@@ -1,0 +1,172 @@
+<?php
+// $Id: chameleon.theme,v 1.44 2006/04/15 04:07:18 unconed Exp $
+
+/**
+ * @file
+ * A slim, CSS-driven theme.
+ */
+
+function chameleon_features() {
+  return array(
+       'toggle_logo',
+       'toggle_favicon',
+       'toggle_name',
+       'toggle_slogan');
+}
+
+function chameleon_regions() {
+  return array(
+       'left' => t('left sidebar'),
+       'right' => t('right sidebar')
+  );
+}
+
+function chameleon_page($content) {
+  $language = $GLOBALS['locale'];
+
+  if (theme_get_setting('toggle_favicon')) {
+    drupal_set_html_head('<link rel="shortcut icon" href="'. check_url(theme_get_setting('favicon')) .'" type="image/x-icon" />');
+  }
+
+  $title = drupal_get_title();
+
+  $output  = "<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.0 Strict//EN\" \"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd\">\n";
+  $output .= "<html xmlns=\"http://www.w3.org/1999/xhtml\" lang=\"$language\" xml:lang=\"$language\">\n";
+  $output .= "<head>\n";
+  $output .= " <title>". ($title ? strip_tags($title) ." | ". variable_get("site_name", "drupal") : variable_get("site_name", "drupal") ." | ". variable_get("site_slogan", "")) ."</title>\n";
+  $output .= drupal_get_html_head();
+  $output .= theme('stylesheet_import', base_path() . path_to_theme() ."/common.css");
+  $output .= theme_get_styles();
+  $output .= "</head>";
+  $output .= "<body>\n";
+  $output .= " <div id=\"header\">";
+
+  if ($logo = theme_get_setting('logo')) {
+    $output .= "  <a href=\"". base_path() ."\" title=\"". t('Home') ."\"><img src=\"$logo\" alt=\"". t('Home') ."\" /></a>";
+  }
+  if (theme_get_setting('toggle_name')) {
+    $output .= "  <h1 class=\"site-name title\">". l(variable_get('site_name', 'drupal'), ""). "</h1>";
+  }
+  if (theme_get_setting('toggle_slogan')) {
+    $output .= "  <div class=\"site-slogan\">". variable_get('site_slogan', '') ."</div>";
+  }
+
+  $output .= "</div>\n";
+
+  $primary_links = theme('links', menu_primary_links());
+  $secondary_links = theme('links', menu_secondary_links());
+  if (isset($primary_links) || isset($secondary_links)) {
+    $output .= ' <div class="navlinks">';
+    if (isset($primary_links)) {
+      $output .= '<div class="primary">'. $primary_links .'</div>';
+    }
+    if (isset($secondary_links)) {
+      $output .= '<div class="secondary">'. $secondary_links .'</div>';
+    }
+    $output .= " </div>\n";
+  }
+
+  $output .= " <table id=\"content\">\n";
+  $output .= "  <tr>\n";
+
+  if ($blocks = theme_blocks("left")) {
+    $output .= "   <td id=\"sidebar-left\">$blocks</td>\n";
+  }
+
+  $output .= "   <td id=\"main\">\n";
+
+  if ($title) {
+    $output .= theme("breadcrumb", drupal_get_breadcrumb());
+    $output .= "<h2>$title</h2>";
+  }
+
+  if ($tabs = theme('menu_local_tasks')) {
+    $output .= $tabs;
+  }
+
+  $output .= theme('help');
+
+  $output .= theme('status_messages');
+
+  $output .= "\n<!-- begin content -->\n";
+  $output .= $content;
+  $output .= "\n<!-- end content -->\n";
+
+  if ($footer = variable_get('site_footer', '')) {
+    $output .= " <div id=\"footer\">$footer</div>\n";
+  }
+
+  $output  .= "   </td>\n";
+
+  if ($blocks = theme_blocks("right")) {
+    $output .= "   <td id=\"sidebar-right\">$blocks</td>\n";
+  }
+
+  $output .= "  </tr>\n";
+  $output .= " </table>\n";
+
+  $output .=  theme_closure();
+  $output .= " </body>\n";
+  $output .= "</html>\n";
+
+  return $output;
+}
+
+function chameleon_node($node, $teaser = 0, $page = 0) {
+
+  $output  = "<div class=\"node". ((!$node->status) ? ' node-unpublished' : '') ."\">\n";
+
+  if (!$page) {
+    $output .= " <h2 class=\"title\">". ($teaser ? l($node->title, "node/$node->nid") : check_plain($node->title)) ."</h2>\n";
+  }
+
+  $output .= " <div class=\"content\">\n";
+
+  if ($teaser && $node->teaser) {
+    $output .= $node->teaser;
+  }
+  else {
+    $output .= $node->body;
+  }
+
+  $output .= " </div>\n";
+
+  $submitted = theme_get_setting("toggle_node_info_$node->type") ? array(t("By %author at %date", array('%author' => theme('username', $node), '%date' => format_date($node->created, 'small')))) : array();
+
+  $terms = array();
+  if (module_exist('taxonomy')) {
+    $terms = taxonomy_link("taxonomy terms", $node);
+  }
+
+  $links = array_merge($submitted, $terms);
+  if ($node->links) {
+    $links = array_merge($links, $node->links);
+  }
+  if (count($links)) {
+    $output .= " <div class=\"links\">". theme('links', $links) ."</div>\n";
+  }
+
+  $output .= "</div>\n";
+
+  return $output;
+}
+
+function chameleon_comment($comment, $links = "") {
+  $submitted = array(t('By %author at %date', array('%author' => theme('username', $comment), '%date' => format_date($comment->timestamp. 'small'))));
+
+  $output  = "<div class=\"comment". ($comment->status == COMMENT_NOT_PUBLISHED ? ' comment-unpublished' : '') ."\">\n";
+  $output .= " <h3 class=\"title\">". l($comment->subject, $_GET['q'], NULL, NULL, "comment-$comment->cid") ."</h3>\n";
+  $output .= " <div class=\"content\">". $comment->comment ."</div>\n";
+  $output .= " <div class=\"links\">". theme('links', array_merge($submitted, $links)) ."</div>\n";
+  $output .= "</div>\n";
+
+  return $output;
+}
+
+function chameleon_help() {
+  if ($help = menu_get_active_help()) {
+    return '<div class="help">'. $help .'</div><hr />';
+  }
+}
+
+?>

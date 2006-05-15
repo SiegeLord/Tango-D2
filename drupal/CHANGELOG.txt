@@ -1,0 +1,524 @@
+Drupal 4.7.0, 2006-05-01
+------------------------
+- added free tagging support.
+- added a site-wide contact form.
+- theme system:
+    * added the PHPTemplate theme engine and removed the Xtemplate engine.
+    * converted the bluemarine theme from XTemplate to PHPTemplate.
+    * converted the pushbutton theme from XTemplate to PHPTemplate.
+- usability:
+    * reworked the 'request new password' functionality.
+    * reworked the node and comment edit forms.
+    * made it easy to add nodes to the navigation menu.
+    * added site 'offline for maintenance' feature.
+    * added support for auto-complete forms (AJAX).
+    * added support for collapsible page sections (JS).
+    * added support for resizable text fields (JS).
+    * improved file upload functionality (AJAX).
+    * reorganized some settings pages.
+    * added friendly database error screens.
+    * improved styling of update.php.
+- refactored the forms API.
+    * made it possible to alter, extend or theme forms.
+- comment system:
+    * added support for "mass comment operations" to ease repetitive tasks.
+    * comment moderation has been removed.
+- node system:
+    * reworked the revision functionality.
+    * removed the bookmarklet code. Third-party modules can now handle
+      this.
+- upgrade system:
+    * allows contributed modules to plug into the upgrade system.
+- profiles:
+    * added a block to display author information along with posts.
+    * added support for private profile fields.
+- statistics module:
+    * added the ability to track page generation times.
+    * made it possible to block certain IPs/hostnames.
+- block system:
+    * added support for theme-specific block regions.
+- syndication:
+    * made the aggregator module parse Atom feeds.
+    * made the aggregator generate RSS feeds.
+    * added RSS feed settings.
+- XML-RPC:
+    * replaced the XML-RPC library by a better one.
+- performance:
+    * added 'loose caching' option for high-traffic sites.
+    * improved performance of path aliasing.
+    * added the ability to track page generation times.
+- internationalization:
+    * improved Unicode string handling API.
+    * added support for PHP's multibyte string module.
+- added support for PHP5's 'mysqli' extension.
+- search module:
+    * made indexer smarter and more robust.
+    * added advanced search operators (e.g. phrase, node type, ...).
+    * added customizable result ranking.
+- PostgreSQL support:
+    * removed dependency on PL/pgSQL procedural language.
+- menu system:
+    * added support for external URLs.
+- queue module:
+    * removed from core.
+- HTTP handling:
+    * added support for a tolerant Base URL.
+    * output URIs relative to the root, without a base tag.
+
+Drupal 4.6.6, 2006-03-13
+------------------------
+- fixed bugs, including 4 security vulnerabilities.
+
+Drupal 4.6.5, 2005-12-12
+------------------------
+- fixed bugs: no critical bugs were identified.
+
+Drupal 4.6.4, 2005-11-30
+------------------------
+- fixed bugs, including 3 security vulnerabilities.
+
+Drupal 4.6.3, 2005-08-15
+------------------------
+- fixed bugs, including a critical "arbitrary PHP code execution" bug.
+
+Drupal 4.6.2, 2005-06-29
+------------------------
+- fixed bugs, including two critical "arbitrary PHP code execution" bugs.
+
+Drupal 4.6.1, 2005-06-01
+------------------------
+- fixed bugs, including a critical input validation bug.
+
+Drupal 4.6.0, 2005-04-15
+------------------------
+- PHP5 compliance
+- search:
+    * added UTF-8 support to make it work with all languages.
+    * improved search indexing algorithm.
+    * improved search output.
+    * impose a throttle on indexing of large sites.
+    * added search block.
+- syndication:
+    * made the ping module ping pingomatic.com which, in turn, will ping all the major ping services.
+    * made Drupal generate RSS 2.0 feeds.
+    * made RSS feeds extensible.
+    * added categories to RSS feeds.
+    * added enclosures to RSS feeds.
+- flood control mechanism:
+    * added a mechanism to throttle certain operations.
+- usability:
+    * refactored the block configuration pages.
+    * refactored the statistics pages.
+    * refactored the watchdog pages.
+    * refactored the throttle module configuration.
+    * refactored the access rules page.
+    * refactored the content administration page.
+    * introduced forum configuration pages.
+    * added a 'add child page' link to book pages.
+- contact module:
+    * added a simple contact module that allows users to contact each other using e-mail.
+- multi-site configuration:
+    * made it possible to run multiple sites from a single code base.
+- added an image API: enables better image handling.
+- block system:
+    * extended the block visibility settings.
+- theme system:
+    * added new theme functions.
+- database backend:
+    * the PEAR database backend is no longer supported.
+- performance:
+    * improved performance of the forum topics block.
+    * improved performance of the tracker module.
+    * improved performance of the node pages.
+- documentation:
+    * improved and extended PHPDoc/Doxygen comments.
+
+Drupal 4.5.8, 2006-03-13
+------------------------
+- fixed bugs, including 3 security vulnerabilities.
+
+Drupal 4.5.7, 2005-12-12
+------------------------
+- fixed bugs: no critical bugs were identified.
+
+Drupal 4.5.6, 2005-11-30
+------------------------
+- fixed bugs, including 3 security vulnerabilities.
+
+Drupal 4.5.5, 2005-08-15
+------------------------
+- fixed bugs, including a critical "arbitrary PHP code execution" bug.
+
+Drupal 4.5.4, 2005-06-29
+------------------------
+- fixed bugs, including two critical "arbitrary PHP code execution" bugs.
+
+Drupal 4.5.3, 2005-06-01
+------------------------
+- fixed bugs, including a critical input validation bug.
+
+Drupal 4.5.2, 2005-01-15
+------------------------
+- fixed bugs: a cross-site scripting (XSS) vulnerability has been fixed.
+
+Drupal 4.5.1, 2004-12-01
+------------------------
+- fixed bugs: no critical bugs were identified.
+
+Drupal 4.5.0, 2004-10-18
+------------------------
+- navigation:
+    * made it possible to add, delete, rename and move menu items.
+    * introduced tabs and subtabs for local tasks.
+    * reorganized the navigation menus.
+- user management:
+    * added support for multiple roles per user.
+    * made it possible to add custom profile fields.
+    * made it possible to browse user profiles by field.
+- node system:
+    * added support for node-level permissions.
+- comment module:
+    * made it possible to leave contact information without having to register.
+- upload module:
+    * added support for uploading documents (includes images).
+- forum module:
+    * added support for sticky forum topics.
+    * made it possible to track forum topics.
+- syndication:
+    * added support for RSS ping-notifications of http://technorati.com/.
+    * refactored the categorization of syndicated news items.
+    * added an URL alias for 'rss.xml'.
+    * improved date parsing.
+- database backend:
+    * added support for multiple database connections.
+    * the PostgreSQL backend does no longer require PEAR.
+- theme system:
+    * changed all GIFs to PNGs.
+    * reorganised the handling of themes, template engines, templates and styles.
+    * unified and extended the available theme settings.
+    * added theme screenshots.
+- blocks:
+    * added 'recent comments' block.
+    * added 'categories' block.
+- blogger API:
+    * added support for auto-discovery of blogger API via RSD.
+- performance:
+    * added support for sending gzip compressed pages.
+    * improved performance of the forum module.
+- accessibility:
+    * improved the accessibility of the archive module's calendar.
+    * improved form handling and error reporting.
+    * added HTTP redirects to prevent submitting twice when refreshing right after a form submission.
+- refactored 403 (forbidden) handling and added support for custom 403 pages.
+- documentation:
+    * added PHPDoc/Doxygen comments.
+- filter system:
+    * added support for using multiple input formats on the site
+    * expanded the embedded PHP-code feature so it can be used everywhere
+    * added support for role-dependant filtering, through input formats
+- UI translation:
+    * managing translations is now completely done through the administration interface
+    * added support for importing/exporting gettext .po files
+
+Drupal 4.4.3, 2005-06-01
+------------------------
+- fixed bugs, including a critical input validation bug.
+
+Drupal 4.4.2, 2004-07-04
+------------------------
+- fixed bugs: no critical bugs were identified.
+
+Drupal 4.4.1, 2004-05-01
+------------------------
+- fixed bugs: no critical bugs were identified.
+
+Drupal 4.4.0, 2004-04-01
+------------------------
+- added support for the MetaWeblog API and MovableType extensions.
+- added a file API: enables better document management.
+- improved the watchdog and search module to log search keys.
+- news aggregator:
+    * added support for conditional GET.
+    * added OPML feed subscription list.
+    * added support for <image>, <pubDate>, <dc:date>, <dcterms:created>, <dcterms:issued> and <dcterms:modified>.
+- comment module:
+    * made it possible to disable the "comment viewing controls".
+- performance:
+    * improved module loading when serving cached pages.
+    * made it possible to automatically disable modules when under heavy load.
+    * made it possible to automatically disable blocks when under heavy load.
+    * improved performance and memory footprint of the locale module.
+- theme system:
+    * made all theme functions start with 'theme_'.
+    * made all theme functions return their output.
+    * migrated away from using the BaseTheme class.
+    * added many new theme functions and refactored existing theme functions.
+    * added avatar support to 'Xtemplate'.
+    * replaced theme 'UnConeD' by 'Chameleon'.
+    * replaced theme 'Marvin' by 'Pushbutton'.
+- usability:
+    * added breadcrumb navigation to all pages.
+    * made it possible to add context-sensitive help to all pages.
+    * replaced drop-down menus by radio buttons where appropriate.
+    * removed the 'magic_quotes_gpc = 0' requirement.
+    * added a 'book navigation' block.
+- accessibility:
+    * made themes degrade gracefully in absence of CSS.
+    * grouped form elements using '<fieldset>' and '<legend>' tags.
+    * added '<label>' tags to form elements.
+- refactored 404 (file not found) handling and added support for custom 404 pages.
+- improved the filter system to prevent conflicts between filters:
+    * made it possible to change the order in which filters are applied.
+- documentation:
+    * added PHPDoc/Doxygen comments.
+
+Drupal 4.3.2, 2004-01-01
+------------------------
+- fixed bugs: no critical bugs were identified.
+
+Drupal 4.3.1, 2003-12-01
+------------------------
+- fixed bugs: no critical bugs were identified.
+
+Drupal 4.3.0, 2003-11-01
+------------------------
+- added support for configurable URLs.
+- added support for sortable table columns.
+- database backend:
+    * added support for selective database table prefixing.
+- performance:
+    * optimized many SQL queries for speed by converting left joins to inner joins.
+- comment module:
+    * rewrote the comment housekeeping code to be much more efficient and scalable.
+    * changed the comment module to use the standard pager.
+- user module:
+    * added support for multiple sessions per user.
+    * added support for anonymous user sessions.
+- forum module:
+    * improved the forum views and the themability thereof.
+- book module:
+    * improved integration of non-book nodes in the book outline.
+- usability:
+    * added support for "mass node operations" to ease repetitive tasks.
+    * added support for breadcrumb navigation to several modules' user pages.
+    * integrated the administration pages with the normal user pages.
+
+Drupal 4.2.0, 2003-08-01
+------------------------
+- added support for clean URLs.
+- added textarea hook and support for onload attributes: enables integration of WYSIWYG editors.
+- rewrote the RSS/RDF parser:
+    * it will now use PHP's built-in XML parser to parse news feeds.
+- rewrote the administration pages:
+    * improved the navigational elements and added breadcrumb navigation.
+    * improved the look and feel.
+    * added context-sensitive help.
+- database backend:
+    * fixed numerous SQL queries to make Drupal ANSI compliant.
+    * added MSSQL database scheme.
+- search module:
+    * changed the search module to use implicit AND'ing instead of implicit OR'ing.
+- node system:
+    * replaced the "post content" permission by more fine-grained permissions.
+    * improved content submission:
+        + improved teasers: teasers are now optional, teaser length can be configured, teaser and body are edited in a single textarea, users will no longer be bothered with teasers when the post is too short for one.
+        + added the ability to preview both the short and the full version of your posts.
+    * extended the node API which allows for better integration.
+    * added default node settings to control the behavior for promotion, moderation and other options.
+- themes:
+    * replaced theme "Goofy" by "Xtemplate", a template driven theme.
+- removed the 'register_globals = on' requirement.
+- added better installation instructions.
+
+Drupal 4.1.0, 2003-02-01
+------------------------
+- collaboratively revised and expanded the Drupal documentation.
+- rewrote comment.module:
+    * reintroduced comment rating/moderation.
+    * added support for comment paging.
+    * performance improvements: improved comment caching, faster SQL queries, etc.
+- rewrote block.module:
+    * performance improvements: blocks are no longer rendered when not displayed.
+- rewrote forum.module:
+    * added a lot of features one can find in stand-alone forum software including but not limited to support for topic paging, added support for icons, rewrote the statistics module, etc.
+- rewrote statistics.module:
+    * collects access counts for each node, referrer logs, number of users/guests.
+    * export blocks displaying top viewed nodes over last 24 hour period, top viewed nodes over all time, last nodes viewed, how many users/guest online.
+- added throttle.module:
+    * auto-throttle congestion control mechanism: Drupal can adapt itself based on the server load.
+- added profile.module:
+    * enables to extend the user and registration page.
+- added pager support to the main page.
+- replaced weblogs.module by ping.module:
+    * added support for normal and RSS notifications of http://blo.gs/.
+    * added support for RSS ping-notifications of http://weblogs.com/.
+- removed the rating module
+- themes:
+    * removed a significant portion of hard-coded mark-up.
+
+Drupal 4.0.0, 2002-06-15
+------------------------
+- added tracker.module:
+    * replaces the previous "your [site]" links (recent comments and nodes).
+- added weblogs.module:
+    * this will ping weblogs.com when new content is promoted.
+- added taxonomy module which replaces the meta module.
+    * supports relations, hierarchies and synonyms.
+- added a caching system:
+    * speeds up pages for anonymous users and reduces system load.
+- added support for external SMTP libraries.
+- added an archive extension to the calendar.
+- added support for the Blogger API.
+- themes:
+    * cleaned up the theme system.
+    * moved themes that are not maintained to contributions CVS repository.
+- database backend:
+    * changed to PEAR database abstraction layer.
+    * using ANSI SQL queries to be more portable.
+- rewrote the user system:
+    * added support for Drupal authentication through XML-RPC and through a Jabber server.
+    * added support for modules to add more user data.
+    * users may delete their own account.
+    * added who's new and who's online blocks.
+- changed block system:
+    * various hard coded blocks are now dynamic.
+    * blocks can now be enabled and/or be set by the user.
+    * blocks can be set to only show up on some pages.
+    * merged box module with block module.
+- node system:
+    * blogs can be updated.
+    * teasers (abstracts) on all node types.
+    * improved error checking.
+    * content versioning support.
+    * usability improvements.
+- improved book module to support text, HTML and PHP pages.
+- improved comment module to mark new comments.
+- added a general outliner which will let any node type be linked to a book.
+- added an update script that lets you upgrade from previous releases or on a day to day basis when using the development tree.
+- search module:
+    * improved the search system by making it context sensitive.
+    * added indexing.
+- various updates:
+    * changed output to valid XHTML.
+    * improved multiple sites using the same Drupal database support.
+    * added support for session IDs in URLs instead of cookies.
+    * made the type of content on the front page configurable.
+    * made each cloud site have its own settings.
+    * modules and themes can now be enabled/disabled using the administration pages.
+    * added URL abstraction for links.
+    * usability changes (renamed links, better UI, etc).
+- collaboratively revised and expanded the Drupal documentation.
+
+Drupal 3.0.1, 2001-10-15
+------------------------
+- various updates:
+    * added missing translations
+    * updated the themes: tidied up some HTML code and added new Drupal logos.
+
+Drupal 3.0.0, 2001-09-15
+------------------------
+- major overhaul of the entire underlying design:
+    * everything is based on nodes: nodes are a conceptual "black box" to couple and manage different types of content and that promotes reusing existing code, thus reducing the complexity and size of Drupal as well as improving long-term stability.
+- rewrote submission/moderation queue and renamed it to queue.module.
+- removed FAQ and documentation module and merged them into a "book module".
+- removed ban module and integrated it into account.module as "access control":
+    * access control is based on much more powerful regular expressions (regex) now rather than on MySQL pattern matching.
+- rewrote watchdog and submission throttle:
+    * improved watchdog messages and added watchdog filter.
+- rewrote headline code and renamed it to import.module and export.module:
+    * added various improvements, including a better parser, bundles and better control over individual feeds.
+- rewrote section code and renamed it to meta.module:
+    * supports unlimited amount of nested topics.  Topics can be nested to create a multi-level hierarchy.
+- rewrote configuration file resolving:
+    * Drupal tries to locate a configuration file that matches your domain name or uses conf.php if the former failed.  Note also that the configuration files got renamed from .conf to .php for security's sake on mal-configured Drupal sites.
+- added caching support which makes Drupal extremely scalable.
+- added access.module:
+    * allows you to setup 'roles' (groups) and to bind a set of permissions to each group.
+- added blog.module.
+- added poll.module.
+- added system.module:
+    * moved most of the configuration options from hostname.conf to the new administration section.
+    * added support for custom "filters".
+- added statistics.module
+- added moderate.module:
+    * allows to assign users editorial/moderator rights to certain nodes or topics.
+- added page.module:
+    * allows creation of static (and dynamic) pages through the administration interface.
+- added help.module:
+    * groups all available module documentation on a single page.
+- added forum.module:
+    * added an integrated forum.
+- added cvs.module and cvs-to-sql.pl:
+    * allows to display and mail CVS log messages as daily digests.
+- added book.module:
+    * allows collaborative handbook writing: primary used for Drupal documentation.
+- removed cron.module and integrated it into conf.module.
+- removed module.module as it was no longer needed.
+- various updates:
+    * added "auto-post new submissions" feature versus "moderate new submissions".
+    * introduced links/Drupal tags: [[link]]
+    * added preview functionality when submitting new content (such as a story) from the administration pages.
+    * made the administration section only show those links a user has access to.
+    * made all modules use specific form_* functions to guarantee a rock-solid forms and more consistent layout.
+    * improved scheduler:
+        + content can be scheduled to be 'posted', 'queued' and 'hidden'.
+    * improved account module:
+        + added "access control" to allow/deny certain usernames/e-mail addresses/hostnames.
+    * improved locale module:
+        + added new overview to easy the translation process.
+    * improved comment module:
+        + made it possible to permanently delete comments.
+    * improved rating module
+    * improved story module:
+        + added preview functionality for administrators.
+        + made it possible to permanently delete stories.
+    * improved themes:
+        + W3C validation on a best effort basis.
+        + removed $theme->control() from themes.
+        + added theme "goofy".
+- collaboratively revised and expanded the Drupal documentation.
+
+Drupal 2.0.0, 2001-03-15
+------------------------
+- rewrote the comment/discussion code:
+    * comment navigation should be less confusing now.
+    * additional/alternative display and order methods have been added.
+    * modules can be extended with a "comment system": modules can embed the existing comment system without having to write their own, duplicate comment system.
+- added sections and section manager:
+    * story sections can be maintained from the administration pages.
+    * story sections make the open submission more adaptive in that you can set individual post, dump and expiration thresholds for each section according to the story type and urgency level: stories in certain sections do not "expire" and might stay interesting and active as time passes by, whereas news-related stories are only considered "hot" over a short period of time.
+- multiple vhosts + multiple directories:
+    * you can setup multiple Drupal sites on top of the same physical source tree either by using vhosts or sub-directories.
+- added "user ratings" similar to SlashCode's Karma or Scoop's Mojo:
+    * all rating logic is packed into a module to ease experimenting with different rating heuristics/algorithms.
+- added "search infrastructure":
+    * improved search page and integrated search functionality in the administration pages.
+- added translation / localization / internationalization support:
+    * because many people would love to see their website showing a lot less of English, and far more of their own language, Drupal provides a framework to setup a multi-lingual website or to overwrite the default English text in English.
+- added fine-grained user permission (or group) system:
+    * users can be granted access to specific administration sections.  Example: a FAQ maintainer can be given access to maintain the FAQ and translators can be given access to the translation pages.
+- added FAQ module
+- changed the "open submission queue" into a (optional) module.
+- various updates:
+    * improved account module:
+        + user accounts can be deleted.
+        + added fine-grained permission support.
+    * improved block module
+    * improved diary module:
+        + diary entries can be deleted
+    * improved headline module:
+        + improved parser to support more "generic" RDF/RSS/XML backend.
+    * improved module module
+    * improved watchdog module
+    * improved database abstraction layer
+    * improved themes:
+        + W3C validation on a best effort basis
+        + added theme "example" (alias "Stone Age")
+    * added new scripts to directory "scripts"
+    * added directory "misc"
+    * added CREDITS file
+- revised documentation
+
+Drupal 1.0.0, 2001-01-15
+------------------------
+- initial release
