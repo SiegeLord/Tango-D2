@@ -169,7 +169,7 @@ class FileSystem
 
                 static void setDirectory (FilePath fp)
                 {
-                        if (std.c.posix.posix.chdir (fp.toUtf8))
+                        if (tango.stdc.posix.posix.chdir (fp.toUtf8))
                             throw new IOException ("Failed to set current directory");
                 }
 
@@ -181,7 +181,7 @@ class FileSystem
 
                 static FilePath getDirectory ()
                 {
-                        char *s = std.c.posix.posix.getcwd (null, 0);
+                        char *s = tango.stdc.posix.posix.getcwd (null, 0);
                         if (s) 
                             // dup the string so we can hang onto it                            
                             return new FilePath (s[0..strlen(s)].dup);

@@ -68,10 +68,10 @@ version (Win32)
 version (Posix)
         {
                 version (linux)
-                         private import std.c.linux.linux;
+                         private import tango.stdc.linux.linux;
 
                 version (darwin)
-                         private import std.c.darwin.darwin;
+                         private import tango.stdc.darwin.darwin;
         }
 
 class Random

@@ -70,11 +70,11 @@ version (Posix)
         {
         private extern (C) int strlen (char *s);
 
-        private import std.c.stdio;
+        private import tango.stdc.stdio;
 
         version (darwin)
                 {
-                // missing from std.c.darwin.darwin in GDC 0.9 :
+                // missing from tango.stdc.darwin.darwin in GDC 0.9 :
 
                 alias long off_t;
 
@@ -649,7 +649,7 @@ class FileProxy : IWritable
                                exception ();
                            }
                         else           
-                           if (std.c.stdio.remove (path.toUtf8) == -1)
+                           if (tango.stdc.stdio.remove (path.toUtf8) == -1)
                                exception ();
                 }              
 

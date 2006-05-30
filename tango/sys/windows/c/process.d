@@ -7,8 +7,8 @@ module sys.windows.c.process;
 
 private
 {
-    import std.c.stdint;
-    import std.c.stddef;
+    import tango.stdc.stdint;
+    import tango.stdc.stddef;
 }
 
 extern (C):

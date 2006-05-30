@@ -1,7 +1,7 @@
 module object;
 
-public import std.c.stddef;
-public import std.c.stdbool;
+public import tango.stdc.stddef;
+public import tango.stdc.stdbool;
 
 alias size_t hash_t;
 

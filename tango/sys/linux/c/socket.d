@@ -6,7 +6,7 @@
 
 module sys.linux.c.socket;
 
-private import std.c.stdint;
+private import tango.stdc.stdint;
 
 
 extern(C):

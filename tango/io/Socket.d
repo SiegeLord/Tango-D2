@@ -98,8 +98,8 @@ version (Phobos)
         }
      else
         {
-        private import std.c.stdint;
-        private import std.c.errno;
+        private import tango.stdc.stdint;
+        private import tango.stdc.errno;
         }
 
 

@@ -35,7 +35,7 @@
 
 module std.math.ieee;
 
-private import std.c.math;
+private import tango.stdc.math;
 private import std.math.core; // for sin and cos
 
 // Returns true if equal to precision, false if not
@@ -193,7 +193,7 @@ real ldexp(real n, int exp) /* intrinsic */
     }
     else
     {
-        return std.c.math.ldexpl(n, exp);
+        return tango.stdc.math.ldexpl(n, exp);
     }
 }
 
@@ -212,11 +212,11 @@ real ldexp(real n, int exp) /* intrinsic */
  */
 int ilogb(real x)
 {
-    return std.c.math.ilogbl(x);
+    return tango.stdc.math.ilogbl(x);
 }
 
-alias std.c.math.FP_ILOGB0   FP_ILOGB0;
-alias std.c.math.FP_ILOGBNAN FP_ILOGBNAN;
+alias tango.stdc.math.FP_ILOGB0   FP_ILOGB0;
+alias tango.stdc.math.FP_ILOGBNAN FP_ILOGBNAN;
 
 /**
  * Extracts the exponent of x as a signed integral value.
@@ -236,7 +236,7 @@ alias std.c.math.FP_ILOGBNAN FP_ILOGBNAN;
  */
 real logb(real x)
 {
-    return std.c.math.logbl(x);
+    return tango.stdc.math.logbl(x);
 }
 
 /**
@@ -254,7 +254,7 @@ real logb(real x)
 real scalbn(real x, int n)
 {
     // BUG: Not implemented in DMD
-    return std.c.math.scalbnl(x, n);
+    return tango.stdc.math.scalbnl(x, n);
 }
 
 /**
@@ -271,7 +271,7 @@ real scalbn(real x, int n)
 real nextafter(real x, real y)
 {
     // BUG: Not implemented in DMD
-    return std.c.math.nextafterl(x, y);
+    return tango.stdc.math.nextafterl(x, y);
 }
 
 /**
@@ -281,7 +281,7 @@ real nan(char[] tagp)
 {
     // NOTE: Should use toStringz
     char[] tmp = tagp ~ '\0';
-    return std.c.math.nanl(tmp);
+    return tango.stdc.math.nanl(tmp);
 }
 
 /**
@@ -319,7 +319,7 @@ real fabs(real x) /* intrinsic */
     }
     else
     {
-        return std.c.math.fabsl(x);
+        return tango.stdc.math.fabsl(x);
     }
 }
 

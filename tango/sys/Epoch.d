@@ -479,7 +479,7 @@ abstract class Epoch
 
         version (Posix)
         {
-                // these are exposed via std.c.time
+                // these are exposed via tango.stdc.time
                 //extern (C) int timezone;
                 //extern (C) int daylight;
 

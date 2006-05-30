@@ -22,14 +22,14 @@
 
 module std.math.special;
 
-private import std.c.math;
+private import tango.stdc.math;
 
 /**
  * Returns the error function of x.
  */
 real erf(real x)
 {
-    return std.c.math.erfl(x);
+    return tango.stdc.math.erfl(x);
 }
 
 /**
@@ -37,7 +37,7 @@ real erf(real x)
  */
 real erfc(real x)
 {
-    return std.c.math.erfcl(x);
+    return tango.stdc.math.erfcl(x);
 }
 
 /**
@@ -69,7 +69,7 @@ real gamma(real x)
 {
     // NOTE: A native implementation of this function is
     //       available at http://www.dsource.org/mathextra
-    return std.c.math.tgammal(x);
+    return tango.stdc.math.tgammal(x);
 }
 
 /**
@@ -92,5 +92,5 @@ real loggamma(real x)
 {
     // NOTE: A native implementation of this function is
     //       available at http://www.dsource.org/mathextra
-    return std.c.math.lgammal(x);
+    return tango.stdc.math.lgammal(x);
 }

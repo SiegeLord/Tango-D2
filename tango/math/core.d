@@ -35,7 +35,7 @@
 
 module std.math.core;
 
-private import std.c.math;
+private import tango.stdc.math;
 private import std.math.ieee;
 
 /*
@@ -162,7 +162,7 @@ real cos(real x) /* intrinsic */
     }
     else
     {
-        return std.c.math.cosl(x);
+        return tango.stdc.math.cosl(x);
     }
 }
 
@@ -190,7 +190,7 @@ real sin(real x) /* intrinsic */
     }
     else
     {
-        return std.c.math.sinl(x);
+        return tango.stdc.math.sinl(x);
     }
 }
 
@@ -307,7 +307,7 @@ unittest
  */
 real acos(real x)
 {
-    return std.c.math.acosl(x);
+    return tango.stdc.math.acosl(x);
 }
 
 /**
@@ -323,7 +323,7 @@ real acos(real x)
  */
 real asin(real x)
 {
-    return std.c.math.asinl(x);
+    return tango.stdc.math.asinl(x);
 }
 
 /**
@@ -338,7 +338,7 @@ real asin(real x)
  */
 real atan(real x)
 {
-    return std.c.math.atanl(x);
+    return tango.stdc.math.atanl(x);
 }
 
 /**
@@ -364,7 +364,7 @@ real atan(real x)
  */
 real atan2(real x, real y)
 {
-    return std.c.math.atan2l(x,y);
+    return tango.stdc.math.atan2l(x,y);
 }
 
 /**
@@ -377,7 +377,7 @@ real atan2(real x, real y)
  */
 real cosh(real x)
 {
-    return std.c.math.coshl(x);
+    return tango.stdc.math.coshl(x);
 }
 
 /**
@@ -391,7 +391,7 @@ real cosh(real x)
  */
 real sinh(real x)
 {
-    return std.c.math.sinhl(x);
+    return tango.stdc.math.sinhl(x);
 }
 
 /**
@@ -405,7 +405,7 @@ real sinh(real x)
  */
 real tanh(real x)
 {
-    return std.c.math.tanhl(x);
+    return tango.stdc.math.tanhl(x);
 }
 
 /**
@@ -533,7 +533,7 @@ float sqrt(float x) /* intrinsic */
     }
     else
     {
-        return std.c.math.sqrtf(x);
+        return tango.stdc.math.sqrtf(x);
     }
 }
 
@@ -549,7 +549,7 @@ double sqrt(double x) /* intrinsic */ /// ditto
     }
     else
     {
-        return std.c.math.sqrt(x);
+        return tango.stdc.math.sqrt(x);
     }
 }
 
@@ -565,7 +565,7 @@ real sqrt(real x) /* intrinsic */ /// ditto
     }
     else
     {
-        return std.c.math.sqrtl(x);
+        return tango.stdc.math.sqrtl(x);
     }
 }
 
@@ -621,7 +621,7 @@ creal sqrt(creal z) /// ditto
  */
 real cbrt(real x)
 {
-    return std.c.math.cbrtl(x);
+    return tango.stdc.math.cbrtl(x);
 }
 
 /**
@@ -635,7 +635,7 @@ real cbrt(real x)
  */
 real exp(real x)
 {
-    return std.c.math.expl(x);
+    return tango.stdc.math.expl(x);
 }
 
 /**
@@ -654,7 +654,7 @@ real exp(real x)
  */
 real expm1(real x)
 {
-    return std.c.math.expm1l(x);
+    return tango.stdc.math.expm1l(x);
 }
 
 /**
@@ -668,7 +668,7 @@ real expm1(real x)
  */
 real exp2(real x)
 {
-    return std.c.math.exp2l(x);
+    return tango.stdc.math.exp2l(x);
 }
 
 /*
@@ -687,7 +687,7 @@ real exp2(real x)
  */
 real log(real x)
 {
-    return std.c.math.logl(x);
+    return tango.stdc.math.logl(x);
 }
 
 /**
@@ -706,7 +706,7 @@ real log(real x)
  */
 real log1p(real x)
 {
-    return std.c.math.log1pl(x);
+    return tango.stdc.math.log1pl(x);
 }
 
 /**
@@ -722,7 +722,7 @@ real log1p(real x)
  */
 real log2(real x)
 {
-    return std.c.math.log2l(x);
+    return tango.stdc.math.log2l(x);
 }
 
 /**
@@ -737,7 +737,7 @@ real log2(real x)
  */
 real log10(real x)
 {
-    return std.c.math.log10l(x);
+    return tango.stdc.math.log10l(x);
 }
 
 /**
@@ -920,7 +920,7 @@ real pow(real x, real y)
         }
     }
     }
-    return std.c.math.powl(x, y);
+    return tango.stdc.math.powl(x, y);
 }
 
 unittest
@@ -1158,7 +1158,7 @@ unittest
  */
 real floor(real x)
 {
-    return std.c.math.floorl(x);
+    return tango.stdc.math.floorl(x);
 }
 
 /**
@@ -1167,7 +1167,7 @@ real floor(real x)
  */
 real ceil(real x)
 {
-    return std.c.math.ceill(x);
+    return tango.stdc.math.ceill(x);
 }
 
 /**
@@ -1177,7 +1177,7 @@ real ceil(real x)
  */
 real round(real x)
 {
-    return std.c.math.roundl(x);
+    return tango.stdc.math.roundl(x);
 }
 
 /**
@@ -1187,7 +1187,7 @@ real round(real x)
  */
 real trunc(real x)
 {
-    return std.c.math.truncl(x);
+    return tango.stdc.math.truncl(x);
 }
 
 /**
@@ -1213,7 +1213,7 @@ int rndint(real x)
     }
     else
     {
-        return std.c.math.lrintl(x);
+        return tango.stdc.math.lrintl(x);
     }
 }
 
@@ -1232,6 +1232,6 @@ long rndlong(real x)
     }
     else
     {
-        return std.c.math.llrintl(x);
+        return tango.stdc.math.llrintl(x);
     }
 }

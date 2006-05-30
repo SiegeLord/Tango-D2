@@ -2,7 +2,7 @@
 module sys.windows.c.com;
 
 private import sys.windows.c.windows;
-private import std.c.string;
+private import tango.stdc.string;
 
 alias WCHAR OLECHAR;
 alias OLECHAR *LPOLESTR;

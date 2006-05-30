@@ -6,7 +6,7 @@
 
 module sys.windows.c.winsock;
 
-private import std.c.stdint;
+private import tango.stdc.stdint;
 private import sys.windows.c.windows;
 
 

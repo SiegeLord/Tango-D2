@@ -42,18 +42,18 @@ module tango.sys.OS;
 version (Phobos)
         {
         version (Win32)
-                 public import std.c.windows.windows;  
+                 public import tango.stdc.windows.windows;  
 
         version (linux)
                 {
-                public import std.c.linux.linux;
-                alias std.c.linux.linux posix;
+                public import tango.stdc.linux.linux;
+                alias tango.stdc.linux.linux posix;
                 }
 
         version (darwin)
                 {
-                public import std.c.darwin.darwin;
-                alias std.c.darwin.darwin posix;
+                public import tango.stdc.darwin.darwin;
+                alias tango.stdc.darwin.darwin posix;
                 }
         }
      else
