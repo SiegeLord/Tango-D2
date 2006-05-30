@@ -33,10 +33,10 @@
  *  Modified by Sean Kelly <sean@f4.ca> for use with the Ares project.
  */
 
-module std.math.ieee;
+module tango.math.ieee;
 
 private import tango.stdc.math;
-private import std.math.core; // for sin and cos
+private import tango.math.core; // for sin and cos
 
 // Returns true if equal to precision, false if not
 // (This function is used in unit tests)
@@ -352,13 +352,13 @@ creal fcis(ireal y)
     }
     else
     {
-        return std.math.core.cos(y.im) + std.math.core.sin(y.im)*1i;
+        return tango.math.core.cos(y.im) + tango.math.core.sin(y.im)*1i;
     }
 }
 
 unittest
 {
-    assert(fcis(1.3e5Li)==std.math.core.cos(1.3e5L)+std.math.core.sin(1.3e5L)*1i);
+    assert(fcis(1.3e5Li)==tango.math.core.cos(1.3e5L)+tango.math.core.sin(1.3e5L)*1i);
     assert(fcis(0.0Li)==1L+0.0Li);
 }
 

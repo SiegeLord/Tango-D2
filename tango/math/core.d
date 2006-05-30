@@ -33,10 +33,10 @@
  *  Modified by Sean Kelly <sean@f4.ca> for use with the Ares project.
  */
 
-module std.math.core;
+module tango.math.core;
 
 private import tango.stdc.math;
-private import std.math.ieee;
+private import tango.math.ieee;
 
 /*
  * Constants
@@ -70,7 +70,7 @@ const real SQRT1_2    = 0.70710678118654752440;  /** &radic;&frac12 */
  */
 real abs(real x)
 {
-    return std.math.ieee.fabs(x);
+    return tango.math.ieee.fabs(x);
 }
 
 /** ditto */
@@ -94,7 +94,7 @@ real abs(creal z)
 /** ditto */
 real abs(ireal y)
 {
-    return std.math.ieee.fabs(y.im);
+    return tango.math.ieee.fabs(y.im);
 }
 
 unittest
@@ -458,12 +458,12 @@ unittest
  */
 real asinh(real x)
 {
-    if (std.math.ieee.fabs(x) > 1 / real.epsilon) // beyond this point, x*x + 1 == x*x
-    return copysign(LN2 + log(std.math.ieee.fabs(x)), x);
+    if (tango.math.ieee.fabs(x) > 1 / real.epsilon) // beyond this point, x*x + 1 == x*x
+    return copysign(LN2 + log(tango.math.ieee.fabs(x)), x);
     else
     {
     // sqrt(x*x + 1) ==  1 + x * x / ( 1 + sqrt(x*x + 1) )
-    return copysign(log1p(std.math.ieee.fabs(x) + x*x / (1 + sqrt(x*x + 1)) ), x);
+    return copysign(log1p(tango.math.ieee.fabs(x) + x*x / (1 + sqrt(x*x + 1)) ), x);
     }
 }
 
@@ -582,8 +582,8 @@ creal sqrt(creal z) /// ditto
     {   real z_re = z.re;
     real z_im = z.im;
 
-    x = std.math.ieee.fabs(z_re);
-    y = std.math.ieee.fabs(z_im);
+    x = tango.math.ieee.fabs(z_re);
+    y = tango.math.ieee.fabs(z_im);
     if (x >= y)
     {
         r = y / x;
@@ -841,14 +841,14 @@ real pow(real x, real y)
         return real.nan;
     if (isinf(y))
     {
-        if (std.math.ieee.fabs(x) > 1)
+        if (tango.math.ieee.fabs(x) > 1)
         {
         if (signbit(y))
             return +0.0;
         else
             return real.infinity;
         }
-        else if (std.math.ieee.fabs(x) == 1)
+        else if (tango.math.ieee.fabs(x) == 1)
         {
         return real.nan;
         }
@@ -977,8 +977,8 @@ real hypot(real x, real y)
     if (isnan(y))
     return y;
 
-    re = std.math.ieee.fabs(x);
-    im = std.math.ieee.fabs(y);
+    re = tango.math.ieee.fabs(x);
+    im = tango.math.ieee.fabs(y);
 
     if (re == 0.0)
     return im;
@@ -986,8 +986,8 @@ real hypot(real x, real y)
     return re;
 
     // Get the exponents of the numbers
-    xx = std.math.ieee.frexp(re, ex);
-    yy = std.math.ieee.frexp(im, ey);
+    xx = tango.math.ieee.frexp(re, ex);
+    yy = tango.math.ieee.frexp(im, ey);
 
     // Check if one number is tiny compared to the other
     e = ex - ey;
@@ -1000,14 +1000,14 @@ real hypot(real x, real y)
     e = (ex + ey) >> 1;
 
     // Rescale so mean is about 1
-    xx = std.math.ieee.ldexp(re, -e);
-    yy = std.math.ieee.ldexp(im, -e);
+    xx = tango.math.ieee.ldexp(re, -e);
+    yy = tango.math.ieee.ldexp(im, -e);
 
     // Hypotenuse of the right triangle
     b = sqrt(xx * xx  +  yy * yy);
 
     // Compute the exponent of the answer.
-    yy = std.math.ieee.frexp(b, ey);
+    yy = tango.math.ieee.frexp(b, ey);
     ey = e + ey;
 
     // Check it for overflow and underflow.
@@ -1020,7 +1020,7 @@ real hypot(real x, real y)
     return 0.0;
 
     // Undo the scaling
-    b = std.math.ieee.ldexp(b, e);
+    b = tango.math.ieee.ldexp(b, e);
     return b;
 }
 

@@ -42,7 +42,7 @@
 
 module tango.sys.ByteSwap;
 
-import std.intrinsic;
+import tango.lang.intrinsic;
 
 /*******************************************************************************
 

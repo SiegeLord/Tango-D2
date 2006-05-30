@@ -20,7 +20,7 @@
  *     distribution.
  */
 
-module std.math.special;
+module tango.math.special;
 
 private import tango.stdc.math;
 

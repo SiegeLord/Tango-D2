@@ -283,7 +283,7 @@ extern(C)
 
 extern(C)
 {
-	private import std.intrinsic;
+	private import tango.lang.intrinsic;
 
 
 	int select(int nfds, fd_set* readfds, fd_set* writefds, fd_set* errorfds, timeval* timeout);

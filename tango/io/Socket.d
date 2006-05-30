@@ -94,7 +94,7 @@ version (Posix)
 
 version (Phobos)
         {
-        private import std.stdint;
+        private import tango.lang.stdint;
         }
      else
         {
@@ -315,7 +315,7 @@ version(BigEndian)
 }
 else version(LittleEndian)
 {
-        import std.intrinsic;
+        import tango.lang.intrinsic;
         
         
         uint16_t htons(uint16_t x)
@@ -2176,7 +2176,7 @@ class SocketSet
         }
         else version (Posix)
         {
-                import std.intrinsic;
+                import tango.lang.intrinsic;
                 
                 
                 uint nfdbits;

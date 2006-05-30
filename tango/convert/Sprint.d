@@ -40,9 +40,9 @@
 module tango.convert.Sprint;
 
 version (Phobos)
-         private import std.stdarg;
+         private import tango.lang.stdarg;
      else
-        private import std.vararg;
+        private import tango.lang.vararg;
 
 private import  tango.convert.Type,
                 tango.convert.Format,

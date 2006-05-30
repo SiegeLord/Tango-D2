@@ -39,7 +39,7 @@
 
 module tango.text.RegexIterator;
 
-private import  std.regexp;
+private import  tango.text.Regexp;
     
 private import  tango.text.Iterator;
 

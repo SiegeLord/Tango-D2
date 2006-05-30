@@ -43,7 +43,7 @@
  * operations (such as increment, decrement, etc), these may be added in some
  * form--perhaps as additional global functions and in an AtomicValue type.
  */
-module std.atomic;
+module tango.sys.atomic;
 
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -75,7 +75,7 @@ enum msync
 
 private
 {
-    import std.traits;
+    import tango.sys.traits;
 
 
     template isValidAtomicType( T )
