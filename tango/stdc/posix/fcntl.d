@@ -1,0 +1,181 @@
+/*
+ * Written by Sean Kelly
+ * Placed into Public Domain
+ */
+
+module tango.stdc.posix.fcntl;
+
+private import tango.stdc.config;
+private import tango.stdc.stdint;
+public import tango.stdc.stddef;          // for size_t
+public import tango.stdc.posix.sys.types; // for off_t, mode_t
+public import tango.stdc.posix.sys.stat;  // for S_IFMT, etc.
+
+extern (C):
+
+//
+// Required
+//
+/*
+F_DUPFD
+F_GETFD
+F_SETFD
+F_GETFL
+F_SETFL
+F_GETLK
+F_SETLK
+F_SETLKW
+F_GETOWN
+F_SETOWN
+
+FD_CLOEXEC
+
+F_RDLCK
+F_UNLCK
+F_WRLCK
+
+O_CREAT
+O_EXCL
+O_NOCTTY
+O_TRUNC
+
+O_APPEND
+O_DSYNC
+O_NONBLOCK
+O_RSYNC
+O_SYNC
+
+O_ACCMODE
+O_RDONLY
+O_RDWR
+O_WRONLY
+
+struct flock
+{
+    short   l_type;
+    short   l_whence;
+    off_t   l_start;
+    off_t   l_len;
+    pid_t   l_pid;
+}
+
+int creat(char *, mode_t);
+int fcntl(int, int, ...);
+int open(char *, int, ...);
+*/
+version( linux )
+{
+    const auto F_DUPFD      = 0;
+    const auto F_GETFD      = 1;
+    const auto F_SETFD      = 2;
+    const auto F_GETFL      = 3;
+    const auto F_SETFL      = 4;
+  static if( false /*__USE_FILE_OFFSET64*/ )
+  {
+    const auto F_GETLK      = 5;
+    const auto F_SETLK      = 6;
+    const auto F_SETLKW     = 7;
+  }
+  else
+  {
+    const auto F_GETLK      = 12;
+    const auto F_SETLK      = 13;
+    const auto F_SETLKW     = 14;
+  }
+    const auto F_GETOWN     = 9;
+    const auto F_SETOWN     = 8;
+
+    const auto FD_CLOEXEC   = 1;
+
+    const auto F_RDLCK      = 0;
+    const auto F_UNLCK      = 2;
+    const auto F_WRLCK      = 1;
+
+    const auto O_CREAT      = 0100;
+    const auto O_EXCL       = 0200;
+    const auto O_NOCTTY     = 0400;
+    const auto O_TRUNC      = 01000;
+
+    const auto O_APPEND     = 02000;
+    const auto O_NONBLOCK   = 04000;
+    const auto O_SYNC       = 010000;
+    const auto O_DSYNC      = O_SYNC;
+    const auto O_RSYNC      = O_SYNC;
+
+    const auto O_ACCMODE    = 0003;
+    const auto O_RDONLY     = 00;
+    const auto O_WRONLY     = 01;
+    const auto O_RDWR       = 02;
+
+    struct flock
+    {
+        short   l_type;
+        short   l_whence;
+        off_t   l_start;
+        off_t   l_len;
+        pid_t   l_pid;
+    }
+}
+else version( darwin )
+{
+    const auto F_DUPFD      = 0;
+    const auto F_GETFD      = 1;
+    const auto F_SETFD      = 2;
+    const auto F_GETFL      = 3;
+    const auto F_SETFL      = 4;
+    const auto F_GETOWN     = 5;
+    const auto F_SETOWN     = 6;
+    const auto F_GETLK      = 7;
+    const auto F_SETLK      = 8;
+    const auto F_SETLKW     = 9;
+
+    const auto FD_CLOEXEC   = 1;
+
+    const auto F_RDLCK      = 1;
+    const auto F_UNLCK      = 2;
+    const auto F_WRLCK      = 3;
+
+    const auto O_CREAT      = 0x0200;
+    const auto O_EXCL       = 0x0800;
+    const auto O_NOCTTY     = 0;
+    const auto O_TRUNC      = 0x0400;
+
+    const auto O_RDONLY     = 0x0000;
+    const auto O_WRONLY     = 0x0001;
+    const auto O_RDWR       = 0x0002;
+    const auto O_ACCMODE    = 0x0003;
+
+    const auto O_NONBLOCK   = 0x0004;
+    const auto O_APPEND     = 0x0008;
+    const auto O_SYNC       = 0x0080;
+    //const auto O_DSYNC
+    //const auto O_RSYNC
+
+    struct flock
+    {
+        off_t   l_start;
+        off_t   l_len;
+        pid_t   l_pid;
+        short   l_type;
+        short   l_whence;
+    }
+}
+
+int creat(char *, mode_t);
+int fcntl(int, int, ...);
+int open(char *, int, ...);
+
+//
+// Advisory Information (ADV)
+//
+/*
+POSIX_FADV_NORMAL
+POSIX_FADV_SEQUENTIAL
+POSIX_FADV_RANDOM
+POSIX_FADV_WILLNEED
+POSIX_FADV_DONTNEED
+POSIX_FADV_NOREUSE
+
+int posix_fadvise(int, off_t, off_t, int);
+int posix_fallocate(int, off_t, off_t);
+*/
