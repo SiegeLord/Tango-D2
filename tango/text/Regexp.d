@@ -104,8 +104,8 @@ private
     import tango.stdc.ctype;
     import tango.stdc.stdlib; // for alloca
 
-    import tango.lang.bitarray;
-    import tango.lang.vararg;
+    import tango.core.bitarray;
+    import tango.core.vararg;
 }
 
 /** Regular expression to extract an _email address */

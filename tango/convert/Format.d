@@ -40,9 +40,9 @@
 module tango.convert.Format;
 
 version (Phobos)
-         private import tango.lang.stdarg;
+         private import tango.core.stdarg;
      else
-        private import tango.lang.vararg;
+        private import tango.core.vararg;
   
 private import  tango.convert.Type,
                 tango.convert.Integer;

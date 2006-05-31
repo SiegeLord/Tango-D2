@@ -316,7 +316,7 @@ version( BigEndian )
 }
 else version( LittleEndian )
 {
-	private import tango.lang.intrinsic;
+	private import tango.core.intrinsic;
 
 
 	uint16_t htons(uint16_t x)
