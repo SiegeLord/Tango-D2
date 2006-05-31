@@ -38,7 +38,7 @@
 
 module tango.sys.System;
 
-private import tango.lang.thread;     
+private import tango.sys.thread;     
 
 private import tango.sys.OS,
                tango.sys.Epoch;
