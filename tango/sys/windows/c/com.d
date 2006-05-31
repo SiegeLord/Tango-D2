@@ -1,7 +1,7 @@
 
-module sys.windows.c.com;
+module tango.sys.windows.c.com;
 
-private import sys.windows.c.windows;
+private import tango.sys.windows.c.windows;
 private import tango.stdc.string;
 
 alias WCHAR OLECHAR;

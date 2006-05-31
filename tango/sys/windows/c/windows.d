@@ -1,5 +1,5 @@
 
-module sys.windows.c.windows;
+module tango.sys.windows.c.windows;
 
 version( Windows )
 {

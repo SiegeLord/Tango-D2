@@ -1,5 +1,5 @@
-import sys.windows.c.windows;
-import sys.windows.c.shellapi;
+import tango.sys.windows.c.windows;
+import tango.sys.windows.c.shellapi;
 // link against shell32.lib
 
 /*

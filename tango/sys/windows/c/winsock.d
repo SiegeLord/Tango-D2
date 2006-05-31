@@ -4,10 +4,10 @@
 */
 
 
-module sys.windows.c.winsock;
+module tango.sys.windows.c.winsock;
 
 private import tango.stdc.stdint;
-private import sys.windows.c.windows;
+private import tango.sys.windows.c.windows;
 
 
 extern(Windows):

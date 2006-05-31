@@ -68,8 +68,8 @@ version( Win32 )
 {
     private
     {
-        import sys.windows.c.process;
-        import sys.windows.c.windows;
+        import tango.sys.windows.c.process;
+        import tango.sys.windows.c.windows;
 
 
         //
@@ -152,9 +152,9 @@ else version( Posix )
         import tango.stdc.posix.time;
 
         version( darwin )
-            import sys.darwin.c.darwin;
+            import tango.sys.darwin.c.darwin;
         else
-            import sys.linux.c.linux;
+            import tango.sys.linux.c.linux;
 
         //
         // entry point for POSIX threads

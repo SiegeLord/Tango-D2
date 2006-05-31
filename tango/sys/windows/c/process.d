@@ -3,7 +3,7 @@
  * Placed into Public Domain
  */
 
-module sys.windows.c.process;
+module tango.sys.windows.c.process;
 
 private
 {

@@ -7,7 +7,7 @@
  * Put them separate so they'll be externed - do not link in linuxextern.o
  */
 
-module sys.linux.c.linuxextern;
+module tango.sys.linux.c.linuxextern;
 
 extern (C)
 {

@@ -4,7 +4,7 @@
 */
 
 
-module sys.linux.c.socket;
+module tango.sys.linux.c.socket;
 
 private import tango.stdc.stdint;
 

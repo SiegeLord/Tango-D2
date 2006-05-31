@@ -4,9 +4,9 @@
  * Placed into public domain.
  */
 
-module sys.linux.c.linux;
+module tango.sys.linux.c.linux;
 
-import sys.linux.c.linuxextern;
+import tango.sys.linux.c.linuxextern;
 
 alias int pid_t;
 alias int off_t;
