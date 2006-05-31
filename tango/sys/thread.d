@@ -39,7 +39,7 @@
  * Support for lightwewight user threads is a long-term consideration,
  * though the design of this module is largely settled for now.
  */
-module tango.lang.thread;
+module tango.sys.thread;
 
 
 /**
@@ -102,7 +102,7 @@ version( Win32 )
 
 
         //
-        // copy of the same-named function in phobos.tango.lang.thread,
+        // copy of the same-named function in phobos.tango.sys.thread,
         // it uses the Windows naming convention to be consistent
         // with GetCurrentThreadId
         //
@@ -570,7 +570,7 @@ class Thread
         {
             if( uint.max / 1000 < milliseconds )
             {
-                tango.stdc.posix.unitango.lang.sleep( milliseconds / 1000 );
+                tango.stdc.posix.unitango.core.sleep( milliseconds / 1000 );
                 milliseconds %= 1000;
             }
             if( milliseconds > 0 )
