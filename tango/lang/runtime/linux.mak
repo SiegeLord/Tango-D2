@@ -169,4 +169,4 @@ clean :
 
 install :
 	$(MD) $(LIB_DEST)
-	$(CP) libdmdrt*.lib $(LIB_DEST)/.
+	$(CP) libdmdrt*.a $(LIB_DEST)/.

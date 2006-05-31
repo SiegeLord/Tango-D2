@@ -9,7 +9,7 @@
 
 private import sys.linux.c.linuxextern;
 private import sys.linux.c.linux;
-private import tango.stdc..posix.sys.mman;
+private import tango.stdc.posix.sys.mman;
 
 /+
 extern (C)

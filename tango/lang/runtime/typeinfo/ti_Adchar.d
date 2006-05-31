@@ -1,7 +1,7 @@
 
 module typeinfo.ti_Adchar;
 
-private import tango.stdc..string;
+private import tango.stdc.string;
 
 
 // dchar[]

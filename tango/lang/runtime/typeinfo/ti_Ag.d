@@ -1,7 +1,7 @@
 
 module typeinfo.ti_Ag;
 
-private import tango.stdc..string;
+private import tango.stdc.string;
 
 // byte[]
 

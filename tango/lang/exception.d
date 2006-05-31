@@ -40,8 +40,8 @@ module tango.lang.exception;
 
 private
 {
-    import tango.stdc..stdio;
-    import tango.stdc..stdlib;
+    import tango.stdc.stdio;
+    import tango.stdc.stdlib;
 }
 
 

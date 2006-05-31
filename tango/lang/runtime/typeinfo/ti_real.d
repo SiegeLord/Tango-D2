@@ -3,7 +3,7 @@
 
 module typeinfo.ti_real;
 
-private import tango.stdc..math;
+private import tango.stdc.math;
 
 class TypeInfo_e : TypeInfo
 {

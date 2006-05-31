@@ -1,7 +1,7 @@
 
 module typeinfo.ti_Aint;
 
-private import tango.stdc..string;
+private import tango.stdc.string;
 
 // int[]
 

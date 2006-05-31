@@ -39,12 +39,12 @@ module object;
 
 private
 {
-    import tango.stdc..string;
+    import tango.stdc.string;
     import util.string;
 }
 
-public import tango.stdc..stddef;
-public import tango.stdc..stdbool;
+public import tango.stdc.stddef;
+public import tango.stdc.stdbool;
 
 alias size_t hash_t;
 

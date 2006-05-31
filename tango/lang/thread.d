@@ -60,7 +60,7 @@ version = StackGrowsDown;
 
 private
 {
-    import tango.stdc..string; // for memset
+    import tango.stdc.string; // for memset
 }
 
 
@@ -145,11 +145,11 @@ else version( Posix )
 {
     private
     {
-        import tango.stdc..posix.semaphore;
-        import tango.stdc..posix.pthread;
-        import tango.stdc..posix.signal;
-        import tango.stdc..posix.unistd;
-        import tango.stdc..posix.time;
+        import tango.stdc.posix.semaphore;
+        import tango.stdc.posix.pthread;
+        import tango.stdc.posix.signal;
+        import tango.stdc.posix.unistd;
+        import tango.stdc.posix.time;
 
         version( darwin )
             import sys.darwin.c.darwin;
@@ -570,7 +570,7 @@ class Thread
         {
             if( uint.max / 1000 < milliseconds )
             {
-                tango.stdc..posix.unitango.lang.sleep( milliseconds / 1000 );
+                tango.stdc.posix.unitango.lang.sleep( milliseconds / 1000 );
                 milliseconds %= 1000;
             }
             if( milliseconds > 0 )

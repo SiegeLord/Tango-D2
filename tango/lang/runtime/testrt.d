@@ -8,21 +8,21 @@
 // to run the unit tests on them.
 // Then, it prints out the arguments passed to main().
 
-import tango.stdc..complex;
-import tango.stdc..ctype;
-import tango.stdc..errno;
-import tango.stdc..fenv;
-import tango.stdc..math;
-import tango.stdc..signal;
-import tango.stdc..stdarg;
-import tango.stdc..stdbool;
-import tango.stdc..stddef;
-import tango.stdc..stdint;
-import tango.stdc..stdio;
-import tango.stdc..stdlib;
-import tango.stdc..string;
-import tango.stdc..time;
-import tango.stdc..wctype;
+import tango.stdc.complex;
+import tango.stdc.ctype;
+import tango.stdc.errno;
+import tango.stdc.fenv;
+import tango.stdc.math;
+import tango.stdc.signal;
+import tango.stdc.stdarg;
+import tango.stdc.stdbool;
+import tango.stdc.stddef;
+import tango.stdc.stdint;
+import tango.stdc.stdio;
+import tango.stdc.stdlib;
+import tango.stdc.string;
+import tango.stdc.time;
+import tango.stdc.wctype;
 
 
 extern (C) void _d_array_bounds( char[] file, uint line )

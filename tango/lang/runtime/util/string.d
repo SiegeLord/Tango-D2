@@ -8,8 +8,8 @@
 
 module util.string;
 
-private import tango.stdc..string;
-private import tango.stdc..stdio;
+private import tango.stdc.string;
+private import tango.stdc.stdio;
 
 extern (C) int memicmp(char *, char *, uint);
 

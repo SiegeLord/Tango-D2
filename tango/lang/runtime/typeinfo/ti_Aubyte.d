@@ -1,7 +1,7 @@
 
 module typeinfo.ti_Aubyte;
 
-private import tango.stdc..string;
+private import tango.stdc.string;
 private import util.string;
 
 // ubyte[]

@@ -25,7 +25,7 @@
  */
 
 private import gcx;
-private import tango.stdc..stdlib;
+private import tango.stdc.stdlib;
 
 version=GCCLASS;
 
@@ -44,13 +44,13 @@ extern (C) void gc_init()
     {	void* p;
 	ClassInfo ci = GC.classinfo;
 
-	p = tango.stdc..stdlib.malloc(ci.init.length);
+	p = tango.stdc.stdlib.malloc(ci.init.length);
 	(cast(byte*)p)[0 .. ci.init.length] = ci.init[];
 	_gc = cast(GC)p;
     }
     else
     {
-	_gc = cast(GC *) tango.stdc..stdlib.calloc(1, GC.sizeof);
+	_gc = cast(GC *) tango.stdc.stdlib.calloc(1, GC.sizeof);
     }
     _gc.initialize();
     GC.scanStaticData(_gc);

@@ -1,7 +1,7 @@
 
 module typeinfo.ti_Aushort;
 
-private import tango.stdc..string;
+private import tango.stdc.string;
 
 // ushort[]
 

@@ -32,13 +32,13 @@ version = MULTI_THREADED;	// produce multithreaded version
 
 private import gcbits;
 private import gcstats;
-private import tango.stdc..string;
+private import tango.stdc.string;
 
 //debug = COLLECT_PRINTF;
 //debug = PRINTF;
 //debug = LOGGING;
 
-debug private import tango.stdc..stdio;
+debug private import tango.stdc.stdio;
 
 version (Win32)
 {
@@ -97,7 +97,7 @@ debug (LOGGING)
 	void Dtor()
 	{
 	    if (data)
-		tango.stdc..stdlib.free(data);
+		tango.stdc.stdlib.free(data);
 	    data = null;
 	}
 
@@ -110,15 +110,15 @@ debug (LOGGING)
 		assert(dim + nentries <= allocdim);
 		if (!data)
 		{
-		    data = cast(Log *)tango.stdc..stdlib.malloc(allocdim * Log.sizeof);
+		    data = cast(Log *)tango.stdc.stdlib.malloc(allocdim * Log.sizeof);
 		}
 		else
 		{   Log *newdata;
 
-		    newdata = cast(Log *)tango.stdc..stdlib.malloc(allocdim * Log.sizeof);
+		    newdata = cast(Log *)tango.stdc.stdlib.malloc(allocdim * Log.sizeof);
 		    assert(newdata);
 		    memcpy(newdata, data, dim * Log.sizeof);
-		    tango.stdc..stdlib.free(data);
+		    tango.stdc.stdlib.free(data);
 		    data = newdata;
 		}
 		assert(!allocdim || data);
@@ -180,7 +180,7 @@ class GC
     void initialize()
     {
 	gcLock = GCLock.classinfo;
-	gcx = cast(Gcx *)tango.stdc..stdlib.calloc(1, Gcx.sizeof);
+	gcx = cast(Gcx *)tango.stdc.stdlib.calloc(1, Gcx.sizeof);
 	gcx.initialize();
 	version (Win32)
 	{
@@ -204,7 +204,7 @@ class GC
 	if (gcx)
 	{
 	    gcx.Dtor();
-	    tango.stdc..stdlib.free(gcx);
+	    tango.stdc.stdlib.free(gcx);
 	    gcx = null;
 	}
     }
@@ -830,16 +830,16 @@ struct Gcx
 	{   Pool *pool = pooltable[i];
 
 	    pool.Dtor();
-	    tango.stdc..stdlib.free(pool);
+	    tango.stdc.stdlib.free(pool);
 	}
 	if (pooltable)
-	    tango.stdc..stdlib.free(pooltable);
+	    tango.stdc.stdlib.free(pooltable);
 
 	if (roots)
-	    tango.stdc..stdlib.free(roots);
+	    tango.stdc.stdlib.free(roots);
 
 	if (ranges)
-	    tango.stdc..stdlib.free(ranges);
+	    tango.stdc.stdlib.free(ranges);
     }
 
     void Invariant() { }
@@ -911,11 +911,11 @@ struct Gcx
 	    uint newdim = rootdim * 2 + 16;
 	    void **newroots;
 
-	    newroots = cast(void **)tango.stdc..stdlib.malloc(newdim * newroots[0].sizeof);
+	    newroots = cast(void **)tango.stdc.stdlib.malloc(newdim * newroots[0].sizeof);
 	    assert(newroots);
 	    if (roots)
 	    {   memcpy(newroots, roots, nroots * newroots[0].sizeof);
-		tango.stdc..stdlib.free(roots);
+		tango.stdc.stdlib.free(roots);
 	    }
 	    roots = newroots;
 	    rootdim = newdim;
@@ -952,11 +952,11 @@ struct Gcx
 	    uint newdim = rangedim * 2 + 16;
 	    Range *newranges;
 
-	    newranges = cast(Range *)tango.stdc..stdlib.malloc(newdim * newranges[0].sizeof);
+	    newranges = cast(Range *)tango.stdc.stdlib.malloc(newdim * newranges[0].sizeof);
 	    assert(newranges);
 	    if (ranges)
 	    {   memcpy(newranges, ranges, nranges * newranges[0].sizeof);
-		tango.stdc..stdlib.free(ranges);
+		tango.stdc.stdlib.free(ranges);
 	    }
 	    ranges = newranges;
 	    rangedim = newdim;
@@ -1215,7 +1215,7 @@ struct Gcx
 		npages = n;
 	}
 
-	pool = cast(Pool *)tango.stdc..stdlib.calloc(1, Pool.sizeof);
+	pool = cast(Pool *)tango.stdc.stdlib.calloc(1, Pool.sizeof);
 	if (pool)
 	{
 	    pool.initialize(npages);
@@ -1223,7 +1223,7 @@ struct Gcx
 		goto Lerr;
 
 	    newnpools = npools + 1;
-	    newpooltable = cast(Pool **)tango.stdc..stdlib.realloc(pooltable, newnpools * (Pool *).sizeof);
+	    newpooltable = cast(Pool **)tango.stdc.stdlib.realloc(pooltable, newnpools * (Pool *).sizeof);
 	    if (!newpooltable)
 		goto Lerr;
 
@@ -1246,7 +1246,7 @@ struct Gcx
 
       Lerr:
 	pool.Dtor();
-	tango.stdc..stdlib.free(pool);
+	tango.stdc.stdlib.free(pool);
 	return null;
     }
 
@@ -1908,7 +1908,7 @@ struct Pool
 	scan.alloc(poolsize / 16);
 	freebits.alloc(poolsize / 16);
 
-	pagetable = cast(ubyte*)tango.stdc..stdlib.malloc(npages);
+	pagetable = cast(ubyte*)tango.stdc.stdlib.malloc(npages);
 	memset(pagetable, B_UNCOMMITTED, npages);
 
 	this.npages = npages;
@@ -1939,7 +1939,7 @@ struct Pool
 	    topAddr = null;
 	}
 	if (pagetable)
-	    tango.stdc..stdlib.free(pagetable);
+	    tango.stdc.stdlib.free(pagetable);
 
 	mark.Dtor();
 	scan.Dtor();
@@ -2036,7 +2036,10 @@ struct Pool
 
     int opCmp(Pool *p2)
     {
-	return baseAddr - p2.baseAddr;
+	if (baseAddr < p2.baseAddr)
+	    return -1;
+	else
+	    return baseAddr > p2.baseAddr;
     }
 }
 

@@ -1,7 +1,7 @@
 
 module typeinfo.ti_Awchar;
 
-private import tango.stdc..string;
+private import tango.stdc.string;
 
 // wchar[]
 

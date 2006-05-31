@@ -1,7 +1,7 @@
 
 module typeinfo.ti_Aulong;
 
-private import tango.stdc..string;
+private import tango.stdc.string;
 
 // ulong[]
 

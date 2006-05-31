@@ -10,7 +10,7 @@
  *  Modified by Sean Kelly <sean@f4.ca> for use with the Ares project.
  */
 
-private import tango.stdc..math;
+private import tango.stdc.math;
 
 extern (C):
 
