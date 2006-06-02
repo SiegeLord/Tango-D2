@@ -8,11 +8,11 @@ module lib.gc.config;
 
 version( Windows )
 {
-    pragma( lib, "dmdgc.lib" );
+    const char[] lib = "dmdgc.lib";
 }
 else version( Posix )
 {
-    pragma( lib, "libdmdgc.a" );
+    const char[] lib = "libdmdgc.a";
 }
 else
 {

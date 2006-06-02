@@ -10,11 +10,11 @@ version( DigitalMars )
 {
     version( Windows )
     {
-        pragma( lib, "dmdrt.lib" );
+        const char[] lib = "dmdrt.lib";
     }
     else version( Posix )
     {
-        pragma( lib, "libdmdrt.a" );
+        const char[] lib = "libdmdrt.a";
     }
     else
     {
