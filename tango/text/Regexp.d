@@ -28,14 +28,14 @@
  */
 
 /**********************************************
- * $(LINK2 ../../../ctg/regular.html, Regular expressions)
+ * $(LINK2 http://www.digitalmars.com/ctg/regular.html, Regular expressions)
  * are a powerful method of string pattern matching.
  * The regular expression
  * language used is the same as that commonly used, however, some of the very
  * advanced forms may behave slightly differently.
  *
  * In the following guide, $(I pattern)[] refers to a
- * $(LINK2 ../../../ctg/regular.html, regular expression).
+ * $(LINK2 http://www.digitalmars.com/ctg/regular.html, Regular expressions).
  * The $(I attributes)[] refers to
 	a string controlling the interpretation
 	of the regular expression.
