@@ -75,7 +75,7 @@ enum msync
 
 private
 {
-    import tango.sys.traits;
+    import tango.core.traits;
 
 
     template isValidAtomicType( T )
@@ -147,7 +147,6 @@ private
 
         template doAtomicLoad( bool membar, T )
         {
-            version( DDoc ) {} else {
             static if( T.sizeof == byte.sizeof )
             {
                 ////////////////////////////////////////////////////////////////
@@ -303,7 +302,7 @@ private
 
                 pragma( msg, "Invalid template type specified." );
                 static assert( false );
-            }}
+            }
         }
 
 
@@ -314,7 +313,6 @@ private
 
         template doAtomicStore( bool membar, T )
         {
-            version( DDoc ) {} else {
             static if( T.sizeof == byte.sizeof )
             {
                 ////////////////////////////////////////////////////////////////
@@ -329,12 +327,11 @@ private
                 }
                 body
                 {
-                    T* pval = &val;
                     static if( membar )
                     {
                         volatile asm
                         {
-                            mov EAX, pval;
+                            mov EAX, val;
                             mov BL, newval;
                             lock;
                             xchg [EAX], BL;
@@ -344,7 +341,7 @@ private
                     {
                         volatile asm
                         {
-                            mov EAX, pval;
+                            mov EAX, val;
                             mov BL, newval;
                             mov [EAX], BL;
                         }
@@ -365,12 +362,11 @@ private
                 }
                 body
                 {
-                    T* pval = &val;
                     static if( membar )
                     {
                         volatile asm
                         {
-                            mov EAX, pval;
+                            mov EAX, val;
                             mov BX, newval;
                             lock;
                             xchg [EAX], BX;
@@ -380,7 +376,7 @@ private
                     {
                         volatile asm
                         {
-                            mov EAX, pval;
+                            mov EAX, val;
                             mov BX, newval;
                             mov [EAX], BX;
                         }
@@ -484,7 +480,7 @@ private
 
                 pragma( msg, "Invalid template type specified." );
                 static assert( false );
-            }}
+            }
         }
 
 
@@ -495,7 +491,6 @@ private
 
         template doAtomicStoreIf( bool membar, T )
         {
-            version( DDoc ) {} else {
             static if( T.sizeof == byte.sizeof )
             {
                 ////////////////////////////////////////////////////////////////
@@ -510,14 +505,13 @@ private
                 }
                 body
                 {
-                    T* pval = &val;
                     static if( membar )
                     {
                         volatile asm
                         {
                             mov BL, newval;
                             mov AL, equalTo;
-                            mov ECX, pval;
+                            mov ECX, val;
                             lock;
                             cmpxchg [ECX], BL;
                             setz AL;
@@ -529,7 +523,7 @@ private
                         {
                             mov BL, newval;
                             mov AL, equalTo;
-                            mov ECX, pval;
+                            mov ECX, val;
                             lock; // lock needed to make this op atomic
                             cmpxchg [ECX], BL;
                             setz AL;
@@ -551,14 +545,13 @@ private
                 }
                 body
                 {
-                    T* pval = &val;
                     static if( membar )
                     {
                         volatile asm
                         {
                             mov BX, newval;
                             mov AX, equalTo;
-                            mov ECX, pval;
+                            mov ECX, val;
                             lock;
                             cmpxchg [ECX], BX;
                             setz AL;
@@ -570,7 +563,7 @@ private
                         {
                             mov BX, newval;
                             mov AX, equalTo;
-                            mov ECX, pval;
+                            mov ECX, val;
                             lock; // lock needed to make this op atomic
                             cmpxchg [ECX], BX;
                             setz AL;
@@ -723,7 +716,7 @@ private
 
                 pragma( msg, "Invalid template type specified." );
                 static assert( false );
-            }}
+            }
         }
 
 
@@ -739,7 +732,6 @@ private
             //
             static assert( isValidNumericType!(T) );
 
-            version( DDoc ) {} else {
             static if( T.sizeof == byte.sizeof )
             {
                 ////////////////////////////////////////////////////////////////
@@ -754,12 +746,11 @@ private
                 }
                 body
                 {
-                    T* pval = &val;
                     static if( membar )
                     {
                         volatile asm
                         {
-                            mov EAX, pval;
+                            mov EAX, val;
                             lock;
                             inc [EAX];
                             mov AL, [EAX];
@@ -769,7 +760,7 @@ private
                     {
                         volatile asm
                         {
-                            mov EAX, pval;
+                            mov EAX, val;
                             lock; // lock needed to make this op atomic
                             inc [EAX];
                             mov AL, [EAX];
@@ -791,12 +782,11 @@ private
                 }
                 body
                 {
-                    T* pval = &val;
                     static if( membar )
                     {
                         volatile asm
                         {
-                            mov EAX, pval;
+                            mov EAX, val;
                             lock;
                             inc [EAX];
                             mov AX, [EAX];
@@ -806,7 +796,7 @@ private
                     {
                         volatile asm
                         {
-                            mov EAX, pval;
+                            mov EAX, val;
                             lock; // lock needed to make this op atomic
                             inc [EAX];
                             mov AX, [EAX];
@@ -913,7 +903,7 @@ private
 
                 pragma( msg, "Invalid template type specified." );
                 static assert( false );
-            }}
+            }
         }
 
 
@@ -929,7 +919,6 @@ private
             //
             static assert( isValidNumericType!(T) );
 
-            version( DDoc ) {} else {
             static if( T.sizeof == byte.sizeof )
             {
                 ////////////////////////////////////////////////////////////////
@@ -944,12 +933,11 @@ private
                 }
                 body
                 {
-                    T* pval = &val;
                     static if( membar )
                     {
                         volatile asm
                         {
-                            mov EAX, pval;
+                            mov EAX, val;
                             lock;
                             dec [EAX];
                             mov AL, [EAX];
@@ -959,7 +947,7 @@ private
                     {
                         volatile asm
                         {
-                            mov EAX, pval;
+                            mov EAX, val;
                             lock; // lock needed to make this op atomic
                             dec [EAX];
                             mov AL, [EAX];
@@ -981,12 +969,11 @@ private
                 }
                 body
                 {
-                    T* pval = &val;
                     static if( membar )
                     {
                         volatile asm
                         {
-                            mov EAX, pval;
+                            mov EAX, val;
                             lock;
                             dec [EAX];
                             mov AX, [EAX];
@@ -996,7 +983,7 @@ private
                     {
                         volatile asm
                         {
-                            mov EAX, pval;
+                            mov EAX, val;
                             lock; // lock needed to make this op atomic
                             dec [EAX];
                             mov AX, [EAX];
@@ -1103,7 +1090,7 @@ private
 
                 pragma( msg, "Invalid template type specified." );
                 static assert( false );
-            }}
+            }
         }
     }
 }
@@ -1263,7 +1250,6 @@ struct Atomic( T )
     template storeIf( msync ms : msync.acq )  { bool storeIf( T newval, T equalTo ) { return atomicStoreIf!(ms,T)( m_val, newval, equalTo ); } } /// ditto
     template storeIf( msync ms : msync.rel )  { bool storeIf( T newval, T equalTo ) { return atomicStoreIf!(ms,T)( m_val, newval, equalTo ); } } /// ditto
 
-    version( DDoc ) {} else {
     static if( isValidNumericType!(T) )
     {
         /**
@@ -1299,7 +1285,7 @@ struct Atomic( T )
         template decrement( msync ms : msync.ssb )  { T decrement() { return atomicDecrement!(ms,T)( m_val ); } } /// ditto
         template decrement( msync ms : msync.acq )  { T decrement() { return atomicDecrement!(ms,T)( m_val ); } } /// ditto
         template decrement( msync ms : msync.rel )  { T decrement() { return atomicDecrement!(ms,T)( m_val ); } } /// ditto
-    }}
+    }
 
 private:
     T   m_val;
