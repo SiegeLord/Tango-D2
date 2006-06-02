@@ -7,9 +7,9 @@
 
 /**
  * The vararg module is intended to facilitate vararg manipulation in D.
- * It should be interface compatible with the C module of the same name,
- * and the two modules may share a common implementation if possible
- * (as is done here).
+ * It should be interface compatible with the C module "stdarg," and the
+ * two modules may share a common implementation if possible (as is done
+ * here).
  */
 module tango.core.vararg;
 

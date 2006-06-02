@@ -34,7 +34,7 @@
  *
  * This module is the first attempt at developing function interface guidelines
  * for Ares.  All functions will likely be templates and will be designed with
- * implicit tempalte instantiation and template overloading as required features.
+ * implicit template instantiation and template overloading as required features.
  * The goal here is to provide a useful set of string routines for everyday use
  * and to use this experience for developing more generalized algorithms later on.
  */

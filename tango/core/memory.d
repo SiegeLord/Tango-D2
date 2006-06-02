@@ -172,7 +172,9 @@ struct GC
      * be freed by realloc if sz is equal to zero.  The garbage collector is
      * otherwise expected to later reclaim the memory block if it is unused.
      * If allocation fails, this function will call onOutOfMemory which is
-     * expected to throw an OutOfMemoryException.
+     * expected to throw an OutOfMemoryException.  If p references memory not
+     * originally allocated by this garbage collector, or if it points to the
+     * interior of a memory block, no action will be taken.
      *
      * Params:
      *  p  = A pointer to the root of a valid memory block or to null.
@@ -196,7 +198,7 @@ struct GC
      * Deallocates the memory references by p.  If p is null, no action
      * occurs.  If p references memory not originally allocated by this
      * garbage collector, or if it points to the interior of a memory block,
-     * the result is undefined.
+     * no action will be taken.
      *
      * Params:
      *  p = A pointer to the root of a valid memory block or to null.

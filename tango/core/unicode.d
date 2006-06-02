@@ -33,7 +33,7 @@
 
 
         History:        Initial version; Oct 2004
-        History:        Moved to tango.convert; Nov 2005
+        History:        Moved to mango.convert; Nov 2005
 
         Authors:        Kris
 

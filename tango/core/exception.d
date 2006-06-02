@@ -40,8 +40,7 @@ module tango.core.exception;
 
 private
 {
-    import tango.stdc.stdio;
-    import tango.stdc.stdlib;
+    import tango.stdc.stddef;
 }
 
 
@@ -190,12 +189,7 @@ void setCollectHandler( collectHandlerType h )
  *  file = The name of the file that signaled this error.
  *  line = The line number on which this error occurred.
  */
-extern (C) void onAssertError( char[] file, uint line )
-{
-    if( !assertHandler )
-        throw new AssertException( file, line );
-    assertHandler( file, line );
-}
+extern (C) void onAssertError( char[] file, uint line );
 
 
 /**
@@ -210,12 +204,7 @@ extern (C) void onAssertError( char[] file, uint line )
  *  true if the runtime should call this object's dtors and false if not.
  *  Default behavior is to return true.
  */
-extern (C) bool onCollectResource( Object obj )
-{
-    if( !collectHandler )
-        return true;
-    return collectHandler( obj );
-}
+extern (C) bool onCollectResource( Object obj );
 
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -234,10 +223,7 @@ extern (C) bool onCollectResource( Object obj )
  * Throws:
  *  ArrayBoundsException.
  */
-extern (C) void onArrayBoundsError( char[] file, size_t line )
-{
-    throw new ArrayBoundsException( file, line );
-}
+extern (C) void onArrayBoundsError( char[] file, size_t line );
 
 
 /**
@@ -249,10 +235,7 @@ extern (C) void onArrayBoundsError( char[] file, size_t line )
  * Throws:
  *  FinalizeException.
  */
-extern (C) void onFinalizeError( ClassInfo info, Exception ex )
-{
-    throw new FinalizeException( info, ex );
-}
+extern (C) void onFinalizeError( ClassInfo info, Exception ex );
 
 
 /**
@@ -262,12 +245,7 @@ extern (C) void onFinalizeError( ClassInfo info, Exception ex )
  * Throws:
  *  OutOfMemoryException.
  */
-extern (C) void onOutOfMemoryError()
-{
-    // NOTE: Since an out of memory condition exists, no allocation must occur
-    //       while generating this object.
-    throw cast(OutOfMemoryException) cast(void*) OutOfMemoryException.classinfo.init;
-}
+extern (C) void onOutOfMemoryError();
 
 
 /**
@@ -280,10 +258,7 @@ extern (C) void onOutOfMemoryError()
  * Throws:
  *  SwitchException.
  */
-extern (C) void onSwitchError( char[] file, size_t line )
-{
-    throw new SwitchException( file, line );
-}
+extern (C) void onSwitchError( char[] file, size_t line );
 
 
 /**
@@ -296,7 +271,4 @@ extern (C) void onSwitchError( char[] file, size_t line )
  * Throws:
  *  UnicodeException.
  */
-extern (C) void onUnicodeError( char[] msg, size_t idx )
-{
-    throw new UnicodeException( msg, idx );
-}
+extern (C) void onUnicodeError( char[] msg, size_t idx );

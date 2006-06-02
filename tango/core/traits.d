@@ -73,7 +73,7 @@ template isPointerType( T )
     const bool isPointerType = is( T : void* )      ||
                                is( T == class )     ||
                                is( T == interface ) ||
-                               is( T == function )  || isFunctionType!( T ) ||
+                               isFunctionPointerType!( T ) ||
                                is( T == delegate );
 }
 
@@ -83,27 +83,19 @@ template isPointerType( T )
  */
 template isCallableType( T )
 {
-    const bool isCallableType = is( T == function ) || isFunctionType!( T ) ||
+    const bool isCallableType = is( T == function ) || isFunctionPointerType!( T ) ||
                                 is( T == delegate ) ||
                                 is( typeof(T.opCall) == function );
 }
 
 
 //
-// NOTE: This template is a hack to replace is(T==function) since it's broken.
+// NOTE: This template is a hack to use in place of "is(T==function)" since
+//       it actually detects a function alias, not a function pointer.
 //
-private template isFunctionType( T )
+private template isFunctionPointerType( T )
 {
-    const bool isFunctionType = mangleString!(T).length > 2 &&
-                                mangleString!(T)[0] == 'P'  &&
-                                mangleString!(T)[1] == 'F';
-}
-
-
-//
-// NOTE: Yet another workaround for a compiler bug.
-//
-private template mangleString( T )
-{
-    const char[] mangleString = T.mangleof;
+    const bool isFunctionPointerType = T.mangleof.length > 2 &&
+                                       T.mangleof[0] == 'P'  &&
+                                       T.mangleof[1] == 'F';
 }
