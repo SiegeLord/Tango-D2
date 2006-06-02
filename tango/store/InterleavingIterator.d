@@ -89,7 +89,7 @@ public class InterleavingIterator : Iterator
         /**
          * Implements java.util.Iterator.more
         **/
-        public synchronized bool more()
+        public final bool more()
         {
                 return current_ !is null;
         }
@@ -97,7 +97,7 @@ public class InterleavingIterator : Iterator
         /**
          * Implements java.util.Iterator.get.
         **/
-        public synchronized Object value()
+        public final Object value()
         {
                 if (!more())
                         throw new NoSuchElementException("exhausted enumeration");
@@ -115,7 +115,7 @@ public class InterleavingIterator : Iterator
          * Alternate sources
         **/
 
-        private void flip()
+        private final void flip()
         {
                 if (current_ is fst_)
                 {

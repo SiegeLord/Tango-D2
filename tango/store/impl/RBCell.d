@@ -106,7 +106,7 @@ public class RBCellT(T) : CellT!(T), ImplementationCheckable
          * Return left child (or null)
         **/
 
-        public RBCellT left()
+        public final RBCellT left()
         {
                 return left_;
         }
@@ -115,7 +115,7 @@ public class RBCellT(T) : CellT!(T), ImplementationCheckable
          * Return right child (or null)
         **/
 
-        public RBCellT right()
+        public final RBCellT right()
         {
                 return right_;
         }
@@ -123,7 +123,7 @@ public class RBCellT(T) : CellT!(T), ImplementationCheckable
         /**
          * Return parent (or null)
         **/
-        public RBCellT parent()
+        public final RBCellT parent()
         {
                 return parent_;
         }
@@ -132,7 +132,7 @@ public class RBCellT(T) : CellT!(T), ImplementationCheckable
         /**
          * @see store.ImplementationCheckable.checkImplementation.
         **/
-        public void checkImplementation()
+        public override void checkImplementation()
         {
 
                 // It's too hard to check the property that every simple
@@ -163,7 +163,7 @@ public class RBCellT(T) : CellT!(T), ImplementationCheckable
          * Implements store.ImplementationCheckable.assert.
          * @see store.ImplementationCheckable#assert
         **/
-        public void assert(bool pred)
+        public final void assert(bool pred)
         {
                 ImplementationError.assert(this, pred);
         }
@@ -173,7 +173,7 @@ public class RBCellT(T) : CellT!(T), ImplementationCheckable
          * Return the minimum element of the current (sub)tree
         **/
 
-        public RBCellT leftmost()
+        public final RBCellT leftmost()
         {
                 RBCellT p = this;
                 for ( ; p.left_ !is null; p = p.left_)
@@ -184,7 +184,7 @@ public class RBCellT(T) : CellT!(T), ImplementationCheckable
         /**
          * Return the maximum element of the current (sub)tree
         **/
-        public RBCellT rightmost()
+        public final RBCellT rightmost()
         {
                 RBCellT p = this;
                 for ( ; p.right_ !is null; p = p.right_)
@@ -195,7 +195,7 @@ public class RBCellT(T) : CellT!(T), ImplementationCheckable
         /**
          * Return the root (parentless node) of the tree
         **/
-        public RBCellT root()
+        public final RBCellT root()
         {
                 RBCellT p = this;
                 for ( ; p.parent_ !is null; p = p.parent_)
@@ -207,7 +207,7 @@ public class RBCellT(T) : CellT!(T), ImplementationCheckable
          * Return true if node is a root (i.e., has a null parent)
         **/
 
-        public bool isRoot()
+        public final bool isRoot()
         {
                 return parent_ is null;
         }
@@ -217,7 +217,7 @@ public class RBCellT(T) : CellT!(T), ImplementationCheckable
          * Return the inorder successor, or null if no such
         **/
 
-        public RBCellT successor()
+        public final RBCellT successor()
         {
                 if (right_ !is null)
                         return right_.leftmost();
@@ -238,7 +238,7 @@ public class RBCellT(T) : CellT!(T), ImplementationCheckable
          * Return the inorder predecessor, or null if no such
         **/
 
-        public RBCellT predecessor()
+        public final RBCellT predecessor()
         {
                 if (left_ !is null)
                         return left_.rightmost();
@@ -258,7 +258,7 @@ public class RBCellT(T) : CellT!(T), ImplementationCheckable
         /**
          * Return the number of nodes in the subtree
         **/
-        public int size()
+        public final int size()
         {
                 int c = 1;
                 if (left_ !is null)
@@ -336,7 +336,7 @@ public class RBCellT(T) : CellT!(T), ImplementationCheckable
          * Return a new subtree containing each element of current subtree
         **/
 
-        public RBCellT copyTree()
+        public final RBCellT copyTree()
         {
                 RBCellT t = null;
                 //      t = cast(RBCellT)(clone());
@@ -370,7 +370,7 @@ public class RBCellT(T) : CellT!(T), ImplementationCheckable
         **/
 
 
-        public RBCellT insertLeft(RBCellT CellT, RBCellT root)
+        public final RBCellT insertLeft(RBCellT CellT, RBCellT root)
         {
                 left_ = CellT;
                 CellT.parent_ = this;
@@ -386,7 +386,7 @@ public class RBCellT(T) : CellT!(T), ImplementationCheckable
          * can change the root!)
         **/
 
-        public RBCellT insertRight(RBCellT CellT, RBCellT root)
+        public final RBCellT insertRight(RBCellT CellT, RBCellT root)
         {
                 right_ = CellT;
                 CellT.parent_ = this;
@@ -402,7 +402,7 @@ public class RBCellT(T) : CellT!(T), ImplementationCheckable
         **/
 
 
-        public RBCellT remove (RBCellT root)
+        public final RBCellT remove (RBCellT root)
         {
 
                 // handle case where we are only node
@@ -476,7 +476,7 @@ public class RBCellT(T) : CellT!(T), ImplementationCheckable
          * Return new root, in case it changed.
         **/
 
-        static RBCellT swapPosition(RBCellT x, RBCellT y, RBCellT root)
+        static final RBCellT swapPosition(RBCellT x, RBCellT y, RBCellT root)
         {
 
                 /* Too messy. TODO: find sequence of assigments that are always OK */
@@ -604,7 +604,7 @@ public class RBCellT(T) : CellT!(T), ImplementationCheckable
          *
         **/
 
-        static bool colorOf(RBCellT p)
+        static final bool colorOf(RBCellT p)
         {
                 return (p is null) ? BLACK : p.color_;
         }
@@ -612,7 +612,7 @@ public class RBCellT(T) : CellT!(T), ImplementationCheckable
         /**
          * return parent of node p, or null if p is null
         **/
-        static RBCellT parentOf(RBCellT p)
+        static final RBCellT parentOf(RBCellT p)
         {
                 return (p is null) ? null : p.parent_;
         }
@@ -621,7 +621,7 @@ public class RBCellT(T) : CellT!(T), ImplementationCheckable
          * Set the color of node p, or do nothing if p is null
         **/
 
-        static void setColor(RBCellT p, bool c)
+        static final void setColor(RBCellT p, bool c)
         {
                 if (p !is null)
                         p.color_ = c;
@@ -631,7 +631,7 @@ public class RBCellT(T) : CellT!(T), ImplementationCheckable
          * return left child of node p, or null if p is null
         **/
 
-        static RBCellT leftOf(RBCellT p)
+        static final RBCellT leftOf(RBCellT p)
         {
                 return (p is null) ? null : p.left_;
         }
@@ -640,14 +640,14 @@ public class RBCellT(T) : CellT!(T), ImplementationCheckable
          * return right child of node p, or null if p is null
         **/
 
-        static RBCellT rightOf(RBCellT p)
+        static final RBCellT rightOf(RBCellT p)
         {
                 return (p is null) ? null : p.right_;
         }
 
 
         /** From CLR **/
-        protected RBCellT rotateLeft(RBCellT root)
+        protected final RBCellT rotateLeft(RBCellT root)
         {
                 RBCellT r = right_;
                 right_ = r.left_;
@@ -667,7 +667,7 @@ public class RBCellT(T) : CellT!(T), ImplementationCheckable
         }
 
         /** From CLR **/
-        protected RBCellT rotateRight(RBCellT root)
+        protected final RBCellT rotateRight(RBCellT root)
         {
                 RBCellT l = left_;
                 left_ = l.right_;
@@ -688,7 +688,7 @@ public class RBCellT(T) : CellT!(T), ImplementationCheckable
 
 
         /** From CLR **/
-        protected RBCellT fixAfterInsertion(RBCellT root)
+        protected final RBCellT fixAfterInsertion(RBCellT root)
         {
                 color_ = RED;
                 RBCellT x = this;
@@ -749,7 +749,7 @@ public class RBCellT(T) : CellT!(T), ImplementationCheckable
 
 
         /** From CLR **/
-        protected RBCellT fixAfterDeletion(RBCellT root)
+        protected final RBCellT fixAfterDeletion(RBCellT root)
         {
                 RBCellT x = this;
                 while (x !is root && colorOf(x) is BLACK)

@@ -107,7 +107,7 @@ public class LinkSeqT(T) : MutableSeqImplT!(T), SortableCollectionT!(T)
          * Time complexity: O(n).
          * @see store.Collection#contains
         **/
-        public synchronized bool contains(T element)
+        public final bool contains(T element)
         {
                 if (!isValidArg(element) || count_ is 0)
                       return false;
@@ -120,7 +120,7 @@ public class LinkSeqT(T) : MutableSeqImplT!(T), SortableCollectionT!(T)
          * Time complexity: O(n).
          * @see store.Collection#instances
         **/
-        public synchronized int instances(T element)
+        public final int instances(T element)
         {
                 if (!isValidArg(element) || count_ is 0)
                     return 0;
@@ -133,7 +133,7 @@ public class LinkSeqT(T) : MutableSeqImplT!(T), SortableCollectionT!(T)
          * Time complexity: O(1).
          * @see store.Collection#elements
         **/
-        public synchronized CollectionIterator elements()
+        public final CollectionIterator elements()
         {
                 return new CellIterator!(T)(this);
         }
@@ -147,7 +147,7 @@ public class LinkSeqT(T) : MutableSeqImplT!(T), SortableCollectionT!(T)
          * Time complexity: O(1).
          * @see store.Seq#head
         **/
-        public synchronized T head()
+        public final T head()
         {
                 return firstCell().element();
         }
@@ -157,7 +157,7 @@ public class LinkSeqT(T) : MutableSeqImplT!(T), SortableCollectionT!(T)
          * Time complexity: O(n).
          * @see store.Seq#tail
         **/
-        public synchronized T tail()
+        public final T tail()
         {
                 return lastCell().element();
         }
@@ -167,7 +167,7 @@ public class LinkSeqT(T) : MutableSeqImplT!(T), SortableCollectionT!(T)
          * Time complexity: O(n).
          * @see store.Seq#get
         **/
-        public synchronized T get(int index)
+        public final T get(int index)
         {
                 return cellAt(index).element();
         }
@@ -177,7 +177,7 @@ public class LinkSeqT(T) : MutableSeqImplT!(T), SortableCollectionT!(T)
          * Time complexity: O(n).
          * @see store.Seq#first
         **/
-        public synchronized int first(T element, int startingIndex = 0)
+        public final int first(T element, int startingIndex = 0)
         {
                 if (!isValidArg(element) || list_ is null || startingIndex >= count_)
                       return -1;
@@ -200,7 +200,7 @@ public class LinkSeqT(T) : MutableSeqImplT!(T), SortableCollectionT!(T)
          * Time complexity: O(n).
          * @see store.Seq#last
         **/
-        public synchronized int last(T element, int startingIndex = 0)
+        public final int last(T element, int startingIndex = 0)
         {
                 if (!isValidArg(element) || list_ is null)
                      return -1;
@@ -228,7 +228,7 @@ public class LinkSeqT(T) : MutableSeqImplT!(T), SortableCollectionT!(T)
          * Time complexity: O(length).
          * @see store.Seq#subseq
         **/
-        public synchronized  /* LinkedList */ SeqT!(T) subseq(int from, int _length)
+        public final  /* LinkedList */ SeqT!(T) subseq(int from, int _length)
         {
                 if (_length > 0)
                    {
@@ -259,7 +259,7 @@ public class LinkSeqT(T) : MutableSeqImplT!(T), SortableCollectionT!(T)
          * Time complexity: O(1).
          * @see store.MutableCollection#clear
         **/
-        public synchronized void clear()
+        public final void clear()
         {
                 if (list_ !is null)
                    {
@@ -273,7 +273,7 @@ public class LinkSeqT(T) : MutableSeqImplT!(T), SortableCollectionT!(T)
          * Time complexity: O(n).
          * @see store.MutableCollection#exclude
         **/
-        public synchronized void exclude(T element)
+        public final void exclude(T element)
         {
                 remove_(element, true);
         }
@@ -283,7 +283,7 @@ public class LinkSeqT(T) : MutableSeqImplT!(T), SortableCollectionT!(T)
          * Time complexity: O(n).
          * @see store.MutableCollection#removeOneOf
         **/
-        public synchronized void removeOneOf(T element)
+        public final void removeOneOf(T element)
         {
                 remove_(element, false);
         }
@@ -293,7 +293,7 @@ public class LinkSeqT(T) : MutableSeqImplT!(T), SortableCollectionT!(T)
          * Time complexity: O(n).
          * @see store.MutableCollection#replaceOneOf
         **/
-        public synchronized void replaceOneOf(T oldElement, T newElement)
+        public final void replaceOneOf(T oldElement, T newElement)
         {
                 replace_(oldElement, newElement, false);
         }
@@ -303,7 +303,7 @@ public class LinkSeqT(T) : MutableSeqImplT!(T), SortableCollectionT!(T)
          * Time complexity: O(n).
          * @see store.MutableCollection#replaceAllOf
         **/
-        public synchronized void replaceAllOf(T oldElement, T newElement)
+        public final void replaceAllOf(T oldElement, T newElement)
         {
                 replace_(oldElement, newElement, true);
         }
@@ -315,7 +315,7 @@ public class LinkSeqT(T) : MutableSeqImplT!(T), SortableCollectionT!(T)
          * takes the first element on the list
          * @see store.MutableCollection#take
         **/
-        public synchronized T take()
+        public final T take()
         {
                 T v = head();
                 removeHead();
@@ -330,7 +330,7 @@ public class LinkSeqT(T) : MutableSeqImplT!(T), SortableCollectionT!(T)
          * Uses a merge-sort-based algorithm.
          * @see store.SortableCollection#sort
         **/
-        public synchronized void sort(Comparator cmp)
+        public final void sort(Comparator cmp)
         {
                 if (list_ !is null)
                    {
@@ -347,7 +347,7 @@ public class LinkSeqT(T) : MutableSeqImplT!(T), SortableCollectionT!(T)
          * Time complexity: O(1).
          * @see store.MutableSeq#prepend
         **/
-        public synchronized void prepend(T element)
+        public final void prepend(T element)
         {
                 checkElement(element);
                 list_ = new LLCell(element, list_);
@@ -359,7 +359,7 @@ public class LinkSeqT(T) : MutableSeqImplT!(T), SortableCollectionT!(T)
          * Time complexity: O(1).
          * @see store.MutableSeq#replaceHead
         **/
-        public synchronized void replaceHead(T element)
+        public final void replaceHead(T element)
         {
                 checkElement(element);
                 firstCell().element(element);
@@ -371,7 +371,7 @@ public class LinkSeqT(T) : MutableSeqImplT!(T), SortableCollectionT!(T)
          * Time complexity: O(1).
          * @see store.MutableSeq#removeHead
         **/
-        public synchronized void removeHead()
+        public final void removeHead()
         {
                 list_ = firstCell().next();
                 decCount();
@@ -382,7 +382,7 @@ public class LinkSeqT(T) : MutableSeqImplT!(T), SortableCollectionT!(T)
          * Time complexity: O(n).
          * @see store.MutableSeq#append
         **/
-        public synchronized void append(T element)
+        public final void append(T element)
         {
                 checkElement(element);
                 if (list_ is null)
@@ -399,7 +399,7 @@ public class LinkSeqT(T) : MutableSeqImplT!(T), SortableCollectionT!(T)
          * Time complexity: O(n).
          * @see store.MutableSeq#replaceTail
         **/
-        public synchronized void replaceTail(T element)
+        public final void replaceTail(T element)
         {
                 checkElement(element);
                 lastCell().element(element);
@@ -411,7 +411,7 @@ public class LinkSeqT(T) : MutableSeqImplT!(T), SortableCollectionT!(T)
          * Time complexity: O(n).
          * @see store.MutableSeq#removeTail
         **/
-        public synchronized void removeTail()
+        public final void removeTail()
         {
                 if (firstCell().next() is null)
                     removeHead();
@@ -435,7 +435,7 @@ public class LinkSeqT(T) : MutableSeqImplT!(T), SortableCollectionT!(T)
          * Time complexity: O(n).
          * @see store.MutableSeq#insert
         **/
-        public synchronized void insert(int index, T element)
+        public final void insert(int index, T element)
         {
                 if (index is 0)
                     prepend(element);
@@ -452,7 +452,7 @@ public class LinkSeqT(T) : MutableSeqImplT!(T), SortableCollectionT!(T)
          * Time complexity: O(n).
          * @see store.MutableSeq#remove
         **/
-        public synchronized void remove(int index)
+        public final void remove(int index)
         {
                 if (index is 0)
                     removeHead();
@@ -468,7 +468,7 @@ public class LinkSeqT(T) : MutableSeqImplT!(T), SortableCollectionT!(T)
          * Time complexity: O(n).
          * @see store.MutableSeq#replace
         **/
-        public synchronized void replace(int index, T element)
+        public final void replace(int index, T element)
         {
                 cellAt(index).element(element);
                 incVersion();
@@ -479,7 +479,7 @@ public class LinkSeqT(T) : MutableSeqImplT!(T), SortableCollectionT!(T)
          * Time complexity: O(number of elements in e).
          * @see store.MutableSeq#prepend
         **/
-        public synchronized void prepend(Iterator e)
+        public final void prepend(Iterator e)
         {
                 splice_(e, null, list_);
         }
@@ -489,7 +489,7 @@ public class LinkSeqT(T) : MutableSeqImplT!(T), SortableCollectionT!(T)
          * Time complexity: O(n + number of elements in e).
          * @see store.MutableSeq#append
         **/
-        public synchronized void append(Iterator e)
+        public final void append(Iterator e)
         {
                 if (list_ is null)
                     splice_(e, null, null);
@@ -502,7 +502,7 @@ public class LinkSeqT(T) : MutableSeqImplT!(T), SortableCollectionT!(T)
          * Time complexity: O(n + number of elements in e).
          * @see store.MutableSeq#insert
         **/
-        public synchronized void insert(int index, Iterator e)
+        public final void insert(int index, Iterator e)
         {
                 if (index is 0)
                     splice_(e, null, list_);
@@ -518,7 +518,7 @@ public class LinkSeqT(T) : MutableSeqImplT!(T), SortableCollectionT!(T)
          * Time complexity: O(n).
          * @see store.MutableSeq#removeFromTo
         **/
-        public synchronized void removeFromTo(int fromIndex, int toIndex)
+        public final void removeFromTo(int fromIndex, int toIndex)
         {
                 checkIndex(toIndex);
 
@@ -547,7 +547,7 @@ public class LinkSeqT(T) : MutableSeqImplT!(T), SortableCollectionT!(T)
 
         // helper methods
 
-        private LLCell firstCell()
+        private final LLCell firstCell()
         {
                 if (list_ !is null)
                     return list_;
@@ -556,7 +556,7 @@ public class LinkSeqT(T) : MutableSeqImplT!(T), SortableCollectionT!(T)
                 return null; // not reached!
         }
 
-        private LLCell lastCell()
+        private final LLCell lastCell()
         {
                 if (list_ !is null)
                     return list_.tail();
@@ -565,7 +565,7 @@ public class LinkSeqT(T) : MutableSeqImplT!(T), SortableCollectionT!(T)
                 return null; // not reached!
         }
 
-        private LLCell cellAt(int index)
+        private final LLCell cellAt(int index)
         {
                 checkIndex(index);
                 return list_.nth(index);
@@ -575,7 +575,7 @@ public class LinkSeqT(T) : MutableSeqImplT!(T), SortableCollectionT!(T)
          * Helper method for removeOneOf()
         **/
 
-        private void remove_(T element, bool allOccurrences)
+        private final void remove_(T element, bool allOccurrences)
         {
                 if (!isValidArg(element) || count_ is 0)
                      return ;
@@ -615,7 +615,7 @@ public class LinkSeqT(T) : MutableSeqImplT!(T), SortableCollectionT!(T)
          * Helper for replace
         **/
 
-        private void replace_(T oldElement, T newElement, bool allOccurrences)
+        private final void replace_(T oldElement, T newElement, bool allOccurrences)
         {
                 if (count_ is 0 || !isValidArg(oldElement) || oldElement == (newElement))
                     return ;
@@ -636,7 +636,7 @@ public class LinkSeqT(T) : MutableSeqImplT!(T), SortableCollectionT!(T)
          * Splice elements of e between hd and tl. if hd is null return new hd
         **/
 
-        private void splice_(Iterator e, LLCell hd, LLCell tl)
+        private final void splice_(Iterator e, LLCell hd, LLCell tl)
         {
                 if (e.more())
                    {
@@ -673,7 +673,7 @@ public class LinkSeqT(T) : MutableSeqImplT!(T), SortableCollectionT!(T)
          * Implements store.ImplementationCheckable.checkImplementation.
          * @see store.ImplementationCheckable#checkImplementation
         **/
-        public synchronized void checkImplementation()
+        public override void checkImplementation()
         {
 
                 super.checkImplementation();
@@ -705,7 +705,7 @@ public class LinkSeqT(T) : MutableSeqImplT!(T), SortableCollectionT!(T)
                         start = seq.list_;
                 }
 
-                public bool more()
+                public final bool more()
                 {
                         if (cell)
                             cell = cell.next();
@@ -719,7 +719,7 @@ public class LinkSeqT(T) : MutableSeqImplT!(T), SortableCollectionT!(T)
                         return true;
                 }
 
-                public T value()
+                public final T value()
                 {
                         return cell.element();
                 }

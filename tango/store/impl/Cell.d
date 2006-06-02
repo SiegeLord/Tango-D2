@@ -54,7 +54,7 @@ public class CellT (T)
          * return the element value
         **/
 
-        public T element()
+        public final T element()
         {
                 return element_;
         }
@@ -63,12 +63,12 @@ public class CellT (T)
          * set the element value
         **/
 
-        public void element (T v)
+        public final void element (T v)
         {
                 element_ = v;
         }
 
-        public int elementHash ()
+        public final int elementHash ()
         {
                 return typeid(T).getHash(&element_);
         }

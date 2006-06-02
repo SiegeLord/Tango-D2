@@ -67,12 +67,12 @@ public abstract class MutableMapImplT(K, T) : MutableImplT!(T), MutableMapT!(K, 
          * Default key-screen. Just checks for null.
          * @see store.Map#canIncludeKey
         **/
-        public bool canIncludeKey(K key)
+        public final bool canIncludeKey(K key)
         {
                 return (key !is K.init);
         }
 
-        protected bool isValidKey(K key)
+        protected final bool isValidKey(K key)
         {
                 static if (is (T : Object))
                           {
@@ -85,7 +85,7 @@ public abstract class MutableMapImplT(K, T) : MutableImplT!(T), MutableMapT!(K, 
         /**
          * Principal method to throw a IllegalElementException for keys
         **/
-        protected void checkKey(K key)
+        protected final void checkKey(K key)
         {
                 if (!canIncludeKey(key))
                 {
@@ -108,7 +108,7 @@ public abstract class MutableMapImplT(K, T) : MutableImplT!(T), MutableMapT!(K, 
          * @see store.Collection#matches
         **/
 
-        public synchronized bool matches(Collection other)
+        public override bool matches(Collection other)
         {
                 if (other is null)
                    {}
@@ -128,7 +128,7 @@ public abstract class MutableMapImplT(K, T) : MutableImplT!(T), MutableMapT!(K, 
         }
 
 
-        public static bool samePairs(Map s, Map t)
+        public final static bool samePairs(Map s, Map t)
         {
                 if (s.size !is t.size)
                     return false;
@@ -150,7 +150,7 @@ public abstract class MutableMapImplT(K, T) : MutableImplT!(T), MutableMapT!(K, 
                             }
         }
 
-        public static bool sameOrderedPairs(Map s, Map t)
+        public final static bool sameOrderedPairs(Map s, Map t)
         {
                 if (s.size !is t.size)
                     return false;
@@ -190,7 +190,7 @@ public abstract class MutableMapImplT(K, T) : MutableImplT!(T), MutableMapT!(K, 
          * to get at elements/keys
         **/
 
-        public char[] toString()
+        public final char[] toString()
         {
                 auto buf = new MutableString;
                 buf.append("( (class: "c).append(this.classinfo.name).append(")"c);
@@ -238,7 +238,7 @@ version (VERBOSE)
          * Implements store.Map.puttingAt.
          * @see store.Map#puttingAt
         **/
-        public synchronized Map puttingAt(K key, V element)
+        public final final Map puttingAt(K key, V element)
         {
                 MutableMap c = null;
                 //      c = (cast(MutableMap)clone());
@@ -251,7 +251,7 @@ version (VERBOSE)
          * Implements store.Map.removingAt
          * @see store.Map#removingAt
         **/
-        public synchronized Map removingAt(K key)
+        public final final Map removingAt(K key)
         {
                 MutableMap c = null;
                 //      c = (cast(MutableMap)clone());

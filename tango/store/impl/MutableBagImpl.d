@@ -57,7 +57,7 @@ public abstract class MutableBagImplT(T) : MutableImplT!(T) , MutableBagT!(T)
          * @see store.MutableBag#addElements
         **/
 
-        public synchronized void addElements(Iterator e)
+        public final void addElements(Iterator e)
         {
                 while (e.more)
                         add (e.value);
@@ -72,7 +72,7 @@ version (VERBOSE)
          * Implements store.Bag.addingIfAbsent
          * @see store.Bag#addingIfAbsent
         **/
-        public synchronized Bag addingIfAbsent(T element)
+        public final Bag addingIfAbsent(T element)
         {
                 MutableBag c = null;
                 //      c = (cast(MutableBag)clone());
@@ -87,7 +87,7 @@ version (VERBOSE)
          * @see store.Bag#adding
         **/
 
-        public synchronized Bag adding(T element)
+        public final Bag adding(T element)
         {
                 MutableBag c = null;
                 //      c = (cast(MutableBag)clone());

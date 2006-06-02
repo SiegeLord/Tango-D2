@@ -45,7 +45,7 @@ public class DefaultComparatorT(T) : ComparatorT!(T)
          * positive number if fst is greater than snd; else 0
         **/
 
-        public int compare(T fst, T snd)
+        public final int compare(T fst, T snd)
         {
                 T a = fst;
                 T b = snd;

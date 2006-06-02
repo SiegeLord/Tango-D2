@@ -97,7 +97,7 @@ public class HashSetT(T) : MutableSetImplT!(T), HashTableParams
          * Make an independent copy of the table. Does not clone elements.
         **/
 
-        public Collection duplicate()
+        public final Collection duplicate()
         {
                 auto c = new HashSetT (screener_, loadFactor_);
 
@@ -124,7 +124,7 @@ public class HashSetT(T) : MutableSetImplT!(T), HashTableParams
          * @see store.HashTableParams#buckets.
         **/
 
-        public synchronized int buckets()
+        public final int buckets()
         {
                 return (table_ is null) ? 0 : table_.length;
         }
@@ -135,7 +135,7 @@ public class HashSetT(T) : MutableSetImplT!(T), HashTableParams
          * @see store.HashTableParams#buckets.
         **/
 
-        public synchronized void buckets(int newCap)
+        public final void buckets(int newCap)
         {
                 if (newCap is buckets())
                     return ;
@@ -155,7 +155,7 @@ public class HashSetT(T) : MutableSetImplT!(T), HashTableParams
          * @see store.HashTableParams#thresholdLoadfactor
         **/
 
-        public synchronized float thresholdLoadFactor()
+        public final float thresholdLoadFactor()
         {
                 return loadFactor_;
         }
@@ -166,7 +166,7 @@ public class HashSetT(T) : MutableSetImplT!(T), HashTableParams
          * @see store.HashTableParams#thresholdLoadfactor
         **/
 
-        public synchronized void thresholdLoadFactor(float desired)
+        public final void thresholdLoadFactor(float desired)
         {
                 if (desired > 0.0)
                    {
@@ -188,7 +188,7 @@ public class HashSetT(T) : MutableSetImplT!(T), HashTableParams
          * Time complexity: O(1) average; O(n) worst.
          * @see store.Collection#contains
         **/
-        public synchronized bool contains(T element)
+        public final bool contains(T element)
         {
                 if (!isValidArg(element) || count_ is 0)
                      return false;
@@ -205,7 +205,7 @@ public class HashSetT(T) : MutableSetImplT!(T), HashTableParams
          * Time complexity: O(n).
          * @see store.Collection#instances
         **/
-        public synchronized int instances(T element)
+        public final int instances(T element)
         {
                 if (contains(element))
                     return 1;
@@ -218,7 +218,7 @@ public class HashSetT(T) : MutableSetImplT!(T), HashTableParams
          * Time complexity: O(1).
          * @see store.Collection#elements
         **/
-        public synchronized CollectionIterator elements()
+        public final CollectionIterator elements()
         {
                 return new CellIterator!(T)(this);
         }
@@ -230,7 +230,7 @@ public class HashSetT(T) : MutableSetImplT!(T), HashTableParams
          * Time complexity: O(1).
          * @see store.MutableCollection#clear
         **/
-        public synchronized void clear()
+        public final void clear()
         {
                 setCount(0);
                 table_ = null;
@@ -241,12 +241,12 @@ public class HashSetT(T) : MutableSetImplT!(T), HashTableParams
          * Time complexity: O(1) average; O(n) worst.
          * @see store.MutableCollection#exclude
         **/
-        public synchronized void exclude(T element)
+        public final void exclude(T element)
         {
                 removeOneOf(element);
         }
 
-        public synchronized void removeOneOf(T element)
+        public final void removeOneOf(T element)
         {
                 if (!isValidArg(element) || count_ is 0)
                     return ;
@@ -279,7 +279,7 @@ public class HashSetT(T) : MutableSetImplT!(T), HashTableParams
                       }
         }
 
-        public synchronized void replaceOneOf(T oldElement, T newElement)
+        public final void replaceOneOf(T oldElement, T newElement)
         {
 
                 if (count_ is 0 || !isValidArg(oldElement) || oldElement == (newElement))
@@ -293,7 +293,7 @@ public class HashSetT(T) : MutableSetImplT!(T), HashTableParams
                    }
         }
 
-        public synchronized void replaceAllOf(T oldElement, T newElement)
+        public final void replaceAllOf(T oldElement, T newElement)
         {
                 replaceOneOf(oldElement, newElement);
         }
@@ -303,7 +303,7 @@ public class HashSetT(T) : MutableSetImplT!(T), HashTableParams
          * Time complexity: O(number of buckets).
          * @see store.MutableCollection#take
         **/
-        public synchronized T take()
+        public final T take()
         {
                 if (count_ !is 0)
                    {
@@ -331,7 +331,7 @@ public class HashSetT(T) : MutableSetImplT!(T), HashTableParams
          * Time complexity: O(1) average; O(n) worst.
          * @see store.MutableSet#include
         **/
-        public synchronized void include(T element)
+        public final void include(T element)
         {
                 checkElement(element);
 
@@ -361,7 +361,7 @@ public class HashSetT(T) : MutableSetImplT!(T), HashTableParams
          * Also while at it, check to see if we are empty so can just
          * unlink table.
         **/
-        protected void checkLoadFactor()
+        protected final void checkLoadFactor()
         {
                 if (table_ is null)
                    {
@@ -385,7 +385,7 @@ public class HashSetT(T) : MutableSetImplT!(T), HashTableParams
          * so it can be used as table index
         **/
 
-        protected int hashOf(T element)
+        protected final int hashOf(T element)
         {
                 return (typeid(T).getHash(&element) & 0x7FFFFFFF) % table_.length;
         }
@@ -394,7 +394,7 @@ public class HashSetT(T) : MutableSetImplT!(T), HashTableParams
         /**
          * resize table to new capacity, rehashing all elements
         **/
-        protected void resize(int newCap)
+        protected final void resize(int newCap)
         {
                 LLCell newtab[] = new LLCell[newCap];
 
@@ -419,7 +419,7 @@ public class HashSetT(T) : MutableSetImplT!(T), HashTableParams
         }
 
         /+
-        private void readObject(java.io.ObjectInputStream stream)
+        private final void readObject(java.io.ObjectInputStream stream)
 
         {
                 int len = stream.readInt();
@@ -442,7 +442,7 @@ public class HashSetT(T) : MutableSetImplT!(T), HashTableParams
                       }
         }
 
-        private void writeObject(java.io.ObjectOutputStream stream)
+        private final void writeObject(java.io.ObjectOutputStream stream)
         {
                 int len;
 
@@ -471,7 +471,7 @@ public class HashSetT(T) : MutableSetImplT!(T), HashTableParams
          * Implements store.ImplementationCheckable.checkImplementation.
          * @see store.ImplementationCheckable#checkImplementation
         **/
-        public synchronized void checkImplementation()
+        public override void checkImplementation()
         {
                 super.checkImplementation();
 
@@ -511,7 +511,7 @@ public class HashSetT(T) : MutableSetImplT!(T), HashTableParams
                         table = set.table_;
                 }
 
-                public bool more()
+                public final bool more()
                 {
                         if (remaining_)
                            {
@@ -528,7 +528,7 @@ public class HashSetT(T) : MutableSetImplT!(T), HashTableParams
                         return false;
                 }
 
-                public T value()
+                public final T value()
                 {
                         return cell.element();
                 }

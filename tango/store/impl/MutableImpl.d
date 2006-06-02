@@ -97,7 +97,7 @@ public abstract class MutableImplT(T) : MutableCollectionT!(T)
         }
 
 
-        package static bool isValidArg (T element)
+        package final static bool isValidArg (T element)
         {
                 static if (is (T : Object))
                           {
@@ -114,7 +114,7 @@ public abstract class MutableImplT(T) : MutableCollectionT!(T)
          * @see clone
         **/
 
-        public synchronized Collection duplicate()
+        public final Collection duplicate()
         {
                 Collection c = null;
                 c = cast(Collection)(clone());
@@ -127,7 +127,7 @@ public abstract class MutableImplT(T) : MutableCollectionT!(T)
          * @see store.Collection#isEmpty
         **/
 
-        public synchronized bool isEmpty()
+        public final bool isEmpty()
         {
                 return count_ is 0;
         }
@@ -137,7 +137,7 @@ public abstract class MutableImplT(T) : MutableCollectionT!(T)
          * Time complexity: O(1).
          * @see store.Collection#size
         **/
-        public synchronized int size()
+        public final int size()
         {
                 return count_;
         }
@@ -147,7 +147,7 @@ public abstract class MutableImplT(T) : MutableCollectionT!(T)
          * Time complexity: O(1) + time of screener, if present
          * @see store.Collection#canInclude
         **/
-        public bool canInclude(T element)
+        public final bool canInclude(T element)
         {
                 return isValidArg(element) && (screener_ is null || screener_.predicate(element));
         }
@@ -166,7 +166,7 @@ public abstract class MutableImplT(T) : MutableCollectionT!(T)
          * @see store.Collection#matches
         **/
 
-        public synchronized bool matches(Collection other)
+        public bool matches(Collection other)
         {
 /+
                 if (other is null)
@@ -213,7 +213,7 @@ version (VERBOSE)
          * Implements store.Collection.removingOneOf
          * @see store.Collection#removingOneOf
         **/
-        public synchronized Collection removingOneOf(T element)
+        public final Collection removingOneOf(T element)
         {
                 MutableCollection c = null;
                 //      c = (cast(MutableCollection)clone());
@@ -226,7 +226,7 @@ version (VERBOSE)
          * Implements store.Collection.excluding.
          * @see store.Collection#excluding
         **/
-        public synchronized Collection excluding(T element)
+        public final Collection excluding(T element)
         {
                 MutableCollection c = null;
                 //      c = (cast(MutableCollection)clone());
@@ -240,7 +240,7 @@ version (VERBOSE)
          * Implements store.Collection.replacingOneOf
          * @see store.Collection#replacingOneOf
         **/
-        public synchronized Collection replacingOneOf(T oldElement, T newElement)
+        public final Collection replacingOneOf(T oldElement, T newElement)
         {
                 MutableCollection c = null;
                 //      c = (cast(MutableCollection)clone());
@@ -253,7 +253,7 @@ version (VERBOSE)
          * Implements store.Collection.replacingAllOf
          * @see store.Collection#replacingAllOf
         **/
-        public synchronized Collection replacingAllOf(T oldElement, T newElement)
+        public final Collection replacingAllOf(T oldElement, T newElement)
         {
                 MutableCollection c = null;
                 //      c = (cast(MutableCollection)clone());
@@ -271,7 +271,7 @@ version (VERBOSE)
          * Time complexity: O(1).
          * @see store.MutableCollection#version
         **/
-        public synchronized int _version()
+        public final int _version()
         {
                 return version_;
         }
@@ -281,7 +281,7 @@ version (VERBOSE)
          * Implements store.MutableCollection.excludeElements
          * @see store.MutableCollection#excludeElements
         **/
-        public synchronized void excludeElements(Iterator e)
+        public final void excludeElements(Iterator e)
         {
                 while (e.more)
                        exclude(e.value);
@@ -292,7 +292,7 @@ version (VERBOSE)
          * Implements store.MutableCollection.removeElements
          * @see store.MutableCollection#removeElements
         **/
-        public synchronized void removeElements(Iterator e)
+        public final void removeElements(Iterator e)
         {
                 while (e.more)
                        removeOneOf(e.value);
@@ -342,7 +342,7 @@ version (VERBOSE)
          * change the version number
         **/
 
-        protected synchronized void incVersion()
+        protected final void incVersion()
         {
                 ++version_;
         }
@@ -351,7 +351,7 @@ version (VERBOSE)
         /**
          * Increment the element count and update version_
         **/
-        protected void incCount()
+        protected final void incCount()
         {
                 count_++;
                 incVersion();
@@ -360,7 +360,7 @@ version (VERBOSE)
         /**
          * Decrement the element count and update version_
         **/
-        protected void decCount()
+        protected final void decCount()
         {
                 count_--;
                 incVersion();
@@ -370,7 +370,7 @@ version (VERBOSE)
         /**
          * add to the element count and update version_ if changed
         **/
-        protected void addToCount(int c)
+        protected final void addToCount(int c)
         {
                 if (c !is 0)
                    {
@@ -382,7 +382,7 @@ version (VERBOSE)
         /**
          * set the element count and update version_ if changed
         **/
-        protected void setCount(int c)
+        protected final void setCount(int c)
         {
                 if (c !is count_)
                    {
@@ -394,7 +394,7 @@ version (VERBOSE)
 
         // Helper methods left public since they might be useful
 
-        public static bool sameInclusions(Collection s, Collection t)
+        public final static bool sameInclusions(Collection s, Collection t)
         {
                 if (s.size !is t.size)
                     return false;
@@ -413,7 +413,7 @@ version (VERBOSE)
                             }
         }
 
-        public static bool sameOccurrences(Collection s, Collection t)
+        public final static bool sameOccurrences(Collection s, Collection t)
         {
                 if (s.size !is t.size)
                     return false;
@@ -439,7 +439,7 @@ version (VERBOSE)
                             }
         }
 
-        public static bool sameOrderedElements(Collection s, Collection t)
+        public final static bool sameOrderedElements(Collection s, Collection t)
         {
                 if (s.size !is t.size)
                     return false;
@@ -469,7 +469,7 @@ version (VERBOSE)
          * Besides index checks in Seqs, you can use it to check for
          * operations on empty collections via checkIndex(0)
         **/
-        protected void checkIndex(int index)
+        protected final void checkIndex(int index)
         {
                 if (index < 0 || index >= count_)
                    {
@@ -490,7 +490,7 @@ version (VERBOSE)
          * Principal method to throw a IllegalElementException
         **/
 
-        protected void checkElement(T element)
+        protected final void checkElement(T element)
         {
                 if (! canInclude(element))
                    {
@@ -505,7 +505,7 @@ version (VERBOSE)
          * Implements store.ImplementationCheckable.assert.
          * @see store.ImplementationCheckable#assert
         **/
-        public void assert(bool pred)
+        public final void assert(bool pred)
         {
                 ImplementationError.assert(this, pred);
         }
@@ -516,7 +516,7 @@ version (VERBOSE)
          * Implements store.ImplementationCheckable.checkImplementation.
          * @see store.ImplementationCheckable#checkImplementation
         **/
-        public synchronized void checkImplementation()
+        public override void checkImplementation()
         {
                 assert(count_ >= 0);
         }

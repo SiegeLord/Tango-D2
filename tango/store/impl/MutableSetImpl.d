@@ -61,7 +61,7 @@ version (VERBOSE)
          * Implements store.Set.including
          * @see store.Set#including
         **/
-        public synchronized Set including(T element)
+        public final Set including(T element)
         {
                 MutableSet c = null;
                 //      c = (cast(MutableSet)clone());
@@ -77,7 +77,7 @@ version (VERBOSE)
          * @see store.MutableSet#includeElements
         **/
 
-        public synchronized void includeElements(Iterator e)
+        public final void includeElements(Iterator e)
         {
                 while (e.more())
                         include(e.value());

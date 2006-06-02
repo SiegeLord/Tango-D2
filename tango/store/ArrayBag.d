@@ -121,7 +121,7 @@ public class ArrayBagT(T) : MutableBagImplT!(T)
          * Make an independent copy. Does not clone elements.
         **/ 
 
-        public Collection duplicate ()
+        public final Collection duplicate ()
         {
                 if (count_ is 0)
                     return new ArrayBagT (screener_);
@@ -150,7 +150,7 @@ public class ArrayBagT(T) : MutableBagImplT!(T)
          * Report the chunk size used when adding new buffers to the list
         **/
 
-        public synchronized int chunkSize()
+        public final int chunkSize()
         {
                 return chunkSize_;
         }
@@ -162,7 +162,7 @@ public class ArrayBagT(T) : MutableBagImplT!(T)
          * into very slow simulation of a linked list!)
         **/
 
-        public synchronized void chunkSize (int newChunkSize)
+        public final void chunkSize (int newChunkSize)
         {
                 if (newChunkSize > 0)
                     chunkSize_ = newChunkSize;
@@ -182,7 +182,7 @@ public class ArrayBagT(T) : MutableBagImplT!(T)
          * Time complexity: O(n).
          * @see store.Collection#contains
         **/
-        public synchronized bool contains(T element)
+        public final bool contains(T element)
         {
                 if (!isValidArg(element) || count_ is 0)
                      return false;
@@ -219,7 +219,7 @@ public class ArrayBagT(T) : MutableBagImplT!(T)
          * Time complexity: O(n).
          * @see store.Collection#instances
         **/
-        public synchronized int instances(T element)
+        public final int instances(T element)
         {
                 if (!isValidArg(element) || count_ is 0)
                     return 0;
@@ -257,7 +257,7 @@ public class ArrayBagT(T) : MutableBagImplT!(T)
          * Time complexity: O(1).
          * @see store.Collection#elements
         **/
-        public synchronized CollectionIterator elements()
+        public final CollectionIterator elements()
         {
                 return new ArrayIterator!(T)(this);
         }
@@ -269,7 +269,7 @@ public class ArrayBagT(T) : MutableBagImplT!(T)
          * Time complexity: O(1).
          * @see store.MutableCollection#clear
         **/
-        public synchronized void clear()
+        public final void clear()
         {
                 setCount(0);
                 tail_ = null;
@@ -281,7 +281,7 @@ public class ArrayBagT(T) : MutableBagImplT!(T)
          * Time complexity: O(n).
          * @see store.MutableCollection#exclude
         **/
-        public synchronized void exclude(T element)
+        public final void exclude(T element)
         {
                 remove_(element, true);
         }
@@ -292,7 +292,7 @@ public class ArrayBagT(T) : MutableBagImplT!(T)
          * Time complexity: O(n).
          * @see store.MutableCollection#removeOneOf
         **/
-        public synchronized void removeOneOf(T element)
+        public final void removeOneOf(T element)
         {
                 remove_(element, false);
         }
@@ -302,7 +302,7 @@ public class ArrayBagT(T) : MutableBagImplT!(T)
          * Time complexity: O(n).
          * @see store.MutableCollection#replaceOneOf
         **/
-        public synchronized void replaceOneOf(T oldElement, T newElement)
+        public final void replaceOneOf(T oldElement, T newElement)
         {
                 replace_(oldElement, newElement, false);
         }
@@ -312,7 +312,7 @@ public class ArrayBagT(T) : MutableBagImplT!(T)
          * Time complexity: O(n).
          * @see store.MutableCollection#replaceAllOf
         **/
-        public synchronized void replaceAllOf(T oldElement, T newElement)
+        public final void replaceAllOf(T oldElement, T newElement)
         {
                 replace_(oldElement, newElement, true);
         }
@@ -323,7 +323,7 @@ public class ArrayBagT(T) : MutableBagImplT!(T)
          * Takes the least element.
          * @see store.MutableCollection#take
         **/
-        public synchronized T take()
+        public final T take()
         {
                 if (count_ !is 0)
                    {
@@ -346,7 +346,7 @@ public class ArrayBagT(T) : MutableBagImplT!(T)
          * Time complexity: O(n).
          * @see store.MutableBag#addIfAbsent
         **/
-        public synchronized void addIfAbsent(T element)
+        public final void addIfAbsent(T element)
         {
                 if (!contains(element))
                      add (element);
@@ -358,7 +358,7 @@ public class ArrayBagT(T) : MutableBagImplT!(T)
          * Time complexity: O(1).
          * @see store.MutableBag#add
         **/
-        public synchronized void add (T element)
+        public final void add (T element)
         {
                 checkElement(element);
 
@@ -385,7 +385,7 @@ public class ArrayBagT(T) : MutableBagImplT!(T)
          * helper for remove/exclude
         **/
 
-        private void remove_(T element, bool allOccurrences)
+        private final void remove_(T element, bool allOccurrences)
         {
                 if (!isValidArg(element) || count_ is 0)
                      return ;
@@ -423,7 +423,7 @@ public class ArrayBagT(T) : MutableBagImplT!(T)
                 }
         }
 
-        private void replace_(T oldElement, T newElement, bool allOccurrences)
+        private final void replace_(T oldElement, T newElement, bool allOccurrences)
         {
                 if (!isValidArg(oldElement) || count_ is 0 || oldElement == (newElement))
                      return ;
@@ -460,7 +460,7 @@ public class ArrayBagT(T) : MutableBagImplT!(T)
                     }
         }
 
-        private void shrink_()
+        private final void shrink_()
         {
                 decCount();
                 lastCount_--;
@@ -485,7 +485,7 @@ public class ArrayBagT(T) : MutableBagImplT!(T)
          * Implements store.ImplementationCheckable.checkImplementation.
          * @see store.ImplementationCheckable#checkImplementation
         **/
-        public void checkImplementation()
+        public override void checkImplementation()
         {
 
                 super.checkImplementation();
@@ -543,7 +543,7 @@ public class ArrayBagT(T) : MutableBagImplT!(T)
                             buff = cell.element();  
                 }
 
-                public bool more()
+                public final bool more()
                 {
                         if (remaining_)
                            {
@@ -560,7 +560,7 @@ public class ArrayBagT(T) : MutableBagImplT!(T)
                         return false;
                 }
 
-                public T value()
+                public final T value()
                 {
                         return buff[index];
                 }

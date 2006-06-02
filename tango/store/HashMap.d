@@ -98,7 +98,7 @@ public class HashMapT(K, T) : MutableMapImplT!(K, T), HashTableParams
          * Make an independent copy of the table. Elements themselves are not cloned.
         **/
 
-        public Collection duplicate()
+        public final Collection duplicate()
         {
                 auto c = new HashMapT (screener_, loadFactor_);
 
@@ -126,7 +126,7 @@ public class HashMapT(K, T) : MutableMapImplT!(K, T), HashTableParams
          * @see store.HashTableParams#buckets.
         **/
 
-        public synchronized int buckets()
+        public final int buckets()
         {
                 return (table_ is null) ? 0 : table_.length;
         }
@@ -137,7 +137,7 @@ public class HashMapT(K, T) : MutableMapImplT!(K, T), HashTableParams
          * @see store.HashTableParams#buckets.
         **/
 
-        public synchronized void buckets(int newCap)
+        public final void buckets(int newCap)
         {
                 if (newCap is buckets())
                     return ;
@@ -154,7 +154,7 @@ public class HashMapT(K, T) : MutableMapImplT!(K, T), HashTableParams
          * @see store.HashTableParams#thresholdLoadfactor
         **/
 
-        public synchronized float thresholdLoadFactor()
+        public final float thresholdLoadFactor()
         {
                 return loadFactor_;
         }
@@ -165,7 +165,7 @@ public class HashMapT(K, T) : MutableMapImplT!(K, T), HashTableParams
          * @see store.HashTableParams#thresholdLoadfactor
         **/
 
-        public synchronized void thresholdLoadFactor(float desired)
+        public final void thresholdLoadFactor(float desired)
         {
                 if (desired > 0.0)
                    {
@@ -186,7 +186,7 @@ public class HashMapT(K, T) : MutableMapImplT!(K, T), HashTableParams
          * Time complexity: O(1) average; O(n) worst.
          * @see store.Collection#contains
         **/
-        public synchronized bool contains(T element)
+        public final bool contains(T element)
         {
                 if (!isValidArg(element) || count_ is 0)
                     return false;
@@ -205,7 +205,7 @@ public class HashMapT(K, T) : MutableMapImplT!(K, T), HashTableParams
          * Time complexity: O(n).
          * @see store.Collection#instances
         **/
-        public synchronized int instances(T element)
+        public final int instances(T element)
         {
                 if (!isValidArg(element) || count_ is 0)
                     return 0;
@@ -225,7 +225,7 @@ public class HashMapT(K, T) : MutableMapImplT!(K, T), HashTableParams
          * Time complexity: O(1).
          * @see store.Collection#elements
         **/
-        public synchronized CollectionIterator elements()
+        public final CollectionIterator elements()
         {
                 return new PairIterator!(K, T)(this);
         }
@@ -239,7 +239,7 @@ public class HashMapT(K, T) : MutableMapImplT!(K, T), HashTableParams
          * Time complexity: O(1) average; O(n) worst.
          * @see store.Map#containsKey
         **/
-        public synchronized bool containsKey(K key)
+        public final bool containsKey(K key)
         {
                 if (!isValidKey(key) || count_ is 0)
                     return false;
@@ -256,7 +256,7 @@ public class HashMapT(K, T) : MutableMapImplT!(K, T), HashTableParams
          * Time complexity: O(1) average; O(n) worst.
          * @see store.Map#containsPair
         **/
-        public synchronized bool containsPair(K key, T element)
+        public final bool containsPair(K key, T element)
         {
                 if (!isValidKey(key) || !isValidArg(element) || count_ is 0)
                     return false;
@@ -273,7 +273,7 @@ public class HashMapT(K, T) : MutableMapImplT!(K, T), HashTableParams
          * Time complexity: O(1).
          * @see store.Map#keys
         **/
-        public synchronized CollectionMapIteratorT!(K, T) keys()
+        public final CollectionMapIteratorT!(K, T) keys()
         {
                 return new PairIterator!(K, T)(this);
         }
@@ -283,7 +283,7 @@ public class HashMapT(K, T) : MutableMapImplT!(K, T), HashTableParams
          * Time complexity: O(1) average; O(n) worst.
          * @see store.Map#at
         **/
-        public synchronized T get(K key)
+        public final T get(K key)
         {
                 checkKey(key);
                 if (count_ !is 0)
@@ -332,7 +332,7 @@ public class HashMapT(K, T) : MutableMapImplT!(K, T), HashTableParams
          * Time complexity: O(n).
          * @see store.Map#akyOf
         **/
-        public synchronized K keyOf(T element)
+        public final K keyOf(T element)
         {
                 if (!isValidArg(element) || count_ is 0)
                     return K.init;
@@ -359,7 +359,7 @@ public class HashMapT(K, T) : MutableMapImplT!(K, T), HashTableParams
          * Time complexity: O(1).
          * @see store.MutableCollection#clear
         **/
-        public synchronized void clear()
+        public final void clear()
         {
                 setCount(0);
                 table_ = null;
@@ -370,7 +370,7 @@ public class HashMapT(K, T) : MutableMapImplT!(K, T), HashTableParams
          * Time complexity: O(n).
          * @see store.MutableCollection#exclude
         **/
-        public synchronized void exclude(T element)
+        public final void exclude(T element)
         {
                 remove_(element, true);
         }
@@ -381,7 +381,7 @@ public class HashMapT(K, T) : MutableMapImplT!(K, T), HashTableParams
          * Time complexity: O(n).
          * @see store.MutableCollection#removeOneOf
         **/
-        public synchronized void removeOneOf(T element)
+        public final void removeOneOf(T element)
         {
                 remove_(element, false);
         }
@@ -392,7 +392,7 @@ public class HashMapT(K, T) : MutableMapImplT!(K, T), HashTableParams
          * Time complexity: O(n).
          * @see store.MutableCollection#replaceOneOf
         **/
-        public synchronized void replaceOneOf(T oldElement, T newElement)
+        public final void replaceOneOf(T oldElement, T newElement)
         {
                 replace_(oldElement, newElement, false);
         }
@@ -402,7 +402,7 @@ public class HashMapT(K, T) : MutableMapImplT!(K, T), HashTableParams
          * Time complexity: O(n).
          * @see store.MutableCollection#replaceAllOf
         **/
-        public synchronized void replaceAllOf(T oldElement, T newElement)
+        public final void replaceAllOf(T oldElement, T newElement)
         {
                 replace_(oldElement, newElement, true);
         }
@@ -412,7 +412,7 @@ public class HashMapT(K, T) : MutableMapImplT!(K, T), HashTableParams
          * Time complexity: O(number of buckets).
          * @see store.MutableCollection#take
         **/
-        public synchronized T take()
+        public final T take()
         {
                 if (count_ !is 0)
                    {
@@ -439,7 +439,7 @@ public class HashMapT(K, T) : MutableMapImplT!(K, T), HashTableParams
          * Time complexity: O(1) average; O(n) worst.
          * @see store.MutableMap#putAt
         **/
-        public synchronized void putAt(K key, T element)
+        public final void putAt(K key, T element)
         {
                 checkKey(key);
                 checkElement(element);
@@ -481,7 +481,7 @@ public class HashMapT(K, T) : MutableMapImplT!(K, T), HashTableParams
          * Time complexity: O(1) average; O(n) worst.
          * @see store.MutableMap#remove
         **/
-        public synchronized void remove(K key)
+        public final void remove(K key)
         {
                 if (!isValidKey(key) || count_ is 0)
                     return;
@@ -516,7 +516,7 @@ public class HashMapT(K, T) : MutableMapImplT!(K, T), HashTableParams
          * Time complexity: O(1) average; O(n) worst.
          * @see store.MutableMap#replaceElement
         **/
-        public synchronized void replaceElement(K key, T oldElement, T newElement)
+        public final void replaceElement(K key, T oldElement, T newElement)
         {
                 if (!isValidKey(key) || !isValidArg(oldElement) || count_ is 0)
                     return;
@@ -542,7 +542,7 @@ public class HashMapT(K, T) : MutableMapImplT!(K, T), HashTableParams
          * Also while at it, check to see if we are empty so can just
          * unlink table.
         **/
-        protected void checkLoadFactor()
+        protected final void checkLoadFactor()
         {
                 if (table_ is null)
                    {
@@ -567,13 +567,13 @@ public class HashMapT(K, T) : MutableMapImplT!(K, T), HashTableParams
          * so it can be used as table index
         **/
 
-        protected int hashOf(K key)
+        protected final int hashOf(K key)
         {
                 return (typeid(K).getHash(&key) & 0x7FFFFFFF) % table_.length;
         }
 
 
-        protected void resize(int newCap)
+        protected final void resize(int newCap)
         {
                 LLPair newtab[] = new LLPair[newCap];
 
@@ -598,7 +598,7 @@ public class HashMapT(K, T) : MutableMapImplT!(K, T), HashTableParams
 
         // helpers
 
-        private void remove_(T element, bool allOccurrences)
+        private final void remove_(T element, bool allOccurrences)
         {
                 if (!isValidArg(element) || count_ is 0)
                     return;
@@ -635,7 +635,7 @@ public class HashMapT(K, T) : MutableMapImplT!(K, T), HashTableParams
                     }
         }
 
-        private void replace_(T oldElement, T newElement, bool allOccurrences)
+        private final void replace_(T oldElement, T newElement, bool allOccurrences)
         {
                 if (count_ is 0 || !isValidArg(oldElement) || oldElement == (newElement))
                     return;
@@ -664,7 +664,7 @@ public class HashMapT(K, T) : MutableMapImplT!(K, T), HashTableParams
 
 
         /+
-        private void readObject(java.io.ObjectInputStream stream)
+        private final void readObject(java.io.ObjectInputStream stream)
         {
                 int len = stream.readInt();
 
@@ -687,7 +687,7 @@ public class HashMapT(K, T) : MutableMapImplT!(K, T), HashTableParams
                       }
         }
 
-        private void writeObject(java.io.ObjectOutputStream stream)
+        private final void writeObject(java.io.ObjectOutputStream stream)
         {
                 int len;
 
@@ -719,7 +719,7 @@ public class HashMapT(K, T) : MutableMapImplT!(K, T), HashTableParams
          * Implements store.ImplementationCheckable.checkImplementation.
          * @see store.ImplementationCheckable#checkImplementation
         **/
-        public synchronized void checkImplementation()
+        public override void checkImplementation()
         {
                 super.checkImplementation();
 
@@ -764,7 +764,7 @@ public class HashMapT(K, T) : MutableMapImplT!(K, T), HashTableParams
                         table = map.table_;
                 }
 
-                public bool more()
+                public final bool more()
                 {
                         if (remaining_)
                            {
@@ -781,12 +781,12 @@ public class HashMapT(K, T) : MutableMapImplT!(K, T), HashTableParams
                         return false;
                 }
 
-                public T value()
+                public final T value()
                 {
                         return pair.element();
                 }
 
-                public K key()
+                public final K key()
                 {
                         return pair.key();
                 }

@@ -75,7 +75,7 @@ public class CLCellT(T) : CellT!(T)
          * return next cell
         **/
 
-        public CLCellT next()
+        public final CLCellT next()
         {
                 return next_;
         }
@@ -84,7 +84,7 @@ public class CLCellT(T) : CellT!(T)
          * Set next cell. You probably don't want to call this
         **/
 
-        public void next(CLCellT n)
+        public final void next(CLCellT n)
         {
                 next_ = n;
         }
@@ -93,7 +93,7 @@ public class CLCellT(T) : CellT!(T)
         /**
          * return previous cell
         **/
-        public CLCellT prev()
+        public final CLCellT prev()
         {
                 return prev_;
         }
@@ -101,7 +101,7 @@ public class CLCellT(T) : CellT!(T)
         /**
          * Set previous cell. You probably don't want to call this
         **/
-        public void prev(CLCellT n)
+        public final void prev(CLCellT n)
         {
                 prev_ = n;
         }
@@ -111,12 +111,12 @@ public class CLCellT(T) : CellT!(T)
          * Return true if current cell is the only one on the list
         **/
 
-        public bool isSingleton()
+        public final bool isSingleton()
         {
                 return next_ is this;
         }
 
-        public void linkNext(CLCellT p)
+        public final void linkNext(CLCellT p)
         {
                 if (p !is null)
                    {
@@ -131,7 +131,7 @@ public class CLCellT(T) : CellT!(T)
          * Make a cell holding v and link it immediately after current cell
         **/
 
-        public void addNext(T v)
+        public final void addNext(T v)
         {
                 CLCellT p = new CLCellT(v, this, next_);
                 next_.prev_ = p;
@@ -142,7 +142,7 @@ public class CLCellT(T) : CellT!(T)
          * make a node holding v, link it before the current cell, and return it
         **/
 
-        public CLCellT addPrev(T v)
+        public final CLCellT addPrev(T v)
         {
                 CLCellT p = prev_;
                 CLCellT c = new CLCellT(v, p, this);
@@ -155,7 +155,7 @@ public class CLCellT(T) : CellT!(T)
          * link p before current cell
         **/
 
-        public void linkPrev(CLCellT p)
+        public final void linkPrev(CLCellT p)
         {
                 if (p !is null)
                    {
@@ -170,7 +170,7 @@ public class CLCellT(T) : CellT!(T)
          * return the number of cells in the list
         **/
 
-        public int _length()
+        public final int _length()
         {
                 int c = 0;
                 CLCellT p = this;
@@ -186,7 +186,7 @@ public class CLCellT(T) : CellT!(T)
          * at current cell, or null if no such
         **/
 
-        public CLCellT find(T element)
+        public final CLCellT find(T element)
         {
                 CLCellT p = this;
                 do {
@@ -202,7 +202,7 @@ public class CLCellT(T) : CellT!(T)
          * traversal
         **/
 
-        public int count(T element)
+        public final int count(T element)
         {
                 int c = 0;
                 CLCellT p = this;
@@ -218,7 +218,7 @@ public class CLCellT(T) : CellT!(T)
          * return the nth cell traversed from here. It may wrap around.
         **/
 
-        public CLCellT nth(int n)
+        public final CLCellT nth(int n)
         {
                 CLCellT p = this;
                 for (int i = 0; i < n; ++i)
@@ -232,7 +232,7 @@ public class CLCellT(T) : CellT!(T)
          * This has no effect on the list if isSingleton()
         **/
 
-        public void unlinkNext()
+        public final void unlinkNext()
         {
                 CLCellT nn = next_.next_;
                 nn.prev_ = this;
@@ -244,7 +244,7 @@ public class CLCellT(T) : CellT!(T)
          * This has no effect on the list if isSingleton()
         **/
 
-        public void unlinkPrev()
+        public final void unlinkPrev()
         {
                 CLCellT pp = prev_.prev_;
                 pp.next_ = this;
@@ -257,7 +257,7 @@ public class CLCellT(T) : CellT!(T)
          * Causes it to be a singleton
         **/
 
-        public void unlink()
+        public final void unlink()
         {
                 CLCellT p = prev_;
                 CLCellT n = next_;
@@ -271,7 +271,7 @@ public class CLCellT(T) : CellT!(T)
          * Make a copy of the list and return new head. 
         **/
 
-        public CLCellT copyList()
+        public final CLCellT copyList()
         {
                 CLCellT hd = this;
 

@@ -116,7 +116,7 @@ public class FilteringIterator : Iterator
          * Implements java.util.Iterator.more
         **/
 
-        public synchronized bool more()
+        public final bool more()
         {
                 return haveNext_;
         }
@@ -124,7 +124,7 @@ public class FilteringIterator : Iterator
         /**
          * Implements java.util.Iterator.get.
         **/
-        public synchronized Object value()
+        public final Object value()
         {
                 if (! more())
                       throw new NoSuchElementException("exhausted enumeration");
@@ -139,7 +139,7 @@ public class FilteringIterator : Iterator
         /**
          * Traverse through src_ elements finding one passing predicate
         **/
-        private void findNext()
+        private final void findNext()
         {
                 haveNext_ = false;
                 get_ = null;

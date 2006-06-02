@@ -110,7 +110,7 @@ public class ArraySeqT(T) : MutableSeqImplT!(T), SortableCollectionT!(T)
          * Make an independent copy. The elements themselves are not cloned
         **/
 
-        public Collection duplicate()
+        public final Collection duplicate()
         {
                 int cap = count_;
                 if (cap is 0)
@@ -135,7 +135,7 @@ public class ArraySeqT(T) : MutableSeqImplT!(T), SortableCollectionT!(T)
          * @return capacity (always greater than or equal to size())
         **/
 
-        public int capacity()
+        public final int capacity()
         {
                 return (array_ is null) ? 0 : array_.length;
         }
@@ -155,7 +155,7 @@ public class ArraySeqT(T) : MutableSeqImplT!(T), SortableCollectionT!(T)
          * </PRE>
         **/
 
-        public synchronized void capacity(int newCap)
+        public final void capacity(int newCap)
         {
                 if (newCap < count_)
                     newCap = count_;
@@ -189,7 +189,7 @@ public class ArraySeqT(T) : MutableSeqImplT!(T), SortableCollectionT!(T)
          * Time complexity: O(n).
          * @see store.Collection#contains
         **/
-        public synchronized bool contains(T element)
+        public final bool contains(T element)
         {
                 if (! isValidArg (element))
                       return false;
@@ -205,7 +205,7 @@ public class ArraySeqT(T) : MutableSeqImplT!(T), SortableCollectionT!(T)
          * Time complexity: O(n).
          * @see store.Collection#instances
         **/
-        public synchronized int instances(T element)
+        public final int instances(T element)
         {
                 if (! isValidArg(element))
                       return 0;
@@ -222,7 +222,7 @@ public class ArraySeqT(T) : MutableSeqImplT!(T), SortableCollectionT!(T)
          * Time complexity: O(1).
          * @see store.Collection#elements
         **/
-        public synchronized CollectionIterator elements()
+        public final CollectionIterator elements()
         {
                 return new ArrayIterator!(T)(this);
         }
@@ -236,7 +236,7 @@ public class ArraySeqT(T) : MutableSeqImplT!(T), SortableCollectionT!(T)
          * Time complexity: O(1).
          * @see store.Seq#head
         **/
-        public synchronized T head()
+        public final T head()
         {
                 checkIndex(0);
                 return array_[0];
@@ -247,7 +247,7 @@ public class ArraySeqT(T) : MutableSeqImplT!(T), SortableCollectionT!(T)
          * Time complexity: O(1).
          * @see store.Seq#tail
         **/
-        public synchronized T tail()
+        public final T tail()
         {
                 checkIndex(count_ -1);
                 return array_[count_ -1];
@@ -272,7 +272,7 @@ public class ArraySeqT(T) : MutableSeqImplT!(T), SortableCollectionT!(T)
          * Time complexity: O(n).
          * @see store.Seq#first
         **/
-        public synchronized int first(T element, int startingIndex = 0)
+        public final int first(T element, int startingIndex = 0)
         {
                 if (startingIndex < 0)
                     startingIndex = 0;
@@ -288,7 +288,7 @@ public class ArraySeqT(T) : MutableSeqImplT!(T), SortableCollectionT!(T)
          * Time complexity: O(n).
          * @see store.Seq#last
         **/
-        public synchronized int last(T element, int startingIndex = 0)
+        public final int last(T element, int startingIndex = 0)
         {
                 if (startingIndex >= count_)
                     startingIndex = count_ -1;
@@ -305,7 +305,7 @@ public class ArraySeqT(T) : MutableSeqImplT!(T), SortableCollectionT!(T)
          * Time complexity: O(length).
          * @see store.Seq#subseq
         **/
-        public synchronized  /* ArraySeq */ SeqT!(T) subseq(int from, int _length)
+        public final  /* ArraySeq */ SeqT!(T) subseq(int from, int _length)
         {
                 if (_length > 0)
                    {
@@ -330,7 +330,7 @@ public class ArraySeqT(T) : MutableSeqImplT!(T), SortableCollectionT!(T)
          * Time complexity: O(1).
          * @see store.MutableCollection#clear
         **/
-        public synchronized void clear()
+        public final void clear()
         {
                 array_ = null;
                 setCount(0);
@@ -341,7 +341,7 @@ public class ArraySeqT(T) : MutableSeqImplT!(T), SortableCollectionT!(T)
          * Time complexity: O(n).
          * @see store.MutableCollection#removeOneOf
         **/
-        public synchronized void removeOneOf(T element)
+        public final void removeOneOf(T element)
         {
                 remove_(element, false);
         }
@@ -352,7 +352,7 @@ public class ArraySeqT(T) : MutableSeqImplT!(T), SortableCollectionT!(T)
          * Time complexity: O(n).
          * @see store.MutableCollection#replaceOneOf
         **/
-        public synchronized void replaceOneOf(T oldElement, T newElement)
+        public final void replaceOneOf(T oldElement, T newElement)
         {
                 replace_(oldElement, newElement, false);
         }
@@ -362,7 +362,7 @@ public class ArraySeqT(T) : MutableSeqImplT!(T), SortableCollectionT!(T)
          * Time complexity: O(n * number of replacements).
          * @see store.MutableCollection#replaceAllOf
         **/
-        public synchronized void replaceAllOf(T oldElement, T newElement)
+        public final void replaceAllOf(T oldElement, T newElement)
         {
                 replace_(oldElement, newElement, true);
         }
@@ -372,7 +372,7 @@ public class ArraySeqT(T) : MutableSeqImplT!(T), SortableCollectionT!(T)
          * Time complexity: O(n * instances(element)).
          * @see store.MutableCollection#exclude
         **/
-        public synchronized void exclude(T element)
+        public final void exclude(T element)
         {
                 remove_(element, true);
         }
@@ -383,7 +383,7 @@ public class ArraySeqT(T) : MutableSeqImplT!(T), SortableCollectionT!(T)
          * Takes the rightmost element of the array.
          * @see store.MutableCollection#take
         **/
-        public synchronized T take()
+        public final T take()
         {
                 T v = tail();
                 removeTail();
@@ -417,7 +417,7 @@ public class ArraySeqT(T) : MutableSeqImplT!(T), SortableCollectionT!(T)
          * Time complexity: O(n)
          * @see store.MutableSeq#prepend
         **/
-        public synchronized void prepend(T element)
+        public final void prepend(T element)
         {
                 checkElement(element);
                 growBy_(1);
@@ -431,7 +431,7 @@ public class ArraySeqT(T) : MutableSeqImplT!(T), SortableCollectionT!(T)
          * Time complexity: O(1).
          * @see store.MutableSeq#replaceHead
         **/
-        public synchronized void replaceHead(T element)
+        public final void replaceHead(T element)
         {
                 checkElement(element);
                 array_[0] = element;
@@ -443,7 +443,7 @@ public class ArraySeqT(T) : MutableSeqImplT!(T), SortableCollectionT!(T)
          * Time complexity: O(n).
          * @see store.MutableSeq#removeHead
         **/
-        public synchronized void removeHead()
+        public final void removeHead()
         {
                 remove(0);
         }
@@ -469,7 +469,7 @@ public class ArraySeqT(T) : MutableSeqImplT!(T), SortableCollectionT!(T)
          * Time complexity: O(1).
          * @see store.MutableSeq#replaceTail
         **/
-        public synchronized void replaceTail(T element)
+        public final void replaceTail(T element)
         {
                 checkElement(element);
                 array_[count_ -1] = element;
@@ -481,7 +481,7 @@ public class ArraySeqT(T) : MutableSeqImplT!(T), SortableCollectionT!(T)
          * Time complexity: O(1).
          * @see store.MutableSeq#removeTail
         **/
-        public synchronized void removeTail()
+        public final void removeTail()
         {
                 checkIndex(0);
                 array_[count_ -1] = T.init;
@@ -493,7 +493,7 @@ public class ArraySeqT(T) : MutableSeqImplT!(T), SortableCollectionT!(T)
          * Time complexity: O(n).
          * @see store.MutableSeq#insert
         **/
-        public synchronized void insert(int index, T element)
+        public final void insert(int index, T element)
         {
                 if (index !is count_)
                     checkIndex(index);
@@ -510,7 +510,7 @@ public class ArraySeqT(T) : MutableSeqImplT!(T), SortableCollectionT!(T)
          * Time complexity: O(n).
          * @see store.MutableSeq#remove
         **/
-        public synchronized void remove(int index)
+        public final void remove(int index)
         {
                 checkIndex(index);
                 for (int i = index + 1; i < count_; ++i)
@@ -525,7 +525,7 @@ public class ArraySeqT(T) : MutableSeqImplT!(T), SortableCollectionT!(T)
          * Time complexity: O(1).
          * @see store.MutableSeq#replace
         **/
-        public synchronized void replace(int index, T element)
+        public final void replace(int index, T element)
         {
                 checkIndex(index);
                 checkElement(element);
@@ -539,7 +539,7 @@ public class ArraySeqT(T) : MutableSeqImplT!(T), SortableCollectionT!(T)
          * instanceof CollectionIterator) else O(n * number of elements in e)
          * @see store.MutableSeq#prepend
         **/
-        public synchronized void prepend(Iterator e)
+        public final void prepend(Iterator e)
         {
                 insert_(0, e);
         }
@@ -549,7 +549,7 @@ public class ArraySeqT(T) : MutableSeqImplT!(T), SortableCollectionT!(T)
          * Time complexity: O(number of elements in e) 
          * @see store.MutableSeq#append
         **/
-        public synchronized void append(Iterator e)
+        public final void append(Iterator e)
         {
                 insert_(count_, e);
         }
@@ -560,7 +560,7 @@ public class ArraySeqT(T) : MutableSeqImplT!(T), SortableCollectionT!(T)
          * instanceof CollectionIterator) else O(n * number of elements in e)
          * @see store.MutableSeq#insert
         **/
-        public synchronized void insert(int index, Iterator e)
+        public final void insert(int index, Iterator e)
         {
                 if (index !is count_)
                     checkIndex(index);
@@ -573,7 +573,7 @@ public class ArraySeqT(T) : MutableSeqImplT!(T), SortableCollectionT!(T)
          * Time complexity: O(n).
          * @see store.MutableSeq#removeFromTo
         **/
-        public synchronized void removeFromTo(int fromIndex, int toIndex)
+        public final void removeFromTo(int fromIndex, int toIndex)
         {
                 checkIndex(fromIndex);
                 checkIndex(toIndex);
@@ -601,7 +601,7 @@ public class ArraySeqT(T) : MutableSeqImplT!(T), SortableCollectionT!(T)
          * @param cmp, the comparator to use for comparing elements
         **/
 
-        public static void quickSort(T s[], int lo, int hi, Comparator cmp)
+        public final static void quickSort(T s[], int lo, int hi, Comparator cmp)
         {
                 if (lo >= hi)
                     return;
@@ -685,7 +685,7 @@ public class ArraySeqT(T) : MutableSeqImplT!(T), SortableCollectionT!(T)
          * buffer of the appropriate size.
         **/
 
-        private void growBy_(int inc)
+        private final void growBy_(int inc)
         {
                 int needed = count_ + inc;
                 if (inc > 0)
@@ -726,7 +726,7 @@ public class ArraySeqT(T) : MutableSeqImplT!(T), SortableCollectionT!(T)
          * Utility to splice in enumerations
         **/
 
-        private void insert_(int index, Iterator e)
+        private final void insert_(int index, Iterator e)
         {
                 if (cast(CollectionIterator) e)
                    { 
@@ -782,7 +782,7 @@ public class ArraySeqT(T) : MutableSeqImplT!(T), SortableCollectionT!(T)
                       }
         }
 
-        private void remove_(T element, bool allOccurrences)
+        private final void remove_(T element, bool allOccurrences)
         {
                 if (! isValidArg(element))
                       return;
@@ -803,7 +803,7 @@ public class ArraySeqT(T) : MutableSeqImplT!(T), SortableCollectionT!(T)
                     }
         }
 
-        private void replace_(T oldElement, T newElement, bool allOccurrences)
+        private final void replace_(T oldElement, T newElement, bool allOccurrences)
         {
                 if (isValidArg(oldElement) is false || count_ is 0)
                     return;
@@ -828,7 +828,7 @@ public class ArraySeqT(T) : MutableSeqImplT!(T), SortableCollectionT!(T)
          * Implements store.ImplementationCheckable.checkImplementation.
          * @see store.ImplementationCheckable#checkImplementation
         **/
-        public synchronized void checkImplementation()
+        public override void checkImplementation()
         {
                 super.checkImplementation();
                 assert(!(array_ is null && count_ !is 0));
@@ -861,7 +861,7 @@ public class ArraySeqT(T) : MutableSeqImplT!(T), SortableCollectionT!(T)
                         array = seq.array_;
                 }
 
-                public bool more()
+                public final bool more()
                 {
                         if (remaining_)
                            {
@@ -873,7 +873,7 @@ public class ArraySeqT(T) : MutableSeqImplT!(T), SortableCollectionT!(T)
                         return false;
                 }
 
-                public T value()
+                public final T value()
                 {
                         return array[row];
                 }

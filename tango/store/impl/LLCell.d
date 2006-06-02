@@ -84,7 +84,7 @@ public class LLCellT(T) : CellT!(T)
          * @param p, the cell to splice
         **/
 
-        public void linkNext(LLCellT p)
+        public final void linkNext(LLCellT p)
         {
                 if (p !is null)
                     p.next_ = next_;
@@ -96,7 +96,7 @@ public class LLCellT(T) : CellT!(T)
          * effectively removing the next element from the list
         **/
 
-        public void unlinkNext()
+        public final void unlinkNext()
         {
                 if (next_ !is null)
                     next_ = next_.next_;
@@ -108,7 +108,7 @@ public class LLCellT(T) : CellT!(T)
          * @return the cell containing element, or null if no such
         **/
 
-        public LLCellT find(T element)
+        public final LLCellT find(T element)
         {
                 for (LLCellT p = this; p !is null; p = p.next_)
                      if (p.element() == element)
@@ -121,7 +121,7 @@ public class LLCellT(T) : CellT!(T)
          * of a cell with element() element, or -1 if not present
         **/
 
-        public int index(T element)
+        public final int index(T element)
         {
                 int i = 0;
                 for (LLCellT p = this; p !is null; p = p.next_)
@@ -138,7 +138,7 @@ public class LLCellT(T) : CellT!(T)
          * Count the number of occurrences of element in list
         **/
 
-        public int count(T element)
+        public final int count(T element)
         {
                 int c = 0;
                 for (LLCellT p = this; p !is null; p = p.next_)
@@ -151,7 +151,7 @@ public class LLCellT(T) : CellT!(T)
          * return the number of cells in the list
         **/
 
-        public int _length()
+        public final int _length()
         {
                 int c = 0;
                 for (LLCellT p = this; p !is null; p = p.next_)
@@ -164,7 +164,7 @@ public class LLCellT(T) : CellT!(T)
          * (i.e., the one whose next() is null
         **/
 
-        public LLCellT tail()
+        public final LLCellT tail()
         {
                 LLCellT p = this;
                 for ( ; p.next_ !is null; p = p.next_)
@@ -176,7 +176,7 @@ public class LLCellT(T) : CellT!(T)
          * return the nth cell of the list, or null if no such
         **/
 
-        public LLCellT nth(int n)
+        public final LLCellT nth(int n)
         {
                 LLCellT p = this;
                 for (int i = 0; i < n; ++i)
@@ -190,7 +190,7 @@ public class LLCellT(T) : CellT!(T)
          * but including the same elements in the same order
         **/
 
-        public LLCellT copyList()
+        public final LLCellT copyList()
         {
                 LLCellT newlist = null;
                 newlist = duplicate();
@@ -209,7 +209,7 @@ public class LLCellT(T) : CellT!(T)
          * Clone is SHALLOW; i.e., just makes a copy of the current cell
         **/
 
-        private LLCellT duplicate()
+        private final LLCellT duplicate()
         {
                 return new LLCellT(element(), next_);
         }
@@ -223,7 +223,7 @@ public class LLCellT(T) : CellT!(T)
          * @return the merged ordered list
         **/
 
-        public static LLCellT merge(LLCellT fst, LLCellT snd, Comparator cmp)
+        public final static LLCellT merge(LLCellT fst, LLCellT snd, Comparator cmp)
         {
                 LLCellT a = fst;
                 LLCellT b = snd;
@@ -279,7 +279,7 @@ public class LLCellT(T) : CellT!(T)
          * @return the head of the second half
         **/
 
-        public static LLCellT split(LLCellT s)
+        public final static LLCellT split(LLCellT s)
         {
                 LLCellT fast = s;
                 LLCellT slow = s;
@@ -310,7 +310,7 @@ public class LLCellT(T) : CellT!(T)
          * @return the head of the sorted list
         **/
 
-        public static LLCellT mergeSort(LLCellT s, Comparator cmp)
+        public final static LLCellT mergeSort(LLCellT s, Comparator cmp)
         {
                 if (s is null || s.next() is null)
                     return s;

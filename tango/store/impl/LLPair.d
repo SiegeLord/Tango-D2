@@ -75,7 +75,7 @@ public class LLPairT(K, T) : LLCellT!(T)
          * return the key
         **/
 
-        public K key()
+        public final K key()
         {
                 return key_;
         }
@@ -84,7 +84,7 @@ public class LLPairT(K, T) : LLCellT!(T)
          * set the key
         **/
 
-        public void key(K k)
+        public final void key(K k)
         {
                 key_ = k;
         }
@@ -94,7 +94,7 @@ public class LLPairT(K, T) : LLCellT!(T)
          * set the key
         **/
 
-        public int keyHash()
+        public final int keyHash()
         {
                 return typeid(K).getHash(&key_);
         }
@@ -104,7 +104,7 @@ public class LLPairT(K, T) : LLCellT!(T)
          * return a cell with key() key or null if no such
         **/
 
-        public LLPairT findKey(K key)
+        public final LLPairT findKey(K key)
         {
                 for (LLPairT p = this; p !is null; p = cast(LLPairT)(p.next()))
                      if (p.key() == (key))
@@ -116,7 +116,7 @@ public class LLPairT(K, T) : LLCellT!(T)
          * return a cell holding the indicated pair or null if no such
         **/
 
-        public LLPairT find(K key, T element)
+        public final LLPairT find(K key, T element)
         {
                 for (LLPairT p = this; p !is null; p = cast(LLPairT)(p.next()))
                      if (p.key() == (key) && p.element() == (element))
@@ -129,7 +129,7 @@ public class LLPairT(K, T) : LLCellT!(T)
          * or -1 if not present
         **/
 
-        public int indexKey(K key)
+        public final int indexKey(K key)
         {
                 int i = 0;
                 for (LLPairT p = this; p !is null; p = cast(LLPairT)(p.next()))
@@ -146,7 +146,7 @@ public class LLPairT(K, T) : LLCellT!(T)
          * Return the number of cells traversed to find a cell with indicated pair
          * or -1 if not present
         **/
-        public int index(K key, T element)
+        public final int index(K key, T element)
         {
                 int i = 0;
                 for (LLPairT p = this; p !is null; p = cast(LLPairT)(p.next()))
@@ -162,7 +162,7 @@ public class LLPairT(K, T) : LLCellT!(T)
         /**
          * Return the number of cells with key() key.
         **/
-        public int countKey(K key)
+        public final int countKey(K key)
         {
                 int c = 0;
                 for (LLPairT p = this; p !is null; p = cast(LLPairT)(p.next()))
@@ -174,7 +174,7 @@ public class LLPairT(K, T) : LLCellT!(T)
         /**
          * Return the number of cells with indicated pair
         **/
-        public int count(K key, T element)
+        public final int count(K key, T element)
         {
                 int c = 0;
                 for (LLPairT p = this; p !is null; p = cast(LLPairT)(p.next()))
@@ -184,7 +184,7 @@ public class LLPairT(K, T) : LLCellT!(T)
         }
 
         //  protected T clone()  {
-        protected LLPairT duplicate()
+        protected final LLPairT duplicate()
         {
                 return new LLPairT(key(), element(), cast(LLPairT)(next()));
         }

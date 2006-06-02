@@ -135,7 +135,7 @@ public class TreeBagT(T) : MutableBagImplT!(T), ElementSortedCollectionT!(T)
          * Time complexity: O(log n).
          * @see store.Collection#contains
         **/
-        public synchronized bool contains(T element)
+        public final bool contains(T element)
         {
                 if (!isValidArg(element) || count_ is 0)
                      return false;
@@ -148,7 +148,7 @@ public class TreeBagT(T) : MutableBagImplT!(T), ElementSortedCollectionT!(T)
          * Time complexity: O(log n).
          * @see store.Collection#instances
         **/
-        public synchronized int instances(T element)
+        public final int instances(T element)
         {
                 if (!isValidArg(element) || count_ is 0)
                      return 0;
@@ -161,7 +161,7 @@ public class TreeBagT(T) : MutableBagImplT!(T), ElementSortedCollectionT!(T)
          * Time complexity: O(1).
          * @see store.Collection#elements
         **/
-        public synchronized CollectionIterator elements()
+        public final CollectionIterator elements()
         {
                 return new CellIterator!(T)(this);
         }
@@ -175,7 +175,7 @@ public class TreeBagT(T) : MutableBagImplT!(T), ElementSortedCollectionT!(T)
          * Time complexity: O(1).
          * @see store.ElementSortedCollection#elementComparator
         **/
-        public synchronized Comparator elementComparator()
+        public final Comparator elementComparator()
         {
                 return cmp_;
         }
@@ -184,7 +184,7 @@ public class TreeBagT(T) : MutableBagImplT!(T), ElementSortedCollectionT!(T)
          * Reset the comparator. Will cause a reorganization of the tree.
          * Time complexity: O(n log n).
         **/
-        public synchronized void elementComparator(Comparator cmp)
+        public final void elementComparator(Comparator cmp)
         {
                 if (cmp !is cmp_)
                    {
@@ -216,7 +216,7 @@ public class TreeBagT(T) : MutableBagImplT!(T), ElementSortedCollectionT!(T)
          * Time complexity: O(1).
          * @see store.MutableCollection#clear
         **/
-        public synchronized void clear()
+        public final void clear()
         {
                 setCount(0);
                 tree_ = null;
@@ -227,7 +227,7 @@ public class TreeBagT(T) : MutableBagImplT!(T), ElementSortedCollectionT!(T)
          * Time complexity: O(log n * instances(element)).
          * @see store.MutableCollection#exclude
         **/
-        public synchronized void exclude(T element)
+        public final void exclude(T element)
         {
                 remove_(element, true);
         }
@@ -238,7 +238,7 @@ public class TreeBagT(T) : MutableBagImplT!(T), ElementSortedCollectionT!(T)
          * Time complexity: O(log n).
          * @see store.MutableCollection#removeOneOf
         **/
-        public synchronized void removeOneOf(T element)
+        public final void removeOneOf(T element)
         {
                 remove_(element, false);
         }
@@ -248,7 +248,7 @@ public class TreeBagT(T) : MutableBagImplT!(T), ElementSortedCollectionT!(T)
          * Time complexity: O(log n).
          * @see store.MutableCollection#replaceOneOf
         **/
-        public synchronized void replaceOneOf(T oldElement, T newElement)
+        public final void replaceOneOf(T oldElement, T newElement)
         {
                 replace_(oldElement, newElement, false);
         }
@@ -258,7 +258,7 @@ public class TreeBagT(T) : MutableBagImplT!(T), ElementSortedCollectionT!(T)
          * Time complexity: O(log n * instances(oldElement)).
          * @see store.MutableCollection#replaceAllOf
         **/
-        public synchronized void replaceAllOf(T oldElement, T newElement)
+        public final void replaceAllOf(T oldElement, T newElement)
         {
                 replace_(oldElement, newElement, true);
         }
@@ -269,7 +269,7 @@ public class TreeBagT(T) : MutableBagImplT!(T), ElementSortedCollectionT!(T)
          * Takes the least element.
          * @see store.MutableCollection#take
         **/
-        public synchronized T take()
+        public final T take()
         {
                 if (count_ !is 0)
                    {
@@ -292,7 +292,7 @@ public class TreeBagT(T) : MutableBagImplT!(T), ElementSortedCollectionT!(T)
          * Time complexity: O(log n).
          * @see store.MutableBag#addIfAbsent
         **/
-        public synchronized void addIfAbsent(T element)
+        public final void addIfAbsent(T element)
         {
                 add_(element, true);
         }
@@ -303,7 +303,7 @@ public class TreeBagT(T) : MutableBagImplT!(T), ElementSortedCollectionT!(T)
          * Time complexity: O(log n).
          * @see store.MutableBag#add
         **/
-        public synchronized void add
+        public final void add
                 (T element)
         {
                 add_(element, false);
@@ -312,7 +312,7 @@ public class TreeBagT(T) : MutableBagImplT!(T), ElementSortedCollectionT!(T)
 
         // helper methods
 
-        private void add_(T element, bool checkOccurrence)
+        private final void add_(T element, bool checkOccurrence)
         {
                 checkElement(element);
 
@@ -358,7 +358,7 @@ public class TreeBagT(T) : MutableBagImplT!(T), ElementSortedCollectionT!(T)
         }
 
 
-        private void remove_(T element, bool allOccurrences)
+        private final void remove_(T element, bool allOccurrences)
         {
                 if (!isValidArg(element))
                     return ;
@@ -379,7 +379,7 @@ public class TreeBagT(T) : MutableBagImplT!(T), ElementSortedCollectionT!(T)
                       }
         }
 
-        private void replace_(T oldElement, T newElement, bool allOccurrences)
+        private final void replace_(T oldElement, T newElement, bool allOccurrences)
         {
                 if (!isValidArg(oldElement) || count_ is 0 || oldElement == newElement)
                     return ;
@@ -399,7 +399,7 @@ public class TreeBagT(T) : MutableBagImplT!(T), ElementSortedCollectionT!(T)
          * Implements store.ImplementationCheckable.checkImplementation.
          * @see store.ImplementationCheckable#checkImplementation
         **/
-        public void checkImplementation()
+        public override void checkImplementation()
         {
 
                 super.checkImplementation();
@@ -444,7 +444,7 @@ public class TreeBagT(T) : MutableBagImplT!(T), ElementSortedCollectionT!(T)
                         start = bag.tree_;
                 }
 
-                public bool more()
+                public final bool more()
                 {
                         if (cell)
                             cell = cell.successor();
@@ -458,7 +458,7 @@ public class TreeBagT(T) : MutableBagImplT!(T), ElementSortedCollectionT!(T)
                         return true;
                 }
 
-                public T value()
+                public final T value()
                 {
                         return cell.element();
                 }

@@ -65,7 +65,7 @@ public abstract class IteratorImplT(T) : CollectionIteratorT!(T)
          * @see store.CollectionIterator#corrupted
         **/
 
-        public bool corrupted()
+        public final bool corrupted()
         {
                 return version_ !is coll_._version();
         }
@@ -74,7 +74,7 @@ public abstract class IteratorImplT(T) : CollectionIteratorT!(T)
          * Implements store.CollectionIterator.numberOfRemaingingElements.
          * @see store.CollectionIterator#remaining
         **/
-        public int remaining()
+        public final int remaining()
         {
                 return remaining_;
         }
@@ -95,7 +95,7 @@ public abstract class IteratorImplT(T) : CollectionIteratorT!(T)
          * if it is already zero or if corrupted()
          * Always call as the first line of get.
         **/
-        protected void decRemaining()
+        protected final void decRemaining()
         {
                 if (corrupted())
                    {

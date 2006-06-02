@@ -109,7 +109,7 @@ public class LinkMapT(K, T) : MutableMapImplT!(K, T)
          * Time complexity: O(n).
          * @see store.Collection#contains
         **/
-        public synchronized bool contains(T element)
+        public final bool contains(T element)
         {
                 if (!isValidArg(element) || list_ is null)
                      return false;
@@ -122,7 +122,7 @@ public class LinkMapT(K, T) : MutableMapImplT!(K, T)
          * Time complexity: O(n).
          * @see store.Collection#instances
         **/
-        public synchronized int instances(T element)
+        public final int instances(T element)
         {
                 if (!isValidArg(element) || list_ is null)
                      return 0;
@@ -135,7 +135,7 @@ public class LinkMapT(K, T) : MutableMapImplT!(K, T)
          * Time complexity: O(1).
          * @see store.Collection#elements
         **/
-        public synchronized CollectionIterator elements()
+        public final CollectionIterator elements()
         {
                 return new PairIterator!(K, T)(this);
         }
@@ -148,7 +148,7 @@ public class LinkMapT(K, T) : MutableMapImplT!(K, T)
          * Time complexity: O(n).
          * @see store.Map#containsKey
         **/
-        public synchronized bool containsKey(K key)
+        public final bool containsKey(K key)
         {
                 if (!isValidKey(key) || list_ is null)
                      return false;
@@ -161,7 +161,7 @@ public class LinkMapT(K, T) : MutableMapImplT!(K, T)
          * Time complexity: O(n).
          * @see store.Map#containsPair
         **/
-        public synchronized bool containsPair(K key, T element)
+        public final bool containsPair(K key, T element)
         {
                 if (!isValidKey(key) || !isValidArg(element) || list_ is null)
                     return false;
@@ -173,7 +173,7 @@ public class LinkMapT(K, T) : MutableMapImplT!(K, T)
          * Time complexity: O(1).
          * @see store.Map#keys
         **/
-        public synchronized CollectionMapIteratorT!(K, T) keys()
+        public final CollectionMapIteratorT!(K, T) keys()
         {
                 return new PairIterator!(K, T)(this);
         }
@@ -183,7 +183,7 @@ public class LinkMapT(K, T) : MutableMapImplT!(K, T)
          * Time complexity: O(n).
          * @see store.Map#get
         **/
-        public synchronized T get(K key)
+        public final T get(K key)
         {
                 checkKey(key);
                 if (list_ !is null)
@@ -201,7 +201,7 @@ public class LinkMapT(K, T) : MutableMapImplT!(K, T)
          * @return whether the key is contained or not
         **/
 
-        public synchronized bool get(K key, inout T element)
+        public final bool get(K key, inout T element)
         {
                 checkKey(key);
                 if (list_ !is null)
@@ -223,7 +223,7 @@ public class LinkMapT(K, T) : MutableMapImplT!(K, T)
          * Time complexity: O(n).
          * @see store.Map#keyOf
         **/
-        public synchronized K keyOf(T element)
+        public final K keyOf(T element)
         {
                 if (!isValidArg(element) || count_ is 0)
                      return null;
@@ -243,7 +243,7 @@ public class LinkMapT(K, T) : MutableMapImplT!(K, T)
          * Time complexity: O(1).
          * @see store.MutableCollection#clear
         **/
-        public synchronized void clear()
+        public final void clear()
         {
                 list_ = null;
                 setCount(0);
@@ -254,7 +254,7 @@ public class LinkMapT(K, T) : MutableMapImplT!(K, T)
          * Time complexity: O(n).
          * @see store.MutableCollection#replaceOneOf
         **/
-        public synchronized void replaceOneOf (T oldElement, T newElement)
+        public final void replaceOneOf (T oldElement, T newElement)
         {
                 replace_(oldElement, newElement, false);
         }
@@ -264,7 +264,7 @@ public class LinkMapT(K, T) : MutableMapImplT!(K, T)
          * Time complexity: O(n).
          * @see store.MutableCollection#replaceAllOf
         **/
-        public synchronized void replaceAllOf(T oldElement, T newElement)
+        public final void replaceAllOf(T oldElement, T newElement)
         {
                 replace_(oldElement, newElement, true);
         }
@@ -274,7 +274,7 @@ public class LinkMapT(K, T) : MutableMapImplT!(K, T)
          * Time complexity: O(n).
          * @see store.MutableCollection#exclude
         **/
-        public synchronized void exclude(T element)
+        public final void exclude(T element)
         {
                 remove_(element, true);
         }
@@ -284,7 +284,7 @@ public class LinkMapT(K, T) : MutableMapImplT!(K, T)
          * Time complexity: O(n).
          * @see store.MutableCollection#removeOneOf
         **/
-        public synchronized void removeOneOf(T element)
+        public final void removeOneOf(T element)
         {
                 remove_(element, false);
         }
@@ -295,7 +295,7 @@ public class LinkMapT(K, T) : MutableMapImplT!(K, T)
          * takes the first element on the list
          * @see store.MutableCollection#take
         **/
-        public synchronized T take()
+        public final T take()
         {
                 if (list_ !is null)
                    {
@@ -316,7 +316,7 @@ public class LinkMapT(K, T) : MutableMapImplT!(K, T)
          * Time complexity: O(n).
          * @see store.MutableMap#putAt
         **/
-        public synchronized void putAt(K key, T element)
+        public final void putAt(K key, T element)
         {
                 checkKey(key);
                 checkElement(element);
@@ -344,7 +344,7 @@ public class LinkMapT(K, T) : MutableMapImplT!(K, T)
          * Time complexity: O(n).
          * @see store.MutableMap#remove
         **/
-        public synchronized void remove(K key)
+        public final void remove(K key)
         {
                 if (!isValidKey(key) || list_ is null)
                     return ;
@@ -377,7 +377,7 @@ public class LinkMapT(K, T) : MutableMapImplT!(K, T)
          * Time complexity: O(n).
          * @see store.MutableMap#replaceElement
         **/
-        public synchronized void replaceElement(K key, T oldElement, T newElement)
+        public final void replaceElement(K key, T oldElement, T newElement)
         {
                 if (!isValidKey(key) || !isValidArg(oldElement) || list_ is null)
                      return ;
@@ -391,7 +391,7 @@ public class LinkMapT(K, T) : MutableMapImplT!(K, T)
                    }
         }
 
-        private void remove_(T element, bool allOccurrences)
+        private final void remove_(T element, bool allOccurrences)
         {
                 if (!isValidArg(element) || count_ is 0)
                      return ;
@@ -430,7 +430,7 @@ public class LinkMapT(K, T) : MutableMapImplT!(K, T)
          * Helper for replace
         **/
 
-        private void replace_(T oldElement, T newElement, bool allOccurrences)
+        private final void replace_(T oldElement, T newElement, bool allOccurrences)
         {
                 if (list_ is null || !isValidArg(oldElement) || oldElement == (newElement))
                     return ;
@@ -453,7 +453,7 @@ public class LinkMapT(K, T) : MutableMapImplT!(K, T)
          * Implements store.ImplementationCheckable.checkImplementation.
          * @see store.ImplementationCheckable#checkImplementation
         **/
-        public synchronized void checkImplementation()
+        public override void checkImplementation()
         {
                 super.checkImplementation();
 
@@ -483,7 +483,7 @@ public class LinkMapT(K, T) : MutableMapImplT!(K, T)
                         start = map.list_;
                 } 
 
-                public bool more()
+                public final bool more()
                 {
                         if (pair)
                             pair = cast(LLPair)(pair.next);
@@ -497,12 +497,12 @@ public class LinkMapT(K, T) : MutableMapImplT!(K, T)
                         return true;
                 }
 
-                public T value()
+                public final T value()
                 {
                         return pair.element();
                 }
 
-                public K key()
+                public final K key()
                 {
                         return pair.key();
                 }

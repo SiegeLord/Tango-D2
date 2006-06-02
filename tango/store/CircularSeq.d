@@ -87,7 +87,7 @@ public class CircularSeqT(T) : MutableSeqImplT!(T)
          * Make an independent copy of the list. Elements themselves are not cloned
         **/
 
-        public Collection duplicate()
+        public final Collection duplicate()
         {
                 if (list_ is null)
                     return new CircularSeqT (screener_, null, 0);
@@ -103,7 +103,7 @@ public class CircularSeqT(T) : MutableSeqImplT!(T)
          * Time complexity: O(n).
          * @see store.Collection#contains
         **/
-        public synchronized bool contains(T element)
+        public final bool contains(T element)
         {
                 if (!isValidArg(element) || list_ is null)
                     return false;
@@ -115,7 +115,7 @@ public class CircularSeqT(T) : MutableSeqImplT!(T)
          * Time complexity: O(n).
          * @see store.Collection#instances
         **/
-        public synchronized int instances(T element)
+        public final int instances(T element)
         {
                 if (!isValidArg(element) || list_ is null)
                     return 0;
@@ -127,7 +127,7 @@ public class CircularSeqT(T) : MutableSeqImplT!(T)
          * Time complexity: O(1).
          * @see store.Collection#elements
         **/
-        public synchronized CollectionIterator elements()
+        public final CollectionIterator elements()
         {
                 return new CellIterator!(T)(this);
         }
@@ -140,7 +140,7 @@ public class CircularSeqT(T) : MutableSeqImplT!(T)
          * Time complexity: O(1).
          * @see store.Seq#head
         **/
-        public synchronized T head()
+        public final T head()
         {
                 return firstCell().element();
         }
@@ -150,7 +150,7 @@ public class CircularSeqT(T) : MutableSeqImplT!(T)
          * Time complexity: O(1).
          * @see store.Seq#tail
         **/
-        public synchronized T tail()
+        public final T tail()
         {
                 return lastCell().element();
         }
@@ -160,7 +160,7 @@ public class CircularSeqT(T) : MutableSeqImplT!(T)
          * Time complexity: O(n).
          * @see store.Seq#get
         **/
-        public synchronized T get(int index)
+        public final T get(int index)
         {
                 return cellAt(index).element();
         }
@@ -170,7 +170,7 @@ public class CircularSeqT(T) : MutableSeqImplT!(T)
          * Time complexity: O(n).
          * @see store.Seq#first
         **/
-        public synchronized int first(T element, int startingIndex = 0)
+        public final int first(T element, int startingIndex = 0)
         {
                 if (startingIndex < 0)
                     startingIndex = 0;
@@ -197,7 +197,7 @@ public class CircularSeqT(T) : MutableSeqImplT!(T)
          * Time complexity: O(n).
          * @see store.Seq#last
         **/
-        public synchronized int last(T element, int startingIndex = 0)
+        public final int last(T element, int startingIndex = 0)
         {
                 if (!isValidArg(element) || count_ is 0)
                     return -1;
@@ -231,7 +231,7 @@ public class CircularSeqT(T) : MutableSeqImplT!(T)
          * Time complexity: O(length).
          * @see store.Seq#subseq
         **/
-        public synchronized  /* CircularSeq */ SeqT!(T) subseq(int from, int _length)
+        public final  /* CircularSeq */ SeqT!(T) subseq(int from, int _length)
         {
                 if (_length > 0)
                    {
@@ -262,7 +262,7 @@ public class CircularSeqT(T) : MutableSeqImplT!(T)
          * Time complexity: O(1).
          * @see store.MutableCollection#clear
         **/
-        public synchronized void clear()
+        public final void clear()
         {
                 list_ = null;
                 setCount(0);
@@ -273,7 +273,7 @@ public class CircularSeqT(T) : MutableSeqImplT!(T)
          * Time complexity: O(n).
          * @see store.MutableCollection#exclude
         **/
-        public synchronized void exclude(T element)
+        public final void exclude(T element)
         {
                 remove_(element, true);
         }
@@ -283,7 +283,7 @@ public class CircularSeqT(T) : MutableSeqImplT!(T)
          * Time complexity: O(n).
          * @see store.MutableCollection#removeOneOf
         **/
-        public synchronized void removeOneOf(T element)
+        public final void removeOneOf(T element)
         {
                 remove_(element, false);
         }
@@ -293,7 +293,7 @@ public class CircularSeqT(T) : MutableSeqImplT!(T)
          * Time complexity: O(n).
          * @see store.MutableCollection#replaceOneOf
         **/
-        public synchronized void replaceOneOf(T oldElement, T newElement)
+        public final void replaceOneOf(T oldElement, T newElement)
         {
                 replace_(oldElement, newElement, false);
         }
@@ -303,7 +303,7 @@ public class CircularSeqT(T) : MutableSeqImplT!(T)
          * Time complexity: O(n).
          * @see store.MutableCollection#replaceAllOf
         **/
-        public synchronized void replaceAllOf(T oldElement, T newElement)
+        public final void replaceAllOf(T oldElement, T newElement)
         {
                 replace_(oldElement, newElement, true);
         }
@@ -315,7 +315,7 @@ public class CircularSeqT(T) : MutableSeqImplT!(T)
          * takes the last element on the list.
          * @see store.MutableCollection#take
         **/
-        public synchronized T take()
+        public final T take()
         {
                 auto v = tail();
                 removeTail();
@@ -331,7 +331,7 @@ public class CircularSeqT(T) : MutableSeqImplT!(T)
          * Time complexity: O(1).
          * @see store.MutableSeq#prepend
         **/
-        public synchronized void prepend(T element)
+        public final void prepend(T element)
         {
                 checkElement(element);
                 if (list_ is null)
@@ -346,7 +346,7 @@ public class CircularSeqT(T) : MutableSeqImplT!(T)
          * Time complexity: O(1).
          * @see store.MutableSeq#replaceHead
         **/
-        public synchronized void replaceHead(T element)
+        public final void replaceHead(T element)
         {
                 checkElement(element);
                 firstCell().element(element);
@@ -358,7 +358,7 @@ public class CircularSeqT(T) : MutableSeqImplT!(T)
          * Time complexity: O(1).
          * @see store.MutableSeq#removeHead
         **/
-        public synchronized void removeHead()
+        public final void removeHead()
         {
                 if (firstCell().isSingleton())
                    list_ = null;
@@ -376,7 +376,7 @@ public class CircularSeqT(T) : MutableSeqImplT!(T)
          * Time complexity: O(1).
          * @see store.MutableSeq#append
         **/
-        public synchronized void append(T element)
+        public final void append(T element)
         {
                 if (list_ is null)
                     prepend(element);
@@ -393,7 +393,7 @@ public class CircularSeqT(T) : MutableSeqImplT!(T)
          * Time complexity: O(1).
          * @see store.MutableSeq#replaceTail
         **/
-        public synchronized void replaceTail(T element)
+        public final void replaceTail(T element)
         {
                 checkElement(element);
                 lastCell().element(element);
@@ -406,7 +406,7 @@ public class CircularSeqT(T) : MutableSeqImplT!(T)
          * Time complexity: O(1).
          * @see store.MutableSeq#removeTail
         **/
-        public synchronized void removeTail()
+        public final void removeTail()
         {
                 auto l = lastCell();
                 if (l is list_)
@@ -421,7 +421,7 @@ public class CircularSeqT(T) : MutableSeqImplT!(T)
          * Time complexity: O(n).
          * @see store.MutableSeq#insert
         **/
-        public synchronized void insert(int index, T element)
+        public final void insert(int index, T element)
         {
                 if (index is 0)
                     prepend(element);
@@ -438,7 +438,7 @@ public class CircularSeqT(T) : MutableSeqImplT!(T)
          * Time complexity: O(n).
          * @see store.MutableSeq#replace
         **/
-        public synchronized void replace(int index, T element)
+        public final void replace(int index, T element)
         {
                 checkElement(element);
                 cellAt(index).element(element);
@@ -450,7 +450,7 @@ public class CircularSeqT(T) : MutableSeqImplT!(T)
          * Time complexity: O(n).
          * @see store.MutableSeq#remove
         **/
-        public synchronized void remove(int index)
+        public final void remove(int index)
         {
                 if (index is 0)
                     removeHead();
@@ -466,7 +466,7 @@ public class CircularSeqT(T) : MutableSeqImplT!(T)
          * Time complexity: O(number of elements in e).
          * @see store.MutableSeq#prepend
         **/
-        public synchronized void prepend(Iterator e)
+        public final void prepend(Iterator e)
         {
                 CLCell hd = null;
                 CLCell current = null;
@@ -508,7 +508,7 @@ public class CircularSeqT(T) : MutableSeqImplT!(T)
          * Time complexity: O(number of elements in e).
          * @see store.MutableSeq#append
         **/
-        public synchronized void append(Iterator e)
+        public final void append(Iterator e)
         {
                 if (list_ is null)
                     prepend(e);
@@ -531,7 +531,7 @@ public class CircularSeqT(T) : MutableSeqImplT!(T)
          * Time complexity: O(size() + number of elements in e).
          * @see store.MutableSeq#insert
         **/
-        public synchronized void insert(int index, Iterator e)
+        public final void insert(int index, Iterator e)
         {
                 if (list_ is null || index is 0)
                     prepend(e);
@@ -555,7 +555,7 @@ public class CircularSeqT(T) : MutableSeqImplT!(T)
          * Time complexity: O(n).
          * @see store.MutableSeq#removeFromTo
         **/
-        public synchronized void removeFromTo(int fromIndex, int toIndex)
+        public final void removeFromTo(int fromIndex, int toIndex)
         {
                 checkIndex(toIndex);
                 CLCell p = cellAt(fromIndex);
@@ -585,7 +585,7 @@ public class CircularSeqT(T) : MutableSeqImplT!(T)
         /**
          * return the first cell, or throw exception if empty
         **/
-        private CLCell firstCell()
+        private final CLCell firstCell()
         {
                 if (list_ !is null)
                     return list_;
@@ -597,7 +597,7 @@ public class CircularSeqT(T) : MutableSeqImplT!(T)
         /**
          * return the last cell, or throw exception if empty
         **/
-        private CLCell lastCell()
+        private final CLCell lastCell()
         {
                 if (list_ !is null)
                     return list_.prev();
@@ -609,7 +609,7 @@ public class CircularSeqT(T) : MutableSeqImplT!(T)
         /**
          * return the index'th cell, or throw exception if bad index
         **/
-        private CLCell cellAt(int index)
+        private final CLCell cellAt(int index)
         {
                 checkIndex(index);
                 return list_.nth(index);
@@ -618,7 +618,7 @@ public class CircularSeqT(T) : MutableSeqImplT!(T)
         /**
          * helper for remove/exclude
         **/
-        private void remove_(T element, bool allOccurrences)
+        private final void remove_(T element, bool allOccurrences)
         {
                 if (!isValidArg(element) || list_ is null)
                     return;
@@ -659,7 +659,7 @@ public class CircularSeqT(T) : MutableSeqImplT!(T)
         /**
          * helper for replace*
         **/
-        private void replace_(T oldElement, T newElement, bool allOccurrences)
+        private final void replace_(T oldElement, T newElement, bool allOccurrences)
         {
                 if (!isValidArg(oldElement) || list_ is null)
                     return;
@@ -685,7 +685,7 @@ public class CircularSeqT(T) : MutableSeqImplT!(T)
          * @see store.ImplementationCheckable#checkImplementation
         **/
 
-        public synchronized void checkImplementation()
+        public override void checkImplementation()
         {
                 super.checkImplementation();
 
@@ -722,7 +722,7 @@ public class CircularSeqT(T) : MutableSeqImplT!(T)
                         start = seq.list_;
                 }
 
-                public bool more()
+                public final bool more()
                 {
                         if (cell)
                             cell = cell.next();
@@ -736,7 +736,7 @@ public class CircularSeqT(T) : MutableSeqImplT!(T)
                         return true;
                 }
 
-                public T value()
+                public final T value()
                 {
                         return cell.element();
                 }

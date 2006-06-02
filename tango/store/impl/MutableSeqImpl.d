@@ -60,7 +60,7 @@ version (VERBOSE)
          * Implements store.Seq.insertingAt.
          * @see store.Seq#insertingAt
         **/
-        public synchronized Seq insertingAt(int index, T element)
+        public final Seq insertingAt(int index, T element)
         {
                 MutableSeq c = null;
                 //      c = (cast(MutableSeq)clone());
@@ -73,7 +73,7 @@ version (VERBOSE)
          * Implements store.Seq.removingAt.
          * @see store.Seq#removingAt
         **/
-        public synchronized Seq removingAt(int index)
+        public final Seq removingAt(int index)
         {
                 MutableSeq c = null;
                 //      c = (cast(MutableSeq)clone());
@@ -87,7 +87,7 @@ version (VERBOSE)
          * Implements store.Seq.replacingAt
          * @see store.Seq#replacingAt
         **/
-        public synchronized Seq replacingAt(int index, T element)
+        public final Seq replacingAt(int index, T element)
         {
                 MutableSeq c = null;
                 //      c = (cast(MutableSeq)clone());

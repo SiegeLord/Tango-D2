@@ -53,7 +53,7 @@ public class RBPairT(K, T) : RBCellT!(T)
         **/
 
         //  protected T clone() {
-        protected RBPairT duplicate()
+        protected final RBPairT duplicate()
         {
                 RBPairT t = new RBPairT(key_, element());
                 t.color_ = color_;
@@ -64,7 +64,7 @@ public class RBPairT(K, T) : RBCellT!(T)
          * return the key
         **/
 
-        public K key()
+        public final K key()
         {
                 return key_;
         }
@@ -74,7 +74,7 @@ public class RBPairT(K, T) : RBCellT!(T)
          * set the key
         **/
 
-        public void key(K k)
+        public final void key(K k)
         {
                 key_ = k;
         }
@@ -87,7 +87,7 @@ public class RBPairT(K, T) : RBCellT!(T)
          * @see RBCellT#find
         **/
 
-        public override RBCellT!(T) find(T element, ComparatorT!(T) cmp)
+        public final override RBCellT!(T) find(T element, ComparatorT!(T) cmp)
         {
 
                 RBCellT!(T) t = this;
@@ -118,7 +118,7 @@ public class RBPairT(K, T) : RBCellT!(T)
          * Implements RBCell.count.
          * @see RBCellT#count
         **/
-        public override int count(T element, ComparatorT!(T) cmp)
+        public final override int count(T element, ComparatorT!(T) cmp)
         {
                 int c = 0;
                 RBCellT!(T) t = this;
@@ -146,7 +146,7 @@ public class RBPairT(K, T) : RBCellT!(T)
          * find and return a cell holding key, or null if no such
         **/
 
-        public RBPairT findKey(K key, ComparatorT!(K) cmp)
+        public final RBPairT findKey(K key, ComparatorT!(K) cmp)
         {
                 RBPairT t = this;
 
@@ -170,7 +170,7 @@ public class RBPairT(K, T) : RBCellT!(T)
         /**
          * find and return a cell holding (key, element), or null if no such
         **/
-        public RBPairT find(K key, T element, ComparatorT!(K) cmp)
+        public final RBPairT find(K key, T element, ComparatorT!(K) cmp)
         {
                 RBPairT t = this;
 
@@ -194,7 +194,7 @@ public class RBPairT(K, T) : RBCellT!(T)
         /**
          * return number of nodes of subtree holding key
         **/
-        public int countKey(K key, ComparatorT!(K) cmp)
+        public final int countKey(K key, ComparatorT!(K) cmp)
         {
                 int c = 0;
                 RBPairT t = this;
@@ -217,7 +217,7 @@ public class RBPairT(K, T) : RBCellT!(T)
         /**
          * return number of nodes of subtree holding (key, element)
         **/
-        public int count(K key, T element, ComparatorT!(K) cmp)
+        public final int count(K key, T element, ComparatorT!(K) cmp)
         {
                 int c = 0;
                 RBPairT t = this;

@@ -142,7 +142,7 @@ public class TreeMapT(K, T) : MutableMapImplT!(K, T), KeySortedCollectionT!(K, T
          * Time complexity: O(log n).
          * @see store.Collection#contains
         **/
-        public synchronized bool contains(T element)
+        public final bool contains(T element)
         {
                 if (!isValidArg(element) || count_ is 0)
                      return false;
@@ -154,7 +154,7 @@ public class TreeMapT(K, T) : MutableMapImplT!(K, T), KeySortedCollectionT!(K, T
          * Time complexity: O(log n).
          * @see store.Collection#instances
         **/
-        public synchronized int instances(T element)
+        public final int instances(T element)
         {
                 if (!isValidArg(element) || count_ is 0)
                      return 0;
@@ -166,7 +166,7 @@ public class TreeMapT(K, T) : MutableMapImplT!(K, T), KeySortedCollectionT!(K, T
          * Time complexity: O(1).
          * @see store.Collection#elements
         **/
-        public synchronized CollectionIterator elements()
+        public final CollectionIterator elements()
         {
                 return new PairIterator!(K, T)(this);
         }
@@ -178,7 +178,7 @@ public class TreeMapT(K, T) : MutableMapImplT!(K, T), KeySortedCollectionT!(K, T
          * Time complexity: O(1).
          * @see store.KeySortedCollection#keyComparator
         **/
-        public synchronized Comparator keyComparator()
+        public final Comparator keyComparator()
         {
                 return cmp_;
         }
@@ -187,7 +187,7 @@ public class TreeMapT(K, T) : MutableMapImplT!(K, T), KeySortedCollectionT!(K, T
          * Use a new comparator. Causes a reorganization
         **/
 
-        public synchronized void comparator(Comparator cmp)
+        public final void comparator(Comparator cmp)
         {
                 if (cmp !is cmp_)
                    {
@@ -219,7 +219,7 @@ public class TreeMapT(K, T) : MutableMapImplT!(K, T), KeySortedCollectionT!(K, T
          * Time complexity: O(log n).
          * @see store.Map#containsKey
         **/
-        public synchronized bool containsKey(K key)
+        public final bool containsKey(K key)
         {
                 if (!isValidKey(key) || count_ is 0)
                     return false;
@@ -231,7 +231,7 @@ public class TreeMapT(K, T) : MutableMapImplT!(K, T), KeySortedCollectionT!(K, T
          * Time complexity: O(n).
          * @see store.Map#containsPair
         **/
-        public synchronized bool containsPair(K key, T element)
+        public final bool containsPair(K key, T element)
         {
                 if (count_ is 0 || !isValidKey(key) || !isValidArg(element))
                     return false;
@@ -243,7 +243,7 @@ public class TreeMapT(K, T) : MutableMapImplT!(K, T), KeySortedCollectionT!(K, T
          * Time complexity: O(1).
          * @see store.Map#keys
         **/
-        public synchronized CollectionMapIteratorT!(K, T) keys()
+        public final CollectionMapIteratorT!(K, T) keys()
         {
                 return new PairIterator!(K, T)(this);
         }
@@ -253,7 +253,7 @@ public class TreeMapT(K, T) : MutableMapImplT!(K, T), KeySortedCollectionT!(K, T
          * Time complexity: O(log n).
          * @see store.Map#get
         **/
-        public synchronized T get(K key)
+        public final T get(K key)
         {
                 if (count_ !is 0)
                    {
@@ -270,7 +270,7 @@ public class TreeMapT(K, T) : MutableMapImplT!(K, T), KeySortedCollectionT!(K, T
          * @return whether the key is contained or not
         **/
 
-        public synchronized bool get(K key, inout T value)
+        public final bool get(K key, inout T value)
         {
                 if (count_ !is 0)
                    {
@@ -291,7 +291,7 @@ public class TreeMapT(K, T) : MutableMapImplT!(K, T), KeySortedCollectionT!(K, T
          * Time complexity: O(n).
          * @see store.Map#keyOf
         **/
-        public synchronized K keyOf(T element)
+        public final K keyOf(T element)
         {
                 if (!isValidArg(element) || count_ is 0)
                       return null;
@@ -311,7 +311,7 @@ public class TreeMapT(K, T) : MutableMapImplT!(K, T), KeySortedCollectionT!(K, T
          * Time complexity: O(1).
          * @see store.MutableCollection#clear
         **/
-        public synchronized void clear()
+        public final void clear()
         {
                 setCount(0);
                 tree_ = null;
@@ -323,7 +323,7 @@ public class TreeMapT(K, T) : MutableMapImplT!(K, T), KeySortedCollectionT!(K, T
          * Time complexity: O(n).
          * @see store.MutableCollection#exclude
         **/
-        public synchronized void exclude(T element)
+        public final void exclude(T element)
         {
                 if (!isValidArg(element) || count_ is 0)
                       return ;
@@ -344,7 +344,7 @@ public class TreeMapT(K, T) : MutableMapImplT!(K, T), KeySortedCollectionT!(K, T
          * Time complexity: O(n).
          * @see store.MutableCollection#removeOneOf
         **/
-        public synchronized void removeOneOf(T element)
+        public final void removeOneOf(T element)
         {
                 if (!isValidArg(element) || count_ is 0)
                       return ;
@@ -363,7 +363,7 @@ public class TreeMapT(K, T) : MutableMapImplT!(K, T), KeySortedCollectionT!(K, T
          * Time complexity: O(n).
          * @see store.MutableCollection#replaceOneOf
         **/
-        public synchronized void replaceOneOf(T oldElement, T newElement)
+        public final void replaceOneOf(T oldElement, T newElement)
         {
                 if (count_ is 0 || !isValidArg(oldElement) || !isValidArg(oldElement))
                     return ;
@@ -382,7 +382,7 @@ public class TreeMapT(K, T) : MutableMapImplT!(K, T), KeySortedCollectionT!(K, T
          * Time complexity: O(n).
          * @see store.MutableCollection#replaceAllOf
         **/
-        public synchronized void replaceAllOf(T oldElement, T newElement)
+        public final void replaceAllOf(T oldElement, T newElement)
         {
                 RBPair p = cast(RBPair)(tree_.find(oldElement, cmpElem_));
                 while (p !is null)
@@ -400,7 +400,7 @@ public class TreeMapT(K, T) : MutableMapImplT!(K, T), KeySortedCollectionT!(K, T
          * Takes the element associated with the least key.
          * @see store.MutableCollection#take
         **/
-        public synchronized T take()
+        public final T take()
         {
                 if (count_ !is 0)
                    {
@@ -423,7 +423,7 @@ public class TreeMapT(K, T) : MutableMapImplT!(K, T), KeySortedCollectionT!(K, T
          * Time complexity: O(log n).
          * @see store.MutableMap#putAt
         **/
-        public synchronized void putAt(K key, T element)
+        public final void putAt(K key, T element)
         {
                 add_(key, element, true);
         }
@@ -434,7 +434,7 @@ public class TreeMapT(K, T) : MutableMapImplT!(K, T), KeySortedCollectionT!(K, T
          * Time complexity: O(log n).
          * @see store.MutableMap#remove
         **/
-        public synchronized void remove(K key)
+        public final void remove(K key)
         {
                 if (!isValidKey(key) || count_ is 0)
                       return ;
@@ -453,7 +453,7 @@ public class TreeMapT(K, T) : MutableMapImplT!(K, T), KeySortedCollectionT!(K, T
          * Time complexity: O(log n).
          * @see store.MutableMap#replaceElement
         **/
-        public synchronized void replaceElement(K key, T oldElement,
+        public final void replaceElement(K key, T oldElement,
                                                 T newElement)
         {
                 if (!isValidKey(key) || !isValidArg(oldElement) || count_ is 0)
@@ -472,7 +472,7 @@ public class TreeMapT(K, T) : MutableMapImplT!(K, T), KeySortedCollectionT!(K, T
         // helper methods
 
 
-        private void add_(K key, T element, bool checkOccurrence)
+        private final void add_(K key, T element, bool checkOccurrence)
         {
                 checkKey(key);
                 checkElement(element);
@@ -530,7 +530,7 @@ public class TreeMapT(K, T) : MutableMapImplT!(K, T), KeySortedCollectionT!(K, T
          * Implements store.ImplementationCheckable.checkImplementation.
          * @see store.ImplementationCheckable#checkImplementation
         **/
-        public void checkImplementation()
+        public override void checkImplementation()
         {
                 super.checkImplementation();
                 assert(cmp_ !is null);
@@ -565,7 +565,7 @@ public class TreeMapT(K, T) : MutableMapImplT!(K, T), KeySortedCollectionT!(K, T
                         start = tree.tree_;
                 }
 
-                public bool more()
+                public final bool more()
                 {
                         if (pair)
                             pair = cast(RBPair) pair.successor();
@@ -579,12 +579,12 @@ public class TreeMapT(K, T) : MutableMapImplT!(K, T), KeySortedCollectionT!(K, T
                         return true;
                 }
 
-                public T value()
+                public final T value()
                 {
                         return pair.element();
                 }
 
-                public K key()
+                public final K key()
                 {
                         return pair.key();
                 }
