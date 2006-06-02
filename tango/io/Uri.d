@@ -38,11 +38,10 @@
 
 module tango.io.Uri;
 
-private import  tango.io.Exception;
+private import  tango.io.HeapSlice,
+                tango.io.Exception;
 
 private import  tango.convert.Integer;
-
-private import  tango.utils.HeapSlice;
 
 private import  tango.io.model.IWriter;
 

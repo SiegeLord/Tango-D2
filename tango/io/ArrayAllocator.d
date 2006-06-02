@@ -38,9 +38,8 @@
 
 module tango.io.ArrayAllocator;
 
-private import  tango.io.Reader;
-
-private import  tango.utils.HeapSlice;
+private import  tango.io.Reader,
+                tango.io.HeapSlice;
 
 private import  tango.io.model.IBuffer,
                 tango.io.model.IReader;
