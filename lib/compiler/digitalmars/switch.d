@@ -25,7 +25,7 @@
  *  Modified by Sean Kelly <sean@f4.ca> for use with the Ares project.
  */
 
-private import std.c.string;
+private import tango.stdc.string;
 
 /******************************************************
  * Support for switch statements switching on strings.

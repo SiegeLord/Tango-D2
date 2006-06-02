@@ -32,7 +32,7 @@ CC=gcc
 LC=$(AR)
 DC=dmd
 
-DMDGC_DEST=../..
+DMDGC_DEST=../../..
 INC_DEST=$(DMDGC_DEST)/include/dmdgc
 LIB_DEST=$(DMDGC_DEST)/lib
 DOC_DEST=$(DMDGC_DEST)/doc/dmdgc
@@ -87,8 +87,8 @@ dmdgc.doc : $(ALL_DOCS)
 clean :
 	$(RM) -r *.di
 	$(RM) $(ALL_OBJS)
-	$(RM) libdmdgc*.a
 	$(RM) $(ALL_DOCS)
+	$(RM) libdmdgc*.a
 
 install :
 	$(MD) $(LIB_DEST)

@@ -29,7 +29,7 @@ CC=dmc
 LC=lib
 DC=dmd
 
-DMDRT_DEST=..\..
+DMDRT_DEST=..\..\..
 INC_DEST=$(DMDRT_DEST)\include\dmdrt
 LIB_DEST=$(DMDRT_DEST)\lib
 DOC_DEST=$(DMDRT_DEST)\doc\dmdrt
@@ -156,8 +156,8 @@ dmdrt.doc : $(ALL_DOCS)
 clean :
 	$(RM) /s *.di
 	$(RM) $(ALL_OBJS)
-	$(RM) dmdrt*.lib
 	$(RM) $(ALL_DOCS)
+	$(RM) dmdrt*.lib
 
 install :
 	$(MD) $(LIB_DEST)

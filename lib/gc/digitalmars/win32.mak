@@ -29,7 +29,7 @@ CC=dmc
 LC=lib
 DC=dmd
 
-DMDGC_DEST=..\..
+DMDGC_DEST=..\..\..
 INC_DEST=$(DMDGC_DEST)\include\dmdgc
 LIB_DEST=$(DMDGC_DEST)\lib
 DOC_DEST=$(DMDGC_DEST)\doc\dmdgc
@@ -84,8 +84,8 @@ dmdgc.doc : $(ALL_DOCS)
 clean :
 	$(RM) /s *.di
 	$(RM) $(ALL_OBJS)
-	$(RM) dmdgc*.lib
 	$(RM) $(ALL_DOCS)
+	$(RM) dmdgc*.lib
 
 install :
 	$(MD) $(LIB_DEST)

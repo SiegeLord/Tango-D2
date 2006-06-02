@@ -3,7 +3,7 @@
 
 module typeinfo.ti_double;
 
-private import std.c.math;
+private import tango.stdc.math;
 
 class TypeInfo_d : TypeInfo
 {

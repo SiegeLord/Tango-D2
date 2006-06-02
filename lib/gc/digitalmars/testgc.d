@@ -10,8 +10,8 @@
 
 // GC tester program
 
-import std.c.stdio;
-import std.c.stdlib;
+import tango.stdc.stdio;
+import tango.stdc.stdlib;
 import std.string;
 
 import gcstats;
@@ -28,20 +28,20 @@ gc_t newGC()
     {	void* p;
 	ClassInfo ci = GC.classinfo;
 
-	p = std.c.stdlib.malloc(ci.init.length);
+	p = tango.stdc.stdlib.malloc(ci.init.length);
 	(cast(byte*)p)[0 .. ci.init.length] = ci.init[];
 	return cast(GC)p;
     }
     else
     {
-	return cast(gc_t)std.c.stdlib.calloc(1, GC.sizeof);
+	return cast(gc_t)tango.stdc.stdlib.calloc(1, GC.sizeof);
     }
 }
 
 void deleteGC(gc_t gc)
 {
     gc.Dtor();
-    std.c.stdlib.free(cast(void*)gc);
+    tango.stdc.stdlib.free(cast(void*)gc);
 }
 
 void printStats(gc_t gc)
@@ -188,11 +188,11 @@ void smoke3()
 //    for (i = 0; i < 1000000; i++)
     for (i = 0; i < 1000; i++)
     {
-	uint size = std.c.stdlib.rand() % 2048;
+	uint size = tango.stdc.stdlib.rand() % 2048;
 	p = cast(int *)gc.malloc(size);
 	memset(p, i, size);
 
-	size = std.c.stdlib.rand() % 2048;
+	size = tango.stdc.stdlib.rand() % 2048;
 	p = cast(int *)gc.realloc(p, size);
 	memset(p, i + 1, size);
     }
@@ -224,7 +224,7 @@ void smoke4()
 	p = cast(int *)gc.malloc(size);
 	memset(p, i, size);
 
-	size = std.c.stdlib.rand() % 2048;
+	size = tango.stdc.stdlib.rand() % 2048;
 	gc.check(p);
 	p = cast(int *)gc.realloc(p, size);
 	memset(p, i + 1, size);
@@ -257,8 +257,8 @@ void smoke5(gc_t gc)
     {
 	for (i = 0; i < 2000 /*4000*/; i++)
 	{
-	    uint size = (std.c.stdlib.rand() % 2048) + 1;
-	    uint index = std.c.stdlib.rand() % SMOKE5_SIZE;
+	    uint size = (tango.stdc.stdlib.rand() % 2048) + 1;
+	    uint index = tango.stdc.stdlib.rand() % SMOKE5_SIZE;
 
 	    //printf("index = %d, size = %d\n", index, size);
 	    p = array[index] - offset[index];
@@ -274,7 +274,7 @@ void smoke5(gc_t gc)
 	    }
 	    array[index] = p;
 	    fill(p, index, size);
-	    offset[index] = std.c.stdlib.rand() % size;
+	    offset[index] = tango.stdc.stdlib.rand() % size;
 	    array[index] += offset[index];
 
 	    //printf("p[0] = %d\n", p[0]);
@@ -458,7 +458,7 @@ private:
 
     //new(uint sz)
     //{
-    //    return std.c.stdlib.malloc(sz);
+    //    return tango.stdc.stdlib.malloc(sz);
     //}
 
     //delete(void* p)

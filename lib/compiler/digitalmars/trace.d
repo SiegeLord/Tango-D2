@@ -13,10 +13,10 @@
 
 private
 {
-    import std.c.ctype;
-    import std.c.stdio;
-    import std.c.string;
-    import std.c.stdlib;
+    import tango.stdc.ctype;
+    import tango.stdc.stdio;
+    import tango.stdc.string;
+    import tango.stdc.stdlib;
     import util.string;
 }
 
@@ -434,7 +434,7 @@ void trace_term()
 
 	// Report results
 	fplog = fopen(trace_logfilename,"w");
-	//fplog = std.c.stdio.stdout;
+	//fplog = tango.stdc.stdio.stdout;
 	if (fplog)
 	{   nsymbols = 0;
 	    trace_report(root);
@@ -673,7 +673,7 @@ L1:
 
 static char *skipspace(char *p)
 {
-    while (std.c.ctype.isspace(*p))
+    while (tango.stdc.ctype.isspace(*p))
 	p++;
     return p;
 }
@@ -729,7 +729,7 @@ static void trace_merge()
 		case '$':
 		case '@':
 		    p = buf;
-		    while (std.c.ctype.isgraph(*p))
+		    while (tango.stdc.ctype.isgraph(*p))
 			p++;
 		    *p = 0;
 		    //printf("trace_addsym('%s')\n",buf);

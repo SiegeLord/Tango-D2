@@ -32,7 +32,7 @@ CC=gcc
 LC=$(AR)
 DC=dmd
 
-DMDRT_DEST=../..
+DMDRT_DEST=../../..
 INC_DEST=$(DMDRT_DEST)/include/dmdrt
 LIB_DEST=$(DMDRT_DEST)/lib
 DOC_DEST=$(DMDRT_DEST)/doc/dmdrt
@@ -164,8 +164,8 @@ dmdrt.doc : $(ALL_DOCS)
 clean :
 	$(RM) -r *.di
 	$(RM) $(ALL_OBJS)
-	$(RM) libdmdrt*.a
 	$(RM) $(ALL_DOCS)
+	$(RM) libdmdrt*.a
 
 install :
 	$(MD) $(LIB_DEST)

@@ -1,6 +1,6 @@
 module moduleinit;
 
-debug private import std.c.stdio;
+debug private import tango.stdc.stdio;
 
 enum
 {   MIctorstart = 1,	// we've started constructing it

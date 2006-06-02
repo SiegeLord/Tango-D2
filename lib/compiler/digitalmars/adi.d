@@ -33,8 +33,8 @@
 
 private
 {
-    import std.c.string;
-    import std.c.stdlib;
+    import tango.stdc.string;
+    import tango.stdc.stdlib;
     import util.utf;
 }
 

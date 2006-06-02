@@ -26,10 +26,10 @@
 
 private
 {
-    import std.c.stdlib;
-    import std.c.string;
-    import std.c.stdarg;
-    debug import std.c.stdio;
+    import tango.stdc.stdlib;
+    import tango.stdc.string;
+    import tango.stdc.stdarg;
+    debug import tango.stdc.stdio;
 }
 
 private
@@ -59,7 +59,7 @@ Object _d_newclass(ClassInfo ci)
     debug printf("_d_newclass(ci = %p)\n", ci);
     if (ci.flags & 1)			// if COM object
     {
-	p = cast(Object)std.c.stdlib.malloc(ci.init.length);
+	p = cast(Object)tango.stdc.stdlib.malloc(ci.init.length);
 	if (!p)
 	    onOutOfMemoryError();
     }

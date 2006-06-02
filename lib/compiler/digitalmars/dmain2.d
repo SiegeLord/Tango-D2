@@ -10,9 +10,9 @@
 
 private
 {
-    import std.c.stdlib;
-    import std.c.string;
-    import std.c.stdio;
+    import tango.stdc.stdlib;
+    import tango.stdc.string;
+    import tango.stdc.stdio;
 }
 
 extern (C) void _STI_monitor_staticctor();

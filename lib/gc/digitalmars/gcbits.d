@@ -9,8 +9,8 @@
  */
 
 private import std.intrinsic;
-private import std.c.string;
-private import std.c.stdlib;
+private import tango.stdc.string;
+private import tango.stdc.stdlib;
 
 /***********************************
  * Theis function must be defined for any D program linked
