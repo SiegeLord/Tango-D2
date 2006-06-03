@@ -25,9 +25,9 @@ private import  tango.log.Logger,
                 tango.log.Event,
                 tango.log.Manager;
 
-private import  tango.ext.net.servlet.Servlet,
-                tango.ext.net.servlet.ServletContext,
-                tango.ext.net.servlet.ServletProvider;
+private import  mango.net.servlet.Servlet,
+                mango.net.servlet.ServletContext,
+                mango.net.servlet.ServletProvider;
 
 /*******************************************************************************
 
