@@ -63,12 +63,11 @@ class Properties
 
         static void load (char[] filepath, void delegate (char[]name, char[] value) dg)
         {
-                FileConduit fc = new FileConduit (filepath, FileStyle.ReadExisting);
-
-                try {
-                    load (fc, dg);
-                    } finally 
-                            fc.close();
+                auto fc = new FileConduit (filepath, FileStyle.ReadExisting);
+                scope (exit)
+                       fc.close;
+                
+                load (fc, dg);
         }
 
         /***********************************************************************
