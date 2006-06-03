@@ -37,7 +37,7 @@
 
 *******************************************************************************/
 
-module tango.net.util.KeepAliveServer;
+module tango.ext.net.util.KeepAliveServer;
 
 private import  tango.core.thread;
 
@@ -51,8 +51,8 @@ public  import  tango.io.model.IConduit;
 
 public  import  tango.log.model.ILogger;
 
-public  import  tango.net.util.ServerThread,
-                tango.net.util.AbstractServer;
+public  import  tango.ext.net.util.ServerThread,
+                tango.ext.net.util.AbstractServer;
 
 
 /******************************************************************************

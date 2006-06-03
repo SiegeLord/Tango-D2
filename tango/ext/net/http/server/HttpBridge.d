@@ -42,7 +42,7 @@ private import  tango.net.Socket;
 
 private import  tango.io.model.IConduit;
 
-private import  tango.net.util.model.IServer;
+private import  tango.ext.net.util.model.IServer;
 
 private import  tango.ext.net.http.server.HttpThread,
                 tango.ext.net.http.server.HttpRequest,

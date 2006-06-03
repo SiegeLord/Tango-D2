@@ -37,7 +37,7 @@
 
 *******************************************************************************/
 
-module tango.net.util.AbstractServer;
+module tango.ext.net.util.AbstractServer;
 
 private import  tango.log.Logger;
 
@@ -50,9 +50,9 @@ private import  tango.io.model.IConduit;
 private import  tango.net.ServerSocket,
                 tango.net.SocketConduit;
 
-private import  tango.net.util.ServerThread;
+private import  tango.ext.net.util.ServerThread;
 
-private import  tango.net.util.model.IServer;
+private import  tango.ext.net.util.model.IServer;
 
 
 /******************************************************************************
@@ -98,7 +98,7 @@ class AbstractServer : IServer
 
                 // save our logger for later reference
                 if (logger is null)
-                    logger = Logger.getLogger ("tango.net.util.AbstractServer");
+                    logger = Logger.getLogger ("tango.ext.net.util.AbstractServer");
                 this.logger = logger;
 
         }

@@ -36,7 +36,7 @@
 
 *******************************************************************************/
 
-module tango.net.util.model.IServer;
+module tango.ext.net.util.model.IServer;
 
 private import  tango.net.Socket;
 

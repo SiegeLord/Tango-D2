@@ -36,7 +36,7 @@
 
 *******************************************************************************/
 
-module tango.net.util.ServerThread;
+module tango.ext.net.util.ServerThread;
 
 private import  tango.core.thread;
 
@@ -46,7 +46,7 @@ private import  tango.io.Conduit,
 private import  tango.net.ServerSocket,
                 tango.net.SocketConduit;
 
-private import  tango.net.util.AbstractServer;
+private import  tango.ext.net.util.AbstractServer;
 
 /******************************************************************************
 

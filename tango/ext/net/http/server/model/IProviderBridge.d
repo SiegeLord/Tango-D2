@@ -40,7 +40,7 @@ module tango.ext.net.http.server.model.IProviderBridge;
 
 private import  tango.io.model.IConduit;
 
-private import  tango.net.util.model.IServer;
+private import  tango.ext.net.util.model.IServer;
 
 private import  tango.ext.net.http.server.model.IProvider;
 

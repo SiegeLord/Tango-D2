@@ -46,8 +46,8 @@ private import  tango.io.model.IConduit;
 
 private import  tango.log.model.ILogger;
 
-private import  tango.net.util.ServerThread,
-                tango.net.util.AbstractServer;
+private import  tango.ext.net.util.ServerThread,
+                tango.ext.net.util.AbstractServer;
 
 private import  tango.ext.net.http.server.HttpThread,
                 tango.ext.net.http.server.HttpBridge;
