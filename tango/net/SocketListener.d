@@ -58,14 +58,7 @@ private import  tango.io.model.IBuffer,
 
 ******************************************************************************/
 
-//version = AltListener;
-
-version (AltListener)
-         alias Object FOO;
-        else
-         alias Thread FOO;
-
-class SocketListener : FOO, IListener
+class SocketListener : Thread, IListener
 {
         private bool                    quit;
         private IBuffer                 buffer;
@@ -90,15 +83,7 @@ class SocketListener : FOO, IListener
         {
                 this.buffer = buffer;
                 this.reader = reader;
-                version (AltListener)
-                        {
-                        Thread t = new Thread (&run);
-                        t.start();
-                        }
         }
-
-        version (AltListener)
-                 void start(){}
 
         /***********************************************************************
                 
@@ -189,7 +174,7 @@ class SocketListener : FOO, IListener
                                        exception (x.toString);
                                        if (--lives == 0)
                                            exception ("listener thread aborting");
-                return 0;
+                                       }
         }
 }
 
