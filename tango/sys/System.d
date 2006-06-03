@@ -38,7 +38,7 @@
 
 module tango.sys.System;
 
-private import tango.sys.thread;     
+//private import tango.core.thread;     
 
 private import tango.sys.OS,
                tango.sys.Epoch;
@@ -117,6 +117,7 @@ struct System
                    } while (interval == uint.max);
         }
 
+/+
         /***********************************************************************
               
                 Create a thread for the given delegate, and optionally start 
@@ -136,4 +137,5 @@ struct System
                     t.start ();
                 return t;
         }
++/
 }
