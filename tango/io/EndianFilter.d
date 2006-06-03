@@ -42,7 +42,7 @@ module tango.io.EndianFilter;
 private import  tango.io.Buffer,
                 tango.io.Conduit;
 
-private import  tango.sys.ByteSwap;
+private import  tango.core.ByteSwap;
 
 
 class EndianFilter : ConduitFilter

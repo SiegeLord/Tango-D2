@@ -45,7 +45,7 @@ private import  tango.io.FileProxy,
                 tango.io.Exception,
                 tango.io.FileConduit;
 
-private import  tango.sys.ByteSwap;
+private import  tango.core.ByteSwap;
 
 private import  tango.convert.UnicodeBom;
 

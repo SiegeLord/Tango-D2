@@ -43,7 +43,7 @@
  * operations (such as increment, decrement, etc), these may be added in some
  * form--perhaps as additional global functions and in an AtomicValue type.
  */
-module tango.sys.atomic;
+module tango.core.atomic;
 
 
 ////////////////////////////////////////////////////////////////////////////////

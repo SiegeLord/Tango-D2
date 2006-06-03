@@ -41,7 +41,7 @@ module tango.log.DateLayout;
 private import  tango.log.Event,
                 tango.log.Layout;
 
-private import  tango.sys.Epoch;
+private import  tango.core.Epoch;
 
 private import  tango.convert.Sprint;
 

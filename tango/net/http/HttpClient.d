@@ -43,7 +43,7 @@
 
 module tango.net.http.HttpClient;
 
-private import  tango.sys.System;
+private import  tango.core.System;
 
 private import  tango.io.Uri,
                 tango.io.Buffer,

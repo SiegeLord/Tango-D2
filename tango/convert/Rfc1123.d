@@ -39,7 +39,7 @@
 
 module tango.convert.Rfc1123;
 
-private import tango.sys.Epoch;
+private import tango.core.Epoch;
 
 private import tango.convert.Sprint;
 

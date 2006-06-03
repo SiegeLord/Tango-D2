@@ -36,10 +36,10 @@
 
 *******************************************************************************/
 
-module tango.sys.System;
+module tango.core.System;
 
 private import tango.sys.OS,
-               tango.sys.Epoch;
+               tango.core.Epoch;
 
 /*******************************************************************************
 

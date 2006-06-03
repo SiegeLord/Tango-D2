@@ -40,7 +40,7 @@
 
 *******************************************************************************/
 
-module tango.sys.ByteSwap;
+module tango.core.ByteSwap;
 
 import tango.core.intrinsic;
 

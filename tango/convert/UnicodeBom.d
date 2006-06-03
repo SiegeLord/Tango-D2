@@ -40,7 +40,7 @@ module tango.convert.UnicodeBom;
 
 private import  tango.convert.Type;
 
-private import  tango.sys.ByteSwap;
+private import  tango.core.ByteSwap;
 
 public  import  tango.convert.Unicode;
 

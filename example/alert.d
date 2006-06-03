@@ -1,4 +1,4 @@
-private import  tango.sys.System;
+private import  tango.core.System;
 
 private import  tango.log.Logger,
                 tango.log.Configurator;

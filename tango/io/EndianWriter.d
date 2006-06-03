@@ -42,7 +42,7 @@ public  import  tango.io.Writer;
 
 private import  tango.convert.Type;
 
-private import  tango.sys.ByteSwap;
+private import  tango.core.ByteSwap;
 
 /*******************************************************************************
 

@@ -6,7 +6,7 @@
 
 private import tango.io.Print;
 
-private import tango.sys.Epoch;
+private import tango.core.Epoch;
 
 /******************************************************************************
 

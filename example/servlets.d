@@ -39,7 +39,7 @@ import  tango.io.Uri,
         tango.io.DisplayWriter;
 
         // for sleep()
-import  tango.sys.System;
+import  tango.core.System;
 
         // for InternetAddress
 import  tango.net.Socket;
