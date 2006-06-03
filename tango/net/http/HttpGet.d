@@ -43,6 +43,8 @@ private import  tango.io.Uri,
                 tango.io.Conduit,
                 tango.io.GrowBuffer;
 
+private import  tango.core.Interval;
+
 private import  tango.net.http.HttpClient;
 
 private import  tango.net.http.HttpHeaders;
@@ -102,7 +104,7 @@ class HttpGet : HttpClient
         
         ***********************************************************************/
 
-        char[] read (uint timeout = DefaultReadTimeout)
+        char[] read (Interval timeout = DefaultReadTimeout)
         {
                 auto input = open (timeout);
 

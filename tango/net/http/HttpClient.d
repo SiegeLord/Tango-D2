@@ -43,7 +43,7 @@
 
 module tango.net.http.HttpClient;
 
-private import  tango.core.System;
+private import  tango.core.Interval;
 
 private import  tango.io.Uri,
                 tango.io.Buffer,
@@ -127,7 +127,7 @@ class HttpClient
         private bool                    doRedirect = true;
 
         // default to three second timeout on read operations ...
-        protected const DefaultReadTimeout = System.Interval.Second * 3;
+        protected const DefaultReadTimeout = Interval.Second * 3;
 
         // use HTTP v1.0 ?
         private static const char[] DefaultHttpVersion = "HTTP/1.0";
@@ -374,7 +374,7 @@ class HttpClient
                 
         ***********************************************************************/
 
-        IBuffer open (uint timeout = DefaultReadTimeout)
+        IBuffer open (Interval timeout = DefaultReadTimeout)
         {
                 return open (timeout, null);
         }
@@ -391,7 +391,7 @@ class HttpClient
                 
         ***********************************************************************/
 
-        IBuffer open (uint timeout, IWritable pump)
+        IBuffer open (Interval timeout, IWritable pump)
         {
                 return open (timeout, pump, method);
         }
@@ -414,9 +414,8 @@ class HttpClient
                 additional content, you must explicitly set your own headers.
                 
         ***********************************************************************/
-//import tango.io.Stdout;
 
-        private IBuffer open (uint timeout, IWritable pump, RequestMethod method)
+        private IBuffer open (Interval timeout, IWritable pump, RequestMethod method)
         {
                 // create socket, and connect it 
                 socket = createSocket;
@@ -580,7 +579,7 @@ class HttpClient
 
         ***********************************************************************/
 
-        IBuffer redirectPost (uint timeout, IWritable pump, int status)
+        IBuffer redirectPost (Interval timeout, IWritable pump, int status)
         {
                 switch (status)
                        {

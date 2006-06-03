@@ -38,15 +38,15 @@
 
 module tango.core.System;
 
-private import tango.os.OS,
-               tango.core.Epoch;
+private import  tango.core.Epoch,
+                tango.core.Interval;
 
 /*******************************************************************************
 
 *******************************************************************************/
 
 version (Win32)
-         extern (Windows) VOID Sleep (DWORD millisecs);
+         extern (Windows) void Sleep (uint millisecs);
 
 version (Posix)
          extern (C) void usleep(uint);
@@ -63,30 +63,6 @@ struct System
 {       
         /***********************************************************************
                 
-                Time interval multipliers. All Mango intervals are based
-                upon microseconds. This should get pulled out into a 
-                distinct module
-
-        ***********************************************************************/
-
-        enum Interval : ulong {
-                        min      = ulong.min,
-                        max      = ulong.max,
-
-                        micro    = 1, 
-                        milli    = 1000, 
-                        second   = 1_000_000,
-                        minute   = 60_000_000,
-
-                        Microsec = 1, 
-                        Millisec = 1000, 
-                        Second   = 1_000_000, 
-                        Minute   = 60_000_000
-                        };
-
-
-        /***********************************************************************
-                
                 Return the number of milliseconds since January 1st 1970
 
         ***********************************************************************/
@@ -100,18 +76,18 @@ struct System
         
                 Send this thread to sleep for a while. The time interval
                 is measured in microseconds. Specifying a period value of
-                uint.max will cause the calling thread to sleep forever.
+                Interval.max will cause the calling thread to sleep forever.
 
         ***********************************************************************/
 
-        final static void sleep (uint interval = uint.max)
+        final static void sleep (Interval interval = Interval.max)
         {
                 do {
                    version (Posix)
                             usleep (interval);
 
                    version (Win32)
-                            Sleep (interval / 1000);
-                   } while (interval == uint.max);
+                            Sleep (interval / Interval.milli);
+                   } while (interval is uint.max);
         }
 }

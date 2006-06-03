@@ -72,6 +72,8 @@ private import  tango.convert.Integer;
 
 private import  tango.os.OS;
 
+private import  tango.core.Interval;
+
 private import  tango.io.Conduit,
                 tango.io.Exception;
 
@@ -876,10 +878,10 @@ class Socket : Conduit
 
         ***********************************************************************/
 
-        void setTimeout (uint us)
+        void setTimeout (Interval us)
         {
-                tv.tv_sec = 0;
-                tv.tv_usec = us;
+                tv.tv_sec = us / Interval.second;
+                tv.tv_usec = us % Interval.second;
         }
                          
         /***********************************************************************
