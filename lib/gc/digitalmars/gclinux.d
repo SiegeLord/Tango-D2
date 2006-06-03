@@ -7,9 +7,9 @@
  *  Modified by Sean Kelly <sean@f4.ca> for use with the Ares project.
  */
 
-private import tango.sys.linux.c.linuxextern;
-private import tango.sys.linux.c.linux;
-private import tango.stdc.posix.tango.sys.mman;
+private import tango.os.linux.c.linuxextern;
+private import tango.os.linux.c.linux;
+private import tango.stdc.posix.sys.mman;
 
 /+
 extern (C)

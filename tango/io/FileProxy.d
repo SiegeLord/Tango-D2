@@ -42,7 +42,7 @@
 
 module tango.io.FileProxy;
 
-private import  tango.sys.OS;
+private import  tango.os.OS;
 
 private import  tango.io.FilePath,
                 tango.io.Exception;

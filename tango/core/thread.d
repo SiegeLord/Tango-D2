@@ -68,8 +68,8 @@ version( Win32 )
 {
     private
     {
-        import tango.sys.windows.c.process;
-        import tango.sys.windows.c.windows;
+        import tango.os.windows.c.process;
+        import tango.os.windows.c.windows;
     }
 }
 else version( Posix )
@@ -83,9 +83,9 @@ else version( Posix )
         import tango.stdc.posix.time;
 
         version( darwin )
-            import tango.sys.darwin.c.darwin;
+            import tango.os.darwin.c.darwin;
         else
-            import tango.sys.linux.c.linux;
+            import tango.os.linux.c.linux;
     }
 }
 else

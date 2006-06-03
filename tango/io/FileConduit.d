@@ -44,7 +44,7 @@ module tango.io.FileConduit;
 public  import  tango.io.FilePath,
                 tango.io.FileProxy;
 
-private import  tango.sys.OS;
+private import  tango.os.OS;
 
 private import  tango.io.Buffer,
                 tango.io.Conduit,

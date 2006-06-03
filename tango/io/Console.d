@@ -34,7 +34,7 @@
 
 module tango.io.Console;
 
-private import  tango.sys.OS;
+private import  tango.os.OS;
 
 private import  tango.io.Buffer,
                 tango.io.DeviceConduit;

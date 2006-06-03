@@ -41,7 +41,7 @@ module tango.log.Event;
 
 version = UseEventFreeList;
 
-private import  tango.sys.OS;
+private import  tango.os.OS;
 
 private import  tango.log.Hierarchy;
 

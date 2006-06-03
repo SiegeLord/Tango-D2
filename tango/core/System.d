@@ -38,7 +38,7 @@
 
 module tango.core.System;
 
-private import tango.sys.OS,
+private import tango.os.OS,
                tango.core.Epoch;
 
 /*******************************************************************************

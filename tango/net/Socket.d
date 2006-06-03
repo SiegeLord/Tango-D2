@@ -70,7 +70,7 @@ private import  tango.text.Text;
 
 private import  tango.convert.Integer;
 
-private import  tango.sys.OS;
+private import  tango.os.OS;
 
 private import  tango.io.Conduit,
                 tango.io.Exception;
