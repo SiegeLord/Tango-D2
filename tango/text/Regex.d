@@ -93,7 +93,7 @@
 	http://www.unicode.org/unicode/reports/tr18/
  */
 
-module tango.text.Regexp;
+module tango.text.Regex;
 
 //debug = regexp; // uncomment to turn on debugging printf's
 
@@ -119,7 +119,7 @@ const char[] url = r"(([h|H][t|T]|[f|F])[t|T][p|P]([s|S]?)\:\/\/|~/|/)?([\w]+:\w
  * One of these gets thrown on compilation errors
  */
 
-class RegExpException : Exception
+class RegexException : Exception
 {
     this(char[] msg)
     {
@@ -149,7 +149,7 @@ private alias char rchar;	// so we can make a wchar version
 
 char[] sub(char[] string, char[] pattern, char[] format, char[] attributes = null)
 {
-    RegExp r = new RegExp(pattern, attributes);
+    Regex r = new Regex(pattern, attributes);
     char[] result = r.replace(string, format);
     delete r;
     return result;
@@ -176,9 +176,9 @@ unittest
  * Returns: the resulting string.
  */
 
-char[] sub(char[] string, char[] pattern, char[] delegate(RegExp) dg, char[] attributes = null)
+char[] sub(char[] string, char[] pattern, char[] delegate(Regex) dg, char[] attributes = null)
 {
-    RegExp r = new RegExp(pattern, attributes);
+    Regex r = new Regex(pattern, attributes);
     rchar[] result;
     int lastindex;
     int offset;
@@ -197,9 +197,9 @@ char[] sub(char[] string, char[] pattern, char[] delegate(RegExp) dg, char[] att
  +
 	// Optimize by using std.string.replace if possible - Dave Fladebo
 	rchar[] slice = result[offset + so .. offset + eo];
-	if (r.attributes & RegExp.REA.global &&		// global, so replace all
-	    !(r.attributes & RegExp.REA.ignoreCase) &&	// not ignoring case
-	    !(r.attributes & RegExp.REA.multiline) &&	// not multiline
+	if (r.attributes & Regex.REA.global &&		// global, so replace all
+	    !(r.attributes & Regex.REA.ignoreCase) &&	// not ignoring case
+	    !(r.attributes & Regex.REA.multiline) &&	// not multiline
 	    pattern == slice &&				// simple pattern (exact match, no special characters)
 	    format == replacement)			// simple format, not $ formats
 	{
@@ -211,7 +211,7 @@ char[] sub(char[] string, char[] pattern, char[] delegate(RegExp) dg, char[] att
 +/
 	result = replaceSlice(result, result[offset + so .. offset + eo], replacement);
 
-	if (r.attributes & RegExp.REA.global)
+	if (r.attributes & Regex.REA.global)
 	{
 	    offset += replacement.length - (eo - so);
 
@@ -232,9 +232,9 @@ unittest
 {
     debug(regexp) printf("regexp.sub.unittest\n");
 
-    char[] foo(RegExp r) { return "ss"; }
+    char[] foo(Regex r) { return "ss"; }
 
-    char[] r = sub("hello", "ll", delegate char[](RegExp r) { return "ss"; });
+    char[] r = sub("hello", "ll", delegate char[](Regex r) { return "ss"; });
     assert(r == "hesso");
 }
 
@@ -253,7 +253,7 @@ int find(rchar[] string, char[] pattern, char[] attributes = null)
 {
     int i = -1;
 
-    RegExp r = new RegExp(pattern, attributes);
+    Regex r = new Regex(pattern, attributes);
     if (r.test(string))
     {
 	i = r.pmatch[0].rm_so;
@@ -290,7 +290,7 @@ int rfind(rchar[] string, char[] pattern, char[] attributes = null)
     int i = -1;
     int lastindex = 0;
 
-    RegExp r = new RegExp(pattern, attributes);
+    Regex r = new Regex(pattern, attributes);
     while (r.test(string, lastindex))
     {   int eo = r.pmatch[0].rm_eo;
 	i = r.pmatch[0].rm_so;
@@ -333,7 +333,7 @@ unittest
 
 char[][] split(char[] string, char[] pattern, char[] attributes = null)
 {
-    RegExp r = new RegExp(pattern, attributes);
+    Regex r = new Regex(pattern, attributes);
     char[][] result = r.split(string);
     delete r;
     return result;
@@ -357,7 +357,7 @@ unittest
  *	pattern = Regular expression pattern.
  *	attributes = Regular expression attributes.
  * Returns:
- *	corresponding RegExp if found, null if not.
+ *	corresponding Regex if found, null if not.
  * Example:
  * ---
  * import std.stdio;
@@ -375,9 +375,9 @@ unittest
  * ---
  */
 
-RegExp search(char[] string, char[] pattern, char[] attributes = null)
+Regex search(char[] string, char[] pattern, char[] attributes = null)
 {
-    RegExp r = new RegExp(pattern, attributes);
+    Regex r = new Regex(pattern, attributes);
 
     if (r.test(string))
     {
@@ -389,24 +389,24 @@ RegExp search(char[] string, char[] pattern, char[] attributes = null)
     return r;
 }
 
-/* ********************************* RegExp ******************************** */
+/* ********************************* Regex ******************************** */
 
 /*****************************
- * RegExp is a class to handle regular expressions.
+ * Regex is a class to handle regular expressions.
  *
  * It is the core foundation for adding powerful string pattern matching
  * capabilities to programs like grep, text editors, awk, sed, etc.
  */
-class RegExp
+class Regex
 {
     /*****
-     * Construct a RegExp object. Compile pattern
+     * Construct a Regex object. Compile pattern
      * with <i>attributes</i> into
      * an internal form for fast execution.
      * Params:
      *	pattern = regular expression
      *  attributes = _attributes
-     * Throws: RegExpException if there are any compilation errors.
+     * Throws: RegexException if there are any compilation errors.
      */
     public this(rchar[] pattern, rchar[] attributes = null)
     {
@@ -415,21 +415,21 @@ class RegExp
     }
 
     /*****
-     * Generate instance of RegExp.
+     * Generate instance of Regex.
      * Params:
      *	pattern = regular expression
      *  attributes = _attributes
-     * Throws: RegExpException if there are any compilation errors.
+     * Throws: RegexException if there are any compilation errors.
      */
-    public static RegExp opCall(rchar[] pattern, rchar[] attributes = null)
+    public static Regex opCall(rchar[] pattern, rchar[] attributes = null)
     {
-	return new RegExp(pattern, attributes);
+	return new Regex(pattern, attributes);
     }
 
     /************************************
      * Set up for start of foreach loop.
      * Returns:
-     *	search() returns instance of RegExp set up to _search string[].
+     *	search() returns instance of Regex set up to _search string[].
      * Example:
      * ---
      * import std.stdio;
@@ -437,7 +437,7 @@ class RegExp
      *
      * void main()
      * {
-     *     foreach(m; RegExp("ab").search("abcabcabab"))
+     *     foreach(m; Regex("ab").search("abcabcabab"))
      *     {
      *         writefln("%s[%s]%s", m.pre, m.match(0), m.post);
      *     }
@@ -450,7 +450,7 @@ class RegExp
      * ---
      */
 
-    public RegExp search(rchar[] string)
+    public Regex search(rchar[] string)
     {
 	input = string;
 	pmatch[0].rm_eo = 0;
@@ -458,10 +458,10 @@ class RegExp
     }
 
     /** ditto */
-    public int opApply(int delegate(inout RegExp) dg)
+    public int opApply(int delegate(inout Regex) dg)
     {
 	int result;
-	RegExp r = this;
+	Regex r = this;
 
 	while (test())
 	{
@@ -597,12 +597,12 @@ private int isword(dchar c) { return isalnum(c) || c == '_'; }
 private uint inf = ~0u;
 
 /* ********************************
- * Throws RegExpException on error
+ * Throws RegexException on error
  */
 
 public void compile(rchar[] pattern, rchar[] attributes)
 {
-    //printf("RegExp.compile('%.*s', '%.*s')\n", pattern, attributes);
+    //printf("Regex.compile('%.*s', '%.*s')\n", pattern, attributes);
 
     this.attributes = 0;
     foreach (rchar c; attributes)
@@ -709,7 +709,7 @@ unittest
 {
     debug(regexp) printf("regexp.split.unittest()\n");
 
-    RegExp r = new RegExp("a*?", null);
+    Regex r = new Regex("a*?", null);
     rchar[][] result;
     rchar[] j;
     int i;
@@ -722,7 +722,7 @@ unittest
     i = cmp(result[1], "b");
     assert(i == 0);
 
-    r = new RegExp("a*", null);
+    r = new Regex("a*", null);
     result = r.split("ab");
     assert(result.length == 2);
     i = cmp(result[0], "");
@@ -730,7 +730,7 @@ unittest
     i = cmp(result[1], "b");
     assert(i == 0);
 
-    r = new RegExp("<(\\/)?([^<>]+)>", null);
+    r = new Regex("<(\\/)?([^<>]+)>", null);
     result = r.split("a<b>font</b>bar<TAG>hello</TAG>");
 
     for (i = 0; i < result.length; i++)
@@ -743,7 +743,7 @@ unittest
     i = cmp(j, "a,,b,font,/,b,bar,,TAG,hello,/,TAG,");
     assert(i == 0);
 
-    r = new RegExp("a[bc]", null);
+    r = new Regex("a[bc]", null);
     result = r.match("123ab");
     j = join(result, ",");
     i = cmp(j, "ab");
@@ -780,7 +780,7 @@ unittest
     debug(regexp) printf("regexp.find.unittest()\n");
 
     int i;
-    RegExp r = new RegExp("abc", null);
+    Regex r = new Regex("abc", null);
     i = r.find("xabcy");
     assert(i == 1);
     i = r.find("cba");
@@ -827,15 +827,15 @@ unittest
     int i;
     rchar[][] result;
     rchar[] j;
-    RegExp r;
+    Regex r;
 
-    r = new RegExp("a[bc]", null);
+    r = new Regex("a[bc]", null);
     result = r.match("1ab2ac3");
     j = join(result, ",");
     i = cmp(j, "ab");
     assert(i == 0);
 
-    r = new RegExp("a[bc]", "g");
+    r = new Regex("a[bc]", "g");
     result = r.match("1ab2ac3");
     j = join(result, ",");
     i = cmp(j, "ab,ac");
@@ -910,9 +910,9 @@ unittest
 
     int i;
     rchar[] result;
-    RegExp r;
+    Regex r;
 
-    r = new RegExp("a[bc]", "g");
+    r = new Regex("a[bc]", "g");
     result = r.replace("1ab2ac3", "x$&y");
     i = cmp(result, "1xaby2xacy3");
     assert(i == 0);
@@ -991,7 +991,7 @@ public int test(char[] string, int startindex)
     uint si;
 
     input = string;
-    debug (regexp) printf("RegExp.test(input[] = '%.*s', startindex = %d)\n", input, startindex);
+    debug (regexp) printf("Regex.test(input[] = '%.*s', startindex = %d)\n", input, startindex);
     pmatch[0].rm_so = 0;
     pmatch[0].rm_eo = 0;
     if (startindex < 0 || startindex > input.length)
@@ -1289,7 +1289,7 @@ int trymatch(int pc, int pcend)
     uint* puint;
 
     debug(regexp)
-	printf("RegExp.trymatch(pc = %d, src = '%.*s', pcend = %d)\n",
+	printf("Regex.trymatch(pc = %d, src = '%.*s', pcend = %d)\n",
 	    pc, input[src .. input.length], pcend);
     srcsave = src;
     psave = null;
@@ -2394,7 +2394,7 @@ void error(char[] msg)
     debug(regexp) printf("error: %.*s\n", msg);
 //assert(0);
 //*(char*)0=0;
-    throw new RegExpException(msg);
+    throw new RegexException(msg);
 }
 
 // p is following the \ char
@@ -2524,7 +2524,7 @@ Lretc:
 void optimize()
 {   ubyte[] prog;
 
-    debug(regexp) printf("RegExp.optimize()\n");
+    debug(regexp) printf("Regex.optimize()\n");
     prog = buf.toBytes();
     for (size_t i = 0; 1;)
     {
@@ -2607,7 +2607,7 @@ int starrchars(Range r, ubyte[] prog)
     uint m;
     ubyte* pop;
 
-    //printf("RegExp.starrchars(prog = %p, progend = %p)\n", prog, progend);
+    //printf("Regex.starrchars(prog = %p, progend = %p)\n", prog, progend);
     for (size_t i = 0; i < prog.length;)
     {
 	switch (prog[i])
@@ -2811,7 +2811,7 @@ public rchar[] replace(rchar[] format)
     return replace3(format, input, pmatch[0 .. re_nsub + 1]);
 }
 
-// Static version that doesn't require a RegExp object to be created
+// Static version that doesn't require a Regex object to be created
 
 private static rchar[] replace3(rchar[] format, rchar[] input, regmatch_t[] pmatch)
 {
@@ -2971,7 +2971,7 @@ public rchar[] replaceOld(rchar[] format)
 }
 
 //
-// NOTE: This code is being included temporarily until RegExp can be modified
+// NOTE: This code is being included temporarily until Regex can be modified
 //       so as not to require it.
 //
 private

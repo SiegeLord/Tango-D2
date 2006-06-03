@@ -39,7 +39,7 @@
 
 module tango.text.RegexIterator;
 
-private import  tango.text.Regexp;
+private import  tango.text.Regex;
     
 private import  tango.text.Iterator;
 
@@ -66,7 +66,7 @@ private import  tango.text.Iterator;
 
 class RegexIteratorT(T) : IteratorT!(T)
 {
-        private RegExp regex;
+        private Regex regex;
 
         /***********************************************************************
         
@@ -174,7 +174,7 @@ class RegexIteratorT(T) : IteratorT!(T)
 
         private void init (T[] pattern)
         {
-                regex = new RegExp (pattern, "");
+                regex = new Regex (pattern, "");
         }
 }
 
