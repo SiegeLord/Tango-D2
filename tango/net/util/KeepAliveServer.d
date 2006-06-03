@@ -103,12 +103,7 @@ class KeepAliveThread : Thread
 
         **********************************************************************/
 
-        version (Ares) 
-                 alias void ThreadReturn;
-              else
-                 alias int ThreadReturn;
-
-        override ThreadReturn run ()
+        override void run ()
         {
                 logger.info (client ~ " starting service handler");
                 
@@ -136,8 +131,6 @@ class KeepAliveThread : Thread
 
                 // make sure we close the conduit ~ the client will see this also
                 buffer.getConduit.close ();
-
-                return 0;
         }
 
         /**********************************************************************
