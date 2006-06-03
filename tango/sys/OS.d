@@ -39,42 +39,21 @@
 
 module tango.sys.OS;
 
-version (Phobos)
+version (Win32)
+         public import tango.sys.windows.c.windows;  
+
+version (linux)
         {
-        version (Win32)
-                 public import tango.sys.windows.windows;  
-
-        version (linux)
-                {
-                public import tango.sys.linux.linux;
-                alias tango.sys.linux.linux posix;
-                }
-
-        version (darwin)
-                {
-                public import tango.sys.darwin.darwin;
-                alias tango.sys.darwin.darwin posix;
-                }
+        public import tango.sys.linux.c.linux;
+        alias tango.sys.linux.c.linux posix;
         }
-     else
+
+version (darwin)
         {
-        extern (C) int printf (char*, ...);
-
-        version (Win32)
-                 public import tango.sys.windows.c.windows;  
-
-        version (linux)
-                {
-                public import tango.sys.linux.c.linux;
-                alias tango.sys.linux.c.linux posix;
-                }
-
-        version (darwin)
-                {
-                public import tango.sys.darwin.c.darwin;
-                alias tango.sys.darwin.c.darwin posix;
-                }
+        public import tango.sys.darwin.c.darwin;
+        alias tango.sys.darwin.c.darwin posix;
         }
+
 
 /*******************************************************************************
 

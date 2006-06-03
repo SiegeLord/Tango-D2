@@ -38,8 +38,6 @@
 
 module tango.sys.System;
 
-//private import tango.core.thread;     
-
 private import tango.sys.OS,
                tango.sys.Epoch;
 
@@ -116,26 +114,4 @@ struct System
                             Sleep (interval / 1000);
                    } while (interval == uint.max);
         }
-
-/+
-        /***********************************************************************
-              
-                Create a thread for the given delegate, and optionally start 
-                it up.
-                  
-        ***********************************************************************/
-
-        version (Phobos)
-                 typedef int delegate() ThreadDelegate;
-              else
-                 typedef void delegate() ThreadDelegate;
-
-        final static Thread createThread (ThreadDelegate dg, bool start = false)
-        {
-                Thread t = new Thread (dg);
-                if (start)
-                    t.start ();
-                return t;
-        }
-+/
 }

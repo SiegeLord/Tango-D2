@@ -77,6 +77,9 @@ private import  tango.io.Conduit,
 
 private import  tango.io.model.IBuffer;
 
+private import  tango.stdc.stdint;
+private import  tango.stdc.errno;
+
 
 /*******************************************************************************
 
@@ -91,17 +94,6 @@ version (darwin)
 
 version (Posix)
          version = BsdSockets;
-
-version (Phobos)
-        {
-        private import tango.core.stdint;
-        }
-     else
-        {
-        private import tango.stdc.stdint;
-        private import tango.stdc.errno;
-        }
-
 
 
 /*******************************************************************************
