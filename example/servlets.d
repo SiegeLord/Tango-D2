@@ -50,12 +50,12 @@ import  tango.log.Admin,
         tango.log.Configurator;
 
         // for testing the http server
-import  tango.net.http.server.HttpServer;
+import  tango.ext.net.http.server.HttpServer;
 
         // for testing the servlet-engine
-import  tango.net.servlet.Servlet,
-        tango.net.servlet.ServletContext,
-        tango.net.servlet.ServletProvider;
+import  tango.ext.net.servlet.Servlet,
+        tango.ext.net.servlet.ServletContext,
+        tango.ext.net.servlet.ServletProvider;
 
         // setup a logger for module scope
 private Logger mainLogger;
