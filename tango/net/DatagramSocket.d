@@ -36,9 +36,9 @@
 
 *******************************************************************************/
 
-module tango.io.DatagramSocket;
+module tango.net.DatagramSocket;
 
-private import  tango.io.Socket,
+private import  tango.net.Socket,
                 tango.io.Exception;
 
 private import  tango.io.model.IBuffer,

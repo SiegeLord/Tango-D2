@@ -36,12 +36,12 @@
 
 *******************************************************************************/
 
-module tango.io.MulticastSocket;
+module tango.net.MulticastSocket;
 
-private import  tango.io.Socket,
+private import  tango.net.Socket,
                 tango.io.Buffer,
                 tango.io.Exception,
-                tango.io.DatagramSocket;
+                tango.net.DatagramSocket;
 
 /******************************************************************************
         

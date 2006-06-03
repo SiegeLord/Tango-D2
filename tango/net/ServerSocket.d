@@ -36,12 +36,12 @@
 
 *******************************************************************************/
 
-module tango.io.ServerSocket;
+module tango.net.ServerSocket;
 
-public  import  tango.io.Socket;
+public  import  tango.net.Socket;
 
 private import  tango.io.Exception,
-                tango.io.SocketConduit;
+                tango.net.SocketConduit;
 
 private import  tango.io.model.IBuffer,
                 tango.io.model.IConduit;

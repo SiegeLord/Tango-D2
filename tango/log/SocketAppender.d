@@ -50,7 +50,7 @@ version (Isolated)
         {
         private import  tango.io.Buffer,
                         tango.io.Console,
-                        tango.io.SocketConduit;
+                        tango.net.SocketConduit;
         }
 
 /*******************************************************************************

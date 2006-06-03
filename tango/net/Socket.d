@@ -64,7 +64,7 @@
 *******************************************************************************/
 
 // MANGO: added all this module & import stuff ...
-module tango.io.Socket;
+module tango.net.Socket;
 
 private import  tango.text.Text;
 
