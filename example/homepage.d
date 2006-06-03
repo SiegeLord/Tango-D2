@@ -1,9 +1,8 @@
 
 private import  tango.io.Console;
 
-private import  tango.http.client.HttpClient;
-
-private import  tango.http.server.HttpHeaders;
+private import  tango.net.http.HttpClient,
+                tango.net.http.HttpHeaders;
 
 /*******************************************************************************
 

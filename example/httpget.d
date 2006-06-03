@@ -1,6 +1,6 @@
 private import  tango.io.Console;
 
-private import  tango.http.client.HttpGet;
+private import  tango.net.http.HttpGet;
 
 /*******************************************************************************
 

@@ -1,5 +1,5 @@
 
-private import  tango.io.Socket;
+private import  tango.net.Socket;
 
 private import  tango.sys.System;
 
@@ -11,7 +11,7 @@ private import  tango.servlet.Servlet,
                 tango.servlet.ServletContext,
                 tango.servlet.ServletProvider;
 
-private import  tango.http.server.HttpServer;
+private import  tango.net.http.server.HttpServer;
 
 private import  tango.cluster.qos.socket.ClusterServer;
 

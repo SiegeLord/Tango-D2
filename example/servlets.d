@@ -35,7 +35,7 @@
 
         // for a variety of servlet IO
 import  tango.io.Uri,
-        tango.io.Socket,
+        tango.net.Socket,
         tango.io.Exception,
         tango.io.FileBucket,
         tango.io.DisplayWriter,
