@@ -35,17 +35,14 @@
 
         // for a variety of servlet IO
 import  tango.io.Uri,
-        tango.net.Socket,
         tango.io.Exception,
-        tango.io.FileBucket,
-        tango.io.DisplayWriter,
-        tango.io.PickleRegistry;
+        tango.io.DisplayWriter;
 
-        // for numeric conversion
-import  tango.convert.Integer;
-
-        // for threads
+        // for sleep()
 import  tango.sys.System;
+
+        // for InternetAddress
+import  tango.net.Socket;
 
         //for logging
 import  tango.log.Admin,
@@ -53,19 +50,12 @@ import  tango.log.Admin,
         tango.log.Configurator;
 
         // for testing the http server
-import  tango.http.server.HttpServer;
-
-        // for testing the http client
-import  tango.http.client.HttpClient;
+import  tango.net.http.server.HttpServer;
 
         // for testing the servlet-engine
-import  tango.servlet.Servlet,
-        tango.servlet.ServletContext,
-        tango.servlet.ServletProvider;
-
-        // for working with cache entries
-import  tango.cache.Payload,
-        tango.cache.VirtualCache;
+import  tango.net.servlet.Servlet,
+        tango.net.servlet.ServletContext,
+        tango.net.servlet.ServletProvider;
 
         // setup a logger for module scope
 private Logger mainLogger;
@@ -226,287 +216,6 @@ class Echo : Servlet
 
 /*******************************************************************************
 
-        A truly contrived example of server-side state management, and 
-        client-side http requests.
-
-*******************************************************************************/
-
-class Ping : Servlet
-{
-        private static VirtualCache cache;
-        private static FileBucket   bucket;
-        private static PingThread   thread;
-        private static int          ping_id;
-
-        /***********************************************************************
-
-                A Thread subclass to monitor external web-pages
-
-        ***********************************************************************/
-
-        static class PingThread
-        {       
-                bool                    halt;
-                ulong                   time;
-                int                     delta;
-                int                     pause,
-                                        content;
-
-                HttpClient              client;
-                Logger                  logger;
-
-
-                /**************************************************************
-
-                **************************************************************/
-
-                this (MutableUri uri, int pause)
-                {
-                        // get a Logger for this class
-                        logger = Logger.getLogger ("tango.servlets.PingThread");
-
-                        this.pause = pause;
-                        client = new HttpClient (HttpClient.Head, uri);
-                }
-
-                /**************************************************************
-
-                        Check the provided URL now and then to see if it
-                        has changed ...
-        
-                **************************************************************/
-
-                version (Ares) 
-                         alias void ThreadReturn;
-                      else
-                         alias int ThreadReturn;
-
-                ThreadReturn run()
-                {
-                        while (true)
-                               try {
-
-                                   // should we bail out?
-                                   if (halt)
-                                       return 0;
-
-                                   // reset, and set up a Host header
-                                   client.reset ();
-                                   client.getRequestHeaders.add (HttpHeader.Host, client.getUri.getHost);
-
-                                   // make request
-                                   client.open ();
-
-                                   // close connection
-                                   client.close ();
-
-                                   // check return status for validity
-                                   if (client.isResponseOK)
-                                      {
-                                      // extract modifed date (be aware of -1 return, for no header)
-                                      ulong time = client.getResponseHeaders.getDate (HttpHeader.LastModified);
-                                      if (time != -1)
-                                         { 
-                                         if (time > this.time)
-                                            {
-                                            this.time = time;
-                                            ++delta;
-                                            }
-                                         }
-                                      else
-                                         {
-                                         int content = client.getResponseHeaders.getInt (HttpHeader.ContentLength);
-                                         if (content != this.content)
-                                            {
-                                            this.content = content;
-                                            ++delta;
-                                            }
-                                         }
-                                      }
-
-                                   // see if tracing is enabled before doing a bunch of work
-                                   if (logger.isEnabled (logger.Level.Trace))
-                                      {
-                                      char[16] tmp;
-                                      logger.trace (Integer.format (tmp, delta));
-
-                                      foreach (HeaderElement header; client.getResponseHeaders())
-                                              {
-                                              logger.trace (header.name.value ~ header.value);
-                                              }
-                                      }
-
-                                   // sleep for a few seconds 
-                                   System.sleep (pause);
-
-                                   } catch (IOException x)
-                                            logger.error ("IOException: " ~ x.toString);
-
-                                     catch (Object x)
-                                            logger.fatal ("Fatal: " ~ x.toString);
-                        return 0;
-                }
-        }
-
-
-        /***********************************************************************
-
-                Each unique requesting IP address has one of these 
-                maintained on the server in a cache. When the cache 
-                fills up, LRU entries are spooled out to disk. The
-                next request for an 'old' entry will cause it to be
-                resurrected from disk storage, with state intact.
-
-        ***********************************************************************/
-
-        private static class PingEntry : Payload
-        {
-                // these are serialized
-                long            delta;
-                int             count;
-
-                /***************************************************************
-
-                        Reset our state via the provided reader
-
-                ***************************************************************/
-
-                override void read (IReader input)
-                {
-                        input (count) (delta);
-                }
-
-                /***************************************************************
-
-                        Save our state via the provided writer
-
-                ***************************************************************/
-
-                override void write (IWriter output)
-                {
-                        output (count) (delta);
-                }
-
-                /***************************************************************
-
-                        ISerializable factory; used for creating new 
-                        class instances, which are then primed with
-                        previously saved state.
-
-                ***************************************************************/
-
-                override Object create (IReader reader)
-                {
-                        PingEntry p = new PingEntry;
-                        p.read (reader);
-                        return p;
-                }
-
-                /***************************************************************
-
-                        Return a network identifier for serializing this 
-                        class. 
-
-                ***************************************************************/
-
-                override char[] getGuid()
-                {
-                        return this.classinfo.name;
-                }
-        }
-
-
-        /***********************************************************************
-
-                Initialize the Ping environment 
-
-        ***********************************************************************/
-
-        static this()
-        {
-                // create a file bucket for serialized PingEntry instances
-                bucket = new FileBucket (new FilePath("bucket.bin"), FileBucket.HalfK);
-
-                // create a VirtualCache to host popular PingEntry instances.
-                // When the cache fills, LRU entries get flushed out to disk, 
-                // and then retrieved and resurrected as necessary.
-                cache = new VirtualCache (bucket, 101);
-
-                // enroll the PingEntry for serialization
-                PickleRegistry.enroll (new PingEntry);
-
-                // create a thread to poll Google News for changes ...
-                thread = new PingThread (new MutableUri ("http", "news.google.com", "/", null), 
-                                                          System.Interval.Second * 30);
-                System.createThread (&thread.run, true);
-        }
-
-        /***********************************************************************
-
-                clean up when we're done
-
-        ***********************************************************************/
-
-        static ~this()
-        {
-                thread.halt = true;
-                bucket.close ();
-        }
-
-        /***********************************************************************
-
-                handle all service requests
-
-        ***********************************************************************/
-
-        void service (IServletRequest request, IServletResponse response)
-        {   
-                PingEntry ping;
-
-                // log an info message
-                Logger.getLogger ("tango.servlets.Ping").info ("request for ping");
-
-                // get the remote ip-address
-                char[] ua = request.getRemoteAddress;
-
-                // protect against thread collisions ...
-                synchronized (cache)
-                             {
-                             // seen this address before?
-                             ping = cast(PingEntry) cache.get (ua);
-                             if (ping is null)
-                                 // nope; create new one
-                                 cache.put (ua, ping = new PingEntry);
-                             }
-
-                // bump ping count
-                ++ping.count;
-
-                // has Google news been updated?
-                long changes = thread.delta - ping.delta;
-                ping.delta = thread.delta;
-
-                // say we're writing html
-                response.setContentType ("text/html");
-
-                // grab the response writer ...
-                IWriter output = response.getWriter;
-
-                // write HTML page ...
-                output ("<HTML><HEAD><TITLE>Ping</TITLE></HEAD><BODY>"c)
-                       ("You've visited this page "c)
-                       (ping.count)
-                       (" times. Google News has had "c)
-                       (changes)
-                       (" update(s) since your last visit."c)
-                       ("</BODY></HTML>"c);
-        }
-}
-          
-
-
-/*******************************************************************************
-
         Create an http server with the given IProvider. Wait for console
         input, then quit.
 
@@ -556,9 +265,6 @@ void testServletEngine ()
 
         // map echo requests to our echo servlet
         sp.addMapping ("/echo", sp.addServlet (new Echo, "echo", example));
-
-        // map ping requests to our ping servlet
-        sp.addMapping ("/ping", sp.addServlet (new Ping, "ping", example));
 
         // point the default context to the mango help files
         sp.addContext (new ServletContext ("", "../doc/html"));
