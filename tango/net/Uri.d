@@ -36,14 +36,13 @@
 
 *******************************************************************************/
 
-module tango.io.Uri;
+module tango.net.Uri;
 
-private import  tango.io.HeapSlice,
-                tango.io.Exception;
+private import  tango.io.Exception;
 
 private import  tango.convert.Integer;
 
-private import  tango.io.model.IWriter;
+private import  tango.io.protocol.model.IWriter;
 
 /*******************************************************************************
 
@@ -865,6 +864,68 @@ class MutableUri : Uri
         {
                 this.fragment = fragment;
                 return this;
+        }
+}
+
+
+/*******************************************************************************
+        
+*******************************************************************************/
+
+private class HeapSlice
+{
+        private uint    used;
+        private void[]  buffer;
+
+        /***********************************************************************
+        
+                Create with the specified starting size
+
+        ***********************************************************************/
+
+        this (uint size)
+        {
+                buffer = new void[size];
+        }
+
+        /***********************************************************************
+        
+                Reset content length to zero
+
+        ***********************************************************************/
+
+        void reset ()
+        {
+                used = 0;
+        }
+
+        /***********************************************************************
+        
+                Potentially expand the content space, and return a pointer
+                to the start of the empty section.
+
+        ***********************************************************************/
+
+        void* expand (uint size)
+        {
+                if ((used + size) > buffer.length)
+                     buffer.length = (used + size) * 2;
+                return &buffer [used];
+        }
+
+        /***********************************************************************
+        
+                Return a slice of the content from the current position 
+                with the specified size. Adjusts the current position to 
+                point at an empty zone.
+
+        ***********************************************************************/
+
+        void[] slice (int size)
+        {
+                uint i = used;
+                used += size;
+                return buffer [i..used];
         }
 }
 

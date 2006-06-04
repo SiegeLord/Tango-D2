@@ -38,9 +38,9 @@
 
 *******************************************************************************/
 
-module tango.io.DisplayWriter;
+module tango.io.protocol.DisplayWriter;
 
-public  import  tango.io.Writer;
+public  import  tango.io.protocol.Writer;
 
 private import  tango.core.vararg;
 

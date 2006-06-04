@@ -36,10 +36,10 @@
 
 *******************************************************************************/
 
-module tango.io.model.IPickle;
+module tango.io.protocol.model.IPickle;
 
-public import tango.io.model.IReader,
-              tango.io.model.IWriter;
+public import tango.io.protocol.model.IReader,
+              tango.io.protocol.model.IWriter;
 
 /*******************************************************************************
 

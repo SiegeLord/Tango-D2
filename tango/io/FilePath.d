@@ -44,7 +44,7 @@ private import  tango.io.Buffer,
                 tango.io.Exception,
                 tango.io.FileConst;
 
-private import  tango.io.model.IWriter;
+private import  tango.io.protocol.model.IWriter;
  
 /*******************************************************************************
 

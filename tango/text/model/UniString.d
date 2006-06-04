@@ -37,7 +37,7 @@
 
 module tango.text.model.UniString;
 
-private import  tango.io.model.IWriter;
+private import  tango.io.protocol.model.IWriter;
 
 /*******************************************************************************
 

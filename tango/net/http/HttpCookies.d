@@ -46,7 +46,7 @@ private import  tango.io.Buffer;
 private import  tango.text.Text,
                 tango.text.Iterator;
 
-private import  tango.io.model.IWriter,
+private import  tango.io.protocol.model.IWriter,
                 tango.io.model.IBuffer,
                 tango.io.model.IConduit;
 

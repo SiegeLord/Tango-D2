@@ -38,7 +38,7 @@
 
 *******************************************************************************/
 
-module tango.io.model.IReader;
+module tango.io.protocol.model.IReader;
 
 public import tango.io.model.IBuffer;
 

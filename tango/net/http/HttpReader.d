@@ -38,7 +38,7 @@
 
 module tango.net.http.HttpReader;
 
-private import  tango.io.Reader;
+private import  tango.io.protocol.Reader;
 
 private import  tango.convert.Type;
 

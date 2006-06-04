@@ -37,16 +37,16 @@
 
 *******************************************************************************/
 
-module tango.io.Reader;
+module tango.io.protocol.Reader;
 
 private import  tango.convert.Type;
 
 private import  tango.io.Exception,
-                tango.io.ArrayAllocator;
+                tango.io.protocol.ArrayAllocator;
 
 public  import  tango.io.Buffer;
 
-public  import  tango.io.model.IReader,
+public  import  tango.io.protocol.model.IReader,
                 tango.io.model.IBuffer,
                 tango.io.model.IConduit;
 

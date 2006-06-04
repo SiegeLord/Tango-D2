@@ -38,7 +38,7 @@
 
 module mango.net.servlet.cache.model.IPayload;
 
-public import tango.io.model.IPickle;
+public import tango.io.protocol.model.IPickle;
 
 /******************************************************************************
 

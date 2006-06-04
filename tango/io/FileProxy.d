@@ -49,7 +49,7 @@ private import  tango.io.FilePath,
 
 private import  tango.convert.Unicode;
 
-private import  tango.io.model.IWriter;
+private import  tango.io.protocol.model.IWriter;
  
 version (Win32)
         {

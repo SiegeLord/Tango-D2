@@ -58,7 +58,7 @@ module tango.text.UtfString;
 private import  tango.convert.Type,
                 tango.convert.Unicode;
 
-private import  tango.io.model.IWriter;
+private import  tango.io.protocol.model.IWriter;
 
 private import  tango.text.model.UniString;
 

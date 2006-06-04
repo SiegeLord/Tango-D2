@@ -38,7 +38,7 @@
 
 *******************************************************************************/
 
-module tango.io.model.IWriter;
+module tango.io.protocol.model.IWriter;
 
 public import tango.io.model.IBuffer;
 private import tango.io.model.IConduit;

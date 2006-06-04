@@ -38,7 +38,7 @@
 
 module mango.net.servlet.ServletRequest;
 
-private import  tango.io.Uri;
+private import  tango.net.Uri;
 
 private import  tango.io.model.IBuffer;
                

@@ -42,7 +42,7 @@ private import  tango.text.Regex;
  
 private import  tango.text.Text;
    
-private import  tango.io.Uri,
+private import  tango.net.Uri,
                 tango.io.Exception;
 
 private import  mango.net.servlet.Servlet,

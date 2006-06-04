@@ -37,7 +37,7 @@
 
 *******************************************************************************/
 
-module tango.io.Writer;
+module tango.io.protocol.Writer;
 
 private import  tango.convert.Type;
 
@@ -45,7 +45,7 @@ private import  tango.io.Exception;
 
 public  import  tango.io.Buffer;
 
-public  import  tango.io.model.IWriter,
+public  import  tango.io.protocol.model.IWriter,
                 tango.io.model.IBuffer,
                 tango.io.model.IConduit;
 

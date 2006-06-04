@@ -44,7 +44,7 @@ private import  tango.io.Buffer,
                 tango.io.Exception;
 
 private import  tango.io.model.IBuffer,
-                tango.io.model.IWriter,
+                tango.io.protocol.model.IWriter,
                 tango.io.model.IConduit;
 
 private import  tango.net.http.HttpHeaders;

@@ -1,6 +1,6 @@
 /*******************************************************************************
 
-        @file EndianWriter.d
+        @file EndianReader.d
         
         Copyright (c) 2004 Kris Bell
         
@@ -36,9 +36,9 @@
 
 *******************************************************************************/
 
-module tango.io.EndianWriter;
+module tango.io.protocol.EndianReader;
 
-public  import  tango.io.Writer;
+public  import  tango.io.protocol.Reader;
 
 private import  tango.convert.Type;
 
@@ -48,7 +48,7 @@ private import  tango.core.ByteSwap;
 
 *******************************************************************************/
 
-class EndianWriter : Writer
+class EndianReader : Reader
 {       
         /***********************************************************************
         
@@ -65,61 +65,39 @@ class EndianWriter : Writer
         
         ***********************************************************************/
 
-        protected override IWriter write (void* src, uint bytes, int type)
+        protected override uint read (void* dst, uint bytes, uint type)
         {
-                void write (int mask, void function (void* dst, uint bytes) mutate)
-                {
-                        uint writer (void[] dst)
-                        {
-                                // cap bytes written
-                                uint len = dst.length & mask;
-                                if (len > bytes)
-                                    len = bytes;
-
-                                dst [0..len] = src [0..len];
-                                mutate (dst, len);
-                                return len;
-                        }
-
-                        while (bytes)
-                              {
-                              //flush if we used all buffer space
-                              if (bytes -= buffer.write (&writer))
-                                  buffer.makeRoom (bytes);
-                              }                          
-                }
-
+                super.read (dst, bytes, type);
 
                 switch (type)
                        {
                        case Type.Short:
                        case Type.UShort:
                        case Type.Utf16:
-                            write (~1, &ByteSwap.swap16);   
+                            ByteSwap.swap16 (dst, bytes);    
                             break;
 
                        case Type.Int:
                        case Type.UInt:
                        case Type.Float:
                        case Type.Utf32:
-                            write (~3, &ByteSwap.swap32);   
+                            ByteSwap.swap32 (dst, bytes);      
                             break;
 
                        case Type.Long:
                        case Type.ULong:
                        case Type.Double:
-                            write (~7, &ByteSwap.swap64);   
+                            ByteSwap.swap64 (dst, bytes);
                             break;
 
                        case Type.Real:
-                            write (~15, &ByteSwap.swap80);   
+                            ByteSwap.swap80 (dst, bytes);
                             break;
 
                        default:
-                            super.write (src, bytes, type);
                             break;
                        }
-                return this;
+
+                return bytes;
         }
 }
-

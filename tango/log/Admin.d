@@ -17,9 +17,9 @@
 
 module tango.log.Admin;
 
-private import  tango.io.Uri;
+private import  tango.net.Uri;
 
-private import  tango.io.model.IWriter;
+private import  tango.io.protocol.model.IWriter;
 
 private import  tango.log.Logger,
                 tango.log.Event,

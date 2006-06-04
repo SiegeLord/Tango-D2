@@ -43,13 +43,13 @@ private import  tango.text.Text,
 
 private import  tango.convert.Atoi;
 
-private import  tango.io.Uri,
+private import  tango.net.Uri,
                 tango.io.Buffer,
-                tango.io.Reader,
+                tango.io.protocol.Reader,
                 tango.io.Exception;
 
 private import  tango.io.model.IBuffer,
-                tango.io.model.IWriter;
+                tango.io.protocol.model.IWriter;
 
 private import  tango.net.http.HttpReader,
 		tango.net.http.HttpHeaders,

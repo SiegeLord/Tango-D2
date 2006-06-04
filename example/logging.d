@@ -7,7 +7,7 @@
 private import tango.log.Logger,
                tango.log.Configurator;
 
-private import tango.convert.Sprint;
+private import tango.text.Sprint;
 
 
 /*******************************************************************************

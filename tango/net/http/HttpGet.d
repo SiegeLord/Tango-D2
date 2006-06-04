@@ -39,7 +39,7 @@
 
 module tango.net.http.HttpGet;
 
-private import  tango.io.Uri,
+private import  tango.net.Uri,
                 tango.io.Conduit,
                 tango.io.GrowBuffer;
 

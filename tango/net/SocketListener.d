@@ -43,7 +43,7 @@ private import  tango.core.thread;
 private import  tango.net.Socket;
 
 private import  tango.io.model.IBuffer,
-                tango.io.model.IWriter;
+                tango.io.protocol.model.IWriter;
 
 /******************************************************************************
 

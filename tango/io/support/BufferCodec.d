@@ -37,7 +37,7 @@
 
 *******************************************************************************/
 
-module tango.io.BufferCodec;
+module tango.io.support.BufferCodec;
 
 private import  tango.io.Buffer;
 

@@ -41,7 +41,7 @@ module tango.io.Print;
 
 private import tango.io.Console;
 
-private import tango.io.BufferFormat;
+private import tango.io.support.BufferFormat;
 
 // the global formatters for console output
 public static BufferFormat      Print, 

@@ -38,10 +38,10 @@
 
 module mango.net.servlet.model.IServletRequest;
 
-private import  tango.io.Uri;
+private import  tango.net.Uri;
 
 private import  tango.io.model.IBuffer,
-                tango.io.model.IReader;
+                tango.io.protocol.model.IReader;
 
 private import  tango.net.http.HttpReader,
                 tango.net.http.HttpParams,

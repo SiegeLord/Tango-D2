@@ -41,7 +41,7 @@ module tango.convert.Rfc1123;
 
 private import tango.core.Epoch;
 
-private import tango.convert.Sprint;
+private import tango.text.Sprint;
 
 extern (C) int memcmp (char *, char *, uint);
 

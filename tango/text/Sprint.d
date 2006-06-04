@@ -37,7 +37,7 @@
 
 *******************************************************************************/
 
-module tango.convert.Sprint;
+module tango.text.Sprint;
 
 private import  tango.core.vararg;
 

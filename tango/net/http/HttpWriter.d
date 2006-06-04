@@ -39,7 +39,7 @@
 
 module tango.net.http.HttpWriter;
 
-private import  tango.io.DisplayWriter;
+private import  tango.io.protocol.DisplayWriter;
 
 private import  tango.io.model.IBuffer;
 

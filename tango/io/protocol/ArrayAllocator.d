@@ -36,13 +36,12 @@
 
 *******************************************************************************/
 
-module tango.io.ArrayAllocator;
+module tango.io.protocol.ArrayAllocator;
 
-private import  tango.io.Reader,
-                tango.io.HeapSlice;
+private import  tango.io.protocol.Reader;
 
 private import  tango.io.model.IBuffer,
-                tango.io.model.IReader;
+                tango.io.protocol.model.IReader;
 
 /*******************************************************************************
 
@@ -215,15 +214,6 @@ class SliceAllocator : HeapSlice, IArrayAllocator
         
         ***********************************************************************/
 
-        void reset ()
-        {
-                super.reset ();
-        }
-
-        /***********************************************************************
-        
-        ***********************************************************************/
-
         void bind (IReader reader)
         {
                 this.reader = reader;
@@ -245,7 +235,7 @@ class SliceAllocator : HeapSlice, IArrayAllocator
         void allocate (void[]* x, uint bytes, uint width, uint type, IBuffer.Converter decoder)
         {       
                 expand (bytes);
-                void[] tmp = slice (bytes);
+                auto tmp = slice (bytes);
                 *x = tmp [0 .. decoder (tmp, bytes, type) / width];
         }
 }
@@ -279,5 +269,68 @@ class ReuseAllocator : SliceAllocator
         }
 
 }
+
+
+/*******************************************************************************
+        
+*******************************************************************************/
+
+private class HeapSlice
+{
+        private uint    used;
+        private void[]  buffer;
+
+        /***********************************************************************
+        
+                Create with the specified starting size
+
+        ***********************************************************************/
+
+        this (uint size)
+        {
+                buffer = new void[size];
+        }
+
+        /***********************************************************************
+        
+                Reset content length to zero
+
+        ***********************************************************************/
+
+        void reset ()
+        {
+                used = 0;
+        }
+
+        /***********************************************************************
+        
+                Potentially expand the content space, and return a pointer
+                to the start of the empty section.
+
+        ***********************************************************************/
+
+        void* expand (uint size)
+        {
+                if ((used + size) > buffer.length)
+                     buffer.length = (used + size) * 2;
+                return &buffer [used];
+        }
+
+        /***********************************************************************
+        
+                Return a slice of the content from the current position 
+                with the specified size. Adjusts the current position to 
+                point at an empty zone.
+
+        ***********************************************************************/
+
+        void[] slice (int size)
+        {
+                uint i = used;
+                used += size;
+                return buffer [i..used];
+        }
+}
+
 
 

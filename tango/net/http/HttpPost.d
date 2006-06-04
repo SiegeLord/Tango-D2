@@ -39,11 +39,11 @@
 
 module tango.net.http.HttpPost;
 
-private import  tango.io.Uri,
+private import  tango.net.Uri,
                 tango.io.Conduit,
                 tango.io.GrowBuffer;
 
-private import  tango.io.model.IWriter;
+private import  tango.io.protocol.model.IWriter;
 
 private import  tango.net.http.HttpClient;
 

@@ -39,9 +39,9 @@
 module mango.net.http.server.HttpResponse;
 
 private import  tango.io.Buffer,
-                tango.io.Writer;
+                tango.io.protocol.Writer;
 
-private import  tango.io.model.IWriter;
+private import  tango.io.protocol.model.IWriter;
 
 private import  tango.net.http.HttpWriter;
 

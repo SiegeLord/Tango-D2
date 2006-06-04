@@ -38,7 +38,7 @@
 
 module mango.net.servlet.ServletResponse;
 
-private import  tango.io.Uri,
+private import  tango.net.Uri,
                 tango.io.Buffer,
                 tango.io.Exception,
                 tango.io.FileConduit;

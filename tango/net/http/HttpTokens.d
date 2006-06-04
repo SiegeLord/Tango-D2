@@ -46,7 +46,7 @@ private import  tango.convert.Integer,
                 tango.convert.Rfc1123;
 
 private import  tango.io.model.IBuffer,
-                tango.io.model.IWriter;
+                tango.io.protocol.model.IWriter;
 
 private import  tango.net.http.HttpStack;
 

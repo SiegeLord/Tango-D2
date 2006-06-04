@@ -47,7 +47,7 @@ private import  tango.log.Appender,
 private import  tango.io.FilePath,
                 tango.io.FileConst,
                 tango.io.FileConduit,
-                tango.io.DisplayWriter;
+                tango.io.protocol.DisplayWriter;
 
 /*******************************************************************************
 

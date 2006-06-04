@@ -45,9 +45,9 @@ module tango.net.http.HttpClient;
 
 private import  tango.core.Interval;
 
-private import  tango.io.Uri,
+private import  tango.net.Uri,
                 tango.io.Buffer,
-                tango.io.Writer,
+                tango.io.protocol.Writer,
                 tango.io.Exception;
 
 private import  tango.convert.Atoi;

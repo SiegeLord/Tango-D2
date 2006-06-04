@@ -37,7 +37,7 @@
 
 *******************************************************************************/
 
-module tango.io.EndianFilter;
+module tango.io.filter.EndianFilter;
 
 private import  tango.io.Buffer,
                 tango.io.Conduit;

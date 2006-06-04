@@ -141,7 +141,7 @@ private import  tango.convert.Type,
                 tango.convert.Format,
                 tango.convert.Unicode;
 
-private import  tango.io.model.IWriter;
+private import  tango.io.protocol.model.IWriter;
 
 private import  tango.text.model.UniString;
 

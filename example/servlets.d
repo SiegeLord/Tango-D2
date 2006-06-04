@@ -34,9 +34,9 @@
 *******************************************************************************/
 
         // for a variety of servlet IO
-import  tango.io.Uri,
+import  tango.net.Uri,
         tango.io.Exception,
-        tango.io.DisplayWriter;
+        tango.io.protocol.DisplayWriter;
 
         // for sleep()
 import  tango.core.System;

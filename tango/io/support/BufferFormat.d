@@ -37,12 +37,12 @@
 
 *******************************************************************************/
 
-module tango.io.BufferFormat;
+module tango.io.support.BufferFormat;
 
 private import  tango.convert.Format,
                 tango.convert.Double;
 
-private import  tango.io.BufferCodec;
+private import  tango.io.support.BufferCodec;
 
 private import  tango.io.model.IBuffer;
 
