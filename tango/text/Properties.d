@@ -36,12 +36,13 @@
 
 *******************************************************************************/
 
-module tango.io.Properties;
+module tango.text.Properties;
 
 private import  tango.text.Text,
                 tango.text.LineIterator;
 
-private import  tango.io.FileConduit;
+private import  tango.io.Buffer,
+                tango.io.FileConduit;
 
 private import  tango.io.model.IConduit;
 
@@ -79,8 +80,20 @@ class Properties
 
         static void load (IConduit conduit, void delegate (char[]name, char[] value) dg)
         {
+                load (new Buffer(conduit), dg);
+        }
+
+        /***********************************************************************
+        
+                Load properties from the provided conduit, and pass them to
+                the provided delegate.
+
+        ***********************************************************************/
+
+        static void load (IBuffer buffer, void delegate (char[]name, char[] value) dg)
+        {
                 // bind the input to a line tokenizer
-                auto line = new LineIterator (conduit);
+                auto line = new LineIterator (buffer);
 
                 // scan all lines
                 while (line.next)

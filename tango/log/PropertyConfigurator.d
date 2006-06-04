@@ -41,7 +41,7 @@ module tango.log.PropertyConfigurator;
 version (Isolated) {}
 else
 {
-private import  tango.io.Properties;
+private import  tango.text.properties;
 
 private import  tango.log.Logger,
                 tango.log.Layout,
