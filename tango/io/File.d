@@ -92,18 +92,16 @@ class File : FileProxy
 
         void[] read ()
         {
-                ubyte[] content;
-
                 auto conduit = new FileConduit (this);  
-                try {
-                    content = new ubyte[cast(int) conduit.length];
+                scope (exit)
+                       conduit.close();
 
-                    // read the entire file into memory and return it
-                    if (conduit.read (content) != content.length)
-                        throw new IOException ("eof whilst reading");
-                    } finally {
-                              conduit.close ();
-                              }
+                auto content = new ubyte[cast(int) conduit.length];
+
+                // read the entire file into memory and return it
+                if (conduit.read (content) != content.length)
+                    throw new IOException ("eof whilst reading");
+
                 return content;
         }
 
@@ -138,11 +136,10 @@ class File : FileProxy
         private File write (void[] content, FileStyle.Bits style)
         {      
                 auto conduit = new FileConduit (this, style);  
-                try {
-                    conduit.flush (content);
-                    } finally {
-                              conduit.close ();
-                              }
+                scope (exit)
+                       conduit.close();
+
+                conduit.flush (content);
                 return this;
         }
 }

@@ -39,6 +39,7 @@
 module tango.io.UnicodeFile;
 
 public  import  tango.io.FilePath;
+
 public  import  tango.convert.Unicode;
 
 private import  tango.io.FileProxy,
@@ -185,19 +186,17 @@ class UnicodeFileT(T) : FileProxy
         T[] read ()
         {
                 auto conduit = new FileConduit (this);  
+                scope (exit)
+                       conduit.close();
 
-                try {
-                    // allocate enough space for the entire file
-                    auto content = new ubyte [conduit.length];
+                // allocate enough space for the entire file
+                auto content = new ubyte [conduit.length];
 
-                    //read the content
-                    if (conduit.read (content) != content.length)
-                        throw new IOException ("unexpected eof");
+                //read the content
+                if (conduit.read (content) != content.length)
+                    throw new IOException ("unexpected eof");
 
-                    return unicode.decode (content);
-                    } finally {                        
-                              conduit.close();
-                              }
+                return unicode.decode (content);
         }
 
         /***********************************************************************
@@ -237,21 +236,19 @@ class UnicodeFileT(T) : FileProxy
 
         private final UnicodeFileT write (T[] content, FileStyle.Bits style, bool bom)
         {       
-                // convert to external representation
+                // convert to external representation (may throw an exeption)
                 void[] converted = unicode.encode (content);
 
                 // open file after conversion ~ in case of exceptions
-                auto FileConduit conduit = new FileConduit (this, style);  
-                
-                try {
-                    if (bom)
-                        conduit.flush (unicode.getSignature);
+                auto conduit = new FileConduit (this, style);  
+                scope (exit)
+                       conduit.close();
 
-                    // and write
-                    conduit.flush (converted);
-                    } finally {
-                              conduit.close();
-                              }
+                if (bom)
+                    conduit.flush (unicode.getSignature);
+
+                // and write
+                conduit.flush (converted);
                 return this;
         }
 }
