@@ -42,7 +42,7 @@ module tango.core.Interval;
 
         Time interval multipliers ~ all Tango intervals are based upon 
         microseconds. Note that recent D compilers support arithmetic
-        applied upon Interval members to be passed as an fully typed
+        applied upon Interval members to be passed as a fully-typed
         Interval argument; e.g.
 
         ---
@@ -66,9 +66,9 @@ enum Interval : uint {
                      second   = 1_000_000,
                      minute   = 60_000_000,
 
-                     Microsec = 1, 
-                     Millisec = 1000, 
-                     Second   = 1_000_000, 
-                     Minute   = 60_000_000
+                     Microsec = micro, 
+                     Millisec = milli, 
+                     Second   = second, 
+                     Minute   = minute
                      };
 
