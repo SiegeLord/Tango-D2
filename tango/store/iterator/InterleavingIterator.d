@@ -12,7 +12,7 @@
 */
 
 
-module tango.store.InterleavingIterator;
+module tango.store.iterator.InterleavingIterator;
 
 private import tango.store.Exception;
 

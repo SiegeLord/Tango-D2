@@ -12,7 +12,7 @@
 */
 
 
-module tango.store.FilteringIterator;
+module tango.store.iterator.FilteringIterator;
 
 private import tango.store.Exception;
 

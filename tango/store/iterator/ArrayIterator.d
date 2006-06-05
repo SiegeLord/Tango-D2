@@ -13,7 +13,7 @@
 */
 
 
-module tango.store.ArrayIterator;
+module tango.store.iterator.ArrayIterator;
 
 private import tango.store.Exception;
 
