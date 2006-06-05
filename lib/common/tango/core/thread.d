@@ -176,9 +176,9 @@ else version( Posix )
             // for OutOfMemoryError plus something to track whether
             // an exception is in-flight?
 
-	        extern (C) void cleanupHandler( void* arg )
+	        static extern (C) void cleanupHandler( void* arg )
 	        {
-                Thread  obj = cast(Thread) arg;
+                Thread  obj = Thread.getThis();
                 assert( obj );
 
                 // NOTE: If the thread terminated abnormally, just set it as
@@ -188,12 +188,12 @@ else version( Posix )
                 obj.m_isRunning = false;
 	        }
 
-	        pthread_cleanup cleanup;
-	        cleanup.push( &cleanupHandler, obj );
-
             obj.m_bstack = getStackBottom();
 	        obj.m_tstack = obj.m_bstack;
 	        pthread_setspecific( obj.sm_this, obj );
+
+	        pthread_cleanup cleanup;
+	        cleanup.push( &cleanupHandler, obj );
 
 	        try
 	        {
@@ -579,7 +579,7 @@ class Thread
         {
             if( uint.max / 1000 < milliseconds )
             {
-                tango.stdc.posix.unitango.core.sleep( milliseconds / 1000 );
+                tango.stdc.posix.unistd.sleep( milliseconds / 1000 );
                 milliseconds %= 1000;
             }
             if( milliseconds > 0 )
