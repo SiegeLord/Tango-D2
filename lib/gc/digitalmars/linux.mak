@@ -1,10 +1,10 @@
-# Makefile to build D runtime library libdmdgc.a for Linux
+# Makefile to build D runtime library digitalmars.a for Linux
 # Designed to work with GNU make
 # Targets:
 #	make
 #		Same as make all
 #	make lib
-#		Build libdmdgc.a
+#		Build digitalmars.a
 #   make doc
 #       Generate documentation
 #	make clean
@@ -18,24 +18,18 @@ MD=mkdir -p
 #CFLAGS=-g -mn -6 -r
 
 DFLAGS=-release -O -inline -version=Posix
-#DFLAGS=-release -O -inline -version=Posix -I../ares
-#DFLAGS=-g -release -version=Posix -I../ares
+#DFLAGS=-g -release -version=Posix
 
 TFLAGS=-O -inline -version=Posix
-#TFLAGS=-O -inline -version=Posix -I../ares
-#TFLAGS=-g -version=Posix -I../ares
+#TFLAGS=-g -version=Posix
 
 DOCFLAGS=-version=DDoc -version=Posix
-#DOCFLAGS=-version=DDoc -version=Posix -I../ares
 
 CC=gcc
 LC=$(AR)
 DC=dmd
 
-DMDGC_DEST=../../..
-INC_DEST=$(DMDGC_DEST)/include/dmdgc
-LIB_DEST=$(DMDGC_DEST)/lib
-DOC_DEST=$(DMDGC_DEST)/doc/dmdgc
+LIB_DEST=..
 
 .SUFFIXES: .asm .c .cpp .d .html .o
 
@@ -52,13 +46,13 @@ DOC_DEST=$(DMDGC_DEST)/doc/dmdgc
 	$(DC) -c $(DFLAGS) $< -of$@
 
 .d.html:
-	$(DC) -c -o- $(DOCFLAGS) -Df$*.html dmdgc.ddoc $<
+	$(DC) -c -o- $(DOCFLAGS) -Df$*.html $<
+#	$(DC) -c -o- $(DOCFLAGS) -Df$*.html digitalmars.ddoc $<
 
 targets : lib doc
 all     : lib doc
-dmdgc   : lib
-lib     : libdmdgc.a
-doc     : dmdgc.doc
+lib     : digitalmars.a
+doc     : digitalmars.doc
 
 ######################################################
 
@@ -75,11 +69,11 @@ ALL_DOCS=
 
 ######################################################
 
-libdmdgc.a : $(ALL_OBJS)
+digitalmars.a : $(ALL_OBJS)
 	$(RM) $@
 	$(LC) -r $@ $(ALL_OBJS)
 
-dmdgc.doc : $(ALL_DOCS)
+digitalmars.doc : $(ALL_DOCS)
 	echo No documentation available.
 
 ######################################################
@@ -88,8 +82,8 @@ clean :
 	$(RM) -r *.di
 	$(RM) $(ALL_OBJS)
 	$(RM) $(ALL_DOCS)
-	$(RM) libdmdgc*.a
+	$(RM) digitalmars*.a
 
 install :
 	$(MD) $(LIB_DEST)
-	$(CP) libdmdgc*.a $(LIB_DEST)/.
+	$(CP) digitalmars*.a $(LIB_DEST)/.

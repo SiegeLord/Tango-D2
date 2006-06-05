@@ -1,10 +1,10 @@
-# Makefile to build D runtime library dmdgc.lib for Win32
+# Makefile to build D runtime library digitalmars.lib for Win32
 # Designed to work with DigitalMars make
 # Targets:
 #	make
 #		Same as make all
 #	make lib
-#		Build dmdgc.lib
+#		Build digitalmars.lib
 #   make doc
 #       Generate documentation
 #	make clean
@@ -29,10 +29,7 @@ CC=dmc
 LC=lib
 DC=dmd
 
-DMDGC_DEST=..\..\..
-INC_DEST=$(DMDGC_DEST)\include\dmdgc
-LIB_DEST=$(DMDGC_DEST)\lib
-DOC_DEST=$(DMDGC_DEST)\doc\dmdgc
+LIB_DEST=..
 
 .DEFAULT: .asm .c .cpp .d .html .obj
 
@@ -49,13 +46,13 @@ DOC_DEST=$(DMDGC_DEST)\doc\dmdgc
 	$(DC) -c $(DFLAGS) $< -of$@
 
 .d.html:
-	$(DC) -c -o- $(DOCFLAGS) -Df$*.html dmdgc.ddoc $<
+	$(DC) -c -o- $(DOCFLAGS) -Df$*.html $<
+#	$(DC) -c -o- $(DOCFLAGS) -Df$*.html digitalmars.ddoc $<
 
 targets : lib doc
 all     : lib doc
-dmdgc   : lib
-lib     : dmdgc.lib
-doc     : dmdgc.doc
+lib     : digitalmars.lib
+doc     : digitalmars.doc
 
 ######################################################
 
@@ -72,11 +69,11 @@ ALL_DOCS=
 
 ######################################################
 
-dmdgc.lib : $(ALL_OBJS)
+digitalmars.lib : $(ALL_OBJS)
 	$(RM) $@
 	$(LC) -c -n $@ $(ALL_OBJS)
 
-dmdgc.doc : $(ALL_DOCS)
+digitalmars.doc : $(ALL_DOCS)
 	@echo No documentation available.
 
 ######################################################
@@ -85,8 +82,8 @@ clean :
 	$(RM) /s *.di
 	$(RM) $(ALL_OBJS)
 	$(RM) $(ALL_DOCS)
-	$(RM) dmdgc*.lib
+	$(RM) digitalmars*.lib
 
 install :
 	$(MD) $(LIB_DEST)
-	$(CP) dmdgc*.lib $(LIB_DEST)\.
+	$(CP) digitalmars*.lib $(LIB_DEST)\.
