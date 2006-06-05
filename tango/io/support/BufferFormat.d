@@ -44,7 +44,8 @@ private import  tango.convert.Format,
 
 private import  tango.io.support.BufferCodec;
 
-private import  tango.io.model.IBuffer;
+private import  tango.io.model.IBuffer,
+                tango.io.model.IConduit;
 
 
 /*******************************************************************************
@@ -61,7 +62,7 @@ class BufferFormatT(T) : FormatClassT!(T)
 {
         private T[]             tail;
         private bool            flush;
-        private IBuffer         buffer;
+        private IBuffer         target;
         private Importer        importer;
 
         /**********************************************************************
@@ -74,16 +75,16 @@ class BufferFormatT(T) : FormatClassT!(T)
 
         **********************************************************************/
 
-        this (IBuffer buffer, bool flush = false, T[] tail = null)
+        this (IBuffer target, bool flush = false, T[] tail = null)
         {
                 // configure the formatter
                 super (&write, &render, &Double.format);
 
                 // hook up a unicode converter
-                importer = new UnicodeImporter!(T)(buffer);
+                importer = new UnicodeImporter!(T)(target);
 
                 // save buffer and tail references
-                this.buffer = buffer;
+                this.target = target;
                 this.flush = flush;
                 this.tail = tail;
         }
@@ -94,9 +95,20 @@ class BufferFormatT(T) : FormatClassT!(T)
 
         **********************************************************************/
 
-        IBuffer getBuffer ()
+        IBuffer buffer ()
         {
-                return buffer;
+                return target;
+        }      
+
+        /**********************************************************************
+
+                return the associated conduit
+
+        **********************************************************************/
+
+        IConduit conduit ()
+        {
+                return target.getConduit();
         }      
 
         /**********************************************************************
@@ -119,10 +131,10 @@ class BufferFormatT(T) : FormatClassT!(T)
         private void render ()
         {
                 if (tail.length)
-                    buffer.append (tail);
+                    target.append (tail);
 
                 if (flush)
-                    buffer.flush ();
+                    target.flush ();
         }      
 }
 

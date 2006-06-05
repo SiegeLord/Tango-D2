@@ -1,6 +1,6 @@
 /*******************************************************************************
 
-        @file Print.d
+        @file Stdout.d
         
         Copyright (c) 2004 Kris Bell
         
@@ -37,20 +37,18 @@
 
 *******************************************************************************/
 
-module tango.io.Print;
+module tango.io.Stdout;
 
 private import tango.io.Console;
 
 private import tango.io.support.BufferFormat;
 
 // the global formatters for console output
-public static BufferFormat      Print, 
-                                Error,
-                                Println;
+public static BufferFormat Stdout, 
+                           Stderr;
 
 static this()
 {
-        Error   = new BufferFormat (Cerr, true);
-        Print   = new BufferFormat (Cout, true);
-        Println = new BufferFormat (Cout, true, "\n");
+        Stdout = new BufferFormat (Cerr, true);
+        Stderr = new BufferFormat (Cout, true);
 }

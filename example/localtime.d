@@ -4,7 +4,7 @@
         
 *******************************************************************************/
 
-private import tango.io.Print;
+private import tango.io.Stdout;
 
 private import tango.core.Epoch;
 
@@ -29,16 +29,16 @@ void main ()
             tz = -tz, sign = '-';
 
         // format fields
-        Println ("%.3s %.3s %02d %02d:%02d:%02d GMT%c%02d%02d %d",
-                 fields.toDowName,
-                 fields.toMonthName,
-                 fields.day,
-                 fields.hour, 
-                 fields.min,
-                 fields.sec,
-                 sign,
-                 tz / 60,
-                 tz % 60,
-                 fields.year
-                 );
+        Stdout.println ("%.3s %.3s %02d %02d:%02d:%02d GMT%c%02d%02d %d",
+                        fields.toDowName,
+                        fields.toMonthName,
+                        fields.day,
+                        fields.hour, 
+                        fields.min,
+                        fields.sec,
+                        sign,
+                        tz / 60,
+                        tz % 60,
+                        fields.year
+                        );
 }

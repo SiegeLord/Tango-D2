@@ -54,6 +54,8 @@ private import  tango.convert.Type,
 
 struct FormatStructT(T)
 {       
+        public  alias print opCall;
+
         private alias IntegerT!(T) Integer;
 
         private alias Integer.Flags Flags;
@@ -82,6 +84,10 @@ struct FormatStructT(T)
 
         mixin Type.TextType!(T);
 
+        version (Posix)
+                 private static T[] newline = "\n";
+             else
+                 private static T[] newline = "\r\n";
 
         /**********************************************************************
 
@@ -141,7 +147,7 @@ struct FormatStructT(T)
 
         ***********************************************************************/
 
-        int opCall (T[] format, TypeInfo[] arguments, va_list argptr)
+        int print (T[] format, TypeInfo[] arguments, va_list argptr, bool nl = false)
         {      
                 int length;
 
@@ -185,6 +191,11 @@ struct FormatStructT(T)
                    meta = null;
                    }
 
+                // add an optional newline
+                if (nl)
+                    length += sink (newline, TextType);
+
+                // render the output?
                 if (close)
                     close();
 
@@ -198,7 +209,7 @@ struct FormatStructT(T)
 
         ***********************************************************************/
 
-        int opCall (T[] format, void* src, uint bytes, uint type)
+        int print (T[] format, void* src, uint bytes, uint type)
         {
                 meta = format;
                 int length = emit (src, bytes, type);
@@ -673,7 +684,9 @@ alias FormatStructT!(char) FormatStruct;
 
 class FormatClassT(T)
 {
-        alias FormatStructT!(T) Format;
+        public  alias print     opCall;
+
+        package alias FormatStructT!(T) Format;
 
         private T[128]          tmp;
         private Format          format;
@@ -691,9 +704,18 @@ class FormatClassT(T)
 
         **********************************************************************/
 
-        int opCall (T[] fmt, ...)
+        int print (T[] fmt, ...)
         {
-                return format (fmt, _arguments, _argptr);
+                return format.print (fmt, _arguments, _argptr);
+        }
+
+        /**********************************************************************
+
+        **********************************************************************/
+
+        int println (T[] fmt, ...)
+        {
+                return format.print (fmt, _arguments, _argptr, true);
         }
 }
 
