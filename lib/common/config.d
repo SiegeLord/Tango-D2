@@ -10,11 +10,11 @@ version( DigitalMars )
 {
     version( Windows )
     {
-        const char[] lib = "tango.lib";
+        const char[] lib = "common.lib";
     }
     else version( Posix )
     {
-        const char[] lib = "libtango.a";
+        const char[] lib = "common.a";
     }
     else
     {

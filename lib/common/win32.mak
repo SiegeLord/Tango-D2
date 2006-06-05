@@ -1,10 +1,10 @@
-# Makefile to build D runtime library tango.lib for Win32
+# Makefile to build D runtime library common.lib for Win32
 # Designed to work with DigitalMars make
 # Targets:
 #	make
 #		Same as make all
 #	make lib
-#		Build tango.lib
+#		Build common.lib
 #   make doc
 #       Generate documentation
 #	make clean
@@ -30,9 +30,10 @@ LC=lib
 DC=dmd
 
 TANGO_DEST=..\..
-INC_DEST=$(TANGO_DEST)\tango\core
+SUB_PATH=tango
+INC_DEST=$(TANGO_DEST)\$(SUB_PATH)
 LIB_DEST=$(TANGO_DEST)\lib
-DOC_DEST=$(TANGO_DEST)\doc\tango\core
+DOC_DEST=$(TANGO_DEST)\doc\$(SUB_PATH)
 
 .DEFAULT: .asm .c .cpp .d .html .obj
 
@@ -46,8 +47,8 @@ DOC_DEST=$(TANGO_DEST)\doc\tango\core
 	$(CC) -c $(CFLAGS) $< -o$@
 
 .d.obj:
-	$(DC) -c $(DFLAGS) $< -of$@
-#	$(DC) -c $(DFLAGS) -Hf$*.di $< -of$@
+	$(DC) -c $(DFLAGS) -Hf$*.di $< -of$@
+#	$(DC) -c $(DFLAGS) $< -of$@
 
 .d.html:
 	$(DC) -c -o- $(DOCFLAGS) -Df$*.html $<
@@ -55,39 +56,53 @@ DOC_DEST=$(TANGO_DEST)\doc\tango\core
 
 targets : lib doc
 all     : lib doc
-tango   : lib
-lib     : tango.lib
-doc     : tango.doc
+common  : lib
+lib     : common.lib
+doc     : common.doc
 
 ######################################################
 
+OBJ_CONVERT= \
+    convert\dtoa.obj
+
 OBJ_CORE= \
-    exception.obj \
-    memory.obj \
-    thread.obj \
-    win32.obj
+    core\exception.obj \
+    core\memory.obj \
+    core\thread.obj
+
+OBJ_OS= \
+    os\windows\c\windows.obj
 
 ALL_OBJS= \
-    $(OBJ_CORE)
+    $(OBJ_CONVERT) \
+    $(OBJ_CORE) \
+    $(OBJ_OS)
 
 ######################################################
 
 DOC_CORE= \
-    exception.html \
-    memory.html \
-    thread.html
+    core\exception.html \
+    core\memory.html \
+    core\thread.html
 
 ALL_DOCS= \
     $(DOC_CORE)
 
 ######################################################
 
-tango.lib : $(ALL_OBJS)
+common.lib : $(ALL_OBJS)
 	$(RM) $@
 	$(LC) -c -n $@ $(ALL_OBJS)
 
-tango.doc : $(ALL_DOCS)
+common.doc : $(ALL_DOCS)
 	@echo Documentation generated.
+
+######################################################
+
+### os\windows\c
+
+os\windows\c\windows.obj : os\windows\c\windows.d
+	$(DC) -c $(DFLAGS) os\windows\c\windows.d -of$@
 
 ######################################################
 
@@ -95,7 +110,7 @@ clean :
 	$(RM) /s *.di
 	$(RM) $(ALL_OBJS)
 	$(RM) $(ALL_DOCS)
-	$(RM) tango*.lib
+	$(RM) common*.lib
 
 install :
 	$(MD) $(INC_DEST)
@@ -103,4 +118,4 @@ install :
 	$(MD) $(DOC_DEST)
 	$(CP) /s *.html $(DOC_DEST)\.
 	$(MD) $(LIB_DEST)
-	$(CP) tango*.lib $(LIB_DEST)\.
+	$(CP) common*.lib $(LIB_DEST)\.
