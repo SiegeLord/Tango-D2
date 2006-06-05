@@ -46,7 +46,7 @@ private
 
 private
 {
-    alias void function( char[] file, uint line ) assertHandlerType;
+    alias void function( char[] file, uint line, char[] msg = null ) assertHandlerType;
     alias bool function( Object obj ) collectHandlerType;
 
     assertHandlerType   assertHandler   = null;
@@ -79,6 +79,11 @@ class AssertException : Exception
     this( char[] file, size_t line )
     {
         super( "Assertion failure", file, line );
+    }
+
+    this( char[] msg, char[] file, size_t line )
+    {
+        super( msg, file, line );
     }
 }
 
@@ -194,6 +199,24 @@ extern (C) void onAssertError( char[] file, uint line )
     if( !assertHandler )
         throw new AssertException( file, line );
     assertHandler( file, line );
+}
+
+
+/**
+ * A callback for assert errors in D.  The user-supplied assert handler will
+ * be called if one has been supplied, otherwise an AssertException will be
+ * thrown.
+ *
+ * Params:
+ *  file = The name of the file that signaled this error.
+ *  line = The line number on which this error occurred.
+ *  msg  = An error message supplied by the user.
+ */
+extern (C) void onAssertErrorMsg( char[] file, uint line, char[] msg )
+{
+    if( !assertHandler )
+        throw new AssertException( msg, file, line );
+    assertHandler( file, line, msg );
 }
 
 

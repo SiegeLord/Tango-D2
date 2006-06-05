@@ -74,7 +74,7 @@ lib : $(ALL_OBJS)
 	make -fwin32.mak lib
 	cd ..\..
 	$(RM) phobos*.lib
-	$(LC) -c -n phobos.lib common\tango.lib compiler\digitalmars\digitalmars.lib gc\digitalmars\digitalmars.lib
+	$(LC) -c -n phobos.lib common\tango\tango.lib compiler\digitalmars\digitalmars.lib gc\digitalmars\digitalmars.lib
 
 doc : $(ALL_DOCS)
 	@echo No documentation available.

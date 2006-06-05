@@ -6,7 +6,7 @@ private
 }
 private
 {
-    alias void(* assertHandlerType)(char[] file, uint line);
+    alias void(* assertHandlerType)(char[] file, uint line, char[] msg = null);
     alias bool(* collectHandlerType)(Object obj);
     assertHandlerType assertHandler = null;
     collectHandlerType collectHandler = null;
@@ -23,6 +23,10 @@ class AssertException : Exception
     this(char[] file, size_t line)
 {
 super("Assertion failure",file,line);
+}
+    this(char[] msg, char[] file, size_t line)
+{
+super(msg,file,line);
 }
 }
 class FinalizeException : Exception
@@ -72,6 +76,10 @@ collectHandler = h;
 extern (C) 
 {
     void onAssertError(char[] file, uint line);
+}
+extern (C) 
+{
+    void onAssertErrorMsg(char[] file, uint line, char[] msg);
 }
 extern (C) 
 {
