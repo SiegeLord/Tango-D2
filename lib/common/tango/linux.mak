@@ -1,10 +1,10 @@
-# Makefile to build D runtime library common.a for Linux
+# Makefile to build D runtime library tango.a for Linux
 # Designed to work with GNU make
 # Targets:
 #	make
 #		Same as make all
 #	make lib
-#		Build common.a
+#		Build tango.a
 #   make doc
 #       Generate documentation
 #	make clean
@@ -32,11 +32,9 @@ CC=gcc
 LC=$(AR)
 DC=dmd
 
-TANGO_DEST=../..
-SUB_PATH=tango
-INC_DEST=$(TANGO_DEST)/$(SUB_PATH)
-LIB_DEST=$(TANGO_DEST)/lib
-DOC_DEST=$(TANGO_DEST)/doc/$(SUB_PATH)
+INC_DEST=../../../tango
+LIB_DEST=..
+DOC_DEST=../../../doc/tango
 
 .SUFFIXES: .asm .c .cpp .d .html .o
 
@@ -59,9 +57,9 @@ DOC_DEST=$(TANGO_DEST)/doc/$(SUB_PATH)
 
 targets : lib doc
 all     : lib doc
-common  : lib
-lib     : common.a
-doc     : common.doc
+tango   : lib
+lib     : tango.a
+doc     : tango.doc
 
 ######################################################
 
@@ -89,11 +87,11 @@ ALL_DOCS= \
 
 ######################################################
 
-common.a : $(ALL_OBJS)
+tango.a : $(ALL_OBJS)
 	$(RM) $@
 	$(LC) -r $@ $(ALL_OBJS)
 
-common.doc : $(ALL_DOCS)
+tango.doc : $(ALL_DOCS)
 	echo Documentation generated.
 
 ######################################################
@@ -102,7 +100,7 @@ clean :
 	$(RM) -r *.di
 	$(RM) $(ALL_OBJS)
 	$(RM) $(ALL_DOCS)
-	$(RM) common*.a
+	$(RM) tango*.a
 
 install :
 	$(MD) $(INC_DEST)
@@ -110,4 +108,4 @@ install :
 	$(MD) $(DOC_DEST)
 	$(CP) -r *.html $(DOC_DEST)/.
 	$(MD) $(LIB_DEST)
-	$(CP) common*.a $(LIB_DEST)/.
+	$(CP) tango*.a $(LIB_DEST)/.

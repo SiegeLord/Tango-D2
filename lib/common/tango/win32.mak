@@ -1,10 +1,10 @@
-# Makefile to build D runtime library common.lib for Win32
+# Makefile to build D runtime library tango.lib for Win32
 # Designed to work with DigitalMars make
 # Targets:
 #	make
 #		Same as make all
 #	make lib
-#		Build common.lib
+#		Build tango.lib
 #   make doc
 #       Generate documentation
 #	make clean
@@ -29,11 +29,9 @@ CC=dmc
 LC=lib
 DC=dmd
 
-TANGO_DEST=..\..
-SUB_PATH=tango
-INC_DEST=$(TANGO_DEST)\$(SUB_PATH)
-LIB_DEST=$(TANGO_DEST)\lib
-DOC_DEST=$(TANGO_DEST)\doc\$(SUB_PATH)
+INC_DEST=..\..\..\tango
+LIB_DEST=..
+DOC_DEST=..\..\..\doc\tango
 
 .DEFAULT: .asm .c .cpp .d .html .obj
 
@@ -56,9 +54,9 @@ DOC_DEST=$(TANGO_DEST)\doc\$(SUB_PATH)
 
 targets : lib doc
 all     : lib doc
-common  : lib
-lib     : common.lib
-doc     : common.doc
+tango   : lib
+lib     : tango.lib
+doc     : tango.doc
 
 ######################################################
 
@@ -90,11 +88,11 @@ ALL_DOCS= \
 
 ######################################################
 
-common.lib : $(ALL_OBJS)
+tango.lib : $(ALL_OBJS)
 	$(RM) $@
 	$(LC) -c -n $@ $(ALL_OBJS)
 
-common.doc : $(ALL_DOCS)
+tango.doc : $(ALL_DOCS)
 	@echo Documentation generated.
 
 ######################################################
@@ -110,7 +108,7 @@ clean :
 	$(RM) /s *.di
 	$(RM) $(ALL_OBJS)
 	$(RM) $(ALL_DOCS)
-	$(RM) common*.lib
+	$(RM) tango*.lib
 
 install :
 	$(MD) $(INC_DEST)
@@ -118,4 +116,4 @@ install :
 	$(MD) $(DOC_DEST)
 	$(CP) /s *.html $(DOC_DEST)\.
 	$(MD) $(LIB_DEST)
-	$(CP) common*.lib $(LIB_DEST)\.
+	$(CP) tango*.lib $(LIB_DEST)\.
