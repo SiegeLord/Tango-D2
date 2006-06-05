@@ -39,11 +39,10 @@
 
 module tango.io.support.BufferCodec;
 
-private import  tango.io.Buffer;
-
 private import  tango.convert.Type,
                 tango.convert.Unicode;
 
+private import  tango.io.model.IBuffer;
 
 /******************************************************************************
 
