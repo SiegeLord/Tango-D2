@@ -9,6 +9,6 @@ private import lib.common.config;
 private import lib.compiler.config;
 private import lib.gc.config;
 
-pragma( lib, lib.common.config.lib );
-pragma( lib, lib.compiler.config.lib );
-pragma( lib, lib.gc.config.lib );
+pragma( lib, "common\\" ~ lib.common.config.lib );
+pragma( lib, "compiler\\" ~ lib.compiler.config.lib );
+pragma( lib, "gc\\" ~ lib.gc.config.lib );
