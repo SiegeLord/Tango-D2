@@ -19,7 +19,7 @@ private import tango.store.Exception;
 
 private import tango.store.impl.RBPair;
 private import tango.store.impl.RBCell;
-private import tango.store.impl.IteratorImpl;
+private import tango.store.iterator.AbstractIterator;
 private import tango.store.impl.MutableMapImpl;
 private import tango.store.impl.DefaultComparator;
 

@@ -15,7 +15,7 @@
 module tango.store.LinkSeq;
 
 private import tango.store.impl.LLCell;
-private import tango.store.impl.IteratorImpl;
+private import tango.store.iterator.AbstractIterator;
 private import tango.store.impl.MutableSeqImpl;
 
 private import tango.store.model.Seq;
@@ -694,7 +694,7 @@ public class LinkSeqT(T) : MutableSeqImplT!(T), SortableCollectionT!(T)
         }
 
 
-        private static class CellIterator(T) : IteratorImplT!(T)
+        private static class CellIterator(T) : AbstractIteratorT!(T)
         {
                 private LLCell  cell,
                                 start;

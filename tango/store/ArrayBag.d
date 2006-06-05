@@ -18,7 +18,7 @@ module tango.store.ArrayBag;
 private import tango.store.Exception;
 
 private import tango.store.impl.CLCell;
-private import tango.store.impl.IteratorImpl;
+private import tango.store.iterator.AbstractIterator;
 private import tango.store.impl.MutableBagImpl;
 
 private import tango.store.model.Predicate;
@@ -529,7 +529,7 @@ public class ArrayBagT(T) : MutableBagImplT!(T)
 
 
 
-        static class ArrayIterator(T) : IteratorImplT!(T)
+        static class ArrayIterator(T) : AbstractIteratorT!(T)
         {
                 private CLCell  cell;
                 private T[]     buff;

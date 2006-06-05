@@ -20,7 +20,7 @@ private import tango.store.Exception;
 
 private import tango.store.impl.LLCell;
 private import tango.store.impl.LLPair;
-private import tango.store.impl.IteratorImpl;
+private import tango.store.iterator.AbstractIterator;
 private import tango.store.impl.MutableMapImpl;
 
 private import tango.store.model.Predicate;

@@ -20,7 +20,7 @@ private import tango.convert.Integer;
 private import tango.store.Exception;
 
 private import tango.store.impl.LLCell;
-private import tango.store.impl.IteratorImpl;
+private import tango.store.iterator.AbstractIterator;
 private import tango.store.impl.MutableSetImpl;
 
 private import tango.store.model.Set;
@@ -499,7 +499,7 @@ public class HashSetT(T) : MutableSetImplT!(T), HashTableParams
 
 
 
-        private static class CellIterator(T) : IteratorImplT!(T)
+        private static class CellIterator(T) : AbstractIteratorT!(T)
         {
                 private int             row;
                 private LLCell          cell;

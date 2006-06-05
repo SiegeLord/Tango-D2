@@ -1,5 +1,5 @@
 /*
- File: IteratorImpl.d
+ File: AbstractIterator.d
 
  Originally written by Doug Lea and released into the public domain. 
  Thanks for the assistance and support of Sun Microsystems Labs, Agorics 
@@ -13,7 +13,7 @@
 */
 
 
-module tango.store.impl.IteratorImpl;
+module tango.store.iterator.AbstractIterator;
 
 private import tango.store.Exception;
 
@@ -31,7 +31,7 @@ private import tango.convert.Integer;
  * <P> For an introduction to this package see <A HREF="index.html"> Overview </A>.
 **/
 
-public abstract class IteratorImplT(T) : CollectionIteratorT!(T)
+public abstract class AbstractIteratorT(T) : CollectionIteratorT!(T)
 {
         /**
          * The collection being enumerated
@@ -115,7 +115,7 @@ public abstract class IteratorImplT(T) : CollectionIteratorT!(T)
 }
 
 
-public abstract class MapIteratorImplT(K, T) : IteratorImplT!(T), CollectionMapIteratorT!(K, T) 
+public abstract class MapIteratorImplT(K, T) : AbstractIteratorT!(T), CollectionMapIteratorT!(K, T) 
 {
         protected this (MutableCollectionT!(T) c)
         {

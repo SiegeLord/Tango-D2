@@ -16,7 +16,7 @@
 module tango.store.TreeBag;
 
 private import tango.store.impl.RBCell;
-private import tango.store.impl.IteratorImpl;
+private import tango.store.iterator.AbstractIterator;
 private import tango.store.impl.MutableBagImpl;
 private import tango.store.impl.DefaultComparator;
 
@@ -433,7 +433,7 @@ public class TreeBagT(T) : MutableBagImplT!(T), ElementSortedCollectionT!(T)
          *
          * <P> For an introduction to this package see <A HREF="index.html"> Overview </A>.
         **/
-        private static class CellIterator(T) : IteratorImplT!(T)
+        private static class CellIterator(T) : AbstractIteratorT!(T)
         {
                 private RBCell  cell,
                                 start;

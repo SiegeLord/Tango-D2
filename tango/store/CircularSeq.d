@@ -15,7 +15,7 @@
 module tango.store.CircularSeq;
 
 private import tango.store.impl.CLCell;
-private import tango.store.impl.IteratorImpl;
+private import tango.store.iterator.AbstractIterator;
 private import tango.store.impl.MutableSeqImpl;
 
 private import tango.store.model.Seq;
@@ -711,7 +711,7 @@ public class CircularSeqT(T) : MutableSeqImplT!(T)
         }
 
 
-        static class CellIterator(T) : IteratorImplT!(T)
+        static class CellIterator(T) : AbstractIteratorT!(T)
         {
                 private CLCell  cell,
                                 start;

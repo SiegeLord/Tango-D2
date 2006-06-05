@@ -15,7 +15,7 @@
         
 module tango.store.ArraySeq;
 
-private import tango.store.impl.IteratorImpl;
+private import tango.store.iterator.AbstractIterator;
 private import tango.store.impl.MutableSeqImpl;
 
 private import tango.store.model.Seq;
@@ -850,7 +850,7 @@ public class ArraySeqT(T) : MutableSeqImplT!(T), SortableCollectionT!(T)
          *
          * <P> For an introduction to this package see <A HREF="index.html"> Overview </A>.
         **/
-        static class ArrayIterator(T) : IteratorImplT!(T)
+        static class ArrayIterator(T) : AbstractIteratorT!(T)
         {
                 private T[]             array;
                 private int             row = -1;
