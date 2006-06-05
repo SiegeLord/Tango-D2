@@ -10,11 +10,11 @@ version( DigitalMars )
 {
     version( Windows )
     {
-        const char[] lib = "dmdrt.lib";
+        const char[] lib = "digitalmars.lib";
     }
     else version( Posix )
     {
-        const char[] lib = "libdmdrt.a";
+        const char[] lib = "digitalmars.a";
     }
     else
     {

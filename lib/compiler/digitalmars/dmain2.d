@@ -31,6 +31,7 @@ extern (C) void _moduleUnitTests();
  * against this library.
  */
 extern (C) void onAssertError( char[] file, uint line );
+extern (C) void onAssertErrorMsg( char[] file, uint line, char[] msg );
 extern (C) void onArrayBoundsError( char[] file, uint line );
 extern (C) void onSwitchError( char[] file, uint line );
 // this function is called from the utf module
@@ -42,6 +43,11 @@ extern (C) void onSwitchError( char[] file, uint line );
 extern (C) void _d_assert( char[] file, uint line )
 {
     onAssertError( file, line );
+}
+
+extern (C) static void _d_assert_msg( char[] msg, char[] file, uint line )
+{
+    onAssertErrorMsg( file, line, msg );
 }
 
 extern (C) void _d_array_bounds( char[] file, uint line )

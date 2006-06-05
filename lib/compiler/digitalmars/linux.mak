@@ -1,10 +1,10 @@
-# Makefile to build D runtime library libdmdrt.a for Linux
+# Makefile to build D runtime library digitalmars.a for Linux
 # Designed to work with GNU make
 # Targets:
 #	make
 #		Same as make all
 #	make lib
-#		Build libdmdrt.a
+#		Build digitalmars.a
 #   make doc
 #       Generate documentation
 #	make clean
@@ -32,10 +32,7 @@ CC=gcc
 LC=$(AR)
 DC=dmd
 
-DMDRT_DEST=../../..
-INC_DEST=$(DMDRT_DEST)/include/dmdrt
-LIB_DEST=$(DMDRT_DEST)/lib
-DOC_DEST=$(DMDRT_DEST)/doc/dmdrt
+LIB_DEST=..
 
 .SUFFIXES: .asm .c .cpp .d .html .o
 
@@ -52,13 +49,12 @@ DOC_DEST=$(DMDRT_DEST)/doc/dmdrt
 	$(DC) -c $(DFLAGS) $< -of$@
 
 .d.html:
-	$(DC) -c -o- $(DOCFLAGS) -Df$*.html dmdrt.ddoc $<
+	$(DC) -c -o- $(DOCFLAGS) -Df$*.html digitalmars.ddoc $<
 
 targets : lib doc
 all     : lib doc
-dmdrt   : lib
-lib     : libdmdrt.a
-doc     : dmdrt.doc
+lib     : digitalmars.a
+doc     : digitalmars.doc
 
 ######################################################
 
@@ -152,11 +148,11 @@ ALL_DOCS=
 
 ######################################################
 
-libdmdrt.a : $(ALL_OBJS)
+digitalmars.a : $(ALL_OBJS)
 	$(RM) $@
 	$(LC) -r $@ $(ALL_OBJS)
 
-dmdrt.doc : $(ALL_DOCS)
+digitalmars.doc : $(ALL_DOCS)
 	echo No documentation available.
 
 ######################################################
@@ -165,8 +161,8 @@ clean :
 	$(RM) -r *.di
 	$(RM) $(ALL_OBJS)
 	$(RM) $(ALL_DOCS)
-	$(RM) libdmdrt*.a
+	$(RM) digitalmars*.a
 
 install :
 	$(MD) $(LIB_DEST)
-	$(CP) libdmdrt*.a $(LIB_DEST)/.
+	$(CP) digitalmars*.a $(LIB_DEST)/.
