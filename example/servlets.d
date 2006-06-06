@@ -236,7 +236,7 @@ void testServer (IProvider provider)
         server.start ();
 
         // send this thread to sleep for ever ...
-        System.sleep (Interval.second * 3);
+        System.sleep ();
 
         // should never get here
         mainLogger.info ("halting server");

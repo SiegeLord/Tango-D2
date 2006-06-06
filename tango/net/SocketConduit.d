@@ -115,6 +115,17 @@ class SocketConduit : Socket, ISocketReader
         }
 
         /***********************************************************************
+
+                Is this socket still alive?
+
+        ***********************************************************************/
+
+        bool isAlive()
+        {
+                return super.isAlive();
+        }
+
+        /***********************************************************************
         
                 Construct this SocketConduit with the given socket handle;
                 this is for FreeList and ServerSocket support.

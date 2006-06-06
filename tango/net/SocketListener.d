@@ -153,11 +153,13 @@ class SocketListener : Thread, IListener
                            buffer.clear ();
 
                            // wait for incoming content
-                           reader.read (buffer);
+                           auto result = reader.read (buffer);
 
                            // time to quit? Note that a v0.95 compiler bug 
                            // prohibits 'break' from exiting the try{} block
-                           if (quit || Socket.isHalting ())
+//                         if (quit || Socket.isHalting ())
+                           if (quit || 
+                              (result is Socket.Eof && !reader.isAlive))
                                lives = 0;
                            else
                               {
@@ -167,12 +169,13 @@ class SocketListener : Thread, IListener
                               }
                            } catch (Object x)
                                     // time to quit?
-                                    if (quit || Socket.isHalting ())
+//                                    if (quit || Socket.isHalting ())
+                                    if (quit || !reader.isAlive)
                                         break;
                                     else
                                        {
                                        exception (x.toString);
-                                       if (--lives == 0)
+                                       if (--lives is 0)
                                            exception ("listener thread aborting");
                                        }
         }
