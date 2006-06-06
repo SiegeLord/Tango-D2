@@ -17,17 +17,14 @@ private import  tango.text.LineIterator;
 
 void main (char[][] args)
 {
-        if (args.length == 2)
+        if (args.length is 2)
            {
            // open a file for reading
            auto file = new FileConduit (args[1]);
 
-           // create an iterator and bind it to the file
-           auto line = new LineIterator (file);
-
            // process file one line at a time
-           while (line.next)
-                  Cout (line.get) .newline;
+           foreach (line; new LineIterator (file))
+                    Cout (line).newline;
            }
         else
            Cout ("usage: lineio filename");
