@@ -88,6 +88,6 @@ struct System
 
                    version (Win32)
                             Sleep (interval / Interval.milli);
-                   } while (interval is uint.max);
+                   } while (interval is Interval.max);
         }
 }
