@@ -35,6 +35,7 @@
 
         // for sleep()
 import  tango.core.System;
+import  tango.core.Interval;
 
         // for InternetAddress et. al.
 import  tango.net.Uri,
@@ -226,7 +227,7 @@ void testServer (IProvider provider)
         mainLogger.info ("starting server");
 
         // bind to port 80 on a local address
-        InternetAddress addr = new InternetAddress (80);
+        InternetAddress addr = new InternetAddress (8080);
 
         // create a (1 thread) server using the IProvider to service requests
         HttpServer server = new HttpServer (provider, addr, 1, mainLogger);
@@ -235,7 +236,7 @@ void testServer (IProvider provider)
         server.start ();
 
         // send this thread to sleep for ever ...
-        System.sleep ();
+        System.sleep (Interval.second * 3);
 
         // should never get here
         mainLogger.info ("halting server");
@@ -284,7 +285,7 @@ void testServletEngine ()
 int main ()
 {   
         BasicConfigurator.configure ();
-        mainLogger = Logger.getLogger ("tango.servlets");
+        mainLogger = Logger.getLogger ("tango.servlets.foo");
         mainLogger.setLevel (mainLogger.Level.Info);
 
         try {
