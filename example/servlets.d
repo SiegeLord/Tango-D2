@@ -33,21 +33,20 @@
 
 *******************************************************************************/
 
-        // for a variety of servlet IO
-import  tango.net.Uri,
-        tango.io.Exception,
-        tango.io.protocol.DisplayWriter;
-
         // for sleep()
 import  tango.core.System;
 
-        // for InternetAddress
-import  tango.net.Socket;
+        // for InternetAddress et. al.
+import  tango.net.Uri,
+        tango.net.Socket;
 
         //for logging
 import  tango.log.Admin,
         tango.log.Logger,
         tango.log.Configurator;
+
+        // for HTTP responses
+import  tango.io.protocol.DisplayWriter;
 
         // for testing the http server
 import  mango.net.http.server.HttpServer;
@@ -56,6 +55,7 @@ import  mango.net.http.server.HttpServer;
 import  mango.net.servlet.Servlet,
         mango.net.servlet.ServletContext,
         mango.net.servlet.ServletProvider;
+
 
         // setup a logger for module scope
 private Logger mainLogger;
