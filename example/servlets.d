@@ -285,7 +285,7 @@ void testServletEngine ()
 int main ()
 {   
         BasicConfigurator.configure ();
-        mainLogger = Logger.getLogger ("tango.servlets.foo");
+        mainLogger = Logger.getLogger ("tango.servlets");
         mainLogger.setLevel (mainLogger.Level.Info);
 
         try {
