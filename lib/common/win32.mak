@@ -117,7 +117,7 @@ clean :
 
 install :
 	$(MD) $(INC_DEST)
-	$(CP) /s *.di $(INC_DEST)\.
+	$(CP) /s *.di $(INC_DEST)\*.d
 	$(MD) $(DOC_DEST)
 	$(CP) /s *.html $(DOC_DEST)\.
 	$(MD) $(LIB_DEST)

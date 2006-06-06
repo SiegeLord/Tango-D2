@@ -40,6 +40,12 @@
 module tango.core.memory;
 
 
+version( build )
+{
+    pragma( nolink );
+}
+
+
 private
 {
     extern (C) void gc_init();

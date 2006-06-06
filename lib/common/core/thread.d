@@ -42,6 +42,12 @@
 module tango.core.thread;
 
 
+version( build )
+{
+    pragma( nolink );
+}
+
+
 /**
  * All exceptions thrown from this module derive from this class.
  */
