@@ -103,8 +103,9 @@ class ServerThread : Thread
                                server.service (this, sc);
                            else
                               // server may be halting ...
-                              if (! SocketConduit.isHalting)
-                                    server.getLogger.error ("Socket accept() failed");
+//                              if (! SocketConduit.isHalting)
+                              if (socket.isAlive)
+                                  server.getLogger.error ("Socket accept() failed");
 
                            } catch (IOException x)
                                    {

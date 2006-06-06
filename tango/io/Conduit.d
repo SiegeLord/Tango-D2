@@ -460,10 +460,9 @@ class ConduitFilter : IConduitFilter
 *******************************************************************************/
 
 private static bool halting;
-extern (C) int printf(char*, ...);
+
 private static ~this()
 {
-        printf ("halting .... \n");
         halting = true;
 }
 

@@ -461,7 +461,7 @@ class Socket : Conduit
         private AddressFamily _family;
 
         version(Win32)
-                private bit _blocking = false;
+                private bool _blocking = false;
         
         /***********************************************************************
 
@@ -897,6 +897,18 @@ class Socket : Conduit
         }
                          
         /***********************************************************************
+
+
+        ***********************************************************************/
+
+        bool isAlive()
+        {
+                int type, typesize = type.sizeof;
+                return cast(bool) (getsockopt (sock, SOL_SOCKET, SO_TYPE, cast(char*) &type, &typesize) != SOCKET_ERROR);
+        }
+        
+        
+        /***********************************************************************
         
                 MANGO: moved this out from the above constructor so that it
                 can be called from the FreeList version of SocketConduit
@@ -1009,7 +1021,7 @@ class Socket : Conduit
 
         ***********************************************************************/
 
-        protected bit blocking()
+        protected bool blocking()
         {
                 version(Win32)
                 {
@@ -1028,7 +1040,7 @@ class Socket : Conduit
 
         ***********************************************************************/
 
-        protected void blocking(bit byes)
+        protected void blocking(bool byes)
         {
                 version(Win32)
                 {
@@ -1062,18 +1074,6 @@ class Socket : Conduit
         protected AddressFamily addressFamily()
         {
                 return _family;
-        }
-        
-        
-        /***********************************************************************
-
-
-        ***********************************************************************/
-
-        protected bit isAlive()
-        {
-                int type, typesize = type.sizeof;
-                return cast(bool) (getsockopt (sock, SOL_SOCKET, SO_TYPE, cast(char*) &type, &typesize) != SOCKET_ERROR);
         }
         
         
@@ -1667,7 +1667,7 @@ class Socket : Conduit
         ***********************************************************************/
 
         /+
-        bit poll (events)
+        bool poll (events)
         {
                 int WSAEventSelect(socket_t s, WSAEVENT hEventObject, int lNetworkEvents); // Winsock 2 ?
                 int poll(pollfd* fds, int nfds, int timeout); // Unix ?
@@ -1845,7 +1845,7 @@ class InternetHost
 
         ***********************************************************************/
 
-        bit getHostByName(char[] name)
+        bool getHostByName(char[] name)
         {
                 char[1024] tmp;
                 
@@ -1863,7 +1863,7 @@ class InternetHost
 
         ***********************************************************************/
 
-        bit getHostByAddr(uint addr)
+        bool getHostByAddr(uint addr)
         {
                 uint x = htonl(addr);
                 hostent* he = gethostbyaddr(&x, 4, cast(int)Socket.AddressFamily.INET);
@@ -1881,7 +1881,7 @@ class InternetHost
         ***********************************************************************/
 
         //shortcut
-        bit getHostByAddr(char[] addr)
+        bool getHostByAddr(char[] addr)
         {
                 char[64] tmp;
                 
