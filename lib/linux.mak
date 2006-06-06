@@ -67,14 +67,14 @@ lib :
 	$(RM) libphobos*.a
 	make -C compiler/digitalmars -flinux.mak lib
 	make -C gc/digitalmars -flinux.mak lib
-	make -C common/tango  -flinux.mak lib
+	make -C common -flinux.mak lib
 	find . -name "*.o" | xargs ar -r libphobos.a
 
 doc : $(ALL_DOCS)
 	echo No documentation available.
 	make -C compiler/digitalmars -flinux.mak doc
 	make -C gc/digitalmars -flinux.mak doc
-	make -C common/tango  -flinux.mak doc
+	make -C common -flinux.mak doc
 
 ######################################################
 
@@ -84,12 +84,12 @@ clean :
 	$(RM) $(ALL_DOCS)
 	make -C compiler/digitalmars -flinux.mak clean
 	make -C gc/digitalmars -flinux.mak clean
-	make -C common/tango -flinux.mak clean
+	make -C common -flinux.mak clean
 #	$(RM) libphobos*.a
 
 install :
 	$(MD) $(LIB_DEST)
 	make -C compiler/digitalmars -flinux.mak clean
 	make -C gc/digitalmars -flinux.mak clean
-	make -C common/tango -flinux.mak clean
+	make -C common -flinux.mak clean
 #	$(CP) libphobos*.a $(LIB_DEST)/.

@@ -70,11 +70,11 @@ lib : $(ALL_OBJS)
 	cd gc\digitalmars
 	make -fwin32.mak lib
 	cd ..\..
-	cd common\tango
+	cd common
 	make -fwin32.mak lib
-	cd ..\..
+	cd ..
 	$(RM) phobos*.lib
-	$(LC) -c -n phobos.lib common\tango\tango.lib compiler\digitalmars\digitalmars.lib gc\digitalmars\digitalmars.lib
+	$(LC) -c -n phobos.lib common\tango.lib compiler\digitalmars\digitalmars.lib gc\digitalmars\digitalmars.lib
 
 doc : $(ALL_DOCS)
 	@echo No documentation available.
@@ -84,9 +84,9 @@ doc : $(ALL_DOCS)
 	cd gc\digitalmars
 	make -fwin32.mak doc
 	cd ..\..
-	cd common\tango
+	cd common
 	make -fwin32.mak doc
-	cd ..\..
+	cd ..
 
 ######################################################
 
@@ -100,9 +100,9 @@ clean :
 	cd gc\digitalmars
 	make -fwin32.mak clean
 	cd ..\..
-	cd common\tango
+	cd common
 	make -fwin32.mak clean
-	cd ..\..
+	cd ..
 #	$(RM) phobos*.lib
 
 install :
@@ -113,7 +113,7 @@ install :
 	cd gc\digitalmars
 	make -fwin32.mak install
 	cd ..\..
-	cd common\tango
+	cd common
 	make -fwin32.mak install
-	cd ..\..
+	cd ..
 #	$(CP) phobos*.lib $(LIB_DEST)\.
