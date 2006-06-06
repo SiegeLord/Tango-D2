@@ -84,11 +84,6 @@ struct FormatStructT(T)
 
         mixin Type.TextType!(T);
 
-        version (Posix)
-                 private static T[] newline = "\n";
-             else
-                 private static T[] newline = "\r\n";
-
         /**********************************************************************
 
                 Default styles for supported styles. This is used to 
@@ -111,7 +106,7 @@ struct FormatStructT(T)
 
         **********************************************************************/
 
-        void ctor (Emitter sink, Close close, T[] workspace, DblFormat dFormat = null)
+        public void ctor (Emitter sink, Close close, T[] workspace, DblFormat dFormat = null)
         {
                 this.sink = sink;
                 this.close = close;
@@ -119,15 +114,20 @@ struct FormatStructT(T)
                 this.workspace = workspace;
         }
 
-        /**********************************************************************
+        /***********************************************************************
+        
+                Emit a newline
 
-                Throw an error
+        ***********************************************************************/
 
-        **********************************************************************/
-
-        static void error (char[] msg)
+        public int newline ()
         {
-                Integer.error(msg);
+                version (Posix)
+                         static T[] Newline = "\n";
+                   else
+                      static T[] Newline = "\r\n";
+
+                return sink (Newline, TextType);
         }
 
         /***********************************************************************
@@ -147,7 +147,7 @@ struct FormatStructT(T)
 
         ***********************************************************************/
 
-        int print (T[] format, TypeInfo[] arguments, va_list argptr, bool nl = false)
+        public int print (T[] format, TypeInfo[] arguments, va_list argptr, bool nl = false)
         {      
                 int length;
 
@@ -193,7 +193,7 @@ struct FormatStructT(T)
 
                 // add an optional newline
                 if (nl)
-                    length += sink (newline, TextType);
+                    length += newline();
 
                 // render the output?
                 if (close)
@@ -209,7 +209,7 @@ struct FormatStructT(T)
 
         ***********************************************************************/
 
-        int print (T[] format, void* src, uint bytes, uint type)
+        public int print (T[] format, void* src, uint bytes, uint type)
         {
                 meta = format;
                 int length = emit (src, bytes, type);
@@ -244,7 +244,7 @@ struct FormatStructT(T)
 
         ***********************************************************************/
 
-        int emit (void* src, uint bytes, uint type)
+        public int emit (void* src, uint bytes, uint type)
         {
                 int     iValue;
                 long    lValue;
@@ -385,6 +385,17 @@ floating:
                 return length;
         }
 
+
+        /**********************************************************************
+
+                Throw an error
+
+        **********************************************************************/
+
+        package static void error (char[] msg)
+        {
+                Integer.error(msg);
+        }
 
         /**********************************************************************
 
