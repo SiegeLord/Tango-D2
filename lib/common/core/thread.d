@@ -66,6 +66,7 @@ version = StackGrowsDown;
 
 private
 {
+    import tango.core.Interval;
     import tango.stdc.string; // for memset
 }
 
@@ -572,27 +573,23 @@ class Thread
      * Suspends the calling thread for at least the supplied time.
      *
      * Params:
-     *  milliseconds = The minimum duration the calling thread should be
-     *                 suspended.
+     *  interval = The minimum duration the calling thread should be
+     *             suspended.  If interval is equal to Interval.max
+     *             then the thread will sleep forever.
      */
-    static void sleep( uint milliseconds )
+    static void sleep( Interval interval = Interval.max )
     {
-        version( Win32 )
+        do
         {
-            Sleep( milliseconds );
-        }
-        else version( Posix )
-        {
-            if( uint.max / 1000 < milliseconds )
+            version( Win32 )
             {
-                tango.stdc.posix.unistd.sleep( milliseconds / 1000 );
-                milliseconds %= 1000;
+                Sleep( interval / Interval.milli );
             }
-            if( milliseconds > 0 )
+            else version( Posix )
             {
-                usleep( milliseconds * 1000 );
+                usleep( interval );
             }
-        }
+        } while( interval == Interval.max );
     }
 
 

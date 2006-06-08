@@ -14,6 +14,7 @@ super(msg);
 version = StackGrowsDown;
 private
 {
+    import tango.core.Interval;
     import tango.stdc.string;
 }
 version (Win32)
@@ -125,7 +126,7 @@ m_call = Call.DG;
 }
     static
 {
-    void sleep(uint milliseconds);
+    void sleep(Interval interval = Interval.max);
 }
     static
 {
