@@ -6,7 +6,7 @@ import tango.os.windows.c.shellapi;
  * Pass on all the real work to the standard main function.
  */
 //extern (C) int main( int argc, char** argv );
-extern (C) int wmain( int argc, wchar** argv );
+extern (C) int wmain( int argc, wchar_t** argv );
 
 extern (Windows) int WinMain( HINSTANCE hInstance,
         	                  HINSTANCE hPrevInstance,

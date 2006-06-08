@@ -1,539 +1,576 @@
-/*
-	Written by Christopher E. Miller
-	Placed into public domain.
-*/
-
-
+/***********************************************************************\
+*                               winsock.d                               *
+*                                                                       *
+*                       Windows API header module                       *
+*                                                                       *
+*                 Translated from MinGW Windows headers                 *
+*                           by Stewart Gordon                           *
+\***********************************************************************/
 module tango.os.windows.c.winsock;
 
-private import tango.stdc.stdint;
-private import tango.os.windows.c.windows;
+/*
+  Definitions for winsock 1.1
 
+  Portions Copyright (c) 1980, 1983, 1988, 1993
+  The Regents of the University of California.  All rights reserved.
 
-extern(Windows):
+  Portions Copyright (c) 1993 by Digital Equipment Corporation.
+ */
 
-alias UINT SOCKET;
-alias int socklen_t;
-
-const SOCKET INVALID_SOCKET = cast(SOCKET)~0;
-const int SOCKET_ERROR = -1;
-
-const int WSADESCRIPTION_LEN = 256;
-const int WSASYS_STATUS_LEN = 128;
-
-struct WSADATA
-{
-	WORD wVersion;
-	WORD wHighVersion;
-	char szDescription[WSADESCRIPTION_LEN + 1];
-	char szSystemStatus[WSASYS_STATUS_LEN + 1];
-	USHORT iMaxSockets;
-	USHORT iMaxUdpDg;
-	char* lpVendorInfo;
-}
-alias WSADATA* LPWSADATA;
-
-
-const int IOCPARM_MASK =  0x7F;
-const int IOC_IN =        cast(int)0x80000000;
-const int FIONBIO =       cast(int)(IOC_IN | ((UINT.sizeof & IOCPARM_MASK) << 16) | (102 << 8) | 126);
-
-
-int WSAStartup(WORD wVersionRequested, LPWSADATA lpWSAData);
-int WSACleanup();
-SOCKET socket(int af, int type, int protocol);
-int ioctlsocket(SOCKET s, int cmd, uint* argp);
-int bind(SOCKET s, sockaddr* name, int namelen);
-int connect(SOCKET s, sockaddr* name, int namelen);
-int listen(SOCKET s, int backlog);
-SOCKET accept(SOCKET s, sockaddr* addr, int* addrlen);
-int closesocket(SOCKET s);
-int shutdown(SOCKET s, int how);
-int getpeername(SOCKET s, sockaddr* name, int* namelen);
-int getsockname(SOCKET s, sockaddr* name, int* namelen);
-int send(SOCKET s, void* buf, int len, int flags);
-int sendto(SOCKET s, void* buf, int len, int flags, sockaddr* to, int tolen);
-int recv(SOCKET s, void* buf, int len, int flags);
-int recvfrom(SOCKET s, void* buf, int len, int flags, sockaddr* from, int* fromlen);
-int getsockopt(SOCKET s, int level, int optname, void* optval, int* optlen);
-int setsockopt(SOCKET s, int level, int optname, void* optval, int optlen);
-uint inet_addr(char* cp);
-int select(int nfds, fd_set* readfds, fd_set* writefds, fd_set* errorfds, timeval* timeout);
-char* inet_ntoa(in_addr ina);
-hostent* gethostbyname(char* name);
-hostent* gethostbyaddr(void* addr, int len, int type);
-protoent* getprotobyname(char* name);
-protoent* getprotobynumber(int number);
-servent* getservbyname(char* name, char* proto);
-servent* getservbyport(int port, char* proto);
-int gethostname(char* name, int namelen);
-int getaddrinfo(char* nodename, char* servname, addrinfo* hints, addrinfo** res);
-void freeaddrinfo(addrinfo* ai);
-int getnameinfo(sockaddr* sa, socklen_t salen, char* host, DWORD hostlen, char* serv, DWORD servlen, int flags);
-
-enum: int
-{
-	WSAEWOULDBLOCK =     10035,
-	WSAEINTR =           10004,
-	WSAHOST_NOT_FOUND =  11001,
+// DRK: This module should not be included if -version=Win32_Winsock2 has
+// been set.  If it has, assert.  I think it's better that way then letting
+// the user believe that it's worked.
+version(Win32_Winsock2) {
+	pragma(msg, "Cannot use tango.os.windows.c.winsock with Win32_Winsock2 defined.");
+	static assert(false);
 }
 
-int WSAGetLastError();
+import tango.os.windows.c.windef;
 
+alias char u_char;
+alias ushort u_short;
+alias uint u_int, u_long, SOCKET;
 
-enum: int
-{
-	AF_UNSPEC =     0,
+const size_t FD_SETSIZE = 64;
 
-	AF_UNIX =       1,
-	AF_INET =       2,
-	AF_IMPLINK =    3,
-	AF_PUP =        4,
-	AF_CHAOS =      5,
-	AF_NS =         6,
-	AF_IPX =        AF_NS,
-	AF_ISO =        7,
-	AF_OSI =        AF_ISO,
-	AF_ECMA =       8,
-	AF_DATAKIT =    9,
-	AF_CCITT =      10,
-	AF_SNA =        11,
-	AF_DECnet =     12,
-	AF_DLI =        13,
-	AF_LAT =        14,
-	AF_HYLINK =     15,
-	AF_APPLETALK =  16,
-	AF_NETBIOS =    17,
-	AF_VOICEVIEW =  18,
-	AF_FIREFOX =    19,
-	AF_UNKNOWN1 =   20,
-	AF_BAN =        21,
-	AF_ATM =        22,
-	AF_INET6 =      23,
-	AF_CLUSTER =    24,
-	AF_12844 =      25,
-	AF_IRDA =       26,
-	AF_NETDES =     28,
-
-	AF_MAX =        29,
-
-
-	PF_UNSPEC     = AF_UNSPEC,
-
-	PF_UNIX =       AF_UNIX,
-	PF_INET =       AF_INET,
-	PF_IMPLINK =    AF_IMPLINK,
-	PF_PUP =        AF_PUP,
-	PF_CHAOS =      AF_CHAOS,
-	PF_NS =         AF_NS,
-	PF_IPX =        AF_IPX,
-	PF_ISO =        AF_ISO,
-	PF_OSI =        AF_OSI,
-	PF_ECMA =       AF_ECMA,
-	PF_DATAKIT =    AF_DATAKIT,
-	PF_CCITT =      AF_CCITT,
-	PF_SNA =        AF_SNA,
-	PF_DECnet =     AF_DECnet,
-	PF_DLI =        AF_DLI,
-	PF_LAT =        AF_LAT,
-	PF_HYLINK =     AF_HYLINK,
-	PF_APPLETALK =  AF_APPLETALK,
-	PF_VOICEVIEW =  AF_VOICEVIEW,
-	PF_FIREFOX =    AF_FIREFOX,
-	PF_UNKNOWN1 =   AF_UNKNOWN1,
-	PF_BAN =        AF_BAN,
-	PF_INET6 =      AF_INET6,
-
-	PF_MAX        = AF_MAX,
+/* shutdown() how types */
+enum : int {
+	SD_RECEIVE,
+	SD_SEND,
+	SD_BOTH
 }
 
-
-enum: int
-{
-	SOL_SOCKET = 0xFFFF,
-}
-
-
-enum: int
-{
-	SO_DEBUG =        0x0001,
-	SO_ACCEPTCONN =   0x0002,
-	SO_REUSEADDR =    0x0004,
-	SO_KEEPALIVE =    0x0008,
-	SO_DONTROUTE =    0x0010,
-	SO_BROADCAST =    0x0020,
-	SO_USELOOPBACK =  0x0040,
-	SO_LINGER =       0x0080,
-	SO_DONTLINGER =   ~SO_LINGER,
-	SO_OOBINLINE =    0x0100,
-	SO_SNDBUF =       0x1001,
-	SO_RCVBUF =       0x1002,
-	SO_SNDLOWAT =     0x1003,
-	SO_RCVLOWAT =     0x1004,
-	SO_SNDTIMEO =     0x1005,
-	SO_RCVTIMEO =     0x1006,
-	SO_ERROR =        0x1007,
-	SO_TYPE =         0x1008,
-	SO_EXCLUSIVEADDRUSE = ~SO_REUSEADDR,
-
-	TCP_NODELAY =    1,
-
-	IP_MULTICAST_LOOP =  0x4,
-	IP_ADD_MEMBERSHIP =  0x5,
-	IP_DROP_MEMBERSHIP = 0x6,
-
-	IPV6_UNICAST_HOPS =    4,
-	IPV6_MULTICAST_IF =    9,
-	IPV6_MULTICAST_HOPS =  10,
-	IPV6_MULTICAST_LOOP =  11,
-	IPV6_ADD_MEMBERSHIP =  12,
-	IPV6_DROP_MEMBERSHIP = 13,
-	IPV6_JOIN_GROUP =      IPV6_ADD_MEMBERSHIP,
-	IPV6_LEAVE_GROUP =     IPV6_DROP_MEMBERSHIP,
-}
-
-
-const uint FD_SETSIZE = 64;
-
-
-struct fd_set
-{
-	UINT fd_count;
+struct FD_SET {
+	u_int              fd_count;
 	SOCKET[FD_SETSIZE] fd_array;
-}
 
-
-// Removes.
-void FD_CLR(SOCKET fd, fd_set* set)
-{
-	uint c = set.fd_count;
-	SOCKET* start = set.fd_array.ptr;
-	SOCKET* stop = start + c;
-
-	for(; start != stop; start++)
-	{
-		if(*start == fd)
-			goto found;
+	static void opCall(SOCKET fd, FD_SET* set) {
+		if (set.fd_count < FD_SETSIZE) set.fd_array[set.fd_count++] = fd;
 	}
-	return; //not found
+}
 
-	found:
-	for(++start; start != stop; start++)
-	{
-		*(start - 1) = *start;
+extern (Pascal) int __WSAFDIsSet(SOCKET, FD_SET*);
+
+void FD_CLR(SOCKET fd, FD_SET* set) {
+	for (u_int i = 0; i < set.fd_count; i++) {
+		if (set.fd_array[i] == fd) {
+			while (i < set.fd_count - 1) {
+				set.fd_array[i] = set.fd_array[i+1];
+				i++;
+			}
+			set.fd_count--;
+			break;
+		}
 	}
-
-	set.fd_count = c - 1;
 }
 
+/+void FD_SET(SOCKET fd, FD_SET* set) {
+	if (set.fd_count < FD_SETSIZE) set.fd_array[set.fd_count++] = fd;
+}+/
 
-// Tests.
-int FD_ISSET(SOCKET fd, fd_set* set)
-{
-	SOCKET* start = set.fd_array.ptr;
-	SOCKET* stop = start + set.fd_count;
-
-	for(; start != stop; start++)
-	{
-		if(*start == fd)
-			return true;
-	}
-	return false;
-}
-
-
-// Adds.
-void FD_SET(SOCKET fd, fd_set* set)
-{
-	uint c = set.fd_count;
-	set.fd_array.ptr[c] = fd;
-	set.fd_count = c + 1;
-}
-
-
-// Resets to zero.
-void FD_ZERO(fd_set* set)
-{
+void FD_ZERO(FD_SET* set) {
 	set.fd_count = 0;
 }
 
+alias __WSAFDIsSet FD_ISSET;
 
-struct linger
-{
-	USHORT l_onoff;
-	USHORT l_linger;
-}
+struct TIMEVAL {
+	int tv_sec;
+	int tv_usec;
 
-
-struct protoent
-{
-	char* p_name;
-	char** p_aliases;
-	SHORT p_proto;
-}
-
-
-struct servent
-{
-	char* s_name;
-	char** s_aliases;
-	SHORT s_port;
-	char* s_proto;
-}
-
-
-/+
-union in6_addr
-{
-	private union _u_t
-	{
-		BYTE[16] Byte;
-		WORD[8] Word;
-	}
-	_u_t u;
-}
-
-
-struct in_addr6
-{
-	BYTE[16] s6_addr;
-}
-+/
-
-
-version( BigEndian )
-{
-	uint16_t htons(uint16_t x)
-	{
-		return x;
-	}
-
-
-	uint32_t htonl(uint32_t x)
-	{
-		return x;
-	}
-}
-else version( LittleEndian )
-{
-	private import tango.core.intrinsic;
-
-
-	uint16_t htons(uint16_t x)
-	{
-		return (x >> 8) | (x << 8);
-	}
-
-
-	uint32_t htonl(uint32_t x)
-	{
-		return bswap(x);
-	}
-}
-else
-{
-	static assert(0);
-}
-
-
-uint16_t ntohs(uint16_t x)
-{
-	return htons(x);
-}
-
-
-uint32_t ntohl(uint32_t x)
-{
-	return htonl(x);
-}
-
-
-enum: int
-{
-	SOCK_STREAM =     1,
-	SOCK_DGRAM =      2,
-	SOCK_RAW =        3,
-	SOCK_RDM =        4,
-	SOCK_SEQPACKET =  5,
-}
-
-
-enum: int
-{
-	IPPROTO_IP =    0,
-	IPPROTO_ICMP =  1,
-	IPPROTO_IGMP =  2,
-	IPPROTO_GGP =   3,
-	IPPROTO_TCP =   6,
-	IPPROTO_PUP =   12,
-	IPPROTO_UDP =   17,
-	IPPROTO_IDP =   22,
-	IPPROTO_IPV6 =  41,
-	IPPROTO_ND =    77,
-	IPPROTO_RAW =   255,
-
-	IPPROTO_MAX =   256,
-}
-
-
-enum: int
-{
-	MSG_OOB =        0x1,
-	MSG_PEEK =       0x2,
-	MSG_DONTROUTE =  0x4,
-}
-
-
-enum: int
-{
-	SD_RECEIVE =  0,
-	SD_SEND =     1,
-	SD_BOTH =     2,
-}
-
-
-enum: uint
-{
-	INADDR_ANY =        0,
-	INADDR_LOOPBACK =   0x7F000001,
-	INADDR_BROADCAST =  0xFFFFFFFF,
-	INADDR_NONE =       0xFFFFFFFF,
-	ADDR_ANY =          INADDR_ANY,
-}
-
-
-enum: int
-{
-	AI_PASSIVE = 0x1,
-	AI_CANONNAME = 0x2,
-	AI_NUMERICHOST = 0x4,
-}
-
-
-struct timeval
-{
-	int32_t tv_sec;
-	int32_t tv_usec;
-}
-
-
-union in_addr
-{
-	private union _S_un_t
-	{
-		private struct _S_un_b_t
-		{
-			uint8_t s_b1, s_b2, s_b3, s_b4;
-		}
-		_S_un_b_t S_un_b;
-
-		private struct _S_un_w_t
-		{
-			uint16_t s_w1, s_w2;
-		}
-		_S_un_w_t S_un_w;
-
-		uint32_t S_addr;
-	}
-	_S_un_t S_un;
-
-	uint32_t s_addr;
-
-	struct
-	{
-		uint8_t s_net, s_host;
-
-		union
-		{
-			uint16_t s_imp;
-
-			struct
-			{
-				uint8_t s_lh, s_impno;
-			}
-		}
+	int opCmp(TIMEVAL tv) {
+		if (tv_sec < tv.tv_sec)   return -1;
+		if (tv_sec > tv.tv_sec)   return  1;
+		if (tv_usec < tv.tv_usec) return -1;
+		if (tv_usec > tv.tv_usec) return  1;
+		return 0;
 	}
 }
 
-
-union in6_addr
-{
-	private union _in6_u_t
-	{
-		uint8_t[16] u6_addr8;
-		uint16_t[8] u6_addr16;
-		uint32_t[4] u6_addr32;
-	}
-	_in6_u_t in6_u;
-
-	uint8_t[16] s6_addr8;
-	uint16_t[8] s6_addr16;
-	uint32_t[4] s6_addr32;
-
-	alias s6_addr8 s6_addr;
+bool timerisset(TIMEVAL tvp) {
+	return tvp.tv_sec || tvp.tv_usec;
 }
 
-
-const in6_addr IN6ADDR_ANY = { s6_addr8: [0] };
-const in6_addr IN6ADDR_LOOPBACK = { s6_addr8: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1] };
-//alias IN6ADDR_ANY IN6ADDR_ANY_INIT;
-//alias IN6ADDR_LOOPBACK IN6ADDR_LOOPBACK_INIT;
-
-const uint INET_ADDRSTRLEN = 16;
-const uint INET6_ADDRSTRLEN = 46;
-
-
-struct sockaddr
-{
-	int16_t sa_family;
-	ubyte[14] sa_data;
+void timerclear(inout TIMEVAL tvp) {
+	tvp.tv_sec = tvp.tv_usec = 0;
 }
 
-
-struct sockaddr_in
-{
-	int16_t sin_family = AF_INET;
-	uint16_t sin_port;
-	in_addr sin_addr;
-	ubyte[8] sin_zero;
-}
-
-
-struct sockaddr_in6
-{
-	int16_t sin6_family = AF_INET6;
-	uint16_t sin6_port;
-	uint32_t sin6_flowinfo;
-	in6_addr sin6_addr;
-	uint32_t sin6_scope_id;
-}
-
-
-struct addrinfo
-{
-	int32_t ai_flags;
-	int32_t ai_family;
-	int32_t ai_socktype;
-	int32_t ai_protocol;
-	size_t ai_addrlen;
-	char* ai_canonname;
-	sockaddr* ai_addr;
-	addrinfo* ai_next;
-}
-
-
-struct hostent
-{
-	char* h_name;
+struct HOSTENT {
+	char*  h_name;
 	char** h_aliases;
-	int16_t h_addrtype;
-	int16_t h_length;
+	short  h_addrtype;
+	short  h_length;
 	char** h_addr_list;
 
+	char* h_addr() { return h_addr_list[0]; }
+	char* h_addr(char* h) { return h_addr_list[0] = h; }
+}
 
-	char* h_addr()
-	{
-		return h_addr_list[0];
+struct LINGER {
+	u_short l_onoff;
+	u_short l_linger;
+}
+
+// TOTHINKABOUT: do we need these, or are they just for internal use?
+/+
+#define IOCPARM_MASK	0x7f
+#define IOC_VOID	0x20000000
+#define IOC_OUT	0x40000000
+#define IOC_IN	0x80000000
+#define IOC_INOUT	(IOC_IN|IOC_OUT)
+
+#define _IO(x,y)	(IOC_VOID|((x)<<8)|(y))
+#define _IOR(x,y,t)	(IOC_OUT|(((int)sizeof(t)&IOCPARM_MASK)<<16)|((x)<<8)|(y))
+#define _IOW(x,y,t)	(IOC_IN|(((int)sizeof(t)&IOCPARM_MASK)<<16)|((x)<<8)|(y))
+
+#define FIONBIO	_IOW('f', 126, u_long)
+#define FIONREAD	_IOR('f', 127, u_long)
+#define FIOASYNC	_IOW('f', 125, u_long)
+#define SIOCSHIWAT	_IOW('s',  0, u_long)
+#define SIOCGHIWAT	_IOR('s',  1, u_long)
+#define SIOCSLOWAT	_IOW('s',  2, u_long)
+#define SIOCGLOWAT	_IOR('s',  3, u_long)
+#define SIOCATMARK	_IOR('s',  7, u_long)
++/
+
+enum : DWORD {
+	FIONBIO    = 0x8004667E,
+	FIONREAD   = 0x4004667F,
+	FIOASYNC   = 0x8004667D,
+	SIOCSHIWAT = 0x80047300,
+	SIOCGHIWAT = 0x40047301,
+	SIOCSLOWAT = 0x80047302,
+	SIOCGLOWAT = 0x40047303,
+	SIOCATMARK = 0x40047307
+}
+
+struct netent {
+	char*  n_name;
+	char** n_aliases;
+	short  n_addrtype;
+	u_long n_net;
+}
+
+struct SERVENT {
+	char*  s_name;
+	char** s_aliases;
+	short  s_port;
+	char*  s_proto;
+}
+
+struct PROTOENT {
+	char*  p_name;
+	char** p_aliases;
+	short  p_proto;
+}
+
+enum : int {
+	IPPROTO_IP   =   0,
+	IPPROTO_ICMP =   1,
+	IPPROTO_IGMP =   2,
+	IPPROTO_GGP  =   3,
+	IPPROTO_TCP  =   6,
+	IPPROTO_PUP  =  12,
+	IPPROTO_UDP  =  17,
+	IPPROTO_IDP  =  22,
+	IPPROTO_ND   =  77,
+	IPPROTO_RAW  = 255,
+	IPPROTO_MAX  = 256
+}
+
+// These are not documented on the MSDN site
+enum {
+	IPPORT_ECHO        =    7,
+	IPPORT_DISCARD     =    9,
+	IPPORT_SYSTAT      =   11,
+	IPPORT_DAYTIME     =   13,
+	IPPORT_NETSTAT     =   15,
+	IPPORT_FTP         =   21,
+	IPPORT_TELNET      =   23,
+	IPPORT_SMTP        =   25,
+	IPPORT_TIMESERVER  =   37,
+	IPPORT_NAMESERVER  =   42,
+	IPPORT_WHOIS       =   43,
+	IPPORT_MTP         =   57,
+	IPPORT_TFTP        =   69,
+	IPPORT_RJE         =   77,
+	IPPORT_FINGER      =   79,
+	IPPORT_TTYLINK     =   87,
+	IPPORT_SUPDUP      =   95,
+	IPPORT_EXECSERVER  =  512,
+	IPPORT_LOGINSERVER =  513,
+	IPPORT_CMDSERVER   =  514,
+	IPPORT_EFSSERVER   =  520,
+	IPPORT_BIFFUDP     =  512,
+	IPPORT_WHOSERVER   =  513,
+	IPPORT_ROUTESERVER =  520,
+	IPPORT_RESERVED    = 1024
+}
+
+// These are not documented on the MSDN site
+enum {
+	IMPLINK_IP        = 155,
+	IMPLINK_LOWEXPER  = 156,
+	IMPLINK_HIGHEXPER = 158
+}
+
+struct IN_ADDR {
+	union {
+		struct { u_char s_net, s_host, s_lh, s_impno; }
+		struct { u_short s_w1, s_imp; }
+		u_long s_addr;
 	}
 }
 
+// These are not documented on the MSDN site
+bool IN_CLASSA(int i) {
+	return (i & 0x80000000) == 0;
+}
+
+const IN_CLASSA_NET    = 0xff000000;
+const IN_CLASSA_NSHIFT =  24;
+const IN_CLASSA_HOST   = 0x00ffffff;
+const IN_CLASSA_MAX    = 128;
+
+bool IN_CLASSB(int i) {
+	return (i & 0xC0000000) == 0x80000000;
+}
+
+const IN_CLASSB_NET    = 0xffff0000;
+const IN_CLASSB_NSHIFT = 16;
+const IN_CLASSB_HOST   = 0x0000ffff;
+const IN_CLASSB_MAX    = 65536;
+
+bool IN_CLASSC(int i) {
+	return (i & 0xE0000000) == 0xC0000000;
+}
+
+const IN_CLASSC_NET    = 0xffffff00;
+const IN_CLASSC_NSHIFT = 8;
+const IN_CLASSC_HOST   = 0x000000ff;
+
+const u_long
+	INADDR_ANY       = 0,
+	INADDR_LOOPBACK  = 0x7F000001,
+	INADDR_BROADCAST = 0xFFFFFFFF,
+	INADDR_NONE      = 0xFFFFFFFF;
+
+struct SOCKADDR_IN {
+	short   sin_family;
+	u_short sin_port;
+	IN_ADDR sin_addr;
+	char[8] sin_zero;
+}
+
+const size_t
+	WSADESCRIPTION_LEN = 256,
+	WSASYS_STATUS_LEN  = 128;
+
+struct WSADATA {
+	WORD   wVersion;
+	WORD   wHighVersion;
+	char[WSADESCRIPTION_LEN+1] szDescription;
+	char[WSASYS_STATUS_LEN+1]  szSystemStatus;
+	ushort iMaxSockets;
+	ushort iMaxUdpDg;
+	char*  lpVendorInfo;
+}
+alias WSADATA* LPWSADATA;
+
+// This is not documented on the MSDN site
+const IP_OPTIONS = 1;
+
+const int
+	SO_DEBUG       =   1,
+	SO_ACCEPTCONN  =   2,
+	SO_REUSEADDR   =   4,
+	SO_KEEPALIVE   =   8,
+	SO_DONTROUTE   =  16,
+	SO_BROADCAST   =  32,
+	SO_USELOOPBACK =  64,
+	SO_LINGER      = 128,
+	SO_OOBINLINE   = 256,
+	SO_DONTLINGER  = ~SO_LINGER;
+
+enum : int {
+	SO_SNDBUF = 0x1001,
+	SO_RCVBUF,
+	SO_SNDLOWAT,
+	SO_RCVLOWAT,
+	SO_SNDTIMEO,
+	SO_RCVTIMEO,
+	SO_ERROR,
+	SO_TYPE // = 0x1008
+}
+
+/*
+ * Note that the next 5 IP defines are specific to WinSock 1.1 (wsock32.dll).
+ * They will cause errors or unexpected results if used with the
+ * (gs)etsockopts exported from the WinSock 2 lib, ws2_32.dll. Refer ws2tcpip.h.
+ */
+enum : int {
+	IP_MULTICAST_IF = 2,
+	IP_MULTICAST_TTL,
+	IP_MULTICAST_LOOP,
+	IP_ADD_MEMBERSHIP,
+	IP_DROP_MEMBERSHIP
+}
+
+// These are not documented on the MSDN site
+const IP_DEFAULT_MULTICAST_TTL  =  1;
+const IP_DEFAULT_MULTICAST_LOOP =  1;
+const IP_MAX_MEMBERSHIPS        = 20;
+
+struct ip_mreq {
+	IN_ADDR imr_multiaddr;
+	IN_ADDR imr_interface;
+}
+
+const SOCKET INVALID_SOCKET = uint.max;
+
+const SOCKET_ERROR = -1;
+
+enum : int {
+	SOCK_STREAM = 1,
+	SOCK_DGRAM,
+	SOCK_RAW,
+	SOCK_RDM,
+	SOCK_SEQPACKET
+}
+
+const int TCP_NODELAY = 1;
+
+enum : int {
+	AF_UNSPEC,
+	AF_UNIX,
+	AF_INET,
+	AF_IMPLINK,
+	AF_PUP,
+	AF_CHAOS,
+	AF_IPX, // = 6
+	AF_NS  = 6,
+	AF_ISO,
+	AF_OSI = AF_ISO,
+	AF_ECMA,
+	AF_DATAKIT,
+	AF_CCITT,
+	AF_SNA,
+	AF_DECnet,
+	AF_DLI,
+	AF_LAT,
+	AF_HYLINK,
+	AF_APPLETALK,
+	AF_NETBIOS,
+	AF_VOICEVIEW,
+	AF_FIREFOX,
+	AF_UNKNOWN1,
+	AF_BAN,
+	AF_ATM,
+	AF_INET6,
+	AF_MAX // = 24
+}
+
+struct SOCKADDR {
+	u_short  sa_family;
+	char[14] sa_data;
+}
+
+struct sockproto {
+	u_short sp_family;
+	u_short sp_protocol;
+}
+
+enum : int {
+	PF_UNSPEC    = AF_UNSPEC,
+	PF_UNIX      = AF_UNIX,
+	PF_INET      = AF_INET,
+	PF_IMPLINK   = AF_IMPLINK,
+	PF_PUP       = AF_PUP,
+	PF_CHAOS     = AF_CHAOS,
+	PF_NS        = AF_NS,
+	PF_IPX       = AF_IPX,
+	PF_ISO       = AF_ISO,
+	PF_OSI       = AF_OSI,
+	PF_ECMA      = AF_ECMA,
+	PF_DATAKIT   = AF_DATAKIT,
+	PF_CCITT     = AF_CCITT,
+	PF_SNA       = AF_SNA,
+	PF_DECnet    = AF_DECnet,
+	PF_DLI       = AF_DLI,
+	PF_LAT       = AF_LAT,
+	PF_HYLINK    = AF_HYLINK,
+	PF_APPLETALK = AF_APPLETALK,
+	PF_VOICEVIEW = AF_VOICEVIEW,
+	PF_FIREFOX   = AF_FIREFOX,
+	PF_UNKNOWN1  = AF_UNKNOWN1,
+	PF_BAN       = AF_BAN,
+	PF_ATM       = AF_ATM,
+	PF_INET6     = AF_INET6,
+	PF_MAX       = AF_MAX
+}
+
+const int SOL_SOCKET = 0xFFFF;
+
+const int SOMAXCONN = 5;
+
+const MSG_OOB       =      1;
+const MSG_PEEK      =      2;
+const MSG_DONTROUTE =      4;
+const MSG_MAXIOVLEN =     16;
+const MSG_PARTIAL   = 0x8000;
+
+const MAXGETHOSTSTRUCT = 1024;
+
+const FD_READ    =  1;
+const FD_WRITE   =  2;
+const FD_OOB     =  4;
+const FD_ACCEPT  =  8;
+const FD_CONNECT = 16;
+const FD_CLOSE   = 32;
+
+enum : int {
+	WSABASEERR         = 10000,
+	WSAEINTR           = 10004,
+	WSAEBADF           = 10009,
+	WSAEACCES          = 10013,
+	WSAEFAULT          = 10014,
+	WSAEINVAL          = 10022,
+	WSAEMFILE          = 10024,
+	WSAEWOULDBLOCK     = 10035,
+	WSAEINPROGRESS     = 10036,
+	WSAEALREADY        = 10037,
+	WSAENOTSOCK        = 10038,
+	WSAEDESTADDRREQ    = 10039,
+	WSAEMSGSIZE        = 10040,
+	WSAEPROTOTYPE      = 10041,
+	WSAENOPROTOOPT     = 10042,
+	WSAEPROTONOSUPPORT = 10043,
+	WSAESOCKTNOSUPPORT = 10044,
+	WSAEOPNOTSUPP      = 10045,
+	WSAEPFNOSUPPORT    = 10046,
+	WSAEAFNOSUPPORT    = 10047,
+	WSAEADDRINUSE      = 10048,
+	WSAEADDRNOTAVAIL   = 10049,
+	WSAENETDOWN        = 10050,
+	WSAENETUNREACH     = 10051,
+	WSAENETRESET       = 10052,
+	WSAECONNABORTED    = 10053,
+	WSAECONNRESET      = 10054,
+	WSAENOBUFS         = 10055,
+	WSAEISCONN         = 10056,
+	WSAENOTCONN        = 10057,
+	WSAESHUTDOWN       = 10058,
+	WSAETOOMANYREFS    = 10059,
+	WSAETIMEDOUT       = 10060,
+	WSAECONNREFUSED    = 10061,
+	WSAELOOP           = 10062,
+	WSAENAMETOOLONG    = 10063,
+	WSAEHOSTDOWN       = 10064,
+	WSAEHOSTUNREACH    = 10065,
+	WSAENOTEMPTY       = 10066,
+	WSAEPROCLIM        = 10067,
+	WSAEUSERS          = 10068,
+	WSAEDQUOT          = 10069,
+	WSAESTALE          = 10070,
+	WSAEREMOTE         = 10071,
+	WSAEDISCON         = 10101,
+	WSASYSNOTREADY     = 10091,
+	WSAVERNOTSUPPORTED = 10092,
+	WSANOTINITIALISED  = 10093,
+	WSAHOST_NOT_FOUND  = 11001,
+	WSATRY_AGAIN       = 11002,
+	WSANO_RECOVERY     = 11003,
+	WSANO_DATA         = 11004,
+	WSANO_ADDRESS      = WSANO_DATA
+}
+
+alias WSAGetLastError h_errno;
+
+enum : int {
+	HOST_NOT_FOUND = WSAHOST_NOT_FOUND,
+	TRY_AGAIN      = WSATRY_AGAIN,
+	NO_RECOVERY    = WSANO_RECOVERY,
+	NO_DATA        = WSANO_DATA,
+	NO_ADDRESS     = WSANO_ADDRESS
+}
+
+extern (Pascal) {
+	SOCKET accept(SOCKET, SOCKADDR*, int*);
+	int bind(SOCKET, SOCKADDR*, int);
+	int closesocket(SOCKET);
+	int connect(SOCKET, SOCKADDR*, int);
+	int ioctlsocket(SOCKET, int, u_long*);
+	int getpeername(SOCKET, SOCKADDR*, int*);
+	int getsockname(SOCKET, SOCKADDR*, int*);
+	int getsockopt(SOCKET, int, int, char*, int*);
+	uint inet_addr(char*);
+	int listen(SOCKET, int);
+	int recv(SOCKET, char*, int, int);
+	int recvfrom(SOCKET, char*, int, int, SOCKADDR*, int*);
+	int send(SOCKET, char*, int, int);
+	int sendto(SOCKET, char*, int, int, SOCKADDR*, int);
+	int setsockopt(SOCKET, int, int, char*, int);
+	int shutdown(SOCKET, int);
+	SOCKET socket(int, int, int);
+	int WSAStartup(WORD, LPWSADATA);
+	int WSACleanup();
+	void WSASetLastError(int);
+	int WSAGetLastError();
+	BOOL WSAIsBlocking();
+	int WSAUnhookBlockingHook();
+	FARPROC WSASetBlockingHook(FARPROC);
+	int WSACancelBlockingCall();
+	HANDLE WSAAsyncGetServByName(HWND, u_int, char*, char*, char*, int);
+	HANDLE WSAAsyncGetServByPort(HWND, u_int, int, char*, char*, int);
+	HANDLE WSAAsyncGetProtoByName(HWND, u_int, char*, char*, int);
+	HANDLE WSAAsyncGetProtoByNumber(HWND, u_int, int, char*, int);
+	HANDLE WSAAsyncGetHostByName(HWND, u_int, char*, char*, int);
+	HANDLE WSAAsyncGetHostByAddr(HWND, u_int, char*, int, int, char*, int);
+	int WSACancelAsyncRequest(HANDLE);
+	int WSAAsyncSelect(SOCKET, HWND, u_int, int);
+	u_long htonl(u_long);
+	u_long ntohl(u_long);
+	u_short htons(u_short);
+	u_short ntohs(u_short);
+	int select(int nfds, FD_SET*, FD_SET*, FD_SET*, TIMEVAL*);
+	int gethostname(char*, int);
+}
+
+extern (Windows) {
+	char* inet_ntoa(IN_ADDR);
+	HOSTENT* gethostbyaddr(char*, int, int);
+	HOSTENT* gethostbyname(char*);
+	SERVENT* getservbyport(int, char*);
+	SERVENT* getservbyname(char*, char*);
+	PROTOENT* getprotobynumber(int);
+	PROTOENT* getprotobyname(char*);
+}
+
+alias MAKELONG WSAMAKEASYNCREPLY, WSAMAKESELECTREPLY;
+alias LOWORD WSAGETASYNCBUFLEN, WSAGETSELECTEVENT;
+alias HIWORD WSAGETASYNCERROR, WSAGETSELECTERROR;
+
+alias SOCKADDR* PSOCKADDR, LPSOCKADDR;
+alias SOCKADDR_IN* PSOCKADDR_IN, LPSOCKADDR_IN;
+alias LINGER* PLINGER, LPLINGER;
+alias IN_ADDR* PIN_ADDR, LPIN_ADDR;
+alias FD_SET* PFD_SET, LPFD_SET;
+alias HOSTENT* PHOSTENT, LPHOSTENT;
+alias SERVENT* PSERVENT, LPSERVENT;
+alias PROTOENT* PPROTOENT, LPPROTOENT;
+alias TIMEVAL* PTIMEVAL, LPTIMEVAL;
+
+/*
+ * Recent MSDN docs indicate that the MS-specific extensions exported from
+ * mswsock.dll (AcceptEx, TransmitFile. WSARecEx and GetAcceptExSockaddrs) are
+ * declared in mswsock.h. These extensions are not supported on W9x or WinCE.
+ * However, code using WinSock 1.1 API may expect the declarations and
+ * associated defines to be in this header. Thus we include mswsock.h here.
+ *
+ * When linking against the WinSock 1.1 lib, wsock32.dll, the mswsock functions
+ * are automatically routed to mswsock.dll (on platforms with support).
+ * The WinSock 2 lib, ws2_32.dll, does not contain any references to
+ * the mswsock extensions.
+ */
+
+import tango.os.windows.c.mswsock;
