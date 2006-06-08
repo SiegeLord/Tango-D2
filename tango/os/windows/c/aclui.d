@@ -9,7 +9,10 @@
 *                       Placed into public domain                       *
 \***********************************************************************/
 module tango.os.windows.c.aclui;
-pragma(lib, "aclui.lib");
+
+version (build) { pragma(nolink); }
+
+//pragma(lib, "aclui.lib");
 
 import tango.os.windows.c.objbase, tango.os.windows.c.commctrl, tango.os.windows.c.accctrl;
 private import tango.os.windows.c.winuser;

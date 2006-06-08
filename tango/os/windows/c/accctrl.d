@@ -10,6 +10,9 @@
 \***********************************************************************/
 module tango.os.windows.c.accctrl;
 
+version (build) { pragma(nolink); }
+
+
 private import tango.os.windows.c.w32api, tango.os.windows.c.winbase, tango.os.windows.c.windef;
 
 // FIXME: check types and grouping of constants

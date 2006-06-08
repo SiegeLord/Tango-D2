@@ -12,6 +12,9 @@
 
 module tango.os.windows.c.olectl;
 
+version (build) { pragma(nolink); }
+
+
 import tango.os.windows.c.ocidl;
 import tango.os.windows.c.olectlid;
 private import tango.os.windows.c.wingdi;

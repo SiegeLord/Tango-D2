@@ -10,6 +10,9 @@
 \***********************************************************************/
 module tango.os.windows.c.custcntl;
 
+version (build) { pragma(nolink); }
+
+
 private import tango.os.windows.c.windef;
 
 // FIXME: check type

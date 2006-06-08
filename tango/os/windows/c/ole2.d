@@ -8,7 +8,10 @@
 *                       Placed into public domain                       *
 \***********************************************************************/
 module tango.os.windows.c.ole2;
-pragma(lib, "ole32.lib");
+
+version (build) { pragma(nolink); }
+
+//pragma(lib, "ole32.lib");
 import tango.os.windows.c.winerror;
 import tango.os.windows.c.objbase;
 import tango.os.windows.c.olectlid;

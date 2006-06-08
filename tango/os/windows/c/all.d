@@ -1,6 +1,9 @@
 // Used only for testing -- imports all windows headers.
 module tango.os.windows.c.all;
 
+version (build) { pragma(nolink); }
+
+
 import tango.os.windows.c.core;
 import tango.os.windows.c.windows;
 import tango.os.windows.c.commctrl;

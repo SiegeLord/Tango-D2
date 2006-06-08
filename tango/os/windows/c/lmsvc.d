@@ -15,6 +15,9 @@
 // TODO: 5 macros
 
 module tango.os.windows.c.lmsvc;
+
+version (build) { pragma(nolink); }
+
 private import tango.os.windows.c.lmsname;
 private import tango.os.windows.c.lmcons;
 private import tango.os.windows.c.windef;

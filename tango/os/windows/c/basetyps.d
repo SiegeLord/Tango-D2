@@ -8,6 +8,9 @@
 *                       Placed into public domain                       *
 \***********************************************************************/
 module tango.os.windows.c.basetyps;
+
+version (build) { pragma(nolink); }
+
 private import tango.os.windows.c.windef;
 
 struct GUID {          // size is 16

@@ -8,7 +8,10 @@
 *                       Placed into public domain                       *
 \***********************************************************************/
 module tango.os.windows.c.shlwapi;
-pragma(lib, "shlwapi.lib");
+
+version (build) { pragma(nolink); }
+
+//pragma(lib, "shlwapi.lib");
 
 /* Changes compared to MinGW:
 wnsprintf functions are not included.

@@ -11,11 +11,14 @@
 // FIXME: clean up Windows version support
 
 module tango.os.windows.c.wingdi;
+
+version (build) { pragma(nolink); }
+
 private import tango.os.windows.c.w32api;
 private import tango.os.windows.c.winver;
 private import tango.os.windows.c.windef;
 
-pragma(lib, "gdi32.lib");
+//pragma(lib, "gdi32.lib");
 
 // BITMAPINFOHEADER.biCompression
 enum : DWORD {

@@ -8,6 +8,9 @@
 \***********************************************************************/
 module tango.os.windows.c.winsock;
 
+version (build) { pragma(nolink); }
+
+
 /*
   Definitions for winsock 1.1
 

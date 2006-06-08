@@ -10,6 +10,9 @@
 
 module tango.os.windows.c.rpcdcep;
 
+version (build) { pragma(nolink); }
+
+
 private import tango.os.windows.c.w32api;
 private import tango.os.windows.c.windef;
 private import tango.os.windows.c.basetyps;

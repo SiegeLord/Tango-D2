@@ -9,6 +9,9 @@
 \***********************************************************************/
 module tango.os.windows.c.cderr;
 
+version (build) { pragma(nolink); }
+
+
 enum {
 	CDERR_DIALOGFAILURE    = 0xFFFF,
 	CDERR_GENERALCODES     = 0x0000,

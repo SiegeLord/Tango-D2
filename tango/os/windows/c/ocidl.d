@@ -10,6 +10,9 @@
 \***********************************************************************/
 module tango.os.windows.c.ocidl;
 
+version (build) { pragma(nolink); }
+
+
 private import tango.os.windows.c.ole2;
 private import tango.os.windows.c.wingdi; // for TEXTMETRICW
 private import tango.os.windows.c.winuser; // for LPMSG

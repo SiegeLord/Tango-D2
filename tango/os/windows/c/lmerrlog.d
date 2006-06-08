@@ -9,6 +9,9 @@
 \***********************************************************************/
 // COMMENT: This appears to be only for Win16. All functions are deprecated.
 module tango.os.windows.c.lmerrlog;
+
+version (build) { pragma(nolink); }
+
 private import tango.os.windows.c.lmcons;
 private import tango.os.windows.c.windef;
 private import tango.os.windows.c.lmaudit; // for LPHLOG

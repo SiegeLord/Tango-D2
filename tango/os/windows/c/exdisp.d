@@ -9,6 +9,9 @@
 \***********************************************************************/
 module tango.os.windows.c.exdisp;
 
+version (build) { pragma(nolink); }
+
+
 import tango.os.windows.c.oaidl;
 import tango.os.windows.c.ocidl;
 import tango.os.windows.c.docobj;

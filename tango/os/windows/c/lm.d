@@ -10,6 +10,9 @@
 
 module tango.os.windows.c.lm;
 
+version (build) { pragma(nolink); }
+
+
 version (WindowsXP) {
  version = WIN32_WINNT_ONLY;
 } else version(Windows2000) {

@@ -5,6 +5,9 @@
 
 module tango.os.windows.c.process;
 
+version (build) { pragma(nolink); }
+
+
 private
 {
     import tango.stdc.stdint;

@@ -13,6 +13,9 @@
  */
 
 module tango.os.windows.c.winerror;
+
+version (build) { pragma(nolink); }
+
 private import tango.os.windows.c.windef;
 
 alias int SCODE; // was in tango.os.windows.c.wtypes.

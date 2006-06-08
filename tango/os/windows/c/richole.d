@@ -8,6 +8,9 @@
 *                       Placed into public domain                       *
 \***********************************************************************/
 module tango.os.windows.c.richole;
+
+version (build) { pragma(nolink); }
+
 private import tango.os.windows.c.unknwn;
 private import tango.os.windows.c.windef;
 private import tango.os.windows.c.ole2;

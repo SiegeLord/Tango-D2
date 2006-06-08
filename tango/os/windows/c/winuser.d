@@ -19,12 +19,15 @@
 //#define DefHookProc(c,p,lp,h) CallNextHookEx((HHOOK)*h,c,p,lp)
 
 module tango.os.windows.c.winuser;
+
+version (build) { pragma(nolink); }
+
 private import tango.os.windows.c.w32api;
 private import tango.os.windows.c.winbase;
 private import tango.os.windows.c.wingdi;
 private import tango.os.windows.c.windef; // for HMONITOR
 
-pragma(lib, "user32.lib");
+//pragma(lib, "user32.lib");
 
 // FIXME: clean up Windows version support
 

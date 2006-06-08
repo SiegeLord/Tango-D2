@@ -10,8 +10,11 @@
 \***********************************************************************/
 module tango.os.windows.c.winsvc;
 
+version (build) { pragma(nolink); }
+
+
 private import tango.os.windows.c.w32api;
-pragma(lib, "advapi.lib");
+//pragma(lib, "advapi.lib");
 
 static if (!_WIN32_WINNT_ONLY) {
 	pragma(msg, "tango.os.windows.c.winsvc is available only if version WindowsNTonly,

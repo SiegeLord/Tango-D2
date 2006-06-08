@@ -9,6 +9,9 @@
 \***********************************************************************/
 module tango.os.windows.c.oledlg;
 
+version (build) { pragma(nolink); }
+
+
 import tango.os.windows.c.windows;
 import tango.os.windows.c.shellapi;
 import tango.os.windows.c.commdlg;

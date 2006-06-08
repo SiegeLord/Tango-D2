@@ -1,6 +1,9 @@
 
 module tango.os.windows.c.com;
 
+version (build) { pragma(nolink); }
+
+
 private import tango.os.windows.c.windows;
 private import tango.stdc.string;
 

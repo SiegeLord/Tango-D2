@@ -8,6 +8,9 @@
 *                       Placed into public domain                       *
 \***********************************************************************/
 module tango.os.windows.c.raserror;
+
+version (build) { pragma(nolink); }
+
  
 enum {
 	SUCCESS = 0, 

@@ -10,6 +10,9 @@
 \***********************************************************************/
 module tango.os.windows.c.windef;
 
+version (build) { pragma(nolink); }
+
+
 import tango.os.windows.c.winnt;
 private import tango.os.windows.c.w32api;
 

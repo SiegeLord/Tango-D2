@@ -10,6 +10,9 @@
 \***********************************************************************/
 module tango.os.windows.c.dlgs;
 
+version (build) { pragma(nolink); }
+
+
 private import tango.os.windows.c.windef;
 
 enum : ushort {

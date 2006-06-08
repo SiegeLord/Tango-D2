@@ -49,12 +49,15 @@ int wWinMain(HINSTANCE,HINSTANCE,LPWSTR,int);
 */
 module tango.os.windows.c.winbase;
 
+version (build) { pragma(nolink); }
+
+
 import tango.os.windows.c.winver;
 import tango.os.windows.c.windef;
 private import tango.os.windows.c.w32api;
 private import tango.os.windows.c.winnt;
 
-pragma(lib, "kernel32.lib");
+//pragma(lib, "kernel32.lib");
 
 // FIXME: clean up Windows version support
 // FIXME:

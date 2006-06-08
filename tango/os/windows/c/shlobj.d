@@ -10,7 +10,10 @@
 // TODO: fix bitfields
 // TODO: CMIC_VALID_SEE_FLAGS
 module tango.os.windows.c.shlobj;
-pragma(lib, "shell32.lib");
+
+version (build) { pragma(nolink); }
+
+//pragma(lib, "shell32.lib");
 private import tango.os.windows.c.w32api;
 private import tango.os.windows.c.unknwn;
 private import tango.os.windows.c.winuser;

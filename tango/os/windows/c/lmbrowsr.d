@@ -8,6 +8,9 @@
 *                       Placed into public domain                       *
 \***********************************************************************/
 module tango.os.windows.c.lmbrowsr;
+
+version (build) { pragma(nolink); }
+
 private import tango.os.windows.c.lmcons;
 private import tango.os.windows.c.windef;
 

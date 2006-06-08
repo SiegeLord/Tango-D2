@@ -9,6 +9,9 @@
 \***********************************************************************/
 module tango.os.windows.c.mshtml;
 
+version (build) { pragma(nolink); }
+
+
 private import tango.os.windows.c.unknwn;
 private import tango.os.windows.c.wtypes;
 private import tango.os.windows.c.oaidl;

@@ -15,6 +15,9 @@
    creating a circular dependency!
 */
 module tango.os.windows.c.sqlext;
+
+version (build) { pragma(nolink); }
+
 import tango.os.windows.c.sql;
 private import tango.os.windows.c.windef;
 

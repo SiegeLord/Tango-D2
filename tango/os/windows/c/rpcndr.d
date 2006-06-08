@@ -9,6 +9,9 @@
 \***********************************************************************/
 module tango.os.windows.c.rpcndr;
 
+version (build) { pragma(nolink); }
+
+
 // TODO: Bitfields in MIDL_STUB_MESSAGE.
 //       Macros need to be converted.
 const __RPCNDR_H_VERSION__= 450;

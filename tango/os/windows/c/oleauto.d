@@ -9,7 +9,10 @@
 \***********************************************************************/
 
 module tango.os.windows.c.oleauto;
-pragma(lib, "oleaut32.lib");
+
+version (build) { pragma(nolink); }
+
+//pragma(lib, "oleaut32.lib");
 import tango.os.windows.c.oaidl;
 private import tango.os.windows.c.wtypes;
 private import tango.os.windows.c.winbase; // for SYSTEMTIME

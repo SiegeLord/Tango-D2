@@ -1,5 +1,8 @@
 module tango.os.windows.c.httpext;
 
+version (build) { pragma(nolink); }
+
+
 /*
        httpext.h - Header for ISAPI extensions.
 

@@ -10,7 +10,10 @@
 // TODO: I think MinGW got this wrong. RPC_UNICODE_SUPPORTED should be replaced aliases for version(Unicode)
 
 module tango.os.windows.c.rpcdce;
-pragma(lib, "Rpcrt4.lib");
+
+version (build) { pragma(nolink); }
+
+//pragma(lib, "Rpcrt4.lib");
 private import tango.os.windows.c.basetyps;
 private import tango.os.windows.c.w32api;
 public import tango.os.windows.c.rpcdcep;

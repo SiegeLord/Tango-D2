@@ -8,7 +8,10 @@
 *                       Placed into public domain                       *
 \***********************************************************************/
 module tango.os.windows.c.lmmsg;
-pragma(lib, "netapi32.lib");
+
+version (build) { pragma(nolink); }
+
+//pragma(lib, "netapi32.lib");
 private import tango.os.windows.c.lmcons;
 private import tango.os.windows.c.windef;
 

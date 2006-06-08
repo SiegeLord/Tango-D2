@@ -9,6 +9,9 @@
 \***********************************************************************/
 module tango.os.windows.c.unknwn;
 
+version (build) { pragma(nolink); }
+
+
 import tango.os.windows.c.windef;
 
 import tango.os.windows.c.objfwd;

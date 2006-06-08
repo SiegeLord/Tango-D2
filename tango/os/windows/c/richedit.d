@@ -8,6 +8,9 @@
 *                       Placed into public domain                       *
 \***********************************************************************/
 module tango.os.windows.c.richedit;
+
+version (build) { pragma(nolink); }
+
 private import tango.os.windows.c.windef;
 private import tango.os.windows.c.winuser;
 private import tango.os.windows.c.wingdi; // for LF_FACESIZE

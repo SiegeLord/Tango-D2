@@ -9,6 +9,9 @@
 \***********************************************************************/
 // TODO: fix possible conflict with shloj. Sort out NEC_98 issue.
 module tango.os.windows.c.regstr;
+
+version (build) { pragma(nolink); }
+
 private import tango.os.windows.c.windef;
 
 const REGSTR_MAX_VALUE_LENGTH = 256;

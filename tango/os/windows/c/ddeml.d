@@ -9,7 +9,10 @@
 *                       Placed into public domain                       *
 \***********************************************************************/
 module tango.os.windows.c.ddeml;
-pragma(lib, "user32.lib");
+
+version (build) { pragma(nolink); }
+
+//pragma(lib, "user32.lib");
 
 private import tango.os.windows.c.winnt, tango.os.windows.c.windef, tango.os.windows.c.basetsd;
 

@@ -9,7 +9,10 @@
 \***********************************************************************/
 
 module tango.os.windows.c.commdlg;
-pragma(lib, "comdlg32.lib");
+
+version (build) { pragma(nolink); }
+
+//pragma(lib, "comdlg32.lib");
 
 private import tango.os.windows.c.w32api;
 import tango.os.windows.c.windef;

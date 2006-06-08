@@ -10,6 +10,9 @@
 \***********************************************************************/
 module tango.os.windows.c.dbt;
 
+version (build) { pragma(nolink); }
+
+
 private import tango.os.windows.c.windef, tango.os.windows.c.w32api;
 
 // FIXME: clean up Windows version support

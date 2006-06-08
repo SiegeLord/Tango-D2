@@ -12,7 +12,10 @@
 // so they are implemented as templates.
 
 module tango.os.windows.c.mmsystem;
-pragma(lib, "winmm.lib");
+
+version (build) { pragma(nolink); }
+
+//pragma(lib, "winmm.lib");
 private import tango.os.windows.c.w32api;
 private import tango.os.windows.c.winver;
 private import tango.os.windows.c.windef;

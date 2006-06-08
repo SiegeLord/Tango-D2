@@ -8,6 +8,9 @@
 *                       Placed into public domain                       *
 \***********************************************************************/
 module tango.os.windows.c.shldisp;
+
+version (build) { pragma(nolink); }
+
 private import tango.os.windows.c.unknwn;
 
 // options for IAutoComplete2

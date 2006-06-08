@@ -10,8 +10,11 @@
 \***********************************************************************/
 module tango.os.windows.c.winreg;
 
+version (build) { pragma(nolink); }
+
+
 private import tango.os.windows.c.windef, tango.os.windows.c.winbase;
-pragma(lib, "advapi32.lib");
+//pragma(lib, "advapi32.lib");
 
 const HKEY
 	HKEY_CLASSES_ROOT     = cast(HKEY) 0x80000000,

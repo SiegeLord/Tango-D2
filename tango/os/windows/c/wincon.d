@@ -10,9 +10,12 @@
 
 module tango.os.windows.c.wincon;
 
+version (build) { pragma(nolink); }
+
+
 private import tango.os.windows.c.w32api;
 private import tango.os.windows.c.windef;
-pragma(lib, "kernel32.lib");
+//pragma(lib, "kernel32.lib");
 
 // FIXME: clean up Windows version support
 

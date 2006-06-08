@@ -9,7 +9,10 @@
 *                       Placed into public domain                       *
 \***********************************************************************/
 module tango.os.windows.c.commctrl;
-pragma(lib, "comctl32.lib");
+
+version (build) { pragma(nolink); }
+
+//pragma(lib, "comctl32.lib");
 
 private import tango.os.windows.c.w32api;
 private import tango.os.windows.c.windef;

@@ -9,7 +9,10 @@
 \***********************************************************************/
 
 module tango.os.windows.c.imm;
-pragma(lib, "imm32.lib");
+
+version (build) { pragma(nolink); }
+
+//pragma(lib, "imm32.lib");
 
 private import tango.os.windows.c.w32api;
 import tango.os.windows.c.windef;

@@ -9,7 +9,10 @@
 *                       Placed into public domain                       *
 \***********************************************************************/
 module tango.os.windows.c.aclapi;
-pragma(lib, "advapi32.lib");
+
+version (build) { pragma(nolink); }
+
+//pragma(lib, "advapi32.lib");
 
 import tango.os.windows.c.windows, tango.os.windows.c.accctrl;
 

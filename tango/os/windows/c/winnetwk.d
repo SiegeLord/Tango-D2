@@ -10,9 +10,12 @@
 \***********************************************************************/
 module tango.os.windows.c.winnetwk;
 
+version (build) { pragma(nolink); }
+
+
 private import tango.os.windows.c.winbase, tango.os.windows.c.winnt;
 private import tango.os.windows.c.winerror;
-pragma(lib, "mpr.lib");
+//pragma(lib, "mpr.lib");
 
 
 enum : DWORD {

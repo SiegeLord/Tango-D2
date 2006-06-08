@@ -9,6 +9,9 @@
 \***********************************************************************/
 module tango.os.windows.c.wtypes;
 
+version (build) { pragma(nolink); }
+
+
 import tango.os.windows.c.rpc;
 import tango.os.windows.c.rpcndr;
 
