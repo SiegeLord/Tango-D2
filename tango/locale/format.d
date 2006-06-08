@@ -11,7 +11,8 @@
   Formatter.format("General: {0} Hexadecimal: 0x{0:x4} Numeric: {0:N}", 1000);
   // -> General: 1000 Hexadecimal: 0x03e8 Numeric: 1,000.00
 
-  // Format using a custom display format, substituting groups with those appropriate for Germany.
+  // Format using a custom display format, substituting groups with those 
+  // appropriate for Germany.
   Formatter.format(Culture.getCulture("de-DE"), "{0:#,#}", 12345678);
   // -> 12.345.678
 
@@ -117,59 +118,47 @@ package struct ArgumentIterator {
 }
 
 /**
-  Contains methods for replacing format items in a string with string equivalents of each argument.
+ * Contains methods for replacing format items in a string with string equivalents of each argument.
+ * Remarks: This struct is not intended to be instantiated. It is a container for various methods.
 **/
 public struct Formatter {
 
   /**
-    Replaces the _format item in a string with the string equivalent of each argument.
-    Params:
-      format  = A string containing _format items.
-      args    = A list of arguments.
-    Returns: A copy of format in which the items have been replaced by the string equivalent of the arguments.
-    Remarks: The format parameter is embedded with _format items of the form: $(BR)$(BR)
-      {index[,alignment][:_format-string]}$(BR)$(BR)
-      $(UL $(LI index $(BR)
-        An integer indicating the element in a list to _format.)
-      $(LI alignment $(BR)
-        An optional integer indicating the minimum width. The result is padded with spaces if the length of the value is less than alignment.)
-      $(LI _format-string $(BR)
-        An optional string of formatting codes.)
-    )$(BR)
-    The leading and trailing braces are required. To include a literal brace character, use two leading or trailing brace characters.$(BR)$(BR)
-    If format is "{0} bottles of beer on the wall" and the argument is an int with the value of 99, the return value will be:$(BR)
-    "99 bottles of beer on the wall".
+   * Replaces the _format item in a string with the string equivalent of each argument.
+   * Params:
+   *   formatStr  = A string containing _format items.
+   *   args       = A list of arguments.
+   * Returns: A copy of formatStr in which the items have been replaced by the string equivalent of the arguments.
+   * Remarks: The formatStr parameter is embedded with _format items of the form: $(BR)$(BR)
+   *   {index[,alignment][:_format-string]}$(BR)$(BR)
+   *   $(UL $(LI index $(BR)
+   *     An integer indicating the element in a list to _format.)
+   *   $(LI alignment $(BR)
+   *     An optional integer indicating the minimum width. The result is padded with spaces if the length of the value is less than alignment.)
+   *   $(LI _format-string $(BR)
+   *     An optional string of formatting codes.)
+   * )$(BR)
+   * The leading and trailing braces are required. To include a literal brace character, use two leading or trailing brace characters.$(BR)$(BR)
+   * If formatStr is "{0} bottles of beer on the wall" and the argument is an int with the value of 99, the return value will be:$(BR)
+   * "99 bottles of beer on the wall".
   **/
-  public static char[] format(char[] format, ...) {
-    ArgumentIterator it = ArgumentIterator(_arguments, _argptr);
-    return internalFormat(null, format, it);
+  public static char[] format(char[] formatStr, ...) {
+    auto it = ArgumentIterator(_arguments, _argptr);
+    return internalFormat(null, formatStr, it);
   }
 
   /**
-    Replaces the _format item in a string with the string equivalent of each argument using _culture-specific formatting information.
-    Params:
-      formatService  = An IFormatService that renders _culture-specific formatting information.
-      format          = A string containing _format items.
-      args            = A list of arguments.
-    Returns: A copy of format in which the items have been replaced by the string equivalent of the arguments.
+   * Replaces the _format item in a string with the string equivalent of each argument using _culture-specific formatting information.
+   * Params:
+   *   formatService  = An IFormatService that renders _culture-specific formatting information.
+   *   formatStr      = A string containing _format items.
+   *   args           = A list of arguments.
+   * Returns: A copy of formatStr in which the items have been replaced by the string equivalent of the arguments.
   **/
-  public static char[] format(IFormatService formatService, char[] format, ...) {
-    ArgumentIterator it = ArgumentIterator(_arguments, _argptr);
-    return internalFormat(formatService, format, it);
+  public static char[] format(IFormatService formatService, char[] formatStr, ...) {
+    auto it = ArgumentIterator(_arguments, _argptr);
+    return internalFormat(formatService, formatStr, it);
   }
-
-  /**
-    Replaces the _format item in a string with the string equivalent of each argument using _culture-specific formatting information.
-    Params:
-      culture = A Culture providing _culture-specific formatting information.
-      format  = A string containing _format items.
-      args    = A list of arguments.
-    Returns: A copy of format in which the items have been replaced by the string equivalent of the arguments.
-  **/
-  /*public static char[] format(Culture culture, char[] format, ...) {
-    ArgumentIterator it = ArgumentIterator(_arguments, _argptr);
-    return internalFormat(culture, format, it);
-  }*/
 
   private static char[] internalFormat(IFormatService formatService, char[] format, inout ArgumentIterator it) {
 
@@ -353,68 +342,6 @@ public struct Formatter {
   }
 
 }
-
-/**
-  Contains methods for formatting integer values.
-**/
-/+public struct Integer {
-
-  /**
-    Converts an integer to its string equivalent using the specified culture-specific formatting information.
-    Returns: The string equivalent of value.
-    Params:
-      value         = An integer.
-      formatService = An IFormatService that renders culture-specific formatting information.
-  **/
-  public static char[] format(long value, IFormatService formatService = null) {
-    return formatInteger(value, null, NumberFormat.getInstance(formatService));
-  }
-
-  /**
-    Converts an integer to its string equivalent using the specified format and _culture-specific formatting information.
-    Returns: The string equivalent of value.
-    Params:
-      value         = An integer.
-      format        = A _format string.
-      formatService = An IFormatService that renders _culture-specific formatting information.
-  **/
-  public static char[] format(long value, char[] format, IFormatService formatService = null) {
-    return formatInteger(value, format, NumberFormat.getInstance(formatService));
-  }
-
-}
-
-/**
-  Contains methods for formatting floating-point values.
-**/
-// Compile with -version=mlfp to enable floating-point support.
-version (mlfp)
-public struct Double {
-
-  /**
-    Converts a floating-point number to its string equivalent using the specified _culture-specific formatting information.
-    Returns: The string equivalent of value.
-    Params:
-      value          = A floating-point number.
-      formatService  = An IFormatService that renders _culture-specific formatting information.
-  **/
-  public static char[] format(double value, IFormatService formatService = null) {
-    return formatDouble(value, null, NumberFormat.getInstance(formatService));
-  }
-
-  /**
-    Converts a floating-point number to its string equivalent using the specified format and _culture-specific formatting information.
-    Returns: The string equivalent of value.
-    Params:
-      value          = A floating-point number.
-      format         = A _format string.
-      formatService  = An IFormatService that renders _culture-specific formatting information.
-  **/
-  public static char[] format(double value, char[] format, IFormatService formatService = null) {
-    return formatDouble(value, format, NumberFormat.getInstance(formatService));
-  }
-
-}+/
 
 private struct Number {
 
@@ -1219,7 +1146,7 @@ private void formatFixed(inout Number number, inout char[] target, int length, i
 
 // DateTime
 
-package char[] allStandardFormats = [ 'd', 'D', 'f', 'F', 'g', 'G', 'm', 'M', 'r', 'R', 's', 't', 'T', 'u', 'U', 'y', 'Y' ];
+package const char[] allStandardFormats = [ 'd', 'D', 'f', 'F', 'g', 'G', 'm', 'M', 'r', 'R', 's', 't', 'T', 'u', 'U', 'y', 'Y' ];
 
 package static char[] formatDateTime(DateTime dateTime, char[] format, DateTimeFormat dtf) {
 
@@ -1236,6 +1163,9 @@ package static char[] formatDateTime(DateTime dateTime, char[] format, DateTimeF
         f = dtf.longDatePattern ~ " " ~ dtf.shortTimePattern;
         break;
       case 'F':
+        f = dtf.fullDateTimePattern;
+        break;
+      case 'g':
         f = dtf.generalShortTimePattern;
         break;
       case 'G':
@@ -1275,7 +1205,7 @@ package static char[] formatDateTime(DateTime dateTime, char[] format, DateTimeF
         f = dtf.yearMonthPattern;
         break;
       default:
-        throw new Exception("Invalid format.");
+        throw new Exception("Invalid date format.");
     }
     return f;
   }

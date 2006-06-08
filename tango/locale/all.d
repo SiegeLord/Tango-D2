@@ -1,3 +1,6 @@
+/**
+ * Contains modules providing information about specific locales.
+ */
 module tango.locale.all;
 
 // Issues: does not compile with "-cov" because of a circular dependency.
