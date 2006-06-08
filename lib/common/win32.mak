@@ -69,7 +69,7 @@ OBJ_CORE= \
     core\thread.obj
 
 OBJ_OS= \
-    os\windows\c\windows.obj
+    os\windows\c\winnt.obj
 
 ALL_OBJS= \
     $(OBJ_CONVERT) \
@@ -104,8 +104,8 @@ convert\dtoa.obj : convert\dtoa.c
 
 ### os\windows\c
 
-os\windows\c\windows.obj : os\windows\c\windows.d
-	$(DC) -c $(DFLAGS) os\windows\c\windows.d -of$@
+os\windows\c\winnt.obj : os\windows\c\winnt.d
+	$(DC) -c $(DFLAGS) os\windows\c\winnt.d -of$@
 
 ######################################################
 
