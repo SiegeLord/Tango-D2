@@ -1,4 +1,4 @@
-module tango.os.windows.c.windows;
+module tango.os.windows.c.winnt;
 
 extern (Windows):
 
