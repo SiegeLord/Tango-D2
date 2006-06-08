@@ -1,3 +1,0 @@
-Testing svn commit rights.
-
--JJR
