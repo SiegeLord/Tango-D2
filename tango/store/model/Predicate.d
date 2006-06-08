@@ -28,7 +28,8 @@ module tango.store.model.Predicate;
  * any attempted add or replace operation will raise an exception. Use of
  * screened collections is a simple way to dynamically ensure
  * that all elements have some desired property.
- * @author Doug Lea
+ * 
+        author: Doug Lea
  * @version 0.93
  *
  * <P> For an introduction to this package see <A HREF="index.html"> Overview </A>.

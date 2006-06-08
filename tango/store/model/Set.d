@@ -24,7 +24,8 @@ private import tango.store.model.Collection;
  * you can be sure that the number of occurrences of any
  * element is either zero or one.
  *
- * @author Doug Lea
+ * 
+        author: Doug Lea
  * @version 0.93
  *
  * <P> For an introduction to this package see <A HREF="index.html"> Overview </A>.

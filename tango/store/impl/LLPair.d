@@ -24,7 +24,8 @@ private import tango.store.model.Iterator;
  *
  * LLPairs are LLCells with keys, and operations that deal with them.
  * As with LLCells, the are pure implementation tools.
- * @author Doug Lea
+ * 
+        author: Doug Lea
  * @version 0.93
  *
  * <P> For an introduction to this package see <A HREF="index.html"> Overview </A>.

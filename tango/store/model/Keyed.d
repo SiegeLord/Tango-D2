@@ -25,7 +25,8 @@ module tango.store.model.Keyed;
  * <P>
  * The DefaultComparator class checks to see if its arguments
  * are Keyed, and if so uses the keys as the basis for comparison.
- * @author Doug Lea
+ * 
+        author: Doug Lea
  * @version 0.93
  *
  * <P> For an introduction to this package see <A HREF="index.html"> Overview </A>.

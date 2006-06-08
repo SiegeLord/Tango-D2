@@ -34,7 +34,8 @@ private import tango.store.model.ElementSortedCollection;
 /**
  *
  * RedBlack trees.
- * @author Doug Lea
+ * 
+        author: Doug Lea
  * @version 0.93
  *
  * <P> For an introduction to this package see <A HREF="index.html"> Overview </A>.
@@ -428,7 +429,8 @@ public class TreeBagT(T) : MutableBagImplT!(T), ElementSortedCollectionT!(T)
          *
          *
          * Enumerator for collections based on RBCells
-         * @author Doug Lea
+         * 
+        author: Doug Lea
          * @version 0.93
          *
          * <P> For an introduction to this package see <A HREF="index.html"> Overview </A>.

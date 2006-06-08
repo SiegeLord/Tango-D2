@@ -21,7 +21,8 @@ module tango.store.impl.Cell;
  * Cell is the base of a bunch of implementation classes
  * for lists and the like.
  * The base version just holds an Object as its element value
- * @author Doug Lea
+ * 
+        author: Doug Lea
  * @version 0.93
  *
  * <P> For an introduction to this package see <A HREF="index.html"> Overview </A>.

@@ -26,7 +26,8 @@ private import tango.store.model.Collection;
  * <P>
  * The elements() enumeration for all seqs is guaranteed to be
  * traversed (via nextElement) in sequential order.
- * @author Doug Lea
+ * 
+        author: Doug Lea
  * @version 0.93
  *
  * <P> For an introduction to this package see <A HREF="index.html"> Overview </A>.

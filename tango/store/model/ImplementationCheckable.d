@@ -23,7 +23,8 @@ module tango.store.model.ImplementationCheckable;
  * a method that checks the consistency of an objects internal state.
  * <P>
  * 
- * @author Doug Lea
+ * 
+        author: Doug Lea
  * @version 0.93
  *
  * <P> For an introduction to this package see <A HREF="index.html"> Overview </A>.

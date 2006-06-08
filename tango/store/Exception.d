@@ -23,7 +23,8 @@ private import tango.store.model.Collection;
  * CorruptedIteratorException is thrown by CollectionIterator
  * nextElement if a versioning inconsistency is detected in the process
  * of returning the next element
- * @author Doug Lea
+ * 
+        author: Doug Lea
  * @version 0.93
  *
  * <P> For an introduction to this package see <A HREF="index.html"> Overview </A>.
@@ -82,7 +83,8 @@ public class IllegalArgumentException : Exception
  * IllegalElementException is thrown by Collection methods
  * that add (or replace) elements (and/or keys) when their
  * arguments are null or do not pass screeners.
- * @author Doug Lea
+ * 
+        author: Doug Lea
  * @version 0.93
  *
  * <P> For an introduction to this package see <A HREF="index.html"> Overview </A>.
@@ -105,7 +107,8 @@ public class IllegalElementException : IllegalArgumentException
  * ImplementationCheckable.checkImplementation upon failure
  * to verify internal representation constraints.
  * 
- * @author Doug Lea
+ * 
+        author: Doug Lea
  * @version 0.93
  *
  * <P> For an introduction to this package see <A HREF="index.html"> Overview </A>.
@@ -135,7 +138,8 @@ public class ImplementationError : Exception
  * IllegalElementException is thrown by Collection methods
  * that add (or replace) elements (and/or keys) when their
  * arguments are null or do not pass screeners.
- * @author Doug Lea
+ * 
+        author: Doug Lea
  * @version 0.93
  *
  * <P> For an introduction to this package see <A HREF="index.html"> Overview </A>.

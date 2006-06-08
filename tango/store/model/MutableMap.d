@@ -23,7 +23,8 @@ private import tango.store.model.MutableCollection;
  *
  * MutableMap supports standard update operations on maps.
  *
- * @author Doug Lea
+ * 
+        author: Doug Lea
  * @version 0.93
  *
  * <P> For an introduction to this package see <A HREF="index.html"> Overview </A>.

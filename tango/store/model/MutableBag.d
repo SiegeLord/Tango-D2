@@ -24,7 +24,8 @@ private import tango.store.model.Iterator;
  *
  *
  * MutableBags support operations to add multiple occurrences of elements
- * @author Doug Lea
+ * 
+        author: Doug Lea
  * @version 0.93
  *
  * <P> For an introduction to this package see <A HREF="index.html"> Overview </A>.

@@ -1,3 +1,15 @@
+/*******************************************************************************
+
+        copyright:      Copyright (c) 2004 Regan Heath. All rights reserved
+
+        license:        BSD style: see doc/license.txt for details
+      
+        version:        Initial release: Feb 2006
+        
+        author:         Regan Heath, Kris
+
+*******************************************************************************/
+
 module tango.cipher.tiger;
 
 public import tango.cipher.base;

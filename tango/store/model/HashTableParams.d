@@ -23,7 +23,8 @@ private import tango.store.model.Set;
  * Provides common ways of dealing with buckets and threshholds.
  * (It would be nice to share some of the code too, but this
  * would require multiple inheritance here.)
- * @author Doug Lea
+ * 
+        author: Doug Lea
  * @version 0.93
  *
  * <P> For an introduction to this package see <A HREF="index.html"> Overview </A>.

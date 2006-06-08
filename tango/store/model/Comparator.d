@@ -19,7 +19,8 @@ module tango.store.model.Comparator;
  *
  * Comparator is an interface for any class possessing an element
  * comparison method.
- * @author Doug Lea
+ * 
+        author: Doug Lea
  * @version 0.93
  *
  * <P> For an introduction to this package see <A HREF="index.html"> Overview </A>.

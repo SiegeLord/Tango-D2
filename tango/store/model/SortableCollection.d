@@ -34,7 +34,8 @@ private import tango.store.model.MutableCollection;
  * <PRE>
  * comparator().compare(a, b) <= 0.
  * </PRE>
- * @author Doug Lea
+ * 
+        author: Doug Lea
  * @version 0.93
  *
  * <P> For an introduction to this package see <A HREF="index.html"> Overview </A>.

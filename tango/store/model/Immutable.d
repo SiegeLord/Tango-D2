@@ -25,7 +25,8 @@ module tango.store.model.Immutable;
  * There are
  * no operations defined in this interface. This interface is used only
  * to provide a name for this `Purity' property.
- * @author Doug Lea
+ * 
+        author: Doug Lea
  * @version 0.93
  *
  * <P> For an introduction to this package see <A HREF="index.html"> Overview </A>.

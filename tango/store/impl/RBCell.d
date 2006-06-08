@@ -32,7 +32,8 @@ private import tango.store.model.ImplementationCheckable;
  * <P>
  * It is a pure implementation class. For harnesses, see:
  * @see RBTree
- * @author Doug Lea
+ * 
+        author: Doug Lea
  * @version 0.93
  *
  * <P> For an introduction to this package see <A HREF="index.html"> Overview </A>.

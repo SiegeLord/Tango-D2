@@ -23,7 +23,8 @@ private import tango.store.impl.Cell;
  *
  * CLCells are cells that are always arranged in circular lists
  * They are pure implementation tools
- * @author Doug Lea
+ * 
+        author: Doug Lea
  * @version 0.93
  *
  * <P> For an introduction to this package see <A HREF="index.html"> Overview </A>.

@@ -26,7 +26,8 @@ private import tango.store.model.Iterator;
  *
  * MutableBagImpl extends MutableImpl to provide
  * default implementations of some Bag operations. 
- * @author Doug Lea
+ * 
+        author: Doug Lea
  * @version 0.93
  *
  * <P> For an introduction to this package see <A HREF="index.html"> Overview </A>.

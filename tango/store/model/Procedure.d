@@ -19,7 +19,8 @@ module tango.store.model.Procedure;
  *
  * Procedure is a common interface for aclasses with an arbitrary void operation
  * of one argument that may throw any kind of exception.
- * @author Doug Lea
+ * 
+        author: Doug Lea
  * @version 0.93
  *
  * <P> For an introduction to this package see <A HREF="index.html"> Overview </A>.

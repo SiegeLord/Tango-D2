@@ -45,7 +45,8 @@ private import tango.store.model.CollectionIterator;
  * resizing. Also, unlike Vectors, they release their internal arrays
  * whenever they are empty.
  *
- * @author Doug Lea
+ * 
+        author: Doug Lea
  * @version 0.93
  *
  * <P> For an introduction to this package see <A HREF="index.html"> Overview </A>.
@@ -845,7 +846,8 @@ public class ArraySeqT(T) : MutableSeqImplT!(T), SortableCollectionT!(T)
         /**
          *
          * Enumerator for collections based on dynamic arrays.
-         * @author Doug Lea
+         * 
+        author: Doug Lea
          * @version 0.93
          *
          * <P> For an introduction to this package see <A HREF="index.html"> Overview </A>.

@@ -45,7 +45,8 @@ private import tango.store.model.Iterator;
  * }
  * </PRE>
  * @see store.Predicate#predicate
- * @author Doug Lea
+ * 
+        author: Doug Lea
  * @version 0.93
  *
  * <P> For an introduction to this package see <A HREF="index.html"> Overview </A>.

@@ -41,7 +41,8 @@ private import tango.text.String;
  * a version number and element count.
  * It also provides default implementations of many
  * collection operations. 
- * @author Doug Lea
+ * 
+        author: Doug Lea
  * @version 0.93
  *
  * <P> For an introduction to this package see <A HREF="index.html"> Overview </A>.

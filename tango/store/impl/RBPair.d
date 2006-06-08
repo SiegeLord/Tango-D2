@@ -24,7 +24,8 @@ private import tango.store.model.Comparator;
  *
  * RBPairs are RBCells with keys.
  *
- * @author Doug Lea
+ * 
+        author: Doug Lea
  * @version 0.93
  *
  * <P> For an introduction to this package see <A HREF="index.html"> Overview </A>.

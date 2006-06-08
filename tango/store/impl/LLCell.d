@@ -29,7 +29,8 @@ private import tango.store.model.Comparator;
  * Still, the class is made `public' so that you can use them to
  * build other kinds of collections or whatever, not just the ones
  * currently supported.
- * @author Doug Lea
+ * 
+        author: Doug Lea
  * @version 0.93
  *
  * <P> For an introduction to this package see <A HREF="index.html"> Overview </A>.

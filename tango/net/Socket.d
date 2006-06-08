@@ -20,16 +20,19 @@
         3. This notice may not be removed or altered from any source distribution.
 
 */
-// socket.d 1.1
-// Mar 2004
-
 
 /*******************************************************************************
 
-        @file Socket.d
+        copyright:      Copyright (c) 2004 Kris Bell. All rights reserved
+
+        license:        BSD style: see doc/license.txt for details
+      
+        version:        Initial release: March 2004
         
-        Mango coercion of the excellent socket.d implementation written by 
-        Chris Miller.
+        author:         Christopher Miller 
+                        Kris Bell
+                        Anders F Bjorklund (Darwin patches)
+
 
         The original code has been modified in several ways:
 
@@ -53,15 +56,10 @@
         All changes within the main body of code all marked with "MANGO:"
 
         For a good tutorial on socket-programming I highly recommend going 
-        here: http://www.ecst.csuchico.edu/~beej/guide/net/
-
-        
-        @version        Initial version, March 2004      
-        @author         Christopher Miller 
-                        Kris Bell
-                        Anders F Bjorklund (Darwin patches)
+        here: http://www.ecst.csuchico.edu/~beej/guide/net/      
 
 *******************************************************************************/
+
 
 // MANGO: added all this module & import stuff ...
 module tango.net.Socket;

@@ -34,7 +34,8 @@ private import tango.store.model.CollectionIterator;
 /**
  *
  * Hash table implementation of Map
- * @author Doug Lea
+ * 
+        author: Doug Lea
  * @version 0.94
  *
  * <P> For an introduction to this package see <A HREF="index.html"> Overview </A>.

@@ -19,7 +19,8 @@ module tango.store.model.Function;
  * Function is a common interface for classes with an arbitrary 
  * function of one Object argument that returns another Object,
  * without throwing any kind of user exception.
- * @author Doug Lea
+ * 
+        author: Doug Lea
  * @version 0.93
  *
  * <P> For an introduction to this package see <A HREF="index.html"> Overview </A>.
