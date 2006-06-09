@@ -22,7 +22,7 @@ version (Win32)
     private
 {
     import tango.os.windows.c.process;
-    import tango.os.windows.c.windows;
+    import tango.os.windows.c.minwin;
     extern (Windows) 
 {
     uint threadFunc(void* arg);

@@ -13,7 +13,7 @@
 module tango.os.OS;
 
 version (Win32)
-         public import tango.os.windows.c.windows;  
+         public import tango.os.windows.c.minwin; 
 
 version (linux)
         {
