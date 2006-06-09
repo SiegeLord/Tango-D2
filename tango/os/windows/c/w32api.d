@@ -10,7 +10,7 @@
 \***********************************************************************/
 module tango.os.windows.c.w32api;
 
-version (build) { pragma(nolink); }
+//version (build) { pragma(nolink); }
 
 
 const __W32API_VERSION = 3.6;

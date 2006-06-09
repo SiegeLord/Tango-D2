@@ -1,7 +1,7 @@
 // Converted from w32api\vfw.h
 module tango.os.windows.c.vfw;
 
-version (build) { pragma(nolink); }
+//version (build) { pragma(nolink); }
 
 
 //pragma(lib, "vfw32.lib");

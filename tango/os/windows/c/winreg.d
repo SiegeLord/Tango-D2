@@ -10,7 +10,7 @@
 \***********************************************************************/
 module tango.os.windows.c.winreg;
 
-version (build) { pragma(nolink); }
+//version (build) { pragma(nolink); }
 
 
 private import tango.os.windows.c.windef, tango.os.windows.c.winbase;

@@ -9,7 +9,7 @@
 \***********************************************************************/
 module tango.os.windows.c.lmuse;
 
-version (build) { pragma(nolink); }
+//version (build) { pragma(nolink); }
 
 //pragma(lib, "netapi32.lib");
 import tango.os.windows.c.lmuseflg;

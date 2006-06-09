@@ -5,7 +5,7 @@
 
 module tango.os.windows.c.process;
 
-version (build) { pragma(nolink); }
+//version (build) { pragma(nolink); }
 
 
 private

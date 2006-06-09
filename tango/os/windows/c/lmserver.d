@@ -9,7 +9,7 @@
 \***********************************************************************/
 module tango.os.windows.c.lmserver;
 
-version (build) { pragma(nolink); }
+//version (build) { pragma(nolink); }
 
 import tango.os.windows.c.winsvc;
 private import tango.os.windows.c.lmcons;

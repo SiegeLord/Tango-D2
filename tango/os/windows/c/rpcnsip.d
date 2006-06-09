@@ -9,7 +9,7 @@
 \***********************************************************************/
 module tango.os.windows.c.rpcnsip;
 
-version (build) { pragma(nolink); }
+//version (build) { pragma(nolink); }
 
 private import tango.os.windows.c.rpcdcep;
 private import tango.os.windows.c.rpcnsi;

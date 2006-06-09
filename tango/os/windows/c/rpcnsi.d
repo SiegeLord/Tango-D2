@@ -10,7 +10,7 @@
 \***********************************************************************/
 module tango.os.windows.c.rpcnsi;
 
-version (build) { pragma(nolink); }
+//version (build) { pragma(nolink); }
 
 //pragma(lib, "rpcns4.lib");
 private import tango.os.windows.c.w32api;

@@ -10,7 +10,7 @@
 \***********************************************************************/
 module tango.os.windows.c.aclapi;
 
-version (build) { pragma(nolink); }
+//version (build) { pragma(nolink); }
 
 //pragma(lib, "advapi32.lib");
 

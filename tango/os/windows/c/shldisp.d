@@ -9,7 +9,7 @@
 \***********************************************************************/
 module tango.os.windows.c.shldisp;
 
-version (build) { pragma(nolink); }
+//version (build) { pragma(nolink); }
 
 private import tango.os.windows.c.unknwn;
 

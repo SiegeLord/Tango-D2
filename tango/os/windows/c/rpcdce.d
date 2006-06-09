@@ -11,7 +11,7 @@
 
 module tango.os.windows.c.rpcdce;
 
-version (build) { pragma(nolink); }
+//version (build) { pragma(nolink); }
 
 //pragma(lib, "Rpcrt4.lib");
 private import tango.os.windows.c.basetyps;

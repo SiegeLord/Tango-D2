@@ -10,7 +10,7 @@
 // D Conversion Note: DESC_CHAR is defined as TCHAR.
 module tango.os.windows.c.lmremutl;
 
-version (build) { pragma(nolink); }
+//version (build) { pragma(nolink); }
 
 //pragma(lib, "netapi32.lib");
 private import tango.os.windows.c.lmcons;

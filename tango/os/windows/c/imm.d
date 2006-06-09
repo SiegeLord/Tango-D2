@@ -10,7 +10,7 @@
 
 module tango.os.windows.c.imm;
 
-version (build) { pragma(nolink); }
+//version (build) { pragma(nolink); }
 
 //pragma(lib, "imm32.lib");
 

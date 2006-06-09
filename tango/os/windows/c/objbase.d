@@ -9,7 +9,7 @@
 \***********************************************************************/
 module tango.os.windows.c.objbase;
 
-version (build) { pragma(nolink); }
+//version (build) { pragma(nolink); }
 
 //pragma(lib, "ole32.lib");
 private import tango.os.windows.c.winbase;

@@ -9,7 +9,7 @@
 \***********************************************************************/
 module tango.os.windows.c.tmschema;
 
-version (build) { pragma(nolink); }
+//version (build) { pragma(nolink); }
 
 
 /* BUTTON parts */

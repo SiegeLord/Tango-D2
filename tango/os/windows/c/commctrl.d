@@ -10,7 +10,7 @@
 \***********************************************************************/
 module tango.os.windows.c.commctrl;
 
-version (build) { pragma(nolink); }
+//version (build) { pragma(nolink); }
 
 //pragma(lib, "comctl32.lib");
 

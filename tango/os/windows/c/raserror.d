@@ -9,7 +9,7 @@
 \***********************************************************************/
 module tango.os.windows.c.raserror;
 
-version (build) { pragma(nolink); }
+//version (build) { pragma(nolink); }
 
  
 enum {

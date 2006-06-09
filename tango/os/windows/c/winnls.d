@@ -10,7 +10,7 @@
 \***********************************************************************/
 module tango.os.windows.c.winnls;
 
-version (build) { pragma(nolink); }
+//version (build) { pragma(nolink); }
 
 
 private import tango.os.windows.c.w32api, tango.os.windows.c.basetsd, tango.os.windows.c.windef, tango.os.windows.c.winbase;

@@ -21,7 +21,7 @@
 */
 module tango.os.windows.c.windows;
 
-version (build) { pragma(nolink); }
+//version (build) { pragma(nolink); }
 
 
 import tango.os.windows.c.w32api;

@@ -10,7 +10,7 @@
 \***********************************************************************/
 module tango.os.windows.c.ddeml;
 
-version (build) { pragma(nolink); }
+//version (build) { pragma(nolink); }
 
 //pragma(lib, "user32.lib");
 

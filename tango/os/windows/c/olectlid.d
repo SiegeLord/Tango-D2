@@ -9,7 +9,7 @@
 \***********************************************************************/
 module tango.os.windows.c.olectlid;
 
-version (build) { pragma(nolink); }
+//version (build) { pragma(nolink); }
 
 private import tango.os.windows.c.basetyps;
 

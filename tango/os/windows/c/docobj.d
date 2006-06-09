@@ -9,7 +9,7 @@
 \***********************************************************************/
 module tango.os.windows.c.docobj;
 
-version (build) { pragma(nolink); }
+//version (build) { pragma(nolink); }
 
 private import tango.os.windows.c.unknwn;
 private import tango.os.windows.c.wtypes;

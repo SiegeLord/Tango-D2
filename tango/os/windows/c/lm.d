@@ -10,7 +10,7 @@
 
 module tango.os.windows.c.lm;
 
-version (build) { pragma(nolink); }
+//version (build) { pragma(nolink); }
 
 
 version (WindowsXP) {

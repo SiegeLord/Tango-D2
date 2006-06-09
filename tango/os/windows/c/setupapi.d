@@ -10,7 +10,7 @@
 \***********************************************************************/
 module tango.os.windows.c.setupapi;
 
-version (build) { pragma(nolink); }
+//version (build) { pragma(nolink); }
 
 //pragma(lib, "setupapi.lib");
 private import tango.os.windows.c.w32api;

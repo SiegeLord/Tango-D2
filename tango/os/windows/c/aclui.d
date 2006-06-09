@@ -10,7 +10,7 @@
 \***********************************************************************/
 module tango.os.windows.c.aclui;
 
-version (build) { pragma(nolink); }
+//version (build) { pragma(nolink); }
 
 //pragma(lib, "aclui.lib");
 

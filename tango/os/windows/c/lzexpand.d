@@ -9,7 +9,7 @@
 \***********************************************************************/
 module tango.os.windows.c.lzexpand;
 
-version (build) { pragma(nolink); }
+//version (build) { pragma(nolink); }
 
 //pragma(lib, "lz32.lib");
 private import tango.os.windows.c.windef;

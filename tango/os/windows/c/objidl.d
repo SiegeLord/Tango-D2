@@ -13,7 +13,7 @@
 // # do we need the proxies that are defined in this file?
 module tango.os.windows.c.objidl;
 
-version (build) { pragma(nolink); }
+//version (build) { pragma(nolink); }
 
 
 import tango.os.windows.c.unknwn;

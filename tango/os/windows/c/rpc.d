@@ -19,7 +19,7 @@ RpcRevertToSelf
 
 module tango.os.windows.c.rpc;
 
-version (build) { pragma(nolink); }
+//version (build) { pragma(nolink); }
 
 
 import tango.os.windows.c.unknwn;

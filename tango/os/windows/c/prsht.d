@@ -10,7 +10,7 @@
 \***********************************************************************/
 module tango.os.windows.c.prsht;
 
-version (build) { pragma(nolink); }
+//version (build) { pragma(nolink); }
 
 //pragma(lib, "comctl32.lib");
 private import tango.os.windows.c.w32api;

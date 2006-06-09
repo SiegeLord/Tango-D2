@@ -11,7 +11,7 @@
 // TODO: CMIC_VALID_SEE_FLAGS
 module tango.os.windows.c.shlobj;
 
-version (build) { pragma(nolink); }
+//version (build) { pragma(nolink); }
 
 //pragma(lib, "shell32.lib");
 private import tango.os.windows.c.w32api;

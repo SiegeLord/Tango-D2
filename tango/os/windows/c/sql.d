@@ -9,7 +9,7 @@
 \***********************************************************************/
 module tango.os.windows.c.sql;
 
-version (build) { pragma(nolink); }
+//version (build) { pragma(nolink); }
 
 import tango.os.windows.c.sqltypes;
 private import tango.os.windows.c.windef;

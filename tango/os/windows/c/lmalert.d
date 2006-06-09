@@ -9,7 +9,7 @@
 \***********************************************************************/
 module tango.os.windows.c.lmalert;
 
-version (build) { pragma(nolink); }
+//version (build) { pragma(nolink); }
 
 //pragma(lib, "netapi32.lib");
 private import tango.os.windows.c.lmcons;

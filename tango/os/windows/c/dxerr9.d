@@ -1,6 +1,6 @@
 module tango.os.windows.c.dxerr9;
 
-version (build) { pragma(nolink); }
+//version (build) { pragma(nolink); }
 
 
 /*

@@ -49,7 +49,7 @@ int wWinMain(HINSTANCE,HINSTANCE,LPWSTR,int);
 */
 module tango.os.windows.c.winbase;
 
-version (build) { pragma(nolink); }
+//version (build) { pragma(nolink); }
 
 
 import tango.os.windows.c.winver;

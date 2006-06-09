@@ -10,7 +10,7 @@
 \***********************************************************************/
 module tango.os.windows.c.cplext;
 
-version (build) { pragma(nolink); }
+//version (build) { pragma(nolink); }
 
 
 // FIXME: check types

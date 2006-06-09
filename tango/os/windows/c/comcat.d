@@ -10,7 +10,7 @@
 \***********************************************************************/
 module tango.os.windows.c.comcat;
 
-version (build) { pragma(nolink); }
+//version (build) { pragma(nolink); }
 
 
 import tango.os.windows.c.windows, tango.os.windows.c.ole2;

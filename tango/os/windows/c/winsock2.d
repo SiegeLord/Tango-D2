@@ -8,7 +8,7 @@
 \***********************************************************************/
 module tango.os.windows.c.winsock2;
 
-version (build) { pragma(nolink); }
+//version (build) { pragma(nolink); }
 
 
 //pragma(lib, "Ws2_32.lib");

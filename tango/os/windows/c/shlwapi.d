@@ -9,7 +9,7 @@
 \***********************************************************************/
 module tango.os.windows.c.shlwapi;
 
-version (build) { pragma(nolink); }
+//version (build) { pragma(nolink); }
 
 //pragma(lib, "shlwapi.lib");
 

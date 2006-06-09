@@ -10,7 +10,7 @@
 
 module tango.os.windows.c.oleacc;
 
-version (build) { pragma(nolink); }
+//version (build) { pragma(nolink); }
 
 //pragma(lib, "oleacc.lib");
 private import tango.os.windows.c.oaidl;

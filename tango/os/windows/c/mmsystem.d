@@ -13,7 +13,7 @@
 
 module tango.os.windows.c.mmsystem;
 
-version (build) { pragma(nolink); }
+//version (build) { pragma(nolink); }
 
 //pragma(lib, "winmm.lib");
 private import tango.os.windows.c.w32api;

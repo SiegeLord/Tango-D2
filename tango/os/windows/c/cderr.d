@@ -9,7 +9,7 @@
 \***********************************************************************/
 module tango.os.windows.c.cderr;
 
-version (build) { pragma(nolink); }
+//version (build) { pragma(nolink); }
 
 
 enum {

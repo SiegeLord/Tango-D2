@@ -10,7 +10,7 @@
 
 module tango.os.windows.c.oleauto;
 
-version (build) { pragma(nolink); }
+//version (build) { pragma(nolink); }
 
 //pragma(lib, "oleaut32.lib");
 import tango.os.windows.c.oaidl;

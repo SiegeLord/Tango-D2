@@ -9,7 +9,7 @@
 \***********************************************************************/
 module tango.os.windows.c.lmerr;
 
-version (build) { pragma(nolink); }
+//version (build) { pragma(nolink); }
 
 import tango.os.windows.c.winerror;
 

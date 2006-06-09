@@ -10,7 +10,7 @@
 \***********************************************************************/
 module tango.os.windows.c.shellapi;
 
-version (build) { pragma(nolink); }
+//version (build) { pragma(nolink); }
 
 //pragma(lib, "shell32.lib");
 private import tango.os.windows.c.w32api, tango.os.windows.c.windef;

@@ -20,7 +20,7 @@
 
 module tango.os.windows.c.winuser;
 
-version (build) { pragma(nolink); }
+//version (build) { pragma(nolink); }
 
 private import tango.os.windows.c.w32api;
 private import tango.os.windows.c.winbase;

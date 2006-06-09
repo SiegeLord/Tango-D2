@@ -8,7 +8,7 @@
 \***********************************************************************/
 module tango.os.windows.c.winsock;
 
-version (build) { pragma(nolink); }
+//version (build) { pragma(nolink); }
 
 
 /*

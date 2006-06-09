@@ -9,7 +9,7 @@
 \***********************************************************************/
 module tango.os.windows.c.rpcndr;
 
-version (build) { pragma(nolink); }
+//version (build) { pragma(nolink); }
 
 
 // TODO: Bitfields in MIDL_STUB_MESSAGE.

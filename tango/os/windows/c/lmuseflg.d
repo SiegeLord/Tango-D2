@@ -1,6 +1,6 @@
 module tango.os.windows.c.lmuseflg;
 
-version (build) { pragma(nolink); }
+//version (build) { pragma(nolink); }
 
 
 enum {

@@ -10,7 +10,7 @@
 
 module tango.os.windows.c.commdlg;
 
-version (build) { pragma(nolink); }
+//version (build) { pragma(nolink); }
 
 //pragma(lib, "comdlg32.lib");
 

@@ -9,7 +9,7 @@
 \***********************************************************************/
 module tango.os.windows.c.ole2;
 
-version (build) { pragma(nolink); }
+//version (build) { pragma(nolink); }
 
 //pragma(lib, "ole32.lib");
 import tango.os.windows.c.winerror;
