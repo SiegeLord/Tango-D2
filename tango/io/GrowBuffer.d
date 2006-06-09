@@ -131,12 +131,13 @@ class GrowBuffer : Buffer
                         
         ***********************************************************************/
 
-        override void makeRoom (uint size)
+        override uint makeRoom (uint size)
         {
                 if (size < increment)
                     size = increment;
 
                 capacity += size;
                 data.length = capacity;               
+                return available();
         }
 }

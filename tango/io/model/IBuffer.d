@@ -158,6 +158,27 @@ abstract class IBuffer /// could be an interface, but that causes poor codegen
 
         /***********************************************************************
 
+                Access buffer content
+
+                Params: 
+                dst = destination of the content
+
+                Returns:
+                return the number of bytes read, which will be less than
+                dst.length when the content has been consumed (Eof, Eob)
+                and zero thereafter.
+
+                Remarks:
+                Fill the provided array with content. We try to satisfy 
+                the request from the buffer content, and read directly
+                from an attached conduit where more is required.
+
+        ***********************************************************************/
+
+        abstract uint get (void[] dst);
+
+        /***********************************************************************
+
                 Exposes the raw data buffer at the current write position, 
                 The delegate is provided with a void[] representing space
                 available within the buffer at the current write position.
@@ -283,7 +304,7 @@ abstract class IBuffer /// could be an interface, but that causes poor codegen
 
         ***********************************************************************/
 
-        abstract void flush ();
+        abstract IBuffer flush ();
 
         /***********************************************************************
         
@@ -350,7 +371,7 @@ abstract class IBuffer /// could be an interface, but that causes poor codegen
                         
         ***********************************************************************/
 
-        abstract void makeRoom (uint space);
+        abstract uint makeRoom (uint space);
 
         /***********************************************************************
         
@@ -377,7 +398,7 @@ abstract class IBuffer /// could be an interface, but that causes poor codegen
 
         ***********************************************************************/
 
-        abstract void setConduit (IConduit conduit);
+        abstract IBuffer setConduit (IConduit conduit);
 
         /***********************************************************************
                 

@@ -81,6 +81,17 @@ class DatagramSocket : Socket, ISocketReader
         }
 
         /***********************************************************************
+        
+                Is this socket still valid?
+
+        ***********************************************************************/
+
+        bool isAlive ()
+        {
+                return super.isAlive();
+        }
+
+        /***********************************************************************
        
                 Write content from the specified buffer to the given address.
          

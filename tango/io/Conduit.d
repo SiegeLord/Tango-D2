@@ -239,24 +239,25 @@ class Conduit : IConduit, IConduitFilter
 
         /**********************************************************************
         
-                Fill the provided buffer. Returns true if the request 
-                can be satisfied; false otherwise
+                Fill the provided buffer. Returns the number of bytes 
+                actually read, which will be less that dst.length when 
+                Eof has been reached and zero thereafter
 
         **********************************************************************/
 	
-        bool fill (void[] dst)
+        uint fill (void[] dst)
         {
                 uint len;
 
                 do {
                    int i = read (dst [len .. $]);   
                    if (i is Eof)
-                       return false;
+                       return len;
 
                    len += i;
                    } while (len < dst.length);
 
-                return true;
+                return len;
         }
         	
         /***********************************************************************

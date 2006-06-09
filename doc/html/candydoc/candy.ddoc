@@ -18,7 +18,7 @@ function anchorFromTitle(title, path, ext) {
 <div id="tabarea"></div><div id="explorerclient"></div>
 <div id="content"><script>explorer.initialize("$(TITLE)");</script>
 	<table class="content">
-		<tr><td id="docbody"><h1><script>anchorFromTitle('$(TITLE)', 'http://dsource.org/projects/mango/browser/branches/v2/', 'd');</script></h1>$(BODY)</td></tr>
+		<tr><td id="docbody"><h1><script>anchorFromTitle('$(TITLE)', 'http://dsource.org/projects/tango/browser/trunk/', 'd');</script></h1>$(BODY)</td></tr>
 		<tr><td id="docfooter">
 			Page was generated with
 			<img src="candydoc/img/candydoc.gif" style="vertical-align:middle; position:relative; top:-1px">
@@ -36,7 +36,7 @@ $(DT <span class="decl">$(LI $0)</span>)
 <script>explorer.outline.writeEnabled = false;</script>
 
 DDOC_PSYMBOL =
-<span class="currsymbol">$(LINK2 http://dsource.org/projects/mango/wiki/$(TITLE).$0, $0)</span>
+<span class="currsymbol">$(LINK2 http://tango.dsource.org/docs/index.php/$(TITLE).$0, $0)</span>
 <script>explorer.outline.addDecl('$0');</script>
 
 DDOC_MEMBERS =
