@@ -75,12 +75,13 @@ interface IConduit
 
         /**********************************************************************
         
-                Fill the provided buffer. Returns true if the request 
-                can be satisfied; false otherwise
+                Fill the provided buffer. Returns the number of bytes 
+                actually read, which will be less that dst.length when 
+                Eof has been reached and zero thereafter
 
         **********************************************************************/
 	
-        abstract bool fill (void[] dst);
+        abstract uint fill (void[] dst);
 
         /***********************************************************************
         

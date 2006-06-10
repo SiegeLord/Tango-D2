@@ -321,7 +321,7 @@ class Buffer : IBuffer
 
         ***********************************************************************/
 
-        final static void error (char[] msg)
+        final void error (char[] msg)
         {
                 throw new IOException (msg);
         }

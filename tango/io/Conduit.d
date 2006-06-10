@@ -226,7 +226,7 @@ class Conduit : IConduit, IConduitFilter
 
         IConduit copy (IConduit source)
         {
-                Buffer buffer = new Buffer (this);
+                auto buffer = new Buffer (this);
 
                 while (buffer.fill (source) != Eof)
                        if (buffer.drain () == Eof)

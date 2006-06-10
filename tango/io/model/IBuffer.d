@@ -257,7 +257,7 @@ abstract class IBuffer /// could be an interface, but that causes poor codegen
 
         ***********************************************************************/
 
-        bool next (uint delegate (void[]));
+        abstract bool next (uint delegate (void[]));
 
         /***********************************************************************
 
@@ -321,7 +321,7 @@ abstract class IBuffer /// could be an interface, but that causes poor codegen
 
         ***********************************************************************/
 
-        bool truncate (uint extent);
+        abstract bool truncate (uint extent);
 
         /***********************************************************************
         
