@@ -1895,6 +1895,9 @@ class InternetHost
 }
 
 
+debug (UnitText)
+{
+extern (C) int printf(char*, ...);
 unittest
 {
         InternetHost ih = new InternetHost;
@@ -1914,6 +1917,7 @@ unittest
         {
                 printf("aliases[%d] = %.*s\n", i, s);
         }
+}
 }
 
 
@@ -2127,13 +2131,14 @@ class InternetAddress: Address
         }
 }
 
-
+debug(Unittest)
+{
 unittest
 {
         InternetAddress ia = new InternetAddress("63.105.9.61", 80);
         assert(ia.toString() == "63.105.9.61:80");
 }
-
+}
 
 /*******************************************************************************
 
