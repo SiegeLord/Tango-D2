@@ -358,24 +358,3 @@ struct TextT(T)
 ******************************************************************************/
 
 alias TextT!(char) Text;
-
-
-
-/******************************************************************************
-
-******************************************************************************/
-
-unittest
-{
-        try 
-        {
-        char[] test = "123456789";
-        assert (Text.locate (test, 'a', test.length) == null);
-        assert (Text.locate (test, '3', test.length) == &test[2]);
-        assert (Text.locate (test, '1', test.length) == &test[0]);
-
-        assert (Text.equal (test, test, test.length));
-        assert (!Text.equal (test, "qwe", 3));
-        } catch (Object o)
-                 Cout (o.toString() ~ "\n");
-}
