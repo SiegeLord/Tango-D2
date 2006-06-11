@@ -5,8 +5,6 @@ public  import  tango.io.FilePath;
 private import  tango.io.Exception,
                 tango.io.FileConduit;
 
-private import  tango.io.model.IBitBucket;
-
 /******************************************************************************
 
         FileBucket implements a simple mechanism to store and recover a 
@@ -28,22 +26,22 @@ private import  tango.io.model.IBitBucket;
         existing key will overwrite any previous content. What follows
         is a contrived example:
         
-        @code
+        ---
         char[] text = "this is a test";
 
-        FileBucket bucket = new FileBucket (new FilePath("bucket.bin"), FileBucket.HalfK);
+        auto bucket = new FileBucket (new FilePath("bucket.bin"), FileBucket.HalfK);
 
         // insert some data, and retrieve it again
         bucket.put ("a key", text);
         char[] b = cast(char[]) bucket.get ("a key");
 
         assert (b == text);
-        bucket.close();
-        @endcode
+        bucket.close;
+        ---
 
 ******************************************************************************/
 
-class FileBucket : IBitBucket
+class FileBucket
 {
         /**********************************************************************
 
@@ -75,7 +73,7 @@ class FileBucket : IBitBucket
         private ulong                   waterLine;
 
         // supported block sizes
-        static const BlockSize          EighthK  = {128-1},
+        public static const BlockSize   EighthK  = {128-1},
                                         HalfK    = {512-1},
                                         OneK     = {1024*1-1},
                                         TwoK     = {1024*2-1},
@@ -84,6 +82,20 @@ class FileBucket : IBitBucket
                                         SixteenK = {1024*16-1},
                                         ThirtyTwoK = {1024*32-1},
                                         SixtyFourK = {1024*64-1};
+
+
+        /**********************************************************************
+
+                Construct a FileBucket with the provided path and record-
+                size. Selecting a record size that roughly matches the 
+                serialized content will limit 'thrashing'.
+
+        **********************************************************************/
+
+        this (char[] path, BlockSize block)
+        {
+                this (new FilePath(path), block);
+        }
 
         /**********************************************************************
 
@@ -205,7 +217,7 @@ class FileBucket : IBitBucket
 
                 if (r is null)
                    {
-                   Record rr = new Record ();
+                   auto rr = new Record;
                    map [key] =  rr;
                    r = &rr;
                    }
@@ -238,7 +250,7 @@ class FileBucket : IBitBucket
 
         **********************************************************************/
 
-        private class Record
+        private static class Record
         {
                 private ulong           offset;
                 private int             length,
