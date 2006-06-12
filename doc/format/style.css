@@ -1,4 +1,4 @@
-#dcode {
+#dcode, #dcode pre {
     font-family: "lucida console", monospace, courier;
     font-size: 11px;
     background-color: #fafbfa;
@@ -16,10 +16,12 @@
 	padding-right: 5px;
 	border-right: dotted grey 1px;
 	text-align: right;
+	vertical-align: top;
+	width: 1px;   /* uhm... it will make the row thin, but not really 1px */
 }
 
 
-#dcode #code {
+#dcode #code pre {
 	padding-left: 10px;
 }
 
