@@ -11,21 +11,15 @@
  * "as is" without express or implied warranty.
  */
 
-module tango.os.process.Process;
+module tango.os.ProcessConduit;
 
 private import tango.os.OS;
+private import tango.io.Conduit;
 private import tango.stdc.stdlib;
 
-import tango.os.process.Pipe;
-
-extern(C) char* strdup(char*);
-
-//version(build) { pragma(link, advapi32); }
+private import tango.os.PipeConduit;
 
 version(Windows) { 
-	import tango.os.windows.c.windows;
-	import tango.os.windows.c.syserror;
-	
 	extern(Windows) {
 		struct PROCESS_INFORMATION {
 		    HANDLE hProcess;
@@ -226,11 +220,8 @@ version(Windows) {
 }
 
 version(Posix) {
-	import tango.os.linux.c.linux;
 	private import tango.stdc.time;
-	private import std.string;
-	private import std.process;
-	//extern (C) char* strerror(int);
+
 	extern(C) int kill(pid_t,int);
 	uint F_SETFD = 2;
 	uint STDIN_FILENO  = 0;
@@ -243,18 +234,19 @@ version(Posix) {
 class ProcessException : Exception
 {
 	version(Windows) {
-		this(char[] msg) { super(msg ~ ": " ~ sysErrorString(GetLastError())); }
+		this(char[] msg) { super(msg ~ ": " ~ OS.error()); }
 	}
 	version(Posix) {	
 		//for some reason getErrno does not link for me?
-		this(char[] msg) { super(msg ~ ": " ~ std.string.toString(strerror(getErrno()))); }
+		this(char[] msg) { super(msg ~ ": " ~ OS.error()); }
 	}
 }
 
-class Process
+class ProcessConduit : Conduit
 {
 	this()
 	{
+                super (ConduitStyle.ReadWrite, false);
 	}
 	
 	this(char[] command)
@@ -269,6 +261,11 @@ class Process
 		startProcess(command);
 	}
 	
+        uint bufferSize ()
+        {
+                return 8 * 1024;
+        } 
+                     
 	void kill()
 	{
 		if (!running) return;
@@ -285,28 +282,28 @@ class Process
 		enviroment ~= value;
 	}
 	
-	char[] readLine()
+	uint reader (void[] dst)
 	{
-		return pout.readLine();
+		return pout.reader(dst);
 	}
 	
-	char[] readError()
+	uint errors(void[] dst)
 	{
-		return perr.readLine();
+		return perr.reader(dst);
 	}
 
-	void writeLine(char[] line)
+	uint writer(void[] src)
 	{
-		pin.writeLine(line);
+		pin.writer(src);
 	}
 
 private:
 	char[][] enviroment = null;
 	char* cmd = null;
 	bool running = false;
-	PipeStream pout = null;
-	PipeStream perr = null;
-	PipeStream pin = null;
+	PipeConduit pout = null;
+	PipeConduit perr = null;
+	PipeConduit pin = null;
 
 	version(Windows)
 	{
@@ -343,21 +340,20 @@ private:
 			char* env = null;
 			
 			try {
-				pout = new PipeStream();
-				perr = new PipeStream();
-				pin = new PipeStream();
+				pout = new PipeConduit();
+				perr = new PipeConduit();
+				pin = new PipeConduit();
 
 				GetStartupInfoA(&startup);
-				startup.hStdInput = pin.readHandle;
-				startup.hStdOutput = pout.writeHandle;
-				startup.hStdError = perr.writeHandle;
+				startup.hStdInput = cast(HANDLE) pin.readHandle;
+				startup.hStdOutput = cast(HANDLE) pout.writeHandle;
+				startup.hStdError = cast(HANDLE) perr.writeHandle;
 				startup.dwFlags = STARTF_USESTDHANDLES;
 
 				info = new PROCESS_INFORMATION();
 				env = makeBlock(enviroment);
 					
-				if (!CreateProcessA(null,std.windows.charset.toMBSz(command),null,null,true,DETACHED_PROCESS,env,null,&startup,info))
-				//if (!CreateProcessW(null,std.string.toUTF16(command),null,null,true,DETACHED_PROCESS,env,null,&startup,info))
+				if (!CreateProcessA(null,command~"\0",null,null,true,DETACHED_PROCESS,env,null,&startup,info))
 					throw new ProcessException("CreateProcess");
 					
 				running = true;
@@ -392,6 +388,10 @@ private:
 			pin = null;
 		}
 	}
+
+
+
+
 	
 	version(Posix)
 	{
@@ -403,7 +403,7 @@ private:
 
 			result = cast(char**)calloc(1,(enviroment.length+1) * typeid(char*).sizeof);
 			foreach(uint i, char[] s; from)
-				result[i] = strdup(toStringz(s));
+				result[i] = strdup(s ~ "\0"); 
 
 			return result;
 		}
@@ -414,6 +414,14 @@ private:
 			free(block);
 		}
 		
+		bool find (char[] list, char match)
+                {
+                        foreach (c; list)
+                                 if (c is match)
+                                     return true;
+                        return false;
+                }
+
 		char[][] splitArgs(char[] string, char[] delims = " \t\r\n")
 		{
 			char[][] results = null;			
@@ -425,7 +433,7 @@ private:
 			{
 				if (string[i] == '\"') isquot = !isquot;
 				if (isquot) continue;
-				if (delims.find(string[i]) != -1) {
+				if (find(delims, string[i])) {
 					if (start == -1) continue;
 					results ~= string[start..i];
 					start = -1;
@@ -441,13 +449,13 @@ private:
 		void startProcess(char[] command)
 		{
 			try {
-				pin = new PipeStream();
-				pout = new PipeStream();
-				perr = new PipeStream();
+				pin = new PipeConduit();
+				pout = new PipeConduit();
+				perr = new PipeConduit();
 				
-				if (fcntl(pin.writeHandle, F_SETFD, 1) == -1) throw new ProcessException("fcntl(pin.writeHandle)");
-				if (fcntl(pout.readHandle, F_SETFD, 1) == -1) throw new ProcessException("fcntl(pout.readHandle)");
-				if (fcntl(perr.readHandle, F_SETFD, 1) == -1) throw new ProcessException("fcntl(perr.readHandle)");
+				if (fcntl(cast(int)pin.writeHandle, F_SETFD, 1) == -1) throw new ProcessException("fcntl(pin.writeHandle)");
+				if (fcntl(cast(int)pout.readHandle, F_SETFD, 1) == -1) throw new ProcessException("fcntl(pout.readHandle)");
+				if (fcntl(cast(int)perr.readHandle, F_SETFD, 1) == -1) throw new ProcessException("fcntl(perr.readHandle)");
 				if (fcntl(fileno(stdin), F_SETFD, 1) == -1) throw new ProcessException("fcntl(stdin)");
 				if (fcntl(fileno(stdout), F_SETFD, 1) == -1) throw new ProcessException("fcntl(stdout)");
 				if (fcntl(fileno(stderr), F_SETFD, 1) == -1) throw new ProcessException("fcntl(stderr)");
@@ -458,9 +466,9 @@ private:
 				
 					/* child */
 					//not sure if we can even throw here?
-					if (dup2(pout.writeHandle,STDOUT_FILENO) == -1) {} //throw new ProcessException("dup2(xwrite[1])");
-					if (dup2(perr.writeHandle,STDERR_FILENO) == -1) {} //throw new ProcessException("dup2(xread[0])");
-					if (dup2(pin.readHandle,STDIN_FILENO) == -1) {} //throw new ProcessException("dup2(xread[0])");
+					if (dup2(cast(int) pout.writeHandle,STDOUT_FILENO) == -1) {} //throw new ProcessException("dup2(xwrite[1])");
+					if (dup2(cast(int) perr.writeHandle,STDERR_FILENO) == -1) {} //throw new ProcessException("dup2(xread[0])");
+					if (dup2(cast(int) pin.readHandle,STDIN_FILENO) == -1) {} //throw new ProcessException("dup2(xread[0])");
 					
 					pout.closeWrite();
 					perr.closeWrite();
@@ -514,10 +522,20 @@ private:
 	}
 }
 
-/+
+
+debug (Main)
+{
+extern (C) uint printf(char*, ...);
+
 void main()
 {
-	auto Process p = new Process("cmd /c dir");
-	printf("%.*s",p.readLine());
+        char[256] buf;
+	auto p = new ProcessConduit("cmd /c dir");
+        uint len;
+
+        while ((len = p.reader(buf)) != p.Eof)
+                printf("%.*s", buf[0..len]);
 }
-+/
+}
+
+

@@ -57,7 +57,7 @@ class Conduit : IConduit, IConduitFilter
 
         ***********************************************************************/
 
-        abstract Handle getHandle (); 
+        //abstract Handle getHandle (); 
                      
         /***********************************************************************
         
