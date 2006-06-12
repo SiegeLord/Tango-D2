@@ -182,10 +182,13 @@ int   fputs(char* s, FILE* stream);
 char* gets(char* s);
 int   puts(char* s);
 
-int getchar()                 { return getc(stdin);     }
-int putchar(int c)            { return putc(c,stdout);  }
-int getc(FILE* stream)        { return fgetc(stream);   }
-int putc(int c, FILE* stream) { return fputc(c,stream); }
+extern (D)
+{
+    int getchar()                 { return getc(stdin);     }
+    int putchar(int c)            { return putc(c,stdout);  }
+    int getc(FILE* stream)        { return fgetc(stream);   }
+    int putc(int c, FILE* stream) { return fputc(c,stream); }
+}
 
 int ungetc(int c, FILE* stream);
 
@@ -245,10 +248,13 @@ wint_t fputwc(wchar_t c, FILE* stream);
 wchar_t* fgetws(wchar_t* s, int n, FILE* stream);
 int      fputws(wchar_t* s, FILE* stream);
 
-wint_t getwchar()                     { return fgetwc(stdin);     }
-wint_t putwchar(wchar_t c)            { return fputwc(c,stdout);  }
-wint_t getwc(FILE* stream)            { return fgetwc(stream);    }
-wint_t putwc(wchar_t c, FILE* stream) { return fputwc(c, stream); }
+extern (D)
+{
+    wint_t getwchar()                     { return fgetwc(stdin);     }
+    wint_t putwchar(wchar_t c)            { return fputwc(c,stdout);  }
+    wint_t getwc(FILE* stream)            { return fgetwc(stream);    }
+    wint_t putwc(wchar_t c, FILE* stream) { return fputwc(c, stream); }
+}
 
 wint_t ungetwc(wint_t c, FILE* stream);
 int    fwide(FILE* stream, int mode);
