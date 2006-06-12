@@ -1,7 +1,7 @@
 #dcode {
     font-family: "lucida console", monospace, courier;
     font-size: 11px;
-    background-color: #f8fff8;
+    background-color: #fafbfa;
     border: none;
     padding: 0px;
     margin: 0px;
@@ -24,11 +24,11 @@
 }
 
 #dcode span.nbr {
-    color: #cc66cc;
+    color: #000080;
 }
 
 #dcode span.str {
-    color: #A0A0F0;
+    color: #9090ff;
 }
 
 #dcode span.com {
