@@ -442,7 +442,7 @@ static int lastError ()
                 } 
         version (Posix)
                 {
-                return getErrno();
+                return errno;
                 }
 }
 
@@ -1106,7 +1106,7 @@ class Socket : Conduit
                                 }
                                 else version (Posix)
                                 {
-                                        if(EINPROGRESS == getErrno())
+                                        if(EINPROGRESS == errno)
                                                 return;
                                 }
                                 else
@@ -1617,7 +1617,7 @@ class Socket : Conduit
                         }
                         else version (Posix)
                         {
-                                if(getErrno() != EINTR)
+                                if(errno != EINTR)
                                    break;
                         }
                         else
