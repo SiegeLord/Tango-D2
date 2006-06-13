@@ -89,7 +89,7 @@ clean :
 
 install :
 	$(MD) $(LIB_DEST)
-	make -C compiler/digitalmars -flinux.mak clean
-	make -C gc/digitalmars -flinux.mak clean
-	make -C common -flinux.mak clean
+	make -C compiler/digitalmars -flinux.mak install
+	make -C gc/digitalmars -flinux.mak install
+	make -C common -flinux.mak install
 #	$(CP) libphobos*.a $(LIB_DEST)/.
