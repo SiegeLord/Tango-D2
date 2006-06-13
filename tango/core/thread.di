@@ -8,9 +8,12 @@ super(msg);
 }
 }
 version = StackGrowsDown;
-private
+public
 {
     import tango.core.Interval;
+}
+private
+{
     import tango.stdc.string;
 }
 version (Win32)
@@ -122,7 +125,11 @@ m_call = Call.DG;
 }
     static
 {
-    void sleep(Interval interval = Interval.max);
+    void sleep(Interval interval);
+}
+    static
+{
+    void sleep();
 }
     static
 {
