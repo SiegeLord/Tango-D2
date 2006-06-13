@@ -36,7 +36,7 @@ $(DT <span class="decl">$(LI $0)</span>)
 <script>explorer.outline.writeEnabled = false;</script>
 
 DDOC_PSYMBOL =
-<span class="currsymbol">$(LINK2 http://tango.dsource.org/docs/index.php/$(TITLE).$0, $0)</span>
+<span class="currsymbol">$(LINK2 http://www.dsource.org/projects/tango/wiki/$(TITLE).$0, $0)</span>
 <script>explorer.outline.addDecl('$0');</script>
 
 DDOC_MEMBERS =
