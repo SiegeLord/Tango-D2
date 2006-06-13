@@ -1,10 +1,11 @@
-/*
- * Written by Walter Bright
- * Digital Mars
- * www.digitalmars.com
- * Placed into Public Domain
+/**
+ * D header file for C99.
+ *
+ * Copyright: Public Domain
+ * License:   Public Domain
+ * Authors:   Sean Kelly, Walter Bright
+ * Standards: ISO/IEC 9899:1999 (E)
  */
-
 module tango.stdc.stdio;
 
 private
@@ -158,8 +159,8 @@ int   fflush(FILE* stream);
 FILE* fopen(char* filename, char* mode);
 FILE* freopen(char* filename, char* mode, FILE* stream);
 
-void  setbuf(FILE* stream, char* buf);
-int   setvbuf(FILE* stream, char* buf, int mode, size_t size);
+void setbuf(FILE* stream, char* buf);
+int  setvbuf(FILE* stream, char* buf, int mode, size_t size);
 
 int fprintf(FILE* stream, char* format, ...);
 int fscanf(FILE* stream, char* format, ...);

@@ -1,8 +1,11 @@
-/*
- * Written by Sean Kelly
- * Placed into Public Domain
+/**
+ * D header file for C99.
+ *
+ * Copyright: Public Domain
+ * License:   Public Domain
+ * Authors:   Sean Kelly
+ * Standards: ISO/IEC 9899:1999 (E)
  */
-
 module tango.stdc.errno;
 
 extern (C):
@@ -49,13 +52,10 @@ version( Win32 )
     const auto ENOSYS           = 40;       // Function not implemented
     const auto ENOTEMPTY        = 41;       // Directory not empty
     const auto EILSEQ           = 42;       // Illegal byte sequence
-
     const auto EDEADLOCK        = EDEADLK;
 }
 else version( linux )
 {
-    // Linux errno values
-    // From /usr/include/asm-generic/errno-base.h
     const auto EPERM            = 1;        // Operation not permitted
     const auto ENOENT           = 2;        // No such file or directory
     const auto ESRCH            = 3;        // No such process
@@ -90,8 +90,6 @@ else version( linux )
     const auto EPIPE            = 32;       // Broken pipe
     const auto EDOM             = 33;       // Math argument out of domain of func
     const auto ERANGE           = 34;       // Math result not representable
-
-    // From /usr/include/asm-generic/errno.h
     const auto EDEADLK          = 35;       // Resource deadlock would occur
     const auto ENAMETOOLONG     = 36;       // File name too long
     const auto ENOLCK           = 37;       // No record locks available
@@ -115,9 +113,7 @@ else version( linux )
     const auto ENOANO           = 55;       // No anode
     const auto EBADRQC          = 56;       // Invalid request code
     const auto EBADSLT          = 57;       // Invalid slot
-
     const auto EDEADLOCK        = EDEADLK;
-
     const auto EBFONT           = 59;       // Bad font file format
     const auto ENOSTR           = 60;       // Device not a stream
     const auto ENODATA          = 61;       // No data available
@@ -182,7 +178,6 @@ else version( linux )
     const auto EISNAM           = 120;      // Is a named type file
     const auto EREMOTEIO        = 121;      // Remote I/O error
     const auto EDQUOT           = 122;      // Quota exceeded
-
     const auto ENOMEDIUM        = 123;      // No medium found
     const auto EMEDIUMTYPE      = 124;      // Wrong medium type
     const auto ECANCELED        = 125;      // Operation Canceled
@@ -190,8 +185,6 @@ else version( linux )
     const auto EKEYEXPIRED      = 127;      // Key has expired
     const auto EKEYREVOKED      = 128;      // Key has been revoked
     const auto EKEYREJECTED     = 129;      // Key was rejected by service
-
-    // for robust mutexes
     const auto EOWNERDEAD       = 130;      // Owner died
     const auto ENOTRECOVERABLE  = 131;      // State not recoverable
 }

@@ -1,8 +1,11 @@
-/*
- * Written by Sean Kelly
- * Placed into Public Domain
+/**
+ * D header file for C99.
+ *
+ * Copyright: Public Domain
+ * License:   Public Domain
+ * Authors:   Sean Kelly
+ * Standards: ISO/IEC 9899:1999 (E)
  */
-
 module tango.stdc.time;
 
 private import tango.stdc.stddef;
@@ -59,20 +62,20 @@ else
 }
 
 clock_t clock();
-double difftime(time_t time1, time_t time0);
-time_t mktime(tm* timeptr);
-time_t time(time_t* timer);
-char* asctime(tm* timeptr);
-char* ctime(time_t* timer);
-tm* gmtime(time_t* timer);
-tm* localtime(time_t* timer);
-size_t strftime(char* s, size_t maxsize, char* format, tm* timeptr);
-size_t wcsftime(wchar_t* s, size_t maxsize, wchar_t* format, tm* timeptr);
+double  difftime(time_t time1, time_t time0);
+time_t  mktime(tm* timeptr);
+time_t  time(time_t* timer);
+char*   asctime(tm* timeptr);
+char*   ctime(time_t* timer);
+tm*     gmtime(time_t* timer);
+tm*     localtime(time_t* timer);
+size_t  strftime(char* s, size_t maxsize, char* format, tm* timeptr);
+size_t  wcsftime(wchar_t* s, size_t maxsize, wchar_t* format, tm* timeptr);
 
 version( Win32 )
 {
-    void tzset();
-    void _tzset();
+    void  tzset();
+    void  _tzset();
     char* _strdate(char* s);
     char* _strtime(char* s);
 
