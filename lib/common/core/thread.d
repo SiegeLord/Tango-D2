@@ -566,7 +566,7 @@ class Thread
             //      and other interrupts.
             do
             {
-                usleep( interval );
+                sleep( uint.max );
             } while( true );
         }
     }
