@@ -1,9 +1,5 @@
 // D import file generated from 'core\memory.d'
 module tango.core.memory;
-version (build)
-{
-    pragma(nolink):
-}
 private
 {
     extern (C) 

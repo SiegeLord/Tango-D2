@@ -1,9 +1,5 @@
 // D import file generated from 'core\exception.d'
 module tango.core.exception;
-version (build)
-{
-    pragma(nolink):
-}
 private
 {
     import tango.stdc.stddef;

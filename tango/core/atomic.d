@@ -8,7 +8,7 @@
  * this thread</a>.
  *
  * Copyright: Copyright (C) 2005-2006 Sean Kelly.  All rights reserved.
- * License:   BSD style: see doc/license.txt for details.
+ * License:   BSD style: $(LICENSE)
  * Authors:   Sean Kelly
  */
 module tango.core.atomic;

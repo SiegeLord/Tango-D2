@@ -1,57 +1,17 @@
-/*
- *  Copyright (C) 2005-2006 Sean Kelly
- *
- *  This software is provided 'as-is', without any express or implied
- *  warranty. In no event will the authors be held liable for any damages
- *  arising from the use of this software.
- *
- *  Permission is granted to anyone to use this software for any purpose,
- *  including commercial applications, and to alter it and redistribute it
- *  freely, in both source and binary form, subject to the following
- *  restrictions:
- *
- *  o  The origin of this software must not be misrepresented; you must not
- *     claim that you wrote the original software. If you use this software
- *     in a product, an acknowledgment in the product documentation would be
- *     appreciated but is not required.
- *  o  Altered source versions must be plainly marked as such, and must not
- *     be misrepresented as being the original software.
- *  o  This notice may not be removed or altered from any source
- *     distribution.
- */
-
 /**
  * The thread module provides support for thread creation and management.
  *
- * Design Issues:
- *
- * One design goal of Ares is to avoid forcing the use of a particular
- * programming style, so long as allowing such flexibility does not
- * compromise the overall API design.  This goal was realized here by
- * allowing threads to be created in the familiar C style (ie. by
- * composition), or by derivation, similar to the Java style.  Composition
- * is further supported by virtue of the thread local storage facility,
- * which allows for thread local data to be stored by the main thread as
- * well as by user threads.
- *
- * Future Directions:
- *
- * Support for lightwewight user threads is a long-term consideration,
- * though the design of this module is largely settled for now.
+ * Copyright: Copyright (C) 2005-2006 Sean Kelly.  All rights reserved.
+ * License:   BSD style: $(LICENSE)
+ * Authors:   Sean Kelly
  */
 module tango.core.thread;
-
-
-version( build )
-{
-    pragma( nolink );
-}
 
 
 /**
  * All exceptions thrown from this module derive from this class.
  */
-class ThreadError : Exception
+class ThreadException : Exception
 {
     this( char[] msg )
     {
@@ -361,7 +321,6 @@ else
  *
  * class DerivedThread : Thread
  * {
- * protected:
  *     void run()
  *     {
  *         printf( "Derived thread running.\n" );
@@ -446,7 +405,7 @@ class Thread
      *  This routine may only be called once per thread instance.
      *
      * Throws:
-     *  ThreadError if the thread fails to start.
+     *  ThreadException if the thread fails to start.
      */
     final void start()
     in
@@ -461,7 +420,7 @@ class Thread
             {
                 m_hndl = cast(HANDLE) _beginthreadex( null, 0, &threadFunc, this, 0, &m_addr );
                 if( cast(size_t) m_hndl == 0 )
-                    throw new ThreadError( "Error creating thread" );
+                    throw new ThreadException( "Error creating thread" );
             }
             else version( Posix )
             {
@@ -469,7 +428,7 @@ class Thread
                 scope( failure ) m_isRunning = false;
 
                 if( pthread_create( &m_addr, null, &threadFunc, this ) != 0 )
-                    throw new ThreadError( "Error creating thread" );
+                    throw new ThreadException( "Error creating thread" );
             }
             multiThreadedFlag = true;
             add( this );
@@ -481,19 +440,19 @@ class Thread
      * Waits for this thread to complete.
      *
      * Throws:
-     *  ThreadError if the operation fails.
+     *  ThreadException if the operation fails.
      */
     final void join()
     {
         version( Win32 )
         {
             if( WaitForSingleObject( m_hndl, INFINITE ) != WAIT_OBJECT_0 )
-                throw new ThreadError( "Unable to join thread" );
+                throw new ThreadException( "Unable to join thread" );
         }
         else version( Posix )
         {
             if( pthread_join( m_addr, null ) != 0 )
-                throw new ThreadError( "Unable to join thread" );
+                throw new ThreadException( "Unable to join thread" );
         }
     }
 
@@ -580,15 +539,15 @@ class Thread
     static void sleep( Interval interval = Interval.max )
     {
         do
+    {
+        version( Win32 )
         {
-            version( Win32 )
-            {
-                Sleep( interval / Interval.milli );
-            }
-            else version( Posix )
-            {
-                usleep( interval );
-            }
+            Sleep( interval / Interval.milli );
+        }
+        else version( Posix )
+        {
+            usleep( interval );
+        }
         } while( interval == Interval.max );
     }
 
@@ -727,7 +686,7 @@ class Thread
                     return key;
                 }
             }
-            throw new ThreadError( "No more local storage slots available" );
+            throw new ThreadException( "No more local storage slots available" );
         }
     }
 
@@ -1137,14 +1096,14 @@ extern (C) void thread_suspendAll()
                     Thread.remove( t );
                     return;
                 }
-                throw new ThreadError( "Unable to suspend thread" );
+                throw new ThreadException( "Unable to suspend thread" );
             }
 
 	        CONTEXT context;
 	        context.ContextFlags = CONTEXT_INTEGER | CONTEXT_CONTROL;
 
 	        if( !GetThreadContext( t.m_hndl, &context ) )
-	            throw new ThreadError( "Unable to load thread context" );
+	            throw new ThreadException( "Unable to load thread context" );
             t.m_tstack = cast(void*) context.Esp;
             // edi,esi,ebp,esp,ebx,edx,ecx,eax
             t.m_reg[0] = context.Edi;
@@ -1167,7 +1126,7 @@ extern (C) void thread_suspendAll()
                         Thread.remove( t );
                         return;
                     }
-                    throw new ThreadError( "Unable to suspend thread" );
+                    throw new ThreadException( "Unable to suspend thread" );
                 }
                 // NOTE: It's really not ideal to wait for each thread to signal
                 //       individually -- I'd much rather suspend them all and wait
@@ -1276,7 +1235,7 @@ body
                     Thread.remove( t );
                     return;
                 }
-                throw new ThreadError( "Unable to resume thread" );
+                throw new ThreadException( "Unable to resume thread" );
             }
 
             t.m_tstack = t.m_bstack;
@@ -1293,7 +1252,7 @@ body
                         Thread.remove( t );
                         return;
                     }
-                    throw new ThreadError( "Unable to resume thread" );
+                    throw new ThreadException( "Unable to resume thread" );
                 }
             }
             else

@@ -1,10 +1,6 @@
 // D import file generated from 'core\thread.d'
 module tango.core.thread;
-version (build)
-{
-    pragma(nolink):
-}
-class ThreadError : Exception
+class ThreadException : Exception
 {
     this(char[] msg)
 {
@@ -22,7 +18,7 @@ version (Win32)
     private
 {
     import tango.os.windows.c.process;
-    import tango.os.windows.c.minwin;
+    import tango.os.windows.c.windows;
     extern (Windows) 
 {
     uint threadFunc(void* arg);

@@ -1,49 +1,12 @@
-/*
- *  Copyright (C) 2005-2006 Sean Kelly
- *
- *  This software is provided 'as-is', without any express or implied
- *  warranty. In no event will the authors be held liable for any damages
- *  arising from the use of this software.
- *
- *  Permission is granted to anyone to use this software for any purpose,
- *  including commercial applications, and to alter it and redistribute it
- *  freely, in both source and binary form, subject to the following
- *  restrictions:
- *
- *  o  The origin of this software must not be misrepresented; you must not
- *     claim that you wrote the original software. If you use this software
- *     in a product, an acknowledgment in the product documentation would be
- *     appreciated but is not required.
- *  o  Altered source versions must be plainly marked as such, and must not
- *     be misrepresented as being the original software.
- *  o  This notice may not be removed or altered from any source
- *     distribution.
- */
-
 /**
  * The memory module provides an interface to the garbage collector and to
  * any other OS or API-level memory management facilities.
  *
- * Design Issues:
- *
- * Since memory management is often performed in performance-critical code,
- * it was important that the design of this module avoid any unnecessary
- * overhead.  For this reason, a number of possible designs (many of which
- * used an interface or abstract base class for GC interaction) were discarded
- * in favor of the current design.
- *
- * Future Directions:
- *
- * The GC code currently exposes certain OS-level functionality that may be
- * useful here, and which will likely be exposed in a future release.
+ * Copyright: Copyright (C) 2005-2006 Sean Kelly.  All rights reserved.
+ * License:   BSD style: $(LICENSE)
+ * Authors:   Sean Kelly
  */
 module tango.core.memory;
-
-
-version( build )
-{
-    pragma( nolink );
-}
 
 
 private
