@@ -61,7 +61,7 @@ ALL_DOCS=
 
 ######################################################
 
-lib :
+lib : $(ALL_OBJS)
 	$(RM) libphobos*.a
 	$(LC) -r libphobos.a $(ALL_OBJS)
 	$(RM) libphobos*.a
