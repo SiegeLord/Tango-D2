@@ -10,6 +10,7 @@ module tango.stdc.posix.signal;
 
 private import tango.stdc.config;
 public import tango.stdc.signal;
+public import tango.stdc.stddef; // needed for size_t
 public import tango.stdc.posix.sys.types; // for pid_t
 public import tango.stdc.posix.time; // for timespec
 
@@ -496,6 +497,118 @@ int siginterrupt(int, int);
 int sigpause(int);
 int sigrelse(int);
 */
+
+version( linux )
+{
+    const auto SIGPOLL      = 29;
+    const auto SIGPROF      = 27;
+    const auto SIGSYS       = 31;
+    const auto SIGTRAP      = 5;
+    const auto SIGVTALRM    = 26;
+    const auto SIGXCPU      = 24;
+    const auto SIGXFSZ      = 25;
+
+    const auto SA_ONSTACK   = 0x08000000;
+    const auto SA_RESETHAND = 0x80000000;
+    const auto SA_RESTART   = 0x10000000;
+    const auto SA_SIGINFO   = 4;
+    const auto SA_NOCLDWAIT = 2;
+    const auto SA_NODEFER   = 0x40000000;
+    const auto SS_ONSTACK   = 1;
+    const auto SS_DISABLE   = 2;
+    const auto MINSIGSTKSZ  = 2048;
+    const auto SIGSTKSZ     = 8192;
+
+    //ucontext_t (defined in tango.stdc.posix.ucontext)
+    //mcontext_t (defined in tango.stdc.posix.ucontext)
+
+    struct stack_t
+    {
+        void*   ss_sp;
+        int     ss_flags;
+        size_t  ss_size;
+    }
+
+    struct sigstack
+    {
+        void*   ss_sp;
+        int     ss_onstack;
+    }
+
+    enum
+    {
+        ILL_ILLOPC = 1,
+        ILL_ILLOPN,
+        ILL_ILLADR,
+        ILL_ILLTRP,
+        ILL_PRVOPC,
+        ILL_PRVREG,
+        ILL_COPROC,
+        ILL_BADSTK
+    }
+
+    enum
+    {
+        FPE_INTDIV = 1,
+        FPE_INTOVF,
+        FPE_FLTDIV,
+        FPE_FLTOVF,
+        FPE_FLTUND,
+        FPE_FLTRES,
+        FPE_FLTINV,
+        FPE_FLTSUB
+    }
+
+    enum
+    {
+        SEGV_MAPERR = 1,
+        SEGV_ACCERR
+    }
+
+    enum
+    {
+        BUS_ADRALN = 1,
+        BUS_ADRERR,
+        BUS_OBJERR
+    }
+
+    enum
+    {
+        TRAP_BRKPT = 1,
+        TRAP_TRACE
+    }
+
+    enum
+    {
+        CLD_EXITED = 1,
+        CLD_KILLED,
+        CLD_DUMPED,
+        CLD_TRAPPED,
+        CLD_STOPPED,
+        CLD_CONTINUED
+    }
+
+    enum
+    {
+        POLL_IN = 1,
+        POLL_OUT,
+        POLL_MSG,
+        POLL_ERR,
+        POLL_PRI,
+        POLL_HUP
+    }
+
+    sigfn_t bsd_signal(int sig, sigfn_t func);
+    sigfn_t sigset(int sig, sigfn_t func);
+
+    int killpg(pid_t, int);
+    int sigaltstack(stack_t*, stack_t*);
+    int sighold(int);
+    int sigignore(int);
+    int siginterrupt(int, int);
+    int sigpause(int);
+    int sigrelse(int);
+}
 
 //
 // Realtime Signals (RTS)
