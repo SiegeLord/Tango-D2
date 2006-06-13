@@ -1,5 +1,5 @@
 export TANGO_OLDHOME=$HOME
-export HOME=`cwd`
+export HOME=`pwd`
 make -f linux.mak clean
 make -f linux.mak
 make -f linux.mak install
