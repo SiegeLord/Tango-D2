@@ -10,7 +10,7 @@ module tango.stdc.errno;
 
 extern (C):
 
-extern int errno;
+int errno;
 
 version( Win32 )
 {
