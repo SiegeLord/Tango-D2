@@ -277,8 +277,9 @@ class Buffer : IBuffer
                 data = the backing array to buffer within
 
                 Remarks:
-                Prime buffer with an application-supplied array. There is no
-                writable space available, and reading begins at position 0                
+                Prime a buffer with an application-supplied array. All content
+                is considered valid for reading, and thus there is no writable 
+                space initially available.
 
         ***********************************************************************/
 
@@ -301,6 +302,9 @@ class Buffer : IBuffer
                 indicate how much readable data is already there. A
                 write operation will begin writing immediately after
                 the existing readable content.
+
+                This is commonly used to attach a Buffer instance to 
+                a local array.
 
         ***********************************************************************/
 
