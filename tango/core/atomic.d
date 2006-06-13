@@ -1,25 +1,3 @@
-/*
- *  Copyright (C) 2005-2006 Sean Kelly
- *
- *  This software is provided 'as-is', without any express or implied
- *  warranty. In no event will the authors be held liable for any damages
- *  arising from the use of this software.
- *
- *  Permission is granted to anyone to use this software for any purpose,
- *  including commercial applications, and to alter it and redistribute it
- *  freely, in both source and binary form, subject to the following
- *  restrictions:
- *
- *  o  The origin of this software must not be misrepresented; you must not
- *     claim that you wrote the original software. If you use this software
- *     in a product, an acknowledgment in the product documentation would be
- *     appreciated but is not required.
- *  o  Altered source versions must be plainly marked as such, and must not
- *     be misrepresented as being the original software.
- *  o  This notice may not be removed or altered from any source
- *     distribution.
- */
-
 /**
  * The atomic module is intended to provide some basic support for lock-free
  * concurrent programming.  Some common operations are defined, each of which
@@ -29,19 +7,9 @@
  * <a href=http://groups.google.com/groups?threadm=3E4820EE.6F408B25%40web.de>
  * this thread</a>.
  *
- * Design Issues:
- *
- * Originally, all functions were intended to be either static or non-static
- * members of the Atomic class.  However, DMD currently can not disambiguate
- * between the two if they have the same name, so the current design was
- * chosen.  This design also seems to be a bit more readable, so it may remain
- * even if the compiler bug (?) is fixed.
- *
- * Future Directions:
- *
- * As many architectures provide optimized atomic support for common integer
- * operations (such as increment, decrement, etc), these may be added in some
- * form--perhaps as additional global functions and in an AtomicValue type.
+ * Copyright: Copyright (C) 2005-2006 Sean Kelly.  All rights reserved.
+ * License:   BSD style: see doc/license.txt for details.
+ * Authors:   Sean Kelly
  */
 module tango.core.atomic;
 

@@ -9,7 +9,7 @@
  *
  * Authors:   Walter Bright
  * Copyright: Public Domain
- * License:   See about.d
+ * License:   Public Domain
  */
 module tango.core.intrinsic;
 

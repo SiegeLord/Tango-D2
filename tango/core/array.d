@@ -1,42 +1,10 @@
-/*
- *  Copyright (C) 2005-2006 Sean Kelly
- *
- *  This software is provided 'as-is', without any express or implied
- *  warranty. In no event will the authors be held liable for any damages
- *  arising from the use of this software.
- *
- *  Permission is granted to anyone to use this software for any purpose,
- *  including commercial applications, and to alter it and redistribute it
- *  freely, in both source and binary form, subject to the following
- *  restrictions:
- *
- *  o  The origin of this software must not be misrepresented; you must not
- *     claim that you wrote the original software. If you use this software
- *     in a product, an acknowledgment in the product documentation would be
- *     appreciated but is not required.
- *  o  Altered source versions must be plainly marked as such, and must not
- *     be misrepresented as being the original software.
- *  o  This notice may not be removed or altered from any source
- *     distribution.
- */
-
 /**
  * The string module provides string manipulation routines in a manner that
  * balances performance and flexibility.
  *
- * Design Issues:
- *
- * While these functions will operate with wide character types, little attempt
- * has yet been made to provide any explicit Unicode support.  So case-insensitive
- * routines are not available and equality is done via binary comparisons.
- *
- * Future Directions:
- *
- * This module is the first attempt at developing function interface guidelines
- * for Ares.  All functions will likely be templates and will be designed with
- * implicit template instantiation and template overloading as required features.
- * The goal here is to provide a useful set of string routines for everyday use
- * and to use this experience for developing more generalized algorithms later on.
+ * Copyright: Copyright (C) 2005-2006 Sean Kelly.  All rights reserved.
+ * License:   BSD style: see doc/license.txt for details.
+ * Authors:   Sean Kelly
  */
 module tango.core.array;
 
