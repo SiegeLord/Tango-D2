@@ -24,9 +24,12 @@ class ThreadException : Exception
 version = StackGrowsDown;
 
 
-private
+public
 {
     import tango.core.Interval;
+}
+private
+{
     import tango.stdc.string; // for memset
 }
 
@@ -533,12 +536,9 @@ class Thread
      *
      * Params:
      *  interval = The minimum duration the calling thread should be
-     *             suspended.  If interval is equal to Interval.max
-     *             then the thread will sleep forever.
+     *             suspended.
      */
-    static void sleep( Interval interval = Interval.max )
-    {
-        do
+    static void sleep( Interval interval )
     {
         version( Win32 )
         {
@@ -548,7 +548,27 @@ class Thread
         {
             usleep( interval );
         }
-        } while( interval == Interval.max );
+    }
+
+
+    /**
+     * Suspends the calling thread until interrupted.
+     */
+    static void sleep()
+    {
+        version( Win32 )
+        {
+            Sleep( INFINITE );
+        }
+        else version( Posix )
+        {
+            // BUG: This implementation will effectively ignore SIGALARM
+            //      and other interrupts.
+            do
+            {
+                usleep( interval );
+            } while( true );
+        }
     }
 
 
