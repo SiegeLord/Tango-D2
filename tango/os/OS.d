@@ -71,7 +71,6 @@ version (Posix)
         extern (C) char *strerror (int);
         extern (C) int strlen (char *);
         extern (C) int getErrno ();
-        extern (C) void usleep(uint);
         }
 else
    static assert(0);
