@@ -57,6 +57,7 @@ DDOC_SUMMARY     = $(BLACK $0)$(BR)$(BR)
 DDOC_DESCRIPTION = $(BLACK $0)$(BR)$(BR)
 DDOC_DECL_DD     = $(DD $0)
 
+LICENSE = see $(LINK2 http://www.dsource.org/projects/tango/wiki/LibraryLicense, license.txt)
 NAVY = <font color=navy>$0</font>
 GREY = <font color=grey>$0</font>
 D_STRING = $(NAVY $0)
