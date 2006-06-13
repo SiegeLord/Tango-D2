@@ -2,7 +2,7 @@
 
         copyright:      (c) 2004 Kris Bell. All rights reserved
 
-        license:        BSD style: see doc/license.txt for details
+        license:        BSD style: $(LICENSE)
 
         version:        Initial release: March 2004
 
@@ -277,14 +277,14 @@ class Buffer : IBuffer
                 data = the backing array to buffer within
 
                 Remarks:
-                Prime buffer with an application-supplied array. There is 
-                no readable data present, and writing begins at position 0.
+                Prime buffer with an application-supplied array. There is no
+                writable space available, and reading begins at position 0                
 
         ***********************************************************************/
 
         this (void[] data)
         {
-                this (data, 0);
+                setContent (data, data.length);
         }
 
         /***********************************************************************
@@ -300,7 +300,7 @@ class Buffer : IBuffer
                 Prime buffer with an application-supplied array, and 
                 indicate how much readable data is already there. A
                 write operation will begin writing immediately after
-                the existing content.
+                the existing readable content.
 
         ***********************************************************************/
 
@@ -422,7 +422,18 @@ class Buffer : IBuffer
                 Note that the slice cannot be larger than the size of 
                 the buffer ~ use method _get(void[]) instead where you
                 simply want the content copied, or use conduit.read()
-                to extract directly from an attached conduit.
+                to extract directly from an attached conduit. Also note 
+                that if you need to retain the slice, then it should be 
+                .dup'd before the buffer is compressed or repopulated.
+
+                Examples:
+                ---
+                // create a buffer with some content 
+                auto buffer = new Buffer ("hello world");
+
+                // consume everything unread 
+                auto slice = buffer.get (buffer.readable);
+                ---
 
         ***********************************************************************/
 
