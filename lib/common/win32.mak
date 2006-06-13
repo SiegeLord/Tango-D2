@@ -23,7 +23,7 @@ DFLAGS=-release -O -inline
 TFLAGS=-O -inline
 #TFLAGS=-g
 
-DOCFLAGS=-version=DDoc
+DOCFLAGS=-version=DDoc ..\..\doc\html\candydoc\modules.ddoc ..\..\doc\html\candydoc\candy.ddoc
 
 CC=dmc
 LC=lib
@@ -110,14 +110,14 @@ os\windows\c\winnt.obj : os\windows\c\winnt.d
 ######################################################
 
 clean :
-	$(RM) /s *.di
+	$(RM) /s .\*.di
 	$(RM) $(ALL_OBJS)
 	$(RM) $(ALL_DOCS)
 	$(RM) tango*.lib
 
 install :
 	$(MD) $(INC_DEST)
-	$(CP) /s *.di $(INC_DEST)\*.d
+	$(CP) /s *.di $(INC_DEST)\.
 	$(MD) $(DOC_DEST)
 	$(CP) /s *.html $(DOC_DEST)\.
 	$(MD) $(LIB_DEST)
