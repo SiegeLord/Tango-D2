@@ -68,6 +68,8 @@ version (Win32)
 else
 version (Posix)
         {
+        private import tango.stdc.errno;
+
         extern (C) char *strerror (int);
         extern (C) int strlen (char *);
         }
