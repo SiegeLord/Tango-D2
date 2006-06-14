@@ -96,7 +96,7 @@ version( none )
     int isunordered(real x, real y);
 }
 
-version( DigitalMars )
+version( DigitalMars ) version( Win32 )
 {
     //
     // This is the DigitalMars inline version of these functions
