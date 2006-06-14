@@ -260,7 +260,7 @@ function Explorer()
         
         // create tabs
         this.createTab("Outline", this.outline.tree.domEntry);
-        this.createTab("Package", this.packageExplorer.tree.domEntry);
+        //this.createTab("Package", this.packageExplorer.tree.domEntry);
     }
     
     this.createTab = function(name, domEntry)
