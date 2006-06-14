@@ -68,7 +68,8 @@ lib : $(ALL_OBJS)
 	make -C compiler/digitalmars -flinux.mak lib
 	make -C gc/digitalmars -flinux.mak lib
 	make -C common -flinux.mak lib
-	find . -name "*.o" | xargs ar -r libphobos.a
+	ALL_OBJS=`find . -name "*.o" | xargs echo`
+	ar -r -s libphobos.a $(ALL_OBJS)
 
 doc : $(ALL_DOCS)
 	echo No documentation available.
