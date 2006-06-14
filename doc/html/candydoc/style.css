@@ -46,7 +46,7 @@ table
 /* Style used for all hyperlinks. */
 #a:hover {  color: #0033cc; text-decoration: none }
 #a:link {  color: #009900; text-decoration: none }
-a:visited {  color: #009999; text-decoration: none }
+#a:visited {  color: #009999; text-decoration: none }
 
 a:link {  color: #000099; text-decoration: none }
 a:visited {  color: #000099; text-decoration: none }
@@ -113,24 +113,24 @@ table.content
 #docbody
 {
 	padding: 8px 20px 8px 20px;
-	border: solid 1px #009900;
+	border: solid 1px #a0a0a0;
 }
 
 /* Style for cell that contains CanDyDOC logo. */
 #docfooter
 {
 	height: 16px;
-	background-color: #ddeedd;
+	background-color: #eeffee;
 	padding: 0px 8px 0px 8px;
-	border: solid 1px #009900;
+	border: solid 1px #a0a0a0;
 }
 
 /* Style applied to currently active tab of explorer window. */
 span.activetab
 {
-	background-color: #0033cc;
+	background-color: #f0f0f0;
 	#border-top: solid 2px #009900;
-	color: #ffffff;
+	color: #000000;
 	font-weight: bold;
 	padding-left: 4px;
 	padding-right: 4px;
@@ -173,8 +173,8 @@ span.inactivetab
 	bottom: 8px;
 	width: 205px;
 	overflow: auto;
-	background-color: #fcfffc;
-	border: solid 2px #0033cc;
+	background-color: #fefeff;
+	border: dotted 1px #a0a0a0;
 	padding: 4px;
 	cursor: default;
 	color: Black;
