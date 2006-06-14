@@ -92,7 +92,7 @@ struct OS
                 version (Win32)
                          return error (GetLastError);
                      else
-                        return error (getErrno);
+                        return error (errno);
         }
 
         /***********************************************************************
