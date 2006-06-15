@@ -38,7 +38,6 @@ table
 	font-family: Verdana, Arial, Helvetica, sans-serif;
 	font-size: 10pt;
 	color: #666666;
-#	text-align: justify;
 	text-align: left;
 }
 
@@ -54,10 +53,6 @@ hr
 
 
 /* Style used for all hyperlinks. */
-#a:hover {  color: #0033cc; text-decoration: none }
-#a:link {  color: #009900; text-decoration: none }
-#a:visited {  color: #009999; text-decoration: none }
-
 a:link {  color: #000099; text-decoration: none }
 a:visited {  color: #000099; text-decoration: none }
 a:hover {  color: #000099; text-decoration: underline }
@@ -80,14 +75,11 @@ span.decl
         color: #000000; 
         text-align: left 
 	border: dotted 1px #9c9;
-	#background-color: #ffff00;
 }
 
 /* Style appled to current declaration's symbol. E.g. 'foo' in 'void foo(int a, float b);' */
-//span.currsymbol { font-size: 12pt; color: #009900 }
 span.currsymbol 
 { 
-        #font-size: 12pt; 
         color: #000099 
 }
 
@@ -139,7 +131,6 @@ table.content
 span.activetab
 {
 	background-color: #f0f0f0;
-	#border-top: solid 2px #009900;
 	color: #000000;
 	font-weight: bold;
 	padding-left: 4px;
