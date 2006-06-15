@@ -42,7 +42,7 @@ table
 	text-align: left;
 }
 
-
+/* used for styling horizontal rules */
 hr 
 {
         border: 0;
@@ -50,6 +50,7 @@ hr
         color: #e0e0e0;
         background-color: #e0e0e0;
         height: 1px;
+        align: center;
 }
 
 
