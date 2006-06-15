@@ -1,7 +1,7 @@
 /**
+ * Copyright: Copyright (C) 2005-2006 Sean Kelly.  All rights reserved.
+ * License:   BSD style: $(LICENSE)
  * Authors:   Sean Kelly
- * Copyright: Copyright (C) 2006 Sean Kelly
- * License:   See about.d
  */
 module lib.common.config;
 
