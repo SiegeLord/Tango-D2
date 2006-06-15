@@ -101,9 +101,6 @@ version( DigitalMars ) version( Win32 )
 
 version( DigitalMarsWin32 )
 {
-    //
-    // This is the DigitalMars inline version of these functions
-    //
     enum
     {
         FP_NANS        = 0,
@@ -173,6 +170,22 @@ version( DigitalMarsWin32 )
 }
 else version( Posix )
 {
+    enum
+    {
+        FP_NAN,
+        FP_INFINITE,
+        FP_ZERO,
+        FP_SUBNORMAL,
+        FP_NORMAL,
+    }
+
+    enum
+    {
+        FP_FAST_FMA  = 0,
+        FP_FAST_FMAF = 0,
+        FP_FAST_FMAL = 0,
+    }
+
     int __fpclassifyf(float x);
     int __fpclassifyd(double x);
     int __fpclassifyl(real x);
