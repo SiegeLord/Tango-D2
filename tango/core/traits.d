@@ -1,9 +1,10 @@
 /**
+ * The traits module defines tools useful for obtaining detailed type
+ * information at compile-time.
  *
  * Copyright: Copyright (C) 2005-2006 Sean Kelly.  All rights reserved.
  * License:   BSD style: $(LICENSE)
  * Authors:   Sean Kelly
- *
  */
 module tango.core.traits;
 
@@ -48,10 +49,19 @@ template isDecimalType( T )
  */
 template isPointerType( T )
 {
-    const bool isPointerType = is( T : void* )      ||
+    const bool isPointerType = is( typeof(*T) );
+}
+
+
+/**
+ *
+ */
+template isReferenceType( T )
+{
+
+    const bool isReferenceType = isPointerType!(T)  ||
                                is( T == class )     ||
                                is( T == interface ) ||
-                               isFunctionPointerType!( T ) ||
                                is( T == delegate );
 }
 
@@ -61,19 +71,8 @@ template isPointerType( T )
  */
 template isCallableType( T )
 {
-    const bool isCallableType = is( T == function ) || isFunctionPointerType!( T ) ||
-                                is( T == delegate ) ||
+    const bool isCallableType = is( T == function )             ||
+                                is( typeof(*T) == function )    ||
+                                is( T == delegate )             ||
                                 is( typeof(T.opCall) == function );
-}
-
-
-//
-// NOTE: This template is a hack to use in place of "is(T==function)" since
-//       it actually detects a function alias, not a function pointer.
-//
-private template isFunctionPointerType( T )
-{
-    const bool isFunctionPointerType = T.mangleof.length > 2 &&
-                                       T.mangleof[0] == 'P'  &&
-                                       T.mangleof[1] == 'F';
 }
