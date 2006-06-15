@@ -2,7 +2,7 @@
 
         copyright:      Copyright (c) 2004 Kris Bell. All rights reserved
 
-        license:        BSD style: see doc/license.txt for details
+        license:        BSD style: $(LICENSE)
 
         version:        Initial release: March 2004      
         version:        Jan 1st 2005 - Added RedShodan patch for timeout query

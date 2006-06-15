@@ -2,7 +2,7 @@
 
         copyright:      Copyright (c) 2004 Regan Heath. All rights reserved
 
-        license:        BSD style: see doc/license.txt for details
+        license:        BSD style: $(LICENSE)
       
         version:        Initial release: Feb 2006
         

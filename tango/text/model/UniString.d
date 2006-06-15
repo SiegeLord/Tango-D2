@@ -2,7 +2,7 @@
 
         copyright:      Copyright (c) 2004 Kris Bell. All rights reserved
 
-        license:        BSD style: see doc/license.txt for details
+        license:        BSD style: $(LICENSE)
 
         version:        Initial release: December 2005
         
