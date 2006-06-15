@@ -202,6 +202,7 @@ extern (C)
         direct array-based IO via a pair of read() and write() methods. 
         These alternate methods will also invoke any attached filters.
 
+        <hr/>
 
 *******************************************************************************/
 
