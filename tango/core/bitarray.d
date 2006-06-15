@@ -1,9 +1,11 @@
-/*
- *  Modified by Sean Kelly <sean@f4.ca> for use with the Ares project.
- */
-
 /**
+ * The string module provides string manipulation routines in a manner that
+ * balances performance and flexibility.
  *
+ * Copyright: Copyright (C) 2005-2006 Digital Mars, www.digitalmars.com.
+ *            All rights reserved.
+ * License:   BSD style: $(LICENSE)
+ * Authors:   Walter Bright, Sean Kelly
  */
 module tango.core.bitarray;
 
