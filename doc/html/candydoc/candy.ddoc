@@ -20,7 +20,7 @@ function anchorFromTitle(title, path, ext) {
 	<table class="content">
 		<tr><td id="docbody"><h1><script>anchorFromTitle('$(TITLE)', 'http://dsource.org/projects/tango/browser/trunk/', 'd');</script></h1>$(BODY)</td></tr>
 		<tr><td id="docfooter">
-                        Copyright $(COPYRIGHT) - page rendering by CandyDoc
+                        Copyright $(COPYRIGHT) - page rendered by CandyDoc
 		</td></tr>
 	</table>
 </div>
