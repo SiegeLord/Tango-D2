@@ -6,7 +6,7 @@
       
         version:        Initial release: Feb 2006
         
-        author:         Regan Heath, Kris
+        author:         Regan Heath
 
 *******************************************************************************/
 
@@ -34,29 +34,76 @@ class Digest
 
 /*******************************************************************************
 
-        The idea behind these methods is that you can call sum() if you 
-        have all  the data at once (sum calls the other 3, meaning you 
-        cannot mix it with  calls to the other).
+        This module defines two abstract base classes, the primary one being
+        "Cipher" which can be extended to provide concrete implementations of 
+        various ciphers (AKA hashing functions or algorithms). These ciphers
+        produce digests (AKA hashes) hence the second abstract base class 
+        "Digest".
         
-        Or you can call start(), followed by update() any number of times, 
-        and finally finish(). These three methods make it easy to integrate  
-        with a stream, for example.
-
-        Each concrete implementation defines a trasform method in the form:
-
-                void transform(ubyte[] input);
-
-        which is called by the mixed methods to process the data. In addition 
-        the following methods:
-
-                void padMessage(ubyte[] at);
-                void padLength(ubyte[] at, ulong length);
-
-        are called to perform the padding, and:
-
-                void extend();
-
-        was required to handle MD2 being a little different to the others.
+        The interface for "Cipher" consists of four main public methods and two
+        usage patterns.
+        
+        The first and simplest usage pattern is to call sum() on the complete 
+        set of data, the cipher is performed immediately and a "Digest" is 
+        produced. For example:
+        ---
+        // create an MD5 cipher
+        Md5Cipher cipher = new Md5Cipher();
+        
+        // process the data and produce a digest
+        Md5Digest digest = cipher.sum("The quick brown fox jumps over the lazy dog");
+        ---
+        
+        The second usage pattern involves three methods and can be used to 
+        process the data piece by piece (this makes it useful for cases 
+        involving streams of data). It begins with a new "Cipher" or a call to
+        start() which initialises the cipher. Data is ciphered by one or more 
+        calls to update(), and finish() is called to complete the process and
+        produce a "Digest". For example:
+        ---
+        // create an MD5 cipher
+        Md5Cipher cipher = new Md5Cipher();
+        
+        // process some data
+        cipher.update("abc");
+        
+        // process some more data
+        cipher.update("abc");
+        
+        // conclude cipher and produce digest
+        Md5Digest digest = cipher.finish()
+        ---
+        
+        When extending "Cipher" to create a custom cipher you will be required
+        to implement a number of abstract methods, these include:
+        ---
+        public abstract Digest getDigest();
+        protected abstract uint blockSize();
+        protected abstract uint addSize();
+        protected abstract void padMessage(ubyte[] data);
+        protected abstract void transform(ubyte[] data);        
+        ---
+        these methods are described in detail below.
+        
+        In addition there exist two further methods, these methods have empty
+        default implementations because in some cases they are not required.
+        ---
+        protected abstract void padLength(ubyte[] data, ulong length);
+        protected abstract void extend();
+        ---
+        The method padLength() is required to implement the SHA series of 
+        ciphers and also the Tiger algorithm, extend() is required only to 
+        implement the MD2 cipher.
+        
+        The basic sequence of events as it happens internally is as follows:
+        1. *transform()
+        2. padMessage()
+        3. padLength()
+        4. transform()
+        4. extend()
+        5. getDigest()
+        
+        * 0 or more times.
 
 *******************************************************************************/
 
@@ -67,17 +114,45 @@ class Cipher
 
         /***********************************************************************
         
+                Obtain the digest
+
+                Returns:
+                the digest
+
+                Remarks:
+                Returns a digest of the current cipher state, this may be the
+                final digest, or a digest of the state between calls to update()
+
         ***********************************************************************/
 
         public abstract Digest getDigest();
         
         /***********************************************************************
+
+                Cipher block size
+
+                Returns:
+                the block size
+
+                Remarks:
+                Specifies the size (in bytes) of the block of data to pass to 
+                each call to transform().
         
         ***********************************************************************/
 
         protected abstract uint blockSize();
 
         /***********************************************************************
+
+                Length padding size
+
+                Returns:
+                the length paddding size
+
+                Remarks:
+                Specifies the size (in bytes) of the padding which uses the
+                length of the data which has been ciphered, this padding is
+                carried out by the padLength method.
         
         ***********************************************************************/
 
@@ -85,11 +160,32 @@ class Cipher
 
         /***********************************************************************
         
+                Pads the cipher data
+
+                Params: 
+                data = a slice of the cipher buffer to fill with padding
+                
+                Remarks:
+                Fills the passed buffer slice with the appropriate padding for 
+                the final call to transform(). This padding will fill the cipher
+                buffer up to blockSize()-addSize().
+
         ***********************************************************************/
 
         protected abstract void padMessage(ubyte[] data);
 
         /***********************************************************************
+
+                Performs the length padding
+
+                Params: 
+                data   = the slice of the cipher buffer to fill with padding
+                length = the length of the data which has been ciphered
+                
+                Remarks:
+                Fills the passed buffer slice with addSize() bytes of padding
+                based on the length in bytes of the input data which has been
+                ciphered.
         
         ***********************************************************************/
 
@@ -97,11 +193,30 @@ class Cipher
 
         /***********************************************************************
         
+                Performs the cipher on a block of data
+
+                Params: 
+                data = the block of data to cipher
+                
+                Remarks:
+                The actual cipher algorithm is carried out by this method on
+                the passed block of data. This method is called for every 
+                blockSize() bytes of input data and once more with the remaining
+                data padded to blockSize().
+
         ***********************************************************************/
 
         protected abstract void transform(ubyte[] data);
 
         /***********************************************************************
+
+                Final processing of cipher.
+
+                Remarks:
+                This method is called after the final transform just prior to
+                the creation of the final digest. The MD2 algorithm requires
+                an additional step at this stage. Future ciphers may or may not
+                require this method.
         
         ***********************************************************************/
 
@@ -109,6 +224,12 @@ class Cipher
         
         /***********************************************************************
         
+                Construct a cipher
+
+                Remarks:
+                Constructs the internal buffer for use by the cipher, the buffer
+                size (in bytes) is defined by the abstract method blockSize().
+
         ***********************************************************************/
 
         this()
@@ -118,6 +239,18 @@ class Cipher
         
         /***********************************************************************
         
+                Cipher the complete set of data
+
+                Params: 
+                data = the set of data to cipher
+                
+                Returns:
+                the completed digest
+
+                Remarks:
+                Performs the cipher on the complete set of data and produces
+                the final digest.
+
         ***********************************************************************/
 
         Digest sum(void[] data)
@@ -128,6 +261,11 @@ class Cipher
         }
 
         /***********************************************************************
+
+                Initialize the cipher
+
+                Remarks:
+                Returns the cipher state to it's initial value
         
         ***********************************************************************/
 
@@ -138,6 +276,14 @@ class Cipher
         
         /***********************************************************************
         
+                Cipher additional data
+
+                Params: 
+                input = the data to cipher
+                
+                Remarks:
+                Continues the cipher operation on the additional data.
+
         ***********************************************************************/
 
         void update(void[] input)
@@ -164,6 +310,14 @@ class Cipher
         
         /***********************************************************************
         
+                Complete the cipher
+
+                Returns:
+                the completed digest
+
+                Remarks:
+                Concludes the cipher producing the final digest.
+
         ***********************************************************************/
 
         Digest finish()
@@ -190,6 +344,15 @@ class Cipher
         
         /***********************************************************************
         
+                Converts 8 bit to 32 bit Little Endian
+
+                Params: 
+                input  = the source array
+                output = the destination array
+                
+                Remarks:
+                Converts an array of ubyte[] into uint[] in Little Endian byte order.
+
         ***********************************************************************/
 
         static final void littleEndian32(ubyte[] input, uint[] output)
@@ -208,6 +371,15 @@ class Cipher
         }       
 
         /***********************************************************************
+
+                Converts 8 bit to 32 bit Big Endian
+
+                Params: 
+                input  = the source array
+                output = the destination array
+                
+                Remarks:
+                Converts an array of ubyte[] into uint[] in Big Endian byte order.
         
         ***********************************************************************/
 
@@ -227,6 +399,15 @@ class Cipher
         }
 
         /***********************************************************************
+
+                Converts 8 bit to 64 bit Little Endian
+
+                Params: 
+                input  = the source array
+                output = the destination array
+                
+                Remarks:
+                Converts an array of ubyte[] into ulong[] in Little Endian byte order.
         
         ***********************************************************************/
 
@@ -248,6 +429,15 @@ class Cipher
 
         /***********************************************************************
         
+                Converts 8 bit to 64 bit Big Endian
+
+                Params: 
+                input  = the source array
+                output = the destination array
+                
+                Remarks:
+                Converts an array of ubyte[] into ulong[] in Big Endian byte order.
+
         ***********************************************************************/
 
         static final void bigEndian64(ubyte[] input, ulong[] output)
@@ -267,6 +457,15 @@ class Cipher
 
         /***********************************************************************
         
+                Rotate left by n
+
+                Params: 
+                x = the value to rotate
+                n = the amount to rotate by
+                
+                Remarks:
+                Rotates a 32 bit value by the specified amount.
+
         ***********************************************************************/
 
         static final uint rotateLeft(uint x, uint n)
@@ -288,6 +487,18 @@ class Cipher
 
 
 /*******************************************************************************
+
+        Represent an array as a hex encoded string
+
+        Params: 
+        d = the array to represent
+
+        Returns:
+        the string representation
+
+        Remarks:
+        Represents any sized array of any sized numerical items as a hex encoded
+        string.
 
 *******************************************************************************/
 
