@@ -7,14 +7,10 @@
         History:        Initial release: Oct 2004
         History:        Moved to mango.convert; Nov 2005
 
-        Authors:        Kris
+        Authors:        Kris, Sean Kelly
 
 
 */
-
-/*
- *  Modified by Sean Kelly <sean@f4.ca> for use with the Ares project.
- */
 
 /*******************************************************************************
 
