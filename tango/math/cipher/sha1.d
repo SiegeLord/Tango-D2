@@ -2,17 +2,21 @@
 
         copyright:      Copyright (c) 2004 Regan Heath. All rights reserved
 
-        license:        BSD style: $(LICENSE)
+        license:        BSD style: see doc/license.txt for details
       
         version:        Initial release: Feb 2006
         
         author:         Regan Heath, Kris
 
+        This module implements the SHA-1 Algorithm described by Secure Hash 
+        Standard, FIPS PUB 180-1, and RFC 3174 US Secure Hash Algorithm 1 
+        (SHA1). D. Eastlake 3rd, P. Jones. September 2001.
+     
 *******************************************************************************/
 
-module tango.cipher.sha1;
+module tango.math.cipher.sha1;
 
-public import tango.cipher.sha0;
+public import tango.math.cipher.sha0;
 
 /*******************************************************************************
 

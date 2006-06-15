@@ -2,21 +2,20 @@
 
         copyright:      Copyright (c) 2004 Regan Heath. All rights reserved
 
-        license:        BSD style: $(LICENSE)
+        license:        BSD style: see doc/license.txt for details
       
         version:        Initial release: Feb 2006
         
         author:         Regan Heath, Kris
 
-*******************************************************************************/
-
-module tango.cipher.md2;
-
-public import tango.cipher.base;
-
-/*******************************************************************************
+        This module implements the MD2 Message Digest Algorithm as described by
+        RFC 1319 The MD2 Message-Digest Algorithm. B. Kaliski. April 1992.
 
 *******************************************************************************/
+
+module tango.math.cipher.md2;
+
+public import tango.math.cipher.base;
 
 class Md2Digest : Digest
 {
@@ -24,17 +23,32 @@ class Md2Digest : Digest
 
         /***********************************************************************
         
+                Construct an Md2Digest.
+
+                Remarks:
+                Constructs a blank Md2Digest.
+
         ***********************************************************************/
 
         this() { digest[] = 0; }
 
         /***********************************************************************
+
+                Construct an Md2Digest.
+
+                Remarks:
+                Constructs an Md2Digest from binary data
         
         ***********************************************************************/
 
         this(ubyte[16] raw) { digest[] = raw[]; }
 
         /***********************************************************************
+
+                Construct an Md2Digest.
+
+                Remarks:
+                Constructs an Md2Digest from another Md2Digest.
         
         ***********************************************************************/
 
@@ -42,9 +56,31 @@ class Md2Digest : Digest
 
         /***********************************************************************
         
+                Return the string representation
+
+                Returns:
+                the digest in string form
+
+                Remarks:
+                Formats the digest into hex encoded string form.
+
         ***********************************************************************/
 
         char[] toString() { return toHexString(digest); }
+
+        /***********************************************************************
+        
+                Return the binary representation
+
+                Returns:
+                the digest in binary form
+
+                Remarks:
+                Returns a void[] containing the binary representation of the digest.
+
+        ***********************************************************************/
+        
+        void[] toBinary() { return cast(void[]) digest; }
 }
 
 
@@ -58,6 +94,11 @@ class Md2Cipher : Cipher
                           state;
         
         /***********************************************************************
+
+                Initialize the cipher
+
+                Remarks:
+                Returns the cipher state to it's initial value
         
         ***********************************************************************/
 
@@ -70,6 +111,15 @@ class Md2Cipher : Cipher
 
         /***********************************************************************
         
+                Obtain the digest
+
+                Returns:
+                the digest
+
+                Remarks:
+                Returns a digest of the current cipher state, this may be the
+                final digest, or a digest of the state between calls to update()
+
         ***********************************************************************/
 
         override Md2Digest getDigest()
@@ -101,6 +151,11 @@ class Md2Cipher : Cipher
 
         protected override void padMessage (ubyte[] data)
         {
+                /* Padding is performed as follows: "i" bytes of value "i" are appended
+                 * to the message so that the length in bytes of the padded message
+                 * becomes congruent to 0, modulo 16. At least one byte and at most 16
+                 * 16 bytes are appended.
+                 */
                 data[0..$] = cast(ubyte) data.length;  // bug?
         }
         

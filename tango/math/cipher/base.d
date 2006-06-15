@@ -2,49 +2,91 @@
 
         copyright:      Copyright (c) 2004 Regan Heath. All rights reserved
 
-        license:        BSD style: $(LICENSE)
+        license:        BSD style: see doc/license.txt for details
       
         version:        Initial release: Feb 2006
         
-        author:         Regan Heath
+        author:         Regan Heath, Kris
+
+        This module defines two abstract base classes, the primary one being
+        Cipher which can be extended to provide concrete implementations of 
+        various ciphers (AKA hashing functions or algorithms). These ciphers
+        produce digests (AKA hashes) hence the second abstract base class 
+        Digest. In addition CipherException is defined for exception 
+        handling.
 
 *******************************************************************************/
 
-module tango.cipher.base;
+module tango.math.cipher.base;
 
 /*******************************************************************************
 
+       This is an exception class to be thrown by Cipher's where required.
+       
 *******************************************************************************/
 
 class CipherException : Exception
 {
+        /***********************************************************************
+        
+                Construct a CipherException.
+
+                Params: 
+                msg = the exception text
+                
+                Remarks:
+                Constructs a CipherException.
+
+        ***********************************************************************/
+
         this(char[] msg) { super(msg); }
 }
 
 
 /*******************************************************************************
 
+       This is the abstract base class for creating custom Digests.
+       
 *******************************************************************************/
 
 class Digest
 {
-        abstract char[] toString();
-}
+        /***********************************************************************
+        
+                Return the string representation
 
+                Returns:
+                the digest in string form
+
+                Remarks:
+                Formats the digest into hex encoded string form.
+
+        ***********************************************************************/
+
+        abstract char[] toString();
+
+        /***********************************************************************
+        
+                Return the binary representation
+
+                Returns:
+                the digest in binary form
+
+                Remarks:
+                Returns a void[] containing the binary representation of the digest.
+
+        ***********************************************************************/
+        
+        abstract void[] toBinary();
+}
 
 /*******************************************************************************
 
-        This module defines two abstract base classes, the primary one being
-        "Cipher" which can be extended to provide concrete implementations of 
-        various ciphers (AKA hashing functions or algorithms). These ciphers
-        produce digests (AKA hashes) hence the second abstract base class 
-        "Digest".
-        
-        The interface for "Cipher" consists of four main public methods and two
+        The interface for Cipher consists of four main public methods and two
         usage patterns.
         
         The first and simplest usage pattern is to call sum() on the complete 
-        set of data, the cipher is performed immediately and a "Digest" is 
+        set of data, the cipher is performed immediately and a Digest is 
         produced. For example:
         ---
         // create an MD5 cipher
@@ -56,25 +98,25 @@ class Digest
         
         The second usage pattern involves three methods and can be used to 
         process the data piece by piece (this makes it useful for cases 
-        involving streams of data). It begins with a new "Cipher" or a call to
+        involving streams of data). It begins with a new Cipher or a call to
         start() which initialises the cipher. Data is ciphered by one or more 
         calls to update(), and finish() is called to complete the process and
-        produce a "Digest". For example:
+        produce a Digest. For example:
         ---
         // create an MD5 cipher
         Md5Cipher cipher = new Md5Cipher();
         
         // process some data
-        cipher.update("abc");
+        cipher.update("The quick brown fox");
         
         // process some more data
-        cipher.update("abc");
+        cipher.update(" jumps over the lazy dog");
         
         // conclude cipher and produce digest
         Md5Digest digest = cipher.finish()
         ---
         
-        When extending "Cipher" to create a custom cipher you will be required
+        When extending Cipher to create a custom cipher you will be required
         to implement a number of abstract methods, these include:
         ---
         public abstract Digest getDigest();
@@ -83,10 +125,9 @@ class Digest
         protected abstract void padMessage(ubyte[] data);
         protected abstract void transform(ubyte[] data);        
         ---
-        these methods are described in detail below.
         
-        In addition there exist two further methods, these methods have empty
-        default implementations because in some cases they are not required.
+        In addition there exist two further abstract methods, these methods 
+        have empty default implementations because in some cases they are not required:
         ---
         protected abstract void padLength(ubyte[] data, ulong length);
         protected abstract void extend();
@@ -96,14 +137,14 @@ class Digest
         implement the MD2 cipher.
         
         The basic sequence of events as it happens internally is as follows:
-        1. *transform()
-        2. padMessage()
-        3. padLength()
-        4. transform()
-        4. extend()
-        5. getDigest()
-        
-        * 0 or more times.
+        $(UL
+        $(LI transform(), 0 or more times)
+        $(LI padMessage())
+        $(LI padLength())
+        $(LI transform())
+        $(LI extend())
+        $(LI getDigest())
+        )
 
 *******************************************************************************/
 

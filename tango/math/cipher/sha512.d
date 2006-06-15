@@ -2,17 +2,20 @@
 
         copyright:      Copyright (c) 2004 Regan Heath. All rights reserved
 
-        license:        BSD style: $(LICENSE)
+        license:        BSD style: see doc/license.txt for details
       
         version:        Initial release: Feb 2006
         
         author:         Regan Heath, Kris
 
+        This module implements the SHA-512 Algorithm described by Secure Hash 
+        Standard, FIPS PUB 180-2
+
 *******************************************************************************/
 
-module tango.cipher.sha512;
+module tango.math.cipher.sha512;
 
-public import tango.cipher.base;
+public import tango.math.cipher.base;
 
 /*******************************************************************************
 
@@ -33,6 +36,12 @@ class Sha512Digest : Digest
         ***********************************************************************/
 
         char[] toString() { return toHexString(digest); }
+        
+        /***********************************************************************
+        
+        ***********************************************************************/
+        
+        void[] toBinary() { return cast(void[]) digest; }
 }
 
 

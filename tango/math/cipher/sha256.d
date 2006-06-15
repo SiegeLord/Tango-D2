@@ -2,17 +2,20 @@
 
         copyright:      Copyright (c) 2004 Regan Heath. All rights reserved
 
-        license:        BSD style: $(LICENSE)
+        license:        BSD style: see doc/license.txt for details
       
         version:        Initial release: Feb 2006
         
         author:         Regan Heath, Kris
 
+        This module implements the SHA-256 Algorithm described by Secure Hash 
+        Standard, FIPS PUB 180-2
+        
 *******************************************************************************/
 
-module tango.cipher.sha256;
+module tango.math.cipher.sha256;
 
-public import tango.cipher.base;
+public import tango.math.cipher.base;
 
 /*******************************************************************************
 
@@ -26,19 +29,19 @@ class Sha256Digest : Digest
         
         ***********************************************************************/
 
-        this(uint[8] context)
-        {
-                digest[] = context[];
-        }
+        this(uint[8] context) { digest[] = context[]; }
         
         /***********************************************************************
         
         ***********************************************************************/
 
-        char[] toString()
-        {
-                return toHexString(digest);
-        }
+        char[] toString() { return toHexString(digest); }
+        
+        /***********************************************************************
+        
+        ***********************************************************************/
+        
+        void[] toBinary() { return cast(void[]) digest; }
 }
 
 

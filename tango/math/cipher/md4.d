@@ -2,19 +2,22 @@
 
         copyright:      Copyright (c) 2004 Regan Heath. All rights reserved
 
-        license:        BSD style: $(LICENSE)
+        license:        BSD style: see doc/license.txt for details
       
         version:        Initial release: Feb 2006
         
         author:         Regan Heath, Kris
 
+        This module implements the MD4 Message Digest Algorithm as described by
+        RFC 1320 The MD4 Message-Digest Algorithm. R. Rivest. April 1992.
+
 *******************************************************************************/
 
-module tango.cipher.md4;
+module tango.math.cipher.md4;
 
-private import tango.cipher.md2;
+private import tango.math.cipher.md2;
 
-public  import tango.cipher.base;
+public  import tango.math.cipher.base;
 
 /*******************************************************************************
 
