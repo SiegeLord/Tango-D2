@@ -119,8 +119,8 @@ table.content
 /* Style for cell that contains CanDyDOC logo. */
 #docfooter
 {
-	height: 16px;
-	background-color: #eeffee;
+	height: 20px;
+	background-color: #f2fff2;
 	padding: 0px 8px 0px 8px;
 	border: solid 1px #a0a0a0;
 }

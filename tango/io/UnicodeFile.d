@@ -41,31 +41,24 @@ private import  tango.convert.UnicodeBom;
 
         Supported external encodings are as follow (from Unicode.d):
 
-                Unicode.Unknown 
-                Unicode.UTF_8
-                Unicode.UTF_8N
-                Unicode.UTF_16
-                Unicode.UTF_16BE
-                Unicode.UTF_16LE 
-                Unicode.UTF_32 
-                Unicode.UTF_32BE
-                Unicode.UTF_32LE 
+                $(UL Unicode.Unknown)
+                $(UL Unicode.UTF_8)
+                $(UL Unicode.UTF_8N)
+                $(UL Unicode.UTF_16)
+                $(UL Unicode.UTF_16BE)
+                $(UL Unicode.UTF_16LE) 
+                $(UL Unicode.UTF_32)
+                $(UL Unicode.UTF_32BE)
+                $(UL Unicode.UTF_32LE) 
 
-        These can be divided into non-explicit and explicit encodings:
+        These can be divided into implicit and explicit encodings:
 
-                Unicode.Unknown 
-                Unicode.UTF_8
-                Unicode.UTF_16
-                Unicode.UTF_32 
+                $(UL Unicode.Unknown)
+                $(UL Unicode.UTF_8)
+                $(UL Unicode.UTF_16)
+                $(UL Unicode.UTF_32) 
 
-
-                Unicode.UTF_8N
-                Unicode.UTF_16BE
-                Unicode.UTF_16LE 
-                Unicode.UTF_32BE
-                Unicode.UTF_32LE 
-        
-        The former group of non-explicit encodings may be used to 'discover'
+        The above group of implicit encodings may be used to 'discover'
         an unknown encoding, by examining the first few bytes of the file
         content for a signature. This signature is optional for all files, 
         but is often written such that the content is self-describing. When
@@ -75,7 +68,13 @@ private import  tango.convert.UnicodeBom;
         with the signature; today's files are supposed to use the WORD-JOINER 
         character instead.
        
-        The group of explicit encodings are for use when the file encoding is
+                $(UL Unicode.UTF_8N)
+                $(UL Unicode.UTF_16BE)
+                $(UL Unicode.UTF_16LE) 
+                $(UL Unicode.UTF_32BE)
+                $(UL Unicode.UTF_32LE) 
+        
+        This group of explicit encodings are for use when the file encoding is
         known. These *must* be used when writing or appending, since written
         content must be in a known format. It should be noted that, during a
         read operation, the presence of a signature is in conflict with these 
@@ -91,13 +90,12 @@ private import  tango.convert.UnicodeBom;
         directory, and other facilities are made available via the FileProxy
         superclass.
 
-
-        See 
-        $(LINK http://www.utf-8.com/)
-        $(LINK http://www.hackcraft.net/xmlUnicode/)
-        $(LINK http://www.unicode.org/faq/utf_bom.html/)
-        $(LINK http://www.azillionmonkeys.com/qed/unicode.html/)
-        $(LINK http://icu.sourceforge.net/docs/papers/forms_of_unicode/)
+        See these links for more info:
+        $(UL $(LINK http://www.utf-8.com/))
+        $(UL $(LINK http://www.hackcraft.net/xmlUnicode/))
+        $(UL $(LINK http://www.unicode.org/faq/utf_bom.html/))
+        $(UL $(LINK http://www.azillionmonkeys.com/qed/unicode.html/))
+        $(UL $(LINK http://icu.sourceforge.net/docs/papers/forms_of_unicode/))
 
 *******************************************************************************/
 
@@ -118,7 +116,7 @@ class UnicodeFileT(T) : FileProxy
                 super (path);
                 unicode = new UnicodeBomT!(T)(encoding);
         }
-        
+
         /***********************************************************************
         
                 Construct a UnicodeFile from a text string. The provided 
