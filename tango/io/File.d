@@ -87,7 +87,7 @@ class File : FileProxy
 
         File write (void[] content)
         {
-                return write (content, FileStyle.WriteTruncate);  
+                return write (content, FileStyle.ReadWriteCreate);  
         }
 
         /***********************************************************************
