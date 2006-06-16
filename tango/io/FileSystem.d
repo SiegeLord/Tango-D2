@@ -161,31 +161,4 @@ class FileSystem
                         throw new IOException ("Failed to get current directory");
                 }
         }   
-
-        /***********************************************************************
-       
-                These have been moved
-
-        ***********************************************************************/
-
-        alias FileConst.PathSeparatorChar PathSeparatorChar; 
-        alias FileConst.FileSeparatorChar FileSeparatorChar; 
-        alias FileConst.RootSeparatorChar RootSeparatorChar; 
-        alias FileConst.PathSeparatorString PathSeparatorString; 
-        alias FileConst.FileSeparatorString FileSeparatorString; 
-        alias FileConst.RootSeparatorString RootSeparatorString; 
-        alias FileConst.NewlineString NewlineString; 
-             
-        /***********************************************************************
-       
-                My bogus mispelling of the word Separator ...
-
-        ***********************************************************************/
-
-        alias PathSeparatorChar         PathSeperatorChar;
-        alias FileSeparatorChar         FileSeperatorChar;
-        alias RootSeparatorChar         RootSeperatorChar;
-        alias PathSeparatorString       PathSeperatorString;
-        alias FileSeparatorString       FileSeperatorString; 
-        alias RootSeparatorString       RootSeperatorString;               
 }
