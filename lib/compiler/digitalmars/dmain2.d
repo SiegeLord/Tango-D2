@@ -13,7 +13,13 @@ private
     import tango.stdc.stdlib;
     import tango.stdc.string;
     import tango.stdc.stdio;
+    import util.utf;
 }
+
+extern (Windows) void*     LocalFree(void*);
+extern (Windows) wchar_t*  GetCommandLineW();
+extern (Windows) wchar_t** CommandLineToArgvW(wchar_t*, int*);
+pragma(lib, "shell32.lib"); // needed for CommandLineToArgvW
 
 extern (C) void _STI_monitor_staticctor();
 extern (C) void _STD_monitor_staticdtor();
@@ -72,70 +78,74 @@ int main(char[][] args);
  * It's purpose is to wrap the call to the D main()
  * function and catch any unhandled exceptions.
  */
-//extern (C) int wmain( int argc, wchar_t** argv )
 extern (C) int main(int argc, char **argv)
 {
-    char[] *am;
     char[][] args;
-    int i;
     int result;
-    int myesp;
-    int myebx;
 
     version (linux)
     {
 	    _STI_monitor_staticctor();
 	    _STI_critical_init();
 	    gc_init();
-	    am = cast(char[]*) malloc(argc * (char[]).sizeof);
-	    // BUG: alloca() conflicts with try-catch-finally stack unwinding
-	    //am = (char[] *) alloca(argc * (char[]).sizeof);
     }
     else version (Win32)
     {
 	    gc_init();
 	    _minit();
-	    am = cast(char[]*) alloca(argc * (char[]).sizeof);
     }
     else
     {
         static assert( false );
     }
 
-    if (no_catch_exceptions)
+    void run()
     {
-    	_moduleCtor();
-    	_moduleUnitTests();
+	    _moduleCtor();
+	    _moduleUnitTests();
 
-    	for (i = 0; i < argc; i++)
-    	{
-    	    int len = strlen(argv[i]);
-    	    am[i] = argv[i][0 .. len];
+        version (Win32)
+        {
+            int       wargc = 0;
+            wchar_t** wargs = CommandLineToArgvW(GetCommandLineW(), &wargc);
+            assert(wargc == argc);
+
+            args = new char[][wargc];
+            for (int i = 0; i < wargc; i++)
+            {
+                args[i] = toUTF8(wargs[i][0..wcslen(wargs[i])]);
+            }
+            LocalFree(wargs);
+            wargs = null;
+            wargc = 0;
+        }
+        else
+        {
+            char[]* am = cast(char[]*) malloc(argc * (char[]).sizeof);
+            scope(exit) free(am);
+
+        	for (int i = 0; i < argc; i++)
+        	{
+        	    int len = strlen(argv[i]);
+        	    am[i] = argv[i][0 .. len];
+        	}
+    	    args = am[0 .. argc];
     	}
 
-    	args = am[0 .. argc];
-
     	result = main(args);
-    	_moduleDtor();
-    	gc_term();
+	    _moduleDtor();
+	    gc_term();
+    }
+
+    if (no_catch_exceptions)
+    {
+        run();
     }
     else
     {
         try
         {
-    	    _moduleCtor();
-    	    _moduleUnitTests();
-        	for (i = 0; i < argc; i++)
-        	{
-        	    int len = strlen(argv[i]);
-        	    am[i] = argv[i][0 .. len];
-        	}
-
-        	args = am[0 .. argc];
-
-        	result = main(args);
-    	    _moduleDtor();
-    	    gc_term();
+            run();
         }
         catch (Exception e)
         {
@@ -158,7 +168,6 @@ extern (C) int main(int argc, char **argv)
 
     version (linux)
     {
-	    free(am);
 	    _STD_critical_term();
 	    _STD_monitor_staticdtor();
     }
