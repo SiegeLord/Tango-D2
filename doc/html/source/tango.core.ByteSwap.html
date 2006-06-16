@@ -1,0 +1,241 @@
+<!DOCTYPE html 
+     PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+     "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html>
+	<head>
+		<link rel="stylesheet" href="style.css" type="text/css" />
+		<title>core/ByteSwap.d</title>
+	</head>
+	<body>
+
+<table id='dcode'><tr><td id='lnum'><pre><span>1</span>
+<span>2</span>
+<span>3</span>
+<span>4</span>
+<span>5</span>
+<span>6</span>
+<span>7</span>
+<span>8</span>
+<span>9</span>
+<span>10</span>
+<span>11</span>
+<span>12</span>
+<span>13</span>
+<span>14</span>
+<span>15</span>
+<span>16</span>
+<span>17</span>
+<span>18</span>
+<span>19</span>
+<span>20</span>
+<span>21</span>
+<span>22</span>
+<span>23</span>
+<span>24</span>
+<span>25</span>
+<span>26</span>
+<span>27</span>
+<span>28</span>
+<span>29</span>
+<span>30</span>
+<span>31</span>
+<span>32</span>
+<span>33</span>
+<span>34</span>
+<span>35</span>
+<span>36</span>
+<span>37</span>
+<span>38</span>
+<span>39</span>
+<span>40</span>
+<span>41</span>
+<span>42</span>
+<span>43</span>
+<span>44</span>
+<span>45</span>
+<span>46</span>
+<span>47</span>
+<span>48</span>
+<span>49</span>
+<span>50</span>
+<span>51</span>
+<span>52</span>
+<span>53</span>
+<span>54</span>
+<span>55</span>
+<span>56</span>
+<span>57</span>
+<span>58</span>
+<span>59</span>
+<span>60</span>
+<span>61</span>
+<span>62</span>
+<span>63</span>
+<span>64</span>
+<span>65</span>
+<span>66</span>
+<span>67</span>
+<span>68</span>
+<span>69</span>
+<span>70</span>
+<span>71</span>
+<span>72</span>
+<span>73</span>
+<span>74</span>
+<span>75</span>
+<span>76</span>
+<span>77</span>
+<span>78</span>
+<span>79</span>
+<span>80</span>
+<span>81</span>
+<span>82</span>
+<span>83</span>
+<span>84</span>
+<span>85</span>
+<span>86</span>
+<span>87</span>
+<span>88</span>
+<span>89</span>
+<span>90</span>
+<span>91</span>
+<span>92</span>
+<span>93</span>
+<span>94</span>
+<span>95</span>
+<span>96</span>
+<span>97</span>
+<span>98</span>
+<span>99</span>
+<span>100</span>
+<span>101</span>
+<span>102</span>
+<span>103</span>
+<span>104</span>
+<span>105</span>
+<span>106</span>
+<span>107</span>
+<span>108</span>
+<span>109</span>
+<span>110</span>
+<span>111</span>
+<span>112</span>
+<span>113</span>
+<span>114</span>
+</pre></td><td id='code'><pre><span class='com'>/*******************************************************************************
+
+        copyright:      Copyright (c) 2004 Kris Bell. All rights reserved
+
+        license:        BSD style: $(LICENSE)
+
+        version:        Initial release: October 2004
+
+        version:        Feb 20th 2005 - Asm version removed by Aleksey Bobnev
+                        non-asm version now makes use of bswap intrinsic
+        
+        author:         Kris, Aleksey Bobnev
+
+*******************************************************************************/</span>
+
+<span class='kw2'>module</span> tango.core.ByteSwap;
+
+<span class='kw2'>import</span> tango.core.intrinsic;
+
+<span class='com'>/*******************************************************************************
+
+        Reverse byte order for specific datum sizes. Note that the
+        byte-swap approach avoids alignment issues, so is probably
+        faster overall than a traditional 'shift' implementation.
+
+*******************************************************************************/</span>
+
+<span class='kw4'>struct</span> ByteSwap
+<span class='opr'>{</span>       
+        <span class='com'>/***********************************************************************
+        
+        ***********************************************************************/</span>
+
+        <span class='kw4'>final</span> <span class='kw4'>static</span> <span class='kw4'>void</span> swap16 <span class='opr'>(</span><span class='kw4'>void</span> <span class='opr'>*</span>dst, <span class='kw4'>uint</span> count<span class='opr'>)</span>
+        <span class='opr'>{</span>
+                <span class='kw4'>ubyte</span><span class='opr'>*</span> p <span class='opr'>=</span> <span class='kw2'>cast</span><span class='opr'>(</span><span class='kw4'>ubyte</span><span class='opr'>*</span><span class='opr'>)</span> dst;
+                <span class='kw1'>while</span> <span class='opr'>(</span>count<span class='opr'>)</span>
+                      <span class='opr'>{</span>
+                      <span class='kw4'>ubyte</span> b <span class='opr'>=</span> p<span class='opr'>[</span><span class='nbr'>0</span><span class='opr'>]</span>;
+                      p<span class='opr'>[</span><span class='nbr'>0</span><span class='opr'>]</span> <span class='opr'>=</span> p<span class='opr'>[</span><span class='nbr'>1</span><span class='opr'>]</span>;
+                      p<span class='opr'>[</span><span class='nbr'>1</span><span class='opr'>]</span> <span class='opr'>=</span> b;
+
+                      p <span class='opr'>+=</span> <span class='kw4'>short</span>.sizeof;
+                      count <span class='opr'>-=</span> <span class='kw4'>short</span>.sizeof;
+                      <span class='opr'>}</span>
+        <span class='opr'>}</span>
+
+        <span class='com'>/***********************************************************************
+        
+        ***********************************************************************/</span>
+
+        <span class='kw4'>final</span> <span class='kw4'>static</span> <span class='kw4'>void</span> swap32 <span class='opr'>(</span><span class='kw4'>void</span> <span class='opr'>*</span>dst, <span class='kw4'>uint</span> count<span class='opr'>)</span>
+        <span class='opr'>{</span>
+                <span class='kw4'>uint</span><span class='opr'>*</span> p <span class='opr'>=</span> <span class='kw2'>cast</span><span class='opr'>(</span><span class='kw4'>uint</span><span class='opr'>*</span><span class='opr'>)</span> dst;
+                <span class='kw1'>while</span> <span class='opr'>(</span>count<span class='opr'>)</span>
+                      <span class='opr'>{</span>
+                      <span class='opr'>*</span>p <span class='opr'>=</span> bswap<span class='opr'>(</span><span class='opr'>*</span>p<span class='opr'>)</span>;
+                      p <span class='opr'>+</span><span class='opr'>+</span>;
+                      count <span class='opr'>-=</span> <span class='kw4'>int</span>.sizeof;
+                      <span class='opr'>}</span>
+        <span class='opr'>}</span>
+
+        <span class='com'>/***********************************************************************
+        
+        ***********************************************************************/</span>
+
+        <span class='kw4'>final</span> <span class='kw4'>static</span> <span class='kw4'>void</span> swap64 <span class='opr'>(</span><span class='kw4'>void</span> <span class='opr'>*</span>dst, <span class='kw4'>uint</span> count<span class='opr'>)</span>
+        <span class='opr'>{</span>
+                <span class='kw4'>uint</span><span class='opr'>*</span> p <span class='opr'>=</span> <span class='kw2'>cast</span><span class='opr'>(</span><span class='kw4'>uint</span><span class='opr'>*</span><span class='opr'>)</span> dst;
+                <span class='kw1'>while</span> <span class='opr'>(</span>count<span class='opr'>)</span>
+                      <span class='opr'>{</span>
+                      <span class='kw4'>uint</span> i <span class='opr'>=</span> p<span class='opr'>[</span><span class='nbr'>0</span><span class='opr'>]</span>;
+                      p<span class='opr'>[</span><span class='nbr'>0</span><span class='opr'>]</span> <span class='opr'>=</span> bswap<span class='opr'>(</span>p<span class='opr'>[</span><span class='nbr'>1</span><span class='opr'>]</span><span class='opr'>)</span>;
+                      p<span class='opr'>[</span><span class='nbr'>1</span><span class='opr'>]</span> <span class='opr'>=</span> bswap<span class='opr'>(</span>i<span class='opr'>)</span>;
+
+                      p <span class='opr'>+=</span> <span class='opr'>(</span><span class='kw4'>long</span>.sizeof / <span class='kw4'>int</span>.sizeof<span class='opr'>)</span>;
+                      count <span class='opr'>-=</span> <span class='kw4'>long</span>.sizeof;
+                      <span class='opr'>}</span>
+        <span class='opr'>}</span>
+
+        <span class='com'>/***********************************************************************
+        
+        ***********************************************************************/</span>
+
+        <span class='kw4'>final</span> <span class='kw4'>static</span> <span class='kw4'>void</span> swap80 <span class='opr'>(</span><span class='kw4'>void</span> <span class='opr'>*</span>dst, <span class='kw4'>uint</span> count<span class='opr'>)</span>
+        <span class='opr'>{</span>
+                <span class='kw4'>ubyte</span><span class='opr'>*</span> p <span class='opr'>=</span> <span class='kw2'>cast</span><span class='opr'>(</span><span class='kw4'>ubyte</span><span class='opr'>*</span><span class='opr'>)</span> dst;
+                <span class='kw1'>while</span> <span class='opr'>(</span>count<span class='opr'>)</span>
+                      <span class='opr'>{</span>
+                      <span class='kw4'>ubyte</span> b <span class='opr'>=</span> p<span class='opr'>[</span><span class='nbr'>0</span><span class='opr'>]</span>;
+                      p<span class='opr'>[</span><span class='nbr'>0</span><span class='opr'>]</span> <span class='opr'>=</span> p<span class='opr'>[</span><span class='nbr'>9</span><span class='opr'>]</span>;
+                      p<span class='opr'>[</span><span class='nbr'>9</span><span class='opr'>]</span> <span class='opr'>=</span> b;
+
+                      b <span class='opr'>=</span> p<span class='opr'>[</span><span class='nbr'>1</span><span class='opr'>]</span>;
+                      p<span class='opr'>[</span><span class='nbr'>1</span><span class='opr'>]</span> <span class='opr'>=</span> p<span class='opr'>[</span><span class='nbr'>8</span><span class='opr'>]</span>;
+                      p<span class='opr'>[</span><span class='nbr'>8</span><span class='opr'>]</span> <span class='opr'>=</span> b;
+
+                      b <span class='opr'>=</span> p<span class='opr'>[</span><span class='nbr'>2</span><span class='opr'>]</span>;
+                      p<span class='opr'>[</span><span class='nbr'>2</span><span class='opr'>]</span> <span class='opr'>=</span> p<span class='opr'>[</span><span class='nbr'>7</span><span class='opr'>]</span>;
+                      p<span class='opr'>[</span><span class='nbr'>7</span><span class='opr'>]</span> <span class='opr'>=</span> b;
+        
+                      b <span class='opr'>=</span> p<span class='opr'>[</span><span class='nbr'>3</span><span class='opr'>]</span>;
+                      p<span class='opr'>[</span><span class='nbr'>3</span><span class='opr'>]</span> <span class='opr'>=</span> p<span class='opr'>[</span><span class='nbr'>6</span><span class='opr'>]</span>;
+                      p<span class='opr'>[</span><span class='nbr'>6</span><span class='opr'>]</span> <span class='opr'>=</span> b;
+        
+                      b <span class='opr'>=</span> p<span class='opr'>[</span><span class='nbr'>4</span><span class='opr'>]</span>;
+                      p<span class='opr'>[</span><span class='nbr'>4</span><span class='opr'>]</span> <span class='opr'>=</span> p<span class='opr'>[</span><span class='nbr'>5</span><span class='opr'>]</span>;
+                      p<span class='opr'>[</span><span class='nbr'>5</span><span class='opr'>]</span> <span class='opr'>=</span> b;
+
+                      p <span class='opr'>+=</span> <span class='kw4'>real</span>.sizeof;
+                      count <span class='opr'>-=</span> <span class='kw4'>real</span>.sizeof;
+                      <span class='opr'>}</span>
+        <span class='opr'>}</span>
+<span class='opr'>}</span>
+</pre></td></tr></table>	</body>
+</html>
