@@ -66,8 +66,6 @@ extern (C) void _d_switch_error( char[] file, uint line )
     onSwitchError( file, line );
 }
 
-extern (C) bool no_catch_exceptions = false;
-
 /***********************************
  * The D main() function supplied by the user's program
  */
@@ -99,74 +97,69 @@ extern (C) int main(int argc, char **argv)
         static assert( false );
     }
 
-    void run()
+    version (Win32)
+    {
+        wchar_t*  wcbuf = GetCommandLineW();
+        size_t    wclen = wcslen(wcbuf);
+        int       wargc = 0;
+        wchar_t** wargs = CommandLineToArgvW(GetCommandLineW(), &wargc);
+        assert(wargc == argc);
+
+        char*     cargp = null;
+        size_t    cargl = WideCharToMultiByte(65001, 0, wcbuf, wclen, null, 0, null, 0);
+
+        cargp = cast(char*) alloca(cargl);
+        args  = (cast(char[]*) alloca(wargc * (char[]).sizeof))[0 .. wargc];
+
+        for (size_t i = 0, p = 0; i < wargc; i++)
+        {
+            int wlen = wcslen( wargs[i] );
+            int clen = WideCharToMultiByte(65001, 0, &wargs[i][0], wlen, null, 0, null, 0);
+            args[i]  = cargp[p .. p+clen];
+            p += clen; assert(p <= cargl);
+            WideCharToMultiByte(65001, 0, &wargs[i][0], wlen, &args[i][0], clen, null, 0);
+        }
+        LocalFree(wargs);
+        wargs = null;
+        wargc = 0;
+    }
+    else
+    {
+        char[]* am = cast(char[]*) malloc(argc * (char[]).sizeof);
+        scope(exit) free(am);
+
+    	for (int i = 0; i < argc; i++)
+    	{
+    	    int len = strlen(argv[i]);
+    	    am[i] = argv[i][0 .. len];
+    	}
+	    args = am[0 .. argc];
+	}
+
+    try
     {
 	    _moduleCtor();
 	    _moduleUnitTests();
-
-        version (Win32)
-        {
-            int       wargc = 0;
-            wchar_t** wargs = CommandLineToArgvW(GetCommandLineW(), &wargc);
-            assert(wargc == argc);
-
-            args = new char[][wargc];
-            for (int i = 0; i < wargc; i++)
-            {
-                int wlen = wcslen( wargs[i] );
-                int clen = WideCharToMultiByte(65001, 0, &wargs[i][0], wlen, null, 0, null, 0);
-                args[i] = new char[clen];
-                WideCharToMultiByte(65001, 0, &wargs[i][0], wlen, &args[i][0], clen, null, 0);
-            }
-            LocalFree(wargs);
-            wargs = null;
-            wargc = 0;
-        }
-        else
-        {
-            char[]* am = cast(char[]*) malloc(argc * (char[]).sizeof);
-            scope(exit) free(am);
-
-        	for (int i = 0; i < argc; i++)
-        	{
-        	    int len = strlen(argv[i]);
-        	    am[i] = argv[i][0 .. len];
-        	}
-    	    args = am[0 .. argc];
-    	}
-
     	result = main(args);
 	    _moduleDtor();
 	    gc_term();
     }
-
-    if (no_catch_exceptions)
+    catch (Exception e)
     {
-        run();
+        while (e)
+        {
+            if (e.file)
+    	        fprintf(stderr, "%.*s(%u): %.*s\n", e.file, e.line, e.msg);
+    	    else
+    	        fprintf(stderr, "%.*s\n", e.toString());
+    	    e = e.next;
+    	}
+	    exit(EXIT_FAILURE);
     }
-    else
+    catch (Object o)
     {
-        try
-        {
-            run();
-        }
-        catch (Exception e)
-        {
-            while (e)
-            {
-                if (e.file)
-        	        fprintf(stderr, "%.*s(%u): %.*s\n", e.file, e.line, e.msg);
-        	    else
-        	        fprintf(stderr, "%.*s\n", e.toString());
-        	    e = e.next;
-        	}
-    	    exit(EXIT_FAILURE);
-        }
-        catch (Object o)
-        {
-    	    fprintf(stderr, "%.*s\n", o.toString());
-    	    exit(EXIT_FAILURE);
-        }
+	    fprintf(stderr, "%.*s\n", o.toString());
+	    exit(EXIT_FAILURE);
     }
 
     version (linux)
