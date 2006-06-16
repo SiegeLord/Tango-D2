@@ -201,28 +201,35 @@ class FilePath : IWritable
 
         ***********************************************************************/
 
-        static char[] normalize (inout char[] path)
+        static char[] normalize (char[] path)
         {
                 version (Win32)
-                        {
-                        foreach (inout char c; path)
-                                 if (c == '/')
-                                     c = '\\';
-                        }
+                         return replace (path, '/', '\\');
                      else
-                        {
-                        foreach (inout char c; path)
-                                 if (c == '\\')
-                                     c = '/';
-                        }
+                         return replace (path, '\\', '/');
+        }
+
+        /***********************************************************************
+        
+                Replace all 'from' instances in the provided path with 'to'
+                  
+        ***********************************************************************/
+
+        static char[] replace (char[] path, char from, char to)
+        {
+                foreach (inout char c; path)
+                         if (c is from)
+                             c = to;
                 return path;
         }
 
         /***********************************************************************
         
+                Clear any cached information in this FilePath
+
         ***********************************************************************/
 
-        void reset ()
+        protected void reset ()
         {
                 fp = null;
                 fpWide = null;

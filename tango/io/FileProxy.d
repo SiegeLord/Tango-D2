@@ -27,6 +27,14 @@ private import  tango.io.protocol.model.IWriter;
  
 version (Win32)
         {
+        extern (Windows) BOOL   MoveFileExA (LPCSTR,LPCSTR,DWORD);
+        extern (Windows) BOOL   MoveFileExW (LPCWSTR,LPCWSTR,DWORD);
+
+        private const DWORD     REPLACE_EXISTING   = 1,
+                                COPY_ALLOWED       = 2,
+                                DELAY_UNTIL_REBOOT = 4,
+                                WRITE_THROUGH      = 8;
+
         version (Win32SansUnicode)
                 {
                 private extern (C) int strlen (char *s);
@@ -335,7 +343,7 @@ class FileProxy : IWritable
 
                 ***************************************************************/
 
-                void remove ()
+                FileProxy remove ()
                 {
                         if (isDirectory ())
                            {
@@ -361,7 +369,35 @@ class FileProxy : IWritable
                                    if (! DeleteFileW (path.toUtf16))
                                          exception();
                                    }
+
+                        return this;
                 }           
+
+                /***************************************************************
+
+                       change the name or location of a file/directory, and
+                       adopt the provided FilePath
+
+                ***************************************************************/
+
+                FileProxy rename (FilePath dst)
+                {
+                        const int Typical = REPLACE_EXISTING + COPY_ALLOWED + 
+                                                               WRITE_THROUGH;
+
+                        int result;
+
+                        version (Win32SansUnicode)
+                                 result = MoveFileExA (path.toUtf8, dst.toUtf8, Typical);
+                             else
+                                result = MoveFileExW (path.toUtf16, dst.toUtf16, Typical);
+
+                        if (! result)
+                              exception();
+
+                        path = dst;
+                        return this;
+                }
 
                 /***************************************************************
 
@@ -615,7 +651,7 @@ class FileProxy : IWritable
 
                 ***************************************************************/
 
-                void remove ()
+                FileProxy remove ()
                 {
                         if (isDirectory())
                            {
@@ -625,7 +661,25 @@ class FileProxy : IWritable
                         else           
                            if (tango.stdc.stdio.remove (path.toUtf8) == -1)
                                exception ();
+
+                        return this;
                 }              
+
+                /***************************************************************
+
+                       change the name or location of a file/directory, and
+                       adopt the provided FilePath
+
+                ***************************************************************/
+
+                FileProxy rename (FilePath dst)
+                {
+                        if (tango.stdc.stdio.rename (path.toUtf8, dst.toUtf8) == -1)
+                            exception ();
+
+                        path = dst;
+                        return this;
+                }
 
                 /***************************************************************
 
