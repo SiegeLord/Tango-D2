@@ -1,0 +1,189 @@
+<!DOCTYPE html 
+     PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+     "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html>
+	<head>
+		<link rel="stylesheet" href="style.css" type="text/css" />
+		<title>os/windows/c/lmbrowsr.d</title>
+	</head>
+	<body>
+
+<table id='dcode'><tr><td id='lnum'><pre><span>1</span>
+<span>2</span>
+<span>3</span>
+<span>4</span>
+<span>5</span>
+<span>6</span>
+<span>7</span>
+<span>8</span>
+<span>9</span>
+<span>10</span>
+<span>11</span>
+<span>12</span>
+<span>13</span>
+<span>14</span>
+<span>15</span>
+<span>16</span>
+<span>17</span>
+<span>18</span>
+<span>19</span>
+<span>20</span>
+<span>21</span>
+<span>22</span>
+<span>23</span>
+<span>24</span>
+<span>25</span>
+<span>26</span>
+<span>27</span>
+<span>28</span>
+<span>29</span>
+<span>30</span>
+<span>31</span>
+<span>32</span>
+<span>33</span>
+<span>34</span>
+<span>35</span>
+<span>36</span>
+<span>37</span>
+<span>38</span>
+<span>39</span>
+<span>40</span>
+<span>41</span>
+<span>42</span>
+<span>43</span>
+<span>44</span>
+<span>45</span>
+<span>46</span>
+<span>47</span>
+<span>48</span>
+<span>49</span>
+<span>50</span>
+<span>51</span>
+<span>52</span>
+<span>53</span>
+<span>54</span>
+<span>55</span>
+<span>56</span>
+<span>57</span>
+<span>58</span>
+<span>59</span>
+<span>60</span>
+<span>61</span>
+<span>62</span>
+<span>63</span>
+<span>64</span>
+<span>65</span>
+<span>66</span>
+<span>67</span>
+<span>68</span>
+<span>69</span>
+<span>70</span>
+<span>71</span>
+<span>72</span>
+<span>73</span>
+<span>74</span>
+<span>75</span>
+<span>76</span>
+<span>77</span>
+<span>78</span>
+<span>79</span>
+<span>80</span>
+<span>81</span>
+<span>82</span>
+<span>83</span>
+<span>84</span>
+<span>85</span>
+<span>86</span>
+<span>87</span>
+<span>88</span>
+</pre></td><td id='code'><pre><span class='com'>/***********************************************************************\
+*                              lmbrowsr.d                               *
+*                                                                       *
+*                       Windows API header module                       *
+*                                                                       *
+*                 Translated from MinGW Windows headers                 *
+*                                                                       *
+*                       Placed into public domain                       *
+\***********************************************************************/</span>
+<span class='kw2'>module</span> tango.os.windows.c.lmbrowsr;
+
+<span class='com'>//version (build) { pragma(nolink); }</span>
+
+<span class='kw4'>private</span> <span class='kw2'>import</span> tango.os.windows.c.lmcons;
+<span class='kw4'>private</span> <span class='kw2'>import</span> tango.os.windows.c.windef;
+
+<span class='kw4'>const</span> BROWSER_ROLE_PDC <span class='opr'>=</span> <span class='nbr'>1</span>;
+<span class='kw4'>const</span> BROWSER_ROLE_BDC <span class='opr'>=</span> <span class='nbr'>2</span>;
+
+<span class='kw4'>struct</span> BROWSER_STATISTICS <span class='opr'>{</span>
+    LARGE_INTEGER StatisticsStartTime;
+    LARGE_INTEGER NumberOfServerAnnouncements;
+    LARGE_INTEGER NumberOfDomainAnnouncements;
+    ULONG NumberOfElectionPackets;
+    ULONG NumberOfMailslotWrites;
+    ULONG NumberOfGetBrowserServerListRequests;
+    ULONG NumberOfServerEnumerations;
+    ULONG NumberOfDomainEnumerations;
+    ULONG NumberOfOtherEnumerations;
+    ULONG NumberOfMissedServerAnnouncements;
+    ULONG NumberOfMissedMailslotDatagrams;
+    ULONG NumberOfMissedGetBrowserServerListRequests;
+    ULONG NumberOfFailedServerAnnounceAllocations;
+    ULONG NumberOfFailedMailslotAllocations;
+    ULONG NumberOfFailedMailslotReceives;
+    ULONG NumberOfFailedMailslotWrites;
+    ULONG NumberOfFailedMailslotOpens;
+    ULONG NumberOfDuplicateMasterAnnouncements;
+    LARGE_INTEGER NumberOfIllegalDatagrams;
+<span class='opr'>}</span>
+<span class='kw2'>alias</span> BROWSER_STATISTICS<span class='opr'>*</span> PBROWSER_STATISTICS, LPBROWSER_STATISTICS;
+
+<span class='kw4'>struct</span> BROWSER_STATISTICS_100 <span class='opr'>{</span>
+    LARGE_INTEGER StartTime;
+    LARGE_INTEGER NumberOfServerAnnouncements;
+    LARGE_INTEGER NumberOfDomainAnnouncements;
+    ULONG NumberOfElectionPackets;
+    ULONG NumberOfMailslotWrites;
+    ULONG NumberOfGetBrowserServerListRequests;
+    LARGE_INTEGER NumberOfIllegalDatagrams;
+<span class='opr'>}</span>
+<span class='kw2'>alias</span> BROWSER_STATISTICS_100<span class='opr'>*</span> PBROWSER_STATISTICS_100;
+
+<span class='kw4'>struct</span> BROWSER_STATISTICS_101 <span class='opr'>{</span>
+    LARGE_INTEGER StartTime;
+    LARGE_INTEGER NumberOfServerAnnouncements;
+    LARGE_INTEGER NumberOfDomainAnnouncements;
+    ULONG NumberOfElectionPackets;
+    ULONG NumberOfMailslotWrites;
+    ULONG NumberOfGetBrowserServerListRequests;
+    LARGE_INTEGER NumberOfIllegalDatagrams;
+    ULONG NumberOfMissedServerAnnouncements;
+    ULONG NumberOfMissedMailslotDatagrams;
+    ULONG NumberOfMissedGetBrowserServerListRequests;
+    ULONG NumberOfFailedServerAnnounceAllocations;
+    ULONG NumberOfFailedMailslotAllocations;
+    ULONG NumberOfFailedMailslotReceives;
+    ULONG NumberOfFailedMailslotWrites;
+    ULONG NumberOfFailedMailslotOpens;
+    ULONG NumberOfDuplicateMasterAnnouncements;
+<span class='opr'>}</span>
+<span class='kw2'>alias</span> BROWSER_STATISTICS_101<span class='opr'>*</span> PBROWSER_STATISTICS_101;
+
+<span class='kw2'>extern</span> <span class='opr'>(</span>Windows<span class='opr'>)</span> <span class='opr'>{</span>
+    NET_API_STATUS I_BrowserServerEnum<span class='opr'>(</span>LPCWSTR, LPCWSTR, LPCWSTR, DWORD,
+      PBYTE<span class='opr'>*</span>, DWORD, PDWORD, PDWORD, DWORD, LPCWSTR, PDWORD<span class='opr'>)</span>;
+    NET_API_STATUS I_BrowserServerEnumEx<span class='opr'>(</span>LPCWSTR, LPCWSTR, LPCWSTR, DWORD,
+      PBYTE<span class='opr'>*</span>, DWORD, PDWORD, PDWORD, DWORD, LPCWSTR, LPCWSTR<span class='opr'>)</span>;
+    NET_API_STATUS I_BrowserQueryEmulatedDomains<span class='opr'>(</span>LPWSTR, PBYTE<span class='opr'>*</span>, PDWORD<span class='opr'>)</span>;
+    NET_API_STATUS I_BrowserQueryOtherDomains<span class='opr'>(</span>LPCWSTR, PBYTE<span class='opr'>*</span>, PDWORD, PDWORD<span class='opr'>)</span>;
+    NET_API_STATUS I_BrowserResetNetlogonState<span class='opr'>(</span>LPCWSTR<span class='opr'>)</span>;
+    NET_API_STATUS I_BrowserSetNetlogonState<span class='opr'>(</span>LPWSTR, LPWSTR, LPWSTR, DWORD<span class='opr'>)</span>;
+    NET_API_STATUS I_BrowserQueryStatistics<span class='opr'>(</span>LPCWSTR, LPBROWSER_STATISTICS<span class='opr'>*</span><span class='opr'>)</span>;
+    NET_API_STATUS I_BrowserResetStatistics<span class='opr'>(</span>LPCWSTR<span class='opr'>)</span>;
+    WORD I_BrowserServerEnumForXactsrv<span class='opr'>(</span>LPCWSTR, LPCWSTR, ULONG, USHORT, PVOID,
+      WORD, DWORD, PDWORD, PDWORD, DWORD, LPCWSTR, LPCWSTR, PWORD<span class='opr'>)</span>;
+    NET_API_STATUS I_BrowserDebugTrace<span class='opr'>(</span>PWCHAR, PCHAR<span class='opr'>)</span>;
+<span class='opr'>}</span>
+</pre></td></tr></table>	</body>
+</html>

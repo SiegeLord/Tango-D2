@@ -1,0 +1,113 @@
+<!DOCTYPE html 
+     PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+     "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html>
+	<head>
+		<link rel="stylesheet" href="style.css" type="text/css" />
+		<title>store/test.d</title>
+	</head>
+	<body>
+
+<table id='dcode'><tr><td id='lnum'><pre><span>1</span>
+<span>2</span>
+<span>3</span>
+<span>4</span>
+<span>5</span>
+<span>6</span>
+<span>7</span>
+<span>8</span>
+<span>9</span>
+<span>10</span>
+<span>11</span>
+<span>12</span>
+<span>13</span>
+<span>14</span>
+<span>15</span>
+<span>16</span>
+<span>17</span>
+<span>18</span>
+<span>19</span>
+<span>20</span>
+<span>21</span>
+<span>22</span>
+<span>23</span>
+<span>24</span>
+<span>25</span>
+<span>26</span>
+<span>27</span>
+<span>28</span>
+<span>29</span>
+<span>30</span>
+<span>31</span>
+<span>32</span>
+<span>33</span>
+<span>34</span>
+<span>35</span>
+<span>36</span>
+<span>37</span>
+<span>38</span>
+<span>39</span>
+<span>40</span>
+<span>41</span>
+<span>42</span>
+<span>43</span>
+<span>44</span>
+<span>45</span>
+<span>46</span>
+<span>47</span>
+<span>48</span>
+<span>49</span>
+<span>50</span>
+</pre></td><td id='code'><pre><span class='kw2'>import</span> tango.store.TreeBag;
+<span class='kw2'>import</span> tango.store.LinkSeq;
+<span class='kw2'>import</span> tango.store.LinkMap;
+<span class='kw2'>import</span> tango.store.TreeMap;
+<span class='kw2'>import</span> tango.store.HashSet;
+<span class='kw2'>import</span> tango.store.HashMap;
+<span class='kw2'>import</span> tango.store.ArraySeq;
+<span class='kw2'>import</span> tango.store.ArrayBag;
+<span class='kw2'>import</span> tango.store.CircularSeq;
+
+<span class='kw2'>import</span> tango.io.Console;
+
+
+<span class='kw4'>void</span> main<span class='opr'>(</span><span class='opr'>)</span>
+<span class='opr'>{</span>
+<span class='com'>///        if (false)</span>
+        <span class='opr'>{</span>
+        <span class='kw4'>auto</span> seq <span class='opr'>=</span> <span class='kw2'>new</span> ArraySeqT!<span class='opr'>(</span><span class='kw4'>float</span><span class='opr'>)</span>;
+        seq.append <span class='opr'>(</span><span class='nbr'>1.1</span><span class='opr'>)</span>;
+        seq.append <span class='opr'>(</span><span class='nbr'>2.2</span><span class='opr'>)</span>;
+        seq.append <span class='opr'>(</span><span class='nbr'>3.3</span><span class='opr'>)</span>;
+        <span class='kw4'>float</span> x <span class='opr'>=</span> seq.get <span class='opr'>(</span><span class='nbr'>0</span><span class='opr'>)</span>;
+        Cout <span class='opr'>(</span>seq.toString<span class='opr'>)</span>.newline;
+
+        <span class='kw4'>auto</span> seq1 <span class='opr'>=</span> seq.duplicate<span class='opr'>(</span><span class='opr'>)</span>;
+        Cout <span class='opr'>(</span>seq1.toString<span class='opr'>)</span>.newline;
+        <span class='opr'>}</span>
+<span class='com'>//        else</span>
+        <span class='opr'>{</span>
+        <span class='kw4'>auto</span> seq <span class='opr'>=</span> <span class='kw2'>new</span> ArraySeqT!<span class='opr'>(</span><span class='kw4'>int</span><span class='opr'>)</span>;
+        seq.append <span class='opr'>(</span><span class='nbr'>1</span><span class='opr'>)</span>;
+        seq.append <span class='opr'>(</span><span class='nbr'>2</span><span class='opr'>)</span>;
+        seq.append <span class='opr'>(</span><span class='nbr'>3</span><span class='opr'>)</span>;
+        seq.append <span class='opr'>(</span><span class='nbr'>4</span><span class='opr'>)</span>;
+        seq.append <span class='opr'>(</span><span class='nbr'>5</span><span class='opr'>)</span>;
+        Cout <span class='opr'>(</span>seq.toString<span class='opr'>)</span>.newline;
+
+        <span class='kw4'>auto</span> seq1 <span class='opr'>=</span> seq.duplicate<span class='opr'>(</span><span class='opr'>)</span>;
+        Cout <span class='opr'>(</span>seq1.toString<span class='opr'>)</span>.newline;
+        <span class='opr'>}</span>
+
+        <span class='kw4'>auto</span> t0 <span class='opr'>=</span> <span class='kw2'>new</span> TreeMapT!<span class='opr'>(</span><span class='kw4'>char</span><span class='opr'>[</span><span class='opr'>]</span>, <span class='kw4'>int</span><span class='opr'>)</span>;
+        <span class='kw4'>auto</span> t1 <span class='opr'>=</span> <span class='kw2'>new</span> TreeBagT!<span class='opr'>(</span><span class='kw4'>int</span><span class='opr'>)</span>;
+        <span class='kw4'>auto</span> t2 <span class='opr'>=</span> <span class='kw2'>new</span> LinkSeqT!<span class='opr'>(</span><span class='kw4'>int</span><span class='opr'>)</span>;
+        <span class='kw4'>auto</span> t3 <span class='opr'>=</span> <span class='kw2'>new</span> LinkMapT!<span class='opr'>(</span><span class='kw4'>char</span><span class='opr'>[</span><span class='opr'>]</span>, <span class='kw4'>int</span><span class='opr'>)</span>;
+        <span class='kw4'>auto</span> t4 <span class='opr'>=</span> <span class='kw2'>new</span> HashSetT!<span class='opr'>(</span><span class='kw4'>int</span><span class='opr'>)</span>;
+        <span class='kw4'>auto</span> t5 <span class='opr'>=</span> <span class='kw2'>new</span> HashMapT!<span class='opr'>(</span><span class='kw4'>wchar</span><span class='opr'>[</span><span class='opr'>]</span>, <span class='kw4'>float</span><span class='opr'>)</span>;
+        <span class='kw4'>auto</span> t6 <span class='opr'>=</span> <span class='kw2'>new</span> CircularSeqT!<span class='opr'>(</span><span class='kw4'>int</span><span class='opr'>)</span>;
+        <span class='kw4'>auto</span> t7 <span class='opr'>=</span> <span class='kw2'>new</span> ArrayBagT!<span class='opr'>(</span><span class='kw4'>int</span><span class='opr'>)</span>;
+<span class='opr'>}</span>
+</pre></td></tr></table>	</body>
+</html>

@@ -1,0 +1,425 @@
+<!DOCTYPE html 
+     PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+     "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html>
+	<head>
+		<link rel="stylesheet" href="style.css" type="text/css" />
+		<title>stdc/posix/sys/mman.d</title>
+	</head>
+	<body>
+
+<table id='dcode'><tr><td id='lnum'><pre><span>1</span>
+<span>2</span>
+<span>3</span>
+<span>4</span>
+<span>5</span>
+<span>6</span>
+<span>7</span>
+<span>8</span>
+<span>9</span>
+<span>10</span>
+<span>11</span>
+<span>12</span>
+<span>13</span>
+<span>14</span>
+<span>15</span>
+<span>16</span>
+<span>17</span>
+<span>18</span>
+<span>19</span>
+<span>20</span>
+<span>21</span>
+<span>22</span>
+<span>23</span>
+<span>24</span>
+<span>25</span>
+<span>26</span>
+<span>27</span>
+<span>28</span>
+<span>29</span>
+<span>30</span>
+<span>31</span>
+<span>32</span>
+<span>33</span>
+<span>34</span>
+<span>35</span>
+<span>36</span>
+<span>37</span>
+<span>38</span>
+<span>39</span>
+<span>40</span>
+<span>41</span>
+<span>42</span>
+<span>43</span>
+<span>44</span>
+<span>45</span>
+<span>46</span>
+<span>47</span>
+<span>48</span>
+<span>49</span>
+<span>50</span>
+<span>51</span>
+<span>52</span>
+<span>53</span>
+<span>54</span>
+<span>55</span>
+<span>56</span>
+<span>57</span>
+<span>58</span>
+<span>59</span>
+<span>60</span>
+<span>61</span>
+<span>62</span>
+<span>63</span>
+<span>64</span>
+<span>65</span>
+<span>66</span>
+<span>67</span>
+<span>68</span>
+<span>69</span>
+<span>70</span>
+<span>71</span>
+<span>72</span>
+<span>73</span>
+<span>74</span>
+<span>75</span>
+<span>76</span>
+<span>77</span>
+<span>78</span>
+<span>79</span>
+<span>80</span>
+<span>81</span>
+<span>82</span>
+<span>83</span>
+<span>84</span>
+<span>85</span>
+<span>86</span>
+<span>87</span>
+<span>88</span>
+<span>89</span>
+<span>90</span>
+<span>91</span>
+<span>92</span>
+<span>93</span>
+<span>94</span>
+<span>95</span>
+<span>96</span>
+<span>97</span>
+<span>98</span>
+<span>99</span>
+<span>100</span>
+<span>101</span>
+<span>102</span>
+<span>103</span>
+<span>104</span>
+<span>105</span>
+<span>106</span>
+<span>107</span>
+<span>108</span>
+<span>109</span>
+<span>110</span>
+<span>111</span>
+<span>112</span>
+<span>113</span>
+<span>114</span>
+<span>115</span>
+<span>116</span>
+<span>117</span>
+<span>118</span>
+<span>119</span>
+<span>120</span>
+<span>121</span>
+<span>122</span>
+<span>123</span>
+<span>124</span>
+<span>125</span>
+<span>126</span>
+<span>127</span>
+<span>128</span>
+<span>129</span>
+<span>130</span>
+<span>131</span>
+<span>132</span>
+<span>133</span>
+<span>134</span>
+<span>135</span>
+<span>136</span>
+<span>137</span>
+<span>138</span>
+<span>139</span>
+<span>140</span>
+<span>141</span>
+<span>142</span>
+<span>143</span>
+<span>144</span>
+<span>145</span>
+<span>146</span>
+<span>147</span>
+<span>148</span>
+<span>149</span>
+<span>150</span>
+<span>151</span>
+<span>152</span>
+<span>153</span>
+<span>154</span>
+<span>155</span>
+<span>156</span>
+<span>157</span>
+<span>158</span>
+<span>159</span>
+<span>160</span>
+<span>161</span>
+<span>162</span>
+<span>163</span>
+<span>164</span>
+<span>165</span>
+<span>166</span>
+<span>167</span>
+<span>168</span>
+<span>169</span>
+<span>170</span>
+<span>171</span>
+<span>172</span>
+<span>173</span>
+<span>174</span>
+<span>175</span>
+<span>176</span>
+<span>177</span>
+<span>178</span>
+<span>179</span>
+<span>180</span>
+<span>181</span>
+<span>182</span>
+<span>183</span>
+<span>184</span>
+<span>185</span>
+<span>186</span>
+<span>187</span>
+<span>188</span>
+<span>189</span>
+<span>190</span>
+<span>191</span>
+<span>192</span>
+<span>193</span>
+<span>194</span>
+<span>195</span>
+<span>196</span>
+<span>197</span>
+<span>198</span>
+<span>199</span>
+<span>200</span>
+<span>201</span>
+<span>202</span>
+<span>203</span>
+<span>204</span>
+<span>205</span>
+<span>206</span>
+</pre></td><td id='code'><pre><span class='com'>/**
+ * D header file for POSIX.
+ *
+ * Copyright: Public Domain
+ * License:   Public Domain
+ * Authors:   Sean Kelly
+ * Standards: The Open Group Base Specifications Issue 6, IEEE Std 1003.1, 2004 Edition
+ */</span>
+<span class='kw2'>module</span> tango.stdc.posix.sys.mman;
+
+<span class='kw4'>public</span> <span class='kw2'>import</span> tango.stdc.stddef; <span class='com'>// for size_t</span>
+<span class='kw4'>public</span> <span class='kw2'>import</span> tango.stdc.posix.sys.types; <span class='com'>// for off_t, mode_t</span>
+
+<span class='kw2'>extern</span> <span class='opr'>(</span>C<span class='opr'>)</span>:
+
+<span class='com'>//</span>
+<span class='com'>// Advisory Information (ADV)</span>
+<span class='com'>//</span>
+<span class='com'>/*
+int posix_madvise(void*, size_t, int);
+*/</span>
+
+<span class='com'>//</span>
+<span class='com'>// Advisory Information and either Memory Mapped Files or Shared Memory Objects (MC1)</span>
+<span class='com'>//</span>
+<span class='com'>/*
+POSIX_MADV_NORMAL
+POSIX_MADV_SEQUENTIAL
+POSIX_MADV_RANDOM
+POSIX_MADV_WILLNEED
+POSIX_MADV_DONTNEED
+*/</span>
+
+<span class='kw4'>version</span><span class='opr'>(</span> darwin <span class='opr'>)</span>
+<span class='opr'>{</span>
+    <span class='kw4'>const</span> <span class='kw4'>auto</span> POSIX_MADV_NORMAL        <span class='opr'>=</span> <span class='nbr'>0</span>;
+    <span class='kw4'>const</span> <span class='kw4'>auto</span> POSIX_MADV_RANDOM        <span class='opr'>=</span> <span class='nbr'>1</span>;
+    <span class='kw4'>const</span> <span class='kw4'>auto</span> POSIX_MADV_SEQUENTIAL    <span class='opr'>=</span> <span class='nbr'>2</span>;
+    <span class='kw4'>const</span> <span class='kw4'>auto</span> POSIX_MADV_WILLNEED      <span class='opr'>=</span> <span class='nbr'>3</span>;
+    <span class='kw4'>const</span> <span class='kw4'>auto</span> POSIX_MADV_DONTNEED      <span class='opr'>=</span> <span class='nbr'>4</span>;
+<span class='opr'>}</span>
+
+<span class='com'>//</span>
+<span class='com'>// Memory Mapped Files, Shared Memory Objects, or Memory Protection (MC2)</span>
+<span class='com'>//</span>
+<span class='com'>/*
+PROT_READ
+PROT_WRITE
+PROT_EXEC
+PROT_NONE
+*/</span>
+
+<span class='kw4'>version</span><span class='opr'>(</span> darwin <span class='opr'>)</span>
+<span class='opr'>{</span>
+    <span class='kw4'>const</span> <span class='kw4'>auto</span> PROT_NONE    <span class='opr'>=</span> <span class='nbr'>0</span>x00;
+    <span class='kw4'>const</span> <span class='kw4'>auto</span> PROT_READ    <span class='opr'>=</span> <span class='nbr'>0</span>x01;
+    <span class='kw4'>const</span> <span class='kw4'>auto</span> PROT_WRITE   <span class='opr'>=</span> <span class='nbr'>0</span>x02;
+    <span class='kw4'>const</span> <span class='kw4'>auto</span> PROT_EXEC    <span class='opr'>=</span> <span class='nbr'>0</span>x04;
+<span class='opr'>}</span>
+
+<span class='com'>//</span>
+<span class='com'>// Memory Mapped Files, Shared Memory Objects, or Typed Memory Objects (MC3)</span>
+<span class='com'>//</span>
+<span class='com'>/*
+void* mmap(void*, size_t, int, int, int, off_t);
+int munmap(void*, size_t);
+*/</span>
+
+<span class='kw4'>version</span><span class='opr'>(</span> linux <span class='opr'>)</span>
+<span class='opr'>{</span>
+    <span class='kw4'>void</span><span class='opr'>*</span> mmap<span class='opr'>(</span><span class='kw4'>void</span><span class='opr'>*</span>, <span class='kw4'>size_t</span>, <span class='kw4'>int</span>, <span class='kw4'>int</span>, <span class='kw4'>int</span>, off_t<span class='opr'>)</span>;
+    <span class='kw4'>int</span>   munmap<span class='opr'>(</span><span class='kw4'>void</span><span class='opr'>*</span>, <span class='kw4'>size_t</span><span class='opr'>)</span>;
+<span class='opr'>}</span>
+<span class='kw1'>else</span> <span class='kw4'>version</span><span class='opr'>(</span> darwin <span class='opr'>)</span>
+<span class='opr'>{</span>
+    <span class='kw4'>void</span><span class='opr'>*</span> mmap<span class='opr'>(</span><span class='kw4'>void</span><span class='opr'>*</span>, <span class='kw4'>size_t</span>, <span class='kw4'>int</span>, <span class='kw4'>int</span>, <span class='kw4'>int</span>, off_t<span class='opr'>)</span>;
+    <span class='kw4'>int</span>   munmap<span class='opr'>(</span><span class='kw4'>void</span><span class='opr'>*</span>, <span class='kw4'>size_t</span><span class='opr'>)</span>;
+<span class='opr'>}</span>
+
+<span class='com'>//</span>
+<span class='com'>// Memory Mapped Files (MF)</span>
+<span class='com'>//</span>
+<span class='com'>/*
+MAP_SHARED (MF|SHM)
+MAP_PRIVATE (MF|SHM)
+MAP_FIXED  (MF|SHM)
+MAP_FAILED (MF|SHM)
+
+MS_ASYNC (MF|SIO)
+MS_SYNC (MF|SIO)
+MS_INVALIDATE (MF|SIO)
+
+int msync(void*, size_t, int); (MF|SIO)
+*/</span>
+
+<span class='kw4'>version</span><span class='opr'>(</span> linux <span class='opr'>)</span>
+<span class='opr'>{</span>
+    <span class='kw4'>const</span> <span class='kw4'>auto</span> MAP_SHARED   <span class='opr'>=</span> <span class='nbr'>0</span>x01;
+    <span class='kw4'>const</span> <span class='kw4'>auto</span> MAP_PRIVATE  <span class='opr'>=</span> <span class='nbr'>0</span>x02;
+    <span class='kw4'>const</span> <span class='kw4'>auto</span> MAP_FIXED    <span class='opr'>=</span> <span class='nbr'>0</span>x10;
+
+    <span class='kw4'>const</span> <span class='kw4'>auto</span> MAP_FAILED  <span class='opr'>=</span> <span class='kw2'>cast</span><span class='opr'>(</span><span class='kw4'>void</span><span class='opr'>*</span><span class='opr'>)</span> <span class='opr'>-</span><span class='nbr'>1</span>;
+
+    <span class='kw4'>enum</span>
+    <span class='opr'>{</span>
+        MS_ASYNC      <span class='opr'>=</span> <span class='nbr'>1</span>,
+        MS_SYNC       <span class='opr'>=</span> <span class='nbr'>4</span>,
+        MS_INVALIDATE <span class='opr'>=</span> <span class='nbr'>2</span>
+    <span class='opr'>}</span>
+
+    <span class='kw4'>int</span> msync<span class='opr'>(</span><span class='kw4'>void</span><span class='opr'>*</span>, <span class='kw4'>size_t</span>, <span class='kw4'>int</span><span class='opr'>)</span>;
+<span class='opr'>}</span>
+<span class='kw1'>else</span> <span class='kw4'>version</span><span class='opr'>(</span> darwin <span class='opr'>)</span>
+<span class='opr'>{</span>
+    <span class='kw4'>const</span> <span class='kw4'>auto</span> MAP_SHARED   <span class='opr'>=</span> <span class='nbr'>0</span>x0001;
+    <span class='kw4'>const</span> <span class='kw4'>auto</span> MAP_PRIVATE  <span class='opr'>=</span> <span class='nbr'>0</span>x0002;
+    <span class='kw4'>const</span> <span class='kw4'>auto</span> MAP_FIXED    <span class='opr'>=</span> <span class='nbr'>0</span>x0010;
+
+    <span class='kw4'>const</span> <span class='kw4'>auto</span> MAP_FAILED <span class='opr'>=</span> <span class='kw2'>cast</span><span class='opr'>(</span><span class='kw4'>void</span><span class='opr'>*</span><span class='opr'>)</span><span class='opr'>-</span><span class='nbr'>1</span>;
+
+    <span class='kw4'>const</span> <span class='kw4'>auto</span> MS_ASYNC         <span class='opr'>=</span> <span class='nbr'>0</span>x0001;
+    <span class='kw4'>const</span> <span class='kw4'>auto</span> MS_INVALIDATE    <span class='opr'>=</span> <span class='nbr'>0</span>x0002;
+    <span class='kw4'>const</span> <span class='kw4'>auto</span> MS_SYNC          <span class='opr'>=</span> <span class='nbr'>0</span>x0010;
+<span class='opr'>}</span>
+
+<span class='com'>//</span>
+<span class='com'>// Process Memory Locking (ML)</span>
+<span class='com'>//</span>
+<span class='com'>/*
+MCL_CURRENT
+MCL_FUTURE
+
+int mlockall(int);
+int munlockall();
+*/</span>
+
+<span class='kw4'>version</span><span class='opr'>(</span> darwin <span class='opr'>)</span>
+<span class='opr'>{</span>
+    <span class='kw4'>const</span> <span class='kw4'>auto</span> MCL_CURRENT <span class='opr'>=</span> <span class='nbr'>0</span>x0001;
+    <span class='kw4'>const</span> <span class='kw4'>auto</span> MCL_FUTURE  <span class='opr'>=</span> <span class='nbr'>0</span>x0002;
+
+    <span class='kw4'>int</span> mlockall<span class='opr'>(</span><span class='kw4'>int</span><span class='opr'>)</span>;
+    <span class='kw4'>int</span> munlockall<span class='opr'>(</span><span class='opr'>)</span>;
+<span class='opr'>}</span>
+
+<span class='com'>//</span>
+<span class='com'>// Range Memory Locking (MLR)</span>
+<span class='com'>//</span>
+<span class='com'>/*
+int mlock(void*, size_t);
+int munlock(void*, size_t);
+*/</span>
+
+<span class='kw4'>version</span><span class='opr'>(</span> darwin <span class='opr'>)</span>
+<span class='opr'>{</span>
+    <span class='kw4'>int</span> mlock<span class='opr'>(</span><span class='kw4'>void</span><span class='opr'>*</span>, <span class='kw4'>size_t</span><span class='opr'>)</span>;
+    <span class='kw4'>int</span> munlock<span class='opr'>(</span><span class='kw4'>void</span><span class='opr'>*</span>, <span class='kw4'>size_t</span><span class='opr'>)</span>;
+<span class='opr'>}</span>
+
+<span class='com'>//</span>
+<span class='com'>// Memory Protection (MPR)</span>
+<span class='com'>//</span>
+<span class='com'>/*
+int mprotect(void*, size_t, int);
+*/</span>
+
+<span class='kw4'>version</span><span class='opr'>(</span> darwin <span class='opr'>)</span>
+<span class='opr'>{</span>
+    <span class='kw4'>int</span> mprotect<span class='opr'>(</span><span class='kw4'>void</span><span class='opr'>*</span>, <span class='kw4'>size_t</span>, <span class='kw4'>int</span><span class='opr'>)</span>;
+<span class='opr'>}</span>
+
+<span class='com'>//</span>
+<span class='com'>// Shared Memory Objects (SHM)</span>
+<span class='com'>//</span>
+<span class='com'>/*
+int shm_open(char*, int, mode_t);
+int shm_unlink(char*);
+*/</span>
+
+<span class='kw4'>version</span><span class='opr'>(</span> linux <span class='opr'>)</span>
+<span class='opr'>{</span>
+
+<span class='opr'>}</span>
+<span class='kw1'>else</span> <span class='kw4'>version</span><span class='opr'>(</span> darwin <span class='opr'>)</span>
+<span class='opr'>{</span>
+    <span class='kw4'>int</span> shm_open<span class='opr'>(</span><span class='kw4'>char</span><span class='opr'>*</span>, <span class='kw4'>int</span>, mode_t<span class='opr'>)</span>;
+    <span class='kw4'>int</span> shm_unlink<span class='opr'>(</span><span class='kw4'>char</span><span class='opr'>*</span><span class='opr'>)</span>;
+<span class='opr'>}</span>
+
+<span class='com'>//</span>
+<span class='com'>// Typed Memory Objects (TYM)</span>
+<span class='com'>//</span>
+<span class='com'>/*
+POSIX_TYPED_MEM_ALLOCATE
+POSIX_TYPED_MEM_ALLOCATE_CONTIG
+POSIX_TYPED_MEM_MAP_ALLOCATABLE
+
+struct posix_typed_mem_info
+{
+    size_t posix_tmi_length;
+}
+
+int posix_mem_offset(void*, size_t, off_t *, size_t *, int *);
+int posix_typed_mem_get_info(int, struct posix_typed_mem_info *);
+int posix_typed_mem_open(char*, int, int);
+*/</span>
+</pre></td></tr></table>	</body>
+</html>

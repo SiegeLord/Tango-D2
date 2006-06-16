@@ -1,0 +1,263 @@
+<!DOCTYPE html 
+     PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+     "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html>
+	<head>
+		<link rel="stylesheet" href="style.css" type="text/css" />
+		<title>store/iterator/AbstractIterator.d</title>
+	</head>
+	<body>
+
+<table id='dcode'><tr><td id='lnum'><pre><span>1</span>
+<span>2</span>
+<span>3</span>
+<span>4</span>
+<span>5</span>
+<span>6</span>
+<span>7</span>
+<span>8</span>
+<span>9</span>
+<span>10</span>
+<span>11</span>
+<span>12</span>
+<span>13</span>
+<span>14</span>
+<span>15</span>
+<span>16</span>
+<span>17</span>
+<span>18</span>
+<span>19</span>
+<span>20</span>
+<span>21</span>
+<span>22</span>
+<span>23</span>
+<span>24</span>
+<span>25</span>
+<span>26</span>
+<span>27</span>
+<span>28</span>
+<span>29</span>
+<span>30</span>
+<span>31</span>
+<span>32</span>
+<span>33</span>
+<span>34</span>
+<span>35</span>
+<span>36</span>
+<span>37</span>
+<span>38</span>
+<span>39</span>
+<span>40</span>
+<span>41</span>
+<span>42</span>
+<span>43</span>
+<span>44</span>
+<span>45</span>
+<span>46</span>
+<span>47</span>
+<span>48</span>
+<span>49</span>
+<span>50</span>
+<span>51</span>
+<span>52</span>
+<span>53</span>
+<span>54</span>
+<span>55</span>
+<span>56</span>
+<span>57</span>
+<span>58</span>
+<span>59</span>
+<span>60</span>
+<span>61</span>
+<span>62</span>
+<span>63</span>
+<span>64</span>
+<span>65</span>
+<span>66</span>
+<span>67</span>
+<span>68</span>
+<span>69</span>
+<span>70</span>
+<span>71</span>
+<span>72</span>
+<span>73</span>
+<span>74</span>
+<span>75</span>
+<span>76</span>
+<span>77</span>
+<span>78</span>
+<span>79</span>
+<span>80</span>
+<span>81</span>
+<span>82</span>
+<span>83</span>
+<span>84</span>
+<span>85</span>
+<span>86</span>
+<span>87</span>
+<span>88</span>
+<span>89</span>
+<span>90</span>
+<span>91</span>
+<span>92</span>
+<span>93</span>
+<span>94</span>
+<span>95</span>
+<span>96</span>
+<span>97</span>
+<span>98</span>
+<span>99</span>
+<span>100</span>
+<span>101</span>
+<span>102</span>
+<span>103</span>
+<span>104</span>
+<span>105</span>
+<span>106</span>
+<span>107</span>
+<span>108</span>
+<span>109</span>
+<span>110</span>
+<span>111</span>
+<span>112</span>
+<span>113</span>
+<span>114</span>
+<span>115</span>
+<span>116</span>
+<span>117</span>
+<span>118</span>
+<span>119</span>
+<span>120</span>
+<span>121</span>
+<span>122</span>
+<span>123</span>
+<span>124</span>
+<span>125</span>
+</pre></td><td id='code'><pre><span class='com'>/*
+ File: AbstractIterator.d
+
+ Originally written by Doug Lea and released into the public domain. 
+ Thanks for the assistance and support of Sun Microsystems Labs, Agorics 
+ Inc, Loral, and everyone contributing, testing, and using this code.
+
+ History:
+ Date     Who                What
+ 24Sep95  dl@cs.oswego.edu   Create from store.d  working file
+ 13Oct95  dl                 Changed protection statuses
+  9Apr97  dl                 made class public
+*/</span>
+
+
+<span class='kw2'>module</span> tango.store.iterator.AbstractIterator;
+
+<span class='kw4'>private</span> <span class='kw2'>import</span> tango.store.Exception;
+
+<span class='kw4'>private</span> <span class='kw2'>import</span> tango.store.model.MutableCollection;
+<span class='kw4'>private</span> <span class='kw2'>import</span> tango.store.model.CollectionIterator;
+
+<span class='kw4'>private</span> <span class='kw2'>import</span> tango.convert.Integer;
+
+<span class='com'>/**
+ *
+ * A convenient base class for implementations of CollectionIterator
+ * 
+        author: Doug Lea
+ * @version 0.93
+ *
+ * &lt;P&gt; For an introduction to this package see &lt;A HREF=&quot;index.html&quot;&gt; Overview &lt;/A&gt;.
+**/</span>
+
+<span class='kw4'>public</span> <span class='kw4'>abstract</span> <span class='kw4'>class</span> AbstractIteratorT<span class='opr'>(</span>T<span class='opr'>)</span> : CollectionIteratorT!<span class='opr'>(</span>T<span class='opr'>)</span>
+<span class='opr'>{</span>
+        <span class='com'>/**
+         * The collection being enumerated
+        **/</span>
+
+        <span class='kw4'>protected</span> MutableCollectionT!<span class='opr'>(</span>T<span class='opr'>)</span> coll_;
+
+        <span class='com'>/**
+         * The version number of the collection we got upon construction
+        **/</span>
+
+        <span class='kw4'>protected</span> <span class='kw4'>int</span> version_;
+
+        <span class='com'>/**
+         * The number of elements we think we have left.
+         * Initialized to coll_.size() upon construction
+        **/</span>
+
+        <span class='kw4'>protected</span> <span class='kw4'>int</span> remaining_;
+
+        <span class='kw4'>protected</span> <span class='kw2'>this</span> <span class='opr'>(</span>MutableCollectionT!<span class='opr'>(</span>T<span class='opr'>)</span> c<span class='opr'>)</span>
+        <span class='opr'>{</span>
+                coll_ <span class='opr'>=</span> c;
+                version_ <span class='opr'>=</span> c._version<span class='opr'>(</span><span class='opr'>)</span>;
+                remaining_ <span class='opr'>=</span> c.size<span class='opr'>(</span><span class='opr'>)</span>;
+        <span class='opr'>}</span>
+
+        <span class='com'>/**
+         * Implements store.CollectionIterator.corrupted.
+         * Claim corruption if version numbers differ
+         * @see store.CollectionIterator#corrupted
+        **/</span>
+
+        <span class='kw4'>public</span> <span class='kw4'>final</span> <span class='kw4'>bool</span> corrupted<span class='opr'>(</span><span class='opr'>)</span>
+        <span class='opr'>{</span>
+                <span class='kw1'>return</span> version_ !<span class='kw2'>is</span> coll_._version<span class='opr'>(</span><span class='opr'>)</span>;
+        <span class='opr'>}</span>
+
+        <span class='com'>/**
+         * Implements store.CollectionIterator.numberOfRemaingingElements.
+         * @see store.CollectionIterator#remaining
+        **/</span>
+        <span class='kw4'>public</span> <span class='kw4'>final</span> <span class='kw4'>int</span> remaining<span class='opr'>(</span><span class='opr'>)</span>
+        <span class='opr'>{</span>
+                <span class='kw1'>return</span> remaining_;
+        <span class='opr'>}</span>
+
+        <span class='com'>/**
+         * Implements java.util.Iterator.more.
+         * Return true if remaining &gt; 0 and not corrupted
+         * @see java.util.Iterator#more
+        **/</span>
+        <span class='kw4'>public</span> <span class='kw4'>bool</span> more<span class='opr'>(</span><span class='opr'>)</span>
+        <span class='opr'>{</span>
+                <span class='kw1'>return</span> !corrupted<span class='opr'>(</span><span class='opr'>)</span> &amp;&amp; remaining_ <span class='opr'>&gt;</span> <span class='nbr'>0</span>;
+        <span class='opr'>}</span>
+
+        <span class='com'>/**
+         * Subclass utility. 
+         * Tries to decrement remaining_, raising exceptions
+         * if it is already zero or if corrupted()
+         * Always call as the first line of get.
+        **/</span>
+        <span class='kw4'>protected</span> <span class='kw4'>final</span> <span class='kw4'>void</span> decRemaining<span class='opr'>(</span><span class='opr'>)</span>
+        <span class='opr'>{</span>
+                <span class='kw1'>if</span> <span class='opr'>(</span>corrupted<span class='opr'>(</span><span class='opr'>)</span><span class='opr'>)</span>
+                   <span class='opr'>{</span>
+                   <span class='kw4'>char</span><span class='opr'>[</span><span class='nbr'>16</span><span class='opr'>]</span> v1, v2;
+                   Integer.format <span class='opr'>(</span>v1, version_<span class='opr'>)</span>;
+                   Integer.format <span class='opr'>(</span>v2, coll_._version<span class='opr'>(</span><span class='opr'>)</span><span class='opr'>)</span>;
+
+<span class='com'>//                   throw new CorruptedIteratorException(version_, coll_._version(), coll_, &quot;Using _version &quot; ~ v1 ~ &quot;but now at _version &quot; ~ v2);</span>
+                   <span class='kw2'>throw</span> <span class='kw2'>new</span> CorruptedIteratorException<span class='opr'>(</span>version_, coll_._version<span class='opr'>(</span><span class='opr'>)</span>, <span class='kw2'>null</span>, <span class='str'>&quot;Using _version &quot;</span> <span class='opr'>~</span> v1 <span class='opr'>~</span> <span class='str'>&quot;but now at _version &quot;</span> <span class='opr'>~</span> v2<span class='opr'>)</span>;
+                   <span class='opr'>}</span>
+                <span class='kw1'>else</span>
+                   <span class='kw1'>if</span> <span class='opr'>(</span>remaining<span class='opr'>(</span><span class='opr'>)</span> <span class='opr'>&lt;</span><span class='opr'>=</span> <span class='nbr'>0</span><span class='opr'>)</span>
+                       <span class='kw2'>throw</span> <span class='kw2'>new</span> NoSuchElementException<span class='opr'>(</span><span class='str'>&quot;exhausted enumeration&quot;</span><span class='opr'>)</span>;
+                   <span class='kw1'>else</span>
+                      <span class='opr'>-</span><span class='opr'>-</span>remaining_;
+        <span class='opr'>}</span>
+<span class='opr'>}</span>
+
+
+<span class='kw4'>public</span> <span class='kw4'>abstract</span> <span class='kw4'>class</span> MapIteratorImplT<span class='opr'>(</span>K, T<span class='opr'>)</span> : AbstractIteratorT!<span class='opr'>(</span>T<span class='opr'>)</span>, CollectionMapIteratorT!<span class='opr'>(</span>K, T<span class='opr'>)</span> 
+<span class='opr'>{</span>
+        <span class='kw4'>protected</span> <span class='kw2'>this</span> <span class='opr'>(</span>MutableCollectionT!<span class='opr'>(</span>T<span class='opr'>)</span> c<span class='opr'>)</span>
+        <span class='opr'>{</span>
+                <span class='kw2'>super</span> <span class='opr'>(</span>c<span class='opr'>)</span>;
+        <span class='opr'>}</span>
+<span class='opr'>}</span>
+</pre></td></tr></table>	</body>
+</html>

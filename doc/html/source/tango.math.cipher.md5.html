@@ -1,0 +1,537 @@
+<!DOCTYPE html 
+     PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+     "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html>
+	<head>
+		<link rel="stylesheet" href="style.css" type="text/css" />
+		<title>math/cipher/md5.d</title>
+	</head>
+	<body>
+
+<table id='dcode'><tr><td id='lnum'><pre><span>1</span>
+<span>2</span>
+<span>3</span>
+<span>4</span>
+<span>5</span>
+<span>6</span>
+<span>7</span>
+<span>8</span>
+<span>9</span>
+<span>10</span>
+<span>11</span>
+<span>12</span>
+<span>13</span>
+<span>14</span>
+<span>15</span>
+<span>16</span>
+<span>17</span>
+<span>18</span>
+<span>19</span>
+<span>20</span>
+<span>21</span>
+<span>22</span>
+<span>23</span>
+<span>24</span>
+<span>25</span>
+<span>26</span>
+<span>27</span>
+<span>28</span>
+<span>29</span>
+<span>30</span>
+<span>31</span>
+<span>32</span>
+<span>33</span>
+<span>34</span>
+<span>35</span>
+<span>36</span>
+<span>37</span>
+<span>38</span>
+<span>39</span>
+<span>40</span>
+<span>41</span>
+<span>42</span>
+<span>43</span>
+<span>44</span>
+<span>45</span>
+<span>46</span>
+<span>47</span>
+<span>48</span>
+<span>49</span>
+<span>50</span>
+<span>51</span>
+<span>52</span>
+<span>53</span>
+<span>54</span>
+<span>55</span>
+<span>56</span>
+<span>57</span>
+<span>58</span>
+<span>59</span>
+<span>60</span>
+<span>61</span>
+<span>62</span>
+<span>63</span>
+<span>64</span>
+<span>65</span>
+<span>66</span>
+<span>67</span>
+<span>68</span>
+<span>69</span>
+<span>70</span>
+<span>71</span>
+<span>72</span>
+<span>73</span>
+<span>74</span>
+<span>75</span>
+<span>76</span>
+<span>77</span>
+<span>78</span>
+<span>79</span>
+<span>80</span>
+<span>81</span>
+<span>82</span>
+<span>83</span>
+<span>84</span>
+<span>85</span>
+<span>86</span>
+<span>87</span>
+<span>88</span>
+<span>89</span>
+<span>90</span>
+<span>91</span>
+<span>92</span>
+<span>93</span>
+<span>94</span>
+<span>95</span>
+<span>96</span>
+<span>97</span>
+<span>98</span>
+<span>99</span>
+<span>100</span>
+<span>101</span>
+<span>102</span>
+<span>103</span>
+<span>104</span>
+<span>105</span>
+<span>106</span>
+<span>107</span>
+<span>108</span>
+<span>109</span>
+<span>110</span>
+<span>111</span>
+<span>112</span>
+<span>113</span>
+<span>114</span>
+<span>115</span>
+<span>116</span>
+<span>117</span>
+<span>118</span>
+<span>119</span>
+<span>120</span>
+<span>121</span>
+<span>122</span>
+<span>123</span>
+<span>124</span>
+<span>125</span>
+<span>126</span>
+<span>127</span>
+<span>128</span>
+<span>129</span>
+<span>130</span>
+<span>131</span>
+<span>132</span>
+<span>133</span>
+<span>134</span>
+<span>135</span>
+<span>136</span>
+<span>137</span>
+<span>138</span>
+<span>139</span>
+<span>140</span>
+<span>141</span>
+<span>142</span>
+<span>143</span>
+<span>144</span>
+<span>145</span>
+<span>146</span>
+<span>147</span>
+<span>148</span>
+<span>149</span>
+<span>150</span>
+<span>151</span>
+<span>152</span>
+<span>153</span>
+<span>154</span>
+<span>155</span>
+<span>156</span>
+<span>157</span>
+<span>158</span>
+<span>159</span>
+<span>160</span>
+<span>161</span>
+<span>162</span>
+<span>163</span>
+<span>164</span>
+<span>165</span>
+<span>166</span>
+<span>167</span>
+<span>168</span>
+<span>169</span>
+<span>170</span>
+<span>171</span>
+<span>172</span>
+<span>173</span>
+<span>174</span>
+<span>175</span>
+<span>176</span>
+<span>177</span>
+<span>178</span>
+<span>179</span>
+<span>180</span>
+<span>181</span>
+<span>182</span>
+<span>183</span>
+<span>184</span>
+<span>185</span>
+<span>186</span>
+<span>187</span>
+<span>188</span>
+<span>189</span>
+<span>190</span>
+<span>191</span>
+<span>192</span>
+<span>193</span>
+<span>194</span>
+<span>195</span>
+<span>196</span>
+<span>197</span>
+<span>198</span>
+<span>199</span>
+<span>200</span>
+<span>201</span>
+<span>202</span>
+<span>203</span>
+<span>204</span>
+<span>205</span>
+<span>206</span>
+<span>207</span>
+<span>208</span>
+<span>209</span>
+<span>210</span>
+<span>211</span>
+<span>212</span>
+<span>213</span>
+<span>214</span>
+<span>215</span>
+<span>216</span>
+<span>217</span>
+<span>218</span>
+<span>219</span>
+<span>220</span>
+<span>221</span>
+<span>222</span>
+<span>223</span>
+<span>224</span>
+<span>225</span>
+<span>226</span>
+<span>227</span>
+<span>228</span>
+<span>229</span>
+<span>230</span>
+<span>231</span>
+<span>232</span>
+<span>233</span>
+<span>234</span>
+<span>235</span>
+<span>236</span>
+<span>237</span>
+<span>238</span>
+<span>239</span>
+<span>240</span>
+<span>241</span>
+<span>242</span>
+<span>243</span>
+<span>244</span>
+<span>245</span>
+<span>246</span>
+<span>247</span>
+<span>248</span>
+<span>249</span>
+<span>250</span>
+<span>251</span>
+<span>252</span>
+<span>253</span>
+<span>254</span>
+<span>255</span>
+<span>256</span>
+<span>257</span>
+<span>258</span>
+<span>259</span>
+<span>260</span>
+<span>261</span>
+<span>262</span>
+</pre></td><td id='code'><pre><span class='com'>/*******************************************************************************
+
+        copyright:      Copyright (c) 2004 Regan Heath. All rights reserved
+
+        license:        BSD style: see doc/license.txt for details
+      
+        version:        Initial release: Feb 2006
+        
+        author:         Regan Heath, Kris
+
+        This module implements the MD5 Message Digest Algorithm as described by
+        RFC 1321 The MD5 Message-Digest Algorithm. R. Rivest. April 1992.
+
+*******************************************************************************/</span>
+
+<span class='kw2'>module</span> tango.math.cipher.md5;
+
+<span class='kw4'>public</span> <span class='kw2'>import</span> tango.math.cipher.md4;
+
+<span class='com'>/*******************************************************************************
+
+*******************************************************************************/</span>
+
+<span class='kw4'>class</span> Md5Digest : Md4Digest
+<span class='opr'>{</span>
+        <span class='com'>/***********************************************************************
+        
+        ***********************************************************************/</span>
+
+        <span class='kw2'>this</span><span class='opr'>(</span><span class='kw4'>uint</span><span class='opr'>[</span><span class='nbr'>4</span><span class='opr'>]</span> raw<span class='opr'>)</span> <span class='opr'>{</span> <span class='kw2'>super</span><span class='opr'>(</span>raw<span class='opr'>)</span>; <span class='opr'>}</span>
+<span class='opr'>}</span>
+
+
+<span class='com'>/*******************************************************************************
+
+*******************************************************************************/</span>
+
+<span class='kw4'>class</span> Md5Cipher : Md4Cipher
+<span class='opr'>{</span>
+        <span class='com'>/***********************************************************************
+        
+        ***********************************************************************/</span>
+
+        <span class='kw4'>private</span> <span class='kw4'>enum</span> <span class='opr'>{</span>
+                S11 <span class='opr'>=</span>  <span class='nbr'>7</span>,
+                S12 <span class='opr'>=</span> <span class='nbr'>12</span>,
+                S13 <span class='opr'>=</span> <span class='nbr'>17</span>,
+                S14 <span class='opr'>=</span> <span class='nbr'>22</span>,
+                S21 <span class='opr'>=</span>  <span class='nbr'>5</span>,
+                S22 <span class='opr'>=</span>  <span class='nbr'>9</span>,
+                S23 <span class='opr'>=</span> <span class='nbr'>14</span>,
+                S24 <span class='opr'>=</span> <span class='nbr'>20</span>,
+                S31 <span class='opr'>=</span>  <span class='nbr'>4</span>,
+                S32 <span class='opr'>=</span> <span class='nbr'>11</span>,
+                S33 <span class='opr'>=</span> <span class='nbr'>16</span>,
+                S34 <span class='opr'>=</span> <span class='nbr'>23</span>,
+                S41 <span class='opr'>=</span>  <span class='nbr'>6</span>,
+                S42 <span class='opr'>=</span> <span class='nbr'>10</span>,
+                S43 <span class='opr'>=</span> <span class='nbr'>15</span>,
+                S44 <span class='opr'>=</span> <span class='nbr'>21</span>
+        <span class='opr'>}</span>;
+
+        <span class='com'>/***********************************************************************
+        
+        ***********************************************************************/</span>
+
+        <span class='kw4'>override</span> Md5Digest getDigest<span class='opr'>(</span><span class='opr'>)</span>
+        <span class='opr'>{</span>
+                <span class='kw1'>return</span> <span class='kw2'>new</span> Md5Digest<span class='opr'>(</span>context<span class='opr'>)</span>;
+        <span class='opr'>}</span>
+
+        <span class='com'>/***********************************************************************
+        
+        ***********************************************************************/</span>
+
+        <span class='kw4'>protected</span> <span class='kw4'>override</span> <span class='kw4'>void</span> transform<span class='opr'>(</span><span class='kw4'>ubyte</span><span class='opr'>[</span><span class='opr'>]</span> input<span class='opr'>)</span>
+        <span class='opr'>{</span>
+                <span class='kw4'>uint</span> a,b,c,d;
+                <span class='kw4'>uint</span><span class='opr'>[</span><span class='nbr'>16</span><span class='opr'>]</span> x;
+
+                littleEndian32<span class='opr'>(</span>input,x<span class='opr'>)</span>;
+                
+                a <span class='opr'>=</span> context<span class='opr'>[</span><span class='nbr'>0</span><span class='opr'>]</span>;
+                b <span class='opr'>=</span> context<span class='opr'>[</span><span class='nbr'>1</span><span class='opr'>]</span>;
+                c <span class='opr'>=</span> context<span class='opr'>[</span><span class='nbr'>2</span><span class='opr'>]</span>;
+                d <span class='opr'>=</span> context<span class='opr'>[</span><span class='nbr'>3</span><span class='opr'>]</span>;
+                
+                <span class='com'>/* Round 1 */</span>
+                ff<span class='opr'>(</span>a, b, c, d, x<span class='opr'>[</span> <span class='nbr'>0</span><span class='opr'>]</span>, S11, <span class='nbr'>0</span>xd76aa478<span class='opr'>)</span>; <span class='com'>/* 1 */</span>
+                ff<span class='opr'>(</span>d, a, b, c, x<span class='opr'>[</span> <span class='nbr'>1</span><span class='opr'>]</span>, S12, <span class='nbr'>0</span>xe8c7b756<span class='opr'>)</span>; <span class='com'>/* 2 */</span>
+                ff<span class='opr'>(</span>c, d, a, b, x<span class='opr'>[</span> <span class='nbr'>2</span><span class='opr'>]</span>, S13, <span class='nbr'>0</span>x242070db<span class='opr'>)</span>; <span class='com'>/* 3 */</span>
+                ff<span class='opr'>(</span>b, c, d, a, x<span class='opr'>[</span> <span class='nbr'>3</span><span class='opr'>]</span>, S14, <span class='nbr'>0</span>xc1bdceee<span class='opr'>)</span>; <span class='com'>/* 4 */</span>
+                ff<span class='opr'>(</span>a, b, c, d, x<span class='opr'>[</span> <span class='nbr'>4</span><span class='opr'>]</span>, S11, <span class='nbr'>0</span>xf57c0faf<span class='opr'>)</span>; <span class='com'>/* 5 */</span>
+                ff<span class='opr'>(</span>d, a, b, c, x<span class='opr'>[</span> <span class='nbr'>5</span><span class='opr'>]</span>, S12, <span class='nbr'>0</span>x4787c62a<span class='opr'>)</span>; <span class='com'>/* 6 */</span>
+                ff<span class='opr'>(</span>c, d, a, b, x<span class='opr'>[</span> <span class='nbr'>6</span><span class='opr'>]</span>, S13, <span class='nbr'>0</span>xa8304613<span class='opr'>)</span>; <span class='com'>/* 7 */</span>
+                ff<span class='opr'>(</span>b, c, d, a, x<span class='opr'>[</span> <span class='nbr'>7</span><span class='opr'>]</span>, S14, <span class='nbr'>0</span>xfd469501<span class='opr'>)</span>; <span class='com'>/* 8 */</span>
+                ff<span class='opr'>(</span>a, b, c, d, x<span class='opr'>[</span> <span class='nbr'>8</span><span class='opr'>]</span>, S11, <span class='nbr'>0</span>x698098d8<span class='opr'>)</span>; <span class='com'>/* 9 */</span>
+                ff<span class='opr'>(</span>d, a, b, c, x<span class='opr'>[</span> <span class='nbr'>9</span><span class='opr'>]</span>, S12, <span class='nbr'>0</span>x8b44f7af<span class='opr'>)</span>; <span class='com'>/* 10 */</span>
+                ff<span class='opr'>(</span>c, d, a, b, x<span class='opr'>[</span><span class='nbr'>10</span><span class='opr'>]</span>, S13, <span class='nbr'>0</span>xffff5bb1<span class='opr'>)</span>; <span class='com'>/* 11 */</span>
+                ff<span class='opr'>(</span>b, c, d, a, x<span class='opr'>[</span><span class='nbr'>11</span><span class='opr'>]</span>, S14, <span class='nbr'>0</span>x895cd7be<span class='opr'>)</span>; <span class='com'>/* 12 */</span>
+                ff<span class='opr'>(</span>a, b, c, d, x<span class='opr'>[</span><span class='nbr'>12</span><span class='opr'>]</span>, S11, <span class='nbr'>0</span>x6b901122<span class='opr'>)</span>; <span class='com'>/* 13 */</span>
+                ff<span class='opr'>(</span>d, a, b, c, x<span class='opr'>[</span><span class='nbr'>13</span><span class='opr'>]</span>, S12, <span class='nbr'>0</span>xfd987193<span class='opr'>)</span>; <span class='com'>/* 14 */</span>
+                ff<span class='opr'>(</span>c, d, a, b, x<span class='opr'>[</span><span class='nbr'>14</span><span class='opr'>]</span>, S13, <span class='nbr'>0</span>xa679438e<span class='opr'>)</span>; <span class='com'>/* 15 */</span>
+                ff<span class='opr'>(</span>b, c, d, a, x<span class='opr'>[</span><span class='nbr'>15</span><span class='opr'>]</span>, S14, <span class='nbr'>0</span>x49b40821<span class='opr'>)</span>; <span class='com'>/* 16 */</span>
+                
+                <span class='com'>/* Round 2 */</span>
+                gg<span class='opr'>(</span>a, b, c, d, x<span class='opr'>[</span> <span class='nbr'>1</span><span class='opr'>]</span>, S21, <span class='nbr'>0</span>xf61e2562<span class='opr'>)</span>; <span class='com'>/* 17 */</span>
+                gg<span class='opr'>(</span>d, a, b, c, x<span class='opr'>[</span> <span class='nbr'>6</span><span class='opr'>]</span>, S22, <span class='nbr'>0</span>xc040b340<span class='opr'>)</span>; <span class='com'>/* 18 */</span>
+                gg<span class='opr'>(</span>c, d, a, b, x<span class='opr'>[</span><span class='nbr'>11</span><span class='opr'>]</span>, S23, <span class='nbr'>0</span>x265e5a51<span class='opr'>)</span>; <span class='com'>/* 19 */</span>
+                gg<span class='opr'>(</span>b, c, d, a, x<span class='opr'>[</span> <span class='nbr'>0</span><span class='opr'>]</span>, S24, <span class='nbr'>0</span>xe9b6c7aa<span class='opr'>)</span>; <span class='com'>/* 20 */</span>
+                gg<span class='opr'>(</span>a, b, c, d, x<span class='opr'>[</span> <span class='nbr'>5</span><span class='opr'>]</span>, S21, <span class='nbr'>0</span>xd62f105d<span class='opr'>)</span>; <span class='com'>/* 21 */</span>
+                gg<span class='opr'>(</span>d, a, b, c, x<span class='opr'>[</span><span class='nbr'>10</span><span class='opr'>]</span>, S22,  <span class='nbr'>0</span>x2441453<span class='opr'>)</span>; <span class='com'>/* 22 */</span>
+                gg<span class='opr'>(</span>c, d, a, b, x<span class='opr'>[</span><span class='nbr'>15</span><span class='opr'>]</span>, S23, <span class='nbr'>0</span>xd8a1e681<span class='opr'>)</span>; <span class='com'>/* 23 */</span>
+                gg<span class='opr'>(</span>b, c, d, a, x<span class='opr'>[</span> <span class='nbr'>4</span><span class='opr'>]</span>, S24, <span class='nbr'>0</span>xe7d3fbc8<span class='opr'>)</span>; <span class='com'>/* 24 */</span>
+                gg<span class='opr'>(</span>a, b, c, d, x<span class='opr'>[</span> <span class='nbr'>9</span><span class='opr'>]</span>, S21, <span class='nbr'>0</span>x21e1cde6<span class='opr'>)</span>; <span class='com'>/* 25 */</span>
+                gg<span class='opr'>(</span>d, a, b, c, x<span class='opr'>[</span><span class='nbr'>14</span><span class='opr'>]</span>, S22, <span class='nbr'>0</span>xc33707d6<span class='opr'>)</span>; <span class='com'>/* 26 */</span>
+                gg<span class='opr'>(</span>c, d, a, b, x<span class='opr'>[</span> <span class='nbr'>3</span><span class='opr'>]</span>, S23, <span class='nbr'>0</span>xf4d50d87<span class='opr'>)</span>; <span class='com'>/* 27 */</span>                
+                gg<span class='opr'>(</span>b, c, d, a, x<span class='opr'>[</span> <span class='nbr'>8</span><span class='opr'>]</span>, S24, <span class='nbr'>0</span>x455a14ed<span class='opr'>)</span>; <span class='com'>/* 28 */</span>
+                gg<span class='opr'>(</span>a, b, c, d, x<span class='opr'>[</span><span class='nbr'>13</span><span class='opr'>]</span>, S21, <span class='nbr'>0</span>xa9e3e905<span class='opr'>)</span>; <span class='com'>/* 29 */</span>
+                gg<span class='opr'>(</span>d, a, b, c, x<span class='opr'>[</span> <span class='nbr'>2</span><span class='opr'>]</span>, S22, <span class='nbr'>0</span>xfcefa3f8<span class='opr'>)</span>; <span class='com'>/* 30 */</span>
+                gg<span class='opr'>(</span>c, d, a, b, x<span class='opr'>[</span> <span class='nbr'>7</span><span class='opr'>]</span>, S23, <span class='nbr'>0</span>x676f02d9<span class='opr'>)</span>; <span class='com'>/* 31 */</span>
+                gg<span class='opr'>(</span>b, c, d, a, x<span class='opr'>[</span><span class='nbr'>12</span><span class='opr'>]</span>, S24, <span class='nbr'>0</span>x8d2a4c8a<span class='opr'>)</span>; <span class='com'>/* 32 */</span>
+
+                <span class='com'>/* Round 3 */</span>
+                hh<span class='opr'>(</span>a, b, c, d, x<span class='opr'>[</span> <span class='nbr'>5</span><span class='opr'>]</span>, S31, <span class='nbr'>0</span>xfffa3942<span class='opr'>)</span>; <span class='com'>/* 33 */</span>
+                hh<span class='opr'>(</span>d, a, b, c, x<span class='opr'>[</span> <span class='nbr'>8</span><span class='opr'>]</span>, S32, <span class='nbr'>0</span>x8771f681<span class='opr'>)</span>; <span class='com'>/* 34 */</span>
+                hh<span class='opr'>(</span>c, d, a, b, x<span class='opr'>[</span><span class='nbr'>11</span><span class='opr'>]</span>, S33, <span class='nbr'>0</span>x6d9d6122<span class='opr'>)</span>; <span class='com'>/* 35 */</span>
+                hh<span class='opr'>(</span>b, c, d, a, x<span class='opr'>[</span><span class='nbr'>14</span><span class='opr'>]</span>, S34, <span class='nbr'>0</span>xfde5380c<span class='opr'>)</span>; <span class='com'>/* 36 */</span>
+                hh<span class='opr'>(</span>a, b, c, d, x<span class='opr'>[</span> <span class='nbr'>1</span><span class='opr'>]</span>, S31, <span class='nbr'>0</span>xa4beea44<span class='opr'>)</span>; <span class='com'>/* 37 */</span>
+                hh<span class='opr'>(</span>d, a, b, c, x<span class='opr'>[</span> <span class='nbr'>4</span><span class='opr'>]</span>, S32, <span class='nbr'>0</span>x4bdecfa9<span class='opr'>)</span>; <span class='com'>/* 38 */</span>
+                hh<span class='opr'>(</span>c, d, a, b, x<span class='opr'>[</span> <span class='nbr'>7</span><span class='opr'>]</span>, S33, <span class='nbr'>0</span>xf6bb4b60<span class='opr'>)</span>; <span class='com'>/* 39 */</span>
+                hh<span class='opr'>(</span>b, c, d, a, x<span class='opr'>[</span><span class='nbr'>10</span><span class='opr'>]</span>, S34, <span class='nbr'>0</span>xbebfbc70<span class='opr'>)</span>; <span class='com'>/* 40 */</span>
+                hh<span class='opr'>(</span>a, b, c, d, x<span class='opr'>[</span><span class='nbr'>13</span><span class='opr'>]</span>, S31, <span class='nbr'>0</span>x289b7ec6<span class='opr'>)</span>; <span class='com'>/* 41 */</span>
+                hh<span class='opr'>(</span>d, a, b, c, x<span class='opr'>[</span> <span class='nbr'>0</span><span class='opr'>]</span>, S32, <span class='nbr'>0</span>xeaa127fa<span class='opr'>)</span>; <span class='com'>/* 42 */</span>
+                hh<span class='opr'>(</span>c, d, a, b, x<span class='opr'>[</span> <span class='nbr'>3</span><span class='opr'>]</span>, S33, <span class='nbr'>0</span>xd4ef3085<span class='opr'>)</span>; <span class='com'>/* 43 */</span>
+                hh<span class='opr'>(</span>b, c, d, a, x<span class='opr'>[</span> <span class='nbr'>6</span><span class='opr'>]</span>, S34,  <span class='nbr'>0</span>x4881d05<span class='opr'>)</span>; <span class='com'>/* 44 */</span>
+                hh<span class='opr'>(</span>a, b, c, d, x<span class='opr'>[</span> <span class='nbr'>9</span><span class='opr'>]</span>, S31, <span class='nbr'>0</span>xd9d4d039<span class='opr'>)</span>; <span class='com'>/* 45 */</span>
+                hh<span class='opr'>(</span>d, a, b, c, x<span class='opr'>[</span><span class='nbr'>12</span><span class='opr'>]</span>, S32, <span class='nbr'>0</span>xe6db99e5<span class='opr'>)</span>; <span class='com'>/* 46 */</span>
+                hh<span class='opr'>(</span>c, d, a, b, x<span class='opr'>[</span><span class='nbr'>15</span><span class='opr'>]</span>, S33, <span class='nbr'>0</span>x1fa27cf8<span class='opr'>)</span>; <span class='com'>/* 47 */</span>
+                hh<span class='opr'>(</span>b, c, d, a, x<span class='opr'>[</span> <span class='nbr'>2</span><span class='opr'>]</span>, S34, <span class='nbr'>0</span>xc4ac5665<span class='opr'>)</span>; <span class='com'>/* 48 */</span>
+
+                <span class='com'>/* Round 4 */</span> <span class='com'>/* Md5 not md4 */</span>
+                ii<span class='opr'>(</span>a, b, c, d, x<span class='opr'>[</span> <span class='nbr'>0</span><span class='opr'>]</span>, S41, <span class='nbr'>0</span>xf4292244<span class='opr'>)</span>; <span class='com'>/* 49 */</span>
+                ii<span class='opr'>(</span>d, a, b, c, x<span class='opr'>[</span> <span class='nbr'>7</span><span class='opr'>]</span>, S42, <span class='nbr'>0</span>x432aff97<span class='opr'>)</span>; <span class='com'>/* 50 */</span>
+                ii<span class='opr'>(</span>c, d, a, b, x<span class='opr'>[</span><span class='nbr'>14</span><span class='opr'>]</span>, S43, <span class='nbr'>0</span>xab9423a7<span class='opr'>)</span>; <span class='com'>/* 51 */</span>
+                ii<span class='opr'>(</span>b, c, d, a, x<span class='opr'>[</span> <span class='nbr'>5</span><span class='opr'>]</span>, S44, <span class='nbr'>0</span>xfc93a039<span class='opr'>)</span>; <span class='com'>/* 52 */</span>
+                ii<span class='opr'>(</span>a, b, c, d, x<span class='opr'>[</span><span class='nbr'>12</span><span class='opr'>]</span>, S41, <span class='nbr'>0</span>x655b59c3<span class='opr'>)</span>; <span class='com'>/* 53 */</span>
+                ii<span class='opr'>(</span>d, a, b, c, x<span class='opr'>[</span> <span class='nbr'>3</span><span class='opr'>]</span>, S42, <span class='nbr'>0</span>x8f0ccc92<span class='opr'>)</span>; <span class='com'>/* 54 */</span>
+                ii<span class='opr'>(</span>c, d, a, b, x<span class='opr'>[</span><span class='nbr'>10</span><span class='opr'>]</span>, S43, <span class='nbr'>0</span>xffeff47d<span class='opr'>)</span>; <span class='com'>/* 55 */</span>
+                ii<span class='opr'>(</span>b, c, d, a, x<span class='opr'>[</span> <span class='nbr'>1</span><span class='opr'>]</span>, S44, <span class='nbr'>0</span>x85845dd1<span class='opr'>)</span>; <span class='com'>/* 56 */</span>
+                ii<span class='opr'>(</span>a, b, c, d, x<span class='opr'>[</span> <span class='nbr'>8</span><span class='opr'>]</span>, S41, <span class='nbr'>0</span>x6fa87e4f<span class='opr'>)</span>; <span class='com'>/* 57 */</span>
+                ii<span class='opr'>(</span>d, a, b, c, x<span class='opr'>[</span><span class='nbr'>15</span><span class='opr'>]</span>, S42, <span class='nbr'>0</span>xfe2ce6e0<span class='opr'>)</span>; <span class='com'>/* 58 */</span>
+                ii<span class='opr'>(</span>c, d, a, b, x<span class='opr'>[</span> <span class='nbr'>6</span><span class='opr'>]</span>, S43, <span class='nbr'>0</span>xa3014314<span class='opr'>)</span>; <span class='com'>/* 59 */</span>
+                ii<span class='opr'>(</span>b, c, d, a, x<span class='opr'>[</span><span class='nbr'>13</span><span class='opr'>]</span>, S44, <span class='nbr'>0</span>x4e0811a1<span class='opr'>)</span>; <span class='com'>/* 60 */</span>
+                ii<span class='opr'>(</span>a, b, c, d, x<span class='opr'>[</span> <span class='nbr'>4</span><span class='opr'>]</span>, S41, <span class='nbr'>0</span>xf7537e82<span class='opr'>)</span>; <span class='com'>/* 61 */</span>
+                ii<span class='opr'>(</span>d, a, b, c, x<span class='opr'>[</span><span class='nbr'>11</span><span class='opr'>]</span>, S42, <span class='nbr'>0</span>xbd3af235<span class='opr'>)</span>; <span class='com'>/* 62 */</span>
+                ii<span class='opr'>(</span>c, d, a, b, x<span class='opr'>[</span> <span class='nbr'>2</span><span class='opr'>]</span>, S43, <span class='nbr'>0</span>x2ad7d2bb<span class='opr'>)</span>; <span class='com'>/* 63 */</span>
+                ii<span class='opr'>(</span>b, c, d, a, x<span class='opr'>[</span> <span class='nbr'>9</span><span class='opr'>]</span>, S44, <span class='nbr'>0</span>xeb86d391<span class='opr'>)</span>; <span class='com'>/* 64 */</span>
+
+                context<span class='opr'>[</span><span class='nbr'>0</span><span class='opr'>]</span> <span class='opr'>+=</span> a;
+                context<span class='opr'>[</span><span class='nbr'>1</span><span class='opr'>]</span> <span class='opr'>+=</span> b;
+                context<span class='opr'>[</span><span class='nbr'>2</span><span class='opr'>]</span> <span class='opr'>+=</span> c;
+                context<span class='opr'>[</span><span class='nbr'>3</span><span class='opr'>]</span> <span class='opr'>+=</span> d;
+
+                x<span class='opr'>[</span><span class='opr'>]</span> <span class='opr'>=</span> <span class='nbr'>0</span>;
+        <span class='opr'>}</span>
+
+        <span class='com'>/***********************************************************************
+        
+        ***********************************************************************/</span>
+
+        <span class='kw4'>private</span> <span class='kw4'>static</span> <span class='kw4'>uint</span> g<span class='opr'>(</span><span class='kw4'>uint</span> x, <span class='kw4'>uint</span> y, <span class='kw4'>uint</span> z<span class='opr'>)</span>
+        <span class='opr'>{</span>
+                <span class='kw1'>return</span> <span class='opr'>(</span>x<span class='opr'>&amp;</span>z<span class='opr'>)</span>|<span class='opr'>(</span>y<span class='opr'>&amp;</span><span class='opr'>~</span>z<span class='opr'>)</span>;
+        <span class='opr'>}</span>
+
+        <span class='com'>/***********************************************************************
+        
+        ***********************************************************************/</span>
+
+        <span class='kw4'>private</span> <span class='kw4'>static</span> <span class='kw4'>uint</span> i<span class='opr'>(</span><span class='kw4'>uint</span> x, <span class='kw4'>uint</span> y, <span class='kw4'>uint</span> z<span class='opr'>)</span>
+        <span class='opr'>{</span>
+                <span class='kw1'>return</span> y^<span class='opr'>(</span>x|<span class='opr'>~</span>z<span class='opr'>)</span>;
+        <span class='opr'>}</span>
+
+        <span class='com'>/***********************************************************************
+        
+        ***********************************************************************/</span>
+
+        <span class='kw4'>private</span> <span class='kw4'>static</span> <span class='kw4'>void</span> ff<span class='opr'>(</span><span class='kw2'>inout</span> <span class='kw4'>uint</span> a, <span class='kw4'>uint</span> b, <span class='kw4'>uint</span> c, <span class='kw4'>uint</span> d, <span class='kw4'>uint</span> x, <span class='kw4'>uint</span> s, <span class='kw4'>uint</span> ac<span class='opr'>)</span>
+        <span class='opr'>{</span>
+                a <span class='opr'>+=</span> f<span class='opr'>(</span>b, c, d<span class='opr'>)</span> <span class='opr'>+</span> x <span class='opr'>+</span> ac;
+                a <span class='opr'>=</span> rotateLeft<span class='opr'>(</span>a, s<span class='opr'>)</span>;
+                a <span class='opr'>+=</span> b;
+        <span class='opr'>}</span>
+
+        <span class='com'>/***********************************************************************
+        
+        ***********************************************************************/</span>
+
+        <span class='kw4'>private</span> <span class='kw4'>static</span> <span class='kw4'>void</span> gg<span class='opr'>(</span><span class='kw2'>inout</span> <span class='kw4'>uint</span> a, <span class='kw4'>uint</span> b, <span class='kw4'>uint</span> c, <span class='kw4'>uint</span> d, <span class='kw4'>uint</span> x, <span class='kw4'>uint</span> s, <span class='kw4'>uint</span> ac<span class='opr'>)</span>
+        <span class='opr'>{</span>
+                a <span class='opr'>+=</span> g<span class='opr'>(</span>b, c, d<span class='opr'>)</span> <span class='opr'>+</span> x <span class='opr'>+</span> ac;
+                a <span class='opr'>=</span> rotateLeft<span class='opr'>(</span>a, s<span class='opr'>)</span>;
+                a <span class='opr'>+=</span> b;
+        <span class='opr'>}</span>
+
+        <span class='com'>/***********************************************************************
+        
+        ***********************************************************************/</span>
+
+        <span class='kw4'>private</span> <span class='kw4'>static</span> <span class='kw4'>void</span> hh<span class='opr'>(</span><span class='kw2'>inout</span> <span class='kw4'>uint</span> a, <span class='kw4'>uint</span> b, <span class='kw4'>uint</span> c, <span class='kw4'>uint</span> d, <span class='kw4'>uint</span> x, <span class='kw4'>uint</span> s, <span class='kw4'>uint</span> ac<span class='opr'>)</span>
+        <span class='opr'>{</span>
+                a <span class='opr'>+=</span> h<span class='opr'>(</span>b, c, d<span class='opr'>)</span> <span class='opr'>+</span> x <span class='opr'>+</span> ac;
+                a <span class='opr'>=</span> rotateLeft<span class='opr'>(</span>a, s<span class='opr'>)</span>;
+                a <span class='opr'>+=</span> b;
+        <span class='opr'>}</span>
+
+        <span class='com'>/***********************************************************************
+        
+        ***********************************************************************/</span>
+
+        <span class='kw4'>private</span> <span class='kw4'>static</span> <span class='kw4'>void</span> ii<span class='opr'>(</span><span class='kw2'>inout</span> <span class='kw4'>uint</span> a, <span class='kw4'>uint</span> b, <span class='kw4'>uint</span> c, <span class='kw4'>uint</span> d, <span class='kw4'>uint</span> x, <span class='kw4'>uint</span> s, <span class='kw4'>uint</span> ac<span class='opr'>)</span>
+        <span class='opr'>{</span>
+                a <span class='opr'>+=</span> i<span class='opr'>(</span>b, c, d<span class='opr'>)</span> <span class='opr'>+</span> x <span class='opr'>+</span> ac;
+                a <span class='opr'>=</span> rotateLeft<span class='opr'>(</span>a, s<span class='opr'>)</span>;
+                a <span class='opr'>+=</span> b;
+        <span class='opr'>}</span>
+<span class='opr'>}</span>
+
+<span class='com'>/*******************************************************************************
+
+*******************************************************************************/</span>
+
+<span class='kw4'>unittest</span> <span class='opr'>{</span>
+        <span class='kw4'>static</span> <span class='kw4'>char</span><span class='opr'>[</span><span class='opr'>]</span><span class='opr'>[</span><span class='opr'>]</span> strings <span class='opr'>=</span> <span class='opr'>[</span>
+                <span class='str'>&quot;&quot;</span>,
+                <span class='str'>&quot;a&quot;</span>,
+                <span class='str'>&quot;abc&quot;</span>,
+                <span class='str'>&quot;message digest&quot;</span>,
+                <span class='str'>&quot;abcdefghijklmnopqrstuvwxyz&quot;</span>,
+                <span class='str'>&quot;ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789&quot;</span>,
+                <span class='str'>&quot;12345678901234567890123456789012345678901234567890123456789012345678901234567890&quot;</span>
+        <span class='opr'>]</span>;
+        <span class='kw4'>static</span> <span class='kw4'>char</span><span class='opr'>[</span><span class='opr'>]</span><span class='opr'>[</span><span class='opr'>]</span> results <span class='opr'>=</span> <span class='opr'>[</span>
+                <span class='str'>&quot;D41D8CD98F00B204E9800998ECF8427E&quot;</span>,
+                <span class='str'>&quot;0CC175B9C0F1B6A831C399E269772661&quot;</span>,
+                <span class='str'>&quot;900150983CD24FB0D6963F7D28E17F72&quot;</span>,
+                <span class='str'>&quot;F96B697D7CB7938D525A2F31AAF161D0&quot;</span>,
+                <span class='str'>&quot;C3FCD3D76192E4007DFB496CCA67E13B&quot;</span>,
+                <span class='str'>&quot;D174AB98D277D9F5A5611C2C9F419D9F&quot;</span>,
+                <span class='str'>&quot;57EDF4A22BE3C955AC49DA2E2107B67A&quot;</span>
+        <span class='opr'>]</span>;
+        
+        <span class='kw4'>auto</span> h <span class='opr'>=</span> <span class='kw2'>new</span> Md5Cipher<span class='opr'>(</span><span class='opr'>)</span>;
+        <span class='kw4'>char</span><span class='opr'>[</span><span class='opr'>]</span> res;
+
+        <span class='kw1'>foreach</span><span class='opr'>(</span><span class='kw4'>int</span> i, <span class='kw4'>char</span><span class='opr'>[</span><span class='opr'>]</span> s; strings<span class='opr'>)</span> <span class='opr'>{</span>
+                res <span class='opr'>=</span> h.sum<span class='opr'>(</span>s<span class='opr'>)</span>.toString<span class='opr'>(</span><span class='opr'>)</span>;
+                <span class='kw2'>assert</span><span class='opr'>(</span>res <span class='opr'>=</span><span class='opr'>=</span> results<span class='opr'>[</span>i<span class='opr'>]</span><span class='opr'>)</span>;
+        <span class='opr'>}</span>
+<span class='opr'>}</span>
+</pre></td></tr></table>	</body>
+</html>

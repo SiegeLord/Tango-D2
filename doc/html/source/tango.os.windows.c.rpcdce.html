@@ -1,0 +1,917 @@
+<!DOCTYPE html 
+     PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+     "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html>
+	<head>
+		<link rel="stylesheet" href="style.css" type="text/css" />
+		<title>os/windows/c/rpcdce.d</title>
+	</head>
+	<body>
+
+<table id='dcode'><tr><td id='lnum'><pre><span>1</span>
+<span>2</span>
+<span>3</span>
+<span>4</span>
+<span>5</span>
+<span>6</span>
+<span>7</span>
+<span>8</span>
+<span>9</span>
+<span>10</span>
+<span>11</span>
+<span>12</span>
+<span>13</span>
+<span>14</span>
+<span>15</span>
+<span>16</span>
+<span>17</span>
+<span>18</span>
+<span>19</span>
+<span>20</span>
+<span>21</span>
+<span>22</span>
+<span>23</span>
+<span>24</span>
+<span>25</span>
+<span>26</span>
+<span>27</span>
+<span>28</span>
+<span>29</span>
+<span>30</span>
+<span>31</span>
+<span>32</span>
+<span>33</span>
+<span>34</span>
+<span>35</span>
+<span>36</span>
+<span>37</span>
+<span>38</span>
+<span>39</span>
+<span>40</span>
+<span>41</span>
+<span>42</span>
+<span>43</span>
+<span>44</span>
+<span>45</span>
+<span>46</span>
+<span>47</span>
+<span>48</span>
+<span>49</span>
+<span>50</span>
+<span>51</span>
+<span>52</span>
+<span>53</span>
+<span>54</span>
+<span>55</span>
+<span>56</span>
+<span>57</span>
+<span>58</span>
+<span>59</span>
+<span>60</span>
+<span>61</span>
+<span>62</span>
+<span>63</span>
+<span>64</span>
+<span>65</span>
+<span>66</span>
+<span>67</span>
+<span>68</span>
+<span>69</span>
+<span>70</span>
+<span>71</span>
+<span>72</span>
+<span>73</span>
+<span>74</span>
+<span>75</span>
+<span>76</span>
+<span>77</span>
+<span>78</span>
+<span>79</span>
+<span>80</span>
+<span>81</span>
+<span>82</span>
+<span>83</span>
+<span>84</span>
+<span>85</span>
+<span>86</span>
+<span>87</span>
+<span>88</span>
+<span>89</span>
+<span>90</span>
+<span>91</span>
+<span>92</span>
+<span>93</span>
+<span>94</span>
+<span>95</span>
+<span>96</span>
+<span>97</span>
+<span>98</span>
+<span>99</span>
+<span>100</span>
+<span>101</span>
+<span>102</span>
+<span>103</span>
+<span>104</span>
+<span>105</span>
+<span>106</span>
+<span>107</span>
+<span>108</span>
+<span>109</span>
+<span>110</span>
+<span>111</span>
+<span>112</span>
+<span>113</span>
+<span>114</span>
+<span>115</span>
+<span>116</span>
+<span>117</span>
+<span>118</span>
+<span>119</span>
+<span>120</span>
+<span>121</span>
+<span>122</span>
+<span>123</span>
+<span>124</span>
+<span>125</span>
+<span>126</span>
+<span>127</span>
+<span>128</span>
+<span>129</span>
+<span>130</span>
+<span>131</span>
+<span>132</span>
+<span>133</span>
+<span>134</span>
+<span>135</span>
+<span>136</span>
+<span>137</span>
+<span>138</span>
+<span>139</span>
+<span>140</span>
+<span>141</span>
+<span>142</span>
+<span>143</span>
+<span>144</span>
+<span>145</span>
+<span>146</span>
+<span>147</span>
+<span>148</span>
+<span>149</span>
+<span>150</span>
+<span>151</span>
+<span>152</span>
+<span>153</span>
+<span>154</span>
+<span>155</span>
+<span>156</span>
+<span>157</span>
+<span>158</span>
+<span>159</span>
+<span>160</span>
+<span>161</span>
+<span>162</span>
+<span>163</span>
+<span>164</span>
+<span>165</span>
+<span>166</span>
+<span>167</span>
+<span>168</span>
+<span>169</span>
+<span>170</span>
+<span>171</span>
+<span>172</span>
+<span>173</span>
+<span>174</span>
+<span>175</span>
+<span>176</span>
+<span>177</span>
+<span>178</span>
+<span>179</span>
+<span>180</span>
+<span>181</span>
+<span>182</span>
+<span>183</span>
+<span>184</span>
+<span>185</span>
+<span>186</span>
+<span>187</span>
+<span>188</span>
+<span>189</span>
+<span>190</span>
+<span>191</span>
+<span>192</span>
+<span>193</span>
+<span>194</span>
+<span>195</span>
+<span>196</span>
+<span>197</span>
+<span>198</span>
+<span>199</span>
+<span>200</span>
+<span>201</span>
+<span>202</span>
+<span>203</span>
+<span>204</span>
+<span>205</span>
+<span>206</span>
+<span>207</span>
+<span>208</span>
+<span>209</span>
+<span>210</span>
+<span>211</span>
+<span>212</span>
+<span>213</span>
+<span>214</span>
+<span>215</span>
+<span>216</span>
+<span>217</span>
+<span>218</span>
+<span>219</span>
+<span>220</span>
+<span>221</span>
+<span>222</span>
+<span>223</span>
+<span>224</span>
+<span>225</span>
+<span>226</span>
+<span>227</span>
+<span>228</span>
+<span>229</span>
+<span>230</span>
+<span>231</span>
+<span>232</span>
+<span>233</span>
+<span>234</span>
+<span>235</span>
+<span>236</span>
+<span>237</span>
+<span>238</span>
+<span>239</span>
+<span>240</span>
+<span>241</span>
+<span>242</span>
+<span>243</span>
+<span>244</span>
+<span>245</span>
+<span>246</span>
+<span>247</span>
+<span>248</span>
+<span>249</span>
+<span>250</span>
+<span>251</span>
+<span>252</span>
+<span>253</span>
+<span>254</span>
+<span>255</span>
+<span>256</span>
+<span>257</span>
+<span>258</span>
+<span>259</span>
+<span>260</span>
+<span>261</span>
+<span>262</span>
+<span>263</span>
+<span>264</span>
+<span>265</span>
+<span>266</span>
+<span>267</span>
+<span>268</span>
+<span>269</span>
+<span>270</span>
+<span>271</span>
+<span>272</span>
+<span>273</span>
+<span>274</span>
+<span>275</span>
+<span>276</span>
+<span>277</span>
+<span>278</span>
+<span>279</span>
+<span>280</span>
+<span>281</span>
+<span>282</span>
+<span>283</span>
+<span>284</span>
+<span>285</span>
+<span>286</span>
+<span>287</span>
+<span>288</span>
+<span>289</span>
+<span>290</span>
+<span>291</span>
+<span>292</span>
+<span>293</span>
+<span>294</span>
+<span>295</span>
+<span>296</span>
+<span>297</span>
+<span>298</span>
+<span>299</span>
+<span>300</span>
+<span>301</span>
+<span>302</span>
+<span>303</span>
+<span>304</span>
+<span>305</span>
+<span>306</span>
+<span>307</span>
+<span>308</span>
+<span>309</span>
+<span>310</span>
+<span>311</span>
+<span>312</span>
+<span>313</span>
+<span>314</span>
+<span>315</span>
+<span>316</span>
+<span>317</span>
+<span>318</span>
+<span>319</span>
+<span>320</span>
+<span>321</span>
+<span>322</span>
+<span>323</span>
+<span>324</span>
+<span>325</span>
+<span>326</span>
+<span>327</span>
+<span>328</span>
+<span>329</span>
+<span>330</span>
+<span>331</span>
+<span>332</span>
+<span>333</span>
+<span>334</span>
+<span>335</span>
+<span>336</span>
+<span>337</span>
+<span>338</span>
+<span>339</span>
+<span>340</span>
+<span>341</span>
+<span>342</span>
+<span>343</span>
+<span>344</span>
+<span>345</span>
+<span>346</span>
+<span>347</span>
+<span>348</span>
+<span>349</span>
+<span>350</span>
+<span>351</span>
+<span>352</span>
+<span>353</span>
+<span>354</span>
+<span>355</span>
+<span>356</span>
+<span>357</span>
+<span>358</span>
+<span>359</span>
+<span>360</span>
+<span>361</span>
+<span>362</span>
+<span>363</span>
+<span>364</span>
+<span>365</span>
+<span>366</span>
+<span>367</span>
+<span>368</span>
+<span>369</span>
+<span>370</span>
+<span>371</span>
+<span>372</span>
+<span>373</span>
+<span>374</span>
+<span>375</span>
+<span>376</span>
+<span>377</span>
+<span>378</span>
+<span>379</span>
+<span>380</span>
+<span>381</span>
+<span>382</span>
+<span>383</span>
+<span>384</span>
+<span>385</span>
+<span>386</span>
+<span>387</span>
+<span>388</span>
+<span>389</span>
+<span>390</span>
+<span>391</span>
+<span>392</span>
+<span>393</span>
+<span>394</span>
+<span>395</span>
+<span>396</span>
+<span>397</span>
+<span>398</span>
+<span>399</span>
+<span>400</span>
+<span>401</span>
+<span>402</span>
+<span>403</span>
+<span>404</span>
+<span>405</span>
+<span>406</span>
+<span>407</span>
+<span>408</span>
+<span>409</span>
+<span>410</span>
+<span>411</span>
+<span>412</span>
+<span>413</span>
+<span>414</span>
+<span>415</span>
+<span>416</span>
+<span>417</span>
+<span>418</span>
+<span>419</span>
+<span>420</span>
+<span>421</span>
+<span>422</span>
+<span>423</span>
+<span>424</span>
+<span>425</span>
+<span>426</span>
+<span>427</span>
+<span>428</span>
+<span>429</span>
+<span>430</span>
+<span>431</span>
+<span>432</span>
+<span>433</span>
+<span>434</span>
+<span>435</span>
+<span>436</span>
+<span>437</span>
+<span>438</span>
+<span>439</span>
+<span>440</span>
+<span>441</span>
+<span>442</span>
+<span>443</span>
+<span>444</span>
+<span>445</span>
+<span>446</span>
+<span>447</span>
+<span>448</span>
+<span>449</span>
+<span>450</span>
+<span>451</span>
+<span>452</span>
+</pre></td><td id='code'><pre><span class='com'>/***********************************************************************\
+*                                rpcdce.d                               *
+*                                                                       *
+*                       Windows API header module                       *
+*                                                                       *
+*                 Translated from MinGW Windows headers                 *
+*                                                                       *
+*                       Placed into public domain                       *
+\***********************************************************************/</span>
+<span class='com'>// TODO: I think MinGW got this wrong. RPC_UNICODE_SUPPORTED should be replaced aliases for version(Unicode)</span>
+
+<span class='kw2'>module</span> tango.os.windows.c.rpcdce;
+
+<span class='com'>//version (build) { pragma(nolink); }</span>
+
+<span class='com'>//pragma(lib, &quot;Rpcrt4.lib&quot;);</span>
+<span class='kw4'>private</span> <span class='kw2'>import</span> tango.os.windows.c.basetyps;
+<span class='kw4'>private</span> <span class='kw2'>import</span> tango.os.windows.c.w32api;
+<span class='kw4'>public</span> <span class='kw2'>import</span> tango.os.windows.c.rpcdcep;
+
+<span class='com'>// FIXME: clean up Windows version support</span>
+
+<span class='kw2'>alias</span> UUID uuid_t;
+<span class='kw2'>alias</span> UUID_VECTOR uuid_vector_t;
+
+<span class='kw2'>alias</span> <span class='kw4'>void</span> RPC_MGR_EPV;
+<span class='com'>// for RpcMgmtSetComTimeout()</span>
+<span class='kw4'>enum</span> : <span class='kw4'>uint</span> <span class='opr'>{</span>
+    RPC_C_BINDING_MIN_TIMEOUT      <span class='opr'>=</span> <span class='nbr'>0</span>,
+    RPC_C_BINDING_DEFAULT_TIMEOUT  <span class='opr'>=</span> <span class='nbr'>5</span>,
+    RPC_C_BINDING_MAX_TIMEOUT      <span class='opr'>=</span> <span class='nbr'>9</span>,
+    RPC_C_BINDING_INFINITE_TIMEOUT <span class='opr'>=</span> <span class='nbr'>10</span>
+<span class='opr'>}</span>
+
+<span class='kw4'>const</span> RPC_C_CANCEL_INFINITE_TIMEOUT<span class='opr'>=</span> <span class='opr'>-</span><span class='nbr'>1</span>;
+<span class='kw4'>const</span> RPC_C_LISTEN_MAX_CALLS_DEFAULT<span class='opr'>=</span><span class='nbr'>1234</span>;
+<span class='kw4'>const</span> RPC_C_PROTSEQ_MAX_REQS_DEFAULT<span class='opr'>=</span><span class='nbr'>10</span>;
+<span class='kw4'>const</span> RPC_C_BIND_TO_ALL_NICS<span class='opr'>=</span><span class='nbr'>1</span>;
+<span class='kw4'>const</span> RPC_C_USE_INTERNET_PORT<span class='opr'>=</span><span class='nbr'>1</span>;
+<span class='kw4'>const</span> RPC_C_USE_INTRANET_PORT<span class='opr'>=</span><span class='nbr'>2</span>;
+
+<span class='com'>// for RPC_STATS_VECTOR, used by RpcMgmyInqStats</span>
+<span class='kw4'>enum</span> : <span class='kw4'>uint</span> <span class='opr'>{</span>
+    RPC_C_STATS_CALLS_IN  <span class='opr'>=</span> <span class='nbr'>0</span>,
+    RPC_C_STATS_CALLS_OUT,
+    RPC_C_STATS_PKTS_IN,
+    RPC_C_STATS_PKTS_OUT
+<span class='opr'>}</span>
+
+<span class='kw4'>const</span> RPC_IF_AUTOLISTEN<span class='opr'>=</span><span class='nbr'>0</span>x0001;
+<span class='kw4'>const</span> RPC_IF_OLE<span class='opr'>=</span><span class='nbr'>2</span>;
+<span class='kw4'>const</span> RPC_C_MGMT_INQ_IF_IDS<span class='opr'>=</span><span class='nbr'>0</span>;
+<span class='kw4'>const</span> RPC_C_MGMT_INQ_PRINC_NAME<span class='opr'>=</span><span class='nbr'>1</span>;
+<span class='kw4'>const</span> RPC_C_MGMT_INQ_STATS<span class='opr'>=</span><span class='nbr'>2</span>;
+<span class='kw4'>const</span> RPC_C_MGMT_IS_SERVER_LISTEN<span class='opr'>=</span><span class='nbr'>3</span>;
+<span class='kw4'>const</span> RPC_C_MGMT_STOP_SERVER_LISTEN<span class='opr'>=</span><span class='nbr'>4</span>;
+
+<span class='com'>// Inquiry Type for RpcMgmtEpEltInqBegin()</span>
+<span class='kw4'>enum</span> : <span class='kw4'>uint</span> <span class='opr'>{</span>
+    RPC_C_EP_ALL_ELTS <span class='opr'>=</span> <span class='nbr'>0</span>,
+    RPC_C_EP_MATCH_BY_IF,
+    RPC_C_EP_MATCH_BY_OBJ,
+    RPC_C_EP_MATCH_BY_BOTH
+<span class='opr'>}</span>
+
+<span class='com'>// for RpcMgmtEpEltInqNext()</span>
+<span class='kw4'>enum</span> : <span class='kw4'>uint</span> <span class='opr'>{</span>
+    RPC_C_VERS_ALL <span class='opr'>=</span> <span class='nbr'>1</span>,
+    RPC_C_VERS_COMPATIBLE,
+    RPC_C_VERS_EXACT,
+    RPC_C_VERS_MAJOR_ONLY,
+    RPC_C_VERS_UPTO
+<span class='opr'>}</span>
+
+<span class='kw4'>const</span> DCE_C_ERROR_STRING_LEN<span class='opr'>=</span><span class='nbr'>256</span>;
+<span class='kw4'>const</span> RPC_C_PARM_MAX_PACKET_LENGTH<span class='opr'>=</span><span class='nbr'>1</span>;
+<span class='kw4'>const</span> RPC_C_PARM_BUFFER_LENGTH<span class='opr'>=</span><span class='nbr'>2</span>;
+<span class='kw4'>const</span> RPC_C_AUTHN_LEVEL_DEFAULT<span class='opr'>=</span><span class='nbr'>0</span>;
+<span class='kw4'>const</span> RPC_C_AUTHN_LEVEL_NONE<span class='opr'>=</span><span class='nbr'>1</span>;
+<span class='kw4'>const</span> RPC_C_AUTHN_LEVEL_CONNECT<span class='opr'>=</span><span class='nbr'>2</span>;
+<span class='kw4'>const</span> RPC_C_AUTHN_LEVEL_CALL<span class='opr'>=</span><span class='nbr'>3</span>;
+<span class='kw4'>const</span> RPC_C_AUTHN_LEVEL_PKT<span class='opr'>=</span><span class='nbr'>4</span>;
+<span class='kw4'>const</span> RPC_C_AUTHN_LEVEL_PKT_INTEGRITY<span class='opr'>=</span><span class='nbr'>5</span>;
+<span class='kw4'>const</span> RPC_C_AUTHN_LEVEL_PKT_PRIVACY<span class='opr'>=</span><span class='nbr'>6</span>;
+<span class='kw4'>const</span> RPC_C_IMP_LEVEL_ANONYMOUS<span class='opr'>=</span><span class='nbr'>1</span>;
+<span class='kw4'>const</span> RPC_C_IMP_LEVEL_IDENTIFY<span class='opr'>=</span><span class='nbr'>2</span>;
+<span class='kw4'>const</span> RPC_C_IMP_LEVEL_IMPERSONATE<span class='opr'>=</span><span class='nbr'>3</span>;
+<span class='kw4'>const</span> RPC_C_IMP_LEVEL_DELEGATE<span class='opr'>=</span><span class='nbr'>4</span>;
+<span class='kw4'>const</span> RPC_C_QOS_IDENTITY_STATIC<span class='opr'>=</span><span class='nbr'>0</span>;
+<span class='kw4'>const</span> RPC_C_QOS_IDENTITY_DYNAMIC<span class='opr'>=</span><span class='nbr'>1</span>;
+<span class='kw4'>const</span> RPC_C_QOS_CAPABILITIES_DEFAULT<span class='opr'>=</span><span class='nbr'>0</span>;
+<span class='kw4'>const</span> RPC_C_QOS_CAPABILITIES_MUTUAL_AUTH<span class='opr'>=</span><span class='nbr'>1</span>;
+
+<span class='com'>// These enums were buggy in MinGW !</span>
+<span class='kw4'>const</span> RPC_C_PROTECT_LEVEL_DEFAULT <span class='opr'>=</span> RPC_C_AUTHN_LEVEL_DEFAULT;
+<span class='kw4'>const</span> RPC_C_PROTECT_LEVEL_NONE <span class='opr'>=</span> RPC_C_AUTHN_LEVEL_NONE;
+<span class='kw4'>const</span> RPC_C_PROTECT_LEVEL_CONNECT <span class='opr'>=</span> RPC_C_AUTHN_LEVEL_CONNECT;
+<span class='kw4'>const</span> RPC_C_PROTECT_LEVEL_CALL <span class='opr'>=</span> RPC_C_AUTHN_LEVEL_CALL;
+<span class='kw4'>const</span> RPC_C_PROTECT_LEVEL_PKT <span class='opr'>=</span> RPC_C_AUTHN_LEVEL_PKT;
+<span class='kw4'>const</span> RPC_C_PROTECT_LEVEL_PKT_INTEGRITY <span class='opr'>=</span> RPC_C_AUTHN_LEVEL_PKT_INTEGRITY;
+<span class='kw4'>const</span> RPC_C_PROTECT_LEVEL_PKT_PRIVACY <span class='opr'>=</span> RPC_C_AUTHN_LEVEL_PKT_PRIVACY;
+
+<span class='kw4'>const</span> RPC_C_AUTHN_NONE<span class='opr'>=</span><span class='nbr'>0</span>;
+<span class='kw4'>const</span> RPC_C_AUTHN_DCE_PRIVATE<span class='opr'>=</span><span class='nbr'>1</span>;
+<span class='kw4'>const</span> RPC_C_AUTHN_DCE_PUBLIC<span class='opr'>=</span><span class='nbr'>2</span>;
+<span class='kw4'>const</span> RPC_C_AUTHN_DEC_PUBLIC<span class='opr'>=</span><span class='nbr'>4</span>;
+<span class='kw4'>const</span> RPC_C_AUTHN_WINNT<span class='opr'>=</span><span class='nbr'>10</span>;
+<span class='kw4'>const</span> RPC_C_AUTHN_DEFAULT<span class='opr'>=</span><span class='nbr'>0</span>xFFFFFFFF;
+<span class='com'>//const RPC_C_SECURITY_QOS_VERSION=L; // FIXME(MinGW): This is nonsense!</span>
+<span class='kw4'>const</span> SEC_WINNT_AUTH_IDENTITY_ANSI<span class='opr'>=</span><span class='nbr'>0</span>x1;
+<span class='kw4'>const</span> SEC_WINNT_AUTH_IDENTITY_UNICODE<span class='opr'>=</span><span class='nbr'>0</span>x2;
+<span class='kw4'>const</span> RPC_C_AUTHZ_NONE<span class='opr'>=</span><span class='nbr'>0</span>;
+<span class='kw4'>const</span> RPC_C_AUTHZ_NAME<span class='opr'>=</span><span class='nbr'>1</span>;
+<span class='kw4'>const</span> RPC_C_AUTHZ_DCE<span class='opr'>=</span><span class='nbr'>2</span>;
+<span class='kw4'>const</span> RPC_C_AUTHZ_DEFAULT<span class='opr'>=</span><span class='nbr'>0</span>xFFFFFFFF;
+
+<span class='kw2'>alias</span> I_RPC_HANDLE RPC_BINDING_HANDLE;
+<span class='kw2'>alias</span> RPC_BINDING_HANDLE handle_t;
+
+<span class='kw4'>struct</span> RPC_BINDING_VECTOR<span class='opr'>{</span>
+    <span class='kw4'>uint</span> Count;
+    RPC_BINDING_HANDLE BindingH<span class='opr'>[</span><span class='nbr'>1</span><span class='opr'>]</span>;
+<span class='opr'>}</span>
+
+<span class='kw2'>alias</span> RPC_BINDING_HANDLE rpc_binding_handle_t;
+<span class='kw2'>alias</span> RPC_BINDING_VECTOR rpc_binding_vector_t;
+
+
+<span class='kw4'>struct</span> UUID_VECTOR<span class='opr'>{</span>
+    <span class='kw4'>uint</span> Count;
+    UUID <span class='opr'>*</span>Uuid<span class='opr'>[</span><span class='nbr'>1</span><span class='opr'>]</span>;
+<span class='opr'>}</span>
+
+<span class='kw2'>alias</span> <span class='kw4'>void</span> <span class='opr'>*</span> RPC_IF_HANDLE;
+
+<span class='kw4'>struct</span> RPC_IF_ID<span class='opr'>{</span>
+    UUID Uuid;
+    <span class='kw4'>ushort</span> VersMajor;
+    <span class='kw4'>ushort</span> VersMinor;
+<span class='opr'>}</span>
+
+<span class='kw4'>struct</span> RPC_POLICY<span class='opr'>{</span>
+    <span class='kw4'>uint</span> Length ;
+    <span class='kw4'>uint</span> EndpointFlags ;
+    <span class='kw4'>uint</span> NICFlags ;
+<span class='opr'>}</span>
+<span class='kw2'>alias</span> RPC_POLICY <span class='opr'>*</span> PRPC_POLICY;
+
+<span class='kw2'>extern</span> <span class='opr'>(</span>Windows<span class='opr'>)</span> <span class='opr'>{</span>
+<span class='kw2'>alias</span> <span class='kw4'>void</span> <span class='kw2'>function</span><span class='opr'>(</span>UUID<span class='opr'>*</span>,UUID<span class='opr'>*</span>,RPC_STATUS<span class='opr'>*</span><span class='opr'>)</span> RPC_OBJECT_INQ_FN;
+<span class='kw2'>alias</span> RPC_STATUS <span class='kw2'>function</span> <span class='opr'>(</span>RPC_IF_HANDLE,<span class='kw4'>void</span><span class='opr'>*</span><span class='opr'>)</span> RPC_IF_CALLBACK_FN;
+<span class='opr'>}</span>
+
+<span class='kw4'>struct</span> RPC_STATS_VECTOR<span class='opr'>{</span>
+    <span class='kw4'>uint</span> Count;
+    <span class='kw4'>uint</span> Stats<span class='opr'>[</span><span class='nbr'>1</span><span class='opr'>]</span>;
+<span class='opr'>}</span>
+
+<span class='kw4'>struct</span> RPC_IF_ID_VECTOR <span class='opr'>{</span>
+    <span class='kw4'>uint</span> Count;
+    RPC_IF_ID<span class='opr'>*</span>IfId<span class='opr'>[</span><span class='nbr'>1</span><span class='opr'>]</span>;
+<span class='opr'>}</span>
+<span class='kw2'>alias</span> <span class='kw4'>void</span> <span class='opr'>*</span> RPC_AUTH_IDENTITY_HANDLE;
+<span class='kw2'>alias</span> <span class='kw4'>void</span> <span class='opr'>*</span> RPC_AUTHZ_HANDLE;
+
+<span class='kw4'>struct</span> RPC_SECURITY_QOS<span class='opr'>{</span>
+    <span class='kw4'>uint</span> Version;
+    <span class='kw4'>uint</span> Capabilities;
+    <span class='kw4'>uint</span> IdentityTracking;
+    <span class='kw4'>uint</span> ImpersonationType;
+<span class='opr'>}</span>
+<span class='kw2'>alias</span> RPC_SECURITY_QOS <span class='opr'>*</span> PRPC_SECURITY_QOS;
+
+<span class='kw4'>struct</span> SEC_WINNT_AUTH_IDENTITY_W<span class='opr'>{</span>
+    <span class='kw4'>ushort</span> <span class='opr'>*</span>User;
+    <span class='kw4'>uint</span> UserLength;
+    <span class='kw4'>ushort</span> <span class='opr'>*</span>Domain;
+    <span class='kw4'>uint</span> DomainLength;
+    <span class='kw4'>ushort</span> <span class='opr'>*</span>Password;
+    <span class='kw4'>uint</span> PasswordLength;
+    <span class='kw4'>uint</span> Flags;
+<span class='opr'>}</span>
+<span class='kw2'>alias</span> SEC_WINNT_AUTH_IDENTITY_W <span class='opr'>*</span> PSEC_WINNT_AUTH_IDENTITY_W;
+
+<span class='kw4'>struct</span> SEC_WINNT_AUTH_IDENTITY_A<span class='opr'>{</span>
+    <span class='kw4'>ubyte</span> <span class='opr'>*</span>User;
+    <span class='kw4'>uint</span> UserLength;
+    <span class='kw4'>ubyte</span> <span class='opr'>*</span>Domain;
+    <span class='kw4'>uint</span> DomainLength;
+    <span class='kw4'>ubyte</span> <span class='opr'>*</span>Password;
+    <span class='kw4'>uint</span> PasswordLength;
+    <span class='kw4'>uint</span> Flags;
+<span class='opr'>}</span>
+<span class='kw2'>alias</span> SEC_WINNT_AUTH_IDENTITY_A <span class='opr'>*</span> PSEC_WINNT_AUTH_IDENTITY_A;
+
+<span class='kw4'>struct</span> RPC_CLIENT_INFORMATION1 <span class='opr'>{</span>
+    <span class='kw4'>ubyte</span> <span class='opr'>*</span>UserName;
+    <span class='kw4'>ubyte</span> <span class='opr'>*</span>ComputerName;
+    <span class='kw4'>ushort</span> Privilege;
+    <span class='kw4'>uint</span> AuthFlags;
+<span class='opr'>}</span>
+<span class='kw2'>alias</span> RPC_CLIENT_INFORMATION1 <span class='opr'>*</span> PRPC_CLIENT_INFORMATION1;
+<span class='kw2'>alias</span> I_RPC_HANDLE <span class='opr'>*</span>RPC_EP_INQ_HANDLE;
+<span class='kw2'>extern</span> <span class='opr'>(</span>Windows<span class='opr'>)</span> <span class='opr'>{</span>
+<span class='kw2'>alias</span> <span class='kw4'>int</span> <span class='kw2'>function</span><span class='opr'>(</span>RPC_BINDING_HANDLE,<span class='kw4'>uint</span>,RPC_STATUS<span class='opr'>*</span><span class='opr'>)</span> RPC_MGMT_AUTHORIZATION_FN;
+<span class='opr'>}</span>
+
+<span class='kw4'>static</span> <span class='kw1'>if</span><span class='opr'>(</span>_WIN32_WINNT_ONLY<span class='opr'>)</span> <span class='opr'>{</span>
+
+<span class='kw4'>struct</span> RPC_PROTSEQ_VECTORA<span class='opr'>{</span>
+    <span class='kw4'>uint</span> Count;
+    <span class='kw4'>ubyte</span><span class='opr'>*</span>Protseq<span class='opr'>[</span><span class='nbr'>1</span><span class='opr'>]</span>;
+<span class='opr'>}</span>
+<span class='kw4'>struct</span> RPC_PROTSEQ_VECTORW<span class='opr'>{</span>
+    <span class='kw4'>uint</span> Count;
+    <span class='kw4'>ushort</span><span class='opr'>*</span>Protseq<span class='opr'>[</span><span class='nbr'>1</span><span class='opr'>]</span>;
+<span class='opr'>}</span>
+<span class='kw2'>extern</span> <span class='opr'>(</span>Windows<span class='opr'>)</span> <span class='opr'>{</span>
+RPC_STATUS RpcBindingFromStringBindingA<span class='opr'>(</span><span class='kw4'>char</span> <span class='opr'>*</span>,RPC_BINDING_HANDLE <span class='opr'>*</span><span class='opr'>)</span>;
+RPC_STATUS RpcBindingFromStringBindingW<span class='opr'>(</span><span class='kw4'>wchar</span> <span class='opr'>*</span>,RPC_BINDING_HANDLE <span class='opr'>*</span><span class='opr'>)</span>;
+RPC_STATUS RpcBindingToStringBindingA<span class='opr'>(</span>RPC_BINDING_HANDLE,<span class='kw4'>char</span> <span class='opr'>*</span><span class='opr'>*</span><span class='opr'>)</span>;
+RPC_STATUS RpcBindingToStringBindingW<span class='opr'>(</span>RPC_BINDING_HANDLE,<span class='kw4'>wchar</span> <span class='opr'>*</span><span class='opr'>*</span><span class='opr'>)</span>;
+RPC_STATUS RpcStringBindingComposeA<span class='opr'>(</span><span class='kw4'>char</span> <span class='opr'>*</span>,<span class='kw4'>char</span> <span class='opr'>*</span>,<span class='kw4'>char</span> <span class='opr'>*</span>,<span class='kw4'>char</span> <span class='opr'>*</span>,<span class='kw4'>char</span> <span class='opr'>*</span>,<span class='kw4'>char</span> <span class='opr'>*</span><span class='opr'>*</span><span class='opr'>)</span>;
+RPC_STATUS RpcStringBindingComposeW<span class='opr'>(</span><span class='kw4'>wchar</span> <span class='opr'>*</span>,<span class='kw4'>wchar</span> <span class='opr'>*</span>,<span class='kw4'>wchar</span> <span class='opr'>*</span>,<span class='kw4'>wchar</span> <span class='opr'>*</span>,<span class='kw4'>wchar</span> <span class='opr'>*</span>,<span class='kw4'>wchar</span> <span class='opr'>*</span><span class='opr'>*</span><span class='opr'>)</span>;
+RPC_STATUS RpcStringBindingParseA<span class='opr'>(</span><span class='kw4'>char</span> <span class='opr'>*</span>,<span class='kw4'>char</span> <span class='opr'>*</span><span class='opr'>*</span>,<span class='kw4'>char</span> <span class='opr'>*</span><span class='opr'>*</span>,<span class='kw4'>char</span> <span class='opr'>*</span><span class='opr'>*</span>,<span class='kw4'>char</span> <span class='opr'>*</span><span class='opr'>*</span>,<span class='kw4'>char</span> <span class='opr'>*</span><span class='opr'>*</span><span class='opr'>)</span>;
+RPC_STATUS RpcStringBindingParseW<span class='opr'>(</span><span class='kw4'>wchar</span> <span class='opr'>*</span>,<span class='kw4'>wchar</span> <span class='opr'>*</span><span class='opr'>*</span>,<span class='kw4'>wchar</span> <span class='opr'>*</span><span class='opr'>*</span>,<span class='kw4'>wchar</span> <span class='opr'>*</span><span class='opr'>*</span>,<span class='kw4'>wchar</span> <span class='opr'>*</span><span class='opr'>*</span>,<span class='kw4'>wchar</span> <span class='opr'>*</span><span class='opr'>*</span><span class='opr'>)</span>;
+RPC_STATUS RpcStringFreeA<span class='opr'>(</span><span class='kw4'>char</span> <span class='opr'>*</span><span class='opr'>*</span><span class='opr'>)</span>;
+RPC_STATUS RpcStringFreeW<span class='opr'>(</span><span class='kw4'>wchar</span> <span class='opr'>*</span><span class='opr'>*</span><span class='opr'>)</span>;
+RPC_STATUS RpcNetworkIsProtseqValidA<span class='opr'>(</span><span class='kw4'>char</span> <span class='opr'>*</span><span class='opr'>)</span>;
+RPC_STATUS RpcNetworkIsProtseqValidW<span class='opr'>(</span><span class='kw4'>wchar</span> <span class='opr'>*</span><span class='opr'>)</span>;
+RPC_STATUS RpcNetworkInqProtseqsA<span class='opr'>(</span>RPC_PROTSEQ_VECTORA<span class='opr'>*</span><span class='opr'>*</span><span class='opr'>)</span>;
+RPC_STATUS RpcNetworkInqProtseqsW<span class='opr'>(</span>RPC_PROTSEQ_VECTORW<span class='opr'>*</span><span class='opr'>*</span><span class='opr'>)</span>;
+RPC_STATUS RpcProtseqVectorFreeA<span class='opr'>(</span>RPC_PROTSEQ_VECTORA<span class='opr'>*</span><span class='opr'>*</span><span class='opr'>)</span>;
+RPC_STATUS RpcProtseqVectorFreeW<span class='opr'>(</span>RPC_PROTSEQ_VECTORW<span class='opr'>*</span><span class='opr'>*</span><span class='opr'>)</span>;
+RPC_STATUS RpcServerUseProtseqA<span class='opr'>(</span><span class='kw4'>char</span> <span class='opr'>*</span>,<span class='kw4'>uint</span>,<span class='kw4'>void</span><span class='opr'>*</span><span class='opr'>)</span>;
+RPC_STATUS RpcServerUseProtseqW<span class='opr'>(</span><span class='kw4'>wchar</span> <span class='opr'>*</span>,<span class='kw4'>uint</span>,<span class='kw4'>void</span><span class='opr'>*</span><span class='opr'>)</span>;
+RPC_STATUS RpcServerUseProtseqExA<span class='opr'>(</span><span class='kw4'>char</span> <span class='opr'>*</span>,<span class='kw4'>uint</span> MaxCalls,<span class='kw4'>void</span><span class='opr'>*</span>,PRPC_POLICY<span class='opr'>)</span>;
+RPC_STATUS RpcServerUseProtseqExW<span class='opr'>(</span><span class='kw4'>wchar</span> <span class='opr'>*</span>,<span class='kw4'>uint</span>,<span class='kw4'>void</span><span class='opr'>*</span>,PRPC_POLICY<span class='opr'>)</span>;
+RPC_STATUS RpcServerUseProtseqEpA<span class='opr'>(</span><span class='kw4'>char</span> <span class='opr'>*</span>,<span class='kw4'>uint</span>,<span class='kw4'>char</span> <span class='opr'>*</span>,<span class='kw4'>void</span><span class='opr'>*</span><span class='opr'>)</span>;
+RPC_STATUS RpcServerUseProtseqEpExA<span class='opr'>(</span><span class='kw4'>char</span> <span class='opr'>*</span>,<span class='kw4'>uint</span>,<span class='kw4'>char</span> <span class='opr'>*</span>,<span class='kw4'>void</span><span class='opr'>*</span>,PRPC_POLICY<span class='opr'>)</span>;
+RPC_STATUS RpcServerUseProtseqEpW<span class='opr'>(</span><span class='kw4'>wchar</span> <span class='opr'>*</span>,<span class='kw4'>uint</span>,<span class='kw4'>wchar</span> <span class='opr'>*</span>,<span class='kw4'>void</span><span class='opr'>*</span><span class='opr'>)</span>;
+RPC_STATUS RpcServerUseProtseqEpExW<span class='opr'>(</span><span class='kw4'>wchar</span> <span class='opr'>*</span>,<span class='kw4'>uint</span>,<span class='kw4'>wchar</span> <span class='opr'>*</span>,<span class='kw4'>void</span><span class='opr'>*</span>,PRPC_POLICY<span class='opr'>)</span>;
+RPC_STATUS RpcServerUseProtseqIfA<span class='opr'>(</span><span class='kw4'>char</span> <span class='opr'>*</span>,<span class='kw4'>uint</span>,RPC_IF_HANDLE,<span class='kw4'>void</span><span class='opr'>*</span><span class='opr'>)</span>;
+RPC_STATUS RpcServerUseProtseqIfExA<span class='opr'>(</span><span class='kw4'>char</span> <span class='opr'>*</span>,<span class='kw4'>uint</span>,RPC_IF_HANDLE,<span class='kw4'>void</span><span class='opr'>*</span>,PRPC_POLICY<span class='opr'>)</span>;
+RPC_STATUS RpcServerUseProtseqIfW<span class='opr'>(</span><span class='kw4'>wchar</span> <span class='opr'>*</span>,<span class='kw4'>uint</span>,RPC_IF_HANDLE,<span class='kw4'>void</span><span class='opr'>*</span><span class='opr'>)</span>;
+RPC_STATUS RpcServerUseProtseqIfExW<span class='opr'>(</span><span class='kw4'>wchar</span> <span class='opr'>*</span>,<span class='kw4'>uint</span>,RPC_IF_HANDLE,<span class='kw4'>void</span><span class='opr'>*</span>,PRPC_POLICY<span class='opr'>)</span>;
+RPC_STATUS RpcMgmtInqServerPrincNameA<span class='opr'>(</span>RPC_BINDING_HANDLE,<span class='kw4'>uint</span>,<span class='kw4'>char</span> <span class='opr'>*</span><span class='opr'>*</span><span class='opr'>)</span>;
+RPC_STATUS RpcMgmtInqServerPrincNameW<span class='opr'>(</span>RPC_BINDING_HANDLE,<span class='kw4'>uint</span>,<span class='kw4'>wchar</span> <span class='opr'>*</span><span class='opr'>*</span><span class='opr'>)</span>;
+RPC_STATUS RpcServerInqDefaultPrincNameA<span class='opr'>(</span><span class='kw4'>uint</span>,<span class='kw4'>char</span> <span class='opr'>*</span><span class='opr'>*</span><span class='opr'>)</span>;
+RPC_STATUS RpcServerInqDefaultPrincNameW<span class='opr'>(</span><span class='kw4'>uint</span>,<span class='kw4'>wchar</span> <span class='opr'>*</span><span class='opr'>*</span><span class='opr'>)</span>;
+RPC_STATUS RpcNsBindingInqEntryNameA<span class='opr'>(</span>RPC_BINDING_HANDLE,<span class='kw4'>uint</span>,<span class='kw4'>char</span> <span class='opr'>*</span><span class='opr'>*</span><span class='opr'>)</span>;
+RPC_STATUS RpcNsBindingInqEntryNameW<span class='opr'>(</span>RPC_BINDING_HANDLE,<span class='kw4'>uint</span>,<span class='kw4'>wchar</span> <span class='opr'>*</span><span class='opr'>*</span><span class='opr'>)</span>;
+RPC_STATUS RpcBindingInqAuthClientA<span class='opr'>(</span>RPC_BINDING_HANDLE,RPC_AUTHZ_HANDLE <span class='opr'>*</span>,<span class='kw4'>char</span> <span class='opr'>*</span><span class='opr'>*</span>,<span class='kw4'>uint</span><span class='opr'>*</span>,<span class='kw4'>uint</span><span class='opr'>*</span>,<span class='kw4'>uint</span><span class='opr'>*</span><span class='opr'>)</span>;
+RPC_STATUS RpcBindingInqAuthClientW<span class='opr'>(</span>RPC_BINDING_HANDLE,RPC_AUTHZ_HANDLE <span class='opr'>*</span>,<span class='kw4'>wchar</span> <span class='opr'>*</span><span class='opr'>*</span>,<span class='kw4'>uint</span><span class='opr'>*</span>,<span class='kw4'>uint</span><span class='opr'>*</span>,<span class='kw4'>uint</span><span class='opr'>*</span><span class='opr'>)</span>;
+RPC_STATUS RpcBindingInqAuthInfoA<span class='opr'>(</span>RPC_BINDING_HANDLE,<span class='kw4'>char</span> <span class='opr'>*</span><span class='opr'>*</span>,<span class='kw4'>uint</span><span class='opr'>*</span>,<span class='kw4'>uint</span><span class='opr'>*</span>,RPC_AUTH_IDENTITY_HANDLE<span class='opr'>*</span>,<span class='kw4'>uint</span><span class='opr'>*</span><span class='opr'>)</span>;
+RPC_STATUS RpcBindingInqAuthInfoW<span class='opr'>(</span>RPC_BINDING_HANDLE,<span class='kw4'>wchar</span> <span class='opr'>*</span><span class='opr'>*</span>,<span class='kw4'>uint</span><span class='opr'>*</span>,<span class='kw4'>uint</span><span class='opr'>*</span>,RPC_AUTH_IDENTITY_HANDLE<span class='opr'>*</span>,<span class='kw4'>uint</span><span class='opr'>*</span><span class='opr'>)</span>;
+RPC_STATUS RpcBindingSetAuthInfoA<span class='opr'>(</span>RPC_BINDING_HANDLE,<span class='kw4'>char</span> <span class='opr'>*</span>,<span class='kw4'>uint</span>,<span class='kw4'>uint</span>,RPC_AUTH_IDENTITY_HANDLE,<span class='kw4'>uint</span><span class='opr'>)</span>;
+RPC_STATUS RpcBindingSetAuthInfoExA<span class='opr'>(</span>RPC_BINDING_HANDLE,<span class='kw4'>char</span> <span class='opr'>*</span>,<span class='kw4'>uint</span>,<span class='kw4'>uint</span>,RPC_AUTH_IDENTITY_HANDLE,<span class='kw4'>uint</span>,RPC_SECURITY_QOS<span class='opr'>*</span><span class='opr'>)</span>;
+RPC_STATUS RpcBindingSetAuthInfoW<span class='opr'>(</span>RPC_BINDING_HANDLE,<span class='kw4'>wchar</span> <span class='opr'>*</span>,<span class='kw4'>uint</span>,<span class='kw4'>uint</span>,RPC_AUTH_IDENTITY_HANDLE,<span class='kw4'>uint</span><span class='opr'>)</span>;
+RPC_STATUS RpcBindingSetAuthInfoExW<span class='opr'>(</span>RPC_BINDING_HANDLE,<span class='kw4'>wchar</span> <span class='opr'>*</span>,<span class='kw4'>uint</span>,<span class='kw4'>uint</span>,RPC_AUTH_IDENTITY_HANDLE,<span class='kw4'>uint</span>,RPC_SECURITY_QOS<span class='opr'>*</span><span class='opr'>)</span>;
+RPC_STATUS RpcBindingInqAuthInfoExA<span class='opr'>(</span>RPC_BINDING_HANDLE,<span class='kw4'>char</span> <span class='opr'>*</span><span class='opr'>*</span>,<span class='kw4'>uint</span><span class='opr'>*</span>,<span class='kw4'>uint</span><span class='opr'>*</span>,RPC_AUTH_IDENTITY_HANDLE<span class='opr'>*</span>,<span class='kw4'>uint</span><span class='opr'>*</span>,<span class='kw4'>uint</span>,RPC_SECURITY_QOS<span class='opr'>*</span><span class='opr'>)</span>;
+RPC_STATUS RpcBindingInqAuthInfoExW<span class='opr'>(</span>RPC_BINDING_HANDLE,<span class='kw4'>wchar</span> <span class='opr'>*</span><span class='opr'>*</span> , <span class='kw4'>uint</span> <span class='opr'>*</span>, <span class='kw4'>uint</span> <span class='opr'>*</span>, RPC_AUTH_IDENTITY_HANDLE <span class='opr'>*</span>, <span class='kw4'>uint</span> <span class='opr'>*</span>, <span class='kw4'>uint</span> , RPC_SECURITY_QOS <span class='opr'>*</span><span class='opr'>)</span>;
+<span class='kw2'>alias</span> <span class='kw4'>void</span> <span class='kw2'>function</span><span class='opr'>(</span><span class='kw4'>void</span><span class='opr'>*</span>, <span class='kw4'>wchar</span> <span class='opr'>*</span>,<span class='kw4'>uint</span>,<span class='kw4'>void</span><span class='opr'>*</span><span class='opr'>*</span>,RPC_STATUS<span class='opr'>*</span><span class='opr'>)</span> RPC_AUTH_KEY_RETRIEVAL_FN;
+RPC_STATUS RpcServerRegisterAuthInfoA<span class='opr'>(</span><span class='kw4'>char</span> <span class='opr'>*</span>,<span class='kw4'>uint</span>,RPC_AUTH_KEY_RETRIEVAL_FN,<span class='kw4'>void</span><span class='opr'>*</span><span class='opr'>)</span>;
+RPC_STATUS RpcServerRegisterAuthInfoW<span class='opr'>(</span><span class='kw4'>wchar</span> <span class='opr'>*</span>,<span class='kw4'>uint</span>,RPC_AUTH_KEY_RETRIEVAL_FN,<span class='kw4'>void</span><span class='opr'>*</span><span class='opr'>)</span>;
+RPC_STATUS UuidToStringA<span class='opr'>(</span>UUID<span class='opr'>*</span>,<span class='kw4'>char</span> <span class='opr'>*</span><span class='opr'>*</span><span class='opr'>)</span>;
+RPC_STATUS UuidFromStringA<span class='opr'>(</span><span class='kw4'>char</span> <span class='opr'>*</span>,UUID<span class='opr'>*</span><span class='opr'>)</span>;
+RPC_STATUS UuidToStringW<span class='opr'>(</span>UUID<span class='opr'>*</span>,<span class='kw4'>wchar</span> <span class='opr'>*</span><span class='opr'>*</span><span class='opr'>)</span>;
+RPC_STATUS UuidFromStringW<span class='opr'>(</span><span class='kw4'>wchar</span> <span class='opr'>*</span>,UUID<span class='opr'>*</span><span class='opr'>)</span>;
+RPC_STATUS RpcEpRegisterNoReplaceA<span class='opr'>(</span>RPC_IF_HANDLE,RPC_BINDING_VECTOR<span class='opr'>*</span>,UUID_VECTOR<span class='opr'>*</span>,<span class='kw4'>char</span> <span class='opr'>*</span><span class='opr'>)</span>;
+RPC_STATUS RpcEpRegisterNoReplaceW<span class='opr'>(</span>RPC_IF_HANDLE,RPC_BINDING_VECTOR<span class='opr'>*</span>, UUID_VECTOR<span class='opr'>*</span>,<span class='kw4'>wchar</span> <span class='opr'>*</span><span class='opr'>)</span>;
+RPC_STATUS RpcEpRegisterA<span class='opr'>(</span>RPC_IF_HANDLE,RPC_BINDING_VECTOR<span class='opr'>*</span>,UUID_VECTOR<span class='opr'>*</span>,<span class='kw4'>char</span> <span class='opr'>*</span><span class='opr'>)</span>;
+RPC_STATUS RpcEpRegisterW<span class='opr'>(</span>RPC_IF_HANDLE,RPC_BINDING_VECTOR<span class='opr'>*</span>,UUID_VECTOR<span class='opr'>*</span>,<span class='kw4'>wchar</span> <span class='opr'>*</span><span class='opr'>)</span>;
+RPC_STATUS DceErrorInqTextA<span class='opr'>(</span>RPC_STATUS,<span class='kw4'>char</span> <span class='opr'>*</span><span class='opr'>)</span>;
+RPC_STATUS DceErrorInqTextW<span class='opr'>(</span>RPC_STATUS,<span class='kw4'>wchar</span> <span class='opr'>*</span><span class='opr'>)</span>;
+RPC_STATUS RpcMgmtEpEltInqNextA<span class='opr'>(</span>RPC_EP_INQ_HANDLE,RPC_IF_ID<span class='opr'>*</span>,RPC_BINDING_HANDLE<span class='opr'>*</span>,UUID<span class='opr'>*</span>,<span class='kw4'>char</span> <span class='opr'>*</span><span class='opr'>*</span><span class='opr'>)</span>;
+RPC_STATUS RpcMgmtEpEltInqNextW<span class='opr'>(</span>RPC_EP_INQ_HANDLE,RPC_IF_ID<span class='opr'>*</span>,RPC_BINDING_HANDLE<span class='opr'>*</span>,UUID<span class='opr'>*</span>,<span class='kw4'>wchar</span> <span class='opr'>*</span><span class='opr'>*</span><span class='opr'>)</span>;
+
+<span class='com'>// MinGW erroneously had these in rpc.h</span>
+RPC_STATUS RpcImpersonateClient<span class='opr'>(</span>RPC_BINDING_HANDLE<span class='opr'>)</span>;
+RPC_STATUS RpcRevertToSelf<span class='opr'>(</span><span class='opr'>)</span>;
+
+<span class='opr'>}</span>
+
+<span class='kw4'>version</span><span class='opr'>(</span>Unicode<span class='opr'>)</span> <span class='opr'>{</span>
+<span class='kw2'>alias</span> RPC_PROTSEQ_VECTORW RPC_PROTSEQ_VECTOR;
+<span class='kw2'>alias</span> SEC_WINNT_AUTH_IDENTITY_W SEC_WINNT_AUTH_IDENTITY;
+<span class='kw2'>alias</span> PSEC_WINNT_AUTH_IDENTITY_W PSEC_WINNT_AUTH_IDENTITY;
+<span class='kw2'>alias</span> RpcMgmtEpEltInqNextW RpcMgmtEpEltInqNext;
+<span class='kw2'>alias</span> RpcBindingFromStringBindingW RpcBindingFromStringBinding;
+<span class='kw2'>alias</span> RpcBindingToStringBindingW RpcBindingToStringBinding;
+<span class='kw2'>alias</span> RpcStringBindingComposeW RpcStringBindingCompose;
+<span class='kw2'>alias</span> RpcStringBindingParseW RpcStringBindingParse;
+<span class='kw2'>alias</span> RpcStringFreeW RpcStringFree;
+<span class='kw2'>alias</span> RpcNetworkIsProtseqValidW RpcNetworkIsProtseqValid;
+<span class='kw2'>alias</span> RpcNetworkInqProtseqsW RpcNetworkInqProtseqs;
+<span class='kw2'>alias</span> RpcProtseqVectorFreeW RpcProtseqVectorFree;
+<span class='kw2'>alias</span> RpcServerUseProtseqW RpcServerUseProtseq;
+<span class='kw2'>alias</span> RpcServerUseProtseqExW RpcServerUseProtseqEx;
+<span class='kw2'>alias</span> RpcServerUseProtseqEpW RpcServerUseProtseqEp;
+<span class='kw2'>alias</span> RpcServerUseProtseqEpExW RpcServerUseProtseqEpEx;
+<span class='kw2'>alias</span> RpcServerUseProtseqIfW RpcServerUseProtseqIf;
+<span class='kw2'>alias</span> RpcServerUseProtseqIfExW RpcServerUseProtseqIfEx;
+<span class='kw2'>alias</span> RpcMgmtInqServerPrincNameW RpcMgmtInqServerPrincName;
+<span class='kw2'>alias</span> RpcServerInqDefaultPrincNameW RpcServerInqDefaultPrincName;
+<span class='kw2'>alias</span> RpcNsBindingInqEntryNameW RpcNsBindingInqEntryName;
+<span class='kw2'>alias</span> RpcBindingInqAuthClientW RpcBindingInqAuthClient;
+<span class='kw2'>alias</span> RpcBindingInqAuthInfoW RpcBindingInqAuthInfo;
+<span class='kw2'>alias</span> RpcBindingSetAuthInfoW RpcBindingSetAuthInfo;
+<span class='kw2'>alias</span> RpcServerRegisterAuthInfoW RpcServerRegisterAuthInfo;
+<span class='kw2'>alias</span> RpcBindingInqAuthInfoExW RpcBindingInqAuthInfoEx;
+<span class='kw2'>alias</span> RpcBindingSetAuthInfoExW RpcBindingSetAuthInfoEx;
+<span class='kw2'>alias</span> UuidFromStringW UuidFromString;
+<span class='kw2'>alias</span> UuidToStringW UuidToString;
+<span class='kw2'>alias</span> RpcEpRegisterNoReplaceW RpcEpRegisterNoReplace;
+<span class='kw2'>alias</span> RpcEpRegisterW RpcEpRegister;
+<span class='kw2'>alias</span> DceErrorInqTextW DceErrorInqText;
+<span class='opr'>}</span> <span class='kw1'>else</span> <span class='opr'>{</span> <span class='com'>// Ansi</span>
+<span class='kw2'>alias</span> RPC_PROTSEQ_VECTORA RPC_PROTSEQ_VECTOR;
+<span class='kw2'>alias</span> SEC_WINNT_AUTH_IDENTITY_A SEC_WINNT_AUTH_IDENTITY;
+<span class='kw2'>alias</span> PSEC_WINNT_AUTH_IDENTITY_A PSEC_WINNT_AUTH_IDENTITY;
+<span class='kw2'>alias</span> RpcMgmtEpEltInqNextA RpcMgmtEpEltInqNext;
+<span class='kw2'>alias</span> RpcBindingFromStringBindingA RpcBindingFromStringBinding;
+<span class='kw2'>alias</span> RpcBindingToStringBindingA RpcBindingToStringBinding;
+<span class='kw2'>alias</span> RpcStringBindingComposeA RpcStringBindingCompose;
+<span class='kw2'>alias</span> RpcStringBindingParseA RpcStringBindingParse;
+<span class='kw2'>alias</span> RpcStringFreeA RpcStringFree;
+<span class='kw2'>alias</span> RpcNetworkIsProtseqValidA RpcNetworkIsProtseqValid;
+<span class='kw2'>alias</span> RpcNetworkInqProtseqsA RpcNetworkInqProtseqs;
+<span class='kw2'>alias</span> RpcProtseqVectorFreeA RpcProtseqVectorFree;
+<span class='kw2'>alias</span> RpcServerUseProtseqA RpcServerUseProtseq;
+<span class='kw2'>alias</span> RpcServerUseProtseqExA RpcServerUseProtseqEx;
+<span class='kw2'>alias</span> RpcServerUseProtseqEpA RpcServerUseProtseqEp;
+<span class='kw2'>alias</span> RpcServerUseProtseqEpExA RpcServerUseProtseqEpEx;
+<span class='kw2'>alias</span> RpcServerUseProtseqIfA RpcServerUseProtseqIf;
+<span class='kw2'>alias</span> RpcServerUseProtseqIfExA RpcServerUseProtseqIfEx;
+<span class='kw2'>alias</span> RpcMgmtInqServerPrincNameA RpcMgmtInqServerPrincName;
+<span class='kw2'>alias</span> RpcServerInqDefaultPrincNameA RpcServerInqDefaultPrincName;
+<span class='kw2'>alias</span> RpcNsBindingInqEntryNameA RpcNsBindingInqEntryName;
+<span class='kw2'>alias</span> RpcBindingInqAuthClientA RpcBindingInqAuthClient;
+<span class='kw2'>alias</span> RpcBindingInqAuthInfoA RpcBindingInqAuthInfo;
+<span class='kw2'>alias</span> RpcBindingSetAuthInfoA RpcBindingSetAuthInfo;
+<span class='kw2'>alias</span> RpcServerRegisterAuthInfoA RpcServerRegisterAuthInfo;
+<span class='kw2'>alias</span> RpcBindingInqAuthInfoExA RpcBindingInqAuthInfoEx;
+<span class='kw2'>alias</span> RpcBindingSetAuthInfoExA RpcBindingSetAuthInfoEx;
+<span class='kw2'>alias</span> UuidFromStringA UuidFromString;
+<span class='kw2'>alias</span> UuidToStringA UuidToString;
+<span class='kw2'>alias</span> RpcEpRegisterNoReplaceA RpcEpRegisterNoReplace;
+<span class='kw2'>alias</span> RpcEpRegisterA RpcEpRegister;
+<span class='kw2'>alias</span> DceErrorInqTextA DceErrorInqText;
+<span class='opr'>}</span><span class='com'>//#endif /* UNICODE */</span>
+
+<span class='opr'>}</span> <span class='kw1'>else</span> <span class='opr'>{</span> <span class='com'>// _WIN32_WINNT_ONLY</span>
+
+<span class='kw4'>struct</span> RPC_PROTSEQ_VECTOR<span class='opr'>{</span>
+    <span class='kw4'>uint</span> Count;
+    <span class='kw4'>ubyte</span><span class='opr'>*</span> Protseq<span class='opr'>[</span><span class='nbr'>1</span><span class='opr'>]</span>;
+<span class='opr'>}</span>
+<span class='com'>// versions without Unicode.</span>
+RPC_STATUS RpcBindingFromStringBinding<span class='opr'>(</span><span class='kw4'>char</span> <span class='opr'>*</span>,RPC_BINDING_HANDLE <span class='opr'>*</span><span class='opr'>)</span>;
+RPC_STATUS RpcBindingToStringBinding<span class='opr'>(</span>RPC_BINDING_HANDLE,<span class='kw4'>char</span> <span class='opr'>*</span><span class='opr'>*</span><span class='opr'>)</span>;
+RPC_STATUS RpcStringBindingCompose<span class='opr'>(</span><span class='kw4'>char</span> <span class='opr'>*</span>,<span class='kw4'>char</span> <span class='opr'>*</span>,<span class='kw4'>char</span> <span class='opr'>*</span>,<span class='kw4'>char</span> <span class='opr'>*</span>,<span class='kw4'>char</span> <span class='opr'>*</span>,<span class='kw4'>char</span> <span class='opr'>*</span><span class='opr'>*</span><span class='opr'>)</span>;
+RPC_STATUS RpcStringBindingParse<span class='opr'>(</span><span class='kw4'>char</span> <span class='opr'>*</span>,<span class='kw4'>char</span> <span class='opr'>*</span><span class='opr'>*</span>,<span class='kw4'>char</span> <span class='opr'>*</span><span class='opr'>*</span>,<span class='kw4'>char</span> <span class='opr'>*</span><span class='opr'>*</span>,<span class='kw4'>char</span> <span class='opr'>*</span><span class='opr'>*</span>,<span class='kw4'>char</span> <span class='opr'>*</span><span class='opr'>*</span><span class='opr'>)</span>;
+RPC_STATUS RpcStringFree<span class='opr'>(</span><span class='kw4'>char</span> <span class='opr'>*</span><span class='opr'>*</span><span class='opr'>)</span>;
+RPC_STATUS RpcNetworkIsProtseqValid<span class='opr'>(</span><span class='kw4'>char</span> <span class='opr'>*</span><span class='opr'>)</span>;
+RPC_STATUS RpcNetworkInqProtseqs<span class='opr'>(</span>RPC_PROTSEQ_VECTOR <span class='opr'>*</span><span class='opr'>*</span><span class='opr'>)</span>;
+RPC_STATUS RpcServerInqBindings<span class='opr'>(</span>RPC_BINDING_VECTOR <span class='opr'>*</span><span class='opr'>*</span><span class='opr'>)</span>;
+RPC_STATUS RpcServerUseProtseq<span class='opr'>(</span><span class='kw4'>char</span> <span class='opr'>*</span>,<span class='kw4'>uint</span>,<span class='kw4'>void</span><span class='opr'>*</span><span class='opr'>)</span>;
+RPC_STATUS RpcServerUseProtseqEx<span class='opr'>(</span><span class='kw4'>char</span> <span class='opr'>*</span>,<span class='kw4'>uint</span>,<span class='kw4'>void</span><span class='opr'>*</span>,PRPC_POLICY<span class='opr'>)</span>;
+RPC_STATUS RpcServerUseProtseqEp<span class='opr'>(</span><span class='kw4'>char</span> <span class='opr'>*</span>,<span class='kw4'>uint</span>,<span class='kw4'>char</span> <span class='opr'>*</span>,<span class='kw4'>void</span><span class='opr'>*</span><span class='opr'>)</span>;
+RPC_STATUS RpcServerUseProtseqEpEx<span class='opr'>(</span><span class='kw4'>char</span> <span class='opr'>*</span>,<span class='kw4'>uint</span>,<span class='kw4'>char</span> <span class='opr'>*</span>,<span class='kw4'>void</span><span class='opr'>*</span>,PRPC_POLICY<span class='opr'>)</span>;
+RPC_STATUS RpcServerUseProtseqIf<span class='opr'>(</span><span class='kw4'>char</span> <span class='opr'>*</span>,<span class='kw4'>uint</span>,RPC_IF_HANDLE,<span class='kw4'>void</span><span class='opr'>*</span><span class='opr'>)</span>;
+RPC_STATUS RpcServerUseProtseqIfEx<span class='opr'>(</span><span class='kw4'>char</span> <span class='opr'>*</span>,<span class='kw4'>uint</span>,RPC_IF_HANDLE,<span class='kw4'>void</span><span class='opr'>*</span>,PRPC_POLICY<span class='opr'>)</span>;
+RPC_STATUS RpcMgmtInqServerPrincName<span class='opr'>(</span>RPC_BINDING_HANDLE,<span class='kw4'>uint</span>,<span class='kw4'>char</span> <span class='opr'>*</span><span class='opr'>*</span><span class='opr'>)</span>;
+RPC_STATUS RpcServerInqDefaultPrincName<span class='opr'>(</span><span class='kw4'>uint</span>,<span class='kw4'>char</span> <span class='opr'>*</span><span class='opr'>*</span><span class='opr'>)</span>;
+RPC_STATUS RpcNsBindingInqEntryName<span class='opr'>(</span>RPC_BINDING_HANDLE,<span class='kw4'>uint</span>,<span class='kw4'>char</span> <span class='opr'>*</span><span class='opr'>*</span><span class='opr'>)</span>;
+RPC_STATUS RpcBindingInqAuthClient<span class='opr'>(</span>RPC_BINDING_HANDLE,RPC_AUTHZ_HANDLE<span class='opr'>*</span>,<span class='kw4'>char</span> <span class='opr'>*</span><span class='opr'>*</span>,<span class='kw4'>uint</span><span class='opr'>*</span>,<span class='kw4'>uint</span><span class='opr'>*</span>,<span class='kw4'>uint</span><span class='opr'>*</span><span class='opr'>)</span>;
+RPC_STATUS RpcBindingInqAuthInfo<span class='opr'>(</span>RPC_BINDING_HANDLE,<span class='kw4'>char</span> <span class='opr'>*</span><span class='opr'>*</span>,<span class='kw4'>uint</span> <span class='opr'>*</span>,<span class='kw4'>uint</span> <span class='opr'>*</span>,RPC_AUTH_IDENTITY_HANDLE <span class='opr'>*</span>,<span class='kw4'>uint</span> <span class='opr'>*</span><span class='opr'>)</span>;
+RPC_STATUS RpcBindingSetAuthInfo<span class='opr'>(</span>RPC_BINDING_HANDLE,<span class='kw4'>char</span> <span class='opr'>*</span>,<span class='kw4'>uint</span>,<span class='kw4'>uint</span>,RPC_AUTH_IDENTITY_HANDLE,<span class='kw4'>uint</span><span class='opr'>)</span>;
+<span class='kw2'>alias</span> <span class='kw4'>void</span> <span class='kw2'>function</span><span class='opr'>(</span><span class='kw4'>void</span><span class='opr'>*</span>,<span class='kw4'>char</span> <span class='opr'>*</span>,<span class='kw4'>uint</span>,<span class='kw4'>void</span><span class='opr'>*</span><span class='opr'>*</span>,RPC_STATUS<span class='opr'>*</span><span class='opr'>)</span> RPC_AUTH_KEY_RETRIEVAL_FN;
+RPC_STATUS RpcServerRegisterAuthInfo<span class='opr'>(</span><span class='kw4'>char</span> <span class='opr'>*</span>,<span class='kw4'>uint</span>,RPC_AUTH_KEY_RETRIEVAL_FN,<span class='kw4'>void</span><span class='opr'>*</span><span class='opr'>)</span>;
+RPC_STATUS UuidToString<span class='opr'>(</span>UUID<span class='opr'>*</span>,<span class='kw4'>char</span> <span class='opr'>*</span><span class='opr'>*</span><span class='opr'>)</span>;
+RPC_STATUS UuidFromString<span class='opr'>(</span><span class='kw4'>char</span> <span class='opr'>*</span>,UUID<span class='opr'>*</span><span class='opr'>)</span>;
+RPC_STATUS RpcEpRegisterNoReplace<span class='opr'>(</span>RPC_IF_HANDLE,RPC_BINDING_VECTOR<span class='opr'>*</span>,UUID_VECTOR<span class='opr'>*</span>,<span class='kw4'>char</span> <span class='opr'>*</span><span class='opr'>)</span>;
+RPC_STATUS RpcEpRegister<span class='opr'>(</span>RPC_IF_HANDLE,RPC_BINDING_VECTOR<span class='opr'>*</span>,UUID_VECTOR<span class='opr'>*</span>,<span class='kw4'>char</span> <span class='opr'>*</span><span class='opr'>)</span>;
+RPC_STATUS DceErrorInqText<span class='opr'>(</span>RPC_STATUS,<span class='kw4'>char</span> <span class='opr'>*</span><span class='opr'>)</span>;
+RPC_STATUS RpcMgmtEpEltInqNext<span class='opr'>(</span>RPC_EP_INQ_HANDLE,RPC_IF_ID <span class='opr'>*</span>,RPC_BINDING_HANDLE <span class='opr'>*</span>,<span class='kw4'>char</span> <span class='opr'>*</span><span class='opr'>*</span><span class='opr'>)</span>;
+<span class='opr'>}</span><span class='com'>// _WIN32_WINNT_ONLY</span>
+
+
+RPC_STATUS RpcBindingCopy<span class='opr'>(</span>RPC_BINDING_HANDLE,RPC_BINDING_HANDLE<span class='opr'>*</span><span class='opr'>)</span>;
+RPC_STATUS RpcBindingFree<span class='opr'>(</span>RPC_BINDING_HANDLE<span class='opr'>*</span><span class='opr'>)</span>;
+RPC_STATUS RpcBindingInqObject<span class='opr'>(</span>RPC_BINDING_HANDLE,UUID <span class='opr'>*</span><span class='opr'>)</span>;
+RPC_STATUS RpcBindingReset<span class='opr'>(</span>RPC_BINDING_HANDLE<span class='opr'>)</span>;
+RPC_STATUS RpcBindingSetObject<span class='opr'>(</span>RPC_BINDING_HANDLE,UUID <span class='opr'>*</span><span class='opr'>)</span>;
+RPC_STATUS RpcMgmtInqDefaultProtectLevel<span class='opr'>(</span><span class='kw4'>uint</span>,<span class='kw4'>uint</span> <span class='opr'>*</span><span class='opr'>)</span>;
+RPC_STATUS RpcBindingVectorFree<span class='opr'>(</span>RPC_BINDING_VECTOR <span class='opr'>*</span><span class='opr'>*</span><span class='opr'>)</span>;
+RPC_STATUS RpcIfInqId<span class='opr'>(</span>RPC_IF_HANDLE,RPC_IF_ID <span class='opr'>*</span><span class='opr'>)</span>;
+RPC_STATUS RpcMgmtInqComTimeout<span class='opr'>(</span>RPC_BINDING_HANDLE,<span class='kw4'>uint</span><span class='opr'>*</span><span class='opr'>)</span>;
+RPC_STATUS RpcMgmtSetComTimeout<span class='opr'>(</span>RPC_BINDING_HANDLE,<span class='kw4'>uint</span><span class='opr'>)</span>;
+RPC_STATUS RpcMgmtSetCancelTimeout<span class='opr'>(</span><span class='kw4'>int</span> Timeout<span class='opr'>)</span>;
+RPC_STATUS RpcObjectInqType<span class='opr'>(</span>UUID <span class='opr'>*</span>,UUID <span class='opr'>*</span><span class='opr'>)</span>;
+RPC_STATUS RpcObjectSetInqFn<span class='opr'>(</span>RPC_OBJECT_INQ_FN <span class='opr'>*</span><span class='opr'>)</span>;
+RPC_STATUS RpcObjectSetType<span class='opr'>(</span>UUID <span class='opr'>*</span>,UUID <span class='opr'>*</span><span class='opr'>)</span>;
+RPC_STATUS RpcProtseqVectorFree<span class='opr'>(</span>RPC_PROTSEQ_VECTOR <span class='opr'>*</span><span class='opr'>*</span><span class='opr'>)</span>;
+RPC_STATUS RpcServerInqIf<span class='opr'>(</span>RPC_IF_HANDLE,UUID<span class='opr'>*</span>,RPC_MGR_EPV<span class='opr'>*</span><span class='opr'>*</span><span class='opr'>)</span>;
+RPC_STATUS RpcServerListen<span class='opr'>(</span><span class='kw4'>uint</span>,<span class='kw4'>uint</span>,<span class='kw4'>uint</span><span class='opr'>)</span>;
+RPC_STATUS RpcServerRegisterIf<span class='opr'>(</span>RPC_IF_HANDLE,UUID<span class='opr'>*</span>,RPC_MGR_EPV<span class='opr'>*</span><span class='opr'>)</span>;
+RPC_STATUS RpcServerRegisterIfEx<span class='opr'>(</span>RPC_IF_HANDLE,UUID<span class='opr'>*</span>,RPC_MGR_EPV<span class='opr'>*</span>,<span class='kw4'>uint</span>,<span class='kw4'>uint</span>,RPC_IF_CALLBACK_FN<span class='opr'>*</span><span class='opr'>)</span>;
+RPC_STATUS RpcServerRegisterIf2<span class='opr'>(</span>RPC_IF_HANDLE,UUID<span class='opr'>*</span>,RPC_MGR_EPV<span class='opr'>*</span>,<span class='kw4'>uint</span>,<span class='kw4'>uint</span>,<span class='kw4'>uint</span>,RPC_IF_CALLBACK_FN<span class='opr'>*</span><span class='opr'>)</span>;
+RPC_STATUS RpcServerUnregisterIf<span class='opr'>(</span>RPC_IF_HANDLE,UUID<span class='opr'>*</span>,<span class='kw4'>uint</span><span class='opr'>)</span>;
+RPC_STATUS RpcServerUseAllProtseqs<span class='opr'>(</span><span class='kw4'>uint</span>,<span class='kw4'>void</span><span class='opr'>*</span><span class='opr'>)</span>;
+RPC_STATUS RpcServerUseAllProtseqsEx<span class='opr'>(</span><span class='kw4'>uint</span>,<span class='kw4'>void</span><span class='opr'>*</span>,PRPC_POLICY<span class='opr'>)</span>;
+RPC_STATUS RpcServerUseAllProtseqsIf<span class='opr'>(</span><span class='kw4'>uint</span>,RPC_IF_HANDLE,<span class='kw4'>void</span><span class='opr'>*</span><span class='opr'>)</span>;
+RPC_STATUS RpcServerUseAllProtseqsIfEx<span class='opr'>(</span><span class='kw4'>uint</span>,RPC_IF_HANDLE,<span class='kw4'>void</span><span class='opr'>*</span>,PRPC_POLICY<span class='opr'>)</span>;
+RPC_STATUS RpcMgmtStatsVectorFree<span class='opr'>(</span>RPC_STATS_VECTOR<span class='opr'>*</span><span class='opr'>*</span><span class='opr'>)</span>;
+RPC_STATUS RpcMgmtInqStats<span class='opr'>(</span>RPC_BINDING_HANDLE,RPC_STATS_VECTOR<span class='opr'>*</span><span class='opr'>*</span><span class='opr'>)</span>;
+RPC_STATUS RpcMgmtIsServerListening<span class='opr'>(</span>RPC_BINDING_HANDLE<span class='opr'>)</span>;
+RPC_STATUS RpcMgmtStopServerListening<span class='opr'>(</span>RPC_BINDING_HANDLE<span class='opr'>)</span>;
+RPC_STATUS RpcMgmtWaitServerListen<span class='opr'>(</span><span class='opr'>)</span>;
+RPC_STATUS RpcMgmtSetServerStackSize<span class='opr'>(</span><span class='kw4'>uint</span><span class='opr'>)</span>;
+<span class='kw4'>void</span> RpcSsDontSerializeContext<span class='opr'>(</span><span class='opr'>)</span>;
+RPC_STATUS RpcMgmtEnableIdleCleanup<span class='opr'>(</span><span class='opr'>)</span>;
+RPC_STATUS RpcMgmtInqIfIds<span class='opr'>(</span>RPC_BINDING_HANDLE,RPC_IF_ID_VECTOR<span class='opr'>*</span><span class='opr'>*</span><span class='opr'>)</span>;
+RPC_STATUS RpcIfIdVectorFree<span class='opr'>(</span>RPC_IF_ID_VECTOR<span class='opr'>*</span><span class='opr'>*</span><span class='opr'>)</span>;
+RPC_STATUS RpcEpResolveBinding<span class='opr'>(</span>RPC_BINDING_HANDLE,RPC_IF_HANDLE<span class='opr'>)</span>;
+RPC_STATUS RpcBindingServerFromClient<span class='opr'>(</span>RPC_BINDING_HANDLE,RPC_BINDING_HANDLE<span class='opr'>*</span><span class='opr'>)</span>;
+
+<span class='com'>/** never returns */</span>
+<span class='kw4'>void</span>  RpcRaiseException<span class='opr'>(</span>RPC_STATUS<span class='opr'>)</span>;
+RPC_STATUS RpcTestCancel<span class='opr'>(</span><span class='opr'>)</span>;
+RPC_STATUS RpcCancelThread<span class='opr'>(</span><span class='kw4'>void</span><span class='opr'>*</span><span class='opr'>)</span>;
+RPC_STATUS UuidCreate<span class='opr'>(</span>UUID<span class='opr'>*</span><span class='opr'>)</span>;
+<span class='kw4'>int</span> UuidCompare<span class='opr'>(</span>UUID<span class='opr'>*</span>,UUID<span class='opr'>*</span>, RPC_STATUS<span class='opr'>*</span><span class='opr'>)</span>;
+RPC_STATUS UuidCreateNil<span class='opr'>(</span>UUID<span class='opr'>*</span><span class='opr'>)</span>;
+<span class='kw4'>int</span> UuidEqual<span class='opr'>(</span>UUID<span class='opr'>*</span>,UUID<span class='opr'>*</span>, RPC_STATUS<span class='opr'>*</span><span class='opr'>)</span>;
+<span class='kw4'>ushort</span> UuidHash<span class='opr'>(</span>UUID<span class='opr'>*</span>,RPC_STATUS<span class='opr'>*</span><span class='opr'>)</span>;
+<span class='kw4'>int</span> UuidIsNil<span class='opr'>(</span>UUID<span class='opr'>*</span>,RPC_STATUS<span class='opr'>*</span><span class='opr'>)</span>;
+RPC_STATUS RpcEpUnregister<span class='opr'>(</span>RPC_IF_HANDLE,RPC_BINDING_VECTOR<span class='opr'>*</span>,UUID_VECTOR<span class='opr'>*</span><span class='opr'>)</span>;
+RPC_STATUS RpcMgmtEpEltInqBegin<span class='opr'>(</span>RPC_BINDING_HANDLE,<span class='kw4'>uint</span>,RPC_IF_ID<span class='opr'>*</span>,<span class='kw4'>uint</span>,UUID<span class='opr'>*</span>,RPC_EP_INQ_HANDLE<span class='opr'>*</span><span class='opr'>)</span>;
+RPC_STATUS RpcMgmtEpEltInqDone<span class='opr'>(</span>RPC_EP_INQ_HANDLE<span class='opr'>*</span><span class='opr'>)</span>;
+RPC_STATUS RpcMgmtEpUnregister<span class='opr'>(</span>RPC_BINDING_HANDLE,RPC_IF_ID<span class='opr'>*</span>,RPC_BINDING_HANDLE,UUID<span class='opr'>*</span><span class='opr'>)</span>;
+RPC_STATUS RpcMgmtSetAuthorizationFn<span class='opr'>(</span>RPC_MGMT_AUTHORIZATION_FN<span class='opr'>)</span>;
+RPC_STATUS RpcMgmtInqParameter<span class='opr'>(</span><span class='kw4'>uint</span>,<span class='kw4'>uint</span><span class='opr'>*</span><span class='opr'>)</span>;
+RPC_STATUS RpcMgmtSetParameter<span class='opr'>(</span><span class='kw4'>uint</span>,<span class='kw4'>uint</span><span class='opr'>)</span>;
+RPC_STATUS RpcMgmtBindingInqParameter<span class='opr'>(</span>RPC_BINDING_HANDLE,<span class='kw4'>uint</span>,<span class='kw4'>uint</span><span class='opr'>*</span><span class='opr'>)</span>;
+RPC_STATUS RpcMgmtBindingSetParameter<span class='opr'>(</span>RPC_BINDING_HANDLE,<span class='kw4'>uint</span>,<span class='kw4'>uint</span><span class='opr'>)</span>;
+
+<span class='kw4'>static</span> <span class='kw1'>if</span> <span class='opr'>(</span>_WIN32_WINNT <span class='opr'>&gt;</span><span class='opr'>=</span> <span class='nbr'>0</span>x0500<span class='opr'>)</span> <span class='opr'>{</span>
+RPC_STATUS UuidCreateSequential<span class='opr'>(</span>UUID<span class='opr'>*</span><span class='opr'>)</span>;
+<span class='opr'>}</span>
+
+</pre></td></tr></table>	</body>
+</html>

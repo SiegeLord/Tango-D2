@@ -1,0 +1,429 @@
+<!DOCTYPE html 
+     PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+     "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html>
+	<head>
+		<link rel="stylesheet" href="style.css" type="text/css" />
+		<title>os/windows/c/lmshare.d</title>
+	</head>
+	<body>
+
+<table id='dcode'><tr><td id='lnum'><pre><span>1</span>
+<span>2</span>
+<span>3</span>
+<span>4</span>
+<span>5</span>
+<span>6</span>
+<span>7</span>
+<span>8</span>
+<span>9</span>
+<span>10</span>
+<span>11</span>
+<span>12</span>
+<span>13</span>
+<span>14</span>
+<span>15</span>
+<span>16</span>
+<span>17</span>
+<span>18</span>
+<span>19</span>
+<span>20</span>
+<span>21</span>
+<span>22</span>
+<span>23</span>
+<span>24</span>
+<span>25</span>
+<span>26</span>
+<span>27</span>
+<span>28</span>
+<span>29</span>
+<span>30</span>
+<span>31</span>
+<span>32</span>
+<span>33</span>
+<span>34</span>
+<span>35</span>
+<span>36</span>
+<span>37</span>
+<span>38</span>
+<span>39</span>
+<span>40</span>
+<span>41</span>
+<span>42</span>
+<span>43</span>
+<span>44</span>
+<span>45</span>
+<span>46</span>
+<span>47</span>
+<span>48</span>
+<span>49</span>
+<span>50</span>
+<span>51</span>
+<span>52</span>
+<span>53</span>
+<span>54</span>
+<span>55</span>
+<span>56</span>
+<span>57</span>
+<span>58</span>
+<span>59</span>
+<span>60</span>
+<span>61</span>
+<span>62</span>
+<span>63</span>
+<span>64</span>
+<span>65</span>
+<span>66</span>
+<span>67</span>
+<span>68</span>
+<span>69</span>
+<span>70</span>
+<span>71</span>
+<span>72</span>
+<span>73</span>
+<span>74</span>
+<span>75</span>
+<span>76</span>
+<span>77</span>
+<span>78</span>
+<span>79</span>
+<span>80</span>
+<span>81</span>
+<span>82</span>
+<span>83</span>
+<span>84</span>
+<span>85</span>
+<span>86</span>
+<span>87</span>
+<span>88</span>
+<span>89</span>
+<span>90</span>
+<span>91</span>
+<span>92</span>
+<span>93</span>
+<span>94</span>
+<span>95</span>
+<span>96</span>
+<span>97</span>
+<span>98</span>
+<span>99</span>
+<span>100</span>
+<span>101</span>
+<span>102</span>
+<span>103</span>
+<span>104</span>
+<span>105</span>
+<span>106</span>
+<span>107</span>
+<span>108</span>
+<span>109</span>
+<span>110</span>
+<span>111</span>
+<span>112</span>
+<span>113</span>
+<span>114</span>
+<span>115</span>
+<span>116</span>
+<span>117</span>
+<span>118</span>
+<span>119</span>
+<span>120</span>
+<span>121</span>
+<span>122</span>
+<span>123</span>
+<span>124</span>
+<span>125</span>
+<span>126</span>
+<span>127</span>
+<span>128</span>
+<span>129</span>
+<span>130</span>
+<span>131</span>
+<span>132</span>
+<span>133</span>
+<span>134</span>
+<span>135</span>
+<span>136</span>
+<span>137</span>
+<span>138</span>
+<span>139</span>
+<span>140</span>
+<span>141</span>
+<span>142</span>
+<span>143</span>
+<span>144</span>
+<span>145</span>
+<span>146</span>
+<span>147</span>
+<span>148</span>
+<span>149</span>
+<span>150</span>
+<span>151</span>
+<span>152</span>
+<span>153</span>
+<span>154</span>
+<span>155</span>
+<span>156</span>
+<span>157</span>
+<span>158</span>
+<span>159</span>
+<span>160</span>
+<span>161</span>
+<span>162</span>
+<span>163</span>
+<span>164</span>
+<span>165</span>
+<span>166</span>
+<span>167</span>
+<span>168</span>
+<span>169</span>
+<span>170</span>
+<span>171</span>
+<span>172</span>
+<span>173</span>
+<span>174</span>
+<span>175</span>
+<span>176</span>
+<span>177</span>
+<span>178</span>
+<span>179</span>
+<span>180</span>
+<span>181</span>
+<span>182</span>
+<span>183</span>
+<span>184</span>
+<span>185</span>
+<span>186</span>
+<span>187</span>
+<span>188</span>
+<span>189</span>
+<span>190</span>
+<span>191</span>
+<span>192</span>
+<span>193</span>
+<span>194</span>
+<span>195</span>
+<span>196</span>
+<span>197</span>
+<span>198</span>
+<span>199</span>
+<span>200</span>
+<span>201</span>
+<span>202</span>
+<span>203</span>
+<span>204</span>
+<span>205</span>
+<span>206</span>
+<span>207</span>
+<span>208</span>
+</pre></td><td id='code'><pre><span class='com'>/***********************************************************************\
+*                               lmshare.d                               *
+*                                                                       *
+*                       Windows API header module                       *
+*                                                                       *
+*                 Translated from MinGW Windows headers                 *
+*                                                                       *
+*                       Placed into public domain                       *
+\***********************************************************************/</span>
+<span class='kw2'>module</span> tango.os.windows.c.lmshare;
+
+<span class='com'>//version (build) { pragma(nolink); }</span>
+
+<span class='kw2'>import</span> tango.os.windows.c.lmcons;
+<span class='kw4'>private</span> <span class='kw2'>import</span> tango.os.windows.c.windef;
+
+
+<span class='kw4'>private</span> <span class='kw2'>import</span> tango.os.windows.c.w32api;
+<span class='kw4'>static</span> <span class='kw1'>if</span> <span class='opr'>(</span>_WIN32_WINNT_ONLY<span class='opr'>)</span> <span class='opr'>{</span>
+    <span class='com'>//pragma(lib, &quot;netapi.lib&quot;);</span>
+<span class='opr'>}</span>
+<span class='com'>/* else {
+// only for WinME, 98, 95.
+    //pragma(lib, &quot;svrapi.lib&quot;)
+}
+*/</span>
+
+<span class='kw4'>const</span> SHARE_NETNAME_PARMNUM      <span class='opr'>=</span> <span class='nbr'>1</span>;
+<span class='kw4'>const</span> SHARE_TYPE_PARMNUM         <span class='opr'>=</span> <span class='nbr'>3</span>;
+<span class='kw4'>const</span> SHARE_REMARK_PARMNUM       <span class='opr'>=</span> <span class='nbr'>4</span>;
+<span class='kw4'>const</span> SHARE_PERMISSIONS_PARMNUM  <span class='opr'>=</span> <span class='nbr'>5</span>;
+<span class='kw4'>const</span> SHARE_MAX_USES_PARMNUM     <span class='opr'>=</span> <span class='nbr'>6</span>;
+<span class='kw4'>const</span> SHARE_CURRENT_USES_PARMNUM <span class='opr'>=</span> <span class='nbr'>7</span>;
+<span class='kw4'>const</span> SHARE_PATH_PARMNUM         <span class='opr'>=</span> <span class='nbr'>8</span>;
+<span class='kw4'>const</span> SHARE_PASSWD_PARMNUM       <span class='opr'>=</span> <span class='nbr'>9</span>;
+<span class='kw4'>const</span> SHARE_FILE_SD_PARMNUM      <span class='opr'>=</span> <span class='nbr'>501</span>;
+<span class='kw4'>const</span> SHARE_REMARK_INFOLEVEL   <span class='opr'>=</span> PARMNUM_BASE_INFOLEVEL <span class='opr'>+</span> SHARE_REMARK_PARMNUM;
+<span class='kw4'>const</span> SHARE_MAX_USES_INFOLEVEL <span class='opr'>=</span> PARMNUM_BASE_INFOLEVEL <span class='opr'>+</span> SHARE_MAX_USES_PARMNUM;
+<span class='kw4'>const</span> SHARE_FILE_SD_INFOLEVEL  <span class='opr'>=</span> PARMNUM_BASE_INFOLEVEL <span class='opr'>+</span> SHARE_FILE_SD_PARMNUM;
+
+<span class='kw4'>const</span> SHI1_NUM_ELEMENTS <span class='opr'>=</span> <span class='nbr'>4</span>;
+<span class='kw4'>const</span> SHI2_NUM_ELEMENTS <span class='opr'>=</span> <span class='nbr'>10</span>;
+
+<span class='kw4'>const</span> STYPE_DISKTREE <span class='opr'>=</span> <span class='nbr'>0</span>;
+<span class='kw4'>const</span> STYPE_PRINTQ   <span class='opr'>=</span> <span class='nbr'>1</span>;
+<span class='kw4'>const</span> STYPE_DEVICE   <span class='opr'>=</span> <span class='nbr'>2</span>;
+<span class='kw4'>const</span> STYPE_IPC      <span class='opr'>=</span> <span class='nbr'>3</span>;
+<span class='kw4'>const</span> STYPE_DFS      <span class='opr'>=</span> <span class='nbr'>100</span>;
+<span class='kw4'>const</span> STYPE_SPECIAL  <span class='opr'>=</span> <span class='nbr'>0</span>x80000000;
+
+<span class='kw4'>const</span> DWORD SHI_USES_UNLIMITED <span class='opr'>=</span> <span class='opr'>-</span><span class='nbr'>1</span>;
+
+<span class='kw4'>const</span> SESS_GUEST <span class='opr'>=</span> <span class='nbr'>1</span>;
+<span class='kw4'>const</span> SESS_NOENCRYPTION <span class='opr'>=</span> <span class='nbr'>2</span>;
+<span class='kw4'>const</span> SESI1_NUM_ELEMENTS <span class='opr'>=</span> <span class='nbr'>8</span>;
+<span class='kw4'>const</span> SESI2_NUM_ELEMENTS <span class='opr'>=</span> <span class='nbr'>9</span>;
+
+<span class='kw4'>const</span> PERM_FILE_READ   <span class='opr'>=</span> <span class='nbr'>1</span>;
+<span class='kw4'>const</span> PERM_FILE_WRITE  <span class='opr'>=</span> <span class='nbr'>2</span>;
+<span class='kw4'>const</span> PERM_FILE_CREATE <span class='opr'>=</span> <span class='nbr'>4</span>;
+
+<span class='kw4'>struct</span> FILE_INFO_2 <span class='opr'>{</span>
+    DWORD fi2_id;
+<span class='opr'>}</span>
+<span class='kw2'>alias</span> FILE_INFO_2<span class='opr'>*</span> PFILE_INFO_2, LPFILE_INFO_2;
+
+<span class='kw4'>struct</span> FILE_INFO_3<span class='opr'>{</span>
+    DWORD fi3_id;
+    DWORD fi3_permissions;
+    DWORD fi3_num_locks;
+    LPTSTR fi3_pathname;
+    LPTSTR fi3_username;
+<span class='opr'>}</span>
+<span class='kw2'>alias</span> FILE_INFO_3<span class='opr'>*</span> PFILE_INFO_3, LPFILE_INFO_3;
+
+<span class='kw4'>struct</span> SHARE_INFO_0 <span class='opr'>{</span>
+    LPTSTR shi0_netname;
+<span class='opr'>}</span>
+<span class='kw2'>alias</span> SHARE_INFO_0<span class='opr'>*</span> PSHARE_INFO_0, LPSHARE_INFO_0;
+
+<span class='kw4'>struct</span> SHARE_INFO_1<span class='opr'>{</span>
+    LPTSTR shi1_netname;
+    DWORD shi1_type;
+    LPTSTR shi1_remark;
+<span class='opr'>}</span>
+<span class='kw2'>alias</span> SHARE_INFO_1<span class='opr'>*</span> PSHARE_INFO_1, LPSHARE_INFO_1;
+
+<span class='kw4'>struct</span> SHARE_INFO_2<span class='opr'>{</span>
+    LPTSTR shi2_netname;
+    DWORD shi2_type;
+    LPTSTR shi2_remark;
+    DWORD shi2_permissions;
+    DWORD shi2_max_uses;
+    DWORD shi2_current_uses;
+    LPTSTR shi2_path;
+    LPTSTR shi2_passwd;
+<span class='opr'>}</span>
+<span class='kw2'>alias</span> SHARE_INFO_2<span class='opr'>*</span> PSHARE_INFO_2, LPSHARE_INFO_2;
+
+<span class='kw4'>struct</span> SHARE_INFO_502<span class='opr'>{</span>
+    LPTSTR shi502_netname;
+    DWORD shi502_type;
+    LPTSTR shi502_remark;
+    DWORD shi502_permissions;
+    DWORD shi502_max_uses;
+    DWORD shi502_current_uses;
+    LPTSTR shi502_path;
+    LPTSTR shi502_passwd;
+    DWORD shi502_reserved;
+    PSECURITY_DESCRIPTOR shi502_security_descriptor;
+<span class='opr'>}</span>
+<span class='kw2'>alias</span> SHARE_INFO_502<span class='opr'>*</span> PSHARE_INFO_502, LPSHARE_INFO_502;
+
+<span class='kw4'>struct</span> SHARE_INFO_1004<span class='opr'>{</span>
+    LPTSTR shi1004_remark;
+<span class='opr'>}</span>
+<span class='kw2'>alias</span> SHARE_INFO_1004<span class='opr'>*</span> PSHARE_INFO_1004, LPSHARE_INFO_1004;
+
+<span class='kw4'>struct</span> SHARE_INFO_1006<span class='opr'>{</span>
+    DWORD shi1006_max_uses;
+<span class='opr'>}</span>
+<span class='kw2'>alias</span> SHARE_INFO_1006<span class='opr'>*</span> PSHARE_INFO_1006, LPSHARE_INFO_1006;
+
+<span class='kw4'>struct</span> SHARE_INFO_1501<span class='opr'>{</span>
+    DWORD shi1501_reserved;
+    PSECURITY_DESCRIPTOR shi1501_security_descriptor;
+<span class='opr'>}</span>
+<span class='kw2'>alias</span> SHARE_INFO_1501<span class='opr'>*</span> PSHARE_INFO_1501, LPSHARE_INFO_1501;
+
+<span class='kw4'>struct</span> SESSION_INFO_0 <span class='opr'>{</span>
+    LPWSTR sesi0_cname;
+<span class='opr'>}</span>
+<span class='kw2'>alias</span> SESSION_INFO_0<span class='opr'>*</span> PSESSION_INFO_0, LPSESSION_INFO_0;
+
+<span class='kw4'>struct</span> SESSION_INFO_1<span class='opr'>{</span>
+    LPTSTR sesi1_cname;
+    LPTSTR sesi1_username;
+    DWORD sesi1_num_opens;
+    DWORD sesi1_time;
+    DWORD sesi1_idle_time;
+    DWORD sesi1_user_flags;
+<span class='opr'>}</span>
+<span class='kw2'>alias</span> SESSION_INFO_1<span class='opr'>*</span> PSESSION_INFO_1, LPSESSION_INFO_1;
+
+<span class='kw4'>struct</span> SESSION_INFO_2<span class='opr'>{</span>
+    LPTSTR sesi2_cname;
+    LPTSTR sesi2_username;
+    DWORD sesi2_num_opens;
+    DWORD sesi2_time;
+    DWORD sesi2_idle_time;
+    DWORD sesi2_user_flags;
+    LPWSTR sesi2_cltype_name;
+<span class='opr'>}</span>
+<span class='kw2'>alias</span> SESSION_INFO_2<span class='opr'>*</span> PSESSION_INFO_2, LPSESSION_INFO_2;
+
+<span class='kw4'>struct</span> SESSION_INFO_10<span class='opr'>{</span>
+    LPWSTR sesi10_cname;
+    LPWSTR sesi10_username;
+    DWORD sesi10_time;
+    DWORD sesi10_idle_time;
+<span class='opr'>}</span>
+<span class='kw2'>alias</span> SESSION_INFO_10<span class='opr'>*</span> PSESSION_INFO_10, LPSESSION_INFO_10;
+
+<span class='kw4'>struct</span> SESSION_INFO_502<span class='opr'>{</span>
+    LPWSTR sesi502_cname;
+    LPWSTR sesi502_username;
+    DWORD sesi502_num_opens;
+    DWORD sesi502_time;
+    DWORD sesi502_idle_time;
+    DWORD sesi502_user_flags;
+    LPWSTR sesi502_cltype_name;
+    LPWSTR sesi502_transport;
+<span class='opr'>}</span>
+<span class='kw2'>alias</span> SESSION_INFO_502<span class='opr'>*</span> PSESSION_INFO_502, LPSESSION_INFO_502;
+
+<span class='kw4'>struct</span> CONNECTION_INFO_0 <span class='opr'>{</span>
+    DWORD coni0_id;
+<span class='opr'>}</span>
+<span class='kw2'>alias</span> CONNECTION_INFO_0<span class='opr'>*</span> PCONNECTION_INFO_0, LPCONNECTION_INFO_0;
+
+<span class='kw4'>struct</span> CONNECTION_INFO_1<span class='opr'>{</span>
+    DWORD coni1_id;
+    DWORD coni1_type;
+    DWORD coni1_num_opens;
+    DWORD coni1_num_users;
+    DWORD coni1_time;
+    LPWSTR coni1_username;
+    LPWSTR coni1_netname;
+<span class='opr'>}</span>
+<span class='kw2'>alias</span> CONNECTION_INFO_1<span class='opr'>*</span> PCONNECTION_INFO_1, LPCONNECTION_INFO_1;
+
+<span class='kw2'>extern</span> <span class='opr'>(</span>Windows<span class='opr'>)</span> <span class='opr'>{</span>
+NET_API_STATUS NetShareAdd<span class='opr'>(</span>LPWSTR,DWORD,PBYTE,PDWORD<span class='opr'>)</span>;
+NET_API_STATUS NetShareEnum<span class='opr'>(</span>LPWSTR,DWORD,PBYTE<span class='opr'>*</span>,DWORD,PDWORD,PDWORD,PDWORD<span class='opr'>)</span>;
+NET_API_STATUS NetShareEnumSticky<span class='opr'>(</span>LPWSTR,DWORD,PBYTE<span class='opr'>*</span>,DWORD,PDWORD,PDWORD,PDWORD resume_handle<span class='opr'>)</span>;
+NET_API_STATUS NetShareGetInfo<span class='opr'>(</span>LPWSTR,LPWSTR,DWORD,PBYTE<span class='opr'>*</span><span class='opr'>)</span>;
+NET_API_STATUS NetShareSetInfo<span class='opr'>(</span>LPWSTR,LPWSTR,DWORD,PBYTE,PDWORD<span class='opr'>)</span>;
+NET_API_STATUS NetShareDel<span class='opr'>(</span>LPWSTR,LPWSTR,DWORD<span class='opr'>)</span>;
+NET_API_STATUS NetShareDelSticky<span class='opr'>(</span>LPWSTR,LPWSTR,DWORD<span class='opr'>)</span>;
+NET_API_STATUS NetShareCheck<span class='opr'>(</span>LPWSTR,LPWSTR,PDWORD<span class='opr'>)</span>;
+NET_API_STATUS NetSessionEnum<span class='opr'>(</span>LPWSTR,LPWSTR,LPWSTR,DWORD,PBYTE<span class='opr'>*</span>,DWORD,PDWORD,PDWORD,PDWORD<span class='opr'>)</span>;
+NET_API_STATUS NetSessionDel<span class='opr'>(</span>LPWSTR,LPWSTR,LPWSTR<span class='opr'>)</span>;
+NET_API_STATUS NetSessionGetInfo<span class='opr'>(</span>LPWSTR,LPWSTR,LPWSTR,DWORD,PBYTE<span class='opr'>*</span><span class='opr'>)</span>;
+NET_API_STATUS NetConnectionEnum<span class='opr'>(</span>LPWSTR,LPWSTR,DWORD,PBYTE<span class='opr'>*</span>,DWORD,PDWORD,PDWORD,PDWORD<span class='opr'>)</span>;
+NET_API_STATUS NetFileClose<span class='opr'>(</span>LPWSTR,DWORD<span class='opr'>)</span>;
+NET_API_STATUS NetFileEnum<span class='opr'>(</span>LPWSTR,LPWSTR,LPWSTR,DWORD,PBYTE<span class='opr'>*</span>,DWORD,PDWORD,PDWORD,PDWORD<span class='opr'>)</span>;
+NET_API_STATUS NetFileGetInfo<span class='opr'>(</span>LPWSTR,DWORD,DWORD,PBYTE<span class='opr'>*</span><span class='opr'>)</span>;
+<span class='opr'>}</span>
+</pre></td></tr></table>	</body>
+</html>

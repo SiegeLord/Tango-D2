@@ -1,0 +1,1367 @@
+<!DOCTYPE html 
+     PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+     "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html>
+	<head>
+		<link rel="stylesheet" href="style.css" type="text/css" />
+		<title>os/windows/c/commdlg.d</title>
+	</head>
+	<body>
+
+<table id='dcode'><tr><td id='lnum'><pre><span>1</span>
+<span>2</span>
+<span>3</span>
+<span>4</span>
+<span>5</span>
+<span>6</span>
+<span>7</span>
+<span>8</span>
+<span>9</span>
+<span>10</span>
+<span>11</span>
+<span>12</span>
+<span>13</span>
+<span>14</span>
+<span>15</span>
+<span>16</span>
+<span>17</span>
+<span>18</span>
+<span>19</span>
+<span>20</span>
+<span>21</span>
+<span>22</span>
+<span>23</span>
+<span>24</span>
+<span>25</span>
+<span>26</span>
+<span>27</span>
+<span>28</span>
+<span>29</span>
+<span>30</span>
+<span>31</span>
+<span>32</span>
+<span>33</span>
+<span>34</span>
+<span>35</span>
+<span>36</span>
+<span>37</span>
+<span>38</span>
+<span>39</span>
+<span>40</span>
+<span>41</span>
+<span>42</span>
+<span>43</span>
+<span>44</span>
+<span>45</span>
+<span>46</span>
+<span>47</span>
+<span>48</span>
+<span>49</span>
+<span>50</span>
+<span>51</span>
+<span>52</span>
+<span>53</span>
+<span>54</span>
+<span>55</span>
+<span>56</span>
+<span>57</span>
+<span>58</span>
+<span>59</span>
+<span>60</span>
+<span>61</span>
+<span>62</span>
+<span>63</span>
+<span>64</span>
+<span>65</span>
+<span>66</span>
+<span>67</span>
+<span>68</span>
+<span>69</span>
+<span>70</span>
+<span>71</span>
+<span>72</span>
+<span>73</span>
+<span>74</span>
+<span>75</span>
+<span>76</span>
+<span>77</span>
+<span>78</span>
+<span>79</span>
+<span>80</span>
+<span>81</span>
+<span>82</span>
+<span>83</span>
+<span>84</span>
+<span>85</span>
+<span>86</span>
+<span>87</span>
+<span>88</span>
+<span>89</span>
+<span>90</span>
+<span>91</span>
+<span>92</span>
+<span>93</span>
+<span>94</span>
+<span>95</span>
+<span>96</span>
+<span>97</span>
+<span>98</span>
+<span>99</span>
+<span>100</span>
+<span>101</span>
+<span>102</span>
+<span>103</span>
+<span>104</span>
+<span>105</span>
+<span>106</span>
+<span>107</span>
+<span>108</span>
+<span>109</span>
+<span>110</span>
+<span>111</span>
+<span>112</span>
+<span>113</span>
+<span>114</span>
+<span>115</span>
+<span>116</span>
+<span>117</span>
+<span>118</span>
+<span>119</span>
+<span>120</span>
+<span>121</span>
+<span>122</span>
+<span>123</span>
+<span>124</span>
+<span>125</span>
+<span>126</span>
+<span>127</span>
+<span>128</span>
+<span>129</span>
+<span>130</span>
+<span>131</span>
+<span>132</span>
+<span>133</span>
+<span>134</span>
+<span>135</span>
+<span>136</span>
+<span>137</span>
+<span>138</span>
+<span>139</span>
+<span>140</span>
+<span>141</span>
+<span>142</span>
+<span>143</span>
+<span>144</span>
+<span>145</span>
+<span>146</span>
+<span>147</span>
+<span>148</span>
+<span>149</span>
+<span>150</span>
+<span>151</span>
+<span>152</span>
+<span>153</span>
+<span>154</span>
+<span>155</span>
+<span>156</span>
+<span>157</span>
+<span>158</span>
+<span>159</span>
+<span>160</span>
+<span>161</span>
+<span>162</span>
+<span>163</span>
+<span>164</span>
+<span>165</span>
+<span>166</span>
+<span>167</span>
+<span>168</span>
+<span>169</span>
+<span>170</span>
+<span>171</span>
+<span>172</span>
+<span>173</span>
+<span>174</span>
+<span>175</span>
+<span>176</span>
+<span>177</span>
+<span>178</span>
+<span>179</span>
+<span>180</span>
+<span>181</span>
+<span>182</span>
+<span>183</span>
+<span>184</span>
+<span>185</span>
+<span>186</span>
+<span>187</span>
+<span>188</span>
+<span>189</span>
+<span>190</span>
+<span>191</span>
+<span>192</span>
+<span>193</span>
+<span>194</span>
+<span>195</span>
+<span>196</span>
+<span>197</span>
+<span>198</span>
+<span>199</span>
+<span>200</span>
+<span>201</span>
+<span>202</span>
+<span>203</span>
+<span>204</span>
+<span>205</span>
+<span>206</span>
+<span>207</span>
+<span>208</span>
+<span>209</span>
+<span>210</span>
+<span>211</span>
+<span>212</span>
+<span>213</span>
+<span>214</span>
+<span>215</span>
+<span>216</span>
+<span>217</span>
+<span>218</span>
+<span>219</span>
+<span>220</span>
+<span>221</span>
+<span>222</span>
+<span>223</span>
+<span>224</span>
+<span>225</span>
+<span>226</span>
+<span>227</span>
+<span>228</span>
+<span>229</span>
+<span>230</span>
+<span>231</span>
+<span>232</span>
+<span>233</span>
+<span>234</span>
+<span>235</span>
+<span>236</span>
+<span>237</span>
+<span>238</span>
+<span>239</span>
+<span>240</span>
+<span>241</span>
+<span>242</span>
+<span>243</span>
+<span>244</span>
+<span>245</span>
+<span>246</span>
+<span>247</span>
+<span>248</span>
+<span>249</span>
+<span>250</span>
+<span>251</span>
+<span>252</span>
+<span>253</span>
+<span>254</span>
+<span>255</span>
+<span>256</span>
+<span>257</span>
+<span>258</span>
+<span>259</span>
+<span>260</span>
+<span>261</span>
+<span>262</span>
+<span>263</span>
+<span>264</span>
+<span>265</span>
+<span>266</span>
+<span>267</span>
+<span>268</span>
+<span>269</span>
+<span>270</span>
+<span>271</span>
+<span>272</span>
+<span>273</span>
+<span>274</span>
+<span>275</span>
+<span>276</span>
+<span>277</span>
+<span>278</span>
+<span>279</span>
+<span>280</span>
+<span>281</span>
+<span>282</span>
+<span>283</span>
+<span>284</span>
+<span>285</span>
+<span>286</span>
+<span>287</span>
+<span>288</span>
+<span>289</span>
+<span>290</span>
+<span>291</span>
+<span>292</span>
+<span>293</span>
+<span>294</span>
+<span>295</span>
+<span>296</span>
+<span>297</span>
+<span>298</span>
+<span>299</span>
+<span>300</span>
+<span>301</span>
+<span>302</span>
+<span>303</span>
+<span>304</span>
+<span>305</span>
+<span>306</span>
+<span>307</span>
+<span>308</span>
+<span>309</span>
+<span>310</span>
+<span>311</span>
+<span>312</span>
+<span>313</span>
+<span>314</span>
+<span>315</span>
+<span>316</span>
+<span>317</span>
+<span>318</span>
+<span>319</span>
+<span>320</span>
+<span>321</span>
+<span>322</span>
+<span>323</span>
+<span>324</span>
+<span>325</span>
+<span>326</span>
+<span>327</span>
+<span>328</span>
+<span>329</span>
+<span>330</span>
+<span>331</span>
+<span>332</span>
+<span>333</span>
+<span>334</span>
+<span>335</span>
+<span>336</span>
+<span>337</span>
+<span>338</span>
+<span>339</span>
+<span>340</span>
+<span>341</span>
+<span>342</span>
+<span>343</span>
+<span>344</span>
+<span>345</span>
+<span>346</span>
+<span>347</span>
+<span>348</span>
+<span>349</span>
+<span>350</span>
+<span>351</span>
+<span>352</span>
+<span>353</span>
+<span>354</span>
+<span>355</span>
+<span>356</span>
+<span>357</span>
+<span>358</span>
+<span>359</span>
+<span>360</span>
+<span>361</span>
+<span>362</span>
+<span>363</span>
+<span>364</span>
+<span>365</span>
+<span>366</span>
+<span>367</span>
+<span>368</span>
+<span>369</span>
+<span>370</span>
+<span>371</span>
+<span>372</span>
+<span>373</span>
+<span>374</span>
+<span>375</span>
+<span>376</span>
+<span>377</span>
+<span>378</span>
+<span>379</span>
+<span>380</span>
+<span>381</span>
+<span>382</span>
+<span>383</span>
+<span>384</span>
+<span>385</span>
+<span>386</span>
+<span>387</span>
+<span>388</span>
+<span>389</span>
+<span>390</span>
+<span>391</span>
+<span>392</span>
+<span>393</span>
+<span>394</span>
+<span>395</span>
+<span>396</span>
+<span>397</span>
+<span>398</span>
+<span>399</span>
+<span>400</span>
+<span>401</span>
+<span>402</span>
+<span>403</span>
+<span>404</span>
+<span>405</span>
+<span>406</span>
+<span>407</span>
+<span>408</span>
+<span>409</span>
+<span>410</span>
+<span>411</span>
+<span>412</span>
+<span>413</span>
+<span>414</span>
+<span>415</span>
+<span>416</span>
+<span>417</span>
+<span>418</span>
+<span>419</span>
+<span>420</span>
+<span>421</span>
+<span>422</span>
+<span>423</span>
+<span>424</span>
+<span>425</span>
+<span>426</span>
+<span>427</span>
+<span>428</span>
+<span>429</span>
+<span>430</span>
+<span>431</span>
+<span>432</span>
+<span>433</span>
+<span>434</span>
+<span>435</span>
+<span>436</span>
+<span>437</span>
+<span>438</span>
+<span>439</span>
+<span>440</span>
+<span>441</span>
+<span>442</span>
+<span>443</span>
+<span>444</span>
+<span>445</span>
+<span>446</span>
+<span>447</span>
+<span>448</span>
+<span>449</span>
+<span>450</span>
+<span>451</span>
+<span>452</span>
+<span>453</span>
+<span>454</span>
+<span>455</span>
+<span>456</span>
+<span>457</span>
+<span>458</span>
+<span>459</span>
+<span>460</span>
+<span>461</span>
+<span>462</span>
+<span>463</span>
+<span>464</span>
+<span>465</span>
+<span>466</span>
+<span>467</span>
+<span>468</span>
+<span>469</span>
+<span>470</span>
+<span>471</span>
+<span>472</span>
+<span>473</span>
+<span>474</span>
+<span>475</span>
+<span>476</span>
+<span>477</span>
+<span>478</span>
+<span>479</span>
+<span>480</span>
+<span>481</span>
+<span>482</span>
+<span>483</span>
+<span>484</span>
+<span>485</span>
+<span>486</span>
+<span>487</span>
+<span>488</span>
+<span>489</span>
+<span>490</span>
+<span>491</span>
+<span>492</span>
+<span>493</span>
+<span>494</span>
+<span>495</span>
+<span>496</span>
+<span>497</span>
+<span>498</span>
+<span>499</span>
+<span>500</span>
+<span>501</span>
+<span>502</span>
+<span>503</span>
+<span>504</span>
+<span>505</span>
+<span>506</span>
+<span>507</span>
+<span>508</span>
+<span>509</span>
+<span>510</span>
+<span>511</span>
+<span>512</span>
+<span>513</span>
+<span>514</span>
+<span>515</span>
+<span>516</span>
+<span>517</span>
+<span>518</span>
+<span>519</span>
+<span>520</span>
+<span>521</span>
+<span>522</span>
+<span>523</span>
+<span>524</span>
+<span>525</span>
+<span>526</span>
+<span>527</span>
+<span>528</span>
+<span>529</span>
+<span>530</span>
+<span>531</span>
+<span>532</span>
+<span>533</span>
+<span>534</span>
+<span>535</span>
+<span>536</span>
+<span>537</span>
+<span>538</span>
+<span>539</span>
+<span>540</span>
+<span>541</span>
+<span>542</span>
+<span>543</span>
+<span>544</span>
+<span>545</span>
+<span>546</span>
+<span>547</span>
+<span>548</span>
+<span>549</span>
+<span>550</span>
+<span>551</span>
+<span>552</span>
+<span>553</span>
+<span>554</span>
+<span>555</span>
+<span>556</span>
+<span>557</span>
+<span>558</span>
+<span>559</span>
+<span>560</span>
+<span>561</span>
+<span>562</span>
+<span>563</span>
+<span>564</span>
+<span>565</span>
+<span>566</span>
+<span>567</span>
+<span>568</span>
+<span>569</span>
+<span>570</span>
+<span>571</span>
+<span>572</span>
+<span>573</span>
+<span>574</span>
+<span>575</span>
+<span>576</span>
+<span>577</span>
+<span>578</span>
+<span>579</span>
+<span>580</span>
+<span>581</span>
+<span>582</span>
+<span>583</span>
+<span>584</span>
+<span>585</span>
+<span>586</span>
+<span>587</span>
+<span>588</span>
+<span>589</span>
+<span>590</span>
+<span>591</span>
+<span>592</span>
+<span>593</span>
+<span>594</span>
+<span>595</span>
+<span>596</span>
+<span>597</span>
+<span>598</span>
+<span>599</span>
+<span>600</span>
+<span>601</span>
+<span>602</span>
+<span>603</span>
+<span>604</span>
+<span>605</span>
+<span>606</span>
+<span>607</span>
+<span>608</span>
+<span>609</span>
+<span>610</span>
+<span>611</span>
+<span>612</span>
+<span>613</span>
+<span>614</span>
+<span>615</span>
+<span>616</span>
+<span>617</span>
+<span>618</span>
+<span>619</span>
+<span>620</span>
+<span>621</span>
+<span>622</span>
+<span>623</span>
+<span>624</span>
+<span>625</span>
+<span>626</span>
+<span>627</span>
+<span>628</span>
+<span>629</span>
+<span>630</span>
+<span>631</span>
+<span>632</span>
+<span>633</span>
+<span>634</span>
+<span>635</span>
+<span>636</span>
+<span>637</span>
+<span>638</span>
+<span>639</span>
+<span>640</span>
+<span>641</span>
+<span>642</span>
+<span>643</span>
+<span>644</span>
+<span>645</span>
+<span>646</span>
+<span>647</span>
+<span>648</span>
+<span>649</span>
+<span>650</span>
+<span>651</span>
+<span>652</span>
+<span>653</span>
+<span>654</span>
+<span>655</span>
+<span>656</span>
+<span>657</span>
+<span>658</span>
+<span>659</span>
+<span>660</span>
+<span>661</span>
+<span>662</span>
+<span>663</span>
+<span>664</span>
+<span>665</span>
+<span>666</span>
+<span>667</span>
+<span>668</span>
+<span>669</span>
+<span>670</span>
+<span>671</span>
+<span>672</span>
+<span>673</span>
+<span>674</span>
+<span>675</span>
+<span>676</span>
+<span>677</span>
+</pre></td><td id='code'><pre><span class='com'>/***********************************************************************\
+*                               commdlg.d                               *
+*                                                                       *
+*                       Windows API header module                       *
+*                                                                       *
+*                 Translated from MinGW Windows headers                 *
+*                                                                       *
+*                       Placed into public domain                       *
+\***********************************************************************/</span>
+
+<span class='kw2'>module</span> tango.os.windows.c.commdlg;
+
+<span class='com'>//version (build) { pragma(nolink); }</span>
+
+<span class='com'>//pragma(lib, &quot;comdlg32.lib&quot;);</span>
+
+<span class='kw4'>private</span> <span class='kw2'>import</span> tango.os.windows.c.w32api;
+<span class='kw2'>import</span> tango.os.windows.c.windef;
+<span class='kw2'>import</span> tango.os.windows.c.wingdi; <span class='com'>// for LPLOGFONTA</span>
+<span class='kw2'>import</span> tango.os.windows.c.winuser;
+
+<span class='kw4'>const</span> TCHAR <span class='opr'>[</span><span class='opr'>]</span>
+    LBSELCHSTRING <span class='opr'>=</span> <span class='str'>&quot;commdlg_LBSelChangedNotify&quot;</span>,
+    SHAREVISTRING <span class='opr'>=</span> <span class='str'>&quot;commdlg_ShareViolation&quot;</span>,
+    FILEOKSTRING  <span class='opr'>=</span> <span class='str'>&quot;commdlg_FileNameOK&quot;</span>,
+    COLOROKSTRING <span class='opr'>=</span> <span class='str'>&quot;commdlg_ColorOK&quot;</span>,
+    SETRGBSTRING  <span class='opr'>=</span> <span class='str'>&quot;commdlg_SetRGBColor&quot;</span>,
+    HELPMSGSTRING <span class='opr'>=</span> <span class='str'>&quot;commdlg_help&quot;</span>,
+    FINDMSGSTRING <span class='opr'>=</span> <span class='str'>&quot;commdlg_FindReplace&quot;</span>;
+
+<span class='kw4'>const</span> UINT
+    CDN_FIRST          <span class='opr'>=</span> <span class='opr'>-</span><span class='nbr'>601</span>,<span class='com'>/* also in commctrl.h */</span>
+    CDN_LAST           <span class='opr'>=</span> <span class='opr'>-</span><span class='nbr'>699</span>,
+    CDN_INITDONE       <span class='opr'>=</span> CDN_FIRST,
+    CDN_SELCHANGE      <span class='opr'>=</span> CDN_FIRST<span class='opr'>-</span><span class='nbr'>1</span>,
+    CDN_FOLDERCHANGE   <span class='opr'>=</span> CDN_FIRST<span class='opr'>-</span><span class='nbr'>2</span>,
+    CDN_SHAREVIOLATION <span class='opr'>=</span> CDN_FIRST<span class='opr'>-</span><span class='nbr'>3</span>,
+    CDN_HELP           <span class='opr'>=</span> CDN_FIRST<span class='opr'>-</span><span class='nbr'>4</span>,
+    CDN_FILEOK         <span class='opr'>=</span> CDN_FIRST<span class='opr'>-</span><span class='nbr'>5</span>,
+    CDN_TYPECHANGE     <span class='opr'>=</span> CDN_FIRST<span class='opr'>-</span><span class='nbr'>6</span>;
+
+<span class='kw4'>const</span> CDM_FIRST           <span class='opr'>=</span> WM_USER<span class='opr'>+</span><span class='nbr'>100</span>;
+<span class='kw4'>const</span> CDM_LAST            <span class='opr'>=</span> WM_USER<span class='opr'>+</span><span class='nbr'>200</span>;
+<span class='kw4'>const</span> CDM_GETSPEC         <span class='opr'>=</span> CDM_FIRST;
+<span class='kw4'>const</span> CDM_GETFILEPATH     <span class='opr'>=</span> CDM_FIRST<span class='opr'>+</span><span class='nbr'>1</span>;
+<span class='kw4'>const</span> CDM_GETFOLDERPATH   <span class='opr'>=</span> CDM_FIRST<span class='opr'>+</span><span class='nbr'>2</span>;
+<span class='kw4'>const</span> CDM_GETFOLDERIDLIST <span class='opr'>=</span> CDM_FIRST<span class='opr'>+</span><span class='nbr'>3</span>;
+<span class='kw4'>const</span> CDM_SETCONTROLTEXT  <span class='opr'>=</span> CDM_FIRST<span class='opr'>+</span><span class='nbr'>4</span>;
+<span class='kw4'>const</span> CDM_HIDECONTROL     <span class='opr'>=</span> CDM_FIRST<span class='opr'>+</span><span class='nbr'>5</span>;
+<span class='kw4'>const</span> CDM_SETDEFEXT       <span class='opr'>=</span> CDM_FIRST<span class='opr'>+</span><span class='nbr'>6</span>;
+
+<span class='com'>// flags for ChooseColor</span>
+<span class='kw4'>enum</span> : DWORD <span class='opr'>{</span>
+    CC_RGBINIT              <span class='opr'>=</span> <span class='nbr'>1</span>,
+    CC_FULLOPEN             <span class='opr'>=</span> <span class='nbr'>2</span>,
+    CC_PREVENTFULLOPEN      <span class='opr'>=</span> <span class='nbr'>4</span>,
+    CC_SHOWHELP             <span class='opr'>=</span> <span class='nbr'>8</span>,
+    CC_ENABLEHOOK           <span class='opr'>=</span> <span class='nbr'>16</span>,
+    CC_ENABLETEMPLATE       <span class='opr'>=</span> <span class='nbr'>32</span>,
+    CC_ENABLETEMPLATEHANDLE <span class='opr'>=</span> <span class='nbr'>64</span>,
+    CC_SOLIDCOLOR           <span class='opr'>=</span> <span class='nbr'>128</span>,
+    CC_ANYCOLOR             <span class='opr'>=</span> <span class='nbr'>256</span>
+<span class='opr'>}</span>
+
+<span class='com'>// flags for ChooseFont</span>
+<span class='kw4'>enum</span> : DWORD <span class='opr'>{</span>
+    CF_SCREENFONTS          <span class='opr'>=</span> <span class='nbr'>1</span>,
+    CF_PRINTERFONTS         <span class='opr'>=</span> <span class='nbr'>2</span>,
+    CF_BOTH                 <span class='opr'>=</span> <span class='nbr'>3</span>,
+    CF_SHOWHELP             <span class='opr'>=</span> <span class='nbr'>4</span>,
+    CF_ENABLEHOOK           <span class='opr'>=</span> <span class='nbr'>8</span>,
+    CF_ENABLETEMPLATE       <span class='opr'>=</span> <span class='nbr'>16</span>,
+    CF_ENABLETEMPLATEHANDLE <span class='opr'>=</span> <span class='nbr'>32</span>,
+    CF_INITTOLOGFONTSTRUCT  <span class='opr'>=</span> <span class='nbr'>64</span>,
+    CF_USESTYLE             <span class='opr'>=</span> <span class='nbr'>128</span>,
+    CF_EFFECTS              <span class='opr'>=</span> <span class='nbr'>256</span>,
+    CF_APPLY                <span class='opr'>=</span> <span class='nbr'>512</span>,
+    CF_ANSIONLY             <span class='opr'>=</span> <span class='nbr'>1024</span>,
+    CF_SCRIPTSONLY          <span class='opr'>=</span> CF_ANSIONLY,
+    CF_NOVECTORFONTS        <span class='opr'>=</span> <span class='nbr'>2048</span>,
+    CF_NOOEMFONTS           <span class='opr'>=</span> <span class='nbr'>2048</span>,
+    CF_NOSIMULATIONS        <span class='opr'>=</span> <span class='nbr'>4096</span>,
+    CF_LIMITSIZE            <span class='opr'>=</span> <span class='nbr'>8192</span>,
+    CF_FIXEDPITCHONLY       <span class='opr'>=</span> <span class='nbr'>16384</span>,
+    CF_WYSIWYG              <span class='opr'>=</span> <span class='nbr'>32768</span>,
+    CF_FORCEFONTEXIST       <span class='opr'>=</span> <span class='nbr'>65536</span>,
+    CF_SCALABLEONLY         <span class='opr'>=</span> <span class='nbr'>131072</span>,
+    CF_TTONLY               <span class='opr'>=</span> <span class='nbr'>262144</span>,
+    CF_NOFACESEL            <span class='opr'>=</span> <span class='nbr'>524288</span>,
+    CF_NOSTYLESEL           <span class='opr'>=</span> <span class='nbr'>1048576</span>,
+    CF_NOSIZESEL            <span class='opr'>=</span> <span class='nbr'>2097152</span>,
+    CF_SELECTSCRIPT         <span class='opr'>=</span> <span class='nbr'>4194304</span>,
+    CF_NOSCRIPTSEL          <span class='opr'>=</span> <span class='nbr'>8388608</span>,
+    CF_NOVERTFONTS          <span class='opr'>=</span> <span class='nbr'>0</span>x1000000
+<span class='opr'>}</span>
+
+<span class='com'>// Font type for ChooseFont</span>
+<span class='kw4'>enum</span> : WORD <span class='opr'>{</span>
+    BOLD_FONTTYPE      <span class='opr'>=</span> <span class='nbr'>0</span>x100,
+    ITALIC_FONTTYPE    <span class='opr'>=</span> <span class='nbr'>0</span>x200,
+    REGULAR_FONTTYPE   <span class='opr'>=</span> <span class='nbr'>0</span>x400,
+    SCREEN_FONTTYPE    <span class='opr'>=</span> <span class='nbr'>0</span>x2000,    
+    PRINTER_FONTTYPE   <span class='opr'>=</span> <span class='nbr'>0</span>x4000,
+    SIMULATED_FONTTYPE <span class='opr'>=</span> <span class='nbr'>0</span>x8000
+<span class='opr'>}</span>
+    
+<span class='kw4'>const</span> WM_CHOOSEFONT_GETLOGFONT <span class='opr'>=</span> WM_USER <span class='opr'>+</span> <span class='nbr'>1</span>;
+<span class='kw4'>const</span> WM_CHOOSEFONT_SETLOGFONT <span class='opr'>=</span> WM_USER <span class='opr'>+</span> <span class='nbr'>101</span>;
+<span class='kw4'>const</span> WM_CHOOSEFONT_SETFLAGS   <span class='opr'>=</span> WM_USER <span class='opr'>+</span> <span class='nbr'>102</span>;
+
+<span class='com'>// flags for OpenFileName</span>
+<span class='kw4'>enum</span> : DWORD <span class='opr'>{</span>
+    OFN_ALLOWMULTISELECT <span class='opr'>=</span> <span class='nbr'>512</span>,
+    OFN_CREATEPROMPT <span class='opr'>=</span> <span class='nbr'>0</span>x2000,
+    OFN_ENABLEHOOK <span class='opr'>=</span> <span class='nbr'>32</span>,
+    OFN_ENABLESIZING <span class='opr'>=</span> <span class='nbr'>0</span>x800000,
+    OFN_ENABLETEMPLATE <span class='opr'>=</span> <span class='nbr'>64</span>,
+    OFN_ENABLETEMPLATEHANDLE <span class='opr'>=</span> <span class='nbr'>128</span>,
+    OFN_EXPLORER <span class='opr'>=</span> <span class='nbr'>0</span>x80000,
+    OFN_EXTENSIONDIFFERENT <span class='opr'>=</span> <span class='nbr'>0</span>x400,
+    OFN_FILEMUSTEXIST <span class='opr'>=</span> <span class='nbr'>0</span>x1000,
+    OFN_HIDEREADONLY <span class='opr'>=</span> <span class='nbr'>4</span>,
+    OFN_LONGNAMES <span class='opr'>=</span> <span class='nbr'>0</span>x200000,
+    OFN_NOCHANGEDIR <span class='opr'>=</span> <span class='nbr'>8</span>,
+    OFN_NODEREFERENCELINKS <span class='opr'>=</span> <span class='nbr'>0</span>x100000,
+    OFN_NOLONGNAMES <span class='opr'>=</span> <span class='nbr'>0</span>x40000,
+    OFN_NONETWORKBUTTON <span class='opr'>=</span> <span class='nbr'>0</span>x20000,
+    OFN_NOREADONLYRETURN <span class='opr'>=</span> <span class='nbr'>0</span>x8000,
+    OFN_NOTESTFILECREATE <span class='opr'>=</span> <span class='nbr'>0</span>x10000,
+    OFN_NOVALIDATE <span class='opr'>=</span> <span class='nbr'>256</span>,
+    OFN_OVERWRITEPROMPT <span class='opr'>=</span> <span class='nbr'>2</span>,
+    OFN_PATHMUSTEXIST <span class='opr'>=</span> <span class='nbr'>0</span>x800,
+    OFN_READONLY <span class='opr'>=</span> <span class='nbr'>1</span>,
+    OFN_SHAREAWARE <span class='opr'>=</span> <span class='nbr'>0</span>x4000,
+    OFN_SHOWHELP <span class='opr'>=</span> <span class='nbr'>16</span>,
+    OFN_SHAREFALLTHROUGH <span class='opr'>=</span> <span class='nbr'>2</span>,
+    OFN_SHARENOWARN <span class='opr'>=</span> <span class='nbr'>1</span>,
+    OFN_SHAREWARN <span class='opr'>=</span> <span class='nbr'>0</span>,
+<span class='opr'>}</span>
+
+<span class='kw4'>const</span> FR_DIALOGTERM<span class='opr'>=</span><span class='nbr'>64</span>;
+<span class='kw4'>const</span> FR_DOWN<span class='opr'>=</span><span class='nbr'>1</span>;
+<span class='kw4'>const</span> FR_ENABLEHOOK<span class='opr'>=</span><span class='nbr'>256</span>;
+<span class='kw4'>const</span> FR_ENABLETEMPLATE<span class='opr'>=</span><span class='nbr'>512</span>;
+<span class='kw4'>const</span> FR_ENABLETEMPLATEHANDLE<span class='opr'>=</span><span class='nbr'>0</span>x2000;
+<span class='kw4'>const</span> FR_FINDNEXT<span class='opr'>=</span><span class='nbr'>8</span>;
+<span class='kw4'>const</span> FR_HIDEUPDOWN<span class='opr'>=</span><span class='nbr'>0</span>x4000;
+<span class='kw4'>const</span> FR_HIDEMATCHCASE<span class='opr'>=</span><span class='nbr'>0</span>x8000;
+<span class='kw4'>const</span> FR_HIDEWHOLEWORD<span class='opr'>=</span><span class='nbr'>0</span>x10000;
+<span class='kw4'>const</span> FR_MATCHALEFHAMZA<span class='opr'>=</span><span class='nbr'>0</span>x80000000;
+<span class='kw4'>const</span> FR_MATCHCASE<span class='opr'>=</span><span class='nbr'>4</span>;
+<span class='kw4'>const</span> FR_MATCHDIAC<span class='opr'>=</span><span class='nbr'>0</span>x20000000;
+<span class='kw4'>const</span> FR_MATCHKASHIDA<span class='opr'>=</span><span class='nbr'>0</span>x40000000;
+<span class='kw4'>const</span> FR_NOMATCHCASE<span class='opr'>=</span><span class='nbr'>0</span>x800;
+<span class='kw4'>const</span> FR_NOUPDOWN<span class='opr'>=</span><span class='nbr'>0</span>x400;
+<span class='kw4'>const</span> FR_NOWHOLEWORD<span class='opr'>=</span><span class='nbr'>4096</span>;
+<span class='kw4'>const</span> FR_REPLACE<span class='opr'>=</span><span class='nbr'>16</span>;
+<span class='kw4'>const</span> FR_REPLACEALL<span class='opr'>=</span><span class='nbr'>32</span>;
+<span class='kw4'>const</span> FR_SHOWHELP<span class='opr'>=</span><span class='nbr'>128</span>;
+<span class='kw4'>const</span> FR_WHOLEWORD<span class='opr'>=</span><span class='nbr'>2</span>;
+
+<span class='kw4'>const</span> PD_ALLPAGES<span class='opr'>=</span><span class='nbr'>0</span>;
+<span class='kw4'>const</span> PD_SELECTION<span class='opr'>=</span><span class='nbr'>1</span>;
+<span class='kw4'>const</span> PD_PAGENUMS<span class='opr'>=</span><span class='nbr'>2</span>;
+<span class='kw4'>const</span> PD_NOSELECTION<span class='opr'>=</span><span class='nbr'>4</span>;
+<span class='kw4'>const</span> PD_NOPAGENUMS<span class='opr'>=</span><span class='nbr'>8</span>;
+<span class='kw4'>const</span> PD_COLLATE<span class='opr'>=</span><span class='nbr'>16</span>;
+<span class='kw4'>const</span> PD_PRINTTOFILE<span class='opr'>=</span><span class='nbr'>32</span>;
+<span class='kw4'>const</span> PD_PRINTSETUP<span class='opr'>=</span><span class='nbr'>64</span>;
+<span class='kw4'>const</span> PD_NOWARNING<span class='opr'>=</span><span class='nbr'>128</span>;
+<span class='kw4'>const</span> PD_RETURNDC<span class='opr'>=</span><span class='nbr'>256</span>;
+<span class='kw4'>const</span> PD_RETURNIC<span class='opr'>=</span><span class='nbr'>512</span>;
+<span class='kw4'>const</span> PD_RETURNDEFAULT<span class='opr'>=</span><span class='nbr'>1024</span>;
+<span class='kw4'>const</span> PD_SHOWHELP<span class='opr'>=</span><span class='nbr'>2048</span>;
+<span class='kw4'>const</span> PD_ENABLEPRINTHOOK<span class='opr'>=</span><span class='nbr'>4096</span>;
+<span class='kw4'>const</span> PD_ENABLESETUPHOOK<span class='opr'>=</span><span class='nbr'>8192</span>;
+<span class='kw4'>const</span> PD_ENABLEPRINTTEMPLATE<span class='opr'>=</span><span class='nbr'>16384</span>;
+<span class='kw4'>const</span> PD_ENABLESETUPTEMPLATE<span class='opr'>=</span><span class='nbr'>32768</span>;
+<span class='kw4'>const</span> PD_ENABLEPRINTTEMPLATEHANDLE<span class='opr'>=</span><span class='nbr'>65536</span>;
+<span class='kw4'>const</span> PD_ENABLESETUPTEMPLATEHANDLE<span class='opr'>=</span><span class='nbr'>0</span>x20000;
+<span class='kw4'>const</span> PD_USEDEVMODECOPIES<span class='opr'>=</span><span class='nbr'>0</span>x40000;
+<span class='kw4'>const</span> PD_USEDEVMODECOPIESANDCOLLATE<span class='opr'>=</span><span class='nbr'>0</span>x40000;
+<span class='kw4'>const</span> PD_DISABLEPRINTTOFILE<span class='opr'>=</span><span class='nbr'>0</span>x80000;
+<span class='kw4'>const</span> PD_HIDEPRINTTOFILE<span class='opr'>=</span><span class='nbr'>0</span>x100000;
+<span class='kw4'>const</span> PD_NONETWORKBUTTON<span class='opr'>=</span><span class='nbr'>0</span>x200000;
+
+<span class='kw4'>const</span> PSD_DEFAULTMINMARGINS<span class='opr'>=</span><span class='nbr'>0</span>;
+<span class='kw4'>const</span> PSD_INWININIINTLMEASURE<span class='opr'>=</span><span class='nbr'>0</span>;
+<span class='kw4'>const</span> PSD_MINMARGINS<span class='opr'>=</span><span class='nbr'>1</span>;
+<span class='kw4'>const</span> PSD_MARGINS<span class='opr'>=</span><span class='nbr'>2</span>;
+<span class='kw4'>const</span> PSD_INTHOUSANDTHSOFINCHES<span class='opr'>=</span><span class='nbr'>4</span>;
+<span class='kw4'>const</span> PSD_INHUNDREDTHSOFMILLIMETERS<span class='opr'>=</span><span class='nbr'>8</span>;
+<span class='kw4'>const</span> PSD_DISABLEMARGINS<span class='opr'>=</span><span class='nbr'>16</span>;
+<span class='kw4'>const</span> PSD_DISABLEPRINTER<span class='opr'>=</span><span class='nbr'>32</span>;
+<span class='kw4'>const</span> PSD_NOWARNING<span class='opr'>=</span><span class='nbr'>128</span>;
+<span class='kw4'>const</span> PSD_DISABLEORIENTATION<span class='opr'>=</span><span class='nbr'>256</span>;
+<span class='kw4'>const</span> PSD_DISABLEPAPER<span class='opr'>=</span><span class='nbr'>512</span>;
+<span class='kw4'>const</span> PSD_RETURNDEFAULT<span class='opr'>=</span><span class='nbr'>1024</span>;
+<span class='kw4'>const</span> PSD_SHOWHELP<span class='opr'>=</span><span class='nbr'>2048</span>;
+<span class='kw4'>const</span> PSD_ENABLEPAGESETUPHOOK<span class='opr'>=</span><span class='nbr'>8192</span>;
+<span class='kw4'>const</span> PSD_ENABLEPAGESETUPTEMPLATE<span class='opr'>=</span><span class='nbr'>0</span>x8000;
+<span class='kw4'>const</span> PSD_ENABLEPAGESETUPTEMPLATEHANDLE<span class='opr'>=</span><span class='nbr'>0</span>x20000;
+<span class='kw4'>const</span> PSD_ENABLEPAGEPAINTHOOK<span class='opr'>=</span><span class='nbr'>0</span>x40000;
+<span class='kw4'>const</span> PSD_DISABLEPAGEPAINTING<span class='opr'>=</span><span class='nbr'>0</span>x80000;
+
+<span class='kw4'>const</span> WM_PSD_PAGESETUPDLG   <span class='opr'>=</span> WM_USER;
+<span class='kw4'>const</span> WM_PSD_FULLPAGERECT   <span class='opr'>=</span> WM_USER<span class='opr'>+</span><span class='nbr'>1</span>;
+<span class='kw4'>const</span> WM_PSD_MINMARGINRECT  <span class='opr'>=</span> WM_USER<span class='opr'>+</span><span class='nbr'>2</span>;
+<span class='kw4'>const</span> WM_PSD_MARGINRECT     <span class='opr'>=</span> WM_USER<span class='opr'>+</span><span class='nbr'>3</span>;
+<span class='kw4'>const</span> WM_PSD_GREEKTEXTRECT  <span class='opr'>=</span> WM_USER<span class='opr'>+</span><span class='nbr'>4</span>;
+<span class='kw4'>const</span> WM_PSD_ENVSTAMPRECT   <span class='opr'>=</span> WM_USER<span class='opr'>+</span><span class='nbr'>5</span>;
+<span class='kw4'>const</span> WM_PSD_YAFULLPAGERECT <span class='opr'>=</span> WM_USER<span class='opr'>+</span><span class='nbr'>6</span>;
+
+<span class='kw4'>const</span> CD_LBSELNOITEMS <span class='opr'>=</span> <span class='opr'>-</span><span class='nbr'>1</span>;
+<span class='kw4'>const</span> CD_LBSELCHANGE  <span class='opr'>=</span> <span class='nbr'>0</span>;
+<span class='kw4'>const</span> CD_LBSELSUB     <span class='opr'>=</span> <span class='nbr'>1</span>;
+<span class='kw4'>const</span> CD_LBSELADD     <span class='opr'>=</span> <span class='nbr'>2</span>;
+
+<span class='kw4'>const</span> DN_DEFAULTPRN<span class='opr'>=</span><span class='nbr'>1</span>;
+
+<span class='com'>/+
+// Both MinGW and the windows docs indicate that there are macros for the send messages
+// the controls. These seem to be totally unnecessary -- and at least one of MinGW or
+// Windows Docs is buggy!
+
+int CommDlg_OpenSave_GetSpec(HWND hWndControl, LPARAM lparam, WPARAM wParam) {
+    return SendMessage(hWndControl, CDM_GETSPEC, wParam, lParam);
+}
+
+int CommDlg_OpenSave_GetFilePath(HWND hWndControl, LPARAM lparam, WPARAM wParam) {
+    return SendMessage(hWndControl, CDM_GETFILEPATH, wParam, lParam);
+}
+
+int CommDlg_OpenSave_GetFolderPath(HWND hWndControl, LPARAM lparam, WPARAM wParam) {
+    return SendMessage(hWndControl, CDM_GETFOLDERPATH, wParam, lParam);
+}
+
+int CommDlg_OpenSave_GetFolderIDList(HWND hWndControl, LPARAM lparam, WPARAM wParam) {
+    return SendMessage(hWndControl, CDM_GETFOLDERIDLIST, wParam, lParam);
+}
+
+void CommDlg_OpenSave_SetControlText(HWND hWndControl, LPARAM lparam, WPARAM wParam) {
+    return SendMessage(hWndControl, CDM_SETCONTROLTEXT, wParam, lParam);
+}
+
+void CommDlg_OpenSave_HideControl(HWND hWndControl, WPARAM wParam) {
+    return SendMessage(hWndControl, CDM_HIDECONTROL, wParam, 0);
+}
+
+void CommDlg_OpenSave_SetDefExt(HWND hWndControl, TCHAR * lparam) {
+    return SendMessage(hWndControl, CDM_SETCONTROLTEXT, 0, cast(LPARAM)lParam);
+}
+
+// These aliases seem even more unnecessary
+alias CommDlg_OpenSave_GetSpec
+    CommDlg_OpenSave_GetSpecA, CommDlg_OpenSave_GetSpecW;
+alias CommDlg_OpenSave_GetFilePath
+    CommDlg_OpenSave_GetFilePathA, CommDlg_OpenSave_GetFilePathW;
+alias CommDlg_OpenSave_GetFolderPath
+    CommDlg_OpenSave_GetFolderPathA, CommDlg_OpenSave_GetFolderPathW;
++/</span>
+
+<span class='com'>// Callbacks. </span>
+<span class='kw2'>extern</span><span class='opr'>(</span>Windows<span class='opr'>)</span> <span class='opr'>{</span>
+<span class='kw2'>alias</span> UINT <span class='kw2'>function</span> <span class='opr'>(</span>HWND,UINT,WPARAM,LPARAM<span class='opr'>)</span>
+    LPCCHOOKPROC, LPCFHOOKPROC, LPFRHOOKPROC, LPOFNHOOKPROC,
+    LPPAGEPAINTHOOK, LPPAGESETUPHOOK, LPSETUPHOOKPROC, LPPRINTHOOKPROC;
+<span class='opr'>}</span>
+<span class='kw4'>align</span> <span class='opr'>(</span><span class='nbr'>1</span><span class='opr'>)</span>:
+
+<span class='kw4'>struct</span> CHOOSECOLORA<span class='opr'>{</span>
+    DWORD    lStructSize;
+    HWND    hwndOwner;
+    HWND    hInstance;
+    COLORREF    rgbResult;
+    COLORREF<span class='opr'>*</span>    lpCustColors;
+    DWORD    Flags;
+    LPARAM    lCustData;
+    LPCCHOOKPROC    lpfnHook;
+    LPCSTR    lpTemplateName;
+<span class='opr'>}</span>
+<span class='kw2'>alias</span> CHOOSECOLORA <span class='opr'>*</span> LPCHOOSECOLORA;
+
+<span class='kw4'>struct</span> CHOOSECOLORW<span class='opr'>{</span>
+    DWORD    lStructSize;
+    HWND    hwndOwner;
+    HWND    hInstance;
+    COLORREF    rgbResult;
+    COLORREF<span class='opr'>*</span>    lpCustColors;
+    DWORD    Flags;
+    LPARAM    lCustData;
+    LPCCHOOKPROC    lpfnHook;
+    LPCWSTR    lpTemplateName;
+<span class='opr'>}</span>
+<span class='kw2'>alias</span> CHOOSECOLORW <span class='opr'>*</span> LPCHOOSECOLORW;
+
+<span class='kw4'>struct</span> CHOOSEFONTA<span class='opr'>{</span>
+    DWORD    lStructSize;
+    HWND    hwndOwner;
+    HDC    hDC;
+    LPLOGFONTA    lpLogFont;
+    INT    iPointSize;
+    DWORD    Flags;
+    DWORD    rgbColors;
+    LPARAM    lCustData;
+    LPCFHOOKPROC    lpfnHook;
+    LPCSTR    lpTemplateName;
+    HINSTANCE    hInstance;
+    LPSTR    lpszStyle;
+    WORD    nFontType;
+    WORD    ___MISSING_ALIGNMENT__;
+    INT    nSizeMin;
+    INT    nSizeMax;
+<span class='opr'>}</span>
+<span class='kw2'>alias</span> CHOOSEFONTA <span class='opr'>*</span> LPCHOOSEFONTA;
+
+<span class='kw4'>struct</span> CHOOSEFONTW<span class='opr'>{</span>
+    DWORD    lStructSize;
+    HWND    hwndOwner;
+    HDC    hDC;
+    LPLOGFONTW    lpLogFont;
+    INT    iPointSize;
+    DWORD    Flags;
+    DWORD    rgbColors;
+    LPARAM    lCustData;
+    LPCFHOOKPROC    lpfnHook;
+    LPCWSTR    lpTemplateName;
+    HINSTANCE    hInstance;
+    LPWSTR    lpszStyle;
+    WORD    nFontType;
+    WORD    ___MISSING_ALIGNMENT__;
+    INT    nSizeMin;
+    INT    nSizeMax;
+<span class='opr'>}</span>
+<span class='kw2'>alias</span> CHOOSEFONTW <span class='opr'>*</span> LPCHOOSEFONTW;
+
+<span class='kw4'>struct</span> DEVNAMES<span class='opr'>{</span>
+    WORD wDriverOffset;
+    WORD wDeviceOffset;
+    WORD wOutputOffset;
+    WORD wDefault;
+<span class='opr'>}</span>
+<span class='kw2'>alias</span> DEVNAMES <span class='opr'>*</span> LPDEVNAMES;
+
+<span class='kw4'>struct</span> FINDREPLACEA <span class='opr'>{</span>
+    DWORD lStructSize;
+    HWND hwndOwner;
+    HINSTANCE hInstance;
+    DWORD Flags;
+    LPSTR lpstrFindWhat;
+    LPSTR lpstrReplaceWith;
+    WORD wFindWhatLen;
+    WORD wReplaceWithLen;
+    LPARAM lCustData;
+    LPFRHOOKPROC lpfnHook;
+    LPCSTR lpTemplateName;
+<span class='opr'>}</span>
+<span class='kw2'>alias</span> FINDREPLACEA <span class='opr'>*</span> LPFINDREPLACEA;
+
+<span class='kw4'>struct</span> FINDREPLACEW <span class='opr'>{</span>
+    DWORD lStructSize;
+    HWND hwndOwner;
+    HINSTANCE hInstance;
+    DWORD Flags;
+    LPWSTR lpstrFindWhat;
+    LPWSTR lpstrReplaceWith;
+    WORD wFindWhatLen;
+    WORD wReplaceWithLen;
+    LPARAM lCustData;
+    LPFRHOOKPROC lpfnHook;
+    LPCWSTR lpTemplateName;
+<span class='opr'>}</span>
+<span class='kw2'>alias</span> FINDREPLACEW <span class='opr'>*</span> LPFINDREPLACEW;
+
+<span class='kw4'>struct</span> OPENFILENAMEA <span class='opr'>{</span>
+    DWORD lStructSize;
+    HWND hwndOwner;
+    HINSTANCE hInstance;
+    LPCSTR lpstrFilter;
+    LPSTR lpstrCustomFilter;
+    DWORD nMaxCustFilter;
+    DWORD nFilterIndex;
+    LPSTR lpstrFile;
+    DWORD nMaxFile;
+    LPSTR lpstrFileTitle;
+    DWORD nMaxFileTitle;
+    LPCSTR lpstrInitialDir;
+    LPCSTR lpstrTitle;
+    DWORD Flags;
+    WORD nFileOffset;
+    WORD nFileExtension;
+    LPCSTR lpstrDefExt;
+    DWORD lCustData;
+    LPOFNHOOKPROC lpfnHook;
+    LPCSTR lpTemplateName;
+<span class='opr'>}</span>
+<span class='kw2'>alias</span> OPENFILENAMEA <span class='opr'>*</span> LPOPENFILENAMEA;
+
+<span class='kw4'>struct</span> OPENFILENAMEW<span class='opr'>{</span>
+    DWORD lStructSize;
+    HWND hwndOwner;
+    HINSTANCE hInstance;
+    LPCWSTR lpstrFilter;
+    LPWSTR lpstrCustomFilter;
+    DWORD nMaxCustFilter;
+    DWORD nFilterIndex;
+    LPWSTR lpstrFile;
+    DWORD nMaxFile;
+    LPWSTR lpstrFileTitle;
+    DWORD nMaxFileTitle;
+    LPCWSTR lpstrInitialDir;
+    LPCWSTR lpstrTitle;
+    DWORD Flags;
+    WORD nFileOffset;
+    WORD nFileExtension;
+    LPCWSTR lpstrDefExt;
+    DWORD lCustData;
+    LPOFNHOOKPROC lpfnHook;
+    LPCWSTR lpTemplateName;
+<span class='opr'>}</span>
+<span class='kw2'>alias</span> OPENFILENAMEW <span class='opr'>*</span> LPOPENFILENAMEW;
+
+<span class='kw4'>struct</span> OFNOTIFYA<span class='opr'>{</span>
+    NMHDR hdr;
+    LPOPENFILENAMEA lpOFN;
+    LPSTR pszFile;
+<span class='opr'>}</span>
+<span class='kw2'>alias</span> OFNOTIFYA <span class='opr'>*</span> LPOFNOTIFYA;
+
+<span class='kw4'>struct</span> OFNOTIFYW<span class='opr'>{</span>
+    NMHDR hdr;
+    LPOPENFILENAMEW lpOFN;
+    LPWSTR pszFile;
+<span class='opr'>}</span>
+<span class='kw2'>alias</span> OFNOTIFYW <span class='opr'>*</span> LPOFNOTIFYW;
+
+<span class='kw4'>struct</span> PAGESETUPDLGA<span class='opr'>{</span>
+    DWORD lStructSize;
+    HWND hwndOwner;
+    HGLOBAL hDevMode;
+    HGLOBAL hDevNames;
+    DWORD Flags;
+    POINT ptPaperSize;
+    RECT rtMinMargin;
+    RECT rtMargin;
+    HINSTANCE hInstance;
+    LPARAM lCustData;
+    LPPAGESETUPHOOK lpfnPageSetupHook;
+    LPPAGEPAINTHOOK lpfnPagePaintHook;
+    LPCSTR lpPageSetupTemplateName;
+    HGLOBAL hPageSetupTemplate;
+<span class='opr'>}</span>
+<span class='kw2'>alias</span> PAGESETUPDLGA <span class='opr'>*</span> LPPAGESETUPDLGA;
+
+<span class='kw4'>struct</span> PAGESETUPDLGW<span class='opr'>{</span>
+    DWORD lStructSize;
+    HWND hwndOwner;
+    HGLOBAL hDevMode;
+    HGLOBAL hDevNames;
+    DWORD Flags;
+    POINT ptPaperSize;
+    RECT rtMinMargin;
+    RECT rtMargin;
+    HINSTANCE hInstance;
+    LPARAM lCustData;
+    LPPAGESETUPHOOK lpfnPageSetupHook;
+    LPPAGEPAINTHOOK lpfnPagePaintHook;
+    LPCWSTR lpPageSetupTemplateName;
+    HGLOBAL hPageSetupTemplate;
+<span class='opr'>}</span>
+<span class='kw2'>alias</span> PAGESETUPDLGW <span class='opr'>*</span> LPPAGESETUPDLGW;
+
+<span class='kw4'>struct</span> PRINTDLGA<span class='opr'>{</span>
+    DWORD lStructSize;
+    HWND hwndOwner;
+    HANDLE hDevMode;
+    HANDLE hDevNames;
+    HDC hDC;
+    DWORD Flags;
+    WORD nFromPage;
+    WORD nToPage;
+    WORD nMinPage;
+    WORD nMaxPage;
+    WORD nCopies;
+    HINSTANCE hInstance;
+    DWORD lCustData;
+    LPPRINTHOOKPROC lpfnPrintHook;
+    LPSETUPHOOKPROC lpfnSetupHook;
+    LPCSTR lpPrintTemplateName;
+    LPCSTR lpSetupTemplateName;
+    HANDLE hPrintTemplate;
+    HANDLE hSetupTemplate;
+<span class='opr'>}</span>
+<span class='kw2'>alias</span> PRINTDLGA <span class='opr'>*</span> LPPRINTDLGA;
+
+<span class='kw4'>struct</span> PRINTDLGW<span class='opr'>{</span>
+    DWORD lStructSize;
+    HWND hwndOwner;
+    HANDLE hDevMode;
+    HANDLE hDevNames;
+    HDC hDC;
+    DWORD Flags;
+    WORD nFromPage;
+    WORD nToPage;
+    WORD nMinPage;
+    WORD nMaxPage;
+    WORD nCopies;
+    HINSTANCE hInstance;
+    DWORD lCustData;
+    LPPRINTHOOKPROC lpfnPrintHook;
+    LPSETUPHOOKPROC lpfnSetupHook;
+    LPCWSTR lpPrintTemplateName;
+    LPCWSTR lpSetupTemplateName;
+    HANDLE hPrintTemplate;
+    HANDLE hSetupTemplate;
+<span class='opr'>}</span>
+<span class='kw2'>alias</span> PRINTDLGW <span class='opr'>*</span> LPPRINTDLGW;
+
+<span class='kw4'>static</span> <span class='kw1'>if</span> <span class='opr'>(</span>WINVER <span class='opr'>&gt;</span><span class='opr'>=</span> <span class='nbr'>0</span>x0500<span class='opr'>)</span> <span class='opr'>{</span>
+<span class='kw2'>import</span> tango.os.windows.c.unknwn;<span class='com'>/* for LPUNKNOWN  */</span>
+<span class='kw2'>import</span> tango.os.windows.c.prsht;<span class='com'>/* for HPROPSHEETPAGE  */</span>
+
+<span class='kw4'>struct</span> PRINTPAGERANGE<span class='opr'>{</span>
+    DWORD  nFromPage;
+    DWORD  nToPage;
+<span class='opr'>}</span>
+<span class='kw2'>alias</span> PRINTPAGERANGE <span class='opr'>*</span> LPPRINTPAGERANGE;
+
+<span class='kw4'>struct</span> PRINTDLGEXA<span class='opr'>{</span>
+    DWORD lStructSize;
+    HWND hwndOwner;
+    HGLOBAL hDevMode;
+    HGLOBAL hDevNames;
+    HDC hDC;
+    DWORD Flags;
+    DWORD Flags2;
+    DWORD ExclusionFlags;
+    DWORD nPageRanges;
+    DWORD nMaxPageRanges;
+    LPPRINTPAGERANGE lpPageRanges;
+    DWORD nMinPage;
+    DWORD nMaxPage;
+    DWORD nCopies;
+    HINSTANCE hInstance;
+    LPCSTR lpPrintTemplateName;
+    LPUNKNOWN lpCallback;
+    DWORD nPropertyPages;
+    HPROPSHEETPAGE <span class='opr'>*</span>lphPropertyPages;
+    DWORD nStartPage;
+    DWORD dwResultAction;
+<span class='opr'>}</span>
+<span class='kw2'>alias</span> PRINTDLGEXA <span class='opr'>*</span> LPPRINTDLGEXA;
+
+<span class='kw4'>struct</span> PRINTDLGEXW<span class='opr'>{</span>
+    DWORD lStructSize;
+    HWND hwndOwner;
+    HGLOBAL hDevMode;
+    HGLOBAL hDevNames;
+    HDC hDC;
+    DWORD Flags;
+    DWORD Flags2;
+    DWORD ExclusionFlags;
+    DWORD nPageRanges;
+    DWORD nMaxPageRanges;
+    LPPRINTPAGERANGE lpPageRanges;
+    DWORD nMinPage;
+    DWORD nMaxPage;
+    DWORD nCopies;
+    HINSTANCE hInstance;
+    LPCWSTR lpPrintTemplateName;
+    LPUNKNOWN lpCallback;
+    DWORD nPropertyPages;
+    HPROPSHEETPAGE <span class='opr'>*</span>lphPropertyPages;
+    DWORD nStartPage;
+    DWORD dwResultAction;
+<span class='opr'>}</span>
+<span class='kw2'>alias</span> PRINTDLGEXW <span class='opr'>*</span> LPPRINTDLGEXW;
+
+<span class='opr'>}</span> <span class='com'>/* WINVER &gt;= 0x0500 */</span>
+
+<span class='kw4'>align</span>:
+
+<span class='kw2'>extern</span> <span class='opr'>(</span>Windows<span class='opr'>)</span>:
+
+BOOL ChooseColorA<span class='opr'>(</span>LPCHOOSECOLORA<span class='opr'>)</span>;
+BOOL ChooseColorW<span class='opr'>(</span>LPCHOOSECOLORW<span class='opr'>)</span>;
+BOOL ChooseFontA<span class='opr'>(</span>LPCHOOSEFONTA<span class='opr'>)</span>;
+BOOL ChooseFontW<span class='opr'>(</span>LPCHOOSEFONTW<span class='opr'>)</span>;
+DWORD CommDlgExtendedError<span class='opr'>(</span><span class='opr'>)</span>;
+HWND FindTextA<span class='opr'>(</span>LPFINDREPLACEA<span class='opr'>)</span>;
+HWND FindTextW<span class='opr'>(</span>LPFINDREPLACEW<span class='opr'>)</span>;
+<span class='kw4'>short</span> GetFileTitleA<span class='opr'>(</span>LPCSTR,LPSTR,WORD<span class='opr'>)</span>;
+<span class='kw4'>short</span> GetFileTitleW<span class='opr'>(</span>LPCWSTR,LPWSTR,WORD<span class='opr'>)</span>;
+BOOL GetOpenFileNameA<span class='opr'>(</span>LPOPENFILENAMEA<span class='opr'>)</span>;
+BOOL GetOpenFileNameW<span class='opr'>(</span>LPOPENFILENAMEW<span class='opr'>)</span>;
+BOOL GetSaveFileNameA<span class='opr'>(</span>LPOPENFILENAMEA<span class='opr'>)</span>;
+BOOL GetSaveFileNameW<span class='opr'>(</span>LPOPENFILENAMEW<span class='opr'>)</span>;
+BOOL PageSetupDlgA<span class='opr'>(</span>LPPAGESETUPDLGA<span class='opr'>)</span>;
+BOOL PageSetupDlgW<span class='opr'>(</span>LPPAGESETUPDLGW<span class='opr'>)</span>;
+BOOL PrintDlgA<span class='opr'>(</span>LPPRINTDLGA<span class='opr'>)</span>;
+BOOL PrintDlgW<span class='opr'>(</span>LPPRINTDLGW<span class='opr'>)</span>;
+HWND ReplaceTextA<span class='opr'>(</span>LPFINDREPLACEA<span class='opr'>)</span>;
+HWND ReplaceTextW<span class='opr'>(</span>LPFINDREPLACEW<span class='opr'>)</span>;
+
+<span class='kw4'>static</span> <span class='kw1'>if</span> <span class='opr'>(</span>WINVER <span class='opr'>&gt;</span><span class='opr'>=</span> <span class='nbr'>0</span>x0500<span class='opr'>)</span> <span class='opr'>{</span>
+
+HRESULT PrintDlgExA<span class='opr'>(</span>LPPRINTDLGEXA<span class='opr'>)</span>;
+HRESULT PrintDlgExW<span class='opr'>(</span>LPPRINTDLGEXW<span class='opr'>)</span>;
+
+<span class='opr'>}</span>
+
+<span class='kw4'>version</span><span class='opr'>(</span>Unicode<span class='opr'>)</span> <span class='opr'>{</span>
+
+<span class='kw2'>alias</span> CHOOSECOLORW CHOOSECOLOR;
+<span class='kw2'>alias</span> CHOOSEFONTW CHOOSEFONT;
+<span class='kw2'>alias</span> FINDREPLACEW FINDREPLACE;
+<span class='kw2'>alias</span> OPENFILENAMEW OPENFILENAME;
+<span class='kw2'>alias</span> OFNOTIFYW OFNOTIFY;
+<span class='kw2'>alias</span> PAGESETUPDLGW PAGESETUPDLG;
+<span class='kw2'>alias</span> PRINTDLGW PRINTDLG;
+
+
+<span class='kw2'>alias</span> ChooseColorW ChooseColor;
+<span class='kw2'>alias</span> ChooseFontW ChooseFont;
+<span class='kw2'>alias</span> FindTextW FindText;
+<span class='kw2'>alias</span> GetFileTitleW GetFileTitle;
+<span class='kw2'>alias</span> GetOpenFileNameW GetOpenFileName;
+<span class='kw2'>alias</span> GetSaveFileNameW GetSaveFileName;
+<span class='kw2'>alias</span> PageSetupDlgW PageSetupDlg;
+<span class='kw2'>alias</span> PrintDlgW PrintDlg;
+<span class='kw2'>alias</span> ReplaceTextW ReplaceText;
+
+<span class='kw4'>static</span> <span class='kw1'>if</span> <span class='opr'>(</span>WINVER <span class='opr'>&gt;</span><span class='opr'>=</span> <span class='nbr'>0</span>x0500<span class='opr'>)</span> <span class='opr'>{</span>
+
+<span class='kw2'>alias</span> PRINTDLGEXW PRINTDLGEX;
+<span class='kw2'>alias</span> PrintDlgExW PrintDlgEx;
+<span class='opr'>}</span> <span class='com'>/* WINVER &gt;= 0x0500 */</span>
+
+<span class='opr'>}</span> <span class='kw1'>else</span> <span class='opr'>{</span> <span class='com'>/* UNICODE */</span>
+
+<span class='kw2'>alias</span> CHOOSECOLORA CHOOSECOLOR;
+<span class='kw2'>alias</span> CHOOSEFONTA CHOOSEFONT;
+<span class='kw2'>alias</span> FINDREPLACEA FINDREPLACE;
+<span class='kw2'>alias</span> OPENFILENAMEA OPENFILENAME;
+<span class='kw2'>alias</span> OFNOTIFYA OFNOTIFY;
+<span class='kw2'>alias</span> PAGESETUPDLGA PAGESETUPDLG;
+<span class='kw2'>alias</span> PRINTDLGA PRINTDLG;
+
+<span class='kw2'>alias</span> ChooseColorA ChooseColor;
+<span class='kw2'>alias</span> ChooseFontA ChooseFont;
+<span class='kw2'>alias</span> FindTextA FindText;
+<span class='kw2'>alias</span> GetFileTitleA GetFileTitle;
+<span class='kw2'>alias</span> GetOpenFileNameA GetOpenFileName;
+<span class='kw2'>alias</span> GetSaveFileNameA GetSaveFileName;
+<span class='kw2'>alias</span> PageSetupDlgA PageSetupDlg;
+<span class='kw2'>alias</span> PrintDlgA PrintDlg;
+<span class='kw2'>alias</span> ReplaceTextA ReplaceText;
+
+<span class='kw4'>static</span> <span class='kw1'>if</span> <span class='opr'>(</span>WINVER <span class='opr'>&gt;</span><span class='opr'>=</span> <span class='nbr'>0</span>x0500<span class='opr'>)</span> <span class='opr'>{</span>
+
+<span class='kw2'>alias</span> PRINTDLGEXA PRINTDLGEX;
+<span class='kw2'>alias</span> PrintDlgExA PrintDlgEx;
+
+<span class='opr'>}</span> <span class='com'>/* WINVER &gt;= 0x0500 */</span>
+
+<span class='opr'>}</span> <span class='com'>/* UNICODE */</span>
+
+<span class='kw2'>alias</span> CHOOSECOLOR <span class='opr'>*</span>LPCHOOSECOLOR;
+<span class='kw2'>alias</span> CHOOSEFONT <span class='opr'>*</span>LPCHOOSEFONT;
+<span class='kw2'>alias</span> FINDREPLACE <span class='opr'>*</span>LPFINDREPLACE;
+<span class='kw2'>alias</span> OPENFILENAME <span class='opr'>*</span>LPOPENFILENAME;
+<span class='kw2'>alias</span> OFNOTIFY <span class='opr'>*</span>LPOFNOTIFY;
+<span class='kw2'>alias</span> PAGESETUPDLG <span class='opr'>*</span>LPPAGESETUPDLG;
+<span class='kw2'>alias</span> PRINTDLG <span class='opr'>*</span>LPPRINTDLG;
+<span class='kw4'>static</span> <span class='kw1'>if</span> <span class='opr'>(</span>WINVER <span class='opr'>&gt;</span><span class='opr'>=</span> <span class='nbr'>0</span>x0500<span class='opr'>)</span> <span class='opr'>{</span>
+<span class='kw2'>alias</span> PRINTDLGEX <span class='opr'>*</span>LPPRINTDLGEX;
+<span class='opr'>}</span>
+</pre></td></tr></table>	</body>
+</html>

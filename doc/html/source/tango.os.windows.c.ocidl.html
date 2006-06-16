@@ -1,0 +1,1031 @@
+<!DOCTYPE html 
+     PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+     "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html>
+	<head>
+		<link rel="stylesheet" href="style.css" type="text/css" />
+		<title>os/windows/c/ocidl.d</title>
+	</head>
+	<body>
+
+<table id='dcode'><tr><td id='lnum'><pre><span>1</span>
+<span>2</span>
+<span>3</span>
+<span>4</span>
+<span>5</span>
+<span>6</span>
+<span>7</span>
+<span>8</span>
+<span>9</span>
+<span>10</span>
+<span>11</span>
+<span>12</span>
+<span>13</span>
+<span>14</span>
+<span>15</span>
+<span>16</span>
+<span>17</span>
+<span>18</span>
+<span>19</span>
+<span>20</span>
+<span>21</span>
+<span>22</span>
+<span>23</span>
+<span>24</span>
+<span>25</span>
+<span>26</span>
+<span>27</span>
+<span>28</span>
+<span>29</span>
+<span>30</span>
+<span>31</span>
+<span>32</span>
+<span>33</span>
+<span>34</span>
+<span>35</span>
+<span>36</span>
+<span>37</span>
+<span>38</span>
+<span>39</span>
+<span>40</span>
+<span>41</span>
+<span>42</span>
+<span>43</span>
+<span>44</span>
+<span>45</span>
+<span>46</span>
+<span>47</span>
+<span>48</span>
+<span>49</span>
+<span>50</span>
+<span>51</span>
+<span>52</span>
+<span>53</span>
+<span>54</span>
+<span>55</span>
+<span>56</span>
+<span>57</span>
+<span>58</span>
+<span>59</span>
+<span>60</span>
+<span>61</span>
+<span>62</span>
+<span>63</span>
+<span>64</span>
+<span>65</span>
+<span>66</span>
+<span>67</span>
+<span>68</span>
+<span>69</span>
+<span>70</span>
+<span>71</span>
+<span>72</span>
+<span>73</span>
+<span>74</span>
+<span>75</span>
+<span>76</span>
+<span>77</span>
+<span>78</span>
+<span>79</span>
+<span>80</span>
+<span>81</span>
+<span>82</span>
+<span>83</span>
+<span>84</span>
+<span>85</span>
+<span>86</span>
+<span>87</span>
+<span>88</span>
+<span>89</span>
+<span>90</span>
+<span>91</span>
+<span>92</span>
+<span>93</span>
+<span>94</span>
+<span>95</span>
+<span>96</span>
+<span>97</span>
+<span>98</span>
+<span>99</span>
+<span>100</span>
+<span>101</span>
+<span>102</span>
+<span>103</span>
+<span>104</span>
+<span>105</span>
+<span>106</span>
+<span>107</span>
+<span>108</span>
+<span>109</span>
+<span>110</span>
+<span>111</span>
+<span>112</span>
+<span>113</span>
+<span>114</span>
+<span>115</span>
+<span>116</span>
+<span>117</span>
+<span>118</span>
+<span>119</span>
+<span>120</span>
+<span>121</span>
+<span>122</span>
+<span>123</span>
+<span>124</span>
+<span>125</span>
+<span>126</span>
+<span>127</span>
+<span>128</span>
+<span>129</span>
+<span>130</span>
+<span>131</span>
+<span>132</span>
+<span>133</span>
+<span>134</span>
+<span>135</span>
+<span>136</span>
+<span>137</span>
+<span>138</span>
+<span>139</span>
+<span>140</span>
+<span>141</span>
+<span>142</span>
+<span>143</span>
+<span>144</span>
+<span>145</span>
+<span>146</span>
+<span>147</span>
+<span>148</span>
+<span>149</span>
+<span>150</span>
+<span>151</span>
+<span>152</span>
+<span>153</span>
+<span>154</span>
+<span>155</span>
+<span>156</span>
+<span>157</span>
+<span>158</span>
+<span>159</span>
+<span>160</span>
+<span>161</span>
+<span>162</span>
+<span>163</span>
+<span>164</span>
+<span>165</span>
+<span>166</span>
+<span>167</span>
+<span>168</span>
+<span>169</span>
+<span>170</span>
+<span>171</span>
+<span>172</span>
+<span>173</span>
+<span>174</span>
+<span>175</span>
+<span>176</span>
+<span>177</span>
+<span>178</span>
+<span>179</span>
+<span>180</span>
+<span>181</span>
+<span>182</span>
+<span>183</span>
+<span>184</span>
+<span>185</span>
+<span>186</span>
+<span>187</span>
+<span>188</span>
+<span>189</span>
+<span>190</span>
+<span>191</span>
+<span>192</span>
+<span>193</span>
+<span>194</span>
+<span>195</span>
+<span>196</span>
+<span>197</span>
+<span>198</span>
+<span>199</span>
+<span>200</span>
+<span>201</span>
+<span>202</span>
+<span>203</span>
+<span>204</span>
+<span>205</span>
+<span>206</span>
+<span>207</span>
+<span>208</span>
+<span>209</span>
+<span>210</span>
+<span>211</span>
+<span>212</span>
+<span>213</span>
+<span>214</span>
+<span>215</span>
+<span>216</span>
+<span>217</span>
+<span>218</span>
+<span>219</span>
+<span>220</span>
+<span>221</span>
+<span>222</span>
+<span>223</span>
+<span>224</span>
+<span>225</span>
+<span>226</span>
+<span>227</span>
+<span>228</span>
+<span>229</span>
+<span>230</span>
+<span>231</span>
+<span>232</span>
+<span>233</span>
+<span>234</span>
+<span>235</span>
+<span>236</span>
+<span>237</span>
+<span>238</span>
+<span>239</span>
+<span>240</span>
+<span>241</span>
+<span>242</span>
+<span>243</span>
+<span>244</span>
+<span>245</span>
+<span>246</span>
+<span>247</span>
+<span>248</span>
+<span>249</span>
+<span>250</span>
+<span>251</span>
+<span>252</span>
+<span>253</span>
+<span>254</span>
+<span>255</span>
+<span>256</span>
+<span>257</span>
+<span>258</span>
+<span>259</span>
+<span>260</span>
+<span>261</span>
+<span>262</span>
+<span>263</span>
+<span>264</span>
+<span>265</span>
+<span>266</span>
+<span>267</span>
+<span>268</span>
+<span>269</span>
+<span>270</span>
+<span>271</span>
+<span>272</span>
+<span>273</span>
+<span>274</span>
+<span>275</span>
+<span>276</span>
+<span>277</span>
+<span>278</span>
+<span>279</span>
+<span>280</span>
+<span>281</span>
+<span>282</span>
+<span>283</span>
+<span>284</span>
+<span>285</span>
+<span>286</span>
+<span>287</span>
+<span>288</span>
+<span>289</span>
+<span>290</span>
+<span>291</span>
+<span>292</span>
+<span>293</span>
+<span>294</span>
+<span>295</span>
+<span>296</span>
+<span>297</span>
+<span>298</span>
+<span>299</span>
+<span>300</span>
+<span>301</span>
+<span>302</span>
+<span>303</span>
+<span>304</span>
+<span>305</span>
+<span>306</span>
+<span>307</span>
+<span>308</span>
+<span>309</span>
+<span>310</span>
+<span>311</span>
+<span>312</span>
+<span>313</span>
+<span>314</span>
+<span>315</span>
+<span>316</span>
+<span>317</span>
+<span>318</span>
+<span>319</span>
+<span>320</span>
+<span>321</span>
+<span>322</span>
+<span>323</span>
+<span>324</span>
+<span>325</span>
+<span>326</span>
+<span>327</span>
+<span>328</span>
+<span>329</span>
+<span>330</span>
+<span>331</span>
+<span>332</span>
+<span>333</span>
+<span>334</span>
+<span>335</span>
+<span>336</span>
+<span>337</span>
+<span>338</span>
+<span>339</span>
+<span>340</span>
+<span>341</span>
+<span>342</span>
+<span>343</span>
+<span>344</span>
+<span>345</span>
+<span>346</span>
+<span>347</span>
+<span>348</span>
+<span>349</span>
+<span>350</span>
+<span>351</span>
+<span>352</span>
+<span>353</span>
+<span>354</span>
+<span>355</span>
+<span>356</span>
+<span>357</span>
+<span>358</span>
+<span>359</span>
+<span>360</span>
+<span>361</span>
+<span>362</span>
+<span>363</span>
+<span>364</span>
+<span>365</span>
+<span>366</span>
+<span>367</span>
+<span>368</span>
+<span>369</span>
+<span>370</span>
+<span>371</span>
+<span>372</span>
+<span>373</span>
+<span>374</span>
+<span>375</span>
+<span>376</span>
+<span>377</span>
+<span>378</span>
+<span>379</span>
+<span>380</span>
+<span>381</span>
+<span>382</span>
+<span>383</span>
+<span>384</span>
+<span>385</span>
+<span>386</span>
+<span>387</span>
+<span>388</span>
+<span>389</span>
+<span>390</span>
+<span>391</span>
+<span>392</span>
+<span>393</span>
+<span>394</span>
+<span>395</span>
+<span>396</span>
+<span>397</span>
+<span>398</span>
+<span>399</span>
+<span>400</span>
+<span>401</span>
+<span>402</span>
+<span>403</span>
+<span>404</span>
+<span>405</span>
+<span>406</span>
+<span>407</span>
+<span>408</span>
+<span>409</span>
+<span>410</span>
+<span>411</span>
+<span>412</span>
+<span>413</span>
+<span>414</span>
+<span>415</span>
+<span>416</span>
+<span>417</span>
+<span>418</span>
+<span>419</span>
+<span>420</span>
+<span>421</span>
+<span>422</span>
+<span>423</span>
+<span>424</span>
+<span>425</span>
+<span>426</span>
+<span>427</span>
+<span>428</span>
+<span>429</span>
+<span>430</span>
+<span>431</span>
+<span>432</span>
+<span>433</span>
+<span>434</span>
+<span>435</span>
+<span>436</span>
+<span>437</span>
+<span>438</span>
+<span>439</span>
+<span>440</span>
+<span>441</span>
+<span>442</span>
+<span>443</span>
+<span>444</span>
+<span>445</span>
+<span>446</span>
+<span>447</span>
+<span>448</span>
+<span>449</span>
+<span>450</span>
+<span>451</span>
+<span>452</span>
+<span>453</span>
+<span>454</span>
+<span>455</span>
+<span>456</span>
+<span>457</span>
+<span>458</span>
+<span>459</span>
+<span>460</span>
+<span>461</span>
+<span>462</span>
+<span>463</span>
+<span>464</span>
+<span>465</span>
+<span>466</span>
+<span>467</span>
+<span>468</span>
+<span>469</span>
+<span>470</span>
+<span>471</span>
+<span>472</span>
+<span>473</span>
+<span>474</span>
+<span>475</span>
+<span>476</span>
+<span>477</span>
+<span>478</span>
+<span>479</span>
+<span>480</span>
+<span>481</span>
+<span>482</span>
+<span>483</span>
+<span>484</span>
+<span>485</span>
+<span>486</span>
+<span>487</span>
+<span>488</span>
+<span>489</span>
+<span>490</span>
+<span>491</span>
+<span>492</span>
+<span>493</span>
+<span>494</span>
+<span>495</span>
+<span>496</span>
+<span>497</span>
+<span>498</span>
+<span>499</span>
+<span>500</span>
+<span>501</span>
+<span>502</span>
+<span>503</span>
+<span>504</span>
+<span>505</span>
+<span>506</span>
+<span>507</span>
+<span>508</span>
+<span>509</span>
+</pre></td><td id='code'><pre><span class='com'>/***********************************************************************\
+*                                ocidl.d                                *
+*                                                                       *
+*                       Windows API header module                       *
+*                 Part of the Internet Development SDK                  *
+*                                                                       *
+*                 Translated from MinGW Windows headers                 *
+*                                                                       *
+*                       Placed into public domain                       *
+\***********************************************************************/</span>
+<span class='kw2'>module</span> tango.os.windows.c.ocidl;
+
+<span class='com'>//version (build) { pragma(nolink); }</span>
+
+
+<span class='kw4'>private</span> <span class='kw2'>import</span> tango.os.windows.c.ole2;
+<span class='kw4'>private</span> <span class='kw2'>import</span> tango.os.windows.c.wingdi; <span class='com'>// for TEXTMETRICW</span>
+<span class='kw4'>private</span> <span class='kw2'>import</span> tango.os.windows.c.winuser; <span class='com'>// for LPMSG</span>
+
+<span class='kw2'>interface</span> IBindHost : <span class='kw4'>public</span> IUnknown <span class='opr'>{</span><span class='opr'>}</span>
+<span class='kw2'>interface</span> IServiceProvider <span class='opr'>{</span><span class='opr'>}</span>
+
+<span class='com'>/+
+// TODO:
+//private import tango.os.windows.c.servprov; // for IServiceProvider
+// private import tango.os.windows.c.urlmon; // for IBindHost. This is not included in MinGW.
+
+// tango.os.windows.c.urlmon should contain:
+interface IBindHost : public IUnknown
+{
+    HRESULT CreateMoniker(LPOLESTR szName, IBindCtx* pBC, IMoniker** ppmk, DWORD);
+    HRESULT MonikerBindToObject(IMoniker* pMk, IBindCtx* pBC, IBindStatusCallback* pBSC, REFIID, void** );
+    HRESULT MonikerBindToStorage(IMoniker* pMk, IBindCtx* pBC, IBindStatusCallback* pBSC, REFIID, void** );
+}
++/</span>
+
+<span class='kw2'>alias</span> IErrorLog<span class='opr'>*</span> LPERRORLOG;
+<span class='kw2'>alias</span> IPropertyBag<span class='opr'>*</span> LPPROPERTYBAG;
+<span class='kw2'>alias</span> IPropertyBag2<span class='opr'>*</span> LPPROPERTYBAG2;
+<span class='kw2'>alias</span> IEnumConnections<span class='opr'>*</span> LPENUMCONNECTIONS;
+<span class='kw2'>alias</span> IConnectionPoint<span class='opr'>*</span> LPCONNECTIONPOINT;
+<span class='kw2'>alias</span> IEnumConnectionPoints<span class='opr'>*</span> LPENUMCONNECTIONPOINTS;
+<span class='kw2'>alias</span> IPropertyPageSite<span class='opr'>*</span> LPPROPERTYPAGESITE;
+<span class='kw2'>alias</span> IFont<span class='opr'>*</span> LPFONT;
+<span class='kw2'>alias</span> IFontDisp<span class='opr'>*</span> LPFONTDISP;
+<span class='kw2'>alias</span> IOleUndoManager<span class='opr'>*</span> LPOLEUNDOMANAGER;
+
+
+<span class='com'>//[Yes] #ifndef OLE2ANSI</span>
+<span class='kw2'>alias</span> TEXTMETRICW TEXTMETRICOLE;
+<span class='com'>//} else {</span>
+<span class='com'>//alias TEXTMETRIC TEXTMETRICOLE;</span>
+<span class='com'>//}</span>
+<span class='kw2'>alias</span> TEXTMETRICOLE<span class='opr'>*</span> LPTEXTMETRICOLE;
+
+<span class='kw2'>alias</span> DWORD OLE_COLOR;
+<span class='kw2'>alias</span> UINT OLE_HANDLE;
+<span class='kw2'>alias</span> <span class='kw4'>int</span> OLE_XPOS_HIMETRIC;
+<span class='kw2'>alias</span> <span class='kw4'>int</span> OLE_YPOS_HIMETRIC;
+<span class='kw2'>alias</span> <span class='kw4'>int</span> OLE_XSIZE_HIMETRIC;
+<span class='kw2'>alias</span> <span class='kw4'>int</span> OLE_YSIZE_HIMETRIC;
+
+<span class='kw4'>enum</span> READYSTATE <span class='opr'>{</span>
+    READYSTATE_UNINITIALIZED <span class='opr'>=</span> <span class='nbr'>0</span>,
+    READYSTATE_LOADING <span class='opr'>=</span> <span class='nbr'>1</span>,
+    READYSTATE_LOADED <span class='opr'>=</span> <span class='nbr'>2</span>,
+    READYSTATE_INTERACTIVE <span class='opr'>=</span> <span class='nbr'>3</span>,
+    READYSTATE_COMPLETE <span class='opr'>=</span> <span class='nbr'>4</span>
+<span class='opr'>}</span>
+
+<span class='kw4'>enum</span> PROPBAG2_TYPE <span class='opr'>{</span>
+    PROPBAG2_TYPE_UNDEFINED    <span class='opr'>=</span> <span class='nbr'>0</span>,
+    PROPBAG2_TYPE_DATA <span class='opr'>=</span> <span class='nbr'>1</span>,
+    PROPBAG2_TYPE_URL <span class='opr'>=</span> <span class='nbr'>2</span>,
+    PROPBAG2_TYPE_OBJECT <span class='opr'>=</span> <span class='nbr'>3</span>,
+    PROPBAG2_TYPE_STREAM <span class='opr'>=</span> <span class='nbr'>4</span>,
+    PROPBAG2_TYPE_STORAGE <span class='opr'>=</span> <span class='nbr'>5</span>,
+    PROPBAG2_TYPE_MONIKER <span class='opr'>=</span> <span class='nbr'>6</span>
+<span class='opr'>}</span>
+
+<span class='kw4'>struct</span> PROPBAG2 <span class='opr'>{</span>
+    DWORD dwType;
+    VARTYPE vt;
+    CLIPFORMAT cfType;
+    DWORD dwHint;
+    LPOLESTR pstrName;
+    CLSID clsid;
+<span class='opr'>}</span>
+
+<span class='kw4'>enum</span> QACONTAINERFLAGS <span class='opr'>{</span>
+    QACONTAINER_SHOWHATCHING <span class='opr'>=</span> <span class='nbr'>1</span>,
+    QACONTAINER_SHOWGRABHANDLES <span class='opr'>=</span> <span class='nbr'>2</span>,
+    QACONTAINER_USERMODE <span class='opr'>=</span> <span class='nbr'>4</span>,
+    QACONTAINER_DISPLAYASDEFAULT <span class='opr'>=</span> <span class='nbr'>8</span>,
+    QACONTAINER_UIDEAD <span class='opr'>=</span> <span class='nbr'>16</span>,
+    QACONTAINER_AUTOCLIP <span class='opr'>=</span> <span class='nbr'>32</span>,
+    QACONTAINER_MESSAGEREFLECT <span class='opr'>=</span> <span class='nbr'>64</span>,
+    QACONTAINER_SUPPORTSMNEMONICS <span class='opr'>=</span> <span class='nbr'>128</span>
+<span class='opr'>}</span>
+
+<span class='kw4'>struct</span> QACONTAINER <span class='opr'>{</span>
+    ULONG cbSize;
+    IOleClientSite<span class='opr'>*</span> pClientSite;
+    IAdviseSinkEx<span class='opr'>*</span> pAdviseSink;
+    IPropertyNotifySink<span class='opr'>*</span> pPropertyNotifySink;
+    IUnknown<span class='opr'>*</span> pUnkEventSink;
+    DWORD dwAmbientFlags;
+    OLE_COLOR colorFore;
+    OLE_COLOR colorBack;
+    IFont<span class='opr'>*</span> pFont;
+    IOleUndoManager<span class='opr'>*</span> pUndoMgr;
+    DWORD dwAppearance;
+    LONG lcid;
+    HPALETTE hpal;
+    IBindHost<span class='opr'>*</span> pBindHost;
+    IOleControlSite<span class='opr'>*</span> pOleControlSite;
+    IServiceProvider<span class='opr'>*</span> pServiceProvider;
+<span class='opr'>}</span>
+
+<span class='kw4'>struct</span> QACONTROL <span class='opr'>{</span>
+    ULONG cbSize;
+    DWORD dwMiscStatus;
+    DWORD dwViewStatus;
+    DWORD dwEventCookie;
+    DWORD dwPropNotifyCookie;
+    DWORD dwPointerActivationPolicy;
+<span class='opr'>}</span>
+
+<span class='kw4'>struct</span> POINTF <span class='opr'>{</span>
+    <span class='kw4'>float</span> x;
+    <span class='kw4'>float</span> y;
+<span class='opr'>}</span>
+<span class='kw2'>alias</span> POINTF<span class='opr'>*</span> LPPOINTF;
+
+<span class='kw4'>struct</span> CONTROLINFO <span class='opr'>{</span>
+    ULONG cb;
+    HACCEL hAccel;
+    USHORT cAccel;
+    DWORD dwFlags;
+<span class='opr'>}</span>
+<span class='kw2'>alias</span> CONTROLINFO<span class='opr'>*</span> LPCONTROLINFO;
+
+<span class='kw4'>struct</span> CONNECTDATA <span class='opr'>{</span>
+    LPUNKNOWN pUnk;
+    DWORD dwCookie;
+<span class='opr'>}</span>
+<span class='kw2'>alias</span> CONNECTDATA<span class='opr'>*</span> LPCONNECTDATA;
+
+<span class='kw4'>struct</span> LICINFO <span class='opr'>{</span>
+    <span class='kw4'>int</span> cbLicInfo;
+    BOOL fRuntimeKeyAvail;
+    BOOL fLicVerified;
+<span class='opr'>}</span>
+<span class='kw2'>alias</span> LICINFO<span class='opr'>*</span> LPLICINFO;
+
+<span class='kw4'>struct</span> CAUUID <span class='opr'>{</span>
+    ULONG cElems;
+    GUID<span class='opr'>*</span> pElems;
+<span class='opr'>}</span>
+<span class='kw2'>alias</span> CAUUID<span class='opr'>*</span> LPCAUUID;
+
+<span class='kw4'>struct</span> CALPOLESTR <span class='opr'>{</span>
+    ULONG cElems;
+    LPOLESTR<span class='opr'>*</span> pElems;
+<span class='opr'>}</span>
+<span class='kw2'>alias</span> CALPOLESTR<span class='opr'>*</span> LPCALPOLESTR;
+
+<span class='kw4'>struct</span> CADWORD <span class='opr'>{</span>
+    ULONG cElems;
+    DWORD<span class='opr'>*</span> pElems;
+<span class='opr'>}</span>
+<span class='kw2'>alias</span> CADWORD<span class='opr'>*</span> LPCADWORD;
+
+<span class='kw4'>struct</span> PROPPAGEINFO <span class='opr'>{</span>
+    ULONG cb;
+    LPOLESTR pszTitle;
+    SIZE size;
+    LPOLESTR pszDocString;
+    LPOLESTR pszHelpFile;
+    DWORD dwHelpContext;
+<span class='opr'>}</span>
+<span class='kw2'>alias</span> PROPPAGEINFO<span class='opr'>*</span> LPPROPPAGEINFO;
+
+<span class='kw2'>extern</span> <span class='opr'>(</span>C<span class='opr'>)</span>
+<span class='opr'>{</span>
+    <span class='kw2'>extern</span> IID IID_IOleControl;
+    <span class='kw2'>extern</span> IID IID_IOleControlSite;
+    <span class='kw2'>extern</span> IID IID_ISimpleFrameSite;
+    <span class='kw2'>extern</span> IID IID_IErrorLog;
+    <span class='kw2'>extern</span> IID IID_IPropertyBag;
+    <span class='kw2'>extern</span> IID IID_IPropertyBag2;
+    <span class='kw2'>extern</span> IID IID_IPersistPropertyBag;
+    <span class='kw2'>extern</span> IID IID_IPersistPropertyBag2;
+    <span class='kw2'>extern</span> IID IID_IPersistStreamInit;
+    <span class='kw2'>extern</span> IID IID_IPersistMemory;
+    <span class='kw2'>extern</span> IID IID_IPropertyNotifySink;
+    <span class='kw2'>extern</span> IID IID_IProvideClassInfo;
+    <span class='kw2'>extern</span> IID IID_IProvideClassInfo2;
+    <span class='kw2'>extern</span> IID IID_IConnectionPointContainer;
+    <span class='kw2'>extern</span> IID IID_IEnumConnectionPoints;
+    <span class='kw2'>extern</span> IID IID_IConnectionPoint;
+    <span class='kw2'>extern</span> IID IID_IEnumConnections;
+    <span class='kw2'>extern</span> IID IID_IClassFactory2;
+    <span class='kw2'>extern</span> IID IID_ISpecifyPropertyPages;
+    <span class='kw2'>extern</span> IID IID_IPerPropertyBrowsing;
+    <span class='kw2'>extern</span> IID IID_IPropertyPageSite;
+    <span class='kw2'>extern</span> IID IID_IPropertyPage;
+    <span class='kw2'>extern</span> IID IID_IPropertyPage2;
+    <span class='kw2'>extern</span> IID IID_IFont;
+    <span class='kw2'>extern</span> IID IID_IFontDisp;
+    <span class='kw2'>extern</span> IID IID_IPicture;
+    <span class='kw2'>extern</span> IID IID_IPictureDisp;
+    <span class='kw2'>extern</span> IID IID_IOleInPlaceSiteEx;
+    <span class='kw2'>extern</span> IID IID_IObjectWithSite;
+    <span class='kw2'>extern</span> IID IID_IOleInPlaceSiteWindowless;
+    <span class='kw2'>extern</span> IID IID_IAdviseSinkEx;
+    <span class='kw2'>extern</span> IID IID_IPointerInactive;
+    <span class='kw2'>extern</span> IID IID_IOleUndoUnit;
+    <span class='kw2'>extern</span> IID IID_IOleParentUndoUnit;
+    <span class='kw2'>extern</span> IID IID_IEnumOleUndoUnits;
+    <span class='kw2'>extern</span> IID IID_IOleUndoManager;
+    <span class='kw2'>extern</span> IID IID_IQuickActivate;
+<span class='opr'>}</span>
+
+<span class='kw2'>interface</span> IOleControl : <span class='kw4'>public</span> IUnknown <span class='opr'>{</span>
+    HRESULT GetControlInfo<span class='opr'>(</span>LPCONTROLINFO<span class='opr'>)</span>;
+    HRESULT OnMnemonic<span class='opr'>(</span>LPMSG<span class='opr'>)</span>;
+    HRESULT OnAmbientPropertyChange<span class='opr'>(</span>DISPID<span class='opr'>)</span>;
+    HRESULT FreezeEvents<span class='opr'>(</span>BOOL<span class='opr'>)</span>;
+<span class='opr'>}</span>
+
+<span class='kw2'>interface</span> IOleControlSite : <span class='kw4'>public</span> IUnknown <span class='opr'>{</span>
+    HRESULT OnControlInfoChanged<span class='opr'>(</span><span class='opr'>)</span>;
+    HRESULT LockInPlaceActive<span class='opr'>(</span>BOOL<span class='opr'>)</span>;
+    HRESULT GetExtendedControl<span class='opr'>(</span>LPDISPATCH<span class='opr'>*</span><span class='opr'>)</span>;
+    HRESULT TransformCoords<span class='opr'>(</span>POINTL<span class='opr'>*</span>, POINTF<span class='opr'>*</span>, DWORD<span class='opr'>)</span>;
+    HRESULT TranslateAccelerator<span class='opr'>(</span>LPMSG, DWORD<span class='opr'>)</span>;
+    HRESULT OnFocus<span class='opr'>(</span>BOOL<span class='opr'>)</span>;
+    HRESULT ShowPropertyFrame<span class='opr'>(</span><span class='opr'>)</span>;
+<span class='opr'>}</span>
+
+<span class='kw2'>interface</span> ISimpleFrameSite : <span class='kw4'>public</span> IUnknown <span class='opr'>{</span>
+    HRESULT PreMessageFilter<span class='opr'>(</span>HWND, UINT, WPARAM, LPARAM, LRESULT<span class='opr'>*</span>, PDWORD<span class='opr'>)</span>;
+    HRESULT PostMessageFilter<span class='opr'>(</span>HWND, UINT, WPARAM, LPARAM, LRESULT<span class='opr'>*</span>, DWORD<span class='opr'>)</span>;
+<span class='opr'>}</span>
+
+<span class='kw2'>interface</span> IErrorLog : <span class='kw4'>public</span> IUnknown <span class='opr'>{</span>
+    HRESULT AddError<span class='opr'>(</span>LPCOLESTR, LPEXCEPINFO<span class='opr'>)</span>;
+<span class='opr'>}</span>
+
+<span class='kw2'>interface</span> IPropertyBag : <span class='kw4'>public</span> IUnknown <span class='opr'>{</span>
+    HRESULT Read<span class='opr'>(</span>LPCOLESTR, LPVARIANT, LPERRORLOG<span class='opr'>)</span>;
+    HRESULT Write<span class='opr'>(</span>LPCOLESTR, LPVARIANT<span class='opr'>)</span>;
+<span class='opr'>}</span>
+
+<span class='kw2'>interface</span> IPropertyBag2 : <span class='kw4'>public</span> IUnknown <span class='opr'>{</span>
+    HRESULT Read<span class='opr'>(</span>ULONG, PROPBAG2<span class='opr'>*</span>, LPERRORLOG, VARIANT<span class='opr'>*</span>, HRESULT<span class='opr'>*</span><span class='opr'>)</span>;
+    HRESULT Write<span class='opr'>(</span>ULONG, PROPBAG2<span class='opr'>*</span>, VARIANT<span class='opr'>*</span><span class='opr'>)</span>;
+    HRESULT CountProperties<span class='opr'>(</span>ULONG<span class='opr'>*</span><span class='opr'>)</span>;
+    HRESULT GetPropertyInfo<span class='opr'>(</span>ULONG, ULONG, PROPBAG2<span class='opr'>*</span>, ULONG<span class='opr'>*</span><span class='opr'>)</span>;
+    HRESULT LoadObject<span class='opr'>(</span>LPCOLESTR, DWORD, IUnknown<span class='opr'>*</span>, LPERRORLOG<span class='opr'>)</span>;
+<span class='opr'>}</span>
+
+<span class='kw2'>interface</span> IPersistPropertyBag : <span class='kw4'>public</span> IPersist <span class='opr'>{</span>
+    HRESULT InitNew<span class='opr'>(</span><span class='opr'>)</span>;
+    HRESULT Load<span class='opr'>(</span>LPPROPERTYBAG, LPERRORLOG<span class='opr'>)</span>;
+    HRESULT Save<span class='opr'>(</span>LPPROPERTYBAG, BOOL, BOOL<span class='opr'>)</span>;
+<span class='opr'>}</span>
+
+<span class='kw2'>interface</span> IPersistPropertyBag2 : <span class='kw4'>public</span> IPersist <span class='opr'>{</span>
+    HRESULT InitNew<span class='opr'>(</span><span class='opr'>)</span>;
+    HRESULT Load<span class='opr'>(</span>LPPROPERTYBAG2, LPERRORLOG<span class='opr'>)</span>;
+    HRESULT Save<span class='opr'>(</span>LPPROPERTYBAG2, BOOL, BOOL<span class='opr'>)</span>;
+    HRESULT IsDirty<span class='opr'>(</span><span class='opr'>)</span>;
+<span class='opr'>}</span>
+
+<span class='kw2'>interface</span> IPersistStreamInit : <span class='kw4'>public</span> IPersist <span class='opr'>{</span>
+    HRESULT IsDirty<span class='opr'>(</span><span class='opr'>)</span>;
+    HRESULT Load<span class='opr'>(</span>LPSTREAM<span class='opr'>)</span>;
+    HRESULT Save<span class='opr'>(</span>LPSTREAM, BOOL<span class='opr'>)</span>;
+    HRESULT GetSizeMax<span class='opr'>(</span>PULARGE_INTEGER<span class='opr'>)</span>;
+    HRESULT InitNew<span class='opr'>(</span><span class='opr'>)</span>;
+<span class='opr'>}</span>
+
+<span class='kw2'>interface</span> IPersistMemory : <span class='kw4'>public</span> IPersist <span class='opr'>{</span>
+    HRESULT IsDirty<span class='opr'>(</span><span class='opr'>)</span>;
+    HRESULT Load<span class='opr'>(</span>PVOID, ULONG<span class='opr'>)</span>;
+    HRESULT Save<span class='opr'>(</span>PVOID, BOOL, ULONG<span class='opr'>)</span>;
+    HRESULT GetSizeMax<span class='opr'>(</span>PULONG<span class='opr'>)</span>;
+    HRESULT InitNew<span class='opr'>(</span><span class='opr'>)</span>;
+<span class='opr'>}</span>
+
+<span class='kw2'>interface</span> IPropertyNotifySink : <span class='kw4'>public</span> IUnknown <span class='opr'>{</span>
+    HRESULT OnChanged<span class='opr'>(</span>DISPID<span class='opr'>)</span>;
+    HRESULT OnRequestEdit<span class='opr'>(</span>DISPID<span class='opr'>)</span>;
+<span class='opr'>}</span>
+
+<span class='kw2'>interface</span> IProvideClassInfo : <span class='kw4'>public</span> IUnknown <span class='opr'>{</span>
+    HRESULT GetClassInfo<span class='opr'>(</span>LPTYPEINFO<span class='opr'>*</span><span class='opr'>)</span>;
+<span class='opr'>}</span>
+
+<span class='kw2'>interface</span> IProvideClassInfo2 : <span class='kw4'>public</span> IProvideClassInfo <span class='opr'>{</span>
+    HRESULT GetGUID<span class='opr'>(</span>DWORD, GUID<span class='opr'>*</span><span class='opr'>)</span>;
+<span class='opr'>}</span>
+
+<span class='kw2'>interface</span> IConnectionPointContainer : <span class='kw4'>public</span> IUnknown <span class='opr'>{</span>
+    HRESULT EnumConnectionPoints<span class='opr'>(</span>LPENUMCONNECTIONPOINTS<span class='opr'>*</span><span class='opr'>)</span>;
+    HRESULT FindConnectionPoint<span class='opr'>(</span>REFIID, LPCONNECTIONPOINT<span class='opr'>*</span><span class='opr'>)</span>;
+<span class='opr'>}</span>
+
+<span class='kw2'>interface</span> IEnumConnectionPoints : <span class='kw4'>public</span> IUnknown <span class='opr'>{</span>
+    HRESULT Next<span class='opr'>(</span>ULONG, LPCONNECTIONPOINT<span class='opr'>*</span>, ULONG<span class='opr'>*</span><span class='opr'>)</span>;
+    HRESULT Skip<span class='opr'>(</span>ULONG<span class='opr'>)</span>;
+    HRESULT Reset<span class='opr'>(</span><span class='opr'>)</span>;
+    HRESULT Clone<span class='opr'>(</span>LPENUMCONNECTIONPOINTS<span class='opr'>*</span><span class='opr'>)</span>;
+<span class='opr'>}</span>
+
+<span class='kw2'>interface</span> IConnectionPoint : <span class='kw4'>public</span> IUnknown <span class='opr'>{</span>
+    HRESULT GetConnectionInterface<span class='opr'>(</span>IID<span class='opr'>*</span><span class='opr'>)</span>;
+    HRESULT GetConnectionPointContainer<span class='opr'>(</span>IConnectionPointContainer<span class='opr'>*</span><span class='opr'>*</span><span class='opr'>)</span>;
+    HRESULT Advise<span class='opr'>(</span>LPUNKNOWN, PDWORD<span class='opr'>)</span>;
+    HRESULT Unadvise<span class='opr'>(</span>DWORD<span class='opr'>)</span>;
+    HRESULT EnumConnections<span class='opr'>(</span>LPENUMCONNECTIONS<span class='opr'>*</span><span class='opr'>)</span>;
+<span class='opr'>}</span>
+
+<span class='kw2'>interface</span> IEnumConnections : <span class='kw4'>public</span> IUnknown <span class='opr'>{</span>
+    HRESULT Next<span class='opr'>(</span>ULONG, LPCONNECTDATA, PULONG<span class='opr'>)</span>;
+    HRESULT Skip<span class='opr'>(</span>ULONG<span class='opr'>)</span>;
+    HRESULT Reset<span class='opr'>(</span><span class='opr'>)</span>;
+    HRESULT Clone<span class='opr'>(</span>LPENUMCONNECTIONS<span class='opr'>*</span><span class='opr'>)</span>;
+<span class='opr'>}</span>
+
+<span class='kw2'>interface</span> IClassFactory2 : <span class='kw4'>public</span> IClassFactory <span class='opr'>{</span>
+    HRESULT GetLicInfo<span class='opr'>(</span>LPLICINFO<span class='opr'>)</span>;
+    HRESULT RequestLicKey<span class='opr'>(</span>DWORD, BSTR<span class='opr'>*</span><span class='opr'>)</span>;
+    HRESULT CreateInstanceLic<span class='opr'>(</span>LPUNKNOWN, LPUNKNOWN, REFIID, BSTR, PVOID<span class='opr'>*</span><span class='opr'>)</span>;
+<span class='opr'>}</span>
+
+<span class='kw2'>interface</span> ISpecifyPropertyPages : <span class='kw4'>public</span> IUnknown <span class='opr'>{</span>
+    HRESULT GetPages<span class='opr'>(</span>CAUUID<span class='opr'>*</span><span class='opr'>)</span>;
+<span class='opr'>}</span>
+
+<span class='kw2'>interface</span> IPerPropertyBrowsing : <span class='kw4'>public</span> IUnknown <span class='opr'>{</span>
+    HRESULT GetDisplayString<span class='opr'>(</span>DISPID, BSTR<span class='opr'>*</span><span class='opr'>)</span>;
+    HRESULT MapPropertyToPage<span class='opr'>(</span>DISPID, LPCLSID<span class='opr'>)</span>;
+    HRESULT GetPredefinedStrings<span class='opr'>(</span>DISPID, CALPOLESTR<span class='opr'>*</span>, CADWORD<span class='opr'>*</span><span class='opr'>)</span>;
+    HRESULT GetPredefinedValue<span class='opr'>(</span>DISPID, DWORD, VARIANT<span class='opr'>*</span><span class='opr'>)</span>;
+<span class='opr'>}</span>
+
+<span class='kw2'>interface</span> IPropertyPageSite : <span class='kw4'>public</span> IUnknown <span class='opr'>{</span>
+    HRESULT OnStatusChange<span class='opr'>(</span>DWORD<span class='opr'>)</span>;
+    HRESULT GetLocaleID<span class='opr'>(</span>LCID<span class='opr'>*</span><span class='opr'>)</span>;
+    HRESULT GetPageContainer<span class='opr'>(</span>LPUNKNOWN<span class='opr'>*</span><span class='opr'>)</span>;
+    HRESULT TranslateAccelerator<span class='opr'>(</span>LPMSG<span class='opr'>)</span>;
+<span class='opr'>}</span>
+
+<span class='kw2'>interface</span> IPropertyPage : <span class='kw4'>public</span> IUnknown <span class='opr'>{</span>
+    HRESULT SetPageSite<span class='opr'>(</span>LPPROPERTYPAGESITE<span class='opr'>)</span>;
+    HRESULT Activate<span class='opr'>(</span>HWND, LPCRECT, BOOL<span class='opr'>)</span>;
+    HRESULT Deactivate<span class='opr'>(</span><span class='opr'>)</span>;
+    HRESULT GetPageInfo<span class='opr'>(</span>LPPROPPAGEINFO<span class='opr'>)</span>;
+    HRESULT SetObjects<span class='opr'>(</span>ULONG, LPUNKNOWN<span class='opr'>*</span><span class='opr'>)</span>;
+    HRESULT Show<span class='opr'>(</span>UINT<span class='opr'>)</span>;
+    HRESULT Move<span class='opr'>(</span>LPCRECT<span class='opr'>)</span>;
+    HRESULT IsPageDirty<span class='opr'>(</span><span class='opr'>)</span>;
+    HRESULT Apply<span class='opr'>(</span><span class='opr'>)</span>;
+    HRESULT Help<span class='opr'>(</span>LPCOLESTR<span class='opr'>)</span>;
+    HRESULT TranslateAccelerator<span class='opr'>(</span>LPMSG<span class='opr'>)</span>;
+<span class='opr'>}</span>
+
+
+<span class='kw2'>interface</span> IPropertyPage2 : <span class='kw4'>public</span> IPropertyPage
+<span class='opr'>{</span> HRESULT EditProperty<span class='opr'>(</span>DISPID<span class='opr'>)</span>;
+<span class='opr'>}</span>
+
+<span class='kw2'>interface</span> IFont : <span class='kw4'>public</span> IUnknown <span class='opr'>{</span>
+    HRESULT get_Name<span class='opr'>(</span>BSTR<span class='opr'>*</span><span class='opr'>)</span>;
+    HRESULT put_Name<span class='opr'>(</span>BSTR<span class='opr'>)</span>;
+    HRESULT get_Size<span class='opr'>(</span>CY<span class='opr'>*</span><span class='opr'>)</span>;
+    HRESULT put_Size<span class='opr'>(</span>CY<span class='opr'>)</span>;
+    HRESULT get_Bold<span class='opr'>(</span>BOOL<span class='opr'>*</span><span class='opr'>)</span>;
+    HRESULT put_Bold<span class='opr'>(</span>BOOL<span class='opr'>)</span>;
+    HRESULT get_Italic<span class='opr'>(</span>BOOL<span class='opr'>*</span><span class='opr'>)</span>;
+    HRESULT put_Italic<span class='opr'>(</span>BOOL<span class='opr'>)</span>;
+    HRESULT get_Underline<span class='opr'>(</span>BOOL<span class='opr'>*</span><span class='opr'>)</span>;
+    HRESULT put_Underline<span class='opr'>(</span>BOOL<span class='opr'>)</span>;
+    HRESULT get_Strikethrough<span class='opr'>(</span>BOOL<span class='opr'>*</span><span class='opr'>)</span>;
+    HRESULT put_Strikethrough<span class='opr'>(</span>BOOL<span class='opr'>)</span>;
+    HRESULT get_Weight<span class='opr'>(</span><span class='kw4'>short</span><span class='opr'>*</span><span class='opr'>)</span>;
+    HRESULT put_Weight<span class='opr'>(</span><span class='kw4'>short</span><span class='opr'>)</span>;
+    HRESULT get_Charset<span class='opr'>(</span><span class='kw4'>short</span><span class='opr'>*</span><span class='opr'>)</span>;
+    HRESULT put_Charset<span class='opr'>(</span><span class='kw4'>short</span><span class='opr'>)</span>;
+    HRESULT get_hFont<span class='opr'>(</span>HFONT<span class='opr'>*</span><span class='opr'>)</span>;
+    HRESULT Clone<span class='opr'>(</span>IFont<span class='opr'>*</span><span class='opr'>*</span><span class='opr'>)</span>;
+    HRESULT IsEqual<span class='opr'>(</span>IFont<span class='opr'>*</span><span class='opr'>)</span>;
+    HRESULT SetRatio<span class='opr'>(</span><span class='kw4'>int</span>, <span class='kw4'>int</span><span class='opr'>)</span>;
+    HRESULT QueryTextMetrics<span class='opr'>(</span>LPTEXTMETRICOLE<span class='opr'>)</span>;
+    HRESULT AddRefHfont<span class='opr'>(</span>HFONT<span class='opr'>)</span>;
+    HRESULT ReleaseHfont<span class='opr'>(</span>HFONT<span class='opr'>)</span>;
+    HRESULT SetHdc<span class='opr'>(</span>HDC<span class='opr'>)</span>;
+<span class='opr'>}</span>
+
+<span class='kw2'>interface</span> IFontDisp : <span class='kw4'>public</span> IDispatch <span class='opr'>{</span>
+<span class='opr'>}</span>
+
+<span class='kw2'>interface</span> IPicture : <span class='kw4'>public</span> IUnknown <span class='opr'>{</span>
+    HRESULT get_Handle<span class='opr'>(</span>OLE_HANDLE<span class='opr'>*</span><span class='opr'>)</span>;
+    HRESULT get_hPal<span class='opr'>(</span>OLE_HANDLE<span class='opr'>*</span><span class='opr'>)</span>;
+    HRESULT get_Type<span class='opr'>(</span><span class='kw4'>short</span><span class='opr'>*</span><span class='opr'>)</span>;
+    HRESULT get_Width<span class='opr'>(</span>OLE_XSIZE_HIMETRIC<span class='opr'>*</span><span class='opr'>)</span>;
+    HRESULT get_Height<span class='opr'>(</span>OLE_YSIZE_HIMETRIC<span class='opr'>*</span><span class='opr'>)</span>;
+    HRESULT Render<span class='opr'>(</span>HDC, <span class='kw4'>int</span>, <span class='kw4'>int</span>, <span class='kw4'>int</span>, <span class='kw4'>int</span>, OLE_XPOS_HIMETRIC,
+      OLE_YPOS_HIMETRIC, OLE_XSIZE_HIMETRIC, OLE_YSIZE_HIMETRIC, LPCRECT<span class='opr'>)</span>;
+    HRESULT set_hPal<span class='opr'>(</span>OLE_HANDLE<span class='opr'>)</span>;
+    HRESULT get_CurDC<span class='opr'>(</span>HDC<span class='opr'>*</span><span class='opr'>)</span>;
+    HRESULT SelectPicture<span class='opr'>(</span>HDC, HDC<span class='opr'>*</span>, OLE_HANDLE<span class='opr'>*</span><span class='opr'>)</span>;
+    HRESULT get_KeepOriginalFormat<span class='opr'>(</span>BOOL<span class='opr'>*</span><span class='opr'>)</span>;
+    HRESULT put_KeepOriginalFormat<span class='opr'>(</span>BOOL<span class='opr'>)</span>;
+    HRESULT PictureChanged<span class='opr'>(</span><span class='opr'>)</span>;
+    HRESULT SaveAsFile<span class='opr'>(</span>LPSTREAM, BOOL, LONG<span class='opr'>*</span><span class='opr'>)</span>;
+    HRESULT get_Attributes<span class='opr'>(</span>PDWORD<span class='opr'>)</span>;
+<span class='opr'>}</span>
+
+<span class='kw2'>interface</span> IPictureDisp : <span class='kw4'>public</span> IDispatch <span class='opr'>{</span>
+<span class='opr'>}</span>
+
+<span class='kw2'>interface</span> IOleInPlaceSiteEx : <span class='kw4'>public</span> IOleInPlaceSite <span class='opr'>{</span>
+    HRESULT OnInPlaceActivateEx<span class='opr'>(</span>BOOL<span class='opr'>*</span>, DWORD<span class='opr'>)</span>;
+    HRESULT OnInPlaceDeactivateEx<span class='opr'>(</span>BOOL<span class='opr'>)</span>;
+    HRESULT RequestUIActivate<span class='opr'>(</span><span class='opr'>)</span>;
+<span class='opr'>}</span>
+
+<span class='kw2'>interface</span> IObjectWithSite : <span class='kw4'>public</span> IUnknown <span class='opr'>{</span>
+    HRESULT SetSite<span class='opr'>(</span>IUnknown<span class='opr'>*</span><span class='opr'>)</span>;
+    HRESULT GetSite<span class='opr'>(</span>REFIID, <span class='kw4'>void</span><span class='opr'>*</span><span class='opr'>*</span><span class='opr'>)</span>;
+<span class='opr'>}</span>
+
+<span class='kw2'>interface</span> IOleInPlaceSiteWindowless : <span class='kw4'>public</span> IOleInPlaceSiteEx <span class='opr'>{</span>
+    HRESULT CanWindowlessActivate<span class='opr'>(</span><span class='opr'>)</span>;
+    HRESULT GetCapture<span class='opr'>(</span><span class='opr'>)</span>;
+    HRESULT SetCapture<span class='opr'>(</span>BOOL<span class='opr'>)</span>;
+    HRESULT GetFocus<span class='opr'>(</span><span class='opr'>)</span>;
+    HRESULT SetFocus<span class='opr'>(</span>BOOL<span class='opr'>)</span>;
+    HRESULT GetDC<span class='opr'>(</span>LPCRECT, DWORD, HDC<span class='opr'>*</span><span class='opr'>)</span>;
+    HRESULT ReleaseDC<span class='opr'>(</span>HDC<span class='opr'>)</span>;
+    HRESULT InvalidateRect<span class='opr'>(</span>LPCRECT, BOOL<span class='opr'>)</span>;
+    HRESULT InvalidateRgn<span class='opr'>(</span>HRGN, BOOL<span class='opr'>)</span>;
+    HRESULT ScrollRect<span class='opr'>(</span>INT, INT, LPCRECT, LPCRECT<span class='opr'>)</span>;
+    HRESULT AdjustRect<span class='opr'>(</span>LPCRECT<span class='opr'>)</span>;
+    HRESULT OnDefWindowMessage<span class='opr'>(</span>UINT, WPARAM, LPARAM, LRESULT<span class='opr'>*</span><span class='opr'>)</span>;
+<span class='opr'>}</span>
+
+<span class='kw2'>interface</span> IAdviseSinkEx : <span class='kw4'>public</span> IUnknown <span class='opr'>{</span>
+    <span class='kw4'>void</span> OnDataChange<span class='opr'>(</span>FORMATETC<span class='opr'>*</span>, STGMEDIUM<span class='opr'>*</span><span class='opr'>)</span>;
+    <span class='kw4'>void</span> OnViewChange<span class='opr'>(</span>DWORD, LONG<span class='opr'>)</span>;
+    <span class='kw4'>void</span> OnRename<span class='opr'>(</span>IMoniker<span class='opr'>*</span><span class='opr'>)</span>;
+    <span class='kw4'>void</span> OnSave<span class='opr'>(</span><span class='opr'>)</span>;
+    <span class='kw4'>void</span> OnClose<span class='opr'>(</span><span class='opr'>)</span>;
+    HRESULT OnViewStatusChange<span class='opr'>(</span>DWORD<span class='opr'>)</span>;
+<span class='opr'>}</span>
+
+<span class='kw2'>interface</span> IPointerInactive : <span class='kw4'>public</span> IUnknown <span class='opr'>{</span>
+    HRESULT GetActivationPolicy<span class='opr'>(</span>DWORD<span class='opr'>*</span><span class='opr'>)</span>;
+    HRESULT OnInactiveMouseMove<span class='opr'>(</span>LPCRECT, LONG, LONG, DWORD<span class='opr'>)</span>;
+    HRESULT OnInactiveSetCursor<span class='opr'>(</span>LPCRECT, LONG, LONG, DWORD, BOOL<span class='opr'>)</span>;
+<span class='opr'>}</span>
+
+<span class='kw2'>interface</span> IOleUndoUnit : <span class='kw4'>public</span> IUnknown <span class='opr'>{</span>
+    HRESULT Do<span class='opr'>(</span>LPOLEUNDOMANAGER<span class='opr'>)</span>;
+    HRESULT GetDescription<span class='opr'>(</span>BSTR<span class='opr'>*</span><span class='opr'>)</span>;
+    HRESULT GetUnitType<span class='opr'>(</span>CLSID<span class='opr'>*</span>, LONG<span class='opr'>*</span><span class='opr'>)</span>;
+    HRESULT OnNextAdd<span class='opr'>(</span><span class='opr'>)</span>;
+<span class='opr'>}</span>
+
+<span class='kw2'>interface</span> IOleParentUndoUnit : <span class='kw4'>public</span> IOleUndoUnit <span class='opr'>{</span>
+    HRESULT Open<span class='opr'>(</span>IOleParentUndoUnit<span class='opr'>*</span><span class='opr'>)</span>;
+    HRESULT Close<span class='opr'>(</span>IOleParentUndoUnit<span class='opr'>*</span>, BOOL<span class='opr'>)</span>;
+    HRESULT Add<span class='opr'>(</span>IOleUndoUnit<span class='opr'>*</span><span class='opr'>)</span>;
+    HRESULT FindUnit<span class='opr'>(</span>IOleUndoUnit<span class='opr'>*</span><span class='opr'>)</span>;
+    HRESULT GetParentState<span class='opr'>(</span>DWORD<span class='opr'>*</span><span class='opr'>)</span>;
+<span class='opr'>}</span>
+
+<span class='kw2'>interface</span> IEnumOleUndoUnits : <span class='kw4'>public</span> IUnknown <span class='opr'>{</span>
+    HRESULT Next<span class='opr'>(</span>ULONG, IOleUndoUnit<span class='opr'>*</span><span class='opr'>*</span>, ULONG<span class='opr'>*</span><span class='opr'>)</span>;
+    HRESULT Skip<span class='opr'>(</span>ULONG<span class='opr'>)</span>;
+    HRESULT Reset<span class='opr'>(</span><span class='opr'>)</span>;
+    HRESULT Clone<span class='opr'>(</span>IEnumOleUndoUnits<span class='opr'>*</span><span class='opr'>*</span><span class='opr'>)</span>;
+<span class='opr'>}</span>
+
+<span class='kw2'>interface</span> IOleUndoManager : <span class='kw4'>public</span> IUnknown <span class='opr'>{</span>
+    HRESULT Open<span class='opr'>(</span>IOleParentUndoUnit<span class='opr'>*</span><span class='opr'>)</span>;
+    HRESULT Close<span class='opr'>(</span>IOleParentUndoUnit<span class='opr'>*</span>, BOOL<span class='opr'>)</span>;
+    HRESULT Add<span class='opr'>(</span>IOleUndoUnit<span class='opr'>*</span><span class='opr'>)</span>;
+    HRESULT GetOpenParentState<span class='opr'>(</span>DWORD<span class='opr'>*</span><span class='opr'>)</span>;
+    HRESULT DiscardFrom<span class='opr'>(</span>IOleUndoUnit<span class='opr'>*</span><span class='opr'>)</span>;
+    HRESULT UndoTo<span class='opr'>(</span>IOleUndoUnit<span class='opr'>*</span><span class='opr'>)</span>;
+    HRESULT RedoTo<span class='opr'>(</span>IOleUndoUnit<span class='opr'>*</span><span class='opr'>)</span>;
+    HRESULT EnumUndoable<span class='opr'>(</span>IEnumOleUndoUnits<span class='opr'>*</span><span class='opr'>*</span><span class='opr'>)</span>;
+    HRESULT EnumRedoable<span class='opr'>(</span>IEnumOleUndoUnits<span class='opr'>*</span><span class='opr'>*</span><span class='opr'>)</span>;
+    HRESULT GetLastUndoDescription<span class='opr'>(</span>BSTR<span class='opr'>*</span><span class='opr'>)</span>;
+    HRESULT GetLastRedoDescription<span class='opr'>(</span>BSTR<span class='opr'>*</span><span class='opr'>)</span>;
+    HRESULT Enable<span class='opr'>(</span>BOOL<span class='opr'>)</span>;
+<span class='opr'>}</span>
+
+<span class='kw2'>interface</span> IQuickActivate : <span class='kw4'>public</span> IUnknown <span class='opr'>{</span>
+    HRESULT QuickActivate<span class='opr'>(</span>QACONTAINER<span class='opr'>*</span>, QACONTROL<span class='opr'>*</span><span class='opr'>)</span>;
+    HRESULT SetContentExtent<span class='opr'>(</span>LPSIZEL<span class='opr'>)</span>;
+    HRESULT GetContentExtent<span class='opr'>(</span>LPSIZEL<span class='opr'>)</span>;
+<span class='opr'>}</span>
+</pre></td></tr></table>	</body>
+</html>

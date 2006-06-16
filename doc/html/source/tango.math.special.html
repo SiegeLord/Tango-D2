@@ -1,0 +1,205 @@
+<!DOCTYPE html 
+     PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+     "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html>
+	<head>
+		<link rel="stylesheet" href="style.css" type="text/css" />
+		<title>math/special.d</title>
+	</head>
+	<body>
+
+<table id='dcode'><tr><td id='lnum'><pre><span>1</span>
+<span>2</span>
+<span>3</span>
+<span>4</span>
+<span>5</span>
+<span>6</span>
+<span>7</span>
+<span>8</span>
+<span>9</span>
+<span>10</span>
+<span>11</span>
+<span>12</span>
+<span>13</span>
+<span>14</span>
+<span>15</span>
+<span>16</span>
+<span>17</span>
+<span>18</span>
+<span>19</span>
+<span>20</span>
+<span>21</span>
+<span>22</span>
+<span>23</span>
+<span>24</span>
+<span>25</span>
+<span>26</span>
+<span>27</span>
+<span>28</span>
+<span>29</span>
+<span>30</span>
+<span>31</span>
+<span>32</span>
+<span>33</span>
+<span>34</span>
+<span>35</span>
+<span>36</span>
+<span>37</span>
+<span>38</span>
+<span>39</span>
+<span>40</span>
+<span>41</span>
+<span>42</span>
+<span>43</span>
+<span>44</span>
+<span>45</span>
+<span>46</span>
+<span>47</span>
+<span>48</span>
+<span>49</span>
+<span>50</span>
+<span>51</span>
+<span>52</span>
+<span>53</span>
+<span>54</span>
+<span>55</span>
+<span>56</span>
+<span>57</span>
+<span>58</span>
+<span>59</span>
+<span>60</span>
+<span>61</span>
+<span>62</span>
+<span>63</span>
+<span>64</span>
+<span>65</span>
+<span>66</span>
+<span>67</span>
+<span>68</span>
+<span>69</span>
+<span>70</span>
+<span>71</span>
+<span>72</span>
+<span>73</span>
+<span>74</span>
+<span>75</span>
+<span>76</span>
+<span>77</span>
+<span>78</span>
+<span>79</span>
+<span>80</span>
+<span>81</span>
+<span>82</span>
+<span>83</span>
+<span>84</span>
+<span>85</span>
+<span>86</span>
+<span>87</span>
+<span>88</span>
+<span>89</span>
+<span>90</span>
+<span>91</span>
+<span>92</span>
+<span>93</span>
+<span>94</span>
+<span>95</span>
+<span>96</span>
+</pre></td><td id='code'><pre><span class='com'>/*
+ *  Copyright (C) 2005-2006 Don Clugston
+ *
+ *  This software is provided 'as-is', without any express or implied
+ *  warranty. In no event will the authors be held liable for any damages
+ *  arising from the use of this software.
+ *
+ *  Permission is granted to anyone to use this software for any purpose,
+ *  including commercial applications, and to alter it and redistribute it
+ *  freely, in both source and binary form, subject to the following
+ *  restrictions:
+ *
+ *  o  The origin of this software must not be misrepresented; you must not
+ *     claim that you wrote the original software. If you use this software
+ *     in a product, an acknowledgment in the product documentation would be
+ *     appreciated but is not required.
+ *  o  Altered source versions must be plainly marked as such, and must not
+ *     be misrepresented as being the original software.
+ *  o  This notice may not be removed or altered from any source
+ *     distribution.
+ */</span>
+
+<span class='kw2'>module</span> tango.math.special;
+
+<span class='kw4'>private</span> <span class='kw2'>import</span> tango.stdc.math;
+
+<span class='com'>/**
+ * Returns the error function of x.
+ */</span>
+<span class='kw4'>real</span> erf<span class='opr'>(</span><span class='kw4'>real</span> x<span class='opr'>)</span>
+<span class='opr'>{</span>
+    <span class='kw1'>return</span> tango.stdc.math.erfl<span class='opr'>(</span>x<span class='opr'>)</span>;
+<span class='opr'>}</span>
+
+<span class='com'>/**
+ * Returns the complementary error function of x, which is 1 - erf(x).
+ */</span>
+<span class='kw4'>real</span> erfc<span class='opr'>(</span><span class='kw4'>real</span> x<span class='opr'>)</span>
+<span class='opr'>{</span>
+    <span class='kw1'>return</span> tango.stdc.math.erfcl<span class='opr'>(</span>x<span class='opr'>)</span>;
+<span class='opr'>}</span>
+
+<span class='com'>/**
+ *  The Gamma function, $(GAMMA)(x)
+ *
+ *  $(GAMMA)(x) is a generalisation of the factorial function
+ *  to real and complex numbers.
+ *  Like x!, $(GAMMA)(x+1) = x*$(GAMMA)(x).
+ *
+ *  Mathematically, if z.re &gt; 0 then
+ *   $(GAMMA)(z) =&lt;big&gt;$(INTEGRAL)&lt;sub&gt;&lt;small&gt;0&lt;/small&gt;&lt;/sub&gt;&lt;sup&gt;&amp;infin;&lt;/sup&gt;&lt;/big&gt;t&lt;sup&gt;z-1&lt;/sup&gt;e&lt;sup&gt;-t&lt;/sup&gt;dt
+ *
+ *  $(TABLE_SV
+ *  &lt;tr&gt; &lt;th&gt; x               &lt;th&gt; $(GAMMA)(x)     &lt;th&gt;invalid?
+ *  &lt;tr&gt; &lt;td&gt; $(NAN)          &lt;td&gt; $(NAN)          &lt;td&gt; yes
+ *  &lt;tr&gt; &lt;td&gt; &amp;plusmn;0.0     &lt;td&gt; &amp;plusmn;&amp;infin; &lt;td&gt; yes
+ *  &lt;tr&gt; &lt;td&gt; integer &gt; 0     &lt;td&gt; (x-1)!          &lt;td&gt; no
+ *  &lt;tr&gt; &lt;td&gt; integer &lt; 0     &lt;td&gt; $(NAN)          &lt;td&gt; yes
+ *  &lt;tr&gt; &lt;td&gt; +&amp;infin;        &lt;td&gt; +&amp;infin;        &lt;td&gt; no
+ *  &lt;tr&gt; &lt;td&gt; -&amp;infin;        &lt;td&gt; $(NAN)          &lt;td&gt; yes
+ *  )
+ *
+ *  References:
+ *  $(LINK http://en.wikipedia.org/wiki/Gamma_function),
+ *  $(LINK http://www.netlib.org/cephes/ldoubdoc.html#gamma)
+ */</span>
+<span class='com'>/* Documentation prepared by Don Clugston */</span>
+<span class='kw4'>real</span> gamma<span class='opr'>(</span><span class='kw4'>real</span> x<span class='opr'>)</span>
+<span class='opr'>{</span>
+    <span class='com'>// NOTE: A native implementation of this function is</span>
+    <span class='com'>//       available at http://www.dsource.org/mathextra</span>
+    <span class='kw1'>return</span> tango.stdc.math.tgammal<span class='opr'>(</span>x<span class='opr'>)</span>;
+<span class='opr'>}</span>
+
+<span class='com'>/**
+ * Natural logarithm of gamma function.
+ *
+ * Returns the base e (2.718...) logarithm of the absolute
+ * value of the gamma function of the argument.
+ *
+ * For reals, lgamma is equivalent to log(fabs(gamma(x))).
+ *
+ *  $(TABLE_SV
+ *  &lt;tr&gt; &lt;th&gt; x               &lt;th&gt; lgamma(x)     &lt;th&gt;invalid?
+ *  &lt;tr&gt; &lt;td&gt; $(NAN)          &lt;td&gt; $(NAN)        &lt;td&gt; yes
+ *  &lt;tr&gt; &lt;td&gt; integer &lt;= 0    &lt;td&gt; +&amp;infin;      &lt;td&gt; yes
+ *  &lt;tr&gt; &lt;td&gt; &amp;plusmn;&amp;infin; &lt;td&gt; +&amp;infin;      &lt;td&gt; no
+ *  )
+ */</span>
+<span class='com'>/* Documentation prepared by Don Clugston */</span>
+<span class='kw4'>real</span> loggamma<span class='opr'>(</span><span class='kw4'>real</span> x<span class='opr'>)</span>
+<span class='opr'>{</span>
+    <span class='com'>// NOTE: A native implementation of this function is</span>
+    <span class='com'>//       available at http://www.dsource.org/mathextra</span>
+    <span class='kw1'>return</span> tango.stdc.math.lgammal<span class='opr'>(</span>x<span class='opr'>)</span>;
+<span class='opr'>}</span>
+</pre></td></tr></table>	</body>
+</html>

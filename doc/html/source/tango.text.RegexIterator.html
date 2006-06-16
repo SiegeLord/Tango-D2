@@ -1,0 +1,327 @@
+<!DOCTYPE html 
+     PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+     "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html>
+	<head>
+		<link rel="stylesheet" href="style.css" type="text/css" />
+		<title>text/RegexIterator.d</title>
+	</head>
+	<body>
+
+<table id='dcode'><tr><td id='lnum'><pre><span>1</span>
+<span>2</span>
+<span>3</span>
+<span>4</span>
+<span>5</span>
+<span>6</span>
+<span>7</span>
+<span>8</span>
+<span>9</span>
+<span>10</span>
+<span>11</span>
+<span>12</span>
+<span>13</span>
+<span>14</span>
+<span>15</span>
+<span>16</span>
+<span>17</span>
+<span>18</span>
+<span>19</span>
+<span>20</span>
+<span>21</span>
+<span>22</span>
+<span>23</span>
+<span>24</span>
+<span>25</span>
+<span>26</span>
+<span>27</span>
+<span>28</span>
+<span>29</span>
+<span>30</span>
+<span>31</span>
+<span>32</span>
+<span>33</span>
+<span>34</span>
+<span>35</span>
+<span>36</span>
+<span>37</span>
+<span>38</span>
+<span>39</span>
+<span>40</span>
+<span>41</span>
+<span>42</span>
+<span>43</span>
+<span>44</span>
+<span>45</span>
+<span>46</span>
+<span>47</span>
+<span>48</span>
+<span>49</span>
+<span>50</span>
+<span>51</span>
+<span>52</span>
+<span>53</span>
+<span>54</span>
+<span>55</span>
+<span>56</span>
+<span>57</span>
+<span>58</span>
+<span>59</span>
+<span>60</span>
+<span>61</span>
+<span>62</span>
+<span>63</span>
+<span>64</span>
+<span>65</span>
+<span>66</span>
+<span>67</span>
+<span>68</span>
+<span>69</span>
+<span>70</span>
+<span>71</span>
+<span>72</span>
+<span>73</span>
+<span>74</span>
+<span>75</span>
+<span>76</span>
+<span>77</span>
+<span>78</span>
+<span>79</span>
+<span>80</span>
+<span>81</span>
+<span>82</span>
+<span>83</span>
+<span>84</span>
+<span>85</span>
+<span>86</span>
+<span>87</span>
+<span>88</span>
+<span>89</span>
+<span>90</span>
+<span>91</span>
+<span>92</span>
+<span>93</span>
+<span>94</span>
+<span>95</span>
+<span>96</span>
+<span>97</span>
+<span>98</span>
+<span>99</span>
+<span>100</span>
+<span>101</span>
+<span>102</span>
+<span>103</span>
+<span>104</span>
+<span>105</span>
+<span>106</span>
+<span>107</span>
+<span>108</span>
+<span>109</span>
+<span>110</span>
+<span>111</span>
+<span>112</span>
+<span>113</span>
+<span>114</span>
+<span>115</span>
+<span>116</span>
+<span>117</span>
+<span>118</span>
+<span>119</span>
+<span>120</span>
+<span>121</span>
+<span>122</span>
+<span>123</span>
+<span>124</span>
+<span>125</span>
+<span>126</span>
+<span>127</span>
+<span>128</span>
+<span>129</span>
+<span>130</span>
+<span>131</span>
+<span>132</span>
+<span>133</span>
+<span>134</span>
+<span>135</span>
+<span>136</span>
+<span>137</span>
+<span>138</span>
+<span>139</span>
+<span>140</span>
+<span>141</span>
+<span>142</span>
+<span>143</span>
+<span>144</span>
+<span>145</span>
+<span>146</span>
+<span>147</span>
+<span>148</span>
+<span>149</span>
+<span>150</span>
+<span>151</span>
+<span>152</span>
+<span>153</span>
+<span>154</span>
+<span>155</span>
+<span>156</span>
+<span>157</span>
+</pre></td><td id='code'><pre><span class='com'>/*******************************************************************************
+
+        copyright:      Copyright (c) 2004 Kris Bell. All rights reserved
+
+        license:        BSD style: $(LICENSE)
+
+        version:        Initial release: January 2006      
+        
+        author:         Kris
+
+*******************************************************************************/</span>
+
+<span class='kw2'>module</span> tango.text.RegexIterator;
+
+<span class='kw4'>private</span> <span class='kw2'>import</span>  tango.text.Regex;
+    
+<span class='kw4'>private</span> <span class='kw2'>import</span>  tango.text.Iterator;
+
+<span class='com'>/*******************************************************************************
+
+        Iterate across a set of text patterns.
+
+        These iterators are based upon the IBuffer construct, and can
+        thus be used in conjunction with other Iterators and/or Reader
+        instances upon a common buffer ~ each will stay in lockstep via
+        state maintained within the IBuffer.
+
+        The content exposed via an iterator is supposed to be entirely
+        read-only. All current iterators abide by this rule, but it is
+        possible a user could mutate the content through a get() slice.
+        To enforce the desired read-only aspect, the code would have to 
+        introduce redundant copying or the compiler would have to support 
+        read-only arrays.
+
+        See LineIterator, SimpleIterator, RegexIterator, QuotedIterator.
+
+
+*******************************************************************************/</span>
+
+<span class='kw4'>class</span> RegexIteratorT<span class='opr'>(</span>T<span class='opr'>)</span> : IteratorT!<span class='opr'>(</span>T<span class='opr'>)</span>
+<span class='opr'>{</span>
+        <span class='kw4'>private</span> Regex regex;
+
+        <span class='com'>/***********************************************************************
+        
+                Construct an uninitialized iterator. Use as follows:
+
+                auto line = new LineIterator;
+
+                void somefunc (IBuffer buffer)
+                {
+                        // there are several set() methods
+                        line.set (buffer);
+                        
+                        while (line.next)
+                               Println (line.get);
+                }
+        
+        ***********************************************************************/</span>
+
+        <span class='kw2'>this</span> <span class='opr'>(</span>T<span class='opr'>[</span><span class='opr'>]</span> pattern<span class='opr'>)</span> 
+        <span class='opr'>{</span>
+                init <span class='opr'>(</span>pattern<span class='opr'>)</span>;
+        <span class='opr'>}</span>
+
+        <span class='com'>/***********************************************************************
+
+                Construct a streaming iterator upon the provided buffer. 
+                Use as follows:
+
+                void somefunc (IBuffer buffer)
+                {
+                        auto line = new LineIterator (buffer);
+                        
+                        while (line.next)
+                               Println (line.get);
+                }
+        
+        ***********************************************************************/</span>
+
+        <span class='kw2'>this</span> <span class='opr'>(</span>IBuffer buffer, T<span class='opr'>[</span><span class='opr'>]</span> pattern<span class='opr'>)</span>
+        <span class='opr'>{</span>
+                <span class='kw2'>super</span> <span class='opr'>(</span>buffer<span class='opr'>)</span>;
+                init <span class='opr'>(</span>pattern<span class='opr'>)</span>;
+        <span class='opr'>}</span>
+
+        <span class='com'>/***********************************************************************
+        
+                Construct a streaming iterator upon the provided conduit. 
+                Use as follows:
+
+                auto line = new LineIterator (new FileConduit (&quot;myfile&quot;));
+
+                while (line.next)
+                       Println (line.get);
+
+        ***********************************************************************/</span>
+
+        <span class='kw2'>this</span> <span class='opr'>(</span>IConduit conduit, T<span class='opr'>[</span><span class='opr'>]</span> pattern<span class='opr'>)</span>
+        <span class='opr'>{</span>
+                <span class='kw2'>super</span> <span class='opr'>(</span>conduit<span class='opr'>)</span>;
+                init <span class='opr'>(</span>pattern<span class='opr'>)</span>;
+        <span class='opr'>}</span>
+
+        <span class='com'>/***********************************************************************
+        
+                Construct an iterator upon the provided string. Use as follows:
+
+                void somefunc (char[] string)
+                {
+                        auto line = new LineIterator (string);
+                        
+                        while (line.next)
+                               Println (line.get);
+                }
+        
+        ***********************************************************************/</span>
+
+        <span class='kw2'>this</span> <span class='opr'>(</span>T<span class='opr'>[</span><span class='opr'>]</span> string, T<span class='opr'>[</span><span class='opr'>]</span> pattern<span class='opr'>)</span>
+        <span class='opr'>{</span>
+                <span class='kw2'>super</span> <span class='opr'>(</span>string<span class='opr'>)</span>;
+                init <span class='opr'>(</span>pattern<span class='opr'>)</span>;
+        <span class='opr'>}</span>
+
+        <span class='com'>/***********************************************************************
+                
+        ***********************************************************************/</span>
+
+        <span class='kw4'>protected</span> <span class='kw4'>uint</span> scan <span class='opr'>(</span><span class='kw4'>void</span><span class='opr'>[</span><span class='opr'>]</span> data<span class='opr'>)</span>
+        <span class='opr'>{</span>
+                T<span class='opr'>[</span><span class='opr'>]</span> content <span class='opr'>=</span> convert <span class='opr'>(</span>data<span class='opr'>)</span>;
+
+                <span class='kw1'>if</span> <span class='opr'>(</span>regex.test <span class='opr'>(</span>content<span class='opr'>)</span><span class='opr'>)</span>
+                   <span class='opr'>{</span>
+                   <span class='kw4'>int</span> start <span class='opr'>=</span> regex.pmatch<span class='opr'>[</span><span class='nbr'>0</span><span class='opr'>]</span>.rm_so;
+                   <span class='kw4'>int</span> finish <span class='opr'>=</span> regex.pmatch<span class='opr'>[</span><span class='nbr'>0</span><span class='opr'>]</span>.rm_eo;
+                   set <span class='opr'>(</span>content, <span class='nbr'>0</span>, start<span class='opr'>)</span>;
+                   <span class='kw1'>return</span> found <span class='opr'>(</span>finish<span class='opr'>)</span>;        
+                   <span class='opr'>}</span>
+
+                <span class='kw1'>return</span> notFound <span class='opr'>(</span>content<span class='opr'>)</span>;
+        <span class='opr'>}</span>
+
+        <span class='com'>/***********************************************************************
+                
+        ***********************************************************************/</span>
+
+        <span class='kw4'>private</span> <span class='kw4'>void</span> init <span class='opr'>(</span>T<span class='opr'>[</span><span class='opr'>]</span> pattern<span class='opr'>)</span>
+        <span class='opr'>{</span>
+                regex <span class='opr'>=</span> <span class='kw2'>new</span> Regex <span class='opr'>(</span>pattern, <span class='str'>&quot;&quot;</span><span class='opr'>)</span>;
+        <span class='opr'>}</span>
+<span class='opr'>}</span>
+
+
+<span class='com'>// convenience alias</span>
+<span class='kw2'>alias</span> RegexIteratorT!<span class='opr'>(</span><span class='kw4'>char</span><span class='opr'>)</span> RegexIterator;
+
+</pre></td></tr></table>	</body>
+</html>

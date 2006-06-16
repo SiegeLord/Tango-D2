@@ -1,0 +1,401 @@
+<!DOCTYPE html 
+     PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+     "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html>
+	<head>
+		<link rel="stylesheet" href="style.css" type="text/css" />
+		<title>os/windows/c/dlgs.d</title>
+	</head>
+	<body>
+
+<table id='dcode'><tr><td id='lnum'><pre><span>1</span>
+<span>2</span>
+<span>3</span>
+<span>4</span>
+<span>5</span>
+<span>6</span>
+<span>7</span>
+<span>8</span>
+<span>9</span>
+<span>10</span>
+<span>11</span>
+<span>12</span>
+<span>13</span>
+<span>14</span>
+<span>15</span>
+<span>16</span>
+<span>17</span>
+<span>18</span>
+<span>19</span>
+<span>20</span>
+<span>21</span>
+<span>22</span>
+<span>23</span>
+<span>24</span>
+<span>25</span>
+<span>26</span>
+<span>27</span>
+<span>28</span>
+<span>29</span>
+<span>30</span>
+<span>31</span>
+<span>32</span>
+<span>33</span>
+<span>34</span>
+<span>35</span>
+<span>36</span>
+<span>37</span>
+<span>38</span>
+<span>39</span>
+<span>40</span>
+<span>41</span>
+<span>42</span>
+<span>43</span>
+<span>44</span>
+<span>45</span>
+<span>46</span>
+<span>47</span>
+<span>48</span>
+<span>49</span>
+<span>50</span>
+<span>51</span>
+<span>52</span>
+<span>53</span>
+<span>54</span>
+<span>55</span>
+<span>56</span>
+<span>57</span>
+<span>58</span>
+<span>59</span>
+<span>60</span>
+<span>61</span>
+<span>62</span>
+<span>63</span>
+<span>64</span>
+<span>65</span>
+<span>66</span>
+<span>67</span>
+<span>68</span>
+<span>69</span>
+<span>70</span>
+<span>71</span>
+<span>72</span>
+<span>73</span>
+<span>74</span>
+<span>75</span>
+<span>76</span>
+<span>77</span>
+<span>78</span>
+<span>79</span>
+<span>80</span>
+<span>81</span>
+<span>82</span>
+<span>83</span>
+<span>84</span>
+<span>85</span>
+<span>86</span>
+<span>87</span>
+<span>88</span>
+<span>89</span>
+<span>90</span>
+<span>91</span>
+<span>92</span>
+<span>93</span>
+<span>94</span>
+<span>95</span>
+<span>96</span>
+<span>97</span>
+<span>98</span>
+<span>99</span>
+<span>100</span>
+<span>101</span>
+<span>102</span>
+<span>103</span>
+<span>104</span>
+<span>105</span>
+<span>106</span>
+<span>107</span>
+<span>108</span>
+<span>109</span>
+<span>110</span>
+<span>111</span>
+<span>112</span>
+<span>113</span>
+<span>114</span>
+<span>115</span>
+<span>116</span>
+<span>117</span>
+<span>118</span>
+<span>119</span>
+<span>120</span>
+<span>121</span>
+<span>122</span>
+<span>123</span>
+<span>124</span>
+<span>125</span>
+<span>126</span>
+<span>127</span>
+<span>128</span>
+<span>129</span>
+<span>130</span>
+<span>131</span>
+<span>132</span>
+<span>133</span>
+<span>134</span>
+<span>135</span>
+<span>136</span>
+<span>137</span>
+<span>138</span>
+<span>139</span>
+<span>140</span>
+<span>141</span>
+<span>142</span>
+<span>143</span>
+<span>144</span>
+<span>145</span>
+<span>146</span>
+<span>147</span>
+<span>148</span>
+<span>149</span>
+<span>150</span>
+<span>151</span>
+<span>152</span>
+<span>153</span>
+<span>154</span>
+<span>155</span>
+<span>156</span>
+<span>157</span>
+<span>158</span>
+<span>159</span>
+<span>160</span>
+<span>161</span>
+<span>162</span>
+<span>163</span>
+<span>164</span>
+<span>165</span>
+<span>166</span>
+<span>167</span>
+<span>168</span>
+<span>169</span>
+<span>170</span>
+<span>171</span>
+<span>172</span>
+<span>173</span>
+<span>174</span>
+<span>175</span>
+<span>176</span>
+<span>177</span>
+<span>178</span>
+<span>179</span>
+<span>180</span>
+<span>181</span>
+<span>182</span>
+<span>183</span>
+<span>184</span>
+<span>185</span>
+<span>186</span>
+<span>187</span>
+<span>188</span>
+<span>189</span>
+<span>190</span>
+<span>191</span>
+<span>192</span>
+<span>193</span>
+<span>194</span>
+</pre></td><td id='code'><pre><span class='com'>/***********************************************************************\
+*                                 dlgs.d                                *
+*                                                                       *
+*                       Windows API header module                       *
+*                                                                       *
+*                 Translated from MinGW Windows headers                 *
+*                           by Stewart Gordon                           *
+*                                                                       *
+*                       Placed into public domain                       *
+\***********************************************************************/</span>
+<span class='kw2'>module</span> tango.os.windows.c.dlgs;
+
+<span class='com'>//version (build) { pragma(nolink); }</span>
+
+
+<span class='kw4'>private</span> <span class='kw2'>import</span> tango.os.windows.c.windef;
+
+<span class='kw4'>enum</span> : <span class='kw4'>ushort</span> <span class='opr'>{</span>
+    FILEOPENORD      <span class='opr'>=</span> <span class='nbr'>1536</span>,
+    MULTIFILEOPENORD <span class='opr'>=</span> <span class='nbr'>1537</span>,
+    PRINTDLGORD      <span class='opr'>=</span> <span class='nbr'>1538</span>,
+    PRNSETUPDLGORD   <span class='opr'>=</span> <span class='nbr'>1539</span>,
+    FINDDLGORD       <span class='opr'>=</span> <span class='nbr'>1540</span>,
+    REPLACEDLGORD    <span class='opr'>=</span> <span class='nbr'>1541</span>,
+    FONTDLGORD       <span class='opr'>=</span> <span class='nbr'>1542</span>,
+    FORMATDLGORD31   <span class='opr'>=</span> <span class='nbr'>1543</span>,
+    FORMATDLGORD30   <span class='opr'>=</span> <span class='nbr'>1544</span>,
+    PAGESETUPDLGORD  <span class='opr'>=</span> <span class='nbr'>1546</span>
+<span class='opr'>}</span>
+
+<span class='kw4'>enum</span> : <span class='kw4'>int</span> <span class='opr'>{</span>
+    ctlFirst <span class='opr'>=</span> <span class='nbr'>0</span>x400,
+    ctlLast  <span class='opr'>=</span> <span class='nbr'>0</span>x4ff,
+    chx1     <span class='opr'>=</span> <span class='nbr'>0</span>x410,
+    chx2     <span class='opr'>=</span> <span class='nbr'>0</span>x411,
+    chx3     <span class='opr'>=</span> <span class='nbr'>0</span>x412,
+    chx4     <span class='opr'>=</span> <span class='nbr'>0</span>x413,
+    chx5     <span class='opr'>=</span> <span class='nbr'>0</span>x414,
+    chx6     <span class='opr'>=</span> <span class='nbr'>0</span>x415,
+    chx7     <span class='opr'>=</span> <span class='nbr'>0</span>x416,
+    chx8     <span class='opr'>=</span> <span class='nbr'>0</span>x417,
+    chx9     <span class='opr'>=</span> <span class='nbr'>0</span>x418,
+    chx10    <span class='opr'>=</span> <span class='nbr'>0</span>x419,
+    chx11    <span class='opr'>=</span> <span class='nbr'>0</span>x41a,
+    chx12    <span class='opr'>=</span> <span class='nbr'>0</span>x41b,
+    chx13    <span class='opr'>=</span> <span class='nbr'>0</span>x41c,
+    chx14    <span class='opr'>=</span> <span class='nbr'>0</span>x41d,
+    chx15    <span class='opr'>=</span> <span class='nbr'>0</span>x41e,
+    chx16    <span class='opr'>=</span> <span class='nbr'>0</span>x41f,
+    cmb1     <span class='opr'>=</span> <span class='nbr'>0</span>x470,
+    cmb2     <span class='opr'>=</span> <span class='nbr'>0</span>x471,
+    cmb3     <span class='opr'>=</span> <span class='nbr'>0</span>x472,
+    cmb4     <span class='opr'>=</span> <span class='nbr'>0</span>x473,
+    cmb5     <span class='opr'>=</span> <span class='nbr'>0</span>x474,
+    cmb6     <span class='opr'>=</span> <span class='nbr'>0</span>x475,
+    cmb7     <span class='opr'>=</span> <span class='nbr'>0</span>x476,
+    cmb8     <span class='opr'>=</span> <span class='nbr'>0</span>x477,
+    cmb9     <span class='opr'>=</span> <span class='nbr'>0</span>x478,
+    cmb10    <span class='opr'>=</span> <span class='nbr'>0</span>x479,
+    cmb11    <span class='opr'>=</span> <span class='nbr'>0</span>x47a,
+    cmb12    <span class='opr'>=</span> <span class='nbr'>0</span>x47b,
+    cmb13    <span class='opr'>=</span> <span class='nbr'>0</span>x47c,
+    cmb14    <span class='opr'>=</span> <span class='nbr'>0</span>x47d,
+    cmb15    <span class='opr'>=</span> <span class='nbr'>0</span>x47e,
+    cmb16    <span class='opr'>=</span> <span class='nbr'>0</span>x47f,
+    edt1     <span class='opr'>=</span> <span class='nbr'>0</span>x480,
+    edt2     <span class='opr'>=</span> <span class='nbr'>0</span>x481,
+    edt3     <span class='opr'>=</span> <span class='nbr'>0</span>x482,
+    edt4     <span class='opr'>=</span> <span class='nbr'>0</span>x483,
+    edt5     <span class='opr'>=</span> <span class='nbr'>0</span>x484,
+    edt6     <span class='opr'>=</span> <span class='nbr'>0</span>x485,
+    edt7     <span class='opr'>=</span> <span class='nbr'>0</span>x486,
+    edt8     <span class='opr'>=</span> <span class='nbr'>0</span>x487,
+    edt9     <span class='opr'>=</span> <span class='nbr'>0</span>x488,
+    edt10    <span class='opr'>=</span> <span class='nbr'>0</span>x489,
+    edt11    <span class='opr'>=</span> <span class='nbr'>0</span>x48a,
+    edt12    <span class='opr'>=</span> <span class='nbr'>0</span>x48b,
+    edt13    <span class='opr'>=</span> <span class='nbr'>0</span>x48c,
+    edt14    <span class='opr'>=</span> <span class='nbr'>0</span>x48d,
+    edt15    <span class='opr'>=</span> <span class='nbr'>0</span>x48e,
+    edt16    <span class='opr'>=</span> <span class='nbr'>0</span>x48f,
+    frm1     <span class='opr'>=</span> <span class='nbr'>0</span>x434,
+    frm2     <span class='opr'>=</span> <span class='nbr'>0</span>x435,
+    frm3     <span class='opr'>=</span> <span class='nbr'>0</span>x436,
+    frm4     <span class='opr'>=</span> <span class='nbr'>0</span>x437,
+    grp1     <span class='opr'>=</span> <span class='nbr'>0</span>x430,
+    grp2     <span class='opr'>=</span> <span class='nbr'>0</span>x431,
+    grp3     <span class='opr'>=</span> <span class='nbr'>0</span>x432,
+    grp4     <span class='opr'>=</span> <span class='nbr'>0</span>x433,
+    ico1     <span class='opr'>=</span> <span class='nbr'>0</span>x43c,
+    ico2     <span class='opr'>=</span> <span class='nbr'>0</span>x43d,
+    ico3     <span class='opr'>=</span> <span class='nbr'>0</span>x43e,
+    ico4     <span class='opr'>=</span> <span class='nbr'>0</span>x43f,
+    lst1     <span class='opr'>=</span> <span class='nbr'>0</span>x460,
+    lst2     <span class='opr'>=</span> <span class='nbr'>0</span>x461,
+    lst3     <span class='opr'>=</span> <span class='nbr'>0</span>x462,
+    lst4     <span class='opr'>=</span> <span class='nbr'>0</span>x463,
+    lst5     <span class='opr'>=</span> <span class='nbr'>0</span>x464,
+    lst6     <span class='opr'>=</span> <span class='nbr'>0</span>x465,
+    lst7     <span class='opr'>=</span> <span class='nbr'>0</span>x466,
+    lst8     <span class='opr'>=</span> <span class='nbr'>0</span>x467,
+    lst9     <span class='opr'>=</span> <span class='nbr'>0</span>x468,
+    lst10    <span class='opr'>=</span> <span class='nbr'>0</span>x469,
+    lst11    <span class='opr'>=</span> <span class='nbr'>0</span>x46a,
+    lst12    <span class='opr'>=</span> <span class='nbr'>0</span>x46b,
+    lst13    <span class='opr'>=</span> <span class='nbr'>0</span>x46c,
+    lst14    <span class='opr'>=</span> <span class='nbr'>0</span>x46d,
+    lst15    <span class='opr'>=</span> <span class='nbr'>0</span>x46e,
+    lst16    <span class='opr'>=</span> <span class='nbr'>0</span>x46f,
+    psh1     <span class='opr'>=</span> <span class='nbr'>0</span>x400,
+    psh2     <span class='opr'>=</span> <span class='nbr'>0</span>x401,
+    psh3     <span class='opr'>=</span> <span class='nbr'>0</span>x402,
+    psh4     <span class='opr'>=</span> <span class='nbr'>0</span>x403,
+    psh5     <span class='opr'>=</span> <span class='nbr'>0</span>x404,
+    psh6     <span class='opr'>=</span> <span class='nbr'>0</span>x405,
+    psh7     <span class='opr'>=</span> <span class='nbr'>0</span>x406,
+    psh8     <span class='opr'>=</span> <span class='nbr'>0</span>x407,
+    psh9     <span class='opr'>=</span> <span class='nbr'>0</span>x408,
+    psh10    <span class='opr'>=</span> <span class='nbr'>0</span>x409,
+    psh11    <span class='opr'>=</span> <span class='nbr'>0</span>x40a,
+    psh12    <span class='opr'>=</span> <span class='nbr'>0</span>x40b,
+    psh13    <span class='opr'>=</span> <span class='nbr'>0</span>x40c,
+    psh14    <span class='opr'>=</span> <span class='nbr'>0</span>x40d,
+    psh15    <span class='opr'>=</span> <span class='nbr'>0</span>x40e,
+    pshHelp  <span class='opr'>=</span> <span class='nbr'>0</span>x40e,
+    psh16    <span class='opr'>=</span> <span class='nbr'>0</span>x40f,
+    rad1     <span class='opr'>=</span> <span class='nbr'>0</span>x420,
+    rad2     <span class='opr'>=</span> <span class='nbr'>0</span>x421,
+    rad3     <span class='opr'>=</span> <span class='nbr'>0</span>x422,
+    rad4     <span class='opr'>=</span> <span class='nbr'>0</span>x423,
+    rad5     <span class='opr'>=</span> <span class='nbr'>0</span>x424,
+    rad6     <span class='opr'>=</span> <span class='nbr'>0</span>x425,
+    rad7     <span class='opr'>=</span> <span class='nbr'>0</span>x426,
+    rad8     <span class='opr'>=</span> <span class='nbr'>0</span>x427,
+    rad9     <span class='opr'>=</span> <span class='nbr'>0</span>x428,
+    rad10    <span class='opr'>=</span> <span class='nbr'>0</span>x429,
+    rad11    <span class='opr'>=</span> <span class='nbr'>0</span>x42a,
+    rad12    <span class='opr'>=</span> <span class='nbr'>0</span>x42b,
+    rad13    <span class='opr'>=</span> <span class='nbr'>0</span>x42c,
+    rad14    <span class='opr'>=</span> <span class='nbr'>0</span>x42d,
+    rad15    <span class='opr'>=</span> <span class='nbr'>0</span>x42e,
+    rad16    <span class='opr'>=</span> <span class='nbr'>0</span>x42f,
+    rct1     <span class='opr'>=</span> <span class='nbr'>0</span>x438,
+    rct2     <span class='opr'>=</span> <span class='nbr'>0</span>x439,
+    rct3     <span class='opr'>=</span> <span class='nbr'>0</span>x43a,
+    rct4     <span class='opr'>=</span> <span class='nbr'>0</span>x43b,
+    scr1     <span class='opr'>=</span> <span class='nbr'>0</span>x490,
+    scr2     <span class='opr'>=</span> <span class='nbr'>0</span>x491,
+    scr3     <span class='opr'>=</span> <span class='nbr'>0</span>x492,
+    scr4     <span class='opr'>=</span> <span class='nbr'>0</span>x493,
+    scr5     <span class='opr'>=</span> <span class='nbr'>0</span>x494,
+    scr6     <span class='opr'>=</span> <span class='nbr'>0</span>x495,
+    scr7     <span class='opr'>=</span> <span class='nbr'>0</span>x496,
+    scr8     <span class='opr'>=</span> <span class='nbr'>0</span>x497,
+    stc1     <span class='opr'>=</span> <span class='nbr'>0</span>x440,
+    stc2     <span class='opr'>=</span> <span class='nbr'>0</span>x441,
+    stc3     <span class='opr'>=</span> <span class='nbr'>0</span>x442,
+    stc4     <span class='opr'>=</span> <span class='nbr'>0</span>x443,
+    stc5     <span class='opr'>=</span> <span class='nbr'>0</span>x444,
+    stc6     <span class='opr'>=</span> <span class='nbr'>0</span>x445,
+    stc7     <span class='opr'>=</span> <span class='nbr'>0</span>x446,
+    stc8     <span class='opr'>=</span> <span class='nbr'>0</span>x447,
+    stc9     <span class='opr'>=</span> <span class='nbr'>0</span>x448,
+    stc10    <span class='opr'>=</span> <span class='nbr'>0</span>x449,
+    stc11    <span class='opr'>=</span> <span class='nbr'>0</span>x44a,
+    stc12    <span class='opr'>=</span> <span class='nbr'>0</span>x44b,
+    stc13    <span class='opr'>=</span> <span class='nbr'>0</span>x44c,
+    stc14    <span class='opr'>=</span> <span class='nbr'>0</span>x44d,
+    stc15    <span class='opr'>=</span> <span class='nbr'>0</span>x44e,
+    stc16    <span class='opr'>=</span> <span class='nbr'>0</span>x44f,
+    stc17    <span class='opr'>=</span> <span class='nbr'>0</span>x450,
+    stc18    <span class='opr'>=</span> <span class='nbr'>0</span>x451,
+    stc19    <span class='opr'>=</span> <span class='nbr'>0</span>x452,
+    stc20    <span class='opr'>=</span> <span class='nbr'>0</span>x453,
+    stc21    <span class='opr'>=</span> <span class='nbr'>0</span>x454,
+    stc22    <span class='opr'>=</span> <span class='nbr'>0</span>x455,
+    stc23    <span class='opr'>=</span> <span class='nbr'>0</span>x456,
+    stc24    <span class='opr'>=</span> <span class='nbr'>0</span>x457,
+    stc25    <span class='opr'>=</span> <span class='nbr'>0</span>x458,
+    stc26    <span class='opr'>=</span> <span class='nbr'>0</span>x459,
+    stc27    <span class='opr'>=</span> <span class='nbr'>0</span>x45a,
+    stc28    <span class='opr'>=</span> <span class='nbr'>0</span>x45b,
+    stc29    <span class='opr'>=</span> <span class='nbr'>0</span>x45c,
+    stc30    <span class='opr'>=</span> <span class='nbr'>0</span>x45d,
+    stc31    <span class='opr'>=</span> <span class='nbr'>0</span>x45e,
+    stc32    <span class='opr'>=</span> <span class='nbr'>0</span>x45f
+<span class='opr'>}</span>
+
+<span class='kw4'>struct</span> CRGB <span class='opr'>{</span>
+    <span class='kw4'>ubyte</span> bRed;
+    <span class='kw4'>ubyte</span> bGreen;
+    <span class='kw4'>ubyte</span> bBlue;
+    <span class='kw4'>ubyte</span> bExtra;
+<span class='opr'>}</span>
+</pre></td></tr></table>	</body>
+</html>

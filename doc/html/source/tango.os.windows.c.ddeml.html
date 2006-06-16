@@ -1,0 +1,767 @@
+<!DOCTYPE html 
+     PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+     "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html>
+	<head>
+		<link rel="stylesheet" href="style.css" type="text/css" />
+		<title>os/windows/c/ddeml.d</title>
+	</head>
+	<body>
+
+<table id='dcode'><tr><td id='lnum'><pre><span>1</span>
+<span>2</span>
+<span>3</span>
+<span>4</span>
+<span>5</span>
+<span>6</span>
+<span>7</span>
+<span>8</span>
+<span>9</span>
+<span>10</span>
+<span>11</span>
+<span>12</span>
+<span>13</span>
+<span>14</span>
+<span>15</span>
+<span>16</span>
+<span>17</span>
+<span>18</span>
+<span>19</span>
+<span>20</span>
+<span>21</span>
+<span>22</span>
+<span>23</span>
+<span>24</span>
+<span>25</span>
+<span>26</span>
+<span>27</span>
+<span>28</span>
+<span>29</span>
+<span>30</span>
+<span>31</span>
+<span>32</span>
+<span>33</span>
+<span>34</span>
+<span>35</span>
+<span>36</span>
+<span>37</span>
+<span>38</span>
+<span>39</span>
+<span>40</span>
+<span>41</span>
+<span>42</span>
+<span>43</span>
+<span>44</span>
+<span>45</span>
+<span>46</span>
+<span>47</span>
+<span>48</span>
+<span>49</span>
+<span>50</span>
+<span>51</span>
+<span>52</span>
+<span>53</span>
+<span>54</span>
+<span>55</span>
+<span>56</span>
+<span>57</span>
+<span>58</span>
+<span>59</span>
+<span>60</span>
+<span>61</span>
+<span>62</span>
+<span>63</span>
+<span>64</span>
+<span>65</span>
+<span>66</span>
+<span>67</span>
+<span>68</span>
+<span>69</span>
+<span>70</span>
+<span>71</span>
+<span>72</span>
+<span>73</span>
+<span>74</span>
+<span>75</span>
+<span>76</span>
+<span>77</span>
+<span>78</span>
+<span>79</span>
+<span>80</span>
+<span>81</span>
+<span>82</span>
+<span>83</span>
+<span>84</span>
+<span>85</span>
+<span>86</span>
+<span>87</span>
+<span>88</span>
+<span>89</span>
+<span>90</span>
+<span>91</span>
+<span>92</span>
+<span>93</span>
+<span>94</span>
+<span>95</span>
+<span>96</span>
+<span>97</span>
+<span>98</span>
+<span>99</span>
+<span>100</span>
+<span>101</span>
+<span>102</span>
+<span>103</span>
+<span>104</span>
+<span>105</span>
+<span>106</span>
+<span>107</span>
+<span>108</span>
+<span>109</span>
+<span>110</span>
+<span>111</span>
+<span>112</span>
+<span>113</span>
+<span>114</span>
+<span>115</span>
+<span>116</span>
+<span>117</span>
+<span>118</span>
+<span>119</span>
+<span>120</span>
+<span>121</span>
+<span>122</span>
+<span>123</span>
+<span>124</span>
+<span>125</span>
+<span>126</span>
+<span>127</span>
+<span>128</span>
+<span>129</span>
+<span>130</span>
+<span>131</span>
+<span>132</span>
+<span>133</span>
+<span>134</span>
+<span>135</span>
+<span>136</span>
+<span>137</span>
+<span>138</span>
+<span>139</span>
+<span>140</span>
+<span>141</span>
+<span>142</span>
+<span>143</span>
+<span>144</span>
+<span>145</span>
+<span>146</span>
+<span>147</span>
+<span>148</span>
+<span>149</span>
+<span>150</span>
+<span>151</span>
+<span>152</span>
+<span>153</span>
+<span>154</span>
+<span>155</span>
+<span>156</span>
+<span>157</span>
+<span>158</span>
+<span>159</span>
+<span>160</span>
+<span>161</span>
+<span>162</span>
+<span>163</span>
+<span>164</span>
+<span>165</span>
+<span>166</span>
+<span>167</span>
+<span>168</span>
+<span>169</span>
+<span>170</span>
+<span>171</span>
+<span>172</span>
+<span>173</span>
+<span>174</span>
+<span>175</span>
+<span>176</span>
+<span>177</span>
+<span>178</span>
+<span>179</span>
+<span>180</span>
+<span>181</span>
+<span>182</span>
+<span>183</span>
+<span>184</span>
+<span>185</span>
+<span>186</span>
+<span>187</span>
+<span>188</span>
+<span>189</span>
+<span>190</span>
+<span>191</span>
+<span>192</span>
+<span>193</span>
+<span>194</span>
+<span>195</span>
+<span>196</span>
+<span>197</span>
+<span>198</span>
+<span>199</span>
+<span>200</span>
+<span>201</span>
+<span>202</span>
+<span>203</span>
+<span>204</span>
+<span>205</span>
+<span>206</span>
+<span>207</span>
+<span>208</span>
+<span>209</span>
+<span>210</span>
+<span>211</span>
+<span>212</span>
+<span>213</span>
+<span>214</span>
+<span>215</span>
+<span>216</span>
+<span>217</span>
+<span>218</span>
+<span>219</span>
+<span>220</span>
+<span>221</span>
+<span>222</span>
+<span>223</span>
+<span>224</span>
+<span>225</span>
+<span>226</span>
+<span>227</span>
+<span>228</span>
+<span>229</span>
+<span>230</span>
+<span>231</span>
+<span>232</span>
+<span>233</span>
+<span>234</span>
+<span>235</span>
+<span>236</span>
+<span>237</span>
+<span>238</span>
+<span>239</span>
+<span>240</span>
+<span>241</span>
+<span>242</span>
+<span>243</span>
+<span>244</span>
+<span>245</span>
+<span>246</span>
+<span>247</span>
+<span>248</span>
+<span>249</span>
+<span>250</span>
+<span>251</span>
+<span>252</span>
+<span>253</span>
+<span>254</span>
+<span>255</span>
+<span>256</span>
+<span>257</span>
+<span>258</span>
+<span>259</span>
+<span>260</span>
+<span>261</span>
+<span>262</span>
+<span>263</span>
+<span>264</span>
+<span>265</span>
+<span>266</span>
+<span>267</span>
+<span>268</span>
+<span>269</span>
+<span>270</span>
+<span>271</span>
+<span>272</span>
+<span>273</span>
+<span>274</span>
+<span>275</span>
+<span>276</span>
+<span>277</span>
+<span>278</span>
+<span>279</span>
+<span>280</span>
+<span>281</span>
+<span>282</span>
+<span>283</span>
+<span>284</span>
+<span>285</span>
+<span>286</span>
+<span>287</span>
+<span>288</span>
+<span>289</span>
+<span>290</span>
+<span>291</span>
+<span>292</span>
+<span>293</span>
+<span>294</span>
+<span>295</span>
+<span>296</span>
+<span>297</span>
+<span>298</span>
+<span>299</span>
+<span>300</span>
+<span>301</span>
+<span>302</span>
+<span>303</span>
+<span>304</span>
+<span>305</span>
+<span>306</span>
+<span>307</span>
+<span>308</span>
+<span>309</span>
+<span>310</span>
+<span>311</span>
+<span>312</span>
+<span>313</span>
+<span>314</span>
+<span>315</span>
+<span>316</span>
+<span>317</span>
+<span>318</span>
+<span>319</span>
+<span>320</span>
+<span>321</span>
+<span>322</span>
+<span>323</span>
+<span>324</span>
+<span>325</span>
+<span>326</span>
+<span>327</span>
+<span>328</span>
+<span>329</span>
+<span>330</span>
+<span>331</span>
+<span>332</span>
+<span>333</span>
+<span>334</span>
+<span>335</span>
+<span>336</span>
+<span>337</span>
+<span>338</span>
+<span>339</span>
+<span>340</span>
+<span>341</span>
+<span>342</span>
+<span>343</span>
+<span>344</span>
+<span>345</span>
+<span>346</span>
+<span>347</span>
+<span>348</span>
+<span>349</span>
+<span>350</span>
+<span>351</span>
+<span>352</span>
+<span>353</span>
+<span>354</span>
+<span>355</span>
+<span>356</span>
+<span>357</span>
+<span>358</span>
+<span>359</span>
+<span>360</span>
+<span>361</span>
+<span>362</span>
+<span>363</span>
+<span>364</span>
+<span>365</span>
+<span>366</span>
+<span>367</span>
+<span>368</span>
+<span>369</span>
+<span>370</span>
+<span>371</span>
+<span>372</span>
+<span>373</span>
+<span>374</span>
+<span>375</span>
+<span>376</span>
+<span>377</span>
+</pre></td><td id='code'><pre><span class='com'>/***********************************************************************\
+*                                ddeml.d                                *
+*                                                                       *
+*                       Windows API header module                       *
+*                                                                       *
+*                 Translated from MinGW Windows headers                 *
+*                           by Stewart Gordon                           *
+*                                                                       *
+*                       Placed into public domain                       *
+\***********************************************************************/</span>
+<span class='kw2'>module</span> tango.os.windows.c.ddeml;
+
+<span class='com'>//version (build) { pragma(nolink); }</span>
+
+<span class='com'>//pragma(lib, &quot;user32.lib&quot;);</span>
+
+<span class='kw4'>private</span> <span class='kw2'>import</span> tango.os.windows.c.winnt, tango.os.windows.c.windef, tango.os.windows.c.basetsd;
+
+<span class='kw4'>enum</span> : <span class='kw4'>int</span> <span class='opr'>{</span>
+    CP_WINANSI    <span class='opr'>=</span> <span class='nbr'>1004</span>,
+    CP_WINUNICODE <span class='opr'>=</span> <span class='nbr'>1200</span>
+<span class='opr'>}</span>
+
+<span class='kw4'>enum</span> : UINT <span class='opr'>{</span>
+    XTYPF_NOBLOCK <span class='opr'>=</span> <span class='nbr'>2</span>,
+    XTYPF_NODATA  <span class='opr'>=</span> <span class='nbr'>4</span>,
+    XTYPF_ACKREQ  <span class='opr'>=</span> <span class='nbr'>8</span>
+<span class='opr'>}</span>
+
+<span class='kw4'>enum</span> : UINT <span class='opr'>{</span>
+    XCLASS_MASK         <span class='opr'>=</span> <span class='nbr'>0</span>xFC00,
+    XCLASS_BOOL         <span class='opr'>=</span> <span class='nbr'>0</span>x1000,
+    XCLASS_DATA         <span class='opr'>=</span> <span class='nbr'>0</span>x2000,
+    XCLASS_FLAGS        <span class='opr'>=</span> <span class='nbr'>0</span>x4000,
+    XCLASS_NOTIFICATION <span class='opr'>=</span> <span class='nbr'>0</span>x8000
+<span class='opr'>}</span>
+
+<span class='kw4'>enum</span> : UINT <span class='opr'>{</span>
+    XST_NULL,
+    XST_INCOMPLETE,
+    XST_CONNECTED,
+    XST_INIT1,
+    XST_INIT2,
+    XST_REQSENT,
+    XST_DATARCVD,
+    XST_POKESENT,
+    XST_POKEACKRCVD,
+    XST_EXECSENT,
+    XST_EXECACKRCVD,
+    XST_ADVSENT,
+    XST_UNADVSENT,
+    XST_ADVACKRCVD,
+    XST_UNADVACKRCVD,
+    XST_ADVDATASENT,
+    XST_ADVDATAACKRCVD <span class='com'>// = 16</span>
+<span class='opr'>}</span>
+
+<span class='kw4'>enum</span> : UINT <span class='opr'>{</span>
+    XTYP_ERROR           <span class='opr'>=</span> XCLASS_NOTIFICATION | XTYPF_NOBLOCK,
+    XTYP_ADVDATA         <span class='opr'>=</span> <span class='nbr'>0</span>x0010 | XCLASS_FLAGS,
+    XTYP_ADVREQ          <span class='opr'>=</span> <span class='nbr'>0</span>x0020 | XCLASS_DATA | XTYPF_NOBLOCK,
+    XTYP_ADVSTART        <span class='opr'>=</span> <span class='nbr'>0</span>x0030 | XCLASS_BOOL,
+    XTYP_ADVSTOP         <span class='opr'>=</span> <span class='nbr'>0</span>x0040 | XCLASS_NOTIFICATION,
+    XTYP_EXECUTE         <span class='opr'>=</span> <span class='nbr'>0</span>x0050 | XCLASS_FLAGS,
+    XTYP_CONNECT         <span class='opr'>=</span> <span class='nbr'>0</span>x0060 | XCLASS_BOOL | XTYPF_NOBLOCK,
+    XTYP_CONNECT_CONFIRM <span class='opr'>=</span> <span class='nbr'>0</span>x0070 | XCLASS_NOTIFICATION | XTYPF_NOBLOCK,
+    XTYP_XACT_COMPLETE   <span class='opr'>=</span> <span class='nbr'>0</span>x0080 | XCLASS_NOTIFICATION,
+    XTYP_POKE            <span class='opr'>=</span> <span class='nbr'>0</span>x0090 | XCLASS_FLAGS,
+    XTYP_REGISTER        <span class='opr'>=</span> <span class='nbr'>0</span>x00A0 | XCLASS_NOTIFICATION | XTYPF_NOBLOCK,
+    XTYP_REQUEST         <span class='opr'>=</span> <span class='nbr'>0</span>x00B0 | XCLASS_DATA,
+    XTYP_DISCONNECT      <span class='opr'>=</span> <span class='nbr'>0</span>x00C0 | XCLASS_NOTIFICATION | XTYPF_NOBLOCK,
+    XTYP_UNREGISTER      <span class='opr'>=</span> <span class='nbr'>0</span>x00D0 | XCLASS_NOTIFICATION | XTYPF_NOBLOCK,
+    XTYP_WILDCONNECT     <span class='opr'>=</span> <span class='nbr'>0</span>x00E0 | XCLASS_DATA | XTYPF_NOBLOCK,
+    XTYP_MONITOR         <span class='opr'>=</span> <span class='nbr'>0</span>X00F0 | XCLASS_NOTIFICATION | XTYPF_NOBLOCK,
+    XTYP_MASK            <span class='opr'>=</span> <span class='nbr'>0</span>x00F0,
+    XTYP_SHIFT           <span class='opr'>=</span> <span class='nbr'>4</span>
+<span class='opr'>}</span>
+
+<span class='com'>/+
+#define TIMEOUT_ASYNC   0xFFFFFFFF
+#define QID_SYNC    0xFFFFFFFF
++/</span>
+
+<span class='kw4'>enum</span> : UINT <span class='opr'>{</span>
+    ST_CONNECTED  <span class='opr'>=</span>   <span class='nbr'>1</span>,
+    ST_ADVISE     <span class='opr'>=</span>   <span class='nbr'>2</span>,
+    ST_ISLOCAL    <span class='opr'>=</span>   <span class='nbr'>4</span>,
+    ST_BLOCKED    <span class='opr'>=</span>   <span class='nbr'>8</span>,
+    ST_CLIENT     <span class='opr'>=</span>  <span class='nbr'>16</span>,
+    ST_TERMINATED <span class='opr'>=</span>  <span class='nbr'>32</span>,
+    ST_INLIST     <span class='opr'>=</span>  <span class='nbr'>64</span>,
+    ST_BLOCKNEXT  <span class='opr'>=</span> <span class='nbr'>128</span>,
+    ST_ISSELF     <span class='opr'>=</span> <span class='nbr'>256</span>
+<span class='opr'>}</span>
+
+<span class='com'>/+
+#define CADV_LATEACK 0xFFFF
++/</span>
+
+<span class='kw4'>enum</span> : UINT <span class='opr'>{</span>
+    DMLERR_NO_ERROR      <span class='opr'>=</span> <span class='nbr'>0</span>,
+    DMLERR_FIRST         <span class='opr'>=</span> <span class='nbr'>0</span>x4000,
+    DMLERR_ADVACKTIMEOUT <span class='opr'>=</span> DMLERR_FIRST,
+    DMLERR_BUSY,
+    DMLERR_DATAACKTIMEOUT,
+    DMLERR_DLL_NOT_INITIALIZED,
+    DMLERR_DLL_USAGE,
+    DMLERR_EXECACKTIMEOUT,
+    DMLERR_INVALIDPARAMETER,
+    DMLERR_LOW_MEMORY,
+    DMLERR_MEMORY_ERROR,
+    DMLERR_NOTPROCESSED,
+    DMLERR_NO_CONV_ESTABLISHED,
+    DMLERR_POKEACKTIMEOUT,
+    DMLERR_POSTMSG_FAILED,
+    DMLERR_REENTRANCY,
+    DMLERR_SERVER_DIED,
+    DMLERR_SYS_ERROR,
+    DMLERR_UNADVACKTIMEOUT,
+    DMLERR_UNFOUND_QUEUE_ID, <span class='com'>// = 0x4011</span>
+    DMLERR_LAST          <span class='opr'>=</span> DMLERR_UNFOUND_QUEUE_ID
+<span class='opr'>}</span>
+
+<span class='com'>/+
+#define DDE_FACK    0x8000
+#define DDE_FBUSY   0x4000
+#define DDE_FDEFERUPD   0x4000
+#define DDE_FACKREQ 0x8000
+#define DDE_FRELEASE    0x2000
+#define DDE_FREQUESTED  0x1000
+#define DDE_FAPPSTATUS  0x00ff
+#define DDE_FNOTPROCESSED   0
+#define DDE_FACKRESERVED    (~(DDE_FACK|DDE_FBUSY|DDE_FAPPSTATUS))
+#define DDE_FADVRESERVED    (~(DDE_FACKREQ|DDE_FDEFERUPD))
+#define DDE_FDATRESERVED    (~(DDE_FACKREQ|DDE_FRELEASE|DDE_FREQUESTED))
+#define DDE_FPOKRESERVED    (~DDE_FRELEASE)
+#define MSGF_DDEMGR 0x8001
+#define CBR_BLOCK   ((HDDEDATA)0xffffffff)
++/</span>
+
+<span class='kw4'>const</span> DWORD
+    APPCLASS_STANDARD         <span class='opr'>=</span> <span class='nbr'>0</span>,
+    APPCLASS_MONITOR          <span class='opr'>=</span> <span class='nbr'>0</span>x00000001,
+    APPCLASS_MASK             <span class='opr'>=</span> <span class='nbr'>0</span>x0000000F,
+    APPCMD_CLIENTONLY         <span class='opr'>=</span> <span class='nbr'>0</span>x00000010,
+    APPCMD_FILTERINITS        <span class='opr'>=</span> <span class='nbr'>0</span>x00000020,
+    APPCMD_MASK               <span class='opr'>=</span> <span class='nbr'>0</span>x00000FF0,
+    CBF_FAIL_SELFCONNECTIONS  <span class='opr'>=</span> <span class='nbr'>0</span>x00001000,
+    CBF_FAIL_CONNECTIONS      <span class='opr'>=</span> <span class='nbr'>0</span>x00002000,
+    CBF_FAIL_ADVISES          <span class='opr'>=</span> <span class='nbr'>0</span>x00004000,
+    CBF_FAIL_EXECUTES         <span class='opr'>=</span> <span class='nbr'>0</span>x00008000,
+    CBF_FAIL_POKES            <span class='opr'>=</span> <span class='nbr'>0</span>x00010000,
+    CBF_FAIL_REQUESTS         <span class='opr'>=</span> <span class='nbr'>0</span>x00020000,
+    CBF_FAIL_ALLSVRXACTIONS   <span class='opr'>=</span> <span class='nbr'>0</span>x0003f000,
+    CBF_SKIP_CONNECT_CONFIRMS <span class='opr'>=</span> <span class='nbr'>0</span>x00040000,
+    CBF_SKIP_REGISTRATIONS    <span class='opr'>=</span> <span class='nbr'>0</span>x00080000,
+    CBF_SKIP_UNREGISTRATIONS  <span class='opr'>=</span> <span class='nbr'>0</span>x00100000,
+    CBF_SKIP_DISCONNECTS      <span class='opr'>=</span> <span class='nbr'>0</span>x00200000,
+    CBF_SKIP_ALLNOTIFICATIONS <span class='opr'>=</span> <span class='nbr'>0</span>x003c0000,
+    MF_HSZ_INFO               <span class='opr'>=</span> <span class='nbr'>0</span>x01000000,
+    MF_SENDMSGS               <span class='opr'>=</span> <span class='nbr'>0</span>x02000000,
+    MF_POSTMSGS               <span class='opr'>=</span> <span class='nbr'>0</span>x04000000,
+    MF_CALLBACKS              <span class='opr'>=</span> <span class='nbr'>0</span>x08000000,
+    MF_ERRORS                 <span class='opr'>=</span> <span class='nbr'>0</span>x10000000,
+    MF_LINKS                  <span class='opr'>=</span> <span class='nbr'>0</span>x20000000,
+    MF_CONV                   <span class='opr'>=</span> <span class='nbr'>0</span>x40000000,
+    MF_MASK                   <span class='opr'>=</span> <span class='nbr'>0</span>xFF000000;
+
+<span class='kw4'>enum</span> : UINT <span class='opr'>{</span>
+    EC_ENABLEALL    <span class='opr'>=</span> <span class='nbr'>0</span>,
+    EC_ENABLEONE    <span class='opr'>=</span> ST_BLOCKNEXT,
+    EC_DISABLE      <span class='opr'>=</span> ST_BLOCKED,
+    EC_QUERYWAITING <span class='opr'>=</span> <span class='nbr'>2</span>
+<span class='opr'>}</span>
+
+<span class='kw4'>enum</span> : UINT <span class='opr'>{</span>
+    DNS_REGISTER   <span class='opr'>=</span> <span class='nbr'>1</span>,
+    DNS_UNREGISTER <span class='opr'>=</span> <span class='nbr'>2</span>,
+    DNS_FILTERON   <span class='opr'>=</span> <span class='nbr'>4</span>,
+    DNS_FILTEROFF  <span class='opr'>=</span> <span class='nbr'>8</span>
+<span class='opr'>}</span>
+
+<span class='com'>/+
+#define HDATA_APPOWNED  1
+#define MAX_MONITORS    4
++/</span>
+
+<span class='kw4'>enum</span> : <span class='kw4'>int</span> <span class='opr'>{</span>
+    MH_CREATE  <span class='opr'>=</span> <span class='nbr'>1</span>,
+    MH_KEEP    <span class='opr'>=</span> <span class='nbr'>2</span>,
+    MH_DELETE  <span class='opr'>=</span> <span class='nbr'>3</span>,
+    MH_CLEANUP <span class='opr'>=</span> <span class='nbr'>4</span>
+<span class='opr'>}</span>
+
+<span class='kw2'>alias</span> HANDLE HCONVLIST, HCONV, HSZ, HDDEDATA;
+
+<span class='kw2'>extern</span> <span class='opr'>(</span>Windows<span class='opr'>)</span> <span class='kw2'>alias</span> HDDEDATA
+  <span class='kw2'>function</span><span class='opr'>(</span>UINT, UINT, HCONV, HSZ, HSZ, HDDEDATA, DWORD, DWORD<span class='opr'>)</span> PFNCALLBACK;
+
+<span class='kw4'>struct</span> HSZPAIR <span class='opr'>{</span>
+    HSZ    hszSvc;
+    HSZ    hszTopic;
+<span class='opr'>}</span>
+<span class='kw2'>alias</span> HSZPAIR<span class='opr'>*</span> PHSZPAIR;
+
+<span class='kw4'>struct</span> CONVCONTEXT <span class='opr'>{</span>
+    UINT                        cb <span class='opr'>=</span> CONVCONTEXT.sizeof;
+    UINT                        wFlags;
+    UINT                        wCountryID;
+    <span class='kw4'>int</span>                         iCodePage;
+    DWORD                       dwLangID;
+    DWORD                       dwSecurity;
+    SECURITY_QUALITY_OF_SERVICE qos;
+<span class='opr'>}</span>
+<span class='kw2'>alias</span> CONVCONTEXT<span class='opr'>*</span> PCONVCONTEXT;
+
+<span class='kw4'>struct</span> CONVINFO <span class='opr'>{</span>
+    DWORD       cb <span class='opr'>=</span> CONVINFO.sizeof;
+    DWORD       hUser;
+    HCONV       hConvPartner;
+    HSZ         hszSvcPartner;
+    HSZ         hszServiceReq;
+    HSZ         hszTopic;
+    HSZ         hszItem;
+    UINT        wFmt;
+    UINT        wType;
+    UINT        wStatus;
+    UINT        wConvst;
+    UINT        wLastError;
+    HCONVLIST   hConvList;
+    CONVCONTEXT ConvCtxt;
+    HWND        hwnd;
+    HWND        hwndPartner;
+<span class='opr'>}</span>
+<span class='kw2'>alias</span> CONVINFO<span class='opr'>*</span> PCONVINFO;
+
+<span class='kw4'>struct</span> DDEML_MSG_HOOK_DATA <span class='opr'>{</span>
+    UINT     uiLo;
+    UINT     uiHi;
+    DWORD    cbData;
+    DWORD<span class='opr'>[</span><span class='nbr'>8</span><span class='opr'>]</span> Data;
+<span class='opr'>}</span>
+
+<span class='kw4'>struct</span> MONHSZSTRUCT <span class='opr'>{</span>
+    UINT     cb <span class='opr'>=</span> MONHSZSTRUCT.sizeof;
+    <span class='kw4'>int</span>      fsAction;
+    DWORD    dwTime;
+    HSZ      hsz;
+    HANDLE   hTask;
+    TCHAR<span class='opr'>[</span><span class='nbr'>1</span><span class='opr'>]</span> _str;
+
+    TCHAR<span class='opr'>*</span> str<span class='opr'>(</span><span class='opr'>)</span> <span class='opr'>{</span> <span class='kw1'>return</span> _str.ptr; <span class='opr'>}</span>
+<span class='opr'>}</span>
+<span class='kw2'>alias</span> MONHSZSTRUCT<span class='opr'>*</span> PMONHSZSTRUCT;
+
+<span class='kw4'>struct</span> MONLINKSTRUCT <span class='opr'>{</span>
+    UINT   cb <span class='opr'>=</span> MONLINKSTRUCT.sizeof;
+    DWORD  dwTime;
+    HANDLE hTask;
+    BOOL   fEstablished;
+    BOOL   fNoData;
+    HSZ    hszSvc;
+    HSZ    hszTopic;
+    HSZ    hszItem;
+    UINT   wFmt;
+    BOOL   fServer;
+    HCONV  hConvServer;
+    HCONV  hConvClient;
+<span class='opr'>}</span>
+<span class='kw2'>alias</span> MONLINKSTRUCT<span class='opr'>*</span> PMONLINKSTRUCT;
+
+<span class='kw4'>struct</span> MONCONVSTRUCT <span class='opr'>{</span>
+    UINT   cb <span class='opr'>=</span> MONCONVSTRUCT.sizeof;
+    BOOL   fConnect;
+    DWORD  dwTime;
+    HANDLE hTask;
+    HSZ    hszSvc;
+    HSZ    hszTopic;
+    HCONV  hConvClient;
+    HCONV  hConvServer;
+<span class='opr'>}</span>
+<span class='kw2'>alias</span> MONCONVSTRUCT<span class='opr'>*</span> PMONCONVSTRUCT;
+
+<span class='kw4'>struct</span> MONCBSTRUCT <span class='opr'>{</span>
+    UINT        cb <span class='opr'>=</span> MONCBSTRUCT.sizeof;
+    DWORD       dwTime;
+    HANDLE      hTask;
+    DWORD       dwRet;
+    UINT        wType;
+    UINT        wFmt;
+    HCONV       hConv;
+    HSZ         hsz1;
+    HSZ         hsz2;
+    HDDEDATA    hData;
+    ULONG_PTR   dwData1;
+    ULONG_PTR   dwData2;
+    CONVCONTEXT cc;
+    DWORD       cbData;
+    DWORD<span class='opr'>[</span><span class='nbr'>8</span><span class='opr'>]</span>    Data;
+<span class='opr'>}</span>
+<span class='kw2'>alias</span> MONCBSTRUCT<span class='opr'>*</span> PMONCBSTRUCT;
+
+<span class='kw4'>struct</span> MONERRSTRUCT <span class='opr'>{</span>
+    UINT   cb <span class='opr'>=</span> MONERRSTRUCT.sizeof;
+    UINT   wLastError;
+    DWORD  dwTime;
+    HANDLE hTask;
+<span class='opr'>}</span>
+<span class='kw2'>alias</span> MONERRSTRUCT<span class='opr'>*</span> PMONERRSTRUCT;
+
+<span class='kw4'>struct</span> MONMSGSTRUCT <span class='opr'>{</span>
+    UINT   cb <span class='opr'>=</span> MONMSGSTRUCT.sizeof;
+    HWND   hwndTo;
+    DWORD  dwTime;
+    HANDLE hTask;
+    UINT   wMsg;
+    WPARAM wParam;
+    LPARAM lParam;
+    DDEML_MSG_HOOK_DATA dmhd;
+<span class='opr'>}</span>
+<span class='kw2'>alias</span> MONMSGSTRUCT<span class='opr'>*</span> PMONMSGSTRUCT;
+
+<span class='kw2'>extern</span> <span class='opr'>(</span>Windows<span class='opr'>)</span> <span class='opr'>{</span>
+    BOOL DdeAbandonTransaction<span class='opr'>(</span>DWORD, HCONV, DWORD<span class='opr'>)</span>;
+    PBYTE DdeAccessData<span class='opr'>(</span>HDDEDATA, PDWORD<span class='opr'>)</span>;
+    HDDEDATA DdeAddData<span class='opr'>(</span>HDDEDATA, PBYTE, DWORD, DWORD<span class='opr'>)</span>;
+    HDDEDATA DdeClientTransaction<span class='opr'>(</span>PBYTE, DWORD, HCONV, HSZ, UINT, UINT,
+      DWORD, PDWORD<span class='opr'>)</span>;
+    <span class='kw4'>int</span> DdeCmpStringHandles<span class='opr'>(</span>HSZ, HSZ<span class='opr'>)</span>;
+    HCONV DdeConnect<span class='opr'>(</span>DWORD, HSZ, HSZ, PCONVCONTEXT<span class='opr'>)</span>;
+    HCONVLIST DdeConnectList<span class='opr'>(</span>DWORD, HSZ, HSZ, HCONVLIST, PCONVCONTEXT<span class='opr'>)</span>;
+    HDDEDATA DdeCreateDataHandle<span class='opr'>(</span>DWORD, PBYTE, DWORD, DWORD, HSZ, UINT,
+      UINT<span class='opr'>)</span>;
+    HSZ DdeCreateStringHandleA<span class='opr'>(</span>DWORD, LPSTR, <span class='kw4'>int</span><span class='opr'>)</span>;
+    HSZ DdeCreateStringHandleW<span class='opr'>(</span>DWORD, LPWSTR, <span class='kw4'>int</span><span class='opr'>)</span>;
+    BOOL DdeDisconnect<span class='opr'>(</span>HCONV<span class='opr'>)</span>;
+    BOOL DdeDisconnectList<span class='opr'>(</span>HCONVLIST<span class='opr'>)</span>;
+    BOOL DdeEnableCallback<span class='opr'>(</span>DWORD, HCONV, UINT<span class='opr'>)</span>;
+    BOOL DdeFreeDataHandle<span class='opr'>(</span>HDDEDATA<span class='opr'>)</span>;
+    BOOL DdeFreeStringHandle<span class='opr'>(</span>DWORD, HSZ<span class='opr'>)</span>;
+    DWORD DdeGetData<span class='opr'>(</span>HDDEDATA, PBYTE, DWORD, DWORD<span class='opr'>)</span>;
+    UINT DdeGetLastError<span class='opr'>(</span>DWORD<span class='opr'>)</span>;
+    BOOL DdeImpersonateClient<span class='opr'>(</span>HCONV<span class='opr'>)</span>;
+    UINT DdeInitializeA<span class='opr'>(</span>PDWORD, PFNCALLBACK, DWORD, DWORD<span class='opr'>)</span>;
+    UINT DdeInitializeW<span class='opr'>(</span>PDWORD, PFNCALLBACK, DWORD, DWORD<span class='opr'>)</span>;
+    BOOL DdeKeepStringHandle<span class='opr'>(</span>DWORD, HSZ<span class='opr'>)</span>;
+    HDDEDATA DdeNameService<span class='opr'>(</span>DWORD, HSZ, HSZ, UINT<span class='opr'>)</span>;
+    BOOL DdePostAdvise<span class='opr'>(</span>DWORD, HSZ, HSZ<span class='opr'>)</span>;
+    UINT DdeQueryConvInfo<span class='opr'>(</span>HCONV, DWORD, PCONVINFO<span class='opr'>)</span>;
+    HCONV DdeQueryNextServer<span class='opr'>(</span>HCONVLIST, HCONV<span class='opr'>)</span>;
+    DWORD DdeQueryStringA<span class='opr'>(</span>DWORD, HSZ, LPSTR, DWORD, <span class='kw4'>int</span><span class='opr'>)</span>;
+    DWORD DdeQueryStringW<span class='opr'>(</span>DWORD, HSZ, LPWSTR, DWORD, <span class='kw4'>int</span><span class='opr'>)</span>;
+    HCONV DdeReconnect<span class='opr'>(</span>HCONV<span class='opr'>)</span>;
+    BOOL DdeSetUserHandle<span class='opr'>(</span>HCONV, DWORD, DWORD<span class='opr'>)</span>;
+    BOOL DdeUnaccessData<span class='opr'>(</span>HDDEDATA<span class='opr'>)</span>;
+    BOOL DdeUninitialize<span class='opr'>(</span>DWORD<span class='opr'>)</span>;
+<span class='opr'>}</span>
+
+<span class='kw4'>const</span> TCHAR<span class='opr'>[</span><span class='opr'>]</span>
+    SZDDESYS_TOPIC         <span class='opr'>=</span> <span class='str'>&quot;System&quot;</span>,
+    SZDDESYS_ITEM_TOPICS   <span class='opr'>=</span> <span class='str'>&quot;Topics&quot;</span>,
+    SZDDESYS_ITEM_SYSITEMS <span class='opr'>=</span> <span class='str'>&quot;SysItems&quot;</span>,
+    SZDDESYS_ITEM_RTNMSG   <span class='opr'>=</span> <span class='str'>&quot;ReturnMessage&quot;</span>,
+    SZDDESYS_ITEM_STATUS   <span class='opr'>=</span> <span class='str'>&quot;Status&quot;</span>,
+    SZDDESYS_ITEM_FORMATS  <span class='opr'>=</span> <span class='str'>&quot;Formats&quot;</span>,
+    SZDDESYS_ITEM_HELP     <span class='opr'>=</span> <span class='str'>&quot;Help&quot;</span>,
+    SZDDE_ITEM_ITEMLIST    <span class='opr'>=</span> <span class='str'>&quot;TopicItemList&quot;</span>;
+
+<span class='kw4'>version</span> <span class='opr'>(</span>Unicode<span class='opr'>)</span> <span class='opr'>{</span>
+    <span class='kw2'>alias</span> DdeCreateStringHandleW DdeCreateStringHandle;
+    <span class='kw2'>alias</span> DdeInitializeW DdeInitialize;
+    <span class='kw2'>alias</span> DdeQueryStringW DdeQueryString;
+<span class='opr'>}</span> <span class='kw1'>else</span> <span class='opr'>{</span>
+    <span class='kw2'>alias</span> DdeCreateStringHandleA DdeCreateStringHandle;
+    <span class='kw2'>alias</span> DdeInitializeA DdeInitialize;
+    <span class='kw2'>alias</span> DdeQueryStringA DdeQueryString;
+<span class='opr'>}</span>
+</pre></td></tr></table>	</body>
+</html>

@@ -1,0 +1,1171 @@
+<!DOCTYPE html 
+     PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+     "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html>
+	<head>
+		<link rel="stylesheet" href="style.css" type="text/css" />
+		<title>os/windows/c/winsock.d</title>
+	</head>
+	<body>
+
+<table id='dcode'><tr><td id='lnum'><pre><span>1</span>
+<span>2</span>
+<span>3</span>
+<span>4</span>
+<span>5</span>
+<span>6</span>
+<span>7</span>
+<span>8</span>
+<span>9</span>
+<span>10</span>
+<span>11</span>
+<span>12</span>
+<span>13</span>
+<span>14</span>
+<span>15</span>
+<span>16</span>
+<span>17</span>
+<span>18</span>
+<span>19</span>
+<span>20</span>
+<span>21</span>
+<span>22</span>
+<span>23</span>
+<span>24</span>
+<span>25</span>
+<span>26</span>
+<span>27</span>
+<span>28</span>
+<span>29</span>
+<span>30</span>
+<span>31</span>
+<span>32</span>
+<span>33</span>
+<span>34</span>
+<span>35</span>
+<span>36</span>
+<span>37</span>
+<span>38</span>
+<span>39</span>
+<span>40</span>
+<span>41</span>
+<span>42</span>
+<span>43</span>
+<span>44</span>
+<span>45</span>
+<span>46</span>
+<span>47</span>
+<span>48</span>
+<span>49</span>
+<span>50</span>
+<span>51</span>
+<span>52</span>
+<span>53</span>
+<span>54</span>
+<span>55</span>
+<span>56</span>
+<span>57</span>
+<span>58</span>
+<span>59</span>
+<span>60</span>
+<span>61</span>
+<span>62</span>
+<span>63</span>
+<span>64</span>
+<span>65</span>
+<span>66</span>
+<span>67</span>
+<span>68</span>
+<span>69</span>
+<span>70</span>
+<span>71</span>
+<span>72</span>
+<span>73</span>
+<span>74</span>
+<span>75</span>
+<span>76</span>
+<span>77</span>
+<span>78</span>
+<span>79</span>
+<span>80</span>
+<span>81</span>
+<span>82</span>
+<span>83</span>
+<span>84</span>
+<span>85</span>
+<span>86</span>
+<span>87</span>
+<span>88</span>
+<span>89</span>
+<span>90</span>
+<span>91</span>
+<span>92</span>
+<span>93</span>
+<span>94</span>
+<span>95</span>
+<span>96</span>
+<span>97</span>
+<span>98</span>
+<span>99</span>
+<span>100</span>
+<span>101</span>
+<span>102</span>
+<span>103</span>
+<span>104</span>
+<span>105</span>
+<span>106</span>
+<span>107</span>
+<span>108</span>
+<span>109</span>
+<span>110</span>
+<span>111</span>
+<span>112</span>
+<span>113</span>
+<span>114</span>
+<span>115</span>
+<span>116</span>
+<span>117</span>
+<span>118</span>
+<span>119</span>
+<span>120</span>
+<span>121</span>
+<span>122</span>
+<span>123</span>
+<span>124</span>
+<span>125</span>
+<span>126</span>
+<span>127</span>
+<span>128</span>
+<span>129</span>
+<span>130</span>
+<span>131</span>
+<span>132</span>
+<span>133</span>
+<span>134</span>
+<span>135</span>
+<span>136</span>
+<span>137</span>
+<span>138</span>
+<span>139</span>
+<span>140</span>
+<span>141</span>
+<span>142</span>
+<span>143</span>
+<span>144</span>
+<span>145</span>
+<span>146</span>
+<span>147</span>
+<span>148</span>
+<span>149</span>
+<span>150</span>
+<span>151</span>
+<span>152</span>
+<span>153</span>
+<span>154</span>
+<span>155</span>
+<span>156</span>
+<span>157</span>
+<span>158</span>
+<span>159</span>
+<span>160</span>
+<span>161</span>
+<span>162</span>
+<span>163</span>
+<span>164</span>
+<span>165</span>
+<span>166</span>
+<span>167</span>
+<span>168</span>
+<span>169</span>
+<span>170</span>
+<span>171</span>
+<span>172</span>
+<span>173</span>
+<span>174</span>
+<span>175</span>
+<span>176</span>
+<span>177</span>
+<span>178</span>
+<span>179</span>
+<span>180</span>
+<span>181</span>
+<span>182</span>
+<span>183</span>
+<span>184</span>
+<span>185</span>
+<span>186</span>
+<span>187</span>
+<span>188</span>
+<span>189</span>
+<span>190</span>
+<span>191</span>
+<span>192</span>
+<span>193</span>
+<span>194</span>
+<span>195</span>
+<span>196</span>
+<span>197</span>
+<span>198</span>
+<span>199</span>
+<span>200</span>
+<span>201</span>
+<span>202</span>
+<span>203</span>
+<span>204</span>
+<span>205</span>
+<span>206</span>
+<span>207</span>
+<span>208</span>
+<span>209</span>
+<span>210</span>
+<span>211</span>
+<span>212</span>
+<span>213</span>
+<span>214</span>
+<span>215</span>
+<span>216</span>
+<span>217</span>
+<span>218</span>
+<span>219</span>
+<span>220</span>
+<span>221</span>
+<span>222</span>
+<span>223</span>
+<span>224</span>
+<span>225</span>
+<span>226</span>
+<span>227</span>
+<span>228</span>
+<span>229</span>
+<span>230</span>
+<span>231</span>
+<span>232</span>
+<span>233</span>
+<span>234</span>
+<span>235</span>
+<span>236</span>
+<span>237</span>
+<span>238</span>
+<span>239</span>
+<span>240</span>
+<span>241</span>
+<span>242</span>
+<span>243</span>
+<span>244</span>
+<span>245</span>
+<span>246</span>
+<span>247</span>
+<span>248</span>
+<span>249</span>
+<span>250</span>
+<span>251</span>
+<span>252</span>
+<span>253</span>
+<span>254</span>
+<span>255</span>
+<span>256</span>
+<span>257</span>
+<span>258</span>
+<span>259</span>
+<span>260</span>
+<span>261</span>
+<span>262</span>
+<span>263</span>
+<span>264</span>
+<span>265</span>
+<span>266</span>
+<span>267</span>
+<span>268</span>
+<span>269</span>
+<span>270</span>
+<span>271</span>
+<span>272</span>
+<span>273</span>
+<span>274</span>
+<span>275</span>
+<span>276</span>
+<span>277</span>
+<span>278</span>
+<span>279</span>
+<span>280</span>
+<span>281</span>
+<span>282</span>
+<span>283</span>
+<span>284</span>
+<span>285</span>
+<span>286</span>
+<span>287</span>
+<span>288</span>
+<span>289</span>
+<span>290</span>
+<span>291</span>
+<span>292</span>
+<span>293</span>
+<span>294</span>
+<span>295</span>
+<span>296</span>
+<span>297</span>
+<span>298</span>
+<span>299</span>
+<span>300</span>
+<span>301</span>
+<span>302</span>
+<span>303</span>
+<span>304</span>
+<span>305</span>
+<span>306</span>
+<span>307</span>
+<span>308</span>
+<span>309</span>
+<span>310</span>
+<span>311</span>
+<span>312</span>
+<span>313</span>
+<span>314</span>
+<span>315</span>
+<span>316</span>
+<span>317</span>
+<span>318</span>
+<span>319</span>
+<span>320</span>
+<span>321</span>
+<span>322</span>
+<span>323</span>
+<span>324</span>
+<span>325</span>
+<span>326</span>
+<span>327</span>
+<span>328</span>
+<span>329</span>
+<span>330</span>
+<span>331</span>
+<span>332</span>
+<span>333</span>
+<span>334</span>
+<span>335</span>
+<span>336</span>
+<span>337</span>
+<span>338</span>
+<span>339</span>
+<span>340</span>
+<span>341</span>
+<span>342</span>
+<span>343</span>
+<span>344</span>
+<span>345</span>
+<span>346</span>
+<span>347</span>
+<span>348</span>
+<span>349</span>
+<span>350</span>
+<span>351</span>
+<span>352</span>
+<span>353</span>
+<span>354</span>
+<span>355</span>
+<span>356</span>
+<span>357</span>
+<span>358</span>
+<span>359</span>
+<span>360</span>
+<span>361</span>
+<span>362</span>
+<span>363</span>
+<span>364</span>
+<span>365</span>
+<span>366</span>
+<span>367</span>
+<span>368</span>
+<span>369</span>
+<span>370</span>
+<span>371</span>
+<span>372</span>
+<span>373</span>
+<span>374</span>
+<span>375</span>
+<span>376</span>
+<span>377</span>
+<span>378</span>
+<span>379</span>
+<span>380</span>
+<span>381</span>
+<span>382</span>
+<span>383</span>
+<span>384</span>
+<span>385</span>
+<span>386</span>
+<span>387</span>
+<span>388</span>
+<span>389</span>
+<span>390</span>
+<span>391</span>
+<span>392</span>
+<span>393</span>
+<span>394</span>
+<span>395</span>
+<span>396</span>
+<span>397</span>
+<span>398</span>
+<span>399</span>
+<span>400</span>
+<span>401</span>
+<span>402</span>
+<span>403</span>
+<span>404</span>
+<span>405</span>
+<span>406</span>
+<span>407</span>
+<span>408</span>
+<span>409</span>
+<span>410</span>
+<span>411</span>
+<span>412</span>
+<span>413</span>
+<span>414</span>
+<span>415</span>
+<span>416</span>
+<span>417</span>
+<span>418</span>
+<span>419</span>
+<span>420</span>
+<span>421</span>
+<span>422</span>
+<span>423</span>
+<span>424</span>
+<span>425</span>
+<span>426</span>
+<span>427</span>
+<span>428</span>
+<span>429</span>
+<span>430</span>
+<span>431</span>
+<span>432</span>
+<span>433</span>
+<span>434</span>
+<span>435</span>
+<span>436</span>
+<span>437</span>
+<span>438</span>
+<span>439</span>
+<span>440</span>
+<span>441</span>
+<span>442</span>
+<span>443</span>
+<span>444</span>
+<span>445</span>
+<span>446</span>
+<span>447</span>
+<span>448</span>
+<span>449</span>
+<span>450</span>
+<span>451</span>
+<span>452</span>
+<span>453</span>
+<span>454</span>
+<span>455</span>
+<span>456</span>
+<span>457</span>
+<span>458</span>
+<span>459</span>
+<span>460</span>
+<span>461</span>
+<span>462</span>
+<span>463</span>
+<span>464</span>
+<span>465</span>
+<span>466</span>
+<span>467</span>
+<span>468</span>
+<span>469</span>
+<span>470</span>
+<span>471</span>
+<span>472</span>
+<span>473</span>
+<span>474</span>
+<span>475</span>
+<span>476</span>
+<span>477</span>
+<span>478</span>
+<span>479</span>
+<span>480</span>
+<span>481</span>
+<span>482</span>
+<span>483</span>
+<span>484</span>
+<span>485</span>
+<span>486</span>
+<span>487</span>
+<span>488</span>
+<span>489</span>
+<span>490</span>
+<span>491</span>
+<span>492</span>
+<span>493</span>
+<span>494</span>
+<span>495</span>
+<span>496</span>
+<span>497</span>
+<span>498</span>
+<span>499</span>
+<span>500</span>
+<span>501</span>
+<span>502</span>
+<span>503</span>
+<span>504</span>
+<span>505</span>
+<span>506</span>
+<span>507</span>
+<span>508</span>
+<span>509</span>
+<span>510</span>
+<span>511</span>
+<span>512</span>
+<span>513</span>
+<span>514</span>
+<span>515</span>
+<span>516</span>
+<span>517</span>
+<span>518</span>
+<span>519</span>
+<span>520</span>
+<span>521</span>
+<span>522</span>
+<span>523</span>
+<span>524</span>
+<span>525</span>
+<span>526</span>
+<span>527</span>
+<span>528</span>
+<span>529</span>
+<span>530</span>
+<span>531</span>
+<span>532</span>
+<span>533</span>
+<span>534</span>
+<span>535</span>
+<span>536</span>
+<span>537</span>
+<span>538</span>
+<span>539</span>
+<span>540</span>
+<span>541</span>
+<span>542</span>
+<span>543</span>
+<span>544</span>
+<span>545</span>
+<span>546</span>
+<span>547</span>
+<span>548</span>
+<span>549</span>
+<span>550</span>
+<span>551</span>
+<span>552</span>
+<span>553</span>
+<span>554</span>
+<span>555</span>
+<span>556</span>
+<span>557</span>
+<span>558</span>
+<span>559</span>
+<span>560</span>
+<span>561</span>
+<span>562</span>
+<span>563</span>
+<span>564</span>
+<span>565</span>
+<span>566</span>
+<span>567</span>
+<span>568</span>
+<span>569</span>
+<span>570</span>
+<span>571</span>
+<span>572</span>
+<span>573</span>
+<span>574</span>
+<span>575</span>
+<span>576</span>
+<span>577</span>
+<span>578</span>
+<span>579</span>
+</pre></td><td id='code'><pre><span class='com'>/***********************************************************************\
+*                               winsock.d                               *
+*                                                                       *
+*                       Windows API header module                       *
+*                                                                       *
+*                 Translated from MinGW Windows headers                 *
+*                           by Stewart Gordon                           *
+\***********************************************************************/</span>
+<span class='kw2'>module</span> tango.os.windows.c.winsock;
+
+<span class='com'>//version (build) { pragma(nolink); }</span>
+
+
+<span class='com'>/*
+  Definitions for winsock 1.1
+
+  Portions Copyright (c) 1980, 1983, 1988, 1993
+  The Regents of the University of California.  All rights reserved.
+
+  Portions Copyright (c) 1993 by Digital Equipment Corporation.
+ */</span>
+
+<span class='com'>// DRK: This module should not be included if -version=Win32_Winsock2 has</span>
+<span class='com'>// been set.  If it has, assert.  I think it's better that way then letting</span>
+<span class='com'>// the user believe that it's worked.</span>
+<span class='kw4'>version</span><span class='opr'>(</span>Win32_Winsock2<span class='opr'>)</span> <span class='opr'>{</span>
+    <span class='kw2'>pragma</span><span class='opr'>(</span>msg, <span class='str'>&quot;Cannot use tango.os.windows.c.winsock with Win32_Winsock2 defined.&quot;</span><span class='opr'>)</span>;
+    <span class='kw4'>static</span> <span class='kw2'>assert</span><span class='opr'>(</span><span class='kw2'>false</span><span class='opr'>)</span>;
+<span class='opr'>}</span>
+
+<span class='kw2'>import</span> tango.os.windows.c.windef;
+
+<span class='kw2'>alias</span> <span class='kw4'>char</span> u_char;
+<span class='kw2'>alias</span> <span class='kw4'>ushort</span> u_short;
+<span class='kw2'>alias</span> <span class='kw4'>uint</span> u_int, u_long, SOCKET;
+
+<span class='kw4'>const</span> <span class='kw4'>size_t</span> FD_SETSIZE <span class='opr'>=</span> <span class='nbr'>64</span>;
+
+<span class='com'>/* shutdown() how types */</span>
+<span class='kw4'>enum</span> : <span class='kw4'>int</span> <span class='opr'>{</span>
+    SD_RECEIVE,
+    SD_SEND,
+    SD_BOTH
+<span class='opr'>}</span>
+
+<span class='kw4'>struct</span> FD_SET <span class='opr'>{</span>
+    u_int              fd_count;
+    SOCKET<span class='opr'>[</span>FD_SETSIZE<span class='opr'>]</span> fd_array;
+
+    <span class='kw4'>static</span> <span class='kw4'>void</span> opCall<span class='opr'>(</span>SOCKET fd, FD_SET<span class='opr'>*</span> set<span class='opr'>)</span> <span class='opr'>{</span>
+        <span class='kw1'>if</span> <span class='opr'>(</span>set.fd_count <span class='opr'>&lt;</span> FD_SETSIZE<span class='opr'>)</span> set.fd_array<span class='opr'>[</span>set.fd_count<span class='opr'>+</span><span class='opr'>+</span><span class='opr'>]</span> <span class='opr'>=</span> fd;
+    <span class='opr'>}</span>
+<span class='opr'>}</span>
+
+<span class='kw2'>extern</span> <span class='opr'>(</span>Pascal<span class='opr'>)</span> <span class='kw4'>int</span> __WSAFDIsSet<span class='opr'>(</span>SOCKET, FD_SET<span class='opr'>*</span><span class='opr'>)</span>;
+
+<span class='kw4'>void</span> FD_CLR<span class='opr'>(</span>SOCKET fd, FD_SET<span class='opr'>*</span> set<span class='opr'>)</span> <span class='opr'>{</span>
+    <span class='kw1'>for</span> <span class='opr'>(</span>u_int i <span class='opr'>=</span> <span class='nbr'>0</span>; i <span class='opr'>&lt;</span> set.fd_count; i<span class='opr'>+</span><span class='opr'>+</span><span class='opr'>)</span> <span class='opr'>{</span>
+        <span class='kw1'>if</span> <span class='opr'>(</span>set.fd_array<span class='opr'>[</span>i<span class='opr'>]</span> <span class='opr'>=</span><span class='opr'>=</span> fd<span class='opr'>)</span> <span class='opr'>{</span>
+            <span class='kw1'>while</span> <span class='opr'>(</span>i <span class='opr'>&lt;</span> set.fd_count <span class='opr'>-</span> <span class='nbr'>1</span><span class='opr'>)</span> <span class='opr'>{</span>
+                set.fd_array<span class='opr'>[</span>i<span class='opr'>]</span> <span class='opr'>=</span> set.fd_array<span class='opr'>[</span>i<span class='opr'>+</span><span class='nbr'>1</span><span class='opr'>]</span>;
+                i<span class='opr'>+</span><span class='opr'>+</span>;
+            <span class='opr'>}</span>
+            set.fd_count<span class='opr'>-</span><span class='opr'>-</span>;
+            <span class='kw1'>break</span>;
+        <span class='opr'>}</span>
+    <span class='opr'>}</span>
+<span class='opr'>}</span>
+
+<span class='com'>/+void FD_SET(SOCKET fd, FD_SET* set) {
+    if (set.fd_count &lt; FD_SETSIZE) set.fd_array[set.fd_count++] = fd;
+}+/</span>
+
+<span class='kw4'>void</span> FD_ZERO<span class='opr'>(</span>FD_SET<span class='opr'>*</span> set<span class='opr'>)</span> <span class='opr'>{</span>
+    set.fd_count <span class='opr'>=</span> <span class='nbr'>0</span>;
+<span class='opr'>}</span>
+
+<span class='kw2'>alias</span> __WSAFDIsSet FD_ISSET;
+
+<span class='kw4'>struct</span> TIMEVAL <span class='opr'>{</span>
+    <span class='kw4'>int</span> tv_sec;
+    <span class='kw4'>int</span> tv_usec;
+
+    <span class='kw4'>int</span> opCmp<span class='opr'>(</span>TIMEVAL tv<span class='opr'>)</span> <span class='opr'>{</span>
+        <span class='kw1'>if</span> <span class='opr'>(</span>tv_sec <span class='opr'>&lt;</span> tv.tv_sec<span class='opr'>)</span>   <span class='kw1'>return</span> <span class='opr'>-</span><span class='nbr'>1</span>;
+        <span class='kw1'>if</span> <span class='opr'>(</span>tv_sec <span class='opr'>&gt;</span> tv.tv_sec<span class='opr'>)</span>   <span class='kw1'>return</span>  <span class='nbr'>1</span>;
+        <span class='kw1'>if</span> <span class='opr'>(</span>tv_usec <span class='opr'>&lt;</span> tv.tv_usec<span class='opr'>)</span> <span class='kw1'>return</span> <span class='opr'>-</span><span class='nbr'>1</span>;
+        <span class='kw1'>if</span> <span class='opr'>(</span>tv_usec <span class='opr'>&gt;</span> tv.tv_usec<span class='opr'>)</span> <span class='kw1'>return</span>  <span class='nbr'>1</span>;
+        <span class='kw1'>return</span> <span class='nbr'>0</span>;
+    <span class='opr'>}</span>
+<span class='opr'>}</span>
+
+<span class='kw4'>bool</span> timerisset<span class='opr'>(</span>TIMEVAL tvp<span class='opr'>)</span> <span class='opr'>{</span>
+    <span class='kw1'>return</span> tvp.tv_sec || tvp.tv_usec;
+<span class='opr'>}</span>
+
+<span class='kw4'>void</span> timerclear<span class='opr'>(</span><span class='kw2'>inout</span> TIMEVAL tvp<span class='opr'>)</span> <span class='opr'>{</span>
+    tvp.tv_sec <span class='opr'>=</span> tvp.tv_usec <span class='opr'>=</span> <span class='nbr'>0</span>;
+<span class='opr'>}</span>
+
+<span class='kw4'>struct</span> HOSTENT <span class='opr'>{</span>
+    <span class='kw4'>char</span><span class='opr'>*</span>  h_name;
+    <span class='kw4'>char</span><span class='opr'>*</span><span class='opr'>*</span> h_aliases;
+    <span class='kw4'>short</span>  h_addrtype;
+    <span class='kw4'>short</span>  h_length;
+    <span class='kw4'>char</span><span class='opr'>*</span><span class='opr'>*</span> h_addr_list;
+
+    <span class='kw4'>char</span><span class='opr'>*</span> h_addr<span class='opr'>(</span><span class='opr'>)</span> <span class='opr'>{</span> <span class='kw1'>return</span> h_addr_list<span class='opr'>[</span><span class='nbr'>0</span><span class='opr'>]</span>; <span class='opr'>}</span>
+    <span class='kw4'>char</span><span class='opr'>*</span> h_addr<span class='opr'>(</span><span class='kw4'>char</span><span class='opr'>*</span> h<span class='opr'>)</span> <span class='opr'>{</span> <span class='kw1'>return</span> h_addr_list<span class='opr'>[</span><span class='nbr'>0</span><span class='opr'>]</span> <span class='opr'>=</span> h; <span class='opr'>}</span>
+<span class='opr'>}</span>
+
+<span class='kw4'>struct</span> LINGER <span class='opr'>{</span>
+    u_short l_onoff;
+    u_short l_linger;
+<span class='opr'>}</span>
+
+<span class='com'>// TOTHINKABOUT: do we need these, or are they just for internal use?</span>
+<span class='com'>/+
+#define IOCPARM_MASK    0x7f
+#define IOC_VOID    0x20000000
+#define IOC_OUT 0x40000000
+#define IOC_IN  0x80000000
+#define IOC_INOUT   (IOC_IN|IOC_OUT)
+
+#define _IO(x,y)    (IOC_VOID|((x)&lt;&lt;8)|(y))
+#define _IOR(x,y,t) (IOC_OUT|(((int)sizeof(t)&amp;IOCPARM_MASK)&lt;&lt;16)|((x)&lt;&lt;8)|(y))
+#define _IOW(x,y,t) (IOC_IN|(((int)sizeof(t)&amp;IOCPARM_MASK)&lt;&lt;16)|((x)&lt;&lt;8)|(y))
+
+#define FIONBIO _IOW('f', 126, u_long)
+#define FIONREAD    _IOR('f', 127, u_long)
+#define FIOASYNC    _IOW('f', 125, u_long)
+#define SIOCSHIWAT  _IOW('s',  0, u_long)
+#define SIOCGHIWAT  _IOR('s',  1, u_long)
+#define SIOCSLOWAT  _IOW('s',  2, u_long)
+#define SIOCGLOWAT  _IOR('s',  3, u_long)
+#define SIOCATMARK  _IOR('s',  7, u_long)
++/</span>
+
+<span class='kw4'>enum</span> : DWORD <span class='opr'>{</span>
+    FIONBIO    <span class='opr'>=</span> <span class='nbr'>0</span>x8004667E,
+    FIONREAD   <span class='opr'>=</span> <span class='nbr'>0</span>x4004667F,
+    FIOASYNC   <span class='opr'>=</span> <span class='nbr'>0</span>x8004667D,
+    SIOCSHIWAT <span class='opr'>=</span> <span class='nbr'>0</span>x80047300,
+    SIOCGHIWAT <span class='opr'>=</span> <span class='nbr'>0</span>x40047301,
+    SIOCSLOWAT <span class='opr'>=</span> <span class='nbr'>0</span>x80047302,
+    SIOCGLOWAT <span class='opr'>=</span> <span class='nbr'>0</span>x40047303,
+    SIOCATMARK <span class='opr'>=</span> <span class='nbr'>0</span>x40047307
+<span class='opr'>}</span>
+
+<span class='kw4'>struct</span> netent <span class='opr'>{</span>
+    <span class='kw4'>char</span><span class='opr'>*</span>  n_name;
+    <span class='kw4'>char</span><span class='opr'>*</span><span class='opr'>*</span> n_aliases;
+    <span class='kw4'>short</span>  n_addrtype;
+    u_long n_net;
+<span class='opr'>}</span>
+
+<span class='kw4'>struct</span> SERVENT <span class='opr'>{</span>
+    <span class='kw4'>char</span><span class='opr'>*</span>  s_name;
+    <span class='kw4'>char</span><span class='opr'>*</span><span class='opr'>*</span> s_aliases;
+    <span class='kw4'>short</span>  s_port;
+    <span class='kw4'>char</span><span class='opr'>*</span>  s_proto;
+<span class='opr'>}</span>
+
+<span class='kw4'>struct</span> PROTOENT <span class='opr'>{</span>
+    <span class='kw4'>char</span><span class='opr'>*</span>  p_name;
+    <span class='kw4'>char</span><span class='opr'>*</span><span class='opr'>*</span> p_aliases;
+    <span class='kw4'>short</span>  p_proto;
+<span class='opr'>}</span>
+
+<span class='kw4'>enum</span> : <span class='kw4'>int</span> <span class='opr'>{</span>
+    IPPROTO_IP   <span class='opr'>=</span>   <span class='nbr'>0</span>,
+    IPPROTO_ICMP <span class='opr'>=</span>   <span class='nbr'>1</span>,
+    IPPROTO_IGMP <span class='opr'>=</span>   <span class='nbr'>2</span>,
+    IPPROTO_GGP  <span class='opr'>=</span>   <span class='nbr'>3</span>,
+    IPPROTO_TCP  <span class='opr'>=</span>   <span class='nbr'>6</span>,
+    IPPROTO_PUP  <span class='opr'>=</span>  <span class='nbr'>12</span>,
+    IPPROTO_UDP  <span class='opr'>=</span>  <span class='nbr'>17</span>,
+    IPPROTO_IDP  <span class='opr'>=</span>  <span class='nbr'>22</span>,
+    IPPROTO_ND   <span class='opr'>=</span>  <span class='nbr'>77</span>,
+    IPPROTO_RAW  <span class='opr'>=</span> <span class='nbr'>255</span>,
+    IPPROTO_MAX  <span class='opr'>=</span> <span class='nbr'>256</span>
+<span class='opr'>}</span>
+
+<span class='com'>// These are not documented on the MSDN site</span>
+<span class='kw4'>enum</span> <span class='opr'>{</span>
+    IPPORT_ECHO        <span class='opr'>=</span>    <span class='nbr'>7</span>,
+    IPPORT_DISCARD     <span class='opr'>=</span>    <span class='nbr'>9</span>,
+    IPPORT_SYSTAT      <span class='opr'>=</span>   <span class='nbr'>11</span>,
+    IPPORT_DAYTIME     <span class='opr'>=</span>   <span class='nbr'>13</span>,
+    IPPORT_NETSTAT     <span class='opr'>=</span>   <span class='nbr'>15</span>,
+    IPPORT_FTP         <span class='opr'>=</span>   <span class='nbr'>21</span>,
+    IPPORT_TELNET      <span class='opr'>=</span>   <span class='nbr'>23</span>,
+    IPPORT_SMTP        <span class='opr'>=</span>   <span class='nbr'>25</span>,
+    IPPORT_TIMESERVER  <span class='opr'>=</span>   <span class='nbr'>37</span>,
+    IPPORT_NAMESERVER  <span class='opr'>=</span>   <span class='nbr'>42</span>,
+    IPPORT_WHOIS       <span class='opr'>=</span>   <span class='nbr'>43</span>,
+    IPPORT_MTP         <span class='opr'>=</span>   <span class='nbr'>57</span>,
+    IPPORT_TFTP        <span class='opr'>=</span>   <span class='nbr'>69</span>,
+    IPPORT_RJE         <span class='opr'>=</span>   <span class='nbr'>77</span>,
+    IPPORT_FINGER      <span class='opr'>=</span>   <span class='nbr'>79</span>,
+    IPPORT_TTYLINK     <span class='opr'>=</span>   <span class='nbr'>87</span>,
+    IPPORT_SUPDUP      <span class='opr'>=</span>   <span class='nbr'>95</span>,
+    IPPORT_EXECSERVER  <span class='opr'>=</span>  <span class='nbr'>512</span>,
+    IPPORT_LOGINSERVER <span class='opr'>=</span>  <span class='nbr'>513</span>,
+    IPPORT_CMDSERVER   <span class='opr'>=</span>  <span class='nbr'>514</span>,
+    IPPORT_EFSSERVER   <span class='opr'>=</span>  <span class='nbr'>520</span>,
+    IPPORT_BIFFUDP     <span class='opr'>=</span>  <span class='nbr'>512</span>,
+    IPPORT_WHOSERVER   <span class='opr'>=</span>  <span class='nbr'>513</span>,
+    IPPORT_ROUTESERVER <span class='opr'>=</span>  <span class='nbr'>520</span>,
+    IPPORT_RESERVED    <span class='opr'>=</span> <span class='nbr'>1024</span>
+<span class='opr'>}</span>
+
+<span class='com'>// These are not documented on the MSDN site</span>
+<span class='kw4'>enum</span> <span class='opr'>{</span>
+    IMPLINK_IP        <span class='opr'>=</span> <span class='nbr'>155</span>,
+    IMPLINK_LOWEXPER  <span class='opr'>=</span> <span class='nbr'>156</span>,
+    IMPLINK_HIGHEXPER <span class='opr'>=</span> <span class='nbr'>158</span>
+<span class='opr'>}</span>
+
+<span class='kw4'>struct</span> IN_ADDR <span class='opr'>{</span>
+    <span class='kw2'>union</span> <span class='opr'>{</span>
+        <span class='kw4'>struct</span> <span class='opr'>{</span> u_char s_net, s_host, s_lh, s_impno; <span class='opr'>}</span>
+        <span class='kw4'>struct</span> <span class='opr'>{</span> u_short s_w1, s_imp; <span class='opr'>}</span>
+        u_long s_addr;
+    <span class='opr'>}</span>
+<span class='opr'>}</span>
+
+<span class='com'>// These are not documented on the MSDN site</span>
+<span class='kw4'>bool</span> IN_CLASSA<span class='opr'>(</span><span class='kw4'>int</span> i<span class='opr'>)</span> <span class='opr'>{</span>
+    <span class='kw1'>return</span> <span class='opr'>(</span>i <span class='opr'>&amp;</span> <span class='nbr'>0</span>x80000000<span class='opr'>)</span> <span class='opr'>=</span><span class='opr'>=</span> <span class='nbr'>0</span>;
+<span class='opr'>}</span>
+
+<span class='kw4'>const</span> IN_CLASSA_NET    <span class='opr'>=</span> <span class='nbr'>0</span>xff000000;
+<span class='kw4'>const</span> IN_CLASSA_NSHIFT <span class='opr'>=</span>  <span class='nbr'>24</span>;
+<span class='kw4'>const</span> IN_CLASSA_HOST   <span class='opr'>=</span> <span class='nbr'>0</span>x00ffffff;
+<span class='kw4'>const</span> IN_CLASSA_MAX    <span class='opr'>=</span> <span class='nbr'>128</span>;
+
+<span class='kw4'>bool</span> IN_CLASSB<span class='opr'>(</span><span class='kw4'>int</span> i<span class='opr'>)</span> <span class='opr'>{</span>
+    <span class='kw1'>return</span> <span class='opr'>(</span>i <span class='opr'>&amp;</span> <span class='nbr'>0</span>xC0000000<span class='opr'>)</span> <span class='opr'>=</span><span class='opr'>=</span> <span class='nbr'>0</span>x80000000;
+<span class='opr'>}</span>
+
+<span class='kw4'>const</span> IN_CLASSB_NET    <span class='opr'>=</span> <span class='nbr'>0</span>xffff0000;
+<span class='kw4'>const</span> IN_CLASSB_NSHIFT <span class='opr'>=</span> <span class='nbr'>16</span>;
+<span class='kw4'>const</span> IN_CLASSB_HOST   <span class='opr'>=</span> <span class='nbr'>0</span>x0000ffff;
+<span class='kw4'>const</span> IN_CLASSB_MAX    <span class='opr'>=</span> <span class='nbr'>65536</span>;
+
+<span class='kw4'>bool</span> IN_CLASSC<span class='opr'>(</span><span class='kw4'>int</span> i<span class='opr'>)</span> <span class='opr'>{</span>
+    <span class='kw1'>return</span> <span class='opr'>(</span>i <span class='opr'>&amp;</span> <span class='nbr'>0</span>xE0000000<span class='opr'>)</span> <span class='opr'>=</span><span class='opr'>=</span> <span class='nbr'>0</span>xC0000000;
+<span class='opr'>}</span>
+
+<span class='kw4'>const</span> IN_CLASSC_NET    <span class='opr'>=</span> <span class='nbr'>0</span>xffffff00;
+<span class='kw4'>const</span> IN_CLASSC_NSHIFT <span class='opr'>=</span> <span class='nbr'>8</span>;
+<span class='kw4'>const</span> IN_CLASSC_HOST   <span class='opr'>=</span> <span class='nbr'>0</span>x000000ff;
+
+<span class='kw4'>const</span> u_long
+    INADDR_ANY       <span class='opr'>=</span> <span class='nbr'>0</span>,
+    INADDR_LOOPBACK  <span class='opr'>=</span> <span class='nbr'>0</span>x7F000001,
+    INADDR_BROADCAST <span class='opr'>=</span> <span class='nbr'>0</span>xFFFFFFFF,
+    INADDR_NONE      <span class='opr'>=</span> <span class='nbr'>0</span>xFFFFFFFF;
+
+<span class='kw4'>struct</span> SOCKADDR_IN <span class='opr'>{</span>
+    <span class='kw4'>short</span>   sin_family;
+    u_short sin_port;
+    IN_ADDR sin_addr;
+    <span class='kw4'>char</span><span class='opr'>[</span><span class='nbr'>8</span><span class='opr'>]</span> sin_zero;
+<span class='opr'>}</span>
+
+<span class='kw4'>const</span> <span class='kw4'>size_t</span>
+    WSADESCRIPTION_LEN <span class='opr'>=</span> <span class='nbr'>256</span>,
+    WSASYS_STATUS_LEN  <span class='opr'>=</span> <span class='nbr'>128</span>;
+
+<span class='kw4'>struct</span> WSADATA <span class='opr'>{</span>
+    WORD   wVersion;
+    WORD   wHighVersion;
+    <span class='kw4'>char</span><span class='opr'>[</span>WSADESCRIPTION_LEN<span class='opr'>+</span><span class='nbr'>1</span><span class='opr'>]</span> szDescription;
+    <span class='kw4'>char</span><span class='opr'>[</span>WSASYS_STATUS_LEN<span class='opr'>+</span><span class='nbr'>1</span><span class='opr'>]</span>  szSystemStatus;
+    <span class='kw4'>ushort</span> iMaxSockets;
+    <span class='kw4'>ushort</span> iMaxUdpDg;
+    <span class='kw4'>char</span><span class='opr'>*</span>  lpVendorInfo;
+<span class='opr'>}</span>
+<span class='kw2'>alias</span> WSADATA<span class='opr'>*</span> LPWSADATA;
+
+<span class='com'>// This is not documented on the MSDN site</span>
+<span class='kw4'>const</span> IP_OPTIONS <span class='opr'>=</span> <span class='nbr'>1</span>;
+
+<span class='kw4'>const</span> <span class='kw4'>int</span>
+    SO_DEBUG       <span class='opr'>=</span>   <span class='nbr'>1</span>,
+    SO_ACCEPTCONN  <span class='opr'>=</span>   <span class='nbr'>2</span>,
+    SO_REUSEADDR   <span class='opr'>=</span>   <span class='nbr'>4</span>,
+    SO_KEEPALIVE   <span class='opr'>=</span>   <span class='nbr'>8</span>,
+    SO_DONTROUTE   <span class='opr'>=</span>  <span class='nbr'>16</span>,
+    SO_BROADCAST   <span class='opr'>=</span>  <span class='nbr'>32</span>,
+    SO_USELOOPBACK <span class='opr'>=</span>  <span class='nbr'>64</span>,
+    SO_LINGER      <span class='opr'>=</span> <span class='nbr'>128</span>,
+    SO_OOBINLINE   <span class='opr'>=</span> <span class='nbr'>256</span>,
+    SO_DONTLINGER  <span class='opr'>=</span> <span class='opr'>~</span>SO_LINGER;
+
+<span class='kw4'>enum</span> : <span class='kw4'>int</span> <span class='opr'>{</span>
+    SO_SNDBUF <span class='opr'>=</span> <span class='nbr'>0</span>x1001,
+    SO_RCVBUF,
+    SO_SNDLOWAT,
+    SO_RCVLOWAT,
+    SO_SNDTIMEO,
+    SO_RCVTIMEO,
+    SO_ERROR,
+    SO_TYPE <span class='com'>// = 0x1008</span>
+<span class='opr'>}</span>
+
+<span class='com'>/*
+ * Note that the next 5 IP defines are specific to WinSock 1.1 (wsock32.dll).
+ * They will cause errors or unexpected results if used with the
+ * (gs)etsockopts exported from the WinSock 2 lib, ws2_32.dll. Refer ws2tcpip.h.
+ */</span>
+<span class='kw4'>enum</span> : <span class='kw4'>int</span> <span class='opr'>{</span>
+    IP_MULTICAST_IF <span class='opr'>=</span> <span class='nbr'>2</span>,
+    IP_MULTICAST_TTL,
+    IP_MULTICAST_LOOP,
+    IP_ADD_MEMBERSHIP,
+    IP_DROP_MEMBERSHIP
+<span class='opr'>}</span>
+
+<span class='com'>// These are not documented on the MSDN site</span>
+<span class='kw4'>const</span> IP_DEFAULT_MULTICAST_TTL  <span class='opr'>=</span>  <span class='nbr'>1</span>;
+<span class='kw4'>const</span> IP_DEFAULT_MULTICAST_LOOP <span class='opr'>=</span>  <span class='nbr'>1</span>;
+<span class='kw4'>const</span> IP_MAX_MEMBERSHIPS        <span class='opr'>=</span> <span class='nbr'>20</span>;
+
+<span class='kw4'>struct</span> ip_mreq <span class='opr'>{</span>
+    IN_ADDR imr_multiaddr;
+    IN_ADDR imr_interface;
+<span class='opr'>}</span>
+
+<span class='kw4'>const</span> SOCKET INVALID_SOCKET <span class='opr'>=</span> <span class='kw4'>uint</span>.max;
+
+<span class='kw4'>const</span> SOCKET_ERROR <span class='opr'>=</span> <span class='opr'>-</span><span class='nbr'>1</span>;
+
+<span class='kw4'>enum</span> : <span class='kw4'>int</span> <span class='opr'>{</span>
+    SOCK_STREAM <span class='opr'>=</span> <span class='nbr'>1</span>,
+    SOCK_DGRAM,
+    SOCK_RAW,
+    SOCK_RDM,
+    SOCK_SEQPACKET
+<span class='opr'>}</span>
+
+<span class='kw4'>const</span> <span class='kw4'>int</span> TCP_NODELAY <span class='opr'>=</span> <span class='nbr'>1</span>;
+
+<span class='kw4'>enum</span> : <span class='kw4'>int</span> <span class='opr'>{</span>
+    AF_UNSPEC,
+    AF_UNIX,
+    AF_INET,
+    AF_IMPLINK,
+    AF_PUP,
+    AF_CHAOS,
+    AF_IPX, <span class='com'>// = 6</span>
+    AF_NS  <span class='opr'>=</span> <span class='nbr'>6</span>,
+    AF_ISO,
+    AF_OSI <span class='opr'>=</span> AF_ISO,
+    AF_ECMA,
+    AF_DATAKIT,
+    AF_CCITT,
+    AF_SNA,
+    AF_DECnet,
+    AF_DLI,
+    AF_LAT,
+    AF_HYLINK,
+    AF_APPLETALK,
+    AF_NETBIOS,
+    AF_VOICEVIEW,
+    AF_FIREFOX,
+    AF_UNKNOWN1,
+    AF_BAN,
+    AF_ATM,
+    AF_INET6,
+    AF_MAX <span class='com'>// = 24</span>
+<span class='opr'>}</span>
+
+<span class='kw4'>struct</span> SOCKADDR <span class='opr'>{</span>
+    u_short  sa_family;
+    <span class='kw4'>char</span><span class='opr'>[</span><span class='nbr'>14</span><span class='opr'>]</span> sa_data;
+<span class='opr'>}</span>
+
+<span class='kw4'>struct</span> sockproto <span class='opr'>{</span>
+    u_short sp_family;
+    u_short sp_protocol;
+<span class='opr'>}</span>
+
+<span class='kw4'>enum</span> : <span class='kw4'>int</span> <span class='opr'>{</span>
+    PF_UNSPEC    <span class='opr'>=</span> AF_UNSPEC,
+    PF_UNIX      <span class='opr'>=</span> AF_UNIX,
+    PF_INET      <span class='opr'>=</span> AF_INET,
+    PF_IMPLINK   <span class='opr'>=</span> AF_IMPLINK,
+    PF_PUP       <span class='opr'>=</span> AF_PUP,
+    PF_CHAOS     <span class='opr'>=</span> AF_CHAOS,
+    PF_NS        <span class='opr'>=</span> AF_NS,
+    PF_IPX       <span class='opr'>=</span> AF_IPX,
+    PF_ISO       <span class='opr'>=</span> AF_ISO,
+    PF_OSI       <span class='opr'>=</span> AF_OSI,
+    PF_ECMA      <span class='opr'>=</span> AF_ECMA,
+    PF_DATAKIT   <span class='opr'>=</span> AF_DATAKIT,
+    PF_CCITT     <span class='opr'>=</span> AF_CCITT,
+    PF_SNA       <span class='opr'>=</span> AF_SNA,
+    PF_DECnet    <span class='opr'>=</span> AF_DECnet,
+    PF_DLI       <span class='opr'>=</span> AF_DLI,
+    PF_LAT       <span class='opr'>=</span> AF_LAT,
+    PF_HYLINK    <span class='opr'>=</span> AF_HYLINK,
+    PF_APPLETALK <span class='opr'>=</span> AF_APPLETALK,
+    PF_VOICEVIEW <span class='opr'>=</span> AF_VOICEVIEW,
+    PF_FIREFOX   <span class='opr'>=</span> AF_FIREFOX,
+    PF_UNKNOWN1  <span class='opr'>=</span> AF_UNKNOWN1,
+    PF_BAN       <span class='opr'>=</span> AF_BAN,
+    PF_ATM       <span class='opr'>=</span> AF_ATM,
+    PF_INET6     <span class='opr'>=</span> AF_INET6,
+    PF_MAX       <span class='opr'>=</span> AF_MAX
+<span class='opr'>}</span>
+
+<span class='kw4'>const</span> <span class='kw4'>int</span> SOL_SOCKET <span class='opr'>=</span> <span class='nbr'>0</span>xFFFF;
+
+<span class='kw4'>const</span> <span class='kw4'>int</span> SOMAXCONN <span class='opr'>=</span> <span class='nbr'>5</span>;
+
+<span class='kw4'>const</span> MSG_OOB       <span class='opr'>=</span>      <span class='nbr'>1</span>;
+<span class='kw4'>const</span> MSG_PEEK      <span class='opr'>=</span>      <span class='nbr'>2</span>;
+<span class='kw4'>const</span> MSG_DONTROUTE <span class='opr'>=</span>      <span class='nbr'>4</span>;
+<span class='kw4'>const</span> MSG_MAXIOVLEN <span class='opr'>=</span>     <span class='nbr'>16</span>;
+<span class='kw4'>const</span> MSG_PARTIAL   <span class='opr'>=</span> <span class='nbr'>0</span>x8000;
+
+<span class='kw4'>const</span> MAXGETHOSTSTRUCT <span class='opr'>=</span> <span class='nbr'>1024</span>;
+
+<span class='kw4'>const</span> FD_READ    <span class='opr'>=</span>  <span class='nbr'>1</span>;
+<span class='kw4'>const</span> FD_WRITE   <span class='opr'>=</span>  <span class='nbr'>2</span>;
+<span class='kw4'>const</span> FD_OOB     <span class='opr'>=</span>  <span class='nbr'>4</span>;
+<span class='kw4'>const</span> FD_ACCEPT  <span class='opr'>=</span>  <span class='nbr'>8</span>;
+<span class='kw4'>const</span> FD_CONNECT <span class='opr'>=</span> <span class='nbr'>16</span>;
+<span class='kw4'>const</span> FD_CLOSE   <span class='opr'>=</span> <span class='nbr'>32</span>;
+
+<span class='kw4'>enum</span> : <span class='kw4'>int</span> <span class='opr'>{</span>
+    WSABASEERR         <span class='opr'>=</span> <span class='nbr'>10000</span>,
+    WSAEINTR           <span class='opr'>=</span> <span class='nbr'>10004</span>,
+    WSAEBADF           <span class='opr'>=</span> <span class='nbr'>10009</span>,
+    WSAEACCES          <span class='opr'>=</span> <span class='nbr'>10013</span>,
+    WSAEFAULT          <span class='opr'>=</span> <span class='nbr'>10014</span>,
+    WSAEINVAL          <span class='opr'>=</span> <span class='nbr'>10022</span>,
+    WSAEMFILE          <span class='opr'>=</span> <span class='nbr'>10024</span>,
+    WSAEWOULDBLOCK     <span class='opr'>=</span> <span class='nbr'>10035</span>,
+    WSAEINPROGRESS     <span class='opr'>=</span> <span class='nbr'>10036</span>,
+    WSAEALREADY        <span class='opr'>=</span> <span class='nbr'>10037</span>,
+    WSAENOTSOCK        <span class='opr'>=</span> <span class='nbr'>10038</span>,
+    WSAEDESTADDRREQ    <span class='opr'>=</span> <span class='nbr'>10039</span>,
+    WSAEMSGSIZE        <span class='opr'>=</span> <span class='nbr'>10040</span>,
+    WSAEPROTOTYPE      <span class='opr'>=</span> <span class='nbr'>10041</span>,
+    WSAENOPROTOOPT     <span class='opr'>=</span> <span class='nbr'>10042</span>,
+    WSAEPROTONOSUPPORT <span class='opr'>=</span> <span class='nbr'>10043</span>,
+    WSAESOCKTNOSUPPORT <span class='opr'>=</span> <span class='nbr'>10044</span>,
+    WSAEOPNOTSUPP      <span class='opr'>=</span> <span class='nbr'>10045</span>,
+    WSAEPFNOSUPPORT    <span class='opr'>=</span> <span class='nbr'>10046</span>,
+    WSAEAFNOSUPPORT    <span class='opr'>=</span> <span class='nbr'>10047</span>,
+    WSAEADDRINUSE      <span class='opr'>=</span> <span class='nbr'>10048</span>,
+    WSAEADDRNOTAVAIL   <span class='opr'>=</span> <span class='nbr'>10049</span>,
+    WSAENETDOWN        <span class='opr'>=</span> <span class='nbr'>10050</span>,
+    WSAENETUNREACH     <span class='opr'>=</span> <span class='nbr'>10051</span>,
+    WSAENETRESET       <span class='opr'>=</span> <span class='nbr'>10052</span>,
+    WSAECONNABORTED    <span class='opr'>=</span> <span class='nbr'>10053</span>,
+    WSAECONNRESET      <span class='opr'>=</span> <span class='nbr'>10054</span>,
+    WSAENOBUFS         <span class='opr'>=</span> <span class='nbr'>10055</span>,
+    WSAEISCONN         <span class='opr'>=</span> <span class='nbr'>10056</span>,
+    WSAENOTCONN        <span class='opr'>=</span> <span class='nbr'>10057</span>,
+    WSAESHUTDOWN       <span class='opr'>=</span> <span class='nbr'>10058</span>,
+    WSAETOOMANYREFS    <span class='opr'>=</span> <span class='nbr'>10059</span>,
+    WSAETIMEDOUT       <span class='opr'>=</span> <span class='nbr'>10060</span>,
+    WSAECONNREFUSED    <span class='opr'>=</span> <span class='nbr'>10061</span>,
+    WSAELOOP           <span class='opr'>=</span> <span class='nbr'>10062</span>,
+    WSAENAMETOOLONG    <span class='opr'>=</span> <span class='nbr'>10063</span>,
+    WSAEHOSTDOWN       <span class='opr'>=</span> <span class='nbr'>10064</span>,
+    WSAEHOSTUNREACH    <span class='opr'>=</span> <span class='nbr'>10065</span>,
+    WSAENOTEMPTY       <span class='opr'>=</span> <span class='nbr'>10066</span>,
+    WSAEPROCLIM        <span class='opr'>=</span> <span class='nbr'>10067</span>,
+    WSAEUSERS          <span class='opr'>=</span> <span class='nbr'>10068</span>,
+    WSAEDQUOT          <span class='opr'>=</span> <span class='nbr'>10069</span>,
+    WSAESTALE          <span class='opr'>=</span> <span class='nbr'>10070</span>,
+    WSAEREMOTE         <span class='opr'>=</span> <span class='nbr'>10071</span>,
+    WSAEDISCON         <span class='opr'>=</span> <span class='nbr'>10101</span>,
+    WSASYSNOTREADY     <span class='opr'>=</span> <span class='nbr'>10091</span>,
+    WSAVERNOTSUPPORTED <span class='opr'>=</span> <span class='nbr'>10092</span>,
+    WSANOTINITIALISED  <span class='opr'>=</span> <span class='nbr'>10093</span>,
+    WSAHOST_NOT_FOUND  <span class='opr'>=</span> <span class='nbr'>11001</span>,
+    WSATRY_AGAIN       <span class='opr'>=</span> <span class='nbr'>11002</span>,
+    WSANO_RECOVERY     <span class='opr'>=</span> <span class='nbr'>11003</span>,
+    WSANO_DATA         <span class='opr'>=</span> <span class='nbr'>11004</span>,
+    WSANO_ADDRESS      <span class='opr'>=</span> WSANO_DATA
+<span class='opr'>}</span>
+
+<span class='kw2'>alias</span> WSAGetLastError h_errno;
+
+<span class='kw4'>enum</span> : <span class='kw4'>int</span> <span class='opr'>{</span>
+    HOST_NOT_FOUND <span class='opr'>=</span> WSAHOST_NOT_FOUND,
+    TRY_AGAIN      <span class='opr'>=</span> WSATRY_AGAIN,
+    NO_RECOVERY    <span class='opr'>=</span> WSANO_RECOVERY,
+    NO_DATA        <span class='opr'>=</span> WSANO_DATA,
+    NO_ADDRESS     <span class='opr'>=</span> WSANO_ADDRESS
+<span class='opr'>}</span>
+
+<span class='kw2'>extern</span> <span class='opr'>(</span>Pascal<span class='opr'>)</span> <span class='opr'>{</span>
+    SOCKET accept<span class='opr'>(</span>SOCKET, SOCKADDR<span class='opr'>*</span>, <span class='kw4'>int</span><span class='opr'>*</span><span class='opr'>)</span>;
+    <span class='kw4'>int</span> bind<span class='opr'>(</span>SOCKET, SOCKADDR<span class='opr'>*</span>, <span class='kw4'>int</span><span class='opr'>)</span>;
+    <span class='kw4'>int</span> closesocket<span class='opr'>(</span>SOCKET<span class='opr'>)</span>;
+    <span class='kw4'>int</span> connect<span class='opr'>(</span>SOCKET, SOCKADDR<span class='opr'>*</span>, <span class='kw4'>int</span><span class='opr'>)</span>;
+    <span class='kw4'>int</span> ioctlsocket<span class='opr'>(</span>SOCKET, <span class='kw4'>int</span>, u_long<span class='opr'>*</span><span class='opr'>)</span>;
+    <span class='kw4'>int</span> getpeername<span class='opr'>(</span>SOCKET, SOCKADDR<span class='opr'>*</span>, <span class='kw4'>int</span><span class='opr'>*</span><span class='opr'>)</span>;
+    <span class='kw4'>int</span> getsockname<span class='opr'>(</span>SOCKET, SOCKADDR<span class='opr'>*</span>, <span class='kw4'>int</span><span class='opr'>*</span><span class='opr'>)</span>;
+    <span class='kw4'>int</span> getsockopt<span class='opr'>(</span>SOCKET, <span class='kw4'>int</span>, <span class='kw4'>int</span>, <span class='kw4'>char</span><span class='opr'>*</span>, <span class='kw4'>int</span><span class='opr'>*</span><span class='opr'>)</span>;
+    <span class='kw4'>uint</span> inet_addr<span class='opr'>(</span><span class='kw4'>char</span><span class='opr'>*</span><span class='opr'>)</span>;
+    <span class='kw4'>int</span> listen<span class='opr'>(</span>SOCKET, <span class='kw4'>int</span><span class='opr'>)</span>;
+    <span class='kw4'>int</span> recv<span class='opr'>(</span>SOCKET, <span class='kw4'>char</span><span class='opr'>*</span>, <span class='kw4'>int</span>, <span class='kw4'>int</span><span class='opr'>)</span>;
+    <span class='kw4'>int</span> recvfrom<span class='opr'>(</span>SOCKET, <span class='kw4'>char</span><span class='opr'>*</span>, <span class='kw4'>int</span>, <span class='kw4'>int</span>, SOCKADDR<span class='opr'>*</span>, <span class='kw4'>int</span><span class='opr'>*</span><span class='opr'>)</span>;
+    <span class='kw4'>int</span> send<span class='opr'>(</span>SOCKET, <span class='kw4'>char</span><span class='opr'>*</span>, <span class='kw4'>int</span>, <span class='kw4'>int</span><span class='opr'>)</span>;
+    <span class='kw4'>int</span> sendto<span class='opr'>(</span>SOCKET, <span class='kw4'>char</span><span class='opr'>*</span>, <span class='kw4'>int</span>, <span class='kw4'>int</span>, SOCKADDR<span class='opr'>*</span>, <span class='kw4'>int</span><span class='opr'>)</span>;
+    <span class='kw4'>int</span> setsockopt<span class='opr'>(</span>SOCKET, <span class='kw4'>int</span>, <span class='kw4'>int</span>, <span class='kw4'>char</span><span class='opr'>*</span>, <span class='kw4'>int</span><span class='opr'>)</span>;
+    <span class='kw4'>int</span> shutdown<span class='opr'>(</span>SOCKET, <span class='kw4'>int</span><span class='opr'>)</span>;
+    SOCKET socket<span class='opr'>(</span><span class='kw4'>int</span>, <span class='kw4'>int</span>, <span class='kw4'>int</span><span class='opr'>)</span>;
+    <span class='kw4'>int</span> WSAStartup<span class='opr'>(</span>WORD, LPWSADATA<span class='opr'>)</span>;
+    <span class='kw4'>int</span> WSACleanup<span class='opr'>(</span><span class='opr'>)</span>;
+    <span class='kw4'>void</span> WSASetLastError<span class='opr'>(</span><span class='kw4'>int</span><span class='opr'>)</span>;
+    <span class='kw4'>int</span> WSAGetLastError<span class='opr'>(</span><span class='opr'>)</span>;
+    BOOL WSAIsBlocking<span class='opr'>(</span><span class='opr'>)</span>;
+    <span class='kw4'>int</span> WSAUnhookBlockingHook<span class='opr'>(</span><span class='opr'>)</span>;
+    FARPROC WSASetBlockingHook<span class='opr'>(</span>FARPROC<span class='opr'>)</span>;
+    <span class='kw4'>int</span> WSACancelBlockingCall<span class='opr'>(</span><span class='opr'>)</span>;
+    HANDLE WSAAsyncGetServByName<span class='opr'>(</span>HWND, u_int, <span class='kw4'>char</span><span class='opr'>*</span>, <span class='kw4'>char</span><span class='opr'>*</span>, <span class='kw4'>char</span><span class='opr'>*</span>, <span class='kw4'>int</span><span class='opr'>)</span>;
+    HANDLE WSAAsyncGetServByPort<span class='opr'>(</span>HWND, u_int, <span class='kw4'>int</span>, <span class='kw4'>char</span><span class='opr'>*</span>, <span class='kw4'>char</span><span class='opr'>*</span>, <span class='kw4'>int</span><span class='opr'>)</span>;
+    HANDLE WSAAsyncGetProtoByName<span class='opr'>(</span>HWND, u_int, <span class='kw4'>char</span><span class='opr'>*</span>, <span class='kw4'>char</span><span class='opr'>*</span>, <span class='kw4'>int</span><span class='opr'>)</span>;
+    HANDLE WSAAsyncGetProtoByNumber<span class='opr'>(</span>HWND, u_int, <span class='kw4'>int</span>, <span class='kw4'>char</span><span class='opr'>*</span>, <span class='kw4'>int</span><span class='opr'>)</span>;
+    HANDLE WSAAsyncGetHostByName<span class='opr'>(</span>HWND, u_int, <span class='kw4'>char</span><span class='opr'>*</span>, <span class='kw4'>char</span><span class='opr'>*</span>, <span class='kw4'>int</span><span class='opr'>)</span>;
+    HANDLE WSAAsyncGetHostByAddr<span class='opr'>(</span>HWND, u_int, <span class='kw4'>char</span><span class='opr'>*</span>, <span class='kw4'>int</span>, <span class='kw4'>int</span>, <span class='kw4'>char</span><span class='opr'>*</span>, <span class='kw4'>int</span><span class='opr'>)</span>;
+    <span class='kw4'>int</span> WSACancelAsyncRequest<span class='opr'>(</span>HANDLE<span class='opr'>)</span>;
+    <span class='kw4'>int</span> WSAAsyncSelect<span class='opr'>(</span>SOCKET, HWND, u_int, <span class='kw4'>int</span><span class='opr'>)</span>;
+    u_long htonl<span class='opr'>(</span>u_long<span class='opr'>)</span>;
+    u_long ntohl<span class='opr'>(</span>u_long<span class='opr'>)</span>;
+    u_short htons<span class='opr'>(</span>u_short<span class='opr'>)</span>;
+    u_short ntohs<span class='opr'>(</span>u_short<span class='opr'>)</span>;
+    <span class='kw4'>int</span> select<span class='opr'>(</span><span class='kw4'>int</span> nfds, FD_SET<span class='opr'>*</span>, FD_SET<span class='opr'>*</span>, FD_SET<span class='opr'>*</span>, TIMEVAL<span class='opr'>*</span><span class='opr'>)</span>;
+    <span class='kw4'>int</span> gethostname<span class='opr'>(</span><span class='kw4'>char</span><span class='opr'>*</span>, <span class='kw4'>int</span><span class='opr'>)</span>;
+<span class='opr'>}</span>
+
+<span class='kw2'>extern</span> <span class='opr'>(</span>Windows<span class='opr'>)</span> <span class='opr'>{</span>
+    <span class='kw4'>char</span><span class='opr'>*</span> inet_ntoa<span class='opr'>(</span>IN_ADDR<span class='opr'>)</span>;
+    HOSTENT<span class='opr'>*</span> gethostbyaddr<span class='opr'>(</span><span class='kw4'>char</span><span class='opr'>*</span>, <span class='kw4'>int</span>, <span class='kw4'>int</span><span class='opr'>)</span>;
+    HOSTENT<span class='opr'>*</span> gethostbyname<span class='opr'>(</span><span class='kw4'>char</span><span class='opr'>*</span><span class='opr'>)</span>;
+    SERVENT<span class='opr'>*</span> getservbyport<span class='opr'>(</span><span class='kw4'>int</span>, <span class='kw4'>char</span><span class='opr'>*</span><span class='opr'>)</span>;
+    SERVENT<span class='opr'>*</span> getservbyname<span class='opr'>(</span><span class='kw4'>char</span><span class='opr'>*</span>, <span class='kw4'>char</span><span class='opr'>*</span><span class='opr'>)</span>;
+    PROTOENT<span class='opr'>*</span> getprotobynumber<span class='opr'>(</span><span class='kw4'>int</span><span class='opr'>)</span>;
+    PROTOENT<span class='opr'>*</span> getprotobyname<span class='opr'>(</span><span class='kw4'>char</span><span class='opr'>*</span><span class='opr'>)</span>;
+<span class='opr'>}</span>
+
+<span class='kw2'>alias</span> MAKELONG WSAMAKEASYNCREPLY, WSAMAKESELECTREPLY;
+<span class='kw2'>alias</span> LOWORD WSAGETASYNCBUFLEN, WSAGETSELECTEVENT;
+<span class='kw2'>alias</span> HIWORD WSAGETASYNCERROR, WSAGETSELECTERROR;
+
+<span class='kw2'>alias</span> SOCKADDR<span class='opr'>*</span> PSOCKADDR, LPSOCKADDR;
+<span class='kw2'>alias</span> SOCKADDR_IN<span class='opr'>*</span> PSOCKADDR_IN, LPSOCKADDR_IN;
+<span class='kw2'>alias</span> LINGER<span class='opr'>*</span> PLINGER, LPLINGER;
+<span class='kw2'>alias</span> IN_ADDR<span class='opr'>*</span> PIN_ADDR, LPIN_ADDR;
+<span class='kw2'>alias</span> FD_SET<span class='opr'>*</span> PFD_SET, LPFD_SET;
+<span class='kw2'>alias</span> HOSTENT<span class='opr'>*</span> PHOSTENT, LPHOSTENT;
+<span class='kw2'>alias</span> SERVENT<span class='opr'>*</span> PSERVENT, LPSERVENT;
+<span class='kw2'>alias</span> PROTOENT<span class='opr'>*</span> PPROTOENT, LPPROTOENT;
+<span class='kw2'>alias</span> TIMEVAL<span class='opr'>*</span> PTIMEVAL, LPTIMEVAL;
+
+<span class='com'>/*
+ * Recent MSDN docs indicate that the MS-specific extensions exported from
+ * mswsock.dll (AcceptEx, TransmitFile. WSARecEx and GetAcceptExSockaddrs) are
+ * declared in mswsock.h. These extensions are not supported on W9x or WinCE.
+ * However, code using WinSock 1.1 API may expect the declarations and
+ * associated defines to be in this header. Thus we include mswsock.h here.
+ *
+ * When linking against the WinSock 1.1 lib, wsock32.dll, the mswsock functions
+ * are automatically routed to mswsock.dll (on platforms with support).
+ * The WinSock 2 lib, ws2_32.dll, does not contain any references to
+ * the mswsock extensions.
+ */</span>
+
+<span class='kw2'>import</span> tango.os.windows.c.mswsock;
+</pre></td></tr></table>	</body>
+</html>

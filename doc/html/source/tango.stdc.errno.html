@@ -1,0 +1,393 @@
+<!DOCTYPE html 
+     PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+     "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html>
+	<head>
+		<link rel="stylesheet" href="style.css" type="text/css" />
+		<title>stdc/errno.d</title>
+	</head>
+	<body>
+
+<table id='dcode'><tr><td id='lnum'><pre><span>1</span>
+<span>2</span>
+<span>3</span>
+<span>4</span>
+<span>5</span>
+<span>6</span>
+<span>7</span>
+<span>8</span>
+<span>9</span>
+<span>10</span>
+<span>11</span>
+<span>12</span>
+<span>13</span>
+<span>14</span>
+<span>15</span>
+<span>16</span>
+<span>17</span>
+<span>18</span>
+<span>19</span>
+<span>20</span>
+<span>21</span>
+<span>22</span>
+<span>23</span>
+<span>24</span>
+<span>25</span>
+<span>26</span>
+<span>27</span>
+<span>28</span>
+<span>29</span>
+<span>30</span>
+<span>31</span>
+<span>32</span>
+<span>33</span>
+<span>34</span>
+<span>35</span>
+<span>36</span>
+<span>37</span>
+<span>38</span>
+<span>39</span>
+<span>40</span>
+<span>41</span>
+<span>42</span>
+<span>43</span>
+<span>44</span>
+<span>45</span>
+<span>46</span>
+<span>47</span>
+<span>48</span>
+<span>49</span>
+<span>50</span>
+<span>51</span>
+<span>52</span>
+<span>53</span>
+<span>54</span>
+<span>55</span>
+<span>56</span>
+<span>57</span>
+<span>58</span>
+<span>59</span>
+<span>60</span>
+<span>61</span>
+<span>62</span>
+<span>63</span>
+<span>64</span>
+<span>65</span>
+<span>66</span>
+<span>67</span>
+<span>68</span>
+<span>69</span>
+<span>70</span>
+<span>71</span>
+<span>72</span>
+<span>73</span>
+<span>74</span>
+<span>75</span>
+<span>76</span>
+<span>77</span>
+<span>78</span>
+<span>79</span>
+<span>80</span>
+<span>81</span>
+<span>82</span>
+<span>83</span>
+<span>84</span>
+<span>85</span>
+<span>86</span>
+<span>87</span>
+<span>88</span>
+<span>89</span>
+<span>90</span>
+<span>91</span>
+<span>92</span>
+<span>93</span>
+<span>94</span>
+<span>95</span>
+<span>96</span>
+<span>97</span>
+<span>98</span>
+<span>99</span>
+<span>100</span>
+<span>101</span>
+<span>102</span>
+<span>103</span>
+<span>104</span>
+<span>105</span>
+<span>106</span>
+<span>107</span>
+<span>108</span>
+<span>109</span>
+<span>110</span>
+<span>111</span>
+<span>112</span>
+<span>113</span>
+<span>114</span>
+<span>115</span>
+<span>116</span>
+<span>117</span>
+<span>118</span>
+<span>119</span>
+<span>120</span>
+<span>121</span>
+<span>122</span>
+<span>123</span>
+<span>124</span>
+<span>125</span>
+<span>126</span>
+<span>127</span>
+<span>128</span>
+<span>129</span>
+<span>130</span>
+<span>131</span>
+<span>132</span>
+<span>133</span>
+<span>134</span>
+<span>135</span>
+<span>136</span>
+<span>137</span>
+<span>138</span>
+<span>139</span>
+<span>140</span>
+<span>141</span>
+<span>142</span>
+<span>143</span>
+<span>144</span>
+<span>145</span>
+<span>146</span>
+<span>147</span>
+<span>148</span>
+<span>149</span>
+<span>150</span>
+<span>151</span>
+<span>152</span>
+<span>153</span>
+<span>154</span>
+<span>155</span>
+<span>156</span>
+<span>157</span>
+<span>158</span>
+<span>159</span>
+<span>160</span>
+<span>161</span>
+<span>162</span>
+<span>163</span>
+<span>164</span>
+<span>165</span>
+<span>166</span>
+<span>167</span>
+<span>168</span>
+<span>169</span>
+<span>170</span>
+<span>171</span>
+<span>172</span>
+<span>173</span>
+<span>174</span>
+<span>175</span>
+<span>176</span>
+<span>177</span>
+<span>178</span>
+<span>179</span>
+<span>180</span>
+<span>181</span>
+<span>182</span>
+<span>183</span>
+<span>184</span>
+<span>185</span>
+<span>186</span>
+<span>187</span>
+<span>188</span>
+<span>189</span>
+<span>190</span>
+</pre></td><td id='code'><pre><span class='com'>/**
+ * D header file for C99.
+ *
+ * Copyright: Public Domain
+ * License:   Public Domain
+ * Authors:   Sean Kelly
+ * Standards: ISO/IEC 9899:1999 (E)
+ */</span>
+<span class='kw2'>module</span> tango.stdc.errno;
+
+<span class='kw2'>extern</span> <span class='opr'>(</span>C<span class='opr'>)</span>:
+
+<span class='kw4'>int</span> errno;
+
+<span class='kw4'>version</span><span class='opr'>(</span> Win32 <span class='opr'>)</span>
+<span class='opr'>{</span>
+    <span class='kw4'>const</span> <span class='kw4'>auto</span> EPERM            <span class='opr'>=</span> <span class='nbr'>1</span>;        <span class='com'>// Operation not permitted</span>
+    <span class='kw4'>const</span> <span class='kw4'>auto</span> ENOENT           <span class='opr'>=</span> <span class='nbr'>2</span>;        <span class='com'>// No such file or directory</span>
+    <span class='kw4'>const</span> <span class='kw4'>auto</span> ESRCH            <span class='opr'>=</span> <span class='nbr'>3</span>;        <span class='com'>// No such process</span>
+    <span class='kw4'>const</span> <span class='kw4'>auto</span> EINTR            <span class='opr'>=</span> <span class='nbr'>4</span>;        <span class='com'>// Interrupted system call</span>
+    <span class='kw4'>const</span> <span class='kw4'>auto</span> EIO              <span class='opr'>=</span> <span class='nbr'>5</span>;        <span class='com'>// I/O error</span>
+    <span class='kw4'>const</span> <span class='kw4'>auto</span> ENXIO            <span class='opr'>=</span> <span class='nbr'>6</span>;        <span class='com'>// No such device or address</span>
+    <span class='kw4'>const</span> <span class='kw4'>auto</span> E2BIG            <span class='opr'>=</span> <span class='nbr'>7</span>;        <span class='com'>// Argument list too long</span>
+    <span class='kw4'>const</span> <span class='kw4'>auto</span> ENOEXEC          <span class='opr'>=</span> <span class='nbr'>8</span>;        <span class='com'>// Exec format error</span>
+    <span class='kw4'>const</span> <span class='kw4'>auto</span> EBADF            <span class='opr'>=</span> <span class='nbr'>9</span>;        <span class='com'>// Bad file number</span>
+    <span class='kw4'>const</span> <span class='kw4'>auto</span> ECHILD           <span class='opr'>=</span> <span class='nbr'>10</span>;       <span class='com'>// No child processes</span>
+    <span class='kw4'>const</span> <span class='kw4'>auto</span> EAGAIN           <span class='opr'>=</span> <span class='nbr'>11</span>;       <span class='com'>// Try again</span>
+    <span class='kw4'>const</span> <span class='kw4'>auto</span> ENOMEM           <span class='opr'>=</span> <span class='nbr'>12</span>;       <span class='com'>// Out of memory</span>
+    <span class='kw4'>const</span> <span class='kw4'>auto</span> EACCES           <span class='opr'>=</span> <span class='nbr'>13</span>;       <span class='com'>// Permission denied</span>
+    <span class='kw4'>const</span> <span class='kw4'>auto</span> EFAULT           <span class='opr'>=</span> <span class='nbr'>14</span>;       <span class='com'>// Bad address</span>
+    <span class='kw4'>const</span> <span class='kw4'>auto</span> EBUSY            <span class='opr'>=</span> <span class='nbr'>16</span>;       <span class='com'>// Device or resource busy</span>
+    <span class='kw4'>const</span> <span class='kw4'>auto</span> EEXIST           <span class='opr'>=</span> <span class='nbr'>17</span>;       <span class='com'>// File exists</span>
+    <span class='kw4'>const</span> <span class='kw4'>auto</span> EXDEV            <span class='opr'>=</span> <span class='nbr'>18</span>;       <span class='com'>// Cross-device link</span>
+    <span class='kw4'>const</span> <span class='kw4'>auto</span> ENODEV           <span class='opr'>=</span> <span class='nbr'>19</span>;       <span class='com'>// No such device</span>
+    <span class='kw4'>const</span> <span class='kw4'>auto</span> ENOTDIR          <span class='opr'>=</span> <span class='nbr'>20</span>;       <span class='com'>// Not a directory</span>
+    <span class='kw4'>const</span> <span class='kw4'>auto</span> EISDIR           <span class='opr'>=</span> <span class='nbr'>21</span>;       <span class='com'>// Is a directory</span>
+    <span class='kw4'>const</span> <span class='kw4'>auto</span> EINVAL           <span class='opr'>=</span> <span class='nbr'>22</span>;       <span class='com'>// Invalid argument</span>
+    <span class='kw4'>const</span> <span class='kw4'>auto</span> ENFILE           <span class='opr'>=</span> <span class='nbr'>23</span>;       <span class='com'>// File table overflow</span>
+    <span class='kw4'>const</span> <span class='kw4'>auto</span> EMFILE           <span class='opr'>=</span> <span class='nbr'>24</span>;       <span class='com'>// Too many open files</span>
+    <span class='kw4'>const</span> <span class='kw4'>auto</span> ENOTTY           <span class='opr'>=</span> <span class='nbr'>25</span>;       <span class='com'>// Not a typewriter</span>
+    <span class='kw4'>const</span> <span class='kw4'>auto</span> EFBIG            <span class='opr'>=</span> <span class='nbr'>27</span>;       <span class='com'>// File too large</span>
+    <span class='kw4'>const</span> <span class='kw4'>auto</span> ENOSPC           <span class='opr'>=</span> <span class='nbr'>28</span>;       <span class='com'>// No space left on device</span>
+    <span class='kw4'>const</span> <span class='kw4'>auto</span> ESPIPE           <span class='opr'>=</span> <span class='nbr'>29</span>;       <span class='com'>// Illegal seek</span>
+    <span class='kw4'>const</span> <span class='kw4'>auto</span> EROFS            <span class='opr'>=</span> <span class='nbr'>30</span>;       <span class='com'>// Read-only file system</span>
+    <span class='kw4'>const</span> <span class='kw4'>auto</span> EMLINK           <span class='opr'>=</span> <span class='nbr'>31</span>;       <span class='com'>// Too many links</span>
+    <span class='kw4'>const</span> <span class='kw4'>auto</span> EPIPE            <span class='opr'>=</span> <span class='nbr'>32</span>;       <span class='com'>// Broken pipe</span>
+    <span class='kw4'>const</span> <span class='kw4'>auto</span> EDOM             <span class='opr'>=</span> <span class='nbr'>33</span>;       <span class='com'>// Math argument out of domain of func</span>
+    <span class='kw4'>const</span> <span class='kw4'>auto</span> ERANGE           <span class='opr'>=</span> <span class='nbr'>34</span>;       <span class='com'>// Math result not representable</span>
+    <span class='kw4'>const</span> <span class='kw4'>auto</span> EDEADLK          <span class='opr'>=</span> <span class='nbr'>36</span>;       <span class='com'>// Resource deadlock would occur</span>
+    <span class='kw4'>const</span> <span class='kw4'>auto</span> ENAMETOOLONG     <span class='opr'>=</span> <span class='nbr'>38</span>;       <span class='com'>// File name too long</span>
+    <span class='kw4'>const</span> <span class='kw4'>auto</span> ENOLCK           <span class='opr'>=</span> <span class='nbr'>39</span>;       <span class='com'>// No record locks available</span>
+    <span class='kw4'>const</span> <span class='kw4'>auto</span> ENOSYS           <span class='opr'>=</span> <span class='nbr'>40</span>;       <span class='com'>// Function not implemented</span>
+    <span class='kw4'>const</span> <span class='kw4'>auto</span> ENOTEMPTY        <span class='opr'>=</span> <span class='nbr'>41</span>;       <span class='com'>// Directory not empty</span>
+    <span class='kw4'>const</span> <span class='kw4'>auto</span> EILSEQ           <span class='opr'>=</span> <span class='nbr'>42</span>;       <span class='com'>// Illegal byte sequence</span>
+    <span class='kw4'>const</span> <span class='kw4'>auto</span> EDEADLOCK        <span class='opr'>=</span> EDEADLK;
+<span class='opr'>}</span>
+<span class='kw1'>else</span> <span class='kw4'>version</span><span class='opr'>(</span> linux <span class='opr'>)</span>
+<span class='opr'>{</span>
+    <span class='kw4'>const</span> <span class='kw4'>auto</span> EPERM            <span class='opr'>=</span> <span class='nbr'>1</span>;        <span class='com'>// Operation not permitted</span>
+    <span class='kw4'>const</span> <span class='kw4'>auto</span> ENOENT           <span class='opr'>=</span> <span class='nbr'>2</span>;        <span class='com'>// No such file or directory</span>
+    <span class='kw4'>const</span> <span class='kw4'>auto</span> ESRCH            <span class='opr'>=</span> <span class='nbr'>3</span>;        <span class='com'>// No such process</span>
+    <span class='kw4'>const</span> <span class='kw4'>auto</span> EINTR            <span class='opr'>=</span> <span class='nbr'>4</span>;        <span class='com'>// Interrupted system call</span>
+    <span class='kw4'>const</span> <span class='kw4'>auto</span> EIO              <span class='opr'>=</span> <span class='nbr'>5</span>;        <span class='com'>// I/O error</span>
+    <span class='kw4'>const</span> <span class='kw4'>auto</span> ENXIO            <span class='opr'>=</span> <span class='nbr'>6</span>;        <span class='com'>// No such device or address</span>
+    <span class='kw4'>const</span> <span class='kw4'>auto</span> E2BIG            <span class='opr'>=</span> <span class='nbr'>7</span>;        <span class='com'>// Argument list too long</span>
+    <span class='kw4'>const</span> <span class='kw4'>auto</span> ENOEXEC          <span class='opr'>=</span> <span class='nbr'>8</span>;        <span class='com'>// Exec format error</span>
+    <span class='kw4'>const</span> <span class='kw4'>auto</span> EBADF            <span class='opr'>=</span> <span class='nbr'>9</span>;        <span class='com'>// Bad file number</span>
+    <span class='kw4'>const</span> <span class='kw4'>auto</span> ECHILD           <span class='opr'>=</span> <span class='nbr'>10</span>;       <span class='com'>// No child processes</span>
+    <span class='kw4'>const</span> <span class='kw4'>auto</span> EAGAIN           <span class='opr'>=</span> <span class='nbr'>11</span>;       <span class='com'>// Try again</span>
+    <span class='kw4'>const</span> <span class='kw4'>auto</span> ENOMEM           <span class='opr'>=</span> <span class='nbr'>12</span>;       <span class='com'>// Out of memory</span>
+    <span class='kw4'>const</span> <span class='kw4'>auto</span> EACCES           <span class='opr'>=</span> <span class='nbr'>13</span>;       <span class='com'>// Permission denied</span>
+    <span class='kw4'>const</span> <span class='kw4'>auto</span> EFAULT           <span class='opr'>=</span> <span class='nbr'>14</span>;       <span class='com'>// Bad address</span>
+    <span class='kw4'>const</span> <span class='kw4'>auto</span> ENOTBLK          <span class='opr'>=</span> <span class='nbr'>15</span>;       <span class='com'>// Block device required</span>
+    <span class='kw4'>const</span> <span class='kw4'>auto</span> EBUSY            <span class='opr'>=</span> <span class='nbr'>16</span>;       <span class='com'>// Device or resource busy</span>
+    <span class='kw4'>const</span> <span class='kw4'>auto</span> EEXIST           <span class='opr'>=</span> <span class='nbr'>17</span>;       <span class='com'>// File exists</span>
+    <span class='kw4'>const</span> <span class='kw4'>auto</span> EXDEV            <span class='opr'>=</span> <span class='nbr'>18</span>;       <span class='com'>// Cross-device link</span>
+    <span class='kw4'>const</span> <span class='kw4'>auto</span> ENODEV           <span class='opr'>=</span> <span class='nbr'>19</span>;       <span class='com'>// No such device</span>
+    <span class='kw4'>const</span> <span class='kw4'>auto</span> ENOTDIR          <span class='opr'>=</span> <span class='nbr'>20</span>;       <span class='com'>// Not a directory</span>
+    <span class='kw4'>const</span> <span class='kw4'>auto</span> EISDIR           <span class='opr'>=</span> <span class='nbr'>21</span>;       <span class='com'>// Is a directory</span>
+    <span class='kw4'>const</span> <span class='kw4'>auto</span> EINVAL           <span class='opr'>=</span> <span class='nbr'>22</span>;       <span class='com'>// Invalid argument</span>
+    <span class='kw4'>const</span> <span class='kw4'>auto</span> ENFILE           <span class='opr'>=</span> <span class='nbr'>23</span>;       <span class='com'>// File table overflow</span>
+    <span class='kw4'>const</span> <span class='kw4'>auto</span> EMFILE           <span class='opr'>=</span> <span class='nbr'>24</span>;       <span class='com'>// Too many open files</span>
+    <span class='kw4'>const</span> <span class='kw4'>auto</span> ENOTTY           <span class='opr'>=</span> <span class='nbr'>25</span>;       <span class='com'>// Not a typewriter</span>
+    <span class='kw4'>const</span> <span class='kw4'>auto</span> ETXTBSY          <span class='opr'>=</span> <span class='nbr'>26</span>;       <span class='com'>// Text file busy</span>
+    <span class='kw4'>const</span> <span class='kw4'>auto</span> EFBIG            <span class='opr'>=</span> <span class='nbr'>27</span>;       <span class='com'>// File too large</span>
+    <span class='kw4'>const</span> <span class='kw4'>auto</span> ENOSPC           <span class='opr'>=</span> <span class='nbr'>28</span>;       <span class='com'>// No space left on device</span>
+    <span class='kw4'>const</span> <span class='kw4'>auto</span> ESPIPE           <span class='opr'>=</span> <span class='nbr'>29</span>;       <span class='com'>// Illegal seek</span>
+    <span class='kw4'>const</span> <span class='kw4'>auto</span> EROFS            <span class='opr'>=</span> <span class='nbr'>30</span>;       <span class='com'>// Read-only file system</span>
+    <span class='kw4'>const</span> <span class='kw4'>auto</span> EMLINK           <span class='opr'>=</span> <span class='nbr'>31</span>;       <span class='com'>// Too many links</span>
+    <span class='kw4'>const</span> <span class='kw4'>auto</span> EPIPE            <span class='opr'>=</span> <span class='nbr'>32</span>;       <span class='com'>// Broken pipe</span>
+    <span class='kw4'>const</span> <span class='kw4'>auto</span> EDOM             <span class='opr'>=</span> <span class='nbr'>33</span>;       <span class='com'>// Math argument out of domain of func</span>
+    <span class='kw4'>const</span> <span class='kw4'>auto</span> ERANGE           <span class='opr'>=</span> <span class='nbr'>34</span>;       <span class='com'>// Math result not representable</span>
+    <span class='kw4'>const</span> <span class='kw4'>auto</span> EDEADLK          <span class='opr'>=</span> <span class='nbr'>35</span>;       <span class='com'>// Resource deadlock would occur</span>
+    <span class='kw4'>const</span> <span class='kw4'>auto</span> ENAMETOOLONG     <span class='opr'>=</span> <span class='nbr'>36</span>;       <span class='com'>// File name too long</span>
+    <span class='kw4'>const</span> <span class='kw4'>auto</span> ENOLCK           <span class='opr'>=</span> <span class='nbr'>37</span>;       <span class='com'>// No record locks available</span>
+    <span class='kw4'>const</span> <span class='kw4'>auto</span> ENOSYS           <span class='opr'>=</span> <span class='nbr'>38</span>;       <span class='com'>// Function not implemented</span>
+    <span class='kw4'>const</span> <span class='kw4'>auto</span> ENOTEMPTY        <span class='opr'>=</span> <span class='nbr'>39</span>;       <span class='com'>// Directory not empty</span>
+    <span class='kw4'>const</span> <span class='kw4'>auto</span> ELOOP            <span class='opr'>=</span> <span class='nbr'>40</span>;       <span class='com'>// Too many symbolic links encountered</span>
+    <span class='kw4'>const</span> <span class='kw4'>auto</span> EWOULDBLOCK      <span class='opr'>=</span> EAGAIN;   <span class='com'>// Operation would block</span>
+    <span class='kw4'>const</span> <span class='kw4'>auto</span> ENOMSG           <span class='opr'>=</span> <span class='nbr'>42</span>;       <span class='com'>// No message of desired type</span>
+    <span class='kw4'>const</span> <span class='kw4'>auto</span> EIDRM            <span class='opr'>=</span> <span class='nbr'>43</span>;       <span class='com'>// Identifier removed</span>
+    <span class='kw4'>const</span> <span class='kw4'>auto</span> ECHRNG           <span class='opr'>=</span> <span class='nbr'>44</span>;       <span class='com'>// Channel number out of range</span>
+    <span class='kw4'>const</span> <span class='kw4'>auto</span> EL2NSYNC         <span class='opr'>=</span> <span class='nbr'>45</span>;       <span class='com'>// Level 2 not synchronized</span>
+    <span class='kw4'>const</span> <span class='kw4'>auto</span> EL3HLT           <span class='opr'>=</span> <span class='nbr'>46</span>;       <span class='com'>// Level 3 halted</span>
+    <span class='kw4'>const</span> <span class='kw4'>auto</span> EL3RST           <span class='opr'>=</span> <span class='nbr'>47</span>;       <span class='com'>// Level 3 reset</span>
+    <span class='kw4'>const</span> <span class='kw4'>auto</span> ELNRNG           <span class='opr'>=</span> <span class='nbr'>48</span>;       <span class='com'>// Link number out of range</span>
+    <span class='kw4'>const</span> <span class='kw4'>auto</span> EUNATCH          <span class='opr'>=</span> <span class='nbr'>49</span>;       <span class='com'>// Protocol driver not attached</span>
+    <span class='kw4'>const</span> <span class='kw4'>auto</span> ENOCSI           <span class='opr'>=</span> <span class='nbr'>50</span>;       <span class='com'>// No CSI structure available</span>
+    <span class='kw4'>const</span> <span class='kw4'>auto</span> EL2HLT           <span class='opr'>=</span> <span class='nbr'>51</span>;       <span class='com'>// Level 2 halted</span>
+    <span class='kw4'>const</span> <span class='kw4'>auto</span> EBADE            <span class='opr'>=</span> <span class='nbr'>52</span>;       <span class='com'>// Invalid exchange</span>
+    <span class='kw4'>const</span> <span class='kw4'>auto</span> EBADR            <span class='opr'>=</span> <span class='nbr'>53</span>;       <span class='com'>// Invalid request descriptor</span>
+    <span class='kw4'>const</span> <span class='kw4'>auto</span> EXFULL           <span class='opr'>=</span> <span class='nbr'>54</span>;       <span class='com'>// Exchange full</span>
+    <span class='kw4'>const</span> <span class='kw4'>auto</span> ENOANO           <span class='opr'>=</span> <span class='nbr'>55</span>;       <span class='com'>// No anode</span>
+    <span class='kw4'>const</span> <span class='kw4'>auto</span> EBADRQC          <span class='opr'>=</span> <span class='nbr'>56</span>;       <span class='com'>// Invalid request code</span>
+    <span class='kw4'>const</span> <span class='kw4'>auto</span> EBADSLT          <span class='opr'>=</span> <span class='nbr'>57</span>;       <span class='com'>// Invalid slot</span>
+    <span class='kw4'>const</span> <span class='kw4'>auto</span> EDEADLOCK        <span class='opr'>=</span> EDEADLK;
+    <span class='kw4'>const</span> <span class='kw4'>auto</span> EBFONT           <span class='opr'>=</span> <span class='nbr'>59</span>;       <span class='com'>// Bad font file format</span>
+    <span class='kw4'>const</span> <span class='kw4'>auto</span> ENOSTR           <span class='opr'>=</span> <span class='nbr'>60</span>;       <span class='com'>// Device not a stream</span>
+    <span class='kw4'>const</span> <span class='kw4'>auto</span> ENODATA          <span class='opr'>=</span> <span class='nbr'>61</span>;       <span class='com'>// No data available</span>
+    <span class='kw4'>const</span> <span class='kw4'>auto</span> ETIME            <span class='opr'>=</span> <span class='nbr'>62</span>;       <span class='com'>// Timer expired</span>
+    <span class='kw4'>const</span> <span class='kw4'>auto</span> ENOSR            <span class='opr'>=</span> <span class='nbr'>63</span>;       <span class='com'>// Out of streams resources</span>
+    <span class='kw4'>const</span> <span class='kw4'>auto</span> ENONET           <span class='opr'>=</span> <span class='nbr'>64</span>;       <span class='com'>// Machine is not on the network</span>
+    <span class='kw4'>const</span> <span class='kw4'>auto</span> ENOPKG           <span class='opr'>=</span> <span class='nbr'>65</span>;       <span class='com'>// Package not installed</span>
+    <span class='kw4'>const</span> <span class='kw4'>auto</span> EREMOTE          <span class='opr'>=</span> <span class='nbr'>66</span>;       <span class='com'>// Object is remote</span>
+    <span class='kw4'>const</span> <span class='kw4'>auto</span> ENOLINK          <span class='opr'>=</span> <span class='nbr'>67</span>;       <span class='com'>// Link has been severed</span>
+    <span class='kw4'>const</span> <span class='kw4'>auto</span> EADV             <span class='opr'>=</span> <span class='nbr'>68</span>;       <span class='com'>// Advertise error</span>
+    <span class='kw4'>const</span> <span class='kw4'>auto</span> ESRMNT           <span class='opr'>=</span> <span class='nbr'>69</span>;       <span class='com'>// Srmount error</span>
+    <span class='kw4'>const</span> <span class='kw4'>auto</span> ECOMM            <span class='opr'>=</span> <span class='nbr'>70</span>;       <span class='com'>// Communication error on send</span>
+    <span class='kw4'>const</span> <span class='kw4'>auto</span> EPROTO           <span class='opr'>=</span> <span class='nbr'>71</span>;       <span class='com'>// Protocol error</span>
+    <span class='kw4'>const</span> <span class='kw4'>auto</span> EMULTIHOP        <span class='opr'>=</span> <span class='nbr'>72</span>;       <span class='com'>// Multihop attempted</span>
+    <span class='kw4'>const</span> <span class='kw4'>auto</span> EDOTDOT          <span class='opr'>=</span> <span class='nbr'>73</span>;       <span class='com'>// RFS specific error</span>
+    <span class='kw4'>const</span> <span class='kw4'>auto</span> EBADMSG          <span class='opr'>=</span> <span class='nbr'>74</span>;       <span class='com'>// Not a data message</span>
+    <span class='kw4'>const</span> <span class='kw4'>auto</span> EOVERFLOW        <span class='opr'>=</span> <span class='nbr'>75</span>;       <span class='com'>// Value too large for defined data type</span>
+    <span class='kw4'>const</span> <span class='kw4'>auto</span> ENOTUNIQ         <span class='opr'>=</span> <span class='nbr'>76</span>;       <span class='com'>// Name not unique on network</span>
+    <span class='kw4'>const</span> <span class='kw4'>auto</span> EBADFD           <span class='opr'>=</span> <span class='nbr'>77</span>;       <span class='com'>// File descriptor in bad state</span>
+    <span class='kw4'>const</span> <span class='kw4'>auto</span> EREMCHG          <span class='opr'>=</span> <span class='nbr'>78</span>;       <span class='com'>// Remote address changed</span>
+    <span class='kw4'>const</span> <span class='kw4'>auto</span> ELIBACC          <span class='opr'>=</span> <span class='nbr'>79</span>;       <span class='com'>// Can not access a needed shared library</span>
+    <span class='kw4'>const</span> <span class='kw4'>auto</span> ELIBBAD          <span class='opr'>=</span> <span class='nbr'>80</span>;       <span class='com'>// Accessing a corrupted shared library</span>
+    <span class='kw4'>const</span> <span class='kw4'>auto</span> ELIBSCN          <span class='opr'>=</span> <span class='nbr'>81</span>;       <span class='com'>// .lib section in a.out corrupted</span>
+    <span class='kw4'>const</span> <span class='kw4'>auto</span> ELIBMAX          <span class='opr'>=</span> <span class='nbr'>82</span>;       <span class='com'>// Attempting to link in too many shared libraries</span>
+    <span class='kw4'>const</span> <span class='kw4'>auto</span> ELIBEXEC         <span class='opr'>=</span> <span class='nbr'>83</span>;       <span class='com'>// Cannot exec a shared library directly</span>
+    <span class='kw4'>const</span> <span class='kw4'>auto</span> EILSEQ           <span class='opr'>=</span> <span class='nbr'>84</span>;       <span class='com'>// Illegal byte sequence</span>
+    <span class='kw4'>const</span> <span class='kw4'>auto</span> ERESTART         <span class='opr'>=</span> <span class='nbr'>85</span>;       <span class='com'>// Interrupted system call should be restarted</span>
+    <span class='kw4'>const</span> <span class='kw4'>auto</span> ESTRPIPE         <span class='opr'>=</span> <span class='nbr'>86</span>;       <span class='com'>// Streams pipe error</span>
+    <span class='kw4'>const</span> <span class='kw4'>auto</span> EUSERS           <span class='opr'>=</span> <span class='nbr'>87</span>;       <span class='com'>// Too many users</span>
+    <span class='kw4'>const</span> <span class='kw4'>auto</span> ENOTSOCK         <span class='opr'>=</span> <span class='nbr'>88</span>;       <span class='com'>// Socket operation on non-socket</span>
+    <span class='kw4'>const</span> <span class='kw4'>auto</span> EDESTADDRREQ     <span class='opr'>=</span> <span class='nbr'>89</span>;       <span class='com'>// Destination address required</span>
+    <span class='kw4'>const</span> <span class='kw4'>auto</span> EMSGSIZE         <span class='opr'>=</span> <span class='nbr'>90</span>;       <span class='com'>// Message too long</span>
+    <span class='kw4'>const</span> <span class='kw4'>auto</span> EPROTOTYPE       <span class='opr'>=</span> <span class='nbr'>91</span>;       <span class='com'>// Protocol wrong type for socket</span>
+    <span class='kw4'>const</span> <span class='kw4'>auto</span> ENOPROTOOPT      <span class='opr'>=</span> <span class='nbr'>92</span>;       <span class='com'>// Protocol not available</span>
+    <span class='kw4'>const</span> <span class='kw4'>auto</span> EPROTONOSUPPORT  <span class='opr'>=</span> <span class='nbr'>93</span>;       <span class='com'>// Protocol not supported</span>
+    <span class='kw4'>const</span> <span class='kw4'>auto</span> ESOCKTNOSUPPORT  <span class='opr'>=</span> <span class='nbr'>94</span>;       <span class='com'>// Socket type not supported</span>
+    <span class='kw4'>const</span> <span class='kw4'>auto</span> EOPNOTSUPP       <span class='opr'>=</span> <span class='nbr'>95</span>;       <span class='com'>// Operation not supported on transport endpoint</span>
+    <span class='kw4'>const</span> <span class='kw4'>auto</span> EPFNOSUPPORT     <span class='opr'>=</span> <span class='nbr'>96</span>;       <span class='com'>// Protocol family not supported</span>
+    <span class='kw4'>const</span> <span class='kw4'>auto</span> EAFNOSUPPORT     <span class='opr'>=</span> <span class='nbr'>97</span>;       <span class='com'>// Address family not supported by protocol</span>
+    <span class='kw4'>const</span> <span class='kw4'>auto</span> EADDRINUSE       <span class='opr'>=</span> <span class='nbr'>98</span>;       <span class='com'>// Address already in use</span>
+    <span class='kw4'>const</span> <span class='kw4'>auto</span> EADDRNOTAVAIL    <span class='opr'>=</span> <span class='nbr'>99</span>;       <span class='com'>// Cannot assign requested address</span>
+    <span class='kw4'>const</span> <span class='kw4'>auto</span> ENETDOWN         <span class='opr'>=</span> <span class='nbr'>100</span>;      <span class='com'>// Network is down</span>
+    <span class='kw4'>const</span> <span class='kw4'>auto</span> ENETUNREACH      <span class='opr'>=</span> <span class='nbr'>101</span>;      <span class='com'>// Network is unreachable</span>
+    <span class='kw4'>const</span> <span class='kw4'>auto</span> ENETRESET        <span class='opr'>=</span> <span class='nbr'>102</span>;      <span class='com'>// Network dropped connection because of reset</span>
+    <span class='kw4'>const</span> <span class='kw4'>auto</span> ECONNABORTED     <span class='opr'>=</span> <span class='nbr'>103</span>;      <span class='com'>// Software caused connection abort</span>
+    <span class='kw4'>const</span> <span class='kw4'>auto</span> ECONNRESET       <span class='opr'>=</span> <span class='nbr'>104</span>;      <span class='com'>// Connection reset by peer</span>
+    <span class='kw4'>const</span> <span class='kw4'>auto</span> ENOBUFS          <span class='opr'>=</span> <span class='nbr'>105</span>;      <span class='com'>// No buffer space available</span>
+    <span class='kw4'>const</span> <span class='kw4'>auto</span> EISCONN          <span class='opr'>=</span> <span class='nbr'>106</span>;      <span class='com'>// Transport endpoint is already connected</span>
+    <span class='kw4'>const</span> <span class='kw4'>auto</span> ENOTCONN         <span class='opr'>=</span> <span class='nbr'>107</span>;      <span class='com'>// Transport endpoint is not connected</span>
+    <span class='kw4'>const</span> <span class='kw4'>auto</span> ESHUTDOWN        <span class='opr'>=</span> <span class='nbr'>108</span>;      <span class='com'>// Cannot send after transport endpoint shutdown</span>
+    <span class='kw4'>const</span> <span class='kw4'>auto</span> ETOOMANYREFS     <span class='opr'>=</span> <span class='nbr'>109</span>;      <span class='com'>// Too many references: cannot splice</span>
+    <span class='kw4'>const</span> <span class='kw4'>auto</span> ETIMEDOUT        <span class='opr'>=</span> <span class='nbr'>110</span>;      <span class='com'>// Connection timed out</span>
+    <span class='kw4'>const</span> <span class='kw4'>auto</span> ECONNREFUSED     <span class='opr'>=</span> <span class='nbr'>111</span>;      <span class='com'>// Connection refused</span>
+    <span class='kw4'>const</span> <span class='kw4'>auto</span> EHOSTDOWN        <span class='opr'>=</span> <span class='nbr'>112</span>;      <span class='com'>// Host is down</span>
+    <span class='kw4'>const</span> <span class='kw4'>auto</span> EHOSTUNREACH     <span class='opr'>=</span> <span class='nbr'>113</span>;      <span class='com'>// No route to host</span>
+    <span class='kw4'>const</span> <span class='kw4'>auto</span> EALREADY         <span class='opr'>=</span> <span class='nbr'>114</span>;      <span class='com'>// Operation already in progress</span>
+    <span class='kw4'>const</span> <span class='kw4'>auto</span> EINPROGRESS      <span class='opr'>=</span> <span class='nbr'>115</span>;      <span class='com'>// Operation now in progress</span>
+    <span class='kw4'>const</span> <span class='kw4'>auto</span> ESTALE           <span class='opr'>=</span> <span class='nbr'>116</span>;      <span class='com'>// Stale NFS file handle</span>
+    <span class='kw4'>const</span> <span class='kw4'>auto</span> EUCLEAN          <span class='opr'>=</span> <span class='nbr'>117</span>;      <span class='com'>// Structure needs cleaning</span>
+    <span class='kw4'>const</span> <span class='kw4'>auto</span> ENOTNAM          <span class='opr'>=</span> <span class='nbr'>118</span>;      <span class='com'>// Not a XENIX named type file</span>
+    <span class='kw4'>const</span> <span class='kw4'>auto</span> ENAVAIL          <span class='opr'>=</span> <span class='nbr'>119</span>;      <span class='com'>// No XENIX semaphores available</span>
+    <span class='kw4'>const</span> <span class='kw4'>auto</span> EISNAM           <span class='opr'>=</span> <span class='nbr'>120</span>;      <span class='com'>// Is a named type file</span>
+    <span class='kw4'>const</span> <span class='kw4'>auto</span> EREMOTEIO        <span class='opr'>=</span> <span class='nbr'>121</span>;      <span class='com'>// Remote I/O error</span>
+    <span class='kw4'>const</span> <span class='kw4'>auto</span> EDQUOT           <span class='opr'>=</span> <span class='nbr'>122</span>;      <span class='com'>// Quota exceeded</span>
+    <span class='kw4'>const</span> <span class='kw4'>auto</span> ENOMEDIUM        <span class='opr'>=</span> <span class='nbr'>123</span>;      <span class='com'>// No medium found</span>
+    <span class='kw4'>const</span> <span class='kw4'>auto</span> EMEDIUMTYPE      <span class='opr'>=</span> <span class='nbr'>124</span>;      <span class='com'>// Wrong medium type</span>
+    <span class='kw4'>const</span> <span class='kw4'>auto</span> ECANCELED        <span class='opr'>=</span> <span class='nbr'>125</span>;      <span class='com'>// Operation Canceled</span>
+    <span class='kw4'>const</span> <span class='kw4'>auto</span> ENOKEY           <span class='opr'>=</span> <span class='nbr'>126</span>;      <span class='com'>// Required key not available</span>
+    <span class='kw4'>const</span> <span class='kw4'>auto</span> EKEYEXPIRED      <span class='opr'>=</span> <span class='nbr'>127</span>;      <span class='com'>// Key has expired</span>
+    <span class='kw4'>const</span> <span class='kw4'>auto</span> EKEYREVOKED      <span class='opr'>=</span> <span class='nbr'>128</span>;      <span class='com'>// Key has been revoked</span>
+    <span class='kw4'>const</span> <span class='kw4'>auto</span> EKEYREJECTED     <span class='opr'>=</span> <span class='nbr'>129</span>;      <span class='com'>// Key was rejected by service</span>
+    <span class='kw4'>const</span> <span class='kw4'>auto</span> EOWNERDEAD       <span class='opr'>=</span> <span class='nbr'>130</span>;      <span class='com'>// Owner died</span>
+    <span class='kw4'>const</span> <span class='kw4'>auto</span> ENOTRECOVERABLE  <span class='opr'>=</span> <span class='nbr'>131</span>;      <span class='com'>// State not recoverable</span>
+<span class='opr'>}</span>
+</pre></td></tr></table>	</body>
+</html>

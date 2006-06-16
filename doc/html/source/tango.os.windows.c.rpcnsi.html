@@ -1,0 +1,311 @@
+<!DOCTYPE html 
+     PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+     "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html>
+	<head>
+		<link rel="stylesheet" href="style.css" type="text/css" />
+		<title>os/windows/c/rpcnsi.d</title>
+	</head>
+	<body>
+
+<table id='dcode'><tr><td id='lnum'><pre><span>1</span>
+<span>2</span>
+<span>3</span>
+<span>4</span>
+<span>5</span>
+<span>6</span>
+<span>7</span>
+<span>8</span>
+<span>9</span>
+<span>10</span>
+<span>11</span>
+<span>12</span>
+<span>13</span>
+<span>14</span>
+<span>15</span>
+<span>16</span>
+<span>17</span>
+<span>18</span>
+<span>19</span>
+<span>20</span>
+<span>21</span>
+<span>22</span>
+<span>23</span>
+<span>24</span>
+<span>25</span>
+<span>26</span>
+<span>27</span>
+<span>28</span>
+<span>29</span>
+<span>30</span>
+<span>31</span>
+<span>32</span>
+<span>33</span>
+<span>34</span>
+<span>35</span>
+<span>36</span>
+<span>37</span>
+<span>38</span>
+<span>39</span>
+<span>40</span>
+<span>41</span>
+<span>42</span>
+<span>43</span>
+<span>44</span>
+<span>45</span>
+<span>46</span>
+<span>47</span>
+<span>48</span>
+<span>49</span>
+<span>50</span>
+<span>51</span>
+<span>52</span>
+<span>53</span>
+<span>54</span>
+<span>55</span>
+<span>56</span>
+<span>57</span>
+<span>58</span>
+<span>59</span>
+<span>60</span>
+<span>61</span>
+<span>62</span>
+<span>63</span>
+<span>64</span>
+<span>65</span>
+<span>66</span>
+<span>67</span>
+<span>68</span>
+<span>69</span>
+<span>70</span>
+<span>71</span>
+<span>72</span>
+<span>73</span>
+<span>74</span>
+<span>75</span>
+<span>76</span>
+<span>77</span>
+<span>78</span>
+<span>79</span>
+<span>80</span>
+<span>81</span>
+<span>82</span>
+<span>83</span>
+<span>84</span>
+<span>85</span>
+<span>86</span>
+<span>87</span>
+<span>88</span>
+<span>89</span>
+<span>90</span>
+<span>91</span>
+<span>92</span>
+<span>93</span>
+<span>94</span>
+<span>95</span>
+<span>96</span>
+<span>97</span>
+<span>98</span>
+<span>99</span>
+<span>100</span>
+<span>101</span>
+<span>102</span>
+<span>103</span>
+<span>104</span>
+<span>105</span>
+<span>106</span>
+<span>107</span>
+<span>108</span>
+<span>109</span>
+<span>110</span>
+<span>111</span>
+<span>112</span>
+<span>113</span>
+<span>114</span>
+<span>115</span>
+<span>116</span>
+<span>117</span>
+<span>118</span>
+<span>119</span>
+<span>120</span>
+<span>121</span>
+<span>122</span>
+<span>123</span>
+<span>124</span>
+<span>125</span>
+<span>126</span>
+<span>127</span>
+<span>128</span>
+<span>129</span>
+<span>130</span>
+<span>131</span>
+<span>132</span>
+<span>133</span>
+<span>134</span>
+<span>135</span>
+<span>136</span>
+<span>137</span>
+<span>138</span>
+<span>139</span>
+<span>140</span>
+<span>141</span>
+<span>142</span>
+<span>143</span>
+<span>144</span>
+<span>145</span>
+<span>146</span>
+<span>147</span>
+<span>148</span>
+<span>149</span>
+</pre></td><td id='code'><pre><span class='com'>/***********************************************************************\
+*                                rpcnsi.d                               *
+*                                                                       *
+*                       Windows API header module                       *
+*                     RPC Name Service (RpcNs APIs)                     *
+*                                                                       *
+*                 Translated from MinGW Windows headers                 *
+*                                                                       *
+*                       Placed into public domain                       *
+\***********************************************************************/</span>
+<span class='kw2'>module</span> tango.os.windows.c.rpcnsi;
+
+<span class='com'>//version (build) { pragma(nolink); }</span>
+
+<span class='com'>//pragma(lib, &quot;rpcns4.lib&quot;);</span>
+<span class='kw4'>private</span> <span class='kw2'>import</span> tango.os.windows.c.w32api;
+<span class='kw4'>private</span> <span class='kw2'>import</span> tango.os.windows.c.basetyps;
+<span class='kw4'>private</span> <span class='kw2'>import</span> tango.os.windows.c.rpcdcep;
+<span class='kw4'>private</span> <span class='kw2'>import</span> tango.os.windows.c.rpcnsi;
+<span class='kw4'>private</span> <span class='kw2'>import</span> tango.os.windows.c.rpcdce;
+
+<span class='kw2'>alias</span> <span class='kw4'>void</span> <span class='opr'>*</span>RPC_NS_HANDLE;
+
+<span class='kw4'>const</span> RPC_C_NS_SYNTAX_DEFAULT<span class='opr'>=</span><span class='nbr'>0</span>;
+<span class='kw4'>const</span> RPC_C_NS_SYNTAX_DCE<span class='opr'>=</span><span class='nbr'>3</span>;
+<span class='kw4'>const</span> RPC_C_PROFILE_DEFAULT_ELT<span class='opr'>=</span><span class='nbr'>0</span>;
+<span class='kw4'>const</span> RPC_C_PROFILE_ALL_ELT<span class='opr'>=</span><span class='nbr'>1</span>;
+<span class='kw4'>const</span> RPC_C_PROFILE_MATCH_BY_IF<span class='opr'>=</span><span class='nbr'>2</span>;
+<span class='kw4'>const</span> RPC_C_PROFILE_MATCH_BY_MBR<span class='opr'>=</span><span class='nbr'>3</span>;
+<span class='kw4'>const</span> RPC_C_PROFILE_MATCH_BY_BOTH<span class='opr'>=</span><span class='nbr'>4</span>;
+<span class='kw4'>const</span> RPC_C_NS_DEFAULT_EXP_AGE<span class='opr'>=</span><span class='opr'>-</span><span class='nbr'>1</span>;
+
+<span class='kw2'>extern</span> <span class='opr'>(</span>Windows<span class='opr'>)</span> <span class='opr'>{</span>
+RPC_STATUS RpcNsBindingExportA<span class='opr'>(</span><span class='kw4'>uint</span>,<span class='kw4'>ubyte</span><span class='opr'>*</span>,RPC_IF_HANDLE,RPC_BINDING_VECTOR<span class='opr'>*</span>,UUID_VECTOR<span class='opr'>*</span><span class='opr'>)</span>;
+RPC_STATUS RpcNsBindingUnexportA<span class='opr'>(</span><span class='kw4'>uint</span>,<span class='kw4'>ubyte</span><span class='opr'>*</span>,RPC_IF_HANDLE,UUID_VECTOR<span class='opr'>*</span><span class='opr'>)</span>;
+RPC_STATUS RpcNsBindingLookupBeginA<span class='opr'>(</span><span class='kw4'>uint</span>,<span class='kw4'>ubyte</span><span class='opr'>*</span>,RPC_IF_HANDLE,UUID<span class='opr'>*</span>,<span class='kw4'>uint</span>,RPC_NS_HANDLE<span class='opr'>*</span><span class='opr'>)</span>;
+RPC_STATUS RpcNsBindingLookupNext<span class='opr'>(</span>RPC_NS_HANDLE,RPC_BINDING_VECTOR<span class='opr'>*</span><span class='opr'>*</span><span class='opr'>)</span>;
+RPC_STATUS RpcNsBindingLookupDone<span class='opr'>(</span>RPC_NS_HANDLE<span class='opr'>*</span><span class='opr'>)</span>;
+RPC_STATUS RpcNsGroupDeleteA<span class='opr'>(</span><span class='kw4'>uint</span>,<span class='kw4'>ubyte</span><span class='opr'>*</span><span class='opr'>)</span>;
+RPC_STATUS RpcNsGroupMbrAddA<span class='opr'>(</span><span class='kw4'>uint</span>,<span class='kw4'>ubyte</span><span class='opr'>*</span>,<span class='kw4'>uint</span>,<span class='kw4'>ubyte</span><span class='opr'>*</span><span class='opr'>)</span>;
+RPC_STATUS RpcNsGroupMbrRemoveA<span class='opr'>(</span><span class='kw4'>uint</span>,<span class='kw4'>ubyte</span><span class='opr'>*</span>,<span class='kw4'>uint</span>,<span class='kw4'>ubyte</span><span class='opr'>*</span><span class='opr'>)</span>;
+RPC_STATUS RpcNsGroupMbrInqBeginA<span class='opr'>(</span><span class='kw4'>uint</span>,<span class='kw4'>ubyte</span><span class='opr'>*</span>,<span class='kw4'>uint</span>,RPC_NS_HANDLE<span class='opr'>*</span><span class='opr'>)</span>;
+RPC_STATUS RpcNsGroupMbrInqNextA<span class='opr'>(</span>RPC_NS_HANDLE,<span class='kw4'>ubyte</span><span class='opr'>*</span><span class='opr'>*</span><span class='opr'>)</span>;
+RPC_STATUS RpcNsGroupMbrInqDone<span class='opr'>(</span>RPC_NS_HANDLE<span class='opr'>*</span><span class='opr'>)</span>;
+RPC_STATUS RpcNsProfileDeleteA<span class='opr'>(</span><span class='kw4'>uint</span>,<span class='kw4'>ubyte</span><span class='opr'>*</span><span class='opr'>)</span>;
+RPC_STATUS RpcNsProfileEltAddA<span class='opr'>(</span><span class='kw4'>uint</span>,<span class='kw4'>ubyte</span><span class='opr'>*</span>,RPC_IF_ID<span class='opr'>*</span>,<span class='kw4'>uint</span>,<span class='kw4'>ubyte</span><span class='opr'>*</span>,<span class='kw4'>uint</span>,<span class='kw4'>ubyte</span><span class='opr'>*</span><span class='opr'>)</span>;
+RPC_STATUS RpcNsProfileEltRemoveA<span class='opr'>(</span><span class='kw4'>uint</span>,<span class='kw4'>ubyte</span><span class='opr'>*</span>,RPC_IF_ID<span class='opr'>*</span>,<span class='kw4'>uint</span>,<span class='kw4'>ubyte</span><span class='opr'>*</span><span class='opr'>)</span>;
+RPC_STATUS RpcNsProfileEltInqBeginA<span class='opr'>(</span><span class='kw4'>uint</span>,<span class='kw4'>ubyte</span><span class='opr'>*</span>,<span class='kw4'>uint</span>,RPC_IF_ID<span class='opr'>*</span>,<span class='kw4'>uint</span>,<span class='kw4'>uint</span>,<span class='kw4'>ubyte</span><span class='opr'>*</span>,RPC_NS_HANDLE<span class='opr'>*</span><span class='opr'>)</span>;
+RPC_STATUS RpcNsProfileEltInqNextA<span class='opr'>(</span>RPC_NS_HANDLE,RPC_IF_ID<span class='opr'>*</span>,<span class='kw4'>ubyte</span><span class='opr'>*</span><span class='opr'>*</span>,<span class='kw4'>uint</span><span class='opr'>*</span>,<span class='kw4'>ubyte</span><span class='opr'>*</span><span class='opr'>*</span><span class='opr'>)</span>;
+RPC_STATUS RpcNsProfileEltInqDone<span class='opr'>(</span>RPC_NS_HANDLE<span class='opr'>*</span><span class='opr'>)</span>;
+RPC_STATUS RpcNsEntryObjectInqNext<span class='opr'>(</span><span class='kw2'>in</span> RPC_NS_HANDLE, <span class='kw2'>out</span> UUID<span class='opr'>*</span><span class='opr'>)</span>;
+RPC_STATUS RpcNsEntryObjectInqDone<span class='opr'>(</span><span class='kw2'>inout</span> RPC_NS_HANDLE<span class='opr'>*</span><span class='opr'>)</span>;
+RPC_STATUS RpcNsEntryExpandNameA<span class='opr'>(</span><span class='kw4'>uint</span>,<span class='kw4'>ubyte</span><span class='opr'>*</span>,<span class='kw4'>ubyte</span><span class='opr'>*</span><span class='opr'>*</span><span class='opr'>)</span>;
+RPC_STATUS RpcNsMgmtBindingUnexportA<span class='opr'>(</span><span class='kw4'>uint</span>,<span class='kw4'>ubyte</span><span class='opr'>*</span>,RPC_IF_ID<span class='opr'>*</span>,<span class='kw4'>uint</span>,UUID_VECTOR<span class='opr'>*</span><span class='opr'>)</span>;
+RPC_STATUS RpcNsMgmtEntryCreateA<span class='opr'>(</span><span class='kw4'>uint</span>,<span class='kw4'>ubyte</span><span class='opr'>*</span><span class='opr'>)</span>;
+RPC_STATUS RpcNsMgmtEntryDeleteA<span class='opr'>(</span><span class='kw4'>uint</span>,<span class='kw4'>ubyte</span><span class='opr'>*</span><span class='opr'>)</span>;
+RPC_STATUS RpcNsMgmtEntryInqIfIdsA<span class='opr'>(</span><span class='kw4'>uint</span>,<span class='kw4'>ubyte</span><span class='opr'>*</span>,RPC_IF_ID_VECTOR<span class='opr'>*</span><span class='opr'>*</span><span class='opr'>)</span>;
+RPC_STATUS RpcNsMgmtHandleSetExpAge<span class='opr'>(</span>RPC_NS_HANDLE,<span class='kw4'>uint</span><span class='opr'>)</span>;
+RPC_STATUS RpcNsMgmtInqExpAge<span class='opr'>(</span><span class='kw4'>uint</span><span class='opr'>*</span><span class='opr'>)</span>;
+RPC_STATUS RpcNsMgmtSetExpAge<span class='opr'>(</span><span class='kw4'>uint</span><span class='opr'>)</span>;
+RPC_STATUS RpcNsBindingImportNext<span class='opr'>(</span>RPC_NS_HANDLE,RPC_BINDING_HANDLE<span class='opr'>*</span><span class='opr'>)</span>;
+RPC_STATUS RpcNsBindingImportDone<span class='opr'>(</span>RPC_NS_HANDLE<span class='opr'>*</span><span class='opr'>)</span>;
+RPC_STATUS RpcNsBindingSelect<span class='opr'>(</span>RPC_BINDING_VECTOR<span class='opr'>*</span>,RPC_BINDING_HANDLE<span class='opr'>*</span><span class='opr'>)</span>;
+<span class='opr'>}</span>
+
+<span class='com'>// For the cases where Win95,98, ME have no _W versions, and we must alias to</span>
+<span class='com'>// _A even for version(Unicode).</span>
+
+<span class='kw4'>version</span> <span class='opr'>(</span>Unicode<span class='opr'>)</span> <span class='opr'>{</span>
+    <span class='kw4'>static</span> <span class='kw1'>if</span> <span class='opr'>(</span>_WIN32_WINNT_ONLY<span class='opr'>)</span> <span class='opr'>{</span>
+        <span class='kw4'>const</span> <span class='kw4'>bool</span> _WIN32_USE_UNICODE <span class='opr'>=</span> <span class='kw2'>true</span>;
+    <span class='opr'>}</span> <span class='kw1'>else</span> <span class='opr'>{</span>
+        <span class='kw4'>const</span> <span class='kw4'>bool</span> _WIN32_USE_UNICODE <span class='opr'>=</span> <span class='kw2'>false</span>;
+    <span class='opr'>}</span>    
+<span class='opr'>}</span> <span class='kw1'>else</span> <span class='opr'>{</span>
+        <span class='kw4'>const</span> <span class='kw4'>bool</span> _WIN32_USE_UNICODE <span class='opr'>=</span> <span class='kw2'>false</span>;
+<span class='opr'>}</span>
+
+<span class='kw4'>static</span> <span class='kw1'>if</span> <span class='opr'>(</span>!_WIN32_USE_UNICODE<span class='opr'>)</span> <span class='opr'>{</span>
+RPC_STATUS RpcNsEntryObjectInqBeginA<span class='opr'>(</span><span class='kw4'>uint</span>,<span class='kw4'>ubyte</span><span class='opr'>*</span>,RPC_NS_HANDLE<span class='opr'>*</span><span class='opr'>)</span>;
+RPC_STATUS RpcNsBindingImportBeginA<span class='opr'>(</span><span class='kw4'>uint</span>,<span class='kw4'>ubyte</span><span class='opr'>*</span>,RPC_IF_HANDLE,UUID<span class='opr'>*</span>,RPC_NS_HANDLE<span class='opr'>*</span><span class='opr'>)</span>;
+<span class='opr'>}</span>
+
+<span class='kw4'>static</span> <span class='kw1'>if</span> <span class='opr'>(</span>_WIN32_WINNT_ONLY<span class='opr'>)</span> <span class='opr'>{</span>
+RPC_STATUS RpcNsBindingExportW<span class='opr'>(</span><span class='kw4'>uint</span>,<span class='kw4'>ushort</span><span class='opr'>*</span>,RPC_IF_HANDLE,RPC_BINDING_VECTOR<span class='opr'>*</span>,UUID_VECTOR<span class='opr'>*</span><span class='opr'>)</span>;
+RPC_STATUS RpcNsBindingUnexportW<span class='opr'>(</span><span class='kw4'>uint</span>,<span class='kw4'>ushort</span><span class='opr'>*</span>,RPC_IF_HANDLE,UUID_VECTOR<span class='opr'>*</span><span class='opr'>)</span>;
+RPC_STATUS RpcNsBindingLookupBeginW<span class='opr'>(</span><span class='kw4'>uint</span>,<span class='kw4'>ushort</span><span class='opr'>*</span>,RPC_IF_HANDLE,UUID<span class='opr'>*</span>,<span class='kw4'>uint</span>,RPC_NS_HANDLE<span class='opr'>*</span><span class='opr'>)</span>;
+RPC_STATUS RpcNsGroupDeleteW<span class='opr'>(</span><span class='kw4'>uint</span>,<span class='kw4'>ushort</span><span class='opr'>*</span><span class='opr'>)</span>;
+RPC_STATUS RpcNsGroupMbrAddW<span class='opr'>(</span><span class='kw4'>uint</span>,<span class='kw4'>ushort</span><span class='opr'>*</span>,<span class='kw4'>uint</span>,<span class='kw4'>ushort</span><span class='opr'>*</span><span class='opr'>)</span>;
+RPC_STATUS RpcNsGroupMbrRemoveW<span class='opr'>(</span><span class='kw4'>uint</span>,<span class='kw4'>ushort</span><span class='opr'>*</span>,<span class='kw4'>uint</span>,<span class='kw4'>ushort</span><span class='opr'>*</span><span class='opr'>)</span>;
+RPC_STATUS RpcNsGroupMbrInqBeginW<span class='opr'>(</span><span class='kw4'>uint</span>,<span class='kw4'>ushort</span><span class='opr'>*</span>,<span class='kw4'>uint</span>,RPC_NS_HANDLE<span class='opr'>*</span><span class='opr'>)</span>;
+RPC_STATUS RpcNsGroupMbrInqNextW<span class='opr'>(</span>RPC_NS_HANDLE,<span class='kw4'>ushort</span><span class='opr'>*</span><span class='opr'>*</span><span class='opr'>)</span>;
+RPC_STATUS RpcNsProfileDeleteW<span class='opr'>(</span><span class='kw4'>uint</span>,<span class='kw4'>ushort</span><span class='opr'>*</span><span class='opr'>)</span>;
+RPC_STATUS RpcNsProfileEltAddW<span class='opr'>(</span><span class='kw4'>uint</span>,<span class='kw4'>ushort</span><span class='opr'>*</span>, RPC_IF_ID<span class='opr'>*</span>,<span class='kw4'>uint</span>,<span class='kw4'>ushort</span><span class='opr'>*</span>,<span class='kw4'>uint</span>,<span class='kw4'>ushort</span><span class='opr'>*</span><span class='opr'>)</span>;
+RPC_STATUS RpcNsProfileEltRemoveW<span class='opr'>(</span><span class='kw4'>uint</span>,<span class='kw4'>ushort</span><span class='opr'>*</span>, RPC_IF_ID<span class='opr'>*</span>,<span class='kw4'>uint</span>,<span class='kw4'>ushort</span><span class='opr'>*</span><span class='opr'>)</span>;
+RPC_STATUS RpcNsProfileEltInqBeginW<span class='opr'>(</span><span class='kw4'>uint</span>,<span class='kw4'>ushort</span><span class='opr'>*</span>, <span class='kw4'>uint</span>,RPC_IF_ID<span class='opr'>*</span>,<span class='kw4'>uint</span>,<span class='kw4'>uint</span>,<span class='kw4'>ushort</span><span class='opr'>*</span>, RPC_NS_HANDLE<span class='opr'>*</span><span class='opr'>)</span>;
+RPC_STATUS RpcNsProfileEltInqNextW<span class='opr'>(</span>RPC_NS_HANDLE,RPC_IF_ID<span class='opr'>*</span>, <span class='kw4'>ushort</span><span class='opr'>*</span><span class='opr'>*</span>,<span class='kw4'>uint</span><span class='opr'>*</span>,<span class='kw4'>ushort</span><span class='opr'>*</span><span class='opr'>*</span><span class='opr'>)</span>;
+RPC_STATUS RpcNsEntryObjectInqBeginW<span class='opr'>(</span><span class='kw4'>uint</span>,<span class='kw4'>ushort</span><span class='opr'>*</span>,RPC_NS_HANDLE<span class='opr'>*</span><span class='opr'>)</span>;
+RPC_STATUS RpcNsEntryExpandNameW<span class='opr'>(</span><span class='kw4'>uint</span>,<span class='kw4'>ushort</span><span class='opr'>*</span>,<span class='kw4'>ushort</span><span class='opr'>*</span><span class='opr'>*</span><span class='opr'>)</span>;
+RPC_STATUS RpcNsMgmtBindingUnexportW<span class='opr'>(</span><span class='kw4'>uint</span>,<span class='kw4'>ushort</span><span class='opr'>*</span>,RPC_IF_ID<span class='opr'>*</span>,<span class='kw4'>uint</span>,UUID_VECTOR<span class='opr'>*</span><span class='opr'>)</span>;
+RPC_STATUS RpcNsMgmtEntryCreateW<span class='opr'>(</span><span class='kw4'>uint</span>,<span class='kw4'>ushort</span><span class='opr'>*</span><span class='opr'>)</span>;
+RPC_STATUS RpcNsMgmtEntryDeleteW<span class='opr'>(</span><span class='kw4'>uint</span>,<span class='kw4'>ushort</span><span class='opr'>*</span><span class='opr'>)</span>;
+RPC_STATUS RpcNsMgmtEntryInqIfIdsW<span class='opr'>(</span><span class='kw4'>uint</span>,<span class='kw4'>ushort</span> , RPC_IF_ID_VECTOR<span class='opr'>*</span><span class='opr'>*</span><span class='opr'>)</span>;
+RPC_STATUS RpcNsBindingImportBeginW<span class='opr'>(</span><span class='kw4'>uint</span>,<span class='kw4'>ushort</span><span class='opr'>*</span>,RPC_IF_HANDLE,UUID<span class='opr'>*</span>,RPC_NS_HANDLE<span class='opr'>*</span><span class='opr'>)</span>;
+<span class='opr'>}</span> <span class='com'>// _WIN32_WINNT_ONLY</span>
+
+<span class='kw4'>static</span> <span class='kw1'>if</span> <span class='opr'>(</span>_WIN32_USE_UNICODE<span class='opr'>)</span> <span class='opr'>{</span>
+<span class='kw2'>alias</span> RpcNsBindingLookupBeginW RpcNsBindingLookupBegin;
+<span class='kw2'>alias</span> RpcNsBindingImportBeginW RpcNsBindingImportBegin;
+<span class='kw2'>alias</span> RpcNsBindingExportW RpcNsBindingExport;
+<span class='kw2'>alias</span> RpcNsBindingUnexportW RpcNsBindingUnexport;
+<span class='kw2'>alias</span> RpcNsGroupDeleteW RpcNsGroupDelete;
+<span class='kw2'>alias</span> RpcNsGroupMbrAddW RpcNsGroupMbrAdd;
+<span class='kw2'>alias</span> RpcNsGroupMbrRemoveW RpcNsGroupMbrRemove;
+<span class='kw2'>alias</span> RpcNsGroupMbrInqBeginW RpcNsGroupMbrInqBegin;
+<span class='kw2'>alias</span> RpcNsGroupMbrInqNextW RpcNsGroupMbrInqNext;
+<span class='kw2'>alias</span> RpcNsEntryExpandNameW RpcNsEntryExpandName;
+<span class='kw2'>alias</span> RpcNsEntryObjectInqBeginW RpcNsEntryObjectInqBegin;
+<span class='kw2'>alias</span> RpcNsMgmtBindingUnexportW RpcNsMgmtBindingUnexport;
+<span class='kw2'>alias</span> RpcNsMgmtEntryCreateW RpcNsMgmtEntryCreate;
+<span class='kw2'>alias</span> RpcNsMgmtEntryDeleteW RpcNsMgmtEntryDelete;
+<span class='kw2'>alias</span> RpcNsMgmtEntryInqIfIdsW RpcNsMgmtEntryInqIfIds;
+<span class='kw2'>alias</span> RpcNsProfileDeleteW RpcNsProfileDelete;
+<span class='kw2'>alias</span> RpcNsProfileEltAddW RpcNsProfileEltAdd;
+<span class='kw2'>alias</span> RpcNsProfileEltRemoveW RpcNsProfileEltRemove;
+<span class='kw2'>alias</span> RpcNsProfileEltInqBeginW RpcNsProfileEltInqBegin;
+<span class='kw2'>alias</span> RpcNsProfileEltInqNextW RpcNsProfileEltInqNext;
+<span class='opr'>}</span> <span class='kw1'>else</span> <span class='opr'>{</span>
+<span class='kw2'>alias</span> RpcNsBindingLookupBeginA RpcNsBindingLookupBegin;
+<span class='kw2'>alias</span> RpcNsBindingImportBeginA RpcNsBindingImportBegin;
+<span class='kw2'>alias</span> RpcNsBindingExportA RpcNsBindingExport;
+<span class='kw2'>alias</span> RpcNsBindingUnexportA RpcNsBindingUnexport;
+<span class='kw2'>alias</span> RpcNsGroupDeleteA RpcNsGroupDelete;
+<span class='kw2'>alias</span> RpcNsGroupMbrAddA RpcNsGroupMbrAdd;
+<span class='kw2'>alias</span> RpcNsGroupMbrRemoveA RpcNsGroupMbrRemove;
+<span class='kw2'>alias</span> RpcNsGroupMbrInqBeginA RpcNsGroupMbrInqBegin;
+<span class='kw2'>alias</span> RpcNsGroupMbrInqNextA RpcNsGroupMbrInqNext;
+<span class='kw2'>alias</span> RpcNsEntryExpandNameA RpcNsEntryExpandName;
+<span class='kw2'>alias</span> RpcNsEntryObjectInqBeginA RpcNsEntryObjectInqBegin;
+<span class='kw2'>alias</span> RpcNsMgmtBindingUnexportA RpcNsMgmtBindingUnexport;
+<span class='kw2'>alias</span> RpcNsMgmtEntryCreateA RpcNsMgmtEntryCreate;
+<span class='kw2'>alias</span> RpcNsMgmtEntryDeleteA RpcNsMgmtEntryDelete;
+<span class='kw2'>alias</span> RpcNsMgmtEntryInqIfIdsA RpcNsMgmtEntryInqIfIds;
+<span class='kw2'>alias</span> RpcNsProfileDeleteA RpcNsProfileDelete;
+<span class='kw2'>alias</span> RpcNsProfileEltAddA RpcNsProfileEltAdd;
+<span class='kw2'>alias</span> RpcNsProfileEltRemoveA RpcNsProfileEltRemove;
+<span class='kw2'>alias</span> RpcNsProfileEltInqBeginA RpcNsProfileEltInqBegin;
+<span class='kw2'>alias</span> RpcNsProfileEltInqNextA RpcNsProfileEltInqNext;
+<span class='opr'>}</span>
+</pre></td></tr></table>	</body>
+</html>

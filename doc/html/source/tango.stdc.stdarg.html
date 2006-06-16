@@ -1,0 +1,91 @@
+<!DOCTYPE html 
+     PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+     "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html>
+	<head>
+		<link rel="stylesheet" href="style.css" type="text/css" />
+		<title>stdc/stdarg.d</title>
+	</head>
+	<body>
+
+<table id='dcode'><tr><td id='lnum'><pre><span>1</span>
+<span>2</span>
+<span>3</span>
+<span>4</span>
+<span>5</span>
+<span>6</span>
+<span>7</span>
+<span>8</span>
+<span>9</span>
+<span>10</span>
+<span>11</span>
+<span>12</span>
+<span>13</span>
+<span>14</span>
+<span>15</span>
+<span>16</span>
+<span>17</span>
+<span>18</span>
+<span>19</span>
+<span>20</span>
+<span>21</span>
+<span>22</span>
+<span>23</span>
+<span>24</span>
+<span>25</span>
+<span>26</span>
+<span>27</span>
+<span>28</span>
+<span>29</span>
+<span>30</span>
+<span>31</span>
+<span>32</span>
+<span>33</span>
+<span>34</span>
+<span>35</span>
+<span>36</span>
+<span>37</span>
+<span>38</span>
+<span>39</span>
+</pre></td><td id='code'><pre><span class='com'>/**
+ * D header file for C99.
+ *
+ * Copyright: Public Domain
+ * License:   Public Domain
+ * Authors:   Hauke Duden, Walter Bright
+ * Standards: ISO/IEC 9899:1999 (E)
+ */</span>
+<span class='kw2'>module</span> tango.stdc.stdarg;
+
+<span class='kw2'>alias</span> <span class='kw4'>void</span><span class='opr'>*</span> va_list;
+
+<span class='kw4'>template</span> va_start<span class='opr'>(</span> T <span class='opr'>)</span>
+<span class='opr'>{</span>
+    <span class='kw4'>void</span> va_start<span class='opr'>(</span> <span class='kw2'>out</span> va_list ap, <span class='kw2'>inout</span> T parmn <span class='opr'>)</span>
+    <span class='opr'>{</span>
+        ap <span class='opr'>=</span> <span class='kw2'>cast</span><span class='opr'>(</span>va_list<span class='opr'>)</span> <span class='opr'>(</span> <span class='kw2'>cast</span><span class='opr'>(</span><span class='kw4'>void</span><span class='opr'>*</span><span class='opr'>)</span> <span class='opr'>&amp;</span>parmn <span class='opr'>+</span> <span class='opr'>(</span> <span class='opr'>(</span> T.sizeof <span class='opr'>+</span> <span class='kw4'>int</span>.sizeof <span class='opr'>-</span> <span class='nbr'>1</span> <span class='opr'>)</span> <span class='opr'>&amp;</span> <span class='opr'>~</span><span class='opr'>(</span> <span class='kw4'>int</span>.sizeof <span class='opr'>-</span> <span class='nbr'>1</span> <span class='opr'>)</span> <span class='opr'>)</span> <span class='opr'>)</span>;
+    <span class='opr'>}</span>
+<span class='opr'>}</span>
+
+<span class='kw4'>template</span> va_arg<span class='opr'>(</span> T <span class='opr'>)</span>
+<span class='opr'>{</span>
+    T va_arg<span class='opr'>(</span> <span class='kw2'>inout</span> va_list ap <span class='opr'>)</span>
+    <span class='opr'>{</span>
+        T arg <span class='opr'>=</span> <span class='opr'>*</span><span class='kw2'>cast</span><span class='opr'>(</span>T<span class='opr'>*</span><span class='opr'>)</span> ap;
+        ap <span class='opr'>=</span> <span class='kw2'>cast</span><span class='opr'>(</span>va_list<span class='opr'>)</span> <span class='opr'>(</span> <span class='kw2'>cast</span><span class='opr'>(</span><span class='kw4'>void</span><span class='opr'>*</span><span class='opr'>)</span> ap <span class='opr'>+</span> <span class='opr'>(</span> <span class='opr'>(</span> T.sizeof <span class='opr'>+</span> <span class='kw4'>int</span>.sizeof <span class='opr'>-</span> <span class='nbr'>1</span> <span class='opr'>)</span> <span class='opr'>&amp;</span> <span class='opr'>~</span><span class='opr'>(</span> <span class='kw4'>int</span>.sizeof <span class='opr'>-</span> <span class='nbr'>1</span> <span class='opr'>)</span> <span class='opr'>)</span> <span class='opr'>)</span>;
+        <span class='kw1'>return</span> arg;
+    <span class='opr'>}</span>
+<span class='opr'>}</span>
+
+<span class='kw4'>void</span> va_end<span class='opr'>(</span> va_list ap <span class='opr'>)</span>
+<span class='opr'>{</span>
+
+<span class='opr'>}</span>
+
+<span class='kw4'>void</span> va_copy<span class='opr'>(</span> <span class='kw2'>out</span> va_list dest, va_list src <span class='opr'>)</span>
+<span class='opr'>{</span>
+    dest <span class='opr'>=</span> src;
+<span class='opr'>}</span>
+</pre></td></tr></table>	</body>
+</html>

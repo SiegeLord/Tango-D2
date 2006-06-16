@@ -1,0 +1,193 @@
+<!DOCTYPE html 
+     PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+     "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html>
+	<head>
+		<link rel="stylesheet" href="style.css" type="text/css" />
+		<title>stdc/time.d</title>
+	</head>
+	<body>
+
+<table id='dcode'><tr><td id='lnum'><pre><span>1</span>
+<span>2</span>
+<span>3</span>
+<span>4</span>
+<span>5</span>
+<span>6</span>
+<span>7</span>
+<span>8</span>
+<span>9</span>
+<span>10</span>
+<span>11</span>
+<span>12</span>
+<span>13</span>
+<span>14</span>
+<span>15</span>
+<span>16</span>
+<span>17</span>
+<span>18</span>
+<span>19</span>
+<span>20</span>
+<span>21</span>
+<span>22</span>
+<span>23</span>
+<span>24</span>
+<span>25</span>
+<span>26</span>
+<span>27</span>
+<span>28</span>
+<span>29</span>
+<span>30</span>
+<span>31</span>
+<span>32</span>
+<span>33</span>
+<span>34</span>
+<span>35</span>
+<span>36</span>
+<span>37</span>
+<span>38</span>
+<span>39</span>
+<span>40</span>
+<span>41</span>
+<span>42</span>
+<span>43</span>
+<span>44</span>
+<span>45</span>
+<span>46</span>
+<span>47</span>
+<span>48</span>
+<span>49</span>
+<span>50</span>
+<span>51</span>
+<span>52</span>
+<span>53</span>
+<span>54</span>
+<span>55</span>
+<span>56</span>
+<span>57</span>
+<span>58</span>
+<span>59</span>
+<span>60</span>
+<span>61</span>
+<span>62</span>
+<span>63</span>
+<span>64</span>
+<span>65</span>
+<span>66</span>
+<span>67</span>
+<span>68</span>
+<span>69</span>
+<span>70</span>
+<span>71</span>
+<span>72</span>
+<span>73</span>
+<span>74</span>
+<span>75</span>
+<span>76</span>
+<span>77</span>
+<span>78</span>
+<span>79</span>
+<span>80</span>
+<span>81</span>
+<span>82</span>
+<span>83</span>
+<span>84</span>
+<span>85</span>
+<span>86</span>
+<span>87</span>
+<span>88</span>
+<span>89</span>
+<span>90</span>
+</pre></td><td id='code'><pre><span class='com'>/**
+ * D header file for C99.
+ *
+ * Copyright: Public Domain
+ * License:   Public Domain
+ * Authors:   Sean Kelly
+ * Standards: ISO/IEC 9899:1999 (E)
+ */</span>
+<span class='kw2'>module</span> tango.stdc.time;
+
+<span class='kw4'>private</span> <span class='kw2'>import</span> tango.stdc.stddef;
+
+<span class='kw2'>extern</span> <span class='opr'>(</span>C<span class='opr'>)</span>:
+
+<span class='kw4'>version</span><span class='opr'>(</span> darwin <span class='opr'>)</span>
+<span class='opr'>{</span>
+    <span class='kw4'>struct</span> tm
+    <span class='opr'>{</span>
+        <span class='kw4'>int</span>   tm_sec;       <span class='com'>// seconds after the minute [0-60]</span>
+        <span class='kw4'>int</span>   tm_min;       <span class='com'>// minutes after the hour [0-59]</span>
+        <span class='kw4'>int</span>   tm_hour;      <span class='com'>// hours since midnight [0-23]</span>
+        <span class='kw4'>int</span>   tm_mday;      <span class='com'>// day of the month [1-31]</span>
+        <span class='kw4'>int</span>   tm_mon;       <span class='com'>// months since January [0-11]</span>
+        <span class='kw4'>int</span>   tm_year;      <span class='com'>// years since 1900</span>
+        <span class='kw4'>int</span>   tm_wday;      <span class='com'>// days since Sunday [0-6]</span>
+        <span class='kw4'>int</span>   tm_yday;      <span class='com'>// days since January 1 [0-365]</span>
+        <span class='kw4'>int</span>   tm_isdst;     <span class='com'>// Daylight Savings Time flag</span>
+        <span class='kw4'>int</span>   tm_gmtoff;    <span class='com'>// offset from CUT in seconds</span>
+        <span class='kw4'>char</span><span class='opr'>*</span> tm_zone;      <span class='com'>// timezone abbreviation</span>
+    <span class='opr'>}</span>
+<span class='opr'>}</span>
+<span class='kw1'>else</span>
+<span class='opr'>{</span>
+    <span class='kw4'>struct</span> tm
+    <span class='opr'>{</span>
+        <span class='kw4'>int</span>     tm_sec,     <span class='com'>// seconds after the minute - [0, 60]</span>
+                tm_min,     <span class='com'>// minutes after the hour - [0, 59]</span>
+                tm_hour,    <span class='com'>// hours since midnight - [0, 23]</span>
+                tm_mday,    <span class='com'>// day of the month - [1, 31]</span>
+                tm_mon,     <span class='com'>// months since January - [0, 11]</span>
+                tm_year,    <span class='com'>// years since 1900</span>
+                tm_wday,    <span class='com'>// days since Sunday - [0, 6]</span>
+                tm_yday,    <span class='com'>// days since January 1 - [0, 365]</span>
+                tm_isdst;   <span class='com'>// Daylight Saving Time flag</span>
+    <span class='opr'>}</span>
+<span class='opr'>}</span>
+
+<span class='kw2'>alias</span> <span class='kw4'>int</span> time_t;
+<span class='kw2'>alias</span> <span class='kw4'>int</span> clock_t;
+
+<span class='kw4'>version</span><span class='opr'>(</span> Win32 <span class='opr'>)</span>
+<span class='opr'>{</span>
+    clock_t CLOCKS_PER_SEC <span class='opr'>=</span> <span class='nbr'>1000</span>;
+<span class='opr'>}</span>
+<span class='kw1'>else</span> <span class='kw4'>version</span><span class='opr'>(</span> darwin <span class='opr'>)</span>
+<span class='opr'>{</span>
+    clock_t CLOCKS_PER_SEC <span class='opr'>=</span> <span class='nbr'>100</span>;
+<span class='opr'>}</span>
+<span class='kw1'>else</span>
+<span class='opr'>{</span>
+    clock_t CLOCKS_PER_SEC <span class='opr'>=</span> <span class='nbr'>1000000</span>;
+<span class='opr'>}</span>
+
+clock_t clock<span class='opr'>(</span><span class='opr'>)</span>;
+<span class='kw4'>double</span>  difftime<span class='opr'>(</span>time_t time1, time_t time0<span class='opr'>)</span>;
+time_t  mktime<span class='opr'>(</span>tm<span class='opr'>*</span> timeptr<span class='opr'>)</span>;
+time_t  time<span class='opr'>(</span>time_t<span class='opr'>*</span> timer<span class='opr'>)</span>;
+<span class='kw4'>char</span><span class='opr'>*</span>   asctime<span class='opr'>(</span>tm<span class='opr'>*</span> timeptr<span class='opr'>)</span>;
+<span class='kw4'>char</span><span class='opr'>*</span>   ctime<span class='opr'>(</span>time_t<span class='opr'>*</span> timer<span class='opr'>)</span>;
+tm<span class='opr'>*</span>     gmtime<span class='opr'>(</span>time_t<span class='opr'>*</span> timer<span class='opr'>)</span>;
+tm<span class='opr'>*</span>     localtime<span class='opr'>(</span>time_t<span class='opr'>*</span> timer<span class='opr'>)</span>;
+<span class='kw4'>size_t</span>  strftime<span class='opr'>(</span><span class='kw4'>char</span><span class='opr'>*</span> s, <span class='kw4'>size_t</span> maxsize, <span class='kw4'>char</span><span class='opr'>*</span> format, tm<span class='opr'>*</span> timeptr<span class='opr'>)</span>;
+<span class='kw4'>size_t</span>  wcsftime<span class='opr'>(</span>wchar_t<span class='opr'>*</span> s, <span class='kw4'>size_t</span> maxsize, wchar_t<span class='opr'>*</span> format, tm<span class='opr'>*</span> timeptr<span class='opr'>)</span>;
+
+<span class='kw4'>version</span><span class='opr'>(</span> Win32 <span class='opr'>)</span>
+<span class='opr'>{</span>
+    <span class='kw4'>void</span>  tzset<span class='opr'>(</span><span class='opr'>)</span>;
+    <span class='kw4'>void</span>  _tzset<span class='opr'>(</span><span class='opr'>)</span>;
+    <span class='kw4'>char</span><span class='opr'>*</span> _strdate<span class='opr'>(</span><span class='kw4'>char</span><span class='opr'>*</span> s<span class='opr'>)</span>;
+    <span class='kw4'>char</span><span class='opr'>*</span> _strtime<span class='opr'>(</span><span class='kw4'>char</span><span class='opr'>*</span> s<span class='opr'>)</span>;
+
+    wchar_t<span class='opr'>*</span> _wasctime<span class='opr'>(</span>tm<span class='opr'>*</span><span class='opr'>)</span>;
+    wchar_t<span class='opr'>*</span> _wctime<span class='opr'>(</span>time_t<span class='opr'>*</span><span class='opr'>)</span>;
+    wchar_t<span class='opr'>*</span> _wstrdate<span class='opr'>(</span>wchar_t<span class='opr'>*</span><span class='opr'>)</span>;
+    wchar_t<span class='opr'>*</span> _wstrtime<span class='opr'>(</span>wchar_t<span class='opr'>*</span><span class='opr'>)</span>;
+<span class='opr'>}</span>
+<span class='kw1'>else</span> <span class='kw4'>version</span><span class='opr'>(</span> linux <span class='opr'>)</span>
+<span class='opr'>{</span>
+    <span class='kw4'>void</span> tzset<span class='opr'>(</span><span class='opr'>)</span>;
+<span class='opr'>}</span>
+</pre></td></tr></table>	</body>
+</html>

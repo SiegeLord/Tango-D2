@@ -1,0 +1,1403 @@
+<!DOCTYPE html 
+     PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+     "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html>
+	<head>
+		<link rel="stylesheet" href="style.css" type="text/css" />
+		<title>os/windows/c/mshtml.d</title>
+	</head>
+	<body>
+
+<table id='dcode'><tr><td id='lnum'><pre><span>1</span>
+<span>2</span>
+<span>3</span>
+<span>4</span>
+<span>5</span>
+<span>6</span>
+<span>7</span>
+<span>8</span>
+<span>9</span>
+<span>10</span>
+<span>11</span>
+<span>12</span>
+<span>13</span>
+<span>14</span>
+<span>15</span>
+<span>16</span>
+<span>17</span>
+<span>18</span>
+<span>19</span>
+<span>20</span>
+<span>21</span>
+<span>22</span>
+<span>23</span>
+<span>24</span>
+<span>25</span>
+<span>26</span>
+<span>27</span>
+<span>28</span>
+<span>29</span>
+<span>30</span>
+<span>31</span>
+<span>32</span>
+<span>33</span>
+<span>34</span>
+<span>35</span>
+<span>36</span>
+<span>37</span>
+<span>38</span>
+<span>39</span>
+<span>40</span>
+<span>41</span>
+<span>42</span>
+<span>43</span>
+<span>44</span>
+<span>45</span>
+<span>46</span>
+<span>47</span>
+<span>48</span>
+<span>49</span>
+<span>50</span>
+<span>51</span>
+<span>52</span>
+<span>53</span>
+<span>54</span>
+<span>55</span>
+<span>56</span>
+<span>57</span>
+<span>58</span>
+<span>59</span>
+<span>60</span>
+<span>61</span>
+<span>62</span>
+<span>63</span>
+<span>64</span>
+<span>65</span>
+<span>66</span>
+<span>67</span>
+<span>68</span>
+<span>69</span>
+<span>70</span>
+<span>71</span>
+<span>72</span>
+<span>73</span>
+<span>74</span>
+<span>75</span>
+<span>76</span>
+<span>77</span>
+<span>78</span>
+<span>79</span>
+<span>80</span>
+<span>81</span>
+<span>82</span>
+<span>83</span>
+<span>84</span>
+<span>85</span>
+<span>86</span>
+<span>87</span>
+<span>88</span>
+<span>89</span>
+<span>90</span>
+<span>91</span>
+<span>92</span>
+<span>93</span>
+<span>94</span>
+<span>95</span>
+<span>96</span>
+<span>97</span>
+<span>98</span>
+<span>99</span>
+<span>100</span>
+<span>101</span>
+<span>102</span>
+<span>103</span>
+<span>104</span>
+<span>105</span>
+<span>106</span>
+<span>107</span>
+<span>108</span>
+<span>109</span>
+<span>110</span>
+<span>111</span>
+<span>112</span>
+<span>113</span>
+<span>114</span>
+<span>115</span>
+<span>116</span>
+<span>117</span>
+<span>118</span>
+<span>119</span>
+<span>120</span>
+<span>121</span>
+<span>122</span>
+<span>123</span>
+<span>124</span>
+<span>125</span>
+<span>126</span>
+<span>127</span>
+<span>128</span>
+<span>129</span>
+<span>130</span>
+<span>131</span>
+<span>132</span>
+<span>133</span>
+<span>134</span>
+<span>135</span>
+<span>136</span>
+<span>137</span>
+<span>138</span>
+<span>139</span>
+<span>140</span>
+<span>141</span>
+<span>142</span>
+<span>143</span>
+<span>144</span>
+<span>145</span>
+<span>146</span>
+<span>147</span>
+<span>148</span>
+<span>149</span>
+<span>150</span>
+<span>151</span>
+<span>152</span>
+<span>153</span>
+<span>154</span>
+<span>155</span>
+<span>156</span>
+<span>157</span>
+<span>158</span>
+<span>159</span>
+<span>160</span>
+<span>161</span>
+<span>162</span>
+<span>163</span>
+<span>164</span>
+<span>165</span>
+<span>166</span>
+<span>167</span>
+<span>168</span>
+<span>169</span>
+<span>170</span>
+<span>171</span>
+<span>172</span>
+<span>173</span>
+<span>174</span>
+<span>175</span>
+<span>176</span>
+<span>177</span>
+<span>178</span>
+<span>179</span>
+<span>180</span>
+<span>181</span>
+<span>182</span>
+<span>183</span>
+<span>184</span>
+<span>185</span>
+<span>186</span>
+<span>187</span>
+<span>188</span>
+<span>189</span>
+<span>190</span>
+<span>191</span>
+<span>192</span>
+<span>193</span>
+<span>194</span>
+<span>195</span>
+<span>196</span>
+<span>197</span>
+<span>198</span>
+<span>199</span>
+<span>200</span>
+<span>201</span>
+<span>202</span>
+<span>203</span>
+<span>204</span>
+<span>205</span>
+<span>206</span>
+<span>207</span>
+<span>208</span>
+<span>209</span>
+<span>210</span>
+<span>211</span>
+<span>212</span>
+<span>213</span>
+<span>214</span>
+<span>215</span>
+<span>216</span>
+<span>217</span>
+<span>218</span>
+<span>219</span>
+<span>220</span>
+<span>221</span>
+<span>222</span>
+<span>223</span>
+<span>224</span>
+<span>225</span>
+<span>226</span>
+<span>227</span>
+<span>228</span>
+<span>229</span>
+<span>230</span>
+<span>231</span>
+<span>232</span>
+<span>233</span>
+<span>234</span>
+<span>235</span>
+<span>236</span>
+<span>237</span>
+<span>238</span>
+<span>239</span>
+<span>240</span>
+<span>241</span>
+<span>242</span>
+<span>243</span>
+<span>244</span>
+<span>245</span>
+<span>246</span>
+<span>247</span>
+<span>248</span>
+<span>249</span>
+<span>250</span>
+<span>251</span>
+<span>252</span>
+<span>253</span>
+<span>254</span>
+<span>255</span>
+<span>256</span>
+<span>257</span>
+<span>258</span>
+<span>259</span>
+<span>260</span>
+<span>261</span>
+<span>262</span>
+<span>263</span>
+<span>264</span>
+<span>265</span>
+<span>266</span>
+<span>267</span>
+<span>268</span>
+<span>269</span>
+<span>270</span>
+<span>271</span>
+<span>272</span>
+<span>273</span>
+<span>274</span>
+<span>275</span>
+<span>276</span>
+<span>277</span>
+<span>278</span>
+<span>279</span>
+<span>280</span>
+<span>281</span>
+<span>282</span>
+<span>283</span>
+<span>284</span>
+<span>285</span>
+<span>286</span>
+<span>287</span>
+<span>288</span>
+<span>289</span>
+<span>290</span>
+<span>291</span>
+<span>292</span>
+<span>293</span>
+<span>294</span>
+<span>295</span>
+<span>296</span>
+<span>297</span>
+<span>298</span>
+<span>299</span>
+<span>300</span>
+<span>301</span>
+<span>302</span>
+<span>303</span>
+<span>304</span>
+<span>305</span>
+<span>306</span>
+<span>307</span>
+<span>308</span>
+<span>309</span>
+<span>310</span>
+<span>311</span>
+<span>312</span>
+<span>313</span>
+<span>314</span>
+<span>315</span>
+<span>316</span>
+<span>317</span>
+<span>318</span>
+<span>319</span>
+<span>320</span>
+<span>321</span>
+<span>322</span>
+<span>323</span>
+<span>324</span>
+<span>325</span>
+<span>326</span>
+<span>327</span>
+<span>328</span>
+<span>329</span>
+<span>330</span>
+<span>331</span>
+<span>332</span>
+<span>333</span>
+<span>334</span>
+<span>335</span>
+<span>336</span>
+<span>337</span>
+<span>338</span>
+<span>339</span>
+<span>340</span>
+<span>341</span>
+<span>342</span>
+<span>343</span>
+<span>344</span>
+<span>345</span>
+<span>346</span>
+<span>347</span>
+<span>348</span>
+<span>349</span>
+<span>350</span>
+<span>351</span>
+<span>352</span>
+<span>353</span>
+<span>354</span>
+<span>355</span>
+<span>356</span>
+<span>357</span>
+<span>358</span>
+<span>359</span>
+<span>360</span>
+<span>361</span>
+<span>362</span>
+<span>363</span>
+<span>364</span>
+<span>365</span>
+<span>366</span>
+<span>367</span>
+<span>368</span>
+<span>369</span>
+<span>370</span>
+<span>371</span>
+<span>372</span>
+<span>373</span>
+<span>374</span>
+<span>375</span>
+<span>376</span>
+<span>377</span>
+<span>378</span>
+<span>379</span>
+<span>380</span>
+<span>381</span>
+<span>382</span>
+<span>383</span>
+<span>384</span>
+<span>385</span>
+<span>386</span>
+<span>387</span>
+<span>388</span>
+<span>389</span>
+<span>390</span>
+<span>391</span>
+<span>392</span>
+<span>393</span>
+<span>394</span>
+<span>395</span>
+<span>396</span>
+<span>397</span>
+<span>398</span>
+<span>399</span>
+<span>400</span>
+<span>401</span>
+<span>402</span>
+<span>403</span>
+<span>404</span>
+<span>405</span>
+<span>406</span>
+<span>407</span>
+<span>408</span>
+<span>409</span>
+<span>410</span>
+<span>411</span>
+<span>412</span>
+<span>413</span>
+<span>414</span>
+<span>415</span>
+<span>416</span>
+<span>417</span>
+<span>418</span>
+<span>419</span>
+<span>420</span>
+<span>421</span>
+<span>422</span>
+<span>423</span>
+<span>424</span>
+<span>425</span>
+<span>426</span>
+<span>427</span>
+<span>428</span>
+<span>429</span>
+<span>430</span>
+<span>431</span>
+<span>432</span>
+<span>433</span>
+<span>434</span>
+<span>435</span>
+<span>436</span>
+<span>437</span>
+<span>438</span>
+<span>439</span>
+<span>440</span>
+<span>441</span>
+<span>442</span>
+<span>443</span>
+<span>444</span>
+<span>445</span>
+<span>446</span>
+<span>447</span>
+<span>448</span>
+<span>449</span>
+<span>450</span>
+<span>451</span>
+<span>452</span>
+<span>453</span>
+<span>454</span>
+<span>455</span>
+<span>456</span>
+<span>457</span>
+<span>458</span>
+<span>459</span>
+<span>460</span>
+<span>461</span>
+<span>462</span>
+<span>463</span>
+<span>464</span>
+<span>465</span>
+<span>466</span>
+<span>467</span>
+<span>468</span>
+<span>469</span>
+<span>470</span>
+<span>471</span>
+<span>472</span>
+<span>473</span>
+<span>474</span>
+<span>475</span>
+<span>476</span>
+<span>477</span>
+<span>478</span>
+<span>479</span>
+<span>480</span>
+<span>481</span>
+<span>482</span>
+<span>483</span>
+<span>484</span>
+<span>485</span>
+<span>486</span>
+<span>487</span>
+<span>488</span>
+<span>489</span>
+<span>490</span>
+<span>491</span>
+<span>492</span>
+<span>493</span>
+<span>494</span>
+<span>495</span>
+<span>496</span>
+<span>497</span>
+<span>498</span>
+<span>499</span>
+<span>500</span>
+<span>501</span>
+<span>502</span>
+<span>503</span>
+<span>504</span>
+<span>505</span>
+<span>506</span>
+<span>507</span>
+<span>508</span>
+<span>509</span>
+<span>510</span>
+<span>511</span>
+<span>512</span>
+<span>513</span>
+<span>514</span>
+<span>515</span>
+<span>516</span>
+<span>517</span>
+<span>518</span>
+<span>519</span>
+<span>520</span>
+<span>521</span>
+<span>522</span>
+<span>523</span>
+<span>524</span>
+<span>525</span>
+<span>526</span>
+<span>527</span>
+<span>528</span>
+<span>529</span>
+<span>530</span>
+<span>531</span>
+<span>532</span>
+<span>533</span>
+<span>534</span>
+<span>535</span>
+<span>536</span>
+<span>537</span>
+<span>538</span>
+<span>539</span>
+<span>540</span>
+<span>541</span>
+<span>542</span>
+<span>543</span>
+<span>544</span>
+<span>545</span>
+<span>546</span>
+<span>547</span>
+<span>548</span>
+<span>549</span>
+<span>550</span>
+<span>551</span>
+<span>552</span>
+<span>553</span>
+<span>554</span>
+<span>555</span>
+<span>556</span>
+<span>557</span>
+<span>558</span>
+<span>559</span>
+<span>560</span>
+<span>561</span>
+<span>562</span>
+<span>563</span>
+<span>564</span>
+<span>565</span>
+<span>566</span>
+<span>567</span>
+<span>568</span>
+<span>569</span>
+<span>570</span>
+<span>571</span>
+<span>572</span>
+<span>573</span>
+<span>574</span>
+<span>575</span>
+<span>576</span>
+<span>577</span>
+<span>578</span>
+<span>579</span>
+<span>580</span>
+<span>581</span>
+<span>582</span>
+<span>583</span>
+<span>584</span>
+<span>585</span>
+<span>586</span>
+<span>587</span>
+<span>588</span>
+<span>589</span>
+<span>590</span>
+<span>591</span>
+<span>592</span>
+<span>593</span>
+<span>594</span>
+<span>595</span>
+<span>596</span>
+<span>597</span>
+<span>598</span>
+<span>599</span>
+<span>600</span>
+<span>601</span>
+<span>602</span>
+<span>603</span>
+<span>604</span>
+<span>605</span>
+<span>606</span>
+<span>607</span>
+<span>608</span>
+<span>609</span>
+<span>610</span>
+<span>611</span>
+<span>612</span>
+<span>613</span>
+<span>614</span>
+<span>615</span>
+<span>616</span>
+<span>617</span>
+<span>618</span>
+<span>619</span>
+<span>620</span>
+<span>621</span>
+<span>622</span>
+<span>623</span>
+<span>624</span>
+<span>625</span>
+<span>626</span>
+<span>627</span>
+<span>628</span>
+<span>629</span>
+<span>630</span>
+<span>631</span>
+<span>632</span>
+<span>633</span>
+<span>634</span>
+<span>635</span>
+<span>636</span>
+<span>637</span>
+<span>638</span>
+<span>639</span>
+<span>640</span>
+<span>641</span>
+<span>642</span>
+<span>643</span>
+<span>644</span>
+<span>645</span>
+<span>646</span>
+<span>647</span>
+<span>648</span>
+<span>649</span>
+<span>650</span>
+<span>651</span>
+<span>652</span>
+<span>653</span>
+<span>654</span>
+<span>655</span>
+<span>656</span>
+<span>657</span>
+<span>658</span>
+<span>659</span>
+<span>660</span>
+<span>661</span>
+<span>662</span>
+<span>663</span>
+<span>664</span>
+<span>665</span>
+<span>666</span>
+<span>667</span>
+<span>668</span>
+<span>669</span>
+<span>670</span>
+<span>671</span>
+<span>672</span>
+<span>673</span>
+<span>674</span>
+<span>675</span>
+<span>676</span>
+<span>677</span>
+<span>678</span>
+<span>679</span>
+<span>680</span>
+<span>681</span>
+<span>682</span>
+<span>683</span>
+<span>684</span>
+<span>685</span>
+<span>686</span>
+<span>687</span>
+<span>688</span>
+<span>689</span>
+<span>690</span>
+<span>691</span>
+<span>692</span>
+<span>693</span>
+<span>694</span>
+<span>695</span>
+</pre></td><td id='code'><pre><span class='com'>/***********************************************************************\
+*                              mshtml.d                               *
+*                                                                       *
+*                       Windows API header module                       *
+*                                                                       *
+*                 Translated from MinGW Windows headers                 *
+*                                                                       *
+*                       Placed into public domain                       *
+\***********************************************************************/</span>
+<span class='kw2'>module</span> tango.os.windows.c.mshtml;
+
+<span class='com'>//version (build) { pragma(nolink); }</span>
+
+
+<span class='kw4'>private</span> <span class='kw2'>import</span> tango.os.windows.c.unknwn;
+<span class='kw4'>private</span> <span class='kw2'>import</span> tango.os.windows.c.wtypes;
+<span class='kw4'>private</span> <span class='kw2'>import</span> tango.os.windows.c.oaidl;
+
+<span class='com'>// These are used in this file, but not defined in MinGW.</span>
+<span class='kw2'>interface</span> IHTMLStyleSheet <span class='opr'>{</span><span class='opr'>}</span>;
+<span class='kw2'>interface</span> IHTMLLocation <span class='opr'>{</span><span class='opr'>}</span>;
+<span class='kw2'>interface</span> IHTMLFramesCollection <span class='opr'>{</span><span class='opr'>}</span>;
+<span class='kw2'>interface</span> IHTMLStyleSheetsCollection <span class='opr'>{</span><span class='opr'>}</span>;
+<span class='kw2'>interface</span> IHTMLStyle <span class='opr'>{</span><span class='opr'>}</span>;
+<span class='kw2'>interface</span> IHTMLFiltersCollection <span class='opr'>{</span><span class='opr'>}</span>;
+<span class='kw2'>interface</span> IOmHistory <span class='opr'>{</span><span class='opr'>}</span>;
+<span class='kw2'>interface</span> IOmNavigator <span class='opr'>{</span><span class='opr'>}</span>;
+<span class='kw2'>interface</span> IHTMLImageElementFactory <span class='opr'>{</span><span class='opr'>}</span>;
+<span class='kw2'>interface</span> IHTMLEventObj <span class='opr'>{</span><span class='opr'>}</span>;
+<span class='kw2'>interface</span> IHTMLScreen <span class='opr'>{</span><span class='opr'>}</span>;
+<span class='kw2'>interface</span> IHTMLOptionElementFactory <span class='opr'>{</span><span class='opr'>}</span>;
+
+
+<span class='kw2'>extern</span> <span class='opr'>(</span>C<span class='opr'>)</span> <span class='opr'>{</span>
+<span class='kw2'>extern</span> IID IID_IHTMLLinkElement;
+<span class='kw2'>extern</span> IID IID_IHTMLImgElement;
+<span class='kw2'>extern</span> IID IID_IHTMLElementCollection;
+<span class='kw2'>extern</span> IID IID_IHTMLDocument;
+<span class='kw2'>extern</span> IID IID_IHTMLDocument2;
+<span class='kw2'>extern</span> IID IID_IHTMLSelectionObject;
+<span class='kw2'>extern</span> IID IID_IHTMLTxtRange;
+<span class='kw2'>extern</span> IID IID_IHTMLElement;
+<span class='kw2'>extern</span> IID IID_IHTMLFramesCollection2;
+<span class='kw2'>extern</span> IID IID_IHTMLWindow2;
+<span class='kw2'>extern</span> IID IID_IHTMLFrameBase;
+<span class='kw2'>extern</span> IID IID_IHTMLFrameBase2;
+<span class='kw2'>extern</span> IID IID_IHTMLFrameBase3;
+<span class='kw2'>extern</span> IID IID_IHTMLBodyElement;
+<span class='kw2'>extern</span> IID IID_IHTMLBodyElement2;
+<span class='opr'>}</span>
+
+
+<span class='kw2'>interface</span> IHTMLLinkElement : <span class='kw4'>public</span> IDispatch
+<span class='opr'>{</span>
+    HRESULT QueryInterface<span class='opr'>(</span>REFIID,PVOID<span class='opr'>*</span><span class='opr'>)</span>;
+    ULONG AddRef<span class='opr'>(</span><span class='opr'>)</span>;
+    ULONG Release<span class='opr'>(</span><span class='opr'>)</span>;
+    HRESULT GetTypeInfoCount<span class='opr'>(</span>UINT<span class='opr'>*</span><span class='opr'>)</span>;
+    HRESULT GetTypeInfo<span class='opr'>(</span>UINT,LCID,LPTYPEINFO<span class='opr'>*</span><span class='opr'>)</span>;
+    HRESULT GetIDsOfNames<span class='opr'>(</span>REFIID,LPOLESTR<span class='opr'>*</span>,UINT,LCID,DISPID<span class='opr'>*</span><span class='opr'>)</span>;
+    HRESULT Invoke<span class='opr'>(</span>DISPID,REFIID,LCID,WORD,DISPPARAMS<span class='opr'>*</span>,VARIANT<span class='opr'>*</span>,EXCEPINFO<span class='opr'>*</span>,UINT<span class='opr'>*</span><span class='opr'>)</span>;
+
+    HRESULT put_href<span class='opr'>(</span>BSTR<span class='opr'>)</span>;
+    HRESULT get_href<span class='opr'>(</span>BSTR<span class='opr'>*</span><span class='opr'>)</span>;
+    HRESULT put_rel<span class='opr'>(</span>BSTR<span class='opr'>)</span>;
+    HRESULT get_rel<span class='opr'>(</span>BSTR<span class='opr'>*</span><span class='opr'>)</span>;
+    HRESULT put_rev<span class='opr'>(</span>BSTR<span class='opr'>)</span>;
+    HRESULT get_rev<span class='opr'>(</span>BSTR<span class='opr'>*</span><span class='opr'>)</span>;
+    HRESULT put_type<span class='opr'>(</span>BSTR<span class='opr'>)</span>;
+    HRESULT get_type<span class='opr'>(</span>BSTR<span class='opr'>*</span><span class='opr'>)</span>;
+    HRESULT get_readyState<span class='opr'>(</span>BSTR<span class='opr'>*</span><span class='opr'>)</span>;
+    HRESULT put_onreadystatechange<span class='opr'>(</span>VARIANT<span class='opr'>)</span>;
+    HRESULT get_onreadystatechange<span class='opr'>(</span>VARIANT<span class='opr'>*</span><span class='opr'>)</span>;
+    HRESULT put_onload<span class='opr'>(</span>VARIANT<span class='opr'>)</span>;
+    HRESULT get_onload<span class='opr'>(</span>VARIANT<span class='opr'>*</span><span class='opr'>)</span>;
+    HRESULT put_onerror<span class='opr'>(</span>VARIANT<span class='opr'>)</span>;
+    HRESULT get_onerror<span class='opr'>(</span>VARIANT<span class='opr'>*</span><span class='opr'>)</span>;
+    HRESULT get_styleSheet<span class='opr'>(</span>LPHTMLSTYLESHEET<span class='opr'>*</span><span class='opr'>)</span>;
+    HRESULT put_disabled<span class='opr'>(</span>VARIANT_BOOL<span class='opr'>)</span>;
+    HRESULT get_disabled<span class='opr'>(</span>VARIANT_BOOL<span class='opr'>*</span><span class='opr'>)</span>;
+    HRESULT put_media<span class='opr'>(</span>BSTR<span class='opr'>)</span>;
+    HRESULT get_media<span class='opr'>(</span>BSTR<span class='opr'>*</span><span class='opr'>)</span>;
+<span class='opr'>}</span>
+
+<span class='kw2'>interface</span> IHTMLImgElement : <span class='kw4'>public</span> IDispatch
+<span class='opr'>{</span>
+    HRESULT QueryInterface<span class='opr'>(</span>REFIID,PVOID<span class='opr'>*</span><span class='opr'>)</span>;
+    ULONG AddRef<span class='opr'>(</span><span class='opr'>)</span>;
+    ULONG Release<span class='opr'>(</span><span class='opr'>)</span>;
+    HRESULT GetTypeInfoCount<span class='opr'>(</span>UINT<span class='opr'>*</span><span class='opr'>)</span>;
+    HRESULT GetTypeInfo<span class='opr'>(</span>UINT,LCID,LPTYPEINFO<span class='opr'>*</span><span class='opr'>)</span>;
+    HRESULT GetIDsOfNames<span class='opr'>(</span>REFIID,LPOLESTR<span class='opr'>*</span>,UINT,LCID,DISPID<span class='opr'>*</span><span class='opr'>)</span>;
+    HRESULT Invoke<span class='opr'>(</span>DISPID,REFIID,LCID,WORD,DISPPARAMS<span class='opr'>*</span>,VARIANT<span class='opr'>*</span>,EXCEPINFO<span class='opr'>*</span>,UINT<span class='opr'>*</span><span class='opr'>)</span>;
+
+    HRESULT put_isMap<span class='opr'>(</span>VARIANT_BOOL<span class='opr'>)</span>;
+    HRESULT get_isMap<span class='opr'>(</span>VARIANT_BOOL<span class='opr'>*</span><span class='opr'>)</span>;
+    HRESULT put_useMap<span class='opr'>(</span>BSTR<span class='opr'>)</span>;
+    HRESULT get_useMap<span class='opr'>(</span>BSTR<span class='opr'>*</span><span class='opr'>)</span>;
+    HRESULT get_mimeType<span class='opr'>(</span>BSTR<span class='opr'>*</span><span class='opr'>)</span>;
+    HRESULT get_fileSize<span class='opr'>(</span>BSTR<span class='opr'>*</span><span class='opr'>)</span>;
+    HRESULT get_fileCreatedDate<span class='opr'>(</span>BSTR<span class='opr'>*</span><span class='opr'>)</span>;
+    HRESULT get_fileModifiedDate<span class='opr'>(</span>BSTR<span class='opr'>*</span><span class='opr'>)</span>;
+    HRESULT get_fileUpdatedDate<span class='opr'>(</span>BSTR<span class='opr'>*</span><span class='opr'>)</span>;
+    HRESULT get_protocol<span class='opr'>(</span>BSTR<span class='opr'>*</span><span class='opr'>)</span>;
+    HRESULT get_href<span class='opr'>(</span>BSTR<span class='opr'>*</span><span class='opr'>)</span>;
+    HRESULT get_nameProp<span class='opr'>(</span>BSTR<span class='opr'>*</span><span class='opr'>)</span>;
+    HRESULT put_border<span class='opr'>(</span>VARIANT<span class='opr'>)</span>;
+    HRESULT get_border<span class='opr'>(</span>VARIANT<span class='opr'>*</span><span class='opr'>)</span>;
+    HRESULT put_vspace<span class='opr'>(</span><span class='kw4'>long</span><span class='opr'>)</span>;
+    HRESULT get_vspace<span class='opr'>(</span><span class='kw4'>long</span><span class='opr'>*</span><span class='opr'>)</span>;
+    HRESULT put_hspace<span class='opr'>(</span><span class='kw4'>long</span><span class='opr'>)</span>;
+    HRESULT get_hspace<span class='opr'>(</span><span class='kw4'>long</span><span class='opr'>*</span><span class='opr'>)</span>;
+    HRESULT put_alt<span class='opr'>(</span>BSTR<span class='opr'>)</span>;
+    HRESULT get_alt<span class='opr'>(</span>BSTR<span class='opr'>*</span><span class='opr'>)</span>;
+    HRESULT put_src<span class='opr'>(</span>BSTR<span class='opr'>)</span>;
+    HRESULT get_src<span class='opr'>(</span>BSTR<span class='opr'>*</span><span class='opr'>)</span>;
+    HRESULT put_lowsrc<span class='opr'>(</span>BSTR<span class='opr'>)</span>;
+    HRESULT get_lowsrc<span class='opr'>(</span>BSTR<span class='opr'>*</span><span class='opr'>)</span>;
+    HRESULT put_vrml<span class='opr'>(</span>BSTR<span class='opr'>)</span>;
+    HRESULT get_vrml<span class='opr'>(</span>BSTR<span class='opr'>*</span><span class='opr'>)</span>;
+    HRESULT put_dynsrc<span class='opr'>(</span>BSTR<span class='opr'>)</span>;
+    HRESULT get_dynsrc<span class='opr'>(</span>BSTR<span class='opr'>*</span><span class='opr'>)</span>;
+    HRESULT get_readyState<span class='opr'>(</span>BSTR<span class='opr'>*</span><span class='opr'>)</span>;
+    HRESULT get_complete<span class='opr'>(</span>VARIANT_BOOL<span class='opr'>*</span><span class='opr'>)</span>;
+    HRESULT put_loop<span class='opr'>(</span>VARIANT<span class='opr'>)</span>;
+    HRESULT get_loop<span class='opr'>(</span>VARIANT<span class='opr'>*</span><span class='opr'>)</span>;
+    HRESULT put_align<span class='opr'>(</span>BSTR<span class='opr'>)</span>;
+    HRESULT get_align<span class='opr'>(</span>BSTR<span class='opr'>*</span><span class='opr'>)</span>;
+    HRESULT put_onload<span class='opr'>(</span>VARIANT<span class='opr'>)</span>;
+    HRESULT get_onload<span class='opr'>(</span>VARIANT<span class='opr'>*</span><span class='opr'>)</span>;
+    HRESULT put_onerror<span class='opr'>(</span>VARIANT<span class='opr'>)</span>;
+    HRESULT get_onerror<span class='opr'>(</span>VARIANT<span class='opr'>*</span><span class='opr'>)</span>;
+    HRESULT put_onabort<span class='opr'>(</span>VARIANT<span class='opr'>)</span>;
+    HRESULT get_onabort<span class='opr'>(</span>VARIANT<span class='opr'>*</span><span class='opr'>)</span>;
+    HRESULT put_name<span class='opr'>(</span>BSTR<span class='opr'>)</span>;
+    HRESULT get_name<span class='opr'>(</span>BSTR<span class='opr'>*</span><span class='opr'>)</span>;
+    HRESULT put_width<span class='opr'>(</span><span class='kw4'>long</span><span class='opr'>)</span>;
+    HRESULT get_width<span class='opr'>(</span><span class='kw4'>long</span><span class='opr'>*</span><span class='opr'>)</span>;
+    HRESULT put_height<span class='opr'>(</span><span class='kw4'>long</span><span class='opr'>)</span>;
+    HRESULT get_height<span class='opr'>(</span><span class='kw4'>long</span><span class='opr'>*</span><span class='opr'>)</span>;
+    HRESULT put_start<span class='opr'>(</span>BSTR<span class='opr'>)</span>;
+    HRESULT get_start<span class='opr'>(</span>BSTR<span class='opr'>*</span><span class='opr'>)</span>;
+<span class='opr'>}</span>
+
+<span class='kw2'>interface</span> IHTMLElementCollection : <span class='kw4'>public</span> IDispatch
+<span class='opr'>{</span>
+    HRESULT QueryInterface<span class='opr'>(</span>REFIID,PVOID<span class='opr'>*</span><span class='opr'>)</span>;
+    ULONG AddRef<span class='opr'>(</span><span class='opr'>)</span>;
+    ULONG Release<span class='opr'>(</span><span class='opr'>)</span>;
+    HRESULT GetTypeInfoCount<span class='opr'>(</span>UINT<span class='opr'>*</span><span class='opr'>)</span>;
+    HRESULT GetTypeInfo<span class='opr'>(</span>UINT,LCID,LPTYPEINFO<span class='opr'>*</span><span class='opr'>)</span>;
+    HRESULT GetIDsOfNames<span class='opr'>(</span>REFIID,LPOLESTR<span class='opr'>*</span>,UINT,LCID,DISPID<span class='opr'>*</span><span class='opr'>)</span>;
+    HRESULT Invoke<span class='opr'>(</span>DISPID,REFIID,LCID,WORD,DISPPARAMS<span class='opr'>*</span>,VARIANT<span class='opr'>*</span>,EXCEPINFO<span class='opr'>*</span>,UINT<span class='opr'>*</span><span class='opr'>)</span>;
+
+    HRESULT toString<span class='opr'>(</span>BSTR<span class='opr'>*</span><span class='opr'>)</span>;
+    HRESULT put_length<span class='opr'>(</span><span class='kw4'>long</span><span class='opr'>)</span>;
+    HRESULT get_length<span class='opr'>(</span><span class='kw4'>long</span><span class='opr'>*</span><span class='opr'>)</span>;
+    HRESULT get__newEnum<span class='opr'>(</span>IUnknown<span class='opr'>*</span><span class='opr'>*</span><span class='opr'>)</span>;
+    HRESULT item<span class='opr'>(</span>VARIANT,VARIANT,IDispatch<span class='opr'>*</span><span class='opr'>*</span><span class='opr'>)</span>;
+    HRESULT tags<span class='opr'>(</span>VARIANT,IDispatch<span class='opr'>*</span><span class='opr'>*</span><span class='opr'>)</span>;
+<span class='opr'>}</span>
+
+<span class='kw2'>interface</span> IHTMLDocument : <span class='kw4'>public</span> IDispatch
+<span class='opr'>{</span>
+    HRESULT QueryInterface<span class='opr'>(</span>REFIID,PVOID<span class='opr'>*</span><span class='opr'>)</span>;
+    ULONG AddRef<span class='opr'>(</span><span class='opr'>)</span>;
+    ULONG Release<span class='opr'>(</span><span class='opr'>)</span>;
+    HRESULT GetTypeInfoCount<span class='opr'>(</span>UINT<span class='opr'>*</span><span class='opr'>)</span>;
+    HRESULT GetTypeInfo<span class='opr'>(</span>UINT,LCID,LPTYPEINFO<span class='opr'>*</span><span class='opr'>)</span>;
+    HRESULT GetIDsOfNames<span class='opr'>(</span>REFIID,LPOLESTR<span class='opr'>*</span>,UINT,LCID,DISPID<span class='opr'>*</span><span class='opr'>)</span>;
+    HRESULT Invoke<span class='opr'>(</span>DISPID,REFIID,LCID,WORD,DISPPARAMS<span class='opr'>*</span>,VARIANT<span class='opr'>*</span>,EXCEPINFO<span class='opr'>*</span>,UINT<span class='opr'>*</span><span class='opr'>)</span>;
+
+    HRESULT get_Script<span class='opr'>(</span>IDispatch<span class='opr'>*</span><span class='opr'>*</span><span class='opr'>)</span>;
+<span class='opr'>}</span>
+
+<span class='kw2'>interface</span> IHTMLDocument2 : <span class='kw4'>public</span> IHTMLDocument
+<span class='opr'>{</span>
+    HRESULT QueryInterface<span class='opr'>(</span>REFIID,PVOID<span class='opr'>*</span><span class='opr'>)</span>;
+    ULONG AddRef<span class='opr'>(</span><span class='opr'>)</span>;
+    ULONG Release<span class='opr'>(</span><span class='opr'>)</span>;
+    HRESULT GetTypeInfoCount<span class='opr'>(</span>UINT<span class='opr'>*</span><span class='opr'>)</span>;
+    HRESULT GetTypeInfo<span class='opr'>(</span>UINT,LCID,LPTYPEINFO<span class='opr'>*</span><span class='opr'>)</span>;
+    HRESULT GetIDsOfNames<span class='opr'>(</span>REFIID,LPOLESTR<span class='opr'>*</span>,UINT,LCID,DISPID<span class='opr'>*</span><span class='opr'>)</span>;
+    HRESULT Invoke<span class='opr'>(</span>DISPID,REFIID,LCID,WORD,DISPPARAMS<span class='opr'>*</span>,VARIANT<span class='opr'>*</span>,EXCEPINFO<span class='opr'>*</span>,UINT<span class='opr'>*</span><span class='opr'>)</span>;
+
+    HRESULT get_Script<span class='opr'>(</span>IDispatch<span class='opr'>*</span><span class='opr'>*</span><span class='opr'>)</span>;
+
+    HRESULT get_all<span class='opr'>(</span>LPHTMLELEMENTCOLLECTION<span class='opr'>*</span><span class='opr'>)</span>;
+    HRESULT get_body<span class='opr'>(</span>LPHTMLELEMENT<span class='opr'>*</span><span class='opr'>)</span>;
+    HRESULT get_activeElement<span class='opr'>(</span>LPHTMLELEMENT<span class='opr'>*</span><span class='opr'>)</span>;
+    HRESULT get_images<span class='opr'>(</span>LPHTMLELEMENTCOLLECTION<span class='opr'>*</span><span class='opr'>)</span>;
+    HRESULT get_applets<span class='opr'>(</span>LPHTMLELEMENTCOLLECTION<span class='opr'>*</span><span class='opr'>)</span>;
+    HRESULT get_links<span class='opr'>(</span>LPHTMLELEMENTCOLLECTION<span class='opr'>*</span><span class='opr'>)</span>;
+    HRESULT get_forms<span class='opr'>(</span>LPHTMLELEMENTCOLLECTION<span class='opr'>*</span><span class='opr'>)</span>;
+    HRESULT get_anchors<span class='opr'>(</span>LPHTMLELEMENTCOLLECTION<span class='opr'>*</span><span class='opr'>)</span>;
+    HRESULT put_title<span class='opr'>(</span>BSTR<span class='opr'>)</span>;
+    HRESULT get_title<span class='opr'>(</span>BSTR<span class='opr'>*</span><span class='opr'>)</span>;
+    HRESULT get_scripts<span class='opr'>(</span>LPHTMLELEMENTCOLLECTION<span class='opr'>*</span><span class='opr'>)</span>;
+    HRESULT put_designMode<span class='opr'>(</span>BSTR<span class='opr'>)</span>;
+    HRESULT get_designMode<span class='opr'>(</span>BSTR<span class='opr'>*</span><span class='opr'>)</span>;
+    HRESULT get_selection<span class='opr'>(</span>LPHTMLSELECTIONOBJECT<span class='opr'>*</span><span class='opr'>)</span>;
+    HRESULT get_readyState<span class='opr'>(</span>BSTR<span class='opr'>*</span><span class='opr'>)</span>;
+    HRESULT get_frames<span class='opr'>(</span>LPHTMLFRAMESCOLLECTION<span class='opr'>*</span><span class='opr'>)</span>;
+    HRESULT get_embeds<span class='opr'>(</span>LPHTMLELEMENTCOLLECTION<span class='opr'>*</span><span class='opr'>)</span>;
+    HRESULT get_plugins<span class='opr'>(</span>LPHTMLELEMENTCOLLECTION<span class='opr'>*</span><span class='opr'>)</span>;
+    HRESULT put_alinkColor<span class='opr'>(</span>VARIANT<span class='opr'>)</span>;
+    HRESULT get_alinkColor<span class='opr'>(</span>VARIANT<span class='opr'>*</span><span class='opr'>)</span>;
+    HRESULT put_bgColor<span class='opr'>(</span>VARIANT<span class='opr'>)</span>;
+    HRESULT get_bgColor<span class='opr'>(</span>VARIANT<span class='opr'>*</span><span class='opr'>)</span>;
+    HRESULT put_fgColor<span class='opr'>(</span>VARIANT<span class='opr'>)</span>;
+    HRESULT get_fgColor<span class='opr'>(</span>VARIANT<span class='opr'>*</span><span class='opr'>)</span>;
+    HRESULT put_linkColor<span class='opr'>(</span>VARIANT<span class='opr'>)</span>;
+    HRESULT get_linkColor<span class='opr'>(</span>VARIANT<span class='opr'>*</span><span class='opr'>)</span>;
+    HRESULT put_vlinkColor<span class='opr'>(</span>VARIANT<span class='opr'>)</span>;
+    HRESULT get_vlinkColor<span class='opr'>(</span>VARIANT<span class='opr'>*</span><span class='opr'>)</span>;
+    HRESULT get_referrer<span class='opr'>(</span>BSTR<span class='opr'>*</span><span class='opr'>)</span>;
+    HRESULT get_location<span class='opr'>(</span>LPHTMLLOCATION<span class='opr'>*</span><span class='opr'>)</span>;
+    HRESULT get_lastModified<span class='opr'>(</span>BSTR<span class='opr'>*</span><span class='opr'>)</span>;
+    HRESULT put_url<span class='opr'>(</span>BSTR<span class='opr'>)</span>;
+    HRESULT get_url<span class='opr'>(</span>BSTR<span class='opr'>*</span><span class='opr'>)</span>;
+    HRESULT put_domain<span class='opr'>(</span>BSTR<span class='opr'>)</span>;
+    HRESULT get_domain<span class='opr'>(</span>BSTR<span class='opr'>*</span><span class='opr'>)</span>;
+    HRESULT put_cookie<span class='opr'>(</span>BSTR<span class='opr'>)</span>;
+    HRESULT get_cookie<span class='opr'>(</span>BSTR<span class='opr'>*</span><span class='opr'>)</span>;
+    HRESULT put_expands<span class='opr'>(</span>VARIANT_BOOL<span class='opr'>)</span>;
+    HRESULT get_expands<span class='opr'>(</span>VARIANT_BOOL<span class='opr'>*</span><span class='opr'>)</span>;
+    HRESULT put_charset<span class='opr'>(</span>BSTR<span class='opr'>)</span>;
+    HRESULT get_charset<span class='opr'>(</span>BSTR<span class='opr'>*</span><span class='opr'>)</span>;
+    HRESULT put_defaultCharset<span class='opr'>(</span>BSTR<span class='opr'>)</span>;
+    HRESULT get_defaultCharset<span class='opr'>(</span>BSTR<span class='opr'>*</span><span class='opr'>)</span>;
+    HRESULT get_mimeType<span class='opr'>(</span>BSTR<span class='opr'>*</span><span class='opr'>)</span>;
+    HRESULT get_fileSize<span class='opr'>(</span>BSTR<span class='opr'>*</span><span class='opr'>)</span>;
+    HRESULT get_fileCreatedDate<span class='opr'>(</span>BSTR<span class='opr'>*</span><span class='opr'>)</span>;
+    HRESULT get_fileModifiedDate<span class='opr'>(</span>BSTR<span class='opr'>*</span><span class='opr'>)</span>;
+    HRESULT get_fileUpdatedDate<span class='opr'>(</span>BSTR<span class='opr'>*</span><span class='opr'>)</span>;
+    HRESULT get_security<span class='opr'>(</span>BSTR<span class='opr'>*</span><span class='opr'>)</span>;
+    HRESULT get_protocol<span class='opr'>(</span>BSTR<span class='opr'>*</span><span class='opr'>)</span>;
+    HRESULT get_nameProp<span class='opr'>(</span>BSTR<span class='opr'>*</span><span class='opr'>)</span>;
+    HRESULT write<span class='opr'>(</span>SAFEARRAY<span class='opr'>*</span><span class='opr'>)</span>;
+    HRESULT writeln<span class='opr'>(</span>SAFEARRAY<span class='opr'>*</span><span class='opr'>)</span>;
+    HRESULT open<span class='opr'>(</span>BSTR,VARIANT,VARIANT,VARIANT,IDispatch<span class='opr'>*</span><span class='opr'>*</span><span class='opr'>)</span>;
+    HRESULT close<span class='opr'>(</span><span class='opr'>)</span>;
+    HRESULT clear<span class='opr'>(</span><span class='opr'>)</span>;
+    HRESULT queryCommandSupported<span class='opr'>(</span>BSTR,VARIANT_BOOL<span class='opr'>*</span><span class='opr'>)</span>;
+    HRESULT queryCommandEnabled<span class='opr'>(</span>BSTR,VARIANT_BOOL<span class='opr'>*</span><span class='opr'>)</span>;
+    HRESULT queryCommandState<span class='opr'>(</span>BSTR,VARIANT_BOOL<span class='opr'>*</span><span class='opr'>)</span>;
+    HRESULT queryCommandIndeterm<span class='opr'>(</span>BSTR,VARIANT_BOOL<span class='opr'>*</span><span class='opr'>)</span>;
+    HRESULT queryCommandText<span class='opr'>(</span>BSTR,BSTR<span class='opr'>*</span><span class='opr'>)</span>;
+    HRESULT queryCommandValue<span class='opr'>(</span>BSTR,VARIANT<span class='opr'>*</span><span class='opr'>)</span>;
+    HRESULT execCommand<span class='opr'>(</span>BSTR,VARIANT_BOOL,VARIANT,VARIANT_BOOL<span class='opr'>*</span><span class='opr'>)</span>;
+    HRESULT execCommandShowHelp<span class='opr'>(</span>BSTR,VARIANT_BOOL<span class='opr'>*</span><span class='opr'>)</span>;
+    HRESULT createElement<span class='opr'>(</span>BSTR,LPHTMLELEMENT<span class='opr'>*</span><span class='opr'>)</span>;
+    HRESULT put_onhelp<span class='opr'>(</span>VARIANT<span class='opr'>)</span>;
+    HRESULT get_onhelp<span class='opr'>(</span>VARIANT<span class='opr'>*</span><span class='opr'>)</span>;
+    HRESULT put_onclick<span class='opr'>(</span>VARIANT<span class='opr'>)</span>;
+    HRESULT get_onclick<span class='opr'>(</span>VARIANT<span class='opr'>*</span><span class='opr'>)</span>;
+    HRESULT put_ondblclick<span class='opr'>(</span>VARIANT<span class='opr'>)</span>;
+    HRESULT get_ondblclick<span class='opr'>(</span>VARIANT<span class='opr'>*</span><span class='opr'>)</span>;
+    HRESULT put_onkeyup<span class='opr'>(</span>VARIANT<span class='opr'>)</span>;
+    HRESULT get_onkeyup<span class='opr'>(</span>VARIANT<span class='opr'>*</span><span class='opr'>)</span>;
+    HRESULT put_onkeydown<span class='opr'>(</span>VARIANT<span class='opr'>)</span>;
+    HRESULT get_onkeydown<span class='opr'>(</span>VARIANT<span class='opr'>*</span><span class='opr'>)</span>;
+    HRESULT put_onkeypress<span class='opr'>(</span>VARIANT<span class='opr'>)</span>;
+    HRESULT get_onkeypress<span class='opr'>(</span>VARIANT<span class='opr'>*</span><span class='opr'>)</span>;
+    HRESULT put_onmouseup<span class='opr'>(</span>VARIANT<span class='opr'>)</span>;
+    HRESULT get_onmouseup<span class='opr'>(</span>VARIANT<span class='opr'>*</span><span class='opr'>)</span>;
+    HRESULT put_onmousedown<span class='opr'>(</span>VARIANT<span class='opr'>)</span>;
+    HRESULT get_onmousedown<span class='opr'>(</span>VARIANT<span class='opr'>*</span><span class='opr'>)</span>;
+    HRESULT put_onmousemove<span class='opr'>(</span>VARIANT<span class='opr'>)</span>;
+    HRESULT get_onmousemove<span class='opr'>(</span>VARIANT<span class='opr'>*</span><span class='opr'>)</span>;
+    HRESULT put_onmouseout<span class='opr'>(</span>VARIANT<span class='opr'>)</span>;
+    HRESULT get_onmouseout<span class='opr'>(</span>VARIANT<span class='opr'>*</span><span class='opr'>)</span>;
+    HRESULT put_onmouseover<span class='opr'>(</span>VARIANT<span class='opr'>)</span>;
+    HRESULT get_onmouseover<span class='opr'>(</span>VARIANT<span class='opr'>*</span><span class='opr'>)</span>;
+    HRESULT put_onreadystatechange<span class='opr'>(</span>VARIANT<span class='opr'>)</span>;
+    HRESULT get_onreadystatechange<span class='opr'>(</span>VARIANT<span class='opr'>*</span><span class='opr'>)</span>;
+    HRESULT put_onafterupdate<span class='opr'>(</span>VARIANT<span class='opr'>)</span>;
+    HRESULT get_onafterupdate<span class='opr'>(</span>VARIANT<span class='opr'>*</span><span class='opr'>)</span>;
+    HRESULT put_onrowexit<span class='opr'>(</span>VARIANT<span class='opr'>)</span>;
+    HRESULT get_onrowexit<span class='opr'>(</span>VARIANT<span class='opr'>*</span><span class='opr'>)</span>;
+    HRESULT put_onrowenter<span class='opr'>(</span>VARIANT<span class='opr'>)</span>;
+    HRESULT get_onrowenter<span class='opr'>(</span>VARIANT<span class='opr'>*</span><span class='opr'>)</span>;
+    HRESULT put_ondragstart<span class='opr'>(</span>VARIANT<span class='opr'>)</span>;
+    HRESULT get_ondragstart<span class='opr'>(</span>VARIANT<span class='opr'>*</span><span class='opr'>)</span>;
+    HRESULT put_onselectstart<span class='opr'>(</span>VARIANT<span class='opr'>)</span>;
+    HRESULT get_onselectstart<span class='opr'>(</span>VARIANT<span class='opr'>*</span><span class='opr'>)</span>;
+    HRESULT elementFromPoint<span class='opr'>(</span><span class='kw4'>long</span>,<span class='kw4'>long</span>,LPHTMLELEMENT<span class='opr'>*</span><span class='opr'>)</span>;
+    HRESULT get_parentWindow<span class='opr'>(</span>LPHTMLWINDOW2<span class='opr'>*</span><span class='opr'>)</span>;
+    HRESULT get_styleSheets<span class='opr'>(</span>LPHTMLSTYLESHEETSCOLLECTION<span class='opr'>*</span><span class='opr'>)</span>;
+    HRESULT put_onbeforeupdate<span class='opr'>(</span>VARIANT<span class='opr'>)</span>;
+    HRESULT get_onbeforeupdate<span class='opr'>(</span>VARIANT<span class='opr'>*</span><span class='opr'>)</span>;
+    HRESULT put_onerrorupdate<span class='opr'>(</span>VARIANT<span class='opr'>)</span>;
+    HRESULT get_onerrorupdate<span class='opr'>(</span>VARIANT<span class='opr'>*</span><span class='opr'>)</span>;
+    HRESULT toString<span class='opr'>(</span>BSTR<span class='opr'>*</span><span class='opr'>)</span>;
+    HRESULT createStyleSheet<span class='opr'>(</span>BSTR,<span class='kw4'>long</span>,LPHTMLSTYLESHEET<span class='opr'>*</span><span class='opr'>)</span>;
+<span class='opr'>}</span>
+
+<span class='kw2'>interface</span> IHTMLSelectionObject : <span class='kw4'>public</span> IDispatch
+<span class='opr'>{</span>
+    HRESULT QueryInterface<span class='opr'>(</span>REFIID,PVOID<span class='opr'>*</span><span class='opr'>)</span>;
+    ULONG AddRef<span class='opr'>(</span><span class='opr'>)</span>;
+    ULONG Release<span class='opr'>(</span><span class='opr'>)</span>;
+    HRESULT GetTypeInfoCount<span class='opr'>(</span>UINT<span class='opr'>*</span><span class='opr'>)</span>;
+    HRESULT GetTypeInfo<span class='opr'>(</span>UINT,LCID,LPTYPEINFO<span class='opr'>*</span><span class='opr'>)</span>;
+    HRESULT GetIDsOfNames<span class='opr'>(</span>REFIID,LPOLESTR<span class='opr'>*</span>,UINT,LCID,DISPID<span class='opr'>*</span><span class='opr'>)</span>;
+    HRESULT Invoke<span class='opr'>(</span>DISPID,REFIID,LCID,WORD,DISPPARAMS<span class='opr'>*</span>,VARIANT<span class='opr'>*</span>,EXCEPINFO<span class='opr'>*</span>,UINT<span class='opr'>*</span><span class='opr'>)</span>;
+
+    HRESULT createRange<span class='opr'>(</span>IDispatch<span class='opr'>*</span><span class='opr'>*</span><span class='opr'>)</span>;
+    HRESULT empty<span class='opr'>(</span><span class='opr'>)</span>;
+    HRESULT clear<span class='opr'>(</span><span class='opr'>)</span>;
+    HRESULT get_type<span class='opr'>(</span>BSTR<span class='opr'>*</span><span class='opr'>)</span>;
+<span class='opr'>}</span>
+
+<span class='kw2'>interface</span> IHTMLTxtRange : <span class='kw4'>public</span> IDispatch
+<span class='opr'>{</span>
+    HRESULT QueryInterface<span class='opr'>(</span>REFIID,PVOID<span class='opr'>*</span><span class='opr'>)</span>;
+    ULONG AddRef<span class='opr'>(</span><span class='opr'>)</span>;
+    ULONG Release<span class='opr'>(</span><span class='opr'>)</span>;
+    HRESULT GetTypeInfoCount<span class='opr'>(</span>UINT<span class='opr'>*</span><span class='opr'>)</span>;
+    HRESULT GetTypeInfo<span class='opr'>(</span>UINT,LCID,LPTYPEINFO<span class='opr'>*</span><span class='opr'>)</span>;
+    HRESULT GetIDsOfNames<span class='opr'>(</span>REFIID,LPOLESTR<span class='opr'>*</span>,UINT,LCID,DISPID<span class='opr'>*</span><span class='opr'>)</span>;
+    HRESULT Invoke<span class='opr'>(</span>DISPID,REFIID,LCID,WORD,DISPPARAMS<span class='opr'>*</span>,VARIANT<span class='opr'>*</span>,EXCEPINFO<span class='opr'>*</span>,UINT<span class='opr'>*</span><span class='opr'>)</span>;
+
+    HRESULT get_htmlText<span class='opr'>(</span>BSTR<span class='opr'>*</span><span class='opr'>)</span>;
+    HRESULT put_text<span class='opr'>(</span>BSTR<span class='opr'>)</span>;
+    HRESULT get_text<span class='opr'>(</span>BSTR<span class='opr'>*</span><span class='opr'>)</span>;
+    HRESULT parentElement<span class='opr'>(</span>LPHTMLELEMENT<span class='opr'>*</span><span class='opr'>)</span>;
+    HRESULT duplicate<span class='opr'>(</span>IHTMLTxtRange<span class='opr'>*</span><span class='opr'>*</span><span class='opr'>)</span>;
+    HRESULT inRange<span class='opr'>(</span>IHTMLTxtRange<span class='opr'>*</span>,VARIANT_BOOL<span class='opr'>*</span><span class='opr'>)</span>;
+    HRESULT isEqual<span class='opr'>(</span>IHTMLTxtRange<span class='opr'>*</span>,VARIANT_BOOL<span class='opr'>*</span><span class='opr'>)</span>;
+    HRESULT scrollIntoView<span class='opr'>(</span>VARIANT_BOOL<span class='opr'>)</span>;
+    HRESULT collapse<span class='opr'>(</span>VARIANT_BOOL<span class='opr'>)</span>;
+    HRESULT expand<span class='opr'>(</span>BSTR,VARIANT_BOOL<span class='opr'>*</span><span class='opr'>)</span>;
+    HRESULT move<span class='opr'>(</span>BSTR,<span class='kw4'>long</span>,<span class='kw4'>long</span><span class='opr'>*</span><span class='opr'>)</span>;
+    HRESULT moveStart<span class='opr'>(</span>BSTR,<span class='kw4'>long</span>,<span class='kw4'>long</span><span class='opr'>*</span><span class='opr'>)</span>;
+    HRESULT moveEnd<span class='opr'>(</span>BSTR,<span class='kw4'>long</span>,<span class='kw4'>long</span><span class='opr'>*</span><span class='opr'>)</span>;
+    HRESULT select<span class='opr'>(</span><span class='opr'>)</span>;
+    HRESULT pasteHTML<span class='opr'>(</span>BSTR<span class='opr'>)</span>;
+    HRESULT moveToElementText<span class='opr'>(</span>LPHTMLELEMENT<span class='opr'>)</span>;
+    HRESULT setEndPoint<span class='opr'>(</span>BSTR,IHTMLTxtRange<span class='opr'>*</span><span class='opr'>)</span>;
+    HRESULT compareEndPoints<span class='opr'>(</span>BSTR,IHTMLTxtRange<span class='opr'>*</span>,<span class='kw4'>long</span><span class='opr'>*</span><span class='opr'>)</span>;
+    HRESULT findText<span class='opr'>(</span>BSTR,<span class='kw4'>long</span>,<span class='kw4'>long</span>,VARIANT_BOOL<span class='opr'>*</span><span class='opr'>)</span>;
+    HRESULT moveToPoint<span class='opr'>(</span><span class='kw4'>long</span>,<span class='kw4'>long</span><span class='opr'>)</span>;
+    HRESULT getBookmark<span class='opr'>(</span>BSTR<span class='opr'>*</span><span class='opr'>)</span>;
+    HRESULT moveToBookbark<span class='opr'>(</span>BSTR,VARIANT_BOOL<span class='opr'>*</span><span class='opr'>)</span>;
+    HRESULT queryCommandSupported<span class='opr'>(</span>BSTR,VARIANT_BOOL<span class='opr'>*</span><span class='opr'>)</span>;
+    HRESULT queryCommandEnabled<span class='opr'>(</span>BSTR,VARIANT_BOOL<span class='opr'>*</span><span class='opr'>)</span>;
+    HRESULT queryCommandState<span class='opr'>(</span>BSTR,VARIANT_BOOL<span class='opr'>*</span><span class='opr'>)</span>;
+    HRESULT queryCommandIndeterm<span class='opr'>(</span>BSTR,VARIANT_BOOL<span class='opr'>*</span><span class='opr'>)</span>;
+    HRESULT queryCommandText<span class='opr'>(</span>BSTR,BSTR<span class='opr'>*</span><span class='opr'>)</span>;
+    HRESULT queryCommandValue<span class='opr'>(</span>BSTR,VARIANT<span class='opr'>*</span><span class='opr'>)</span>;
+    HRESULT execCommand<span class='opr'>(</span>BSTR,VARIANT_BOOL,VARIANT,VARIANT_BOOL<span class='opr'>*</span><span class='opr'>)</span>;
+    HRESULT execCommandShowHelp<span class='opr'>(</span>BSTR,VARIANT_BOOL<span class='opr'>*</span><span class='opr'>)</span>;
+<span class='opr'>}</span>
+
+<span class='kw2'>interface</span> IHTMLElement : <span class='kw4'>public</span> IDispatch
+<span class='opr'>{</span>
+    HRESULT QueryInterface<span class='opr'>(</span>REFIID,PVOID<span class='opr'>*</span><span class='opr'>)</span>;
+    ULONG AddRef<span class='opr'>(</span><span class='opr'>)</span>;
+    ULONG Release<span class='opr'>(</span><span class='opr'>)</span>;
+    HRESULT GetTypeInfoCount<span class='opr'>(</span>UINT<span class='opr'>*</span><span class='opr'>)</span>;
+    HRESULT GetTypeInfo<span class='opr'>(</span>UINT,LCID,LPTYPEINFO<span class='opr'>*</span><span class='opr'>)</span>;
+    HRESULT GetIDsOfNames<span class='opr'>(</span>REFIID,LPOLESTR<span class='opr'>*</span>,UINT,LCID,DISPID<span class='opr'>*</span><span class='opr'>)</span>;
+    HRESULT Invoke<span class='opr'>(</span>DISPID,REFIID,LCID,WORD,DISPPARAMS<span class='opr'>*</span>,VARIANT<span class='opr'>*</span>,EXCEPINFO<span class='opr'>*</span>,UINT<span class='opr'>*</span><span class='opr'>)</span>;
+
+    HRESULT setAttribute<span class='opr'>(</span>BSTR,VARIANT,<span class='kw4'>long</span><span class='opr'>)</span>;
+    HRESULT getAttribute<span class='opr'>(</span>BSTR,<span class='kw4'>long</span>,VARIANT<span class='opr'>*</span><span class='opr'>)</span>;
+    HRESULT removeAttribute<span class='opr'>(</span>BSTR,<span class='kw4'>long</span>,VARIANT_BOOL<span class='opr'>*</span><span class='opr'>)</span>;
+    HRESULT put_className<span class='opr'>(</span>BSTR<span class='opr'>)</span>;
+    HRESULT get_className<span class='opr'>(</span>BSTR<span class='opr'>*</span><span class='opr'>)</span>;
+    HRESULT put_id<span class='opr'>(</span>BSTR<span class='opr'>)</span>;
+    HRESULT get_id<span class='opr'>(</span>BSTR<span class='opr'>*</span><span class='opr'>)</span>;
+    HRESULT get_tagName<span class='opr'>(</span>BSTR<span class='opr'>*</span><span class='opr'>)</span>;
+    HRESULT get_parentElement<span class='opr'>(</span>LPHTMLELEMENT<span class='opr'>*</span><span class='opr'>)</span>;
+    HRESULT get_style<span class='opr'>(</span>LPHTMLSTYLE<span class='opr'>*</span><span class='opr'>)</span>;
+    HRESULT put_onhelp<span class='opr'>(</span>VARIANT<span class='opr'>)</span>;
+    HRESULT get_onhelp<span class='opr'>(</span>VARIANT<span class='opr'>*</span><span class='opr'>)</span>;
+    HRESULT put_onclick<span class='opr'>(</span>VARIANT<span class='opr'>)</span>;
+    HRESULT get_onclick<span class='opr'>(</span>VARIANT<span class='opr'>*</span><span class='opr'>)</span>;
+    HRESULT put_ondblclick<span class='opr'>(</span>VARIANT<span class='opr'>)</span>;
+    HRESULT get_ondblclick<span class='opr'>(</span>VARIANT<span class='opr'>*</span><span class='opr'>)</span>;
+    HRESULT put_onkeydown<span class='opr'>(</span>VARIANT<span class='opr'>)</span>;
+    HRESULT get_onkeydown<span class='opr'>(</span>VARIANT<span class='opr'>*</span><span class='opr'>)</span>;
+    HRESULT put_onkeyup<span class='opr'>(</span>VARIANT<span class='opr'>)</span>;
+    HRESULT get_onkeyup<span class='opr'>(</span>VARIANT<span class='opr'>*</span><span class='opr'>)</span>;
+    HRESULT put_onkeypress<span class='opr'>(</span>VARIANT<span class='opr'>)</span>;
+    HRESULT get_onkeypress<span class='opr'>(</span>VARIANT<span class='opr'>*</span><span class='opr'>)</span>;
+    HRESULT put_onmouseout<span class='opr'>(</span>VARIANT<span class='opr'>)</span>;
+    HRESULT get_onmouseout<span class='opr'>(</span>VARIANT<span class='opr'>*</span><span class='opr'>)</span>;
+    HRESULT put_onmouseover<span class='opr'>(</span>VARIANT<span class='opr'>)</span>;
+    HRESULT get_onmouseover<span class='opr'>(</span>VARIANT<span class='opr'>*</span><span class='opr'>)</span>;
+    HRESULT put_onmousemove<span class='opr'>(</span>VARIANT<span class='opr'>)</span>;
+    HRESULT get_onmousemove<span class='opr'>(</span>VARIANT<span class='opr'>*</span><span class='opr'>)</span>;
+    HRESULT put_onmousedown<span class='opr'>(</span>VARIANT<span class='opr'>)</span>;
+    HRESULT get_onmousedown<span class='opr'>(</span>VARIANT<span class='opr'>*</span><span class='opr'>)</span>;
+    HRESULT put_onmouseup<span class='opr'>(</span>VARIANT<span class='opr'>)</span>;
+    HRESULT get_onmouseup<span class='opr'>(</span>VARIANT<span class='opr'>*</span><span class='opr'>)</span>;
+    HRESULT get_document<span class='opr'>(</span>IDispatch<span class='opr'>*</span><span class='opr'>*</span><span class='opr'>)</span>;
+    HRESULT put_title<span class='opr'>(</span>BSTR<span class='opr'>)</span>;
+    HRESULT get_title<span class='opr'>(</span>BSTR<span class='opr'>*</span><span class='opr'>)</span>;
+    HRESULT put_language<span class='opr'>(</span>BSTR<span class='opr'>)</span>;
+    HRESULT get_language<span class='opr'>(</span>BSTR<span class='opr'>*</span><span class='opr'>)</span>;
+    HRESULT put_onselectstart<span class='opr'>(</span>VARIANT<span class='opr'>)</span>;
+    HRESULT get_onselectstart<span class='opr'>(</span>VARIANT<span class='opr'>*</span><span class='opr'>)</span>;
+    HRESULT scrollIntoView<span class='opr'>(</span>VARIANT<span class='opr'>)</span>;
+    HRESULT contains<span class='opr'>(</span>LPHTMLELEMENT,VARIANT_BOOL<span class='opr'>*</span><span class='opr'>)</span>;
+    HRESULT get_source3Index<span class='opr'>(</span><span class='kw4'>long</span><span class='opr'>*</span><span class='opr'>)</span>;
+    HRESULT get_recordNumber<span class='opr'>(</span>VARIANT<span class='opr'>*</span><span class='opr'>)</span>;
+    HRESULT put_lang<span class='opr'>(</span>BSTR<span class='opr'>)</span>;
+    HRESULT get_lang<span class='opr'>(</span>BSTR<span class='opr'>*</span><span class='opr'>)</span>;
+    HRESULT get_offsetLeft<span class='opr'>(</span><span class='kw4'>long</span><span class='opr'>*</span><span class='opr'>)</span>;
+    HRESULT get_offsetTop<span class='opr'>(</span><span class='kw4'>long</span><span class='opr'>*</span><span class='opr'>)</span>;
+    HRESULT get_offsetWidth<span class='opr'>(</span><span class='kw4'>long</span><span class='opr'>*</span><span class='opr'>)</span>;
+    HRESULT get_offsetHeight<span class='opr'>(</span><span class='kw4'>long</span><span class='opr'>*</span><span class='opr'>)</span>;
+    HRESULT get_offsetParent<span class='opr'>(</span>LPHTMLELEMENT<span class='opr'>*</span><span class='opr'>)</span>;
+    HRESULT put_innerHTML<span class='opr'>(</span>BSTR<span class='opr'>)</span>;
+    HRESULT get_innerHTML<span class='opr'>(</span>BSTR<span class='opr'>*</span><span class='opr'>)</span>;
+    HRESULT put_innerText<span class='opr'>(</span>BSTR<span class='opr'>)</span>;
+    HRESULT get_innerText<span class='opr'>(</span>BSTR<span class='opr'>*</span><span class='opr'>)</span>;
+    HRESULT put_outerHTML<span class='opr'>(</span>BSTR<span class='opr'>)</span>;
+    HRESULT get_outerHTML<span class='opr'>(</span>BSTR<span class='opr'>*</span><span class='opr'>)</span>;
+    HRESULT put_outerText<span class='opr'>(</span>BSTR<span class='opr'>)</span>;
+    HRESULT get_outerText<span class='opr'>(</span>BSTR<span class='opr'>*</span><span class='opr'>)</span>;
+    HRESULT insertAdjacentHTML<span class='opr'>(</span>BSTR,BSTR<span class='opr'>)</span>;
+    HRESULT insertAdjacentText<span class='opr'>(</span>BSTR,BSTR<span class='opr'>)</span>;
+    HRESULT get_parentTextEdit<span class='opr'>(</span>LPHTMLELEMENT<span class='opr'>*</span><span class='opr'>)</span>;
+    HRESULT isTextEdit<span class='opr'>(</span>VARIANT_BOOL<span class='opr'>*</span><span class='opr'>)</span>;
+    HRESULT click<span class='opr'>(</span><span class='opr'>)</span>;
+    HRESULT get_filters<span class='opr'>(</span>LPHTMLFILTERSCOLLECTION<span class='opr'>*</span><span class='opr'>)</span>;
+    HRESULT put_ondragstart<span class='opr'>(</span>VARIANT<span class='opr'>)</span>;
+    HRESULT get_ondragstart<span class='opr'>(</span>VARIANT<span class='opr'>*</span><span class='opr'>)</span>;
+    HRESULT toString<span class='opr'>(</span>BSTR<span class='opr'>*</span><span class='opr'>)</span>;
+    HRESULT put_onbeforeupdate<span class='opr'>(</span>VARIANT<span class='opr'>)</span>;
+    HRESULT get_onbeforeupdate<span class='opr'>(</span>VARIANT<span class='opr'>*</span><span class='opr'>)</span>;
+    HRESULT put_onafterupdate<span class='opr'>(</span>VARIANT<span class='opr'>)</span>;
+    HRESULT get_onafterupdate<span class='opr'>(</span>VARIANT<span class='opr'>*</span><span class='opr'>)</span>;
+    HRESULT put_onerrorupdate<span class='opr'>(</span>VARIANT<span class='opr'>)</span>;
+    HRESULT get_onerrorupdate<span class='opr'>(</span>VARIANT<span class='opr'>*</span><span class='opr'>)</span>;
+    HRESULT put_onrowexit<span class='opr'>(</span>VARIANT<span class='opr'>)</span>;
+    HRESULT get_onrowexit<span class='opr'>(</span>VARIANT<span class='opr'>*</span><span class='opr'>)</span>;
+    HRESULT put_onrowenter<span class='opr'>(</span>VARIANT<span class='opr'>)</span>;
+    HRESULT get_onrowenter<span class='opr'>(</span>VARIANT<span class='opr'>*</span><span class='opr'>)</span>;
+    HRESULT put_ondatasetchanged<span class='opr'>(</span>VARIANT<span class='opr'>)</span>;
+    HRESULT get_ondatasetchanged<span class='opr'>(</span>VARIANT<span class='opr'>*</span><span class='opr'>)</span>;
+    HRESULT put_ondataavailable<span class='opr'>(</span>VARIANT<span class='opr'>)</span>;
+    HRESULT get_ondataavailable<span class='opr'>(</span>VARIANT<span class='opr'>*</span><span class='opr'>)</span>;
+    HRESULT put_ondatasetcomplete<span class='opr'>(</span>VARIANT<span class='opr'>)</span>;
+    HRESULT get_ondatasetcomplete<span class='opr'>(</span>VARIANT<span class='opr'>*</span><span class='opr'>)</span>;
+    HRESULT put_onfilterchange<span class='opr'>(</span>VARIANT<span class='opr'>)</span>;
+    HRESULT get_onfilterchange<span class='opr'>(</span>VARIANT<span class='opr'>*</span><span class='opr'>)</span>;
+    HRESULT get_children<span class='opr'>(</span>IDispatch<span class='opr'>*</span><span class='opr'>*</span><span class='opr'>)</span>;
+    HRESULT get_all<span class='opr'>(</span>IDispatch<span class='opr'>*</span><span class='opr'>*</span><span class='opr'>)</span>;
+<span class='opr'>}</span>
+
+<span class='kw2'>interface</span> IHTMLFramesCollection2 : <span class='kw4'>public</span> IDispatch
+<span class='opr'>{</span>
+    HRESULT QueryInterface<span class='opr'>(</span>REFIID,PVOID<span class='opr'>*</span><span class='opr'>)</span>;
+    ULONG AddRef<span class='opr'>(</span><span class='opr'>)</span>;
+    ULONG Release<span class='opr'>(</span><span class='opr'>)</span>;
+    HRESULT GetTypeInfoCount<span class='opr'>(</span>UINT<span class='opr'>*</span><span class='opr'>)</span>;
+    HRESULT GetTypeInfo<span class='opr'>(</span>UINT,LCID,LPTYPEINFO<span class='opr'>*</span><span class='opr'>)</span>;
+    HRESULT GetIDsOfNames<span class='opr'>(</span>REFIID,LPOLESTR<span class='opr'>*</span>,UINT,LCID,DISPID<span class='opr'>*</span><span class='opr'>)</span>;
+    HRESULT Invoke<span class='opr'>(</span>DISPID,REFIID,LCID,WORD,DISPPARAMS<span class='opr'>*</span>,VARIANT<span class='opr'>*</span>,EXCEPINFO<span class='opr'>*</span>,UINT<span class='opr'>*</span><span class='opr'>)</span>;
+
+    HRESULT item<span class='opr'>(</span>VARIANT<span class='opr'>*</span>,VARIANT<span class='opr'>*</span><span class='opr'>)</span>;
+    HRESULT get_length<span class='opr'>(</span><span class='kw4'>long</span><span class='opr'>*</span><span class='opr'>)</span>;
+<span class='opr'>}</span>
+
+<span class='kw2'>interface</span> IHTMLWindow2 : <span class='kw4'>public</span> IHTMLFramesCollection2
+<span class='opr'>{</span>
+    HRESULT QueryInterface<span class='opr'>(</span>REFIID,PVOID<span class='opr'>*</span><span class='opr'>)</span>;
+    ULONG AddRef<span class='opr'>(</span><span class='opr'>)</span>;
+    ULONG Release<span class='opr'>(</span><span class='opr'>)</span>;
+    HRESULT GetTypeInfoCount<span class='opr'>(</span>UINT<span class='opr'>*</span><span class='opr'>)</span>;
+    HRESULT GetTypeInfo<span class='opr'>(</span>UINT,LCID,LPTYPEINFO<span class='opr'>*</span><span class='opr'>)</span>;
+    HRESULT GetIDsOfNames<span class='opr'>(</span>REFIID,LPOLESTR<span class='opr'>*</span>,UINT,LCID,DISPID<span class='opr'>*</span><span class='opr'>)</span>;
+    HRESULT Invoke<span class='opr'>(</span>DISPID,REFIID,LCID,WORD,DISPPARAMS<span class='opr'>*</span>,VARIANT<span class='opr'>*</span>,EXCEPINFO<span class='opr'>*</span>,UINT<span class='opr'>*</span><span class='opr'>)</span>;
+    HRESULT item<span class='opr'>(</span>VARIANT<span class='opr'>*</span>,VARIANT<span class='opr'>*</span><span class='opr'>)</span>;
+    HRESULT get_length<span class='opr'>(</span><span class='kw4'>long</span><span class='opr'>*</span><span class='opr'>)</span>;
+
+    HRESULT get_frames<span class='opr'>(</span>IHTMLFramesCollection2<span class='opr'>*</span><span class='opr'>*</span><span class='opr'>)</span>;
+    HRESULT put_defaultStatus<span class='opr'>(</span>BSTR<span class='opr'>)</span>;
+    HRESULT get_defaultStatus<span class='opr'>(</span>BSTR<span class='opr'>*</span><span class='opr'>)</span>;
+    HRESULT put_status<span class='opr'>(</span>BSTR<span class='opr'>)</span>;
+    HRESULT get_status<span class='opr'>(</span>BSTR<span class='opr'>*</span><span class='opr'>)</span>;
+    HRESULT setTimeout<span class='opr'>(</span>BSTR,<span class='kw4'>long</span>,VARIANT<span class='opr'>*</span>,<span class='kw4'>long</span><span class='opr'>*</span><span class='opr'>)</span>;
+    HRESULT clearTimeout<span class='opr'>(</span><span class='kw4'>long</span><span class='opr'>)</span>;
+    HRESULT alert<span class='opr'>(</span>BSTR<span class='opr'>)</span>;
+    HRESULT confirm<span class='opr'>(</span>BSTR,VARIANT_BOOL<span class='opr'>*</span><span class='opr'>)</span>;
+    HRESULT prompt<span class='opr'>(</span>BSTR,BSTR,VARIANT<span class='opr'>*</span><span class='opr'>)</span>;
+    HRESULT get_Image<span class='opr'>(</span>LPHTMLIMAGEELEMENTFACTORY<span class='opr'>*</span><span class='opr'>)</span>;
+    HRESULT get_location<span class='opr'>(</span>LPHTMLLOCATION<span class='opr'>*</span><span class='opr'>)</span>;
+    HRESULT get_history<span class='opr'>(</span>LPOMHISTORY<span class='opr'>*</span><span class='opr'>)</span>;
+    HRESULT close<span class='opr'>(</span><span class='opr'>)</span>;
+    HRESULT put_opener<span class='opr'>(</span>VARIANT<span class='opr'>)</span>;
+    HRESULT get_opener<span class='opr'>(</span>VARIANT<span class='opr'>*</span><span class='opr'>)</span>;
+    HRESULT get_navigator<span class='opr'>(</span>LPOMNAVIGATOR<span class='opr'>*</span><span class='opr'>)</span>;
+    HRESULT put_name<span class='opr'>(</span>BSTR<span class='opr'>)</span>;
+    HRESULT get_name<span class='opr'>(</span>BSTR<span class='opr'>*</span><span class='opr'>)</span>;
+    HRESULT get_parent<span class='opr'>(</span>LPHTMLWINDOW2<span class='opr'>*</span><span class='opr'>)</span>;
+    HRESULT open<span class='opr'>(</span>BSTR,BSTR,BSTR,VARIANT_BOOL,LPHTMLWINDOW2<span class='opr'>*</span><span class='opr'>)</span>;
+    HRESULT get_self<span class='opr'>(</span>LPHTMLWINDOW2<span class='opr'>*</span><span class='opr'>)</span>;
+    HRESULT get_top<span class='opr'>(</span>LPHTMLWINDOW2<span class='opr'>*</span><span class='opr'>)</span>;
+    HRESULT get_window<span class='opr'>(</span>LPHTMLWINDOW2<span class='opr'>*</span><span class='opr'>)</span>;
+    HRESULT navigate<span class='opr'>(</span>BSTR<span class='opr'>)</span>;
+    HRESULT put_onfocus<span class='opr'>(</span>VARIANT<span class='opr'>)</span>;
+    HRESULT get_onfocus<span class='opr'>(</span>VARIANT<span class='opr'>*</span><span class='opr'>)</span>;
+    HRESULT put_onblur<span class='opr'>(</span>VARIANT<span class='opr'>)</span>;
+    HRESULT get_onblur<span class='opr'>(</span>VARIANT<span class='opr'>*</span><span class='opr'>)</span>;
+    HRESULT put_onload<span class='opr'>(</span>VARIANT<span class='opr'>)</span>;
+    HRESULT get_onload<span class='opr'>(</span>VARIANT<span class='opr'>*</span><span class='opr'>)</span>;
+    HRESULT put_onbeforeunload<span class='opr'>(</span>VARIANT<span class='opr'>)</span>;
+    HRESULT get_onbeforeunload<span class='opr'>(</span>VARIANT<span class='opr'>*</span><span class='opr'>)</span>;
+    HRESULT put_onunload<span class='opr'>(</span>VARIANT<span class='opr'>)</span>;
+    HRESULT get_onunload<span class='opr'>(</span>VARIANT<span class='opr'>*</span><span class='opr'>)</span>;
+    HRESULT put_onhelp<span class='opr'>(</span>VARIANT<span class='opr'>)</span>;
+    HRESULT get_onhelp<span class='opr'>(</span>VARIANT<span class='opr'>*</span><span class='opr'>)</span>;
+    HRESULT put_onerror<span class='opr'>(</span>VARIANT<span class='opr'>)</span>;
+    HRESULT get_onerror<span class='opr'>(</span>VARIANT<span class='opr'>*</span><span class='opr'>)</span>;
+    HRESULT put_onresize<span class='opr'>(</span>VARIANT<span class='opr'>)</span>;
+    HRESULT get_onresize<span class='opr'>(</span>VARIANT<span class='opr'>*</span><span class='opr'>)</span>;
+    HRESULT put_onscroll<span class='opr'>(</span>VARIANT<span class='opr'>)</span>;
+    HRESULT get_onscroll<span class='opr'>(</span>VARIANT<span class='opr'>*</span><span class='opr'>)</span>;
+    HRESULT get_document<span class='opr'>(</span>IHTMLDocument2<span class='opr'>*</span><span class='opr'>*</span><span class='opr'>)</span>;
+    HRESULT get_event<span class='opr'>(</span>LPHTMLEVENTOBJ<span class='opr'>*</span><span class='opr'>)</span>;
+    HRESULT get__newEnum<span class='opr'>(</span>IUnknown<span class='opr'>*</span><span class='opr'>*</span><span class='opr'>)</span>;
+    HRESULT showModalDialog<span class='opr'>(</span>BSTR,VARIANT<span class='opr'>*</span>,VARIANT<span class='opr'>*</span>,VARIANT<span class='opr'>*</span><span class='opr'>)</span>;
+    HRESULT showHelp<span class='opr'>(</span>BSTR,VARIANT,BSTR<span class='opr'>)</span>;
+    HRESULT get_screen<span class='opr'>(</span>LPHTMLSCREEN<span class='opr'>*</span><span class='opr'>)</span>;
+    HRESULT get_Option<span class='opr'>(</span>LPHTMLOPTIONELEMENTFACTORY<span class='opr'>*</span><span class='opr'>)</span>;
+    HRESULT focus<span class='opr'>(</span><span class='opr'>)</span>;
+    HRESULT get_closed<span class='opr'>(</span>VARIANT_BOOL<span class='opr'>*</span><span class='opr'>)</span>;
+    HRESULT blur<span class='opr'>(</span><span class='opr'>)</span>;
+    HRESULT scroll<span class='opr'>(</span><span class='kw4'>long</span>,<span class='kw4'>long</span><span class='opr'>)</span>;
+    HRESULT get_clientInformation<span class='opr'>(</span>LPOMNAVIGATOR<span class='opr'>*</span><span class='opr'>)</span>;
+    HRESULT setInterval<span class='opr'>(</span>BSTR,<span class='kw4'>long</span>,VARIANT<span class='opr'>*</span>,<span class='kw4'>long</span><span class='opr'>*</span><span class='opr'>)</span>;
+    HRESULT clearInterval<span class='opr'>(</span><span class='kw4'>long</span><span class='opr'>)</span>;
+    HRESULT put_offscreenBuffering<span class='opr'>(</span>VARIANT<span class='opr'>)</span>;
+    HRESULT get_offscreenBuffering<span class='opr'>(</span>VARIANT<span class='opr'>*</span><span class='opr'>)</span>;
+    HRESULT execScript<span class='opr'>(</span>BSTR,BSTR,VARIANT<span class='opr'>*</span><span class='opr'>)</span>;
+    HRESULT toString<span class='opr'>(</span>BSTR<span class='opr'>*</span><span class='opr'>)</span>;
+    HRESULT scrollBy<span class='opr'>(</span><span class='kw4'>long</span>,<span class='kw4'>long</span><span class='opr'>)</span>;
+    HRESULT scrollTo<span class='opr'>(</span><span class='kw4'>long</span>,<span class='kw4'>long</span><span class='opr'>)</span>;
+    HRESULT moveTo<span class='opr'>(</span><span class='kw4'>long</span>,<span class='kw4'>long</span><span class='opr'>)</span>;
+    HRESULT moveBy<span class='opr'>(</span><span class='kw4'>long</span>,<span class='kw4'>long</span><span class='opr'>)</span>;
+    HRESULT resizeTo<span class='opr'>(</span><span class='kw4'>long</span>,<span class='kw4'>long</span><span class='opr'>)</span>;
+    HRESULT resizeBy<span class='opr'>(</span><span class='kw4'>long</span>,<span class='kw4'>long</span><span class='opr'>)</span>;
+    HRESULT get_external<span class='opr'>(</span>IDispatch<span class='opr'>*</span><span class='opr'>*</span><span class='opr'>)</span>;
+<span class='opr'>}</span>
+
+<span class='kw2'>interface</span> IHTMLFrameBase : <span class='kw4'>public</span> IDispatch
+<span class='opr'>{</span>
+    HRESULT QueryInterface<span class='opr'>(</span>REFIID,PVOID<span class='opr'>*</span><span class='opr'>)</span>;
+    ULONG AddRef<span class='opr'>(</span><span class='opr'>)</span>;
+    ULONG Release<span class='opr'>(</span><span class='opr'>)</span>;
+    HRESULT GetTypeInfoCount<span class='opr'>(</span>UINT<span class='opr'>*</span><span class='opr'>)</span>;
+    HRESULT GetTypeInfo<span class='opr'>(</span>UINT,LCID,LPTYPEINFO<span class='opr'>*</span><span class='opr'>)</span>;
+    HRESULT GetIDsOfNames<span class='opr'>(</span>REFIID,LPOLESTR<span class='opr'>*</span>,UINT,LCID,DISPID<span class='opr'>*</span><span class='opr'>)</span>;
+    HRESULT Invoke<span class='opr'>(</span>DISPID,REFIID,LCID,WORD,DISPPARAMS<span class='opr'>*</span>,VARIANT<span class='opr'>*</span>,EXCEPINFO<span class='opr'>*</span>,UINT<span class='opr'>*</span><span class='opr'>)</span>;
+
+    HRESULT put_src<span class='opr'>(</span>BSTR<span class='opr'>)</span>;
+    HRESULT get_src<span class='opr'>(</span>BSTR<span class='opr'>*</span><span class='opr'>)</span>;
+    HRESULT put_name<span class='opr'>(</span>BSTR<span class='opr'>)</span>;
+    HRESULT get_name<span class='opr'>(</span>BSTR<span class='opr'>*</span><span class='opr'>)</span>;
+    HRESULT put_border<span class='opr'>(</span>VARIANT<span class='opr'>)</span>;
+    HRESULT get_border<span class='opr'>(</span>VARIANT<span class='opr'>*</span><span class='opr'>)</span>;
+    HRESULT put_frameBorder<span class='opr'>(</span>BSTR<span class='opr'>)</span>;
+    HRESULT get_frameBorder<span class='opr'>(</span>BSTR<span class='opr'>*</span><span class='opr'>)</span>;
+    HRESULT put_frameSpacing<span class='opr'>(</span>VARIANT<span class='opr'>)</span>;
+    HRESULT get_frameSpacing<span class='opr'>(</span>VARIANT<span class='opr'>*</span><span class='opr'>)</span>;
+    HRESULT put_marginWidth<span class='opr'>(</span>VARIANT<span class='opr'>)</span>;
+    HRESULT get_marginWidth<span class='opr'>(</span>VARIANT<span class='opr'>*</span><span class='opr'>)</span>;
+    HRESULT put_marginHeight<span class='opr'>(</span>VARIANT<span class='opr'>)</span>;
+    HRESULT get_marginHeight<span class='opr'>(</span>VARIANT<span class='opr'>*</span><span class='opr'>)</span>;
+    HRESULT put_noResize<span class='opr'>(</span>VARIANT_BOOL<span class='opr'>)</span>;
+    HRESULT get_noResize<span class='opr'>(</span>VARIANT_BOOL<span class='opr'>*</span><span class='opr'>)</span>;
+    HRESULT put_scrolling<span class='opr'>(</span>BSTR<span class='opr'>)</span>;
+    HRESULT get_scrolling<span class='opr'>(</span>BSTR<span class='opr'>*</span><span class='opr'>)</span>;
+<span class='opr'>}</span>
+
+<span class='kw2'>interface</span> IHTMLFrameBase2 : <span class='kw4'>public</span> IDispatch
+<span class='opr'>{</span>
+    HRESULT QueryInterface<span class='opr'>(</span>REFIID,PVOID<span class='opr'>*</span><span class='opr'>)</span>;
+    ULONG AddRef<span class='opr'>(</span><span class='opr'>)</span>;
+    ULONG Release<span class='opr'>(</span><span class='opr'>)</span>;
+    HRESULT GetTypeInfoCount<span class='opr'>(</span>UINT<span class='opr'>*</span><span class='opr'>)</span>;
+    HRESULT GetTypeInfo<span class='opr'>(</span>UINT,LCID,LPTYPEINFO<span class='opr'>*</span><span class='opr'>)</span>;
+    HRESULT GetIDsOfNames<span class='opr'>(</span>REFIID,LPOLESTR<span class='opr'>*</span>,UINT,LCID,DISPID<span class='opr'>*</span><span class='opr'>)</span>;
+    HRESULT Invoke<span class='opr'>(</span>DISPID,REFIID,LCID,WORD,DISPPARAMS<span class='opr'>*</span>,VARIANT<span class='opr'>*</span>,EXCEPINFO<span class='opr'>*</span>,UINT<span class='opr'>*</span><span class='opr'>)</span>;
+
+    HRESULT get_contentWindow<span class='opr'>(</span>IHTMLWindow2 <span class='opr'>*</span><span class='opr'>*</span><span class='opr'>)</span>;
+    HRESULT put_onload<span class='opr'>(</span>VARIANT<span class='opr'>)</span>;
+    HRESULT get_onload<span class='opr'>(</span>VARIANT<span class='opr'>*</span><span class='opr'>)</span>;
+    HRESULT put_onreadystatechange<span class='opr'>(</span>VARIANT<span class='opr'>)</span>;
+    HRESULT get_onreadystatechange<span class='opr'>(</span>VARIANT<span class='opr'>*</span><span class='opr'>)</span>;
+    HRESULT get_readyState<span class='opr'>(</span>BSTR<span class='opr'>*</span><span class='opr'>)</span>;
+    HRESULT put_allowTransparency<span class='opr'>(</span>VARIANT_BOOL<span class='opr'>)</span>;
+    HRESULT get_allowTransparency<span class='opr'>(</span>VARIANT_BOOL<span class='opr'>*</span><span class='opr'>)</span>;
+<span class='opr'>}</span>
+
+<span class='kw2'>interface</span> IHTMLFrameBase3 : <span class='kw4'>public</span> IDispatch
+<span class='opr'>{</span>
+    HRESULT QueryInterface<span class='opr'>(</span>REFIID,PVOID<span class='opr'>*</span><span class='opr'>)</span>;
+    ULONG AddRef<span class='opr'>(</span><span class='opr'>)</span>;
+    ULONG Release<span class='opr'>(</span><span class='opr'>)</span>;
+    HRESULT GetTypeInfoCount<span class='opr'>(</span>UINT<span class='opr'>*</span><span class='opr'>)</span>;
+    HRESULT GetTypeInfo<span class='opr'>(</span>UINT,LCID,LPTYPEINFO<span class='opr'>*</span><span class='opr'>)</span>;
+    HRESULT GetIDsOfNames<span class='opr'>(</span>REFIID,LPOLESTR<span class='opr'>*</span>,UINT,LCID,DISPID<span class='opr'>*</span><span class='opr'>)</span>;
+    HRESULT Invoke<span class='opr'>(</span>DISPID,REFIID,LCID,WORD,DISPPARAMS<span class='opr'>*</span>,VARIANT<span class='opr'>*</span>,EXCEPINFO<span class='opr'>*</span>,UINT<span class='opr'>*</span><span class='opr'>)</span>;
+
+    HRESULT put_longDesc<span class='opr'>(</span>BSTR<span class='opr'>)</span>;
+    HRESULT get_longDesc<span class='opr'>(</span>BSTR<span class='opr'>*</span><span class='opr'>)</span>;
+<span class='opr'>}</span>
+
+<span class='kw2'>interface</span> IHTMLBodyElement : <span class='kw4'>public</span> IDispatch
+<span class='opr'>{</span>
+    HRESULT QueryInterface<span class='opr'>(</span>REFIID,PVOID<span class='opr'>*</span><span class='opr'>)</span>;
+    ULONG AddRef<span class='opr'>(</span><span class='opr'>)</span>;
+    ULONG Release<span class='opr'>(</span><span class='opr'>)</span>;
+    HRESULT GetTypeInfoCount<span class='opr'>(</span>UINT<span class='opr'>*</span><span class='opr'>)</span>;
+    HRESULT GetTypeInfo<span class='opr'>(</span>UINT,LCID,LPTYPEINFO<span class='opr'>*</span><span class='opr'>)</span>;
+    HRESULT GetIDsOfNames<span class='opr'>(</span>REFIID,LPOLESTR<span class='opr'>*</span>,UINT,LCID,DISPID<span class='opr'>*</span><span class='opr'>)</span>;
+    HRESULT Invoke<span class='opr'>(</span>DISPID,REFIID,LCID,WORD,DISPPARAMS<span class='opr'>*</span>,VARIANT<span class='opr'>*</span>,EXCEPINFO<span class='opr'>*</span>,UINT<span class='opr'>*</span><span class='opr'>)</span>;
+
+    HRESULT put_background<span class='opr'>(</span>BSTR<span class='opr'>)</span>;
+    HRESULT get_background<span class='opr'>(</span>BSTR<span class='opr'>*</span><span class='opr'>)</span>;
+    HRESULT put_bgProperties<span class='opr'>(</span>BSTR<span class='opr'>)</span>;
+    HRESULT get_bgProperties<span class='opr'>(</span>BSTR<span class='opr'>*</span><span class='opr'>)</span>;
+    HRESULT put_leftMargin<span class='opr'>(</span>VARIANT<span class='opr'>)</span>;
+    HRESULT get_leftMargin<span class='opr'>(</span>VARIANT<span class='opr'>*</span><span class='opr'>)</span>;
+    HRESULT put_topMargin<span class='opr'>(</span>VARIANT<span class='opr'>)</span>;
+    HRESULT get_topMargin<span class='opr'>(</span>VARIANT<span class='opr'>*</span><span class='opr'>)</span>;
+    HRESULT put_rightMargin<span class='opr'>(</span>VARIANT<span class='opr'>)</span>;
+    HRESULT get_rightMargin<span class='opr'>(</span>VARIANT<span class='opr'>*</span><span class='opr'>)</span>;
+    HRESULT put_bottomMargin<span class='opr'>(</span>VARIANT<span class='opr'>)</span>;
+    HRESULT get_bottomMargin<span class='opr'>(</span>VARIANT<span class='opr'>*</span><span class='opr'>)</span>;
+    HRESULT put_noWrap<span class='opr'>(</span>VARIANT_BOOL<span class='opr'>)</span>;
+    HRESULT get_noWrap<span class='opr'>(</span>VARIANT_BOOL<span class='opr'>*</span><span class='opr'>)</span>;
+    HRESULT put_bgColor<span class='opr'>(</span>VARIANT<span class='opr'>)</span>;
+    HRESULT get_bgColor<span class='opr'>(</span>VARIANT<span class='opr'>*</span><span class='opr'>)</span>;
+    HRESULT put_text<span class='opr'>(</span>VARIANT<span class='opr'>)</span>;
+    HRESULT get_text<span class='opr'>(</span>VARIANT<span class='opr'>*</span><span class='opr'>)</span>;
+    HRESULT put_link<span class='opr'>(</span>VARIANT<span class='opr'>)</span>;
+    HRESULT get_link<span class='opr'>(</span>VARIANT<span class='opr'>*</span><span class='opr'>)</span>;
+    HRESULT put_vLink<span class='opr'>(</span>VARIANT<span class='opr'>)</span>;
+    HRESULT get_vLink<span class='opr'>(</span>VARIANT<span class='opr'>*</span><span class='opr'>)</span>;
+    HRESULT put_aLink<span class='opr'>(</span>VARIANT<span class='opr'>)</span>;
+    HRESULT get_aLink<span class='opr'>(</span>VARIANT<span class='opr'>*</span><span class='opr'>)</span>;
+    HRESULT put_onload<span class='opr'>(</span>VARIANT<span class='opr'>)</span>;
+    HRESULT get_onload<span class='opr'>(</span>VARIANT<span class='opr'>*</span><span class='opr'>)</span>;
+    HRESULT put_onunload<span class='opr'>(</span>VARIANT<span class='opr'>)</span>;
+    HRESULT get_onunload<span class='opr'>(</span>VARIANT<span class='opr'>*</span><span class='opr'>)</span>;
+    HRESULT put_scroll<span class='opr'>(</span>BSTR<span class='opr'>)</span>;
+    HRESULT get_scroll<span class='opr'>(</span>BSTR<span class='opr'>*</span><span class='opr'>)</span>;
+    HRESULT put_onselect<span class='opr'>(</span>VARIANT<span class='opr'>)</span>;
+    HRESULT get_onselect<span class='opr'>(</span>VARIANT<span class='opr'>*</span><span class='opr'>)</span>;
+    HRESULT put_onbeforeunload<span class='opr'>(</span>VARIANT<span class='opr'>)</span>;
+    HRESULT get_onbeforeunload<span class='opr'>(</span>VARIANT<span class='opr'>*</span><span class='opr'>)</span>;
+    HRESULT createTextRange<span class='opr'>(</span>IHTMLTxtRange<span class='opr'>*</span><span class='opr'>*</span><span class='opr'>)</span>;
+<span class='opr'>}</span>
+
+<span class='kw2'>interface</span> IHTMLBodyElement2 : <span class='kw4'>public</span> IDispatch
+<span class='opr'>{</span>
+    HRESULT QueryInterface<span class='opr'>(</span>REFIID,PVOID<span class='opr'>*</span><span class='opr'>)</span>;
+    ULONG AddRef<span class='opr'>(</span><span class='opr'>)</span>;
+    ULONG Release<span class='opr'>(</span><span class='opr'>)</span>;
+    HRESULT GetTypeInfoCount<span class='opr'>(</span>UINT<span class='opr'>*</span><span class='opr'>)</span>;
+    HRESULT GetTypeInfo<span class='opr'>(</span>UINT,LCID,LPTYPEINFO<span class='opr'>*</span><span class='opr'>)</span>;
+    HRESULT GetIDsOfNames<span class='opr'>(</span>REFIID,LPOLESTR<span class='opr'>*</span>,UINT,LCID,DISPID<span class='opr'>*</span><span class='opr'>)</span>;
+    HRESULT Invoke<span class='opr'>(</span>DISPID,REFIID,LCID,WORD,DISPPARAMS<span class='opr'>*</span>,VARIANT<span class='opr'>*</span>,EXCEPINFO<span class='opr'>*</span>,UINT<span class='opr'>*</span><span class='opr'>)</span>;
+
+    HRESULT put_onbeforeprint<span class='opr'>(</span>VARIANT<span class='opr'>)</span>;
+    HRESULT get_onbeforeprint<span class='opr'>(</span>VARIANT<span class='opr'>*</span><span class='opr'>)</span>;
+    HRESULT put_onafterprint<span class='opr'>(</span>VARIANT<span class='opr'>)</span>;
+    HRESULT get_onafterprint<span class='opr'>(</span>VARIANT<span class='opr'>*</span><span class='opr'>)</span>;
+<span class='opr'>}</span>
+
+<span class='kw2'>alias</span> IHTMLElementCollection<span class='opr'>*</span> LPHTMLELEMENTCOLLECTION;
+<span class='kw2'>alias</span> IHTMLElement<span class='opr'>*</span> LPHTMLELEMENT;
+<span class='kw2'>alias</span> IHTMLSelectionObject<span class='opr'>*</span> LPHTMLSELECTIONOBJECT;
+<span class='kw2'>alias</span> IHTMLFramesCollection<span class='opr'>*</span> LPHTMLFRAMESCOLLECTION;
+<span class='kw2'>alias</span> IHTMLLocation<span class='opr'>*</span> LPHTMLLOCATION;
+<span class='kw2'>alias</span> IHTMLWindow2<span class='opr'>*</span> LPHTMLWINDOW2;
+<span class='kw2'>alias</span> IHTMLStyleSheetsCollection<span class='opr'>*</span> LPHTMLSTYLESHEETSCOLLECTION;
+<span class='kw2'>alias</span> IHTMLStyleSheet<span class='opr'>*</span> LPHTMLSTYLESHEET;
+<span class='kw2'>alias</span> IHTMLStyle<span class='opr'>*</span> LPHTMLSTYLE;
+<span class='kw2'>alias</span> IHTMLFiltersCollection<span class='opr'>*</span> LPHTMLFILTERSCOLLECTION;
+<span class='kw2'>alias</span> IHTMLLinkElement<span class='opr'>*</span> LPHTMLLINKELEMENT;
+<span class='kw2'>alias</span> IHTMLImgElement<span class='opr'>*</span> LPHTMLIMGELEMENT;
+<span class='kw2'>alias</span> IHTMLImageElementFactory<span class='opr'>*</span> LPHTMLIMAGEELEMENTFACTORY;
+<span class='kw2'>alias</span> IHTMLEventObj<span class='opr'>*</span> LPHTMLEVENTOBJ;
+<span class='kw2'>alias</span> IHTMLScreen<span class='opr'>*</span> LPHTMLSCREEN;
+<span class='kw2'>alias</span> IHTMLOptionElementFactory<span class='opr'>*</span> LPHTMLOPTIONELEMENTFACTORY;
+<span class='kw2'>alias</span> IOmHistory<span class='opr'>*</span> LPOMHISTORY;
+<span class='kw2'>alias</span> IOmNavigator<span class='opr'>*</span> LPOMNAVIGATOR;
+</pre></td></tr></table>	</body>
+</html>

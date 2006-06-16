@@ -1,0 +1,643 @@
+<!DOCTYPE html 
+     PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+     "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html>
+	<head>
+		<link rel="stylesheet" href="style.css" type="text/css" />
+		<title>os/windows/c/lmerr.d</title>
+	</head>
+	<body>
+
+<table id='dcode'><tr><td id='lnum'><pre><span>1</span>
+<span>2</span>
+<span>3</span>
+<span>4</span>
+<span>5</span>
+<span>6</span>
+<span>7</span>
+<span>8</span>
+<span>9</span>
+<span>10</span>
+<span>11</span>
+<span>12</span>
+<span>13</span>
+<span>14</span>
+<span>15</span>
+<span>16</span>
+<span>17</span>
+<span>18</span>
+<span>19</span>
+<span>20</span>
+<span>21</span>
+<span>22</span>
+<span>23</span>
+<span>24</span>
+<span>25</span>
+<span>26</span>
+<span>27</span>
+<span>28</span>
+<span>29</span>
+<span>30</span>
+<span>31</span>
+<span>32</span>
+<span>33</span>
+<span>34</span>
+<span>35</span>
+<span>36</span>
+<span>37</span>
+<span>38</span>
+<span>39</span>
+<span>40</span>
+<span>41</span>
+<span>42</span>
+<span>43</span>
+<span>44</span>
+<span>45</span>
+<span>46</span>
+<span>47</span>
+<span>48</span>
+<span>49</span>
+<span>50</span>
+<span>51</span>
+<span>52</span>
+<span>53</span>
+<span>54</span>
+<span>55</span>
+<span>56</span>
+<span>57</span>
+<span>58</span>
+<span>59</span>
+<span>60</span>
+<span>61</span>
+<span>62</span>
+<span>63</span>
+<span>64</span>
+<span>65</span>
+<span>66</span>
+<span>67</span>
+<span>68</span>
+<span>69</span>
+<span>70</span>
+<span>71</span>
+<span>72</span>
+<span>73</span>
+<span>74</span>
+<span>75</span>
+<span>76</span>
+<span>77</span>
+<span>78</span>
+<span>79</span>
+<span>80</span>
+<span>81</span>
+<span>82</span>
+<span>83</span>
+<span>84</span>
+<span>85</span>
+<span>86</span>
+<span>87</span>
+<span>88</span>
+<span>89</span>
+<span>90</span>
+<span>91</span>
+<span>92</span>
+<span>93</span>
+<span>94</span>
+<span>95</span>
+<span>96</span>
+<span>97</span>
+<span>98</span>
+<span>99</span>
+<span>100</span>
+<span>101</span>
+<span>102</span>
+<span>103</span>
+<span>104</span>
+<span>105</span>
+<span>106</span>
+<span>107</span>
+<span>108</span>
+<span>109</span>
+<span>110</span>
+<span>111</span>
+<span>112</span>
+<span>113</span>
+<span>114</span>
+<span>115</span>
+<span>116</span>
+<span>117</span>
+<span>118</span>
+<span>119</span>
+<span>120</span>
+<span>121</span>
+<span>122</span>
+<span>123</span>
+<span>124</span>
+<span>125</span>
+<span>126</span>
+<span>127</span>
+<span>128</span>
+<span>129</span>
+<span>130</span>
+<span>131</span>
+<span>132</span>
+<span>133</span>
+<span>134</span>
+<span>135</span>
+<span>136</span>
+<span>137</span>
+<span>138</span>
+<span>139</span>
+<span>140</span>
+<span>141</span>
+<span>142</span>
+<span>143</span>
+<span>144</span>
+<span>145</span>
+<span>146</span>
+<span>147</span>
+<span>148</span>
+<span>149</span>
+<span>150</span>
+<span>151</span>
+<span>152</span>
+<span>153</span>
+<span>154</span>
+<span>155</span>
+<span>156</span>
+<span>157</span>
+<span>158</span>
+<span>159</span>
+<span>160</span>
+<span>161</span>
+<span>162</span>
+<span>163</span>
+<span>164</span>
+<span>165</span>
+<span>166</span>
+<span>167</span>
+<span>168</span>
+<span>169</span>
+<span>170</span>
+<span>171</span>
+<span>172</span>
+<span>173</span>
+<span>174</span>
+<span>175</span>
+<span>176</span>
+<span>177</span>
+<span>178</span>
+<span>179</span>
+<span>180</span>
+<span>181</span>
+<span>182</span>
+<span>183</span>
+<span>184</span>
+<span>185</span>
+<span>186</span>
+<span>187</span>
+<span>188</span>
+<span>189</span>
+<span>190</span>
+<span>191</span>
+<span>192</span>
+<span>193</span>
+<span>194</span>
+<span>195</span>
+<span>196</span>
+<span>197</span>
+<span>198</span>
+<span>199</span>
+<span>200</span>
+<span>201</span>
+<span>202</span>
+<span>203</span>
+<span>204</span>
+<span>205</span>
+<span>206</span>
+<span>207</span>
+<span>208</span>
+<span>209</span>
+<span>210</span>
+<span>211</span>
+<span>212</span>
+<span>213</span>
+<span>214</span>
+<span>215</span>
+<span>216</span>
+<span>217</span>
+<span>218</span>
+<span>219</span>
+<span>220</span>
+<span>221</span>
+<span>222</span>
+<span>223</span>
+<span>224</span>
+<span>225</span>
+<span>226</span>
+<span>227</span>
+<span>228</span>
+<span>229</span>
+<span>230</span>
+<span>231</span>
+<span>232</span>
+<span>233</span>
+<span>234</span>
+<span>235</span>
+<span>236</span>
+<span>237</span>
+<span>238</span>
+<span>239</span>
+<span>240</span>
+<span>241</span>
+<span>242</span>
+<span>243</span>
+<span>244</span>
+<span>245</span>
+<span>246</span>
+<span>247</span>
+<span>248</span>
+<span>249</span>
+<span>250</span>
+<span>251</span>
+<span>252</span>
+<span>253</span>
+<span>254</span>
+<span>255</span>
+<span>256</span>
+<span>257</span>
+<span>258</span>
+<span>259</span>
+<span>260</span>
+<span>261</span>
+<span>262</span>
+<span>263</span>
+<span>264</span>
+<span>265</span>
+<span>266</span>
+<span>267</span>
+<span>268</span>
+<span>269</span>
+<span>270</span>
+<span>271</span>
+<span>272</span>
+<span>273</span>
+<span>274</span>
+<span>275</span>
+<span>276</span>
+<span>277</span>
+<span>278</span>
+<span>279</span>
+<span>280</span>
+<span>281</span>
+<span>282</span>
+<span>283</span>
+<span>284</span>
+<span>285</span>
+<span>286</span>
+<span>287</span>
+<span>288</span>
+<span>289</span>
+<span>290</span>
+<span>291</span>
+<span>292</span>
+<span>293</span>
+<span>294</span>
+<span>295</span>
+<span>296</span>
+<span>297</span>
+<span>298</span>
+<span>299</span>
+<span>300</span>
+<span>301</span>
+<span>302</span>
+<span>303</span>
+<span>304</span>
+<span>305</span>
+<span>306</span>
+<span>307</span>
+<span>308</span>
+<span>309</span>
+<span>310</span>
+<span>311</span>
+<span>312</span>
+<span>313</span>
+<span>314</span>
+<span>315</span>
+</pre></td><td id='code'><pre><span class='com'>/***********************************************************************\
+*                                lmerr.d                                *
+*                                                                       *
+*                       Windows API header module                       *
+*                                                                       *
+*                 Translated from MinGW Windows headers                 *
+*                                                                       *
+*                       Placed into public domain                       *
+\***********************************************************************/</span>
+<span class='kw2'>module</span> tango.os.windows.c.lmerr;
+
+<span class='com'>//version (build) { pragma(nolink); }</span>
+
+<span class='kw2'>import</span> tango.os.windows.c.winerror;
+
+<span class='kw4'>enum</span> <span class='opr'>{</span>
+    NERR_Success                      <span class='opr'>=</span> <span class='nbr'>0</span>,
+    NERR_BASE                         <span class='opr'>=</span> <span class='nbr'>2100</span>,
+    NERR_NetNotStarted                <span class='opr'>=</span> NERR_BASE <span class='opr'>+</span> <span class='nbr'>2</span>,
+    NERR_UnknownServer,
+    NERR_ShareMem,
+    NERR_NoNetworkResource,
+    NERR_RemoteOnly,
+    NERR_DevNotRedirected,
+    NERR_ServerNotStarted             <span class='opr'>=</span> NERR_BASE <span class='opr'>+</span> <span class='nbr'>14</span>,
+    NERR_ItemNotFound,
+    NERR_UnknownDevDir,
+    NERR_RedirectedPath,
+    NERR_DuplicateShare,
+    NERR_NoRoom,
+    NERR_TooManyItems                 <span class='opr'>=</span> NERR_BASE <span class='opr'>+</span> <span class='nbr'>21</span>,
+    NERR_InvalidMaxUsers,
+    NERR_BufTooSmall,
+    NERR_RemoteErr                    <span class='opr'>=</span> NERR_BASE <span class='opr'>+</span> <span class='nbr'>27</span>,
+    NERR_LanmanIniError               <span class='opr'>=</span> NERR_BASE <span class='opr'>+</span> <span class='nbr'>31</span>,
+    NERR_NetworkError                 <span class='opr'>=</span> NERR_BASE <span class='opr'>+</span> <span class='nbr'>36</span>,
+    NERR_WkstaInconsistentState,
+    NERR_WkstaNotStarted,
+    NERR_BrowserNotStarted,
+    NERR_InternalError,
+    NERR_BadTransactConfig,
+    NERR_InvalidAPI,
+    NERR_BadEventName,
+    NERR_DupNameReboot,
+    NERR_CfgCompNotFound              <span class='opr'>=</span> NERR_BASE <span class='opr'>+</span> <span class='nbr'>46</span>,
+    NERR_CfgParamNotFound,
+    NERR_LineTooLong                  <span class='opr'>=</span> NERR_BASE <span class='opr'>+</span> <span class='nbr'>49</span>,
+    NERR_QNotFound,
+    NERR_JobNotFound,
+    NERR_DestNotFound,
+    NERR_DestExists,
+    NERR_QExists,
+    NERR_QNoRoom,
+    NERR_JobNoRoom,
+    NERR_DestNoRoom,
+    NERR_DestIdle,
+    NERR_DestInvalidOp,
+    NERR_ProcNoRespond,
+    NERR_SpoolerNotLoaded,
+    NERR_DestInvalidState,
+    NERR_QInvalidState,
+    NERR_JobInvalidState,
+    NERR_SpoolNoMemory,
+    NERR_DriverNotFound,
+    NERR_DataTypeInvalid,
+    NERR_ProcNotFound,
+    NERR_ServiceTableLocked           <span class='opr'>=</span> NERR_BASE <span class='opr'>+</span> <span class='nbr'>80</span>,
+    NERR_ServiceTableFull,
+    NERR_ServiceInstalled,
+    NERR_ServiceEntryLocked,
+    NERR_ServiceNotInstalled,
+    NERR_BadServiceName,
+    NERR_ServiceCtlTimeout,
+    NERR_ServiceCtlBusy,
+    NERR_BadServiceProgName,
+    NERR_ServiceNotCtrl,
+    NERR_ServiceKillProc,
+    NERR_ServiceCtlNotValid,
+    NERR_NotInDispatchTbl,
+    NERR_BadControlRecv,
+    NERR_ServiceNotStarting,
+    NERR_AlreadyLoggedOn              <span class='opr'>=</span> NERR_BASE <span class='opr'>+</span> <span class='nbr'>100</span>,
+    NERR_NotLoggedOn,
+    NERR_BadUsername,
+    NERR_BadPassword,
+    NERR_UnableToAddName_W,
+    NERR_UnableToAddName_F,
+    NERR_UnableToDelName_W,
+    NERR_UnableToDelName_F,
+    NERR_LogonsPaused                 <span class='opr'>=</span> NERR_BASE <span class='opr'>+</span> <span class='nbr'>109</span>,
+    NERR_LogonServerConflict,
+    NERR_LogonNoUserPath,
+    NERR_LogonScriptError,
+    NERR_StandaloneLogon              <span class='opr'>=</span> NERR_BASE <span class='opr'>+</span> <span class='nbr'>114</span>,
+    NERR_LogonServerNotFound,
+    NERR_LogonDomainExists,
+    NERR_NonValidatedLogon,
+    NERR_ACFNotFound                  <span class='opr'>=</span> NERR_BASE <span class='opr'>+</span> <span class='nbr'>119</span>,
+    NERR_GroupNotFound,
+    NERR_UserNotFound,
+    NERR_ResourceNotFound,
+    NERR_GroupExists,
+    NERR_UserExists,
+    NERR_ResourceExists,
+    NERR_NotPrimary,
+    NERR_ACFNotLoaded,
+    NERR_ACFNoRoom,
+    NERR_ACFFileIOFail,
+    NERR_ACFTooManyLists,
+    NERR_UserLogon,
+    NERR_ACFNoParent,
+    NERR_CanNotGrowSegment,
+    NERR_SpeGroupOp,
+    NERR_NotInCache,
+    NERR_UserInGroup,
+    NERR_UserNotInGroup,
+    NERR_AccountUndefined,
+    NERR_AccountExpired,
+    NERR_InvalidWorkstation,
+    NERR_InvalidLogonHours,
+    NERR_PasswordExpired,
+    NERR_PasswordCantChange,
+    NERR_PasswordHistConflict,
+    NERR_PasswordTooShort,
+    NERR_PasswordTooRecent,
+    NERR_InvalidDatabase,
+    NERR_DatabaseUpToDate,
+    NERR_SyncRequired,
+    NERR_UseNotFound,
+    NERR_BadAsgType,
+    NERR_DeviceIsShared,
+    NERR_NoComputerName               <span class='opr'>=</span> NERR_BASE <span class='opr'>+</span> <span class='nbr'>170</span>,
+    NERR_MsgAlreadyStarted,
+    NERR_MsgInitFailed,
+    NERR_NameNotFound,
+    NERR_AlreadyForwarded,
+    NERR_AddForwarded,
+    NERR_AlreadyExists,
+    NERR_TooManyNames,
+    NERR_DelComputerName,
+    NERR_LocalForward,
+    NERR_GrpMsgProcessor,
+    NERR_PausedRemote,
+    NERR_BadReceive,
+    NERR_NameInUse,
+    NERR_MsgNotStarted,
+    NERR_NotLocalName,
+    NERR_NoForwardName,
+    NERR_RemoteFull,
+    NERR_NameNotForwarded,
+    NERR_TruncatedBroadcast,
+    NERR_InvalidDevice                <span class='opr'>=</span> NERR_BASE <span class='opr'>+</span> <span class='nbr'>194</span>,
+    NERR_WriteFault,
+    NERR_DuplicateName                <span class='opr'>=</span> NERR_BASE <span class='opr'>+</span> <span class='nbr'>197</span>,
+    NERR_DeleteLater,
+    NERR_IncompleteDel,
+    NERR_MultipleNets,
+    NERR_NetNameNotFound              <span class='opr'>=</span> NERR_BASE <span class='opr'>+</span> <span class='nbr'>210</span>,
+    NERR_DeviceNotShared,
+    NERR_ClientNameNotFound,
+    NERR_FileIdNotFound               <span class='opr'>=</span> NERR_BASE <span class='opr'>+</span> <span class='nbr'>214</span>,
+    NERR_ExecFailure,
+    NERR_TmpFile,
+    NERR_TooMuchData,
+    NERR_DeviceShareConflict,
+    NERR_BrowserTableIncomplete,
+    NERR_NotLocalDomain,
+    NERR_DevInvalidOpCode             <span class='opr'>=</span> NERR_BASE <span class='opr'>+</span> <span class='nbr'>231</span>,
+    NERR_DevNotFound,
+    NERR_DevNotOpen,
+    NERR_BadQueueDevString,
+    NERR_BadQueuePriority,
+    NERR_NoCommDevs                   <span class='opr'>=</span> NERR_BASE <span class='opr'>+</span> <span class='nbr'>237</span>,
+    NERR_QueueNotFound,
+    NERR_BadDevString                 <span class='opr'>=</span> NERR_BASE <span class='opr'>+</span> <span class='nbr'>240</span>,
+    NERR_BadDev,
+    NERR_InUseBySpooler,
+    NERR_CommDevInUse,
+    NERR_InvalidComputer              <span class='opr'>=</span> NERR_BASE <span class='opr'>+</span> <span class='nbr'>251</span>,
+    NERR_MaxLenExceeded               <span class='opr'>=</span> NERR_BASE <span class='opr'>+</span> <span class='nbr'>254</span>,
+    NERR_BadComponent                 <span class='opr'>=</span> NERR_BASE <span class='opr'>+</span> <span class='nbr'>256</span>,
+    NERR_CantType,
+    NERR_TooManyEntries               <span class='opr'>=</span> NERR_BASE <span class='opr'>+</span> <span class='nbr'>262</span>,
+    NERR_ProfileFileTooBig            <span class='opr'>=</span> NERR_BASE <span class='opr'>+</span> <span class='nbr'>270</span>,
+    NERR_ProfileOffset,
+    NERR_ProfileCleanup,
+    NERR_ProfileUnknownCmd,
+    NERR_ProfileLoadErr,
+    NERR_ProfileSaveErr,
+    NERR_LogOverflow                  <span class='opr'>=</span> NERR_BASE <span class='opr'>+</span> <span class='nbr'>277</span>,
+    NERR_LogFileChanged,
+    NERR_LogFileCorrupt,
+    NERR_SourceIsDir,
+    NERR_BadSource,
+    NERR_BadDest,
+    NERR_DifferentServers,
+    NERR_RunSrvPaused                 <span class='opr'>=</span> NERR_BASE <span class='opr'>+</span> <span class='nbr'>285</span>,
+    NERR_ErrCommRunSrv                <span class='opr'>=</span> NERR_BASE <span class='opr'>+</span> <span class='nbr'>289</span>,
+    NERR_ErrorExecingGhost            <span class='opr'>=</span> NERR_BASE <span class='opr'>+</span> <span class='nbr'>291</span>,
+    NERR_ShareNotFound,
+    NERR_InvalidLana                  <span class='opr'>=</span> NERR_BASE <span class='opr'>+</span> <span class='nbr'>300</span>,
+    NERR_OpenFiles,
+    NERR_ActiveConns,
+    NERR_BadPasswordCore,
+    NERR_DevInUse,
+    NERR_LocalDrive,
+    NERR_AlertExists                  <span class='opr'>=</span> NERR_BASE <span class='opr'>+</span> <span class='nbr'>330</span>,
+    NERR_TooManyAlerts,
+    NERR_NoSuchAlert,
+    NERR_BadRecipient,
+    NERR_AcctLimitExceeded,
+    NERR_InvalidLogSeek               <span class='opr'>=</span> NERR_BASE <span class='opr'>+</span> <span class='nbr'>340</span>,
+    NERR_BadUasConfig                 <span class='opr'>=</span> NERR_BASE <span class='opr'>+</span> <span class='nbr'>350</span>,
+    NERR_InvalidUASOp,
+    NERR_LastAdmin,
+    NERR_DCNotFound,
+    NERR_LogonTrackingError,
+    NERR_NetlogonNotStarted,
+    NERR_CanNotGrowUASFile,
+    NERR_TimeDiffAtDC,
+    NERR_PasswordMismatch,
+    NERR_NoSuchServer                 <span class='opr'>=</span> NERR_BASE <span class='opr'>+</span> <span class='nbr'>360</span>,
+    NERR_NoSuchSession,
+    NERR_NoSuchConnection,
+    NERR_TooManyServers,
+    NERR_TooManySessions,
+    NERR_TooManyConnections,
+    NERR_TooManyFiles,
+    NERR_NoAlternateServers,
+    NERR_TryDownLevel                 <span class='opr'>=</span> NERR_BASE <span class='opr'>+</span> <span class='nbr'>370</span>,
+    NERR_UPSDriverNotStarted          <span class='opr'>=</span> NERR_BASE <span class='opr'>+</span> <span class='nbr'>380</span>,
+    NERR_UPSInvalidConfig,
+    NERR_UPSInvalidCommPort,
+    NERR_UPSSignalAsserted,
+    NERR_UPSShutdownFailed,
+    NERR_BadDosRetCode                <span class='opr'>=</span> NERR_BASE <span class='opr'>+</span> <span class='nbr'>400</span>,
+    NERR_ProgNeedsExtraMem,
+    NERR_BadDosFunction,
+    NERR_RemoteBootFailed,
+    NERR_BadFileCheckSum,
+    NERR_NoRplBootSystem,
+    NERR_RplLoadrNetBiosErr,
+    NERR_RplLoadrDiskErr,
+    NERR_ImageParamErr,
+    NERR_TooManyImageParams,
+    NERR_NonDosFloppyUsed,
+    NERR_RplBootRestart,
+    NERR_RplSrvrCallFailed,
+    NERR_CantConnectRplSrvr,
+    NERR_CantOpenImageFile,
+    NERR_CallingRplSrvr,
+    NERR_StartingRplBoot,
+    NERR_RplBootServiceTerm,
+    NERR_RplBootStartFailed,
+    NERR_RPL_CONNECTED,
+    NERR_BrowserConfiguredToNotRun    <span class='opr'>=</span> NERR_BASE <span class='opr'>+</span> <span class='nbr'>450</span>,
+    NERR_RplNoAdaptersStarted         <span class='opr'>=</span> NERR_BASE <span class='opr'>+</span> <span class='nbr'>510</span>,
+    NERR_RplBadRegistry,
+    NERR_RplBadDatabase,
+    NERR_RplRplfilesShare,
+    NERR_RplNotRplServer,
+    NERR_RplCannotEnum,
+    NERR_RplWkstaInfoCorrupted,
+    NERR_RplWkstaNotFound,
+    NERR_RplWkstaNameUnavailable,
+    NERR_RplProfileInfoCorrupted,
+    NERR_RplProfileNotFound,
+    NERR_RplProfileNameUnavailable,
+    NERR_RplProfileNotEmpty,
+    NERR_RplConfigInfoCorrupted,
+    NERR_RplConfigNotFound,
+    NERR_RplAdapterInfoCorrupted,
+    NERR_RplInternal,
+    NERR_RplVendorInfoCorrupted,
+    NERR_RplBootInfoCorrupted,
+    NERR_RplWkstaNeedsUserAcct,
+    NERR_RplNeedsRPLUSERAcct,
+    NERR_RplBootNotFound,
+    NERR_RplIncompatibleProfile,
+    NERR_RplAdapterNameUnavailable,
+    NERR_RplConfigNotEmpty,
+    NERR_RplBootInUse,
+    NERR_RplBackupDatabase,
+    NERR_RplAdapterNotFound,
+    NERR_RplVendorNotFound,
+    NERR_RplVendorNameUnavailable,
+    NERR_RplBootNameUnavailable,
+    NERR_RplConfigNameUnavailable,
+    NERR_DfsInternalCorruption        <span class='opr'>=</span> NERR_BASE <span class='opr'>+</span> <span class='nbr'>560</span>,
+    NERR_DfsVolumeDataCorrupt,
+    NERR_DfsNoSuchVolume,
+    NERR_DfsVolumeAlreadyExists,
+    NERR_DfsAlreadyShared,
+    NERR_DfsNoSuchShare,
+    NERR_DfsNotALeafVolume,
+    NERR_DfsLeafVolume,
+    NERR_DfsVolumeHasMultipleServers,
+    NERR_DfsCantCreateJunctionPoint,
+    NERR_DfsServerNotDfsAware,
+    NERR_DfsBadRenamePath,
+    NERR_DfsVolumeIsOffline,
+    NERR_DfsNoSuchServer,
+    NERR_DfsCyclicalName,
+    NERR_DfsNotSupportedInServerDfs,
+    NERR_DfsDuplicateService,
+    NERR_DfsCantRemoveLastServerShare,
+    NERR_DfsVolumeIsInterDfs,
+    NERR_DfsInconsistent,
+    NERR_DfsServerUpgraded,
+    NERR_DfsDataIsIdentical,
+    NERR_DfsCantRemoveDfsRoot,
+    NERR_DfsChildOrParentInDfs,
+    NERR_DfsInternalError             <span class='opr'>=</span> NERR_BASE <span class='opr'>+</span> <span class='nbr'>590</span>,
+    MAX_NERR                          <span class='opr'>=</span> NERR_BASE <span class='opr'>+</span> <span class='nbr'>899</span>
+<span class='opr'>}</span>
+</pre></td></tr></table>	</body>
+</html>

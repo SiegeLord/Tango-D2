@@ -1,0 +1,1179 @@
+<!DOCTYPE html 
+     PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+     "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html>
+	<head>
+		<link rel="stylesheet" href="style.css" type="text/css" />
+		<title>os/windows/c/richedit.d</title>
+	</head>
+	<body>
+
+<table id='dcode'><tr><td id='lnum'><pre><span>1</span>
+<span>2</span>
+<span>3</span>
+<span>4</span>
+<span>5</span>
+<span>6</span>
+<span>7</span>
+<span>8</span>
+<span>9</span>
+<span>10</span>
+<span>11</span>
+<span>12</span>
+<span>13</span>
+<span>14</span>
+<span>15</span>
+<span>16</span>
+<span>17</span>
+<span>18</span>
+<span>19</span>
+<span>20</span>
+<span>21</span>
+<span>22</span>
+<span>23</span>
+<span>24</span>
+<span>25</span>
+<span>26</span>
+<span>27</span>
+<span>28</span>
+<span>29</span>
+<span>30</span>
+<span>31</span>
+<span>32</span>
+<span>33</span>
+<span>34</span>
+<span>35</span>
+<span>36</span>
+<span>37</span>
+<span>38</span>
+<span>39</span>
+<span>40</span>
+<span>41</span>
+<span>42</span>
+<span>43</span>
+<span>44</span>
+<span>45</span>
+<span>46</span>
+<span>47</span>
+<span>48</span>
+<span>49</span>
+<span>50</span>
+<span>51</span>
+<span>52</span>
+<span>53</span>
+<span>54</span>
+<span>55</span>
+<span>56</span>
+<span>57</span>
+<span>58</span>
+<span>59</span>
+<span>60</span>
+<span>61</span>
+<span>62</span>
+<span>63</span>
+<span>64</span>
+<span>65</span>
+<span>66</span>
+<span>67</span>
+<span>68</span>
+<span>69</span>
+<span>70</span>
+<span>71</span>
+<span>72</span>
+<span>73</span>
+<span>74</span>
+<span>75</span>
+<span>76</span>
+<span>77</span>
+<span>78</span>
+<span>79</span>
+<span>80</span>
+<span>81</span>
+<span>82</span>
+<span>83</span>
+<span>84</span>
+<span>85</span>
+<span>86</span>
+<span>87</span>
+<span>88</span>
+<span>89</span>
+<span>90</span>
+<span>91</span>
+<span>92</span>
+<span>93</span>
+<span>94</span>
+<span>95</span>
+<span>96</span>
+<span>97</span>
+<span>98</span>
+<span>99</span>
+<span>100</span>
+<span>101</span>
+<span>102</span>
+<span>103</span>
+<span>104</span>
+<span>105</span>
+<span>106</span>
+<span>107</span>
+<span>108</span>
+<span>109</span>
+<span>110</span>
+<span>111</span>
+<span>112</span>
+<span>113</span>
+<span>114</span>
+<span>115</span>
+<span>116</span>
+<span>117</span>
+<span>118</span>
+<span>119</span>
+<span>120</span>
+<span>121</span>
+<span>122</span>
+<span>123</span>
+<span>124</span>
+<span>125</span>
+<span>126</span>
+<span>127</span>
+<span>128</span>
+<span>129</span>
+<span>130</span>
+<span>131</span>
+<span>132</span>
+<span>133</span>
+<span>134</span>
+<span>135</span>
+<span>136</span>
+<span>137</span>
+<span>138</span>
+<span>139</span>
+<span>140</span>
+<span>141</span>
+<span>142</span>
+<span>143</span>
+<span>144</span>
+<span>145</span>
+<span>146</span>
+<span>147</span>
+<span>148</span>
+<span>149</span>
+<span>150</span>
+<span>151</span>
+<span>152</span>
+<span>153</span>
+<span>154</span>
+<span>155</span>
+<span>156</span>
+<span>157</span>
+<span>158</span>
+<span>159</span>
+<span>160</span>
+<span>161</span>
+<span>162</span>
+<span>163</span>
+<span>164</span>
+<span>165</span>
+<span>166</span>
+<span>167</span>
+<span>168</span>
+<span>169</span>
+<span>170</span>
+<span>171</span>
+<span>172</span>
+<span>173</span>
+<span>174</span>
+<span>175</span>
+<span>176</span>
+<span>177</span>
+<span>178</span>
+<span>179</span>
+<span>180</span>
+<span>181</span>
+<span>182</span>
+<span>183</span>
+<span>184</span>
+<span>185</span>
+<span>186</span>
+<span>187</span>
+<span>188</span>
+<span>189</span>
+<span>190</span>
+<span>191</span>
+<span>192</span>
+<span>193</span>
+<span>194</span>
+<span>195</span>
+<span>196</span>
+<span>197</span>
+<span>198</span>
+<span>199</span>
+<span>200</span>
+<span>201</span>
+<span>202</span>
+<span>203</span>
+<span>204</span>
+<span>205</span>
+<span>206</span>
+<span>207</span>
+<span>208</span>
+<span>209</span>
+<span>210</span>
+<span>211</span>
+<span>212</span>
+<span>213</span>
+<span>214</span>
+<span>215</span>
+<span>216</span>
+<span>217</span>
+<span>218</span>
+<span>219</span>
+<span>220</span>
+<span>221</span>
+<span>222</span>
+<span>223</span>
+<span>224</span>
+<span>225</span>
+<span>226</span>
+<span>227</span>
+<span>228</span>
+<span>229</span>
+<span>230</span>
+<span>231</span>
+<span>232</span>
+<span>233</span>
+<span>234</span>
+<span>235</span>
+<span>236</span>
+<span>237</span>
+<span>238</span>
+<span>239</span>
+<span>240</span>
+<span>241</span>
+<span>242</span>
+<span>243</span>
+<span>244</span>
+<span>245</span>
+<span>246</span>
+<span>247</span>
+<span>248</span>
+<span>249</span>
+<span>250</span>
+<span>251</span>
+<span>252</span>
+<span>253</span>
+<span>254</span>
+<span>255</span>
+<span>256</span>
+<span>257</span>
+<span>258</span>
+<span>259</span>
+<span>260</span>
+<span>261</span>
+<span>262</span>
+<span>263</span>
+<span>264</span>
+<span>265</span>
+<span>266</span>
+<span>267</span>
+<span>268</span>
+<span>269</span>
+<span>270</span>
+<span>271</span>
+<span>272</span>
+<span>273</span>
+<span>274</span>
+<span>275</span>
+<span>276</span>
+<span>277</span>
+<span>278</span>
+<span>279</span>
+<span>280</span>
+<span>281</span>
+<span>282</span>
+<span>283</span>
+<span>284</span>
+<span>285</span>
+<span>286</span>
+<span>287</span>
+<span>288</span>
+<span>289</span>
+<span>290</span>
+<span>291</span>
+<span>292</span>
+<span>293</span>
+<span>294</span>
+<span>295</span>
+<span>296</span>
+<span>297</span>
+<span>298</span>
+<span>299</span>
+<span>300</span>
+<span>301</span>
+<span>302</span>
+<span>303</span>
+<span>304</span>
+<span>305</span>
+<span>306</span>
+<span>307</span>
+<span>308</span>
+<span>309</span>
+<span>310</span>
+<span>311</span>
+<span>312</span>
+<span>313</span>
+<span>314</span>
+<span>315</span>
+<span>316</span>
+<span>317</span>
+<span>318</span>
+<span>319</span>
+<span>320</span>
+<span>321</span>
+<span>322</span>
+<span>323</span>
+<span>324</span>
+<span>325</span>
+<span>326</span>
+<span>327</span>
+<span>328</span>
+<span>329</span>
+<span>330</span>
+<span>331</span>
+<span>332</span>
+<span>333</span>
+<span>334</span>
+<span>335</span>
+<span>336</span>
+<span>337</span>
+<span>338</span>
+<span>339</span>
+<span>340</span>
+<span>341</span>
+<span>342</span>
+<span>343</span>
+<span>344</span>
+<span>345</span>
+<span>346</span>
+<span>347</span>
+<span>348</span>
+<span>349</span>
+<span>350</span>
+<span>351</span>
+<span>352</span>
+<span>353</span>
+<span>354</span>
+<span>355</span>
+<span>356</span>
+<span>357</span>
+<span>358</span>
+<span>359</span>
+<span>360</span>
+<span>361</span>
+<span>362</span>
+<span>363</span>
+<span>364</span>
+<span>365</span>
+<span>366</span>
+<span>367</span>
+<span>368</span>
+<span>369</span>
+<span>370</span>
+<span>371</span>
+<span>372</span>
+<span>373</span>
+<span>374</span>
+<span>375</span>
+<span>376</span>
+<span>377</span>
+<span>378</span>
+<span>379</span>
+<span>380</span>
+<span>381</span>
+<span>382</span>
+<span>383</span>
+<span>384</span>
+<span>385</span>
+<span>386</span>
+<span>387</span>
+<span>388</span>
+<span>389</span>
+<span>390</span>
+<span>391</span>
+<span>392</span>
+<span>393</span>
+<span>394</span>
+<span>395</span>
+<span>396</span>
+<span>397</span>
+<span>398</span>
+<span>399</span>
+<span>400</span>
+<span>401</span>
+<span>402</span>
+<span>403</span>
+<span>404</span>
+<span>405</span>
+<span>406</span>
+<span>407</span>
+<span>408</span>
+<span>409</span>
+<span>410</span>
+<span>411</span>
+<span>412</span>
+<span>413</span>
+<span>414</span>
+<span>415</span>
+<span>416</span>
+<span>417</span>
+<span>418</span>
+<span>419</span>
+<span>420</span>
+<span>421</span>
+<span>422</span>
+<span>423</span>
+<span>424</span>
+<span>425</span>
+<span>426</span>
+<span>427</span>
+<span>428</span>
+<span>429</span>
+<span>430</span>
+<span>431</span>
+<span>432</span>
+<span>433</span>
+<span>434</span>
+<span>435</span>
+<span>436</span>
+<span>437</span>
+<span>438</span>
+<span>439</span>
+<span>440</span>
+<span>441</span>
+<span>442</span>
+<span>443</span>
+<span>444</span>
+<span>445</span>
+<span>446</span>
+<span>447</span>
+<span>448</span>
+<span>449</span>
+<span>450</span>
+<span>451</span>
+<span>452</span>
+<span>453</span>
+<span>454</span>
+<span>455</span>
+<span>456</span>
+<span>457</span>
+<span>458</span>
+<span>459</span>
+<span>460</span>
+<span>461</span>
+<span>462</span>
+<span>463</span>
+<span>464</span>
+<span>465</span>
+<span>466</span>
+<span>467</span>
+<span>468</span>
+<span>469</span>
+<span>470</span>
+<span>471</span>
+<span>472</span>
+<span>473</span>
+<span>474</span>
+<span>475</span>
+<span>476</span>
+<span>477</span>
+<span>478</span>
+<span>479</span>
+<span>480</span>
+<span>481</span>
+<span>482</span>
+<span>483</span>
+<span>484</span>
+<span>485</span>
+<span>486</span>
+<span>487</span>
+<span>488</span>
+<span>489</span>
+<span>490</span>
+<span>491</span>
+<span>492</span>
+<span>493</span>
+<span>494</span>
+<span>495</span>
+<span>496</span>
+<span>497</span>
+<span>498</span>
+<span>499</span>
+<span>500</span>
+<span>501</span>
+<span>502</span>
+<span>503</span>
+<span>504</span>
+<span>505</span>
+<span>506</span>
+<span>507</span>
+<span>508</span>
+<span>509</span>
+<span>510</span>
+<span>511</span>
+<span>512</span>
+<span>513</span>
+<span>514</span>
+<span>515</span>
+<span>516</span>
+<span>517</span>
+<span>518</span>
+<span>519</span>
+<span>520</span>
+<span>521</span>
+<span>522</span>
+<span>523</span>
+<span>524</span>
+<span>525</span>
+<span>526</span>
+<span>527</span>
+<span>528</span>
+<span>529</span>
+<span>530</span>
+<span>531</span>
+<span>532</span>
+<span>533</span>
+<span>534</span>
+<span>535</span>
+<span>536</span>
+<span>537</span>
+<span>538</span>
+<span>539</span>
+<span>540</span>
+<span>541</span>
+<span>542</span>
+<span>543</span>
+<span>544</span>
+<span>545</span>
+<span>546</span>
+<span>547</span>
+<span>548</span>
+<span>549</span>
+<span>550</span>
+<span>551</span>
+<span>552</span>
+<span>553</span>
+<span>554</span>
+<span>555</span>
+<span>556</span>
+<span>557</span>
+<span>558</span>
+<span>559</span>
+<span>560</span>
+<span>561</span>
+<span>562</span>
+<span>563</span>
+<span>564</span>
+<span>565</span>
+<span>566</span>
+<span>567</span>
+<span>568</span>
+<span>569</span>
+<span>570</span>
+<span>571</span>
+<span>572</span>
+<span>573</span>
+<span>574</span>
+<span>575</span>
+<span>576</span>
+<span>577</span>
+<span>578</span>
+<span>579</span>
+<span>580</span>
+<span>581</span>
+<span>582</span>
+<span>583</span>
+</pre></td><td id='code'><pre><span class='com'>/***********************************************************************\
+*                              richedit.d                               *
+*                                                                       *
+*                       Windows API header module                       *
+*                                                                       *
+*                 Translated from MinGW Windows headers                 *
+*                                                                       *
+*                       Placed into public domain                       *
+\***********************************************************************/</span>
+<span class='kw2'>module</span> tango.os.windows.c.richedit;
+
+<span class='com'>//version (build) { pragma(nolink); }</span>
+
+<span class='kw4'>private</span> <span class='kw2'>import</span> tango.os.windows.c.windef;
+<span class='kw4'>private</span> <span class='kw2'>import</span> tango.os.windows.c.winuser;
+<span class='kw4'>private</span> <span class='kw2'>import</span> tango.os.windows.c.wingdi; <span class='com'>// for LF_FACESIZE</span>
+<span class='kw4'>align</span><span class='opr'>(</span><span class='nbr'>4</span><span class='opr'>)</span>:
+
+<span class='kw4'>version</span><span class='opr'>(</span>Unicode<span class='opr'>)</span> <span class='opr'>{</span>
+    <span class='kw4'>const</span> <span class='kw4'>wchar</span> <span class='opr'>[</span><span class='opr'>]</span> RICHEDIT_CLASS <span class='opr'>=</span> <span class='str'>&quot;RichEdit20W&quot;</span>;
+<span class='opr'>}</span> <span class='kw1'>else</span> <span class='opr'>{</span>
+    <span class='kw4'>const</span> <span class='kw4'>char</span> <span class='opr'>[</span><span class='opr'>]</span> RICHEDIT_CLASS  <span class='opr'>=</span> <span class='str'>&quot;RichEdit20A&quot;</span>;
+<span class='opr'>}</span>
+
+<span class='kw4'>const</span> RICHEDIT_CLASS10A <span class='opr'>=</span> <span class='str'>&quot;RICHEDIT&quot;</span>;
+
+<span class='kw4'>const</span> TCHAR <span class='opr'>[</span><span class='opr'>]</span>
+    CF_RTF       <span class='opr'>=</span> <span class='str'>&quot;Rich Text Format&quot;</span>,
+    CF_RTFNOOBJS <span class='opr'>=</span> <span class='str'>&quot;Rich Text Format Without Objects&quot;</span>,
+    CF_RETEXTOBJ <span class='opr'>=</span> <span class='str'>&quot;RichEdit Text and Objects&quot;</span>;
+
+<span class='kw4'>const</span> DWORD 
+    CFM_BOLD        <span class='opr'>=</span> <span class='nbr'>1</span>,
+    CFM_ITALIC      <span class='opr'>=</span> <span class='nbr'>2</span>,
+    CFM_UNDERLINE   <span class='opr'>=</span> <span class='nbr'>4</span>,
+    CFM_STRIKEOUT   <span class='opr'>=</span> <span class='nbr'>8</span>,
+    CFM_PROTECTED   <span class='opr'>=</span> <span class='nbr'>16</span>,
+    CFM_LINK        <span class='opr'>=</span> <span class='nbr'>32</span>,
+    CFM_SIZE        <span class='opr'>=</span> <span class='nbr'>0</span>x80000000,
+    CFM_COLOR       <span class='opr'>=</span> <span class='nbr'>0</span>x40000000,
+    CFM_FACE        <span class='opr'>=</span> <span class='nbr'>0</span>x20000000,
+    CFM_OFFSET      <span class='opr'>=</span> <span class='nbr'>0</span>x10000000,
+    CFM_CHARSET     <span class='opr'>=</span> <span class='nbr'>0</span>x08000000,
+    CFM_SUBSCRIPT   <span class='opr'>=</span> <span class='nbr'>0</span>x00030000,
+    CFM_SUPERSCRIPT <span class='opr'>=</span> <span class='nbr'>0</span>x00030000;
+
+<span class='kw4'>const</span> DWORD
+    CFE_BOLD        <span class='opr'>=</span> <span class='nbr'>1</span>,
+    CFE_ITALIC      <span class='opr'>=</span> <span class='nbr'>2</span>,
+    CFE_UNDERLINE   <span class='opr'>=</span> <span class='nbr'>4</span>,
+    CFE_STRIKEOUT   <span class='opr'>=</span> <span class='nbr'>8</span>,
+    CFE_PROTECTED   <span class='opr'>=</span> <span class='nbr'>16</span>,
+    CFE_SUBSCRIPT   <span class='opr'>=</span> <span class='nbr'>0</span>x00010000,
+    CFE_SUPERSCRIPT <span class='opr'>=</span> <span class='nbr'>0</span>x00020000,
+    CFE_AUTOCOLOR   <span class='opr'>=</span> <span class='nbr'>0</span>x40000000;
+    
+<span class='kw4'>const</span> CFM_EFFECTS <span class='opr'>=</span> CFM_BOLD | CFM_ITALIC | CFM_UNDERLINE | CFM_COLOR | CFM_STRIKEOUT | CFE_PROTECTED | CFM_LINK;
+
+<span class='com'>// flags for EM_SETIMEOPTIONS </span>
+<span class='kw4'>const</span> LPARAM
+    IMF_FORCENONE         <span class='opr'>=</span> <span class='nbr'>1</span>,
+    IMF_FORCEENABLE       <span class='opr'>=</span> <span class='nbr'>2</span>,
+    IMF_FORCEDISABLE      <span class='opr'>=</span> <span class='nbr'>4</span>,
+    IMF_CLOSESTATUSWINDOW <span class='opr'>=</span> <span class='nbr'>8</span>,
+    IMF_VERTICAL          <span class='opr'>=</span> <span class='nbr'>32</span>,
+    IMF_FORCEACTIVE       <span class='opr'>=</span> <span class='nbr'>64</span>,
+    IMF_FORCEINACTIVE     <span class='opr'>=</span> <span class='nbr'>128</span>,
+    IMF_FORCEREMEMBER     <span class='opr'>=</span> <span class='nbr'>256</span>;
+
+<span class='kw4'>const</span> SEL_EMPTY<span class='opr'>=</span><span class='nbr'>0</span>;
+<span class='kw4'>const</span> SEL_TEXT<span class='opr'>=</span><span class='nbr'>1</span>;
+<span class='kw4'>const</span> SEL_OBJECT<span class='opr'>=</span><span class='nbr'>2</span>;
+<span class='kw4'>const</span> SEL_MULTICHAR<span class='opr'>=</span><span class='nbr'>4</span>;
+<span class='kw4'>const</span> SEL_MULTIOBJECT<span class='opr'>=</span><span class='nbr'>8</span>;
+
+<span class='kw4'>const</span> MAX_TAB_STOPS<span class='opr'>=</span><span class='nbr'>32</span>;
+
+<span class='kw4'>const</span> PFM_ALIGNMENT<span class='opr'>=</span><span class='nbr'>8</span>;
+<span class='kw4'>const</span> PFM_NUMBERING<span class='opr'>=</span><span class='nbr'>32</span>;
+<span class='kw4'>const</span> PFM_OFFSET<span class='opr'>=</span><span class='nbr'>4</span>;
+<span class='kw4'>const</span> PFM_OFFSETINDENT<span class='opr'>=</span><span class='nbr'>0</span>x80000000;
+<span class='kw4'>const</span> PFM_RIGHTINDENT<span class='opr'>=</span><span class='nbr'>2</span>;
+<span class='kw4'>const</span> PFM_STARTINDENT<span class='opr'>=</span><span class='nbr'>1</span>;
+<span class='kw4'>const</span> PFM_TABSTOPS<span class='opr'>=</span><span class='nbr'>16</span>;
+<span class='kw4'>const</span> PFM_BORDER<span class='opr'>=</span><span class='nbr'>2048</span>;
+<span class='kw4'>const</span> PFM_LINESPACING<span class='opr'>=</span><span class='nbr'>256</span>;
+<span class='kw4'>const</span> PFM_NUMBERINGSTART<span class='opr'>=</span><span class='nbr'>32768</span>;
+<span class='kw4'>const</span> PFM_NUMBERINGSTYLE<span class='opr'>=</span><span class='nbr'>8192</span>;
+<span class='kw4'>const</span> PFM_NUMBERINGTAB<span class='opr'>=</span><span class='nbr'>16384</span>;
+<span class='kw4'>const</span> PFM_SHADING<span class='opr'>=</span><span class='nbr'>4096</span>;
+<span class='kw4'>const</span> PFM_SPACEAFTER<span class='opr'>=</span><span class='nbr'>128</span>;
+<span class='kw4'>const</span> PFM_SPACEBEFORE<span class='opr'>=</span><span class='nbr'>64</span>;
+<span class='kw4'>const</span> PFM_STYLE<span class='opr'>=</span><span class='nbr'>1024</span>;
+<span class='kw4'>const</span> PFM_DONOTHYPHEN<span class='opr'>=</span><span class='nbr'>4194304</span>;
+<span class='kw4'>const</span> PFM_KEEP<span class='opr'>=</span><span class='nbr'>131072</span>;
+<span class='kw4'>const</span> PFM_KEEPNEXT<span class='opr'>=</span><span class='nbr'>262144</span>;
+<span class='kw4'>const</span> PFM_NOLINENUMBER<span class='opr'>=</span><span class='nbr'>1048576</span>;
+<span class='kw4'>const</span> PFM_NOWIDOWCONTROL<span class='opr'>=</span><span class='nbr'>2097152</span>;
+<span class='kw4'>const</span> PFM_PAGEBREAKBEFORE<span class='opr'>=</span><span class='nbr'>524288</span>;
+<span class='kw4'>const</span> PFM_RTLPARA<span class='opr'>=</span><span class='nbr'>65536</span>;
+<span class='kw4'>const</span> PFM_SIDEBYSIDE<span class='opr'>=</span><span class='nbr'>8388608</span>;
+<span class='kw4'>const</span> PFM_TABLE<span class='opr'>=</span><span class='nbr'>1073741824</span>;
+<span class='kw4'>const</span> PFN_BULLET<span class='opr'>=</span><span class='nbr'>1</span>;
+
+<span class='kw4'>const</span> PFE_DONOTHYPHEN<span class='opr'>=</span><span class='nbr'>64</span>;
+<span class='kw4'>const</span> PFE_KEEP<span class='opr'>=</span><span class='nbr'>2</span>;
+<span class='kw4'>const</span> PFE_KEEPNEXT<span class='opr'>=</span><span class='nbr'>4</span>;
+<span class='kw4'>const</span> PFE_NOLINENUMBER<span class='opr'>=</span><span class='nbr'>16</span>;
+<span class='kw4'>const</span> PFE_NOWIDOWCONTROL<span class='opr'>=</span><span class='nbr'>32</span>;
+<span class='kw4'>const</span> PFE_PAGEBREAKBEFORE<span class='opr'>=</span><span class='nbr'>8</span>;
+<span class='kw4'>const</span> PFE_RTLPARA<span class='opr'>=</span><span class='nbr'>1</span>;
+<span class='kw4'>const</span> PFE_SIDEBYSIDE<span class='opr'>=</span><span class='nbr'>128</span>;
+<span class='kw4'>const</span> PFE_TABLE<span class='opr'>=</span><span class='nbr'>16384</span>;
+<span class='kw4'>const</span> PFA_LEFT<span class='opr'>=</span><span class='nbr'>1</span>;
+<span class='kw4'>const</span> PFA_RIGHT<span class='opr'>=</span><span class='nbr'>2</span>;
+<span class='kw4'>const</span> PFA_CENTER<span class='opr'>=</span><span class='nbr'>3</span>;
+<span class='kw4'>const</span> PFA_JUSTIFY<span class='opr'>=</span><span class='nbr'>4</span>;
+<span class='kw4'>const</span> PFA_FULL_INTERWORD<span class='opr'>=</span><span class='nbr'>4</span>;
+
+<span class='kw4'>const</span> SF_TEXT<span class='opr'>=</span><span class='nbr'>1</span>;
+<span class='kw4'>const</span> SF_RTF<span class='opr'>=</span><span class='nbr'>2</span>;
+<span class='kw4'>const</span> SF_RTFNOOBJS<span class='opr'>=</span><span class='nbr'>3</span>;
+<span class='kw4'>const</span> SF_TEXTIZED<span class='opr'>=</span><span class='nbr'>4</span>;
+<span class='kw4'>const</span> SF_UNICODE<span class='opr'>=</span><span class='nbr'>16</span>;
+<span class='kw4'>const</span> SF_USECODEPAGE<span class='opr'>=</span><span class='nbr'>32</span>;
+<span class='kw4'>const</span> SF_NCRFORNONASCII<span class='opr'>=</span><span class='nbr'>64</span>;
+<span class='kw4'>const</span> SF_RTFVAL<span class='opr'>=</span><span class='nbr'>0</span>x0700;
+
+<span class='kw4'>const</span> SFF_PWD<span class='opr'>=</span><span class='nbr'>0</span>x0800;
+<span class='kw4'>const</span> SFF_KEEPDOCINFO<span class='opr'>=</span><span class='nbr'>0</span>x1000;
+<span class='kw4'>const</span> SFF_PERSISTVIEWSCALE<span class='opr'>=</span><span class='nbr'>0</span>x2000;
+<span class='kw4'>const</span> SFF_PLAINRTF<span class='opr'>=</span><span class='nbr'>0</span>x4000;
+<span class='kw4'>const</span> SFF_SELECTION<span class='opr'>=</span><span class='nbr'>0</span>x8000;
+
+<span class='kw4'>const</span> WB_CLASSIFY      <span class='opr'>=</span> <span class='nbr'>3</span>;
+<span class='kw4'>const</span> WB_MOVEWORDLEFT  <span class='opr'>=</span> <span class='nbr'>4</span>;
+<span class='kw4'>const</span> WB_MOVEWORDRIGHT <span class='opr'>=</span> <span class='nbr'>5</span>;
+<span class='kw4'>const</span> WB_LEFTBREAK     <span class='opr'>=</span> <span class='nbr'>6</span>;
+<span class='kw4'>const</span> WB_RIGHTBREAK    <span class='opr'>=</span> <span class='nbr'>7</span>;
+<span class='kw4'>const</span> WB_MOVEWORDPREV  <span class='opr'>=</span> <span class='nbr'>4</span>;
+<span class='kw4'>const</span> WB_MOVEWORDNEXT  <span class='opr'>=</span> <span class='nbr'>5</span>;
+<span class='kw4'>const</span> WB_PREVBREAK     <span class='opr'>=</span> <span class='nbr'>6</span>;
+<span class='kw4'>const</span> WB_NEXTBREAK     <span class='opr'>=</span> <span class='nbr'>7</span>;
+
+<span class='kw4'>const</span> WBF_WORDWRAP  <span class='opr'>=</span> <span class='nbr'>16</span>;
+<span class='kw4'>const</span> WBF_WORDBREAK <span class='opr'>=</span> <span class='nbr'>32</span>;
+<span class='kw4'>const</span> WBF_OVERFLOW  <span class='opr'>=</span> <span class='nbr'>64</span>;
+<span class='kw4'>const</span> WBF_LEVEL1    <span class='opr'>=</span> <span class='nbr'>128</span>;
+<span class='kw4'>const</span> WBF_LEVEL2    <span class='opr'>=</span> <span class='nbr'>256</span>;
+<span class='kw4'>const</span> WBF_CUSTOM    <span class='opr'>=</span> <span class='nbr'>512</span>;
+
+<span class='kw4'>const</span> ES_DISABLENOSCROLL  <span class='opr'>=</span> <span class='nbr'>8192</span>;
+<span class='kw4'>const</span> ES_SUNKEN           <span class='opr'>=</span> <span class='nbr'>16384</span>;
+<span class='kw4'>const</span> ES_SAVESEL          <span class='opr'>=</span> <span class='nbr'>32768</span>;
+<span class='kw4'>const</span> ES_EX_NOCALLOLEINIT <span class='opr'>=</span> <span class='nbr'>16777216</span>;
+<span class='kw4'>const</span> ES_NOIME            <span class='opr'>=</span> <span class='nbr'>524288</span>;
+<span class='kw4'>const</span> ES_NOOLEDRAGDROP    <span class='opr'>=</span> <span class='nbr'>8</span>;
+<span class='kw4'>const</span> ES_SELECTIONBAR     <span class='opr'>=</span> <span class='nbr'>16777216</span>;
+<span class='kw4'>const</span> ES_SELFIME          <span class='opr'>=</span> <span class='nbr'>262144</span>;
+<span class='kw4'>const</span> ES_VERTICAL         <span class='opr'>=</span> <span class='nbr'>4194304</span>;
+
+<span class='kw4'>const</span> EM_CANPASTE <span class='opr'>=</span> WM_USER<span class='opr'>+</span><span class='nbr'>50</span>;
+<span class='kw4'>const</span> EM_DISPLAYBAND <span class='opr'>=</span> WM_USER<span class='opr'>+</span><span class='nbr'>51</span>;
+<span class='kw4'>const</span> EM_EXGETSEL <span class='opr'>=</span> WM_USER<span class='opr'>+</span><span class='nbr'>52</span>;
+<span class='kw4'>const</span> EM_EXLIMITTEXT <span class='opr'>=</span> WM_USER<span class='opr'>+</span><span class='nbr'>53</span>;
+<span class='kw4'>const</span> EM_EXLINEFROMCHAR <span class='opr'>=</span> WM_USER<span class='opr'>+</span><span class='nbr'>54</span>;
+<span class='kw4'>const</span> EM_EXSETSEL <span class='opr'>=</span> WM_USER<span class='opr'>+</span><span class='nbr'>55</span>;
+<span class='kw4'>const</span> EM_FINDTEXT <span class='opr'>=</span> WM_USER<span class='opr'>+</span><span class='nbr'>56</span>;
+<span class='kw4'>const</span> EM_FORMATRANGE <span class='opr'>=</span> WM_USER<span class='opr'>+</span><span class='nbr'>57</span>;
+<span class='kw4'>const</span> EM_GETCHARFORMAT <span class='opr'>=</span> WM_USER<span class='opr'>+</span><span class='nbr'>58</span>;
+<span class='kw4'>const</span> EM_GETEVENTMASK <span class='opr'>=</span> WM_USER<span class='opr'>+</span><span class='nbr'>59</span>;
+<span class='kw4'>const</span> EM_GETOLEINTERFACE <span class='opr'>=</span> WM_USER<span class='opr'>+</span><span class='nbr'>60</span>;
+<span class='kw4'>const</span> EM_GETPARAFORMAT <span class='opr'>=</span> WM_USER<span class='opr'>+</span><span class='nbr'>61</span>;
+<span class='kw4'>const</span> EM_GETSELTEXT <span class='opr'>=</span> WM_USER<span class='opr'>+</span><span class='nbr'>62</span>;
+<span class='kw4'>const</span> EM_HIDESELECTION <span class='opr'>=</span> WM_USER<span class='opr'>+</span><span class='nbr'>63</span>;
+<span class='kw4'>const</span> EM_PASTESPECIAL <span class='opr'>=</span> WM_USER<span class='opr'>+</span><span class='nbr'>64</span>;
+<span class='kw4'>const</span> EM_REQUESTRESIZE <span class='opr'>=</span> WM_USER<span class='opr'>+</span><span class='nbr'>65</span>;
+<span class='kw4'>const</span> EM_SELECTIONTYPE <span class='opr'>=</span> WM_USER<span class='opr'>+</span><span class='nbr'>66</span>;
+<span class='kw4'>const</span> EM_SETBKGNDCOLOR <span class='opr'>=</span> WM_USER<span class='opr'>+</span><span class='nbr'>67</span>;
+<span class='kw4'>const</span> EM_SETCHARFORMAT <span class='opr'>=</span> WM_USER<span class='opr'>+</span><span class='nbr'>68</span>;
+<span class='kw4'>const</span> EM_SETEVENTMASK <span class='opr'>=</span> WM_USER<span class='opr'>+</span><span class='nbr'>69</span>;
+<span class='kw4'>const</span> EM_SETOLECALLBACK <span class='opr'>=</span> WM_USER<span class='opr'>+</span><span class='nbr'>70</span>;
+<span class='kw4'>const</span> EM_SETPARAFORMAT <span class='opr'>=</span> WM_USER<span class='opr'>+</span><span class='nbr'>71</span>;
+<span class='kw4'>const</span> EM_SETTARGETDEVICE <span class='opr'>=</span> WM_USER<span class='opr'>+</span><span class='nbr'>72</span>;
+<span class='kw4'>const</span> EM_STREAMIN <span class='opr'>=</span> WM_USER<span class='opr'>+</span><span class='nbr'>73</span>;
+<span class='kw4'>const</span> EM_STREAMOUT <span class='opr'>=</span> WM_USER<span class='opr'>+</span><span class='nbr'>74</span>;
+<span class='kw4'>const</span> EM_GETTEXTRANGE <span class='opr'>=</span> WM_USER<span class='opr'>+</span><span class='nbr'>75</span>;
+<span class='kw4'>const</span> EM_FINDWORDBREAK <span class='opr'>=</span> WM_USER<span class='opr'>+</span><span class='nbr'>76</span>;
+<span class='kw4'>const</span> EM_SETOPTIONS <span class='opr'>=</span> WM_USER<span class='opr'>+</span><span class='nbr'>77</span>;
+<span class='kw4'>const</span> EM_GETOPTIONS <span class='opr'>=</span> WM_USER<span class='opr'>+</span><span class='nbr'>78</span>;
+<span class='kw4'>const</span> EM_FINDTEXTEX <span class='opr'>=</span> WM_USER<span class='opr'>+</span><span class='nbr'>79</span>;
+<span class='kw4'>const</span> EM_GETWORDBREAKPROCEX <span class='opr'>=</span> WM_USER<span class='opr'>+</span><span class='nbr'>80</span>;
+<span class='kw4'>const</span> EM_SETWORDBREAKPROCEX <span class='opr'>=</span> WM_USER<span class='opr'>+</span><span class='nbr'>81</span>;
+<span class='com'>/* RichEdit 2.0 messages */</span>
+<span class='kw4'>const</span> EM_SETUNDOLIMIT <span class='opr'>=</span> WM_USER<span class='opr'>+</span><span class='nbr'>82</span>;
+<span class='kw4'>const</span> EM_REDO <span class='opr'>=</span> WM_USER<span class='opr'>+</span><span class='nbr'>84</span>;
+<span class='kw4'>const</span> EM_CANREDO <span class='opr'>=</span> WM_USER<span class='opr'>+</span><span class='nbr'>85</span>;
+<span class='kw4'>const</span> EM_GETUNDONAME <span class='opr'>=</span> WM_USER<span class='opr'>+</span><span class='nbr'>86</span>;
+<span class='kw4'>const</span> EM_GETREDONAME <span class='opr'>=</span> WM_USER<span class='opr'>+</span><span class='nbr'>87</span>;
+<span class='kw4'>const</span> EM_STOPGROUPTYPING <span class='opr'>=</span> WM_USER<span class='opr'>+</span><span class='nbr'>88</span>;
+<span class='kw4'>const</span> EM_SETTEXTMODE <span class='opr'>=</span> WM_USER<span class='opr'>+</span><span class='nbr'>89</span>;
+<span class='kw4'>const</span> EM_GETTEXTMODE <span class='opr'>=</span> WM_USER<span class='opr'>+</span><span class='nbr'>90</span>;
+<span class='kw4'>const</span> EM_AUTOURLDETECT <span class='opr'>=</span> WM_USER<span class='opr'>+</span><span class='nbr'>91</span>;
+<span class='kw4'>const</span> EM_GETAUTOURLDETECT <span class='opr'>=</span> WM_USER <span class='opr'>+</span> <span class='nbr'>92</span>;
+<span class='kw4'>const</span> EM_SETPALETTE <span class='opr'>=</span> WM_USER <span class='opr'>+</span> <span class='nbr'>93</span>;
+<span class='kw4'>const</span> EM_GETTEXTEX <span class='opr'>=</span> WM_USER<span class='opr'>+</span><span class='nbr'>94</span>;
+<span class='kw4'>const</span> EM_GETTEXTLENGTHEX <span class='opr'>=</span> WM_USER<span class='opr'>+</span><span class='nbr'>95</span>;
+<span class='kw4'>const</span> EM_SHOWSCROLLBAR <span class='opr'>=</span> WM_USER<span class='opr'>+</span><span class='nbr'>96</span>;
+<span class='kw4'>const</span> EM_SETTEXTEX <span class='opr'>=</span> WM_USER <span class='opr'>+</span> <span class='nbr'>97</span>;
+<span class='kw4'>const</span> EM_SETPUNCTUATION <span class='opr'>=</span> WM_USER <span class='opr'>+</span> <span class='nbr'>100</span>;
+<span class='kw4'>const</span> EM_GETPUNCTUATION <span class='opr'>=</span> WM_USER <span class='opr'>+</span> <span class='nbr'>101</span>;
+<span class='kw4'>const</span> EM_SETWORDWRAPMODE <span class='opr'>=</span> WM_USER <span class='opr'>+</span> <span class='nbr'>102</span>;
+<span class='kw4'>const</span> EM_GETWORDWRAPMODE <span class='opr'>=</span> WM_USER <span class='opr'>+</span> <span class='nbr'>103</span>;
+<span class='kw4'>const</span> EM_SETIMECOLOR <span class='opr'>=</span> WM_USER <span class='opr'>+</span> <span class='nbr'>104</span>;
+<span class='kw4'>const</span> EM_GETIMECOLOR <span class='opr'>=</span> WM_USER <span class='opr'>+</span> <span class='nbr'>105</span>;
+<span class='kw4'>const</span> EM_SETIMEOPTIONS <span class='opr'>=</span> WM_USER <span class='opr'>+</span> <span class='nbr'>106</span>;
+<span class='kw4'>const</span> EM_GETIMEOPTIONS <span class='opr'>=</span> WM_USER <span class='opr'>+</span> <span class='nbr'>107</span>;
+<span class='kw4'>const</span> EM_SETLANGOPTIONS <span class='opr'>=</span> WM_USER<span class='opr'>+</span><span class='nbr'>120</span>;
+<span class='kw4'>const</span> EM_GETLANGOPTIONS <span class='opr'>=</span> WM_USER<span class='opr'>+</span><span class='nbr'>121</span>;
+<span class='kw4'>const</span> EM_GETIMECOMPMODE <span class='opr'>=</span> WM_USER<span class='opr'>+</span><span class='nbr'>122</span>;
+<span class='kw4'>const</span> EM_FINDTEXTW <span class='opr'>=</span> WM_USER <span class='opr'>+</span> <span class='nbr'>123</span>;
+<span class='kw4'>const</span> EM_FINDTEXTEXW <span class='opr'>=</span> WM_USER <span class='opr'>+</span> <span class='nbr'>124</span>;
+<span class='kw4'>const</span> EM_RECONVERSION <span class='opr'>=</span> WM_USER <span class='opr'>+</span> <span class='nbr'>125</span>;
+<span class='kw4'>const</span> EM_SETBIDIOPTIONS <span class='opr'>=</span> WM_USER <span class='opr'>+</span> <span class='nbr'>200</span>;
+<span class='kw4'>const</span> EM_GETBIDIOPTIONS <span class='opr'>=</span> WM_USER <span class='opr'>+</span> <span class='nbr'>201</span>;
+<span class='kw4'>const</span> EM_SETTYPOGRAPHYOPTIONS <span class='opr'>=</span> WM_USER<span class='opr'>+</span><span class='nbr'>202</span>;
+<span class='kw4'>const</span> EM_GETTYPOGRAPHYOPTIONS <span class='opr'>=</span> WM_USER<span class='opr'>+</span><span class='nbr'>203</span>;
+<span class='kw4'>const</span> EM_SETEDITSTYLE <span class='opr'>=</span> WM_USER <span class='opr'>+</span> <span class='nbr'>204</span>;
+<span class='kw4'>const</span> EM_GETEDITSTYLE <span class='opr'>=</span> WM_USER <span class='opr'>+</span> <span class='nbr'>205</span>;
+<span class='kw4'>const</span> EM_GETSCROLLPOS <span class='opr'>=</span> WM_USER<span class='opr'>+</span><span class='nbr'>221</span>;
+<span class='kw4'>const</span> EM_SETSCROLLPOS <span class='opr'>=</span> WM_USER<span class='opr'>+</span><span class='nbr'>222</span>;
+<span class='kw4'>const</span> EM_SETFONTSIZE <span class='opr'>=</span> WM_USER<span class='opr'>+</span><span class='nbr'>223</span>;
+<span class='kw4'>const</span> EM_GETZOOM <span class='opr'>=</span> WM_USER<span class='opr'>+</span><span class='nbr'>224</span>;
+<span class='kw4'>const</span> EM_SETZOOM <span class='opr'>=</span> WM_USER<span class='opr'>+</span><span class='nbr'>225</span>;
+
+<span class='kw4'>const</span> EN_MSGFILTER     <span class='opr'>=</span> <span class='nbr'>1792</span>;
+<span class='kw4'>const</span> EN_REQUESTRESIZE <span class='opr'>=</span> <span class='nbr'>1793</span>;
+<span class='kw4'>const</span> EN_SELCHANGE     <span class='opr'>=</span> <span class='nbr'>1794</span>;
+<span class='kw4'>const</span> EN_DROPFILES     <span class='opr'>=</span> <span class='nbr'>1795</span>;
+<span class='kw4'>const</span> EN_PROTECTED     <span class='opr'>=</span> <span class='nbr'>1796</span>;
+<span class='kw4'>const</span> EN_CORRECTTEXT   <span class='opr'>=</span> <span class='nbr'>1797</span>;
+<span class='kw4'>const</span> EN_STOPNOUNDO    <span class='opr'>=</span> <span class='nbr'>1798</span>;
+<span class='kw4'>const</span> EN_IMECHANGE     <span class='opr'>=</span> <span class='nbr'>1799</span>;
+<span class='kw4'>const</span> EN_SAVECLIPBOARD <span class='opr'>=</span> <span class='nbr'>1800</span>;
+<span class='kw4'>const</span> EN_OLEOPFAILED   <span class='opr'>=</span> <span class='nbr'>1801</span>;
+<span class='kw4'>const</span> EN_LINK          <span class='opr'>=</span> <span class='nbr'>1803</span>;
+
+<span class='kw4'>const</span> ENM_NONE            <span class='opr'>=</span> <span class='nbr'>0</span>;
+<span class='kw4'>const</span> ENM_CHANGE          <span class='opr'>=</span> <span class='nbr'>1</span>;
+<span class='kw4'>const</span> ENM_UPDATE          <span class='opr'>=</span> <span class='nbr'>2</span>;
+<span class='kw4'>const</span> ENM_SCROLL          <span class='opr'>=</span> <span class='nbr'>4</span>;
+<span class='kw4'>const</span> ENM_SCROLLEVENTS    <span class='opr'>=</span> <span class='nbr'>8</span>;
+<span class='kw4'>const</span> ENM_DRAGDROPDONE    <span class='opr'>=</span> <span class='nbr'>16</span>;
+<span class='kw4'>const</span> ENM_KEYEVENTS       <span class='opr'>=</span> <span class='nbr'>65536</span>;
+<span class='kw4'>const</span> ENM_MOUSEEVENTS     <span class='opr'>=</span> <span class='nbr'>131072</span>;
+<span class='kw4'>const</span> ENM_REQUESTRESIZE   <span class='opr'>=</span> <span class='nbr'>262144</span>;
+<span class='kw4'>const</span> ENM_SELCHANGE       <span class='opr'>=</span> <span class='nbr'>524288</span>;
+<span class='kw4'>const</span> ENM_DROPFILES       <span class='opr'>=</span> <span class='nbr'>1048576</span>;
+<span class='kw4'>const</span> ENM_PROTECTED       <span class='opr'>=</span> <span class='nbr'>2097152</span>;
+<span class='kw4'>const</span> ENM_CORRECTTEXT     <span class='opr'>=</span> <span class='nbr'>4194304</span>;
+<span class='kw4'>const</span> ENM_IMECHANGE       <span class='opr'>=</span> <span class='nbr'>8388608</span>;
+<span class='kw4'>const</span> ENM_LANGCHANGE      <span class='opr'>=</span> <span class='nbr'>16777216</span>;
+<span class='kw4'>const</span> ENM_OBJECTPOSITIONS <span class='opr'>=</span> <span class='nbr'>33554432</span>;
+<span class='kw4'>const</span> ENM_LINK            <span class='opr'>=</span> <span class='nbr'>67108864</span>;
+
+<span class='kw4'>const</span> ECO_AUTOWORDSELECTION<span class='opr'>=</span><span class='nbr'>1</span>;
+<span class='kw4'>const</span> ECO_AUTOVSCROLL<span class='opr'>=</span><span class='nbr'>64</span>;
+<span class='kw4'>const</span> ECO_AUTOHSCROLL<span class='opr'>=</span><span class='nbr'>128</span>;
+<span class='kw4'>const</span> ECO_NOHIDESEL<span class='opr'>=</span><span class='nbr'>256</span>;
+<span class='kw4'>const</span> ECO_READONLY<span class='opr'>=</span><span class='nbr'>2048</span>;
+<span class='kw4'>const</span> ECO_WANTRETURN<span class='opr'>=</span><span class='nbr'>4096</span>;
+<span class='kw4'>const</span> ECO_SAVESEL<span class='opr'>=</span><span class='nbr'>0</span>x8000;
+<span class='kw4'>const</span> ECO_SELECTIONBAR<span class='opr'>=</span><span class='nbr'>0</span>x1000000;
+<span class='kw4'>const</span> ECO_VERTICAL<span class='opr'>=</span><span class='nbr'>0</span>x400000;
+
+<span class='kw4'>enum</span> <span class='opr'>{</span>
+    ECOOP_SET <span class='opr'>=</span> <span class='nbr'>1</span>,
+    ECOOP_OR,
+    ECOOP_AND,
+    ECOOP_XOR
+<span class='opr'>}</span>
+
+<span class='kw4'>const</span> SCF_DEFAULT    <span class='opr'>=</span> <span class='nbr'>0</span>;
+<span class='kw4'>const</span> SCF_SELECTION  <span class='opr'>=</span> <span class='nbr'>1</span>;
+<span class='kw4'>const</span> SCF_WORD       <span class='opr'>=</span> <span class='nbr'>2</span>;
+<span class='kw4'>const</span> SCF_ALL        <span class='opr'>=</span> <span class='nbr'>4</span>;
+<span class='kw4'>const</span> SCF_USEUIRULES <span class='opr'>=</span> <span class='nbr'>8</span>;
+
+<span class='kw4'>const</span> TM_PLAINTEXT<span class='opr'>=</span><span class='nbr'>1</span>;
+<span class='kw4'>const</span> TM_RICHTEXT<span class='opr'>=</span><span class='nbr'>2</span>;
+<span class='kw4'>const</span> TM_SINGLELEVELUNDO<span class='opr'>=</span><span class='nbr'>4</span>;
+<span class='kw4'>const</span> TM_MULTILEVELUNDO<span class='opr'>=</span><span class='nbr'>8</span>;
+<span class='kw4'>const</span> TM_SINGLECODEPAGE<span class='opr'>=</span><span class='nbr'>16</span>;
+<span class='kw4'>const</span> TM_MULTICODEPAGE<span class='opr'>=</span><span class='nbr'>32</span>;
+
+<span class='kw4'>const</span> GT_DEFAULT<span class='opr'>=</span><span class='nbr'>0</span>;
+<span class='kw4'>const</span> GT_USECRLF<span class='opr'>=</span><span class='nbr'>1</span>;
+
+<span class='kw4'>const</span> yHeightCharPtsMost<span class='opr'>=</span><span class='nbr'>1638</span>;
+<span class='kw4'>const</span> lDefaultTab<span class='opr'>=</span><span class='nbr'>720</span>;
+
+<span class='kw4'>struct</span> CHARFORMATA <span class='opr'>{</span>
+    UINT cbSize;
+    DWORD dwMask;
+    DWORD dwEffects;
+    LONG yHeight;
+    LONG yOffset;
+    COLORREF crTextColor;
+    BYTE bCharSet;
+    BYTE bPitchAndFamily;
+    <span class='kw4'>char</span> szFaceName<span class='opr'>[</span>LF_FACESIZE<span class='opr'>]</span>;
+<span class='opr'>}</span>
+<span class='kw4'>struct</span> CHARFORMATW<span class='opr'>{</span>
+    UINT cbSize;
+    DWORD dwMask;
+    DWORD dwEffects;
+    LONG yHeight;
+    LONG yOffset;
+    COLORREF crTextColor;
+    BYTE bCharSet;
+    BYTE bPitchAndFamily;
+    WCHAR szFaceName<span class='opr'>[</span>LF_FACESIZE<span class='opr'>]</span>;
+<span class='opr'>}</span>
+
+<span class='kw4'>struct</span> CHARFORMAT2A <span class='opr'>{</span>
+    UINT cbSize;
+    DWORD dwMask;
+    DWORD dwEffects;
+    LONG yHeight;
+    LONG yOffset;
+    COLORREF crTextColor;
+    BYTE bCharSet;
+    BYTE bPitchAndFamily;
+    <span class='kw4'>char</span> szFaceName<span class='opr'>[</span>LF_FACESIZE<span class='opr'>]</span>;
+    WORD wWeight;
+    SHORT sSpacing;
+    COLORREF crBackColor;
+    LCID lcid;
+    DWORD dwReserved;
+    SHORT sStyle;
+    WORD wKerning;
+    BYTE bUnderlineType;
+    BYTE bAnimation;
+    BYTE bRevAuthor;
+<span class='opr'>}</span>
+
+<span class='kw4'>struct</span> CHARFORMAT2W <span class='opr'>{</span>
+    UINT cbSize;
+    DWORD dwMask;
+    DWORD dwEffects;
+    LONG yHeight;
+    LONG yOffset;
+    COLORREF crTextColor;
+    BYTE bCharSet;
+    BYTE bPitchAndFamily;
+    WCHAR szFaceName<span class='opr'>[</span>LF_FACESIZE<span class='opr'>]</span>;
+    WORD wWeight;
+    SHORT sSpacing;
+    COLORREF crBackColor;
+    LCID lcid;
+    DWORD dwReserved;
+    SHORT sStyle;
+    WORD wKerning;
+    BYTE bUnderlineType;
+    BYTE bAnimation;
+    BYTE bRevAuthor;
+<span class='opr'>}</span>
+
+<span class='kw4'>struct</span> CHARRANGE <span class='opr'>{</span>
+    LONG cpMin;
+    LONG cpMax;
+<span class='opr'>}</span>
+
+<span class='kw4'>struct</span> COMPCOLOR<span class='opr'>{</span>
+    COLORREF crText;
+    COLORREF crBackground;
+    DWORD dwEffects;
+<span class='opr'>}</span>
+
+<span class='kw2'>extern</span> <span class='opr'>(</span>Windows<span class='opr'>)</span> <span class='opr'>{</span>
+    <span class='kw2'>alias</span> DWORD <span class='kw2'>function</span><span class='opr'>(</span>DWORD,PBYTE,LONG,LONG<span class='opr'>*</span><span class='opr'>)</span> EDITSTREAMCALLBACK;
+<span class='opr'>}</span>
+
+<span class='kw4'>struct</span> EDITSTREAM <span class='opr'>{</span>
+    DWORD dwCookie;
+    DWORD dwError;
+    EDITSTREAMCALLBACK pfnCallback;
+<span class='opr'>}</span>
+
+<span class='kw4'>struct</span> ENCORRECTTEXT<span class='opr'>{</span>
+    NMHDR nmhdr;
+    CHARRANGE chrg;
+    WORD seltyp;
+<span class='opr'>}</span>
+
+<span class='kw4'>struct</span> ENDROPFILES<span class='opr'>{</span>
+    NMHDR nmhdr;
+    HANDLE hDrop;
+    LONG cp;
+    BOOL fProtected;
+<span class='opr'>}</span>
+
+<span class='kw4'>struct</span> ENLINK <span class='opr'>{</span>
+    NMHDR nmhdr;
+    UINT msg;
+    WPARAM wParam;
+    LPARAM lParam;
+    CHARRANGE chrg;
+<span class='opr'>}</span>
+
+<span class='kw4'>struct</span> ENOLEOPFAILED <span class='opr'>{</span>
+    NMHDR nmhdr;
+    LONG iob;
+    LONG lOper;
+    HRESULT hr;
+<span class='opr'>}</span>
+
+<span class='kw4'>struct</span> ENPROTECTED<span class='opr'>{</span>
+    NMHDR nmhdr;
+    UINT msg;
+    WPARAM wParam;
+    LPARAM lParam;
+    CHARRANGE chrg;
+<span class='opr'>}</span>
+<span class='kw2'>alias</span> ENPROTECTED<span class='opr'>*</span> LPENPROTECTED;
+
+<span class='kw4'>struct</span> ENSAVECLIPBOARD<span class='opr'>{</span>
+    NMHDR nmhdr;
+    LONG cObjectCount;
+    LONG cch;
+<span class='opr'>}</span>
+
+<span class='kw4'>struct</span> FINDTEXTA<span class='opr'>{</span>
+    CHARRANGE chrg;
+    LPSTR lpstrText;
+<span class='opr'>}</span>
+
+<span class='kw4'>struct</span> FINDTEXTW <span class='opr'>{</span>
+    CHARRANGE chrg;
+    LPWSTR lpstrText;
+<span class='opr'>}</span>
+
+<span class='kw4'>struct</span> FINDTEXTEXA<span class='opr'>{</span>
+    CHARRANGE chrg;
+    LPSTR lpstrText;
+    CHARRANGE chrgText;
+<span class='opr'>}</span>
+
+<span class='kw4'>struct</span> FINDTEXTEXW<span class='opr'>{</span>
+    CHARRANGE chrg;
+    LPWSTR lpstrText;
+    CHARRANGE chrgText;
+<span class='opr'>}</span>
+
+<span class='kw4'>struct</span> FORMATRANGE <span class='opr'>{</span>
+    HDC hdc;
+    HDC hdcTarget;
+    RECT rc;
+    RECT rcPage;
+    CHARRANGE chrg;
+<span class='opr'>}</span>
+
+<span class='kw4'>struct</span> MSGFILTER<span class='opr'>{</span>
+    NMHDR nmhdr;
+    UINT msg;
+    WPARAM wParam;
+    LPARAM lParam;
+<span class='opr'>}</span>
+
+<span class='kw4'>struct</span> PARAFORMAT<span class='opr'>{</span>
+    UINT cbSize;
+    DWORD dwMask;
+    WORD wNumbering;
+    WORD wReserved;
+    LONG dxStartIndent;
+    LONG dxRightIndent;
+    LONG dxOffset;
+    WORD wAlignment;
+    SHORT cTabCount;
+    LONG rgxTabs<span class='opr'>[</span>MAX_TAB_STOPS<span class='opr'>]</span>;
+<span class='opr'>}</span>
+
+<span class='kw4'>struct</span> PARAFORMAT2<span class='opr'>{</span>
+    UINT cbSize;
+    DWORD dwMask;
+    WORD wNumbering;
+    WORD wEffects;
+    LONG dxStartIndent;
+    LONG dxRightIndent;
+    LONG dxOffset;
+    WORD wAlignment;
+    SHORT cTabCount;
+    LONG rgxTabs<span class='opr'>[</span>MAX_TAB_STOPS<span class='opr'>]</span>;
+    LONG dySpaceBefore;
+    LONG dySpaceAfter;
+    LONG dyLineSpacing;
+    SHORT sStype;
+    BYTE bLineSpacingRule;
+    BYTE bOutlineLevel;
+    WORD wShadingWeight;
+    WORD wShadingStyle;
+    WORD wNumberingStart;
+    WORD wNumberingStyle;
+    WORD wNumberingTab;
+    WORD wBorderSpace;
+    WORD wBorderWidth;
+    WORD wBorders;
+<span class='opr'>}</span>
+
+<span class='kw4'>struct</span> SELCHANGE <span class='opr'>{</span>
+    NMHDR nmhdr;
+    CHARRANGE chrg;
+    WORD seltyp;
+<span class='opr'>}</span>
+
+<span class='kw4'>struct</span> TEXTRANGEA<span class='opr'>{</span>
+    CHARRANGE chrg;
+    LPSTR lpstrText;
+<span class='opr'>}</span>
+
+<span class='kw4'>struct</span> TEXTRANGEW<span class='opr'>{</span>
+    CHARRANGE chrg;
+    LPWSTR lpstrText;
+<span class='opr'>}</span>
+
+<span class='kw4'>struct</span> REQRESIZE<span class='opr'>{</span>
+    NMHDR nmhdr;
+    RECT rc;
+<span class='opr'>}</span>
+
+<span class='kw4'>struct</span> REPASTESPECIAL <span class='opr'>{</span>
+    DWORD dwAspect;
+    DWORD dwParam;
+<span class='opr'>}</span>
+
+<span class='kw4'>struct</span> PUNCTUATION<span class='opr'>{</span>
+    UINT iSize;
+    LPSTR szPunctuation;
+<span class='opr'>}</span>
+
+<span class='kw4'>struct</span> GETTEXTEX <span class='opr'>{</span>
+    DWORD cb;
+    DWORD flags;
+    UINT codepage;
+    LPCSTR lpDefaultChar;
+    LPBOOL lpUsedDefaultChar;
+<span class='opr'>}</span>
+
+<span class='kw2'>extern</span> <span class='opr'>(</span>Windows<span class='opr'>)</span> <span class='opr'>{</span>
+<span class='kw2'>alias</span> LONG <span class='kw2'>function</span><span class='opr'>(</span><span class='kw4'>char</span><span class='opr'>*</span>,LONG,BYTE,INT<span class='opr'>)</span> EDITWORDBREAKPROCEX;
+<span class='opr'>}</span>
+
+<span class='com'>/* Defines for EM_SETTYPOGRAPHYOPTIONS */</span>
+<span class='kw4'>const</span> TO_ADVANCEDTYPOGRAPHY <span class='opr'>=</span> <span class='nbr'>1</span>;
+<span class='kw4'>const</span> TO_SIMPLELINEBREAK    <span class='opr'>=</span> <span class='nbr'>2</span>;
+
+<span class='com'>/* Defines for GETTEXTLENGTHEX */</span>
+<span class='kw4'>const</span> GTL_DEFAULT  <span class='opr'>=</span> <span class='nbr'>0</span>;
+<span class='kw4'>const</span> GTL_USECRLF  <span class='opr'>=</span> <span class='nbr'>1</span>;
+<span class='kw4'>const</span> GTL_PRECISE  <span class='opr'>=</span> <span class='nbr'>2</span>;
+<span class='kw4'>const</span> GTL_CLOSE    <span class='opr'>=</span> <span class='nbr'>4</span>;
+<span class='kw4'>const</span> GTL_NUMCHARS <span class='opr'>=</span> <span class='nbr'>8</span>;
+<span class='kw4'>const</span> GTL_NUMBYTES <span class='opr'>=</span> <span class='nbr'>16</span>;
+
+<span class='kw4'>struct</span> GETTEXTLENGTHEX <span class='opr'>{</span>
+    DWORD flags;
+    UINT codepage;
+<span class='opr'>}</span>
+
+<span class='kw4'>version</span><span class='opr'>(</span>Unicode<span class='opr'>)</span> <span class='opr'>{</span>
+    <span class='kw2'>alias</span> CHARFORMATW CHARFORMAT;
+    <span class='kw2'>alias</span> CHARFORMAT2W CHARFORMAT2;
+    <span class='kw2'>alias</span> FINDTEXTW FINDTEXT;
+    <span class='kw2'>alias</span> FINDTEXTEXW FINDTEXTEX;
+    <span class='kw2'>alias</span> TEXTRANGEW TEXTRANGE;
+<span class='opr'>}</span> <span class='kw1'>else</span> <span class='opr'>{</span>
+    <span class='kw2'>alias</span> CHARFORMATA CHARFORMAT;
+    <span class='kw2'>alias</span> CHARFORMAT2A CHARFORMAT2;
+    <span class='kw2'>alias</span> FINDTEXTA FINDTEXT;
+    <span class='kw2'>alias</span> FINDTEXTEXA FINDTEXTEX;
+    <span class='kw2'>alias</span> TEXTRANGEA TEXTRANGE;
+<span class='opr'>}</span>
+<span class='kw4'>align</span>:
+</pre></td></tr></table>	</body>
+</html>

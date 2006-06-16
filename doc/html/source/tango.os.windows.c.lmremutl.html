@@ -1,0 +1,137 @@
+<!DOCTYPE html 
+     PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+     "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html>
+	<head>
+		<link rel="stylesheet" href="style.css" type="text/css" />
+		<title>os/windows/c/lmremutl.d</title>
+	</head>
+	<body>
+
+<table id='dcode'><tr><td id='lnum'><pre><span>1</span>
+<span>2</span>
+<span>3</span>
+<span>4</span>
+<span>5</span>
+<span>6</span>
+<span>7</span>
+<span>8</span>
+<span>9</span>
+<span>10</span>
+<span>11</span>
+<span>12</span>
+<span>13</span>
+<span>14</span>
+<span>15</span>
+<span>16</span>
+<span>17</span>
+<span>18</span>
+<span>19</span>
+<span>20</span>
+<span>21</span>
+<span>22</span>
+<span>23</span>
+<span>24</span>
+<span>25</span>
+<span>26</span>
+<span>27</span>
+<span>28</span>
+<span>29</span>
+<span>30</span>
+<span>31</span>
+<span>32</span>
+<span>33</span>
+<span>34</span>
+<span>35</span>
+<span>36</span>
+<span>37</span>
+<span>38</span>
+<span>39</span>
+<span>40</span>
+<span>41</span>
+<span>42</span>
+<span>43</span>
+<span>44</span>
+<span>45</span>
+<span>46</span>
+<span>47</span>
+<span>48</span>
+<span>49</span>
+<span>50</span>
+<span>51</span>
+<span>52</span>
+<span>53</span>
+<span>54</span>
+<span>55</span>
+<span>56</span>
+<span>57</span>
+<span>58</span>
+<span>59</span>
+<span>60</span>
+<span>61</span>
+<span>62</span>
+</pre></td><td id='code'><pre><span class='com'>/***********************************************************************\
+*                              lmremutl.d                               *
+*                                                                       *
+*                       Windows API header module                       *
+*                                                                       *
+*                 Translated from MinGW Windows headers                 *
+*                                                                       *
+*                       Placed into public domain                       *
+\***********************************************************************/</span>
+<span class='com'>// D Conversion Note: DESC_CHAR is defined as TCHAR.</span>
+<span class='kw2'>module</span> tango.os.windows.c.lmremutl;
+
+<span class='com'>//version (build) { pragma(nolink); }</span>
+
+<span class='com'>//pragma(lib, &quot;netapi32.lib&quot;);</span>
+<span class='kw4'>private</span> <span class='kw2'>import</span> tango.os.windows.c.lmcons;
+<span class='kw4'>private</span> <span class='kw2'>import</span> tango.os.windows.c.windef;
+
+<span class='kw4'>const</span> SUPPORTS_REMOTE_ADMIN_PROTOCOL <span class='opr'>=</span>  <span class='nbr'>2</span>;
+<span class='kw4'>const</span> SUPPORTS_RPC                   <span class='opr'>=</span>  <span class='nbr'>4</span>;
+<span class='kw4'>const</span> SUPPORTS_SAM_PROTOCOL          <span class='opr'>=</span>  <span class='nbr'>8</span>;
+<span class='kw4'>const</span> SUPPORTS_UNICODE               <span class='opr'>=</span> <span class='nbr'>16</span>;
+<span class='kw4'>const</span> SUPPORTS_LOCAL                 <span class='opr'>=</span> <span class='nbr'>32</span>;
+<span class='kw4'>const</span> SUPPORTS_ANY                   <span class='opr'>=</span> <span class='nbr'>0</span>xFFFFFFFF;
+
+<span class='kw4'>const</span> NO_PERMISSION_REQUIRED <span class='opr'>=</span> <span class='nbr'>1</span>;
+<span class='kw4'>const</span> ALLOCATE_RESPONSE      <span class='opr'>=</span> <span class='nbr'>2</span>;
+<span class='kw4'>const</span> USE_SPECIFIC_TRANSPORT <span class='opr'>=</span> <span class='nbr'>0</span>x80000000;
+
+<span class='com'>//[Yes] #ifndef DESC_CHAR_UNICODE</span>
+<span class='com'>//alias CHAR DESC_CHAR;</span>
+<span class='com'>//} else {</span>
+<span class='com'>//[No] #else</span>
+<span class='com'>//[No] typedef WCHAR DESC_CHAR;</span>
+<span class='com'>//[No] #endif</span>
+<span class='com'>// FIXME (D): Is this OK?</span>
+<span class='kw2'>alias</span> TCHAR DESC_CHAR;
+
+<span class='kw2'>alias</span> DESC_CHAR<span class='opr'>*</span> LPDESC;
+
+<span class='kw4'>struct</span> TIME_OF_DAY_INFO <span class='opr'>{</span>
+    DWORD tod_elapsedt;
+    DWORD tod_msecs;
+    DWORD tod_hours;
+    DWORD tod_mins;
+    DWORD tod_secs;
+    DWORD tod_hunds;
+    LONG  tod_timezone;
+    DWORD tod_tinterval;
+    DWORD tod_day;
+    DWORD tod_month;
+    DWORD tod_year;
+    DWORD tod_weekday;
+<span class='opr'>}</span>
+<span class='kw2'>alias</span> TIME_OF_DAY_INFO<span class='opr'>*</span> PTIME_OF_DAY_INFO, LPTIME_OF_DAY_INFO;
+
+<span class='kw2'>extern</span> <span class='opr'>(</span>Windows<span class='opr'>)</span> <span class='opr'>{</span>
+    NET_API_STATUS NetRemoteTOD<span class='opr'>(</span>LPCWSTR, PBYTE<span class='opr'>*</span><span class='opr'>)</span>;
+    NET_API_STATUS NetRemoteComputerSupports<span class='opr'>(</span>LPCWSTR, DWORD, PDWORD<span class='opr'>)</span>;
+    NET_API_STATUS RxRemoteApi<span class='opr'>(</span>DWORD, LPCWSTR, LPDESC, LPDESC, LPDESC,
+      LPDESC, LPDESC, LPDESC, LPDESC, DWORD, <span class='opr'>..</span>.<span class='opr'>)</span>;
+<span class='opr'>}</span>
+</pre></td></tr></table>	</body>
+</html>

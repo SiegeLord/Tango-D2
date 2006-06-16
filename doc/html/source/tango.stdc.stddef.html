@@ -1,0 +1,79 @@
+<!DOCTYPE html 
+     PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+     "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html>
+	<head>
+		<link rel="stylesheet" href="style.css" type="text/css" />
+		<title>stdc/stddef.d</title>
+	</head>
+	<body>
+
+<table id='dcode'><tr><td id='lnum'><pre><span>1</span>
+<span>2</span>
+<span>3</span>
+<span>4</span>
+<span>5</span>
+<span>6</span>
+<span>7</span>
+<span>8</span>
+<span>9</span>
+<span>10</span>
+<span>11</span>
+<span>12</span>
+<span>13</span>
+<span>14</span>
+<span>15</span>
+<span>16</span>
+<span>17</span>
+<span>18</span>
+<span>19</span>
+<span>20</span>
+<span>21</span>
+<span>22</span>
+<span>23</span>
+<span>24</span>
+<span>25</span>
+<span>26</span>
+<span>27</span>
+<span>28</span>
+<span>29</span>
+<span>30</span>
+<span>31</span>
+<span>32</span>
+<span>33</span>
+</pre></td><td id='code'><pre><span class='com'>/**
+ * D header file for C99.
+ *
+ * Copyright: Public Domain
+ * License:   Public Domain
+ * Authors:   Sean Kelly
+ * Standards: ISO/IEC 9899:1999 (E)
+ */</span>
+<span class='kw2'>module</span> tango.stdc.stddef;
+
+<span class='kw2'>extern</span> <span class='opr'>(</span>C<span class='opr'>)</span>:
+
+<span class='kw2'>alias</span> <span class='kw2'>typeof</span><span class='opr'>(</span><span class='kw4'>int</span>.sizeof<span class='opr'>)</span>                    <span class='kw4'>size_t</span>;
+<span class='kw2'>alias</span> <span class='kw2'>typeof</span><span class='opr'>(</span><span class='kw2'>cast</span><span class='opr'>(</span><span class='kw4'>void</span><span class='opr'>*</span><span class='opr'>)</span><span class='nbr'>0</span> <span class='opr'>-</span> <span class='kw2'>cast</span><span class='opr'>(</span><span class='kw4'>void</span><span class='opr'>*</span><span class='opr'>)</span><span class='nbr'>0</span><span class='opr'>)</span>   <span class='kw4'>ptrdiff_t</span>;
+
+<span class='kw4'>version</span><span class='opr'>(</span> Win32 <span class='opr'>)</span>
+<span class='opr'>{</span>
+    <span class='kw2'>alias</span> <span class='kw4'>wchar</span> wint_t;
+    <span class='kw2'>alias</span> <span class='kw4'>wchar</span> wchar_t;
+    <span class='kw2'>alias</span> <span class='kw4'>wchar</span> wctype_t;
+    <span class='kw2'>alias</span> <span class='kw4'>wchar</span> wctrans_t;
+
+    <span class='kw4'>const</span> <span class='kw4'>wchar</span> WEOF <span class='opr'>=</span> <span class='nbr'>0</span>xFFFF;
+<span class='opr'>}</span>
+<span class='kw1'>else</span>
+<span class='opr'>{</span>
+    <span class='kw2'>alias</span> <span class='kw4'>dchar</span> wint_t;
+    <span class='kw2'>alias</span> <span class='kw4'>dchar</span> wchar_t;
+    <span class='kw2'>alias</span> <span class='kw4'>dchar</span> wctype_t;
+    <span class='kw2'>alias</span> <span class='kw4'>dchar</span> wctrans_t;
+
+    <span class='kw4'>const</span> <span class='kw4'>dchar</span> WEOF <span class='opr'>=</span> <span class='nbr'>0</span>xFFFF;
+<span class='opr'>}</span>
+</pre></td></tr></table>	</body>
+</html>

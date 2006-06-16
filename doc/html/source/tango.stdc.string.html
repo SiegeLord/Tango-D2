@@ -1,0 +1,155 @@
+<!DOCTYPE html 
+     PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+     "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html>
+	<head>
+		<link rel="stylesheet" href="style.css" type="text/css" />
+		<title>stdc/string.d</title>
+	</head>
+	<body>
+
+<table id='dcode'><tr><td id='lnum'><pre><span>1</span>
+<span>2</span>
+<span>3</span>
+<span>4</span>
+<span>5</span>
+<span>6</span>
+<span>7</span>
+<span>8</span>
+<span>9</span>
+<span>10</span>
+<span>11</span>
+<span>12</span>
+<span>13</span>
+<span>14</span>
+<span>15</span>
+<span>16</span>
+<span>17</span>
+<span>18</span>
+<span>19</span>
+<span>20</span>
+<span>21</span>
+<span>22</span>
+<span>23</span>
+<span>24</span>
+<span>25</span>
+<span>26</span>
+<span>27</span>
+<span>28</span>
+<span>29</span>
+<span>30</span>
+<span>31</span>
+<span>32</span>
+<span>33</span>
+<span>34</span>
+<span>35</span>
+<span>36</span>
+<span>37</span>
+<span>38</span>
+<span>39</span>
+<span>40</span>
+<span>41</span>
+<span>42</span>
+<span>43</span>
+<span>44</span>
+<span>45</span>
+<span>46</span>
+<span>47</span>
+<span>48</span>
+<span>49</span>
+<span>50</span>
+<span>51</span>
+<span>52</span>
+<span>53</span>
+<span>54</span>
+<span>55</span>
+<span>56</span>
+<span>57</span>
+<span>58</span>
+<span>59</span>
+<span>60</span>
+<span>61</span>
+<span>62</span>
+<span>63</span>
+<span>64</span>
+<span>65</span>
+<span>66</span>
+<span>67</span>
+<span>68</span>
+<span>69</span>
+<span>70</span>
+<span>71</span>
+</pre></td><td id='code'><pre><span class='com'>/**
+ * D header file for C99.
+ *
+ * Copyright: Public Domain
+ * License:   Public Domain
+ * Authors:   Sean Kelly
+ * Standards: ISO/IEC 9899:1999 (E)
+ */</span>
+<span class='kw2'>module</span> tango.stdc.string;
+
+<span class='kw4'>private</span> <span class='kw2'>import</span> tango.stdc.stddef;
+
+<span class='kw2'>extern</span> <span class='opr'>(</span>C<span class='opr'>)</span>:
+
+<span class='kw4'>void</span><span class='opr'>*</span> memchr<span class='opr'>(</span><span class='kw4'>void</span><span class='opr'>*</span> s, <span class='kw4'>int</span> c, <span class='kw4'>size_t</span> n<span class='opr'>)</span>;
+<span class='kw4'>int</span>   memcmp<span class='opr'>(</span><span class='kw4'>void</span><span class='opr'>*</span> s1, <span class='kw4'>void</span><span class='opr'>*</span> s2, <span class='kw4'>size_t</span> n<span class='opr'>)</span>;
+<span class='kw4'>void</span><span class='opr'>*</span> memcpy<span class='opr'>(</span><span class='kw4'>void</span><span class='opr'>*</span> s1, <span class='kw4'>void</span><span class='opr'>*</span> s2, <span class='kw4'>size_t</span> n<span class='opr'>)</span>;
+<span class='kw4'>void</span><span class='opr'>*</span> memmove<span class='opr'>(</span><span class='kw4'>void</span><span class='opr'>*</span> s1, <span class='kw4'>void</span><span class='opr'>*</span> s2, <span class='kw4'>size_t</span> n<span class='opr'>)</span>;
+<span class='kw4'>void</span><span class='opr'>*</span> memset<span class='opr'>(</span><span class='kw4'>void</span><span class='opr'>*</span> s, <span class='kw4'>int</span> c, <span class='kw4'>size_t</span> n<span class='opr'>)</span>;
+
+<span class='kw4'>char</span><span class='opr'>*</span>  strcpy<span class='opr'>(</span><span class='kw4'>char</span><span class='opr'>*</span> s1, <span class='kw4'>char</span><span class='opr'>*</span> s2<span class='opr'>)</span>;
+<span class='kw4'>char</span><span class='opr'>*</span>  strncpy<span class='opr'>(</span><span class='kw4'>char</span><span class='opr'>*</span> s1, <span class='kw4'>char</span><span class='opr'>*</span> s2, <span class='kw4'>size_t</span> n<span class='opr'>)</span>;
+<span class='kw4'>char</span><span class='opr'>*</span>  strcat<span class='opr'>(</span><span class='kw4'>char</span><span class='opr'>*</span> s1, <span class='kw4'>char</span><span class='opr'>*</span> s2<span class='opr'>)</span>;
+<span class='kw4'>char</span><span class='opr'>*</span>  strncat<span class='opr'>(</span><span class='kw4'>char</span><span class='opr'>*</span> s1, <span class='kw4'>char</span><span class='opr'>*</span> s2, <span class='kw4'>size_t</span> n<span class='opr'>)</span>;
+<span class='kw4'>int</span>    strcmp<span class='opr'>(</span><span class='kw4'>char</span><span class='opr'>*</span> s1, <span class='kw4'>char</span><span class='opr'>*</span> s2<span class='opr'>)</span>;
+<span class='kw4'>int</span>    strcoll<span class='opr'>(</span><span class='kw4'>char</span><span class='opr'>*</span> s1, <span class='kw4'>char</span><span class='opr'>*</span> s2<span class='opr'>)</span>;
+<span class='kw4'>int</span>    strncmp<span class='opr'>(</span><span class='kw4'>char</span><span class='opr'>*</span> s1, <span class='kw4'>char</span><span class='opr'>*</span> s2, <span class='kw4'>size_t</span> n<span class='opr'>)</span>;
+<span class='kw4'>size_t</span> strxfrm<span class='opr'>(</span><span class='kw4'>char</span><span class='opr'>*</span> s1, <span class='kw4'>char</span><span class='opr'>*</span> s2, <span class='kw4'>size_t</span> n<span class='opr'>)</span>;
+<span class='kw4'>char</span><span class='opr'>*</span>  strchr<span class='opr'>(</span><span class='kw4'>char</span><span class='opr'>*</span> s, <span class='kw4'>int</span> c<span class='opr'>)</span>;
+<span class='kw4'>size_t</span> strcspn<span class='opr'>(</span><span class='kw4'>char</span><span class='opr'>*</span> s1, <span class='kw4'>char</span><span class='opr'>*</span> s2<span class='opr'>)</span>;
+<span class='kw4'>char</span><span class='opr'>*</span>  strpbrk<span class='opr'>(</span><span class='kw4'>char</span><span class='opr'>*</span> s1, <span class='kw4'>char</span><span class='opr'>*</span> s2<span class='opr'>)</span>;
+<span class='kw4'>char</span><span class='opr'>*</span>  strrchr<span class='opr'>(</span><span class='kw4'>char</span><span class='opr'>*</span> s, <span class='kw4'>int</span> c<span class='opr'>)</span>;
+<span class='kw4'>size_t</span> strspn<span class='opr'>(</span><span class='kw4'>char</span><span class='opr'>*</span> s1, <span class='kw4'>char</span><span class='opr'>*</span> s2<span class='opr'>)</span>;
+<span class='kw4'>char</span><span class='opr'>*</span>  strstr<span class='opr'>(</span><span class='kw4'>char</span><span class='opr'>*</span> s1, <span class='kw4'>char</span><span class='opr'>*</span> s2<span class='opr'>)</span>;
+<span class='kw4'>char</span><span class='opr'>*</span>  strtok<span class='opr'>(</span><span class='kw4'>char</span><span class='opr'>*</span> s1, <span class='kw4'>char</span><span class='opr'>*</span> s2<span class='opr'>)</span>;
+<span class='kw4'>char</span><span class='opr'>*</span>  strerror<span class='opr'>(</span><span class='kw4'>int</span> errnum<span class='opr'>)</span>;
+<span class='kw4'>size_t</span> strlen<span class='opr'>(</span><span class='kw4'>char</span><span class='opr'>*</span> s<span class='opr'>)</span>;
+
+wchar_t<span class='opr'>*</span> wmemchr<span class='opr'>(</span>wchar_t<span class='opr'>*</span> s, wchar_t c, <span class='kw4'>size_t</span> n<span class='opr'>)</span>;
+<span class='kw4'>int</span>      wmemcmp<span class='opr'>(</span>wchar_t<span class='opr'>*</span> s1, wchar_t<span class='opr'>*</span> s2, <span class='kw4'>size_t</span> n<span class='opr'>)</span>;
+wchar_t<span class='opr'>*</span> wmemcpy<span class='opr'>(</span>wchar_t<span class='opr'>*</span> s1, wchar_t<span class='opr'>*</span> s2, <span class='kw4'>size_t</span> n<span class='opr'>)</span>;
+wchar_t<span class='opr'>*</span> wmemmove<span class='opr'>(</span>wchar_t<span class='opr'>*</span>s1, wchar_t<span class='opr'>*</span>s2, <span class='kw4'>size_t</span> n<span class='opr'>)</span>;
+wchar_t<span class='opr'>*</span> wmemset<span class='opr'>(</span>wchar_t<span class='opr'>*</span> s, wchar_t c, <span class='kw4'>size_t</span> n<span class='opr'>)</span>;
+
+wchar_t<span class='opr'>*</span> wcscpy<span class='opr'>(</span>wchar_t<span class='opr'>*</span> s1, wchar_t<span class='opr'>*</span> s2<span class='opr'>)</span>;
+wchar_t<span class='opr'>*</span> wcsncpy<span class='opr'>(</span>wchar_t<span class='opr'>*</span> s1, wchar_t<span class='opr'>*</span> s2, <span class='kw4'>size_t</span> n<span class='opr'>)</span>;
+wchar_t<span class='opr'>*</span> wcscat<span class='opr'>(</span>wchar_t<span class='opr'>*</span> s1, wchar_t<span class='opr'>*</span> s2<span class='opr'>)</span>;
+wchar_t<span class='opr'>*</span> wcsncat<span class='opr'>(</span>wchar_t<span class='opr'>*</span> s1, wchar_t<span class='opr'>*</span> s2, <span class='kw4'>size_t</span> n<span class='opr'>)</span>;
+<span class='kw4'>int</span>      wcscmp<span class='opr'>(</span>wchar_t<span class='opr'>*</span>s1, wchar_t<span class='opr'>*</span>s2<span class='opr'>)</span>;
+<span class='kw4'>int</span>      wcscoll<span class='opr'>(</span>wchar_t<span class='opr'>*</span>s1, wchar_t<span class='opr'>*</span>s2<span class='opr'>)</span>;
+<span class='kw4'>int</span>      wcsncmp<span class='opr'>(</span>wchar_t<span class='opr'>*</span>s1, wchar_t<span class='opr'>*</span>s2, <span class='kw4'>size_t</span> n<span class='opr'>)</span>;
+<span class='kw4'>size_t</span>   wcsxfrm<span class='opr'>(</span>wchar_t<span class='opr'>*</span> s1, wchar_t<span class='opr'>*</span> s2, <span class='kw4'>size_t</span> n<span class='opr'>)</span>;
+wchar_t<span class='opr'>*</span> wcschr<span class='opr'>(</span>wchar_t<span class='opr'>*</span> s, wchar_t c<span class='opr'>)</span>;
+<span class='kw4'>size_t</span>   wcscspn<span class='opr'>(</span>wchar_t<span class='opr'>*</span>s1, wchar_t<span class='opr'>*</span>s2<span class='opr'>)</span>;
+wchar_t<span class='opr'>*</span> wcspbrk<span class='opr'>(</span>wchar_t<span class='opr'>*</span>s1, wchar_t<span class='opr'>*</span>s2<span class='opr'>)</span>;
+wchar_t<span class='opr'>*</span> wcsrchr<span class='opr'>(</span>wchar_t<span class='opr'>*</span> s, wchar_t c<span class='opr'>)</span>;
+<span class='kw4'>size_t</span>   wcsspn<span class='opr'>(</span>wchar_t<span class='opr'>*</span>s1, wchar_t<span class='opr'>*</span>s2<span class='opr'>)</span>;
+wchar_t<span class='opr'>*</span> wcsstr<span class='opr'>(</span>wchar_t<span class='opr'>*</span>s1, wchar_t<span class='opr'>*</span>s2<span class='opr'>)</span>;
+wchar_t<span class='opr'>*</span> wcstok<span class='opr'>(</span>wchar_t<span class='opr'>*</span> s1, wchar_t<span class='opr'>*</span> s2, wchar_t<span class='opr'>*</span><span class='opr'>*</span> ptr<span class='opr'>)</span>;
+<span class='kw4'>size_t</span>   wcslen<span class='opr'>(</span>wchar_t<span class='opr'>*</span> s<span class='opr'>)</span>;
+
+<span class='kw2'>alias</span> <span class='kw4'>int</span> mbstate_t;
+
+wint_t btowc<span class='opr'>(</span><span class='kw4'>int</span> c<span class='opr'>)</span>;
+<span class='kw4'>int</span>    wctob<span class='opr'>(</span>wint_t c<span class='opr'>)</span>;
+<span class='kw4'>int</span>    mbsinit<span class='opr'>(</span>mbstate_t<span class='opr'>*</span>ps<span class='opr'>)</span>;
+<span class='kw4'>size_t</span> mbrlen<span class='opr'>(</span><span class='kw4'>char</span><span class='opr'>*</span> s, <span class='kw4'>size_t</span> n, mbstate_t<span class='opr'>*</span> ps<span class='opr'>)</span>;
+<span class='kw4'>size_t</span> mbrtowc<span class='opr'>(</span>wchar_t<span class='opr'>*</span> pwc, <span class='kw4'>char</span><span class='opr'>*</span> s, <span class='kw4'>size_t</span> n, mbstate_t<span class='opr'>*</span> ps<span class='opr'>)</span>;
+<span class='kw4'>size_t</span> wcrtomb<span class='opr'>(</span><span class='kw4'>char</span><span class='opr'>*</span> s, wchar_t wc, mbstate_t<span class='opr'>*</span> ps<span class='opr'>)</span>;
+<span class='kw4'>size_t</span> mbsrtowcs<span class='opr'>(</span>wchar_t<span class='opr'>*</span> dst, <span class='kw4'>char</span><span class='opr'>*</span><span class='opr'>*</span> src, <span class='kw4'>size_t</span> len, mbstate_t<span class='opr'>*</span> ps<span class='opr'>)</span>;
+<span class='kw4'>size_t</span> wcsrtombs<span class='opr'>(</span><span class='kw4'>char</span><span class='opr'>*</span> dst, wchar_t<span class='opr'>*</span><span class='opr'>*</span> src, <span class='kw4'>size_t</span> len, mbstate_t<span class='opr'>*</span> ps<span class='opr'>)</span>;
+</pre></td></tr></table>	</body>
+</html>

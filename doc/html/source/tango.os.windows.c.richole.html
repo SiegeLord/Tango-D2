@@ -1,0 +1,243 @@
+<!DOCTYPE html 
+     PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+     "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html>
+	<head>
+		<link rel="stylesheet" href="style.css" type="text/css" />
+		<title>os/windows/c/richole.d</title>
+	</head>
+	<body>
+
+<table id='dcode'><tr><td id='lnum'><pre><span>1</span>
+<span>2</span>
+<span>3</span>
+<span>4</span>
+<span>5</span>
+<span>6</span>
+<span>7</span>
+<span>8</span>
+<span>9</span>
+<span>10</span>
+<span>11</span>
+<span>12</span>
+<span>13</span>
+<span>14</span>
+<span>15</span>
+<span>16</span>
+<span>17</span>
+<span>18</span>
+<span>19</span>
+<span>20</span>
+<span>21</span>
+<span>22</span>
+<span>23</span>
+<span>24</span>
+<span>25</span>
+<span>26</span>
+<span>27</span>
+<span>28</span>
+<span>29</span>
+<span>30</span>
+<span>31</span>
+<span>32</span>
+<span>33</span>
+<span>34</span>
+<span>35</span>
+<span>36</span>
+<span>37</span>
+<span>38</span>
+<span>39</span>
+<span>40</span>
+<span>41</span>
+<span>42</span>
+<span>43</span>
+<span>44</span>
+<span>45</span>
+<span>46</span>
+<span>47</span>
+<span>48</span>
+<span>49</span>
+<span>50</span>
+<span>51</span>
+<span>52</span>
+<span>53</span>
+<span>54</span>
+<span>55</span>
+<span>56</span>
+<span>57</span>
+<span>58</span>
+<span>59</span>
+<span>60</span>
+<span>61</span>
+<span>62</span>
+<span>63</span>
+<span>64</span>
+<span>65</span>
+<span>66</span>
+<span>67</span>
+<span>68</span>
+<span>69</span>
+<span>70</span>
+<span>71</span>
+<span>72</span>
+<span>73</span>
+<span>74</span>
+<span>75</span>
+<span>76</span>
+<span>77</span>
+<span>78</span>
+<span>79</span>
+<span>80</span>
+<span>81</span>
+<span>82</span>
+<span>83</span>
+<span>84</span>
+<span>85</span>
+<span>86</span>
+<span>87</span>
+<span>88</span>
+<span>89</span>
+<span>90</span>
+<span>91</span>
+<span>92</span>
+<span>93</span>
+<span>94</span>
+<span>95</span>
+<span>96</span>
+<span>97</span>
+<span>98</span>
+<span>99</span>
+<span>100</span>
+<span>101</span>
+<span>102</span>
+<span>103</span>
+<span>104</span>
+<span>105</span>
+<span>106</span>
+<span>107</span>
+<span>108</span>
+<span>109</span>
+<span>110</span>
+<span>111</span>
+<span>112</span>
+<span>113</span>
+<span>114</span>
+<span>115</span>
+</pre></td><td id='code'><pre><span class='com'>/***********************************************************************\
+*                              richole.d                                *
+*                                                                       *
+*                       Windows API header module                       *
+*                                                                       *
+*                 Translated from MinGW Windows headers                 *
+*                                                                       *
+*                       Placed into public domain                       *
+\***********************************************************************/</span>
+<span class='kw2'>module</span> tango.os.windows.c.richole;
+
+<span class='com'>//version (build) { pragma(nolink); }</span>
+
+<span class='kw4'>private</span> <span class='kw2'>import</span> tango.os.windows.c.unknwn;
+<span class='kw4'>private</span> <span class='kw2'>import</span> tango.os.windows.c.windef;
+<span class='kw4'>private</span> <span class='kw2'>import</span> tango.os.windows.c.ole2;
+<span class='kw4'>private</span> <span class='kw2'>import</span> tango.os.windows.c.richedit; <span class='com'>// for CHARRANGE</span>
+
+<span class='kw4'>align</span><span class='opr'>(</span><span class='nbr'>4</span><span class='opr'>)</span>:
+
+<span class='kw4'>const</span> ULONG
+    REO_GETOBJ_NO_INTERFACES <span class='opr'>=</span> <span class='nbr'>0</span>,
+    REO_GETOBJ_POLEOBJ <span class='opr'>=</span> <span class='nbr'>1</span>,
+    REO_GETOBJ_PSTG <span class='opr'>=</span> <span class='nbr'>2</span>,
+    REO_GETOBJ_POLESITE <span class='opr'>=</span> <span class='nbr'>4</span>,
+    REO_GETOBJ_ALL_INTERFACES <span class='opr'>=</span> <span class='nbr'>7</span>,
+    REO_CP_SELECTION <span class='opr'>=</span> <span class='opr'>-</span><span class='nbr'>1</span>,
+    REO_IOB_SELECTION <span class='opr'>=</span> <span class='opr'>-</span><span class='nbr'>1</span>,
+    REO_IOB_USE_CP <span class='opr'>=</span> <span class='opr'>-</span><span class='nbr'>2</span>,
+    REO_NULL <span class='opr'>=</span> <span class='nbr'>0</span>,
+    REO_READWRITEMASK <span class='opr'>=</span> <span class='nbr'>0</span>x3F,
+    REO_DONTNEEDPALETTE <span class='opr'>=</span> <span class='nbr'>32</span>,
+    REO_BLANK <span class='opr'>=</span> <span class='nbr'>16</span>,
+    REO_DYNAMICSIZE <span class='opr'>=</span> <span class='nbr'>8</span>,
+    REO_INVERTEDSELECT <span class='opr'>=</span> <span class='nbr'>4</span>,
+    REO_BELOWBASELINE <span class='opr'>=</span> <span class='nbr'>2</span>,
+    REO_RESIZABLE <span class='opr'>=</span> <span class='nbr'>1</span>,
+    REO_LINK <span class='opr'>=</span> <span class='nbr'>0</span>x80000000,
+    REO_STATIC <span class='opr'>=</span> <span class='nbr'>0</span>x40000000,
+    REO_SELECTED <span class='opr'>=</span> <span class='nbr'>0</span>x08000000,
+    REO_OPEN <span class='opr'>=</span> <span class='nbr'>0</span>x4000000,
+    REO_INPLACEACTIVE <span class='opr'>=</span> <span class='nbr'>0</span>x2000000,
+    REO_HILITED <span class='opr'>=</span> <span class='nbr'>0</span>x1000000,
+    REO_LINKAVAILABLE <span class='opr'>=</span> <span class='nbr'>0</span>x800000,
+    REO_GETMETAFILE <span class='opr'>=</span> <span class='nbr'>0</span>x400000;
+
+<span class='kw4'>enum</span> <span class='opr'>{</span>
+    RECO_PASTE <span class='opr'>=</span> <span class='nbr'>0</span>,
+    RECO_DROP,
+    RECO_COPY,
+    RECO_CUT,
+    RECO_DRAG <span class='com'>// = 4</span>
+<span class='opr'>}</span>
+
+<span class='kw2'>extern</span> <span class='opr'>(</span>C<span class='opr'>)</span> <span class='opr'>{</span>
+<span class='kw2'>extern</span> GUID IID_IRichEditOle;
+<span class='kw2'>extern</span> GUID IID_IRichEditOleCallback;
+<span class='opr'>}</span>
+
+<span class='kw4'>struct</span> REOBJECT <span class='opr'>{</span>
+    DWORD cbStruct;
+    LONG    cp;
+    CLSID    clsid;
+    LPOLEOBJECT    poleobj;
+    LPSTORAGE    pstg;
+    LPOLECLIENTSITE    polesite;
+    SIZEL    sizel;
+    DWORD    dvaspect;
+    DWORD    dwFlags;
+    DWORD    dwUser;
+<span class='opr'>}</span>
+
+<span class='kw2'>interface</span> IRichEditOle : <span class='kw4'>public</span> IUnknown
+<span class='opr'>{</span>
+    HRESULT QueryInterface<span class='opr'>(</span>REFIID,PVOID<span class='opr'>*</span><span class='opr'>)</span>;
+    ULONG AddRef<span class='opr'>(</span><span class='opr'>)</span>;
+    ULONG Release<span class='opr'>(</span><span class='opr'>)</span>;
+    HRESULT GetClientSite<span class='opr'>(</span>LPOLECLIENTSITE<span class='opr'>*</span><span class='opr'>)</span>;
+    LONG GetObjectCount<span class='opr'>(</span><span class='opr'>)</span>;
+    LONG GetLinkCount<span class='opr'>(</span><span class='opr'>)</span>;
+    HRESULT GetObject<span class='opr'>(</span>LONG, REOBJECT<span class='opr'>*</span>,DWORD<span class='opr'>)</span>;
+    HRESULT InsertObject<span class='opr'>(</span>REOBJECT<span class='opr'>*</span><span class='opr'>)</span>;
+    HRESULT ConvertObject<span class='opr'>(</span>LONG,REFCLSID,LPCSTR<span class='opr'>)</span>;
+    HRESULT ActivateAs<span class='opr'>(</span>REFCLSID,REFCLSID<span class='opr'>)</span>;
+    HRESULT SetHostNames<span class='opr'>(</span>LPCSTR,LPCSTR<span class='opr'>)</span>;
+    HRESULT SetLinkAvailable<span class='opr'>(</span>LONG,BOOL<span class='opr'>)</span>;
+    HRESULT SetDvaspect<span class='opr'>(</span>LONG,DWORD<span class='opr'>)</span>;
+    HRESULT HandsOffStorage<span class='opr'>(</span>LONG<span class='opr'>)</span>;
+    HRESULT SaveCompleted<span class='opr'>(</span>LONG,LPSTORAGE<span class='opr'>)</span>;
+    HRESULT InPlaceDeactivate<span class='opr'>(</span><span class='opr'>)</span>;
+    HRESULT ContextSensitiveHelp<span class='opr'>(</span>BOOL<span class='opr'>)</span>;
+    HRESULT GetClipboardData<span class='opr'>(</span>CHARRANGE<span class='opr'>*</span>,DWORD,LPDATAOBJECT<span class='opr'>*</span><span class='opr'>)</span>;
+    HRESULT ImportDataObject<span class='opr'>(</span>LPDATAOBJECT,CLIPFORMAT,HGLOBAL<span class='opr'>)</span>;
+<span class='opr'>}</span>;
+<span class='kw2'>alias</span> IRichEditOle <span class='opr'>*</span>LPRICHEDITOLE;
+
+<span class='kw2'>interface</span> IRichEditOleCallback : <span class='kw4'>public</span> IUnknown
+<span class='opr'>{</span>
+    HRESULT QueryInterface<span class='opr'>(</span>REFIID,PVOID<span class='opr'>*</span><span class='opr'>)</span>;
+    ULONG AddRef<span class='opr'>(</span><span class='opr'>)</span>;
+    ULONG Release<span class='opr'>(</span><span class='opr'>)</span>;
+    HRESULT GetNewStorage<span class='opr'>(</span>LPSTORAGE<span class='opr'>*</span><span class='opr'>)</span>;
+    HRESULT GetInPlaceContext<span class='opr'>(</span>LPOLEINPLACEFRAME<span class='opr'>*</span>,LPOLEINPLACEUIWINDOW<span class='opr'>*</span>,LPOLEINPLACEFRAMEINFO<span class='opr'>)</span>;
+    HRESULT ShowContainerUI<span class='opr'>(</span>BOOL<span class='opr'>)</span>;
+    HRESULT QueryInsertObject<span class='opr'>(</span>LPCLSID,LPSTORAGE,LONG<span class='opr'>)</span>;
+    HRESULT DeleteObject<span class='opr'>(</span>LPOLEOBJECT<span class='opr'>)</span>;
+    HRESULT QueryAcceptData<span class='opr'>(</span>LPDATAOBJECT,CLIPFORMAT<span class='opr'>*</span>,DWORD,BOOL,HGLOBAL<span class='opr'>)</span>;
+    HRESULT ContextSensitiveHelp<span class='opr'>(</span>BOOL<span class='opr'>)</span>;
+    HRESULT GetClipboardData<span class='opr'>(</span>CHARRANGE<span class='opr'>*</span>,DWORD,LPDATAOBJECT<span class='opr'>*</span><span class='opr'>)</span>;
+    HRESULT GetDragDropEffect<span class='opr'>(</span>BOOL,DWORD,PDWORD<span class='opr'>)</span>;
+    HRESULT GetContextMenu<span class='opr'>(</span>WORD,LPOLEOBJECT,CHARRANGE<span class='opr'>*</span>,HMENU<span class='opr'>*</span><span class='opr'>)</span>;
+<span class='opr'>}</span>;
+<span class='kw2'>alias</span> IRichEditOleCallback <span class='opr'>*</span> LPRICHEDITOLECALLBACK;
+
+<span class='kw4'>align</span>:
+</pre></td></tr></table>	</body>
+</html>

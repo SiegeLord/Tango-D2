@@ -1,0 +1,577 @@
+<!DOCTYPE html 
+     PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+     "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html>
+	<head>
+		<link rel="stylesheet" href="style.css" type="text/css" />
+		<title>os/windows/c/wincon.d</title>
+	</head>
+	<body>
+
+<table id='dcode'><tr><td id='lnum'><pre><span>1</span>
+<span>2</span>
+<span>3</span>
+<span>4</span>
+<span>5</span>
+<span>6</span>
+<span>7</span>
+<span>8</span>
+<span>9</span>
+<span>10</span>
+<span>11</span>
+<span>12</span>
+<span>13</span>
+<span>14</span>
+<span>15</span>
+<span>16</span>
+<span>17</span>
+<span>18</span>
+<span>19</span>
+<span>20</span>
+<span>21</span>
+<span>22</span>
+<span>23</span>
+<span>24</span>
+<span>25</span>
+<span>26</span>
+<span>27</span>
+<span>28</span>
+<span>29</span>
+<span>30</span>
+<span>31</span>
+<span>32</span>
+<span>33</span>
+<span>34</span>
+<span>35</span>
+<span>36</span>
+<span>37</span>
+<span>38</span>
+<span>39</span>
+<span>40</span>
+<span>41</span>
+<span>42</span>
+<span>43</span>
+<span>44</span>
+<span>45</span>
+<span>46</span>
+<span>47</span>
+<span>48</span>
+<span>49</span>
+<span>50</span>
+<span>51</span>
+<span>52</span>
+<span>53</span>
+<span>54</span>
+<span>55</span>
+<span>56</span>
+<span>57</span>
+<span>58</span>
+<span>59</span>
+<span>60</span>
+<span>61</span>
+<span>62</span>
+<span>63</span>
+<span>64</span>
+<span>65</span>
+<span>66</span>
+<span>67</span>
+<span>68</span>
+<span>69</span>
+<span>70</span>
+<span>71</span>
+<span>72</span>
+<span>73</span>
+<span>74</span>
+<span>75</span>
+<span>76</span>
+<span>77</span>
+<span>78</span>
+<span>79</span>
+<span>80</span>
+<span>81</span>
+<span>82</span>
+<span>83</span>
+<span>84</span>
+<span>85</span>
+<span>86</span>
+<span>87</span>
+<span>88</span>
+<span>89</span>
+<span>90</span>
+<span>91</span>
+<span>92</span>
+<span>93</span>
+<span>94</span>
+<span>95</span>
+<span>96</span>
+<span>97</span>
+<span>98</span>
+<span>99</span>
+<span>100</span>
+<span>101</span>
+<span>102</span>
+<span>103</span>
+<span>104</span>
+<span>105</span>
+<span>106</span>
+<span>107</span>
+<span>108</span>
+<span>109</span>
+<span>110</span>
+<span>111</span>
+<span>112</span>
+<span>113</span>
+<span>114</span>
+<span>115</span>
+<span>116</span>
+<span>117</span>
+<span>118</span>
+<span>119</span>
+<span>120</span>
+<span>121</span>
+<span>122</span>
+<span>123</span>
+<span>124</span>
+<span>125</span>
+<span>126</span>
+<span>127</span>
+<span>128</span>
+<span>129</span>
+<span>130</span>
+<span>131</span>
+<span>132</span>
+<span>133</span>
+<span>134</span>
+<span>135</span>
+<span>136</span>
+<span>137</span>
+<span>138</span>
+<span>139</span>
+<span>140</span>
+<span>141</span>
+<span>142</span>
+<span>143</span>
+<span>144</span>
+<span>145</span>
+<span>146</span>
+<span>147</span>
+<span>148</span>
+<span>149</span>
+<span>150</span>
+<span>151</span>
+<span>152</span>
+<span>153</span>
+<span>154</span>
+<span>155</span>
+<span>156</span>
+<span>157</span>
+<span>158</span>
+<span>159</span>
+<span>160</span>
+<span>161</span>
+<span>162</span>
+<span>163</span>
+<span>164</span>
+<span>165</span>
+<span>166</span>
+<span>167</span>
+<span>168</span>
+<span>169</span>
+<span>170</span>
+<span>171</span>
+<span>172</span>
+<span>173</span>
+<span>174</span>
+<span>175</span>
+<span>176</span>
+<span>177</span>
+<span>178</span>
+<span>179</span>
+<span>180</span>
+<span>181</span>
+<span>182</span>
+<span>183</span>
+<span>184</span>
+<span>185</span>
+<span>186</span>
+<span>187</span>
+<span>188</span>
+<span>189</span>
+<span>190</span>
+<span>191</span>
+<span>192</span>
+<span>193</span>
+<span>194</span>
+<span>195</span>
+<span>196</span>
+<span>197</span>
+<span>198</span>
+<span>199</span>
+<span>200</span>
+<span>201</span>
+<span>202</span>
+<span>203</span>
+<span>204</span>
+<span>205</span>
+<span>206</span>
+<span>207</span>
+<span>208</span>
+<span>209</span>
+<span>210</span>
+<span>211</span>
+<span>212</span>
+<span>213</span>
+<span>214</span>
+<span>215</span>
+<span>216</span>
+<span>217</span>
+<span>218</span>
+<span>219</span>
+<span>220</span>
+<span>221</span>
+<span>222</span>
+<span>223</span>
+<span>224</span>
+<span>225</span>
+<span>226</span>
+<span>227</span>
+<span>228</span>
+<span>229</span>
+<span>230</span>
+<span>231</span>
+<span>232</span>
+<span>233</span>
+<span>234</span>
+<span>235</span>
+<span>236</span>
+<span>237</span>
+<span>238</span>
+<span>239</span>
+<span>240</span>
+<span>241</span>
+<span>242</span>
+<span>243</span>
+<span>244</span>
+<span>245</span>
+<span>246</span>
+<span>247</span>
+<span>248</span>
+<span>249</span>
+<span>250</span>
+<span>251</span>
+<span>252</span>
+<span>253</span>
+<span>254</span>
+<span>255</span>
+<span>256</span>
+<span>257</span>
+<span>258</span>
+<span>259</span>
+<span>260</span>
+<span>261</span>
+<span>262</span>
+<span>263</span>
+<span>264</span>
+<span>265</span>
+<span>266</span>
+<span>267</span>
+<span>268</span>
+<span>269</span>
+<span>270</span>
+<span>271</span>
+<span>272</span>
+<span>273</span>
+<span>274</span>
+<span>275</span>
+<span>276</span>
+<span>277</span>
+<span>278</span>
+<span>279</span>
+<span>280</span>
+<span>281</span>
+<span>282</span>
+</pre></td><td id='code'><pre><span class='com'>/***********************************************************************\
+*                                wincon.d                               *
+*                                                                       *
+*                       Windows API header module                       *
+*                                                                       *
+*                 Translated from MinGW Windows headers                 *
+*                                                                       *
+*                       Placed into public domain                       *
+\***********************************************************************/</span>
+
+<span class='kw2'>module</span> tango.os.windows.c.wincon;
+
+<span class='com'>//version (build) { pragma(nolink); }</span>
+
+
+<span class='kw4'>private</span> <span class='kw2'>import</span> tango.os.windows.c.w32api;
+<span class='kw4'>private</span> <span class='kw2'>import</span> tango.os.windows.c.windef;
+<span class='com'>//pragma(lib, &quot;kernel32.lib&quot;);</span>
+
+<span class='com'>// FIXME: clean up Windows version support</span>
+
+<span class='kw4'>enum</span> <span class='opr'>{</span>
+    FOREGROUND_BLUE      <span class='opr'>=</span> <span class='nbr'>1</span>,
+    FOREGROUND_GREEN     <span class='opr'>=</span> <span class='nbr'>2</span>,
+    FOREGROUND_RED       <span class='opr'>=</span> <span class='nbr'>4</span>,
+    FOREGROUND_INTENSITY <span class='opr'>=</span> <span class='nbr'>8</span>,
+    BACKGROUND_BLUE      <span class='opr'>=</span> <span class='nbr'>16</span>,
+    BACKGROUND_GREEN     <span class='opr'>=</span> <span class='nbr'>32</span>,
+    BACKGROUND_RED       <span class='opr'>=</span> <span class='nbr'>64</span>,
+    BACKGROUND_INTENSITY <span class='opr'>=</span> <span class='nbr'>128</span>
+<span class='opr'>}</span>
+
+<span class='kw4'>static</span> <span class='kw1'>if</span> <span class='opr'>(</span>_WIN32_WINNT <span class='opr'>&gt;</span><span class='opr'>=</span> <span class='nbr'>0</span>x0501<span class='opr'>)</span> <span class='opr'>{</span>
+    <span class='kw4'>enum</span> <span class='opr'>{</span>
+        CONSOLE_FULLSCREEN_MODE <span class='opr'>=</span> <span class='nbr'>1</span>,
+        CONSOLE_WINDOWED_MODE   <span class='opr'>=</span> <span class='nbr'>0</span>
+    <span class='opr'>}</span>
+<span class='opr'>}</span>
+
+<span class='kw4'>enum</span> <span class='opr'>{</span>
+    CTRL_C_EVENT        <span class='opr'>=</span> <span class='nbr'>0</span>,
+    CTRL_BREAK_EVENT    <span class='opr'>=</span> <span class='nbr'>1</span>,
+    CTRL_CLOSE_EVENT    <span class='opr'>=</span> <span class='nbr'>2</span>,
+    CTRL_LOGOFF_EVENT   <span class='opr'>=</span> <span class='nbr'>5</span>,
+    CTRL_SHUTDOWN_EVENT <span class='opr'>=</span> <span class='nbr'>6</span>
+<span class='opr'>}</span>
+
+<span class='kw4'>enum</span> <span class='opr'>{</span>
+    ENABLE_PROCESSED_INPUT  <span class='opr'>=</span> <span class='nbr'>1</span>,
+    ENABLE_LINE_INPUT       <span class='opr'>=</span> <span class='nbr'>2</span>,
+    ENABLE_ECHO_INPUT       <span class='opr'>=</span> <span class='nbr'>4</span>,
+    ENABLE_WINDOW_INPUT     <span class='opr'>=</span> <span class='nbr'>8</span>,
+    ENABLE_MOUSE_INPUT      <span class='opr'>=</span> <span class='nbr'>16</span>
+<span class='opr'>}</span>
+
+<span class='kw4'>enum</span> <span class='opr'>{</span>
+    ENABLE_PROCESSED_OUTPUT    <span class='opr'>=</span> <span class='nbr'>1</span>,
+    ENABLE_WRAP_AT_EOL_OUTPUT  <span class='opr'>=</span> <span class='nbr'>2</span>
+<span class='opr'>}</span>
+
+<span class='kw4'>enum</span> <span class='opr'>{</span>
+    KEY_EVENT                 <span class='opr'>=</span> <span class='nbr'>1</span>,
+    MOUSE_EVENT               <span class='opr'>=</span> <span class='nbr'>2</span>,
+    WINDOW_BUFFER_SIZE_EVENT  <span class='opr'>=</span> <span class='nbr'>4</span>,
+    MENU_EVENT                <span class='opr'>=</span> <span class='nbr'>8</span>,
+    FOCUS_EVENT               <span class='opr'>=</span> <span class='nbr'>16</span>
+<span class='opr'>}</span>
+<span class='kw4'>enum</span> <span class='opr'>{</span>
+    RIGHT_ALT_PRESSED  <span class='opr'>=</span> <span class='nbr'>1</span>,
+    LEFT_ALT_PRESSED   <span class='opr'>=</span> <span class='nbr'>2</span>,
+    RIGHT_CTRL_PRESSED <span class='opr'>=</span> <span class='nbr'>4</span>,
+    LEFT_CTRL_PRESSED  <span class='opr'>=</span> <span class='nbr'>8</span>,
+    SHIFT_PRESSED      <span class='opr'>=</span> <span class='nbr'>16</span>,
+    NUMLOCK_ON         <span class='opr'>=</span> <span class='nbr'>32</span>,
+    SCROLLLOCK_ON      <span class='opr'>=</span> <span class='nbr'>64</span>,
+    CAPSLOCK_ON        <span class='opr'>=</span> <span class='nbr'>128</span>,
+    ENHANCED_KEY       <span class='opr'>=</span> <span class='nbr'>256</span>
+<span class='opr'>}</span>
+<span class='kw4'>enum</span> <span class='opr'>{</span>
+    FROM_LEFT_1ST_BUTTON_PRESSED  <span class='opr'>=</span> <span class='nbr'>1</span>,
+    RIGHTMOST_BUTTON_PRESSED      <span class='opr'>=</span> <span class='nbr'>2</span>,
+    FROM_LEFT_2ND_BUTTON_PRESSED  <span class='opr'>=</span> <span class='nbr'>4</span>,
+    FROM_LEFT_3RD_BUTTON_PRESSED  <span class='opr'>=</span> <span class='nbr'>8</span>,
+    FROM_LEFT_4TH_BUTTON_PRESSED  <span class='opr'>=</span> <span class='nbr'>16</span>
+<span class='opr'>}</span>
+
+<span class='kw4'>enum</span> <span class='opr'>{</span>
+    MOUSE_MOVED   <span class='opr'>=</span> <span class='nbr'>1</span>,
+    DOUBLE_CLICK  <span class='opr'>=</span> <span class='nbr'>2</span>,
+    MOUSE_WHEELED <span class='opr'>=</span> <span class='nbr'>4</span>
+<span class='opr'>}</span>
+
+<span class='kw4'>struct</span> CHAR_INFO <span class='opr'>{</span>
+    <span class='kw2'>union</span> Char<span class='opr'>{</span>
+        WCHAR UnicodeChar;
+        CHAR AsciiChar;
+    <span class='opr'>}</span>
+    WORD Attributes;
+<span class='opr'>}</span>
+<span class='kw2'>alias</span> CHAR_INFO <span class='opr'>*</span> PCHAR_INFO;
+
+<span class='kw4'>struct</span> SMALL_RECT <span class='opr'>{</span>
+    SHORT Left;
+    SHORT Top;
+    SHORT Right;
+    SHORT Bottom;
+<span class='opr'>}</span>
+<span class='kw2'>alias</span> SMALL_RECT <span class='opr'>*</span> PSMALL_RECT;
+
+<span class='kw4'>struct</span> CONSOLE_CURSOR_INFO <span class='opr'>{</span>
+    DWORD    dwSize;
+    BOOL    bVisible;
+<span class='opr'>}</span>
+<span class='kw2'>alias</span> CONSOLE_CURSOR_INFO <span class='opr'>*</span> PCONSOLE_CURSOR_INFO;
+
+<span class='kw4'>struct</span> COORD <span class='opr'>{</span>
+    SHORT X;
+    SHORT Y;
+<span class='opr'>}</span>
+<span class='kw2'>alias</span> COORD <span class='opr'>*</span>PCOORD;
+
+<span class='kw4'>struct</span> CONSOLE_FONT_INFO <span class='opr'>{</span>
+    DWORD nFont;
+    COORD dwFontSize;
+<span class='opr'>}</span>
+<span class='kw2'>alias</span> CONSOLE_FONT_INFO <span class='opr'>*</span> PCONSOLE_FONT_INFO;
+
+<span class='kw4'>struct</span> CONSOLE_SCREEN_BUFFER_INFO <span class='opr'>{</span>
+    COORD    dwSize;
+    COORD    dwCursorPosition;
+    WORD    wAttributes;
+    SMALL_RECT srWindow;
+    COORD    dwMaximumWindowSize;
+<span class='opr'>}</span>
+<span class='kw2'>alias</span> CONSOLE_SCREEN_BUFFER_INFO <span class='opr'>*</span> PCONSOLE_SCREEN_BUFFER_INFO;
+
+<span class='kw2'>alias</span> BOOL <span class='kw2'>function</span> <span class='opr'>(</span>DWORD<span class='opr'>)</span> PHANDLER_ROUTINE;
+
+<span class='kw4'>struct</span> KEY_EVENT_RECORD <span class='opr'>{</span>
+    BOOL bKeyDown;
+    WORD wRepeatCount;
+    WORD wVirtualKeyCode;
+    WORD wVirtualScanCode;
+    <span class='kw2'>union</span> uChar <span class='opr'>{</span>
+        WCHAR UnicodeChar;
+        CHAR AsciiChar;
+    <span class='opr'>}</span>
+    DWORD dwControlKeyState;
+<span class='opr'>}</span>
+
+<span class='kw4'>struct</span> MOUSE_EVENT_RECORD <span class='opr'>{</span>
+    COORD dwMousePosition;
+    DWORD dwButtonState;
+    DWORD dwControlKeyState;
+    DWORD dwEventFlags;
+<span class='opr'>}</span>
+
+<span class='kw4'>struct</span> WINDOW_BUFFER_SIZE_RECORD <span class='opr'>{</span>
+    COORD dwSize;
+<span class='opr'>}</span>
+
+<span class='kw4'>struct</span> MENU_EVENT_RECORD <span class='opr'>{</span>
+    UINT dwCommandId;
+<span class='opr'>}</span>
+<span class='kw2'>alias</span> MENU_EVENT_RECORD <span class='opr'>*</span> PMENU_EVENT_RECORD;
+
+<span class='kw4'>struct</span> FOCUS_EVENT_RECORD <span class='opr'>{</span>
+    BOOL bSetFocus;
+<span class='opr'>}</span>
+
+<span class='kw4'>struct</span> INPUT_RECORD <span class='opr'>{</span>
+    WORD EventType;
+    <span class='kw2'>union</span> Event <span class='opr'>{</span>
+        KEY_EVENT_RECORD KeyEvent;
+        MOUSE_EVENT_RECORD MouseEvent;
+        WINDOW_BUFFER_SIZE_RECORD WindowBufferSizeEvent;
+        MENU_EVENT_RECORD MenuEvent;
+        FOCUS_EVENT_RECORD FocusEvent;
+    <span class='opr'>}</span>
+<span class='opr'>}</span>
+<span class='kw2'>alias</span> INPUT_RECORD <span class='opr'>*</span> PINPUT_RECORD;
+
+<span class='kw2'>extern</span> <span class='opr'>(</span>Windows<span class='opr'>)</span>:
+
+BOOL AllocConsole<span class='opr'>(</span><span class='opr'>)</span>;
+HANDLE CreateConsoleScreenBuffer<span class='opr'>(</span>DWORD, DWORD, SECURITY_ATTRIBUTES<span class='opr'>*</span>, DWORD, LPVOID<span class='opr'>)</span>;
+BOOL FillConsoleOutputAttribute<span class='opr'>(</span>HANDLE, WORD, DWORD, COORD, PDWORD<span class='opr'>)</span>;
+BOOL FillConsoleOutputCharacterA<span class='opr'>(</span>HANDLE, CHAR, DWORD, COORD, PDWORD<span class='opr'>)</span>;
+BOOL FillConsoleOutputCharacterW<span class='opr'>(</span>HANDLE, WCHAR, DWORD, COORD, PDWORD<span class='opr'>)</span>;
+BOOL FlushConsoleInputBuffer<span class='opr'>(</span>HANDLE<span class='opr'>)</span>;
+BOOL FreeConsole<span class='opr'>(</span><span class='opr'>)</span>;
+BOOL GenerateConsoleCtrlEvent<span class='opr'>(</span>DWORD, DWORD<span class='opr'>)</span>;
+UINT GetConsoleCP<span class='opr'>(</span><span class='opr'>)</span>;
+BOOL GetConsoleCursorInfo<span class='opr'>(</span>HANDLE, PCONSOLE_CURSOR_INFO<span class='opr'>)</span>;
+BOOL GetConsoleMode<span class='opr'>(</span>HANDLE,PDWORD<span class='opr'>)</span>;
+UINT GetConsoleOutputCP<span class='opr'>(</span><span class='opr'>)</span>;
+BOOL GetConsoleScreenBufferInfo<span class='opr'>(</span>HANDLE, PCONSOLE_SCREEN_BUFFER_INFO<span class='opr'>)</span>;
+DWORD GetConsoleTitleA<span class='opr'>(</span>LPSTR, DWORD<span class='opr'>)</span>;
+DWORD GetConsoleTitleW<span class='opr'>(</span>LPWSTR, DWORD<span class='opr'>)</span>;
+COORD GetLargestConsoleWindowSize<span class='opr'>(</span>HANDLE<span class='opr'>)</span>;
+BOOL GetNumberOfConsoleInputEvents<span class='opr'>(</span>HANDLE, PDWORD<span class='opr'>)</span>;
+BOOL GetNumberOfConsoleMouseButtons<span class='opr'>(</span>PDWORD<span class='opr'>)</span>;
+BOOL PeekConsoleInputA<span class='opr'>(</span>HANDLE, PINPUT_RECORD, DWORD, PDWORD<span class='opr'>)</span>;
+BOOL PeekConsoleInputW<span class='opr'>(</span>HANDLE, PINPUT_RECORD, DWORD, PDWORD<span class='opr'>)</span>;
+BOOL ReadConsoleA<span class='opr'>(</span>HANDLE, PVOID, DWORD, PDWORD, PVOID<span class='opr'>)</span>;
+BOOL ReadConsoleW<span class='opr'>(</span>HANDLE, PVOID, DWORD, PDWORD, PVOID<span class='opr'>)</span>;
+BOOL ReadConsoleInputA<span class='opr'>(</span>HANDLE, PINPUT_RECORD, DWORD, PDWORD<span class='opr'>)</span>;
+BOOL ReadConsoleInputW<span class='opr'>(</span>HANDLE, PINPUT_RECORD, DWORD, PDWORD<span class='opr'>)</span>;
+BOOL ReadConsoleOutputAttribute<span class='opr'>(</span>HANDLE, LPWORD, DWORD, COORD, LPDWORD<span class='opr'>)</span>;
+BOOL ReadConsoleOutputCharacterA<span class='opr'>(</span>HANDLE, LPSTR, DWORD, COORD, PDWORD<span class='opr'>)</span>;
+BOOL ReadConsoleOutputCharacterW<span class='opr'>(</span>HANDLE, LPWSTR, DWORD, COORD, PDWORD<span class='opr'>)</span>;
+BOOL ReadConsoleOutputA<span class='opr'>(</span>HANDLE, PCHAR_INFO, COORD, COORD, PSMALL_RECT<span class='opr'>)</span>;
+BOOL ReadConsoleOutputW<span class='opr'>(</span>HANDLE, PCHAR_INFO, COORD, COORD, PSMALL_RECT<span class='opr'>)</span>;
+BOOL ScrollConsoleScreenBufferA<span class='opr'>(</span>HANDLE, SMALL_RECT<span class='opr'>*</span>, SMALL_RECT<span class='opr'>*</span>, COORD, CHAR_INFO<span class='opr'>*</span><span class='opr'>)</span>;
+BOOL ScrollConsoleScreenBufferW<span class='opr'>(</span>HANDLE, SMALL_RECT<span class='opr'>*</span>, SMALL_RECT<span class='opr'>*</span>, COORD, CHAR_INFO<span class='opr'>*</span><span class='opr'>)</span>;
+BOOL SetConsoleActiveScreenBuffer<span class='opr'>(</span>HANDLE<span class='opr'>)</span>;
+BOOL SetConsoleCP<span class='opr'>(</span>UINT<span class='opr'>)</span>;
+BOOL SetConsoleCtrlHandler<span class='opr'>(</span>PHANDLER_ROUTINE, BOOL<span class='opr'>)</span>;
+BOOL SetConsoleCursorInfo<span class='opr'>(</span>HANDLE, CONSOLE_CURSOR_INFO<span class='opr'>*</span><span class='opr'>)</span>;
+BOOL SetConsoleCursorPosition<span class='opr'>(</span>HANDLE, COORD<span class='opr'>)</span>;
+
+
+<span class='kw4'>static</span> <span class='kw1'>if</span> <span class='opr'>(</span>_WIN32_WINNT <span class='opr'>&gt;</span><span class='opr'>=</span> <span class='nbr'>0</span>x0500<span class='opr'>)</span> <span class='opr'>{</span>
+BOOL GetConsoleDisplayMode<span class='opr'>(</span>LPDWORD<span class='opr'>)</span>;
+HWND GetConsoleWindow<span class='opr'>(</span><span class='opr'>)</span>;
+<span class='opr'>}</span>
+
+<span class='kw4'>static</span> <span class='kw1'>if</span> <span class='opr'>(</span>_WIN32_WINNT <span class='opr'>&gt;</span><span class='opr'>=</span> <span class='nbr'>0</span>x0501<span class='opr'>)</span> <span class='opr'>{</span>
+BOOL AttachConsole<span class='opr'>(</span>DWORD<span class='opr'>)</span>;
+BOOL SetConsoleDisplayMode<span class='opr'>(</span>HANDLE, DWORD, PCOORD<span class='opr'>)</span>;
+<span class='opr'>}</span>
+
+BOOL SetConsoleMode<span class='opr'>(</span>HANDLE, DWORD<span class='opr'>)</span>;
+BOOL SetConsoleOutputCP<span class='opr'>(</span>UINT<span class='opr'>)</span>;
+BOOL SetConsoleScreenBufferSize<span class='opr'>(</span>HANDLE, COORD<span class='opr'>)</span>;
+BOOL SetConsoleTextAttribute<span class='opr'>(</span>HANDLE, WORD<span class='opr'>)</span>;
+BOOL SetConsoleTitleA<span class='opr'>(</span>LPCSTR<span class='opr'>)</span>;
+BOOL SetConsoleTitleW<span class='opr'>(</span>LPCWSTR<span class='opr'>)</span>;
+BOOL SetConsoleWindowInfo<span class='opr'>(</span>HANDLE, BOOL, SMALL_RECT<span class='opr'>*</span><span class='opr'>)</span>;
+BOOL WriteConsoleA<span class='opr'>(</span>HANDLE, PCVOID, DWORD, PDWORD, PVOID<span class='opr'>)</span>;
+BOOL WriteConsoleW<span class='opr'>(</span>HANDLE, PCVOID, DWORD, PDWORD, PVOID<span class='opr'>)</span>;
+BOOL WriteConsoleInputA<span class='opr'>(</span>HANDLE, INPUT_RECORD<span class='opr'>*</span>, DWORD, PDWORD<span class='opr'>)</span>;
+BOOL WriteConsoleInputW<span class='opr'>(</span>HANDLE, INPUT_RECORD<span class='opr'>*</span>, DWORD, PDWORD<span class='opr'>)</span>;
+BOOL WriteConsoleOutputA<span class='opr'>(</span>HANDLE, CHAR_INFO<span class='opr'>*</span>, COORD, COORD, PSMALL_RECT<span class='opr'>)</span>;
+BOOL WriteConsoleOutputW<span class='opr'>(</span>HANDLE, CHAR_INFO<span class='opr'>*</span>, COORD, COORD, PSMALL_RECT<span class='opr'>)</span>;
+BOOL WriteConsoleOutputAttribute<span class='opr'>(</span>HANDLE, WORD<span class='opr'>*</span>, DWORD, COORD, PDWORD<span class='opr'>)</span>;
+BOOL WriteConsoleOutputCharacterA<span class='opr'>(</span>HANDLE, LPCSTR, DWORD, COORD, PDWORD<span class='opr'>)</span>;
+BOOL WriteConsoleOutputCharacterW<span class='opr'>(</span>HANDLE, LPCWSTR, DWORD, COORD, PDWORD<span class='opr'>)</span>;
+
+<span class='kw4'>version</span> <span class='opr'>(</span>Unicode<span class='opr'>)</span> <span class='opr'>{</span>
+
+<span class='kw2'>alias</span> FillConsoleOutputCharacterW FillConsoleOutputCharacter;
+<span class='kw2'>alias</span> GetConsoleTitleW GetConsoleTitle;
+<span class='kw2'>alias</span> PeekConsoleInputW PeekConsoleInput;
+<span class='kw2'>alias</span> ReadConsoleW ReadConsole;
+<span class='kw2'>alias</span> ReadConsoleInputW ReadConsoleInput;
+<span class='kw2'>alias</span> ReadConsoleOutputW ReadConsoleOutput;
+<span class='kw2'>alias</span> ReadConsoleOutputCharacterW ReadConsoleOutputCharacter;
+<span class='kw2'>alias</span> ScrollConsoleScreenBufferW ScrollConsoleScreenBuffer;
+<span class='kw2'>alias</span> SetConsoleTitleW SetConsoleTitle;
+<span class='kw2'>alias</span> WriteConsoleW WriteConsole;
+<span class='kw2'>alias</span> WriteConsoleInputW WriteConsoleInput;
+<span class='kw2'>alias</span> WriteConsoleOutputW WriteConsoleOutput;
+<span class='kw2'>alias</span> WriteConsoleOutputCharacterW WriteConsoleOutputCharacter;
+
+<span class='opr'>}</span> <span class='kw1'>else</span> <span class='opr'>{</span>
+
+<span class='kw2'>alias</span> FillConsoleOutputCharacterA FillConsoleOutputCharacter;
+<span class='kw2'>alias</span> GetConsoleTitleA GetConsoleTitle;
+<span class='kw2'>alias</span> PeekConsoleInputA PeekConsoleInput;
+<span class='kw2'>alias</span> ReadConsoleA ReadConsole;
+<span class='kw2'>alias</span> ReadConsoleInputA ReadConsoleInput;
+<span class='kw2'>alias</span> ReadConsoleOutputA ReadConsoleOutput;
+<span class='kw2'>alias</span> ReadConsoleOutputCharacterA ReadConsoleOutputCharacter;
+<span class='kw2'>alias</span> ScrollConsoleScreenBufferA ScrollConsoleScreenBuffer;
+<span class='kw2'>alias</span> SetConsoleTitleA SetConsoleTitle;
+<span class='kw2'>alias</span> WriteConsoleA WriteConsole;
+<span class='kw2'>alias</span> WriteConsoleInputA WriteConsoleInput;
+<span class='kw2'>alias</span> WriteConsoleOutputA WriteConsoleOutput;
+<span class='kw2'>alias</span> WriteConsoleOutputCharacterA WriteConsoleOutputCharacter;
+
+<span class='opr'>}</span>
+</pre></td></tr></table>	</body>
+</html>

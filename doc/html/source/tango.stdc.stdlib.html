@@ -1,0 +1,205 @@
+<!DOCTYPE html 
+     PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+     "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html>
+	<head>
+		<link rel="stylesheet" href="style.css" type="text/css" />
+		<title>stdc/stdlib.d</title>
+	</head>
+	<body>
+
+<table id='dcode'><tr><td id='lnum'><pre><span>1</span>
+<span>2</span>
+<span>3</span>
+<span>4</span>
+<span>5</span>
+<span>6</span>
+<span>7</span>
+<span>8</span>
+<span>9</span>
+<span>10</span>
+<span>11</span>
+<span>12</span>
+<span>13</span>
+<span>14</span>
+<span>15</span>
+<span>16</span>
+<span>17</span>
+<span>18</span>
+<span>19</span>
+<span>20</span>
+<span>21</span>
+<span>22</span>
+<span>23</span>
+<span>24</span>
+<span>25</span>
+<span>26</span>
+<span>27</span>
+<span>28</span>
+<span>29</span>
+<span>30</span>
+<span>31</span>
+<span>32</span>
+<span>33</span>
+<span>34</span>
+<span>35</span>
+<span>36</span>
+<span>37</span>
+<span>38</span>
+<span>39</span>
+<span>40</span>
+<span>41</span>
+<span>42</span>
+<span>43</span>
+<span>44</span>
+<span>45</span>
+<span>46</span>
+<span>47</span>
+<span>48</span>
+<span>49</span>
+<span>50</span>
+<span>51</span>
+<span>52</span>
+<span>53</span>
+<span>54</span>
+<span>55</span>
+<span>56</span>
+<span>57</span>
+<span>58</span>
+<span>59</span>
+<span>60</span>
+<span>61</span>
+<span>62</span>
+<span>63</span>
+<span>64</span>
+<span>65</span>
+<span>66</span>
+<span>67</span>
+<span>68</span>
+<span>69</span>
+<span>70</span>
+<span>71</span>
+<span>72</span>
+<span>73</span>
+<span>74</span>
+<span>75</span>
+<span>76</span>
+<span>77</span>
+<span>78</span>
+<span>79</span>
+<span>80</span>
+<span>81</span>
+<span>82</span>
+<span>83</span>
+<span>84</span>
+<span>85</span>
+<span>86</span>
+<span>87</span>
+<span>88</span>
+<span>89</span>
+<span>90</span>
+<span>91</span>
+<span>92</span>
+<span>93</span>
+<span>94</span>
+<span>95</span>
+<span>96</span>
+</pre></td><td id='code'><pre><span class='com'>/**
+ * D header file for C99.
+ *
+ * Copyright: Public Domain
+ * License:   Public Domain
+ * Authors:   Sean Kelly
+ * Standards: ISO/IEC 9899:1999 (E)
+ */</span>
+<span class='kw2'>module</span> tango.stdc.stdlib;
+
+<span class='kw4'>private</span> <span class='kw2'>import</span> tango.stdc.stddef;
+<span class='kw4'>private</span> <span class='kw2'>import</span> tango.stdc.config;
+
+<span class='kw2'>extern</span> <span class='opr'>(</span>C<span class='opr'>)</span>:
+
+<span class='kw4'>struct</span> div_t
+<span class='opr'>{</span>
+    <span class='kw4'>int</span> quot,
+        rem;
+<span class='opr'>}</span>
+
+<span class='kw4'>struct</span> ldiv_t
+<span class='opr'>{</span>
+    <span class='kw4'>int</span> quot,
+        rem;
+<span class='opr'>}</span>
+
+<span class='kw4'>struct</span> lldiv_t
+<span class='opr'>{</span>
+    <span class='kw4'>long</span> quot,
+         rem;
+<span class='opr'>}</span>
+
+<span class='kw4'>const</span> <span class='kw4'>auto</span> EXIT_SUCCESS <span class='opr'>=</span> <span class='nbr'>0</span>;
+<span class='kw4'>const</span> <span class='kw4'>auto</span> EXIT_FAILURE <span class='opr'>=</span> <span class='nbr'>1</span>;
+<span class='kw4'>const</span> <span class='kw4'>auto</span> RAND_MAX     <span class='opr'>=</span> <span class='nbr'>32767</span>;
+<span class='kw4'>const</span> <span class='kw4'>auto</span> MB_CUR_MAX   <span class='opr'>=</span> <span class='nbr'>1</span>;
+
+<span class='kw4'>double</span>  atof<span class='opr'>(</span><span class='kw4'>char</span><span class='opr'>*</span> nptr<span class='opr'>)</span>;
+<span class='kw4'>int</span>     atoi<span class='opr'>(</span><span class='kw4'>char</span><span class='opr'>*</span> nptr<span class='opr'>)</span>;
+c_long  atol<span class='opr'>(</span><span class='kw4'>char</span><span class='opr'>*</span> nptr<span class='opr'>)</span>;
+<span class='kw4'>long</span>    atoll<span class='opr'>(</span><span class='kw4'>char</span><span class='opr'>*</span> nptr<span class='opr'>)</span>;
+
+<span class='kw4'>double</span>  strtod<span class='opr'>(</span><span class='kw4'>char</span><span class='opr'>*</span> nptr, <span class='kw4'>char</span><span class='opr'>*</span><span class='opr'>*</span> endptr<span class='opr'>)</span>;
+<span class='kw4'>float</span>   strtof<span class='opr'>(</span><span class='kw4'>char</span><span class='opr'>*</span> nptr, <span class='kw4'>char</span><span class='opr'>*</span><span class='opr'>*</span> endptr<span class='opr'>)</span>;
+<span class='kw4'>real</span>    strtold<span class='opr'>(</span><span class='kw4'>char</span><span class='opr'>*</span> nptr, <span class='kw4'>char</span><span class='opr'>*</span><span class='opr'>*</span> endptr<span class='opr'>)</span>;
+c_long  strtol<span class='opr'>(</span><span class='kw4'>char</span><span class='opr'>*</span> nptr, <span class='kw4'>char</span><span class='opr'>*</span><span class='opr'>*</span> endptr, <span class='kw4'>int</span> base<span class='opr'>)</span>;
+<span class='kw4'>long</span>    strtoll<span class='opr'>(</span><span class='kw4'>char</span><span class='opr'>*</span> nptr, <span class='kw4'>char</span><span class='opr'>*</span><span class='opr'>*</span> endptr, <span class='kw4'>int</span> base<span class='opr'>)</span>;
+c_ulong strtoul<span class='opr'>(</span><span class='kw4'>char</span><span class='opr'>*</span> nptr, <span class='kw4'>char</span><span class='opr'>*</span><span class='opr'>*</span> endptr, <span class='kw4'>int</span> base<span class='opr'>)</span>;
+<span class='kw4'>ulong</span>   strtoull<span class='opr'>(</span><span class='kw4'>char</span><span class='opr'>*</span> nptr, <span class='kw4'>char</span><span class='opr'>*</span><span class='opr'>*</span> endptr, <span class='kw4'>int</span> base<span class='opr'>)</span>;
+
+<span class='kw4'>double</span>  wcstod<span class='opr'>(</span>wchar_t<span class='opr'>*</span> nptr, wchar_t<span class='opr'>*</span><span class='opr'>*</span> endptr<span class='opr'>)</span>;
+<span class='kw4'>float</span>   wcstof<span class='opr'>(</span>wchar_t<span class='opr'>*</span> nptr, wchar_t<span class='opr'>*</span><span class='opr'>*</span> endptr<span class='opr'>)</span>;
+<span class='kw4'>real</span>    wcstold<span class='opr'>(</span>wchar_t<span class='opr'>*</span> nptr, wchar_t<span class='opr'>*</span><span class='opr'>*</span> endptr<span class='opr'>)</span>;
+c_long  wcstol<span class='opr'>(</span>wchar_t<span class='opr'>*</span> nptr, wchar_t<span class='opr'>*</span><span class='opr'>*</span> endptr, <span class='kw4'>int</span> base<span class='opr'>)</span>;
+<span class='kw4'>long</span>    wcstoll<span class='opr'>(</span>wchar_t<span class='opr'>*</span> nptr, wchar_t<span class='opr'>*</span><span class='opr'>*</span> endptr, <span class='kw4'>int</span> base<span class='opr'>)</span>;
+c_ulong wcstoul<span class='opr'>(</span>wchar_t<span class='opr'>*</span> nptr, wchar_t<span class='opr'>*</span><span class='opr'>*</span> endptr, <span class='kw4'>int</span> base<span class='opr'>)</span>;
+<span class='kw4'>ulong</span>   wcstoull<span class='opr'>(</span>wchar_t<span class='opr'>*</span> nptr, wchar_t<span class='opr'>*</span><span class='opr'>*</span> endptr, <span class='kw4'>int</span> base<span class='opr'>)</span>;
+
+<span class='kw4'>int</span>     rand<span class='opr'>(</span><span class='opr'>)</span>;
+<span class='kw4'>void</span>    srand<span class='opr'>(</span><span class='kw4'>uint</span> seed<span class='opr'>)</span>;
+
+<span class='kw4'>void</span><span class='opr'>*</span>   malloc<span class='opr'>(</span><span class='kw4'>size_t</span> size<span class='opr'>)</span>;
+<span class='kw4'>void</span><span class='opr'>*</span>   calloc<span class='opr'>(</span><span class='kw4'>size_t</span> nmemb, <span class='kw4'>size_t</span> size<span class='opr'>)</span>;
+<span class='kw4'>void</span><span class='opr'>*</span>   realloc<span class='opr'>(</span><span class='kw4'>void</span><span class='opr'>*</span> ptr, <span class='kw4'>size_t</span> size<span class='opr'>)</span>;
+<span class='kw4'>void</span>    free<span class='opr'>(</span><span class='kw4'>void</span><span class='opr'>*</span> ptr<span class='opr'>)</span>;
+
+<span class='kw4'>void</span>    abort<span class='opr'>(</span><span class='opr'>)</span>;
+<span class='kw4'>void</span>    exit<span class='opr'>(</span><span class='kw4'>int</span> status<span class='opr'>)</span>;
+<span class='kw4'>int</span>     atexit<span class='opr'>(</span><span class='kw4'>void</span> <span class='kw2'>function</span><span class='opr'>(</span><span class='opr'>)</span> func<span class='opr'>)</span>;
+<span class='kw4'>void</span>    _Exit<span class='opr'>(</span><span class='kw4'>int</span> status<span class='opr'>)</span>;
+
+<span class='kw4'>char</span><span class='opr'>*</span>   getenv<span class='opr'>(</span><span class='kw4'>char</span><span class='opr'>*</span> name<span class='opr'>)</span>;
+<span class='kw4'>int</span>     system<span class='opr'>(</span><span class='kw4'>char</span><span class='opr'>*</span> string<span class='opr'>)</span>;
+
+<span class='kw4'>void</span><span class='opr'>*</span>   bsearch<span class='opr'>(</span><span class='kw4'>void</span><span class='opr'>*</span> key, <span class='kw4'>void</span><span class='opr'>*</span> base, <span class='kw4'>size_t</span> nmemb, <span class='kw4'>size_t</span> size, <span class='kw4'>int</span> <span class='kw2'>function</span><span class='opr'>(</span><span class='kw4'>void</span><span class='opr'>*</span>, <span class='kw4'>void</span><span class='opr'>*</span><span class='opr'>)</span> compar<span class='opr'>)</span>;
+<span class='kw4'>void</span>    qsort<span class='opr'>(</span><span class='kw4'>void</span><span class='opr'>*</span> base, <span class='kw4'>size_t</span> nmemb, <span class='kw4'>size_t</span> size, <span class='kw4'>int</span> <span class='kw2'>function</span><span class='opr'>(</span><span class='kw4'>void</span><span class='opr'>*</span>, <span class='kw4'>void</span><span class='opr'>*</span><span class='opr'>)</span> compar<span class='opr'>)</span>;
+
+<span class='kw4'>int</span>     abs<span class='opr'>(</span><span class='kw4'>int</span> j<span class='opr'>)</span>;
+c_long  labs<span class='opr'>(</span>c_long j<span class='opr'>)</span>;
+<span class='kw4'>long</span>    llabs<span class='opr'>(</span><span class='kw4'>long</span> j<span class='opr'>)</span>;
+
+div_t   div<span class='opr'>(</span><span class='kw4'>int</span> numer, <span class='kw4'>int</span> denom<span class='opr'>)</span>;
+ldiv_t  ldiv<span class='opr'>(</span>c_long numer, c_long denom<span class='opr'>)</span>;
+lldiv_t lldiv<span class='opr'>(</span><span class='kw4'>long</span> numer, <span class='kw4'>long</span> denom<span class='opr'>)</span>;
+
+<span class='kw4'>int</span>     mblen<span class='opr'>(</span><span class='kw4'>char</span><span class='opr'>*</span> s, <span class='kw4'>size_t</span> n<span class='opr'>)</span>;
+<span class='kw4'>int</span>     mbtowc<span class='opr'>(</span>wchar_t<span class='opr'>*</span> pwc, <span class='kw4'>char</span><span class='opr'>*</span> s, <span class='kw4'>size_t</span> n<span class='opr'>)</span>;
+<span class='kw4'>int</span>     wctomb<span class='opr'>(</span><span class='kw4'>char</span><span class='opr'>*</span>s, wchar_t wc<span class='opr'>)</span>;
+<span class='kw4'>size_t</span>  mbstowcs<span class='opr'>(</span>wchar_t<span class='opr'>*</span> pwcs, <span class='kw4'>char</span><span class='opr'>*</span> s, <span class='kw4'>size_t</span> n<span class='opr'>)</span>;
+<span class='kw4'>size_t</span>  wcstombs<span class='opr'>(</span><span class='kw4'>char</span><span class='opr'>*</span> s, wchar_t<span class='opr'>*</span> pwcs, <span class='kw4'>size_t</span> n<span class='opr'>)</span>;
+
+<span class='kw4'>version</span><span class='opr'>(</span> DigitalMars <span class='opr'>)</span>
+<span class='opr'>{</span>
+    <span class='kw4'>void</span><span class='opr'>*</span> alloca<span class='opr'>(</span><span class='kw4'>size_t</span> size<span class='opr'>)</span>;
+<span class='opr'>}</span>
+</pre></td></tr></table>	</body>
+</html>

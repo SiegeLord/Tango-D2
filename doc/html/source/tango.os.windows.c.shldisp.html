@@ -1,0 +1,71 @@
+<!DOCTYPE html 
+     PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+     "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html>
+	<head>
+		<link rel="stylesheet" href="style.css" type="text/css" />
+		<title>os/windows/c/shldisp.d</title>
+	</head>
+	<body>
+
+<table id='dcode'><tr><td id='lnum'><pre><span>1</span>
+<span>2</span>
+<span>3</span>
+<span>4</span>
+<span>5</span>
+<span>6</span>
+<span>7</span>
+<span>8</span>
+<span>9</span>
+<span>10</span>
+<span>11</span>
+<span>12</span>
+<span>13</span>
+<span>14</span>
+<span>15</span>
+<span>16</span>
+<span>17</span>
+<span>18</span>
+<span>19</span>
+<span>20</span>
+<span>21</span>
+<span>22</span>
+<span>23</span>
+<span>24</span>
+<span>25</span>
+<span>26</span>
+<span>27</span>
+<span>28</span>
+<span>29</span>
+</pre></td><td id='code'><pre><span class='com'>/***********************************************************************\
+*                              shldisp.d                                *
+*                                                                       *
+*                       Windows API header module                       *
+*                                                                       *
+*                 Translated from MinGW Windows headers                 *
+*                                                                       *
+*                       Placed into public domain                       *
+\***********************************************************************/</span>
+<span class='kw2'>module</span> tango.os.windows.c.shldisp;
+
+<span class='com'>//version (build) { pragma(nolink); }</span>
+
+<span class='kw4'>private</span> <span class='kw2'>import</span> tango.os.windows.c.unknwn;
+
+<span class='com'>// options for IAutoComplete2</span>
+<span class='kw4'>const</span> DWORD ACO_AUTOSUGGEST <span class='opr'>=</span> <span class='nbr'>0</span>x01;
+
+<span class='kw2'>interface</span> IAutoComplete : <span class='kw4'>public</span> IUnknown <span class='opr'>{</span>
+    HRESULT Init<span class='opr'>(</span>HWND, IUnknown<span class='opr'>*</span>, LPCOLESTR, LPCOLESTR<span class='opr'>)</span>;
+    HRESULT Enable<span class='opr'>(</span>BOOL<span class='opr'>)</span>;
+<span class='opr'>}</span>
+<span class='kw2'>alias</span> IAutoComplete<span class='opr'>*</span> LPAUTOCOMPLETE;
+
+<span class='kw2'>interface</span> IAutoComplete2 : <span class='kw4'>public</span> IAutoComplete <span class='opr'>{</span>
+    HRESULT SetOptions<span class='opr'>(</span>DWORD<span class='opr'>)</span>;
+    HRESULT GetOptions<span class='opr'>(</span>DWORD<span class='opr'>*</span><span class='opr'>)</span>;
+<span class='opr'>}</span>
+<span class='kw2'>alias</span> IAutoComplete2<span class='opr'>*</span> LPAUTOCOMPLETE2;
+</pre></td></tr></table>	</body>
+</html>

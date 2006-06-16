@@ -1,0 +1,323 @@
+<!DOCTYPE html 
+     PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+     "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html>
+	<head>
+		<link rel="stylesheet" href="style.css" type="text/css" />
+		<title>os/windows/c/winperf.d</title>
+	</head>
+	<body>
+
+<table id='dcode'><tr><td id='lnum'><pre><span>1</span>
+<span>2</span>
+<span>3</span>
+<span>4</span>
+<span>5</span>
+<span>6</span>
+<span>7</span>
+<span>8</span>
+<span>9</span>
+<span>10</span>
+<span>11</span>
+<span>12</span>
+<span>13</span>
+<span>14</span>
+<span>15</span>
+<span>16</span>
+<span>17</span>
+<span>18</span>
+<span>19</span>
+<span>20</span>
+<span>21</span>
+<span>22</span>
+<span>23</span>
+<span>24</span>
+<span>25</span>
+<span>26</span>
+<span>27</span>
+<span>28</span>
+<span>29</span>
+<span>30</span>
+<span>31</span>
+<span>32</span>
+<span>33</span>
+<span>34</span>
+<span>35</span>
+<span>36</span>
+<span>37</span>
+<span>38</span>
+<span>39</span>
+<span>40</span>
+<span>41</span>
+<span>42</span>
+<span>43</span>
+<span>44</span>
+<span>45</span>
+<span>46</span>
+<span>47</span>
+<span>48</span>
+<span>49</span>
+<span>50</span>
+<span>51</span>
+<span>52</span>
+<span>53</span>
+<span>54</span>
+<span>55</span>
+<span>56</span>
+<span>57</span>
+<span>58</span>
+<span>59</span>
+<span>60</span>
+<span>61</span>
+<span>62</span>
+<span>63</span>
+<span>64</span>
+<span>65</span>
+<span>66</span>
+<span>67</span>
+<span>68</span>
+<span>69</span>
+<span>70</span>
+<span>71</span>
+<span>72</span>
+<span>73</span>
+<span>74</span>
+<span>75</span>
+<span>76</span>
+<span>77</span>
+<span>78</span>
+<span>79</span>
+<span>80</span>
+<span>81</span>
+<span>82</span>
+<span>83</span>
+<span>84</span>
+<span>85</span>
+<span>86</span>
+<span>87</span>
+<span>88</span>
+<span>89</span>
+<span>90</span>
+<span>91</span>
+<span>92</span>
+<span>93</span>
+<span>94</span>
+<span>95</span>
+<span>96</span>
+<span>97</span>
+<span>98</span>
+<span>99</span>
+<span>100</span>
+<span>101</span>
+<span>102</span>
+<span>103</span>
+<span>104</span>
+<span>105</span>
+<span>106</span>
+<span>107</span>
+<span>108</span>
+<span>109</span>
+<span>110</span>
+<span>111</span>
+<span>112</span>
+<span>113</span>
+<span>114</span>
+<span>115</span>
+<span>116</span>
+<span>117</span>
+<span>118</span>
+<span>119</span>
+<span>120</span>
+<span>121</span>
+<span>122</span>
+<span>123</span>
+<span>124</span>
+<span>125</span>
+<span>126</span>
+<span>127</span>
+<span>128</span>
+<span>129</span>
+<span>130</span>
+<span>131</span>
+<span>132</span>
+<span>133</span>
+<span>134</span>
+<span>135</span>
+<span>136</span>
+<span>137</span>
+<span>138</span>
+<span>139</span>
+<span>140</span>
+<span>141</span>
+<span>142</span>
+<span>143</span>
+<span>144</span>
+<span>145</span>
+<span>146</span>
+<span>147</span>
+<span>148</span>
+<span>149</span>
+<span>150</span>
+<span>151</span>
+<span>152</span>
+<span>153</span>
+<span>154</span>
+<span>155</span>
+</pre></td><td id='code'><pre><span class='com'>/***********************************************************************\
+*                               winperf.d                               *
+*                                                                       *
+*                       Windows API header module                       *
+*                                                                       *
+*                 Translated from MinGW Windows headers                 *
+*                                                                       *
+*                       Placed into public domain                       *
+\***********************************************************************/</span>
+
+<span class='kw2'>module</span> tango.os.windows.c.winperf;
+
+<span class='com'>//version (build) { pragma(nolink); }</span>
+
+<span class='kw2'>import</span> tango.os.windows.c.windef;
+<span class='kw2'>import</span> tango.os.windows.c.winbase; <span class='com'>// for SYSTEMTIME</span>
+
+<span class='kw4'>const</span> PERF_DATA_VERSION<span class='opr'>=</span><span class='nbr'>1</span>;
+<span class='kw4'>const</span> PERF_DATA_REVISION<span class='opr'>=</span><span class='nbr'>1</span>;
+<span class='kw4'>const</span> PERF_NO_INSTANCES<span class='opr'>=</span><span class='opr'>-</span><span class='nbr'>1</span>;
+<span class='kw4'>const</span> PERF_SIZE_DWORD<span class='opr'>=</span><span class='nbr'>0</span>;
+<span class='kw4'>const</span> PERF_SIZE_LARGE<span class='opr'>=</span><span class='nbr'>256</span>;
+<span class='kw4'>const</span> PERF_SIZE_ZERO<span class='opr'>=</span><span class='nbr'>512</span>;
+<span class='kw4'>const</span> PERF_SIZE_VARIABLE_LEN<span class='opr'>=</span><span class='nbr'>768</span>;
+<span class='kw4'>const</span> PERF_TYPE_NUMBER<span class='opr'>=</span><span class='nbr'>0</span>;
+<span class='kw4'>const</span> PERF_TYPE_COUNTER<span class='opr'>=</span><span class='nbr'>1024</span>;
+<span class='kw4'>const</span> PERF_TYPE_TEXT<span class='opr'>=</span><span class='nbr'>2048</span>;
+<span class='kw4'>const</span> PERF_TYPE_ZERO<span class='opr'>=</span><span class='nbr'>0</span>xC00;
+<span class='kw4'>const</span> PERF_NUMBER_HEX<span class='opr'>=</span><span class='nbr'>0</span>;
+<span class='kw4'>const</span> PERF_NUMBER_DECIMAL<span class='opr'>=</span><span class='nbr'>0</span>x10000;
+<span class='kw4'>const</span> PERF_NUMBER_DEC_1000<span class='opr'>=</span><span class='nbr'>0</span>x20000;
+<span class='kw4'>const</span> PERF_COUNTER_VALUE<span class='opr'>=</span><span class='nbr'>0</span>;
+<span class='kw4'>const</span> PERF_COUNTER_RATE<span class='opr'>=</span><span class='nbr'>0</span>x10000;
+<span class='kw4'>const</span> PERF_COUNTER_FRACTION<span class='opr'>=</span><span class='nbr'>0</span>x20000;
+<span class='kw4'>const</span> PERF_COUNTER_BASE<span class='opr'>=</span><span class='nbr'>0</span>x30000;
+<span class='kw4'>const</span> PERF_COUNTER_ELAPSED<span class='opr'>=</span><span class='nbr'>0</span>x40000;
+<span class='kw4'>const</span> PERF_COUNTER_QUEUELEN<span class='opr'>=</span><span class='nbr'>0</span>x50000;
+<span class='kw4'>const</span> PERF_COUNTER_HISTOGRAM<span class='opr'>=</span><span class='nbr'>0</span>x60000;
+<span class='kw4'>const</span> PERF_TEXT_UNICODE<span class='opr'>=</span><span class='nbr'>0</span>;
+<span class='kw4'>const</span> PERF_TEXT_ASCII<span class='opr'>=</span><span class='nbr'>0</span>x10000;
+<span class='kw4'>const</span> PERF_TIMER_TICK<span class='opr'>=</span><span class='nbr'>0</span>;
+<span class='kw4'>const</span> PERF_TIMER_100NS<span class='opr'>=</span><span class='nbr'>0</span>x100000;
+<span class='kw4'>const</span> PERF_OBJECT_TIMER<span class='opr'>=</span><span class='nbr'>0</span>x200000;
+<span class='kw4'>const</span> PERF_DELTA_COUNTER<span class='opr'>=</span><span class='nbr'>0</span>x400000;
+<span class='kw4'>const</span> PERF_DELTA_BASE<span class='opr'>=</span><span class='nbr'>0</span>x800000;
+<span class='kw4'>const</span> PERF_INVERSE_COUNTER<span class='opr'>=</span><span class='nbr'>0</span>x1000000;
+<span class='kw4'>const</span> PERF_MULTI_COUNTER<span class='opr'>=</span><span class='nbr'>0</span>x2000000;
+<span class='kw4'>const</span> PERF_DISPLAY_NO_SUFFIX<span class='opr'>=</span><span class='nbr'>0</span>;
+<span class='kw4'>const</span> PERF_DISPLAY_PER_SEC<span class='opr'>=</span><span class='nbr'>0</span>x10000000;
+<span class='kw4'>const</span> PERF_DISPLAY_PERCENT<span class='opr'>=</span><span class='nbr'>0</span>x20000000;
+<span class='kw4'>const</span> PERF_DISPLAY_SECONDS<span class='opr'>=</span><span class='nbr'>0</span>x30000000;
+<span class='kw4'>const</span> PERF_DISPLAY_NOSHOW<span class='opr'>=</span><span class='nbr'>0</span>x40000000;
+<span class='kw4'>const</span> PERF_COUNTER_HISTOGRAM_TYPE<span class='opr'>=</span><span class='nbr'>0</span>x80000000;
+<span class='kw4'>const</span> PERF_NO_UNIQUE_ID<span class='opr'>=</span><span class='opr'>(</span><span class='opr'>-</span><span class='nbr'>1</span><span class='opr'>)</span>;
+<span class='kw4'>const</span> PERF_DETAIL_NOVICE<span class='opr'>=</span><span class='nbr'>100</span>;
+<span class='kw4'>const</span> PERF_DETAIL_ADVANCED<span class='opr'>=</span><span class='nbr'>200</span>;
+<span class='kw4'>const</span> PERF_DETAIL_EXPERT<span class='opr'>=</span><span class='nbr'>300</span>;
+<span class='kw4'>const</span> PERF_DETAIL_WIZARD<span class='opr'>=</span><span class='nbr'>400</span>;
+<span class='kw4'>const</span> PERF_COUNTER_COUNTER<span class='opr'>=</span><span class='opr'>(</span>PERF_SIZE_DWORD|PERF_TYPE_COUNTER|PERF_COUNTER_RATE|PERF_TIMER_TICK|PERF_DELTA_COUNTER|PERF_DISPLAY_PER_SEC<span class='opr'>)</span>;
+<span class='kw4'>const</span> PERF_COUNTER_TIMER<span class='opr'>=</span><span class='opr'>(</span>PERF_SIZE_LARGE|PERF_TYPE_COUNTER|PERF_COUNTER_RATE|PERF_TIMER_TICK|PERF_DELTA_COUNTER|PERF_DISPLAY_PERCENT<span class='opr'>)</span>;
+<span class='kw4'>const</span> PERF_COUNTER_QUEUELEN_TYPE<span class='opr'>=</span><span class='opr'>(</span>PERF_SIZE_DWORD|PERF_TYPE_COUNTER|PERF_COUNTER_QUEUELEN|PERF_TIMER_TICK|PERF_DELTA_COUNTER|PERF_DISPLAY_NO_SUFFIX<span class='opr'>)</span>;
+<span class='kw4'>const</span> PERF_COUNTER_BULK_COUNT<span class='opr'>=</span><span class='opr'>(</span>PERF_SIZE_LARGE|PERF_TYPE_COUNTER|PERF_COUNTER_RATE|PERF_TIMER_TICK|PERF_DELTA_COUNTER|PERF_DISPLAY_PER_SEC<span class='opr'>)</span>;
+<span class='kw4'>const</span> PERF_COUNTER_TEXT<span class='opr'>=</span><span class='opr'>(</span>PERF_SIZE_VARIABLE_LEN|PERF_TYPE_TEXT|PERF_TEXT_UNICODE|PERF_DISPLAY_NO_SUFFIX<span class='opr'>)</span>;
+<span class='kw4'>const</span> PERF_COUNTER_RAWCOUNT<span class='opr'>=</span><span class='opr'>(</span>PERF_SIZE_DWORD|PERF_TYPE_NUMBER|PERF_NUMBER_DECIMAL|PERF_DISPLAY_NO_SUFFIX<span class='opr'>)</span>;
+<span class='kw4'>const</span> PERF_COUNTER_LARGE_RAWCOUNT<span class='opr'>=</span><span class='opr'>(</span>PERF_SIZE_LARGE|PERF_TYPE_NUMBER|PERF_NUMBER_DECIMAL|PERF_DISPLAY_NO_SUFFIX<span class='opr'>)</span>;
+<span class='kw4'>const</span> PERF_COUNTER_RAWCOUNT_HEX<span class='opr'>=</span><span class='opr'>(</span>PERF_SIZE_DWORD|PERF_TYPE_NUMBER|PERF_NUMBER_HEX|PERF_DISPLAY_NO_SUFFIX<span class='opr'>)</span>;
+<span class='kw4'>const</span> PERF_COUNTER_LARGE_RAWCOUNT_HEX<span class='opr'>=</span><span class='opr'>(</span>PERF_SIZE_LARGE|PERF_TYPE_NUMBER|PERF_NUMBER_HEX|PERF_DISPLAY_NO_SUFFIX<span class='opr'>)</span>;
+<span class='kw4'>const</span> PERF_SAMPLE_FRACTION<span class='opr'>=</span><span class='opr'>(</span>PERF_SIZE_DWORD|PERF_TYPE_COUNTER|PERF_COUNTER_FRACTION|PERF_DELTA_COUNTER|PERF_DELTA_BASE|PERF_DISPLAY_PERCENT<span class='opr'>)</span>;
+<span class='kw4'>const</span> PERF_SAMPLE_COUNTER<span class='opr'>=</span><span class='opr'>(</span>PERF_SIZE_DWORD|PERF_TYPE_COUNTER|PERF_COUNTER_RATE|PERF_TIMER_TICK|PERF_DELTA_COUNTER|PERF_DISPLAY_NO_SUFFIX<span class='opr'>)</span>;
+<span class='kw4'>const</span> PERF_COUNTER_NODATA<span class='opr'>=</span><span class='opr'>(</span>PERF_SIZE_ZERO|PERF_DISPLAY_NOSHOW<span class='opr'>)</span>;
+<span class='kw4'>const</span> PERF_COUNTER_TIMER_INV<span class='opr'>=</span><span class='opr'>(</span>PERF_SIZE_LARGE|PERF_TYPE_COUNTER|PERF_COUNTER_RATE|PERF_TIMER_TICK|PERF_DELTA_COUNTER|PERF_INVERSE_COUNTER|PERF_DISPLAY_PERCENT<span class='opr'>)</span>;
+<span class='kw4'>const</span> PERF_SAMPLE_BASE<span class='opr'>=</span><span class='opr'>(</span>PERF_SIZE_DWORD|PERF_TYPE_COUNTER|PERF_COUNTER_BASE|PERF_DISPLAY_NOSHOW|<span class='nbr'>1</span><span class='opr'>)</span>;
+<span class='kw4'>const</span> PERF_AVERAGE_TIMER<span class='opr'>=</span><span class='opr'>(</span>PERF_SIZE_DWORD|PERF_TYPE_COUNTER|PERF_COUNTER_FRACTION|PERF_DISPLAY_SECONDS<span class='opr'>)</span>;
+<span class='kw4'>const</span> PERF_AVERAGE_BASE<span class='opr'>=</span><span class='opr'>(</span>PERF_SIZE_DWORD|PERF_TYPE_COUNTER|PERF_COUNTER_BASE|PERF_DISPLAY_NOSHOW|<span class='nbr'>2</span><span class='opr'>)</span>;
+<span class='kw4'>const</span> PERF_AVERAGE_BULK<span class='opr'>=</span><span class='opr'>(</span>PERF_SIZE_LARGE|PERF_TYPE_COUNTER|PERF_COUNTER_FRACTION|PERF_DISPLAY_NOSHOW<span class='opr'>)</span>;
+<span class='kw4'>const</span> PERF_100NSEC_TIMER<span class='opr'>=</span><span class='opr'>(</span>PERF_SIZE_LARGE|PERF_TYPE_COUNTER|PERF_COUNTER_RATE|PERF_TIMER_100NS|PERF_DELTA_COUNTER|PERF_DISPLAY_PERCENT<span class='opr'>)</span>;
+<span class='kw4'>const</span> PERF_100NSEC_TIMER_INV<span class='opr'>=</span><span class='opr'>(</span>PERF_SIZE_LARGE|PERF_TYPE_COUNTER|PERF_COUNTER_RATE|PERF_TIMER_100NS|PERF_DELTA_COUNTER|PERF_INVERSE_COUNTER|PERF_DISPLAY_PERCENT<span class='opr'>)</span>;
+<span class='kw4'>const</span> PERF_COUNTER_MULTI_TIMER<span class='opr'>=</span><span class='opr'>(</span>PERF_SIZE_LARGE|PERF_TYPE_COUNTER|PERF_COUNTER_RATE|PERF_DELTA_COUNTER|PERF_TIMER_TICK|PERF_MULTI_COUNTER|PERF_DISPLAY_PERCENT<span class='opr'>)</span>;
+<span class='kw4'>const</span> PERF_COUNTER_MULTI_TIMER_INV<span class='opr'>=</span><span class='opr'>(</span>PERF_SIZE_LARGE|PERF_TYPE_COUNTER|PERF_COUNTER_RATE|PERF_DELTA_COUNTER|PERF_MULTI_COUNTER|PERF_TIMER_TICK|PERF_INVERSE_COUNTER|PERF_DISPLAY_PERCENT<span class='opr'>)</span>;
+<span class='kw4'>const</span> PERF_COUNTER_MULTI_BASE<span class='opr'>=</span><span class='opr'>(</span>PERF_SIZE_LARGE|PERF_TYPE_COUNTER|PERF_COUNTER_BASE|PERF_MULTI_COUNTER|PERF_DISPLAY_NOSHOW<span class='opr'>)</span>;
+<span class='kw4'>const</span> PERF_100NSEC_MULTI_TIMER<span class='opr'>=</span><span class='opr'>(</span>PERF_SIZE_LARGE|PERF_TYPE_COUNTER|PERF_DELTA_COUNTER|PERF_COUNTER_RATE|PERF_TIMER_100NS|PERF_MULTI_COUNTER|PERF_DISPLAY_PERCENT<span class='opr'>)</span>;
+<span class='kw4'>const</span> PERF_100NSEC_MULTI_TIMER_INV<span class='opr'>=</span><span class='opr'>(</span>PERF_SIZE_LARGE|PERF_TYPE_COUNTER|PERF_DELTA_COUNTER|PERF_COUNTER_RATE|PERF_TIMER_100NS|PERF_MULTI_COUNTER|PERF_INVERSE_COUNTER|PERF_DISPLAY_PERCENT<span class='opr'>)</span>;
+<span class='kw4'>const</span> PERF_RAW_FRACTION<span class='opr'>=</span><span class='opr'>(</span>PERF_SIZE_DWORD|PERF_TYPE_COUNTER|PERF_COUNTER_FRACTION|PERF_DISPLAY_PERCENT<span class='opr'>)</span>;
+<span class='kw4'>const</span> PERF_RAW_BASE<span class='opr'>=</span><span class='opr'>(</span>PERF_SIZE_DWORD|PERF_TYPE_COUNTER|PERF_COUNTER_BASE|PERF_DISPLAY_NOSHOW|<span class='nbr'>3</span><span class='opr'>)</span>;
+<span class='kw4'>const</span> PERF_ELAPSED_TIME<span class='opr'>=</span><span class='opr'>(</span>PERF_SIZE_LARGE|PERF_TYPE_COUNTER|PERF_COUNTER_ELAPSED|PERF_OBJECT_TIMER|PERF_DISPLAY_SECONDS<span class='opr'>)</span>;
+
+<span class='kw4'>struct</span> PERF_DATA_BLOCK<span class='opr'>{</span>
+    WCHAR Signature<span class='opr'>[</span><span class='nbr'>4</span><span class='opr'>]</span>;
+    DWORD LittleEndian;
+    DWORD Version;
+    DWORD Revision;
+    DWORD TotalByteLength;
+    DWORD HeaderLength;
+    DWORD NumObjectTypes;
+    LONG DefaultObject;
+    SYSTEMTIME SystemTime;
+    LARGE_INTEGER PerfTime;
+    LARGE_INTEGER PerfFreq;
+    LARGE_INTEGER PerfTime100nSec;
+    DWORD SystemNameLength;
+    DWORD SystemNameOffset;
+<span class='opr'>}</span>
+<span class='kw2'>alias</span> PERF_DATA_BLOCK <span class='opr'>*</span> PPERF_DATA_BLOCK;
+
+<span class='kw4'>struct</span> PERF_OBJECT_TYPE<span class='opr'>{</span>
+    DWORD TotalByteLength;
+    DWORD DefinitionLength;
+    DWORD HeaderLength;
+    DWORD ObjectNameTitleIndex;
+    LPWSTR ObjectNameTitle;
+    DWORD ObjectHelpTitleIndex;
+    LPWSTR ObjectHelpTitle;
+    DWORD DetailLevel;
+    DWORD NumCounters;
+    LONG DefaultCounter;
+    LONG NumInstances;
+    DWORD CodePage;
+    LARGE_INTEGER PerfTime;
+    LARGE_INTEGER PerfFreq;
+<span class='opr'>}</span>
+<span class='kw2'>alias</span> PERF_OBJECT_TYPE <span class='opr'>*</span> PPERF_OBJECT_TYPE;
+
+<span class='kw4'>struct</span> PERF_COUNTER_DEFINITION<span class='opr'>{</span>
+    DWORD ByteLength;
+    DWORD CounterNameTitleIndex;
+    LPWSTR CounterNameTitle;
+    DWORD CounterHelpTitleIndex;
+    LPWSTR CounterHelpTitle;
+    LONG DefaultScale;
+    DWORD DetailLevel;
+    DWORD CounterType;
+    DWORD CounterSize;
+    DWORD CounterOffset;
+<span class='opr'>}</span>
+<span class='kw2'>alias</span> PERF_COUNTER_DEFINITION <span class='opr'>*</span> PPERF_COUNTER_DEFINITION;
+
+<span class='kw4'>struct</span> PERF_INSTANCE_DEFINITION<span class='opr'>{</span>
+    DWORD ByteLength;
+    DWORD ParentObjectTitleIndex;
+    DWORD ParentObjectInstance;
+    LONG UniqueID;
+    DWORD NameOffset;
+    DWORD NameLength;
+<span class='opr'>}</span>
+<span class='kw2'>alias</span> PERF_INSTANCE_DEFINITION <span class='opr'>*</span> PPERF_INSTANCE_DEFINITION;
+
+<span class='kw4'>struct</span> PERF_COUNTER_BLOCK<span class='opr'>{</span>
+    DWORD ByteLength;
+<span class='opr'>}</span>
+<span class='kw2'>alias</span> PERF_COUNTER_BLOCK <span class='opr'>*</span> PPERF_COUNTER_BLOCK;
+
+<span class='kw2'>extern</span> <span class='opr'>(</span>Windows<span class='opr'>)</span>:
+<span class='kw2'>alias</span> DWORD <span class='kw2'>function</span> <span class='opr'>(</span>LPWSTR<span class='opr'>)</span> PM_OPEN_PROC;
+<span class='kw2'>alias</span> DWORD <span class='kw2'>function</span> <span class='opr'>(</span>LPWSTR,PVOID<span class='opr'>*</span>,PDWORD,PDWORD<span class='opr'>)</span> PM_COLLECT_PROC;
+<span class='kw2'>alias</span> DWORD <span class='kw2'>function</span> <span class='opr'>(</span><span class='opr'>)</span> PM_CLOSE_PROC;
+</pre></td></tr></table>	</body>
+</html>

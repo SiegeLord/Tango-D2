@@ -1,0 +1,521 @@
+<!DOCTYPE html 
+     PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+     "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html>
+	<head>
+		<link rel="stylesheet" href="style.css" type="text/css" />
+		<title>stdc/posix/sys/stat.d</title>
+	</head>
+	<body>
+
+<table id='dcode'><tr><td id='lnum'><pre><span>1</span>
+<span>2</span>
+<span>3</span>
+<span>4</span>
+<span>5</span>
+<span>6</span>
+<span>7</span>
+<span>8</span>
+<span>9</span>
+<span>10</span>
+<span>11</span>
+<span>12</span>
+<span>13</span>
+<span>14</span>
+<span>15</span>
+<span>16</span>
+<span>17</span>
+<span>18</span>
+<span>19</span>
+<span>20</span>
+<span>21</span>
+<span>22</span>
+<span>23</span>
+<span>24</span>
+<span>25</span>
+<span>26</span>
+<span>27</span>
+<span>28</span>
+<span>29</span>
+<span>30</span>
+<span>31</span>
+<span>32</span>
+<span>33</span>
+<span>34</span>
+<span>35</span>
+<span>36</span>
+<span>37</span>
+<span>38</span>
+<span>39</span>
+<span>40</span>
+<span>41</span>
+<span>42</span>
+<span>43</span>
+<span>44</span>
+<span>45</span>
+<span>46</span>
+<span>47</span>
+<span>48</span>
+<span>49</span>
+<span>50</span>
+<span>51</span>
+<span>52</span>
+<span>53</span>
+<span>54</span>
+<span>55</span>
+<span>56</span>
+<span>57</span>
+<span>58</span>
+<span>59</span>
+<span>60</span>
+<span>61</span>
+<span>62</span>
+<span>63</span>
+<span>64</span>
+<span>65</span>
+<span>66</span>
+<span>67</span>
+<span>68</span>
+<span>69</span>
+<span>70</span>
+<span>71</span>
+<span>72</span>
+<span>73</span>
+<span>74</span>
+<span>75</span>
+<span>76</span>
+<span>77</span>
+<span>78</span>
+<span>79</span>
+<span>80</span>
+<span>81</span>
+<span>82</span>
+<span>83</span>
+<span>84</span>
+<span>85</span>
+<span>86</span>
+<span>87</span>
+<span>88</span>
+<span>89</span>
+<span>90</span>
+<span>91</span>
+<span>92</span>
+<span>93</span>
+<span>94</span>
+<span>95</span>
+<span>96</span>
+<span>97</span>
+<span>98</span>
+<span>99</span>
+<span>100</span>
+<span>101</span>
+<span>102</span>
+<span>103</span>
+<span>104</span>
+<span>105</span>
+<span>106</span>
+<span>107</span>
+<span>108</span>
+<span>109</span>
+<span>110</span>
+<span>111</span>
+<span>112</span>
+<span>113</span>
+<span>114</span>
+<span>115</span>
+<span>116</span>
+<span>117</span>
+<span>118</span>
+<span>119</span>
+<span>120</span>
+<span>121</span>
+<span>122</span>
+<span>123</span>
+<span>124</span>
+<span>125</span>
+<span>126</span>
+<span>127</span>
+<span>128</span>
+<span>129</span>
+<span>130</span>
+<span>131</span>
+<span>132</span>
+<span>133</span>
+<span>134</span>
+<span>135</span>
+<span>136</span>
+<span>137</span>
+<span>138</span>
+<span>139</span>
+<span>140</span>
+<span>141</span>
+<span>142</span>
+<span>143</span>
+<span>144</span>
+<span>145</span>
+<span>146</span>
+<span>147</span>
+<span>148</span>
+<span>149</span>
+<span>150</span>
+<span>151</span>
+<span>152</span>
+<span>153</span>
+<span>154</span>
+<span>155</span>
+<span>156</span>
+<span>157</span>
+<span>158</span>
+<span>159</span>
+<span>160</span>
+<span>161</span>
+<span>162</span>
+<span>163</span>
+<span>164</span>
+<span>165</span>
+<span>166</span>
+<span>167</span>
+<span>168</span>
+<span>169</span>
+<span>170</span>
+<span>171</span>
+<span>172</span>
+<span>173</span>
+<span>174</span>
+<span>175</span>
+<span>176</span>
+<span>177</span>
+<span>178</span>
+<span>179</span>
+<span>180</span>
+<span>181</span>
+<span>182</span>
+<span>183</span>
+<span>184</span>
+<span>185</span>
+<span>186</span>
+<span>187</span>
+<span>188</span>
+<span>189</span>
+<span>190</span>
+<span>191</span>
+<span>192</span>
+<span>193</span>
+<span>194</span>
+<span>195</span>
+<span>196</span>
+<span>197</span>
+<span>198</span>
+<span>199</span>
+<span>200</span>
+<span>201</span>
+<span>202</span>
+<span>203</span>
+<span>204</span>
+<span>205</span>
+<span>206</span>
+<span>207</span>
+<span>208</span>
+<span>209</span>
+<span>210</span>
+<span>211</span>
+<span>212</span>
+<span>213</span>
+<span>214</span>
+<span>215</span>
+<span>216</span>
+<span>217</span>
+<span>218</span>
+<span>219</span>
+<span>220</span>
+<span>221</span>
+<span>222</span>
+<span>223</span>
+<span>224</span>
+<span>225</span>
+<span>226</span>
+<span>227</span>
+<span>228</span>
+<span>229</span>
+<span>230</span>
+<span>231</span>
+<span>232</span>
+<span>233</span>
+<span>234</span>
+<span>235</span>
+<span>236</span>
+<span>237</span>
+<span>238</span>
+<span>239</span>
+<span>240</span>
+<span>241</span>
+<span>242</span>
+<span>243</span>
+<span>244</span>
+<span>245</span>
+<span>246</span>
+<span>247</span>
+<span>248</span>
+<span>249</span>
+<span>250</span>
+<span>251</span>
+<span>252</span>
+<span>253</span>
+<span>254</span>
+</pre></td><td id='code'><pre><span class='com'>/**
+ * D header file for POSIX.
+ *
+ * Copyright: Public Domain
+ * License:   Public Domain
+ * Authors:   Sean Kelly
+ * Standards: The Open Group Base Specifications Issue 6, IEEE Std 1003.1, 2004 Edition
+ */</span>
+<span class='kw2'>module</span> tango.stdc.posix.sys.stat;
+
+<span class='kw4'>private</span> <span class='kw2'>import</span> tango.stdc.config;
+<span class='kw4'>private</span> <span class='kw2'>import</span> tango.stdc.stdint;
+<span class='kw4'>private</span> <span class='kw2'>import</span> tango.stdc.posix.time;     <span class='com'>// for timespec</span>
+<span class='kw4'>public</span> <span class='kw2'>import</span> tango.stdc.stddef;          <span class='com'>// for size_t</span>
+<span class='kw4'>public</span> <span class='kw2'>import</span> tango.stdc.posix.sys.types; <span class='com'>// for off_t, mode_t</span>
+
+<span class='kw2'>extern</span> <span class='opr'>(</span>C<span class='opr'>)</span>:
+
+<span class='com'>//</span>
+<span class='com'>// Required</span>
+<span class='com'>//</span>
+<span class='com'>/*
+struct stat
+{
+    dev_t   st_dev;
+    ino_t   st_ino;
+    mode_t  st_mode;
+    nlink_t st_nlink;
+    uid_t   st_uid;
+    gid_t   st_gid;
+    off_t   st_size;
+    time_t  st_atime;
+    time_t  st_mtime;
+    time_t  st_ctime;
+}
+
+S_IRWXU
+    S_IRUSR
+    S_IWUSR
+    S_IXUSR
+S_IRWXG
+    S_IRGRP
+    S_IWGRP
+    S_IXGRP
+S_IRWXO
+    S_IROTH
+    S_IWOTH
+    S_IXOTH
+S_ISUID
+S_ISGID
+S_ISVTX
+
+S_ISBLK(m)
+S_ISCHR(m)
+S_ISDIR(m)
+S_ISFIFO(m)
+S_ISREG(m)
+S_ISLNK(m)
+S_ISSOCK(m)
+
+S_TYPEISMQ(buf)
+S_TYPEISSEM(buf)
+S_TYPEISSHM(buf)
+
+int    chmod(char*, mode_t);
+int    fchmod(int, mode_t);
+int    fstat(int, stat*);
+int    lstat(char*, stat*);
+int    mkdir(char*, mode_t);
+int    mkfifo(char*, mode_t);
+int    stat(char*, stat*);
+mode_t umask(mode_t);
+*/</span>
+
+<span class='kw4'>version</span><span class='opr'>(</span> linux <span class='opr'>)</span>
+<span class='opr'>{</span>
+    <span class='kw4'>struct</span> stat
+    <span class='opr'>{</span>
+        dev_t       st_dev;
+        <span class='kw4'>ushort</span>      __pad1;
+      <span class='kw4'>static</span> <span class='kw1'>if</span><span class='opr'>(</span> <span class='kw2'>false</span> <span class='com'>/*__USE_FILE_OFFSET64*/</span> <span class='opr'>)</span>
+      <span class='opr'>{</span>
+        ino_t       __st_ino;
+      <span class='opr'>}</span>
+      <span class='kw1'>else</span>
+      <span class='opr'>{</span>
+        ino_t       st_ino;
+      <span class='opr'>}</span>
+        mode_t      st_mode;
+        nlink_t     st_nlink;
+        uid_t       st_uid;
+        gid_t       st_gid;
+        dev_t       st_rdev;
+        <span class='kw4'>ushort</span>      __pad2;
+        off_t       st_size;
+        blksize_t   st_blksize;
+        blkcnt_t    st_blocks;
+      <span class='kw4'>static</span> <span class='kw1'>if</span><span class='opr'>(</span> <span class='kw2'>false</span> <span class='com'>/*__USE_MISC*/</span> <span class='opr'>)</span> <span class='com'>// true if _BSD_SOURCE || _SVID_SOURCE</span>
+      <span class='opr'>{</span>
+        <span class='com'>/* Nanosecond resolution timestamps are stored in a format
+        equivalent to 'struct timespec'.  This is the type used
+        whenever possible but the Unix namespace rules do not allow the
+        identifier 'timespec' to appear in the &lt;sys/stat.h&gt; header.
+        Therefore we have to handle the use of this header in strictly
+        standard-compliant sources special. */</span>
+        timespec    st_atim;
+        timespec    st_mtim;
+        timespec    st_ctim;
+        <span class='kw2'>alias</span> st_atim.tv_sec st_atime;
+        <span class='kw2'>alias</span> st_mtim.tv_sec st_mtime;
+        <span class='kw2'>alias</span> st_ctim.tv_sec st_ctime;
+      <span class='opr'>}</span>
+      <span class='kw1'>else</span>
+      <span class='opr'>{</span>
+        time_t      st_atime;
+        c_ulong     st_atimensec;
+        time_t      st_mtime;
+        c_ulong     st_mtimensec;
+        time_t      st_ctime;
+        c_ulong     st_ctimensec;
+      <span class='opr'>}</span>
+      <span class='kw4'>static</span> <span class='kw1'>if</span><span class='opr'>(</span> <span class='kw2'>false</span> <span class='com'>/*__USE_FILE_OFFSET64*/</span> <span class='opr'>)</span>
+      <span class='opr'>{</span>
+        ino_t       st_ino;
+      <span class='opr'>}</span>
+      <span class='kw1'>else</span>
+      <span class='opr'>{</span>
+        c_ulong     __unused4;
+        c_ulong     __unused5;
+      <span class='opr'>}</span>
+    <span class='opr'>}</span>
+
+    <span class='kw4'>const</span> <span class='kw4'>auto</span> S_IRUSR <span class='opr'>=</span> <span class='nbr'>0400</span>;
+    <span class='kw4'>const</span> <span class='kw4'>auto</span> S_IWUSR <span class='opr'>=</span> <span class='nbr'>0200</span>;
+    <span class='kw4'>const</span> <span class='kw4'>auto</span> S_IXUSR <span class='opr'>=</span> <span class='nbr'>0100</span>;
+    <span class='kw4'>const</span> <span class='kw4'>auto</span> S_IRWXU <span class='opr'>=</span> S_IRUSR | S_IWUSR | S_IXUSR;
+
+    <span class='kw4'>const</span> <span class='kw4'>auto</span> S_IRGRP <span class='opr'>=</span> S_IRUSR <span class='opr'>&gt;</span><span class='opr'>&gt;</span> <span class='nbr'>3</span>;
+    <span class='kw4'>const</span> <span class='kw4'>auto</span> S_IWGRP <span class='opr'>=</span> S_IWUSR <span class='opr'>&gt;</span><span class='opr'>&gt;</span> <span class='nbr'>3</span>;
+    <span class='kw4'>const</span> <span class='kw4'>auto</span> S_IXGRP <span class='opr'>=</span> S_IXUSR <span class='opr'>&gt;</span><span class='opr'>&gt;</span> <span class='nbr'>3</span>;
+    <span class='kw4'>const</span> <span class='kw4'>auto</span> S_IRWXG <span class='opr'>=</span> S_IRWXU <span class='opr'>&gt;</span><span class='opr'>&gt;</span> <span class='nbr'>3</span>;
+
+    <span class='kw4'>const</span> <span class='kw4'>auto</span> S_IROTH <span class='opr'>=</span> S_IRGRP <span class='opr'>&gt;</span><span class='opr'>&gt;</span> <span class='nbr'>3</span>;
+    <span class='kw4'>const</span> <span class='kw4'>auto</span> S_IWOTH <span class='opr'>=</span> S_IWGRP <span class='opr'>&gt;</span><span class='opr'>&gt;</span> <span class='nbr'>3</span>;
+    <span class='kw4'>const</span> <span class='kw4'>auto</span> S_IXOTH <span class='opr'>=</span> S_IXGRP <span class='opr'>&gt;</span><span class='opr'>&gt;</span> <span class='nbr'>3</span>;
+    <span class='kw4'>const</span> <span class='kw4'>auto</span> S_IRWXO <span class='opr'>=</span> S_IRWXG <span class='opr'>&gt;</span><span class='opr'>&gt;</span> <span class='nbr'>3</span>;
+
+    <span class='kw4'>const</span> <span class='kw4'>auto</span> S_ISUID <span class='opr'>=</span> <span class='nbr'>04000</span>;
+    <span class='kw4'>const</span> <span class='kw4'>auto</span> S_ISGID <span class='opr'>=</span> <span class='nbr'>02000</span>;
+    <span class='kw4'>const</span> <span class='kw4'>auto</span> S_ISVTX <span class='opr'>=</span> <span class='nbr'>01000</span>;
+
+    <span class='kw4'>private</span>
+    <span class='opr'>{</span>
+        <span class='kw4'>const</span> <span class='kw4'>auto</span> S_IFDIR  <span class='opr'>=</span> <span class='nbr'>0040000</span>;
+        <span class='kw4'>const</span> <span class='kw4'>auto</span> S_IFCHR  <span class='opr'>=</span> <span class='nbr'>0020000</span>;
+        <span class='kw4'>const</span> <span class='kw4'>auto</span> S_IFBLK  <span class='opr'>=</span> <span class='nbr'>0060000</span>;
+        <span class='kw4'>const</span> <span class='kw4'>auto</span> S_IFREG  <span class='opr'>=</span> <span class='nbr'>0100000</span>;
+        <span class='kw4'>const</span> <span class='kw4'>auto</span> S_IFIFO  <span class='opr'>=</span> <span class='nbr'>0010000</span>;
+        <span class='kw4'>const</span> <span class='kw4'>auto</span> S_IFLNK  <span class='opr'>=</span> <span class='nbr'>0120000</span>;
+        <span class='kw4'>const</span> <span class='kw4'>auto</span> S_IFSOCK <span class='opr'>=</span> <span class='nbr'>0140000</span>;
+
+        <span class='kw2'>extern</span> <span class='opr'>(</span>D<span class='opr'>)</span> <span class='kw4'>bool</span> S_ISTYPE<span class='opr'>(</span> mode_t mode, <span class='kw4'>uint</span> mask <span class='opr'>)</span>
+        <span class='opr'>{</span>
+            <span class='kw1'>return</span> <span class='opr'>(</span> mode <span class='opr'>&amp;</span> S_IFMT <span class='opr'>)</span> <span class='opr'>=</span><span class='opr'>=</span> mask;
+        <span class='opr'>}</span>
+    <span class='opr'>}</span>
+
+    <span class='kw2'>extern</span> <span class='opr'>(</span>D<span class='opr'>)</span> <span class='kw4'>bool</span> S_ISBLK<span class='opr'>(</span> mode_t mode <span class='opr'>)</span>  <span class='opr'>{</span> <span class='kw1'>return</span> S_ISTYPE<span class='opr'>(</span> mode, S_IFBLK <span class='opr'>)</span>;  <span class='opr'>}</span>
+    <span class='kw2'>extern</span> <span class='opr'>(</span>D<span class='opr'>)</span> <span class='kw4'>bool</span> S_ISCHR<span class='opr'>(</span> mode_t mode <span class='opr'>)</span>  <span class='opr'>{</span> <span class='kw1'>return</span> S_ISTYPE<span class='opr'>(</span> mode, S_IFCHR <span class='opr'>)</span>;  <span class='opr'>}</span>
+    <span class='kw2'>extern</span> <span class='opr'>(</span>D<span class='opr'>)</span> <span class='kw4'>bool</span> S_ISDIR<span class='opr'>(</span> mode_t mode <span class='opr'>)</span>  <span class='opr'>{</span> <span class='kw1'>return</span> S_ISTYPE<span class='opr'>(</span> mode, S_IFDIR <span class='opr'>)</span>;  <span class='opr'>}</span>
+    <span class='kw2'>extern</span> <span class='opr'>(</span>D<span class='opr'>)</span> <span class='kw4'>bool</span> S_ISFIFO<span class='opr'>(</span> mode_t mode <span class='opr'>)</span> <span class='opr'>{</span> <span class='kw1'>return</span> S_ISTYPE<span class='opr'>(</span> mode, S_IFIFO <span class='opr'>)</span>;  <span class='opr'>}</span>
+    <span class='kw2'>extern</span> <span class='opr'>(</span>D<span class='opr'>)</span> <span class='kw4'>bool</span> S_ISREG<span class='opr'>(</span> mode_t mode <span class='opr'>)</span>  <span class='opr'>{</span> <span class='kw1'>return</span> S_ISTYPE<span class='opr'>(</span> mode, S_IFREG <span class='opr'>)</span>;  <span class='opr'>}</span>
+    <span class='kw2'>extern</span> <span class='opr'>(</span>D<span class='opr'>)</span> <span class='kw4'>bool</span> S_ISLNK<span class='opr'>(</span> mode_t mode <span class='opr'>)</span>  <span class='opr'>{</span> <span class='kw1'>return</span> S_ISTYPE<span class='opr'>(</span> mode, S_IFLNK <span class='opr'>)</span>;  <span class='opr'>}</span>
+    <span class='kw2'>extern</span> <span class='opr'>(</span>D<span class='opr'>)</span> <span class='kw4'>bool</span> S_ISSOCK<span class='opr'>(</span> mode_t mode <span class='opr'>)</span> <span class='opr'>{</span> <span class='kw1'>return</span> S_ISTYPE<span class='opr'>(</span> mode, S_IFSOCK <span class='opr'>)</span>; <span class='opr'>}</span>
+
+    <span class='kw4'>static</span> <span class='kw1'>if</span><span class='opr'>(</span> <span class='kw2'>true</span> <span class='com'>/*__USE_POSIX199309*/</span> <span class='opr'>)</span>
+    <span class='opr'>{</span>
+        <span class='kw2'>extern</span> <span class='kw4'>bool</span> S_TYPEISMQ<span class='opr'>(</span> stat<span class='opr'>*</span> buf <span class='opr'>)</span>  <span class='opr'>{</span> <span class='kw1'>return</span> <span class='kw2'>false</span>; <span class='opr'>}</span>
+        <span class='kw2'>extern</span> <span class='kw4'>bool</span> S_TYPEISSEM<span class='opr'>(</span> stat<span class='opr'>*</span> buf <span class='opr'>)</span> <span class='opr'>{</span> <span class='kw1'>return</span> <span class='kw2'>false</span>; <span class='opr'>}</span>
+        <span class='kw2'>extern</span> <span class='kw4'>bool</span> S_TYPEISSHM<span class='opr'>(</span> stat<span class='opr'>*</span> buf <span class='opr'>)</span> <span class='opr'>{</span> <span class='kw1'>return</span> <span class='kw2'>false</span>; <span class='opr'>}</span>
+    <span class='opr'>}</span>
+<span class='opr'>}</span>
+<span class='kw1'>else</span> <span class='kw4'>version</span><span class='opr'>(</span> darwin <span class='opr'>)</span>
+<span class='opr'>{</span>
+    <span class='kw4'>struct</span> stat
+    <span class='opr'>{</span>
+        dev_t       st_dev;
+        ino_t       st_ino;
+        mode_t      st_mode;
+        nlink_t     st_nlink;
+        uid_t       st_uid;
+        gid_t       st_gid;
+        dev_t       st_rdev;
+        time_t      st_atime;
+        c_ulong     st_atimensec;
+        time_t      st_mtime;
+        c_ulong     st_mtimensec;
+        time_t      st_ctime;
+        c_ulong     st_ctimensec;
+        off_t       st_size;
+        blkcnt_t    st_blocks;
+        blksize_t   st_blksize;
+        <span class='kw4'>uint</span>        st_flags;
+        <span class='kw4'>uint</span>        st_gen;
+        <span class='kw4'>int</span>         st_lspare;
+        <span class='kw4'>long</span>        st_qspare<span class='opr'>[</span><span class='nbr'>2</span><span class='opr'>]</span>;
+    <span class='opr'>}</span>
+<span class='opr'>}</span>
+
+<span class='kw4'>int</span>    chmod<span class='opr'>(</span><span class='kw4'>char</span><span class='opr'>*</span>, mode_t<span class='opr'>)</span>;
+<span class='kw4'>int</span>    fchmod<span class='opr'>(</span><span class='kw4'>int</span>, mode_t<span class='opr'>)</span>;
+<span class='kw4'>int</span>    fstat<span class='opr'>(</span><span class='kw4'>int</span>, stat<span class='opr'>*</span><span class='opr'>)</span>;
+<span class='kw4'>int</span>    lstat<span class='opr'>(</span><span class='kw4'>char</span><span class='opr'>*</span>, stat<span class='opr'>*</span><span class='opr'>)</span>;
+<span class='kw4'>int</span>    mkdir<span class='opr'>(</span><span class='kw4'>char</span><span class='opr'>*</span>, mode_t<span class='opr'>)</span>;
+<span class='kw4'>int</span>    mkfifo<span class='opr'>(</span><span class='kw4'>char</span><span class='opr'>*</span>, mode_t<span class='opr'>)</span>;
+<span class='kw4'>int</span>    stat<span class='opr'>(</span><span class='kw4'>char</span><span class='opr'>*</span>, stat<span class='opr'>*</span><span class='opr'>)</span>;
+mode_t umask<span class='opr'>(</span>mode_t<span class='opr'>)</span>;
+
+<span class='com'>//</span>
+<span class='com'>// Typed Memory Objects (TYM)</span>
+<span class='com'>//</span>
+<span class='com'>/*
+S_TYPEISTMO(buf)
+*/</span>
+
+<span class='com'>//</span>
+<span class='com'>// XOpen (XSI)</span>
+<span class='com'>//</span>
+<span class='com'>/*
+S_IFMT
+S_IFBLK
+S_IFCHR
+S_IFIFO
+S_IFREG
+S_IFDIR
+S_IFLNK
+S_IFSOCK
+
+int mknod(char*, mode_t, dev_t);
+*/</span>
+
+<span class='kw4'>version</span><span class='opr'>(</span> darwin <span class='opr'>)</span>
+<span class='opr'>{</span>
+    <span class='kw4'>const</span> <span class='kw4'>auto</span> S_IFMT   <span class='opr'>=</span> <span class='nbr'>0170000</span>;
+    <span class='kw4'>const</span> <span class='kw4'>auto</span> S_IFBLK  <span class='opr'>=</span> <span class='nbr'>0060000</span>;
+    <span class='kw4'>const</span> <span class='kw4'>auto</span> S_IFCHR  <span class='opr'>=</span> <span class='nbr'>0020000</span>;
+    <span class='kw4'>const</span> <span class='kw4'>auto</span> S_IFIFO  <span class='opr'>=</span> <span class='nbr'>0010000</span>;
+    <span class='kw4'>const</span> <span class='kw4'>auto</span> S_IFREG  <span class='opr'>=</span> <span class='nbr'>0100000</span>;
+    <span class='kw4'>const</span> <span class='kw4'>auto</span> S_IFDIR  <span class='opr'>=</span> <span class='nbr'>0040000</span>;
+    <span class='kw4'>const</span> <span class='kw4'>auto</span> S_IFLNK  <span class='opr'>=</span> <span class='nbr'>0120000</span>;
+    <span class='kw4'>const</span> <span class='kw4'>auto</span> S_IFSOCK <span class='opr'>=</span> <span class='nbr'>0140000</span>;
+
+    <span class='kw4'>int</span> mknod<span class='opr'>(</span><span class='kw4'>char</span><span class='opr'>*</span>, mode_t, dev_t<span class='opr'>)</span>;
+<span class='opr'>}</span>
+</pre></td></tr></table>	</body>
+</html>

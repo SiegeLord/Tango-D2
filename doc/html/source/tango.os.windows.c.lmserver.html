@@ -1,0 +1,1899 @@
+<!DOCTYPE html 
+     PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+     "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html>
+	<head>
+		<link rel="stylesheet" href="style.css" type="text/css" />
+		<title>os/windows/c/lmserver.d</title>
+	</head>
+	<body>
+
+<table id='dcode'><tr><td id='lnum'><pre><span>1</span>
+<span>2</span>
+<span>3</span>
+<span>4</span>
+<span>5</span>
+<span>6</span>
+<span>7</span>
+<span>8</span>
+<span>9</span>
+<span>10</span>
+<span>11</span>
+<span>12</span>
+<span>13</span>
+<span>14</span>
+<span>15</span>
+<span>16</span>
+<span>17</span>
+<span>18</span>
+<span>19</span>
+<span>20</span>
+<span>21</span>
+<span>22</span>
+<span>23</span>
+<span>24</span>
+<span>25</span>
+<span>26</span>
+<span>27</span>
+<span>28</span>
+<span>29</span>
+<span>30</span>
+<span>31</span>
+<span>32</span>
+<span>33</span>
+<span>34</span>
+<span>35</span>
+<span>36</span>
+<span>37</span>
+<span>38</span>
+<span>39</span>
+<span>40</span>
+<span>41</span>
+<span>42</span>
+<span>43</span>
+<span>44</span>
+<span>45</span>
+<span>46</span>
+<span>47</span>
+<span>48</span>
+<span>49</span>
+<span>50</span>
+<span>51</span>
+<span>52</span>
+<span>53</span>
+<span>54</span>
+<span>55</span>
+<span>56</span>
+<span>57</span>
+<span>58</span>
+<span>59</span>
+<span>60</span>
+<span>61</span>
+<span>62</span>
+<span>63</span>
+<span>64</span>
+<span>65</span>
+<span>66</span>
+<span>67</span>
+<span>68</span>
+<span>69</span>
+<span>70</span>
+<span>71</span>
+<span>72</span>
+<span>73</span>
+<span>74</span>
+<span>75</span>
+<span>76</span>
+<span>77</span>
+<span>78</span>
+<span>79</span>
+<span>80</span>
+<span>81</span>
+<span>82</span>
+<span>83</span>
+<span>84</span>
+<span>85</span>
+<span>86</span>
+<span>87</span>
+<span>88</span>
+<span>89</span>
+<span>90</span>
+<span>91</span>
+<span>92</span>
+<span>93</span>
+<span>94</span>
+<span>95</span>
+<span>96</span>
+<span>97</span>
+<span>98</span>
+<span>99</span>
+<span>100</span>
+<span>101</span>
+<span>102</span>
+<span>103</span>
+<span>104</span>
+<span>105</span>
+<span>106</span>
+<span>107</span>
+<span>108</span>
+<span>109</span>
+<span>110</span>
+<span>111</span>
+<span>112</span>
+<span>113</span>
+<span>114</span>
+<span>115</span>
+<span>116</span>
+<span>117</span>
+<span>118</span>
+<span>119</span>
+<span>120</span>
+<span>121</span>
+<span>122</span>
+<span>123</span>
+<span>124</span>
+<span>125</span>
+<span>126</span>
+<span>127</span>
+<span>128</span>
+<span>129</span>
+<span>130</span>
+<span>131</span>
+<span>132</span>
+<span>133</span>
+<span>134</span>
+<span>135</span>
+<span>136</span>
+<span>137</span>
+<span>138</span>
+<span>139</span>
+<span>140</span>
+<span>141</span>
+<span>142</span>
+<span>143</span>
+<span>144</span>
+<span>145</span>
+<span>146</span>
+<span>147</span>
+<span>148</span>
+<span>149</span>
+<span>150</span>
+<span>151</span>
+<span>152</span>
+<span>153</span>
+<span>154</span>
+<span>155</span>
+<span>156</span>
+<span>157</span>
+<span>158</span>
+<span>159</span>
+<span>160</span>
+<span>161</span>
+<span>162</span>
+<span>163</span>
+<span>164</span>
+<span>165</span>
+<span>166</span>
+<span>167</span>
+<span>168</span>
+<span>169</span>
+<span>170</span>
+<span>171</span>
+<span>172</span>
+<span>173</span>
+<span>174</span>
+<span>175</span>
+<span>176</span>
+<span>177</span>
+<span>178</span>
+<span>179</span>
+<span>180</span>
+<span>181</span>
+<span>182</span>
+<span>183</span>
+<span>184</span>
+<span>185</span>
+<span>186</span>
+<span>187</span>
+<span>188</span>
+<span>189</span>
+<span>190</span>
+<span>191</span>
+<span>192</span>
+<span>193</span>
+<span>194</span>
+<span>195</span>
+<span>196</span>
+<span>197</span>
+<span>198</span>
+<span>199</span>
+<span>200</span>
+<span>201</span>
+<span>202</span>
+<span>203</span>
+<span>204</span>
+<span>205</span>
+<span>206</span>
+<span>207</span>
+<span>208</span>
+<span>209</span>
+<span>210</span>
+<span>211</span>
+<span>212</span>
+<span>213</span>
+<span>214</span>
+<span>215</span>
+<span>216</span>
+<span>217</span>
+<span>218</span>
+<span>219</span>
+<span>220</span>
+<span>221</span>
+<span>222</span>
+<span>223</span>
+<span>224</span>
+<span>225</span>
+<span>226</span>
+<span>227</span>
+<span>228</span>
+<span>229</span>
+<span>230</span>
+<span>231</span>
+<span>232</span>
+<span>233</span>
+<span>234</span>
+<span>235</span>
+<span>236</span>
+<span>237</span>
+<span>238</span>
+<span>239</span>
+<span>240</span>
+<span>241</span>
+<span>242</span>
+<span>243</span>
+<span>244</span>
+<span>245</span>
+<span>246</span>
+<span>247</span>
+<span>248</span>
+<span>249</span>
+<span>250</span>
+<span>251</span>
+<span>252</span>
+<span>253</span>
+<span>254</span>
+<span>255</span>
+<span>256</span>
+<span>257</span>
+<span>258</span>
+<span>259</span>
+<span>260</span>
+<span>261</span>
+<span>262</span>
+<span>263</span>
+<span>264</span>
+<span>265</span>
+<span>266</span>
+<span>267</span>
+<span>268</span>
+<span>269</span>
+<span>270</span>
+<span>271</span>
+<span>272</span>
+<span>273</span>
+<span>274</span>
+<span>275</span>
+<span>276</span>
+<span>277</span>
+<span>278</span>
+<span>279</span>
+<span>280</span>
+<span>281</span>
+<span>282</span>
+<span>283</span>
+<span>284</span>
+<span>285</span>
+<span>286</span>
+<span>287</span>
+<span>288</span>
+<span>289</span>
+<span>290</span>
+<span>291</span>
+<span>292</span>
+<span>293</span>
+<span>294</span>
+<span>295</span>
+<span>296</span>
+<span>297</span>
+<span>298</span>
+<span>299</span>
+<span>300</span>
+<span>301</span>
+<span>302</span>
+<span>303</span>
+<span>304</span>
+<span>305</span>
+<span>306</span>
+<span>307</span>
+<span>308</span>
+<span>309</span>
+<span>310</span>
+<span>311</span>
+<span>312</span>
+<span>313</span>
+<span>314</span>
+<span>315</span>
+<span>316</span>
+<span>317</span>
+<span>318</span>
+<span>319</span>
+<span>320</span>
+<span>321</span>
+<span>322</span>
+<span>323</span>
+<span>324</span>
+<span>325</span>
+<span>326</span>
+<span>327</span>
+<span>328</span>
+<span>329</span>
+<span>330</span>
+<span>331</span>
+<span>332</span>
+<span>333</span>
+<span>334</span>
+<span>335</span>
+<span>336</span>
+<span>337</span>
+<span>338</span>
+<span>339</span>
+<span>340</span>
+<span>341</span>
+<span>342</span>
+<span>343</span>
+<span>344</span>
+<span>345</span>
+<span>346</span>
+<span>347</span>
+<span>348</span>
+<span>349</span>
+<span>350</span>
+<span>351</span>
+<span>352</span>
+<span>353</span>
+<span>354</span>
+<span>355</span>
+<span>356</span>
+<span>357</span>
+<span>358</span>
+<span>359</span>
+<span>360</span>
+<span>361</span>
+<span>362</span>
+<span>363</span>
+<span>364</span>
+<span>365</span>
+<span>366</span>
+<span>367</span>
+<span>368</span>
+<span>369</span>
+<span>370</span>
+<span>371</span>
+<span>372</span>
+<span>373</span>
+<span>374</span>
+<span>375</span>
+<span>376</span>
+<span>377</span>
+<span>378</span>
+<span>379</span>
+<span>380</span>
+<span>381</span>
+<span>382</span>
+<span>383</span>
+<span>384</span>
+<span>385</span>
+<span>386</span>
+<span>387</span>
+<span>388</span>
+<span>389</span>
+<span>390</span>
+<span>391</span>
+<span>392</span>
+<span>393</span>
+<span>394</span>
+<span>395</span>
+<span>396</span>
+<span>397</span>
+<span>398</span>
+<span>399</span>
+<span>400</span>
+<span>401</span>
+<span>402</span>
+<span>403</span>
+<span>404</span>
+<span>405</span>
+<span>406</span>
+<span>407</span>
+<span>408</span>
+<span>409</span>
+<span>410</span>
+<span>411</span>
+<span>412</span>
+<span>413</span>
+<span>414</span>
+<span>415</span>
+<span>416</span>
+<span>417</span>
+<span>418</span>
+<span>419</span>
+<span>420</span>
+<span>421</span>
+<span>422</span>
+<span>423</span>
+<span>424</span>
+<span>425</span>
+<span>426</span>
+<span>427</span>
+<span>428</span>
+<span>429</span>
+<span>430</span>
+<span>431</span>
+<span>432</span>
+<span>433</span>
+<span>434</span>
+<span>435</span>
+<span>436</span>
+<span>437</span>
+<span>438</span>
+<span>439</span>
+<span>440</span>
+<span>441</span>
+<span>442</span>
+<span>443</span>
+<span>444</span>
+<span>445</span>
+<span>446</span>
+<span>447</span>
+<span>448</span>
+<span>449</span>
+<span>450</span>
+<span>451</span>
+<span>452</span>
+<span>453</span>
+<span>454</span>
+<span>455</span>
+<span>456</span>
+<span>457</span>
+<span>458</span>
+<span>459</span>
+<span>460</span>
+<span>461</span>
+<span>462</span>
+<span>463</span>
+<span>464</span>
+<span>465</span>
+<span>466</span>
+<span>467</span>
+<span>468</span>
+<span>469</span>
+<span>470</span>
+<span>471</span>
+<span>472</span>
+<span>473</span>
+<span>474</span>
+<span>475</span>
+<span>476</span>
+<span>477</span>
+<span>478</span>
+<span>479</span>
+<span>480</span>
+<span>481</span>
+<span>482</span>
+<span>483</span>
+<span>484</span>
+<span>485</span>
+<span>486</span>
+<span>487</span>
+<span>488</span>
+<span>489</span>
+<span>490</span>
+<span>491</span>
+<span>492</span>
+<span>493</span>
+<span>494</span>
+<span>495</span>
+<span>496</span>
+<span>497</span>
+<span>498</span>
+<span>499</span>
+<span>500</span>
+<span>501</span>
+<span>502</span>
+<span>503</span>
+<span>504</span>
+<span>505</span>
+<span>506</span>
+<span>507</span>
+<span>508</span>
+<span>509</span>
+<span>510</span>
+<span>511</span>
+<span>512</span>
+<span>513</span>
+<span>514</span>
+<span>515</span>
+<span>516</span>
+<span>517</span>
+<span>518</span>
+<span>519</span>
+<span>520</span>
+<span>521</span>
+<span>522</span>
+<span>523</span>
+<span>524</span>
+<span>525</span>
+<span>526</span>
+<span>527</span>
+<span>528</span>
+<span>529</span>
+<span>530</span>
+<span>531</span>
+<span>532</span>
+<span>533</span>
+<span>534</span>
+<span>535</span>
+<span>536</span>
+<span>537</span>
+<span>538</span>
+<span>539</span>
+<span>540</span>
+<span>541</span>
+<span>542</span>
+<span>543</span>
+<span>544</span>
+<span>545</span>
+<span>546</span>
+<span>547</span>
+<span>548</span>
+<span>549</span>
+<span>550</span>
+<span>551</span>
+<span>552</span>
+<span>553</span>
+<span>554</span>
+<span>555</span>
+<span>556</span>
+<span>557</span>
+<span>558</span>
+<span>559</span>
+<span>560</span>
+<span>561</span>
+<span>562</span>
+<span>563</span>
+<span>564</span>
+<span>565</span>
+<span>566</span>
+<span>567</span>
+<span>568</span>
+<span>569</span>
+<span>570</span>
+<span>571</span>
+<span>572</span>
+<span>573</span>
+<span>574</span>
+<span>575</span>
+<span>576</span>
+<span>577</span>
+<span>578</span>
+<span>579</span>
+<span>580</span>
+<span>581</span>
+<span>582</span>
+<span>583</span>
+<span>584</span>
+<span>585</span>
+<span>586</span>
+<span>587</span>
+<span>588</span>
+<span>589</span>
+<span>590</span>
+<span>591</span>
+<span>592</span>
+<span>593</span>
+<span>594</span>
+<span>595</span>
+<span>596</span>
+<span>597</span>
+<span>598</span>
+<span>599</span>
+<span>600</span>
+<span>601</span>
+<span>602</span>
+<span>603</span>
+<span>604</span>
+<span>605</span>
+<span>606</span>
+<span>607</span>
+<span>608</span>
+<span>609</span>
+<span>610</span>
+<span>611</span>
+<span>612</span>
+<span>613</span>
+<span>614</span>
+<span>615</span>
+<span>616</span>
+<span>617</span>
+<span>618</span>
+<span>619</span>
+<span>620</span>
+<span>621</span>
+<span>622</span>
+<span>623</span>
+<span>624</span>
+<span>625</span>
+<span>626</span>
+<span>627</span>
+<span>628</span>
+<span>629</span>
+<span>630</span>
+<span>631</span>
+<span>632</span>
+<span>633</span>
+<span>634</span>
+<span>635</span>
+<span>636</span>
+<span>637</span>
+<span>638</span>
+<span>639</span>
+<span>640</span>
+<span>641</span>
+<span>642</span>
+<span>643</span>
+<span>644</span>
+<span>645</span>
+<span>646</span>
+<span>647</span>
+<span>648</span>
+<span>649</span>
+<span>650</span>
+<span>651</span>
+<span>652</span>
+<span>653</span>
+<span>654</span>
+<span>655</span>
+<span>656</span>
+<span>657</span>
+<span>658</span>
+<span>659</span>
+<span>660</span>
+<span>661</span>
+<span>662</span>
+<span>663</span>
+<span>664</span>
+<span>665</span>
+<span>666</span>
+<span>667</span>
+<span>668</span>
+<span>669</span>
+<span>670</span>
+<span>671</span>
+<span>672</span>
+<span>673</span>
+<span>674</span>
+<span>675</span>
+<span>676</span>
+<span>677</span>
+<span>678</span>
+<span>679</span>
+<span>680</span>
+<span>681</span>
+<span>682</span>
+<span>683</span>
+<span>684</span>
+<span>685</span>
+<span>686</span>
+<span>687</span>
+<span>688</span>
+<span>689</span>
+<span>690</span>
+<span>691</span>
+<span>692</span>
+<span>693</span>
+<span>694</span>
+<span>695</span>
+<span>696</span>
+<span>697</span>
+<span>698</span>
+<span>699</span>
+<span>700</span>
+<span>701</span>
+<span>702</span>
+<span>703</span>
+<span>704</span>
+<span>705</span>
+<span>706</span>
+<span>707</span>
+<span>708</span>
+<span>709</span>
+<span>710</span>
+<span>711</span>
+<span>712</span>
+<span>713</span>
+<span>714</span>
+<span>715</span>
+<span>716</span>
+<span>717</span>
+<span>718</span>
+<span>719</span>
+<span>720</span>
+<span>721</span>
+<span>722</span>
+<span>723</span>
+<span>724</span>
+<span>725</span>
+<span>726</span>
+<span>727</span>
+<span>728</span>
+<span>729</span>
+<span>730</span>
+<span>731</span>
+<span>732</span>
+<span>733</span>
+<span>734</span>
+<span>735</span>
+<span>736</span>
+<span>737</span>
+<span>738</span>
+<span>739</span>
+<span>740</span>
+<span>741</span>
+<span>742</span>
+<span>743</span>
+<span>744</span>
+<span>745</span>
+<span>746</span>
+<span>747</span>
+<span>748</span>
+<span>749</span>
+<span>750</span>
+<span>751</span>
+<span>752</span>
+<span>753</span>
+<span>754</span>
+<span>755</span>
+<span>756</span>
+<span>757</span>
+<span>758</span>
+<span>759</span>
+<span>760</span>
+<span>761</span>
+<span>762</span>
+<span>763</span>
+<span>764</span>
+<span>765</span>
+<span>766</span>
+<span>767</span>
+<span>768</span>
+<span>769</span>
+<span>770</span>
+<span>771</span>
+<span>772</span>
+<span>773</span>
+<span>774</span>
+<span>775</span>
+<span>776</span>
+<span>777</span>
+<span>778</span>
+<span>779</span>
+<span>780</span>
+<span>781</span>
+<span>782</span>
+<span>783</span>
+<span>784</span>
+<span>785</span>
+<span>786</span>
+<span>787</span>
+<span>788</span>
+<span>789</span>
+<span>790</span>
+<span>791</span>
+<span>792</span>
+<span>793</span>
+<span>794</span>
+<span>795</span>
+<span>796</span>
+<span>797</span>
+<span>798</span>
+<span>799</span>
+<span>800</span>
+<span>801</span>
+<span>802</span>
+<span>803</span>
+<span>804</span>
+<span>805</span>
+<span>806</span>
+<span>807</span>
+<span>808</span>
+<span>809</span>
+<span>810</span>
+<span>811</span>
+<span>812</span>
+<span>813</span>
+<span>814</span>
+<span>815</span>
+<span>816</span>
+<span>817</span>
+<span>818</span>
+<span>819</span>
+<span>820</span>
+<span>821</span>
+<span>822</span>
+<span>823</span>
+<span>824</span>
+<span>825</span>
+<span>826</span>
+<span>827</span>
+<span>828</span>
+<span>829</span>
+<span>830</span>
+<span>831</span>
+<span>832</span>
+<span>833</span>
+<span>834</span>
+<span>835</span>
+<span>836</span>
+<span>837</span>
+<span>838</span>
+<span>839</span>
+<span>840</span>
+<span>841</span>
+<span>842</span>
+<span>843</span>
+<span>844</span>
+<span>845</span>
+<span>846</span>
+<span>847</span>
+<span>848</span>
+<span>849</span>
+<span>850</span>
+<span>851</span>
+<span>852</span>
+<span>853</span>
+<span>854</span>
+<span>855</span>
+<span>856</span>
+<span>857</span>
+<span>858</span>
+<span>859</span>
+<span>860</span>
+<span>861</span>
+<span>862</span>
+<span>863</span>
+<span>864</span>
+<span>865</span>
+<span>866</span>
+<span>867</span>
+<span>868</span>
+<span>869</span>
+<span>870</span>
+<span>871</span>
+<span>872</span>
+<span>873</span>
+<span>874</span>
+<span>875</span>
+<span>876</span>
+<span>877</span>
+<span>878</span>
+<span>879</span>
+<span>880</span>
+<span>881</span>
+<span>882</span>
+<span>883</span>
+<span>884</span>
+<span>885</span>
+<span>886</span>
+<span>887</span>
+<span>888</span>
+<span>889</span>
+<span>890</span>
+<span>891</span>
+<span>892</span>
+<span>893</span>
+<span>894</span>
+<span>895</span>
+<span>896</span>
+<span>897</span>
+<span>898</span>
+<span>899</span>
+<span>900</span>
+<span>901</span>
+<span>902</span>
+<span>903</span>
+<span>904</span>
+<span>905</span>
+<span>906</span>
+<span>907</span>
+<span>908</span>
+<span>909</span>
+<span>910</span>
+<span>911</span>
+<span>912</span>
+<span>913</span>
+<span>914</span>
+<span>915</span>
+<span>916</span>
+<span>917</span>
+<span>918</span>
+<span>919</span>
+<span>920</span>
+<span>921</span>
+<span>922</span>
+<span>923</span>
+<span>924</span>
+<span>925</span>
+<span>926</span>
+<span>927</span>
+<span>928</span>
+<span>929</span>
+<span>930</span>
+<span>931</span>
+<span>932</span>
+<span>933</span>
+<span>934</span>
+<span>935</span>
+<span>936</span>
+<span>937</span>
+<span>938</span>
+<span>939</span>
+<span>940</span>
+<span>941</span>
+<span>942</span>
+<span>943</span>
+</pre></td><td id='code'><pre><span class='com'>/***********************************************************************\
+*                              lmserver.d                               *
+*                                                                       *
+*                       Windows API header module                       *
+*                                                                       *
+*                 Translated from MinGW Windows headers                 *
+*                                                                       *
+*                       Placed into public domain                       *
+\***********************************************************************/</span>
+<span class='kw2'>module</span> tango.os.windows.c.lmserver;
+
+<span class='com'>//version (build) { pragma(nolink); }</span>
+
+<span class='kw2'>import</span> tango.os.windows.c.winsvc;
+<span class='kw4'>private</span> <span class='kw2'>import</span> tango.os.windows.c.lmcons;
+<span class='kw4'>private</span> <span class='kw2'>import</span> tango.os.windows.c.windef;
+
+<span class='kw4'>struct</span> SERVER_INFO_100<span class='opr'>{</span>
+    DWORD    sv100_platform_id;
+    LPWSTR    sv100_name;
+<span class='opr'>}</span>
+<span class='kw2'>alias</span> SERVER_INFO_100<span class='opr'>*</span> PSERVER_INFO_100, LPSERVER_INFO_100;
+
+<span class='kw4'>struct</span> SERVER_INFO_101<span class='opr'>{</span>
+    DWORD    sv101_platform_id;
+    LPWSTR    sv101_name;
+    DWORD    sv101_version_major;
+    DWORD    sv101_version_minor;
+    DWORD    sv101_type;
+    LPWSTR    sv101_comment;
+<span class='opr'>}</span>
+<span class='kw2'>alias</span> SERVER_INFO_101<span class='opr'>*</span> PSERVER_INFO_101, LPSERVER_INFO_101;
+
+<span class='kw4'>struct</span> SERVER_INFO_102<span class='opr'>{</span>
+    DWORD    sv102_platform_id;
+    LPWSTR    sv102_name;
+    DWORD    sv102_version_major;
+    DWORD    sv102_version_minor;
+    DWORD    sv102_type;
+    LPWSTR    sv102_comment;
+    DWORD    sv102_users;
+    LONG    sv102_disc;
+    BOOL    sv102_hidden;
+    DWORD    sv102_announce;
+    DWORD    sv102_anndelta;
+    DWORD    sv102_licenses;
+    LPWSTR    sv102_userpath;
+<span class='opr'>}</span>
+<span class='kw2'>alias</span> SERVER_INFO_102<span class='opr'>*</span> PSERVER_INFO_102, LPSERVER_INFO_102;
+
+<span class='kw4'>struct</span> SERVER_INFO_402<span class='opr'>{</span>
+    DWORD    sv402_ulist_mtime;
+    DWORD    sv402_glist_mtime;
+    DWORD    sv402_alist_mtime;
+    LPWSTR    sv402_alerts;
+    DWORD    sv402_security;
+    DWORD    sv402_numadmin;
+    DWORD    sv402_lanmask;
+    LPWSTR    sv402_guestacct;
+    DWORD    sv402_chdevs;
+    DWORD    sv402_chdevq;
+    DWORD    sv402_chdevjobs;
+    DWORD    sv402_connections;
+    DWORD    sv402_shares;
+    DWORD    sv402_openfiles;
+    DWORD    sv402_sessopens;
+    DWORD    sv402_sessvcs;
+    DWORD    sv402_sessreqs;
+    DWORD    sv402_opensearch;
+    DWORD    sv402_activelocks;
+    DWORD    sv402_numreqbuf;
+    DWORD    sv402_sizreqbuf;
+    DWORD    sv402_numbigbuf;
+    DWORD    sv402_numfiletasks;
+    DWORD    sv402_alertsched;
+    DWORD    sv402_erroralert;
+    DWORD    sv402_logonalert;
+    DWORD    sv402_accessalert;
+    DWORD    sv402_diskalert;
+    DWORD    sv402_netioalert;
+    DWORD    sv402_maxauditsz;
+    LPWSTR    sv402_srvheuristics;
+<span class='opr'>}</span>
+<span class='kw2'>alias</span> SERVER_INFO_402<span class='opr'>*</span> PSERVER_INFO_402, LPSERVER_INFO_402;
+
+<span class='kw4'>struct</span> SERVER_INFO_403<span class='opr'>{</span>
+    DWORD    sv403_ulist_mtime;
+    DWORD    sv403_glist_mtime;
+    DWORD    sv403_alist_mtime;
+    LPWSTR    sv403_alerts;
+    DWORD    sv403_security;
+    DWORD    sv403_numadmin;
+    DWORD    sv403_lanmask;
+    LPWSTR    sv403_guestacct;
+    DWORD    sv403_chdevs;
+    DWORD    sv403_chdevq;
+    DWORD    sv403_chdevjobs;
+    DWORD    sv403_connections;
+    DWORD    sv403_shares;
+    DWORD    sv403_openfiles;
+    DWORD    sv403_sessopens;
+    DWORD    sv403_sessvcs;
+    DWORD    sv403_sessreqs;
+    DWORD    sv403_opensearch;
+    DWORD    sv403_activelocks;
+    DWORD    sv403_numreqbuf;
+    DWORD    sv403_sizreqbuf;
+    DWORD    sv403_numbigbuf;
+    DWORD    sv403_numfiletasks;
+    DWORD    sv403_alertsched;
+    DWORD    sv403_erroralert;
+    DWORD    sv403_logonalert;
+    DWORD    sv403_accessalert;
+    DWORD    sv403_diskalert;
+    DWORD    sv403_netioalert;
+    DWORD    sv403_maxauditsz;
+    LPWSTR    sv403_srvheuristics;
+    DWORD    sv403_auditedevents;
+    DWORD    sv403_autoprofile;
+    LPWSTR    sv403_autopath;
+<span class='opr'>}</span>
+<span class='kw2'>alias</span> SERVER_INFO_403<span class='opr'>*</span> PSERVER_INFO_403, LPSERVER_INFO_403;
+
+<span class='kw4'>struct</span> SERVER_INFO_502<span class='opr'>{</span>
+    DWORD    sv502_sessopens;
+    DWORD    sv502_sessvcs;
+    DWORD    sv502_opensearch;
+    DWORD    sv502_sizreqbuf;
+    DWORD    sv502_initworkitems;
+    DWORD    sv502_maxworkitems;
+    DWORD    sv502_rawworkitems;
+    DWORD    sv502_irpstacksize;
+    DWORD    sv502_maxrawbuflen;
+    DWORD    sv502_sessusers;
+    DWORD    sv502_sessconns;
+    DWORD    sv502_maxpagedmemoryusage;
+    DWORD    sv502_maxnonpagedmemoryusage;
+    BOOL    sv502_enablesoftcompat;
+    BOOL    sv502_enableforcedlogoff;
+    BOOL    sv502_timesource;
+    BOOL    sv502_acceptdownlevelapis;
+    BOOL    sv502_lmannounce;
+<span class='opr'>}</span>
+<span class='kw2'>alias</span> SERVER_INFO_502<span class='opr'>*</span> PSERVER_INFO_502, LPSERVER_INFO_502;
+
+<span class='kw4'>struct</span> SERVER_INFO_503<span class='opr'>{</span>
+    DWORD    sv503_sessopens;
+    DWORD    sv503_sessvcs;
+    DWORD    sv503_opensearch;
+    DWORD    sv503_sizreqbuf;
+    DWORD    sv503_initworkitems;
+    DWORD    sv503_maxworkitems;
+    DWORD    sv503_rawworkitems;
+    DWORD    sv503_irpstacksize;
+    DWORD    sv503_maxrawbuflen;
+    DWORD    sv503_sessusers;
+    DWORD    sv503_sessconns;
+    DWORD    sv503_maxpagedmemoryusage;
+    DWORD    sv503_maxnonpagedmemoryusage;
+    BOOL    sv503_enablesoftcompat;
+    BOOL    sv503_enableforcedlogoff;
+    BOOL    sv503_timesource;
+    BOOL    sv503_acceptdownlevelapis;
+    BOOL    sv503_lmannounce;
+    LPWSTR    sv503_domain;
+    DWORD    sv503_maxcopyreadlen;
+    DWORD    sv503_maxcopywritelen;
+    DWORD    sv503_minkeepsearch;
+    DWORD    sv503_maxkeepsearch;
+    DWORD    sv503_minkeepcomplsearch;
+    DWORD    sv503_maxkeepcomplsearch;
+    DWORD    sv503_threadcountadd;
+    DWORD    sv503_numblockthreads;
+    DWORD    sv503_scavtimeout;
+    DWORD    sv503_minrcvqueue;
+    DWORD    sv503_minfreeworkitems;
+    DWORD    sv503_xactmemsize;
+    DWORD    sv503_threadpriority;
+    DWORD    sv503_maxmpxct;
+    DWORD    sv503_oplockbreakwait;
+    DWORD    sv503_oplockbreakresponsewait;
+    BOOL    sv503_enableoplocks;
+    BOOL    sv503_enableoplockforceclose;
+    BOOL    sv503_enablefcbopens;
+    BOOL    sv503_enableraw;
+    BOOL    sv503_enablesharednetdrives;
+    DWORD    sv503_minfreeconnections;
+    DWORD    sv503_maxfreeconnections;
+<span class='opr'>}</span>
+<span class='kw2'>alias</span> SERVER_INFO_503<span class='opr'>*</span> PSERVER_INFO_503, LPSERVER_INFO_503;
+
+<span class='kw4'>struct</span> SERVER_INFO_599<span class='opr'>{</span>
+    DWORD    sv599_sessopens;
+    DWORD    sv599_sessvcs;
+    DWORD    sv599_opensearch;
+    DWORD    sv599_sizreqbuf;
+    DWORD    sv599_initworkitems;
+    DWORD    sv599_maxworkitems;
+    DWORD    sv599_rawworkitems;
+    DWORD    sv599_irpstacksize;
+    DWORD    sv599_maxrawbuflen;
+    DWORD    sv599_sessusers;
+    DWORD    sv599_sessconns;
+    DWORD    sv599_maxpagedmemoryusage;
+    DWORD    sv599_maxnonpagedmemoryusage;
+    BOOL    sv599_enablesoftcompat;
+    BOOL    sv599_enableforcedlogoff;
+    BOOL    sv599_timesource;
+    BOOL    sv599_acceptdownlevelapis;
+    BOOL    sv599_lmannounce;
+    LPWSTR    sv599_domain;
+    DWORD    sv599_maxcopyreadlen;
+    DWORD    sv599_maxcopywritelen;
+    DWORD    sv599_minkeepsearch;
+    DWORD    sv599_maxkeepsearch;
+    DWORD    sv599_minkeepcomplsearch;
+    DWORD    sv599_maxkeepcomplsearch;
+    DWORD    sv599_threadcountadd;
+    DWORD    sv599_numblockthreads;
+    DWORD    sv599_scavtimeout;
+    DWORD    sv599_minrcvqueue;
+    DWORD    sv599_minfreeworkitems;
+    DWORD    sv599_xactmemsize;
+    DWORD    sv599_threadpriority;
+    DWORD    sv599_maxmpxct;
+    DWORD    sv599_oplockbreakwait;
+    DWORD    sv599_oplockbreakresponsewait;
+    BOOL    sv599_enableoplocks;
+    BOOL    sv599_enableoplockforceclose;
+    BOOL    sv599_enablefcbopens;
+    BOOL    sv599_enableraw;
+    BOOL    sv599_enablesharednetdrives;
+    DWORD    sv599_minfreeconnections;
+    DWORD    sv599_maxfreeconnections;
+    DWORD    sv599_initsesstable;
+    DWORD    sv599_initconntable;
+    DWORD    sv599_initfiletable;
+    DWORD    sv599_initsearchtable;
+    DWORD    sv599_alertschedule;
+    DWORD    sv599_errorthreshold;
+    DWORD    sv599_networkerrorthreshold;
+    DWORD    sv599_diskspacethreshold;
+    DWORD    sv599_reserved;
+    DWORD    sv599_maxlinkdelay;
+    DWORD    sv599_minlinkthroughput;
+    DWORD    sv599_linkinfovalidtime;
+    DWORD    sv599_scavqosinfoupdatetime;
+    DWORD    sv599_maxworkitemidletime;
+<span class='opr'>}</span>
+<span class='kw2'>alias</span> SERVER_INFO_599<span class='opr'>*</span> PSERVER_INFO_599, LPSERVER_INFO_599;
+
+<span class='kw4'>struct</span> SERVER_INFO_598<span class='opr'>{</span>
+    DWORD    sv598_maxrawworkitems;
+    DWORD    sv598_maxthreadsperqueue;
+    DWORD    sv598_producttype;
+    DWORD    sv598_serversize;
+    DWORD    sv598_connectionlessautodisc;
+    DWORD    sv598_sharingviolationretries;
+    DWORD    sv598_sharingviolationdelay;
+    DWORD    sv598_maxglobalopensearch;
+    DWORD    sv598_removeduplicatesearches;
+    DWORD    sv598_lockviolationoffset;
+    DWORD    sv598_lockviolationdelay;
+    DWORD    sv598_mdlreadswitchover;
+    DWORD    sv598_cachedopenlimit;
+    DWORD    sv598_otherqueueaffinity;
+    BOOL    sv598_restrictnullsessaccess;
+    BOOL    sv598_enablewfw311directipx;
+    DWORD    sv598_queuesamplesecs;
+    DWORD    sv598_balancecount;
+    DWORD    sv598_preferredaffinity;
+    DWORD    sv598_maxfreerfcbs;
+    DWORD    sv598_maxfreemfcbs;
+    DWORD    sv598_maxfreelfcbs;
+    DWORD    sv598_maxfreepagedpoolchunks;
+    DWORD    sv598_minpagedpoolchunksize;
+    DWORD    sv598_maxpagedpoolchunksize;
+    BOOL    sv598_sendsfrompreferredprocessor;
+<span class='opr'>}</span>
+<span class='kw2'>alias</span> SERVER_INFO_598<span class='opr'>*</span> PSERVER_INFO_598, LPSERVER_INFO_598;
+
+<span class='kw4'>struct</span> SERVER_INFO_1005 <span class='opr'>{</span>
+    LPWSTR sv1005_comment;
+<span class='opr'>}</span>
+<span class='kw2'>alias</span> SERVER_INFO_1005<span class='opr'>*</span> PSERVER_INFO_1005, LPSERVER_INFO_1005;
+
+<span class='kw4'>struct</span> SERVER_INFO_1107 <span class='opr'>{</span>
+    DWORD sv1107_users;
+<span class='opr'>}</span>
+<span class='kw2'>alias</span> SERVER_INFO_1107<span class='opr'>*</span> PSERVER_INFO_1107, LPSERVER_INFO_1107;
+
+<span class='kw4'>struct</span> SERVER_INFO_1010 <span class='opr'>{</span>
+    LONG sv1010_disc;
+<span class='opr'>}</span>
+<span class='kw2'>alias</span> SERVER_INFO_1010<span class='opr'>*</span> PSERVER_INFO_1010, LPSERVER_INFO_1010;
+
+<span class='kw4'>struct</span> SERVER_INFO_1016 <span class='opr'>{</span>
+    BOOL sv1016_hidden;
+<span class='opr'>}</span>
+<span class='kw2'>alias</span> SERVER_INFO_1016<span class='opr'>*</span> PSERVER_INFO_1016, LPSERVER_INFO_1016;
+
+<span class='kw4'>struct</span> SERVER_INFO_1017 <span class='opr'>{</span>
+    DWORD sv1017_announce;
+<span class='opr'>}</span>
+<span class='kw2'>alias</span> SERVER_INFO_1017<span class='opr'>*</span> PSERVER_INFO_1017, LPSERVER_INFO_1017;
+
+<span class='kw4'>struct</span> SERVER_INFO_1018 <span class='opr'>{</span>
+    DWORD sv1018_anndelta;
+<span class='opr'>}</span>
+<span class='kw2'>alias</span> SERVER_INFO_1018<span class='opr'>*</span> PSERVER_INFO_1018, LPSERVER_INFO_1018;
+
+<span class='kw4'>struct</span> SERVER_INFO_1501 <span class='opr'>{</span>
+    DWORD sv1501_sessopens;
+<span class='opr'>}</span>
+<span class='kw2'>alias</span> SERVER_INFO_1501<span class='opr'>*</span> PSERVER_INFO_1501, LPSERVER_INFO_1501;
+
+<span class='kw4'>struct</span> SERVER_INFO_1502 <span class='opr'>{</span>
+    DWORD sv1502_sessvcs;
+<span class='opr'>}</span>
+<span class='kw2'>alias</span> SERVER_INFO_1502<span class='opr'>*</span> PSERVER_INFO_1502, LPSERVER_INFO_1502;
+
+<span class='kw4'>struct</span> SERVER_INFO_1503 <span class='opr'>{</span>
+    DWORD sv1503_opensearch;
+<span class='opr'>}</span>
+<span class='kw2'>alias</span> SERVER_INFO_1503<span class='opr'>*</span> PSERVER_INFO_1503, LPSERVER_INFO_1503;
+
+<span class='kw4'>struct</span> SERVER_INFO_1506 <span class='opr'>{</span>
+    DWORD sv1506_maxworkitems;
+<span class='opr'>}</span>
+<span class='kw2'>alias</span> SERVER_INFO_1506<span class='opr'>*</span> PSERVER_INFO_1506, LPSERVER_INFO_1506;
+
+<span class='kw4'>struct</span> SERVER_INFO_1509 <span class='opr'>{</span>
+    DWORD sv1509_maxrawbuflen;
+<span class='opr'>}</span>
+<span class='kw2'>alias</span> SERVER_INFO_1509<span class='opr'>*</span> PSERVER_INFO_1509, LPSERVER_INFO_1509;
+
+<span class='kw4'>struct</span> SERVER_INFO_1510 <span class='opr'>{</span>
+    DWORD sv1510_sessusers;
+<span class='opr'>}</span>
+<span class='kw2'>alias</span> SERVER_INFO_1510<span class='opr'>*</span> PSERVER_INFO_1510, LPSERVER_INFO_1510;
+
+<span class='kw4'>struct</span> SERVER_INFO_1511 <span class='opr'>{</span> 
+    DWORD sv1511_sessconns;
+<span class='opr'>}</span> <span class='kw2'>alias</span> SERVER_INFO_1511<span class='opr'>*</span> PSERVER_INFO_1511, LPSERVER_INFO_1511;
+
+<span class='kw4'>struct</span> SERVER_INFO_1512 <span class='opr'>{</span>
+    DWORD sv1512_maxnonpagedmemoryusage;
+<span class='opr'>}</span>
+<span class='kw2'>alias</span> SERVER_INFO_1512<span class='opr'>*</span> PSERVER_INFO_1512, LPSERVER_INFO_1512;
+
+<span class='kw4'>struct</span> SERVER_INFO_1513 <span class='opr'>{</span>
+    DWORD sv1513_maxpagedmemoryusage;
+<span class='opr'>}</span>
+<span class='kw2'>alias</span> SERVER_INFO_1513<span class='opr'>*</span> PSERVER_INFO_1513, LPSERVER_INFO_1513;
+
+<span class='kw4'>struct</span> SERVER_INFO_1514 <span class='opr'>{</span>
+    BOOL sv1514_enablesoftcompat;
+<span class='opr'>}</span>
+<span class='kw2'>alias</span> SERVER_INFO_1514<span class='opr'>*</span> PSERVER_INFO_1514, LPSERVER_INFO_1514;
+
+<span class='kw4'>struct</span> SERVER_INFO_1515 <span class='opr'>{</span>
+    BOOL sv1515_enableforcedlogoff;
+<span class='opr'>}</span>
+<span class='kw2'>alias</span> SERVER_INFO_1515<span class='opr'>*</span> PSERVER_INFO_1515, LPSERVER_INFO_1515;
+
+<span class='kw4'>struct</span> SERVER_INFO_1516 <span class='opr'>{</span>
+    BOOL sv1516_timesource;
+<span class='opr'>}</span>
+<span class='kw2'>alias</span> SERVER_INFO_1516<span class='opr'>*</span> PSERVER_INFO_1516, LPSERVER_INFO_1516;
+
+<span class='kw4'>struct</span> SERVER_INFO_1518 <span class='opr'>{</span>
+    BOOL sv1518_lmannounce;
+<span class='opr'>}</span>
+<span class='kw2'>alias</span> SERVER_INFO_1518<span class='opr'>*</span> PSERVER_INFO_1518, LPSERVER_INFO_1518;
+
+<span class='kw4'>struct</span> SERVER_INFO_1520 <span class='opr'>{</span>
+    DWORD sv1520_maxcopyreadlen;
+<span class='opr'>}</span>
+<span class='kw2'>alias</span> SERVER_INFO_1520<span class='opr'>*</span> PSERVER_INFO_1520, LPSERVER_INFO_1520;
+
+<span class='kw4'>struct</span> SERVER_INFO_1521 <span class='opr'>{</span>
+    DWORD sv1521_maxcopywritelen;
+<span class='opr'>}</span>
+<span class='kw2'>alias</span> SERVER_INFO_1521<span class='opr'>*</span> PSERVER_INFO_1521, LPSERVER_INFO_1521;
+
+<span class='kw4'>struct</span> SERVER_INFO_1522 <span class='opr'>{</span>
+    DWORD sv1522_minkeepsearch;
+<span class='opr'>}</span>
+<span class='kw2'>alias</span> SERVER_INFO_1522<span class='opr'>*</span> PSERVER_INFO_1522, LPSERVER_INFO_1522;
+
+<span class='kw4'>struct</span> SERVER_INFO_1523 <span class='opr'>{</span>
+    DWORD sv1523_maxkeepsearch;
+<span class='opr'>}</span>
+<span class='kw2'>alias</span> SERVER_INFO_1523<span class='opr'>*</span> PSERVER_INFO_1523, LPSERVER_INFO_1523;
+
+<span class='kw4'>struct</span> SERVER_INFO_1524 <span class='opr'>{</span>
+    DWORD sv1524_minkeepcomplsearch;
+<span class='opr'>}</span>
+<span class='kw2'>alias</span> SERVER_INFO_1524<span class='opr'>*</span> PSERVER_INFO_1524, LPSERVER_INFO_1524;
+
+<span class='kw4'>struct</span> SERVER_INFO_1525 <span class='opr'>{</span>
+    DWORD sv1525_maxkeepcomplsearch;
+<span class='opr'>}</span>
+<span class='kw2'>alias</span> SERVER_INFO_1525<span class='opr'>*</span> PSERVER_INFO_1525, LPSERVER_INFO_1525;
+
+<span class='kw4'>struct</span> SERVER_INFO_1528 <span class='opr'>{</span>
+    DWORD sv1528_scavtimeout;
+<span class='opr'>}</span>
+<span class='kw2'>alias</span> SERVER_INFO_1528<span class='opr'>*</span> PSERVER_INFO_1528, LPSERVER_INFO_1528;
+
+<span class='kw4'>struct</span> SERVER_INFO_1529 <span class='opr'>{</span>
+    DWORD sv1529_minrcvqueue;
+<span class='opr'>}</span>
+<span class='kw2'>alias</span> SERVER_INFO_1529<span class='opr'>*</span> PSERVER_INFO_1529, LPSERVER_INFO_1529;
+
+<span class='kw4'>struct</span> SERVER_INFO_1530 <span class='opr'>{</span>
+    DWORD sv1530_minfreeworkitems;
+<span class='opr'>}</span>
+<span class='kw2'>alias</span> SERVER_INFO_1530<span class='opr'>*</span> PSERVER_INFO_1530, LPSERVER_INFO_1530;
+
+<span class='kw4'>struct</span> SERVER_INFO_1533 <span class='opr'>{</span>
+    DWORD sv1533_maxmpxct;
+<span class='opr'>}</span>
+<span class='kw2'>alias</span> SERVER_INFO_1533<span class='opr'>*</span> PSERVER_INFO_1533, LPSERVER_INFO_1533;
+
+<span class='kw4'>struct</span> SERVER_INFO_1534 <span class='opr'>{</span>
+    DWORD sv1534_oplockbreakwait;
+<span class='opr'>}</span>
+<span class='kw2'>alias</span> SERVER_INFO_1534<span class='opr'>*</span> PSERVER_INFO_1534, LPSERVER_INFO_1534;
+
+<span class='kw4'>struct</span> SERVER_INFO_1535 <span class='opr'>{</span>
+    DWORD sv1535_oplockbreakresponsewait;
+<span class='opr'>}</span>
+<span class='kw2'>alias</span> SERVER_INFO_1535<span class='opr'>*</span> PSERVER_INFO_1535, LPSERVER_INFO_1535;
+
+<span class='kw4'>struct</span> SERVER_INFO_1536 <span class='opr'>{</span>
+    BOOL sv1536_enableoplocks;
+<span class='opr'>}</span>
+<span class='kw2'>alias</span> SERVER_INFO_1536<span class='opr'>*</span> PSERVER_INFO_1536, LPSERVER_INFO_1536;
+
+<span class='kw4'>struct</span> SERVER_INFO_1537 <span class='opr'>{</span>
+    BOOL sv1537_enableoplockforceclose;
+<span class='opr'>}</span>
+<span class='kw2'>alias</span> SERVER_INFO_1537<span class='opr'>*</span> PSERVER_INFO_1537, LPSERVER_INFO_1537;
+
+<span class='kw4'>struct</span> SERVER_INFO_1538 <span class='opr'>{</span>
+    BOOL sv1538_enablefcbopens;
+<span class='opr'>}</span>
+<span class='kw2'>alias</span> SERVER_INFO_1538<span class='opr'>*</span> PSERVER_INFO_1538, LPSERVER_INFO_1538;
+
+<span class='kw4'>struct</span> SERVER_INFO_1539 <span class='opr'>{</span>
+    BOOL sv1539_enableraw;
+<span class='opr'>}</span>
+<span class='kw2'>alias</span> SERVER_INFO_1539<span class='opr'>*</span> PSERVER_INFO_1539, LPSERVER_INFO_1539;
+
+<span class='kw4'>struct</span> SERVER_INFO_1540 <span class='opr'>{</span>
+    BOOL sv1540_enablesharednetdrives;
+<span class='opr'>}</span>
+<span class='kw2'>alias</span> SERVER_INFO_1540<span class='opr'>*</span> PSERVER_INFO_1540, LPSERVER_INFO_1540;
+
+<span class='kw4'>struct</span> SERVER_INFO_1541 <span class='opr'>{</span>
+    BOOL sv1541_minfreeconnections;
+<span class='opr'>}</span>
+<span class='kw2'>alias</span> SERVER_INFO_1541<span class='opr'>*</span> PSERVER_INFO_1541, LPSERVER_INFO_1541;
+
+<span class='kw4'>struct</span> SERVER_INFO_1542 <span class='opr'>{</span>
+    BOOL sv1542_maxfreeconnections;
+<span class='opr'>}</span>
+<span class='kw2'>alias</span> SERVER_INFO_1542<span class='opr'>*</span> PSERVER_INFO_1542, LPSERVER_INFO_1542;
+
+<span class='kw4'>struct</span> SERVER_INFO_1543 <span class='opr'>{</span>
+    DWORD sv1543_initsesstable;
+<span class='opr'>}</span>
+<span class='kw2'>alias</span> SERVER_INFO_1543<span class='opr'>*</span> PSERVER_INFO_1543, LPSERVER_INFO_1543;
+
+<span class='kw4'>struct</span> SERVER_INFO_1544 <span class='opr'>{</span>
+    DWORD sv1544_initconntable;
+<span class='opr'>}</span>
+<span class='kw2'>alias</span> SERVER_INFO_1544<span class='opr'>*</span> PSERVER_INFO_1544, LPSERVER_INFO_1544;
+
+<span class='kw4'>struct</span> SERVER_INFO_1545 <span class='opr'>{</span>
+    DWORD sv1545_initfiletable;
+<span class='opr'>}</span>
+<span class='kw2'>alias</span> SERVER_INFO_1545<span class='opr'>*</span> PSERVER_INFO_1545, LPSERVER_INFO_1545;
+
+<span class='kw4'>struct</span> SERVER_INFO_1546 <span class='opr'>{</span>
+    DWORD sv1546_initsearchtable;
+<span class='opr'>}</span>
+<span class='kw2'>alias</span> SERVER_INFO_1546<span class='opr'>*</span> PSERVER_INFO_1546, LPSERVER_INFO_1546;
+
+<span class='kw4'>struct</span> SERVER_INFO_1547 <span class='opr'>{</span>
+    DWORD sv1547_alertschedule;
+<span class='opr'>}</span>
+<span class='kw2'>alias</span> SERVER_INFO_1547<span class='opr'>*</span> PSERVER_INFO_1547, LPSERVER_INFO_1547;
+
+<span class='kw4'>struct</span> SERVER_INFO_1548 <span class='opr'>{</span>
+    DWORD sv1548_errorthreshold;
+<span class='opr'>}</span>
+<span class='kw2'>alias</span> SERVER_INFO_1548<span class='opr'>*</span> PSERVER_INFO_1548, LPSERVER_INFO_1548;
+
+<span class='kw4'>struct</span> SERVER_INFO_1549 <span class='opr'>{</span>
+    DWORD sv1549_networkerrorthreshold;
+<span class='opr'>}</span>
+<span class='kw2'>alias</span> SERVER_INFO_1549<span class='opr'>*</span> PSERVER_INFO_1549, LPSERVER_INFO_1549;
+
+<span class='kw4'>struct</span> SERVER_INFO_1550 <span class='opr'>{</span>
+    DWORD sv1550_diskspacethreshold;
+<span class='opr'>}</span>
+<span class='kw2'>alias</span> SERVER_INFO_1550<span class='opr'>*</span> PSERVER_INFO_1550, LPSERVER_INFO_1550;
+
+<span class='kw4'>struct</span> SERVER_INFO_1552 <span class='opr'>{</span>
+    DWORD sv1552_maxlinkdelay;
+<span class='opr'>}</span>
+<span class='kw2'>alias</span> SERVER_INFO_1552<span class='opr'>*</span> PSERVER_INFO_1552, LPSERVER_INFO_1552;
+
+<span class='kw4'>struct</span> SERVER_INFO_1553 <span class='opr'>{</span>
+    DWORD sv1553_minlinkthroughput;
+<span class='opr'>}</span>
+<span class='kw2'>alias</span> SERVER_INFO_1553<span class='opr'>*</span> PSERVER_INFO_1553, LPSERVER_INFO_1553;
+
+<span class='kw4'>struct</span> SERVER_INFO_1554 <span class='opr'>{</span>
+    DWORD sv1554_linkinfovalidtime;
+<span class='opr'>}</span>
+<span class='kw2'>alias</span> SERVER_INFO_1554<span class='opr'>*</span> PSERVER_INFO_1554, LPSERVER_INFO_1554;
+
+<span class='kw4'>struct</span> SERVER_INFO_1555 <span class='opr'>{</span>
+    DWORD sv1555_scavqosinfoupdatetime;
+<span class='opr'>}</span>
+<span class='kw2'>alias</span> SERVER_INFO_1555<span class='opr'>*</span> PSERVER_INFO_1555, LPSERVER_INFO_1555;
+
+<span class='kw4'>struct</span> SERVER_INFO_1556 <span class='opr'>{</span>
+    DWORD sv1556_maxworkitemidletime;
+<span class='opr'>}</span>
+<span class='kw2'>alias</span> SERVER_INFO_1556<span class='opr'>*</span> PSERVER_INFO_1556, LPSERVER_INFO_1556;
+
+<span class='kw4'>struct</span> SERVER_INFO_1557 <span class='opr'>{</span>
+    DWORD sv1557_maxrawworkitems;
+<span class='opr'>}</span>
+<span class='kw2'>alias</span> SERVER_INFO_1557<span class='opr'>*</span> PSERVER_INFO_1557, LPSERVER_INFO_1557;
+
+<span class='kw4'>struct</span> SERVER_INFO_1560 <span class='opr'>{</span>
+    DWORD sv1560_producttype;
+<span class='opr'>}</span>
+<span class='kw2'>alias</span> SERVER_INFO_1560<span class='opr'>*</span> PSERVER_INFO_1560, LPSERVER_INFO_1560;
+
+<span class='kw4'>struct</span> SERVER_INFO_1561 <span class='opr'>{</span>
+    DWORD sv1561_serversize;
+<span class='opr'>}</span>
+<span class='kw2'>alias</span> SERVER_INFO_1561<span class='opr'>*</span> PSERVER_INFO_1561, LPSERVER_INFO_1561;
+
+<span class='kw4'>struct</span> SERVER_INFO_1562 <span class='opr'>{</span>
+    DWORD sv1562_connectionlessautodisc;
+<span class='opr'>}</span>
+<span class='kw2'>alias</span> SERVER_INFO_1562<span class='opr'>*</span> PSERVER_INFO_1562, LPSERVER_INFO_1562;
+
+<span class='kw4'>struct</span> SERVER_INFO_1563 <span class='opr'>{</span>
+    DWORD sv1563_sharingviolationretries;
+<span class='opr'>}</span>
+<span class='kw2'>alias</span> SERVER_INFO_1563<span class='opr'>*</span> PSERVER_INFO_1563, LPSERVER_INFO_1563;
+
+<span class='kw4'>struct</span> SERVER_INFO_1564 <span class='opr'>{</span>
+    DWORD sv1564_sharingviolationdelay;
+<span class='opr'>}</span>
+<span class='kw2'>alias</span> SERVER_INFO_1564<span class='opr'>*</span> PSERVER_INFO_1564, LPSERVER_INFO_1564;
+
+<span class='kw4'>struct</span> SERVER_INFO_1565 <span class='opr'>{</span>
+    DWORD sv1565_maxglobalopensearch;
+<span class='opr'>}</span>
+<span class='kw2'>alias</span> SERVER_INFO_1565<span class='opr'>*</span> PSERVER_INFO_1565, LPSERVER_INFO_1565;
+
+<span class='kw4'>struct</span> SERVER_INFO_1566 <span class='opr'>{</span>
+    BOOL sv1566_removeduplicatesearches;
+<span class='opr'>}</span>
+<span class='kw2'>alias</span> SERVER_INFO_1566<span class='opr'>*</span> PSERVER_INFO_1566, LPSERVER_INFO_1566;
+
+<span class='kw4'>struct</span> SERVER_INFO_1567 <span class='opr'>{</span>
+    DWORD sv1567_lockviolationretries;
+<span class='opr'>}</span>
+<span class='kw2'>alias</span> SERVER_INFO_1567<span class='opr'>*</span> PSERVER_INFO_1567, LPSERVER_INFO_1567;
+
+<span class='kw4'>struct</span> SERVER_INFO_1568 <span class='opr'>{</span>
+    DWORD sv1568_lockviolationoffset;
+<span class='opr'>}</span>
+<span class='kw2'>alias</span> SERVER_INFO_1568<span class='opr'>*</span> PSERVER_INFO_1568, LPSERVER_INFO_1568;
+
+<span class='kw4'>struct</span> SERVER_INFO_1569 <span class='opr'>{</span>
+    DWORD sv1569_lockviolationdelay;
+<span class='opr'>}</span>
+<span class='kw2'>alias</span> SERVER_INFO_1569<span class='opr'>*</span> PSERVER_INFO_1569, LPSERVER_INFO_1569;
+
+<span class='kw4'>struct</span> SERVER_INFO_1570 <span class='opr'>{</span>
+    DWORD sv1570_mdlreadswitchover;
+<span class='opr'>}</span>
+<span class='kw2'>alias</span> SERVER_INFO_1570<span class='opr'>*</span> PSERVER_INFO_1570, LPSERVER_INFO_1570;
+
+<span class='kw4'>struct</span> SERVER_INFO_1571 <span class='opr'>{</span>
+    DWORD sv1571_cachedopenlimit;
+<span class='opr'>}</span>
+<span class='kw2'>alias</span> SERVER_INFO_1571<span class='opr'>*</span> PSERVER_INFO_1571, LPSERVER_INFO_1571;
+
+<span class='kw4'>struct</span> SERVER_INFO_1572 <span class='opr'>{</span>
+    DWORD sv1572_criticalthreads;
+<span class='opr'>}</span>
+<span class='kw2'>alias</span> SERVER_INFO_1572<span class='opr'>*</span> PSERVER_INFO_1572, LPSERVER_INFO_1572;
+
+<span class='kw4'>struct</span> SERVER_INFO_1573 <span class='opr'>{</span>
+    DWORD sv1573_restrictnullsessaccess;
+<span class='opr'>}</span>
+<span class='kw2'>alias</span> SERVER_INFO_1573<span class='opr'>*</span> PSERVER_INFO_1573, LPSERVER_INFO_1573;
+
+<span class='kw4'>struct</span> SERVER_INFO_1574 <span class='opr'>{</span>
+    DWORD sv1574_enablewfw311directipx;
+<span class='opr'>}</span>
+<span class='kw2'>alias</span> SERVER_INFO_1574<span class='opr'>*</span> PSERVER_INFO_1574, LPSERVER_INFO_1574;
+
+<span class='kw4'>struct</span> SERVER_INFO_1575 <span class='opr'>{</span>
+    DWORD sv1575_otherqueueaffinity;
+<span class='opr'>}</span>
+<span class='kw2'>alias</span> SERVER_INFO_1575<span class='opr'>*</span> PSERVER_INFO_1575, LPSERVER_INFO_1575;
+
+<span class='kw4'>struct</span> SERVER_INFO_1576 <span class='opr'>{</span>
+    DWORD sv1576_queuesamplesecs;
+<span class='opr'>}</span>
+<span class='kw2'>alias</span> SERVER_INFO_1576<span class='opr'>*</span> PSERVER_INFO_1576, LPSERVER_INFO_1576;
+
+<span class='kw4'>struct</span> SERVER_INFO_1577 <span class='opr'>{</span>
+    DWORD sv1577_balancecount;
+<span class='opr'>}</span>
+<span class='kw2'>alias</span> SERVER_INFO_1577<span class='opr'>*</span> PSERVER_INFO_1577, LPSERVER_INFO_1577;
+
+<span class='kw4'>struct</span> SERVER_INFO_1578 <span class='opr'>{</span>
+    DWORD sv1578_preferredaffinity;
+<span class='opr'>}</span>
+<span class='kw2'>alias</span> SERVER_INFO_1578<span class='opr'>*</span> PSERVER_INFO_1578, LPSERVER_INFO_1578;
+
+<span class='kw4'>struct</span> SERVER_INFO_1579 <span class='opr'>{</span>
+    DWORD sv1579_maxfreerfcbs;
+<span class='opr'>}</span>
+<span class='kw2'>alias</span> SERVER_INFO_1579<span class='opr'>*</span> PSERVER_INFO_1579, LPSERVER_INFO_1579;
+
+<span class='kw4'>struct</span> SERVER_INFO_1580 <span class='opr'>{</span>
+    DWORD sv1580_maxfreemfcbs;
+<span class='opr'>}</span>
+<span class='kw2'>alias</span> SERVER_INFO_1580<span class='opr'>*</span> PSERVER_INFO_1580, LPSERVER_INFO_1580;
+
+<span class='kw4'>struct</span> SERVER_INFO_1581 <span class='opr'>{</span>
+    DWORD sv1581_maxfreemlcbs;
+<span class='opr'>}</span>
+<span class='kw2'>alias</span> SERVER_INFO_1581<span class='opr'>*</span> PSERVER_INFO_1581, LPSERVER_INFO_1581;
+
+<span class='kw4'>struct</span> SERVER_INFO_1582 <span class='opr'>{</span>
+    DWORD sv1582_maxfreepagedpoolchunks;
+<span class='opr'>}</span>
+<span class='kw2'>alias</span> SERVER_INFO_1582<span class='opr'>*</span> PSERVER_INFO_1582, LPSERVER_INFO_1582;
+
+<span class='kw4'>struct</span> SERVER_INFO_1583 <span class='opr'>{</span>
+    DWORD sv1583_minpagedpoolchunksize;
+<span class='opr'>}</span>
+<span class='kw2'>alias</span> SERVER_INFO_1583<span class='opr'>*</span> PSERVER_INFO_1583, LPSERVER_INFO_1583;
+
+<span class='kw4'>struct</span> SERVER_INFO_1584 <span class='opr'>{</span>
+    DWORD sv1584_maxpagedpoolchunksize;
+<span class='opr'>}</span>
+<span class='kw2'>alias</span> SERVER_INFO_1584<span class='opr'>*</span> PSERVER_INFO_1584, LPSERVER_INFO_1584;
+
+<span class='kw4'>struct</span> SERVER_INFO_1585 <span class='opr'>{</span>
+    BOOL sv1585_sendsfrompreferredprocessor;
+<span class='opr'>}</span>
+<span class='kw2'>alias</span> SERVER_INFO_1585<span class='opr'>*</span> PSERVER_INFO_1585, LPSERVER_INFO_1585;
+
+<span class='kw4'>struct</span> SERVER_INFO_1586 <span class='opr'>{</span>
+    BOOL sv1586_maxthreadsperqueue;
+<span class='opr'>}</span>
+<span class='kw2'>alias</span> SERVER_INFO_1586<span class='opr'>*</span> PSERVER_INFO_1586, LPSERVER_INFO_1586;
+
+<span class='kw4'>struct</span> SERVER_TRANSPORT_INFO_0<span class='opr'>{</span>
+    DWORD svti0_numberofvcs;
+    LPWSTR    svti0_transportname;
+    PBYTE    svti0_transportaddress;
+    DWORD    svti0_transportaddresslength;
+    LPWSTR    svti0_networkaddress;
+<span class='opr'>}</span>
+<span class='kw2'>alias</span> SERVER_TRANSPORT_INFO_0<span class='opr'>*</span> PSERVER_TRANSPORT_INFO_0, LPSERVER_TRANSPORT_INFO_0;
+
+<span class='kw2'>extern</span> <span class='opr'>(</span>Windows<span class='opr'>)</span>:
+NET_API_STATUS NetServerEnum<span class='opr'>(</span>LPCWSTR,DWORD,PBYTE<span class='opr'>*</span>,DWORD,PDWORD,PDWORD,DWORD,LPCWSTR,PDWORD<span class='opr'>)</span>;
+NET_API_STATUS NetServerEnumEx<span class='opr'>(</span>LPCWSTR,DWORD,PBYTE<span class='opr'>*</span>,DWORD,PDWORD,PDWORD,DWORD,LPCWSTR,LPCWSTR<span class='opr'>)</span>;
+NET_API_STATUS NetServerGetInfo<span class='opr'>(</span>LPWSTR,DWORD,PBYTE<span class='opr'>*</span><span class='opr'>)</span>;
+NET_API_STATUS NetServerSetInfo<span class='opr'>(</span>LPWSTR,DWORD,PBYTE,PDWORD<span class='opr'>)</span>;
+NET_API_STATUS NetServerSetInfoCommandLine<span class='opr'>(</span>WORD,LPWSTR<span class='opr'>*</span><span class='opr'>)</span>;
+NET_API_STATUS NetServerDiskEnum<span class='opr'>(</span>LPWSTR,DWORD,PBYTE<span class='opr'>*</span>,DWORD,PDWORD,PDWORD,PDWORD<span class='opr'>)</span>;
+NET_API_STATUS NetServerComputerNameAdd<span class='opr'>(</span>LPWSTR,LPWSTR,LPWSTR<span class='opr'>)</span>;
+NET_API_STATUS NetServerComputerNameDel<span class='opr'>(</span>LPWSTR,LPWSTR<span class='opr'>)</span>;
+NET_API_STATUS NetServerTransportAdd<span class='opr'>(</span>LPWSTR,DWORD,PBYTE<span class='opr'>)</span>;
+NET_API_STATUS NetServerTransportAddEx<span class='opr'>(</span>LPWSTR,DWORD,PBYTE<span class='opr'>)</span>;
+NET_API_STATUS NetServerTransportDel<span class='opr'>(</span>LPWSTR,DWORD,PBYTE<span class='opr'>)</span>;
+NET_API_STATUS NetServerTransportEnum<span class='opr'>(</span>LPWSTR,DWORD,PBYTE<span class='opr'>*</span>,DWORD,PDWORD,PDWORD,PDWORD<span class='opr'>)</span>;
+BOOL SetServiceBits<span class='opr'>(</span>SERVICE_STATUS_HANDLE,DWORD,BOOL,BOOL<span class='opr'>)</span>;
+
+<span class='kw4'>const</span> SVI1_NUM_ELEMENTS<span class='opr'>=</span><span class='nbr'>5</span>;
+<span class='kw4'>const</span> SVI2_NUM_ELEMENTS<span class='opr'>=</span><span class='nbr'>40</span>;
+<span class='kw4'>const</span> SVI3_NUM_ELEMENTS<span class='opr'>=</span><span class='nbr'>44</span>;
+<span class='kw4'>const</span> SV_MAX_CMD_LEN<span class='opr'>=</span>PATHLEN;
+<span class='kw4'>const</span> SW_AUTOPROF_LOAD_MASK<span class='opr'>=</span><span class='nbr'>1</span>;
+<span class='kw4'>const</span> SW_AUTOPROF_SAVE_MASK<span class='opr'>=</span><span class='nbr'>2</span>;
+<span class='kw4'>const</span> SV_MAX_SRV_HEUR_LEN<span class='opr'>=</span><span class='nbr'>32</span>;
+<span class='kw4'>const</span> SV_USERS_PER_LICENSE<span class='opr'>=</span><span class='nbr'>5</span>;
+<span class='kw4'>const</span> SV_PLATFORM_ID_OS2<span class='opr'>=</span><span class='nbr'>400</span>;
+<span class='kw4'>const</span> SV_PLATFORM_ID_NT<span class='opr'>=</span><span class='nbr'>500</span>;
+<span class='kw4'>const</span> MAJOR_VERSION_MASK<span class='opr'>=</span><span class='nbr'>15</span>;
+<span class='kw4'>const</span> SV_TYPE_WORKSTATION<span class='opr'>=</span><span class='nbr'>1</span>;
+<span class='kw4'>const</span> SV_TYPE_SERVER<span class='opr'>=</span><span class='nbr'>2</span>;
+<span class='kw4'>const</span> SV_TYPE_SQLSERVER<span class='opr'>=</span><span class='nbr'>4</span>;
+<span class='kw4'>const</span> SV_TYPE_DOMAIN_CTRL<span class='opr'>=</span><span class='nbr'>8</span>;
+<span class='kw4'>const</span> SV_TYPE_DOMAIN_BAKCTRL<span class='opr'>=</span><span class='nbr'>16</span>;
+<span class='kw4'>const</span> SV_TYPE_TIME_SOURCE<span class='opr'>=</span><span class='nbr'>32</span>;
+<span class='kw4'>const</span> SV_TYPE_AFP<span class='opr'>=</span><span class='nbr'>64</span>;
+<span class='kw4'>const</span> SV_TYPE_NOVELL<span class='opr'>=</span><span class='nbr'>128</span>;
+<span class='kw4'>const</span> SV_TYPE_DOMAIN_MEMBER<span class='opr'>=</span><span class='nbr'>256</span>;
+<span class='kw4'>const</span> SV_TYPE_PRINTQ_SERVER<span class='opr'>=</span><span class='nbr'>512</span>;
+<span class='kw4'>const</span> SV_TYPE_DIALIN_SERVER<span class='opr'>=</span><span class='nbr'>1024</span>;
+<span class='kw4'>const</span> SV_TYPE_XENIX_SERVER<span class='opr'>=</span><span class='nbr'>2048</span>;
+<span class='kw4'>const</span> SV_TYPE_SERVER_UNIX<span class='opr'>=</span>SV_TYPE_XENIX_SERVER;
+<span class='kw4'>const</span> SV_TYPE_NT<span class='opr'>=</span><span class='nbr'>4096</span>;
+<span class='kw4'>const</span> SV_TYPE_WFW<span class='opr'>=</span><span class='nbr'>8192</span>;
+<span class='kw4'>const</span> SV_TYPE_SERVER_MFPN<span class='opr'>=</span><span class='nbr'>16384</span>;
+<span class='kw4'>const</span> SV_TYPE_SERVER_NT<span class='opr'>=</span><span class='nbr'>32768</span>;
+<span class='kw4'>const</span> SV_TYPE_POTENTIAL_BROWSER<span class='opr'>=</span><span class='nbr'>65536</span>;
+<span class='kw4'>const</span> SV_TYPE_BACKUP_BROWSER<span class='opr'>=</span><span class='nbr'>0</span>x20000;
+<span class='kw4'>const</span> SV_TYPE_MASTER_BROWSER<span class='opr'>=</span><span class='nbr'>0</span>x40000;
+<span class='kw4'>const</span> SV_TYPE_DOMAIN_MASTER<span class='opr'>=</span><span class='nbr'>0</span>x80000;
+<span class='kw4'>const</span> SV_TYPE_SERVER_OSF<span class='opr'>=</span><span class='nbr'>0</span>x100000;
+<span class='kw4'>const</span> SV_TYPE_SERVER_VMS<span class='opr'>=</span><span class='nbr'>0</span>x200000;
+<span class='kw4'>const</span> SV_TYPE_WINDOWS<span class='opr'>=</span><span class='nbr'>0</span>x400000;
+<span class='kw4'>const</span> SV_TYPE_ALTERNATE_XPORT<span class='opr'>=</span><span class='nbr'>0</span>x20000000;
+<span class='kw4'>const</span> SV_TYPE_LOCAL_LIST_ONLY<span class='opr'>=</span><span class='nbr'>0</span>x40000000;
+<span class='kw4'>const</span> SV_TYPE_DOMAIN_ENUM<span class='opr'>=</span><span class='nbr'>0</span>x80000000;
+<span class='kw4'>const</span> SV_TYPE_ALL<span class='opr'>=</span><span class='nbr'>0</span>xFFFFFFFF;
+<span class='kw4'>const</span> SV_NODISC<span class='opr'>=</span><span class='opr'>(</span><span class='opr'>-</span><span class='nbr'>1</span><span class='opr'>)</span>;
+<span class='kw4'>const</span> SV_USERSECURITY<span class='opr'>=</span><span class='nbr'>1</span>;
+<span class='kw4'>const</span> SV_SHARESECURITY<span class='opr'>=</span><span class='nbr'>0</span>;
+<span class='kw4'>const</span> SV_HIDDEN<span class='opr'>=</span><span class='nbr'>1</span>;
+<span class='kw4'>const</span> SV_VISIBLE<span class='opr'>=</span><span class='nbr'>0</span>;
+<span class='kw4'>const</span> SV_PLATFORM_ID_PARMNUM<span class='opr'>=</span><span class='nbr'>101</span>;
+<span class='kw4'>const</span> SV_NAME_PARMNUM<span class='opr'>=</span><span class='nbr'>102</span>;
+<span class='kw4'>const</span> SV_VERSION_MAJOR_PARMNUM<span class='opr'>=</span><span class='nbr'>103</span>;
+<span class='kw4'>const</span> SV_VERSION_MINOR_PARMNUM<span class='opr'>=</span><span class='nbr'>104</span>;
+<span class='kw4'>const</span> SV_TYPE_PARMNUM<span class='opr'>=</span><span class='nbr'>105</span>;
+<span class='kw4'>const</span> SV_COMMENT_PARMNUM<span class='opr'>=</span><span class='nbr'>5</span>;
+<span class='kw4'>const</span> SV_USERS_PARMNUM<span class='opr'>=</span><span class='nbr'>107</span>;
+<span class='kw4'>const</span> SV_DISC_PARMNUM<span class='opr'>=</span><span class='nbr'>10</span>;
+<span class='kw4'>const</span> SV_HIDDEN_PARMNUM<span class='opr'>=</span><span class='nbr'>16</span>;
+<span class='kw4'>const</span> SV_ANNOUNCE_PARMNUM<span class='opr'>=</span><span class='nbr'>17</span>;
+<span class='kw4'>const</span> SV_ANNDELTA_PARMNUM<span class='opr'>=</span><span class='nbr'>18</span>;
+<span class='kw4'>const</span> SV_USERPATH_PARMNUM<span class='opr'>=</span><span class='nbr'>112</span>;
+<span class='kw4'>const</span> SV_ULIST_MTIME_PARMNUM<span class='opr'>=</span><span class='nbr'>401</span>;
+<span class='kw4'>const</span> SV_GLIST_MTIME_PARMNUM<span class='opr'>=</span><span class='nbr'>402</span>;
+<span class='kw4'>const</span> SV_ALIST_MTIME_PARMNUM<span class='opr'>=</span><span class='nbr'>403</span>;
+<span class='kw4'>const</span> SV_ALERTS_PARMNUM<span class='opr'>=</span><span class='nbr'>11</span>;
+<span class='kw4'>const</span> SV_SECURITY_PARMNUM<span class='opr'>=</span><span class='nbr'>405</span>;
+<span class='kw4'>const</span> SV_NUMADMIN_PARMNUM<span class='opr'>=</span><span class='nbr'>406</span>;
+<span class='kw4'>const</span> SV_LANMASK_PARMNUM<span class='opr'>=</span><span class='nbr'>407</span>;
+<span class='kw4'>const</span> SV_GUESTACC_PARMNUM<span class='opr'>=</span><span class='nbr'>408</span>;
+<span class='kw4'>const</span> SV_CHDEVQ_PARMNUM<span class='opr'>=</span><span class='nbr'>410</span>;
+<span class='kw4'>const</span> SV_CHDEVJOBS_PARMNUM<span class='opr'>=</span><span class='nbr'>411</span>;
+<span class='kw4'>const</span> SV_CONNECTIONS_PARMNUM<span class='opr'>=</span><span class='nbr'>412</span>;
+<span class='kw4'>const</span> SV_SHARES_PARMNUM<span class='opr'>=</span><span class='nbr'>413</span>;
+<span class='kw4'>const</span> SV_OPENFILES_PARMNUM<span class='opr'>=</span><span class='nbr'>414</span>;
+<span class='kw4'>const</span> SV_SESSREQS_PARMNUM<span class='opr'>=</span><span class='nbr'>417</span>;
+<span class='kw4'>const</span> SV_ACTIVELOCKS_PARMNUM<span class='opr'>=</span><span class='nbr'>419</span>;
+<span class='kw4'>const</span> SV_NUMREQBUF_PARMNUM<span class='opr'>=</span><span class='nbr'>420</span>;
+<span class='kw4'>const</span> SV_NUMBIGBUF_PARMNUM<span class='opr'>=</span><span class='nbr'>422</span>;
+<span class='kw4'>const</span> SV_NUMFILETASKS_PARMNUM<span class='opr'>=</span><span class='nbr'>423</span>;
+<span class='kw4'>const</span> SV_ALERTSCHED_PARMNUM<span class='opr'>=</span><span class='nbr'>37</span>;
+<span class='kw4'>const</span> SV_ERRORALERT_PARMNUM<span class='opr'>=</span><span class='nbr'>38</span>;
+<span class='kw4'>const</span> SV_LOGONALERT_PARMNUM<span class='opr'>=</span><span class='nbr'>39</span>;
+<span class='kw4'>const</span> SV_ACCESSALERT_PARMNUM<span class='opr'>=</span><span class='nbr'>40</span>;
+<span class='kw4'>const</span> SV_DISKALERT_PARMNUM<span class='opr'>=</span><span class='nbr'>41</span>;
+<span class='kw4'>const</span> SV_NETIOALERT_PARMNUM<span class='opr'>=</span><span class='nbr'>42</span>;
+<span class='kw4'>const</span> SV_MAXAUDITSZ_PARMNUM<span class='opr'>=</span><span class='nbr'>43</span>;
+<span class='kw4'>const</span> SV_SRVHEURISTICS_PARMNUM<span class='opr'>=</span><span class='nbr'>431</span>;
+<span class='kw4'>const</span> SV_SESSOPENS_PARMNUM<span class='opr'>=</span><span class='nbr'>501</span>;
+<span class='kw4'>const</span> SV_SESSVCS_PARMNUM<span class='opr'>=</span><span class='nbr'>502</span>;
+<span class='kw4'>const</span> SV_OPENSEARCH_PARMNUM<span class='opr'>=</span><span class='nbr'>503</span>;
+<span class='kw4'>const</span> SV_SIZREQBUF_PARMNUM<span class='opr'>=</span><span class='nbr'>504</span>;
+<span class='kw4'>const</span> SV_INITWORKITEMS_PARMNUM<span class='opr'>=</span><span class='nbr'>505</span>;
+<span class='kw4'>const</span> SV_MAXWORKITEMS_PARMNUM<span class='opr'>=</span><span class='nbr'>506</span>;
+<span class='kw4'>const</span> SV_RAWWORKITEMS_PARMNUM<span class='opr'>=</span><span class='nbr'>507</span>;
+<span class='kw4'>const</span> SV_IRPSTACKSIZE_PARMNUM<span class='opr'>=</span><span class='nbr'>508</span>;
+<span class='kw4'>const</span> SV_MAXRAWBUFLEN_PARMNUM<span class='opr'>=</span><span class='nbr'>509</span>;
+<span class='kw4'>const</span> SV_SESSUSERS_PARMNUM<span class='opr'>=</span><span class='nbr'>510</span>;
+<span class='kw4'>const</span> SV_SESSCONNS_PARMNUM<span class='opr'>=</span><span class='nbr'>511</span>;
+<span class='kw4'>const</span> SV_MAXNONPAGEDMEMORYUSAGE_PARMNUM<span class='opr'>=</span><span class='nbr'>512</span>;
+<span class='kw4'>const</span> SV_MAXPAGEDMEMORYUSAGE_PARMNUM<span class='opr'>=</span><span class='nbr'>513</span>;
+<span class='kw4'>const</span> SV_ENABLESOFTCOMPAT_PARMNUM<span class='opr'>=</span><span class='nbr'>514</span>;
+<span class='kw4'>const</span> SV_ENABLEFORCEDLOGOFF_PARMNUM<span class='opr'>=</span><span class='nbr'>515</span>;
+<span class='kw4'>const</span> SV_TIMESOURCE_PARMNUM<span class='opr'>=</span><span class='nbr'>516</span>;
+<span class='kw4'>const</span> SV_ACCEPTDOWNLEVELAPIS_PARMNUM<span class='opr'>=</span><span class='nbr'>517</span>;
+<span class='kw4'>const</span> SV_LMANNOUNCE_PARMNUM<span class='opr'>=</span><span class='nbr'>518</span>;
+<span class='kw4'>const</span> SV_DOMAIN_PARMNUM<span class='opr'>=</span><span class='nbr'>519</span>;
+<span class='kw4'>const</span> SV_MAXCOPYREADLEN_PARMNUM<span class='opr'>=</span><span class='nbr'>520</span>;
+<span class='kw4'>const</span> SV_MAXCOPYWRITELEN_PARMNUM<span class='opr'>=</span><span class='nbr'>521</span>;
+<span class='kw4'>const</span> SV_MINKEEPSEARCH_PARMNUM<span class='opr'>=</span><span class='nbr'>522</span>;
+<span class='kw4'>const</span> SV_MAXKEEPSEARCH_PARMNUM<span class='opr'>=</span><span class='nbr'>523</span>;
+<span class='kw4'>const</span> SV_MINKEEPCOMPLSEARCH_PARMNUM<span class='opr'>=</span><span class='nbr'>524</span>;
+<span class='kw4'>const</span> SV_MAXKEEPCOMPLSEARCH_PARMNUM<span class='opr'>=</span><span class='nbr'>525</span>;
+<span class='kw4'>const</span> SV_THREADCOUNTADD_PARMNUM<span class='opr'>=</span><span class='nbr'>526</span>;
+<span class='kw4'>const</span> SV_NUMBLOCKTHREADS_PARMNUM<span class='opr'>=</span><span class='nbr'>527</span>;
+<span class='kw4'>const</span> SV_SCAVTIMEOUT_PARMNUM<span class='opr'>=</span><span class='nbr'>528</span>;
+<span class='kw4'>const</span> SV_MINRCVQUEUE_PARMNUM<span class='opr'>=</span><span class='nbr'>529</span>;
+<span class='kw4'>const</span> SV_MINFREEWORKITEMS_PARMNUM<span class='opr'>=</span><span class='nbr'>530</span>;
+<span class='kw4'>const</span> SV_XACTMEMSIZE_PARMNUM<span class='opr'>=</span><span class='nbr'>531</span>;
+<span class='kw4'>const</span> SV_THREADPRIORITY_PARMNUM<span class='opr'>=</span><span class='nbr'>532</span>;
+<span class='kw4'>const</span> SV_MAXMPXCT_PARMNUM<span class='opr'>=</span><span class='nbr'>533</span>;
+<span class='kw4'>const</span> SV_OPLOCKBREAKWAIT_PARMNUM<span class='opr'>=</span><span class='nbr'>534</span>;
+<span class='kw4'>const</span> SV_OPLOCKBREAKRESPONSEWAIT_PARMNUM<span class='opr'>=</span><span class='nbr'>535</span>;
+<span class='kw4'>const</span> SV_ENABLEOPLOCKS_PARMNUM<span class='opr'>=</span><span class='nbr'>536</span>;
+<span class='kw4'>const</span> SV_ENABLEOPLOCKFORCECLOSE_PARMNUM<span class='opr'>=</span><span class='nbr'>537</span>;
+<span class='kw4'>const</span> SV_ENABLEFCBOPENS_PARMNUM<span class='opr'>=</span><span class='nbr'>538</span>;
+<span class='kw4'>const</span> SV_ENABLERAW_PARMNUM<span class='opr'>=</span><span class='nbr'>539</span>;
+<span class='kw4'>const</span> SV_ENABLESHAREDNETDRIVES_PARMNUM<span class='opr'>=</span><span class='nbr'>540</span>;
+<span class='kw4'>const</span> SV_MINFREECONNECTIONS_PARMNUM<span class='opr'>=</span><span class='nbr'>541</span>;
+<span class='kw4'>const</span> SV_MAXFREECONNECTIONS_PARMNUM<span class='opr'>=</span><span class='nbr'>542</span>;
+<span class='kw4'>const</span> SV_INITSESSTABLE_PARMNUM<span class='opr'>=</span><span class='nbr'>543</span>;
+<span class='kw4'>const</span> SV_INITCONNTABLE_PARMNUM<span class='opr'>=</span><span class='nbr'>544</span>;
+<span class='kw4'>const</span> SV_INITFILETABLE_PARMNUM<span class='opr'>=</span><span class='nbr'>545</span>;
+<span class='kw4'>const</span> SV_INITSEARCHTABLE_PARMNUM<span class='opr'>=</span><span class='nbr'>546</span>;
+<span class='kw4'>const</span> SV_ALERTSCHEDULE_PARMNUM<span class='opr'>=</span><span class='nbr'>547</span>;
+<span class='kw4'>const</span> SV_ERRORTHRESHOLD_PARMNUM<span class='opr'>=</span><span class='nbr'>548</span>;
+<span class='kw4'>const</span> SV_NETWORKERRORTHRESHOLD_PARMNUM<span class='opr'>=</span><span class='nbr'>549</span>;
+<span class='kw4'>const</span> SV_DISKSPACETHRESHOLD_PARMNUM<span class='opr'>=</span><span class='nbr'>550</span>;
+<span class='kw4'>const</span> SV_MAXLINKDELAY_PARMNUM<span class='opr'>=</span><span class='nbr'>552</span>;
+<span class='kw4'>const</span> SV_MINLINKTHROUGHPUT_PARMNUM<span class='opr'>=</span><span class='nbr'>553</span>;
+<span class='kw4'>const</span> SV_LINKINFOVALIDTIME_PARMNUM<span class='opr'>=</span><span class='nbr'>554</span>;
+<span class='kw4'>const</span> SV_SCAVQOSINFOUPDATETIME_PARMNUM<span class='opr'>=</span><span class='nbr'>555</span>;
+<span class='kw4'>const</span> SV_MAXWORKITEMIDLETIME_PARMNUM<span class='opr'>=</span><span class='nbr'>556</span>;
+<span class='kw4'>const</span> SV_MAXRAWWORKITEMS_PARMNUM<span class='opr'>=</span><span class='nbr'>557</span>;
+<span class='kw4'>const</span> SV_PRODUCTTYPE_PARMNUM<span class='opr'>=</span><span class='nbr'>560</span>;
+<span class='kw4'>const</span> SV_SERVERSIZE_PARMNUM<span class='opr'>=</span><span class='nbr'>561</span>;
+<span class='kw4'>const</span> SV_CONNECTIONLESSAUTODISC_PARMNUM<span class='opr'>=</span><span class='nbr'>562</span>;
+<span class='kw4'>const</span> SV_SHARINGVIOLATIONRETRIES_PARMNUM<span class='opr'>=</span><span class='nbr'>563</span>;
+<span class='kw4'>const</span> SV_SHARINGVIOLATIONDELAY_PARMNUM<span class='opr'>=</span><span class='nbr'>564</span>;
+<span class='kw4'>const</span> SV_MAXGLOBALOPENSEARCH_PARMNUM<span class='opr'>=</span><span class='nbr'>565</span>;
+<span class='kw4'>const</span> SV_REMOVEDUPLICATESEARCHES_PARMNUM<span class='opr'>=</span><span class='nbr'>566</span>;
+<span class='kw4'>const</span> SV_LOCKVIOLATIONRETRIES_PARMNUM<span class='opr'>=</span><span class='nbr'>567</span>;
+<span class='kw4'>const</span> SV_LOCKVIOLATIONOFFSET_PARMNUM<span class='opr'>=</span><span class='nbr'>568</span>;
+<span class='kw4'>const</span> SV_LOCKVIOLATIONDELAY_PARMNUM<span class='opr'>=</span><span class='nbr'>569</span>;
+<span class='kw4'>const</span> SV_MDLREADSWITCHOVER_PARMNUM<span class='opr'>=</span><span class='nbr'>570</span>;
+<span class='kw4'>const</span> SV_CACHEDOPENLIMIT_PARMNUM<span class='opr'>=</span><span class='nbr'>571</span>;
+<span class='kw4'>const</span> SV_CRITICALTHREADS_PARMNUM<span class='opr'>=</span><span class='nbr'>572</span>;
+<span class='kw4'>const</span> SV_RESTRICTNULLSESSACCESS_PARMNUM<span class='opr'>=</span><span class='nbr'>573</span>;
+<span class='kw4'>const</span> SV_ENABLEWFW311DIRECTIPX_PARMNUM<span class='opr'>=</span><span class='nbr'>574</span>;
+<span class='kw4'>const</span> SV_OTHERQUEUEAFFINITY_PARMNUM<span class='opr'>=</span><span class='nbr'>575</span>;
+<span class='kw4'>const</span> SV_QUEUESAMPLESECS_PARMNUM<span class='opr'>=</span><span class='nbr'>576</span>;
+<span class='kw4'>const</span> SV_BALANCECOUNT_PARMNUM<span class='opr'>=</span><span class='nbr'>577</span>;
+<span class='kw4'>const</span> SV_PREFERREDAFFINITY_PARMNUM<span class='opr'>=</span><span class='nbr'>578</span>;
+<span class='kw4'>const</span> SV_MAXFREERFCBS_PARMNUM<span class='opr'>=</span><span class='nbr'>579</span>;
+<span class='kw4'>const</span> SV_MAXFREEMFCBS_PARMNUM<span class='opr'>=</span><span class='nbr'>580</span>;
+<span class='kw4'>const</span> SV_MAXFREELFCBS_PARMNUM<span class='opr'>=</span><span class='nbr'>581</span>;
+<span class='kw4'>const</span> SV_MAXFREEPAGEDPOOLCHUNKS_PARMNUM<span class='opr'>=</span><span class='nbr'>582</span>;
+<span class='kw4'>const</span> SV_MINPAGEDPOOLCHUNKSIZE_PARMNUM<span class='opr'>=</span><span class='nbr'>583</span>;
+<span class='kw4'>const</span> SV_MAXPAGEDPOOLCHUNKSIZE_PARMNUM<span class='opr'>=</span><span class='nbr'>584</span>;
+<span class='kw4'>const</span> SV_SENDSFROMPREFERREDPROCESSOR_PARMNUM<span class='opr'>=</span><span class='nbr'>585</span>;
+<span class='kw4'>const</span> SV_MAXTHREADSPERQUEUE_PARMNUM<span class='opr'>=</span><span class='nbr'>586</span>;
+<span class='kw4'>const</span> SV_COMMENT_INFOLEVEL<span class='opr'>=</span><span class='opr'>(</span>PARMNUM_BASE_INFOLEVEL<span class='opr'>+</span>SV_COMMENT_PARMNUM<span class='opr'>)</span>;
+<span class='kw4'>const</span> SV_USERS_INFOLEVEL<span class='opr'>=</span><span class='opr'>(</span>PARMNUM_BASE_INFOLEVEL<span class='opr'>+</span>SV_USERS_PARMNUM<span class='opr'>)</span>;
+<span class='kw4'>const</span> SV_DISC_INFOLEVEL<span class='opr'>=</span><span class='opr'>(</span>PARMNUM_BASE_INFOLEVEL<span class='opr'>+</span>SV_DISC_PARMNUM<span class='opr'>)</span>;
+<span class='kw4'>const</span> SV_HIDDEN_INFOLEVEL<span class='opr'>=</span><span class='opr'>(</span>PARMNUM_BASE_INFOLEVEL<span class='opr'>+</span>SV_HIDDEN_PARMNUM<span class='opr'>)</span>;
+<span class='kw4'>const</span> SV_ANNOUNCE_INFOLEVEL<span class='opr'>=</span><span class='opr'>(</span>PARMNUM_BASE_INFOLEVEL<span class='opr'>+</span>SV_ANNOUNCE_PARMNUM<span class='opr'>)</span>;
+<span class='kw4'>const</span> SV_ANNDELTA_INFOLEVEL<span class='opr'>=</span><span class='opr'>(</span>PARMNUM_BASE_INFOLEVEL<span class='opr'>+</span>SV_ANNDELTA_PARMNUM<span class='opr'>)</span>;
+<span class='kw4'>const</span> SV_SESSOPENS_INFOLEVEL<span class='opr'>=</span><span class='opr'>(</span>PARMNUM_BASE_INFOLEVEL<span class='opr'>+</span>SV_SESSOPENS_PARMNUM<span class='opr'>)</span>;
+<span class='kw4'>const</span> SV_SESSVCS_INFOLEVEL<span class='opr'>=</span><span class='opr'>(</span>PARMNUM_BASE_INFOLEVEL<span class='opr'>+</span>SV_SESSVCS_PARMNUM<span class='opr'>)</span>;
+<span class='kw4'>const</span> SV_OPENSEARCH_INFOLEVEL<span class='opr'>=</span><span class='opr'>(</span>PARMNUM_BASE_INFOLEVEL<span class='opr'>+</span>SV_OPENSEARCH_PARMNUM<span class='opr'>)</span>;
+<span class='kw4'>const</span> SV_MAXWORKITEMS_INFOLEVEL<span class='opr'>=</span><span class='opr'>(</span>PARMNUM_BASE_INFOLEVEL<span class='opr'>+</span>SV_MAXWORKITEMS_PARMNUM<span class='opr'>)</span>;
+<span class='kw4'>const</span> SV_MAXRAWBUFLEN_INFOLEVEL<span class='opr'>=</span><span class='opr'>(</span>PARMNUM_BASE_INFOLEVEL<span class='opr'>+</span>SV_MAXRAWBUFLEN_PARMNUM<span class='opr'>)</span>;
+<span class='kw4'>const</span> SV_SESSUSERS_INFOLEVEL<span class='opr'>=</span><span class='opr'>(</span>PARMNUM_BASE_INFOLEVEL<span class='opr'>+</span>SV_SESSUSERS_PARMNUM<span class='opr'>)</span>;
+<span class='kw4'>const</span> SV_SESSCONNS_INFOLEVEL<span class='opr'>=</span><span class='opr'>(</span>PARMNUM_BASE_INFOLEVEL<span class='opr'>+</span>SV_SESSCONNS_PARMNUM<span class='opr'>)</span>;
+<span class='kw4'>const</span> SV_MAXNONPAGEDMEMORYUSAGE_INFOLEVEL<span class='opr'>=</span><span class='opr'>(</span>PARMNUM_BASE_INFOLEVEL<span class='opr'>+</span>SV_MAXNONPAGEDMEMORYUSAGE_PARMNUM<span class='opr'>)</span>;
+<span class='kw4'>const</span> SV_MAXPAGEDMEMORYUSAGE_INFOLEVEL<span class='opr'>=</span><span class='opr'>(</span>PARMNUM_BASE_INFOLEVEL<span class='opr'>+</span>SV_MAXPAGEDMEMORYUSAGE_PARMNUM<span class='opr'>)</span>;
+<span class='kw4'>const</span> SV_ENABLESOFTCOMPAT_INFOLEVEL<span class='opr'>=</span><span class='opr'>(</span>PARMNUM_BASE_INFOLEVEL<span class='opr'>+</span>SV_ENABLESOFTCOMPAT_PARMNUM<span class='opr'>)</span>;
+<span class='kw4'>const</span> SV_ENABLEFORCEDLOGOFF_INFOLEVEL<span class='opr'>=</span><span class='opr'>(</span>PARMNUM_BASE_INFOLEVEL<span class='opr'>+</span>SV_ENABLEFORCEDLOGOFF_PARMNUM<span class='opr'>)</span>;
+<span class='kw4'>const</span> SV_TIMESOURCE_INFOLEVEL<span class='opr'>=</span><span class='opr'>(</span>PARMNUM_BASE_INFOLEVEL<span class='opr'>+</span>SV_TIMESOURCE_PARMNUM<span class='opr'>)</span>;
+<span class='kw4'>const</span> SV_LMANNOUNCE_INFOLEVEL<span class='opr'>=</span><span class='opr'>(</span>PARMNUM_BASE_INFOLEVEL<span class='opr'>+</span>SV_LMANNOUNCE_PARMNUM<span class='opr'>)</span>;
+<span class='kw4'>const</span> SV_MAXCOPYREADLEN_INFOLEVEL<span class='opr'>=</span><span class='opr'>(</span>PARMNUM_BASE_INFOLEVEL<span class='opr'>+</span>SV_MAXCOPYREADLEN_PARMNUM<span class='opr'>)</span>;
+<span class='kw4'>const</span> SV_MAXCOPYWRITELEN_INFOLEVEL<span class='opr'>=</span><span class='opr'>(</span>PARMNUM_BASE_INFOLEVEL<span class='opr'>+</span>SV_MAXCOPYWRITELEN_PARMNUM<span class='opr'>)</span>;
+<span class='kw4'>const</span> SV_MINKEEPSEARCH_INFOLEVEL<span class='opr'>=</span><span class='opr'>(</span>PARMNUM_BASE_INFOLEVEL<span class='opr'>+</span>SV_MINKEEPSEARCH_PARMNUM<span class='opr'>)</span>;
+<span class='kw4'>const</span> SV_MAXKEEPSEARCH_INFOLEVEL<span class='opr'>=</span><span class='opr'>(</span>PARMNUM_BASE_INFOLEVEL<span class='opr'>+</span>SV_MAXKEEPSEARCH_PARMNUM<span class='opr'>)</span>;
+<span class='kw4'>const</span> SV_MINKEEPCOMPLSEARCH_INFOLEVEL<span class='opr'>=</span><span class='opr'>(</span>PARMNUM_BASE_INFOLEVEL<span class='opr'>+</span>SV_MINKEEPCOMPLSEARCH_PARMNUM<span class='opr'>)</span>;
+<span class='kw4'>const</span> SV_MAXKEEPCOMPLSEARCH_INFOLEVEL<span class='opr'>=</span><span class='opr'>(</span>PARMNUM_BASE_INFOLEVEL<span class='opr'>+</span>SV_MAXKEEPCOMPLSEARCH_PARMNUM<span class='opr'>)</span>;
+<span class='kw4'>const</span> SV_SCAVTIMEOUT_INFOLEVEL<span class='opr'>=</span><span class='opr'>(</span>PARMNUM_BASE_INFOLEVEL<span class='opr'>+</span>SV_SCAVTIMEOUT_PARMNUM<span class='opr'>)</span>;
+<span class='kw4'>const</span> SV_MINRCVQUEUE_INFOLEVEL<span class='opr'>=</span><span class='opr'>(</span>PARMNUM_BASE_INFOLEVEL<span class='opr'>+</span>SV_MINRCVQUEUE_PARMNUM<span class='opr'>)</span>;
+<span class='kw4'>const</span> SV_MINFREEWORKITEMS_INFOLEVEL<span class='opr'>=</span><span class='opr'>(</span>PARMNUM_BASE_INFOLEVEL<span class='opr'>+</span>SV_MINFREEWORKITEMS_PARMNUM<span class='opr'>)</span>;
+<span class='kw4'>const</span> SV_MAXMPXCT_INFOLEVEL<span class='opr'>=</span><span class='opr'>(</span>PARMNUM_BASE_INFOLEVEL<span class='opr'>+</span>SV_MAXMPXCT_PARMNUM<span class='opr'>)</span>;
+<span class='kw4'>const</span> SV_OPLOCKBREAKWAIT_INFOLEVEL<span class='opr'>=</span><span class='opr'>(</span>PARMNUM_BASE_INFOLEVEL<span class='opr'>+</span>SV_OPLOCKBREAKWAIT_PARMNUM<span class='opr'>)</span>;
+<span class='kw4'>const</span> SV_OPLOCKBREAKRESPONSEWAIT_INFOLEVEL<span class='opr'>=</span><span class='opr'>(</span>PARMNUM_BASE_INFOLEVEL<span class='opr'>+</span>SV_OPLOCKBREAKRESPONSEWAIT_PARMNUM<span class='opr'>)</span>;
+<span class='kw4'>const</span> SV_ENABLEOPLOCKS_INFOLEVEL<span class='opr'>=</span><span class='opr'>(</span>PARMNUM_BASE_INFOLEVEL<span class='opr'>+</span>SV_ENABLEOPLOCKS_PARMNUM<span class='opr'>)</span>;
+<span class='kw4'>const</span> SV_ENABLEOPLOCKFORCECLOSE_INFOLEVEL<span class='opr'>=</span><span class='opr'>(</span>PARMNUM_BASE_INFOLEVEL<span class='opr'>+</span>SV_ENABLEOPLOCKFORCECLOSE_PARMNUM<span class='opr'>)</span>;
+<span class='kw4'>const</span> SV_ENABLEFCBOPENS_INFOLEVEL<span class='opr'>=</span><span class='opr'>(</span>PARMNUM_BASE_INFOLEVEL<span class='opr'>+</span>SV_ENABLEFCBOPENS_PARMNUM<span class='opr'>)</span>;
+<span class='kw4'>const</span> SV_ENABLERAW_INFOLEVEL<span class='opr'>=</span><span class='opr'>(</span>PARMNUM_BASE_INFOLEVEL<span class='opr'>+</span>SV_ENABLERAW_PARMNUM<span class='opr'>)</span>;
+<span class='kw4'>const</span> SV_ENABLESHAREDNETDRIVES_INFOLEVEL<span class='opr'>=</span><span class='opr'>(</span>PARMNUM_BASE_INFOLEVEL<span class='opr'>+</span>SV_ENABLESHAREDNETDRIVES_PARMNUM<span class='opr'>)</span>;
+<span class='kw4'>const</span> SV_MINFREECONNECTIONS_INFOLEVEL<span class='opr'>=</span><span class='opr'>(</span>PARMNUM_BASE_INFOLEVEL<span class='opr'>+</span>SV_MINFREECONNECTIONS_PARMNUM<span class='opr'>)</span>;
+<span class='kw4'>const</span> SV_MAXFREECONNECTIONS_INFOLEVEL<span class='opr'>=</span><span class='opr'>(</span>PARMNUM_BASE_INFOLEVEL<span class='opr'>+</span>SV_MAXFREECONNECTIONS_PARMNUM<span class='opr'>)</span>;
+<span class='kw4'>const</span> SV_INITSESSTABLE_INFOLEVEL<span class='opr'>=</span><span class='opr'>(</span>PARMNUM_BASE_INFOLEVEL<span class='opr'>+</span>SV_INITSESSTABLE_PARMNUM<span class='opr'>)</span>;
+<span class='kw4'>const</span> SV_INITCONNTABLE_INFOLEVEL<span class='opr'>=</span><span class='opr'>(</span>PARMNUM_BASE_INFOLEVEL<span class='opr'>+</span>SV_INITCONNTABLE_PARMNUM<span class='opr'>)</span>;
+<span class='kw4'>const</span> SV_INITFILETABLE_INFOLEVEL<span class='opr'>=</span><span class='opr'>(</span>PARMNUM_BASE_INFOLEVEL<span class='opr'>+</span>SV_INITFILETABLE_PARMNUM<span class='opr'>)</span>;
+<span class='kw4'>const</span> SV_INITSEARCHTABLE_INFOLEVEL<span class='opr'>=</span><span class='opr'>(</span>PARMNUM_BASE_INFOLEVEL<span class='opr'>+</span>SV_INITSEARCHTABLE_PARMNUM<span class='opr'>)</span>;
+<span class='kw4'>const</span> SV_ALERTSCHEDULE_INFOLEVEL<span class='opr'>=</span><span class='opr'>(</span>PARMNUM_BASE_INFOLEVEL<span class='opr'>+</span>SV_ALERTSCHEDULE_PARMNUM<span class='opr'>)</span>;
+<span class='kw4'>const</span> SV_ERRORTHRESHOLD_INFOLEVEL<span class='opr'>=</span><span class='opr'>(</span>PARMNUM_BASE_INFOLEVEL<span class='opr'>+</span>SV_ERRORTHRESHOLD_PARMNUM<span class='opr'>)</span>;
+<span class='kw4'>const</span> SV_NETWORKERRORTHRESHOLD_INFOLEVEL<span class='opr'>=</span><span class='opr'>(</span>PARMNUM_BASE_INFOLEVEL<span class='opr'>+</span>SV_NETWORKERRORTHRESHOLD_PARMNUM<span class='opr'>)</span>;
+<span class='kw4'>const</span> SV_DISKSPACETHRESHOLD_INFOLEVEL<span class='opr'>=</span><span class='opr'>(</span>PARMNUM_BASE_INFOLEVEL<span class='opr'>+</span>SV_DISKSPACETHRESHOLD_PARMNUM<span class='opr'>)</span>;
+<span class='kw4'>const</span> SV_MAXLINKDELAY_INFOLEVEL<span class='opr'>=</span><span class='opr'>(</span>PARMNUM_BASE_INFOLEVEL<span class='opr'>+</span>SV_MAXLINKDELAY_PARMNUM<span class='opr'>)</span>;
+<span class='kw4'>const</span> SV_MINLINKTHROUGHPUT_INFOLEVEL<span class='opr'>=</span><span class='opr'>(</span>PARMNUM_BASE_INFOLEVEL<span class='opr'>+</span>SV_MINLINKTHROUGHPUT_PARMNUM<span class='opr'>)</span>;
+<span class='kw4'>const</span> SV_LINKINFOVALIDTIME_INFOLEVEL<span class='opr'>=</span><span class='opr'>(</span>PARMNUM_BASE_INFOLEVEL<span class='opr'>+</span>SV_LINKINFOVALIDTIME_PARMNUM<span class='opr'>)</span>;
+<span class='kw4'>const</span> SV_SCAVQOSINFOUPDATETIME_INFOLEVEL<span class='opr'>=</span><span class='opr'>(</span>PARMNUM_BASE_INFOLEVEL<span class='opr'>+</span>SV_SCAVQOSINFOUPDATETIME_PARMNUM<span class='opr'>)</span>;
+<span class='kw4'>const</span> SV_MAXWORKITEMIDLETIME_INFOLEVEL<span class='opr'>=</span><span class='opr'>(</span>PARMNUM_BASE_INFOLEVEL<span class='opr'>+</span>SV_MAXWORKITEMIDLETIME_PARMNUM<span class='opr'>)</span>;
+<span class='kw4'>const</span> SV_MAXRAWWORKITEMS_INFOLOEVEL<span class='opr'>=</span><span class='opr'>(</span>PARMNUM_BASE_INFOLEVEL<span class='opr'>+</span>SV_MAXRAWWORKITEMS_PARMNUM<span class='opr'>)</span>;
+<span class='kw4'>const</span> SV_PRODUCTTYPE_INFOLOEVEL<span class='opr'>=</span><span class='opr'>(</span>PARMNUM_BASE_INFOLEVEL<span class='opr'>+</span>SV_PRODUCTTYPE_PARMNUM<span class='opr'>)</span>;
+<span class='kw4'>const</span> SV_SERVERSIZE_INFOLOEVEL<span class='opr'>=</span><span class='opr'>(</span>PARMNUM_BASE_INFOLEVEL<span class='opr'>+</span>SV_SERVERSIZE_PARMNUM<span class='opr'>)</span>;
+<span class='kw4'>const</span> SV_CONNECTIONLESSAUTODISC_INFOLOEVEL<span class='opr'>=</span><span class='opr'>(</span>PARMNUM_BASE_INFOLEVEL<span class='opr'>+</span>SV_CONNECTIONLESSAUTODISC_PARMNUM<span class='opr'>)</span>;
+<span class='kw4'>const</span> SV_SHARINGVIOLATIONRETRIES_INFOLOEVEL<span class='opr'>=</span><span class='opr'>(</span>PARMNUM_BASE_INFOLEVEL<span class='opr'>+</span>SV_SHARINGVIOLATIONRETRIES_PARMNUM<span class='opr'>)</span>;
+<span class='kw4'>const</span> SV_SHARINGVIOLATIONDELAY_INFOLOEVEL<span class='opr'>=</span><span class='opr'>(</span>PARMNUM_BASE_INFOLEVEL<span class='opr'>+</span>SV_SHARINGVIOLATIONDELAY_PARMNUM<span class='opr'>)</span>;
+<span class='kw4'>const</span> SV_MAXGLOBALOPENSEARCH_INFOLOEVEL<span class='opr'>=</span><span class='opr'>(</span>PARMNUM_BASE_INFOLEVEL<span class='opr'>+</span>SV_MAXGLOBALOPENSEARCH_PARMNUM<span class='opr'>)</span>;
+<span class='kw4'>const</span> SV_REMOVEDUPLICATESEARCHES_INFOLOEVEL<span class='opr'>=</span><span class='opr'>(</span>PARMNUM_BASE_INFOLEVEL<span class='opr'>+</span>SV_REMOVEDUPLICATESEARCHES_PARMNUM<span class='opr'>)</span>;
+<span class='kw4'>const</span> SV_LOCKVIOLATIONRETRIES_INFOLOEVEL<span class='opr'>=</span><span class='opr'>(</span>PARMNUM_BASE_INFOLEVEL<span class='opr'>+</span>SV_LOCKVIOLATIONRETRIES_PARMNUM<span class='opr'>)</span>;
+<span class='kw4'>const</span> SV_LOCKVIOLATIONOFFSET_INFOLOEVEL<span class='opr'>=</span><span class='opr'>(</span>PARMNUM_BASE_INFOLEVEL<span class='opr'>+</span>SV_LOCKVIOLATIONOFFSET_PARMNUM<span class='opr'>)</span>;
+<span class='kw4'>const</span> SV_LOCKVIOLATIONDELAY_INFOLOEVEL<span class='opr'>=</span><span class='opr'>(</span>PARMNUM_BASE_INFOLEVEL<span class='opr'>+</span>SV_LOCKVIOLATIONDELAY_PARMNUM<span class='opr'>)</span>;
+<span class='kw4'>const</span> SV_MDLREADSWITCHOVER_INFOLOEVEL<span class='opr'>=</span><span class='opr'>(</span>PARMNUM_BASE_INFOLEVEL<span class='opr'>+</span>SV_MDLREADSWITCHOVER_PARMNUM<span class='opr'>)</span>;
+<span class='kw4'>const</span> SV_CACHEDOPENLIMIT_INFOLOEVEL<span class='opr'>=</span><span class='opr'>(</span>PARMNUM_BASE_INFOLEVEL<span class='opr'>+</span>SV_CACHEDOPENLIMIT_PARMNUM<span class='opr'>)</span>;
+<span class='kw4'>const</span> SV_CRITICALTHREADS_INFOLOEVEL<span class='opr'>=</span><span class='opr'>(</span>PARMNUM_BASE_INFOLEVEL<span class='opr'>+</span>SV_CRITICALTHREADS_PARMNUM<span class='opr'>)</span>;
+<span class='kw4'>const</span> SV_RESTRICTNULLSESSACCESS_INFOLOEVEL<span class='opr'>=</span><span class='opr'>(</span>PARMNUM_BASE_INFOLEVEL<span class='opr'>+</span>SV_RESTRICTNULLSESSACCESS_PARMNUM<span class='opr'>)</span>;
+<span class='kw4'>const</span> SV_ENABLEWFW311DIRECTIPX_INFOLOEVEL<span class='opr'>=</span><span class='opr'>(</span>PARMNUM_BASE_INFOLEVEL<span class='opr'>+</span>SV_ENABLEWFW311DIRECTIPX_PARMNUM<span class='opr'>)</span>;
+<span class='kw4'>const</span> SV_OTHERQUEUEAFFINITY_INFOLEVEL<span class='opr'>=</span><span class='opr'>(</span>PARMNUM_BASE_INFOLEVEL<span class='opr'>+</span>SV_OTHERQUEUEAFFINITY_PARMNUM<span class='opr'>)</span>;
+<span class='kw4'>const</span> SV_QUEUESAMPLESECS_INFOLEVEL<span class='opr'>=</span><span class='opr'>(</span>PARMNUM_BASE_INFOLEVEL<span class='opr'>+</span>SV_QUEUESAMPLESECS_PARMNUM<span class='opr'>)</span>;
+<span class='kw4'>const</span> SV_BALANCECOUNT_INFOLEVEL<span class='opr'>=</span><span class='opr'>(</span>PARMNUM_BASE_INFOLEVEL<span class='opr'>+</span>SV_BALANCECOUNT_PARMNUM<span class='opr'>)</span>;
+<span class='kw4'>const</span> SV_PREFERREDAFFINITY_INFOLEVEL<span class='opr'>=</span><span class='opr'>(</span>PARMNUM_BASE_INFOLEVEL<span class='opr'>+</span>SV_PREFERREDAFFINITY_PARMNUM<span class='opr'>)</span>;
+<span class='kw4'>const</span> SV_MAXFREERFCBS_INFOLEVEL<span class='opr'>=</span><span class='opr'>(</span>PARMNUM_BASE_INFOLEVEL<span class='opr'>+</span>SV_MAXFREERFCBS_PARMNUM<span class='opr'>)</span>;
+<span class='kw4'>const</span> SV_MAXFREEMFCBS_INFOLEVEL<span class='opr'>=</span><span class='opr'>(</span>PARMNUM_BASE_INFOLEVEL<span class='opr'>+</span>SV_MAXFREEMFCBS_PARMNUM<span class='opr'>)</span>;
+<span class='kw4'>const</span> SV_MAXFREELFCBS_INFOLEVEL<span class='opr'>=</span><span class='opr'>(</span>PARMNUM_BASE_INFOLEVEL<span class='opr'>+</span>SV_MAXFREELFCBS_PARMNUM<span class='opr'>)</span>;
+<span class='kw4'>const</span> SV_MAXFREEPAGEDPOOLCHUNKS_INFOLEVEL<span class='opr'>=</span><span class='opr'>(</span>PARMNUM_BASE_INFOLEVEL<span class='opr'>+</span>SV_MAXFREEPAGEDPOOLCHUNKS_PARMNUM<span class='opr'>)</span>;
+<span class='kw4'>const</span> SV_MINPAGEDPOOLCHUNKSIZE_INFOLEVEL<span class='opr'>=</span><span class='opr'>(</span>PARMNUM_BASE_INFOLEVEL<span class='opr'>+</span>SV_MINPAGEDPOOLCHUNKSIZE_PARMNUM<span class='opr'>)</span>;
+<span class='kw4'>const</span> SV_MAXPAGEDPOOLCHUNKSIZE_INFOLEVEL<span class='opr'>=</span><span class='opr'>(</span>PARMNUM_BASE_INFOLEVEL<span class='opr'>+</span>SV_MAXPAGEDPOOLCHUNKSIZE_PARMNUM<span class='opr'>)</span>;
+<span class='kw4'>const</span> SV_SENDSFROMPREFERREDPROCESSOR_INFOLEVEL<span class='opr'>=</span><span class='opr'>(</span>PARMNUM_BASE_INFOLEVEL<span class='opr'>+</span>SV_SENDSFROMPREFERREDPROCESSOR_PARMNUM<span class='opr'>)</span>;
+<span class='kw4'>const</span> SV_MAXTHREADSPERQUEUE_INFOLEVEL<span class='opr'>=</span><span class='opr'>(</span>PARMNUM_BASE_INFOLEVEL<span class='opr'>+</span>SV_MAXTHREADSPERQUEUE_PARMNUM<span class='opr'>)</span>;
+</pre></td></tr></table>	</body>
+</html>

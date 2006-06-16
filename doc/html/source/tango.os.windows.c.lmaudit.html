@@ -1,0 +1,623 @@
+<!DOCTYPE html 
+     PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+     "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html>
+	<head>
+		<link rel="stylesheet" href="style.css" type="text/css" />
+		<title>os/windows/c/lmaudit.d</title>
+	</head>
+	<body>
+
+<table id='dcode'><tr><td id='lnum'><pre><span>1</span>
+<span>2</span>
+<span>3</span>
+<span>4</span>
+<span>5</span>
+<span>6</span>
+<span>7</span>
+<span>8</span>
+<span>9</span>
+<span>10</span>
+<span>11</span>
+<span>12</span>
+<span>13</span>
+<span>14</span>
+<span>15</span>
+<span>16</span>
+<span>17</span>
+<span>18</span>
+<span>19</span>
+<span>20</span>
+<span>21</span>
+<span>22</span>
+<span>23</span>
+<span>24</span>
+<span>25</span>
+<span>26</span>
+<span>27</span>
+<span>28</span>
+<span>29</span>
+<span>30</span>
+<span>31</span>
+<span>32</span>
+<span>33</span>
+<span>34</span>
+<span>35</span>
+<span>36</span>
+<span>37</span>
+<span>38</span>
+<span>39</span>
+<span>40</span>
+<span>41</span>
+<span>42</span>
+<span>43</span>
+<span>44</span>
+<span>45</span>
+<span>46</span>
+<span>47</span>
+<span>48</span>
+<span>49</span>
+<span>50</span>
+<span>51</span>
+<span>52</span>
+<span>53</span>
+<span>54</span>
+<span>55</span>
+<span>56</span>
+<span>57</span>
+<span>58</span>
+<span>59</span>
+<span>60</span>
+<span>61</span>
+<span>62</span>
+<span>63</span>
+<span>64</span>
+<span>65</span>
+<span>66</span>
+<span>67</span>
+<span>68</span>
+<span>69</span>
+<span>70</span>
+<span>71</span>
+<span>72</span>
+<span>73</span>
+<span>74</span>
+<span>75</span>
+<span>76</span>
+<span>77</span>
+<span>78</span>
+<span>79</span>
+<span>80</span>
+<span>81</span>
+<span>82</span>
+<span>83</span>
+<span>84</span>
+<span>85</span>
+<span>86</span>
+<span>87</span>
+<span>88</span>
+<span>89</span>
+<span>90</span>
+<span>91</span>
+<span>92</span>
+<span>93</span>
+<span>94</span>
+<span>95</span>
+<span>96</span>
+<span>97</span>
+<span>98</span>
+<span>99</span>
+<span>100</span>
+<span>101</span>
+<span>102</span>
+<span>103</span>
+<span>104</span>
+<span>105</span>
+<span>106</span>
+<span>107</span>
+<span>108</span>
+<span>109</span>
+<span>110</span>
+<span>111</span>
+<span>112</span>
+<span>113</span>
+<span>114</span>
+<span>115</span>
+<span>116</span>
+<span>117</span>
+<span>118</span>
+<span>119</span>
+<span>120</span>
+<span>121</span>
+<span>122</span>
+<span>123</span>
+<span>124</span>
+<span>125</span>
+<span>126</span>
+<span>127</span>
+<span>128</span>
+<span>129</span>
+<span>130</span>
+<span>131</span>
+<span>132</span>
+<span>133</span>
+<span>134</span>
+<span>135</span>
+<span>136</span>
+<span>137</span>
+<span>138</span>
+<span>139</span>
+<span>140</span>
+<span>141</span>
+<span>142</span>
+<span>143</span>
+<span>144</span>
+<span>145</span>
+<span>146</span>
+<span>147</span>
+<span>148</span>
+<span>149</span>
+<span>150</span>
+<span>151</span>
+<span>152</span>
+<span>153</span>
+<span>154</span>
+<span>155</span>
+<span>156</span>
+<span>157</span>
+<span>158</span>
+<span>159</span>
+<span>160</span>
+<span>161</span>
+<span>162</span>
+<span>163</span>
+<span>164</span>
+<span>165</span>
+<span>166</span>
+<span>167</span>
+<span>168</span>
+<span>169</span>
+<span>170</span>
+<span>171</span>
+<span>172</span>
+<span>173</span>
+<span>174</span>
+<span>175</span>
+<span>176</span>
+<span>177</span>
+<span>178</span>
+<span>179</span>
+<span>180</span>
+<span>181</span>
+<span>182</span>
+<span>183</span>
+<span>184</span>
+<span>185</span>
+<span>186</span>
+<span>187</span>
+<span>188</span>
+<span>189</span>
+<span>190</span>
+<span>191</span>
+<span>192</span>
+<span>193</span>
+<span>194</span>
+<span>195</span>
+<span>196</span>
+<span>197</span>
+<span>198</span>
+<span>199</span>
+<span>200</span>
+<span>201</span>
+<span>202</span>
+<span>203</span>
+<span>204</span>
+<span>205</span>
+<span>206</span>
+<span>207</span>
+<span>208</span>
+<span>209</span>
+<span>210</span>
+<span>211</span>
+<span>212</span>
+<span>213</span>
+<span>214</span>
+<span>215</span>
+<span>216</span>
+<span>217</span>
+<span>218</span>
+<span>219</span>
+<span>220</span>
+<span>221</span>
+<span>222</span>
+<span>223</span>
+<span>224</span>
+<span>225</span>
+<span>226</span>
+<span>227</span>
+<span>228</span>
+<span>229</span>
+<span>230</span>
+<span>231</span>
+<span>232</span>
+<span>233</span>
+<span>234</span>
+<span>235</span>
+<span>236</span>
+<span>237</span>
+<span>238</span>
+<span>239</span>
+<span>240</span>
+<span>241</span>
+<span>242</span>
+<span>243</span>
+<span>244</span>
+<span>245</span>
+<span>246</span>
+<span>247</span>
+<span>248</span>
+<span>249</span>
+<span>250</span>
+<span>251</span>
+<span>252</span>
+<span>253</span>
+<span>254</span>
+<span>255</span>
+<span>256</span>
+<span>257</span>
+<span>258</span>
+<span>259</span>
+<span>260</span>
+<span>261</span>
+<span>262</span>
+<span>263</span>
+<span>264</span>
+<span>265</span>
+<span>266</span>
+<span>267</span>
+<span>268</span>
+<span>269</span>
+<span>270</span>
+<span>271</span>
+<span>272</span>
+<span>273</span>
+<span>274</span>
+<span>275</span>
+<span>276</span>
+<span>277</span>
+<span>278</span>
+<span>279</span>
+<span>280</span>
+<span>281</span>
+<span>282</span>
+<span>283</span>
+<span>284</span>
+<span>285</span>
+<span>286</span>
+<span>287</span>
+<span>288</span>
+<span>289</span>
+<span>290</span>
+<span>291</span>
+<span>292</span>
+<span>293</span>
+<span>294</span>
+<span>295</span>
+<span>296</span>
+<span>297</span>
+<span>298</span>
+<span>299</span>
+<span>300</span>
+<span>301</span>
+<span>302</span>
+<span>303</span>
+<span>304</span>
+<span>305</span>
+</pre></td><td id='code'><pre><span class='com'>/***********************************************************************\
+*                               lmaudit.d                               *
+*                                                                       *
+*                       Windows API header module                       *
+*                                                                       *
+*                 Translated from MinGW Windows headers                 *
+*                                                                       *
+*                       Placed into public domain                       *
+\***********************************************************************/</span>
+<span class='com'>// COMMENT: This file may be deprecated.</span>
+<span class='kw2'>module</span> tango.os.windows.c.lmaudit;
+
+<span class='com'>//version (build) { pragma(nolink); }</span>
+
+<span class='kw4'>private</span> <span class='kw2'>import</span> tango.os.windows.c.lmcons;
+<span class='kw4'>private</span> <span class='kw2'>import</span> tango.os.windows.c.windef;
+
+<span class='kw4'>const</span> LOGFLAGS_FORWARD  <span class='opr'>=</span> <span class='nbr'>0</span>;
+<span class='kw4'>const</span> LOGFLAGS_BACKWARD <span class='opr'>=</span> <span class='nbr'>1</span>;
+<span class='kw4'>const</span> LOGFLAGS_SEEK     <span class='opr'>=</span> <span class='nbr'>2</span>;
+
+<span class='kw4'>const</span> ACTION_LOCKOUT     <span class='opr'>=</span> <span class='nbr'>0</span>;
+<span class='kw4'>const</span> ACTION_ADMINUNLOCK <span class='opr'>=</span> <span class='nbr'>1</span>;
+
+<span class='kw4'>const</span> AE_GUEST<span class='opr'>=</span><span class='nbr'>0</span>;
+<span class='kw4'>const</span> AE_USER<span class='opr'>=</span><span class='nbr'>1</span>;
+<span class='kw4'>const</span> AE_ADMIN<span class='opr'>=</span><span class='nbr'>2</span>;
+<span class='kw4'>const</span> AE_NORMAL<span class='opr'>=</span><span class='nbr'>0</span>;
+<span class='kw4'>const</span> AE_USERLIMIT<span class='opr'>=</span><span class='nbr'>0</span>;
+<span class='kw4'>const</span> AE_GENERAL<span class='opr'>=</span><span class='nbr'>0</span>;
+<span class='kw4'>const</span> AE_ERROR<span class='opr'>=</span><span class='nbr'>1</span>;
+<span class='kw4'>const</span> AE_SESSDIS<span class='opr'>=</span><span class='nbr'>1</span>;
+<span class='kw4'>const</span> AE_BADPW<span class='opr'>=</span><span class='nbr'>1</span>;
+<span class='kw4'>const</span> AE_AUTODIS<span class='opr'>=</span><span class='nbr'>2</span>;
+<span class='kw4'>const</span> AE_UNSHARE<span class='opr'>=</span><span class='nbr'>2</span>;
+<span class='kw4'>const</span> AE_ADMINPRIVREQD<span class='opr'>=</span><span class='nbr'>2</span>;
+<span class='kw4'>const</span> AE_ADMINDIS<span class='opr'>=</span><span class='nbr'>3</span>;
+<span class='kw4'>const</span> AE_NOACCESSPERM<span class='opr'>=</span><span class='nbr'>3</span>;
+<span class='kw4'>const</span> AE_ACCRESTRICT<span class='opr'>=</span><span class='nbr'>4</span>;
+<span class='kw4'>const</span> AE_NORMAL_CLOSE<span class='opr'>=</span><span class='nbr'>0</span>;
+<span class='kw4'>const</span> AE_SES_CLOSE<span class='opr'>=</span><span class='nbr'>1</span>;
+<span class='kw4'>const</span> AE_ADMIN_CLOSE<span class='opr'>=</span><span class='nbr'>2</span>;
+<span class='kw4'>const</span> AE_LIM_UNKNOWN<span class='opr'>=</span><span class='nbr'>0</span>;
+<span class='kw4'>const</span> AE_LIM_LOGONHOURS<span class='opr'>=</span><span class='nbr'>1</span>;
+<span class='kw4'>const</span> AE_LIM_EXPIRED<span class='opr'>=</span><span class='nbr'>2</span>;
+<span class='kw4'>const</span> AE_LIM_INVAL_WKSTA<span class='opr'>=</span><span class='nbr'>3</span>;
+<span class='kw4'>const</span> AE_LIM_DISABLED<span class='opr'>=</span><span class='nbr'>4</span>;
+<span class='kw4'>const</span> AE_LIM_DELETED<span class='opr'>=</span><span class='nbr'>5</span>;
+<span class='kw4'>const</span> AE_MOD<span class='opr'>=</span><span class='nbr'>0</span>;
+<span class='kw4'>const</span> AE_DELETE<span class='opr'>=</span><span class='nbr'>1</span>;
+<span class='kw4'>const</span> AE_ADD<span class='opr'>=</span><span class='nbr'>2</span>;
+
+<span class='kw4'>const</span> AE_UAS_USER   <span class='opr'>=</span> <span class='nbr'>0</span>;
+<span class='kw4'>const</span> AE_UAS_GROUP  <span class='opr'>=</span> <span class='nbr'>1</span>;
+<span class='kw4'>const</span> AE_UAS_MODALS <span class='opr'>=</span> <span class='nbr'>2</span>;
+
+<span class='kw4'>const</span> SVAUD_SERVICE       <span class='opr'>=</span> <span class='nbr'>1</span>;
+<span class='kw4'>const</span> SVAUD_GOODSESSLOGON <span class='opr'>=</span> <span class='nbr'>6</span>;
+<span class='kw4'>const</span> SVAUD_BADSESSLOGON  <span class='opr'>=</span> <span class='nbr'>24</span>;
+<span class='kw4'>const</span> SVAUD_SESSLOGON     <span class='opr'>=</span> SVAUD_GOODSESSLOGON|SVAUD_BADSESSLOGON;
+<span class='kw4'>const</span> SVAUD_GOODNETLOGON  <span class='opr'>=</span> <span class='nbr'>96</span>;
+<span class='kw4'>const</span> SVAUD_BADNETLOGON   <span class='opr'>=</span> <span class='nbr'>384</span>;
+<span class='kw4'>const</span> SVAUD_NETLOGON      <span class='opr'>=</span> SVAUD_GOODNETLOGON|SVAUD_BADNETLOGON;
+<span class='kw4'>const</span> SVAUD_LOGON         <span class='opr'>=</span> SVAUD_NETLOGON|SVAUD_SESSLOGON;
+<span class='kw4'>const</span> SVAUD_GOODUSE       <span class='opr'>=</span> <span class='nbr'>0</span>x600;
+<span class='kw4'>const</span> SVAUD_BADUSE        <span class='opr'>=</span> <span class='nbr'>0</span>x1800;
+<span class='kw4'>const</span> SVAUD_USE           <span class='opr'>=</span> SVAUD_GOODUSE|SVAUD_BADUSE;
+<span class='kw4'>const</span> SVAUD_USERLIST      <span class='opr'>=</span> <span class='nbr'>8192</span>;
+<span class='kw4'>const</span> SVAUD_PERMISSIONS   <span class='opr'>=</span> <span class='nbr'>16384</span>;
+<span class='kw4'>const</span> SVAUD_RESOURCE      <span class='opr'>=</span> <span class='nbr'>32768</span>;
+<span class='kw4'>const</span> SVAUD_LOGONLIM      <span class='opr'>=</span> <span class='nbr'>65536</span>;
+
+<span class='kw4'>const</span> AA_AUDIT_ALL<span class='opr'>=</span><span class='nbr'>1</span>;
+<span class='kw4'>const</span> AA_A_OWNER<span class='opr'>=</span><span class='nbr'>4</span>;
+<span class='kw4'>const</span> AA_CLOSE<span class='opr'>=</span><span class='nbr'>8</span>;
+<span class='kw4'>const</span> AA_S_OPEN<span class='opr'>=</span><span class='nbr'>16</span>;
+<span class='kw4'>const</span> AA_S_WRITE<span class='opr'>=</span><span class='nbr'>32</span>;
+<span class='kw4'>const</span> AA_S_CREATE<span class='opr'>=</span><span class='nbr'>32</span>;
+<span class='kw4'>const</span> AA_S_DELETE<span class='opr'>=</span><span class='nbr'>64</span>;
+<span class='kw4'>const</span> AA_S_ACL<span class='opr'>=</span><span class='nbr'>128</span>;
+<span class='kw4'>const</span> AA_S_ALL<span class='opr'>=</span><span class='nbr'>253</span>;
+<span class='kw4'>const</span> AA_F_OPEN<span class='opr'>=</span><span class='nbr'>256</span>;
+<span class='kw4'>const</span> AA_F_WRITE<span class='opr'>=</span><span class='nbr'>512</span>;
+<span class='kw4'>const</span> AA_F_CREATE<span class='opr'>=</span><span class='nbr'>512</span>;
+<span class='kw4'>const</span> AA_F_DELETE<span class='opr'>=</span><span class='nbr'>1024</span>;
+<span class='kw4'>const</span> AA_F_ACL<span class='opr'>=</span><span class='nbr'>2048</span>;
+<span class='kw4'>const</span> AA_F_ALL <span class='opr'>=</span> AA_F_OPEN|AA_F_WRITE|AA_F_DELETE|AA_F_ACL;
+<span class='kw4'>const</span> AA_A_OPEN<span class='opr'>=</span><span class='nbr'>2048</span>;
+<span class='kw4'>const</span> AA_A_WRITE<span class='opr'>=</span><span class='nbr'>4096</span>;
+<span class='kw4'>const</span> AA_A_CREATE<span class='opr'>=</span><span class='nbr'>8192</span>;
+<span class='kw4'>const</span> AA_A_DELETE<span class='opr'>=</span><span class='nbr'>16384</span>;
+<span class='kw4'>const</span> AA_A_ACL<span class='opr'>=</span><span class='nbr'>32768</span>;
+<span class='kw4'>const</span> AA_A_ALL <span class='opr'>=</span> AA_F_OPEN|AA_F_WRITE|AA_F_DELETE|AA_F_ACL;
+
+<span class='kw4'>struct</span> AUDIT_ENTRY<span class='opr'>{</span>
+    DWORD ae_len;
+    DWORD ae_reserved;
+    DWORD ae_time;
+    DWORD ae_type;
+    DWORD ae_data_offset;
+    DWORD ae_data_size;
+<span class='opr'>}</span>
+<span class='kw2'>alias</span> AUDIT_ENTRY<span class='opr'>*</span> PAUDIT_ENTRY, LPAUDIT_ENTRY;
+
+<span class='kw4'>struct</span> HLOG<span class='opr'>{</span>
+    DWORD time;
+    DWORD last_flags;
+    DWORD offset;
+    DWORD rec_offset;
+<span class='opr'>}</span>
+<span class='kw2'>alias</span> HLOG<span class='opr'>*</span> PHLOG, LPHLOG;
+
+<span class='kw4'>struct</span> AE_SRVSTATUS<span class='opr'>{</span>
+    DWORD ae_sv_status;
+<span class='opr'>}</span>
+<span class='kw2'>alias</span> AE_SRVSTATUS<span class='opr'>*</span> PAE_SRVSTATUS, LPAE_SRVSTATUS;
+
+<span class='kw4'>struct</span> AE_SESSLOGON<span class='opr'>{</span>
+    DWORD ae_so_compname;
+    DWORD ae_so_username;
+    DWORD ae_so_privilege;
+<span class='opr'>}</span>
+<span class='kw2'>alias</span> AE_SESSLOGON<span class='opr'>*</span> PAE_SESSLOGON, LPAE_SESSLOGON;
+
+<span class='kw4'>struct</span> AE_SESSLOGOFF<span class='opr'>{</span>
+    DWORD ae_sf_compname;
+    DWORD ae_sf_username;
+    DWORD ae_sf_reason;
+<span class='opr'>}</span>
+<span class='kw2'>alias</span> AE_SESSLOGOFF<span class='opr'>*</span> PAE_SESSLOGOFF, LPAE_SESSLOGOFF;
+
+<span class='kw4'>struct</span> AE_SESSPWERR<span class='opr'>{</span>
+    DWORD ae_sp_compname;
+    DWORD ae_sp_username;
+<span class='opr'>}</span>
+<span class='kw2'>alias</span> AE_SESSPWERR<span class='opr'>*</span> PAE_SESSPWERR, LPAE_SESSPWERR;
+
+<span class='kw4'>struct</span> AE_CONNSTART<span class='opr'>{</span>
+    DWORD ae_ct_compname;
+    DWORD ae_ct_username;
+    DWORD ae_ct_netname;
+    DWORD ae_ct_connid;
+<span class='opr'>}</span>
+<span class='kw2'>alias</span> AE_CONNSTART<span class='opr'>*</span> PAE_CONNSTART, LPAE_CONNSTART;
+
+<span class='kw4'>struct</span> AE_CONNSTOP<span class='opr'>{</span>
+    DWORD ae_cp_compname;
+    DWORD ae_cp_username;
+    DWORD ae_cp_netname;
+    DWORD ae_cp_connid;
+    DWORD ae_cp_reason;
+<span class='opr'>}</span>
+<span class='kw2'>alias</span> AE_CONNSTOP<span class='opr'>*</span> PAE_CONNSTOP, LPAE_CONNSTOP;
+
+<span class='kw4'>struct</span> AE_CONNREJ<span class='opr'>{</span>
+    DWORD ae_cr_compname;
+    DWORD ae_cr_username;
+    DWORD ae_cr_netname;
+    DWORD ae_cr_reason;
+<span class='opr'>}</span>
+<span class='kw2'>alias</span> AE_CONNREJ<span class='opr'>*</span> PAE_CONNREJ, LPAE_CONNREJ;
+
+<span class='kw4'>struct</span> AE_RESACCESS<span class='opr'>{</span>
+    DWORD ae_ra_compname;
+    DWORD ae_ra_username;
+    DWORD ae_ra_resname;
+    DWORD ae_ra_operation;
+    DWORD ae_ra_returncode;
+    DWORD ae_ra_restype;
+    DWORD ae_ra_fileid;
+<span class='opr'>}</span>
+<span class='kw2'>alias</span> AE_RESACCESS<span class='opr'>*</span> PAE_RESACCESS, LPAE_RESACCESS;
+
+<span class='kw4'>struct</span> AE_RESACCESSREJ<span class='opr'>{</span>
+    DWORD ae_rr_compname;
+    DWORD ae_rr_username;
+    DWORD ae_rr_resname;
+    DWORD ae_rr_operation;
+<span class='opr'>}</span>
+<span class='kw2'>alias</span> AE_RESACCESSREJ<span class='opr'>*</span> PAE_RESACCESSREJ, LPAE_RESACCESSREJ;
+
+<span class='kw4'>struct</span> AE_CLOSEFILE<span class='opr'>{</span>
+    DWORD ae_cf_compname;
+    DWORD ae_cf_username;
+    DWORD ae_cf_resname;
+    DWORD ae_cf_fileid;
+    DWORD ae_cf_duration;
+    DWORD ae_cf_reason;
+<span class='opr'>}</span>
+<span class='kw2'>alias</span> AE_CLOSEFILE<span class='opr'>*</span> PAE_CLOSEFILE, LPAE_CLOSEFILE;
+
+<span class='kw4'>struct</span> AE_SERVICESTAT<span class='opr'>{</span>
+    DWORD ae_ss_compname;
+    DWORD ae_ss_username;
+    DWORD ae_ss_svcname;
+    DWORD ae_ss_status;
+    DWORD ae_ss_code;
+    DWORD ae_ss_text;
+    DWORD ae_ss_returnval;
+<span class='opr'>}</span>
+<span class='kw2'>alias</span> AE_SERVICESTAT<span class='opr'>*</span> PAE_SERVICESTAT, LPAE_SERVICESTAT;
+
+<span class='kw4'>struct</span> AE_ACLMOD<span class='opr'>{</span>
+    DWORD ae_am_compname;
+    DWORD ae_am_username;
+    DWORD ae_am_resname;
+    DWORD ae_am_action;
+    DWORD ae_am_datalen;
+<span class='opr'>}</span>
+<span class='kw2'>alias</span> AE_ACLMOD<span class='opr'>*</span> PAE_ACLMOD, LPAE_ACLMOD;
+
+<span class='kw4'>struct</span> AE_UASMOD<span class='opr'>{</span>
+    DWORD ae_um_compname;
+    DWORD ae_um_username;
+    DWORD ae_um_resname;
+    DWORD ae_um_rectype;
+    DWORD ae_um_action;
+    DWORD ae_um_datalen;
+<span class='opr'>}</span>
+<span class='kw2'>alias</span> AE_UASMOD<span class='opr'>*</span> PAE_UASMOD, LPAE_UASMOD;
+
+<span class='kw4'>struct</span> AE_NETLOGON<span class='opr'>{</span>
+    DWORD ae_no_compname;
+    DWORD ae_no_username;
+    DWORD ae_no_privilege;
+    DWORD ae_no_authflags;
+<span class='opr'>}</span>
+<span class='kw2'>alias</span> AE_NETLOGON<span class='opr'>*</span> PAE_NETLOGON, LPAE_NETLOGON;
+
+<span class='kw4'>struct</span> AE_NETLOGOFF<span class='opr'>{</span>
+    DWORD ae_nf_compname;
+    DWORD ae_nf_username;
+    DWORD ae_nf_reserved1;
+    DWORD ae_nf_reserved2;
+<span class='opr'>}</span>
+<span class='kw2'>alias</span> AE_NETLOGOFF<span class='opr'>*</span> PAE_NETLOGOFF, LPAE_NETLOGOFF;
+
+<span class='kw4'>struct</span> AE_ACCLIM<span class='opr'>{</span>
+    DWORD ae_al_compname;
+    DWORD ae_al_username;
+    DWORD ae_al_resname;
+    DWORD ae_al_limit;
+<span class='opr'>}</span>
+<span class='kw2'>alias</span> AE_ACCLIM<span class='opr'>*</span> PAE_ACCLIM, LPAE_ACCLIM;
+
+<span class='kw4'>struct</span> AE_LOCKOUT<span class='opr'>{</span>
+    DWORD ae_lk_compname;
+    DWORD ae_lk_username;
+    DWORD ae_lk_action;
+    DWORD ae_lk_bad_pw_count;
+<span class='opr'>}</span>
+<span class='kw2'>alias</span> AE_LOCKOUT<span class='opr'>*</span> PAE_LOCKOUT, LPAE_LOCKOUT;
+
+<span class='kw4'>struct</span> AE_GENERIC<span class='opr'>{</span>
+    DWORD ae_ge_msgfile;
+    DWORD ae_ge_msgnum;
+    DWORD ae_ge_params;
+    DWORD ae_ge_param1;
+    DWORD ae_ge_param2;
+    DWORD ae_ge_param3;
+    DWORD ae_ge_param4;
+    DWORD ae_ge_param5;
+    DWORD ae_ge_param6;
+    DWORD ae_ge_param7;
+    DWORD ae_ge_param8;
+    DWORD ae_ge_param9;
+<span class='opr'>}</span>
+<span class='kw2'>alias</span> AE_GENERIC<span class='opr'>*</span> PAE_GENERIC, LPAE_GENERIC;
+
+<span class='kw2'>extern</span> <span class='opr'>(</span>Windows<span class='opr'>)</span> <span class='opr'>{</span>
+<span class='kw4'>deprecated</span> <span class='opr'>{</span>
+NET_API_STATUS NetAuditClear<span class='opr'>(</span>LPCWSTR,LPCWSTR,LPCWSTR<span class='opr'>)</span>;
+NET_API_STATUS NetAuditRead<span class='opr'>(</span>LPTSTR,LPTSTR,LPHLOG,DWORD,PDWORD,DWORD,DWORD,PBYTE<span class='opr'>*</span>,DWORD,PDWORD,PDWORD<span class='opr'>)</span>;
+NET_API_STATUS NetAuditWrite<span class='opr'>(</span>DWORD,PBYTE,DWORD,LPTSTR,PBYTE<span class='opr'>)</span>;
+<span class='opr'>}</span>
+<span class='opr'>}</span>
+
+<span class='com'>/+
+/* MinGW: These conflict with struct typedefs, why? */
+const AE_SRVSTATUS=0;
+const AE_SESSLOGON=1;
+const AE_SESSLOGOFF=2;
+const AE_SESSPWERR=3;
+const AE_CONNSTART=4;
+const AE_CONNSTOP=5;
+const AE_CONNREJ=6;
+const AE_RESACCESS=7;
+const AE_RESACCESSREJ=8;
+const AE_CLOSEFILE=9;
+const AE_SERVICESTAT=11;
+const AE_ACLMOD=12;
+const AE_UASMOD=13;
+const AE_NETLOGON=14;
+const AE_NETLOGOFF=15;
+const AE_NETLOGDENIED=16;
+const AE_ACCLIMITEXCD=17;
+const AE_RESACCESS2=18;
+const AE_ACLMODFAIL=19;
+const AE_LOCKOUT=20;
+const AE_GENERIC_TYPE=21;
+const AE_SRVSTART=0;
+const AE_SRVPAUSED=1;
+const AE_SRVCONT=2;
+const AE_SRVSTOP=3;
++/</span>
+</pre></td></tr></table>	</body>
+</html>

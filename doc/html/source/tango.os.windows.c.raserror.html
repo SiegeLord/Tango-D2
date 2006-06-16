@@ -1,0 +1,449 @@
+<!DOCTYPE html 
+     PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+     "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html>
+	<head>
+		<link rel="stylesheet" href="style.css" type="text/css" />
+		<title>os/windows/c/raserror.d</title>
+	</head>
+	<body>
+
+<table id='dcode'><tr><td id='lnum'><pre><span>1</span>
+<span>2</span>
+<span>3</span>
+<span>4</span>
+<span>5</span>
+<span>6</span>
+<span>7</span>
+<span>8</span>
+<span>9</span>
+<span>10</span>
+<span>11</span>
+<span>12</span>
+<span>13</span>
+<span>14</span>
+<span>15</span>
+<span>16</span>
+<span>17</span>
+<span>18</span>
+<span>19</span>
+<span>20</span>
+<span>21</span>
+<span>22</span>
+<span>23</span>
+<span>24</span>
+<span>25</span>
+<span>26</span>
+<span>27</span>
+<span>28</span>
+<span>29</span>
+<span>30</span>
+<span>31</span>
+<span>32</span>
+<span>33</span>
+<span>34</span>
+<span>35</span>
+<span>36</span>
+<span>37</span>
+<span>38</span>
+<span>39</span>
+<span>40</span>
+<span>41</span>
+<span>42</span>
+<span>43</span>
+<span>44</span>
+<span>45</span>
+<span>46</span>
+<span>47</span>
+<span>48</span>
+<span>49</span>
+<span>50</span>
+<span>51</span>
+<span>52</span>
+<span>53</span>
+<span>54</span>
+<span>55</span>
+<span>56</span>
+<span>57</span>
+<span>58</span>
+<span>59</span>
+<span>60</span>
+<span>61</span>
+<span>62</span>
+<span>63</span>
+<span>64</span>
+<span>65</span>
+<span>66</span>
+<span>67</span>
+<span>68</span>
+<span>69</span>
+<span>70</span>
+<span>71</span>
+<span>72</span>
+<span>73</span>
+<span>74</span>
+<span>75</span>
+<span>76</span>
+<span>77</span>
+<span>78</span>
+<span>79</span>
+<span>80</span>
+<span>81</span>
+<span>82</span>
+<span>83</span>
+<span>84</span>
+<span>85</span>
+<span>86</span>
+<span>87</span>
+<span>88</span>
+<span>89</span>
+<span>90</span>
+<span>91</span>
+<span>92</span>
+<span>93</span>
+<span>94</span>
+<span>95</span>
+<span>96</span>
+<span>97</span>
+<span>98</span>
+<span>99</span>
+<span>100</span>
+<span>101</span>
+<span>102</span>
+<span>103</span>
+<span>104</span>
+<span>105</span>
+<span>106</span>
+<span>107</span>
+<span>108</span>
+<span>109</span>
+<span>110</span>
+<span>111</span>
+<span>112</span>
+<span>113</span>
+<span>114</span>
+<span>115</span>
+<span>116</span>
+<span>117</span>
+<span>118</span>
+<span>119</span>
+<span>120</span>
+<span>121</span>
+<span>122</span>
+<span>123</span>
+<span>124</span>
+<span>125</span>
+<span>126</span>
+<span>127</span>
+<span>128</span>
+<span>129</span>
+<span>130</span>
+<span>131</span>
+<span>132</span>
+<span>133</span>
+<span>134</span>
+<span>135</span>
+<span>136</span>
+<span>137</span>
+<span>138</span>
+<span>139</span>
+<span>140</span>
+<span>141</span>
+<span>142</span>
+<span>143</span>
+<span>144</span>
+<span>145</span>
+<span>146</span>
+<span>147</span>
+<span>148</span>
+<span>149</span>
+<span>150</span>
+<span>151</span>
+<span>152</span>
+<span>153</span>
+<span>154</span>
+<span>155</span>
+<span>156</span>
+<span>157</span>
+<span>158</span>
+<span>159</span>
+<span>160</span>
+<span>161</span>
+<span>162</span>
+<span>163</span>
+<span>164</span>
+<span>165</span>
+<span>166</span>
+<span>167</span>
+<span>168</span>
+<span>169</span>
+<span>170</span>
+<span>171</span>
+<span>172</span>
+<span>173</span>
+<span>174</span>
+<span>175</span>
+<span>176</span>
+<span>177</span>
+<span>178</span>
+<span>179</span>
+<span>180</span>
+<span>181</span>
+<span>182</span>
+<span>183</span>
+<span>184</span>
+<span>185</span>
+<span>186</span>
+<span>187</span>
+<span>188</span>
+<span>189</span>
+<span>190</span>
+<span>191</span>
+<span>192</span>
+<span>193</span>
+<span>194</span>
+<span>195</span>
+<span>196</span>
+<span>197</span>
+<span>198</span>
+<span>199</span>
+<span>200</span>
+<span>201</span>
+<span>202</span>
+<span>203</span>
+<span>204</span>
+<span>205</span>
+<span>206</span>
+<span>207</span>
+<span>208</span>
+<span>209</span>
+<span>210</span>
+<span>211</span>
+<span>212</span>
+<span>213</span>
+<span>214</span>
+<span>215</span>
+<span>216</span>
+<span>217</span>
+<span>218</span>
+</pre></td><td id='code'><pre><span class='com'>/***********************************************************************\
+*                              raserror.d                               *
+*                                                                       *
+*                       Windows API header module                       *
+*                                                                       *
+*                 Translated from MinGW Windows headers                 *
+*                                                                       *
+*                       Placed into public domain                       *
+\***********************************************************************/</span>
+<span class='kw2'>module</span> tango.os.windows.c.raserror;
+
+<span class='com'>//version (build) { pragma(nolink); }</span>
+
+ 
+<span class='kw4'>enum</span> <span class='opr'>{</span>
+    SUCCESS <span class='opr'>=</span> <span class='nbr'>0</span>, 
+    RASBASE <span class='opr'>=</span> <span class='nbr'>600</span>,
+    PENDING <span class='opr'>=</span> RASBASE,
+    ERROR_INVALID_PORT_HANDLE,
+    ERROR_PORT_ALREADY_OPEN,
+    ERROR_BUFFER_TOO_SMALL,
+    ERROR_WRONG_INFO_SPECIFIED,
+    ERROR_CANNOT_SET_PORT_INFO,
+    ERROR_PORT_NOT_CONNECTED,
+    ERROR_EVENT_INVALID,
+    ERROR_DEVICE_DOES_NOT_EXIST,
+    ERROR_DEVICETYPE_DOES_NOT_EXIST,
+    ERROR_BUFFER_INVALID,
+    ERROR_ROUTE_NOT_AVAILABLE,
+    ERROR_ROUTE_NOT_ALLOCATED,
+    ERROR_INVALID_COMPRESSION_SPECIFIED,
+    ERROR_OUT_OF_BUFFERS,
+    ERROR_PORT_NOT_FOUND,
+    ERROR_ASYNC_REQUEST_PENDING,
+    ERROR_ALREADY_DISCONNECTING,
+    ERROR_PORT_NOT_OPEN,
+    ERROR_PORT_DISCONNECTED,
+    ERROR_NO_ENDPOINTS,
+    ERROR_CANNOT_OPEN_PHONEBOOK,
+    ERROR_CANNOT_LOAD_PHONEBOOK,
+    ERROR_CANNOT_FIND_PHONEBOOK_ENTRY,
+    ERROR_CANNOT_WRITE_PHONEBOOK,
+    ERROR_CORRUPT_PHONEBOOK,
+    ERROR_CANNOT_LOAD_STRING,
+    ERROR_KEY_NOT_FOUND,
+    ERROR_DISCONNECTION,
+    ERROR_REMOTE_DISCONNECTION,
+    ERROR_HARDWARE_FAILURE,
+    ERROR_USER_DISCONNECTION,
+    ERROR_INVALID_SIZE,
+    ERROR_PORT_NOT_AVAILABLE,
+    ERROR_CANNOT_PROJECT_CLIENT,
+    ERROR_UNKNOWN,
+    ERROR_WRONG_DEVICE_ATTACHED,
+    ERROR_BAD_STRING,
+    ERROR_REQUEST_TIMEOUT,
+    ERROR_CANNOT_GET_LANA,
+    ERROR_NETBIOS_ERROR,
+    ERROR_SERVER_OUT_OF_RESOURCES,
+    ERROR_NAME_EXISTS_ON_NET,
+    ERROR_SERVER_GENERAL_NET_FAILURE,
+    WARNING_MSG_ALIAS_NOT_ADDED,
+    ERROR_AUTH_INTERNAL,
+    ERROR_RESTRICTED_LOGON_HOURS,
+    ERROR_ACCT_DISABLED,
+    ERROR_PASSWD_EXPIRED,
+    ERROR_NO_DIALIN_PERMISSION,
+    ERROR_SERVER_NOT_RESPONDING,
+    ERROR_FROM_DEVICE,
+    ERROR_UNRECOGNIZED_RESPONSE,
+    ERROR_MACRO_NOT_FOUND,
+    ERROR_MACRO_NOT_DEFINED,
+    ERROR_MESSAGE_MACRO_NOT_FOUND,
+    ERROR_DEFAULTOFF_MACRO_NOT_FOUND,
+    ERROR_FILE_COULD_NOT_BE_OPENED,
+    ERROR_DEVICENAME_TOO_LONG,
+    ERROR_DEVICENAME_NOT_FOUND,
+    ERROR_NO_RESPONSES,
+    ERROR_NO_COMMAND_FOUND,
+    ERROR_WRONG_KEY_SPECIFIED,
+    ERROR_UNKNOWN_DEVICE_TYPE,
+    ERROR_ALLOCATING_MEMORY,
+    ERROR_PORT_NOT_CONFIGURED,
+    ERROR_DEVICE_NOT_READY,
+    ERROR_READING_INI_FILE,
+    ERROR_NO_CONNECTION,
+    ERROR_BAD_USAGE_IN_INI_FILE,
+    ERROR_READING_SECTIONNAME,
+    ERROR_READING_DEVICETYPE,
+    ERROR_READING_DEVICENAME,
+    ERROR_READING_USAGE,
+    ERROR_READING_MAXCONNECTBPS,
+    ERROR_READING_MAXCARRIERBPS,
+    ERROR_LINE_BUSY,
+    ERROR_VOICE_ANSWER,
+    ERROR_NO_ANSWER,
+    ERROR_NO_CARRIER,
+    ERROR_NO_DIALTONE,
+    ERROR_IN_COMMAND,
+    ERROR_WRITING_SECTIONNAME,
+    ERROR_WRITING_DEVICETYPE,
+    ERROR_WRITING_DEVICENAME,
+    ERROR_WRITING_MAXCONNECTBPS,
+    ERROR_WRITING_MAXCARRIERBPS,
+    ERROR_WRITING_USAGE,
+    ERROR_WRITING_DEFAULTOFF,
+    ERROR_READING_DEFAULTOFF,
+    ERROR_EMPTY_INI_FILE,
+    ERROR_AUTHENTICATION_FAILURE,
+    ERROR_PORT_OR_DEVICE,
+    ERROR_NOT_BINARY_MACRO,
+    ERROR_DCB_NOT_FOUND,
+    ERROR_STATE_MACHINES_NOT_STARTED,
+    ERROR_STATE_MACHINES_ALREADY_STARTED,
+    ERROR_PARTIAL_RESPONSE_LOOPING,
+    ERROR_UNKNOWN_RESPONSE_KEY,
+    ERROR_RECV_BUF_FULL,
+    ERROR_CMD_TOO_LONG,
+    ERROR_UNSUPPORTED_BPS,
+    ERROR_UNEXPECTED_RESPONSE,
+    ERROR_INTERACTIVE_MODE,
+    ERROR_BAD_CALLBACK_NUMBER,
+    ERROR_INVALID_AUTH_STATE,
+    ERROR_WRITING_INITBPS,
+    ERROR_X25_DIAGNOSTIC,
+    ERROR_ACCT_EXPIRED,
+    ERROR_CHANGING_PASSWORD,
+    ERROR_OVERRUN,
+    ERROR_RASMAN_CANNOT_INITIALIZE,
+    ERROR_BIPLEX_PORT_NOT_AVAILABLE,
+    ERROR_NO_ACTIVE_ISDN_LINES,
+    ERROR_NO_ISDN_CHANNELS_AVAILABLE,
+    ERROR_TOO_MANY_LINE_ERRORS,
+    ERROR_IP_CONFIGURATION,
+    ERROR_NO_IP_ADDRESSES,
+    ERROR_PPP_TIMEOUT,
+    ERROR_PPP_REMOTE_TERMINATED,
+    ERROR_PPP_NO_PROTOCOLS_CONFIGURED,
+    ERROR_PPP_NO_RESPONSE,
+    ERROR_PPP_INVALID_PACKET,
+    ERROR_PHONE_NUMBER_TOO_LONG,
+    ERROR_IPXCP_NO_DIALOUT_CONFIGURED,
+    ERROR_IPXCP_NO_DIALIN_CONFIGURED,
+    ERROR_IPXCP_DIALOUT_ALREADY_ACTIVE,
+    ERROR_ACCESSING_TCPCFGDLL,
+    ERROR_NO_IP_RAS_ADAPTER,
+    ERROR_SLIP_REQUIRES_IP,
+    ERROR_PROJECTION_NOT_COMPLETE,
+    ERROR_PROTOCOL_NOT_CONFIGURED,
+    ERROR_PPP_NOT_CONVERGING,
+    ERROR_PPP_CP_REJECTED,
+    ERROR_PPP_LCP_TERMINATED,
+    ERROR_PPP_REQUIRED_ADDRESS_REJECTED,
+    ERROR_PPP_NCP_TERMINATED,
+    ERROR_PPP_LOOPBACK_DETECTED,
+    ERROR_PPP_NO_ADDRESS_ASSIGNED,
+    ERROR_CANNOT_USE_LOGON_CREDENTIALS,
+    ERROR_TAPI_CONFIGURATION,
+    ERROR_NO_LOCAL_ENCRYPTION,
+    ERROR_NO_REMOTE_ENCRYPTION,
+    ERROR_REMOTE_REQUIRES_ENCRYPTION,
+    ERROR_IPXCP_NET_NUMBER_CONFLICT,
+    ERROR_INVALID_SMM,
+    ERROR_SMM_UNINITIALIZED,
+    ERROR_NO_MAC_FOR_PORT,
+    ERROR_SMM_TIMEOUT,
+    ERROR_BAD_PHONE_NUMBER,
+    ERROR_WRONG_MODULE,
+    ERROR_INVALID_CALLBACK_NUMBER,
+    ERROR_SCRIPT_SYNTAX,
+    ERROR_HANGUP_FAILED,
+    ERROR_BUNDLE_NOT_FOUND,
+    ERROR_CANNOT_DO_CUSTOMDIAL,
+    ERROR_DIAL_ALREADY_IN_PROGRESS,
+    ERROR_RASAUTO_CANNOT_INITIALIZE,
+    ERROR_CONNECTION_ALREADY_SHARED,
+    ERROR_SHARING_CHANGE_FAILED,
+    ERROR_SHARING_ROUTER_INSTALL,
+    ERROR_SHARE_CONNECTION_FAILED,
+    ERROR_SHARING_PRIVATE_INSTALL,
+    ERROR_CANNOT_SHARE_CONNECTION,
+    ERROR_NO_SMART_CARD_READER,
+    ERROR_SHARING_ADDRESS_EXISTS,
+    ERROR_NO_CERTIFICATE,
+    ERROR_SHARING_MULTIPLE_ADDRESSES,
+    ERROR_FAILED_TO_ENCRYPT,
+    ERROR_BAD_ADDRESS_SPECIFIED,
+    ERROR_CONNECTION_REJECT,
+    ERROR_CONGESTION,
+    ERROR_INCOMPATIBLE,
+    ERROR_NUMBERCHANGED,
+    ERROR_TEMPFAILURE,
+    ERROR_BLOCKED,
+    ERROR_DONOTDISTURB,
+    ERROR_OUTOFORDER,
+    ERROR_UNABLE_TO_AUTHENTICATE_SERVER,
+    ERROR_SMART_CARD_REQUIRED,
+    ERROR_INVALID_FUNCTION_FOR_ENTRY,
+    ERROR_CERT_FOR_ENCRYPTION_NOT_FOUND,
+    ERROR_SHARING_RRAS_CONFLICT,
+    ERROR_SHARING_NO_PRIVATE_LAN,
+    ERROR_NO_DIFF_USER_AT_LOGON,
+    ERROR_NO_REG_CERT_AT_LOGON,
+    ERROR_OAKLEY_NO_CERT,
+    ERROR_OAKLEY_AUTH_FAIL,
+    ERROR_OAKLEY_ATTRIB_FAIL,
+    ERROR_OAKLEY_GENERAL_PROCESSING,
+    ERROR_OAKLEY_NO_PEER_CERT,
+    ERROR_OAKLEY_NO_POLICY,
+    ERROR_OAKLEY_TIMED_OUT,
+    ERROR_OAKLEY_ERROR,
+    ERROR_UNKNOWN_FRAMED_PROTOCOL,
+    ERROR_WRONG_TUNNEL_TYPE,
+    ERROR_UNKNOWN_SERVICE_TYPE,
+    ERROR_CONNECTING_DEVICE_NOT_FOUND,
+    ERROR_NO_EAPTLS_CERTIFICATE, <span class='com'>// = RASBASE+198</span>
+    RASBASEEND <span class='opr'>=</span> ERROR_NO_EAPTLS_CERTIFICATE
+<span class='opr'>}</span>
+</pre></td></tr></table>	</body>
+</html>

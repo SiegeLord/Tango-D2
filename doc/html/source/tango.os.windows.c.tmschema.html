@@ -1,0 +1,1535 @@
+<!DOCTYPE html 
+     PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+     "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html>
+	<head>
+		<link rel="stylesheet" href="style.css" type="text/css" />
+		<title>os/windows/c/tmschema.d</title>
+	</head>
+	<body>
+
+<table id='dcode'><tr><td id='lnum'><pre><span>1</span>
+<span>2</span>
+<span>3</span>
+<span>4</span>
+<span>5</span>
+<span>6</span>
+<span>7</span>
+<span>8</span>
+<span>9</span>
+<span>10</span>
+<span>11</span>
+<span>12</span>
+<span>13</span>
+<span>14</span>
+<span>15</span>
+<span>16</span>
+<span>17</span>
+<span>18</span>
+<span>19</span>
+<span>20</span>
+<span>21</span>
+<span>22</span>
+<span>23</span>
+<span>24</span>
+<span>25</span>
+<span>26</span>
+<span>27</span>
+<span>28</span>
+<span>29</span>
+<span>30</span>
+<span>31</span>
+<span>32</span>
+<span>33</span>
+<span>34</span>
+<span>35</span>
+<span>36</span>
+<span>37</span>
+<span>38</span>
+<span>39</span>
+<span>40</span>
+<span>41</span>
+<span>42</span>
+<span>43</span>
+<span>44</span>
+<span>45</span>
+<span>46</span>
+<span>47</span>
+<span>48</span>
+<span>49</span>
+<span>50</span>
+<span>51</span>
+<span>52</span>
+<span>53</span>
+<span>54</span>
+<span>55</span>
+<span>56</span>
+<span>57</span>
+<span>58</span>
+<span>59</span>
+<span>60</span>
+<span>61</span>
+<span>62</span>
+<span>63</span>
+<span>64</span>
+<span>65</span>
+<span>66</span>
+<span>67</span>
+<span>68</span>
+<span>69</span>
+<span>70</span>
+<span>71</span>
+<span>72</span>
+<span>73</span>
+<span>74</span>
+<span>75</span>
+<span>76</span>
+<span>77</span>
+<span>78</span>
+<span>79</span>
+<span>80</span>
+<span>81</span>
+<span>82</span>
+<span>83</span>
+<span>84</span>
+<span>85</span>
+<span>86</span>
+<span>87</span>
+<span>88</span>
+<span>89</span>
+<span>90</span>
+<span>91</span>
+<span>92</span>
+<span>93</span>
+<span>94</span>
+<span>95</span>
+<span>96</span>
+<span>97</span>
+<span>98</span>
+<span>99</span>
+<span>100</span>
+<span>101</span>
+<span>102</span>
+<span>103</span>
+<span>104</span>
+<span>105</span>
+<span>106</span>
+<span>107</span>
+<span>108</span>
+<span>109</span>
+<span>110</span>
+<span>111</span>
+<span>112</span>
+<span>113</span>
+<span>114</span>
+<span>115</span>
+<span>116</span>
+<span>117</span>
+<span>118</span>
+<span>119</span>
+<span>120</span>
+<span>121</span>
+<span>122</span>
+<span>123</span>
+<span>124</span>
+<span>125</span>
+<span>126</span>
+<span>127</span>
+<span>128</span>
+<span>129</span>
+<span>130</span>
+<span>131</span>
+<span>132</span>
+<span>133</span>
+<span>134</span>
+<span>135</span>
+<span>136</span>
+<span>137</span>
+<span>138</span>
+<span>139</span>
+<span>140</span>
+<span>141</span>
+<span>142</span>
+<span>143</span>
+<span>144</span>
+<span>145</span>
+<span>146</span>
+<span>147</span>
+<span>148</span>
+<span>149</span>
+<span>150</span>
+<span>151</span>
+<span>152</span>
+<span>153</span>
+<span>154</span>
+<span>155</span>
+<span>156</span>
+<span>157</span>
+<span>158</span>
+<span>159</span>
+<span>160</span>
+<span>161</span>
+<span>162</span>
+<span>163</span>
+<span>164</span>
+<span>165</span>
+<span>166</span>
+<span>167</span>
+<span>168</span>
+<span>169</span>
+<span>170</span>
+<span>171</span>
+<span>172</span>
+<span>173</span>
+<span>174</span>
+<span>175</span>
+<span>176</span>
+<span>177</span>
+<span>178</span>
+<span>179</span>
+<span>180</span>
+<span>181</span>
+<span>182</span>
+<span>183</span>
+<span>184</span>
+<span>185</span>
+<span>186</span>
+<span>187</span>
+<span>188</span>
+<span>189</span>
+<span>190</span>
+<span>191</span>
+<span>192</span>
+<span>193</span>
+<span>194</span>
+<span>195</span>
+<span>196</span>
+<span>197</span>
+<span>198</span>
+<span>199</span>
+<span>200</span>
+<span>201</span>
+<span>202</span>
+<span>203</span>
+<span>204</span>
+<span>205</span>
+<span>206</span>
+<span>207</span>
+<span>208</span>
+<span>209</span>
+<span>210</span>
+<span>211</span>
+<span>212</span>
+<span>213</span>
+<span>214</span>
+<span>215</span>
+<span>216</span>
+<span>217</span>
+<span>218</span>
+<span>219</span>
+<span>220</span>
+<span>221</span>
+<span>222</span>
+<span>223</span>
+<span>224</span>
+<span>225</span>
+<span>226</span>
+<span>227</span>
+<span>228</span>
+<span>229</span>
+<span>230</span>
+<span>231</span>
+<span>232</span>
+<span>233</span>
+<span>234</span>
+<span>235</span>
+<span>236</span>
+<span>237</span>
+<span>238</span>
+<span>239</span>
+<span>240</span>
+<span>241</span>
+<span>242</span>
+<span>243</span>
+<span>244</span>
+<span>245</span>
+<span>246</span>
+<span>247</span>
+<span>248</span>
+<span>249</span>
+<span>250</span>
+<span>251</span>
+<span>252</span>
+<span>253</span>
+<span>254</span>
+<span>255</span>
+<span>256</span>
+<span>257</span>
+<span>258</span>
+<span>259</span>
+<span>260</span>
+<span>261</span>
+<span>262</span>
+<span>263</span>
+<span>264</span>
+<span>265</span>
+<span>266</span>
+<span>267</span>
+<span>268</span>
+<span>269</span>
+<span>270</span>
+<span>271</span>
+<span>272</span>
+<span>273</span>
+<span>274</span>
+<span>275</span>
+<span>276</span>
+<span>277</span>
+<span>278</span>
+<span>279</span>
+<span>280</span>
+<span>281</span>
+<span>282</span>
+<span>283</span>
+<span>284</span>
+<span>285</span>
+<span>286</span>
+<span>287</span>
+<span>288</span>
+<span>289</span>
+<span>290</span>
+<span>291</span>
+<span>292</span>
+<span>293</span>
+<span>294</span>
+<span>295</span>
+<span>296</span>
+<span>297</span>
+<span>298</span>
+<span>299</span>
+<span>300</span>
+<span>301</span>
+<span>302</span>
+<span>303</span>
+<span>304</span>
+<span>305</span>
+<span>306</span>
+<span>307</span>
+<span>308</span>
+<span>309</span>
+<span>310</span>
+<span>311</span>
+<span>312</span>
+<span>313</span>
+<span>314</span>
+<span>315</span>
+<span>316</span>
+<span>317</span>
+<span>318</span>
+<span>319</span>
+<span>320</span>
+<span>321</span>
+<span>322</span>
+<span>323</span>
+<span>324</span>
+<span>325</span>
+<span>326</span>
+<span>327</span>
+<span>328</span>
+<span>329</span>
+<span>330</span>
+<span>331</span>
+<span>332</span>
+<span>333</span>
+<span>334</span>
+<span>335</span>
+<span>336</span>
+<span>337</span>
+<span>338</span>
+<span>339</span>
+<span>340</span>
+<span>341</span>
+<span>342</span>
+<span>343</span>
+<span>344</span>
+<span>345</span>
+<span>346</span>
+<span>347</span>
+<span>348</span>
+<span>349</span>
+<span>350</span>
+<span>351</span>
+<span>352</span>
+<span>353</span>
+<span>354</span>
+<span>355</span>
+<span>356</span>
+<span>357</span>
+<span>358</span>
+<span>359</span>
+<span>360</span>
+<span>361</span>
+<span>362</span>
+<span>363</span>
+<span>364</span>
+<span>365</span>
+<span>366</span>
+<span>367</span>
+<span>368</span>
+<span>369</span>
+<span>370</span>
+<span>371</span>
+<span>372</span>
+<span>373</span>
+<span>374</span>
+<span>375</span>
+<span>376</span>
+<span>377</span>
+<span>378</span>
+<span>379</span>
+<span>380</span>
+<span>381</span>
+<span>382</span>
+<span>383</span>
+<span>384</span>
+<span>385</span>
+<span>386</span>
+<span>387</span>
+<span>388</span>
+<span>389</span>
+<span>390</span>
+<span>391</span>
+<span>392</span>
+<span>393</span>
+<span>394</span>
+<span>395</span>
+<span>396</span>
+<span>397</span>
+<span>398</span>
+<span>399</span>
+<span>400</span>
+<span>401</span>
+<span>402</span>
+<span>403</span>
+<span>404</span>
+<span>405</span>
+<span>406</span>
+<span>407</span>
+<span>408</span>
+<span>409</span>
+<span>410</span>
+<span>411</span>
+<span>412</span>
+<span>413</span>
+<span>414</span>
+<span>415</span>
+<span>416</span>
+<span>417</span>
+<span>418</span>
+<span>419</span>
+<span>420</span>
+<span>421</span>
+<span>422</span>
+<span>423</span>
+<span>424</span>
+<span>425</span>
+<span>426</span>
+<span>427</span>
+<span>428</span>
+<span>429</span>
+<span>430</span>
+<span>431</span>
+<span>432</span>
+<span>433</span>
+<span>434</span>
+<span>435</span>
+<span>436</span>
+<span>437</span>
+<span>438</span>
+<span>439</span>
+<span>440</span>
+<span>441</span>
+<span>442</span>
+<span>443</span>
+<span>444</span>
+<span>445</span>
+<span>446</span>
+<span>447</span>
+<span>448</span>
+<span>449</span>
+<span>450</span>
+<span>451</span>
+<span>452</span>
+<span>453</span>
+<span>454</span>
+<span>455</span>
+<span>456</span>
+<span>457</span>
+<span>458</span>
+<span>459</span>
+<span>460</span>
+<span>461</span>
+<span>462</span>
+<span>463</span>
+<span>464</span>
+<span>465</span>
+<span>466</span>
+<span>467</span>
+<span>468</span>
+<span>469</span>
+<span>470</span>
+<span>471</span>
+<span>472</span>
+<span>473</span>
+<span>474</span>
+<span>475</span>
+<span>476</span>
+<span>477</span>
+<span>478</span>
+<span>479</span>
+<span>480</span>
+<span>481</span>
+<span>482</span>
+<span>483</span>
+<span>484</span>
+<span>485</span>
+<span>486</span>
+<span>487</span>
+<span>488</span>
+<span>489</span>
+<span>490</span>
+<span>491</span>
+<span>492</span>
+<span>493</span>
+<span>494</span>
+<span>495</span>
+<span>496</span>
+<span>497</span>
+<span>498</span>
+<span>499</span>
+<span>500</span>
+<span>501</span>
+<span>502</span>
+<span>503</span>
+<span>504</span>
+<span>505</span>
+<span>506</span>
+<span>507</span>
+<span>508</span>
+<span>509</span>
+<span>510</span>
+<span>511</span>
+<span>512</span>
+<span>513</span>
+<span>514</span>
+<span>515</span>
+<span>516</span>
+<span>517</span>
+<span>518</span>
+<span>519</span>
+<span>520</span>
+<span>521</span>
+<span>522</span>
+<span>523</span>
+<span>524</span>
+<span>525</span>
+<span>526</span>
+<span>527</span>
+<span>528</span>
+<span>529</span>
+<span>530</span>
+<span>531</span>
+<span>532</span>
+<span>533</span>
+<span>534</span>
+<span>535</span>
+<span>536</span>
+<span>537</span>
+<span>538</span>
+<span>539</span>
+<span>540</span>
+<span>541</span>
+<span>542</span>
+<span>543</span>
+<span>544</span>
+<span>545</span>
+<span>546</span>
+<span>547</span>
+<span>548</span>
+<span>549</span>
+<span>550</span>
+<span>551</span>
+<span>552</span>
+<span>553</span>
+<span>554</span>
+<span>555</span>
+<span>556</span>
+<span>557</span>
+<span>558</span>
+<span>559</span>
+<span>560</span>
+<span>561</span>
+<span>562</span>
+<span>563</span>
+<span>564</span>
+<span>565</span>
+<span>566</span>
+<span>567</span>
+<span>568</span>
+<span>569</span>
+<span>570</span>
+<span>571</span>
+<span>572</span>
+<span>573</span>
+<span>574</span>
+<span>575</span>
+<span>576</span>
+<span>577</span>
+<span>578</span>
+<span>579</span>
+<span>580</span>
+<span>581</span>
+<span>582</span>
+<span>583</span>
+<span>584</span>
+<span>585</span>
+<span>586</span>
+<span>587</span>
+<span>588</span>
+<span>589</span>
+<span>590</span>
+<span>591</span>
+<span>592</span>
+<span>593</span>
+<span>594</span>
+<span>595</span>
+<span>596</span>
+<span>597</span>
+<span>598</span>
+<span>599</span>
+<span>600</span>
+<span>601</span>
+<span>602</span>
+<span>603</span>
+<span>604</span>
+<span>605</span>
+<span>606</span>
+<span>607</span>
+<span>608</span>
+<span>609</span>
+<span>610</span>
+<span>611</span>
+<span>612</span>
+<span>613</span>
+<span>614</span>
+<span>615</span>
+<span>616</span>
+<span>617</span>
+<span>618</span>
+<span>619</span>
+<span>620</span>
+<span>621</span>
+<span>622</span>
+<span>623</span>
+<span>624</span>
+<span>625</span>
+<span>626</span>
+<span>627</span>
+<span>628</span>
+<span>629</span>
+<span>630</span>
+<span>631</span>
+<span>632</span>
+<span>633</span>
+<span>634</span>
+<span>635</span>
+<span>636</span>
+<span>637</span>
+<span>638</span>
+<span>639</span>
+<span>640</span>
+<span>641</span>
+<span>642</span>
+<span>643</span>
+<span>644</span>
+<span>645</span>
+<span>646</span>
+<span>647</span>
+<span>648</span>
+<span>649</span>
+<span>650</span>
+<span>651</span>
+<span>652</span>
+<span>653</span>
+<span>654</span>
+<span>655</span>
+<span>656</span>
+<span>657</span>
+<span>658</span>
+<span>659</span>
+<span>660</span>
+<span>661</span>
+<span>662</span>
+<span>663</span>
+<span>664</span>
+<span>665</span>
+<span>666</span>
+<span>667</span>
+<span>668</span>
+<span>669</span>
+<span>670</span>
+<span>671</span>
+<span>672</span>
+<span>673</span>
+<span>674</span>
+<span>675</span>
+<span>676</span>
+<span>677</span>
+<span>678</span>
+<span>679</span>
+<span>680</span>
+<span>681</span>
+<span>682</span>
+<span>683</span>
+<span>684</span>
+<span>685</span>
+<span>686</span>
+<span>687</span>
+<span>688</span>
+<span>689</span>
+<span>690</span>
+<span>691</span>
+<span>692</span>
+<span>693</span>
+<span>694</span>
+<span>695</span>
+<span>696</span>
+<span>697</span>
+<span>698</span>
+<span>699</span>
+<span>700</span>
+<span>701</span>
+<span>702</span>
+<span>703</span>
+<span>704</span>
+<span>705</span>
+<span>706</span>
+<span>707</span>
+<span>708</span>
+<span>709</span>
+<span>710</span>
+<span>711</span>
+<span>712</span>
+<span>713</span>
+<span>714</span>
+<span>715</span>
+<span>716</span>
+<span>717</span>
+<span>718</span>
+<span>719</span>
+<span>720</span>
+<span>721</span>
+<span>722</span>
+<span>723</span>
+<span>724</span>
+<span>725</span>
+<span>726</span>
+<span>727</span>
+<span>728</span>
+<span>729</span>
+<span>730</span>
+<span>731</span>
+<span>732</span>
+<span>733</span>
+<span>734</span>
+<span>735</span>
+<span>736</span>
+<span>737</span>
+<span>738</span>
+<span>739</span>
+<span>740</span>
+<span>741</span>
+<span>742</span>
+<span>743</span>
+<span>744</span>
+<span>745</span>
+<span>746</span>
+<span>747</span>
+<span>748</span>
+<span>749</span>
+<span>750</span>
+<span>751</span>
+<span>752</span>
+<span>753</span>
+<span>754</span>
+<span>755</span>
+<span>756</span>
+<span>757</span>
+<span>758</span>
+<span>759</span>
+<span>760</span>
+<span>761</span>
+</pre></td><td id='code'><pre><span class='com'>/***********************************************************************\
+*                              tmschema.d                               *
+*                                                                       *
+*                       Windows API header module                       *
+*                                                                       *
+*                 Translated from MinGW Windows headers                 *
+*                                                                       *
+*                       Placed into public domain                       *
+\***********************************************************************/</span>
+<span class='kw2'>module</span> tango.os.windows.c.tmschema;
+
+<span class='com'>//version (build) { pragma(nolink); }</span>
+
+
+<span class='com'>/* BUTTON parts */</span>
+<span class='kw4'>enum</span> <span class='opr'>{</span>
+    BP_PUSHBUTTON <span class='opr'>=</span> <span class='nbr'>1</span>,
+    BP_RADIOBUTTON <span class='opr'>=</span> <span class='nbr'>2</span>,
+    BP_CHECKBOX <span class='opr'>=</span> <span class='nbr'>3</span>,
+    BP_GROUPBOX <span class='opr'>=</span> <span class='nbr'>4</span>,
+    BP_USERBUTTON <span class='opr'>=</span> <span class='nbr'>5</span>
+<span class='opr'>}</span>
+
+<span class='kw4'>enum</span> <span class='opr'>{</span>
+    CBS_UNCHECKEDNORMAL <span class='opr'>=</span> <span class='nbr'>1</span>,
+    CBS_UNCHECKEDHOT <span class='opr'>=</span> <span class='nbr'>2</span>,
+    CBS_UNCHECKEDPRESSED <span class='opr'>=</span> <span class='nbr'>3</span>,
+    CBS_UNCHECKEDDISABLED <span class='opr'>=</span> <span class='nbr'>4</span>,
+    CBS_CHECKEDNORMAL <span class='opr'>=</span> <span class='nbr'>5</span>,
+    CBS_CHECKEDHOT <span class='opr'>=</span> <span class='nbr'>6</span>,
+    CBS_CHECKEDPRESSED <span class='opr'>=</span> <span class='nbr'>7</span>,
+    CBS_CHECKEDDISABLED <span class='opr'>=</span> <span class='nbr'>8</span>,
+    CBS_MIXEDNORMAL <span class='opr'>=</span> <span class='nbr'>9</span>,
+    CBS_MIXEDHOT <span class='opr'>=</span> <span class='nbr'>10</span>,
+    CBS_MIXEDPRESSED <span class='opr'>=</span> <span class='nbr'>11</span>,
+    CBS_MIXEDDISABLED <span class='opr'>=</span> <span class='nbr'>12</span>
+<span class='opr'>}</span>
+
+<span class='kw4'>enum</span> <span class='opr'>{</span>
+    GBS_NORMAL <span class='opr'>=</span> <span class='nbr'>1</span>,
+    GBS_DISABLED <span class='opr'>=</span> <span class='nbr'>2</span>
+<span class='opr'>}</span>
+
+<span class='kw4'>enum</span> <span class='opr'>{</span>
+    PBS_NORMAL <span class='opr'>=</span> <span class='nbr'>1</span>,
+    PBS_HOT <span class='opr'>=</span> <span class='nbr'>2</span>,
+    PBS_PRESSED <span class='opr'>=</span> <span class='nbr'>3</span>,
+    PBS_DISABLED <span class='opr'>=</span> <span class='nbr'>4</span>,
+    PBS_DEFAULTED <span class='opr'>=</span> <span class='nbr'>5</span>
+<span class='opr'>}</span>
+
+<span class='kw4'>enum</span> <span class='opr'>{</span>
+    RBS_UNCHECKEDNORMAL <span class='opr'>=</span> <span class='nbr'>1</span>,
+    RBS_UNCHECKEDHOT <span class='opr'>=</span> <span class='nbr'>2</span>,
+    RBS_UNCHECKEDPRESSED <span class='opr'>=</span> <span class='nbr'>3</span>,
+    RBS_UNCHECKEDDISABLED <span class='opr'>=</span> <span class='nbr'>4</span>,
+    RBS_CHECKEDNORMAL <span class='opr'>=</span> <span class='nbr'>5</span>,
+    RBS_CHECKEDHOT <span class='opr'>=</span> <span class='nbr'>6</span>,
+    RBS_CHECKEDPRESSED <span class='opr'>=</span> <span class='nbr'>7</span>,
+    RBS_CHECKEDDISABLED <span class='opr'>=</span> <span class='nbr'>8</span>
+<span class='opr'>}</span>
+
+<span class='com'>/* CLOCK parts */</span>
+<span class='kw4'>enum</span> <span class='opr'>{</span>
+    CLP_TIME <span class='opr'>=</span> <span class='nbr'>1</span>
+<span class='opr'>}</span>
+
+<span class='kw4'>enum</span> <span class='opr'>{</span>
+    CLS_NORMAL <span class='opr'>=</span> <span class='nbr'>1</span>
+<span class='opr'>}</span>
+
+<span class='com'>/* COMBOBOX parts */</span>
+<span class='kw4'>enum</span> <span class='opr'>{</span>
+    CP_DROPDOWNBUTTON <span class='opr'>=</span> <span class='nbr'>1</span>
+<span class='opr'>}</span>
+
+<span class='kw4'>enum</span> <span class='opr'>{</span>
+    CBXS_NORMAL <span class='opr'>=</span> <span class='nbr'>1</span>,
+    CBXS_HOT <span class='opr'>=</span> <span class='nbr'>2</span>,
+    CBXS_PRESSED <span class='opr'>=</span> <span class='nbr'>3</span>,
+    CBXS_DISABLED <span class='opr'>=</span> <span class='nbr'>4</span>
+<span class='opr'>}</span>
+
+<span class='com'>/* EDIT parts */</span>
+<span class='kw4'>enum</span> <span class='opr'>{</span>
+    EP_EDITTEXT <span class='opr'>=</span> <span class='nbr'>1</span>,
+    EP_CARET <span class='opr'>=</span> <span class='nbr'>2</span>
+<span class='opr'>}</span>
+
+<span class='kw4'>enum</span> <span class='opr'>{</span>
+    ETS_NORMAL <span class='opr'>=</span> <span class='nbr'>1</span>,
+    ETS_HOT <span class='opr'>=</span> <span class='nbr'>2</span>,
+    ETS_SELECTED <span class='opr'>=</span> <span class='nbr'>3</span>,
+    ETS_DISABLED <span class='opr'>=</span> <span class='nbr'>4</span>,
+    ETS_FOCUSED <span class='opr'>=</span> <span class='nbr'>5</span>,
+    ETS_READONLY <span class='opr'>=</span> <span class='nbr'>6</span>,
+    ETS_ASSIST <span class='opr'>=</span> <span class='nbr'>7</span>
+<span class='opr'>}</span>
+<span class='com'>/* EXPLORERBAR parts */</span>
+<span class='kw4'>enum</span> <span class='opr'>{</span>
+    EBP_HEADERBACKGROUND <span class='opr'>=</span> <span class='nbr'>1</span>,
+    EBP_HEADERCLOSE <span class='opr'>=</span> <span class='nbr'>2</span>,
+    EBP_HEADERPIN <span class='opr'>=</span> <span class='nbr'>3</span>,
+    EBP_IEBARMENU <span class='opr'>=</span> <span class='nbr'>4</span>,
+    EBP_NORMALGROUPBACKGROUND <span class='opr'>=</span> <span class='nbr'>5</span>,
+    EBP_NORMALGROUPCOLLAPSE <span class='opr'>=</span> <span class='nbr'>6</span>,
+    EBP_NORMALGROUPEXPAND <span class='opr'>=</span> <span class='nbr'>7</span>,
+    EBP_NORMALGROUPHEAD <span class='opr'>=</span> <span class='nbr'>8</span>,
+    EBP_SPECIALGROUPBACKGROUND <span class='opr'>=</span> <span class='nbr'>9</span>,
+    EBP_SPECIALGROUPCOLLAPSE <span class='opr'>=</span> <span class='nbr'>10</span>,
+    EBP_SPECIALGROUPEXPAND <span class='opr'>=</span> <span class='nbr'>11</span>,
+    EBP_SPECIALGROUPHEAD <span class='opr'>=</span> <span class='nbr'>12</span>
+<span class='opr'>}</span>
+
+<span class='kw4'>enum</span> <span class='opr'>{</span>
+    EBHC_NORMAL <span class='opr'>=</span> <span class='nbr'>1</span>,
+    EBHC_HOT <span class='opr'>=</span> <span class='nbr'>2</span>,
+    EBHC_PRESSED <span class='opr'>=</span> <span class='nbr'>3</span>
+<span class='opr'>}</span>
+
+<span class='kw4'>enum</span> <span class='opr'>{</span>
+    EBHP_NORMAL <span class='opr'>=</span> <span class='nbr'>1</span>,
+    EBHP_HOT <span class='opr'>=</span> <span class='nbr'>2</span>,
+    EBHP_PRESSED <span class='opr'>=</span> <span class='nbr'>3</span>,
+    EBHP_SELECTEDNORMAL <span class='opr'>=</span> <span class='nbr'>4</span>,
+    EBHP_SELECTEDHOT <span class='opr'>=</span> <span class='nbr'>5</span>,
+    EBHP_SELECTEDPRESSED <span class='opr'>=</span> <span class='nbr'>6</span>
+<span class='opr'>}</span>
+
+<span class='kw4'>enum</span> <span class='opr'>{</span>
+    EBM_NORMAL <span class='opr'>=</span> <span class='nbr'>1</span>,
+    EBM_HOT <span class='opr'>=</span> <span class='nbr'>2</span>,
+    EBM_PRESSED <span class='opr'>=</span> <span class='nbr'>3</span>
+<span class='opr'>}</span>
+
+<span class='kw4'>enum</span> <span class='opr'>{</span>
+    EBNGC_NORMAL <span class='opr'>=</span> <span class='nbr'>1</span>,
+    EBNGC_HOT <span class='opr'>=</span> <span class='nbr'>2</span>,
+    EBNGC_PRESSED <span class='opr'>=</span> <span class='nbr'>3</span>
+<span class='opr'>}</span>
+
+<span class='kw4'>enum</span> <span class='opr'>{</span>
+    EBNGE_NORMAL <span class='opr'>=</span> <span class='nbr'>1</span>,
+    EBNGE_HOT <span class='opr'>=</span> <span class='nbr'>2</span>,
+    EBNGE_PRESSED <span class='opr'>=</span> <span class='nbr'>3</span>
+<span class='opr'>}</span>
+
+<span class='kw4'>enum</span> <span class='opr'>{</span>
+    EBSGC_NORMAL <span class='opr'>=</span> <span class='nbr'>1</span>,
+    EBSGC_HOT <span class='opr'>=</span> <span class='nbr'>2</span>,
+    EBSGC_PRESSED <span class='opr'>=</span> <span class='nbr'>3</span>
+<span class='opr'>}</span>
+
+<span class='kw4'>enum</span> <span class='opr'>{</span>
+    EBSGE_NORMAL <span class='opr'>=</span> <span class='nbr'>1</span>,
+    EBSGE_HOT <span class='opr'>=</span> <span class='nbr'>2</span>,
+    EBSGE_PRESSED <span class='opr'>=</span> <span class='nbr'>3</span>
+<span class='opr'>}</span>
+
+<span class='com'>/* HEADER parts */</span>
+<span class='kw4'>enum</span> <span class='opr'>{</span>
+    HP_HEADERITEM <span class='opr'>=</span> <span class='nbr'>1</span>,
+    HP_HEADERITEMLEFT <span class='opr'>=</span> <span class='nbr'>2</span>,
+    HP_HEADERITEMRIGHT <span class='opr'>=</span> <span class='nbr'>3</span>,
+    HP_HEADERSORTARROW <span class='opr'>=</span> <span class='nbr'>4</span>
+<span class='opr'>}</span>
+
+<span class='kw4'>enum</span> <span class='opr'>{</span>
+    HIS_NORMAL <span class='opr'>=</span> <span class='nbr'>1</span>,
+    HIS_HOT <span class='opr'>=</span> <span class='nbr'>2</span>,
+    HIS_PRESSED <span class='opr'>=</span> <span class='nbr'>3</span>
+<span class='opr'>}</span>
+
+<span class='kw4'>enum</span> <span class='opr'>{</span>
+    HILS_NORMAL <span class='opr'>=</span> <span class='nbr'>1</span>,
+    HILS_HOT <span class='opr'>=</span> <span class='nbr'>2</span>,
+    HILS_PRESSED <span class='opr'>=</span> <span class='nbr'>3</span>
+<span class='opr'>}</span>
+
+<span class='kw4'>enum</span> <span class='opr'>{</span>
+    HIRS_NORMAL <span class='opr'>=</span> <span class='nbr'>1</span>,
+    HIRS_HOT <span class='opr'>=</span> <span class='nbr'>2</span>,
+    HIRS_PRESSED <span class='opr'>=</span> <span class='nbr'>3</span>
+<span class='opr'>}</span>
+
+<span class='kw4'>enum</span> <span class='opr'>{</span>
+    HSAS_SORTEDUP <span class='opr'>=</span> <span class='nbr'>1</span>,
+    HSAS_SORTEDDOWN <span class='opr'>=</span> <span class='nbr'>2</span>
+<span class='opr'>}</span>
+
+<span class='com'>/* LISTVIEW parts */</span>
+<span class='kw4'>enum</span> <span class='opr'>{</span>
+    LVP_LISTITEM <span class='opr'>=</span> <span class='nbr'>1</span>,
+    LVP_LISTGROUP <span class='opr'>=</span> <span class='nbr'>2</span>,
+    LVP_LISTDETAIL <span class='opr'>=</span> <span class='nbr'>3</span>,
+    LVP_LISTSORTEDDETAIL <span class='opr'>=</span> <span class='nbr'>4</span>,
+    LVP_EMPTYTEXT <span class='opr'>=</span> <span class='nbr'>5</span>
+<span class='opr'>}</span>
+
+<span class='kw4'>enum</span> <span class='opr'>{</span>
+    LIS_NORMAL <span class='opr'>=</span> <span class='nbr'>1</span>,
+    LIS_HOT <span class='opr'>=</span> <span class='nbr'>2</span>,
+    LIS_SELECTED <span class='opr'>=</span> <span class='nbr'>3</span>,
+    LIS_DISABLED <span class='opr'>=</span> <span class='nbr'>4</span>,
+    LIS_SELECTEDNOTFOCUS <span class='opr'>=</span> <span class='nbr'>5</span>
+<span class='opr'>}</span>
+
+<span class='com'>/* MENU parts */</span>
+<span class='kw4'>enum</span> <span class='opr'>{</span>
+    MP_MENUITEM <span class='opr'>=</span> <span class='nbr'>1</span>,
+    MP_MENUDROPDOWN <span class='opr'>=</span> <span class='nbr'>2</span>,
+    MP_MENUBARITEM <span class='opr'>=</span> <span class='nbr'>3</span>,
+    MP_MENUBARDROPDOWN <span class='opr'>=</span> <span class='nbr'>4</span>,
+    MP_CHEVRON <span class='opr'>=</span> <span class='nbr'>5</span>,
+    MP_SEPARATOR <span class='opr'>=</span> <span class='nbr'>6</span>
+<span class='opr'>}</span>
+
+<span class='kw4'>enum</span> <span class='opr'>{</span>
+    MS_NORMAL <span class='opr'>=</span> <span class='nbr'>1</span>,
+    MS_SELECTED <span class='opr'>=</span> <span class='nbr'>2</span>,
+    MS_DEMOTED <span class='opr'>=</span> <span class='nbr'>3</span>
+<span class='opr'>}</span>
+<span class='com'>/* MENUBAND parts */</span>
+<span class='kw4'>enum</span> <span class='opr'>{</span>
+    MDP_NEWAPPBUTTON <span class='opr'>=</span> <span class='nbr'>1</span>,
+    MDP_SEPERATOR <span class='opr'>=</span> <span class='nbr'>2</span>
+<span class='opr'>}</span>
+
+<span class='kw4'>enum</span> <span class='opr'>{</span>
+    MDS_NORMAL <span class='opr'>=</span> <span class='nbr'>1</span>,
+    MDS_HOT <span class='opr'>=</span> <span class='nbr'>2</span>,
+    MDS_PRESSED <span class='opr'>=</span> <span class='nbr'>3</span>,
+    MDS_DISABLED <span class='opr'>=</span> <span class='nbr'>4</span>,
+    MDS_CHECKED <span class='opr'>=</span> <span class='nbr'>5</span>,
+    MDS_HOTCHECKED <span class='opr'>=</span> <span class='nbr'>6</span>
+<span class='opr'>}</span>
+
+<span class='com'>/* PAGE parts */</span>
+<span class='kw4'>enum</span> <span class='opr'>{</span>
+    PGRP_UP <span class='opr'>=</span> <span class='nbr'>1</span>,
+    PGRP_DOWN <span class='opr'>=</span> <span class='nbr'>2</span>,
+    PGRP_UPHORZ <span class='opr'>=</span> <span class='nbr'>3</span>,
+    PGRP_DOWNHORZ <span class='opr'>=</span> <span class='nbr'>4</span>
+<span class='opr'>}</span>
+
+<span class='kw4'>enum</span> <span class='opr'>{</span>
+    DNS_NORMAL <span class='opr'>=</span> <span class='nbr'>1</span>,
+    DNS_HOT <span class='opr'>=</span> <span class='nbr'>2</span>,
+    DNS_PRESSED <span class='opr'>=</span> <span class='nbr'>3</span>,
+    DNS_DISABLED <span class='opr'>=</span> <span class='nbr'>4</span>
+<span class='opr'>}</span>
+
+<span class='kw4'>enum</span> <span class='opr'>{</span>
+    DNHZS_NORMAL <span class='opr'>=</span> <span class='nbr'>1</span>,
+    DNHZS_HOT <span class='opr'>=</span> <span class='nbr'>2</span>,
+    DNHZS_PRESSED <span class='opr'>=</span> <span class='nbr'>3</span>,
+    DNHZS_DISABLED <span class='opr'>=</span> <span class='nbr'>4</span>
+<span class='opr'>}</span>
+
+<span class='kw4'>enum</span> <span class='opr'>{</span>
+    UPS_NORMAL <span class='opr'>=</span> <span class='nbr'>1</span>,
+    UPS_HOT <span class='opr'>=</span> <span class='nbr'>2</span>,
+    UPS_PRESSED <span class='opr'>=</span> <span class='nbr'>3</span>,
+    UPS_DISABLED <span class='opr'>=</span> <span class='nbr'>4</span>
+<span class='opr'>}</span>
+
+<span class='kw4'>enum</span> <span class='opr'>{</span>
+    UPHZS_NORMAL <span class='opr'>=</span> <span class='nbr'>1</span>,
+    UPHZS_HOT <span class='opr'>=</span> <span class='nbr'>2</span>,
+    UPHZS_PRESSED <span class='opr'>=</span> <span class='nbr'>3</span>,
+    UPHZS_DISABLED <span class='opr'>=</span> <span class='nbr'>4</span>
+<span class='opr'>}</span>
+
+<span class='com'>/* PROGRESS parts */</span>
+<span class='kw4'>enum</span> <span class='opr'>{</span>
+    PP_BAR <span class='opr'>=</span> <span class='nbr'>1</span>,
+    PP_BARVERT <span class='opr'>=</span> <span class='nbr'>2</span>,
+    PP_CHUNK <span class='opr'>=</span> <span class='nbr'>3</span>,
+    PP_CHUNKVERT <span class='opr'>=</span> <span class='nbr'>4</span>
+<span class='opr'>}</span>
+
+<span class='com'>/* REBAR parts */</span>
+<span class='kw4'>enum</span> <span class='opr'>{</span>
+    RP_GRIPPER <span class='opr'>=</span> <span class='nbr'>1</span>,
+    RP_GRIPPERVERT <span class='opr'>=</span> <span class='nbr'>2</span>,
+    RP_BAND <span class='opr'>=</span> <span class='nbr'>3</span>,
+    RP_CHEVRON <span class='opr'>=</span> <span class='nbr'>4</span>,
+    RP_CHEVRONVERT <span class='opr'>=</span> <span class='nbr'>5</span>
+<span class='opr'>}</span>
+
+<span class='kw4'>enum</span> <span class='opr'>{</span>
+    CHEVS_NORMAL <span class='opr'>=</span> <span class='nbr'>1</span>,
+    CHEVS_HOT <span class='opr'>=</span> <span class='nbr'>2</span>,
+    CHEVS_PRESSED <span class='opr'>=</span> <span class='nbr'>3</span>
+<span class='opr'>}</span>
+
+<span class='com'>/* SCROLLBAR parts */</span>
+<span class='kw4'>enum</span> <span class='opr'>{</span>
+    SBP_ARROWBTN <span class='opr'>=</span> <span class='nbr'>1</span>,
+    SBP_THUMBBTNHORZ <span class='opr'>=</span> <span class='nbr'>2</span>,
+    SBP_THUMBBTNVERT <span class='opr'>=</span> <span class='nbr'>3</span>,
+    SBP_LOWERTRACKHORZ <span class='opr'>=</span> <span class='nbr'>4</span>,
+    SBP_UPPERTRACKHORZ <span class='opr'>=</span> <span class='nbr'>5</span>,
+    SBP_LOWERTRACKVERT <span class='opr'>=</span> <span class='nbr'>6</span>,
+    SBP_UPPERTRACKVERT <span class='opr'>=</span> <span class='nbr'>7</span>,
+    SBP_GRIPPERHORZ <span class='opr'>=</span> <span class='nbr'>8</span>,
+    SBP_GRIPPERVERT <span class='opr'>=</span> <span class='nbr'>9</span>,
+    SBP_SIZEBOX <span class='opr'>=</span> <span class='nbr'>10</span>
+<span class='opr'>}</span>
+
+<span class='kw4'>enum</span> <span class='opr'>{</span>
+    ABS_UPNORMAL <span class='opr'>=</span> <span class='nbr'>1</span>,
+    ABS_UPHOT <span class='opr'>=</span> <span class='nbr'>2</span>,
+    ABS_UPPRESSED <span class='opr'>=</span> <span class='nbr'>3</span>,
+    ABS_UPDISABLED <span class='opr'>=</span> <span class='nbr'>4</span>,
+    ABS_DOWNNORMAL <span class='opr'>=</span> <span class='nbr'>5</span>,
+    ABS_DOWNHOT <span class='opr'>=</span> <span class='nbr'>6</span>,
+    ABS_DOWNPRESSED <span class='opr'>=</span> <span class='nbr'>7</span>,
+    ABS_DOWNDISABLED <span class='opr'>=</span> <span class='nbr'>8</span>,
+    ABS_LEFTNORMAL <span class='opr'>=</span> <span class='nbr'>9</span>,
+    ABS_LEFTHOT <span class='opr'>=</span> <span class='nbr'>10</span>,
+    ABS_LEFTPRESSED <span class='opr'>=</span> <span class='nbr'>11</span>,
+    ABS_LEFTDISABLED <span class='opr'>=</span> <span class='nbr'>12</span>,
+    ABS_RIGHTNORMAL <span class='opr'>=</span> <span class='nbr'>13</span>,
+    ABS_RIGHTHOT <span class='opr'>=</span> <span class='nbr'>14</span>,
+    ABS_RIGHTPRESSED <span class='opr'>=</span> <span class='nbr'>15</span>,
+    ABS_RIGHTDISABLED <span class='opr'>=</span> <span class='nbr'>16</span>
+<span class='opr'>}</span>
+
+<span class='kw4'>enum</span> <span class='opr'>{</span>
+    SCRBS_NORMAL <span class='opr'>=</span> <span class='nbr'>1</span>,
+    SCRBS_HOT <span class='opr'>=</span> <span class='nbr'>2</span>,
+    SCRBS_PRESSED <span class='opr'>=</span> <span class='nbr'>3</span>,
+    SCRBS_DISABLED <span class='opr'>=</span> <span class='nbr'>4</span>
+<span class='opr'>}</span>
+
+<span class='kw4'>enum</span> <span class='opr'>{</span>
+    SZB_RIGHTALIGN <span class='opr'>=</span> <span class='nbr'>1</span>,
+    SZB_LEFTALIGN <span class='opr'>=</span> <span class='nbr'>2</span>
+<span class='opr'>}</span>
+
+<span class='com'>/* SPIN parts */</span>
+<span class='kw4'>enum</span> <span class='opr'>{</span>
+    SPNP_UP <span class='opr'>=</span> <span class='nbr'>1</span>,
+    SPNP_DOWN <span class='opr'>=</span> <span class='nbr'>2</span>,
+    SPNP_UPHORZ <span class='opr'>=</span> <span class='nbr'>3</span>,
+    SPNP_DOWNHORZ <span class='opr'>=</span> <span class='nbr'>4</span>
+<span class='opr'>}</span>
+
+<span class='com'>/* STARTPANEL parts */</span>
+<span class='kw4'>enum</span> <span class='opr'>{</span>
+    SPP_USERPANE <span class='opr'>=</span> <span class='nbr'>1</span>,
+    SPP_MOREPROGRAMS <span class='opr'>=</span> <span class='nbr'>2</span>,
+    SPP_MOREPROGRAMSARROW <span class='opr'>=</span> <span class='nbr'>3</span>,
+    SPP_PROGLIST <span class='opr'>=</span> <span class='nbr'>4</span>,
+    SPP_PROGLISTSEPARATOR <span class='opr'>=</span> <span class='nbr'>5</span>,
+    SPP_PLACESLIST <span class='opr'>=</span> <span class='nbr'>6</span>,
+    SPP_PLACESLISTSEPARATOR <span class='opr'>=</span> <span class='nbr'>7</span>,
+    SPP_LOGOFF <span class='opr'>=</span> <span class='nbr'>8</span>,
+    SPP_LOGOFFBUTTONS <span class='opr'>=</span> <span class='nbr'>9</span>,
+    SPP_USERPICTURE <span class='opr'>=</span> <span class='nbr'>10</span>,
+    SPP_PREVIEW <span class='opr'>=</span> <span class='nbr'>11</span>
+<span class='opr'>}</span>
+
+<span class='kw4'>enum</span> <span class='opr'>{</span>
+    SPLS_NORMAL <span class='opr'>=</span> <span class='nbr'>1</span>,
+    SPLS_HOT <span class='opr'>=</span> <span class='nbr'>2</span>,
+    SPLS_PRESSED <span class='opr'>=</span> <span class='nbr'>3</span>
+<span class='opr'>}</span>
+
+<span class='kw4'>enum</span> <span class='opr'>{</span>
+    SPS_NORMAL <span class='opr'>=</span> <span class='nbr'>1</span>,
+    SPS_HOT <span class='opr'>=</span> <span class='nbr'>2</span>,
+    SPS_PRESSED <span class='opr'>=</span> <span class='nbr'>3</span>
+<span class='opr'>}</span>
+
+<span class='com'>/* STATUS parts */</span>
+<span class='kw4'>enum</span> <span class='opr'>{</span>
+    SP_PANE <span class='opr'>=</span> <span class='nbr'>1</span>,
+    SP_GRIPPERPANE <span class='opr'>=</span> <span class='nbr'>2</span>,
+    SP_GRIPPER <span class='opr'>=</span> <span class='nbr'>3</span>
+<span class='opr'>}</span>
+
+<span class='com'>/* TAB parts */</span>
+<span class='kw4'>enum</span> <span class='opr'>{</span>
+    TABP_TABITEM <span class='opr'>=</span> <span class='nbr'>1</span>,
+    TABP_TABITEMLEFTEDGE <span class='opr'>=</span> <span class='nbr'>2</span>,
+    TABP_TABITEMRIGHTEDGE <span class='opr'>=</span> <span class='nbr'>3</span>,
+    TABP_TABITEMBOTHEDGE <span class='opr'>=</span> <span class='nbr'>4</span>,
+    TABP_TOPTABITEM <span class='opr'>=</span> <span class='nbr'>5</span>,
+    TABP_TOPTABITEMLEFTEDGE <span class='opr'>=</span> <span class='nbr'>6</span>,
+    TABP_TOPTABITEMRIGHTEDGE <span class='opr'>=</span> <span class='nbr'>7</span>,
+    TABP_TOPTABITEMBOTHEDGE <span class='opr'>=</span> <span class='nbr'>8</span>,
+    TABP_PANE <span class='opr'>=</span> <span class='nbr'>9</span>,
+    TABP_BODY <span class='opr'>=</span> <span class='nbr'>10</span>
+<span class='opr'>}</span>
+
+<span class='kw4'>enum</span> <span class='opr'>{</span>
+    TIS_NORMAL <span class='opr'>=</span> <span class='nbr'>1</span>,
+    TIS_HOT <span class='opr'>=</span> <span class='nbr'>2</span>,
+    TIS_SELECTED <span class='opr'>=</span> <span class='nbr'>3</span>,
+    TIS_DISABLED <span class='opr'>=</span> <span class='nbr'>4</span>,
+    TIS_FOCUSED <span class='opr'>=</span> <span class='nbr'>5</span>
+<span class='opr'>}</span>
+
+<span class='kw4'>enum</span> <span class='opr'>{</span>
+    TIBES_NORMAL <span class='opr'>=</span> <span class='nbr'>1</span>,
+    TIBES_HOT <span class='opr'>=</span> <span class='nbr'>2</span>,
+    TIBES_SELECTED <span class='opr'>=</span> <span class='nbr'>3</span>,
+    TIBES_DISABLED <span class='opr'>=</span> <span class='nbr'>4</span>,
+    TIBES_FOCUSED <span class='opr'>=</span> <span class='nbr'>5</span>
+<span class='opr'>}</span>
+
+<span class='kw4'>enum</span> <span class='opr'>{</span>
+    TILES_NORMAL <span class='opr'>=</span> <span class='nbr'>1</span>,
+    TILES_HOT <span class='opr'>=</span> <span class='nbr'>2</span>,
+    TILES_SELECTED <span class='opr'>=</span> <span class='nbr'>3</span>,
+    TILES_DISABLED <span class='opr'>=</span> <span class='nbr'>4</span>,
+    TILES_FOCUSED <span class='opr'>=</span> <span class='nbr'>5</span>
+<span class='opr'>}</span>
+
+<span class='kw4'>enum</span> <span class='opr'>{</span>
+    TIRES_NORMAL <span class='opr'>=</span> <span class='nbr'>1</span>,
+    TIRES_HOT <span class='opr'>=</span> <span class='nbr'>2</span>,
+    TIRES_SELECTED <span class='opr'>=</span> <span class='nbr'>3</span>,
+    TIRES_DISABLED <span class='opr'>=</span> <span class='nbr'>4</span>,
+    TIRES_FOCUSED <span class='opr'>=</span> <span class='nbr'>5</span>
+<span class='opr'>}</span>
+
+<span class='kw4'>enum</span> <span class='opr'>{</span>
+    TTIS_NORMAL <span class='opr'>=</span> <span class='nbr'>1</span>,
+    TTIS_HOT <span class='opr'>=</span> <span class='nbr'>2</span>,
+    TTIS_SELECTED <span class='opr'>=</span> <span class='nbr'>3</span>,
+    TTIS_DISABLED <span class='opr'>=</span> <span class='nbr'>4</span>,
+    TTIS_FOCUSED <span class='opr'>=</span> <span class='nbr'>5</span>
+<span class='opr'>}</span>
+
+<span class='kw4'>enum</span> <span class='opr'>{</span>
+    TTIBES_NORMAL <span class='opr'>=</span> <span class='nbr'>1</span>,
+    TTIBES_HOT <span class='opr'>=</span> <span class='nbr'>2</span>,
+    TTIBES_SELECTED <span class='opr'>=</span> <span class='nbr'>3</span>,
+    TTIBES_DISABLED <span class='opr'>=</span> <span class='nbr'>4</span>,
+    TTIBES_FOCUSED <span class='opr'>=</span> <span class='nbr'>5</span>
+<span class='opr'>}</span>
+
+<span class='kw4'>enum</span> <span class='opr'>{</span>
+    TTILES_NORMAL <span class='opr'>=</span> <span class='nbr'>1</span>,
+    TTILES_HOT <span class='opr'>=</span> <span class='nbr'>2</span>,
+    TTILES_SELECTED <span class='opr'>=</span> <span class='nbr'>3</span>,
+    TTILES_DISABLED <span class='opr'>=</span> <span class='nbr'>4</span>,
+    TTILES_FOCUSED <span class='opr'>=</span> <span class='nbr'>5</span>
+<span class='opr'>}</span>
+
+<span class='kw4'>enum</span> <span class='opr'>{</span>
+    TTIRES_NORMAL <span class='opr'>=</span> <span class='nbr'>1</span>,
+    TTIRES_HOT <span class='opr'>=</span> <span class='nbr'>2</span>,
+    TTIRES_SELECTED <span class='opr'>=</span> <span class='nbr'>3</span>,
+    TTIRES_DISABLED <span class='opr'>=</span> <span class='nbr'>4</span>,
+    TTIRES_FOCUSED <span class='opr'>=</span> <span class='nbr'>5</span>
+<span class='opr'>}</span>
+
+<span class='com'>/* TASKBAND parts */</span>
+<span class='kw4'>enum</span> <span class='opr'>{</span>
+    TDP_GROUPCOUNT <span class='opr'>=</span> <span class='nbr'>1</span>,
+    TDP_FLASHBUTTON <span class='opr'>=</span> <span class='nbr'>2</span>,
+    TDP_FLASHBUTTONGROUPMENU <span class='opr'>=</span> <span class='nbr'>3</span>
+<span class='opr'>}</span>
+
+<span class='com'>/* TASKBAR parts */</span>
+<span class='kw4'>enum</span> <span class='opr'>{</span>
+    TBP_BACKGROUNDBOTTOM <span class='opr'>=</span> <span class='nbr'>1</span>,
+    TBP_BACKGROUNDRIGHT <span class='opr'>=</span> <span class='nbr'>2</span>,
+    TBP_BACKGROUNDTOP <span class='opr'>=</span> <span class='nbr'>3</span>,
+    TBP_BACKGROUNDLEFT <span class='opr'>=</span> <span class='nbr'>4</span>,
+    TBP_SIZINGBARBOTTOM <span class='opr'>=</span> <span class='nbr'>5</span>,
+    TBP_SIZINGBARRIGHT <span class='opr'>=</span> <span class='nbr'>6</span>,
+    TBP_SIZINGBARTOP <span class='opr'>=</span> <span class='nbr'>7</span>,
+    TBP_SIZINGBARLEFT <span class='opr'>=</span> <span class='nbr'>8</span>
+<span class='opr'>}</span>
+
+<span class='com'>/* TOOLBAR parts */</span>
+<span class='kw4'>enum</span> <span class='opr'>{</span>
+    TP_BUTTON <span class='opr'>=</span> <span class='nbr'>1</span>,
+    TP_DROPDOWNBUTTON <span class='opr'>=</span> <span class='nbr'>2</span>,
+    TP_SPLITBUTTON <span class='opr'>=</span> <span class='nbr'>3</span>,
+    TP_SPLITBUTTONDROPDOWN <span class='opr'>=</span> <span class='nbr'>4</span>,
+    TP_SEPARATOR <span class='opr'>=</span> <span class='nbr'>5</span>,
+    TP_SEPARATORVERT <span class='opr'>=</span> <span class='nbr'>6</span>
+<span class='opr'>}</span>
+
+<span class='kw4'>enum</span> <span class='opr'>{</span>
+    TS_NORMAL <span class='opr'>=</span> <span class='nbr'>1</span>,
+    TS_HOT <span class='opr'>=</span> <span class='nbr'>2</span>,
+    TS_PRESSED <span class='opr'>=</span> <span class='nbr'>3</span>,
+    TS_DISABLED <span class='opr'>=</span> <span class='nbr'>4</span>,
+    TS_CHECKED <span class='opr'>=</span> <span class='nbr'>5</span>,
+    TS_HOTCHECKED <span class='opr'>=</span> <span class='nbr'>6</span>
+<span class='opr'>}</span>
+
+<span class='com'>/* TOOLTIP parts */</span>
+<span class='kw4'>enum</span> <span class='opr'>{</span>
+    TTP_STANDARD <span class='opr'>=</span> <span class='nbr'>1</span>,
+    TTP_STANDARDTITLE <span class='opr'>=</span> <span class='nbr'>2</span>,
+    TTP_BALLOON <span class='opr'>=</span> <span class='nbr'>3</span>,
+    TTP_BALLOONTITLE <span class='opr'>=</span> <span class='nbr'>4</span>,
+    TTP_CLOSE <span class='opr'>=</span> <span class='nbr'>5</span>
+<span class='opr'>}</span>
+
+<span class='kw4'>enum</span> <span class='opr'>{</span>
+    TTBS_NORMAL <span class='opr'>=</span> <span class='nbr'>1</span>,
+    TTBS_LINK <span class='opr'>=</span> <span class='nbr'>2</span>
+<span class='opr'>}</span>
+
+<span class='kw4'>enum</span> <span class='opr'>{</span>
+    TTCS_NORMAL <span class='opr'>=</span> <span class='nbr'>1</span>,
+    TTCS_HOT <span class='opr'>=</span> <span class='nbr'>2</span>,
+    TTCS_PRESSED <span class='opr'>=</span> <span class='nbr'>3</span>
+<span class='opr'>}</span>
+
+<span class='kw4'>enum</span> <span class='opr'>{</span>
+    TTSS_NORMAL <span class='opr'>=</span> <span class='nbr'>1</span>,
+    TTSS_LINK <span class='opr'>=</span> <span class='nbr'>2</span>
+<span class='opr'>}</span>
+
+<span class='com'>/* TRACKBAR parts */</span>
+<span class='kw4'>enum</span> <span class='opr'>{</span>
+    TKP_TRACK <span class='opr'>=</span> <span class='nbr'>1</span>,
+    TKP_TRACKVERT <span class='opr'>=</span> <span class='nbr'>2</span>,
+    TKP_THUMB <span class='opr'>=</span> <span class='nbr'>3</span>,
+    TKP_THUMBBOTTOM <span class='opr'>=</span> <span class='nbr'>4</span>,
+    TKP_THUMBTOP <span class='opr'>=</span> <span class='nbr'>5</span>,
+    TKP_THUMBVERT <span class='opr'>=</span> <span class='nbr'>6</span>,
+    TKP_THUMBLEFT <span class='opr'>=</span> <span class='nbr'>7</span>,
+    TKP_THUMBRIGHT <span class='opr'>=</span> <span class='nbr'>8</span>,
+    TKP_TICS <span class='opr'>=</span> <span class='nbr'>9</span>,
+    TKP_TICSVERT <span class='opr'>=</span> <span class='nbr'>10</span>
+<span class='opr'>}</span>
+
+<span class='kw4'>enum</span> <span class='opr'>{</span>
+    TUS_NORMAL <span class='opr'>=</span> <span class='nbr'>1</span>,
+    TUS_HOT <span class='opr'>=</span> <span class='nbr'>2</span>,
+    TUS_PRESSED <span class='opr'>=</span> <span class='nbr'>3</span>,
+    TUS_FOCUSED <span class='opr'>=</span> <span class='nbr'>4</span>,
+    TUS_DISABLED <span class='opr'>=</span> <span class='nbr'>5</span>
+<span class='opr'>}</span>
+
+<span class='kw4'>enum</span> <span class='opr'>{</span>
+    TUBS_NORMAL <span class='opr'>=</span> <span class='nbr'>1</span>,
+    TUBS_HOT <span class='opr'>=</span> <span class='nbr'>2</span>,
+    TUBS_PRESSED <span class='opr'>=</span> <span class='nbr'>3</span>,
+    TUBS_FOCUSED <span class='opr'>=</span> <span class='nbr'>4</span>,
+    TUBS_DISABLED <span class='opr'>=</span> <span class='nbr'>5</span>
+<span class='opr'>}</span>
+
+<span class='kw4'>enum</span> <span class='opr'>{</span>
+    TUVLS_NORMAL <span class='opr'>=</span> <span class='nbr'>1</span>,
+    TUVLS_HOT <span class='opr'>=</span> <span class='nbr'>2</span>,
+    TUVLS_PRESSED <span class='opr'>=</span> <span class='nbr'>3</span>,
+    TUVLS_FOCUSED <span class='opr'>=</span> <span class='nbr'>4</span>,
+    TUVLS_DISABLED <span class='opr'>=</span> <span class='nbr'>5</span>
+<span class='opr'>}</span>
+
+<span class='kw4'>enum</span> <span class='opr'>{</span>
+    TUVRS_NORMAL <span class='opr'>=</span> <span class='nbr'>1</span>,
+    TUVRS_HOT <span class='opr'>=</span> <span class='nbr'>2</span>,
+    TUVRS_PRESSED <span class='opr'>=</span> <span class='nbr'>3</span>,
+    TUVRS_FOCUSED <span class='opr'>=</span> <span class='nbr'>4</span>,
+    TUVRS_DISABLED <span class='opr'>=</span> <span class='nbr'>5</span>
+<span class='opr'>}</span>
+
+<span class='kw4'>enum</span> <span class='opr'>{</span>
+    TUTS_NORMAL <span class='opr'>=</span> <span class='nbr'>1</span>,
+    TUTS_HOT <span class='opr'>=</span> <span class='nbr'>2</span>,
+    TUTS_PRESSED <span class='opr'>=</span> <span class='nbr'>3</span>,
+    TUTS_FOCUSED <span class='opr'>=</span> <span class='nbr'>4</span>,
+    TUTS_DISABLED <span class='opr'>=</span> <span class='nbr'>5</span>
+<span class='opr'>}</span>
+
+<span class='kw4'>enum</span> <span class='opr'>{</span>
+    TUVS_NORMAL <span class='opr'>=</span> <span class='nbr'>1</span>,
+    TUVS_HOT <span class='opr'>=</span> <span class='nbr'>2</span>,
+    TUVS_PRESSED <span class='opr'>=</span> <span class='nbr'>3</span>,
+    TUVS_FOCUSED <span class='opr'>=</span> <span class='nbr'>4</span>,
+    TUVS_DISABLED <span class='opr'>=</span> <span class='nbr'>5</span>
+<span class='opr'>}</span>
+
+<span class='kw4'>enum</span> <span class='opr'>{</span>
+    TSS_NORMAL <span class='opr'>=</span> <span class='nbr'>1</span>
+<span class='opr'>}</span>
+
+<span class='kw4'>enum</span> <span class='opr'>{</span>
+    TSVS_NORMAL <span class='opr'>=</span> <span class='nbr'>1</span>
+<span class='opr'>}</span>
+
+<span class='kw4'>enum</span> <span class='opr'>{</span>
+    TRS_NORMAL <span class='opr'>=</span> <span class='nbr'>1</span>
+<span class='opr'>}</span>
+
+<span class='kw4'>enum</span> <span class='opr'>{</span>
+    TRVS_NORMAL <span class='opr'>=</span> <span class='nbr'>1</span>
+<span class='opr'>}</span>
+
+<span class='com'>/* TRAYNOTIFY parts */</span>
+<span class='kw4'>enum</span> <span class='opr'>{</span>
+    TNP_BACKGROUND <span class='opr'>=</span> <span class='nbr'>1</span>,
+    TNP_ANIMBACKGROUND <span class='opr'>=</span> <span class='nbr'>2</span>
+<span class='opr'>}</span>
+
+<span class='com'>/* TREEVIEW parts */</span>
+<span class='kw4'>enum</span> <span class='opr'>{</span>
+    TVP_TREEITEM <span class='opr'>=</span> <span class='nbr'>1</span>,
+    TVP_GLYPH <span class='opr'>=</span> <span class='nbr'>2</span>,
+    TVP_BRANCH <span class='opr'>=</span> <span class='nbr'>3</span>
+<span class='opr'>}</span>
+
+<span class='kw4'>enum</span> <span class='opr'>{</span>
+    GLPS_CLOSED <span class='opr'>=</span> <span class='nbr'>1</span>,
+    GLPS_OPENED <span class='opr'>=</span> <span class='nbr'>2</span>
+<span class='opr'>}</span>
+
+<span class='kw4'>enum</span> <span class='opr'>{</span>
+    TREIS_NORMAL <span class='opr'>=</span> <span class='nbr'>1</span>,
+    TREIS_HOT <span class='opr'>=</span> <span class='nbr'>2</span>,
+    TREIS_SELECTED <span class='opr'>=</span> <span class='nbr'>3</span>,
+    TREIS_DISABLED <span class='opr'>=</span> <span class='nbr'>4</span>,
+    TREIS_SELECTEDNOTFOCUS <span class='opr'>=</span> <span class='nbr'>5</span>
+<span class='opr'>}</span>
+
+<span class='com'>/* WINDOW parts */</span>
+<span class='kw4'>enum</span> <span class='opr'>{</span>
+    WP_CAPTION <span class='opr'>=</span> <span class='nbr'>1</span>,
+    WP_SMALLCAPTION <span class='opr'>=</span> <span class='nbr'>2</span>,
+    WP_MINCAPTION <span class='opr'>=</span> <span class='nbr'>3</span>,
+    WP_SMALLMINCAPTION <span class='opr'>=</span> <span class='nbr'>4</span>,
+    WP_MAXCAPTION <span class='opr'>=</span> <span class='nbr'>5</span>,
+    WP_SMALLMAXCAPTION <span class='opr'>=</span> <span class='nbr'>6</span>,
+    WP_FRAMELEFT <span class='opr'>=</span> <span class='nbr'>7</span>,
+    WP_FRAMERIGHT <span class='opr'>=</span> <span class='nbr'>8</span>,
+    WP_FRAMEBOTTOM <span class='opr'>=</span> <span class='nbr'>9</span>,
+    WP_SMALLFRAMELEFT <span class='opr'>=</span> <span class='nbr'>10</span>,
+    WP_SMALLFRAMERIGHT <span class='opr'>=</span> <span class='nbr'>11</span>,
+    WP_SMALLFRAMEBOTTOM <span class='opr'>=</span> <span class='nbr'>12</span>,
+    WP_SYSBUTTON <span class='opr'>=</span> <span class='nbr'>13</span>,
+    WP_MDISYSBUTTON <span class='opr'>=</span> <span class='nbr'>14</span>,
+    WP_MINBUTTON <span class='opr'>=</span> <span class='nbr'>15</span>,
+    WP_MDIMINBUTTON <span class='opr'>=</span> <span class='nbr'>16</span>,
+    WP_MAXBUTTON <span class='opr'>=</span> <span class='nbr'>17</span>,
+    WP_CLOSEBUTTON <span class='opr'>=</span> <span class='nbr'>18</span>,
+    WP_SMALLCLOSEBUTTON <span class='opr'>=</span> <span class='nbr'>19</span>,
+    WP_MDICLOSEBUTTON <span class='opr'>=</span> <span class='nbr'>20</span>,
+    WP_RESTOREBUTTON <span class='opr'>=</span> <span class='nbr'>21</span>,
+    WP_MDIRESTOREBUTTON <span class='opr'>=</span> <span class='nbr'>22</span>,
+    WP_HELPBUTTON <span class='opr'>=</span> <span class='nbr'>23</span>,
+    WP_MDIHELPBUTTON <span class='opr'>=</span> <span class='nbr'>24</span>,
+    WP_HORZSCROLL <span class='opr'>=</span> <span class='nbr'>25</span>,
+    WP_HORZTHUMB <span class='opr'>=</span> <span class='nbr'>26</span>,
+    WP_VERTSCROLL <span class='opr'>=</span> <span class='nbr'>27</span>,
+    WP_VERTTHUMB <span class='opr'>=</span> <span class='nbr'>28</span>,
+    WP_DIALOG <span class='opr'>=</span> <span class='nbr'>29</span>,
+    WP_CAPTIONSIZINGTEMPLATE <span class='opr'>=</span> <span class='nbr'>30</span>,
+    WP_SMALLCAPTIONSIZINGTEMPLATE <span class='opr'>=</span> <span class='nbr'>31</span>,
+    WP_FRAMELEFTSIZINGTEMPLATE <span class='opr'>=</span> <span class='nbr'>32</span>,
+    WP_SMALLFRAMELEFTSIZINGTEMPLATE <span class='opr'>=</span> <span class='nbr'>33</span>,
+    WP_FRAMERIGHTSIZINGTEMPLATE <span class='opr'>=</span> <span class='nbr'>34</span>,
+    WP_SMALLFRAMERIGHTSIZINGTEMPLATE <span class='opr'>=</span> <span class='nbr'>35</span>,
+    WP_FRAMEBOTTOMSIZINGTEMPLATE <span class='opr'>=</span> <span class='nbr'>36</span>,
+    WP_SMALLFRAMEBOTTOMSIZINGTEMPLATE <span class='opr'>=</span> <span class='nbr'>37</span>
+<span class='opr'>}</span>
+
+<span class='kw4'>enum</span> <span class='opr'>{</span>
+    CS_ACTIVE <span class='opr'>=</span> <span class='nbr'>1</span>,
+    CS_INACTIVE <span class='opr'>=</span> <span class='nbr'>2</span>,
+    CS_DISABLED <span class='opr'>=</span> <span class='nbr'>3</span>
+<span class='opr'>}</span>
+
+<span class='kw4'>enum</span> <span class='opr'>{</span>
+    CBS_NORMAL <span class='opr'>=</span> <span class='nbr'>1</span>,
+    CBS_HOT <span class='opr'>=</span> <span class='nbr'>2</span>,
+    CBS_PUSHED <span class='opr'>=</span> <span class='nbr'>3</span>,
+    CBS_DISABLED <span class='opr'>=</span> <span class='nbr'>4</span>
+<span class='opr'>}</span>
+
+<span class='kw4'>enum</span> <span class='opr'>{</span>
+    FS_ACTIVE <span class='opr'>=</span> <span class='nbr'>1</span>,
+    FS_INACTIVE <span class='opr'>=</span> <span class='nbr'>2</span>
+<span class='opr'>}</span>
+
+<span class='kw4'>enum</span> <span class='opr'>{</span>
+    HBS_NORMAL <span class='opr'>=</span> <span class='nbr'>1</span>,
+    HBS_HOT <span class='opr'>=</span> <span class='nbr'>2</span>,
+    HBS_PUSHED <span class='opr'>=</span> <span class='nbr'>3</span>,
+    HBS_DISABLED <span class='opr'>=</span> <span class='nbr'>4</span>
+<span class='opr'>}</span>
+
+<span class='kw4'>enum</span> <span class='opr'>{</span>
+    HSS_NORMAL <span class='opr'>=</span> <span class='nbr'>1</span>,
+    HSS_HOT <span class='opr'>=</span> <span class='nbr'>2</span>,
+    HSS_PUSHED <span class='opr'>=</span> <span class='nbr'>3</span>,
+    HSS_DISABLED <span class='opr'>=</span> <span class='nbr'>4</span>
+<span class='opr'>}</span>
+
+<span class='kw4'>enum</span> <span class='opr'>{</span>
+    HTS_NORMAL <span class='opr'>=</span> <span class='nbr'>1</span>,
+    HTS_HOT <span class='opr'>=</span> <span class='nbr'>2</span>,
+    HTS_PUSHED <span class='opr'>=</span> <span class='nbr'>3</span>,
+    HTS_DISABLED <span class='opr'>=</span> <span class='nbr'>4</span>
+<span class='opr'>}</span>
+
+<span class='kw4'>enum</span> <span class='opr'>{</span>
+    MAXBS_NORMAL <span class='opr'>=</span> <span class='nbr'>1</span>,
+    MAXBS_HOT <span class='opr'>=</span> <span class='nbr'>2</span>,
+    MAXBS_PUSHED <span class='opr'>=</span> <span class='nbr'>3</span>,
+    MAXBS_DISABLED <span class='opr'>=</span> <span class='nbr'>4</span>
+<span class='opr'>}</span>
+
+<span class='kw4'>enum</span> <span class='opr'>{</span>
+    MXCS_ACTIVE <span class='opr'>=</span> <span class='nbr'>1</span>,
+    MXCS_INACTIVE <span class='opr'>=</span> <span class='nbr'>2</span>,
+    MXCS_DISABLED <span class='opr'>=</span> <span class='nbr'>3</span>
+<span class='opr'>}</span>
+
+<span class='kw4'>enum</span> <span class='opr'>{</span>
+    MINBS_NORMAL <span class='opr'>=</span> <span class='nbr'>1</span>,
+    MINBS_HOT <span class='opr'>=</span> <span class='nbr'>2</span>,
+    MINBS_PUSHED <span class='opr'>=</span> <span class='nbr'>3</span>,
+    MINBS_DISABLED <span class='opr'>=</span> <span class='nbr'>4</span>
+<span class='opr'>}</span>
+
+<span class='kw4'>enum</span> <span class='opr'>{</span>
+    RBS_NORMAL <span class='opr'>=</span> <span class='nbr'>1</span>,
+    RBS_HOT <span class='opr'>=</span> <span class='nbr'>2</span>,
+    RBS_PUSHED <span class='opr'>=</span> <span class='nbr'>3</span>,
+    RBS_DISABLED <span class='opr'>=</span> <span class='nbr'>4</span>
+<span class='opr'>}</span>
+
+<span class='kw4'>enum</span> <span class='opr'>{</span>
+    SBS_NORMAL <span class='opr'>=</span> <span class='nbr'>1</span>,
+    SBS_HOT <span class='opr'>=</span> <span class='nbr'>2</span>,
+    SBS_PUSHED <span class='opr'>=</span> <span class='nbr'>3</span>,
+    SBS_DISABLED <span class='opr'>=</span> <span class='nbr'>4</span>
+<span class='opr'>}</span>
+
+<span class='kw4'>enum</span> <span class='opr'>{</span>
+    MNCS_ACTIVE <span class='opr'>=</span> <span class='nbr'>1</span>,
+    MNCS_INACTIVE <span class='opr'>=</span> <span class='nbr'>2</span>,
+    MNCS_DISABLED <span class='opr'>=</span> <span class='nbr'>3</span>
+<span class='opr'>}</span>
+
+<span class='kw4'>enum</span> <span class='opr'>{</span>
+    VSS_NORMAL <span class='opr'>=</span> <span class='nbr'>1</span>,
+    VSS_HOT <span class='opr'>=</span> <span class='nbr'>2</span>,
+    VSS_PUSHED <span class='opr'>=</span> <span class='nbr'>3</span>,
+    VSS_DISABLED <span class='opr'>=</span> <span class='nbr'>4</span>
+<span class='opr'>}</span>
+
+<span class='kw4'>enum</span> <span class='opr'>{</span>
+    VTS_NORMAL <span class='opr'>=</span> <span class='nbr'>1</span>,
+    VTS_HOT <span class='opr'>=</span> <span class='nbr'>2</span>,
+    VTS_PUSHED <span class='opr'>=</span> <span class='nbr'>3</span>,
+    VTS_DISABLED <span class='opr'>=</span> <span class='nbr'>4</span>
+<span class='opr'>}</span>
+</pre></td></tr></table>	</body>
+</html>

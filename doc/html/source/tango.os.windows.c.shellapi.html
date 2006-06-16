@@ -1,0 +1,843 @@
+<!DOCTYPE html 
+     PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+     "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html>
+	<head>
+		<link rel="stylesheet" href="style.css" type="text/css" />
+		<title>os/windows/c/shellapi.d</title>
+	</head>
+	<body>
+
+<table id='dcode'><tr><td id='lnum'><pre><span>1</span>
+<span>2</span>
+<span>3</span>
+<span>4</span>
+<span>5</span>
+<span>6</span>
+<span>7</span>
+<span>8</span>
+<span>9</span>
+<span>10</span>
+<span>11</span>
+<span>12</span>
+<span>13</span>
+<span>14</span>
+<span>15</span>
+<span>16</span>
+<span>17</span>
+<span>18</span>
+<span>19</span>
+<span>20</span>
+<span>21</span>
+<span>22</span>
+<span>23</span>
+<span>24</span>
+<span>25</span>
+<span>26</span>
+<span>27</span>
+<span>28</span>
+<span>29</span>
+<span>30</span>
+<span>31</span>
+<span>32</span>
+<span>33</span>
+<span>34</span>
+<span>35</span>
+<span>36</span>
+<span>37</span>
+<span>38</span>
+<span>39</span>
+<span>40</span>
+<span>41</span>
+<span>42</span>
+<span>43</span>
+<span>44</span>
+<span>45</span>
+<span>46</span>
+<span>47</span>
+<span>48</span>
+<span>49</span>
+<span>50</span>
+<span>51</span>
+<span>52</span>
+<span>53</span>
+<span>54</span>
+<span>55</span>
+<span>56</span>
+<span>57</span>
+<span>58</span>
+<span>59</span>
+<span>60</span>
+<span>61</span>
+<span>62</span>
+<span>63</span>
+<span>64</span>
+<span>65</span>
+<span>66</span>
+<span>67</span>
+<span>68</span>
+<span>69</span>
+<span>70</span>
+<span>71</span>
+<span>72</span>
+<span>73</span>
+<span>74</span>
+<span>75</span>
+<span>76</span>
+<span>77</span>
+<span>78</span>
+<span>79</span>
+<span>80</span>
+<span>81</span>
+<span>82</span>
+<span>83</span>
+<span>84</span>
+<span>85</span>
+<span>86</span>
+<span>87</span>
+<span>88</span>
+<span>89</span>
+<span>90</span>
+<span>91</span>
+<span>92</span>
+<span>93</span>
+<span>94</span>
+<span>95</span>
+<span>96</span>
+<span>97</span>
+<span>98</span>
+<span>99</span>
+<span>100</span>
+<span>101</span>
+<span>102</span>
+<span>103</span>
+<span>104</span>
+<span>105</span>
+<span>106</span>
+<span>107</span>
+<span>108</span>
+<span>109</span>
+<span>110</span>
+<span>111</span>
+<span>112</span>
+<span>113</span>
+<span>114</span>
+<span>115</span>
+<span>116</span>
+<span>117</span>
+<span>118</span>
+<span>119</span>
+<span>120</span>
+<span>121</span>
+<span>122</span>
+<span>123</span>
+<span>124</span>
+<span>125</span>
+<span>126</span>
+<span>127</span>
+<span>128</span>
+<span>129</span>
+<span>130</span>
+<span>131</span>
+<span>132</span>
+<span>133</span>
+<span>134</span>
+<span>135</span>
+<span>136</span>
+<span>137</span>
+<span>138</span>
+<span>139</span>
+<span>140</span>
+<span>141</span>
+<span>142</span>
+<span>143</span>
+<span>144</span>
+<span>145</span>
+<span>146</span>
+<span>147</span>
+<span>148</span>
+<span>149</span>
+<span>150</span>
+<span>151</span>
+<span>152</span>
+<span>153</span>
+<span>154</span>
+<span>155</span>
+<span>156</span>
+<span>157</span>
+<span>158</span>
+<span>159</span>
+<span>160</span>
+<span>161</span>
+<span>162</span>
+<span>163</span>
+<span>164</span>
+<span>165</span>
+<span>166</span>
+<span>167</span>
+<span>168</span>
+<span>169</span>
+<span>170</span>
+<span>171</span>
+<span>172</span>
+<span>173</span>
+<span>174</span>
+<span>175</span>
+<span>176</span>
+<span>177</span>
+<span>178</span>
+<span>179</span>
+<span>180</span>
+<span>181</span>
+<span>182</span>
+<span>183</span>
+<span>184</span>
+<span>185</span>
+<span>186</span>
+<span>187</span>
+<span>188</span>
+<span>189</span>
+<span>190</span>
+<span>191</span>
+<span>192</span>
+<span>193</span>
+<span>194</span>
+<span>195</span>
+<span>196</span>
+<span>197</span>
+<span>198</span>
+<span>199</span>
+<span>200</span>
+<span>201</span>
+<span>202</span>
+<span>203</span>
+<span>204</span>
+<span>205</span>
+<span>206</span>
+<span>207</span>
+<span>208</span>
+<span>209</span>
+<span>210</span>
+<span>211</span>
+<span>212</span>
+<span>213</span>
+<span>214</span>
+<span>215</span>
+<span>216</span>
+<span>217</span>
+<span>218</span>
+<span>219</span>
+<span>220</span>
+<span>221</span>
+<span>222</span>
+<span>223</span>
+<span>224</span>
+<span>225</span>
+<span>226</span>
+<span>227</span>
+<span>228</span>
+<span>229</span>
+<span>230</span>
+<span>231</span>
+<span>232</span>
+<span>233</span>
+<span>234</span>
+<span>235</span>
+<span>236</span>
+<span>237</span>
+<span>238</span>
+<span>239</span>
+<span>240</span>
+<span>241</span>
+<span>242</span>
+<span>243</span>
+<span>244</span>
+<span>245</span>
+<span>246</span>
+<span>247</span>
+<span>248</span>
+<span>249</span>
+<span>250</span>
+<span>251</span>
+<span>252</span>
+<span>253</span>
+<span>254</span>
+<span>255</span>
+<span>256</span>
+<span>257</span>
+<span>258</span>
+<span>259</span>
+<span>260</span>
+<span>261</span>
+<span>262</span>
+<span>263</span>
+<span>264</span>
+<span>265</span>
+<span>266</span>
+<span>267</span>
+<span>268</span>
+<span>269</span>
+<span>270</span>
+<span>271</span>
+<span>272</span>
+<span>273</span>
+<span>274</span>
+<span>275</span>
+<span>276</span>
+<span>277</span>
+<span>278</span>
+<span>279</span>
+<span>280</span>
+<span>281</span>
+<span>282</span>
+<span>283</span>
+<span>284</span>
+<span>285</span>
+<span>286</span>
+<span>287</span>
+<span>288</span>
+<span>289</span>
+<span>290</span>
+<span>291</span>
+<span>292</span>
+<span>293</span>
+<span>294</span>
+<span>295</span>
+<span>296</span>
+<span>297</span>
+<span>298</span>
+<span>299</span>
+<span>300</span>
+<span>301</span>
+<span>302</span>
+<span>303</span>
+<span>304</span>
+<span>305</span>
+<span>306</span>
+<span>307</span>
+<span>308</span>
+<span>309</span>
+<span>310</span>
+<span>311</span>
+<span>312</span>
+<span>313</span>
+<span>314</span>
+<span>315</span>
+<span>316</span>
+<span>317</span>
+<span>318</span>
+<span>319</span>
+<span>320</span>
+<span>321</span>
+<span>322</span>
+<span>323</span>
+<span>324</span>
+<span>325</span>
+<span>326</span>
+<span>327</span>
+<span>328</span>
+<span>329</span>
+<span>330</span>
+<span>331</span>
+<span>332</span>
+<span>333</span>
+<span>334</span>
+<span>335</span>
+<span>336</span>
+<span>337</span>
+<span>338</span>
+<span>339</span>
+<span>340</span>
+<span>341</span>
+<span>342</span>
+<span>343</span>
+<span>344</span>
+<span>345</span>
+<span>346</span>
+<span>347</span>
+<span>348</span>
+<span>349</span>
+<span>350</span>
+<span>351</span>
+<span>352</span>
+<span>353</span>
+<span>354</span>
+<span>355</span>
+<span>356</span>
+<span>357</span>
+<span>358</span>
+<span>359</span>
+<span>360</span>
+<span>361</span>
+<span>362</span>
+<span>363</span>
+<span>364</span>
+<span>365</span>
+<span>366</span>
+<span>367</span>
+<span>368</span>
+<span>369</span>
+<span>370</span>
+<span>371</span>
+<span>372</span>
+<span>373</span>
+<span>374</span>
+<span>375</span>
+<span>376</span>
+<span>377</span>
+<span>378</span>
+<span>379</span>
+<span>380</span>
+<span>381</span>
+<span>382</span>
+<span>383</span>
+<span>384</span>
+<span>385</span>
+<span>386</span>
+<span>387</span>
+<span>388</span>
+<span>389</span>
+<span>390</span>
+<span>391</span>
+<span>392</span>
+<span>393</span>
+<span>394</span>
+<span>395</span>
+<span>396</span>
+<span>397</span>
+<span>398</span>
+<span>399</span>
+<span>400</span>
+<span>401</span>
+<span>402</span>
+<span>403</span>
+<span>404</span>
+<span>405</span>
+<span>406</span>
+<span>407</span>
+<span>408</span>
+<span>409</span>
+<span>410</span>
+<span>411</span>
+<span>412</span>
+<span>413</span>
+<span>414</span>
+<span>415</span>
+</pre></td><td id='code'><pre><span class='com'>/***********************************************************************\
+*                               shellapi.d                              *
+*                                                                       *
+*                       Windows API header module                       *
+*                                                                       *
+*                 Translated from MinGW Windows headers                 *
+*                           by Stewart Gordon                           *
+*                                                                       *
+*                       Placed into public domain                       *
+\***********************************************************************/</span>
+<span class='kw2'>module</span> tango.os.windows.c.shellapi;
+
+<span class='com'>//version (build) { pragma(nolink); }</span>
+
+<span class='com'>//pragma(lib, &quot;shell32.lib&quot;);</span>
+<span class='kw4'>private</span> <span class='kw2'>import</span> tango.os.windows.c.w32api, tango.os.windows.c.windef;
+
+<span class='kw4'>enum</span> : UINT <span class='opr'>{</span>
+    ABE_LEFT,
+    ABE_TOP,
+    ABE_RIGHT,
+    ABE_BOTTOM <span class='com'>// = 3</span>
+<span class='opr'>}</span>
+
+<span class='kw4'>enum</span> : UINT <span class='opr'>{</span>
+    ABS_AUTOHIDE    <span class='opr'>=</span> <span class='nbr'>1</span>,
+    ABS_ALWAYSONTOP
+<span class='opr'>}</span>
+
+<span class='kw4'>const</span> ULONG
+    SEE_MASK_CLASSNAME      <span class='opr'>=</span>        <span class='nbr'>1</span>,
+    SEE_MASK_CLASSKEY       <span class='opr'>=</span>        <span class='nbr'>3</span>,
+    SEE_MASK_IDLIST         <span class='opr'>=</span>        <span class='nbr'>4</span>,
+    SEE_MASK_INVOKEIDLIST   <span class='opr'>=</span>       <span class='nbr'>12</span>,
+    SEE_MASK_ICON           <span class='opr'>=</span> <span class='nbr'>0</span>x000010,
+    SEE_MASK_HOTKEY         <span class='opr'>=</span> <span class='nbr'>0</span>x000020,
+    SEE_MASK_NOCLOSEPROCESS <span class='opr'>=</span> <span class='nbr'>0</span>x000040,
+    SEE_MASK_CONNECTNETDRV  <span class='opr'>=</span> <span class='nbr'>0</span>x000080,
+    SEE_MASK_FLAG_DDEWAIT   <span class='opr'>=</span> <span class='nbr'>0</span>x000100,
+    SEE_MASK_DOENVSUBST     <span class='opr'>=</span> <span class='nbr'>0</span>x000200,
+    SEE_MASK_FLAG_NO_UI     <span class='opr'>=</span> <span class='nbr'>0</span>x000400,
+    SEE_MASK_NO_CONSOLE     <span class='opr'>=</span> <span class='nbr'>0</span>x008000,
+    SEE_MASK_UNICODE        <span class='opr'>=</span> <span class='nbr'>0</span>x010000,
+    SEE_MASK_ASYNCOK        <span class='opr'>=</span> <span class='nbr'>0</span>x100000,
+    SEE_MASK_HMONITOR       <span class='opr'>=</span> <span class='nbr'>0</span>x200000;
+
+<span class='kw4'>enum</span> : DWORD <span class='opr'>{</span>
+    ABM_NEW,
+    ABM_REMOVE,
+    ABM_QUERYPOS,
+    ABM_SETPOS,
+    ABM_GETSTATE,
+    ABM_GETTASKBARPOS,
+    ABM_ACTIVATE,
+    ABM_GETAUTOHIDEBAR,
+    ABM_SETAUTOHIDEBAR,
+    ABM_WINDOWPOSCHANGED <span class='com'>// = 9</span>
+<span class='opr'>}</span>
+
+<span class='com'>// FIXME: is the value correct?</span>
+<span class='kw4'>static</span> <span class='kw1'>if</span> <span class='opr'>(</span>WINVER <span class='opr'>&gt;</span><span class='opr'>=</span> <span class='nbr'>0</span>x501<span class='opr'>)</span> <span class='opr'>{</span>
+    <span class='kw4'>const</span> DWORD ABM_SETSTATE <span class='opr'>=</span> <span class='nbr'>10</span>;
+<span class='opr'>}</span>
+
+<span class='kw4'>enum</span> : UINT <span class='opr'>{</span>
+    ABN_STATECHANGE,
+    ABN_POSCHANGED,
+    ABN_FULLSCREENAPP,
+    ABN_WINDOWARRANGE
+<span class='opr'>}</span>
+
+<span class='kw4'>enum</span> : DWORD <span class='opr'>{</span>
+    NIM_ADD,
+    NIM_MODIFY,
+    NIM_DELETE
+<span class='opr'>}</span>
+
+<span class='kw4'>static</span> <span class='kw1'>if</span> <span class='opr'>(</span>_WIN32_IE <span class='opr'>&gt;</span><span class='opr'>=</span> <span class='nbr'>0</span>x500<span class='opr'>)</span> <span class='opr'>{</span>
+    <span class='kw4'>const</span> NOTIFYICON_VERSION <span class='opr'>=</span> <span class='nbr'>3</span>;
+
+    <span class='kw4'>enum</span> : DWORD <span class='opr'>{</span>
+        NIM_SETFOCUS <span class='opr'>=</span> <span class='nbr'>3</span>,
+        NIM_SETVERSION
+    <span class='opr'>}</span>
+<span class='opr'>}</span>
+
+<span class='kw4'>const</span> UINT
+    NIF_MESSAGE <span class='opr'>=</span> <span class='nbr'>0</span>x00000001,
+    NIF_ICON    <span class='opr'>=</span> <span class='nbr'>0</span>x00000002,
+    NIF_TIP        <span class='opr'>=</span> <span class='nbr'>0</span>x00000004,
+    NIF_STATE   <span class='opr'>=</span> <span class='nbr'>0</span>x00000008;
+
+<span class='kw4'>static</span> <span class='kw1'>if</span> <span class='opr'>(</span>_WIN32_IE <span class='opr'>&gt;</span><span class='opr'>=</span> <span class='nbr'>0</span>x500<span class='opr'>)</span> <span class='opr'>{</span>
+    <span class='kw4'>const</span> UINT NIF_INFO <span class='opr'>=</span> <span class='nbr'>0</span>x00000010;
+<span class='opr'>}</span>
+
+<span class='kw4'>static</span> <span class='kw1'>if</span> <span class='opr'>(</span>_WIN32_IE <span class='opr'>&gt;</span><span class='opr'>=</span> <span class='nbr'>0</span>x600<span class='opr'>)</span> <span class='opr'>{</span>
+    <span class='kw4'>const</span> UINT NIF_GUID <span class='opr'>=</span> <span class='nbr'>0</span>x00000020;
+<span class='opr'>}</span>
+
+<span class='kw4'>static</span> <span class='kw1'>if</span> <span class='opr'>(</span>_WIN32_IE <span class='opr'>&gt;</span><span class='opr'>=</span> <span class='nbr'>0</span>x500<span class='opr'>)</span> <span class='opr'>{</span>
+    <span class='kw4'>enum</span> : DWORD <span class='opr'>{</span>
+        NIIF_NONE,
+        NIIF_INFO,
+        NIIF_WARNING,
+        NIIF_ERROR
+    <span class='opr'>}</span>
+<span class='opr'>}</span>
+
+<span class='kw4'>static</span> <span class='kw1'>if</span> <span class='opr'>(</span>_WIN32_IE <span class='opr'>&gt;</span><span class='opr'>=</span> <span class='nbr'>0</span>x600<span class='opr'>)</span> <span class='opr'>{</span>
+    <span class='kw4'>enum</span> : DWORD <span class='opr'>{</span>
+        NIIF_ICON_MASK <span class='opr'>=</span> <span class='nbr'>15</span>,
+        NIIF_NOSOUND
+    <span class='opr'>}</span>
+<span class='opr'>}</span>
+
+<span class='kw4'>const</span> DWORD
+    NIS_HIDDEN     <span class='opr'>=</span> <span class='nbr'>1</span>,
+    NIS_SHAREDICON <span class='opr'>=</span> <span class='nbr'>2</span>;
+
+<span class='kw4'>const</span> HINSTANCE
+    SE_ERR_FNF             <span class='opr'>=</span> <span class='kw2'>cast</span><span class='opr'>(</span>HANDLE<span class='opr'>)</span>  <span class='nbr'>2</span>,
+    SE_ERR_PNF             <span class='opr'>=</span> <span class='kw2'>cast</span><span class='opr'>(</span>HANDLE<span class='opr'>)</span>  <span class='nbr'>3</span>,
+    SE_ERR_ACCESSDENIED    <span class='opr'>=</span> <span class='kw2'>cast</span><span class='opr'>(</span>HANDLE<span class='opr'>)</span>  <span class='nbr'>5</span>,
+    SE_ERR_OOM             <span class='opr'>=</span> <span class='kw2'>cast</span><span class='opr'>(</span>HANDLE<span class='opr'>)</span>  <span class='nbr'>8</span>,
+    SE_ERR_DLLNOTFOUND     <span class='opr'>=</span> <span class='kw2'>cast</span><span class='opr'>(</span>HANDLE<span class='opr'>)</span> <span class='nbr'>32</span>,
+    SE_ERR_SHARE           <span class='opr'>=</span> <span class='kw2'>cast</span><span class='opr'>(</span>HANDLE<span class='opr'>)</span> <span class='nbr'>26</span>,
+    SE_ERR_ASSOCINCOMPLETE <span class='opr'>=</span> <span class='kw2'>cast</span><span class='opr'>(</span>HANDLE<span class='opr'>)</span> <span class='nbr'>27</span>,
+    SE_ERR_DDETIMEOUT      <span class='opr'>=</span> <span class='kw2'>cast</span><span class='opr'>(</span>HANDLE<span class='opr'>)</span> <span class='nbr'>28</span>,
+    SE_ERR_DDEFAIL         <span class='opr'>=</span> <span class='kw2'>cast</span><span class='opr'>(</span>HANDLE<span class='opr'>)</span> <span class='nbr'>29</span>,
+    SE_ERR_DDEBUSY         <span class='opr'>=</span> <span class='kw2'>cast</span><span class='opr'>(</span>HANDLE<span class='opr'>)</span> <span class='nbr'>30</span>,
+    SE_ERR_NOASSOC         <span class='opr'>=</span> <span class='kw2'>cast</span><span class='opr'>(</span>HANDLE<span class='opr'>)</span> <span class='nbr'>31</span>;
+
+<span class='kw4'>enum</span> : UINT <span class='opr'>{</span>
+    FO_MOVE <span class='opr'>=</span> <span class='nbr'>1</span>,
+    FO_COPY,
+    FO_DELETE,
+    FO_RENAME
+<span class='opr'>}</span>
+
+<span class='kw4'>const</span> FILEOP_FLAGS
+    FOF_MULTIDESTFILES        <span class='opr'>=</span> <span class='nbr'>0</span>x0001,
+    FOF_CONFIRMMOUSE          <span class='opr'>=</span> <span class='nbr'>0</span>x0002,
+    FOF_SILENT                <span class='opr'>=</span> <span class='nbr'>0</span>x0004,
+    FOF_RENAMEONCOLLISION     <span class='opr'>=</span> <span class='nbr'>0</span>x0008,
+    FOF_NOCONFIRMATION        <span class='opr'>=</span> <span class='nbr'>0</span>x0010,
+    FOF_WANTMAPPINGHANDLE     <span class='opr'>=</span> <span class='nbr'>0</span>x0020,
+    FOF_ALLOWUNDO             <span class='opr'>=</span> <span class='nbr'>0</span>x0040,
+    FOF_FILESONLY             <span class='opr'>=</span> <span class='nbr'>0</span>x0080,
+    FOF_SIMPLEPROGRESS        <span class='opr'>=</span> <span class='nbr'>0</span>x0100,
+    FOF_NOCONFIRMMKDIR        <span class='opr'>=</span> <span class='nbr'>0</span>x0200,
+    FOF_NOERRORUI             <span class='opr'>=</span> <span class='nbr'>0</span>x0400,
+    FOF_NOCOPYSECURITYATTRIBS <span class='opr'>=</span> <span class='nbr'>0</span>x0800;
+
+<span class='com'>// these are not documented on the MSDN site</span>
+<span class='kw4'>enum</span> <span class='opr'>{</span>
+    PO_DELETE     <span class='opr'>=</span> <span class='nbr'>19</span>,
+    PO_RENAME     <span class='opr'>=</span> <span class='nbr'>20</span>,
+    PO_PORTCHANGE <span class='opr'>=</span> <span class='nbr'>32</span>,
+    PO_REN_PORT   <span class='opr'>=</span> <span class='nbr'>52</span>
+<span class='opr'>}</span>
+
+<span class='kw4'>const</span> UINT
+    SHGFI_LARGEICON         <span class='opr'>=</span> <span class='nbr'>0</span>x000000,
+    SHGFI_SMALLICON         <span class='opr'>=</span> <span class='nbr'>0</span>x000001,
+    SHGFI_OPENICON          <span class='opr'>=</span> <span class='nbr'>0</span>x000002,
+    SHGFI_SHELLICONSIZE     <span class='opr'>=</span> <span class='nbr'>0</span>x000004,
+    SHGFI_PIDL              <span class='opr'>=</span> <span class='nbr'>0</span>x000008,
+    SHGFI_USEFILEATTRIBUTES <span class='opr'>=</span> <span class='nbr'>0</span>x000010,
+    SHGFI_ICON              <span class='opr'>=</span> <span class='nbr'>0</span>x000100,
+    SHGFI_DISPLAYNAME       <span class='opr'>=</span> <span class='nbr'>0</span>x000200,
+    SHGFI_TYPENAME          <span class='opr'>=</span> <span class='nbr'>0</span>x000400,
+    SHGFI_ATTRIBUTES        <span class='opr'>=</span> <span class='nbr'>0</span>x000800,
+    SHGFI_ICONLOCATION      <span class='opr'>=</span> <span class='nbr'>0</span>x001000,
+    SHGFI_EXETYPE           <span class='opr'>=</span> <span class='nbr'>0</span>x002000,
+    SHGFI_SYSICONINDEX      <span class='opr'>=</span> <span class='nbr'>0</span>x004000,
+    SHGFI_LINKOVERLAY       <span class='opr'>=</span> <span class='nbr'>0</span>x008000,
+    SHGFI_SELECTED          <span class='opr'>=</span> <span class='nbr'>0</span>x010000,
+    SHGFI_ATTR_SPECIFIED    <span class='opr'>=</span> <span class='nbr'>0</span>x020000;
+
+<span class='kw4'>const</span> SHERB_NOCONFIRMATION <span class='opr'>=</span> <span class='nbr'>1</span>;
+<span class='kw4'>const</span> SHERB_NOPROGRESSUI   <span class='opr'>=</span> <span class='nbr'>2</span>;
+<span class='kw4'>const</span> SHERB_NOSOUND        <span class='opr'>=</span> <span class='nbr'>4</span>;
+
+<span class='kw2'>alias</span> WORD FILEOP_FLAGS, PRINTEROP_FLAGS;
+<span class='kw2'>alias</span> HANDLE HDROP;
+
+<span class='kw4'>align</span><span class='opr'>(</span><span class='nbr'>2</span><span class='opr'>)</span>:
+
+<span class='kw4'>struct</span> APPBARDATA <span class='opr'>{</span>
+    DWORD  cbSize <span class='opr'>=</span> APPBARDATA.sizeof;
+    HWND   hWnd;
+    UINT   uCallbackMessage;
+    UINT   uEdge;
+    RECT   rc;
+    LPARAM lParam;
+<span class='opr'>}</span>
+<span class='kw2'>alias</span> APPBARDATA<span class='opr'>*</span> PAPPBARDATA;
+
+<span class='kw4'>struct</span> NOTIFYICONDATAA <span class='opr'>{</span>
+    DWORD cbSize <span class='opr'>=</span> NOTIFYICONDATAA.sizeof;
+    HWND  hWnd;
+    UINT  uID;
+    UINT  uFlags;
+    UINT  uCallbackMessage;
+    HICON hIcon;
+    <span class='kw4'>static</span> <span class='kw1'>if</span> <span class='opr'>(</span>_WIN32_IE <span class='opr'>&gt;</span><span class='opr'>=</span> <span class='nbr'>0</span>x500<span class='opr'>)</span> <span class='opr'>{</span>
+        CHAR<span class='opr'>[</span><span class='nbr'>128</span><span class='opr'>]</span> szTip;
+        DWORD     dwState;
+        DWORD     dwStateMask;
+        CHAR<span class='opr'>[</span><span class='nbr'>256</span><span class='opr'>]</span> szInfo;
+        <span class='kw2'>union</span> <span class='opr'>{</span>
+            UINT  uTimeout;
+            UINT  uVersion;
+        <span class='opr'>}</span>
+        CHAR<span class='opr'>[</span><span class='nbr'>64</span><span class='opr'>]</span>  szInfoTitle;
+        DWORD     dwInfoFlags;
+    <span class='opr'>}</span> <span class='kw1'>else</span> <span class='opr'>{</span>
+        CHAR<span class='opr'>[</span><span class='nbr'>64</span><span class='opr'>]</span>  szTip;
+    <span class='opr'>}</span>
+    <span class='kw4'>static</span> <span class='kw1'>if</span> <span class='opr'>(</span>_WIN32_IE <span class='opr'>&gt;</span><span class='opr'>=</span> <span class='nbr'>0</span>x600<span class='opr'>)</span> <span class='opr'>{</span>
+        GUID      guidItem;
+    <span class='opr'>}</span>
+<span class='opr'>}</span>
+<span class='kw2'>alias</span> NOTIFYICONDATAA<span class='opr'>*</span> PNOTIFYICONDATAA;
+
+<span class='kw4'>struct</span> NOTIFYICONDATAW <span class='opr'>{</span>
+    DWORD cbSize <span class='opr'>=</span> NOTIFYICONDATAW.sizeof;
+    HWND  hWnd;
+    UINT  uID;
+    UINT  uFlags;
+    UINT  uCallbackMessage;
+    HICON hIcon;
+    <span class='kw4'>static</span> <span class='kw1'>if</span> <span class='opr'>(</span>_WIN32_IE <span class='opr'>&gt;</span><span class='opr'>=</span> <span class='nbr'>0</span>x500<span class='opr'>)</span> <span class='opr'>{</span>
+        WCHAR<span class='opr'>[</span><span class='nbr'>128</span><span class='opr'>]</span> szTip;
+        DWORD      dwState;
+        DWORD      dwStateMask;
+        WCHAR<span class='opr'>[</span><span class='nbr'>256</span><span class='opr'>]</span> szInfo;
+        <span class='kw2'>union</span> <span class='opr'>{</span>
+            UINT uTimeout;
+            UINT uVersion;
+        <span class='opr'>}</span>
+        WCHAR<span class='opr'>[</span><span class='nbr'>64</span><span class='opr'>]</span> szInfoTitle;
+        DWORD     dwInfoFlags;
+    <span class='opr'>}</span> <span class='kw1'>else</span> <span class='opr'>{</span>
+        WCHAR<span class='opr'>[</span><span class='nbr'>64</span><span class='opr'>]</span> szTip;
+    <span class='opr'>}</span>
+    <span class='kw4'>static</span> <span class='kw1'>if</span> <span class='opr'>(</span>_WIN32_IE <span class='opr'>&gt;</span><span class='opr'>=</span> <span class='nbr'>0</span>x600<span class='opr'>)</span> <span class='opr'>{</span>
+        GUID guidItem;
+    <span class='opr'>}</span>
+<span class='opr'>}</span>
+<span class='kw2'>alias</span> NOTIFYICONDATAW<span class='opr'>*</span> PNOTIFYICONDATAW;
+
+<span class='kw4'>struct</span> SHELLEXECUTEINFOA <span class='opr'>{</span>
+    DWORD     cbSize <span class='opr'>=</span> SHELLEXECUTEINFOA.sizeof;
+    ULONG     fMask;
+    HWND      hwnd;
+    LPCSTR    lpVerb;
+    LPCSTR    lpFile;
+    LPCSTR    lpParameters;
+    LPCSTR    lpDirectory;
+    <span class='kw4'>int</span>       nShow;
+    HINSTANCE hInstApp;
+    PVOID     lpIDList;
+    LPCSTR    lpClass;
+    HKEY      hkeyClass;
+    DWORD     dwHotKey;
+    HANDLE    hIcon;
+    HANDLE    hProcess;
+<span class='opr'>}</span>
+<span class='kw2'>alias</span> SHELLEXECUTEINFOA<span class='opr'>*</span> LPSHELLEXECUTEINFOA;
+
+<span class='kw4'>struct</span> SHELLEXECUTEINFOW <span class='opr'>{</span>
+    DWORD     cbSize <span class='opr'>=</span> SHELLEXECUTEINFOW.sizeof;
+    ULONG     fMask;
+    HWND      hwnd;
+    LPCWSTR   lpVerb;
+    LPCWSTR   lpFile;
+    LPCWSTR   lpParameters;
+    LPCWSTR   lpDirectory;
+    <span class='kw4'>int</span>       nShow;
+    HINSTANCE hInstApp;
+    PVOID     lpIDList;
+    LPCWSTR   lpClass;
+    HKEY      hkeyClass;
+    DWORD     dwHotKey;
+    HANDLE    hIcon;
+    HANDLE    hProcess;
+<span class='opr'>}</span>
+<span class='kw2'>alias</span> SHELLEXECUTEINFOW<span class='opr'>*</span> LPSHELLEXECUTEINFOW;
+
+<span class='kw4'>struct</span> SHFILEOPSTRUCTA <span class='opr'>{</span>
+    HWND         hwnd;
+    UINT         wFunc;
+    LPCSTR       pFrom;
+    LPCSTR       pTo;
+    FILEOP_FLAGS fFlags;
+    BOOL         fAnyOperationsAborted;
+    PVOID        hNameMappings;
+    LPCSTR       lpszProgressTitle;
+<span class='opr'>}</span>
+<span class='kw2'>alias</span> SHFILEOPSTRUCTA<span class='opr'>*</span> LPSHFILEOPSTRUCTA;
+
+<span class='kw4'>struct</span> SHFILEOPSTRUCTW <span class='opr'>{</span>
+    HWND         hwnd;
+    UINT         wFunc;
+    LPCWSTR      pFrom;
+    LPCWSTR      pTo;
+    FILEOP_FLAGS fFlags;
+    BOOL         fAnyOperationsAborted;
+    PVOID        hNameMappings;
+    LPCWSTR      lpszProgressTitle;
+<span class='opr'>}</span>
+<span class='kw2'>alias</span> SHFILEOPSTRUCTW<span class='opr'>*</span> LPSHFILEOPSTRUCTW;
+
+<span class='kw4'>struct</span> SHFILEINFOA <span class='opr'>{</span>
+    HICON          hIcon;
+    <span class='kw4'>int</span>            iIcon;
+    DWORD          dwAttributes;
+    CHAR<span class='opr'>[</span>MAX_PATH<span class='opr'>]</span> szDisplayName;
+    CHAR<span class='opr'>[</span><span class='nbr'>80</span><span class='opr'>]</span>       szTypeName;
+<span class='opr'>}</span>
+
+<span class='kw4'>struct</span> SHFILEINFOW <span class='opr'>{</span>
+    HICON           hIcon;
+    <span class='kw4'>int</span>             iIcon;
+    DWORD           dwAttributes;
+    WCHAR<span class='opr'>[</span>MAX_PATH<span class='opr'>]</span> szDisplayName;
+    WCHAR<span class='opr'>[</span><span class='nbr'>80</span><span class='opr'>]</span>       szTypeName;
+<span class='opr'>}</span>
+
+<span class='kw4'>struct</span> SHQUERYRBINFO <span class='opr'>{</span>
+    DWORD cbSize <span class='opr'>=</span> SHQUERYRBINFO.sizeof;
+    <span class='kw4'>long</span>  i64Size;
+    <span class='kw4'>long</span>  i64NumItems;
+<span class='opr'>}</span>
+<span class='kw2'>alias</span> SHQUERYRBINFO<span class='opr'>*</span> LPSHQUERYRBINFO;
+
+<span class='kw2'>extern</span> <span class='opr'>(</span>Windows<span class='opr'>)</span> <span class='opr'>{</span>
+    LPWSTR<span class='opr'>*</span> CommandLineToArgvW<span class='opr'>(</span>LPCWSTR, <span class='kw4'>int</span><span class='opr'>*</span><span class='opr'>)</span>;
+    <span class='kw4'>void</span> DragAcceptFiles<span class='opr'>(</span>HWND, BOOL<span class='opr'>)</span>;
+    <span class='kw4'>void</span> DragFinish<span class='opr'>(</span>HDROP<span class='opr'>)</span>;
+    UINT DragQueryFileA<span class='opr'>(</span>HDROP, UINT, LPSTR, UINT<span class='opr'>)</span>;
+    UINT DragQueryFileW<span class='opr'>(</span>HDROP, UINT, LPWSTR, UINT<span class='opr'>)</span>;
+    BOOL DragQueryPoint<span class='opr'>(</span>HDROP, LPPOINT<span class='opr'>)</span>;
+    HICON DuplicateIcon<span class='opr'>(</span>HINSTANCE, HICON<span class='opr'>)</span>;
+    HICON ExtractAssociatedIconA<span class='opr'>(</span>HINSTANCE, LPCSTR, PWORD<span class='opr'>)</span>;
+    HICON ExtractAssociatedIconW<span class='opr'>(</span>HINSTANCE, LPCWSTR, PWORD<span class='opr'>)</span>;
+    HICON ExtractIconA<span class='opr'>(</span>HINSTANCE, LPCSTR, UINT<span class='opr'>)</span>;
+    HICON ExtractIconW<span class='opr'>(</span>HINSTANCE, LPCWSTR, UINT<span class='opr'>)</span>;
+    UINT ExtractIconExA<span class='opr'>(</span>LPCSTR, <span class='kw4'>int</span>, HICON<span class='opr'>*</span>, HICON<span class='opr'>*</span>, UINT<span class='opr'>)</span>;
+    UINT ExtractIconExW<span class='opr'>(</span>LPCWSTR, <span class='kw4'>int</span>, HICON<span class='opr'>*</span>, HICON<span class='opr'>*</span>, UINT<span class='opr'>)</span>;
+    HINSTANCE FindExecutableA<span class='opr'>(</span>LPCSTR, LPCSTR, LPSTR<span class='opr'>)</span>;
+    HINSTANCE FindExecutableW<span class='opr'>(</span>LPCWSTR, LPCWSTR, LPWSTR<span class='opr'>)</span>;
+    UINT SHAppBarMessage<span class='opr'>(</span>DWORD, PAPPBARDATA<span class='opr'>)</span>;
+    BOOL Shell_NotifyIconA<span class='opr'>(</span>DWORD, PNOTIFYICONDATAA<span class='opr'>)</span>;
+    BOOL Shell_NotifyIconW<span class='opr'>(</span>DWORD, PNOTIFYICONDATAW<span class='opr'>)</span>;
+    <span class='kw4'>int</span> ShellAboutA<span class='opr'>(</span>HWND, LPCSTR, LPCSTR, HICON<span class='opr'>)</span>;
+    <span class='kw4'>int</span> ShellAboutW<span class='opr'>(</span>HWND, LPCWSTR, LPCWSTR, HICON<span class='opr'>)</span>;
+    HINSTANCE ShellExecuteA<span class='opr'>(</span>HWND, LPCSTR, LPCSTR, LPCSTR, LPCSTR, INT<span class='opr'>)</span>;
+    HINSTANCE ShellExecuteW<span class='opr'>(</span>HWND, LPCWSTR, LPCWSTR, LPCWSTR, LPCWSTR, INT<span class='opr'>)</span>;
+    BOOL ShellExecuteExA<span class='opr'>(</span>LPSHELLEXECUTEINFOA<span class='opr'>)</span>;
+    BOOL ShellExecuteExW<span class='opr'>(</span>LPSHELLEXECUTEINFOW<span class='opr'>)</span>;
+    <span class='kw4'>int</span> SHFileOperationA<span class='opr'>(</span>LPSHFILEOPSTRUCTA<span class='opr'>)</span>;
+    <span class='kw4'>int</span> SHFileOperationW<span class='opr'>(</span>LPSHFILEOPSTRUCTW<span class='opr'>)</span>;
+    <span class='kw4'>void</span> SHFreeNameMappings<span class='opr'>(</span>HANDLE<span class='opr'>)</span>;
+    DWORD SHGetFileInfoA<span class='opr'>(</span>LPCSTR, DWORD, SHFILEINFOA<span class='opr'>*</span>, UINT, UINT<span class='opr'>)</span>;
+    DWORD SHGetFileInfoW<span class='opr'>(</span>LPCWSTR, DWORD, SHFILEINFOW<span class='opr'>*</span>, UINT, UINT<span class='opr'>)</span>;
+    HRESULT SHQueryRecycleBinA<span class='opr'>(</span>LPCSTR,  LPSHQUERYRBINFO<span class='opr'>)</span>;
+    HRESULT SHQueryRecycleBinW<span class='opr'>(</span>LPCWSTR,  LPSHQUERYRBINFO<span class='opr'>)</span>;
+    HRESULT SHEmptyRecycleBinA<span class='opr'>(</span>HWND, LPCSTR, DWORD<span class='opr'>)</span>;
+    HRESULT SHEmptyRecycleBinW<span class='opr'>(</span>HWND, LPCWSTR, DWORD<span class='opr'>)</span>;
+<span class='opr'>}</span>
+
+<span class='kw4'>version</span> <span class='opr'>(</span>Unicode<span class='opr'>)</span> <span class='opr'>{</span>
+    <span class='kw2'>alias</span> NOTIFYICONDATAW NOTIFYICONDATA;
+    <span class='kw2'>alias</span> SHELLEXECUTEINFOW SHELLEXECUTEINFO;
+    <span class='kw2'>alias</span> SHFILEOPSTRUCTW SHFILEOPSTRUCT;
+    <span class='kw2'>alias</span> SHFILEINFOW SHFILEINFO;
+    <span class='kw2'>alias</span> DragQueryFileW DragQueryFile;
+    <span class='kw2'>alias</span> ExtractAssociatedIconW ExtractAssociatedIcon;
+    <span class='kw2'>alias</span> ExtractIconW ExtractIcon;
+    <span class='kw2'>alias</span> ExtractIconExW ExtractIconEx;
+    <span class='kw2'>alias</span> FindExecutableW FindExecutable;
+    <span class='kw2'>alias</span> Shell_NotifyIconW Shell_NotifyIcon;
+    <span class='kw2'>alias</span> ShellAboutW ShellAbout;
+    <span class='kw2'>alias</span> ShellExecuteW ShellExecute;
+    <span class='kw2'>alias</span> ShellExecuteExW ShellExecuteEx;
+    <span class='kw2'>alias</span> SHFileOperationW SHFileOperation;
+    <span class='kw2'>alias</span> SHGetFileInfoW SHGetFileInfo;
+    <span class='kw2'>alias</span> SHQueryRecycleBinW SHQueryRecycleBin;
+    <span class='kw2'>alias</span> SHEmptyRecycleBinW SHEmptyRecycleBin;
+<span class='opr'>}</span> <span class='kw1'>else</span> <span class='opr'>{</span>
+    <span class='kw2'>alias</span> NOTIFYICONDATAA NOTIFYICONDATA;
+    <span class='kw2'>alias</span> SHELLEXECUTEINFOA SHELLEXECUTEINFO;
+    <span class='kw2'>alias</span> SHFILEOPSTRUCTA SHFILEOPSTRUCT;
+    <span class='kw2'>alias</span> SHFILEINFOA SHFILEINFO;
+    <span class='kw2'>alias</span> DragQueryFileA DragQueryFile;
+    <span class='kw2'>alias</span> ExtractAssociatedIconA ExtractAssociatedIcon;
+    <span class='kw2'>alias</span> ExtractIconA ExtractIcon;
+    <span class='kw2'>alias</span> ExtractIconExA ExtractIconEx;
+    <span class='kw2'>alias</span> FindExecutableA FindExecutable;
+    <span class='kw2'>alias</span> Shell_NotifyIconA Shell_NotifyIcon;
+    <span class='kw2'>alias</span> ShellAboutA ShellAbout;
+    <span class='kw2'>alias</span> ShellExecuteA ShellExecute;
+    <span class='kw2'>alias</span> ShellExecuteExA ShellExecuteEx;
+    <span class='kw2'>alias</span> SHFileOperationA SHFileOperation;
+    <span class='kw2'>alias</span> SHGetFileInfoA SHGetFileInfo;
+    <span class='kw2'>alias</span> SHQueryRecycleBinA SHQueryRecycleBin;
+    <span class='kw2'>alias</span> SHEmptyRecycleBinA SHEmptyRecycleBin;
+<span class='opr'>}</span>
+
+<span class='kw2'>alias</span> NOTIFYICONDATA<span class='opr'>*</span> PNOTIFYICONDATA;
+<span class='kw2'>alias</span> SHELLEXECUTEINFO<span class='opr'>*</span> LPSHELLEXECUTEINFO;
+<span class='kw2'>alias</span> SHFILEOPSTRUCT<span class='opr'>*</span> LPSHFILEOPSTRUCT;
+</pre></td></tr></table>	</body>
+</html>

@@ -1,0 +1,515 @@
+<!DOCTYPE html 
+     PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+     "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html>
+	<head>
+		<link rel="stylesheet" href="style.css" type="text/css" />
+		<title>stdc/inttypes.d</title>
+	</head>
+	<body>
+
+<table id='dcode'><tr><td id='lnum'><pre><span>1</span>
+<span>2</span>
+<span>3</span>
+<span>4</span>
+<span>5</span>
+<span>6</span>
+<span>7</span>
+<span>8</span>
+<span>9</span>
+<span>10</span>
+<span>11</span>
+<span>12</span>
+<span>13</span>
+<span>14</span>
+<span>15</span>
+<span>16</span>
+<span>17</span>
+<span>18</span>
+<span>19</span>
+<span>20</span>
+<span>21</span>
+<span>22</span>
+<span>23</span>
+<span>24</span>
+<span>25</span>
+<span>26</span>
+<span>27</span>
+<span>28</span>
+<span>29</span>
+<span>30</span>
+<span>31</span>
+<span>32</span>
+<span>33</span>
+<span>34</span>
+<span>35</span>
+<span>36</span>
+<span>37</span>
+<span>38</span>
+<span>39</span>
+<span>40</span>
+<span>41</span>
+<span>42</span>
+<span>43</span>
+<span>44</span>
+<span>45</span>
+<span>46</span>
+<span>47</span>
+<span>48</span>
+<span>49</span>
+<span>50</span>
+<span>51</span>
+<span>52</span>
+<span>53</span>
+<span>54</span>
+<span>55</span>
+<span>56</span>
+<span>57</span>
+<span>58</span>
+<span>59</span>
+<span>60</span>
+<span>61</span>
+<span>62</span>
+<span>63</span>
+<span>64</span>
+<span>65</span>
+<span>66</span>
+<span>67</span>
+<span>68</span>
+<span>69</span>
+<span>70</span>
+<span>71</span>
+<span>72</span>
+<span>73</span>
+<span>74</span>
+<span>75</span>
+<span>76</span>
+<span>77</span>
+<span>78</span>
+<span>79</span>
+<span>80</span>
+<span>81</span>
+<span>82</span>
+<span>83</span>
+<span>84</span>
+<span>85</span>
+<span>86</span>
+<span>87</span>
+<span>88</span>
+<span>89</span>
+<span>90</span>
+<span>91</span>
+<span>92</span>
+<span>93</span>
+<span>94</span>
+<span>95</span>
+<span>96</span>
+<span>97</span>
+<span>98</span>
+<span>99</span>
+<span>100</span>
+<span>101</span>
+<span>102</span>
+<span>103</span>
+<span>104</span>
+<span>105</span>
+<span>106</span>
+<span>107</span>
+<span>108</span>
+<span>109</span>
+<span>110</span>
+<span>111</span>
+<span>112</span>
+<span>113</span>
+<span>114</span>
+<span>115</span>
+<span>116</span>
+<span>117</span>
+<span>118</span>
+<span>119</span>
+<span>120</span>
+<span>121</span>
+<span>122</span>
+<span>123</span>
+<span>124</span>
+<span>125</span>
+<span>126</span>
+<span>127</span>
+<span>128</span>
+<span>129</span>
+<span>130</span>
+<span>131</span>
+<span>132</span>
+<span>133</span>
+<span>134</span>
+<span>135</span>
+<span>136</span>
+<span>137</span>
+<span>138</span>
+<span>139</span>
+<span>140</span>
+<span>141</span>
+<span>142</span>
+<span>143</span>
+<span>144</span>
+<span>145</span>
+<span>146</span>
+<span>147</span>
+<span>148</span>
+<span>149</span>
+<span>150</span>
+<span>151</span>
+<span>152</span>
+<span>153</span>
+<span>154</span>
+<span>155</span>
+<span>156</span>
+<span>157</span>
+<span>158</span>
+<span>159</span>
+<span>160</span>
+<span>161</span>
+<span>162</span>
+<span>163</span>
+<span>164</span>
+<span>165</span>
+<span>166</span>
+<span>167</span>
+<span>168</span>
+<span>169</span>
+<span>170</span>
+<span>171</span>
+<span>172</span>
+<span>173</span>
+<span>174</span>
+<span>175</span>
+<span>176</span>
+<span>177</span>
+<span>178</span>
+<span>179</span>
+<span>180</span>
+<span>181</span>
+<span>182</span>
+<span>183</span>
+<span>184</span>
+<span>185</span>
+<span>186</span>
+<span>187</span>
+<span>188</span>
+<span>189</span>
+<span>190</span>
+<span>191</span>
+<span>192</span>
+<span>193</span>
+<span>194</span>
+<span>195</span>
+<span>196</span>
+<span>197</span>
+<span>198</span>
+<span>199</span>
+<span>200</span>
+<span>201</span>
+<span>202</span>
+<span>203</span>
+<span>204</span>
+<span>205</span>
+<span>206</span>
+<span>207</span>
+<span>208</span>
+<span>209</span>
+<span>210</span>
+<span>211</span>
+<span>212</span>
+<span>213</span>
+<span>214</span>
+<span>215</span>
+<span>216</span>
+<span>217</span>
+<span>218</span>
+<span>219</span>
+<span>220</span>
+<span>221</span>
+<span>222</span>
+<span>223</span>
+<span>224</span>
+<span>225</span>
+<span>226</span>
+<span>227</span>
+<span>228</span>
+<span>229</span>
+<span>230</span>
+<span>231</span>
+<span>232</span>
+<span>233</span>
+<span>234</span>
+<span>235</span>
+<span>236</span>
+<span>237</span>
+<span>238</span>
+<span>239</span>
+<span>240</span>
+<span>241</span>
+<span>242</span>
+<span>243</span>
+<span>244</span>
+<span>245</span>
+<span>246</span>
+<span>247</span>
+<span>248</span>
+<span>249</span>
+<span>250</span>
+<span>251</span>
+</pre></td><td id='code'><pre><span class='com'>/**
+ * D header file for C99.
+ *
+ * Copyright: Public Domain
+ * License:   Public Domain
+ * Authors:   Sean Kelly
+ * Standards: ISO/IEC 9899:1999 (E)
+ */</span>
+<span class='kw2'>module</span> tango.stdc.inttypes;
+
+<span class='kw4'>public</span> <span class='kw2'>import</span> tango.stdc.stdint;
+
+<span class='kw2'>extern</span> <span class='opr'>(</span>C<span class='opr'>)</span>:
+
+<span class='kw4'>struct</span> imaxdiv_t
+<span class='opr'>{</span>
+    intmax_t    quot,
+                rem;
+<span class='opr'>}</span>
+
+<span class='kw4'>version</span><span class='opr'>(</span> VerboseC <span class='opr'>)</span>
+<span class='opr'>{</span>
+    <span class='kw4'>const</span> <span class='kw4'>char</span><span class='opr'>*</span> PRId8        <span class='opr'>=</span> <span class='str'>&quot;hhd&quot;</span>;
+    <span class='kw4'>const</span> <span class='kw4'>char</span><span class='opr'>*</span> PRId16        <span class='opr'>=</span> <span class='str'>&quot;hd&quot;</span>;
+    <span class='kw4'>const</span> <span class='kw4'>char</span><span class='opr'>*</span> PRId32        <span class='opr'>=</span> <span class='str'>&quot;ld&quot;</span>;
+    <span class='kw4'>const</span> <span class='kw4'>char</span><span class='opr'>*</span> PRId64        <span class='opr'>=</span> <span class='str'>&quot;lld&quot;</span>;
+
+    <span class='kw4'>const</span> <span class='kw4'>char</span><span class='opr'>*</span> PRIdLEAST8    <span class='opr'>=</span> <span class='str'>&quot;hhd&quot;</span>;
+    <span class='kw4'>const</span> <span class='kw4'>char</span><span class='opr'>*</span> PRIdLEAST16    <span class='opr'>=</span> <span class='str'>&quot;hd&quot;</span>;
+    <span class='kw4'>const</span> <span class='kw4'>char</span><span class='opr'>*</span> PRIdLEAST32    <span class='opr'>=</span> <span class='str'>&quot;ld&quot;</span>;
+    <span class='kw4'>const</span> <span class='kw4'>char</span><span class='opr'>*</span> PRIdLEAST64    <span class='opr'>=</span> <span class='str'>&quot;lld&quot;</span>;
+
+    <span class='kw4'>const</span> <span class='kw4'>char</span><span class='opr'>*</span> PRIdFAST8    <span class='opr'>=</span> <span class='str'>&quot;hhd&quot;</span>;
+    <span class='kw4'>const</span> <span class='kw4'>char</span><span class='opr'>*</span> PRIdFAST16    <span class='opr'>=</span> <span class='str'>&quot;d&quot;</span>;
+    <span class='kw4'>const</span> <span class='kw4'>char</span><span class='opr'>*</span> PRIdFAST32    <span class='opr'>=</span> <span class='str'>&quot;ld&quot;</span>;
+    <span class='kw4'>const</span> <span class='kw4'>char</span><span class='opr'>*</span> PRIdFAST64    <span class='opr'>=</span> <span class='str'>&quot;lld&quot;</span>;
+
+    <span class='kw4'>const</span> <span class='kw4'>char</span><span class='opr'>*</span> PRIi8        <span class='opr'>=</span> <span class='str'>&quot;hhi&quot;</span>;
+    <span class='kw4'>const</span> <span class='kw4'>char</span><span class='opr'>*</span> PRIi16        <span class='opr'>=</span> <span class='str'>&quot;hi&quot;</span>;
+    <span class='kw4'>const</span> <span class='kw4'>char</span><span class='opr'>*</span> PRIi32        <span class='opr'>=</span> <span class='str'>&quot;li&quot;</span>;
+    <span class='kw4'>const</span> <span class='kw4'>char</span><span class='opr'>*</span> PRIi64        <span class='opr'>=</span> <span class='str'>&quot;lli&quot;</span>;
+
+    <span class='kw4'>const</span> <span class='kw4'>char</span><span class='opr'>*</span> PRIiLEAST8    <span class='opr'>=</span> <span class='str'>&quot;hhi&quot;</span>;
+    <span class='kw4'>const</span> <span class='kw4'>char</span><span class='opr'>*</span> PRIiLEAST16    <span class='opr'>=</span> <span class='str'>&quot;hi&quot;</span>;
+    <span class='kw4'>const</span> <span class='kw4'>char</span><span class='opr'>*</span> PRIiLEAST32    <span class='opr'>=</span> <span class='str'>&quot;li&quot;</span>;
+    <span class='kw4'>const</span> <span class='kw4'>char</span><span class='opr'>*</span> PRIiLEAST64    <span class='opr'>=</span> <span class='str'>&quot;lli&quot;</span>;
+
+    <span class='kw4'>const</span> <span class='kw4'>char</span><span class='opr'>*</span> PRIiFAST8    <span class='opr'>=</span> <span class='str'>&quot;hhi&quot;</span>;
+    <span class='kw4'>const</span> <span class='kw4'>char</span><span class='opr'>*</span> PRIiFAST16    <span class='opr'>=</span> <span class='str'>&quot;i&quot;</span>;
+    <span class='kw4'>const</span> <span class='kw4'>char</span><span class='opr'>*</span> PRIiFAST32    <span class='opr'>=</span> <span class='str'>&quot;li&quot;</span>;
+    <span class='kw4'>const</span> <span class='kw4'>char</span><span class='opr'>*</span> PRIiFAST64    <span class='opr'>=</span> <span class='str'>&quot;lli&quot;</span>;
+
+    <span class='kw4'>const</span> <span class='kw4'>char</span><span class='opr'>*</span> PRIo8        <span class='opr'>=</span> <span class='str'>&quot;hho&quot;</span>;
+    <span class='kw4'>const</span> <span class='kw4'>char</span><span class='opr'>*</span> PRIo16        <span class='opr'>=</span> <span class='str'>&quot;ho&quot;</span>;
+    <span class='kw4'>const</span> <span class='kw4'>char</span><span class='opr'>*</span> PRIo32        <span class='opr'>=</span> <span class='str'>&quot;lo&quot;</span>;
+    <span class='kw4'>const</span> <span class='kw4'>char</span><span class='opr'>*</span> PRIo64        <span class='opr'>=</span> <span class='str'>&quot;llo&quot;</span>;
+
+    <span class='kw4'>const</span> <span class='kw4'>char</span><span class='opr'>*</span> PRIoLEAST8    <span class='opr'>=</span> <span class='str'>&quot;hho&quot;</span>;
+    <span class='kw4'>const</span> <span class='kw4'>char</span><span class='opr'>*</span> PRIoLEAST16    <span class='opr'>=</span> <span class='str'>&quot;ho&quot;</span>;
+    <span class='kw4'>const</span> <span class='kw4'>char</span><span class='opr'>*</span> PRIoLEAST32    <span class='opr'>=</span> <span class='str'>&quot;lo&quot;</span>;
+    <span class='kw4'>const</span> <span class='kw4'>char</span><span class='opr'>*</span> PRIoLEAST64    <span class='opr'>=</span> <span class='str'>&quot;llo&quot;</span>;
+
+    <span class='kw4'>const</span> <span class='kw4'>char</span><span class='opr'>*</span> PRIoFAST8    <span class='opr'>=</span> <span class='str'>&quot;hho&quot;</span>;
+    <span class='kw4'>const</span> <span class='kw4'>char</span><span class='opr'>*</span> PRIoFAST16    <span class='opr'>=</span> <span class='str'>&quot;o&quot;</span>;
+    <span class='kw4'>const</span> <span class='kw4'>char</span><span class='opr'>*</span> PRIoFAST32    <span class='opr'>=</span> <span class='str'>&quot;lo&quot;</span>;
+    <span class='kw4'>const</span> <span class='kw4'>char</span><span class='opr'>*</span> PRIoFAST64    <span class='opr'>=</span> <span class='str'>&quot;llo&quot;</span>;
+
+    <span class='kw4'>const</span> <span class='kw4'>char</span><span class='opr'>*</span> PRIu8        <span class='opr'>=</span> <span class='str'>&quot;hhu&quot;</span>;
+    <span class='kw4'>const</span> <span class='kw4'>char</span><span class='opr'>*</span> PRIu16        <span class='opr'>=</span> <span class='str'>&quot;hu&quot;</span>;
+    <span class='kw4'>const</span> <span class='kw4'>char</span><span class='opr'>*</span> PRIu32        <span class='opr'>=</span> <span class='str'>&quot;lu&quot;</span>;
+    <span class='kw4'>const</span> <span class='kw4'>char</span><span class='opr'>*</span> PRIu64        <span class='opr'>=</span> <span class='str'>&quot;llu&quot;</span>;
+
+    <span class='kw4'>const</span> <span class='kw4'>char</span><span class='opr'>*</span> PRIuLEAST8    <span class='opr'>=</span> <span class='str'>&quot;hhu&quot;</span>;
+    <span class='kw4'>const</span> <span class='kw4'>char</span><span class='opr'>*</span> PRIuLEAST16    <span class='opr'>=</span> <span class='str'>&quot;hu&quot;</span>;
+    <span class='kw4'>const</span> <span class='kw4'>char</span><span class='opr'>*</span> PRIuLEAST32    <span class='opr'>=</span> <span class='str'>&quot;lu&quot;</span>;
+    <span class='kw4'>const</span> <span class='kw4'>char</span><span class='opr'>*</span> PRIuLEAST64    <span class='opr'>=</span> <span class='str'>&quot;llu&quot;</span>;
+
+    <span class='kw4'>const</span> <span class='kw4'>char</span><span class='opr'>*</span> PRIuFAST8    <span class='opr'>=</span> <span class='str'>&quot;hhu&quot;</span>;
+    <span class='kw4'>const</span> <span class='kw4'>char</span><span class='opr'>*</span> PRIuFAST16    <span class='opr'>=</span> <span class='str'>&quot;u&quot;</span>;
+    <span class='kw4'>const</span> <span class='kw4'>char</span><span class='opr'>*</span> PRIuFAST32    <span class='opr'>=</span> <span class='str'>&quot;lu&quot;</span>;
+    <span class='kw4'>const</span> <span class='kw4'>char</span><span class='opr'>*</span> PRIuFAST64    <span class='opr'>=</span> <span class='str'>&quot;llu&quot;</span>;
+
+    <span class='kw4'>const</span> <span class='kw4'>char</span><span class='opr'>*</span> PRIx8        <span class='opr'>=</span> <span class='str'>&quot;hhx&quot;</span>;
+    <span class='kw4'>const</span> <span class='kw4'>char</span><span class='opr'>*</span> PRIx16        <span class='opr'>=</span> <span class='str'>&quot;hx&quot;</span>;
+    <span class='kw4'>const</span> <span class='kw4'>char</span><span class='opr'>*</span> PRIx32        <span class='opr'>=</span> <span class='str'>&quot;lx&quot;</span>;
+    <span class='kw4'>const</span> <span class='kw4'>char</span><span class='opr'>*</span> PRIx64        <span class='opr'>=</span> <span class='str'>&quot;llx&quot;</span>;
+
+    <span class='kw4'>const</span> <span class='kw4'>char</span><span class='opr'>*</span> PRIxLEAST8    <span class='opr'>=</span> <span class='str'>&quot;hhx&quot;</span>;
+    <span class='kw4'>const</span> <span class='kw4'>char</span><span class='opr'>*</span> PRIxLEAST16    <span class='opr'>=</span> <span class='str'>&quot;hx&quot;</span>;
+    <span class='kw4'>const</span> <span class='kw4'>char</span><span class='opr'>*</span> PRIxLEAST32    <span class='opr'>=</span> <span class='str'>&quot;lx&quot;</span>;
+    <span class='kw4'>const</span> <span class='kw4'>char</span><span class='opr'>*</span> PRIxLEAST64    <span class='opr'>=</span> <span class='str'>&quot;llx&quot;</span>;
+
+    <span class='kw4'>const</span> <span class='kw4'>char</span><span class='opr'>*</span> PRIxFAST8    <span class='opr'>=</span> <span class='str'>&quot;hhx&quot;</span>;
+    <span class='kw4'>const</span> <span class='kw4'>char</span><span class='opr'>*</span> PRIxFAST16    <span class='opr'>=</span> <span class='str'>&quot;x&quot;</span>;
+    <span class='kw4'>const</span> <span class='kw4'>char</span><span class='opr'>*</span> PRIxFAST32    <span class='opr'>=</span> <span class='str'>&quot;lx&quot;</span>;
+    <span class='kw4'>const</span> <span class='kw4'>char</span><span class='opr'>*</span> PRIxFAST64    <span class='opr'>=</span> <span class='str'>&quot;llx&quot;</span>;
+
+    <span class='kw4'>const</span> <span class='kw4'>char</span><span class='opr'>*</span> PRIX8        <span class='opr'>=</span> <span class='str'>&quot;hhX&quot;</span>;
+    <span class='kw4'>const</span> <span class='kw4'>char</span><span class='opr'>*</span> PRIX16        <span class='opr'>=</span> <span class='str'>&quot;hX&quot;</span>;
+    <span class='kw4'>const</span> <span class='kw4'>char</span><span class='opr'>*</span> PRIX32        <span class='opr'>=</span> <span class='str'>&quot;lX&quot;</span>;
+    <span class='kw4'>const</span> <span class='kw4'>char</span><span class='opr'>*</span> PRIX64        <span class='opr'>=</span> <span class='str'>&quot;llX&quot;</span>;
+
+    <span class='kw4'>const</span> <span class='kw4'>char</span><span class='opr'>*</span> PRIXLEAST8    <span class='opr'>=</span> <span class='str'>&quot;hhX&quot;</span>;
+    <span class='kw4'>const</span> <span class='kw4'>char</span><span class='opr'>*</span> PRIXLEAST16    <span class='opr'>=</span> <span class='str'>&quot;hX&quot;</span>;
+    <span class='kw4'>const</span> <span class='kw4'>char</span><span class='opr'>*</span> PRIXLEAST32    <span class='opr'>=</span> <span class='str'>&quot;lX&quot;</span>;
+    <span class='kw4'>const</span> <span class='kw4'>char</span><span class='opr'>*</span> PRIXLEAST64    <span class='opr'>=</span> <span class='str'>&quot;llX&quot;</span>;
+
+    <span class='kw4'>const</span> <span class='kw4'>char</span><span class='opr'>*</span> PRIXFAST8    <span class='opr'>=</span> <span class='str'>&quot;hhX&quot;</span>;
+    <span class='kw4'>const</span> <span class='kw4'>char</span><span class='opr'>*</span> PRIXFAST16    <span class='opr'>=</span> <span class='str'>&quot;X&quot;</span>;
+    <span class='kw4'>const</span> <span class='kw4'>char</span><span class='opr'>*</span> PRIXFAST32    <span class='opr'>=</span> <span class='str'>&quot;lX&quot;</span>;
+    <span class='kw4'>const</span> <span class='kw4'>char</span><span class='opr'>*</span> PRIXFAST64    <span class='opr'>=</span> <span class='str'>&quot;llX&quot;</span>;
+
+    <span class='kw4'>const</span> <span class='kw4'>char</span><span class='opr'>*</span> SCNd8        <span class='opr'>=</span> <span class='str'>&quot;hhd&quot;</span>;
+    <span class='kw4'>const</span> <span class='kw4'>char</span><span class='opr'>*</span> SCNd16        <span class='opr'>=</span> <span class='str'>&quot;hd&quot;</span>;
+    <span class='kw4'>const</span> <span class='kw4'>char</span><span class='opr'>*</span> SCNd32        <span class='opr'>=</span> <span class='str'>&quot;ld&quot;</span>;
+    <span class='kw4'>const</span> <span class='kw4'>char</span><span class='opr'>*</span> SCNd64        <span class='opr'>=</span> <span class='str'>&quot;lld&quot;</span>;
+
+    <span class='kw4'>const</span> <span class='kw4'>char</span><span class='opr'>*</span> SCNdLEAST8    <span class='opr'>=</span> <span class='str'>&quot;hhd&quot;</span>;
+    <span class='kw4'>const</span> <span class='kw4'>char</span><span class='opr'>*</span> SCNdLEAST16    <span class='opr'>=</span> <span class='str'>&quot;hd&quot;</span>;
+    <span class='kw4'>const</span> <span class='kw4'>char</span><span class='opr'>*</span> SCNdLEAST32    <span class='opr'>=</span> <span class='str'>&quot;ld&quot;</span>;
+    <span class='kw4'>const</span> <span class='kw4'>char</span><span class='opr'>*</span> SCNdLEAST64    <span class='opr'>=</span> <span class='str'>&quot;lld&quot;</span>;
+
+    <span class='kw4'>const</span> <span class='kw4'>char</span><span class='opr'>*</span> SCNdFAST8    <span class='opr'>=</span> <span class='str'>&quot;hhd&quot;</span>;
+    <span class='kw4'>const</span> <span class='kw4'>char</span><span class='opr'>*</span> SCNdFAST16    <span class='opr'>=</span> <span class='str'>&quot;d&quot;</span>;
+    <span class='kw4'>const</span> <span class='kw4'>char</span><span class='opr'>*</span> SCNdFAST32    <span class='opr'>=</span> <span class='str'>&quot;ld&quot;</span>;
+    <span class='kw4'>const</span> <span class='kw4'>char</span><span class='opr'>*</span> SCNdFAST64    <span class='opr'>=</span> <span class='str'>&quot;lld&quot;</span>;
+
+    <span class='kw4'>const</span> <span class='kw4'>char</span><span class='opr'>*</span> SCNi8        <span class='opr'>=</span> <span class='str'>&quot;hhd&quot;</span>;
+    <span class='kw4'>const</span> <span class='kw4'>char</span><span class='opr'>*</span> SCNi16        <span class='opr'>=</span> <span class='str'>&quot;hi&quot;</span>;
+    <span class='kw4'>const</span> <span class='kw4'>char</span><span class='opr'>*</span> SCNi32        <span class='opr'>=</span> <span class='str'>&quot;li&quot;</span>;
+    <span class='kw4'>const</span> <span class='kw4'>char</span><span class='opr'>*</span> SCNi64        <span class='opr'>=</span> <span class='str'>&quot;lli&quot;</span>;
+
+    <span class='kw4'>const</span> <span class='kw4'>char</span><span class='opr'>*</span> SCNiLEAST8    <span class='opr'>=</span> <span class='str'>&quot;hhd&quot;</span>;
+    <span class='kw4'>const</span> <span class='kw4'>char</span><span class='opr'>*</span> SCNiLEAST16    <span class='opr'>=</span> <span class='str'>&quot;hi&quot;</span>;
+    <span class='kw4'>const</span> <span class='kw4'>char</span><span class='opr'>*</span> SCNiLEAST32    <span class='opr'>=</span> <span class='str'>&quot;li&quot;</span>;
+    <span class='kw4'>const</span> <span class='kw4'>char</span><span class='opr'>*</span> SCNiLEAST64    <span class='opr'>=</span> <span class='str'>&quot;lli&quot;</span>;
+
+    <span class='kw4'>const</span> <span class='kw4'>char</span><span class='opr'>*</span> SCNiFAST8    <span class='opr'>=</span> <span class='str'>&quot;hhd&quot;</span>;
+    <span class='kw4'>const</span> <span class='kw4'>char</span><span class='opr'>*</span> SCNiFAST16    <span class='opr'>=</span> <span class='str'>&quot;i&quot;</span>;
+    <span class='kw4'>const</span> <span class='kw4'>char</span><span class='opr'>*</span> SCNiFAST32    <span class='opr'>=</span> <span class='str'>&quot;li&quot;</span>;
+    <span class='kw4'>const</span> <span class='kw4'>char</span><span class='opr'>*</span> SCNiFAST64    <span class='opr'>=</span> <span class='str'>&quot;lli&quot;</span>;
+
+    <span class='kw4'>const</span> <span class='kw4'>char</span><span class='opr'>*</span> SCNo8        <span class='opr'>=</span> <span class='str'>&quot;hhd&quot;</span>;
+    <span class='kw4'>const</span> <span class='kw4'>char</span><span class='opr'>*</span> SCNo16        <span class='opr'>=</span> <span class='str'>&quot;ho&quot;</span>;
+    <span class='kw4'>const</span> <span class='kw4'>char</span><span class='opr'>*</span> SCNo32        <span class='opr'>=</span> <span class='str'>&quot;lo&quot;</span>;
+    <span class='kw4'>const</span> <span class='kw4'>char</span><span class='opr'>*</span> SCNo64        <span class='opr'>=</span> <span class='str'>&quot;llo&quot;</span>;
+
+    <span class='kw4'>const</span> <span class='kw4'>char</span><span class='opr'>*</span> SCNoLEAST8    <span class='opr'>=</span> <span class='str'>&quot;hhd&quot;</span>;
+    <span class='kw4'>const</span> <span class='kw4'>char</span><span class='opr'>*</span> SCNoLEAST16    <span class='opr'>=</span> <span class='str'>&quot;ho&quot;</span>;
+    <span class='kw4'>const</span> <span class='kw4'>char</span><span class='opr'>*</span> SCNoLEAST32    <span class='opr'>=</span> <span class='str'>&quot;lo&quot;</span>;
+    <span class='kw4'>const</span> <span class='kw4'>char</span><span class='opr'>*</span> SCNoLEAST64    <span class='opr'>=</span> <span class='str'>&quot;llo&quot;</span>;
+
+    <span class='kw4'>const</span> <span class='kw4'>char</span><span class='opr'>*</span> SCNoFAST8    <span class='opr'>=</span> <span class='str'>&quot;hhd&quot;</span>;
+    <span class='kw4'>const</span> <span class='kw4'>char</span><span class='opr'>*</span> SCNoFAST16    <span class='opr'>=</span> <span class='str'>&quot;o&quot;</span>;
+    <span class='kw4'>const</span> <span class='kw4'>char</span><span class='opr'>*</span> SCNoFAST32    <span class='opr'>=</span> <span class='str'>&quot;lo&quot;</span>;
+    <span class='kw4'>const</span> <span class='kw4'>char</span><span class='opr'>*</span> SCNoFAST64    <span class='opr'>=</span> <span class='str'>&quot;llo&quot;</span>;
+
+    <span class='kw4'>const</span> <span class='kw4'>char</span><span class='opr'>*</span> SCNu8        <span class='opr'>=</span> <span class='str'>&quot;hhd&quot;</span>;
+    <span class='kw4'>const</span> <span class='kw4'>char</span><span class='opr'>*</span> SCNu16        <span class='opr'>=</span> <span class='str'>&quot;hu&quot;</span>;
+    <span class='kw4'>const</span> <span class='kw4'>char</span><span class='opr'>*</span> SCNu32        <span class='opr'>=</span> <span class='str'>&quot;lu&quot;</span>;
+    <span class='kw4'>const</span> <span class='kw4'>char</span><span class='opr'>*</span> SCNu64        <span class='opr'>=</span> <span class='str'>&quot;llu&quot;</span>;
+
+    <span class='kw4'>const</span> <span class='kw4'>char</span><span class='opr'>*</span> SCNuLEAST8    <span class='opr'>=</span> <span class='str'>&quot;hhd&quot;</span>;
+    <span class='kw4'>const</span> <span class='kw4'>char</span><span class='opr'>*</span> SCNuLEAST16    <span class='opr'>=</span> <span class='str'>&quot;hu&quot;</span>;
+    <span class='kw4'>const</span> <span class='kw4'>char</span><span class='opr'>*</span> SCNuLEAST32    <span class='opr'>=</span> <span class='str'>&quot;lu&quot;</span>;
+    <span class='kw4'>const</span> <span class='kw4'>char</span><span class='opr'>*</span> SCNuLEAST64    <span class='opr'>=</span> <span class='str'>&quot;llu&quot;</span>;
+
+    <span class='kw4'>const</span> <span class='kw4'>char</span><span class='opr'>*</span> SCNuFAST8    <span class='opr'>=</span> <span class='str'>&quot;hhd&quot;</span>;
+    <span class='kw4'>const</span> <span class='kw4'>char</span><span class='opr'>*</span> SCNuFAST16    <span class='opr'>=</span> <span class='str'>&quot;u&quot;</span>;
+    <span class='kw4'>const</span> <span class='kw4'>char</span><span class='opr'>*</span> SCNuFAST32    <span class='opr'>=</span> <span class='str'>&quot;lu&quot;</span>;
+    <span class='kw4'>const</span> <span class='kw4'>char</span><span class='opr'>*</span> SCNuFAST64    <span class='opr'>=</span> <span class='str'>&quot;llu&quot;</span>;
+
+    <span class='kw4'>const</span> <span class='kw4'>char</span><span class='opr'>*</span> SCNx8        <span class='opr'>=</span> <span class='str'>&quot;hhd&quot;</span>;
+    <span class='kw4'>const</span> <span class='kw4'>char</span><span class='opr'>*</span> SCNx16        <span class='opr'>=</span> <span class='str'>&quot;hx&quot;</span>;
+    <span class='kw4'>const</span> <span class='kw4'>char</span><span class='opr'>*</span> SCNx32        <span class='opr'>=</span> <span class='str'>&quot;lx&quot;</span>;
+    <span class='kw4'>const</span> <span class='kw4'>char</span><span class='opr'>*</span> SCNx64        <span class='opr'>=</span> <span class='str'>&quot;llx&quot;</span>;
+
+    <span class='kw4'>const</span> <span class='kw4'>char</span><span class='opr'>*</span> SCNxLEAST8    <span class='opr'>=</span> <span class='str'>&quot;hhd&quot;</span>;
+    <span class='kw4'>const</span> <span class='kw4'>char</span><span class='opr'>*</span> SCNxLEAST16    <span class='opr'>=</span> <span class='str'>&quot;hx&quot;</span>;
+    <span class='kw4'>const</span> <span class='kw4'>char</span><span class='opr'>*</span> SCNxLEAST32    <span class='opr'>=</span> <span class='str'>&quot;lx&quot;</span>;
+    <span class='kw4'>const</span> <span class='kw4'>char</span><span class='opr'>*</span> SCNxLEAST64    <span class='opr'>=</span> <span class='str'>&quot;llx&quot;</span>;
+
+    <span class='kw4'>const</span> <span class='kw4'>char</span><span class='opr'>*</span> SCNxFAST8    <span class='opr'>=</span> <span class='str'>&quot;hhd&quot;</span>;
+    <span class='kw4'>const</span> <span class='kw4'>char</span><span class='opr'>*</span> SCNxFAST16    <span class='opr'>=</span> <span class='str'>&quot;x&quot;</span>;
+    <span class='kw4'>const</span> <span class='kw4'>char</span><span class='opr'>*</span> SCNxFAST32    <span class='opr'>=</span> <span class='str'>&quot;lx&quot;</span>;
+    <span class='kw4'>const</span> <span class='kw4'>char</span><span class='opr'>*</span> SCNxFAST64    <span class='opr'>=</span> <span class='str'>&quot;llx&quot;</span>;
+
+  <span class='kw4'>version</span><span class='opr'>(</span> X86_64 <span class='opr'>)</span>
+  <span class='opr'>{</span>
+    <span class='kw4'>const</span> <span class='kw4'>char</span><span class='opr'>*</span> PRIdMAX        <span class='opr'>=</span> PRId64;
+    <span class='kw4'>const</span> <span class='kw4'>char</span><span class='opr'>*</span> PRIiMAX        <span class='opr'>=</span> PRIi64;
+    <span class='kw4'>const</span> <span class='kw4'>char</span><span class='opr'>*</span> PRIoMAX        <span class='opr'>=</span> PRIo64;
+    <span class='kw4'>const</span> <span class='kw4'>char</span><span class='opr'>*</span> PRIuMAX        <span class='opr'>=</span> PRIu64;
+    <span class='kw4'>const</span> <span class='kw4'>char</span><span class='opr'>*</span> PRIxMAX    <span class='opr'>=</span> PRIx64;
+    <span class='kw4'>const</span> <span class='kw4'>char</span><span class='opr'>*</span> PRIXMAX        <span class='opr'>=</span> PRIX64;
+
+    <span class='kw4'>const</span> <span class='kw4'>char</span><span class='opr'>*</span> SCNdMAX        <span class='opr'>=</span> SCNd64;
+    <span class='kw4'>const</span> <span class='kw4'>char</span><span class='opr'>*</span> SCNiMAX        <span class='opr'>=</span> SCNi64;
+    <span class='kw4'>const</span> <span class='kw4'>char</span><span class='opr'>*</span> SCNoMAX        <span class='opr'>=</span> SCNo64;
+    <span class='kw4'>const</span> <span class='kw4'>char</span><span class='opr'>*</span> SCNuMAX        <span class='opr'>=</span> SCNu64;
+    <span class='kw4'>const</span> <span class='kw4'>char</span><span class='opr'>*</span> SCNxMAX        <span class='opr'>=</span> SCNx64;
+
+    <span class='kw4'>const</span> <span class='kw4'>char</span><span class='opr'>*</span> PRIdPTR        <span class='opr'>=</span> PRId64;
+    <span class='kw4'>const</span> <span class='kw4'>char</span><span class='opr'>*</span> PRIiPTR        <span class='opr'>=</span> PRIi64;
+    <span class='kw4'>const</span> <span class='kw4'>char</span><span class='opr'>*</span> PRIoPTR        <span class='opr'>=</span> PRIo64;
+    <span class='kw4'>const</span> <span class='kw4'>char</span><span class='opr'>*</span> PRIuPTR        <span class='opr'>=</span> PRIu64;
+    <span class='kw4'>const</span> <span class='kw4'>char</span><span class='opr'>*</span> PRIxPTR        <span class='opr'>=</span> PRIx64;
+    <span class='kw4'>const</span> <span class='kw4'>char</span><span class='opr'>*</span> PRIXPTR        <span class='opr'>=</span> PRIX64;
+
+    <span class='kw4'>const</span> <span class='kw4'>char</span><span class='opr'>*</span> SCNdPTR        <span class='opr'>=</span> SCNd64;
+    <span class='kw4'>const</span> <span class='kw4'>char</span><span class='opr'>*</span> SCNiPTR        <span class='opr'>=</span> SCNi64;
+    <span class='kw4'>const</span> <span class='kw4'>char</span><span class='opr'>*</span> SCNoPTR        <span class='opr'>=</span> SCNo64;
+    <span class='kw4'>const</span> <span class='kw4'>char</span><span class='opr'>*</span> SCNuPTR        <span class='opr'>=</span> SCNu64;
+    <span class='kw4'>const</span> <span class='kw4'>char</span><span class='opr'>*</span> SCNxPTR        <span class='opr'>=</span> SCNx64;
+  <span class='opr'>}</span>
+  <span class='kw1'>else</span>
+  <span class='opr'>{</span>
+    <span class='kw4'>const</span> <span class='kw4'>char</span><span class='opr'>*</span> PRIdMAX        <span class='opr'>=</span> PRId32;
+    <span class='kw4'>const</span> <span class='kw4'>char</span><span class='opr'>*</span> PRIiMAX        <span class='opr'>=</span> PRIi32;
+    <span class='kw4'>const</span> <span class='kw4'>char</span><span class='opr'>*</span> PRIoMAX        <span class='opr'>=</span> PRIo32;
+    <span class='kw4'>const</span> <span class='kw4'>char</span><span class='opr'>*</span> PRIuMAX        <span class='opr'>=</span> PRIu32;
+    <span class='kw4'>const</span> <span class='kw4'>char</span><span class='opr'>*</span> PRIxMAX        <span class='opr'>=</span> PRIx32;
+    <span class='kw4'>const</span> <span class='kw4'>char</span><span class='opr'>*</span> PRIXMAX        <span class='opr'>=</span> PRIX32;
+
+    <span class='kw4'>const</span> <span class='kw4'>char</span><span class='opr'>*</span> SCNdMAX        <span class='opr'>=</span> SCNd32;
+    <span class='kw4'>const</span> <span class='kw4'>char</span><span class='opr'>*</span> SCNiMAX        <span class='opr'>=</span> SCNi32;
+    <span class='kw4'>const</span> <span class='kw4'>char</span><span class='opr'>*</span> SCNoMAX        <span class='opr'>=</span> SCNo32;
+    <span class='kw4'>const</span> <span class='kw4'>char</span><span class='opr'>*</span> SCNuMAX        <span class='opr'>=</span> SCNu32;
+    <span class='kw4'>const</span> <span class='kw4'>char</span><span class='opr'>*</span> SCNxMAX        <span class='opr'>=</span> SCNx32;
+
+    <span class='kw4'>const</span> <span class='kw4'>char</span><span class='opr'>*</span> PRIdPTR        <span class='opr'>=</span> PRId32;
+    <span class='kw4'>const</span> <span class='kw4'>char</span><span class='opr'>*</span> PRIiPTR        <span class='opr'>=</span> PRIi32;
+    <span class='kw4'>const</span> <span class='kw4'>char</span><span class='opr'>*</span> PRIoPTR        <span class='opr'>=</span> PRIo32;
+    <span class='kw4'>const</span> <span class='kw4'>char</span><span class='opr'>*</span> PRIuPTR        <span class='opr'>=</span> PRIu32;
+    <span class='kw4'>const</span> <span class='kw4'>char</span><span class='opr'>*</span> PRIxPTR        <span class='opr'>=</span> PRIx32;
+    <span class='kw4'>const</span> <span class='kw4'>char</span><span class='opr'>*</span> PRIXPTR        <span class='opr'>=</span> PRIX32;
+
+    <span class='kw4'>const</span> <span class='kw4'>char</span><span class='opr'>*</span> SCNdPTR        <span class='opr'>=</span> SCNd32;
+    <span class='kw4'>const</span> <span class='kw4'>char</span><span class='opr'>*</span> SCNiPTR        <span class='opr'>=</span> SCNi32;
+    <span class='kw4'>const</span> <span class='kw4'>char</span><span class='opr'>*</span> SCNoPTR        <span class='opr'>=</span> SCNo32;
+    <span class='kw4'>const</span> <span class='kw4'>char</span><span class='opr'>*</span> SCNuPTR        <span class='opr'>=</span> SCNu32;
+    <span class='kw4'>const</span> <span class='kw4'>char</span><span class='opr'>*</span> SCNxPTR        <span class='opr'>=</span> SCNx32;
+  <span class='opr'>}</span>
+<span class='opr'>}</span>
+
+intmax_t  imaxabs<span class='opr'>(</span>intmax_t j<span class='opr'>)</span>;
+imaxdiv_t imaxdiv<span class='opr'>(</span>intmax_t numer, intmax_t denom<span class='opr'>)</span>;
+intmax_t  strtoimax<span class='opr'>(</span><span class='kw4'>char</span><span class='opr'>*</span> nptr, <span class='kw4'>char</span><span class='opr'>*</span><span class='opr'>*</span> endptr, <span class='kw4'>int</span> base<span class='opr'>)</span>;
+uintmax_t strtoumax<span class='opr'>(</span><span class='kw4'>char</span><span class='opr'>*</span> nptr, <span class='kw4'>char</span><span class='opr'>*</span><span class='opr'>*</span> endptr, <span class='kw4'>int</span> base<span class='opr'>)</span>;
+intmax_t  wcstoimax<span class='opr'>(</span>wchar_t<span class='opr'>*</span> nptr, wchar_t<span class='opr'>*</span><span class='opr'>*</span> endptr, <span class='kw4'>int</span> base<span class='opr'>)</span>;
+uintmax_t wcstoumax<span class='opr'>(</span>wchar_t<span class='opr'>*</span> nptr, wchar_t<span class='opr'>*</span><span class='opr'>*</span> endptr, <span class='kw4'>int</span> base<span class='opr'>)</span>;
+</pre></td></tr></table>	</body>
+</html>

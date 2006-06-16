@@ -1,0 +1,181 @@
+<!DOCTYPE html 
+     PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+     "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html>
+	<head>
+		<link rel="stylesheet" href="style.css" type="text/css" />
+		<title>store/model/HashTableParams.d</title>
+	</head>
+	<body>
+
+<table id='dcode'><tr><td id='lnum'><pre><span>1</span>
+<span>2</span>
+<span>3</span>
+<span>4</span>
+<span>5</span>
+<span>6</span>
+<span>7</span>
+<span>8</span>
+<span>9</span>
+<span>10</span>
+<span>11</span>
+<span>12</span>
+<span>13</span>
+<span>14</span>
+<span>15</span>
+<span>16</span>
+<span>17</span>
+<span>18</span>
+<span>19</span>
+<span>20</span>
+<span>21</span>
+<span>22</span>
+<span>23</span>
+<span>24</span>
+<span>25</span>
+<span>26</span>
+<span>27</span>
+<span>28</span>
+<span>29</span>
+<span>30</span>
+<span>31</span>
+<span>32</span>
+<span>33</span>
+<span>34</span>
+<span>35</span>
+<span>36</span>
+<span>37</span>
+<span>38</span>
+<span>39</span>
+<span>40</span>
+<span>41</span>
+<span>42</span>
+<span>43</span>
+<span>44</span>
+<span>45</span>
+<span>46</span>
+<span>47</span>
+<span>48</span>
+<span>49</span>
+<span>50</span>
+<span>51</span>
+<span>52</span>
+<span>53</span>
+<span>54</span>
+<span>55</span>
+<span>56</span>
+<span>57</span>
+<span>58</span>
+<span>59</span>
+<span>60</span>
+<span>61</span>
+<span>62</span>
+<span>63</span>
+<span>64</span>
+<span>65</span>
+<span>66</span>
+<span>67</span>
+<span>68</span>
+<span>69</span>
+<span>70</span>
+<span>71</span>
+<span>72</span>
+<span>73</span>
+<span>74</span>
+<span>75</span>
+<span>76</span>
+<span>77</span>
+<span>78</span>
+<span>79</span>
+<span>80</span>
+<span>81</span>
+<span>82</span>
+<span>83</span>
+<span>84</span>
+</pre></td><td id='code'><pre><span class='com'>/*
+ File: HashTableParams.d
+
+ Originally written by Doug Lea and released into the public domain. 
+ Thanks for the assistance and support of Sun Microsystems Labs, Agorics 
+ Inc, Loral, and everyone contributing, testing, and using this code.
+
+ History:
+ Date     Who                What
+ 24Sep95  dl@cs.oswego.edu   Create from collections.d  working file
+
+*/</span>
+
+
+<span class='kw2'>module</span> tango.store.model.HashTableParams;
+
+<span class='kw4'>private</span> <span class='kw2'>import</span> tango.store.model.Set;
+
+
+<span class='com'>/**
+ *
+ * Base interface for hash table based collections.
+ * Provides common ways of dealing with buckets and threshholds.
+ * (It would be nice to share some of the code too, but this
+ * would require multiple inheritance here.)
+ * 
+        author: Doug Lea
+ * @version 0.93
+ *
+ * &lt;P&gt; For an introduction to this package see &lt;A HREF=&quot;index.html&quot;&gt; Overview &lt;/A&gt;.
+ *
+**/</span>
+
+
+<span class='kw4'>public</span> <span class='kw2'>interface</span> HashTableParams
+<span class='opr'>{</span>
+
+        <span class='com'>/**
+         * The default initial number of buckets of a non-empty HT
+        **/</span>
+
+        <span class='kw4'>public</span> <span class='kw4'>static</span> <span class='kw4'>int</span> defaultInitialBuckets <span class='opr'>=</span> <span class='nbr'>31</span>;
+
+        <span class='com'>/**
+         * The default load factor for a non-empty HT. When the proportion
+         * of elements per buckets exceeds this, the table is resized.
+        **/</span>
+
+        <span class='kw4'>public</span> <span class='kw4'>static</span> <span class='kw4'>float</span> defaultLoadFactor <span class='opr'>=</span> <span class='nbr'>0.75f</span>;
+
+        <span class='com'>/**
+         * return the current number of hash table buckets
+        **/</span>
+
+        <span class='kw4'>public</span> <span class='kw4'>int</span> buckets<span class='opr'>(</span><span class='opr'>)</span>;
+
+        <span class='com'>/**
+         * Set the desired number of buckets in the hash table.
+         * Any value greater than or equal to one is OK.
+         * if different than current buckets, causes a version change
+         * @exception IllegalArgumentException if newCap less than 1
+        **/</span>
+
+        <span class='kw4'>public</span> <span class='kw4'>void</span> buckets<span class='opr'>(</span><span class='kw4'>int</span> newCap<span class='opr'>)</span>;
+
+
+        <span class='com'>/**
+         * Return the current load factor threshold
+         * The Hash table occasionally checka against the load factor
+         * resizes itself if it has gone past it.
+        **/</span>
+
+        <span class='kw4'>public</span> <span class='kw4'>float</span> thresholdLoadFactor<span class='opr'>(</span><span class='opr'>)</span>;
+
+        <span class='com'>/**
+         * Set the current desired load factor. Any value greater than 0 is OK.
+         * The current load is checked against it, possibly causing resize.
+         * @exception IllegalArgumentException if desired is 0 or less
+        **/</span>
+
+        <span class='kw4'>public</span> <span class='kw4'>void</span> thresholdLoadFactor<span class='opr'>(</span><span class='kw4'>float</span> desired<span class='opr'>)</span>;
+
+
+<span class='opr'>}</span>
+</pre></td></tr></table>	</body>
+</html>

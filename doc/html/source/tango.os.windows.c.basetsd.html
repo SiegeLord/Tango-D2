@@ -1,0 +1,213 @@
+<!DOCTYPE html 
+     PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+     "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html>
+	<head>
+		<link rel="stylesheet" href="style.css" type="text/css" />
+		<title>os/windows/c/basetsd.d</title>
+	</head>
+	<body>
+
+<table id='dcode'><tr><td id='lnum'><pre><span>1</span>
+<span>2</span>
+<span>3</span>
+<span>4</span>
+<span>5</span>
+<span>6</span>
+<span>7</span>
+<span>8</span>
+<span>9</span>
+<span>10</span>
+<span>11</span>
+<span>12</span>
+<span>13</span>
+<span>14</span>
+<span>15</span>
+<span>16</span>
+<span>17</span>
+<span>18</span>
+<span>19</span>
+<span>20</span>
+<span>21</span>
+<span>22</span>
+<span>23</span>
+<span>24</span>
+<span>25</span>
+<span>26</span>
+<span>27</span>
+<span>28</span>
+<span>29</span>
+<span>30</span>
+<span>31</span>
+<span>32</span>
+<span>33</span>
+<span>34</span>
+<span>35</span>
+<span>36</span>
+<span>37</span>
+<span>38</span>
+<span>39</span>
+<span>40</span>
+<span>41</span>
+<span>42</span>
+<span>43</span>
+<span>44</span>
+<span>45</span>
+<span>46</span>
+<span>47</span>
+<span>48</span>
+<span>49</span>
+<span>50</span>
+<span>51</span>
+<span>52</span>
+<span>53</span>
+<span>54</span>
+<span>55</span>
+<span>56</span>
+<span>57</span>
+<span>58</span>
+<span>59</span>
+<span>60</span>
+<span>61</span>
+<span>62</span>
+<span>63</span>
+<span>64</span>
+<span>65</span>
+<span>66</span>
+<span>67</span>
+<span>68</span>
+<span>69</span>
+<span>70</span>
+<span>71</span>
+<span>72</span>
+<span>73</span>
+<span>74</span>
+<span>75</span>
+<span>76</span>
+<span>77</span>
+<span>78</span>
+<span>79</span>
+<span>80</span>
+<span>81</span>
+<span>82</span>
+<span>83</span>
+<span>84</span>
+<span>85</span>
+<span>86</span>
+<span>87</span>
+<span>88</span>
+<span>89</span>
+<span>90</span>
+<span>91</span>
+<span>92</span>
+<span>93</span>
+<span>94</span>
+<span>95</span>
+<span>96</span>
+<span>97</span>
+<span>98</span>
+<span>99</span>
+<span>100</span>
+</pre></td><td id='code'><pre><span class='com'>/***********************************************************************\
+*                               basestd.d                               *
+*                                                                       *
+*                       Windows API header module                       *
+*                                                                       *
+*                 Translated from MinGW Windows headers                 *
+*                           by Stewart Gordon                           *
+*                                                                       *
+*                       Placed into public domain                       *
+\***********************************************************************/</span>
+<span class='kw2'>module</span> tango.os.windows.c.basetsd;
+
+<span class='com'>//version (build) { pragma(nolink); }</span>
+
+
+<span class='kw4'>private</span> <span class='kw2'>import</span> tango.os.windows.c.winnt;
+
+<span class='kw4'>version</span> <span class='opr'>(</span>Win64<span class='opr'>)</span> <span class='opr'>{</span>
+    <span class='kw2'>alias</span> <span class='kw4'>long</span> __int3264;
+    <span class='kw4'>enum</span> : <span class='kw4'>ulong</span> <span class='opr'>{</span> ADDRESS_TAG_BIT <span class='opr'>=</span> <span class='nbr'>0</span>x40000000000 <span class='opr'>}</span>
+
+    <span class='kw2'>alias</span> <span class='kw4'>long</span> INT_PTR, LONG_PTR;
+    <span class='kw2'>alias</span> <span class='kw4'>long</span><span class='opr'>*</span> PINT_PTR, PLONG_PTR;
+    <span class='kw2'>alias</span> <span class='kw4'>ulong</span> UINT_PTR, ULONG_PTR, HANDLE_PTR;
+    <span class='kw2'>alias</span> <span class='kw4'>ulong</span><span class='opr'>*</span> PUINT_PTR, PULONG_PTR;
+    <span class='kw2'>alias</span> <span class='kw4'>int</span> HALF_PTR;
+    <span class='kw2'>alias</span> <span class='kw4'>int</span><span class='opr'>*</span> PHALF_PTR;
+    <span class='kw2'>alias</span> <span class='kw4'>uint</span> UHALF_PTR;
+    <span class='kw2'>alias</span> <span class='kw4'>uint</span><span class='opr'>*</span> PUHALF_PTR;
+    <span class='com'>// LATER: translate *To* functions once Win64 is here</span>
+<span class='opr'>}</span> <span class='kw1'>else</span> <span class='opr'>{</span>
+    <span class='kw2'>alias</span> <span class='kw4'>int</span> __int3264;
+    <span class='kw4'>enum</span> : <span class='kw4'>uint</span> <span class='opr'>{</span> ADDRESS_TAG_BIT <span class='opr'>=</span> <span class='nbr'>0</span>x80000000 <span class='opr'>}</span>
+
+    <span class='kw2'>alias</span> <span class='kw4'>int</span> INT_PTR, LONG_PTR;
+    <span class='kw2'>alias</span> <span class='kw4'>int</span><span class='opr'>*</span> PINT_PTR, PLONG_PTR;
+    <span class='kw2'>alias</span> <span class='kw4'>uint</span> UINT_PTR, ULONG_PTR, HANDLE_PTR;
+    <span class='kw2'>alias</span> <span class='kw4'>uint</span><span class='opr'>*</span> PUINT_PTR, PULONG_PTR;
+    <span class='kw2'>alias</span> <span class='kw4'>short</span> HALF_PTR;
+    <span class='kw2'>alias</span> <span class='kw4'>short</span><span class='opr'>*</span> PHALF_PTR;
+    <span class='kw2'>alias</span> <span class='kw4'>ushort</span> UHALF_PTR;
+    <span class='kw2'>alias</span> <span class='kw4'>ushort</span><span class='opr'>*</span> PUHALF_PTR;
+
+    <span class='kw4'>uint</span> HandleToUlong<span class='opr'>(</span>HANDLE h<span class='opr'>)</span>    <span class='opr'>{</span> <span class='kw1'>return</span> <span class='kw2'>cast</span><span class='opr'>(</span><span class='kw4'>uint</span><span class='opr'>)</span> h; <span class='opr'>}</span>
+    <span class='kw4'>int</span> HandleToLong<span class='opr'>(</span>HANDLE h<span class='opr'>)</span>      <span class='opr'>{</span> <span class='kw1'>return</span> <span class='kw2'>cast</span><span class='opr'>(</span><span class='kw4'>int</span><span class='opr'>)</span> h; <span class='opr'>}</span>
+    HANDLE LongToHandle<span class='opr'>(</span>LONG_PTR h<span class='opr'>)</span> <span class='opr'>{</span> <span class='kw1'>return</span> <span class='kw2'>cast</span><span class='opr'>(</span>HANDLE<span class='opr'>)</span> h; <span class='opr'>}</span>
+    <span class='kw4'>uint</span> PtrToUlong<span class='opr'>(</span><span class='kw4'>void</span><span class='opr'>*</span> p<span class='opr'>)</span>        <span class='opr'>{</span> <span class='kw1'>return</span> <span class='kw2'>cast</span><span class='opr'>(</span><span class='kw4'>uint</span><span class='opr'>)</span> p; <span class='opr'>}</span>
+    <span class='kw4'>uint</span> PtrToUint<span class='opr'>(</span><span class='kw4'>void</span><span class='opr'>*</span> p<span class='opr'>)</span>         <span class='opr'>{</span> <span class='kw1'>return</span> <span class='kw2'>cast</span><span class='opr'>(</span><span class='kw4'>uint</span><span class='opr'>)</span> p; <span class='opr'>}</span>
+    <span class='kw4'>int</span> PtrToInt<span class='opr'>(</span><span class='kw4'>void</span><span class='opr'>*</span> p<span class='opr'>)</span>           <span class='opr'>{</span> <span class='kw1'>return</span> <span class='kw2'>cast</span><span class='opr'>(</span><span class='kw4'>int</span><span class='opr'>)</span> p; <span class='opr'>}</span>
+    <span class='kw4'>ushort</span> PtrToUshort<span class='opr'>(</span><span class='kw4'>void</span><span class='opr'>*</span> p<span class='opr'>)</span>     <span class='opr'>{</span> <span class='kw1'>return</span> <span class='kw2'>cast</span><span class='opr'>(</span><span class='kw4'>ushort</span><span class='opr'>)</span> p; <span class='opr'>}</span>
+    <span class='kw4'>short</span> PtrToShort<span class='opr'>(</span><span class='kw4'>void</span><span class='opr'>*</span> p<span class='opr'>)</span>       <span class='opr'>{</span> <span class='kw1'>return</span> <span class='kw2'>cast</span><span class='opr'>(</span><span class='kw4'>short</span><span class='opr'>)</span> p; <span class='opr'>}</span>
+    <span class='kw4'>void</span><span class='opr'>*</span> IntToPtr<span class='opr'>(</span><span class='kw4'>int</span> i<span class='opr'>)</span>           <span class='opr'>{</span> <span class='kw1'>return</span> <span class='kw2'>cast</span><span class='opr'>(</span><span class='kw4'>void</span><span class='opr'>*</span><span class='opr'>)</span> i; <span class='opr'>}</span>
+    <span class='kw4'>void</span><span class='opr'>*</span> UIntToPtr<span class='opr'>(</span><span class='kw4'>uint</span> ui<span class='opr'>)</span>        <span class='opr'>{</span> <span class='kw1'>return</span> <span class='kw2'>cast</span><span class='opr'>(</span><span class='kw4'>void</span><span class='opr'>*</span><span class='opr'>)</span> ui; <span class='opr'>}</span>
+    <span class='kw2'>alias</span> IntToPtr LongToPtr;
+    <span class='kw2'>alias</span> UIntToPtr ULongToPtr;
+<span class='opr'>}</span>
+
+<span class='kw2'>alias</span> UIntToPtr UintToPtr, UlongToPtr;
+
+<span class='kw4'>enum</span> : UINT_PTR <span class='opr'>{</span>
+    MAXUINT_PTR <span class='opr'>=</span> UINT_PTR.max
+<span class='opr'>}</span>
+
+<span class='kw4'>enum</span> : INT_PTR <span class='opr'>{</span>
+    MAXINT_PTR <span class='opr'>=</span> INT_PTR.max,
+    MININT_PTR <span class='opr'>=</span> INT_PTR.min
+<span class='opr'>}</span>
+
+<span class='kw4'>enum</span> : ULONG_PTR <span class='opr'>{</span>
+    MAXULONG_PTR <span class='opr'>=</span> ULONG_PTR.max
+<span class='opr'>}</span>
+
+<span class='kw4'>enum</span> : LONG_PTR <span class='opr'>{</span>
+    MAXLONG_PTR <span class='opr'>=</span> LONG_PTR.max,
+    MINLONG_PTR <span class='opr'>=</span> LONG_PTR.min
+<span class='opr'>}</span>
+
+<span class='kw4'>enum</span> : UHALF_PTR <span class='opr'>{</span>
+    MAXUHALF_PTR <span class='opr'>=</span> UHALF_PTR.max
+<span class='opr'>}</span>
+
+<span class='kw4'>enum</span> : HALF_PTR <span class='opr'>{</span>
+    MAXHALF_PTR <span class='opr'>=</span> HALF_PTR.max,
+    MINHALF_PTR <span class='opr'>=</span> HALF_PTR.min
+<span class='opr'>}</span>
+
+<span class='kw2'>alias</span> <span class='kw4'>int</span> LONG32, INT32;
+<span class='kw2'>alias</span> <span class='kw4'>int</span><span class='opr'>*</span> PLONG32, PINT32;
+<span class='kw2'>alias</span> <span class='kw4'>uint</span> ULONG32, DWORD32, UINT32;
+<span class='kw2'>alias</span> <span class='kw4'>uint</span><span class='opr'>*</span> PULONG32, PDWORD32, PUINT32;
+
+<span class='kw2'>alias</span> ULONG_PTR SIZE_T, DWORD_PTR;
+<span class='kw2'>alias</span> ULONG_PTR<span class='opr'>*</span> PSIZE_T, PDWORD_PTR;
+<span class='kw2'>alias</span> LONG_PTR SSIZE_T;
+<span class='kw2'>alias</span> LONG_PTR<span class='opr'>*</span> PSSIZE_T;
+
+<span class='kw2'>alias</span> <span class='kw4'>long</span> LONG64, INT64;
+<span class='kw2'>alias</span> <span class='kw4'>long</span><span class='opr'>*</span> PLONG64, PINT64;
+<span class='kw2'>alias</span> <span class='kw4'>ulong</span> ULONG64, DWORD64, UINT64;
+<span class='kw2'>alias</span> <span class='kw4'>ulong</span><span class='opr'>*</span> PULONG64, PDWORD64, PUINT64;
+</pre></td></tr></table>	</body>
+</html>
