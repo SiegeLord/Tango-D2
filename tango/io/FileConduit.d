@@ -118,17 +118,17 @@ struct FileStyle
         Serial input and output is straightforward. In this example we
         copy a file directly to the console:
 
-        @code
+        ---
         // open a file for reading
         FileConduit from = new FileConduit ("test.txt");
 
         // stream directly to console
         Stdout.conduit.copy (from);
-        @endcode
+        ---
 
         And here we copy one file to another:
 
-        @code
+        ---
         // open a file for reading
         FileConduit from = new FileConduit ("test.txt");
 
@@ -137,12 +137,12 @@ struct FileStyle
 
         // copy file
         to.copy (from);
-        @endcode
+        ---
         
         FileConduit can just as easily handle random IO. Here we see how
         a Reader and Writer are used to perform simple input and output:
 
-        @code
+        ---
         // open a file for reading
         FileConduit fc = new FileConduit ("random.bin", FileStyle.ReadWriteCreate);
 
@@ -165,12 +165,12 @@ struct FileStyle
         assert (x==20);
 
         fc.close();
-        @endcode
+        ---
 
         FileConduits can also be used directly, without Readers, Writers, or
         Buffers. To load a file directly into local-memory one might do this:
 
-        @code
+        ---
         // open file for reading
         FileConduit fc = new FileConduit ("test.txt");
 
@@ -179,17 +179,17 @@ struct FileStyle
 
         // read the file content. Return value is the number of bytes read
         int bytesRead = fc.read (content);
-        @endcode
+        ---
 
         Conversely, one may write directly to a FileConduit, like so:
 
-        @code
+        ---
         // open file for writing
         FileConduit to = new FileConduit ("text.txt", FileStyle.WriteTruncate);
 
         // write an array of content to it
         int bytesWritten = fc.write (content);
-        @endcode
+        ---
 
 
         See File, FilePath, FileProxy, FileConst, FileScan, and FileSystem for 

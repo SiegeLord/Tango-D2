@@ -165,7 +165,7 @@ interface IConduit
         is the first one invoked. It is the responsibility of each
         filter to invoke the next link in the chain; for example:
 
-        @code
+        ---
         class MungingFilter : ConduitFilter
         {
                 int reader (void[] dst)
@@ -191,7 +191,7 @@ interface IConduit
                         return next.writer (tmp);
                 }
         }
-        @endcode
+        ---
 
         Notice how this filter invokes the 'next' instance before 
         munging the content ... the far end of the chain is where
@@ -201,18 +201,18 @@ interface IConduit
         should your filter (or throw an IOException). From a client 
         perspective, filters are attached like this:
 
-        @code
+        ---
         FileConduit fc = new FileConduit (...);
 
         fc.attach (new ZipFilter);
         fc.attach (new MungingFilter);
-        @endcode
+        ---
 
         Again, the last filter attached is the first one invoked 
         when a block of content is actually read. Each filter has
         two additional methods that it may use to control behavior:
 
-        @code
+        ---
         class ConduitFilter : IConduitFilter
         {
                 protected IConduitFilter next;
@@ -226,7 +226,7 @@ interface IConduit
                 {
                 }
         }
-        @endcode
+        ---
 
         The first method is invoked when the filter is attached to a 
         conduit, while the second is invoked just before the conduit 

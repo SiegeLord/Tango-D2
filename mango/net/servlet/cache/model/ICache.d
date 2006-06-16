@@ -150,9 +150,9 @@ interface IRemoteCacheLoader : IPayload, ICacheLoader
                 where the pause starts off small, and increases as time
                 passes. A simple implementation might look like this:
 
-                @code
+                ---
                 return (wait > 2_000_000) ? 0 : 10_000 + wait / 2;
-                @endcode
+                ---
 
         **********************************************************************/
 

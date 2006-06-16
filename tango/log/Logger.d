@@ -23,24 +23,24 @@ public  import  tango.log.model.ILogger;
         methods to access and/or create Logger instances, and the other
         methods to modify specific Logger attributes. 
         
-        @code
+        ---
         Logger myLogger = Logger.getLogger ("my.logger");
 
         myLogger.info  ("an informational message");
         myLogger.error ("an exception message: " ~ exception.toString);
 
         etc ...
-        @endcode
+        ---
 
         Messages passed to a Logger are assumed to be pre-formatted. You 
         may find that the TextFormat class is handy for collating various 
         components of the message. 
         
-        @code
+        ---
         TextFormat tf = new TextFormat (256);
 
         myLogger.warn (tf.format("temperature is %d degrees!", 101));
-        @endcode
+        ---
 
         You may also need to use one of the two classes BasicConfigurator 
         and PropertyConfigurator, along with the various Layout & Appender 

@@ -500,7 +500,7 @@ class Uri : IWritable
         
                 Parsing is performed according to RFC 2396
                 
-                @code
+                ---
                   ^(([^:/?#]+):)?(//([^/?#]*))?([^?#]*)(\?([^#]*))?(#(.*))?
                    12            3  4          5       6  7        8 9
                     
@@ -509,7 +509,7 @@ class Uri : IWritable
                 5 isolates path
                 7 isolates query
                 9 isolates fragment
-                @endcode
+                ---
 
                 This was originally a state-machine; it turned out to be a 
                 lot faster (~40%) when unwound like this instead.
@@ -570,14 +570,14 @@ class Uri : IWritable
                 Authority is the section after the scheme, but before the 
                 path, query or fragment; it typically represents a host.
                
-                @code
+                ---
                     ^(([^@]*)@?)([^:]*)?(:(.*))?
                      12         3       4 5
                   
                 2 isolates userinfo
                 3 isolates host
                 5 isolates port
-                @endcode
+                ---
 
         ***********************************************************************/
 

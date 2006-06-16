@@ -27,7 +27,7 @@ private import  tango.convert.Type,
         This is the stack-based version, used when heap allocation must
         be avoided ~ see Sprint for the class version
 
-        @code
+        ---
         // output buffer
         char[100]    tmp;
 
@@ -36,7 +36,7 @@ private import  tango.convert.Type,
 
         // write text to the console
         Cout (sprint ("%d green bottles, sitting on a wall\n", 10));
-        @endcode
+        ---
 
         State is maintained on the stack only, making this thread-safe. 
         You may supply a workspace buffer as an optional initialization 
@@ -125,13 +125,13 @@ alias SprintStructT!(char) SprintStruct;
         This is the class-based version, used when convenience is a
         factor ~ see SprintStruct for the stack-based version
 
-        @code
+        ---
         // create a Sprint instance
         Sprint sprint = new Sprint (100);
 
         // write text to the console
         Cout (sprint ("%d green bottles, sitting on a wall\n", 10));
-        @endcode
+        ---
 
         This can be really handy when you wish to format text for 
         a Logger. Please note that the class itself is stateful, and 

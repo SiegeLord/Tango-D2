@@ -45,7 +45,7 @@ public  import  tango.io.protocol.model.IWriter,
 
         The code below illustrates basic operation upon a memory buffer:
         
-        @code
+        ---
         Buffer buf = new Buffer (256);
 
         // map same buffer into both reader and writer
@@ -79,7 +79,7 @@ public  import  tango.io.protocol.model.IWriter,
         write.put(c).put(i).put(j).put(d);
         read.get(c).get(i).get(j).get(d);
 
-        @endcode
+        ---
 
         Writers may also be used with any class implementing the IWritable
         interface. See PickleReader for an example of how this can be put
@@ -91,9 +91,9 @@ public  import  tango.io.protocol.model.IWriter,
         Writers also support formatted output via the DisplayWriter module,
         which has full support for printf() syntax:
 
-        @code
+        ---
         Stdout.println ("%d green bottles", 10);
-        @endcode
+        ---
         
         Lastly, each Writer may be configured with a text encoder. These
         encoders convert between an internal text representation, and the

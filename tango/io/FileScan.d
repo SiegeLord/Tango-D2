@@ -21,7 +21,7 @@ public import   tango.io.File,
         an output structure as we go. This can be used to produce a list
         of subdirectories and the files contained therein. Usage example:
 
-        @code
+        ---
         void files (File file)
         {
                 Stdout (file.getPath) (CR);
@@ -42,7 +42,7 @@ public import   tango.io.File,
 
         Stdout (CR) ("files:") (CR);
         scan.files (&files);       
-        @endcode
+        ---
         
 *******************************************************************************/
 

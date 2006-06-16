@@ -641,11 +641,11 @@ class MutableStringT(T) : StringT!(T)
                 where each particular argument should be positioned within 
                 the text. This is handy for collating I18N components.
 
-                @code
+                ---
                 auto string = new MutableString;
 
                 string.layout ("%2 %1", "one", "two");
-                @endcode
+                ---
 
                 The index numbers range from one through nine      
               

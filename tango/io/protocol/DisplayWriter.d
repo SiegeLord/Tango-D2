@@ -31,17 +31,17 @@ private import  tango.convert.Type,
         and extends the notion to operate with one dimensional arrays. For
         instance, this code
 
-        @code
+        ---
         static int x = [1, 2, 3, 4, 5, 6, 7, 8];
 
         Stdout.print ("%@04b, ", x);
-        @endcode
+        ---
 
         results in the following output: 
 
-        @code
+        ---
         0001, 0010, 0011, 0100, 0101, 0110, 0111, 1000,
-        @endcode
+        ---
 
         Note that DisplayWriter itself is a wrapper around the tango.convert 
         package, which can be used directly as desired (Integer, Double, 

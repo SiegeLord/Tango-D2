@@ -51,7 +51,7 @@ public  import  tango.io.protocol.model.IReader,
 
         The code below illustrates basic operation upon a memory buffer:
         
-        @code
+        ---
         Buffer buf = new Buffer (256);
 
         // map same buffer into both reader and writer
@@ -85,7 +85,7 @@ public  import  tango.io.protocol.model.IReader,
         write.put(c).put(i).put(j).put(d);
         read.get(c).get(i).get(j).get(d);
 
-        @endcode
+        ---
 
         Note that certain Readers, such as the basic binary implementation, 
         expect to retrieve the number of array elements from the source. 
@@ -93,9 +93,9 @@ public  import  tango.io.protocol.model.IReader,
         is read from the file also. If the content is not arranged in such a 
         manner, you may specify how many elements to read via a second argument:
 
-        @code
+        ---
                 read (myArray, 11);
-        @endcode
+        ---
 
         Readers may also be used with any class implementing the IReadable
         interface. See PickleReader for an example of how this can be put

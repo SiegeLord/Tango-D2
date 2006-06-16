@@ -27,8 +27,8 @@ private import  tango.net.http.HttpHeaders;
         Supports the basic needs of a client making file requests of an 
         HTTP server. The following is a usage example:
 
-        @code
-        @endcode
+        ---
+        ---
 
 *******************************************************************************/
 

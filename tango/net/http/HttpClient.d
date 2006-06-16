@@ -42,7 +42,7 @@ private import  tango.net.http.HttpParams,
         Supports the basic needs of a client making requests of an HTTP
         server. The following is an example of how this might be used:
 
-        @code
+        ---
         // callback for client reader
         void sink (char[] content)
         {
@@ -71,7 +71,7 @@ private import  tango.net.http.HttpParams,
            Stderr.put (client.getResponse);
 
         client.close ();
-        @endcode
+        ---
 
 *******************************************************************************/
 

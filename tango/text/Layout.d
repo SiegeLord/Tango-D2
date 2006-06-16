@@ -19,12 +19,12 @@ module tango.text.Layout;
         each particular argument should be positioned within the text. 
         This is handy for collating I18N components.
 
-        @code
+        ---
         // write ordered text to Stdout
         char[64] dst;
 
         Stdout (TextLayout (dst, "%2 %1", "one", "two"));
-        @endcode
+        ---
 
         The index numbers range from one through nine. TextLayout defaults
         to char[], but you can instantiate the template for any other type.

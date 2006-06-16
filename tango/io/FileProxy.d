@@ -166,12 +166,12 @@ class FileProxy : IWritable
         
                 List the files contained within the associated path:
 
-                @code
+                ---
                 FileProxy proxy = new FileProxy (".");
 
                 foreach (FilePath path; proxy.toList())
                          Stdout.put(path).cr();
-                @endcode
+                ---
 
         ***********************************************************************/
 
