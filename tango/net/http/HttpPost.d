@@ -16,6 +16,8 @@ private import  tango.net.Uri,
                 tango.io.Conduit,
                 tango.io.GrowBuffer;
 
+private import  tango.core.Interval;
+
 private import  tango.io.protocol.model.IWriter;
 
 private import  tango.net.http.HttpClient;
@@ -86,7 +88,7 @@ class HttpPost : HttpClient, IWritable
         
         ***********************************************************************/
 
-        char[] write (void[] content, uint timeout = DefaultReadTimeout)
+        char[] write (void[] content, Interval timeout = DefaultReadTimeout)
         {
                 this.content = content;
                 return write (this, timeout);
@@ -96,7 +98,7 @@ class HttpPost : HttpClient, IWritable
         
         ***********************************************************************/
 
-        char[] write (IWritable pump, uint timeout = DefaultReadTimeout)
+        char[] write (IWritable pump, Interval timeout = DefaultReadTimeout)
         {
                 auto input = open (timeout, pump);
 

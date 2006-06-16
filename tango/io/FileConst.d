@@ -31,7 +31,7 @@ struct FileConst
                 static const char[] FileSeparatorString = ".";
                 static const char[] RootSeparatorString = ":";
 
-                static const char[] NewlineString = "\r\n";
+                static const char[] NewlineString = "\r\n"c;
         }
         
         version (Posix)

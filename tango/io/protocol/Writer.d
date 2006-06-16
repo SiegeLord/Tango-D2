@@ -671,7 +671,7 @@ class NewlineWriter : INewlineWriter
                 version (Posix)
                          this (cast(char[]) FileConst.NewlineString);
                 else
-                   this (FileConst.NewlineString);                   
+                   this (cast(char[]) FileConst.NewlineString);                   
         }
 
         /***********************************************************************

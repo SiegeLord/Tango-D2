@@ -121,11 +121,13 @@ class MappedBuffer : Buffer
 
                 ***************************************************************/
 
-                void flush ()
+                IBuffer flush ()
                 {
                         // flush all dirty pages
                         if (! FlushViewOfFile (base, 0))
                               host.error ();
+
+                        return this;
                 }
         }
 
@@ -178,7 +180,7 @@ class MappedBuffer : Buffer
                         base = null;    
                 }
 
-                void flush () 
+                IBuffer flush () 
                 {
                         // MS_ASYNC: delayed flush; equivalent to "add-to-queue"
                         // MS_SYNC: function flushes file immediately; no return until flush complete
@@ -186,6 +188,8 @@ class MappedBuffer : Buffer
 
                         if (msync (base, size, MS_SYNC | MS_INVALIDATE))
                             host.error();
+
+                        return this;
                 }
         }
 
@@ -312,8 +316,9 @@ class MappedBuffer : Buffer
 
         ***********************************************************************/
 
-        override void setConduit (IConduit conduit)
+        override IBuffer setConduit (IConduit conduit)
         {
                 throw new IOException ("cannot setConduit on memory-mapped buffer");
+                return null;
         }
 }

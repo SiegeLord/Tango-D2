@@ -1,5 +1,7 @@
 module tango.locale.linux;
 
+version (Posix)
+{
 alias tango.locale.linux nativeMethods;
 
 private import tango.locale.data;
@@ -68,4 +70,5 @@ short[] getDaylightChanges() {
 
 int compareString(int lcid, char[] stringA, uint offsetA, uint lengthA, char[] stringB, uint offsetB, uint lengthB, bool ignoreCase) {
   return 0;
+}
 }

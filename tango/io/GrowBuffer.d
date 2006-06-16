@@ -138,6 +138,6 @@ class GrowBuffer : Buffer
 
                 capacity += size;
                 data.length = capacity;               
-                return available();
+                return writable();
         }
 }
