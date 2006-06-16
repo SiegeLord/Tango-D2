@@ -13,12 +13,12 @@ private
     import tango.stdc.stdlib;
     import tango.stdc.string;
     import tango.stdc.stdio;
-    import util.utf;
 }
 
-extern (Windows) void*     LocalFree(void*);
-extern (Windows) wchar_t*  GetCommandLineW();
-extern (Windows) wchar_t** CommandLineToArgvW(wchar_t*, int*);
+extern (Windows) void*      LocalFree(void*);
+extern (Windows) wchar_t*   GetCommandLineW();
+extern (Windows) wchar_t**  CommandLineToArgvW(wchar_t*, int*);
+extern (Windows) export int WideCharToMultiByte(uint, uint, wchar_t*, int, char*, int, char*, int);
 pragma(lib, "shell32.lib"); // needed for CommandLineToArgvW
 
 extern (C) void _STI_monitor_staticctor();
@@ -113,7 +113,10 @@ extern (C) int main(int argc, char **argv)
             args = new char[][wargc];
             for (int i = 0; i < wargc; i++)
             {
-                args[i] = toUTF8(wargs[i][0..wcslen(wargs[i])]);
+                int wlen = wcslen( wargs[i] );
+                int clen = WideCharToMultiByte(65001, 0, &wargs[i][0], wlen, null, 0, null, 0);
+                args[i] = new char[clen];
+                WideCharToMultiByte(65001, 0, &wargs[i][0], wlen, &args[i][0], clen, null, 0);
             }
             LocalFree(wargs);
             wargs = null;
