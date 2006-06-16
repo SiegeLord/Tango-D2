@@ -1,4 +1,3 @@
-
 /* Windows is a registered trademark of Microsoft Corporation in the United
 States and other countries. */
 
