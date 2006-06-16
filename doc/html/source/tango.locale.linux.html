@@ -1,0 +1,155 @@
+<!DOCTYPE html 
+     PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+     "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html>
+	<head>
+		<link rel="stylesheet" href="style.css" type="text/css" />
+		<title>locale/linux.d</title>
+	</head>
+	<body>
+
+<table id='dcode'><tr><td id='lnum'><pre><span>1</span>
+<span>2</span>
+<span>3</span>
+<span>4</span>
+<span>5</span>
+<span>6</span>
+<span>7</span>
+<span>8</span>
+<span>9</span>
+<span>10</span>
+<span>11</span>
+<span>12</span>
+<span>13</span>
+<span>14</span>
+<span>15</span>
+<span>16</span>
+<span>17</span>
+<span>18</span>
+<span>19</span>
+<span>20</span>
+<span>21</span>
+<span>22</span>
+<span>23</span>
+<span>24</span>
+<span>25</span>
+<span>26</span>
+<span>27</span>
+<span>28</span>
+<span>29</span>
+<span>30</span>
+<span>31</span>
+<span>32</span>
+<span>33</span>
+<span>34</span>
+<span>35</span>
+<span>36</span>
+<span>37</span>
+<span>38</span>
+<span>39</span>
+<span>40</span>
+<span>41</span>
+<span>42</span>
+<span>43</span>
+<span>44</span>
+<span>45</span>
+<span>46</span>
+<span>47</span>
+<span>48</span>
+<span>49</span>
+<span>50</span>
+<span>51</span>
+<span>52</span>
+<span>53</span>
+<span>54</span>
+<span>55</span>
+<span>56</span>
+<span>57</span>
+<span>58</span>
+<span>59</span>
+<span>60</span>
+<span>61</span>
+<span>62</span>
+<span>63</span>
+<span>64</span>
+<span>65</span>
+<span>66</span>
+<span>67</span>
+<span>68</span>
+<span>69</span>
+<span>70</span>
+<span>71</span>
+</pre></td><td id='code'><pre><span class='kw2'>module</span> tango.locale.linux;
+
+<span class='kw2'>alias</span> tango.locale.linux nativeMethods;
+
+<span class='kw4'>private</span> <span class='kw2'>import</span> tango.locale.data;
+
+<span class='kw2'>extern</span> <span class='opr'>(</span>C<span class='opr'>)</span>
+<span class='kw4'>private</span> <span class='opr'>{</span>
+
+  <span class='kw4'>struct</span> tm <span class='opr'>{</span>
+    <span class='kw4'>int</span> tm_sec;
+    <span class='kw4'>int</span> tm_min;
+    <span class='kw4'>int</span> tm_hour;
+    <span class='kw4'>int</span> tm_mday;
+    <span class='kw4'>int</span> tm_mon;
+    <span class='kw4'>int</span> tm_year;
+    <span class='kw4'>int</span> tm_wday;
+    <span class='kw4'>int</span> tm_yday;
+    <span class='kw4'>int</span> tm_isdst;
+  <span class='opr'>}</span>
+
+  <span class='kw4'>int</span> time<span class='opr'>(</span><span class='kw4'>int</span><span class='opr'>*</span><span class='opr'>)</span>;
+  tm<span class='opr'>*</span> gmtime<span class='opr'>(</span><span class='kw4'>int</span><span class='opr'>*</span><span class='opr'>)</span>;
+
+<span class='opr'>}</span>
+
+<span class='kw4'>int</span> getUserCulture<span class='opr'>(</span><span class='opr'>)</span> <span class='opr'>{</span>
+  <span class='kw4'>char</span><span class='opr'>*</span> env <span class='opr'>=</span> getenv<span class='opr'>(</span><span class='str'>&quot;LC_ALL&quot;</span><span class='opr'>)</span>;
+  <span class='kw1'>if</span> <span class='opr'>(</span>!env || <span class='opr'>*</span>env <span class='opr'>=</span><span class='opr'>=</span> <span class='str'>'\0'</span><span class='opr'>)</span> <span class='opr'>{</span>
+    env <span class='opr'>=</span> getenv<span class='opr'>(</span><span class='str'>&quot;LANG&quot;</span><span class='opr'>)</span>;
+    <span class='kw1'>if</span> <span class='opr'>(</span>!env || <span class='opr'>*</span>env <span class='opr'>=</span> <span class='str'>'\0'</span><span class='opr'>)</span>
+      <span class='kw1'>return</span> <span class='nbr'>0</span>;
+  <span class='opr'>}</span>
+
+  <span class='com'>// getenv returns a string of the form &lt;language&gt;_&lt;region&gt;.</span>
+  <span class='com'>// Therefore we need to replace underscores with hyphens.</span>
+  <span class='kw4'>char</span><span class='opr'>*</span> p <span class='opr'>=</span> env;
+  <span class='kw4'>int</span> len;
+  <span class='kw1'>while</span> <span class='opr'>(</span><span class='opr'>*</span>p<span class='opr'>)</span> <span class='opr'>{</span>
+    <span class='kw1'>if</span> <span class='opr'>(</span><span class='opr'>*</span>p <span class='opr'>=</span><span class='opr'>=</span> <span class='str'>'_'</span><span class='opr'>)</span>
+      <span class='opr'>*</span>p <span class='opr'>=</span> <span class='str'>'-'</span>;
+    <span class='opr'>*</span>p<span class='opr'>+</span><span class='opr'>+</span>;
+    len<span class='opr'>+</span><span class='opr'>+</span>;
+  <span class='opr'>}</span>
+
+  <span class='kw4'>char</span><span class='opr'>[</span><span class='opr'>]</span> s <span class='opr'>=</span> env<span class='opr'>[</span><span class='nbr'>0</span> <span class='opr'>..</span> len<span class='opr'>]</span>;
+  <span class='kw1'>foreach</span> <span class='opr'>(</span>entry; CultureData.cultureDataTable<span class='opr'>)</span> <span class='opr'>{</span>
+    <span class='kw1'>if</span> <span class='opr'>(</span>compareString<span class='opr'>(</span>entry.name, s<span class='opr'>)</span> <span class='opr'>=</span><span class='opr'>=</span> <span class='nbr'>0</span><span class='opr'>)</span>
+      <span class='kw1'>return</span> entry.id;
+  <span class='opr'>}</span>
+  <span class='kw1'>return</span> <span class='nbr'>0</span>;
+<span class='opr'>}</span>
+
+<span class='kw4'>void</span> setUserCulture<span class='opr'>(</span><span class='kw4'>int</span> lcid<span class='opr'>)</span> <span class='opr'>{</span>
+  <span class='com'>// putenv?</span>
+<span class='opr'>}</span>
+
+<span class='kw4'>ulong</span> getUtcTime<span class='opr'>(</span><span class='opr'>)</span> <span class='opr'>{</span>
+  <span class='kw4'>int</span> t;
+  time<span class='opr'>(</span>t<span class='opr'>)</span>;
+  gmtime<span class='opr'>(</span>t<span class='opr'>)</span>;
+  <span class='kw1'>return</span> <span class='opr'>(</span><span class='kw2'>cast</span><span class='opr'>(</span><span class='kw4'>long</span><span class='opr'>)</span>t <span class='opr'>*</span> <span class='nbr'>10000000L</span><span class='opr'>)</span> <span class='opr'>+</span> <span class='nbr'>116444736000000000L</span>;
+<span class='opr'>}</span>
+
+<span class='kw4'>short</span><span class='opr'>[</span><span class='opr'>]</span> getDaylightChanges<span class='opr'>(</span><span class='opr'>)</span> <span class='opr'>{</span>
+  <span class='kw1'>return</span> <span class='kw2'>null</span>;
+<span class='opr'>}</span>
+
+<span class='kw4'>int</span> compareString<span class='opr'>(</span><span class='kw4'>int</span> lcid, <span class='kw4'>char</span><span class='opr'>[</span><span class='opr'>]</span> stringA, <span class='kw4'>uint</span> offsetA, <span class='kw4'>uint</span> lengthA, <span class='kw4'>char</span><span class='opr'>[</span><span class='opr'>]</span> stringB, <span class='kw4'>uint</span> offsetB, <span class='kw4'>uint</span> lengthB, <span class='kw4'>bool</span> ignoreCase<span class='opr'>)</span> <span class='opr'>{</span>
+  <span class='kw1'>return</span> <span class='nbr'>0</span>;
+<span class='opr'>}</span>
+</pre></td></tr></table>	</body>
+</html>

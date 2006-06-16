@@ -1,0 +1,471 @@
+<!DOCTYPE html 
+     PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+     "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html>
+	<head>
+		<link rel="stylesheet" href="style.css" type="text/css" />
+		<title>io/UnicodeFile.d</title>
+	</head>
+	<body>
+
+<table id='dcode'><tr><td id='lnum'><pre><span>1</span>
+<span>2</span>
+<span>3</span>
+<span>4</span>
+<span>5</span>
+<span>6</span>
+<span>7</span>
+<span>8</span>
+<span>9</span>
+<span>10</span>
+<span>11</span>
+<span>12</span>
+<span>13</span>
+<span>14</span>
+<span>15</span>
+<span>16</span>
+<span>17</span>
+<span>18</span>
+<span>19</span>
+<span>20</span>
+<span>21</span>
+<span>22</span>
+<span>23</span>
+<span>24</span>
+<span>25</span>
+<span>26</span>
+<span>27</span>
+<span>28</span>
+<span>29</span>
+<span>30</span>
+<span>31</span>
+<span>32</span>
+<span>33</span>
+<span>34</span>
+<span>35</span>
+<span>36</span>
+<span>37</span>
+<span>38</span>
+<span>39</span>
+<span>40</span>
+<span>41</span>
+<span>42</span>
+<span>43</span>
+<span>44</span>
+<span>45</span>
+<span>46</span>
+<span>47</span>
+<span>48</span>
+<span>49</span>
+<span>50</span>
+<span>51</span>
+<span>52</span>
+<span>53</span>
+<span>54</span>
+<span>55</span>
+<span>56</span>
+<span>57</span>
+<span>58</span>
+<span>59</span>
+<span>60</span>
+<span>61</span>
+<span>62</span>
+<span>63</span>
+<span>64</span>
+<span>65</span>
+<span>66</span>
+<span>67</span>
+<span>68</span>
+<span>69</span>
+<span>70</span>
+<span>71</span>
+<span>72</span>
+<span>73</span>
+<span>74</span>
+<span>75</span>
+<span>76</span>
+<span>77</span>
+<span>78</span>
+<span>79</span>
+<span>80</span>
+<span>81</span>
+<span>82</span>
+<span>83</span>
+<span>84</span>
+<span>85</span>
+<span>86</span>
+<span>87</span>
+<span>88</span>
+<span>89</span>
+<span>90</span>
+<span>91</span>
+<span>92</span>
+<span>93</span>
+<span>94</span>
+<span>95</span>
+<span>96</span>
+<span>97</span>
+<span>98</span>
+<span>99</span>
+<span>100</span>
+<span>101</span>
+<span>102</span>
+<span>103</span>
+<span>104</span>
+<span>105</span>
+<span>106</span>
+<span>107</span>
+<span>108</span>
+<span>109</span>
+<span>110</span>
+<span>111</span>
+<span>112</span>
+<span>113</span>
+<span>114</span>
+<span>115</span>
+<span>116</span>
+<span>117</span>
+<span>118</span>
+<span>119</span>
+<span>120</span>
+<span>121</span>
+<span>122</span>
+<span>123</span>
+<span>124</span>
+<span>125</span>
+<span>126</span>
+<span>127</span>
+<span>128</span>
+<span>129</span>
+<span>130</span>
+<span>131</span>
+<span>132</span>
+<span>133</span>
+<span>134</span>
+<span>135</span>
+<span>136</span>
+<span>137</span>
+<span>138</span>
+<span>139</span>
+<span>140</span>
+<span>141</span>
+<span>142</span>
+<span>143</span>
+<span>144</span>
+<span>145</span>
+<span>146</span>
+<span>147</span>
+<span>148</span>
+<span>149</span>
+<span>150</span>
+<span>151</span>
+<span>152</span>
+<span>153</span>
+<span>154</span>
+<span>155</span>
+<span>156</span>
+<span>157</span>
+<span>158</span>
+<span>159</span>
+<span>160</span>
+<span>161</span>
+<span>162</span>
+<span>163</span>
+<span>164</span>
+<span>165</span>
+<span>166</span>
+<span>167</span>
+<span>168</span>
+<span>169</span>
+<span>170</span>
+<span>171</span>
+<span>172</span>
+<span>173</span>
+<span>174</span>
+<span>175</span>
+<span>176</span>
+<span>177</span>
+<span>178</span>
+<span>179</span>
+<span>180</span>
+<span>181</span>
+<span>182</span>
+<span>183</span>
+<span>184</span>
+<span>185</span>
+<span>186</span>
+<span>187</span>
+<span>188</span>
+<span>189</span>
+<span>190</span>
+<span>191</span>
+<span>192</span>
+<span>193</span>
+<span>194</span>
+<span>195</span>
+<span>196</span>
+<span>197</span>
+<span>198</span>
+<span>199</span>
+<span>200</span>
+<span>201</span>
+<span>202</span>
+<span>203</span>
+<span>204</span>
+<span>205</span>
+<span>206</span>
+<span>207</span>
+<span>208</span>
+<span>209</span>
+<span>210</span>
+<span>211</span>
+<span>212</span>
+<span>213</span>
+<span>214</span>
+<span>215</span>
+<span>216</span>
+<span>217</span>
+<span>218</span>
+<span>219</span>
+<span>220</span>
+<span>221</span>
+<span>222</span>
+<span>223</span>
+<span>224</span>
+<span>225</span>
+<span>226</span>
+<span>227</span>
+<span>228</span>
+<span>229</span>
+</pre></td><td id='code'><pre><span class='com'>/*******************************************************************************
+
+        copyright:      Copyright (c) 2004 Kris Bell. All rights reserved
+
+        license:        BSD style: $(LICENSE)
+
+        version:        Initial release: December 2005      
+        
+        author:         Kris
+
+*******************************************************************************/</span>
+
+<span class='kw2'>module</span> tango.io.UnicodeFile;
+
+<span class='kw4'>public</span>  <span class='kw2'>import</span>  tango.io.FilePath;
+
+<span class='kw4'>public</span>  <span class='kw2'>import</span>  tango.convert.Unicode;
+
+<span class='kw4'>private</span> <span class='kw2'>import</span>  tango.io.FileProxy,
+                tango.io.Exception,
+                tango.io.FileConduit;
+
+<span class='kw4'>private</span> <span class='kw2'>import</span>  tango.convert.UnicodeBom;
+
+<span class='com'>/*******************************************************************************
+
+        Read and write unicode files
+
+        For our purposes, unicode files are an encoding of textual material.
+        The goal of this module is to interface that external-encoding with
+        a programmer-defined internal-encoding. This internal encoding is
+        declared via the template argument T, whilst the external encoding
+        is either specified or derived.
+
+        Three internal encodings are supported: char, wchar, and dchar. The
+        methods herein operate upon arrays of this type. For example, read()
+        returns an array of the type, whilst write() and append() expect an
+        array of said type.
+
+        Supported external encodings are as follow (from Unicode.d):
+
+                $(UL Unicode.Unknown)
+                $(UL Unicode.UTF_8)
+                $(UL Unicode.UTF_8N)
+                $(UL Unicode.UTF_16)
+                $(UL Unicode.UTF_16BE)
+                $(UL Unicode.UTF_16LE) 
+                $(UL Unicode.UTF_32)
+                $(UL Unicode.UTF_32BE)
+                $(UL Unicode.UTF_32LE) 
+
+        These can be divided into implicit and explicit encodings:
+
+                $(UL Unicode.Unknown)
+                $(UL Unicode.UTF_8)
+                $(UL Unicode.UTF_16)
+                $(UL Unicode.UTF_32) 
+
+        The above group of implicit encodings may be used to 'discover'
+        an unknown encoding, by examining the first few bytes of the file
+        content for a signature. This signature is optional for all files, 
+        but is often written such that the content is self-describing. When
+        the encoding is unknown, using one of the non-explicit encodings will
+        cause the read() method to look for a signature and adjust itself 
+        accordingly. It is possible that a ZWNBSP character might be confused 
+        with the signature; today's files are supposed to use the WORD-JOINER 
+        character instead.
+       
+                $(UL Unicode.UTF_8N)
+                $(UL Unicode.UTF_16BE)
+                $(UL Unicode.UTF_16LE) 
+                $(UL Unicode.UTF_32BE)
+                $(UL Unicode.UTF_32LE) 
+        
+        This group of explicit encodings are for use when the file encoding is
+        known. These *must* be used when writing or appending, since written
+        content must be in a known format. It should be noted that, during a
+        read operation, the presence of a signature is in conflict with these 
+        explicit varieties.
+
+        Method read() returns the current content of the file, whilst write()
+        sets the file content, and file length, to the provided array. Method
+        append() adds content to the tail of the file. When appending, it is
+        your responsibility to ensure the existing and current encodings are
+        correctly matched.
+
+        Methods to inspect the file system, check the status of a file or
+        directory, and other facilities are made available via the FileProxy
+        superclass.
+
+        See these links for more info:
+        $(UL $(LINK http://www.utf-8.com/))
+        $(UL $(LINK http://www.hackcraft.net/xmlUnicode/))
+        $(UL $(LINK http://www.unicode.org/faq/utf_bom.html/))
+        $(UL $(LINK http://www.azillionmonkeys.com/qed/unicode.html/))
+        $(UL $(LINK http://icu.sourceforge.net/docs/papers/forms_of_unicode/))
+
+*******************************************************************************/</span>
+
+<span class='kw4'>class</span> UnicodeFileT<span class='opr'>(</span>T<span class='opr'>)</span> : FileProxy
+<span class='opr'>{</span>
+        <span class='kw4'>private</span> UnicodeBomT!<span class='opr'>(</span>T<span class='opr'>)</span> unicode;
+
+        <span class='com'>/***********************************************************************
+        
+                Construct a UnicodeFile from the provided FilePath. The given 
+                encoding represents the external file encoding, and should
+                be one of the Unicode.xx types 
+
+        ***********************************************************************/</span>
+                                  
+        <span class='kw2'>this</span> <span class='opr'>(</span>FilePath path, <span class='kw4'>int</span> encoding<span class='opr'>)</span>
+        <span class='opr'>{</span>
+                <span class='kw2'>super</span> <span class='opr'>(</span>path<span class='opr'>)</span>;
+                unicode <span class='opr'>=</span> <span class='kw2'>new</span> UnicodeBomT!<span class='opr'>(</span>T<span class='opr'>)</span><span class='opr'>(</span>encoding<span class='opr'>)</span>;
+        <span class='opr'>}</span>
+
+        <span class='com'>/***********************************************************************
+        
+                Construct a UnicodeFile from a text string. The provided 
+                encoding represents the external file encoding, and should
+                be one of the Unicode.xx types 
+
+        ***********************************************************************/</span>
+
+        <span class='kw2'>this</span> <span class='opr'>(</span><span class='kw4'>char</span><span class='opr'>[</span><span class='opr'>]</span> path, <span class='kw4'>int</span> encoding<span class='opr'>)</span>
+        <span class='opr'>{</span>
+                <span class='kw2'>this</span> <span class='opr'>(</span><span class='kw2'>new</span> FilePath<span class='opr'>(</span>path<span class='opr'>)</span>, encoding<span class='opr'>)</span>;
+        <span class='opr'>}</span>
+
+        <span class='com'>/***********************************************************************
+
+                Return the current encoding. This is either the originally
+                specified encoding, or a derived one obtained by inspecting
+                the file content for a BOM. The latter is performed as part
+                of the read() method.
+
+        ***********************************************************************/</span>
+
+        <span class='kw4'>int</span> getEncoding <span class='opr'>(</span><span class='opr'>)</span>
+        <span class='opr'>{</span>
+                <span class='kw1'>return</span> unicode.getEncoding<span class='opr'>(</span><span class='opr'>)</span>;
+        <span class='opr'>}</span>
+        
+        <span class='com'>/***********************************************************************
+
+                Return the content of the file. The content is inspected 
+                for a BOM signature, which is stripped. An exception is
+                thrown if a signature is present when, according to the
+                encoding type, it should not be. Conversely, An exception
+                is thrown if there is no known signature where the current
+                encoding expects one to be present.
+
+        ***********************************************************************/</span>
+
+        T<span class='opr'>[</span><span class='opr'>]</span> read <span class='opr'>(</span><span class='opr'>)</span>
+        <span class='opr'>{</span>
+                <span class='kw4'>auto</span> conduit <span class='opr'>=</span> <span class='kw2'>new</span> FileConduit <span class='opr'>(</span><span class='kw2'>this</span><span class='opr'>)</span>;  
+                <span class='kw2'>scope</span> <span class='opr'>(</span>exit<span class='opr'>)</span>
+                       conduit.close<span class='opr'>(</span><span class='opr'>)</span>;
+
+                <span class='com'>// allocate enough space for the entire file</span>
+                <span class='kw4'>auto</span> content <span class='opr'>=</span> <span class='kw2'>new</span> <span class='kw4'>ubyte</span> <span class='opr'>[</span>conduit.length<span class='opr'>]</span>;
+
+                <span class='com'>//read the content</span>
+                <span class='kw1'>if</span> <span class='opr'>(</span>conduit.read <span class='opr'>(</span>content<span class='opr'>)</span> <span class='opr'>!=</span> content.length<span class='opr'>)</span>
+                    <span class='kw2'>throw</span> <span class='kw2'>new</span> IOException <span class='opr'>(</span><span class='str'>&quot;unexpected eof&quot;</span><span class='opr'>)</span>;
+
+                <span class='kw1'>return</span> unicode.decode <span class='opr'>(</span>content<span class='opr'>)</span>;
+        <span class='opr'>}</span>
+
+        <span class='com'>/***********************************************************************
+
+                Set the file content and length to reflect the given array.
+                The content will be encoded accordingly.
+
+        ***********************************************************************/</span>
+
+        UnicodeFileT write <span class='opr'>(</span>T<span class='opr'>[</span><span class='opr'>]</span> content, <span class='kw4'>bool</span> bom <span class='opr'>=</span> <span class='kw2'>false</span><span class='opr'>)</span>
+        <span class='opr'>{</span>
+                <span class='kw1'>return</span> write <span class='opr'>(</span>content, FileStyle.ReadWriteCreate, bom<span class='opr'>)</span>;  
+        <span class='opr'>}</span>
+
+        <span class='com'>/***********************************************************************
+
+                Append content to the file; the content will be encoded 
+                accordingly.
+
+                Note that it is your responsibility to ensure the 
+                existing and current encodings are correctly matched.
+
+        ***********************************************************************/</span>
+
+        UnicodeFileT append <span class='opr'>(</span>T<span class='opr'>[</span><span class='opr'>]</span> content<span class='opr'>)</span>
+        <span class='opr'>{</span>
+                <span class='kw1'>return</span> write <span class='opr'>(</span>content, FileStyle.WriteAppending, <span class='kw2'>false</span><span class='opr'>)</span>;  
+        <span class='opr'>}</span>
+
+        <span class='com'>/***********************************************************************
+
+                Internal method to perform writing of content. Note that
+                the encoding must be of the explicit variety by the time
+                we get here.
+
+        ***********************************************************************/</span>
+
+        <span class='kw4'>private</span> <span class='kw4'>final</span> UnicodeFileT write <span class='opr'>(</span>T<span class='opr'>[</span><span class='opr'>]</span> content, FileStyle.Bits style, <span class='kw4'>bool</span> bom<span class='opr'>)</span>
+        <span class='opr'>{</span>       
+                <span class='com'>// convert to external representation (may throw an exeption)</span>
+                <span class='kw4'>void</span><span class='opr'>[</span><span class='opr'>]</span> converted <span class='opr'>=</span> unicode.encode <span class='opr'>(</span>content<span class='opr'>)</span>;
+
+                <span class='com'>// open file after conversion ~ in case of exceptions</span>
+                <span class='kw4'>auto</span> conduit <span class='opr'>=</span> <span class='kw2'>new</span> FileConduit <span class='opr'>(</span><span class='kw2'>this</span>, style<span class='opr'>)</span>;  
+                <span class='kw2'>scope</span> <span class='opr'>(</span>exit<span class='opr'>)</span>
+                       conduit.close<span class='opr'>(</span><span class='opr'>)</span>;
+
+                <span class='kw1'>if</span> <span class='opr'>(</span>bom<span class='opr'>)</span>
+                    conduit.flush <span class='opr'>(</span>unicode.getSignature<span class='opr'>)</span>;
+
+                <span class='com'>// and write</span>
+                conduit.flush <span class='opr'>(</span>converted<span class='opr'>)</span>;
+                <span class='kw1'>return</span> <span class='kw2'>this</span>;
+        <span class='opr'>}</span>
+<span class='opr'>}</span>
+
+
+<span class='com'>// convenience aliases</span>
+
+<span class='kw2'>alias</span> UnicodeFileT!<span class='opr'>(</span><span class='kw4'>char</span><span class='opr'>)</span>  UnicodeFile;
+</pre></td></tr></table>	</body>
+</html>

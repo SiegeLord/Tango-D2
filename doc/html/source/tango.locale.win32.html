@@ -1,0 +1,205 @@
+<!DOCTYPE html 
+     PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+     "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html>
+	<head>
+		<link rel="stylesheet" href="style.css" type="text/css" />
+		<title>locale/win32.d</title>
+	</head>
+	<body>
+
+<table id='dcode'><tr><td id='lnum'><pre><span>1</span>
+<span>2</span>
+<span>3</span>
+<span>4</span>
+<span>5</span>
+<span>6</span>
+<span>7</span>
+<span>8</span>
+<span>9</span>
+<span>10</span>
+<span>11</span>
+<span>12</span>
+<span>13</span>
+<span>14</span>
+<span>15</span>
+<span>16</span>
+<span>17</span>
+<span>18</span>
+<span>19</span>
+<span>20</span>
+<span>21</span>
+<span>22</span>
+<span>23</span>
+<span>24</span>
+<span>25</span>
+<span>26</span>
+<span>27</span>
+<span>28</span>
+<span>29</span>
+<span>30</span>
+<span>31</span>
+<span>32</span>
+<span>33</span>
+<span>34</span>
+<span>35</span>
+<span>36</span>
+<span>37</span>
+<span>38</span>
+<span>39</span>
+<span>40</span>
+<span>41</span>
+<span>42</span>
+<span>43</span>
+<span>44</span>
+<span>45</span>
+<span>46</span>
+<span>47</span>
+<span>48</span>
+<span>49</span>
+<span>50</span>
+<span>51</span>
+<span>52</span>
+<span>53</span>
+<span>54</span>
+<span>55</span>
+<span>56</span>
+<span>57</span>
+<span>58</span>
+<span>59</span>
+<span>60</span>
+<span>61</span>
+<span>62</span>
+<span>63</span>
+<span>64</span>
+<span>65</span>
+<span>66</span>
+<span>67</span>
+<span>68</span>
+<span>69</span>
+<span>70</span>
+<span>71</span>
+<span>72</span>
+<span>73</span>
+<span>74</span>
+<span>75</span>
+<span>76</span>
+<span>77</span>
+<span>78</span>
+<span>79</span>
+<span>80</span>
+<span>81</span>
+<span>82</span>
+<span>83</span>
+<span>84</span>
+<span>85</span>
+<span>86</span>
+<span>87</span>
+<span>88</span>
+<span>89</span>
+<span>90</span>
+<span>91</span>
+<span>92</span>
+<span>93</span>
+<span>94</span>
+<span>95</span>
+<span>96</span>
+</pre></td><td id='code'><pre><span class='kw2'>module</span> tango.locale.win32;
+
+<span class='kw2'>alias</span> tango.locale.win32 nativeMethods;
+
+<span class='kw2'>extern</span> <span class='opr'>(</span>Windows<span class='opr'>)</span>
+<span class='kw4'>private</span> <span class='opr'>{</span>
+
+  <span class='kw4'>struct</span> SYSTEMTIME <span class='opr'>{</span>
+    <span class='kw4'>ushort</span> wYear;
+    <span class='kw4'>ushort</span> wMonth;
+    <span class='kw4'>ushort</span> wDayOfWeek;
+    <span class='kw4'>ushort</span> wDay;
+    <span class='kw4'>ushort</span> wHour;
+    <span class='kw4'>ushort</span> wMinute;
+    <span class='kw4'>ushort</span> wSecond;
+    <span class='kw4'>ushort</span> wMilliseconds;
+  <span class='opr'>}</span>
+
+  <span class='kw4'>struct</span> TIME_ZONE_INFORMATION <span class='opr'>{</span>
+    <span class='kw4'>int</span> Bias;
+    <span class='kw4'>wchar</span><span class='opr'>[</span><span class='nbr'>32</span><span class='opr'>]</span> StandardName;
+    SYSTEMTIME StandardDate;
+    <span class='kw4'>int</span> StandardBias;
+    <span class='kw4'>wchar</span><span class='opr'>[</span><span class='nbr'>32</span><span class='opr'>]</span> DaylightName;
+    SYSTEMTIME DaylightDate;
+    <span class='kw4'>int</span> DaylightBias;
+  <span class='opr'>}</span>
+
+  <span class='kw4'>void</span> GetSystemTimeAsFileTime<span class='opr'>(</span><span class='kw2'>out</span> <span class='kw4'>ulong</span> lpSystemTimeAsFileTime<span class='opr'>)</span>;
+  <span class='kw4'>uint</span> GetTimeZoneInformation<span class='opr'>(</span><span class='kw2'>out</span> TIME_ZONE_INFORMATION lpTimeZoneInformation<span class='opr'>)</span>;
+  <span class='kw4'>uint</span> GetUserDefaultLCID<span class='opr'>(</span><span class='opr'>)</span>;
+  <span class='kw4'>uint</span> GetThreadLocale<span class='opr'>(</span><span class='opr'>)</span>;
+  <span class='kw4'>bool</span> SetThreadLocale<span class='opr'>(</span><span class='kw4'>uint</span> Locale<span class='opr'>)</span>;
+  <span class='kw4'>int</span> MultiByteToWideChar<span class='opr'>(</span><span class='kw4'>uint</span> CodePage, <span class='kw4'>uint</span> dwFlags, <span class='kw4'>char</span><span class='opr'>*</span> lpMultiByteStr, <span class='kw4'>int</span> cbMultiByte, <span class='kw4'>wchar</span><span class='opr'>*</span> lpWideCharStr, <span class='kw4'>int</span> cchWideChar<span class='opr'>)</span>;
+  <span class='kw4'>int</span> CompareStringW<span class='opr'>(</span><span class='kw4'>uint</span> Locale, <span class='kw4'>uint</span> dwCmpFlags, <span class='kw4'>wchar</span><span class='opr'>*</span> lpString1, <span class='kw4'>int</span> cchCount1, <span class='kw4'>wchar</span><span class='opr'>*</span> lpString2, <span class='kw4'>int</span> cchCount2<span class='opr'>)</span>;
+
+<span class='opr'>}</span>
+
+<span class='kw4'>int</span> getUserCulture<span class='opr'>(</span><span class='opr'>)</span> <span class='opr'>{</span>
+  <span class='kw1'>return</span> GetUserDefaultLCID<span class='opr'>(</span><span class='opr'>)</span>;
+<span class='opr'>}</span>
+
+<span class='kw4'>void</span> setUserCulture<span class='opr'>(</span><span class='kw4'>int</span> lcid<span class='opr'>)</span> <span class='opr'>{</span>
+  SetThreadLocale<span class='opr'>(</span>lcid<span class='opr'>)</span>;
+<span class='opr'>}</span>
+
+<span class='kw4'>ulong</span> getUtcTime<span class='opr'>(</span><span class='opr'>)</span> <span class='opr'>{</span>
+  <span class='kw4'>ulong</span> ticks;
+  GetSystemTimeAsFileTime<span class='opr'>(</span>ticks<span class='opr'>)</span>;
+  <span class='kw1'>return</span> ticks;
+<span class='opr'>}</span>
+
+<span class='kw4'>short</span><span class='opr'>[</span><span class='opr'>]</span> getDaylightChanges<span class='opr'>(</span><span class='opr'>)</span> <span class='opr'>{</span>
+  TIME_ZONE_INFORMATION tzi;
+  GetTimeZoneInformation<span class='opr'>(</span>tzi<span class='opr'>)</span>;
+  <span class='kw4'>short</span><span class='opr'>[</span><span class='opr'>]</span> data <span class='opr'>=</span> <span class='kw2'>new</span> <span class='kw4'>short</span><span class='opr'>[</span><span class='nbr'>18</span><span class='opr'>]</span>;
+  data<span class='opr'>[</span><span class='nbr'>0</span><span class='opr'>]</span> <span class='opr'>=</span> <span class='kw2'>cast</span><span class='opr'>(</span><span class='kw4'>short</span><span class='opr'>)</span>tzi.DaylightDate.wYear;
+  data<span class='opr'>[</span><span class='nbr'>1</span><span class='opr'>]</span> <span class='opr'>=</span> <span class='kw2'>cast</span><span class='opr'>(</span><span class='kw4'>short</span><span class='opr'>)</span>tzi.DaylightDate.wMonth;
+  data<span class='opr'>[</span><span class='nbr'>2</span><span class='opr'>]</span> <span class='opr'>=</span> <span class='kw2'>cast</span><span class='opr'>(</span><span class='kw4'>short</span><span class='opr'>)</span>tzi.DaylightDate.wDayOfWeek;
+  data<span class='opr'>[</span><span class='nbr'>3</span><span class='opr'>]</span> <span class='opr'>=</span> <span class='kw2'>cast</span><span class='opr'>(</span><span class='kw4'>short</span><span class='opr'>)</span>tzi.DaylightDate.wDay;
+  data<span class='opr'>[</span><span class='nbr'>4</span><span class='opr'>]</span> <span class='opr'>=</span> <span class='kw2'>cast</span><span class='opr'>(</span><span class='kw4'>short</span><span class='opr'>)</span>tzi.DaylightDate.wHour;
+  data<span class='opr'>[</span><span class='nbr'>5</span><span class='opr'>]</span> <span class='opr'>=</span> <span class='kw2'>cast</span><span class='opr'>(</span><span class='kw4'>short</span><span class='opr'>)</span>tzi.DaylightDate.wMinute;
+  data<span class='opr'>[</span><span class='nbr'>6</span><span class='opr'>]</span> <span class='opr'>=</span> <span class='kw2'>cast</span><span class='opr'>(</span><span class='kw4'>short</span><span class='opr'>)</span>tzi.DaylightDate.wSecond;
+  data<span class='opr'>[</span><span class='nbr'>7</span><span class='opr'>]</span> <span class='opr'>=</span> <span class='kw2'>cast</span><span class='opr'>(</span><span class='kw4'>short</span><span class='opr'>)</span>tzi.DaylightDate.wMilliseconds;
+  data<span class='opr'>[</span><span class='nbr'>8</span><span class='opr'>]</span> <span class='opr'>=</span> <span class='kw2'>cast</span><span class='opr'>(</span><span class='kw4'>short</span><span class='opr'>)</span>tzi.StandardDate.wYear;
+  data<span class='opr'>[</span><span class='nbr'>9</span><span class='opr'>]</span> <span class='opr'>=</span> <span class='kw2'>cast</span><span class='opr'>(</span><span class='kw4'>short</span><span class='opr'>)</span>tzi.StandardDate.wMonth;
+  data<span class='opr'>[</span><span class='nbr'>10</span><span class='opr'>]</span> <span class='opr'>=</span> <span class='kw2'>cast</span><span class='opr'>(</span><span class='kw4'>short</span><span class='opr'>)</span>tzi.StandardDate.wDayOfWeek;
+  data<span class='opr'>[</span><span class='nbr'>11</span><span class='opr'>]</span> <span class='opr'>=</span> <span class='kw2'>cast</span><span class='opr'>(</span><span class='kw4'>short</span><span class='opr'>)</span>tzi.StandardDate.wDay;
+  data<span class='opr'>[</span><span class='nbr'>12</span><span class='opr'>]</span> <span class='opr'>=</span> <span class='kw2'>cast</span><span class='opr'>(</span><span class='kw4'>short</span><span class='opr'>)</span>tzi.StandardDate.wHour;
+  data<span class='opr'>[</span><span class='nbr'>13</span><span class='opr'>]</span> <span class='opr'>=</span> <span class='kw2'>cast</span><span class='opr'>(</span><span class='kw4'>short</span><span class='opr'>)</span>tzi.StandardDate.wMinute;
+  data<span class='opr'>[</span><span class='nbr'>14</span><span class='opr'>]</span> <span class='opr'>=</span> <span class='kw2'>cast</span><span class='opr'>(</span><span class='kw4'>short</span><span class='opr'>)</span>tzi.StandardDate.wSecond;
+  data<span class='opr'>[</span><span class='nbr'>15</span><span class='opr'>]</span> <span class='opr'>=</span> <span class='kw2'>cast</span><span class='opr'>(</span><span class='kw4'>short</span><span class='opr'>)</span>tzi.StandardDate.wMilliseconds;
+  data<span class='opr'>[</span><span class='nbr'>16</span><span class='opr'>]</span> <span class='opr'>=</span> <span class='kw2'>cast</span><span class='opr'>(</span><span class='kw4'>short</span><span class='opr'>)</span><span class='opr'>(</span>tzi.DaylightBias <span class='opr'>*</span> <span class='opr'>-</span><span class='nbr'>1</span><span class='opr'>)</span>;
+  data<span class='opr'>[</span><span class='nbr'>17</span><span class='opr'>]</span> <span class='opr'>=</span> <span class='kw2'>cast</span><span class='opr'>(</span><span class='kw4'>short</span><span class='opr'>)</span><span class='opr'>(</span>tzi.Bias <span class='opr'>*</span> <span class='opr'>-</span><span class='nbr'>1</span><span class='opr'>)</span>;
+  <span class='kw1'>return</span> data;
+<span class='opr'>}</span>
+
+<span class='kw4'>int</span> compareString<span class='opr'>(</span><span class='kw4'>int</span> lcid, <span class='kw4'>char</span><span class='opr'>[</span><span class='opr'>]</span> stringA, <span class='kw4'>uint</span> offsetA, <span class='kw4'>uint</span> lengthA, <span class='kw4'>char</span><span class='opr'>[</span><span class='opr'>]</span> stringB, <span class='kw4'>uint</span> offsetB, <span class='kw4'>uint</span> lengthB, <span class='kw4'>bool</span> ignoreCase<span class='opr'>)</span> <span class='opr'>{</span>
+
+  <span class='kw4'>wchar</span><span class='opr'>[</span><span class='opr'>]</span> toUnicode<span class='opr'>(</span><span class='kw4'>char</span><span class='opr'>[</span><span class='opr'>]</span> string, <span class='kw4'>uint</span> offset, <span class='kw4'>uint</span> length, <span class='kw2'>out</span> <span class='kw4'>int</span> translated<span class='opr'>)</span> <span class='opr'>{</span>
+    <span class='kw4'>char</span><span class='opr'>*</span> chars <span class='opr'>=</span> string.ptr <span class='opr'>+</span> offset;
+    <span class='kw4'>int</span> required <span class='opr'>=</span> MultiByteToWideChar<span class='opr'>(</span><span class='nbr'>0</span>, <span class='nbr'>0</span>, chars, length, <span class='kw2'>null</span>, <span class='nbr'>0</span><span class='opr'>)</span>;
+    <span class='kw4'>wchar</span><span class='opr'>[</span><span class='opr'>]</span> result <span class='opr'>=</span> <span class='kw2'>new</span> <span class='kw4'>wchar</span><span class='opr'>[</span>required<span class='opr'>]</span>;
+    translated <span class='opr'>=</span> MultiByteToWideChar<span class='opr'>(</span><span class='nbr'>0</span>, <span class='nbr'>0</span>, chars, length, result, required<span class='opr'>)</span>;
+    <span class='kw1'>return</span> result;
+  <span class='opr'>}</span>
+
+  <span class='kw4'>int</span> sortId <span class='opr'>=</span> <span class='opr'>(</span>lcid <span class='opr'>&gt;</span><span class='opr'>&gt;</span> <span class='nbr'>16</span><span class='opr'>)</span> <span class='opr'>&amp;</span> <span class='nbr'>0</span>xF;
+  sortId <span class='opr'>=</span> <span class='opr'>(</span>sortId <span class='opr'>=</span><span class='opr'>=</span> <span class='nbr'>0</span><span class='opr'>)</span> ? lcid : <span class='opr'>(</span>lcid | <span class='opr'>(</span>sortId <span class='opr'>&lt;</span><span class='opr'>&lt;</span> <span class='nbr'>16</span><span class='opr'>)</span><span class='opr'>)</span>;
+
+  <span class='kw4'>int</span> len1, len2;
+  <span class='kw4'>wchar</span><span class='opr'>[</span><span class='opr'>]</span> string1 <span class='opr'>=</span> toUnicode<span class='opr'>(</span>stringA, offsetA, lengthA, len1<span class='opr'>)</span>;
+  <span class='kw4'>wchar</span><span class='opr'>[</span><span class='opr'>]</span> string2 <span class='opr'>=</span> toUnicode<span class='opr'>(</span>stringB, offsetB, lengthB, len2<span class='opr'>)</span>;
+
+  <span class='kw1'>return</span> CompareStringW<span class='opr'>(</span>sortId, ignoreCase ? <span class='nbr'>0</span>x1 : <span class='nbr'>0</span>x0, string1, len1, string2, len2<span class='opr'>)</span> <span class='opr'>-</span> <span class='nbr'>2</span>;
+<span class='opr'>}</span>
+</pre></td></tr></table>	</body>
+</html>
