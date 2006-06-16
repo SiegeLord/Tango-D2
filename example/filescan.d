@@ -1,4 +1,4 @@
-private import  tango.io.Stdout,
+private import  tango.io.Console,
                 tango.io.FileScan;
 
 /*******************************************************************************
@@ -12,12 +12,12 @@ void main(char[][] args)
 {       
         void files (File file)
         {
-                Stdout (file) (CR);
+                Cout (file.toString).newline;
         }
 
         void dirs (FilePath path)
         {
-                Stdout (path) (CR);
+                Cout (path.toString).newline;
         }
 
         char[] dir = (args.length == 2) ? args[1] : ".";
@@ -25,10 +25,10 @@ void main(char[][] args)
         FileScan scan = new FileScan;
         scan (dir, "d");
 
-        Stdout ("Directories:\n"c);
+        Cout ("Directories:").newline;
         scan.directories (&dirs);
 
-        Stdout ("\nFiles:\n"c);
+        Cout ("\nFiles:").newline;
         scan.files (&files);       
 }
 
