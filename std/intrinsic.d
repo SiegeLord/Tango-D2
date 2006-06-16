@@ -7,9 +7,9 @@
  * integrated in with intrinsic functions, bringing to bear their full power on
  * them. This can result in some surprising speedups.
  *
- * Authors:   Walter Bright
  * Copyright: Public Domain
- * License:   See about.d
+ * License:   Public Domain
+ * Authors:   Walter Bright
  */
 module std.intrinsic;
 
