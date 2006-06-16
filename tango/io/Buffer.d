@@ -267,7 +267,7 @@ class Buffer : IBuffer
 
         this (uint capacity = 0)
         {
-                this (new ubyte[capacity]);              
+                setContent (new ubyte[capacity], 0);              
         }
 
         /***********************************************************************
