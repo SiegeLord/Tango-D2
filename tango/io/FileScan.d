@@ -48,7 +48,7 @@ public import   tango.io.File,
 
 class FileScan
 {       
-        alias read opCall;
+        alias sweep opCall;
 
         private char[]          ext;
         private Dependencies    deps;
@@ -70,37 +70,37 @@ class FileScan
 
         /***********************************************************************
 
-                Read a set of files and directories from the given parent
+                Sweep a set of files and directories from the given parent
                 path, where the files are filtered by the given extension.
 
         ***********************************************************************/
         
-        FileScan read (char[] path, char[] ext)
+        FileScan sweep (char[] path, char[] ext)
         {
-                return read (new FilePath(path), ext);
+                return sweep (new FilePath(path), ext);
         }
 
         /***********************************************************************
 
-                Read a set of files and directories from the given parent
+                Sweep a set of files and directories from the given parent
                 path, where the files are filtered by the given extension.
         
         ***********************************************************************/
         
-        FileScan read (FilePath path, char[] ext)
+        FileScan sweep (FilePath path, char[] ext)
         {
                 this.ext = ext;
-                return read (path, &simpleFilter);
+                return sweep (path, &simpleFilter);
         }
 
         /***********************************************************************
 
-                Read a set of files and directories from the given parent
+                Sweep a set of files and directories from the given parent
                 path, where the files are filtered by the provided delegate.
 
         ***********************************************************************/
         
-        FileScan read (FilePath path, Filter filter)
+        FileScan sweep (FilePath path, Filter filter)
         {
                 deps.mods = null;
                 deps.pkgs = null;
