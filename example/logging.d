@@ -9,8 +9,6 @@ private import tango.log.Log,
 
 private import tango.convert.Sprint;
 
-private import tango.log.Admin;
-
 /*******************************************************************************
 
 *******************************************************************************/
