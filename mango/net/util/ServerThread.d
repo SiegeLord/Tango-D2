@@ -14,13 +14,13 @@ module mango.net.util.ServerThread;
 
 private import  tango.core.thread;
 
-private import  tango.io.Conduit,
-                tango.io.Exception;
+private import  tango.io.Exception;
 
-private import  tango.net.ServerSocket,
-                tango.net.SocketConduit;
+private import  tango.net.ServerSocket;
 
 private import  mango.net.util.AbstractServer;
+
+private import  mango.net.util.model.IRunnable;
 
 /******************************************************************************
 
@@ -31,10 +31,10 @@ private import  mango.net.util.AbstractServer;
 
 ******************************************************************************/
 
-class ServerThread : Thread
+class ServerThread : Thread, IRunnable
 {
-        ServerSocket    socket;
-        AbstractServer  server;
+        private ServerSocket    socket;
+        private AbstractServer  server;
 
         /**********************************************************************
 
@@ -47,6 +47,15 @@ class ServerThread : Thread
         {
                 this.server = server;
                 this.socket = socket;
+        }
+
+        /**********************************************************************
+
+        **********************************************************************/
+
+        void execute ()
+        {
+                super.start();
         }
 
         /**********************************************************************
@@ -65,11 +74,11 @@ class ServerThread : Thread
                 while (true)
                        try {
                            // should we bail out?
-                           if (SocketConduit.isHalting)
+                           if (socket.isHalting)
                                return 0;
 
                            // wait for a socket connection
-                           SocketConduit sc = socket.accept ();
+                           auto sc = socket.accept ();
 
                            // did we get a valid response?
                            if (sc)
@@ -77,7 +86,6 @@ class ServerThread : Thread
                                server.service (this, sc);
                            else
                               // server may be halting ...
-//                              if (! SocketConduit.isHalting)
                               if (socket.isAlive)
                                   server.getLogger.error ("Socket accept() failed");
 

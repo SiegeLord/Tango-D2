@@ -12,16 +12,15 @@
 
 module mango.net.http.server.HttpServer;
 
+private import  tango.log.Logger;
+
 private import  tango.io.Exception;
 
 private import  tango.net.ServerSocket;
 
 private import  tango.io.model.IConduit;
 
-private import  tango.log.model.ILogger;
-
-private import  mango.net.util.ServerThread,
-                mango.net.util.AbstractServer;
+private import  mango.net.util.AbstractServer;
 
 private import  mango.net.http.server.HttpThread,
                 mango.net.http.server.HttpBridge;
@@ -29,6 +28,8 @@ private import  mango.net.http.server.HttpThread,
 public  import  mango.net.http.server.model.IProvider;
 
 private import  mango.net.http.server.model.IProviderBridge;              
+
+private import  mango.net.util.model.IRunnable;
 
 /******************************************************************************
         
@@ -50,7 +51,7 @@ class HttpServer : AbstractServer
 
         **********************************************************************/
 
-        this (IProvider provider, InternetAddress bind, int threads, ILogger logger = null)
+        this (IProvider provider, InternetAddress bind, int threads, Logger logger = null)
         {
                 this (provider, bind, threads, 10, logger);
         }
@@ -66,7 +67,7 @@ class HttpServer : AbstractServer
 
         **********************************************************************/
 
-        this (IProvider provider, InternetAddress bind, int threads, int backlog, ILogger logger = null)
+        this (IProvider provider, InternetAddress bind, int threads, int backlog, Logger logger = null)
         {
                 super (bind, threads, backlog, logger);
                 this.provider = provider;
@@ -115,7 +116,7 @@ class HttpServer : AbstractServer
 
         **********************************************************************/
 
-        override ServerThread createThread (ServerSocket socket)
+        override IRunnable createThread (ServerSocket socket)
         {
                 return new HttpThread (this, socket);
         }
@@ -127,7 +128,7 @@ class HttpServer : AbstractServer
 
         **********************************************************************/
 
-        override void service (ServerThread st, IConduit conduit)
+        override void service (IRunnable st, IConduit conduit)
         {
                 HttpThread      thread;
                 IProviderBridge bridge;

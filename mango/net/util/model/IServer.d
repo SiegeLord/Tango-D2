@@ -12,8 +12,6 @@
 
 module mango.net.util.model.IServer;
 
-private import  tango.net.Socket;
-
 private import  tango.io.model.IConduit;
 
 /******************************************************************************

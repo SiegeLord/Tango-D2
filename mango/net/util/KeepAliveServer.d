@@ -12,6 +12,14 @@
 
 module mango.net.util.KeepAliveServer;
 
+public  import  tango.log.Logger;
+
+public  import  tango.io.model.IConduit;
+
+public  import  mango.net.util.ServerThread,
+                mango.net.util.AbstractServer;
+
+
 private import  tango.core.thread;
 
 private import  tango.io.Buffer,
@@ -19,14 +27,6 @@ private import  tango.io.Buffer,
                 tango.io.GrowBuffer;
 
 private import  tango.net.ServerSocket;
-
-public  import  tango.io.model.IConduit;
-
-public  import  tango.log.model.ILogger;
-
-public  import  mango.net.util.ServerThread,
-                mango.net.util.AbstractServer;
-
 
 /******************************************************************************
 
@@ -41,7 +41,7 @@ public  import  mango.net.util.ServerThread,
 class KeepAliveThread : Thread
 {
         public GrowBuffer      buffer;
-        public ILogger         logger;
+        public Logger          logger;
         public char[]          client;
 
         /**********************************************************************
@@ -168,7 +168,7 @@ class KeepAliveServer : AbstractServer
 
         **********************************************************************/
 
-        this (InternetAddress addr, int threads = 1, int backlog = 100, ILogger logger = null)
+        this (InternetAddress addr, int threads = 1, int backlog = 100, Logger logger = null)
         {
                 super (addr, threads, backlog, logger);
         }

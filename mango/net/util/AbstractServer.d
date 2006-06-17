@@ -12,7 +12,7 @@
 
 module mango.net.util.AbstractServer;
 
-private import  tango.log.Logger;
+private import  tango.log.Log;
 
 private import  tango.io.Exception;
 
@@ -23,9 +23,10 @@ private import  tango.io.model.IConduit;
 private import  tango.net.ServerSocket,
                 tango.net.SocketConduit;
 
-private import  mango.net.util.ServerThread;
+//private import  mango.net.util.ServerThread;
 
-private import  mango.net.util.model.IServer;
+private import  mango.net.util.model.IServer,
+                mango.net.util.model.IRunnable;
 
 
 /******************************************************************************
@@ -42,7 +43,7 @@ class AbstractServer : IServer
         private int             threads;
         private int             backlog;
         private ServerSocket    socket;
-        private ILogger         logger;
+        private Logger          logger;
 
         /**********************************************************************
 
@@ -57,7 +58,7 @@ class AbstractServer : IServer
 
         **********************************************************************/
 
-        this (InternetAddress bind, int threads, int backlog, ILogger logger = null)
+        this (InternetAddress bind, int threads, int backlog, Logger logger = null)
         in {
            assert (bind);
            assert (backlog >= 0);
@@ -71,7 +72,7 @@ class AbstractServer : IServer
 
                 // save our logger for later reference
                 if (logger is null)
-                    logger = Logger.getLogger ("mango.net.util.AbstractServer");
+                    logger = Log.getLogger ("mango.net.util.AbstractServer");
                 this.logger = logger;
 
         }
@@ -94,11 +95,11 @@ class AbstractServer : IServer
 
         /**********************************************************************
 
-                Concrete server must expose a ServerThread factory
+                Concrete server must expose an IRunnable factory
 
         **********************************************************************/
 
-        protected abstract ServerThread createThread (ServerSocket socket);
+        protected abstract IRunnable createThread (ServerSocket socket);
 
         /**********************************************************************
 
@@ -106,7 +107,7 @@ class AbstractServer : IServer
 
         **********************************************************************/
 
-        abstract void service (ServerThread thread, IConduit conduit);
+        abstract void service (IRunnable thread, IConduit conduit);
 
         /**********************************************************************
 
@@ -166,7 +167,7 @@ class AbstractServer : IServer
 
         **********************************************************************/
 
-        ILogger getLogger ()
+        Logger getLogger ()
         {
                 return logger;
         }
@@ -184,7 +185,7 @@ class AbstractServer : IServer
                 
                 // instantiate and start all threads
                 for (int i=threads; --i >= 0;)
-                     createThread (socket).start();
+                     createThread (socket).execute;
 
                 char[] info = "Server "~toString()~" started on "~
                                socket.localAddress().toString()~
