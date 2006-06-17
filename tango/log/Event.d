@@ -17,9 +17,9 @@ version = UseEventFreeList;
 
 private import  tango.os.OS;
 
-private import  tango.log.Hierarchy;
+private import  tango.log.model.ILevel,
+                tango.log.model.IHierarchy;
 
-private import  tango.log.model.ILevel;
 
 version (Win32)
 {
@@ -47,7 +47,7 @@ public class Event : ILevel
                                 name;
         private ulong           time;
         private Level           level;
-        private Hierarchy       hierarchy;
+        private IHierarchy      hierarchy;
 
         // timestamps
         private static ulong    epochTime;
@@ -212,7 +212,7 @@ public class Event : ILevel
 
         ***********************************************************************/
 
-        final void set (Hierarchy hierarchy, Level level, char[] msg, char[] name)
+        final void set (IHierarchy hierarchy, Level level, char[] msg, char[] name)
         {
                 this.hierarchy = hierarchy;
                 this.time = getRuntime ();
@@ -301,7 +301,7 @@ public class Event : ILevel
 
         ***********************************************************************/
 
-        final Hierarchy getHierarchy ()
+        final IHierarchy getHierarchy ()
         {
                 return hierarchy;
         }

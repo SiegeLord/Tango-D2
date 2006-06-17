@@ -71,7 +71,7 @@ import tango.log.FileAppender;
 import tango.log.Hierarchy;
 import tango.log.Layout;
 import tango.log.Logger;
-import tango.log.Manager;
+import tango.log.Log;
 import tango.log.model.ILevel;
 import tango.log.model.ILogger;
 import tango.log.NullAppender;

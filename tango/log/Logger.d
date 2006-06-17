@@ -12,10 +12,9 @@
 
 module tango.log.Logger;
 
-private import  tango.log.Manager,
-                tango.log.Appender;
+private import tango.log.Appender;
 
-public  import  tango.log.model.ILogger;
+private import tango.log.model.ILevel;
 
 /*******************************************************************************
 
@@ -53,41 +52,8 @@ public  import  tango.log.model.ILogger;
 
 *******************************************************************************/
 
-public class Logger : ILogger
+public class Logger : ILevel
 {
-        /***********************************************************************
-
-                Return the root Logger instance. This is the ancestor of
-                all loggers and, as such, can be used to manipulate the 
-                entire hierarchy. For instance, setting the root 'level' 
-                attribute will affect all other loggers in the tree.
-
-        ***********************************************************************/
-
-        static Logger getRootLogger ()
-        {
-                return Manager.getRootLogger ();
-        }
-
-        /***********************************************************************
-
-                Return an instance of the named logger. Names should be
-                hierarchical in nature, using dot notation (with '.') to 
-                seperate each name section. For example, a typical name 
-                might be something like "tango.io.Buffer".
-
-                If the logger does not currently exist, it is created and
-                inserted into the hierarchy. A parent will be attached to
-                it, which will be either the root logger or the closest
-                ancestor in terms of the hierarchical name space.
-
-        ***********************************************************************/
-
-        static Logger getLogger (char[] name)
-        {
-                return Manager.getLogger (name);
-        }
-
         /***********************************************************************
 
                 Add a trace messages. This is called 'debug' in Log4J but
@@ -164,7 +130,7 @@ public class Logger : ILogger
 
         ***********************************************************************/
 
-        abstract void setLevel (Level level);
+        abstract void setLevel (Level level = Level.Trace);
 
         /***********************************************************************
         

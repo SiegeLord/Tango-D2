@@ -4,11 +4,12 @@
 
 *******************************************************************************/
 
-private import tango.log.Logger,
+private import tango.log.Log,
                tango.log.Configurator;
 
 private import tango.convert.Sprint;
 
+private import tango.log.Admin;
 
 /*******************************************************************************
 
@@ -27,7 +28,7 @@ private class Sieve
         this()
         {
                 // get a logger for this object. Could make this static instead
-                logger = Logger.getLogger ("example.logging.Sieve");
+                logger = Log.getLogger ("example.logging.Sieve");
         }
 
         /***********************************************************************
@@ -114,10 +115,10 @@ void main()
 {
         // get a logger to represent this module. We could just as
         // easily share a name with some other module(s)
-        Logger logger = Logger.getLogger ("example.logging");
+        auto logger = Log.getLogger ("example.logging");
         
         // set up a basic logging configuration
-        BasicConfigurator.configure();
+        Configurator ();
 
         try {
             Sieve sieve = new Sieve;

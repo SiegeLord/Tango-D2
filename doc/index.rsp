@@ -191,7 +191,7 @@ tango\io\model\IConduit.d
 tango\io\FileProxy.d
 tango\stdc\stdint.d
 tango\store\iterator\ArrayIterator.d
-tango\log\Manager.d
+tango\log\Log.d
 tango\text\SimpleIterator.d
 tango\store\CircularSeq.d
 mango\net\servlet\cache\Payload.d

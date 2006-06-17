@@ -12,15 +12,14 @@
 
 module mango.net.servlet.ServletContext;
 
-private import  tango.log.Logger;
+private import  tango.log.Log;
 
 private import  tango.text.Text;
 
 private import  tango.io.FileConduit;
               
-private import  mango.net.servlet.Dictionary;
-
-private import  mango.net.servlet.ServletException;
+private import  mango.net.servlet.Dictionary,
+                mango.net.servlet.ServletException;
 
 /******************************************************************************
 
@@ -41,7 +40,7 @@ class ServletContext
 
         private static MutableDictionary mimeMap;
 
-        private static const char[]     ServerIdentity = "tango.Servlet/Beta 9";
+        private static const char[]     ServerIdentity = "mango.Servlet/Beta 9";
         
 
         // content to build contentType map for file extensions
@@ -186,7 +185,7 @@ class ServletContext
         
                 Construct a context with the given name, and the specified 
                 base-path. The latter is where files and properties will be
-                located from.                .
+                located from.
 
         ***********************************************************************/
 
@@ -203,7 +202,7 @@ class ServletContext
                 // each context may have its own logger. This skirts around 
                 // the current (Feb, 2005) lack of static-ctor ordering in D
                 if (! log)
-                      log = Logger.getLogger ("mango.net.servlet.ServletContext");
+                      log = Log.getLogger ("mango.net.servlet.ServletContext");
                 this.logger = log;
 
                 if (name.length > 0)

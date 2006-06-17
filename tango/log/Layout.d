@@ -22,8 +22,6 @@ private import tango.log.Event;
 
 public class Layout
 {
-        private import tango.log.Logger;
-
         /***********************************************************************
                 
                 Subclasses should implement this method to perform the

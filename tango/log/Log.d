@@ -11,7 +11,9 @@
 
 *******************************************************************************/
 
-module tango.log.Manager;
+module tango.log.Log;
+
+public  import  tango.log.Logger;
 
 private import  tango.log.Event,
                 tango.log.Hierarchy;
@@ -25,7 +27,7 @@ private import  tango.log.Event,
 
 *******************************************************************************/
 
-class Manager 
+class Log 
 {
         static private Hierarchy base;
 
@@ -47,28 +49,39 @@ class Manager
 
         static this ()
         {
-                base = new Hierarchy ("mango");
+                base = new Hierarchy ("tango");
                 Event.initialize ();
         }
 
         /***********************************************************************
-        
-                Return the singleton root
+
+                Return the root Logger instance. This is the ancestor of
+                all loggers and, as such, can be used to manipulate the 
+                entire hierarchy. For instance, setting the root 'level' 
+                attribute will affect all other loggers in the tree.
 
         ***********************************************************************/
 
-        static LoggerInstance getRootLogger ()
+        static Logger getRootLogger ()
         {
                 return base.getRootLogger ();
         }
 
         /***********************************************************************
         
-                Return a named Logger within the singleton hierarchy
+                Return an instance of the named logger. Names should be
+                hierarchical in nature, using dot notation (with '.') to 
+                seperate each name section. For example, a typical name 
+                might be something like "tango.io.Buffer".
+
+                If the logger does not currently exist, it is created and
+                inserted into the hierarchy. A parent will be attached to
+                it, which will be either the root logger or the closest
+                ancestor in terms of the hierarchical name space.
 
         ***********************************************************************/
 
-        static LoggerInstance getLogger (char[] name)
+        static Logger getLogger (char[] name)
         {
                 return base.getLogger (name);
         }

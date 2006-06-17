@@ -12,9 +12,8 @@
 
 module tango.log.Configurator;
 
-private import  tango.log.Logger,
+private import  tango.log.Log,
                 tango.log.Layout,
-                tango.log.DateLayout,
                 tango.log.ConsoleAppender;
 
 /*******************************************************************************
@@ -24,8 +23,10 @@ private import  tango.log.Logger,
 
 *******************************************************************************/
 
-public class BasicConfigurator
+public class Configurator
 {
+        public alias configure opCall;
+
         /***********************************************************************
 
                 Create a default StdioAppender with a SimpleTimerLayout.
@@ -35,7 +36,7 @@ public class BasicConfigurator
         static protected Logger defaultAppender ()
         {
                 // get the hierarchy root
-                Logger root = Logger.getRootLogger();
+                auto root = Log.getRootLogger();
 
                 // setup a default appender
                 root.addAppender (new ConsoleAppender (new SimpleTimerLayout));
@@ -54,6 +55,6 @@ public class BasicConfigurator
         static void configure ()
         {
                 // enable all messages for all loggers
-                defaultAppender().setLevel (Logger.Level.Trace);
+                defaultAppender().setLevel ();
         }
 }

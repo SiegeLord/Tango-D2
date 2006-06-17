@@ -21,9 +21,8 @@ private import  tango.net.Uri;
 
 private import  tango.io.protocol.model.IWriter;
 
-private import  tango.log.Logger,
-                tango.log.Event,
-                tango.log.Manager;
+private import  tango.log.Log,
+                tango.log.Event;
 
 private import  mango.net.servlet.Servlet,
                 mango.net.servlet.ServletContext,
@@ -48,7 +47,7 @@ class AdminServlet : Servlet
 
         this()
         {
-                log = Logger.getLogger ("mango.admin.AdminServlet");
+                log = Log.getLogger ("tango.admin.AdminServlet");
         }
 
         /***********************************************************************
@@ -60,9 +59,9 @@ class AdminServlet : Servlet
         void addLogger(IServletRequest request, IServletResponse response)
         {
                 char[] loggerName = request.getParameters.get("logger");
-                Logger.Level level = cast(Logger.Level) request.getParameters.getInt("level");
+                auto level = cast(Logger.Level) request.getParameters.getInt("level");
                 
-                Logger loggerToChange = Manager.getLogger(loggerName);
+                auto loggerToChange = Log.getLogger(loggerName);
                 loggerToChange.setLevel(level);
         }
 
@@ -82,9 +81,9 @@ class AdminServlet : Servlet
                 // get the logger
                 Logger loggerToChange;
                 if (loggerName.length)
-                    loggerToChange = Manager.getLogger(loggerName);
+                    loggerToChange = Log.getLogger(loggerName);
                 else
-                   loggerToChange = Manager.getRootLogger();
+                   loggerToChange = Log.getRootLogger();
 
                 //set the level on the logger
                 log.info("Setting logger " ~ loggerName ~ 
@@ -175,7 +174,7 @@ class AdminServlet : Servlet
                       .cr();
 
                 //print a table row for each logger
-                foreach (Logger l; Manager.getHierarchy())
+                foreach (Logger l; Log.getHierarchy())
                 {
                         char[] name = l.getName();
                         char[] label = name;

@@ -17,11 +17,13 @@ else
 {
 private import  tango.text.Properties;
 
-private import  tango.log.Logger,
+private import  tango.log.Log,
                 tango.log.Layout,
                 tango.log.DateLayout,
                 tango.log.Configurator,
                 tango.log.ConsoleAppender;
+
+private import  tango.model.ILevel;
 
 /*******************************************************************************
 
@@ -37,7 +39,7 @@ private import  tango.log.Logger,
 
 public class PropertyConfigurator
 {
-        private static Logger.Level[char[]] map;
+        private static ILevel.Level[char[]] map;
 
         /***********************************************************************
         
@@ -47,18 +49,18 @@ public class PropertyConfigurator
 
         static this()
         {
-                map["TRACE"]    = Logger.Level.Trace;
-                map["trace"]    = Logger.Level.Trace;
-                map["INFO"]     = Logger.Level.Info;
-                map["info"]     = Logger.Level.Info;
-                map["WARN"]     = Logger.Level.Warn;
-                map["warn"]     = Logger.Level.Warn;
-                map["ERROR"]    = Logger.Level.Error;
-                map["error"]    = Logger.Level.Error;
-                map["FATAL"]    = Logger.Level.Fatal;
-                map["fatal"]    = Logger.Level.Fatal;
-                map["NONE"]     = Logger.Level.None;
-                map["none"]     = Logger.Level.None;
+                map["TRACE"]    = ILevel.Level.Trace;
+                map["trace"]    = ILevel.Level.Trace;
+                map["INFO"]     = ILevel.Level.Info;
+                map["info"]     = ILevel.Level.Info;
+                map["WARN"]     = ILevel.Level.Warn;
+                map["warn"]     = ILevel.Level.Warn;
+                map["ERROR"]    = ILevel.Level.Error;
+                map["error"]    = ILevel.Level.Error;
+                map["FATAL"]    = ILevel.Level.Fatal;
+                map["fatal"]    = ILevel.Level.Fatal;
+                map["NONE"]     = ILevel.Level.None;
+                map["none"]     = ILevel.Level.None;
         }
 
         /***********************************************************************
@@ -89,16 +91,16 @@ public class PropertyConfigurator
                         Logger l;
 
                         if (name == "root")
-                            l = Logger.getRootLogger ();                            
+                            l = Log.getRootLogger ();                            
                         else
-                           l = Logger.getLogger (name);
+                           l = Log.getLogger (name);
 
                         if (l && value in map)
                             l.setLevel (map[value]);
                 }
 
                 // setup the basic stuff
-                BasicConfigurator.defaultAppender ();
+                Configurator.defaultAppender ();
 
                 // read and parse properties from file
                 Properties.load (filepath, &loader);

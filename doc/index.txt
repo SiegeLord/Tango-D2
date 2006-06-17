@@ -1,4 +1,7 @@
 = API Index =
+
+Use the Browser incremental search facility to quickly locate a particular module name. Source code for each module is hooked up via the big blue title at the top of each page, and all other links therein lead to Wiki annotations. Packages are sorted by name:
+
 tango.convert
  * [http://svn.dsource.org/projects/tango/trunk/doc/html/tango.convert.Atoi.html Atoi]
  * [http://svn.dsource.org/projects/tango/trunk/doc/html/tango.convert.DGDouble.html DGDouble]
@@ -76,7 +79,7 @@ tango.log
  * [http://svn.dsource.org/projects/tango/trunk/doc/html/tango.log.Hierarchy.html Hierarchy]
  * [http://svn.dsource.org/projects/tango/trunk/doc/html/tango.log.Layout.html Layout]
  * [http://svn.dsource.org/projects/tango/trunk/doc/html/tango.log.Logger.html Logger]
- * [http://svn.dsource.org/projects/tango/trunk/doc/html/tango.log.Manager.html Manager]
+ * [http://svn.dsource.org/projects/tango/trunk/doc/html/tango.log.Log.html Log]
  * [http://svn.dsource.org/projects/tango/trunk/doc/html/tango.log.NullAppender.html NullAppender]
  * [http://svn.dsource.org/projects/tango/trunk/doc/html/tango.log.PropertyConfigurator.html PropertyConfigurator]
  * [http://svn.dsource.org/projects/tango/trunk/doc/html/tango.log.RollingFileAppender.html RollingFileAppender]

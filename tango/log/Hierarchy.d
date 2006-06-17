@@ -12,10 +12,10 @@
 
 module tango.log.Hierarchy;
 
-private import tango.log.Appender;
+private import  tango.log.Logger,
+                tango.log.Appender;
 
-// GDC: this should not be required: it is public imported via log.Appender ...
-private import tango.log.Logger;
+private import  tango.log.model.IHierarchy;
 
 /*******************************************************************************
 
@@ -183,7 +183,7 @@ private class LoggerInstance : Logger
 
         ***********************************************************************/
 
-        final void setLevel (Level level)
+        final void setLevel (Level level = Level.Trace)
         {
                 setLevel (level, false);
         }
@@ -272,40 +272,37 @@ private class LoggerInstance : Logger
         {
                 if (isEnabled (level))
                    {
-                   uint            masks;
-                   LoggerInstance  l = this;
-                   Event           event = Event.allocate ();
+                   auto event = Event.allocate();
+                   scope (exit)
+                          Event.deallocate (event);
 
-                   try {
-                       // set the event attributes
-                       event.set (hierarchy, level, s, name[0..name.length-1]);
+                   // set the event attributes
+                   event.set (hierarchy, level, s, name[0..name.length-1]);
 
-                       // combine appenders from all ancestors
-                       do {
-                          Appender appender = l.appender;
+                   // combine appenders from all ancestors
+                   auto masks = 0;                 
+                   auto links = this;
+                   do {
+                      auto appender = links.appender;
 
-                          // this level have an appender?
-                          while (appender)
-                                { 
-                                uint mask = appender.getMask();
+                      // this level have an appender?
+                      while (appender)
+                            { 
+                            auto mask = appender.getMask ();
 
-                                // have we used this appender already?
-                                if ((masks & mask) == 0)
-                                   {
-                                   // no - append message and update mask
-                                   event.scratch.length = 0;
-                                   appender.append (event);
-                                   masks |= mask;
-                                   }
-                                // process all appenders for this node
-                                appender = appender.getNext ();
-                                }
-                            // process all ancestors
-                          } while (l.additive && ((l = l.parent) !is null));
-                        
-                       // make sure we release the event ...
-                       } finally
-                               Event.deallocate (event);
+                            // have we used this appender already?
+                            if ((masks & mask) is 0)
+                               {
+                               // no - append message and update mask
+                               event.scratch.length = 0;
+                               appender.append (event);
+                               masks |= mask;
+                               }
+                            // process all appenders for this node
+                            appender = appender.getNext;
+                            }
+                        // process all ancestors
+                      } while (links.additive && ((links = links.parent) !is null));
                    }
         }
 
@@ -319,13 +316,13 @@ private class LoggerInstance : Logger
 
         private final bool isCloserAncestor (LoggerInstance other)
         {
-                int length = other.name.length;
+                auto length = other.name.length;
 
                 // possible parent if length is shorter
                 if (length < name.length)
                     // does the prefix match? Note we append a "." to each 
-                    if (length == 0 || 
-                        memcmp (&other.name[0], &name[0], length) == 0)
+                    if (length is 0 || 
+                        memcmp (&other.name[0], &name[0], length) is 0)
                         // is this a better (longer) match than prior parent?
                         if ((parent is null) || (length >= parent.name.length))
                              return true;
@@ -347,7 +344,7 @@ private class LoggerInstance : Logger
 
 *******************************************************************************/
 
-class Hierarchy 
+class Hierarchy : IHierarchy
 {
         private char[]                  name,
                                         address;      
@@ -473,8 +470,8 @@ class Hierarchy
                 while (curr)
                       {
                       // BUG: this uncovers a cast() issue in the 'inout' delegation
-                      Logger l = curr;
-                      if ((result = dg (l)) != 0)
+                      Logger logger = curr;
+                      if ((result = dg (logger)) != 0)
                            break;
                       curr = curr.next;
                       }
@@ -562,7 +559,7 @@ class Hierarchy
                    logger.parent = changed;
 
                    // if we don't have an explicit level set, inherit it
-                   if (logger.level == Logger.Level.None || force)
+                   if (logger.level is Logger.Level.None || force)
                        logger.level = changed.level;
 
                    // always force breakpoints to follow parent settings

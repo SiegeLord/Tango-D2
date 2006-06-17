@@ -42,8 +42,8 @@ import  tango.net.Uri,
         tango.net.Socket;
 
         //for logging
-import  tango.log.Admin,
-        tango.log.Logger,
+import  tango.log.Log,
+        tango.log.Admin,
         tango.log.Configurator;
 
         // for HTTP responses
@@ -118,7 +118,7 @@ class FileServlet : MethodServlet
 
         static this ()
         {
-                logger = Logger.getLogger ("tango.servlets.File");
+                logger = Log.getLogger ("tango.servlets.File");
         }
 
         /***********************************************************************
@@ -155,7 +155,7 @@ class Echo : Servlet
 
         static this ()
         {
-                logger = Logger.getLogger ("tango.servlets.Echo");
+                logger = Log.getLogger ("tango.servlets.Echo");
         }
 
         /***********************************************************************
@@ -284,8 +284,8 @@ void testServletEngine ()
 
 int main ()
 {   
-        BasicConfigurator.configure ();
-        mainLogger = Logger.getLogger ("tango.servlets");
+        Configurator ();
+        mainLogger = Log.getLogger ("tango.servlets");
         mainLogger.setLevel (mainLogger.Level.Info);
 
         try {
