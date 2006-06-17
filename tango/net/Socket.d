@@ -78,7 +78,6 @@ private import  tango.io.Conduit,
 private import  tango.io.model.IBuffer;
 
 private import  tango.stdc.stdint;
-private import  tango.stdc.errno;
 
 
 /*******************************************************************************
@@ -177,6 +176,8 @@ version (Win32)
 
 version (BsdSockets)
         {
+        private import tango.stdc.errno;
+
         private typedef int socket_t = -1;
         
         private const int F_GETFL       = 3;
