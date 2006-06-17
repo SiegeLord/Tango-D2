@@ -10,9 +10,6 @@ module tango.stdc.stdint;
 
 private
 {
-    import tango.stdc.stddef;
-    import tango.stdc.signal; // for sig_atomic_t
-
     template typify(T)
     {
         T typify( T val ) { return val; }
@@ -69,6 +66,9 @@ alias ulong     uintmax_t;
 
 version( VerboseC )
 {
+    private import tango.stdc.stddef;
+    private import tango.stdc.signal; // for sig_atomic_t
+
     const int8_t  INT8_MIN  = int8_t.min;
     const int8_t  INT8_MAX  = int8_t.max;
     const int16_t INT16_MIN = int16_t.min;
