@@ -12,17 +12,17 @@
 
 module tango.io.protocol.Reader;
 
-private import  tango.convert.Type;
-
-private import  tango.io.Exception,
-                tango.io.protocol.ArrayAllocator;
-
 public  import  tango.io.Buffer;
 
-public  import  tango.io.protocol.model.IReader,
-                tango.io.model.IBuffer,
+public  import  tango.io.model.IBuffer,
                 tango.io.model.IConduit;
 
+public  import  tango.io.protocol.model.IReader;
+
+
+private import  tango.convert.Type;
+
+private import  tango.io.Exception;
 
 /*******************************************************************************
 

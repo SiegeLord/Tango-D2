@@ -14,11 +14,7 @@ module tango.net.ServerSocket;
 
 public  import  tango.net.Socket;
 
-private import  tango.io.Exception,
-                tango.net.SocketConduit;
-
-private import  tango.io.model.IBuffer,
-                tango.io.model.IConduit;
+private import  tango.net.SocketConduit;
 
 /*******************************************************************************
 
