@@ -73,7 +73,7 @@ import tango.log.Layout;
 import tango.log.Logger;
 import tango.log.Log;
 import tango.log.model.ILevel;
-import tango.log.model.ILogger;
+import tango.log.model.IHierarchy;
 import tango.log.NullAppender;
 import tango.log.PropertyConfigurator;
 import tango.log.RollingFileAppender;
