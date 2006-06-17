@@ -32,11 +32,16 @@ private import  tango.io.support.BufferCodec;
 
 *******************************************************************************/
 
-private class BufferFormatT(T) : FormatClassT!(T)
+private class BufferFormatT(T)
 {
-        private bool            flush;
-        private IBuffer         target;
-        private Importer        importer;
+        private alias FormatStructT!(T) Format;
+        public  alias print             opCall;
+
+        private bool                    flush;
+        private IBuffer                 target;
+        private Importer                importer;
+        private T[128]                  tmp;
+        private Format                  format;
 
         /**********************************************************************
 
@@ -51,7 +56,7 @@ private class BufferFormatT(T) : FormatClassT!(T)
         this (IBuffer target, bool flush = true)
         {
                 // configure the formatter
-                super (&write, &render, &Double.format);
+                format.ctor (&write, &render, tmp, &Double.format);
 
                 // hook up a unicode converter
                 importer = new UnicodeImporter!(T)(target);
@@ -61,6 +66,39 @@ private class BufferFormatT(T) : FormatClassT!(T)
                 this.flush = flush;
         }
                 
+        /**********************************************************************
+
+        **********************************************************************/
+
+        BufferFormatT print (T[] fmt, ...)
+        {
+                format.print (fmt, _arguments, _argptr, false);
+                return this;
+        }
+
+        /**********************************************************************
+
+        **********************************************************************/
+
+        BufferFormatT println (T[] fmt, ...)
+        {
+                format.print (fmt, _arguments, _argptr, true);
+                return this;
+        }
+
+        /***********************************************************************
+        
+                Emit a newline
+
+        ***********************************************************************/
+
+        BufferFormatT newline ()
+        {
+                format.newline();
+                render();
+                return this;
+        }
+
         /**********************************************************************
 
                 return the associated buffer
