@@ -12,9 +12,9 @@
 
 module tango.convert.Double;
 
-private import tango.stdc.math;
-
 private import tango.convert.Atoi;
+
+private extern (C) double log10(double x);
 
 /******************************************************************************
 
@@ -91,7 +91,7 @@ struct DoubleT(T)
                    x += 0.5 / pow10 (decimals);
 
                    // extract base10 exponent
-                   exp = cast(int) tango.stdc.math.log10 (x);
+                   exp = cast(int) log10 (x);
 
                    // normalize base10 mantissa (0 < m < 10)
                    int len = exp;
