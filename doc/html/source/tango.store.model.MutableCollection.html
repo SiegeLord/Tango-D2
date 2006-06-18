@@ -1,0 +1,409 @@
+<!DOCTYPE html 
+     PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+     "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html>
+	<head>
+		<link rel="stylesheet" href="style.css" type="text/css" />
+		<title>/MutableCollection.d</title>
+	</head>
+	<body>
+
+<table id='dcode'><tr><td id='lnum'><pre><span>1</span>
+<span>2</span>
+<span>3</span>
+<span>4</span>
+<span>5</span>
+<span>6</span>
+<span>7</span>
+<span>8</span>
+<span>9</span>
+<span>10</span>
+<span>11</span>
+<span>12</span>
+<span>13</span>
+<span>14</span>
+<span>15</span>
+<span>16</span>
+<span>17</span>
+<span>18</span>
+<span>19</span>
+<span>20</span>
+<span>21</span>
+<span>22</span>
+<span>23</span>
+<span>24</span>
+<span>25</span>
+<span>26</span>
+<span>27</span>
+<span>28</span>
+<span>29</span>
+<span>30</span>
+<span>31</span>
+<span>32</span>
+<span>33</span>
+<span>34</span>
+<span>35</span>
+<span>36</span>
+<span>37</span>
+<span>38</span>
+<span>39</span>
+<span>40</span>
+<span>41</span>
+<span>42</span>
+<span>43</span>
+<span>44</span>
+<span>45</span>
+<span>46</span>
+<span>47</span>
+<span>48</span>
+<span>49</span>
+<span>50</span>
+<span>51</span>
+<span>52</span>
+<span>53</span>
+<span>54</span>
+<span>55</span>
+<span>56</span>
+<span>57</span>
+<span>58</span>
+<span>59</span>
+<span>60</span>
+<span>61</span>
+<span>62</span>
+<span>63</span>
+<span>64</span>
+<span>65</span>
+<span>66</span>
+<span>67</span>
+<span>68</span>
+<span>69</span>
+<span>70</span>
+<span>71</span>
+<span>72</span>
+<span>73</span>
+<span>74</span>
+<span>75</span>
+<span>76</span>
+<span>77</span>
+<span>78</span>
+<span>79</span>
+<span>80</span>
+<span>81</span>
+<span>82</span>
+<span>83</span>
+<span>84</span>
+<span>85</span>
+<span>86</span>
+<span>87</span>
+<span>88</span>
+<span>89</span>
+<span>90</span>
+<span>91</span>
+<span>92</span>
+<span>93</span>
+<span>94</span>
+<span>95</span>
+<span>96</span>
+<span>97</span>
+<span>98</span>
+<span>99</span>
+<span>100</span>
+<span>101</span>
+<span>102</span>
+<span>103</span>
+<span>104</span>
+<span>105</span>
+<span>106</span>
+<span>107</span>
+<span>108</span>
+<span>109</span>
+<span>110</span>
+<span>111</span>
+<span>112</span>
+<span>113</span>
+<span>114</span>
+<span>115</span>
+<span>116</span>
+<span>117</span>
+<span>118</span>
+<span>119</span>
+<span>120</span>
+<span>121</span>
+<span>122</span>
+<span>123</span>
+<span>124</span>
+<span>125</span>
+<span>126</span>
+<span>127</span>
+<span>128</span>
+<span>129</span>
+<span>130</span>
+<span>131</span>
+<span>132</span>
+<span>133</span>
+<span>134</span>
+<span>135</span>
+<span>136</span>
+<span>137</span>
+<span>138</span>
+<span>139</span>
+<span>140</span>
+<span>141</span>
+<span>142</span>
+<span>143</span>
+<span>144</span>
+<span>145</span>
+<span>146</span>
+<span>147</span>
+<span>148</span>
+<span>149</span>
+<span>150</span>
+<span>151</span>
+<span>152</span>
+<span>153</span>
+<span>154</span>
+<span>155</span>
+<span>156</span>
+<span>157</span>
+<span>158</span>
+<span>159</span>
+<span>160</span>
+<span>161</span>
+<span>162</span>
+<span>163</span>
+<span>164</span>
+<span>165</span>
+<span>166</span>
+<span>167</span>
+<span>168</span>
+<span>169</span>
+<span>170</span>
+<span>171</span>
+<span>172</span>
+<span>173</span>
+<span>174</span>
+<span>175</span>
+<span>176</span>
+<span>177</span>
+<span>178</span>
+<span>179</span>
+<span>180</span>
+<span>181</span>
+<span>182</span>
+<span>183</span>
+<span>184</span>
+<span>185</span>
+<span>186</span>
+<span>187</span>
+<span>188</span>
+<span>189</span>
+<span>190</span>
+<span>191</span>
+<span>192</span>
+<span>193</span>
+<span>194</span>
+<span>195</span>
+<span>196</span>
+<span>197</span>
+<span>198</span>
+</pre></td><td id='code'><pre><span class='com'>/*
+ File: MutableCollection.d
+
+ Originally written by Doug Lea and released into the public domain. 
+ Thanks for the assistance and support of Sun Microsystems Labs, Agorics 
+ Inc, Loral, and everyone contributing, testing, and using this code.
+
+ History:
+ Date     Who                What
+ 24Sep95  dl@cs.oswego.edu   Create from collections.d  working file
+
+*/</span>
+
+
+<span class='kw2'>module</span> tango.store.model.MutableCollection;
+
+<span class='kw4'>private</span> <span class='kw2'>import</span> tango.store.model.Collection;
+
+<span class='kw4'>private</span> <span class='kw2'>import</span> tango.store.model.Iterator;
+
+<span class='com'>/**
+ *
+ * MutableCollection is the root interface of all mutable collections; i.e.,
+ * collections that may have elements dynamically added, removed,
+ * and/or replaced in accord with their collection semantics.
+ *
+ * 
+        author: Doug Lea
+ * @version 0.93
+ *
+ * &lt;P&gt; For an introduction to this package see &lt;A HREF=&quot;index.html&quot;&gt; Overview &lt;/A&gt;.
+**/</span>
+
+
+<span class='kw4'>public</span> <span class='kw2'>interface</span> MutableCollectionT<span class='opr'>(</span>T<span class='opr'>)</span> : CollectionT!<span class='opr'>(</span>T<span class='opr'>)</span>
+<span class='opr'>{</span>
+        <span class='com'>/**
+         * All updatable collections maintain a `version number'. The numbering
+         * scheme is arbitrary, but is guaranteed to change upon every
+         * modification that could possibly affect an elements() enumeration traversal.
+         * (This is true at least within the precision of the `int' representation;
+         * performing more than 2^32 operations will lead to reuse of version numbers).
+         * Versioning
+         * &lt;EM&gt;may&lt;/EM&gt; be conservative with respect to `replacement' operations.
+         * For the sake of versioning replacements may be considered as
+         * removals followed by additions. Thus version numbers may change 
+         * even if the old and new  elements are identical.
+         * &lt;P&gt;
+         * All element() enumerations for Mutable Collections track version
+         * numbers, and raise inconsistency exceptions if the enumeration is
+         * used (via get()) on a version other than the one generated
+         * by the elements() method.
+         * &lt;P&gt;
+         * You can use versions to check if update operations actually have any effect
+         * on observable state.
+         * For example, clear() will cause cause a version change only
+         * if the collection was previously non-empty.
+         * @return the version number
+        **/</span>
+
+        <span class='kw4'>public</span> <span class='kw4'>int</span> _version<span class='opr'>(</span><span class='opr'>)</span>;
+
+        <span class='com'>/**
+         * Cause the collection to become empty. 
+         * @return condition:
+         * &lt;PRE&gt;
+         * isEmpty() &amp;&amp;
+         * Version change iff !PREV(this).isEmpty();
+         * &lt;/PRE&gt;
+        **/</span>
+
+        <span class='kw4'>public</span> <span class='kw4'>void</span> clear<span class='opr'>(</span><span class='opr'>)</span>;
+
+        <span class='com'>/**
+         * Exclude all occurrences of the indicated element from the collection. 
+         * No effect if element not present.
+         * @param element the element to exclude.
+         * @return condition: 
+         * &lt;PRE&gt;
+         * !has(element) &amp;&amp;
+         * size() == PREV(this).size() - PREV(this).instances(element) &amp;&amp;
+         * no other element changes &amp;&amp;
+         * Version change iff PREV(this).has(element)
+         * &lt;/PRE&gt;
+        **/</span>
+
+        <span class='kw4'>public</span> <span class='kw4'>void</span> exclude<span class='opr'>(</span>T element<span class='opr'>)</span>;
+
+
+        <span class='com'>/**
+         * Remove an instance of the indicated element from the collection. 
+         * No effect if !has(element)
+         * @param element the element to remove
+         * @return condition: 
+         * &lt;PRE&gt;
+         * let occ = max(1, instances(element)) in
+         *  size() == PREV(this).size() - occ &amp;&amp;
+         *  instances(element) == PREV(this).instances(element) - occ &amp;&amp;
+         *  no other element changes &amp;&amp;
+         *  version change iff occ == 1
+         * &lt;/PRE&gt;
+        **/</span>
+
+        <span class='kw4'>public</span> <span class='kw4'>void</span> removeOneOf<span class='opr'>(</span>T element<span class='opr'>)</span>;
+
+        <span class='com'>/**
+         * Replace an occurrence of oldElement with newElement.
+         * No effect if does not hold oldElement or if oldElement.equals(newElement).
+         * The operation has a consistent, but slightly special interpretation
+         * when applied to Sets. For Sets, because elements occur at
+         * most once, if newElement is already included, replacing oldElement with
+         * with newElement has the same effect as just removing oldElement.
+         * @return condition:
+         * &lt;PRE&gt;
+         * let int delta = oldElement.equals(newElement)? 0 : 
+         *               max(1, PREV(this).instances(oldElement) in
+         *  instances(oldElement) == PREV(this).instances(oldElement) - delta &amp;&amp;
+         *  instances(newElement) ==  (this instanceof Set) ? 
+         *         max(1, PREV(this).instances(oldElement) + delta):
+         *                PREV(this).instances(oldElement) + delta) &amp;&amp;
+         *  no other element changes &amp;&amp;
+         *  Version change iff delta != 0
+         * &lt;/PRE&gt;
+         * @exception IllegalElementException if has(oldElement) and !canInclude(newElement)
+        **/</span>
+
+        <span class='kw4'>public</span> <span class='kw4'>void</span> replaceOneOf<span class='opr'>(</span>T oldElement, T newElement<span class='opr'>)</span>;
+
+
+        <span class='com'>/**
+         * Replace all occurrences of oldElement with newElement.
+         * No effect if does not hold oldElement or if oldElement.equals(newElement).
+         * The operation has a consistent, but slightly special interpretation
+         * when applied to Sets. For Sets, because elements occur at
+         * most once, if newElement is already included, replacing oldElement with
+         * with newElement has the same effect as just removing oldElement.
+         * @return condition:
+         * &lt;PRE&gt;
+         * let int delta = oldElement.equals(newElement)? 0 : 
+                           PREV(this).instances(oldElement) in
+         *  instances(oldElement) == PREV(this).instances(oldElement) - delta &amp;&amp;
+         *  instances(newElement) ==  (this instanceof Set) ? 
+         *         max(1, PREV(this).instances(oldElement) + delta):
+         *                PREV(this).instances(oldElement) + delta) &amp;&amp;
+         *  no other element changes &amp;&amp;
+         *  Version change iff delta != 0
+         * &lt;/PRE&gt;
+         * @exception IllegalElementException if has(oldElement) and !canInclude(newElement)
+        **/</span>
+
+        <span class='kw4'>public</span> <span class='kw4'>void</span> replaceAllOf<span class='opr'>(</span>T oldElement, T newElement<span class='opr'>)</span>;
+
+
+        <span class='com'>/**
+         * Remove and return an element.  Implementations
+         * may strengthen the guarantee about the nature of this element.
+         * but in general it is the most convenient or efficient element to remove.
+         * &lt;P&gt;
+         * Example usage. One way to transfer all elements from 
+         * MutableCollection a to MutableBag b is:
+         * &lt;PRE&gt;
+         * while (!a.empty()) b.add(a.take());
+         * &lt;/PRE&gt;
+         * @return an element v such that PREV(this).has(v) 
+         * and the postconditions of removeOneOf(v) hold.
+         * @exception NoSuchElementException iff isEmpty.
+        **/</span>
+
+        <span class='kw4'>public</span> T take<span class='opr'>(</span><span class='opr'>)</span>;
+
+
+        <span class='com'>/**
+         * Exclude all occurrences of each element of the Iterator.
+         * Behaviorally equivalent to
+         * &lt;PRE&gt;
+         * while (e.more()) exclude(e.value());
+         * @param e the enumeration of elements to exclude.
+         * @exception CorruptedIteratorException is propagated if thrown
+        **/</span>
+
+        <span class='kw4'>public</span> <span class='kw4'>void</span> excludeElements<span class='opr'>(</span>IteratorT!<span class='opr'>(</span>T<span class='opr'>)</span> e<span class='opr'>)</span>;
+
+
+
+        <span class='com'>/**
+         * Remove an occurrence of each element of the Iterator.
+         * Behaviorally equivalent to
+         * &lt;PRE&gt;
+         * while (e.more()) removeOneOf(e.value());
+         * @param e the enumeration of elements to remove.
+         * @exception CorruptedIteratorException is propagated if thrown
+        **/</span>
+
+        <span class='kw4'>public</span> <span class='kw4'>void</span> removeElements<span class='opr'>(</span>IteratorT!<span class='opr'>(</span>T<span class='opr'>)</span> e<span class='opr'>)</span>;
+<span class='opr'>}</span>
+
+
+<span class='kw2'>alias</span> MutableCollectionT!<span class='opr'>(</span><span class='kw3'>Object</span><span class='opr'>)</span> MutableCollection;
+</pre></td></tr></table>	</body>
+</html>

@@ -1,0 +1,205 @@
+<!DOCTYPE html 
+     PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+     "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html>
+	<head>
+		<link rel="stylesheet" href="style.css" type="text/css" />
+		<title>/HttpGet.d</title>
+	</head>
+	<body>
+
+<table id='dcode'><tr><td id='lnum'><pre><span>1</span>
+<span>2</span>
+<span>3</span>
+<span>4</span>
+<span>5</span>
+<span>6</span>
+<span>7</span>
+<span>8</span>
+<span>9</span>
+<span>10</span>
+<span>11</span>
+<span>12</span>
+<span>13</span>
+<span>14</span>
+<span>15</span>
+<span>16</span>
+<span>17</span>
+<span>18</span>
+<span>19</span>
+<span>20</span>
+<span>21</span>
+<span>22</span>
+<span>23</span>
+<span>24</span>
+<span>25</span>
+<span>26</span>
+<span>27</span>
+<span>28</span>
+<span>29</span>
+<span>30</span>
+<span>31</span>
+<span>32</span>
+<span>33</span>
+<span>34</span>
+<span>35</span>
+<span>36</span>
+<span>37</span>
+<span>38</span>
+<span>39</span>
+<span>40</span>
+<span>41</span>
+<span>42</span>
+<span>43</span>
+<span>44</span>
+<span>45</span>
+<span>46</span>
+<span>47</span>
+<span>48</span>
+<span>49</span>
+<span>50</span>
+<span>51</span>
+<span>52</span>
+<span>53</span>
+<span>54</span>
+<span>55</span>
+<span>56</span>
+<span>57</span>
+<span>58</span>
+<span>59</span>
+<span>60</span>
+<span>61</span>
+<span>62</span>
+<span>63</span>
+<span>64</span>
+<span>65</span>
+<span>66</span>
+<span>67</span>
+<span>68</span>
+<span>69</span>
+<span>70</span>
+<span>71</span>
+<span>72</span>
+<span>73</span>
+<span>74</span>
+<span>75</span>
+<span>76</span>
+<span>77</span>
+<span>78</span>
+<span>79</span>
+<span>80</span>
+<span>81</span>
+<span>82</span>
+<span>83</span>
+<span>84</span>
+<span>85</span>
+<span>86</span>
+<span>87</span>
+<span>88</span>
+<span>89</span>
+<span>90</span>
+<span>91</span>
+<span>92</span>
+<span>93</span>
+<span>94</span>
+<span>95</span>
+<span>96</span>
+</pre></td><td id='code'><pre><span class='com'>/*******************************************************************************
+
+        copyright:      Copyright (c) 2004 Kris Bell. All rights reserved
+
+        license:        BSD style: $(LICENSE)
+
+        version:        Initial release: January 2006
+        
+        author:         Kris
+
+*******************************************************************************/</span>
+
+<span class='kw2'>module</span> tango.net.http.HttpGet;
+
+<span class='kw4'>private</span> <span class='kw2'>import</span>  tango.net.Uri,
+                tango.io.Conduit,
+                tango.io.GrowBuffer;
+
+<span class='kw4'>private</span> <span class='kw2'>import</span>  tango.core.Interval;
+
+<span class='kw4'>private</span> <span class='kw2'>import</span>  tango.net.http.HttpClient;
+
+<span class='kw4'>private</span> <span class='kw2'>import</span>  tango.net.http.HttpHeaders;
+
+
+<span class='com'>/*******************************************************************************
+
+        Supports the basic needs of a client making file requests of an 
+        HTTP server. The following is a usage example:
+
+        ---
+        ---
+
+*******************************************************************************/</span>
+
+<span class='kw4'>class</span> HttpGet : HttpClient
+<span class='opr'>{</span>      
+        <span class='kw4'>private</span> <span class='kw4'>uint</span> pageChunk;
+
+        <span class='com'>/***********************************************************************
+        
+                Create a client for the given URL. The argument should be
+                fully qualified with an &quot;http:&quot; or &quot;https:&quot; scheme, or an
+                explicit port should be provided.
+
+        ***********************************************************************/</span>
+
+        <span class='kw2'>this</span> <span class='opr'>(</span><span class='kw4'>char</span><span class='opr'>[</span><span class='opr'>]</span> url, <span class='kw4'>uint</span> pageChunk <span class='opr'>=</span> <span class='nbr'>16</span> <span class='opr'>*</span> <span class='nbr'>1024</span><span class='opr'>)</span>
+        <span class='opr'>{</span>
+                <span class='kw2'>this</span> <span class='opr'>(</span><span class='kw2'>new</span> MutableUri <span class='opr'>(</span>url<span class='opr'>)</span>, pageChunk<span class='opr'>)</span>;
+        <span class='opr'>}</span>
+
+        <span class='com'>/***********************************************************************
+        
+                Create a client with the provided Uri instance. The Uri should 
+                be fully qualified with an &quot;http:&quot; or &quot;https:&quot; scheme, or an
+                explicit port should be provided. 
+
+        ***********************************************************************/</span>
+
+        <span class='kw2'>this</span> <span class='opr'>(</span>MutableUri uri, <span class='kw4'>uint</span> pageChunk <span class='opr'>=</span> <span class='nbr'>16</span> <span class='opr'>*</span> <span class='nbr'>1024</span><span class='opr'>)</span>
+        <span class='opr'>{</span>
+                <span class='kw2'>super</span> <span class='opr'>(</span>HttpClient.Get, uri<span class='opr'>)</span>;
+                <span class='kw2'>this</span>.pageChunk <span class='opr'>=</span> pageChunk;
+        <span class='opr'>}</span>
+
+        <span class='com'>/***********************************************************************
+        
+        ***********************************************************************/</span>
+
+        <span class='kw4'>protected</span> IBuffer inputBuffer <span class='opr'>(</span>IConduit conduit<span class='opr'>)</span>
+        <span class='opr'>{</span>
+                <span class='kw1'>return</span> <span class='kw2'>new</span> GrowBuffer <span class='opr'>(</span>conduit, pageChunk<span class='opr'>)</span>;
+        <span class='opr'>}</span>
+
+        <span class='com'>/***********************************************************************
+        
+        ***********************************************************************/</span>
+
+        <span class='kw4'>char</span><span class='opr'>[</span><span class='opr'>]</span> read <span class='opr'>(</span>Interval timeout <span class='opr'>=</span> DefaultReadTimeout<span class='opr'>)</span>
+        <span class='opr'>{</span>
+                <span class='kw4'>auto</span> input <span class='opr'>=</span> open <span class='opr'>(</span>timeout<span class='opr'>)</span>;
+
+                <span class='com'>// check return status for validity</span>
+                <span class='kw1'>if</span> <span class='opr'>(</span>isResponseOK<span class='opr'>)</span>
+                   <span class='opr'>{</span>
+                   <span class='com'>// extract content length</span>
+                   <span class='kw4'>int</span> length <span class='opr'>=</span> getResponseHeaders.getInt <span class='opr'>(</span>HttpHeader.ContentLength, <span class='kw4'>int</span>.max<span class='opr'>)</span>;
+                   <span class='kw1'>while</span> <span class='opr'>(</span>input.readable<span class='opr'>(</span><span class='opr'>)</span> <span class='opr'>&lt;</span> length &amp;&amp; input.fill<span class='opr'>(</span><span class='opr'>)</span> <span class='opr'>!=</span> Conduit.Eof<span class='opr'>)</span> <span class='opr'>{</span><span class='opr'>}</span>
+                   <span class='opr'>}</span>
+
+                close <span class='opr'>(</span><span class='opr'>)</span>;
+                <span class='kw1'>return</span> input.toString;
+        <span class='opr'>}</span>
+<span class='opr'>}</span>
+
+</pre></td></tr></table>	</body>
+</html>

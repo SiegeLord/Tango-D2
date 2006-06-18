@@ -1,0 +1,259 @@
+<!DOCTYPE html 
+     PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+     "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html>
+	<head>
+		<link rel="stylesheet" href="style.css" type="text/css" />
+		<title>/MulticastSocket.d</title>
+	</head>
+	<body>
+
+<table id='dcode'><tr><td id='lnum'><pre><span>1</span>
+<span>2</span>
+<span>3</span>
+<span>4</span>
+<span>5</span>
+<span>6</span>
+<span>7</span>
+<span>8</span>
+<span>9</span>
+<span>10</span>
+<span>11</span>
+<span>12</span>
+<span>13</span>
+<span>14</span>
+<span>15</span>
+<span>16</span>
+<span>17</span>
+<span>18</span>
+<span>19</span>
+<span>20</span>
+<span>21</span>
+<span>22</span>
+<span>23</span>
+<span>24</span>
+<span>25</span>
+<span>26</span>
+<span>27</span>
+<span>28</span>
+<span>29</span>
+<span>30</span>
+<span>31</span>
+<span>32</span>
+<span>33</span>
+<span>34</span>
+<span>35</span>
+<span>36</span>
+<span>37</span>
+<span>38</span>
+<span>39</span>
+<span>40</span>
+<span>41</span>
+<span>42</span>
+<span>43</span>
+<span>44</span>
+<span>45</span>
+<span>46</span>
+<span>47</span>
+<span>48</span>
+<span>49</span>
+<span>50</span>
+<span>51</span>
+<span>52</span>
+<span>53</span>
+<span>54</span>
+<span>55</span>
+<span>56</span>
+<span>57</span>
+<span>58</span>
+<span>59</span>
+<span>60</span>
+<span>61</span>
+<span>62</span>
+<span>63</span>
+<span>64</span>
+<span>65</span>
+<span>66</span>
+<span>67</span>
+<span>68</span>
+<span>69</span>
+<span>70</span>
+<span>71</span>
+<span>72</span>
+<span>73</span>
+<span>74</span>
+<span>75</span>
+<span>76</span>
+<span>77</span>
+<span>78</span>
+<span>79</span>
+<span>80</span>
+<span>81</span>
+<span>82</span>
+<span>83</span>
+<span>84</span>
+<span>85</span>
+<span>86</span>
+<span>87</span>
+<span>88</span>
+<span>89</span>
+<span>90</span>
+<span>91</span>
+<span>92</span>
+<span>93</span>
+<span>94</span>
+<span>95</span>
+<span>96</span>
+<span>97</span>
+<span>98</span>
+<span>99</span>
+<span>100</span>
+<span>101</span>
+<span>102</span>
+<span>103</span>
+<span>104</span>
+<span>105</span>
+<span>106</span>
+<span>107</span>
+<span>108</span>
+<span>109</span>
+<span>110</span>
+<span>111</span>
+<span>112</span>
+<span>113</span>
+<span>114</span>
+<span>115</span>
+<span>116</span>
+<span>117</span>
+<span>118</span>
+<span>119</span>
+<span>120</span>
+<span>121</span>
+<span>122</span>
+<span>123</span>
+</pre></td><td id='code'><pre><span class='com'>/*******************************************************************************
+
+        copyright:      Copyright (c) 2004 Kris Bell. All rights reserved
+
+        license:        BSD style: $(LICENSE)
+
+        version:        Initial release: June 2004      
+        
+        author:         Kris
+
+*******************************************************************************/</span>
+
+<span class='kw2'>module</span> tango.net.MulticastSocket;
+
+<span class='kw4'>private</span> <span class='kw2'>import</span>  tango.net.Socket,
+                tango.io.Buffer,
+                tango.io.Exception,
+                tango.net.DatagramSocket;
+
+<span class='com'>/******************************************************************************
+        
+        Wrapper around multicast style of sockets, to simplify the API a
+        bit, and to tie them into the IBuffer construct. Note that when used 
+        with a SocketListener you must first join the MulticastSocket to a 
+        group. Do not bind() it yourself, since that is performed by the 
+        join() method.
+
+*******************************************************************************/</span>
+
+<span class='kw4'>class</span> MulticastSocket : DatagramSocket
+<span class='opr'>{</span>
+        <span class='kw4'>private</span> InternetAddress groupAddress;
+
+        <span class='com'>/***********************************************************************
+                
+                Enable/disable the receipt of multicast packets send 
+                from the same socket
+
+        ***********************************************************************/</span>
+
+        <span class='kw4'>void</span> setLoopback <span class='opr'>(</span><span class='kw4'>bool</span> loopback<span class='opr'>)</span>
+        <span class='opr'>{</span>
+                <span class='kw4'>uint</span><span class='opr'>[</span><span class='nbr'>1</span><span class='opr'>]</span> onoff <span class='opr'>=</span> loopback;
+                setOption <span class='opr'>(</span>OptionLevel.IP, Option.IP_MULTICAST_LOOP, onoff<span class='opr'>)</span>;
+        <span class='opr'>}</span>
+
+        <span class='com'>/***********************************************************************
+
+                Join a multicast group. This is necessary only for a 
+                multicast reciever (listener). You may call this for
+                a send-only socket without harm, but the operation is
+                completely superfluous.
+
+                Note that the socket will be bound to the specified port, 
+                and be listening on the provided class D address. Expect
+                join() to fail without a network adapter present, or the
+                NIC is not plugged into a router or switch.
+
+        ***********************************************************************/</span>
+
+        <span class='kw4'>void</span> join <span class='opr'>(</span>InternetAddress groupAddress<span class='opr'>)</span>
+        <span class='opr'>{</span>
+                <span class='kw2'>this</span>.groupAddress <span class='opr'>=</span> groupAddress;
+
+                setAddressReuse <span class='opr'>(</span><span class='kw2'>true</span><span class='opr'>)</span>;
+                bind <span class='opr'>(</span><span class='kw2'>new</span> InternetAddress<span class='opr'>(</span>groupAddress.port<span class='opr'>(</span><span class='opr'>)</span><span class='opr'>)</span><span class='opr'>)</span>;
+                resumeGroup <span class='opr'>(</span><span class='opr'>)</span>;
+        <span class='opr'>}</span>
+
+        <span class='com'>/***********************************************************************
+        
+                Remove this socket from the current group. Method join()
+                is expected to have been invoked previously, otherwise 
+                this is a noop.
+
+        ***********************************************************************/</span>
+
+        <span class='kw4'>void</span> pauseGroup <span class='opr'>(</span><span class='opr'>)</span>
+        <span class='opr'>{</span>
+                <span class='kw1'>if</span> <span class='opr'>(</span>groupAddress<span class='opr'>)</span>
+                    <span class='kw1'>if</span> <span class='opr'>(</span>! setGroup <span class='opr'>(</span>groupAddress, Option.IP_DROP_MEMBERSHIP<span class='opr'>)</span><span class='opr'>)</span>
+                          exception <span class='opr'>(</span><span class='str'>&quot;Unable to leave multicast group.&quot;</span><span class='opr'>)</span>;
+        <span class='opr'>}</span>
+
+        <span class='com'>/***********************************************************************
+
+                Add this socket to the current group again. Method join()
+                is expected to have been invoked previously, otherwise 
+                this is a noop.
+
+        ***********************************************************************/</span>
+
+        <span class='kw4'>void</span> resumeGroup <span class='opr'>(</span><span class='opr'>)</span>
+        <span class='opr'>{</span>
+                <span class='kw1'>if</span> <span class='opr'>(</span>groupAddress<span class='opr'>)</span>
+                    <span class='kw1'>if</span> <span class='opr'>(</span>! setGroup <span class='opr'>(</span>groupAddress, Option.IP_ADD_MEMBERSHIP<span class='opr'>)</span><span class='opr'>)</span>
+                          exception <span class='opr'>(</span><span class='str'>&quot;Unable to join multicast group.&quot;</span><span class='opr'>)</span>;
+        <span class='opr'>}</span>
+
+        <span class='com'>/***********************************************************************
+        
+                Leave a multicast group. This should only be invoked on
+                sockets that have already joined a multicast group, and
+                before said socket joins another group. 
+
+                There does not appear to be a means to unbind the socket
+                from the port specified during the original join(); thus
+                we have to create a new underlying socket before join()
+                will bind() cleanly.
+
+        ***********************************************************************/</span>
+
+        <span class='kw4'>void</span> leave <span class='opr'>(</span><span class='opr'>)</span>
+        <span class='opr'>{</span>
+                <span class='kw1'>if</span> <span class='opr'>(</span>groupAddress<span class='opr'>)</span>
+                   <span class='opr'>{</span>
+                   pauseGroup <span class='opr'>(</span><span class='opr'>)</span>;
+                   groupAddress <span class='opr'>=</span> <span class='kw2'>null</span>;
+
+                   reopen<span class='opr'>(</span><span class='opr'>)</span>;
+                   <span class='opr'>}</span>
+        <span class='opr'>}</span>
+<span class='opr'>}</span>
+</pre></td></tr></table>	</body>
+</html>

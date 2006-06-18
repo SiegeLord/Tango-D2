@@ -1,0 +1,97 @@
+<!DOCTYPE html 
+     PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+     "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html>
+	<head>
+		<link rel="stylesheet" href="style.css" type="text/css" />
+		<title>/Function.d</title>
+	</head>
+	<body>
+
+<table id='dcode'><tr><td id='lnum'><pre><span>1</span>
+<span>2</span>
+<span>3</span>
+<span>4</span>
+<span>5</span>
+<span>6</span>
+<span>7</span>
+<span>8</span>
+<span>9</span>
+<span>10</span>
+<span>11</span>
+<span>12</span>
+<span>13</span>
+<span>14</span>
+<span>15</span>
+<span>16</span>
+<span>17</span>
+<span>18</span>
+<span>19</span>
+<span>20</span>
+<span>21</span>
+<span>22</span>
+<span>23</span>
+<span>24</span>
+<span>25</span>
+<span>26</span>
+<span>27</span>
+<span>28</span>
+<span>29</span>
+<span>30</span>
+<span>31</span>
+<span>32</span>
+<span>33</span>
+<span>34</span>
+<span>35</span>
+<span>36</span>
+<span>37</span>
+<span>38</span>
+<span>39</span>
+<span>40</span>
+<span>41</span>
+<span>42</span>
+</pre></td><td id='code'><pre><span class='com'>/*
+ File: Function.d
+
+ Originally written by Doug Lea and released into the public domain. 
+ Thanks for the assistance and support of Sun Microsystems Labs, Agorics 
+ Inc, Loral, and everyone contributing, testing, and using this code.
+
+ History:
+ Date     Who                What
+ 22Oct95  dl@cs.oswego.edu   Created.
+
+*/</span>
+
+
+<span class='kw2'>module</span> tango.store.model.Function;
+
+<span class='com'>/**
+ *
+ * Function is a common interface for classes with an arbitrary 
+ * function of one Object argument that returns another Object,
+ * without throwing any kind of user exception.
+ * 
+        author: Doug Lea
+ * @version 0.93
+ *
+ * &lt;P&gt; For an introduction to this package see &lt;A HREF=&quot;index.html&quot;&gt; Overview &lt;/A&gt;.
+ *
+**/</span>
+
+
+<span class='kw4'>public</span> <span class='kw2'>interface</span> FunctionT<span class='opr'>(</span>T<span class='opr'>)</span>
+<span class='opr'>{</span>
+
+        <span class='com'>/**
+         * Execute some function of the argument.
+        **/</span>
+
+        <span class='kw4'>public</span> T func <span class='opr'>(</span>T t<span class='opr'>)</span>;
+<span class='opr'>}</span>
+
+
+<span class='kw2'>alias</span> FunctionT!<span class='opr'>(</span><span class='kw3'>Object</span><span class='opr'>)</span> Function;
+</pre></td></tr></table>	</body>
+</html>

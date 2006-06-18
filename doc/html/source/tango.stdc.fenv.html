@@ -1,0 +1,195 @@
+<!DOCTYPE html 
+     PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+     "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html>
+	<head>
+		<link rel="stylesheet" href="style.css" type="text/css" />
+		<title>/fenv.d</title>
+	</head>
+	<body>
+
+<table id='dcode'><tr><td id='lnum'><pre><span>1</span>
+<span>2</span>
+<span>3</span>
+<span>4</span>
+<span>5</span>
+<span>6</span>
+<span>7</span>
+<span>8</span>
+<span>9</span>
+<span>10</span>
+<span>11</span>
+<span>12</span>
+<span>13</span>
+<span>14</span>
+<span>15</span>
+<span>16</span>
+<span>17</span>
+<span>18</span>
+<span>19</span>
+<span>20</span>
+<span>21</span>
+<span>22</span>
+<span>23</span>
+<span>24</span>
+<span>25</span>
+<span>26</span>
+<span>27</span>
+<span>28</span>
+<span>29</span>
+<span>30</span>
+<span>31</span>
+<span>32</span>
+<span>33</span>
+<span>34</span>
+<span>35</span>
+<span>36</span>
+<span>37</span>
+<span>38</span>
+<span>39</span>
+<span>40</span>
+<span>41</span>
+<span>42</span>
+<span>43</span>
+<span>44</span>
+<span>45</span>
+<span>46</span>
+<span>47</span>
+<span>48</span>
+<span>49</span>
+<span>50</span>
+<span>51</span>
+<span>52</span>
+<span>53</span>
+<span>54</span>
+<span>55</span>
+<span>56</span>
+<span>57</span>
+<span>58</span>
+<span>59</span>
+<span>60</span>
+<span>61</span>
+<span>62</span>
+<span>63</span>
+<span>64</span>
+<span>65</span>
+<span>66</span>
+<span>67</span>
+<span>68</span>
+<span>69</span>
+<span>70</span>
+<span>71</span>
+<span>72</span>
+<span>73</span>
+<span>74</span>
+<span>75</span>
+<span>76</span>
+<span>77</span>
+<span>78</span>
+<span>79</span>
+<span>80</span>
+<span>81</span>
+<span>82</span>
+<span>83</span>
+<span>84</span>
+<span>85</span>
+<span>86</span>
+<span>87</span>
+<span>88</span>
+<span>89</span>
+<span>90</span>
+<span>91</span>
+</pre></td><td id='code'><pre><span class='com'>/**
+ * D header file for C99.
+ *
+ * Copyright: Public Domain
+ * License:   Public Domain
+ * Authors:   Sean Kelly, Walter Bright
+ * Standards: ISO/IEC 9899:1999 (E)
+ */</span>
+<span class='kw2'>module</span> tango.stdc.fenv;
+
+<span class='kw2'>extern</span> <span class='opr'>(</span>C<span class='opr'>)</span>:
+
+<span class='kw4'>version</span><span class='opr'>(</span> Win32 <span class='opr'>)</span>
+<span class='opr'>{</span>
+    <span class='kw4'>struct</span> fenv_t
+    <span class='opr'>{</span>
+        <span class='kw4'>ushort</span> status;
+        <span class='kw4'>ushort</span> control;
+        <span class='kw4'>ushort</span> round;
+        <span class='kw4'>ushort</span> reserved<span class='opr'>[</span><span class='nbr'>2</span><span class='opr'>]</span>;
+    <span class='opr'>}</span>
+<span class='opr'>}</span>
+<span class='kw1'>else</span> <span class='kw4'>version</span><span class='opr'>(</span> linux <span class='opr'>)</span>
+<span class='opr'>{</span>
+    <span class='kw4'>struct</span> fenv_t
+    <span class='opr'>{</span>
+        <span class='kw4'>ushort</span> __control_word;
+        <span class='kw4'>ushort</span> __unused1;
+        <span class='kw4'>ushort</span> __status_word;
+        <span class='kw4'>ushort</span> __unused2;
+        <span class='kw4'>ushort</span> __tags;
+        <span class='kw4'>ushort</span> __unused3;
+        <span class='kw4'>uint</span>   __eip;
+        <span class='kw4'>ushort</span> __cs_selector;
+        <span class='kw4'>ushort</span> __opcode;
+        <span class='kw4'>uint</span>   __data_offset;
+        <span class='kw4'>ushort</span> __data_selector;
+        <span class='kw4'>ushort</span> __unused5;
+    <span class='opr'>}</span>
+<span class='opr'>}</span>
+<span class='kw1'>else</span>
+<span class='opr'>{</span>
+    <span class='kw4'>static</span> <span class='kw2'>assert</span><span class='opr'>(</span> <span class='kw2'>false</span> <span class='opr'>)</span>;
+<span class='opr'>}</span>
+
+<span class='kw2'>alias</span> <span class='kw4'>int</span> fexcept_t;
+
+<span class='kw4'>enum</span>
+<span class='opr'>{</span>
+    FE_INVALID      <span class='opr'>=</span> <span class='nbr'>1</span>,
+    FE_DENORMAL     <span class='opr'>=</span> <span class='nbr'>2</span>, <span class='com'>// non-standard</span>
+    FE_DIVBYZERO    <span class='opr'>=</span> <span class='nbr'>4</span>,
+    FE_OVERFLOW     <span class='opr'>=</span> <span class='nbr'>8</span>,
+    FE_UNDERFLOW    <span class='opr'>=</span> <span class='nbr'>0</span>x10,
+    FE_INEXACT      <span class='opr'>=</span> <span class='nbr'>0</span>x20,
+    FE_ALL_EXCEPT   <span class='opr'>=</span> <span class='nbr'>0</span>x3F,
+    FE_TONEAREST    <span class='opr'>=</span> <span class='nbr'>0</span>,
+    FE_UPWARD       <span class='opr'>=</span> <span class='nbr'>0</span>x800,
+    FE_DOWNWARD     <span class='opr'>=</span> <span class='nbr'>0</span>x400,
+    FE_TOWARDZERO   <span class='opr'>=</span> <span class='nbr'>0</span>xC00,
+<span class='opr'>}</span>
+
+<span class='kw4'>version</span><span class='opr'>(</span> Win32 <span class='opr'>)</span>
+<span class='opr'>{</span>
+    <span class='kw4'>private</span> <span class='kw2'>extern</span> fenv_t _FE_DFL_ENV;
+    fenv_t<span class='opr'>*</span> FE_DFL_ENV <span class='opr'>=</span> <span class='opr'>&amp;</span>_FE_DFL_ENV;
+<span class='opr'>}</span>
+<span class='kw1'>else</span> <span class='kw4'>version</span><span class='opr'>(</span> linux <span class='opr'>)</span>
+<span class='opr'>{</span>
+    fenv_t<span class='opr'>*</span> FE_DFL_ENV <span class='opr'>=</span> <span class='kw2'>cast</span><span class='opr'>(</span>fenv_t<span class='opr'>*</span><span class='opr'>)</span><span class='opr'>(</span><span class='opr'>-</span><span class='nbr'>1</span><span class='opr'>)</span>;
+<span class='opr'>}</span>
+<span class='kw1'>else</span>
+<span class='opr'>{</span>
+    <span class='kw4'>static</span> <span class='kw2'>assert</span><span class='opr'>(</span> <span class='kw2'>false</span> <span class='opr'>)</span>;
+<span class='opr'>}</span>
+
+<span class='kw4'>void</span> feraiseexcept<span class='opr'>(</span><span class='kw4'>int</span> excepts<span class='opr'>)</span>;
+<span class='kw4'>void</span> feclearexcept<span class='opr'>(</span><span class='kw4'>int</span> excepts<span class='opr'>)</span>;
+
+<span class='kw4'>int</span> fetestexcept<span class='opr'>(</span><span class='kw4'>int</span> excepts<span class='opr'>)</span>;
+<span class='kw4'>int</span> feholdexcept<span class='opr'>(</span>fenv_t<span class='opr'>*</span> envp<span class='opr'>)</span>;
+
+<span class='kw4'>void</span> fegetexceptflag<span class='opr'>(</span>fexcept_t<span class='opr'>*</span> flagp, <span class='kw4'>int</span> excepts<span class='opr'>)</span>;
+<span class='kw4'>void</span> fesetexceptflag<span class='opr'>(</span>fexcept_t<span class='opr'>*</span> flagp, <span class='kw4'>int</span> excepts<span class='opr'>)</span>;
+
+<span class='kw4'>int</span> fegetround<span class='opr'>(</span><span class='opr'>)</span>;
+<span class='kw4'>int</span> fesetround<span class='opr'>(</span><span class='kw4'>int</span> round<span class='opr'>)</span>;
+
+<span class='kw4'>void</span> fegetenv<span class='opr'>(</span>fenv_t<span class='opr'>*</span> envp<span class='opr'>)</span>;
+<span class='kw4'>void</span> fesetenv<span class='opr'>(</span>fenv_t<span class='opr'>*</span> envp<span class='opr'>)</span>;
+<span class='kw4'>void</span> feupdateenv<span class='opr'>(</span>fenv_t<span class='opr'>*</span> envp<span class='opr'>)</span>;
+</pre></td></tr></table>	</body>
+</html>

@@ -1,0 +1,219 @@
+<!DOCTYPE html 
+     PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+     "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html>
+	<head>
+		<link rel="stylesheet" href="style.css" type="text/css" />
+		<title>/MutableBagImpl.d</title>
+	</head>
+	<body>
+
+<table id='dcode'><tr><td id='lnum'><pre><span>1</span>
+<span>2</span>
+<span>3</span>
+<span>4</span>
+<span>5</span>
+<span>6</span>
+<span>7</span>
+<span>8</span>
+<span>9</span>
+<span>10</span>
+<span>11</span>
+<span>12</span>
+<span>13</span>
+<span>14</span>
+<span>15</span>
+<span>16</span>
+<span>17</span>
+<span>18</span>
+<span>19</span>
+<span>20</span>
+<span>21</span>
+<span>22</span>
+<span>23</span>
+<span>24</span>
+<span>25</span>
+<span>26</span>
+<span>27</span>
+<span>28</span>
+<span>29</span>
+<span>30</span>
+<span>31</span>
+<span>32</span>
+<span>33</span>
+<span>34</span>
+<span>35</span>
+<span>36</span>
+<span>37</span>
+<span>38</span>
+<span>39</span>
+<span>40</span>
+<span>41</span>
+<span>42</span>
+<span>43</span>
+<span>44</span>
+<span>45</span>
+<span>46</span>
+<span>47</span>
+<span>48</span>
+<span>49</span>
+<span>50</span>
+<span>51</span>
+<span>52</span>
+<span>53</span>
+<span>54</span>
+<span>55</span>
+<span>56</span>
+<span>57</span>
+<span>58</span>
+<span>59</span>
+<span>60</span>
+<span>61</span>
+<span>62</span>
+<span>63</span>
+<span>64</span>
+<span>65</span>
+<span>66</span>
+<span>67</span>
+<span>68</span>
+<span>69</span>
+<span>70</span>
+<span>71</span>
+<span>72</span>
+<span>73</span>
+<span>74</span>
+<span>75</span>
+<span>76</span>
+<span>77</span>
+<span>78</span>
+<span>79</span>
+<span>80</span>
+<span>81</span>
+<span>82</span>
+<span>83</span>
+<span>84</span>
+<span>85</span>
+<span>86</span>
+<span>87</span>
+<span>88</span>
+<span>89</span>
+<span>90</span>
+<span>91</span>
+<span>92</span>
+<span>93</span>
+<span>94</span>
+<span>95</span>
+<span>96</span>
+<span>97</span>
+<span>98</span>
+<span>99</span>
+<span>100</span>
+<span>101</span>
+<span>102</span>
+<span>103</span>
+</pre></td><td id='code'><pre><span class='com'>/*
+ File: MutableBagImpl.d
+
+ Originally written by Doug Lea and released into the public domain. 
+ Thanks for the assistance and support of Sun Microsystems Labs, Agorics 
+ Inc, Loral, and everyone contributing, testing, and using this code.
+
+ History:
+ Date     Who                What
+ 13Oct95  dl                 Create
+ 22Oct95  dl                 add addElements
+ 28jan97  dl                 make class public
+*/</span>
+
+
+<span class='kw2'>module</span> tango.store.impl.MutableBagImpl;
+
+<span class='kw4'>private</span> <span class='kw2'>import</span> tango.store.model.Bag;
+<span class='kw4'>private</span> <span class='kw2'>import</span> tango.store.model.Predicate;
+<span class='kw4'>private</span> <span class='kw2'>import</span> tango.store.model.MutableBag;
+<span class='kw4'>private</span> <span class='kw2'>import</span> tango.store.impl.MutableImpl;
+
+<span class='kw4'>private</span> <span class='kw2'>import</span> tango.store.model.Iterator;
+
+<span class='com'>/**
+ *
+ * MutableBagImpl extends MutableImpl to provide
+ * default implementations of some Bag operations. 
+ * 
+        author: Doug Lea
+ * @version 0.93
+ *
+ * &lt;P&gt; For an introduction to this package see &lt;A HREF=&quot;index.html&quot;&gt; Overview &lt;/A&gt;.
+ *
+**/</span>
+
+<span class='kw4'>public</span> <span class='kw4'>abstract</span> <span class='kw4'>class</span> MutableBagImplT<span class='opr'>(</span>T<span class='opr'>)</span> : MutableImplT!<span class='opr'>(</span>T<span class='opr'>)</span> , MutableBagT!<span class='opr'>(</span>T<span class='opr'>)</span>
+<span class='opr'>{</span>
+        <span class='com'>/**
+         * Initialize at version 0, an empty count, and null screener
+        **/</span>
+
+        <span class='kw4'>protected</span> <span class='kw2'>this</span> <span class='opr'>(</span><span class='opr'>)</span>
+        <span class='opr'>{</span>
+                <span class='kw2'>super</span><span class='opr'>(</span><span class='opr'>)</span>;
+        <span class='opr'>}</span>
+
+        <span class='com'>/**
+         * Initialize at version 0, an empty count, and supplied screener
+        **/</span>
+        <span class='kw4'>protected</span> <span class='kw2'>this</span> <span class='opr'>(</span>Predicate screener<span class='opr'>)</span>
+        <span class='opr'>{</span>
+                <span class='kw2'>super</span><span class='opr'>(</span>screener<span class='opr'>)</span>;
+        <span class='opr'>}</span>
+
+        <span class='com'>/**
+         * Implements store.MutableBag.addElements
+         * @see store.MutableBag#addElements
+        **/</span>
+
+        <span class='kw4'>public</span> <span class='kw4'>final</span> <span class='kw4'>void</span> addElements<span class='opr'>(</span>Iterator e<span class='opr'>)</span>
+        <span class='opr'>{</span>
+                <span class='kw1'>while</span> <span class='opr'>(</span>e.more<span class='opr'>)</span>
+                        add <span class='opr'>(</span>e.value<span class='opr'>)</span>;
+        <span class='opr'>}</span>
+
+
+        <span class='com'>// Default implementations of Bag methods</span>
+
+<span class='kw4'>version</span> <span class='opr'>(</span>VERBOSE<span class='opr'>)</span>
+<span class='opr'>{</span>
+        <span class='com'>/**
+         * Implements store.Bag.addingIfAbsent
+         * @see store.Bag#addingIfAbsent
+        **/</span>
+        <span class='kw4'>public</span> <span class='kw4'>final</span> Bag addingIfAbsent<span class='opr'>(</span>T element<span class='opr'>)</span>
+        <span class='opr'>{</span>
+                MutableBag c <span class='opr'>=</span> <span class='kw2'>null</span>;
+                <span class='com'>//      c = (cast(MutableBag)clone());</span>
+                c <span class='opr'>=</span> <span class='opr'>(</span><span class='kw2'>cast</span><span class='opr'>(</span>MutableBag<span class='opr'>)</span>duplicate<span class='opr'>(</span><span class='opr'>)</span><span class='opr'>)</span>;
+                c.addIfAbsent<span class='opr'>(</span>element<span class='opr'>)</span>;
+                <span class='kw1'>return</span> c;
+        <span class='opr'>}</span>
+
+
+        <span class='com'>/**
+         * Implements store.Bag.adding
+         * @see store.Bag#adding
+        **/</span>
+
+        <span class='kw4'>public</span> <span class='kw4'>final</span> Bag adding<span class='opr'>(</span>T element<span class='opr'>)</span>
+        <span class='opr'>{</span>
+                MutableBag c <span class='opr'>=</span> <span class='kw2'>null</span>;
+                <span class='com'>//      c = (cast(MutableBag)clone());</span>
+                c <span class='opr'>=</span> <span class='opr'>(</span><span class='kw2'>cast</span><span class='opr'>(</span>MutableBag<span class='opr'>)</span>duplicate<span class='opr'>(</span><span class='opr'>)</span><span class='opr'>)</span>;
+                c.add<span class='opr'>(</span>element<span class='opr'>)</span>;
+                <span class='kw1'>return</span> c;
+        <span class='opr'>}</span>
+<span class='opr'>}</span> <span class='com'>// version</span>
+<span class='opr'>}</span>
+
+
+<span class='kw2'>alias</span> MutableBagImplT!<span class='opr'>(</span><span class='kw3'>Object</span><span class='opr'>)</span> MutableBagImpl;
+</pre></td></tr></table>	</body>
+</html>

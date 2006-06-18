@@ -1,0 +1,219 @@
+<!DOCTYPE html 
+     PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+     "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html>
+	<head>
+		<link rel="stylesheet" href="style.css" type="text/css" />
+		<title>/sched.d</title>
+	</head>
+	<body>
+
+<table id='dcode'><tr><td id='lnum'><pre><span>1</span>
+<span>2</span>
+<span>3</span>
+<span>4</span>
+<span>5</span>
+<span>6</span>
+<span>7</span>
+<span>8</span>
+<span>9</span>
+<span>10</span>
+<span>11</span>
+<span>12</span>
+<span>13</span>
+<span>14</span>
+<span>15</span>
+<span>16</span>
+<span>17</span>
+<span>18</span>
+<span>19</span>
+<span>20</span>
+<span>21</span>
+<span>22</span>
+<span>23</span>
+<span>24</span>
+<span>25</span>
+<span>26</span>
+<span>27</span>
+<span>28</span>
+<span>29</span>
+<span>30</span>
+<span>31</span>
+<span>32</span>
+<span>33</span>
+<span>34</span>
+<span>35</span>
+<span>36</span>
+<span>37</span>
+<span>38</span>
+<span>39</span>
+<span>40</span>
+<span>41</span>
+<span>42</span>
+<span>43</span>
+<span>44</span>
+<span>45</span>
+<span>46</span>
+<span>47</span>
+<span>48</span>
+<span>49</span>
+<span>50</span>
+<span>51</span>
+<span>52</span>
+<span>53</span>
+<span>54</span>
+<span>55</span>
+<span>56</span>
+<span>57</span>
+<span>58</span>
+<span>59</span>
+<span>60</span>
+<span>61</span>
+<span>62</span>
+<span>63</span>
+<span>64</span>
+<span>65</span>
+<span>66</span>
+<span>67</span>
+<span>68</span>
+<span>69</span>
+<span>70</span>
+<span>71</span>
+<span>72</span>
+<span>73</span>
+<span>74</span>
+<span>75</span>
+<span>76</span>
+<span>77</span>
+<span>78</span>
+<span>79</span>
+<span>80</span>
+<span>81</span>
+<span>82</span>
+<span>83</span>
+<span>84</span>
+<span>85</span>
+<span>86</span>
+<span>87</span>
+<span>88</span>
+<span>89</span>
+<span>90</span>
+<span>91</span>
+<span>92</span>
+<span>93</span>
+<span>94</span>
+<span>95</span>
+<span>96</span>
+<span>97</span>
+<span>98</span>
+<span>99</span>
+<span>100</span>
+<span>101</span>
+<span>102</span>
+<span>103</span>
+</pre></td><td id='code'><pre><span class='com'>/**
+ * D header file for POSIX.
+ *
+ * Copyright: Public Domain
+ * License:   Public Domain
+ * Authors:   Sean Kelly
+ * Standards: The Open Group Base Specifications Issue 6, IEEE Std 1003.1, 2004 Edition
+ */</span>
+<span class='kw2'>module</span> tango.stdc.posix.sched;
+
+<span class='kw4'>public</span> <span class='kw2'>import</span> tango.stdc.posix.time;
+<span class='kw4'>public</span> <span class='kw2'>import</span> tango.stdc.posix.sys.types;
+
+<span class='kw2'>extern</span> <span class='opr'>(</span>C<span class='opr'>)</span>:
+
+<span class='com'>//</span>
+<span class='com'>// Required</span>
+<span class='com'>//</span>
+<span class='com'>/*
+struct sched_param
+{
+    int sched_priority (THR)
+    int sched_ss_low_priority (SS|TSP)
+    struct timespec sched_ss_repl_period (SS|TSP)
+    struct timespec sched_ss_init_budget (SS|TSP)
+    int sched_ss_max_repl (SS|TSP)
+}
+
+SCHED_FIFO
+SCHED_RR
+SCHED_SPORADIC (SS|TSP)
+SCHED_OTHER
+
+int sched_getparam(pid_t, sched_param*);
+int sched_getscheduler(pid_t);
+int sched_setparam(pid_t, sched_param*);
+int sched_setscheduler(pid_t, int, sched_param*);
+*/</span>
+
+<span class='kw4'>version</span><span class='opr'>(</span> linux <span class='opr'>)</span>
+<span class='opr'>{</span>
+    <span class='kw4'>struct</span> sched_param
+    <span class='opr'>{</span>
+        <span class='kw4'>int</span> __sched_priority;
+    <span class='opr'>}</span>
+
+    <span class='kw4'>const</span> <span class='kw4'>auto</span> SCHED_OTHER <span class='opr'>=</span> <span class='nbr'>0</span>;
+    <span class='kw4'>const</span> <span class='kw4'>auto</span> SCHED_FIFO  <span class='opr'>=</span> <span class='nbr'>1</span>;
+    <span class='kw4'>const</span> <span class='kw4'>auto</span> SCHED_RR    <span class='opr'>=</span> <span class='nbr'>2</span>;
+    <span class='com'>//SCHED_SPORADIC (SS|TSP)</span>
+<span class='opr'>}</span>
+<span class='kw1'>else</span> <span class='kw4'>version</span><span class='opr'>(</span> darwin <span class='opr'>)</span>
+<span class='opr'>{</span>
+    <span class='kw4'>const</span> <span class='kw4'>auto</span> SCHED_OTHER <span class='opr'>=</span> <span class='nbr'>1</span>;
+    <span class='kw4'>const</span> <span class='kw4'>auto</span> SCHED_FIFO  <span class='opr'>=</span> <span class='nbr'>4</span>;
+    <span class='kw4'>const</span> <span class='kw4'>auto</span> SCHED_RR    <span class='opr'>=</span> <span class='nbr'>2</span>;
+    <span class='com'>// SCHED_SPORADIC seems to be unavailable</span>
+
+    <span class='kw4'>private</span> <span class='kw4'>const</span> <span class='kw4'>auto</span> __SCHED_PARAM_SIZE__ <span class='opr'>=</span> <span class='nbr'>4</span>;
+
+    <span class='kw4'>struct</span> sched_param
+    <span class='opr'>{</span>
+        <span class='kw4'>int</span>                         sched_priority;
+        <span class='kw4'>byte</span><span class='opr'>[</span>__SCHED_PARAM_SIZE__<span class='opr'>]</span>  opaque;
+    <span class='opr'>}</span>
+<span class='opr'>}</span>
+
+<span class='kw4'>int</span> sched_getparam<span class='opr'>(</span>pid_t, sched_param<span class='opr'>*</span><span class='opr'>)</span>;
+<span class='kw4'>int</span> sched_getscheduler<span class='opr'>(</span>pid_t<span class='opr'>)</span>;
+<span class='kw4'>int</span> sched_setparam<span class='opr'>(</span>pid_t, sched_param<span class='opr'>*</span><span class='opr'>)</span>;
+<span class='kw4'>int</span> sched_setscheduler<span class='opr'>(</span>pid_t, <span class='kw4'>int</span>, sched_param<span class='opr'>*</span><span class='opr'>)</span>;
+
+<span class='com'>//</span>
+<span class='com'>// Thread (THR)</span>
+<span class='com'>//</span>
+<span class='com'>/*
+int sched_yield();
+*/</span>
+
+<span class='kw4'>version</span><span class='opr'>(</span> linux <span class='opr'>)</span>
+<span class='opr'>{</span>
+    <span class='kw4'>int</span> sched_yield<span class='opr'>(</span><span class='opr'>)</span>;
+<span class='opr'>}</span>
+<span class='kw1'>else</span> <span class='kw4'>version</span><span class='opr'>(</span> darwin <span class='opr'>)</span>
+<span class='opr'>{</span>
+    <span class='kw4'>int</span> sched_yield<span class='opr'>(</span><span class='opr'>)</span>;
+<span class='opr'>}</span>
+
+<span class='com'>//</span>
+<span class='com'>// Scheduling (TPS)</span>
+<span class='com'>//</span>
+<span class='com'>/*
+int sched_get_priority_max(int);
+int sched_get_priority_min(int);
+int sched_rr_get_interval(pid_t, timespec*);
+*/</span>
+
+<span class='kw4'>version</span><span class='opr'>(</span> darwin <span class='opr'>)</span>
+<span class='opr'>{</span>
+    <span class='kw4'>int</span> sched_get_priority_min<span class='opr'>(</span><span class='kw4'>int</span><span class='opr'>)</span>;
+    <span class='kw4'>int</span> sched_get_priority_max<span class='opr'>(</span><span class='kw4'>int</span><span class='opr'>)</span>;
+    <span class='com'>//int sched_rr_get_interval(pid_t, timespec*); // FIXME: unavailable?</span>
+<span class='opr'>}</span>
+</pre></td></tr></table>	</body>
+</html>
