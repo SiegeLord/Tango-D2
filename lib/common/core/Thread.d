@@ -7,7 +7,6 @@
  */
 module tango.core.Thread;
 
-
 /**
  * All exceptions thrown from this module derive from this class.
  */
@@ -30,7 +29,8 @@ public
 }
 private
 {
-    import tango.stdc.string; // for memset
+     // import tango.stdc.string; // for memset
+     extern (C) void* memset(void* s, int c, size_t n);
 }
 
 
@@ -38,8 +38,25 @@ version( Win32 )
 {
     private
     {
-        import tango.os.windows.c.process;
-        import tango.os.windows.c.windows;
+        // minimal windows decls
+        import tango.os.windows.c.minwin;
+
+        // avoid importing all of windows.*
+        extern (Windows)
+               {
+               BOOL TlsSetValue(DWORD,PVOID);
+               PVOID TlsGetValue(DWORD);
+               DWORD TlsAlloc();
+               const STILL_ACTIVE = 0x103;
+               const DWORD TLS_OUT_OF_INDEXES = 0xFFFFFFFF;
+               }
+
+        // avoid multiple imports via process.d
+        extern (Windows) alias uint function(void*) btex_fptr;
+        version (X86)
+                extern (C) ulong _beginthreadex(void*, uint, btex_fptr, void*, uint, uint *);
+             else    
+                extern (C) uint _beginthreadex(void*, uint, btex_fptr, void*, uint, uint *);
 
 
         //
