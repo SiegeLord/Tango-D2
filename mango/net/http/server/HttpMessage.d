@@ -18,8 +18,9 @@ private import  tango.io.Buffer,
                 tango.io.Exception;
 
 private import  tango.io.model.IBuffer,
-                tango.io.protocol.model.IWriter,
                 tango.io.model.IConduit;
+
+private import  tango.io.protocol.model.IWriter;
 
 private import  tango.net.http.HttpHeaders;
 
@@ -253,4 +254,51 @@ class HttpMessage : IWritable
 }
 
 
+/+
 
+/******************************************************************************
+
+        The basic HTTP message. Acts as a base-class for HttpRequest and
+        HttpResponse. 
+
+******************************************************************************/
+
+interface IHttpMessage
+{
+        /**********************************************************************
+
+                Return the encoding string 
+
+        **********************************************************************/
+
+        char[] getEncoding();
+
+        /**********************************************************************
+
+                Return the mime-type in use
+
+        **********************************************************************/
+
+        char[] getMimeType();
+
+        /**********************************************************************
+
+                Set the content-type header, and parse it for encoding and
+                mime-tpye information.
+
+        **********************************************************************/
+
+        void setContentType (char[] type);
+
+        /**********************************************************************
+
+                Return the content-type from the headers.
+
+        **********************************************************************/
+
+        char[] getContentType();
+}
+
+
+
++/

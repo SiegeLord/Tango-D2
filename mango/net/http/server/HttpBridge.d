@@ -77,17 +77,6 @@ class HttpBridge : IProviderBridge
 
         /**********************************************************************
 
-                Return the provider from the other side of the bridge
-
-        **********************************************************************/
-
-        IProvider getProvider()
-        {
-                return provider;
-        }
-
-        /**********************************************************************
-
                 Bridge the divide between IServer and IProvider instances.
                 Note that there is one instance of this class per thread.
 

@@ -16,8 +16,6 @@ private import  tango.io.model.IConduit;
 
 private import  mango.net.util.model.IServer;
 
-private import  mango.net.http.server.model.IProvider;
-
 /******************************************************************************
 
         Bridges between an IProvider and an IServer, and maintains a set of
@@ -39,14 +37,6 @@ interface IProviderBridge
         **********************************************************************/
 
         IServer getServer ();
-
-        /**********************************************************************
-
-                Return the provider from the other side of the bridge
-
-        **********************************************************************/
-
-        IProvider getProvider ();
 
         /**********************************************************************
 
