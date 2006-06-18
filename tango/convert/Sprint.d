@@ -56,25 +56,23 @@ private import  tango.convert.Type,
 
 ******************************************************************************/
 
-struct SprintStructT(T)
+struct SprintStructT(T, uint work=128)
 {
         package alias FormatStructT!(T) Format;
 
         private   Unicode.Into!(T) into;
         protected Format           format;
-        protected T[128]           tmp;
+        protected T[work]          tmp;
         protected T[]              buffer;
         protected T*               p, limit;
-
-        mixin Type.TextType!(T);
 
         /**********************************************************************
 
         **********************************************************************/
 
-        void ctor (T[] dst, Format.DblFormat df = null, T[] workspace = null)
+        void ctor (T[] dst, Format.DblFormat df = null)
         {
-                format.ctor (&sink, null, workspace.length ? workspace : tmp, df);
+                format.ctor (&sink, null, tmp, df);
                 p = buffer = dst;
                 limit = p + buffer.length;
         }
@@ -86,10 +84,6 @@ struct SprintStructT(T)
         private uint sink (void[] v, uint type)   
         {
                 auto s = cast(T[]) into.convert (v, type);
-
-//                if (type != TextType)
-//                    format.error ("Sprint.sink : struct version does not transcode");
-//                auto s = cast(T[]) v;
 
                 int len = s.length;
                 if (p+len >= limit)
@@ -106,8 +100,17 @@ struct SprintStructT(T)
 
         T[] opCall (T[] fmt, ...)
         {
+                return opCall (fmt, _arguments, _argptr);
+        }
+
+        /**********************************************************************
+
+        **********************************************************************/
+
+        T[] opCall (T[] fmt, TypeInfo[] arguments, va_list argptr)
+        {
                 p = buffer;
-                return buffer [0 .. format (fmt, _arguments, _argptr)];
+                return buffer [0 .. format (fmt, arguments, argptr)];
         }
 }
 
@@ -152,13 +155,13 @@ alias SprintStructT!(char) SprintStruct;
 
 ******************************************************************************/
 
-class SprintClassT(T)
+class SprintClassT(T, uint work=128)
 {
         package alias FormatStructT!(T) Format;
 
         private Unicode.Into!(T) into;
         private Format           format;
-        private T[128]           tmp;
+        private T[work]          tmp;
         private T[]              buffer;
         private T*               p, limit;
 
@@ -166,9 +169,9 @@ class SprintClassT(T)
 
         **********************************************************************/
 
-        this (int size, Format.DblFormat df = null, T[] workspace = null)
+        this (int size, Format.DblFormat df = null)
         {
-                format.ctor (&sink, null, workspace.length ? workspace : tmp, df);
+                format.ctor (&sink, null, tmp, df);
                 p = buffer = new T[size];
                 limit = p + buffer.length;
         }
@@ -196,8 +199,17 @@ class SprintClassT(T)
 
         T[] opCall (T[] fmt, ...)
         {
+                return opCall (fmt, _arguments, _argptr);
+        }
+
+        /**********************************************************************
+
+        **********************************************************************/
+
+        T[] opCall (T[] fmt, TypeInfo[] arguments, va_list argptr)
+        {
                 p = buffer;
-                return buffer [0 .. format (fmt, _arguments, _argptr)];
+                return buffer [0 .. format (fmt, arguments, argptr)];
         }
 }
 
