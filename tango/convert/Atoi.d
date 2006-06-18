@@ -62,25 +62,25 @@ struct AtoiT(T)
                            {
                            case 'x':
                            case 'X':
-                                 ++p;
-                                 radix = 16;
-                                 break;
+                                ++p;
+                                radix = 16;
+                                break;
 
-                            case 'b':
-                            case 'B':
-                                 ++p;
-                                 radix = 2;
-                                 break;
+                           case 'b':
+                           case 'B':
+                                ++p;
+                                radix = 2;
+                                break;
 
-                            case 'o':
-                            case 'O':
-                                 ++p;
-                                 radix = 8;
-                                 break;
+                           case 'o':
+                           case 'O':
+                                ++p;
+                                radix = 8;
+                                break;
 
-                            default:
-                                 break;
-                            } 
+                           default:
+                                break;
+                           } 
 
                 // return number of characters eaten
                 return (p - digits.ptr);
