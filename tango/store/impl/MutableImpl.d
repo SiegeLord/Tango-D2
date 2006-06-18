@@ -18,16 +18,16 @@ module tango.store.impl.MutableImpl;
 
 private import tango.store.Exception;
 
-private import tango.store.model.Bag;
-private import tango.store.model.Map;
-private import tango.store.model.Seq;
-private import tango.store.model.Set;
+//private import tango.store.model.Bag;
+//private import tango.store.model.Map;
+//private import tango.store.model.Seq;
+//private import tango.store.model.Set;
 private import tango.store.model.Predicate;
 private import tango.store.model.Collection;
 private import tango.store.model.Iterator;
-private import tango.store.model.KeySortedCollection;
+//private import tango.store.model.KeySortedCollection;
 private import tango.store.model.MutableCollection;
-private import tango.store.model.ElementSortedCollection;
+//private import tango.store.model.ElementSortedCollection;
 
 private import tango.convert.Integer;
 
