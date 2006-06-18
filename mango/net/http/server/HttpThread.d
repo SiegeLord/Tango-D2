@@ -17,19 +17,19 @@ private import  tango.net.ServerSocket;
 private import  mango.net.util.ServerThread,
                 mango.net.util.AbstractServer;
 
-private import  mango.net.http.server.model.IProviderBridge;
+private import  mango.net.http.server.ServiceBridge;
 
 /******************************************************************************
 
         Extends the basic ServerThread to add thread-local data. All data
-        maintained on a thread basis is stored via multiple IProviderBridge
+        maintained on a thread basis is stored via multiple ServiceBridge
         instances (one per thread).
  
 ******************************************************************************/
 
 class HttpThread : ServerThread
 {
-        IProviderBridge bridge;
+        ServiceBridge bridge;
 
         /**********************************************************************
 
@@ -45,12 +45,12 @@ class HttpThread : ServerThread
 
         /**********************************************************************
 
-                Attach an IProvider/IServer bridge. This is where additional
+                Attach an ServiceProvider/IServer bridge. This is where additional
                 per-thread data is stored.
 
         **********************************************************************/
 
-        void setBridge (IProviderBridge bridge)
+        void setBridge (ServiceBridge bridge)
         {
                 this.bridge = bridge;
         }
@@ -61,7 +61,7 @@ class HttpThread : ServerThread
 
         **********************************************************************/
 
-        IProviderBridge getBridge ()
+        ServiceBridge getBridge ()
         {
                 return bridge;
         }       

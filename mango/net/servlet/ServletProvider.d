@@ -12,12 +12,12 @@
 
 module mango.net.servlet.ServletProvider;
 
-private import  tango.text.Regex;
- 
-private import  tango.text.Text;
+private import  tango.net.Uri;
+
+private import  tango.text.Text,
+                tango.text.Regex;
    
-private import  tango.net.Uri,
-                tango.io.Exception;
+private import  tango.io.Exception;
 
 private import  mango.net.servlet.Servlet,
                 mango.net.servlet.ServletConfig,
@@ -30,10 +30,9 @@ private import  mango.net.servlet.cache.HashMap,
                 mango.net.servlet.cache.QueuedCache;
 
 private import  mango.net.http.server.HttpRequest,
-                mango.net.http.server.HttpResponse;
-
-private import  mango.net.http.server.model.IProvider,
-                mango.net.http.server.model.IProviderBridge;
+                mango.net.http.server.HttpResponse,
+                mango.net.http.server.ServiceBridge,
+                mango.net.http.server.ServiceProvider;
 
 
 /******************************************************************************
@@ -68,7 +67,7 @@ private import  mango.net.http.server.model.IProvider,
 
 ******************************************************************************/
 
-class ServletProvider : IProvider
+class ServletProvider : ServiceProvider
 {
         private QueuedCache             cache;
         private HashMap                 proxies;
@@ -100,22 +99,22 @@ class ServletProvider : IProvider
 
         /**********************************************************************
 
-                IProvider interface method
+                ServiceProvider interface method
 
         **********************************************************************/
 
-        HttpRequest createRequest (IProviderBridge bridge)
+        HttpRequest createRequest (ServiceBridge bridge)
         {
                 return new ServletRequest (bridge);
         }
 
         /**********************************************************************
 
-                IProvider interface method
+                ServiceProvider interface method
 
         **********************************************************************/
 
-        HttpResponse createResponse (IProviderBridge bridge)
+        HttpResponse createResponse (ServiceBridge bridge)
         {
                 return new ServletResponse (bridge);
         }
@@ -358,7 +357,7 @@ class ServletProvider : IProvider
 
         /**********************************************************************
 
-                IProvider interface method. This is where the real work 
+                ServiceProvider interface method. This is where the real work 
                 is done, and where optimization efforts should be focused.
                 The process itself is straightforward:
 

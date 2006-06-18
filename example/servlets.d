@@ -217,19 +217,19 @@ class Echo : Servlet
 
 /*******************************************************************************
 
-        Create an http server with the given IProvider. Wait for console
+        Create an http server with the given ServiceProvider. Wait for console
         input, then quit.
 
 *******************************************************************************/
 
-void testServer (IProvider provider)
+void testServer (ServiceProvider provider)
 {       
         mainLogger.info ("starting server");
 
         // bind to port 80 on a local address
         InternetAddress addr = new InternetAddress (8080);
 
-        // create a (1 thread) server using the IProvider to service requests
+        // create a (1 thread) server using the ServiceProvider to service requests
         HttpServer server = new HttpServer (provider, addr, 1, mainLogger);
         
         // start listening for requests (but this thread does not listen)

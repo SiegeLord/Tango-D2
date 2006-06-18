@@ -13,16 +13,15 @@
 module mango.net.http.server.HttpProvider;
 
 private import  mango.net.http.server.HttpRequest,
-                mango.net.http.server.HttpResponse;
-
-private import  mango.net.http.server.model.IProvider,
-                mango.net.http.server.model.IProviderBridge;
+                mango.net.http.server.HttpResponse,
+                mango.net.http.server.ServiceBridge,
+                mango.net.http.server.ServiceProvider;
 
 /******************************************************************************
 
-        Bridges between an IProvider and an IServer, and maintains a set of
+        Bridges between an ServiceProvider and an IServer, and maintains a set of
         data specific to each thread. There is only one instance of server
-        and provider, but multiple live instances of IProviderBridge (there
+        and provider, but multiple live instances of ServiceBridge (there
         is one per server-thread).
 
         Any additional thread-specific data should probably be maintained
@@ -30,7 +29,7 @@ private import  mango.net.http.server.model.IProvider,
 
 ******************************************************************************/
 
-class HttpProvider : IProvider
+class HttpProvider : ServiceProvider
 {
         /**********************************************************************
 
@@ -42,22 +41,22 @@ class HttpProvider : IProvider
 
         /**********************************************************************
 
-                IProvider interface to create a request instance
+                ServiceProvider interface to create a request instance
 
         **********************************************************************/
 
-        HttpRequest createRequest (IProviderBridge bridge)
+        HttpRequest createRequest (ServiceBridge bridge)
         {
                 return new HttpRequest (bridge);
         }
 
         /**********************************************************************
 
-                IProvider interface to create a response instance
+                ServiceProvider interface to create a response instance
 
         **********************************************************************/
 
-        HttpResponse createResponse (IProviderBridge bridge)
+        HttpResponse createResponse (ServiceBridge bridge)
         {
                 return new HttpResponse (bridge);
         }

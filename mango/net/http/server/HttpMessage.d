@@ -24,7 +24,7 @@ private import  tango.io.protocol.model.IWriter;
 
 private import  tango.net.http.HttpHeaders;
 
-private import  mango.net.http.server.model.IProviderBridge;
+private import  mango.net.http.server.ServiceBridge;
 
 
 /******************************************************************************
@@ -61,7 +61,7 @@ class InvalidStateException : IOException
 class HttpMessage : IWritable
 {
         private Buffer                  buffer;
-        private IProviderBridge         bridge;
+        private ServiceBridge           bridge;
         private HttpMutableHeaders      headers;
 
         private char[]                  encoding,
@@ -75,7 +75,7 @@ class HttpMessage : IWritable
 
         **********************************************************************/
 
-        this (IProviderBridge bridge, IBuffer headerSpace)
+        this (ServiceBridge bridge, IBuffer headerSpace)
         {
                 this.bridge = bridge;
 
@@ -160,7 +160,7 @@ class HttpMessage : IWritable
 
         **********************************************************************/
 
-        protected final IProviderBridge getBridge()
+        protected final ServiceBridge getBridge()
         {
                 return bridge;
         }

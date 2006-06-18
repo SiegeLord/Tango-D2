@@ -20,14 +20,13 @@ private import  mango.net.util.model.IServer;
 
 private import  mango.net.http.server.HttpThread,
                 mango.net.http.server.HttpRequest,
-                mango.net.http.server.HttpResponse;
-
-private import  mango.net.http.server.model.IProvider,
-                mango.net.http.server.model.IProviderBridge;
+                mango.net.http.server.HttpResponse,
+                mango.net.http.server.ServiceBridge,
+                mango.net.http.server.ServiceProvider;
 
 /******************************************************************************
 
-        Bridges between an IProvider and an IServer, and contains a set of
+        Bridges between an ServiceProvider and an IServer, and contains a set of
         data specific to each thread. There is only one instance of server
         and provider, but multiple live instances of HttpBridge (one per 
         server-thread).
@@ -37,10 +36,10 @@ private import  mango.net.http.server.model.IProvider,
 
 ******************************************************************************/
 
-class HttpBridge : IProviderBridge
+class HttpBridge : ServiceBridge
 {
         private IServer         server;
-        private IProvider       provider;
+        private ServiceProvider provider;
 
         private HttpThread      thread;
         private HttpRequest     request;
@@ -54,14 +53,14 @@ class HttpBridge : IProviderBridge
 
         **********************************************************************/
 
-        this (IServer server, IProvider provider, HttpThread thread)
+        this (IServer server, ServiceProvider provider, HttpThread thread)
         {
-                this.thread = thread;
                 this.server = server;
+                this.thread = thread;
                 this.provider = provider;
 
-                request = provider.createRequest(this);
-                response = provider.createResponse(this);
+                request = provider.createRequest (this);
+                response = provider.createResponse (this);
         }
 
         /**********************************************************************
@@ -77,7 +76,7 @@ class HttpBridge : IProviderBridge
 
         /**********************************************************************
 
-                Bridge the divide between IServer and IProvider instances.
+                Bridge the divide between IServer and ServiceProvider instances.
                 Note that there is one instance of this class per thread.
 
                 Note also that this is probably the right place to implement 
@@ -92,20 +91,19 @@ class HttpBridge : IProviderBridge
                 request.setConduit (conduit);
                 response.setConduit (conduit);
 
-                try {
-                    // reset the (probably overridden) input and output
-                    request.reset();
-                    response.reset();
+                // close and destroy this conduit (socket)
+                scope (exit)
+                       conduit.close;
 
-                    // first, extract HTTP headers from input
-                    request.readHeaders ();
+                // reset the (probably overridden) input and output
+                request.reset();
+                response.reset();
 
-                    // pass request off to the provider. It is the provider's 
-                    // responsibility to flush the output!
-                    provider.service (request, response);
-                    } finally {
-                              // close and destroy this conduit (socket)
-                              conduit.close();
-                              }
+                // first, extract HTTP headers from input
+                request.readHeaders ();
+
+                // pass request off to the provider. It is the provider's 
+                // responsibility to flush the output!
+                provider.service (request, response);
         }
 }

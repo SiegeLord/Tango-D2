@@ -22,8 +22,6 @@ private import  tango.net.http.HttpWriter,
 
 private import  mango.net.servlet.ServletContext;
 
-private import  mango.net.servlet.model.IServletResponse;
-
 /******************************************************************************
 
 ******************************************************************************/

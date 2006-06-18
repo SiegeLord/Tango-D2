@@ -12,21 +12,18 @@
 
 module mango.net.http.server.HttpResponse;
 
-private import  tango.io.Buffer,
-                tango.io.protocol.Writer;
+private import  tango.io.Buffer;
 
-private import  tango.io.protocol.model.IWriter;
-
-private import  tango.net.http.HttpWriter;
-
-private import  tango.net.http.HttpParams,
+private import  tango.net.http.HttpWriter,
+                tango.net.http.HttpParams,
                 tango.net.http.HttpCookies,
                 tango.net.http.HttpHeaders,
                 tango.net.http.HttpResponses;
 
-private import  mango.net.http.server.HttpMessage;
+private import  mango.net.http.server.HttpMessage,
+                mango.net.http.server.ServiceBridge;
 
-private import  mango.net.http.server.model.IProviderBridge;
+private import  tango.io.protocol.model.IWriter;
 
 //version = ShowHeaders;
 
@@ -76,7 +73,7 @@ class HttpResponse : HttpMessage
 
         **********************************************************************/
 
-        this (IProviderBridge bridge)
+        this (ServiceBridge bridge)
         {
                 // create a seperate output buffer for headers to reside
                 super (bridge, new Buffer(HeaderBufferSize));

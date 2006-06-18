@@ -19,11 +19,11 @@ private import  tango.convert.Atoi;
 
 private import  tango.net.Uri,
                 tango.io.Buffer,
-                tango.io.protocol.Reader,
                 tango.io.Exception;
 
-private import  tango.io.model.IBuffer,
-                tango.io.protocol.model.IWriter;
+private import  tango.io.model.IBuffer;
+
+private import  tango.io.protocol.model.IWriter;
 
 private import  tango.net.http.HttpReader,
 		tango.net.http.HttpHeaders,
@@ -31,9 +31,8 @@ private import  tango.net.http.HttpReader,
 		tango.net.http.HttpTriplet;
 
 private import  mango.net.http.server.HttpMessage,
+                mango.net.http.server.ServiceBridge,
                 mango.net.http.server.HttpQueryParams;              
-
-private import  mango.net.http.server.model.IProviderBridge;
 
 /******************************************************************************
 
@@ -80,7 +79,7 @@ class HttpRequest : HttpMessage, IWritable
 
         **********************************************************************/
 
-        this (IProviderBridge bridge)
+        this (ServiceBridge bridge)
         {
                 super (bridge, null);
                 

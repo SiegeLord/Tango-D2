@@ -35,7 +35,7 @@ void main ()
         // bind server to port 8080 on a local address
         auto addr = new InternetAddress (8080);
 
-        // create a (1 thread) server using the IProvider to service requests
+        // create a (1 thread) server using the ServiceProvider to service requests
         auto server = new HttpServer (new Provider, addr, 1, 100);
 
         // start listening for requests (but this thread does not listen)

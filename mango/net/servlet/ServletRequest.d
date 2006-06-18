@@ -25,9 +25,8 @@ private import  tango.net.http.HttpReader,
                 tango.net.http.HttpCookies,
                 tango.net.http.HttpHeaders;
 
-private import  mango.net.http.server.HttpRequest;
-
-private import  mango.net.http.server.model.IProviderBridge;
+private import  mango.net.http.server.HttpRequest,
+                mango.net.http.server.ServiceBridge;
 
 /******************************************************************************
 
@@ -42,7 +41,7 @@ class ServletRequest : HttpRequest, IServletRequest
 
         **********************************************************************/
 
-        this (IProviderBridge bridge)
+        this (ServiceBridge bridge)
         {
                 // initialize the HttpRequest
                 super (bridge);
