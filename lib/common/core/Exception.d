@@ -11,12 +11,6 @@ module tango.core.Exception;
 
 private
 {
-    import tango.stdc.stddef;
-}
-
-
-private
-{
     alias void function( char[] file, uint line, char[] msg = null ) assertHandlerType;
     alias bool function( Object obj ) collectHandlerType;
 
