@@ -12,7 +12,7 @@
 
 module tango.convert.Sprint;
 
-private import  tango.core.vararg;
+private import  tango.core.Vararg;
 
 private import  tango.convert.Type,
                 tango.convert.Format,

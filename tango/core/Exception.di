@@ -1,5 +1,5 @@
 // D import file generated from 'core\exception.d'
-module tango.core.exception;
+module tango.core.Exception;
 private
 {
     import tango.stdc.stddef;

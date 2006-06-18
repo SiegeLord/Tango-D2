@@ -6,10 +6,10 @@
  * License:   BSD style: $(LICENSE)
  * Authors:   Sean Kelly
  */
-module tango.core.array;
+module tango.core.Array;
 
 
-private import tango.core.traits;
+private import tango.core.Traits;
 
 
 /**

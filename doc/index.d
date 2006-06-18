@@ -9,17 +9,17 @@ import tango.convert.Type;
 import tango.convert.Unicode;
 import tango.convert.UnicodeBom;
 
-import tango.core.array;
-import tango.core.atomic;
-import tango.core.bitarray;
+import tango.core.Array;
+import tango.core.Atomic;
+import tango.core.BitArray;
 import tango.core.ByteSwap;
 import tango.core.Epoch;
 import tango.core.Interval;
-import tango.core.intrinsic;
+import tango.core.Intrinsic;
 import tango.core.System;
-import tango.core.traits;
-import tango.core.unicode;
-import tango.core.vararg;
+import tango.core.Traits;
+import tango.core.Unicode;
+import tango.core.Vararg;
 
 import tango.io.Buffer;
 import tango.io.Conduit;

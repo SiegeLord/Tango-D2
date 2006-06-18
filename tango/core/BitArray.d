@@ -7,10 +7,10 @@
  * License:   BSD style: $(LICENSE)
  * Authors:   Walter Bright, Sean Kelly
  */
-module tango.core.bitarray;
+module tango.core.BitArray;
 
 
-private import tango.core.intrinsic;
+private import tango.core.Intrinsic;
 
 
 /**

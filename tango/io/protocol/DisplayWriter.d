@@ -15,7 +15,7 @@ module tango.io.protocol.DisplayWriter;
 
 public  import  tango.io.protocol.Writer;
 
-private import  tango.core.vararg;
+private import  tango.core.Vararg;
 
 private import  tango.convert.Type,
                 tango.convert.Format,

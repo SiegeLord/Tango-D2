@@ -1,4 +1,4 @@
-import  tango.core.thread;
+import  tango.core.Thread;
 
 import  tango.net.Socket;
         

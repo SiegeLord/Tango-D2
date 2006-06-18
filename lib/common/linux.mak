@@ -67,9 +67,9 @@ OBJ_CONVERT= \
     convert/dtoa.o
 
 OBJ_CORE= \
-    core/exception.o \
-    core/memory.o \
-    core/thread.o
+    core/Exception.o \
+    core/Memory.o \
+    core/Thread.o
 
 ALL_OBJS= \
     $(OBJ_CONVERT) \
@@ -78,9 +78,9 @@ ALL_OBJS= \
 ######################################################
 
 DOC_CORE= \
-    core/exception.html \
-    core/memory.html \
-    core/thread.html
+    core/Exception.html \
+    core/Memory.html \
+    core/Thread.html
 
 ALL_DOCS= \
     $(DOC_CORE)

@@ -8,7 +8,7 @@
  * License:   Public Domain
  * Authors:   Hauke Duden, Walter Bright
  */
-module tango.core.vararg;
+module tango.core.Vararg;
 
 
 /**

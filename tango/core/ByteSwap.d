@@ -15,7 +15,7 @@
 
 module tango.core.ByteSwap;
 
-import tango.core.intrinsic;
+import tango.core.Intrinsic;
 
 /*******************************************************************************
 

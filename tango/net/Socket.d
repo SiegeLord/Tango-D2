@@ -306,7 +306,7 @@ version(BigEndian)
 }
 else version(LittleEndian)
 {
-        import tango.core.intrinsic;
+        import tango.core.Intrinsic;
         
         
         uint16_t htons(uint16_t x)
@@ -2173,7 +2173,7 @@ class SocketSet
         }
         else version (Posix)
         {
-                import tango.core.intrinsic;
+                import tango.core.Intrinsic;
                 
                 
                 uint nfdbits;

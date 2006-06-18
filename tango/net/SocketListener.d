@@ -12,7 +12,7 @@
 
 module tango.net.SocketListener;
 
-private import  tango.core.thread;
+private import  tango.core.Thread;
 
 private import  tango.net.Socket;
 

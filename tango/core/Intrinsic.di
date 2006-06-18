@@ -6,7 +6,7 @@
  * License:   Public Domain
  * Authors:   Sean Kelly
  */
-module tango.core.intrinsic;
+module tango.core.Intrinsic;
 
 public import std.intrinsic;
 

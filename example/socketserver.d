@@ -7,7 +7,7 @@
 
 *******************************************************************************/
 
-private import  tango.core.thread;
+private import  tango.core.Thread;
 
 private import  tango.io.Console;
 

@@ -6,7 +6,7 @@
  * License:   BSD style: $(LICENSE)
  * Authors:   Sean Kelly
  */
-module tango.core.traits;
+module tango.core.Traits;
 
 
 /**

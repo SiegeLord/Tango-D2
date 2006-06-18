@@ -64,9 +64,9 @@ OBJ_CONVERT= \
     convert\dtoa.obj
 
 OBJ_CORE= \
-    core\exception.obj \
-    core\memory.obj \
-    core\thread.obj
+    core\Exception.obj \
+    core\Memory.obj \
+    core\Thread.obj
 
 OBJ_OS= \
     os\windows\c\winnt.obj
@@ -79,9 +79,9 @@ ALL_OBJS= \
 ######################################################
 
 DOC_CORE= \
-    core\exception.html \
-    core\memory.html \
-    core\thread.html
+    core\Exception.html \
+    core\Memory.html \
+    core\Thread.html
 
 ALL_DOCS= \
     $(DOC_CORE)

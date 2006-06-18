@@ -1,5 +1,5 @@
 // D import file generated from 'core\memory.d'
-module tango.core.memory;
+module tango.core.Memory;
 private
 {
     extern (C) 

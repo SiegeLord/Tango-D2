@@ -11,7 +11,7 @@
  * License:   BSD style: $(LICENSE)
  * Authors:   Sean Kelly
  */
-module tango.core.atomic;
+module tango.core.Atomic;
 
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -43,7 +43,7 @@ enum msync
 
 private
 {
-    import tango.core.traits;
+    import tango.core.Traits;
 
 
     template isValidAtomicType( T )

@@ -1,5 +1,5 @@
 // D import file generated from 'core\thread.d'
-module tango.core.thread;
+module tango.core.Thread;
 class ThreadException : Exception
 {
     this(char[] msg)

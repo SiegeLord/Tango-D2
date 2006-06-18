@@ -12,7 +12,7 @@
 
 module tango.convert.Format;
 
-private import  tango.core.vararg;
+private import  tango.core.Vararg;
   
 private import  tango.convert.Type,
                 tango.convert.Integer;

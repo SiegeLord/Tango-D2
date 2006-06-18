@@ -53,7 +53,7 @@
         $(LINK http://icu.sourceforge.net/docs/papers/forms_of_unicode/)
 
 *******************************************************************************/
-module tango.core.unicode;
+module tango.core.Unicode;
 
 
 private
