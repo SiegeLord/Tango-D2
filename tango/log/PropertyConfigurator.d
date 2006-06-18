@@ -23,7 +23,7 @@ private import  tango.log.Log,
                 tango.log.Configurator,
                 tango.log.ConsoleAppender;
 
-private import  tango.model.ILevel;
+private import  tango.log.model.ILevel;
 
 /*******************************************************************************
 
