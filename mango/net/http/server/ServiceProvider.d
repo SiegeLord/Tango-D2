@@ -10,12 +10,11 @@
 
 *******************************************************************************/
 
-module mango.net.http.server.model.IProvider;
+module mango.net.http.server.ServiceProvider;
 
 private import  mango.net.http.server.HttpRequest,
-                mango.net.http.server.HttpResponse;
-
-private import  mango.net.http.server.model.IProviderBridge;
+                mango.net.http.server.HttpResponse,
+                mango.net.http.server.ServiceBridge;
 
 /******************************************************************************
 
@@ -23,7 +22,7 @@ private import  mango.net.http.server.model.IProviderBridge;
 
 ******************************************************************************/
 
-interface IProvider
+interface ServiceProvider
 {
         /**********************************************************************
 
@@ -39,7 +38,7 @@ interface IProvider
 
         **********************************************************************/
 
-        HttpRequest createRequest (IProviderBridge bridge);
+        HttpRequest createRequest (ServiceBridge bridge);
 
         /**********************************************************************
 
@@ -47,7 +46,7 @@ interface IProvider
 
         **********************************************************************/
 
-        HttpResponse createResponse (IProviderBridge bridge);
+        HttpResponse createResponse (ServiceBridge bridge);
 
         /**********************************************************************
 
