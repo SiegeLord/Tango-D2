@@ -1,4 +1,4 @@
-// D import file generated from 'core\thread.d'
+// D import file generated from 'core\Thread.d'
 module tango.core.Thread;
 class ThreadException : Exception
 {
