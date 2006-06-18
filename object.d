@@ -1,9 +1,11 @@
 module object;
 
 public import tango.stdc.stddef;
-public import tango.stdc.stdbool;
 
-alias size_t hash_t;
+// please, let's forget about 'bit' :)
+//public import tango.stdc.stdbool;
+
+private alias size_t hash_t;
 
 class Object
 {
