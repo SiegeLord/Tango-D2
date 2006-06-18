@@ -1,6 +1,6 @@
 = API Index =
 
-Use the Browser incremental search facility to quickly locate a particular module name. Source code for each module is hooked up via the big blue title at the top of each page, and all other links therein lead to Wiki annotations. Packages are sorted by name:
+Use the Browser ''incremental search'' facility to quickly locate a particular module name. Source code for each module is hooked up via the ''big blue title'' at the top of each page, and all other links therein lead to Wiki annotations. Packages are sorted by name:
 
 tango.convert
  * [http://svn.dsource.org/projects/tango/trunk/doc/html/tango.convert.Atoi.html Atoi]
@@ -14,19 +14,20 @@ tango.convert
  * [http://svn.dsource.org/projects/tango/trunk/doc/html/tango.convert.Unicode.html Unicode]
  * [http://svn.dsource.org/projects/tango/trunk/doc/html/tango.convert.UnicodeBom.html UnicodeBom]
 tango.core
- * [http://svn.dsource.org/projects/tango/trunk/doc/html/tango.core.array.html array]
- * [http://svn.dsource.org/projects/tango/trunk/doc/html/tango.core.atomic.html atomic]
- * [http://svn.dsource.org/projects/tango/trunk/doc/html/tango.core.bitarray.html bitarray]
+ * [http://svn.dsource.org/projects/tango/trunk/doc/html/tango.core.Array.html Array]
+ * [http://svn.dsource.org/projects/tango/trunk/doc/html/tango.core.Atomic.html Atomic]
+ * [http://svn.dsource.org/projects/tango/trunk/doc/html/tango.core.BitArray.html BitArray]
  * [http://svn.dsource.org/projects/tango/trunk/doc/html/tango.core.ByteSwap.html ByteSwap]
  * [http://svn.dsource.org/projects/tango/trunk/doc/html/tango.core.Epoch.html Epoch]
- * [http://svn.dsource.org/projects/tango/trunk/doc/html/tango.core.exception.html exception]
+ * [http://svn.dsource.org/projects/tango/trunk/doc/html/tango.core.Exception.html Exception]
  * [http://svn.dsource.org/projects/tango/trunk/doc/html/tango.core.Interval.html Interval]
- * [http://svn.dsource.org/projects/tango/trunk/doc/html/tango.core.memory.html memory]
+ * [http://svn.dsource.org/projects/tango/trunk/doc/html/tango.core.Intrinsic.html Intrinsic]
+ * [http://svn.dsource.org/projects/tango/trunk/doc/html/tango.core.Memory.html Memory]
  * [http://svn.dsource.org/projects/tango/trunk/doc/html/tango.core.System.html System]
- * [http://svn.dsource.org/projects/tango/trunk/doc/html/tango.core.thread.html thread]
- * [http://svn.dsource.org/projects/tango/trunk/doc/html/tango.core.traits.html traits]
- * [http://svn.dsource.org/projects/tango/trunk/doc/html/tango.core.unicode.html unicode]
- * [http://svn.dsource.org/projects/tango/trunk/doc/html/tango.core.core.html core]
+ * [http://svn.dsource.org/projects/tango/trunk/doc/html/tango.core.Thread.html Thread]
+ * [http://svn.dsource.org/projects/tango/trunk/doc/html/tango.core.Traits.html Traits]
+ * [http://svn.dsource.org/projects/tango/trunk/doc/html/tango.core.Unicode.html Unicode]
+ * [http://svn.dsource.org/projects/tango/trunk/doc/html/tango.core.Vararg.html Vararg]
 tango.io
  * [http://svn.dsource.org/projects/tango/trunk/doc/html/tango.io.Buffer.html Buffer]
  * [http://svn.dsource.org/projects/tango/trunk/doc/html/tango.io.Conduit.html Conduit]
@@ -63,11 +64,10 @@ tango.io.protocol.model
 tango.io.support
  * [http://svn.dsource.org/projects/tango/trunk/doc/html/tango.io.support.BufferCodec.html BufferCodec]
 tango.locale
- * [http://svn.dsource.org/projects/tango/trunk/doc/html/tango.locale.locale.html locale]
- * [http://svn.dsource.org/projects/tango/trunk/doc/html/tango.locale.collation.html collation]
- * [http://svn.dsource.org/projects/tango/trunk/doc/html/tango.locale.constants.html constants]
- * [http://svn.dsource.org/projects/tango/trunk/doc/html/tango.locale.core.html core]
- * [http://svn.dsource.org/projects/tango/trunk/doc/html/tango.locale.format.html format]
+ * [http://svn.dsource.org/projects/tango/trunk/doc/html/tango.locale.Collation.html Collation]
+ * [http://svn.dsource.org/projects/tango/trunk/doc/html/tango.locale.Constants.html Constants]
+ * [http://svn.dsource.org/projects/tango/trunk/doc/html/tango.locale.Core.html Core]
+ * [http://svn.dsource.org/projects/tango/trunk/doc/html/tango.locale.Format.html Format]
 tango.log
  * [http://svn.dsource.org/projects/tango/trunk/doc/html/tango.log.Admin.html Admin]
  * [http://svn.dsource.org/projects/tango/trunk/doc/html/tango.log.Appender.html Appender]
@@ -94,15 +94,15 @@ tango.math
  * [http://svn.dsource.org/projects/tango/trunk/doc/html/tango.math.Random.html Random]
  * [http://svn.dsource.org/projects/tango/trunk/doc/html/tango.math.special.html special]
 tango.math.cipher
- * [http://svn.dsource.org/projects/tango/trunk/doc/html/tango.math.cipher.base.html base]
- * [http://svn.dsource.org/projects/tango/trunk/doc/html/tango.math.cipher.md2.html md2]
- * [http://svn.dsource.org/projects/tango/trunk/doc/html/tango.math.cipher.md4.html md4]
- * [http://svn.dsource.org/projects/tango/trunk/doc/html/tango.math.cipher.md5.html md5]
- * [http://svn.dsource.org/projects/tango/trunk/doc/html/tango.math.cipher.sha0.html sha0]
- * [http://svn.dsource.org/projects/tango/trunk/doc/html/tango.math.cipher.sha1.html sha1]
- * [http://svn.dsource.org/projects/tango/trunk/doc/html/tango.math.cipher.sha256.html sha256]
- * [http://svn.dsource.org/projects/tango/trunk/doc/html/tango.math.cipher.sha512.html sha512]
- * [http://svn.dsource.org/projects/tango/trunk/doc/html/tango.math.cipher.tiger.html tiger]
+ * [http://svn.dsource.org/projects/tango/trunk/doc/html/tango.math.cipher.Cipher.html Cipher]
+ * [http://svn.dsource.org/projects/tango/trunk/doc/html/tango.math.cipher.Md2.html Md2]
+ * [http://svn.dsource.org/projects/tango/trunk/doc/html/tango.math.cipher.Md4.html Md4]
+ * [http://svn.dsource.org/projects/tango/trunk/doc/html/tango.math.cipher.Md5.html Md5]
+ * [http://svn.dsource.org/projects/tango/trunk/doc/html/tango.math.cipher.Sha0.html Sha0]
+ * [http://svn.dsource.org/projects/tango/trunk/doc/html/tango.math.cipher.Sha1.html Sha1]
+ * [http://svn.dsource.org/projects/tango/trunk/doc/html/tango.math.cipher.Sha256.html Sha256]
+ * [http://svn.dsource.org/projects/tango/trunk/doc/html/tango.math.cipher.Sha512.html Sha512]
+ * [http://svn.dsource.org/projects/tango/trunk/doc/html/tango.math.cipher.Tiger.html Tiger]
 tango.net
  * [http://svn.dsource.org/projects/tango/trunk/doc/html/tango.net.DatagramSocket.html DatagramSocket]
  * [http://svn.dsource.org/projects/tango/trunk/doc/html/tango.net.MulticastSocket.html MulticastSocket]
@@ -135,7 +135,7 @@ tango.os.linux.c
  * [http://svn.dsource.org/projects/tango/trunk/doc/html/tango.os.linux.c.linuxextern.html linuxextern]
  * [http://svn.dsource.org/projects/tango/trunk/doc/html/tango.os.linux.c.socket.html socket]
 tango.os.c.windows
- * [http://svn.dsource.org/projects/tango/trunk/doc/html/tango.os.windows.c.winmin.html winmin]
+ * [http://svn.dsource.org/projects/tango/trunk/doc/html/tango.os.windows.c.minwin.html minwin]
 tango.stdc
  * [http://svn.dsource.org/projects/tango/trunk/doc/html/tango.stdc.complex.html complex]
  * [http://svn.dsource.org/projects/tango/trunk/doc/html/tango.stdc.config.html config]
@@ -225,6 +225,7 @@ tango.store.model
  * [http://svn.dsource.org/projects/tango/trunk/doc/html/tango.store.model.Set.html Set]
  * [http://svn.dsource.org/projects/tango/trunk/doc/html/tango.store.model.SortableCollection.html SortableCollection]
 tango.text
+ * [http://svn.dsource.org/projects/tango/trunk/doc/html/tango.text.ArgParser.html ArgParser]
  * [http://svn.dsource.org/projects/tango/trunk/doc/html/tango.text.Iterator.html Iterator]
  * [http://svn.dsource.org/projects/tango/trunk/doc/html/tango.text.Layout.html Layout]
  * [http://svn.dsource.org/projects/tango/trunk/doc/html/tango.text.LineIterator.html LineIterator]

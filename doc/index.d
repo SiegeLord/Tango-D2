@@ -51,15 +51,10 @@ import tango.io.Stdout;
 import tango.io.support.BufferCodec;
 import tango.io.UnicodeFile;
 
-import tango.locale.all;
-import tango.locale.collation;
-import tango.locale.constants;
-import tango.locale.core;
-import tango.locale.data;
-import tango.locale.format;
-import tango.locale.linux;
-import tango.locale.parse;
-import tango.locale.win32;
+import tango.locale.Collation;
+import tango.locale.Constants;
+import tango.locale.Core;
+import tango.locale.Format;
 
 import tango.log.Admin;
 import tango.log.Appender;
@@ -80,15 +75,15 @@ import tango.log.RollingFileAppender;
 import tango.log.SocketAppender;
 import tango.log.XmlLayout;
 
-import tango.math.cipher.base;
-import tango.math.cipher.md2;
-import tango.math.cipher.md4;
-import tango.math.cipher.md5;
-import tango.math.cipher.sha0;
-import tango.math.cipher.sha1;
-import tango.math.cipher.sha256;
-import tango.math.cipher.sha512;
-import tango.math.cipher.tiger;
+import tango.math.cipher.Cipher;
+import tango.math.cipher.Md2;
+import tango.math.cipher.Md4;
+import tango.math.cipher.Md5;
+import tango.math.cipher.Sha0;
+import tango.math.cipher.Sha1;
+import tango.math.cipher.Sha256;
+import tango.math.cipher.Sha512;
+import tango.math.cipher.Tiger;
 import tango.math.core;
 import tango.math.ieee;
 import tango.math.Random;
@@ -329,10 +324,10 @@ import tango.store.model.Procedure;
 import tango.store.model.Seq;
 import tango.store.model.Set;
 import tango.store.model.SortableCollection;
-
 import tango.store.TreeBag;
 import tango.store.TreeMap;
 
+import tango.text.ArgParser;
 import tango.text.Iterator;
 import tango.text.Layout;
 import tango.text.LineIterator;
