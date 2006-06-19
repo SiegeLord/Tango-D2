@@ -21,7 +21,6 @@ private import  tango.core.Interval;
 
 private import  tango.net.Uri,
                 tango.io.Buffer,
-                tango.io.protocol.Writer,
                 tango.io.Exception;
 
 private import  tango.convert.Atoi;
@@ -77,6 +76,9 @@ private import  tango.net.http.HttpParams,
 
 class HttpClient
 {       
+        // callback for sending PUT content
+        alias void delegate (IBuffer)   Pump;
+
         // this is struct rather than typedef to avoid compiler bugs
         private struct RequestMethod
         {
@@ -334,7 +336,7 @@ class HttpClient
                 
         ***********************************************************************/
 
-        IBuffer open (IWritable pump)
+        IBuffer open (Pump pump)
         {
                 return open (DefaultReadTimeout, pump);
         }
@@ -365,7 +367,7 @@ class HttpClient
                 
         ***********************************************************************/
 
-        IBuffer open (Interval timeout, IWritable pump)
+        IBuffer open (Interval timeout, Pump pump)
         {
                 return open (timeout, pump, method);
         }
@@ -389,7 +391,7 @@ class HttpClient
                 
         ***********************************************************************/
 
-        private IBuffer open (Interval timeout, IWritable pump, RequestMethod method)
+        private IBuffer open (Interval timeout, Pump pump, RequestMethod method)
         {
                 // create socket, and connect it 
                 socket = createSocket;
@@ -448,7 +450,7 @@ class HttpClient
 
                     // user has additional data to send?
                     if (pump)
-                        pump.write (emit);
+                        pump (emit.getBuffer);
                     else
                        // send POST data?
                        if (method is Post && query.length)
@@ -553,7 +555,7 @@ class HttpClient
 
         ***********************************************************************/
 
-        IBuffer redirectPost (Interval timeout, IWritable pump, int status)
+        IBuffer redirectPost (Interval timeout, Pump pump, int status)
         {
                 switch (status)
                        {
