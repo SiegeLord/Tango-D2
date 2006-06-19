@@ -14,14 +14,44 @@ public
 }
 private
 {
-    import tango.stdc.string;
+    extern (C) 
+{
+    void* memset(void* s, int c, size_t n);
+}
 }
 version (Win32)
 {
     private
 {
-    import tango.os.windows.c.process;
-    import tango.os.windows.c.windows;
+    extern (Windows) 
+{
+    BOOL TlsSetValue(DWORD, PVOID);
+    PVOID TlsGetValue(DWORD);
+    DWORD TlsAlloc();
+    const STILL_ACTIVE = 259;
+    const
+{
+    DWORD TLS_OUT_OF_INDEXES = -1u;
+}
+}
+    extern (Windows) 
+{
+    alias uint(* btex_fptr)(void*);
+}
+    version (X86)
+{
+    extern (C) 
+{
+    ulong _beginthreadex(void*, uint, btex_fptr, void*, uint, uint*);
+}
+}
+else
+{
+    extern (C) 
+{
+    uint _beginthreadex(void*, uint, btex_fptr, void*, uint, uint*);
+}
+}
     extern (Windows) 
 {
     uint threadFunc(void* arg);
