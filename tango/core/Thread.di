@@ -23,6 +23,7 @@ version (Win32)
 {
     private
 {
+    import tango.os.windows.c.minwin;
     extern (Windows) 
 {
     BOOL TlsSetValue(DWORD, PVOID);
