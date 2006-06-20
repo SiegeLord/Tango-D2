@@ -15,7 +15,7 @@ module tango.net.SocketConduit;
 
 public  import  tango.net.Socket;
 
-private import  tango.io.Buffer;
+private import  tango.io.model.IBuffer;
 
 
 /*******************************************************************************
