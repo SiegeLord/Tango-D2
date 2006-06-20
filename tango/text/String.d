@@ -9,9 +9,10 @@
         author:         Kris
 
 
+        ---
         class MutableString(T) : String!(T)
         {
-                // reset the content 
+                // set or reset the content 
                 MutableString set (T[] chars, bool mutable=true);
                 MutableString set (String other, bool mutable=true);
 
@@ -92,6 +93,9 @@
                 // copy content
                 T[] copy (T[] dst);
                 T[] copy ();
+
+                // replace the comparison algorithm 
+                String setComparator (Comparator comparator);
         }
 
         abstract class UniString
@@ -101,7 +105,7 @@
                 abstract wchar[] utf16 (wchar[] dst = null);
                 abstract dchar[] utf32 (dchar[] dst = null);
         }
-
+        ---
 
 *******************************************************************************/
 
@@ -895,9 +899,10 @@ class StringT(T) : UniString
 
         ***********************************************************************/
 
-        void setComparator (Comparator comparator)
+        StringT setComparator (Comparator comparator)
         {
                 this.comparator = comparator;
+                return this;
         }
 
         /***********************************************************************
