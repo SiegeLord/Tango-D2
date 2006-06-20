@@ -9,27 +9,22 @@
         
         author:         Eric Anderton, Lars Ivar Igesund
 
+        This module defines a utility class that can parse your 
+        command line arguments.
+
+        A sample program would instantiate the ArgParser class, 
+        bind some delegates (can be anonymous), then call parse 
+        with the arguments as a parameter.
+
+        Note that the delegates must return the correct number of
+        consumed characters to ensure that the ArgParser operates 
+        correctly. Simple arguments that don't use the value parameter 
+        of the callback, should return 0 consumed characters. This 
+        behaviour will ensure that ArgParser will correctly handle 
+        all arguments, even when there are no space between them.
+
 *******************************************************************************/
 
-/**
-    This module holds a utility class that can parse your command 
-    line arguments.
-
-    A sample program would instantiate the ArgParser class, bind
-    some delegates (can be anonymous), then call parse with the
-    arguments as a parameter.
-
-    Note that the delegates must return the correct number of
-    consumed characters to ensure that the ArgParser operates correctly.
-    Simple arguments that don't use the value parameter of the callback,
-    should return 0 consumed characters. This behaviour will ensure that
-    ArgParser will correctly handle all arguments, even when there are
-    no space between them.
-
-    Authors: Eric Anderton, Lars Ivar Igesund
-    License: BSD Derivative (see source for details)
-    Copyright: 2005-2006 Eric Anderton, Lars Ivar Igesund
-*/
 module tango.text.ArgParser;
 
 /**
@@ -63,14 +58,14 @@ alias void delegate () ArgParserSimpleCallback;
     A utility class to parse and handle your command line arguments.
 */
 class ArgParser{
-	/**
-	    A helper struct containing a callback and an id to, corresponding to
-	    the argId passed to one of the bind methods.
-	*/
-	protected struct PrefixCallback {
-	    char[] id;
-	    ArgParserCallback cb;
-	}	
+        /**
+            A helper struct containing a callback and an id to, corresponding to
+            the argId passed to one of the bind methods.
+        */
+        protected struct PrefixCallback {
+            char[] id;
+            ArgParserCallback cb;
+        }       
 
     protected PrefixCallback[][char[]] bindings;
     protected DefaultArgParserCallback[char[]] defaultBindings;
@@ -177,7 +172,7 @@ class ArgParser{
             arguments = the command line arguments from the application
     */
     public void parse(char[][] arguments){
-	    uint defaultOrdinal = 0;
+            uint defaultOrdinal = 0;
         if (bindings.length == 0) return;
 
         foreach (char[] arg; arguments) {
