@@ -12,10 +12,9 @@
 
 module tango.io.Conduit;
 
-private import  tango.io.Buffer,
-                tango.io.Exception;
+private import  tango.io.Exception;
 
-public  import  tango.io.model.IConduit;
+private import  tango.io.model.IConduit;
 
 /*******************************************************************************
 
@@ -39,9 +38,16 @@ public  import  tango.io.model.IConduit;
 
 class Conduit : IConduit, IConduitFilter
 {
-        private ConduitStyle.Bits       style;
+        private Access                  access;
         private IConduitFilter          filter;
         private bool                    seekable;
+
+        enum Access : ubyte             {
+                                        Read      = 0x01,       // is readable
+                                        Write     = 0x02,       // is writable 
+                                        ReadWrite = 0x03,       // both 
+                                        };
+
 
         /***********************************************************************
         
@@ -50,14 +56,6 @@ class Conduit : IConduit, IConduitFilter
         ***********************************************************************/
 
         abstract uint bufferSize (); 
-                     
-        /***********************************************************************
-        
-                Return the underlying OS handle of this Conduit
-
-        ***********************************************************************/
-
-        //abstract Handle getHandle (); 
                      
         /***********************************************************************
         
@@ -83,10 +81,10 @@ class Conduit : IConduit, IConduitFilter
 
         ***********************************************************************/
 
-        this (ConduitStyle.Bits style, bool seekable)
+        this (Access access, bool seekable)
         {
                 filter = this;
-                this.style = style;
+                this.access = access;
                 this.seekable = seekable;
         }
 
@@ -192,7 +190,7 @@ class Conduit : IConduit, IConduitFilter
 
         bool isReadable ()
         {
-                return cast(bool) ((style.access & ConduitStyle.Access.Read) != 0);
+                return cast(bool) ((access & Access.Read) != 0);
         }               
 
         /***********************************************************************
@@ -203,7 +201,7 @@ class Conduit : IConduit, IConduitFilter
 
         bool isWritable ()
         {
-                return cast(bool) ((style.access & ConduitStyle.Access.Write) != 0);
+                return cast(bool) ((access & Access.Write) != 0);
         }               
 
         /***********************************************************************
@@ -226,14 +224,12 @@ class Conduit : IConduit, IConduitFilter
 
         IConduit copy (IConduit source)
         {
-                auto buffer = new Buffer (this);
+                auto buffer = new byte[bufferSize()];
 
-                while (buffer.fill (source) != Eof)
-                       if (buffer.drain () == Eof)
-                           throw new IOException ("Eof while copying conduit");
-
-                // flush any remains into the target
-                buffer.flush ();
+                uint i;
+                while ((i = source.read (buffer)) != Eof)
+                        if (! flush (buffer [0..i]))
+                              throw new IOException ("target Eof while copying conduit");
                 return this;
         }               
 
@@ -262,13 +258,13 @@ class Conduit : IConduit, IConduitFilter
         	
         /***********************************************************************
         
-                Return the style used when creating this conduit
+                Return the access-style used when creating this conduit
 
         ***********************************************************************/
 
-        ConduitStyle.Bits getStyle ()
+        Access getAccess ()
         {
-                return style;
+                return access;
         }    
 
         /***********************************************************************

@@ -178,7 +178,7 @@ class UnicodeFileT(T) : FileProxy
 
         UnicodeFileT write (T[] content, bool bom = false)
         {
-                return write (content, FileStyle.ReadWriteCreate, bom);  
+                return write (content, FileConduit.ReadWriteCreate, bom);  
         }
 
         /***********************************************************************
@@ -193,7 +193,7 @@ class UnicodeFileT(T) : FileProxy
 
         UnicodeFileT append (T[] content)
         {
-                return write (content, FileStyle.WriteAppending, false);  
+                return write (content, FileConduit.WriteAppending, false);  
         }
 
         /***********************************************************************
@@ -204,7 +204,7 @@ class UnicodeFileT(T) : FileProxy
 
         ***********************************************************************/
 
-        private final UnicodeFileT write (T[] content, FileStyle.Bits style, bool bom)
+        private final UnicodeFileT write (T[] content, FileConduit.Style style, bool bom)
         {       
                 // convert to external representation (may throw an exeption)
                 void[] converted = unicode.encode (content);

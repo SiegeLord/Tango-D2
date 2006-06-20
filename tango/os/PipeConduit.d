@@ -49,7 +49,7 @@ version(Windows)
 	{
 		this()
 		{
-                        super (ConduitStyle.ReadWrite, false);
+                        super (Access.ReadWrite, false);
 
 			SECURITY_ATTRIBUTES security;
 		
@@ -135,7 +135,7 @@ version(Posix)
 	{
 		this(uint dummy = 0)
 		{
-                        super (ConduitStyle.ReadWrite, false);
+                        super (Access.ReadWrite, false);
 
 			if (pipe(handle) == -1) throw new PipeException("pipe(handle)");
 		}

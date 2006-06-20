@@ -71,10 +71,11 @@ class MappedBuffer : Buffer
 
                         // can only do 32bit mapping on 32bit platform
                         ulong size = host.length;
-                        ConduitStyle.Bits style = host.getStyle;
+
+                        auto access = host.getAccess();
 
                         DWORD flags = PAGE_READONLY;
-                        if (style.access & ConduitStyle.Access.Write)
+                        if (access & host.Access.Write)
                             flags = PAGE_READWRITE;
 
                         auto handle = cast(HANDLE) host.getHandle();
@@ -83,7 +84,7 @@ class MappedBuffer : Buffer
                             host.error ();
 
                         flags = FILE_MAP_READ;
-                        if (style.access & ConduitStyle.Access.Write)
+                        if (access & host.Access.Write)
                             flags |= FILE_MAP_WRITE;
 
                         base = MapViewOfFile (mmFile, flags, 0, 0, 0);
@@ -151,12 +152,12 @@ class MappedBuffer : Buffer
                         // Make sure the mapping attributes are consistant with
                         // the FileConduit attributes.
                         
-                        ConduitStyle.Bits style = host.getStyle;
+                        auto access = host.getAccess();
                         
                         int flags = MAP_SHARED;
                         int protection = PROT_READ;
                         
-                        if (style.access & ConduitStyle.Access.Write)
+                        if (access & host.Access.Write)
                             protection |= PROT_WRITE;
                                 
                         base = mmap (null, size, protection, flags, host.getHandle(), 0);
@@ -223,14 +224,14 @@ class MappedBuffer : Buffer
 
         ***********************************************************************/
 
-        uint seek (uint offset, ISeekable.SeekAnchor anchor)
+        uint seek (uint offset, IConduit.Seek.Anchor anchor)
         {
                 uint pos = capacity;
 
-                if (anchor == ISeekable.SeekAnchor.Begin)
+                if (anchor is IConduit.Seek.Anchor.Begin)
                     pos = offset;
                 else
-                   if (anchor == ISeekable.SeekAnchor.End)
+                   if (anchor is IConduit.Seek.Anchor.End)
                        pos -= offset;
                    else
                       pos = position + offset;

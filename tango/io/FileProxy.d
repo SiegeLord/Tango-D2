@@ -18,12 +18,13 @@ module tango.io.FileProxy;
 
 private import  tango.os.OS;
 
-private import  tango.io.FilePath,
-                tango.io.Exception;
+public  import  tango.io.FilePath;
+
+private import  tango.io.Exception;
 
 private import  tango.convert.Unicode;
 
-private import  tango.io.protocol.model.IWriter;
+//private import  tango.io.protocol.model.IWriter;
  
 version (Win32)
         {
@@ -99,7 +100,7 @@ version (Posix)
         
 *******************************************************************************/
 
-class FileProxy : IWritable
+class FileProxy // : IWritable
 {
         private FilePath path;
 
@@ -187,12 +188,12 @@ class FileProxy : IWritable
                 the filepath, since that's what we represent.
 
         ***********************************************************************/
-
+/+
         void write (IWriter emit)
         {
                 emit (path);
         }
-
++/
         /***********************************************************************
 
         ***********************************************************************/
@@ -486,12 +487,12 @@ class FileProxy : IWritable
                                    version (Win32SansUnicode)
                                            {
                                            int len = strlen (fileinfo.cFileName);
-                                           fp = new FilePath (fileinfo.cFileName [0 .. len].dup);
+                                           fp = new FilePath (fileinfo.cFileName [0 .. len]);
                                            }
                                         else
                                            {
                                            int len = wcslen (fileinfo.cFileName);
-                                           fp = new FilePath (Unicode.toUtf8(fileinfo.cFileName [0 .. len]));                                           
+                                           fp = new FilePath (Unicode.toUtf8(fileinfo.cFileName [0 .. len]), false);                                           
                                            }
 
                                    if (i >= list.length)
@@ -739,7 +740,7 @@ class FileProxy : IWritable
                               int len = strlen (entry.d_name);
 
                               // make a copy of the file name for listing
-                              FilePath fp = new FilePath (entry.d_name[0 ..len].dup);
+                              FilePath fp = new FilePath (entry.d_name[0 ..len]);
 
                               if (i >= list.length)
                                   list.length = list.length * 2;

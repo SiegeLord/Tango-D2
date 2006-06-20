@@ -6,23 +6,20 @@
 
         version:        Initial release: March 2004      
         
-        author:         Kris 
-                        John Reimer
-                        Anders F Bjorklund (Darwin patches)
-                        Chris Sauls (Win95 file support)
+        author:         $(UL Kris)
+                        $(UL John Reimer)
+                        $(UL Anders F Bjorklund (Darwin patches))
+                        $(UL Chris Sauls (Win95 file support))
 
 *******************************************************************************/
 
 module tango.io.FileConduit;
 
-public  import  tango.io.FilePath,
-                tango.io.FileProxy;
-
 private import  tango.os.OS;
 
-private import  tango.io.Buffer,
-                tango.io.Conduit,
-                tango.io.DeviceConduit;
+public  import  tango.io.FileProxy;
+
+private import  tango.io.DeviceConduit;
 
 /*******************************************************************************
 
@@ -45,63 +42,6 @@ version (Win32)
 
 struct FileStyle
 {
-        /***********************************************************************
-        
-                Fits into 32 bits ...
-
-        ***********************************************************************/
-
-        align(1):
-
-        struct Bits
-        {
-                ConduitStyle.Bits       conduit;        /// access rights
-                Open                    open;           /// how to open
-                Share                   share;          /// how to share
-                Cache                   cache;          /// how to cache
-        }
-
-        /***********************************************************************
-        
-        ***********************************************************************/
-
-        enum Open : ubyte       {
-                                Exists=0,               /// must exist
-                                Create,                 /// create always
-                                Truncate,               /// must exist
-                                Append,                 /// create if necessary
-                                };
-
-        /***********************************************************************
-        
-        ***********************************************************************/
-
-        enum Share : ubyte      {
-                                Read=0,                 /// shared reading
-                                Write,                  /// shared writing
-                                ReadWrite,              /// both
-                                };
-
-        /***********************************************************************
-        
-        ***********************************************************************/
-
-        enum Cache : ubyte      {
-                                None      = 0x00,       /// don't optimize
-                                Random    = 0x01,       /// optimize for random
-                                Stream    = 0x02,       /// optimize for stream
-                                WriteThru = 0x04,       /// backing-cache flag
-                                };
-
-        /***********************************************************************
-        
-        ***********************************************************************/
-
-        const Bits ReadExisting = {ConduitStyle.Read, Open.Exists};
-        const Bits WriteTruncate = {ConduitStyle.Write, Open.Truncate};
-        const Bits WriteAppending = {ConduitStyle.Write, Open.Append};
-        const Bits ReadWriteCreate = {ConduitStyle.ReadWrite, Open.Create}; 
-        const Bits ReadWriteExisting = {ConduitStyle.ReadWrite, Open.Exists}; 
 }
 
 
@@ -203,8 +143,67 @@ struct FileStyle
         
 *******************************************************************************/
 
-class FileConduit : DeviceConduit, ISeekable
+class FileConduit : DeviceConduit, DeviceConduit.Seek
 {
+        /***********************************************************************
+        
+                Fits into 32 bits ...
+
+        ***********************************************************************/
+
+        struct Style
+        {
+                align (1):
+
+                Access          access;                 /// access rights
+                Open            open;                   /// how to open
+                Share           share;                  /// how to share
+                Cache           cache;                  /// how to cache
+        }
+
+        /***********************************************************************
+        
+        ***********************************************************************/
+
+        enum Open : ubyte       {
+                                Exists=0,               /// must exist
+                                Create,                 /// create always
+                                Truncate,               /// must exist
+                                Append,                 /// create if necessary
+                                };
+
+        /***********************************************************************
+        
+        ***********************************************************************/
+
+        enum Share : ubyte      {
+                                Read=0,                 /// shared reading
+                                Write,                  /// shared writing
+                                ReadWrite,              /// both
+                                };
+
+        /***********************************************************************
+        
+        ***********************************************************************/
+
+        enum Cache : ubyte      {
+                                None      = 0x00,       /// don't optimize
+                                Random    = 0x01,       /// optimize for random
+                                Stream    = 0x02,       /// optimize for stream
+                                WriteThru = 0x04,       /// backing-cache flag
+                                };
+
+        /***********************************************************************
+        
+        ***********************************************************************/
+
+        const Style ReadExisting = {DeviceConduit.Access.Read, Open.Exists};
+        const Style WriteTruncate = {DeviceConduit.Access.Write, Open.Truncate};
+        const Style WriteAppending = {DeviceConduit.Access.Write, Open.Append};
+        const Style ReadWriteCreate = {DeviceConduit.Access.ReadWrite, Open.Create}; 
+        const Style ReadWriteExisting = {DeviceConduit.Access.ReadWrite, Open.Exists}; 
+
+
         // the file we're working with 
         private FilePath path;
 
@@ -219,7 +218,7 @@ class FileConduit : DeviceConduit, ISeekable
 
         ***********************************************************************/
 
-        this (char[] name, FileStyle.Bits style = FileStyle.ReadExisting)
+        this (char[] name, Style style = ReadExisting)
         {
                 this (new FilePath(name), style);
         }
@@ -230,7 +229,7 @@ class FileConduit : DeviceConduit, ISeekable
 
         ***********************************************************************/
 
-        this (FileProxy proxy, FileStyle.Bits style = FileStyle.ReadExisting)
+        this (FileProxy proxy, Style style = ReadExisting)
         {
                 this (proxy.getPath(), style);
         }
@@ -241,10 +240,10 @@ class FileConduit : DeviceConduit, ISeekable
 
         ***********************************************************************/
 
-        this (FilePath path, FileStyle.Bits style = FileStyle.ReadExisting)
+        this (FilePath path, Style style = ReadExisting)
         {
                 // say we're seekable
-                super (style.conduit, true);
+                super (style.access, true);
                 
                 // remember who we are
                 this.path = path;
@@ -272,7 +271,7 @@ class FileConduit : DeviceConduit, ISeekable
 
         ulong getPosition ()
         {
-                return seek (0, SeekAnchor.Current);
+                return seek (0, Seek.Anchor.Current);
         }               
 
         /***********************************************************************
@@ -287,7 +286,7 @@ class FileConduit : DeviceConduit, ISeekable
                         ret;
                         
                 pos = getPosition ();
-                ret = seek (0, SeekAnchor.End);
+                ret = seek (0, Seek.Anchor.End);
                 seek (pos);
                 return ret;
         }               
@@ -338,7 +337,7 @@ class FileConduit : DeviceConduit, ISeekable
 
                 ***************************************************************/
 
-                protected void open (FileStyle.Bits style)
+                protected void open (Style style)
                 {
                         DWORD   attr,
                                 share,
@@ -382,7 +381,7 @@ class FileConduit : DeviceConduit, ISeekable
                         attr = Attr[style.cache];
                         share = Share[style.share];
                         create = Create[style.open];
-                        access = Access[style.conduit.access];
+                        access = Access[style.access];
 
                         version (Win32SansUnicode)
                                  handle = CreateFileA (path.toUtf8, access, share, 
@@ -395,11 +394,11 @@ class FileConduit : DeviceConduit, ISeekable
                                                       attr | FILE_ATTRIBUTE_NORMAL,
                                                       cast(HANDLE) null);
 
-                        if (handle == INVALID_HANDLE_VALUE)
+                        if (handle is INVALID_HANDLE_VALUE)
                             error ();
 
                         // move to end of file?
-                        if (style.open == FileStyle.Open.Append)
+                        if (style.open is Open.Append)
                             appending = true;
                 }
                 
@@ -416,7 +415,7 @@ class FileConduit : DeviceConduit, ISeekable
 
                         // try to emulate the Unix O_APPEND mode
                         if (appending)
-                            SetFilePointer (handle, 0, null, SeekAnchor.End);
+                            SetFilePointer (handle, 0, null, Seek.Anchor.End);
                         
                         return super.writer (src);
                 }
@@ -443,13 +442,13 @@ class FileConduit : DeviceConduit, ISeekable
 
                 ***************************************************************/
 
-                ulong seek (ulong offset, SeekAnchor anchor = SeekAnchor.Begin)
+                ulong seek (ulong offset, Seek.Anchor anchor = Seek.Anchor.Begin)
                 {
                         LONG high = cast(LONG) (offset >> 32);
                         ulong result = SetFilePointer (handle, cast(LONG) offset, 
                                                        &high, anchor);
 
-                        if (result == -1 && 
+                        if (result is -1 && 
                             GetLastError() != ERROR_SUCCESS)
                             error ();
 
@@ -472,7 +471,7 @@ class FileConduit : DeviceConduit, ISeekable
 
                 ***************************************************************/
 
-                protected void open (FileStyle.Bits style)
+                protected void open (Style style)
                 {
                         int     share, 
                                 access;
@@ -505,10 +504,10 @@ class FileConduit : DeviceConduit, ISeekable
                                         ];
                                                 
                         share = Share[style.share];
-                        access = Access[style.conduit.access] | Create[style.open];
+                        access = Access[style.access] | Create[style.open];
 
                         handle = posix.open (path.toUtf8, access, share);
-                        if (handle == -1)
+                        if (handle is -1)
                             error ();
                 }
 
@@ -525,7 +524,7 @@ class FileConduit : DeviceConduit, ISeekable
                 void truncate ()
                 {
                         // set filesize to be current seek-position
-                        if (ftruncate (handle, getPosition()) == -1)
+                        if (ftruncate (handle, getPosition()) is -1)
                             error ();
                 }               
 
@@ -538,10 +537,10 @@ class FileConduit : DeviceConduit, ISeekable
 
                 ***************************************************************/
 
-                ulong seek (ulong offset, SeekAnchor anchor = SeekAnchor.Begin)
+                ulong seek (ulong offset, Seek.Anchor anchor = Seek.Anchor.Begin)
                 {
                         uint result = posix.lseek (handle, offset, anchor);
-                        if (result == -1)
+                        if (result is -1)
                             error ();
                         return result;
                 }               
@@ -563,7 +562,7 @@ class TextFileConduit : FileConduit
 
         ***********************************************************************/
 
-        this (char[] name, FileStyle.Bits style = FileStyle.ReadExisting)
+        this (char[] name, Style style = ReadExisting)
         {
                 super (name, style);
         }
@@ -574,7 +573,7 @@ class TextFileConduit : FileConduit
 
         ***********************************************************************/
 
-        this (FileProxy proxy, FileStyle.Bits style = FileStyle.ReadExisting)
+        this (FileProxy proxy, Style style = ReadExisting)
         {
                 super (proxy, style);
         }
@@ -585,7 +584,7 @@ class TextFileConduit : FileConduit
 
         ***********************************************************************/
 
-        this (FilePath path, FileStyle.Bits style = FileStyle.ReadExisting)
+        this (FilePath path, Style style = ReadExisting)
         {
                 super (path, style);
         }    

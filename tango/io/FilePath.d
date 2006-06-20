@@ -12,14 +12,11 @@
 
 module tango.io.FilePath;
 
-private import  tango.convert.Unicode;
-
-private import  tango.io.Buffer,
-                tango.io.Exception,
+private import  tango.io.Exception,
                 tango.io.FileConst;
 
-private import  tango.io.protocol.model.IWriter;
- 
+private import  tango.convert.Unicode;
+
 /*******************************************************************************
 
         Models a file name. These are expected to be used as the constructor 
@@ -35,22 +32,17 @@ private import  tango.io.protocol.model.IWriter;
 
 *******************************************************************************/
 
-class FilePath : IWritable
+class FilePath
 {       
-        private char[]  fp,
-                        ext,
-                        name,
-                        path,
-                        root,
-                        suffix;
+        private char[]  fp,                     // utf8 filepath with trailing 0
+                        ext,                    // file extension
+                        name,                   // file name
+                        path,                   // path before name
+                        root,                   // C: D: etc
+                        suffix;                 // from first '.'
 
-        private wchar[] fpWide;
+        private wchar[] fpWide;                 // utf 16 with trailing 0
 
-        // version = MangoDebug;
-        // version = MangoOptimize;
-
-        private static const int MaxFilePathSize = 1024;
-        
         /***********************************************************************
         
                 Create an empty FilePath. This is strictly for subclass
@@ -82,35 +74,18 @@ class FilePath : IWritable
                 suffix = other.suffix;
                 fpWide = other.fpWide;
         }
-/+
+
         /***********************************************************************
         
-                Create a FilePath from a Uri. Note that the Uri authority
-                is used to house an optional root (device, drive-letter ...)
+                Create a FilePath from the given string. Note the path string
+                is usually duplicated here, though you may specify that it be
+                aliased instead via the second argument. When aliased, you are 
+                expected to provide an immutable copy for the lifetime of this 
+                object. If you are not certain, ignore the second argument.
 
         ***********************************************************************/
 
-        this (Uri uri)
-        {
-                char[] path = uri.getPath();
-
-                if (uri.getHost.length)
-                    path = uri.getHost ~ FileConst.RootSeparatorString ~ path;
-                
-                this (path);
-        }
-+/
-        /***********************************************************************
-        
-                Create a FilePath from the given string. Note the path
-                is not duplicated here, so you are expected to provide 
-                an immutable copy for the lifetime of this object. 
-
-                If you're not certain, duplicate the path first.
-
-        ***********************************************************************/
-
-        this (char[] filepath)
+        this (char[] filepath, bool copy = true)
         in {
            assert (filepath);
            assert(filepath.length > 0);
@@ -121,13 +96,15 @@ class FilePath : IWritable
             }
         body
         {
-                int     ext = -1,
-                        path = -1,
-                        root = -1,
-                        suffix = -1;
+                int ext = -1,
+                    path = -1,
+                    root = -1,
+                    suffix = -1;
                 
-                //printf ("FilePath: '%.*s'\n", filepath);
-
+                // default behaviour is to make a copy
+                if (copy)
+                    filepath = filepath.dup;
+                        
                 for (int i=filepath.length; i > 0; --i)
                      switch (filepath[i-1])
                             {
@@ -157,12 +134,6 @@ class FilePath : IWritable
 
                 int i = filepath.length;
 
-                version (MangoDebug)
-                {
-                printf ("\n>>'%d' root:'%d' path:'%d' ext:'%d' suffix:'%d'\n", 
-                        i, root, path, ext, suffix);
-                }
-
                 if (ext >= 0)
                    {
                    this.ext = filepath [ext..i];
@@ -183,17 +154,53 @@ class FilePath : IWritable
                    path = root;
 
                 this.name = filepath [path..ext];
-
-                // save original
-                this.fp = filepath;
-
-                version (MangoDebug)
-                {
-                printf (">>'%.*s' root:'%.*s' path:'%.*s' name:'%.*s' ext:'%.*s' suffix:'%.*s'\n", 
-                        filepath, this.root, this.path, this.name, this.ext, this.suffix);
-                }
         }
                              
+/+
+        /***********************************************************************
+        
+                Create a FilePath from a Uri. Note that the Uri authority
+                is used to house an optional root (device, drive-letter ...)
+
+        ***********************************************************************/
+
+        this (Uri uri)
+        {
+                char[] path = uri.getPath();
+
+                if (uri.getHost.length)
+                    path = uri.getHost ~ FileConst.RootSeparatorString ~ path;
+                
+                this (path);
+        }
+
+        /***********************************************************************
+
+                Convert this FilePath to a Uri. Note that a root (such as a
+                drive-letter, or device) is placed into the Uri authority
+        
+        ***********************************************************************/
+
+        MutableUri toUri ()
+        {
+                MutableUri uri = new MutableUri();
+
+                if (isAbsolute)
+                    uri.setScheme ("file");
+
+                if (root.length)
+                    uri.setHost (root);
+
+                char[] s = path~name;
+                if (ext.length)
+                    s ~= FileConst.FileSeparatorString ~ ext;
+
+                version (Win32)
+                         Text.replace (s, FileConst.PathSeparatorChar, '/');
+                uri.setPath (s);
+                return uri;
+        }
++/
         /***********************************************************************
         
                 Convert path separators to the correct format. This mutates
@@ -245,7 +252,7 @@ class FilePath : IWritable
         bool isAbsolute ()
         {
                 return cast(bool) (root.length || 
-                       (path.length && path[0] == FileConst.PathSeparatorChar)
+                       (path.length && path[0] is FileConst.PathSeparatorChar)
                        );
         }               
 
@@ -319,45 +326,7 @@ class FilePath : IWritable
 
         char[] toString ()
         {
-                if (fp is null)
-                   {  
-                   // get the assembled path
-                   char[] tmp = write (new Buffer(MaxFilePathSize)).toString;
-
-                   // add a terminating '\0'
-                   fp = new char[tmp.length + 1];
-                   fp[tmp.length] = 0;
-                   fp.length = fp.length - 1;
-
-                   // copy new filepath content
-                   fp[] = tmp;
-                   }
-                return fp;
-        }               
-
-        /***********************************************************************
-        
-                Write this FilePath to the given IWriter. This makes the
-                FilePath compatible with all Writers. Note that we could 
-                leverage the write(IBuffer) method here, but that would
-                bypass any special character converters attached to the
-                IWriter.
-
-        ***********************************************************************/
-
-        void write (IWriter write)
-        {
-                if (root.length)
-                    write (root) (FileConst.RootSeparatorChar);
-
-                if (path.length)
-                    write (path);
-                       
-                if (name.length)
-                    write (name);
-
-                if (ext.length) 
-                    write (FileConst.FileSeparatorChar) (ext);
+                return toUtf8 ();
         }               
 
         /***********************************************************************
@@ -366,84 +335,50 @@ class FilePath : IWritable
 
         ***********************************************************************/
 
-        IBuffer write (IBuffer buf)
+        ICharAppender write (ICharAppender append)
         {
                 if (root.length)
-                    buf.append(root).append(FileConst.RootSeparatorString);
+                    append (root) (FileConst.RootSeparatorString);
 
                 if (path.length)
-                    buf.append(path);
+                    append (path);
 
                 if (name.length)
-                    buf.append(name);
+                    append (name);
 
                 if (ext.length)
-                    buf.append(FileConst.FileSeparatorString).append(ext);
+                    append (FileConst.FileSeparatorString) (ext);
 
-                return buf;
+                return append;
         }               
 
-/+
-        /***********************************************************************
-
-                Convert this FilePath to a Uri. Note that a root (such as a
-                drive-letter, or device) is placed into the Uri authority
-        
-        ***********************************************************************/
-
-        MutableUri toUri ()
-        {
-                MutableUri uri = new MutableUri();
-
-                if (isAbsolute)
-                    uri.setScheme ("file");
-
-                if (root.length)
-                    uri.setHost (root);
-
-                char[] s = path~name;
-                if (ext.length)
-                    s ~= FileConst.FileSeparatorString ~ ext;
-
-                version (Win32)
-                         Text.replace (s, FileConst.PathSeparatorChar, '/');
-                uri.setPath (s);
-                return uri;
-        }
-+/
-
         /***********************************************************************
         
-                Return a zero terminated version of this file path. Note
-                that the compiler places a zero at the end of each static 
-                string, as does the allocator for char[] requests.
-
-                In typical usage, this will not need to duplicate the path
+                Return a zero terminated UTF8 version of this file path
 
         ***********************************************************************/
 
-        char[] toUtf8 ()
+        char[] toUtf8 (bool withNull = false)
         {
-                char* p = fp;
+                if (fp is null)
+                    fp = write(new CharAppender).append("\0").toString;
 
-                // reconstruct if not terminated
-                if (p && *(cast(char *) p + fp.length))
-                    reset();
-
-                return toString;
+                // return with or without trailing null
+                return fp [0 .. $ - (withNull ? 0 : 1)];
         }
 
         /***********************************************************************
         
+                Return a zero terminated UTF16 version of this file path
+
         ***********************************************************************/
 
         wchar[] toUtf16 ()
         {
-                if (! fpWide)
-                   {
-                   fpWide = Unicode.toUtf16 (toString);
-                   *(cast(wchar*) fpWide + fpWide.length) = 0;
-                   }
+                if (fpWide is null)
+                    // convert trailing null also :)
+                    fpWide = Unicode.toUtf16 (toUtf8 (true));
+
                 return fpWide;
         }
 
@@ -456,7 +391,7 @@ class FilePath : IWritable
 
         char[] splice (FilePath base)
         {      
-                return splice (base, new Buffer(MaxFilePathSize)).toString();
+                return splice (base, new CharAppender).toString;
         }               
 
         /***********************************************************************
@@ -466,23 +401,23 @@ class FilePath : IWritable
 
         ***********************************************************************/
 
-        IBuffer splice (FilePath base, IBuffer buf)
+        ICharAppender splice (FilePath base, ICharAppender append)
         {      
-                int pos = buf.getLimit;
-                base.write (buf);
-                if (buf.getLimit != pos)
-                    buf.append (FileConst.PathSeparatorString);
+                auto p = base.write(append).toString();
+
+                if (p.length && p[$-1] != FileConst.PathSeparatorChar)
+                    append (FileConst.PathSeparatorString);
 
                 if (path.length)
-                    buf.append(path);
+                    append (path);
                        
                 if (name.length)
-                    buf.append(name);
+                    append (name);
 
                 if (ext.length)
-                    buf.append(FileConst.FileSeparatorString).append(ext);
+                    append (FileConst.FileSeparatorString) (ext);
 
-                return buf;
+                return append;
         }               
 
         /***********************************************************************
@@ -499,7 +434,7 @@ class FilePath : IWritable
                 // set new path to rightmost PathSeparator
                 if (--i > 0)
                     while (--i >= 0)
-                           if (path[i] == FileConst.PathSeparatorChar)
+                           if (path[i] is FileConst.PathSeparatorChar)
                                return i;
                 return -1;
         }               
@@ -573,6 +508,7 @@ class FilePath : IWritable
 
         FilePath toSibling (char[] name, char[] ext, char[] suffix) 
         {
+                // don't copy ... we can alias instead
                 FilePath sibling = new FilePath (this);
 
                 sibling.suffix = suffix;
@@ -695,3 +631,37 @@ class MutableFilePath : FilePath
                 return set (&this.suffix, &suffix);
         }
 }
+
+
+/*******************************************************************************
+
+*******************************************************************************/
+
+interface ICharAppender
+{
+        alias append    opCall;
+
+        ICharAppender   append (char[]);
+        char[]          toString ();
+}
+
+/*******************************************************************************
+
+*******************************************************************************/
+
+private class CharAppender : ICharAppender
+{
+        private char[]  buffer;
+
+        ICharAppender append (char[] s)
+        {
+                buffer ~= s;
+                return this;
+        }
+
+        char[] toString()
+        {
+                return buffer;
+        }
+}
+

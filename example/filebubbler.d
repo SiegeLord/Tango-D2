@@ -10,7 +10,7 @@ private import  tango.io.Console,
         hierarchy is flattened into a naming sheme where a '.' is used
         to replace the traditional path-separator
 
-        Used by the Tango project to help mange renderings of the source 
+        Used by the Tango project to help manage renderings of the source 
         code.
 
 *******************************************************************************/

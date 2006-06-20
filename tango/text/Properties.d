@@ -38,7 +38,7 @@ class Properties
 
         static void load (char[] filepath, void delegate (char[]name, char[] value) dg)
         {
-                auto fc = new FileConduit (filepath, FileStyle.ReadExisting);
+                auto fc = new FileConduit (filepath, FileConduit.ReadExisting);
                 scope (exit)
                        fc.close;
                 

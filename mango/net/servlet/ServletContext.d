@@ -323,7 +323,7 @@ class ServletContext
         FileConduit getResourceAsFile (char[] path)
         {
                 checkPath (path);
-                return new FileConduit (basePath~path, FileStyle.ReadExisting);
+                return new FileConduit (basePath~path, FileConduit.ReadExisting);
         }
 
         /***********************************************************************

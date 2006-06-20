@@ -19,13 +19,13 @@ module tango.net.http.HttpClient;
 
 private import  tango.core.Interval;
 
-private import  tango.net.Uri,
-                tango.io.Buffer,
+private import  tango.io.Buffer,
                 tango.io.Exception;
 
 private import  tango.convert.Atoi;
 
-private import  tango.net.SocketConduit;
+private import  tango.net.Uri,
+                tango.net.SocketConduit;
 
 private import  tango.text.LineIterator;
 

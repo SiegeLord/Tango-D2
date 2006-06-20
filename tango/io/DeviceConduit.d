@@ -14,9 +14,9 @@ module tango.io.DeviceConduit;
 
 private import  tango.os.OS;
                 
-private import  tango.io.Buffer,
-                tango.io.Conduit,
-                tango.io.Exception;
+private import  tango.io.Conduit;
+
+private import  tango.io.Exception;
 
 /*******************************************************************************
 
@@ -40,9 +40,9 @@ class DeviceConduit : Conduit
 
         ***********************************************************************/
 
-        this (ConduitStyle.Bits style, bool seekable)
+        this (Access access, bool seekable)
         {
-                super (style, seekable);
+                super (access, seekable);
         }
 
         /***********************************************************************
@@ -56,7 +56,7 @@ class DeviceConduit : Conduit
         this (FileDevice device)
         {
                 // say we're not seekable
-                super (device.style, false);
+                super (device.access, false);
                 
                 // open the file
                 reopen (device);
@@ -309,12 +309,12 @@ class DeviceConduit : Conduit
 
 class FileDevice 
 {
-        private uint                    _id;
-        private ConduitStyle.Bits       style;
+        private uint             _id;
+        private Conduit.Access  access;
 
-        this (uint id, ConduitStyle.Bits style)
+        this (uint id, Conduit.Access access)
         {
-                this.style = style;
+                this.access = access;
                 this._id = id;
         }
 

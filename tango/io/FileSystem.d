@@ -99,7 +99,7 @@ class FileSystem
                                    {
                                    char[] dir = new char [length];
                                    GetCurrentDirectoryA (length, dir);
-                                   return new FilePath (dir);
+                                   return new FilePath (dir, false);
                                    }
                                 }
                              else
@@ -109,7 +109,7 @@ class FileSystem
                                    {
                                    wchar[] dir = new wchar [length];
                                    GetCurrentDirectoryW (length, dir);
-                                   return new FilePath (Unicode.toUtf8 (dir));
+                                   return new FilePath (Unicode.toUtf8 (dir), false);
                                    }
                                 }
                         throw new IOException ("Failed to get current directory");
@@ -155,8 +155,7 @@ class FileSystem
                 {
                         char *s = tango.stdc.posix.posix.getcwd (null, 0);
                         if (s) 
-                            // dup the string so we can hang onto it                            
-                            return new FilePath (s[0..strlen(s)].dup);
+                            return new FilePath (s[0..strlen(s)]);
 
                         throw new IOException ("Failed to get current directory");
                 }

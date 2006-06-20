@@ -376,7 +376,7 @@ static Console.Output   Cout,
 
 static this ()
 {
-        Cin  = new Console.Input  (new FileDevice (0, ConduitStyle.Read));
-        Cout = new Console.Output (new FileDevice (1, ConduitStyle.Write));
-        Cerr = new Console.Output (new FileDevice (2, ConduitStyle.Write));
+        Cin  = new Console.Input  (new FileDevice (0, DeviceConduit.Access.Read));
+        Cout = new Console.Output (new FileDevice (1, DeviceConduit.Access.Write));
+        Cerr = new Console.Output (new FileDevice (2, DeviceConduit.Access.Write));
 }

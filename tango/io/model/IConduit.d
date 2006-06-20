@@ -29,8 +29,7 @@ module tango.io.model.IConduit;
 
 interface IConduit
 {
-        // abstract OS file-handle from getHandle()
-        typedef int Handle = -1;
+        typedef int Handle = -1;        /// opaque OS file-handle
 
         /***********************************************************************
         
@@ -46,7 +45,7 @@ interface IConduit
 
         ***********************************************************************/
 
-        abstract uint read (void[] dst);               
+        uint read (void[] dst);               
 
         /***********************************************************************
         
@@ -54,7 +53,7 @@ interface IConduit
 
         ***********************************************************************/
 
-        abstract uint write (void[] src);               
+        uint write (void[] src);               
 
         /***********************************************************************
         
@@ -62,7 +61,7 @@ interface IConduit
 
         ***********************************************************************/
 
-        abstract bool flush (void[] src);
+        bool flush (void[] src);
 
         /***********************************************************************
         
@@ -71,7 +70,7 @@ interface IConduit
         
         ***********************************************************************/
 
-        abstract IConduit copy (IConduit source);
+        IConduit copy (IConduit source);
 
         /**********************************************************************
         
@@ -81,7 +80,7 @@ interface IConduit
 
         **********************************************************************/
 	
-        abstract uint fill (void[] dst);
+        uint fill (void[] dst);
 
         /***********************************************************************
         
@@ -89,7 +88,7 @@ interface IConduit
 
         ***********************************************************************/
 
-        abstract void attach (IConduitFilter filter);
+        void attach (IConduitFilter filter);
 
         /***********************************************************************
         
@@ -97,7 +96,7 @@ interface IConduit
 
         ***********************************************************************/
 
-        abstract uint bufferSize (); 
+        uint bufferSize (); 
                      
         /***********************************************************************
         
@@ -105,7 +104,7 @@ interface IConduit
 
         ***********************************************************************/
 
-        abstract bool isReadable ();
+        bool isReadable ();
 
         /***********************************************************************
         
@@ -113,7 +112,7 @@ interface IConduit
 
         ***********************************************************************/
 
-        abstract bool isWritable ();
+        bool isWritable ();
 
         /***********************************************************************
         
@@ -122,7 +121,7 @@ interface IConduit
 
         ***********************************************************************/
 
-        abstract bool isSeekable ();
+        bool isSeekable ();
 
         /***********************************************************************
         
@@ -130,15 +129,7 @@ interface IConduit
 
         ***********************************************************************/
 
-        abstract bool isTextual ();
-
-        /***********************************************************************
-        
-                Return the underlying OS handle of this Conduit
-
-        ***********************************************************************/
-
-        //abstract Handle getHandle (); 
+        bool isTextual ();
 
         /***********************************************************************
                 
@@ -146,7 +137,45 @@ interface IConduit
 
         ***********************************************************************/
 
-        abstract void close ();
+        void close ();
+
+        /***********************************************************************
+
+                Models the ability to seek within a conduit
+
+        ***********************************************************************/
+
+        interface Seek
+        {
+                /***************************************************************
+        
+                        The anchor positions supported by ISeekable
+
+                ***************************************************************/
+
+                enum Anchor     {
+                                Begin   = 0,
+                                Current = 1,
+                                End     = 2,
+                                };
+
+                /***************************************************************
+                        
+                        Return current conduit position (e.g. file position)
+                
+                ***************************************************************/
+
+                ulong getPosition ();
+
+                /***************************************************************
+                
+                        Move the file position to the given offset from the 
+                        provided anchor point, and return adjusted position.
+
+                ***************************************************************/
+
+                ulong seek (ulong offset, Anchor anchor = Anchor.Begin);
+        }
 }
 
 
@@ -249,7 +278,7 @@ interface IConduitFilter
 
         ***********************************************************************/
 
-        abstract uint reader (void[] dst);               
+        uint reader (void[] dst);               
                              
         /***********************************************************************
         
@@ -257,96 +286,19 @@ interface IConduitFilter
 
         ***********************************************************************/
 
-        abstract uint writer (void[] dst);               
+        uint writer (void[] dst);               
                              
         /***********************************************************************
         
         ***********************************************************************/
 
-        abstract void bind (IConduit conduit, IConduitFilter next);                       
+        void bind (IConduit conduit, IConduitFilter next);                       
                               
         /***********************************************************************
         
         ***********************************************************************/
 
-        abstract void unbind ();
-}
-
-
-/*******************************************************************************
-
-        Models the ability to seek within a conduit. 
-
-*******************************************************************************/
-
-interface ISeekable
-{
-        /***********************************************************************
-        
-                The anchor positions supported by ISeekable
-
-        ***********************************************************************/
-
-        enum SeekAnchor {
-                        Begin   = 0,
-                        Current = 1,
-                        End     = 2,
-                        };
-
-        /***********************************************************************
-                        
-                Return the current conduit position (such as file position)
-                
-        ***********************************************************************/
-
-        abstract ulong getPosition ();
-
-        /***********************************************************************
-        
-                Move the file position to the given offset from the provided 
-                anchor point, and return the adjusted position.
-
-        ***********************************************************************/
-
-        abstract ulong seek (ulong offset, SeekAnchor anchor=SeekAnchor.Begin);
-}
-
-
-/*******************************************************************************
-
-        Defines how a Conduit should be opened. This is typically subsumed
-        by another structure     
-
-*******************************************************************************/
-
-struct ConduitStyle
-{
-        align(1):
-
-        struct Bits
-        {
-                Access access;                          // access rights
-        }
-
-        /***********************************************************************
-        
-        ***********************************************************************/
-
-        enum Access : ubyte     {
-                                Read      = 0x01,       // is readable
-                                Write     = 0x02,       // is writable 
-                                ReadWrite = 0x03,       // both 
-                                };
-
-        /***********************************************************************
-        
-                Setup common instances of conduit styles
-
-        ***********************************************************************/
-
-        const Bits Read = {Access.Read};
-        const Bits Write = {Access.Write};
-        const Bits ReadWrite = {Access.ReadWrite}; 
+        void unbind ();
 }
 
 

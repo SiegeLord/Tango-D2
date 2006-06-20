@@ -16,11 +16,12 @@ private import  tango.convert.Type;
 
 private import  tango.io.Exception;
 
-public  import  tango.io.Buffer;
+private import  tango.io.Buffer;
 
-public  import  tango.io.protocol.model.IWriter,
-                tango.io.model.IBuffer,
+public  import  tango.io.model.IBuffer,
                 tango.io.model.IConduit;
+
+public  import  tango.io.protocol.model.IWriter;
 
 /*******************************************************************************
 

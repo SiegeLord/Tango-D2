@@ -12,16 +12,16 @@
 
 module tango.net.http.HttpGet;
 
-private import  tango.net.Uri,
-                tango.io.Conduit,
-                tango.io.GrowBuffer;
+public  import  tango.net.Uri;
 
-private import  tango.core.Interval;
+public  import  tango.core.Interval;
 
-private import  tango.net.http.HttpClient;
+private import  tango.io.GrowBuffer;
 
-private import  tango.net.http.HttpHeaders;
+private import  tango.io.model.IConduit;
 
+private import  tango.net.http.HttpClient,
+                tango.net.http.HttpHeaders;
 
 /*******************************************************************************
 
@@ -86,7 +86,7 @@ class HttpGet : HttpClient
                    {
                    // extract content length
                    int length = getResponseHeaders.getInt (HttpHeader.ContentLength, int.max);
-                   while (input.readable() < length && input.fill() != Conduit.Eof) {}
+                   while (input.readable() < length && input.fill() != IConduit.Eof) {}
                    }
 
                 close ();

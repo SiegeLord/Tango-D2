@@ -770,7 +770,7 @@ class Socket : Conduit
                 // MANGO: exposed the constructor functionality: see below.
                 set (sock);
 
-                super (ConduitStyle.ReadWrite, false);
+                super (Access.ReadWrite, false);
         }
 
        /***********************************************************************
@@ -942,7 +942,7 @@ class Socket : Conduit
         {
                 create (af, type, protocol);
 
-                super (ConduitStyle.ReadWrite, false);
+                super (Access.ReadWrite, false);
         }
         
         

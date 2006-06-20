@@ -13,13 +13,13 @@
 
 module tango.io.protocol.DisplayWriter;
 
-public  import  tango.io.protocol.Writer;
-
 private import  tango.core.Vararg;
 
 private import  tango.convert.Type,
                 tango.convert.Format,
                 tango.convert.Double;
+
+public  import  tango.io.protocol.Writer;
 
 /*******************************************************************************
 
@@ -74,7 +74,7 @@ class DisplayWriter : Writer
         {
                 super (buffer);
                 
-                if (workspace == null)
+                if (workspace is null)
                     workspace = this.workspace;
 
                 // configure output-handler, workspace, and the
@@ -90,7 +90,10 @@ class DisplayWriter : Writer
 
         this (IConduit conduit)
         {
-                this (new Buffer(conduit));
+                super (conduit);
+
+                // configure formatter
+                format.ctor (&emit, null, workspace, &Double.format);
         }
 
         /***********************************************************************

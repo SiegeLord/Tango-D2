@@ -166,7 +166,7 @@ public class RollingFileAppender : FileAppender
                 close ();
 
                 // open file; get writer
-                buffer = setConduit (new FileConduit (paths[index], FileStyle.WriteAppending));
+                buffer = setConduit (new FileConduit (paths[index], FileConduit.WriteAppending));
         }
 }
 }

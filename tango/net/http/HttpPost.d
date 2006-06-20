@@ -12,17 +12,16 @@
 
 module tango.net.http.HttpPost;
 
-private import  tango.net.Uri,
-                tango.io.Conduit,
-                tango.io.GrowBuffer;
+public import   tango.net.Uri;
 
-private import  tango.core.Interval;
+public import   tango.core.Interval;
 
-private import  tango.io.protocol.model.IWriter;
+private import  tango.io.GrowBuffer;
 
-private import  tango.net.http.HttpClient;
+private import  tango.io.model.IConduit;
 
-private import  tango.net.http.HttpHeaders;
+private import  tango.net.http.HttpClient,
+                tango.net.http.HttpHeaders;
 
 /*******************************************************************************
 
@@ -34,10 +33,9 @@ private import  tango.net.http.HttpHeaders;
 
 *******************************************************************************/
 
-class HttpPost : HttpClient, IWritable
+class HttpPost : HttpClient
 {      
-        private void[]  content;
-        private uint    pageChunk;
+        private uint pageChunk;
 
         /***********************************************************************
         
@@ -70,15 +68,6 @@ class HttpPost : HttpClient, IWritable
         
         ***********************************************************************/
 
-        void write (IWriter output)
-        {
-                output (cast(byte[]) content);   
-        }
-
-        /***********************************************************************
-        
-        ***********************************************************************/
-
         protected IBuffer inputBuffer (IConduit conduit)
         {
                 return new GrowBuffer (conduit, pageChunk);
@@ -90,15 +79,14 @@ class HttpPost : HttpClient, IWritable
 
         char[] write (void[] content, Interval timeout = DefaultReadTimeout)
         {
-                this.content = content;
-                return write (this, timeout);
+                return write (delegate void (IBuffer b){b.append(content);}, timeout);
         }
 
         /***********************************************************************
         
         ***********************************************************************/
 
-        char[] write (IWritable pump, Interval timeout = DefaultReadTimeout)
+        char[] write (Pump pump, Interval timeout = DefaultReadTimeout)
         {
                 auto input = open (timeout, pump);
 
@@ -107,7 +95,7 @@ class HttpPost : HttpClient, IWritable
                    {
                    // extract content length
                    int length = getResponseHeaders.getInt (HttpHeader.ContentLength, int.max);
-                   while (input.readable() < length && input.fill() != Conduit.Eof) {}
+                   while (input.readable() < length && input.fill() != IConduit.Eof) {}
                    }
 
                 close ();

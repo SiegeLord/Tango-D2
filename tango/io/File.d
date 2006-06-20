@@ -12,10 +12,8 @@
 
 module tango.io.File;
 
-public  import  tango.io.FilePath;
- 
-private import  tango.io.FileProxy,
-                tango.io.Exception,
+private import  tango.io.Exception,
+                tango.io.FileProxy,
                 tango.io.FileConduit;
 
 /*******************************************************************************
@@ -73,7 +71,7 @@ class File : FileProxy
                 auto content = new ubyte[cast(int) conduit.length];
 
                 // read the entire file into memory and return it
-                if (conduit.read (content) != content.length)
+                if (conduit.fill (content) != content.length)
                     throw new IOException ("eof whilst reading");
 
                 return content;
@@ -87,7 +85,7 @@ class File : FileProxy
 
         File write (void[] content)
         {
-                return write (content, FileStyle.ReadWriteCreate);  
+                return write (content, FileConduit.ReadWriteCreate);  
         }
 
         /***********************************************************************
@@ -98,7 +96,7 @@ class File : FileProxy
 
         File append (void[] content)
         {
-                return write (content, FileStyle.WriteAppending);  
+                return write (content, FileConduit.WriteAppending);  
         }
 
         /***********************************************************************
@@ -107,7 +105,7 @@ class File : FileProxy
 
         ***********************************************************************/
 
-        private File write (void[] content, FileStyle.Bits style)
+        private File write (void[] content, FileConduit.Style style)
         {      
                 auto conduit = new FileConduit (this, style);  
                 scope (exit)

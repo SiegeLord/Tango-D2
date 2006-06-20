@@ -173,7 +173,7 @@ class FileScan
                 foreach (FilePath x; paths) 
                         {
                         // combine base path with listed file
-                        FilePath spliced = new FilePath (x.splice (base));
+                        FilePath spliced = new FilePath (x.splice (base), false);
 
                         // recurse if this is a directory ...
                         file = new File (spliced);

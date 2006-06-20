@@ -203,7 +203,7 @@ public class FileAppender : Appender
 
         this (FilePath fp)
         {
-                setConduit (new FileConduit (fp, FileStyle.WriteAppending));
+                setConduit (new FileConduit (fp, FileConduit.WriteAppending));
         }
 
         /***********************************************************************

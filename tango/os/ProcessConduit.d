@@ -246,7 +246,7 @@ class ProcessConduit : Conduit
 {
 	this()
 	{
-                super (ConduitStyle.ReadWrite, false);
+                super (Access.ReadWrite, false);
 	}
 	
 	this(char[] command)
