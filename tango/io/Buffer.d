@@ -575,6 +575,29 @@ class Buffer : IBuffer
 
         /***********************************************************************
         
+                Consume content from a producer
+
+                Params:
+                src = the content to _consume
+
+                Remarks:
+                Appends an array of data to this buffer, and flushes to the
+                conduit as necessary. Throws an IOException indicating eof or 
+                eob when the append fails
+
+                This is often used in lieu of a Writer, and enables simple
+                classes, such as FilePath and Uri, to emit content directly
+                into a buffer (thus avoiding intermediate heap activity)
+
+        ***********************************************************************/
+
+        void consume (char[] src)        
+        {               
+                append (src);
+        }
+
+        /***********************************************************************
+        
                 Append content
 
                 Params:

@@ -16,8 +16,6 @@ private import  tango.io.Exception;
 
 private import  tango.convert.Integer;
 
-private import  tango.io.protocol.model.IWriter;
-
 /*******************************************************************************
 
 *******************************************************************************/
@@ -32,9 +30,10 @@ extern (C) char* memchr (char *, char, uint);
 
         The implementation fails the spec on two counts: it doesn't insist
         on a scheme being present in the Uri, and it doesn't implement the
-        "Relative References" support noted in section 5.2. Note that IRI
-        support can be added by assuming each of userinfo, path, query, and 
-        fragment are UTF-8 encoded 
+        "Relative References" support noted in section 5.2. 
+        
+        Note that IRI support can be implied by assuming each of userinfo, path, 
+        query, and fragment are UTF-8 encoded 
         (see <A HREF="http://www.w3.org/2001/Talks/0912-IUC-IRI/paper.html">
         this page</A> for further details).
 
@@ -43,7 +42,7 @@ extern (C) char* memchr (char *, char, uint);
 
 *******************************************************************************/
 
-class Uri : IWritable
+class Uri
 {
         public const int        InvalidPort = -1;
 
@@ -116,6 +115,9 @@ class Uri : IWritable
                         {"whois",       43},
                         {"whois++",     43},
                         ];
+
+
+        private alias void delegate (char[]) Consumer;  // simplistic string appender
 
 
         /***********************************************************************
@@ -273,7 +275,7 @@ class Uri : IWritable
 
         int getValidPort()
         {
-                if (port == InvalidPort)
+                if (port is InvalidPort)
                     return getDefaultPort (scheme);
                 return port;
         }
@@ -328,7 +330,7 @@ class Uri : IWritable
 
         /***********************************************************************
         
-                return whether or not the Uri scheme is considered generic.
+                Return whether or not the Uri scheme is considered generic.
 
         ***********************************************************************/
 
@@ -339,62 +341,99 @@ class Uri : IWritable
 
         /***********************************************************************
         
-                Write the content of this Uri to the provided buffer. The
-                output is constructed per RFC 2396
+                Emit the content of this Uri via the provided Consumer. The
+                output is constructed per RFC 2396.
 
         ***********************************************************************/
 
-        IBuffer write (IBuffer buf)
+        Consumer produce (Consumer consume)
         {
                 if (scheme.length)
-                    buf.append (scheme).append(":");
+                    consume (scheme), consume (":");
 
 
                 if (userinfo.length || host.length || port != InvalidPort)
                    {
-                   buf.append ("//");
+                   consume ("//");
 
                    if (userinfo.length)
-                       encode (buf, userinfo, IncUser).append("@");
+                       encode (consume, userinfo, IncUser) ("@");
 
                    if (host.length)
-                       buf.append (host);
+                       consume (host);
 
                    if (port != InvalidPort && port != getDefaultPort(scheme))
                       {
                       char[4] tmp;
-                      buf.append(":").append(Integer.format (tmp, port));
+                      consume (":"), consume (Integer.format (tmp, port));
                       }
                    }
 
                 if (path.length)
-                    encode (buf, path, IncPath);
+                    encode (consume, path, IncPath);
 
                 if (query.length)
                    {
-                   buf.append ("?");
-                   encode (buf, query, IncQuery);
+                   consume ("?");
+                   encode (consume, query, IncQuery);
                    }
 
                 if (fragment.length)
                    {
-                   buf.append ("#");
-                   encode (buf, fragment, IncQuery);
+                   consume ("#");
+                   encode (consume, fragment, IncQuery);
                    }
 
-                return buf;
+                return consume;
         }
 
         /***********************************************************************
         
-                Write the content of this Uri to the provided writer. The
-                output is constructed per RFC 2396
+                Emit the content of this Uri via the provided Consumer. The
+                output is constructed per RFC 2396.
 
         ***********************************************************************/
 
-        void write (IWriter writer)
+        override char[] toString ()
         {
-                write (writer.getBuffer);
+                char[] s;
+
+                s.length = 256, s.length = 0;
+                produce ((char[] v) {s ~= v;});
+                return s;
+        }
+
+        /***********************************************************************
+        
+                Encode uri characters into a Consumer, such that
+                reserved chars are converted into their %hex version.
+
+        ***********************************************************************/
+
+        static Consumer encode (Consumer consume, char[] s, int flags)
+        {
+                char[3] hex;
+                int     mark;
+
+                hex[0] = '%';
+                foreach (int i, char c; s)
+                        {
+                        if (! (map[c] & flags))
+                           {
+                           consume (s[mark..i]);
+                           mark = i+1;
+                                
+                           hex[1] = hexDigits [(c >> 4) & 0x0f];
+                           hex[2] = hexDigits [c & 0x0f];
+                           consume (hex);
+                           }
+                        }
+
+                // add trailing section
+                if (mark < s.length)
+                    consume (s[mark..s.length]);
+
+                return consume;
         }
 
         /***********************************************************************
@@ -435,7 +474,7 @@ class Uri : IWritable
                    for (int i; i < length; ++i, ++j, ++p)
                        {
                        int c = s[i];
-                       if (c == '%' && (i+2) < length)
+                       if (c is '%' && (i+2) < length)
                           {
                           c = toInt(s[i+1]) * 16 + toInt(s[i+2]);
                           i += 2;
@@ -450,39 +489,6 @@ class Uri : IWritable
                 // return original content
                 return s;
         }   
-
-        /***********************************************************************
-        
-                Encode uri characters into an output buffer, such that
-                reserved chars are converted into their %hex version.
-
-        ***********************************************************************/
-
-        private static IBuffer encode (IBuffer buf, char[] s, int flags)
-        {
-                char[3] hex;
-                int     mark;
-
-                hex[0] = '%';
-                foreach (int i, char c; s)
-                        {
-                        if (! (map[c] & flags))
-                           {
-                           buf.append (s[mark..i]);
-                           mark = i+1;
-                                
-                           hex[1] = hexDigits [(c >> 4) & 0x0f];
-                           hex[2] = hexDigits [c & 0x0f];
-                           buf.append (hex);
-                           }
-                        }
-
-                // add trailing section
-                if (mark < s.length)
-                    buf.append (s[mark..s.length]);
-
-                return buf;
-        }
 
         /***********************************************************************
         
@@ -525,7 +531,7 @@ class Uri : IWritable
 
                 // isolate scheme (note that it's OK to not specify a scheme)
                 for (i=0; i < len && !(map[c = uri[i]] & ExcScheme); ++i) {}
-                if (c == ':')
+                if (c is ':')
                    {
                    scheme = uri [mark..i];
                    toLower (scheme);
@@ -533,7 +539,7 @@ class Uri : IWritable
                    }
 
                 // isolate authority
-                if (mark < len-1  &&  uri[mark] == '/'  &&  uri[mark+1] == '/')
+                if (mark < len-1  &&  uri[mark] is '/'  &&  uri[mark+1] is '/')
                    {
                    for (mark+=2, i=mark; i < len && !(map[uri[i]] & ExcAuthority); ++i) {}
                    parseAuthority (uri[mark..i]); 
@@ -553,7 +559,7 @@ class Uri : IWritable
                 mark = i;
 
                 // isolate query
-                if (mark < len && uri[mark] == '?')
+                if (mark < len && uri[mark] is '?')
                    {
                    for (++mark, i=mark; i < len && uri[i] != '#'; ++i) {}
                    query = decode (uri[mark..i]);
@@ -561,7 +567,7 @@ class Uri : IWritable
                    }
 
                 // isolate fragment
-                if (mark < len && uri[mark] == '#')
+                if (mark < len && uri[mark] is '#')
                     fragment = decode (uri[mark+1..len]);
         }
 
@@ -588,7 +594,7 @@ class Uri : IWritable
 
                 // get userinfo: (([^@]*)@?)
                 foreach (int i, char c; auth)
-                         if (c == '@')
+                         if (c is '@')
                             {
                             userinfo = decode (auth[0..i]);
                             mark = i + 1;
@@ -597,7 +603,7 @@ class Uri : IWritable
 
                 // get port: (:(.*))?
                 for (int i=mark; i < len; ++i)
-                     if (auth [i] == ':')
+                     if (auth [i] is ':')
                         {
                         port = cast(int) Integer.parse (auth [i+1..len]);
                         len = i;

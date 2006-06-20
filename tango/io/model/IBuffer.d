@@ -142,6 +142,26 @@ abstract class IBuffer // could be an interface, but that causes poor codegen
         IBuffer append (IBuffer other);
 
         /***********************************************************************
+        
+                Consume content from a producer
+
+                Params:
+                src = the content to _consume
+
+                Remarks:
+                Appends an array of data to this buffer, and flushes to the
+                conduit as necessary. Throws an IOException indicating eof or 
+                eob when the append fails
+
+                This is often used in lieu of a Writer, and enables simple
+                classes, such as FilePath and Uri, to emit content directly
+                into a buffer (thus avoiding intermediate heap activity)
+
+        ***********************************************************************/
+
+        void consume (char[] src);
+
+        /***********************************************************************
 
                 Read a chunk of data from the buffer, loading from the
                 conduit as necessary. The requested number of bytes are

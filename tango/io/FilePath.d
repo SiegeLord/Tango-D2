@@ -43,6 +43,8 @@ class FilePath
 
         private wchar[] fpWide;                 // utf 16 with trailing 0
 
+        private alias void delegate (char[]) Consumer;  // simplistic string appender
+
         /***********************************************************************
         
                 Create an empty FilePath. This is strictly for subclass
@@ -154,9 +156,34 @@ class FilePath
                    path = root;
 
                 this.name = filepath [path..ext];
+
+                // reserve a bit of space for later
+                fp.length = 256;
+                fp.length = 0;
         }
+
+
                              
 /+
+        alias Consume delegate(char[]) Bar;
+        typedef Bar delegate (char[]) Consume;
+
+        Consume emit (Consume consume)
+        {
+                return consume ("1") ("2") ("3") ("4");
+        }
+
+        void other ()
+        {
+                Bar t (char[] v)
+                {
+                        return cast(Bar) &t;
+                }
+
+                emit (&t);
+        }
+
+
         /***********************************************************************
         
                 Create a FilePath from a Uri. Note that the Uri authority
@@ -238,8 +265,7 @@ class FilePath
 
         protected void reset ()
         {
-                fp = null;
-                fpWide = null;
+                fp.length = fpWide.length = 0;
         }
 
         /***********************************************************************
@@ -255,6 +281,17 @@ class FilePath
                        (path.length && path[0] is FileConst.PathSeparatorChar)
                        );
         }               
+
+        /***********************************************************************
+        
+                Returns true  if this FilePath is empty
+
+        ***********************************************************************/
+
+        bool isEmpty ()
+        {
+                return (path.length + name.length + ext.length) is 0;
+        }
 
         /***********************************************************************
                 
@@ -319,37 +356,36 @@ class FilePath
 
         /***********************************************************************
 
-                Convert this FilePath to a char[]. This is expected to 
-                execute optimally in most cases.
+                Convert this FilePath to a char[] via the provided Consumer
+
+        ***********************************************************************/
+
+        Consumer produce (Consumer consume)
+        {
+                if (root.length)
+                    consume (root), consume (FileConst.RootSeparatorString);
+
+                if (path.length)
+                    consume (path);
+
+                if (name.length)
+                    consume (name);
+
+                if (ext.length)
+                    consume (FileConst.FileSeparatorString), consume (ext);
+
+                return consume;
+        }               
+
+        /***********************************************************************
+
+                Convert this FilePath to a char[]
 
         ***********************************************************************/
 
         char[] toString ()
         {
                 return toUtf8 ();
-        }               
-
-        /***********************************************************************
-
-                Convert this FilePath to a char[] in the provided buffer
-
-        ***********************************************************************/
-
-        ICharAppender write (ICharAppender append)
-        {
-                if (root.length)
-                    append (root) (FileConst.RootSeparatorString);
-
-                if (path.length)
-                    append (path);
-
-                if (name.length)
-                    append (name);
-
-                if (ext.length)
-                    append (FileConst.FileSeparatorString) (ext);
-
-                return append;
         }               
 
         /***********************************************************************
@@ -360,8 +396,8 @@ class FilePath
 
         char[] toUtf8 (bool withNull = false)
         {
-                if (fp is null)
-                    fp = write(new CharAppender).append("\0").toString;
+                if (fp.length is 0)
+                    produce ((char[] v){fp ~= v;}) ("\0");
 
                 // return with or without trailing null
                 return fp [0 .. $ - (withNull ? 0 : 1)];
@@ -391,33 +427,36 @@ class FilePath
 
         char[] splice (FilePath base)
         {      
-                return splice (base, new CharAppender).toString;
+                char[] s;
+                s.length = 256, s.length = 0;
+                splice (base, (char[] v){s ~= v;});
+                return s;
         }               
 
         /***********************************************************************
         
                 Splice this FilePath onto the end of the provided base path.
-                Output is placed into the provided IBuffer.
+                Output is handled via the provided Consumer
 
         ***********************************************************************/
 
-        ICharAppender splice (FilePath base, ICharAppender append)
+        Consumer splice (FilePath base, Consumer consume)
         {      
-                auto p = base.write(append).toString();
+                base.produce (consume);
 
-                if (p.length && p[$-1] != FileConst.PathSeparatorChar)
-                    append (FileConst.PathSeparatorString);
+                if (! base.isEmpty)
+                      consume (FileConst.PathSeparatorString);
 
                 if (path.length)
-                    append (path);
+                    consume (path);
                        
                 if (name.length)
-                    append (name);
+                    consume (name);
 
                 if (ext.length)
-                    append (FileConst.FileSeparatorString) (ext);
+                    consume (FileConst.FileSeparatorString), consume (ext);
 
-                return append;
+                return consume;
         }               
 
         /***********************************************************************
@@ -631,37 +670,3 @@ class MutableFilePath : FilePath
                 return set (&this.suffix, &suffix);
         }
 }
-
-
-/*******************************************************************************
-
-*******************************************************************************/
-
-interface ICharAppender
-{
-        alias append    opCall;
-
-        ICharAppender   append (char[]);
-        char[]          toString ();
-}
-
-/*******************************************************************************
-
-*******************************************************************************/
-
-private class CharAppender : ICharAppender
-{
-        private char[]  buffer;
-
-        ICharAppender append (char[] s)
-        {
-                buffer ~= s;
-                return this;
-        }
-
-        char[] toString()
-        {
-                return buffer;
-        }
-}
-
