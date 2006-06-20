@@ -174,13 +174,13 @@ extern (C) long _adReverseWchar(wchar[] a)
 		break;
 
 	    if (stridelo == stridehi)
-	    {	int tmp;
+	    {	int stmp;
 
 		assert(stridelo == 2);
-		assert(tmp.sizeof == 2 * (*lo).sizeof);
-		tmp = *cast(int*)lo;
+		assert(stmp.sizeof == 2 * (*lo).sizeof);
+		stmp = *cast(int*)lo;
 		*cast(int*)lo = *cast(int*)hi;
-		*cast(int*)hi = tmp;
+		*cast(int*)hi = stmp;
 		lo += stridelo;
 		hi--;
 		continue;
@@ -547,7 +547,7 @@ extern (C) int _adEqBit(Array a1, Array a2)
     ubyte mask;
 
     n = a1.length & 7;
-    mask = (1 << n) - 1;
+    mask = cast(ubyte)((1 << n) - 1);
     //printf("i = %d, n = %d, mask = %x, %x, %x\n", i, n, mask, p1[i], p2[i]);
     return (mask == 0) || (p1[i] & mask) == (p2[i] & mask);
 }
@@ -786,7 +786,7 @@ extern (C) int _adCmpBit(Array a1, Array a2)
 	    break;		// not equal
     }
     for (uint j = i * 8; j < len; j++)
-    {	ubyte mask = 1 << j;
+    {	ubyte mask = cast(ubyte)(1 << j);
 	int c;
 
 	c = cast(int)(p1[i] & mask) - cast(int)(p2[i] & mask);

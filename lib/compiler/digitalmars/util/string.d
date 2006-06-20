@@ -409,7 +409,7 @@ char[] toString(long i)
     if (cast(int)i == i)
 	return toString(cast(int)i);
 
-    ulong u = -i;
+    ulong u = cast(ulong)(-i);
     int ndigits = 1;
     while (u)
     {
@@ -551,12 +551,12 @@ body
     uint i = buffer.length;
 
     if (value < radix && value < hexdigits.length)
-	return hexdigits[value .. value + 1];
+	return hexdigits[cast(size_t)value .. cast(size_t)value + 1];
 
     do
     {	ubyte c;
 
-	c = value % radix;
+	c = cast(ubyte)(value % radix);
 	value = value / radix;
 	i--;
 	buffer[i] = (c < 10) ? c + '0' : c + 'A' - 10;
