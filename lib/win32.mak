@@ -64,24 +64,24 @@ ALL_DOCS=
 lib : $(ALL_OBJS)
 	$(RM) phobos*.lib
 	$(LC) -c -n phobos.lib $(ALL_OBJS)
-	cd compiler\digitalmars
+	cd compiler\dmd
 	make -fwin32.mak lib
 	cd ..\..
-	cd gc\digitalmars
+	cd gc\dmd
 	make -fwin32.mak lib
 	cd ..\..
 	cd common
 	make -fwin32.mak lib
 	cd ..
 	$(RM) phobos*.lib
-	$(LC) -c -n phobos.lib common\tango.lib compiler\digitalmars\digitalmars.lib gc\digitalmars\digitalmars.lib
+	$(LC) -c -n phobos.lib common\tango.lib compiler\dmd\dmd.lib gc\dmd\dmd.lib
 
 doc : $(ALL_DOCS)
 	@echo No documentation available.
-	cd compiler\digitalmars
+	cd compiler\dmd
 	make -fwin32.mak doc
 	cd ..\..
-	cd gc\digitalmars
+	cd gc\dmd
 	make -fwin32.mak doc
 	cd ..\..
 	cd common
@@ -94,10 +94,10 @@ clean :
 	$(RM) /s *.di
 	$(RM) $(ALL_OBJS)
 	$(RM) $(ALL_DOCS)
-	cd compiler\digitalmars
+	cd compiler\dmd
 	make -fwin32.mak clean
 	cd ..\..
-	cd gc\digitalmars
+	cd gc\dmd
 	make -fwin32.mak clean
 	cd ..\..
 	cd common
@@ -107,10 +107,10 @@ clean :
 
 install :
 	$(MD) $(LIB_DEST)
-	cd compiler\digitalmars
+	cd compiler\dmd
 	make -fwin32.mak install
 	cd ..\..
-	cd gc\digitalmars
+	cd gc\dmd
 	make -fwin32.mak install
 	cd ..\..
 	cd common

@@ -1,10 +1,10 @@
-# Makefile to build D runtime library digitalmars.a for Linux
+# Makefile to build D runtime library dmd.a for Linux
 # Designed to work with GNU make
 # Targets:
 #	make
 #		Same as make all
 #	make lib
-#		Build digitalmars.a
+#		Build dmd.a
 #   make doc
 #       Generate documentation
 #	make clean
@@ -49,12 +49,12 @@ LIB_DEST=..
 	$(DC) -c $(DFLAGS) $< -of$@
 
 .d.html:
-	$(DC) -c -o- $(DOCFLAGS) -Df$*.html digitalmars.ddoc $<
+	$(DC) -c -o- $(DOCFLAGS) -Df$*.html dmd.ddoc $<
 
 targets : lib doc
 all     : lib doc
-lib     : digitalmars.a
-doc     : digitalmars.doc
+lib     : dmd.a
+doc     : dmd.doc
 
 ######################################################
 
@@ -148,11 +148,11 @@ ALL_DOCS=
 
 ######################################################
 
-digitalmars.a : $(ALL_OBJS)
+dmd.a : $(ALL_OBJS)
 	$(RM) $@
 	$(LC) -r $@ $(ALL_OBJS)
 
-digitalmars.doc : $(ALL_DOCS)
+dmd.doc : $(ALL_DOCS)
 	echo No documentation available.
 
 ######################################################
@@ -161,8 +161,8 @@ clean :
 	$(RM) -r *.di
 	$(RM) $(ALL_OBJS)
 	$(RM) $(ALL_DOCS)
-	$(RM) digitalmars*.a
+	$(RM) dmd*.a
 
 install :
 	$(MD) $(LIB_DEST)
-	$(CP) digitalmars*.a $(LIB_DEST)/.
+	$(CP) dmd*.a $(LIB_DEST)/.

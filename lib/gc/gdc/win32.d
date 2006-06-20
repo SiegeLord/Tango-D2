@@ -8,7 +8,7 @@
  *  Modified by Sean Kelly <sean@f4.ca> for use with the Ares project.
  */
 
-import tango.os.windows.c.windows;
+import tango.os.windows.c.minwin;
 
 alias int pthread_t;
 
@@ -109,7 +109,7 @@ void os_query_staticdataseg(void **base, uint *nbytes)
 }
 else
 {
-    
+
 extern (C)
 {
     extern int _xi_a;	// &_xi_a just happens to be start of data segment

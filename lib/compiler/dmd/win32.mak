@@ -1,10 +1,10 @@
-# Makefile to build D runtime library digitalmars.lib for Win32
+# Makefile to build D runtime library dmd.lib for Win32
 # Designed to work with DigitalMars make
 # Targets:
 #	make
 #		Same as make all
 #	make lib
-#		Build digitalmars.lib
+#		Build dmd.lib
 #   make doc
 #       Generate documentation
 #	make clean
@@ -46,12 +46,12 @@ LIB_DEST=..
 	$(DC) -c $(DFLAGS) $< -of$@
 
 .d.html:
-	$(DC) -c -o- $(DOCFLAGS) -Df$*.html digitalmars.ddoc $<
+	$(DC) -c -o- $(DOCFLAGS) -Df$*.html dmd.ddoc $<
 
 targets : lib doc
 all     : lib doc
-lib     : digitalmars.lib
-doc     : digitalmars.doc
+lib     : dmd.lib
+doc     : dmd.doc
 
 ######################################################
 
@@ -140,11 +140,11 @@ ALL_DOCS=
 
 ######################################################
 
-digitalmars.lib : $(ALL_OBJS)
+dmd.lib : $(ALL_OBJS)
 	$(RM) $@
 	$(LC) -c -n $@ $(ALL_OBJS) minit.obj
 
-digitalmars.doc : $(ALL_DOCS)
+dmd.doc : $(ALL_DOCS)
 	@echo No documentation available.
 
 ######################################################
@@ -153,8 +153,8 @@ clean :
 	$(RM) /s *.di
 	$(RM) $(ALL_OBJS)
 	$(RM) $(ALL_DOCS)
-	$(RM) digitalmars*.lib
+	$(RM) dmd*.lib
 
 install :
 	$(MD) $(LIB_DEST)
-	$(CP) digitalmars*.lib $(LIB_DEST)\.
+	$(CP) dmd*.lib $(LIB_DEST)\.

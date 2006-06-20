@@ -8,11 +8,11 @@ module lib.gc.config;
 
 version( Windows )
 {
-    const char[] lib = "digitalmars.lib";
+    const char[] lib = "dmd.lib";
 }
 else version( Posix )
 {
-    const char[] lib = "digitalmars.a";
+    const char[] lib = "dmd.a";
 }
 else
 {
