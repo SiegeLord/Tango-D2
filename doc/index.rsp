@@ -128,7 +128,6 @@ mango\net\servlet\model\IServletRequest.d
 tango\store\model\Procedure.d
 tango\store\iterator\FilteringIterator.d
 tango\log\SocketAppender.d
-doc\index.d
 mango\net\servlet\cache\HashMap.d
 tango\convert\Type.d
 tango\text\RegexIterator.d
