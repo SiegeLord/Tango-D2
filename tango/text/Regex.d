@@ -684,7 +684,7 @@ enum : ubyte
     REword,
     REnotword,
     REbackref,
-};
+}
 
 // BUG: should this include '$'?
 private int isword(dchar c) { return isalnum(c) || c == '_'; }
@@ -2290,7 +2290,7 @@ class Range
 	bits[u] = 1;
     }
 
-};
+}
 
 int parseRange()
 {   ubyte op;
@@ -3038,6 +3038,7 @@ public rchar[] replaceOld(rchar[] format)
 	}
     }
     return result;
+}
 }
 
 //
