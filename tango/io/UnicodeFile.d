@@ -160,7 +160,7 @@ class UnicodeFileT(T) : FileProxy
                        conduit.close();
 
                 // allocate enough space for the entire file
-                auto content = new ubyte [conduit.length];
+                auto content = new ubyte [cast(uint) conduit.length];
 
                 //read the content
                 if (conduit.read (content) != content.length)

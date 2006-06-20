@@ -320,6 +320,5 @@ class MappedBuffer : Buffer
         override IBuffer setConduit (IConduit conduit)
         {
                 throw new IOException ("cannot setConduit on memory-mapped buffer");
-                return null;
         }
 }

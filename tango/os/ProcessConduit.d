@@ -294,7 +294,7 @@ class ProcessConduit : Conduit
 
 	uint writer(void[] src)
 	{
-		pin.writer(src);
+		return pin.writer(src);
 	}
 
 private:

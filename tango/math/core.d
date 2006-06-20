@@ -576,7 +576,7 @@ creal sqrt(creal z) /// ditto
 
     if (z == 0)
     {
-    c = 0;
+    c = z;
     }
     else
     {   real z_re = z.re;
