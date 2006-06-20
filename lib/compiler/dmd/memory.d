@@ -191,7 +191,7 @@ ulong _d_newbitarray(size_t length, bit value)
 	result = 0;
     else
     {	size_t size = (length + 8) >> 3;	// number of bytes
-	ubyte fill = value ? 0xFF : 0;
+	ubyte fill = cast(ubyte) (value ? 0xFF : 0);
 
 	p = gc_malloc(size);
 	debug printf(" p = %p\n", p);

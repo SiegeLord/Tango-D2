@@ -266,6 +266,7 @@ dchar decode(char[] s, inout size_t idx)
 
       Lerr:
       onUnicodeError("invalid UTF-8 sequence", i);
+    return V; // dummy return
     }
 
 unittest
@@ -375,6 +376,7 @@ dchar decode(wchar[] s, inout size_t idx)
 
       Lerr:
 	  onUnicodeError(msg, i);
+	return cast(dchar)u; // dummy return
     }
 
 /********************************************************/
@@ -396,6 +398,7 @@ dchar decode(dchar[] s, inout size_t idx)
 
       Lerr:
 	  onUnicodeError("invalid UTF-32 value", i);
+	return c; // dummy return
     }
 
 

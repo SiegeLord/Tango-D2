@@ -17,13 +17,13 @@ MD=mkdir -p
 #CFLAGS=-mn -6 -r
 #CFLAGS=-g -mn -6 -r
 
-DFLAGS=-release -O -inline -version=Posix
-#DFLAGS=-release -O -inline -version=Posix -I..
-#DFLAGS=-g -release -version=Posix -I..
+DFLAGS=-release -O -inline -version=Posix -w
+#DFLAGS=-release -O -inline -version=Posix -I.. -w
+#DFLAGS=-g -release -version=Posix -I.. -w
 
-TFLAGS=-O -inline -version=Posix
-#TFLAGS=-O -inline -version=Posix -I..
-#TFLAGS=-g -version=Posix -I.
+TFLAGS=-O -inline -version=Posix -w
+#TFLAGS=-O -inline -version=Posix -I.. -w
+#TFLAGS=-g -version=Posix -I. -w
 
 DOCFLAGS=-version=DDoc -version=Posix
 #DOCFLAGS=-version=DDoc -version=Posix -I..

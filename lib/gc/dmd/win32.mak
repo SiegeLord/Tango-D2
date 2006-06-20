@@ -17,6 +17,8 @@ MD=mkdir
 CFLAGS=-mn -6 -r
 #CFLAGS=-g -mn -6 -r
 
+### warnings disabled because gcx has issues ###
+
 DFLAGS=-release -O -inline
 #DFLAGS=-g -release
 

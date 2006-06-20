@@ -17,11 +17,11 @@ MD=mkdir
 CFLAGS=-mn -6 -r
 #CFLAGS=-g -mn -6 -r
 
-DFLAGS=-release -O -inline
-#DFLAGS=-g -release
+DFLAGS=-release -O -inline -w
+#DFLAGS=-g -release -w
 
-TFLAGS=-O -inline
-#TFLAGS=-g
+TFLAGS=-O -inline -w
+#TFLAGS=-g -w
 
 DOCFLAGS=-version=DDoc
 

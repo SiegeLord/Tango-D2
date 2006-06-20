@@ -17,13 +17,18 @@ MD=mkdir -p
 #CFLAGS=-mn -6 -r
 #CFLAGS=-g -mn -6 -r
 
+### warnings disabled because gcx has issues ###
+
 DFLAGS=-release -O -inline -version=Posix
-#DFLAGS=-g -release -version=Posix
+#DFLAGS=-release -O -inline -version=Posix -I..
+#DFLAGS=-g -release -version=Posix -I..
 
 TFLAGS=-O -inline -version=Posix
-#TFLAGS=-g -version=Posix
+#TFLAGS=-O -inline -version=Posix -I..
+#TFLAGS=-g -version=Posix -I..
 
 DOCFLAGS=-version=DDoc -version=Posix
+#DOCFLAGS=-version=DDoc -version=Posix -I..
 
 CC=gcc
 LC=$(AR)
