@@ -114,7 +114,7 @@ real frexp(real value, out int exp)
     else
     {
         exp = ex - 0x3FFE;
-        vu[4] = (0x8000 & vu[4]) | 0x3FFE;
+	    vu[4] = cast(ushort)((0x8000 & vu[4]) | 0x3FFE);
     }
     }
     else if (!*vl)
@@ -132,7 +132,7 @@ real frexp(real value, out int exp)
         *vl <<= 1;
     } while (*vl > 0);
     exp = i;
-        vu[4] = (0x8000 & vu[4]) | 0x3FFE;
+        vu[4] = cast(ushort)((0x8000 & vu[4]) | 0x3FFE);
     }
     return value;
 }
