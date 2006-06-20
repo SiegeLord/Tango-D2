@@ -34,8 +34,7 @@
 *******************************************************************************/
 
         // for sleep()
-import  tango.core.System;
-import  tango.core.Interval;
+import  tango.core.Thread;
 
         // for InternetAddress et. al.
 import  tango.net.Uri,
@@ -46,7 +45,7 @@ import  tango.log.Log,
         tango.log.Admin,
         tango.log.Configurator;
 
-        // for HTTP responses
+        // for html responses
 import  tango.io.protocol.DisplayWriter;
 
         // for testing the http server
@@ -222,7 +221,7 @@ class Echo : Servlet
 
 *******************************************************************************/
 
-void testServer (ServiceProvider provider)
+void testServer (ServletProvider provider)
 {       
         mainLogger.info ("starting server");
 
@@ -236,7 +235,7 @@ void testServer (ServiceProvider provider)
         server.start ();
 
         // send this thread to sleep for ever ...
-        System.sleep ();
+        Thread.sleep ();
 
         // should never get here
         mainLogger.info ("halting server");

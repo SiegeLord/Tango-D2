@@ -16,7 +16,6 @@ import tango.core.ByteSwap;
 import tango.core.Epoch;
 import tango.core.Interval;
 import tango.core.Intrinsic;
-import tango.core.System;
 import tango.core.Traits;
 import tango.core.Unicode;
 import tango.core.Vararg;

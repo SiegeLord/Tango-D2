@@ -222,7 +222,6 @@ tango\store\impl\RBCell.d
 tango\text\model\UniString.d
 tango\store\model\BinaryFunction.d
 tango\os\OS.d
-tango\core\System.d
 mango\net\util\model\IServer.d
 tango\net\http\HttpWriter.d
 tango\log\FileAppender.d
