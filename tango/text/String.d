@@ -113,8 +113,6 @@ private import  tango.convert.Type,
                 tango.convert.Format,
                 tango.convert.Unicode;
 
-private import  tango.io.protocol.model.IWriter;
-
 private import  tango.text.model.UniString;
 
 /*******************************************************************************
@@ -1318,17 +1316,6 @@ class StringT(T) : UniString
                 
                 return a.length - b.length;
         }
-
-        /***********************************************************************
-        
-                Emit content to the provided writer  (IWritable interface)
-
-        ***********************************************************************/
-       
-       void write (IWriter write)
-       {        
-                write (content [0 .. contentLength]);
-       }
 }       
 
 

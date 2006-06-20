@@ -12,15 +12,13 @@
 
 module tango.text.model.UniString;
 
-private import  tango.io.protocol.model.IWriter;
-
 /*******************************************************************************
 
         A string abstraction that converts to anything
 
 *******************************************************************************/
 
-class UniString : IWritable
+class UniString
 {
         abstract char[]  utf8  (char[]  dst = null);
 
@@ -29,7 +27,5 @@ class UniString : IWritable
         abstract dchar[] utf32 (dchar[] dst = null);
 
 	abstract uint getEncoding();
-
-        abstract void write (IWriter);
 }
 
