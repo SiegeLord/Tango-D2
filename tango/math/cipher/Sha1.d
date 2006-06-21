@@ -48,6 +48,8 @@ class Sha1Cipher : Sha0Cipher
 
 *******************************************************************************/
 
+version (UnitText)
+{
 unittest {
         static char[][] strings = [
                 "abc",
@@ -78,4 +80,5 @@ unittest {
                 res = h.finish().toString();
                 assert(res == results[i]);
         }
+}
 }

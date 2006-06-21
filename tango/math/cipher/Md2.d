@@ -277,6 +277,8 @@ private const ubyte[256] PI =
 
 *******************************************************************************/
 
+version (UnitText)
+{
 unittest {
         static char[][] strings = [
                 "",
@@ -304,4 +306,5 @@ unittest {
                 res = h.sum(s).toString();
                 assert(res == results[i]);
         }
+}
 }

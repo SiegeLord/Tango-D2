@@ -356,6 +356,8 @@ private static const uint[8] initial = [
 
 *******************************************************************************/
 
+version (UnitText)
+{
 unittest {
         static char[][] strings = [
                 "abc",
@@ -373,4 +375,5 @@ unittest {
                 res = h.sum(s).toString();
                 assert(res == results[i]);
         }
+}
 }

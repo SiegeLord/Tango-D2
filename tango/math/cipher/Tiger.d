@@ -877,6 +877,8 @@ private static ulong[1024] table = [
 
 *******************************************************************************/
 
+version (UnitText)
+{
 unittest {      
         static char[][] strings = [
                 "",
@@ -915,5 +917,6 @@ unittest {
         res = h.sum(buffer).toString();
         assert(res == "8EF43951B3F5F4FD1D41AFE51B420E710462F233C3AAA8E1");
 
+}
 }
 

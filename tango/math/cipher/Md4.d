@@ -336,6 +336,8 @@ class Md4Cipher : Cipher
 
 *******************************************************************************/
 
+version (UnitText)
+{
 unittest {
         static char[][] strings = [
                 "",
@@ -363,4 +365,5 @@ unittest {
                 res = h.sum(s).toString();
                 assert(res == results[i]);
         }
+}
 }
