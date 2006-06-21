@@ -17,6 +17,8 @@ module tango.math.cipher.Sha256;
 
 public import tango.math.cipher.Cipher;
 
+private import tango.core.ByteSwap;
+
 /*******************************************************************************
 
 *******************************************************************************/
@@ -27,18 +29,45 @@ class Sha256Digest : Digest
 
         /***********************************************************************
         
+                Construct an Sha256Digest.
+
+                Remarks:
+                Constructs an Sha256Digest from binary data
+        
         ***********************************************************************/
 
-        this(uint[8] context) { digest[] = context[]; }
+        this (uint[8] context) 
+        { 
+                digest[] = context[]; 
+
+                version (LittleEndian)
+                         ByteSwap.swap32 (digest.ptr, digest.length * uint.sizeof);
+        }
         
         /***********************************************************************
         
+                Return the string representation
+
+                Returns:
+                the digest in string form
+
+                Remarks:
+                Formats the digest into hex encoded string form.
+
         ***********************************************************************/
 
-        char[] toString() { return toHexString(digest); }
+        char[] toString() { return toHexString (cast(ubyte[]) digest); }
         
         /***********************************************************************
         
+                Return the binary representation
+
+                Returns:
+                the digest in binary form
+
+                Remarks:
+                Returns a void[] containing the binary representation of the digest.
+
         ***********************************************************************/
         
         void[] toBinary() { return cast(void[]) digest; }
@@ -56,6 +85,11 @@ class Sha256Cipher : Cipher
 
         /***********************************************************************
         
+                Initialize the cipher
+
+                Remarks:
+                Returns the cipher state to it's initial value
+        
         ***********************************************************************/
 
         override void start()
@@ -66,6 +100,15 @@ class Sha256Cipher : Cipher
         
         /***********************************************************************
         
+                Obtain the digest
+
+                Returns:
+                the digest
+
+                Remarks:
+                Returns a digest of the current cipher state, this may be the
+                final digest, or a digest of the state between calls to update()
+
         ***********************************************************************/
 
         override Sha256Digest getDigest()
@@ -75,18 +118,47 @@ class Sha256Cipher : Cipher
         
         /***********************************************************************
         
+                Cipher block size
+
+                Returns:
+                the block size
+
+                Remarks:
+                Specifies the size (in bytes) of the block of data to pass to 
+                each call to transform(). For SHA256 the blockSize is 64.
+
         ***********************************************************************/
 
         protected override uint blockSize() { return 64; }
 
         /***********************************************************************
         
+                Length padding size
+
+                Returns:
+                the length paddding size
+
+                Remarks:
+                Specifies the size (in bytes) of the padding which uses the
+                length of the data which has been ciphered, this padding is
+                carried out by the padLength method. For SHA256 the addSize is 8.
+
         ***********************************************************************/
 
         protected override uint addSize()   { return 8;  }
 
         /***********************************************************************
         
+                Pads the cipher data
+
+                Params: 
+                data = a slice of the cipher buffer to fill with padding
+                
+                Remarks:
+                Fills the passed buffer slice with the appropriate padding for 
+                the final call to transform(). This padding will fill the cipher
+                buffer up to blockSize()-addSize(). 
+
         ***********************************************************************/
 
         protected override void padMessage(ubyte[] data)
@@ -96,6 +168,17 @@ class Sha256Cipher : Cipher
         }
 
         /***********************************************************************
+        
+                Performs the length padding
+
+                Params: 
+                data   = the slice of the cipher buffer to fill with padding
+                length = the length of the data which has been ciphered
+                
+                Remarks:
+                Fills the passed buffer slice with addSize() bytes of padding
+                based on the length in bytes of the input data which has been
+                ciphered.
         
         ***********************************************************************/
 
@@ -108,6 +191,17 @@ class Sha256Cipher : Cipher
 
         /***********************************************************************
         
+                Performs the cipher on a block of data
+
+                Params: 
+                data = the block of data to cipher
+                
+                Remarks:
+                The actual cipher algorithm is carried out by this method on
+                the passed block of data. This method is called for every 
+                blockSize() bytes of input data and once more with the remaining
+                data padded to blockSize().
+
         ***********************************************************************/
 
         protected override void transform(ubyte[] input)

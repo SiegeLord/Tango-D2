@@ -25,6 +25,11 @@ class Md5Digest : Md4Digest
 {
         /***********************************************************************
         
+                Construct an Md5Digest.
+
+                Remarks:
+                Constructs an Md5Digest from binary data
+
         ***********************************************************************/
 
         this(uint[4] raw) { super(raw); }
@@ -62,6 +67,15 @@ class Md5Cipher : Md4Cipher
 
         /***********************************************************************
         
+                Obtain the digest
+
+                Returns:
+                the digest
+
+                Remarks:
+                Returns a digest of the current cipher state, this may be the
+                final digest, or a digest of the state between calls to update()
+
         ***********************************************************************/
 
         override Md5Digest getDigest()
@@ -71,6 +85,17 @@ class Md5Cipher : Md4Cipher
 
         /***********************************************************************
         
+                Performs the cipher on a block of data
+
+                Params: 
+                data = the block of data to cipher
+                
+                Remarks:
+                The actual cipher algorithm is carried out by this method on
+                the passed block of data. This method is called for every 
+                blockSize() bytes of input data and once more with the remaining
+                data padded to blockSize().
+
         ***********************************************************************/
 
         protected override void transform(ubyte[] input)

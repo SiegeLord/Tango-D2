@@ -27,6 +27,11 @@ class Md4Digest : Md2Digest
 {       
         /***********************************************************************
         
+                Construct an Md4Digest.
+
+                Remarks:
+                Constructs an Md4Digest from binary data
+
         ***********************************************************************/
 
         this(uint[4] raw) { super(cast(ubyte[16])raw); }
@@ -46,7 +51,7 @@ class Md4Cipher : Cipher
         
         ***********************************************************************/
 
-        static const uint[4] initial = 
+        private static const uint[4] initial = 
         [
                 0x67452301,
                 0xefcdab89,
@@ -58,7 +63,7 @@ class Md4Cipher : Cipher
         
         ***********************************************************************/
 
-        static enum 
+        private static enum 
         {
                 S11 =  3,
                 S12 =  7,
@@ -76,6 +81,11 @@ class Md4Cipher : Cipher
         
         /***********************************************************************
         
+                Initialize the cipher
+
+                Remarks:
+                Returns the cipher state to it's initial value
+        
         ***********************************************************************/
 
         override void start()
@@ -86,6 +96,15 @@ class Md4Cipher : Cipher
 
         /***********************************************************************
         
+                Obtain the digest
+
+                Returns:
+                the digest
+
+                Remarks:
+                Returns a digest of the current cipher state, this may be the
+                final digest, or a digest of the state between calls to update()
+
         ***********************************************************************/
 
         override Md4Digest getDigest()
@@ -95,18 +114,47 @@ class Md4Cipher : Cipher
 
         /***********************************************************************
         
+                Cipher block size
+
+                Returns:
+                the block size
+
+                Remarks:
+                Specifies the size (in bytes) of the block of data to pass to 
+                each call to transform(). For MD4 the blockSize is 64.
+
         ***********************************************************************/
 
         protected override uint blockSize() { return 64; }
 
         /***********************************************************************
         
+                Length padding size
+
+                Returns:
+                the length paddding size
+
+                Remarks:
+                Specifies the size (in bytes) of the padding which uses the
+                length of the data which has been ciphered, this padding is
+                carried out by the padLength method. For MD4 the addSize is 8.
+
         ***********************************************************************/
 
         protected override uint addSize()   { return 8;  }
 
         /***********************************************************************
         
+                Pads the cipher data
+
+                Params: 
+                data = a slice of the cipher buffer to fill with padding
+                
+                Remarks:
+                Fills the passed buffer slice with the appropriate padding for 
+                the final call to transform(). This padding will fill the cipher
+                buffer up to blockSize()-addSize(). 
+
         ***********************************************************************/
 
         protected override void padMessage(ubyte[] data)
@@ -116,6 +164,17 @@ class Md4Cipher : Cipher
         }
         
         /***********************************************************************
+        
+                Performs the length padding
+
+                Params: 
+                data   = the slice of the cipher buffer to fill with padding
+                length = the length of the data which has been ciphered
+                
+                Remarks:
+                Fills the passed buffer slice with addSize() bytes of padding
+                based on the length in bytes of the input data which has been
+                ciphered.
         
         ***********************************************************************/
 
@@ -127,6 +186,17 @@ class Md4Cipher : Cipher
 
         /***********************************************************************
         
+                Performs the cipher on a block of data
+
+                Params: 
+                data = the block of data to cipher
+                
+                Remarks:
+                The actual cipher algorithm is carried out by this method on
+                the passed block of data. This method is called for every 
+                blockSize() bytes of input data and once more with the remaining
+                data padded to blockSize().
+
         ***********************************************************************/
 
         protected override void transform(ubyte[] input)

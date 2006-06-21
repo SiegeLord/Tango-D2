@@ -27,11 +27,21 @@ class Sha0Digest : Digest
 
         /***********************************************************************
         
+                Construct an Sha0Digest.
+
+                Remarks:
+                Constructs a blank Sha0Digest.
+
         ***********************************************************************/
 
         this() { digest[] = 0; }
 
         /***********************************************************************
+        
+                Construct an Sha0Digest.
+
+                Remarks:
+                Constructs an Sha0Digest from binary data
         
         ***********************************************************************/
 
@@ -42,18 +52,39 @@ class Sha0Digest : Digest
 
         /***********************************************************************
         
+                Construct an Sha0Digest.
+
+                Remarks:
+                Constructs an Sha0Digest from another Sha0Digest.
+        
         ***********************************************************************/
 
         this(Sha0Digest rhs) { digest[] = rhs.digest[]; }       
 
         /***********************************************************************
         
+                Return the string representation
+
+                Returns:
+                the digest in string form
+
+                Remarks:
+                Formats the digest into hex encoded string form.
+
         ***********************************************************************/
 
         char[] toString() { return toHexString(digest); }
 
         /***********************************************************************
         
+                Return the binary representation
+
+                Returns:
+                the digest in binary form
+
+                Remarks:
+                Returns a void[] containing the binary representation of the digest.
+
         ***********************************************************************/
         
         void[] toBinary() { return cast(void[]) digest; }
@@ -75,7 +106,7 @@ class Sha0Cipher : Cipher
         
         ***********************************************************************/
 
-        static const uint[] K = 
+        private static const uint[] K = 
         [
                 0x5A827999,
                 0x6ED9EBA1,
@@ -87,7 +118,7 @@ class Sha0Cipher : Cipher
         
         ***********************************************************************/
 
-        static const uint[5] initial = 
+        private static const uint[5] initial = 
         [
                 0x67452301, 
                 0xEFCDAB89, 
@@ -97,6 +128,11 @@ class Sha0Cipher : Cipher
         ];
 
         /***********************************************************************
+        
+                Initialize the cipher
+
+                Remarks:
+                Returns the cipher state to it's initial value
         
         ***********************************************************************/
 
@@ -108,6 +144,15 @@ class Sha0Cipher : Cipher
         
         /***********************************************************************
         
+                Obtain the digest
+
+                Returns:
+                the digest
+
+                Remarks:
+                Returns a digest of the current cipher state, this may be the
+                final digest, or a digest of the state between calls to update()
+
         ***********************************************************************/
 
         override Digest getDigest()
@@ -117,18 +162,47 @@ class Sha0Cipher : Cipher
         
         /***********************************************************************
         
+                Cipher block size
+
+                Returns:
+                the block size
+
+                Remarks:
+                Specifies the size (in bytes) of the block of data to pass to 
+                each call to transform(). For SHA0 the blockSize is 64.
+
         ***********************************************************************/
 
         protected override uint blockSize() { return 64; }
 
         /***********************************************************************
         
+                Length padding size
+
+                Returns:
+                the length paddding size
+
+                Remarks:
+                Specifies the size (in bytes) of the padding which uses the
+                length of the data which has been ciphered, this padding is
+                carried out by the padLength method. For SHA0 the addSize is 0.
+
         ***********************************************************************/
 
         protected override uint addSize()   { return 8;  }
         
         /***********************************************************************
         
+                Pads the cipher data
+
+                Params: 
+                data = a slice of the cipher buffer to fill with padding
+                
+                Remarks:
+                Fills the passed buffer slice with the appropriate padding for 
+                the final call to transform(). This padding will fill the cipher
+                buffer up to blockSize()-addSize(). 
+
         ***********************************************************************/
 
         protected override void padMessage(ubyte[] data)
@@ -138,6 +212,17 @@ class Sha0Cipher : Cipher
         }
 
         /***********************************************************************
+        
+                Performs the length padding
+
+                Params: 
+                data   = the slice of the cipher buffer to fill with padding
+                length = the length of the data which has been ciphered
+                
+                Remarks:
+                Fills the passed buffer slice with addSize() bytes of padding
+                based on the length in bytes of the input data which has been
+                ciphered.
         
         ***********************************************************************/
 
@@ -150,6 +235,17 @@ class Sha0Cipher : Cipher
 
         /***********************************************************************
         
+                Performs the cipher on a block of data
+
+                Params: 
+                data = the block of data to cipher
+                
+                Remarks:
+                The actual cipher algorithm is carried out by this method on
+                the passed block of data. This method is called for every 
+                blockSize() bytes of input data and once more with the remaining
+                data padded to blockSize().
+
         ***********************************************************************/
 
         protected override void transform(ubyte[] input)

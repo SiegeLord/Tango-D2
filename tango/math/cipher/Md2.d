@@ -108,7 +108,7 @@ class Md2Cipher : Cipher
                 state[] = 0;
                 C[] = 0;
         }
-
+        
         /***********************************************************************
         
                 Obtain the digest
@@ -129,6 +129,15 @@ class Md2Cipher : Cipher
 
         /***********************************************************************
         
+                Cipher block size
+
+                Returns:
+                the block size
+
+                Remarks:
+                Specifies the size (in bytes) of the block of data to pass to 
+                each call to transform(). For MD2 the blockSize is 16.
+
         ***********************************************************************/
         
         protected override uint blockSize() 
@@ -138,6 +147,16 @@ class Md2Cipher : Cipher
 
         /***********************************************************************
         
+                Length padding size
+
+                Returns:
+                the length paddding size
+
+                Remarks:
+                Specifies the size (in bytes) of the padding which uses the
+                length of the data which has been ciphered, this padding is
+                carried out by the padLength method. For MD2 the addSize is 0.
+
         ***********************************************************************/
 
         protected override uint addSize() 
@@ -147,6 +166,16 @@ class Md2Cipher : Cipher
         
         /***********************************************************************
         
+                Pads the cipher data
+
+                Params: 
+                data = a slice of the cipher buffer to fill with padding
+                
+                Remarks:
+                Fills the passed buffer slice with the appropriate padding for 
+                the final call to transform(). This padding will fill the cipher
+                buffer up to blockSize()-addSize(). 
+
         ***********************************************************************/
 
         protected override void padMessage (ubyte[] data)
@@ -156,11 +185,22 @@ class Md2Cipher : Cipher
                  * becomes congruent to 0, modulo 16. At least one byte and at most 16
                  * 16 bytes are appended.
                  */
-                data[0..$] = cast(ubyte) data.length;  // bug?
+                data[0..$] = cast(ubyte) data.length;  
         }
         
         /***********************************************************************
         
+                Performs the cipher on a block of data
+
+                Params: 
+                data = the block of data to cipher
+                
+                Remarks:
+                The actual cipher algorithm is carried out by this method on
+                the passed block of data. This method is called for every 
+                blockSize() bytes of input data and once more with the remaining
+                data padded to blockSize().
+
         ***********************************************************************/
 
         protected override void transform (ubyte[] input)
@@ -189,6 +229,14 @@ class Md2Cipher : Cipher
         
         /***********************************************************************
         
+                Final processing of cipher.
+
+                Remarks:
+                This method is called after the final transform just prior to
+                the creation of the final digest. The MD2 algorithm requires
+                an additional step at this stage. Future ciphers may or may not
+                require this method.
+
         ***********************************************************************/
 
         protected override void extend()

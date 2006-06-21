@@ -19,6 +19,8 @@
 
 module tango.math.cipher.Cipher;
 
+private import tango.core.ByteSwap;
+
 /*******************************************************************************
 
        This is an exception class to be thrown by Cipher's where required.
@@ -78,6 +80,41 @@ class Digest
         ***********************************************************************/
         
         abstract void[] toBinary();
+
+        /***********************************************************************
+
+                Represent an array as a hex encoded string
+
+                Params: 
+                d = the array to represent
+
+                Returns:
+                the string representation
+
+                Remarks:
+                Represents any sized array of any sized numerical items as a 
+                hex encoded string.
+
+        ***********************************************************************/
+
+        protected char[] toHexString (ubyte[] src) 
+        {
+                char[] result;
+                static char[] hexdigits = "0123456789ABCDEF";
+
+                if (src.length) 
+                   {
+                   uint index = -1;
+                   result = new char [src.length * 2];
+                   foreach (b; src)
+                           {
+                           result [++index] = hexdigits [b >> 4];
+                           result [++index] = hexdigits [b & 0x0f];
+                           }
+                   }
+
+                return result;
+        }
 }
 
 /*******************************************************************************
@@ -99,7 +136,7 @@ class Digest
         The second usage pattern involves three methods and can be used to 
         process the data piece by piece (this makes it useful for cases 
         involving streams of data). It begins with a new Cipher or a call to
-        start() which initialises the cipher. Data is ciphered by one or more 
+        start() which initializes the cipher. Data is ciphered by one or more 
         calls to update(), and finish() is called to complete the process and
         produce a Digest. For example:
         ---
@@ -398,18 +435,12 @@ class Cipher
 
         static final void littleEndian32(ubyte[] input, uint[] output)
         {
-                output[] = 0;
-
                 assert(output.length == input.length/4);
-                for (uint i = 0; i < input.length; i++) 
-                    {
-                    output[i/4] <<= 8;
-                    version (BigEndian) 
-                             output[i/4] |= cast(uint)input[i];
-                       else 
-                          output[i/4] |= cast(uint)input[i^3];
-                    }
-        }       
+                output[] = cast(uint[]) input;
+
+                version (BigEndian)
+                         ByteSwap.swap32 (output.ptr, output.length * uint.sizeof);
+        }
 
         /***********************************************************************
 
@@ -425,18 +456,12 @@ class Cipher
         ***********************************************************************/
 
         static final void bigEndian32(ubyte[] input, uint[] output)
-        {               
-                output[] = 0;
-
+        {
                 assert(output.length == input.length/4);
-                for (uint i = 0; i < input.length; i++) 
-                    {
-                    output[i/4] <<= 8;
-                    version (BigEndian) 
-                             output[i/4] |= cast(uint)input[i^3];
-                       else 
-                          output[i/4] |= cast(uint)input[i];
-                    }
+                output[] = cast(uint[]) input;
+
+                version(LittleEndian)
+                        ByteSwap.swap32 (output.ptr, output.length *  uint.sizeof);
         }
 
         /***********************************************************************
@@ -454,19 +479,12 @@ class Cipher
 
         static final void littleEndian64(ubyte[] input, ulong[] output)
         {
-                output[] = 0;
-
                 assert(output.length == input.length/8);
-                for (uint i = 0; i < input.length; i++) 
-                    {
-                    output[i/8] <<= 8;
-                    version (BigEndian) 
-                             output[i/8] |= cast(ulong)input[i];
-                       else 
-                          output[i/8] |= cast(ulong)input[i^7];
-                    }
-        }
+                output[] = cast(ulong[]) input;
 
+                version (BigEndian)
+                         ByteSwap.swap64 (output.ptr, output.length * ulong.sizeof);
+        }
 
         /***********************************************************************
         
@@ -483,17 +501,11 @@ class Cipher
 
         static final void bigEndian64(ubyte[] input, ulong[] output)
         {
-                output[] = 0;
-
                 assert(output.length == input.length/8);
-                for (uint i = 0; i < input.length; i++) 
-                    {
-                    output[i/8] <<= 8;
-                    version (BigEndian) 
-                             output[i/8] |= cast(ulong)input[i^7];
-                       else 
-                          output[i/8] |= cast(ulong)input[i];
-                    }
+                output[] = cast(ulong[]) input;
+
+                version (LittleEndian)
+                         ByteSwap.swap64 (output.ptr, output.length * ulong.sizeof);
         }
 
         /***********************************************************************
@@ -511,7 +523,8 @@ class Cipher
 
         static final uint rotateLeft(uint x, uint n)
         {       
-                version (X86) 
+                version (D_InlineAsm_X86) 
+                        version (DigitalMars) 
                         {
                         asm {
                             naked;
@@ -523,54 +536,9 @@ class Cipher
                         }
                      else 
                         return (x << n) | (x >> (32-n));
+                else 
+                   return (x << n) | (x >> (32-n));
         }
 }
 
-
-/*******************************************************************************
-
-        Represent an array as a hex encoded string
-
-        Params: 
-        d = the array to represent
-
-        Returns:
-        the string representation
-
-        Remarks:
-        Represents any sized array of any sized numerical items as a hex encoded
-        string.
-
-*******************************************************************************/
-
-template toHexString(T)
-{ 
-        char[] toHexString(T d) 
-        {
-                char[] result;
-                static char[] hexdigits = "0123456789ABCDEF";
-
-                if (d.length != 0) 
-                   {
-                   typeof(d[0]) u;
-                   uint sz = u.sizeof*2;
-                   uint ndigits = 0;
-
-                   result = new char[sz*d.length];
-                   for (int i = d.length-1; i >= 0; i--) 
-                       {                  
-                       u = d[i];
-                       for (; u; u /= 16) 
-                           {
-                           result[result.length-1-ndigits] = hexdigits[0x0f & cast(uint) u];
-                           ndigits++;
-                           }
-
-                       for (; ndigits < (d.length-i)*sz; ndigits++)
-                              result[result.length-1-ndigits] = '0';
-                       }
-                   }
-                return result;
-        }
-}
 
