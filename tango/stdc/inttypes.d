@@ -8,6 +8,7 @@
  */
 module tango.stdc.inttypes;
 
+public import tango.stdc.stddef;
 public import tango.stdc.stdint;
 
 extern (C):
