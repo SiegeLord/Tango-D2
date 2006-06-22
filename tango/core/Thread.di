@@ -26,10 +26,13 @@ version (Win32)
     import tango.os.windows.c.minwin;
     extern (Windows) 
 {
-    BOOL TlsSetValue(DWORD, PVOID);
-    PVOID TlsGetValue(DWORD);
     DWORD TlsAlloc();
-    const STILL_ACTIVE = 259;
+    PVOID TlsGetValue(DWORD);
+    BOOL TlsSetValue(DWORD, PVOID);
+    const
+{
+    DWORD STILL_ACTIVE = 259;
+}
     const
 {
     DWORD TLS_OUT_OF_INDEXES = -1u;

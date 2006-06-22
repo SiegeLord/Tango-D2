@@ -38,25 +38,34 @@ version( Win32 )
 {
     private
     {
-        // minimal windows decls
         import tango.os.windows.c.minwin;
 
-        // avoid importing all of windows.*
+        //
+        // decls not in minwin
+        //
         extern (Windows)
-               {
-               BOOL TlsSetValue(DWORD,PVOID);
-               PVOID TlsGetValue(DWORD);
-               DWORD TlsAlloc();
-               const STILL_ACTIVE = 0x103;
-               const DWORD TLS_OUT_OF_INDEXES = 0xFFFFFFFF;
-               }
+        {
+            DWORD TlsAlloc();
+            PVOID TlsGetValue(DWORD);
+            BOOL TlsSetValue(DWORD,PVOID);
 
-        // avoid multiple imports via process.d
+            const DWORD STILL_ACTIVE        = 0x103;
+            const DWORD TLS_OUT_OF_INDEXES  = 0xFFFFFFFF;
+       }
+
+        //
+        // avoid multiple imports via tango.os.windows.process
+        //
         extern (Windows) alias uint function(void*) btex_fptr;
-        version (X86)
-                extern (C) ulong _beginthreadex(void*, uint, btex_fptr, void*, uint, uint *);
-             else    
-                extern (C) uint _beginthreadex(void*, uint, btex_fptr, void*, uint, uint *);
+
+        version( X86 )
+        {
+            extern (C) ulong _beginthreadex(void*, uint, btex_fptr, void*, uint, uint*);
+        }
+        else
+        {
+            extern (C) uint _beginthreadex(void*, uint, btex_fptr, void*, uint, uint*);
+        }
 
 
         //

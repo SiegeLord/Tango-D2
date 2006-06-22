@@ -10,8 +10,8 @@ module tango.stdc.stddef;
 
 extern (C):
 
-alias typeof(int.sizeof)                    size_t;
-alias typeof(cast(void*)0 - cast(void*)0)   ptrdiff_t;
+//alias typeof(int.sizeof)                    size_t;
+//alias typeof(cast(void*)0 - cast(void*)0)   ptrdiff_t;
 
 version( Win32 )
 {

@@ -43,8 +43,22 @@ private
     import util.string;
 }
 
-public import tango.stdc.stddef;
-public import tango.stdc.stdbool;
+// NOTE: For some reason, this declaration method doesn't work
+//       in this particular file (and this file only).  It must
+//       be a DMD thing.
+//alias typeof(int.sizeof)                    size_t;
+//alias typeof(cast(void*)0 - cast(void*)0)   ptrdiff_t;
+
+version( X86_64 )
+{
+    alias ulong size_t;
+    alias long  ptrdiff_t;
+}
+else
+{
+    alias uint  size_t;
+    alias int   ptrdiff_t;
+}
 
 alias size_t hash_t;
 
@@ -131,8 +145,8 @@ class ClassInfo : Object
  */
 class TypeInfo
 {
-    uint toHash()
-    {	uint hash;
+    hash_t toHash()
+    {	hash_t hash;
 
 	foreach (char c; this.classinfo.name)
 	    hash = hash * 9 + c;

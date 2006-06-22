@@ -35,6 +35,7 @@ private
 {
     import tango.stdc.string;
     import tango.stdc.stdlib;
+    import tango.stdc.stdbool; // TODO: remove this when the old bit code goes away
     import util.utf;
 }
 

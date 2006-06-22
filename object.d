@@ -1,16 +1,14 @@
 module object;
 
-public import tango.stdc.stddef;
+alias typeof(int.sizeof)                    size_t;
+alias typeof(cast(void*)0 - cast(void*)0)   ptrdiff_t;
 
-// please, let's forget about 'bit' :)
-//public import tango.stdc.stdbool;
-
-private alias size_t hash_t;
+alias size_t hash_t;
 
 class Object
 {
     char[] toString();
-    uint toHash();
+    hash_t toHash();
     int opCmp(Object o);
     int opEquals(Object o);
 }

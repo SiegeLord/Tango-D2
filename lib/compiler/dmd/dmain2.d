@@ -10,6 +10,7 @@
 
 private
 {
+    import tango.stdc.stddef;
     import tango.stdc.stdlib;
     import tango.stdc.string;
     import tango.stdc.stdio;
