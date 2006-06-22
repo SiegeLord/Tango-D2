@@ -20,7 +20,7 @@ struct Type
         enum : uint
         {
                 Void=0, Bool, Byte, UByte, Short, UShort, Int, UInt, Long, ULong, 
-                Float, Double, Real, Utf8, Utf16, Utf32, Pointer,
+                Float, Double, Real, Utf8, Utf16, Utf32, Pointer, Obj,
 
                 Raw=uint.max // non-utf type
         }
@@ -45,6 +45,7 @@ struct Type
                 wchar.sizeof,
                 dchar.sizeof,
                 (void*).sizeof,
+                (Object*).sizeof,
         ];
 
 

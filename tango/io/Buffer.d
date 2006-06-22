@@ -221,6 +221,8 @@ class Buffer : IBuffer
         protected static char[] eofRead   = "end-of-file whilst reading";
         protected static char[] eofWrite  = "end-of-file whilst writing";
 
+        alias append opCall;
+
         /***********************************************************************
         
                 Ensure the buffer remains valid between method calls
@@ -536,16 +538,13 @@ class Buffer : IBuffer
                 Params:
                 src = the content to _append
 
-                Returns:
-                the buffer instance
+                Returns a chaining reference if all content was written. 
+                Throws an IOException indicating eof or eob if not.
 
                 Remarks:
-                Append an array of data to this buffer, and flush to the
-                conduit as necessary. Returns a chaining reference if all 
-                data was written; throws an IOException indicating eof or 
-                eob if not.
-
-                This is often used in lieu of a Writer.
+                Append another buffer to this one, and flush to the
+                conduit as necessary. This is often used in lieu of 
+                a Writer.
 
         ***********************************************************************/
 
@@ -575,44 +574,19 @@ class Buffer : IBuffer
 
         /***********************************************************************
         
-                Consume content from a producer
-
-                Params:
-                src = the content to _consume
-
-                Remarks:
-                Appends an array of data to this buffer, and flushes to the
-                conduit as necessary. Throws an IOException indicating eof or 
-                eob when the append fails
-
-                This is often used in lieu of a Writer, and enables simple
-                classes, such as FilePath and Uri, to emit content directly
-                into a buffer (thus avoiding intermediate heap activity)
-
-        ***********************************************************************/
-
-        void consume (char[] src)        
-        {               
-                append (src);
-        }
-
-        /***********************************************************************
-        
                 Append content
 
                 Params:
                 other = a buffer with content available
 
                 Returns:
-                the buffer instance
+                Returns a chaining reference if all content was written. 
+                Throws an IOException indicating eof or eob if not.
 
                 Remarks:
                 Append another buffer to this one, and flush to the
-                conduit as necessary. Returns a chaining reference if all 
-                data was written; throws an IOException indicating eof or 
-                eob if not.
-
-                This is often used in lieu of a Writer.
+                conduit as necessary. This is often used in lieu of 
+                a Writer.
 
         ***********************************************************************/
 
@@ -621,6 +595,90 @@ class Buffer : IBuffer
                 return append (other.toString);
         }
 
+        /***********************************************************************
+        
+                Consume content from a producer
+
+                Params:
+                dg = the producing delegate, which should itself accept
+                a callback for consuming char[] content
+
+                Returns:
+                Returns a chaining reference if all content was written. 
+                Throws an IOException indicating eof or eob if not.
+
+                Remarks:
+                Invokes the provided 
+
+                This is often used in lieu of a Writer, and enables simple
+                classes, such as FilePath and Uri, to emit content directly
+                into a buffer (thus avoiding intermediate heap activity)
+
+                Examples:
+                ---
+                auto path = new FilePath (somepath);
+
+                Cout (&path.produce);
+                ---
+
+                Contrast the above with the following, which used toString()
+                instead:
+                ---
+                Cout (new FilePath (somepath));
+                ---
+
+
+        ***********************************************************************/
+
+        private alias void delegate (void[]) Consumer;
+
+        IBuffer consume (Consumer delegate (Consumer) dg)        
+        {               
+                dg ((void[] v){append(v);});
+                return this;
+        }
+
+        /***********************************************************************
+        
+                Append content
+
+                Params:
+                other = an object with a useful toString() method
+
+                Returns:
+                Returns a chaining reference if all content was written. 
+                Throws an IOException indicating eof or eob if not.
+
+                Remarks:
+                Append the result of other.toString() to this buffer, and 
+                flush to the conduit as necessary. This is often used in 
+                lieu of a Writer.
+
+        ***********************************************************************/
+
+        IBuffer append (Object o)        
+        {           
+                return append (o.toString);
+        }
+
+        /***********************************************************************
+        
+                Append a newline
+
+                Returns:
+                Returns a chaining reference if all content was written. 
+                Throws an IOException indicating eof or eob if not.
+
+                Remarks:
+                Emit a platform-specific newline into the buffer
+
+        ***********************************************************************/
+
+        protected IBuffer newline ()
+        {
+                return this;
+        }     
+                      
         /***********************************************************************
         
                 Retrieve the current content as a string

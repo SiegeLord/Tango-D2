@@ -43,7 +43,7 @@ class FilePath
 
         private wchar[] fpWide;                 // utf 16 with trailing 0
 
-        private alias void delegate (char[]) Consumer;  // simplistic string appender
+        private alias void delegate (void[]) Consumer;  // simplistic string appender
 
         /***********************************************************************
         
@@ -383,7 +383,7 @@ class FilePath
 
         ***********************************************************************/
 
-        char[] toString ()
+        override char[] toString ()
         {
                 return toUtf8 ();
         }               
@@ -397,7 +397,7 @@ class FilePath
         char[] toUtf8 (bool withNull = false)
         {
                 if (fp.length is 0)
-                    produce ((char[] v){fp ~= v;}) ("\0");
+                    produce ((void[] v){fp ~= cast(char[]) v;}) ("\0");
 
                 // return with or without trailing null
                 return fp [0 .. $ - (withNull ? 0 : 1)];
@@ -429,7 +429,7 @@ class FilePath
         {      
                 char[] s;
                 s.length = 256, s.length = 0;
-                splice (base, (char[] v){s ~= v;});
+                splice (base, (void[] v){s ~= cast(char[]) v;});
                 return s;
         }               
 

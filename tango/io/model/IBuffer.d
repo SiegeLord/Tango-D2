@@ -70,6 +70,8 @@ abstract class IBuffer // could be an interface, but that causes poor codegen
 {
         typedef uint delegate (void* dst, uint count, uint type) Converter;
 
+        alias append opCall;
+        
         private typedef byte Style;
 
         const Style     Mixed  = 0, 
@@ -139,7 +141,11 @@ abstract class IBuffer // could be an interface, but that causes poor codegen
 
         ***********************************************************************/
 
-        IBuffer append (IBuffer other);
+        abstract IBuffer append (IBuffer other);
+
+        abstract IBuffer append (Object o);
+
+        abstract IBuffer newline ();
 
         /***********************************************************************
         
@@ -159,7 +165,7 @@ abstract class IBuffer // could be an interface, but that causes poor codegen
 
         ***********************************************************************/
 
-        void consume (char[] src);
+        //abstract void consume (char[] src);
 
         /***********************************************************************
 

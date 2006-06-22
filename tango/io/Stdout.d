@@ -37,26 +37,24 @@ private class BufferFormatT(T)
         private alias FormatStructT!(T) Format;
         public  alias print             opCall;
 
+        private T[128]                  tmp;
         private bool                    flush;
         private IBuffer                 target;
         private Importer                importer;
-        private T[128]                  tmp;
-        private Format                  format;
+        private Format                  formatter;
 
         /**********************************************************************
 
                 Construct a BufferFormat instance, tying the provided
                 buffer to a formatter. Set option 'flush' to true if
-                the result should be flushed when complete, and provide
-                a 'tail' to append on the completed output (such as a 
-                newline).
+                the result should be flushed when complete.
 
         **********************************************************************/
 
         this (IBuffer target, bool flush = true)
         {
                 // configure the formatter
-                format.ctor (&write, &render, tmp, &Double.format);
+                formatter.ctor (&write, tmp, &Double.format);
 
                 // hook up a unicode converter
                 importer = new UnicodeImporter!(T)(target);
@@ -72,18 +70,18 @@ private class BufferFormatT(T)
 
         BufferFormatT print (T[] fmt, ...)
         {
-                format.print (fmt, _arguments, _argptr, false);
-                return this;
+                formatter.print (fmt, _arguments, _argptr);
+                return render();
         }
 
         /**********************************************************************
 
         **********************************************************************/
 
-        BufferFormatT println (T[] fmt, ...)
+        BufferFormatT format (...)
         {
-                format.print (fmt, _arguments, _argptr, true);
-                return this;
+                formatter.print (null, _arguments, _argptr);
+                return render();
         }
 
         /***********************************************************************
@@ -94,9 +92,8 @@ private class BufferFormatT(T)
 
         BufferFormatT newline ()
         {
-                format.newline();
-                render();
-                return this;
+                formatter.newline;
+                return render();
         }
 
         /**********************************************************************
@@ -118,7 +115,7 @@ private class BufferFormatT(T)
 
         IConduit conduit ()
         {
-                return target.getConduit();
+                return target.getConduit;
         }      
 
         /**********************************************************************
@@ -134,14 +131,15 @@ private class BufferFormatT(T)
 
         /**********************************************************************
 
-                Callback from the Format instance to render the content
+                Render content -- flush the output buffer
 
         **********************************************************************/
 
-        private void render ()
+        private BufferFormatT render ()
         {
                 if (flush)
-                    target.flush ();
+                    target.flush;
+                return this;
         }      
 }
 
@@ -153,10 +151,10 @@ alias BufferFormatT!(char) BufferFormat;
 
         Standard, global formatters for console output. If you don't need
         formatted output or unicode translation, consider using the module
-        io.Console directly
+        tango.io.Console directly
 
         Note that both the buffer and conduit in use are exposed by these
-        global instances ~ this can be leveraged to, for example, copy a 
+        global instances ~ this can be leveraged, for instance, to copy a 
         file to the standard output:
 
         ---

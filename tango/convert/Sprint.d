@@ -72,7 +72,7 @@ struct SprintStructT(T, uint work=128)
 
         void ctor (T[] dst, Format.DblFormat df = null)
         {
-                format.ctor (&sink, null, tmp, df);
+                format.ctor (&sink, tmp, df);
                 p = buffer = dst;
                 limit = p + buffer.length;
         }
@@ -171,7 +171,7 @@ class SprintClassT(T, uint work=128)
 
         this (int size, Format.DblFormat df = null)
         {
-                format.ctor (&sink, null, tmp, df);
+                format.ctor (&sink, tmp, df);
                 p = buffer = new T[size];
                 limit = p + buffer.length;
         }

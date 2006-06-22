@@ -264,6 +264,17 @@ class FileConduit : DeviceConduit, DeviceConduit.Seek
         }               
 
         /***********************************************************************
+        
+                Return the name of the FilePath used by this file.
+
+        ***********************************************************************/
+
+        override char[] toString ()
+        {
+                return path.toString;
+        }               
+
+        /***********************************************************************
                 
                 Return the current file position.
                 

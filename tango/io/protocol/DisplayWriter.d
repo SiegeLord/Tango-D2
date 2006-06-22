@@ -79,7 +79,7 @@ class DisplayWriter : Writer
 
                 // configure output-handler, workspace, and the
                 // floating-point converter
-                format.ctor (&emit, null, workspace, df);
+                format.ctor (&emit, workspace, df);
         }
      
         /***********************************************************************
@@ -93,7 +93,7 @@ class DisplayWriter : Writer
                 super (conduit);
 
                 // configure formatter
-                format.ctor (&emit, null, workspace, &Double.format);
+                format.ctor (&emit, workspace, &Double.format);
         }
 
         /***********************************************************************

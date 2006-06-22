@@ -37,11 +37,7 @@ struct FormatStructT(T)
 
         typedef uint delegate (void[], uint type) Emitter;
 
-        typedef void delegate () Close;
-
-
         private Emitter         sink;           // text emitter
-        private Close           close;          // completion notifier
         private int             style,          // character following %
                                 width,          // width specifier
                                 precision;      // number of decimals
@@ -53,7 +49,10 @@ struct FormatStructT(T)
         private T[]             workspace;      // formatting buffer
 
 
-        private static T[64]   Spaces = ' ';    // for padding the output
+        private static T[]      Left   = "[",
+                                Right  = "]",
+                                Comma  = ", ";
+        private static T[64]    Spaces = ' ';   // for padding the output
 
         mixin Type.TextType!(T);
 
@@ -68,7 +67,7 @@ struct FormatStructT(T)
         private static ubyte DefaultStyle[] = ['s', 's', 'd', 'u', 'd', 
                                                'u', 'd', 'u', 'd', 'u',
                                                'f', 'f', 'f', 's', 's', 
-                                               's', 'x'];
+                                               's', 'x', 's'];
 
 
         /**********************************************************************
@@ -79,10 +78,9 @@ struct FormatStructT(T)
 
         **********************************************************************/
 
-        public void ctor (Emitter sink, Close close, T[] workspace, DblFormat dFormat = null)
+        public void ctor (Emitter sink, T[] workspace, DblFormat dFormat = null)
         {
                 this.sink = sink;
-                this.close = close;
                 this.dFormat = dFormat;
                 this.workspace = workspace;
         }
@@ -101,6 +99,15 @@ struct FormatStructT(T)
                       static T[] Newline = "\r\n";
 
                 return sink (Newline, TextType);
+        }
+
+        /***********************************************************************
+        
+        ***********************************************************************/
+
+        public int print (TypeInfo[] arguments, va_list argptr, bool nl)
+        {      
+                return print (null, arguments, argptr, nl);
         }
 
         /***********************************************************************
@@ -133,9 +140,9 @@ struct FormatStructT(T)
                         uint t = ti.classinfo.name[9];
 
                         // is this an array style?
-                        if (t == 'A')
+                        if (t is 'A')
                            {
-                           void[]* q = cast(void[]*) argptr;
+                           void[] q = *cast(void[]*) argptr;
                            t = getType (ti.classinfo.name[10]);
 
                            // print this argument ...
@@ -168,13 +175,8 @@ struct FormatStructT(T)
                 if (nl)
                     length += newline();
 
-                // render the output?
-                if (close)
-                    close();
-
                 return length;
         }
-
 
         /***********************************************************************
         
@@ -195,7 +197,6 @@ struct FormatStructT(T)
                    }
                 return length;
         }
-
 
         /***********************************************************************
         
@@ -219,30 +220,33 @@ struct FormatStructT(T)
 
         public int emit (void* src, uint bytes, uint type)
         {
+                return header(type) + emit(src, bytes, type, style);           
+        }                 
+
+        /**********************************************************************
+
+                Throw an error
+
+        **********************************************************************/
+
+        public static void error (char[] msg)
+        {
+                Integer.error(msg);
+        }
+
+        /***********************************************************************
+        
+        ***********************************************************************/
+
+        private int emit (void* src, uint bytes, uint type, uint style)
+        {
                 int     iValue;
                 long    lValue;
                 double  fValue;
                 uint    length;
 
-                // convert format segment to Style
-                if (parse (meta) is 0)
-                    style = DefaultStyle[type];
-
-                if (flags & Flags.Array)
-                    meta = null;
-                else
-                   {
-                   // flip remaining format, if array not specified
-                   meta = tail;
-                   tail = null;
-                   }
-
                 // get width of elements (note: does not work for bit[])
                 int size = Type.widths[type];
-
-                // always emit prefix text 
-                if (head.length)
-                    length = sink (head, TextType);                   
 
                 // for all bytes in source ...
                 while (bytes)
@@ -313,6 +317,11 @@ floating:
                                   fValue = *cast(real*) src;
                                   goto floating;
 
+                             case Type.Obj:
+                                  char[] tmp = (*cast(Object*) src).toString;
+                                  length += emit (tmp.ptr, tmp.length, Type.Utf8, style); 
+                                  break;
+
                              case Type.Utf8:
                              case Type.Utf16:
                              case Type.Utf32:
@@ -352,22 +361,11 @@ floating:
                              }
 
                       // bump counters and loop around for next instance
-                      bytes -= size;
+                      if (bytes -= size)
+                          length += sink (Comma, TextType);
                       src += size;
                       }
                 return length;
-        }
-
-
-        /**********************************************************************
-
-                Throw an error
-
-        **********************************************************************/
-
-        public static void error (char[] msg)
-        {
-                Integer.error(msg);
         }
 
         /**********************************************************************
@@ -388,15 +386,18 @@ floating:
 
                 if (t >= 'a' && t <= 'w')
                    {
-                   t = xlate[t - 'a'];
-                   if (t >= 0)
-                       return t;
+                   auto tt = xlate[t - 'a'];
+                   if (tt >= 0)
+                       return tt;
                    }
                 else
                    if (t is 'P')
                        return Type.Pointer;
+                    else
+                       if (t is 'C')
+                           return Type.Obj;
 
-                Integer.error ("Format.getType : unexpected argument type");
+                Integer.error ("Format.getType : unexpected argument type " ~ cast(char) t);
                 return 0;
         }
 
@@ -518,6 +519,34 @@ floating:
         {
                 return cast(bool) (t >= '0' && t <= '9');
         }
+
+        /***********************************************************************
+
+                Emit the text prior to a format specifier
+        
+        ***********************************************************************/
+
+        private int header (uint type)
+        {
+                // convert format segment to Style
+                if (parse (meta) is 0)
+                    style = DefaultStyle[type];
+
+                if (flags & Flags.Array)
+                    meta = null;
+                else
+                   {
+                   // flip remaining format, if array not specified
+                   meta = tail;
+                   tail = null;
+                   }
+
+                // always emit prefix text 
+                if (head.length)
+                    return sink (head, TextType);  
+         
+                return 0;
+        }                 
 
         /**********************************************************************
 
@@ -679,9 +708,9 @@ class FormatClassT(T)
 
         **********************************************************************/
 
-        this (Format.Emitter sink, Format.Close close, Format.DblFormat df = null)
+        this (Format.Emitter sink, Format.DblFormat df = null)
         {
-                format.ctor (sink, close, tmp, df);
+                format.ctor (sink, tmp, df);
         }
 
         /**********************************************************************

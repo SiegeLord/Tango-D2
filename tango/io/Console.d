@@ -65,6 +65,8 @@ struct Console
         class Input : Buffer
         {
                 alias getConduit conduit;
+                
+                alias get opCall;
 
                 /**************************************************************
 
@@ -79,12 +81,12 @@ struct Console
 
                 **************************************************************/
 
-                Input opCall (inout char[] x)
+                Input get (inout char[] x)
                 {
-                        if (readable == 0)
+                        if (readable is 0)
                             fill ();
 
-                        x = cast(char[]) get (readable);
+                        x = cast(char[]) super.get (readable);
                         return this;
                 }
         }
@@ -99,6 +101,7 @@ struct Console
         {
                 alias getConduit conduit;
 
+                alias Buffer.append append;
 
                 /**************************************************************
 
@@ -113,20 +116,18 @@ struct Console
 
                 **************************************************************/
 
-                Output opCall (char[] x)
+                override Output append (void[] x)
                 {
-                        append(x).flush();
-                        return this;
+                        return super.append(x).flush;
                 } 
                           
                 /**************************************************************
 
                 **************************************************************/
 
-                Output newline ()
+                override Output newline ()
                 {
-                        append("\n").flush();
-                        return this;
+                        return this.append ("\n");
                 }           
         }
 

@@ -794,7 +794,7 @@ class MutableStringT(T) : StringT!(T)
                 
                 scratch  = new T[64];
                 converts = new T[256];
-                formatter.ctor (&convert, null, scratch, df);                
+                formatter.ctor (&convert, scratch, df);                
         }
 
         /**********************************************************************

@@ -145,7 +145,7 @@ class FileProxy // : IWritable
 
         char[] toString ()
         {
-                return path.toString();
+                return path.toString;
         }               
 
         /***********************************************************************

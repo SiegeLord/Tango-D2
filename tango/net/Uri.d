@@ -117,7 +117,7 @@ class Uri
                         ];
 
 
-        private alias void delegate (char[]) Consumer;  // simplistic string appender
+        private alias void delegate (void[]) Consumer;  // simplistic string appender
 
 
         /***********************************************************************
@@ -399,7 +399,7 @@ class Uri
                 char[] s;
 
                 s.length = 256, s.length = 0;
-                produce ((char[] v) {s ~= v;});
+                produce ((void[] v) {s ~= cast(char[]) v;});
                 return s;
         }
 
