@@ -28,9 +28,9 @@ public class Appender
 {
         typedef int Mask;
 
-        private Appender        next;
-        private Layout          layout;
-        private Mask[char[]]    registry;
+        private Appender                next;
+        private Layout                  layout;
+        private static Mask[char[]]     registry;
 
         /***********************************************************************
                 
