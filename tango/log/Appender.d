@@ -28,9 +28,8 @@ public class Appender
 {
         typedef int Mask;
 
-        private Appender                next;
-        private Layout                  layout;
-        private static Mask[char[]]     registry;
+        private Appender        next;
+        private Layout          layout;
 
         /***********************************************************************
                 
@@ -78,9 +77,10 @@ public class Appender
 
         ***********************************************************************/
 
-        protected static Mask register (char[] tag)
+        protected Mask register (char[] tag)
         {
                 static Mask mask = 1;
+                static Mask[char[]] registry;
 
                 Mask* p = tag in registry;
                 if (p)
