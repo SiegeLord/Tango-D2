@@ -6,11 +6,11 @@
                         
         version:        Initial release: March 2004      
         
-        author:         Kris
-                        Brad Anderson
-                        teqdruid
-                        Anders (Darwin support)
-                        Chris Sauls (Win95 file support)
+        author:         $(UL Kris)
+                        $(UL Brad Anderson)
+                        $(UL teqdruid)
+                        $(UL Anders (Darwin support))
+                        $(UL Chris Sauls (Win95 file support))
 
 *******************************************************************************/
 
@@ -24,8 +24,11 @@ private import  tango.io.Exception;
 
 private import  tango.convert.Unicode;
 
-//private import  tango.io.protocol.model.IWriter;
- 
+
+/*******************************************************************************
+
+*******************************************************************************/
+
 version (Win32)
         {
         extern (Windows) BOOL   MoveFileExA (LPCSTR,LPCSTR,DWORD);
@@ -100,7 +103,7 @@ version (Posix)
         
 *******************************************************************************/
 
-class FileProxy // : IWritable
+class FileProxy
 {
         private FilePath path;
 
@@ -182,18 +185,6 @@ class FileProxy // : IWritable
                 return toList (delegate bool(FilePath fp) {return true;});
         }              
 
-        /***********************************************************************
-        
-                Write this FileProxy to the given IWriter. We just emit 
-                the filepath, since that's what we represent.
-
-        ***********************************************************************/
-/+
-        void write (IWriter emit)
-        {
-                emit (path);
-        }
-+/
         /***********************************************************************
 
         ***********************************************************************/
