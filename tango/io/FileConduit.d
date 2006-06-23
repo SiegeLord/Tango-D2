@@ -370,7 +370,7 @@ class FileConduit : DeviceConduit, DeviceConduit.Seek
                                         OPEN_EXISTING,          // must exist
                                         CREATE_ALWAYS,          // create always
                                         TRUNCATE_EXISTING,      // must exist
-                                        CREATE_ALWAYS,          // (for appending)
+                                        OPEN_ALWAYS,            // (for appending)
                                         ];
                                                 
                         static const Flags Share =   
