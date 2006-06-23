@@ -1,4 +1,4 @@
-module tango.locale.Data;
+module tango.text.locale.Data;
 
 package int compareString(char[] strA, char[] strB) {
   // Comparison ignores case

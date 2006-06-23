@@ -1,6 +1,6 @@
 /**
  */
-module tango.locale.Constants;
+module tango.text.locale.Constants;
 
 /**
  * Defines the types of cultures that can be retrieved from Culture.getCultures.

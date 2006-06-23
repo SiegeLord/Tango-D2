@@ -1,13 +1,13 @@
 /**
  */
-module tango.locale.Collation;
+module tango.text.locale.Collation;
 
-private import tango.locale.Core;
+private import tango.text.locale.Core;
 
 version (Windows)
-  private import tango.locale.Win32;
+  private import tango.text.locale.Win32;
 else version (linux)
-  private import tango.locale.Linux;
+  private import tango.text.locale.Linux;
 
   /**
   Compares strings using the specified case and cultural comparision rules.

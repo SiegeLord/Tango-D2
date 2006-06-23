@@ -1,6 +1,6 @@
-module tango.locale.Win32;
+module tango.text.locale.Win32;
 
-alias tango.locale.Win32 nativeMethods;
+alias tango.text.locale.Win32 nativeMethods;
 
 extern (Windows)
 private {

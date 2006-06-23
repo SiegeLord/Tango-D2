@@ -1,6 +1,6 @@
-module tango.locale.Parse;
+module tango.text.locale.Parse;
 
-private import tango.locale.Core;
+private import tango.text.locale.Core;
 
 private struct DateTimeParseResult {
 

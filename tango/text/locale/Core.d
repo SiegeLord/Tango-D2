@@ -88,17 +88,17 @@
  * )
  * )
  */
-module tango.locale.Core;
+module tango.text.locale.Core;
 
-private import  tango.locale.Constants,
-                tango.locale.Data,
-                tango.locale.Format,
-                tango.locale.Parse;
+private import  tango.text.locale.Constants,
+                tango.text.locale.Data,
+                tango.text.locale.Format,
+                tango.text.locale.Parse;
 
 version (Windows)
-  private import tango.locale.Win32;
+  private import tango.text.locale.Win32;
 else version (linux)
-  private import tango.locale.Linux;
+  private import tango.text.locale.Linux;
 
 // Used by cloneObject.
 extern (C) 
@@ -148,7 +148,7 @@ public interface IFormatService {
 /**
  * $(ANCHOR _Culture)
  * Provides information about a culture, such as its name, calendar and date and number format patterns.
- * Remarks: tango.locale adopts the RFC 1766 standard for culture names in the format &lt;language&gt;"-"&lt;region&gt;. 
+ * Remarks: tango.text.locale adopts the RFC 1766 standard for culture names in the format &lt;language&gt;"-"&lt;region&gt;. 
  * &lt;language&gt; is a lower-case two-letter code defined by ISO 639-1. &lt;region&gt; is an upper-case 
  * two-letter code defined by ISO 3166. For example, "en-GB" is UK English.
  * $(BR)$(BR)There are three types of culture: invariant, neutral and specific. The invariant culture is not tied to
@@ -158,7 +158,7 @@ public interface IFormatService {
  * $(BR)$(BR)Instances of $(LINK2 #DateTimeFormat, DateTimeFormat) and $(LINK2 #NumberFormat, NumberFormat) cannot be created for neutral cultures.
  * Examples:
  * ---
- * import tango.io.Print, tango.locale.Common;
+ * import tango.io.Print, tango.text.locale.Common;
  *
  * void main() {
  *   Culture culture = new Culture("it-IT");
@@ -422,7 +422,7 @@ public class Culture : IFormatService {
    * Examples:
    * The following examples shows how to change the _current culture.
    * ---
-   * import tango.io.Print, tango.locale.Common;
+   * import tango.io.Print, tango.text.locale.Common;
    *
    * void main() {
    *   // Displays the name of the current culture.
@@ -541,7 +541,7 @@ public class Culture : IFormatService {
    * Examples:
    * The following example displays which cultures using Chinese are neutral.
    * ---
-   * import tango.io.Print, tango.locale.Common;
+   * import tango.io.Print, tango.text.locale.Common;
    *
    * void main() {
    *   foreach (c; Culture.getCultures(CultureTypes.All)) {
@@ -692,7 +692,7 @@ public class Culture : IFormatService {
  * Examples:
  * The following example displays some of the properties of the Region class:
  * ---
- * import tango.io.Print, tango.locale.Common;
+ * import tango.io.Print, tango.text.locale.Common;
  *
  * void main() {
  *   Region region = new Region("en-GB");
@@ -864,7 +864,7 @@ public class Region {
  * The following example shows how to retrieve an instance of NumberFormat for a Culture
  * and use it to display number formatting information.
  * ---
- * import tango.io.Print, tango.locale.Common;
+ * import tango.io.Print, tango.text.locale.Common;
  *
  * void main(char[][] args) {
  *   foreach (c; Culture.getCultures(CultureTypes.Specific)) {
@@ -1053,7 +1053,7 @@ public class NumberFormat : IFormatService {
    * Examples:
    * The following example shows the effect of changing numberDecimalDigits.
    * ---
-   * import tango.io.Print, tango.locale.Common;
+   * import tango.io.Print, tango.text.locale.Common;
    *
    * void main() {
    *   // Get the NumberFormat from the en-GB culture.
@@ -1101,7 +1101,7 @@ public class NumberFormat : IFormatService {
    * Examples:
    * The following example shows the effect of the different patterns.
    * ---
-   * import tango.io.Print, tango.locale.Common;
+   * import tango.io.Print, tango.text.locale.Common;
    *
    * void main() {
    *   NumberFormat fmt = new NumberFormat;
@@ -4160,7 +4160,7 @@ public struct DateTime {
    * Remarks: See $(LINK2 datetimeformat.html, DateTime Formatting) for more information about date and time formatting.
    * Examples:
    * ---
-   * import tango.io.Print, tango.locale.Core;
+   * import tango.io.Print, tango.text.locale.Core;
    *
    * void main() {
    *   Culture culture = Culture.current;
@@ -4246,7 +4246,7 @@ public struct DateTime {
    * Remarks: The s parameter is parsed using the formatting information in the current $(LINK2 #DateTimeFormat, DateTimeFormat) instance.
    * Examples:
    * ---
-   * import tango.io.Print, tango.locale.Core;
+   * import tango.io.Print, tango.text.locale.Core;
    *
    * void main() {
    *   // Date is May 26, 2006
@@ -4450,7 +4450,7 @@ public struct DateTime {
    * Examples:
    * The following example displays the current time in local and UTC time.
    * ---
-   * import tango.io.Print, tango.locale.Core;
+   * import tango.io.Print, tango.text.locale.Core;
    *
    * void main() {
    *   // Get the current local time.

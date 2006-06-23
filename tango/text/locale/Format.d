@@ -25,10 +25,10 @@
   // -> vendredi 3 mars 2006
   --------
 **/
-module tango.locale.Format;
+module tango.text.locale.Format;
 
-private import  tango.locale.Core,
-                tango.locale.Constants;
+private import  tango.text.locale.Core,
+                tango.text.locale.Constants;
 
 version (mlfp)
 // For Number.opCall(double).
