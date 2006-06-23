@@ -40,8 +40,11 @@ public class RollingFileAppender : FileAppender
 
         /***********************************************************************
                 
-                Create a basic RollingFileAppender to a file-set with the 
-                specified path.
+                Create a RollingFileAppender upon a file-set with the 
+                specified path and optional layout.
+
+                Where a file set already exists, we resume appending to 
+                the one with the most recent activity timestamp.
 
         ***********************************************************************/
 
@@ -56,6 +59,8 @@ public class RollingFileAppender : FileAppender
                 mask = register (p.toString);
 
                 char[1] x;
+                ulong mostRecent;
+
                 for (int i=0; i < count; ++i)
                     {
                     x[0] = '0' + i;
@@ -63,20 +68,34 @@ public class RollingFileAppender : FileAppender
                     auto clone = new MutableFilePath (p);
                     clone.setName (clone.getName ~ x);
                     paths ~= clone;
+
+                    // use the most recent file in the set
+                    auto proxy = new FileProxy (clone);
+                    if (proxy.isExisting && proxy.getModifiedTime > mostRecent)
+                       {
+                       mostRecent = proxy.getModifiedTime;
+                       index = i;
+                       }
                     }
 
+                // remember the maximum size 
                 this.maxSize = maxSize;
-                index = -1;
-                nextFile ();
 
-                // set provided layout (ignore when null)
+                // adjust index and open the appropriate log file
+                --index; 
+                nextFile (false);
+
+                // set provided layout (ignored when null)
                 setLayout (layout);
         }
 
         /***********************************************************************
                 
-                Create a basic RollingFileAppender to a file-set with the 
-                specified path, and with the given Layout
+                Create a RollingFileAppender upon a file-set with the 
+                specified path and optional layout.
+
+                Where a file set already exists, we resume appending to 
+                the one with the most recent activity timestamp.
 
         ***********************************************************************/
 
@@ -119,7 +138,7 @@ public class RollingFileAppender : FileAppender
 
                 // file already full?
                 if (fileSize >= maxSize)
-                    nextFile ();
+                    nextFile (true);
 
                 // bump file size
                 fileSize += FileConst.NewlineString.length;
@@ -147,7 +166,7 @@ public class RollingFileAppender : FileAppender
 
         ***********************************************************************/
 
-        private void nextFile ()
+        private void nextFile (bool reset)
         {
                 // select next file in the set
                 if (++index >= paths.length)
@@ -159,8 +178,10 @@ public class RollingFileAppender : FileAppender
                 // close any existing conduit
                 close ();
 
-                // open file; get writer
-                buffer = setConduit (new FileConduit (paths[index], FileConduit.WriteAppending));
+                auto conduit = new FileConduit (paths[index], FileConduit.WriteAppending);
+                buffer = setConduit (conduit);
+                if (reset)
+                    conduit.truncate();
         }
 }
 }
