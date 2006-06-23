@@ -23,18 +23,7 @@ private import tango.log.Appender;
 
 public class NullAppender : Appender
 {
-        private static uint mask;
-
-        /***********************************************************************
-                
-                Get a unique fingerprint for this class
-
-        ***********************************************************************/
-
-        static this()
-        {
-                mask = nextMask();
-        }
+        private Mask mask;
 
         /***********************************************************************
                
@@ -44,6 +33,8 @@ public class NullAppender : Appender
 
         this ()
         {
+                // Get a unique fingerprint for this class
+                mask = register (getName);
         }
 
         /***********************************************************************
@@ -63,7 +54,7 @@ public class NullAppender : Appender
 
         ***********************************************************************/
 
-        uint getMask ()
+        Mask getMask ()
         {
                 return mask;
         }

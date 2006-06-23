@@ -28,28 +28,7 @@ version (Isolated)
 
 public class ConsoleAppender : Appender
 {
-        private static uint mask;
-
-        /***********************************************************************
-                
-                Get a unique fingerprint for this class
-
-        ***********************************************************************/
-
-        static this()
-        {
-                mask = nextMask();
-        }
-
-        /***********************************************************************
-               
-                Create a basic ConsoleAppender
-
-        ***********************************************************************/
-
-        this ()
-        {
-        }
+        private Mask mask;
 
         /***********************************************************************
                 
@@ -57,8 +36,11 @@ public class ConsoleAppender : Appender
 
         ***********************************************************************/
 
-        this (Layout layout)
+        this (Layout layout = null)
         {
+                // Get a unique fingerprint for this class
+                mask = register (getName);
+
                 setLayout (layout);
         }
 
@@ -68,7 +50,7 @@ public class ConsoleAppender : Appender
 
         ***********************************************************************/
 
-        uint getMask ()
+        Mask getMask ()
         {
                 return mask;
         }

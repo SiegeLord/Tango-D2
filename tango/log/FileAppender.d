@@ -171,20 +171,9 @@ private import  tango.io.model.IConduit;
 
 public class FileAppender : Appender
 {
-        private static uint     mask;
+        private Mask            mask;
         private Buffer          buffer;
         private IConduit        conduit;
-
-        /***********************************************************************
-                
-                Get a unique fingerprint for this class
-
-        ***********************************************************************/
-
-        static this()
-        {
-                mask = nextMask();
-        }
 
         /***********************************************************************
 
@@ -201,9 +190,13 @@ public class FileAppender : Appender
 
         ***********************************************************************/
 
-        this (FilePath fp)
+        this (FilePath fp, Layout layout = null)
         {
+                // Get a unique fingerprint for this instance
+                mask = register (fp.toString);
+
                 setConduit (new FileConduit (fp, FileConduit.WriteAppending));
+                setLayout (layout);
         }
 
         /***********************************************************************
@@ -213,10 +206,9 @@ public class FileAppender : Appender
 
         ***********************************************************************/
 
-        this (FilePath fp, Layout layout)
+        this (char[] fp, Layout layout = null)
         {
-                this (fp);
-                setLayout (layout);
+                this (new FilePath (fp), layout);
         }
 
         /***********************************************************************
@@ -249,7 +241,7 @@ public class FileAppender : Appender
 
         ***********************************************************************/
 
-        uint getMask ()
+        Mask getMask ()
         {
                 return mask;
         }

@@ -280,8 +280,8 @@ private class LoggerInstance : Logger
                    event.set (hierarchy, level, s, name[0..name.length-1]);
 
                    // combine appenders from all ancestors
-                   auto masks = 0;                 
                    auto links = this;
+                   Appender.Mask masks = 0;                 
                    do {
                       auto appender = links.appender;
 

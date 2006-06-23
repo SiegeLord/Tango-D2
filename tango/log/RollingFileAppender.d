@@ -31,7 +31,7 @@ private import  tango.io.FilePath,
 
 public class RollingFileAppender : FileAppender
 {
-        private static uint     mask;
+        private Mask            mask;
         private FilePath[]      paths;
         private int             index;
         private IBuffer         buffer;
@@ -40,35 +40,27 @@ public class RollingFileAppender : FileAppender
 
         /***********************************************************************
                 
-                Get a unique fingerprint for this class
-
-        ***********************************************************************/
-
-        static this()
-        {
-                mask = nextMask();
-        }
-
-        /***********************************************************************
-                
                 Create a basic RollingFileAppender to a file-set with the 
                 specified path.
 
         ***********************************************************************/
 
-        this (FilePath p, int count, ulong maxSize)
+        this (FilePath p, int count, ulong maxSize, Layout layout = null)
         in {
            assert (count > 1 && count < 10);
            assert (p);
            }
         body
         {
+                // Get a unique fingerprint for this instance
+                mask = register (p.toString);
+
                 char[1] x;
                 for (int i=0; i < count; ++i)
                     {
                     x[0] = '0' + i;
 
-                    MutableFilePath clone = new MutableFilePath (p);
+                    auto clone = new MutableFilePath (p);
                     clone.setName (clone.getName ~ x);
                     paths ~= clone;
                     }
@@ -76,6 +68,9 @@ public class RollingFileAppender : FileAppender
                 this.maxSize = maxSize;
                 index = -1;
                 nextFile ();
+
+                // set provided layout (ignore when null)
+                setLayout (layout);
         }
 
         /***********************************************************************
@@ -85,10 +80,9 @@ public class RollingFileAppender : FileAppender
 
         ***********************************************************************/
 
-        this (FilePath p, int count, ulong maxSize, Layout layout)
+        this (char[] fp, int count, ulong maxSize, Layout layout = null)
         {
-                this (p, count, maxSize);
-                setLayout (layout);
+                this (new FilePath (fp), count, maxSize, layout);
         }
 
         /***********************************************************************
@@ -97,7 +91,7 @@ public class RollingFileAppender : FileAppender
 
         ***********************************************************************/
 
-        uint getMask ()
+        Mask getMask ()
         {
                 return mask;
         }

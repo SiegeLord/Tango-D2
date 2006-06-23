@@ -26,8 +26,11 @@ public import   tango.log.Event,
 
 public class Appender
 {
+        typedef int Mask;
+
         private Appender        next;
         private Layout          layout;
+        private Mask[char[]]    registry;
 
         /***********************************************************************
                 
@@ -37,7 +40,7 @@ public class Appender
 
         ***********************************************************************/
 
-        abstract uint getMask ();
+        abstract Mask getMask ();
 
         /***********************************************************************
                 
@@ -75,13 +78,24 @@ public class Appender
 
         ***********************************************************************/
 
-        protected static uint nextMask()
+        protected static Mask register (char[] tag)
         {
-                static uint mask = 1;
+                static Mask mask = 1;
 
-                uint ret = mask;
-                mask <<= 1;
-                return ret;
+                Mask* p = tag in registry;
+                if (p)
+                    return *p;
+                else
+                   {
+                   auto ret = mask;
+                   registry [tag] = mask;
+
+                   if (mask < 0)
+                       throw new Exception ("too many unique registrations");
+
+                   mask <<= 1;
+                   return ret;
+                   }
         }
 
         /***********************************************************************
@@ -92,7 +106,8 @@ public class Appender
 
         void setLayout (Layout layout)
         {
-                this.layout = layout;
+                if (layout)
+                    this.layout = layout;
         }
 
         /***********************************************************************

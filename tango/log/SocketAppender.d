@@ -35,7 +35,7 @@ version (Isolated)
 
 public class SocketAppender : Appender
 {
-        private static uint mask;
+        private Mask mask;
 
         version (Isolated)
                  private SocketStream stream;
@@ -44,25 +44,14 @@ public class SocketAppender : Appender
 
         /***********************************************************************
                 
-                Get a unique fingerprint for this class
-
-        ***********************************************************************/
-
-        static this()
-        {
-                mask = nextMask();
-        }
-
-        /***********************************************************************
-                
                 Create with the given Layout and address
 
         ***********************************************************************/
 
-        this (Layout layout, InternetAddress address)
+        this (InternetAddress address, Layout layout = null)
         {
-                setLayout (layout);
                 setAddress (address);
+                setLayout (layout);
         }
 
         /***********************************************************************
@@ -71,7 +60,7 @@ public class SocketAppender : Appender
 
         ***********************************************************************/
 
-        void setAddress (InternetAddress address)
+        private void setAddress (InternetAddress address)
         {
                 close ();
                 
@@ -94,6 +83,9 @@ public class SocketAppender : Appender
                             } catch (Object x)
                                      Cerr ("SocketAppender: failed to connect\n"c);
                         }
+
+                // Get a unique fingerprint for this class
+                mask = register (address.toString);
         }
 
         /***********************************************************************
@@ -102,7 +94,7 @@ public class SocketAppender : Appender
 
         ***********************************************************************/
 
-        uint getMask ()
+        Mask getMask ()
         {
                 return mask;
         }
