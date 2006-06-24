@@ -51,14 +51,14 @@ private class LoggerInstance : Logger
         
                 Construct a LoggerInstance with the specified name for the 
                 given hierarchy. By default, logger instances are additive
-                and are prohibited from emitting events.
+                and are set to emit all events.
 
         ***********************************************************************/
 
         protected this (Hierarchy hierarchy, char[] name)
         {
                 this.hierarchy = hierarchy;
-                this.level = Level.None;
+                this.level = Level.Trace;
                 this.additive = true;
                 this.name = name;
         }
