@@ -50,10 +50,10 @@ import tango.io.Stdout;
 import tango.io.support.BufferCodec;
 import tango.io.UnicodeFile;
 
-import tango.locale.Collation;
-import tango.locale.Constants;
-import tango.locale.Core;
-import tango.locale.Format;
+import tango.text.locale.Collation;
+import tango.text.locale.Constants;
+import tango.text.locale.Core;
+import tango.text.locale.Format;
 
 import tango.log.Admin;
 import tango.log.Appender;

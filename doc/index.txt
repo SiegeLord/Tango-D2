@@ -23,7 +23,6 @@ tango.core
  * [http://svn.dsource.org/projects/tango/trunk/doc/html/tango.core.Interval.html Interval]
  * [http://svn.dsource.org/projects/tango/trunk/doc/html/tango.core.Intrinsic.html Intrinsic]
  * [http://svn.dsource.org/projects/tango/trunk/doc/html/tango.core.Memory.html Memory]
- * [http://svn.dsource.org/projects/tango/trunk/doc/html/tango.core.System.html System]
  * [http://svn.dsource.org/projects/tango/trunk/doc/html/tango.core.Thread.html Thread]
  * [http://svn.dsource.org/projects/tango/trunk/doc/html/tango.core.Traits.html Traits]
  * [http://svn.dsource.org/projects/tango/trunk/doc/html/tango.core.Unicode.html Unicode]
@@ -63,11 +62,6 @@ tango.io.protocol.model
  * [http://svn.dsource.org/projects/tango/trunk/doc/html/tango.io.protocol.model.IWriter.html IWriter]
 tango.io.support
  * [http://svn.dsource.org/projects/tango/trunk/doc/html/tango.io.support.BufferCodec.html BufferCodec]
-tango.locale
- * [http://svn.dsource.org/projects/tango/trunk/doc/html/tango.locale.Collation.html Collation]
- * [http://svn.dsource.org/projects/tango/trunk/doc/html/tango.locale.Constants.html Constants]
- * [http://svn.dsource.org/projects/tango/trunk/doc/html/tango.locale.Core.html Core]
- * [http://svn.dsource.org/projects/tango/trunk/doc/html/tango.locale.Format.html Format]
 tango.log
  * [http://svn.dsource.org/projects/tango/trunk/doc/html/tango.log.Admin.html Admin]
  * [http://svn.dsource.org/projects/tango/trunk/doc/html/tango.log.Appender.html Appender]
@@ -237,6 +231,10 @@ tango.text
  * [http://svn.dsource.org/projects/tango/trunk/doc/html/tango.text.String.html String]
  * [http://svn.dsource.org/projects/tango/trunk/doc/html/tango.text.Text.html Text]
  * [http://svn.dsource.org/projects/tango/trunk/doc/html/tango.text.UtfString.html UtfString]
+tango.text.locale
+ * [http://svn.dsource.org/projects/tango/trunk/doc/html/tango.text.locale.Collation.html Collation]
+ * [http://svn.dsource.org/projects/tango/trunk/doc/html/tango.text.locale.Constants.html Constants]
+ * [http://svn.dsource.org/projects/tango/trunk/doc/html/tango.text.locale.Core.html Core]
+ * [http://svn.dsource.org/projects/tango/trunk/doc/html/tango.text.locale.Format.html Format]
 tango.text.model
  * [http://svn.dsource.org/projects/tango/trunk/doc/html/tango.text.model.UniString.html UniString]
-

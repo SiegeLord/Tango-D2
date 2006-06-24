@@ -13,7 +13,7 @@
 -IC:\d\tango\tango\io\filter\
 -IC:\d\tango\tango\io\protocol\
 -IC:\d\tango\tango\io\support\
--IC:\d\tango\tango\locale\
+-IC:\d\tango\tango\text\locale\
 -IC:\d\tango\tango\log\
 -IC:\d\tango\tango\net\
 -IC:\d\tango\mango\net\servlet\
@@ -63,7 +63,7 @@ tango\stdc\errno.d
 tango\convert\Sprint.d
 mango\net\servlet\ServletContext.d
 tango\math\cipher\Cipher.d
-tango\locale\Parse.d
+tango\text\locale\Parse.d
 tango\io\model\IBuffer.d
 tango\io\Console.d
 tango\math\special.d
@@ -115,13 +115,13 @@ tango\math\cipher\Sha512.d
 tango\stdc\signal.d
 tango\io\FileScan.d
 tango\io\protocol\EndianReader.d
-tango\locale\Core.d
+tango\text\locale\Core.d
 tango\net\Uri.d
 tango\net\http\HttpResponses.d
 tango\os\linux\c\socket.d
 tango\store\ArraySeq.d
 tango\store\impl\MutableImpl.d
-tango\locale\Constants.d
+tango\text\locale\Constants.d
 tango\math\cipher\Md4.d
 tango\math\cipher\Sha256.d
 mango\net\servlet\model\IServletRequest.d
@@ -174,8 +174,8 @@ mango\net\http\server\ServiceBridge.d
 tango\core\Epoch.d
 tango\store\impl\MutableSeqImpl.d
 tango\net\http\HttpPost.d
-tango\locale\Collation.d
-tango\locale\Format.d
+tango\text\locale\Collation.d
+tango\text\locale\Format.d
 tango\store\impl\LLPair.d
 mango\net\servlet\Dictionary.d
 tango\net\ServerSocket.d
@@ -193,7 +193,7 @@ mango\net\servlet\cache\QueuedCache.d
 tango\convert\Rfc1123.d
 tango\io\FileSystem.d
 tango\io\support\BufferCodec.d
-tango\locale\Win32.d
+tango\text\locale\Win32.d
 tango\log\PropertyConfigurator.d
 tango\log\DateLayout.d
 tango\log\Hierarchy.d
@@ -248,7 +248,7 @@ tango\stdc\config.d
 tango\store\impl\LLCell.d
 tango\convert\DGDouble.d
 tango\core\BitArray.d
-tango\locale\Data.d
+tango\text\locale\Data.d
 tango\store\iterator\InterleavingIterator.d
 tango\io\protocol\Reader.d
 tango\store\model\KeySortedCollection.d
