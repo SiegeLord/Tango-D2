@@ -382,9 +382,9 @@ floating:
                         Type.Float, Type.Byte, Type.UByte, Type.Int, -1, 
                         Type.UInt, Type.Long, Type.ULong, -1, -1, -1, -1, -1, 
                         Type.Short, Type.UShort, Type.Utf16, -1, Type.Utf32, 
-                        ];
+                        Type.Bool];
 
-                if (t >= 'a' && t <= 'w')
+                if (t >= 'a' && t <= 'x')
                    {
                    auto tt = xlate[t - 'a'];
                    if (tt >= 0)
