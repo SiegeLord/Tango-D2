@@ -1,0 +1,358 @@
+# GDC -- D front-end for GCC
+# Copyright (C) 2004 David Friedman
+#
+# This program is free software; you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation; either version 2 of the License, or
+# (at your option) any later version.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with this program; if not, write to the Free Software
+# Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+
+target_alias = @target_alias@
+host_alias = @host_alias@
+
+AR = @AR@
+RANLIB = @RANLIB@
+
+CFLAGS=@CFLAGS@
+OUR_CFLAGS=@DEFS@ -I . -I $(srcdir)/gcc
+D_GC_FLAGS=@D_GC_FLAGS@
+
+# Because parts of Phobos are generated (and are in flux), we need
+# to prevent this build from getting tripped up on an already installed
+# version.  Add -nostdinc to handle this.
+
+# Only the GC routines need D_GC_FLAGS
+
+DFLAGS=@DFLAGS@  $(D_GC_FLAGS) -nostdinc
+
+D_GENERATE_FRAGMENTS=@D_GENERATE_FRAGMENTS@
+D_FRAGMENT_SRCDIR=@D_FRAGMENT_SRCDIR@
+
+EXEEXT=@EXEEXT@
+
+INSTALL=@INSTALL@
+INSTALL_DATA = @INSTALL_DATA@
+INSTALL_HEADER = $(INSTALL_DATA)
+# %% fix when part of normal build process
+mkinstalldirs = $(INSTALL) -d
+
+# %% remove for automake..
+STAMP = echo timestamp >
+
+# Note that the real gdc knows what LIBS to use
+LIBS=@LIBS@
+CC=@CC@
+GDC=@GDC@
+
+srcdir=@srcdir@
+VPATH = @srcdir@
+
+prefix=@prefix@
+exec_prefix=@exec_prefix@
+libdir=@libdir@
+includedir=@includedir@
+
+phobos_toolexecdir = @phobos_toolexecdir@
+phobos_toolexeclibdir = @phobos_toolexeclibdir@
+toolexecdir = $(phobos_toolexecdir)
+toolexeclibdir = $(phobos_toolexeclibdir)
+
+gdc_include_dir=@gdc_include_dir@
+
+config_d_src=$(host_alias)/gcc/config.d
+configunix_d_src=$(host_alias)/gcc/configunix.d
+
+D_PREREQ_SRCS=@D_PREREQ_SRCS@
+
+all: libgphobos.a
+
+%.o : %.c
+	$(CC) -o $@ $(OUR_CFLAGS) $(CFLAGS) -c $<
+
+%.o : %.d $(host_alias)/gcc/config.d $(D_PREREQ_SRCS)
+	$(GDC) -o $@ $(DFLAGS) -I $(srcdir) -I $(srcdir)/internal/gc -I ./$(host_alias) -c $<
+
+%.t.o : %.d $(host_alias)/gcc/config.d $(D_PREREQ_SRCS)
+	$(GDC) -o $@ $(DFLAGS) -fno-release -funittest -I $(srcdir) -I $(srcdir)/internal/gc -I ./$(host_alias) -c $<
+
+# internal/gc/gcx.t.o: $(srcdir)/internal/gc/gcx.d
+# 	$(GDC) -o $@ $(DFLAGS) -funittest -I $(srcdir) -I $(srcdir)/internal/gc -I ./$(host_alias) -c $<
+
+%.t.o : %.o
+	cp $< $@
+
+Makefile: Makefile.in
+	./config.status
+
+unittest: unittest.o libgphobos_t.a
+	$(CC) -o $@ $(CFLAGS) unittest.o -L./ -lgphobos_t $(LIBS)
+
+# internal/gc/testgc.o: $(host_alias)/gcc/config.d $(srcdir)/internal/gc/testgc.d
+#	$(GDC) -o $@ $(DFLAGS) -fno-release -I $(srcdir) -I $(srcdir)/internal/gc -I ./$(host_alias) -c $(srcdir)/internal/gc/testgc.d
+
+# testgc: internal/gc/testgc.o libgphobos_t.a
+#	$(CC) -o $@ $(CFLAGS) internal/gc/testgc.o -L./ -lgphobos_t $(LIBS)
+
+#$(GDC) -o $@ $(DFLAGS) unittest.o -L./
+
+# This should not be linked into a shared library.
+OBJ_CMAIN=internal/cmain.o
+
+OBJ_BASE= \
+    aaA.o \
+    aApply.o \
+    adi.o \
+    arraycast.o \
+    arraycat.o \
+    cast.o \
+    critical.o \
+    dgccmain2.o \
+    invariant.o \
+    memory.o \
+    memset.o \
+    monitor.o \
+    obj.o \
+    object.o \
+    qsortg.o \
+    rundmain.o \
+    switch.o \
+    moduleinit.o
+# NOTE: trace.o is not necessary for a successful build
+# NOTE: a pre-compiled minit.obj has been provided in dmd
+#       but is only needed for Win32
+#   minit.obj
+# NOTE: these files are used by DMD Linux but not GDC:
+#   alloca.o
+#   complex.o
+#   deh2.o
+#   dmain2.o
+#   llmath.o
+#   qsort.o
+#   trace.o
+
+OBJ_UTIL= \
+    util/ctype.o \
+    util/string.o \
+    util/utf.o
+
+OBJ_TI= \
+    typeinfo/ti_Aa.o \
+    typeinfo/ti_AC.o \
+    typeinfo/ti_Acdouble.o \
+    typeinfo/ti_Acfloat.o \
+    typeinfo/ti_Acreal.o \
+    typeinfo/ti_Adchar.o \
+    typeinfo/ti_Adouble.o \
+    typeinfo/ti_Afloat.o \
+    typeinfo/ti_Ag.o \
+    typeinfo/ti_Aint.o \
+    typeinfo/ti_Along.o \
+    typeinfo/ti_Areal.o \
+    typeinfo/ti_Ashort.o \
+    typeinfo/ti_Aubyte.o \
+    typeinfo/ti_Auint.o \
+    typeinfo/ti_Aulong.o \
+    typeinfo/ti_Aushort.o \
+    typeinfo/ti_Awchar.o \
+    typeinfo/ti_byte.o \
+    typeinfo/ti_C.o \
+    typeinfo/ti_cdouble.o \
+    typeinfo/ti_cfloat.o \
+    typeinfo/ti_char.o \
+    typeinfo/ti_creal.o \
+    typeinfo/ti_dchar.o \
+    typeinfo/ti_Delegate.o \
+    typeinfo/ti_double.o \
+    typeinfo/ti_float.o \
+    typeinfo/ti_idouble.o \
+    typeinfo/ti_ifloat.o \
+    typeinfo/ti_int.o \
+    typeinfo/ti_ireal.o \
+    typeinfo/ti_long.o \
+    typeinfo/ti_ptr.o \
+    typeinfo/ti_real.o \
+    typeinfo/ti_short.o \
+    typeinfo/ti_ubyte.o \
+    typeinfo/ti_uint.o \
+    typeinfo/ti_ulong.o \
+    typeinfo/ti_ushort.o \
+    typeinfo/ti_void.o \
+    typeinfo/ti_wchar.o
+
+ALL_OBJS= \
+    $(OBJ_BASE) \
+    $(OBJ_UTIL) \
+    $(OBJ_TI)
+
+ZLIB_OBJS= etc/c/zlib/adler32.o etc/c/zlib/compress.o \
+	etc/c/zlib/crc32.o etc/c/zlib/gzio.o \
+	etc/c/zlib/uncompr.o etc/c/zlib/deflate.o \
+	etc/c/zlib/trees.o etc/c/zlib/zutil.o \
+	etc/c/zlib/inflate.o etc/c/zlib/infback.o \
+	etc/c/zlib/inftrees.o etc/c/zlib/inffast.o
+
+GC_OBJS= internal/gc/gc.o internal/gc/gcx.o \
+	internal/gc/gcbits.o
+GC_OBJS += @D_GC_MODULES@
+
+GCC_OBJS = gcc/config.o gcc/unwind.o gcc/deh.o gcc/threadsem.o \
+	std/c/dirent.o gcc/cbridge_time.o
+
+# std.c.linux.linux, std.loader, gcc.cbridge*
+WINDOWS_OBJS=std/c/windows/windows.o std/c/windows/com.o std/c/windows/winsock.o \
+	std/windows/iunknown.o std/windows/registry.o std/windows/syserror.o \
+	std/windows/charset.o
+D_EXTRA_OBJS=@D_EXTRA_OBJS@
+
+# needed until instrinsics are implemented
+D_EXTRA_OBJS+=std/intrinsic.o
+
+# currently just add compatibility for a bug
+D_EXTRA_OBJS+=gcc/support.o
+
+CONFIG_D_FRAGMENTS = config/config-head frag-ac frag-gen frag-math config/config-mid config/config-tail
+CONFIG_UNIX_FRAGMENTS = config/unix-head frag-unix config/unix-mid
+
+# until I figure out how to deal with weak module references
+WEAK_OBJS =
+
+# This has to be an empty file because it is included in the prerequisites of rules
+# that use "cat $^" to generate their targets.
+# Otherwise, need to specify $srcdir for known source files in CONFIG_xxx_FRAGMENTS..
+stamp-tgtdir:
+	mkdir -p $(host_alias)/gcc
+	touch $@
+
+gen_config1: config/gen_config1.o
+	$(CC) -o $@ $^
+
+$(config_d_src): $(CONFIG_D_FRAGMENTS) stamp-tgtdir
+	cat $^ > $@
+
+gcc/config.o: $(config_d_src)
+	$(GDC) -o $@ $(DFLAGS) -I $(srcdir) -I $(srcdir)/internal/gc -I ./$(host_alias) -c $<
+gcc/config.t.o: gcc/config.o
+	cp gcc/config.o gcc/config.t.o
+
+
+gen_math: config/gen_math.o
+	$(CC) -o $@ $^
+
+config/gen_unix.o: config/gen_unix.c config/makestruct.h
+
+gen_unix: config/gen_unix.o
+	$(CC) -o $@ $^
+
+ifdef D_GENERATE_FRAGMENTS
+frag-gen: gen_config1
+	./gen_config1 > $@ || rm -f $@
+frag-unix: gen_unix
+	./gen_unix > $@
+frag-math: gen_math
+	./gen_math > $@ || rm -f $@
+else
+frag-gen: $(D_FRAGMENT_SRCDIR)/$@
+	cp $(D_FRAGMENT_SRCDIR)/$@ $@
+frag-unix: $(D_FRAGMENT_SRCDIR)/$@
+	cp $(D_FRAGMENT_SRCDIR)/$@ $@
+frag-math: $(D_FRAGMENT_SRCDIR)/$@
+	cp $(D_FRAGMENT_SRCDIR)/$@ $@
+endif
+
+$(configunix_d_src): $(CONFIG_UNIX_FRAGMENTS) stamp-tgtdir
+	cat $^ > $@
+
+gcc/configunix.o: $(configunix_d_src) $(config_d_src)
+	$(GDC) -o $@ $(DFLAGS) -I $(srcdir) -I $(srcdir)/internal/gc -I ./$(host_alias) -c $<
+gcc/configunix.t.o: gcc/configunix.o
+	cp gcc/configunix.o gcc/configunix.t.o
+
+gcc/cbridge_math.o: gcc/cbridge_math.c
+	$(CC) -o $@ $(OUR_CFLAGS) $(CFLAGS) -fno-strict-aliasing -c $<
+
+# std/stream.o: std/stream.d $(D_PREREQ_SRCS)
+#	$(GDC) -o $@ $(DFLAGS) -fdeprecated -I $(srcdir) -I $(srcdir)/internal/gc -I ./$(host_alias) -c $<
+# std/stream.t.o: std/stream.d $(D_PREREQ_SRCS)
+#	$(GDC) -o $@ $(DFLAGS) -fdeprecated -I $(srcdir) -I $(srcdir)/internal/gc -I ./$(host_alias) -c $<
+
+
+
+# GCC_OBJS (gcc/config.o) first so I don't have to write more deps
+ALL_OBJS = \
+    $(OBJ_BASE) \
+    $(OBJ_UTIL) \
+    $(OBJ_TI) \
+    $(D_EXTRA_OBJS) \
+    $(GCC_OBJS) \
+    $(MAIN_OBJS) \
+    $(GC_OBJS) \
+    $(WEAK_OBJS)
+
+libgphobos.a : $(ALL_OBJS) $(CMAIN_OBJS)
+	$(AR) -r $@ $(ALL_OBJS) $(CMAIN_OBJS)
+	$(RANLIB) $@
+
+libgphobos_t.a : $(ALL_OBJS:.o=.t.o) $(CMAIN_OBJS)
+	$(AR) -r $@ $(ALL_OBJS:.o=.t.o) $(CMAIN_OBJS)
+	$(RANLIB) $@
+
+.PHONY: info dvi TAGS install-info installcheck mostlyclean distclean maintainer-clean check
+
+check: unittest testgc
+	./unittest
+	./testgc
+
+info:
+dvi:
+TAGS:
+install-info:
+installcheck:
+mostlyclean: clean
+distclean: clean
+maintainer-clean: clean
+
+#echo "XXX" $(mkinstalldirs) $(DESTDIR)$(gdc_include_dir)/$$i; \
+#echo "YYY" $(INSTALL_HEADER) $(srcdir)/$$i/*.[hd] $(DESTDIR)$(gdc_include_dir)/$$i; \
+
+# 3.3.x install-sh can't handle multiple source arguments
+# $(INSTALL_HEADER) $(srcdir)/$$i/*.[hd] $(DESTDIR)$(gdc_include_dir)/$$i; done
+install: $(D_PREREQ_SRCS) libgphobos.a
+	for i in etc etc/c \
+		etc/c/stlsoft etc/c/zlib \
+		gcc std std/c \
+                std/c/darwin std/c/linux std/c/mach std/c/skyos std/c/unix std/c/windows \
+		std/typeinfo std/windows; do \
+		$(mkinstalldirs) $(DESTDIR)$(gdc_include_dir)/$$i; \
+		for f in $(srcdir)/$$i/*.[hd]; do $(INSTALL_HEADER) $$f $(DESTDIR)$(gdc_include_dir)/$$i; done; \
+	done
+	for i in crc32.d gcstats.d object.d; do \
+		$(INSTALL_HEADER) $(srcdir)/$$i $(DESTDIR)$(gdc_include_dir); done
+	$(mkinstalldirs) $(DESTDIR)$(gdc_include_dir)/$(host_alias)/gcc
+	$(INSTALL_HEADER) $(config_d_src) $(DESTDIR)$(gdc_include_dir)/$(host_alias)/gcc
+	if test -f $(configunix_d_src); then $(INSTALL_HEADER) $(host_alias)/gcc/configunix.d $(DESTDIR)$(gdc_include_dir)/$(host_alias)/gcc; fi
+	$(INSTALL) phobos-ver-syms $(DESTDIR)$(gdc_include_dir)/$(host_alias)
+	$(mkinstalldirs) $(DESTDIR)$(toolexeclibdir)
+	$(INSTALL) libgphobos.a $(DESTDIR)$(toolexeclibdir)
+	$(RANLIB) $(DESTDIR)$(toolexeclibdir)/libgphobos.a
+	$(INSTALL) libgphobos.spec $(DESTDIR)$(toolexeclibdir)
+
+clean:
+	echo 'Removing files...'
+	rm -f $(ALL_OBJS) $(CMAIN_OBJS)
+	rm -f $(ALL_OBJS:.o=.t.o)
+	rm -f unittest.o internal/gc/testgc.o
+	rm -f unittest$(EXEEXT) testgc$(EXEEXT)
+	rm -f config/gen_config1.o config/gen_unix.o config/gen_math.o
+	rm -f gen_config1$(EXEEXT) gen_unix$(EXEEXT) gen_math$(EXEEXT)
+	rm -f frag-gen frag-math frag-unix
+	rm -f $(config_d_src) $(configunix_d_src)
+	rm -f libgphobos.a
+	rm -f libgphobos_t.a
