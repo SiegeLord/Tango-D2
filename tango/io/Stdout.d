@@ -31,7 +31,8 @@ private import  tango.io.support.BufferCodec;
         dchar (utf8, utf16, or utf32)
 
 *******************************************************************************/
-
+version (Old)
+{
 private class BufferFormatT(T)
 {
         private alias FormatStructT!(T) Format;
@@ -162,7 +163,128 @@ private class BufferFormatT(T)
 
 // convenience alias
 alias BufferFormatT!(char) BufferFormat;
+}
 
+
+private import tango.text.convert.Format;
+
+private class BufferFormat
+{
+        public alias print opCall;
+
+        private bool            flush;
+        private IBuffer         target;
+
+        /**********************************************************************
+
+                Construct a BufferFormat instance, tying the provided
+                buffer to a formatter. Set option 'flush' to true if
+                the result should be flushed when complete.
+
+        **********************************************************************/
+
+        this (IBuffer target, bool flush = true)
+        {
+                this.target = target;
+                this.flush = flush;
+        }
+                
+        /**********************************************************************
+
+        **********************************************************************/
+
+        BufferFormat print (char[] fmt, ...)
+        {
+                uint sink (char[] s)
+                {
+                        target.append (s);
+                        return s.length;
+                }
+
+                Formatter.format (&sink, fmt, _arguments, _argptr);
+                return render();
+        }
+
+        /**********************************************************************
+
+        **********************************************************************/
+
+        BufferFormat print (bool v)
+        {
+                return print ("{0}", v);
+        }
+
+        /**********************************************************************
+
+        **********************************************************************/
+
+        BufferFormat print (long v)
+        {
+                return print ("{0}", v);
+        }
+
+        /**********************************************************************
+
+        **********************************************************************/
+
+        BufferFormat print (Object v)
+        {
+                return print ("{0}", v);
+        }
+
+        /***********************************************************************
+        
+                Emit a newline
+
+        ***********************************************************************/
+
+        BufferFormat newline ()
+        {
+                version (Windows)
+                         static char[] Newline = "\n";
+                     else
+                        static char[] Newline = "\r\n";
+
+                target.append (Newline);
+                return render();
+        }
+
+        /**********************************************************************
+
+                return the associated buffer
+
+        **********************************************************************/
+
+        IBuffer buffer ()
+        {
+                return target;
+        }      
+
+        /**********************************************************************
+
+                return the associated conduit
+
+        **********************************************************************/
+
+        IConduit conduit ()
+        {
+                return target.getConduit;
+        }      
+
+        /**********************************************************************
+
+                Render content -- flush the output buffer
+
+        **********************************************************************/
+
+        private BufferFormat render ()
+        {
+                if (flush)
+                    target.flush;
+                return this;
+        }      
+        
+}
 
 /*******************************************************************************
 

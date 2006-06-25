@@ -27,11 +27,12 @@ Formatter.format(Culture.getCulture("fr-FR"), "{0:D}", DateTime.today);
 **/
 module tango.text.convert.Format;
 
+/+
 import tango.io.Console;
 
 void main ()
 {
-        Cout (Formatter.format ("{0:#,#} green bottles", 1234455));
+        Cout (Formatter.format ("{0:D3} green bottles", 1234455));
 }
 
 /*******************************************************************************
@@ -61,7 +62,7 @@ private struct Stdout
         }
 }
 
-
++/
 
 /*******************************************************************************
 
