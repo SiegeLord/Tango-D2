@@ -222,6 +222,7 @@ class Buffer : IBuffer
         protected static char[] eofWrite  = "end-of-file whilst writing";
 
         alias append opCall;
+        alias flush  opCall;
 
         /***********************************************************************
         

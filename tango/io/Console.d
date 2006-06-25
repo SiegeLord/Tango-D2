@@ -73,7 +73,7 @@ struct Console
 
                 **************************************************************/
 
-                this (FileDevice device)
+                private this (FileDevice device)
                 {
                         super (new ConsoleConduit (device));
                 }
@@ -108,6 +108,8 @@ struct Console
 
         class Output : Buffer
         {
+                alias newline    nl;
+                alias flush      opCall;
                 alias append     opCall;
                 alias getConduit conduit;
 
@@ -117,7 +119,7 @@ struct Console
 
                 **************************************************************/
 
-                this (FileDevice device)
+                private this (FileDevice device)
                 {
                         super (new ConsoleConduit (device));
                 }
@@ -132,7 +134,7 @@ struct Console
 
                 Output append (char[] x)
                 {
-                        super.append(x).flush;
+                        super.append(x);
                         return this;
                 } 
                           
@@ -174,7 +176,8 @@ struct Console
 
                 Output newline ()
                 {
-                        return append ("\n");
+                        super.append ("\n").flush;
+                        return this;
                 }           
         }
 

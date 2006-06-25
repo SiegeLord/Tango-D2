@@ -34,7 +34,7 @@ private import  tango.io.support.BufferCodec;
 
 *******************************************************************************/
 
-private class BufferFormatT(T)
+private class BufferedFormatT(T)
 {
         private alias FormatStructT!(T) Format;
         public  alias print             opCall;
@@ -47,7 +47,7 @@ private class BufferFormatT(T)
 
         /**********************************************************************
 
-                Construct a BufferFormat instance, tying the provided
+                Construct a BufferedFormat instance, tying the provided
                 buffer to a formatter. Set option 'flush' to true if
                 the result should be flushed when complete.
 
@@ -70,7 +70,7 @@ private class BufferFormatT(T)
 
         **********************************************************************/
 
-        BufferFormatT print (T[] fmt, ...)
+        BufferedFormatT print (T[] fmt, ...)
         {
                 formatter.print (fmt, _arguments, _argptr);
                 return render();
@@ -80,7 +80,7 @@ private class BufferFormatT(T)
 
         **********************************************************************/
 
-        BufferFormatT print (bool v)
+        BufferedFormatT print (bool v)
         {
                 return print ("%s", v);
         }
@@ -89,7 +89,7 @@ private class BufferFormatT(T)
 
         **********************************************************************/
 
-        BufferFormatT print (long v)
+        BufferedFormatT print (long v)
         {
                 return print ("%s", v);
         }
@@ -98,9 +98,19 @@ private class BufferFormatT(T)
 
         **********************************************************************/
 
-        BufferFormatT print (Object v)
+        BufferedFormatT print (Object v)
         {
                 return print ("%s", v);
+        }
+
+        /**********************************************************************
+
+        **********************************************************************/
+
+        BufferedFormatT print ()
+        {
+                target.flush;
+                return this;
         }
 
         /***********************************************************************
@@ -109,7 +119,7 @@ private class BufferFormatT(T)
 
         ***********************************************************************/
 
-        BufferFormatT newline ()
+        BufferedFormatT newline ()
         {
                 formatter.newline;
                 return render();
@@ -154,7 +164,7 @@ private class BufferFormatT(T)
 
         **********************************************************************/
 
-        private BufferFormatT render ()
+        private BufferedFormatT render ()
         {
                 if (flush)
                     target.flush;
@@ -163,7 +173,7 @@ private class BufferFormatT(T)
 }
 
 // convenience alias
-alias BufferFormatT!(char) BufferFormat;
+alias BufferedFormatT!(char) BufferedFormat;
 }
 
 
@@ -176,7 +186,7 @@ private import  tango.io.model.IBuffer,
 
 private import tango.text.convert.Format;
 
-private class BufferFormat
+private class BufferedFormat
 {
         public alias print opCall;
 
@@ -185,7 +195,7 @@ private class BufferFormat
 
         /**********************************************************************
 
-                Construct a BufferFormat instance, tying the provided
+                Construct a BufferedFormat instance, tying the provided
                 buffer to a formatter. Set option 'flush' to true if
                 the result should be flushed when complete.
 
@@ -201,7 +211,7 @@ private class BufferFormat
 
         **********************************************************************/
 
-        BufferFormat print (char[] fmt, ...)
+        BufferedFormat print (char[] fmt, ...)
         {
                 uint sink (char[] s)
                 {
@@ -217,7 +227,7 @@ private class BufferFormat
 
         **********************************************************************/
 
-        BufferFormat print (bool v)
+        BufferedFormat print (bool v)
         {
                 return print ("{0}", v);
         }
@@ -226,7 +236,7 @@ private class BufferFormat
 
         **********************************************************************/
 
-        BufferFormat print (long v)
+        BufferedFormat print (long v)
         {
                 return print ("{0}", v);
         }
@@ -235,7 +245,7 @@ private class BufferFormat
 
         **********************************************************************/
 
-        BufferFormat print (Object v)
+        BufferedFormat print (Object v)
         {
                 return print ("{0}", v);
         }
@@ -246,7 +256,7 @@ private class BufferFormat
 
         ***********************************************************************/
 
-        BufferFormat newline ()
+        BufferedFormat newline ()
         {
                 version (Windows)
                          static char[] Newline = "\n";
@@ -285,7 +295,7 @@ private class BufferFormat
 
         **********************************************************************/
 
-        private BufferFormat render ()
+        private BufferedFormat render ()
         {
                 if (flush)
                     target.flush;
@@ -310,12 +320,12 @@ private class BufferFormat
 
 *******************************************************************************/
 
-public static BufferFormat Stdout, 
-                           Stderr;
+public static BufferedFormat Stdout, 
+                             Stderr;
 
 static this()
 {
-        Stdout = new BufferFormat (Cout);
-        Stderr = new BufferFormat (Cerr);
+        Stdout = new BufferedFormat (Cout);
+        Stderr = new BufferedFormat (Cerr);
 }
 
