@@ -93,7 +93,7 @@ public class ConsoleAppender : Appender
                              Cerr.append (layout.header  (event));
                              Cerr.append (layout.content (event));
                              Cerr.append (layout.footer  (event));                        
-                             Cerr ("\n");
+                             Cerr.newline;
                              }
                 }
         }
