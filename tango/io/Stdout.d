@@ -12,6 +12,8 @@
 
 module tango.io.Stdout;
 
+version (Old)
+{
 private import  tango.io.Console;
 
 private import  tango.convert.Format,
@@ -31,8 +33,7 @@ private import  tango.io.support.BufferCodec;
         dchar (utf8, utf16, or utf32)
 
 *******************************************************************************/
-version (Old)
-{
+
 private class BufferFormatT(T)
 {
         private alias FormatStructT!(T) Format;
@@ -165,6 +166,13 @@ private class BufferFormatT(T)
 alias BufferFormatT!(char) BufferFormat;
 }
 
+
+
+
+private import  tango.io.Console;
+
+private import  tango.io.model.IBuffer,
+                tango.io.model.IConduit;
 
 private import tango.text.convert.Format;
 
