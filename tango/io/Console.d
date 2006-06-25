@@ -58,7 +58,8 @@ struct Console
 {
         /**********************************************************************
 
-                Model console input as a buffer
+                Model console input as a buffer. Note that we read utf8
+                only.
 
         **********************************************************************/
 
@@ -66,70 +67,117 @@ struct Console
         {
                 alias getConduit conduit;
                 
-                alias get opCall;
-
                 /**************************************************************
+
+                        Attach console input to the provided device
 
                 **************************************************************/
 
                 this (FileDevice device)
                 {
-                        super (new ConsoleConduit(device));
+                        super (new ConsoleConduit (device));
                 }
 
                 /**************************************************************
 
+                        Return available input from the console. Note that 
+                        you may obtain a slice from the buffer instead by
+                        setting copy to false.
+                         
                 **************************************************************/
 
-                Input get (inout char[] x)
+                char[] get (bool copy = true)
                 {
                         if (readable is 0)
                             fill ();
 
-                        x = cast(char[]) super.get (readable);
-                        return this;
+                        auto x = cast(char[]) super.get (readable);
+                        return (copy ? x.dup : x);
                 }
         }
 
+
         /**********************************************************************
 
-                Model console output as a buffer
+                Model console output as a buffer. Note that we accept 
+                utf8 only: the superclass append() methods are hidden
+                from view. Buffer.consume is left open, for those who
+                require lower-level access ~ along with Buffer.write
 
         **********************************************************************/
 
         class Output : Buffer
         {
+                alias append     opCall;
                 alias getConduit conduit;
 
-                alias Buffer.append append;
-
                 /**************************************************************
+
+                        Attach console output to the provided device
 
                 **************************************************************/
 
                 this (FileDevice device)
                 {
-                        super (new ConsoleConduit(device));
+                        super (new ConsoleConduit (device));
                 }
 
                 /**************************************************************
 
+                        Append to the console. We accept UTF8 only, so
+                        all other encodings should be handled via some
+                        higher level API
+
                 **************************************************************/
 
-                override Output append (void[] x)
+                Output append (char[] x)
                 {
-                        return super.append(x).flush;
+                        super.append(x).flush;
+                        return this;
                 } 
                           
                 /**************************************************************
 
+                        Append content
+
+                        Params:
+                        other = an object with a useful toString() method
+
+                        Returns:
+                        Returns a chaining reference if all content was 
+                        written. Throws an IOException indicating eof or 
+                        eob if not.
+
+                        Remarks:
+                        Append the result of other.toString() to the console, 
+                        and flush.
+
                 **************************************************************/
 
-                override Output newline ()
+                Output append (Object o)        
+                {           
+                        return append (o.toString);
+                }
+
+                /**************************************************************
+
+                        Append a newline
+
+                        Returns:
+                        Returns a chaining reference if content was written. 
+                        Throws an IOException indicating eof or eob if not.
+
+                        Remarks:
+                        Emit a platform-specific newline into the buffer
+
+                **************************************************************/
+
+                Output newline ()
                 {
-                        return this.append ("\n");
+                        return append ("\n");
                 }           
         }
+
 
         /***********************************************************************
 

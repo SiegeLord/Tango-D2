@@ -612,73 +612,22 @@ class Buffer : IBuffer
 
                 This is often used in lieu of a Writer, and enables simple
                 classes, such as FilePath and Uri, to emit content directly
-                into a buffer (thus avoiding intermediate heap activity)
+                into a buffer (thus avoiding potential for heap activity)
 
                 Examples:
                 ---
                 auto path = new FilePath (somepath);
 
-                Cout (&path.produce);
+                path.produce (&buffer.consume);
                 ---
-
-                Contrast the above with the following, which used toString()
-                instead:
-                ---
-                Cout (new FilePath (somepath));
-                ---
-
 
         ***********************************************************************/
 
-        private alias void delegate (void[]) Consumer;
-
-        IBuffer consume (Consumer delegate (Consumer) dg)        
-        {               
-                dg ((void[] v){append(v);});
-                return this;
+        void consume (void[] x)        
+        {   
+                append (x);
         }
-
-        /***********************************************************************
-        
-                Append content
-
-                Params:
-                other = an object with a useful toString() method
-
-                Returns:
-                Returns a chaining reference if all content was written. 
-                Throws an IOException indicating eof or eob if not.
-
-                Remarks:
-                Append the result of other.toString() to this buffer, and 
-                flush to the conduit as necessary. This is often used in 
-                lieu of a Writer.
-
-        ***********************************************************************/
-
-        IBuffer append (Object o)        
-        {           
-                return append (o.toString);
-        }
-
-        /***********************************************************************
-        
-                Append a newline
-
-                Returns:
-                Returns a chaining reference if all content was written. 
-                Throws an IOException indicating eof or eob if not.
-
-                Remarks:
-                Emit a platform-specific newline into the buffer
-
-        ***********************************************************************/
-
-        protected IBuffer newline ()
-        {
-                return this;
-        }     
-                      
+                    
         /***********************************************************************
         
                 Retrieve the current content as a string

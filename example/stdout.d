@@ -10,5 +10,5 @@ private import tango.io.Stdout;
 
 void main()
 {
-        Stdout.println ("hello %s \u263a", "world");
+        Stdout ("hello world \u263a").newline;
 }

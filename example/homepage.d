@@ -30,7 +30,7 @@ void main()
            int length = client.getResponseHeaders.getInt (HttpHeader.ContentLength, int.max);
 
            // display response
-           client.read (delegate(char[] c){Cout (c);}, length);
+           client.read (&Cout.consume, length);
            }
         else
            Cout ("failed to return the D home page");  

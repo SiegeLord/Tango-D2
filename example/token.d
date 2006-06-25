@@ -12,19 +12,15 @@ private import tango.text.QuoteIterator;
   
 void main()
 {
-        char[] args;
-
-        // prompt user
         Cout ("Please enter some space-delimited tokens: ");
 
-        // get console input
-        Cin (args);
-
-        // create quote-aware tokenizer for handling space-delimited tokens
-        auto token = new QuoteIterator (args, " \t");
+        // create quote-aware tokenizer for handling space-delimited
+        // tokens from the console input
+        auto token = new QuoteIterator (Cin.get, " \t");
+        
+        Cout ("You entered: ");
         
         // scan and display trimmed tokens
-        Cout ("You entered: ");
         while (token.next)
                Cout ("{") (token.trim.get) ("} ");
 }

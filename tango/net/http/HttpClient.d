@@ -537,7 +537,7 @@ class HttpClient
         
         ***********************************************************************/
 
-        void read (void delegate (char[]) sink, long length = long.max)
+        void read (void delegate (void[]) sink, long length = long.max)
         {
                 do {
                    length -= input.readable;

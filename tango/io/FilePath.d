@@ -103,10 +103,7 @@ class FilePath
                     root = -1,
                     suffix = -1;
                 
-                // default behaviour is to make a copy
-                if (copy)
-                    filepath = filepath.dup;
-                        
+                // mark path segments
                 for (int i=filepath.length; i > 0; --i)
                      switch (filepath[i-1])
                             {
@@ -134,8 +131,14 @@ class FilePath
                                  break;
                             }
 
+                // hang onto original length ...
                 int i = filepath.length;
 
+                // copy the filepath? Add a null if so
+                if (copy)
+                    fp = filepath = filepath ~ '\0';
+                        
+                // slice each path segment
                 if (ext >= 0)
                    {
                    this.ext = filepath [ext..i];
@@ -156,10 +159,6 @@ class FilePath
                    path = root;
 
                 this.name = filepath [path..ext];
-
-                // reserve a bit of space for later
-                fp.length = 256;
-                fp.length = 0;
         }
 
 
@@ -397,7 +396,13 @@ class FilePath
         char[] toUtf8 (bool withNull = false)
         {
                 if (fp.length is 0)
-                    produce ((void[] v){fp ~= cast(char[]) v;}) ("\0");
+                   {
+                   // preallocate some space
+                   fp.length = 256, fp.length = 0;
+
+                   // concatenate segments
+                   produce ((void[] v){fp ~= cast(char[]) v;}) ("\0");
+                   }
 
                 // return with or without trailing null
                 return fp [0 .. $ - (withNull ? 0 : 1)];
@@ -412,7 +417,7 @@ class FilePath
         wchar[] toUtf16 ()
         {
                 if (fpWide is null)
-                    // convert trailing null also :)
+                    // convert trailing null also ...
                     fpWide = Unicode.toUtf16 (toUtf8 (true));
 
                 return fpWide;

@@ -185,7 +185,7 @@ public static BufferFormat Stdout,
 
 static this()
 {
-        Stdout = new BufferFormat (Cerr);
-        Stderr = new BufferFormat (Cout);
+        Stdout = new BufferFormat (Cout);
+        Stderr = new BufferFormat (Cerr);
 }
 
