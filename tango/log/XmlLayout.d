@@ -15,6 +15,8 @@ module tango.log.XmlLayout;
 private import  tango.log.Event,
                 tango.log.Layout;
 
+private import  tango.core.Thread;
+
 /*******************************************************************************
 
         A layout with XML output conforming to Log4J specs.
@@ -33,6 +35,11 @@ public class XmlLayout : Layout
         char[] header (Event event)
         {
                 char[20] tmp;
+                char[]   threadName;
+                
+                threadName = Thread.getThis.name;
+                if (threadName.length is 0)
+                    threadName = "{unknown}";
 
                 event.append ("<log4j:event logger=\"")
                      .append (event.getName)
@@ -40,7 +47,7 @@ public class XmlLayout : Layout
                      .append (ultoa (tmp, event.getEpochTime))
                      .append ("\" level=\"")
                      .append (event.getLevelName [0..length-1])
-                     .append ("\" thread=\"unknown\">\r\n<log4j:message><![CDATA[");
+                     .append ("\" thread=\"").append(threadName).append("\">\r\n<log4j:message><![CDATA[");
 
                 return event.getContent;
         }
