@@ -1,7 +1,7 @@
 
 /* Trace dynamic profiler.
  * For use with the Digital Mars DMD compiler.
- * Copyright (C) 1995-2005 by Digital Mars
+ * Copyright (C) 1995-2006 by Digital Mars
  * All Rights Reserved
  * Written by Walter Bright
  * www.digitalmars.com
@@ -434,7 +434,7 @@ void trace_term()
 
 	// Report results
 	fplog = fopen(trace_logfilename,"w");
-	//fplog = tango.stdc.stdio.stdout;
+	//fplog = std.c.stdio.stdout;
 	if (fplog)
 	{   nsymbols = 0;
 	    trace_report(root);
@@ -489,7 +489,7 @@ static Symbol* trace_addsym(char[] id)
     rover = *parent;
     while (rover != null)		// while we haven't run out of tree
     {
-	cmp = util.string.cmp(id, rover.Sident);
+	cmp = std.string.cmp(id, rover.Sident);
 	if (cmp == 0)
 	{
 	    return rover;
@@ -673,7 +673,7 @@ L1:
 
 static char *skipspace(char *p)
 {
-    while (tango.stdc.ctype.isspace(*p))
+    while (std.ctype.isspace(*p))
 	p++;
     return p;
 }
@@ -729,7 +729,7 @@ static void trace_merge()
 		case '$':
 		case '@':
 		    p = buf;
-		    while (tango.stdc.ctype.isgraph(*p))
+		    while (std.ctype.isgraph(*p))
 			p++;
 		    *p = 0;
 		    //printf("trace_addsym('%s')\n",buf);
@@ -754,9 +754,9 @@ static void trace_merge()
 
 			p++;
 			count = strtoul(p,&p,10);
-			t = strtoull(p,&p,10);
+			t = cast(long)strtoull(p,&p,10);
 			s.totaltime += t;
-			t = strtoull(p,&p,10);
+			t = cast(long)strtoull(p,&p,10);
 			s.functime += t;
 		    }
 		    break;

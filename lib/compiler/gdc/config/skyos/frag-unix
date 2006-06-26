@@ -5,6 +5,8 @@ const int __FD_SET_SIZEOF = 8;
 const int FD_SETSIZE = 64;
 alias uint mode_t;
 alias int pid_t;
+alias ushort uid_t;
+alias ushort gid_t;
 
 enum {
   O_RDONLY = 0,
@@ -66,6 +68,7 @@ struct tm {
     int tm_wday;
     int tm_yday;
     int tm_isdst;
+    int tm_gmtoff;
 }
 
 static assert(tm.tm_sec.offsetof == 0);
@@ -77,7 +80,7 @@ static assert(tm.tm_year.offsetof == 20);
 static assert(tm.tm_wday.offsetof == 24);
 static assert(tm.tm_yday.offsetof == 28);
 static assert(tm.tm_isdst.offsetof == 32);
-static assert(tm.sizeof == 36);
+static assert(tm.sizeof == 40);
 
 
 enum {
@@ -183,7 +186,7 @@ enum {
   SA_ONSTACK = 134217728,
   SA_RESTART = 268435456,
   SA_NODEFER = 1073741824,
-  SA_RESETHAND = 0,
+  SA_RESETHAND = -2147483648,
 }
 
 struct sigset_t { ubyte[4] opaque; }
@@ -204,10 +207,17 @@ static assert(sigaction_t.sizeof == 12);
 
 
 // from <sys/mman.h>
+extern(D) const void * MAP_FAILED = cast(void *) -1;
+enum { PROT_NONE = 0, PROT_READ = 1, PROT_WRITE = 2, PROT_EXEC = 4 }
+enum { MAP_SHARED = 0x1, MAP_PRIVATE = 0x2, MAP_ANON = 0x20,       MAP_ANONYMOUS = 0x20,  MAP_TYPE = 15,
+  MAP_FIXED = 16,
+  MAP_FILE = 0,
+}
+
 enum {
-  MS_ASYNC = 0,
-  MS_INVALIDATE = 0,
-  MS_SYNC = 0,
+  MS_ASYNC = 1,
+  MS_INVALIDATE = 4,
+  MS_SYNC = 2,
 }
 
 enum {
@@ -240,12 +250,20 @@ enum {
 }
 
 struct sem_t { ubyte[0] opaque; }
-alias int pthread_t;
+alias uint pthread_t;
 struct pthread_attr_t { ubyte[28] opaque; }
 struct pthread_cond_t { ubyte[20] opaque; }
 struct pthread_condattr_t { ubyte[4] opaque; }
 struct pthread_mutex_t { ubyte[16] opaque; }
 struct pthread_mutexattr_t { ubyte[8] opaque; }
+
+enum : int {
+  PTHREAD_CANCEL_ENABLE = 0,
+  PTHREAD_CANCEL_DISABLE = 1,
+  PTHREAD_CANCEL_DEFERRED = 0,
+  PTHREAD_CANCEL_ASYNCHRONOUS = 1,
+}
+
 alias uint socklen_t;
 // from <sys/socket.h>
 const int SOL_SOCKET = 1
@@ -284,8 +302,8 @@ enum : int {
   SOCK_STREAM = 0,
   SOCK_DGRAM = 1,
   SOCK_RAW = 2,
-  SOCK_RDM = -1,
-  SOCK_SEQPACKET = -1,
+  SOCK_RDM = 3,
+  SOCK_SEQPACKET = 4,
 }
 
 enum : int {
@@ -300,7 +318,7 @@ enum : int {
   AF_INET = 0,
   AF_IPX = 255,
   AF_APPLETALK = 16,
-  AF_INET6 = 255,
+  AF_INET6 = 23,
   AF_BOGOSITY = 255,
 }
 
@@ -389,5 +407,21 @@ static assert(hostent.sizeof == 16);
 
 
 struct addrinfo { }
+struct passwd {
+    char * pw_name;
+    char * pw_passwd;
+    int pw_uid;
+    int pw_gid;
+   ubyte[4] ___pad1;
+    char * pw_gecos;
+    char * pw_dir;
+    char * pw_shell;
+}
+
+static assert(passwd.pw_uid.offsetof == 8);
+static assert(passwd.pw_gid.offsetof == 12);
+static assert(passwd.sizeof == 32);
+
+
 }
 

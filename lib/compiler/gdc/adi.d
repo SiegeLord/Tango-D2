@@ -1,5 +1,4 @@
 //_ adi.d
-
 /*
  *  Copyright (C) 2000-2006 by Digital Mars, www.digitalmars.com
  *  Written by Walter Bright
@@ -49,7 +48,7 @@ private
 struct Array
 {
     size_t length;
-    void *ptr;
+    void* ptr;
 }
 
 /**********************************************
@@ -181,13 +180,13 @@ extern (C) Array _adReverseWchar(wchar[] a)
 		break;
 
 	    if (stridelo == stridehi)
-	    {	int tmp;
+	    {	int stmp;
 
 		assert(stridelo == 2);
-		assert(tmp.sizeof == 2 * (*lo).sizeof);
-		tmp = *cast(int*)lo;
+		assert(stmp.sizeof == 2 * (*lo).sizeof);
+		stmp = *cast(int*)lo;
 		*cast(int*)lo = *cast(int*)hi;
-		*cast(int*)hi = tmp;
+		*cast(int*)hi = stmp;
 		lo += stridelo;
 		hi--;
 		continue;
@@ -386,7 +385,7 @@ extern (C) Array _adReverse(Array a, int szelem)
     {
 	if (a.length >= 2)
 	{
-	    byte *tmp;
+	    byte* tmp;
 	    byte[16] buffer;
 
 	    void* lo = a.ptr;
@@ -702,7 +701,7 @@ extern (C) int _adEqBit(Array a1, Array a2)
     ubyte mask;
 
     n = a1.length & 7;
-    mask = (1 << n) - 1;
+    mask = cast(ubyte)((1 << n) - 1);
     //printf("i = %d, n = %d, mask = %x, %x, %x\n", i, n, mask, p1[i], p2[i]);
     return (mask == 0) || (p1[i] & mask) == (p2[i] & mask);
 }
@@ -796,11 +795,9 @@ extern (C) int _adCmpBit(Array a1, Array a2)
 	    break;		// not equal
     }
     for (uint j = i * 8; j < len; j++)
-    {	ubyte mask = 1 << j;
+    {	ubyte mask = cast(ubyte)(1 << j);
 	int c;
 
-	// need != 0, otherwise comparison on bit 31 would be wrong...
-	//c = (int)((p1[i] & mask) != 0) - (int)((p2[i] & mask) != 0);
 	c = cast(int)(p1[i] & mask) - cast(int)(p2[i] & mask);
 	if (c)
 	    return c;

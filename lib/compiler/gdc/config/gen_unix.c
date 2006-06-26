@@ -154,7 +154,7 @@ void c_time() {
 	finish_struct(fi, 2, sizeof(rec), "timezone");
     }
     {
-	FieldInfo fi[9];
+	FieldInfo fi[11];
 	unsigned n;
 	struct tm rec;
 	INT_FIELD(fi[0], tm_sec);
