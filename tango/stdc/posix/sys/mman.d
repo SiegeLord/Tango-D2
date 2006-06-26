@@ -105,6 +105,7 @@ version( linux )
     const auto MAP_SHARED   = 0x01;
     const auto MAP_PRIVATE  = 0x02;
     const auto MAP_FIXED    = 0x10;
+    const auto MAP_ANON     = 0x20; // NOTE: this is a nonstandard extension
 
     const auto MAP_FAILED  = cast(void*) -1;
 
