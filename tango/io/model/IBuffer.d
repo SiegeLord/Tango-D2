@@ -71,7 +71,8 @@ abstract class IBuffer // could be an interface, but that causes poor codegen
         typedef uint delegate (void* dst, uint count, uint type) Converter;
 
         alias append opCall;
-        
+        alias flush  opCall;
+      
         private typedef byte Style;
 
         const Style     Mixed  = 0, 

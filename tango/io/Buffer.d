@@ -221,9 +221,6 @@ class Buffer : IBuffer
         protected static char[] eofRead   = "end-of-file whilst reading";
         protected static char[] eofWrite  = "end-of-file whilst writing";
 
-        alias append opCall;
-        alias flush  opCall;
-
         /***********************************************************************
         
                 Ensure the buffer remains valid between method calls
