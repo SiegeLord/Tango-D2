@@ -1,0 +1,7 @@
+// frags-ac.in...
+
+@DCFG_LONG_DOUBLE_FUNCS@
+
+@DCFG_SQRTF@
+
+// ...frags-ac.in

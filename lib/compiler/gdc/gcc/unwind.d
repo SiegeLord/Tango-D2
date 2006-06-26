@@ -19,7 +19,7 @@
 
 module gcc.unwind;
 private import gcc.builtins;
-private import std.c.process; // for abort
+private import tango.stdc.stdlib; // for abort
 
 
 /* This is derived from the C++ ABI for IA-64.  Where we diverge

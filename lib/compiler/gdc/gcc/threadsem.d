@@ -21,7 +21,7 @@ private import gcc.config;
 
 version (GNU_Semaphore_POSIX)
 {
-    private import std.c.unix.unix;
+    private import tango.stdc.posix.semaphore;
     struct Semaphore {
 	sem_t sem;
 	bool create() {  return sem_init(& sem, 0, 0) == 0; }
@@ -32,6 +32,7 @@ version (GNU_Semaphore_POSIX)
 }
 else version (GNU_Semaphore_Mach)
 {
+    // TODO: this needs a Tango replacement
     private import std.c.mach.mach;
     struct Semaphore {
 	semaphore_t sem;
@@ -44,7 +45,6 @@ else version (GNU_Semaphore_Mach)
 }
 else version (GNU_Sempahore_Pthreads)
 {
-    private import std.c.unix.unix;
     struct Semaphore {
 	pthread_mutex_t lock;
 	pthread_cond_t  cond;

@@ -22,9 +22,8 @@
 module gcc.deh; 
 private import gcc.unwind;
 private import gcc.builtins;
-private import std.gc;
-private import std.c.stdlib;
-private import std.c.process;
+private import gc;
+private import tango.stdc.stdlib;
 
 // User code creates the exception and there's no copy method, so we'll
 // just use the (probably) GC'd object (..shouldn't allow throwing auto classes)

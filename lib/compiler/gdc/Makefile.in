@@ -16,7 +16,9 @@
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 
 target_alias = @target_alias@
-host_alias = @host_alias@
+# FIXME: this should be @host_alias@, but it came out empty thus ruining some paths where
+# it is used
+host_alias = $(srcdir)
 
 AR = @AR@
 RANLIB = @RANLIB@
@@ -31,7 +33,10 @@ D_GC_FLAGS=@D_GC_FLAGS@
 
 # Only the GC routines need D_GC_FLAGS
 
-DFLAGS=@DFLAGS@  $(D_GC_FLAGS) -nostdinc
+# FIXME: The Posix version flag should be added through configuration, probably
+# FIXME: The -I.. flag is needed to build the Tango version of libgphobos, but
+# there might possibly be a more streamlined way to do this
+DFLAGS=@DFLAGS@  $(D_GC_FLAGS) -nostdinc --version=Posix -I.. 
 
 D_GENERATE_FRAGMENTS=@D_GENERATE_FRAGMENTS@
 D_FRAGMENT_SRCDIR=@D_FRAGMENT_SRCDIR@
@@ -77,11 +82,13 @@ all: libgphobos.a
 %.o : %.c
 	$(CC) -o $@ $(OUR_CFLAGS) $(CFLAGS) -c $<
 
+# Changed the gc source path here for Tango
 %.o : %.d $(host_alias)/gcc/config.d $(D_PREREQ_SRCS)
-	$(GDC) -o $@ $(DFLAGS) -I $(srcdir) -I $(srcdir)/internal/gc -I ./$(host_alias) -c $<
+	$(GDC) -o $@ $(DFLAGS) -I $(srcdir) -I $(srcdir)/../../gc/gdc -I ./$(host_alias) -c $<
 
+# Changed the gc source path here for Tango
 %.t.o : %.d $(host_alias)/gcc/config.d $(D_PREREQ_SRCS)
-	$(GDC) -o $@ $(DFLAGS) -fno-release -funittest -I $(srcdir) -I $(srcdir)/internal/gc -I ./$(host_alias) -c $<
+	$(GDC) -o $@ $(DFLAGS) -fno-release -funittest -I $(srcdir) -I $(srcdir)/../../gc/gdc -I ./$(host_alias) -c $<
 
 # internal/gc/gcx.t.o: $(srcdir)/internal/gc/gcx.d
 # 	$(GDC) -o $@ $(DFLAGS) -funittest -I $(srcdir) -I $(srcdir)/internal/gc -I ./$(host_alias) -c $<
@@ -192,19 +199,13 @@ ALL_OBJS= \
     $(OBJ_UTIL) \
     $(OBJ_TI)
 
-ZLIB_OBJS= etc/c/zlib/adler32.o etc/c/zlib/compress.o \
-	etc/c/zlib/crc32.o etc/c/zlib/gzio.o \
-	etc/c/zlib/uncompr.o etc/c/zlib/deflate.o \
-	etc/c/zlib/trees.o etc/c/zlib/zutil.o \
-	etc/c/zlib/inflate.o etc/c/zlib/infback.o \
-	etc/c/zlib/inftrees.o etc/c/zlib/inffast.o
-
-GC_OBJS= internal/gc/gc.o internal/gc/gcx.o \
-	internal/gc/gcbits.o
+GC_OBJS= gc/gdc/gc.o gc/gdc/gcx.o \
+	gc/gdc/gcbits.o
 GC_OBJS += @D_GC_MODULES@
 
+# Removed std/c/dirent.o for Tango
 GCC_OBJS = gcc/config.o gcc/unwind.o gcc/deh.o gcc/threadsem.o \
-	std/c/dirent.o gcc/cbridge_time.o
+	gcc/cbridge_time.o
 
 # std.c.linux.linux, std.loader, gcc.cbridge*
 WINDOWS_OBJS=std/c/windows/windows.o std/c/windows/com.o std/c/windows/winsock.o \
@@ -324,25 +325,25 @@ maintainer-clean: clean
 
 # 3.3.x install-sh can't handle multiple source arguments
 # $(INSTALL_HEADER) $(srcdir)/$$i/*.[hd] $(DESTDIR)$(gdc_include_dir)/$$i; done
-install: $(D_PREREQ_SRCS) libgphobos.a
-	for i in etc etc/c \
-		etc/c/stlsoft etc/c/zlib \
-		gcc std std/c \
-                std/c/darwin std/c/linux std/c/mach std/c/skyos std/c/unix std/c/windows \
-		std/typeinfo std/windows; do \
-		$(mkinstalldirs) $(DESTDIR)$(gdc_include_dir)/$$i; \
-		for f in $(srcdir)/$$i/*.[hd]; do $(INSTALL_HEADER) $$f $(DESTDIR)$(gdc_include_dir)/$$i; done; \
-	done
-	for i in crc32.d gcstats.d object.d; do \
-		$(INSTALL_HEADER) $(srcdir)/$$i $(DESTDIR)$(gdc_include_dir); done
-	$(mkinstalldirs) $(DESTDIR)$(gdc_include_dir)/$(host_alias)/gcc
-	$(INSTALL_HEADER) $(config_d_src) $(DESTDIR)$(gdc_include_dir)/$(host_alias)/gcc
-	if test -f $(configunix_d_src); then $(INSTALL_HEADER) $(host_alias)/gcc/configunix.d $(DESTDIR)$(gdc_include_dir)/$(host_alias)/gcc; fi
-	$(INSTALL) phobos-ver-syms $(DESTDIR)$(gdc_include_dir)/$(host_alias)
-	$(mkinstalldirs) $(DESTDIR)$(toolexeclibdir)
-	$(INSTALL) libgphobos.a $(DESTDIR)$(toolexeclibdir)
-	$(RANLIB) $(DESTDIR)$(toolexeclibdir)/libgphobos.a
-	$(INSTALL) libgphobos.spec $(DESTDIR)$(toolexeclibdir)
+#install: $(D_PREREQ_SRCS) libgphobos.a
+#	for i in etc etc/c \
+#		etc/c/stlsoft etc/c/zlib \
+#		gcc std std/c \
+#                std/c/darwin std/c/linux std/c/mach std/c/skyos std/c/unix std/c/windows \
+#		std/typeinfo std/windows; do \
+#		$(mkinstalldirs) $(DESTDIR)$(gdc_include_dir)/$$i; \
+#		for f in $(srcdir)/$$i/*.[hd]; do $(INSTALL_HEADER) $$f $(DESTDIR)$(gdc_include_dir)/$$i; done; \
+#	done
+#	for i in crc32.d gcstats.d object.d; do \
+#		$(INSTALL_HEADER) $(srcdir)/$$i $(DESTDIR)$(gdc_include_dir); done
+#	$(mkinstalldirs) $(DESTDIR)$(gdc_include_dir)/$(host_alias)/gcc
+#	$(INSTALL_HEADER) $(config_d_src) $(DESTDIR)$(gdc_include_dir)/$(host_alias)/gcc
+#	if test -f $(configunix_d_src); then $(INSTALL_HEADER) $(host_alias)/gcc/configunix.d $(DESTDIR)$(gdc_include_dir)/$(host_alias)/gcc; fi
+#	$(INSTALL) phobos-ver-syms $(DESTDIR)$(gdc_include_dir)/$(host_alias)
+#	$(mkinstalldirs) $(DESTDIR)$(toolexeclibdir)
+#	$(INSTALL) libgphobos.a $(DESTDIR)$(toolexeclibdir)
+#	$(RANLIB) $(DESTDIR)$(toolexeclibdir)/libgphobos.a
+#	$(INSTALL) libgphobos.spec $(DESTDIR)$(toolexeclibdir)
 
 clean:
 	echo 'Removing files...'

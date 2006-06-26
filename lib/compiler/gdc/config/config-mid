@@ -106,7 +106,7 @@ version (Use_FP_Math)
 }
 
 // TODO: configure these
-private import std.c.stdio;
+private import tango.stdc.stdio;
 extern (C) int ferror(FILE *);
 extern (C) int feof(FILE *);
 extern (C) void clearerr(FILE *);

@@ -600,6 +600,7 @@ byte[] _d_arrayappendcp(inout byte[] x, in size_t size, void *argp)
 	    memcpy(newdata, x, length * size);
 	    (cast(void **)(&x))[1] = newdata;
 	    }
+    }
 
     *cast(size_t *)&x = newlength;
     (cast(byte *)x)[length * size .. newlength * size] = (cast(byte*)argp)[0 .. size];
@@ -638,7 +639,6 @@ body
 	if (!x.length)
 	    return y;
     }
-
     size_t xlen = x.length * size;
     size_t ylen = y.length * size;
     size_t len = xlen + ylen;
@@ -649,10 +649,8 @@ body
     memcpy(p, x, xlen);
     memcpy(p + xlen, y, ylen);
     p[len] = 0;
-
     return p[0 .. x.length + y.length];
 }
-
 
 
 extern (C)
@@ -669,3 +667,4 @@ bit[] _d_arrayappendcb(inout bit[] x, bit b)
     x[x.length - 1] = b;
     return x;
 }
+

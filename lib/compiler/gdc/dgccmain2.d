@@ -4,13 +4,13 @@
 */
 
 import object;
-import std.c.stdio;
-import std.c.stdlib;
-import std.c.string;
+import tango.stdc.stdio;
+import tango.stdc.stdlib;
+import tango.stdc.string;
 version (GNU)
 {
     private import gcc.config;
-    private import gc_guess_stack;
+    private import gc.gdc.gc_guess_stack;
 }
 
 extern (C) void _STI_monitor_staticctor();
@@ -94,7 +94,7 @@ extern (C) int _d_run_main(int argc, char **argv, main_type main_func)
 	catch (Object o)
 	{
 	    printf("Error: ");
-	    o.print();
+	    printf(o.toString() ~ '\0');
 	    exit(EXIT_FAILURE);
 	}
     }

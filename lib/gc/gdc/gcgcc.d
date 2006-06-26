@@ -1,17 +1,16 @@
 private import gcgccextern;
-private import std.gc;
-private import std.c.stdlib;
-private import std.string; // for memmove
+private import gc;
+private import tango.stdc.stdlib;
+private import tango.stdc.string; // for memmove
 
 debug(ProcMaps)
-    private import std.c.stdio;
+    private import tango.stdc.stdio;
 
 /* ------- Memory allocation ------------- */
 
 version (GC_Use_Alloc_MMap)
 {    
-    private import std.c.unix.unix;
-
+    private import tango.stdc.posix.sys.mman;
     void *os_mem_map(uint nbytes)
     {   void *p;
 	p = mmap(null, nbytes, PROT_READ | PROT_WRITE, MAP_PRIVATE | MAP_ANON, -1, 0);
@@ -145,8 +144,7 @@ version (GC_Use_Data_Dyld)
 
 version (GC_Use_Data_Proc_Maps)
 {
-    private import std.c.unix.unix;
-    private import std.c.stdlib;
+    private import tango.stdc.stdlib;
 }
 
 

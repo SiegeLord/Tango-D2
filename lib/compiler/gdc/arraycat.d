@@ -27,6 +27,7 @@
 
 private import tango.stdc.string;
 private import tango.stdc.stdbool; // TODO: remove this when the old bit code goes away
+private import tango.stdc.stdarg;
 
 extern (C):
 
