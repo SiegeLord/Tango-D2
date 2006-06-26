@@ -50,7 +50,14 @@ PROT_EXEC
 PROT_NONE
 */
 
-version( darwin )
+version( linux )
+{
+    const auto PROT_NONE    = 0x0;
+    const auto PROT_READ    = 0x1;
+    const auto PROT_WRITE   = 0x2;
+    const auto PROT_EXEC    = 0x4;
+}
+else version( darwin )
 {
     const auto PROT_NONE    = 0x00;
     const auto PROT_READ    = 0x01;
