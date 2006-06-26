@@ -25,7 +25,15 @@ version(GC_Use_Data_Fixed)
 	alias _end Data_End;
 	enum FM { One = 1, MinMax = 0, Two = 0 }
     }
-    else version (bsd)
+    else version (cygwin)
+    {
+	alias _data_start__ Data_Start;
+	alias _data_end__ Data_End;
+	alias _bss_start__ Data_Start_2;
+	alias _bss_end__ Data_End_2;
+	enum FM { MinMax = 1, One = 0, Two = 0 }
+    }
+    else version (freebsd)
     {
 	// use '_etext' if '__fini_array_end' doesn't work
 	/* There is a bunch of read-only data after .data and before .bss, but
@@ -34,14 +42,6 @@ version(GC_Use_Data_Fixed)
 	alias __fini_array_end Data_Start;
 	alias _end Data_End;
 	enum FM { One = 1, MinMax = 0, Two = 0 }
-    }
-    else version (cygwin)
-    {
-	alias _data_start__ Data_Start;
-	alias _data_end__ Data_End;
-	alias _bss_start__ Data_Start_2;
-	alias _bss_end__ Data_End_2;
-	enum FM { MinMax = 1, One = 0, Two = 0 }
     }
     else version (linux)
     {

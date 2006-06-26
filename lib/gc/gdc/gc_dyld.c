@@ -24,7 +24,7 @@ const static struct {
 
 /* This should never be called by a thread holding the lock */
 static void
-on_dyld_add_image(struct mach_header* hdr, unsigned long slide) {
+on_dyld_add_image(const struct mach_header* hdr, intptr_t slide) {
     unsigned i;
     unsigned long start, end;
     const struct section *sec;
@@ -46,7 +46,7 @@ on_dyld_add_image(struct mach_header* hdr, unsigned long slide) {
     
 /* This should never be called by a thread holding the lock */
 static void
-on_dyld_remove_image(struct mach_header* hdr, unsigned long slide) {
+on_dyld_remove_image(const struct mach_header* hdr, intptr_t slide) {
     unsigned i;
     unsigned long start, end;
     const struct section *sec;
