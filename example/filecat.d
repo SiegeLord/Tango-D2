@@ -12,7 +12,7 @@ void main(char[][] args)
         if (args.length > 2)
            {
            // open the file for writing
-           auto dst = new FileConduit (args[1], FileStyle.WriteTruncate);
+           auto dst = new FileConduit (args[1], FileConduit.WriteTruncate);
 
            // copy each file onto dst
            foreach (char[] arg; args[2..args.length])

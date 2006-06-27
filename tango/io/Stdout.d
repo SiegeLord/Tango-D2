@@ -258,12 +258,7 @@ private class BufferedFormat
 
         BufferedFormat newline ()
         {
-                version (Windows)
-                         static char[] Newline = "\n";
-                     else
-                        static char[] Newline = "\r\n";
-
-                target.append (Newline);
+                target.append ("\n");
                 return render();
         }
 
