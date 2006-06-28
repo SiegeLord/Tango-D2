@@ -4,8 +4,8 @@
 
 <html>
 	<head>
-		<link rel="stylesheet" href="../style.css" type="text/css" />
-		<title>io/Stdout.d</title>
+		<link rel="stylesheet" href="style.css" type="text/css" />
+		<title>Stdout.d</title>
 	</head>
 	<body>
 
@@ -335,6 +335,35 @@
 324
 325
 326
+327
+328
+329
+330
+331
+332
+333
+334
+335
+336
+337
+338
+339
+340
+341
+342
+343
+344
+345
+346
+347
+348
+349
+350
+351
+352
+353
+354
+355
 </pre></td><td id='code'><pre><span class='com'>/*******************************************************************************
 
         copyright:      Copyright (c) 2004 Kris Bell. All rights reserved
@@ -529,6 +558,8 @@
 
         <span class='kw4'>private</span> <span class='kw4'>bool</span>            flush;
         <span class='kw4'>private</span> IBuffer         target;
+        <span class='kw4'>private</span> <span class='kw4'>static</span> <span class='kw4'>char</span><span class='opr'>[</span><span class='opr'>]</span>   One <span class='opr'>=</span> <span class='str'>&quot;{0}&quot;</span>;
+
 
         <span class='com'>/**********************************************************************
 
@@ -548,7 +579,7 @@
 
         **********************************************************************/</span>
 
-        BufferedFormat print <span class='opr'>(</span><span class='kw4'>char</span><span class='opr'>[</span><span class='opr'>]</span> fmt, <span class='opr'>..</span>.<span class='opr'>)</span>
+        <span class='kw4'>final</span> BufferedFormat format <span class='opr'>(</span><span class='kw4'>char</span><span class='opr'>[</span><span class='opr'>]</span> fmt, <span class='opr'>..</span>.<span class='opr'>)</span>
         <span class='opr'>{</span>
                 <span class='kw4'>uint</span> sink <span class='opr'>(</span><span class='kw4'>char</span><span class='opr'>[</span><span class='opr'>]</span> s<span class='opr'>)</span>
                 <span class='opr'>{</span>
@@ -564,27 +595,54 @@
 
         **********************************************************************/</span>
 
-        BufferedFormat print <span class='opr'>(</span><span class='kw4'>bool</span> v<span class='opr'>)</span>
+        <span class='kw4'>final</span> BufferedFormat print <span class='opr'>(</span><span class='kw4'>bool</span> v<span class='opr'>)</span>
         <span class='opr'>{</span>
-                <span class='kw1'>return</span> print <span class='opr'>(</span><span class='str'>&quot;{0}&quot;</span>, v<span class='opr'>)</span>;
+                <span class='kw1'>return</span> format <span class='opr'>(</span>One, v<span class='opr'>)</span>;
         <span class='opr'>}</span>
 
         <span class='com'>/**********************************************************************
 
         **********************************************************************/</span>
 
-        BufferedFormat print <span class='opr'>(</span><span class='kw4'>long</span> v<span class='opr'>)</span>
+        <span class='kw4'>final</span> BufferedFormat print <span class='opr'>(</span><span class='kw4'>int</span> v<span class='opr'>)</span>
         <span class='opr'>{</span>
-                <span class='kw1'>return</span> print <span class='opr'>(</span><span class='str'>&quot;{0}&quot;</span>, v<span class='opr'>)</span>;
+                <span class='kw1'>return</span> format <span class='opr'>(</span>One, v<span class='opr'>)</span>;
         <span class='opr'>}</span>
 
         <span class='com'>/**********************************************************************
 
         **********************************************************************/</span>
 
-        BufferedFormat print <span class='opr'>(</span><span class='kw3'>Object</span> v<span class='opr'>)</span>
+        <span class='kw4'>final</span> BufferedFormat print <span class='opr'>(</span><span class='kw4'>long</span> v<span class='opr'>)</span>
         <span class='opr'>{</span>
-                <span class='kw1'>return</span> print <span class='opr'>(</span><span class='str'>&quot;{0}&quot;</span>, v<span class='opr'>)</span>;
+                <span class='kw1'>return</span> format <span class='opr'>(</span>One, v<span class='opr'>)</span>;
+        <span class='opr'>}</span>
+
+        <span class='com'>/**********************************************************************
+
+        **********************************************************************/</span>
+
+        <span class='kw4'>final</span> BufferedFormat print <span class='opr'>(</span><span class='kw4'>double</span> v<span class='opr'>)</span>
+        <span class='opr'>{</span>
+                <span class='kw1'>return</span> format <span class='opr'>(</span>One, v<span class='opr'>)</span>;
+        <span class='opr'>}</span>
+
+        <span class='com'>/**********************************************************************
+
+        **********************************************************************/</span>
+
+        <span class='kw4'>final</span> BufferedFormat print <span class='opr'>(</span><span class='kw3'>Object</span> v<span class='opr'>)</span>
+        <span class='opr'>{</span>
+                <span class='kw1'>return</span> format <span class='opr'>(</span>One, v<span class='opr'>)</span>;
+        <span class='opr'>}</span>
+
+        <span class='com'>/**********************************************************************
+
+        **********************************************************************/</span>
+
+        <span class='kw4'>final</span> BufferedFormat print <span class='opr'>(</span><span class='kw4'>char</span><span class='opr'>[</span><span class='opr'>]</span> v<span class='opr'>)</span>
+        <span class='opr'>{</span>
+                <span class='kw1'>return</span> format <span class='opr'>(</span>One, v<span class='opr'>)</span>;
         <span class='opr'>}</span>
 
         <span class='com'>/***********************************************************************
@@ -593,7 +651,7 @@
 
         ***********************************************************************/</span>
 
-        BufferedFormat newline <span class='opr'>(</span><span class='opr'>)</span>
+        <span class='kw4'>final</span> BufferedFormat newline <span class='opr'>(</span><span class='opr'>)</span>
         <span class='opr'>{</span>
                 target.append <span class='opr'>(</span><span class='str'>&quot;\n&quot;</span><span class='opr'>)</span>;
                 <span class='kw1'>return</span> render<span class='opr'>(</span><span class='opr'>)</span>;
@@ -605,7 +663,7 @@
 
         **********************************************************************/</span>
 
-        IBuffer buffer <span class='opr'>(</span><span class='opr'>)</span>
+        <span class='kw4'>final</span> IBuffer buffer <span class='opr'>(</span><span class='opr'>)</span>
         <span class='opr'>{</span>
                 <span class='kw1'>return</span> target;
         <span class='opr'>}</span>      
@@ -616,7 +674,7 @@
 
         **********************************************************************/</span>
 
-        IConduit conduit <span class='opr'>(</span><span class='opr'>)</span>
+        <span class='kw4'>final</span> IConduit conduit <span class='opr'>(</span><span class='opr'>)</span>
         <span class='opr'>{</span>
                 <span class='kw1'>return</span> target.getConduit;
         <span class='opr'>}</span>      

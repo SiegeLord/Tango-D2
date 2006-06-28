@@ -4,8 +4,8 @@
 
 <html>
 	<head>
-		<link rel="stylesheet" href="../style.css" type="text/css" />
-		<title>io/FilePath.d</title>
+		<link rel="stylesheet" href="style.css" type="text/css" />
+		<title>FilePath.d</title>
 	</head>
 	<body>
 
@@ -686,6 +686,7 @@
 675
 676
 677
+678
 </pre></td><td id='code'><pre><span class='com'>/*******************************************************************************
 
         copyright:      Copyright (c) 2004 Kris Bell. All rights reserved
@@ -704,6 +705,7 @@
                 tango.io.FileConst;
 
 <span class='kw4'>private</span> <span class='kw2'>import</span>  tango.convert.Unicode;
+
 
 <span class='com'>/*******************************************************************************
 
@@ -824,7 +826,7 @@
 
                 <span class='com'>// copy the filepath? Add a null if so</span>
                 <span class='kw1'>if</span> <span class='opr'>(</span>copy<span class='opr'>)</span>
-                    fp <span class='opr'>=</span> filepath <span class='opr'>=</span> filepath <span class='opr'>~</span> <span class='str'>'\0'</span>;
+                    fp <span class='opr'>=</span> filepath <span class='opr'>=</span> <span class='opr'>(</span>filepath <span class='opr'>~</span> <span class='str'>'\0'</span><span class='opr'>)</span>;
                         
                 <span class='com'>// slice each path segment</span>
                 <span class='kw1'>if</span> <span class='opr'>(</span>ext <span class='opr'>&gt;</span><span class='opr'>=</span> <span class='nbr'>0</span><span class='opr'>)</span>
@@ -1102,11 +1104,11 @@
 
         ***********************************************************************/</span>
 
-        <span class='kw4'>wchar</span><span class='opr'>[</span><span class='opr'>]</span> toUtf16 <span class='opr'>(</span><span class='opr'>)</span>
+        <span class='kw4'>wchar</span><span class='opr'>[</span><span class='opr'>]</span> toUtf16 <span class='opr'>(</span><span class='kw4'>bool</span> withNull <span class='opr'>=</span> <span class='kw2'>false</span><span class='opr'>)</span>
         <span class='opr'>{</span>
-                <span class='kw1'>if</span> <span class='opr'>(</span>fpWide <span class='kw2'>is</span> <span class='kw2'>null</span><span class='opr'>)</span>
+                <span class='kw1'>if</span> <span class='opr'>(</span>fpWide.length <span class='kw2'>is</span> <span class='nbr'>0</span><span class='opr'>)</span>
                     <span class='com'>// convert trailing null also ...</span>
-                    fpWide <span class='opr'>=</span> Unicode.toUtf16 <span class='opr'>(</span>toUtf8 <span class='opr'>(</span><span class='kw2'>true</span><span class='opr'>)</span><span class='opr'>)</span>;
+                    fpWide <span class='opr'>=</span> Unicode.toUtf16 <span class='opr'>(</span>toUtf8 <span class='opr'>(</span>withNull<span class='opr'>)</span><span class='opr'>)</span>;
 
                 <span class='kw1'>return</span> fpWide;
         <span class='opr'>}</span>

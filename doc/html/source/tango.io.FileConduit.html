@@ -4,8 +4,8 @@
 
 <html>
 	<head>
-		<link rel="stylesheet" href="../style.css" type="text/css" />
-		<title>io/FileConduit.d</title>
+		<link rel="stylesheet" href="style.css" type="text/css" />
+		<title>FileConduit.d</title>
 	</head>
 	<body>
 
@@ -1025,8 +1025,8 @@
                                                        attr | FILE_ATTRIBUTE_NORMAL,
                                                        <span class='kw2'>cast</span><span class='opr'>(</span>HANDLE<span class='opr'>)</span> <span class='kw2'>null</span><span class='opr'>)</span>;
                              <span class='kw1'>else</span>
-                                handle <span class='opr'>=</span> CreateFileW <span class='opr'>(</span>path.toUtf16, access, share, 
-                                                      <span class='kw2'>null</span>, create, 
+                                handle <span class='opr'>=</span> CreateFileW <span class='opr'>(</span>path.toUtf16<span class='opr'>(</span><span class='kw2'>true</span><span class='opr'>)</span>, access, 
+                                                      share, <span class='kw2'>null</span>, create, 
                                                       attr | FILE_ATTRIBUTE_NORMAL,
                                                       <span class='kw2'>cast</span><span class='opr'>(</span>HANDLE<span class='opr'>)</span> <span class='kw2'>null</span><span class='opr'>)</span>;
 

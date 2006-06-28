@@ -4,8 +4,8 @@
 
 <html>
 	<head>
-		<link rel="stylesheet" href="../style.css" type="text/css" />
-		<title>io/FileSystem.d</title>
+		<link rel="stylesheet" href="style.css" type="text/css" />
+		<title>FileSystem.d</title>
 	</head>
 	<body>
 
@@ -253,7 +253,7 @@
                                 <span class='opr'>}</span>
                              <span class='kw1'>else</span>
                                 <span class='opr'>{</span>
-                                <span class='kw1'>if</span> <span class='opr'>(</span>! SetCurrentDirectoryW <span class='opr'>(</span>fp.toUtf16<span class='opr'>)</span><span class='opr'>)</span>
+                                <span class='kw1'>if</span> <span class='opr'>(</span>! SetCurrentDirectoryW <span class='opr'>(</span>fp.toUtf16<span class='opr'>(</span><span class='kw2'>true</span><span class='opr'>)</span><span class='opr'>)</span><span class='opr'>)</span>
                                       <span class='kw2'>throw</span> <span class='kw2'>new</span> IOException <span class='opr'>(</span><span class='str'>&quot;Failed to set current directory&quot;</span><span class='opr'>)</span>;
                                 <span class='opr'>}</span>
                 <span class='opr'>}</span>

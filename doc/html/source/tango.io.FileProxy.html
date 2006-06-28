@@ -4,8 +4,8 @@
 
 <html>
 	<head>
-		<link rel="stylesheet" href="../style.css" type="text/css" />
-		<title>io/FileProxy.d</title>
+		<link rel="stylesheet" href="style.css" type="text/css" />
+		<title>FileProxy.d</title>
 	</head>
 	<body>
 
@@ -979,7 +979,7 @@
                         <span class='kw4'>version</span> <span class='opr'>(</span>Win32SansUnicode<span class='opr'>)</span>
                                  HANDLE h <span class='opr'>=</span> FindFirstFileA <span class='opr'>(</span>path.toUtf8, <span class='opr'>&amp;</span>info<span class='opr'>)</span>;
                              <span class='kw1'>else</span>
-                                HANDLE h <span class='opr'>=</span> FindFirstFileW <span class='opr'>(</span>path.toUtf16, <span class='opr'>&amp;</span>info<span class='opr'>)</span>;
+                                HANDLE h <span class='opr'>=</span> FindFirstFileW <span class='opr'>(</span>path.toUtf16<span class='opr'>(</span><span class='kw2'>true</span><span class='opr'>)</span>, <span class='opr'>&amp;</span>info<span class='opr'>)</span>;
 
                         <span class='kw1'>if</span> <span class='opr'>(</span>h <span class='opr'>=</span><span class='opr'>=</span> INVALID_HANDLE_VALUE<span class='opr'>)</span>
                             exception <span class='opr'>(</span><span class='opr'>)</span>;
@@ -1110,7 +1110,7 @@
                                    <span class='opr'>}</span>
                                 <span class='kw1'>else</span>
                                    <span class='opr'>{</span>
-                                   <span class='kw1'>if</span> <span class='opr'>(</span>! RemoveDirectoryW <span class='opr'>(</span>path.toUtf16<span class='opr'>)</span><span class='opr'>)</span>
+                                   <span class='kw1'>if</span> <span class='opr'>(</span>! RemoveDirectoryW <span class='opr'>(</span>path.toUtf16<span class='opr'>(</span><span class='kw2'>true</span><span class='opr'>)</span><span class='opr'>)</span><span class='opr'>)</span>
                                          exception<span class='opr'>(</span><span class='opr'>)</span>;
                                    <span class='opr'>}</span>
                            <span class='opr'>}</span>
@@ -1122,7 +1122,7 @@
                                    <span class='opr'>}</span>
                                 <span class='kw1'>else</span>
                                    <span class='opr'>{</span>
-                                   <span class='kw1'>if</span> <span class='opr'>(</span>! DeleteFileW <span class='opr'>(</span>path.toUtf16<span class='opr'>)</span><span class='opr'>)</span>
+                                   <span class='kw1'>if</span> <span class='opr'>(</span>! DeleteFileW <span class='opr'>(</span>path.toUtf16<span class='opr'>(</span><span class='kw2'>true</span><span class='opr'>)</span><span class='opr'>)</span><span class='opr'>)</span>
                                          exception<span class='opr'>(</span><span class='opr'>)</span>;
                                    <span class='opr'>}</span>
 
@@ -1146,7 +1146,7 @@
                         <span class='kw4'>version</span> <span class='opr'>(</span>Win32SansUnicode<span class='opr'>)</span>
                                  result <span class='opr'>=</span> MoveFileExA <span class='opr'>(</span>path.toUtf8, dst.toUtf8, Typical<span class='opr'>)</span>;
                              <span class='kw1'>else</span>
-                                result <span class='opr'>=</span> MoveFileExW <span class='opr'>(</span>path.toUtf16, dst.toUtf16, Typical<span class='opr'>)</span>;
+                                result <span class='opr'>=</span> MoveFileExW <span class='opr'>(</span>path.toUtf16<span class='opr'>(</span><span class='kw2'>true</span><span class='opr'>)</span>, dst.toUtf16<span class='opr'>(</span><span class='kw2'>true</span><span class='opr'>)</span>, Typical<span class='opr'>)</span>;
 
                         <span class='kw1'>if</span> <span class='opr'>(</span>! result<span class='opr'>)</span>
                               exception<span class='opr'>(</span><span class='opr'>)</span>;
@@ -1170,7 +1170,7 @@
                                                   <span class='nbr'>0</span>, <span class='kw2'>null</span>, CREATE_ALWAYS, 
                                                   FILE_ATTRIBUTE_NORMAL, <span class='kw2'>null</span><span class='opr'>)</span>;
                              <span class='kw1'>else</span>
-                                h <span class='opr'>=</span> CreateFileW <span class='opr'>(</span>path.toUtf16, GENERIC_WRITE, 
+                                h <span class='opr'>=</span> CreateFileW <span class='opr'>(</span>path.toUtf16<span class='opr'>(</span><span class='kw2'>true</span><span class='opr'>)</span>, GENERIC_WRITE, 
                                                  <span class='nbr'>0</span>, <span class='kw2'>null</span>, CREATE_ALWAYS, 
                                                  FILE_ATTRIBUTE_NORMAL, <span class='kw2'>null</span><span class='opr'>)</span>;
 
@@ -1198,7 +1198,7 @@
                                 <span class='opr'>}</span>
                              <span class='kw1'>else</span>
                                 <span class='opr'>{</span>
-                                <span class='kw1'>if</span> <span class='opr'>(</span>! CreateDirectoryW <span class='opr'>(</span>path.toUtf16, <span class='kw2'>null</span><span class='opr'>)</span><span class='opr'>)</span>
+                                <span class='kw1'>if</span> <span class='opr'>(</span>! CreateDirectoryW <span class='opr'>(</span>path.toUtf16<span class='opr'>(</span><span class='kw2'>true</span><span class='opr'>)</span>, <span class='kw2'>null</span><span class='opr'>)</span><span class='opr'>)</span>
                                       exception<span class='opr'>(</span><span class='opr'>)</span>;
                                 <span class='opr'>}</span>
                         <span class='kw1'>return</span> <span class='kw2'>this</span>;
