@@ -4,8 +4,8 @@
 
 <html>
 	<head>
-		<link rel="stylesheet" href="%root%style.css" type="text/css" />
-		<title>%path%/%file%</title>
+		<link rel="stylesheet" href="style.css" type="text/css" />
+		<title>%file%</title>
 	</head>
 	<body>
 
