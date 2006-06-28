@@ -17,6 +17,7 @@ private import  tango.io.Exception,
 
 private import  tango.convert.Unicode;
 
+
 /*******************************************************************************
 
         Models a file name. These are expected to be used as the constructor 
@@ -136,7 +137,7 @@ class FilePath
 
                 // copy the filepath? Add a null if so
                 if (copy)
-                    fp = filepath = filepath ~ '\0';
+                    fp = filepath = (filepath ~ '\0');
                         
                 // slice each path segment
                 if (ext >= 0)
@@ -414,11 +415,11 @@ class FilePath
 
         ***********************************************************************/
 
-        wchar[] toUtf16 ()
+        wchar[] toUtf16 (bool withNull = false)
         {
-                if (fpWide is null)
+                if (fpWide.length is 0)
                     // convert trailing null also ...
-                    fpWide = Unicode.toUtf16 (toUtf8 (true));
+                    fpWide = Unicode.toUtf16 (toUtf8 (withNull));
 
                 return fpWide;
         }
