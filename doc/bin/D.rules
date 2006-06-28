@@ -1,0 +1,82 @@
+ident	    [_a-z][\w]*	insensitive
+
+pragma	    \#[ ]*line
+
+nbr	    0b[01]+[_01]*[ ]*\.\.[ ]*0b[01]+[_01]*(UL|LU|U|L)?	insensitive
+nbr	    0[0-7]+[_0-7]*[ ]*\.\.[ ]*0[0-7]+[_0-7]*(UL|LU|U|L)?	    insensitive
+nbr	    0x[0-9a-f]+[_0-9a-f]*[ ]*\.\.[ ]*0x[0-9a-f]+[_0-9a-f]*(UL|LU|U|L)?  insensitive
+nbr	    [0-9]+[_0-9]*(UL|LU|U|L)?[ ]*\.\.[ ]*[0-9]+[_0-9]*(UL|LU|U|L)?	insensitive
+
+nbr	    0B[01]+[_01]*(UL|LU|U|L)?   insensitive
+nbr	    0[0-7]+[_0-7]*(UL|LU|U|L)?  insensitive
+nbr	    0x[0-9a-f]+[_0-9a-f]*(UL|LU|U|L)?   insensitive
+nbr	    [0-9]+[_0-9]*(UL|LU|U|L)?	insensitive
+
+nbr	    [0-9]*[_0-9]*\.[_0-9]*(e-|e|e\+)?[0-9]+[_0-9]*(FI|LI|I|F|L)?	insensitive
+nbr	    [0-9]+[_0-9]*\.[_0-9]*(e-|e|e\+)?[0-9]*[_0-9]*(FI|LI|I|F|L)?	insensitive
+
+nbr	    [0-9]*[_0-9]*\.?[_0-9]*(e-|e|e\+)[0-9]+[_0-9]*(FI|LI|I|F|L)?	insensitive
+nbr	    0x[0-9a-f]+[_0-9a-f]*\.[_0-9a-f]*(p-|p|p\+)?[0-9a-f]+[_0-9a-f]*(FI|LI|I|F|L)?	insensitive
+nbr	    0x[0-9a-f]+[_0-9a-f]*\.?[_0-9a-f]*(p-|p|p\+)[0-9a-f]+[_0-9a-f]*(FI|LI|I|F|L)?	insensitive
+
+escstr	    \\[n|t|&quot;]
+escstr	    (\\r\\n)
+escstr	    \\0[0-7]+
+escstr	    \\u[0-9]+	insensitive
+escstr	    \\x[0-9a-fA-F]+
+
+char	    '([^\\]|(\\.)|\n)*'
+string	    "([^\\]|(\\.)|\n)*"
+wysiwyg	    `(\n|.)*`
+
+endl	    \n\r
+endl	    \n
+space	    (\x20|\t)+
+
+semicolon   ;
+comma	    ,
+dot	    \.
+
+comment	    //[^\n\r]*
+comment	    /\*(\n|.)*\*/
+nestedCommentO	    /\+([^/\+]|(\+[^/])|(/[^\+]))*
+nestedCommentC	    \+/
+
+curlyOpen	\{
+curlyClose	\}
+
+roundOpen	\(
+roundClose	\)
+
+squareOpen	\[
+squareClose	\]
+
+lor	    \|\|
+land	    \&\&
+
+op	=
+op	\+
+op	-
+op	\*
+op	\+
+op	~
+op	<
+op	>
+op	%
+op	^
+op	&
+op	%
+op	\.
+op	\.\.
+op	\+=
+op	-=
+op	\*=
+op	/=
+op	~=
+op	^=
+op	&=
+op	\|=
+op	!=
+
+other	    \!
+other	    \*
