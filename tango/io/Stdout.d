@@ -211,7 +211,7 @@ private class BufferedFormat
 
         **********************************************************************/
 
-        BufferedFormat print (char[] fmt, ...)
+        BufferedFormat format (char[] fmt, ...)
         {
                 uint sink (char[] s)
                 {
@@ -229,7 +229,16 @@ private class BufferedFormat
 
         BufferedFormat print (bool v)
         {
-                return print ("{0}", v);
+                return format ("{0}", v);
+        }
+
+        /**********************************************************************
+
+        **********************************************************************/
+
+        BufferedFormat print (int v)
+        {
+                return format ("{0}", v);
         }
 
         /**********************************************************************
@@ -238,7 +247,16 @@ private class BufferedFormat
 
         BufferedFormat print (long v)
         {
-                return print ("{0}", v);
+                return format ("{0}", v);
+        }
+
+        /**********************************************************************
+
+        **********************************************************************/
+
+        BufferedFormat print (double v)
+        {
+                return format ("{0}", v);
         }
 
         /**********************************************************************
@@ -247,7 +265,16 @@ private class BufferedFormat
 
         BufferedFormat print (Object v)
         {
-                return print ("{0}", v);
+                return format ("{0}", v);
+        }
+
+        /**********************************************************************
+
+        **********************************************************************/
+
+        BufferedFormat print (char[] v)
+        {
+                return format ("{0}", v);
         }
 
         /***********************************************************************
