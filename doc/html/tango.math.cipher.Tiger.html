@@ -59,7 +59,15 @@ Regan Heath, Kris
 </li></span></dt>
 <script>explorer.outline.writeEnabled = false;</script>
 
-<dd><br><br>
+<dd><font color=black>Construct an TigerDigest.
+</font><br><br>
+<b>Remarks:</b><br>
+Constructs an TigerDigest from binary data
+<br><br>
+
+        
+<br><br>
+
 </dd>
 
 
@@ -71,7 +79,19 @@ Regan Heath, Kris
 </li></span></dt>
 <script>explorer.outline.writeEnabled = false;</script>
 
-<dd><br><br>
+<dd><font color=black>Return the string representation
+</font><br><br>
+<b>Returns:</b><br>
+the digest in string form
+
+<br><br>
+<b>Remarks:</b><br>
+Formats the digest into hex encoded string form.
+<br><br>
+
+        
+<br><br>
+
 </dd>
 
 
@@ -83,7 +103,19 @@ Regan Heath, Kris
 </li></span></dt>
 <script>explorer.outline.writeEnabled = false;</script>
 
-<dd><br><br>
+<dd><font color=black>Return the binary representation
+</font><br><br>
+<b>Returns:</b><br>
+the digest in binary form
+
+<br><br>
+<b>Remarks:</b><br>
+Returns a void[] containing the binary representation of the digest.
+<br><br>
+
+        
+<br><br>
+
 </dd>
 
 </dl>
@@ -113,7 +145,15 @@ Regan Heath, Kris
 </li></span></dt>
 <script>explorer.outline.writeEnabled = false;</script>
 
-<dd><br><br>
+<dd><font color=black>Initialize the cipher
+</font><br><br>
+<b>Remarks:</b><br>
+Returns the cipher state to it's initial value
+<br><br>
+
+        
+<br><br>
+
 </dd>
 
 
@@ -125,7 +165,20 @@ Regan Heath, Kris
 </li></span></dt>
 <script>explorer.outline.writeEnabled = false;</script>
 
-<dd><br><br>
+<dd><font color=black>Obtain the digest
+</font><br><br>
+<b>Returns:</b><br>
+the digest
+
+<br><br>
+<b>Remarks:</b><br>
+Returns a digest of the current cipher state, this may be the
+                final digest, or a digest of the state between calls to update()
+<br><br>
+
+        
+<br><br>
+
 </dd>
 
 
@@ -137,7 +190,31 @@ Regan Heath, Kris
 </li></span></dt>
 <script>explorer.outline.writeEnabled = false;</script>
 
-<dd><br><br>
+<dd><font color=black>Get the number of 
+<span class="currsymbol"><a href="http://www.dsource.org/projects/tango/wiki/tango.math.cipher.Tiger.passes">passes</a></span>
+<script>explorer.outline.addDecl('passes');</script>
+ being performed
+</font><br><br>
+<b>Returns:</b><br>
+the number of 
+<span class="currsymbol"><a href="http://www.dsource.org/projects/tango/wiki/tango.math.cipher.Tiger.passes">passes</a></span>
+<script>explorer.outline.addDecl('passes');</script>
+
+
+<br><br>
+<b>Remarks:</b><br>
+The Tiger algorithm may perform an arbitrary number of 
+<span class="currsymbol"><a href="http://www.dsource.org/projects/tango/wiki/tango.math.cipher.Tiger.passes">passes</a></span>
+<script>explorer.outline.addDecl('passes');</script>
+
+                the minimum recommended number is 3 and this number should be
+                quite secure however the "ultra-cautious" may wish to increase
+                this number.
+<br><br>
+
+        
+<br><br>
+
 </dd>
 
 
@@ -149,7 +226,34 @@ Regan Heath, Kris
 </li></span></dt>
 <script>explorer.outline.writeEnabled = false;</script>
 
-<dd><br><br>
+<dd><font color=black>Set the number of 
+<span class="currsymbol"><a href="http://www.dsource.org/projects/tango/wiki/tango.math.cipher.Tiger.passes">passes</a></span>
+<script>explorer.outline.addDecl('passes');</script>
+ to be performed
+</font><br><br>
+<b>Params:</b><br>
+<table><tr>
+<td nowrap valign="top" style="padding-right: 8px">uint <span class="funcparam">n</span></td>
+
+               
+<td>the number of 
+<span class="currsymbol"><a href="http://www.dsource.org/projects/tango/wiki/tango.math.cipher.Tiger.passes">passes</a></span>
+<script>explorer.outline.addDecl('passes');</script>
+ to perform</td></tr>
+</table><br>
+<b>Remarks:</b><br>
+The Tiger algorithm may perform an arbitrary number of 
+<span class="currsymbol"><a href="http://www.dsource.org/projects/tango/wiki/tango.math.cipher.Tiger.passes">passes</a></span>
+<script>explorer.outline.addDecl('passes');</script>
+
+                the minimum recommended number is 3 and this number should be
+                quite secure however the "ultra-cautious" may wish to increase
+                this number.
+<br><br>
+
+        
+<br><br>
+
 </dd>
 
 
@@ -161,7 +265,23 @@ Regan Heath, Kris
 </li></span></dt>
 <script>explorer.outline.writeEnabled = false;</script>
 
-<dd><br><br>
+<dd><font color=black>Cipher block size
+</font><br><br>
+<b>Returns:</b><br>
+the block size
+
+<br><br>
+<b>Remarks:</b><br>
+Specifies the size (in bytes) of the block of data to pass to
+                each call to transform(). For Tiger the 
+<span class="currsymbol"><a href="http://www.dsource.org/projects/tango/wiki/tango.math.cipher.Tiger.blockSize">blockSize</a></span>
+<script>explorer.outline.addDecl('blockSize');</script>
+ is 64.
+<br><br>
+
+        
+<br><br>
+
 </dd>
 
 
@@ -173,7 +293,24 @@ Regan Heath, Kris
 </li></span></dt>
 <script>explorer.outline.writeEnabled = false;</script>
 
-<dd><br><br>
+<dd><font color=black>Length padding size
+</font><br><br>
+<b>Returns:</b><br>
+the length paddding size
+
+<br><br>
+<b>Remarks:</b><br>
+Specifies the size (in bytes) of the padding which uses the
+                length of the data which has been ciphered, this padding is
+                carried out by the padLength method. For Tiger the 
+<span class="currsymbol"><a href="http://www.dsource.org/projects/tango/wiki/tango.math.cipher.Tiger.addSize">addSize</a></span>
+<script>explorer.outline.addDecl('addSize');</script>
+ is 8.
+<br><br>
+
+        
+<br><br>
+
 </dd>
 
 
@@ -185,7 +322,24 @@ Regan Heath, Kris
 </li></span></dt>
 <script>explorer.outline.writeEnabled = false;</script>
 
-<dd><br><br>
+<dd><font color=black>Pads the cipher data
+</font><br><br>
+<b>Params:</b><br>
+<table><tr>
+<td nowrap valign="top" style="padding-right: 8px">data</td>
+
+               
+<td>a slice of the cipher buffer to fill with padding</td></tr>
+</table><br>
+<b>Remarks:</b><br>
+Fills the passed buffer slice with the appropriate padding for
+                the final call to transform(). This padding will fill the cipher
+                buffer up to blockSize()-addSize().
+<br><br>
+
+        
+<br><br>
+
 </dd>
 
 
@@ -197,7 +351,29 @@ Regan Heath, Kris
 </li></span></dt>
 <script>explorer.outline.writeEnabled = false;</script>
 
-<dd><br><br>
+<dd><font color=black>Performs the <span class="funcparam">length</span> padding
+</font><br><br>
+<b>Params:</b><br>
+<table><tr>
+<td nowrap valign="top" style="padding-right: 8px">data</td>
+
+               
+<td>the slice of the cipher buffer to fill with padding</td></tr>
+<tr>
+<td nowrap valign="top" style="padding-right: 8px">ulong <span class="funcparam">length</span></td>
+
+               
+<td>the <span class="funcparam">length</span> of the data which has been ciphered</td></tr>
+</table><br>
+<b>Remarks:</b><br>
+Fills the passed buffer slice with addSize() bytes of padding
+                based on the <span class="funcparam">length</span> in bytes of the input data which has been
+                ciphered.
+<br><br>
+
+        
+<br><br>
+
 </dd>
 
 
@@ -209,7 +385,25 @@ Regan Heath, Kris
 </li></span></dt>
 <script>explorer.outline.writeEnabled = false;</script>
 
-<dd><br><br>
+<dd><font color=black>Performs the cipher on a block of data
+</font><br><br>
+<b>Params:</b><br>
+<table><tr>
+<td nowrap valign="top" style="padding-right: 8px">data</td>
+
+               
+<td>the block of data to cipher</td></tr>
+</table><br>
+<b>Remarks:</b><br>
+The actual cipher algorithm is carried out by this method on
+                the passed block of data. This method is called for every
+                blockSize() bytes of <span class="funcparam">input</span> data and once more with the remaining
+                data padded to blockSize().
+<br><br>
+
+        
+<br><br>
+
 </dd>
 
 </dl>

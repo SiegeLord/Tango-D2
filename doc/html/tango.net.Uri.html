@@ -51,7 +51,7 @@ Kris
 <dt><span class="decl"><li>class 
 <span class="currsymbol"><a href="http://www.dsource.org/projects/tango/wiki/tango.net.Uri.Uri">Uri</a></span>
 <script>explorer.outline.addDecl('Uri');</script>
-: tango.io.protocol.model.IWriter.IWritable;
+;
 </li></span></dt>
 <script>explorer.outline.writeEnabled = false;</script>
 
@@ -64,9 +64,11 @@ Kris
 <span class="currsymbol"><a href="http://www.dsource.org/projects/tango/wiki/tango.net.Uri.Uri">Uri</a></span>
 <script>explorer.outline.addDecl('Uri');</script>
 , and it doesn't implement the
-        "Relative References" support noted in section 5.2. Note that IRI
-        support can be added by assuming each of userinfo, path, query, and
-        fragment are UTF-8 encoded
+        "Relative References" support noted in section 5.2.
+<br><br>
+
+        Note that IRI support can be implied by assuming each of userinfo, path,
+        query, and fragment are UTF-8 encoded
         (see <A HREF="http://www.w3.org/2001/Talks/0912-IUC-IRI/paper.html">
         this page</A> for further details).
 <br><br>
@@ -234,37 +236,52 @@ Kris
 </li></span></dt>
 <script>explorer.outline.writeEnabled = false;</script>
 
-<dd><font color=black>return whether or not the Uri scheme is considered generic.
+<dd><font color=black>Return whether or not the Uri scheme is considered generic.
 </font><br><br>
 
 </dd>
 
 
 <script>explorer.outline.writeEnabled = true;</script>
-<dt><span class="decl"><li>IBuffer 
-<span class="currsymbol"><a href="http://www.dsource.org/projects/tango/wiki/tango.net.Uri.write">write</a></span>
-<script>explorer.outline.addDecl('write');</script>
-(IBuffer <span class="funcparam">buf</span>);
+<dt><span class="decl"><li>void delegate(void[]) 
+<span class="currsymbol"><a href="http://www.dsource.org/projects/tango/wiki/tango.net.Uri.produce">produce</a></span>
+<script>explorer.outline.addDecl('produce');</script>
+(void delegate(void[]) <span class="funcparam">consume</span>);
 </li></span></dt>
 <script>explorer.outline.writeEnabled = false;</script>
 
-<dd><font color=black>Write the content of this Uri to the provided buffer. The
-                output is constructed per RFC 2396
+<dd><font color=black>Emit the content of this Uri via the provided Consumer. The
+                output is constructed per RFC 2396.
 </font><br><br>
 
 </dd>
 
 
 <script>explorer.outline.writeEnabled = true;</script>
-<dt><span class="decl"><li>void 
-<span class="currsymbol"><a href="http://www.dsource.org/projects/tango/wiki/tango.net.Uri.write">write</a></span>
-<script>explorer.outline.addDecl('write');</script>
-(IWriter <span class="funcparam">writer</span>);
+<dt><span class="decl"><li>char[] 
+<span class="currsymbol"><a href="http://www.dsource.org/projects/tango/wiki/tango.net.Uri.toString">toString</a></span>
+<script>explorer.outline.addDecl('toString');</script>
+();
 </li></span></dt>
 <script>explorer.outline.writeEnabled = false;</script>
 
-<dd><font color=black>Write the content of this Uri to the provided <span class="funcparam">writer</span>. The
-                output is constructed per RFC 2396
+<dd><font color=black>Emit the content of this Uri via the provided Consumer. The
+                output is constructed per RFC 2396.
+</font><br><br>
+
+</dd>
+
+
+<script>explorer.outline.writeEnabled = true;</script>
+<dt><span class="decl"><li>static void delegate(void[]) 
+<span class="currsymbol"><a href="http://www.dsource.org/projects/tango/wiki/tango.net.Uri.encode">encode</a></span>
+<script>explorer.outline.addDecl('encode');</script>
+(void delegate(void[]) <span class="funcparam">consume</span>, char[] <span class="funcparam">s</span>, int <span class="funcparam">flags</span>);
+</li></span></dt>
+<script>explorer.outline.writeEnabled = false;</script>
+
+<dd><font color=black>Encode uri characters into a Consumer, such that
+                reserved chars are converted into their %hex version.
 </font><br><br>
 
 </dd>

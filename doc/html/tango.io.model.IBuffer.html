@@ -186,7 +186,7 @@ Kris
 
 
 <script>explorer.outline.writeEnabled = true;</script>
-<dt><span class="decl"><li>IBuffer 
+<dt><span class="decl"><li>abstract IBuffer 
 <span class="currsymbol"><a href="http://www.dsource.org/projects/tango/wiki/tango.io.model.IBuffer.append">append</a></span>
 <script>explorer.outline.addDecl('append');</script>
 (IBuffer <span class="funcparam">other</span>);
@@ -203,6 +203,50 @@ Kris
 
         
 </font><br><br>
+
+</dd>
+
+
+<script>explorer.outline.writeEnabled = true;</script>
+<dt><span class="decl"><li>abstract void 
+<span class="currsymbol"><a href="http://www.dsource.org/projects/tango/wiki/tango.io.model.IBuffer.consume">consume</a></span>
+<script>explorer.outline.addDecl('consume');</script>
+(void[] <span class="funcparam">src</span>);
+</li></span></dt>
+<script>explorer.outline.writeEnabled = false;</script>
+
+<dd><font color=black>Consume content from a producer
+</font><br><br>
+<b>Params:</b><br>
+<table><tr>
+<td nowrap valign="top" style="padding-right: 8px">dg</td>
+
+               
+<td>the producing delegate, which should itself accept
+                a callback for consuming char[] content</td></tr>
+</table><br>
+<b>Returns:</b><br>
+Returns a chaining reference if all content was written.
+                Throws an IOException indicating eof or eob if not.
+
+<br><br>
+<b>Remarks:</b><br>
+Invokes the provided
+<br><br>
+
+                This is often used in lieu of a Writer, and enables simple
+                classes, such as FilePath and Uri, to emit content directly
+                into a buffer (thus avoiding potential for heap activity)
+
+<br><br>
+<b>Examples:</b><br>
+<pre class="d_code">                <font color=blue>auto</font> path = <font color=blue>new</font> FilePath (somepath);
+
+                path.produce (&amp;buffer.consume);
+</pre>
+
+        
+<br><br>
 
 </dd>
 

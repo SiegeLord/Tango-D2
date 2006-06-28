@@ -33,153 +33,102 @@ Kris
 
 <br><br>
 
-        class MutableString(T) : 
-<span class="currsymbol"><a href="http://www.dsource.org/projects/tango/wiki/tango.text.String.String">String</a></span>
-<script>explorer.outline.addDecl('String');</script>
-!(T)
+<pre class="d_code">        <font color=blue>class</font> MutableString(T) : String!(T)
         {
-                // reset the content
-                MutableString set (T[] chars, bool mutable=<b>true</b>);
-                MutableString set (
-<span class="currsymbol"><a href="http://www.dsource.org/projects/tango/wiki/tango.text.String.String">String</a></span>
-<script>explorer.outline.addDecl('String');</script>
- other, bool mutable=<b>true</b>);
-<br><br>
+                <font color=grey>// set or reset the content
+</font>                MutableString set (T[] chars, <font color=blue>bool</font> mutable=<font color=blue>true</font>);
+                MutableString set (String other, <font color=blue>bool</font> mutable=<font color=blue>true</font>);
 
-                // get the index and length of the current selection
-                uint selection (inout int length);
-<br><br>
+                <font color=grey>// get the index and length of the current selection
+</font>                <font color=blue>uint</font> selection (<font color=blue>inout</font> <font color=blue>int</font> length);
 
-                // make a selection
-                MutableString select (int start=0, int length=int.max);
-<br><br>
+                <font color=grey>// make a selection
+</font>                MutableString select (<font color=blue>int</font> start=0, <font color=blue>int</font> length=<font color=blue>int</font>.max);
 
-                // move the selection around
-                bool select (T c);
-                bool select (T[] chars);
-                bool select (
-<span class="currsymbol"><a href="http://www.dsource.org/projects/tango/wiki/tango.text.String.String">String</a></span>
-<script>explorer.outline.addDecl('String');</script>
- other);
-                bool rselect (T c);
-                bool rselect (T[] chars);
-                bool rselect (
-<span class="currsymbol"><a href="http://www.dsource.org/projects/tango/wiki/tango.text.String.String">String</a></span>
-<script>explorer.outline.addDecl('String');</script>
- other);
-<br><br>
+                <font color=grey>// move the selection around
+</font>                <font color=blue>bool</font> select (T c);
+                <font color=blue>bool</font> select (T[] chars);
+                <font color=blue>bool</font> select (String other);
+                <font color=blue>bool</font> rselect (T c);
+                <font color=blue>bool</font> rselect (T[] chars);
+                <font color=blue>bool</font> rselect (String other);
 
-                // append behind current selection
-                MutableString append (
-<span class="currsymbol"><a href="http://www.dsource.org/projects/tango/wiki/tango.text.String.String">String</a></span>
-<script>explorer.outline.addDecl('String');</script>
- other);
-                MutableString append (char[] other);
-                MutableString append (wchar[] other);
-                MutableString append (dchar[] other);
-                MutableString append (T chr, int count=1);
-                MutableString append (int value, T[] format=<b>null</b>);
-                MutableString append (long value, T[] format=<b>null</b>);
-                MutableString append (double value, T[] format=<b>null</b>);
-<br><br>
+                <font color=grey>// append behind current selection
+</font>                MutableString append (String other);
+                MutableString append (<font color=blue>char</font>[] other);
+                MutableString append (<font color=blue>wchar</font>[] other);
+                MutableString append (<font color=blue>dchar</font>[] other);
+                MutableString append (T chr, <font color=blue>int</font> count=1);
+                MutableString append (<font color=blue>int</font> value, T[] format=<font color=blue>null</font>);
+                MutableString append (<font color=blue>long</font> value, T[] format=<font color=blue>null</font>);
+                MutableString append (<font color=blue>double</font> value, T[] format=<font color=blue>null</font>);
 
-                // format and layout behind current selection
-                MutableString format (T[] format, ...);
+                <font color=grey>// format and layout behind current selection
+</font>                MutableString format (T[] format, ...);
                 MutableString layout (T[] layout ...);
-<br><br>
 
-                // insert before current selection
-                MutableString prepend (T[] other);
-                MutableString prepend (
-<span class="currsymbol"><a href="http://www.dsource.org/projects/tango/wiki/tango.text.String.String">String</a></span>
-<script>explorer.outline.addDecl('String');</script>
- other);
-                MutableString prepend (T chr, int count=1);
-<br><br>
+                <font color=grey>// insert before current selection
+</font>                MutableString prepend (T[] other);
+                MutableString prepend (String other);
+                MutableString prepend (T chr, <font color=blue>int</font> count=1);
 
-                // replace current selection
-                MutableString replace (T chr);
+                <font color=grey>// replace current selection
+</font>                MutableString replace (T chr);
                 MutableString replace (T[] other);
-                MutableString replace (
-<span class="currsymbol"><a href="http://www.dsource.org/projects/tango/wiki/tango.text.String.String">String</a></span>
-<script>explorer.outline.addDecl('String');</script>
- other);
-<br><br>
+                MutableString replace (String other);
 
-                // remove current selection
-                MutableString remove ();
-<br><br>
+                <font color=grey>// remove current selection
+</font>                MutableString remove ();
 
-                // truncate at point, or current selection
-                MutableString truncate (int point = int.max);
-<br><br>
+                <font color=grey>// truncate at point, or current selection
+</font>                MutableString truncate (<font color=blue>int</font> point = <font color=blue>int</font>.max);
 
-                // trim content
-                MutableString trim ();
-<br><br>
+                <font color=grey>// trim content
+</font>                MutableString trim ();
 
-                // return content
-                T[] aliasOf ();
+                <font color=grey>// return content
+</font>                T[] aliasOf ();
         }
-<br><br>
 
-        class 
-<span class="currsymbol"><a href="http://www.dsource.org/projects/tango/wiki/tango.text.String.String">String</a></span>
-<script>explorer.outline.addDecl('String');</script>
-(T) : UniString
+        <font color=blue>class</font> String(T) : UniString
         {
-                // iterate across content
-                opApply (int delegate(inout T) dg);
-<br><br>
+                <font color=grey>// iterate across content
+</font>                opApply (<font color=blue>int</font> <font color=blue>delegate</font>(<font color=blue>inout</font> T) dg);
 
-                // hash content
-                uint toHash ();
-<br><br>
+                <font color=grey>// hash content
+</font>                <font color=blue>uint</font> toHash ();
 
-                // return length of content
-                uint length ();
-<br><br>
+                <font color=grey>// return length of content
+</font>                <font color=blue>uint</font> length ();
 
-                // compare content
-                bool equals  (T[] other);
-                bool equals  (
-<span class="currsymbol"><a href="http://www.dsource.org/projects/tango/wiki/tango.text.String.String">String</a></span>
-<script>explorer.outline.addDecl('String');</script>
- other);
-                bool ends    (T[] other);
-                bool ends    (
-<span class="currsymbol"><a href="http://www.dsource.org/projects/tango/wiki/tango.text.String.String">String</a></span>
-<script>explorer.outline.addDecl('String');</script>
- other);
-                bool starts  (T[] other);
-                bool starts  (
-<span class="currsymbol"><a href="http://www.dsource.org/projects/tango/wiki/tango.text.String.String">String</a></span>
-<script>explorer.outline.addDecl('String');</script>
- other);
-                int compare  (T[] other);
-                int compare  (
-<span class="currsymbol"><a href="http://www.dsource.org/projects/tango/wiki/tango.text.String.String">String</a></span>
-<script>explorer.outline.addDecl('String');</script>
- other);
-                int opEquals (Object other);
-                int opCmp    (Object other);
-<br><br>
+                <font color=grey>// compare content
+</font>                <font color=blue>bool</font> equals  (T[] other);
+                <font color=blue>bool</font> equals  (String other);
+                <font color=blue>bool</font> ends    (T[] other);
+                <font color=blue>bool</font> ends    (String other);
+                <font color=blue>bool</font> starts  (T[] other);
+                <font color=blue>bool</font> starts  (String other);
+                <font color=blue>int</font> compare  (T[] other);
+                <font color=blue>int</font> compare  (String other);
+                <font color=blue>int</font> opEquals (Object other);
+                <font color=blue>int</font> opCmp    (Object other);
 
-                // copy content
-                T[] copy (T[] dst);
+                <font color=grey>// copy content
+</font>                T[] copy (T[] dst);
                 T[] copy ();
-        }
-<br><br>
 
-        abstract class UniString
+                <font color=grey>// replace the comparison algorithm
+</font>                String setComparator (Comparator comparator);
+        }
+
+        <font color=blue>abstract</font> <font color=blue>class</font> UniString
         {
-                // convert content
-                abstract char[]  utf8  (char[]  dst = <b>null</b>);
-                abstract wchar[] utf16 (wchar[] dst = <b>null</b>);
-                abstract dchar[] utf32 (dchar[] dst = <b>null</b>);
+                <font color=grey>// convert content
+</font>                <font color=blue>abstract</font> <font color=blue>char</font>[]  utf8  (<font color=blue>char</font>[]  dst = <font color=blue>null</font>);
+                <font color=blue>abstract</font> <font color=blue>wchar</font>[] utf16 (<font color=blue>wchar</font>[] dst = <font color=blue>null</font>);
+                <font color=blue>abstract</font> <font color=blue>dchar</font>[] utf32 (<font color=blue>dchar</font>[] dst = <font color=blue>null</font>);
         }
-<br><br>
-
+</pre>
 
 <br><br>
 
@@ -941,7 +890,7 @@ Kris
 
 
 <script>explorer.outline.writeEnabled = true;</script>
-<dt><span class="decl"><li>void 
+<dt><span class="decl"><li>StringT 
 <span class="currsymbol"><a href="http://www.dsource.org/projects/tango/wiki/tango.text.String.setComparator">setComparator</a></span>
 <script>explorer.outline.addDecl('setComparator');</script>
 (Comparator <span class="funcparam">comparator</span>);
@@ -1366,23 +1315,6 @@ Kris
 <br><br>
 
         
-</font><br><br>
-
-</dd>
-
-
-<script>explorer.outline.writeEnabled = true;</script>
-<dt><span class="decl"><li>void 
-<span class="currsymbol"><a href="http://www.dsource.org/projects/tango/wiki/tango.text.String.write">write</a></span>
-<script>explorer.outline.addDecl('write');</script>
-(IWriter 
-<span class="currsymbol"><a href="http://www.dsource.org/projects/tango/wiki/tango.text.String.write">write</a></span>
-<script>explorer.outline.addDecl('write');</script>
-);
-</li></span></dt>
-<script>explorer.outline.writeEnabled = false;</script>
-
-<dd><font color=black>Emit content to the provided writer  (IWritable interface)
 </font><br><br>
 
 </dd>

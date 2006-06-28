@@ -39,7 +39,7 @@ Kris
 <dt><span class="decl"><li>class 
 <span class="currsymbol"><a href="http://www.dsource.org/projects/tango/wiki/tango.io.DeviceConduit.DeviceConduit">DeviceConduit</a></span>
 <script>explorer.outline.addDecl('DeviceConduit');</script>
-: tango.io.Conduit.Conduit;
+: tango.io.Conduit.Conduit, tango.io.model.IConduit.IConduit.Device;
 </li></span></dt>
 <script>explorer.outline.writeEnabled = false;</script>
 
@@ -52,11 +52,11 @@ Kris
 <script>explorer.outline.incSymbolLevel();</script>
 <dl>
 <script>explorer.outline.writeEnabled = true;</script>
-<dt><span class="decl"><li>this(Bits <span class="funcparam">style</span>, bool <span class="funcparam">seekable</span>);
+<dt><span class="decl"><li>this(Access <span class="funcparam">access</span>, bool <span class="funcparam">seekable</span>);
 </li></span></dt>
 <script>explorer.outline.writeEnabled = false;</script>
 
-<dd><font color=black>Construct a conduit with the given <span class="funcparam">style</span> and seek abilities.
+<dd><font color=black>Construct a conduit with the given style and seek abilities.
                 Conduits are either <span class="funcparam">seekable</span> or non-<span class="funcparam">seekable</span>.
 </font><br><br>
 

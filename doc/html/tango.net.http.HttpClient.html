@@ -322,7 +322,7 @@ h3r3tic - fixed a number of Post issues and
 <dt><span class="decl"><li>IBuffer 
 <span class="currsymbol"><a href="http://www.dsource.org/projects/tango/wiki/tango.net.http.HttpClient.open">open</a></span>
 <script>explorer.outline.addDecl('open');</script>
-(IWritable <span class="funcparam">pump</span>);
+(void delegate(IBuffer) <span class="funcparam">pump</span>);
 </li></span></dt>
 <script>explorer.outline.writeEnabled = false;</script>
 
@@ -357,7 +357,7 @@ h3r3tic - fixed a number of Post issues and
 <dt><span class="decl"><li>IBuffer 
 <span class="currsymbol"><a href="http://www.dsource.org/projects/tango/wiki/tango.net.http.HttpClient.open">open</a></span>
 <script>explorer.outline.addDecl('open');</script>
-(Interval <span class="funcparam">timeout</span>, IWritable <span class="funcparam">pump</span>);
+(Interval <span class="funcparam">timeout</span>, void delegate(IBuffer) <span class="funcparam">pump</span>);
 </li></span></dt>
 <script>explorer.outline.writeEnabled = false;</script>
 
@@ -377,7 +377,7 @@ h3r3tic - fixed a number of Post issues and
 <dt><span class="decl"><li>void 
 <span class="currsymbol"><a href="http://www.dsource.org/projects/tango/wiki/tango.net.http.HttpClient.read">read</a></span>
 <script>explorer.outline.addDecl('read');</script>
-(void delegate(char[]) <span class="funcparam">sink</span>, long <span class="funcparam">length</span> = 9223372036854775807L);
+(void delegate(void[]) <span class="funcparam">sink</span>, long <span class="funcparam">length</span> = 9223372036854775807L);
 </li></span></dt>
 <script>explorer.outline.writeEnabled = false;</script>
 
@@ -389,7 +389,7 @@ h3r3tic - fixed a number of Post issues and
 <dt><span class="decl"><li>IBuffer 
 <span class="currsymbol"><a href="http://www.dsource.org/projects/tango/wiki/tango.net.http.HttpClient.redirectPost">redirectPost</a></span>
 <script>explorer.outline.addDecl('redirectPost');</script>
-(Interval <span class="funcparam">timeout</span>, IWritable <span class="funcparam">pump</span>, int <span class="funcparam">status</span>);
+(Interval <span class="funcparam">timeout</span>, void delegate(IBuffer) <span class="funcparam">pump</span>, int <span class="funcparam">status</span>);
 </li></span></dt>
 <script>explorer.outline.writeEnabled = false;</script>
 

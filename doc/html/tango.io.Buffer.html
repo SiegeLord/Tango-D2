@@ -602,20 +602,15 @@ Wait for something to arrive in the buffer. This may stall
 <td nowrap valign="top" style="padding-right: 8px">void[] <span class="funcparam">src</span></td>
 
                
-<td>the content to append</td></tr>
+<td>the content to append
+
+                Returns a chaining reference if all content was written.
+                Throws an IOException indicating eof or eob if not.</td></tr>
 </table><br>
-<b>Returns:</b><br>
-the buffer instance
-
-<br><br>
 <b>Remarks:</b><br>
-Append an array of data to this buffer, and flush to the
-                conduit as necessary. Returns a chaining reference if all
-                data was written; throws an IOException indicating eof or
-                eob if not.
-<br><br>
-
-                This is often used in lieu of a Writer.
+Append another buffer to this one, and flush to the
+                conduit as necessary. This is often used in lieu of
+                a Writer.
 <br><br>
 
         
@@ -642,18 +637,59 @@ Append an array of data to this buffer, and flush to the
 <td>a buffer with content available</td></tr>
 </table><br>
 <b>Returns:</b><br>
-the buffer instance
+Returns a chaining reference if all content was written.
+                Throws an IOException indicating eof or eob if not.
 
 <br><br>
 <b>Remarks:</b><br>
 Append another buffer to this one, and flush to the
-                conduit as necessary. Returns a chaining reference if all
-                data was written; throws an IOException indicating eof or
-                eob if not.
+                conduit as necessary. This is often used in lieu of
+                a Writer.
 <br><br>
 
-                This is often used in lieu of a Writer.
+        
 <br><br>
+
+</dd>
+
+
+<script>explorer.outline.writeEnabled = true;</script>
+<dt><span class="decl"><li>void 
+<span class="currsymbol"><a href="http://www.dsource.org/projects/tango/wiki/tango.io.Buffer.consume">consume</a></span>
+<script>explorer.outline.addDecl('consume');</script>
+(void[] <span class="funcparam">x</span>);
+</li></span></dt>
+<script>explorer.outline.writeEnabled = false;</script>
+
+<dd><font color=black>Consume content from a producer
+</font><br><br>
+<b>Params:</b><br>
+<table><tr>
+<td nowrap valign="top" style="padding-right: 8px">dg</td>
+
+               
+<td>the producing delegate, which should itself accept
+                a callback for consuming char[] content</td></tr>
+</table><br>
+<b>Returns:</b><br>
+Returns a chaining reference if all content was written.
+                Throws an IOException indicating eof or eob if not.
+
+<br><br>
+<b>Remarks:</b><br>
+Invokes the provided
+<br><br>
+
+                This is often used in lieu of a Writer, and enables simple
+                classes, such as FilePath and Uri, to emit content directly
+                into a buffer (thus avoiding potential for heap activity)
+
+<br><br>
+<b>Examples:</b><br>
+<pre class="d_code">                <font color=blue>auto</font> path = <font color=blue>new</font> FilePath (somepath);
+
+                path.produce (&amp;buffer.consume);
+</pre>
 
         
 <br><br>

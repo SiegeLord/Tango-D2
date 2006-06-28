@@ -39,7 +39,7 @@ Kris
 <dt><span class="decl"><li>class 
 <span class="currsymbol"><a href="http://www.dsource.org/projects/tango/wiki/tango.io.FilePath.FilePath">FilePath</a></span>
 <script>explorer.outline.addDecl('FilePath');</script>
-: tango.io.protocol.model.IWriter.IWritable;
+;
 </li></span></dt>
 <script>explorer.outline.writeEnabled = false;</script>
 
@@ -86,18 +86,15 @@ Kris
 
 
 <script>explorer.outline.writeEnabled = true;</script>
-<dt><span class="decl"><li>this(char[] <span class="funcparam">filepath</span>);
+<dt><span class="decl"><li>this(char[] <span class="funcparam">filepath</span>, bool <span class="funcparam">copy</span> = true);
 </li></span></dt>
 <script>explorer.outline.writeEnabled = false;</script>
 
-<dd><font color=black>Create a FilePath from the given string. Note the path
-                is not duplicated here, so you are expected to provide
-                an immutable copy for the lifetime of this object.
-</font><br><br>
-<font color=black>If you're not certain, duplicate the path first.
-<br><br>
-
-        
+<dd><font color=black>Create a FilePath from the given string. Note the path string
+                is usually duplicated here, though you may specify that it be
+                aliased instead via the second argument. When aliased, you are
+                expected to provide an immutable <span class="funcparam">copy</span> for the lifetime of this
+                object. If you are not certain, ignore the second argument.
 </font><br><br>
 
 </dd>
@@ -156,6 +153,20 @@ Kris
 
 <dd><font color=black>Returns <b>true</b> if this FilePath is *not* relative to the
                 current working directory.
+</font><br><br>
+
+</dd>
+
+
+<script>explorer.outline.writeEnabled = true;</script>
+<dt><span class="decl"><li>bool 
+<span class="currsymbol"><a href="http://www.dsource.org/projects/tango/wiki/tango.io.FilePath.isEmpty">isEmpty</a></span>
+<script>explorer.outline.addDecl('isEmpty');</script>
+();
+</li></span></dt>
+<script>explorer.outline.writeEnabled = false;</script>
+
+<dd><font color=black>Returns <b>true</b>  if this FilePath is empty
 </font><br><br>
 
 </dd>
@@ -238,6 +249,20 @@ Kris
 
 
 <script>explorer.outline.writeEnabled = true;</script>
+<dt><span class="decl"><li>void delegate(void[]) 
+<span class="currsymbol"><a href="http://www.dsource.org/projects/tango/wiki/tango.io.FilePath.produce">produce</a></span>
+<script>explorer.outline.addDecl('produce');</script>
+(void delegate(void[]) <span class="funcparam">consume</span>);
+</li></span></dt>
+<script>explorer.outline.writeEnabled = false;</script>
+
+<dd><font color=black>Convert this FilePath to a char[] via the provided Consumer
+</font><br><br>
+
+</dd>
+
+
+<script>explorer.outline.writeEnabled = true;</script>
 <dt><span class="decl"><li>char[] 
 <span class="currsymbol"><a href="http://www.dsource.org/projects/tango/wiki/tango.io.FilePath.toString">toString</a></span>
 <script>explorer.outline.addDecl('toString');</script>
@@ -245,46 +270,7 @@ Kris
 </li></span></dt>
 <script>explorer.outline.writeEnabled = false;</script>
 
-<dd><font color=black>Convert this FilePath to a char[]. This is expected to
-                execute optimally in most cases.
-</font><br><br>
-
-</dd>
-
-
-<script>explorer.outline.writeEnabled = true;</script>
-<dt><span class="decl"><li>void 
-<span class="currsymbol"><a href="http://www.dsource.org/projects/tango/wiki/tango.io.FilePath.write">write</a></span>
-<script>explorer.outline.addDecl('write');</script>
-(IWriter 
-<span class="currsymbol"><a href="http://www.dsource.org/projects/tango/wiki/tango.io.FilePath.write">write</a></span>
-<script>explorer.outline.addDecl('write');</script>
-);
-</li></span></dt>
-<script>explorer.outline.writeEnabled = false;</script>
-
-<dd><font color=black>Write this FilePath to the given IWriter. This makes the
-                FilePath compatible with all Writers. Note that we could
-                leverage the 
-<span class="currsymbol"><a href="http://www.dsource.org/projects/tango/wiki/tango.io.FilePath.write">write</a></span>
-<script>explorer.outline.addDecl('write');</script>
-(IBuffer) method here, but that would
-                bypass any special character converters attached to the
-                IWriter.
-</font><br><br>
-
-</dd>
-
-
-<script>explorer.outline.writeEnabled = true;</script>
-<dt><span class="decl"><li>IBuffer 
-<span class="currsymbol"><a href="http://www.dsource.org/projects/tango/wiki/tango.io.FilePath.write">write</a></span>
-<script>explorer.outline.addDecl('write');</script>
-(IBuffer <span class="funcparam">buf</span>);
-</li></span></dt>
-<script>explorer.outline.writeEnabled = false;</script>
-
-<dd><font color=black>Convert this FilePath to a char[] in the provided buffer
+<dd><font color=black>Convert this FilePath to a char[]
 </font><br><br>
 
 </dd>
@@ -294,18 +280,11 @@ Kris
 <dt><span class="decl"><li>char[] 
 <span class="currsymbol"><a href="http://www.dsource.org/projects/tango/wiki/tango.io.FilePath.toUtf8">toUtf8</a></span>
 <script>explorer.outline.addDecl('toUtf8');</script>
-();
+(bool <span class="funcparam">withNull</span> = false);
 </li></span></dt>
 <script>explorer.outline.writeEnabled = false;</script>
 
-<dd><font color=black>Return a zero terminated version of this file path. Note
-                that the compiler places a zero at the end of each static
-                string, as does the allocator for char[] requests.
-</font><br><br>
-<font color=black>In typical usage, this will not need to duplicate the path
-<br><br>
-
-        
+<dd><font color=black>Return a zero terminated UTF8 version of this file path
 </font><br><br>
 
 </dd>
@@ -315,11 +294,13 @@ Kris
 <dt><span class="decl"><li>wchar[] 
 <span class="currsymbol"><a href="http://www.dsource.org/projects/tango/wiki/tango.io.FilePath.toUtf16">toUtf16</a></span>
 <script>explorer.outline.addDecl('toUtf16');</script>
-();
+(bool <span class="funcparam">withNull</span> = false);
 </li></span></dt>
 <script>explorer.outline.writeEnabled = false;</script>
 
-<dd><br><br>
+<dd><font color=black>Return a zero terminated UTF16 version of this file path
+</font><br><br>
+
 </dd>
 
 
@@ -339,15 +320,15 @@ Kris
 
 
 <script>explorer.outline.writeEnabled = true;</script>
-<dt><span class="decl"><li>IBuffer 
+<dt><span class="decl"><li>void delegate(void[]) 
 <span class="currsymbol"><a href="http://www.dsource.org/projects/tango/wiki/tango.io.FilePath.splice">splice</a></span>
 <script>explorer.outline.addDecl('splice');</script>
-(FilePath <span class="funcparam">base</span>, IBuffer <span class="funcparam">buf</span>);
+(FilePath <span class="funcparam">base</span>, void delegate(void[]) <span class="funcparam">consume</span>);
 </li></span></dt>
 <script>explorer.outline.writeEnabled = false;</script>
 
 <dd><font color=black>Splice this FilePath onto the end of the provided <span class="funcparam">base</span> path.
-                Output is placed into the provided IBuffer.
+                Output is handled via the provided Consumer
 </font><br><br>
 
 </dd>

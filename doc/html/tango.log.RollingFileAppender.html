@@ -50,31 +50,43 @@ Kris
 <script>explorer.outline.incSymbolLevel();</script>
 <dl>
 <script>explorer.outline.writeEnabled = true;</script>
-<dt><span class="decl"><li>this(FilePath <span class="funcparam">p</span>, int <span class="funcparam">count</span>, ulong <span class="funcparam">maxSize</span>);
+<dt><span class="decl"><li>this(FilePath <span class="funcparam">p</span>, int <span class="funcparam">count</span>, ulong <span class="funcparam">maxSize</span>, Layout <span class="funcparam">layout</span> = cast(Layout)null);
 </li></span></dt>
 <script>explorer.outline.writeEnabled = false;</script>
 
-<dd><font color=black>Create a basic RollingFileAppender to a file-set with the
-                specified path.
+<dd><font color=black>Create a RollingFileAppender upon a file-set with the
+                specified path and optional <span class="funcparam">layout</span>.
+</font><br><br>
+<font color=black>Where a file set already exists, we resume appending to
+                the one with the most recent activity timestamp.
+<br><br>
+
+        
 </font><br><br>
 
 </dd>
 
 
 <script>explorer.outline.writeEnabled = true;</script>
-<dt><span class="decl"><li>this(FilePath <span class="funcparam">p</span>, int <span class="funcparam">count</span>, ulong <span class="funcparam">maxSize</span>, Layout <span class="funcparam">layout</span>);
+<dt><span class="decl"><li>this(char[] <span class="funcparam">fp</span>, int <span class="funcparam">count</span>, ulong <span class="funcparam">maxSize</span>, Layout <span class="funcparam">layout</span> = cast(Layout)null);
 </li></span></dt>
 <script>explorer.outline.writeEnabled = false;</script>
 
-<dd><font color=black>Create a basic RollingFileAppender to a file-set with the
-                specified path, and with the given Layout
+<dd><font color=black>Create a RollingFileAppender upon a file-set with the
+                specified path and optional <span class="funcparam">layout</span>.
+</font><br><br>
+<font color=black>Where a file set already exists, we resume appending to
+                the one with the most recent activity timestamp.
+<br><br>
+
+        
 </font><br><br>
 
 </dd>
 
 
 <script>explorer.outline.writeEnabled = true;</script>
-<dt><span class="decl"><li>uint 
+<dt><span class="decl"><li>Mask 
 <span class="currsymbol"><a href="http://www.dsource.org/projects/tango/wiki/tango.log.RollingFileAppender.getMask">getMask</a></span>
 <script>explorer.outline.addDecl('getMask');</script>
 ();

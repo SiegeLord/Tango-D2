@@ -104,7 +104,23 @@ Returns a digest of the current cipher state, this may be the
 </li></span></dt>
 <script>explorer.outline.writeEnabled = false;</script>
 
-<dd><br><br>
+<dd><font color=black>Cipher block size
+</font><br><br>
+<b>Returns:</b><br>
+the block size
+
+<br><br>
+<b>Remarks:</b><br>
+Specifies the size (in bytes) of the block of data to pass to
+                each call to transform(). For MD2 the 
+<span class="currsymbol"><a href="http://www.dsource.org/projects/tango/wiki/tango.math.cipher.Md2.blockSize">blockSize</a></span>
+<script>explorer.outline.addDecl('blockSize');</script>
+ is 16.
+<br><br>
+
+        
+<br><br>
+
 </dd>
 
 
@@ -116,7 +132,24 @@ Returns a digest of the current cipher state, this may be the
 </li></span></dt>
 <script>explorer.outline.writeEnabled = false;</script>
 
-<dd><br><br>
+<dd><font color=black>Length padding size
+</font><br><br>
+<b>Returns:</b><br>
+the length paddding size
+
+<br><br>
+<b>Remarks:</b><br>
+Specifies the size (in bytes) of the padding which uses the
+                length of the data which has been ciphered, this padding is
+                carried out by the padLength method. For MD2 the 
+<span class="currsymbol"><a href="http://www.dsource.org/projects/tango/wiki/tango.math.cipher.Md2.addSize">addSize</a></span>
+<script>explorer.outline.addDecl('addSize');</script>
+ is 0.
+<br><br>
+
+        
+<br><br>
+
 </dd>
 
 
@@ -128,7 +161,24 @@ Returns a digest of the current cipher state, this may be the
 </li></span></dt>
 <script>explorer.outline.writeEnabled = false;</script>
 
-<dd><br><br>
+<dd><font color=black>Pads the cipher <span class="funcparam">data</span>
+</font><br><br>
+<b>Params:</b><br>
+<table><tr>
+<td nowrap valign="top" style="padding-right: 8px">ubyte[] <span class="funcparam">data</span></td>
+
+               
+<td>a slice of the cipher buffer to fill with padding</td></tr>
+</table><br>
+<b>Remarks:</b><br>
+Fills the passed buffer slice with the appropriate padding for
+                the final call to transform(). This padding will fill the cipher
+                buffer up to blockSize()-addSize().
+<br><br>
+
+        
+<br><br>
+
 </dd>
 
 
@@ -140,7 +190,25 @@ Returns a digest of the current cipher state, this may be the
 </li></span></dt>
 <script>explorer.outline.writeEnabled = false;</script>
 
-<dd><br><br>
+<dd><font color=black>Performs the cipher on a block of data
+</font><br><br>
+<b>Params:</b><br>
+<table><tr>
+<td nowrap valign="top" style="padding-right: 8px">data</td>
+
+               
+<td>the block of data to cipher</td></tr>
+</table><br>
+<b>Remarks:</b><br>
+The actual cipher algorithm is carried out by this method on
+                the passed block of data. This method is called for every
+                blockSize() bytes of <span class="funcparam">input</span> data and once more with the remaining
+                data padded to blockSize().
+<br><br>
+
+        
+<br><br>
+
 </dd>
 
 
@@ -152,7 +220,18 @@ Returns a digest of the current cipher state, this may be the
 </li></span></dt>
 <script>explorer.outline.writeEnabled = false;</script>
 
-<dd><br><br>
+<dd><font color=black>Final processing of cipher.
+</font><br><br>
+<b>Remarks:</b><br>
+This method is called after the final transform just prior to
+                the creation of the final digest. The MD2 algorithm requires
+                an additional step at this stage. Future ciphers may or may not
+                require this method.
+<br><br>
+
+        
+<br><br>
+
 </dd>
 
 </dl>

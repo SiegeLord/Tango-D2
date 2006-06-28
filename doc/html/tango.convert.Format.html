@@ -79,7 +79,7 @@ Kris
 <dt><span class="decl"><li>void 
 <span class="currsymbol"><a href="http://www.dsource.org/projects/tango/wiki/tango.convert.Format.ctor">ctor</a></span>
 <script>explorer.outline.addDecl('ctor');</script>
-(Emitter <span class="funcparam">sink</span>, Close <span class="funcparam">close</span>, T[] <span class="funcparam">workspace</span>, DblFormat <span class="funcparam">dFormat</span> = null);
+(Emitter <span class="funcparam">sink</span>, T[] <span class="funcparam">workspace</span>, DblFormat <span class="funcparam">dFormat</span> = null);
 </li></span></dt>
 <script>explorer.outline.writeEnabled = false;</script>
 
@@ -105,6 +105,18 @@ Kris
 
 </font><br><br>
 
+</dd>
+
+
+<script>explorer.outline.writeEnabled = true;</script>
+<dt><span class="decl"><li>int 
+<span class="currsymbol"><a href="http://www.dsource.org/projects/tango/wiki/tango.convert.Format.print">print</a></span>
+<script>explorer.outline.addDecl('print');</script>
+(TypeInfo[] <span class="funcparam">arguments</span>, va_list <span class="funcparam">argptr</span>, bool <span class="funcparam">nl</span>);
+</li></span></dt>
+<script>explorer.outline.writeEnabled = false;</script>
+
+<dd><br><br>
 </dd>
 
 
@@ -209,6 +221,18 @@ Kris
 
 <script>explorer.outline.writeEnabled = true;</script>
 <dt><span class="decl"><li>int 
+<span class="currsymbol"><a href="http://www.dsource.org/projects/tango/wiki/tango.convert.Format.emit">emit</a></span>
+<script>explorer.outline.addDecl('emit');</script>
+(void* <span class="funcparam">src</span>, uint <span class="funcparam">bytes</span>, uint <span class="funcparam">type</span>, uint <span class="funcparam">style</span>);
+</li></span></dt>
+<script>explorer.outline.writeEnabled = false;</script>
+
+<dd><br><br>
+</dd>
+
+
+<script>explorer.outline.writeEnabled = true;</script>
+<dt><span class="decl"><li>int 
 <span class="currsymbol"><a href="http://www.dsource.org/projects/tango/wiki/tango.convert.Format.getType">getType</a></span>
 <script>explorer.outline.addDecl('getType');</script>
 (int <span class="funcparam">t</span>);
@@ -308,6 +332,20 @@ Kris
 <script>explorer.outline.writeEnabled = false;</script>
 
 <dd><font color=black>test for a digit
+</font><br><br>
+
+</dd>
+
+
+<script>explorer.outline.writeEnabled = true;</script>
+<dt><span class="decl"><li>int 
+<span class="currsymbol"><a href="http://www.dsource.org/projects/tango/wiki/tango.convert.Format.header">header</a></span>
+<script>explorer.outline.addDecl('header');</script>
+(uint <span class="funcparam">type</span>);
+</li></span></dt>
+<script>explorer.outline.writeEnabled = false;</script>
+
+<dd><font color=black>Emit the text prior to a format specifier
 </font><br><br>
 
 </dd>
@@ -423,7 +461,7 @@ Kris
 <script>explorer.outline.incSymbolLevel();</script>
 <dl>
 <script>explorer.outline.writeEnabled = true;</script>
-<dt><span class="decl"><li>this(Format.Emitter sink, Format.Close close, Format.DblFormat df = null);
+<dt><span class="decl"><li>this(Format.Emitter sink, Format.DblFormat df = null);
 </li></span></dt>
 <script>explorer.outline.writeEnabled = false;</script>
 

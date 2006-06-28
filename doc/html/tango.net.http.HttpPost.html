@@ -38,7 +38,7 @@ $(DDOC_MODULE_MEMBERS
 <dt><span class="decl"><li>class 
 <span class="currsymbol"><a href="http://www.dsource.org/projects/tango/wiki/tango.net.http.HttpPost.HttpPost">HttpPost</a></span>
 <script>explorer.outline.addDecl('HttpPost');</script>
-: tango.net.http.HttpClient.HttpClient, tango.io.protocol.model.IWriter.IWritable;
+: tango.net.http.HttpClient.HttpClient;
 </li></span></dt>
 <script>explorer.outline.writeEnabled = false;</script>
 
@@ -79,18 +79,6 @@ $(DDOC_MODULE_MEMBERS
 
 
 <script>explorer.outline.writeEnabled = true;</script>
-<dt><span class="decl"><li>void 
-<span class="currsymbol"><a href="http://www.dsource.org/projects/tango/wiki/tango.net.http.HttpPost.write">write</a></span>
-<script>explorer.outline.addDecl('write');</script>
-(IWriter <span class="funcparam">output</span>);
-</li></span></dt>
-<script>explorer.outline.writeEnabled = false;</script>
-
-<dd><br><br>
-</dd>
-
-
-<script>explorer.outline.writeEnabled = true;</script>
 <dt><span class="decl"><li>protected IBuffer 
 <span class="currsymbol"><a href="http://www.dsource.org/projects/tango/wiki/tango.net.http.HttpPost.inputBuffer">inputBuffer</a></span>
 <script>explorer.outline.addDecl('inputBuffer');</script>
@@ -118,7 +106,7 @@ $(DDOC_MODULE_MEMBERS
 <dt><span class="decl"><li>char[] 
 <span class="currsymbol"><a href="http://www.dsource.org/projects/tango/wiki/tango.net.http.HttpPost.write">write</a></span>
 <script>explorer.outline.addDecl('write');</script>
-(IWritable <span class="funcparam">pump</span>, Interval <span class="funcparam">timeout</span> = cast(Interval)1000000u * cast(Interval)3u);
+(void delegate(IBuffer) <span class="funcparam">pump</span>, Interval <span class="funcparam">timeout</span> = cast(Interval)1000000u * cast(Interval)3u);
 </li></span></dt>
 <script>explorer.outline.writeEnabled = false;</script>
 

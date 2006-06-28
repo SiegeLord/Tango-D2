@@ -151,6 +151,38 @@ Returns a void[] containing the binary representation of the digest.
 
 </dd>
 
+
+<script>explorer.outline.writeEnabled = true;</script>
+<dt><span class="decl"><li>protected char[] 
+<span class="currsymbol"><a href="http://www.dsource.org/projects/tango/wiki/tango.math.cipher.Cipher.toHexString">toHexString</a></span>
+<script>explorer.outline.addDecl('toHexString');</script>
+(ubyte[] <span class="funcparam">src</span>);
+</li></span></dt>
+<script>explorer.outline.writeEnabled = false;</script>
+
+<dd><font color=black>Represent an array as a hex encoded string
+</font><br><br>
+<b>Params:</b><br>
+<table><tr>
+<td nowrap valign="top" style="padding-right: 8px">d</td>
+
+               
+<td>the array to represent</td></tr>
+</table><br>
+<b>Returns:</b><br>
+the string representation
+
+<br><br>
+<b>Remarks:</b><br>
+Represents any sized array of any sized numerical items as a
+                hex encoded string.
+<br><br>
+
+        
+<br><br>
+
+</dd>
+
 </dl>
 <script>explorer.outline.decSymbolLevel();</script>
 
@@ -188,7 +220,7 @@ Returns a void[] containing the binary representation of the digest.
 <span class="currsymbol"><a href="http://www.dsource.org/projects/tango/wiki/tango.math.cipher.Cipher.Cipher">Cipher</a></span>
 <script>explorer.outline.addDecl('Cipher');</script>
  or a call to
-        start() which initialises the cipher. Data is ciphered by one or more
+        start() which initializes the cipher. Data is ciphered by one or more
         calls to update(), and finish() is called to complete the process and
         produce a Digest. For example:
 <pre class="d_code">        <font color=grey>// create an MD5 cipher
@@ -713,41 +745,6 @@ Rotates a 32 bit value by the specified amount.
 </dd>
 
 </dl>
-<script>explorer.outline.decSymbolLevel();</script>
-
-
-</dd>
-
-
-<script>explorer.outline.writeEnabled = true;</script>
-<dt><span class="decl"><li>template 
-<span class="currsymbol"><a href="http://www.dsource.org/projects/tango/wiki/tango.math.cipher.Cipher.toHexString">toHexString</a></span>
-<script>explorer.outline.addDecl('toHexString');</script>
-(T)</li></span></dt>
-<script>explorer.outline.writeEnabled = false;</script>
-
-<dd><font color=black>Represent an array as a hex encoded string
-</font><br><br>
-<b>Params:</b><br>
-<table><tr>
-<td nowrap valign="top" style="padding-right: 8px">d</td>
-
-               
-<td>the array to represent</td></tr>
-</table><br>
-<b>Returns:</b><br>
-the string representation
-
-<br><br>
-<b>Remarks:</b><br>
-Represents any sized array of any sized numerical items as a hex encoded
-        string.
-
-<br><br>
-
-
-<script>explorer.outline.incSymbolLevel();</script>
-<dl></dl>
 <script>explorer.outline.decSymbolLevel();</script>
 
 

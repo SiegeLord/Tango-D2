@@ -28,11 +28,11 @@ Initial release: March 2004
 
 <br><br>
 <b>author:</b><br>
-Kris
-                        Brad Anderson
-                        teqdruid
-                        Anders (Darwin support)
-                        Chris Sauls (Win95 file support)
+<ul>Kris</ul>
+                        <ul>Brad Anderson</ul>
+                        <ul>teqdruid</ul>
+                        <ul>Anders (Darwin support)</ul>
+                        <ul>Chris Sauls (Win95 file support)</ul>
 
 <br><br>
 
@@ -40,10 +40,46 @@ Kris
 <script>explorer.outline.incSymbolLevel();</script>
 <dl>
 <script>explorer.outline.writeEnabled = true;</script>
+<dt><span class="decl"><li>int 
+<span class="currsymbol"><a href="http://www.dsource.org/projects/tango/wiki/tango.io.FileProxy.MoveFileExA">MoveFileExA</a></span>
+<script>explorer.outline.addDecl('MoveFileExA');</script>
+(char*, char*, uint);
+</li></span></dt>
+<script>explorer.outline.writeEnabled = false;</script>
+
+<dd><br><br>
+</dd>
+
+
+<script>explorer.outline.writeEnabled = true;</script>
+<dt><span class="decl"><li>int 
+<span class="currsymbol"><a href="http://www.dsource.org/projects/tango/wiki/tango.io.FileProxy.MoveFileExW">MoveFileExW</a></span>
+<script>explorer.outline.addDecl('MoveFileExW');</script>
+(wchar*, wchar*, uint);
+</li></span></dt>
+<script>explorer.outline.writeEnabled = false;</script>
+
+<dd><br><br>
+</dd>
+
+
+<script>explorer.outline.writeEnabled = true;</script>
+<dt><span class="decl"><li>alias 
+<span class="currsymbol"><a href="http://www.dsource.org/projects/tango/wiki/tango.io.FileProxy.FIND_DATA">FIND_DATA</a></span>
+<script>explorer.outline.addDecl('FIND_DATA');</script>
+;
+</li></span></dt>
+<script>explorer.outline.writeEnabled = false;</script>
+
+<dd><br><br>
+</dd>
+
+
+<script>explorer.outline.writeEnabled = true;</script>
 <dt><span class="decl"><li>class 
 <span class="currsymbol"><a href="http://www.dsource.org/projects/tango/wiki/tango.io.FileProxy.FileProxy">FileProxy</a></span>
 <script>explorer.outline.addDecl('FileProxy');</script>
-: tango.io.protocol.model.IWriter.IWritable;
+;
 </li></span></dt>
 <script>explorer.outline.writeEnabled = false;</script>
 
@@ -144,21 +180,6 @@ Kris
 </pre>
 
         
-</font><br><br>
-
-</dd>
-
-
-<script>explorer.outline.writeEnabled = true;</script>
-<dt><span class="decl"><li>void 
-<span class="currsymbol"><a href="http://www.dsource.org/projects/tango/wiki/tango.io.FileProxy.write">write</a></span>
-<script>explorer.outline.addDecl('write');</script>
-(IWriter <span class="funcparam">emit</span>);
-</li></span></dt>
-<script>explorer.outline.writeEnabled = false;</script>
-
-<dd><font color=black>Write this FileProxy to the given IWriter. We just <span class="funcparam">emit</span>
-                the filepath, since that's what we represent.
 </font><br><br>
 
 </dd>

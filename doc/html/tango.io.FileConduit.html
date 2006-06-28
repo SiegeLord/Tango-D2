@@ -28,10 +28,10 @@ Initial release: March 2004
 
 <br><br>
 <b>author:</b><br>
-Kris
-                        John Reimer
-                        Anders F Bjorklund (Darwin patches)
-                        Chris Sauls (Win95 file support)
+<ul>Kris</ul>
+                        <ul>John Reimer</ul>
+                        <ul>Anders F Bjorklund (Darwin patches)</ul>
+                        <ul>Chris Sauls (Win95 file support)</ul>
 
 <br><br>
 
@@ -52,7 +52,219 @@ Kris
 
 
 <script>explorer.outline.incSymbolLevel();</script>
+<dl></dl>
+<script>explorer.outline.decSymbolLevel();</script>
+
+
+</dd>
+
+
+<script>explorer.outline.writeEnabled = true;</script>
+<dt><span class="decl"><li>class 
+<span class="currsymbol"><a href="http://www.dsource.org/projects/tango/wiki/tango.io.FileConduit.FileConduit">FileConduit</a></span>
+<script>explorer.outline.addDecl('FileConduit');</script>
+: tango.io.DeviceConduit.DeviceConduit, tango.io.model.IConduit.IConduit.Seek;
+</li></span></dt>
+<script>explorer.outline.writeEnabled = false;</script>
+
+<dd><font color=black>Implements a means of reading and writing a generic file. Conduits
+        are the primary means of accessing external data, and are usually
+        routed through a Buffer. File conduit extends the generic conduit
+        by providing file-specific methods to set the file size, seek to a
+        specific file position, and so on. Also provided is a class for
+        creating a memory-mapped Buffer upon a file.
+</font><br><br>
+<font color=black>Serial input and output is straightforward. In this example we
+        copy a file directly to the console:
+<br><br>
+
+<pre class="d_code">        <font color=grey>// open a file for reading
+</font>        FileConduit from = <font color=blue>new</font> FileConduit (<font color=navy>"test.txt"</font>);
+
+        <font color=grey>// stream directly to console
+</font>        Stdout.conduit.copy (from);
+</pre>
+
+        And here we copy one file to another:
+<br><br>
+
+<pre class="d_code">        <font color=grey>// open a file for reading
+</font>        FileConduit from = <font color=blue>new</font> FileConduit (<font color=navy>"test.txt"</font>);
+
+        <font color=grey>// open another for writing
+</font>        FileConduit to = <font color=blue>new</font> FileConduit (<font color=navy>"copy.txt"</font>, FileStyle.WriteTruncate);
+
+        <font color=grey>// copy file
+</font>        to.copy (from);
+</pre>
+
+        
+<span class="currsymbol"><a href="http://www.dsource.org/projects/tango/wiki/tango.io.FileConduit.FileConduit">FileConduit</a></span>
+<script>explorer.outline.addDecl('FileConduit');</script>
+ can just as easily handle random IO. Here we see how
+        a Reader and Writer are used to perform simple input and output:
+<br><br>
+
+<pre class="d_code">        <font color=grey>// open a file for reading
+</font>        FileConduit fc = <font color=blue>new</font> FileConduit (<font color=navy>"random.bin"</font>, FileStyle.ReadWriteCreate);
+
+        <font color=grey>// construct (binary) reader &amp; writer upon this conduit
+</font>        Reader read = <font color=blue>new</font> Reader (fc);
+        Writer write = <font color=blue>new</font> Writer (fc);
+
+        <font color=blue>int</font> x=10, y=20;
+
+        <font color=grey>// write some data, and flush output since IO is buffered
+</font>        write (x) (y) ();
+
+        <font color=grey>// rewind to file start
+</font>        fc.seek (0);
+
+        <font color=grey>// read data back again, but swap destinations
+</font>        read (y) (x);
+
+        <font color=blue>assert</font> (y==10);
+        <font color=blue>assert</font> (x==20);
+
+        fc.close();
+</pre>
+
+        FileConduits can also be used directly, without Readers, Writers, or
+        Buffers. To load a file directly into local-memory one might do this:
+<br><br>
+
+<pre class="d_code">        <font color=grey>// open file for reading
+</font>        FileConduit fc = <font color=blue>new</font> FileConduit (<font color=navy>"test.txt"</font>);
+
+        <font color=grey>// create an array to house the entire file
+</font>        <font color=blue>char</font>[] content = <font color=blue>new</font> <font color=blue>char</font>[fc.length];
+
+        <font color=grey>// read the file content. Return value is the number of bytes read
+</font>        <font color=blue>int</font> bytesRead = fc.read (content);
+</pre>
+
+        Conversely, one may write directly to a 
+<span class="currsymbol"><a href="http://www.dsource.org/projects/tango/wiki/tango.io.FileConduit.FileConduit">FileConduit</a></span>
+<script>explorer.outline.addDecl('FileConduit');</script>
+, like so:
+<br><br>
+
+<pre class="d_code">        <font color=grey>// open file for writing
+</font>        FileConduit to = <font color=blue>new</font> FileConduit (<font color=navy>"text.txt"</font>, FileStyle.WriteTruncate);
+
+        <font color=grey>// write an array of content to it
+</font>        <font color=blue>int</font> bytesWritten = fc.write (content);
+</pre>
+
+<br><br>
+
+        See File, FilePath, FileProxy, FileConst, FileScan, and FileSystem for
+        additional functionality related to file manipulation.
+<br><br>
+
+        Doxygen has a hard time with D version() statements, so part of this
+        class is documented within 
+<span class="currsymbol"><a href="http://www.dsource.org/projects/tango/wiki/tango.io.FileConduit.FileConduit">FileConduit</a></span>
+<script>explorer.outline.addDecl('FileConduit');</script>
+::VersionWin32 instead.
+<br><br>
+
+        Compile with -version=Win32SansUnicode to enable Win95 &amp; Win32s file
+        support.
+
+</font><br><br>
+
+
+<script>explorer.outline.incSymbolLevel();</script>
 <dl>
+<script>explorer.outline.writeEnabled = true;</script>
+<dt><span class="decl"><li>struct 
+<span class="currsymbol"><a href="http://www.dsource.org/projects/tango/wiki/tango.io.FileConduit.Style">Style</a></span>
+<script>explorer.outline.addDecl('Style');</script>
+;
+</li></span></dt>
+<script>explorer.outline.writeEnabled = false;</script>
+
+<dd><font color=black>Fits into 32 bits ...
+</font><br><br>
+
+
+<script>explorer.outline.incSymbolLevel();</script>
+<dl>
+<script>explorer.outline.writeEnabled = true;</script>
+<dt><span class="decl"><li>Access 
+<span class="currsymbol"><a href="http://www.dsource.org/projects/tango/wiki/tango.io.FileConduit.access">access</a></span>
+<script>explorer.outline.addDecl('access');</script>
+;
+</li></span></dt>
+<script>explorer.outline.writeEnabled = false;</script>
+
+<dd><font color=black>
+<span class="currsymbol"><a href="http://www.dsource.org/projects/tango/wiki/tango.io.FileConduit.access">access</a></span>
+<script>explorer.outline.addDecl('access');</script>
+ rights
+</font><br><br>
+
+</dd>
+
+
+<script>explorer.outline.writeEnabled = true;</script>
+<dt><span class="decl"><li>Open 
+<span class="currsymbol"><a href="http://www.dsource.org/projects/tango/wiki/tango.io.FileConduit.open">open</a></span>
+<script>explorer.outline.addDecl('open');</script>
+;
+</li></span></dt>
+<script>explorer.outline.writeEnabled = false;</script>
+
+<dd><font color=black>how to 
+<span class="currsymbol"><a href="http://www.dsource.org/projects/tango/wiki/tango.io.FileConduit.open">open</a></span>
+<script>explorer.outline.addDecl('open');</script>
+
+</font><br><br>
+
+</dd>
+
+
+<script>explorer.outline.writeEnabled = true;</script>
+<dt><span class="decl"><li>Share 
+<span class="currsymbol"><a href="http://www.dsource.org/projects/tango/wiki/tango.io.FileConduit.share">share</a></span>
+<script>explorer.outline.addDecl('share');</script>
+;
+</li></span></dt>
+<script>explorer.outline.writeEnabled = false;</script>
+
+<dd><font color=black>how to 
+<span class="currsymbol"><a href="http://www.dsource.org/projects/tango/wiki/tango.io.FileConduit.share">share</a></span>
+<script>explorer.outline.addDecl('share');</script>
+
+</font><br><br>
+
+</dd>
+
+
+<script>explorer.outline.writeEnabled = true;</script>
+<dt><span class="decl"><li>Cache 
+<span class="currsymbol"><a href="http://www.dsource.org/projects/tango/wiki/tango.io.FileConduit.cache">cache</a></span>
+<script>explorer.outline.addDecl('cache');</script>
+;
+</li></span></dt>
+<script>explorer.outline.writeEnabled = false;</script>
+
+<dd><font color=black>how to 
+<span class="currsymbol"><a href="http://www.dsource.org/projects/tango/wiki/tango.io.FileConduit.cache">cache</a></span>
+<script>explorer.outline.addDecl('cache');</script>
+
+</font><br><br>
+
+</dd>
+
+</dl>
+<script>explorer.outline.decSymbolLevel();</script>
+
+
+</dd>
+
+
 <script>explorer.outline.writeEnabled = true;</script>
 <dt><span class="decl"><li>enum 
 <span class="currsymbol"><a href="http://www.dsource.org/projects/tango/wiki/tango.io.FileConduit.Open">Open</a></span>
@@ -251,7 +463,7 @@ Kris
 
 
 <script>explorer.outline.writeEnabled = true;</script>
-<dt><span class="decl"><li>const Bits 
+<dt><span class="decl"><li>const Style 
 <span class="currsymbol"><a href="http://www.dsource.org/projects/tango/wiki/tango.io.FileConduit.ReadExisting">ReadExisting</a></span>
 <script>explorer.outline.addDecl('ReadExisting');</script>
 ;
@@ -261,133 +473,9 @@ Kris
 <dd><br><br>
 </dd>
 
-</dl>
-<script>explorer.outline.decSymbolLevel();</script>
-
-
-</dd>
-
 
 <script>explorer.outline.writeEnabled = true;</script>
-<dt><span class="decl"><li>class 
-<span class="currsymbol"><a href="http://www.dsource.org/projects/tango/wiki/tango.io.FileConduit.FileConduit">FileConduit</a></span>
-<script>explorer.outline.addDecl('FileConduit');</script>
-: tango.io.DeviceConduit.DeviceConduit, tango.io.model.IConduit.ISeekable;
-</li></span></dt>
-<script>explorer.outline.writeEnabled = false;</script>
-
-<dd><font color=black>Implements a means of reading and writing a generic file. Conduits
-        are the primary means of accessing external data, and are usually
-        routed through a Buffer. File conduit extends the generic conduit
-        by providing file-specific methods to set the file size, seek to a
-        specific file position, and so on. Also provided is a class for
-        creating a memory-mapped Buffer upon a file.
-</font><br><br>
-<font color=black>Serial input and output is straightforward. In this example we
-        copy a file directly to the console:
-<br><br>
-
-<pre class="d_code">        <font color=grey>// open a file for reading
-</font>        FileConduit from = <font color=blue>new</font> FileConduit (<font color=navy>"test.txt"</font>);
-
-        <font color=grey>// stream directly to console
-</font>        Stdout.conduit.copy (from);
-</pre>
-
-        And here we copy one file to another:
-<br><br>
-
-<pre class="d_code">        <font color=grey>// open a file for reading
-</font>        FileConduit from = <font color=blue>new</font> FileConduit (<font color=navy>"test.txt"</font>);
-
-        <font color=grey>// open another for writing
-</font>        FileConduit to = <font color=blue>new</font> FileConduit (<font color=navy>"copy.txt"</font>, FileStyle.WriteTruncate);
-
-        <font color=grey>// copy file
-</font>        to.copy (from);
-</pre>
-
-        
-<span class="currsymbol"><a href="http://www.dsource.org/projects/tango/wiki/tango.io.FileConduit.FileConduit">FileConduit</a></span>
-<script>explorer.outline.addDecl('FileConduit');</script>
- can just as easily handle random IO. Here we see how
-        a Reader and Writer are used to perform simple input and output:
-<br><br>
-
-<pre class="d_code">        <font color=grey>// open a file for reading
-</font>        FileConduit fc = <font color=blue>new</font> FileConduit (<font color=navy>"random.bin"</font>, FileStyle.ReadWriteCreate);
-
-        <font color=grey>// construct (binary) reader &amp; writer upon this conduit
-</font>        Reader read = <font color=blue>new</font> Reader (fc);
-        Writer write = <font color=blue>new</font> Writer (fc);
-
-        <font color=blue>int</font> x=10, y=20;
-
-        <font color=grey>// write some data, and flush output since IO is buffered
-</font>        write (x) (y) ();
-
-        <font color=grey>// rewind to file start
-</font>        fc.seek (0);
-
-        <font color=grey>// read data back again, but swap destinations
-</font>        read (y) (x);
-
-        <font color=blue>assert</font> (y==10);
-        <font color=blue>assert</font> (x==20);
-
-        fc.close();
-</pre>
-
-        FileConduits can also be used directly, without Readers, Writers, or
-        Buffers. To load a file directly into local-memory one might do this:
-<br><br>
-
-<pre class="d_code">        <font color=grey>// open file for reading
-</font>        FileConduit fc = <font color=blue>new</font> FileConduit (<font color=navy>"test.txt"</font>);
-
-        <font color=grey>// create an array to house the entire file
-</font>        <font color=blue>char</font>[] content = <font color=blue>new</font> <font color=blue>char</font>[fc.length];
-
-        <font color=grey>// read the file content. Return value is the number of bytes read
-</font>        <font color=blue>int</font> bytesRead = fc.read (content);
-</pre>
-
-        Conversely, one may write directly to a 
-<span class="currsymbol"><a href="http://www.dsource.org/projects/tango/wiki/tango.io.FileConduit.FileConduit">FileConduit</a></span>
-<script>explorer.outline.addDecl('FileConduit');</script>
-, like so:
-<br><br>
-
-<pre class="d_code">        <font color=grey>// open file for writing
-</font>        FileConduit to = <font color=blue>new</font> FileConduit (<font color=navy>"text.txt"</font>, FileStyle.WriteTruncate);
-
-        <font color=grey>// write an array of content to it
-</font>        <font color=blue>int</font> bytesWritten = fc.write (content);
-</pre>
-
-<br><br>
-
-        See File, FilePath, FileProxy, FileConst, FileScan, and FileSystem for
-        additional functionality related to file manipulation.
-<br><br>
-
-        Doxygen has a hard time with D version() statements, so part of this
-        class is documented within 
-<span class="currsymbol"><a href="http://www.dsource.org/projects/tango/wiki/tango.io.FileConduit.FileConduit">FileConduit</a></span>
-<script>explorer.outline.addDecl('FileConduit');</script>
-::VersionWin32 instead.
-<br><br>
-
-        Compile with -version=Win32SansUnicode to enable Win95 &amp; Win32s file
-        support.
-
-</font><br><br>
-
-
-<script>explorer.outline.incSymbolLevel();</script>
-<dl>
-<script>explorer.outline.writeEnabled = true;</script>
-<dt><span class="decl"><li>this(char[] <span class="funcparam">name</span>, Bits <span class="funcparam">style</span> = ReadExisting);
+<dt><span class="decl"><li>this(char[] <span class="funcparam">name</span>, Style <span class="funcparam">style</span> = ReadExisting);
 </li></span></dt>
 <script>explorer.outline.writeEnabled = false;</script>
 
@@ -398,7 +486,7 @@ Kris
 
 
 <script>explorer.outline.writeEnabled = true;</script>
-<dt><span class="decl"><li>this(FileProxy <span class="funcparam">proxy</span>, Bits <span class="funcparam">style</span> = ReadExisting);
+<dt><span class="decl"><li>this(FileProxy <span class="funcparam">proxy</span>, Style <span class="funcparam">style</span> = ReadExisting);
 </li></span></dt>
 <script>explorer.outline.writeEnabled = false;</script>
 
@@ -409,7 +497,7 @@ Kris
 
 
 <script>explorer.outline.writeEnabled = true;</script>
-<dt><span class="decl"><li>this(FilePath <span class="funcparam">path</span>, Bits <span class="funcparam">style</span> = ReadExisting);
+<dt><span class="decl"><li>this(FilePath <span class="funcparam">path</span>, Style <span class="funcparam">style</span> = ReadExisting);
 </li></span></dt>
 <script>explorer.outline.writeEnabled = false;</script>
 
@@ -428,6 +516,20 @@ Kris
 <script>explorer.outline.writeEnabled = false;</script>
 
 <dd><font color=black>Return the FilePath used by this file.
+</font><br><br>
+
+</dd>
+
+
+<script>explorer.outline.writeEnabled = true;</script>
+<dt><span class="decl"><li>char[] 
+<span class="currsymbol"><a href="http://www.dsource.org/projects/tango/wiki/tango.io.FileConduit.toString">toString</a></span>
+<script>explorer.outline.addDecl('toString');</script>
+();
+</li></span></dt>
+<script>explorer.outline.writeEnabled = false;</script>
+
+<dd><font color=black>Return the name of the FilePath used by this file.
 </font><br><br>
 
 </dd>
@@ -498,7 +600,7 @@ Kris
 <dt><span class="decl"><li>protected void 
 <span class="currsymbol"><a href="http://www.dsource.org/projects/tango/wiki/tango.io.FileConduit.open">open</a></span>
 <script>explorer.outline.addDecl('open');</script>
-(Bits <span class="funcparam">style</span>);
+(Style <span class="funcparam">style</span>);
 </li></span></dt>
 <script>explorer.outline.writeEnabled = false;</script>
 
@@ -558,7 +660,7 @@ Kris
 <dt><span class="decl"><li>ulong 
 <span class="currsymbol"><a href="http://www.dsource.org/projects/tango/wiki/tango.io.FileConduit.seek">seek</a></span>
 <script>explorer.outline.addDecl('seek');</script>
-(ulong <span class="funcparam">offset</span>, SeekAnchor <span class="funcparam">anchor</span> = cast(SeekAnchor)0);
+(ulong <span class="funcparam">offset</span>, Anchor <span class="funcparam">anchor</span> = cast(Anchor)0);
 </li></span></dt>
 <script>explorer.outline.writeEnabled = false;</script>
 
@@ -598,7 +700,7 @@ Kris
 <script>explorer.outline.incSymbolLevel();</script>
 <dl>
 <script>explorer.outline.writeEnabled = true;</script>
-<dt><span class="decl"><li>this(char[] <span class="funcparam">name</span>, Bits <span class="funcparam">style</span> = ReadExisting);
+<dt><span class="decl"><li>this(char[] <span class="funcparam">name</span>, Style <span class="funcparam">style</span> = ReadExisting);
 </li></span></dt>
 <script>explorer.outline.writeEnabled = false;</script>
 
@@ -609,7 +711,7 @@ Kris
 
 
 <script>explorer.outline.writeEnabled = true;</script>
-<dt><span class="decl"><li>this(FileProxy <span class="funcparam">proxy</span>, Bits <span class="funcparam">style</span> = ReadExisting);
+<dt><span class="decl"><li>this(FileProxy <span class="funcparam">proxy</span>, Style <span class="funcparam">style</span> = ReadExisting);
 </li></span></dt>
 <script>explorer.outline.writeEnabled = false;</script>
 
@@ -620,7 +722,7 @@ Kris
 
 
 <script>explorer.outline.writeEnabled = true;</script>
-<dt><span class="decl"><li>this(FilePath <span class="funcparam">path</span>, Bits <span class="funcparam">style</span> = ReadExisting);
+<dt><span class="decl"><li>this(FilePath <span class="funcparam">path</span>, Style <span class="funcparam">style</span> = ReadExisting);
 </li></span></dt>
 <script>explorer.outline.writeEnabled = false;</script>
 

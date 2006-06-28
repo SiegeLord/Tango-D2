@@ -66,6 +66,20 @@ Kris
 <script>explorer.outline.incSymbolLevel();</script>
 <dl>
 <script>explorer.outline.writeEnabled = true;</script>
+<dt><span class="decl"><li>typedef 
+<span class="currsymbol"><a href="http://www.dsource.org/projects/tango/wiki/tango.io.model.IConduit.Handle">Handle</a></span>
+<script>explorer.outline.addDecl('Handle');</script>
+;
+</li></span></dt>
+<script>explorer.outline.writeEnabled = false;</script>
+
+<dd><font color=black>opaque OS file-handle
+</font><br><br>
+
+</dd>
+
+
+<script>explorer.outline.writeEnabled = true;</script>
 <dt><span class="decl"><li>abstract uint 
 <span class="currsymbol"><a href="http://www.dsource.org/projects/tango/wiki/tango.io.model.IConduit.read">read</a></span>
 <script>explorer.outline.addDecl('read');</script>
@@ -240,13 +254,111 @@ Kris
 </li></span></dt>
 <script>explorer.outline.writeEnabled = false;</script>
 
-<dd><font color=black>Return the underlying OS handle of this Conduit
+<dd><font color=black>Release external resources
 </font><br><br>
-<font color=black>Release external resources
-<br><br>
 
-        
+</dd>
+
+
+<script>explorer.outline.writeEnabled = true;</script>
+<dt><span class="decl"><li>interface 
+<span class="currsymbol"><a href="http://www.dsource.org/projects/tango/wiki/tango.io.model.IConduit.Device">Device</a></span>
+<script>explorer.outline.addDecl('Device');</script>
+;
+</li></span></dt>
+<script>explorer.outline.writeEnabled = false;</script>
+
+<dd><font color=black>Models a handle-oriented device
 </font><br><br>
+
+
+<script>explorer.outline.incSymbolLevel();</script>
+<dl>
+<script>explorer.outline.writeEnabled = true;</script>
+<dt><span class="decl"><li>abstract Handle 
+<span class="currsymbol"><a href="http://www.dsource.org/projects/tango/wiki/tango.io.model.IConduit.getHandle">getHandle</a></span>
+<script>explorer.outline.addDecl('getHandle');</script>
+();
+</li></span></dt>
+<script>explorer.outline.writeEnabled = false;</script>
+
+<dd><font color=black>Return the handle of this device
+</font><br><br>
+
+</dd>
+
+</dl>
+<script>explorer.outline.decSymbolLevel();</script>
+
+
+</dd>
+
+
+<script>explorer.outline.writeEnabled = true;</script>
+<dt><span class="decl"><li>interface 
+<span class="currsymbol"><a href="http://www.dsource.org/projects/tango/wiki/tango.io.model.IConduit.Seek">Seek</a></span>
+<script>explorer.outline.addDecl('Seek');</script>
+;
+</li></span></dt>
+<script>explorer.outline.writeEnabled = false;</script>
+
+<dd><font color=black>Models the ability to seek within a conduit
+</font><br><br>
+
+
+<script>explorer.outline.incSymbolLevel();</script>
+<dl>
+<script>explorer.outline.writeEnabled = true;</script>
+<dt><span class="decl"><li>enum 
+<span class="currsymbol"><a href="http://www.dsource.org/projects/tango/wiki/tango.io.model.IConduit.Anchor">Anchor</a></span>
+<script>explorer.outline.addDecl('Anchor');</script>
+;
+</li></span></dt>
+<script>explorer.outline.writeEnabled = false;</script>
+
+<dd><font color=black>The anchor positions supported by ISeekable
+</font><br><br>
+
+
+<script>explorer.outline.incSymbolLevel();</script>
+<dl></dl>
+<script>explorer.outline.decSymbolLevel();</script>
+
+
+</dd>
+
+
+<script>explorer.outline.writeEnabled = true;</script>
+<dt><span class="decl"><li>abstract ulong 
+<span class="currsymbol"><a href="http://www.dsource.org/projects/tango/wiki/tango.io.model.IConduit.getPosition">getPosition</a></span>
+<script>explorer.outline.addDecl('getPosition');</script>
+();
+</li></span></dt>
+<script>explorer.outline.writeEnabled = false;</script>
+
+<dd><font color=black>Return current conduit position (e.g. file position)
+</font><br><br>
+
+</dd>
+
+
+<script>explorer.outline.writeEnabled = true;</script>
+<dt><span class="decl"><li>abstract ulong 
+<span class="currsymbol"><a href="http://www.dsource.org/projects/tango/wiki/tango.io.model.IConduit.seek">seek</a></span>
+<script>explorer.outline.addDecl('seek');</script>
+(ulong <span class="funcparam">offset</span>, Anchor <span class="funcparam">anchor</span> = cast(Anchor)0);
+</li></span></dt>
+<script>explorer.outline.writeEnabled = false;</script>
+
+<dd><font color=black>Move the file position to the given <span class="funcparam">offset</span> from the
+                        provided <span class="funcparam">anchor</span> point, and return adjusted position.
+</font><br><br>
+
+</dd>
+
+</dl>
+<script>explorer.outline.decSymbolLevel();</script>
+
 
 </dd>
 
@@ -416,128 +528,6 @@ less than or equal to the length of the provided
 <script>explorer.outline.writeEnabled = false;</script>
 
 <dd><br><br>
-</dd>
-
-</dl>
-<script>explorer.outline.decSymbolLevel();</script>
-
-
-</dd>
-
-
-<script>explorer.outline.writeEnabled = true;</script>
-<dt><span class="decl"><li>interface 
-<span class="currsymbol"><a href="http://www.dsource.org/projects/tango/wiki/tango.io.model.IConduit.ISeekable">ISeekable</a></span>
-<script>explorer.outline.addDecl('ISeekable');</script>
-;
-</li></span></dt>
-<script>explorer.outline.writeEnabled = false;</script>
-
-<dd><font color=black>Models the ability to seek within a conduit.
-</font><br><br>
-
-
-<script>explorer.outline.incSymbolLevel();</script>
-<dl>
-<script>explorer.outline.writeEnabled = true;</script>
-<dt><span class="decl"><li>enum 
-<span class="currsymbol"><a href="http://www.dsource.org/projects/tango/wiki/tango.io.model.IConduit.SeekAnchor">SeekAnchor</a></span>
-<script>explorer.outline.addDecl('SeekAnchor');</script>
-;
-</li></span></dt>
-<script>explorer.outline.writeEnabled = false;</script>
-
-<dd><font color=black>The anchor positions supported by ISeekable
-</font><br><br>
-
-
-<script>explorer.outline.incSymbolLevel();</script>
-<dl></dl>
-<script>explorer.outline.decSymbolLevel();</script>
-
-
-</dd>
-
-
-<script>explorer.outline.writeEnabled = true;</script>
-<dt><span class="decl"><li>abstract ulong 
-<span class="currsymbol"><a href="http://www.dsource.org/projects/tango/wiki/tango.io.model.IConduit.getPosition">getPosition</a></span>
-<script>explorer.outline.addDecl('getPosition');</script>
-();
-</li></span></dt>
-<script>explorer.outline.writeEnabled = false;</script>
-
-<dd><font color=black>Return the current conduit position (such as file position)
-</font><br><br>
-
-</dd>
-
-
-<script>explorer.outline.writeEnabled = true;</script>
-<dt><span class="decl"><li>abstract ulong 
-<span class="currsymbol"><a href="http://www.dsource.org/projects/tango/wiki/tango.io.model.IConduit.seek">seek</a></span>
-<script>explorer.outline.addDecl('seek');</script>
-(ulong <span class="funcparam">offset</span>, SeekAnchor <span class="funcparam">anchor</span> = cast(SeekAnchor)0);
-</li></span></dt>
-<script>explorer.outline.writeEnabled = false;</script>
-
-<dd><font color=black>Move the file position to the given <span class="funcparam">offset</span> from the provided
-                <span class="funcparam">anchor</span> point, and return the adjusted position.
-</font><br><br>
-
-</dd>
-
-</dl>
-<script>explorer.outline.decSymbolLevel();</script>
-
-
-</dd>
-
-
-<script>explorer.outline.writeEnabled = true;</script>
-<dt><span class="decl"><li>struct 
-<span class="currsymbol"><a href="http://www.dsource.org/projects/tango/wiki/tango.io.model.IConduit.ConduitStyle">ConduitStyle</a></span>
-<script>explorer.outline.addDecl('ConduitStyle');</script>
-;
-</li></span></dt>
-<script>explorer.outline.writeEnabled = false;</script>
-
-<dd><font color=black>Defines how a Conduit should be opened. This is typically subsumed
-        by another structure
-</font><br><br>
-
-
-<script>explorer.outline.incSymbolLevel();</script>
-<dl>
-<script>explorer.outline.writeEnabled = true;</script>
-<dt><span class="decl"><li>enum 
-<span class="currsymbol"><a href="http://www.dsource.org/projects/tango/wiki/tango.io.model.IConduit.Access">Access</a></span>
-<script>explorer.outline.addDecl('Access');</script>
-;
-</li></span></dt>
-<script>explorer.outline.writeEnabled = false;</script>
-
-<dd><br><br>
-
-<script>explorer.outline.incSymbolLevel();</script>
-<dl></dl>
-<script>explorer.outline.decSymbolLevel();</script>
-
-
-</dd>
-
-
-<script>explorer.outline.writeEnabled = true;</script>
-<dt><span class="decl"><li>const Bits 
-<span class="currsymbol"><a href="http://www.dsource.org/projects/tango/wiki/tango.io.model.IConduit.Read">Read</a></span>
-<script>explorer.outline.addDecl('Read');</script>
-;
-</li></span></dt>
-<script>explorer.outline.writeEnabled = false;</script>
-
-<dd><font color=black>Setup common instances of conduit styles
-</font><br><br>
-
 </dd>
 
 </dl>

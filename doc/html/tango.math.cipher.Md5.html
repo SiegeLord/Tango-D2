@@ -56,7 +56,15 @@ Regan Heath, Kris
 </li></span></dt>
 <script>explorer.outline.writeEnabled = false;</script>
 
-<dd><br><br>
+<dd><font color=black>Construct an Md5Digest.
+</font><br><br>
+<b>Remarks:</b><br>
+Constructs an Md5Digest from binary data
+<br><br>
+
+        
+<br><br>
+
 </dd>
 
 </dl>
@@ -86,7 +94,20 @@ Regan Heath, Kris
 </li></span></dt>
 <script>explorer.outline.writeEnabled = false;</script>
 
-<dd><br><br>
+<dd><font color=black>Obtain the digest
+</font><br><br>
+<b>Returns:</b><br>
+the digest
+
+<br><br>
+<b>Remarks:</b><br>
+Returns a digest of the current cipher state, this may be the
+                final digest, or a digest of the state between calls to update()
+<br><br>
+
+        
+<br><br>
+
 </dd>
 
 
@@ -98,7 +119,25 @@ Regan Heath, Kris
 </li></span></dt>
 <script>explorer.outline.writeEnabled = false;</script>
 
-<dd><br><br>
+<dd><font color=black>Performs the cipher on a block of data
+</font><br><br>
+<b>Params:</b><br>
+<table><tr>
+<td nowrap valign="top" style="padding-right: 8px">data</td>
+
+               
+<td>the block of data to cipher</td></tr>
+</table><br>
+<b>Remarks:</b><br>
+The actual cipher algorithm is carried out by this method on
+                the passed block of data. This method is called for every
+                blockSize() bytes of <span class="funcparam">input</span> data and once more with the remaining
+                data padded to blockSize().
+<br><br>
+
+        
+<br><br>
+
 </dd>
 
 </dl>

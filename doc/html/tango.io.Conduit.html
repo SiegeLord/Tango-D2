@@ -93,15 +93,10 @@ Kris
 </li></span></dt>
 <script>explorer.outline.writeEnabled = false;</script>
 
-<dd><font color=black>Return the underlying OS handle of this Conduit
-</font><br><br>
-<font color=black>conduit-specific 
+<dd><font color=black>conduit-specific 
 <span class="currsymbol"><a href="http://www.dsource.org/projects/tango/wiki/tango.io.Conduit.reader">reader</a></span>
 <script>explorer.outline.addDecl('reader');</script>
 
-<br><br>
-
-        
 </font><br><br>
 
 </dd>
@@ -125,11 +120,11 @@ Kris
 
 
 <script>explorer.outline.writeEnabled = true;</script>
-<dt><span class="decl"><li>this(Bits <span class="funcparam">style</span>, bool <span class="funcparam">seekable</span>);
+<dt><span class="decl"><li>this(Access <span class="funcparam">access</span>, bool <span class="funcparam">seekable</span>);
 </li></span></dt>
 <script>explorer.outline.writeEnabled = false;</script>
 
-<dd><font color=black>Construct a conduit with the given <span class="funcparam">style</span> and seek abilities.
+<dd><font color=black>Construct a conduit with the given style and seek abilities.
                 Conduits are either <span class="funcparam">seekable</span> or non-<span class="funcparam">seekable</span>.
 </font><br><br>
 
@@ -337,14 +332,14 @@ Kris
 
 
 <script>explorer.outline.writeEnabled = true;</script>
-<dt><span class="decl"><li>Bits  
-<span class="currsymbol"><a href="http://www.dsource.org/projects/tango/wiki/tango.io.Conduit.getStyle">getStyle</a></span>
-<script>explorer.outline.addDecl('getStyle');</script>
+<dt><span class="decl"><li>Access 
+<span class="currsymbol"><a href="http://www.dsource.org/projects/tango/wiki/tango.io.Conduit.getAccess">getAccess</a></span>
+<script>explorer.outline.addDecl('getAccess');</script>
 ();
 </li></span></dt>
 <script>explorer.outline.writeEnabled = false;</script>
 
-<dd><font color=black>Return the style used when creating this conduit
+<dd><font color=black>Return the access-style used when creating this conduit
 </font><br><br>
 
 </dd>

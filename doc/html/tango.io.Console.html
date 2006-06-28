@@ -70,30 +70,26 @@ Kris
 </li></span></dt>
 <script>explorer.outline.writeEnabled = false;</script>
 
-<dd><font color=black>Model console input as a buffer
+<dd><font color=black>Model console input as a buffer. Note that we read utf8
+                only.
 </font><br><br>
 
 
 <script>explorer.outline.incSymbolLevel();</script>
 <dl>
 <script>explorer.outline.writeEnabled = true;</script>
-<dt><span class="decl"><li>this(FileDevice <span class="funcparam">device</span>);
+<dt><span class="decl"><li>char[] 
+<span class="currsymbol"><a href="http://www.dsource.org/projects/tango/wiki/tango.io.Console.get">get</a></span>
+<script>explorer.outline.addDecl('get');</script>
+(bool <span class="funcparam">copy</span> = true);
 </li></span></dt>
 <script>explorer.outline.writeEnabled = false;</script>
 
-<dd><br><br>
-</dd>
+<dd><font color=black>Return available input from the console. Note that
+                        you may obtain a slice from the buffer instead by
+                        setting <span class="funcparam">copy</span> to <b>false</b>.
+</font><br><br>
 
-
-<script>explorer.outline.writeEnabled = true;</script>
-<dt><span class="decl"><li>Input 
-<span class="currsymbol"><a href="http://www.dsource.org/projects/tango/wiki/tango.io.Console.opCall">opCall</a></span>
-<script>explorer.outline.addDecl('opCall');</script>
-(inout char[] <span class="funcparam">x</span>);
-</li></span></dt>
-<script>explorer.outline.writeEnabled = false;</script>
-
-<dd><br><br>
 </dd>
 
 </dl>
@@ -111,30 +107,62 @@ Kris
 </li></span></dt>
 <script>explorer.outline.writeEnabled = false;</script>
 
-<dd><font color=black>Model console output as a buffer
+<dd><font color=black>Model console output as a buffer. Note that we accept
+                utf8 only: the superclass append() methods are hidden
+                from view. Buffer.consume is left open, for those who
+                require lower-level access ~ along with Buffer.write
 </font><br><br>
 
 
 <script>explorer.outline.incSymbolLevel();</script>
 <dl>
 <script>explorer.outline.writeEnabled = true;</script>
-<dt><span class="decl"><li>this(FileDevice <span class="funcparam">device</span>);
+<dt><span class="decl"><li>Output 
+<span class="currsymbol"><a href="http://www.dsource.org/projects/tango/wiki/tango.io.Console.append">append</a></span>
+<script>explorer.outline.addDecl('append');</script>
+(char[] <span class="funcparam">x</span>);
 </li></span></dt>
 <script>explorer.outline.writeEnabled = false;</script>
 
-<dd><br><br>
+<dd><font color=black>Append to the console. We accept UTF8 only, so
+                        all other encodings should be handled via some
+                        higher level API
+</font><br><br>
+
 </dd>
 
 
 <script>explorer.outline.writeEnabled = true;</script>
 <dt><span class="decl"><li>Output 
-<span class="currsymbol"><a href="http://www.dsource.org/projects/tango/wiki/tango.io.Console.opCall">opCall</a></span>
-<script>explorer.outline.addDecl('opCall');</script>
-(char[] <span class="funcparam">x</span>);
+<span class="currsymbol"><a href="http://www.dsource.org/projects/tango/wiki/tango.io.Console.append">append</a></span>
+<script>explorer.outline.addDecl('append');</script>
+(Object <span class="funcparam">o</span>);
 </li></span></dt>
 <script>explorer.outline.writeEnabled = false;</script>
 
-<dd><br><br>
+<dd><font color=black>Append content
+</font><br><br>
+<b>Params:</b><br>
+<table><tr>
+<td nowrap valign="top" style="padding-right: 8px">other</td>
+
+               
+<td>an object with a useful toString() method</td></tr>
+</table><br>
+<b>Returns:</b><br>
+Returns a chaining reference if all content was
+                        written. Throws an IOException indicating eof or
+                        eob if not.
+
+<br><br>
+<b>Remarks:</b><br>
+Append the result of other.toString() to the console,
+                        and flush.
+<br><br>
+
+                
+<br><br>
+
 </dd>
 
 
@@ -146,7 +174,26 @@ Kris
 </li></span></dt>
 <script>explorer.outline.writeEnabled = false;</script>
 
-<dd><br><br>
+<dd><font color=black>Append a 
+<span class="currsymbol"><a href="http://www.dsource.org/projects/tango/wiki/tango.io.Console.newline">newline</a></span>
+<script>explorer.outline.addDecl('newline');</script>
+
+</font><br><br>
+<b>Returns:</b><br>
+Returns a chaining reference if content was written.
+                        Throws an IOException indicating eof or eob if not.
+
+<br><br>
+<b>Remarks:</b><br>
+Emit a platform-specific 
+<span class="currsymbol"><a href="http://www.dsource.org/projects/tango/wiki/tango.io.Console.newline">newline</a></span>
+<script>explorer.outline.addDecl('newline');</script>
+ into the buffer
+<br><br>
+
+                
+<br><br>
+
 </dd>
 
 </dl>
