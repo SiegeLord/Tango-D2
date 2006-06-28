@@ -211,7 +211,7 @@ private class BufferedFormat
 
         **********************************************************************/
 
-        BufferedFormat format (char[] fmt, ...)
+        final BufferedFormat format (char[] fmt, ...)
         {
                 uint sink (char[] s)
                 {
@@ -227,7 +227,7 @@ private class BufferedFormat
 
         **********************************************************************/
 
-        BufferedFormat print (bool v)
+        final BufferedFormat print (bool v)
         {
                 return format ("{0}", v);
         }
@@ -236,7 +236,7 @@ private class BufferedFormat
 
         **********************************************************************/
 
-        BufferedFormat print (int v)
+        final BufferedFormat print (int v)
         {
                 return format ("{0}", v);
         }
@@ -245,7 +245,7 @@ private class BufferedFormat
 
         **********************************************************************/
 
-        BufferedFormat print (long v)
+        final BufferedFormat print (long v)
         {
                 return format ("{0}", v);
         }
@@ -254,7 +254,7 @@ private class BufferedFormat
 
         **********************************************************************/
 
-        BufferedFormat print (double v)
+        final BufferedFormat print (double v)
         {
                 return format ("{0}", v);
         }
@@ -263,7 +263,7 @@ private class BufferedFormat
 
         **********************************************************************/
 
-        BufferedFormat print (Object v)
+        final BufferedFormat print (Object v)
         {
                 return format ("{0}", v);
         }
@@ -272,7 +272,7 @@ private class BufferedFormat
 
         **********************************************************************/
 
-        BufferedFormat print (char[] v)
+        final BufferedFormat print (char[] v)
         {
                 return format ("{0}", v);
         }
@@ -283,7 +283,7 @@ private class BufferedFormat
 
         ***********************************************************************/
 
-        BufferedFormat newline ()
+        final BufferedFormat newline ()
         {
                 target.append ("\n");
                 return render();
@@ -295,7 +295,7 @@ private class BufferedFormat
 
         **********************************************************************/
 
-        IBuffer buffer ()
+        final IBuffer buffer ()
         {
                 return target;
         }      
@@ -306,7 +306,7 @@ private class BufferedFormat
 
         **********************************************************************/
 
-        IConduit conduit ()
+        final IConduit conduit ()
         {
                 return target.getConduit;
         }      
