@@ -192,6 +192,8 @@ private class BufferedFormat
 
         private bool            flush;
         private IBuffer         target;
+        private static char[]   One = "{0}";
+
 
         /**********************************************************************
 
@@ -229,7 +231,7 @@ private class BufferedFormat
 
         final BufferedFormat print (bool v)
         {
-                return format ("{0}", v);
+                return format (One, v);
         }
 
         /**********************************************************************
@@ -238,7 +240,7 @@ private class BufferedFormat
 
         final BufferedFormat print (int v)
         {
-                return format ("{0}", v);
+                return format (One, v);
         }
 
         /**********************************************************************
@@ -247,7 +249,7 @@ private class BufferedFormat
 
         final BufferedFormat print (long v)
         {
-                return format ("{0}", v);
+                return format (One, v);
         }
 
         /**********************************************************************
@@ -256,7 +258,7 @@ private class BufferedFormat
 
         final BufferedFormat print (double v)
         {
-                return format ("{0}", v);
+                return format (One, v);
         }
 
         /**********************************************************************
@@ -265,7 +267,7 @@ private class BufferedFormat
 
         final BufferedFormat print (Object v)
         {
-                return format ("{0}", v);
+                return format (One, v);
         }
 
         /**********************************************************************
@@ -274,7 +276,7 @@ private class BufferedFormat
 
         final BufferedFormat print (char[] v)
         {
-                return format ("{0}", v);
+                return format (One, v);
         }
 
         /***********************************************************************
