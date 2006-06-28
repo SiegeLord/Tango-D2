@@ -79,7 +79,7 @@ class FileSystem
                                 }
                              else
                                 {
-                                if (! SetCurrentDirectoryW (fp.toUtf16))
+                                if (! SetCurrentDirectoryW (fp.toUtf16(true)))
                                       throw new IOException ("Failed to set current directory");
                                 }
                 }

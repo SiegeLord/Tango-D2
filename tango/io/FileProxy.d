@@ -215,7 +215,7 @@ class FileProxy
                         version (Win32SansUnicode)
                                  HANDLE h = FindFirstFileA (path.toUtf8, &info);
                              else
-                                HANDLE h = FindFirstFileW (path.toUtf16, &info);
+                                HANDLE h = FindFirstFileW (path.toUtf16(true), &info);
 
                         if (h == INVALID_HANDLE_VALUE)
                             exception ();
@@ -346,7 +346,7 @@ class FileProxy
                                    }
                                 else
                                    {
-                                   if (! RemoveDirectoryW (path.toUtf16))
+                                   if (! RemoveDirectoryW (path.toUtf16(true)))
                                          exception();
                                    }
                            }
@@ -358,7 +358,7 @@ class FileProxy
                                    }
                                 else
                                    {
-                                   if (! DeleteFileW (path.toUtf16))
+                                   if (! DeleteFileW (path.toUtf16(true)))
                                          exception();
                                    }
 
@@ -382,7 +382,7 @@ class FileProxy
                         version (Win32SansUnicode)
                                  result = MoveFileExA (path.toUtf8, dst.toUtf8, Typical);
                              else
-                                result = MoveFileExW (path.toUtf16, dst.toUtf16, Typical);
+                                result = MoveFileExW (path.toUtf16(true), dst.toUtf16(true), Typical);
 
                         if (! result)
                               exception();
@@ -406,7 +406,7 @@ class FileProxy
                                                   0, null, CREATE_ALWAYS, 
                                                   FILE_ATTRIBUTE_NORMAL, null);
                              else
-                                h = CreateFileW (path.toUtf16, GENERIC_WRITE, 
+                                h = CreateFileW (path.toUtf16(true), GENERIC_WRITE, 
                                                  0, null, CREATE_ALWAYS, 
                                                  FILE_ATTRIBUTE_NORMAL, null);
 
@@ -434,7 +434,7 @@ class FileProxy
                                 }
                              else
                                 {
-                                if (! CreateDirectoryW (path.toUtf16, null))
+                                if (! CreateDirectoryW (path.toUtf16(true), null))
                                       exception();
                                 }
                         return this;

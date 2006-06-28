@@ -400,8 +400,8 @@ class FileConduit : DeviceConduit, DeviceConduit.Seek
                                                        attr | FILE_ATTRIBUTE_NORMAL,
                                                        cast(HANDLE) null);
                              else
-                                handle = CreateFileW (path.toUtf16, access, share, 
-                                                      null, create, 
+                                handle = CreateFileW (path.toUtf16(true), access, 
+                                                      share, null, create, 
                                                       attr | FILE_ATTRIBUTE_NORMAL,
                                                       cast(HANDLE) null);
 
