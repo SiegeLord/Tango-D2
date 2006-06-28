@@ -4,3545 +4,3621 @@
 
 <html>
 	<head>
-		<link rel="stylesheet" href="style.css" type="text/css" />
-		<title>/Regex.d</title>
+		<link rel="stylesheet" href="../style.css" type="text/css" />
+		<title>text/Regex.d</title>
 	</head>
 	<body>
 
-<table id='dcode'><tr><td id='lnum'><pre><span>1</span>
-<span>2</span>
-<span>3</span>
-<span>4</span>
-<span>5</span>
-<span>6</span>
-<span>7</span>
-<span>8</span>
-<span>9</span>
-<span>10</span>
-<span>11</span>
-<span>12</span>
-<span>13</span>
-<span>14</span>
-<span>15</span>
-<span>16</span>
-<span>17</span>
-<span>18</span>
-<span>19</span>
-<span>20</span>
-<span>21</span>
-<span>22</span>
-<span>23</span>
-<span>24</span>
-<span>25</span>
-<span>26</span>
-<span>27</span>
-<span>28</span>
-<span>29</span>
-<span>30</span>
-<span>31</span>
-<span>32</span>
-<span>33</span>
-<span>34</span>
-<span>35</span>
-<span>36</span>
-<span>37</span>
-<span>38</span>
-<span>39</span>
-<span>40</span>
-<span>41</span>
-<span>42</span>
-<span>43</span>
-<span>44</span>
-<span>45</span>
-<span>46</span>
-<span>47</span>
-<span>48</span>
-<span>49</span>
-<span>50</span>
-<span>51</span>
-<span>52</span>
-<span>53</span>
-<span>54</span>
-<span>55</span>
-<span>56</span>
-<span>57</span>
-<span>58</span>
-<span>59</span>
-<span>60</span>
-<span>61</span>
-<span>62</span>
-<span>63</span>
-<span>64</span>
-<span>65</span>
-<span>66</span>
-<span>67</span>
-<span>68</span>
-<span>69</span>
-<span>70</span>
-<span>71</span>
-<span>72</span>
-<span>73</span>
-<span>74</span>
-<span>75</span>
-<span>76</span>
-<span>77</span>
-<span>78</span>
-<span>79</span>
-<span>80</span>
-<span>81</span>
-<span>82</span>
-<span>83</span>
-<span>84</span>
-<span>85</span>
-<span>86</span>
-<span>87</span>
-<span>88</span>
-<span>89</span>
-<span>90</span>
-<span>91</span>
-<span>92</span>
-<span>93</span>
-<span>94</span>
-<span>95</span>
-<span>96</span>
-<span>97</span>
-<span>98</span>
-<span>99</span>
-<span>100</span>
-<span>101</span>
-<span>102</span>
-<span>103</span>
-<span>104</span>
-<span>105</span>
-<span>106</span>
-<span>107</span>
-<span>108</span>
-<span>109</span>
-<span>110</span>
-<span>111</span>
-<span>112</span>
-<span>113</span>
-<span>114</span>
-<span>115</span>
-<span>116</span>
-<span>117</span>
-<span>118</span>
-<span>119</span>
-<span>120</span>
-<span>121</span>
-<span>122</span>
-<span>123</span>
-<span>124</span>
-<span>125</span>
-<span>126</span>
-<span>127</span>
-<span>128</span>
-<span>129</span>
-<span>130</span>
-<span>131</span>
-<span>132</span>
-<span>133</span>
-<span>134</span>
-<span>135</span>
-<span>136</span>
-<span>137</span>
-<span>138</span>
-<span>139</span>
-<span>140</span>
-<span>141</span>
-<span>142</span>
-<span>143</span>
-<span>144</span>
-<span>145</span>
-<span>146</span>
-<span>147</span>
-<span>148</span>
-<span>149</span>
-<span>150</span>
-<span>151</span>
-<span>152</span>
-<span>153</span>
-<span>154</span>
-<span>155</span>
-<span>156</span>
-<span>157</span>
-<span>158</span>
-<span>159</span>
-<span>160</span>
-<span>161</span>
-<span>162</span>
-<span>163</span>
-<span>164</span>
-<span>165</span>
-<span>166</span>
-<span>167</span>
-<span>168</span>
-<span>169</span>
-<span>170</span>
-<span>171</span>
-<span>172</span>
-<span>173</span>
-<span>174</span>
-<span>175</span>
-<span>176</span>
-<span>177</span>
-<span>178</span>
-<span>179</span>
-<span>180</span>
-<span>181</span>
-<span>182</span>
-<span>183</span>
-<span>184</span>
-<span>185</span>
-<span>186</span>
-<span>187</span>
-<span>188</span>
-<span>189</span>
-<span>190</span>
-<span>191</span>
-<span>192</span>
-<span>193</span>
-<span>194</span>
-<span>195</span>
-<span>196</span>
-<span>197</span>
-<span>198</span>
-<span>199</span>
-<span>200</span>
-<span>201</span>
-<span>202</span>
-<span>203</span>
-<span>204</span>
-<span>205</span>
-<span>206</span>
-<span>207</span>
-<span>208</span>
-<span>209</span>
-<span>210</span>
-<span>211</span>
-<span>212</span>
-<span>213</span>
-<span>214</span>
-<span>215</span>
-<span>216</span>
-<span>217</span>
-<span>218</span>
-<span>219</span>
-<span>220</span>
-<span>221</span>
-<span>222</span>
-<span>223</span>
-<span>224</span>
-<span>225</span>
-<span>226</span>
-<span>227</span>
-<span>228</span>
-<span>229</span>
-<span>230</span>
-<span>231</span>
-<span>232</span>
-<span>233</span>
-<span>234</span>
-<span>235</span>
-<span>236</span>
-<span>237</span>
-<span>238</span>
-<span>239</span>
-<span>240</span>
-<span>241</span>
-<span>242</span>
-<span>243</span>
-<span>244</span>
-<span>245</span>
-<span>246</span>
-<span>247</span>
-<span>248</span>
-<span>249</span>
-<span>250</span>
-<span>251</span>
-<span>252</span>
-<span>253</span>
-<span>254</span>
-<span>255</span>
-<span>256</span>
-<span>257</span>
-<span>258</span>
-<span>259</span>
-<span>260</span>
-<span>261</span>
-<span>262</span>
-<span>263</span>
-<span>264</span>
-<span>265</span>
-<span>266</span>
-<span>267</span>
-<span>268</span>
-<span>269</span>
-<span>270</span>
-<span>271</span>
-<span>272</span>
-<span>273</span>
-<span>274</span>
-<span>275</span>
-<span>276</span>
-<span>277</span>
-<span>278</span>
-<span>279</span>
-<span>280</span>
-<span>281</span>
-<span>282</span>
-<span>283</span>
-<span>284</span>
-<span>285</span>
-<span>286</span>
-<span>287</span>
-<span>288</span>
-<span>289</span>
-<span>290</span>
-<span>291</span>
-<span>292</span>
-<span>293</span>
-<span>294</span>
-<span>295</span>
-<span>296</span>
-<span>297</span>
-<span>298</span>
-<span>299</span>
-<span>300</span>
-<span>301</span>
-<span>302</span>
-<span>303</span>
-<span>304</span>
-<span>305</span>
-<span>306</span>
-<span>307</span>
-<span>308</span>
-<span>309</span>
-<span>310</span>
-<span>311</span>
-<span>312</span>
-<span>313</span>
-<span>314</span>
-<span>315</span>
-<span>316</span>
-<span>317</span>
-<span>318</span>
-<span>319</span>
-<span>320</span>
-<span>321</span>
-<span>322</span>
-<span>323</span>
-<span>324</span>
-<span>325</span>
-<span>326</span>
-<span>327</span>
-<span>328</span>
-<span>329</span>
-<span>330</span>
-<span>331</span>
-<span>332</span>
-<span>333</span>
-<span>334</span>
-<span>335</span>
-<span>336</span>
-<span>337</span>
-<span>338</span>
-<span>339</span>
-<span>340</span>
-<span>341</span>
-<span>342</span>
-<span>343</span>
-<span>344</span>
-<span>345</span>
-<span>346</span>
-<span>347</span>
-<span>348</span>
-<span>349</span>
-<span>350</span>
-<span>351</span>
-<span>352</span>
-<span>353</span>
-<span>354</span>
-<span>355</span>
-<span>356</span>
-<span>357</span>
-<span>358</span>
-<span>359</span>
-<span>360</span>
-<span>361</span>
-<span>362</span>
-<span>363</span>
-<span>364</span>
-<span>365</span>
-<span>366</span>
-<span>367</span>
-<span>368</span>
-<span>369</span>
-<span>370</span>
-<span>371</span>
-<span>372</span>
-<span>373</span>
-<span>374</span>
-<span>375</span>
-<span>376</span>
-<span>377</span>
-<span>378</span>
-<span>379</span>
-<span>380</span>
-<span>381</span>
-<span>382</span>
-<span>383</span>
-<span>384</span>
-<span>385</span>
-<span>386</span>
-<span>387</span>
-<span>388</span>
-<span>389</span>
-<span>390</span>
-<span>391</span>
-<span>392</span>
-<span>393</span>
-<span>394</span>
-<span>395</span>
-<span>396</span>
-<span>397</span>
-<span>398</span>
-<span>399</span>
-<span>400</span>
-<span>401</span>
-<span>402</span>
-<span>403</span>
-<span>404</span>
-<span>405</span>
-<span>406</span>
-<span>407</span>
-<span>408</span>
-<span>409</span>
-<span>410</span>
-<span>411</span>
-<span>412</span>
-<span>413</span>
-<span>414</span>
-<span>415</span>
-<span>416</span>
-<span>417</span>
-<span>418</span>
-<span>419</span>
-<span>420</span>
-<span>421</span>
-<span>422</span>
-<span>423</span>
-<span>424</span>
-<span>425</span>
-<span>426</span>
-<span>427</span>
-<span>428</span>
-<span>429</span>
-<span>430</span>
-<span>431</span>
-<span>432</span>
-<span>433</span>
-<span>434</span>
-<span>435</span>
-<span>436</span>
-<span>437</span>
-<span>438</span>
-<span>439</span>
-<span>440</span>
-<span>441</span>
-<span>442</span>
-<span>443</span>
-<span>444</span>
-<span>445</span>
-<span>446</span>
-<span>447</span>
-<span>448</span>
-<span>449</span>
-<span>450</span>
-<span>451</span>
-<span>452</span>
-<span>453</span>
-<span>454</span>
-<span>455</span>
-<span>456</span>
-<span>457</span>
-<span>458</span>
-<span>459</span>
-<span>460</span>
-<span>461</span>
-<span>462</span>
-<span>463</span>
-<span>464</span>
-<span>465</span>
-<span>466</span>
-<span>467</span>
-<span>468</span>
-<span>469</span>
-<span>470</span>
-<span>471</span>
-<span>472</span>
-<span>473</span>
-<span>474</span>
-<span>475</span>
-<span>476</span>
-<span>477</span>
-<span>478</span>
-<span>479</span>
-<span>480</span>
-<span>481</span>
-<span>482</span>
-<span>483</span>
-<span>484</span>
-<span>485</span>
-<span>486</span>
-<span>487</span>
-<span>488</span>
-<span>489</span>
-<span>490</span>
-<span>491</span>
-<span>492</span>
-<span>493</span>
-<span>494</span>
-<span>495</span>
-<span>496</span>
-<span>497</span>
-<span>498</span>
-<span>499</span>
-<span>500</span>
-<span>501</span>
-<span>502</span>
-<span>503</span>
-<span>504</span>
-<span>505</span>
-<span>506</span>
-<span>507</span>
-<span>508</span>
-<span>509</span>
-<span>510</span>
-<span>511</span>
-<span>512</span>
-<span>513</span>
-<span>514</span>
-<span>515</span>
-<span>516</span>
-<span>517</span>
-<span>518</span>
-<span>519</span>
-<span>520</span>
-<span>521</span>
-<span>522</span>
-<span>523</span>
-<span>524</span>
-<span>525</span>
-<span>526</span>
-<span>527</span>
-<span>528</span>
-<span>529</span>
-<span>530</span>
-<span>531</span>
-<span>532</span>
-<span>533</span>
-<span>534</span>
-<span>535</span>
-<span>536</span>
-<span>537</span>
-<span>538</span>
-<span>539</span>
-<span>540</span>
-<span>541</span>
-<span>542</span>
-<span>543</span>
-<span>544</span>
-<span>545</span>
-<span>546</span>
-<span>547</span>
-<span>548</span>
-<span>549</span>
-<span>550</span>
-<span>551</span>
-<span>552</span>
-<span>553</span>
-<span>554</span>
-<span>555</span>
-<span>556</span>
-<span>557</span>
-<span>558</span>
-<span>559</span>
-<span>560</span>
-<span>561</span>
-<span>562</span>
-<span>563</span>
-<span>564</span>
-<span>565</span>
-<span>566</span>
-<span>567</span>
-<span>568</span>
-<span>569</span>
-<span>570</span>
-<span>571</span>
-<span>572</span>
-<span>573</span>
-<span>574</span>
-<span>575</span>
-<span>576</span>
-<span>577</span>
-<span>578</span>
-<span>579</span>
-<span>580</span>
-<span>581</span>
-<span>582</span>
-<span>583</span>
-<span>584</span>
-<span>585</span>
-<span>586</span>
-<span>587</span>
-<span>588</span>
-<span>589</span>
-<span>590</span>
-<span>591</span>
-<span>592</span>
-<span>593</span>
-<span>594</span>
-<span>595</span>
-<span>596</span>
-<span>597</span>
-<span>598</span>
-<span>599</span>
-<span>600</span>
-<span>601</span>
-<span>602</span>
-<span>603</span>
-<span>604</span>
-<span>605</span>
-<span>606</span>
-<span>607</span>
-<span>608</span>
-<span>609</span>
-<span>610</span>
-<span>611</span>
-<span>612</span>
-<span>613</span>
-<span>614</span>
-<span>615</span>
-<span>616</span>
-<span>617</span>
-<span>618</span>
-<span>619</span>
-<span>620</span>
-<span>621</span>
-<span>622</span>
-<span>623</span>
-<span>624</span>
-<span>625</span>
-<span>626</span>
-<span>627</span>
-<span>628</span>
-<span>629</span>
-<span>630</span>
-<span>631</span>
-<span>632</span>
-<span>633</span>
-<span>634</span>
-<span>635</span>
-<span>636</span>
-<span>637</span>
-<span>638</span>
-<span>639</span>
-<span>640</span>
-<span>641</span>
-<span>642</span>
-<span>643</span>
-<span>644</span>
-<span>645</span>
-<span>646</span>
-<span>647</span>
-<span>648</span>
-<span>649</span>
-<span>650</span>
-<span>651</span>
-<span>652</span>
-<span>653</span>
-<span>654</span>
-<span>655</span>
-<span>656</span>
-<span>657</span>
-<span>658</span>
-<span>659</span>
-<span>660</span>
-<span>661</span>
-<span>662</span>
-<span>663</span>
-<span>664</span>
-<span>665</span>
-<span>666</span>
-<span>667</span>
-<span>668</span>
-<span>669</span>
-<span>670</span>
-<span>671</span>
-<span>672</span>
-<span>673</span>
-<span>674</span>
-<span>675</span>
-<span>676</span>
-<span>677</span>
-<span>678</span>
-<span>679</span>
-<span>680</span>
-<span>681</span>
-<span>682</span>
-<span>683</span>
-<span>684</span>
-<span>685</span>
-<span>686</span>
-<span>687</span>
-<span>688</span>
-<span>689</span>
-<span>690</span>
-<span>691</span>
-<span>692</span>
-<span>693</span>
-<span>694</span>
-<span>695</span>
-<span>696</span>
-<span>697</span>
-<span>698</span>
-<span>699</span>
-<span>700</span>
-<span>701</span>
-<span>702</span>
-<span>703</span>
-<span>704</span>
-<span>705</span>
-<span>706</span>
-<span>707</span>
-<span>708</span>
-<span>709</span>
-<span>710</span>
-<span>711</span>
-<span>712</span>
-<span>713</span>
-<span>714</span>
-<span>715</span>
-<span>716</span>
-<span>717</span>
-<span>718</span>
-<span>719</span>
-<span>720</span>
-<span>721</span>
-<span>722</span>
-<span>723</span>
-<span>724</span>
-<span>725</span>
-<span>726</span>
-<span>727</span>
-<span>728</span>
-<span>729</span>
-<span>730</span>
-<span>731</span>
-<span>732</span>
-<span>733</span>
-<span>734</span>
-<span>735</span>
-<span>736</span>
-<span>737</span>
-<span>738</span>
-<span>739</span>
-<span>740</span>
-<span>741</span>
-<span>742</span>
-<span>743</span>
-<span>744</span>
-<span>745</span>
-<span>746</span>
-<span>747</span>
-<span>748</span>
-<span>749</span>
-<span>750</span>
-<span>751</span>
-<span>752</span>
-<span>753</span>
-<span>754</span>
-<span>755</span>
-<span>756</span>
-<span>757</span>
-<span>758</span>
-<span>759</span>
-<span>760</span>
-<span>761</span>
-<span>762</span>
-<span>763</span>
-<span>764</span>
-<span>765</span>
-<span>766</span>
-<span>767</span>
-<span>768</span>
-<span>769</span>
-<span>770</span>
-<span>771</span>
-<span>772</span>
-<span>773</span>
-<span>774</span>
-<span>775</span>
-<span>776</span>
-<span>777</span>
-<span>778</span>
-<span>779</span>
-<span>780</span>
-<span>781</span>
-<span>782</span>
-<span>783</span>
-<span>784</span>
-<span>785</span>
-<span>786</span>
-<span>787</span>
-<span>788</span>
-<span>789</span>
-<span>790</span>
-<span>791</span>
-<span>792</span>
-<span>793</span>
-<span>794</span>
-<span>795</span>
-<span>796</span>
-<span>797</span>
-<span>798</span>
-<span>799</span>
-<span>800</span>
-<span>801</span>
-<span>802</span>
-<span>803</span>
-<span>804</span>
-<span>805</span>
-<span>806</span>
-<span>807</span>
-<span>808</span>
-<span>809</span>
-<span>810</span>
-<span>811</span>
-<span>812</span>
-<span>813</span>
-<span>814</span>
-<span>815</span>
-<span>816</span>
-<span>817</span>
-<span>818</span>
-<span>819</span>
-<span>820</span>
-<span>821</span>
-<span>822</span>
-<span>823</span>
-<span>824</span>
-<span>825</span>
-<span>826</span>
-<span>827</span>
-<span>828</span>
-<span>829</span>
-<span>830</span>
-<span>831</span>
-<span>832</span>
-<span>833</span>
-<span>834</span>
-<span>835</span>
-<span>836</span>
-<span>837</span>
-<span>838</span>
-<span>839</span>
-<span>840</span>
-<span>841</span>
-<span>842</span>
-<span>843</span>
-<span>844</span>
-<span>845</span>
-<span>846</span>
-<span>847</span>
-<span>848</span>
-<span>849</span>
-<span>850</span>
-<span>851</span>
-<span>852</span>
-<span>853</span>
-<span>854</span>
-<span>855</span>
-<span>856</span>
-<span>857</span>
-<span>858</span>
-<span>859</span>
-<span>860</span>
-<span>861</span>
-<span>862</span>
-<span>863</span>
-<span>864</span>
-<span>865</span>
-<span>866</span>
-<span>867</span>
-<span>868</span>
-<span>869</span>
-<span>870</span>
-<span>871</span>
-<span>872</span>
-<span>873</span>
-<span>874</span>
-<span>875</span>
-<span>876</span>
-<span>877</span>
-<span>878</span>
-<span>879</span>
-<span>880</span>
-<span>881</span>
-<span>882</span>
-<span>883</span>
-<span>884</span>
-<span>885</span>
-<span>886</span>
-<span>887</span>
-<span>888</span>
-<span>889</span>
-<span>890</span>
-<span>891</span>
-<span>892</span>
-<span>893</span>
-<span>894</span>
-<span>895</span>
-<span>896</span>
-<span>897</span>
-<span>898</span>
-<span>899</span>
-<span>900</span>
-<span>901</span>
-<span>902</span>
-<span>903</span>
-<span>904</span>
-<span>905</span>
-<span>906</span>
-<span>907</span>
-<span>908</span>
-<span>909</span>
-<span>910</span>
-<span>911</span>
-<span>912</span>
-<span>913</span>
-<span>914</span>
-<span>915</span>
-<span>916</span>
-<span>917</span>
-<span>918</span>
-<span>919</span>
-<span>920</span>
-<span>921</span>
-<span>922</span>
-<span>923</span>
-<span>924</span>
-<span>925</span>
-<span>926</span>
-<span>927</span>
-<span>928</span>
-<span>929</span>
-<span>930</span>
-<span>931</span>
-<span>932</span>
-<span>933</span>
-<span>934</span>
-<span>935</span>
-<span>936</span>
-<span>937</span>
-<span>938</span>
-<span>939</span>
-<span>940</span>
-<span>941</span>
-<span>942</span>
-<span>943</span>
-<span>944</span>
-<span>945</span>
-<span>946</span>
-<span>947</span>
-<span>948</span>
-<span>949</span>
-<span>950</span>
-<span>951</span>
-<span>952</span>
-<span>953</span>
-<span>954</span>
-<span>955</span>
-<span>956</span>
-<span>957</span>
-<span>958</span>
-<span>959</span>
-<span>960</span>
-<span>961</span>
-<span>962</span>
-<span>963</span>
-<span>964</span>
-<span>965</span>
-<span>966</span>
-<span>967</span>
-<span>968</span>
-<span>969</span>
-<span>970</span>
-<span>971</span>
-<span>972</span>
-<span>973</span>
-<span>974</span>
-<span>975</span>
-<span>976</span>
-<span>977</span>
-<span>978</span>
-<span>979</span>
-<span>980</span>
-<span>981</span>
-<span>982</span>
-<span>983</span>
-<span>984</span>
-<span>985</span>
-<span>986</span>
-<span>987</span>
-<span>988</span>
-<span>989</span>
-<span>990</span>
-<span>991</span>
-<span>992</span>
-<span>993</span>
-<span>994</span>
-<span>995</span>
-<span>996</span>
-<span>997</span>
-<span>998</span>
-<span>999</span>
-<span>1000</span>
-<span>1001</span>
-<span>1002</span>
-<span>1003</span>
-<span>1004</span>
-<span>1005</span>
-<span>1006</span>
-<span>1007</span>
-<span>1008</span>
-<span>1009</span>
-<span>1010</span>
-<span>1011</span>
-<span>1012</span>
-<span>1013</span>
-<span>1014</span>
-<span>1015</span>
-<span>1016</span>
-<span>1017</span>
-<span>1018</span>
-<span>1019</span>
-<span>1020</span>
-<span>1021</span>
-<span>1022</span>
-<span>1023</span>
-<span>1024</span>
-<span>1025</span>
-<span>1026</span>
-<span>1027</span>
-<span>1028</span>
-<span>1029</span>
-<span>1030</span>
-<span>1031</span>
-<span>1032</span>
-<span>1033</span>
-<span>1034</span>
-<span>1035</span>
-<span>1036</span>
-<span>1037</span>
-<span>1038</span>
-<span>1039</span>
-<span>1040</span>
-<span>1041</span>
-<span>1042</span>
-<span>1043</span>
-<span>1044</span>
-<span>1045</span>
-<span>1046</span>
-<span>1047</span>
-<span>1048</span>
-<span>1049</span>
-<span>1050</span>
-<span>1051</span>
-<span>1052</span>
-<span>1053</span>
-<span>1054</span>
-<span>1055</span>
-<span>1056</span>
-<span>1057</span>
-<span>1058</span>
-<span>1059</span>
-<span>1060</span>
-<span>1061</span>
-<span>1062</span>
-<span>1063</span>
-<span>1064</span>
-<span>1065</span>
-<span>1066</span>
-<span>1067</span>
-<span>1068</span>
-<span>1069</span>
-<span>1070</span>
-<span>1071</span>
-<span>1072</span>
-<span>1073</span>
-<span>1074</span>
-<span>1075</span>
-<span>1076</span>
-<span>1077</span>
-<span>1078</span>
-<span>1079</span>
-<span>1080</span>
-<span>1081</span>
-<span>1082</span>
-<span>1083</span>
-<span>1084</span>
-<span>1085</span>
-<span>1086</span>
-<span>1087</span>
-<span>1088</span>
-<span>1089</span>
-<span>1090</span>
-<span>1091</span>
-<span>1092</span>
-<span>1093</span>
-<span>1094</span>
-<span>1095</span>
-<span>1096</span>
-<span>1097</span>
-<span>1098</span>
-<span>1099</span>
-<span>1100</span>
-<span>1101</span>
-<span>1102</span>
-<span>1103</span>
-<span>1104</span>
-<span>1105</span>
-<span>1106</span>
-<span>1107</span>
-<span>1108</span>
-<span>1109</span>
-<span>1110</span>
-<span>1111</span>
-<span>1112</span>
-<span>1113</span>
-<span>1114</span>
-<span>1115</span>
-<span>1116</span>
-<span>1117</span>
-<span>1118</span>
-<span>1119</span>
-<span>1120</span>
-<span>1121</span>
-<span>1122</span>
-<span>1123</span>
-<span>1124</span>
-<span>1125</span>
-<span>1126</span>
-<span>1127</span>
-<span>1128</span>
-<span>1129</span>
-<span>1130</span>
-<span>1131</span>
-<span>1132</span>
-<span>1133</span>
-<span>1134</span>
-<span>1135</span>
-<span>1136</span>
-<span>1137</span>
-<span>1138</span>
-<span>1139</span>
-<span>1140</span>
-<span>1141</span>
-<span>1142</span>
-<span>1143</span>
-<span>1144</span>
-<span>1145</span>
-<span>1146</span>
-<span>1147</span>
-<span>1148</span>
-<span>1149</span>
-<span>1150</span>
-<span>1151</span>
-<span>1152</span>
-<span>1153</span>
-<span>1154</span>
-<span>1155</span>
-<span>1156</span>
-<span>1157</span>
-<span>1158</span>
-<span>1159</span>
-<span>1160</span>
-<span>1161</span>
-<span>1162</span>
-<span>1163</span>
-<span>1164</span>
-<span>1165</span>
-<span>1166</span>
-<span>1167</span>
-<span>1168</span>
-<span>1169</span>
-<span>1170</span>
-<span>1171</span>
-<span>1172</span>
-<span>1173</span>
-<span>1174</span>
-<span>1175</span>
-<span>1176</span>
-<span>1177</span>
-<span>1178</span>
-<span>1179</span>
-<span>1180</span>
-<span>1181</span>
-<span>1182</span>
-<span>1183</span>
-<span>1184</span>
-<span>1185</span>
-<span>1186</span>
-<span>1187</span>
-<span>1188</span>
-<span>1189</span>
-<span>1190</span>
-<span>1191</span>
-<span>1192</span>
-<span>1193</span>
-<span>1194</span>
-<span>1195</span>
-<span>1196</span>
-<span>1197</span>
-<span>1198</span>
-<span>1199</span>
-<span>1200</span>
-<span>1201</span>
-<span>1202</span>
-<span>1203</span>
-<span>1204</span>
-<span>1205</span>
-<span>1206</span>
-<span>1207</span>
-<span>1208</span>
-<span>1209</span>
-<span>1210</span>
-<span>1211</span>
-<span>1212</span>
-<span>1213</span>
-<span>1214</span>
-<span>1215</span>
-<span>1216</span>
-<span>1217</span>
-<span>1218</span>
-<span>1219</span>
-<span>1220</span>
-<span>1221</span>
-<span>1222</span>
-<span>1223</span>
-<span>1224</span>
-<span>1225</span>
-<span>1226</span>
-<span>1227</span>
-<span>1228</span>
-<span>1229</span>
-<span>1230</span>
-<span>1231</span>
-<span>1232</span>
-<span>1233</span>
-<span>1234</span>
-<span>1235</span>
-<span>1236</span>
-<span>1237</span>
-<span>1238</span>
-<span>1239</span>
-<span>1240</span>
-<span>1241</span>
-<span>1242</span>
-<span>1243</span>
-<span>1244</span>
-<span>1245</span>
-<span>1246</span>
-<span>1247</span>
-<span>1248</span>
-<span>1249</span>
-<span>1250</span>
-<span>1251</span>
-<span>1252</span>
-<span>1253</span>
-<span>1254</span>
-<span>1255</span>
-<span>1256</span>
-<span>1257</span>
-<span>1258</span>
-<span>1259</span>
-<span>1260</span>
-<span>1261</span>
-<span>1262</span>
-<span>1263</span>
-<span>1264</span>
-<span>1265</span>
-<span>1266</span>
-<span>1267</span>
-<span>1268</span>
-<span>1269</span>
-<span>1270</span>
-<span>1271</span>
-<span>1272</span>
-<span>1273</span>
-<span>1274</span>
-<span>1275</span>
-<span>1276</span>
-<span>1277</span>
-<span>1278</span>
-<span>1279</span>
-<span>1280</span>
-<span>1281</span>
-<span>1282</span>
-<span>1283</span>
-<span>1284</span>
-<span>1285</span>
-<span>1286</span>
-<span>1287</span>
-<span>1288</span>
-<span>1289</span>
-<span>1290</span>
-<span>1291</span>
-<span>1292</span>
-<span>1293</span>
-<span>1294</span>
-<span>1295</span>
-<span>1296</span>
-<span>1297</span>
-<span>1298</span>
-<span>1299</span>
-<span>1300</span>
-<span>1301</span>
-<span>1302</span>
-<span>1303</span>
-<span>1304</span>
-<span>1305</span>
-<span>1306</span>
-<span>1307</span>
-<span>1308</span>
-<span>1309</span>
-<span>1310</span>
-<span>1311</span>
-<span>1312</span>
-<span>1313</span>
-<span>1314</span>
-<span>1315</span>
-<span>1316</span>
-<span>1317</span>
-<span>1318</span>
-<span>1319</span>
-<span>1320</span>
-<span>1321</span>
-<span>1322</span>
-<span>1323</span>
-<span>1324</span>
-<span>1325</span>
-<span>1326</span>
-<span>1327</span>
-<span>1328</span>
-<span>1329</span>
-<span>1330</span>
-<span>1331</span>
-<span>1332</span>
-<span>1333</span>
-<span>1334</span>
-<span>1335</span>
-<span>1336</span>
-<span>1337</span>
-<span>1338</span>
-<span>1339</span>
-<span>1340</span>
-<span>1341</span>
-<span>1342</span>
-<span>1343</span>
-<span>1344</span>
-<span>1345</span>
-<span>1346</span>
-<span>1347</span>
-<span>1348</span>
-<span>1349</span>
-<span>1350</span>
-<span>1351</span>
-<span>1352</span>
-<span>1353</span>
-<span>1354</span>
-<span>1355</span>
-<span>1356</span>
-<span>1357</span>
-<span>1358</span>
-<span>1359</span>
-<span>1360</span>
-<span>1361</span>
-<span>1362</span>
-<span>1363</span>
-<span>1364</span>
-<span>1365</span>
-<span>1366</span>
-<span>1367</span>
-<span>1368</span>
-<span>1369</span>
-<span>1370</span>
-<span>1371</span>
-<span>1372</span>
-<span>1373</span>
-<span>1374</span>
-<span>1375</span>
-<span>1376</span>
-<span>1377</span>
-<span>1378</span>
-<span>1379</span>
-<span>1380</span>
-<span>1381</span>
-<span>1382</span>
-<span>1383</span>
-<span>1384</span>
-<span>1385</span>
-<span>1386</span>
-<span>1387</span>
-<span>1388</span>
-<span>1389</span>
-<span>1390</span>
-<span>1391</span>
-<span>1392</span>
-<span>1393</span>
-<span>1394</span>
-<span>1395</span>
-<span>1396</span>
-<span>1397</span>
-<span>1398</span>
-<span>1399</span>
-<span>1400</span>
-<span>1401</span>
-<span>1402</span>
-<span>1403</span>
-<span>1404</span>
-<span>1405</span>
-<span>1406</span>
-<span>1407</span>
-<span>1408</span>
-<span>1409</span>
-<span>1410</span>
-<span>1411</span>
-<span>1412</span>
-<span>1413</span>
-<span>1414</span>
-<span>1415</span>
-<span>1416</span>
-<span>1417</span>
-<span>1418</span>
-<span>1419</span>
-<span>1420</span>
-<span>1421</span>
-<span>1422</span>
-<span>1423</span>
-<span>1424</span>
-<span>1425</span>
-<span>1426</span>
-<span>1427</span>
-<span>1428</span>
-<span>1429</span>
-<span>1430</span>
-<span>1431</span>
-<span>1432</span>
-<span>1433</span>
-<span>1434</span>
-<span>1435</span>
-<span>1436</span>
-<span>1437</span>
-<span>1438</span>
-<span>1439</span>
-<span>1440</span>
-<span>1441</span>
-<span>1442</span>
-<span>1443</span>
-<span>1444</span>
-<span>1445</span>
-<span>1446</span>
-<span>1447</span>
-<span>1448</span>
-<span>1449</span>
-<span>1450</span>
-<span>1451</span>
-<span>1452</span>
-<span>1453</span>
-<span>1454</span>
-<span>1455</span>
-<span>1456</span>
-<span>1457</span>
-<span>1458</span>
-<span>1459</span>
-<span>1460</span>
-<span>1461</span>
-<span>1462</span>
-<span>1463</span>
-<span>1464</span>
-<span>1465</span>
-<span>1466</span>
-<span>1467</span>
-<span>1468</span>
-<span>1469</span>
-<span>1470</span>
-<span>1471</span>
-<span>1472</span>
-<span>1473</span>
-<span>1474</span>
-<span>1475</span>
-<span>1476</span>
-<span>1477</span>
-<span>1478</span>
-<span>1479</span>
-<span>1480</span>
-<span>1481</span>
-<span>1482</span>
-<span>1483</span>
-<span>1484</span>
-<span>1485</span>
-<span>1486</span>
-<span>1487</span>
-<span>1488</span>
-<span>1489</span>
-<span>1490</span>
-<span>1491</span>
-<span>1492</span>
-<span>1493</span>
-<span>1494</span>
-<span>1495</span>
-<span>1496</span>
-<span>1497</span>
-<span>1498</span>
-<span>1499</span>
-<span>1500</span>
-<span>1501</span>
-<span>1502</span>
-<span>1503</span>
-<span>1504</span>
-<span>1505</span>
-<span>1506</span>
-<span>1507</span>
-<span>1508</span>
-<span>1509</span>
-<span>1510</span>
-<span>1511</span>
-<span>1512</span>
-<span>1513</span>
-<span>1514</span>
-<span>1515</span>
-<span>1516</span>
-<span>1517</span>
-<span>1518</span>
-<span>1519</span>
-<span>1520</span>
-<span>1521</span>
-<span>1522</span>
-<span>1523</span>
-<span>1524</span>
-<span>1525</span>
-<span>1526</span>
-<span>1527</span>
-<span>1528</span>
-<span>1529</span>
-<span>1530</span>
-<span>1531</span>
-<span>1532</span>
-<span>1533</span>
-<span>1534</span>
-<span>1535</span>
-<span>1536</span>
-<span>1537</span>
-<span>1538</span>
-<span>1539</span>
-<span>1540</span>
-<span>1541</span>
-<span>1542</span>
-<span>1543</span>
-<span>1544</span>
-<span>1545</span>
-<span>1546</span>
-<span>1547</span>
-<span>1548</span>
-<span>1549</span>
-<span>1550</span>
-<span>1551</span>
-<span>1552</span>
-<span>1553</span>
-<span>1554</span>
-<span>1555</span>
-<span>1556</span>
-<span>1557</span>
-<span>1558</span>
-<span>1559</span>
-<span>1560</span>
-<span>1561</span>
-<span>1562</span>
-<span>1563</span>
-<span>1564</span>
-<span>1565</span>
-<span>1566</span>
-<span>1567</span>
-<span>1568</span>
-<span>1569</span>
-<span>1570</span>
-<span>1571</span>
-<span>1572</span>
-<span>1573</span>
-<span>1574</span>
-<span>1575</span>
-<span>1576</span>
-<span>1577</span>
-<span>1578</span>
-<span>1579</span>
-<span>1580</span>
-<span>1581</span>
-<span>1582</span>
-<span>1583</span>
-<span>1584</span>
-<span>1585</span>
-<span>1586</span>
-<span>1587</span>
-<span>1588</span>
-<span>1589</span>
-<span>1590</span>
-<span>1591</span>
-<span>1592</span>
-<span>1593</span>
-<span>1594</span>
-<span>1595</span>
-<span>1596</span>
-<span>1597</span>
-<span>1598</span>
-<span>1599</span>
-<span>1600</span>
-<span>1601</span>
-<span>1602</span>
-<span>1603</span>
-<span>1604</span>
-<span>1605</span>
-<span>1606</span>
-<span>1607</span>
-<span>1608</span>
-<span>1609</span>
-<span>1610</span>
-<span>1611</span>
-<span>1612</span>
-<span>1613</span>
-<span>1614</span>
-<span>1615</span>
-<span>1616</span>
-<span>1617</span>
-<span>1618</span>
-<span>1619</span>
-<span>1620</span>
-<span>1621</span>
-<span>1622</span>
-<span>1623</span>
-<span>1624</span>
-<span>1625</span>
-<span>1626</span>
-<span>1627</span>
-<span>1628</span>
-<span>1629</span>
-<span>1630</span>
-<span>1631</span>
-<span>1632</span>
-<span>1633</span>
-<span>1634</span>
-<span>1635</span>
-<span>1636</span>
-<span>1637</span>
-<span>1638</span>
-<span>1639</span>
-<span>1640</span>
-<span>1641</span>
-<span>1642</span>
-<span>1643</span>
-<span>1644</span>
-<span>1645</span>
-<span>1646</span>
-<span>1647</span>
-<span>1648</span>
-<span>1649</span>
-<span>1650</span>
-<span>1651</span>
-<span>1652</span>
-<span>1653</span>
-<span>1654</span>
-<span>1655</span>
-<span>1656</span>
-<span>1657</span>
-<span>1658</span>
-<span>1659</span>
-<span>1660</span>
-<span>1661</span>
-<span>1662</span>
-<span>1663</span>
-<span>1664</span>
-<span>1665</span>
-<span>1666</span>
-<span>1667</span>
-<span>1668</span>
-<span>1669</span>
-<span>1670</span>
-<span>1671</span>
-<span>1672</span>
-<span>1673</span>
-<span>1674</span>
-<span>1675</span>
-<span>1676</span>
-<span>1677</span>
-<span>1678</span>
-<span>1679</span>
-<span>1680</span>
-<span>1681</span>
-<span>1682</span>
-<span>1683</span>
-<span>1684</span>
-<span>1685</span>
-<span>1686</span>
-<span>1687</span>
-<span>1688</span>
-<span>1689</span>
-<span>1690</span>
-<span>1691</span>
-<span>1692</span>
-<span>1693</span>
-<span>1694</span>
-<span>1695</span>
-<span>1696</span>
-<span>1697</span>
-<span>1698</span>
-<span>1699</span>
-<span>1700</span>
-<span>1701</span>
-<span>1702</span>
-<span>1703</span>
-<span>1704</span>
-<span>1705</span>
-<span>1706</span>
-<span>1707</span>
-<span>1708</span>
-<span>1709</span>
-<span>1710</span>
-<span>1711</span>
-<span>1712</span>
-<span>1713</span>
-<span>1714</span>
-<span>1715</span>
-<span>1716</span>
-<span>1717</span>
-<span>1718</span>
-<span>1719</span>
-<span>1720</span>
-<span>1721</span>
-<span>1722</span>
-<span>1723</span>
-<span>1724</span>
-<span>1725</span>
-<span>1726</span>
-<span>1727</span>
-<span>1728</span>
-<span>1729</span>
-<span>1730</span>
-<span>1731</span>
-<span>1732</span>
-<span>1733</span>
-<span>1734</span>
-<span>1735</span>
-<span>1736</span>
-<span>1737</span>
-<span>1738</span>
-<span>1739</span>
-<span>1740</span>
-<span>1741</span>
-<span>1742</span>
-<span>1743</span>
-<span>1744</span>
-<span>1745</span>
-<span>1746</span>
-<span>1747</span>
-<span>1748</span>
-<span>1749</span>
-<span>1750</span>
-<span>1751</span>
-<span>1752</span>
-<span>1753</span>
-<span>1754</span>
-<span>1755</span>
-<span>1756</span>
-<span>1757</span>
-<span>1758</span>
-<span>1759</span>
-<span>1760</span>
-<span>1761</span>
-<span>1762</span>
-<span>1763</span>
-<span>1764</span>
-<span>1765</span>
-<span>1766</span>
-<span>1767</span>
-<span>1768</span>
-<span>1769</span>
-<span>1770</span>
-<span>1771</span>
-<span>1772</span>
-<span>1773</span>
-<span>1774</span>
-<span>1775</span>
-<span>1776</span>
-<span>1777</span>
-<span>1778</span>
-<span>1779</span>
-<span>1780</span>
-<span>1781</span>
-<span>1782</span>
-<span>1783</span>
-<span>1784</span>
-<span>1785</span>
-<span>1786</span>
-<span>1787</span>
-<span>1788</span>
-<span>1789</span>
-<span>1790</span>
-<span>1791</span>
-<span>1792</span>
-<span>1793</span>
-<span>1794</span>
-<span>1795</span>
-<span>1796</span>
-<span>1797</span>
-<span>1798</span>
-<span>1799</span>
-<span>1800</span>
-<span>1801</span>
-<span>1802</span>
-<span>1803</span>
-<span>1804</span>
-<span>1805</span>
-<span>1806</span>
-<span>1807</span>
-<span>1808</span>
-<span>1809</span>
-<span>1810</span>
-<span>1811</span>
-<span>1812</span>
-<span>1813</span>
-<span>1814</span>
-<span>1815</span>
-<span>1816</span>
-<span>1817</span>
-<span>1818</span>
-<span>1819</span>
-<span>1820</span>
-<span>1821</span>
-<span>1822</span>
-<span>1823</span>
-<span>1824</span>
-<span>1825</span>
-<span>1826</span>
-<span>1827</span>
-<span>1828</span>
-<span>1829</span>
-<span>1830</span>
-<span>1831</span>
-<span>1832</span>
-<span>1833</span>
-<span>1834</span>
-<span>1835</span>
-<span>1836</span>
-<span>1837</span>
-<span>1838</span>
-<span>1839</span>
-<span>1840</span>
-<span>1841</span>
-<span>1842</span>
-<span>1843</span>
-<span>1844</span>
-<span>1845</span>
-<span>1846</span>
-<span>1847</span>
-<span>1848</span>
-<span>1849</span>
-<span>1850</span>
-<span>1851</span>
-<span>1852</span>
-<span>1853</span>
-<span>1854</span>
-<span>1855</span>
-<span>1856</span>
-<span>1857</span>
-<span>1858</span>
-<span>1859</span>
-<span>1860</span>
-<span>1861</span>
-<span>1862</span>
-<span>1863</span>
-<span>1864</span>
-<span>1865</span>
-<span>1866</span>
-<span>1867</span>
-<span>1868</span>
-<span>1869</span>
-<span>1870</span>
-<span>1871</span>
-<span>1872</span>
-<span>1873</span>
-<span>1874</span>
-<span>1875</span>
-<span>1876</span>
-<span>1877</span>
-<span>1878</span>
-<span>1879</span>
-<span>1880</span>
-<span>1881</span>
-<span>1882</span>
-<span>1883</span>
-<span>1884</span>
-<span>1885</span>
-<span>1886</span>
-<span>1887</span>
-<span>1888</span>
-<span>1889</span>
-<span>1890</span>
-<span>1891</span>
-<span>1892</span>
-<span>1893</span>
-<span>1894</span>
-<span>1895</span>
-<span>1896</span>
-<span>1897</span>
-<span>1898</span>
-<span>1899</span>
-<span>1900</span>
-<span>1901</span>
-<span>1902</span>
-<span>1903</span>
-<span>1904</span>
-<span>1905</span>
-<span>1906</span>
-<span>1907</span>
-<span>1908</span>
-<span>1909</span>
-<span>1910</span>
-<span>1911</span>
-<span>1912</span>
-<span>1913</span>
-<span>1914</span>
-<span>1915</span>
-<span>1916</span>
-<span>1917</span>
-<span>1918</span>
-<span>1919</span>
-<span>1920</span>
-<span>1921</span>
-<span>1922</span>
-<span>1923</span>
-<span>1924</span>
-<span>1925</span>
-<span>1926</span>
-<span>1927</span>
-<span>1928</span>
-<span>1929</span>
-<span>1930</span>
-<span>1931</span>
-<span>1932</span>
-<span>1933</span>
-<span>1934</span>
-<span>1935</span>
-<span>1936</span>
-<span>1937</span>
-<span>1938</span>
-<span>1939</span>
-<span>1940</span>
-<span>1941</span>
-<span>1942</span>
-<span>1943</span>
-<span>1944</span>
-<span>1945</span>
-<span>1946</span>
-<span>1947</span>
-<span>1948</span>
-<span>1949</span>
-<span>1950</span>
-<span>1951</span>
-<span>1952</span>
-<span>1953</span>
-<span>1954</span>
-<span>1955</span>
-<span>1956</span>
-<span>1957</span>
-<span>1958</span>
-<span>1959</span>
-<span>1960</span>
-<span>1961</span>
-<span>1962</span>
-<span>1963</span>
-<span>1964</span>
-<span>1965</span>
-<span>1966</span>
-<span>1967</span>
-<span>1968</span>
-<span>1969</span>
-<span>1970</span>
-<span>1971</span>
-<span>1972</span>
-<span>1973</span>
-<span>1974</span>
-<span>1975</span>
-<span>1976</span>
-<span>1977</span>
-<span>1978</span>
-<span>1979</span>
-<span>1980</span>
-<span>1981</span>
-<span>1982</span>
-<span>1983</span>
-<span>1984</span>
-<span>1985</span>
-<span>1986</span>
-<span>1987</span>
-<span>1988</span>
-<span>1989</span>
-<span>1990</span>
-<span>1991</span>
-<span>1992</span>
-<span>1993</span>
-<span>1994</span>
-<span>1995</span>
-<span>1996</span>
-<span>1997</span>
-<span>1998</span>
-<span>1999</span>
-<span>2000</span>
-<span>2001</span>
-<span>2002</span>
-<span>2003</span>
-<span>2004</span>
-<span>2005</span>
-<span>2006</span>
-<span>2007</span>
-<span>2008</span>
-<span>2009</span>
-<span>2010</span>
-<span>2011</span>
-<span>2012</span>
-<span>2013</span>
-<span>2014</span>
-<span>2015</span>
-<span>2016</span>
-<span>2017</span>
-<span>2018</span>
-<span>2019</span>
-<span>2020</span>
-<span>2021</span>
-<span>2022</span>
-<span>2023</span>
-<span>2024</span>
-<span>2025</span>
-<span>2026</span>
-<span>2027</span>
-<span>2028</span>
-<span>2029</span>
-<span>2030</span>
-<span>2031</span>
-<span>2032</span>
-<span>2033</span>
-<span>2034</span>
-<span>2035</span>
-<span>2036</span>
-<span>2037</span>
-<span>2038</span>
-<span>2039</span>
-<span>2040</span>
-<span>2041</span>
-<span>2042</span>
-<span>2043</span>
-<span>2044</span>
-<span>2045</span>
-<span>2046</span>
-<span>2047</span>
-<span>2048</span>
-<span>2049</span>
-<span>2050</span>
-<span>2051</span>
-<span>2052</span>
-<span>2053</span>
-<span>2054</span>
-<span>2055</span>
-<span>2056</span>
-<span>2057</span>
-<span>2058</span>
-<span>2059</span>
-<span>2060</span>
-<span>2061</span>
-<span>2062</span>
-<span>2063</span>
-<span>2064</span>
-<span>2065</span>
-<span>2066</span>
-<span>2067</span>
-<span>2068</span>
-<span>2069</span>
-<span>2070</span>
-<span>2071</span>
-<span>2072</span>
-<span>2073</span>
-<span>2074</span>
-<span>2075</span>
-<span>2076</span>
-<span>2077</span>
-<span>2078</span>
-<span>2079</span>
-<span>2080</span>
-<span>2081</span>
-<span>2082</span>
-<span>2083</span>
-<span>2084</span>
-<span>2085</span>
-<span>2086</span>
-<span>2087</span>
-<span>2088</span>
-<span>2089</span>
-<span>2090</span>
-<span>2091</span>
-<span>2092</span>
-<span>2093</span>
-<span>2094</span>
-<span>2095</span>
-<span>2096</span>
-<span>2097</span>
-<span>2098</span>
-<span>2099</span>
-<span>2100</span>
-<span>2101</span>
-<span>2102</span>
-<span>2103</span>
-<span>2104</span>
-<span>2105</span>
-<span>2106</span>
-<span>2107</span>
-<span>2108</span>
-<span>2109</span>
-<span>2110</span>
-<span>2111</span>
-<span>2112</span>
-<span>2113</span>
-<span>2114</span>
-<span>2115</span>
-<span>2116</span>
-<span>2117</span>
-<span>2118</span>
-<span>2119</span>
-<span>2120</span>
-<span>2121</span>
-<span>2122</span>
-<span>2123</span>
-<span>2124</span>
-<span>2125</span>
-<span>2126</span>
-<span>2127</span>
-<span>2128</span>
-<span>2129</span>
-<span>2130</span>
-<span>2131</span>
-<span>2132</span>
-<span>2133</span>
-<span>2134</span>
-<span>2135</span>
-<span>2136</span>
-<span>2137</span>
-<span>2138</span>
-<span>2139</span>
-<span>2140</span>
-<span>2141</span>
-<span>2142</span>
-<span>2143</span>
-<span>2144</span>
-<span>2145</span>
-<span>2146</span>
-<span>2147</span>
-<span>2148</span>
-<span>2149</span>
-<span>2150</span>
-<span>2151</span>
-<span>2152</span>
-<span>2153</span>
-<span>2154</span>
-<span>2155</span>
-<span>2156</span>
-<span>2157</span>
-<span>2158</span>
-<span>2159</span>
-<span>2160</span>
-<span>2161</span>
-<span>2162</span>
-<span>2163</span>
-<span>2164</span>
-<span>2165</span>
-<span>2166</span>
-<span>2167</span>
-<span>2168</span>
-<span>2169</span>
-<span>2170</span>
-<span>2171</span>
-<span>2172</span>
-<span>2173</span>
-<span>2174</span>
-<span>2175</span>
-<span>2176</span>
-<span>2177</span>
-<span>2178</span>
-<span>2179</span>
-<span>2180</span>
-<span>2181</span>
-<span>2182</span>
-<span>2183</span>
-<span>2184</span>
-<span>2185</span>
-<span>2186</span>
-<span>2187</span>
-<span>2188</span>
-<span>2189</span>
-<span>2190</span>
-<span>2191</span>
-<span>2192</span>
-<span>2193</span>
-<span>2194</span>
-<span>2195</span>
-<span>2196</span>
-<span>2197</span>
-<span>2198</span>
-<span>2199</span>
-<span>2200</span>
-<span>2201</span>
-<span>2202</span>
-<span>2203</span>
-<span>2204</span>
-<span>2205</span>
-<span>2206</span>
-<span>2207</span>
-<span>2208</span>
-<span>2209</span>
-<span>2210</span>
-<span>2211</span>
-<span>2212</span>
-<span>2213</span>
-<span>2214</span>
-<span>2215</span>
-<span>2216</span>
-<span>2217</span>
-<span>2218</span>
-<span>2219</span>
-<span>2220</span>
-<span>2221</span>
-<span>2222</span>
-<span>2223</span>
-<span>2224</span>
-<span>2225</span>
-<span>2226</span>
-<span>2227</span>
-<span>2228</span>
-<span>2229</span>
-<span>2230</span>
-<span>2231</span>
-<span>2232</span>
-<span>2233</span>
-<span>2234</span>
-<span>2235</span>
-<span>2236</span>
-<span>2237</span>
-<span>2238</span>
-<span>2239</span>
-<span>2240</span>
-<span>2241</span>
-<span>2242</span>
-<span>2243</span>
-<span>2244</span>
-<span>2245</span>
-<span>2246</span>
-<span>2247</span>
-<span>2248</span>
-<span>2249</span>
-<span>2250</span>
-<span>2251</span>
-<span>2252</span>
-<span>2253</span>
-<span>2254</span>
-<span>2255</span>
-<span>2256</span>
-<span>2257</span>
-<span>2258</span>
-<span>2259</span>
-<span>2260</span>
-<span>2261</span>
-<span>2262</span>
-<span>2263</span>
-<span>2264</span>
-<span>2265</span>
-<span>2266</span>
-<span>2267</span>
-<span>2268</span>
-<span>2269</span>
-<span>2270</span>
-<span>2271</span>
-<span>2272</span>
-<span>2273</span>
-<span>2274</span>
-<span>2275</span>
-<span>2276</span>
-<span>2277</span>
-<span>2278</span>
-<span>2279</span>
-<span>2280</span>
-<span>2281</span>
-<span>2282</span>
-<span>2283</span>
-<span>2284</span>
-<span>2285</span>
-<span>2286</span>
-<span>2287</span>
-<span>2288</span>
-<span>2289</span>
-<span>2290</span>
-<span>2291</span>
-<span>2292</span>
-<span>2293</span>
-<span>2294</span>
-<span>2295</span>
-<span>2296</span>
-<span>2297</span>
-<span>2298</span>
-<span>2299</span>
-<span>2300</span>
-<span>2301</span>
-<span>2302</span>
-<span>2303</span>
-<span>2304</span>
-<span>2305</span>
-<span>2306</span>
-<span>2307</span>
-<span>2308</span>
-<span>2309</span>
-<span>2310</span>
-<span>2311</span>
-<span>2312</span>
-<span>2313</span>
-<span>2314</span>
-<span>2315</span>
-<span>2316</span>
-<span>2317</span>
-<span>2318</span>
-<span>2319</span>
-<span>2320</span>
-<span>2321</span>
-<span>2322</span>
-<span>2323</span>
-<span>2324</span>
-<span>2325</span>
-<span>2326</span>
-<span>2327</span>
-<span>2328</span>
-<span>2329</span>
-<span>2330</span>
-<span>2331</span>
-<span>2332</span>
-<span>2333</span>
-<span>2334</span>
-<span>2335</span>
-<span>2336</span>
-<span>2337</span>
-<span>2338</span>
-<span>2339</span>
-<span>2340</span>
-<span>2341</span>
-<span>2342</span>
-<span>2343</span>
-<span>2344</span>
-<span>2345</span>
-<span>2346</span>
-<span>2347</span>
-<span>2348</span>
-<span>2349</span>
-<span>2350</span>
-<span>2351</span>
-<span>2352</span>
-<span>2353</span>
-<span>2354</span>
-<span>2355</span>
-<span>2356</span>
-<span>2357</span>
-<span>2358</span>
-<span>2359</span>
-<span>2360</span>
-<span>2361</span>
-<span>2362</span>
-<span>2363</span>
-<span>2364</span>
-<span>2365</span>
-<span>2366</span>
-<span>2367</span>
-<span>2368</span>
-<span>2369</span>
-<span>2370</span>
-<span>2371</span>
-<span>2372</span>
-<span>2373</span>
-<span>2374</span>
-<span>2375</span>
-<span>2376</span>
-<span>2377</span>
-<span>2378</span>
-<span>2379</span>
-<span>2380</span>
-<span>2381</span>
-<span>2382</span>
-<span>2383</span>
-<span>2384</span>
-<span>2385</span>
-<span>2386</span>
-<span>2387</span>
-<span>2388</span>
-<span>2389</span>
-<span>2390</span>
-<span>2391</span>
-<span>2392</span>
-<span>2393</span>
-<span>2394</span>
-<span>2395</span>
-<span>2396</span>
-<span>2397</span>
-<span>2398</span>
-<span>2399</span>
-<span>2400</span>
-<span>2401</span>
-<span>2402</span>
-<span>2403</span>
-<span>2404</span>
-<span>2405</span>
-<span>2406</span>
-<span>2407</span>
-<span>2408</span>
-<span>2409</span>
-<span>2410</span>
-<span>2411</span>
-<span>2412</span>
-<span>2413</span>
-<span>2414</span>
-<span>2415</span>
-<span>2416</span>
-<span>2417</span>
-<span>2418</span>
-<span>2419</span>
-<span>2420</span>
-<span>2421</span>
-<span>2422</span>
-<span>2423</span>
-<span>2424</span>
-<span>2425</span>
-<span>2426</span>
-<span>2427</span>
-<span>2428</span>
-<span>2429</span>
-<span>2430</span>
-<span>2431</span>
-<span>2432</span>
-<span>2433</span>
-<span>2434</span>
-<span>2435</span>
-<span>2436</span>
-<span>2437</span>
-<span>2438</span>
-<span>2439</span>
-<span>2440</span>
-<span>2441</span>
-<span>2442</span>
-<span>2443</span>
-<span>2444</span>
-<span>2445</span>
-<span>2446</span>
-<span>2447</span>
-<span>2448</span>
-<span>2449</span>
-<span>2450</span>
-<span>2451</span>
-<span>2452</span>
-<span>2453</span>
-<span>2454</span>
-<span>2455</span>
-<span>2456</span>
-<span>2457</span>
-<span>2458</span>
-<span>2459</span>
-<span>2460</span>
-<span>2461</span>
-<span>2462</span>
-<span>2463</span>
-<span>2464</span>
-<span>2465</span>
-<span>2466</span>
-<span>2467</span>
-<span>2468</span>
-<span>2469</span>
-<span>2470</span>
-<span>2471</span>
-<span>2472</span>
-<span>2473</span>
-<span>2474</span>
-<span>2475</span>
-<span>2476</span>
-<span>2477</span>
-<span>2478</span>
-<span>2479</span>
-<span>2480</span>
-<span>2481</span>
-<span>2482</span>
-<span>2483</span>
-<span>2484</span>
-<span>2485</span>
-<span>2486</span>
-<span>2487</span>
-<span>2488</span>
-<span>2489</span>
-<span>2490</span>
-<span>2491</span>
-<span>2492</span>
-<span>2493</span>
-<span>2494</span>
-<span>2495</span>
-<span>2496</span>
-<span>2497</span>
-<span>2498</span>
-<span>2499</span>
-<span>2500</span>
-<span>2501</span>
-<span>2502</span>
-<span>2503</span>
-<span>2504</span>
-<span>2505</span>
-<span>2506</span>
-<span>2507</span>
-<span>2508</span>
-<span>2509</span>
-<span>2510</span>
-<span>2511</span>
-<span>2512</span>
-<span>2513</span>
-<span>2514</span>
-<span>2515</span>
-<span>2516</span>
-<span>2517</span>
-<span>2518</span>
-<span>2519</span>
-<span>2520</span>
-<span>2521</span>
-<span>2522</span>
-<span>2523</span>
-<span>2524</span>
-<span>2525</span>
-<span>2526</span>
-<span>2527</span>
-<span>2528</span>
-<span>2529</span>
-<span>2530</span>
-<span>2531</span>
-<span>2532</span>
-<span>2533</span>
-<span>2534</span>
-<span>2535</span>
-<span>2536</span>
-<span>2537</span>
-<span>2538</span>
-<span>2539</span>
-<span>2540</span>
-<span>2541</span>
-<span>2542</span>
-<span>2543</span>
-<span>2544</span>
-<span>2545</span>
-<span>2546</span>
-<span>2547</span>
-<span>2548</span>
-<span>2549</span>
-<span>2550</span>
-<span>2551</span>
-<span>2552</span>
-<span>2553</span>
-<span>2554</span>
-<span>2555</span>
-<span>2556</span>
-<span>2557</span>
-<span>2558</span>
-<span>2559</span>
-<span>2560</span>
-<span>2561</span>
-<span>2562</span>
-<span>2563</span>
-<span>2564</span>
-<span>2565</span>
-<span>2566</span>
-<span>2567</span>
-<span>2568</span>
-<span>2569</span>
-<span>2570</span>
-<span>2571</span>
-<span>2572</span>
-<span>2573</span>
-<span>2574</span>
-<span>2575</span>
-<span>2576</span>
-<span>2577</span>
-<span>2578</span>
-<span>2579</span>
-<span>2580</span>
-<span>2581</span>
-<span>2582</span>
-<span>2583</span>
-<span>2584</span>
-<span>2585</span>
-<span>2586</span>
-<span>2587</span>
-<span>2588</span>
-<span>2589</span>
-<span>2590</span>
-<span>2591</span>
-<span>2592</span>
-<span>2593</span>
-<span>2594</span>
-<span>2595</span>
-<span>2596</span>
-<span>2597</span>
-<span>2598</span>
-<span>2599</span>
-<span>2600</span>
-<span>2601</span>
-<span>2602</span>
-<span>2603</span>
-<span>2604</span>
-<span>2605</span>
-<span>2606</span>
-<span>2607</span>
-<span>2608</span>
-<span>2609</span>
-<span>2610</span>
-<span>2611</span>
-<span>2612</span>
-<span>2613</span>
-<span>2614</span>
-<span>2615</span>
-<span>2616</span>
-<span>2617</span>
-<span>2618</span>
-<span>2619</span>
-<span>2620</span>
-<span>2621</span>
-<span>2622</span>
-<span>2623</span>
-<span>2624</span>
-<span>2625</span>
-<span>2626</span>
-<span>2627</span>
-<span>2628</span>
-<span>2629</span>
-<span>2630</span>
-<span>2631</span>
-<span>2632</span>
-<span>2633</span>
-<span>2634</span>
-<span>2635</span>
-<span>2636</span>
-<span>2637</span>
-<span>2638</span>
-<span>2639</span>
-<span>2640</span>
-<span>2641</span>
-<span>2642</span>
-<span>2643</span>
-<span>2644</span>
-<span>2645</span>
-<span>2646</span>
-<span>2647</span>
-<span>2648</span>
-<span>2649</span>
-<span>2650</span>
-<span>2651</span>
-<span>2652</span>
-<span>2653</span>
-<span>2654</span>
-<span>2655</span>
-<span>2656</span>
-<span>2657</span>
-<span>2658</span>
-<span>2659</span>
-<span>2660</span>
-<span>2661</span>
-<span>2662</span>
-<span>2663</span>
-<span>2664</span>
-<span>2665</span>
-<span>2666</span>
-<span>2667</span>
-<span>2668</span>
-<span>2669</span>
-<span>2670</span>
-<span>2671</span>
-<span>2672</span>
-<span>2673</span>
-<span>2674</span>
-<span>2675</span>
-<span>2676</span>
-<span>2677</span>
-<span>2678</span>
-<span>2679</span>
-<span>2680</span>
-<span>2681</span>
-<span>2682</span>
-<span>2683</span>
-<span>2684</span>
-<span>2685</span>
-<span>2686</span>
-<span>2687</span>
-<span>2688</span>
-<span>2689</span>
-<span>2690</span>
-<span>2691</span>
-<span>2692</span>
-<span>2693</span>
-<span>2694</span>
-<span>2695</span>
-<span>2696</span>
-<span>2697</span>
-<span>2698</span>
-<span>2699</span>
-<span>2700</span>
-<span>2701</span>
-<span>2702</span>
-<span>2703</span>
-<span>2704</span>
-<span>2705</span>
-<span>2706</span>
-<span>2707</span>
-<span>2708</span>
-<span>2709</span>
-<span>2710</span>
-<span>2711</span>
-<span>2712</span>
-<span>2713</span>
-<span>2714</span>
-<span>2715</span>
-<span>2716</span>
-<span>2717</span>
-<span>2718</span>
-<span>2719</span>
-<span>2720</span>
-<span>2721</span>
-<span>2722</span>
-<span>2723</span>
-<span>2724</span>
-<span>2725</span>
-<span>2726</span>
-<span>2727</span>
-<span>2728</span>
-<span>2729</span>
-<span>2730</span>
-<span>2731</span>
-<span>2732</span>
-<span>2733</span>
-<span>2734</span>
-<span>2735</span>
-<span>2736</span>
-<span>2737</span>
-<span>2738</span>
-<span>2739</span>
-<span>2740</span>
-<span>2741</span>
-<span>2742</span>
-<span>2743</span>
-<span>2744</span>
-<span>2745</span>
-<span>2746</span>
-<span>2747</span>
-<span>2748</span>
-<span>2749</span>
-<span>2750</span>
-<span>2751</span>
-<span>2752</span>
-<span>2753</span>
-<span>2754</span>
-<span>2755</span>
-<span>2756</span>
-<span>2757</span>
-<span>2758</span>
-<span>2759</span>
-<span>2760</span>
-<span>2761</span>
-<span>2762</span>
-<span>2763</span>
-<span>2764</span>
-<span>2765</span>
-<span>2766</span>
-<span>2767</span>
-<span>2768</span>
-<span>2769</span>
-<span>2770</span>
-<span>2771</span>
-<span>2772</span>
-<span>2773</span>
-<span>2774</span>
-<span>2775</span>
-<span>2776</span>
-<span>2777</span>
-<span>2778</span>
-<span>2779</span>
-<span>2780</span>
-<span>2781</span>
-<span>2782</span>
-<span>2783</span>
-<span>2784</span>
-<span>2785</span>
-<span>2786</span>
-<span>2787</span>
-<span>2788</span>
-<span>2789</span>
-<span>2790</span>
-<span>2791</span>
-<span>2792</span>
-<span>2793</span>
-<span>2794</span>
-<span>2795</span>
-<span>2796</span>
-<span>2797</span>
-<span>2798</span>
-<span>2799</span>
-<span>2800</span>
-<span>2801</span>
-<span>2802</span>
-<span>2803</span>
-<span>2804</span>
-<span>2805</span>
-<span>2806</span>
-<span>2807</span>
-<span>2808</span>
-<span>2809</span>
-<span>2810</span>
-<span>2811</span>
-<span>2812</span>
-<span>2813</span>
-<span>2814</span>
-<span>2815</span>
-<span>2816</span>
-<span>2817</span>
-<span>2818</span>
-<span>2819</span>
-<span>2820</span>
-<span>2821</span>
-<span>2822</span>
-<span>2823</span>
-<span>2824</span>
-<span>2825</span>
-<span>2826</span>
-<span>2827</span>
-<span>2828</span>
-<span>2829</span>
-<span>2830</span>
-<span>2831</span>
-<span>2832</span>
-<span>2833</span>
-<span>2834</span>
-<span>2835</span>
-<span>2836</span>
-<span>2837</span>
-<span>2838</span>
-<span>2839</span>
-<span>2840</span>
-<span>2841</span>
-<span>2842</span>
-<span>2843</span>
-<span>2844</span>
-<span>2845</span>
-<span>2846</span>
-<span>2847</span>
-<span>2848</span>
-<span>2849</span>
-<span>2850</span>
-<span>2851</span>
-<span>2852</span>
-<span>2853</span>
-<span>2854</span>
-<span>2855</span>
-<span>2856</span>
-<span>2857</span>
-<span>2858</span>
-<span>2859</span>
-<span>2860</span>
-<span>2861</span>
-<span>2862</span>
-<span>2863</span>
-<span>2864</span>
-<span>2865</span>
-<span>2866</span>
-<span>2867</span>
-<span>2868</span>
-<span>2869</span>
-<span>2870</span>
-<span>2871</span>
-<span>2872</span>
-<span>2873</span>
-<span>2874</span>
-<span>2875</span>
-<span>2876</span>
-<span>2877</span>
-<span>2878</span>
-<span>2879</span>
-<span>2880</span>
-<span>2881</span>
-<span>2882</span>
-<span>2883</span>
-<span>2884</span>
-<span>2885</span>
-<span>2886</span>
-<span>2887</span>
-<span>2888</span>
-<span>2889</span>
-<span>2890</span>
-<span>2891</span>
-<span>2892</span>
-<span>2893</span>
-<span>2894</span>
-<span>2895</span>
-<span>2896</span>
-<span>2897</span>
-<span>2898</span>
-<span>2899</span>
-<span>2900</span>
-<span>2901</span>
-<span>2902</span>
-<span>2903</span>
-<span>2904</span>
-<span>2905</span>
-<span>2906</span>
-<span>2907</span>
-<span>2908</span>
-<span>2909</span>
-<span>2910</span>
-<span>2911</span>
-<span>2912</span>
-<span>2913</span>
-<span>2914</span>
-<span>2915</span>
-<span>2916</span>
-<span>2917</span>
-<span>2918</span>
-<span>2919</span>
-<span>2920</span>
-<span>2921</span>
-<span>2922</span>
-<span>2923</span>
-<span>2924</span>
-<span>2925</span>
-<span>2926</span>
-<span>2927</span>
-<span>2928</span>
-<span>2929</span>
-<span>2930</span>
-<span>2931</span>
-<span>2932</span>
-<span>2933</span>
-<span>2934</span>
-<span>2935</span>
-<span>2936</span>
-<span>2937</span>
-<span>2938</span>
-<span>2939</span>
-<span>2940</span>
-<span>2941</span>
-<span>2942</span>
-<span>2943</span>
-<span>2944</span>
-<span>2945</span>
-<span>2946</span>
-<span>2947</span>
-<span>2948</span>
-<span>2949</span>
-<span>2950</span>
-<span>2951</span>
-<span>2952</span>
-<span>2953</span>
-<span>2954</span>
-<span>2955</span>
-<span>2956</span>
-<span>2957</span>
-<span>2958</span>
-<span>2959</span>
-<span>2960</span>
-<span>2961</span>
-<span>2962</span>
-<span>2963</span>
-<span>2964</span>
-<span>2965</span>
-<span>2966</span>
-<span>2967</span>
-<span>2968</span>
-<span>2969</span>
-<span>2970</span>
-<span>2971</span>
-<span>2972</span>
-<span>2973</span>
-<span>2974</span>
-<span>2975</span>
-<span>2976</span>
-<span>2977</span>
-<span>2978</span>
-<span>2979</span>
-<span>2980</span>
-<span>2981</span>
-<span>2982</span>
-<span>2983</span>
-<span>2984</span>
-<span>2985</span>
-<span>2986</span>
-<span>2987</span>
-<span>2988</span>
-<span>2989</span>
-<span>2990</span>
-<span>2991</span>
-<span>2992</span>
-<span>2993</span>
-<span>2994</span>
-<span>2995</span>
-<span>2996</span>
-<span>2997</span>
-<span>2998</span>
-<span>2999</span>
-<span>3000</span>
-<span>3001</span>
-<span>3002</span>
-<span>3003</span>
-<span>3004</span>
-<span>3005</span>
-<span>3006</span>
-<span>3007</span>
-<span>3008</span>
-<span>3009</span>
-<span>3010</span>
-<span>3011</span>
-<span>3012</span>
-<span>3013</span>
-<span>3014</span>
-<span>3015</span>
-<span>3016</span>
-<span>3017</span>
-<span>3018</span>
-<span>3019</span>
-<span>3020</span>
-<span>3021</span>
-<span>3022</span>
-<span>3023</span>
-<span>3024</span>
-<span>3025</span>
-<span>3026</span>
-<span>3027</span>
-<span>3028</span>
-<span>3029</span>
-<span>3030</span>
-<span>3031</span>
-<span>3032</span>
-<span>3033</span>
-<span>3034</span>
-<span>3035</span>
-<span>3036</span>
-<span>3037</span>
-<span>3038</span>
-<span>3039</span>
-<span>3040</span>
-<span>3041</span>
-<span>3042</span>
-<span>3043</span>
-<span>3044</span>
-<span>3045</span>
-<span>3046</span>
-<span>3047</span>
-<span>3048</span>
-<span>3049</span>
-<span>3050</span>
-<span>3051</span>
-<span>3052</span>
-<span>3053</span>
-<span>3054</span>
-<span>3055</span>
-<span>3056</span>
-<span>3057</span>
-<span>3058</span>
-<span>3059</span>
-<span>3060</span>
-<span>3061</span>
-<span>3062</span>
-<span>3063</span>
-<span>3064</span>
-<span>3065</span>
-<span>3066</span>
-<span>3067</span>
-<span>3068</span>
-<span>3069</span>
-<span>3070</span>
-<span>3071</span>
-<span>3072</span>
-<span>3073</span>
-<span>3074</span>
-<span>3075</span>
-<span>3076</span>
-<span>3077</span>
-<span>3078</span>
-<span>3079</span>
-<span>3080</span>
-<span>3081</span>
-<span>3082</span>
-<span>3083</span>
-<span>3084</span>
-<span>3085</span>
-<span>3086</span>
-<span>3087</span>
-<span>3088</span>
-<span>3089</span>
-<span>3090</span>
-<span>3091</span>
-<span>3092</span>
-<span>3093</span>
-<span>3094</span>
-<span>3095</span>
-<span>3096</span>
-<span>3097</span>
-<span>3098</span>
-<span>3099</span>
-<span>3100</span>
-<span>3101</span>
-<span>3102</span>
-<span>3103</span>
-<span>3104</span>
-<span>3105</span>
-<span>3106</span>
-<span>3107</span>
-<span>3108</span>
-<span>3109</span>
-<span>3110</span>
-<span>3111</span>
-<span>3112</span>
-<span>3113</span>
-<span>3114</span>
-<span>3115</span>
-<span>3116</span>
-<span>3117</span>
-<span>3118</span>
-<span>3119</span>
-<span>3120</span>
-<span>3121</span>
-<span>3122</span>
-<span>3123</span>
-<span>3124</span>
-<span>3125</span>
-<span>3126</span>
-<span>3127</span>
-<span>3128</span>
-<span>3129</span>
-<span>3130</span>
-<span>3131</span>
-<span>3132</span>
-<span>3133</span>
-<span>3134</span>
-<span>3135</span>
-<span>3136</span>
-<span>3137</span>
-<span>3138</span>
-<span>3139</span>
-<span>3140</span>
-<span>3141</span>
-<span>3142</span>
-<span>3143</span>
-<span>3144</span>
-<span>3145</span>
-<span>3146</span>
-<span>3147</span>
-<span>3148</span>
-<span>3149</span>
-<span>3150</span>
-<span>3151</span>
-<span>3152</span>
-<span>3153</span>
-<span>3154</span>
-<span>3155</span>
-<span>3156</span>
-<span>3157</span>
-<span>3158</span>
-<span>3159</span>
-<span>3160</span>
-<span>3161</span>
-<span>3162</span>
-<span>3163</span>
-<span>3164</span>
-<span>3165</span>
-<span>3166</span>
-<span>3167</span>
-<span>3168</span>
-<span>3169</span>
-<span>3170</span>
-<span>3171</span>
-<span>3172</span>
-<span>3173</span>
-<span>3174</span>
-<span>3175</span>
-<span>3176</span>
-<span>3177</span>
-<span>3178</span>
-<span>3179</span>
-<span>3180</span>
-<span>3181</span>
-<span>3182</span>
-<span>3183</span>
-<span>3184</span>
-<span>3185</span>
-<span>3186</span>
-<span>3187</span>
-<span>3188</span>
-<span>3189</span>
-<span>3190</span>
-<span>3191</span>
-<span>3192</span>
-<span>3193</span>
-<span>3194</span>
-<span>3195</span>
-<span>3196</span>
-<span>3197</span>
-<span>3198</span>
-<span>3199</span>
-<span>3200</span>
-<span>3201</span>
-<span>3202</span>
-<span>3203</span>
-<span>3204</span>
-<span>3205</span>
-<span>3206</span>
-<span>3207</span>
-<span>3208</span>
-<span>3209</span>
-<span>3210</span>
-<span>3211</span>
-<span>3212</span>
-<span>3213</span>
-<span>3214</span>
-<span>3215</span>
-<span>3216</span>
-<span>3217</span>
-<span>3218</span>
-<span>3219</span>
-<span>3220</span>
-<span>3221</span>
-<span>3222</span>
-<span>3223</span>
-<span>3224</span>
-<span>3225</span>
-<span>3226</span>
-<span>3227</span>
-<span>3228</span>
-<span>3229</span>
-<span>3230</span>
-<span>3231</span>
-<span>3232</span>
-<span>3233</span>
-<span>3234</span>
-<span>3235</span>
-<span>3236</span>
-<span>3237</span>
-<span>3238</span>
-<span>3239</span>
-<span>3240</span>
-<span>3241</span>
-<span>3242</span>
-<span>3243</span>
-<span>3244</span>
-<span>3245</span>
-<span>3246</span>
-<span>3247</span>
-<span>3248</span>
-<span>3249</span>
-<span>3250</span>
-<span>3251</span>
-<span>3252</span>
-<span>3253</span>
-<span>3254</span>
-<span>3255</span>
-<span>3256</span>
-<span>3257</span>
-<span>3258</span>
-<span>3259</span>
-<span>3260</span>
-<span>3261</span>
-<span>3262</span>
-<span>3263</span>
-<span>3264</span>
-<span>3265</span>
-<span>3266</span>
-<span>3267</span>
-<span>3268</span>
-<span>3269</span>
-<span>3270</span>
-<span>3271</span>
-<span>3272</span>
-<span>3273</span>
-<span>3274</span>
-<span>3275</span>
-<span>3276</span>
-<span>3277</span>
-<span>3278</span>
-<span>3279</span>
-<span>3280</span>
-<span>3281</span>
-<span>3282</span>
-<span>3283</span>
-<span>3284</span>
-<span>3285</span>
-<span>3286</span>
-<span>3287</span>
-<span>3288</span>
-<span>3289</span>
-<span>3290</span>
-<span>3291</span>
-<span>3292</span>
-<span>3293</span>
-<span>3294</span>
-<span>3295</span>
-<span>3296</span>
-<span>3297</span>
-<span>3298</span>
-<span>3299</span>
-<span>3300</span>
-<span>3301</span>
-<span>3302</span>
-<span>3303</span>
-<span>3304</span>
-<span>3305</span>
-<span>3306</span>
-<span>3307</span>
-<span>3308</span>
-<span>3309</span>
-<span>3310</span>
-<span>3311</span>
-<span>3312</span>
-<span>3313</span>
-<span>3314</span>
-<span>3315</span>
-<span>3316</span>
-<span>3317</span>
-<span>3318</span>
-<span>3319</span>
-<span>3320</span>
-<span>3321</span>
-<span>3322</span>
-<span>3323</span>
-<span>3324</span>
-<span>3325</span>
-<span>3326</span>
-<span>3327</span>
-<span>3328</span>
-<span>3329</span>
-<span>3330</span>
-<span>3331</span>
-<span>3332</span>
-<span>3333</span>
-<span>3334</span>
-<span>3335</span>
-<span>3336</span>
-<span>3337</span>
-<span>3338</span>
-<span>3339</span>
-<span>3340</span>
-<span>3341</span>
-<span>3342</span>
-<span>3343</span>
-<span>3344</span>
-<span>3345</span>
-<span>3346</span>
-<span>3347</span>
-<span>3348</span>
-<span>3349</span>
-<span>3350</span>
-<span>3351</span>
-<span>3352</span>
-<span>3353</span>
-<span>3354</span>
-<span>3355</span>
-<span>3356</span>
-<span>3357</span>
-<span>3358</span>
-<span>3359</span>
-<span>3360</span>
-<span>3361</span>
-<span>3362</span>
-<span>3363</span>
-<span>3364</span>
-<span>3365</span>
-<span>3366</span>
-<span>3367</span>
-<span>3368</span>
-<span>3369</span>
-<span>3370</span>
-<span>3371</span>
-<span>3372</span>
-<span>3373</span>
-<span>3374</span>
-<span>3375</span>
-<span>3376</span>
-<span>3377</span>
-<span>3378</span>
-<span>3379</span>
-<span>3380</span>
-<span>3381</span>
-<span>3382</span>
-<span>3383</span>
-<span>3384</span>
-<span>3385</span>
-<span>3386</span>
-<span>3387</span>
-<span>3388</span>
-<span>3389</span>
-<span>3390</span>
-<span>3391</span>
-<span>3392</span>
-<span>3393</span>
-<span>3394</span>
-<span>3395</span>
-<span>3396</span>
-<span>3397</span>
-<span>3398</span>
-<span>3399</span>
-<span>3400</span>
-<span>3401</span>
-<span>3402</span>
-<span>3403</span>
-<span>3404</span>
-<span>3405</span>
-<span>3406</span>
-<span>3407</span>
-<span>3408</span>
-<span>3409</span>
-<span>3410</span>
-<span>3411</span>
-<span>3412</span>
-<span>3413</span>
-<span>3414</span>
-<span>3415</span>
-<span>3416</span>
-<span>3417</span>
-<span>3418</span>
-<span>3419</span>
-<span>3420</span>
-<span>3421</span>
-<span>3422</span>
-<span>3423</span>
-<span>3424</span>
-<span>3425</span>
-<span>3426</span>
-<span>3427</span>
-<span>3428</span>
-<span>3429</span>
-<span>3430</span>
-<span>3431</span>
-<span>3432</span>
-<span>3433</span>
-<span>3434</span>
-<span>3435</span>
-<span>3436</span>
-<span>3437</span>
-<span>3438</span>
-<span>3439</span>
-<span>3440</span>
-<span>3441</span>
-<span>3442</span>
-<span>3443</span>
-<span>3444</span>
-<span>3445</span>
-<span>3446</span>
-<span>3447</span>
-<span>3448</span>
-<span>3449</span>
-<span>3450</span>
-<span>3451</span>
-<span>3452</span>
-<span>3453</span>
-<span>3454</span>
-<span>3455</span>
-<span>3456</span>
-<span>3457</span>
-<span>3458</span>
-<span>3459</span>
-<span>3460</span>
-<span>3461</span>
-<span>3462</span>
-<span>3463</span>
-<span>3464</span>
-<span>3465</span>
-<span>3466</span>
-<span>3467</span>
-<span>3468</span>
-<span>3469</span>
-<span>3470</span>
-<span>3471</span>
-<span>3472</span>
-<span>3473</span>
-<span>3474</span>
-<span>3475</span>
-<span>3476</span>
-<span>3477</span>
-<span>3478</span>
-<span>3479</span>
-<span>3480</span>
-<span>3481</span>
-<span>3482</span>
-<span>3483</span>
-<span>3484</span>
-<span>3485</span>
-<span>3486</span>
-<span>3487</span>
-<span>3488</span>
-<span>3489</span>
-<span>3490</span>
-<span>3491</span>
-<span>3492</span>
-<span>3493</span>
-<span>3494</span>
-<span>3495</span>
-<span>3496</span>
-<span>3497</span>
-<span>3498</span>
-<span>3499</span>
-<span>3500</span>
-<span>3501</span>
-<span>3502</span>
-<span>3503</span>
-<span>3504</span>
-<span>3505</span>
-<span>3506</span>
-<span>3507</span>
-<span>3508</span>
-<span>3509</span>
-<span>3510</span>
-<span>3511</span>
-<span>3512</span>
-<span>3513</span>
-<span>3514</span>
-<span>3515</span>
-<span>3516</span>
-<span>3517</span>
-<span>3518</span>
-<span>3519</span>
-<span>3520</span>
-<span>3521</span>
-<span>3522</span>
-<span>3523</span>
-<span>3524</span>
-<span>3525</span>
-<span>3526</span>
-<span>3527</span>
-<span>3528</span>
-<span>3529</span>
-<span>3530</span>
-<span>3531</span>
-<span>3532</span>
-<span>3533</span>
-<span>3534</span>
+<table id='dcode'><tr><td id='lnum'><pre>1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24
+25
+26
+27
+28
+29
+30
+31
+32
+33
+34
+35
+36
+37
+38
+39
+40
+41
+42
+43
+44
+45
+46
+47
+48
+49
+50
+51
+52
+53
+54
+55
+56
+57
+58
+59
+60
+61
+62
+63
+64
+65
+66
+67
+68
+69
+70
+71
+72
+73
+74
+75
+76
+77
+78
+79
+80
+81
+82
+83
+84
+85
+86
+87
+88
+89
+90
+91
+92
+93
+94
+95
+96
+97
+98
+99
+100
+101
+102
+103
+104
+105
+106
+107
+108
+109
+110
+111
+112
+113
+114
+115
+116
+117
+118
+119
+120
+121
+122
+123
+124
+125
+126
+127
+128
+129
+130
+131
+132
+133
+134
+135
+136
+137
+138
+139
+140
+141
+142
+143
+144
+145
+146
+147
+148
+149
+150
+151
+152
+153
+154
+155
+156
+157
+158
+159
+160
+161
+162
+163
+164
+165
+166
+167
+168
+169
+170
+171
+172
+173
+174
+175
+176
+177
+178
+179
+180
+181
+182
+183
+184
+185
+186
+187
+188
+189
+190
+191
+192
+193
+194
+195
+196
+197
+198
+199
+200
+201
+202
+203
+204
+205
+206
+207
+208
+209
+210
+211
+212
+213
+214
+215
+216
+217
+218
+219
+220
+221
+222
+223
+224
+225
+226
+227
+228
+229
+230
+231
+232
+233
+234
+235
+236
+237
+238
+239
+240
+241
+242
+243
+244
+245
+246
+247
+248
+249
+250
+251
+252
+253
+254
+255
+256
+257
+258
+259
+260
+261
+262
+263
+264
+265
+266
+267
+268
+269
+270
+271
+272
+273
+274
+275
+276
+277
+278
+279
+280
+281
+282
+283
+284
+285
+286
+287
+288
+289
+290
+291
+292
+293
+294
+295
+296
+297
+298
+299
+300
+301
+302
+303
+304
+305
+306
+307
+308
+309
+310
+311
+312
+313
+314
+315
+316
+317
+318
+319
+320
+321
+322
+323
+324
+325
+326
+327
+328
+329
+330
+331
+332
+333
+334
+335
+336
+337
+338
+339
+340
+341
+342
+343
+344
+345
+346
+347
+348
+349
+350
+351
+352
+353
+354
+355
+356
+357
+358
+359
+360
+361
+362
+363
+364
+365
+366
+367
+368
+369
+370
+371
+372
+373
+374
+375
+376
+377
+378
+379
+380
+381
+382
+383
+384
+385
+386
+387
+388
+389
+390
+391
+392
+393
+394
+395
+396
+397
+398
+399
+400
+401
+402
+403
+404
+405
+406
+407
+408
+409
+410
+411
+412
+413
+414
+415
+416
+417
+418
+419
+420
+421
+422
+423
+424
+425
+426
+427
+428
+429
+430
+431
+432
+433
+434
+435
+436
+437
+438
+439
+440
+441
+442
+443
+444
+445
+446
+447
+448
+449
+450
+451
+452
+453
+454
+455
+456
+457
+458
+459
+460
+461
+462
+463
+464
+465
+466
+467
+468
+469
+470
+471
+472
+473
+474
+475
+476
+477
+478
+479
+480
+481
+482
+483
+484
+485
+486
+487
+488
+489
+490
+491
+492
+493
+494
+495
+496
+497
+498
+499
+500
+501
+502
+503
+504
+505
+506
+507
+508
+509
+510
+511
+512
+513
+514
+515
+516
+517
+518
+519
+520
+521
+522
+523
+524
+525
+526
+527
+528
+529
+530
+531
+532
+533
+534
+535
+536
+537
+538
+539
+540
+541
+542
+543
+544
+545
+546
+547
+548
+549
+550
+551
+552
+553
+554
+555
+556
+557
+558
+559
+560
+561
+562
+563
+564
+565
+566
+567
+568
+569
+570
+571
+572
+573
+574
+575
+576
+577
+578
+579
+580
+581
+582
+583
+584
+585
+586
+587
+588
+589
+590
+591
+592
+593
+594
+595
+596
+597
+598
+599
+600
+601
+602
+603
+604
+605
+606
+607
+608
+609
+610
+611
+612
+613
+614
+615
+616
+617
+618
+619
+620
+621
+622
+623
+624
+625
+626
+627
+628
+629
+630
+631
+632
+633
+634
+635
+636
+637
+638
+639
+640
+641
+642
+643
+644
+645
+646
+647
+648
+649
+650
+651
+652
+653
+654
+655
+656
+657
+658
+659
+660
+661
+662
+663
+664
+665
+666
+667
+668
+669
+670
+671
+672
+673
+674
+675
+676
+677
+678
+679
+680
+681
+682
+683
+684
+685
+686
+687
+688
+689
+690
+691
+692
+693
+694
+695
+696
+697
+698
+699
+700
+701
+702
+703
+704
+705
+706
+707
+708
+709
+710
+711
+712
+713
+714
+715
+716
+717
+718
+719
+720
+721
+722
+723
+724
+725
+726
+727
+728
+729
+730
+731
+732
+733
+734
+735
+736
+737
+738
+739
+740
+741
+742
+743
+744
+745
+746
+747
+748
+749
+750
+751
+752
+753
+754
+755
+756
+757
+758
+759
+760
+761
+762
+763
+764
+765
+766
+767
+768
+769
+770
+771
+772
+773
+774
+775
+776
+777
+778
+779
+780
+781
+782
+783
+784
+785
+786
+787
+788
+789
+790
+791
+792
+793
+794
+795
+796
+797
+798
+799
+800
+801
+802
+803
+804
+805
+806
+807
+808
+809
+810
+811
+812
+813
+814
+815
+816
+817
+818
+819
+820
+821
+822
+823
+824
+825
+826
+827
+828
+829
+830
+831
+832
+833
+834
+835
+836
+837
+838
+839
+840
+841
+842
+843
+844
+845
+846
+847
+848
+849
+850
+851
+852
+853
+854
+855
+856
+857
+858
+859
+860
+861
+862
+863
+864
+865
+866
+867
+868
+869
+870
+871
+872
+873
+874
+875
+876
+877
+878
+879
+880
+881
+882
+883
+884
+885
+886
+887
+888
+889
+890
+891
+892
+893
+894
+895
+896
+897
+898
+899
+900
+901
+902
+903
+904
+905
+906
+907
+908
+909
+910
+911
+912
+913
+914
+915
+916
+917
+918
+919
+920
+921
+922
+923
+924
+925
+926
+927
+928
+929
+930
+931
+932
+933
+934
+935
+936
+937
+938
+939
+940
+941
+942
+943
+944
+945
+946
+947
+948
+949
+950
+951
+952
+953
+954
+955
+956
+957
+958
+959
+960
+961
+962
+963
+964
+965
+966
+967
+968
+969
+970
+971
+972
+973
+974
+975
+976
+977
+978
+979
+980
+981
+982
+983
+984
+985
+986
+987
+988
+989
+990
+991
+992
+993
+994
+995
+996
+997
+998
+999
+1000
+1001
+1002
+1003
+1004
+1005
+1006
+1007
+1008
+1009
+1010
+1011
+1012
+1013
+1014
+1015
+1016
+1017
+1018
+1019
+1020
+1021
+1022
+1023
+1024
+1025
+1026
+1027
+1028
+1029
+1030
+1031
+1032
+1033
+1034
+1035
+1036
+1037
+1038
+1039
+1040
+1041
+1042
+1043
+1044
+1045
+1046
+1047
+1048
+1049
+1050
+1051
+1052
+1053
+1054
+1055
+1056
+1057
+1058
+1059
+1060
+1061
+1062
+1063
+1064
+1065
+1066
+1067
+1068
+1069
+1070
+1071
+1072
+1073
+1074
+1075
+1076
+1077
+1078
+1079
+1080
+1081
+1082
+1083
+1084
+1085
+1086
+1087
+1088
+1089
+1090
+1091
+1092
+1093
+1094
+1095
+1096
+1097
+1098
+1099
+1100
+1101
+1102
+1103
+1104
+1105
+1106
+1107
+1108
+1109
+1110
+1111
+1112
+1113
+1114
+1115
+1116
+1117
+1118
+1119
+1120
+1121
+1122
+1123
+1124
+1125
+1126
+1127
+1128
+1129
+1130
+1131
+1132
+1133
+1134
+1135
+1136
+1137
+1138
+1139
+1140
+1141
+1142
+1143
+1144
+1145
+1146
+1147
+1148
+1149
+1150
+1151
+1152
+1153
+1154
+1155
+1156
+1157
+1158
+1159
+1160
+1161
+1162
+1163
+1164
+1165
+1166
+1167
+1168
+1169
+1170
+1171
+1172
+1173
+1174
+1175
+1176
+1177
+1178
+1179
+1180
+1181
+1182
+1183
+1184
+1185
+1186
+1187
+1188
+1189
+1190
+1191
+1192
+1193
+1194
+1195
+1196
+1197
+1198
+1199
+1200
+1201
+1202
+1203
+1204
+1205
+1206
+1207
+1208
+1209
+1210
+1211
+1212
+1213
+1214
+1215
+1216
+1217
+1218
+1219
+1220
+1221
+1222
+1223
+1224
+1225
+1226
+1227
+1228
+1229
+1230
+1231
+1232
+1233
+1234
+1235
+1236
+1237
+1238
+1239
+1240
+1241
+1242
+1243
+1244
+1245
+1246
+1247
+1248
+1249
+1250
+1251
+1252
+1253
+1254
+1255
+1256
+1257
+1258
+1259
+1260
+1261
+1262
+1263
+1264
+1265
+1266
+1267
+1268
+1269
+1270
+1271
+1272
+1273
+1274
+1275
+1276
+1277
+1278
+1279
+1280
+1281
+1282
+1283
+1284
+1285
+1286
+1287
+1288
+1289
+1290
+1291
+1292
+1293
+1294
+1295
+1296
+1297
+1298
+1299
+1300
+1301
+1302
+1303
+1304
+1305
+1306
+1307
+1308
+1309
+1310
+1311
+1312
+1313
+1314
+1315
+1316
+1317
+1318
+1319
+1320
+1321
+1322
+1323
+1324
+1325
+1326
+1327
+1328
+1329
+1330
+1331
+1332
+1333
+1334
+1335
+1336
+1337
+1338
+1339
+1340
+1341
+1342
+1343
+1344
+1345
+1346
+1347
+1348
+1349
+1350
+1351
+1352
+1353
+1354
+1355
+1356
+1357
+1358
+1359
+1360
+1361
+1362
+1363
+1364
+1365
+1366
+1367
+1368
+1369
+1370
+1371
+1372
+1373
+1374
+1375
+1376
+1377
+1378
+1379
+1380
+1381
+1382
+1383
+1384
+1385
+1386
+1387
+1388
+1389
+1390
+1391
+1392
+1393
+1394
+1395
+1396
+1397
+1398
+1399
+1400
+1401
+1402
+1403
+1404
+1405
+1406
+1407
+1408
+1409
+1410
+1411
+1412
+1413
+1414
+1415
+1416
+1417
+1418
+1419
+1420
+1421
+1422
+1423
+1424
+1425
+1426
+1427
+1428
+1429
+1430
+1431
+1432
+1433
+1434
+1435
+1436
+1437
+1438
+1439
+1440
+1441
+1442
+1443
+1444
+1445
+1446
+1447
+1448
+1449
+1450
+1451
+1452
+1453
+1454
+1455
+1456
+1457
+1458
+1459
+1460
+1461
+1462
+1463
+1464
+1465
+1466
+1467
+1468
+1469
+1470
+1471
+1472
+1473
+1474
+1475
+1476
+1477
+1478
+1479
+1480
+1481
+1482
+1483
+1484
+1485
+1486
+1487
+1488
+1489
+1490
+1491
+1492
+1493
+1494
+1495
+1496
+1497
+1498
+1499
+1500
+1501
+1502
+1503
+1504
+1505
+1506
+1507
+1508
+1509
+1510
+1511
+1512
+1513
+1514
+1515
+1516
+1517
+1518
+1519
+1520
+1521
+1522
+1523
+1524
+1525
+1526
+1527
+1528
+1529
+1530
+1531
+1532
+1533
+1534
+1535
+1536
+1537
+1538
+1539
+1540
+1541
+1542
+1543
+1544
+1545
+1546
+1547
+1548
+1549
+1550
+1551
+1552
+1553
+1554
+1555
+1556
+1557
+1558
+1559
+1560
+1561
+1562
+1563
+1564
+1565
+1566
+1567
+1568
+1569
+1570
+1571
+1572
+1573
+1574
+1575
+1576
+1577
+1578
+1579
+1580
+1581
+1582
+1583
+1584
+1585
+1586
+1587
+1588
+1589
+1590
+1591
+1592
+1593
+1594
+1595
+1596
+1597
+1598
+1599
+1600
+1601
+1602
+1603
+1604
+1605
+1606
+1607
+1608
+1609
+1610
+1611
+1612
+1613
+1614
+1615
+1616
+1617
+1618
+1619
+1620
+1621
+1622
+1623
+1624
+1625
+1626
+1627
+1628
+1629
+1630
+1631
+1632
+1633
+1634
+1635
+1636
+1637
+1638
+1639
+1640
+1641
+1642
+1643
+1644
+1645
+1646
+1647
+1648
+1649
+1650
+1651
+1652
+1653
+1654
+1655
+1656
+1657
+1658
+1659
+1660
+1661
+1662
+1663
+1664
+1665
+1666
+1667
+1668
+1669
+1670
+1671
+1672
+1673
+1674
+1675
+1676
+1677
+1678
+1679
+1680
+1681
+1682
+1683
+1684
+1685
+1686
+1687
+1688
+1689
+1690
+1691
+1692
+1693
+1694
+1695
+1696
+1697
+1698
+1699
+1700
+1701
+1702
+1703
+1704
+1705
+1706
+1707
+1708
+1709
+1710
+1711
+1712
+1713
+1714
+1715
+1716
+1717
+1718
+1719
+1720
+1721
+1722
+1723
+1724
+1725
+1726
+1727
+1728
+1729
+1730
+1731
+1732
+1733
+1734
+1735
+1736
+1737
+1738
+1739
+1740
+1741
+1742
+1743
+1744
+1745
+1746
+1747
+1748
+1749
+1750
+1751
+1752
+1753
+1754
+1755
+1756
+1757
+1758
+1759
+1760
+1761
+1762
+1763
+1764
+1765
+1766
+1767
+1768
+1769
+1770
+1771
+1772
+1773
+1774
+1775
+1776
+1777
+1778
+1779
+1780
+1781
+1782
+1783
+1784
+1785
+1786
+1787
+1788
+1789
+1790
+1791
+1792
+1793
+1794
+1795
+1796
+1797
+1798
+1799
+1800
+1801
+1802
+1803
+1804
+1805
+1806
+1807
+1808
+1809
+1810
+1811
+1812
+1813
+1814
+1815
+1816
+1817
+1818
+1819
+1820
+1821
+1822
+1823
+1824
+1825
+1826
+1827
+1828
+1829
+1830
+1831
+1832
+1833
+1834
+1835
+1836
+1837
+1838
+1839
+1840
+1841
+1842
+1843
+1844
+1845
+1846
+1847
+1848
+1849
+1850
+1851
+1852
+1853
+1854
+1855
+1856
+1857
+1858
+1859
+1860
+1861
+1862
+1863
+1864
+1865
+1866
+1867
+1868
+1869
+1870
+1871
+1872
+1873
+1874
+1875
+1876
+1877
+1878
+1879
+1880
+1881
+1882
+1883
+1884
+1885
+1886
+1887
+1888
+1889
+1890
+1891
+1892
+1893
+1894
+1895
+1896
+1897
+1898
+1899
+1900
+1901
+1902
+1903
+1904
+1905
+1906
+1907
+1908
+1909
+1910
+1911
+1912
+1913
+1914
+1915
+1916
+1917
+1918
+1919
+1920
+1921
+1922
+1923
+1924
+1925
+1926
+1927
+1928
+1929
+1930
+1931
+1932
+1933
+1934
+1935
+1936
+1937
+1938
+1939
+1940
+1941
+1942
+1943
+1944
+1945
+1946
+1947
+1948
+1949
+1950
+1951
+1952
+1953
+1954
+1955
+1956
+1957
+1958
+1959
+1960
+1961
+1962
+1963
+1964
+1965
+1966
+1967
+1968
+1969
+1970
+1971
+1972
+1973
+1974
+1975
+1976
+1977
+1978
+1979
+1980
+1981
+1982
+1983
+1984
+1985
+1986
+1987
+1988
+1989
+1990
+1991
+1992
+1993
+1994
+1995
+1996
+1997
+1998
+1999
+2000
+2001
+2002
+2003
+2004
+2005
+2006
+2007
+2008
+2009
+2010
+2011
+2012
+2013
+2014
+2015
+2016
+2017
+2018
+2019
+2020
+2021
+2022
+2023
+2024
+2025
+2026
+2027
+2028
+2029
+2030
+2031
+2032
+2033
+2034
+2035
+2036
+2037
+2038
+2039
+2040
+2041
+2042
+2043
+2044
+2045
+2046
+2047
+2048
+2049
+2050
+2051
+2052
+2053
+2054
+2055
+2056
+2057
+2058
+2059
+2060
+2061
+2062
+2063
+2064
+2065
+2066
+2067
+2068
+2069
+2070
+2071
+2072
+2073
+2074
+2075
+2076
+2077
+2078
+2079
+2080
+2081
+2082
+2083
+2084
+2085
+2086
+2087
+2088
+2089
+2090
+2091
+2092
+2093
+2094
+2095
+2096
+2097
+2098
+2099
+2100
+2101
+2102
+2103
+2104
+2105
+2106
+2107
+2108
+2109
+2110
+2111
+2112
+2113
+2114
+2115
+2116
+2117
+2118
+2119
+2120
+2121
+2122
+2123
+2124
+2125
+2126
+2127
+2128
+2129
+2130
+2131
+2132
+2133
+2134
+2135
+2136
+2137
+2138
+2139
+2140
+2141
+2142
+2143
+2144
+2145
+2146
+2147
+2148
+2149
+2150
+2151
+2152
+2153
+2154
+2155
+2156
+2157
+2158
+2159
+2160
+2161
+2162
+2163
+2164
+2165
+2166
+2167
+2168
+2169
+2170
+2171
+2172
+2173
+2174
+2175
+2176
+2177
+2178
+2179
+2180
+2181
+2182
+2183
+2184
+2185
+2186
+2187
+2188
+2189
+2190
+2191
+2192
+2193
+2194
+2195
+2196
+2197
+2198
+2199
+2200
+2201
+2202
+2203
+2204
+2205
+2206
+2207
+2208
+2209
+2210
+2211
+2212
+2213
+2214
+2215
+2216
+2217
+2218
+2219
+2220
+2221
+2222
+2223
+2224
+2225
+2226
+2227
+2228
+2229
+2230
+2231
+2232
+2233
+2234
+2235
+2236
+2237
+2238
+2239
+2240
+2241
+2242
+2243
+2244
+2245
+2246
+2247
+2248
+2249
+2250
+2251
+2252
+2253
+2254
+2255
+2256
+2257
+2258
+2259
+2260
+2261
+2262
+2263
+2264
+2265
+2266
+2267
+2268
+2269
+2270
+2271
+2272
+2273
+2274
+2275
+2276
+2277
+2278
+2279
+2280
+2281
+2282
+2283
+2284
+2285
+2286
+2287
+2288
+2289
+2290
+2291
+2292
+2293
+2294
+2295
+2296
+2297
+2298
+2299
+2300
+2301
+2302
+2303
+2304
+2305
+2306
+2307
+2308
+2309
+2310
+2311
+2312
+2313
+2314
+2315
+2316
+2317
+2318
+2319
+2320
+2321
+2322
+2323
+2324
+2325
+2326
+2327
+2328
+2329
+2330
+2331
+2332
+2333
+2334
+2335
+2336
+2337
+2338
+2339
+2340
+2341
+2342
+2343
+2344
+2345
+2346
+2347
+2348
+2349
+2350
+2351
+2352
+2353
+2354
+2355
+2356
+2357
+2358
+2359
+2360
+2361
+2362
+2363
+2364
+2365
+2366
+2367
+2368
+2369
+2370
+2371
+2372
+2373
+2374
+2375
+2376
+2377
+2378
+2379
+2380
+2381
+2382
+2383
+2384
+2385
+2386
+2387
+2388
+2389
+2390
+2391
+2392
+2393
+2394
+2395
+2396
+2397
+2398
+2399
+2400
+2401
+2402
+2403
+2404
+2405
+2406
+2407
+2408
+2409
+2410
+2411
+2412
+2413
+2414
+2415
+2416
+2417
+2418
+2419
+2420
+2421
+2422
+2423
+2424
+2425
+2426
+2427
+2428
+2429
+2430
+2431
+2432
+2433
+2434
+2435
+2436
+2437
+2438
+2439
+2440
+2441
+2442
+2443
+2444
+2445
+2446
+2447
+2448
+2449
+2450
+2451
+2452
+2453
+2454
+2455
+2456
+2457
+2458
+2459
+2460
+2461
+2462
+2463
+2464
+2465
+2466
+2467
+2468
+2469
+2470
+2471
+2472
+2473
+2474
+2475
+2476
+2477
+2478
+2479
+2480
+2481
+2482
+2483
+2484
+2485
+2486
+2487
+2488
+2489
+2490
+2491
+2492
+2493
+2494
+2495
+2496
+2497
+2498
+2499
+2500
+2501
+2502
+2503
+2504
+2505
+2506
+2507
+2508
+2509
+2510
+2511
+2512
+2513
+2514
+2515
+2516
+2517
+2518
+2519
+2520
+2521
+2522
+2523
+2524
+2525
+2526
+2527
+2528
+2529
+2530
+2531
+2532
+2533
+2534
+2535
+2536
+2537
+2538
+2539
+2540
+2541
+2542
+2543
+2544
+2545
+2546
+2547
+2548
+2549
+2550
+2551
+2552
+2553
+2554
+2555
+2556
+2557
+2558
+2559
+2560
+2561
+2562
+2563
+2564
+2565
+2566
+2567
+2568
+2569
+2570
+2571
+2572
+2573
+2574
+2575
+2576
+2577
+2578
+2579
+2580
+2581
+2582
+2583
+2584
+2585
+2586
+2587
+2588
+2589
+2590
+2591
+2592
+2593
+2594
+2595
+2596
+2597
+2598
+2599
+2600
+2601
+2602
+2603
+2604
+2605
+2606
+2607
+2608
+2609
+2610
+2611
+2612
+2613
+2614
+2615
+2616
+2617
+2618
+2619
+2620
+2621
+2622
+2623
+2624
+2625
+2626
+2627
+2628
+2629
+2630
+2631
+2632
+2633
+2634
+2635
+2636
+2637
+2638
+2639
+2640
+2641
+2642
+2643
+2644
+2645
+2646
+2647
+2648
+2649
+2650
+2651
+2652
+2653
+2654
+2655
+2656
+2657
+2658
+2659
+2660
+2661
+2662
+2663
+2664
+2665
+2666
+2667
+2668
+2669
+2670
+2671
+2672
+2673
+2674
+2675
+2676
+2677
+2678
+2679
+2680
+2681
+2682
+2683
+2684
+2685
+2686
+2687
+2688
+2689
+2690
+2691
+2692
+2693
+2694
+2695
+2696
+2697
+2698
+2699
+2700
+2701
+2702
+2703
+2704
+2705
+2706
+2707
+2708
+2709
+2710
+2711
+2712
+2713
+2714
+2715
+2716
+2717
+2718
+2719
+2720
+2721
+2722
+2723
+2724
+2725
+2726
+2727
+2728
+2729
+2730
+2731
+2732
+2733
+2734
+2735
+2736
+2737
+2738
+2739
+2740
+2741
+2742
+2743
+2744
+2745
+2746
+2747
+2748
+2749
+2750
+2751
+2752
+2753
+2754
+2755
+2756
+2757
+2758
+2759
+2760
+2761
+2762
+2763
+2764
+2765
+2766
+2767
+2768
+2769
+2770
+2771
+2772
+2773
+2774
+2775
+2776
+2777
+2778
+2779
+2780
+2781
+2782
+2783
+2784
+2785
+2786
+2787
+2788
+2789
+2790
+2791
+2792
+2793
+2794
+2795
+2796
+2797
+2798
+2799
+2800
+2801
+2802
+2803
+2804
+2805
+2806
+2807
+2808
+2809
+2810
+2811
+2812
+2813
+2814
+2815
+2816
+2817
+2818
+2819
+2820
+2821
+2822
+2823
+2824
+2825
+2826
+2827
+2828
+2829
+2830
+2831
+2832
+2833
+2834
+2835
+2836
+2837
+2838
+2839
+2840
+2841
+2842
+2843
+2844
+2845
+2846
+2847
+2848
+2849
+2850
+2851
+2852
+2853
+2854
+2855
+2856
+2857
+2858
+2859
+2860
+2861
+2862
+2863
+2864
+2865
+2866
+2867
+2868
+2869
+2870
+2871
+2872
+2873
+2874
+2875
+2876
+2877
+2878
+2879
+2880
+2881
+2882
+2883
+2884
+2885
+2886
+2887
+2888
+2889
+2890
+2891
+2892
+2893
+2894
+2895
+2896
+2897
+2898
+2899
+2900
+2901
+2902
+2903
+2904
+2905
+2906
+2907
+2908
+2909
+2910
+2911
+2912
+2913
+2914
+2915
+2916
+2917
+2918
+2919
+2920
+2921
+2922
+2923
+2924
+2925
+2926
+2927
+2928
+2929
+2930
+2931
+2932
+2933
+2934
+2935
+2936
+2937
+2938
+2939
+2940
+2941
+2942
+2943
+2944
+2945
+2946
+2947
+2948
+2949
+2950
+2951
+2952
+2953
+2954
+2955
+2956
+2957
+2958
+2959
+2960
+2961
+2962
+2963
+2964
+2965
+2966
+2967
+2968
+2969
+2970
+2971
+2972
+2973
+2974
+2975
+2976
+2977
+2978
+2979
+2980
+2981
+2982
+2983
+2984
+2985
+2986
+2987
+2988
+2989
+2990
+2991
+2992
+2993
+2994
+2995
+2996
+2997
+2998
+2999
+3000
+3001
+3002
+3003
+3004
+3005
+3006
+3007
+3008
+3009
+3010
+3011
+3012
+3013
+3014
+3015
+3016
+3017
+3018
+3019
+3020
+3021
+3022
+3023
+3024
+3025
+3026
+3027
+3028
+3029
+3030
+3031
+3032
+3033
+3034
+3035
+3036
+3037
+3038
+3039
+3040
+3041
+3042
+3043
+3044
+3045
+3046
+3047
+3048
+3049
+3050
+3051
+3052
+3053
+3054
+3055
+3056
+3057
+3058
+3059
+3060
+3061
+3062
+3063
+3064
+3065
+3066
+3067
+3068
+3069
+3070
+3071
+3072
+3073
+3074
+3075
+3076
+3077
+3078
+3079
+3080
+3081
+3082
+3083
+3084
+3085
+3086
+3087
+3088
+3089
+3090
+3091
+3092
+3093
+3094
+3095
+3096
+3097
+3098
+3099
+3100
+3101
+3102
+3103
+3104
+3105
+3106
+3107
+3108
+3109
+3110
+3111
+3112
+3113
+3114
+3115
+3116
+3117
+3118
+3119
+3120
+3121
+3122
+3123
+3124
+3125
+3126
+3127
+3128
+3129
+3130
+3131
+3132
+3133
+3134
+3135
+3136
+3137
+3138
+3139
+3140
+3141
+3142
+3143
+3144
+3145
+3146
+3147
+3148
+3149
+3150
+3151
+3152
+3153
+3154
+3155
+3156
+3157
+3158
+3159
+3160
+3161
+3162
+3163
+3164
+3165
+3166
+3167
+3168
+3169
+3170
+3171
+3172
+3173
+3174
+3175
+3176
+3177
+3178
+3179
+3180
+3181
+3182
+3183
+3184
+3185
+3186
+3187
+3188
+3189
+3190
+3191
+3192
+3193
+3194
+3195
+3196
+3197
+3198
+3199
+3200
+3201
+3202
+3203
+3204
+3205
+3206
+3207
+3208
+3209
+3210
+3211
+3212
+3213
+3214
+3215
+3216
+3217
+3218
+3219
+3220
+3221
+3222
+3223
+3224
+3225
+3226
+3227
+3228
+3229
+3230
+3231
+3232
+3233
+3234
+3235
+3236
+3237
+3238
+3239
+3240
+3241
+3242
+3243
+3244
+3245
+3246
+3247
+3248
+3249
+3250
+3251
+3252
+3253
+3254
+3255
+3256
+3257
+3258
+3259
+3260
+3261
+3262
+3263
+3264
+3265
+3266
+3267
+3268
+3269
+3270
+3271
+3272
+3273
+3274
+3275
+3276
+3277
+3278
+3279
+3280
+3281
+3282
+3283
+3284
+3285
+3286
+3287
+3288
+3289
+3290
+3291
+3292
+3293
+3294
+3295
+3296
+3297
+3298
+3299
+3300
+3301
+3302
+3303
+3304
+3305
+3306
+3307
+3308
+3309
+3310
+3311
+3312
+3313
+3314
+3315
+3316
+3317
+3318
+3319
+3320
+3321
+3322
+3323
+3324
+3325
+3326
+3327
+3328
+3329
+3330
+3331
+3332
+3333
+3334
+3335
+3336
+3337
+3338
+3339
+3340
+3341
+3342
+3343
+3344
+3345
+3346
+3347
+3348
+3349
+3350
+3351
+3352
+3353
+3354
+3355
+3356
+3357
+3358
+3359
+3360
+3361
+3362
+3363
+3364
+3365
+3366
+3367
+3368
+3369
+3370
+3371
+3372
+3373
+3374
+3375
+3376
+3377
+3378
+3379
+3380
+3381
+3382
+3383
+3384
+3385
+3386
+3387
+3388
+3389
+3390
+3391
+3392
+3393
+3394
+3395
+3396
+3397
+3398
+3399
+3400
+3401
+3402
+3403
+3404
+3405
+3406
+3407
+3408
+3409
+3410
+3411
+3412
+3413
+3414
+3415
+3416
+3417
+3418
+3419
+3420
+3421
+3422
+3423
+3424
+3425
+3426
+3427
+3428
+3429
+3430
+3431
+3432
+3433
+3434
+3435
+3436
+3437
+3438
+3439
+3440
+3441
+3442
+3443
+3444
+3445
+3446
+3447
+3448
+3449
+3450
+3451
+3452
+3453
+3454
+3455
+3456
+3457
+3458
+3459
+3460
+3461
+3462
+3463
+3464
+3465
+3466
+3467
+3468
+3469
+3470
+3471
+3472
+3473
+3474
+3475
+3476
+3477
+3478
+3479
+3480
+3481
+3482
+3483
+3484
+3485
+3486
+3487
+3488
+3489
+3490
+3491
+3492
+3493
+3494
+3495
+3496
+3497
+3498
+3499
+3500
+3501
+3502
+3503
+3504
+3505
+3506
+3507
+3508
+3509
+3510
+3511
+3512
+3513
+3514
+3515
+3516
+3517
+3518
+3519
+3520
+3521
+3522
+3523
+3524
+3525
+3526
+3527
+3528
+3529
+3530
+3531
+3532
+3533
+3534
+3535
+3536
+3537
+3538
+3539
+3540
+3541
+3542
+3543
+3544
+3545
+3546
+3547
+3548
+3549
+3550
+3551
+3552
+3553
+3554
+3555
+3556
+3557
+3558
+3559
+3560
+3561
+3562
+3563
+3564
+3565
+3566
+3567
+3568
+3569
+3570
+3571
+3572
+3573
+3574
+3575
+3576
+3577
+3578
+3579
+3580
+3581
+3582
+3583
+3584
+3585
+3586
+3587
+3588
+3589
+3590
+3591
+3592
+3593
+3594
+3595
+3596
+3597
+3598
+3599
+3600
+3601
+3602
+3603
+3604
+3605
+3606
+3607
+3608
+3609
+3610
 </pre></td><td id='code'><pre>
 <span class='com'>// Regular Expressions</span>
 
@@ -3580,7 +3656,7 @@
  * advanced forms may behave slightly differently.
  *
  * In the following guide, $(I pattern)[] refers to a
- * $(LINK2 http://www.digitalmars.com/ctg/regular.html, Regular expressions).
+ * $(LINK2 http://www.digitalmars.com/ctg/regular.html, regular expression).
  * The $(I attributes)[] refers to
     a string controlling the interpretation
     of the regular expression.
@@ -3588,24 +3664,61 @@
     of the following characters:
 
     &lt;table border=1 cellspacing=0 cellpadding=5&gt;
-    &lt;th&gt;Attribute
-    &lt;th&gt;Action
+    &lt;caption&gt;Attribute Characters&lt;/caption&gt;
+    $(TR $(TH Attribute) $(TH Action))
     &lt;tr&gt;
-    &lt;td&gt; $(B g)
-    &lt;td&gt;global; repeat over the whole input string
+    $(TD $(B g))
+    $(TD global; repeat over the whole input string)
     &lt;/tr&gt;
     &lt;tr&gt;
-    &lt;td&gt; $(B i)
-    &lt;td&gt; case insensitive
+    $(TD $(B i))
+    $(TD case insensitive)
     &lt;/tr&gt;
     &lt;tr&gt;
-    &lt;td&gt; $(B m)
-    &lt;td&gt; treat as multiple lines separated by newlines
+    $(TD $(B m))
+    $(TD treat as multiple lines separated by newlines)
     &lt;/tr&gt;
     &lt;/table&gt;
+ *
+ * The $(I format)[] string has the formatting characters:
+ *
+ *  &lt;table border=1 cellspacing=0 cellpadding=5&gt;
+    &lt;caption&gt;Formatting Characters&lt;/caption&gt;
+    $(TR $(TH Format) $(TH Replaced With))
+    $(TR
+    $(TD $(B $$))   $(TD $)
+    )
+    $(TR
+    $(TD $(B $&amp;))   $(TD The matched substring.)
+    )
+    $(TR
+    $(TD $(B $`))   $(TD The portion of string that precedes the matched substring.)
+    )
+    $(TR
+    $(TD $(B $'))   $(TD The portion of string that follows the matched substring.)
+    )
+    $(TR
+    $(TD $(B $(DOLLAR))$(I n)) $(TD The $(I n)th capture, where $(I n)
+            is a single digit 1-9
+            and $$(I n) is not followed by a decimal digit.)
+    )
+    $(TR
+    $(TD $(B $(DOLLAR))$(I nn)) $(TD The $(I nn)th capture, where $(I nn)
+            is a two-digit decimal
+            number 01-99.
+            If $(I nn)th capture is undefined or more than the number
+            of parenthesized subexpressions, use the empty
+            string instead.)
+    )
+    &lt;/table&gt;
 
+ *  Any other $ are left as is.
+ *
+ * References:
+ *  $(LINK2 http://en.wikipedia.org/wiki/Regular_expressions, Wikipedia)
  * Macros:
  *  WIKI = StdRegexp
+ *  DOLLAR = $
  */</span>
 
 <span class='com'>/*
@@ -3640,7 +3753,7 @@
 
 <span class='kw2'>module</span> tango.text.Regex;
 
-<span class='com'>//debug = regexp; // uncomment to turn on debugging printf's</span>
+<span class='com'>//debug = Regex;        // uncomment to turn on debugging printf's</span>
 
 <span class='kw4'>private</span>
 <span class='opr'>{</span>
@@ -3689,7 +3802,20 @@
  *  pattern = Regular expression pattern.
  *  format = Replacement string format.
  *  attributes = Regular expression attributes.
- * Returns: the resulting string.
+ * Returns:
+ *  the resulting string
+ * Example:
+ *  Replace the letters 'a' with the letters 'ZZ'.
+ * ---
+ * s = &quot;Strap a rocket engine on a chicken.&quot;
+ * sub(s, &quot;a&quot;, &quot;ZZ&quot;)        // result: StrZZp a rocket engine on a chicken.
+ * sub(s, &quot;a&quot;, &quot;ZZ&quot;, &quot;g&quot;)   // result: StrZZp ZZ rocket engine on ZZ chicken.
+ * ---
+ *  The replacement format can reference the matches using
+ *  the $&amp;amp;, $$, $', $`, $0 .. $99 notation:
+ * ---
+ * sub(s, &quot;[ar]&quot;, &quot;[$&amp;]&quot;, &quot;g&quot;) // result: St[r][a]p [a] [r]ocket engine on [a] chi
+ * ---
  */</span>
 
 <span class='kw4'>char</span><span class='opr'>[</span><span class='opr'>]</span> sub<span class='opr'>(</span><span class='kw4'>char</span><span class='opr'>[</span><span class='opr'>]</span> string, <span class='kw4'>char</span><span class='opr'>[</span><span class='opr'>]</span> pattern, <span class='kw4'>char</span><span class='opr'>[</span><span class='opr'>]</span> format, <span class='kw4'>char</span><span class='opr'>[</span><span class='opr'>]</span> attributes <span class='opr'>=</span> <span class='kw2'>null</span><span class='opr'>)</span>
@@ -3702,7 +3828,7 @@
 
 <span class='kw4'>unittest</span>
 <span class='opr'>{</span>
-    <span class='kw4'>debug</span><span class='opr'>(</span>regexp<span class='opr'>)</span> printf<span class='opr'>(</span><span class='str'>&quot;regexp.sub.unittest\n&quot;</span><span class='opr'>)</span>;
+    <span class='kw4'>debug</span><span class='opr'>(</span>Regex<span class='opr'>)</span> printf<span class='opr'>(</span><span class='str'>&quot;Regex.sub.unittest\n&quot;</span><span class='opr'>)</span>;
 
     <span class='kw4'>char</span><span class='opr'>[</span><span class='opr'>]</span> r <span class='opr'>=</span> sub<span class='opr'>(</span><span class='str'>&quot;hello&quot;</span>, <span class='str'>&quot;ll&quot;</span>, <span class='str'>&quot;ss&quot;</span><span class='opr'>)</span>;
     <span class='kw2'>assert</span><span class='opr'>(</span>r <span class='opr'>=</span><span class='opr'>=</span> <span class='str'>&quot;hesso&quot;</span><span class='opr'>)</span>;
@@ -3719,6 +3845,17 @@
  *  dg = Delegate
  *  attributes = Regular expression attributes.
  * Returns: the resulting string.
+ * Example:
+ * Capitalize the letters 'a' and 'r':
+ * ---
+ * s = &quot;Strap a rocket engine on a chicken.&quot;;
+ * sub(s, &quot;[ar]&quot;,
+ *    delegate char[] (Regex m)
+ *    {
+ *         return toupper(m.match(0));
+ *    },
+ *    &quot;g&quot;);    // result: StRAp A Rocket engine on A chicken.
+ * ---
  */</span>
 
 <span class='kw4'>char</span><span class='opr'>[</span><span class='opr'>]</span> sub<span class='opr'>(</span><span class='kw4'>char</span><span class='opr'>[</span><span class='opr'>]</span> string, <span class='kw4'>char</span><span class='opr'>[</span><span class='opr'>]</span> pattern, <span class='kw4'>char</span><span class='opr'>[</span><span class='opr'>]</span> <span class='kw2'>delegate</span><span class='opr'>(</span>Regex<span class='opr'>)</span> dg, <span class='kw4'>char</span><span class='opr'>[</span><span class='opr'>]</span> attributes <span class='opr'>=</span> <span class='kw2'>null</span><span class='opr'>)</span>
@@ -3745,11 +3882,10 @@
     if (r.attributes &amp; Regex.REA.global &amp;&amp;      // global, so replace all
         !(r.attributes &amp; Regex.REA.ignoreCase) &amp;&amp;   // not ignoring case
         !(r.attributes &amp; Regex.REA.multiline) &amp;&amp;    // not multiline
-        pattern == slice &amp;&amp;             // simple pattern (exact match, no special characters)
-        format == replacement)          // simple format, not $ formats
+        pattern == slice)               // simple pattern (exact match, no special characters)
     {
-        debug(regexp)
-        printf(&quot;pattern: %.*s, slice: %.*s, format: %.*s, replacement: %.*s\n&quot;,pattern,result[offset + so .. offset + eo],format,replacement);
+        debug(Regex)
+        printf(&quot;pattern: %.*s, slice: %.*s, replacement: %.*s\n&quot;,pattern,result[offset + so .. offset + eo],replacement);
         result = std.string.replace(result,slice,replacement);
         break;
     }
@@ -3775,7 +3911,7 @@
 
 <span class='kw4'>unittest</span>
 <span class='opr'>{</span>
-    <span class='kw4'>debug</span><span class='opr'>(</span>regexp<span class='opr'>)</span> printf<span class='opr'>(</span><span class='str'>&quot;regexp.sub.unittest\n&quot;</span><span class='opr'>)</span>;
+    <span class='kw4'>debug</span><span class='opr'>(</span>Regex<span class='opr'>)</span> printf<span class='opr'>(</span><span class='str'>&quot;Regex.sub.unittest\n&quot;</span><span class='opr'>)</span>;
 
     <span class='kw4'>char</span><span class='opr'>[</span><span class='opr'>]</span> foo<span class='opr'>(</span>Regex r<span class='opr'>)</span> <span class='opr'>{</span> <span class='kw1'>return</span> <span class='str'>&quot;ss&quot;</span>; <span class='opr'>}</span>
 
@@ -3792,6 +3928,12 @@
  *  attributes = Regular expression attributes.
  * Returns:
  *  index into string[] of match if found, -1 if no match.
+ * Example:
+ * ---
+ * auto s = &quot;abcabcabab&quot;;
+ * tango.text.Regex.find(s, &quot;b&quot;);    // match, returns 1
+ * tango.text.Regex.find(s, &quot;f&quot;);    // no match, returns -1
+ * ---
  */</span>
 
 <span class='kw4'>int</span> find<span class='opr'>(</span>rchar<span class='opr'>[</span><span class='opr'>]</span> string, <span class='kw4'>char</span><span class='opr'>[</span><span class='opr'>]</span> pattern, <span class='kw4'>char</span><span class='opr'>[</span><span class='opr'>]</span> attributes <span class='opr'>=</span> <span class='kw2'>null</span><span class='opr'>)</span>
@@ -3809,7 +3951,7 @@
 
 <span class='kw4'>unittest</span>
 <span class='opr'>{</span>
-    <span class='kw4'>debug</span><span class='opr'>(</span>regexp<span class='opr'>)</span> printf<span class='opr'>(</span><span class='str'>&quot;regexp.find.unittest\n&quot;</span><span class='opr'>)</span>;
+    <span class='kw4'>debug</span><span class='opr'>(</span>Regex<span class='opr'>)</span> printf<span class='opr'>(</span><span class='str'>&quot;Regex.find.unittest\n&quot;</span><span class='opr'>)</span>;
 
     <span class='kw4'>int</span> i;
     i <span class='opr'>=</span> find<span class='opr'>(</span><span class='str'>&quot;xabcy&quot;</span>, <span class='str'>&quot;abc&quot;</span><span class='opr'>)</span>;
@@ -3828,6 +3970,12 @@
  *  attributes = Regular expression attributes.
  * Returns:
  *  index into string[] of match if found, -1 if no match.
+ * Example:
+ * ---
+ * auto s = &quot;abcabcabab&quot;;
+ * tango.text.Regex.find(s, &quot;b&quot;);    // match, returns 9
+ * tango.text.Regex.find(s, &quot;f&quot;);    // no match, returns -1
+ * ---
  */</span>
 
 <span class='kw4'>int</span> rfind<span class='opr'>(</span>rchar<span class='opr'>[</span><span class='opr'>]</span> string, <span class='kw4'>char</span><span class='opr'>[</span><span class='opr'>]</span> pattern, <span class='kw4'>char</span><span class='opr'>[</span><span class='opr'>]</span> attributes <span class='opr'>=</span> <span class='kw2'>null</span><span class='opr'>)</span>
@@ -3852,7 +4000,7 @@
 <span class='opr'>{</span>
     <span class='kw4'>int</span> i;
 
-    <span class='kw4'>debug</span><span class='opr'>(</span>regexp<span class='opr'>)</span> printf<span class='opr'>(</span><span class='str'>&quot;regexp.rfind.unittest\n&quot;</span><span class='opr'>)</span>;
+    <span class='kw4'>debug</span><span class='opr'>(</span>Regex<span class='opr'>)</span> printf<span class='opr'>(</span><span class='str'>&quot;Regex.rfind.unittest\n&quot;</span><span class='opr'>)</span>;
     i <span class='opr'>=</span> rfind<span class='opr'>(</span><span class='str'>&quot;abcdefcdef&quot;</span>, <span class='str'>&quot;c&quot;</span><span class='opr'>)</span>;
     <span class='kw2'>assert</span><span class='opr'>(</span>i <span class='opr'>=</span><span class='opr'>=</span> <span class='nbr'>6</span><span class='opr'>)</span>;
     i <span class='opr'>=</span> rfind<span class='opr'>(</span><span class='str'>&quot;abcdefcdef&quot;</span>, <span class='str'>&quot;cd&quot;</span><span class='opr'>)</span>;
@@ -3869,11 +4017,23 @@
 <span class='com'>/********************************************
  * Split string[] into an array of strings, using the regular
  * expression pattern[] with attributes[] as the separator.
+ * Params:
  *  string = String to search.
  *  pattern = Regular expression pattern.
  *  attributes = Regular expression attributes.
  * Returns:
  *  array of slices into string[]
+ * Example:
+ * ---
+ * foreach (s; split(&quot;abcabcabab&quot;, &quot;C.&quot;, &quot;i&quot;))
+ * {
+ *     writefln(&quot;s = '%s'&quot;, s);
+ * }
+ * // Prints:
+ * // s = 'ab'
+ * // s = 'b'
+ * // s = 'bab'
+ * ---
  */</span>
 
 <span class='kw4'>char</span><span class='opr'>[</span><span class='opr'>]</span><span class='opr'>[</span><span class='opr'>]</span> split<span class='opr'>(</span><span class='kw4'>char</span><span class='opr'>[</span><span class='opr'>]</span> string, <span class='kw4'>char</span><span class='opr'>[</span><span class='opr'>]</span> pattern, <span class='kw4'>char</span><span class='opr'>[</span><span class='opr'>]</span> attributes <span class='opr'>=</span> <span class='kw2'>null</span><span class='opr'>)</span>
@@ -3886,7 +4046,7 @@
 
 <span class='kw4'>unittest</span>
 <span class='opr'>{</span>
-    <span class='kw4'>debug</span><span class='opr'>(</span>regexp<span class='opr'>)</span> printf<span class='opr'>(</span><span class='str'>&quot;regexp.split.unittest()\n&quot;</span><span class='opr'>)</span>;
+    <span class='kw4'>debug</span><span class='opr'>(</span>Regex<span class='opr'>)</span> printf<span class='opr'>(</span><span class='str'>&quot;Regex.split.unittest()\n&quot;</span><span class='opr'>)</span>;
     <span class='kw4'>char</span><span class='opr'>[</span><span class='opr'>]</span><span class='opr'>[</span><span class='opr'>]</span> result;
 
     result <span class='opr'>=</span> split<span class='opr'>(</span><span class='str'>&quot;ab&quot;</span>, <span class='str'>&quot;a*&quot;</span><span class='opr'>)</span>;
@@ -3905,12 +4065,12 @@
  *  corresponding Regex if found, null if not.
  * Example:
  * ---
- * import std.stdio;
- * import std.regexp;
+ * import tango.stdc.stdio;
+ * import tango.text.Regex;
  *
  * void main()
  * {
- *     if (m; std.regexp.search(&quot;abcdef&quot;, &quot;c&quot;))
+ *     if (auto m = tango.text.Regex.search(&quot;abcdef&quot;, &quot;c&quot;))
  *     {
  *         writefln(&quot;%s[%s]%s&quot;, m.pre, m.match(0), m.post);
  *     }
@@ -3952,6 +4112,12 @@ Regex search<span class='opr'>(</span><span class='kw4'>char</span><span class='
      *  pattern = regular expression
      *  attributes = _attributes
      * Throws: RegexException if there are any compilation errors.
+     * Example:
+     *  Declare two variables and assign to them a Regex object:
+     * ---
+     * auto r = new Regex(&quot;pattern&quot;);
+     * auto s = new Regex(r&quot;p[1-5]\s*&quot;);
+     * ---
      */</span>
     <span class='kw4'>public</span> <span class='kw2'>this</span><span class='opr'>(</span>rchar<span class='opr'>[</span><span class='opr'>]</span> pattern, rchar<span class='opr'>[</span><span class='opr'>]</span> attributes <span class='opr'>=</span> <span class='kw2'>null</span><span class='opr'>)</span>
     <span class='opr'>{</span>
@@ -3965,6 +4131,11 @@ Regex search<span class='opr'>(</span><span class='kw4'>char</span><span class='
      *  pattern = regular expression
      *  attributes = _attributes
      * Throws: RegexException if there are any compilation errors.
+     * Example:
+     *  Declare two variables and assign to them a Regex object:
+     * ---
+     * auto r = Regex(&quot;pattern&quot;);
+     * auto s = Regex(r&quot;p[1-5]\s*&quot;);
      */</span>
     <span class='kw4'>public</span> <span class='kw4'>static</span> Regex opCall<span class='opr'>(</span>rchar<span class='opr'>[</span><span class='opr'>]</span> pattern, rchar<span class='opr'>[</span><span class='opr'>]</span> attributes <span class='opr'>=</span> <span class='kw2'>null</span><span class='opr'>)</span>
     <span class='opr'>{</span>
@@ -3977,8 +4148,8 @@ Regex search<span class='opr'>(</span><span class='kw4'>char</span><span class='
      *  search() returns instance of Regex set up to _search string[].
      * Example:
      * ---
-     * import std.stdio;
-     * import std.regexp;
+     * import tango.stdc.stdio;
+     * import tango.text.Regex;
      *
      * void main()
      * {
@@ -4134,7 +4305,7 @@ Regex search<span class='opr'>(</span><span class='kw4'>char</span><span class='
     REword,
     REnotword,
     REbackref,
-<span class='opr'>}</span>;
+<span class='opr'>}</span>
 
 <span class='com'>// BUG: should this include '$'?</span>
 <span class='kw4'>private</span> <span class='kw4'>int</span> isword<span class='opr'>(</span><span class='kw4'>dchar</span> c<span class='opr'>)</span> <span class='opr'>{</span> <span class='kw1'>return</span> isalnum<span class='opr'>(</span>c<span class='opr'>)</span> || c <span class='opr'>=</span><span class='opr'>=</span> <span class='str'>'_'</span>; <span class='opr'>}</span>
@@ -4209,7 +4380,7 @@ Regex search<span class='opr'>(</span><span class='kw4'>char</span><span class='
 
 <span class='kw4'>public</span> rchar<span class='opr'>[</span><span class='opr'>]</span><span class='opr'>[</span><span class='opr'>]</span> split<span class='opr'>(</span>rchar<span class='opr'>[</span><span class='opr'>]</span> string<span class='opr'>)</span>
 <span class='opr'>{</span>
-    <span class='kw4'>debug</span><span class='opr'>(</span>regexp<span class='opr'>)</span> printf<span class='opr'>(</span><span class='str'>&quot;regexp.split()\n&quot;</span><span class='opr'>)</span>;
+    <span class='kw4'>debug</span><span class='opr'>(</span>Regex<span class='opr'>)</span> printf<span class='opr'>(</span><span class='str'>&quot;Regex.split()\n&quot;</span><span class='opr'>)</span>;
 
     rchar<span class='opr'>[</span><span class='opr'>]</span><span class='opr'>[</span><span class='opr'>]</span> result;
 
@@ -4252,7 +4423,7 @@ Regex search<span class='opr'>(</span><span class='kw4'>char</span><span class='
 
 <span class='kw4'>unittest</span>
 <span class='opr'>{</span>
-    <span class='kw4'>debug</span><span class='opr'>(</span>regexp<span class='opr'>)</span> printf<span class='opr'>(</span><span class='str'>&quot;regexp.split.unittest()\n&quot;</span><span class='opr'>)</span>;
+    <span class='kw4'>debug</span><span class='opr'>(</span>Regex<span class='opr'>)</span> printf<span class='opr'>(</span><span class='str'>&quot;Regex.split.unittest()\n&quot;</span><span class='opr'>)</span>;
 
     Regex r <span class='opr'>=</span> <span class='kw2'>new</span> Regex<span class='opr'>(</span><span class='str'>&quot;a*?&quot;</span>, <span class='kw2'>null</span><span class='opr'>)</span>;
     rchar<span class='opr'>[</span><span class='opr'>]</span><span class='opr'>[</span><span class='opr'>]</span> result;
@@ -4280,7 +4451,7 @@ Regex search<span class='opr'>(</span><span class='kw4'>char</span><span class='
 
     <span class='kw1'>for</span> <span class='opr'>(</span>i <span class='opr'>=</span> <span class='nbr'>0</span>; i <span class='opr'>&lt;</span> result.length; i<span class='opr'>+</span><span class='opr'>+</span><span class='opr'>)</span>
     <span class='opr'>{</span>
-    <span class='com'>//debug(regexp) printf(&quot;result[%d] = '%.*s'\n&quot;, i, result[i]);</span>
+    <span class='com'>//debug(Regex) printf(&quot;result[%d] = '%.*s'\n&quot;, i, result[i]);</span>
     <span class='opr'>}</span>
 
     j <span class='opr'>=</span> join<span class='opr'>(</span>result, <span class='str'>&quot;,&quot;</span><span class='opr'>)</span>;
@@ -4322,7 +4493,7 @@ Regex search<span class='opr'>(</span><span class='kw4'>char</span><span class='
 
 <span class='kw4'>unittest</span>
 <span class='opr'>{</span>
-    <span class='kw4'>debug</span><span class='opr'>(</span>regexp<span class='opr'>)</span> printf<span class='opr'>(</span><span class='str'>&quot;regexp.find.unittest()\n&quot;</span><span class='opr'>)</span>;
+    <span class='kw4'>debug</span><span class='opr'>(</span>Regex<span class='opr'>)</span> printf<span class='opr'>(</span><span class='str'>&quot;Regex.find.unittest()\n&quot;</span><span class='opr'>)</span>;
 
     <span class='kw4'>int</span> i;
     Regex r <span class='opr'>=</span> <span class='kw2'>new</span> Regex<span class='opr'>(</span><span class='str'>&quot;abc&quot;</span>, <span class='kw2'>null</span><span class='opr'>)</span>;
@@ -4367,7 +4538,7 @@ Regex search<span class='opr'>(</span><span class='kw4'>char</span><span class='
 
 <span class='kw4'>unittest</span>
 <span class='opr'>{</span>
-    <span class='kw4'>debug</span><span class='opr'>(</span>regexp<span class='opr'>)</span> printf<span class='opr'>(</span><span class='str'>&quot;regexp.match.unittest()\n&quot;</span><span class='opr'>)</span>;
+    <span class='kw4'>debug</span><span class='opr'>(</span>Regex<span class='opr'>)</span> printf<span class='opr'>(</span><span class='str'>&quot;Regex.match.unittest()\n&quot;</span><span class='opr'>)</span>;
 
     <span class='kw4'>int</span> i;
     rchar<span class='opr'>[</span><span class='opr'>]</span><span class='opr'>[</span><span class='opr'>]</span> result;
@@ -4425,7 +4596,7 @@ Regex search<span class='opr'>(</span><span class='kw4'>char</span><span class='
        pattern == slice &amp;&amp;          // simple pattern (exact match, no special characters)
        format == replacement)       // simple format, not $ formats
     {
-        debug(regexp)
+        debug(Regex)
         printf(&quot;pattern: %.*s, slice: %.*s, format: %.*s, replacement: %.*s\n&quot;,pattern,result[offset + so .. offset + eo],format,replacement);
         result = std.string.replace(result,slice,replacement);
         break;
@@ -4451,7 +4622,7 @@ Regex search<span class='opr'>(</span><span class='kw4'>char</span><span class='
 
 <span class='kw4'>unittest</span>
 <span class='opr'>{</span>
-    <span class='kw4'>debug</span><span class='opr'>(</span>regexp<span class='opr'>)</span> printf<span class='opr'>(</span><span class='str'>&quot;regexp.replace.unittest()\n&quot;</span><span class='opr'>)</span>;
+    <span class='kw4'>debug</span><span class='opr'>(</span>Regex<span class='opr'>)</span> printf<span class='opr'>(</span><span class='str'>&quot;Regex.replace.unittest()\n&quot;</span><span class='opr'>)</span>;
 
     <span class='kw4'>int</span> i;
     rchar<span class='opr'>[</span><span class='opr'>]</span> result;
@@ -4472,7 +4643,7 @@ Regex search<span class='opr'>(</span><span class='kw4'>char</span><span class='
 
 <span class='kw4'>public</span> rchar<span class='opr'>[</span><span class='opr'>]</span><span class='opr'>[</span><span class='opr'>]</span> exec<span class='opr'>(</span>rchar<span class='opr'>[</span><span class='opr'>]</span> string<span class='opr'>)</span>
 <span class='opr'>{</span>
-    <span class='kw4'>debug</span><span class='opr'>(</span>regexp<span class='opr'>)</span> printf<span class='opr'>(</span><span class='str'>&quot;regexp.exec(string = '%.*s')\n&quot;</span>, string<span class='opr'>)</span>;
+    <span class='kw4'>debug</span><span class='opr'>(</span>Regex<span class='opr'>)</span> printf<span class='opr'>(</span><span class='str'>&quot;Regex.exec(string = '%.*s')\n&quot;</span>, string<span class='opr'>)</span>;
     input <span class='opr'>=</span> string;
     pmatch<span class='opr'>[</span><span class='nbr'>0</span><span class='opr'>]</span>.rm_so <span class='opr'>=</span> <span class='nbr'>0</span>;
     pmatch<span class='opr'>[</span><span class='nbr'>0</span><span class='opr'>]</span>.rm_eo <span class='opr'>=</span> <span class='nbr'>0</span>;
@@ -4536,14 +4707,14 @@ Regex search<span class='opr'>(</span><span class='kw4'>char</span><span class='
     <span class='kw4'>uint</span> si;
 
     input <span class='opr'>=</span> string;
-    <span class='kw4'>debug</span> <span class='opr'>(</span>regexp<span class='opr'>)</span> printf<span class='opr'>(</span><span class='str'>&quot;Regex.test(input[] = '%.*s', startindex = %d)\n&quot;</span>, input, startindex<span class='opr'>)</span>;
+    <span class='kw4'>debug</span> <span class='opr'>(</span>Regex<span class='opr'>)</span> printf<span class='opr'>(</span><span class='str'>&quot;Regex.test(input[] = '%.*s', startindex = %d)\n&quot;</span>, input, startindex<span class='opr'>)</span>;
     pmatch<span class='opr'>[</span><span class='nbr'>0</span><span class='opr'>]</span>.rm_so <span class='opr'>=</span> <span class='nbr'>0</span>;
     pmatch<span class='opr'>[</span><span class='nbr'>0</span><span class='opr'>]</span>.rm_eo <span class='opr'>=</span> <span class='nbr'>0</span>;
     <span class='kw1'>if</span> <span class='opr'>(</span>startindex <span class='opr'>&lt;</span> <span class='nbr'>0</span> || startindex <span class='opr'>&gt;</span> input.length<span class='opr'>)</span>
     <span class='opr'>{</span>
     <span class='kw1'>return</span> <span class='nbr'>0</span>;            <span class='com'>// fail</span>
     <span class='opr'>}</span>
-    <span class='com'>//debug(regexp) printProgram(program);</span>
+    <span class='com'>//debug(Regex) printProgram(program);</span>
 
     <span class='com'>// First character optimization</span>
     firstc <span class='opr'>=</span> <span class='nbr'>0</span>;
@@ -4577,7 +4748,7 @@ Regex search<span class='opr'>(</span><span class='kw4'>char</span><span class='
     <span class='opr'>{</span>
         pmatch<span class='opr'>[</span><span class='nbr'>0</span><span class='opr'>]</span>.rm_so <span class='opr'>=</span> si;
         pmatch<span class='opr'>[</span><span class='nbr'>0</span><span class='opr'>]</span>.rm_eo <span class='opr'>=</span> src;
-        <span class='com'>//debug(regexp) printf(&quot;start = %d, end = %d\n&quot;, gmatch.rm_so, gmatch.rm_eo);</span>
+        <span class='com'>//debug(Regex) printf(&quot;start = %d, end = %d\n&quot;, gmatch.rm_so, gmatch.rm_eo);</span>
         <span class='kw1'>return</span> <span class='nbr'>1</span>;
     <span class='opr'>}</span>
     <span class='com'>// If possible match must start at beginning, we are done</span>
@@ -4594,7 +4765,7 @@ Regex search<span class='opr'>(</span><span class='kw4'>char</span><span class='
     <span class='opr'>}</span>
     <span class='kw1'>if</span> <span class='opr'>(</span>si <span class='opr'>=</span><span class='opr'>=</span> input.length<span class='opr'>)</span>
         <span class='kw1'>break</span>;
-    <span class='com'>//debug(regexp) printf(&quot;Starting new try: '%.*s'\n&quot;, input[si + 1 .. input.length]);</span>
+    <span class='com'>//debug(Regex) printf(&quot;Starting new try: '%.*s'\n&quot;, input[si + 1 .. input.length]);</span>
     <span class='opr'>}</span>
     <span class='kw1'>return</span> <span class='nbr'>0</span>;        <span class='com'>// no match</span>
 <span class='opr'>}</span>
@@ -4612,7 +4783,7 @@ Regex search<span class='opr'>(</span><span class='kw4'>char</span><span class='
 
 <span class='kw4'>void</span> printProgram<span class='opr'>(</span><span class='kw4'>ubyte</span><span class='opr'>[</span><span class='opr'>]</span> prog<span class='opr'>)</span>
 <span class='opr'>{</span>
-  <span class='com'>//debug(regexp)</span>
+  <span class='com'>//debug(Regex)</span>
   <span class='opr'>{</span>
     <span class='kw4'>uint</span> pc;
     <span class='kw4'>uint</span> len;
@@ -4833,7 +5004,7 @@ Regex search<span class='opr'>(</span><span class='kw4'>char</span><span class='
     <span class='kw4'>ushort</span><span class='opr'>*</span> pu;
     <span class='kw4'>uint</span><span class='opr'>*</span> puint;
 
-    <span class='kw4'>debug</span><span class='opr'>(</span>regexp<span class='opr'>)</span>
+    <span class='kw4'>debug</span><span class='opr'>(</span>Regex<span class='opr'>)</span>
     printf<span class='opr'>(</span><span class='str'>&quot;Regex.trymatch(pc = %d, src = '%.*s', pcend = %d)\n&quot;</span>,
         pc, input<span class='opr'>[</span>src <span class='opr'>..</span> input.length<span class='opr'>]</span>, pcend<span class='opr'>)</span>;
     srcsave <span class='opr'>=</span> src;
@@ -4851,7 +5022,7 @@ Regex search<span class='opr'>(</span><span class='kw4'>char</span><span class='
         <span class='kw1'>case</span> REchar:
         <span class='kw1'>if</span> <span class='opr'>(</span>src <span class='opr'>=</span><span class='opr'>=</span> input.length<span class='opr'>)</span>
             <span class='kw1'>goto</span> Lnomatch;
-        <span class='kw4'>debug</span><span class='opr'>(</span>regexp<span class='opr'>)</span> printf<span class='opr'>(</span><span class='str'>&quot;\tREchar '%c', src = '%c'\n&quot;</span>, program<span class='opr'>[</span>pc <span class='opr'>+</span> <span class='nbr'>1</span><span class='opr'>]</span>, input<span class='opr'>[</span>src<span class='opr'>]</span><span class='opr'>)</span>;
+        <span class='kw4'>debug</span><span class='opr'>(</span>Regex<span class='opr'>)</span> printf<span class='opr'>(</span><span class='str'>&quot;\tREchar '%c', src = '%c'\n&quot;</span>, program<span class='opr'>[</span>pc <span class='opr'>+</span> <span class='nbr'>1</span><span class='opr'>]</span>, input<span class='opr'>[</span>src<span class='opr'>]</span><span class='opr'>)</span>;
         <span class='kw1'>if</span> <span class='opr'>(</span>program<span class='opr'>[</span>pc <span class='opr'>+</span> <span class='nbr'>1</span><span class='opr'>]</span> <span class='opr'>!=</span> input<span class='opr'>[</span>src<span class='opr'>]</span><span class='opr'>)</span>
             <span class='kw1'>goto</span> Lnomatch;
         src<span class='opr'>+</span><span class='opr'>+</span>;
@@ -4861,7 +5032,7 @@ Regex search<span class='opr'>(</span><span class='kw4'>char</span><span class='
         <span class='kw1'>case</span> REichar:
         <span class='kw1'>if</span> <span class='opr'>(</span>src <span class='opr'>=</span><span class='opr'>=</span> input.length<span class='opr'>)</span>
             <span class='kw1'>goto</span> Lnomatch;
-        <span class='kw4'>debug</span><span class='opr'>(</span>regexp<span class='opr'>)</span> printf<span class='opr'>(</span><span class='str'>&quot;\tREichar '%c', src = '%c'\n&quot;</span>, program<span class='opr'>[</span>pc <span class='opr'>+</span> <span class='nbr'>1</span><span class='opr'>]</span>, input<span class='opr'>[</span>src<span class='opr'>]</span><span class='opr'>)</span>;
+        <span class='kw4'>debug</span><span class='opr'>(</span>Regex<span class='opr'>)</span> printf<span class='opr'>(</span><span class='str'>&quot;\tREichar '%c', src = '%c'\n&quot;</span>, program<span class='opr'>[</span>pc <span class='opr'>+</span> <span class='nbr'>1</span><span class='opr'>]</span>, input<span class='opr'>[</span>src<span class='opr'>]</span><span class='opr'>)</span>;
         c1 <span class='opr'>=</span> program<span class='opr'>[</span>pc <span class='opr'>+</span> <span class='nbr'>1</span><span class='opr'>]</span>;
         c2 <span class='opr'>=</span> input<span class='opr'>[</span>src<span class='opr'>]</span>;
         <span class='kw1'>if</span> <span class='opr'>(</span>c1 <span class='opr'>!=</span> c2<span class='opr'>)</span>
@@ -4878,7 +5049,7 @@ Regex search<span class='opr'>(</span><span class='kw4'>char</span><span class='
         <span class='kw1'>break</span>;
 
         <span class='kw1'>case</span> REdchar:
-        <span class='kw4'>debug</span><span class='opr'>(</span>regexp<span class='opr'>)</span> printf<span class='opr'>(</span><span class='str'>&quot;\tREdchar '%c', src = '%c'\n&quot;</span>, <span class='opr'>*</span><span class='opr'>(</span><span class='kw2'>cast</span><span class='opr'>(</span><span class='kw4'>dchar</span> <span class='opr'>*</span><span class='opr'>)</span><span class='opr'>&amp;</span>program<span class='opr'>[</span>pc <span class='opr'>+</span> <span class='nbr'>1</span><span class='opr'>]</span><span class='opr'>)</span>, input<span class='opr'>[</span>src<span class='opr'>]</span><span class='opr'>)</span>;
+        <span class='kw4'>debug</span><span class='opr'>(</span>Regex<span class='opr'>)</span> printf<span class='opr'>(</span><span class='str'>&quot;\tREdchar '%c', src = '%c'\n&quot;</span>, <span class='opr'>*</span><span class='opr'>(</span><span class='kw2'>cast</span><span class='opr'>(</span><span class='kw4'>dchar</span> <span class='opr'>*</span><span class='opr'>)</span><span class='opr'>&amp;</span>program<span class='opr'>[</span>pc <span class='opr'>+</span> <span class='nbr'>1</span><span class='opr'>]</span><span class='opr'>)</span>, input<span class='opr'>[</span>src<span class='opr'>]</span><span class='opr'>)</span>;
         <span class='kw1'>if</span> <span class='opr'>(</span>src <span class='opr'>=</span><span class='opr'>=</span> input.length<span class='opr'>)</span>
             <span class='kw1'>goto</span> Lnomatch;
         <span class='kw1'>if</span> <span class='opr'>(</span><span class='opr'>*</span><span class='opr'>(</span><span class='kw2'>cast</span><span class='opr'>(</span><span class='kw4'>dchar</span> <span class='opr'>*</span><span class='opr'>)</span><span class='opr'>&amp;</span>program<span class='opr'>[</span>pc <span class='opr'>+</span> <span class='nbr'>1</span><span class='opr'>]</span><span class='opr'>)</span> <span class='opr'>!=</span> input<span class='opr'>[</span>src<span class='opr'>]</span><span class='opr'>)</span>
@@ -4888,7 +5059,7 @@ Regex search<span class='opr'>(</span><span class='kw4'>char</span><span class='
         <span class='kw1'>break</span>;
 
         <span class='kw1'>case</span> REidchar:
-        <span class='kw4'>debug</span><span class='opr'>(</span>regexp<span class='opr'>)</span> printf<span class='opr'>(</span><span class='str'>&quot;\tREidchar '%c', src = '%c'\n&quot;</span>, <span class='opr'>*</span><span class='opr'>(</span><span class='kw2'>cast</span><span class='opr'>(</span><span class='kw4'>dchar</span> <span class='opr'>*</span><span class='opr'>)</span><span class='opr'>&amp;</span>program<span class='opr'>[</span>pc <span class='opr'>+</span> <span class='nbr'>1</span><span class='opr'>]</span><span class='opr'>)</span>, input<span class='opr'>[</span>src<span class='opr'>]</span><span class='opr'>)</span>;
+        <span class='kw4'>debug</span><span class='opr'>(</span>Regex<span class='opr'>)</span> printf<span class='opr'>(</span><span class='str'>&quot;\tREidchar '%c', src = '%c'\n&quot;</span>, <span class='opr'>*</span><span class='opr'>(</span><span class='kw2'>cast</span><span class='opr'>(</span><span class='kw4'>dchar</span> <span class='opr'>*</span><span class='opr'>)</span><span class='opr'>&amp;</span>program<span class='opr'>[</span>pc <span class='opr'>+</span> <span class='nbr'>1</span><span class='opr'>]</span><span class='opr'>)</span>, input<span class='opr'>[</span>src<span class='opr'>]</span><span class='opr'>)</span>;
         <span class='kw1'>if</span> <span class='opr'>(</span>src <span class='opr'>=</span><span class='opr'>=</span> input.length<span class='opr'>)</span>
             <span class='kw1'>goto</span> Lnomatch;
         c1 <span class='opr'>=</span> <span class='opr'>*</span><span class='opr'>(</span><span class='kw2'>cast</span><span class='opr'>(</span><span class='kw4'>dchar</span> <span class='opr'>*</span><span class='opr'>)</span><span class='opr'>&amp;</span>program<span class='opr'>[</span>pc <span class='opr'>+</span> <span class='nbr'>1</span><span class='opr'>]</span><span class='opr'>)</span>;
@@ -4907,7 +5078,7 @@ Regex search<span class='opr'>(</span><span class='kw4'>char</span><span class='
         <span class='kw1'>break</span>;
 
         <span class='kw1'>case</span> REanychar:
-        <span class='kw4'>debug</span><span class='opr'>(</span>regexp<span class='opr'>)</span> printf<span class='opr'>(</span><span class='str'>&quot;\tREanychar\n&quot;</span><span class='opr'>)</span>;
+        <span class='kw4'>debug</span><span class='opr'>(</span>Regex<span class='opr'>)</span> printf<span class='opr'>(</span><span class='str'>&quot;\tREanychar\n&quot;</span><span class='opr'>)</span>;
         <span class='kw1'>if</span> <span class='opr'>(</span>src <span class='opr'>=</span><span class='opr'>=</span> input.length<span class='opr'>)</span>
             <span class='kw1'>goto</span> Lnomatch;
         <span class='kw1'>if</span> <span class='opr'>(</span>!<span class='opr'>(</span>attributes <span class='opr'>&amp;</span> REA.dotmatchlf<span class='opr'>)</span> &amp;&amp; input<span class='opr'>[</span>src<span class='opr'>]</span> <span class='opr'>=</span><span class='opr'>=</span> <span class='kw2'>cast</span><span class='opr'>(</span>rchar<span class='opr'>)</span><span class='str'>'\n'</span><span class='opr'>)</span>
@@ -4918,7 +5089,7 @@ Regex search<span class='opr'>(</span><span class='kw4'>char</span><span class='
 
         <span class='kw1'>case</span> REstring:
         len <span class='opr'>=</span> <span class='opr'>*</span><span class='kw2'>cast</span><span class='opr'>(</span><span class='kw4'>uint</span> <span class='opr'>*</span><span class='opr'>)</span><span class='opr'>&amp;</span>program<span class='opr'>[</span>pc <span class='opr'>+</span> <span class='nbr'>1</span><span class='opr'>]</span>;
-        <span class='kw4'>debug</span><span class='opr'>(</span>regexp<span class='opr'>)</span> printf<span class='opr'>(</span><span class='str'>&quot;\tREstring x%x, '%.*s'\n&quot;</span>, len,
+        <span class='kw4'>debug</span><span class='opr'>(</span>Regex<span class='opr'>)</span> printf<span class='opr'>(</span><span class='str'>&quot;\tREstring x%x, '%.*s'\n&quot;</span>, len,
             <span class='opr'>(</span><span class='opr'>&amp;</span>program<span class='opr'>[</span>pc <span class='opr'>+</span> <span class='nbr'>1</span> <span class='opr'>+</span> <span class='kw4'>uint</span>.sizeof<span class='opr'>]</span><span class='opr'>)</span><span class='opr'>[</span><span class='nbr'>0</span> <span class='opr'>..</span> len<span class='opr'>]</span><span class='opr'>)</span>;
         <span class='kw1'>if</span> <span class='opr'>(</span>src <span class='opr'>+</span> len <span class='opr'>&gt;</span> input.length<span class='opr'>)</span>
             <span class='kw1'>goto</span> Lnomatch;
@@ -4930,7 +5101,7 @@ Regex search<span class='opr'>(</span><span class='kw4'>char</span><span class='
 
         <span class='kw1'>case</span> REistring:
         len <span class='opr'>=</span> <span class='opr'>*</span><span class='kw2'>cast</span><span class='opr'>(</span><span class='kw4'>uint</span> <span class='opr'>*</span><span class='opr'>)</span><span class='opr'>&amp;</span>program<span class='opr'>[</span>pc <span class='opr'>+</span> <span class='nbr'>1</span><span class='opr'>]</span>;
-        <span class='kw4'>debug</span><span class='opr'>(</span>regexp<span class='opr'>)</span> printf<span class='opr'>(</span><span class='str'>&quot;\tREistring x%x, '%.*s'\n&quot;</span>, len,
+        <span class='kw4'>debug</span><span class='opr'>(</span>Regex<span class='opr'>)</span> printf<span class='opr'>(</span><span class='str'>&quot;\tREistring x%x, '%.*s'\n&quot;</span>, len,
             <span class='opr'>(</span><span class='opr'>&amp;</span>program<span class='opr'>[</span>pc <span class='opr'>+</span> <span class='nbr'>1</span> <span class='opr'>+</span> <span class='kw4'>uint</span>.sizeof<span class='opr'>]</span><span class='opr'>)</span><span class='opr'>[</span><span class='nbr'>0</span> <span class='opr'>..</span> len<span class='opr'>]</span><span class='opr'>)</span>;
         <span class='kw1'>if</span> <span class='opr'>(</span>src <span class='opr'>+</span> len <span class='opr'>&gt;</span> input.length<span class='opr'>)</span>
             <span class='kw1'>goto</span> Lnomatch;
@@ -4951,7 +5122,7 @@ Regex search<span class='opr'>(</span><span class='kw4'>char</span><span class='
 
         <span class='kw1'>case</span> REtestbit:
         pu <span class='opr'>=</span> <span class='opr'>(</span><span class='kw2'>cast</span><span class='opr'>(</span><span class='kw4'>ushort</span> <span class='opr'>*</span><span class='opr'>)</span><span class='opr'>&amp;</span>program<span class='opr'>[</span>pc <span class='opr'>+</span> <span class='nbr'>1</span><span class='opr'>]</span><span class='opr'>)</span>;
-        <span class='kw4'>debug</span><span class='opr'>(</span>regexp<span class='opr'>)</span> printf<span class='opr'>(</span><span class='str'>&quot;\tREtestbit %d, %d, '%c', x%02x\n&quot;</span>,
+        <span class='kw4'>debug</span><span class='opr'>(</span>Regex<span class='opr'>)</span> printf<span class='opr'>(</span><span class='str'>&quot;\tREtestbit %d, %d, '%c', x%02x\n&quot;</span>,
             pu<span class='opr'>[</span><span class='nbr'>0</span><span class='opr'>]</span>, pu<span class='opr'>[</span><span class='nbr'>1</span><span class='opr'>]</span>, input<span class='opr'>[</span>src<span class='opr'>]</span>, input<span class='opr'>[</span>src<span class='opr'>]</span><span class='opr'>)</span>;
         <span class='kw1'>if</span> <span class='opr'>(</span>src <span class='opr'>=</span><span class='opr'>=</span> input.length<span class='opr'>)</span>
             <span class='kw1'>goto</span> Lnomatch;
@@ -4966,7 +5137,7 @@ Regex search<span class='opr'>(</span><span class='kw4'>char</span><span class='
 
         <span class='kw1'>case</span> REbit:
         pu <span class='opr'>=</span> <span class='opr'>(</span><span class='kw2'>cast</span><span class='opr'>(</span><span class='kw4'>ushort</span> <span class='opr'>*</span><span class='opr'>)</span><span class='opr'>&amp;</span>program<span class='opr'>[</span>pc <span class='opr'>+</span> <span class='nbr'>1</span><span class='opr'>]</span><span class='opr'>)</span>;
-        <span class='kw4'>debug</span><span class='opr'>(</span>regexp<span class='opr'>)</span> printf<span class='opr'>(</span><span class='str'>&quot;\tREbit %d, %d, '%c'\n&quot;</span>,
+        <span class='kw4'>debug</span><span class='opr'>(</span>Regex<span class='opr'>)</span> printf<span class='opr'>(</span><span class='str'>&quot;\tREbit %d, %d, '%c'\n&quot;</span>,
             pu<span class='opr'>[</span><span class='nbr'>0</span><span class='opr'>]</span>, pu<span class='opr'>[</span><span class='nbr'>1</span><span class='opr'>]</span>, input<span class='opr'>[</span>src<span class='opr'>]</span><span class='opr'>)</span>;
         <span class='kw1'>if</span> <span class='opr'>(</span>src <span class='opr'>=</span><span class='opr'>=</span> input.length<span class='opr'>)</span>
             <span class='kw1'>goto</span> Lnomatch;
@@ -4982,7 +5153,7 @@ Regex search<span class='opr'>(</span><span class='kw4'>char</span><span class='
 
         <span class='kw1'>case</span> REnotbit:
         pu <span class='opr'>=</span> <span class='opr'>(</span><span class='kw2'>cast</span><span class='opr'>(</span><span class='kw4'>ushort</span> <span class='opr'>*</span><span class='opr'>)</span><span class='opr'>&amp;</span>program<span class='opr'>[</span>pc <span class='opr'>+</span> <span class='nbr'>1</span><span class='opr'>]</span><span class='opr'>)</span>;
-        <span class='kw4'>debug</span><span class='opr'>(</span>regexp<span class='opr'>)</span> printf<span class='opr'>(</span><span class='str'>&quot;\tREnotbit %d, %d, '%c'\n&quot;</span>,
+        <span class='kw4'>debug</span><span class='opr'>(</span>Regex<span class='opr'>)</span> printf<span class='opr'>(</span><span class='str'>&quot;\tREnotbit %d, %d, '%c'\n&quot;</span>,
             pu<span class='opr'>[</span><span class='nbr'>0</span><span class='opr'>]</span>, pu<span class='opr'>[</span><span class='nbr'>1</span><span class='opr'>]</span>, input<span class='opr'>[</span>src<span class='opr'>]</span><span class='opr'>)</span>;
         <span class='kw1'>if</span> <span class='opr'>(</span>src <span class='opr'>=</span><span class='opr'>=</span> input.length<span class='opr'>)</span>
             <span class='kw1'>goto</span> Lnomatch;
@@ -4997,7 +5168,7 @@ Regex search<span class='opr'>(</span><span class='kw4'>char</span><span class='
 
         <span class='kw1'>case</span> RErange:
         len <span class='opr'>=</span> <span class='opr'>*</span><span class='kw2'>cast</span><span class='opr'>(</span><span class='kw4'>uint</span> <span class='opr'>*</span><span class='opr'>)</span><span class='opr'>&amp;</span>program<span class='opr'>[</span>pc <span class='opr'>+</span> <span class='nbr'>1</span><span class='opr'>]</span>;
-        <span class='kw4'>debug</span><span class='opr'>(</span>regexp<span class='opr'>)</span> printf<span class='opr'>(</span><span class='str'>&quot;\tRErange %d\n&quot;</span>, len<span class='opr'>)</span>;
+        <span class='kw4'>debug</span><span class='opr'>(</span>Regex<span class='opr'>)</span> printf<span class='opr'>(</span><span class='str'>&quot;\tRErange %d\n&quot;</span>, len<span class='opr'>)</span>;
         <span class='kw1'>if</span> <span class='opr'>(</span>src <span class='opr'>=</span><span class='opr'>=</span> input.length<span class='opr'>)</span>
             <span class='kw1'>goto</span> Lnomatch;
         <span class='com'>// BUG: REA.ignoreCase?</span>
@@ -5009,7 +5180,7 @@ Regex search<span class='opr'>(</span><span class='kw4'>char</span><span class='
 
         <span class='kw1'>case</span> REnotrange:
         len <span class='opr'>=</span> <span class='opr'>*</span><span class='kw2'>cast</span><span class='opr'>(</span><span class='kw4'>uint</span> <span class='opr'>*</span><span class='opr'>)</span><span class='opr'>&amp;</span>program<span class='opr'>[</span>pc <span class='opr'>+</span> <span class='nbr'>1</span><span class='opr'>]</span>;
-        <span class='kw4'>debug</span><span class='opr'>(</span>regexp<span class='opr'>)</span> printf<span class='opr'>(</span><span class='str'>&quot;\tREnotrange %d\n&quot;</span>, len<span class='opr'>)</span>;
+        <span class='kw4'>debug</span><span class='opr'>(</span>Regex<span class='opr'>)</span> printf<span class='opr'>(</span><span class='str'>&quot;\tREnotrange %d\n&quot;</span>, len<span class='opr'>)</span>;
         <span class='kw1'>if</span> <span class='opr'>(</span>src <span class='opr'>=</span><span class='opr'>=</span> input.length<span class='opr'>)</span>
             <span class='kw1'>goto</span> Lnomatch;
         <span class='com'>// BUG: REA.ignoreCase?</span>
@@ -5020,7 +5191,7 @@ Regex search<span class='opr'>(</span><span class='kw4'>char</span><span class='
         <span class='kw1'>break</span>;
 
         <span class='kw1'>case</span> REbol:
-        <span class='kw4'>debug</span><span class='opr'>(</span>regexp<span class='opr'>)</span> printf<span class='opr'>(</span><span class='str'>&quot;\tREbol\n&quot;</span><span class='opr'>)</span>;
+        <span class='kw4'>debug</span><span class='opr'>(</span>Regex<span class='opr'>)</span> printf<span class='opr'>(</span><span class='str'>&quot;\tREbol\n&quot;</span><span class='opr'>)</span>;
         <span class='kw1'>if</span> <span class='opr'>(</span>src <span class='opr'>=</span><span class='opr'>=</span> <span class='nbr'>0</span><span class='opr'>)</span>
         <span class='opr'>{</span>
         <span class='opr'>}</span>
@@ -5035,7 +5206,7 @@ Regex search<span class='opr'>(</span><span class='kw4'>char</span><span class='
         <span class='kw1'>break</span>;
 
         <span class='kw1'>case</span> REeol:
-        <span class='kw4'>debug</span><span class='opr'>(</span>regexp<span class='opr'>)</span> printf<span class='opr'>(</span><span class='str'>&quot;\tREeol\n&quot;</span><span class='opr'>)</span>;
+        <span class='kw4'>debug</span><span class='opr'>(</span>Regex<span class='opr'>)</span> printf<span class='opr'>(</span><span class='str'>&quot;\tREeol\n&quot;</span><span class='opr'>)</span>;
         <span class='kw1'>if</span> <span class='opr'>(</span>src <span class='opr'>=</span><span class='opr'>=</span> input.length<span class='opr'>)</span>
         <span class='opr'>{</span>
         <span class='opr'>}</span>
@@ -5048,7 +5219,7 @@ Regex search<span class='opr'>(</span><span class='kw4'>char</span><span class='
 
         <span class='kw1'>case</span> REor:
         len <span class='opr'>=</span> <span class='opr'>(</span><span class='kw2'>cast</span><span class='opr'>(</span><span class='kw4'>uint</span> <span class='opr'>*</span><span class='opr'>)</span><span class='opr'>&amp;</span>program<span class='opr'>[</span>pc <span class='opr'>+</span> <span class='nbr'>1</span><span class='opr'>]</span><span class='opr'>)</span><span class='opr'>[</span><span class='nbr'>0</span><span class='opr'>]</span>;
-        <span class='kw4'>debug</span><span class='opr'>(</span>regexp<span class='opr'>)</span> printf<span class='opr'>(</span><span class='str'>&quot;\tREor %d\n&quot;</span>, len<span class='opr'>)</span>;
+        <span class='kw4'>debug</span><span class='opr'>(</span>Regex<span class='opr'>)</span> printf<span class='opr'>(</span><span class='str'>&quot;\tREor %d\n&quot;</span>, len<span class='opr'>)</span>;
         pop <span class='opr'>=</span> pc <span class='opr'>+</span> <span class='nbr'>1</span> <span class='opr'>+</span> <span class='kw4'>uint</span>.sizeof;
         ss <span class='opr'>=</span> src;
         <span class='kw1'>if</span> <span class='opr'>(</span>trymatch<span class='opr'>(</span>pop, pcend<span class='opr'>)</span><span class='opr'>)</span>
@@ -5058,7 +5229,7 @@ Regex search<span class='opr'>(</span><span class='kw4'>char</span><span class='
 
             s <span class='opr'>=</span> src;
             <span class='kw1'>if</span> <span class='opr'>(</span>trymatch<span class='opr'>(</span>pcend, program.length<span class='opr'>)</span><span class='opr'>)</span>
-            <span class='opr'>{</span>   <span class='kw4'>debug</span><span class='opr'>(</span>regexp<span class='opr'>)</span> printf<span class='opr'>(</span><span class='str'>&quot;\tfirst operand matched\n&quot;</span><span class='opr'>)</span>;
+            <span class='opr'>{</span>   <span class='kw4'>debug</span><span class='opr'>(</span>Regex<span class='opr'>)</span> printf<span class='opr'>(</span><span class='str'>&quot;\tfirst operand matched\n&quot;</span><span class='opr'>)</span>;
                 src <span class='opr'>=</span> s;
                 <span class='kw1'>return</span> <span class='nbr'>1</span>;
             <span class='opr'>}</span>
@@ -5068,7 +5239,7 @@ Regex search<span class='opr'>(</span><span class='kw4'>char</span><span class='
                 src <span class='opr'>=</span> ss;
                 <span class='kw1'>if</span> <span class='opr'>(</span>!trymatch<span class='opr'>(</span>pop <span class='opr'>+</span> len, program.length<span class='opr'>)</span><span class='opr'>)</span>
                 <span class='opr'>{</span>
-                <span class='kw4'>debug</span><span class='opr'>(</span>regexp<span class='opr'>)</span> printf<span class='opr'>(</span><span class='str'>&quot;\tfirst operand matched\n&quot;</span><span class='opr'>)</span>;
+                <span class='kw4'>debug</span><span class='opr'>(</span>Regex<span class='opr'>)</span> printf<span class='opr'>(</span><span class='str'>&quot;\tfirst operand matched\n&quot;</span><span class='opr'>)</span>;
                 src <span class='opr'>=</span> s;
                 <span class='kw1'>return</span> <span class='nbr'>1</span>;
                 <span class='opr'>}</span>
@@ -5076,7 +5247,7 @@ Regex search<span class='opr'>(</span><span class='kw4'>char</span><span class='
             src <span class='opr'>=</span> ss;
             <span class='opr'>}</span>
             <span class='kw1'>else</span>
-            <span class='opr'>{</span>    <span class='kw4'>debug</span><span class='opr'>(</span>regexp<span class='opr'>)</span> printf<span class='opr'>(</span><span class='str'>&quot;\tfirst operand matched\n&quot;</span><span class='opr'>)</span>;
+            <span class='opr'>{</span>    <span class='kw4'>debug</span><span class='opr'>(</span>Regex<span class='opr'>)</span> printf<span class='opr'>(</span><span class='str'>&quot;\tfirst operand matched\n&quot;</span><span class='opr'>)</span>;
             <span class='kw1'>return</span> <span class='nbr'>1</span>;
             <span class='opr'>}</span>
         <span class='opr'>}</span>
@@ -5084,13 +5255,13 @@ Regex search<span class='opr'>(</span><span class='kw4'>char</span><span class='
         <span class='kw1'>break</span>;
 
         <span class='kw1'>case</span> REgoto:
-        <span class='kw4'>debug</span><span class='opr'>(</span>regexp<span class='opr'>)</span> printf<span class='opr'>(</span><span class='str'>&quot;\tREgoto\n&quot;</span><span class='opr'>)</span>;
+        <span class='kw4'>debug</span><span class='opr'>(</span>Regex<span class='opr'>)</span> printf<span class='opr'>(</span><span class='str'>&quot;\tREgoto\n&quot;</span><span class='opr'>)</span>;
         len <span class='opr'>=</span> <span class='opr'>(</span><span class='kw2'>cast</span><span class='opr'>(</span><span class='kw4'>uint</span> <span class='opr'>*</span><span class='opr'>)</span><span class='opr'>&amp;</span>program<span class='opr'>[</span>pc <span class='opr'>+</span> <span class='nbr'>1</span><span class='opr'>]</span><span class='opr'>)</span><span class='opr'>[</span><span class='nbr'>0</span><span class='opr'>]</span>;
         pc <span class='opr'>+=</span> <span class='nbr'>1</span> <span class='opr'>+</span> <span class='kw4'>uint</span>.sizeof <span class='opr'>+</span> len;
         <span class='kw1'>break</span>;
 
         <span class='kw1'>case</span> REanystar:
-        <span class='kw4'>debug</span><span class='opr'>(</span>regexp<span class='opr'>)</span> printf<span class='opr'>(</span><span class='str'>&quot;\tREanystar\n&quot;</span><span class='opr'>)</span>;
+        <span class='kw4'>debug</span><span class='opr'>(</span>Regex<span class='opr'>)</span> printf<span class='opr'>(</span><span class='str'>&quot;\tREanystar\n&quot;</span><span class='opr'>)</span>;
         pc<span class='opr'>+</span><span class='opr'>+</span>;
         <span class='kw1'>for</span> <span class='opr'>(</span>;;<span class='opr'>)</span>
         <span class='opr'>{</span>   <span class='kw4'>int</span> s1;
@@ -5127,7 +5298,7 @@ Regex search<span class='opr'>(</span><span class='kw4'>char</span><span class='
         len <span class='opr'>=</span> puint<span class='opr'>[</span><span class='nbr'>0</span><span class='opr'>]</span>;
         n <span class='opr'>=</span> puint<span class='opr'>[</span><span class='nbr'>1</span><span class='opr'>]</span>;
         m <span class='opr'>=</span> puint<span class='opr'>[</span><span class='nbr'>2</span><span class='opr'>]</span>;
-        <span class='kw4'>debug</span><span class='opr'>(</span>regexp<span class='opr'>)</span> printf<span class='opr'>(</span><span class='str'>&quot;\tREnm%s len=%d, n=%u, m=%u\n&quot;</span>, <span class='opr'>(</span>program<span class='opr'>[</span>pc<span class='opr'>]</span> <span class='opr'>=</span><span class='opr'>=</span> REnmq<span class='opr'>)</span> ? <span class='kw2'>cast</span><span class='opr'>(</span><span class='kw4'>char</span><span class='opr'>*</span><span class='opr'>)</span><span class='str'>&quot;q&quot;</span> : <span class='kw2'>cast</span><span class='opr'>(</span><span class='kw4'>char</span><span class='opr'>*</span><span class='opr'>)</span><span class='str'>&quot;&quot;</span>, len, n, m<span class='opr'>)</span>;
+        <span class='kw4'>debug</span><span class='opr'>(</span>Regex<span class='opr'>)</span> printf<span class='opr'>(</span><span class='str'>&quot;\tREnm%s len=%d, n=%u, m=%u\n&quot;</span>, <span class='opr'>(</span>program<span class='opr'>[</span>pc<span class='opr'>]</span> <span class='opr'>=</span><span class='opr'>=</span> REnmq<span class='opr'>)</span> ? <span class='kw2'>cast</span><span class='opr'>(</span><span class='kw4'>char</span><span class='opr'>*</span><span class='opr'>)</span><span class='str'>&quot;q&quot;</span> : <span class='kw2'>cast</span><span class='opr'>(</span><span class='kw4'>char</span><span class='opr'>*</span><span class='opr'>)</span><span class='str'>&quot;&quot;</span>, len, n, m<span class='opr'>)</span>;
         pop <span class='opr'>=</span> pc <span class='opr'>+</span> <span class='nbr'>1</span> <span class='opr'>+</span> <span class='kw4'>uint</span>.sizeof <span class='opr'>*</span> <span class='nbr'>3</span>;
         <span class='kw1'>for</span> <span class='opr'>(</span>count <span class='opr'>=</span> <span class='nbr'>0</span>; count <span class='opr'>&lt;</span> n; count<span class='opr'>+</span><span class='opr'>+</span><span class='opr'>)</span>
         <span class='opr'>{</span>
@@ -5157,14 +5328,14 @@ Regex search<span class='opr'>(</span><span class='kw4'>char</span><span class='
             <span class='opr'>}</span>
 
             <span class='kw1'>if</span> <span class='opr'>(</span>!trymatch<span class='opr'>(</span>pop, pop <span class='opr'>+</span> len<span class='opr'>)</span><span class='opr'>)</span>
-            <span class='opr'>{</span>   <span class='kw4'>debug</span><span class='opr'>(</span>regexp<span class='opr'>)</span> printf<span class='opr'>(</span><span class='str'>&quot;\tdoesn't match subexpression\n&quot;</span><span class='opr'>)</span>;
+            <span class='opr'>{</span>   <span class='kw4'>debug</span><span class='opr'>(</span>Regex<span class='opr'>)</span> printf<span class='opr'>(</span><span class='str'>&quot;\tdoesn't match subexpression\n&quot;</span><span class='opr'>)</span>;
                 <span class='kw1'>break</span>;
             <span class='opr'>}</span>
 
             <span class='com'>// If source is not consumed, don't</span>
             <span class='com'>// infinite loop on the match</span>
             <span class='kw1'>if</span> <span class='opr'>(</span>s1 <span class='opr'>=</span><span class='opr'>=</span> src<span class='opr'>)</span>
-            <span class='opr'>{</span>   <span class='kw4'>debug</span><span class='opr'>(</span>regexp<span class='opr'>)</span> printf<span class='opr'>(</span><span class='str'>&quot;\tsource is not consumed\n&quot;</span><span class='opr'>)</span>;
+            <span class='opr'>{</span>   <span class='kw4'>debug</span><span class='opr'>(</span>Regex<span class='opr'>)</span> printf<span class='opr'>(</span><span class='str'>&quot;\tsource is not consumed\n&quot;</span><span class='opr'>)</span>;
                 <span class='kw1'>break</span>;
             <span class='opr'>}</span>
             <span class='opr'>}</span>
@@ -5178,7 +5349,7 @@ Regex search<span class='opr'>(</span><span class='kw4'>char</span><span class='
             memcpy<span class='opr'>(</span>psave, pmatch, <span class='opr'>(</span>re_nsub <span class='opr'>+</span> <span class='nbr'>1</span><span class='opr'>)</span> <span class='opr'>*</span> regmatch_t.sizeof<span class='opr'>)</span>;
             s1 <span class='opr'>=</span> src;
             <span class='kw1'>if</span> <span class='opr'>(</span>!trymatch<span class='opr'>(</span>pop, pop <span class='opr'>+</span> len<span class='opr'>)</span><span class='opr'>)</span>
-            <span class='opr'>{</span>   <span class='kw4'>debug</span><span class='opr'>(</span>regexp<span class='opr'>)</span> printf<span class='opr'>(</span><span class='str'>&quot;\tdoesn't match subexpression\n&quot;</span><span class='opr'>)</span>;
+            <span class='opr'>{</span>   <span class='kw4'>debug</span><span class='opr'>(</span>Regex<span class='opr'>)</span> printf<span class='opr'>(</span><span class='str'>&quot;\tdoesn't match subexpression\n&quot;</span><span class='opr'>)</span>;
                 <span class='kw1'>break</span>;
             <span class='opr'>}</span>
             s2 <span class='opr'>=</span> src;
@@ -5186,7 +5357,7 @@ Regex search<span class='opr'>(</span><span class='kw4'>char</span><span class='
             <span class='com'>// If source is not consumed, don't</span>
             <span class='com'>// infinite loop on the match</span>
             <span class='kw1'>if</span> <span class='opr'>(</span>s1 <span class='opr'>=</span><span class='opr'>=</span> s2<span class='opr'>)</span>
-            <span class='opr'>{</span>   <span class='kw4'>debug</span><span class='opr'>(</span>regexp<span class='opr'>)</span> printf<span class='opr'>(</span><span class='str'>&quot;\tsource is not consumed\n&quot;</span><span class='opr'>)</span>;
+            <span class='opr'>{</span>   <span class='kw4'>debug</span><span class='opr'>(</span>Regex<span class='opr'>)</span> printf<span class='opr'>(</span><span class='str'>&quot;\tsource is not consumed\n&quot;</span><span class='opr'>)</span>;
                 <span class='kw1'>break</span>;
             <span class='opr'>}</span>
 
@@ -5205,13 +5376,13 @@ Regex search<span class='opr'>(</span><span class='kw4'>char</span><span class='
             src <span class='opr'>=</span> s2;
             <span class='opr'>}</span>
         <span class='opr'>}</span>
-        <span class='kw4'>debug</span><span class='opr'>(</span>regexp<span class='opr'>)</span> printf<span class='opr'>(</span><span class='str'>&quot;\tREnm len=%d, n=%u, m=%u, DONE count=%d\n&quot;</span>, len, n, m, count<span class='opr'>)</span>;
+        <span class='kw4'>debug</span><span class='opr'>(</span>Regex<span class='opr'>)</span> printf<span class='opr'>(</span><span class='str'>&quot;\tREnm len=%d, n=%u, m=%u, DONE count=%d\n&quot;</span>, len, n, m, count<span class='opr'>)</span>;
         pc <span class='opr'>=</span> pop <span class='opr'>+</span> len;
         <span class='kw1'>break</span>;
 
         <span class='kw1'>case</span> REparen:
         <span class='com'>// len, ()</span>
-        <span class='kw4'>debug</span><span class='opr'>(</span>regexp<span class='opr'>)</span> printf<span class='opr'>(</span><span class='str'>&quot;\tREparen\n&quot;</span><span class='opr'>)</span>;
+        <span class='kw4'>debug</span><span class='opr'>(</span>Regex<span class='opr'>)</span> printf<span class='opr'>(</span><span class='str'>&quot;\tREparen\n&quot;</span><span class='opr'>)</span>;
         puint <span class='opr'>=</span> <span class='kw2'>cast</span><span class='opr'>(</span><span class='kw4'>uint</span> <span class='opr'>*</span><span class='opr'>)</span><span class='opr'>&amp;</span>program<span class='opr'>[</span>pc <span class='opr'>+</span> <span class='nbr'>1</span><span class='opr'>]</span>;
         len <span class='opr'>=</span> puint<span class='opr'>[</span><span class='nbr'>0</span><span class='opr'>]</span>;
         n <span class='opr'>=</span> puint<span class='opr'>[</span><span class='nbr'>1</span><span class='opr'>]</span>;
@@ -5225,11 +5396,11 @@ Regex search<span class='opr'>(</span><span class='kw4'>char</span><span class='
         <span class='kw1'>break</span>;
 
         <span class='kw1'>case</span> REend:
-        <span class='kw4'>debug</span><span class='opr'>(</span>regexp<span class='opr'>)</span> printf<span class='opr'>(</span><span class='str'>&quot;\tREend\n&quot;</span><span class='opr'>)</span>;
+        <span class='kw4'>debug</span><span class='opr'>(</span>Regex<span class='opr'>)</span> printf<span class='opr'>(</span><span class='str'>&quot;\tREend\n&quot;</span><span class='opr'>)</span>;
         <span class='kw1'>return</span> <span class='nbr'>1</span>;        <span class='com'>// successful match</span>
 
         <span class='kw1'>case</span> REwordboundary:
-        <span class='kw4'>debug</span><span class='opr'>(</span>regexp<span class='opr'>)</span> printf<span class='opr'>(</span><span class='str'>&quot;\tREwordboundary\n&quot;</span><span class='opr'>)</span>;
+        <span class='kw4'>debug</span><span class='opr'>(</span>Regex<span class='opr'>)</span> printf<span class='opr'>(</span><span class='str'>&quot;\tREwordboundary\n&quot;</span><span class='opr'>)</span>;
         <span class='kw1'>if</span> <span class='opr'>(</span>src <span class='opr'>&gt;</span> <span class='nbr'>0</span> &amp;&amp; src <span class='opr'>&lt;</span> input.length<span class='opr'>)</span>
         <span class='opr'>{</span>
             c1 <span class='opr'>=</span> input<span class='opr'>[</span>src <span class='opr'>-</span> <span class='nbr'>1</span><span class='opr'>]</span>;
@@ -5245,7 +5416,7 @@ Regex search<span class='opr'>(</span><span class='kw4'>char</span><span class='
         <span class='kw1'>break</span>;
 
         <span class='kw1'>case</span> REnotwordboundary:
-        <span class='kw4'>debug</span><span class='opr'>(</span>regexp<span class='opr'>)</span> printf<span class='opr'>(</span><span class='str'>&quot;\tREnotwordboundary\n&quot;</span><span class='opr'>)</span>;
+        <span class='kw4'>debug</span><span class='opr'>(</span>Regex<span class='opr'>)</span> printf<span class='opr'>(</span><span class='str'>&quot;\tREnotwordboundary\n&quot;</span><span class='opr'>)</span>;
         <span class='kw1'>if</span> <span class='opr'>(</span>src <span class='opr'>=</span><span class='opr'>=</span> <span class='nbr'>0</span> || src <span class='opr'>=</span><span class='opr'>=</span> input.length<span class='opr'>)</span>
             <span class='kw1'>goto</span> Lnomatch;
         c1 <span class='opr'>=</span> input<span class='opr'>[</span>src <span class='opr'>-</span> <span class='nbr'>1</span><span class='opr'>]</span>;
@@ -5259,7 +5430,7 @@ Regex search<span class='opr'>(</span><span class='kw4'>char</span><span class='
         <span class='kw1'>break</span>;
 
         <span class='kw1'>case</span> REdigit:
-        <span class='kw4'>debug</span><span class='opr'>(</span>regexp<span class='opr'>)</span> printf<span class='opr'>(</span><span class='str'>&quot;\tREdigit\n&quot;</span><span class='opr'>)</span>;
+        <span class='kw4'>debug</span><span class='opr'>(</span>Regex<span class='opr'>)</span> printf<span class='opr'>(</span><span class='str'>&quot;\tREdigit\n&quot;</span><span class='opr'>)</span>;
         <span class='kw1'>if</span> <span class='opr'>(</span>src <span class='opr'>=</span><span class='opr'>=</span> input.length<span class='opr'>)</span>
             <span class='kw1'>goto</span> Lnomatch;
         <span class='kw1'>if</span> <span class='opr'>(</span>!isdigit<span class='opr'>(</span>input<span class='opr'>[</span>src<span class='opr'>]</span><span class='opr'>)</span><span class='opr'>)</span>
@@ -5269,7 +5440,7 @@ Regex search<span class='opr'>(</span><span class='kw4'>char</span><span class='
         <span class='kw1'>break</span>;
 
         <span class='kw1'>case</span> REnotdigit:
-        <span class='kw4'>debug</span><span class='opr'>(</span>regexp<span class='opr'>)</span> printf<span class='opr'>(</span><span class='str'>&quot;\tREnotdigit\n&quot;</span><span class='opr'>)</span>;
+        <span class='kw4'>debug</span><span class='opr'>(</span>Regex<span class='opr'>)</span> printf<span class='opr'>(</span><span class='str'>&quot;\tREnotdigit\n&quot;</span><span class='opr'>)</span>;
         <span class='kw1'>if</span> <span class='opr'>(</span>src <span class='opr'>=</span><span class='opr'>=</span> input.length<span class='opr'>)</span>
             <span class='kw1'>goto</span> Lnomatch;
         <span class='kw1'>if</span> <span class='opr'>(</span>isdigit<span class='opr'>(</span>input<span class='opr'>[</span>src<span class='opr'>]</span><span class='opr'>)</span><span class='opr'>)</span>
@@ -5279,7 +5450,7 @@ Regex search<span class='opr'>(</span><span class='kw4'>char</span><span class='
         <span class='kw1'>break</span>;
 
         <span class='kw1'>case</span> REspace:
-        <span class='kw4'>debug</span><span class='opr'>(</span>regexp<span class='opr'>)</span> printf<span class='opr'>(</span><span class='str'>&quot;\tREspace\n&quot;</span><span class='opr'>)</span>;
+        <span class='kw4'>debug</span><span class='opr'>(</span>Regex<span class='opr'>)</span> printf<span class='opr'>(</span><span class='str'>&quot;\tREspace\n&quot;</span><span class='opr'>)</span>;
         <span class='kw1'>if</span> <span class='opr'>(</span>src <span class='opr'>=</span><span class='opr'>=</span> input.length<span class='opr'>)</span>
             <span class='kw1'>goto</span> Lnomatch;
         <span class='kw1'>if</span> <span class='opr'>(</span>!isspace<span class='opr'>(</span>input<span class='opr'>[</span>src<span class='opr'>]</span><span class='opr'>)</span><span class='opr'>)</span>
@@ -5289,7 +5460,7 @@ Regex search<span class='opr'>(</span><span class='kw4'>char</span><span class='
         <span class='kw1'>break</span>;
 
         <span class='kw1'>case</span> REnotspace:
-        <span class='kw4'>debug</span><span class='opr'>(</span>regexp<span class='opr'>)</span> printf<span class='opr'>(</span><span class='str'>&quot;\tREnotspace\n&quot;</span><span class='opr'>)</span>;
+        <span class='kw4'>debug</span><span class='opr'>(</span>Regex<span class='opr'>)</span> printf<span class='opr'>(</span><span class='str'>&quot;\tREnotspace\n&quot;</span><span class='opr'>)</span>;
         <span class='kw1'>if</span> <span class='opr'>(</span>src <span class='opr'>=</span><span class='opr'>=</span> input.length<span class='opr'>)</span>
             <span class='kw1'>goto</span> Lnomatch;
         <span class='kw1'>if</span> <span class='opr'>(</span>isspace<span class='opr'>(</span>input<span class='opr'>[</span>src<span class='opr'>]</span><span class='opr'>)</span><span class='opr'>)</span>
@@ -5299,7 +5470,7 @@ Regex search<span class='opr'>(</span><span class='kw4'>char</span><span class='
         <span class='kw1'>break</span>;
 
         <span class='kw1'>case</span> REword:
-        <span class='kw4'>debug</span><span class='opr'>(</span>regexp<span class='opr'>)</span> printf<span class='opr'>(</span><span class='str'>&quot;\tREword\n&quot;</span><span class='opr'>)</span>;
+        <span class='kw4'>debug</span><span class='opr'>(</span>Regex<span class='opr'>)</span> printf<span class='opr'>(</span><span class='str'>&quot;\tREword\n&quot;</span><span class='opr'>)</span>;
         <span class='kw1'>if</span> <span class='opr'>(</span>src <span class='opr'>=</span><span class='opr'>=</span> input.length<span class='opr'>)</span>
             <span class='kw1'>goto</span> Lnomatch;
         <span class='kw1'>if</span> <span class='opr'>(</span>!isword<span class='opr'>(</span>input<span class='opr'>[</span>src<span class='opr'>]</span><span class='opr'>)</span><span class='opr'>)</span>
@@ -5309,7 +5480,7 @@ Regex search<span class='opr'>(</span><span class='kw4'>char</span><span class='
         <span class='kw1'>break</span>;
 
         <span class='kw1'>case</span> REnotword:
-        <span class='kw4'>debug</span><span class='opr'>(</span>regexp<span class='opr'>)</span> printf<span class='opr'>(</span><span class='str'>&quot;\tREnotword\n&quot;</span><span class='opr'>)</span>;
+        <span class='kw4'>debug</span><span class='opr'>(</span>Regex<span class='opr'>)</span> printf<span class='opr'>(</span><span class='str'>&quot;\tREnotword\n&quot;</span><span class='opr'>)</span>;
         <span class='kw1'>if</span> <span class='opr'>(</span>src <span class='opr'>=</span><span class='opr'>=</span> input.length<span class='opr'>)</span>
             <span class='kw1'>goto</span> Lnomatch;
         <span class='kw1'>if</span> <span class='opr'>(</span>isword<span class='opr'>(</span>input<span class='opr'>[</span>src<span class='opr'>]</span><span class='opr'>)</span><span class='opr'>)</span>
@@ -5321,7 +5492,7 @@ Regex search<span class='opr'>(</span><span class='kw4'>char</span><span class='
         <span class='kw1'>case</span> REbackref:
         <span class='opr'>{</span>
         n <span class='opr'>=</span> program<span class='opr'>[</span>pc <span class='opr'>+</span> <span class='nbr'>1</span><span class='opr'>]</span>;
-        <span class='kw4'>debug</span><span class='opr'>(</span>regexp<span class='opr'>)</span> printf<span class='opr'>(</span><span class='str'>&quot;\tREbackref %d\n&quot;</span>, n<span class='opr'>)</span>;
+        <span class='kw4'>debug</span><span class='opr'>(</span>Regex<span class='opr'>)</span> printf<span class='opr'>(</span><span class='str'>&quot;\tREbackref %d\n&quot;</span>, n<span class='opr'>)</span>;
 
         <span class='kw4'>int</span> so <span class='opr'>=</span> pmatch<span class='opr'>[</span>n <span class='opr'>+</span> <span class='nbr'>1</span><span class='opr'>]</span>.rm_so;
         <span class='kw4'>int</span> eo <span class='opr'>=</span> pmatch<span class='opr'>[</span>n <span class='opr'>+</span> <span class='nbr'>1</span><span class='opr'>]</span>.rm_eo;
@@ -5346,7 +5517,7 @@ Regex search<span class='opr'>(</span><span class='kw4'>char</span><span class='
     <span class='opr'>}</span>
 
 Lnomatch:
-    <span class='kw4'>debug</span><span class='opr'>(</span>regexp<span class='opr'>)</span> printf<span class='opr'>(</span><span class='str'>&quot;\tnomatch pc=%d\n&quot;</span>, pc<span class='opr'>)</span>;
+    <span class='kw4'>debug</span><span class='opr'>(</span>Regex<span class='opr'>)</span> printf<span class='opr'>(</span><span class='str'>&quot;\tnomatch pc=%d\n&quot;</span>, pc<span class='opr'>)</span>;
     src <span class='opr'>=</span> srcsave;
     <span class='kw1'>return</span> <span class='nbr'>0</span>;
 <span class='opr'>}</span>
@@ -5393,6 +5564,7 @@ Lnomatch:
         <span class='kw1'>break</span>;
     <span class='opr'>}</span>
     <span class='opr'>}</span>
+    <span class='kw2'>assert</span><span class='opr'>(</span><span class='nbr'>0</span><span class='opr'>)</span>;
 <span class='opr'>}</span>
 
 <span class='kw4'>int</span> parsePiece<span class='opr'>(</span><span class='opr'>)</span>
@@ -5500,6 +5672,7 @@ Lnomatch:
 
 Lerr:
     error<span class='opr'>(</span><span class='str'>&quot;badly formed {n,m}&quot;</span><span class='opr'>)</span>;
+    <span class='kw2'>assert</span><span class='opr'>(</span><span class='nbr'>0</span><span class='opr'>)</span>;
 <span class='opr'>}</span>
 
 <span class='kw4'>int</span> parseAtom<span class='opr'>(</span><span class='opr'>)</span>
@@ -5663,7 +5836,7 @@ Lerr:
             len <span class='opr'>=</span> q <span class='opr'>-</span> p;
             <span class='kw1'>if</span> <span class='opr'>(</span>len <span class='opr'>&gt;</span> <span class='nbr'>0</span><span class='opr'>)</span>
             <span class='opr'>{</span>
-            <span class='kw4'>debug</span><span class='opr'>(</span>regexp<span class='opr'>)</span> printf<span class='opr'>(</span><span class='str'>&quot;writing string len %d, c = '%c', pattern[p] = '%c'\n&quot;</span>, len<span class='opr'>+</span><span class='nbr'>1</span>, c, pattern<span class='opr'>[</span>p<span class='opr'>]</span><span class='opr'>)</span>;
+            <span class='kw4'>debug</span><span class='opr'>(</span>Regex<span class='opr'>)</span> printf<span class='opr'>(</span><span class='str'>&quot;writing string len %d, c = '%c', pattern[p] = '%c'\n&quot;</span>, len<span class='opr'>+</span><span class='nbr'>1</span>, c, pattern<span class='opr'>[</span>p<span class='opr'>]</span><span class='opr'>)</span>;
             buf.reserve<span class='opr'>(</span><span class='nbr'>5</span> <span class='opr'>+</span> <span class='opr'>(</span><span class='nbr'>1</span> <span class='opr'>+</span> len<span class='opr'>)</span> <span class='opr'>*</span> rchar.sizeof<span class='opr'>)</span>;
             buf.write<span class='opr'>(</span><span class='opr'>(</span>attributes <span class='opr'>&amp;</span> REA.ignoreCase<span class='opr'>)</span> ? REistring : REstring<span class='opr'>)</span>;
             buf.write<span class='opr'>(</span>len <span class='opr'>+</span> <span class='nbr'>1</span><span class='opr'>)</span>;
@@ -5683,7 +5856,7 @@ Lerr:
         <span class='kw1'>else</span>
         <span class='opr'>{</span>
          Lchar:
-            <span class='kw4'>debug</span><span class='opr'>(</span>regexp<span class='opr'>)</span> printf<span class='opr'>(</span><span class='str'>&quot;It's an REchar '%c'\n&quot;</span>, c<span class='opr'>)</span>;
+            <span class='kw4'>debug</span><span class='opr'>(</span>Regex<span class='opr'>)</span> printf<span class='opr'>(</span><span class='str'>&quot;It's an REchar '%c'\n&quot;</span>, c<span class='opr'>)</span>;
             buf.write<span class='opr'>(</span>op<span class='opr'>)</span>;
             buf.write<span class='opr'>(</span><span class='kw2'>cast</span><span class='opr'>(</span><span class='kw4'>char</span><span class='opr'>)</span>c<span class='opr'>)</span>;
         <span class='opr'>}</span>
@@ -5718,11 +5891,11 @@ Lerr:
         maxc <span class='opr'>=</span> u;
         b <span class='opr'>=</span> u / <span class='nbr'>8</span>;
         <span class='kw1'>if</span> <span class='opr'>(</span>b <span class='opr'>&gt;</span><span class='opr'>=</span> maxb<span class='opr'>)</span>
-        <span class='opr'>{</span>    <span class='kw4'>uint</span> u;
+        <span class='opr'>{</span>    <span class='kw4'>uint</span> u2;
 
-        u <span class='opr'>=</span> base ? base <span class='opr'>-</span> <span class='opr'>&amp;</span>buf.data<span class='opr'>[</span><span class='nbr'>0</span><span class='opr'>]</span> : <span class='nbr'>0</span>;
+        u2 <span class='opr'>=</span> base ? base <span class='opr'>-</span> <span class='opr'>&amp;</span>buf.data<span class='opr'>[</span><span class='nbr'>0</span><span class='opr'>]</span> : <span class='nbr'>0</span>;
         buf.fill0<span class='opr'>(</span>b <span class='opr'>-</span> maxb <span class='opr'>+</span> <span class='nbr'>1</span><span class='opr'>)</span>;
-        base <span class='opr'>=</span> <span class='opr'>&amp;</span>buf.data<span class='opr'>[</span>u<span class='opr'>]</span>;
+        base <span class='opr'>=</span> <span class='opr'>&amp;</span>buf.data<span class='opr'>[</span>u2<span class='opr'>]</span>;
         maxb <span class='opr'>=</span> b <span class='opr'>+</span> <span class='nbr'>1</span>;
         <span class='com'>//bits = (cast(bit*)this.base)[0 .. maxc + 1];</span>
         bits.init<span class='opr'>(</span><span class='opr'>(</span><span class='kw2'>cast</span><span class='opr'>(</span><span class='kw4'>uint</span><span class='opr'>*</span><span class='opr'>)</span><span class='kw2'>this</span>.base<span class='opr'>)</span><span class='opr'>[</span><span class='nbr'>0</span> <span class='opr'>..</span> <span class='opr'>(</span>maxc <span class='opr'>+</span> <span class='nbr'>1</span><span class='opr'>)</span> / <span class='opr'>(</span><span class='kw4'>uint</span><span class='opr'>*</span><span class='opr'>)</span>.sizeof<span class='opr'>]</span>, maxc <span class='opr'>+</span> <span class='nbr'>1</span><span class='opr'>)</span>;
@@ -5743,7 +5916,7 @@ Lerr:
     bits<span class='opr'>[</span>u<span class='opr'>]</span> <span class='opr'>=</span> <span class='nbr'>1</span>;
     <span class='opr'>}</span>
 
-<span class='opr'>}</span>;
+<span class='opr'>}</span>
 
 <span class='kw4'>int</span> parseRange<span class='opr'>(</span><span class='opr'>)</span>
 <span class='opr'>{</span>   <span class='kw4'>ubyte</span> op;
@@ -5803,6 +5976,8 @@ Lerr:
             <span class='kw1'>break</span>;
             <span class='kw1'>case</span> RS.start:
             <span class='kw1'>break</span>;
+            <span class='kw2'>default</span>:
+            <span class='kw2'>assert</span><span class='opr'>(</span><span class='nbr'>0</span><span class='opr'>)</span>;
         <span class='opr'>}</span>
         p<span class='opr'>+</span><span class='opr'>+</span>;
         <span class='kw1'>break</span>;
@@ -5906,6 +6081,9 @@ Lerr:
                 r.bits<span class='opr'>[</span>c<span class='opr'>]</span> <span class='opr'>=</span> <span class='nbr'>1</span>;
             rs <span class='opr'>=</span> RS.start;
             <span class='kw1'>break</span>;
+
+            <span class='kw2'>default</span>:
+            <span class='kw2'>assert</span><span class='opr'>(</span><span class='nbr'>0</span><span class='opr'>)</span>;
         <span class='opr'>}</span>
         <span class='kw1'>continue</span>;
     <span class='opr'>}</span>
@@ -5936,7 +6114,7 @@ Lerr:
 <span class='kw4'>void</span> error<span class='opr'>(</span><span class='kw4'>char</span><span class='opr'>[</span><span class='opr'>]</span> msg<span class='opr'>)</span>
 <span class='opr'>{</span>
     errors<span class='opr'>+</span><span class='opr'>+</span>;
-    <span class='kw4'>debug</span><span class='opr'>(</span>regexp<span class='opr'>)</span> printf<span class='opr'>(</span><span class='str'>&quot;error: %.*s\n&quot;</span>, msg<span class='opr'>)</span>;
+    <span class='kw4'>debug</span><span class='opr'>(</span>Regex<span class='opr'>)</span> printf<span class='opr'>(</span><span class='str'>&quot;error: %.*s\n&quot;</span>, msg<span class='opr'>)</span>;
 <span class='com'>//assert(0);</span>
 <span class='com'>//*(char*)0=0;</span>
     <span class='kw2'>throw</span> <span class='kw2'>new</span> RegexException<span class='opr'>(</span>msg<span class='opr'>)</span>;
@@ -6069,7 +6247,7 @@ Lretc:
 <span class='kw4'>void</span> optimize<span class='opr'>(</span><span class='opr'>)</span>
 <span class='opr'>{</span>   <span class='kw4'>ubyte</span><span class='opr'>[</span><span class='opr'>]</span> prog;
 
-    <span class='kw4'>debug</span><span class='opr'>(</span>regexp<span class='opr'>)</span> printf<span class='opr'>(</span><span class='str'>&quot;Regex.optimize()\n&quot;</span><span class='opr'>)</span>;
+    <span class='kw4'>debug</span><span class='opr'>(</span>Regex<span class='opr'>)</span> printf<span class='opr'>(</span><span class='str'>&quot;Regex.optimize()\n&quot;</span><span class='opr'>)</span>;
     prog <span class='opr'>=</span> buf.toBytes<span class='opr'>(</span><span class='opr'>)</span>;
     <span class='kw1'>for</span> <span class='opr'>(</span><span class='kw4'>size_t</span> i <span class='opr'>=</span> <span class='nbr'>0</span>; <span class='nbr'>1</span>;<span class='opr'>)</span>
     <span class='opr'>{</span>
@@ -6119,7 +6297,7 @@ Lretc:
         offset <span class='opr'>=</span> i;
         <span class='kw1'>if</span> <span class='opr'>(</span>starrchars<span class='opr'>(</span>r, prog<span class='opr'>[</span>i <span class='opr'>..</span> prog.length<span class='opr'>]</span><span class='opr'>)</span><span class='opr'>)</span>
         <span class='opr'>{</span>
-            <span class='kw4'>debug</span><span class='opr'>(</span>regexp<span class='opr'>)</span> printf<span class='opr'>(</span><span class='str'>&quot;\tfilter built\n&quot;</span><span class='opr'>)</span>;
+            <span class='kw4'>debug</span><span class='opr'>(</span>Regex<span class='opr'>)</span> printf<span class='opr'>(</span><span class='str'>&quot;\tfilter built\n&quot;</span><span class='opr'>)</span>;
             buf.spread<span class='opr'>(</span>offset, <span class='nbr'>1</span> <span class='opr'>+</span> <span class='nbr'>4</span> <span class='opr'>+</span> r.maxb<span class='opr'>)</span>;
             buf.data<span class='opr'>[</span>offset<span class='opr'>]</span> <span class='opr'>=</span> REtestbit;
             <span class='opr'>(</span><span class='kw2'>cast</span><span class='opr'>(</span><span class='kw4'>ushort</span> <span class='opr'>*</span><span class='opr'>)</span><span class='opr'>&amp;</span>buf.data<span class='opr'>[</span>offset <span class='opr'>+</span> <span class='nbr'>1</span><span class='opr'>]</span><span class='opr'>)</span><span class='opr'>[</span><span class='nbr'>0</span><span class='opr'>]</span> <span class='opr'>=</span> <span class='kw2'>cast</span><span class='opr'>(</span><span class='kw4'>ushort</span><span class='opr'>)</span>r.maxc;
@@ -6182,7 +6360,7 @@ Lretc:
         len <span class='opr'>=</span> <span class='opr'>*</span><span class='kw2'>cast</span><span class='opr'>(</span><span class='kw4'>uint</span> <span class='opr'>*</span><span class='opr'>)</span><span class='opr'>&amp;</span>prog<span class='opr'>[</span>i <span class='opr'>+</span> <span class='nbr'>1</span><span class='opr'>]</span>;
         <span class='kw2'>assert</span><span class='opr'>(</span>len<span class='opr'>)</span>;
         c <span class='opr'>=</span> <span class='opr'>*</span><span class='kw2'>cast</span><span class='opr'>(</span>rchar <span class='opr'>*</span><span class='opr'>)</span><span class='opr'>&amp;</span>prog<span class='opr'>[</span>i <span class='opr'>+</span> <span class='nbr'>1</span> <span class='opr'>+</span> <span class='kw4'>uint</span>.sizeof<span class='opr'>]</span>;
-        <span class='kw4'>debug</span><span class='opr'>(</span>regexp<span class='opr'>)</span> printf<span class='opr'>(</span><span class='str'>&quot;\tREstring %d, '%c'\n&quot;</span>, len, c<span class='opr'>)</span>;
+        <span class='kw4'>debug</span><span class='opr'>(</span>Regex<span class='opr'>)</span> printf<span class='opr'>(</span><span class='str'>&quot;\tREstring %d, '%c'\n&quot;</span>, len, c<span class='opr'>)</span>;
         <span class='kw1'>if</span> <span class='opr'>(</span>c <span class='opr'>&lt;</span><span class='opr'>=</span> <span class='nbr'>0</span>x7F<span class='opr'>)</span>
             r.setbit2<span class='opr'>(</span>c<span class='opr'>)</span>;
         <span class='kw1'>return</span> <span class='nbr'>1</span>;
@@ -6191,7 +6369,7 @@ Lretc:
         len <span class='opr'>=</span> <span class='opr'>*</span><span class='kw2'>cast</span><span class='opr'>(</span><span class='kw4'>uint</span> <span class='opr'>*</span><span class='opr'>)</span><span class='opr'>&amp;</span>prog<span class='opr'>[</span>i <span class='opr'>+</span> <span class='nbr'>1</span><span class='opr'>]</span>;
         <span class='kw2'>assert</span><span class='opr'>(</span>len<span class='opr'>)</span>;
         c <span class='opr'>=</span> <span class='opr'>*</span><span class='kw2'>cast</span><span class='opr'>(</span>rchar <span class='opr'>*</span><span class='opr'>)</span><span class='opr'>&amp;</span>prog<span class='opr'>[</span>i <span class='opr'>+</span> <span class='nbr'>1</span> <span class='opr'>+</span> <span class='kw4'>uint</span>.sizeof<span class='opr'>]</span>;
-        <span class='kw4'>debug</span><span class='opr'>(</span>regexp<span class='opr'>)</span> printf<span class='opr'>(</span><span class='str'>&quot;\tREistring %d, '%c'\n&quot;</span>, len, c<span class='opr'>)</span>;
+        <span class='kw4'>debug</span><span class='opr'>(</span>Regex<span class='opr'>)</span> printf<span class='opr'>(</span><span class='str'>&quot;\tREistring %d, '%c'\n&quot;</span>, len, c<span class='opr'>)</span>;
         <span class='kw1'>if</span> <span class='opr'>(</span>c <span class='opr'>&lt;</span><span class='opr'>=</span> <span class='nbr'>0</span>x7F<span class='opr'>)</span>
         <span class='opr'>{</span>   r.setbit2<span class='opr'>(</span>toupper<span class='opr'>(</span><span class='kw2'>cast</span><span class='opr'>(</span>rchar<span class='opr'>)</span>c<span class='opr'>)</span><span class='opr'>)</span>;
             r.setbit2<span class='opr'>(</span>tolower<span class='opr'>(</span><span class='kw2'>cast</span><span class='opr'>(</span>rchar<span class='opr'>)</span>c<span class='opr'>)</span><span class='opr'>)</span>;
@@ -6310,6 +6488,9 @@ Lretc:
 
         <span class='kw1'>case</span> REbackref:
         <span class='kw1'>return</span> <span class='nbr'>0</span>;
+
+        <span class='kw2'>default</span>:
+        <span class='kw2'>assert</span><span class='opr'>(</span><span class='nbr'>0</span><span class='opr'>)</span>;
     <span class='opr'>}</span>
     <span class='opr'>}</span>
     <span class='kw1'>return</span> <span class='nbr'>1</span>;
@@ -6321,34 +6502,6 @@ Lretc:
  * After a match is found with test(), this function
  * will take the match results and, using the format
  * string, generate and return a new string.
- * The format string has the formatting characters:
- *  &lt;table border=1 cellspacing=0 cellpadding=5&gt;
-    $(TR $(TH Format) $(TH Replaced With))
-    $(TR
-    $(TD $(B $$))   $(TD $)
-    )
-    $(TR
-    $(TD $(B $&amp;))   $(TD The matched substring.)
-    )
-    $(TR
-    $(TD $(B $`))   $(TD The portion of string that precedes the matched substring.)
-    )
-    $(TR
-    $(TD $(B $'))   $(TD The portion of string that follows the matched substring.)
-    )
-    $(TR
-    $(TD $(B $n))   $(TD The nth capture, where n is a single digit 1-9
-            and $n is not followed by a decimal digit.)
-    )
-    $(TR
-    $(TD $(B $nn))  $(TD The nnth capture, where nn is a two-digit decimal
-            number 01-99.
-            If nnth capture is undefined or more than the number
-            of parenthesized subexpressions, use the empty
-            string instead.)
-    )
-    &lt;/table&gt;
-    Any other $ are left as is.
  */</span>
 
 <span class='kw4'>public</span> rchar<span class='opr'>[</span><span class='opr'>]</span> replace<span class='opr'>(</span>rchar<span class='opr'>[</span><span class='opr'>]</span> format<span class='opr'>)</span>
@@ -6494,11 +6647,11 @@ Lretc:
         <span class='opr'>{</span>
             c <span class='opr'>=</span> format<span class='opr'>[</span><span class='opr'>+</span><span class='opr'>+</span>i<span class='opr'>]</span>;
             <span class='kw1'>if</span> <span class='opr'>(</span>c <span class='opr'>&gt;</span><span class='opr'>=</span> <span class='str'>'1'</span> &amp;&amp; c <span class='opr'>&lt;</span><span class='opr'>=</span> <span class='str'>'9'</span><span class='opr'>)</span>
-            <span class='opr'>{</span>   <span class='kw4'>uint</span> i;
+            <span class='opr'>{</span>   <span class='kw4'>uint</span> j;
 
-            i <span class='opr'>=</span> c <span class='opr'>-</span> <span class='str'>'0'</span>;
-            <span class='kw1'>if</span> <span class='opr'>(</span>i <span class='opr'>&lt;</span><span class='opr'>=</span> re_nsub &amp;&amp; pmatch<span class='opr'>[</span>i<span class='opr'>]</span>.rm_so <span class='opr'>!=</span> pmatch<span class='opr'>[</span>i<span class='opr'>]</span>.rm_eo<span class='opr'>)</span>
-                result <span class='opr'>~=</span> input<span class='opr'>[</span>pmatch<span class='opr'>[</span>i<span class='opr'>]</span>.rm_so <span class='opr'>..</span> pmatch<span class='opr'>[</span>i<span class='opr'>]</span>.rm_eo<span class='opr'>]</span>;
+            j <span class='opr'>=</span> c <span class='opr'>-</span> <span class='str'>'0'</span>;
+            <span class='kw1'>if</span> <span class='opr'>(</span>j <span class='opr'>&lt;</span><span class='opr'>=</span> re_nsub &amp;&amp; pmatch<span class='opr'>[</span>j<span class='opr'>]</span>.rm_so <span class='opr'>!=</span> pmatch<span class='opr'>[</span>j<span class='opr'>]</span>.rm_eo<span class='opr'>)</span>
+                result <span class='opr'>~=</span> input<span class='opr'>[</span>pmatch<span class='opr'>[</span>j<span class='opr'>]</span>.rm_so <span class='opr'>..</span> pmatch<span class='opr'>[</span>j<span class='opr'>]</span>.rm_eo<span class='opr'>]</span>;
             <span class='kw1'>break</span>;
             <span class='opr'>}</span>
         <span class='opr'>}</span>
@@ -6507,12 +6660,11 @@ Lretc:
 
         <span class='kw2'>default</span>:
         result <span class='opr'>~=</span> c;
-                <span class='kw1'>break</span>;
-            <span class='opr'>}</span>
-        <span class='opr'>}</span>
-        <span class='kw1'>return</span> result;
+        <span class='kw1'>break</span>;
     <span class='opr'>}</span>
-
+    <span class='opr'>}</span>
+    <span class='kw1'>return</span> result;
+<span class='opr'>}</span>
 <span class='opr'>}</span>
 
 <span class='com'>//</span>

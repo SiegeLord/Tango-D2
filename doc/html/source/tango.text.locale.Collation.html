@@ -1,0 +1,479 @@
+<!DOCTYPE html 
+     PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+     "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html>
+	<head>
+		<link rel="stylesheet" href="../../style.css" type="text/css" />
+		<title>text/locale/Collation.d</title>
+	</head>
+	<body>
+
+<table id='dcode'><tr><td id='lnum'><pre>1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24
+25
+26
+27
+28
+29
+30
+31
+32
+33
+34
+35
+36
+37
+38
+39
+40
+41
+42
+43
+44
+45
+46
+47
+48
+49
+50
+51
+52
+53
+54
+55
+56
+57
+58
+59
+60
+61
+62
+63
+64
+65
+66
+67
+68
+69
+70
+71
+72
+73
+74
+75
+76
+77
+78
+79
+80
+81
+82
+83
+84
+85
+86
+87
+88
+89
+90
+91
+92
+93
+94
+95
+96
+97
+98
+99
+100
+101
+102
+103
+104
+105
+106
+107
+108
+109
+110
+111
+112
+113
+114
+115
+116
+117
+118
+119
+120
+121
+122
+123
+124
+125
+126
+127
+128
+129
+130
+131
+132
+133
+134
+135
+136
+137
+138
+139
+140
+141
+142
+143
+144
+145
+146
+147
+148
+149
+150
+151
+152
+153
+154
+155
+156
+157
+158
+159
+160
+161
+162
+163
+164
+165
+166
+167
+168
+169
+170
+171
+172
+173
+174
+175
+176
+177
+178
+179
+180
+181
+182
+183
+184
+185
+186
+187
+188
+189
+190
+191
+192
+193
+194
+195
+196
+197
+198
+199
+200
+201
+202
+203
+204
+205
+206
+207
+208
+209
+210
+211
+212
+213
+214
+215
+216
+217
+218
+219
+220
+221
+222
+223
+224
+225
+226
+227
+228
+229
+230
+231
+232
+233
+</pre></td><td id='code'><pre><span class='com'>/**
+ */</span>
+<span class='kw2'>module</span> tango.text.locale.Collation;
+
+<span class='kw4'>private</span> <span class='kw2'>import</span> tango.text.locale.Core;
+
+<span class='kw4'>version</span> <span class='opr'>(</span>Windows<span class='opr'>)</span>
+  <span class='kw4'>private</span> <span class='kw2'>import</span> tango.text.locale.Win32;
+<span class='kw1'>else</span> <span class='kw4'>version</span> <span class='opr'>(</span>linux<span class='opr'>)</span>
+  <span class='kw4'>private</span> <span class='kw2'>import</span> tango.text.locale.Linux;
+
+  <span class='com'>/**
+  Compares strings using the specified case and cultural comparision rules.
+ */</span>
+<span class='kw4'>public</span> <span class='kw4'>class</span> StringComparer <span class='opr'>{</span>
+
+  <span class='kw4'>private</span> <span class='kw4'>static</span> StringComparer invariant_;
+  <span class='kw4'>private</span> <span class='kw4'>static</span> StringComparer invariantIgnoreCase_;
+  <span class='kw4'>private</span> Culture culture_;
+  <span class='kw4'>private</span> <span class='kw4'>bool</span> ignoreCase_;
+
+  <span class='kw4'>static</span> <span class='kw2'>this</span><span class='opr'>(</span><span class='opr'>)</span> <span class='opr'>{</span>
+    invariant_ <span class='opr'>=</span> <span class='kw2'>new</span> StringComparer<span class='opr'>(</span>Culture.invariantCulture, <span class='kw2'>false</span><span class='opr'>)</span>;
+    invariantIgnoreCase_ <span class='opr'>=</span> <span class='kw2'>new</span> StringComparer<span class='opr'>(</span>Culture.invariantCulture, <span class='kw2'>true</span><span class='opr'>)</span>;
+  <span class='opr'>}</span>
+
+  <span class='com'>/**
+    Creates an instance that compares strings using the rules of the specified culture.
+    Params:
+      culture = A Culture instance whose rules are used to compare strings.
+      ignoreCase = true to perform case-insensitive comparisons; false to perform case-sensitive comparisions.
+  */</span>
+  <span class='kw4'>public</span> <span class='kw2'>this</span><span class='opr'>(</span>Culture culture, <span class='kw4'>bool</span> ignoreCase<span class='opr'>)</span> <span class='opr'>{</span>
+    culture_ <span class='opr'>=</span> culture;
+    ignoreCase_ <span class='opr'>=</span> ignoreCase;
+  <span class='opr'>}</span>
+
+  <span class='com'>/**
+    Compares two strings and returns the sort order.
+    Returns:
+      -1 is strA is less than strB; 0 if strA is equal to strB; 1 if strA is greater than strB.
+    Params:
+      strA = A string to compare to strB.
+      strB = A string to compare to strA.
+  */</span>
+  <span class='kw4'>public</span> <span class='kw4'>int</span> compare<span class='opr'>(</span><span class='kw4'>char</span><span class='opr'>[</span><span class='opr'>]</span> strA, <span class='kw4'>char</span><span class='opr'>[</span><span class='opr'>]</span> strB<span class='opr'>)</span> <span class='opr'>{</span>
+    <span class='kw1'>return</span> nativeMethods.compareString<span class='opr'>(</span>culture_.id, strA, <span class='nbr'>0</span>, strA.length, strB, <span class='nbr'>0</span>, strB.length, ignoreCase_<span class='opr'>)</span>;
+  <span class='opr'>}</span>
+
+  <span class='com'>/**
+    Indicates whether the two strings are equal.
+    Returns:
+      true if strA and strB are equal; otherwise, false.
+    Params:
+      strA = A string to compare to strB.
+      strB = A string to compare to strA.
+  */</span>
+  <span class='kw4'>public</span> <span class='kw4'>bool</span> equals<span class='opr'>(</span><span class='kw4'>char</span><span class='opr'>[</span><span class='opr'>]</span> strA, <span class='kw4'>char</span><span class='opr'>[</span><span class='opr'>]</span> strB<span class='opr'>)</span> <span class='opr'>{</span>
+    <span class='kw1'>return</span> <span class='opr'>(</span>compare<span class='opr'>(</span>strA, strB<span class='opr'>)</span> <span class='opr'>=</span><span class='opr'>=</span> <span class='nbr'>0</span><span class='opr'>)</span>;
+  <span class='opr'>}</span>
+
+  <span class='com'>/**
+    $(I Property.) Retrieves an instance that performs case-sensitive comparisons using the rules of the current culture.
+    Returns:
+      A new StringComparer instance.
+  */</span>
+  <span class='kw4'>public</span> <span class='kw4'>static</span> StringComparer currentCulture<span class='opr'>(</span><span class='opr'>)</span> <span class='opr'>{</span>
+    <span class='kw1'>return</span> <span class='kw2'>new</span> StringComparer<span class='opr'>(</span>Culture.current, <span class='kw2'>false</span><span class='opr'>)</span>;
+  <span class='opr'>}</span>
+
+  <span class='com'>/**
+    $(I Property.) Retrieves an instance that performs case-insensitive comparisons using the rules of the current culture.
+    Returns:
+      A new StringComparer instance.
+  */</span>
+  <span class='kw4'>public</span> <span class='kw4'>static</span> StringComparer currentCultureIgnoreCase<span class='opr'>(</span><span class='opr'>)</span> <span class='opr'>{</span>
+    <span class='kw1'>return</span> <span class='kw2'>new</span> StringComparer<span class='opr'>(</span>Culture.current, <span class='kw2'>true</span><span class='opr'>)</span>;
+  <span class='opr'>}</span>
+
+  <span class='com'>/**
+    $(I Property.) Retrieves an instance that performs case-sensitive comparisons using the rules of the invariant culture.
+    Returns:
+      A new StringComparer instance.
+  */</span>
+  <span class='kw4'>public</span> <span class='kw4'>static</span> StringComparer invariantCulture<span class='opr'>(</span><span class='opr'>)</span> <span class='opr'>{</span>
+    <span class='kw1'>return</span> invariant_;
+  <span class='opr'>}</span>
+
+  <span class='com'>/**
+    $(I Property.) Retrieves an instance that performs case-insensitive comparisons using the rules of the invariant culture.
+    Returns:
+      A new StringComparer instance.
+  */</span>
+  <span class='kw4'>public</span> <span class='kw4'>static</span> StringComparer invariantCultureIgnoreCase<span class='opr'>(</span><span class='opr'>)</span> <span class='opr'>{</span>
+    <span class='kw1'>return</span> invariantIgnoreCase_;
+  <span class='opr'>}</span>
+
+<span class='opr'>}</span>
+
+<span class='com'>/**
+  $(I Delegate.) Represents the method that will handle the string comparison.
+  Remarks:
+    The delegate has the signature $(I int delegate(char[], char[])).
+ */</span>
+<span class='kw2'>alias</span> <span class='kw4'>int</span> <span class='kw2'>delegate</span><span class='opr'>(</span><span class='kw4'>char</span><span class='opr'>[</span><span class='opr'>]</span>, <span class='kw4'>char</span><span class='opr'>[</span><span class='opr'>]</span><span class='opr'>)</span> StringComparison;
+
+<span class='com'>/**
+  Sorts strings according to the rules of the specified culture.
+ */</span>
+<span class='kw4'>public</span> <span class='kw4'>class</span> StringSorter <span class='opr'>{</span>
+
+  <span class='kw4'>private</span> <span class='kw4'>static</span> StringSorter invariant_;
+  <span class='kw4'>private</span> <span class='kw4'>static</span> StringSorter invariantIgnoreCase_;
+  <span class='kw4'>private</span> Culture culture_;
+  <span class='kw4'>private</span> StringComparison comparison_;
+
+  <span class='kw4'>static</span> <span class='kw2'>this</span><span class='opr'>(</span><span class='opr'>)</span> <span class='opr'>{</span>
+    invariant_ <span class='opr'>=</span> <span class='kw2'>new</span> StringSorter<span class='opr'>(</span>StringComparer.invariantCulture<span class='opr'>)</span>;
+    invariantIgnoreCase_ <span class='opr'>=</span> <span class='kw2'>new</span> StringSorter<span class='opr'>(</span>StringComparer.invariantCultureIgnoreCase<span class='opr'>)</span>;
+  <span class='opr'>}</span>
+
+  <span class='com'>/**
+    Creates an instance using the specified StringComparer.
+    Params:
+      comparer = The StringComparer to use when comparing strings. $(I Optional.)
+  */</span>
+  <span class='kw4'>public</span> <span class='kw2'>this</span><span class='opr'>(</span>StringComparer comparer <span class='opr'>=</span> <span class='kw2'>null</span><span class='opr'>)</span> <span class='opr'>{</span>
+    <span class='kw1'>if</span> <span class='opr'>(</span>comparer <span class='kw2'>is</span> <span class='kw2'>null</span><span class='opr'>)</span>
+      comparer <span class='opr'>=</span> StringComparer.currentCulture;
+    comparison_ <span class='opr'>=</span> <span class='opr'>&amp;</span>comparer.compare;
+  <span class='opr'>}</span>
+
+  <span class='com'>/**
+    Creates an instance using the specified delegate.
+    Params:
+      comparison = The delegate to use when comparing strings.
+    Remarks:
+      The comparison parameter must have the same signature as StringComparison.
+  */</span>
+  <span class='kw4'>public</span> <span class='kw2'>this</span><span class='opr'>(</span>StringComparison comparison<span class='opr'>)</span> <span class='opr'>{</span>
+    comparison_ <span class='opr'>=</span> comparison;
+  <span class='opr'>}</span>
+
+  <span class='com'>/**
+    Sorts all the elements in an array.
+    Params:
+      array = The array of strings to _sort.
+  */</span>
+  <span class='kw4'>public</span> <span class='kw4'>void</span> sort<span class='opr'>(</span><span class='kw2'>inout</span> <span class='kw4'>char</span><span class='opr'>[</span><span class='opr'>]</span><span class='opr'>[</span><span class='opr'>]</span> array<span class='opr'>)</span> <span class='opr'>{</span>
+    sort<span class='opr'>(</span>array, <span class='nbr'>0</span>, array.length<span class='opr'>)</span>;
+  <span class='opr'>}</span>
+
+  <span class='com'>/**
+    Sorts a range of the elements in an array.
+    Params:
+      array = The array of strings to _sort.
+      index = The starting index of the range.
+      count = The number of elements in the range.
+  */</span>
+  <span class='kw4'>public</span> <span class='kw4'>void</span> sort<span class='opr'>(</span><span class='kw2'>inout</span> <span class='kw4'>char</span><span class='opr'>[</span><span class='opr'>]</span><span class='opr'>[</span><span class='opr'>]</span> array, <span class='kw4'>int</span> index, <span class='kw4'>int</span> count<span class='opr'>)</span> <span class='opr'>{</span>
+
+    <span class='kw4'>void</span> qsort<span class='opr'>(</span><span class='kw4'>int</span> left, <span class='kw4'>int</span> right<span class='opr'>)</span> <span class='opr'>{</span>
+      <span class='kw1'>do</span> <span class='opr'>{</span>
+        <span class='kw4'>int</span> i <span class='opr'>=</span> left, j <span class='opr'>=</span> right;
+        <span class='kw4'>char</span><span class='opr'>[</span><span class='opr'>]</span> pivot <span class='opr'>=</span> array<span class='opr'>[</span>left <span class='opr'>+</span> <span class='opr'>(</span><span class='opr'>(</span>right <span class='opr'>-</span> left<span class='opr'>)</span> <span class='opr'>&gt;</span><span class='opr'>&gt;</span> <span class='nbr'>1</span><span class='opr'>)</span><span class='opr'>]</span>;
+
+        <span class='kw1'>do</span> <span class='opr'>{</span>
+          <span class='kw1'>while</span> <span class='opr'>(</span>comparison_<span class='opr'>(</span>array<span class='opr'>[</span>i<span class='opr'>]</span>, pivot<span class='opr'>)</span> <span class='opr'>&lt;</span> <span class='nbr'>0</span><span class='opr'>)</span>
+            i<span class='opr'>+</span><span class='opr'>+</span>;
+          <span class='kw1'>while</span> <span class='opr'>(</span>comparison_<span class='opr'>(</span>pivot, array<span class='opr'>[</span>j<span class='opr'>]</span><span class='opr'>)</span> <span class='opr'>&lt;</span> <span class='nbr'>0</span><span class='opr'>)</span>
+            j<span class='opr'>-</span><span class='opr'>-</span>;
+
+          <span class='kw1'>if</span> <span class='opr'>(</span>i <span class='opr'>&gt;</span> j<span class='opr'>)</span>
+            <span class='kw1'>break</span>;
+          <span class='kw1'>else</span> <span class='kw1'>if</span> <span class='opr'>(</span>i <span class='opr'>&lt;</span> j<span class='opr'>)</span> <span class='opr'>{</span>
+            <span class='kw4'>char</span><span class='opr'>[</span><span class='opr'>]</span> temp <span class='opr'>=</span> array<span class='opr'>[</span>i<span class='opr'>]</span>;
+            array<span class='opr'>[</span>i<span class='opr'>]</span> <span class='opr'>=</span> array<span class='opr'>[</span>j<span class='opr'>]</span>;
+            array<span class='opr'>[</span>j<span class='opr'>]</span> <span class='opr'>=</span> temp;
+          <span class='opr'>}</span>
+
+          i<span class='opr'>+</span><span class='opr'>+</span>;
+          j<span class='opr'>-</span><span class='opr'>-</span>;
+        <span class='opr'>}</span> <span class='kw1'>while</span> <span class='opr'>(</span>i <span class='opr'>&lt;</span><span class='opr'>=</span> j<span class='opr'>)</span>;
+
+        <span class='kw1'>if</span> <span class='opr'>(</span>j <span class='opr'>-</span> left <span class='opr'>&lt;</span><span class='opr'>=</span> right <span class='opr'>-</span> i<span class='opr'>)</span> <span class='opr'>{</span>
+          <span class='kw1'>if</span> <span class='opr'>(</span>left <span class='opr'>&lt;</span> j<span class='opr'>)</span>
+            qsort<span class='opr'>(</span>left, j<span class='opr'>)</span>;
+          left <span class='opr'>=</span> i;
+        <span class='opr'>}</span>
+        <span class='kw1'>else</span> <span class='opr'>{</span>
+          <span class='kw1'>if</span> <span class='opr'>(</span>i <span class='opr'>&lt;</span> right<span class='opr'>)</span>
+            qsort<span class='opr'>(</span>i, right<span class='opr'>)</span>;
+          right <span class='opr'>=</span> j;
+        <span class='opr'>}</span>
+      <span class='opr'>}</span> <span class='kw1'>while</span> <span class='opr'>(</span>left <span class='opr'>&lt;</span> right<span class='opr'>)</span>;
+    <span class='opr'>}</span>
+
+    qsort<span class='opr'>(</span>index, index <span class='opr'>+</span> <span class='opr'>(</span>count <span class='opr'>-</span> <span class='nbr'>1</span><span class='opr'>)</span><span class='opr'>)</span>;
+  <span class='opr'>}</span>
+
+  <span class='com'>/**
+    $(I Property.) Retrieves an instance that performs a case-sensitive sort using the rules of the current culture.
+    Returns: A StringSorter instance.
+  */</span>
+  <span class='kw4'>public</span> <span class='kw4'>static</span> StringSorter currentCulture<span class='opr'>(</span><span class='opr'>)</span> <span class='opr'>{</span>
+    <span class='kw1'>return</span> <span class='kw2'>new</span> StringSorter<span class='opr'>(</span>StringComparer.currentCulture<span class='opr'>)</span>;
+  <span class='opr'>}</span>
+
+  <span class='com'>/**
+    $(I Property.) Retrieves an instance that performs a case-insensitive sort using the rules of the current culture.
+    Returns: A StringSorter instance.
+  */</span>
+  <span class='kw4'>public</span> <span class='kw4'>static</span> StringSorter currentCultureIgnoreCase<span class='opr'>(</span><span class='opr'>)</span> <span class='opr'>{</span>
+    <span class='kw1'>return</span> <span class='kw2'>new</span> StringSorter<span class='opr'>(</span>StringComparer.currentCultureIgnoreCase<span class='opr'>)</span>;
+  <span class='opr'>}</span>
+
+  <span class='com'>/**
+    $(I Property.) Retrieves an instance that performs a case-sensitive sort using the rules of the invariant culture.
+    Returns: A StringSorter instance.
+  */</span>
+  <span class='kw4'>public</span> <span class='kw4'>static</span> StringSorter invariantCulture<span class='opr'>(</span><span class='opr'>)</span> <span class='opr'>{</span>
+    <span class='kw1'>return</span> invariant_;
+  <span class='opr'>}</span>
+
+  <span class='com'>/**
+    $(I Property.) Retrieves an instance that performs a case-insensitive sort using the rules of the invariant culture.
+    Returns: A StringSorter instance.
+  */</span>
+  <span class='kw4'>public</span> <span class='kw4'>static</span> StringSorter invariantCultureIgnoreCase<span class='opr'>(</span><span class='opr'>)</span> <span class='opr'>{</span>
+    <span class='kw1'>return</span> invariantIgnoreCase_;
+  <span class='opr'>}</span>
+
+<span class='opr'>}</span>
+</pre></td></tr></table>	</body>
+</html>

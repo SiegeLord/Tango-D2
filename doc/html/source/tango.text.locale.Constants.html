@@ -1,0 +1,113 @@
+<!DOCTYPE html 
+     PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+     "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html>
+	<head>
+		<link rel="stylesheet" href="../../style.css" type="text/css" />
+		<title>text/locale/Constants.d</title>
+	</head>
+	<body>
+
+<table id='dcode'><tr><td id='lnum'><pre>1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24
+25
+26
+27
+28
+29
+30
+31
+32
+33
+34
+35
+36
+37
+38
+39
+40
+41
+42
+43
+44
+45
+46
+47
+48
+49
+50
+</pre></td><td id='code'><pre><span class='com'>/**
+ */</span>
+<span class='kw2'>module</span> tango.text.locale.Constants;
+
+<span class='com'>/**
+ * Defines the types of cultures that can be retrieved from Culture.getCultures.
+ */</span>
+<span class='kw4'>public</span> <span class='kw4'>enum</span> CultureTypes <span class='opr'>{</span>
+  Neutral <span class='opr'>=</span> <span class='nbr'>1</span>,             <span class='com'>/// Refers to cultures that are associated with a language but not specific to a country or region.</span>
+  Specific <span class='opr'>=</span> <span class='nbr'>2</span>,            <span class='com'>/// Refers to cultures that are specific to a country or region.</span>
+  All <span class='opr'>=</span> Neutral | Specific <span class='com'>/// Refers to all cultures.</span>
+<span class='opr'>}</span>
+
+  <span class='com'>/**
+   */</span>
+<span class='kw4'>public</span> <span class='kw4'>enum</span> DayOfWeek <span class='opr'>{</span>
+  Sunday,    <span class='com'>/// Indicates _Sunday.</span>
+  Monday,    <span class='com'>/// Indicates _Monday.</span>
+  Tuesday,   <span class='com'>/// Indicates _Tuesday.</span>
+  Wednesday, <span class='com'>/// Indicates _Wednesday.</span>
+  Thursday,  <span class='com'>/// Indicates _Thursday.</span>
+  Friday,    <span class='com'>/// Indicates _Friday.</span>
+  Saturday   <span class='com'>/// Indicates _Saturday.</span>
+<span class='opr'>}</span>
+
+  <span class='com'>/**
+   */</span>
+<span class='kw4'>public</span> <span class='kw4'>enum</span> CalendarWeekRule <span class='opr'>{</span>
+  FirstDay,         <span class='com'>/// Indicates that the first week of the year is the first week containing the first day of the year.</span>
+  FirstFullWeek,    <span class='com'>/// Indicates that the first week of the year is the first full week following the first day of the year.</span>
+  FirstFourDayWeek  <span class='com'>/// Indicates that the first week of the year is the first week containing at least four days.</span>
+<span class='opr'>}</span>
+
+  <span class='com'>/**
+   */</span>
+<span class='kw4'>public</span> <span class='kw4'>enum</span> GregorianCalendarTypes <span class='opr'>{</span>
+  Localized <span class='opr'>=</span> <span class='nbr'>1</span>,               <span class='com'>/// Refers to the localized version of the Gregorian calendar.</span>
+  USEnglish <span class='opr'>=</span> <span class='nbr'>2</span>,               <span class='com'>/// Refers to the US English version of the Gregorian calendar.</span>
+  MiddleEastFrench <span class='opr'>=</span> <span class='nbr'>9</span>,        <span class='com'>/// Refers to the Middle East French version of the Gregorian calendar.</span>
+  Arabic <span class='opr'>=</span> <span class='nbr'>10</span>,                 <span class='com'>/// Refers to the _Arabic version of the Gregorian calendar.</span>
+  TransliteratedEnglish <span class='opr'>=</span> <span class='nbr'>11</span>,  <span class='com'>/// Refers to the transliterated English version of the Gregorian calendar.</span>
+  TransliteratedFrench <span class='opr'>=</span> <span class='nbr'>12</span>    <span class='com'>/// Refers to the transliterated French version of the Gregorian calendar.</span>
+<span class='opr'>}</span>
+
+<span class='kw4'>package</span> <span class='kw4'>enum</span> DatePart <span class='opr'>{</span>
+  YEAR,
+  MONTH,
+  DAY,
+  DAY_OF_YEAR
+<span class='opr'>}</span>
+</pre></td></tr></table>	</body>
+</html>
