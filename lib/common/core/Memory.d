@@ -164,7 +164,7 @@ struct GC
 
 
     /**
-     * Deallocates the memory references by p.  If p is null, no action
+     * Deallocates the memory referenced by p.  If p is null, no action
      * occurs.  If p references memory not originally allocated by this
      * garbage collector, or if it points to the interior of a memory block,
      * no action will be taken.
@@ -261,11 +261,11 @@ struct GC
 
 
     /**
-     * Removes the memory block range beginning with pbeg and ending
-     * immediately before pend from an internal list of roots to be
-     * scanned during a collection.  If pbeg and pend were not previously
-     * passed to the garbage collector by a call to add, the result is
-     * undefined.  If pbeg and pend are null, no operation is performed.
+     * Removes the memory range beginning with pbeg and ending immediately
+     * before pend from an internal list of roots to be scanned during a
+     * collection.  If pbeg and pend were not previously passed to the garbage
+     * collector by a call to add, the result is undefined.  If pbeg and pend
+     * are null, no operation is performed.
      *
      * Params:
      *  pbeg = A pointer to the a valid memory location or to null.

@@ -7,6 +7,7 @@
  */
 module tango.core.Thread;
 
+
 /**
  * All exceptions thrown from this module derive from this class.
  */
@@ -289,11 +290,9 @@ else version( Posix )
         }
 
 
-        //
         // NOTE: this may not work on all versions of linux,
         //       but apparently the Windows implementation
         //       does not work in Linux (according to DMD revs)
-        //
         void* getStackBottom()
         {
             version( darwin )
@@ -522,9 +521,7 @@ class Thread
 
 
     /**
-     * Tests whether this thread is running.  This function should be
-     * callable from anywhere within the application without a risk of
-     * deadlock.
+     * Tests whether this thread is running.
      *
      * Returns:
      *  true if the thread is running, false if not.
@@ -546,7 +543,7 @@ class Thread
         {
             // NOTE: It should be safe to access this value without
             //       memory barriers because word-tearing and such
-            //       really aren't an issue for boolean values.
+            //       really isn't an issue for boolean values.
             return m_isRunning;
         }
     }
@@ -623,7 +620,7 @@ class Thread
 
 
     /**
-     * The calling thread.
+     * Provides a reference to the calling thread.
      *
      * Returns:
      *  The thread object representing the calling thread.  The result of
@@ -646,8 +643,7 @@ class Thread
 
 
     /**
-     * This function is not intended to be used by the garbage collector,
-     * so memory allocation is allowed.
+     * Provides a list of all threads currently being tracked by the system.
      *
      * Returns:
      *  An array containing references to all threads currently being
@@ -671,7 +667,8 @@ class Thread
 
 
     /**
-     * Operates on all threads currently tracked by the system.
+     * Operates on all threads currently being tracked by the system.  The
+     * result of deleting any Thread object is undefined.
      *
      * Params:
      *
@@ -989,17 +986,17 @@ private:
 
 /**
  * Initializes the thread module.  This function must be called by the
- * garbage collector on startup and before any other thread routines.
+ * garbage collector on startup and before any other thread routines
  * are called.
- *
- * Please note that if thread_init itself performs any allocations then
- * the thread routines reserved for garbage collector use may be called
- * while thread_init is being processed.  However, since no memory should
- * exist to be scanned at this point, it is sufficient for these functions
- * to detect the condition and return immediately.
  */
 extern (C) void thread_init()
 {
+    // NOTE: If thread_init itself performs any allocations then the thread
+    //       routines reserved for garbage collector use may be called while
+    //       thread_init is being processed.  However, since no memory should
+    //       exist to be scanned at this point, it is sufficient for these
+    //       functions to detect the condition and return immediately.
+
     version( Win32 )
     {
         Thread.sm_this = TlsAlloc();
@@ -1069,13 +1066,14 @@ extern (C) void thread_init()
 
 /**
  * Performs intermediate shutdown of the thread module.
- *
- * Please note that the functionality related to garbage
- * collection must be minimally operable afterwords.
  */
 static ~this()
 {
-    foreach( Thread t; Thread )
+    // NOTE: The functionality related to garbage collection must be minimally
+    //       operable after this dtor completes.  Therefore, only minimal
+    //       cleanup may occur.
+
+    for( Thread t = Thread.sm_all; t; t = t.m_next ) // foreach( Thread t; Thread )
     {
         if( !t.isRunning )
             Thread.remove( t );
@@ -1175,11 +1173,12 @@ extern (C) void thread_suspendAll()
                     throw new ThreadException( "Unable to suspend thread" );
                 }
                 // NOTE: It's really not ideal to wait for each thread to signal
-                //       individually -- I'd much rather suspend them all and wait
-                //       once at the end.  However, semaphores don't really work
-                //       this way, and the obvious alternative (looping on an
-                //       atomic suspend count) requires either the atomic module
-                //       (which only works on x86) or specialized functionality.
+                //       individually -- rather, it would be better to suspend
+                //       them all and wait once at the end.  However, semaphores
+                //       don't really work this way, and the obvious alternative
+                //       (looping on an atomic suspend count) requires either
+                //       the atomic module (which only works on x86) or
+                //       other specialized functionality.
                 sem_wait( &suspendCount );
             }
             else
@@ -1221,7 +1220,7 @@ extern (C) void thread_suspendAll()
         //       the same thread to be suspended twice, which would likely
         //       cause the second suspend to fail, the garbage collection to
         //       abort, and Bad Things to occur.
-        foreach( Thread t; Thread )
+        for( Thread t = Thread.sm_all; t; t = t.m_next ) // foreach( Thread t; Thread )
         {
             if( t.isRunning )
                 suspend( t );
@@ -1321,7 +1320,7 @@ body
         if( --suspendDepth > 0 )
             return;
 
-        foreach( Thread t; Thread )
+        for( Thread t = Thread.sm_all; t; t = t.m_next ) // foreach( Thread t; Thread )
         {
             resume( t );
         }
@@ -1503,9 +1502,11 @@ class ThreadGroup
         {
             int ret = 0;
 
-            foreach( Thread t; m_all )
+            // NOTE: This loop relies on the knowledge that m_all uses the
+            //       Thread object for both the key and the mapped value.
+            foreach( Thread t; m_all.keys ) // foreach( Thread t; m_all )
             {
-                ret = dg( t );
+                ret = dg( t ); // ret = dg( t );
                 if( ret )
                     break;
             }
@@ -1525,11 +1526,13 @@ class ThreadGroup
     {
         synchronized
         {
-            foreach( Thread t; m_all )
+            // NOTE: This loop relies on the knowledge that m_all uses the
+            //       Thread object for both the key and the mapped value.
+            foreach( Thread t; m_all.keys ) // foreach( Thread t; m_all )
             {
                 t.join();
                 if( !preserve )
-                    remove( t );
+                    m_all.remove( t );
             }
         }
     }

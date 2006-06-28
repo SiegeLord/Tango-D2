@@ -86,6 +86,11 @@ class OutOfMemoryException : Exception
     {
         super( "Memory allocation failed", file, line );
     }
+
+    char[] toString()
+    {
+        return msg ? super.toString() : "Memory allocation failed";
+    }
 }
 
 
@@ -125,7 +130,7 @@ class UnicodeException : Exception
  * Overrides the default assert hander with a user-supplied version.
  *
  * Params:
- *  h = The new assert handler.
+ *  h = The new assert handler.  Set to null to use the default handler.
  */
 void setAssertHandler( assertHandlerType h )
 {
@@ -137,7 +142,7 @@ void setAssertHandler( assertHandlerType h )
  * Overrides the default collect hander with a user-supplied version.
  *
  * Params:
- *  h = The new collect handler.
+ *  h = The new collect handler.  Set to null to use the default handler.
  */
 void setCollectHandler( collectHandlerType h )
 {
@@ -194,7 +199,7 @@ extern (C) void onAssertErrorMsg( char[] file, uint line, char[] msg )
  *  obj = The object being collected.
  *
  * Returns:
- *  true if the runtime should call this object's dtors and false if not.
+ *  true if the runtime should call this object's dtor and false if not.
  *  Default behavior is to return true.
  */
 extern (C) bool onCollectResource( Object obj )
