@@ -44,6 +44,10 @@ class OutOfMemoryException : Exception
 {
 super("Memory allocation failed",file,line);
 }
+    char[] toString()
+{
+return msg ? super.toString() : "Memory allocation failed";
+}
 }
 class SwitchException : Exception
 {
