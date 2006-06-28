@@ -241,9 +241,6 @@ void _d_delmemory(void* *p)
 }
 
 
-//
-// NOTE: This is called by DMD for auto classes.
-//
 extern (C) void _d_callfinalizer(void *p)
 {
     cr_finalize( p );
