@@ -1867,3 +1867,71 @@ class NumberFormat
         }
 
 }
+
+
+
+/*******************************************************************************
+
+*******************************************************************************/
+
+debug (UnitTest)
+{
+unittest{
+    assert( Formatter.format( "abc" ) == "abc" );
+    
+    assert( Formatter.format( "{0}", 1 ) == "1" );
+    assert( Formatter.format( "{0}", -1 ) == "-1" );
+    
+    assert( Formatter.format( "{0}", true ) == "True" );
+    assert( Formatter.format( "{0}", false ) == "False" );
+    
+    assert( Formatter.format( "{0}", cast(byte)-128 ) == "-128" );
+    assert( Formatter.format( "{0}", cast(byte)127 ) == "127" );
+    assert( Formatter.format( "{0}", cast(ubyte)255 ) == "255" );
+    
+    assert( Formatter.format( "{0}", cast(short)-32768  ) == "-32768" );
+    assert( Formatter.format( "{0}", cast(short)32767 ) == "32767" );
+    assert( Formatter.format( "{0}", cast(ushort)65535 ) == "65535" );
+    
+    assert( Formatter.format( "{0}", -2147483648 ) == "-2147483648" );
+    assert( Formatter.format( "{0}", 2147483647 ) == "2147483647" );
+    assert( Formatter.format( "{0}", 4294967295 ) == "4294967295" );
+    // compiler error
+    //assert( Formatter.format( "{0}", -9223372036854775808L) == "-9223372036854775808" );
+    assert( Formatter.format( "{0}", 0x8000_0000_0000_0000L) == "-9223372036854775808" );
+    assert( Formatter.format( "{0}", 9223372036854775807L ) == "9223372036854775807" );
+    // Error: prints -1
+    // assert( Formatter.format( "{0}", 18446744073709551615UL ) == "18446744073709551615" );
+    
+    assert( Formatter.format( "{0}", "s" ) == "s" );
+    // fragments before and after
+    assert( Formatter.format( "d{0}d", "s" ) == "dsd" );
+    // brace escaping
+    assert( Formatter.format( "d{{0}}d", "s" ) == "d{0}d" );
+    
+    // argument index
+    assert( Formatter.format( "a{0}b{1}c{2}", "x", "y", "z" ) == "axbycz" );
+    assert( Formatter.format( "a{2}b{1}c{0}", "x", "y", "z" ) == "azbycx" );
+    assert( Formatter.format( "a{1}b{1}c{1}", "x", "y", "z" ) == "aybycy" );
+    
+    // alignment
+    assert( Formatter.format( "->{0,-10}<-", "hello" ) == "->hello     <-" );
+    assert( Formatter.format( "->{0,10}<-", "hello" ) == "->     hello<-" );
+    assert( Formatter.format( "->{0,-10}<-", 12345 ) == "->12345     <-" );
+    assert( Formatter.format( "->{0,10}<-", 12345 ) == "->     12345<-" );
+    
+    assert( Formatter.format("General: {0} Hexadecimal: 0x{0:x4} Numeric: {0:N}", 1000) 
+	    == "General: 1000 Hexadecimal: 0x03e8 Numeric: 1,000.00" );
+//    assert( Formatter.format(Culture.getCulture("de-DE"), "{0:#,#}", 12345678)
+//	    == "12.345.678" );
+//    assert( Formatter.format(Culture.getCulture("es-ES"), "{0:C}", 59.99)
+//	    == "59,99 €" );
+//    assert( Formatter.format(Culture.getCulture("fr-FR"), "{0:D}", DateTime.today)
+//	    == "vendredi 3 mars 2006" );
+    
+    version( mlfp ){
+	assert( Formatter.format( "{0:f}", 1.23f ) == "1.23" );
+	assert( Formatter.format( "{0:f}", 1.23 ) == "1.23" );
+    }
+}
+}
