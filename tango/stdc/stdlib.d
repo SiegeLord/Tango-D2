@@ -90,7 +90,10 @@ int     wctomb(char*s, wchar_t wc);
 size_t  mbstowcs(wchar_t* pwcs, char* s, size_t n);
 size_t  wcstombs(char* s, wchar_t* pwcs, size_t n);
 
-version( DigitalMars )
+// NOTE: alloca is nonstandard but currently seems to be available just about
+//       everywhere, so the version( all ) serves to distinguish this from
+//       normal C99 defs, but there's no actual filtering quite yet.
+version( all )
 {
     void* alloca(size_t size);
 }
