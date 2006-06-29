@@ -1,14 +1,14 @@
 /*
         Copyright (C) 2004 Christopher E. Miller
-        
+
         This software is provided 'as-is', without any express or implied
         warranty.  In no event will the authors be held liable for any damages
         arising from the use of this software.
-        
+
         Permission is granted to anyone to use this software for any purpose,
         including commercial applications, and to alter it and redistribute it
         freely, subject to the following restrictions:
-        
+
         1. The origin of this software must not be misrepresented; you must not
            claim that you wrote the original software. If you use this software
            in a product, an acknowledgment in the product documentation would be
@@ -55,8 +55,8 @@
 
         All changes within the main body of code all marked with "MANGO:"
 
-        For a good tutorial on socket-programming I highly recommend going 
-        here: http://www.ecst.csuchico.edu/~beej/guide/net/      
+        For a good tutorial on socket-programming I highly recommend going
+        here: http://www.ecst.csuchico.edu/~beej/guide/net/
 
 *******************************************************************************/
 
@@ -112,8 +112,8 @@ version (Win32)
         private const int WSASYS_STATUS_LEN = 128;
         private const int WSAEWOULDBLOCK =  10035;
         private const int WSAEINTR =        10004;
-                
-                
+
+
         struct WSADATA
         {
                         WORD wVersion;
@@ -125,7 +125,7 @@ version (Win32)
                         char* lpVendorInfo;
         }
         alias WSADATA* LPWSADATA;
-                
+
         extern  (Windows)
                 {
                 int WSAStartup(WORD wVersionRequested, LPWSADATA lpWSAData);
@@ -177,7 +177,7 @@ version (BsdSockets)
         private import tango.stdc.errno;
 
         private typedef int socket_t = -1;
-        
+
         private const int F_GETFL       = 3;
         private const int F_SETFL       = 4;
         private const int O_NONBLOCK    = 0x4000;
@@ -185,11 +185,11 @@ version (BsdSockets)
         private const int SO_TYPE       = 0x1008;
 
         version (Phobos)
-                {
-                private const int EINTR = 4;
-                private const int EINPROGRESS = 115; 
-                }
-                
+           {
+           private const int EINTR = 4;
+           private const int EINPROGRESS = 115;
+           }
+
         private alias SOL_SOCKET_D SOL_SOCKET; // symbol conflict, when linking
 
         extern  (C)
@@ -236,8 +236,8 @@ private const int SOCKET_ERROR = -1;
 +/
 
 /*******************************************************************************
-        
-        Internal structs: 
+
+        Internal structs:
 
 *******************************************************************************/
 
@@ -256,8 +256,8 @@ struct fd_set
 
 struct sockaddr
 {
-        ushort sa_family;               
-        char[14] sa_data = [0];             
+        ushort sa_family;
+        char[14] sa_data = [0];
 }
 
 
@@ -276,8 +276,8 @@ struct hostent
                 int h_length;
         }
         char** h_addr_list;
-        
-        
+
+
         char* h_addr()
         {
                 return h_addr_list[0];
@@ -286,7 +286,7 @@ struct hostent
 
 
 /*******************************************************************************
-        
+
         conversions for network byte-order
 
 *******************************************************************************/
@@ -297,8 +297,8 @@ version(BigEndian)
         {
                 return x;
         }
-        
-        
+
+
         uint32_t htonl(uint32_t x)
         {
                 return x;
@@ -307,8 +307,8 @@ version(BigEndian)
 else version(LittleEndian)
 {
         import tango.core.Intrinsic;
-        
-        
+
+
         uint16_t htons(uint16_t x)
         {
                 return cast(uint16_t) ((x >> 8) | (x << 8));
@@ -361,8 +361,8 @@ private static char* convert2C (char[] input, char[] output)
         output [input.length] = 0;
         return output.ptr;
 }
-        
-        
+
+
 /*******************************************************************************
 
         Public interface ...
@@ -436,16 +436,16 @@ class SocketAcceptException: SocketException
 static int lastError ()
 {
         version (Win32)
-                {       
+                {
                 return WSAGetLastError();
-                } 
+                }
         version (Posix)
                 {
                 return errno;
                 }
 }
 
-        
+
 /*******************************************************************************
 
         MANGO: socket now subclasses tango.io.Resource
@@ -459,7 +459,7 @@ class Socket : Conduit, Conduit.Device
 
         version(Win32)
                 private bool _blocking = false;
-        
+
         /***********************************************************************
 
 
@@ -468,7 +468,7 @@ class Socket : Conduit, Conduit.Device
         /+
         #ifdef INCLUDE_ALL_FOR_DOXYGEN
         +/
-        
+
         version (Win32)
         {
                 /***************************************************************
@@ -513,7 +513,7 @@ class Socket : Conduit, Conduit.Device
                                ushort l_onoff;          // option on/off
                                ushort l_linger;         // linger time
                                };
-                        ushort[2]       array;          // combined 
+                        ushort[2]       array;          // combined
                 }
 
                 /***************************************************************
@@ -523,7 +523,7 @@ class Socket : Conduit, Conduit.Device
 
                 enum OptionLevel
                 {
-                        SOCKET =  0xFFFF, 
+                        SOCKET =  0xFFFF,
                         IP =      0,
                         TCP =     6,
                         UDP =     17,
@@ -579,7 +579,7 @@ class Socket : Conduit, Conduit.Device
 
                 enum OptionLevel
                 {
-                        SOCKET =  1,  // correct for linux on x86 
+                        SOCKET =  1,  // correct for linux on x86
                         IP =      0,  // appears to be correct
                         TCP =     6,  // appears to be correct
                         UDP =     17, // appears to be correct
@@ -589,7 +589,7 @@ class Socket : Conduit, Conduit.Device
         {
                 /***************************************************************
 
-                        these appear to be compatible with x86 platforms, 
+                        these appear to be compatible with x86 platforms,
                         but not others!
 
                 ***************************************************************/
@@ -608,9 +608,9 @@ class Socket : Conduit, Conduit.Device
                         SO_ERROR        = 4,
 
                         SO_ACCEPTCONN   = 30,
-                        SO_KEEPALIVE    = 9, 
-                        SO_DONTROUTE    = 5, 
-                        SO_TYPE         = 3, 
+                        SO_KEEPALIVE    = 9,
+                        SO_DONTROUTE    = 5,
+                        SO_TYPE         = 3,
 
                         // OptionLevel.IP settings
                         IP_MULTICAST_LOOP = 34,
@@ -639,7 +639,7 @@ class Socket : Conduit, Conduit.Device
 
                 enum OptionLevel
                 {
-                        SOCKET =  1,  // correct for linux on x86 
+                        SOCKET =  1,  // correct for linux on x86
                         IP =      0,  // appears to be correct
                         TCP =     6,  // appears to be correct
                         UDP =     17, // appears to be correct
@@ -755,9 +755,9 @@ class Socket : Conduit, Conduit.Device
         /+
         #endif
         +/
-        
 
-        
+
+
         /***********************************************************************
 
                 Construct a Socket from a handle. This is used internally
@@ -774,18 +774,18 @@ class Socket : Conduit, Conduit.Device
         }
 
        /***********************************************************************
-        
-                Callback routine to read content from the socket. Note 
+
+                Callback routine to read content from the socket. Note
                 that the operation may timeout if method setTimeout()
-                has been invoked with a non-zero value.         
+                has been invoked with a non-zero value.
 
                 Returns the number of bytes read from the socket, or
                 IConduit.Eof where there's no more content available
 
 		Note that a timeout is equivalent to Eof. Isolating
-		a timeout condition can be achieved via hadTimeout() 
+		a timeout condition can be achieved via hadTimeout()
 
-		Note also that a zero return value is not legitimate; 
+		Note also that a zero return value is not legitimate;
 		such a value indicates Eof
 
         ***********************************************************************/
@@ -796,7 +796,7 @@ class Socket : Conduit, Conduit.Device
 
         protected uint reader (void[] dst)
         {
-                // ensure just one read at a time 
+                // ensure just one read at a time
                 synchronized (this)
                 {
 		// reset timeout; we assume there's no thread contention
@@ -830,8 +830,8 @@ class Socket : Conduit, Conduit.Device
         }
 
         /***********************************************************************
-        
-                Callback routine to write the provided content to the 
+
+                Callback routine to write the provided content to the
                 socket. This will stall until the socket responds in
                 some manner. Returns the number of bytes sent to the
                 output, or IConduit.Eof if the socket cannot write.
@@ -847,7 +847,7 @@ class Socket : Conduit, Conduit.Device
         }
 
         /***********************************************************************
-        
+
                 Return a preferred size for buffering conduit I/O
 
         ***********************************************************************/
@@ -856,9 +856,9 @@ class Socket : Conduit, Conduit.Device
         {
                 return 1024 * 8;
         }
-                     
+
         /***********************************************************************
-        
+
                 Return the underlying OS handle of this Conduit
 
         ***********************************************************************/
@@ -867,10 +867,10 @@ class Socket : Conduit, Conduit.Device
         {
                 return cast(Handle) sock;
         }
-                     
+
         /***********************************************************************
-        
-                Set the read timeout to the specified microseconds. Set a 
+
+                Set the read timeout to the specified microseconds. Set a
                 value of zero to disable timeout support.
 
         ***********************************************************************/
@@ -880,11 +880,11 @@ class Socket : Conduit, Conduit.Device
                 tv.tv_sec = us / Interval.second;
                 tv.tv_usec = us % Interval.second;
         }
-                         
+
         /***********************************************************************
-		
+
 		Did the last operation result in a timeout? Note that this
-		assumes there is no thread contention on this object.        
+		assumes there is no thread contention on this object.
 
         ***********************************************************************/
 
@@ -892,7 +892,7 @@ class Socket : Conduit, Conduit.Device
         {
 		return timeout;
         }
-                         
+
         /***********************************************************************
 
                 Is this socket still alive?
@@ -917,9 +917,9 @@ class Socket : Conduit, Conduit.Device
         {
                 this.sock = sock;
         }
-                
+
         /***********************************************************************
-        
+
                 MANGO: added to reset socket
 
         ***********************************************************************/
@@ -931,8 +931,8 @@ class Socket : Conduit, Conduit.Device
                 // dump all filters
                 super.close();
         }
-        
-        
+
+
         /***********************************************************************
 
 
@@ -944,13 +944,13 @@ class Socket : Conduit, Conduit.Device
 
                 super (Access.ReadWrite, false);
         }
-        
-        
+
+
         /***********************************************************************
 
                 Create a new socket for binding during another join() or
                 connect(), since there doesn't appear to be another means
-         
+
         ***********************************************************************/
 
         protected void create ()
@@ -972,10 +972,10 @@ class Socket : Conduit, Conduit.Device
                    exception("Unable to create socket: ");
                 _family = af;
         }
-        
+
 
         /***********************************************************************
-        
+
                 Re-open this socket
 
         ***********************************************************************/
@@ -989,7 +989,7 @@ class Socket : Conduit, Conduit.Device
                 // there doesn't appear to be a means of unbinding
                 create ();
         }
-        
+
         /***********************************************************************
 
                 get underlying socket handle
@@ -1000,8 +1000,8 @@ class Socket : Conduit, Conduit.Device
         {
                 return sock;
         }
-        
-        
+
+
         /***********************************************************************
 
 
@@ -1011,8 +1011,8 @@ class Socket : Conduit, Conduit.Device
         {
                 return "Socket";
         }
-        
-        
+
+
         /***********************************************************************
 
                 getter
@@ -1030,8 +1030,8 @@ class Socket : Conduit, Conduit.Device
                         return !(fcntl(handle, F_GETFL, 0) & O_NONBLOCK);
                 }
         }
-        
-        
+
+
         /***********************************************************************
 
                 setter
@@ -1058,12 +1058,12 @@ class Socket : Conduit, Conduit.Device
                                 goto err;
                 }
                 return; //success
-                
+
                 err:
                 exception("Unable to set socket blocking: ");
         }
-        
-        
+
+
         /***********************************************************************
 
 
@@ -1073,8 +1073,8 @@ class Socket : Conduit, Conduit.Device
         {
                 return _family;
         }
-        
-        
+
+
         /***********************************************************************
 
 
@@ -1085,13 +1085,13 @@ class Socket : Conduit, Conduit.Device
                 if(SOCKET_ERROR == .bind (sock, addr.name(), addr.nameLen()))
                    exception ("Unable to bind socket: ");
         }
-        
-        
+
+
         /***********************************************************************
 
 
         ***********************************************************************/
- 
+
         void connect(Address to)
         {
                 if(SOCKET_ERROR == .connect (sock, to.name(), to.nameLen()))
@@ -1116,8 +1116,8 @@ class Socket : Conduit, Conduit.Device
                         exception ("Unable to connect socket: ");
                 }
         }
-        
-        
+
+
         /***********************************************************************
 
                 need to bind() first
@@ -1129,7 +1129,7 @@ class Socket : Conduit, Conduit.Device
                 if(SOCKET_ERROR == .listen (sock, backlog))
                    exception ("Unable to listen on socket: ");
         }
-        
+
         /***********************************************************************
 
                 MANGO: added
@@ -1147,7 +1147,7 @@ class Socket : Conduit, Conduit.Device
         ***********************************************************************/
 
         protected Socket accept()
-        {       
+        {
                 socket_t newsock = .accept (sock, null, null);
                 if(INVALID_SOCKET == newsock)
                    // MANGO: return null rather than throwing an exception because
@@ -1165,8 +1165,8 @@ class Socket : Conduit, Conduit.Device
                 newSocket._family = _family; //same family
                 return newSocket;
         }
-        
-        
+
+
         /***********************************************************************
 
 
@@ -1176,7 +1176,7 @@ class Socket : Conduit, Conduit.Device
         {       //printf ("shutdown\n");
                 .shutdown (sock, cast(int) Shutdown.BOTH);
         }
-        
+
         /***********************************************************************
 
 
@@ -1186,7 +1186,7 @@ class Socket : Conduit, Conduit.Device
         {
                 .shutdown (sock, cast(int)how);
         }
-        
+
 
         /***********************************************************************
 
@@ -1200,10 +1200,10 @@ class Socket : Conduit, Conduit.Device
 
                 l.l_onoff = 1;                          //option on/off
                 l.l_linger = cast(ushort) period;       //linger time
-        
+
                 setOption (OptionLevel.SOCKET, Option.SO_LINGER, l.array);
         }
-        
+
 
         /***********************************************************************
 
@@ -1218,7 +1218,7 @@ class Socket : Conduit, Conduit.Device
                 setOption (OptionLevel.SOCKET, Option.SO_REUSEADDR, x);
         }
 
-        
+
         /***********************************************************************
 
                 Helper function to handle the adding and dropping of group
@@ -1230,7 +1230,7 @@ class Socket : Conduit, Conduit.Device
 
         protected bool setGroup (InternetAddress address, Option option)
         {
-                struct ip_mreq 
+                struct ip_mreq
                 {
                 uint  imr_multiaddr;  /* IP multicast address of group */
                 uint  imr_interface;  /* local IP address of interface */
@@ -1255,8 +1255,8 @@ class Socket : Conduit, Conduit.Device
         {
                 super.close ();
                 collect ();
-        }       
-        
+        }
+
         /***********************************************************************
 
         ***********************************************************************/
@@ -1270,7 +1270,7 @@ class Socket : Conduit, Conduit.Device
 
                    version(Win32)
                            .closesocket (sock);
-                   else 
+                   else
                    version(BsdSockets)
                            .close (sock);
 
@@ -1279,8 +1279,8 @@ class Socket : Conduit, Conduit.Device
 
                    sock = sock.init;
                    }
-        }       
-        
+        }
+
         /***********************************************************************
 
         ***********************************************************************/
@@ -1304,14 +1304,14 @@ class Socket : Conduit, Conduit.Device
                         case AddressFamily.INET:
                                 result = new InternetAddress;
                                 break;
-                        
+
                         default:
                                 result = new UnknownAddress;
                 }
                 return result;
         }
-        
-        
+
+
         /***********************************************************************
 
                 Mango: added this to return the hostname
@@ -1326,7 +1326,7 @@ class Socket : Conduit, Conduit.Device
                    exception ("Unable to obtain host name: ");
                 return name [0 .. strlen(name)].dup;
         }
-        
+
 
         /***********************************************************************
 
@@ -1344,7 +1344,7 @@ class Socket : Conduit, Conduit.Device
                 return ih.addrList[0];
         }
 
-        
+
         /***********************************************************************
 
 
@@ -1359,8 +1359,8 @@ class Socket : Conduit, Conduit.Device
                 assert (addr.addressFamily() == _family);
                 return addr;
         }
-        
-        
+
+
         /***********************************************************************
 
 
@@ -1375,8 +1375,8 @@ class Socket : Conduit, Conduit.Device
                 assert (addr.addressFamily() == _family);
                 return addr;
         }
-        
-        
+
+
         /***********************************************************************
 
                 returns number of bytes actually sent, or -1 on error
@@ -1388,8 +1388,8 @@ class Socket : Conduit, Conduit.Device
                 int sent = .send (sock, buf, buf.length, cast(int)flags);
                 return sent;
         }
-        
-        
+
+
         /***********************************************************************
 
                 -to- is ignored if connected ?
@@ -1401,8 +1401,8 @@ class Socket : Conduit, Conduit.Device
                 int sent = .sendto (sock, buf, buf.length, cast(int)flags, to.name(), to.nameLen());
                 return sent;
         }
-        
-        
+
+
         /***********************************************************************
 
                 -to- is ignored if connected ?
@@ -1413,8 +1413,8 @@ class Socket : Conduit, Conduit.Device
         {
                 return sendTo (buf, Flags.NONE, to);
         }
-        
-        
+
+
         /***********************************************************************
 
                 assumes you connect()ed
@@ -1426,11 +1426,11 @@ class Socket : Conduit, Conduit.Device
                 int sent = .sendto (sock, buf, buf.length, cast(int)flags, null, 0);
                 return sent;
         }
-        
-        
+
+
         /***********************************************************************
 
-                returns number of bytes actually received, 0 on connection 
+                returns number of bytes actually received, 0 on connection
                 closure, or -1 on error
 
         ***********************************************************************/
@@ -1445,8 +1445,8 @@ class Socket : Conduit, Conduit.Device
                 // if(!read) //connection closed
                 return read;
         }
-        
-        
+
+
         /***********************************************************************
 
                 -from- is ignored if connected ?
@@ -1475,8 +1475,8 @@ class Socket : Conduit, Conduit.Device
                 // if(!read) //connection closed
                 return read;
         }
-        
-        
+
+
         /***********************************************************************
 
                 -from- is ignored if connected ?
@@ -1487,8 +1487,8 @@ class Socket : Conduit, Conduit.Device
         {
                 return receiveFrom (buf, Flags.NONE, from);
         }
-        
-        
+
+
         /***********************************************************************
 
                 assumes you connect()ed
@@ -1505,8 +1505,8 @@ class Socket : Conduit, Conduit.Device
                 // if(!read) //connection closde
                 return read;
         }
-        
-        
+
+
         /***********************************************************************
 
                 assumes you connect()ed
@@ -1517,11 +1517,11 @@ class Socket : Conduit, Conduit.Device
         {
                 return receiveFrom (buf, Flags.NONE);
         }
-        
-        
+
+
         /***********************************************************************
 
-                returns the length, in bytes, of the actual result - very 
+                returns the length, in bytes, of the actual result - very
                 different from getsockopt()
 
         ***********************************************************************/
@@ -1533,8 +1533,8 @@ class Socket : Conduit, Conduit.Device
                    exception ("Unable to get socket option: ");
                 return len;
         }
-        
-        
+
+
         /***********************************************************************
 
 
@@ -1545,8 +1545,8 @@ class Socket : Conduit, Conduit.Device
                 if(SOCKET_ERROR == .setsockopt (sock, cast(int)level, cast(int)option, value, value.length))
                    exception ("Unable to set socket option: ");
         }
-        
-        
+
+
         /***********************************************************************
 
                 Mango: added this common function
@@ -1557,17 +1557,17 @@ class Socket : Conduit, Conduit.Device
         {
                 throw new SocketException (msg ~ OS.error (lastError));
         }
-        
+
 
         /***********************************************************************
 
-                SocketSet's are updated to include only those sockets which an 
+                SocketSet's are updated to include only those sockets which an
                 event occured.
-                
+
                 Returns the number of events, 0 on timeout, or -1 on interruption
 
-                for a connect()ing socket, writeability means connected 
-                for a listen()ing socket, readability means listening 
+                for a connect()ing socket, writeability means connected
+                for a listen()ing socket, readability means listening
 
                 Winsock: possibly internally limited to 64 sockets per set
 
@@ -1590,7 +1590,7 @@ class Socket : Conduit, Conduit.Device
         body
         {
                 fd_set* fr, fw, fe;
-                
+
                 version(Win32)
                 {
                         //Windows has a problem with empty fd_set's that aren't null
@@ -1604,35 +1604,50 @@ class Socket : Conduit, Conduit.Device
                         fw = checkWrite ? checkWrite.toFd_set() : null;
                         fe = checkError ? checkError.toFd_set() : null;
                 }
-               
+
                 int result;
-              
+
                 // MANGO: if select() was interrupted, we now try again
-                while ((result = .select (socket_t.max - 1, fr, fw, fe, tv)) == -1)              
-                        version(Win32)
+                version(Win32)
+                {
+                        while ((result = .select (socket_t.max - 1, fr, fw, fe, tv)) == -1)
                         {
                                 if(WSAGetLastError() != WSAEINTR)
                                    break;
                         }
-                        else version (Posix)
+                }
+                else version (Posix)
+                {
+                        socket_t maxfd = 0;
+
+                        if (checkRead)
+                                maxfd = checkRead.maxfd;
+
+                        if (checkWrite && checkWrite.maxfd > maxfd)
+                                maxfd = checkWrite.maxfd;
+
+                        if (checkError && checkError.maxfd > maxfd)
+                                maxfd = checkError.maxfd;
+
+                        while ((result = .select (maxfd + 1, fr, fw, fe, tv)) == -1)
                         {
-                                if(errno != EINTR)
+                                if(getErrno() != EINTR)
                                    break;
                         }
-                        else
-                        {
-                                static assert(0);
-                        }
-                
-                // MANGO: don't throw an exception here ... wait until we get 
+                }
+                else
+                {
+                        static assert(0);
+                }
+                // MANGO: don't throw an exception here ... wait until we get
                 // a bit further back along the control path
                 //if(SOCKET_ERROR == result)
                 //   throw new SocketException("Socket select error.");
-                
+
                 return result;
         }
-        
-        
+
+
         /***********************************************************************
 
 
@@ -1645,8 +1660,8 @@ class Socket : Conduit, Conduit.Device
                 tv.tv_usec = microseconds;
                 return select (checkRead, checkWrite, checkError, &tv);
         }
-        
-        
+
+
         /***********************************************************************
 
                 maximum timeout
@@ -1657,8 +1672,8 @@ class Socket : Conduit, Conduit.Device
         {
                 return select (checkRead, checkWrite, checkError, null);
         }
-        
-        
+
+
         /***********************************************************************
 
 
@@ -1699,7 +1714,7 @@ abstract class Address
         {
                 throw new AddressException (msg);
         }
-        
+
 }
 
 
@@ -1712,8 +1727,8 @@ class UnknownAddress: Address
 {
         protected:
         sockaddr sa;
-        
-        
+
+
         /***********************************************************************
 
 
@@ -1723,8 +1738,8 @@ class UnknownAddress: Address
         {
                 return &sa;
         }
-        
-        
+
+
         /***********************************************************************
 
 
@@ -1734,8 +1749,8 @@ class UnknownAddress: Address
         {
                 return sa.sizeof;
         }
-        
-        
+
+
         public:
         /***********************************************************************
 
@@ -1746,8 +1761,8 @@ class UnknownAddress: Address
         {
                 return cast(Socket.AddressFamily)sa.sa_family;
         }
-        
-        
+
+
         /***********************************************************************
 
 
@@ -1770,8 +1785,8 @@ class InternetHost
         char[] name;
         char[][] aliases;
         uint[] addrList;
-        
-        
+
+
         /***********************************************************************
 
 
@@ -1782,8 +1797,8 @@ class InternetHost
                 if(he.h_addrtype != cast(int)Socket.AddressFamily.INET || he.h_length != 4)
                         throw new HostException("Address family mismatch.");
         }
-        
-        
+
+
         /***********************************************************************
 
 
@@ -1793,16 +1808,16 @@ class InternetHost
         {
                 int i;
                 char* p;
-                
+
                 name = .toString(he.h_name);
-                
+
                 for(i = 0;; i++)
                 {
                         p = he.h_aliases[i];
                         if(!p)
                                 break;
                 }
-                
+
                 if(i)
                 {
                         aliases = new char[][i];
@@ -1815,14 +1830,14 @@ class InternetHost
                 {
                         aliases = null;
                 }
-                
+
                 for(i = 0;; i++)
                 {
                         p = he.h_addr_list[i];
                         if(!p)
                                 break;
                 }
-                
+
                 if(i)
                 {
                         addrList = new uint[i];
@@ -1836,8 +1851,8 @@ class InternetHost
                         addrList = null;
                 }
         }
-        
-        
+
+
         /***********************************************************************
 
 
@@ -1846,7 +1861,7 @@ class InternetHost
         bool getHostByName(char[] name)
         {
                 char[1024] tmp;
-                
+
                 hostent* he = gethostbyname(convert2C (name, tmp));
                 if(!he)
                         return false;
@@ -1854,8 +1869,8 @@ class InternetHost
                 populate(he);
                 return true;
         }
-        
-        
+
+
         /***********************************************************************
 
 
@@ -1871,8 +1886,8 @@ class InternetHost
                 populate(he);
                 return true;
         }
-        
-        
+
+
         /***********************************************************************
 
 
@@ -1882,7 +1897,7 @@ class InternetHost
         bool getHostByAddr(char[] addr)
         {
                 char[64] tmp;
-                
+
                 uint x = inet_addr(convert2C (addr, tmp));
                 hostent* he = gethostbyaddr(&x, 4, cast(int)Socket.AddressFamily.INET);
                 if(!he)
@@ -1900,16 +1915,17 @@ extern (C) int printf(char*, ...);
 unittest
 {
         InternetHost ih = new InternetHost;
-        assert(ih.addrList.length);
+        ih.getHostByName(Socket.hostName());
+        assert(ih.addrList.length > 0);
         InternetAddress ia = new InternetAddress(ih.addrList[0], InternetAddress.PORT_ANY);
         printf("IP address = %.*s\nname = %.*s\n", ia.toAddrString(), ih.name);
         foreach(int i, char[] s; ih.aliases)
         {
                 printf("aliases[%d] = %.*s\n", i, s);
         }
-        
+
         printf("---\n");
-        
+
         assert(ih.getHostByAddr(ih.addrList[0]));
         printf("name = %.*s\n", ih.name);
         foreach(int i, char[] s; ih.aliases)
@@ -1950,8 +1966,8 @@ class InternetAddress: Address
         +/
 
         sockaddr_in sin;
-        
-        
+
+
         /***********************************************************************
 
 
@@ -1961,8 +1977,8 @@ class InternetAddress: Address
         {
                 return cast(sockaddr*)&sin;
         }
-        
-        
+
+
         /***********************************************************************
 
 
@@ -1972,8 +1988,8 @@ class InternetAddress: Address
         {
                 return sin.sizeof;
         }
-        
-        
+
+
         /***********************************************************************
 
 
@@ -1982,14 +1998,14 @@ class InternetAddress: Address
         this()
         {
         }
-        
-        
+
+
         public:
         const uint ADDR_ANY = 0;
         const uint ADDR_NONE = cast(uint)-1;
         const ushort PORT_ANY = 0;
-        
-        
+
+
         /***********************************************************************
 
 
@@ -1999,8 +2015,8 @@ class InternetAddress: Address
         {
                 return Socket.AddressFamily.INET;
         }
-        
-        
+
+
         /***********************************************************************
 
 
@@ -2010,8 +2026,8 @@ class InternetAddress: Address
         {
                 return ntohs(sin.sin_port);
         }
-        
-        
+
+
         /***********************************************************************
 
 
@@ -2021,8 +2037,8 @@ class InternetAddress: Address
         {
                 return ntohl(sin.sin_addr);
         }
-        
-        
+
+
         /***********************************************************************
 
                 -port- can be PORT_ANY
@@ -2043,8 +2059,8 @@ class InternetAddress: Address
                 sin.sin_addr = htonl(uiaddr);
                 sin.sin_port = htons(cast(ushort) port);
         }
-        
-        
+
+
         /***********************************************************************
 
 
@@ -2055,8 +2071,8 @@ class InternetAddress: Address
                 sin.sin_addr = htonl(addr);
                 sin.sin_port = htons(port);
         }
-        
-        
+
+
         /***********************************************************************
 
 
@@ -2067,11 +2083,11 @@ class InternetAddress: Address
                 sin.sin_addr = 0; //any, "0.0.0.0"
                 sin.sin_port = htons(port);
         }
-        
+
         /**********************************************************************
-        
+
         **********************************************************************/
-		
+
         static InternetAddress create (char[] host)
         {
                 foreach (int i, char c; host)
@@ -2091,8 +2107,8 @@ class InternetAddress: Address
         {
                 return .toString(inet_ntoa(sin.sin_addr)).dup;
         }
-        
-        
+
+
         /***********************************************************************
 
 
@@ -2102,8 +2118,8 @@ class InternetAddress: Address
         {
                 return Integer.format(_port, port());
         }
-        
-        
+
+
         /***********************************************************************
 
 
@@ -2113,8 +2129,8 @@ class InternetAddress: Address
         {
                 return toAddrString() ~ ":" ~ toPortString();
         }
-        
-        
+
+
         /***********************************************************************
 
                 -addr- is an IP address in the format "a.b.c.d"
@@ -2123,7 +2139,7 @@ class InternetAddress: Address
         ***********************************************************************/
 
         static uint parse(char[] addr)
-        {       
+        {
                 char[64] tmp;
 
                 return ntohl(inet_addr(convert2C (addr, tmp)));
@@ -2150,22 +2166,22 @@ class SocketSet
 //        private:
         private uint nbytes; //Win32: excludes uint.size "count"
         private byte* buf;
-        
-        
+
+
         version(Win32)
         {
                 uint count()
                 {
                         return *(cast(uint*)buf);
                 }
-                
-                
+
+
                 void count(int setter)
                 {
                         *(cast(uint*)buf) = setter;
                 }
-                
-                
+
+
                 socket_t* first()
                 {
                         return cast(socket_t*)(buf + uint.sizeof);
@@ -2174,29 +2190,34 @@ class SocketSet
         else version (Posix)
         {
                 import tango.core.Intrinsic;
-                
-                
+
+
                 uint nfdbits;
-                
-                
+                socket_t _maxfd = 0;
+
                 uint fdelt(socket_t s)
                 {
                         return cast(uint)s / nfdbits;
                 }
-                
-                
+
+
                 uint fdmask(socket_t s)
                 {
                         return 1 << cast(uint)s % nfdbits;
                 }
-                
-                
+
+
                 uint* first()
                 {
                         return cast(uint*)buf;
                 }
+
+                public socket_t maxfd()
+                {
+                        return _maxfd;
+                }
         }
-        
+
         
         public:
         /***********************************************************************
@@ -2227,8 +2248,8 @@ class SocketSet
                         static assert(0);
                 }
         }
-        
-        
+
+
         /***********************************************************************
 
 
@@ -2249,8 +2270,8 @@ class SocketSet
                         static assert(0);
                 }
         }
-        
-        
+
+
         /***********************************************************************
 
 
@@ -2265,14 +2286,15 @@ class SocketSet
                 else version (Posix)
                 {
                         buf[0 .. nbytes] = 0;
+                        _maxfd = 0;
                 }
                 else
                 {
                         static assert(0);
                 }
         }
-        
-        
+
+
         /***********************************************************************
 
 
@@ -2296,6 +2318,9 @@ class SocketSet
                 }
                 else version (Posix)
                 {
+                        if (s > _maxfd)
+                                _maxfd = s;
+
                         bts(cast(uint*)&first[fdelt(s)], cast(uint)s % nfdbits);
                 }
                 else
@@ -2303,8 +2328,8 @@ class SocketSet
                         static assert(0);
                 }
         }
-        
-        
+
+
         /***********************************************************************
 
 
@@ -2314,8 +2339,8 @@ class SocketSet
         {
                 add(s.sock);
         }
-        
-        
+
+
         /***********************************************************************
 
 
@@ -2328,33 +2353,47 @@ class SocketSet
                         uint c = count;
                         socket_t* start = first;
                         socket_t* stop = start + c;
-                        
+
                         for(; start != stop; start++)
                         {
                                 if(*start == s)
                                         goto found;
                         }
                         return; //not found
-                        
+
                         found:
                         for(++start; start != stop; start++)
                         {
                                 *(start - 1) = *start;
                         }
-                        
+
                         count = c - 1;
                 }
                 else version (Posix)
                 {
                         btr(cast(uint*)&first[fdelt(s)], cast(uint)s % nfdbits);
+
+                        // If we're removing the biggest file descriptor we've
+                        // entered so far we need to recalculate this value
+                        // for the socket set.
+                        if (s == _maxfd)
+                        {
+                                while (--_maxfd >= 0)
+                                {
+                                        if (isSet(_maxfd))
+                                        {
+                                                break;
+                                        }
+                                }
+                        }
                 }
                 else
                 {
                         static assert(0);
                 }
         }
-        
-        
+
+
         /***********************************************************************
 
 
@@ -2364,8 +2403,8 @@ class SocketSet
         {
                 remove(s.sock);
         }
-        
-        
+
+
         /***********************************************************************
 
 
@@ -2377,7 +2416,7 @@ class SocketSet
                 {
                         socket_t* start = first;
                         socket_t* stop = start + count;
-                        
+
                         for(; start != stop; start++)
                         {
                                 if(*start == s)
@@ -2396,8 +2435,8 @@ class SocketSet
                         static assert(0);
                 }
         }
-        
-        
+
+
         /***********************************************************************
 
 
@@ -2407,20 +2446,20 @@ class SocketSet
         {
                 return isSet(s.sock);
         }
-        
-        
+
+
         /***********************************************************************
 
                 max sockets that can be added, like FD_SETSIZE
 
         ***********************************************************************/
 
-        uint max() 
+        uint max()
         {
                 return nbytes / socket_t.sizeof;
         }
-        
-        
+
+
         /***********************************************************************
 
 
@@ -2465,7 +2504,7 @@ interface ISocketReader
 {
         /***********************************************************************
 
-                Polymorphic contract for readers handed to a listener. 
+                Polymorphic contract for readers handed to a listener.
                 Should return the number of bytes read, or -1 on error.
 
         ***********************************************************************/
