@@ -205,7 +205,7 @@ extern (C)
     void freeaddrinfo(addrinfo* ai);
     int getnameinfo(sockaddr* sa, socklen_t salen, char* node, socklen_t nodelen, char* service, socklen_t servicelen, int flags);
 
-    private import std.stdint;
+    private import tango.stdc.stdint;
 
     version(BigEndian)
     {
