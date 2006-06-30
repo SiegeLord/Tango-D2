@@ -1,18 +1,12 @@
-/*
+/*******************************************************************************
 
         copyright:      Copyright (c) 2004 Kris Bell. All rights reserved
 
         license:        BSD style: $(LICENSE)
 
-        History:        Initial release: Oct 2004
-        History:        Moved to mango.convert; Nov 2005
+        version:        Initial release: Oct 2004
 
         Authors:        Kris, Sean Kelly
-
-
-*/
-
-/*******************************************************************************
 
         Fast Unicode transcoders. These are particularly sensitive to
         minor changes on 32bit x86 devices, because the register set of
@@ -46,21 +40,19 @@
         have been consumed. In all cases, a correct slice of the output
         is returned.
 
-        For details on Unicode processing see
-        $(LINK http://www.utf-8.com/)
-        $(LINK http://www.hackcraft.net/xmlUnicode/)
-        $(LINK http://www.azillionmonkeys.com/qed/unicode.html/)
-        $(LINK http://icu.sourceforge.net/docs/papers/forms_of_unicode/)
+        For details on Unicode processing see:
+        $(UL $(LINK http://www.utf-8.com/))
+        $(UL $(LINK http://www.hackcraft.net/xmlUnicode/))
+        $(UL $(LINK http://www.azillionmonkeys.com/qed/unicode.html/))
+        $(UL $(LINK http://icu.sourceforge.net/docs/papers/forms_of_unicode/))
 
 *******************************************************************************/
 module tango.core.Unicode;
-
 
 private
 {
     extern (C) void onUnicodeError( char[] msg, size_t idx );
 }
-
 
 /***********************************************************************
 
@@ -78,7 +70,7 @@ private
 
         char[] output;
 
-        wchar[] result = toUtf8 (input, output);
+                char[] result = toUtf8 (input, output);
 
         // reset output after a realloc
         if (result.length > output.length)
@@ -554,13 +546,24 @@ dchar[] toUtf32 (wchar[] input, dchar[] output=null, uint* ate=null)
 template convert( DstElem, SrcElem )
 {
     /**
+     * Transcodes the UTF string src to the UTF format required by dst.
      *
+     * Params:
+     *  src = The source string to convert.
+     *  dst = The destination buffer.
+     *  ate = The number of elements consumed from src.
+     *
+     * Returns:
+     *  The converted string.
+     *
+     * Throws:
+     *  UnicodeException.
      */
-    DstElem[] convert (SrcElem[] x, DstElem[] dst=null, uint* ate=null)
+    DstElem[] convert (SrcElem[] src, DstElem[] dst=null, uint* ate=null)
     {
         static if (is (DstElem == FromElem))
         {
-            return x;
+            return src;
         }
         else
         {
@@ -568,20 +571,19 @@ template convert( DstElem, SrcElem )
 
             static if (is (DstElem == char))
             {
-                ret = toUtf8 (x, dst, ate);
+                ret = toUtf8 (src, dst, ate);
             }
             else static if (is (DstElem == wchar))
             {
-                ret = toUtf16 (x, dst, ate);
+                ret = toUtf16 (src, dst, ate);
             }
             else static if (is (DstElem == dchar))
             {
-                ret = toUtf32 (x, dst, ate);
+                ret = toUtf32 (src, dst, ate);
             }
             else
             {
-                pragma (msg, "Invalid destination type.");
-                static assert (false);
+                static assert (false, "Invalid destination type.");
             }
             if (ate)
             {
