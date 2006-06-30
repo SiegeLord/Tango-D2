@@ -111,7 +111,7 @@ unittest: unittest.o libgphobos_t.a
 #$(GDC) -o $@ $(DFLAGS) unittest.o -L./
 
 # This should not be linked into a shared library.
-OBJ_CMAIN=internal/cmain.o
+OBJ_CMAIN=cmain.o
 
 OBJ_BASE= \
     aaA.o \
