@@ -915,7 +915,12 @@ private:
     in
     {
         assert( t.m_next || t.m_prev );
-        assert( !t.isRunning );
+        version( Win32 )
+        {
+            // NOTE: This doesn't work for Posix as m_isRunning must be set to
+            //       false after the thread is removed during normal execution.
+            assert( !t.isRunning );
+        }
     }
     body
     {
