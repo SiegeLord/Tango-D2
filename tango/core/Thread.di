@@ -14,7 +14,7 @@ public
 }
 private
 {
-    extern (C) 
+    extern (C)
 {
     void* memset(void* s, int c, size_t n);
 }
@@ -23,8 +23,8 @@ version (Win32)
 {
     private
 {
-    import tango.os.windows.c.minwin;
-    extern (Windows) 
+    import tango.os.windows.minwin;
+    extern (Windows)
 {
     DWORD TlsAlloc();
     PVOID TlsGetValue(DWORD);
@@ -38,25 +38,25 @@ version (Win32)
     DWORD TLS_OUT_OF_INDEXES = -1u;
 }
 }
-    extern (Windows) 
+    extern (Windows)
 {
     alias uint(* btex_fptr)(void*);
 }
     version (X86)
 {
-    extern (C) 
+    extern (C)
 {
     ulong _beginthreadex(void*, uint, btex_fptr, void*, uint, uint*);
 }
 }
 else
 {
-    extern (C) 
+    extern (C)
 {
     uint _beginthreadex(void*, uint, btex_fptr, void*, uint, uint*);
 }
 }
-    extern (Windows) 
+    extern (Windows)
 {
     uint threadFunc(void* arg);
 }
@@ -86,22 +86,22 @@ else
     import tango.stdc.posix.time;
     version (darwin)
 {
-    import tango.os.darwin.c.darwin;
+    import tango.os.darwin.darwin;
 }
 else
 {
-    import tango.os.linux.c.linux;
+    import tango.os.linux.linux;
 }
-    extern (C) 
+    extern (C)
 {
     void* threadFunc(void* arg);
 }
     sem_t suspendCount;
-    extern (C) 
+    extern (C)
 {
     void suspendHandler(int sig);
 }
-    extern (C) 
+    extern (C)
 {
     void resumeHandler(int sig)
 in
@@ -210,7 +210,7 @@ return getThis().m_local[key] = val;
     protected:
     void run();
     private:
-    enum Call 
+    enum Call
 {
 NO,
 FN,
@@ -288,7 +288,7 @@ return Thread.classinfo;
     uint[8] m_reg;
 }
 }
-extern (C) 
+extern (C)
 {
     void thread_init();
 }
@@ -296,7 +296,7 @@ private
 {
     bool multiThreadedFlag = false;
 }
-extern (C) 
+extern (C)
 {
     bool thread_needLock()
 {
@@ -307,11 +307,11 @@ private
 {
     uint suspendDepth = 0;
 }
-extern (C) 
+extern (C)
 {
     void thread_suspendAll();
 }
-extern (C) 
+extern (C)
 {
     void thread_resumeAll();
 }
@@ -319,7 +319,7 @@ private
 {
     alias void delegate(void*, void*) scanAllThreadsFn;
 }
-extern (C) 
+extern (C)
 {
     void thread_scanAll(scanAllThreadsFn fn, void* curStackTop = null);
 }
