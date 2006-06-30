@@ -221,7 +221,7 @@ private class BufferedFormat
                         return s.length;
                 }
 
-                Formatter.format (&sink, fmt, _arguments, _argptr);
+                Formatter.format (&sink, _arguments, _argptr, fmt);
                 return render();
         }
 

@@ -27,12 +27,13 @@ Formatter.format(Culture.getCulture("fr-FR"), "{0:D}", DateTime.today);
 **/
 module tango.text.convert.Format;
 
-/+
+
 import tango.io.Console;
 
+/+
 void main ()
 {
-        Cout (Formatter.format ("{0:D3} green bottles", 1234455));
+        Cout (Formatter.format ("{0:x20} green bottles", 1234455)) ();
 }
 
 /*******************************************************************************
@@ -347,14 +348,14 @@ public struct Formatter
 
         public static uint format (Sink sink, char[] formatStr, ...)
         {
-                return format (sink, formatStr, _arguments, _argptr);
+                return format (sink, _arguments, _argptr, formatStr);
         }
 
         /**********************************************************************
 
         **********************************************************************/
 
-        public static uint format (Sink sink, char[] formatStr, TypeInfo[] arguments, void* args)
+        public static uint format (Sink sink, TypeInfo[] arguments, void* args, char[] formatStr)
         {
                 auto it = ArgumentIterator (arguments, args);
                 return internalFormat (null, formatStr, it, sink);
