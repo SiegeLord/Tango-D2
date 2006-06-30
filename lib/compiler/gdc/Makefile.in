@@ -122,6 +122,7 @@ OBJ_BASE= \
     cast.o \
     critical.o \
     dgccmain2.o \
+    errno.o \
     invariant.o \
     memory.o \
     memset.o \

@@ -8,9 +8,16 @@
  */
 module tango.stdc.errno;
 
-extern (C):
+private
+{
+    extern (C) int getErrno();
+    extern (C) int setErrno(int);
+}
 
-extern (C) int errno;
+int errno()          { return getErrno();      }
+int errno( int val ) { return setErrno( val ); }
+
+extern (C):
 
 version( Win32 )
 {

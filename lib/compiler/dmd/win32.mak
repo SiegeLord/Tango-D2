@@ -66,6 +66,7 @@ OBJ_BASE= \
     critical.obj \
     deh.obj \
     dmain2.obj \
+    errno.obj \
     invariant.obj \
     memory.obj \
     memset.obj \
