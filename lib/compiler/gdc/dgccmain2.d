@@ -3,14 +3,17 @@
 
 */
 
-import object;
-import tango.stdc.stdio;
-import tango.stdc.stdlib;
-import tango.stdc.string;
-version (GNU)
+/*
+ *  Modified by Sean Kelly <sean@f4.ca> for use with the Ares project.
+ */
+
+private
 {
-    private import gcc.config;
-    private import gc.gdc.gc_guess_stack;
+    import object;
+    //import tango.stdc.stddef;
+    import tango.stdc.stdlib;
+    import tango.stdc.string;
+    import tango.stdc.stdio;
 }
 
 extern (C) void _STI_monitor_staticctor();
@@ -24,7 +27,39 @@ extern (C) void _moduleCtor();
 extern (C) void _moduleDtor();
 extern (C) void _moduleUnitTests();
 
-extern (C) bool no_catch_exceptions = false;
+/***********************************
+ * These functions must be defined for any D program linked
+ * against this library.
+ */
+extern (C) void onAssertError( char[] file, uint line );
+extern (C) void onAssertErrorMsg( char[] file, uint line, char[] msg );
+extern (C) void onArrayBoundsError( char[] file, uint line );
+extern (C) void onSwitchError( char[] file, uint line );
+// this function is called from the utf module
+//extern (C) void onUnicodeError( char[] msg, size_t idx );
+
+/***********************************
+ * These are internal callbacks for various language errors.
+ */
+extern (C) void _d_assert( char[] file, uint line )
+{
+    onAssertError( file, line );
+}
+
+extern (C) static void _d_assert_msg( char[] msg, char[] file, uint line )
+{
+    onAssertErrorMsg( file, line, msg );
+}
+
+extern (C) void _d_array_bounds( char[] file, uint line )
+{
+    onArrayBoundsError( file, line );
+}
+
+extern (C) void _d_switch_error( char[] file, uint line )
+{
+    onSwitchError( file, line );
+}
 
 /***********************************
  * The D main() function supplied by the user's program
@@ -49,12 +84,10 @@ extern (C) alias int function(char[][] args) main_type;
    by non-D executables. (TODO: Not complete, need a general library
    init routine.)
 */
-   
+
 extern (C) int _d_run_main(int argc, char **argv, main_type main_func)
 {
-    char[] *am;
     char[][] args;
-    int i;
     int result;
 
     version (GC_Use_Stack_Guess)
@@ -62,46 +95,56 @@ extern (C) int _d_run_main(int argc, char **argv, main_type main_func)
     version (GNU_CBridge_Stdio)
 	_d_gnu_cbridge_init_stdio();
     // Win32: original didn't do this -- what about Gcc?
-    _STI_monitor_staticctor();
-    _STI_critical_init();
-    gc_init();
-    am = cast(char[] *) malloc(argc * (char[]).sizeof);
-
-    void go()
+    version (all)
     {
-	_moduleCtor();
-	_moduleUnitTests();
-
-	for (i = 0; i < argc; i++)
-	{
-	    int len = strlen(argv[i]);
-	    am[i] = argv[i][0 .. len];
-	}
-
-	args = am[0 .. argc];
-
-	result = main_func(args);
-	_moduleDtor();
-	gc_term();
+        _STI_monitor_staticctor();
+        _STI_critical_init();
+        gc_init();
     }
 
-    if (no_catch_exceptions)
-	go();
-    else
+    version (all)
     {
-	try
-	    go();
-	catch (Object o)
-	{
-	    printf("Error: ");
-	    printf(o.toString() ~ '\0');
+        char[]* am = cast(char[]*) malloc(argc * (char[]).sizeof);
+        scope(exit) free(am);
+
+    	for (int i = 0; i < argc; i++)
+    	{
+    	    int len = strlen(argv[i]);
+    	    am[i] = argv[i][0 .. len];
+    	}
+	    args = am[0 .. argc];
+	}
+
+    try
+    {
+	    _moduleCtor();
+	    _moduleUnitTests();
+    	result = main(args);
+	    _moduleDtor();
+	    gc_term();
+    }
+    catch (Exception e)
+    {
+        while (e)
+        {
+            if (e.file)
+    	        fprintf(stderr, "%.*s(%u): %.*s\n", e.file, e.line, e.msg);
+    	    else
+    	        fprintf(stderr, "%.*s\n", e.toString());
+    	    e = e.next;
+    	}
 	    exit(EXIT_FAILURE);
-	}
     }
-    
-    free(am);
-    _STD_critical_term();
-    _STD_monitor_staticdtor();
+    catch (Object o)
+    {
+	    fprintf(stderr, "%.*s\n", o.toString());
+	    exit(EXIT_FAILURE);
+    }
 
+    version (all)
+    {
+	    _STD_critical_term();
+	    _STD_monitor_staticdtor();
+    }
     return result;
 }

@@ -36,7 +36,7 @@ D_GC_FLAGS=@D_GC_FLAGS@
 # FIXME: The Posix version flag should be added through configuration, probably
 # FIXME: The -I.. flag is needed to build the Tango version of libgphobos, but
 # there might possibly be a more streamlined way to do this
-DFLAGS=@DFLAGS@  $(D_GC_FLAGS) -nostdinc --version=Posix -I.. 
+DFLAGS=@DFLAGS@  $(D_GC_FLAGS) -nostdinc --version=Posix -I..
 
 D_GENERATE_FRAGMENTS=@D_GENERATE_FRAGMENTS@
 D_FRAGMENT_SRCDIR=@D_FRAGMENT_SRCDIR@
@@ -297,12 +297,12 @@ ALL_OBJS = \
     $(GC_OBJS) \
     $(WEAK_OBJS)
 
-libgphobos.a : $(ALL_OBJS) $(CMAIN_OBJS)
-	$(AR) -r $@ $(ALL_OBJS) $(CMAIN_OBJS)
+libgphobos.a : $(ALL_OBJS) $(OBJ_CMAIN)
+	$(AR) -r $@ $(ALL_OBJS) $(OBJ_CMAIN)
 	$(RANLIB) $@
 
-libgphobos_t.a : $(ALL_OBJS:.o=.t.o) $(CMAIN_OBJS)
-	$(AR) -r $@ $(ALL_OBJS:.o=.t.o) $(CMAIN_OBJS)
+libgphobos_t.a : $(ALL_OBJS:.o=.t.o) $(OBJ_CMAIN)
+	$(AR) -r $@ $(ALL_OBJS:.o=.t.o) $(OBJ_CMAIN)
 	$(RANLIB) $@
 
 .PHONY: info dvi TAGS install-info installcheck mostlyclean distclean maintainer-clean check
@@ -347,7 +347,7 @@ maintainer-clean: clean
 
 clean:
 	echo 'Removing files...'
-	rm -f $(ALL_OBJS) $(CMAIN_OBJS)
+	rm -f $(ALL_OBJS) $(OBJ_CMAIN)
 	rm -f $(ALL_OBJS:.o=.t.o)
 	rm -f unittest.o internal/gc/testgc.o
 	rm -f unittest$(EXEEXT) testgc$(EXEEXT)
