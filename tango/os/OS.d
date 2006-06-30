@@ -13,18 +13,18 @@
 module tango.os.OS;
 
 version (Win32)
-         public import tango.os.windows.c.minwin; 
+         public import tango.os.windows.minwin; 
 
 version (linux)
         {
-        public import tango.os.linux.c.linux;
-        alias tango.os.linux.c.linux posix;
+        public import tango.os.linux.linux;
+        alias tango.os.linux.linux posix;
         }
 
 version (darwin)
         {
-        public import tango.os.darwin.c.darwin;
-        alias tango.os.darwin.c.darwin posix;
+        public import tango.os.darwin.darwin;
+        alias tango.os.darwin.darwin posix;
         }
 
 

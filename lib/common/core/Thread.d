@@ -39,7 +39,7 @@ version( Win32 )
 {
     private
     {
-        import tango.os.windows.c.minwin;
+        import tango.os.windows.minwin;
 
         //
         // decls not in minwin
@@ -149,9 +149,9 @@ else version( Posix )
         import tango.stdc.posix.time;
 
         version( darwin )
-            import tango.os.darwin.c.darwin;
+            import tango.os.darwin.darwin;
         else
-            import tango.os.linux.c.linux;
+            import tango.os.linux.linux;
 
         //
         // entry point for POSIX threads

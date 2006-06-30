@@ -25,7 +25,7 @@
 
 //debug=1;
 
-import tango.os.linux.c.linuxextern;
+import tango.os.linux.linuxextern;
 
 extern (C) int _d_isbaseof(ClassInfo oc, ClassInfo c);
 
