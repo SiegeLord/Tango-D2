@@ -29,6 +29,17 @@ class Sha512Digest : Digest
 
         /***********************************************************************
         
+                Construct an Sha256Digest.
+
+                Remarks:
+                Constructs a blank Sha256Digest.
+       
+        ***********************************************************************/
+
+        this() { digest[] = 0; }
+
+        /***********************************************************************
+        
                 Construct an Sha512Digest.
 
                 Remarks:
@@ -36,13 +47,18 @@ class Sha512Digest : Digest
         
         ***********************************************************************/
 
-        this (ulong[8] context) 
-        { 
-                digest[] = context[]; 
+        this(void[] raw) { digest[] = cast(ulong[]) raw; }
 
-                version (LittleEndian)
-                         ByteSwap.swap64 (digest.ptr, digest.length * ulong.sizeof);
-        }
+        /***********************************************************************
+        
+                Construct an Sha256Digest.
+
+                Remarks:
+                Constructs an Sha256Digest from another Sha256Digest.
+        
+        ***********************************************************************/
+
+        this(Sha512Digest rhs) { digest[] = rhs.digest[]; }       
 
         /***********************************************************************
         
@@ -71,6 +87,8 @@ class Sha512Digest : Digest
         ***********************************************************************/
         
         void[] toBinary() { return cast(void[]) digest; }
+        
+        int opEquals(Object o) { Sha512Digest rhs = cast(Sha512Digest)o; assert(rhs); return digest == rhs.digest; }
 }
 
 
@@ -82,6 +100,33 @@ class Sha512Cipher : Cipher
 {
         private ulong[8]        context;
         private const uint      padChar = 0x80;
+
+        /***********************************************************************
+
+                Construct an Sha512Cipher
+
+        ***********************************************************************/
+
+        this() { }
+        
+        /***********************************************************************
+
+                Construct an Sha512Cipher
+
+                Params: 
+                rhs = an existing Sha512Digest
+
+                Remarks:
+                Construct an Sha512Cipher from a previous Sha512Digest.
+
+        ***********************************************************************/
+
+        this(Sha512Digest rhs)
+        {
+                context[] = cast(ulong[]) rhs.toBinary();
+                version (LittleEndian)
+                        ByteSwap.swap64 (context.ptr, context.length * ulong.sizeof);
+        }
 
         /***********************************************************************
         
@@ -113,7 +158,10 @@ class Sha512Cipher : Cipher
 
         override Sha512Digest getDigest()
         {
-                return new Sha512Digest(context);
+                ulong[8] digest = context[];
+                version (LittleEndian)
+                        ByteSwap.swap64 (digest.ptr, digest.length * ulong.sizeof);
+                return new Sha512Digest(digest);
         }
 
         /***********************************************************************
@@ -371,7 +419,7 @@ private static const ulong[8] initial = [
 
 *******************************************************************************/
 
-version (UnitText)
+version (UnitTest)
 {
 unittest {      
         static char[][] strings = [
@@ -383,12 +431,22 @@ unittest {
                 "8E959B75DAE313DA8CF4F72814FC143F8F7779C6EB9F7FA17299AEADB6889018501D289E4900F7E4331B99DEC4B5433AC7D329EEB6DD26545E96E55B874BE909"
         ];
         
-        auto h = new Sha512Cipher();
-        char[] res;
+        Sha512Cipher h = new Sha512Cipher();
+        Sha512Digest d,e;
 
         foreach(int i, char[] s; strings) {
-                res = h.sum(s).toString();
-                assert(res == results[i]);
+                d = cast(Sha512Digest)h.sum(s);
+                assert(d.toString() == results[i],"Cipher:("~s~")("~d.toString()~")!=("~results[i]~")");
+                
+                e = new Sha512Digest(d);
+                assert(d == e,"Digest from Digest:("~d.toString()~")!=("~e.toString()~")");
+                
+                e = new Sha512Digest(d.toBinary());
+                assert(d == e,"Digest from Digest binary:("~d.toString()~")!=("~e.toString()~")");
+                
+                h = new Sha512Cipher(d);
+                e = h.getDigest();
+                assert(d == e,"Digest from Cipher continue:("~d.toString()~")!=("~e.toString()~")");
         }
 }
 }

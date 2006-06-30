@@ -41,7 +41,7 @@ class Md2Digest : Digest
         
         ***********************************************************************/
 
-        this(ubyte[16] raw) { digest[] = raw[]; }
+        this(void[] raw) { digest[] = cast(ubyte[])raw; }
 
         /***********************************************************************
 
@@ -52,7 +52,7 @@ class Md2Digest : Digest
         
         ***********************************************************************/
 
-        this(Md2Digest rhs) { digest[] = rhs.digest[]; }        
+        this(Md2Digest rhs) { digest[] = rhs.digest[]; }
 
         /***********************************************************************
         
@@ -81,6 +81,8 @@ class Md2Digest : Digest
         ***********************************************************************/
         
         void[] toBinary() { return cast(void[]) digest; }
+        
+        int opEquals(Object o) { Md2Digest rhs = cast(Md2Digest)o; assert(rhs); return digest == rhs.digest; }
 }
 
 
@@ -92,6 +94,28 @@ class Md2Cipher : Cipher
 {
         private ubyte[16] C,
                           state;
+        
+        /***********************************************************************
+        
+                Construct an Md2Cipher
+
+        ***********************************************************************/
+
+        this() { }
+        
+        /***********************************************************************
+        
+                Construct an Md2Cipher
+
+                Params: 
+                rhs = an existing Md2Digest
+
+                Remarks:
+                Construct an Md2Cipher from a previous Md2Digest.
+
+        ***********************************************************************/
+
+        this(Md2Digest rhs) { state[] = cast(ubyte[])rhs.toBinary(); }
         
         /***********************************************************************
 
@@ -277,7 +301,7 @@ private const ubyte[256] PI =
 
 *******************************************************************************/
 
-version (UnitText)
+version (UnitTest)
 {
 unittest {
         static char[][] strings = [
@@ -300,11 +324,21 @@ unittest {
         ];
         
         Md2Cipher h = new Md2Cipher();
-        char[] res;
+        Md2Digest d,e;
 
         foreach(int i, char[] s; strings) {
-                res = h.sum(s).toString();
-                assert(res == results[i]);
+                d = cast(Md2Digest)h.sum(s);
+                assert(d.toString() == results[i],"Cipher:("~s~")("~d.toString()~")!=("~results[i]~")");
+                
+                e = new Md2Digest(d);
+                assert(d == e,"Digest from Digest:("~d.toString()~")!=("~e.toString()~")");
+                
+                e = new Md2Digest(d.toBinary());
+                assert(d == e,"Digest from Digest binary:("~d.toString()~")!=("~e.toString()~")");
+                
+                h = new Md2Cipher(d);
+                e = h.getDigest();
+                assert(d == e,"Digest from Cipher continue:("~d.toString()~")!=("~e.toString()~")");
         }
 }
 }

@@ -32,18 +32,34 @@ class Sha256Digest : Digest
                 Construct an Sha256Digest.
 
                 Remarks:
+                Constructs a blank Sha256Digest.
+       
+        ***********************************************************************/
+
+        this() { digest[] = 0; }
+        
+        /***********************************************************************
+        
+                Construct an Sha256Digest.
+
+                Remarks:
                 Constructs an Sha256Digest from binary data
         
         ***********************************************************************/
 
-        this (uint[8] context) 
-        { 
-                digest[] = context[]; 
+        this(void[] raw) { digest[] = cast(uint[]) raw; }
 
-                version (LittleEndian)
-                         ByteSwap.swap32 (digest.ptr, digest.length * uint.sizeof);
-        }
+        /***********************************************************************
         
+                Construct an Sha256Digest.
+
+                Remarks:
+                Constructs an Sha256Digest from another Sha256Digest.
+        
+        ***********************************************************************/
+
+        this(Sha256Digest rhs) { digest[] = rhs.digest[]; }       
+
         /***********************************************************************
         
                 Return the string representation
@@ -71,6 +87,8 @@ class Sha256Digest : Digest
         ***********************************************************************/
         
         void[] toBinary() { return cast(void[]) digest; }
+        
+        int opEquals(Object o) { Sha256Digest rhs = cast(Sha256Digest)o; assert(rhs); return digest == rhs.digest; }
 }
 
 
@@ -82,6 +100,33 @@ class Sha256Cipher : Cipher
 {
         private uint[8]         context;
         private const uint      padChar = 0x80;
+
+        /***********************************************************************
+
+                Construct an Sha256Cipher
+
+        ***********************************************************************/
+
+        this() { }
+        
+        /***********************************************************************
+
+                Construct an Sha1Cipher
+
+                Params: 
+                rhs = an existing Sha1Digest
+
+                Remarks:
+                Construct an Sha1Cipher from a previous Sha1Digest.
+
+        ***********************************************************************/
+
+        this(Sha256Digest rhs)
+        {
+                context[] = cast(uint[]) rhs.toBinary();
+                version (LittleEndian)
+                        ByteSwap.swap32 (context.ptr, context.length * uint.sizeof);
+        }
 
         /***********************************************************************
         
@@ -113,7 +158,10 @@ class Sha256Cipher : Cipher
 
         override Sha256Digest getDigest()
         {
-                return new Sha256Digest(context);
+                uint[8] digest = context[];
+                version (LittleEndian)
+                        ByteSwap.swap32 (digest.ptr, digest.length * uint.sizeof);
+                return new Sha256Digest(digest);
         }
         
         /***********************************************************************
@@ -356,7 +404,7 @@ private static const uint[8] initial = [
 
 *******************************************************************************/
 
-version (UnitText)
+version (UnitTest)
 {
 unittest {
         static char[][] strings = [
@@ -368,12 +416,22 @@ unittest {
                 "248D6A61D20638B8E5C026930C3E6039A33CE45964FF2167F6ECEDD419DB06C1"
         ];
         
-        auto h = new Sha256Cipher();
-        char[] res;
+        Sha256Cipher h = new Sha256Cipher();
+        Sha256Digest d,e;
 
         foreach(int i, char[] s; strings) {
-                res = h.sum(s).toString();
-                assert(res == results[i]);
+                d = cast(Sha256Digest)h.sum(s);
+                assert(d.toString() == results[i],"Cipher:("~s~")("~d.toString()~")!=("~results[i]~")");
+                
+                e = new Sha256Digest(d);
+                assert(d == e,"Digest from Digest:("~d.toString()~")!=("~e.toString()~")");
+                
+                e = new Sha256Digest(d.toBinary());
+                assert(d == e,"Digest from Digest binary:("~d.toString()~")!=("~e.toString()~")");
+                
+                h = new Sha256Cipher(d);
+                e = h.getDigest();
+                assert(d == e,"Digest from Cipher continue:("~d.toString()~")!=("~e.toString()~")");
         }
 }
 }

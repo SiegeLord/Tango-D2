@@ -29,20 +29,44 @@ class TigerDigest : Digest
 
         /***********************************************************************
         
-                Construct an TigerDigest.
+                Construct a TigerDigest.
 
                 Remarks:
-                Constructs an TigerDigest from binary data
+                Constructs a blank TigerDigest.
+       
+        ***********************************************************************/
+
+        this() { digest[] = 0; }
+
+        /***********************************************************************
+        
+                Construct a TigerDigest.
+
+                Remarks:
+                Constructs a TigerDigest from binary data
         
         ***********************************************************************/
 
-        this (ulong[3] context) 
+        this(void[] raw) { digest[] = cast(ulong[]) raw; }
+        
+        /*this (ulong[3] context) 
         { 
                 digest[] = context[]; 
 
                 version (LittleEndian)
                          ByteSwap.swap64 (digest.ptr, digest.length * ulong.sizeof);
-        }
+        }*/
+
+        /***********************************************************************
+        
+                Construct a TigerDigest.
+
+                Remarks:
+                Constructs a TigerDigest from another TigerDigest.
+        
+        ***********************************************************************/
+
+        this(TigerDigest rhs) { digest[] = rhs.digest[]; }       
 
         /***********************************************************************
         
@@ -71,6 +95,8 @@ class TigerDigest : Digest
         ***********************************************************************/
         
         void[] toBinary() { return cast(void[]) digest; }
+        
+        int opEquals(Object o) { TigerDigest rhs = cast(TigerDigest)o; assert(rhs); return digest == rhs.digest; }
 }
 
 
@@ -95,6 +121,33 @@ class TigerCipher : Cipher
                 0xF096A5B4C3B2E187
         ];
         
+        /***********************************************************************
+
+                Construct an TigerCipher
+
+        ***********************************************************************/
+
+        this() { }
+        
+        /***********************************************************************
+
+                Construct an TigerCipher
+
+                Params: 
+                rhs = an existing TigerDigest
+
+                Remarks:
+                Construct an TigerCipher from a previous TigerDigest.
+
+        ***********************************************************************/
+
+        this(TigerDigest rhs)
+        {
+                context[] = cast(ulong[]) rhs.toBinary();
+                version (LittleEndian)
+                        ByteSwap.swap64 (context.ptr, context.length * ulong.sizeof);
+        }
+
         /***********************************************************************
         
                 Initialize the cipher
@@ -125,7 +178,10 @@ class TigerCipher : Cipher
 
         override TigerDigest getDigest()
         {
-                return new TigerDigest(context);
+                ulong[3] digest = context[];
+                version (LittleEndian)
+                        ByteSwap.swap64 (digest.ptr, digest.length * ulong.sizeof);
+                return new TigerDigest(digest);
         }
         
         /***********************************************************************
@@ -877,7 +933,7 @@ private static ulong[1024] table = [
 
 *******************************************************************************/
 
-version (UnitText)
+version (UnitTest)
 {
 unittest {      
         static char[][] strings = [
@@ -902,21 +958,32 @@ unittest {
                 "3D9AEB03D1BD1A6357B2774DFD6D5B24DD68151D503974FC",
                 "00B83EB4E53440C576AC6AAEE0A7485825FD15E70A59FFE4"
         ];
-        
-        auto h = new TigerCipher();
-        ubyte[65536] buffer;
-        char[] res;
+
+        TigerCipher h = new TigerCipher();
+        TigerDigest d,e;
 
         foreach(int i, char[] s; strings) {
-                res = h.sum(s).toString();
-                assert(res == results[i]);
+                d = cast(TigerDigest)h.sum(s);
+                assert(d.toString() == results[i],"Cipher:("~s~")("~d.toString()~")!=("~results[i]~")");
+
+                e = new TigerDigest(d);
+                assert(d == e,"Digest from Digest:("~d.toString()~")!=("~e.toString()~")");
+
+                e = new TigerDigest(d.toBinary());
+                assert(d == e,"Digest from Digest binary:("~d.toString()~")!=("~e.toString()~")");
+
+                h = new TigerCipher(d);
+                e = h.getDigest();
+                assert(d == e,"Digest from Cipher continue:("~d.toString()~")!=("~e.toString()~")");
         }
-        
+
+        ubyte[65536] buffer;
+
         for (uint i = 0; i < 65536; i++)
                 buffer[i] = cast(ubyte) i;
-        res = h.sum(buffer).toString();
-        assert(res == "8EF43951B3F5F4FD1D41AFE51B420E710462F233C3AAA8E1");
 
+        d = cast(TigerDigest)h.sum(buffer);
+        assert(d.toString() == "8EF43951B3F5F4FD1D41AFE51B420E710462F233C3AAA8E1",
+                "Cipher:(65k)("~d.toString()~")!=(8EF43951B3F5F4FD1D41AFE51B420E710462F233C3AAA8E1)");
 }
 }
-

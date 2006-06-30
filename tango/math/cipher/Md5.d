@@ -28,11 +28,33 @@ class Md5Digest : Md4Digest
                 Construct an Md5Digest.
 
                 Remarks:
-                Constructs an Md5Digest from binary data
+                Constructs a blank Md5Digest.
 
         ***********************************************************************/
 
-        this(uint[4] raw) { super(raw); }
+        this() { }
+
+        /***********************************************************************
+
+                Construct an Md5Digest.
+
+                Remarks:
+                Constructs an Md5Digest from binary data
+        
+        ***********************************************************************/
+
+        this(void[] raw) { super(raw); }
+
+        /***********************************************************************
+
+                Construct an Md5Digest.
+
+                Remarks:
+                Constructs an Md5Digest from another Md5Digest.
+        
+        ***********************************************************************/
+
+        this(Md5Digest rhs) { super(rhs); }
 }
 
 
@@ -66,7 +88,29 @@ class Md5Cipher : Md4Cipher
         };
 
         /***********************************************************************
-        
+
+                Construct an Md5Cipher
+
+        ***********************************************************************/
+
+        this() { }
+
+        /***********************************************************************
+
+                Construct an Md5Cipher
+
+                Params: 
+                rhs = an existing Md5Digest
+
+                Remarks:
+                Construct an Md5Cipher from a previous Md5Digest.
+
+        ***********************************************************************/
+
+        this(Md5Digest rhs) { context[] = cast(uint[])rhs.toBinary(); }
+
+        /***********************************************************************
+
                 Obtain the digest
 
                 Returns:
@@ -257,7 +301,7 @@ class Md5Cipher : Md4Cipher
 
 *******************************************************************************/
 
-version (UnitText)
+version (UnitTest)
 {
 unittest {
         static char[][] strings = [
@@ -279,12 +323,22 @@ unittest {
                 "57EDF4A22BE3C955AC49DA2E2107B67A"
         ];
         
-        auto h = new Md5Cipher();
-        char[] res;
+        Md5Cipher h = new Md5Cipher();
+        Md5Digest d,e;
 
         foreach(int i, char[] s; strings) {
-                res = h.sum(s).toString();
-                assert(res == results[i]);
+                d = cast(Md5Digest)h.sum(s);
+                assert(d.toString() == results[i],"Cipher:("~s~")("~d.toString()~")!=("~results[i]~")");
+                
+                e = new Md5Digest(d);
+                assert(d == e,"Digest from Digest:("~d.toString()~")!=("~e.toString()~")");
+                
+                e = new Md5Digest(d.toBinary());
+                assert(d == e,"Digest from Digest binary:("~d.toString()~")!=("~e.toString()~")");
+                
+                h = new Md5Cipher(d);
+                e = h.getDigest();
+                assert(d == e,"Digest from Cipher continue:("~d.toString()~")!=("~e.toString()~")");
         }
 }
 }

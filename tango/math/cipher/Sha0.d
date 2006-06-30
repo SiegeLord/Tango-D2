@@ -17,6 +17,8 @@ module tango.math.cipher.Sha0;
 
 public import tango.math.cipher.Cipher;
 
+private import tango.core.ByteSwap;
+
 /*******************************************************************************
 
 *******************************************************************************/
@@ -45,10 +47,7 @@ class Sha0Digest : Digest
         
         ***********************************************************************/
 
-        this(uint[5] context) {
-                foreach(uint i, ubyte b; (cast(ubyte *)context)[0..20])
-                        digest[i^3] = b;
-        }
+        this(void[] raw) { digest[] = cast(ubyte[])raw; }
 
         /***********************************************************************
         
@@ -88,6 +87,8 @@ class Sha0Digest : Digest
         ***********************************************************************/
         
         void[] toBinary() { return cast(void[]) digest; }
+        
+        int opEquals(Object o) { Sha0Digest rhs = cast(Sha0Digest)o; assert(rhs); return digest == rhs.digest; }
 }
 
 
@@ -97,7 +98,7 @@ class Sha0Digest : Digest
 
 class Sha0Cipher : Cipher
 {
-        private uint[5]         context;
+        protected uint[5]       context;
 
         private const ubyte     padChar = 0x80;
         private const uint      mask = 0x0000000F;
@@ -128,6 +129,33 @@ class Sha0Cipher : Cipher
         ];
 
         /***********************************************************************
+
+                Construct an Sha0Cipher
+
+        ***********************************************************************/
+
+        this() { }
+        
+        /***********************************************************************
+
+                Construct an Sha0Cipher
+
+                Params: 
+                rhs = an existing Sha0Digest
+
+                Remarks:
+                Construct an Sha0Cipher from a previous Sha0Digest.
+
+        ***********************************************************************/
+
+        this(Sha0Digest rhs)
+        {
+                context[] = cast(uint[])rhs.toBinary();
+                version (LittleEndian)
+                        ByteSwap.swap32 (context.ptr, context.length * uint.sizeof);
+        }
+
+        /***********************************************************************
         
                 Initialize the cipher
 
@@ -155,9 +183,12 @@ class Sha0Cipher : Cipher
 
         ***********************************************************************/
 
-        override Digest getDigest()
+        override Sha0Digest getDigest()
         {
-                return new Sha0Digest(context);
+                uint[5] digest = context[];
+                version (LittleEndian)
+                         ByteSwap.swap32 (digest.ptr, digest.length * uint.sizeof);
+                return new Sha0Digest(digest);
         }
         
         /***********************************************************************
@@ -317,7 +348,7 @@ class Sha0Cipher : Cipher
 
 *******************************************************************************/
 
-version (UnitText)
+version (UnitTest)
 {
 unittest {
         static char[][] strings = [
@@ -337,12 +368,22 @@ unittest {
                 "4AA29D14D171522ECE47BEE8957E35A41F3E9CFF",
         ];
         
-        auto h = new Sha0Cipher();
-        char[] res;
+        Sha0Cipher h = new Sha0Cipher();
+        Sha0Digest d,e;
 
         foreach(int i, char[] s; strings) {
-                res = h.sum(s).toString();
-                assert(res == results[i]);
+                d = cast(Sha0Digest)h.sum(s);
+                assert(d.toString() == results[i],"Cipher:("~s~")("~d.toString()~")!=("~results[i]~")");
+                
+                e = new Sha0Digest(d);
+                assert(d == e,"Digest from Digest:("~d.toString()~")!=("~e.toString()~")");
+                
+                e = new Sha0Digest(d.toBinary());
+                assert(d == e,"Digest from Digest binary:("~d.toString()~")!=("~e.toString()~")");
+                
+                h = new Sha0Cipher(d);
+                e = h.getDigest();
+                assert(d == e,"Digest from Cipher continue:("~d.toString()~")!=("~e.toString()~")");
         }
 }
 }

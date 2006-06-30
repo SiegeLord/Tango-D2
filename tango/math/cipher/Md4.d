@@ -24,17 +24,39 @@ public  import tango.math.cipher.Cipher;
 *******************************************************************************/
 
 class Md4Digest : Md2Digest
-{       
+{
         /***********************************************************************
         
                 Construct an Md4Digest.
 
                 Remarks:
-                Constructs an Md4Digest from binary data
+                Constructs a blank Md4Digest.
 
         ***********************************************************************/
 
-        this(uint[4] raw) { super(cast(ubyte[16])raw); }
+        this() { }
+        
+        /***********************************************************************
+
+                Construct an Md4Digest.
+
+                Remarks:
+                Constructs an Md4Digest from binary data
+        
+        ***********************************************************************/
+
+        this(void[] raw) { super(raw); }
+        
+        /***********************************************************************
+
+                Construct an Md4Digest.
+
+                Remarks:
+                Constructs an Md4Digest from another Md4Digest.
+        
+        ***********************************************************************/
+
+        this(Md4Digest rhs) { super(rhs); }
 }
 
 
@@ -47,6 +69,29 @@ class Md4Cipher : Cipher
         protected uint[4]       context;
         private const ubyte     padChar = 0x80;
         
+
+        /***********************************************************************
+        
+                Construct an Md4Cipher
+
+        ***********************************************************************/
+
+        this() { }
+        
+        /***********************************************************************
+        
+                Construct an Md4Cipher
+
+                Params: 
+                rhs = an existing Md4Digest
+
+                Remarks:
+                Construct an Md4Cipher from a previous Md4Digest.
+
+        ***********************************************************************/
+
+        this(Md4Digest rhs) { context[] = cast(uint[])rhs.toBinary(); }
+
         /***********************************************************************
         
         ***********************************************************************/
@@ -109,7 +154,7 @@ class Md4Cipher : Cipher
 
         override Md4Digest getDigest()
         {
-                return new Md4Digest(context);
+                return new Md4Digest(cast(void[])context);
         }
 
         /***********************************************************************
@@ -336,7 +381,7 @@ class Md4Cipher : Cipher
 
 *******************************************************************************/
 
-version (UnitText)
+version (UnitTest)
 {
 unittest {
         static char[][] strings = [
@@ -358,12 +403,22 @@ unittest {
                 "E33B4DDC9C38F2199C3E7B164FCC0536"
         ];
         
-        auto h = new Md4Cipher();
-        char[] res;
+        Md4Cipher h = new Md4Cipher();
+        Md4Digest d,e;
 
         foreach(int i, char[] s; strings) {
-                res = h.sum(s).toString();
-                assert(res == results[i]);
+                d = cast(Md4Digest)h.sum(s);
+                assert(d.toString() == results[i],"Cipher:("~s~")("~d.toString()~")!=("~results[i]~")");
+                
+                e = new Md4Digest(d);
+                assert(d == e,"Digest from Digest:("~d.toString()~")!=("~e.toString()~")");
+                
+                e = new Md4Digest(d.toBinary());
+                assert(d == e,"Digest from Digest binary:("~d.toString()~")!=("~e.toString()~")");
+                
+                h = new Md4Cipher(d);
+                e = h.getDigest();
+                assert(d == e,"Digest from Cipher continue:("~d.toString()~")!=("~e.toString()~")");
         }
 }
 }
