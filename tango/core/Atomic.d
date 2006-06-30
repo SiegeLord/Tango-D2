@@ -43,6 +43,8 @@ enum msync
 
 private
 {
+  version( DDoc ) {} else
+  {
     import tango.core.Traits;
 
 
@@ -77,6 +79,186 @@ private
                               ms == msync.ssb ||
                               ms == msync.rel;
     }
+  }
+}
+
+
+////////////////////////////////////////////////////////////////////////////////
+// DDoc Documentation for Atomic Functions
+////////////////////////////////////////////////////////////////////////////////
+
+
+version( DDoc )
+{
+    ////////////////////////////////////////////////////////////////////////////
+    // Atomic Load
+    ////////////////////////////////////////////////////////////////////////////
+
+
+    /**
+     * Supported msync values:
+     *  msync.none
+     *  msync.hlb
+     *  msync.ddhlb
+     *  msync.acq
+     */
+    template atomicLoad( msync ms, T )
+    {
+        /**
+         * Refreshes the contents of 'val' from main memory.  This operation is
+         * both lock-free and atomic.
+         *
+         * Returns:
+         *  The loaded value.
+         *
+         * Params:
+         *  val = The value to load.  This value must be properly aligned.
+         */
+        T atomicLoad( inout T val )
+        {
+            return val;
+        }
+    }
+
+
+    ////////////////////////////////////////////////////////////////////////////
+    // Atomic Store
+    ////////////////////////////////////////////////////////////////////////////
+
+
+    /**
+     * Supported msync values:
+     *  msync.none
+     *  msync.ssb
+     *  msync.acq
+     *  msync.rel
+     */
+    template atomicStore( msync ms, T )
+    {
+        /**
+         * Stores 'newval' to the memory referenced by 'val'.  This operation
+         * is both lock-free and atomic.
+         *
+         * Params:
+         *  val     = The destination variable.
+         *  newval  = The value to store.
+         */
+        void atomicStore( inout T val, T newval )
+        {
+
+        }
+    }
+
+
+    ////////////////////////////////////////////////////////////////////////////
+    // Atomic StoreIf
+    ////////////////////////////////////////////////////////////////////////////
+
+
+    /**
+     * Supported msync values:
+     *  msync.none
+     *  msync.ssb
+     *  msync.acq
+     *  msync.rel
+     */
+    template atomicStoreIf( msync ms, T )
+    {
+        /**
+         * Stores 'newval' to the memory referenced by 'val' if val is equal to
+         * 'equalTo'.  This operation is both lock-free and atomic.
+         *
+         * Returns:
+         *  true if the store occurred, false if not.
+         *
+         * Params:
+         *  val     = The destination variable.
+         *  newval  = The value to store.
+         *  equalTo = The comparison value.
+         */
+        bool atomicStoreIf( inout T val, T newval, T equalTo )
+        {
+            return false;
+        }
+    }
+
+
+    ////////////////////////////////////////////////////////////////////////////
+    // Atomic Increment
+    ////////////////////////////////////////////////////////////////////////////
+
+
+    /**
+     * Supported msync values:
+     *  msync.none
+     *  msync.ssb
+     *  msync.acq
+     *  msync.rel
+     */
+    template atomicIncrement( msync ms, T )
+    {
+        /**
+         * This operation is only legal for built-in value and pointer types,
+         * and is equivalent to an atomic "val = val + 1" operation.  This
+         * function exists to facilitate use of the optimized increment
+         * instructions provided by some architecures.  If no such instruction
+         * exists on the target platform then the behavior will perform the
+         * operation using more traditional means.  This operation is both
+         * lock-free and atomic.
+         *
+         * Returns:
+         *  The result of an atomicLoad of val immediately following the
+         *  increment operation.  This value is not required to be equal to the
+         *  newly stored value.  Thus, competing writes are allowed to occur
+         *  between the increment and successive load operation.
+         *
+         * Params:
+         *  val = The value to increment.
+         */
+        T atomicIncrement( inout T val )
+        {
+            return val;
+        }
+    }
+
+
+    ////////////////////////////////////////////////////////////////////////////
+    // Atomic Decrement
+    ////////////////////////////////////////////////////////////////////////////
+
+
+    /**
+     * Supported msync values:
+     *  msync.none
+     *  msync.ssb
+     *  msync.acq
+     *  msync.rel
+     */
+    template atomicDecrement( msync ms, T )
+    {
+        /**
+         * This operation is only legal for built-in value and pointer types,
+         * and is equivalent to an atomic "val = val - 1" operation.  This
+         * function exists to facilitate use of the optimized decrement
+         * instructions provided by some architecures.  If no such instruction
+         * exists on the target platform then the behavior will perform the
+         * operation using more traditional means.  This operation is both
+         * lock-free and atomic.
+         *
+         * Returns:
+         *  The result of an atomicLoad of val immediately following the
+         *  increment operation.  This value is not required to be equal to the
+         *  newly stored value.  Thus, competing writes are allowed to occur
+         *  between the increment and successive load operation.
+         *
+         * Params:
+         *  val = The value to decrement.
+         */
+        T atomicDecrement( inout T val )
+        {
+            return val;
+        }
+    }
 }
 
 
@@ -85,20 +267,18 @@ private
 ////////////////////////////////////////////////////////////////////////////////
 
 
-private
+else version( X86 )
 {
-    version( X86 )
+    private
     {
         ////////////////////////////////////////////////////////////////////////
         // x86 Value Requirements
         ////////////////////////////////////////////////////////////////////////
 
 
-        //
         // NOTE: Strictly speaking, the x86 supports atomic operations on
         //       unaligned values.  However, this is far slower than the
         //       common case, so such behavior should be prohibited.
-        //
         template atomicValueIsProperlyAligned( T )
         {
             bool atomicValueIsProperlyAligned( size_t addr )
@@ -1061,106 +1241,44 @@ private
             }
         }
     }
-}
 
 
-////////////////////////////////////////////////////////////////////////////////
-// x86 Atomic Function Accessors
-////////////////////////////////////////////////////////////////////////////////
+    ////////////////////////////////////////////////////////////////////////////
+    // x86 Public Atomic Functions
+    ////////////////////////////////////////////////////////////////////////////
 
-
-version( X86 )
-{
     //
     // NOTE: x86 loads implicitly have acquire semantics so a membar is only necessary on release
     //
 
-    /**
-     * Refreshes the contents of 'val' from main memory.  This operation is both lock-free and atomic.
-     *
-     * Returns:
-     *  The loaded value.
-     *
-     * Params:
-     *  val = The value to load.  This value must be properly aligned.
-     */
     template atomicLoad( msync ms : msync.none, T )  { alias doAtomicLoad!(isSinkOp!(ms),T) atomicLoad; }
-    template atomicLoad( msync ms : msync.hlb, T )   { alias doAtomicLoad!(isSinkOp!(ms),T) atomicLoad; } /// ditto
-    template atomicLoad( msync ms : msync.ddhlb, T ) { alias doAtomicLoad!(isSinkOp!(ms),T) atomicLoad; } /// ditto
-    template atomicLoad( msync ms : msync.acq, T )   { alias doAtomicLoad!(isSinkOp!(ms),T) atomicLoad; } /// ditto
+    template atomicLoad( msync ms : msync.hlb, T )   { alias doAtomicLoad!(isSinkOp!(ms),T) atomicLoad; }
+    template atomicLoad( msync ms : msync.ddhlb, T ) { alias doAtomicLoad!(isSinkOp!(ms),T) atomicLoad; }
+    template atomicLoad( msync ms : msync.acq, T )   { alias doAtomicLoad!(isSinkOp!(ms),T) atomicLoad; }
 
     //
     // NOTE: x86 stores implicitly have release semantics so a membar is only necessary on acquires
     //
 
-    /**
-     * Stores 'newval' to the memory referenced by 'val'.  This operation is both lock-free and atomic.
-     *
-     * Params:
-     *  val     = The destination variable.
-     *  newval  = The value to store.
-     */
     template atomicStore( msync ms : msync.none, T ) { alias doAtomicStore!(isHoistOp!(ms),T) atomicStore; }
-    template atomicStore( msync ms : msync.ssb, T )  { alias doAtomicStore!(isHoistOp!(ms),T) atomicStore; } /// ditto
-    template atomicStore( msync ms : msync.acq, T )  { alias doAtomicStore!(isHoistOp!(ms),T) atomicStore; } /// ditto
-    template atomicStore( msync ms : msync.rel, T )  { alias doAtomicStore!(isHoistOp!(ms),T) atomicStore; } /// ditto
+    template atomicStore( msync ms : msync.ssb, T )  { alias doAtomicStore!(isHoistOp!(ms),T) atomicStore; }
+    template atomicStore( msync ms : msync.acq, T )  { alias doAtomicStore!(isHoistOp!(ms),T) atomicStore; }
+    template atomicStore( msync ms : msync.rel, T )  { alias doAtomicStore!(isHoistOp!(ms),T) atomicStore; }
 
-    /**
-     * Stores 'newval' to the memory referenced by 'val' if val is equal to 'equalTo'.  This operation
-     * is both lock-free and atomic.
-     *
-     * Returns:
-     *  true if the store occurred, false if not.
-     *
-     * Params:
-     *  val     = The destination variable.
-     *  newval  = The value to store.
-     *  equalTo = The comparison value.
-     */
     template atomicStoreIf( msync ms : msync.none, T ) { alias doAtomicStoreIf!(ms!=msync.none,T) atomicStoreIf; }
-    template atomicStoreIf( msync ms : msync.ssb, T )  { alias doAtomicStoreIf!(ms!=msync.none,T) atomicStoreIf; } /// ditto
-    template atomicStoreIf( msync ms : msync.acq, T )  { alias doAtomicStoreIf!(ms!=msync.none,T) atomicStoreIf; } /// ditto
-    template atomicStoreIf( msync ms : msync.rel, T )  { alias doAtomicStoreIf!(ms!=msync.none,T) atomicStoreIf; } /// ditto
+    template atomicStoreIf( msync ms : msync.ssb, T )  { alias doAtomicStoreIf!(ms!=msync.none,T) atomicStoreIf; }
+    template atomicStoreIf( msync ms : msync.acq, T )  { alias doAtomicStoreIf!(ms!=msync.none,T) atomicStoreIf; }
+    template atomicStoreIf( msync ms : msync.rel, T )  { alias doAtomicStoreIf!(ms!=msync.none,T) atomicStoreIf; }
 
-    /**
-     * This operation is only legal for built-in value and pointer types, and is equivalent to an atomic
-     * "val = val + 1" operation.  This function exists to facilitate use of the optimized increment
-     * instructions provided by some architecures.  If no such instruction exists on the target platform
-     * then the behavior will perform the operation using more traditional means.  This operation is both
-     * lock-free and atomic.
-     *
-     * Returns:
-     *  The result of an atomicLoad of val immediately following the increment operation.  This value
-     *  is not required to be equal to the newly stored value.  Thus, competing writes are allowed to
-     *  occur between the increment and successive load operation.
-     *
-     * Params:
-     *  val = The value to increment.
-     */
     template atomicIncrement( msync ms : msync.none, T ) { alias doAtomicIncrement!(ms!=msync.none,T) atomicIncrement; }
-    template atomicIncrement( msync ms : msync.ssb, T )  { alias doAtomicIncrement!(ms!=msync.none,T) atomicIncrement; } /// ditto
-    template atomicIncrement( msync ms : msync.acq, T )  { alias doAtomicIncrement!(ms!=msync.none,T) atomicIncrement; } /// ditto
-    template atomicIncrement( msync ms : msync.rel, T )  { alias doAtomicIncrement!(ms!=msync.none,T) atomicIncrement; } /// ditto
+    template atomicIncrement( msync ms : msync.ssb, T )  { alias doAtomicIncrement!(ms!=msync.none,T) atomicIncrement; }
+    template atomicIncrement( msync ms : msync.acq, T )  { alias doAtomicIncrement!(ms!=msync.none,T) atomicIncrement; }
+    template atomicIncrement( msync ms : msync.rel, T )  { alias doAtomicIncrement!(ms!=msync.none,T) atomicIncrement; }
 
-    /**
-     * This operation is only legal for built-in value and pointer types, and is equivalent to an atomic
-     * "val = val - 1" operation.  This function exists to facilitate use of the optimized decrement
-     * instructions provided by some architecures.  If no such instruction exists on the target platform
-     * then the behavior will perform the operation using more traditional means.  This operation is both
-     * lock-free and atomic.
-     *
-     * Returns:
-     *  The result of an atomicLoad of val immediately following the increment operation.  This value
-     *  is not required to be equal to the newly stored value.  Thus, competing writes are allowed to
-     *  occur between the increment and successive load operation.
-     *
-     * Params:
-     *  val = The value to decrement.
-     */
     template atomicDecrement( msync ms : msync.none, T ) { alias doAtomicDecrement!(ms!=msync.none,T) atomicDecrement; }
-    template atomicDecrement( msync ms : msync.ssb, T )  { alias doAtomicDecrement!(ms!=msync.none,T) atomicDecrement; } /// ditto
-    template atomicDecrement( msync ms : msync.acq, T )  { alias doAtomicDecrement!(ms!=msync.none,T) atomicDecrement; } /// ditto
-    template atomicDecrement( msync ms : msync.rel, T )  { alias doAtomicDecrement!(ms!=msync.none,T) atomicDecrement; } /// ditto
+    template atomicDecrement( msync ms : msync.ssb, T )  { alias doAtomicDecrement!(ms!=msync.none,T) atomicDecrement; }
+    template atomicDecrement( msync ms : msync.acq, T )  { alias doAtomicDecrement!(ms!=msync.none,T) atomicDecrement; }
+    template atomicDecrement( msync ms : msync.rel, T )  { alias doAtomicDecrement!(ms!=msync.none,T) atomicDecrement; }
 }
 
 
@@ -1170,89 +1288,171 @@ version( X86 )
 
 
 /**
- * This class represents a value which will be subject to competing access.  All accesses to
- * this value will be synchronized with main memory, and various memory barriers may be
- * employed for instruction ordering.  Any primitive type of size equal to or smaller than
- * the memory bus size is allowed, so 32-bit machines may use values with size <= int.sizeof
- * and 64-bit machines may use values with size <= long.sizeof.  The one exception to this
- * rule is that architectures that support DCAS will allow double-wide storeIf operations.
- * The 32-bit x86 architecture, for example, supports 64-bit storeIf operations.
+ * This class represents a value which will be subject to competing access.
+ * All accesses to this value will be synchronized with main memory, and
+ * various memory barriers may be employed for instruction ordering.  Any
+ * primitive type of size equal to or smaller than the memory bus size is
+ * allowed, so 32-bit machines may use values with size <= int.sizeof and
+ * 64-bit machines may use values with size <= long.sizeof.  The one exception
+ * to this rule is that architectures that support DCAS will allow double-wide
+ * storeIf operations.  The 32-bit x86 architecture, for example, supports
+ * 64-bit storeIf operations.
  */
 struct Atomic( T )
 {
-    /**
-     * Refreshes the contents of this value from main memory.  This operation is both lock-free and atomic.
-     *
-     * Returns:
-     *  The loaded value.
-     */
-    template load( msync ms : msync.none )  { T load() { return atomicLoad!(ms,T)( m_val ); } }
-    template load( msync ms : msync.hlb )   { T load() { return atomicLoad!(ms,T)( m_val ); } } /// ditto
-    template load( msync ms : msync.ddhlb ) { T load() { return atomicLoad!(ms,T)( m_val ); } } /// ditto
-    template load( msync ms : msync.acq )   { T load() { return atomicLoad!(ms,T)( m_val ); } } /// ditto
+    ////////////////////////////////////////////////////////////////////////////
+    // Atomic Load
+    ////////////////////////////////////////////////////////////////////////////
+
+
+    template load( msync ms )
+    {
+        static assert( ms == msync.none  || ms == msync.hlb ||
+                       ms == msync.ddhlb || ms == msync.acq,
+                       "ms must be one of: msync.none, msync.hlb, msync.ddhlb, msync.acq" );
+
+        /**
+         * Refreshes the contents of this value from main memory.  This
+         * operation is both lock-free and atomic.
+         *
+         * Returns:
+         *  The loaded value.
+         */
+        T load()
+        {
+            return atomicLoad!(ms,T)( m_val );
+        }
+    }
+
+
+    ////////////////////////////////////////////////////////////////////////////
+    // Atomic Store
+    ////////////////////////////////////////////////////////////////////////////
+
+
+    template store( msync ms )
+    {
+        static assert( ms == msync.none || ms == msync.ssb ||
+                       ms == msync.acq  || ms == msync.rel,
+                       "ms must be one of: msync.none, msync.ssb, msync.acq, msync.rel" );
+
+        /**
+         * Stores 'newval' to the memory referenced by this value.  This
+         * operation is both lock-free and atomic.
+         *
+         * Params:
+         *  newval  = The value to store.
+         */
+        void store( T newval )
+        {
+            atomicStore!(ms,T)( m_val, newval );
+        }
+    }
+
+
+    ////////////////////////////////////////////////////////////////////////////
+    // Atomic StoreIf
+    ////////////////////////////////////////////////////////////////////////////
+
+
+    template storeIf( msync ms )
+    {
+        static assert( ms == msync.none || ms == msync.ssb ||
+                       ms == msync.acq  || ms == msync.rel,
+                       "ms must be one of: msync.none, msync.ssb, msync.acq, msync.rel" );
+
+        /**
+         * Stores 'newval' to the memory referenced by this value if val is
+         * equal to 'equalTo'.  This operation is both lock-free and atomic.
+         *
+         * Returns:
+         *  true if the store occurred, false if not.
+         *
+         * Params:
+         *  newval  = The value to store.
+         *  equalTo = The comparison value.
+         */
+        bool storeIf( T newval, T equalTo )
+        {
+            return atomicStoreIf!(ms,T)( m_val, newval, equalTo );
+        }
+    }
+
+
+    ////////////////////////////////////////////////////////////////////////////
+    // Numeric Functions
+    ////////////////////////////////////////////////////////////////////////////
+
 
     /**
-     * Stores 'newval' to the memory referenced by this value.  This operation is both lock-free and atomic.
-     *
-     * Params:
-     *  newval  = The value to store.
+     * The following additional functions are available for integer types.
      */
-    template store( msync ms : msync.none ) { void store( T newval ) { atomicStore!(ms,T)( m_val, newval ); } }
-    template store( msync ms : msync.ssb )  { void store( T newval ) { atomicStore!(ms,T)( m_val, newval ); } } /// ditto
-    template store( msync ms : msync.acq )  { void store( T newval ) { atomicStore!(ms,T)( m_val, newval ); } } /// ditto
-    template store( msync ms : msync.rel )  { void store( T newval ) { atomicStore!(ms,T)( m_val, newval ); } } /// ditto
-
-    /**
-     * Stores 'newval' to the memory referenced by this value if val is equal to 'equalTo'.  This operation
-     * is both lock-free and atomic.
-     *
-     * Returns:
-     *  true if the store occurred, false if not.
-     *
-     * Params:
-     *  newval  = The value to store.
-     *  equalTo = The comparison value.
-     */
-    template storeIf( msync ms : msync.none ) { bool storeIf( T newval, T equalTo ) { return atomicStoreIf!(ms,T)( m_val, newval, equalTo ); } }
-    template storeIf( msync ms : msync.ssb )  { bool storeIf( T newval, T equalTo ) { return atomicStoreIf!(ms,T)( m_val, newval, equalTo ); } } /// ditto
-    template storeIf( msync ms : msync.acq )  { bool storeIf( T newval, T equalTo ) { return atomicStoreIf!(ms,T)( m_val, newval, equalTo ); } } /// ditto
-    template storeIf( msync ms : msync.rel )  { bool storeIf( T newval, T equalTo ) { return atomicStoreIf!(ms,T)( m_val, newval, equalTo ); } } /// ditto
-
     static if( isValidNumericType!(T) )
     {
-        /**
-         * This operation is only legal for built-in value and pointer types, and is equivalent to an atomic
-         * "val = val + 1" operation.  This function exists to facilitate use of the optimized increment
-         * instructions provided by some architecures.  If no such instruction exists on the target platform
-         * then the behavior will perform the operation using more traditional means.  This operation is both
-         * lock-free and atomic.
-         *
-         * Returns:
-         *  The result of an atomicLoad of val immediately following the increment operation.  This value
-         *  is not required to be equal to the newly stored value.  Thus, competing writes are allowed to
-         *  occur between the increment and successive load operation.
-         */
-        template increment( msync ms : msync.none ) { T increment() { return atomicIncrement!(ms,T)( m_val ); } }
-        template increment( msync ms : msync.ssb )  { T increment() { return atomicIncrement!(ms,T)( m_val ); } } /// ditto
-        template increment( msync ms : msync.acq )  { T increment() { return atomicIncrement!(ms,T)( m_val ); } } /// ditto
-        template increment( msync ms : msync.rel )  { T increment() { return atomicIncrement!(ms,T)( m_val ); } } /// ditto
+        ////////////////////////////////////////////////////////////////////////
+        // Atomic Increment
+        ////////////////////////////////////////////////////////////////////////
 
-        /**
-         * This operation is only legal for built-in value and pointer types, and is equivalent to an atomic
-         * "val = val - 1" operation.  This function exists to facilitate use of the optimized decrement
-         * instructions provided by some architecures.  If no such instruction exists on the target platform
-         * then the behavior will perform the operation using more traditional means.  This operation is both
-         * lock-free and atomic.
-         *
-         * Returns:
-         *  The result of an atomicLoad of val immediately following the increment operation.  This value
-         *  is not required to be equal to the newly stored value.  Thus, competing writes are allowed to
-         *  occur between the increment and successive load operation.
-         */
-        template decrement( msync ms : msync.none ) { T decrement() { return atomicDecrement!(ms,T)( m_val ); } }
-        template decrement( msync ms : msync.ssb )  { T decrement() { return atomicDecrement!(ms,T)( m_val ); } } /// ditto
-        template decrement( msync ms : msync.acq )  { T decrement() { return atomicDecrement!(ms,T)( m_val ); } } /// ditto
-        template decrement( msync ms : msync.rel )  { T decrement() { return atomicDecrement!(ms,T)( m_val ); } } /// ditto
+
+        template increment( msync ms )
+        {
+            static assert( ms == msync.none || ms == msync.ssb ||
+                           ms == msync.acq  || ms == msync.rel,
+                           "ms must be one of: msync.none, msync.ssb, msync.acq, msync.rel" );
+
+            /**
+             * This operation is only legal for built-in value and pointer
+             * types, and is equivalent to an atomic "val = val + 1" operation.
+             * This function exists to facilitate use of the optimized
+             * increment instructions provided by some architecures.  If no
+             * such instruction exists on the target platform then the
+             * behavior will perform the operation using more traditional
+             * means.  This operation is both lock-free and atomic.
+             *
+             * Returns:
+             *  The result of an atomicLoad of val immediately following the
+             *  increment operation.  This value is not required to be equal to
+             *  the newly stored value.  Thus, competing writes are allowed to
+             *  occur between the increment and successive load operation.
+             */
+            T increment()
+            {
+                return atomicIncrement!(ms,T)( m_val );
+            }
+        }
+
+
+        ////////////////////////////////////////////////////////////////////////
+        // Atomic Decrement
+        ////////////////////////////////////////////////////////////////////////
+
+
+        template decrement( msync ms )
+        {
+            static assert( ms == msync.none || ms == msync.ssb ||
+                           ms == msync.acq  || ms == msync.rel,
+                           "ms must be one of: msync.none, msync.ssb, msync.acq, msync.rel" );
+
+            /**
+             * This operation is only legal for built-in value and pointer
+             * types, and is equivalent to an atomic "val = val - 1" operation.
+             * This function exists to facilitate use of the optimized
+             * decrement instructions provided by some architecures.  If no
+             * such instruction exists on the target platform then the behavior
+             * will perform the operation using more traditional means.  This
+             * operation is both lock-free and atomic.
+             *
+             * Returns:
+             *  The result of an atomicLoad of val immediately following the
+             *  increment operation.  This value is not required to be equal to
+             *  the newly stored value.  Thus, competing writes are allowed to
+             *  occur between the increment and successive load operation.
+             */
+            T decrement()
+            {
+                return atomicDecrement!(ms,T)( m_val );
+            }
+        }
     }
 
 private:
@@ -1267,6 +1467,8 @@ private:
 
 private
 {
+  version( DDoc ) {} else
+  {
     template testLoad( msync ms, T )
     {
         void testLoad( T val = T.init + 1 )
@@ -1372,6 +1574,7 @@ private
             }
         }
     }
+  }
 }
 
 
