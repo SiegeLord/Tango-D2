@@ -125,11 +125,7 @@ extern (C)
 	void FD_COPY(inout fd_set f, inout fd_set t) { return _d_gnu_fd_copy(& f, & t); }
 	void FD_ZERO(inout fd_set p) { return _d_gnu_fd_zero(& p); }
     }
-    void FD_SET(int n,  fd_set * p) { return _d_gnu_fd_set(n, p); }
-    void FD_CLR(int n,  fd_set * p) { return _d_gnu_fd_clr(n, p); }
-    int FD_ISSET(int n, fd_set * p) { return _d_gnu_fd_isset(n, p); }
     void FD_COPY(fd_set * f, inout fd_set * t) { return _d_gnu_fd_copy(f, t); }
-    void FD_ZERO(fd_set * p) { return _d_gnu_fd_zero(p); }
 
     // from <pwd.h>
     passwd *getpwnam(char *name);
