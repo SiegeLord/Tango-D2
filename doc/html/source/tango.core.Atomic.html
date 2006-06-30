@@ -1,14 +1,3 @@
-<!DOCTYPE html 
-     PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
-     "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-
-<html>
-	<head>
-		<link rel="stylesheet" href="style.css" type="text/css" />
-		<title>Atomic.d</title>
-	</head>
-	<body>
-
 <table id='dcode'><tr><td id='lnum'><pre>1
 2
 3
@@ -1451,6 +1440,209 @@
 1440
 1441
 1442
+1443
+1444
+1445
+1446
+1447
+1448
+1449
+1450
+1451
+1452
+1453
+1454
+1455
+1456
+1457
+1458
+1459
+1460
+1461
+1462
+1463
+1464
+1465
+1466
+1467
+1468
+1469
+1470
+1471
+1472
+1473
+1474
+1475
+1476
+1477
+1478
+1479
+1480
+1481
+1482
+1483
+1484
+1485
+1486
+1487
+1488
+1489
+1490
+1491
+1492
+1493
+1494
+1495
+1496
+1497
+1498
+1499
+1500
+1501
+1502
+1503
+1504
+1505
+1506
+1507
+1508
+1509
+1510
+1511
+1512
+1513
+1514
+1515
+1516
+1517
+1518
+1519
+1520
+1521
+1522
+1523
+1524
+1525
+1526
+1527
+1528
+1529
+1530
+1531
+1532
+1533
+1534
+1535
+1536
+1537
+1538
+1539
+1540
+1541
+1542
+1543
+1544
+1545
+1546
+1547
+1548
+1549
+1550
+1551
+1552
+1553
+1554
+1555
+1556
+1557
+1558
+1559
+1560
+1561
+1562
+1563
+1564
+1565
+1566
+1567
+1568
+1569
+1570
+1571
+1572
+1573
+1574
+1575
+1576
+1577
+1578
+1579
+1580
+1581
+1582
+1583
+1584
+1585
+1586
+1587
+1588
+1589
+1590
+1591
+1592
+1593
+1594
+1595
+1596
+1597
+1598
+1599
+1600
+1601
+1602
+1603
+1604
+1605
+1606
+1607
+1608
+1609
+1610
+1611
+1612
+1613
+1614
+1615
+1616
+1617
+1618
+1619
+1620
+1621
+1622
+1623
+1624
+1625
+1626
+1627
+1628
+1629
+1630
+1631
+1632
+1633
+1634
+1635
+1636
+1637
+1638
+1639
+1640
+1641
+1642
+1643
+1644
+1645
 </pre></td><td id='code'><pre><span class='com'>/**
  * The atomic module is intended to provide some basic support for lock-free
  * concurrent programming.  Some common operations are defined, each of which
@@ -1496,6 +1688,8 @@
 
 <span class='kw4'>private</span>
 <span class='opr'>{</span>
+  <span class='kw4'>version</span><span class='opr'>(</span> DDoc <span class='opr'>)</span> <span class='opr'>{</span><span class='opr'>}</span> <span class='kw1'>else</span>
+  <span class='opr'>{</span>
     <span class='kw2'>import</span> tango.core.Traits;
 
 
@@ -1530,6 +1724,186 @@
                               ms <span class='opr'>=</span><span class='opr'>=</span> msync.ssb ||
                               ms <span class='opr'>=</span><span class='opr'>=</span> msync.rel;
     <span class='opr'>}</span>
+  <span class='opr'>}</span>
+<span class='opr'>}</span>
+
+
+<span class='com'>////////////////////////////////////////////////////////////////////////////////</span>
+<span class='com'>// DDoc Documentation for Atomic Functions</span>
+<span class='com'>////////////////////////////////////////////////////////////////////////////////</span>
+
+
+<span class='kw4'>version</span><span class='opr'>(</span> DDoc <span class='opr'>)</span>
+<span class='opr'>{</span>
+    <span class='com'>////////////////////////////////////////////////////////////////////////////</span>
+    <span class='com'>// Atomic Load</span>
+    <span class='com'>////////////////////////////////////////////////////////////////////////////</span>
+
+
+    <span class='com'>/**
+     * Supported msync values:
+     *  msync.none
+     *  msync.hlb
+     *  msync.ddhlb
+     *  msync.acq
+     */</span>
+    <span class='kw4'>template</span> atomicLoad<span class='opr'>(</span> msync ms, T <span class='opr'>)</span>
+    <span class='opr'>{</span>
+        <span class='com'>/**
+         * Refreshes the contents of 'val' from main memory.  This operation is
+         * both lock-free and atomic.
+         *
+         * Returns:
+         *  The loaded value.
+         *
+         * Params:
+         *  val = The value to load.  This value must be properly aligned.
+         */</span>
+        T atomicLoad<span class='opr'>(</span> <span class='kw2'>inout</span> T val <span class='opr'>)</span>
+        <span class='opr'>{</span>
+            <span class='kw1'>return</span> val;
+        <span class='opr'>}</span>
+    <span class='opr'>}</span>
+
+
+    <span class='com'>////////////////////////////////////////////////////////////////////////////</span>
+    <span class='com'>// Atomic Store</span>
+    <span class='com'>////////////////////////////////////////////////////////////////////////////</span>
+
+
+    <span class='com'>/**
+     * Supported msync values:
+     *  msync.none
+     *  msync.ssb
+     *  msync.acq
+     *  msync.rel
+     */</span>
+    <span class='kw4'>template</span> atomicStore<span class='opr'>(</span> msync ms, T <span class='opr'>)</span>
+    <span class='opr'>{</span>
+        <span class='com'>/**
+         * Stores 'newval' to the memory referenced by 'val'.  This operation
+         * is both lock-free and atomic.
+         *
+         * Params:
+         *  val     = The destination variable.
+         *  newval  = The value to store.
+         */</span>
+        <span class='kw4'>void</span> atomicStore<span class='opr'>(</span> <span class='kw2'>inout</span> T val, T newval <span class='opr'>)</span>
+        <span class='opr'>{</span>
+
+        <span class='opr'>}</span>
+    <span class='opr'>}</span>
+
+
+    <span class='com'>////////////////////////////////////////////////////////////////////////////</span>
+    <span class='com'>// Atomic StoreIf</span>
+    <span class='com'>////////////////////////////////////////////////////////////////////////////</span>
+
+
+    <span class='com'>/**
+     * Supported msync values:
+     *  msync.none
+     *  msync.ssb
+     *  msync.acq
+     *  msync.rel
+     */</span>
+    <span class='kw4'>template</span> atomicStoreIf<span class='opr'>(</span> msync ms, T <span class='opr'>)</span>
+    <span class='opr'>{</span>
+        <span class='com'>/**
+         * Stores 'newval' to the memory referenced by 'val' if val is equal to
+         * 'equalTo'.  This operation is both lock-free and atomic.
+         *
+         * Returns:
+         *  true if the store occurred, false if not.
+         *
+         * Params:
+         *  val     = The destination variable.
+         *  newval  = The value to store.
+         *  equalTo = The comparison value.
+         */</span>
+        <span class='kw4'>bool</span> atomicStoreIf<span class='opr'>(</span> <span class='kw2'>inout</span> T val, T newval, T equalTo <span class='opr'>)</span>
+        <span class='opr'>{</span>
+            <span class='kw1'>return</span> <span class='kw2'>false</span>;
+        <span class='opr'>}</span>
+    <span class='opr'>}</span>
+
+
+    <span class='com'>////////////////////////////////////////////////////////////////////////////</span>
+    <span class='com'>// Atomic Increment</span>
+    <span class='com'>////////////////////////////////////////////////////////////////////////////</span>
+
+
+    <span class='com'>/**
+     * Supported msync values:
+     *  msync.none
+     *  msync.ssb
+     *  msync.acq
+     *  msync.rel
+     */</span>
+    <span class='kw4'>template</span> atomicIncrement<span class='opr'>(</span> msync ms, T <span class='opr'>)</span>
+    <span class='opr'>{</span>
+        <span class='com'>/**
+         * This operation is only legal for built-in value and pointer types,
+         * and is equivalent to an atomic &quot;val = val + 1&quot; operation.  This
+         * function exists to facilitate use of the optimized increment
+         * instructions provided by some architecures.  If no such instruction
+         * exists on the target platform then the behavior will perform the
+         * operation using more traditional means.  This operation is both
+         * lock-free and atomic.
+         *
+         * Returns:
+         *  The result of an atomicLoad of val immediately following the
+         *  increment operation.  This value is not required to be equal to the
+         *  newly stored value.  Thus, competing writes are allowed to occur
+         *  between the increment and successive load operation.
+         *
+         * Params:
+         *  val = The value to increment.
+         */</span>
+        T atomicIncrement<span class='opr'>(</span> <span class='kw2'>inout</span> T val <span class='opr'>)</span>
+        <span class='opr'>{</span>
+            <span class='kw1'>return</span> val;
+        <span class='opr'>}</span>
+    <span class='opr'>}</span>
+
+
+    <span class='com'>////////////////////////////////////////////////////////////////////////////</span>
+    <span class='com'>// Atomic Decrement</span>
+    <span class='com'>////////////////////////////////////////////////////////////////////////////</span>
+
+
+    <span class='com'>/**
+     * Supported msync values:
+     *  msync.none
+     *  msync.ssb
+     *  msync.acq
+     *  msync.rel
+     */</span>
+    <span class='kw4'>template</span> atomicDecrement<span class='opr'>(</span> msync ms, T <span class='opr'>)</span>
+    <span class='opr'>{</span>
+        <span class='com'>/**
+         * This operation is only legal for built-in value and pointer types,
+         * and is equivalent to an atomic &quot;val = val - 1&quot; operation.  This
+         * function exists to facilitate use of the optimized decrement
+         * instructions provided by some architecures.  If no such instruction
+         * exists on the target platform then the behavior will perform the
+         * operation using more traditional means.  This operation is both
+         * lock-free and atomic.
+         *
+         * Returns:
+         *  The result of an atomicLoad of val immediately following the
+         *  increment operation.  This value is not required to be equal to the
+         *  newly stored value.  Thus, competing writes are allowed to occur
+         *  between the increment and successive load operation.
+         *
+         * Params:
+         *  val = The value to decrement.
+         */</span>
+        T atomicDecrement<span class='opr'>(</span> <span class='kw2'>inout</span> T val <span class='opr'>)</span>
+        <span class='opr'>{</span>
+            <span class='kw1'>return</span> val;
+        <span class='opr'>}</span>
+    <span class='opr'>}</span>
 <span class='opr'>}</span>
 
 
@@ -1538,20 +1912,18 @@
 <span class='com'>////////////////////////////////////////////////////////////////////////////////</span>
 
 
-<span class='kw4'>private</span>
+<span class='kw1'>else</span> <span class='kw4'>version</span><span class='opr'>(</span> X86 <span class='opr'>)</span>
 <span class='opr'>{</span>
-    <span class='kw4'>version</span><span class='opr'>(</span> X86 <span class='opr'>)</span>
+    <span class='kw4'>private</span>
     <span class='opr'>{</span>
         <span class='com'>////////////////////////////////////////////////////////////////////////</span>
         <span class='com'>// x86 Value Requirements</span>
         <span class='com'>////////////////////////////////////////////////////////////////////////</span>
 
 
-        <span class='com'>//</span>
         <span class='com'>// NOTE: Strictly speaking, the x86 supports atomic operations on</span>
         <span class='com'>//       unaligned values.  However, this is far slower than the</span>
         <span class='com'>//       common case, so such behavior should be prohibited.</span>
-        <span class='com'>//</span>
         <span class='kw4'>template</span> atomicValueIsProperlyAligned<span class='opr'>(</span> T <span class='opr'>)</span>
         <span class='opr'>{</span>
             <span class='kw4'>bool</span> atomicValueIsProperlyAligned<span class='opr'>(</span> <span class='kw4'>size_t</span> addr <span class='opr'>)</span>
@@ -2514,106 +2886,44 @@
             <span class='opr'>}</span>
         <span class='opr'>}</span>
     <span class='opr'>}</span>
-<span class='opr'>}</span>
 
 
-<span class='com'>////////////////////////////////////////////////////////////////////////////////</span>
-<span class='com'>// x86 Atomic Function Accessors</span>
-<span class='com'>////////////////////////////////////////////////////////////////////////////////</span>
+    <span class='com'>////////////////////////////////////////////////////////////////////////////</span>
+    <span class='com'>// x86 Public Atomic Functions</span>
+    <span class='com'>////////////////////////////////////////////////////////////////////////////</span>
 
-
-<span class='kw4'>version</span><span class='opr'>(</span> X86 <span class='opr'>)</span>
-<span class='opr'>{</span>
     <span class='com'>//</span>
     <span class='com'>// NOTE: x86 loads implicitly have acquire semantics so a membar is only necessary on release</span>
     <span class='com'>//</span>
 
-    <span class='com'>/**
-     * Refreshes the contents of 'val' from main memory.  This operation is both lock-free and atomic.
-     *
-     * Returns:
-     *  The loaded value.
-     *
-     * Params:
-     *  val = The value to load.  This value must be properly aligned.
-     */</span>
     <span class='kw4'>template</span> atomicLoad<span class='opr'>(</span> msync ms : msync.none, T <span class='opr'>)</span>  <span class='opr'>{</span> <span class='kw2'>alias</span> doAtomicLoad!<span class='opr'>(</span>isSinkOp!<span class='opr'>(</span>ms<span class='opr'>)</span>,T<span class='opr'>)</span> atomicLoad; <span class='opr'>}</span>
-    <span class='kw4'>template</span> atomicLoad<span class='opr'>(</span> msync ms : msync.hlb, T <span class='opr'>)</span>   <span class='opr'>{</span> <span class='kw2'>alias</span> doAtomicLoad!<span class='opr'>(</span>isSinkOp!<span class='opr'>(</span>ms<span class='opr'>)</span>,T<span class='opr'>)</span> atomicLoad; <span class='opr'>}</span> <span class='com'>/// ditto</span>
-    <span class='kw4'>template</span> atomicLoad<span class='opr'>(</span> msync ms : msync.ddhlb, T <span class='opr'>)</span> <span class='opr'>{</span> <span class='kw2'>alias</span> doAtomicLoad!<span class='opr'>(</span>isSinkOp!<span class='opr'>(</span>ms<span class='opr'>)</span>,T<span class='opr'>)</span> atomicLoad; <span class='opr'>}</span> <span class='com'>/// ditto</span>
-    <span class='kw4'>template</span> atomicLoad<span class='opr'>(</span> msync ms : msync.acq, T <span class='opr'>)</span>   <span class='opr'>{</span> <span class='kw2'>alias</span> doAtomicLoad!<span class='opr'>(</span>isSinkOp!<span class='opr'>(</span>ms<span class='opr'>)</span>,T<span class='opr'>)</span> atomicLoad; <span class='opr'>}</span> <span class='com'>/// ditto</span>
+    <span class='kw4'>template</span> atomicLoad<span class='opr'>(</span> msync ms : msync.hlb, T <span class='opr'>)</span>   <span class='opr'>{</span> <span class='kw2'>alias</span> doAtomicLoad!<span class='opr'>(</span>isSinkOp!<span class='opr'>(</span>ms<span class='opr'>)</span>,T<span class='opr'>)</span> atomicLoad; <span class='opr'>}</span>
+    <span class='kw4'>template</span> atomicLoad<span class='opr'>(</span> msync ms : msync.ddhlb, T <span class='opr'>)</span> <span class='opr'>{</span> <span class='kw2'>alias</span> doAtomicLoad!<span class='opr'>(</span>isSinkOp!<span class='opr'>(</span>ms<span class='opr'>)</span>,T<span class='opr'>)</span> atomicLoad; <span class='opr'>}</span>
+    <span class='kw4'>template</span> atomicLoad<span class='opr'>(</span> msync ms : msync.acq, T <span class='opr'>)</span>   <span class='opr'>{</span> <span class='kw2'>alias</span> doAtomicLoad!<span class='opr'>(</span>isSinkOp!<span class='opr'>(</span>ms<span class='opr'>)</span>,T<span class='opr'>)</span> atomicLoad; <span class='opr'>}</span>
 
     <span class='com'>//</span>
     <span class='com'>// NOTE: x86 stores implicitly have release semantics so a membar is only necessary on acquires</span>
     <span class='com'>//</span>
 
-    <span class='com'>/**
-     * Stores 'newval' to the memory referenced by 'val'.  This operation is both lock-free and atomic.
-     *
-     * Params:
-     *  val     = The destination variable.
-     *  newval  = The value to store.
-     */</span>
     <span class='kw4'>template</span> atomicStore<span class='opr'>(</span> msync ms : msync.none, T <span class='opr'>)</span> <span class='opr'>{</span> <span class='kw2'>alias</span> doAtomicStore!<span class='opr'>(</span>isHoistOp!<span class='opr'>(</span>ms<span class='opr'>)</span>,T<span class='opr'>)</span> atomicStore; <span class='opr'>}</span>
-    <span class='kw4'>template</span> atomicStore<span class='opr'>(</span> msync ms : msync.ssb, T <span class='opr'>)</span>  <span class='opr'>{</span> <span class='kw2'>alias</span> doAtomicStore!<span class='opr'>(</span>isHoistOp!<span class='opr'>(</span>ms<span class='opr'>)</span>,T<span class='opr'>)</span> atomicStore; <span class='opr'>}</span> <span class='com'>/// ditto</span>
-    <span class='kw4'>template</span> atomicStore<span class='opr'>(</span> msync ms : msync.acq, T <span class='opr'>)</span>  <span class='opr'>{</span> <span class='kw2'>alias</span> doAtomicStore!<span class='opr'>(</span>isHoistOp!<span class='opr'>(</span>ms<span class='opr'>)</span>,T<span class='opr'>)</span> atomicStore; <span class='opr'>}</span> <span class='com'>/// ditto</span>
-    <span class='kw4'>template</span> atomicStore<span class='opr'>(</span> msync ms : msync.rel, T <span class='opr'>)</span>  <span class='opr'>{</span> <span class='kw2'>alias</span> doAtomicStore!<span class='opr'>(</span>isHoistOp!<span class='opr'>(</span>ms<span class='opr'>)</span>,T<span class='opr'>)</span> atomicStore; <span class='opr'>}</span> <span class='com'>/// ditto</span>
+    <span class='kw4'>template</span> atomicStore<span class='opr'>(</span> msync ms : msync.ssb, T <span class='opr'>)</span>  <span class='opr'>{</span> <span class='kw2'>alias</span> doAtomicStore!<span class='opr'>(</span>isHoistOp!<span class='opr'>(</span>ms<span class='opr'>)</span>,T<span class='opr'>)</span> atomicStore; <span class='opr'>}</span>
+    <span class='kw4'>template</span> atomicStore<span class='opr'>(</span> msync ms : msync.acq, T <span class='opr'>)</span>  <span class='opr'>{</span> <span class='kw2'>alias</span> doAtomicStore!<span class='opr'>(</span>isHoistOp!<span class='opr'>(</span>ms<span class='opr'>)</span>,T<span class='opr'>)</span> atomicStore; <span class='opr'>}</span>
+    <span class='kw4'>template</span> atomicStore<span class='opr'>(</span> msync ms : msync.rel, T <span class='opr'>)</span>  <span class='opr'>{</span> <span class='kw2'>alias</span> doAtomicStore!<span class='opr'>(</span>isHoistOp!<span class='opr'>(</span>ms<span class='opr'>)</span>,T<span class='opr'>)</span> atomicStore; <span class='opr'>}</span>
 
-    <span class='com'>/**
-     * Stores 'newval' to the memory referenced by 'val' if val is equal to 'equalTo'.  This operation
-     * is both lock-free and atomic.
-     *
-     * Returns:
-     *  true if the store occurred, false if not.
-     *
-     * Params:
-     *  val     = The destination variable.
-     *  newval  = The value to store.
-     *  equalTo = The comparison value.
-     */</span>
     <span class='kw4'>template</span> atomicStoreIf<span class='opr'>(</span> msync ms : msync.none, T <span class='opr'>)</span> <span class='opr'>{</span> <span class='kw2'>alias</span> doAtomicStoreIf!<span class='opr'>(</span>ms<span class='opr'>!=</span>msync.none,T<span class='opr'>)</span> atomicStoreIf; <span class='opr'>}</span>
-    <span class='kw4'>template</span> atomicStoreIf<span class='opr'>(</span> msync ms : msync.ssb, T <span class='opr'>)</span>  <span class='opr'>{</span> <span class='kw2'>alias</span> doAtomicStoreIf!<span class='opr'>(</span>ms<span class='opr'>!=</span>msync.none,T<span class='opr'>)</span> atomicStoreIf; <span class='opr'>}</span> <span class='com'>/// ditto</span>
-    <span class='kw4'>template</span> atomicStoreIf<span class='opr'>(</span> msync ms : msync.acq, T <span class='opr'>)</span>  <span class='opr'>{</span> <span class='kw2'>alias</span> doAtomicStoreIf!<span class='opr'>(</span>ms<span class='opr'>!=</span>msync.none,T<span class='opr'>)</span> atomicStoreIf; <span class='opr'>}</span> <span class='com'>/// ditto</span>
-    <span class='kw4'>template</span> atomicStoreIf<span class='opr'>(</span> msync ms : msync.rel, T <span class='opr'>)</span>  <span class='opr'>{</span> <span class='kw2'>alias</span> doAtomicStoreIf!<span class='opr'>(</span>ms<span class='opr'>!=</span>msync.none,T<span class='opr'>)</span> atomicStoreIf; <span class='opr'>}</span> <span class='com'>/// ditto</span>
+    <span class='kw4'>template</span> atomicStoreIf<span class='opr'>(</span> msync ms : msync.ssb, T <span class='opr'>)</span>  <span class='opr'>{</span> <span class='kw2'>alias</span> doAtomicStoreIf!<span class='opr'>(</span>ms<span class='opr'>!=</span>msync.none,T<span class='opr'>)</span> atomicStoreIf; <span class='opr'>}</span>
+    <span class='kw4'>template</span> atomicStoreIf<span class='opr'>(</span> msync ms : msync.acq, T <span class='opr'>)</span>  <span class='opr'>{</span> <span class='kw2'>alias</span> doAtomicStoreIf!<span class='opr'>(</span>ms<span class='opr'>!=</span>msync.none,T<span class='opr'>)</span> atomicStoreIf; <span class='opr'>}</span>
+    <span class='kw4'>template</span> atomicStoreIf<span class='opr'>(</span> msync ms : msync.rel, T <span class='opr'>)</span>  <span class='opr'>{</span> <span class='kw2'>alias</span> doAtomicStoreIf!<span class='opr'>(</span>ms<span class='opr'>!=</span>msync.none,T<span class='opr'>)</span> atomicStoreIf; <span class='opr'>}</span>
 
-    <span class='com'>/**
-     * This operation is only legal for built-in value and pointer types, and is equivalent to an atomic
-     * &quot;val = val + 1&quot; operation.  This function exists to facilitate use of the optimized increment
-     * instructions provided by some architecures.  If no such instruction exists on the target platform
-     * then the behavior will perform the operation using more traditional means.  This operation is both
-     * lock-free and atomic.
-     *
-     * Returns:
-     *  The result of an atomicLoad of val immediately following the increment operation.  This value
-     *  is not required to be equal to the newly stored value.  Thus, competing writes are allowed to
-     *  occur between the increment and successive load operation.
-     *
-     * Params:
-     *  val = The value to increment.
-     */</span>
     <span class='kw4'>template</span> atomicIncrement<span class='opr'>(</span> msync ms : msync.none, T <span class='opr'>)</span> <span class='opr'>{</span> <span class='kw2'>alias</span> doAtomicIncrement!<span class='opr'>(</span>ms<span class='opr'>!=</span>msync.none,T<span class='opr'>)</span> atomicIncrement; <span class='opr'>}</span>
-    <span class='kw4'>template</span> atomicIncrement<span class='opr'>(</span> msync ms : msync.ssb, T <span class='opr'>)</span>  <span class='opr'>{</span> <span class='kw2'>alias</span> doAtomicIncrement!<span class='opr'>(</span>ms<span class='opr'>!=</span>msync.none,T<span class='opr'>)</span> atomicIncrement; <span class='opr'>}</span> <span class='com'>/// ditto</span>
-    <span class='kw4'>template</span> atomicIncrement<span class='opr'>(</span> msync ms : msync.acq, T <span class='opr'>)</span>  <span class='opr'>{</span> <span class='kw2'>alias</span> doAtomicIncrement!<span class='opr'>(</span>ms<span class='opr'>!=</span>msync.none,T<span class='opr'>)</span> atomicIncrement; <span class='opr'>}</span> <span class='com'>/// ditto</span>
-    <span class='kw4'>template</span> atomicIncrement<span class='opr'>(</span> msync ms : msync.rel, T <span class='opr'>)</span>  <span class='opr'>{</span> <span class='kw2'>alias</span> doAtomicIncrement!<span class='opr'>(</span>ms<span class='opr'>!=</span>msync.none,T<span class='opr'>)</span> atomicIncrement; <span class='opr'>}</span> <span class='com'>/// ditto</span>
+    <span class='kw4'>template</span> atomicIncrement<span class='opr'>(</span> msync ms : msync.ssb, T <span class='opr'>)</span>  <span class='opr'>{</span> <span class='kw2'>alias</span> doAtomicIncrement!<span class='opr'>(</span>ms<span class='opr'>!=</span>msync.none,T<span class='opr'>)</span> atomicIncrement; <span class='opr'>}</span>
+    <span class='kw4'>template</span> atomicIncrement<span class='opr'>(</span> msync ms : msync.acq, T <span class='opr'>)</span>  <span class='opr'>{</span> <span class='kw2'>alias</span> doAtomicIncrement!<span class='opr'>(</span>ms<span class='opr'>!=</span>msync.none,T<span class='opr'>)</span> atomicIncrement; <span class='opr'>}</span>
+    <span class='kw4'>template</span> atomicIncrement<span class='opr'>(</span> msync ms : msync.rel, T <span class='opr'>)</span>  <span class='opr'>{</span> <span class='kw2'>alias</span> doAtomicIncrement!<span class='opr'>(</span>ms<span class='opr'>!=</span>msync.none,T<span class='opr'>)</span> atomicIncrement; <span class='opr'>}</span>
 
-    <span class='com'>/**
-     * This operation is only legal for built-in value and pointer types, and is equivalent to an atomic
-     * &quot;val = val - 1&quot; operation.  This function exists to facilitate use of the optimized decrement
-     * instructions provided by some architecures.  If no such instruction exists on the target platform
-     * then the behavior will perform the operation using more traditional means.  This operation is both
-     * lock-free and atomic.
-     *
-     * Returns:
-     *  The result of an atomicLoad of val immediately following the increment operation.  This value
-     *  is not required to be equal to the newly stored value.  Thus, competing writes are allowed to
-     *  occur between the increment and successive load operation.
-     *
-     * Params:
-     *  val = The value to decrement.
-     */</span>
     <span class='kw4'>template</span> atomicDecrement<span class='opr'>(</span> msync ms : msync.none, T <span class='opr'>)</span> <span class='opr'>{</span> <span class='kw2'>alias</span> doAtomicDecrement!<span class='opr'>(</span>ms<span class='opr'>!=</span>msync.none,T<span class='opr'>)</span> atomicDecrement; <span class='opr'>}</span>
-    <span class='kw4'>template</span> atomicDecrement<span class='opr'>(</span> msync ms : msync.ssb, T <span class='opr'>)</span>  <span class='opr'>{</span> <span class='kw2'>alias</span> doAtomicDecrement!<span class='opr'>(</span>ms<span class='opr'>!=</span>msync.none,T<span class='opr'>)</span> atomicDecrement; <span class='opr'>}</span> <span class='com'>/// ditto</span>
-    <span class='kw4'>template</span> atomicDecrement<span class='opr'>(</span> msync ms : msync.acq, T <span class='opr'>)</span>  <span class='opr'>{</span> <span class='kw2'>alias</span> doAtomicDecrement!<span class='opr'>(</span>ms<span class='opr'>!=</span>msync.none,T<span class='opr'>)</span> atomicDecrement; <span class='opr'>}</span> <span class='com'>/// ditto</span>
-    <span class='kw4'>template</span> atomicDecrement<span class='opr'>(</span> msync ms : msync.rel, T <span class='opr'>)</span>  <span class='opr'>{</span> <span class='kw2'>alias</span> doAtomicDecrement!<span class='opr'>(</span>ms<span class='opr'>!=</span>msync.none,T<span class='opr'>)</span> atomicDecrement; <span class='opr'>}</span> <span class='com'>/// ditto</span>
+    <span class='kw4'>template</span> atomicDecrement<span class='opr'>(</span> msync ms : msync.ssb, T <span class='opr'>)</span>  <span class='opr'>{</span> <span class='kw2'>alias</span> doAtomicDecrement!<span class='opr'>(</span>ms<span class='opr'>!=</span>msync.none,T<span class='opr'>)</span> atomicDecrement; <span class='opr'>}</span>
+    <span class='kw4'>template</span> atomicDecrement<span class='opr'>(</span> msync ms : msync.acq, T <span class='opr'>)</span>  <span class='opr'>{</span> <span class='kw2'>alias</span> doAtomicDecrement!<span class='opr'>(</span>ms<span class='opr'>!=</span>msync.none,T<span class='opr'>)</span> atomicDecrement; <span class='opr'>}</span>
+    <span class='kw4'>template</span> atomicDecrement<span class='opr'>(</span> msync ms : msync.rel, T <span class='opr'>)</span>  <span class='opr'>{</span> <span class='kw2'>alias</span> doAtomicDecrement!<span class='opr'>(</span>ms<span class='opr'>!=</span>msync.none,T<span class='opr'>)</span> atomicDecrement; <span class='opr'>}</span>
 <span class='opr'>}</span>
 
 
@@ -2623,89 +2933,171 @@
 
 
 <span class='com'>/**
- * This class represents a value which will be subject to competing access.  All accesses to
- * this value will be synchronized with main memory, and various memory barriers may be
- * employed for instruction ordering.  Any primitive type of size equal to or smaller than
- * the memory bus size is allowed, so 32-bit machines may use values with size &lt;= int.sizeof
- * and 64-bit machines may use values with size &lt;= long.sizeof.  The one exception to this
- * rule is that architectures that support DCAS will allow double-wide storeIf operations.
- * The 32-bit x86 architecture, for example, supports 64-bit storeIf operations.
+ * This class represents a value which will be subject to competing access.
+ * All accesses to this value will be synchronized with main memory, and
+ * various memory barriers may be employed for instruction ordering.  Any
+ * primitive type of size equal to or smaller than the memory bus size is
+ * allowed, so 32-bit machines may use values with size &lt;= int.sizeof and
+ * 64-bit machines may use values with size &lt;= long.sizeof.  The one exception
+ * to this rule is that architectures that support DCAS will allow double-wide
+ * storeIf operations.  The 32-bit x86 architecture, for example, supports
+ * 64-bit storeIf operations.
  */</span>
 <span class='kw4'>struct</span> Atomic<span class='opr'>(</span> T <span class='opr'>)</span>
 <span class='opr'>{</span>
-    <span class='com'>/**
-     * Refreshes the contents of this value from main memory.  This operation is both lock-free and atomic.
-     *
-     * Returns:
-     *  The loaded value.
-     */</span>
-    <span class='kw4'>template</span> load<span class='opr'>(</span> msync ms : msync.none <span class='opr'>)</span>  <span class='opr'>{</span> T load<span class='opr'>(</span><span class='opr'>)</span> <span class='opr'>{</span> <span class='kw1'>return</span> atomicLoad!<span class='opr'>(</span>ms,T<span class='opr'>)</span><span class='opr'>(</span> m_val <span class='opr'>)</span>; <span class='opr'>}</span> <span class='opr'>}</span>
-    <span class='kw4'>template</span> load<span class='opr'>(</span> msync ms : msync.hlb <span class='opr'>)</span>   <span class='opr'>{</span> T load<span class='opr'>(</span><span class='opr'>)</span> <span class='opr'>{</span> <span class='kw1'>return</span> atomicLoad!<span class='opr'>(</span>ms,T<span class='opr'>)</span><span class='opr'>(</span> m_val <span class='opr'>)</span>; <span class='opr'>}</span> <span class='opr'>}</span> <span class='com'>/// ditto</span>
-    <span class='kw4'>template</span> load<span class='opr'>(</span> msync ms : msync.ddhlb <span class='opr'>)</span> <span class='opr'>{</span> T load<span class='opr'>(</span><span class='opr'>)</span> <span class='opr'>{</span> <span class='kw1'>return</span> atomicLoad!<span class='opr'>(</span>ms,T<span class='opr'>)</span><span class='opr'>(</span> m_val <span class='opr'>)</span>; <span class='opr'>}</span> <span class='opr'>}</span> <span class='com'>/// ditto</span>
-    <span class='kw4'>template</span> load<span class='opr'>(</span> msync ms : msync.acq <span class='opr'>)</span>   <span class='opr'>{</span> T load<span class='opr'>(</span><span class='opr'>)</span> <span class='opr'>{</span> <span class='kw1'>return</span> atomicLoad!<span class='opr'>(</span>ms,T<span class='opr'>)</span><span class='opr'>(</span> m_val <span class='opr'>)</span>; <span class='opr'>}</span> <span class='opr'>}</span> <span class='com'>/// ditto</span>
+    <span class='com'>////////////////////////////////////////////////////////////////////////////</span>
+    <span class='com'>// Atomic Load</span>
+    <span class='com'>////////////////////////////////////////////////////////////////////////////</span>
+
+
+    <span class='kw4'>template</span> load<span class='opr'>(</span> msync ms <span class='opr'>)</span>
+    <span class='opr'>{</span>
+        <span class='kw4'>static</span> <span class='kw2'>assert</span><span class='opr'>(</span> ms <span class='opr'>=</span><span class='opr'>=</span> msync.none  || ms <span class='opr'>=</span><span class='opr'>=</span> msync.hlb ||
+                       ms <span class='opr'>=</span><span class='opr'>=</span> msync.ddhlb || ms <span class='opr'>=</span><span class='opr'>=</span> msync.acq,
+                       <span class='str'>&quot;ms must be one of: msync.none, msync.hlb, msync.ddhlb, msync.acq&quot;</span> <span class='opr'>)</span>;
+
+        <span class='com'>/**
+         * Refreshes the contents of this value from main memory.  This
+         * operation is both lock-free and atomic.
+         *
+         * Returns:
+         *  The loaded value.
+         */</span>
+        T load<span class='opr'>(</span><span class='opr'>)</span>
+        <span class='opr'>{</span>
+            <span class='kw1'>return</span> atomicLoad!<span class='opr'>(</span>ms,T<span class='opr'>)</span><span class='opr'>(</span> m_val <span class='opr'>)</span>;
+        <span class='opr'>}</span>
+    <span class='opr'>}</span>
+
+
+    <span class='com'>////////////////////////////////////////////////////////////////////////////</span>
+    <span class='com'>// Atomic Store</span>
+    <span class='com'>////////////////////////////////////////////////////////////////////////////</span>
+
+
+    <span class='kw4'>template</span> store<span class='opr'>(</span> msync ms <span class='opr'>)</span>
+    <span class='opr'>{</span>
+        <span class='kw4'>static</span> <span class='kw2'>assert</span><span class='opr'>(</span> ms <span class='opr'>=</span><span class='opr'>=</span> msync.none || ms <span class='opr'>=</span><span class='opr'>=</span> msync.ssb ||
+                       ms <span class='opr'>=</span><span class='opr'>=</span> msync.acq  || ms <span class='opr'>=</span><span class='opr'>=</span> msync.rel,
+                       <span class='str'>&quot;ms must be one of: msync.none, msync.ssb, msync.acq, msync.rel&quot;</span> <span class='opr'>)</span>;
+
+        <span class='com'>/**
+         * Stores 'newval' to the memory referenced by this value.  This
+         * operation is both lock-free and atomic.
+         *
+         * Params:
+         *  newval  = The value to store.
+         */</span>
+        <span class='kw4'>void</span> store<span class='opr'>(</span> T newval <span class='opr'>)</span>
+        <span class='opr'>{</span>
+            atomicStore!<span class='opr'>(</span>ms,T<span class='opr'>)</span><span class='opr'>(</span> m_val, newval <span class='opr'>)</span>;
+        <span class='opr'>}</span>
+    <span class='opr'>}</span>
+
+
+    <span class='com'>////////////////////////////////////////////////////////////////////////////</span>
+    <span class='com'>// Atomic StoreIf</span>
+    <span class='com'>////////////////////////////////////////////////////////////////////////////</span>
+
+
+    <span class='kw4'>template</span> storeIf<span class='opr'>(</span> msync ms <span class='opr'>)</span>
+    <span class='opr'>{</span>
+        <span class='kw4'>static</span> <span class='kw2'>assert</span><span class='opr'>(</span> ms <span class='opr'>=</span><span class='opr'>=</span> msync.none || ms <span class='opr'>=</span><span class='opr'>=</span> msync.ssb ||
+                       ms <span class='opr'>=</span><span class='opr'>=</span> msync.acq  || ms <span class='opr'>=</span><span class='opr'>=</span> msync.rel,
+                       <span class='str'>&quot;ms must be one of: msync.none, msync.ssb, msync.acq, msync.rel&quot;</span> <span class='opr'>)</span>;
+
+        <span class='com'>/**
+         * Stores 'newval' to the memory referenced by this value if val is
+         * equal to 'equalTo'.  This operation is both lock-free and atomic.
+         *
+         * Returns:
+         *  true if the store occurred, false if not.
+         *
+         * Params:
+         *  newval  = The value to store.
+         *  equalTo = The comparison value.
+         */</span>
+        <span class='kw4'>bool</span> storeIf<span class='opr'>(</span> T newval, T equalTo <span class='opr'>)</span>
+        <span class='opr'>{</span>
+            <span class='kw1'>return</span> atomicStoreIf!<span class='opr'>(</span>ms,T<span class='opr'>)</span><span class='opr'>(</span> m_val, newval, equalTo <span class='opr'>)</span>;
+        <span class='opr'>}</span>
+    <span class='opr'>}</span>
+
+
+    <span class='com'>////////////////////////////////////////////////////////////////////////////</span>
+    <span class='com'>// Numeric Functions</span>
+    <span class='com'>////////////////////////////////////////////////////////////////////////////</span>
+
 
     <span class='com'>/**
-     * Stores 'newval' to the memory referenced by this value.  This operation is both lock-free and atomic.
-     *
-     * Params:
-     *  newval  = The value to store.
+     * The following additional functions are available for integer types.
      */</span>
-    <span class='kw4'>template</span> store<span class='opr'>(</span> msync ms : msync.none <span class='opr'>)</span> <span class='opr'>{</span> <span class='kw4'>void</span> store<span class='opr'>(</span> T newval <span class='opr'>)</span> <span class='opr'>{</span> atomicStore!<span class='opr'>(</span>ms,T<span class='opr'>)</span><span class='opr'>(</span> m_val, newval <span class='opr'>)</span>; <span class='opr'>}</span> <span class='opr'>}</span>
-    <span class='kw4'>template</span> store<span class='opr'>(</span> msync ms : msync.ssb <span class='opr'>)</span>  <span class='opr'>{</span> <span class='kw4'>void</span> store<span class='opr'>(</span> T newval <span class='opr'>)</span> <span class='opr'>{</span> atomicStore!<span class='opr'>(</span>ms,T<span class='opr'>)</span><span class='opr'>(</span> m_val, newval <span class='opr'>)</span>; <span class='opr'>}</span> <span class='opr'>}</span> <span class='com'>/// ditto</span>
-    <span class='kw4'>template</span> store<span class='opr'>(</span> msync ms : msync.acq <span class='opr'>)</span>  <span class='opr'>{</span> <span class='kw4'>void</span> store<span class='opr'>(</span> T newval <span class='opr'>)</span> <span class='opr'>{</span> atomicStore!<span class='opr'>(</span>ms,T<span class='opr'>)</span><span class='opr'>(</span> m_val, newval <span class='opr'>)</span>; <span class='opr'>}</span> <span class='opr'>}</span> <span class='com'>/// ditto</span>
-    <span class='kw4'>template</span> store<span class='opr'>(</span> msync ms : msync.rel <span class='opr'>)</span>  <span class='opr'>{</span> <span class='kw4'>void</span> store<span class='opr'>(</span> T newval <span class='opr'>)</span> <span class='opr'>{</span> atomicStore!<span class='opr'>(</span>ms,T<span class='opr'>)</span><span class='opr'>(</span> m_val, newval <span class='opr'>)</span>; <span class='opr'>}</span> <span class='opr'>}</span> <span class='com'>/// ditto</span>
-
-    <span class='com'>/**
-     * Stores 'newval' to the memory referenced by this value if val is equal to 'equalTo'.  This operation
-     * is both lock-free and atomic.
-     *
-     * Returns:
-     *  true if the store occurred, false if not.
-     *
-     * Params:
-     *  newval  = The value to store.
-     *  equalTo = The comparison value.
-     */</span>
-    <span class='kw4'>template</span> storeIf<span class='opr'>(</span> msync ms : msync.none <span class='opr'>)</span> <span class='opr'>{</span> <span class='kw4'>bool</span> storeIf<span class='opr'>(</span> T newval, T equalTo <span class='opr'>)</span> <span class='opr'>{</span> <span class='kw1'>return</span> atomicStoreIf!<span class='opr'>(</span>ms,T<span class='opr'>)</span><span class='opr'>(</span> m_val, newval, equalTo <span class='opr'>)</span>; <span class='opr'>}</span> <span class='opr'>}</span>
-    <span class='kw4'>template</span> storeIf<span class='opr'>(</span> msync ms : msync.ssb <span class='opr'>)</span>  <span class='opr'>{</span> <span class='kw4'>bool</span> storeIf<span class='opr'>(</span> T newval, T equalTo <span class='opr'>)</span> <span class='opr'>{</span> <span class='kw1'>return</span> atomicStoreIf!<span class='opr'>(</span>ms,T<span class='opr'>)</span><span class='opr'>(</span> m_val, newval, equalTo <span class='opr'>)</span>; <span class='opr'>}</span> <span class='opr'>}</span> <span class='com'>/// ditto</span>
-    <span class='kw4'>template</span> storeIf<span class='opr'>(</span> msync ms : msync.acq <span class='opr'>)</span>  <span class='opr'>{</span> <span class='kw4'>bool</span> storeIf<span class='opr'>(</span> T newval, T equalTo <span class='opr'>)</span> <span class='opr'>{</span> <span class='kw1'>return</span> atomicStoreIf!<span class='opr'>(</span>ms,T<span class='opr'>)</span><span class='opr'>(</span> m_val, newval, equalTo <span class='opr'>)</span>; <span class='opr'>}</span> <span class='opr'>}</span> <span class='com'>/// ditto</span>
-    <span class='kw4'>template</span> storeIf<span class='opr'>(</span> msync ms : msync.rel <span class='opr'>)</span>  <span class='opr'>{</span> <span class='kw4'>bool</span> storeIf<span class='opr'>(</span> T newval, T equalTo <span class='opr'>)</span> <span class='opr'>{</span> <span class='kw1'>return</span> atomicStoreIf!<span class='opr'>(</span>ms,T<span class='opr'>)</span><span class='opr'>(</span> m_val, newval, equalTo <span class='opr'>)</span>; <span class='opr'>}</span> <span class='opr'>}</span> <span class='com'>/// ditto</span>
-
     <span class='kw4'>static</span> <span class='kw1'>if</span><span class='opr'>(</span> isValidNumericType!<span class='opr'>(</span>T<span class='opr'>)</span> <span class='opr'>)</span>
     <span class='opr'>{</span>
-        <span class='com'>/**
-         * This operation is only legal for built-in value and pointer types, and is equivalent to an atomic
-         * &quot;val = val + 1&quot; operation.  This function exists to facilitate use of the optimized increment
-         * instructions provided by some architecures.  If no such instruction exists on the target platform
-         * then the behavior will perform the operation using more traditional means.  This operation is both
-         * lock-free and atomic.
-         *
-         * Returns:
-         *  The result of an atomicLoad of val immediately following the increment operation.  This value
-         *  is not required to be equal to the newly stored value.  Thus, competing writes are allowed to
-         *  occur between the increment and successive load operation.
-         */</span>
-        <span class='kw4'>template</span> increment<span class='opr'>(</span> msync ms : msync.none <span class='opr'>)</span> <span class='opr'>{</span> T increment<span class='opr'>(</span><span class='opr'>)</span> <span class='opr'>{</span> <span class='kw1'>return</span> atomicIncrement!<span class='opr'>(</span>ms,T<span class='opr'>)</span><span class='opr'>(</span> m_val <span class='opr'>)</span>; <span class='opr'>}</span> <span class='opr'>}</span>
-        <span class='kw4'>template</span> increment<span class='opr'>(</span> msync ms : msync.ssb <span class='opr'>)</span>  <span class='opr'>{</span> T increment<span class='opr'>(</span><span class='opr'>)</span> <span class='opr'>{</span> <span class='kw1'>return</span> atomicIncrement!<span class='opr'>(</span>ms,T<span class='opr'>)</span><span class='opr'>(</span> m_val <span class='opr'>)</span>; <span class='opr'>}</span> <span class='opr'>}</span> <span class='com'>/// ditto</span>
-        <span class='kw4'>template</span> increment<span class='opr'>(</span> msync ms : msync.acq <span class='opr'>)</span>  <span class='opr'>{</span> T increment<span class='opr'>(</span><span class='opr'>)</span> <span class='opr'>{</span> <span class='kw1'>return</span> atomicIncrement!<span class='opr'>(</span>ms,T<span class='opr'>)</span><span class='opr'>(</span> m_val <span class='opr'>)</span>; <span class='opr'>}</span> <span class='opr'>}</span> <span class='com'>/// ditto</span>
-        <span class='kw4'>template</span> increment<span class='opr'>(</span> msync ms : msync.rel <span class='opr'>)</span>  <span class='opr'>{</span> T increment<span class='opr'>(</span><span class='opr'>)</span> <span class='opr'>{</span> <span class='kw1'>return</span> atomicIncrement!<span class='opr'>(</span>ms,T<span class='opr'>)</span><span class='opr'>(</span> m_val <span class='opr'>)</span>; <span class='opr'>}</span> <span class='opr'>}</span> <span class='com'>/// ditto</span>
+        <span class='com'>////////////////////////////////////////////////////////////////////////</span>
+        <span class='com'>// Atomic Increment</span>
+        <span class='com'>////////////////////////////////////////////////////////////////////////</span>
 
-        <span class='com'>/**
-         * This operation is only legal for built-in value and pointer types, and is equivalent to an atomic
-         * &quot;val = val - 1&quot; operation.  This function exists to facilitate use of the optimized decrement
-         * instructions provided by some architecures.  If no such instruction exists on the target platform
-         * then the behavior will perform the operation using more traditional means.  This operation is both
-         * lock-free and atomic.
-         *
-         * Returns:
-         *  The result of an atomicLoad of val immediately following the increment operation.  This value
-         *  is not required to be equal to the newly stored value.  Thus, competing writes are allowed to
-         *  occur between the increment and successive load operation.
-         */</span>
-        <span class='kw4'>template</span> decrement<span class='opr'>(</span> msync ms : msync.none <span class='opr'>)</span> <span class='opr'>{</span> T decrement<span class='opr'>(</span><span class='opr'>)</span> <span class='opr'>{</span> <span class='kw1'>return</span> atomicDecrement!<span class='opr'>(</span>ms,T<span class='opr'>)</span><span class='opr'>(</span> m_val <span class='opr'>)</span>; <span class='opr'>}</span> <span class='opr'>}</span>
-        <span class='kw4'>template</span> decrement<span class='opr'>(</span> msync ms : msync.ssb <span class='opr'>)</span>  <span class='opr'>{</span> T decrement<span class='opr'>(</span><span class='opr'>)</span> <span class='opr'>{</span> <span class='kw1'>return</span> atomicDecrement!<span class='opr'>(</span>ms,T<span class='opr'>)</span><span class='opr'>(</span> m_val <span class='opr'>)</span>; <span class='opr'>}</span> <span class='opr'>}</span> <span class='com'>/// ditto</span>
-        <span class='kw4'>template</span> decrement<span class='opr'>(</span> msync ms : msync.acq <span class='opr'>)</span>  <span class='opr'>{</span> T decrement<span class='opr'>(</span><span class='opr'>)</span> <span class='opr'>{</span> <span class='kw1'>return</span> atomicDecrement!<span class='opr'>(</span>ms,T<span class='opr'>)</span><span class='opr'>(</span> m_val <span class='opr'>)</span>; <span class='opr'>}</span> <span class='opr'>}</span> <span class='com'>/// ditto</span>
-        <span class='kw4'>template</span> decrement<span class='opr'>(</span> msync ms : msync.rel <span class='opr'>)</span>  <span class='opr'>{</span> T decrement<span class='opr'>(</span><span class='opr'>)</span> <span class='opr'>{</span> <span class='kw1'>return</span> atomicDecrement!<span class='opr'>(</span>ms,T<span class='opr'>)</span><span class='opr'>(</span> m_val <span class='opr'>)</span>; <span class='opr'>}</span> <span class='opr'>}</span> <span class='com'>/// ditto</span>
+
+        <span class='kw4'>template</span> increment<span class='opr'>(</span> msync ms <span class='opr'>)</span>
+        <span class='opr'>{</span>
+            <span class='kw4'>static</span> <span class='kw2'>assert</span><span class='opr'>(</span> ms <span class='opr'>=</span><span class='opr'>=</span> msync.none || ms <span class='opr'>=</span><span class='opr'>=</span> msync.ssb ||
+                           ms <span class='opr'>=</span><span class='opr'>=</span> msync.acq  || ms <span class='opr'>=</span><span class='opr'>=</span> msync.rel,
+                           <span class='str'>&quot;ms must be one of: msync.none, msync.ssb, msync.acq, msync.rel&quot;</span> <span class='opr'>)</span>;
+
+            <span class='com'>/**
+             * This operation is only legal for built-in value and pointer
+             * types, and is equivalent to an atomic &quot;val = val + 1&quot; operation.
+             * This function exists to facilitate use of the optimized
+             * increment instructions provided by some architecures.  If no
+             * such instruction exists on the target platform then the
+             * behavior will perform the operation using more traditional
+             * means.  This operation is both lock-free and atomic.
+             *
+             * Returns:
+             *  The result of an atomicLoad of val immediately following the
+             *  increment operation.  This value is not required to be equal to
+             *  the newly stored value.  Thus, competing writes are allowed to
+             *  occur between the increment and successive load operation.
+             */</span>
+            T increment<span class='opr'>(</span><span class='opr'>)</span>
+            <span class='opr'>{</span>
+                <span class='kw1'>return</span> atomicIncrement!<span class='opr'>(</span>ms,T<span class='opr'>)</span><span class='opr'>(</span> m_val <span class='opr'>)</span>;
+            <span class='opr'>}</span>
+        <span class='opr'>}</span>
+
+
+        <span class='com'>////////////////////////////////////////////////////////////////////////</span>
+        <span class='com'>// Atomic Decrement</span>
+        <span class='com'>////////////////////////////////////////////////////////////////////////</span>
+
+
+        <span class='kw4'>template</span> decrement<span class='opr'>(</span> msync ms <span class='opr'>)</span>
+        <span class='opr'>{</span>
+            <span class='kw4'>static</span> <span class='kw2'>assert</span><span class='opr'>(</span> ms <span class='opr'>=</span><span class='opr'>=</span> msync.none || ms <span class='opr'>=</span><span class='opr'>=</span> msync.ssb ||
+                           ms <span class='opr'>=</span><span class='opr'>=</span> msync.acq  || ms <span class='opr'>=</span><span class='opr'>=</span> msync.rel,
+                           <span class='str'>&quot;ms must be one of: msync.none, msync.ssb, msync.acq, msync.rel&quot;</span> <span class='opr'>)</span>;
+
+            <span class='com'>/**
+             * This operation is only legal for built-in value and pointer
+             * types, and is equivalent to an atomic &quot;val = val - 1&quot; operation.
+             * This function exists to facilitate use of the optimized
+             * decrement instructions provided by some architecures.  If no
+             * such instruction exists on the target platform then the behavior
+             * will perform the operation using more traditional means.  This
+             * operation is both lock-free and atomic.
+             *
+             * Returns:
+             *  The result of an atomicLoad of val immediately following the
+             *  increment operation.  This value is not required to be equal to
+             *  the newly stored value.  Thus, competing writes are allowed to
+             *  occur between the increment and successive load operation.
+             */</span>
+            T decrement<span class='opr'>(</span><span class='opr'>)</span>
+            <span class='opr'>{</span>
+                <span class='kw1'>return</span> atomicDecrement!<span class='opr'>(</span>ms,T<span class='opr'>)</span><span class='opr'>(</span> m_val <span class='opr'>)</span>;
+            <span class='opr'>}</span>
+        <span class='opr'>}</span>
     <span class='opr'>}</span>
 
 <span class='kw4'>private</span>:
@@ -2720,6 +3112,8 @@
 
 <span class='kw4'>private</span>
 <span class='opr'>{</span>
+  <span class='kw4'>version</span><span class='opr'>(</span> DDoc <span class='opr'>)</span> <span class='opr'>{</span><span class='opr'>}</span> <span class='kw1'>else</span>
+  <span class='opr'>{</span>
     <span class='kw4'>template</span> testLoad<span class='opr'>(</span> msync ms, T <span class='opr'>)</span>
     <span class='opr'>{</span>
         <span class='kw4'>void</span> testLoad<span class='opr'>(</span> T val <span class='opr'>=</span> T.init <span class='opr'>+</span> <span class='nbr'>1</span> <span class='opr'>)</span>
@@ -2825,6 +3219,7 @@
             <span class='opr'>}</span>
         <span class='opr'>}</span>
     <span class='opr'>}</span>
+  <span class='opr'>}</span>
 <span class='opr'>}</span>
 
 
@@ -2893,5 +3288,4 @@
         testStoreIf!<span class='opr'>(</span>msync.acq, <span class='kw4'>ulong</span><span class='opr'>)</span><span class='opr'>(</span><span class='opr'>)</span>;
     <span class='opr'>}</span>
 <span class='opr'>}</span>
-</pre></td></tr></table>	</body>
-</html>
+</pre></td></tr></table>
