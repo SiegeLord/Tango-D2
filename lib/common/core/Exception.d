@@ -166,7 +166,7 @@ void setCollectHandler( collectHandlerType h )
  */
 extern (C) void onAssertError( char[] file, uint line )
 {
-    if( !assertHandler )
+    if( assertHandler is null )
         throw new AssertException( file, line );
     assertHandler( file, line );
 }
@@ -184,7 +184,7 @@ extern (C) void onAssertError( char[] file, uint line )
  */
 extern (C) void onAssertErrorMsg( char[] file, uint line, char[] msg )
 {
-    if( !assertHandler )
+    if( assertHandler is null )
         throw new AssertException( msg, file, line );
     assertHandler( file, line, msg );
 }
@@ -204,7 +204,7 @@ extern (C) void onAssertErrorMsg( char[] file, uint line, char[] msg )
  */
 extern (C) bool onCollectResource( Object obj )
 {
-    if( !collectHandler )
+    if( collectHandler is null )
         return true;
     return collectHandler( obj );
 }
