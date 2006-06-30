@@ -119,7 +119,7 @@ extern (C) int _d_run_main(int argc, char **argv, main_type main_func)
     {
 	    _moduleCtor();
 	    _moduleUnitTests();
-    	result = main(args);
+    	result = main_func(args);
 	    _moduleDtor();
 	    gc_term();
     }
