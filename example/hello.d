@@ -19,5 +19,5 @@ private import tango.io.Console;
 
 void main()
 {
-        Cout ("hello world \u263a") ();
+        Cout ("hello world \u263a").newline;
 }
