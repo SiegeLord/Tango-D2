@@ -284,7 +284,11 @@ gcc/cbridge_math.o: gcc/cbridge_math.c
 # std/stream.t.o: std/stream.d $(D_PREREQ_SRCS)
 #	$(GDC) -o $@ $(DFLAGS) -fdeprecated -I $(srcdir) -I $(srcdir)/internal/gc -I ./$(host_alias) -c $<
 
-
+COMMON_OBJS= \
+    common/convert/dtoa.o \
+    common/core/Exceptio.o \
+    common/core/Memory.o \
+    common/core/Thread.o
 
 # GCC_OBJS (gcc/config.o) first so I don't have to write more deps
 ALL_OBJS = \
@@ -295,7 +299,8 @@ ALL_OBJS = \
     $(GCC_OBJS) \
     $(MAIN_OBJS) \
     $(GC_OBJS) \
-    $(WEAK_OBJS)
+    $(WEAK_OBJS) \
+    $(COMMON_OBJS)
 
 libgphobos.a : $(ALL_OBJS) $(OBJ_CMAIN)
 	$(AR) -r $@ $(ALL_OBJS) $(OBJ_CMAIN)
