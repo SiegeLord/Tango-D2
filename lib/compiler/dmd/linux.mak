@@ -70,7 +70,6 @@ OBJ_BASE= \
     critical.o \
     deh2.o \
     dmain2.o \
-    errno.o \
     invariant.o \
     llmath.o \
     memory.o \

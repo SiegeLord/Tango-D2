@@ -71,9 +71,13 @@ OBJ_CORE= \
     core/Memory.o \
     core/Thread.o
 
+OBJ_STDC= \
+    stdc/wrap.o
+
 ALL_OBJS= \
     $(OBJ_CONVERT) \
-    $(OBJ_CORE)
+    $(OBJ_CORE) \
+    $(OBJ_STDC)
 
 ######################################################
 

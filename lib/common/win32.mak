@@ -71,10 +71,14 @@ OBJ_CORE= \
 OBJ_OS= \
     os\windows\minwin.obj
 
+OBJ_STDC= \
+    stdc\wrap.obj
+
 ALL_OBJS= \
     $(OBJ_CONVERT) \
     $(OBJ_CORE) \
-    $(OBJ_OS)
+    $(OBJ_OS) \
+    $(OBJ_STDC)
 
 ######################################################
 
