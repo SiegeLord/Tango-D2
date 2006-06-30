@@ -10,7 +10,7 @@ import tango.convert.Unicode;
 import tango.convert.UnicodeBom;
 
 import tango.core.Array;
-import tango.core.Atomic;
+//import tango.core.Atomic;
 import tango.core.BitArray;
 import tango.core.ByteSwap;
 import tango.core.Epoch;
