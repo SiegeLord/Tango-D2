@@ -187,64 +187,64 @@ else version( Posix )
     }
 
     int __fpclassifyf(float x);
-    int __fpclassifyd(double x);
+    int __fpclassify(double x);
     int __fpclassifyl(real x);
 
-    int __isfinitef(float x);
-    int __isfinited(double x);
-    int __isfinitel(real x);
+    int __finitef(float x);
+    int __finite(double x);
+    int __finitel(real x);
 
     int __isinff(float x);
-    int __isinfd(double x);
+    int __isinf(double x);
     int __isinfl(real x);
 
     int __isnanf(float x);
-    int __isnand(double x);
+    int __isnan(double x);
     int __isnanl(real x);
 
     int __signbitf(float x);
-    int __signbitd(double x);
+    int __signbit(double x);
     int __signbitl(real x);
 
   extern (D)
   {
     //int fpclassify(real-floating x);
     int fpclassify(float x)     { return __fpclassifyf(x); }
-    int fpclassify(double x)    { return __fpclassifyd(x); }
+    int fpclassify(double x)    { return __fpclassify(x);  }
     int fpclassify(real x)
     {
         return (real.sizeof == double.sizeof)
-    	    ? __fpclassifyd(x)
+    	    ? __fpclassify(x)
     	    : __fpclassifyl(x);
     }
 
     //int isfinite(real-floating x);
-    int isfinite(float x)       { return __isfinitef(x); }
-    int isfinite(double x)      { return __isfinited(x); }
+    int isfinite(float x)       { return __finitef(x); }
+    int isfinite(double x)      { return __finite(x);  }
     int isfinite(real x)
     {
         return (real.sizeof == double.sizeof)
-    	    ? __isfinited(x)
-    	    : __isfinitel(x);
+    	    ? __finite(x)
+    	    : __finitel(x);
     }
 
     //int isinf(real-floating x);
-    int isinf(float x)          { return __isinff(x); }
-    int isinf(double x)         { return __isinfd(x); }
+    int isinf(float x)          { return __isinff(x);  }
+    int isinf(double x)         { return __isinf(x);   }
     int isinf(real x)
     {
         return (real.sizeof == double.sizeof)
-    	    ? __isinfd(x)
+    	    ? __isinf(x)
     	    : __isinfl(x);
     }
 
     //int isnan(real-floating x);
-    int isnan(float x)          { return __isnanf(x);   }
-    int isnan(double x)         { return __isnand(x);   }
+    int isnan(float x)          { return __isnanf(x);  }
+    int isnan(double x)         { return __isnan(x);   }
     int isnan(real x)
     {
         return (real.sizeof == double.sizeof)
-    	    ? __isnand(x)
+    	    ? __isnan(x)
     	    : __isnanl(x);
     }
 
@@ -255,11 +255,11 @@ else version( Posix )
 
     //int signbit(real-floating x);
     int signbit(float x)     { return __signbitf(x); }
-    int signbit(double x)    { return __signbitd(x); }
+    int signbit(double x)    { return __signbit(x);  }
     int signbit(real x)
     {
         return (real.sizeof == double.sizeof)
-    	    ? __signbitd(x)
+    	    ? __signbit(x)
     	    : __signbitl(x);
     }
   }
