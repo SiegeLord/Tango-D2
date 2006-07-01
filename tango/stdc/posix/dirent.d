@@ -46,7 +46,7 @@ version( linux )
       }
         ushort      d_reclen;
         ubyte       d_type;
-        char[256]   d_name[256];
+        char[256]   d_name;
     }
 
     struct DIR

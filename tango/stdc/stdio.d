@@ -223,6 +223,7 @@ else version( linux )
     void clearerr(FILE* stream);
     int  feof(FILE* stream);
     int  ferror(FILE* stream);
+    int  fileno(FILE *);
 
     int  snprintf(char* s, size_t n, char* format, ...);
     int  vsnprintf(char* s, size_t n, char* format, va_list arg);

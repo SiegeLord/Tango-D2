@@ -74,7 +74,7 @@ mode_t umask(mode_t);
 
 version( linux )
 {
-    struct stat
+    struct stat_t
     {
         dev_t       st_dev;
         ushort      __pad1;
@@ -175,14 +175,14 @@ version( linux )
 
     static if( true /*__USE_POSIX199309*/ )
     {
-        extern bool S_TYPEISMQ( stat* buf )  { return false; }
-        extern bool S_TYPEISSEM( stat* buf ) { return false; }
-        extern bool S_TYPEISSHM( stat* buf ) { return false; }
+        extern bool S_TYPEISMQ( stat_t* buf )  { return false; }
+        extern bool S_TYPEISSEM( stat_t* buf ) { return false; }
+        extern bool S_TYPEISSHM( stat_t* buf ) { return false; }
     }
 }
 else version( darwin )
 {
-    struct stat
+    struct stat_t
     {
         dev_t       st_dev;
         ino_t       st_ino;
@@ -209,11 +209,11 @@ else version( darwin )
 
 int    chmod(char*, mode_t);
 int    fchmod(int, mode_t);
-int    fstat(int, stat*);
-int    lstat(char*, stat*);
+int    fstat(int, stat_t*);
+int    lstat(char*, stat_t*);
 int    mkdir(char*, mode_t);
 int    mkfifo(char*, mode_t);
-int    stat(char*, stat*);
+int    stat(char*, stat_t*);
 mode_t umask(mode_t);
 
 //
