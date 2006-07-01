@@ -25,11 +25,26 @@ struct IntegerT(T)
 {       
         private alias AtoiT!(T) Atoi;
 
-        enum Format {Binary='b', Octal='o', Hex='x', HexUpper='X', Integer='d', Unsigned='u', String='s'};
+        /**********************************************************************
+
+                Format identifiers 
+
+        **********************************************************************/
+
+        enum Format 
+        {
+                Integer  = 'd', 
+                String   = 's',
+                Binary   = 'b', 
+                Octal    = 'o', 
+                Hex      = 'x', 
+                HexUpper = 'X', 
+                Unsigned = 'u', 
+        }
 
         /**********************************************************************
 
-                Declare stylistic flags 
+                Style flags 
 
         **********************************************************************/
 
@@ -46,7 +61,7 @@ struct IntegerT(T)
                 Comma	= Sign << 1,            // unused
                 Plus	= Comma << 1,           // prefix decimal with '+'
                 Array	= Plus << 1,            // array flag
-        };
+        }
 
 
         /***********************************************************************
