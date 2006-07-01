@@ -5,6 +5,8 @@ debug private import tango.stdc.stdio;
 enum
 {   MIctorstart = 1,	// we've started constructing it
     MIctordone = 2,	// finished construction
+    MIstandalone = 4,	// module ctor does not depend on other module
+			// ctors being done first
 }
 
 class ModuleInfo
@@ -85,7 +87,8 @@ void _moduleCtor2(ModuleInfo[] mi, int skip)
 	ModuleInfo m = mi[i];
 
 	debug printf("\tmodule[%d] = '%p'\n", i, m);
-	if (!m) continue;
+	if (!m)
+	    continue;
 	debug printf("\tmodule[%d] = '%.*s'\n", i, m.name);
 	if (m.flags & MIctordone)
 	    continue;
@@ -94,7 +97,7 @@ void _moduleCtor2(ModuleInfo[] mi, int skip)
 	if (m.ctor || m.dtor)
 	{
 	    if (m.flags & MIctorstart)
-	    {	if (skip)
+	    {	if (skip || m.flags & MIstandalone)
 		    continue;
 		    throw new Exception( "Cyclic dependency in module " ~ m.name );
 	    }
@@ -153,6 +156,9 @@ extern (C) void _moduleUnitTests()
     for (uint i = 0; i < _moduleinfo_array.length; i++)
     {
 	ModuleInfo m = _moduleinfo_array[i];
+
+	if (!m)
+	    continue;
 
 	debug printf("\tmodule[%d] = '%.*s'\n", i, m.name);
 	if (m.unitTest)

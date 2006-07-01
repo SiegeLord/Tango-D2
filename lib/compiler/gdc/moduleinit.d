@@ -12,13 +12,14 @@ module compiler.gdc.moduleinit;
 private
 {
     import object;
-    import tango.stdc.stdio;
-    import tango.stdc.stdlib;
+    debug import tango.stdc.stdio;
 }
 
 enum
 {   MIctorstart = 1,	// we've started constructing it
     MIctordone = 2,	// finished construction
+    MIstandalone = 4,	// module ctor does not depend on other module
+			// ctors being done first
 }
 
 class ModuleInfo
@@ -32,14 +33,6 @@ class ModuleInfo
     void (*ctor)();
     void (*dtor)();
     void (*unitTest)();
-}
-
-class ModuleCtorError : Exception
-{
-    this(ModuleInfo m)
-    {
-	super("circular initialization dependency with module " ~ m.name);
-    }
 }
 
 
@@ -125,9 +118,9 @@ void _moduleCtor2(ModuleInfo[] mi, int skip)
 	if (m.ctor || m.dtor)
 	{
 	    if (m.flags & MIctorstart)
-	    {	if (skip)
+	    {	if (skip || m.flags & MIstandalone)
 		    continue;
-		throw new ModuleCtorError(m);
+		    throw new Exception( "Cyclic dependency in module " ~ m.name );
 	    }
 
 	    m.flags |= MIctorstart;
