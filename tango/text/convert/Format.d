@@ -30,12 +30,14 @@ module tango.text.convert.Format;
 
 import tango.io.Console;
 
-/+
+
 void main ()
 {
+        Formatter.format( "d{{0}d", "s" );
         Cout (Formatter.format ("{0:x20} green bottles", 1234455)) ();
 }
 
+/+
 /*******************************************************************************
 
 *******************************************************************************/
@@ -338,7 +340,7 @@ public struct Formatter
                         return s.length;
                 }
 
-                format (&sink, formatStr, _arguments, _argptr);
+                format (&sink, _arguments, _argptr, formatStr);
                 return output;
         }
 
@@ -358,7 +360,8 @@ public struct Formatter
         public static uint format (Sink sink, TypeInfo[] arguments, void* args, char[] formatStr)
         {
                 auto it = ArgumentIterator (arguments, args);
-                return internalFormat (null, formatStr, it, sink);
+//                return internalFormat (null, formatStr, it, sink);
+                return parse (null, formatStr, it, sink);
         }
 
         /**********************************************************************
@@ -378,7 +381,7 @@ public struct Formatter
                 return ret + sink (Spaces[0..count]);
         }
 
-
+/+
         /**********************************************************************
 
         **********************************************************************/
@@ -535,7 +538,116 @@ public struct Formatter
                      }
                 return length;
         }
++/
 
+        /**********************************************************************
+
+                Parse the format-string, emitting formatted args and text
+                fragments as we go.
+
+        **********************************************************************/
+
+        private static uint parse (IFormatService formatService, char[] layout, inout ArgumentIterator it, Sink sink)
+        {
+                char[256] output = void;
+                auto result = Result (output);
+
+                int length;
+
+                char* s = layout;
+                char* fragment = s;
+                char* end = s + layout.length;
+
+                while (true)
+                      {
+                      while (s < end && *s != '{') 
+                             ++s;
+
+                      // emit fragment
+                      length += sink (fragment [0 .. s - fragment]); 
+
+                      // all done?
+                      if (s is end)
+                          break;
+                          
+                      // check for "{{" and skip if so
+                      if (*++s is '{')
+                         {
+                         fragment = s++;
+                         continue;
+                         }
+
+                      // extract index 
+                      int index;
+                      while (*s >= '0' && *s <= '9')
+                             index = index * 10 + *s++ -'0';
+
+                      // skip spaces
+                      while (s < end && *s is ' ')
+                             ++s;
+                      
+                      int  width;
+                      bool leftAlign;
+
+                      // has width?
+                      if (*s is ',')
+                         {
+                         while (++s < end && *s is ' ') {}
+
+                         if (*s is '-')
+                            {
+                            leftAlign = true;
+                            ++s;
+                            }
+
+                         // get width
+                         while (*s >= '0' && *s <= '9')
+                                width = width * 10 + *s++ -'0';
+
+                         // skip spaces
+                         while (s < end && *s is ' ')
+                                ++s;
+                         }    
+                      
+                      char[] format;
+
+                      // has a format string?
+                      if (*s is ':' && s < end)
+                         {
+                         char* fs = ++s;
+
+                         // eat everything up to closing brace
+                         while (s < end && *s != '}')
+                                ++s;
+                         format = fs [0 .. s - fs];
+                         }   
+                        
+                      // insist on a closing brace
+                      if (*s != '}')
+                          throw new Exception ("Invalid format string in Formatter.parse()");
+                        
+                      // next char is start of following fragment
+                      fragment = ++s;
+
+                      // convert argument to a string
+                      Argument arg = it [index];
+                      char[] str = formatArgument (result, format, arg, formatService);
+                      int padding = width - str.length;
+
+                      // if not left aligned, pad out with spaces
+                      if (! leftAlign && padding > 0)
+                            length += spaces (sink, padding);
+         
+                      // emit formatted argument
+                      length += sink (str);
+        
+                      // finally, pad out on right
+                      if (leftAlign && padding > 0)
+                          length += spaces (sink, padding);
+                      }
+
+                return length;
+        }
 }
 
 
@@ -1908,7 +2020,7 @@ unittest{
     // fragments before and after
     assert( Formatter.format( "d{0}d", "s" ) == "dsd" );
     // brace escaping
-    assert( Formatter.format( "d{{0}}d", "s" ) == "d{0}d" );
+    assert( Formatter.format( "d{{0}d", "s" ) == "d{0}d");
     
     // argument index
     assert( Formatter.format( "a{0}b{1}c{2}", "x", "y", "z" ) == "axbycz" );
