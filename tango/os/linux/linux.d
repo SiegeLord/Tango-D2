@@ -160,7 +160,7 @@ extern (C)
 
 /**************************************************************/
 // Memory mapping from <sys/mman.h> and <bits/mman.h>
-
+/+
 enum
 {
 	PROT_NONE	= 0,
@@ -168,7 +168,7 @@ enum
 	PROT_WRITE	= 2,
 	PROT_EXEC	= 4,
 }
-
++/
 // Memory mapping sharing types
 
 enum
@@ -179,7 +179,7 @@ enum
 //	MAP_FIXED	= 0x10,
 	MAP_FILE	= 0,
 	MAP_ANONYMOUS	= 0x20,
-	MAP_ANON	= 0x20,
+//	MAP_ANON	= 0x20,
 	MAP_GROWSDOWN	= 0x100,
 	MAP_DENYWRITE	= 0x800,
 	MAP_EXECUTABLE	= 0x1000,
