@@ -72,12 +72,21 @@ OBJ_CORE= \
     core/Thread.o
 
 OBJ_STDC= \
+    stdc/stdbool.o \
+    stdc/stddef.o \
+    stdc/stdio.o \
+    stdc/stdlib.o \
+    stdc/string.o \
     stdc/wrap.o
+
+OBJ_STDC_POSIX= \
+    stdc/posix/signal.o
 
 ALL_OBJS= \
     $(OBJ_CONVERT) \
     $(OBJ_CORE) \
-    $(OBJ_STDC)
+    $(OBJ_STDC) \
+    $(OBJ_STDC_POSIX)
 
 ######################################################
 
