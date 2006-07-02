@@ -4,7 +4,7 @@
 -I\d\tango\
 -IC:\d\dmd\src\phobos\
 -IC:\d\tango\doc\
--IC:\d\tango\tango\convert\
+-IC:\d\tango\tango\text\convert\
 -IC:\d\tango\tango\core\
 -IC:\d\tango\tango\os\
 -IC:\d\tango\tango\io\
@@ -60,7 +60,7 @@ mango\net\servlet\cache\model\IPayload.d
 tango\store\iterator\AbstractIterator.d
 tango\store\model\Comparator.d
 tango\stdc\errno.d
-tango\convert\Sprint.d
+tango\text\convert\Sprint.d
 mango\net\servlet\ServletContext.d
 tango\math\cipher\Cipher.d
 tango\text\locale\Parse.d
@@ -68,13 +68,13 @@ tango\io\model\IBuffer.d
 tango\io\Console.d
 tango\math\special.d
 tango\io\DeviceConduit.d
-tango\convert\Double.d
+tango\text\convert\Double.d
 tango\core\Traits.d
 mango\net\http\server\HttpResponse.d
 tango\os\linux\c\linuxextern.d
 tango\io\FileConduit.d
 tango\net\http\HttpStack.d
-tango\convert\Integer.d
+tango\text\convert\Integer.d
 tango\text\Properties.d
 tango\store\impl\DefaultComparator.d
 tango\log\NullAppender.d
@@ -98,7 +98,7 @@ tango\net\http\HttpTriplet.d
 tango\store\model\ImplementationCheckable.d
 tango\store\model\CollectionIterator.d
 tango\store\impl\MutableMapImpl.d
-tango\convert\Format.d
+tango\text\convert\Format.d
 tango\io\Exception.d
 tango\io\FileConst.d
 tango\log\model\IHierarchy.d
@@ -129,7 +129,7 @@ tango\store\model\Procedure.d
 tango\store\iterator\FilteringIterator.d
 tango\log\SocketAppender.d
 mango\net\servlet\cache\HashMap.d
-tango\convert\Type.d
+tango\text\convert\Type.d
 tango\text\RegexIterator.d
 tango\log\Logger.d
 tango\log\model\ILevel.d
@@ -190,7 +190,7 @@ tango\store\CircularSeq.d
 tango\io\FilePath.d
 tango\net\http\HttpCookies.d
 mango\net\servlet\cache\QueuedCache.d
-tango\convert\Rfc1123.d
+tango\text\convert\Rfc1123.d
 tango\io\FileSystem.d
 tango\io\support\BufferCodec.d
 tango\text\locale\Win32.d
@@ -210,7 +210,7 @@ tango\store\LinkSeq.d
 tango\store\HashMap.d
 tango\math\cipher\Tiger.d
 tango\text\QuoteIterator.d
-tango\convert\UnicodeBom.d
+tango\text\convert\UnicodeBom.d
 tango\io\Buffer.d
 tango\store\model\Immutable.d
 tango\store\model\MutableCollection.d
@@ -231,7 +231,7 @@ mango\net\servlet\ServletException.d
 mango\net\servlet\ServletRequest.d
 tango\text\LineIterator.d
 tango\math\cipher\Md2.d
-tango\convert\Unicode.d
+tango\text\convert\Unicode.d
 tango\log\Configurator.d
 tango\text\ArgParser.d
 tango\io\GrowBuffer.d
@@ -241,12 +241,12 @@ tango\store\impl\CLCell.d
 mango\net\servlet\cache\PlainCache.d
 tango\os\PipeConduit.d
 tango\stdc\fenv.d
-tango\convert\Atoi.d
+tango\text\convert\Atoi.d
 tango\io\protocol\EndianWriter.d
 tango\stdc\string.d
 tango\stdc\config.d
 tango\store\impl\LLCell.d
-tango\convert\DGDouble.d
+tango\text\convert\DGDouble.d
 tango\core\BitArray.d
 tango\text\locale\Data.d
 tango\store\iterator\InterleavingIterator.d

@@ -2,17 +2,6 @@
 
 Use the Browser ''incremental search'' facility to quickly locate a particular module name. Source code for each module is hooked up via the ''big blue title'' at the top of each page, and all other links therein lead to Wiki annotations. Packages are sorted by name:
 
-tango.convert
- * [http://svn.dsource.org/projects/tango/trunk/doc/html/tango.convert.Atoi.html Atoi]
- * [http://svn.dsource.org/projects/tango/trunk/doc/html/tango.convert.DGDouble.html DGDouble]
- * [http://svn.dsource.org/projects/tango/trunk/doc/html/tango.convert.Double.html Double]
- * [http://svn.dsource.org/projects/tango/trunk/doc/html/tango.convert.Format.html Format]
- * [http://svn.dsource.org/projects/tango/trunk/doc/html/tango.convert.Integer.html Integer]
- * [http://svn.dsource.org/projects/tango/trunk/doc/html/tango.convert.Rfc1123.html Rfc1123]
- * [http://svn.dsource.org/projects/tango/trunk/doc/html/tango.convert.Sprint.html Sprint]
- * [http://svn.dsource.org/projects/tango/trunk/doc/html/tango.convert.Type.html Type]
- * [http://svn.dsource.org/projects/tango/trunk/doc/html/tango.convert.Unicode.html Unicode]
- * [http://svn.dsource.org/projects/tango/trunk/doc/html/tango.convert.UnicodeBom.html UnicodeBom]
 tango.core
  * [http://svn.dsource.org/projects/tango/trunk/doc/html/tango.core.Array.html Array]
  * [http://svn.dsource.org/projects/tango/trunk/doc/html/tango.core.Atomic.html Atomic]
@@ -231,6 +220,17 @@ tango.text
  * [http://svn.dsource.org/projects/tango/trunk/doc/html/tango.text.String.html String]
  * [http://svn.dsource.org/projects/tango/trunk/doc/html/tango.text.Text.html Text]
  * [http://svn.dsource.org/projects/tango/trunk/doc/html/tango.text.UtfString.html UtfString]
+tango.text.convert
+ * [http://svn.dsource.org/projects/tango/trunk/doc/html/tango.text.convert.Atoi.html Atoi]
+ * [http://svn.dsource.org/projects/tango/trunk/doc/html/tango.text.convert.DGDouble.html DGDouble]
+ * [http://svn.dsource.org/projects/tango/trunk/doc/html/tango.text.convert.Double.html Double]
+ * [http://svn.dsource.org/projects/tango/trunk/doc/html/tango.text.convert.Format.html Format]
+ * [http://svn.dsource.org/projects/tango/trunk/doc/html/tango.text.convert.Integer.html Integer]
+ * [http://svn.dsource.org/projects/tango/trunk/doc/html/tango.text.convert.Rfc1123.html Rfc1123]
+ * [http://svn.dsource.org/projects/tango/trunk/doc/html/tango.text.convert.Sprint.html Sprint]
+ * [http://svn.dsource.org/projects/tango/trunk/doc/html/tango.text.convert.Type.html Type]
+ * [http://svn.dsource.org/projects/tango/trunk/doc/html/tango.text.convert.Unicode.html Unicode]
+ * [http://svn.dsource.org/projects/tango/trunk/doc/html/tango.text.convert.UnicodeBom.html UnicodeBom]
 tango.text.locale
  * [http://svn.dsource.org/projects/tango/trunk/doc/html/tango.text.locale.Collation.html Collation]
  * [http://svn.dsource.org/projects/tango/trunk/doc/html/tango.text.locale.Constants.html Constants]
