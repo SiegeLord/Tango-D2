@@ -6,6 +6,8 @@
 
 module tango.os.linux.linux;
 
+version( Posix ) version ( build ) pragma( ignore );
+
 import tango.os.linux.linuxextern;
 
 alias int pid_t;

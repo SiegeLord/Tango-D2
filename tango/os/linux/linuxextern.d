@@ -9,6 +9,8 @@
 
 module tango.os.linux.linuxextern;
 
+version( Posix ) version ( build ) pragma( ignore );
+
 extern (C)
 {
     extern void* __libc_stack_end;
