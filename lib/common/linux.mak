@@ -71,6 +71,9 @@ OBJ_CORE= \
     core/Memory.o \
     core/Thread.o
 
+OBJ_OS= \
+    os/windows/minwin.o
+
 OBJ_STDC= \
     stdc/stdbool.o \
     stdc/stddef.o \
@@ -85,6 +88,7 @@ OBJ_STDC_POSIX= \
 ALL_OBJS= \
     $(OBJ_CONVERT) \
     $(OBJ_CORE) \
+    $(OBJ_OS) \
     $(OBJ_STDC) \
     $(OBJ_STDC_POSIX)
 
