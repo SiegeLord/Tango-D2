@@ -8,6 +8,8 @@
  */
 module tango.stdc.stdio;
 
+version( Posix ) version ( build ) pragma( ignore );
+
 private
 {
     import tango.stdc.stdarg;

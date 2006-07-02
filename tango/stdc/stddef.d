@@ -8,6 +8,8 @@
  */
 module tango.stdc.stddef;
 
+version( Posix ) version ( build ) pragma( ignore );
+
 extern (C):
 
 //alias typeof(int.sizeof)                    size_t;
