@@ -158,16 +158,16 @@ public interface IFormatService {
  * $(BR)$(BR)Instances of $(LINK2 #DateTimeFormat, DateTimeFormat) and $(LINK2 #NumberFormat, NumberFormat) cannot be created for neutral cultures.
  * Examples:
  * ---
- * import tango.io.Print, tango.text.locale.Common;
+ * import tango.io.Stdout, tango.text.locale.Common;
  *
  * void main() {
  *   Culture culture = new Culture("it-IT");
  *
- *   Println("englishName: %s", culture.englishName);
- *   Println("nativeName: %s", culture.nativeName);
- *   Println("name: %s", culture.name);
- *   Println("parent: %s", culture.parent.name);
- *   Println("isNeutral: %s", culture.isNeutral);
+ *   Stdout.format("englishName: {0}\n", culture.englishName);
+ *   Stdout.format("nativeName: {0}\n", culture.nativeName);
+ *   Stdout.format("name: {0}\n", culture.name);
+ *   Stdout.format("parent: {0}\n", culture.parent.name);
+ *   Stdout.format("isNeutral: {0}\n", culture.isNeutral);
  * }
  *
  * // Produces the following output:

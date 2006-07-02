@@ -26,29 +26,13 @@ public  import  tango.io.protocol.Writer;
         the means to append formatted  data to an IBuffer, and exposes 
         a convenient method of handling a variety of data types. 
         
-        DisplayWriter supports the usual printf() format specifiers & flags, 
-        and extends the notion to operate with one dimensional arrays. For
-        instance, this code
-
-        ---
-        static int x = [1, 2, 3, 4, 5, 6, 7, 8];
-
-        Stdout.print ("%@04b, ", x);
-        ---
-
-        results in the following output: 
-
-        ---
-        0001, 0010, 0011, 0100, 0101, 0110, 0111, 1000,
-        ---
-
-        Note that DisplayWriter itself is a wrapper around the tango.convert 
-        package, which can be used directly as desired (Integer, Double, 
-        DGDouble, etc). The latter classes are home to a set of static 
+        The DisplayWriter itself is a wrapper around the tango.text.convert 
+        package, which should be used directly as desired (Integer, Double, 
+        DGDouble, etc). The latter modules are home to a set of static 
         formatting-methods, making them convenient for ad-hoc application.
 
-        tango.convert also has Format and Sprint classes for working directly
-        with text arrays.
+        Tango.text.convert also has Format and Sprint modules for working 
+        directly with text arrays.
          
 *******************************************************************************/
 

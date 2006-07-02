@@ -93,7 +93,8 @@ public  import  tango.io.protocol.model.IWriter;
         which has full support for printf() syntax:
 
         ---
-        Stdout.println ("%d green bottles", 10);
+        auto write = new DisplayWriter (buf);
+        write.format ("{0} green bottles", 10);
         ---
         
         Lastly, each Writer may be configured with a text encoder. These

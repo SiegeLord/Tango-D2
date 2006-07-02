@@ -12,17 +12,12 @@
 
 module tango.io.Stdout;
 
-version (Old)
-{
 private import  tango.io.Console;
-
-private import  tango.text.convert.Format,
-                tango.text.convert.Double;
 
 private import  tango.io.model.IBuffer,
                 tango.io.model.IConduit;
 
-private import  tango.io.support.BufferCodec;
+private import tango.text.convert.Format;
 
 /*******************************************************************************
 
@@ -34,158 +29,6 @@ private import  tango.io.support.BufferCodec;
 
 *******************************************************************************/
 
-private class BufferedFormatT(T)
-{
-        private alias FormatStructT!(T) Format;
-        public  alias print             opCall;
-
-        private T[128]                  tmp;
-        private bool                    flush;
-        private IBuffer                 target;
-        private Importer                importer;
-        private Format                  formatter;
-
-        /**********************************************************************
-
-                Construct a BufferedFormat instance, tying the provided
-                buffer to a formatter. Set option 'flush' to true if
-                the result should be flushed when complete.
-
-        **********************************************************************/
-
-        this (IBuffer target, bool flush = true)
-        {
-                // configure the formatter
-                formatter.ctor (&write, tmp, &Double.format);
-
-                // hook up a unicode converter
-                importer = new UnicodeImporter!(T)(target);
-
-                // save buffer and tail references
-                this.target = target;
-                this.flush = flush;
-        }
-                
-        /**********************************************************************
-
-        **********************************************************************/
-
-        BufferedFormatT print (T[] fmt, ...)
-        {
-                formatter.print (fmt, _arguments, _argptr);
-                return render();
-        }
-
-        /**********************************************************************
-
-        **********************************************************************/
-
-        BufferedFormatT print (bool v)
-        {
-                return print ("%s", v);
-        }
-
-        /**********************************************************************
-
-        **********************************************************************/
-
-        BufferedFormatT print (long v)
-        {
-                return print ("%s", v);
-        }
-
-        /**********************************************************************
-
-        **********************************************************************/
-
-        BufferedFormatT print (Object v)
-        {
-                return print ("%s", v);
-        }
-
-        /**********************************************************************
-
-        **********************************************************************/
-
-        BufferedFormatT print ()
-        {
-                target.flush;
-                return this;
-        }
-
-        /***********************************************************************
-        
-                Emit a newline
-
-        ***********************************************************************/
-
-        BufferedFormatT newline ()
-        {
-                formatter.newline;
-                return render();
-        }
-
-        /**********************************************************************
-
-                return the associated buffer
-
-        **********************************************************************/
-
-        IBuffer buffer ()
-        {
-                return target;
-        }      
-
-        /**********************************************************************
-
-                return the associated conduit
-
-        **********************************************************************/
-
-        IConduit conduit ()
-        {
-                return target.getConduit;
-        }      
-
-        /**********************************************************************
-
-                Callback from the Format instance to write an array
-
-        **********************************************************************/
-
-        private uint write (void[] x, uint type)
-        {
-                return importer (x, x.length, type);
-        }      
-
-        /**********************************************************************
-
-                Render content -- flush the output buffer
-
-        **********************************************************************/
-
-        private BufferedFormatT render ()
-        {
-                if (flush)
-                    target.flush;
-                return this;
-        }      
-}
-
-// convenience alias
-alias BufferedFormatT!(char) BufferedFormat;
-}
-
-
-
-
-private import  tango.io.Console;
-
-private import  tango.io.model.IBuffer,
-                tango.io.model.IConduit;
-
-private import tango.text.convert.Format;
-
 private class BufferedFormat
 {
         public alias print opCall;
@@ -193,7 +36,6 @@ private class BufferedFormat
         private bool            flush;
         private IBuffer         target;
         private static char[]   One = "{0}";
-
 
         /**********************************************************************
 

@@ -127,10 +127,10 @@ extern (C)
         write ("now is the time for all good men "c) (foo);
         ---
 
-        Or, using printf-like formatting via a text oriented DisplayWriter:
+        Or, using formatted output via a text oriented DisplayWriter:
         ---
-        auto write = new DisplayWriter (new Buffer(256));
-        write.print ("now is the time for %d good men %s", 3, foo);
+        auto writer = new DisplayWriter (new Buffer(256));
+        writer.format ("now is the time for {0} good men {1}", 3, foo);
         ---
 
         One might use a GrowBuffer instead, where one wishes to append
@@ -162,27 +162,26 @@ extern (C)
         Stdout.conduit.copy (new FileConduit ("readme.txt"));
         ---
 
-        Because Stdout is an instance of DisplayWriter, it also has
-        support for formatted output:
+        Stdout also has support for both text conversions and formatted 
+        output:
         ---
-        Stdout.println ("now is the time for %d good men %s", 3, foo);
+        Stdout ("now is the time for ") (3) (" good men ") (foo);
+
+        Stdout.format ("now is the time for {0} good men {1}", 3, foo);
         ---
 
-        The Stdout writer is attached to a specific buffer, which in
-        turn is attached to a specific conduit. This buffer is known 
-        as Cout, and it is attached to a conduit representing the 
-        console. Cout can be used directly, bypassing the writer layer
-        if so desired. 
+        Stdout is attached to a specific buffer, which in turn is attached 
+        to a specific conduit. This buffer is known as Cout, and is attached 
+        to a conduit representing the console. Cout can be used directly, 
+        bypassing the formatting layer if so desired. 
         
         Cout has relatives named Cerr and Cin, which are attached to 
         the corresponding console conduits. Writer Stderr, and reader 
         Stdin are mapped onto Cerr and Cin respectively, ensuring 
         console IO is buffered in one common area. 
         ---
-        Cout ("what is your name?");
-        char[] name;
-        Cin (name);
-        Cout ("hello ") (name) .newline;
+        Cout ("what is your name?") ();
+        Cout ("hello ")(Cin.get).newline;
         ---
 
         An Iterator is constructed in a similar manner to a Reader; you
