@@ -72,10 +72,12 @@ OBJ_CORE= \
     core/Thread.o
 
 OBJ_OS= \
-    os/windows/minwin.o
+    os/linux/linux.o \
+    os/linux/linuxextern.o
 
 OBJ_STDC= \
     stdc/stdbool.o \
+    stdc/stdarg.o \
     stdc/stddef.o \
     stdc/stdio.o \
     stdc/stdlib.o \
@@ -83,7 +85,8 @@ OBJ_STDC= \
     stdc/wrap.o
 
 OBJ_STDC_POSIX= \
-    stdc/posix/signal.o
+    stdc/posix/signal.o \
+    stdc/posix/time.o
 
 ALL_OBJS= \
     $(OBJ_CONVERT) \
