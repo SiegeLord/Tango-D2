@@ -16,8 +16,8 @@ version (Old)
 {
 private import  tango.io.Console;
 
-private import  tango.convert.Format,
-                tango.convert.Double;
+private import  tango.text.convert.Format,
+                tango.text.convert.Double;
 
 private import  tango.io.model.IBuffer,
                 tango.io.model.IConduit;

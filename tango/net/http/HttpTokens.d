@@ -16,8 +16,8 @@ private import  tango.text.Text;
 
 private import  tango.io.Buffer;
 
-private import  tango.convert.Integer,
-                tango.convert.Rfc1123;
+private import  tango.text.convert.Integer,
+                tango.text.convert.Rfc1123;
 
 private import  tango.io.model.IBuffer,
                 tango.io.protocol.model.IWriter;

@@ -14,7 +14,7 @@ module tango.net.Uri;
 
 private import  tango.io.Exception;
 
-private import  tango.convert.Integer;
+private import  tango.text.convert.Integer;
 
 /*******************************************************************************
 

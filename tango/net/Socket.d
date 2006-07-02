@@ -64,7 +64,7 @@
 // MANGO: added all this module & import stuff ...
 module tango.net.Socket;
 
-private import  tango.convert.Integer;
+private import  tango.text.convert.Integer;
 
 private import  tango.os.OS;
 

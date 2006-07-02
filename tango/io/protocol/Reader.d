@@ -20,7 +20,7 @@ public  import  tango.io.model.IBuffer,
 public  import  tango.io.protocol.model.IReader;
 
 
-private import  tango.convert.Type;
+private import  tango.text.convert.Type;
 
 private import  tango.io.Exception;
 

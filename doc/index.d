@@ -1,13 +1,13 @@
-import tango.convert.Atoi;
-import tango.convert.DGDouble;
-import tango.convert.Double;
-import tango.convert.Format;
-import tango.convert.Integer;
-import tango.convert.Rfc1123;
-import tango.convert.Sprint;
-import tango.convert.Type;
-import tango.convert.Unicode;
-import tango.convert.UnicodeBom;
+import tango.text.convert.Atoi;
+import tango.text.convert.DGDouble;
+import tango.text.convert.Double;
+import tango.text.convert.Format;
+import tango.text.convert.Integer;
+import tango.text.convert.Rfc1123;
+import tango.text.convert.Sprint;
+import tango.text.convert.Type;
+import tango.text.convert.Unicode;
+import tango.text.convert.UnicodeBom;
 
 import tango.core.Array;
 //import tango.core.Atomic;

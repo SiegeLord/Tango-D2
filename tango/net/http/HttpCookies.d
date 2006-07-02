@@ -23,7 +23,7 @@ private import  tango.io.protocol.model.IWriter,
                 tango.io.model.IBuffer,
                 tango.io.model.IConduit;
 
-private import  tango.convert.Integer;
+private import  tango.text.convert.Integer;
 
 private import  tango.net.http.HttpWriter;
 

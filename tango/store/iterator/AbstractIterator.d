@@ -20,7 +20,7 @@ private import tango.store.Exception;
 private import tango.store.model.MutableCollection;
 private import tango.store.model.CollectionIterator;
 
-private import tango.convert.Integer;
+private import tango.text.convert.Integer;
 
 /**
  *

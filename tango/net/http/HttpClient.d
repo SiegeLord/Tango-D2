@@ -22,7 +22,7 @@ private import  tango.core.Interval;
 private import  tango.io.Buffer,
                 tango.io.Exception;
 
-private import  tango.convert.Atoi;
+private import  tango.text.convert.Atoi;
 
 private import  tango.net.Uri,
                 tango.net.SocketConduit;

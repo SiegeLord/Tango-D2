@@ -16,7 +16,7 @@ private import  tango.log.Log;
 
 private import  tango.io.Exception;
 
-private import  tango.convert.Integer;
+private import  tango.text.convert.Integer;
 
 private import  tango.io.model.IConduit;
 

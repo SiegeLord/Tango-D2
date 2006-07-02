@@ -29,7 +29,7 @@ private import tango.store.model.Iterator;
 private import tango.store.model.MutableCollection;
 //private import tango.store.model.ElementSortedCollection;
 
-private import tango.convert.Integer;
+private import tango.text.convert.Integer;
 
 private import tango.text.String;
 

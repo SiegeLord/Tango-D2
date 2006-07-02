@@ -20,7 +20,7 @@ private import  tango.io.FilePath,
                 tango.io.FileConst,
                 tango.io.Exception;
 
-private import  tango.convert.Unicode;
+private import  tango.text.convert.Unicode;
 
 version (Win32)
         extern (Windows) DWORD GetLogicalDriveStringsA (DWORD, LPTSTR);

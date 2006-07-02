@@ -7,7 +7,7 @@
 private import tango.log.Log,
                tango.log.Configurator;
 
-private import tango.convert.Sprint;
+private import tango.text.convert.Sprint;
 
 /*******************************************************************************
 
@@ -57,7 +57,7 @@ private class Sieve
                 }
 
                 // information level
-                logger.info (sprint ("Searching prime numbers to : %d", max));
+                logger.info (sprint ("Searching prime numbers to : {0}", max));
 
                 feld = new byte[max / 16 + 1];
 
@@ -69,7 +69,7 @@ private class Sieve
                            {
                            if  ((++hits & 0x0f) == 0) 
                                 // more information level
-                                logger.info (sprint ("found %d", hits)); 
+                                logger.info (sprint ("found {0}", hits)); 
 
                            for (mom=3*teste; mom < max; mom += teste<<1) 
                                 set (feld, mom);
@@ -80,7 +80,7 @@ private class Sieve
 
                 if (hits)
                     // more information
-                    logger.info (sprint ("%d prime numbers found in %d millsecs", hits, period));
+                    logger.info (sprint ("{0} prime numbers found in {1} millsecs", hits, period));
                 else
                    // a warning level
                    logger.warn ("no prime numbers found");
@@ -97,7 +97,7 @@ private class Sieve
                    while ((count+=2) < e) 
                            // log trace information
                            if (! test (feld, count)) 
-                               logger.trace (sprint ("prime found: %d", count));
+                               logger.trace (sprint ("prime found: {0}", count));
                    }
         }
 }

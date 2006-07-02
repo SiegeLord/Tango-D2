@@ -14,13 +14,13 @@ module tango.io.UnicodeFile;
 
 public  import  tango.io.FilePath;
 
-public  import  tango.convert.Unicode;
+public  import  tango.text.convert.Unicode;
 
 private import  tango.io.FileProxy,
                 tango.io.Exception,
                 tango.io.FileConduit;
 
-private import  tango.convert.UnicodeBom;
+private import  tango.text.convert.UnicodeBom;
 
 /*******************************************************************************
 

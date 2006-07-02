@@ -14,7 +14,7 @@ module tango.io.protocol.EndianReader;
 
 public  import  tango.io.protocol.Reader;
 
-private import  tango.convert.Type;
+private import  tango.text.convert.Type;
 
 private import  tango.core.ByteSwap;
 

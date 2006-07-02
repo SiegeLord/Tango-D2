@@ -12,7 +12,7 @@
 
 module tango.io.protocol.Writer;
 
-private import  tango.convert.Type;
+private import  tango.text.convert.Type;
 
 private import  tango.io.Exception;
 

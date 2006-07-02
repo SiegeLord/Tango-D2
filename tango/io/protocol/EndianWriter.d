@@ -14,7 +14,7 @@ module tango.io.protocol.EndianWriter;
 
 public  import  tango.io.protocol.Writer;
 
-private import  tango.convert.Type;
+private import  tango.text.convert.Type;
 
 private import  tango.core.ByteSwap;
 

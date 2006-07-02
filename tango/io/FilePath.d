@@ -15,7 +15,7 @@ module tango.io.FilePath;
 private import  tango.io.Exception,
                 tango.io.FileConst;
 
-private import  tango.convert.Unicode;
+private import  tango.text.convert.Unicode;
 
 
 /*******************************************************************************

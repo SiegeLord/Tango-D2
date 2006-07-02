@@ -15,9 +15,8 @@ module tango.io.protocol.DisplayWriter;
 
 private import  tango.core.Vararg;
 
-private import  tango.convert.Type,
-                tango.convert.Format,
-                tango.convert.Double;
+private import  tango.text.convert.Type,
+                tango.text.convert.Format;
 
 public  import  tango.io.protocol.Writer;
 
@@ -55,11 +54,6 @@ public  import  tango.io.protocol.Writer;
 
 class DisplayWriter : Writer
 {
-        alias FormatStructT!(char) Format;
-
-        private Format          format;
-        private char[128]       workspace;
-
         /***********************************************************************
         
                 Construct a DisplayWriter upon the specified IBuffer. 
@@ -70,16 +64,9 @@ class DisplayWriter : Writer
 
         ***********************************************************************/
 
-        this (IBuffer buffer, char[] workspace = null, Format.DblFormat df = &Double.format)
+        this (IBuffer buffer)
         {
                 super (buffer);
-                
-                if (workspace is null)
-                    workspace = this.workspace;
-
-                // configure output-handler, workspace, and the
-                // floating-point converter
-                format.ctor (&emit, workspace, df);
         }
      
         /***********************************************************************
@@ -91,48 +78,6 @@ class DisplayWriter : Writer
         this (IConduit conduit)
         {
                 super (conduit);
-
-                // configure formatter
-                format.ctor (&emit, workspace, &Double.format);
-        }
-
-        /***********************************************************************
-        
-                Format a set of arguments a la printf(). Please see module
-                tango.convert.Format for details
-
-        ***********************************************************************/
-
-        int print (char[] s, TypeInfo[] ti, va_list args)
-        {       
-                return format (s, ti, args);
-        }
-
-        /***********************************************************************
-        
-                Format a set of arguments a la printf(). Please see module
-                tango.convert.Format for details
-
-        ***********************************************************************/
-
-        DisplayWriter print (char[] s, ...)
-        {       
-                print (s, _arguments, _argptr);
-                return this;
-        }
-
-        /***********************************************************************
-        
-                Format a set of arguments a la printf(). Please see module
-                tango.convert.Format for details
-
-        ***********************************************************************/
-
-        DisplayWriter println (char[] s, ...)
-        {       
-                print (s, _arguments, _argptr);
-                put (CR);
-                return this;
         }
 
         /***********************************************************************
@@ -148,25 +93,78 @@ class DisplayWriter : Writer
 
         /***********************************************************************
         
+                Format a set of arguments a la printf(). Please see module
+                tango.text.convert.Format for details
+
+        ***********************************************************************/
+
+        DisplayWriter format (char[] s, ...)
+        {       
+                format (s, _arguments, _argptr);
+                return this;
+        }
+
+        /***********************************************************************
+        
+                Format a set of arguments a la printf(). Please see module
+                tango.text.convert.Format for details
+
+        ***********************************************************************/
+
+        protected int format (char[] s, TypeInfo[] ti, va_list args)
+        {       
+                uint sink (char[] s)
+                {
+                        encode (s.ptr, s.length, Type.Utf8);
+                        return s.length;
+                }
+
+                return Formatter.format (&sink, ti, args, s);
+        }
+
+        /***********************************************************************
+        
                 Intercept discrete output and convert it to printable form
 
         ***********************************************************************/
 
         protected override IWriter write (void* src, uint bytes, int type)
         {
-                format.emit (src, bytes, type);
+                switch (type)
+                       {
+                       case Type.Utf8:
+                       case Type.Utf16:
+                       case Type.Utf32:
+                            encode (src, bytes, type);
+                            break;
+
+                       default:
+                            char[128] output = void;
+                            auto ti = Type.revert [type];
+                            auto result = Result (output);
+                            auto width = ti.tsize();
+
+                            bool array = width < bytes;
+
+                            if (array)
+                                encode ("[".ptr, 1, Type.Utf8);
+
+                            while (bytes)
+                                  {
+                                  auto s = Formatter.format (result, ti, src);
+                                  encode (s.ptr, s.length, Type.Utf8);
+
+                                  bytes -= width;
+                                  src += width;
+
+                                  if (bytes > 0)
+                                      encode (", ".ptr, 2, Type.Utf8);
+                                  }
+
+                            if (array)
+                                encode ("]".ptr, 1, Type.Utf8);
+                            break;
+                       }
                 return this;
-        }
-
-        /***********************************************************************
-        
-                formatting handler
-
-        ***********************************************************************/
-
-        private uint emit (void[] x, uint type)
-        {
-                encode (x, x.length, type);
-                return x.length;
         }
 }

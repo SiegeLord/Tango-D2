@@ -17,7 +17,7 @@ private import  tango.log.Event,
 
 private import  tango.core.Epoch;
 
-private import  tango.convert.Sprint;
+private import  tango.text.convert.Sprint;
 
 /*******************************************************************************
 

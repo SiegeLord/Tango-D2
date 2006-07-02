@@ -22,7 +22,7 @@ public  import  tango.io.FilePath;
 
 private import  tango.io.Exception;
 
-private import  tango.convert.Unicode;
+private import  tango.text.convert.Unicode;
 
 
 /*******************************************************************************

@@ -15,7 +15,7 @@ module mango.net.http.server.HttpRequest;
 private import  tango.text.Text,
                 tango.text.LineIterator;
 
-private import  tango.convert.Atoi;
+private import  tango.text.convert.Atoi;
 
 private import  tango.net.Uri,
                 tango.io.Buffer,

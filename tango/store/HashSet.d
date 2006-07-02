@@ -15,7 +15,7 @@
 
 module tango.store.HashSet;
 
-private import tango.convert.Integer;
+private import tango.text.convert.Integer;
 
 private import tango.store.Exception;
 

@@ -113,9 +113,9 @@ module tango.text.String;
 
 private import  tango.text.Text;
 
-private import  tango.convert.Type,
-                tango.convert.Format,
-                tango.convert.Unicode;
+private import  tango.text.convert.Type,
+                tango.text.convert.Format,
+                tango.text.convert.Unicode;
 
 private import  tango.text.model.UniString;
 

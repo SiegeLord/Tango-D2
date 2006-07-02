@@ -176,7 +176,7 @@ private struct Argument
 
 *******************************************************************************/
 
-private struct Result
+struct Result
 {
         private uint index;
         private char[] target_;
@@ -348,6 +348,15 @@ public struct Formatter
 
         **********************************************************************/
 
+        public static void error (char[] msg)
+        {
+                throw new Exception (msg);
+        }
+
+        /**********************************************************************
+
+        **********************************************************************/
+
         public static uint format (Sink sink, char[] formatStr, ...)
         {
                 return format (sink, _arguments, _argptr, formatStr);
@@ -360,8 +369,18 @@ public struct Formatter
         public static uint format (Sink sink, TypeInfo[] arguments, void* args, char[] formatStr)
         {
                 auto it = ArgumentIterator (arguments, args);
-//                return internalFormat (null, formatStr, it, sink);
                 return parse (null, formatStr, it, sink);
+        }
+
+        /**********************************************************************
+
+        **********************************************************************/
+
+        public static char[] format (inout Result result, TypeInfo ti, void* arg)
+        {
+                auto argument = Argument (ti, arg);
+
+                return formatArgument (result, null, argument, null);
         }
 
         /**********************************************************************
