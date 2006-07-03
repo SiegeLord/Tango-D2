@@ -8,6 +8,8 @@
  */
 module tango.stdc.posix.fcntl;
 
+version( Posix ) { unittest {} }
+
 private import tango.stdc.config;
 private import tango.stdc.stdint;
 public import tango.stdc.stddef;          // for size_t

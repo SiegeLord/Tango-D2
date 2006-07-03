@@ -8,6 +8,8 @@
  */
 module tango.stdc.config;
 
+version( Posix ) { unittest {} }
+
 extern (C):
 
 alias int   c_long;

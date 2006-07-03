@@ -8,6 +8,8 @@
  */
 module tango.stdc.errno;
 
+version( Posix ) { unittest {} }
+
 private
 {
     extern (C) int getErrno();

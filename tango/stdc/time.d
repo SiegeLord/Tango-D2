@@ -8,6 +8,8 @@
  */
 module tango.stdc.time;
 
+version( Posix ) { unittest {} }
+
 private import tango.stdc.stddef;
 
 extern (C):

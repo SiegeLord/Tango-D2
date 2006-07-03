@@ -8,7 +8,7 @@
  */
 module tango.stdc.stdarg;
 
-version( Posix ) version ( build ) pragma( ignore );
+version( Posix ) { unittest {} version ( build ) pragma( ignore ); }
 
 alias void* va_list;
 

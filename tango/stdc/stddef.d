@@ -8,7 +8,7 @@
  */
 module tango.stdc.stddef;
 
-version( Posix ) version ( build ) pragma( ignore );
+version( Posix ) { unittest {} version ( build ) pragma( ignore ); }
 
 extern (C):
 

@@ -8,7 +8,7 @@
  */
 module tango.stdc.posix.time;
 
-version( Posix ) version ( build ) pragma( ignore );
+version( Posix ) { unittest {} version ( build ) pragma( ignore ); }
 
 private import tango.stdc.config;
 public import tango.stdc.time;

@@ -8,6 +8,8 @@
  */
 module tango.stdc.fenv;
 
+version( Posix ) { unittest {} }
+
 extern (C):
 
 version( Win32 )

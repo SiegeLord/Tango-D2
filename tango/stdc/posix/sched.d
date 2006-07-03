@@ -8,6 +8,8 @@
  */
 module tango.stdc.posix.sched;
 
+version( Posix ) { unittest {} }
+
 public import tango.stdc.posix.time;
 public import tango.stdc.posix.sys.types;
 

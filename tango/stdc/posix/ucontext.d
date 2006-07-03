@@ -8,6 +8,8 @@
  */
 module tango.stdc.posix.ucontext;
 
+version( Posix ) { unittest {} }
+
 private import tango.stdc.config;
 public import tango.stdc.posix.signal; // for sigset_t, stack_t
 

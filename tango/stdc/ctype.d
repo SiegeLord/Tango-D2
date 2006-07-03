@@ -8,6 +8,8 @@
  */
 module tango.stdc.ctype;
 
+version( Posix ) { unittest {} }
+
 extern (C):
 
 int isalnum(int c);

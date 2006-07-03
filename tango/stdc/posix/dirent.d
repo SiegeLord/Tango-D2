@@ -8,6 +8,8 @@
  */
 module tango.stdc.posix.dirent;
 
+version( Posix ) { unittest {} }
+
 private import tango.stdc.config;
 public import tango.stdc.posix.sys.types; // for ino_t
 
