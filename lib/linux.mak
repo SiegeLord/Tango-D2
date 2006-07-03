@@ -68,7 +68,9 @@ lib : $(ALL_OBJS)
 	make -C compiler/dmd -flinux.mak lib
 	make -C gc/dmd -flinux.mak lib
 	make -C common -flinux.mak lib
-	ar -r -s -v libphobos.a `find . -name "*.o" | xargs echo`
+	ar -r -s -v libphobos.a `find ./compiler/dmd -name "*.o" | xargs echo`
+	ar -r -s -v libphobos.a `find ./gc/dmd -name "*.o" | xargs echo`
+#	ar -r -s -v libphobos.a `find . -name "*.o" | xargs echo`
 
 doc : $(ALL_DOCS)
 	echo No documentation available.
