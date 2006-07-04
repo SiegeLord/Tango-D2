@@ -77,7 +77,6 @@ OBJ_STDC= \
 ALL_OBJS= \
     $(OBJ_CONVERT) \
     $(OBJ_CORE) \
-    $(OBJ_OS) \
     $(OBJ_STDC)
 
 ######################################################

@@ -1148,7 +1148,7 @@ extern (C) void thread_suspendAll()
                 throw new ThreadException( "Unable to suspend thread" );
             }
 
-	        CONTEXT context;
+	        CONTEXT context = void;
 	        context.ContextFlags = CONTEXT_INTEGER | CONTEXT_CONTROL;
 
 	        if( !GetThreadContext( t.m_hndl, &context ) )
