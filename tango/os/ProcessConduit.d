@@ -221,14 +221,12 @@ version(Windows) {
 
 version(Posix) {
 	private import tango.stdc.time;
+	private import tango.stdc.stdio;
+	private import tango.stdc.posix.unistd;
+	private import tango.stdc.posix.signal;
+	private import tango.stdc.posix.fcntl;
+	private import tango.stdc.posix.sys.wait;
 
-	extern(C) int kill(pid_t,int);
-	uint F_SETFD = 2;
-	uint STDIN_FILENO  = 0;
-	uint STDOUT_FILENO = 1;
-	uint STDERR_FILENO = 2;
-	uint WNOHANG = 1;
-	uint WUNTRACED = 2;
 }
 
 class ProcessException : Exception
@@ -403,7 +401,7 @@ private:
 
 			result = cast(char**)calloc(1,(enviroment.length+1) * typeid(char*).sizeof);
 			foreach(uint i, char[] s; from)
-				result[i] = strdup(s ~ "\0"); 
+				result[i] = strdup( s ~ "\0" ); 
 
 			return result;
 		}
@@ -479,7 +477,19 @@ private:
 					//if (setgid(gid) == -1) throw new ProcessException("setgid");
 
 					args = splitArgs(command);
-					execve(args[0],args,enviroment); //this does not return on success
+					// args are not null terminated
+					char*[] argptrs;
+					foreach( char[] a; args ){
+					    argptrs ~= ( a ~ '\0' ).ptr;
+					}
+					argptrs ~= null;
+					// enviroments are not null terminated
+					char*[] envptrs;
+					foreach( char[] e; enviroment ){
+					    envptrs ~= ( e ~ '\0' ).ptr;
+					}
+					envptrs ~= null;
+					execve(args[0],argptrs.ptr,envptrs.ptr); //this does not return on success
 					//can we throw? how to notify parent of failure?
 					exit(1);
 				}
