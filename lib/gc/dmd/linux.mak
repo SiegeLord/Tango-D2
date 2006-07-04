@@ -84,7 +84,7 @@ dmd.doc : $(ALL_DOCS)
 ######################################################
 
 clean :
-	$(RM) -r *.di
+	find . -name "*.di" | xargs $(RM)
 	$(RM) $(ALL_OBJS)
 	$(RM) $(ALL_DOCS)
 	$(RM) dmd*.a
