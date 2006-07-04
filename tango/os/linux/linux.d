@@ -9,13 +9,14 @@ module tango.os.linux.linux;
 version( Posix ) version ( build ) pragma( ignore );
 
 import tango.os.linux.linuxextern;
+import tango.stdc.posix.sys.types;
 
-alias int pid_t;
-alias int off_t;
-alias uint mode_t;
+//alias int pid_t;   // use tango.stdc.posix.sys.types instead
+//alias int off_t;   // use tango.stdc.posix.sys.types instead
+//alias uint mode_t; // use tango.stdc.posix.sys.types instead
+//alias uint uid_t;  // use tango.stdc.posix.sys.types instead
+//alias uint gid_t;  // use tango.stdc.posix.sys.types instead
 
-alias uint uid_t;
-alias uint gid_t;
 /+
 enum : int
 {
@@ -123,13 +124,13 @@ extern (C)
     int mkdir(char*, int);
     int rmdir(char*);
     char* getcwd(char*, int);
-    int chmod(char*, mode_t);
-    int fork();
-    int dup(int);
-    int dup2(int, int);
-    int pipe(int[2]);
-    pid_t wait(int*);
-    int waitpid(pid_t, int*, int);
+    //int chmod(char*, mode_t);      // use tango.stdc.posix.sys.stat
+    //int fork();                    // use tango.stdc.posix.unistd 
+    //int dup(int);                  // use tango.stdc.posix.unistd 
+    //int dup2(int, int);            // use tango.stdc.posix.unistd 
+    //int pipe(int[2]);              // use tango.stdc.posix.unistd 
+    //pid_t wait(int*);              // use tango.stdc.posix.sys.wait
+    //int waitpid(pid_t, int*, int); // use tango.stdc.posix.sys.wait
 }
 
 struct timeval
@@ -162,15 +163,15 @@ extern (C)
 
 /**************************************************************/
 // Memory mapping from <sys/mman.h> and <bits/mman.h>
-/+
-enum
-{
-	PROT_NONE	= 0,
-	PROT_READ	= 1,
-	PROT_WRITE	= 2,
-	PROT_EXEC	= 4,
-}
-+/
+//
+//enum
+//{
+//	PROT_NONE	= 0,
+//	PROT_READ	= 1,
+//	PROT_WRITE	= 2,
+//	PROT_EXEC	= 4,
+//}
+//
 // Memory mapping sharing types
 
 enum
@@ -249,37 +250,37 @@ extern(C)
 
     enum
     {
-	DT_UNKNOWN = 0,
-	DT_FIFO = 1,
-	DT_CHR = 2,
-	DT_DIR = 4,
-	DT_BLK = 6,
-	DT_REG = 8,
-	DT_LNK = 10,
-	DT_SOCK = 12,
-	DT_WHT = 14,
+        DT_UNKNOWN = 0,
+        DT_FIFO = 1,
+        DT_CHR = 2,
+        DT_DIR = 4,
+        DT_BLK = 6,
+        DT_REG = 8,
+        DT_LNK = 10,
+        DT_SOCK = 12,
+        DT_WHT = 14,
     }
 
-    struct dirent
-    {
-	int d_ino;
-	off_t d_off;
-	ushort d_reclen;
-	ubyte d_type;
-	char[256] d_name;
-    }
+    //struct dirent
+    //{
+    //    int d_ino;
+    //    off_t d_off;
+    //    ushort d_reclen;
+    //    ubyte d_type;
+    //    char[256] d_name;
+    //}
 
-    struct DIR
-    {
-	// Managed by OS.
-    }
+    //struct DIR
+    //{
+    //    // Managed by OS.
+    //}
 
-    DIR* opendir(char* name);
-    int closedir(DIR* dir);
-    dirent* readdir(DIR* dir);
-    void rewinddir(DIR* dir);
-    off_t telldir(DIR* dir);
-    void seekdir(DIR* dir, off_t offset);
+    //DIR* opendir(char* name);             // use tango.stdc.posix.dirent
+    //int closedir(DIR* dir);               // use tango.stdc.posix.dirent
+    //dirent* readdir(DIR* dir);            // use tango.stdc.posix.dirent
+    //void rewinddir(DIR* dir);             // use tango.stdc.posix.dirent
+    //off_t telldir(DIR* dir);              // use tango.stdc.posix.dirent
+    //void seekdir(DIR* dir, off_t offset); // use tango.stdc.posix.dirent
 }
 
 
@@ -289,9 +290,9 @@ extern(C)
 
 
 	int select(int nfds, fd_set* readfds, fd_set* writefds, fd_set* errorfds, timeval* timeout);
-	int fcntl(int s, int f, ...);
+	//int fcntl(int s, int f, ...); // use tango.stdc.posix.fcntl
 
-    /+
+	/+
 	enum
 	{
 		EINTR = 4,
@@ -373,13 +374,13 @@ extern (C)
 
     struct passwd
     {
-	char *pw_name;
-	char *pw_passwd;
-	uid_t pw_uid;
-	gid_t pw_gid;
-	char *pw_gecos;
-	char *pw_dir;
-	char *pw_shell;
+        char *pw_name;
+        char *pw_passwd;
+        uid_t pw_uid;
+        gid_t pw_gid;
+        char *pw_gecos;
+        char *pw_dir;
+        char *pw_shell;
     }
 
     int getpwnam_r(char*, passwd*, void*, size_t, passwd**);
@@ -493,3 +494,6 @@ version (linux)
 		int epoll_wait(int epfd, epoll_event* events, int maxevents, int timeout);
 	}
 }
+
+
+
