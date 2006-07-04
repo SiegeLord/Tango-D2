@@ -70,7 +70,7 @@ lib : $(ALL_OBJS)
 	make -C common -flinux.mak lib
 	ar -r -s -v libphobos.a `find ./compiler/dmd -name "*.o" | xargs echo`
 	ar -r -s -v libphobos.a `find ./gc/dmd -name "*.o" | xargs echo`
-	ar -r -s -v libphobos.a `find . -name "*.o" | xargs echo`
+	ar -r -s -v libphobos.a `find ./common -name "*.o" | xargs echo`
 
 doc : $(ALL_DOCS)
 	echo No documentation available.
