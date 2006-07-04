@@ -160,6 +160,7 @@ version( linux )
         const auto S_IFIFO  = 0010000;
         const auto S_IFLNK  = 0120000;
         const auto S_IFSOCK = 0140000;
+	const auto S_IFMT   = 0170000;
 
         extern (D) bool S_ISTYPE( mode_t mode, uint mask )
         {
