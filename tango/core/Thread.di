@@ -1,5 +1,9 @@
-// D import file generated from 'core\Thread.d'
+// D import file generated from 'core/Thread.d'
 module tango.core.Thread;
+debug (1)
+{
+    import tango.stdc.stdio;
+}
 class ThreadException : Exception
 {
     this(char[] msg)
@@ -14,17 +18,21 @@ public
 }
 private
 {
-    extern (C)
+    extern (C) 
 {
     void* memset(void* s, int c, size_t n);
 }
+}
+debug (1)
+{
+    void checkStack(Thread aThread);
 }
 version (Win32)
 {
     private
 {
     import tango.os.windows.minwin;
-    extern (Windows)
+    extern (Windows) 
 {
     DWORD TlsAlloc();
     PVOID TlsGetValue(DWORD);
@@ -38,27 +46,27 @@ version (Win32)
     DWORD TLS_OUT_OF_INDEXES = -1u;
 }
 }
-    extern (Windows)
+    extern (Windows) 
 {
     alias uint(* btex_fptr)(void*);
 }
     version (X86)
 {
-    extern (C)
+    extern (C) 
 {
     ulong _beginthreadex(void*, uint, btex_fptr, void*, uint, uint*);
 }
 }
 else
 {
-    extern (C)
+    extern (C) 
 {
     uint _beginthreadex(void*, uint, btex_fptr, void*, uint, uint*);
 }
 }
-    extern (Windows)
+    extern (Windows) 
 {
-    uint threadFunc(void* arg);
+    uint tango_core_Thread_threadFunc(void* arg);
 }
     HANDLE GetCurrentThreadHandle()
 {
@@ -92,16 +100,19 @@ else
 {
     import tango.os.linux.linux;
 }
-    extern (C)
+    extern (C) 
 {
-    void* threadFunc(void* arg);
+    static
+{
+    void* tango_core_Thread_threadFunc(void* arg);
+}
 }
     sem_t suspendCount;
-    extern (C)
+    extern (C) 
 {
     void suspendHandler(int sig);
 }
-    extern (C)
+    extern (C) 
 {
     void resumeHandler(int sig)
 in
@@ -113,6 +124,7 @@ body
 }
 }
     void* getStackBottom();
+    void* getStackPtr();
     void* getStackTop();
 }
 }
@@ -137,6 +149,21 @@ m_call = Call.FN;
 m_dg = dg;
 m_call = Call.DG;
 }
+    version (Posix)
+{
+    version (Rtai)
+{
+    static
+{
+    Thread createRtThread(void delegate() dg)
+{
+Thread result = new Thread(dg);
+result.m_isRt = true;
+return result;
+}
+}
+}
+}
     final
 {
     void start();
@@ -144,6 +171,19 @@ m_call = Call.DG;
     final
 {
     void join();
+}
+    version (Posix)
+{
+    version (Rtai)
+{
+    public
+{
+    void rtaiUpdateStackPtr()
+{
+m_tstack = getStackPtr();
+}
+}
+}
 }
     final
 {
@@ -210,7 +250,7 @@ return getThis().m_local[key] = val;
     protected:
     void run();
     private:
-    enum Call
+    enum Call 
 {
 NO,
 FN,
@@ -253,6 +293,10 @@ void delegate() m_dg;
     version (Posix)
 {
     bool m_isRunning;
+    version (Rtai)
+{
+    bool m_isRt = false;
+}
 }
     private:
     static
@@ -288,7 +332,7 @@ return Thread.classinfo;
     uint[8] m_reg;
 }
 }
-extern (C)
+extern (C) 
 {
     void thread_init();
 }
@@ -296,7 +340,7 @@ private
 {
     bool multiThreadedFlag = false;
 }
-extern (C)
+extern (C) 
 {
     bool thread_needLock()
 {
@@ -307,11 +351,11 @@ private
 {
     uint suspendDepth = 0;
 }
-extern (C)
+extern (C) 
 {
     void thread_suspendAll();
 }
-extern (C)
+extern (C) 
 {
     void thread_resumeAll();
 }
@@ -319,7 +363,7 @@ private
 {
     alias void delegate(void*, void*) scanAllThreadsFn;
 }
-extern (C)
+extern (C) 
 {
     void thread_scanAll(scanAllThreadsFn fn, void* curStackTop = null);
 }
