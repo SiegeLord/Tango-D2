@@ -26,15 +26,19 @@ public  import  tango.io.FileConduit;
 *******************************************************************************/
 
 version (Win32)
-        {
-        private extern (Windows) 
-                {
-                BOOL   UnmapViewOfFile    (LPCVOID);
-                BOOL   FlushViewOfFile    (LPCVOID, DWORD);
-                LPVOID MapViewOfFile      (HANDLE, DWORD, DWORD, DWORD, DWORD);
-                HANDLE CreateFileMappingA (HANDLE, LPSECURITY_ATTRIBUTES, DWORD, DWORD, DWORD, LPCTSTR);
-                }
-        }
+{
+    private extern (Windows) 
+    {
+	BOOL   UnmapViewOfFile    (LPCVOID);
+	BOOL   FlushViewOfFile    (LPCVOID, DWORD);
+	LPVOID MapViewOfFile      (HANDLE, DWORD, DWORD, DWORD, DWORD);
+	HANDLE CreateFileMappingA (HANDLE, LPSECURITY_ATTRIBUTES, DWORD, DWORD, DWORD, LPCTSTR);
+    }
+}
+version (Posix)
+{               
+    import tango.stdc.posix.sys.mman;
+}
 
 
 /*******************************************************************************
