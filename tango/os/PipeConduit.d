@@ -124,11 +124,12 @@ version(Windows)
 version(Posix)
 {		
 	private import tango.stdc.stdlib;
+	private import tango.stdc.posix.unistd;
 
 	class PipeException : IOException
 	{
 		//for some reason getErrno does not link for me?
-		this(char[] msg) { super(msg ~ ": " ~ OS.error(OS.error())); }
+		this(char[] msg) { super(msg ~ ": " ~ OS.error()); }
 	}
 
 	class PipeConduit : Conduit
