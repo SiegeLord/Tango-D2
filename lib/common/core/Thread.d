@@ -6,8 +6,7 @@
  * Authors:   Sean Kelly
  */
 module tango.core.Thread;
-
-
+debug import tango.stdc.stdio;
 /**
  * All exceptions thrown from this module derive from this class.
  */
@@ -34,6 +33,21 @@ private
      extern (C) void* memset(void* s, int c, size_t n);
 }
 
+
+debug{
+    void checkStack( Thread aThread ){
+	if( aThread.m_bstack < aThread.m_tstack ){
+	    printf( "checkStack: stackptrs corrupted, 0x%08X, 0x%08X\n", aThread.m_bstack, aThread.m_tstack );
+	    uint* p;
+	    *p = 0;
+	}
+	if( ( aThread.m_bstack - aThread.m_tstack ) > 1000000 ){
+	    printf( "checkStack: stack too big, 0x%08X, 0x%08X\n", aThread.m_bstack, aThread.m_tstack );
+	    uint* p;
+	    *p = 0;
+	}
+    }
+}
 
 version( Win32 )
 {
@@ -72,7 +86,7 @@ version( Win32 )
         //
         // entry point for Windows threads
         //
-        extern (Windows) uint threadFunc( void* arg )
+        extern (Windows) uint tango_core_Thread_threadFunc( void* arg )
         {
 	        Thread  obj = cast(Thread) arg;
 	        assert( obj );
@@ -84,6 +98,7 @@ version( Win32 )
 
             obj.m_bstack = getStackBottom();
             obj.m_tstack = obj.m_bstack;
+	    
             TlsSetValue( Thread.sm_this, obj );
 
 	        try
@@ -156,19 +171,10 @@ else version( Posix )
         //
         // entry point for POSIX threads
         //
-        extern (C) void* threadFunc( void* arg )
+        extern (C) void* tango_core_Thread_threadFunc( void* arg )
         {
 	        Thread  obj = cast(Thread) arg;
 	        assert( obj );
-	        scope( exit )
-	        {
-	            // NOTE: isRunning should be set to false after the thread is
-	            //       removed or a double-removal could occur between this
-	            //       function and thread_suspendAll.
-	            Thread.remove( obj );
-	            obj.m_isRunning = false;
-	        }
-
             // maybe put an auto exception object here (using alloca)
             // for OutOfMemoryError plus something to track whether
             // an exception is in-flight?
@@ -185,7 +191,9 @@ else version( Posix )
                 obj.m_isRunning = false;
 	        }
 
-            obj.m_bstack = getStackBottom();
+		// NOTE: There is some offset necessary. This is 
+		//       found by trial and error.
+		obj.m_bstack = ( getStackPtr()+8 );
 	        obj.m_tstack = obj.m_bstack;
 	        pthread_setspecific( obj.sm_this, obj );
 
@@ -200,6 +208,16 @@ else version( Posix )
 	        {
 	            // error should really print to stderr
 	        }
+		finally
+	        {
+		    obj.m_tstack = getStackPtr();
+	            // NOTE: isRunning should be set to false after the thread is
+	            //       removed or a double-removal could occur between this
+	            //       function and thread_suspendAll.
+	            Thread.remove( obj );
+	            obj.m_isRunning = false;
+	        }
+
 	        return null;
         }
 
@@ -239,9 +257,26 @@ else version( Posix )
             //       before the stack cleanup code is called below.
             {
                 Thread  obj = Thread.getThis();
+		version( Rtai ){
+		    if( obj.m_isRt ){
+			// Should never come here, because a realtime 
+			// thread should never be suspended.
+			// But for savety, just return.
+			version( X86 )
+			{
+			    asm
+			    {
+				popad;
+			    }
+			}
+			return;
+		    }
+		}
                 assert( obj );
 
-                obj.m_tstack = getStackTop();
+		debug checkStack( obj );
+                obj.m_tstack = getStackPtr();
+		debug checkStack( obj );
 
                 sigset_t    sigres;
                 int         status;
@@ -256,8 +291,10 @@ else version( Posix )
                 assert( status == 0 );
 
                 sigsuspend( &sigres );
-
+		
+		debug checkStack( obj );
                 obj.m_tstack = obj.m_bstack;
+		debug checkStack( obj );
             }
 
             version( X86 )
@@ -302,6 +339,21 @@ else version( Posix )
         }
 
 
+        void* getStackPtr()
+        {
+            version( X86 )
+            {
+            	asm
+            	{   naked;
+            	    mov EAX, ESP;
+            	    ret;
+            	}
+            }
+            else
+            {
+                static assert( false );
+            }
+        }
         void* getStackTop()
         {
             version( X86 )
@@ -418,6 +470,14 @@ class Thread
         m_call = Call.DG;
     }
 
+    version( Posix ) version( Rtai ){
+	static Thread createRtThread( void delegate() dg ) {
+	    Thread result = new Thread( dg ); 
+	    result.m_isRt = true;
+	    return result;
+	}
+    }
+
 
     ////////////////////////////////////////////////////////////////////////////
     // General Actions
@@ -446,7 +506,7 @@ class Thread
         {
             version( Win32 )
             {
-                m_hndl = cast(HANDLE) _beginthreadex( null, 0, &threadFunc, this, 0, &m_addr );
+                m_hndl = cast(HANDLE) _beginthreadex( null, 0, &tango_core_Thread_threadFunc, this, 0, &m_addr );
                 if( cast(size_t) m_hndl == 0 )
                     throw new ThreadException( "Error creating thread" );
             }
@@ -455,8 +515,9 @@ class Thread
                 m_isRunning = true;
                 scope( failure ) m_isRunning = false;
 
-                if( pthread_create( &m_addr, null, &threadFunc, this ) != 0 )
-                    throw new ThreadException( "Error creating thread" );
+		if( pthread_create( &m_addr, null, & tango_core_Thread_threadFunc, this ) != 0 ){
+		    throw new ThreadException( "Error creating thread" );
+		}
             }
             multiThreadedFlag = true;
             add( this );
@@ -475,16 +536,30 @@ class Thread
         version( Win32 )
         {
             if( WaitForSingleObject( m_hndl, INFINITE ) != WAIT_OBJECT_0 )
-                throw new ThreadException( "Unable to join thread" );
+	    {
+		throw new ThreadException( "Unable to join thread" );
+	    }
         }
         else version( Posix )
         {
+	    if( m_addr == 0 ){
+		// if m_addr is 0, pthread_join can make a segfault.
+		// this can happen if the thread was already joined.
+		return;
+	    }
             if( pthread_join( m_addr, null ) != 0 )
-                throw new ThreadException( "Unable to join thread" );
+	    {
+		throw new ThreadException( "Unable to join thread" );
+	    }
         }
     }
 
 
+    version( Posix ) version( Rtai ){
+	public void rtaiUpdateStackPtr() {
+	    m_tstack = getStackPtr();
+	}
+    }
     ////////////////////////////////////////////////////////////////////////////
     // General Properties
     ////////////////////////////////////////////////////////////////////////////
@@ -866,6 +941,9 @@ private:
     version( Posix )
     {
         bool            m_isRunning;
+	version( Rtai ){
+	    bool        m_isRt = false;
+	}
     }
 
 
@@ -1057,7 +1135,9 @@ extern (C) void thread_init()
 
         Thread main      = new Thread();
         main.m_addr      = pthread_self();
-        main.m_bstack    = getStackBottom();
+	// NOTE: There is some offset necessary. This is 
+	//       found by trial and error.
+        main.m_bstack    = getStackPtr()+16;
         main.m_tstack    = main.m_bstack;
         main.m_isRunning = true;
 
@@ -1080,8 +1160,9 @@ static ~this()
 
     for( Thread t = Thread.sm_all; t; t = t.m_next ) // foreach( Thread t; Thread )
     {
-        if( !t.isRunning )
+        if( !t.isRunning ){
             Thread.remove( t );
+	}
     }
 }
 
@@ -1166,6 +1247,11 @@ extern (C) void thread_suspendAll()
         }
         else version( Posix )
         {
+	    version( Rtai ){
+		if( t.m_isRt ){
+		    return;
+		}
+	    }
             if( t.m_addr != pthread_self() )
             {
                 if( pthread_kill( t.m_addr, SIGUSR1 ) != 0 )
@@ -1188,7 +1274,9 @@ extern (C) void thread_suspendAll()
             }
             else
             {
-                t.m_tstack = getStackTop();
+		debug checkStack( t );
+                t.m_tstack = getStackPtr();
+		debug checkStack( t );
             }
         }
     }
@@ -1288,11 +1376,19 @@ body
                 throw new ThreadException( "Unable to resume thread" );
             }
 
+		debug checkStack( t );
             t.m_tstack = t.m_bstack;
+		debug checkStack( t );
             memset( &t.m_reg[0], 0, uint.sizeof * t.m_reg.length );
         }
         else version( Posix )
         {
+	    version( Rtai ){
+		if( t.m_isRt ){
+		    return;
+		}
+	    }
+
             if( t.m_addr != pthread_self() )
             {
                 if( pthread_kill( t.m_addr, SIGUSR2 ) != 0 )
@@ -1307,7 +1403,9 @@ body
             }
             else
             {
+		debug checkStack( t );
                 t.m_tstack = t.m_bstack;
+		debug checkStack( t );
             }
         }
     }
