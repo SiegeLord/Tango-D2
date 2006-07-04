@@ -25,7 +25,11 @@ private import  tango.text.convert.Unicode;
 version (Win32)
         extern (Windows) DWORD GetLogicalDriveStringsA (DWORD, LPTSTR);
      else
+    
         extern (C) int strlen (char *);
+	version(Posix){
+	    private import tango.stdc.posix.unistd;
+	}
 
 /*******************************************************************************
 
@@ -141,7 +145,7 @@ class FileSystem
 
                 static void setDirectory (FilePath fp)
                 {
-                        if (tango.stdc.posix.posix.chdir (fp.toUtf8))
+                        if (tango.stdc.posix.unistd.chdir (fp.toUtf8))
                             throw new IOException ("Failed to set current directory");
                 }
 
@@ -153,7 +157,7 @@ class FileSystem
 
                 static FilePath getDirectory ()
                 {
-                        char *s = tango.stdc.posix.posix.getcwd (null, 0);
+                        char *s = tango.stdc.posix.unistd.getcwd (null, 0);
                         if (s) 
                             return new FilePath (s[0..strlen(s)]);
 

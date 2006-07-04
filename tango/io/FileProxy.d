@@ -57,6 +57,7 @@ version (Posix)
         private extern (C) int strlen (char *s);
 
         private import tango.stdc.stdio;
+        private import tango.stdc.posix.dirent;
 
         version (darwin)
                 {
@@ -728,7 +729,7 @@ class FileProxy
                         list = new FilePath [50];
                         while ((entry = readdir(dir)) != null)
                               {
-                              int len = strlen (entry.d_name);
+                              int len = strlen (entry.d_name.ptr);
 
                               // make a copy of the file name for listing
                               FilePath fp = new FilePath (entry.d_name[0 ..len]);
