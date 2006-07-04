@@ -148,16 +148,12 @@ private extern (C) void memmove (void* dst, void* src, uint bytes);
 
 class MutableStringT(T) : StringT!(T)
 {
-        public  alias append                    opCat;
-
-        private alias FormatStructT!(T)         Format;
-        private  alias Unicode.Into!(T)         Into;   
+        public  alias append            opCat;
+        private  alias Unicode.Into!(T) Into;   
 
         public  Into                    into;           // unicode converter
         private T[]                     scratch;        // formatting scratchpad
         private T[]                     converts;       // unicode buffer
-        private Format                  formatter;      // printf formatter
-
 
         /***********************************************************************
         
@@ -170,7 +166,7 @@ class MutableStringT(T) : StringT!(T)
         {
                 content.length = space;
                 mutable = true;
-                setup ();
+//                setup ();
         }
 
         /***********************************************************************
@@ -186,7 +182,7 @@ class MutableStringT(T) : StringT!(T)
         this (T[] content, bool mutable = true)
         {
                 set (content, mutable);
-                setup ();
+//                setup ();
         }
 
         /***********************************************************************
@@ -458,10 +454,9 @@ class MutableStringT(T) : StringT!(T)
 
         ***********************************************************************/
 
-        MutableStringT append (int v, T[] format=null)
+        MutableStringT append (int v, T[] fmt=null)
         {
-                formatter (format, &v, v.sizeof, Type.Int);
-                return this;
+                return format (fmt, v);
         }
 
         /***********************************************************************
@@ -471,10 +466,9 @@ class MutableStringT(T) : StringT!(T)
 
         ***********************************************************************/
 
-        MutableStringT append (long v, T[] format=null)
+        MutableStringT append (long v, T[] fmt=null)
         {
-                formatter (format, &v, v.sizeof, Type.Long);
-                return this;
+                return format (fmt, v);
         }
 
         /***********************************************************************
@@ -484,10 +478,9 @@ class MutableStringT(T) : StringT!(T)
 
         ***********************************************************************/
 
-        MutableStringT append (double v, T[] format=null)
+        MutableStringT append (double v, T[] fmt=null)
         {
-                formatter (format, &v, v.sizeof, Type.Double);
-                return this;
+                return format (fmt, v);
         }
 
         /**********************************************************************
@@ -499,7 +492,10 @@ class MutableStringT(T) : StringT!(T)
 
         MutableStringT format (T[] fmt, ...)
         {
-                formatter (fmt, _arguments, _argptr);
+                if (fmt.ptr is null)
+                    fmt = "{0}";
+                
+                Formatter.format (&appender, _arguments, _argptr, fmt);
                 return this;
         }
 
@@ -673,7 +669,7 @@ class MutableStringT(T) : StringT!(T)
                                  continue;
                                  }
                               else
-                                 formatter.error ("TextLayout : invalid argument");
+                                 Formatter.error ("TextLayout : invalid argument");
                               }
                            }
                         else
@@ -781,7 +777,7 @@ class MutableStringT(T) : StringT!(T)
                 content[point .. point+count] = chars[0 .. count];
                 return this;
         }
-
+/+
         /***********************************************************************
         
                 Initialize this MutableString. Allocate conversion buffers
@@ -796,7 +792,7 @@ class MutableStringT(T) : StringT!(T)
                 converts = new T[256];
                 formatter.ctor (&convert, scratch, df);                
         }
-
++/
         /**********************************************************************
 
                 Support for the formatter, to convert from one encoding
@@ -804,7 +800,7 @@ class MutableStringT(T) : StringT!(T)
 
         **********************************************************************/
 
-        private uint convert (void[] v, uint type)   
+        private uint convert (void[] v, int type)   
         {
                 // convert as required
                 auto s = cast(T[]) into.convert (v, type, converts);
@@ -813,7 +809,15 @@ class MutableStringT(T) : StringT!(T)
                 if (s.length > converts.length)
                     converts = s;
 
-                // append to string
+                return appender (s);
+        }
+
+        /**********************************************************************
+
+        **********************************************************************/
+
+        private uint appender (T[] s)   
+        {
                 append (s.ptr, s.length);
                 return s.length;
         }
