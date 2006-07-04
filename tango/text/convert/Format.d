@@ -413,7 +413,13 @@ public struct Formatter
                 char c;
                 int pos;
                 uint length;
-                char[] chars = format;
+		
+		// todo: without the .dup we get a segmentation fault on linux, if format is
+		// a string literal. With the dup, the fault is gone.
+		// Is there a memory write protection for string literal with MMU in linux?
+		// This method need review
+                // original: char[] chars = format;
+                char[] chars = format.dup;
 
                 while (true)
                       {
@@ -2024,6 +2030,8 @@ unittest{
     assert( Formatter.format( "{0}", cast(short)-32768  ) == "-32768" );
     assert( Formatter.format( "{0}", cast(short)32767 ) == "32767" );
     assert( Formatter.format( "{0}", cast(ushort)65535 ) == "65535" );
+    // assert( Formatter.format( "{0:x4}", cast(ushort)0xafe ) == "0afe" );
+    // assert( Formatter.format( "{0:X4}", cast(ushort)0xafe ) == "0AFE" );
     
     assert( Formatter.format( "{0}", -2147483648 ) == "-2147483648" );
     assert( Formatter.format( "{0}", 2147483647 ) == "2147483647" );
@@ -2041,6 +2049,30 @@ unittest{
     // brace escaping
     assert( Formatter.format( "d{{0}d", "s" ) == "d{0}d");
     
+    // assert( Formatter.format( "{0:x}", 0xafe0000 ) == "afe0000" );
+    // // todo: is it correct to print 7 instead of 6 chars???
+    // assert( Formatter.format( "{0:x6}", 0xafe0000 ) == "afe0000" );
+    // assert( Formatter.format( "{0:x8}", 0xafe0000 ) == "0afe0000" );
+    // assert( Formatter.format( "{0:X8}", 0xafe0000 ) == "0AFE0000" );
+    // assert( Formatter.format( "{0:X9}", 0xafe0000 ) == "00AFE0000" );
+    // assert( Formatter.format( "{0:X13}", 0xafe0000 ) == "000000AFE0000" );
+    // assert( Formatter.format( "{0:x13}", 0xafe0000 ) == "000000afe0000" );
+    // // compiler error
+    // //assert( Formatter.format( "{0}", -9223372036854775808L) == "-9223372036854775808" );
+    // assert( Formatter.format( "{0}", 0x8000_0000_0000_0000L) == "-9223372036854775808" );
+    // assert( Formatter.format( "{0}", 9223372036854775807L ) == "9223372036854775807" );
+    // assert( Formatter.format( "{0:X}", 0xFFFF_FFFF_FFFF_FFFF) == "FFFFFFFFFFFFFFFF" );
+    // assert( Formatter.format( "{0:x}", 0xFFFF_FFFF_FFFF_FFFF) == "ffffffffffffffff" );
+    // assert( Formatter.format( "{0:x}", 0xFFFF_1234_FFFF_FFFF) == "ffff1234ffffffff" );
+    // assert( Formatter.format( "{0:x19}", 0x1234_FFFF_FFFF) == "00000001234ffffffff" );
+    // // Error: prints -1
+    // // assert( Formatter.format( "{0}", 18446744073709551615UL ) == "18446744073709551615" );
+    // assert( Formatter.format( "{0}", "s" ) == "s" );
+    // // fragments before and after
+    // assert( Formatter.format( "d{0}d", "s" ) == "dsd" );
+    // // brace escaping
+    // assert( Formatter.format( "d{{0}}d", "s" ) == "d{0}d" );
+
     // argument index
     assert( Formatter.format( "a{0}b{1}c{2}", "x", "y", "z" ) == "axbycz" );
     assert( Formatter.format( "a{2}b{1}c{0}", "x", "y", "z" ) == "azbycx" );
@@ -2067,3 +2099,4 @@ unittest{
     }
 }
 }
+
