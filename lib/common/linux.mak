@@ -17,7 +17,8 @@ MD=mkdir -p
 #CFLAGS=-mn -6 -r
 #CFLAGS=-g -mn -6 -r
 
-DFLAGS=-release -O -inline -version=Posix -w
+DFLAGS=-release -O -inline -version=Posix -version=Rtai -w
+#DFLAGS=-release -O -inline -version=Posix -w
 #DFLAGS=-release -O -inline -version=Posix -I.. -w
 #DFLAGS=-g -release -version=Posix -I.. -w
 
@@ -109,7 +110,7 @@ ALL_DOCS= \
 
 tango.a : $(ALL_OBJS)
 	$(RM) $@
-	$(LC) -r $@ $(ALL_OBJS)
+	$(LC) -P -r $@ $(ALL_OBJS)
 
 tango.doc : $(ALL_DOCS)
 	echo Documentation generated.
@@ -123,6 +124,7 @@ clean :
 	find . -name "tango*.a" | xargs $(RM)
 
 install :
+	rm os/linux/*.di
 	$(MD) $(INC_DEST)
 	find . -name "*.di" | cpio -p -u --make-directories $(INC_DEST)
 	$(MD) $(DOC_DEST)

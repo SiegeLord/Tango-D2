@@ -63,14 +63,14 @@ ALL_DOCS=
 
 lib : $(ALL_OBJS)
 	find . -name "libphobos*.a" | xargs $(RM)
-	$(LC) -r libphobos.a $(ALL_OBJS)
+	$(LC) -P -r libphobos.a $(ALL_OBJS)
 	find . -name "libphobos*.a" | xargs $(RM)
 	make -C compiler/dmd -flinux.mak lib
 	make -C gc/dmd -flinux.mak lib
 	make -C common -flinux.mak lib
-	ar -r -s -v libphobos.a `find ./compiler/dmd -name "*.o" | xargs echo`
-	ar -r -s -v libphobos.a `find ./gc/dmd -name "*.o" | xargs echo`
-	ar -r -s -v libphobos.a `find ./common -name "*.o" | xargs echo`
+	ar -P -r -s -v libphobos.a `find ./compiler/dmd -name "*.o" | xargs echo`
+	ar -P -r -s -v libphobos.a `find ./gc/dmd -name "*.o" | xargs echo`
+	ar -P -r -s -v libphobos.a `find ./common -name "*.o" | xargs echo`
 
 doc : $(ALL_DOCS)
 	echo No documentation available.
