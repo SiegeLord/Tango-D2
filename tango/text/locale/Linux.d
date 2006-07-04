@@ -5,32 +5,14 @@ version (Posix)
 alias tango.text.locale.Linux nativeMethods;
 
 private import tango.text.locale.Data;
-
-extern (C)
-private {
-
-  struct tm {
-    int tm_sec;
-    int tm_min;
-    int tm_hour;
-    int tm_mday;
-    int tm_mon;
-    int tm_year;
-    int tm_wday;
-    int tm_yday;
-    int tm_isdst;
-  }
-
-  int time(int*);
-  tm* gmtime(int*);
-
-}
+private import tango.stdc.stdlib;
+private import tango.stdc.posix.time;
 
 int getUserCulture() {
   char* env = getenv("LC_ALL");
   if (!env || *env == '\0') {
     env = getenv("LANG");
-    if (!env || *env = '\0')
+    if (!env || *env == '\0')
       return 0;
   }
 
@@ -39,16 +21,20 @@ int getUserCulture() {
   char* p = env;
   int len;
   while (*p) {
-    if (*p == '_')
+    if (*p == '_'){
       *p = '-';
-    *p++;
+    }
+    p++;
     len++;
   }
 
   char[] s = env[0 .. len];
   foreach (entry; CultureData.cultureDataTable) {
-    if (compareString(entry.name, s) == 0)
-      return entry.id;
+    // todo: there is also a local compareString defined. Is it correct that here 
+    // we use tango.text.locale.Data, which matches the signature?
+    if (tango.text.locale.Data.compareString(entry.name, s) == 0)
+	// todo: here was entry.id returned, which does not exist. Is lcid correct?
+      return entry.lcid;
   }
   return 0;
 }
@@ -58,9 +44,9 @@ void setUserCulture(int lcid) {
 }
 
 ulong getUtcTime() {
-  int t;
-  time(t);
-  gmtime(t);
+  time_t t;
+  time(&t);
+  gmtime(&t);
   return (cast(long)t * 10000000L) + 116444736000000000L;
 }
 
