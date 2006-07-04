@@ -66,6 +66,7 @@ OBJ_BASE= \
     arraycast.o \
     arraycat.o \
     cast.o \
+    cmath2.o \
     complex.o \
     critical.o \
     deh2.o \
@@ -158,11 +159,12 @@ dmd.doc : $(ALL_DOCS)
 ######################################################
 
 clean :
-	$(RM) -r *.di
+	find . -name "*.di" | xargs $(RM)
 	$(RM) $(ALL_OBJS)
 	$(RM) $(ALL_DOCS)
 	$(RM) dmd*.a
 
 install :
 	$(MD) $(LIB_DEST)
-	$(CP) dmd*.a $(LIB_DEST)/.
+
+

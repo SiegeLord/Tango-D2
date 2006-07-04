@@ -62,15 +62,15 @@ ALL_DOCS=
 ######################################################
 
 lib : $(ALL_OBJS)
-	$(RM) libphobos*.a
+	find . -name "libphobos*.a" | xargs $(RM)
 	$(LC) -r libphobos.a $(ALL_OBJS)
-	$(RM) libphobos*.a
+	find . -name "libphobos*.a" | xargs $(RM)
 	make -C compiler/dmd -flinux.mak lib
 	make -C gc/dmd -flinux.mak lib
 	make -C common -flinux.mak lib
 	ar -r -s -v libphobos.a `find ./compiler/dmd -name "*.o" | xargs echo`
 	ar -r -s -v libphobos.a `find ./gc/dmd -name "*.o" | xargs echo`
-#	ar -r -s -v libphobos.a `find . -name "*.o" | xargs echo`
+	ar -r -s -v libphobos.a `find . -name "*.o" | xargs echo`
 
 doc : $(ALL_DOCS)
 	echo No documentation available.
@@ -81,7 +81,7 @@ doc : $(ALL_DOCS)
 ######################################################
 
 clean :
-	$(RM) -r *.di
+	find . -name "*.di" | xargs $(RM)
 	$(RM) $(ALL_OBJS)
 	$(RM) $(ALL_DOCS)
 	make -C compiler/dmd -flinux.mak clean

@@ -117,15 +117,16 @@ tango.doc : $(ALL_DOCS)
 ######################################################
 
 clean :
-	$(RM) -r *.di
+	find . -name "*.di" | xargs $(RM)
 	$(RM) $(ALL_OBJS)
 	$(RM) $(ALL_DOCS)
-	$(RM) tango*.a
+	find . -name "tango*.a" | xargs $(RM)
 
 install :
 	$(MD) $(INC_DEST)
-	$(CP) -r *.di $(INC_DEST)/.
+	find . -name "*.di" | cpio -p -u --make-directories $(INC_DEST)
 	$(MD) $(DOC_DEST)
-	$(CP) -r *.html $(DOC_DEST)/.
+	find . -name "*.html" | cpio -p -u --make-directories $(DOC_DEST)
 	$(MD) $(LIB_DEST)
-	$(CP) tango*.a $(LIB_DEST)/.
+	find . -name "tango*.a" | cpio -p -u --make-directories $(LIB_DEST)
+
