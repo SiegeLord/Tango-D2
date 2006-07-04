@@ -38,6 +38,10 @@ char*  strtok(char* s1, char* s2);
 char*  strerror(int errnum);
 size_t strlen(char* s);
 
+version(Posix){
+    char *strdup (char *);
+}
+
 wchar_t* wmemchr(wchar_t* s, wchar_t c, size_t n);
 int      wmemcmp(wchar_t* s1, wchar_t* s2, size_t n);
 wchar_t* wmemcpy(wchar_t* s1, wchar_t* s2, size_t n);
