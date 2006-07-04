@@ -13,7 +13,7 @@ private import  tango.io.protocol.Reader,
 void main()
 {
         // open a file for reading
-        FileConduit fc = new FileConduit ("random.bin", FileStyle.ReadWriteCreate);
+        FileConduit fc = new FileConduit ("random.bin", FileConduit.ReadWriteCreate);
 
         // construct (binary) reader & writer upon this conduit
         Reader read  = new Reader (fc);

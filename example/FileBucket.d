@@ -126,7 +126,7 @@ class FileBucket
                 this.block = block;
 
                 // open a storage file
-                file = new FileConduit (path, FileStyle.ReadWriteCreate);
+                file = new FileConduit (path, FileConduit.ReadWriteCreate);
 
                 // set initial file size (can be zero)
                 fileSize = initialRecords * block.capacity;

@@ -67,6 +67,7 @@ module tango.net.Socket;
 private import  tango.text.convert.Integer;
 
 private import  tango.os.OS;
+private import  tango.stdc.errno;
 
 private import  tango.core.Interval;
 
@@ -1631,7 +1632,7 @@ class Socket : Conduit, Conduit.Device
 
                         while ((result = .select (maxfd + 1, fr, fw, fe, tv)) == -1)
                         {
-                                if(getErrno() != EINTR)
+                                if(errno() != EINTR)
                                    break;
                         }
                 }

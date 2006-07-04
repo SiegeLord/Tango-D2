@@ -1,4 +1,4 @@
-
+import tango.stdc.stdio;
 
 int main(char[][] args)
 {

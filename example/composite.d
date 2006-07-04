@@ -67,7 +67,7 @@ void main()
         auto wombat = new Wombat (new Wumpus);
 
         // open a file for IO
-        auto file = new FileConduit ("random.bin", FileStyle.ReadWriteCreate);
+        auto file = new FileConduit ("random.bin", FileConduit.ReadWriteCreate);
 
         // construct reader & writer upon the file, with binary IO
         auto output = new Writer (file);
