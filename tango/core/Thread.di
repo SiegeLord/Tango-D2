@@ -102,10 +102,7 @@ else
 }
     extern (C) 
 {
-    static
-{
     void* tango_core_Thread_threadFunc(void* arg);
-}
 }
     sem_t suspendCount;
     extern (C) 
