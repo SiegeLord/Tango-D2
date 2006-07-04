@@ -286,7 +286,7 @@ gcc/cbridge_math.o: gcc/cbridge_math.c
 
 COMMON_OBJS= \
     common/convert/dtoa.o \
-    common/core/Exceptio.o \
+    common/core/Exception.o \
     common/core/Memory.o \
     common/core/Thread.o
 
