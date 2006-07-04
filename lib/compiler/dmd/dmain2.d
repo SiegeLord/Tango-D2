@@ -127,7 +127,6 @@ extern (C) int main(int argc, char **argv)
     else
     {
         char[]* am = cast(char[]*) malloc(argc * (char[]).sizeof);
-        scope(exit) free(am);
 
     	for (int i = 0; i < argc; i++)
     	{
@@ -167,6 +166,7 @@ extern (C) int main(int argc, char **argv)
     {
 	    _STD_critical_term();
 	    _STD_monitor_staticdtor();
+	    free(am);
     }
     return result;
 }
