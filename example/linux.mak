@@ -52,6 +52,11 @@ PHOBOS_EXAMPLES =       	\
 	./phobos/sieve 		\
 	./phobos/wc2 
 
+# At the moment there are problems on linux with the 
+# "Missing ModuleInfo" issue.
+# Adding these modules to the modules to link
+# is a workaround. This can be removed if this 
+# problem is solved.
 BUG_MODS = 				\
 	tango/stdc/posix/pthread.d 	\
 	tango/stdc/posix/semaphore.d 	\
