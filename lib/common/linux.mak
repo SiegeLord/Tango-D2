@@ -17,8 +17,8 @@ MD=mkdir -p
 #CFLAGS=-mn -6 -r
 #CFLAGS=-g -mn -6 -r
 
-DFLAGS=-release -O -inline -version=Posix -version=Rtai -w
-#DFLAGS=-release -O -inline -version=Posix -w
+#DFLAGS=-release -O -inline -version=Posix -version=Rtai -w
+DFLAGS=-release -O -inline -version=Posix -w
 #DFLAGS=-release -O -inline -version=Posix -I.. -w
 #DFLAGS=-g -release -version=Posix -I.. -w
 
