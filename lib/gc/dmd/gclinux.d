@@ -8,7 +8,6 @@
  */
 
 private import tango.os.linux.linuxextern;
-private import tango.os.linux.linux;
 private import tango.stdc.posix.sys.mman;
 
 /+
@@ -25,6 +24,20 @@ extern (C)
 	   MAP_FIXED = 0x10, MAP_FILE = 0, MAP_ANON = 0x20 }
 }
 +/
+
+extern (C)
+{
+    /* From <dlfcn.h>
+     * See http://www.opengroup.org/onlinepubs/007908799/xsh/dlsym.html
+     */
+
+    const int RTLD_NOW = 0x00002;	// Correct for Red Hat 8
+
+    void* dlopen(char* file, int mode);
+    int   dlclose(void* handle);
+    void* dlsym(void* handle, char* name);
+    char* dlerror();
+}
 
 /***********************************
  * Map memory.
