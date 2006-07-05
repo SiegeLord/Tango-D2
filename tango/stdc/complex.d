@@ -8,8 +8,6 @@
  */
 module tango.stdc.complex;
 
-version( Posix ) { unittest {} }
-
 extern (C):
 
 cdouble cacos(cdouble z);

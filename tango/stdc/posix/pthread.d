@@ -8,8 +8,6 @@
  */
 module tango.stdc.posix.pthread;
 
-version( Posix ) { unittest {} }
-
 public import tango.stdc.posix.sys.types;
 public import tango.stdc.posix.sched;
 public import tango.stdc.posix.time;

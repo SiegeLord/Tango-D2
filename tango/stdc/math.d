@@ -8,8 +8,6 @@
  */
 module tango.stdc.math;
 
-version( Posix ) { unittest {} }
-
 private import tango.stdc.config;
 
 extern (C):

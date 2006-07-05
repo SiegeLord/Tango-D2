@@ -8,8 +8,6 @@
  */
 module tango.stdc.posix.semaphore;
 
-version( Posix ) { unittest {} }
-
 private import tango.stdc.config;
 private import tango.stdc.posix.time;
 

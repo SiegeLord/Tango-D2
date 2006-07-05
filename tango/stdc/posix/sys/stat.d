@@ -8,8 +8,6 @@
  */
 module tango.stdc.posix.sys.stat;
 
-version( Posix ) { unittest {} }
-
 private import tango.stdc.config;
 private import tango.stdc.stdint;
 private import tango.stdc.posix.time;     // for timespec

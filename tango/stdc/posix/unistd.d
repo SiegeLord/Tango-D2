@@ -8,8 +8,6 @@
  */
 module tango.stdc.posix.unistd;
 
-version( Posix ) { unittest {} }
-
 private import tango.stdc.config;
 private import tango.stdc.stddef;
 public import tango.stdc.posix.inttypes;  // for intptr_t

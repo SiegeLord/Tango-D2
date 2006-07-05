@@ -8,8 +8,6 @@
  */
 module tango.stdc.signal;
 
-version( Posix ) { unittest {} }
-
 extern (C):
 
 // this should be volatile

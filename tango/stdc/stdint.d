@@ -8,8 +8,6 @@
  */
 module tango.stdc.stdint;
 
-version( Posix ) { unittest {} }
-
 private
 {
     template typify(T)

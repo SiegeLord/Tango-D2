@@ -8,8 +8,6 @@
  */
 module tango.stdc.stdbool;
 
-version( Posix ) { version ( build ) pragma( ignore ); }
-
 extern (C):
 
 alias bool bit;

@@ -8,8 +8,6 @@
  */
 module tango.stdc.posix.time;
 
-version( Posix ) { version ( build ) pragma( ignore ); }
-
 private import tango.stdc.config;
 public import tango.stdc.time;
 public import tango.stdc.posix.sys.types;

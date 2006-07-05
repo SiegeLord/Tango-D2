@@ -8,8 +8,6 @@
  */
 module tango.stdc.posix.signal;
 
-version( Posix ) { version ( build ) pragma( ignore ); }
-
 private import tango.stdc.config;
 public import tango.stdc.signal;
 public import tango.stdc.stddef; // needed for size_t

@@ -8,8 +8,6 @@
  */
 module tango.stdc.stdarg;
 
-version( Posix ) { version ( build ) pragma( ignore ); }
-
 alias void* va_list;
 
 template va_start( T )

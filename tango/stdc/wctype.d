@@ -8,8 +8,6 @@
  */
 module tango.stdc.wctype;
 
-version( Posix ) { unittest {} }
-
 private import tango.stdc.stddef;
 
 extern (C):

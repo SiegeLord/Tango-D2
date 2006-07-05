@@ -8,8 +8,6 @@
  */
 module tango.stdc.posix.sys.wait;
 
-version( Posix ) { unittest {} }
-
 public import tango.stdc.posix.sys.types; // for id_t, pid_t
 public import tango.stdc.posix.signal;    // for siginfo_t (XSI)
 //public import tango.stdc.posix.resource; // for rusage (XSI)
