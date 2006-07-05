@@ -1,3 +1,18 @@
+# Makefile to build the examples of tango for Linux
+# Designed to work with GNU make
+# Targets:
+#	make
+#		Same as make all
+#	make all
+#		Build all examples
+#
+#	make <executable-name>
+#		Build a specified example
+#   	make clean
+#   		remove all build examples
+#   
+# 
+
 # Relative path to the tango include dir
 # This is where the tango tree is located
 TANGO_DIR = ..
@@ -10,34 +25,34 @@ PHOBOS_DIR = $(TANGO_DIR)/phobos
 ZLIB_DIR = $(PHOBOS_DIR)/etc/c/zlib
 ZLIB = $(ZLIB_DIR)/zlib.a
 
-.PHONY: all
+.PHONY: all clean
 
 # Standart target
 all : 
 
 
-SIMPLE_EXAMPLES =       \
-	./hello         \
-	./filecat       \
-	./stdout        \
-	./servletserver \
-	./chainsaw      \
-	./composite     \
-	./httpserver    \
-	./servlets      \
-	./randomio      \
-	./localtime     \
-	./filecopy      \
-	./filebubbler   \
-	./localetime    \
-	./lineio        \
-	./httpget       \
-	./socketserver  \
-	./token         \
-	./filescan      \
-	./homepage      \
-	./logging       \
-	./mmap          \
+SIMPLE_EXAMPLES =       	\
+	./hello         	\
+	./filecat       	\
+	./stdout        	\
+	./servletserver 	\
+	./chainsaw      	\
+	./composite     	\
+	./httpserver    	\
+	./servlets      	\
+	./randomio      	\
+	./localtime     	\
+	./filecopy      	\
+	./filebubbler   	\
+	./localetime    	\
+	./lineio        	\
+	./httpget       	\
+	./socketserver  	\
+	./token         	\
+	./filescan      	\
+	./homepage      	\
+	./logging       	\
+	./mmap          	\
 	./unifile
 
 PHOBOS_EXAMPLES =       	\
@@ -77,7 +92,8 @@ $(ZLIB) :
 all : $(SIMPLE_EXAMPLES) $(PHOBOS_EXAMPLES)
 	
 clean :
-	rm $(SIMPLE_EXAMPLES) $(PHOBOS_EXAMPLES)
+	rm -f $(SIMPLE_EXAMPLES) $(PHOBOS_EXAMPLES)
+	rm -f random.bin
 	
 
 
