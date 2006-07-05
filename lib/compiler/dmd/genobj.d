@@ -197,13 +197,12 @@ class TypeInfo
     // local function to compare two strings. Invoked by the default opCmp
     private static int cmp (char[] s1, char[] s2)
     {
-        int result;
         auto len = s1.length;
 
         if (s2.length < len)
 	   len = s2.length;
 
-        result = memcmp(s1, s2, len);
+        int result = memcmp(s1, s2, len);
 
         if (result == 0)
 	    result = cast(int)s1.length - cast(int)s2.length;
