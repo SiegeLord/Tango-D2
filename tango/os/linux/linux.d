@@ -11,11 +11,11 @@ version( Posix ) version ( build ) pragma( ignore );
 import tango.os.linux.linuxextern;
 import tango.stdc.posix.sys.types;
 
-//alias int pid_t;   // use tango.stdc.posix.sys.types instead
-//alias int off_t;   // use tango.stdc.posix.sys.types instead
-//alias uint mode_t; // use tango.stdc.posix.sys.types instead
-//alias uint uid_t;  // use tango.stdc.posix.sys.types instead
-//alias uint gid_t;  // use tango.stdc.posix.sys.types instead
+alias int pid_t;   // use tango.stdc.posix.sys.types instead
+alias int off_t;   // use tango.stdc.posix.sys.types instead
+alias uint mode_t; // use tango.stdc.posix.sys.types instead
+alias uint uid_t;  // use tango.stdc.posix.sys.types instead
+alias uint gid_t;  // use tango.stdc.posix.sys.types instead
 
 /+
 enum : int
