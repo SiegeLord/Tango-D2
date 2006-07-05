@@ -81,17 +81,21 @@ BUG_MODS = 				\
 	tango/stdc/signal.d
 	
 $(SIMPLE_EXAMPLES) : % : %.d
-	$(BUILDTOOL) $< $(BUG_MODS) $(BUILDOPTS) -T$@
+	@echo "Building : " $@
+	@$(BUILDTOOL) $< $(BUG_MODS) $(BUILDOPTS) -T$@
 
 $(PHOBOS_EXAMPLES) : % : %.d $(ZLIB)
-	$(BUILDTOOL) $< $(BUG_MODS) $(BUILDOPTS) -T$@ -Mphobos $(ZLIB) -L-ldl
+	@echo "Building : " $@
+	@$(BUILDTOOL) $< $(BUG_MODS) $(BUILDOPTS) -T$@ -Mphobos $(ZLIB) -L-ldl
 
 $(ZLIB) :
+	@echo "Building *** Phobos ZLIB ***"
 	$(MAKE) -C $(ZLIB_DIR) -f linux.mak
 
 all : $(SIMPLE_EXAMPLES) $(PHOBOS_EXAMPLES)
 	
 clean :
+	@echo "Removing all examples"
 	rm -f $(SIMPLE_EXAMPLES) $(PHOBOS_EXAMPLES)
 	rm -f random.bin
 	
