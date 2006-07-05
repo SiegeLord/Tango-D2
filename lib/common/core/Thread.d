@@ -6,7 +6,8 @@
  * Authors:   Sean Kelly
  */
 module tango.core.Thread;
-debug import tango.stdc.stdio;
+
+
 /**
  * All exceptions thrown from this module derive from this class.
  */
@@ -33,21 +34,6 @@ private
      extern (C) void* memset(void* s, int c, size_t n);
 }
 
-
-debug{
-    void checkStack( Thread aThread ){
-	if( aThread.m_bstack < aThread.m_tstack ){
-	    printf( "checkStack: stackptrs corrupted, 0x%08X, 0x%08X\n", aThread.m_bstack, aThread.m_tstack );
-	    uint* p;
-	    *p = 0;
-	}
-	if( ( aThread.m_bstack - aThread.m_tstack ) > 1000000 ){
-	    printf( "checkStack: stack too big, 0x%08X, 0x%08X\n", aThread.m_bstack, aThread.m_tstack );
-	    uint* p;
-	    *p = 0;
-	}
-    }
-}
 
 version( Win32 )
 {
@@ -86,30 +72,29 @@ version( Win32 )
         //
         // entry point for Windows threads
         //
-        extern (Windows) uint tango_core_Thread_threadFunc( void* arg )
+        extern (Windows) uint thread_entryPoint( void* arg )
         {
-	        Thread  obj = cast(Thread) arg;
-	        assert( obj );
-	        scope( exit ) Thread.remove( obj );
+            Thread  obj = cast(Thread) arg;
+            assert( obj );
+            scope( exit ) Thread.remove( obj );
 
-	        // maybe put an auto exception object here (using alloca)
+            // maybe put an auto exception object here (using alloca)
             // for OutOfMemoryError plus something to track whether
             // an exception is in-flight?
 
             obj.m_bstack = getStackBottom();
             obj.m_tstack = obj.m_bstack;
-	    
             TlsSetValue( Thread.sm_this, obj );
 
-	        try
-	        {
-	            obj.run();
-	        }
-	        catch
-	        {
-	            // error should really print to stderr
-	        }
-	        return 0;
+            try
+            {
+                obj.run();
+            }
+            catch
+            {
+                // error should really print to stderr
+            }
+            return 0;
         }
 
 
@@ -122,12 +107,12 @@ version( Win32 )
         {
             const uint DUPLICATE_SAME_ACCESS = 0x00000002;
 
-    	    HANDLE curr = GetCurrentThread(),
-    	           proc = GetCurrentProcess(),
-    	           hndl;
+            HANDLE curr = GetCurrentThread(),
+                   proc = GetCurrentProcess(),
+                   hndl;
 
-    	    DuplicateHandle( proc, curr, proc, &hndl, 0, TRUE, DUPLICATE_SAME_ACCESS );
-    	    return hndl;
+            DuplicateHandle( proc, curr, proc, &hndl, 0, TRUE, DUPLICATE_SAME_ACCESS );
+            return hndl;
         }
 
 
@@ -136,7 +121,7 @@ version( Win32 )
             asm
             {
                 naked;
-                mov	EAX, FS:4;
+                mov EAX, FS:4;
                 ret;
             }
         }
@@ -146,7 +131,7 @@ version( Win32 )
         {
             asm
             {
-        	    naked;
+                naked;
                 mov EAX, ESP;
                 ret;
             }
@@ -171,16 +156,25 @@ else version( Posix )
         //
         // entry point for POSIX threads
         //
-        extern (C) void* tango_core_Thread_threadFunc( void* arg )
+        extern (C) void* thread_entryPoint( void* arg )
         {
-	        Thread  obj = cast(Thread) arg;
-	        assert( obj );
+            Thread  obj = cast(Thread) arg;
+            assert( obj );
+            scope( exit )
+            {
+                // NOTE: isRunning should be set to false after the thread is
+                //       removed or a double-removal could occur between this
+                //       function and thread_suspendAll.
+                Thread.remove( obj );
+                obj.m_isRunning = false;
+            }
+
             // maybe put an auto exception object here (using alloca)
             // for OutOfMemoryError plus something to track whether
             // an exception is in-flight?
 
-	        static extern (C) void cleanupHandler( void* arg )
-	        {
+            static extern (C) void cleanupHandler( void* arg )
+            {
                 Thread  obj = Thread.getThis();
                 assert( obj );
 
@@ -189,36 +183,24 @@ else version( Posix )
                 //       the thread list.  This is safer and is consistent
                 //       with the Windows thread code.
                 obj.m_isRunning = false;
-	        }
+            }
 
-		// NOTE: There is some offset necessary. This is 
-		//       found by trial and error.
-		obj.m_bstack = ( getStackPtr()+8 );
-	        obj.m_tstack = obj.m_bstack;
-	        pthread_setspecific( obj.sm_this, obj );
+            obj.m_bstack = getStackBottom();
+            obj.m_tstack = obj.m_bstack;
+            pthread_setspecific( obj.sm_this, obj );
 
-	        pthread_cleanup cleanup;
-	        cleanup.push( &cleanupHandler, obj );
+            pthread_cleanup cleanup;
+            cleanup.push( &cleanupHandler, obj );
 
-	        try
-	        {
-	            obj.run();
-	        }
-	        catch
-	        {
-	            // error should really print to stderr
-	        }
-		finally
-	        {
-		    obj.m_tstack = getStackPtr();
-	            // NOTE: isRunning should be set to false after the thread is
-	            //       removed or a double-removal could occur between this
-	            //       function and thread_suspendAll.
-	            Thread.remove( obj );
-	            obj.m_isRunning = false;
-	        }
-
-	        return null;
+            try
+            {
+                obj.run();
+            }
+            catch
+            {
+                // error should really print to stderr
+            }
+            return null;
         }
 
 
@@ -257,28 +239,11 @@ else version( Posix )
             //       before the stack cleanup code is called below.
             {
                 Thread  obj = Thread.getThis();
-		version( Rtai ){
-		    if( obj.m_isRt ){
-			// Should never come here, because a realtime 
-			// thread should never be suspended.
-			// But for savety, just return.
-			version( X86 )
-			{
-			    asm
-			    {
-				popad;
-			    }
-			}
-			return;
-		    }
-		}
                 assert( obj );
 
-		debug checkStack( obj );
-                obj.m_tstack = getStackPtr();
-		debug checkStack( obj );
+                obj.m_tstack = getStackTop();
 
-                sigset_t    sigres;
+                sigset_t    sigres = void;
                 int         status;
 
                 status = sigfillset( &sigres );
@@ -291,28 +256,26 @@ else version( Posix )
                 assert( status == 0 );
 
                 sigsuspend( &sigres );
-		
-		debug checkStack( obj );
+
                 obj.m_tstack = obj.m_bstack;
-		debug checkStack( obj );
             }
 
             version( X86 )
             {
-	            asm
-	            {
-    	            popad;
-	            }
-	        }
+                asm
+                {
+                    popad;
+                }
+            }
             // TODO: darwin/ppc support
             //else version( PPC )
             //{
             //    __builtin_unwind_init();
             //}
-	        else
-	        {
-	            static assert( false );
-	        }
+            else
+            {
+                static assert( false );
+            }
         }
 
 
@@ -339,30 +302,15 @@ else version( Posix )
         }
 
 
-        void* getStackPtr()
-        {
-            version( X86 )
-            {
-            	asm
-            	{   naked;
-            	    mov EAX, ESP;
-            	    ret;
-            	}
-            }
-            else
-            {
-                static assert( false );
-            }
-        }
         void* getStackTop()
         {
             version( X86 )
             {
-            	asm
-            	{   naked;
-            	    mov EAX, ESP;
-            	    ret;
-            	}
+                asm
+                {   naked;
+                    mov EAX, ESP;
+                    ret;
+                }
             }
             else
             {
@@ -470,14 +418,6 @@ class Thread
         m_call = Call.DG;
     }
 
-    version( Posix ) version( Rtai ){
-	static Thread createRtThread( void delegate() dg ) {
-	    Thread result = new Thread( dg ); 
-	    result.m_isRt = true;
-	    return result;
-	}
-    }
-
 
     ////////////////////////////////////////////////////////////////////////////
     // General Actions
@@ -506,7 +446,7 @@ class Thread
         {
             version( Win32 )
             {
-                m_hndl = cast(HANDLE) _beginthreadex( null, 0, &tango_core_Thread_threadFunc, this, 0, &m_addr );
+                m_hndl = cast(HANDLE) _beginthreadex( null, 0, &thread_entryPoint, this, 0, &m_addr );
                 if( cast(size_t) m_hndl == 0 )
                     throw new ThreadException( "Error creating thread" );
             }
@@ -515,9 +455,8 @@ class Thread
                 m_isRunning = true;
                 scope( failure ) m_isRunning = false;
 
-		if( pthread_create( &m_addr, null, & tango_core_Thread_threadFunc, this ) != 0 ){
-		    throw new ThreadException( "Error creating thread" );
-		}
+                if( pthread_create( &m_addr, null, &thread_entryPoint, this ) != 0 )
+                    throw new ThreadException( "Error creating thread" );
             }
             multiThreadedFlag = true;
             add( this );
@@ -536,30 +475,16 @@ class Thread
         version( Win32 )
         {
             if( WaitForSingleObject( m_hndl, INFINITE ) != WAIT_OBJECT_0 )
-	    {
-		throw new ThreadException( "Unable to join thread" );
-	    }
+                throw new ThreadException( "Unable to join thread" );
         }
         else version( Posix )
         {
-	    if( m_addr == 0 ){
-		// if m_addr is 0, pthread_join can make a segfault.
-		// this can happen if the thread was already joined.
-		return;
-	    }
             if( pthread_join( m_addr, null ) != 0 )
-	    {
-		throw new ThreadException( "Unable to join thread" );
-	    }
+                throw new ThreadException( "Unable to join thread" );
         }
     }
 
 
-    version( Posix ) version( Rtai ){
-	public void rtaiUpdateStackPtr() {
-	    m_tstack = getStackPtr();
-	}
-    }
     ////////////////////////////////////////////////////////////////////////////
     // General Properties
     ////////////////////////////////////////////////////////////////////////////
@@ -941,9 +866,6 @@ private:
     version( Posix )
     {
         bool            m_isRunning;
-	version( Rtai ){
-	    bool        m_isRt = false;
-	}
     }
 
 
@@ -1095,8 +1017,8 @@ extern (C) void thread_init()
     else version( Posix )
     {
         int         status;
-        sigaction_t sigusr1,
-                    sigusr2;
+        sigaction_t sigusr1 = void;
+        sigaction_t sigusr2 = void;
 
         // NOTE: SA_RESTART indicates that system calls should restart if they
         //       are interrupted by a signal, but this is not available on all
@@ -1135,9 +1057,7 @@ extern (C) void thread_init()
 
         Thread main      = new Thread();
         main.m_addr      = pthread_self();
-	// NOTE: There is some offset necessary. This is 
-	//       found by trial and error.
-        main.m_bstack    = getStackPtr()+16;
+        main.m_bstack    = getStackBottom();
         main.m_tstack    = main.m_bstack;
         main.m_isRunning = true;
 
@@ -1160,9 +1080,8 @@ static ~this()
 
     for( Thread t = Thread.sm_all; t; t = t.m_next ) // foreach( Thread t; Thread )
     {
-        if( !t.isRunning ){
+        if( !t.isRunning )
             Thread.remove( t );
-	}
     }
 }
 
@@ -1229,11 +1148,11 @@ extern (C) void thread_suspendAll()
                 throw new ThreadException( "Unable to suspend thread" );
             }
 
-	        CONTEXT context = void;
-	        context.ContextFlags = CONTEXT_INTEGER | CONTEXT_CONTROL;
+            CONTEXT context = void;
+            context.ContextFlags = CONTEXT_INTEGER | CONTEXT_CONTROL;
 
-	        if( !GetThreadContext( t.m_hndl, &context ) )
-	            throw new ThreadException( "Unable to load thread context" );
+            if( !GetThreadContext( t.m_hndl, &context ) )
+                throw new ThreadException( "Unable to load thread context" );
             t.m_tstack = cast(void*) context.Esp;
             // edi,esi,ebp,esp,ebx,edx,ecx,eax
             t.m_reg[0] = context.Edi;
@@ -1247,11 +1166,6 @@ extern (C) void thread_suspendAll()
         }
         else version( Posix )
         {
-	    version( Rtai ){
-		if( t.m_isRt ){
-		    return;
-		}
-	    }
             if( t.m_addr != pthread_self() )
             {
                 if( pthread_kill( t.m_addr, SIGUSR1 ) != 0 )
@@ -1274,9 +1188,7 @@ extern (C) void thread_suspendAll()
             }
             else
             {
-		debug checkStack( t );
-                t.m_tstack = getStackPtr();
-		debug checkStack( t );
+                t.m_tstack = getStackTop();
             }
         }
     }
@@ -1376,19 +1288,11 @@ body
                 throw new ThreadException( "Unable to resume thread" );
             }
 
-		debug checkStack( t );
             t.m_tstack = t.m_bstack;
-		debug checkStack( t );
             memset( &t.m_reg[0], 0, uint.sizeof * t.m_reg.length );
         }
         else version( Posix )
         {
-	    version( Rtai ){
-		if( t.m_isRt ){
-		    return;
-		}
-	    }
-
             if( t.m_addr != pthread_self() )
             {
                 if( pthread_kill( t.m_addr, SIGUSR2 ) != 0 )
@@ -1403,9 +1307,7 @@ body
             }
             else
             {
-		debug checkStack( t );
                 t.m_tstack = t.m_bstack;
-		debug checkStack( t );
             }
         }
     }

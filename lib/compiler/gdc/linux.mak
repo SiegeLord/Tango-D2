@@ -70,13 +70,13 @@ OBJ_BASE= \
     critical.o \
     deh2.o \
     dmain2.o \
+    genobj.o \
     invariant.o \
     llmath.o \
     memory.o \
     memset.o \
     monitor.o \
     obj.o \
-    object.o \
     qsort.o \
     switch.o \
     moduleinit.o \

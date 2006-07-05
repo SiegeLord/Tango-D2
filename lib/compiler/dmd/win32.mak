@@ -71,7 +71,7 @@ OBJ_BASE= \
     memset.obj \
     monitor.obj \
     obj.obj \
-    object.obj \
+    genobj.obj \
     qsort.obj \
     switch.obj \
     moduleinit.obj \

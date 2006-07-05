@@ -68,9 +68,6 @@ OBJ_CORE= \
     core\Memory.obj \
     core\Thread.obj
 
-OBJ_OS= \
-    os\windows\minwin.obj
-
 OBJ_STDC= \
     stdc\wrap.obj
 

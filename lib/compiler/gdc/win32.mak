@@ -66,12 +66,12 @@ OBJ_BASE= \
     critical.obj \
     deh.obj \
     dmain2.obj \
+    genobj.obj \
     invariant.obj \
     memory.obj \
     memset.obj \
     monitor.obj \
     obj.obj \
-    object.obj \
     qsort.obj \
     switch.obj \
     moduleinit.obj \

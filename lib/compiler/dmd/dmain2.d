@@ -16,11 +16,14 @@ private
     import tango.stdc.stdio;
 }
 
-extern (Windows) void*      LocalFree(void*);
-extern (Windows) wchar_t*   GetCommandLineW();
-extern (Windows) wchar_t**  CommandLineToArgvW(wchar_t*, int*);
-extern (Windows) export int WideCharToMultiByte(uint, uint, wchar_t*, int, char*, int, char*, int);
-pragma(lib, "shell32.lib"); // needed for CommandLineToArgvW
+version( Win32 )
+{
+    extern (Windows) void*      LocalFree(void*);
+    extern (Windows) wchar_t*   GetCommandLineW();
+    extern (Windows) wchar_t**  CommandLineToArgvW(wchar_t*, int*);
+    extern (Windows) export int WideCharToMultiByte(uint, uint, wchar_t*, int, char*, int, char*, int);
+    pragma(lib, "shell32.lib"); // needed for CommandLineToArgvW
+}
 
 extern (C) void _STI_monitor_staticctor();
 extern (C) void _STD_monitor_staticdtor();
@@ -82,16 +85,16 @@ extern (C) int main(int argc, char **argv)
     char[][] args;
     int result;
 
-    version (linux)
+    version (Win32)
+    {
+	    gc_init();
+	    _minit();
+    }
+    else version (linux)
     {
 	    _STI_monitor_staticctor();
 	    _STI_critical_init();
 	    gc_init();
-    }
-    else version (Win32)
-    {
-	    gc_init();
-	    _minit();
     }
     else
     {
@@ -124,7 +127,7 @@ extern (C) int main(int argc, char **argv)
         wargs = null;
         wargc = 0;
     }
-    else
+    else version (linux)
     {
         char[]* am = cast(char[]*) malloc(argc * (char[]).sizeof);
 

@@ -72,29 +72,15 @@ OBJ_CORE= \
     core/Memory.o \
     core/Thread.o
 
-OBJ_OS= \
-    os/linux/linux.o \
-    os/linux/linuxextern.o
-
 OBJ_STDC= \
-    stdc/stdbool.o \
-    stdc/stdarg.o \
-    stdc/stddef.o \
     stdc/stdio.o \
     stdc/stdlib.o \
-    stdc/string.o \
     stdc/wrap.o
-
-OBJ_STDC_POSIX= \
-    stdc/posix/signal.o \
-    stdc/posix/time.o
 
 ALL_OBJS= \
     $(OBJ_CONVERT) \
     $(OBJ_CORE) \
-    $(OBJ_OS) \
-    $(OBJ_STDC) \
-    $(OBJ_STDC_POSIX)
+    $(OBJ_STDC)
 
 ######################################################
 
@@ -124,11 +110,9 @@ clean :
 	find . -name "tango*.a" | xargs $(RM)
 
 install :
-	rm os/linux/*.di
 	$(MD) $(INC_DEST)
 	find . -name "*.di" | cpio -p -u --make-directories $(INC_DEST)
 	$(MD) $(DOC_DEST)
 	find . -name "*.html" | cpio -p -u --make-directories $(DOC_DEST)
 	$(MD) $(LIB_DEST)
 	find . -name "tango*.a" | cpio -p -u --make-directories $(LIB_DEST)
-
