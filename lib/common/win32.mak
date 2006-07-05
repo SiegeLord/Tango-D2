@@ -102,11 +102,6 @@ tango.doc : $(ALL_DOCS)
 convert\dtoa.obj : convert\dtoa.c
 	$(CC) -c $(CFLAGS) -w2 -w7 convert\dtoa.c -o$@
 
-### os\windows
-
-os\windows\minwin.obj : os\windows\minwin.d
-	$(DC) -c $(DFLAGS) os\windows\minwin.d -of$@
-
 ######################################################
 
 clean :

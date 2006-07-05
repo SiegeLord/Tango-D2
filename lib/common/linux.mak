@@ -103,6 +103,16 @@ tango.doc : $(ALL_DOCS)
 
 ######################################################
 
+### stdc
+
+stdc/stdio.o : stdc/stdio.d
+	$(DC) -c $(DFLAGS) stdc/stdio.d -of$@
+
+stdc/stdlib.o : stdc/stdlib.d
+	$(DC) -c $(DFLAGS) stdc/stdlib.d -of$@
+
+######################################################
+
 clean :
 	find . -name "*.di" | xargs $(RM)
 	$(RM) $(ALL_OBJS)
