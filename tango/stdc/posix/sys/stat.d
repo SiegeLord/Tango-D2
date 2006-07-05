@@ -153,15 +153,6 @@ version( linux )
 
     private
     {
-        const auto S_IFDIR  = 0040000;
-        const auto S_IFCHR  = 0020000;
-        const auto S_IFBLK  = 0060000;
-        const auto S_IFREG  = 0100000;
-        const auto S_IFIFO  = 0010000;
-        const auto S_IFLNK  = 0120000;
-        const auto S_IFSOCK = 0140000;
-	const auto S_IFMT   = 0170000;
-
         extern (D) bool S_ISTYPE( mode_t mode, uint mask )
         {
             return ( mode & S_IFMT ) == mask;
@@ -242,7 +233,20 @@ S_IFSOCK
 int mknod(char*, mode_t, dev_t);
 */
 
-version( darwin )
+version( linux )
+{
+    const auto S_IFMT   = 0170000;
+    const auto S_IFBLK  = 0060000;
+    const auto S_IFCHR  = 0020000;
+    const auto S_IFIFO  = 0010000;
+    const auto S_IFREG  = 0100000;
+    const auto S_IFDIR  = 0040000;
+    const auto S_IFLNK  = 0120000;
+    const auto S_IFSOCK = 0140000;
+
+    int mknod(char*, mode_t, dev_t);
+}
+else version( darwin )
 {
     const auto S_IFMT   = 0170000;
     const auto S_IFBLK  = 0060000;

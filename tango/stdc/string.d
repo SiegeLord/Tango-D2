@@ -38,9 +38,9 @@ char*  strtok(char* s1, char* s2);
 char*  strerror(int errnum);
 size_t strlen(char* s);
 
-version(Posix){
-// from string2.h
-    char *strdup (char *);
+version( Posix )
+{
+    char* strdup(char*);
 }
 
 wchar_t* wmemchr(wchar_t* s, wchar_t c, size_t n);
