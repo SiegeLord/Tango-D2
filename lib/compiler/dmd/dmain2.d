@@ -10,10 +10,11 @@
 
 private
 {
+    import util.console;
+
     import tango.stdc.stddef;
     import tango.stdc.stdlib;
     import tango.stdc.string;
-    import tango.stdc.stdio;
 }
 
 version( Win32 )
@@ -44,6 +45,7 @@ extern (C) void onAssertError( char[] file, uint line );
 extern (C) void onAssertErrorMsg( char[] file, uint line, char[] msg );
 extern (C) void onArrayBoundsError( char[] file, uint line );
 extern (C) void onSwitchError( char[] file, uint line );
+
 // this function is called from the utf module
 //extern (C) void onUnicodeError( char[] msg, size_t idx );
 
@@ -87,14 +89,14 @@ extern (C) int main(int argc, char **argv)
 
     version (Win32)
     {
-	    gc_init();
-	    _minit();
+        gc_init();
+        _minit();
     }
     else version (linux)
     {
-	    _STI_monitor_staticctor();
-	    _STI_critical_init();
-	    gc_init();
+        _STI_monitor_staticctor();
+        _STI_critical_init();
+        gc_init();
     }
     else
     {
@@ -131,44 +133,58 @@ extern (C) int main(int argc, char **argv)
     {
         char[]* am = cast(char[]*) malloc(argc * (char[]).sizeof);
 
-    	for (int i = 0; i < argc; i++)
-    	{
-    	    int len = strlen(argv[i]);
-    	    am[i] = argv[i][0 .. len];
-    	}
-	    args = am[0 .. argc];
-	}
+        for (int i = 0; i < argc; i++)
+        {
+            int len = strlen(argv[i]);
+            am[i] = argv[i][0 .. len];
+        }
+        args = am[0 .. argc];
+    }
 
     try
     {
-	    _moduleCtor();
-	    _moduleUnitTests();
-    	result = main(args);
-	    _moduleDtor();
-	    gc_term();
+            _moduleCtor();
+            _moduleUnitTests();
+            result = main(args);
+            _moduleDtor();
+            gc_term();
     }
     catch (Exception e)
     {
         while (e)
         {
-            if (e.file)
-    	        fprintf(stderr, "%.*s(%u): %.*s\n", e.file, e.line, e.msg);
-    	    else
-    	        fprintf(stderr, "%.*s\n", e.toString());
-    	    e = e.next;
-    	}
-	    exit(EXIT_FAILURE);
+            if (e.file) 
+            {
+               // fprintf(stderr, "%.*s(%u): %.*s\n", e.file, e.line, e.msg);
+               console (e.file);
+               console ("(");
+               console (e.line);
+               console ("): ");
+               console (e.msg);
+               console ("\n");
+            }
+            else
+            {
+               // fprintf(stderr, "%.*s\n", e.toString());
+               console (e.toString);
+               console ("\n");
+            }
+            e = e.next;
+        }
+        exit(EXIT_FAILURE);
     }
     catch (Object o)
     {
-	    fprintf(stderr, "%.*s\n", o.toString());
-	    exit(EXIT_FAILURE);
+        // fprintf(stderr, "%.*s\n", o.toString());
+        console (o.toString);
+        console ("\n");
+        exit(EXIT_FAILURE);
     }
 
     version (linux)
     {
-	    _STD_critical_term();
-	    _STD_monitor_staticdtor();
+        _STD_critical_term();
+        _STD_monitor_staticdtor();
         free(am);
     }
     return result;
