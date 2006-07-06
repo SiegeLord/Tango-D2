@@ -139,7 +139,6 @@ class ClassInfo : Object
 }
 
 
-
 /**
  * Runtime type information about a type.
  * Can be retrieved for any type using a
@@ -192,34 +191,6 @@ class TypeInfo
 	    (cast(byte *)p1)[i] = (cast(byte *)p2)[i];
 	    (cast(byte *)p2)[i] = t;
 	}
-    }
-
-    // local function to compare two strings. Invoked by the default opCmp
-    private static int cmp (char[] s1, char[] s2)
-    {
-        auto len = s1.length;
-
-        if (s2.length < len)
-	   len = s2.length;
-
-        int result = memcmp(s1, s2, len);
-
-        if (result == 0)
-	    result = cast(int)s1.length - cast(int)s2.length;
-
-        return result;
-    }
-
-    // local function to convert int to string. Used by Array subclasses
-    private static char[] atoi (char[] tmp, uint val)
-    {
-        char* p = tmp.ptr + tmp.length;
-
-        do {
-           *--p = (val % 10) + '0';
-           } while (val /= 10);
-
-        return tmp [(p - tmp.ptr) .. $];
     }
 }
 
@@ -608,4 +579,32 @@ class Exception : Object
     {
         return msg;
     }
+}
+
+// local function to compare two strings. Invoked by the default opCmp
+private static int cmp (char[] s1, char[] s2)
+{
+    auto len = s1.length;
+
+    if (s2.length < len)
+        len = s2.length;
+
+    int result = memcmp(s1, s2, len);
+
+    if (result == 0)
+        result = cast(int)s1.length - cast(int)s2.length;
+
+    return result;
+}
+
+// local function to convert int to string. Used by Array subclasses
+private static char[] atoi (char[] tmp, uint val)
+{
+    char* p = tmp.ptr + tmp.length;
+
+    do {
+       *--p = (val % 10) + '0';
+       } while (val /= 10);
+
+    return tmp [(p - tmp.ptr) .. $];
 }
