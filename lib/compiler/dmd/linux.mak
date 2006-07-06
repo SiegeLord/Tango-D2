@@ -91,7 +91,7 @@ OBJ_BASE= \
 
 OBJ_UTIL= \
     util/ctype.o \
-    util/string.o \
+    util/stringutils.o \
     util/utf.o
 
 OBJ_TI= \
