@@ -6,8 +6,6 @@
 
 module tango.os.linux.linux;
 
-version( Posix ) version ( build ) pragma( ignore );
-
 import tango.os.linux.linuxextern;
 import tango.stdc.posix.sys.types;
 
