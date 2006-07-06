@@ -81,8 +81,9 @@ OBJ_BASE= \
 #   minit.obj
 
 OBJ_UTIL= \
+    util\console.obj \
     util\ctype.obj \
-    util\string.obj \
+    util\stringutils.obj \
     util\utf.obj
 
 OBJ_TI= \

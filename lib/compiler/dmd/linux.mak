@@ -90,6 +90,7 @@ OBJ_BASE= \
 #	is used
 
 OBJ_UTIL= \
+    util/console.o \
     util/ctype.o \
     util/stringutils.o \
     util/utf.o
