@@ -39,6 +39,8 @@ module object;
 
 private
 {
+    // be careful not to import anything in this module, otherwise
+    // we get moduleinfo issues with the linux linker
     extern (C) int memcmp (void*, void*, int);
     extern (C) int memcpy (void*, void*, int);
 }
@@ -312,8 +314,8 @@ class TypeInfo_StaticArray : TypeInfo
 {
     char[] toString()
     {
-        char [16] tmp = void;
-        return next.toString() ~ "[" ~ atoi(tmp, len) ~ "]";
+        char [10] tmp = void;
+        return next.toString() ~ "[" ~ itoa(tmp, len) ~ "]";
     }
 
     hash_t getHash(void *p)
@@ -581,6 +583,11 @@ class Exception : Object
     }
 }
 
+
+/******************************************************************************/
+/**** these functions are here to avoid importing anything into the module ****/
+/******************************************************************************/
+
 // local function to compare two strings. Invoked by the default opCmp
 private static int cmp (char[] s1, char[] s2)
 {
@@ -598,7 +605,7 @@ private static int cmp (char[] s1, char[] s2)
 }
 
 // local function to convert int to string. Used by Array subclasses
-private static char[] atoi (char[] tmp, uint val)
+private static char[] itoa (char[] tmp, uint val)
 {
     char* p = tmp.ptr + tmp.length;
 
