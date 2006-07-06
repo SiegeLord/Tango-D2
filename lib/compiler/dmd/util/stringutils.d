@@ -1,6 +1,19 @@
-module util.string;
+/*******************************************************************************
 
-private extern (C) int memcmp (void*, void*, int);
+        copyright:      Copyright (c) 2004 Tango group. All rights reserved
+
+        license:        BSD style: $(LICENSE)
+      
+        version:        Initial release: July 2006
+        
+
+        Various char[] utilities
+
+*******************************************************************************/
+
+module util.stringutils;
+
+private import tango.stdc.string;
 
 // convert uint to char[], within the given buffer 
 // Returns a valid slice of the populated buffer

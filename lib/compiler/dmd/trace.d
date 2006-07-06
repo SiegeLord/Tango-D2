@@ -490,7 +490,7 @@ static Symbol* trace_addsym(char[] id)
     rover = *parent;
     while (rover != null)		// while we haven't run out of tree
     {
-//	cmp = util.string.cmp(id, rover.Sident);
+//	cmp = util.stringutils.StringCompare (id, rover.Sident);
 	cmp = typeid(char[]).compare (id, rover.Sident);
 	if (cmp == 0)
 	{

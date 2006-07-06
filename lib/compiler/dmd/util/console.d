@@ -7,45 +7,48 @@
         version:        Initial release: July 2006
         
 
-        Various console oriented utilities
+        Various low-level console oriented utilities
 
 *******************************************************************************/
 
 module util.console;
 
+private import util.stringutils;
+
 version (Win32)
         {
-        private extern (Windows) uint GetStdHandle (uint);
-        private extern (Windows) void WriteFile (uint, char*, uint, uint*, void*);
+        private extern (Windows) int GetStdHandle (int);
+        private extern (Windows) int WriteFile (int, char*, int, int*, void*);
         }
 
 version (linux)
         {
-        private extern (C) int write(int, void*, int);
+        private extern (C) int write (int, void*, int);
         }
 
-void console (char[] s)
+// emit a char[] to the console. Note that Win32 does not handle utf8, but 
+// then neither does fprintf (stderr). This will handle redirection though.
+// May need to remedy the utf8 issue
+int console (char[] s)
 {
         version (Win32)
                 {
-                uint count;
-                WriteFile (GetStdHandle(0xfffffff5), s.ptr, s.length, &count, null);
+                int count;
+                if (WriteFile (GetStdHandle(0xfffffff5), s.ptr, s.length, &count, null))
+                    return count;
+                return -1;
                 }
 
         version (linux)
                 {
-                write (2, s.ptr, s.length);
+                return write (2, s.ptr, s.length);
                 }
 }
 
-void console (uint i)
+// emit an integer to the console
+int console (uint i)
 {
-        char[8] tmp = void;
+        char[10] tmp = void;
         
-        char* p = tmp.ptr+tmp.length;
-        do {
-           *--p = '0' + (i % 10);
-           } while (i /= 10); 
-
-        console (tmp [p-tmp.ptr .. $]);
+        return console (intToString (tmp, i));
 }
