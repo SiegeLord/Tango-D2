@@ -17,7 +17,6 @@ private
     import tango.stdc.stdio;
     import tango.stdc.string;
     import tango.stdc.stdlib;
-    import util.string;
 }
 
 extern (C):
@@ -322,7 +321,9 @@ static void trace_times(Symbol* root)
 	char[] id;
 
 	version (Win32)
-	{   char* p = toStringz(s.Sident);
+	{   
+            //char* p = toStringz(s.Sident);
+            char* p = s.Sident ~ '\0';
 	    p = unmangle_ident(p);
 	    if (p)
 		id = p[0 .. strlen(p)];
@@ -489,7 +490,8 @@ static Symbol* trace_addsym(char[] id)
     rover = *parent;
     while (rover != null)		// while we haven't run out of tree
     {
-	cmp = util.string.cmp(id, rover.Sident);
+//	cmp = util.string.cmp(id, rover.Sident);
+	cmp = typeid(char[]).compare (id, rover.Sident);
 	if (cmp == 0)
 	{
 	    return rover;
