@@ -9,7 +9,6 @@
 module util.string;
 
 private import tango.stdc.string;
-private import tango.stdc.stdio;
 
 extern (C) int memicmp(char *, char *, uint);
 
@@ -456,6 +455,10 @@ unittest
     assert(i == 0);
 }
 
+
+version (WithFP)
+{
+
 /// ditto
 char[] toString(float f) { return toString(cast(double) f); }
 
@@ -517,6 +520,8 @@ char[] toString(creal r)
 
     sprintf(buffer, "%Lg+%Lgi", r.re, r.im);
     return toString(buffer).dup;
+}
+
 }
 
 
