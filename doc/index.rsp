@@ -27,7 +27,7 @@
 -IC:\d\tango\mango\net\servlet\cache\model\
 -IC:\d\tango\tango\math\cipher\
 -IC:\d\tango\tango\math\
--IC:\d\tango\tango\os\linux\c\
+-IC:\d\tango\tango\os\linux\
 -IC:\d\tango\tango\store\
 -IC:\d\tango\tango\store\model\
 -IC:\d\tango\tango\store\impl\
@@ -36,7 +36,7 @@
 -c
 doc\index.def
 doc\html\candydoc\candy.ddoc
-tango\os\windows\c\minwin.d
+tango\os\windows\minwin.d
 tango\store\LinkMap.d
 tango\text\UtfString.d
 tango\core\ByteSwap.d
@@ -71,7 +71,7 @@ tango\io\DeviceConduit.d
 tango\text\convert\Double.d
 tango\core\Traits.d
 mango\net\http\server\HttpResponse.d
-tango\os\linux\c\linuxextern.d
+tango\os\linux\linuxextern.d
 tango\io\FileConduit.d
 tango\net\http\HttpStack.d
 tango\text\convert\Integer.d
@@ -109,7 +109,7 @@ tango\stdc\math.d
 tango\store\HashSet.d
 tango\io\MappedBuffer.d
 tango\io\protocol\ArrayAllocator.d
-tango\os\darwin\c\darwin.d
+tango\os\darwin\darwin.d
 tango\store\model\Map.d
 tango\math\cipher\Sha512.d
 tango\stdc\signal.d
@@ -118,7 +118,7 @@ tango\io\protocol\EndianReader.d
 tango\text\locale\Core.d
 tango\net\Uri.d
 tango\net\http\HttpResponses.d
-tango\os\linux\c\socket.d
+tango\os\linux\socket.d
 tango\store\ArraySeq.d
 tango\store\impl\MutableImpl.d
 tango\text\locale\Constants.d
@@ -204,7 +204,7 @@ tango\os\ProcessConduit.d
 tango\store\model\Bag.d
 tango\store\model\MutableSeq.d
 tango\core\Atomic.d
-tango\os\linux\c\linux.d
+tango\os\linux\linux.d
 tango\store\model\Predicate.d
 tango\store\LinkSeq.d
 tango\store\HashMap.d
