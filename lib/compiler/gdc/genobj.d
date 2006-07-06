@@ -5,7 +5,7 @@
  *
  * This module is implicitly imported.
  * Macros:
- *	WIKI = Object
+ *      WIKI = Object
  */
 
 /*
@@ -72,7 +72,7 @@ class Object
      */
     char[] toString()
     {
-	return this.classinfo.name;
+        return this.classinfo.name;
     }
 
     /**
@@ -80,14 +80,14 @@ class Object
      */
     hash_t toHash()
     {
-	// BUG: this prevents a compacting GC from working, needs to be fixed
-	return cast(uint)cast(void *)this;
+        // BUG: this prevents a compacting GC from working, needs to be fixed
+        return cast(uint)cast(void *)this;
     }
 
     /**
      * Compare with another Object obj.
      * Returns:
-     *	$(TABLE
+     *  $(TABLE
      *  $(TR $(TD this &lt; obj) $(TD &lt; 0))
      *  $(TR $(TD this == obj) $(TD 0))
      *  $(TR $(TD this &gt; obj) $(TD &gt; 0))
@@ -95,8 +95,8 @@ class Object
      */
     int opCmp(Object o)
     {
-	// BUG: this prevents a compacting GC from working, needs to be fixed
-	return cast(int)cast(void *)this - cast(int)cast(void *)o;
+        // BUG: this prevents a compacting GC from working, needs to be fixed
+        return cast(int)cast(void *)this - cast(int)cast(void *)o;
     }
 
     /**
@@ -104,7 +104,7 @@ class Object
      */
     int opEquals(Object o)
     {
-	return this is o;
+        return this is o;
     }
 }
 
@@ -113,9 +113,9 @@ class Object
  */
 struct Interface
 {
-    ClassInfo classinfo;	/// .classinfo for this interface
+    ClassInfo classinfo;        /// .classinfo for this interface
     void *[] vtbl;
-    int offset;			// offset to Interface 'this' from Object 'this'
+    int offset;                 // offset to Interface 'this' from Object 'this'
 }
 
 /**
@@ -124,20 +124,19 @@ struct Interface
  */
 class ClassInfo : Object
 {
-    byte[] init;		/** class static initializer
-				 * (init.length gives size in bytes of class)
-				 */
-    char[] name;		/// class name
-    void *[] vtbl;		/// virtual function pointer table
-    Interface[] interfaces;	/// interfaces this class implements
-    ClassInfo base;		/// base class
+    byte[] init;                /** class static initializer
+                                 * (init.length gives size in bytes of class)
+                                 */
+    char[] name;                /// class name
+    void *[] vtbl;              /// virtual function pointer table
+    Interface[] interfaces;     /// interfaces this class implements
+    ClassInfo base;             /// base class
     void *destructor;
     void (*classInvariant)(Object);
      uint flags;
-    //	1:			// IUnknown
+    //  1:                      // IUnknown
     void *deallocator;
 }
-
 
 
 /**
@@ -148,25 +147,25 @@ class ClassInfo : Object
 class TypeInfo
 {
     hash_t toHash()
-    {	hash_t hash;
+    {   hash_t hash;
 
-	foreach (char c; this.classinfo.name)
-	    hash = hash * 9 + c;
-	return hash;
+        foreach (char c; this.classinfo.name)
+            hash = hash * 9 + c;
+        return hash;
     }
 
     int opCmp(Object o)
     {
-	return cmp(this.classinfo.name, o.classinfo.name);
+        return cmp(this.classinfo.name, o.classinfo.name);
     }
 
     int opEquals(Object o)
     {
-	/* TypeInfo instances are singletons, but duplicates can exist
-	 * across DLL's. Therefore, comparing for a name match is
-	 * sufficient.
-	 */
-	return this is o || this.classinfo.name == o.classinfo.name;
+        /* TypeInfo instances are singletons, but duplicates can exist
+         * across DLL's. Therefore, comparing for a name match is
+         * sufficient.
+         */
+        return this is o || this.classinfo.name == o.classinfo.name;
     }
 
     /// Returns a hash of the instance of a type.
@@ -184,42 +183,14 @@ class TypeInfo
     /// Swaps two instances of the type.
     void swap(void *p1, void *p2)
     {
-	size_t n = tsize();
-	for (size_t i = 0; i < n; i++)
-	{   byte t;
+        size_t n = tsize();
+        for (size_t i = 0; i < n; i++)
+        {   byte t;
 
-	    t = (cast(byte *)p1)[i];
-	    (cast(byte *)p1)[i] = (cast(byte *)p2)[i];
-	    (cast(byte *)p2)[i] = t;
-	}
-    }
-
-    // local function to compare two strings. Invoked by the default opCmp
-    private static int cmp (char[] s1, char[] s2)
-    {
-        auto len = s1.length;
-
-        if (s2.length < len)
-	   len = s2.length;
-
-        int result = memcmp(s1, s2, len);
-
-        if (result == 0)
-	    result = cast(int)s1.length - cast(int)s2.length;
-
-        return result;
-    }
-
-    // local function to convert int to string. Used by Array subclasses
-    private static char[] atoi (char[] tmp, uint val)
-    {
-        char* p = tmp.ptr + tmp.length;
-
-        do {
-           *--p = (val % 10) + '0';
-           } while (val /= 10);
-
-        return tmp [(p - tmp.ptr) .. $];
+            t = (cast(byte *)p1)[i];
+            (cast(byte *)p1)[i] = (cast(byte *)p2)[i];
+            (cast(byte *)p2)[i] = t;
+        }
     }
 }
 
@@ -262,14 +233,14 @@ class TypeInfo_Pointer : TypeInfo
 
     size_t tsize()
     {
-	return (void*).sizeof;
+        return (void*).sizeof;
     }
 
     void swap(void *p1, void *p2)
-    {	void* tmp;
-	tmp = *cast(void**)p1;
-	*cast(void**)p1 = *cast(void**)p2;
-	*cast(void**)p2 = tmp;
+    {   void* tmp;
+        tmp = *cast(void**)p1;
+        *cast(void**)p1 = *cast(void**)p2;
+        *cast(void**)p2 = tmp;
     }
 
     TypeInfo next;
@@ -280,35 +251,35 @@ class TypeInfo_Array : TypeInfo
     char[] toString() { return next.toString() ~ "[]"; }
 
     hash_t getHash(void *p)
-    {	size_t sz = next.tsize();
-	hash_t hash = 0;
-	void[] a = *cast(void[]*)p;
-	for (size_t i = 0; i < a.length; i++)
-	    hash += next.getHash(a.ptr + i * sz);
+    {   size_t sz = next.tsize();
+        hash_t hash = 0;
+        void[] a = *cast(void[]*)p;
+        for (size_t i = 0; i < a.length; i++)
+            hash += next.getHash(a.ptr + i * sz);
         return hash;
     }
 
     int equals(void *p1, void *p2)
     {
-	void[] a1 = *cast(void[]*)p1;
-	void[] a2 = *cast(void[]*)p2;
-	if (a1.length != a2.length)
-	    return 0;
-	size_t sz = next.tsize();
-	for (size_t i = 0; i < a1.length; i++)
-	{
-	    if (!next.equals(a1.ptr + i * sz, a2.ptr + i * sz))
-		return 0;
-	}
+        void[] a1 = *cast(void[]*)p1;
+        void[] a2 = *cast(void[]*)p2;
+        if (a1.length != a2.length)
+            return 0;
+        size_t sz = next.tsize();
+        for (size_t i = 0; i < a1.length; i++)
+        {
+            if (!next.equals(a1.ptr + i * sz, a2.ptr + i * sz))
+                return 0;
+        }
         return 1;
     }
 
     int compare(void *p1, void *p2)
     {
-	void[] a1 = *cast(void[]*)p1;
-	void[] a2 = *cast(void[]*)p2;
-	size_t sz = next.tsize();
-	size_t len = a1.length;
+        void[] a1 = *cast(void[]*)p1;
+        void[] a2 = *cast(void[]*)p2;
+        size_t sz = next.tsize();
+        size_t len = a1.length;
 
         if (a2.length < len)
             len = a2.length;
@@ -323,14 +294,14 @@ class TypeInfo_Array : TypeInfo
 
     size_t tsize()
     {
-	return (void[]).sizeof;
+        return (void[]).sizeof;
     }
 
     void swap(void *p1, void *p2)
-    {	void[] tmp;
-	tmp = *cast(void[]*)p1;
-	*cast(void[]*)p1 = *cast(void[]*)p2;
-	*cast(void[]*)p2 = tmp;
+    {   void[] tmp;
+        tmp = *cast(void[]*)p1;
+        *cast(void[]*)p1 = *cast(void[]*)p2;
+        *cast(void[]*)p2 = tmp;
     }
 
     TypeInfo next;
@@ -342,32 +313,32 @@ class TypeInfo_StaticArray : TypeInfo
     char[] toString()
     {
         char [16] tmp = void;
-	return next.toString() ~ "[" ~ atoi(tmp, len) ~ "]";
+        return next.toString() ~ "[" ~ atoi(tmp, len) ~ "]";
     }
 
     hash_t getHash(void *p)
-    {	size_t sz = next.tsize();
-	hash_t hash = 0;
-	for (size_t i = 0; i < len; i++)
-	    hash += next.getHash(p + i * sz);
+    {   size_t sz = next.tsize();
+        hash_t hash = 0;
+        for (size_t i = 0; i < len; i++)
+            hash += next.getHash(p + i * sz);
         return hash;
     }
 
     int equals(void *p1, void *p2)
     {
-	size_t sz = next.tsize();
+        size_t sz = next.tsize();
 
         for (size_t u = 0; u < len; u++)
         {
-	    if (!next.equals(p1 + u * sz, p2 + u * sz))
-		return 0;
+            if (!next.equals(p1 + u * sz, p2 + u * sz))
+                return 0;
         }
         return 1;
     }
 
     int compare(void *p1, void *p2)
     {
-	size_t sz = next.tsize();
+        size_t sz = next.tsize();
 
         for (size_t u = 0; u < len; u++)
         {
@@ -380,28 +351,28 @@ class TypeInfo_StaticArray : TypeInfo
 
     size_t tsize()
     {
-	return len * next.tsize();
+        return len * next.tsize();
     }
 
     void swap(void *p1, void *p2)
-    {	ubyte* tmp;
-	size_t sz = next.tsize();
-	ubyte[16] buffer;
-	ubyte* pbuffer;
+    {   ubyte* tmp;
+        size_t sz = next.tsize();
+        ubyte[16] buffer;
+        ubyte* pbuffer;
 
-	if (sz < buffer.sizeof)
-	    tmp = buffer;
-	else
-	    tmp = pbuffer = new ubyte[sz];
+        if (sz < buffer.sizeof)
+            tmp = buffer;
+        else
+            tmp = pbuffer = new ubyte[sz];
 
-	for (size_t u = 0; u < len; u += sz)
-	{   size_t o = u * sz;
-	    memcpy(tmp, p1 + o, sz);
-	    memcpy(p1 + o, p2 + o, sz);
-	    memcpy(p2 + o, tmp, sz);
-	}
-	if (pbuffer)
-	    delete pbuffer;
+        for (size_t u = 0; u < len; u += sz)
+        {   size_t o = u * sz;
+            memcpy(tmp, p1 + o, sz);
+            memcpy(p1 + o, p2 + o, sz);
+            memcpy(p2 + o, tmp, sz);
+        }
+        if (pbuffer)
+            delete pbuffer;
     }
 
     TypeInfo next;
@@ -412,14 +383,14 @@ class TypeInfo_AssociativeArray : TypeInfo
 {
     char[] toString()
     {
-	return next.toString() ~ "[" ~ key.toString() ~ "]";
+        return next.toString() ~ "[" ~ key.toString() ~ "]";
     }
 
     // BUG: need to add the rest of the functions
 
     size_t tsize()
     {
-	return (void[]).sizeof;
+        return (void[]).sizeof;
     }
 
     TypeInfo next;
@@ -430,14 +401,14 @@ class TypeInfo_Function : TypeInfo
 {
     char[] toString()
     {
-	return next.toString() ~ "()";
+        return next.toString() ~ "()";
     }
 
     // BUG: need to add the rest of the functions
 
     size_t tsize()
     {
-	return 0;	// no size for functions
+        return 0;       // no size for functions
     }
 
     TypeInfo next;
@@ -447,14 +418,14 @@ class TypeInfo_Delegate : TypeInfo
 {
     char[] toString()
     {
-	return next.toString() ~ " delegate()";
+        return next.toString() ~ " delegate()";
     }
 
     // BUG: need to add the rest of the functions
 
     size_t tsize()
-    {	alias int delegate() dg;
-	return dg.sizeof;
+    {   alias int delegate() dg;
+        return dg.sizeof;
     }
 
     TypeInfo next;
@@ -466,43 +437,43 @@ class TypeInfo_Class : TypeInfo
 
     hash_t getHash(void *p)
     {
-	Object o = *cast(Object*)p;
-	assert(o);
-	return o.toHash();
+        Object o = *cast(Object*)p;
+        assert(o);
+        return o.toHash();
     }
 
     int equals(void *p1, void *p2)
     {
-	Object o1 = *cast(Object*)p1;
-	Object o2 = *cast(Object*)p2;
+        Object o1 = *cast(Object*)p1;
+        Object o2 = *cast(Object*)p2;
 
-	return o1 == o2 || (o1 && o1.opCmp(o2) == 0);
+        return o1 == o2 || (o1 && o1.opCmp(o2) == 0);
     }
 
     int compare(void *p1, void *p2)
     {
-	Object o1 = *cast(Object*)p1;
-	Object o2 = *cast(Object*)p2;
-	int c = 0;
+        Object o1 = *cast(Object*)p1;
+        Object o2 = *cast(Object*)p2;
+        int c = 0;
 
-	// Regard null references as always being "less than"
-	if (o1 != o2)
-	{
-	    if (o1)
-	    {	if (!o2)
-		    c = 1;
-		else
-		    c = o1.opCmp(o2);
-	    }
-	    else
-		c = -1;
-	}
-	return c;
+        // Regard null references as always being "less than"
+        if (o1 != o2)
+        {
+            if (o1)
+            {   if (!o2)
+                    c = 1;
+                else
+                    c = o1.opCmp(o2);
+            }
+            else
+                c = -1;
+        }
+        return c;
     }
 
     size_t tsize()
     {
-	return Object.sizeof;
+        return Object.sizeof;
     }
 
     ClassInfo info;
@@ -513,67 +484,67 @@ class TypeInfo_Struct : TypeInfo
     char[] toString() { return name; }
 
     hash_t getHash(void *p)
-    {	hash_t h;
+    {   hash_t h;
 
-	assert(p);
-	if (xtoHash)
-	{   //printf("getHash() using xtoHash\n");
-	    h = (*xtoHash)(p);
-	}
-	else
-	{
-	    //printf("getHash() using default hash\n");
-	    // A sorry hash algorithm.
-	    // Should use the one for strings.
-	    // BUG: relies on the GC not moving objects
-	    for (size_t i = 0; i < xsize; i++)
-	    {	h = h * 9 + *cast(ubyte*)p;
-		p++;
-	    }
-	}
-	return h;
+        assert(p);
+        if (xtoHash)
+        {   //printf("getHash() using xtoHash\n");
+            h = (*xtoHash)(p);
+        }
+        else
+        {
+            //printf("getHash() using default hash\n");
+            // A sorry hash algorithm.
+            // Should use the one for strings.
+            // BUG: relies on the GC not moving objects
+            for (size_t i = 0; i < xsize; i++)
+            {   h = h * 9 + *cast(ubyte*)p;
+                p++;
+            }
+        }
+        return h;
     }
 
     int equals(void *p2, void *p1)
-    {	int c;
+    {   int c;
 
-	if (p1 == p2)
-	    c = 1;
-	else if (!p1 || !p2)
-	    c = 0;
-	else if (xopEquals)
-	    c = (*xopEquals)(p1, p2);
-	else
-	    // BUG: relies on the GC not moving objects
-	    c = (memcmp(p1, p2, xsize) == 0);
-	return c;
+        if (p1 == p2)
+            c = 1;
+        else if (!p1 || !p2)
+            c = 0;
+        else if (xopEquals)
+            c = (*xopEquals)(p1, p2);
+        else
+            // BUG: relies on the GC not moving objects
+            c = (memcmp(p1, p2, xsize) == 0);
+        return c;
     }
 
     int compare(void *p2, void *p1)
     {
-	int c = 0;
+        int c = 0;
 
-	// Regard null references as always being "less than"
-	if (p1 != p2)
-	{
-	    if (p1)
-	    {	if (!p2)
-		    c = 1;
-		else if (xopCmp)
-		    c = (*xopCmp)(p1, p2);
-		else
-		    // BUG: relies on the GC not moving objects
-		    c = memcmp(p1, p2, xsize);
-	    }
-	    else
-		c = -1;
-	}
-	return c;
+        // Regard null references as always being "less than"
+        if (p1 != p2)
+        {
+            if (p1)
+            {   if (!p2)
+                    c = 1;
+                else if (xopCmp)
+                    c = (*xopCmp)(p1, p2);
+                else
+                    // BUG: relies on the GC not moving objects
+                    c = memcmp(p1, p2, xsize);
+            }
+            else
+                c = -1;
+        }
+        return c;
     }
 
     size_t tsize()
     {
-	return xsize;
+        return xsize;
     }
 
     char[] name;
@@ -608,4 +579,32 @@ class Exception : Object
     {
         return msg;
     }
+}
+
+// local function to compare two strings. Invoked by the default opCmp
+private static int cmp (char[] s1, char[] s2)
+{
+    auto len = s1.length;
+
+    if (s2.length < len)
+        len = s2.length;
+
+    int result = memcmp(s1, s2, len);
+
+    if (result == 0)
+        result = cast(int)s1.length - cast(int)s2.length;
+
+    return result;
+}
+
+// local function to convert int to string. Used by Array subclasses
+private static char[] atoi (char[] tmp, uint val)
+{
+    char* p = tmp.ptr + tmp.length;
+
+    do {
+       *--p = (val % 10) + '0';
+       } while (val /= 10);
+
+    return tmp [(p - tmp.ptr) .. $];
 }
