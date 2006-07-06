@@ -66,27 +66,14 @@ PHOBOS_EXAMPLES =       	\
 	./phobos/d2html 	\
 	./phobos/sieve 		\
 	./phobos/wc2 
-
-# At the moment there are problems on linux with the 
-# "Missing ModuleInfo" issue.
-# Adding these modules to the modules to link
-# is a workaround. This can be removed if this 
-# problem is solved.
-BUG_MODS = 				\
-	tango/stdc/posix/pthread.d 	\
-	tango/stdc/posix/semaphore.d 	\
-	tango/stdc/posix/unistd.d 	\
-	tango/stdc/math.d 		\
-	tango/stdc/posix/sys/mman.d  	\
-	tango/stdc/signal.d
 	
 $(SIMPLE_EXAMPLES) : % : %.d
 	@echo "Building : " $@
-	@$(BUILDTOOL) $< $(BUG_MODS) $(BUILDOPTS) -T$@
+	@$(BUILDTOOL) $< $(BUILDOPTS) -T$@
 
 $(PHOBOS_EXAMPLES) : % : %.d $(ZLIB)
 	@echo "Building : " $@
-	@$(BUILDTOOL) $< $(BUG_MODS) $(BUILDOPTS) -T$@ -Mphobos $(ZLIB) -L-ldl
+	@$(BUILDTOOL) $< $(BUILDOPTS) -T$@ -Mphobos $(ZLIB) -L-ldl
 
 $(ZLIB) :
 	@echo "Building *** Phobos ZLIB ***"
