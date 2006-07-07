@@ -1,4 +1,4 @@
-// D import file generated from 'core/Memory.d'
+// D import file generated from 'core\Memory.d'
 module tango.core.Memory;
 private
 {

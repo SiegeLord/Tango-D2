@@ -1,4 +1,4 @@
-// D import file generated from 'core/Exception.d'
+// D import file generated from 'core\Exception.d'
 module tango.core.Exception;
 private
 {
