@@ -173,7 +173,7 @@ else version( Posix )
             // for OutOfMemoryError plus something to track whether
             // an exception is in-flight?
 
-            static extern (C) void cleanupHandler( void* arg )
+            extern (C) void thread_cleanupHandler( void* arg )
             {
                 Thread  obj = Thread.getThis();
                 assert( obj );
@@ -190,7 +190,7 @@ else version( Posix )
             pthread_setspecific( obj.sm_this, obj );
 
             pthread_cleanup cleanup;
-            cleanup.push( &cleanupHandler, obj );
+            cleanup.push( &thread_cleanupHandler, obj );
 
             try
             {
@@ -210,7 +210,7 @@ else version( Posix )
         sem_t   suspendCount;
 
 
-        extern (C) void suspendHandler( int sig )
+        extern (C) void thread_suspendHandler( int sig )
         in
         {
             assert( sig == SIGUSR1 );
@@ -279,7 +279,7 @@ else version( Posix )
         }
 
 
-        extern (C) void resumeHandler( int sig )
+        extern (C) void thread_resumeHandler( int sig )
         in
         {
             assert( sig == SIGUSR2 );
@@ -1027,7 +1027,7 @@ extern (C) void thread_init()
             sigusr1.sa_flags = SA_RESTART;
         else
         sigusr1.sa_flags   = 0;
-        sigusr1.sa_handler = &suspendHandler;
+        sigusr1.sa_handler = &thread_suspendHandler;
         // NOTE: We want to ignore all signals while in this handler, so fill
         //       sa_mask to indicate this.
         status = sigfillset( &sigusr1.sa_mask );
@@ -1037,7 +1037,7 @@ extern (C) void thread_init()
         //       suspend handler, we don't want this signal to trigger a
         //       restart.
         sigusr2.sa_flags   = 0;
-        sigusr2.sa_handler = &resumeHandler;
+        sigusr2.sa_handler = &thread_resumeHandler;
         // NOTE: We want to ignore all signals while in this handler, so fill
         //       sa_mask to indicate this.
         status = sigfillset( &sigusr2.sa_mask );
