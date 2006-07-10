@@ -92,7 +92,7 @@ OBJ_BASE= \
 OBJ_UTIL= \
     util/console.o \
     util/ctype.o \
-    util/stringutils.o \
+    util/string.o \
     util/utf.o
 
 OBJ_TI= \

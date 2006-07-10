@@ -153,21 +153,15 @@ extern (C) int main(int argc, char **argv)
     {
         while (e)
         {
-            if (e.file) 
+            if (e.file)
             {
                // fprintf(stderr, "%.*s(%u): %.*s\n", e.file, e.line, e.msg);
-               console (e.file);
-               console ("(");
-               console (e.line);
-               console ("): ");
-               console (e.msg);
-               console ("\n");
+               console (e.file)("(")(e.line)("): ")(e.msg)("\n");
             }
             else
             {
                // fprintf(stderr, "%.*s\n", e.toString());
-               console (e.toString);
-               console ("\n");
+               console (e.toString)("\n");
             }
             e = e.next;
         }
@@ -176,8 +170,7 @@ extern (C) int main(int argc, char **argv)
     catch (Object o)
     {
         // fprintf(stderr, "%.*s\n", o.toString());
-        console (o.toString);
-        console ("\n");
+        console (o.toString)("\n");
         exit(EXIT_FAILURE);
     }
 

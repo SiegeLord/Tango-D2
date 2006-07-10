@@ -321,7 +321,7 @@ static void trace_times(Symbol* root)
 	char[] id;
 
 	version (Win32)
-	{   
+	{
             //char* p = toStringz(s.Sident);
             char* p = s.Sident ~ '\0';
 	    p = unmangle_ident(p);
@@ -490,7 +490,7 @@ static Symbol* trace_addsym(char[] id)
     rover = *parent;
     while (rover != null)		// while we haven't run out of tree
     {
-//	cmp = util.stringutils.StringCompare (id, rover.Sident);
+//	cmp = util.string.StringCompare (id, rover.Sident);
 	cmp = typeid(char[]).compare (id, rover.Sident);
 	if (cmp == 0)
 	{

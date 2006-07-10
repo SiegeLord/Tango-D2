@@ -2,7 +2,7 @@
 module typeinfo.Aa;
 
 private import tango.stdc.string;
-private import util.stringutils;
+private import util.string;
 
 // char[]
 

@@ -83,7 +83,7 @@ OBJ_BASE= \
 OBJ_UTIL= \
     util\console.obj \
     util\ctype.obj \
-    util\stringutils.obj \
+    util\string.obj \
     util\utf.obj
 
 OBJ_TI= \
