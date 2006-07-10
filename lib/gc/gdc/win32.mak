@@ -1,10 +1,10 @@
-# Makefile to build D runtime library digitalmars.lib for Win32
+# Makefile to build D runtime library gdc.lib for Win32
 # Designed to work with DigitalMars make
 # Targets:
 #	make
 #		Same as make all
 #	make lib
-#		Build digitalmars.lib
+#		Build gdc.lib
 #   make doc
 #       Generate documentation
 #	make clean
@@ -17,6 +17,8 @@ MD=mkdir
 CFLAGS=-mn -6 -r
 #CFLAGS=-g -mn -6 -r
 
+### warnings disabled because gcx has issues ###
+
 DFLAGS=-release -O -inline
 #DFLAGS=-g -release
 
@@ -27,7 +29,7 @@ DOCFLAGS=-version=DDoc
 
 CC=dmc
 LC=lib
-DC=dmd
+DC=gdc
 
 LIB_DEST=..
 
@@ -47,12 +49,12 @@ LIB_DEST=..
 
 .d.html:
 	$(DC) -c -o- $(DOCFLAGS) -Df$*.html $<
-#	$(DC) -c -o- $(DOCFLAGS) -Df$*.html digitalmars.ddoc $<
+#	$(DC) -c -o- $(DOCFLAGS) -Df$*.html gdc.ddoc $<
 
 targets : lib doc
 all     : lib doc
-lib     : digitalmars.lib
-doc     : digitalmars.doc
+lib     : gdc.lib
+doc     : gdc.doc
 
 ######################################################
 
@@ -69,11 +71,11 @@ ALL_DOCS=
 
 ######################################################
 
-digitalmars.lib : $(ALL_OBJS)
+gdc.lib : $(ALL_OBJS)
 	$(RM) $@
 	$(LC) -c -n $@ $(ALL_OBJS)
 
-digitalmars.doc : $(ALL_DOCS)
+gdc.doc : $(ALL_DOCS)
 	@echo No documentation available.
 
 ######################################################
@@ -82,8 +84,8 @@ clean :
 	$(RM) /s *.di
 	$(RM) $(ALL_OBJS)
 	$(RM) $(ALL_DOCS)
-	$(RM) digitalmars*.lib
+	$(RM) gdc*.lib
 
 install :
 	$(MD) $(LIB_DEST)
-	$(CP) digitalmars*.lib $(LIB_DEST)\.
+	$(CP) gdc*.lib $(LIB_DEST)\.

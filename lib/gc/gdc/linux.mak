@@ -1,10 +1,10 @@
-# Makefile to build D runtime library digitalmars.a for Linux
+# Makefile to build D runtime library gdc.a for Linux
 # Designed to work with GNU make
 # Targets:
 #	make
 #		Same as make all
 #	make lib
-#		Build digitalmars.a
+#		Build gdc.a
 #   make doc
 #       Generate documentation
 #	make clean
@@ -17,17 +17,22 @@ MD=mkdir -p
 #CFLAGS=-mn -6 -r
 #CFLAGS=-g -mn -6 -r
 
+### warnings disabled because gcx has issues ###
+
 DFLAGS=-release -O -inline -version=Posix
-#DFLAGS=-g -release -version=Posix
+#DFLAGS=-release -O -inline -version=Posix -I..
+#DFLAGS=-g -release -version=Posix -I..
 
 TFLAGS=-O -inline -version=Posix
-#TFLAGS=-g -version=Posix
+#TFLAGS=-O -inline -version=Posix -I..
+#TFLAGS=-g -version=Posix -I..
 
 DOCFLAGS=-version=DDoc -version=Posix
+#DOCFLAGS=-version=DDoc -version=Posix -I..
 
 CC=gcc
 LC=$(AR)
-DC=dmd
+DC=gdc
 
 LIB_DEST=..
 
@@ -47,12 +52,12 @@ LIB_DEST=..
 
 .d.html:
 	$(DC) -c -o- $(DOCFLAGS) -Df$*.html $<
-#	$(DC) -c -o- $(DOCFLAGS) -Df$*.html digitalmars.ddoc $<
+#	$(DC) -c -o- $(DOCFLAGS) -Df$*.html gdc.ddoc $<
 
 targets : lib doc
 all     : lib doc
-lib     : digitalmars.a
-doc     : digitalmars.doc
+lib     : gdc.a
+doc     : gdc.doc
 
 ######################################################
 
@@ -69,21 +74,21 @@ ALL_DOCS=
 
 ######################################################
 
-digitalmars.a : $(ALL_OBJS)
+gdc.a : $(ALL_OBJS)
 	$(RM) $@
 	$(LC) -r $@ $(ALL_OBJS)
 
-digitalmars.doc : $(ALL_DOCS)
+gdc.doc : $(ALL_DOCS)
 	echo No documentation available.
 
 ######################################################
 
 clean :
-	$(RM) -r *.di
+	find . -name "*.di" | xargs $(RM)
 	$(RM) $(ALL_OBJS)
 	$(RM) $(ALL_DOCS)
-	$(RM) digitalmars*.a
+	$(RM) gdc*.a
 
 install :
 	$(MD) $(LIB_DEST)
-	$(CP) digitalmars*.a $(LIB_DEST)/.
+	$(CP) gdc*.a $(LIB_DEST)/.

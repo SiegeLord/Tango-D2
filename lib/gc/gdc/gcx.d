@@ -61,7 +61,7 @@ else version (GNU)
 }
 else version (linux)
 {
-    import gclinux;
+    private import gclinux;
 }
 
 private extern (C) void cr_finalize( void* p, bool det = true );
