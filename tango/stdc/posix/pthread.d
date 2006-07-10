@@ -317,6 +317,13 @@ int pthread_rwlock_timedrdlock(pthread_rwlock_t*, timespec*);
 int pthread_rwlock_timedwrlock(pthread_rwlock_t*, timespec*);
 */
 
+version( linux )
+{
+    int pthread_mutex_timedlock(pthread_mutex_t*, timespec*);
+    int pthread_rwlock_timedrdlock(pthread_rwlock_t*, timespec*);
+    int pthread_rwlock_timedwrlock(pthread_rwlock_t*, timespec*);
+}
+
 //
 // Priority (TPI|TPP)
 //
