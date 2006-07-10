@@ -10,9 +10,6 @@
 \***********************************************************************/
 module tango.os.windows.basetsd;
 
-//version (build) { pragma(nolink); }
-
-
 private import tango.os.windows.winnt;
 
 version (Win64) {

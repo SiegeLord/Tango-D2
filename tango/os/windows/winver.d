@@ -10,9 +10,6 @@
 \***********************************************************************/
 module tango.os.windows.winver;
 
-//version (build) { pragma(nolink); }
-
-
 private import tango.os.windows.windef;
 
 // FIXME: type weirdness
@@ -94,8 +91,8 @@ enum : DWORD {
 }
 
 enum : DWORD {
-	VIFF_FORCEINSTALL	= 1,
-	VIFF_DONTDELETEOLD	= 2
+	VIFF_FORCEINSTALL  = 1,
+	VIFF_DONTDELETEOLD
 }
 
 enum {

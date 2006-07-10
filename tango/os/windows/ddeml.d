@@ -9,10 +9,7 @@
 *                       Placed into public domain                       *
 \***********************************************************************/
 module tango.os.windows.ddeml;
-
-//version (build) { pragma(nolink); }
-
-//pragma(lib, "user32.lib");
+pragma(lib, "user32.lib");
 
 private import tango.os.windows.winnt, tango.os.windows.windef, tango.os.windows.basetsd;
 
@@ -77,8 +74,8 @@ enum : UINT {
 }
 
 /+
-#define TIMEOUT_ASYNC	0xFFFFFFFF
-#define QID_SYNC	0xFFFFFFFF
+#define TIMEOUT_ASYNC  0xFFFFFFFF
+#define QID_SYNC       0xFFFFFFFF
 +/
 
 enum : UINT {
@@ -198,8 +195,8 @@ extern (Windows) alias HDDEDATA
   function(UINT, UINT, HCONV, HSZ, HSZ, HDDEDATA, DWORD, DWORD) PFNCALLBACK;
 
 struct HSZPAIR {
-	HSZ	hszSvc;
-	HSZ	hszTopic;
+	HSZ hszSvc;
+	HSZ hszTopic;
 }
 alias HSZPAIR* PHSZPAIR;
 

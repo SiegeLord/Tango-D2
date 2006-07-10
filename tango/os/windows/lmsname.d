@@ -1,7 +1,4 @@
 module tango.os.windows.lmsname;
-
-//version (build) { pragma(nolink); }
-
 private import tango.os.windows.windef;
 
 const TCHAR[]

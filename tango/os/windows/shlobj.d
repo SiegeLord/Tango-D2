@@ -11,9 +11,9 @@
 // TODO: CMIC_VALID_SEE_FLAGS
 module tango.os.windows.shlobj;
 
-//version (build) { pragma(nolink); }
+/* SHGetFolderPath in shfolder.dll on W9x, NT4, also in shell32.dll on W2K */
+pragma(lib, "shell32.lib");
 
-//pragma(lib, "shell32.lib");
 private import tango.os.windows.w32api;
 private import tango.os.windows.unknwn;
 private import tango.os.windows.winuser;
@@ -227,7 +227,7 @@ enum {
 	CSIDL_FLAG_MASK = 0xFF00
 }
 
-const TCHAR []
+const TCHAR[]
 	CFSTR_SHELLIDLIST       = "Shell IDList Array",
 	CFSTR_SHELLIDLISTOFFSET = "Shell Object Offsets",
 	CFSTR_NETRESOURCES      = "Net Resource",
@@ -376,50 +376,50 @@ const UINT SV2GV_DEFAULTVIEW=-2;
 alias ULONG SFGAOF;
 alias DWORD SHGDNF;
 
-struct CIDA{
-	UINT cidl;
-	UINT aoffset[1];
+struct CIDA {
+	UINT    cidl;
+	UINT[1] aoffset;
 }
 alias CIDA* LPIDA;
 
-struct SHITEMID{
-	USHORT	cb;
-	BYTE	abID[1];
+struct SHITEMID {
+	USHORT  cb;
+	BYTE[1] abID;
 }
 alias SHITEMID* LPSHITEMID, LPCSHITEMID;
 
-struct ITEMIDLIST{
+struct ITEMIDLIST {
 	SHITEMID mkid;
 }
 alias ITEMIDLIST* LPITEMIDLIST, LPCITEMIDLIST;
 
-alias int function (HWND,UINT,LPARAM,LPARAM) BFFCALLBACK;
+alias int function(HWND,UINT,LPARAM,LPARAM) BFFCALLBACK;
 
 struct BROWSEINFOA {
-	HWND	hwndOwner;
-	LPCITEMIDLIST	pidlRoot;
-	LPSTR	pszDisplayName;
-	LPCSTR	lpszTitle;
-	UINT	ulFlags;
-	BFFCALLBACK	lpfn;
-	LPARAM	lParam;
-	int	iImage;
+	HWND          hwndOwner;
+	LPCITEMIDLIST pidlRoot;
+	LPSTR         pszDisplayName;
+	LPCSTR        lpszTitle;
+	UINT          ulFlags;
+	BFFCALLBACK   lpfn;
+	LPARAM        lParam;
+	int           iImage;
 }
 alias BROWSEINFOA* PBROWSEINFOA, LPBROWSEINFOA;
 
-struct BROWSEINFOW{
-	HWND	hwndOwner;
-	LPCITEMIDLIST	pidlRoot;
-	LPWSTR	pszDisplayName;
-	LPCWSTR	lpszTitle;
-	UINT	ulFlags;
-	BFFCALLBACK	lpfn;
-	LPARAM	lParam;
-	int	iImage;
+struct BROWSEINFOW {
+	HWND          hwndOwner;
+	LPCITEMIDLIST pidlRoot;
+	LPWSTR        pszDisplayName;
+	LPCWSTR       lpszTitle;
+	UINT          ulFlags;
+	BFFCALLBACK   lpfn;
+	LPARAM        lParam;
+	int           iImage;
 }
 alias BROWSEINFOW* PBROWSEINFOW, LPBROWSEINFOW;
 
-struct CMINVOKECOMMANDINFO{
+struct CMINVOKECOMMANDINFO {
 	DWORD cbSize;
 	DWORD fMask;
 	HWND hwnd;
@@ -432,7 +432,7 @@ struct CMINVOKECOMMANDINFO{
 }
 alias CMINVOKECOMMANDINFO* LPCMINVOKECOMMANDINFO;
 
-struct DROPFILES{
+struct DROPFILES {
 	DWORD pFiles;
 	POINT pt;
 	BOOL fNC;
@@ -440,7 +440,7 @@ struct DROPFILES{
 }
 alias DROPFILES* LPDROPFILES;
 
-enum SHGNO{
+enum SHGNO {
 	SHGDN_NORMAL             = 0,
 	SHGDN_INFOLDER,
 	SHGDN_FOREDITING         = 0x1000,
@@ -449,7 +449,7 @@ enum SHGNO{
 	SHGDN_FORPARSING         = 0x8000
 }
 
-enum SHCONTF{
+enum SHCONTF {
 	SHCONTF_FOLDERS            = 32,
 	SHCONTF_NONFOLDERS         = 64,
 	SHCONTF_INCLUDEHIDDEN      = 128,
@@ -459,7 +459,7 @@ enum SHCONTF{
 	SHCONTF_STORAGE            = 2048
 }
 
-struct STRRET{
+struct STRRET {
 	UINT uType;
 	union {
 		LPWSTR pOleStr;
@@ -480,7 +480,7 @@ enum FD_FLAGS {
 	FD_LINKUI     = 0x8000
 }
 
-struct FILEDESCRIPTORA{
+struct FILEDESCRIPTORA {
 	DWORD dwFlags;
 	CLSID clsid;
 	SIZEL sizel;
@@ -495,7 +495,7 @@ struct FILEDESCRIPTORA{
 }
 alias FILEDESCRIPTORA* LPFILEDESCRIPTORA;
 
-struct FILEDESCRIPTORW{
+struct FILEDESCRIPTORW {
 	DWORD dwFlags;
 	CLSID clsid;
 	SIZEL sizel;
@@ -510,13 +510,13 @@ struct FILEDESCRIPTORW{
 }
 alias FILEDESCRIPTORW* LPFILEDESCRIPTORW;
 
-struct FILEGROUPDESCRIPTORA{
+struct FILEGROUPDESCRIPTORA {
 	UINT cItems;
 	FILEDESCRIPTORA fgd[1];
 }
 alias FILEGROUPDESCRIPTORA* LPFILEGROUPDESCRIPTORA;
 
-struct FILEGROUPDESCRIPTORW{
+struct FILEGROUPDESCRIPTORW {
 	UINT cItems;
 	FILEDESCRIPTORW fgd[1];
 }
@@ -581,7 +581,7 @@ struct FVSHOWINFO {
 }
 alias FVSHOWINFO* LPFVSHOWINFO;
 
-struct NRESARRAY{
+struct NRESARRAY {
 	UINT cItems;
 	NETRESOURCE nr[1];
 }
@@ -613,7 +613,7 @@ enum SVUIA_STATUS {
 static if (_WIN32_IE >= 0x0500) {
 
 	struct EXTRASEARCH
-	{
+	 {
 		GUID guidSearch;
 		WCHAR wszFriendlyName[80];
 		WCHAR wszUrl[2084];
@@ -636,7 +636,7 @@ static if (_WIN32_IE >= 0x0500) {
 	alias SHELLDETAILS* LPSHELLDETAILS;
 
 	struct PERSIST_FOLDER_TARGET_INFO
-	{
+	 {
 		LPITEMIDLIST pidlTargetFolder;
 		WCHAR szTargetParsingName[MAX_PATH];
 		WCHAR szNetworkProvider[MAX_PATH];
@@ -745,7 +745,7 @@ static if (_WIN32_IE >= 0x0500) {
 	}
 
 	interface IColumnProvider : public IUnknown
-	{
+	 {
 		HRESULT QueryInterface(REFIID,PVOID*);
 		ULONG AddRef();
 		ULONG Release();
@@ -1064,7 +1064,7 @@ alias ICommDlgBrowser *LPCOMMDLGBROWSER;
 
 alias GUID SHELLVIEWID;
 
-struct SV2CVW2_PARAMS{
+struct SV2CVW2_PARAMS {
 	DWORD cbSize;
 	IShellView *psvPrev;
 	FOLDERSETTINGS  *pfs;
@@ -1224,7 +1224,7 @@ static if (_WIN32_IE >= 0x0500) {
 	align:
 
 	interface IDragSourceHelper : public IUnknown
-	{
+	 {
 		HRESULT QueryInterface(REFIID riid, void **ppv);
 		ULONG AddRef();
 		ULONG Release();
@@ -1233,7 +1233,7 @@ static if (_WIN32_IE >= 0x0500) {
 	}
 
 	interface IDropTargetHelper : public IUnknown
-	{
+	 {
 		HRESULT QueryInterface(REFIID riid, void** ppv);
 		ULONG AddRef();
 		ULONG Release();
@@ -1353,6 +1353,4 @@ version(Unicode) {
 	alias FILEGROUPDESCRIPTORA FILEGROUPDESCRIPTOR;
 	alias LPFILEGROUPDESCRIPTORA LPFILEGROUPDESCRIPTOR;
 }
-	alias BROWSEINFO* PBROWSEINFO, LPBROWSEINFO;
-
-align:
+alias BROWSEINFO* PBROWSEINFO, LPBROWSEINFO;

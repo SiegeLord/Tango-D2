@@ -7,13 +7,10 @@
 *                                                                       *
 *                       Placed into public domain                       *
 \***********************************************************************/
-// In conversion from MinGW, the following was deleted: 
+// In conversion from MinGW, the following was deleted:
 //#define FONTSIZE(n) {n##0000,0}
 
 module tango.os.windows.olectl;
-
-//version (build) { pragma(nolink); }
-
 
 import tango.os.windows.ocidl;
 import tango.os.windows.olectlid;
@@ -35,7 +32,7 @@ template ITF_SUCCESS_SCODE_FOR_D(int c)
   const SCODE ITF_SUCCESS_SCODE_FOR_D = (SEVERITY_SUCCESS << 31) | (FACILITY_ITF << 16) | c;
 }
 
-template STD_CTL_SCODE(int c) 
+template STD_CTL_SCODE(int c)
 {
   const SCODE STD_CTL_SCODE = (SEVERITY_ERROR << 31) | (FACILITY_CONTROL << 16) | c;
 }
@@ -96,14 +93,14 @@ enum : SCODE {
 	CONNECT_E_ADVISELIMIT     = CONNECT_E_FIRST + 1,
 	CONNECT_E_CANNOTCONNECT   = CONNECT_E_FIRST + 2,
 	CONNECT_E_OVERRIDDEN      = CONNECT_E_FIRST + 3,
-	
+
 	SELFREG_E_FIRST           = ITF_ERROR_SCODE_FOR_D!(0x200),
 	SELFREG_E_LAST            = ITF_ERROR_SCODE_FOR_D!(0x20F),
 	SELFREG_S_FIRST           = ITF_SUCCESS_SCODE_FOR_D!(0x200),
-	SELFREG_S_LAST            = ITF_SUCCESS_SCODE_FOR_D!(0x20F),	
+	SELFREG_S_LAST            = ITF_SUCCESS_SCODE_FOR_D!(0x20F),
 	SELFREG_E_TYPELIB         = SELFREG_E_FIRST + 0,
 	SELFREG_E_CLASS           = SELFREG_E_FIRST + 1,
-	
+
 	PERPROP_E_FIRST           = ITF_ERROR_SCODE_FOR_D!(0x200),
 	PERPROP_E_LAST            = ITF_ERROR_SCODE_FOR_D!(0x20F),
 	PERPROP_S_FIRST           = ITF_SUCCESS_SCODE_FOR_D!(0x200),
@@ -329,7 +326,7 @@ enum OLE_TRISTATE {
 	triGray
 }
 
-struct OCPFIPARAMS{
+struct OCPFIPARAMS {
 	ULONG cbStructSize;
 	HWND hWndOwner;
 	int x;
@@ -344,7 +341,7 @@ struct OCPFIPARAMS{
 }
 alias OCPFIPARAMS* LPOCPFIPARAMS;
 
-struct FONTDESC{
+struct FONTDESC {
 	UINT cbSizeofstruct;
 	LPOLESTR lpstrName;
 	CY cySize;
@@ -379,7 +376,6 @@ struct PICTDESC
 	}
 }
 alias PICTDESC* LPPICTDESC;
-align:
 
 extern(Windows) {
 	HRESULT DllRegisterServer();

@@ -8,14 +8,11 @@
 *                       Placed into public domain                       *
 \***********************************************************************/
 module tango.os.windows.objfwd;
-
-//version (build) { pragma(nolink); }
-
 private import tango.os.windows.objidl;
 
 /+
 // Forward declararions are not necessary in D.
-extern(Windows){
+extern(Windows) {
 	interface IMoniker;
 	interface IStream;
 	interface IMarshal;

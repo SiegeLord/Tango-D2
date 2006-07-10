@@ -10,9 +10,6 @@
 \***********************************************************************/
 module tango.os.windows.cplext;
 
-//version (build) { pragma(nolink); }
-
-
 // FIXME: check types
 
 const CPLPAGE_MOUSE_BUTTONS      = 1;

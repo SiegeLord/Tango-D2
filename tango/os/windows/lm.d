@@ -7,18 +7,14 @@
 *                                                                       *
 *                       Placed into public domain                       *
 \***********************************************************************/
-
 module tango.os.windows.lm;
 
-//version (build) { pragma(nolink); }
-
-
-version (WindowsXP) {
- version = WIN32_WINNT_ONLY;
-} else version(Windows2000) {
- version = WIN32_WINNT_ONLY;
-} else version (Windows2003) {
- version = WIN32_WINNT_ONLY;
+version (Windows2003) {
+	version = WIN32_WINNT_ONLY;
+} else version (WindowsXP) {
+	version = WIN32_WINNT_ONLY;
+} else version(WindowsNTonly) {
+	version = WIN32_WINNT_ONLY;
 }
 
 import tango.os.windows.lmcons;
@@ -34,8 +30,8 @@ import tango.os.windows.lmrepl;
 import tango.os.windows.lmuse;
 
 version (WIN32_WINNT_ONLY) {
-import tango.os.windows.lmwksta;
-import tango.os.windows.lmserver;
+	import tango.os.windows.lmwksta;
+	import tango.os.windows.lmserver;
 }
 import tango.os.windows.lmstats;
 

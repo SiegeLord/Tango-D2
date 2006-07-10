@@ -8,9 +8,9 @@
 *                       Placed into public domain                       *
 \***********************************************************************/
 module tango.os.windows.rpcndr;
-
-//version (build) { pragma(nolink); }
-
+/* Translation notes:
+ RPC_CLIENT_ALLOC*, RPC_CLIENT_FREE* were replaced with PRPC_CLIENT_ALLOC, PRPC_CLIENT_FREE
+*/
 
 // TODO: Bitfields in MIDL_STUB_MESSAGE.
 //       Macros need to be converted.
@@ -21,6 +21,10 @@ import tango.os.windows.rpcnsip;
 private import tango.os.windows.objidl; // for IRpcChannelBuffer, IRpcStubBuffer
 private import tango.os.windows.rpcdce;
 private import tango.os.windows.unknwn;
+
+pragma(lib,"rpcrt4.lib");
+
+extern (Windows):
 
 const uint NDR_CHAR_REP_MASK      = 0xF,
 	NDR_INT_REP_MASK              = 0xF0,
@@ -40,9 +44,9 @@ alias MIDL_user_free midl_user_free;
 alias long hyper;
 alias ulong MIDL_uhyper;
 alias char small;
-//MACRO #define NDRSContextValue(hContext) (&(hContext)->userContext)
 
 const cbNDRContext=20;
+//MACRO #define NDRSContextValue(hContext) (&(hContext)->userContext)
 //MACRO #define byte_from_ndr(source, target) { *(target) = *(*(char**)&(source)->Buffer)++; }
 
 //MACRO #define byte_array_from_ndr(Source, LowerIndex, UpperIndex, Target) { NDRcopy ((((char *)(Target))+(LowerIndex)), (Source)->Buffer, (unsigned int)((UpperIndex)-(LowerIndex))); *(unsigned long *)&(Source)->Buffer += ((UpperIndex)-(LowerIndex)); }
@@ -64,35 +68,20 @@ const cbNDRContext=20;
 //MACRO #define MIDL_memset(s,c,n) memset(s,c,n)
 
 //MACRO #define _midl_ma1( p, cast ) *(*( cast **)&p)++
-
 //MACRO #define _midl_ma2( p, cast ) *(*( cast **)&p)++
-
 //MACRO #define _midl_ma4( p, cast ) *(*( cast **)&p)++
-
 //MACRO #define _midl_ma8( p, cast ) *(*( cast **)&p)++
-
 //MACRO #define _midl_unma1( p, cast ) *(( cast *)p)++
-
 //MACRO #define _midl_unma2( p, cast ) *(( cast *)p)++
-
 //MACRO #define _midl_unma3( p, cast ) *(( cast *)p)++
-
 //MACRO #define _midl_unma4( p, cast ) *(( cast *)p)++
-
 //MACRO #define _midl_fa2( p ) (p = (RPC_BUFPTR )((unsigned long)(p+1) & 0xfffffffe))
-
 //MACRO #define _midl_fa4( p ) (p = (RPC_BUFPTR )((unsigned long)(p+3) & 0xfffffffc))
-
 //MACRO #define _midl_fa8( p ) (p = (RPC_BUFPTR )((unsigned long)(p+7) & 0xfffffff8))
-
 //MACRO #define _midl_addp( p, n ) (p += n)
-
 //MACRO #define _midl_marsh_lhs( p, cast ) *(*( cast **)&p)++
-
 //MACRO #define _midl_marsh_up( mp, p ) *(*(unsigned long **)&mp)++ = (unsigned long)p
-
 //MACRO #define _midl_advmp( mp ) *(*(unsigned long **)&mp)++
-
 //MACRO #define _midl_unmarsh_up( p ) (*(*(unsigned long **)&p)++)
 
 //MACRO #define NdrMarshConfStringHdr( p, s, l ) (_midl_ma4( p, unsigned long) = s, _midl_ma4( p, unsigned long) = 0, _midl_ma4( p, unsigned long) = l)
@@ -100,31 +89,23 @@ const cbNDRContext=20;
 //MACRO #define NdrUnMarshConfStringHdr(p, s, l) ((s=_midl_unma4(p,unsigned long), (_midl_addp(p,4)), (l=_midl_unma4(p,unsigned long))
 
 //MACRO #define NdrMarshCCtxtHdl(pc,p) (NDRCContextMarshall( (NDR_CCONTEXT)pc, p ),p+20)
-
 //MACRO #define NdrUnMarshCCtxtHdl(pc,p,h,drep) (NDRCContextUnmarshall((NDR_CONTEXT)pc,h,p,drep), p+20)
-
 //MACRO #define NdrUnMarshSCtxtHdl(pc, p,drep) (pc = NdrSContextUnMarshall(p,drep ))
-
 //MACRO #define NdrMarshSCtxtHdl(pc,p,rd) (NdrSContextMarshall((NDR_SCONTEXT)pc,p, (NDR_RUNDOWN)rd)
 
 //MACRO #define NdrFieldOffset(s,f) (long)(& (((s *)0)->f))
-
 //MACRO #define NdrFieldPad(s,f,p,t) (NdrFieldOffset(s,f) - NdrFieldOffset(s,p) - sizeof(t))
-
 //MACRO #define NdrFcShort(s) (unsigned char)(s & 0xff), (unsigned char)(s >> 8)
-
 //MACRO #define NdrFcLong(s) (unsigned char)(s & 0xff), (unsigned char)((s & 0x0000ff00) >> 8), (unsigned char)((s & 0x00ff0000) >> 16), (unsigned char)(s >> 24)
 
 alias void * NDR_CCONTEXT;
-struct tagNDR_SCONTEXT{
+struct tagNDR_SCONTEXT {
 	void *pad[2];
 	void *userContext;
 }
 alias tagNDR_SCONTEXT * NDR_SCONTEXT;
 
-alias void function (void*) NDR_RUNDOWN;
-
-struct SCONTEXT_QUEUE{
+struct SCONTEXT_QUEUE {
 	uint NumberOfObjects;
 	NDR_SCONTEXT *ArrayOfObjects;
 }
@@ -136,8 +117,6 @@ struct _FULL_PTR_XLAT_TABLES;
 
 alias ubyte *RPC_BUFPTR;
 alias uint RPC_LENGTH;
-
-alias void function (_MIDL_STUB_MESSAGE*) EXPR_EVAL;
 
 alias  ubyte *PFORMAT_STRING;
 
@@ -185,7 +164,7 @@ void  tree_peek_ndr(PRPC_MESSAGE,ubyte**,char*,ubyte);
 void * midl_allocate(int);
 
 align(4):
-struct MIDL_STUB_MESSAGE{
+struct MIDL_STUB_MESSAGE {
 	PRPC_MESSAGE RpcMsg;
 	ubyte *Buffer;
 	ubyte *BufferStart;
@@ -237,16 +216,13 @@ struct MIDL_STUB_MESSAGE{
 alias MIDL_STUB_MESSAGE * PMIDL_STUB_MESSAGE;
 
 align:
-
-alias void* function (void*) GENERIC_BINDING_ROUTINE;
-alias void function (void*,ubyte*) GENERIC_UNBIND_ROUTINE;
-struct GENERIC_BINDING_ROUTINE_PAIR{
+struct GENERIC_BINDING_ROUTINE_PAIR {
 	GENERIC_BINDING_ROUTINE pfnBind;
 	GENERIC_UNBIND_ROUTINE pfnUnbind;
 }
 alias GENERIC_BINDING_ROUTINE_PAIR * PGENERIC_BINDING_ROUTINE_PAIR;
 
-struct GENERIC_BINDING_INFO{
+struct GENERIC_BINDING_INFO {
 	void *pObj;
 	uint Size;
 	GENERIC_BINDING_ROUTINE pfnBind;
@@ -254,8 +230,8 @@ struct GENERIC_BINDING_INFO{
 }
 alias GENERIC_BINDING_INFO * PGENERIC_BINDING_INFO;
 
-alias void function(PMIDL_STUB_MESSAGE) XMIT_HELPER_ROUTINE;
-struct XMIT_ROUTINE_QUINTUPLE{
+
+struct XMIT_ROUTINE_QUINTUPLE {
 	XMIT_HELPER_ROUTINE pfnTranslateToXmit;
 	XMIT_HELPER_ROUTINE pfnTranslateFromXmit;
 	XMIT_HELPER_ROUTINE pfnFreeXmit;
@@ -263,54 +239,42 @@ struct XMIT_ROUTINE_QUINTUPLE{
 }
 alias XMIT_ROUTINE_QUINTUPLE * PXMIT_ROUTINE_QUINTUPLE;
 
-struct MALLOC_FREE_STRUCT{
+struct MALLOC_FREE_STRUCT {
 	void* function (uint) pfnAllocate;
 	void function (void*) pfnFree;
 }
 
-struct COMM_FAULT_OFFSETS{
+struct COMM_FAULT_OFFSETS {
 	short CommOffset;
 	short FaultOffset;
 }
 
-alias uint function (uint *,uint,void *) USER_MARSHAL_SIZING_ROUTINE;
-alias ubyte * function (uint *,ubyte *,void *) USER_MARSHAL_MARSHALLING_ROUTINE;
-alias ubyte * function (uint *,ubyte *,void *) USER_MARSHAL_UNMARSHALLING_ROUTINE;
-alias void function (uint *,void *) USER_MARSHAL_FREEING_ROUTINE;
-
-struct USER_MARSHAL_ROUTINE_QUADRUPLE{
+struct USER_MARSHAL_ROUTINE_QUADRUPLE {
 	USER_MARSHAL_SIZING_ROUTINE pfnBufferSize;
 	USER_MARSHAL_MARSHALLING_ROUTINE pfnMarshall;
 	USER_MARSHAL_UNMARSHALLING_ROUTINE pfnUnmarshall;
 	USER_MARSHAL_FREEING_ROUTINE pfnFree;
 }
 
-alias void function () NDR_NOTIFY_ROUTINE;
-
-enum IDL_CS_CONVERT{
+enum IDL_CS_CONVERT {
 	IDL_CS_NO_CONVERT,
 	IDL_CS_IN_PLACE_CONVERT,
 	IDL_CS_NEW_BUFFER_CONVERT
 }
-alias void function (RPC_BINDING_HANDLE,uint,uint,IDL_CS_CONVERT*,uint*,error_status_t*) CS_TYPE_NET_SIZE_ROUTINE;
-alias void function (RPC_BINDING_HANDLE,uint,uint,IDL_CS_CONVERT*,uint*,error_status_t*) CS_TYPE_LOCAL_SIZE_ROUTINE;
-alias void function (RPC_BINDING_HANDLE,uint,void*,uint,byte*,uint*,error_status_t*) CS_TYPE_TO_NETCS_ROUTINE;
-alias void function (RPC_BINDING_HANDLE,uint,byte*,uint,uint,void*,uint*,error_status_t*) CS_TYPE_FROM_NETCS_ROUTINE;
-alias void function (RPC_BINDING_HANDLE,int,uint*,uint*,uint*,error_status_t*) CS_TAG_GETTING_ROUTINE;
 
-struct NDR_CS_SIZE_CONVERT_ROUTINES{
+struct NDR_CS_SIZE_CONVERT_ROUTINES {
 	CS_TYPE_NET_SIZE_ROUTINE pfnNetSize;
 	CS_TYPE_TO_NETCS_ROUTINE pfnToNetCs;
 	CS_TYPE_LOCAL_SIZE_ROUTINE pfnLocalSize;
 	CS_TYPE_FROM_NETCS_ROUTINE pfnFromNetCs;
 }
 
-struct NDR_CS_ROUTINES{
+struct NDR_CS_ROUTINES {
 	NDR_CS_SIZE_CONVERT_ROUTINES *pSizeConvertRoutines;
 	CS_TAG_GETTING_ROUTINE *pTagGettingRoutines;
 }
 
-struct MIDL_STUB_DESC{
+struct MIDL_STUB_DESC {
 	void* RpcInterfaceInformation;
 	void* function(uint) pfnAllocate;
 	void function (void*) pfnFree;
@@ -340,15 +304,11 @@ alias  MIDL_STUB_DESC * PMIDL_STUB_DESC;
 
 alias void * PMIDL_XMIT_TYPE;
 
-struct MIDL_FORMAT_STRING{
+struct MIDL_FORMAT_STRING {
 	short Pad;
 	ubyte Format[1];
 }
 
-extern (Windows) {
-	alias void function (PMIDL_STUB_MESSAGE) STUB_THUNK;
-	alias int function() SERVER_ROUTINE;
-}
 struct MIDL_SERVER_INFO {
 	PMIDL_STUB_DESC pStubDesc;
 	SERVER_ROUTINE *DispatchTable;
@@ -358,7 +318,7 @@ struct MIDL_SERVER_INFO {
 }
 alias MIDL_SERVER_INFO * PMIDL_SERVER_INFO;
 
-struct MIDL_STUBLESS_PROXY_INFO{
+struct MIDL_STUBLESS_PROXY_INFO {
 	PMIDL_STUB_DESC pStubDesc;
 	PFORMAT_STRING ProcFormatString;
 	ushort *FormatStringOffset;
@@ -382,7 +342,7 @@ struct FULL_PTR_TO_REFID_ELEMENT {
 }
 alias FULL_PTR_TO_REFID_ELEMENT * PFULL_PTR_TO_REFID_ELEMENT;
 
-struct FULL_PTR_XLAT_TABLES{
+struct FULL_PTR_XLAT_TABLES {
 	struct RefIdToPointer {
 		void **XlatTable;
 		ubyte *StateTable;
@@ -397,6 +357,50 @@ struct FULL_PTR_XLAT_TABLES{
 	XLAT_SIDE XlatSide;
 }
 alias FULL_PTR_XLAT_TABLES * PFULL_PTR_XLAT_TABLES;
+
+
+enum STUB_PHASE {
+	STUB_UNMARSHAL,
+	STUB_CALL_SERVER,
+	STUB_MARSHAL,
+	STUB_CALL_SERVER_NO_HRESULT
+}
+
+enum PROXY_PHASE {
+	PROXY_CALCSIZE,
+	PROXY_GETBUFFER,
+	PROXY_MARSHAL,
+	PROXY_SENDRECEIVE,
+	PROXY_UNMARSHAL
+}
+
+typedef void * RPC_SS_THREAD_HANDLE;
+
+extern (Windows) {
+alias void function (void*) NDR_RUNDOWN;
+alias void function (_MIDL_STUB_MESSAGE*) EXPR_EVAL;
+alias void* function (void*) GENERIC_BINDING_ROUTINE;
+alias void function (void*,ubyte*) GENERIC_UNBIND_ROUTINE;
+alias void function(PMIDL_STUB_MESSAGE) XMIT_HELPER_ROUTINE;
+alias uint function (uint *,uint,void *) USER_MARSHAL_SIZING_ROUTINE;
+alias ubyte * function (uint *,ubyte *,void *) USER_MARSHAL_MARSHALLING_ROUTINE;
+alias ubyte * function (uint *,ubyte *,void *) USER_MARSHAL_UNMARSHALLING_ROUTINE;
+alias void function (uint *,void *) USER_MARSHAL_FREEING_ROUTINE;
+alias void function () NDR_NOTIFY_ROUTINE;
+alias void function (RPC_BINDING_HANDLE,uint,uint,IDL_CS_CONVERT*,uint*,error_status_t*) CS_TYPE_NET_SIZE_ROUTINE;
+alias void function (RPC_BINDING_HANDLE,uint,uint,IDL_CS_CONVERT*,uint*,error_status_t*) CS_TYPE_LOCAL_SIZE_ROUTINE;
+alias void function (RPC_BINDING_HANDLE,uint,void*,uint,byte*,uint*,error_status_t*) CS_TYPE_TO_NETCS_ROUTINE;
+alias void function (RPC_BINDING_HANDLE,uint,byte*,uint,uint,void*,uint*,error_status_t*) CS_TYPE_FROM_NETCS_ROUTINE;
+alias void function (RPC_BINDING_HANDLE,int,uint*,uint*,uint*,error_status_t*) CS_TAG_GETTING_ROUTINE;
+
+//alias void* RPC_CLIENT_ALLOC(uint);
+//alias void RPC_CLIENT_FREE(void*);
+alias void* function(uint) PRPC_CLIENT_ALLOC;
+alias void function(void*) PRPC_CLIENT_FREE;
+
+	alias void function (PMIDL_STUB_MESSAGE) STUB_THUNK;
+	alias int function() SERVER_ROUTINE;
+}
 
 void  NdrSimpleTypeMarshall(PMIDL_STUB_MESSAGE,ubyte*,ubyte);
 ubyte * NdrPointerMarshall(PMIDL_STUB_MESSAGE,ubyte*,PFORMAT_STRING pFormat);
@@ -438,7 +442,6 @@ ubyte * NdrNonEncapsulatedUnionUnmarshall(PMIDL_STUB_MESSAGE,ubyte**,PFORMAT_STR
 ubyte * NdrByteCountPointerUnmarshall(PMIDL_STUB_MESSAGE,ubyte**,PFORMAT_STRING,ubyte);
 ubyte * NdrXmitOrRepAsUnmarshall(PMIDL_STUB_MESSAGE,ubyte**,PFORMAT_STRING,ubyte);
 ubyte * NdrInterfacePointerUnmarshall(PMIDL_STUB_MESSAGE,ubyte**,PFORMAT_STRING,ubyte);
-
 void  NdrClientContextUnmarshall(PMIDL_STUB_MESSAGE,NDR_CCONTEXT*,RPC_BINDING_HANDLE);
 NDR_SCONTEXT  NdrServerContextUnmarshall(PMIDL_STUB_MESSAGE);
 void  NdrPointerBufferSize(PMIDL_STUB_MESSAGE,ubyte*,PFORMAT_STRING);
@@ -508,21 +511,6 @@ void  NdrFreeBuffer(PMIDL_STUB_MESSAGE);
 
 CLIENT_CALL_RETURN  NdrClientCall(PMIDL_STUB_DESC,PFORMAT_STRING,...);
 
-enum STUB_PHASE {
-	STUB_UNMARSHAL,
-	STUB_CALL_SERVER,
-	STUB_MARSHAL,
-	STUB_CALL_SERVER_NO_HRESULT
-}
-
-enum PROXY_PHASE {
-	PROXY_CALCSIZE,
-	PROXY_GETBUFFER,
-	PROXY_MARSHAL,
-	PROXY_SENDRECEIVE,
-	PROXY_UNMARSHAL
-}
-
 int  NdrStubCall(IRpcStubBuffer*, IRpcChannelBuffer*,PRPC_MESSAGE,uint*);
 void  NdrServerCall(PRPC_MESSAGE);
 int  NdrServerUnmarshall(IRpcChannelBuffer*, PRPC_MESSAGE,PMIDL_STUB_MESSAGE,PMIDL_STUB_DESC,PFORMAT_STRING,void*);
@@ -540,19 +528,14 @@ uint  NdrSH_Copy(ubyte*,ubyte*,uint);
 void  NdrSH_IfFree(PMIDL_STUB_MESSAGE,ubyte*);
 RPC_BUFPTR  NdrSH_StringMarshall(PMIDL_STUB_MESSAGE,ubyte*,uint,int);
 RPC_BUFPTR  NdrSH_StringUnMarshall(PMIDL_STUB_MESSAGE,ubyte**,int);
-
-alias void * RPC_SS_THREAD_HANDLE;
-alias void* RPC_CLIENT_ALLOC(uint);
-alias void RPC_CLIENT_FREE(void*);
-
 void* RpcSsAllocate(uint);
 void  RpcSsDisableAllocate();
 void  RpcSsEnableAllocate();
 void  RpcSsFree(void*);
 RPC_SS_THREAD_HANDLE  RpcSsGetThreadHandle();
-void  RpcSsSetClientAllocFree(RPC_CLIENT_ALLOC*,RPC_CLIENT_FREE*);
+void  RpcSsSetClientAllocFree(PRPC_CLIENT_ALLOC,PRPC_CLIENT_FREE);
 void  RpcSsSetThreadHandle(RPC_SS_THREAD_HANDLE);
-void  RpcSsSwapClientAllocFree(RPC_CLIENT_ALLOC*,RPC_CLIENT_FREE*,RPC_CLIENT_ALLOC**,RPC_CLIENT_FREE**);
+void  RpcSsSwapClientAllocFree(PRPC_CLIENT_ALLOC,PRPC_CLIENT_FREE,PRPC_CLIENT_ALLOC*,PRPC_CLIENT_FREE*);
 void* RpcSmAllocate(uint,RPC_STATUS*);
 RPC_STATUS  RpcSmClientFree(void*);
 RPC_STATUS  RpcSmDestroyClientContext(void**);
@@ -560,9 +543,9 @@ RPC_STATUS  RpcSmDisableAllocate();
 RPC_STATUS  RpcSmEnableAllocate();
 RPC_STATUS  RpcSmFree(void*);
 RPC_SS_THREAD_HANDLE  RpcSmGetThreadHandle(RPC_STATUS*);
-RPC_STATUS  RpcSmSetClientAllocFree(RPC_CLIENT_ALLOC*,RPC_CLIENT_FREE*);
+RPC_STATUS  RpcSmSetClientAllocFree(PRPC_CLIENT_ALLOC,PRPC_CLIENT_FREE);
 RPC_STATUS  RpcSmSetThreadHandle(RPC_SS_THREAD_HANDLE);
-RPC_STATUS  RpcSmSwapClientAllocFree(RPC_CLIENT_ALLOC*,RPC_CLIENT_FREE*,RPC_CLIENT_ALLOC**,RPC_CLIENT_FREE**);
+RPC_STATUS  RpcSmSwapClientAllocFree(PRPC_CLIENT_ALLOC,PRPC_CLIENT_FREE,PRPC_CLIENT_ALLOC*,PRPC_CLIENT_FREE*);
 void  NdrRpcSsEnableAllocate(PMIDL_STUB_MESSAGE);
 void  NdrRpcSsDisableAllocate(PMIDL_STUB_MESSAGE);
 void  NdrRpcSmSetClientToOsf(PMIDL_STUB_MESSAGE);

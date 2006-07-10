@@ -8,9 +8,6 @@
 *                       Placed into public domain                       *
 \***********************************************************************/
 module tango.os.windows.sql;
-
-//version (build) { pragma(nolink); }
-
 import tango.os.windows.sqltypes;
 private import tango.os.windows.windef;
 

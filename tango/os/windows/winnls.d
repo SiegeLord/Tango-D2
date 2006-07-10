@@ -10,11 +10,8 @@
 \***********************************************************************/
 module tango.os.windows.winnls;
 
-//version (build) { pragma(nolink); }
-
-
 private import tango.os.windows.w32api, tango.os.windows.basetsd, tango.os.windows.windef, tango.os.windows.winbase;
-//pragma(lib, "kernel32.lib");
+pragma(lib, "kernel32.lib");
 
 alias DWORD LCTYPE, CALTYPE, CALID, LGRPID, GEOID, GEOTYPE, GEOCLASS;
 

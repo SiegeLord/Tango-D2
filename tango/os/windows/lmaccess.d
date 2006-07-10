@@ -14,10 +14,7 @@
 */
 
 module tango.os.windows.lmaccess;
-
-//version (build) { pragma(nolink); }
-
-//pragma(lib, "netapi32.lib");
+pragma(lib, "netapi32.lib");
 private import tango.os.windows.windef;
 private import tango.os.windows.lmcons;
 

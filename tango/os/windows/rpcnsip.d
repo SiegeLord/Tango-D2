@@ -8,9 +8,6 @@
 *                       Placed into public domain                       *
 \***********************************************************************/
 module tango.os.windows.rpcnsip;
-
-//version (build) { pragma(nolink); }
-
 private import tango.os.windows.rpcdcep;
 private import tango.os.windows.rpcnsi;
 private import tango.os.windows.rpcdce;

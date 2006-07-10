@@ -8,86 +8,83 @@
 *                       Placed into public domain                       *
 \***********************************************************************/
 module tango.os.windows.cguid;
-
-//version (build) { pragma(nolink); }
-
 private import tango.os.windows.basetyps;
 
-extern (C)
-{
-extern IID GUID_NULL;
+extern (C) {
+	extern const IID
+		GUID_NULL,
+		IID_IRpcChannel,
+		IID_IRpcStub,
+		IID_IStubManager,
+		IID_IRpcProxy,
+		IID_IProxyManager,
+		IID_IPSFactory,
+		IID_IInternalMoniker,
+		IID_IDfReserved1,
+		IID_IDfReserved2,
+		IID_IDfReserved3,
+		IID_IStub,
+		IID_IProxy,
+		IID_IEnumGeneric,
+		IID_IEnumHolder,
+		IID_IEnumCallback,
+		IID_IOleManager,
+		IID_IOlePresObj,
+		IID_IDebug,
+		IID_IDebugStream;
 
-extern IID IID_IRpcChannel;
-extern IID IID_IRpcStub;
-extern IID IID_IStubManager;
-extern IID IID_IRpcProxy;
-extern IID IID_IProxyManager;
-extern IID IID_IPSFactory;
-extern IID IID_IInternalMoniker;
-extern IID IID_IDfReserved1;
-extern IID IID_IDfReserved2;
-extern IID IID_IDfReserved3;
-extern IID IID_IStub;
-extern IID IID_IProxy;
-extern IID IID_IEnumGeneric;
-extern IID IID_IEnumHolder;
-extern IID IID_IEnumCallback;
-extern IID IID_IOleManager;
-extern IID IID_IOlePresObj;
-extern IID IID_IDebug;
-extern IID IID_IDebugStream;
+	extern const CLSID
+		CLSID_StdMarshal,
+		CLSID_PSGenObject,
+		CLSID_PSClientSite,
+		CLSID_PSClassObject,
+		CLSID_PSInPlaceActive,
+		CLSID_PSInPlaceFrame,
+		CLSID_PSDragDrop,
+		CLSID_PSBindCtx,
+		CLSID_PSEnumerators,
+		CLSID_StaticMetafile,
+		CLSID_StaticDib,
 
-extern CLSID CLSID_StdMarshal;
-extern CLSID CLSID_PSGenObject;
-extern CLSID CLSID_PSClientSite;
-extern CLSID CLSID_PSClassObject;
-extern CLSID CLSID_PSInPlaceActive;
-extern CLSID CLSID_PSInPlaceFrame;
-extern CLSID CLSID_PSDragDrop;
-extern CLSID CLSID_PSBindCtx;
-extern CLSID CLSID_PSEnumerators;
-extern CLSID CLSID_StaticMetafile;
-extern CLSID CLSID_StaticDib;
+		CID_CDfsVolume,
 
-extern CLSID CID_CDfsVolume;
+		CLSID_CCDFormKrnl,
+		CLSID_CCDPropertyPage,
+		CLSID_CCDFormDialog,
+		CLSID_CCDCommandButton,
+		CLSID_CCDComboBox,
+		CLSID_CCDTextBox,
+		CLSID_CCDCheckBox,
+		CLSID_CCDLabel,
+		CLSID_CCDOptionButton,
+		CLSID_CCDListBox,
+		CLSID_CCDScrollBar,
+		CLSID_CCDGroupBox,
+		CLSID_CCDGeneralPropertyPage,
+		CLSID_CCDGenericPropertyPage,
+		CLSID_CCDFontPropertyPage,
+		CLSID_CCDColorPropertyPage,
+		CLSID_CCDLabelPropertyPage,
+		CLSID_CCDCheckBoxPropertyPage,
+		CLSID_CCDTextBoxPropertyPage,
+		CLSID_CCDOptionButtonPropertyPage,
+		CLSID_CCDListBoxPropertyPage,
+		CLSID_CCDCommandButtonPropertyPage,
+		CLSID_CCDComboBoxPropertyPage,
+		CLSID_CCDScrollBarPropertyPage,
+		CLSID_CCDGroupBoxPropertyPage,
+		CLSID_CCDXObjectPropertyPage,
+		CLSID_CStdPropertyFrame,
+		CLSID_CFormPropertyPage,
+		CLSID_CGridPropertyPage,
+		CLSID_CWSJArticlePage,
+		CLSID_CSystemPage,
+		CLSID_IdentityUnmarshal,
+		CLSID_InProcFreeMarshaler,
+		CLSID_Picture_Metafile,
+		CLSID_Picture_EnhMetafile,
+		CLSID_Picture_Dib,
+		CLSID_StdGlobalInterfaceTable;
 
-extern CLSID CLSID_CCDFormKrnl;
-extern CLSID CLSID_CCDPropertyPage;
-extern CLSID CLSID_CCDFormDialog;
-extern CLSID CLSID_CCDCommandButton;
-extern CLSID CLSID_CCDComboBox;
-extern CLSID CLSID_CCDTextBox;
-extern CLSID CLSID_CCDCheckBox;
-extern CLSID CLSID_CCDLabel;
-extern CLSID CLSID_CCDOptionButton;
-extern CLSID CLSID_CCDListBox;
-extern CLSID CLSID_CCDScrollBar;
-extern CLSID CLSID_CCDGroupBox;
-extern CLSID CLSID_CCDGeneralPropertyPage;
-extern CLSID CLSID_CCDGenericPropertyPage;
-extern CLSID CLSID_CCDFontPropertyPage;
-extern CLSID CLSID_CCDColorPropertyPage;
-extern CLSID CLSID_CCDLabelPropertyPage;
-extern CLSID CLSID_CCDCheckBoxPropertyPage;
-extern CLSID CLSID_CCDTextBoxPropertyPage;
-extern CLSID CLSID_CCDOptionButtonPropertyPage;
-extern CLSID CLSID_CCDListBoxPropertyPage;
-extern CLSID CLSID_CCDCommandButtonPropertyPage;
-extern CLSID CLSID_CCDComboBoxPropertyPage;
-extern CLSID CLSID_CCDScrollBarPropertyPage;
-extern CLSID CLSID_CCDGroupBoxPropertyPage;
-extern CLSID CLSID_CCDXObjectPropertyPage;
-extern CLSID CLSID_CStdPropertyFrame;
-extern CLSID CLSID_CFormPropertyPage;
-extern CLSID CLSID_CGridPropertyPage;
-extern CLSID CLSID_CWSJArticlePage;
-extern CLSID CLSID_CSystemPage;
-extern CLSID CLSID_IdentityUnmarshal;
-extern CLSID CLSID_InProcFreeMarshaler;
-extern CLSID CLSID_Picture_Metafile;
-extern CLSID CLSID_Picture_EnhMetafile;
-extern CLSID CLSID_Picture_Dib;
-extern CLSID CLSID_StdGlobalInterfaceTable;
-
-extern GUID GUID_TRISTATE;
+	extern const GUID GUID_TRISTATE;
 }

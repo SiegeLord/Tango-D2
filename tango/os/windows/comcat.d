@@ -10,9 +10,6 @@
 \***********************************************************************/
 module tango.os.windows.comcat;
 
-//version (build) { pragma(nolink); }
-
-
 import tango.os.windows.windows, tango.os.windows.ole2;
 
 alias IEnumGUID* LPENUMGUID;

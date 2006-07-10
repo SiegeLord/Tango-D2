@@ -9,9 +9,6 @@
 \***********************************************************************/
 module tango.os.windows.oaidl;
 
-//version (build) { pragma(nolink); }
-
-
 private import tango.os.windows.basetyps;
 private import tango.os.windows.windef;
 private import tango.os.windows.unknwn;

@@ -9,9 +9,6 @@
 \***********************************************************************/
 
 module tango.os.windows.winperf;
-
-//version (build) { pragma(nolink); }
-
 import tango.os.windows.windef;
 import tango.os.windows.winbase; // for SYSTEMTIME
 
@@ -84,7 +81,7 @@ const PERF_RAW_FRACTION=(PERF_SIZE_DWORD|PERF_TYPE_COUNTER|PERF_COUNTER_FRACTION
 const PERF_RAW_BASE=(PERF_SIZE_DWORD|PERF_TYPE_COUNTER|PERF_COUNTER_BASE|PERF_DISPLAY_NOSHOW|3);
 const PERF_ELAPSED_TIME=(PERF_SIZE_LARGE|PERF_TYPE_COUNTER|PERF_COUNTER_ELAPSED|PERF_OBJECT_TIMER|PERF_DISPLAY_SECONDS);
 
-struct PERF_DATA_BLOCK{
+struct PERF_DATA_BLOCK {
 	WCHAR Signature[4];
 	DWORD LittleEndian;
 	DWORD Version;
@@ -102,7 +99,7 @@ struct PERF_DATA_BLOCK{
 }
 alias PERF_DATA_BLOCK * PPERF_DATA_BLOCK;
 
-struct PERF_OBJECT_TYPE{
+struct PERF_OBJECT_TYPE {
 	DWORD TotalByteLength;
 	DWORD DefinitionLength;
 	DWORD HeaderLength;
@@ -120,7 +117,7 @@ struct PERF_OBJECT_TYPE{
 }
 alias PERF_OBJECT_TYPE * PPERF_OBJECT_TYPE;
 
-struct PERF_COUNTER_DEFINITION{
+struct PERF_COUNTER_DEFINITION {
 	DWORD ByteLength;
 	DWORD CounterNameTitleIndex;
 	LPWSTR CounterNameTitle;
@@ -134,7 +131,7 @@ struct PERF_COUNTER_DEFINITION{
 }
 alias PERF_COUNTER_DEFINITION * PPERF_COUNTER_DEFINITION;
 
-struct PERF_INSTANCE_DEFINITION{
+struct PERF_INSTANCE_DEFINITION {
 	DWORD ByteLength;
 	DWORD ParentObjectTitleIndex;
 	DWORD ParentObjectInstance;
@@ -144,7 +141,7 @@ struct PERF_INSTANCE_DEFINITION{
 }
 alias PERF_INSTANCE_DEFINITION * PPERF_INSTANCE_DEFINITION;
 
-struct PERF_COUNTER_BLOCK{
+struct PERF_COUNTER_BLOCK {
 	DWORD ByteLength;
 }
 alias PERF_COUNTER_BLOCK * PPERF_COUNTER_BLOCK;

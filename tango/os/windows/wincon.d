@@ -7,15 +7,11 @@
 *                                                                       *
 *                       Placed into public domain                       *
 \***********************************************************************/
-
 module tango.os.windows.wincon;
-
-//version (build) { pragma(nolink); }
-
+pragma(lib, "kernel32.lib");
 
 private import tango.os.windows.w32api;
 private import tango.os.windows.windef;
-//pragma(lib, "kernel32.lib");
 
 // FIXME: clean up Windows version support
 
@@ -91,7 +87,7 @@ enum {
 }
 
 struct CHAR_INFO {
-	union Char{
+	union Char {
 		WCHAR UnicodeChar;
 		CHAR AsciiChar;
 	}
@@ -108,8 +104,8 @@ struct SMALL_RECT {
 alias SMALL_RECT * PSMALL_RECT;
 
 struct CONSOLE_CURSOR_INFO {
-	DWORD	dwSize;
-	BOOL	bVisible;
+	DWORD dwSize;
+	BOOL  bVisible;
 }
 alias CONSOLE_CURSOR_INFO * PCONSOLE_CURSOR_INFO;
 
@@ -126,24 +122,24 @@ struct CONSOLE_FONT_INFO {
 alias CONSOLE_FONT_INFO * PCONSOLE_FONT_INFO;
 
 struct CONSOLE_SCREEN_BUFFER_INFO {
-	COORD	dwSize;
-	COORD	dwCursorPosition;
-	WORD	wAttributes;
+	COORD      dwSize;
+	COORD      dwCursorPosition;
+	WORD       wAttributes;
 	SMALL_RECT srWindow;
-	COORD	dwMaximumWindowSize;
+	COORD      dwMaximumWindowSize;
 }
-alias CONSOLE_SCREEN_BUFFER_INFO * PCONSOLE_SCREEN_BUFFER_INFO;
+alias CONSOLE_SCREEN_BUFFER_INFO* PCONSOLE_SCREEN_BUFFER_INFO;
 
-alias BOOL function (DWORD) PHANDLER_ROUTINE;
+alias BOOL function(DWORD) PHANDLER_ROUTINE;
 
 struct KEY_EVENT_RECORD {
-	BOOL bKeyDown;
-	WORD wRepeatCount;
-	WORD wVirtualKeyCode;
-	WORD wVirtualScanCode;
+	BOOL  bKeyDown;
+	WORD  wRepeatCount;
+	WORD  wVirtualKeyCode;
+	WORD  wVirtualScanCode;
 	union uChar {
 		WCHAR UnicodeChar;
-		CHAR AsciiChar;
+		CHAR  AsciiChar;
 	}
 	DWORD dwControlKeyState;
 }

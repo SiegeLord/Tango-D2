@@ -9,9 +9,6 @@
 \***********************************************************************/
 // All functions in this file are deprecated!
 module tango.os.windows.lmconfig;
-
-//version (build) { pragma(nolink); }
-
 private import tango.os.windows.windef;
 private import tango.os.windows.lmcons;
 

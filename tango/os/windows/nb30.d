@@ -10,9 +10,6 @@
 \***********************************************************************/
 module tango.os.windows.nb30;
 
-//version (build) { pragma(nolink); }
-
-
 private import tango.os.windows.windef;
 
 const size_t

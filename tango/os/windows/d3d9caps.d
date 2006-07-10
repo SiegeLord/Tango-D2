@@ -10,9 +10,6 @@
 \***********************************************************************/
 module tango.os.windows.d3d9caps;
 
-//version (build) { pragma(nolink); }
-
-
 private import tango.os.windows.windef, tango.os.windows.d3d9types;
 
 // FIXME: check types of constants

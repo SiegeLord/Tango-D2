@@ -9,9 +9,6 @@
 \***********************************************************************/
 module tango.os.windows.shlguid;
 
-//version (build) { pragma(nolink); }
-
-
 private import tango.os.windows.basetyps;
 private import tango.os.windows.w32api;
 
@@ -21,76 +18,78 @@ private import tango.os.windows.w32api;
 //MACRO #define DEFINE_SHLGUID(n,l,w1,w2) DEFINE_GUID(n,l,w1,w2,0xC0,0,0,0,0,0,0,0x46)
 
 extern (C) {
-	extern GUID CLSID_ShellDesktop;
-	extern GUID CLSID_ShellLink;
-	extern GUID FMTID_Intshcut;
-	extern GUID FMTID_InternetSite;
-	extern GUID CGID_Explorer;
-	extern GUID CGID_ShellDocView;
-	extern GUID CGID_ShellServiceObject;
-	extern GUID IID_INewShortcutHookA;
-	extern GUID IID_IShellBrowser;
-	extern GUID IID_IShellView;
-	extern GUID IID_IContextMenu;
-	extern GUID IID_IColumnProvider;
-	extern GUID IID_IQueryInfo;
-	extern GUID IID_IShellIcon;
-	extern GUID IID_IShellIconOverlayIdentifier;
-	extern GUID IID_IShellFolder;
-	extern GUID IID_IShellExtInit;
-	extern GUID IID_IShellPropSheetExt;
-	extern GUID IID_IPersistFolder;
-	extern GUID IID_IExtractIconA;
-	extern GUID IID_IShellLinkA;
-	extern GUID IID_IShellCopyHookA;
-	extern GUID IID_IFileViewerA;
-	extern GUID IID_ICommDlgBrowser;
-	extern GUID IID_IEnumIDList;
-	extern GUID IID_IFileViewerSite;
-	extern GUID IID_IContextMenu2;
-	extern GUID IID_IShellExecuteHookA;
-	extern GUID IID_IPropSheetPage;
-	extern GUID IID_INewShortcutHookW;
-	extern GUID IID_IFileViewerW;
-	extern GUID IID_IShellLinkW;
-	extern GUID IID_IExtractIconW;
-	extern GUID IID_IShellExecuteHookW;
-	extern GUID IID_IShellCopyHookW;
-	extern GUID IID_IShellView2;
-	extern GUID LIBID_SHDocVw;
-	extern GUID IID_IShellExplorer;
-	extern GUID DIID_DShellExplorerEvents;
-	extern GUID CLSID_ShellExplorer;
-	extern GUID IID_ISHItemOC;
-	extern GUID DIID_DSHItemOCEvents;
-	extern GUID CLSID_SHItemOC;
-	extern GUID IID_DHyperLink;
-	extern GUID IID_DIExplorer;
-	extern GUID DIID_DExplorerEvents;
-	extern GUID CLSID_InternetExplorer;
-	extern GUID CLSID_StdHyperLink;
-	extern GUID CLSID_FileTypes;
-	extern GUID CLSID_InternetShortcut;
-	extern GUID IID_IUniformResourceLocator;
-	extern GUID CLSID_DragDropHelper;
-	extern GUID IID_IDropTargetHelper;
-	extern GUID IID_IDragSourceHelper;
-	extern GUID CLSID_AutoComplete;
-	extern GUID IID_IAutoComplete;
-	extern GUID IID_IAutoComplete2;
-	extern GUID CLSID_ACLMulti;
-	extern GUID IID_IObjMgr;
-	extern GUID CLSID_ACListISF;
-	extern GUID IID_IACList;
+	extern const GUID
+		CLSID_ShellDesktop,
+		CLSID_ShellLink,
+		FMTID_Intshcut,
+		FMTID_InternetSite,
+		CGID_Explorer,
+		CGID_ShellDocView,
+		CGID_ShellServiceObject,
+		IID_INewShortcutHookA,
+		IID_IShellBrowser,
+		IID_IShellView,
+		IID_IContextMenu,
+		IID_IColumnProvider,
+		IID_IQueryInfo,
+		IID_IShellIcon,
+		IID_IShellIconOverlayIdentifier,
+		IID_IShellFolder,
+		IID_IShellExtInit,
+		IID_IShellPropSheetExt,
+		IID_IPersistFolder,
+		IID_IExtractIconA,
+		IID_IShellLinkA,
+		IID_IShellCopyHookA,
+		IID_IFileViewerA,
+		IID_ICommDlgBrowser,
+		IID_IEnumIDList,
+		IID_IFileViewerSite,
+		IID_IContextMenu2,
+		IID_IShellExecuteHookA,
+		IID_IPropSheetPage,
+		IID_INewShortcutHookW,
+		IID_IFileViewerW,
+		IID_IShellLinkW,
+		IID_IExtractIconW,
+		IID_IShellExecuteHookW,
+		IID_IShellCopyHookW,
+		IID_IShellView2,
+		LIBID_SHDocVw,
+		IID_IShellExplorer,
+		DIID_DShellExplorerEvents,
+		CLSID_ShellExplorer,
+		IID_ISHItemOC,
+		DIID_DSHItemOCEvents,
+		CLSID_SHItemOC,
+		IID_DHyperLink,
+		IID_DIExplorer,
+		DIID_DExplorerEvents,
+		CLSID_InternetExplorer,
+		CLSID_StdHyperLink,
+		CLSID_FileTypes,
+		CLSID_InternetShortcut,
+		IID_IUniformResourceLocator,
+		CLSID_DragDropHelper,
+		IID_IDropTargetHelper,
+		IID_IDragSourceHelper,
+		CLSID_AutoComplete,
+		IID_IAutoComplete,
+		IID_IAutoComplete2,
+		CLSID_ACLMulti,
+		IID_IObjMgr,
+		CLSID_ACListISF,
+		IID_IACList;
 
 	static if (_WIN32_IE >= 0x400 || _WIN32_WINNT >= 0x500) {
-		extern GUID IID_IPersistFolder2;
+		extern const GUID IID_IPersistFolder2;
 	}
 
 	static if (_WIN32_WINNT >= 0x0500) {
-		extern GUID IID_IPersistFolder3;
-		extern GUID IID_IShellFolder2;
-		extern GUID IID_IFileSystemBindData;
+		extern const GUID
+			IID_IPersistFolder3,
+			IID_IShellFolder2,
+			IID_IFileSystemBindData;
 	}
 }
 

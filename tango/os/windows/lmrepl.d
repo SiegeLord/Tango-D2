@@ -8,10 +8,8 @@
 *                       Placed into public domain                       *
 \***********************************************************************/
 module tango.os.windows.lmrepl;
+pragma(lib, "netapi32.lib");
 
-//version (build) { pragma(nolink); }
-
-//pragma(lib, "netapi32.lib");
 private import tango.os.windows.lmcons;
 private import tango.os.windows.windef;
 
@@ -38,7 +36,7 @@ const REPL_EXTENT_TREE=2;
 const REPL_EXPORT_INTEGRITY_INFOLEVEL = PARMNUM_BASE_INFOLEVEL+0;
 const REPL_EXPORT_EXTENT_INFOLEVEL    = PARMNUM_BASE_INFOLEVEL+1;
 
-struct REPL_INFO_0{
+struct REPL_INFO_0 {
 	DWORD rp0_role;
 	LPWSTR rp0_exportpath;
 	LPWSTR rp0_exportlist;
@@ -72,19 +70,19 @@ struct REPL_INFO_1003 {
 }
 alias REPL_INFO_1003* PREPL_INFO_1003, LPREPL_INFO_1003;
 
-struct REPL_EDIR_INFO_0{
+struct REPL_EDIR_INFO_0 {
 	LPWSTR rped0_dirname;
 }
 alias REPL_EDIR_INFO_0* PREPL_EDIR_INFO_0, LPREPL_EDIR_INFO_0;
 
-struct REPL_EDIR_INFO_1{
+struct REPL_EDIR_INFO_1 {
 	LPWSTR rped1_dirname;
 	DWORD rped1_integrity;
 	DWORD rped1_extent;
 }
 alias REPL_EDIR_INFO_1* PREPL_EDIR_INFO_1, LPREPL_EDIR_INFO_1;
 
-struct REPL_EDIR_INFO_2{
+struct REPL_EDIR_INFO_2 {
 	LPWSTR rped2_dirname;
 	DWORD rped2_integrity;
 	DWORD rped2_extent;
@@ -93,12 +91,12 @@ struct REPL_EDIR_INFO_2{
 }
 alias REPL_EDIR_INFO_2* PREPL_EDIR_INFO_2, LPREPL_EDIR_INFO_2;
 
-struct REPL_EDIR_INFO_1000{
+struct REPL_EDIR_INFO_1000 {
 	DWORD rped1000_integrity;
 }
 alias REPL_EDIR_INFO_1000* PREPL_EDIR_INFO_1000, LPREPL_EDIR_INFO_1000;
 
-struct REPL_EDIR_INFO_1001{
+struct REPL_EDIR_INFO_1001 {
 	DWORD rped1001_extent;
 }
 alias REPL_EDIR_INFO_1001* PREPL_EDIR_INFO_1001, LPREPL_EDIR_INFO_1001;
@@ -108,7 +106,7 @@ struct REPL_IDIR_INFO_0 {
 }
 alias REPL_IDIR_INFO_0* PREPL_IDIR_INFO_0, LPREPL_IDIR_INFO_0;
 
-struct REPL_IDIR_INFO_1{
+struct REPL_IDIR_INFO_1 {
 	LPWSTR rpid1_dirname;
 	DWORD rpid1_state;
 	LPWSTR rpid1_mastername;

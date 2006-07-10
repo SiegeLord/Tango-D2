@@ -12,9 +12,6 @@
 */
 
 module tango.os.windows.sqltypes;
-
-//version (build) { pragma(nolink); }
-
 private import tango.os.windows.wtypes; // for GUID
 
 alias byte SCHAR;
@@ -87,19 +84,19 @@ alias long SQLBIGINT;
 alias ulong SQLUBIGINT;
 //}
 
-struct DATE_STRUCT{
+struct DATE_STRUCT {
 	SQLSMALLINT year;
 	SQLUSMALLINT month;
 	SQLUSMALLINT day;
 }
 
-struct TIME_STRUCT{
+struct TIME_STRUCT {
 	SQLUSMALLINT hour;
 	SQLUSMALLINT minute;
 	SQLUSMALLINT second;
 }
 
-struct TIMESTAMP_STRUCT{
+struct TIMESTAMP_STRUCT {
 	SQLSMALLINT year;
 	SQLUSMALLINT month;
 	SQLUSMALLINT day;
@@ -136,16 +133,16 @@ struct SQL_YEAR_MONTH_STRUCT {
 
 struct SQL_DAY_SECOND_STRUCT {
 	SQLUINTEGER day;
-	SQLUINTEGER	hour;
+	SQLUINTEGER hour;
 	SQLUINTEGER minute;
 	SQLUINTEGER second;
 	SQLUINTEGER fraction;
 }
 
-struct SQL_INTERVAL_STRUCT{
+struct SQL_INTERVAL_STRUCT {
 	SQLINTERVAL interval_type;
 	SQLSMALLINT interval_sign;
-	union intval{
+	union intval {
 		SQL_YEAR_MONTH_STRUCT year_month;
 		SQL_DAY_SECOND_STRUCT day_second;
 	}
@@ -153,7 +150,7 @@ struct SQL_INTERVAL_STRUCT{
 
 const SQL_MAX_NUMERIC_LEN = 16;
 
-struct SQL_NUMERIC_STRUCT{
+struct SQL_NUMERIC_STRUCT {
 	SQLCHAR precision;
 	SQLSCHAR scale;
 	SQLCHAR sign;

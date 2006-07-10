@@ -1,10 +1,7 @@
 // Converted from w32api\vfw.h
 module tango.os.windows.vfw;
 
-//version (build) { pragma(nolink); }
-
-
-//pragma(lib, "vfw32.lib");
+pragma(lib, "vfw32.lib");
 
 private import tango.os.windows.windows;
 private import tango.os.windows.mmsystem;
@@ -739,7 +736,7 @@ LONG InitVFW();
 LONG TermVFW();
 DWORD VFWAPIV ICCompress(HIC,DWORD,LPBITMAPINFOHEADER,LPVOID,LPBITMAPINFOHEADER,LPVOID,LPDWORD,LPDWORD,LONG,DWORD,DWORD,LPBITMAPINFOHEADER,LPVOID);
 DWORD VFWAPIV ICDecompress(HIC,DWORD,LPBITMAPINFOHEADER,LPVOID,LPBITMAPINFOHEADER,LPVOID);
-LRESULT	ICSendMessage(HIC,UINT,DWORD,DWORD);
+LRESULT ICSendMessage(HIC,UINT,DWORD,DWORD);
 HANDLE ICImageCompress(HIC,UINT,LPBITMAPINFO,LPVOID,LPBITMAPINFO,LONG,LONG*);
 HANDLE ICImageDecompress(HIC,UINT,LPBITMAPINFO,LPVOID,LPBITMAPINFO);
 BOOL ICInfo(DWORD,DWORD,ICINFO*);
@@ -1253,4 +1250,3 @@ version(Unicode) {
 	alias MCIWNDM_RETURNSTRINGA MCIWNDM_RETURNSTRING;
 	alias MCIWNDM_OPENA MCIWNDM_OPEN;
 }
-align:

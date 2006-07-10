@@ -8,9 +8,6 @@
 *                       Placed into public domain                       *
 \***********************************************************************/
 module tango.os.windows.lmerr;
-
-//version (build) { pragma(nolink); }
-
 import tango.os.windows.winerror;
 
 enum {

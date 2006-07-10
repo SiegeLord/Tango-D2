@@ -7,12 +7,8 @@
 *                                                                       *
 *                       Placed into public domain                       *
 \***********************************************************************/
-
 module tango.os.windows.commdlg;
-
-//version (build) { pragma(nolink); }
-
-//pragma(lib, "comdlg32.lib");
+pragma(lib, "comdlg32.lib");
 
 private import tango.os.windows.w32api;
 import tango.os.windows.windef;
@@ -29,7 +25,7 @@ const TCHAR []
 	FINDMSGSTRING = "commdlg_FindReplace";
 
 const UINT
-	CDN_FIRST          = -601,/* also in commctrl.h */
+	CDN_FIRST          = -601, // also in commctrl.h
 	CDN_LAST           = -699,
 	CDN_INITDONE       = CDN_FIRST,
 	CDN_SELCHANGE      = CDN_FIRST-1,
@@ -99,11 +95,11 @@ enum : WORD {
 	BOLD_FONTTYPE      = 0x100,
 	ITALIC_FONTTYPE    = 0x200,
 	REGULAR_FONTTYPE   = 0x400,
-	SCREEN_FONTTYPE    = 0x2000,	
+	SCREEN_FONTTYPE    = 0x2000,
 	PRINTER_FONTTYPE   = 0x4000,
 	SIMULATED_FONTTYPE = 0x8000
 }
-	
+
 const WM_CHOOSEFONT_GETLOGFONT = WM_USER + 1;
 const WM_CHOOSEFONT_SETLOGFONT = WM_USER + 101;
 const WM_CHOOSEFONT_SETFLAGS   = WM_USER + 102;
@@ -247,7 +243,7 @@ void CommDlg_OpenSave_HideControl(HWND hWndControl, WPARAM wParam) {
 	return SendMessage(hWndControl, CDM_HIDECONTROL, wParam, 0);
 }
 
-void CommDlg_OpenSave_SetDefExt(HWND hWndControl, TCHAR * lparam) {
+void CommDlg_OpenSave_SetDefExt(HWND hWndControl, TCHAR* lparam) {
 	return SendMessage(hWndControl, CDM_SETCONTROLTEXT, 0, cast(LPARAM)lParam);
 }
 
@@ -260,87 +256,88 @@ alias CommDlg_OpenSave_GetFolderPath
 	CommDlg_OpenSave_GetFolderPathA, CommDlg_OpenSave_GetFolderPathW;
 +/
 
-// Callbacks. 
+// Callbacks.
 extern(Windows) {
 alias UINT function (HWND,UINT,WPARAM,LPARAM)
 	LPCCHOOKPROC, LPCFHOOKPROC, LPFRHOOKPROC, LPOFNHOOKPROC,
 	LPPAGEPAINTHOOK, LPPAGESETUPHOOK, LPSETUPHOOKPROC, LPPRINTHOOKPROC;
 }
+
 align (1):
 
-struct CHOOSECOLORA{
-	DWORD	lStructSize;
-	HWND	hwndOwner;
-	HWND	hInstance;
-	COLORREF	rgbResult;
-	COLORREF*	lpCustColors;
-	DWORD	Flags;
-	LPARAM	lCustData;
-	LPCCHOOKPROC	lpfnHook;
-	LPCSTR	lpTemplateName;
+struct CHOOSECOLORA {
+	DWORD        lStructSize;
+	HWND         hwndOwner;
+	HWND         hInstance;
+	COLORREF     rgbResult;
+	COLORREF*    lpCustColors;
+	DWORD        Flags;
+	LPARAM       lCustData;
+	LPCCHOOKPROC lpfnHook;
+	LPCSTR       lpTemplateName;
 }
-alias CHOOSECOLORA * LPCHOOSECOLORA;
+alias CHOOSECOLORA* LPCHOOSECOLORA;
 
-struct CHOOSECOLORW{
-	DWORD	lStructSize;
-	HWND	hwndOwner;
-	HWND	hInstance;
-	COLORREF	rgbResult;
-	COLORREF*	lpCustColors;
-	DWORD	Flags;
-	LPARAM	lCustData;
-	LPCCHOOKPROC	lpfnHook;
-	LPCWSTR	lpTemplateName;
+struct CHOOSECOLORW {
+	DWORD        lStructSize;
+	HWND         hwndOwner;
+	HWND         hInstance;
+	COLORREF     rgbResult;
+	COLORREF*    lpCustColors;
+	DWORD        Flags;
+	LPARAM       lCustData;
+	LPCCHOOKPROC lpfnHook;
+	LPCWSTR      lpTemplateName;
 }
-alias CHOOSECOLORW * LPCHOOSECOLORW;
+alias CHOOSECOLORW* LPCHOOSECOLORW;
 
-struct CHOOSEFONTA{
-	DWORD	lStructSize;
-	HWND	hwndOwner;
-	HDC	hDC;
-	LPLOGFONTA	lpLogFont;
-	INT	iPointSize;
-	DWORD	Flags;
-	DWORD	rgbColors;
-	LPARAM	lCustData;
-	LPCFHOOKPROC	lpfnHook;
-	LPCSTR	lpTemplateName;
-	HINSTANCE	hInstance;
-	LPSTR	lpszStyle;
-	WORD	nFontType;
-	WORD	___MISSING_ALIGNMENT__;
-	INT	nSizeMin;
-	INT	nSizeMax;
+struct CHOOSEFONTA {
+	DWORD        lStructSize;
+	HWND         hwndOwner;
+	HDC          hDC;
+	LPLOGFONTA   lpLogFont;
+	INT          iPointSize;
+	DWORD        Flags;
+	DWORD        rgbColors;
+	LPARAM       lCustData;
+	LPCFHOOKPROC lpfnHook;
+	LPCSTR       lpTemplateName;
+	HINSTANCE    hInstance;
+	LPSTR        lpszStyle;
+	WORD         nFontType;
+	WORD         ___MISSING_ALIGNMENT__;
+	INT          nSizeMin;
+	INT          nSizeMax;
 }
-alias CHOOSEFONTA * LPCHOOSEFONTA;
+alias CHOOSEFONTA* LPCHOOSEFONTA;
 
-struct CHOOSEFONTW{
-	DWORD	lStructSize;
-	HWND	hwndOwner;
-	HDC	hDC;
-	LPLOGFONTW	lpLogFont;
-	INT	iPointSize;
-	DWORD	Flags;
-	DWORD	rgbColors;
-	LPARAM	lCustData;
-	LPCFHOOKPROC	lpfnHook;
-	LPCWSTR	lpTemplateName;
-	HINSTANCE	hInstance;
-	LPWSTR	lpszStyle;
-	WORD	nFontType;
-	WORD	___MISSING_ALIGNMENT__;
-	INT	nSizeMin;
-	INT	nSizeMax;
+struct CHOOSEFONTW {
+	DWORD        lStructSize;
+	HWND         hwndOwner;
+	HDC          hDC;
+	LPLOGFONTW   lpLogFont;
+	INT          iPointSize;
+	DWORD        Flags;
+	DWORD        rgbColors;
+	LPARAM       lCustData;
+	LPCFHOOKPROC lpfnHook;
+	LPCWSTR      lpTemplateName;
+	HINSTANCE    hInstance;
+	LPWSTR       lpszStyle;
+	WORD         nFontType;
+	WORD         ___MISSING_ALIGNMENT__;
+	INT          nSizeMin;
+	INT          nSizeMax;
 }
-alias CHOOSEFONTW * LPCHOOSEFONTW;
+alias CHOOSEFONTW* LPCHOOSEFONTW;
 
-struct DEVNAMES{
+struct DEVNAMES {
 	WORD wDriverOffset;
 	WORD wDeviceOffset;
 	WORD wOutputOffset;
 	WORD wDefault;
 }
-alias DEVNAMES * LPDEVNAMES;
+alias DEVNAMES* LPDEVNAMES;
 
 struct FINDREPLACEA {
 	DWORD lStructSize;
@@ -355,7 +352,7 @@ struct FINDREPLACEA {
 	LPFRHOOKPROC lpfnHook;
 	LPCSTR lpTemplateName;
 }
-alias FINDREPLACEA * LPFINDREPLACEA;
+alias FINDREPLACEA* LPFINDREPLACEA;
 
 struct FINDREPLACEW {
 	DWORD lStructSize;
@@ -370,7 +367,7 @@ struct FINDREPLACEW {
 	LPFRHOOKPROC lpfnHook;
 	LPCWSTR lpTemplateName;
 }
-alias FINDREPLACEW * LPFINDREPLACEW;
+alias FINDREPLACEW* LPFINDREPLACEW;
 
 struct OPENFILENAMEA {
 	DWORD lStructSize;
@@ -394,9 +391,9 @@ struct OPENFILENAMEA {
 	LPOFNHOOKPROC lpfnHook;
 	LPCSTR lpTemplateName;
 }
-alias OPENFILENAMEA * LPOPENFILENAMEA;
+alias OPENFILENAMEA* LPOPENFILENAMEA;
 
-struct OPENFILENAMEW{
+struct OPENFILENAMEW {
 	DWORD lStructSize;
 	HWND hwndOwner;
 	HINSTANCE hInstance;
@@ -418,23 +415,23 @@ struct OPENFILENAMEW{
 	LPOFNHOOKPROC lpfnHook;
 	LPCWSTR lpTemplateName;
 }
-alias OPENFILENAMEW * LPOPENFILENAMEW;
+alias OPENFILENAMEW* LPOPENFILENAMEW;
 
-struct OFNOTIFYA{
+struct OFNOTIFYA {
 	NMHDR hdr;
 	LPOPENFILENAMEA lpOFN;
 	LPSTR pszFile;
 }
-alias OFNOTIFYA * LPOFNOTIFYA;
+alias OFNOTIFYA* LPOFNOTIFYA;
 
-struct OFNOTIFYW{
+struct OFNOTIFYW {
 	NMHDR hdr;
 	LPOPENFILENAMEW lpOFN;
 	LPWSTR pszFile;
 }
-alias OFNOTIFYW * LPOFNOTIFYW;
+alias OFNOTIFYW* LPOFNOTIFYW;
 
-struct PAGESETUPDLGA{
+struct PAGESETUPDLGA {
 	DWORD lStructSize;
 	HWND hwndOwner;
 	HGLOBAL hDevMode;
@@ -450,9 +447,9 @@ struct PAGESETUPDLGA{
 	LPCSTR lpPageSetupTemplateName;
 	HGLOBAL hPageSetupTemplate;
 }
-alias PAGESETUPDLGA * LPPAGESETUPDLGA;
+alias PAGESETUPDLGA* LPPAGESETUPDLGA;
 
-struct PAGESETUPDLGW{
+struct PAGESETUPDLGW {
 	DWORD lStructSize;
 	HWND hwndOwner;
 	HGLOBAL hDevMode;
@@ -468,9 +465,9 @@ struct PAGESETUPDLGW{
 	LPCWSTR lpPageSetupTemplateName;
 	HGLOBAL hPageSetupTemplate;
 }
-alias PAGESETUPDLGW * LPPAGESETUPDLGW;
+alias PAGESETUPDLGW* LPPAGESETUPDLGW;
 
-struct PRINTDLGA{
+struct PRINTDLGA {
 	DWORD lStructSize;
 	HWND hwndOwner;
 	HANDLE hDevMode;
@@ -491,9 +488,9 @@ struct PRINTDLGA{
 	HANDLE hPrintTemplate;
 	HANDLE hSetupTemplate;
 }
-alias PRINTDLGA * LPPRINTDLGA;
+alias PRINTDLGA* LPPRINTDLGA;
 
-struct PRINTDLGW{
+struct PRINTDLGW {
 	DWORD lStructSize;
 	HWND hwndOwner;
 	HANDLE hDevMode;
@@ -514,19 +511,19 @@ struct PRINTDLGW{
 	HANDLE hPrintTemplate;
 	HANDLE hSetupTemplate;
 }
-alias PRINTDLGW * LPPRINTDLGW;
+alias PRINTDLGW* LPPRINTDLGW;
 
 static if (WINVER >= 0x0500) {
-import tango.os.windows.unknwn;/* for LPUNKNOWN  */
-import tango.os.windows.prsht;/* for HPROPSHEETPAGE  */
+import tango.os.windows.unknwn; // for LPUNKNOWN
+import tango.os.windows.prsht;  // for HPROPSHEETPAGE
 
-struct PRINTPAGERANGE{
+struct PRINTPAGERANGE {
 	DWORD  nFromPage;
 	DWORD  nToPage;
 }
-alias PRINTPAGERANGE * LPPRINTPAGERANGE;
+alias PRINTPAGERANGE* LPPRINTPAGERANGE;
 
-struct PRINTDLGEXA{
+struct PRINTDLGEXA {
 	DWORD lStructSize;
 	HWND hwndOwner;
 	HGLOBAL hDevMode;
@@ -545,13 +542,13 @@ struct PRINTDLGEXA{
 	LPCSTR lpPrintTemplateName;
 	LPUNKNOWN lpCallback;
 	DWORD nPropertyPages;
-	HPROPSHEETPAGE *lphPropertyPages;
+	HPROPSHEETPAGE* lphPropertyPages;
 	DWORD nStartPage;
 	DWORD dwResultAction;
 }
-alias PRINTDLGEXA * LPPRINTDLGEXA;
+alias PRINTDLGEXA* LPPRINTDLGEXA;
 
-struct PRINTDLGEXW{
+struct PRINTDLGEXW {
 	DWORD lStructSize;
 	HWND hwndOwner;
 	HGLOBAL hDevMode;
@@ -570,15 +567,13 @@ struct PRINTDLGEXW{
 	LPCWSTR lpPrintTemplateName;
 	LPUNKNOWN lpCallback;
 	DWORD nPropertyPages;
-	HPROPSHEETPAGE *lphPropertyPages;
+	HPROPSHEETPAGE* lphPropertyPages;
 	DWORD nStartPage;
 	DWORD dwResultAction;
 }
-alias PRINTDLGEXW * LPPRINTDLGEXW;
+alias PRINTDLGEXW* LPPRINTDLGEXW;
 
-} /* WINVER >= 0x0500 */
-
-align:
+} // WINVER >= 0x0500
 
 extern (Windows):
 
@@ -603,75 +598,68 @@ HWND ReplaceTextA(LPFINDREPLACEA);
 HWND ReplaceTextW(LPFINDREPLACEW);
 
 static if (WINVER >= 0x0500) {
-
-HRESULT PrintDlgExA(LPPRINTDLGEXA);
-HRESULT PrintDlgExW(LPPRINTDLGEXW);
-
+	HRESULT PrintDlgExA(LPPRINTDLGEXA);
+	HRESULT PrintDlgExW(LPPRINTDLGEXW);
 }
 
 version(Unicode) {
+	alias CHOOSECOLORW CHOOSECOLOR;
+	alias CHOOSEFONTW CHOOSEFONT;
+	alias FINDREPLACEW FINDREPLACE;
+	alias OPENFILENAMEW OPENFILENAME;
+	alias OFNOTIFYW OFNOTIFY;
+	alias PAGESETUPDLGW PAGESETUPDLG;
+	alias PRINTDLGW PRINTDLG;
 
-alias CHOOSECOLORW CHOOSECOLOR;
-alias CHOOSEFONTW CHOOSEFONT;
-alias FINDREPLACEW FINDREPLACE;
-alias OPENFILENAMEW OPENFILENAME;
-alias OFNOTIFYW OFNOTIFY;
-alias PAGESETUPDLGW PAGESETUPDLG;
-alias PRINTDLGW PRINTDLG;
+	alias ChooseColorW ChooseColor;
+	alias ChooseFontW ChooseFont;
+	alias FindTextW FindText;
+	alias GetFileTitleW GetFileTitle;
+	alias GetOpenFileNameW GetOpenFileName;
+	alias GetSaveFileNameW GetSaveFileName;
+	alias PageSetupDlgW PageSetupDlg;
+	alias PrintDlgW PrintDlg;
+	alias ReplaceTextW ReplaceText;
 
+	static if (WINVER >= 0x0500) {
+		alias PRINTDLGEXW PRINTDLGEX;
+		alias PrintDlgExW PrintDlgEx;
+	} // WINVER >= 0x0500
 
-alias ChooseColorW ChooseColor;
-alias ChooseFontW ChooseFont;
-alias FindTextW FindText;
-alias GetFileTitleW GetFileTitle;
-alias GetOpenFileNameW GetOpenFileName;
-alias GetSaveFileNameW GetSaveFileName;
-alias PageSetupDlgW PageSetupDlg;
-alias PrintDlgW PrintDlg;
-alias ReplaceTextW ReplaceText;
+} else { // UNICODE
 
+	alias CHOOSECOLORA CHOOSECOLOR;
+	alias CHOOSEFONTA CHOOSEFONT;
+	alias FINDREPLACEA FINDREPLACE;
+	alias OPENFILENAMEA OPENFILENAME;
+	alias OFNOTIFYA OFNOTIFY;
+	alias PAGESETUPDLGA PAGESETUPDLG;
+	alias PRINTDLGA PRINTDLG;
+
+	alias ChooseColorA ChooseColor;
+	alias ChooseFontA ChooseFont;
+	alias FindTextA FindText;
+	alias GetFileTitleA GetFileTitle;
+	alias GetOpenFileNameA GetOpenFileName;
+	alias GetSaveFileNameA GetSaveFileName;
+	alias PageSetupDlgA PageSetupDlg;
+	alias PrintDlgA PrintDlg;
+	alias ReplaceTextA ReplaceText;
+
+	static if (WINVER >= 0x0500) {
+		alias PRINTDLGEXA PRINTDLGEX;
+		alias PrintDlgExA PrintDlgEx;
+	} // WINVER >= 0x0500
+
+} // UNICODE
+
+alias CHOOSECOLOR* LPCHOOSECOLOR;
+alias CHOOSEFONT* LPCHOOSEFONT;
+alias FINDREPLACE* LPFINDREPLACE;
+alias OPENFILENAME* LPOPENFILENAME;
+alias OFNOTIFY* LPOFNOTIFY;
+alias PAGESETUPDLG* LPPAGESETUPDLG;
+alias PRINTDLG* LPPRINTDLG;
 static if (WINVER >= 0x0500) {
-
-alias PRINTDLGEXW PRINTDLGEX;
-alias PrintDlgExW PrintDlgEx;
-} /* WINVER >= 0x0500 */
-
-} else { /* UNICODE */
-
-alias CHOOSECOLORA CHOOSECOLOR;
-alias CHOOSEFONTA CHOOSEFONT;
-alias FINDREPLACEA FINDREPLACE;
-alias OPENFILENAMEA OPENFILENAME;
-alias OFNOTIFYA OFNOTIFY;
-alias PAGESETUPDLGA PAGESETUPDLG;
-alias PRINTDLGA PRINTDLG;
-
-alias ChooseColorA ChooseColor;
-alias ChooseFontA ChooseFont;
-alias FindTextA FindText;
-alias GetFileTitleA GetFileTitle;
-alias GetOpenFileNameA GetOpenFileName;
-alias GetSaveFileNameA GetSaveFileName;
-alias PageSetupDlgA PageSetupDlg;
-alias PrintDlgA PrintDlg;
-alias ReplaceTextA ReplaceText;
-
-static if (WINVER >= 0x0500) {
-
-alias PRINTDLGEXA PRINTDLGEX;
-alias PrintDlgExA PrintDlgEx;
-
-} /* WINVER >= 0x0500 */
-
-} /* UNICODE */
-
-alias CHOOSECOLOR *LPCHOOSECOLOR;
-alias CHOOSEFONT *LPCHOOSEFONT;
-alias FINDREPLACE *LPFINDREPLACE;
-alias OPENFILENAME *LPOPENFILENAME;
-alias OFNOTIFY *LPOFNOTIFY;
-alias PAGESETUPDLG *LPPAGESETUPDLG;
-alias PRINTDLG *LPPRINTDLG;
-static if (WINVER >= 0x0500) {
-alias PRINTDLGEX *LPPRINTDLGEX;
+	alias PRINTDLGEX* LPPRINTDLGEX;
 }

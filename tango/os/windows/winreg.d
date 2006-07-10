@@ -10,11 +10,8 @@
 \***********************************************************************/
 module tango.os.windows.winreg;
 
-//version (build) { pragma(nolink); }
-
-
 private import tango.os.windows.windef, tango.os.windows.winbase;
-//pragma(lib, "advapi32.lib");
+pragma(lib, "advapi32.lib");
 
 const HKEY
 	HKEY_CLASSES_ROOT     = cast(HKEY) 0x80000000,
@@ -31,7 +28,7 @@ enum : DWORD {
 }
 
 enum : DWORD {
-	REG_CREATED_NEW_KEY	    = 1,
+	REG_CREATED_NEW_KEY = 1,
 	REG_OPENED_EXISTING_KEY
 }
 

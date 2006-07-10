@@ -10,9 +10,6 @@
 
 // COMMENT: This file might be deprecated.
 module tango.os.windows.lmchdev;
-
-//version (build) { pragma(nolink); }
-
 private import tango.os.windows.lmcons;
 private import tango.os.windows.windef;
 

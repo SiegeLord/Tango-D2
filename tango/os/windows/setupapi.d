@@ -9,10 +9,7 @@
 *                       Placed into public domain                       *
 \***********************************************************************/
 module tango.os.windows.setupapi;
-
-//version (build) { pragma(nolink); }
-
-//pragma(lib, "setupapi.lib");
+pragma(lib, "setupapi.lib");
 private import tango.os.windows.w32api;
 private import tango.os.windows.windef;
 private import tango.os.windows.winbase; // for SYSTEMTIME
@@ -148,7 +145,7 @@ enum : DWORD {
 	DICD_GENERATE_ID       = 0x00000001,
 	DICD_INHERIT_CLASSDRVS = 0x00000002
 }
-	
+
 enum : DWORD {
 	DICS_ENABLE = 1,
 	DICS_DISABLE,
@@ -639,7 +636,7 @@ enum : DWORD {
 	SPCRP_MAXIMUM_PROPERTY // = 28
 }
 
-enum : DWORD { 
+enum : DWORD {
 	SPDIT_NODRIVER,
 	SPDIT_CLASSDRIVER,
 	SPDIT_COMPATDRIVER // = 2
@@ -1367,8 +1364,6 @@ struct SP_BACKUP_QUEUE_PARAMS_W {
 	INT   FilenameOffset;
 }
 alias SP_BACKUP_QUEUE_PARAMS_W* PSP_BACKUP_QUEUE_PARAMS_W;
-
-align:
 
 version (Unicode) {
 	alias SP_ORIGINAL_FILE_INFO_W SP_ORIGINAL_FILE_INFO;

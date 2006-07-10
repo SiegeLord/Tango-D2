@@ -7,12 +7,8 @@
 *                                                                       *
 *                       Placed into public domain                       *
 \***********************************************************************/
-
 module tango.os.windows.imm;
-
-//version (build) { pragma(nolink); }
-
-//pragma(lib, "imm32.lib");
+pragma(lib, "imm32.lib");
 
 private import tango.os.windows.w32api;
 import tango.os.windows.windef;
@@ -30,8 +26,8 @@ const WM_IME_CONTROL          = 0x283;
 const WM_IME_COMPOSITIONFULL  = 0x284;
 const WM_IME_SELECT           = 0x285;
 const WM_IME_CHAR             = 0x286;
-static if (WINVER >= 0x0500) {
-	const WM_IME_REQUEST=0x0288;
+static if (WINVER >= 0x500) {
+	const WM_IME_REQUEST      = 0x288;
 }
 const WM_IME_KEYDOWN          = 0x290;
 const WM_IME_KEYUP            = 0x291;
@@ -283,14 +279,14 @@ const STYLE_DESCRIPTION_SIZE=32;
 
 alias DWORD HIMC;
 alias DWORD HIMCC;
-alias HKL *LPHKL;
+alias HKL* LPHKL;
 
 struct COMPOSITIONFORM{
 	DWORD dwStyle;
 	POINT ptCurrentPos;
 	RECT rcArea;
 }
-alias COMPOSITIONFORM *PCOMPOSITIONFORM, LPCOMPOSITIONFORM;
+alias COMPOSITIONFORM* PCOMPOSITIONFORM, LPCOMPOSITIONFORM;
 
 struct CANDIDATEFORM{
 	DWORD dwIndex;
@@ -298,7 +294,7 @@ struct CANDIDATEFORM{
 	POINT ptCurrentPos;
 	RECT rcArea;
 }
-alias CANDIDATEFORM * PCANDIDATEFORM, LPCANDIDATEFORM;
+alias CANDIDATEFORM* PCANDIDATEFORM, LPCANDIDATEFORM;
 
 struct CANDIDATELIST{
 	DWORD dwSize;
@@ -309,31 +305,31 @@ struct CANDIDATELIST{
 	DWORD dwPageSize;
 	DWORD dwOffset[1];
 }
-alias CANDIDATELIST * PCANDIDATELIST, LPCANDIDATELIST;
+alias CANDIDATELIST* PCANDIDATELIST, LPCANDIDATELIST;
 
 struct REGISTERWORDA{
 	LPSTR lpReading;
 	LPSTR lpWord;
 }
-alias REGISTERWORDA *PREGISTERWORDA, LPREGISTERWORDA;
+alias REGISTERWORDA* PREGISTERWORDA, LPREGISTERWORDA;
 
 struct REGISTERWORDW{
 	LPWSTR lpReading;
 	LPWSTR lpWord;
 }
-alias REGISTERWORDW * PREGISTERWORDW, LPREGISTERWORDW;
+alias REGISTERWORDW* PREGISTERWORDW, LPREGISTERWORDW;
 
 struct STYLEBUFA{
 	DWORD dwStyle;
 	CHAR szDescription[STYLE_DESCRIPTION_SIZE];
 }
-alias STYLEBUFA * PSTYLEBUFA, LPSTYLEBUFA;
+alias STYLEBUFA* PSTYLEBUFA, LPSTYLEBUFA;
 
 struct STYLEBUFW{
 	DWORD dwStyle;
 	WCHAR szDescription[STYLE_DESCRIPTION_SIZE];
 }
-alias STYLEBUFW * PSTYLEBUFW, LPSTYLEBUFW;
+alias STYLEBUFW* PSTYLEBUFW, LPSTYLEBUFW;
 
 struct IMEMENUITEMINFOA{
 	UINT cbSize;
@@ -346,7 +342,7 @@ struct IMEMENUITEMINFOA{
 	CHAR szString[IMEMENUITEM_STRING_SIZE];
 	HBITMAP hbmpItem;
 }
-alias IMEMENUITEMINFOA * PIMEMENUITEMINFOA, LPIMEMENUITEMINFOA;
+alias IMEMENUITEMINFOA* PIMEMENUITEMINFOA, LPIMEMENUITEMINFOA;
 
 struct IMEMENUITEMINFOW{
 	UINT cbSize;
@@ -359,138 +355,131 @@ struct IMEMENUITEMINFOW{
 	WCHAR szString[IMEMENUITEM_STRING_SIZE];
 	HBITMAP hbmpItem;
 }
-alias IMEMENUITEMINFOW *PIMEMENUITEMINFOW, LPIMEMENUITEMINFOW;
+alias IMEMENUITEMINFOW* PIMEMENUITEMINFOW, LPIMEMENUITEMINFOW;
 
 alias int function (LPCSTR, DWORD, LPCSTR, LPVOID)  REGISTERWORDENUMPROCA;
 alias int function (LPCWSTR, DWORD, LPCWSTR, LPVOID) REGISTERWORDENUMPROCW;
 
 version(Unicode) {
-
-alias REGISTERWORDENUMPROCW REGISTERWORDENUMPROC;
-alias REGISTERWORDW REGISTERWORD;
-alias IMEMENUITEMINFOW IMEMENUITEMINFO;
-alias STYLEBUFW STYLEBUF;
-
+	alias REGISTERWORDENUMPROCW REGISTERWORDENUMPROC;
+	alias REGISTERWORDW REGISTERWORD;
+	alias IMEMENUITEMINFOW IMEMENUITEMINFO;
+	alias STYLEBUFW STYLEBUF;
 } else {
-
-alias REGISTERWORDENUMPROCA REGISTERWORDENUMPROC;
-alias REGISTERWORDA REGISTERWORD;
-alias IMEMENUITEMINFOA IMEMENUITEMINFO;
-alias STYLEBUFA STYLEBUF;
-
+	alias REGISTERWORDENUMPROCA REGISTERWORDENUMPROC;
+	alias REGISTERWORDA REGISTERWORD;
+	alias IMEMENUITEMINFOA IMEMENUITEMINFO;
+	alias STYLEBUFA STYLEBUF;
 }
 
-alias STYLEBUF * PSTYLEBUF, LPSTYLEBUF;
-alias REGISTERWORD * PREGISTERWORD, LPREGISTERWORD;
-alias IMEMENUITEMINFO * PIMEMENUITEMINFO, LPIMEMENUITEMINFO;
+alias STYLEBUF* PSTYLEBUF, LPSTYLEBUF;
+alias REGISTERWORD* PREGISTERWORD, LPREGISTERWORD;
+alias IMEMENUITEMINFO* PIMEMENUITEMINFO, LPIMEMENUITEMINFO;
 
 
 extern (Windows):
-HKL ImmInstallIMEA(LPCSTR,LPCSTR);
-HKL ImmInstallIMEW(LPCWSTR,LPCWSTR);
+HKL ImmInstallIMEA(LPCSTR, LPCSTR);
+HKL ImmInstallIMEW(LPCWSTR, LPCWSTR);
 HWND ImmGetDefaultIMEWnd(HWND);
-UINT ImmGetDescriptionA(HKL,LPSTR,UINT);
-UINT ImmGetDescriptionW(HKL,LPWSTR,UINT);
-UINT ImmGetIMEFileNameA(HKL,LPSTR,UINT);
-UINT ImmGetIMEFileNameW(HKL,LPWSTR,UINT);
-DWORD ImmGetProperty(HKL,DWORD);
+UINT ImmGetDescriptionA(HKL, LPSTR, UINT);
+UINT ImmGetDescriptionW(HKL, LPWSTR, UINT);
+UINT ImmGetIMEFileNameA(HKL, LPSTR, UINT);
+UINT ImmGetIMEFileNameW(HKL, LPWSTR, UINT);
+DWORD ImmGetProperty(HKL, DWORD);
 BOOL ImmIsIME(HKL);
-BOOL ImmSimulateHotKey(HWND,DWORD);
+BOOL ImmSimulateHotKey(HWND, DWORD);
 HIMC ImmCreateContext();
 BOOL ImmDestroyContext(HIMC);
 HIMC ImmGetContext(HWND);
-BOOL ImmReleaseContext(HWND,HIMC);
-HIMC ImmAssociateContext(HWND,HIMC);
-LONG ImmGetCompositionStringA(HIMC,DWORD,PVOID,DWORD);
-LONG ImmGetCompositionStringW(HIMC,DWORD,PVOID,DWORD);
-BOOL ImmSetCompositionStringA(HIMC,DWORD,PCVOID,DWORD,PCVOID,DWORD);
-BOOL ImmSetCompositionStringW(HIMC,DWORD,PCVOID,DWORD,PCVOID,DWORD);
-DWORD ImmGetCandidateListCountA(HIMC,PDWORD);
-DWORD ImmGetCandidateListCountW(HIMC,PDWORD);
-DWORD ImmGetCandidateListA(HIMC,DWORD,PCANDIDATELIST,DWORD);
-DWORD ImmGetCandidateListW(HIMC,DWORD,PCANDIDATELIST,DWORD);
-DWORD ImmGetGuideLineA(HIMC,DWORD,LPSTR,DWORD);
-DWORD ImmGetGuideLineW(HIMC,DWORD,LPWSTR,DWORD);
-BOOL ImmGetConversionStatus(HIMC,LPDWORD,PDWORD);
-BOOL ImmSetConversionStatus(HIMC,DWORD,DWORD);
+BOOL ImmReleaseContext(HWND, HIMC);
+HIMC ImmAssociateContext(HWND, HIMC);
+LONG ImmGetCompositionStringA(HIMC, DWORD, PVOID, DWORD);
+LONG ImmGetCompositionStringW(HIMC, DWORD, PVOID, DWORD);
+BOOL ImmSetCompositionStringA(HIMC, DWORD, PCVOID, DWORD, PCVOID, DWORD);
+BOOL ImmSetCompositionStringW(HIMC, DWORD, PCVOID, DWORD, PCVOID, DWORD);
+DWORD ImmGetCandidateListCountA(HIMC, PDWORD);
+DWORD ImmGetCandidateListCountW(HIMC, PDWORD);
+DWORD ImmGetCandidateListA(HIMC, DWORD, PCANDIDATELIST, DWORD);
+DWORD ImmGetCandidateListW(HIMC, DWORD, PCANDIDATELIST, DWORD);
+DWORD ImmGetGuideLineA(HIMC, DWORD, LPSTR, DWORD);
+DWORD ImmGetGuideLineW(HIMC, DWORD, LPWSTR, DWORD);
+BOOL ImmGetConversionStatus(HIMC, LPDWORD, PDWORD);
+BOOL ImmSetConversionStatus(HIMC, DWORD, DWORD);
 BOOL ImmGetOpenStatus(HIMC);
-BOOL ImmSetOpenStatus(HIMC,BOOL);
+BOOL ImmSetOpenStatus(HIMC, BOOL);
 
-BOOL ImmGetCompositionFontA(HIMC,LPLOGFONTA);
-BOOL ImmGetCompositionFontW(HIMC,LPLOGFONTW);
-BOOL ImmSetCompositionFontA(HIMC,LPLOGFONTA);
-BOOL ImmSetCompositionFontW(HIMC,LPLOGFONTW);
+BOOL ImmGetCompositionFontA(HIMC, LPLOGFONTA);
+BOOL ImmGetCompositionFontW(HIMC, LPLOGFONTW);
+BOOL ImmSetCompositionFontA(HIMC, LPLOGFONTA);
+BOOL ImmSetCompositionFontW(HIMC, LPLOGFONTW);
 
-BOOL ImmConfigureIMEA(HKL,HWND,DWORD,PVOID);
-BOOL ImmConfigureIMEW(HKL,HWND,DWORD,PVOID);
-LRESULT ImmEscapeA(HKL,HIMC,UINT,PVOID);
-LRESULT ImmEscapeW(HKL,HIMC,UINT,PVOID);
-DWORD ImmGetConversionListA(HKL,HIMC,LPCSTR,PCANDIDATELIST,DWORD,UINT);
-DWORD ImmGetConversionListW(HKL,HIMC,LPCWSTR,PCANDIDATELIST,DWORD,UINT);
-BOOL ImmNotifyIME(HIMC,DWORD,DWORD,DWORD);
-BOOL ImmGetStatusWindowPos(HIMC,LPPOINT);
-BOOL ImmSetStatusWindowPos(HIMC,LPPOINT);
-BOOL ImmGetCompositionWindow(HIMC,PCOMPOSITIONFORM);
-BOOL ImmSetCompositionWindow(HIMC,PCOMPOSITIONFORM);
-BOOL ImmGetCandidateWindow(HIMC,DWORD,PCANDIDATEFORM);
-BOOL ImmSetCandidateWindow(HIMC,PCANDIDATEFORM);
-BOOL ImmIsUIMessageA(HWND,UINT,WPARAM,LPARAM);
-BOOL ImmIsUIMessageW(HWND,UINT,WPARAM,LPARAM);
+BOOL ImmConfigureIMEA(HKL, HWND, DWORD, PVOID);
+BOOL ImmConfigureIMEW(HKL, HWND, DWORD, PVOID);
+LRESULT ImmEscapeA(HKL, HIMC, UINT, PVOID);
+LRESULT ImmEscapeW(HKL, HIMC, UINT, PVOID);
+DWORD ImmGetConversionListA(HKL, HIMC, LPCSTR, PCANDIDATELIST, DWORD, UINT);
+DWORD ImmGetConversionListW(HKL, HIMC, LPCWSTR, PCANDIDATELIST, DWORD, UINT);
+BOOL ImmNotifyIME(HIMC, DWORD, DWORD, DWORD);
+BOOL ImmGetStatusWindowPos(HIMC, LPPOINT);
+BOOL ImmSetStatusWindowPos(HIMC, LPPOINT);
+BOOL ImmGetCompositionWindow(HIMC, PCOMPOSITIONFORM);
+BOOL ImmSetCompositionWindow(HIMC, PCOMPOSITIONFORM);
+BOOL ImmGetCandidateWindow(HIMC, DWORD, PCANDIDATEFORM);
+BOOL ImmSetCandidateWindow(HIMC, PCANDIDATEFORM);
+BOOL ImmIsUIMessageA(HWND, UINT, WPARAM, LPARAM);
+BOOL ImmIsUIMessageW(HWND, UINT, WPARAM, LPARAM);
 UINT ImmGetVirtualKey(HWND);
-BOOL ImmRegisterWordA(HKL,LPCSTR,DWORD,LPCSTR);
-BOOL ImmRegisterWordW(HKL,LPCWSTR,DWORD,LPCWSTR);
-BOOL ImmUnregisterWordA(HKL,LPCSTR,DWORD,LPCSTR);
-BOOL ImmUnregisterWordW(HKL,LPCWSTR,DWORD,LPCWSTR);
-UINT ImmGetRegisterWordStyleA(HKL,UINT,PSTYLEBUFA);
-UINT ImmGetRegisterWordStyleW(HKL,UINT,PSTYLEBUFW);
-UINT ImmEnumRegisterWordA(HKL,REGISTERWORDENUMPROCA,LPCSTR,DWORD,LPCSTR,PVOID);
-UINT ImmEnumRegisterWordW(HKL,REGISTERWORDENUMPROCW,LPCWSTR,DWORD,LPCWSTR,PVOID);
+BOOL ImmRegisterWordA(HKL, LPCSTR, DWORD, LPCSTR);
+BOOL ImmRegisterWordW(HKL, LPCWSTR, DWORD, LPCWSTR);
+BOOL ImmUnregisterWordA(HKL, LPCSTR, DWORD, LPCSTR);
+BOOL ImmUnregisterWordW(HKL, LPCWSTR, DWORD, LPCWSTR);
+UINT ImmGetRegisterWordStyleA(HKL, UINT, PSTYLEBUFA);
+UINT ImmGetRegisterWordStyleW(HKL, UINT, PSTYLEBUFW);
+UINT ImmEnumRegisterWordA(HKL, REGISTERWORDENUMPROCA, LPCSTR, DWORD, LPCSTR, PVOID);
+UINT ImmEnumRegisterWordW(HKL, REGISTERWORDENUMPROCW, LPCWSTR, DWORD, LPCWSTR, PVOID);
 BOOL EnableEUDC(BOOL);
 BOOL ImmDisableIME(DWORD);
-DWORD ImmGetImeMenuItemsA(HIMC,DWORD,DWORD,LPIMEMENUITEMINFOA,LPIMEMENUITEMINFOA,DWORD);
-DWORD ImmGetImeMenuItemsW(HIMC,DWORD,DWORD,LPIMEMENUITEMINFOW,LPIMEMENUITEMINFOW,DWORD);
+DWORD ImmGetImeMenuItemsA(HIMC, DWORD, DWORD, LPIMEMENUITEMINFOA, LPIMEMENUITEMINFOA, DWORD);
+DWORD ImmGetImeMenuItemsW(HIMC, DWORD, DWORD, LPIMEMENUITEMINFOW, LPIMEMENUITEMINFOW, DWORD);
 
 version(Unicode) {
-
-alias ImmEnumRegisterWordW ImmEnumRegisterWord;
-alias ImmGetRegisterWordStyleW ImmGetRegisterWordStyle;
-alias ImmUnregisterWordW ImmUnregisterWord;
-alias ImmRegisterWordW ImmRegisterWord;
-alias ImmInstallIMEW ImmInstallIME;
-alias ImmIsUIMessageW ImmIsUIMessage;
-alias ImmGetConversionListW ImmGetConversionList;
-alias ImmEscapeW ImmEscape;
-alias ImmConfigureIMEW ImmConfigureIME;
-alias ImmSetCompositionFontW ImmSetCompositionFont;
-alias ImmGetCompositionFontW ImmGetCompositionFont;
-alias ImmGetGuideLineW ImmGetGuideLine;
-alias ImmGetCandidateListW ImmGetCandidateList;
-alias ImmGetCandidateListCountW ImmGetCandidateListCount;
-alias ImmSetCompositionStringW ImmSetCompositionString;
-alias ImmGetCompositionStringW ImmGetCompositionString;
-alias ImmGetDescriptionW ImmGetDescription;
-alias ImmGetIMEFileNameW ImmGetIMEFileName;
-alias ImmGetImeMenuItemsW ImmGetImeMenuItems;
-
+	alias ImmEnumRegisterWordW ImmEnumRegisterWord;
+	alias ImmGetRegisterWordStyleW ImmGetRegisterWordStyle;
+	alias ImmUnregisterWordW ImmUnregisterWord;
+	alias ImmRegisterWordW ImmRegisterWord;
+	alias ImmInstallIMEW ImmInstallIME;
+	alias ImmIsUIMessageW ImmIsUIMessage;
+	alias ImmGetConversionListW ImmGetConversionList;
+	alias ImmEscapeW ImmEscape;
+	alias ImmConfigureIMEW ImmConfigureIME;
+	alias ImmSetCompositionFontW ImmSetCompositionFont;
+	alias ImmGetCompositionFontW ImmGetCompositionFont;
+	alias ImmGetGuideLineW ImmGetGuideLine;
+	alias ImmGetCandidateListW ImmGetCandidateList;
+	alias ImmGetCandidateListCountW ImmGetCandidateListCount;
+	alias ImmSetCompositionStringW ImmSetCompositionString;
+	alias ImmGetCompositionStringW ImmGetCompositionString;
+	alias ImmGetDescriptionW ImmGetDescription;
+	alias ImmGetIMEFileNameW ImmGetIMEFileName;
+	alias ImmGetImeMenuItemsW ImmGetImeMenuItems;
 } else {
-
-alias ImmEnumRegisterWordA ImmEnumRegisterWord;
-alias ImmGetRegisterWordStyleA ImmGetRegisterWordStyle;
-alias ImmUnregisterWordA ImmUnregisterWord;
-alias ImmRegisterWordA ImmRegisterWord;
-alias ImmInstallIMEA ImmInstallIME;
-alias ImmIsUIMessageA ImmIsUIMessage;
-alias ImmGetConversionListA ImmGetConversionList;
-alias ImmEscapeA ImmEscape;
-alias ImmConfigureIMEA ImmConfigureIME;
-alias ImmSetCompositionFontA ImmSetCompositionFont;
-alias ImmGetCompositionFontA ImmGetCompositionFont;
-alias ImmGetGuideLineA ImmGetGuideLine;
-alias ImmGetCandidateListA ImmGetCandidateList;
-alias ImmGetCandidateListCountA ImmGetCandidateListCount;
-alias ImmSetCompositionStringA ImmSetCompositionString;
-alias ImmGetCompositionStringA ImmGetCompositionString;
-alias ImmGetDescriptionA ImmGetDescription;
-alias ImmGetIMEFileNameA ImmGetIMEFileName;
-alias ImmGetImeMenuItemsW ImmGetImeMenuItems;
+	alias ImmEnumRegisterWordA ImmEnumRegisterWord;
+	alias ImmGetRegisterWordStyleA ImmGetRegisterWordStyle;
+	alias ImmUnregisterWordA ImmUnregisterWord;
+	alias ImmRegisterWordA ImmRegisterWord;
+	alias ImmInstallIMEA ImmInstallIME;
+	alias ImmIsUIMessageA ImmIsUIMessage;
+	alias ImmGetConversionListA ImmGetConversionList;
+	alias ImmEscapeA ImmEscape;
+	alias ImmConfigureIMEA ImmConfigureIME;
+	alias ImmSetCompositionFontA ImmSetCompositionFont;
+	alias ImmGetCompositionFontA ImmGetCompositionFont;
+	alias ImmGetGuideLineA ImmGetGuideLine;
+	alias ImmGetCandidateListA ImmGetCandidateList;
+	alias ImmGetCandidateListCountA ImmGetCandidateListCount;
+	alias ImmSetCompositionStringA ImmSetCompositionString;
+	alias ImmGetCompositionStringA ImmGetCompositionString;
+	alias ImmGetDescriptionA ImmGetDescription;
+	alias ImmGetIMEFileNameA ImmGetIMEFileName;
+	alias ImmGetImeMenuItemsW ImmGetImeMenuItems;
 }

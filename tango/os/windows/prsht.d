@@ -9,12 +9,9 @@
 *                       Placed into public domain                       *
 \***********************************************************************/
 module tango.os.windows.prsht;
-
-//version (build) { pragma(nolink); }
-
-//pragma(lib, "comctl32.lib");
+pragma(lib, "comctl32.lib");
 private import tango.os.windows.w32api;
-private import tango.os.windows.windef; 
+private import tango.os.windows.windef;
 private import tango.os.windows.winuser;
 
 const MAXPROPPAGES = 100;
@@ -222,9 +219,9 @@ struct PROPSHEETPAGEA {
 alias PROPSHEETPAGEA* LPPROPSHEETPAGEA, LPCPROPSHEETPAGEA;
 
 struct PROPSHEETPAGEW {
-	DWORD dwSize = PROPSHEETPAGEW.sizeof;
-	DWORD dwFlags;
-	HINSTANCE	hInstance;
+	DWORD     dwSize = PROPSHEETPAGEW.sizeof;
+	DWORD     dwFlags;
+	HINSTANCE hInstance;
 	union {
 		LPCWSTR        pszTemplate;
 		LPCDLGTEMPLATE pResource;
@@ -233,11 +230,11 @@ struct PROPSHEETPAGEW {
 		HICON   hIcon;
 		LPCWSTR pszIcon;
 	}
-	LPCWSTR pszTitle;
-	DLGPROC pfnDlgProc;
-	LPARAM  lParam;
+	LPCWSTR   pszTitle;
+	DLGPROC   pfnDlgProc;
+	LPARAM    lParam;
 	LPFNPSPCALLBACKW pfnCallback;
-	UINT* pcRefParent;
+	UINT*     pcRefParent;
 	static if (_WIN32_IE >= 0x0400) {
 		LPCWSTR pszHeaderTitle;
 		LPCWSTR pszHeaderSubTitle;
@@ -282,16 +279,16 @@ struct PROPSHEETHEADERA {
 alias PROPSHEETHEADERA* LPPROPSHEETHEADERA, LPCPROPSHEETHEADERA;
 
 struct PROPSHEETHEADERW {
-	DWORD dwSize = PROPSHEETHEADERW.sizeof;
-	DWORD dwFlags;
-	HWND  hwndParent;
-	HINSTANCE	hInstance;
+	DWORD     dwSize = PROPSHEETHEADERW.sizeof;
+	DWORD     dwFlags;
+	HWND      hwndParent;
+	HINSTANCE hInstance;
 	union {
 		HICON   hIcon;
 		LPCWSTR pszIcon;
 	}
-	LPCWSTR pszCaption;
-	UINT    nPages;
+	LPCWSTR   pszCaption;
+	UINT      nPages;
 	union {
 		UINT    nStartPage;
 		LPCWSTR pStartPage;
@@ -324,8 +321,6 @@ struct PSHNOTIFY {
 }
 alias PSHNOTIFY* LPPSHNOTIFY;
 
-align:
-
 extern (Windows) {
 	HPROPSHEETPAGE CreatePropertySheetPageA(LPCPROPSHEETPAGEA);
 	HPROPSHEETPAGE CreatePropertySheetPageW(LPCPROPSHEETPAGEW);
@@ -348,7 +343,7 @@ version (Unicode) {
 	alias PropertySheetW           PropertySheet;
 } else {
 	alias LPFNPSPCALLBACKA         LPFNPSPCALLBACK;
-	alias PROPSHEETPAGEA           PROPSHEETPAGE;	
+	alias PROPSHEETPAGEA           PROPSHEETPAGE;
 	alias LPPROPSHEETPAGEA         LPPROPSHEETPAGE;
 	alias LPCPROPSHEETPAGEA        LPCPROPSHEETPAGE;
 	alias PROPSHEETHEADERA         PROPSHEETHEADER;
@@ -369,7 +364,7 @@ VOID PropSheet_RemovePage(HWND hPropSheetDlg,int index,HPROPSHEETPAGE hpage) {
 }
 
 BOOL PropSheet_AddPage(HWND hPropSheetDlg, HPROPSHEETPAGE hpage) {
-		return cast(BOOL)SendMessage(hPropSheetDlg,PSM_ADDPAGE,0,cast(LPARAM)hpage); 
+		return cast(BOOL)SendMessage(hPropSheetDlg,PSM_ADDPAGE,0,cast(LPARAM)hpage);
 }
 
 VOID PropSheet_Changed(HWND hPropSheetDlg, HWND hwndPage) {

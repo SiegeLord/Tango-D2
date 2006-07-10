@@ -8,10 +8,7 @@
 *                       Placed into public domain                       *
 \***********************************************************************/
 module tango.os.windows.objbase;
-
-//version (build) { pragma(nolink); }
-
-//pragma(lib, "ole32.lib");
+pragma(lib, "ole32.lib");
 private import tango.os.windows.winbase;
 private import tango.os.windows.basetyps;
 import tango.os.windows.wtypes;
@@ -71,7 +68,7 @@ struct STGOPTIONS {
 	USHORT usVersion;
 	USHORT reserved;
 	ULONG ulSectorSize;
-	WCHAR *pwcsTemplateFile;
+	WCHAR* pwcsTemplateFile;
 }
 
 enum REGCLS {
@@ -88,21 +85,21 @@ alias IsEqualGUID IsEqualIID;
 alias IsEqualGUID IsEqualCLSID;
 
 enum COINIT {
-	COINIT_APARTMENTTHREADED	= 0x2,
-	COINIT_MULTITHREADED		= 0x0,
-	COINIT_DISABLE_OLE1DDE		= 0x4,
-	COINIT_SPEED_OVER_MEMORY	= 0x8
+	COINIT_APARTMENTTHREADED = 2,
+	COINIT_MULTITHREADED     = 0,
+	COINIT_DISABLE_OLE1DDE   = 4,
+	COINIT_SPEED_OVER_MEMORY = 8
 }
 
 enum STDMSHLFLAGS {
-	SMEXF_SERVER  = 0x01,
-	SMEXF_HANDLER = 0x02
+	SMEXF_SERVER  = 1,
+	SMEXF_HANDLER
 }
 
 extern(Windows) {
 
-alias HRESULT function (REFCLSID,REFIID,PVOID*) LPFNGETCLASSOBJECT;
-alias HRESULT function () LPFNCANUNLOADNOW;
+alias HRESULT function(REFCLSID,REFIID,PVOID*) LPFNGETCLASSOBJECT;
+alias HRESULT function() LPFNCANUNLOADNOW;
 
 DWORD CoBuildVersion();
 HRESULT CoInitialize(PVOID);

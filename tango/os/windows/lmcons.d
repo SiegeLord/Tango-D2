@@ -8,9 +8,6 @@
 *                       Placed into public domain                       *
 \***********************************************************************/
 module tango.os.windows.lmcons;
-
-//version (build) { pragma(nolink); }
-
 private import tango.os.windows.windef;
 private import tango.os.windows.lmerr; // for NERR_BASE
 

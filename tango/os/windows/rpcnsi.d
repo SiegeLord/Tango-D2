@@ -9,10 +9,7 @@
 *                       Placed into public domain                       *
 \***********************************************************************/
 module tango.os.windows.rpcnsi;
-
-//version (build) { pragma(nolink); }
-
-//pragma(lib, "rpcns4.lib");
+pragma(lib, "rpcns4.lib");
 private import tango.os.windows.w32api;
 private import tango.os.windows.basetyps;
 private import tango.os.windows.rpcdcep;
@@ -71,7 +68,7 @@ version (Unicode) {
 		const bool _WIN32_USE_UNICODE = true;
 	} else {
 		const bool _WIN32_USE_UNICODE = false;
-	}	
+	}
 } else {
 		const bool _WIN32_USE_UNICODE = false;
 }

@@ -19,9 +19,6 @@ RpcRevertToSelf
 
 module tango.os.windows.rpc;
 
-//version (build) { pragma(nolink); }
-
-
 import tango.os.windows.unknwn;
 
 alias MIDL_user_allocate midl_user_allocate;

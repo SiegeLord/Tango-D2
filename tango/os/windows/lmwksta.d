@@ -8,15 +8,12 @@
 *                       Placed into public domain                       *
 \***********************************************************************/
 module tango.os.windows.lmwksta;
-
-//version (build) { pragma(nolink); }
-
-//pragma(lib, "netapi32.lib");
+pragma(lib, "netapi32.lib");
 private import tango.os.windows.lmcons;
 import tango.os.windows.lmuseflg;
 private import tango.os.windows.windef;
 
-//pragma(lib, "Netapi32.lib");
+pragma(lib, "Netapi32.lib");
 
 enum {
 	WKSTA_COMPUTERNAME_PARMNUM     = 1,

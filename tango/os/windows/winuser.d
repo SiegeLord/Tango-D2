@@ -7,33 +7,28 @@
 *                                                                       *
 *                       Placed into public domain                       *
 \***********************************************************************/
-
 // Conversion Notes:
 // The following macros were for win16 only, and are not included in this file:
-//#define EnumTaskWindows(h,f,p) EnumThreadWindows((DWORD)h,f,p)
-//#define PostAppMessageA(t,m,w,l) PostThreadMessageA((DWORD)t,m,w,l)
-//#define PostAppMessageW(t,m,w,l) PostThreadMessageW((DWORD)t,m,w,l)
+//#define EnumTaskWindows(h, f, p) EnumThreadWindows((DWORD)h, f, p)
+//#define PostAppMessageA(t, m, w, l) PostThreadMessageA((DWORD)t, m, w, l)
+//#define PostAppMessageW(t, m, w, l) PostThreadMessageW((DWORD)t, m, w, l)
 //#define GetSysModalWindow() (NULL)
 //#define SetSysModalWindow(h) (NULL)
 //#define GetWindowTask(hWnd) ((HANDLE)GetWindowThreadProcessId(hWnd, NULL))
-//#define DefHookProc(c,p,lp,h) CallNextHookEx((HHOOK)*h,c,p,lp)
+//#define DefHookProc(c, p, lp, h) CallNextHookEx((HHOOK)*h, c, p, lp)
 
 module tango.os.windows.winuser;
-
-//version (build) { pragma(nolink); }
+pragma(lib, "user32.lib");
 
 private import tango.os.windows.w32api;
 private import tango.os.windows.winbase;
 private import tango.os.windows.wingdi;
 private import tango.os.windows.windef; // for HMONITOR
 
-//pragma(lib, "user32.lib");
-
 // FIXME: clean up Windows version support
 
-template MAKEINTATOM_T (int i)
-{
-	const LPTSTR MAKEINTATOM_T = cast(LPTSTR)(i);
+template MAKEINTATOM_T(int i) {
+	const LPTSTR MAKEINTATOM_T = cast(LPTSTR) i;
 }
 
 const WC_DIALOG = MAKEINTATOM_T!(0x8002);
@@ -46,7 +41,7 @@ const FALT      = 16;
 
 const ATF_TIMEOUTON     = 1;
 const ATF_ONOFFFEEDBACK = 2;
-const ATF_AVAILABLE     = 4;/* May be obsolete. Not in recent MS docs. */
+const ATF_AVAILABLE     = 4; // May be obsolete. Not in recent MS docs.
 
 const WH_MIN             = -1;
 const WH_MSGFILTER       =  -1;
@@ -160,7 +155,7 @@ const MF_USECHECKBITMAPS = 512;
 const MF_UNHILITE = 0;
 const MF_HILITE = 128;
 
-/* Also defined in dbt.h */
+// Also defined in dbt.h
 const BSM_ALLCOMPONENTS      = 0;
 const BSM_VXDS               = 1;
 const BSM_NETDRIVER          = 2;
@@ -176,11 +171,11 @@ const BSF_POSTMESSAGE        = 0x00000010;
 const BSF_FORCEIFHUNG        = 0x00000020;
 const BSF_NOTIMEOUTIFNOTHUNG = 0x00000040;
 
-static if (_WIN32_WINNT >= 0x0500) {
+static if (_WIN32_WINNT >= 0x500) {
 	const BSF_ALLOWSFW          = 0x00000080;
 	const BSF_SENDNOTIFYMESSAGE = 0x00000100;
 }
-static if (_WIN32_WINNT >= 0x0501) {
+static if (_WIN32_WINNT >= 0x501) {
 	const BSF_RETURNHDESK       = 0x00000200;
 	const BSF_LUID              = 0x00000400;
 }
@@ -412,18 +407,18 @@ const DS_SHELLFONT = DS_SETFONT | DS_FIXEDSYS;
 const WS_EX_ACCEPTFILES = 16;
 const WS_EX_APPWINDOW = 0x40000;
 const WS_EX_CLIENTEDGE = 512;
-const WS_EX_COMPOSITED = 0x2000000;/* XP */
+const WS_EX_COMPOSITED = 0x2000000;  // XP
 const WS_EX_CONTEXTHELP = 0x400;
 const WS_EX_CONTROLPARENT = 0x10000;
 const WS_EX_DLGMODALFRAME = 1;
-const WS_EX_LAYERED = 0x80000;/* w2k */
-const WS_EX_LAYOUTRTL = 0x400000;/* w98, w2k */
+const WS_EX_LAYERED = 0x80000;  // w2k
+const WS_EX_LAYOUTRTL = 0x400000;  // w98, w2k
 const WS_EX_LEFT = 0;
 const WS_EX_LEFTSCROLLBAR = 0x4000;
 const WS_EX_LTRREADING = 0;
 const WS_EX_MDICHILD = 64;
-const WS_EX_NOACTIVATE = 0x8000000;/* w2k */
-const WS_EX_NOINHERITLAYOUT = 0x100000;/* w2k */
+const WS_EX_NOACTIVATE = 0x8000000;  // w2k
+const WS_EX_NOINHERITLAYOUT = 0x100000;  // w2k
 const WS_EX_NOPARENTNOTIFY = 4;
 const WS_EX_OVERLAPPEDWINDOW = 0x300;
 const WS_EX_PALETTEWINDOW = 0x188;
@@ -462,14 +457,14 @@ const DC_ICON     = 0x00000004;
 const DC_TEXT     = 0x00000008;
 const DC_INBUTTON = 0x00000010;
 
-static if (WINVER >= 0x0500) {
+static if (WINVER >= 0x500) {
 const DC_GRADIENT=0x00000020;
 }
-static if (_WIN32_WINNT >= 0x0501) {
+static if (_WIN32_WINNT >= 0x501) {
 const DC_BUTTONS=0x00001000;
 }
 
-/* Where are these documented? */
+// Where are these documented?
 //const DC_CAPTION = DC_ICON|DC_TEXT|DC_BUTTONS;
 //const DC_NC      = DC_CAPTION|DC_FRAME;
 
@@ -511,9 +506,9 @@ const DFC_CAPTION=1;
 const DFC_MENU=2;
 const DFC_SCROLL=3;
 const DFC_BUTTON=4;
-static if (WINVER >= 0x0500) {
+static if (WINVER >= 0x500) {
 const DFC_POPUPMENU=5;
-}// WINVER >= 0x0500
+}// WINVER >= 0x500
 
 const DFCS_CAPTIONCLOSE   = 0;
 const DFCS_CAPTIONMIN     = 1;
@@ -543,7 +538,7 @@ const DFCS_BUTTONPUSH          = 16;
 const DFCS_INACTIVE            = 256;
 const DFCS_PUSHED              = 512;
 const DFCS_CHECKED             = 1024;
-static if (WINVER >= 0x0500) {
+static if (WINVER >= 0x500) {
 const DFCS_TRANSPARENT         = 0x800;
 const DFCS_HOT                 = 0x1000;
 }
@@ -670,7 +665,7 @@ const EWX_SHUTDOWN = 1;
 const EWX_REBOOT   = 2;
 const EWX_FORCE    = 4;
 const EWX_POWEROFF = 8;
-static if (_WIN32_WINNT >= 0x0500) {
+static if (_WIN32_WINNT >= 0x500) {
 const EWX_FORCEIFHUNG = 16;
 }
 
@@ -737,7 +732,7 @@ const MIIM_STRING = 64;
 const MIIM_BITMAP = 128;
 const MIIM_FTYPE = 256;
 
-static if (WINVER >= 0x0500) {
+static if (WINVER >= 0x500) {
 
 const MIM_MAXHEIGHT = 1;
 const MIM_BACKGROUND = 2;
@@ -821,11 +816,11 @@ const MB_ICONSTOP = 16;
 const MB_OKCANCEL = 1;
 const MB_RETRYCANCEL = 5;
 
-static if (is(_WIN32_WINNT)) {
-	static if (_WIN32_WINNT >= 0x0400) {
-	const MB_SERVICE_NOTIFICATION = 0x00200000;
+static if (_WIN32_WINNT_ONLY) {
+	static if (_WIN32_WINNT >= 0x400) {
+		const MB_SERVICE_NOTIFICATION = 0x00200000;
 	} else {
-	const MB_SERVICE_NOTIFICATION = 0x00040000;
+		const MB_SERVICE_NOTIFICATION = 0x00040000;
 	}
 	const MB_SERVICE_NOTIFICATION_NT3X = 0x00040000;
 }
@@ -842,8 +837,8 @@ const MB_MISCMASK = 0x0000C000;
 const MB_NOFOCUS = 0x00008000;
 const MB_TYPEMASK = 15;
 // [Redefined] MB_TOPMOST=0x40000
-static if (WINVER >= 0x0500) {
-const MB_CANCELTRYCONTINUE=6;
+static if (WINVER >= 0x500) {
+	const MB_CANCELTRYCONTINUE=6;
 }
 
 const IDOK       = 1;
@@ -853,11 +848,11 @@ const IDRETRY    = 4;
 const IDIGNORE   = 5;
 const IDYES      = 6;
 const IDNO       = 7;
-static if (WINVER >= 0x0400) {
+static if (WINVER >= 0x400) {
 const IDCLOSE    = 8;
 const IDHELP     = 9;
 }
-static if (WINVER >= 0x0500) {
+static if (WINVER >= 0x500) {
 const IDTRYAGAIN = 10;
 const IDCONTINUE = 11;
 }
@@ -892,7 +887,7 @@ const QS_PAINT          = 32;
 const QS_SENDMESSAGE    = 64;
 const QS_HOTKEY         = 128;
 const QS_ALLPOSTMESSAGE = 256;
-static if (_WIN32_WINNT >= 0x0501) {
+static if (_WIN32_WINNT >= 0x501) {
 const QS_RAWINPUT       = 1024;
 const QS_INPUT          = 1031;
 const QS_ALLEVENTS      = 1215;
@@ -1082,7 +1077,7 @@ enum : UINT {
 
 const KEYEVENTF_EXTENDEDKEY = 0x00000001;
 const KEYEVENTF_KEYUP       = 00000002;
-static if (_WIN32_WINNT >= 0x0500) {
+static if (_WIN32_WINNT >= 0x500) {
 const KEYEVENTF_UNICODE     = 0x00000004;
 const KEYEVENTF_SCANCODE    = 0x00000008;
 }
@@ -1174,7 +1169,7 @@ const PM_NOREMOVE = 0;
 const PM_REMOVE = 1;
 const PM_NOYIELD = 2;
 
-static if (WINVER >= 0x0500) {
+static if (WINVER >= 0x500) {
 const PM_QS_INPUT = (QS_INPUT << 16);
 const PM_QS_POSTMESSAGE = ((QS_POSTMESSAGE|QS_HOTKEY|QS_TIMER) << 16);
 const PM_QS_PAINT = (QS_PAINT << 16);
@@ -1187,7 +1182,7 @@ const HWND
 	HWND_TOP       = cast(HWND)0,
 	HWND_TOPMOST   = cast(HWND)(-1),
 	HWND_DESKTOP   = cast(HWND)0,
-	HWND_MESSAGE   = cast(HWND)(-3);/* w2k */
+	HWND_MESSAGE   = cast(HWND)(-3);// w2k
 
 const RDW_INVALIDATE      = 1;
 const RDW_INTERNALPAINT   = 2;
@@ -1239,7 +1234,7 @@ const HSHELL_WINDOWCREATED = 1;
 const HSHELL_WINDOWDESTROYED = 2;
 const HSHELL_FLASH = 32774;
 
-static if (WINVER >= 0x0500) {
+static if (WINVER >= 0x500) {
 const SPI_SETFOREGROUNDLOCKTIMEOUT=0x2001;
 const SPI_GETFOREGROUNDLOCKTIMEOUT=0x2000;
 }
@@ -1338,7 +1333,7 @@ const SPI_SETTOGGLEKEYS=53;
 const SPI_SETWHEELSCROLLLINES=105;
 const SPI_SETWORKAREA=47;
 
-static if (WINVER >= 0x0500) {
+static if (WINVER >= 0x500) {
 const SPI_GETDESKWALLPAPER=115;
 const SPI_GETMOUSESPEED=112;
 const SPI_GETSCREENSAVERRUNNING=114;
@@ -1381,7 +1376,7 @@ const SPIF_SENDCHANGE=2;
 const WM_APP=32768;
 const WM_ACTIVATE=6;
 const WM_ACTIVATEAPP=28;
-/* FIXME/CHECK: Are WM_AFX{FIRST,LAST} valid for WINVER < 0x400? */
+// FIXME/CHECK: Are WM_AFX {FIRST, LAST} valid for WINVER < 0x400?
 const WM_AFXFIRST=864;
 const WM_AFXLAST=895;
 const WM_ASKCBFORMATNAME=780;
@@ -1395,7 +1390,7 @@ const WM_CHILDACTIVATE=34;
 const WM_CLEAR=771;
 const WM_CLOSE=16;
 const WM_COMMAND=273;
-const WM_COMMNOTIFY=68;/* obsolete */
+const WM_COMMNOTIFY=68; // obsolete
 const WM_COMPACTING=65;
 const WM_COMPAREITEM=57;
 const WM_CONTEXTMENU=123;
@@ -1464,7 +1459,7 @@ const WM_MDIRESTORE=547;
 const WM_MDISETMENU=560;
 const WM_MDITILE=550;
 const WM_MEASUREITEM=44;
-static if (WINVER >= 0x0500) {
+static if (WINVER >= 0x500) {
 const WM_UNINITMENUPOPUP=0x0125;
 const WM_MENURBUTTONUP=290;
 const WM_MENUCOMMAND=0x0126;
@@ -1486,7 +1481,7 @@ const WM_NCLBUTTONUP=162;
 const WM_NCMBUTTONDBLCLK=169;
 const WM_NCMBUTTONDOWN=167;
 const WM_NCMBUTTONUP=168;
-static if (_WIN32_WINNT >= 0x0500) {
+static if (_WIN32_WINNT >= 0x500) {
 const WM_NCXBUTTONDOWN=171;
 const WM_NCXBUTTONUP=172;
 const WM_NCXBUTTONDBLCLK=173;
@@ -1574,7 +1569,7 @@ const WM_MBUTTONUP=520;
 const WM_MBUTTONDBLCLK=521;
 const WM_MOUSEWHEEL=522;
 const WM_MOUSEFIRST=512;
-static if (_WIN32_WINNT >= 0x0500) {
+static if (_WIN32_WINNT >= 0x500) {
 const WM_XBUTTONDOWN=523;
 const WM_XBUTTONUP=524;
 const WM_XBUTTONDBLCLK=525;
@@ -1584,7 +1579,7 @@ const WM_MOUSELAST=522;
 }
 const WM_MOUSEHOVER=0x2A1;
 const WM_MOUSELEAVE=0x2A3;
-static if (_WIN32_WINNT >= 0x0400) {
+static if (_WIN32_WINNT >= 0x400) {
 const WHEEL_DELTA=120;
 
 SHORT GET_WHEEL_DELTA_WPARAM(WPARAM wparam)
@@ -1826,7 +1821,7 @@ const MKF_INDICATOR=32;
 const MKF_MOUSEKEYSON=1;
 const MKF_MODIFIERS=64;
 const MKF_REPLACENUMBERS=128;
-const SERKF_ACTIVE=8;/* May be obsolete. Not in recent MS docs. */
+const SERKF_ACTIVE=8;  // May be obsolete. Not in recent MS docs.
 const SERKF_AVAILABLE=2;
 const SERKF_INDICATOR=4;
 const SERKF_SERIALKEYSON=1;
@@ -1865,7 +1860,7 @@ const VK_LBUTTON=1;
 const VK_RBUTTON=2;
 const VK_CANCEL=3;
 const VK_MBUTTON=4;
-static if (_WIN32_WINNT >= 0x0500) {
+static if (_WIN32_WINNT >= 0x500) {
 const VK_XBUTTON1=5;
 const VK_XBUTTON2=6;
 }
@@ -1958,7 +1953,7 @@ const VK_LCONTROL=0xA2;
 const VK_RCONTROL=0xA3;
 const VK_LMENU=0xA4;
 const VK_RMENU=0xA5;
-static if (_WIN32_WINNT >= 0x0500) {
+static if (_WIN32_WINNT >= 0x500) {
 const VK_BROWSER_BACK=0xA6;
 const VK_BROWSER_FORWARD=0xA7;
 const VK_BROWSER_REFRESH=0xA8;
@@ -1979,7 +1974,7 @@ const VK_LAUNCH_APP1=0xB6;
 const VK_LAUNCH_APP2=0xB7;
 }
 const VK_OEM_1=0xBA;
-static if (_WIN32_WINNT >= 0x0500) {
+static if (_WIN32_WINNT >= 0x500) {
 const VK_OEM_PLUS=0xBB;
 const VK_OEM_COMMA=0xBC;
 const VK_OEM_MINUS=0xBD;
@@ -1992,11 +1987,11 @@ const VK_OEM_5=0xDC;
 const VK_OEM_6=0xDD;
 const VK_OEM_7=0xDE;
 const VK_OEM_8=0xDF;
-static if (_WIN32_WINNT >= 0x0500) {
+static if (_WIN32_WINNT >= 0x500) {
 const VK_OEM_102=0xE2;
 }
 const VK_PROCESSKEY=0xE5;
-static if (_WIN32_WINNT >= 0x0500) {
+static if (_WIN32_WINNT >= 0x500) {
 const VK_PACKET=0xE7;
 }
 const VK_ATTN=0xF6;
@@ -2021,7 +2016,7 @@ const MK_RBUTTON=2;
 const MK_SHIFT=4;
 const MK_CONTROL=8;
 const MK_MBUTTON=16;
-static if (_WIN32_WINNT >= 0x0500) {
+static if (_WIN32_WINNT >= 0x500) {
 const MK_XBUTTON1=32;
 const MK_XBUTTON2=64;
 }
@@ -2037,7 +2032,7 @@ const TPM_VCENTERALIGN=16;
 const TPM_BOTTOMALIGN=32;
 const TPM_NONOTIFY=128;
 const TPM_RETURNCMD=256;
-static if ((_WIN32_WINNT >= 0x0500) || (_WIN32_WINDOWS >= 0x0410)) {
+static if ((_WIN32_WINNT >= 0x500) || (_WIN32_WINDOWS >= 0x410)) {
 const TPM_RECURSE=1;
 }
 
@@ -2277,7 +2272,7 @@ const WA_CLICKACTIVE=2;
 
 const ICON_SMALL=0;
 const ICON_BIG=1;
-static if (_WIN32_WINNT >= 0x0501) {
+static if (_WIN32_WINNT >= 0x501) {
 const ICON_SMALL2=2;
 }
 
@@ -2308,7 +2303,7 @@ const LLKHF_INJECTED=0x00000010;
 const LLKHF_ALTDOWN=(KF_ALTDOWN >> 8);
 const LLKHF_UP=(KF_UP >> 8);
 
-static if (WINVER >= 0x0500) {
+static if (WINVER >= 0x500) {
 const FLASHW_STOP=0;
 const FLASHW_CAPTION=1;
 const FLASHW_TRAY=2;
@@ -2319,16 +2314,16 @@ const FLASHW_TIMERNOFG=12;
 
 const CURSOR_SHOWING=0x00000001;
 const WS_ACTIVECAPTION=0x00000001;
-static if (_WIN32_WINNT >= 0x0403) {
+static if (_WIN32_WINNT >= 0x403) {
 const INPUT_MOUSE=0x00000000;
 const INPUT_KEYBOARD=0x00000001;
 const INPUT_HARDWARE=0x00000002;
 }
-static if (WINVER >= 0x0400) {
+static if (WINVER >= 0x400) {
 const ENDSESSION_LOGOFF = 0x80000000;
 }
 
-static if (WINVER >= 0x0500) {
+static if (WINVER >= 0x500) {
 const CHILDID_SELF   = 0;
 const OBJID_WINDOW   = 0x00000000;
 const OBJID_SYSMENU  = 0xFFFFFFFF;
@@ -2349,7 +2344,7 @@ const GUI_INMENUMODE     = 0x00000004;
 const GUI_SYSTEMMENUMODE = 0x00000008;
 const GUI_POPUPMENUMODE  = 0x00000010;
 
-static if (_WIN32_WINNT >= 0x0501) {
+static if (_WIN32_WINNT >= 0x501) {
 const GUI_16BITTASK      = 0x00000020;
 }
 const WINEVENT_OUTOFCONTEXT=0x0000;
@@ -2368,7 +2363,7 @@ const AW_BLEND=0x00080000;
 const DEVICE_NOTIFY_WINDOW_HANDLE=0x00000000;
 const DEVICE_NOTIFY_SERVICE_HANDLE=0x00000001;
 
-static if (_WIN32_WINNT >= 0x0501) {
+static if (_WIN32_WINNT >= 0x501) {
 const DEVICE_NOTIFY_ALL_INTERFACE_CLASSES=0x00000004;
 }
 
@@ -2417,7 +2412,7 @@ const EVENT_OBJECT_HELPCHANGE = 0x00008010;
 const EVENT_OBJECT_DEFACTIONCHANGE = 0x00008011;
 const EVENT_OBJECT_ACCELERATORCHANGE = 0x00008012;
 
-static if (_WIN32_WINNT >= 0x0501) {
+static if (_WIN32_WINNT >= 0x501) {
 const EVENT_CONSOLE_CARET             = 0x00004001;
 const EVENT_CONSOLE_UPDATE_REGION     = 0x00004002;
 const EVENT_CONSOLE_UPDATE_SIMPLE     = 0x00004003;
@@ -2434,15 +2429,15 @@ const CONSOLE_APPLICATION_16BIT = 0x00000001;
 }
 const EVENT_MAX=0x7fffffff;
 
-}//(WINVER >= 0x0500)
+}//(WINVER >= 0x500)
 
-static if ((_WIN32_WINNT >= 0x0500) || (_WIN32_WINDOWS >= 0x0490)) {
+static if ((_WIN32_WINNT >= 0x500) || (_WIN32_WINDOWS >= 0x490)) {
 const DWORD ASFW_ANY = -1;
 const LSFW_LOCK   = 1;
 const LSFW_UNLOCK = 2;
 }
 
-static if (_WIN32_WINNT >= 0x0500) {
+static if (_WIN32_WINNT >= 0x500) {
 const LWA_COLORKEY=0x01;
 const LWA_ALPHA=0x02;
 const ULW_COLORKEY=0x01;
@@ -2454,7 +2449,7 @@ const GA_PARENT    = 1;
 const GA_ROOT      = 2;
 const GA_ROOTOWNER = 3;
 
-static if ((_WIN32_WINNT >= 0x0500) || (_WIN32_WINDOWS >= 0x0410)) {
+static if ((_WIN32_WINNT >= 0x500) || (_WIN32_WINDOWS >= 0x410)) {
 
 const MONITOR_DEFAULTTONULL    = 0;
 const MONITOR_DEFAULTTOPRIMARY = 1;
@@ -2470,17 +2465,17 @@ const ISMEX_CALLBACK = 0x00000004;
 const ISMEX_REPLIED  = 0x00000008;
 }
 
-static if (_WIN32_WINNT >= 0x0500) {
+static if (_WIN32_WINNT >= 0x500) {
 const GR_GDIOBJECTS  = 0;
 const GR_USEROBJECTS = 1;
 }
 
-static if ((_WIN32_WINNT >= 0x0500) || (_WIN32_WINDOWS >= 0x0490)) {
+static if ((_WIN32_WINNT >= 0x500) || (_WIN32_WINDOWS >= 0x490)) {
 const GMMP_USE_DISPLAY_POINTS         = 1;
 const GMMP_USE_HIGH_RESOLUTION_POINTS = 2;
 }
 
-static if (_WIN32_WINNT >= 0x0501) {
+static if (_WIN32_WINNT >= 0x501) {
 const PW_CLIENTONLY               = 0x00000001;
 const RIM_INPUT                   = 0x00000000;
 const RIM_INPUTSINK               = 0x00000001;
@@ -2535,28 +2530,28 @@ const RIDEV_APPKEYS      = 0x00000400;
 
 // Callbacks ----
 extern (Windows) {
-alias BOOL function (HWND,UINT,WPARAM,LPARAM)    DLGPROC;
-alias void function (HWND,UINT,UINT,DWORD)       TIMERPROC;
-alias BOOL function (HDC,LPARAM,int)             GRAYSTRINGPROC;
-alias LRESULT function (int,WPARAM,LPARAM)       HOOKPROC;
-alias BOOL function (HWND,LPCSTR,HANDLE)         PROPENUMPROCA;
-alias BOOL function (HWND,LPCWSTR,HANDLE)        PROPENUMPROCW;
-alias BOOL function (HWND,LPSTR,HANDLE,DWORD)    PROPENUMPROCEXA;
-alias BOOL function (HWND,LPWSTR,HANDLE,DWORD)   PROPENUMPROCEXW;
-alias int function (LPSTR,int,int,int)           EDITWORDBREAKPROCA;
-alias int function (LPWSTR,int,int,int)          EDITWORDBREAKPROCW;
-alias LRESULT function (HWND,UINT,WPARAM,LPARAM) WNDPROC;
-alias BOOL function (HDC,LPARAM,WPARAM,int,int)  DRAWSTATEPROC;
-alias BOOL function (HWND,LPARAM)                WNDENUMPROC;
-alias BOOL function (HWND,LPARAM)                ENUMWINDOWSPROC;
+alias BOOL function (HWND, UINT, WPARAM, LPARAM)    DLGPROC;
+alias void function (HWND, UINT, UINT, DWORD)       TIMERPROC;
+alias BOOL function (HDC, LPARAM, int)             GRAYSTRINGPROC;
+alias LRESULT function (int, WPARAM, LPARAM)       HOOKPROC;
+alias BOOL function (HWND, LPCSTR, HANDLE)         PROPENUMPROCA;
+alias BOOL function (HWND, LPCWSTR, HANDLE)        PROPENUMPROCW;
+alias BOOL function (HWND, LPSTR, HANDLE, DWORD)    PROPENUMPROCEXA;
+alias BOOL function (HWND, LPWSTR, HANDLE, DWORD)   PROPENUMPROCEXW;
+alias int function (LPSTR, int, int, int)           EDITWORDBREAKPROCA;
+alias int function (LPWSTR, int, int, int)          EDITWORDBREAKPROCW;
+alias LRESULT function (HWND, UINT, WPARAM, LPARAM) WNDPROC;
+alias BOOL function (HDC, LPARAM, WPARAM, int, int)  DRAWSTATEPROC;
+alias BOOL function (HWND, LPARAM)                WNDENUMPROC;
+alias BOOL function (HWND, LPARAM)                ENUMWINDOWSPROC;
 alias void function (LPHELPINFO)                 MSGBOXCALLBACK;
 
 static if (WINVER >= 0x410) {
-alias BOOL function (HMONITOR,HDC,LPRECT,LPARAM) MONITORENUMPROC;
+alias BOOL function (HMONITOR, HDC, LPRECT, LPARAM) MONITORENUMPROC;
 }
-alias BOOL function (LPSTR,LPARAM)               NAMEENUMPROCA;
-alias BOOL function (LPWSTR,LPARAM)              NAMEENUMPROCW;
-alias void function (HWND,UINT,DWORD,LRESULT)    SENDASYNCPROC;
+alias BOOL function (LPSTR, LPARAM)               NAMEENUMPROCA;
+alias BOOL function (LPWSTR, LPARAM)              NAMEENUMPROCW;
+alias void function (HWND, UINT, DWORD, LRESULT)    SENDASYNCPROC;
 
 alias NAMEENUMPROCA DESKTOPENUMPROCA;
 alias NAMEENUMPROCW DESKTOPENUMPROCW;
@@ -2569,102 +2564,102 @@ typedef HANDLE HHOOK;
 typedef HANDLE HDWP;
 typedef HANDLE HDEVNOTIFY;
 
-struct ACCEL{
+struct ACCEL {
 	BYTE fVirt;
 	WORD key;
 	WORD cmd;
 }
-alias ACCEL * LPACCEL;
+alias ACCEL* LPACCEL;
 
-struct ACCESSTIMEOUT{
-	UINT cbSize;
+struct ACCESSTIMEOUT {
+	UINT  cbSize = ACCESSTIMEOUT.sizeof;
 	DWORD dwFlags;
 	DWORD iTimeOutMSec;
 }
-alias ACCESSTIMEOUT * LPACCESSTIMEOUT;
+alias ACCESSTIMEOUT* LPACCESSTIMEOUT;
 
-struct ANIMATIONINFO{
-	UINT cbSize;
-	int iMinAnimate;
+struct ANIMATIONINFO {
+	UINT cbSize = ANIMATIONINFO.sizeof;
+	int  iMinAnimate;
 }
-alias ANIMATIONINFO * LPANIMATIONINFO;
+alias ANIMATIONINFO* LPANIMATIONINFO;
 
-struct CREATESTRUCTA{
-	LPVOID	  lpCreateParams;
+struct CREATESTRUCTA {
+	LPVOID    lpCreateParams;
 	HINSTANCE hInstance;
-	HMENU	  hMenu;
-	HWND	  hwndParent;
-	int	cy;
-	int	cx;
-	int	y;
-	int	x;
-	LONG     style;
-	LPCSTR	 lpszName;
-	LPCSTR   lpszClass;
-	DWORD    dwExStyle;
+	HMENU     hMenu;
+	HWND      hwndParent;
+	int       cy;
+	int       cx;
+	int       y;
+	int       x;
+	LONG      style;
+	LPCSTR    lpszName;
+	LPCSTR    lpszClass;
+	DWORD     dwExStyle;
 }
-alias CREATESTRUCTA * LPCREATESTRUCTA;
+alias CREATESTRUCTA* LPCREATESTRUCTA;
 
-struct CREATESTRUCTW{
-	LPVOID	lpCreateParams;
-	HINSTANCE	hInstance;
-	HMENU	hMenu;
-	HWND	hwndParent;
-	int	cy;
-	int	cx;
-	int	y;
-	int	x;
-	LONG	style;
-	LPCWSTR	lpszName;
-	LPCWSTR	lpszClass;
-	DWORD	dwExStyle;
+struct CREATESTRUCTW {
+	LPVOID    lpCreateParams;
+	HINSTANCE hInstance;
+	HMENU     hMenu;
+	HWND      hwndParent;
+	int       cy;
+	int       cx;
+	int       y;
+	int       x;
+	LONG      style;
+	LPCWSTR   lpszName;
+	LPCWSTR   lpszClass;
+	DWORD     dwExStyle;
 }
-alias CREATESTRUCTW * LPCREATESTRUCTW;
+alias CREATESTRUCTW* LPCREATESTRUCTW;
 
-struct CBT_CREATEWNDA{
+struct CBT_CREATEWNDA {
 	LPCREATESTRUCTA lpcs;
-	HWND	hwndInsertAfter;
+	HWND            hwndInsertAfter;
 }
-alias CBT_CREATEWNDA * LPCBT_CREATEWNDA;
+alias CBT_CREATEWNDA* LPCBT_CREATEWNDA;
 
-struct CBT_CREATEWNDW{
+struct CBT_CREATEWNDW {
 	LPCREATESTRUCTW lpcs;
-	HWND	hwndInsertAfter;
+	HWND            hwndInsertAfter;
 }
-alias CBT_CREATEWNDW * LPCBT_CREATEWNDW;
+alias CBT_CREATEWNDW* LPCBT_CREATEWNDW;
 
-struct CBTACTIVATESTRUCT{
+struct CBTACTIVATESTRUCT {
 	BOOL fMouse;
 	HWND hWndActive;
 }
-alias CBTACTIVATESTRUCT * LPCBTACTIVATESTRUCT;
+alias CBTACTIVATESTRUCT* LPCBTACTIVATESTRUCT;
 
-struct CLIENTCREATESTRUCT{
-	HANDLE	hWindowMenu;
-	UINT	idFirstChild;
+struct CLIENTCREATESTRUCT {
+	HANDLE hWindowMenu;
+	UINT   idFirstChild;
 }
-alias CLIENTCREATESTRUCT * LPCLIENTCREATESTRUCT;
+alias CLIENTCREATESTRUCT* LPCLIENTCREATESTRUCT;
 
-struct COMPAREITEMSTRUCT{
-	UINT	CtlType;
-	UINT	CtlID;
-	HWND	hwndItem;
-	UINT	itemID1;
-	DWORD	itemData1;
-	UINT	itemID2;
-	DWORD	itemData2;
-	DWORD	dwLocaleId;
+struct COMPAREITEMSTRUCT {
+	UINT  CtlType;
+	UINT  CtlID;
+	HWND  hwndItem;
+	UINT  itemID1;
+	DWORD itemData1;
+	UINT  itemID2;
+	DWORD itemData2;
+	DWORD dwLocaleId;
 }
-alias COMPAREITEMSTRUCT * LPCOMPAREITEMSTRUCT;
+alias COMPAREITEMSTRUCT* LPCOMPAREITEMSTRUCT;
 
-struct COPYDATASTRUCT{
+struct COPYDATASTRUCT {
 	DWORD dwData;
 	DWORD cbData;
 	PVOID lpData;
 }
-alias COPYDATASTRUCT * PCOPYDATASTRUCT;
+alias COPYDATASTRUCT* PCOPYDATASTRUCT;
 
-struct CURSORSHAPE{
+struct CURSORSHAPE {
 	int xHotSpot;
 	int yHotSpot;
 	int cx;
@@ -2673,9 +2668,9 @@ struct CURSORSHAPE{
 	BYTE Planes;
 	BYTE BitsPixel;
 }
-alias CURSORSHAPE * LPCURSORSHAPE;
+alias CURSORSHAPE* LPCURSORSHAPE;
 
-struct CWPRETSTRUCT{
+struct CWPRETSTRUCT {
 	LRESULT lResult;
 	LPARAM lParam;
 	WPARAM wParam;
@@ -2683,31 +2678,31 @@ struct CWPRETSTRUCT{
 	HWND hwnd;
 }
 
-struct CWPSTRUCT{
+struct CWPSTRUCT {
 	LPARAM lParam;
 	WPARAM wParam;
 	UINT message;
 	HWND hwnd;
 }
-alias CWPSTRUCT * PCWPSTRUCT;
+alias CWPSTRUCT* PCWPSTRUCT;
 
-struct DEBUGHOOKINFO{
+struct DEBUGHOOKINFO {
 	DWORD idThread;
 	DWORD idThreadInstaller;
 	LPARAM lParam;
 	WPARAM wParam;
 	int code;
 }
-alias DEBUGHOOKINFO * PDEBUGHOOKINFO, LPDEBUGHOOKINFO;
+alias DEBUGHOOKINFO* PDEBUGHOOKINFO, LPDEBUGHOOKINFO;
 
-struct DELETEITEMSTRUCT{
+struct DELETEITEMSTRUCT {
 	UINT CtlType;
 	UINT CtlID;
 	UINT itemID;
 	HWND hwndItem;
 	UINT itemData;
 }
-alias DELETEITEMSTRUCT * PDELETEITEMSTRUCT, LPDELETEITEMSTRUCT;
+alias DELETEITEMSTRUCT* PDELETEITEMSTRUCT, LPDELETEITEMSTRUCT;
 
 align(2):
 struct DLGITEMTEMPLATE {
@@ -2719,7 +2714,7 @@ struct DLGITEMTEMPLATE {
 	short cy;
 	WORD id;
 }
-alias DLGITEMTEMPLATE * LPDLGITEMTEMPLATE;
+alias DLGITEMTEMPLATE* LPDLGITEMTEMPLATE;
 
 struct DLGTEMPLATE {
 	DWORD style;
@@ -2730,44 +2725,44 @@ struct DLGTEMPLATE {
 	short cx;
 	short cy;
 }
-alias DLGTEMPLATE * LPDLGTEMPLATE, LPDLGTEMPLATEA, LPDLGTEMPLATEW;
-alias DLGTEMPLATE * LPCDLGTEMPLATE;
+alias DLGTEMPLATE* LPDLGTEMPLATE, LPDLGTEMPLATEA, LPDLGTEMPLATEW;
+alias DLGTEMPLATE* LPCDLGTEMPLATE;
 
 align:
 
-struct DRAWITEMSTRUCT{
-	UINT CtlType;
-	UINT CtlID;
-	UINT itemID;
-	UINT itemAction;
-	UINT itemState;
-	HWND hwndItem;
-	HDC	hDC;
-	RECT rcItem;
+struct DRAWITEMSTRUCT {
+	UINT  CtlType;
+	UINT  CtlID;
+	UINT  itemID;
+	UINT  itemAction;
+	UINT  itemState;
+	HWND  hwndItem;
+	HDC   hDC;
+	RECT  rcItem;
 	DWORD itemData;
 }
-alias DRAWITEMSTRUCT * LPDRAWITEMSTRUCT, PDRAWITEMSTRUCT;
+alias DRAWITEMSTRUCT* LPDRAWITEMSTRUCT, PDRAWITEMSTRUCT;
 
 struct DRAWTEXTPARAMS {
-	UINT cbSize;
-	int iTabLength;
-	int iLeftMargin;
-	int iRightMargin;
+	UINT cbSize = DRAWTEXTPARAMS.sizeof;
+	int  iTabLength;
+	int  iLeftMargin;
+	int  iRightMargin;
 	UINT uiLengthDrawn;
 }
-alias DRAWTEXTPARAMS * LPDRAWTEXTPARAMS;
+alias DRAWTEXTPARAMS* LPDRAWTEXTPARAMS;
 
-struct PAINTSTRUCT{
-	HDC	hdc;
-	BOOL fErase;
-	RECT rcPaint;
-	BOOL fRestore;
-	BOOL fIncUpdate;
-	BYTE rgbReserved[32];
+struct PAINTSTRUCT {
+	HDC      hdc;
+	BOOL     fErase;
+	RECT     rcPaint;
+	BOOL     fRestore;
+	BOOL     fIncUpdate;
+	BYTE[32] rgbReserved;
 }
-alias PAINTSTRUCT * LPPAINTSTRUCT;
+alias PAINTSTRUCT* LPPAINTSTRUCT;
 
-struct MSG{
+struct MSG {
 	HWND hwnd;
 	UINT message;
 	WPARAM wParam;
@@ -2775,25 +2770,25 @@ struct MSG{
 	DWORD time;
 	POINT pt;
 }
-alias MSG * LPMSG, PMSG;
+alias MSG* LPMSG, PMSG;
 
-struct ICONINFO{
+struct ICONINFO {
 	BOOL fIcon;
 	DWORD xHotspot;
 	DWORD yHotspot;
 	HBITMAP hbmMask;
 	HBITMAP hbmColor;
 }
-alias ICONINFO * PICONINFO;
+alias ICONINFO* PICONINFO;
 
-struct NMHDR{
+struct NMHDR {
 	HWND hwndFrom;
 	UINT idFrom;
 	UINT code;
 }
-alias NMHDR * LPNMHDR;
+alias NMHDR* LPNMHDR;
 
-struct WNDCLASSA{
+struct WNDCLASSA {
 	UINT style;
 	WNDPROC lpfnWndProc;
 	int cbClsExtra;
@@ -2805,9 +2800,9 @@ struct WNDCLASSA{
 	LPCSTR lpszMenuName;
 	LPCSTR lpszClassName;
 }
-alias WNDCLASSA * LPWNDCLASSA, PWNDCLASSA;
+alias WNDCLASSA* LPWNDCLASSA, PWNDCLASSA;
 
-struct WNDCLASSW{
+struct WNDCLASSW {
 	UINT style;
 	WNDPROC lpfnWndProc;
 	int cbClsExtra;
@@ -2819,79 +2814,79 @@ struct WNDCLASSW{
 	LPCWSTR lpszMenuName;
 	LPCWSTR lpszClassName;
 }
-alias WNDCLASSW * LPWNDCLASSW, PWNDCLASSW;
+alias WNDCLASSW* LPWNDCLASSW, PWNDCLASSW;
 
-struct WNDCLASSEXA{
-	UINT cbSize;
-	UINT style;
-	WNDPROC lpfnWndProc;
-	int cbClsExtra;
-	int cbWndExtra;
+struct WNDCLASSEXA {
+	UINT      cbSize = WNDCLASSEXA.sizeof;
+	UINT      style;
+	WNDPROC   lpfnWndProc;
+	int       cbClsExtra;
+	int       cbWndExtra;
 	HINSTANCE hInstance;
-	HICON hIcon;
-	HCURSOR hCursor;
-	HBRUSH hbrBackground;
-	LPCSTR lpszMenuName;
-	LPCSTR lpszClassName;
-	HICON hIconSm;
+	HICON     hIcon;
+	HCURSOR   hCursor;
+	HBRUSH    hbrBackground;
+	LPCSTR    lpszMenuName;
+	LPCSTR    lpszClassName;
+	HICON     hIconSm;
 }
-alias WNDCLASSEXA * LPWNDCLASSEXA, PWNDCLASSEXA;
+alias WNDCLASSEXA* LPWNDCLASSEXA, PWNDCLASSEXA;
 
-struct WNDCLASSEXW{
-	UINT cbSize;
-	UINT style;
-	WNDPROC lpfnWndProc;
-	int cbClsExtra;
-	int cbWndExtra;
+struct WNDCLASSEXW {
+	UINT      cbSize = WNDCLASSEXW.sizeof;
+	UINT      style;
+	WNDPROC   lpfnWndProc;
+	int       cbClsExtra;
+	int       cbWndExtra;
 	HINSTANCE hInstance;
-	HICON hIcon;
-	HCURSOR hCursor;
-	HBRUSH hbrBackground;
-	LPCWSTR lpszMenuName;
-	LPCWSTR lpszClassName;
-	HICON hIconSm;
+	HICON     hIcon;
+	HCURSOR   hCursor;
+	HBRUSH    hbrBackground;
+	LPCWSTR   lpszMenuName;
+	LPCWSTR   lpszClassName;
+	HICON     hIconSm;
 }
-alias WNDCLASSEXW * LPWNDCLASSEXW, PWNDCLASSEXW;
+alias WNDCLASSEXW* LPWNDCLASSEXW, PWNDCLASSEXW;
 
-struct MENUITEMINFOA{
-	UINT cbSize;
-	UINT fMask;
-	UINT fType;
-	UINT fState;
-	UINT wID;
-	HMENU hSubMenu;
+struct MENUITEMINFOA {
+	UINT    cbSize = MENUITEMINFOA.sizeof;
+	UINT    fMask;
+	UINT    fType;
+	UINT    fState;
+	UINT    wID;
+	HMENU   hSubMenu;
 	HBITMAP hbmpChecked;
 	HBITMAP hbmpUnchecked;
-	DWORD dwItemData;
-	LPSTR dwTypeData;
-	UINT cch;
-static if (_WIN32_WINNT >= 0x0500) {
-	HBITMAP hbmpItem;
+	DWORD   dwItemData;
+	LPSTR   dwTypeData;
+	UINT    cch;
+	static if (_WIN32_WINNT >= 0x500) {
+		HBITMAP hbmpItem;
+	}
 }
-}
-alias MENUITEMINFOA * LPMENUITEMINFOA;
-alias MENUITEMINFOA * LPCMENUITEMINFOA;
+alias MENUITEMINFOA* LPMENUITEMINFOA;
+alias MENUITEMINFOA* LPCMENUITEMINFOA;
 
-struct MENUITEMINFOW{
-	UINT cbSize;
-	UINT fMask;
-	UINT fType;
-	UINT fState;
-	UINT wID;
-	HMENU hSubMenu;
+struct MENUITEMINFOW {
+	UINT    cbSize = MENUITEMINFOW.sizeof;
+	UINT    fMask;
+	UINT    fType;
+	UINT    fState;
+	UINT    wID;
+	HMENU   hSubMenu;
 	HBITMAP hbmpChecked;
 	HBITMAP hbmpUnchecked;
-	DWORD dwItemData;
-	LPWSTR dwTypeData;
-	UINT cch;
-static if (_WIN32_WINNT >= 0x0500) {
-	HBITMAP hbmpItem;
+	DWORD   dwItemData;
+	LPWSTR  dwTypeData;
+	UINT    cch;
+	static if (_WIN32_WINNT >= 0x500) {
+		HBITMAP hbmpItem;
+	}
 }
-}
-alias MENUITEMINFOW * LPMENUITEMINFOW;
-alias  MENUITEMINFOW *LPCMENUITEMINFOW;
+alias MENUITEMINFOW* LPMENUITEMINFOW;
+alias  MENUITEMINFOW* LPCMENUITEMINFOW;
 
-struct SCROLLINFO{
+struct SCROLLINFO {
 	UINT cbSize;
 	UINT fMask;
 	int nMin;
@@ -2900,10 +2895,10 @@ struct SCROLLINFO{
 	int nPos;
 	int nTrackPos;
 }
-alias SCROLLINFO * LPSCROLLINFO;
-alias SCROLLINFO * LPCSCROLLINFO;
+alias SCROLLINFO* LPSCROLLINFO;
+alias SCROLLINFO* LPCSCROLLINFO;
 
-struct WINDOWPLACEMENT{
+struct WINDOWPLACEMENT {
 	UINT length;
 	UINT flags;
 	UINT showCmd;
@@ -2911,7 +2906,7 @@ struct WINDOWPLACEMENT{
 	POINT ptMaxPosition;
 	RECT rcNormalPosition;
 }
-alias WINDOWPLACEMENT * LPWINDOWPLACEMENT, PWINDOWPLACEMENT;
+alias WINDOWPLACEMENT* LPWINDOWPLACEMENT, PWINDOWPLACEMENT;
 
 struct MENUITEMTEMPLATEHEADER {
 	WORD versionNumber;
@@ -2926,9 +2921,9 @@ struct MENUITEMTEMPLATE {
 
 alias void MENUTEMPLATE, MENUTEMPLATEA, MENUTEMPLATEW;
 
-alias MENUTEMPLATE *LPMENUTEMPLATEA, LPMENUTEMPLATEW, LPMENUTEMPLATE;
+alias MENUTEMPLATE* LPMENUTEMPLATEA, LPMENUTEMPLATEW, LPMENUTEMPLATE;
 
-struct HELPINFO{
+struct HELPINFO {
 	UINT cbSize;
 	int iContextType;
 	int iCtrlId;
@@ -2936,7 +2931,7 @@ struct HELPINFO{
 	DWORD dwContextId;
 	POINT MousePos;
 }
-alias HELPINFO * LPHELPINFO;
+alias HELPINFO* LPHELPINFO;
 
 struct MSGBOXPARAMSA {
 	UINT cbSize;
@@ -2950,7 +2945,7 @@ struct MSGBOXPARAMSA {
 	MSGBOXCALLBACK lpfnMsgBoxCallback;
 	DWORD dwLanguageId;
 }
-alias MSGBOXPARAMSA * PMSGBOXPARAMSA, LPMSGBOXPARAMSA;
+alias MSGBOXPARAMSA* PMSGBOXPARAMSA, LPMSGBOXPARAMSA;
 
 struct MSGBOXPARAMSW {
 	UINT cbSize;
@@ -2964,15 +2959,15 @@ struct MSGBOXPARAMSW {
 	MSGBOXCALLBACK lpfnMsgBoxCallback;
 	DWORD dwLanguageId;
 }
-alias MSGBOXPARAMSW * PMSGBOXPARAMSW, LPMSGBOXPARAMSW;
+alias MSGBOXPARAMSW* PMSGBOXPARAMSW, LPMSGBOXPARAMSW;
 
-struct USEROBJECTFLAGS{
+struct USEROBJECTFLAGS {
 	BOOL fInherit;
 	BOOL fReserved;
 	DWORD dwFlags;
 }
 
-struct FILTERKEYS{
+struct FILTERKEYS {
 	UINT cbSize;
 	DWORD dwFlags;
 	DWORD iWaitMSec;
@@ -2981,48 +2976,48 @@ struct FILTERKEYS{
 	DWORD iBounceMSec;
 }
 
-struct HIGHCONTRASTA{
+struct HIGHCONTRASTA {
 	UINT cbSize;
 	DWORD dwFlags;
 	LPSTR lpszDefaultScheme;
 }
-alias HIGHCONTRASTA * LPHIGHCONTRASTA;
+alias HIGHCONTRASTA* LPHIGHCONTRASTA;
 
-struct HIGHCONTRASTW{
+struct HIGHCONTRASTW {
 	UINT cbSize;
 	DWORD dwFlags;
 	LPWSTR lpszDefaultScheme;
 }
-alias HIGHCONTRASTW * LPHIGHCONTRASTW;
+alias HIGHCONTRASTW* LPHIGHCONTRASTW;
 
-struct ICONMETRICSA{
+struct ICONMETRICSA {
 	UINT cbSize;
 	int iHorzSpacing;
 	int iVertSpacing;
 	int iTitleWrap;
 	LOGFONTA lfFont;
 }
-alias ICONMETRICSA * LPICONMETRICSA;
+alias ICONMETRICSA* LPICONMETRICSA;
 
-struct ICONMETRICSW{
+struct ICONMETRICSW {
 	UINT cbSize;
 	int iHorzSpacing;
 	int iVertSpacing;
 	int iTitleWrap;
 	LOGFONTW lfFont;
 }
-alias ICONMETRICSW * LPICONMETRICSW;
+alias ICONMETRICSW* LPICONMETRICSW;
 
-struct MINIMIZEDMETRICS{
+struct MINIMIZEDMETRICS {
 	UINT cbSize;
 	int iWidth;
 	int iHorzGap;
 	int iVertGap;
 	int iArrange;
 }
-alias MINIMIZEDMETRICS * LPMINIMIZEDMETRICS;
+alias MINIMIZEDMETRICS* LPMINIMIZEDMETRICS;
 
-struct MOUSEKEYS{
+struct MOUSEKEYS {
 	UINT cbSize;
 	DWORD dwFlags;
 	DWORD iMaxSpeed;
@@ -3031,9 +3026,9 @@ struct MOUSEKEYS{
 	DWORD dwReserved1;
 	DWORD dwReserved2;
 }
-alias MOUSEKEYS * LPMOUSEKEYS;
+alias MOUSEKEYS* LPMOUSEKEYS;
 
-struct NONCLIENTMETRICSA{
+struct NONCLIENTMETRICSA {
 	UINT cbSize;
 	int iBorderWidth;
 	int iScrollWidth;
@@ -3050,9 +3045,9 @@ struct NONCLIENTMETRICSA{
 	LOGFONTA lfStatusFont;
 	LOGFONTA lfMessageFont;
 }
-alias NONCLIENTMETRICSA * LPNONCLIENTMETRICSA;
+alias NONCLIENTMETRICSA* LPNONCLIENTMETRICSA;
 
-struct NONCLIENTMETRICSW{
+struct NONCLIENTMETRICSW {
 	UINT cbSize;
 	int iBorderWidth;
 	int iScrollWidth;
@@ -3069,9 +3064,9 @@ struct NONCLIENTMETRICSW{
 	LOGFONTW lfStatusFont;
 	LOGFONTW lfMessageFont;
 }
-alias NONCLIENTMETRICSW * LPNONCLIENTMETRICSW;
+alias NONCLIENTMETRICSW* LPNONCLIENTMETRICSW;
 
-struct SERIALKEYSA{
+struct SERIALKEYSA {
 	UINT cbSize;
 	DWORD dwFlags;
 	LPSTR lpszActivePort;
@@ -3080,9 +3075,9 @@ struct SERIALKEYSA{
 	UINT iPortState;
 	UINT iActive;
 }
-alias SERIALKEYSA * LPSERIALKEYSA;
+alias SERIALKEYSA* LPSERIALKEYSA;
 
-struct SERIALKEYSW{
+struct SERIALKEYSW {
 	UINT cbSize;
 	DWORD dwFlags;
 	LPWSTR lpszActivePort;
@@ -3091,9 +3086,9 @@ struct SERIALKEYSW{
 	UINT iPortState;
 	UINT iActive;
 }
-alias SERIALKEYSW * LPSERIALKEYSW;
+alias SERIALKEYSW* LPSERIALKEYSW;
 
-struct SOUNDSENTRYA{
+struct SOUNDSENTRYA {
 	UINT cbSize;
 	DWORD dwFlags;
 	DWORD iFSTextEffect;
@@ -3107,9 +3102,9 @@ struct SOUNDSENTRYA{
 	LPSTR lpszWindowsEffectDLL;
 	DWORD iWindowsEffectOrdinal;
 }
-alias SOUNDSENTRYA * LPSOUNDSENTRYA;
+alias SOUNDSENTRYA* LPSOUNDSENTRYA;
 
-struct SOUNDSENTRYW{
+struct SOUNDSENTRYW {
 	UINT cbSize;
 	DWORD dwFlags;
 	DWORD iFSTextEffect;
@@ -3123,51 +3118,51 @@ struct SOUNDSENTRYW{
 	LPWSTR lpszWindowsEffectDLL;
 	DWORD iWindowsEffectOrdinal;
 }
-alias SOUNDSENTRYW * LPSOUNDSENTRYW;
+alias SOUNDSENTRYW* LPSOUNDSENTRYW;
 
-struct STICKYKEYS{
+struct STICKYKEYS {
 	DWORD cbSize;
 	DWORD dwFlags;
 }
-alias STICKYKEYS * LPSTICKYKEYS;
+alias STICKYKEYS* LPSTICKYKEYS;
 
-struct TOGGLEKEYS{
+struct TOGGLEKEYS {
 	DWORD cbSize;
 	DWORD dwFlags;
 }
 
-struct MOUSEHOOKSTRUCT{
+struct MOUSEHOOKSTRUCT {
 	POINT pt;
 	HWND hwnd;
 	UINT wHitTestCode;
 	DWORD dwExtraInfo;
 }
-alias MOUSEHOOKSTRUCT * LPMOUSEHOOKSTRUCT, PMOUSEHOOKSTRUCT;
+alias MOUSEHOOKSTRUCT* LPMOUSEHOOKSTRUCT, PMOUSEHOOKSTRUCT;
 
-struct TRACKMOUSEEVENT{
+struct TRACKMOUSEEVENT {
 	DWORD cbSize;
 	DWORD dwFlags;
 	HWND  hwndTrack;
 	DWORD dwHoverTime;
 }
-alias TRACKMOUSEEVENT * LPTRACKMOUSEEVENT;
+alias TRACKMOUSEEVENT* LPTRACKMOUSEEVENT;
 
-struct TPMPARAMS{
+struct TPMPARAMS {
 	UINT cbSize;
 	RECT rcExclude;
 }
-alias TPMPARAMS * LPTPMPARAMS;
+alias TPMPARAMS* LPTPMPARAMS;
 
-struct EVENTMSG{
+struct EVENTMSG {
 	UINT message;
 	UINT paramL;
 	UINT paramH;
 	DWORD time;
 	HWND hwnd;
 }
-alias EVENTMSG * PEVENTMSGMSG, LPEVENTMSGMSG, PEVENTMSG, LPEVENTMSG;
+alias EVENTMSG* PEVENTMSGMSG, LPEVENTMSGMSG, PEVENTMSG, LPEVENTMSG;
 
-struct WINDOWPOS{
+struct WINDOWPOS {
 	HWND hwnd;
 	HWND hwndInsertAfter;
 	int x;
@@ -3176,15 +3171,15 @@ struct WINDOWPOS{
 	int cy;
 	UINT flags;
 }
-alias WINDOWPOS * PWINDOWPOS, LPWINDOWPOS;
+alias WINDOWPOS* PWINDOWPOS, LPWINDOWPOS;
 
-struct NCCALCSIZE_PARAMS{
+struct NCCALCSIZE_PARAMS {
 	RECT rgrc[3];
 	PWINDOWPOS lppos;
 }
-alias NCCALCSIZE_PARAMS * LPNCCALCSIZE_PARAMS;
+alias NCCALCSIZE_PARAMS* LPNCCALCSIZE_PARAMS;
 
-struct MDICREATESTRUCTA{
+struct MDICREATESTRUCTA {
 	LPCSTR szClass;
 	LPCSTR szTitle;
 	HANDLE hOwner;
@@ -3195,9 +3190,9 @@ struct MDICREATESTRUCTA{
 	DWORD style;
 	LPARAM lParam;
 }
-alias MDICREATESTRUCTA * LPMDICREATESTRUCTA;
+alias MDICREATESTRUCTA* LPMDICREATESTRUCTA;
 
-struct MDICREATESTRUCTW{
+struct MDICREATESTRUCTW {
 	LPCWSTR szClass;
 	LPCWSTR szTitle;
 	HANDLE hOwner;
@@ -3208,25 +3203,25 @@ struct MDICREATESTRUCTW{
 	DWORD style;
 	LPARAM lParam;
 }
-alias MDICREATESTRUCTW * LPMDICREATESTRUCTW;
+alias MDICREATESTRUCTW* LPMDICREATESTRUCTW;
 
-struct MINMAXINFO{
+struct MINMAXINFO {
 	POINT ptReserved;
 	POINT ptMaxSize;
 	POINT ptMaxPosition;
 	POINT ptMinTrackSize;
 	POINT ptMaxTrackSize;
 }
-alias MINMAXINFO * PMINMAXINFO, LPMINMAXINFO;
+alias MINMAXINFO* PMINMAXINFO, LPMINMAXINFO;
 
-struct MDINEXTMENU{
+struct MDINEXTMENU {
 	HMENU hmenuIn;
 	HMENU hmenuNext;
 	HWND hwndNext;
 }
-alias MDINEXTMENU * PMDINEXTMENU, LPMDINEXTMENU;
+alias MDINEXTMENU* PMDINEXTMENU, LPMDINEXTMENU;
 
-struct MEASUREITEMSTRUCT{
+struct MEASUREITEMSTRUCT {
 	UINT CtlType;
 	UINT CtlID;
 	UINT itemID;
@@ -3234,9 +3229,9 @@ struct MEASUREITEMSTRUCT{
 	UINT itemHeight;
 	DWORD itemData;
 }
-alias MEASUREITEMSTRUCT * PMEASUREITEMSTRUCT, LPMEASUREITEMSTRUCT;
+alias MEASUREITEMSTRUCT* PMEASUREITEMSTRUCT, LPMEASUREITEMSTRUCT;
 
-struct DROPSTRUCT{
+struct DROPSTRUCT {
 	HWND hwndSource;
 	HWND hwndSink;
 	DWORD wFmt;
@@ -3244,25 +3239,25 @@ struct DROPSTRUCT{
 	POINT ptDrop;
 	DWORD dwControlData;
 }
-alias DROPSTRUCT * PDROPSTRUCT, LPDROPSTRUCT;
+alias DROPSTRUCT* PDROPSTRUCT, LPDROPSTRUCT;
 
 alias DWORD HELPPOLY;
 
-struct MULTIKEYHELPA{
+struct MULTIKEYHELPA {
 	DWORD mkSize;
 	CHAR mkKeylist;
 	CHAR szKeyphrase[1];
 }
-alias MULTIKEYHELPA * PMULTIKEYHELPA, LPMULTIKEYHELPA;
+alias MULTIKEYHELPA* PMULTIKEYHELPA, LPMULTIKEYHELPA;
 
-struct MULTIKEYHELPW{
+struct MULTIKEYHELPW {
 	DWORD mkSize;
 	WCHAR mkKeylist;
 	WCHAR szKeyphrase[1];
 }
-alias MULTIKEYHELPW * PMULTIKEYHELPW, LPMULTIKEYHELPW;
+alias MULTIKEYHELPW* PMULTIKEYHELPW, LPMULTIKEYHELPW;
 
-struct HELPWININFOA{
+struct HELPWININFOA {
 	int wStructSize;
 	int x;
 	int y;
@@ -3271,9 +3266,9 @@ struct HELPWININFOA{
 	int wMax;
 	CHAR rgchMember[2];
 }
-alias HELPWININFOA * PHELPWININFOA, LPHELPWININFOA;
+alias HELPWININFOA* PHELPWININFOA, LPHELPWININFOA;
 
-struct HELPWININFOW{
+struct HELPWININFOW {
 	int wStructSize;
 	int x;
 	int y;
@@ -3282,15 +3277,15 @@ struct HELPWININFOW{
 	int wMax;
 	WCHAR rgchMember[2];
 }
-alias HELPWININFOW * PHELPWININFOW, LPHELPWININFOW;
+alias HELPWININFOW* PHELPWININFOW, LPHELPWININFOW;
 
-struct STYLESTRUCT{
+struct STYLESTRUCT {
 	DWORD styleOld;
 	DWORD styleNew;
 }
-alias STYLESTRUCT * LPSTYLESTRUCT;
+alias STYLESTRUCT* LPSTYLESTRUCT;
 
-struct ALTTABINFO{
+struct ALTTABINFO {
 	DWORD cbSize;
 	int   cItems;
 	int   cColumns;
@@ -3301,9 +3296,9 @@ struct ALTTABINFO{
 	int   cyItem;
 	POINT ptStart;
 }
-alias ALTTABINFO * PALTTABINFO, LPALTTABINFO;
+alias ALTTABINFO* PALTTABINFO, LPALTTABINFO;
 
-struct COMBOBOXINFO{
+struct COMBOBOXINFO {
 	DWORD cbSize;
 	RECT rcItem;
 	RECT rcButton;
@@ -3312,17 +3307,17 @@ struct COMBOBOXINFO{
 	HWND hwndItem;
 	HWND hwndList;
 }
-alias COMBOBOXINFO * PCOMBOBOXINFO, LPCOMBOBOXINFO;
+alias COMBOBOXINFO* PCOMBOBOXINFO, LPCOMBOBOXINFO;
 
-struct CURSORINFO{
+struct CURSORINFO {
 	DWORD cbSize;
 	DWORD flags;
 	HCURSOR hCursor;
 	POINT ptScreenPos;
 }
-alias CURSORINFO * PCURSORINFO, LPCURSORINFO;
+alias CURSORINFO* PCURSORINFO, LPCURSORINFO;
 
-struct MENUBARINFO{
+struct MENUBARINFO {
 	DWORD cbSize;
 	RECT  rcBar;
 	HMENU hMenu;
@@ -3335,9 +3330,9 @@ struct MENUBARINFO{
 	void fBarFocused(bool b) { bf_ = (bf_ & 0xFE) | b; }
 	void fFocused(bool b) { bf_ = b ? (bf_ | 2) : bf_ & 0xFD; }
 }
-alias MENUBARINFO * PMENUBARINFO;
+alias MENUBARINFO* PMENUBARINFO;
 
-struct MENUINFO{
+struct MENUINFO {
 	DWORD cbSize;
 	DWORD fMask;
 	DWORD dwStyle;
@@ -3346,12 +3341,12 @@ struct MENUINFO{
 	DWORD   dwContextHelpID;
 	ULONG_PTR dwMenuData;
 }
-alias MENUINFO * LPMENUINFO, LPCMENUINFO;
+alias MENUINFO* LPMENUINFO, LPCMENUINFO;
 
 
 const CCHILDREN_SCROLLBAR=5;
 
-struct SCROLLBARINFO{
+struct SCROLLBARINFO {
 	DWORD cbSize;
 	RECT  rcScrollBar;
 	int   dxyLineButton;
@@ -3360,19 +3355,19 @@ struct SCROLLBARINFO{
 	int   reserved;
 	DWORD rgstate[CCHILDREN_SCROLLBAR+1];
 }
-alias SCROLLBARINFO * PSCROLLBARINFO, LPSCROLLBARINFO;
+alias SCROLLBARINFO* PSCROLLBARINFO, LPSCROLLBARINFO;
 
 const CCHILDREN_TITLEBAR=5;
 
-struct TITLEBARINFO{
-	DWORD cbSize;
+struct TITLEBARINFO {
+	DWORD cbSize = TITLEBARINFO.sizeof;
 	RECT  rcTitleBar;
-	DWORD rgstate[CCHILDREN_TITLEBAR+1];
+	DWORD[CCHILDREN_TITLEBAR+1] rgstate;
 }
-alias TITLEBARINFO * PTITLEBARINFO, LPTITLEBARINFO;
+alias TITLEBARINFO* PTITLEBARINFO, LPTITLEBARINFO;
 
-struct WINDOWINFO{
-	DWORD cbSize;
+struct WINDOWINFO {
+	DWORD cbSize = WINDOWINFO.sizeof;
 	RECT  rcWindow;
 	RECT  rcClient;
 	DWORD dwStyle;
@@ -3383,52 +3378,52 @@ struct WINDOWINFO{
 	ATOM  atomWindowType;
 	WORD  wCreatorVersion;
 }
-alias WINDOWINFO * PWINDOWINFO, LPWINDOWINFO;
+alias WINDOWINFO* PWINDOWINFO, LPWINDOWINFO;
 
-struct LASTINPUTINFO{
+struct LASTINPUTINFO {
 	UINT cbSize;
 	DWORD dwTime;
 }
-alias LASTINPUTINFO * PLASTINPUTINFO;
+alias LASTINPUTINFO* PLASTINPUTINFO;
 
-struct MONITORINFO{
+struct MONITORINFO {
 	DWORD cbSize;
 	RECT rcMonitor;
 	RECT rcWork;
 	DWORD dwFlags;
 }
-alias MONITORINFO * LPMONITORINFO;
+alias MONITORINFO* LPMONITORINFO;
 
 const CCHDEVICENAME=32;
 
-struct MONITORINFOEXA{
-	DWORD	cbSize;
-	RECT	rcMonitor;
-	RECT	rcWork;
-	DWORD	dwFlags;
-	CHAR	szDevice[CCHDEVICENAME];
+struct MONITORINFOEXA {
+	DWORD cbSize = MONITORINFOEXA.sizeof;
+	RECT  rcMonitor;
+	RECT  rcWork;
+	DWORD dwFlags;
+	CHAR[CCHDEVICENAME] szDevice;
 }
-alias MONITORINFOEXA * LPMONITORINFOEXA;
+alias MONITORINFOEXA* LPMONITORINFOEXA;
 
-struct MONITORINFOEXW{
-	DWORD	cbSize;
-	RECT	rcMonitor;
-	RECT	rcWork;
-	DWORD	dwFlags;
-	WCHAR	szDevice[CCHDEVICENAME];
+struct MONITORINFOEXW {
+	DWORD cbSize = MONITORINFOEXW.sizeof;
+	RECT  rcMonitor;
+	RECT  rcWork;
+	DWORD dwFlags;
+	WCHAR[CCHDEVICENAME] szDevice;
 }
-alias MONITORINFOEXW * LPMONITORINFOEXW;
+alias MONITORINFOEXW* LPMONITORINFOEXW;
 
-struct KBDLLHOOKSTRUCT{
+struct KBDLLHOOKSTRUCT {
 	DWORD vkCode;
 	DWORD scanCode;
 	DWORD flags;
 	DWORD time;
 	DWORD dwExtraInfo;
 }
-alias KBDLLHOOKSTRUCT * LPKBDLLHOOKSTRUCT, PKBDLLHOOKSTRUCT;
+alias KBDLLHOOKSTRUCT* LPKBDLLHOOKSTRUCT, PKBDLLHOOKSTRUCT;
 
-static if ((_WIN32_WINNT >= 0x0500) || (_WIN32_WINDOWS >= 0x0410)) {
+static if ((_WIN32_WINNT >= 0x500) || (_WIN32_WINDOWS >= 0x410)) {
 
 struct FLASHWINFO {
 	UINT  cbSize;
@@ -3437,23 +3432,23 @@ struct FLASHWINFO {
 	UINT  uCount;
 	DWORD dwTimeout;
 }
-alias FLASHWINFO * PFLASHWINFO;
+alias FLASHWINFO* PFLASHWINFO;
 
 }
 
-static if ((_WIN32_WINNT >= 0x0500) || (_WIN32_WINDOWS >= 0x0490)) {
+static if ((_WIN32_WINNT >= 0x500) || (_WIN32_WINDOWS >= 0x490)) {
 
-struct MOUSEMOVEPOINT{
+struct MOUSEMOVEPOINT {
 	int x;
 	int y;
 	DWORD time;
 	ULONG_PTR dwExtraInfo;
 }
-alias MOUSEMOVEPOINT * PMOUSEMOVEPOINT, LPMOUSEMOVEPOINT;
+alias MOUSEMOVEPOINT* PMOUSEMOVEPOINT, LPMOUSEMOVEPOINT;
 }
 
-static if (_WIN32_WINNT >= 0x0403) {
-struct MOUSEINPUT{
+static if (_WIN32_WINNT >= 0x403) {
+struct MOUSEINPUT {
 	LONG dx;
 	LONG dy;
 	DWORD mouseData;
@@ -3461,25 +3456,25 @@ struct MOUSEINPUT{
 	DWORD time;
 	ULONG_PTR dwExtraInfo;
 }
-alias MOUSEINPUT * PMOUSEINPUT;
+alias MOUSEINPUT* PMOUSEINPUT;
 
-struct KEYBDINPUT{
+struct KEYBDINPUT {
 	WORD wVk;
 	WORD wScan;
 	DWORD dwFlags;
 	DWORD time;
 	ULONG_PTR dwExtraInfo;
 }
-alias KEYBDINPUT * PKEYBDINPUT;
+alias KEYBDINPUT* PKEYBDINPUT;
 
-struct HARDWAREINPUT{
+struct HARDWAREINPUT {
 	DWORD uMsg;
 	WORD wParamL;
 	WORD wParamH;
 }
-alias HARDWAREINPUT * PHARDWAREINPUT;
+alias HARDWAREINPUT* PHARDWAREINPUT;
 
-struct INPUT{
+struct INPUT {
 	DWORD type;
 	union {
 		MOUSEINPUT mi;
@@ -3487,11 +3482,11 @@ struct INPUT{
 		HARDWAREINPUT hi;
 	}
 }
-alias INPUT * PINPUT, LPINPUT;
-}// (_WIN32_WINNT >= 0x0403)
+alias INPUT* PINPUT, LPINPUT;
+}// (_WIN32_WINNT >= 0x403)
 
-static if (WINVER >= 0x0500) {
-struct GUITHREADINFO{
+static if (WINVER >= 0x500) {
+struct GUITHREADINFO {
 	DWORD cbSize;
 	DWORD flags;
 	HWND hwndActive;
@@ -3502,33 +3497,33 @@ struct GUITHREADINFO{
 	HWND hwndCaret;
 	RECT rcCaret;
 }
-alias GUITHREADINFO * PGUITHREADINFO, LPGUITHREADINFO;
+alias GUITHREADINFO* PGUITHREADINFO, LPGUITHREADINFO;
 extern (Windows) {
-alias void function (HWINEVENTHOOK,DWORD,HWND,LONG,LONG,DWORD,DWORD) WINEVENTPROC;
+alias void function (HWINEVENTHOOK, DWORD, HWND, LONG, LONG, DWORD, DWORD) WINEVENTPROC;
 }
 
-}// (WINVER >= 0x0500)
+}// (WINVER >= 0x500)
 
-static if (_WIN32_WINNT >= 0x0501) {
+static if (_WIN32_WINNT >= 0x501) {
 struct BSMINFO {
 	UINT  cbSize;
 	HDESK hdesk;
 	HWND  hwnd;
 	LUID  luid;
 }
-alias BSMINFO * PBSMINFO;
+alias BSMINFO* PBSMINFO;
 
 typedef HANDLE HRAWINPUT;
 
-struct RAWINPUTHEADER{
+struct RAWINPUTHEADER {
 	DWORD dwType;
 	DWORD dwSize;
 	HANDLE hDevice;
 	WPARAM wParam;
 }
-alias RAWINPUTHEADER * PRAWINPUTHEADER;
+alias RAWINPUTHEADER* PRAWINPUTHEADER;
 
-struct RAWMOUSE{
+struct RAWMOUSE {
 	USHORT usFlags;
 	union {
 		ULONG ulButtons;
@@ -3542,9 +3537,9 @@ struct RAWMOUSE{
 	LONG lLastY;
 	ULONG ulExtraInformation;
 }
-alias RAWMOUSE * PRAWMOUSE, LPRAWMOUSE;
+alias RAWMOUSE* PRAWMOUSE, LPRAWMOUSE;
 
-struct RAWKEYBOARD{
+struct RAWKEYBOARD {
 	USHORT MakeCode;
 	USHORT Flags;
 	USHORT Reserved;
@@ -3552,40 +3547,40 @@ struct RAWKEYBOARD{
 	UINT Message;
 	ULONG ExtraInformation;
 }
-alias RAWKEYBOARD * PRAWKEYBOARD, LPRAWKEYBOARD;
+alias RAWKEYBOARD* PRAWKEYBOARD, LPRAWKEYBOARD;
 
-struct RAWHID{
+struct RAWHID {
 	DWORD dwSizeHid;
 	DWORD dwCount;
 	BYTE bRawData;
 }
-alias RAWHID * PRAWHID, LPRAWHID;
+alias RAWHID* PRAWHID, LPRAWHID;
 
-struct RAWINPUT{
+struct RAWINPUT {
 	RAWINPUTHEADER header;
-	union data{
+	union data {
 		RAWMOUSE    mouse;
 		RAWKEYBOARD keyboard;
 		RAWHID      hid;
 	}
 }
-alias RAWINPUT * PRAWINPUT, LPRAWINPUT;
+alias RAWINPUT* PRAWINPUT, LPRAWINPUT;
 
-struct RAWINPUTDEVICE{
+struct RAWINPUTDEVICE {
 	USHORT usUsagePage;
 	USHORT usUsage;
 	DWORD dwFlags;
 	HWND hwndTarget;
 }
-alias RAWINPUTDEVICE * PRAWINPUTDEVICE, LPRAWINPUTDEVICE;
-alias RAWINPUTDEVICE *PCRAWINPUTDEVICE;
+alias RAWINPUTDEVICE* PRAWINPUTDEVICE, LPRAWINPUTDEVICE;
+alias RAWINPUTDEVICE* PCRAWINPUTDEVICE;
 
-struct RAWINPUTDEVICELIST{
+struct RAWINPUTDEVICELIST {
 	HANDLE hDevice;
 	DWORD dwType;
 }
-alias RAWINPUTDEVICELIST * PRAWINPUTDEVICELIST;
-}// (_WIN32_WINNT >= 0x0501)
+alias RAWINPUTDEVICELIST* PRAWINPUTDEVICELIST;
+}// (_WIN32_WINNT >= 0x501)
 
 struct MSLLHOOKSTRUCT {
 	POINT pt;
@@ -3594,7 +3589,7 @@ struct MSLLHOOKSTRUCT {
 	DWORD time;
 	ULONG_PTR dwExtraInfo;
 }
-alias MSLLHOOKSTRUCT * PMSLLHOOKSTRUCT;
+alias MSLLHOOKSTRUCT* PMSLLHOOKSTRUCT;
 
 alias CharToOemA AnsiToOem;
 alias OemToCharA OemToAnsi;
@@ -3611,114 +3606,114 @@ alias MAKELONG MAKEWPARAM;
 alias MAKELONG MAKELPARAM;
 alias MAKELONG MAKELRESULT;
 
-//MACRO #define POINTSTOPOINT(p,ps) { (p).x=LOWORD(*(DWORD *)&ps); (p).y=HIWORD(*(DWORD *)&ps); }
-//MACRO #define POINTTOPOINTS(p) ((POINTS)MAKELONG((p).x,(p).y))
+//MACRO #define POINTSTOPOINT(p, ps) { (p).x=LOWORD(*(DWORD* )&ps); (p).y=HIWORD(*(DWORD* )&ps); }
+//MACRO #define POINTTOPOINTS(p) ((POINTS)MAKELONG((p).x, (p).y))
 
 extern (Windows) {
 
-HKL ActivateKeyboardLayout(HKL,UINT);
-BOOL AdjustWindowRect(LPRECT,DWORD,BOOL);
-BOOL AdjustWindowRectEx(LPRECT,DWORD,BOOL,DWORD);
+HKL ActivateKeyboardLayout(HKL, UINT);
+BOOL AdjustWindowRect(LPRECT, DWORD, BOOL);
+BOOL AdjustWindowRectEx(LPRECT, DWORD, BOOL, DWORD);
 BOOL AnyPopup();
-BOOL AppendMenuA(HMENU,UINT,UINT_PTR,LPCSTR);
-BOOL AppendMenuW(HMENU,UINT,UINT_PTR,LPCWSTR);
+BOOL AppendMenuA(HMENU, UINT, UINT_PTR, LPCSTR);
+BOOL AppendMenuW(HMENU, UINT, UINT_PTR, LPCWSTR);
 UINT ArrangeIconicWindows(HWND);
-BOOL AttachThreadInput(DWORD,DWORD,BOOL);
+BOOL AttachThreadInput(DWORD, DWORD, BOOL);
 HDWP BeginDeferWindowPos(int);
-HDC BeginPaint(HWND,LPPAINTSTRUCT);
+HDC BeginPaint(HWND, LPPAINTSTRUCT);
 BOOL BringWindowToTop(HWND);
-BOOL CallMsgFilterA(LPMSG,INT);
-BOOL CallMsgFilterW(LPMSG,INT);
-LRESULT CallNextHookEx(HHOOK,int,WPARAM,LPARAM);
-LRESULT CallWindowProcA(WNDPROC,HWND,UINT,WPARAM,LPARAM);
-LRESULT CallWindowProcW(WNDPROC,HWND,UINT,WPARAM,LPARAM);
-WORD CascadeWindows(HWND,UINT,LPCRECT,UINT, HWND*);
-BOOL ChangeClipboardChain(HWND,HWND);
+BOOL CallMsgFilterA(LPMSG, INT);
+BOOL CallMsgFilterW(LPMSG, INT);
+LRESULT CallNextHookEx(HHOOK, int, WPARAM, LPARAM);
+LRESULT CallWindowProcA(WNDPROC, HWND, UINT, WPARAM, LPARAM);
+LRESULT CallWindowProcW(WNDPROC, HWND, UINT, WPARAM, LPARAM);
+WORD CascadeWindows(HWND, UINT, LPCRECT, UINT, HWND*);
+BOOL ChangeClipboardChain(HWND, HWND);
 
-LONG ChangeDisplaySettingsA(PDEVMODEA,DWORD);
-LONG ChangeDisplaySettingsW(PDEVMODEW,DWORD);
-LONG ChangeDisplaySettingsExA(LPCSTR,LPDEVMODEA,HWND,DWORD,LPVOID);
-LONG ChangeDisplaySettingsExW(LPCWSTR,LPDEVMODEW,HWND,DWORD,LPVOID);
+LONG ChangeDisplaySettingsA(PDEVMODEA, DWORD);
+LONG ChangeDisplaySettingsW(PDEVMODEW, DWORD);
+LONG ChangeDisplaySettingsExA(LPCSTR, LPDEVMODEA, HWND, DWORD, LPVOID);
+LONG ChangeDisplaySettingsExW(LPCWSTR, LPDEVMODEW, HWND, DWORD, LPVOID);
 
-BOOL ChangeMenuA(HMENU,UINT,LPCSTR,UINT,UINT);
-BOOL ChangeMenuW(HMENU,UINT,LPCWSTR,UINT,UINT);
+BOOL ChangeMenuA(HMENU, UINT, LPCSTR, UINT, UINT);
+BOOL ChangeMenuW(HMENU, UINT, LPCWSTR, UINT, UINT);
 LPSTR CharLowerA(LPSTR);
 LPWSTR CharLowerW(LPWSTR);
-DWORD CharLowerBuffA(LPSTR,DWORD);
-DWORD CharLowerBuffW(LPWSTR,DWORD);
+DWORD CharLowerBuffA(LPSTR, DWORD);
+DWORD CharLowerBuffW(LPWSTR, DWORD);
 LPSTR CharNextA(LPCSTR);
 LPWSTR CharNextW(LPCWSTR);
-LPSTR CharNextExA(WORD,LPCSTR,DWORD);
-LPWSTR CharNextExW(WORD,LPCWSTR,DWORD);
-LPSTR CharPrevA(LPCSTR,LPCSTR);
-LPWSTR CharPrevW(LPCWSTR,LPCWSTR);
-LPSTR CharPrevExA(WORD,LPCSTR,LPCSTR,DWORD);
-LPWSTR CharPrevExW(WORD,LPCWSTR,LPCWSTR,DWORD);
-BOOL CharToOemA(LPCSTR,LPSTR);
-BOOL CharToOemW(LPCWSTR,LPSTR);
-BOOL CharToOemBuffA(LPCSTR,LPSTR,DWORD);
-BOOL CharToOemBuffW(LPCWSTR,LPSTR,DWORD);
+LPSTR CharNextExA(WORD, LPCSTR, DWORD);
+LPWSTR CharNextExW(WORD, LPCWSTR, DWORD);
+LPSTR CharPrevA(LPCSTR, LPCSTR);
+LPWSTR CharPrevW(LPCWSTR, LPCWSTR);
+LPSTR CharPrevExA(WORD, LPCSTR, LPCSTR, DWORD);
+LPWSTR CharPrevExW(WORD, LPCWSTR, LPCWSTR, DWORD);
+BOOL CharToOemA(LPCSTR, LPSTR);
+BOOL CharToOemW(LPCWSTR, LPSTR);
+BOOL CharToOemBuffA(LPCSTR, LPSTR, DWORD);
+BOOL CharToOemBuffW(LPCWSTR, LPSTR, DWORD);
 LPSTR CharUpperA(LPSTR);
 LPWSTR CharUpperW(LPWSTR);
-DWORD CharUpperBuffA(LPSTR,DWORD);
-DWORD CharUpperBuffW(LPWSTR,DWORD);
-BOOL CheckDlgButton(HWND,int,UINT);
-DWORD CheckMenuItem(HMENU,UINT,UINT);
-BOOL CheckMenuRadioItem(HMENU,UINT,UINT,UINT,UINT);
-BOOL CheckRadioButton(HWND,int,int,int);
-HWND ChildWindowFromPoint(HWND,POINT);
-HWND ChildWindowFromPointEx(HWND,POINT,UINT);
-BOOL ClientToScreen(HWND,LPPOINT);
+DWORD CharUpperBuffA(LPSTR, DWORD);
+DWORD CharUpperBuffW(LPWSTR, DWORD);
+BOOL CheckDlgButton(HWND, int, UINT);
+DWORD CheckMenuItem(HMENU, UINT, UINT);
+BOOL CheckMenuRadioItem(HMENU, UINT, UINT, UINT, UINT);
+BOOL CheckRadioButton(HWND, int, int, int);
+HWND ChildWindowFromPoint(HWND, POINT);
+HWND ChildWindowFromPointEx(HWND, POINT, UINT);
+BOOL ClientToScreen(HWND, LPPOINT);
 BOOL ClipCursor(LPCRECT);
 BOOL CloseClipboard();
 BOOL CloseDesktop(HDESK);
 BOOL CloseWindow(HWND);
 BOOL CloseWindowStation(HWINSTA);
-int CopyAcceleratorTableA(HACCEL,LPACCEL,int);
-int CopyAcceleratorTableW(HACCEL,LPACCEL,int);
+int CopyAcceleratorTableA(HACCEL, LPACCEL, int);
+int CopyAcceleratorTableW(HACCEL, LPACCEL, int);
 
 HICON CopyIcon(HICON);
-HANDLE CopyImage(HANDLE,UINT,int,int,UINT);
-BOOL CopyRect(LPRECT,LPCRECT);
+HANDLE CopyImage(HANDLE, UINT, int, int, UINT);
+BOOL CopyRect(LPRECT, LPCRECT);
 int CountClipboardFormats();
-HACCEL CreateAcceleratorTableA(LPACCEL,int);
-HACCEL CreateAcceleratorTableW(LPACCEL,int);
-BOOL CreateCaret(HWND,HBITMAP,int,int);
-HCURSOR CreateCursor(HINSTANCE,int,int,int,int,PCVOID,PCVOID);
+HACCEL CreateAcceleratorTableA(LPACCEL, int);
+HACCEL CreateAcceleratorTableW(LPACCEL, int);
+BOOL CreateCaret(HWND, HBITMAP, int, int);
+HCURSOR CreateCursor(HINSTANCE, int, int, int, int, PCVOID, PCVOID);
 
-HDESK CreateDesktopA(LPCSTR,LPCSTR,LPDEVMODEA,DWORD,ACCESS_MASK,LPSECURITY_ATTRIBUTES);
-HDESK CreateDesktopW(LPCWSTR,LPCWSTR,LPDEVMODEW,DWORD,ACCESS_MASK,LPSECURITY_ATTRIBUTES);
+HDESK CreateDesktopA(LPCSTR, LPCSTR, LPDEVMODEA, DWORD, ACCESS_MASK, LPSECURITY_ATTRIBUTES);
+HDESK CreateDesktopW(LPCWSTR, LPCWSTR, LPDEVMODEW, DWORD, ACCESS_MASK, LPSECURITY_ATTRIBUTES);
 
-HWND CreateDialogParamA(HINSTANCE,LPCSTR,HWND,DLGPROC,LPARAM);
-HWND CreateDialogParamW(HINSTANCE,LPCWSTR,HWND,DLGPROC,LPARAM);
-HWND CreateDialogIndirectParamA(HINSTANCE,LPCDLGTEMPLATE,HWND,DLGPROC,LPARAM);
-HWND CreateDialogIndirectParamW(HINSTANCE,LPCDLGTEMPLATE,HWND,DLGPROC,LPARAM);
+HWND CreateDialogParamA(HINSTANCE, LPCSTR, HWND, DLGPROC, LPARAM);
+HWND CreateDialogParamW(HINSTANCE, LPCWSTR, HWND, DLGPROC, LPARAM);
+HWND CreateDialogIndirectParamA(HINSTANCE, LPCDLGTEMPLATE, HWND, DLGPROC, LPARAM);
+HWND CreateDialogIndirectParamW(HINSTANCE, LPCDLGTEMPLATE, HWND, DLGPROC, LPARAM);
 
-HICON CreateIcon(HINSTANCE,int,int,BYTE,BYTE, BYTE*, BYTE*);
-HICON CreateIconFromResource(PBYTE,DWORD,BOOL,DWORD);
-HICON CreateIconFromResourceEx(PBYTE,DWORD,BOOL,DWORD,int,int,UINT);
+HICON CreateIcon(HINSTANCE, int, int, BYTE, BYTE, BYTE*, BYTE*);
+HICON CreateIconFromResource(PBYTE, DWORD, BOOL, DWORD);
+HICON CreateIconFromResourceEx(PBYTE, DWORD, BOOL, DWORD, int, int, UINT);
 HICON CreateIconIndirect(PICONINFO);
-HWND CreateMDIWindowA(LPCSTR,LPCSTR,DWORD,int,int,int,int,HWND,HINSTANCE,LPARAM);
-HWND CreateMDIWindowW(LPCWSTR,LPCWSTR,DWORD,int,int,int,int,HWND,HINSTANCE,LPARAM);
+HWND CreateMDIWindowA(LPCSTR, LPCSTR, DWORD, int, int, int, int, HWND, HINSTANCE, LPARAM);
+HWND CreateMDIWindowW(LPCWSTR, LPCWSTR, DWORD, int, int, int, int, HWND, HINSTANCE, LPARAM);
 HMENU CreateMenu();
 HMENU CreatePopupMenu();
 
-HWND CreateWindowExA(DWORD,LPCSTR,LPCSTR,DWORD,int,int,int,int,HWND,HMENU,HINSTANCE,LPVOID);
-HWND CreateWindowExW(DWORD,LPCWSTR,LPCWSTR,DWORD,int,int,int,int,HWND,HMENU,HINSTANCE,LPVOID);
+HWND CreateWindowExA(DWORD, LPCSTR, LPCSTR, DWORD, int, int, int, int, HWND, HMENU, HINSTANCE, LPVOID);
+HWND CreateWindowExW(DWORD, LPCWSTR, LPCWSTR, DWORD, int, int, int, int, HWND, HMENU, HINSTANCE, LPVOID);
 
-HWINSTA CreateWindowStationA(LPSTR,DWORD,DWORD,LPSECURITY_ATTRIBUTES);
-HWINSTA CreateWindowStationW(LPWSTR,DWORD,DWORD,LPSECURITY_ATTRIBUTES);
-LRESULT DefDlgProcA(HWND,UINT,WPARAM,LPARAM);
-LRESULT DefDlgProcW(HWND,UINT,WPARAM,LPARAM);
-HDWP DeferWindowPos(HDWP,HWND,HWND,int,int,int,int,UINT);
-LRESULT DefFrameProcA(HWND,HWND,UINT,WPARAM,LPARAM);
-LRESULT DefFrameProcW(HWND,HWND,UINT,WPARAM,LPARAM);
+HWINSTA CreateWindowStationA(LPSTR, DWORD, DWORD, LPSECURITY_ATTRIBUTES);
+HWINSTA CreateWindowStationW(LPWSTR, DWORD, DWORD, LPSECURITY_ATTRIBUTES);
+LRESULT DefDlgProcA(HWND, UINT, WPARAM, LPARAM);
+LRESULT DefDlgProcW(HWND, UINT, WPARAM, LPARAM);
+HDWP DeferWindowPos(HDWP, HWND, HWND, int, int, int, int, UINT);
+LRESULT DefFrameProcA(HWND, HWND, UINT, WPARAM, LPARAM);
+LRESULT DefFrameProcW(HWND, HWND, UINT, WPARAM, LPARAM);
 
-LRESULT DefMDIChildProcA(HWND,UINT,WPARAM,LPARAM);
-LRESULT DefMDIChildProcW(HWND,UINT,WPARAM,LPARAM);
-LRESULT DefWindowProcA(HWND,UINT,WPARAM,LPARAM);
-LRESULT DefWindowProcW(HWND,UINT,WPARAM,LPARAM);
-BOOL DeleteMenu(HMENU,UINT,UINT);
+LRESULT DefMDIChildProcA(HWND, UINT, WPARAM, LPARAM);
+LRESULT DefMDIChildProcW(HWND, UINT, WPARAM, LPARAM);
+LRESULT DefWindowProcA(HWND, UINT, WPARAM, LPARAM);
+LRESULT DefWindowProcW(HWND, UINT, WPARAM, LPARAM);
+BOOL DeleteMenu(HMENU, UINT, UINT);
 BOOL DeregisterShellHookWindow(HWND);
 BOOL DestroyAcceleratorTable(HACCEL);
 BOOL DestroyCaret();
@@ -3727,10 +3722,10 @@ BOOL DestroyIcon(HICON);
 BOOL DestroyMenu(HMENU);
 BOOL DestroyWindow(HWND);
 
-int DialogBoxParamA(HINSTANCE,LPCSTR,HWND,DLGPROC,LPARAM);
-int DialogBoxParamW(HINSTANCE,LPCWSTR,HWND,DLGPROC,LPARAM);
-int DialogBoxIndirectParamA(HINSTANCE,LPCDLGTEMPLATE,HWND,DLGPROC,LPARAM);
-int DialogBoxIndirectParamW(HINSTANCE,LPCDLGTEMPLATE,HWND,DLGPROC,LPARAM);
+int DialogBoxParamA(HINSTANCE, LPCSTR, HWND, DLGPROC, LPARAM);
+int DialogBoxParamW(HINSTANCE, LPCWSTR, HWND, DLGPROC, LPARAM);
+int DialogBoxIndirectParamA(HINSTANCE, LPCDLGTEMPLATE, HWND, DLGPROC, LPARAM);
+int DialogBoxIndirectParamW(HINSTANCE, LPCDLGTEMPLATE, HWND, DLGPROC, LPARAM);
 
 } // extern (Windows)
 
@@ -3739,55 +3734,55 @@ HCURSOR CopyCursor(HCURSOR c)
 	return cast(HCURSOR)CopyIcon(cast(HICON)c);
 }
 
-HWND CreateDialogA(HINSTANCE h,LPCSTR n,HWND w,DLGPROC f)
+HWND CreateDialogA(HINSTANCE h, LPCSTR n, HWND w, DLGPROC f)
 {
 	return CreateDialogParamA(h, n, w, f, 0);
 }
 
-HWND CreateDialogW(HINSTANCE h,LPCWSTR n,HWND w,DLGPROC f)
+HWND CreateDialogW(HINSTANCE h, LPCWSTR n, HWND w, DLGPROC f)
 {
 	return CreateDialogParamW(h, n, w, f, 0);
 }
 
-HWND CreateDialogIndirectA(HINSTANCE h,LPCDLGTEMPLATE t,HWND w ,DLGPROC f)
+HWND CreateDialogIndirectA(HINSTANCE h, LPCDLGTEMPLATE t, HWND w , DLGPROC f)
 {
 	return CreateDialogIndirectParamA(h, t, w, f, 0);
 }
 
-HWND CreateDialogIndirectW(HINSTANCE h,LPCDLGTEMPLATE t,HWND w ,DLGPROC f)
+HWND CreateDialogIndirectW(HINSTANCE h, LPCDLGTEMPLATE t, HWND w , DLGPROC f)
 {
 	return CreateDialogIndirectParamW(h, t, w, f, 0);
 }
 
 
-HWND CreateWindowA(LPCSTR a,LPCSTR b,DWORD c,int d,int e,int f,int g,HWND h,HMENU i,HINSTANCE j,LPVOID k)
+HWND CreateWindowA(LPCSTR a, LPCSTR b, DWORD c, int d, int e, int f, int g, HWND h, HMENU i, HINSTANCE j, LPVOID k)
 {
-	return CreateWindowExA(0,a,b,c,d,e,f,g,h,i,j,k);
+	return CreateWindowExA(0, a, b, c, d, e, f, g, h, i, j, k);
 }
 
-HWND CreateWindowW(LPCWSTR a,LPCWSTR b,DWORD c,int d,int e,int f,int g,HWND h,HMENU i,HINSTANCE j,LPVOID k)
+HWND CreateWindowW(LPCWSTR a, LPCWSTR b, DWORD c, int d, int e, int f, int g, HWND h, HMENU i, HINSTANCE j, LPVOID k)
 {
-	return CreateWindowExW(0,a,b,c,d,e,f,g,h,i,j,k);
+	return CreateWindowExW(0, a, b, c, d, e, f, g, h, i, j, k);
 }
 
-int DialogBoxA(HINSTANCE i,LPCSTR t,HWND p,DLGPROC f)
+int DialogBoxA(HINSTANCE i, LPCSTR t, HWND p, DLGPROC f)
 {
-	return DialogBoxParamA(i,t,p,f,0);
+	return DialogBoxParamA(i, t, p, f, 0);
 }
 
-int DialogBoxW(HINSTANCE i,LPCWSTR t,HWND p,DLGPROC f)
+int DialogBoxW(HINSTANCE i, LPCWSTR t, HWND p, DLGPROC f)
 {
-	return DialogBoxParamW(i,t,p,f,0);
+	return DialogBoxParamW(i, t, p, f, 0);
 }
 
-int DialogBoxIndirectA(HINSTANCE i,LPCDLGTEMPLATE t,HWND p,DLGPROC f)
+int DialogBoxIndirectA(HINSTANCE i, LPCDLGTEMPLATE t, HWND p, DLGPROC f)
 {
-	return DialogBoxIndirectParamA(i,t,p,f,0);
+	return DialogBoxIndirectParamA(i, t, p, f, 0);
 }
 
-int DialogBoxIndirectW(HINSTANCE i,LPCDLGTEMPLATE t,HWND p,DLGPROC f)
+int DialogBoxIndirectW(HINSTANCE i, LPCDLGTEMPLATE t, HWND p, DLGPROC f)
 {
-	return DialogBoxIndirectParamW(i,t,p,f,0);
+	return DialogBoxIndirectParamW(i, t, p, f, 0);
 }
 
 BOOL ExitWindows(UINT r, DWORD c)
@@ -3799,207 +3794,207 @@ alias GetWindow GetNextWindow;
 extern (Windows):
 LONG DispatchMessageA( MSG*);
 LONG DispatchMessageW( MSG*);
-int DlgDirListA(HWND,LPSTR,int,int,UINT);
-int DlgDirListW(HWND,LPWSTR,int,int,UINT);
-int DlgDirListComboBoxA(HWND,LPSTR,int,int,UINT);
-int DlgDirListComboBoxW(HWND,LPWSTR,int,int,UINT);
-BOOL DlgDirSelectComboBoxExA(HWND,LPSTR,int,int);
-BOOL DlgDirSelectComboBoxExW(HWND,LPWSTR,int,int);
-BOOL DlgDirSelectExA(HWND,LPSTR,int,int);
-BOOL DlgDirSelectExW(HWND,LPWSTR,int,int);
-BOOL DragDetect(HWND,POINT);
-DWORD DragObject(HWND,HWND,UINT,DWORD,HCURSOR);
-BOOL DrawAnimatedRects(HWND,int,LPCRECT,LPCRECT);
-BOOL DrawCaption(HWND,HDC,LPCRECT,UINT);
-BOOL DrawEdge(HDC,LPRECT,UINT,UINT);
-BOOL DrawFocusRect(HDC,LPCRECT);
-BOOL DrawFrameControl(HDC,LPRECT,UINT,UINT);
-BOOL DrawIcon(HDC,int,int,HICON);
-BOOL DrawIconEx(HDC,int,int,HICON,int,int,UINT,HBRUSH,UINT);
+int DlgDirListA(HWND, LPSTR, int, int, UINT);
+int DlgDirListW(HWND, LPWSTR, int, int, UINT);
+int DlgDirListComboBoxA(HWND, LPSTR, int, int, UINT);
+int DlgDirListComboBoxW(HWND, LPWSTR, int, int, UINT);
+BOOL DlgDirSelectComboBoxExA(HWND, LPSTR, int, int);
+BOOL DlgDirSelectComboBoxExW(HWND, LPWSTR, int, int);
+BOOL DlgDirSelectExA(HWND, LPSTR, int, int);
+BOOL DlgDirSelectExW(HWND, LPWSTR, int, int);
+BOOL DragDetect(HWND, POINT);
+DWORD DragObject(HWND, HWND, UINT, DWORD, HCURSOR);
+BOOL DrawAnimatedRects(HWND, int, LPCRECT, LPCRECT);
+BOOL DrawCaption(HWND, HDC, LPCRECT, UINT);
+BOOL DrawEdge(HDC, LPRECT, UINT, UINT);
+BOOL DrawFocusRect(HDC, LPCRECT);
+BOOL DrawFrameControl(HDC, LPRECT, UINT, UINT);
+BOOL DrawIcon(HDC, int, int, HICON);
+BOOL DrawIconEx(HDC, int, int, HICON, int, int, UINT, HBRUSH, UINT);
 BOOL DrawMenuBar(HWND);
-BOOL DrawStateA(HDC,HBRUSH,DRAWSTATEPROC,LPARAM,WPARAM,int,int,int,int,UINT);
-BOOL DrawStateW(HDC,HBRUSH,DRAWSTATEPROC,LPARAM,WPARAM,int,int,int,int,UINT);
-int DrawTextA(HDC,LPCSTR,int,LPRECT,UINT);
-int DrawTextW(HDC,LPCWSTR,int,LPRECT,UINT);
-int DrawTextExA(HDC,LPSTR,int,LPRECT,UINT,LPDRAWTEXTPARAMS);
-int DrawTextExW(HDC,LPWSTR,int,LPRECT,UINT,LPDRAWTEXTPARAMS);
+BOOL DrawStateA(HDC, HBRUSH, DRAWSTATEPROC, LPARAM, WPARAM, int, int, int, int, UINT);
+BOOL DrawStateW(HDC, HBRUSH, DRAWSTATEPROC, LPARAM, WPARAM, int, int, int, int, UINT);
+int DrawTextA(HDC, LPCSTR, int, LPRECT, UINT);
+int DrawTextW(HDC, LPCWSTR, int, LPRECT, UINT);
+int DrawTextExA(HDC, LPSTR, int, LPRECT, UINT, LPDRAWTEXTPARAMS);
+int DrawTextExW(HDC, LPWSTR, int, LPRECT, UINT, LPDRAWTEXTPARAMS);
 BOOL EmptyClipboard();
-BOOL EnableMenuItem(HMENU,UINT,UINT);
-BOOL EnableScrollBar(HWND,UINT,UINT);
-BOOL EnableWindow(HWND,BOOL);
+BOOL EnableMenuItem(HMENU, UINT, UINT);
+BOOL EnableScrollBar(HWND, UINT, UINT);
+BOOL EnableWindow(HWND, BOOL);
 BOOL EndDeferWindowPos(HDWP);
-BOOL EndDialog(HWND,int);
+BOOL EndDialog(HWND, int);
 BOOL EndMenu();
 BOOL EndPaint(HWND, PAINTSTRUCT*);
-BOOL EnumChildWindows(HWND,ENUMWINDOWSPROC,LPARAM);
+BOOL EnumChildWindows(HWND, ENUMWINDOWSPROC, LPARAM);
 UINT EnumClipboardFormats(UINT);
-BOOL EnumDesktopsA(HWINSTA,DESKTOPENUMPROCA,LPARAM);
-BOOL EnumDesktopsW(HWINSTA,DESKTOPENUMPROCW,LPARAM);
-BOOL EnumDesktopWindows(HDESK,ENUMWINDOWSPROC,LPARAM);
-BOOL EnumDisplaySettingsA(LPCSTR,DWORD,PDEVMODEA);
-BOOL EnumDisplaySettingsW(LPCWSTR,DWORD,PDEVMODEW);
+BOOL EnumDesktopsA(HWINSTA, DESKTOPENUMPROCA, LPARAM);
+BOOL EnumDesktopsW(HWINSTA, DESKTOPENUMPROCW, LPARAM);
+BOOL EnumDesktopWindows(HDESK, ENUMWINDOWSPROC, LPARAM);
+BOOL EnumDisplaySettingsA(LPCSTR, DWORD, PDEVMODEA);
+BOOL EnumDisplaySettingsW(LPCWSTR, DWORD, PDEVMODEW);
 
-BOOL EnumDisplayDevicesA(LPCSTR,DWORD,PDISPLAY_DEVICEA,DWORD);
-BOOL EnumDisplayDevicesW(LPCWSTR,DWORD,PDISPLAY_DEVICEW,DWORD);
+BOOL EnumDisplayDevicesA(LPCSTR, DWORD, PDISPLAY_DEVICEA, DWORD);
+BOOL EnumDisplayDevicesW(LPCWSTR, DWORD, PDISPLAY_DEVICEW, DWORD);
 
-int EnumPropsA(HWND,PROPENUMPROCA);
-int EnumPropsW(HWND,PROPENUMPROCW);
-int EnumPropsExA(HWND,PROPENUMPROCEXA,LPARAM);
-int EnumPropsExW(HWND,PROPENUMPROCEXW,LPARAM);
+int EnumPropsA(HWND, PROPENUMPROCA);
+int EnumPropsW(HWND, PROPENUMPROCW);
+int EnumPropsExA(HWND, PROPENUMPROCEXA, LPARAM);
+int EnumPropsExW(HWND, PROPENUMPROCEXW, LPARAM);
 
-BOOL EnumThreadWindows(DWORD,WNDENUMPROC,LPARAM);
-BOOL EnumWindows(WNDENUMPROC,LPARAM);
-BOOL EnumWindowStationsA(WINSTAENUMPROCA,LPARAM);
-BOOL EnumWindowStationsW(WINSTAENUMPROCW,LPARAM);
-BOOL EqualRect(LPCRECT,LPCRECT);
+BOOL EnumThreadWindows(DWORD, WNDENUMPROC, LPARAM);
+BOOL EnumWindows(WNDENUMPROC, LPARAM);
+BOOL EnumWindowStationsA(WINSTAENUMPROCA, LPARAM);
+BOOL EnumWindowStationsW(WINSTAENUMPROCW, LPARAM);
+BOOL EqualRect(LPCRECT, LPCRECT);
 
-BOOL ExitWindowsEx(UINT,DWORD);
-HWND FindWindowA(LPCSTR,LPCSTR);
-HWND FindWindowExA(HWND,HWND,LPCSTR,LPCSTR);
-HWND FindWindowExW(HWND,HWND,LPCWSTR,LPCWSTR);
-HWND FindWindowW(LPCWSTR,LPCWSTR);
-BOOL FlashWindow(HWND,BOOL);
+BOOL ExitWindowsEx(UINT, DWORD);
+HWND FindWindowA(LPCSTR, LPCSTR);
+HWND FindWindowExA(HWND, HWND, LPCSTR, LPCSTR);
+HWND FindWindowExW(HWND, HWND, LPCWSTR, LPCWSTR);
+HWND FindWindowW(LPCWSTR, LPCWSTR);
+BOOL FlashWindow(HWND, BOOL);
 
-int FrameRect(HDC,LPCRECT,HBRUSH);
-BOOL FrameRgn(HDC,HRGN,HBRUSH,int,int);
+int FrameRect(HDC, LPCRECT, HBRUSH);
+BOOL FrameRgn(HDC, HRGN, HBRUSH, int, int);
 HWND GetActiveWindow();
-HWND GetAncestor(HWND,UINT);
+HWND GetAncestor(HWND, UINT);
 SHORT GetAsyncKeyState(int);
 HWND GetCapture();
 UINT GetCaretBlinkTime();
 BOOL GetCaretPos(LPPOINT);
-BOOL GetClassInfoA(HINSTANCE,LPCSTR,LPWNDCLASSA);
-BOOL GetClassInfoExA(HINSTANCE,LPCSTR,LPWNDCLASSEXA);
-BOOL GetClassInfoW(HINSTANCE,LPCWSTR,LPWNDCLASSW);
-BOOL GetClassInfoExW(HINSTANCE,LPCWSTR,LPWNDCLASSEXW);
-DWORD GetClassLongA(HWND,int);
-DWORD GetClassLongW(HWND,int);
-int GetClassNameA(HWND,LPSTR,int);
-int GetClassNameW(HWND,LPWSTR,int);
-WORD GetClassWord(HWND,int);
-BOOL GetClientRect(HWND,LPRECT);
+BOOL GetClassInfoA(HINSTANCE, LPCSTR, LPWNDCLASSA);
+BOOL GetClassInfoExA(HINSTANCE, LPCSTR, LPWNDCLASSEXA);
+BOOL GetClassInfoW(HINSTANCE, LPCWSTR, LPWNDCLASSW);
+BOOL GetClassInfoExW(HINSTANCE, LPCWSTR, LPWNDCLASSEXW);
+DWORD GetClassLongA(HWND, int);
+DWORD GetClassLongW(HWND, int);
+int GetClassNameA(HWND, LPSTR, int);
+int GetClassNameW(HWND, LPWSTR, int);
+WORD GetClassWord(HWND, int);
+BOOL GetClientRect(HWND, LPRECT);
 HANDLE GetClipboardData(UINT);
-int GetClipboardFormatNameA(UINT,LPSTR,int);
-int GetClipboardFormatNameW(UINT,LPWSTR,int);
+int GetClipboardFormatNameA(UINT, LPSTR, int);
+int GetClipboardFormatNameW(UINT, LPWSTR, int);
 HWND GetClipboardOwner();
 HWND GetClipboardViewer();
 BOOL GetClipCursor(LPRECT);
 BOOL GetCursorPos(LPPOINT);
 HDC GetDC(HWND);
-HDC GetDCEx(HWND,HRGN,DWORD);
+HDC GetDCEx(HWND, HRGN, DWORD);
 HWND GetDesktopWindow();
 int GetDialogBaseUnits();
 int GetDlgCtrlID(HWND);
-HWND GetDlgItem(HWND,int);
-UINT GetDlgItemInt(HWND,int,PBOOL,BOOL);
-UINT GetDlgItemTextA(HWND,int,LPSTR,int);
-UINT GetDlgItemTextW(HWND,int,LPWSTR,int);
+HWND GetDlgItem(HWND, int);
+UINT GetDlgItemInt(HWND, int, PBOOL, BOOL);
+UINT GetDlgItemTextA(HWND, int, LPSTR, int);
+UINT GetDlgItemTextW(HWND, int, LPWSTR, int);
 UINT GetDoubleClickTime();
 HWND GetFocus();
 HWND GetForegroundWindow();
 
-BOOL GetIconInfo(HICON,PICONINFO);
+BOOL GetIconInfo(HICON, PICONINFO);
 BOOL GetInputState();
 UINT GetKBCodePage();
 HKL GetKeyboardLayout(DWORD);
-UINT GetKeyboardLayoutList(int,HKL*);
+UINT GetKeyboardLayoutList(int, HKL*);
 BOOL GetKeyboardLayoutNameA(LPSTR);
 BOOL GetKeyboardLayoutNameW(LPWSTR);
 BOOL GetKeyboardState(PBYTE);
 int GetKeyboardType(int);
-int GetKeyNameTextA(LONG,LPSTR,int);
-int GetKeyNameTextW(LONG,LPWSTR,int);
+int GetKeyNameTextA(LONG, LPSTR, int);
+int GetKeyNameTextW(LONG, LPWSTR, int);
 SHORT GetKeyState(int);
 HWND GetLastActivePopup(HWND);
 HMENU GetMenu(HWND);
 LONG GetMenuCheckMarkDimensions();
 DWORD GetMenuContextHelpId(HMENU);
-UINT GetMenuDefaultItem(HMENU,UINT,UINT);
+UINT GetMenuDefaultItem(HMENU, UINT, UINT);
 int GetMenuItemCount(HMENU);
-UINT GetMenuItemID(HMENU,int);
-BOOL GetMenuItemInfoA(HMENU,UINT,BOOL,LPMENUITEMINFOA);
-BOOL GetMenuItemInfoW(HMENU,UINT,BOOL,LPMENUITEMINFOW);
-BOOL GetMenuItemRect(HWND,HMENU,UINT,LPRECT);
-UINT GetMenuState(HMENU,UINT,UINT);
-int GetMenuStringA(HMENU,UINT,LPSTR,int,UINT);
-int GetMenuStringW(HMENU,UINT,LPWSTR,int,UINT);
-BOOL GetMessageA(LPMSG,HWND,UINT,UINT);
-BOOL GetMessageW(LPMSG,HWND,UINT,UINT);
+UINT GetMenuItemID(HMENU, int);
+BOOL GetMenuItemInfoA(HMENU, UINT, BOOL, LPMENUITEMINFOA);
+BOOL GetMenuItemInfoW(HMENU, UINT, BOOL, LPMENUITEMINFOW);
+BOOL GetMenuItemRect(HWND, HMENU, UINT, LPRECT);
+UINT GetMenuState(HMENU, UINT, UINT);
+int GetMenuStringA(HMENU, UINT, LPSTR, int, UINT);
+int GetMenuStringW(HMENU, UINT, LPWSTR, int, UINT);
+BOOL GetMessageA(LPMSG, HWND, UINT, UINT);
+BOOL GetMessageW(LPMSG, HWND, UINT, UINT);
 LONG GetMessageExtraInfo();
 DWORD GetMessagePos();
 LONG GetMessageTime();
 
-HWND GetNextDlgGroupItem(HWND,HWND,BOOL);
-HWND GetNextDlgTabItem(HWND,HWND,BOOL);
+HWND GetNextDlgGroupItem(HWND, HWND, BOOL);
+HWND GetNextDlgTabItem(HWND, HWND, BOOL);
 
 HWND GetOpenClipboardWindow();
 HWND GetParent(HWND);
-int GetPriorityClipboardFormat(UINT*,int);
-HANDLE GetPropA(HWND,LPCSTR);
-HANDLE GetPropW(HWND,LPCWSTR);
+int GetPriorityClipboardFormat(UINT*, int);
+HANDLE GetPropA(HWND, LPCSTR);
+HANDLE GetPropW(HWND, LPCWSTR);
 
 DWORD GetQueueStatus(UINT);
-BOOL GetScrollInfo(HWND,int,LPSCROLLINFO);
-int GetScrollPos(HWND,int);
-BOOL GetScrollRange(HWND,int,LPINT,LPINT);
+BOOL GetScrollInfo(HWND, int, LPSCROLLINFO);
+int GetScrollPos(HWND, int);
+BOOL GetScrollRange(HWND, int, LPINT, LPINT);
 
-HMENU GetSubMenu(HMENU,int);
+HMENU GetSubMenu(HMENU, int);
 DWORD GetSysColor(int);
 HBRUSH GetSysColorBrush(int);
 
-HMENU GetSystemMenu(HWND,BOOL);
+HMENU GetSystemMenu(HWND, BOOL);
 int GetSystemMetrics(int);
-DWORD GetTabbedTextExtentA(HDC,LPCSTR,int,int,LPINT);
-DWORD GetTabbedTextExtentW(HDC,LPCWSTR,int,int,LPINT);
-LONG GetWindowLongA(HWND,int);
-LONG GetWindowLongW(HWND,int);
+DWORD GetTabbedTextExtentA(HDC, LPCSTR, int, int, LPINT);
+DWORD GetTabbedTextExtentW(HDC, LPCWSTR, int, int, LPINT);
+LONG GetWindowLongA(HWND, int);
+LONG GetWindowLongW(HWND, int);
 
 HDESK GetThreadDesktop(DWORD);
 HWND GetTopWindow(HWND);
-BOOL GetUpdateRect(HWND,LPRECT,BOOL);
-int GetUpdateRgn(HWND,HRGN,BOOL);
-BOOL GetUserObjectInformationA(HANDLE,int,PVOID,DWORD,PDWORD);
-BOOL GetUserObjectInformationW(HANDLE,int,PVOID,DWORD,PDWORD);
-BOOL GetUserObjectSecurity(HANDLE,PSECURITY_INFORMATION,PSECURITY_DESCRIPTOR,DWORD,PDWORD);
-HWND GetWindow(HWND,UINT);
+BOOL GetUpdateRect(HWND, LPRECT, BOOL);
+int GetUpdateRgn(HWND, HRGN, BOOL);
+BOOL GetUserObjectInformationA(HANDLE, int, PVOID, DWORD, PDWORD);
+BOOL GetUserObjectInformationW(HANDLE, int, PVOID, DWORD, PDWORD);
+BOOL GetUserObjectSecurity(HANDLE, PSECURITY_INFORMATION, PSECURITY_DESCRIPTOR, DWORD, PDWORD);
+HWND GetWindow(HWND, UINT);
 DWORD GetWindowContextHelpId(HWND);
 HDC GetWindowDC(HWND);
-BOOL GetWindowPlacement(HWND,WINDOWPLACEMENT*);
-BOOL GetWindowRect(HWND,LPRECT);
-int GetWindowRgn(HWND,HRGN);
-int GetWindowTextA(HWND,LPSTR,int);
+BOOL GetWindowPlacement(HWND, WINDOWPLACEMENT*);
+BOOL GetWindowRect(HWND, LPRECT);
+int GetWindowRgn(HWND, HRGN);
+int GetWindowTextA(HWND, LPSTR, int);
 int GetWindowTextLengthA(HWND);
 int GetWindowTextLengthW(HWND);
-int GetWindowTextW(HWND,LPWSTR,int);
-WORD GetWindowWord(HWND,int);
-BOOL GetAltTabInfoA(HWND,int,PALTTABINFO,LPSTR,UINT);
-BOOL GetAltTabInfoW(HWND,int,PALTTABINFO,LPWSTR,UINT);
-BOOL GetComboBoxInfo(HWND,PCOMBOBOXINFO);
+int GetWindowTextW(HWND, LPWSTR, int);
+WORD GetWindowWord(HWND, int);
+BOOL GetAltTabInfoA(HWND, int, PALTTABINFO, LPSTR, UINT);
+BOOL GetAltTabInfoW(HWND, int, PALTTABINFO, LPWSTR, UINT);
+BOOL GetComboBoxInfo(HWND, PCOMBOBOXINFO);
 BOOL GetCursorInfo(PCURSORINFO);
 BOOL GetLastInputInfo(PLASTINPUTINFO);
 DWORD GetListBoxInfo(HWND);
-BOOL GetMenuBarInfo(HWND,LONG,LONG,PMENUBARINFO);
-BOOL GetMenuInfo(HMENU,LPMENUINFO);
-BOOL GetScrollBarInfo(HWND,LONG,PSCROLLBARINFO);
-BOOL GetTitleBarInfo(HWND,PTITLEBARINFO);
-BOOL GetWindowInfo(HWND,PWINDOWINFO);
-UINT GetWindowModuleFileNameA(HWND,LPSTR,UINT);
-UINT GetWindowModuleFileNameW(HWND,LPWSTR,UINT);
-BOOL GrayStringA(HDC,HBRUSH,GRAYSTRINGPROC,LPARAM,int,int,int,int,int);
-BOOL GrayStringW(HDC,HBRUSH,GRAYSTRINGPROC,LPARAM,int,int,int,int,int);
+BOOL GetMenuBarInfo(HWND, LONG, LONG, PMENUBARINFO);
+BOOL GetMenuInfo(HMENU, LPMENUINFO);
+BOOL GetScrollBarInfo(HWND, LONG, PSCROLLBARINFO);
+BOOL GetTitleBarInfo(HWND, PTITLEBARINFO);
+BOOL GetWindowInfo(HWND, PWINDOWINFO);
+UINT GetWindowModuleFileNameA(HWND, LPSTR, UINT);
+UINT GetWindowModuleFileNameW(HWND, LPWSTR, UINT);
+BOOL GrayStringA(HDC, HBRUSH, GRAYSTRINGPROC, LPARAM, int, int, int, int, int);
+BOOL GrayStringW(HDC, HBRUSH, GRAYSTRINGPROC, LPARAM, int, int, int, int, int);
 BOOL HideCaret(HWND);
-BOOL HiliteMenuItem(HWND,HMENU,UINT,UINT);
-BOOL InflateRect(LPRECT,int,int);
+BOOL HiliteMenuItem(HWND, HMENU, UINT, UINT);
+BOOL InflateRect(LPRECT, int, int);
 BOOL InSendMessage();
-BOOL InsertMenuA(HMENU,UINT,UINT,UINT,LPCSTR);
-BOOL InsertMenuW(HMENU,UINT,UINT,UINT,LPCWSTR);
-BOOL InsertMenuItemA(HMENU,UINT,BOOL,LPCMENUITEMINFOA);
-BOOL InsertMenuItemW(HMENU,UINT,BOOL,LPCMENUITEMINFOW);
-INT InternalGetWindowText(HWND,LPWSTR,INT);
-BOOL IntersectRect(LPRECT,LPCRECT,LPCRECT);
-BOOL InvalidateRect(HWND,LPCRECT,BOOL);
-BOOL InvalidateRgn(HWND,HRGN,BOOL);
-BOOL InvertRect(HDC,LPCRECT);
+BOOL InsertMenuA(HMENU, UINT, UINT, UINT, LPCSTR);
+BOOL InsertMenuW(HMENU, UINT, UINT, UINT, LPCWSTR);
+BOOL InsertMenuItemA(HMENU, UINT, BOOL, LPCMENUITEMINFOA);
+BOOL InsertMenuItemW(HMENU, UINT, BOOL, LPCMENUITEMINFOW);
+INT InternalGetWindowText(HWND, LPWSTR, INT);
+BOOL IntersectRect(LPRECT, LPCRECT, LPCRECT);
+BOOL InvalidateRect(HWND, LPCRECT, BOOL);
+BOOL InvalidateRgn(HWND, HRGN, BOOL);
+BOOL InvertRect(HDC, LPCRECT);
 BOOL IsCharAlphaA(CHAR ch);
 BOOL IsCharAlphaNumericA(CHAR);
 BOOL IsCharAlphaNumericW(WCHAR);
@@ -4008,11 +4003,11 @@ BOOL IsCharLowerA(CHAR);
 BOOL IsCharLowerW(WCHAR);
 BOOL IsCharUpperA(CHAR);
 BOOL IsCharUpperW(WCHAR);
-BOOL IsChild(HWND,HWND);
+BOOL IsChild(HWND, HWND);
 BOOL IsClipboardFormatAvailable(UINT);
-BOOL IsDialogMessageA(HWND,LPMSG);
-BOOL IsDialogMessageW(HWND,LPMSG);
-UINT IsDlgButtonChecked(HWND,int);
+BOOL IsDialogMessageA(HWND, LPMSG);
+BOOL IsDialogMessageW(HWND, LPMSG);
+UINT IsDlgButtonChecked(HWND, int);
 BOOL IsIconic(HWND);
 BOOL IsMenu(HMENU);
 BOOL IsRectEmpty(LPCRECT);
@@ -4021,302 +4016,302 @@ BOOL IsWindowEnabled(HWND);
 BOOL IsWindowUnicode(HWND);
 BOOL IsWindowVisible(HWND);
 BOOL IsZoomed(HWND);
-void keybd_event(BYTE,BYTE,DWORD,DWORD);
-BOOL KillTimer(HWND,UINT);
-HACCEL LoadAcceleratorsA(HINSTANCE,LPCSTR);
-HACCEL LoadAcceleratorsW(HINSTANCE,LPCWSTR);
-HBITMAP LoadBitmapA(HINSTANCE,LPCSTR);
-HBITMAP LoadBitmapW(HINSTANCE,LPCWSTR);
-HCURSOR LoadCursorA(HINSTANCE,LPCSTR);
+void keybd_event(BYTE, BYTE, DWORD, DWORD);
+BOOL KillTimer(HWND, UINT);
+HACCEL LoadAcceleratorsA(HINSTANCE, LPCSTR);
+HACCEL LoadAcceleratorsW(HINSTANCE, LPCWSTR);
+HBITMAP LoadBitmapA(HINSTANCE, LPCSTR);
+HBITMAP LoadBitmapW(HINSTANCE, LPCWSTR);
+HCURSOR LoadCursorA(HINSTANCE, LPCSTR);
 HCURSOR LoadCursorFromFileA(LPCSTR);
 HCURSOR LoadCursorFromFileW(LPCWSTR);
-HCURSOR LoadCursorW(HINSTANCE,LPCWSTR);
-HICON LoadIconA(HINSTANCE,LPCSTR);
-HICON LoadIconW(HINSTANCE,LPCWSTR);
-HANDLE LoadImageA(HINSTANCE,LPCSTR,UINT,int,int,UINT);
-HANDLE LoadImageW(HINSTANCE,LPCWSTR,UINT,int,int,UINT);
-HKL LoadKeyboardLayoutA(LPCSTR,UINT);
-HKL LoadKeyboardLayoutW(LPCWSTR,UINT);
-HMENU LoadMenuA(HINSTANCE,LPCSTR);
+HCURSOR LoadCursorW(HINSTANCE, LPCWSTR);
+HICON LoadIconA(HINSTANCE, LPCSTR);
+HICON LoadIconW(HINSTANCE, LPCWSTR);
+HANDLE LoadImageA(HINSTANCE, LPCSTR, UINT, int, int, UINT);
+HANDLE LoadImageW(HINSTANCE, LPCWSTR, UINT, int, int, UINT);
+HKL LoadKeyboardLayoutA(LPCSTR, UINT);
+HKL LoadKeyboardLayoutW(LPCWSTR, UINT);
+HMENU LoadMenuA(HINSTANCE, LPCSTR);
 HMENU LoadMenuIndirectA( MENUTEMPLATE*);
 HMENU LoadMenuIndirectW( MENUTEMPLATE*);
-HMENU LoadMenuW(HINSTANCE,LPCWSTR);
-int LoadStringA(HINSTANCE,UINT,LPSTR,int);
-int LoadStringW(HINSTANCE,UINT,LPWSTR,int);
+HMENU LoadMenuW(HINSTANCE, LPCWSTR);
+int LoadStringA(HINSTANCE, UINT, LPSTR, int);
+int LoadStringW(HINSTANCE, UINT, LPWSTR, int);
 BOOL LockWindowUpdate(HWND);
-int LookupIconIdFromDirectory(PBYTE,BOOL);
-int LookupIconIdFromDirectoryEx(PBYTE,BOOL,int,int,UINT);
-BOOL MapDialogRect(HWND,LPRECT);
-UINT MapVirtualKeyA(UINT,UINT);
-UINT MapVirtualKeyExA(UINT,UINT,HKL);
-UINT MapVirtualKeyExW(UINT,UINT,HKL);
-UINT MapVirtualKeyW(UINT,UINT);
-int MapWindowPoints(HWND,HWND,LPPOINT,UINT);
-int MenuItemFromPoint(HWND,HMENU,POINT);
+int LookupIconIdFromDirectory(PBYTE, BOOL);
+int LookupIconIdFromDirectoryEx(PBYTE, BOOL, int, int, UINT);
+BOOL MapDialogRect(HWND, LPRECT);
+UINT MapVirtualKeyA(UINT, UINT);
+UINT MapVirtualKeyExA(UINT, UINT, HKL);
+UINT MapVirtualKeyExW(UINT, UINT, HKL);
+UINT MapVirtualKeyW(UINT, UINT);
+int MapWindowPoints(HWND, HWND, LPPOINT, UINT);
+int MenuItemFromPoint(HWND, HMENU, POINT);
 BOOL MessageBeep(UINT);
-int MessageBoxA(HWND,LPCSTR,LPCSTR,UINT);
-int MessageBoxW(HWND,LPCWSTR,LPCWSTR,UINT);
-int MessageBoxExA(HWND,LPCSTR,LPCSTR,UINT,WORD);
-int MessageBoxExW(HWND,LPCWSTR,LPCWSTR,UINT,WORD);
+int MessageBoxA(HWND, LPCSTR, LPCSTR, UINT);
+int MessageBoxW(HWND, LPCWSTR, LPCWSTR, UINT);
+int MessageBoxExA(HWND, LPCSTR, LPCSTR, UINT, WORD);
+int MessageBoxExW(HWND, LPCWSTR, LPCWSTR, UINT, WORD);
 int MessageBoxIndirectA(MSGBOXPARAMSA*);
 int MessageBoxIndirectW(MSGBOXPARAMSW*);
-BOOL ModifyMenuA(HMENU,UINT,UINT,UINT,LPCSTR);
-BOOL ModifyMenuW(HMENU,UINT,UINT,UINT,LPCWSTR);
-void mouse_event(DWORD,DWORD,DWORD,DWORD,ULONG_PTR);
-BOOL MoveWindow(HWND,int,int,int,int,BOOL);
-DWORD MsgWaitForMultipleObjects(DWORD, HANDLE*,BOOL,DWORD,DWORD);
-DWORD MsgWaitForMultipleObjectsEx(DWORD, HANDLE*,DWORD,DWORD,DWORD);
+BOOL ModifyMenuA(HMENU, UINT, UINT, UINT, LPCSTR);
+BOOL ModifyMenuW(HMENU, UINT, UINT, UINT, LPCWSTR);
+void mouse_event(DWORD, DWORD, DWORD, DWORD, ULONG_PTR);
+BOOL MoveWindow(HWND, int, int, int, int, BOOL);
+DWORD MsgWaitForMultipleObjects(DWORD, HANDLE*, BOOL, DWORD, DWORD);
+DWORD MsgWaitForMultipleObjectsEx(DWORD, HANDLE*, DWORD, DWORD, DWORD);
 DWORD OemKeyScan(WORD);
-BOOL OemToCharA(LPCSTR,LPSTR);
-BOOL OemToCharBuffA(LPCSTR,LPSTR,DWORD);
-BOOL OemToCharBuffW(LPCSTR,LPWSTR,DWORD);
-BOOL OemToCharW(LPCSTR,LPWSTR);
-BOOL OffsetRect(LPRECT,int,int);
+BOOL OemToCharA(LPCSTR, LPSTR);
+BOOL OemToCharBuffA(LPCSTR, LPSTR, DWORD);
+BOOL OemToCharBuffW(LPCSTR, LPWSTR, DWORD);
+BOOL OemToCharW(LPCSTR, LPWSTR);
+BOOL OffsetRect(LPRECT, int, int);
 BOOL OpenClipboard(HWND);
-HDESK OpenDesktopA(LPSTR,DWORD,BOOL,DWORD);
-HDESK OpenDesktopW(LPWSTR,DWORD,BOOL,DWORD);
+HDESK OpenDesktopA(LPSTR, DWORD, BOOL, DWORD);
+HDESK OpenDesktopW(LPWSTR, DWORD, BOOL, DWORD);
 BOOL OpenIcon(HWND);
-HDESK OpenInputDesktop(DWORD,BOOL,DWORD);
-HWINSTA OpenWindowStationA(LPSTR,BOOL,DWORD);
-HWINSTA OpenWindowStationW(LPWSTR,BOOL,DWORD);
+HDESK OpenInputDesktop(DWORD, BOOL, DWORD);
+HWINSTA OpenWindowStationA(LPSTR, BOOL, DWORD);
+HWINSTA OpenWindowStationW(LPWSTR, BOOL, DWORD);
 BOOL PaintDesktop(HDC);
-BOOL PeekMessageA(LPMSG,HWND,UINT,UINT,UINT);
-BOOL PeekMessageW(LPMSG,HWND,UINT,UINT,UINT);
-BOOL PostMessageA(HWND,UINT,WPARAM,LPARAM);
-BOOL PostMessageW(HWND,UINT,WPARAM,LPARAM);
+BOOL PeekMessageA(LPMSG, HWND, UINT, UINT, UINT);
+BOOL PeekMessageW(LPMSG, HWND, UINT, UINT, UINT);
+BOOL PostMessageA(HWND, UINT, WPARAM, LPARAM);
+BOOL PostMessageW(HWND, UINT, WPARAM, LPARAM);
 void PostQuitMessage(int);
-BOOL PostThreadMessageA(DWORD,UINT,WPARAM,LPARAM);
-BOOL PostThreadMessageW(DWORD,UINT,WPARAM,LPARAM);
-BOOL PtInRect(LPCRECT,POINT);
-HWND RealChildWindowFromPoint(HWND,POINT);
-UINT RealGetWindowClassA(HWND,LPSTR,UINT);
-UINT RealGetWindowClassW(HWND,LPWSTR,UINT);
-BOOL RedrawWindow(HWND,LPCRECT,HRGN,UINT);
+BOOL PostThreadMessageA(DWORD, UINT, WPARAM, LPARAM);
+BOOL PostThreadMessageW(DWORD, UINT, WPARAM, LPARAM);
+BOOL PtInRect(LPCRECT, POINT);
+HWND RealChildWindowFromPoint(HWND, POINT);
+UINT RealGetWindowClassA(HWND, LPSTR, UINT);
+UINT RealGetWindowClassW(HWND, LPWSTR, UINT);
+BOOL RedrawWindow(HWND, LPCRECT, HRGN, UINT);
 ATOM RegisterClassA(WNDCLASSA*);
 ATOM RegisterClassW(WNDCLASSW*);
 ATOM RegisterClassExA(WNDCLASSEXA*);
 ATOM RegisterClassExW(WNDCLASSEXW*);
 UINT RegisterClipboardFormatA(LPCSTR);
 UINT RegisterClipboardFormatW(LPCWSTR);
-BOOL RegisterHotKey(HWND,int,UINT,UINT);
+BOOL RegisterHotKey(HWND, int, UINT, UINT);
 UINT RegisterWindowMessageA(LPCSTR);
 UINT RegisterWindowMessageW(LPCWSTR);
 BOOL ReleaseCapture();
-int ReleaseDC(HWND,HDC);
-BOOL RemoveMenu(HMENU,UINT,UINT);
-HANDLE RemovePropA(HWND,LPCSTR);
-HANDLE RemovePropW(HWND,LPCWSTR);
+int ReleaseDC(HWND, HDC);
+BOOL RemoveMenu(HMENU, UINT, UINT);
+HANDLE RemovePropA(HWND, LPCSTR);
+HANDLE RemovePropW(HWND, LPCWSTR);
 BOOL ReplyMessage(LRESULT);
-BOOL ScreenToClient(HWND,LPPOINT);
-BOOL ScrollDC(HDC,int,int,LPCRECT,LPCRECT,HRGN,LPRECT);
-BOOL ScrollWindow(HWND,int,int,LPCRECT,LPCRECT);
-int ScrollWindowEx(HWND,int,int,LPCRECT,LPCRECT,HRGN,LPRECT,UINT);
-LONG SendDlgItemMessageA(HWND,int,UINT,WPARAM,LPARAM);
-LONG SendDlgItemMessageW(HWND,int,UINT,WPARAM,LPARAM);
-LRESULT SendMessageA(HWND,UINT,WPARAM,LPARAM);
-BOOL SendMessageCallbackA(HWND,UINT,WPARAM,LPARAM,SENDASYNCPROC,DWORD);
-BOOL SendMessageCallbackW(HWND,UINT,WPARAM,LPARAM,SENDASYNCPROC,DWORD);
-LRESULT SendMessageTimeoutA(HWND,UINT,WPARAM,LPARAM,UINT,UINT,PDWORD);
-LRESULT SendMessageTimeoutW(HWND,UINT,WPARAM,LPARAM,UINT,UINT,PDWORD);
-LRESULT SendMessageW(HWND,UINT,WPARAM,LPARAM);
-BOOL SendNotifyMessageA(HWND,UINT,WPARAM,LPARAM);
-BOOL SendNotifyMessageW(HWND,UINT,WPARAM,LPARAM);
+BOOL ScreenToClient(HWND, LPPOINT);
+BOOL ScrollDC(HDC, int, int, LPCRECT, LPCRECT, HRGN, LPRECT);
+BOOL ScrollWindow(HWND, int, int, LPCRECT, LPCRECT);
+int ScrollWindowEx(HWND, int, int, LPCRECT, LPCRECT, HRGN, LPRECT, UINT);
+LONG SendDlgItemMessageA(HWND, int, UINT, WPARAM, LPARAM);
+LONG SendDlgItemMessageW(HWND, int, UINT, WPARAM, LPARAM);
+LRESULT SendMessageA(HWND, UINT, WPARAM, LPARAM);
+BOOL SendMessageCallbackA(HWND, UINT, WPARAM, LPARAM, SENDASYNCPROC, DWORD);
+BOOL SendMessageCallbackW(HWND, UINT, WPARAM, LPARAM, SENDASYNCPROC, DWORD);
+LRESULT SendMessageTimeoutA(HWND, UINT, WPARAM, LPARAM, UINT, UINT, PDWORD);
+LRESULT SendMessageTimeoutW(HWND, UINT, WPARAM, LPARAM, UINT, UINT, PDWORD);
+LRESULT SendMessageW(HWND, UINT, WPARAM, LPARAM);
+BOOL SendNotifyMessageA(HWND, UINT, WPARAM, LPARAM);
+BOOL SendNotifyMessageW(HWND, UINT, WPARAM, LPARAM);
 HWND SetActiveWindow(HWND);
 HWND SetCapture(HWND hWnd);
 BOOL SetCaretBlinkTime(UINT);
-BOOL SetCaretPos(int,int);
-DWORD SetClassLongA(HWND,int,LONG);
-DWORD SetClassLongW(HWND,int,LONG);
-WORD SetClassWord(HWND,int,WORD);
-HANDLE SetClipboardData(UINT,HANDLE);
+BOOL SetCaretPos(int, int);
+DWORD SetClassLongA(HWND, int, LONG);
+DWORD SetClassLongW(HWND, int, LONG);
+WORD SetClassWord(HWND, int, WORD);
+HANDLE SetClipboardData(UINT, HANDLE);
 HWND SetClipboardViewer(HWND);
 HCURSOR SetCursor(HCURSOR);
-BOOL SetCursorPos(int,int);
+BOOL SetCursorPos(int, int);
 void SetDebugErrorLevel(DWORD);
-BOOL SetDlgItemInt(HWND,int,UINT,BOOL);
-BOOL SetDlgItemTextA(HWND,int,LPCSTR);
-BOOL SetDlgItemTextW(HWND,int,LPCWSTR);
+BOOL SetDlgItemInt(HWND, int, UINT, BOOL);
+BOOL SetDlgItemTextA(HWND, int, LPCSTR);
+BOOL SetDlgItemTextW(HWND, int, LPCWSTR);
 BOOL SetDoubleClickTime(UINT);
 HWND SetFocus(HWND);
 BOOL SetForegroundWindow(HWND);
 BOOL SetKeyboardState(PBYTE);
-BOOL SetMenu(HWND,HMENU);
-BOOL SetMenuContextHelpId(HMENU,DWORD);
-BOOL SetMenuDefaultItem(HMENU,UINT,UINT);
-BOOL SetMenuInfo(HMENU,LPCMENUINFO);
-BOOL SetMenuItemBitmaps(HMENU,UINT,UINT,HBITMAP,HBITMAP);
-BOOL SetMenuItemInfoA(HMENU,UINT,BOOL,LPCMENUITEMINFOA);
-BOOL SetMenuItemInfoW( HMENU,UINT,BOOL,LPCMENUITEMINFOW);
+BOOL SetMenu(HWND, HMENU);
+BOOL SetMenuContextHelpId(HMENU, DWORD);
+BOOL SetMenuDefaultItem(HMENU, UINT, UINT);
+BOOL SetMenuInfo(HMENU, LPCMENUINFO);
+BOOL SetMenuItemBitmaps(HMENU, UINT, UINT, HBITMAP, HBITMAP);
+BOOL SetMenuItemInfoA(HMENU, UINT, BOOL, LPCMENUITEMINFOA);
+BOOL SetMenuItemInfoW( HMENU, UINT, BOOL, LPCMENUITEMINFOW);
 LPARAM SetMessageExtraInfo(LPARAM);
 BOOL SetMessageQueue(int);
-HWND SetParent(HWND,HWND);
+HWND SetParent(HWND, HWND);
 BOOL SetProcessWindowStation(HWINSTA);
-BOOL SetPropA(HWND,LPCSTR,HANDLE);
-BOOL SetPropW(HWND,LPCWSTR,HANDLE);
-BOOL SetRect(LPRECT,int,int,int,int);
+BOOL SetPropA(HWND, LPCSTR, HANDLE);
+BOOL SetPropW(HWND, LPCWSTR, HANDLE);
+BOOL SetRect(LPRECT, int, int, int, int);
 BOOL SetRectEmpty(LPRECT);
-int SetScrollInfo(HWND,int,LPCSCROLLINFO,BOOL);
-int SetScrollPos(HWND,int,int,BOOL);
-BOOL SetScrollRange(HWND,int,int,int,BOOL);
-BOOL SetSysColors(int, INT *, COLORREF *);
-BOOL SetSystemCursor(HCURSOR,DWORD);
+int SetScrollInfo(HWND, int, LPCSCROLLINFO, BOOL);
+int SetScrollPos(HWND, int, int, BOOL);
+BOOL SetScrollRange(HWND, int, int, int, BOOL);
+BOOL SetSysColors(int, INT* , COLORREF* );
+BOOL SetSystemCursor(HCURSOR, DWORD);
 BOOL SetThreadDesktop(HDESK);
-UINT SetTimer(HWND,UINT,UINT,TIMERPROC);
-BOOL SetUserObjectInformationA(HANDLE,int,PVOID,DWORD);
-BOOL SetUserObjectInformationW(HANDLE,int,PVOID,DWORD);
-BOOL SetUserObjectSecurity(HANDLE,PSECURITY_INFORMATION,PSECURITY_DESCRIPTOR);
-BOOL SetWindowContextHelpId(HWND,DWORD);
-LONG SetWindowLongA(HWND,int,LONG);
-LONG SetWindowLongW(HWND,int,LONG);
+UINT SetTimer(HWND, UINT, UINT, TIMERPROC);
+BOOL SetUserObjectInformationA(HANDLE, int, PVOID, DWORD);
+BOOL SetUserObjectInformationW(HANDLE, int, PVOID, DWORD);
+BOOL SetUserObjectSecurity(HANDLE, PSECURITY_INFORMATION, PSECURITY_DESCRIPTOR);
+BOOL SetWindowContextHelpId(HWND, DWORD);
+LONG SetWindowLongA(HWND, int, LONG);
+LONG SetWindowLongW(HWND, int, LONG);
 BOOL SetWindowPlacement(HWND hWnd, WINDOWPLACEMENT*);
-BOOL SetWindowPos(HWND,HWND,int,int,int,int,UINT);
-int SetWindowRgn(HWND,HRGN,BOOL);
-HHOOK SetWindowsHookA(int,HOOKPROC);
-HHOOK SetWindowsHookW(int,HOOKPROC);
-HHOOK SetWindowsHookExA(int,HOOKPROC,HINSTANCE,DWORD);
-HHOOK SetWindowsHookExW(int,HOOKPROC,HINSTANCE,DWORD);
-BOOL SetWindowTextA(HWND,LPCSTR);
-BOOL SetWindowTextW(HWND,LPCWSTR);
-WORD SetWindowWord(HWND,int,WORD);
+BOOL SetWindowPos(HWND, HWND, int, int, int, int, UINT);
+int SetWindowRgn(HWND, HRGN, BOOL);
+HHOOK SetWindowsHookA(int, HOOKPROC);
+HHOOK SetWindowsHookW(int, HOOKPROC);
+HHOOK SetWindowsHookExA(int, HOOKPROC, HINSTANCE, DWORD);
+HHOOK SetWindowsHookExW(int, HOOKPROC, HINSTANCE, DWORD);
+BOOL SetWindowTextA(HWND, LPCSTR);
+BOOL SetWindowTextW(HWND, LPCWSTR);
+WORD SetWindowWord(HWND, int, WORD);
 BOOL ShowCaret(HWND);
 int ShowCursor(BOOL);
-BOOL ShowOwnedPopups(HWND,BOOL);
-BOOL ShowScrollBar(HWND,int,BOOL);
-BOOL ShowWindow(HWND,int);
-BOOL ShowWindowAsync(HWND,int);
-BOOL SubtractRect(LPRECT,LPCRECT,LPCRECT);
+BOOL ShowOwnedPopups(HWND, BOOL);
+BOOL ShowScrollBar(HWND, int, BOOL);
+BOOL ShowWindow(HWND, int);
+BOOL ShowWindowAsync(HWND, int);
+BOOL SubtractRect(LPRECT, LPCRECT, LPCRECT);
 BOOL SwapMouseButton(BOOL);
 BOOL SwitchDesktop(HDESK);
-BOOL SystemParametersInfoA(UINT,UINT,PVOID,UINT);
-BOOL SystemParametersInfoW(UINT,UINT,PVOID,UINT);
-LONG TabbedTextOutA(HDC,int,int,LPCSTR,int,int,LPINT,int);
-LONG TabbedTextOutW(HDC,int,int,LPCWSTR,int,int,LPINT,int);
-WORD TileWindows(HWND,UINT,LPCRECT,UINT, HWND *);
-int ToAscii(UINT,UINT,PBYTE,LPWORD,UINT);
-int ToAsciiEx(UINT,UINT,PBYTE,LPWORD,UINT,HKL);
-int ToUnicode(UINT,UINT,PBYTE,LPWSTR,int,UINT);
-int ToUnicodeEx(UINT,UINT,PBYTE,LPWSTR,int,UINT,HKL);
+BOOL SystemParametersInfoA(UINT, UINT, PVOID, UINT);
+BOOL SystemParametersInfoW(UINT, UINT, PVOID, UINT);
+LONG TabbedTextOutA(HDC, int, int, LPCSTR, int, int, LPINT, int);
+LONG TabbedTextOutW(HDC, int, int, LPCWSTR, int, int, LPINT, int);
+WORD TileWindows(HWND, UINT, LPCRECT, UINT, HWND* );
+int ToAscii(UINT, UINT, PBYTE, LPWORD, UINT);
+int ToAsciiEx(UINT, UINT, PBYTE, LPWORD, UINT, HKL);
+int ToUnicode(UINT, UINT, PBYTE, LPWSTR, int, UINT);
+int ToUnicodeEx(UINT, UINT, PBYTE, LPWSTR, int, UINT, HKL);
 BOOL TrackMouseEvent(LPTRACKMOUSEEVENT);
-BOOL TrackPopupMenu(HMENU,UINT,int,int,int,HWND,LPCRECT);
-BOOL TrackPopupMenuEx(HMENU,UINT,int,int,HWND,LPTPMPARAMS);
-int TranslateAcceleratorA(HWND,HACCEL,LPMSG);
-int TranslateAcceleratorW(HWND,HACCEL,LPMSG);
-BOOL TranslateMDISysAccel(HWND,LPMSG);
+BOOL TrackPopupMenu(HMENU, UINT, int, int, int, HWND, LPCRECT);
+BOOL TrackPopupMenuEx(HMENU, UINT, int, int, HWND, LPTPMPARAMS);
+int TranslateAcceleratorA(HWND, HACCEL, LPMSG);
+int TranslateAcceleratorW(HWND, HACCEL, LPMSG);
+BOOL TranslateMDISysAccel(HWND, LPMSG);
 BOOL TranslateMessage( MSG*);
-BOOL UnhookWindowsHook(int,HOOKPROC);
+BOOL UnhookWindowsHook(int, HOOKPROC);
 BOOL UnhookWindowsHookEx(HHOOK);
-BOOL UnionRect(LPRECT,LPCRECT,LPCRECT);
+BOOL UnionRect(LPRECT, LPCRECT, LPCRECT);
 BOOL UnloadKeyboardLayout(HKL);
-BOOL UnregisterClassA(LPCSTR,HINSTANCE);
-BOOL UnregisterClassW(LPCWSTR,HINSTANCE);
-BOOL UnregisterHotKey(HWND,int);
+BOOL UnregisterClassA(LPCSTR, HINSTANCE);
+BOOL UnregisterClassW(LPCWSTR, HINSTANCE);
+BOOL UnregisterHotKey(HWND, int);
 BOOL UpdateWindow(HWND);
-BOOL ValidateRect(HWND,LPCRECT);
-BOOL ValidateRgn(HWND,HRGN);
+BOOL ValidateRect(HWND, LPCRECT);
+BOOL ValidateRgn(HWND, HRGN);
 SHORT VkKeyScanA(CHAR);
-SHORT VkKeyScanExA(CHAR,HKL);
-SHORT VkKeyScanExW(WCHAR,HKL);
+SHORT VkKeyScanExA(CHAR, HKL);
+SHORT VkKeyScanExW(WCHAR, HKL);
 SHORT VkKeyScanW(WCHAR);
-DWORD WaitForInputIdle(HANDLE,DWORD);
+DWORD WaitForInputIdle(HANDLE, DWORD);
 BOOL WaitMessage();
 HWND WindowFromDC(HDC hDC);
 HWND WindowFromPoint(POINT);
-UINT WinExec(LPCSTR,UINT);
-BOOL WinHelpA(HWND,LPCSTR,UINT,DWORD);
-BOOL WinHelpW(HWND,LPCWSTR,UINT,DWORD);
+UINT WinExec(LPCSTR, UINT);
+BOOL WinHelpA(HWND, LPCSTR, UINT, DWORD);
+BOOL WinHelpW(HWND, LPCWSTR, UINT, DWORD);
 
 extern (C) {
-	int wsprintfA(LPSTR,LPCSTR,...);
-	int wsprintfW(LPWSTR,LPCWSTR,...);
+	int wsprintfA(LPSTR, LPCSTR, ...);
+	int wsprintfW(LPWSTR, LPCWSTR, ...);
 }
 
 
 // These shouldn't be necessary for D.
-typedef char * va_list_;
-int wvsprintfA(LPSTR,LPCSTR, va_list_ arglist);
-int wvsprintfW(LPWSTR,LPCWSTR,va_list_ arglist);
+typedef char* va_list_;
+int wvsprintfA(LPSTR, LPCSTR, va_list_ arglist);
+int wvsprintfW(LPWSTR, LPCWSTR, va_list_ arglist);
 
 
 static if (_WIN32_WINDOWS == 0x400) {
 // On Win95, there's only one version.
-int BroadcastSystemMessage(DWORD,LPDWORD,UINT,WPARAM,LPARAM);
+int BroadcastSystemMessage(DWORD, LPDWORD, UINT, WPARAM, LPARAM);
 }
-static if (_WIN32_WINNT >= 0x0400) {
-int BroadcastSystemMessageA(DWORD,LPDWORD,UINT,WPARAM,LPARAM);
-int BroadcastSystemMessageW(DWORD,LPDWORD,UINT,WPARAM,LPARAM);
+static if (_WIN32_WINNT >= 0x400) {
+int BroadcastSystemMessageA(DWORD, LPDWORD, UINT, WPARAM, LPARAM);
+int BroadcastSystemMessageW(DWORD, LPDWORD, UINT, WPARAM, LPARAM);
 }
-static if (_WIN32_WINNT >= 0x0501) {
-int BroadcastSystemMessageExA(DWORD,LPDWORD,UINT,WPARAM,LPARAM,PBSMINFO);
-int BroadcastSystemMessageExW(DWORD,LPDWORD,UINT,WPARAM,LPARAM,PBSMINFO);
+static if (_WIN32_WINNT >= 0x501) {
+int BroadcastSystemMessageExA(DWORD, LPDWORD, UINT, WPARAM, LPARAM, PBSMINFO);
+int BroadcastSystemMessageExW(DWORD, LPDWORD, UINT, WPARAM, LPARAM, PBSMINFO);
 }
 
-static if (_WIN32_WINNT >= 0x0403) {
-UINT SendInput(UINT,LPINPUT,int);
+static if (_WIN32_WINNT >= 0x403) {
+UINT SendInput(UINT, LPINPUT, int);
 }
-static if (_WIN32_WINNT >= 0x0500) {
-BOOL AnimateWindow(HWND,DWORD,DWORD);
-BOOL EndTask(HWND,BOOL,BOOL);
-DWORD GetGuiResources(HANDLE,DWORD);
+static if (_WIN32_WINNT >= 0x500) {
+BOOL AnimateWindow(HWND, DWORD, DWORD);
+BOOL EndTask(HWND, BOOL, BOOL);
+DWORD GetGuiResources(HANDLE, DWORD);
 HWND GetShellWindow();
 BOOL GetProcessDefaultLayout(DWORD*);
 BOOL IsHungAppWindow(HWND);
 BOOL LockWorkStation();
-HDEVNOTIFY RegisterDeviceNotificationA(HANDLE,LPVOID,DWORD);
-HDEVNOTIFY RegisterDeviceNotificationW(HANDLE,LPVOID,DWORD);
+HDEVNOTIFY RegisterDeviceNotificationA(HANDLE, LPVOID, DWORD);
+HDEVNOTIFY RegisterDeviceNotificationW(HANDLE, LPVOID, DWORD);
 BOOL SetProcessDefaultLayout(DWORD);
-void SwitchToThisWindow(HWND,BOOL);
-BOOL SetLayeredWindowAttributes(HWND,COLORREF,BYTE,DWORD);
-BOOL UpdateLayeredWindow(HWND,HDC,POINT*,SIZE*,HDC,POINT*,COLORREF,BLENDFUNCTION*,DWORD);
-BOOL UserHandleGrantAccess(HANDLE,HANDLE,BOOL);
+void SwitchToThisWindow(HWND, BOOL);
+BOOL SetLayeredWindowAttributes(HWND, COLORREF, BYTE, DWORD);
+BOOL UpdateLayeredWindow(HWND, HDC, POINT*, SIZE*, HDC, POINT*, COLORREF, BLENDFUNCTION*, DWORD);
+BOOL UserHandleGrantAccess(HANDLE, HANDLE, BOOL);
 }
-static if (_WIN32_WINNT >= 0x0501) {
-UINT GetRawInputBuffer(PRAWINPUT,PUINT,UINT);
-UINT GetRawInputData(HRAWINPUT,UINT,LPVOID,PUINT,UINT);
-UINT GetRawInputDeviceInfoA(HANDLE,UINT,LPVOID,PUINT);
-UINT GetRawInputDeviceInfoW(HANDLE,UINT,LPVOID,PUINT);
-UINT GetRawInputDeviceList(PRAWINPUTDEVICELIST,PUINT,UINT);
-UINT GetRegisteredRawInputDevices(PRAWINPUTDEVICE,PUINT,UINT);
-LRESULT DefRawInputProc(PRAWINPUT*,INT,UINT);
-BOOL RegisterRawInputDevices(PCRAWINPUTDEVICE,UINT,UINT);
+static if (_WIN32_WINNT >= 0x501) {
+UINT GetRawInputBuffer(PRAWINPUT, PUINT, UINT);
+UINT GetRawInputData(HRAWINPUT, UINT, LPVOID, PUINT, UINT);
+UINT GetRawInputDeviceInfoA(HANDLE, UINT, LPVOID, PUINT);
+UINT GetRawInputDeviceInfoW(HANDLE, UINT, LPVOID, PUINT);
+UINT GetRawInputDeviceList(PRAWINPUTDEVICELIST, PUINT, UINT);
+UINT GetRegisteredRawInputDevices(PRAWINPUTDEVICE, PUINT, UINT);
+LRESULT DefRawInputProc(PRAWINPUT*, INT, UINT);
+BOOL RegisterRawInputDevices(PCRAWINPUTDEVICE, UINT, UINT);
 
 BOOL IsGUIThread(BOOL);
 BOOL IsWinEventHookInstalled(DWORD);
-BOOL PrintWindow(HWND,HDC,UINT);
-BOOL GetLayeredWindowAttributes(HWND,COLORREF*,BYTE*,DWORD*);
+BOOL PrintWindow(HWND, HDC, UINT);
+BOOL GetLayeredWindowAttributes(HWND, COLORREF*, BYTE*, DWORD*);
 }
-static if (WINVER >= 0x0410) {
-	BOOL EnumDisplayMonitors(HDC,LPCRECT,MONITORENUMPROC,LPARAM);
-	BOOL GetMonitorInfoA(HMONITOR,LPMONITORINFO);
-	BOOL GetMonitorInfoW(HMONITOR,LPMONITORINFO);
-	HMONITOR MonitorFromPoint(POINT,DWORD);
-	HMONITOR MonitorFromRect(LPCRECT,DWORD);
-	HMONITOR MonitorFromWindow(HWND,DWORD);
+static if (WINVER >= 0x410) {
+	BOOL EnumDisplayMonitors(HDC, LPCRECT, MONITORENUMPROC, LPARAM);
+	BOOL GetMonitorInfoA(HMONITOR, LPMONITORINFO);
+	BOOL GetMonitorInfoW(HMONITOR, LPMONITORINFO);
+	HMONITOR MonitorFromPoint(POINT, DWORD);
+	HMONITOR MonitorFromRect(LPCRECT, DWORD);
+	HMONITOR MonitorFromWindow(HWND, DWORD);
 }
-static if (WINVER >= 0x0500) {
-BOOL GetGUIThreadInfo(DWORD,LPGUITHREADINFO);
-void NotifyWinEvent(DWORD,HWND,LONG,LONG);
-HWINEVENTHOOK SetWinEventHook(UINT,UINT,HMODULE,WINEVENTPROC,DWORD,DWORD,UINT);
+static if (WINVER >= 0x500) {
+BOOL GetGUIThreadInfo(DWORD, LPGUITHREADINFO);
+void NotifyWinEvent(DWORD, HWND, LONG, LONG);
+HWINEVENTHOOK SetWinEventHook(UINT, UINT, HMODULE, WINEVENTPROC, DWORD, DWORD, UINT);
 BOOL UnhookWinEvent(HWINEVENTHOOK);
 BOOL UnregisterDeviceNotification(HANDLE);
 }
-static if ((_WIN32_WINNT >= 0x0500) || (_WIN32_WINDOWS >= 0x0410)) {
-BOOL EnumDisplaySettingsExA(LPCSTR,DWORD,LPDEVMODEA,DWORD);
-BOOL EnumDisplaySettingsExW(LPCWSTR,DWORD,LPDEVMODEW,DWORD);
+static if ((_WIN32_WINNT >= 0x500) || (_WIN32_WINDOWS >= 0x410)) {
+BOOL EnumDisplaySettingsExA(LPCSTR, DWORD, LPDEVMODEA, DWORD);
+BOOL EnumDisplaySettingsExW(LPCWSTR, DWORD, LPDEVMODEW, DWORD);
 BOOL FlashWindowEx(PFLASHWINFO);
 DWORD GetClipboardSequenceNumber();
 DWORD InSendMessageEx(LPVOID);
 }
-static if ((_WIN32_WINNT >= 0x0500) || (_WIN32_WINDOWS >= 0x0490)) {
+static if ((_WIN32_WINNT >= 0x500) || (_WIN32_WINDOWS >= 0x490)) {
 BOOL AllowSetForegroundWindow(DWORD);
 BOOL LockSetForegroundWindow(UINT);
-int GetMouseMovePointsEx(UINT,LPMOUSEMOVEPOINT,LPMOUSEMOVEPOINT,int,DWORD);
+int GetMouseMovePointsEx(UINT, LPMOUSEMOVEPOINT, LPMOUSEMOVEPOINT, int, DWORD);
 }
 
 version (Win64) {
-LONG_PTR GetWindowLongPtrA(HWND,int);
-LONG_PTR GetWindowLongPtrW(HWND,int);
-LONG_PTR SetWindowLongPtrA(HWND,int,LONG_PTR);
-LONG_PTR SetWindowLongPtrW(HWND,int,LONG_PTR);
+LONG_PTR GetWindowLongPtrA(HWND, int);
+LONG_PTR GetWindowLongPtrW(HWND, int);
+LONG_PTR SetWindowLongPtrA(HWND, int, LONG_PTR);
+LONG_PTR SetWindowLongPtrW(HWND, int, LONG_PTR);
 } else {
 alias GetWindowLongA GetWindowLongPtrA;
 alias GetWindowLongW GetWindowLongPtrW;
@@ -4354,7 +4349,7 @@ alias NONCLIENTMETRICSW NONCLIENTMETRICS;
 
 alias AppendMenuW AppendMenu;
 alias BroadcastSystemMessageW BroadcastSystemMessage;
-static if (_WIN32_WINNT >= 0x0501) {
+static if (_WIN32_WINNT >= 0x501) {
 alias BroadcastSystemMessageExW BroadcastSystemMessageEx;
 }
 alias CallMsgFilterW CallMsgFilter;
@@ -4417,7 +4412,7 @@ static if (WINVER >=0x410) {
 alias GetMonitorInfoW GetMonitorInfo;
 }
 alias GetPropW GetProp;
-static if (_WIN32_WINNT >= 0x0501) {
+static if (_WIN32_WINNT >= 0x501) {
 alias GetRawInputDeviceInfoW GetRawInputDeviceInfo;
 }
 alias GetTabbedTextExtentW GetTabbedTextExtent;
@@ -4463,7 +4458,7 @@ alias RealGetWindowClassW RealGetWindowClass;
 alias RegisterClassW RegisterClass;
 alias RegisterClassExW RegisterClassEx;
 alias RegisterClipboardFormatW RegisterClipboardFormat;
-static if (WINVER >= 0x0500) {
+static if (WINVER >= 0x500) {
 alias RegisterDeviceNotificationW RegisterDeviceNotification;
 }
 alias RegisterWindowMessageW RegisterWindowMessage;
@@ -4497,7 +4492,7 @@ alias ChangeDisplaySettingsW ChangeDisplaySettings;
 alias ChangeDisplaySettingsExW ChangeDisplaySettingsEx;
 alias CreateDesktopW CreateDesktop;
 alias EnumDisplaySettingsW EnumDisplaySettings;
-static if ((_WIN32_WINNT >= 0x0500) || (_WIN32_WINDOWS >= 0x0410)) {
+static if ((_WIN32_WINNT >= 0x500) || (_WIN32_WINDOWS >= 0x410)) {
 alias EnumDisplaySettingsExW EnumDisplaySettingsEx;
 }
 alias EnumDisplayDevicesW EnumDisplayDevices;
@@ -4529,7 +4524,7 @@ alias NONCLIENTMETRICSA NONCLIENTMETRICS;
 
 alias AppendMenuA AppendMenu;
 alias BroadcastSystemMessageA BroadcastSystemMessage;
-static if (_WIN32_WINNT >= 0x0501) {
+static if (_WIN32_WINNT >= 0x501) {
 alias BroadcastSystemMessageExA BroadcastSystemMessageEx;
 }
 alias CallMsgFilterA CallMsgFilter;
@@ -4592,7 +4587,7 @@ static if (WINVER >=0x410) {
 alias GetMonitorInfoA GetMonitorInfo;
 }
 alias GetPropA GetProp;
-static if (_WIN32_WINNT >= 0x0501) {
+static if (_WIN32_WINNT >= 0x501) {
 alias GetRawInputDeviceInfoA GetRawInputDeviceInfo;
 }
 alias GetTabbedTextExtentA GetTabbedTextExtent;
@@ -4638,7 +4633,7 @@ alias RealGetWindowClassA RealGetWindowClass;
 alias RegisterClassA RegisterClass;
 alias RegisterClassExA RegisterClassEx;
 alias RegisterClipboardFormatA RegisterClipboardFormat;
-static if (WINVER >= 0x0500) {
+static if (WINVER >= 0x500) {
 alias RegisterDeviceNotificationA RegisterDeviceNotification;
 }
 alias RegisterWindowMessageA RegisterWindowMessage;
@@ -4672,24 +4667,24 @@ alias ChangeDisplaySettingsA ChangeDisplaySettings;
 alias ChangeDisplaySettingsExA ChangeDisplaySettingsEx;
 alias CreateDesktopA CreateDesktop;
 alias EnumDisplaySettingsA EnumDisplaySettings;
-static if ((_WIN32_WINNT >= 0x0500) || (_WIN32_WINDOWS >= 0x0410)) {
-alias EnumDisplaySettingsExA EnumDisplaySettingsEx;
+static if ((_WIN32_WINNT >= 0x500) || (_WIN32_WINDOWS >= 0x410)) {
+	alias EnumDisplaySettingsExA EnumDisplaySettingsEx;
 }
-alias EnumDisplayDevicesA EnumDisplayDevices;
+	alias EnumDisplayDevicesA EnumDisplayDevices;
 }
 
 
-alias WNDCLASS * LPWNDCLASS, PWNDCLASS;
-alias WNDCLASSEX * LPWNDCLASSEX, PWNDCLASSEX;
-alias MENUITEMINFO * LPMENUITEMINFO;
-alias MSGBOXPARAMS * PMSGBOXPARAMS, LPMSGBOXPARAMS;
-alias HIGHCONTRAST * LPHIGHCONTRAST;
-alias SERIALKEYS * LPSERIALKEYS;
-alias SOUNDSENTRY * LPSOUNDSENTRY;
-alias CREATESTRUCT * LPCREATESTRUCT;
-alias CBT_CREATEWND * LPCBT_CREATEWND;
-alias MDICREATESTRUCT * LPMDICREATESTRUCT;
-alias MULTIKEYHELP * PMULTIKEYHELP, LPMULTIKEYHELP;
-alias MONITORINFOEX * LPMONITORINFOEX;
-alias ICONMETRICS * LPICONMETRICS;
-alias NONCLIENTMETRICS * LPNONCLIENTMETRICS;
+alias WNDCLASS* LPWNDCLASS, PWNDCLASS;
+alias WNDCLASSEX* LPWNDCLASSEX, PWNDCLASSEX;
+alias MENUITEMINFO* LPMENUITEMINFO;
+alias MSGBOXPARAMS* PMSGBOXPARAMS, LPMSGBOXPARAMS;
+alias HIGHCONTRAST* LPHIGHCONTRAST;
+alias SERIALKEYS* LPSERIALKEYS;
+alias SOUNDSENTRY* LPSOUNDSENTRY;
+alias CREATESTRUCT* LPCREATESTRUCT;
+alias CBT_CREATEWND* LPCBT_CREATEWND;
+alias MDICREATESTRUCT* LPMDICREATESTRUCT;
+alias MULTIKEYHELP* PMULTIKEYHELP, LPMULTIKEYHELP;
+alias MONITORINFOEX* LPMONITORINFOEX;
+alias ICONMETRICS* LPICONMETRICS;
+alias NONCLIENTMETRICS* LPNONCLIENTMETRICS;

@@ -9,9 +9,6 @@
 \***********************************************************************/
 // COMMENT: This file may be deprecated.
 module tango.os.windows.lmaudit;
-
-//version (build) { pragma(nolink); }
-
 private import tango.os.windows.lmcons;
 private import tango.os.windows.windef;
 

@@ -9,10 +9,7 @@
 *                       Placed into public domain                       *
 \***********************************************************************/
 module tango.os.windows.commctrl;
-
-//version (build) { pragma(nolink); }
-
-//pragma(lib, "comctl32.lib");
+pragma(lib, "comctl32.lib");
 
 private import tango.os.windows.w32api;
 private import tango.os.windows.windef;
@@ -92,7 +89,7 @@ enum {
 
 enum {
 	CBEN_INSERTITEM = CBEN_FIRST - 1,
-	CBEN_DELETEITEM	= CBEN_FIRST - 2,
+	CBEN_DELETEITEM = CBEN_FIRST - 2,
 	CBEN_BEGINEDIT  = CBEN_FIRST - 4,
 	CBEN_ENDEDITA   = CBEN_FIRST - 5,
 	CBEN_ENDEDITW   = CBEN_FIRST - 6
@@ -879,7 +876,7 @@ static if (_WIN32_IE >= 0x300) {
 	}
 }
 
-static if (_WIN32_IE >= 0x400) {		/* IE4.0 ??? */
+static if (_WIN32_IE >= 0x400) {  /* IE4.0 ??? */
 	enum {
 		TTM_UPDATE = WM_USER + 29,
 		TTM_GETBUBBLESIZE,
@@ -2010,7 +2007,7 @@ enum {
 	DTN_FORMATQUERYA   = -755U,
 	DTN_FORMATQUERYW   = -742U,
 	DTN_DROPDOWN       = -754U,
-	DTN_CLOSEUP	       = -753U,
+	DTN_CLOSEUP        = -753U,
 	DTN_DATETIMECHANGE = -759U,
 }
 
@@ -3530,7 +3527,7 @@ alias TVINSERTSTRUCTW TV_INSERTSTRUCTW;
 
 struct TVHITTESTINFO {
 	POINT     pt;
- 	UINT      flags;
+	UINT      flags;
 	HTREEITEM hItem;
 }
 alias TVHITTESTINFO* LPTVHITTESTINFO, LPTV_HITTESTINFO;
@@ -3996,7 +3993,7 @@ version (Unicode) {
 	alias TB_ADDSTRINGW TB_ADDSTRING;
 
 	static if (_WIN32_IE >= 0x400) {
-		alias TBN_GETBUTTONINFOW TBN_GETBUTTONINFO;	// fixme
+		alias TBN_GETBUTTONINFOW TBN_GETBUTTONINFO;  // fixme
 	}
 
 	static if (_WIN32_IE >= 0x400) {

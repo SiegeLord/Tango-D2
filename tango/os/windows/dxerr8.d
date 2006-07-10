@@ -1,8 +1,5 @@
 module tango.os.windows.dxerr8;
 
-//version (build) { pragma(nolink); }
-
-
 /*
 	dxerr8.d - Header file for the DirectX 8 Error API
 

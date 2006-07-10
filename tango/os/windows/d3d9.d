@@ -10,9 +10,6 @@
 \***********************************************************************/
 module tango.os.windows.d3d9;
 
-//version (build) { pragma(nolink); }
-
-
 import tango.os.windows.objbase;
 import tango.os.windows.d3d9types;
 import tango.os.windows.d3d9caps;

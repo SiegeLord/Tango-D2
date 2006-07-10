@@ -11,14 +11,11 @@
 // FIXME: clean up Windows version support
 
 module tango.os.windows.wingdi;
-
-//version (build) { pragma(nolink); }
-
 private import tango.os.windows.w32api;
 private import tango.os.windows.winver;
 private import tango.os.windows.windef;
 
-//pragma(lib, "gdi32.lib");
+pragma(lib, "gdi32.lib");
 
 // BITMAPINFOHEADER.biCompression
 enum : DWORD {
@@ -188,12 +185,19 @@ enum : DWORD {
     EMR_PIXELFORMAT // = 104
 }
 
-const ENHMETA_SIGNATURE = 1179469088;
-const EPS_SIGNATURE     = 0x46535045;
+// ENHMETAHEADER.dSignature, ENHMETAHEADER3.dSignature,
+// EMRFORMAT.dSignature
+enum : DWORD {
+	ENHMETA_SIGNATURE = 1179469088,
+	EPS_SIGNATURE     = 0x46535045
+}
 
 static if (_WIN32_WINNT >= 0x0500) {
-    const FR_PRIVATE=0x10;
-    const FR_NOT_ENUM=0x20;
+	// AddFontResourceEx()
+    enum : DWORD {
+		FR_PRIVATE  = 0x10,
+		FR_NOT_ENUM = 0x20
+    }
 }
 
 enum {
@@ -275,20 +279,21 @@ enum : BYTE {
     PT_MOVETO      = 6
 }
 
-// PIXELFORMATDESCRIPTOR (OpenGL)
+// ----
+// PIXELFORMATDESCRIPTOR.iPixelType
 enum : BYTE {
 	PFD_TYPE_RGBA       = 0,
 	PFD_TYPE_COLORINDEX = 1
 }
 
 deprecated {
-// PIXELFORMATDESCRIPTOR (OpenGL)
+// PIXELFORMATDESCRIPTOR.
 const byte
 	PFD_MAIN_PLANE     = 0,
 	PFD_OVERLAY_PLANE  = 1,
 	PFD_UNDERLAY_PLANE = -1;
 }
-// PIXELFORMATDESCRIPTOR (OpenGL)
+// PIXELFORMATDESCRIPTOR.dwFlags
 const DWORD
 	PFD_DOUBLEBUFFER          = 1,
 	PFD_STEREO                = 2,
@@ -307,30 +312,24 @@ const DWORD
 	PFD_DOUBLEBUFFER_DONTCARE = 0x40000000,
 	PFD_STEREO_DONTCARE       = 0x80000000;
 
-enum : int {
-    SP_ERROR= -1,
-    SP_OUTOFDISK= -4,
-    SP_OUTOFMEMORY= -5,
-    SP_USERABORT=-3,
-    SP_APPABORT=-2
-}
+// ----
 
 const DWORD
-    BLACKNESS  = 0x42,
-    NOTSRCERASE= 0x1100A6,
-    NOTSRCCOPY = 0x330008,
-    SRCERASE   = 0x440328,
-    DSTINVERT  = 0x550009,
-    PATINVERT  = 0x5A0049,
-    SRCINVERT  = 0x660046,
-    SRCAND     = 0x8800C6,
-    MERGEPAINT = 0xBB0226,
-    MERGECOPY  = 0xC000CA,
-    SRCCOPY    = 0xCC0020,
-    SRCPAINT   = 0xEE0086,
-    PATCOPY    = 0xF00021,
-    PATPAINT   = 0xFB0A09,
-    WHITENESS  = 0xFF0062;
+    BLACKNESS   = 0x42,
+    NOTSRCERASE = 0x1100A6,
+    NOTSRCCOPY  = 0x330008,
+    SRCERASE    = 0x440328,
+    DSTINVERT   = 0x550009,
+    PATINVERT   = 0x5A0049,
+    SRCINVERT   = 0x660046,
+    SRCAND      = 0x8800C6,
+    MERGEPAINT  = 0xBB0226,
+    MERGECOPY   = 0xC000CA,
+    SRCCOPY     = 0xCC0020,
+    SRCPAINT    = 0xEE0086,
+    PATCOPY     = 0xF00021,
+    PATPAINT    = 0xFB0A09,
+    WHITENESS   = 0xFF0062;
 
 // GetROP2(), SetROP2()
 enum : int {
@@ -393,6 +392,7 @@ const LF_FULLFACESIZE = 64;
 // FIXME: Not needed for D, only EXTLOGFONT
 const ELF_VENDOR_SIZE = 4;
 
+// ???
 const ELF_VERSION = 0;
 const ELF_CULTURE_LATIN = 0;
 
@@ -501,6 +501,7 @@ enum {
 	PAN_MIDLINE_INDEX,
 	PAN_XHEIGHT_INDEX
 }
+
 const PAN_CULTURE_LATIN=0;
 
 // NOTE: the first two values (PAN_ANY and PAN_NO_FIT) apply to all these enums!
@@ -637,7 +638,7 @@ enum : BYTE {
 }
 
 // ----
-
+// ???
 const FS_LATIN1=1;
 const FS_LATIN2=2;
 const FS_CYRILLIC=4;
@@ -654,6 +655,7 @@ const FS_CHINESETRAD=0x100000;
 const FS_JOHAB=0x200000;
 const FS_SYMBOL=0x80000000;
 
+// ----
 // Poly Fill Mode
 enum : int {
 	ALTERNATE = 1,
@@ -710,53 +712,66 @@ const DWORD
 	PS_ENDCAP_MASK   = 3840,
 	PS_TYPE_MASK     = 983040;
 
-
 // ---
-const DC_BINNAMES=12;
-const DC_BINS=6;
-const DC_COPIES=18;
-const DC_DRIVER=11;
-const DC_DATATYPE_PRODUCED=21;
-const DC_DUPLEX=7;
-const DC_EMF_COMPLIANT=20;
-const DC_ENUMRESOLUTIONS=13;
-const DC_EXTRA=9;
-const DC_FIELDS=1;
-const DC_FILEDEPENDENCIES=14;
-const DC_MAXEXTENT=5;
-const DC_MINEXTENT=4;
-const DC_ORIENTATION=17;
-const DC_PAPERNAMES=16;
-const DC_PAPERS=2;
-const DC_PAPERSIZE=3;
-const DC_SIZE=8;
-const DC_TRUETYPE=15;
-const DCTT_BITMAP=1;
-const DCTT_DOWNLOAD=2;
-const DCTT_SUBDEV=4;
-const DCTT_DOWNLOAD_OUTLINE=8;
-const DC_VERSION=10;
-const DC_BINADJUST=19;
-const DC_MANUFACTURER=23;
-const DC_MODEL=24;
+// DeviceCapabilities()
 
-const DCBA_FACEUPNONE=0;
-const DCBA_FACEUPCENTER=1;
-const DCBA_FACEUPLEFT=2;
-const DCBA_FACEUPRIGHT=3;
-const DCBA_FACEDOWNNONE=256;
-const DCBA_FACEDOWNCENTER=257;
-const DCBA_FACEDOWNLEFT=258;
-const DCBA_FACEDOWNRIGHT=259;
+enum : WORD {
+	DC_FIELDS = 1,
+	DC_PAPERS,
+	DC_PAPERSIZE,
+	DC_MINEXTENT,
+	DC_MAXEXTENT,
+	DC_BINS,
+	DC_DUPLEX,
+	DC_SIZE,
+	DC_EXTRA,
+	DC_VERSION,
+	DC_DRIVER,
+	DC_BINNAMES,
+	DC_ENUMRESOLUTIONS,
+	DC_FILEDEPENDENCIES,
+	DC_TRUETYPE,
+	DC_PAPERNAMES,
+	DC_ORIENTATION,
+	DC_COPIES,
+	DC_BINADJUST,
+	DC_EMF_COMPLIANT,
+	DC_DATATYPE_PRODUCED, // = 21
+	DC_MANUFACTURER = 23,
+	DC_MODEL  = 24
+}
+
+// return from DC_TRUETYPE
+const DWORD
+	DCTT_BITMAP           = 1,
+	DCTT_DOWNLOAD         = 2,
+	DCTT_SUBDEV           = 4,
+	DCTT_DOWNLOAD_OUTLINE = 8;
+
+// return from DC_BINADJUST
+enum : DWORD {
+	DCBA_FACEUPNONE     = 0,
+	DCBA_FACEUPCENTER   = 1,
+	DCBA_FACEUPLEFT     = 2,
+	DCBA_FACEUPRIGHT    = 3,
+	DCBA_FACEDOWNNONE   = 256,
+	DCBA_FACEDOWNCENTER = 257,
+	DCBA_FACEDOWNLEFT   = 258,
+	DCBA_FACEDOWNRIGHT  = 259
+}
+//---
 
 const FLOODFILLBORDER  = 0;
 const FLOODFILLSURFACE = 1;
 
-const ETO_OPAQUE      = 2;
-const ETO_CLIPPED     = 4;
-const ETO_GLYPH_INDEX = 16;
-const ETO_RTLREADING  = 128;
+// ExtTextOut()
+const UINT
+	ETO_OPAQUE      = 2,
+	ETO_CLIPPED     = 4,
+	ETO_GLYPH_INDEX = 16,
+	ETO_RTLREADING  = 128;
 
+// GdiComment()
 enum {
 	GDICOMMENT_WINDOWS_METAFILE = -2147483647,
 	GDICOMMENT_BEGINGROUP       = 2,
@@ -765,35 +780,47 @@ enum {
 	GDICOMMENT_IDENTIFIER       = 1128875079
 }
 
-const AD_COUNTERCLOCKWISE = 1;
-const AD_CLOCKWISE        = 2;
+// Get/SetArcDirection()
+enum : int {
+	AD_COUNTERCLOCKWISE = 1,
+	AD_CLOCKWISE        = 2
+}
 
 const RDH_RECTANGLES = 1;
 
-const GCPCLASS_LATIN=1;
-const GCPCLASS_HEBREW=2;
-const GCPCLASS_ARABIC=2;
-const GCPCLASS_NEUTRAL=3;
-const GCPCLASS_LOCALNUMBER=4;
-const GCPCLASS_LATINNUMBER=5;
-const GCPCLASS_LATINNUMERICTERMINATOR=6;
-const GCPCLASS_LATINNUMERICSEPARATOR=7;
-const GCPCLASS_NUMERICSEPARATOR=8;
-const GCPCLASS_PREBOUNDLTR=128;
-const GCPCLASS_PREBOUNDRTL=64;
-const GCPCLASS_POSTBOUNDLTR=32;
-const GCPCLASS_POSTBOUNDRTL=16;
-const GCPGLYPH_LINKBEFORE=0x8000;
-const GCPGLYPH_LINKAFTER=0x4000;
-
-const DCB_RESET=1;
-const DCB_SET=3;
-const DCB_ACCUMULATE=2;
-const DCB_ENABLE=4;
-const DCB_DISABLE=8;
-const DCB_DIRTY=2;
-
+// GCPRESULTS.lpClass
 enum {
+	GCPCLASS_LATIN  = 1,
+	GCPCLASS_HEBREW = 2,
+	GCPCLASS_ARABIC = 2,
+	GCPCLASS_NEUTRAL,
+	GCPCLASS_LOCALNUMBER,
+	GCPCLASS_LATINNUMBER,
+	GCPCLASS_LATINNUMERICTERMINATOR,
+	GCPCLASS_LATINNUMERICSEPARATOR,
+	GCPCLASS_NUMERICSEPARATOR, // = 8,
+	GCPCLASS_POSTBOUNDRTL = 16,
+	GCPCLASS_POSTBOUNDLTR = 32,
+	GCPCLASS_PREBOUNDRTL  = 64,
+	GCPCLASS_PREBOUNDLTR  = 128,
+	GCPGLYPH_LINKAFTER    = 0x4000,
+	GCPGLYPH_LINKBEFORE   = 0x8000
+}
+
+// GetBoundsRect(), SetBoundsRect()
+const UINT
+	DCB_RESET      = 1,
+	DCB_ACCUMULATE = 2,
+	DCB_SET        = 3,
+	DCB_ENABLE     = 4,
+	DCB_DISABLE    = 8;
+
+// ???
+const DCB_DIRTY = 2;
+
+//---
+// GetObjectType()
+enum : DWORD {
 	OBJ_PEN = 1,
 	OBJ_BRUSH,
 	OBJ_DC,
@@ -835,7 +862,7 @@ enum : int {
 	RASTERCAPS      = 38,
 	ASPECTX         = 40,
 	ASPECTY         = 42,
-	ASPECTXY        = 44,	
+	ASPECTXY        = 44,
 	LOGPIXELSX      = 88,
 	LOGPIXELSY      = 90,
 	SIZEPALETTE     = 104,
@@ -985,8 +1012,10 @@ enum : UINT {
 	GGO_UNHINTED     = 256
 }
 
-const GM_COMPATIBLE = 1;
-const GM_ADVANCED   = 2;
+enum : int {
+	GM_COMPATIBLE = 1,
+	GM_ADVANCED
+}
 
 enum : int {
 	MM_TEXT = 1,
@@ -1003,21 +1032,22 @@ enum : int {
 const ABSOLUTE = 1;
 const RELATIVE = 2;
 
-const PC_RESERVED   = 1;
-const PC_EXPLICIT   = 2;
-const PC_NOCOLLAPSE = 4;
+enum : BYTE {
+	PC_RESERVED   = 1,
+	PC_EXPLICIT   = 2,
+	PC_NOCOLLAPSE = 4
+}
 
-const CLR_NONE    = 0xffffffff;
-const CLR_INVALID = CLR_NONE;
-const CLR_DEFAULT = 0xff000000;
+// ImageList
+const COLORREF 
+	CLR_NONE    = 0xffffffff,
+	CLR_INVALID = CLR_NONE,
+	CLR_DEFAULT = 0xff000000;
 
-// [Redefined] PT_MOVETO=6
-// [Redefined] PT_LINETO=2
-// [Redefined] PT_BEZIERTO=4
-// [Redefined] PT_CLOSEFIGURE=1
-
-const TT_AVAILABLE = 1;
-const TT_ENABLED   = 2;
+// RASTERIZER_STATUS.wFlags
+const short
+	TT_AVAILABLE = 1,
+	TT_ENABLED   = 2;
 
 // GetStockObject()
 enum : int {
@@ -1044,12 +1074,16 @@ enum : int {
     DC_PEN = 19    // Requires Win 2000/XP
 //}
 }
-const SYSPAL_ERROR    = 0;
-const SYSPAL_STATIC   = 1;
-const SYSPAL_NOSTATIC = 2;
+
+// Get/SetSystemPaletteUse()
+enum : UINT {
+	SYSPAL_ERROR    = 0,
+	SYSPAL_STATIC   = 1,
+	SYSPAL_NOSTATIC = 2
+}
 
 // SetTextAlign()
-const UINT 
+const UINT
 	TA_TOP        = 0,
 	TA_CENTER     = 6,
 	TA_BOTTOM     = 8,
@@ -1067,115 +1101,145 @@ const UINT
 	VTA_BOTTOM    = TA_RIGHT,
 	VTA_TOP       = TA_LEFT;
 
-const MWT_IDENTITY = 1;
-const MWT_LEFTMULTIPLY = 2;
-const MWT_RIGHTMULTIPLY = 3;
+// EMRMODIFYWORLDTRANSFORM.iMode
+enum : DWORD {
+	MWT_IDENTITY = 1,
+	MWT_LEFTMULTIPLY,
+	MWT_RIGHTMULTIPLY
+}
 
-const OPAQUE = 2;
-const TRANSPARENT = 1;
+enum {
+	TRANSPARENT = 1,
+	OPAQUE      = 2
+}
 
-const BLACKONWHITE = 1;
-const WHITEONBLACK = 2;
-const COLORONCOLOR = 3;
-const HALFTONE     = 4;
+// Get/SetStretchMode()
+enum : int {
+	BLACKONWHITE = 1,
+	WHITEONBLACK = 2,
+	COLORONCOLOR = 3,
+	HALFTONE     = 4,
+	
+	STRETCH_ANDSCANS    = 1,
+	STRETCH_ORSCANS     = 2,
+	STRETCH_DELETESCANS = 3,
+	STRETCH_HALFTONE    = 4,
+	
+	MAXSTRETCHBLTMODE   = 4
+}
 
-const MAXSTRETCHBLTMODE = 4;
+// TranslateCharsetInfo()
+enum : DWORD {
+	TCI_SRCCHARSET  = 1,
+	TCI_SRCCODEPAGE = 2,
+	TCI_SRCFONTSIG  = 3
+}
 
-const STRETCH_ANDSCANS    = 1;
-const STRETCH_ORSCANS     = 2;
-const STRETCH_DELETESCANS = 3;
-const STRETCH_HALFTONE    = 4;
+// SetICMMode()
+enum : int {
+	ICM_OFF   = 1,
+	ICM_ON    = 2,
+	ICM_QUERY = 3
+}
 
-const TCI_SRCCHARSET  = 1;
-const TCI_SRCCODEPAGE = 2;
-const TCI_SRCFONTSIG  = 3;
-
-const ICM_OFF   = 1;
-const ICM_ON    = 2;
-const ICM_QUERY = 3;
+// ----
+// Escape() return codes
+enum : int {
+    SP_ERROR       = -1,
+    SP_APPABORT    = -2,
+    SP_USERABORT   = -3,
+    SP_OUTOFDISK   = -4,
+    SP_OUTOFMEMORY = -5
+}
 
 // Escape(), ExtEscape()
-const QUERYESCSUPPORT = 8;
-const PASSTHROUGH = 19;
+const int 
+	QUERYESCSUPPORT = 8,
+	PASSTHROUGH     = 19;
 
 // Escape(), ExtEscape()
 // Most of the following are deprecated (Win16 only)
-const NEWFRAME=1;
-const ABORTDOC=2;
-const NEXTBAND=3;
-const SETCOLORTABLE=4;
-const GETCOLORTABLE=5;
-const FLUSHOUTPUT=6;
-const DRAFTMODE=7;
-const SETABORTPROC=9;
-const STARTDOC=10;
-const ENDDOC=11;
-const GETPHYSPAGESIZE=12;
-const GETPRINTINGOFFSET=13;
-const GETSCALINGFACTOR=14;
-const MFCOMMENT=15;
-const GETPENWIDTH=16;
-const SETCOPYCOUNT=17;
-const SELECTPAPERSOURCE=18;
-const DEVICEDATA=19;
-//const GETTECHNOLGY=20;  // misspelt!
-const GETTECHNOLOGY=20;
-const SETLINECAP=21;
-const SETLINEJOIN=22;
-const SETMITERLIMIT=23;
-const BANDINFO=24;
-const DRAWPATTERNRECT=25;
-const GETVECTORPENSIZE=26;
-const GETVECTORBRUSHSIZE=27;
-const ENABLEDUPLEX=28;
-const GETSETPAPERBINS=29;
-const GETSETPRINTORIENT=30;
-const ENUMPAPERBINS=31;
-const SETDIBSCALING=32;
-const EPSPRINTING=33;
-const ENUMPAPERMETRICS=34;
-const GETSETPAPERMETRICS=35;
-const POSTSCRIPT_DATA=37;
-const POSTSCRIPT_IGNORE=38;
-const MOUSETRAILS=39;
-const GETDEVICEUNITS=42;
-const GETEXTENDEDTEXTMETRICS=256;
-const GETEXTENTTABLE=257;
-const GETPAIRKERNTABLE=258;
-const GETTRACKKERNTABLE=259;
-const EXTTEXTOUT=512;
-const GETFACENAME=513;
-const DOWNLOADFACE=514;
-const ENABLERELATIVEWIDTHS=768;
-const ENABLEPAIRKERNING=769;
-const SETKERNTRACK=770;
-const SETALLJUSTVALUES=771;
-const SETCHARSET=772;
-const STRETCHBLT=2048;
-const GETSETSCREENPARAMS=3072;
-const QUERYDIBSUPPORT=3073;
-const BEGIN_PATH=4096;
-const CLIP_TO_PATH=4097;
-const END_PATH=4098;
-const EXT_DEVICE_CAPS=4099;
-const RESTORE_CTM=4100;
-const SAVE_CTM=4101;
-const SET_ARC_DIRECTION=4102;
-const SET_BACKGROUND_COLOR=4103;
-const SET_POLY_MODE=4104;
-const SET_SCREEN_ANGLE=4105;
-const SET_SPREAD=4106;
-const TRANSFORM_CTM=4107;
-const SET_CLIP_BOX=4108;
-const SET_BOUNDS=4109;
-const SET_MIRROR_MODE=4110;
-const OPENCHANNEL=4110;
-const DOWNLOADHEADER=4111;
-const CLOSECHANNEL=4112;
-const POSTSCRIPT_PASSTHROUGH=4115;
-const ENCAPSULATED_POSTSCRIPT=4116;
+enum : int {
+	NEWFRAME      = 1,
+	ABORTDOC      = 2,
+	NEXTBAND      = 3,
+	SETCOLORTABLE = 4,
+	GETCOLORTABLE = 5,
+	FLUSHOUTPUT   = 6,
+	DRAFTMODE     = 7,
+	SETABORTPROC  = 9,
+	STARTDOC      = 10,
+	ENDDOC        = 11,
+	GETPHYSPAGESIZE   = 12,
+	GETPRINTINGOFFSET = 13,
+	GETSCALINGFACTOR  = 14,
+	MFCOMMENT         = 15,
+	GETPENWIDTH       = 16,
+	SETCOPYCOUNT      = 17,
+	SELECTPAPERSOURCE = 18,
+	DEVICEDATA        = 19,
+	GETTECHNOLOGY     = 20,
+	SETLINECAP = 21,
+	SETLINEJOIN = 22,
+	SETMITERLIMIT = 23,
+	BANDINFO = 24,
+	DRAWPATTERNRECT = 25,
+	GETVECTORPENSIZE = 26,
+	GETVECTORBRUSHSIZE = 27,
+	ENABLEDUPLEX = 28,
+	GETSETPAPERBINS = 29,
+	GETSETPRINTORIENT = 30,
+	ENUMPAPERBINS = 31,
+	SETDIBSCALING = 32,
+	EPSPRINTING = 33,
+	ENUMPAPERMETRICS = 34,
+	GETSETPAPERMETRICS = 35,
+	POSTSCRIPT_DATA = 37,
+	POSTSCRIPT_IGNORE = 38,
+	MOUSETRAILS = 39,
+	GETDEVICEUNITS = 42,
+	GETEXTENDEDTEXTMETRICS = 256,
+	GETEXTENTTABLE = 257,
+	GETPAIRKERNTABLE = 258,
+	GETTRACKKERNTABLE = 259,
+	EXTTEXTOUT = 512,
+	GETFACENAME = 513,
+	DOWNLOADFACE = 514,
+	ENABLERELATIVEWIDTHS = 768,
+	ENABLEPAIRKERNING = 769,
+	SETKERNTRACK = 770,
+	SETALLJUSTVALUES = 771,
+	SETCHARSET = 772,
+	STRETCHBLT = 2048,
+	GETSETSCREENPARAMS = 3072,
+	QUERYDIBSUPPORT = 3073,
+	BEGIN_PATH = 4096,
+	CLIP_TO_PATH = 4097,
+	END_PATH = 4098,
+	EXT_DEVICE_CAPS = 4099,
+	RESTORE_CTM = 4100,
+	SAVE_CTM = 4101,
+	SET_ARC_DIRECTION = 4102,
+	SET_BACKGROUND_COLOR = 4103,
+	SET_POLY_MODE = 4104,
+	SET_SCREEN_ANGLE = 4105,
+	SET_SPREAD = 4106,
+	TRANSFORM_CTM = 4107,
+	SET_CLIP_BOX = 4108,
+	SET_BOUNDS = 4109,
+	SET_MIRROR_MODE = 4110,
+	OPENCHANNEL = 4110,
+	DOWNLOADHEADER = 4111,
+	CLOSECHANNEL = 4112,
+	POSTSCRIPT_PASSTHROUGH  = 4115,
+	ENCAPSULATED_POSTSCRIPT = 4116
+}
 
+// ----
 
+const WPARAM PR_JOBSTATUS = 0;
+
+// ???
 const QDI_SETDIBITS   = 1;
 const QDI_GETDIBITS   = 2;
 const QDI_DIBTOSCREEN = 4;
@@ -1183,20 +1247,26 @@ const QDI_STRETCHDIB  = 8;
 
 const SP_NOTREPORTED=0x4000;
 
-const PR_JOBSTATUS=0;
-
 const ASPECT_FILTERING=1;
 
-const LCS_CALIBRATED_RGB=0;
-const LCS_DEVICE_RGB=1;
-const LCS_DEVICE_CMYK=2;
-const LCS_GM_BUSINESS=1;
-const LCS_GM_GRAPHICS=2;
-const LCS_GM_IMAGES=4;
+// LOGCOLORSPACE.lcsCSType
+enum : LCSCSTYPE {
+	LCS_CALIBRATED_RGB=0,
+	LCS_DEVICE_RGB,
+	LCS_DEVICE_CMYK
+}
 
-const RASTER_FONTTYPE   = 1;
-const DEVICE_FONTTYPE   = 2;
-const TRUETYPE_FONTTYPE = 4;
+// LOGCOLORSPACE.lcsIntent
+enum : LCSGAMUTMATCH {
+	LCS_GM_BUSINESS = 1,
+	LCS_GM_GRAPHICS = 2,
+	LCS_GM_IMAGES   = 4 
+}
+
+const DWORD
+	RASTER_FONTTYPE   = 1,
+	DEVICE_FONTTYPE   = 2,
+	TRUETYPE_FONTTYPE = 4;
 
 // ---
 // DEVMODE struct
@@ -1435,36 +1505,55 @@ const DWORD
 const GDI_ERROR = 0xFFFFFFFF;
 const HGDI_ERROR= cast(HANDLE)GDI_ERROR;
 
-const TMPF_FIXED_PITCH = 1;
-const TMPF_VECTOR = 2;
-const TMPF_TRUETYPE = 4;
-const TMPF_DEVICE = 8;
+// TEXTMETRIC.tmPitchAndFamily
+const BYTE 
+	TMPF_FIXED_PITCH = 1,
+	TMPF_VECTOR      = 2,
+	TMPF_TRUETYPE    = 4,
+	TMPF_DEVICE      = 8;
 
-const NTM_ITALIC = 1;
-const NTM_BOLD = 32;
-const NTM_REGULAR = 64;
+// NEWTEXTMETRIC.ntmFlags
+const DWORD
+	NTM_ITALIC  = 1,
+	NTM_BOLD    = 32,
+	NTM_REGULAR = 64;
 
-const TT_POLYGON_TYPE = 24;
-const TT_PRIM_LINE = 1;
-const TT_PRIM_QSPLINE = 2;
+// ---
+const DWORD TT_POLYGON_TYPE = 24;
 
+// TTPOLYCURVE
+enum : WORD {
+	TT_PRIM_LINE    = 1,
+	TT_PRIM_QSPLINE = 2
+	//TT_PRIM_CSPLINE = ?
+}
+// ---
 const FONTMAPPER_MAX = 10;
 const ENHMETA_STOCK_OBJECT = 0x80000000;
 const WGL_FONT_LINES = 0;
 const WGL_FONT_POLYGONS = 1;
 
-const LPD_DOUBLEBUFFER = 1;
-const LPD_STEREO = 2;
-const LPD_SUPPORT_GDI = 16;
-const LPD_SUPPORT_OPENGL = 32;
-const LPD_SHARE_DEPTH = 64;
-const LPD_SHARE_STENCIL = 128;
-const LPD_SHARE_ACCUM = 256;
-const LPD_SWAP_EXCHANGE = 512;
-const LPD_SWAP_COPY = 1024;
-const LPD_TRANSPARENT = 4096;
-const LPD_TYPE_RGBA = 0;
-const LPD_TYPE_COLORINDEX = 1;
+// ---
+// LAYERPLANEDESCRIPTOR.dwFlags
+const DWORD
+	LPD_DOUBLEBUFFER   = 1,
+	LPD_STEREO         = 2,
+	LPD_SUPPORT_GDI    = 16,
+	LPD_SUPPORT_OPENGL = 32,
+	LPD_SHARE_DEPTH    = 64,
+	LPD_SHARE_STENCIL  = 128,
+	LPD_SHARE_ACCUM    = 256,
+	LPD_SWAP_EXCHANGE  = 512,
+	LPD_SWAP_COPY      = 1024,
+	LPD_TRANSPARENT    = 4096;
+
+// LAYERPLANEDESCRIPTOR.iPixelType
+enum : BYTE {
+	LPD_TYPE_RGBA       = 0,
+	LPD_TYPE_COLORINDEX = 1
+}
+
+// ---
 
 // wglSwapLayerBuffers()
 const UINT
@@ -1500,12 +1589,14 @@ const UINT
 	WGL_SWAP_UNDERLAY14 = 0x20000000,
 	WGL_SWAP_UNDERLAY15 = 0x40000000;
 
-const AC_SRC_OVER = 0x00;
+const AC_SRC_OVER  = 0x00;
 const AC_SRC_ALPHA = 0x01;
+
+// ???
 const AC_SRC_NO_PREMULT_ALPHA = 0x01;
-const AC_SRC_NO_ALPHA = 0x02;
+const AC_SRC_NO_ALPHA         = 0x02;
 const AC_DST_NO_PREMULT_ALPHA = 0x10;
-const AC_DST_NO_ALPHA = 0x20;
+const AC_DST_NO_ALPHA         = 0x20;
 
 const LAYOUT_RTL = 1;
 const LAYOUT_BITMAPORIENTATIONPRESERVED = 8;
@@ -1525,25 +1616,31 @@ static if (WINVER > 0x0500) {
     const SETICMPROFILE_EMBEDED=0x00000001;
 }
 
-const DISPLAY_DEVICE_ATTACHED_TO_DESKTOP = 0x00000001;
-const DISPLAY_DEVICE_MULTI_DRIVER        = 0x00000002;
-const DISPLAY_DEVICE_PRIMARY_DEVICE      = 0x00000004;
-const DISPLAY_DEVICE_MIRRORING_DRIVER    = 0x00000008;
-const DISPLAY_DEVICE_VGA_COMPATIBLE      = 0x00000010;
-const DISPLAY_DEVICE_REMOVABLE           = 0x00000020;
-const DISPLAY_DEVICE_MODESPRUNED         = 0x08000000;
+// DISPLAY_DEVICE.StateFlags
+const DWORD
+	DISPLAY_DEVICE_ATTACHED_TO_DESKTOP = 0x00000001,
+	DISPLAY_DEVICE_MULTI_DRIVER        = 0x00000002,
+	DISPLAY_DEVICE_PRIMARY_DEVICE      = 0x00000004,
+	DISPLAY_DEVICE_MIRRORING_DRIVER    = 0x00000008,
+	DISPLAY_DEVICE_VGA_COMPATIBLE      = 0x00000010,
+	DISPLAY_DEVICE_REMOVABLE           = 0x00000020,
+	DISPLAY_DEVICE_MODESPRUNED         = 0x08000000;
 
 static if (_WIN32_WINNT >= 0x0500) {
     const GGI_MARK_NONEXISTING_GLYPHS = 1;
 }
 
-struct ABC {
-    int abcA;
-    UINT abcB;
-    int abcC;
-};
+// ----------
+//   STRUCTS
+// ----------
 
+struct ABC {
+    int  abcA;
+    UINT abcB;
+    int  abcC;
+}
 alias ABC* LPABC;
+
 struct ABCFLOAT {
     FLOAT abcfA;
     FLOAT abcfB;
@@ -1552,26 +1649,24 @@ struct ABCFLOAT {
 alias ABCFLOAT* LPABCFLOAT;
 
 struct BITMAP {
-    LONG	bmType;
-    LONG	bmWidth;
-    LONG	bmHeight;
-    LONG	bmWidthBytes;
-    WORD	bmPlanes;
-    WORD	bmBitsPixel;
-    LPVOID	bmBits;
+    LONG   bmType;
+    LONG   bmWidth;
+    LONG   bmHeight;
+    LONG   bmWidthBytes;
+    WORD   bmPlanes;
+    WORD   bmBitsPixel;
+    LPVOID bmBits;
 }
-alias BITMAP* PBITMAP;
-alias BITMAP* LPBITMAP;
+alias BITMAP* PBITMAP, LPBITMAP;
 
 struct BITMAPCOREHEADER {
-    DWORD	bcSize;
-    WORD	bcWidth;
-    WORD	bcHeight;
-    WORD	bcPlanes;
-    WORD	bcBitCount;
+    DWORD bcSize;
+    WORD  bcWidth;
+    WORD  bcHeight;
+    WORD  bcPlanes;
+    WORD  bcBitCount;
 }
-alias BITMAPCOREHEADER* PBITMAPCOREHEADER;
-alias BITMAPCOREHEADER* LPBITMAPCOREHEADER;
+alias BITMAPCOREHEADER* PBITMAPCOREHEADER, LPBITMAPCOREHEADER;
 
 align(1):
 struct RGBTRIPLE {
@@ -1583,55 +1678,51 @@ alias RGBTRIPLE* LPRGBTRIPLE;
 
 align(2):
 struct BITMAPFILEHEADER {
-    WORD	bfType;
-    DWORD	bfSize;
-    WORD	bfReserved1;
-    WORD	bfReserved2;
-    DWORD	bfOffBits;
+    WORD  bfType;
+    DWORD bfSize;
+    WORD  bfReserved1;
+    WORD  bfReserved2;
+    DWORD bfOffBits;
 }
-alias BITMAPFILEHEADER* LPBITMAPFILEHEADER;
-alias BITMAPFILEHEADER* PBITMAPFILEHEADER;
+alias BITMAPFILEHEADER* LPBITMAPFILEHEADER, PBITMAPFILEHEADER;
 
 align:
 
 struct BITMAPCOREINFO {
-    BITMAPCOREHEADER	bmciHeader;
-    RGBTRIPLE	bmciColors[1];
-};
-alias  BITMAPCOREINFO* LPBITMAPCOREINFO;
-alias  BITMAPCOREINFO* PBITMAPCOREINFO;
+    BITMAPCOREHEADER bmciHeader;
+    RGBTRIPLE[1]     bmciColors;
+}
+alias BITMAPCOREINFO* LPBITMAPCOREINFO, PBITMAPCOREINFO;
 
 struct BITMAPINFOHEADER {
-    DWORD	biSize;
-    LONG	biWidth;
-    LONG	biHeight;
-    WORD	biPlanes;
-    WORD	biBitCount;
-    DWORD	biCompression;
-    DWORD	biSizeImage;
-    LONG	biXPelsPerMeter;
-    LONG	biYPelsPerMeter;
-    DWORD	biClrUsed;
-    DWORD	biClrImportant;
-};
+    DWORD biSize;
+    LONG  biWidth;
+    LONG  biHeight;
+    WORD  biPlanes;
+    WORD  biBitCount;
+    DWORD biCompression;
+    DWORD biSizeImage;
+    LONG  biXPelsPerMeter;
+    LONG  biYPelsPerMeter;
+    DWORD biClrUsed;
+    DWORD biClrImportant;
+}
 
-alias BITMAPINFOHEADER* LPBITMAPINFOHEADER;
-alias BITMAPINFOHEADER* PBITMAPINFOHEADER;
+alias BITMAPINFOHEADER* LPBITMAPINFOHEADER, PBITMAPINFOHEADER;
 
 struct RGBQUAD {
-    BYTE	rgbBlue;
-    BYTE	rgbGreen;
-    BYTE	rgbRed;
-    BYTE	rgbReserved;
+    BYTE rgbBlue;
+    BYTE rgbGreen;
+    BYTE rgbRed;
+    BYTE rgbReserved;
 };
 alias RGBQUAD* LPRGBQUAD;
 
 struct BITMAPINFO {
     BITMAPINFOHEADER bmiHeader;
-    RGBQUAD bmiColors[1];
+    RGBQUAD[1]       bmiColors;
 };
-alias BITMAPINFO* LPBITMAPINFO;
-alias BITMAPINFO* PBITMAPINFO;
+alias BITMAPINFO* PBITMAPINFO, LPBITMAPINFO;
 
 alias int FXPT16DOT16;
 alias int* LPFXPT16DOT16;
@@ -1653,33 +1744,32 @@ struct CIEXYZTRIPLE {
 alias CIEXYZTRIPLE* LPCIEXYZTRIPLE;
 
 struct BITMAPV4HEADER {
-    DWORD	bV4Size;
-    LONG	bV4Width;
-    LONG	bV4Height;
-    WORD	bV4Planes;
-    WORD	bV4BitCount;
-    DWORD	bV4V4Compression;
-    DWORD	bV4SizeImage;
-    LONG	bV4XPelsPerMeter;
-    LONG	bV4YPelsPerMeter;
-    DWORD	bV4ClrUsed;
-    DWORD	bV4ClrImportant;
-    DWORD	bV4RedMask;
-    DWORD	bV4GreenMask;
-    DWORD	bV4BlueMask;
-    DWORD	bV4AlphaMask;
-    DWORD	bV4CSType;
+    DWORD        bV4Size;
+    LONG         bV4Width;
+    LONG         bV4Height;
+    WORD         bV4Planes;
+    WORD         bV4BitCount;
+    DWORD        bV4V4Compression;
+    DWORD        bV4SizeImage;
+    LONG         bV4XPelsPerMeter;
+    LONG         bV4YPelsPerMeter;
+    DWORD        bV4ClrUsed;
+    DWORD        bV4ClrImportant;
+    DWORD        bV4RedMask;
+    DWORD        bV4GreenMask;
+    DWORD        bV4BlueMask;
+    DWORD        bV4AlphaMask;
+    DWORD        bV4CSType;
     CIEXYZTRIPLE bV4Endpoints;
-    DWORD	bV4GammaRed;
-    DWORD	bV4GammaGreen;
-    DWORD	bV4GammaBlue;
+    DWORD        bV4GammaRed;
+    DWORD        bV4GammaGreen;
+    DWORD        bV4GammaBlue;
 }
-alias BITMAPV4HEADER* LPBITMAPV4HEADER;
-alias BITMAPV4HEADER* PBITMAPV4HEADER;
+alias BITMAPV4HEADER* LPBITMAPV4HEADER, PBITMAPV4HEADER;
 
 struct FONTSIGNATURE {
-    DWORD	fsUsb[4];
-    DWORD	fsCsb[2];
+    DWORD[4] fsUsb;
+    DWORD[2] fsCsb;
 }
 alias FONTSIGNATURE* LPFONTSIGNATURE;
 
@@ -1690,19 +1780,19 @@ struct CHARSETINFO {
 }
 alias CHARSETINFO* LPCHARSETINFO;
 
-struct  COLORADJUSTMENT {
-    WORD	caSize;
-    WORD	caFlags;
-    WORD	caIlluminantIndex;
-    WORD	caRedGamma;
-    WORD	caGreenGamma;
-    WORD	caBlueGamma;
-    WORD	caReferenceBlack;
-    WORD	caReferenceWhite;
-    SHORT	caContrast;
-    SHORT	caBrightness;
-    SHORT	caColorfulness;
-    SHORT	caRedGreenTint;
+struct COLORADJUSTMENT {
+    WORD  caSize;
+    WORD  caFlags;
+    WORD  caIlluminantIndex;
+    WORD  caRedGamma;
+    WORD  caGreenGamma;
+    WORD  caBlueGamma;
+    WORD  caReferenceBlack;
+    WORD  caReferenceWhite;
+    SHORT caContrast;
+    SHORT caBrightness;
+    SHORT caColorfulness;
+    SHORT caRedGreenTint;
 }
 alias COLORADJUSTMENT* LPCOLORADJUSTMENT;
 
@@ -1854,80 +1944,75 @@ struct PANOSE {
 }
 
 struct LOGFONTA {
-    LONG	lfHeight;
-    LONG	lfWidth;
-    LONG	lfEscapement;
-    LONG	lfOrientation;
-    LONG	lfWeight;
-    BYTE	lfItalic;
-    BYTE	lfUnderline;
-    BYTE	lfStrikeOut;
-    BYTE	lfCharSet;
-    BYTE	lfOutPrecision;
-    BYTE	lfClipPrecision;
-    BYTE	lfQuality;
-    BYTE	lfPitchAndFamily;
-    CHAR	lfFaceName[LF_FACESIZE];
+    LONG lfHeight;
+    LONG lfWidth;
+    LONG lfEscapement;
+    LONG lfOrientation;
+    LONG lfWeight;
+    BYTE lfItalic;
+    BYTE lfUnderline;
+    BYTE lfStrikeOut;
+    BYTE lfCharSet;
+    BYTE lfOutPrecision;
+    BYTE lfClipPrecision;
+    BYTE lfQuality;
+    BYTE lfPitchAndFamily;
+    CHAR[LF_FACESIZE] lfFaceName;
 }
-alias LOGFONTA* PLOGFONTA;
-alias LOGFONTA* LPLOGFONTA;
+alias LOGFONTA* PLOGFONTA, LPLOGFONTA;
 
 struct LOGFONTW {
-    LONG	lfHeight;
-    LONG	lfWidth;
-    LONG	lfEscapement;
-    LONG	lfOrientation;
-    LONG	lfWeight;
-    BYTE	lfItalic;
-    BYTE	lfUnderline;
-    BYTE	lfStrikeOut;
-    BYTE	lfCharSet;
-    BYTE	lfOutPrecision;
-    BYTE	lfClipPrecision;
-    BYTE	lfQuality;
-    BYTE	lfPitchAndFamily;
-    WCHAR	lfFaceName[LF_FACESIZE];
+    LONG lfHeight;
+    LONG lfWidth;
+    LONG lfEscapement;
+    LONG lfOrientation;
+    LONG lfWeight;
+    BYTE lfItalic;
+    BYTE lfUnderline;
+    BYTE lfStrikeOut;
+    BYTE lfCharSet;
+    BYTE lfOutPrecision;
+    BYTE lfClipPrecision;
+    BYTE lfQuality;
+    BYTE lfPitchAndFamily;
+    WCHAR[LF_FACESIZE] lfFaceName;
 }
-alias LOGFONTW* PLOGFONTW;
-alias LOGFONTW* LPLOGFONTW;
+alias LOGFONTW* PLOGFONTW, LPLOGFONTW;
 
 struct EXTLOGFONTA {
-    LOGFONTA	elfLogFont;
-    BYTE	elfFullName[LF_FULLFACESIZE];
-    BYTE	elfStyle[LF_FACESIZE];
-    DWORD	elfVersion;
-    DWORD	elfStyleSize;
-    DWORD	elfMatch;
-    DWORD	elfReserved;
-    BYTE	elfVendorId[ELF_VENDOR_SIZE];
-    DWORD	elfCulture;
-    PANOSE	elfPanose;
+    LOGFONTA              elfLogFont;
+    BYTE[LF_FULLFACESIZE] elfFullName;
+    BYTE[LF_FACESIZE]     elfStyle;
+    DWORD                 elfVersion;
+    DWORD                 elfStyleSize;
+    DWORD                 elfMatch;
+    DWORD                 elfReserved;
+    BYTE[ELF_VENDOR_SIZE] elfVendorId;
+    DWORD                 elfCulture;
+    PANOSE                elfPanose;
 }
-alias EXTLOGFONTA* PEXTLOGFONTA;
-alias EXTLOGFONTA* LPEXTLOGFONTA;
+alias EXTLOGFONTA* PEXTLOGFONTA, LPEXTLOGFONTA;
 
 struct EXTLOGFONTW {
-    LOGFONTW	elfLogFont;
-    WCHAR	elfFullName[LF_FULLFACESIZE];
-    WCHAR	elfStyle[LF_FACESIZE];
-    DWORD	elfVersion;
-    DWORD	elfStyleSize;
-    DWORD	elfMatch;
-    DWORD	elfReserved;
-    BYTE	elfVendorId[ELF_VENDOR_SIZE];
-    DWORD	elfCulture;
-    PANOSE	elfPanose;
+    LOGFONTW               elfLogFont;
+    WCHAR[LF_FULLFACESIZE] elfFullName;
+    WCHAR[LF_FACESIZE]     elfStyle;
+    DWORD                  elfVersion;
+    DWORD                  elfStyleSize;
+    DWORD                  elfMatch;
+    DWORD                  elfReserved;
+    BYTE[ELF_VENDOR_SIZE]  elfVendorId;
+    DWORD                  elfCulture;
+    PANOSE                 elfPanose;
 }
-alias EXTLOGFONTW* PEXTLOGFONTW;
-alias EXTLOGFONTW* LPEXTLOGFONTW;
+alias EXTLOGFONTW* PEXTLOGFONTW, LPEXTLOGFONTW;
 
 struct LOGPEN {
-    UINT lopnStyle;
-    POINT lopnWidth;
+    UINT     lopnStyle;
+    POINT    lopnWidth;
     COLORREF lopnColor;
 }
-alias LOGPEN* PLOGPEN;
-alias LOGPEN* LPLOGPEN;
+alias LOGPEN* PLOGPEN, LPLOGPEN;
 
 // ---------------------- EMR ------------
 
@@ -1938,29 +2023,24 @@ struct EMR {
 alias EMR* PEMR;
 
 struct EMRANGLEARC {
-    EMR emr;
+    EMR    emr;
     POINTL ptlCenter;
-    DWORD nRadius;
-    FLOAT eStartAngle;
-    FLOAT eSweepAngle;
+    DWORD  nRadius;
+    FLOAT  eStartAngle;
+    FLOAT  eSweepAngle;
 }
 alias EMRANGLEARC* PEMRANGLEARC;
 
 struct EMRARC {
-    EMR emr;
-    RECTL rclBox;
+    EMR    emr;
+    RECTL  rclBox;
     POINTL ptlStart;
     POINTL ptlEnd;
 }
-alias EMRARC* PEMRARC;
-typedef EMRARC EMRARCTO;
-alias EMRARC* PEMRARCTO;
-typedef EMRARC EMRCHORD;
-alias EMRARC* PEMRCHORD;
-typedef EMRARC EMRPIE;
-alias EMRARC* PEMRPIE;
+alias EMRARC EMRARCTO, EMRCHORD, EMRPIE;
+alias EMRARC* PEMRARC, PEMRARCTO, PEMRCHORD, PEMRPIE;
 
-struct  XFORM {
+struct XFORM {
     FLOAT eM11;
     FLOAT eM12;
     FLOAT eM21;
@@ -1968,48 +2048,43 @@ struct  XFORM {
     FLOAT eDx;
     FLOAT eDy;
 }
-alias XFORM* PXFORM;
-alias XFORM* LPXFORM;
+alias XFORM* PXFORM, LPXFORM;
 
 struct EMRBITBLT {
-    EMR emr;
-    RECTL rclBounds;
-    LONG xDest;
-    LONG yDest;
-    LONG cxDest;
-    LONG cyDest;
-    DWORD dwRop;
-    LONG xSrc;
-    LONG ySrc;
-    XFORM xformSrc;
+    EMR      emr;
+    RECTL    rclBounds;
+    LONG     xDest;
+    LONG     yDest;
+    LONG     cxDest;
+    LONG     cyDest;
+    DWORD    dwRop;
+    LONG     xSrc;
+    LONG     ySrc;
+    XFORM    xformSrc;
     COLORREF crBkColorSrc;
-    DWORD iUsageSrc;
-    DWORD offBmiSrc;
-    DWORD offBitsSrc;
-    DWORD cbBitsSrc;
+    DWORD    iUsageSrc;
+    DWORD    offBmiSrc;
+    DWORD    offBitsSrc;
+    DWORD    cbBitsSrc;
 }
 alias EMRBITBLT* PEMRBITBLT;
 
 struct LOGBRUSH {
-    UINT lbStyle;
+    UINT     lbStyle;
     COLORREF lbColor;
-    LONG lbHatch;
+    LONG     lbHatch;
 }
-alias LOGBRUSH* PLOGBRUSH;
-alias LOGBRUSH* LPLOGBRUSH;
-typedef LOGBRUSH PATTERN;
-alias LOGBRUSH* PPATTERN;
-alias LOGBRUSH* LPPATTERN;
+alias LOGBRUSH PATTERN;
+alias LOGBRUSH* PLOGBRUSH, LPLOGBRUSH, PPATTERN, LPPATTERN;
 
 struct EMRCREATEBRUSHINDIRECT {
-    EMR emr;
-    DWORD ihBrush;
+    EMR      emr;
+    DWORD    ihBrush;
     LOGBRUSH lb;
 }
 alias EMRCREATEBRUSHINDIRECT* PEMRCREATEBRUSHINDIRECT;
 
-alias LONG LCSCSTYPE;
-alias LONG LCSGAMUTMATCH;
+alias LONG LCSCSTYPE, LCSGAMUTMATCH;
 
 struct LOGCOLORSPACEA {
     DWORD lcsSignature;
@@ -2024,6 +2099,7 @@ struct LOGCOLORSPACEA {
     CHAR lcsFilename[MAX_PATH];
 }
 alias LOGCOLORSPACEA* LPLOGCOLORSPACEA;
+
 struct LOGCOLORSPACEW {
     DWORD lcsSignature;
     DWORD lcsVersion;
@@ -2073,7 +2149,7 @@ struct PALETTEENTRY {
     BYTE peBlue;
     BYTE peFlags;
 }
-alias PALETTEENTRY* LPPALETTEENTRY, PPALETTEENTRY;
+alias PALETTEENTRY* PPALETTEENTRY, LPPALETTEENTRY;
 
 struct LOGPALETTE {
     WORD palVersion;
@@ -2101,6 +2177,7 @@ struct EMRELLIPSE {
     RECTL rclBox;
 }
 alias EMRELLIPSE* PEMRELLIPSE;
+
 typedef EMRELLIPSE EMRRECTANGLE;
 alias EMRRECTANGLE* PEMRRECTANGLE;
 
@@ -2136,8 +2213,7 @@ struct EXTLOGPEN {
     DWORD elpNumEntries;
     DWORD elpStyleEntry[1];
 }
-alias EXTLOGPEN* PEXTLOGPEN;
-alias EXTLOGPEN* LPEXTLOGPEN;
+alias EXTLOGPEN* PEXTLOGPEN, LPEXTLOGPEN;
 
 struct EMREXTCREATEPEN {
     EMR emr;
@@ -2184,17 +2260,18 @@ struct EMREXTTEXTOUTA {
     FLOAT eyScale;
     EMRTEXT emrtext;
 }
-alias EMREXTTEXTOUTA* PEMREXTTEXTOUTA;
 alias EMREXTTEXTOUTA EMREXTTEXTOUTW;
-alias EMREXTTEXTOUTA* PEMREXTTEXTOUTW;
+alias EMREXTTEXTOUTA* PEMREXTTEXTOUTA, PEMREXTTEXTOUTW;
 
 struct EMRFILLPATH {
     EMR emr;
     RECTL rclBounds;
 }
 alias EMRFILLPATH* PEMRFILLPATH;
+
 typedef EMRFILLPATH EMRSTROKEANDFILLPATH;
 alias EMRSTROKEANDFILLPATH* PEMRSTROKEANDFILLPATH;
+
 typedef EMRFILLPATH EMRSTROKEPATH;
 alias EMRSTROKEPATH* PEMRSTROKEPATH;
 
@@ -2648,7 +2725,7 @@ struct ENHMETAHEADER {
     DWORD nSize;
     RECTL rclBounds;
     RECTL rclFrame;
-    DWORD dSignature;
+    DWORD dSignature = ENHMETA_SIGNATURE;
     DWORD nVersion;
     DWORD nBytes;
     DWORD nRecords;
@@ -2685,6 +2762,8 @@ struct ENHMETARECORD {
 }
 alias ENHMETARECORD* LPENHMETARECORD;
 
+// ---
+
 struct HANDLETABLE {
     HGDIOBJ objectHandle[1];
 }
@@ -2712,8 +2791,7 @@ struct TEXTMETRICA {
     BYTE tmPitchAndFamily;
     BYTE tmCharSet;
 }
-alias TEXTMETRICA* PTEXTMETRICA;
-alias TEXTMETRICA* LPTEXTMETRICA;
+alias TEXTMETRICA* PTEXTMETRICA, LPTEXTMETRICA;
 
 struct TEXTMETRICW {
     LONG tmHeight;
@@ -2737,8 +2815,7 @@ struct TEXTMETRICW {
     BYTE tmPitchAndFamily;
     BYTE tmCharSet;
 }
-alias TEXTMETRICW* PTEXTMETRICW;
-alias TEXTMETRICW* LPTEXTMETRICW;
+alias TEXTMETRICW* PTEXTMETRICW, LPTEXTMETRICW;
 
 struct RGNDATAHEADER {
     DWORD dwSize;
@@ -2796,8 +2873,7 @@ static if (_WIN32_WINNT >= 0x0500) {
         WCHAR wcLow;
         USHORT cGlyphs;
     }
-    alias WCRANGE* PWCRANGE;
-    alias WCRANGE* LPWCRANGE;
+    alias WCRANGE* PWCRANGE, LPWCRANGE;
 
     struct GLYPHSET {
         DWORD cbThis;
@@ -2806,8 +2882,7 @@ static if (_WIN32_WINNT >= 0x0500) {
         DWORD cRanges;
         WCRANGE ranges[1];
     }
-    alias GLYPHSET* PGLYPHSET;
-    alias GLYPHSET* LPGLYPHSET;
+    alias GLYPHSET* PGLYPHSET, LPGLYPHSET;
 }
 
 struct KERNINGPAIR {
@@ -3241,7 +3316,7 @@ alias DWORD function (LPSTR, LPSTR, UINT, LPSTR, LPDEVMODEA) LPFNDEVCAPS;
 // ---------
 // C Macros.
 // FIXME:
-//MACRO #define MAKEPOINTS(l) (*((POINTS*)&(l)))
+//POINTS MAKEPOINTS(DWORD dwValue) #define MAKEPOINTS(l) (*((POINTS*)&(l)))
 
 DWORD MAKEROP4(DWORD fore, DWORD back) {
     return (( back<<8)&0xFF000000)|(fore);

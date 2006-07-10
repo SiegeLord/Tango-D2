@@ -10,11 +10,8 @@
 \***********************************************************************/
 module tango.os.windows.winsvc;
 
-//version (build) { pragma(nolink); }
-
-
 private import tango.os.windows.w32api;
-//pragma(lib, "advapi.lib");
+pragma(lib, "advapi.lib");
 
 static if (!_WIN32_WINNT_ONLY) {
 	pragma(msg, "tango.os.windows.winsvc is available only if version WindowsNTonly,
@@ -243,7 +240,7 @@ static if (_WIN32_WINNT >= 0x500) {
 		LPSTR lpDescription;
 	}
 	alias SERVICE_DESCRIPTIONA* LPSERVICE_DESCRIPTIONA;
-	
+
 	struct SERVICE_DESCRIPTIONW {
 		LPWSTR lpDescription;
 	}
@@ -270,7 +267,7 @@ static if (_WIN32_WINNT >= 0x500) {
 		SC_ACTION* lpsaActions;
 	}
 	alias SERVICE_FAILURE_ACTIONSA* LPSERVICE_FAILURE_ACTIONSA;
-	
+
 	struct SERVICE_FAILURE_ACTIONSW {
 		DWORD      dwResetPeriod;
 		LPWSTR     lpRebootMsg;
@@ -349,7 +346,7 @@ extern (Windows) {
 		SERVICE_STATUS_HANDLE RegisterServiceCtrlHandlerExW(LPCWSTR,
 		  LPHANDLER_FUNCTION_EX, LPVOID);
 	}
-	
+
 	static if (_WIN32_WINNT >= 0x501) {
 		BOOL ChangeServiceConfig2A(SC_HANDLE, DWORD, LPVOID);
 		BOOL ChangeServiceConfig2W(SC_HANDLE, DWORD, LPVOID);
@@ -382,13 +379,13 @@ version (Unicode) {
 		alias SERVICE_FAILURE_ACTIONSW SERVICE_FAILURE_ACTIONS;
 		alias EnumServicesStatusExW EnumServicesStatusEx;
 		alias QueryServiceConfig2W QueryServiceConfig2;
-		alias RegisterServiceCtrlHandlerExW RegisterServiceCtrlHandlerEx;	
+		alias RegisterServiceCtrlHandlerExW RegisterServiceCtrlHandlerEx;
 	}
 
 	static if (_WIN32_WINNT >= 0x501) {
 		alias ChangeServiceConfig2W ChangeServiceConfig2;
 	}
-	
+
 } else {
 	alias ENUM_SERVICE_STATUSA ENUM_SERVICE_STATUS;
 	alias QUERY_SERVICE_CONFIGA QUERY_SERVICE_CONFIG;
@@ -415,13 +412,13 @@ version (Unicode) {
 		alias SERVICE_FAILURE_ACTIONSA SERVICE_FAILURE_ACTIONS;
 		alias EnumServicesStatusExA EnumServicesStatusEx;
 		alias QueryServiceConfig2A QueryServiceConfig2;
-		alias RegisterServiceCtrlHandlerExA RegisterServiceCtrlHandlerEx;	
+		alias RegisterServiceCtrlHandlerExA RegisterServiceCtrlHandlerEx;
 	}
 
 	static if (_WIN32_WINNT >= 0x501) {
 		alias ChangeServiceConfig2A ChangeServiceConfig2;
 	}
-	
+
 }
 
 alias ENUM_SERVICE_STATUS* LPENUM_SERVICE_STATUS;

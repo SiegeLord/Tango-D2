@@ -9,9 +9,6 @@
 \***********************************************************************/
 module tango.os.windows.tmschema;
 
-//version (build) { pragma(nolink); }
-
-
 /* BUTTON parts */
 enum {
 	BP_PUSHBUTTON = 1,

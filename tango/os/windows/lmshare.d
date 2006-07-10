@@ -8,20 +8,17 @@
 *                       Placed into public domain                       *
 \***********************************************************************/
 module tango.os.windows.lmshare;
-
-//version (build) { pragma(nolink); }
-
 import tango.os.windows.lmcons;
 private import tango.os.windows.windef;
 
 
 private import tango.os.windows.w32api;
 static if (_WIN32_WINNT_ONLY) {
-	//pragma(lib, "netapi.lib");
+	pragma(lib, "netapi.lib");
 }
 /* else {
 // only for WinME, 98, 95.
-	//pragma(lib, "svrapi.lib")
+	pragma(lib, "svrapi.lib")
 }
 */
 

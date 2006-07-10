@@ -8,9 +8,6 @@
 *                       Placed into public domain                       *
 \***********************************************************************/
 module tango.os.windows.sqlucode;
-
-//version (build) { pragma(nolink); }
-
 private import tango.os.windows.sqlext;
 
 const SQL_WCHAR        = -8;

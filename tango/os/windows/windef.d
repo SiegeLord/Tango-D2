@@ -10,9 +10,6 @@
 \***********************************************************************/
 module tango.os.windows.windef;
 
-//version (build) { pragma(nolink); }
-
-
 import tango.os.windows.winnt;
 private import tango.os.windows.w32api;
 
@@ -54,17 +51,12 @@ template min(T) {
 	}
 }
 
-alias ushort USHORT;
-alias USHORT* PUSHORT;
-alias uint ULONG;
-alias ULONG* PULONG;
-
-alias ushort WORD, ATOM;
-alias ushort* PWORD, LPWORD;
 alias ubyte BYTE;
 alias ubyte* PBYTE, LPBYTE;
-alias uint DWORD, UINT, COLORREF;
-alias uint* PDWORD, LPDWORD, PUINT, LPUINT;
+alias ushort USHORT, WORD, ATOM;
+alias ushort* PUSHORT, PWORD, LPWORD;
+alias uint ULONG, DWORD, UINT, COLORREF;
+alias uint* PULONG, PDWORD, LPDWORD, PUINT, LPUINT;
 alias int WINBOOL, BOOL, INT, LONG, HFILE;
 alias int* PWINBOOL, LPWINBOOL, PBOOL, LPBOOL, PINT, LPINT, LPLONG;
 alias float FLOAT;

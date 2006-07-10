@@ -9,9 +9,6 @@
 \***********************************************************************/
 module tango.os.windows.mshtml;
 
-//version (build) { pragma(nolink); }
-
-
 private import tango.os.windows.unknwn;
 private import tango.os.windows.wtypes;
 private import tango.os.windows.oaidl;
@@ -31,35 +28,24 @@ interface IHTMLScreen {};
 interface IHTMLOptionElementFactory {};
 
 
-extern (C) {
-extern IID IID_IHTMLLinkElement;
-extern IID IID_IHTMLImgElement;
-extern IID IID_IHTMLElementCollection;
-extern IID IID_IHTMLDocument;
-extern IID IID_IHTMLDocument2;
-extern IID IID_IHTMLSelectionObject;
-extern IID IID_IHTMLTxtRange;
-extern IID IID_IHTMLElement;
-extern IID IID_IHTMLFramesCollection2;
-extern IID IID_IHTMLWindow2;
-extern IID IID_IHTMLFrameBase;
-extern IID IID_IHTMLFrameBase2;
-extern IID IID_IHTMLFrameBase3;
-extern IID IID_IHTMLBodyElement;
-extern IID IID_IHTMLBodyElement2;
-}
+extern (C) extern const IID
+	IID_IHTMLLinkElement,
+	IID_IHTMLImgElement,
+	IID_IHTMLElementCollection,
+	IID_IHTMLDocument,
+	IID_IHTMLDocument2,
+	IID_IHTMLSelectionObject,
+	IID_IHTMLTxtRange,
+	IID_IHTMLElement,
+	IID_IHTMLFramesCollection2,
+	IID_IHTMLWindow2,
+	IID_IHTMLFrameBase,
+	IID_IHTMLFrameBase2,
+	IID_IHTMLFrameBase3,
+	IID_IHTMLBodyElement,
+	IID_IHTMLBodyElement2;
 
-
-interface IHTMLLinkElement : public IDispatch
-{
-	HRESULT QueryInterface(REFIID,PVOID*);
-	ULONG AddRef();
-	ULONG Release();
-	HRESULT GetTypeInfoCount(UINT*);
-	HRESULT GetTypeInfo(UINT,LCID,LPTYPEINFO*);
-	HRESULT GetIDsOfNames(REFIID,LPOLESTR*,UINT,LCID,DISPID*);
-	HRESULT Invoke(DISPID,REFIID,LCID,WORD,DISPPARAMS*,VARIANT*,EXCEPINFO*,UINT*);
-
+interface IHTMLLinkElement : public IDispatch {
 	HRESULT put_href(BSTR);
 	HRESULT get_href(BSTR*);
 	HRESULT put_rel(BSTR);
@@ -82,16 +68,7 @@ interface IHTMLLinkElement : public IDispatch
 	HRESULT get_media(BSTR*);
 }
 
-interface IHTMLImgElement : public IDispatch
-{
-	HRESULT QueryInterface(REFIID,PVOID*);
-	ULONG AddRef();
-	ULONG Release();
-	HRESULT GetTypeInfoCount(UINT*);
-	HRESULT GetTypeInfo(UINT,LCID,LPTYPEINFO*);
-	HRESULT GetIDsOfNames(REFIID,LPOLESTR*,UINT,LCID,DISPID*);
-	HRESULT Invoke(DISPID,REFIID,LCID,WORD,DISPPARAMS*,VARIANT*,EXCEPINFO*,UINT*);
-
+interface IHTMLImgElement : public IDispatch {
 	HRESULT put_isMap(VARIANT_BOOL);
 	HRESULT get_isMap(VARIANT_BOOL*);
 	HRESULT put_useMap(BSTR);
@@ -142,16 +119,7 @@ interface IHTMLImgElement : public IDispatch
 	HRESULT get_start(BSTR*);
 }
 
-interface IHTMLElementCollection : public IDispatch
-{
-	HRESULT QueryInterface(REFIID,PVOID*);
-	ULONG AddRef();
-	ULONG Release();
-	HRESULT GetTypeInfoCount(UINT*);
-	HRESULT GetTypeInfo(UINT,LCID,LPTYPEINFO*);
-	HRESULT GetIDsOfNames(REFIID,LPOLESTR*,UINT,LCID,DISPID*);
-	HRESULT Invoke(DISPID,REFIID,LCID,WORD,DISPPARAMS*,VARIANT*,EXCEPINFO*,UINT*);
-
+interface IHTMLElementCollection : public IDispatch {
 	HRESULT toString(BSTR*);
 	HRESULT put_length(long);
 	HRESULT get_length(long*);
@@ -160,31 +128,11 @@ interface IHTMLElementCollection : public IDispatch
 	HRESULT tags(VARIANT,IDispatch**);
 }
 
-interface IHTMLDocument : public IDispatch
-{
-	HRESULT QueryInterface(REFIID,PVOID*);
-	ULONG AddRef();
-	ULONG Release();
-	HRESULT GetTypeInfoCount(UINT*);
-	HRESULT GetTypeInfo(UINT,LCID,LPTYPEINFO*);
-	HRESULT GetIDsOfNames(REFIID,LPOLESTR*,UINT,LCID,DISPID*);
-	HRESULT Invoke(DISPID,REFIID,LCID,WORD,DISPPARAMS*,VARIANT*,EXCEPINFO*,UINT*);
-
+interface IHTMLDocument : public IDispatch {
 	HRESULT get_Script(IDispatch**);
 }
 
-interface IHTMLDocument2 : public IHTMLDocument
-{
-	HRESULT QueryInterface(REFIID,PVOID*);
-	ULONG AddRef();
-	ULONG Release();
-	HRESULT GetTypeInfoCount(UINT*);
-	HRESULT GetTypeInfo(UINT,LCID,LPTYPEINFO*);
-	HRESULT GetIDsOfNames(REFIID,LPOLESTR*,UINT,LCID,DISPID*);
-	HRESULT Invoke(DISPID,REFIID,LCID,WORD,DISPPARAMS*,VARIANT*,EXCEPINFO*,UINT*);
-
-	HRESULT get_Script(IDispatch**);
-
+interface IHTMLDocument2 : public IHTMLDocument {
 	HRESULT get_all(LPHTMLELEMENTCOLLECTION*);
 	HRESULT get_body(LPHTMLELEMENT*);
 	HRESULT get_activeElement(LPHTMLELEMENT*);
@@ -295,32 +243,14 @@ interface IHTMLDocument2 : public IHTMLDocument
 	HRESULT createStyleSheet(BSTR,long,LPHTMLSTYLESHEET*);
 }
 
-interface IHTMLSelectionObject : public IDispatch
-{
-	HRESULT QueryInterface(REFIID,PVOID*);
-	ULONG AddRef();
-	ULONG Release();
-	HRESULT GetTypeInfoCount(UINT*);
-	HRESULT GetTypeInfo(UINT,LCID,LPTYPEINFO*);
-	HRESULT GetIDsOfNames(REFIID,LPOLESTR*,UINT,LCID,DISPID*);
-	HRESULT Invoke(DISPID,REFIID,LCID,WORD,DISPPARAMS*,VARIANT*,EXCEPINFO*,UINT*);
-
+interface IHTMLSelectionObject : public IDispatch {
 	HRESULT createRange(IDispatch**);
 	HRESULT empty();
 	HRESULT clear();
 	HRESULT get_type(BSTR*);
 }
 
-interface IHTMLTxtRange : public IDispatch
-{
-	HRESULT QueryInterface(REFIID,PVOID*);
-	ULONG AddRef();
-	ULONG Release();
-	HRESULT GetTypeInfoCount(UINT*);
-	HRESULT GetTypeInfo(UINT,LCID,LPTYPEINFO*);
-	HRESULT GetIDsOfNames(REFIID,LPOLESTR*,UINT,LCID,DISPID*);
-	HRESULT Invoke(DISPID,REFIID,LCID,WORD,DISPPARAMS*,VARIANT*,EXCEPINFO*,UINT*);
-
+interface IHTMLTxtRange : public IDispatch {
 	HRESULT get_htmlText(BSTR*);
 	HRESULT put_text(BSTR);
 	HRESULT get_text(BSTR*);
@@ -353,16 +283,7 @@ interface IHTMLTxtRange : public IDispatch
 	HRESULT execCommandShowHelp(BSTR,VARIANT_BOOL*);
 }
 
-interface IHTMLElement : public IDispatch
-{
-	HRESULT QueryInterface(REFIID,PVOID*);
-	ULONG AddRef();
-	ULONG Release();
-	HRESULT GetTypeInfoCount(UINT*);
-	HRESULT GetTypeInfo(UINT,LCID,LPTYPEINFO*);
-	HRESULT GetIDsOfNames(REFIID,LPOLESTR*,UINT,LCID,DISPID*);
-	HRESULT Invoke(DISPID,REFIID,LCID,WORD,DISPPARAMS*,VARIANT*,EXCEPINFO*,UINT*);
-
+interface IHTMLElement : public IDispatch {
 	HRESULT setAttribute(BSTR,VARIANT,long);
 	HRESULT getAttribute(BSTR,long,VARIANT*);
 	HRESULT removeAttribute(BSTR,long,VARIANT_BOOL*);
@@ -452,32 +373,12 @@ interface IHTMLElement : public IDispatch
 	HRESULT get_all(IDispatch**);
 }
 
-interface IHTMLFramesCollection2 : public IDispatch
-{
-	HRESULT QueryInterface(REFIID,PVOID*);
-	ULONG AddRef();
-	ULONG Release();
-	HRESULT GetTypeInfoCount(UINT*);
-	HRESULT GetTypeInfo(UINT,LCID,LPTYPEINFO*);
-	HRESULT GetIDsOfNames(REFIID,LPOLESTR*,UINT,LCID,DISPID*);
-	HRESULT Invoke(DISPID,REFIID,LCID,WORD,DISPPARAMS*,VARIANT*,EXCEPINFO*,UINT*);
-
+interface IHTMLFramesCollection2 : public IDispatch {
 	HRESULT item(VARIANT*,VARIANT*);
 	HRESULT get_length(long*);
 }
 
-interface IHTMLWindow2 : public IHTMLFramesCollection2
-{
-	HRESULT QueryInterface(REFIID,PVOID*);
-	ULONG AddRef();
-	ULONG Release();
-	HRESULT GetTypeInfoCount(UINT*);
-	HRESULT GetTypeInfo(UINT,LCID,LPTYPEINFO*);
-	HRESULT GetIDsOfNames(REFIID,LPOLESTR*,UINT,LCID,DISPID*);
-	HRESULT Invoke(DISPID,REFIID,LCID,WORD,DISPPARAMS*,VARIANT*,EXCEPINFO*,UINT*);
-	HRESULT item(VARIANT*,VARIANT*);
-	HRESULT get_length(long*);
-
+interface IHTMLWindow2 : public IHTMLFramesCollection2 {
 	HRESULT get_frames(IHTMLFramesCollection2**);
 	HRESULT put_defaultStatus(BSTR);
 	HRESULT get_defaultStatus(BSTR*);
@@ -548,16 +449,7 @@ interface IHTMLWindow2 : public IHTMLFramesCollection2
 	HRESULT get_external(IDispatch**);
 }
 
-interface IHTMLFrameBase : public IDispatch
-{
-	HRESULT QueryInterface(REFIID,PVOID*);
-	ULONG AddRef();
-	ULONG Release();
-	HRESULT GetTypeInfoCount(UINT*);
-	HRESULT GetTypeInfo(UINT,LCID,LPTYPEINFO*);
-	HRESULT GetIDsOfNames(REFIID,LPOLESTR*,UINT,LCID,DISPID*);
-	HRESULT Invoke(DISPID,REFIID,LCID,WORD,DISPPARAMS*,VARIANT*,EXCEPINFO*,UINT*);
-
+interface IHTMLFrameBase : public IDispatch {
 	HRESULT put_src(BSTR);
 	HRESULT get_src(BSTR*);
 	HRESULT put_name(BSTR);
@@ -578,16 +470,7 @@ interface IHTMLFrameBase : public IDispatch
 	HRESULT get_scrolling(BSTR*);
 }
 
-interface IHTMLFrameBase2 : public IDispatch
-{
-	HRESULT QueryInterface(REFIID,PVOID*);
-	ULONG AddRef();
-	ULONG Release();
-	HRESULT GetTypeInfoCount(UINT*);
-	HRESULT GetTypeInfo(UINT,LCID,LPTYPEINFO*);
-	HRESULT GetIDsOfNames(REFIID,LPOLESTR*,UINT,LCID,DISPID*);
-	HRESULT Invoke(DISPID,REFIID,LCID,WORD,DISPPARAMS*,VARIANT*,EXCEPINFO*,UINT*);
-
+interface IHTMLFrameBase2 : public IDispatch {
 	HRESULT get_contentWindow(IHTMLWindow2 **);
 	HRESULT put_onload(VARIANT);
 	HRESULT get_onload(VARIANT*);
@@ -598,30 +481,12 @@ interface IHTMLFrameBase2 : public IDispatch
 	HRESULT get_allowTransparency(VARIANT_BOOL*);
 }
 
-interface IHTMLFrameBase3 : public IDispatch
-{
-	HRESULT QueryInterface(REFIID,PVOID*);
-	ULONG AddRef();
-	ULONG Release();
-	HRESULT GetTypeInfoCount(UINT*);
-	HRESULT GetTypeInfo(UINT,LCID,LPTYPEINFO*);
-	HRESULT GetIDsOfNames(REFIID,LPOLESTR*,UINT,LCID,DISPID*);
-	HRESULT Invoke(DISPID,REFIID,LCID,WORD,DISPPARAMS*,VARIANT*,EXCEPINFO*,UINT*);
-
+interface IHTMLFrameBase3 : public IDispatch {
 	HRESULT put_longDesc(BSTR);
 	HRESULT get_longDesc(BSTR*);
 }
 
-interface IHTMLBodyElement : public IDispatch
-{
-	HRESULT QueryInterface(REFIID,PVOID*);
-	ULONG AddRef();
-	ULONG Release();
-	HRESULT GetTypeInfoCount(UINT*);
-	HRESULT GetTypeInfo(UINT,LCID,LPTYPEINFO*);
-	HRESULT GetIDsOfNames(REFIID,LPOLESTR*,UINT,LCID,DISPID*);
-	HRESULT Invoke(DISPID,REFIID,LCID,WORD,DISPPARAMS*,VARIANT*,EXCEPINFO*,UINT*);
-
+interface IHTMLBodyElement : public IDispatch {
 	HRESULT put_background(BSTR);
 	HRESULT get_background(BSTR*);
 	HRESULT put_bgProperties(BSTR);
@@ -659,16 +524,7 @@ interface IHTMLBodyElement : public IDispatch
 	HRESULT createTextRange(IHTMLTxtRange**);
 }
 
-interface IHTMLBodyElement2 : public IDispatch
-{
-	HRESULT QueryInterface(REFIID,PVOID*);
-	ULONG AddRef();
-	ULONG Release();
-	HRESULT GetTypeInfoCount(UINT*);
-	HRESULT GetTypeInfo(UINT,LCID,LPTYPEINFO*);
-	HRESULT GetIDsOfNames(REFIID,LPOLESTR*,UINT,LCID,DISPID*);
-	HRESULT Invoke(DISPID,REFIID,LCID,WORD,DISPPARAMS*,VARIANT*,EXCEPINFO*,UINT*);
-
+interface IHTMLBodyElement2 : public IDispatch {
 	HRESULT put_onbeforeprint(VARIANT);
 	HRESULT get_onbeforeprint(VARIANT*);
 	HRESULT put_onafterprint(VARIANT);

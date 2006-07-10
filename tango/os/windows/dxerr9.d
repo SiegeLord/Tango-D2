@@ -1,8 +1,5 @@
 module tango.os.windows.dxerr9;
 
-//version (build) { pragma(nolink); }
-
-
 /*
 	dxerr9.h - Header file for the DirectX 9 Error API
 

@@ -21,30 +21,19 @@
 */
 module tango.os.windows.windows;
 
-//version (build) { pragma(nolink); }
-
-
 import tango.os.windows.w32api;
-import tango.os.windows.windef;
-import tango.os.windows.wincon;
-import tango.os.windows.winbase;
-import tango.os.windows.wingdi;
-import tango.os.windows.winuser;
-import tango.os.windows.winnls;
-import tango.os.windows.winver;
-import tango.os.windows.winnetwk;
+import tango.os.windows.core;
 
 // We can't use static if for imports, build gets confused.
 // static if (_WIN32_WINNT_ONLY) import tango.os.windows.winsvc;
 version (Windows2003) {
 	import tango.os.windows.winsvc;
-} else version (WindowsXP) { 
+} else version (WindowsXP) {
 	import tango.os.windows.winsvc;
 } else version (WindowsNTonly) {
 	import tango.os.windows.winsvc;
 }
 
-//#ifndef WIN32_LEAN_AND_MEAN
 import tango.os.windows.cderr;
 import tango.os.windows.dde;
 import tango.os.windows.ddeml;
@@ -61,7 +50,7 @@ import tango.os.windows.winspool;
 
 // Select correct version of winsock.  Importing the incorrect
 // module will cause a static assert to prevent problems later on.
-version( Win32_Winsock2 )
+version (Win32_Winsock2)
 	import tango.os.windows.winsock2;
 else
 	import tango.os.windows.winsock;
@@ -80,4 +69,3 @@ else
 +/
 
 import tango.os.windows.ole2;
-// #endif /* WIN32_LEAN_AND_MEAN */

@@ -13,9 +13,6 @@
 
 module tango.os.windows.oleidl;
 
-//version (build) { pragma(nolink); }
-
-
 private import tango.os.windows.unknwn;
 private import tango.os.windows.wtypes;
 private import tango.os.windows.objidl;

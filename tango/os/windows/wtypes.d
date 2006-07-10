@@ -9,9 +9,6 @@
 \***********************************************************************/
 module tango.os.windows.wtypes;
 
-//version (build) { pragma(nolink); }
-
-
 import tango.os.windows.rpc;
 import tango.os.windows.rpcndr;
 
@@ -24,31 +21,31 @@ alias GUID_NULL CLSID_NULL;
 const ROTFLAGS_REGISTRATIONKEEPSALIVE = 0x01;
 const ROTFLAGS_ALLOWANYCLIENT         = 0x02;
 
- /* also in winsock2.h */
-struct BLOB{ 
-	ULONG	cbSize;
-	BYTE	*pBlobData;
+// also in winsock2.h
+struct BLOB {
+	ULONG cbSize;
+	BYTE* pBlobData;
 }
-alias BLOB * PBLOB, LPBLOB;
+alias BLOB* PBLOB, LPBLOB;
 
-enum DVASPECT{
+enum DVASPECT {
 	DVASPECT_CONTENT   = 1,
 	DVASPECT_THUMBNAIL = 2,
 	DVASPECT_ICON      = 4,
 	DVASPECT_DOCPRINT  = 8
 }
 
-enum DVASPECT2{
+enum DVASPECT2 {
 	DVASPECT_OPAQUE      = 16,
 	DVASPECT_TRANSPARENT = 32
 }
 
-enum STATFLAG{
+enum STATFLAG {
 	STATFLAG_DEFAULT = 0,
 	STATFLAG_NONAME  = 1
 }
 
-enum MEMCTX{
+enum MEMCTX {
 	MEMCTX_LOCAL = 0,
 	MEMCTX_TASK,
 	MEMCTX_SHARED,
@@ -57,7 +54,7 @@ enum MEMCTX{
 	MEMCTX_SAME = -2
 }
 
-enum MSHCTX{
+enum MSHCTX {
 	MSHCTX_LOCAL = 0,
 	MSHCTX_NOSHAREDMEM,
 	MSHCTX_DIFFERENTMACHINE,
@@ -65,7 +62,7 @@ enum MSHCTX{
 	MSHCTX_CROSSCTX
 }
 
-enum CLSCTX{
+enum CLSCTX {
 	CLSCTX_INPROC_SERVER   = 1,
 	CLSCTX_INPROC_HANDLER  = 2,
 	CLSCTX_LOCAL_SERVER    = 4,
@@ -73,13 +70,13 @@ enum CLSCTX{
 	CLSCTX_REMOTE_SERVER   = 16
 }
 
-enum MSHLFLAGS{
+enum MSHLFLAGS {
 	MSHLFLAGS_NORMAL,
 	MSHLFLAGS_TABLESTRONG,
 	MSHLFLAGS_TABLEWEAK
 }
 
-struct FLAGGED_WORD_BLOB{
+struct FLAGGED_WORD_BLOB {
 	uint fFlags;
 	uint clSize;
 	ushort asData[1];
@@ -114,24 +111,24 @@ struct  BSTRBLOB {
 	ULONG cbSize;
 	PBYTE pData;
 }
-alias BSTRBLOB * LPBSTRBLOB;
+alias BSTRBLOB* LPBSTRBLOB;
 
 // Used only in the PROPVARIANT structure
 // According to the 2003 SDK, this should be in propidl.h, not here.
-struct CLIPDATA{
+struct CLIPDATA {
 	ULONG cbSize;
 	int ulClipFmt;
 	PBYTE pClipData;
 }
 
-enum STGC{
+enum STGC {
 	STGC_DEFAULT,
 	STGC_OVERWRITE,
 	STGC_ONLYIFCURRENT,
 	STGC_DANGEROUSLYCOMMITMERELYTODISKCACHE
 }
 
-enum STGMOVE{
+enum STGMOVE {
 	STGMOVE_MOVE,
 	STGMOVE_COPY,
 	STGMOVE_SHALLOWCOPY
@@ -191,30 +188,30 @@ enum VARENUM {
 	VT_TYPEMASK      = 0xfff
 };
 
-struct BYTE_SIZEDARR{
+struct BYTE_SIZEDARR {
 	uint clSize;
-	byte *pData;
+	byte* pData;
 }
 
-struct WORD_SIZEDARR{
+struct WORD_SIZEDARR {
 	uint clSize;
-	ushort *pData;
+	ushort* pData;
 }
 
-struct DWORD_SIZEDARR{
+struct DWORD_SIZEDARR {
 uint clSize;
-uint *pData;
+uint* pData;
 }
 
-struct HYPER_SIZEDARR{
+struct HYPER_SIZEDARR {
 	uint clSize;
-	hyper *pData;
+	hyper* pData;
 }
 
 alias double DOUBLE;
 
 
-struct DECIMAL{
+struct DECIMAL {
 	USHORT wReserved;
 	union {
 		struct {

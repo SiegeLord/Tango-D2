@@ -12,10 +12,7 @@
 // so they are implemented as templates.
 
 module tango.os.windows.mmsystem;
-
-//version (build) { pragma(nolink); }
-
-//pragma(lib, "winmm.lib");
+pragma(lib, "winmm.lib");
 private import tango.os.windows.w32api;
 private import tango.os.windows.winver;
 private import tango.os.windows.windef;
@@ -509,7 +506,7 @@ enum  : DWORD {
 	JOY_POVRIGHT    = 9000
 }
 
-const DWORD 
+const DWORD
 	JOY_RETURNX        = 0x00000001,
 	JOY_RETURNY        = 0x00000002,
 	JOY_RETURNZ        = 0x00000004,
@@ -667,7 +664,7 @@ enum {
 	MCIERR_SET_DRIVE,
 	MCIERR_DEVICE_LENGTH,
 	MCIERR_DEVICE_ORD_LENGTH,
-	MCIERR_NO_INTEGER, // = MCIERR_BASE + 56 
+	MCIERR_NO_INTEGER, // = MCIERR_BASE + 56
 	MCIERR_WAVE_OUTPUTSINUSE = MCIERR_BASE + 64,
 	MCIERR_WAVE_SETOUTPUTINUSE,
 	MCIERR_WAVE_INPUTSINUSE,
@@ -1486,7 +1483,7 @@ alias MIXERCONTROLDETAILS_SIGNED* PMIXERCONTROLDETAILS_SIGNED, LPMIXERCONTROLDET
 
 struct MIXERCONTROLDETAILS_UNSIGNED {
 	DWORD dwValue;
-} 
+}
 alias MIXERCONTROLDETAILS_UNSIGNED* PMIXERCONTROLDETAILS_UNSIGNED, LPMIXERCONTROLDETAILS_UNSIGNED;
 
 alias void function (UINT,UINT,DWORD,DWORD,DWORD) LPTIMECALLBACK;
@@ -2142,7 +2139,7 @@ struct MCI_OVLY_LOAD_PARMSW {
 }
 alias MCI_OVLY_LOAD_PARMSW* PMCI_OVLY_LOAD_PARMSW, LPMCI_OVLY_LOAD_PARMSW;
 
-version(Unicode) {	
+version(Unicode) {
 	alias WAVEOUTCAPSW WAVEOUTCAPS;
 	alias WAVEINCAPSW WAVEINCAPS;
 	alias MIDIOUTCAPSW MIDIOUTCAPS;
@@ -2166,7 +2163,7 @@ version(Unicode) {
 	alias MCI_OVLY_OPEN_PARMSW MCI_OVLY_OPEN_PARMS;
 	alias MCI_OVLY_WINDOW_PARMSW MCI_OVLY_WINDOW_PARMS;
 	alias MCI_OVLY_SAVE_PARMSW MCI_OVLY_SAVE_PARMS;
-	
+
 	alias sndPlaySoundW sndPlaySound;
 	alias PlaySoundW PlaySound;
 	alias waveOutGetDevCapsW waveOutGetDevCaps;
@@ -2217,7 +2214,7 @@ version(Unicode) {
 	alias MCI_OVLY_OPEN_PARMSA MCI_OVLY_OPEN_PARMS;
 	alias MCI_OVLY_WINDOW_PARMSA MCI_OVLY_WINDOW_PARMS;
 	alias MCI_OVLY_SAVE_PARMSA MCI_OVLY_SAVE_PARMS;
-	
+
 	alias sndPlaySoundA sndPlaySound;
 	alias PlaySoundA PlaySound;
 	alias waveOutGetDevCapsA waveOutGetDevCaps;

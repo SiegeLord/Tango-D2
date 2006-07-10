@@ -9,9 +9,6 @@
 \***********************************************************************/
 module tango.os.windows.rpcnterr;
 
-//version (build) { pragma(nolink); }
-
-
 import tango.os.windows.winerror;
 
 enum : uint {

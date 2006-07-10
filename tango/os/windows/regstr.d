@@ -9,9 +9,6 @@
 \***********************************************************************/
 // TODO: fix possible conflict with shloj. Sort out NEC_98 issue.
 module tango.os.windows.regstr;
-
-//version (build) { pragma(nolink); }
-
 private import tango.os.windows.windef;
 
 const REGSTR_MAX_VALUE_LENGTH = 256;
@@ -132,7 +129,7 @@ const APMMENUSUSPEND_ENABLED  = 1;
 const APMMENUSUSPEND_UNDOCKED = 2;
 const APMMENUSUSPEND_NOCHANGE = 128;
 
-const TCHAR[] 
+const TCHAR[]
 	REGSTR_KEY_CLASS = "Class",
 	REGSTR_KEY_CONFIG = "Config",
 	REGSTR_KEY_ENUM = "Enum",
@@ -194,7 +191,7 @@ const TCHAR[]
 	REGSTR_PATH_WINBOOT = "System\\CurrentControlSet\\Control\\WinBoot",
 	REGSTR_PATH_INSTALLEDFILES = "System\\CurrentControlSet\\Control\\InstalledFiles",
 	REGSTR_PATH_VMM32FILES = "System\\CurrentControlSet\\Control\\VMM32Files",
-	
+
 	REGSTR_VAL_BITSPERPIXEL = "BitsPerPixel",
 	REGSTR_VAL_RESOLUTION = "Resolution",
 	REGSTR_VAL_DPILOGICALX = "DPILogicalX",
@@ -229,7 +226,7 @@ const TCHAR[]
 	REGSTR_VAL_FIRSTINSTALLDATETIME = "FirstInstallDateTime",
 	REGSTR_VAL_INSTALLTYPE = "InstallType",
 	REGSTR_VAL_WRAPPER = "Wrapper",
-	
+
 	REGSTR_KEY_SETUP = "\\Setup",
 	REGSTR_VAL_BOOTDIR = "BootDir",
 	REGSTR_VAL_WINBOOTDIR = "WinbootDir",
@@ -251,7 +248,7 @@ const TCHAR[]
 	REGSTR_VAL_AUTOEXEC = "Autoexec.Bat",
 	REGSTR_VAL_STDDOSOPTION = "StdOption",
 	REGSTR_VAL_DOSOPTTIP = "TipText",
-	
+
 	REGSTR_VAL_DOSPAGER = "DOSPager",
 	REGSTR_VAL_VXDGROUPS = "VXDGroups",
 	REGSTR_VAL_VPOWERDFLAGS = "Flags",
@@ -367,7 +364,7 @@ const TCHAR[]
 	REGSTR_VAL_PCI = "PCI",
 	REGSTR_PCI_OPTIONS = "Options",
 	REGSTR_PCI_DUAL_IDE = "PCIDualIDE",
-	
+
 	REGSTR_KEY_CRASHES = "Crashes",
 	REGSTR_KEY_DANGERS = "Dangers",
 	REGSTR_KEY_DETMODVARS = "DetModVars",
@@ -429,7 +426,7 @@ const TCHAR[]
 	REGSTR_MACHTYPE_ATT_PC = "AT&T PC",
 	REGSTR_MACHTYPE_ZENITH_PC = "Zenith PC",
 	REGSTR_VAL_APMMENUSUSPEND = "APMMenuSuspend",
-	
+
 	REGSTR_VAL_BUSTYPE = "BusType",
 	REGSTR_VAL_CPU = "CPU",
 	REGSTR_VAL_NDP = "NDP",
@@ -539,7 +536,7 @@ const TCHAR[]
 	REGSTR_KEY_USER = "User",
 	REGSTR_VAL_DPI = "dpi",
 	REGSTR_VAL_PCICOPTIONS = "PCICOptions",
-	
+
 	REGSTR_VAL_PCICIRQMAP = "PCICIRQMap",
 	REGSTR_PATH_APPEARANCE = "Control Panel\\Appearance",
 	REGSTR_PATH_LOOKSCHEMES = "Control Panel\\Appearance\\Schemes",
@@ -802,7 +799,7 @@ const TCHAR[]
 // #define	REGSTR_VAL_EISA_SIMULATE_INT15	TEXT("NESASimulateInt15")
 // #endif
 
-struct DSKTLSYSTEMTIME{
+struct DSKTLSYSTEMTIME {
 	WORD wYear;
 	WORD wMonth;
 	WORD wDayOfWeek;

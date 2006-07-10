@@ -8,10 +8,7 @@
 *                       Placed into public domain                       *
 \***********************************************************************/
 module tango.os.windows.lzexpand;
-
-//version (build) { pragma(nolink); }
-
-//pragma(lib, "lz32.lib");
+pragma(lib, "lz32.lib");
 private import tango.os.windows.windef;
 private import tango.os.windows.winbase;
 

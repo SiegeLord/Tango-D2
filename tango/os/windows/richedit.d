@@ -8,18 +8,16 @@
 *                       Placed into public domain                       *
 \***********************************************************************/
 module tango.os.windows.richedit;
-
-//version (build) { pragma(nolink); }
-
 private import tango.os.windows.windef;
 private import tango.os.windows.winuser;
 private import tango.os.windows.wingdi; // for LF_FACESIZE
+
 align(4):
 
 version(Unicode) {
-	const wchar [] RICHEDIT_CLASS = "RichEdit20W";
+	const wchar[] RICHEDIT_CLASS = "RichEdit20W";
 } else {
-	const char [] RICHEDIT_CLASS  = "RichEdit20A";
+	const char[] RICHEDIT_CLASS  = "RichEdit20A";
 }
 
 const RICHEDIT_CLASS10A = "RICHEDIT";
@@ -29,7 +27,7 @@ const TCHAR []
 	CF_RTFNOOBJS = "Rich Text Format Without Objects",
 	CF_RETEXTOBJ = "RichEdit Text and Objects";
 
-const DWORD 
+const DWORD
 	CFM_BOLD        = 1,
 	CFM_ITALIC      = 2,
 	CFM_UNDERLINE   = 4,
@@ -53,10 +51,11 @@ const DWORD
 	CFE_SUBSCRIPT   = 0x00010000,
 	CFE_SUPERSCRIPT = 0x00020000,
 	CFE_AUTOCOLOR   = 0x40000000;
-	
-const CFM_EFFECTS = CFM_BOLD | CFM_ITALIC | CFM_UNDERLINE | CFM_COLOR | CFM_STRIKEOUT | CFE_PROTECTED | CFM_LINK;
 
-// flags for EM_SETIMEOPTIONS 
+const CFM_EFFECTS = CFM_BOLD | CFM_ITALIC | CFM_UNDERLINE | CFM_COLOR
+  | CFM_STRIKEOUT | CFE_PROTECTED | CFM_LINK;
+
+// flags for EM_SETIMEOPTIONS
 const LPARAM
 	IMF_FORCENONE         = 1,
 	IMF_FORCEENABLE       = 2,
@@ -310,7 +309,7 @@ struct CHARFORMATA {
 	BYTE bPitchAndFamily;
 	char szFaceName[LF_FACESIZE];
 }
-struct CHARFORMATW{
+struct CHARFORMATW {
 	UINT cbSize;
 	DWORD dwMask;
 	DWORD dwEffects;
@@ -371,7 +370,7 @@ struct CHARRANGE {
 	LONG cpMax;
 }
 
-struct COMPCOLOR{
+struct COMPCOLOR {
 	COLORREF crText;
 	COLORREF crBackground;
 	DWORD dwEffects;
@@ -387,13 +386,13 @@ struct EDITSTREAM {
 	EDITSTREAMCALLBACK pfnCallback;
 }
 
-struct ENCORRECTTEXT{
+struct ENCORRECTTEXT {
 	NMHDR nmhdr;
 	CHARRANGE chrg;
 	WORD seltyp;
 }
 
-struct ENDROPFILES{
+struct ENDROPFILES {
 	NMHDR nmhdr;
 	HANDLE hDrop;
 	LONG cp;
@@ -415,7 +414,7 @@ struct ENOLEOPFAILED {
 	HRESULT hr;
 }
 
-struct ENPROTECTED{
+struct ENPROTECTED {
 	NMHDR nmhdr;
 	UINT msg;
 	WPARAM wParam;
@@ -424,13 +423,13 @@ struct ENPROTECTED{
 }
 alias ENPROTECTED* LPENPROTECTED;
 
-struct ENSAVECLIPBOARD{
+struct ENSAVECLIPBOARD {
 	NMHDR nmhdr;
 	LONG cObjectCount;
 	LONG cch;
 }
 
-struct FINDTEXTA{
+struct FINDTEXTA {
 	CHARRANGE chrg;
 	LPSTR lpstrText;
 }
@@ -440,13 +439,13 @@ struct FINDTEXTW {
 	LPWSTR lpstrText;
 }
 
-struct FINDTEXTEXA{
+struct FINDTEXTEXA {
 	CHARRANGE chrg;
 	LPSTR lpstrText;
 	CHARRANGE chrgText;
 }
 
-struct FINDTEXTEXW{
+struct FINDTEXTEXW {
 	CHARRANGE chrg;
 	LPWSTR lpstrText;
 	CHARRANGE chrgText;
@@ -460,14 +459,14 @@ struct FORMATRANGE {
 	CHARRANGE chrg;
 }
 
-struct MSGFILTER{
+struct MSGFILTER {
 	NMHDR nmhdr;
 	UINT msg;
 	WPARAM wParam;
 	LPARAM lParam;
 }
 
-struct PARAFORMAT{
+struct PARAFORMAT {
 	UINT cbSize;
 	DWORD dwMask;
 	WORD wNumbering;
@@ -480,7 +479,7 @@ struct PARAFORMAT{
 	LONG rgxTabs[MAX_TAB_STOPS];
 }
 
-struct PARAFORMAT2{
+struct PARAFORMAT2 {
 	UINT cbSize;
 	DWORD dwMask;
 	WORD wNumbering;
@@ -513,17 +512,17 @@ struct SELCHANGE {
 	WORD seltyp;
 }
 
-struct TEXTRANGEA{
+struct TEXTRANGEA {
 	CHARRANGE chrg;
 	LPSTR lpstrText;
 }
 
-struct TEXTRANGEW{
+struct TEXTRANGEW {
 	CHARRANGE chrg;
 	LPWSTR lpstrText;
 }
 
-struct REQRESIZE{
+struct REQRESIZE {
 	NMHDR nmhdr;
 	RECT rc;
 }
@@ -533,7 +532,7 @@ struct REPASTESPECIAL {
 	DWORD dwParam;
 }
 
-struct PUNCTUATION{
+struct PUNCTUATION {
 	UINT iSize;
 	LPSTR szPunctuation;
 }
@@ -580,4 +579,3 @@ version(Unicode) {
 	alias FINDTEXTEXA FINDTEXTEX;
 	alias TEXTRANGEA TEXTRANGE;
 }
-align:

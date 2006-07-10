@@ -10,9 +10,6 @@
 \***********************************************************************/
 module tango.os.windows.accctrl;
 
-//version (build) { pragma(nolink); }
-
-
 private import tango.os.windows.w32api, tango.os.windows.winbase, tango.os.windows.windef;
 
 // FIXME: check types and grouping of constants
@@ -124,7 +121,7 @@ const uint
 	TRUSTEE_ACCESS_ALL        = 0xFFFFFFFF;
 
 const uint
-	NO_INHERITANCE	                   = 0x0,
+	NO_INHERITANCE                     = 0x0,
 	SUB_OBJECTS_ONLY_INHERIT           = 0x1,
 	SUB_CONTAINERS_ONLY_INHERIT        = 0x2,
 	SUB_CONTAINERS_AND_OBJECTS_INHERIT = 0x3,

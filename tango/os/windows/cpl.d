@@ -10,9 +10,6 @@
 \***********************************************************************/
 module tango.os.windows.cpl;
 
-//version (build) { pragma(nolink); }
-
-
 private import tango.os.windows.winuser, tango.os.windows.windef;
 
 enum : uint {

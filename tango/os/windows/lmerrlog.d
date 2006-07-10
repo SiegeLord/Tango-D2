@@ -9,9 +9,6 @@
 \***********************************************************************/
 // COMMENT: This appears to be only for Win16. All functions are deprecated.
 module tango.os.windows.lmerrlog;
-
-//version (build) { pragma(nolink); }
-
 private import tango.os.windows.lmcons;
 private import tango.os.windows.windef;
 private import tango.os.windows.lmaudit; // for LPHLOG
@@ -200,7 +197,7 @@ const NELOG_RplRestoreDatabaseSuccess=(ERRLOG2_BASE+68);
 const NELOG_RplInitRestoredDatabase=(ERRLOG2_BASE+69);
 const NELOG_NetlogonSessionTypeWrong=(ERRLOG2_BASE+70);
 
-struct ERROR_LOG{
+struct ERROR_LOG {
 	DWORD el_len;
 	DWORD el_reserved;
 	DWORD el_time;
@@ -214,9 +211,11 @@ struct ERROR_LOG{
 alias ERROR_LOG* PERROR_LOG, LPERROR_LOG;
 
 extern (Windows) {
-deprecated {
-NET_API_STATUS NetErrorLogClear(LPCWSTR,LPCWSTR,LPBYTE);
-NET_API_STATUS NetErrorLogRead(LPCWSTR,LPWSTR,LPHLOG,DWORD,LPDWORD,DWORD,DWORD,LPBYTE*,DWORD,LPDWORD,LPDWORD);
-NET_API_STATUS NetErrorLogWrite(LPBYTE,DWORD,LPCWSTR,LPBYTE,DWORD,LPBYTE,DWORD,LPBYTE);
-}
+	deprecated {
+		NET_API_STATUS NetErrorLogClear(LPCWSTR, LPCWSTR, LPBYTE);
+		NET_API_STATUS NetErrorLogRead(LPCWSTR, LPWSTR, LPHLOG, DWORD,
+		  LPDWORD, DWORD, DWORD, LPBYTE*, DWORD, LPDWORD, LPDWORD);
+		NET_API_STATUS NetErrorLogWrite(LPBYTE, DWORD, LPCWSTR, LPBYTE,
+		  DWORD, LPBYTE, DWORD, LPBYTE);
+	}
 }

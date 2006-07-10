@@ -10,9 +10,6 @@
 \***********************************************************************/
 module tango.os.windows.dbt;
 
-//version (build) { pragma(nolink); }
-
-
 private import tango.os.windows.windef, tango.os.windows.w32api;
 
 // FIXME: clean up Windows version support
@@ -117,24 +114,24 @@ struct DEV_BROADCAST_PORT_A {
 	DWORD dbcp_size = DEV_BROADCAST_PORT_A.sizeof;
 	DWORD dbcp_devicetype;
 	DWORD dbcp_reserved;
-	char _dbcp_name[1];
-	char* dbcp_name() { return _dbcp_name.ptr; }
+	char  _dbcp_name;
+	char* dbcp_name() { return &_dbcp_name; }
 }
 alias DEV_BROADCAST_PORT_A* PDEV_BROADCAST_PORT_A;
 
 struct DEV_BROADCAST_PORT_W {
-	DWORD dbcp_size = DEV_BROADCAST_PORT_W.sizeof;
-	DWORD dbcp_devicetype;
-	DWORD dbcp_reserved;
-	WCHAR _dbcp_name[1];
-  WCHAR* dbcp_name() { return _dbcp_name.ptr; }
+	DWORD  dbcp_size = DEV_BROADCAST_PORT_W.sizeof;
+	DWORD  dbcp_devicetype;
+	DWORD  dbcp_reserved;
+	WCHAR  _dbcp_name;
+	WCHAR* dbcp_name() { return &_dbcp_name; }
 }
 alias DEV_BROADCAST_PORT_W* PDEV_BROADCAST_PORT_W;
 
 struct DEV_BROADCAST_USERDEFINED {
 	DEV_BROADCAST_HDR dbud_dbh;
-	char _dbud_szName[1];
-	char* dbud_szName() { return _dbud_szName.ptr; }
+	char  _dbud_szName;
+	char* dbud_szName() { return &_dbud_szName; }
 }
 
 struct DEV_BROADCAST_VOLUME {
@@ -159,18 +156,18 @@ static if ((_WIN32_WINDOWS >= 0x0410) || (_WIN32_WINNT >= 0x0500)) {
 		DWORD dbcc_devicetype;
 		DWORD dbcc_reserved;
 		GUID  dbcc_classguid;
-		char  _dbcc_name[1];
-		char* dbcc_name() { return _dbcc_name.ptr; }
+		char  _dbcc_name;
+		char* dbcc_name() { return &_dbcc_name; }
 	}
 	alias DEV_BROADCAST_DEVICEINTERFACE_A* PDEV_BROADCAST_DEVICEINTERFACE_A;
 
 	struct DEV_BROADCAST_DEVICEINTERFACE_W {
-		DWORD dbcc_size = DEV_BROADCAST_DEVICEINTERFACE_W.sizeof;
-		DWORD dbcc_devicetype;
-		DWORD dbcc_reserved;
-		GUID  dbcc_classguid;
-		WCHAR _dbcc_name[1];
-		WCHAR* dbcc_name() { return _dbcc_name.ptr; }
+		DWORD  dbcc_size = DEV_BROADCAST_DEVICEINTERFACE_W.sizeof;
+		DWORD  dbcc_devicetype;
+		DWORD  dbcc_reserved;
+		GUID   dbcc_classguid;
+		WCHAR  _dbcc_name;
+		WCHAR* dbcc_name() { return &_dbcc_name; }
 	}
 	alias DEV_BROADCAST_DEVICEINTERFACE_W* PDEV_BROADCAST_DEVICEINTERFACE_W;
 
@@ -189,8 +186,8 @@ static if ((_WIN32_WINDOWS >= 0x0410) || (_WIN32_WINNT >= 0x0500)) {
 		DWORD  dbch_hdevnotify;
 		GUID   dbch_eventguid;
 		LONG   dbch_nameoffset;
-		BYTE   _dbch_data[1];
-		BYTE*  dbch_data() { return _dbch_data.ptr; }
+		BYTE   _dbch_data;
+		BYTE*  dbch_data() { return &_dbch_data; }
 	}
 	alias DEV_BROADCAST_HANDLE* PDEV_BROADCAST_HANDLE;
 }

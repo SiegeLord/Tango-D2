@@ -10,9 +10,6 @@
 
 module tango.os.windows.rpcdcep;
 
-//version (build) { pragma(nolink); }
-
-
 private import tango.os.windows.w32api;
 private import tango.os.windows.windef;
 private import tango.os.windows.basetyps;
@@ -33,17 +30,17 @@ const TRANSPORT_TYPE_DG=2;
 const TRANSPORT_TYPE_LPC=4;
 const TRANSPORT_TYPE_WMSG=8;
 
-struct RPC_VERSION{
+struct RPC_VERSION {
 	ushort MajorVersion;
 	ushort MinorVersion;
 }
-struct RPC_SYNTAX_IDENTIFIER{
+struct RPC_SYNTAX_IDENTIFIER {
 	GUID SyntaxGUID;
 	RPC_VERSION SyntaxVersion;
 }
 alias RPC_SYNTAX_IDENTIFIER * PRPC_SYNTAX_IDENTIFIER;
 
-struct RPC_MESSAGE{
+struct RPC_MESSAGE {
 	HANDLE Handle;
 	uint DataRepresentation;
 	void *Buffer;
@@ -69,13 +66,13 @@ struct RPC_DISPATCH_TABLE {
 }
 alias RPC_DISPATCH_TABLE * PRPC_DISPATCH_TABLE;
 
-struct RPC_PROTSEQ_ENDPOINT{
+struct RPC_PROTSEQ_ENDPOINT {
 	ubyte *RpcProtocolSequence;
 	ubyte *Endpoint;
 }
 alias RPC_PROTSEQ_ENDPOINT * PRPC_PROTSEQ_ENDPOINT;
 
-struct RPC_SERVER_INTERFACE{
+struct RPC_SERVER_INTERFACE {
 	uint Length;
 	RPC_SYNTAX_IDENTIFIER InterfaceId;
 	RPC_SYNTAX_IDENTIFIER TransferSyntax;
@@ -87,7 +84,7 @@ struct RPC_SERVER_INTERFACE{
 }
 alias RPC_SERVER_INTERFACE * PRPC_SERVER_INTERFACE;
 
-struct RPC_CLIENT_INTERFACE{
+struct RPC_CLIENT_INTERFACE {
 	uint Length;
 	RPC_SYNTAX_IDENTIFIER InterfaceId;
 	RPC_SYNTAX_IDENTIFIER TransferSyntax;
@@ -101,7 +98,7 @@ alias RPC_CLIENT_INTERFACE * PRPC_CLIENT_INTERFACE;
 
 typedef void *I_RPC_MUTEX;
 
-struct RPC_TRANSFER_SYNTAX{
+struct RPC_TRANSFER_SYNTAX {
 	GUID Uuid;
 	ushort VersMajor;
 	ushort VersMinor;

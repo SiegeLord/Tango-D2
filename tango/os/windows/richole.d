@@ -8,9 +8,6 @@
 *                       Placed into public domain                       *
 \***********************************************************************/
 module tango.os.windows.richole;
-
-//version (build) { pragma(nolink); }
-
 private import tango.os.windows.unknwn;
 private import tango.os.windows.windef;
 private import tango.os.windows.ole2;
@@ -52,64 +49,53 @@ enum {
 	RECO_DRAG // = 4
 }
 
-extern (C) {
-extern GUID IID_IRichEditOle;
-extern GUID IID_IRichEditOleCallback;
-}
+extern (C) extern const GUID
+	IID_IRichEditOle,
+	IID_IRichEditOleCallback;
 
 struct REOBJECT {
-	DWORD cbStruct;
-	LONG	cp;
-	CLSID	clsid;
-	LPOLEOBJECT	poleobj;
-	LPSTORAGE	pstg;
-	LPOLECLIENTSITE	polesite;
-	SIZEL	sizel;
-	DWORD	dvaspect;
-	DWORD	dwFlags;
-	DWORD	dwUser;
+	DWORD           cbStruct = REOBJECT.sizeof;
+	LONG            cp;
+	CLSID           clsid;
+	LPOLEOBJECT     poleobj;
+	LPSTORAGE       pstg;
+	LPOLECLIENTSITE polesite;
+	SIZEL           sizel;
+	DWORD           dvaspect;
+	DWORD           dwFlags;
+	DWORD           dwUser;
 }
 
-interface IRichEditOle : public IUnknown
-{
-	HRESULT QueryInterface(REFIID,PVOID*);
-	ULONG AddRef();
-	ULONG Release();
+interface IRichEditOle : public IUnknown {
 	HRESULT GetClientSite(LPOLECLIENTSITE*);
 	LONG GetObjectCount();
 	LONG GetLinkCount();
-	HRESULT GetObject(LONG, REOBJECT*,DWORD);
+	HRESULT GetObject(LONG, REOBJECT*, DWORD);
 	HRESULT InsertObject(REOBJECT*);
-	HRESULT ConvertObject(LONG,REFCLSID,LPCSTR);
-	HRESULT ActivateAs(REFCLSID,REFCLSID);
-	HRESULT SetHostNames(LPCSTR,LPCSTR);
-	HRESULT SetLinkAvailable(LONG,BOOL);
-	HRESULT SetDvaspect(LONG,DWORD);
+	HRESULT ConvertObject(LONG, REFCLSID, LPCSTR);
+	HRESULT ActivateAs(REFCLSID, REFCLSID);
+	HRESULT SetHostNames(LPCSTR, LPCSTR);
+	HRESULT SetLinkAvailable(LONG, BOOL);
+	HRESULT SetDvaspect(LONG, DWORD);
 	HRESULT HandsOffStorage(LONG);
-	HRESULT SaveCompleted(LONG,LPSTORAGE);
+	HRESULT SaveCompleted(LONG, LPSTORAGE);
 	HRESULT InPlaceDeactivate();
 	HRESULT ContextSensitiveHelp(BOOL);
-	HRESULT GetClipboardData(CHARRANGE*,DWORD,LPDATAOBJECT*);
-	HRESULT ImportDataObject(LPDATAOBJECT,CLIPFORMAT,HGLOBAL);
+	HRESULT GetClipboardData(CHARRANGE*, DWORD, LPDATAOBJECT*);
+	HRESULT ImportDataObject(LPDATAOBJECT, CLIPFORMAT, HGLOBAL);
 };
-alias IRichEditOle *LPRICHEDITOLE;
+alias IRichEditOle* LPRICHEDITOLE;
 
-interface IRichEditOleCallback : public IUnknown
-{
-	HRESULT QueryInterface(REFIID,PVOID*);
-	ULONG AddRef();
-	ULONG Release();
+interface IRichEditOleCallback : public IUnknown {
 	HRESULT GetNewStorage(LPSTORAGE*);
-	HRESULT GetInPlaceContext(LPOLEINPLACEFRAME*,LPOLEINPLACEUIWINDOW*,LPOLEINPLACEFRAMEINFO);
+	HRESULT GetInPlaceContext(LPOLEINPLACEFRAME*, LPOLEINPLACEUIWINDOW*, LPOLEINPLACEFRAMEINFO);
 	HRESULT ShowContainerUI(BOOL);
-	HRESULT QueryInsertObject(LPCLSID,LPSTORAGE,LONG);
+	HRESULT QueryInsertObject(LPCLSID, LPSTORAGE, LONG);
 	HRESULT DeleteObject(LPOLEOBJECT);
-	HRESULT QueryAcceptData(LPDATAOBJECT,CLIPFORMAT*,DWORD,BOOL,HGLOBAL);
+	HRESULT QueryAcceptData(LPDATAOBJECT, CLIPFORMAT*, DWORD, BOOL, HGLOBAL);
 	HRESULT ContextSensitiveHelp(BOOL);
-	HRESULT GetClipboardData(CHARRANGE*,DWORD,LPDATAOBJECT*);
-	HRESULT GetDragDropEffect(BOOL,DWORD,PDWORD);
-	HRESULT GetContextMenu(WORD,LPOLEOBJECT,CHARRANGE*,HMENU*);
+	HRESULT GetClipboardData(CHARRANGE*, DWORD, LPDATAOBJECT*);
+	HRESULT GetDragDropEffect(BOOL, DWORD, PDWORD);
+	HRESULT GetContextMenu(WORD, LPOLEOBJECT, CHARRANGE*, HMENU*);
 };
-alias IRichEditOleCallback * LPRICHEDITOLECALLBACK;
-
-align:
+alias IRichEditOleCallback* LPRICHEDITOLECALLBACK;

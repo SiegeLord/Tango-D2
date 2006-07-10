@@ -10,9 +10,6 @@
 \***********************************************************************/
 module tango.os.windows.ocidl;
 
-//version (build) { pragma(nolink); }
-
-
 private import tango.os.windows.ole2;
 private import tango.os.windows.wingdi; // for TEXTMETRICW
 private import tango.os.windows.winuser; // for LPMSG
@@ -69,13 +66,13 @@ enum READYSTATE {
 }
 
 enum PROPBAG2_TYPE {
-	PROPBAG2_TYPE_UNDEFINED	= 0,
-	PROPBAG2_TYPE_DATA = 1,
-	PROPBAG2_TYPE_URL = 2,
-	PROPBAG2_TYPE_OBJECT = 3,
-	PROPBAG2_TYPE_STREAM = 4,
-	PROPBAG2_TYPE_STORAGE = 5,
-	PROPBAG2_TYPE_MONIKER = 6
+	PROPBAG2_TYPE_UNDEFINED,
+	PROPBAG2_TYPE_DATA,
+	PROPBAG2_TYPE_URL,
+	PROPBAG2_TYPE_OBJECT,
+	PROPBAG2_TYPE_STREAM,
+	PROPBAG2_TYPE_STORAGE,
+	PROPBAG2_TYPE_MONIKER // = 6
 }
 
 struct PROPBAG2 {

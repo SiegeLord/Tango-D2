@@ -10,9 +10,6 @@
 \***********************************************************************/
 module tango.os.windows.d3d9types;
 
-//version (build) { pragma(nolink); }
-
-
 private import tango.os.windows.windef;
 
 // FIXME: check types and grouping of constants
@@ -67,10 +64,10 @@ const D3DCS_PLANE2 = 0x0100;
 const D3DCS_PLANE3 = 0x0200;
 const D3DCS_PLANE4 = 0x0400;
 const D3DCS_PLANE5 = 0x0800;
-const D3DCS_ALL	   = 0x0FFF;
+const D3DCS_ALL    = 0x0FFF;
 
 // FIXME: what's this?
-//#define D3DDECL_END()	{0xff,0,D3DDECLTYPE_UNUSED,0,0,0}
+//#define D3DDECL_END()  {0xff,0,D3DDECLTYPE_UNUSED,0,0,0}
 
 const D3DDP_MAXTEXCOORD   = 8;
 const D3DPV_DONOTCOPYDATA = 1;
@@ -201,8 +198,8 @@ const uint D3DRENDERSTATE_WRAPBIAS = 128;
 
 // FIXME: what are these?
 /+
-#define D3DSINCOSCONST1	-1.5500992e-006f, -2.1701389e-005f, 0.0026041667f, 0.00026041668f
-#define D3DSINCOSCONST2	-0.020833334f, -0.12500000f, 1.0f, 0.50000000f
+#define D3DSINCOSCONST1  -1.5500992e-006f, -2.1701389e-005f, 0.0026041667f, 0.00026041668f
+#define D3DSINCOSCONST2  -0.020833334f, -0.12500000f, 1.0f, 0.50000000f
 +/
 
 const D3DSP_OPCODESPECIFICCONTROL_MASK  = 0x00ff0000;

@@ -13,9 +13,6 @@
 // # do we need the proxies that are defined in this file?
 module tango.os.windows.objidl;
 
-//version (build) { pragma(nolink); }
-
-
 import tango.os.windows.unknwn;
 import tango.os.windows.objfwd;
 private import tango.os.windows.oleidl;
@@ -140,9 +137,9 @@ enum EXTCONN {
 }
 
 struct MULTI_QI {
-	IID* pIID;
+	IID*      pIID;
 	IUnknown* pItf;
-	HRESULT	hr;
+	HRESULT   hr;
 }
 
 struct AUTH_IDENTITY {

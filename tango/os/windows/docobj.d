@@ -8,9 +8,6 @@
 *                       Placed into public domain                       *
 \***********************************************************************/
 module tango.os.windows.docobj;
-
-//version (build) { pragma(nolink); }
-
 private import tango.os.windows.unknwn;
 private import tango.os.windows.wtypes;
 private import tango.os.windows.oleidl;
@@ -72,14 +69,14 @@ enum OLECMDEXECOPT {
 	OLECMDEXECOPT_SHOWHELP = 3
 }
 
-struct OLECMDTEXT{
+struct OLECMDTEXT {
 	DWORD cmdtextf;
 	ULONG cwActual;
 	ULONG cwBuf;
 	wchar rgwz[1];
 }
 
-struct OLECMD{
+struct OLECMD {
 	ULONG cmdID;
 	DWORD cmdf;
 }
@@ -87,74 +84,50 @@ struct OLECMD{
 alias IOleInPlaceSite* LPOLEINPLACESITE;
 alias IEnumOleDocumentViews* LPENUMOLEDOCUMENTVIEWS;
 
-extern (C) {
-extern IID IID_IContinueCallback;
-extern IID IID_IEnumOleDocumentViews;
-extern IID IID_IPrint;
-extern IID IID_IOleDocumentView;
-extern IID IID_IOleDocument;
-extern IID IID_IOleCommandTarget;
-extern IID IID_IOleDocumentSite;
-}
+extern (C) extern const IID
+	IID_IContinueCallback,
+	IID_IEnumOleDocumentViews,
+	IID_IPrint,
+	IID_IOleDocumentView,
+	IID_IOleDocument,
+	IID_IOleCommandTarget,
+	IID_IOleDocumentSite;
 
-interface IOleDocumentView : public IUnknown
-{
-	HRESULT QueryInterface(REFIID,PVOID*);
-	ULONG AddRef();
-	ULONG Release();
 
+interface IOleDocumentView : public IUnknown {
 	HRESULT SetInPlaceSite(LPOLEINPLACESITE);
 	HRESULT GetInPlaceSite(LPOLEINPLACESITE*);
 	HRESULT GetDocument(IUnknown**);
 	HRESULT SetRect(LPRECT);
 	HRESULT GetRect(LPRECT);
-	HRESULT SetRectComplex(LPRECT,LPRECT,LPRECT,LPRECT);
+	HRESULT SetRectComplex(LPRECT, LPRECT, LPRECT, LPRECT);
 	HRESULT Show(BOOL);
 	HRESULT UIActivate(BOOL);
 	HRESULT Open();
 	HRESULT Close(DWORD);
 	HRESULT SaveViewState(IStream*);
 	HRESULT ApplyViewState(IStream*);
-	HRESULT Clone(LPOLEINPLACESITE,IOleDocumentView**);
+	HRESULT Clone(LPOLEINPLACESITE, IOleDocumentView**);
 }
 
-interface IEnumOleDocumentViews : public IUnknown
-{
-	  HRESULT QueryInterface(REFIID,PVOID*);
-	  ULONG AddRef();
-	  ULONG Release();
-	  HRESULT Next(ULONG,IOleDocumentView*,ULONG*);
+interface IEnumOleDocumentViews : public IUnknown {
+	  HRESULT Next(ULONG, IOleDocumentView*, ULONG*);
 	  HRESULT Skip(ULONG);
 	  HRESULT Reset();
 	  HRESULT Clone(IEnumOleDocumentViews**);
 }
 
-interface IOleDocument : public IUnknown
-{
-	HRESULT QueryInterface(REFIID,PVOID*);
-	ULONG AddRef();
-	ULONG Release();
-
-	HRESULT CreateView(LPOLEINPLACESITE,IStream*,DWORD,IOleDocumentView**);
+interface IOleDocument : public IUnknown {
+	HRESULT CreateView(LPOLEINPLACESITE, IStream*, DWORD, IOleDocumentView**);
 	HRESULT GetDocMiscStatus(DWORD*);
-	HRESULT EnumViews(LPENUMOLEDOCUMENTVIEWS*,IOleDocumentView**);
+	HRESULT EnumViews(LPENUMOLEDOCUMENTVIEWS*, IOleDocumentView**);
 }
 
-interface IOleCommandTarget : public IUnknown
-{
-	HRESULT QueryInterface(REFIID,PVOID*);
-	ULONG AddRef();
-	ULONG Release();
-
-	HRESULT QueryStatus( GUID*,ULONG,OLECMD*,OLECMDTEXT*);
-	HRESULT Exec( GUID*,DWORD,DWORD,VARIANTARG*,VARIANTARG*);
+interface IOleCommandTarget : public IUnknown {
+	HRESULT QueryStatus(GUID*, ULONG, OLECMD*, OLECMDTEXT*);
+	HRESULT Exec(GUID*, DWORD, DWORD, VARIANTARG*, VARIANTARG*);
 }
 
-interface IOleDocumentSite : public IUnknown
-{
-	HRESULT QueryInterface(REFIID,PVOID*);
-	ULONG AddRef();
-	ULONG Release();
-
+interface IOleDocumentSite : public IUnknown {
 	HRESULT ActivateMe(IOleDocumentView*);
 }

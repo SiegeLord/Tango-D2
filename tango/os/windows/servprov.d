@@ -8,9 +8,6 @@
 *                       Placed into public domain                       *
 \***********************************************************************/
 module tango.os.windows.servprov;
-
-//version (build) { pragma(nolink); }
-
 private import tango.os.windows.unknwn;
 private import tango.os.windows.wtypes;
 
