@@ -62,9 +62,9 @@ struct flock
     pid_t   l_pid;
 }
 
-int creat(char *, mode_t);
+int creat(char*, mode_t);
 int fcntl(int, int, ...);
-int open(char *, int, ...);
+int open(char*, int, ...);
 */
 version( linux )
 {
@@ -164,9 +164,9 @@ else version( darwin )
     }
 }
 
-int creat(char *, mode_t);
+int creat(char*, mode_t);
 int fcntl(int, int, ...);
-int open(char *, int, ...);
+int open(char*, int, ...);
 
 //
 // Advisory Information (ADV)
