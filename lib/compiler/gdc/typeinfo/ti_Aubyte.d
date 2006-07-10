@@ -65,7 +65,7 @@ class TypeInfo_Ah : TypeInfo
 	char[] s1 = *cast(char[]*)p1;
 	char[] s2 = *cast(char[]*)p2;
 
-	return cmp(s1, s2);
+	return stringCompare (s1, s2);
     }
 
     size_t tsize()

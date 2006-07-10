@@ -9,11 +9,20 @@
 
 private
 {
-    import object;
-    //import tango.stdc.stddef;
+    import util.console;
+
+    import tango.stdc.stddef;
     import tango.stdc.stdlib;
     import tango.stdc.string;
-    import tango.stdc.stdio;
+}
+
+version( Win32 )
+{
+    extern (Windows) void*      LocalFree(void*);
+    extern (Windows) wchar_t*   GetCommandLineW();
+    extern (Windows) wchar_t**  CommandLineToArgvW(wchar_t*, int*);
+    extern (Windows) export int WideCharToMultiByte(uint, uint, wchar_t*, int, char*, int, char*, int);
+    pragma(lib, "shell32.lib"); // needed for CommandLineToArgvW
 }
 
 extern (C) void _STI_monitor_staticctor();
@@ -105,7 +114,6 @@ extern (C) int _d_run_main(int argc, char **argv, main_type main_func)
     version (all)
     {
         char[]* am = cast(char[]*) malloc(argc * (char[]).sizeof);
-        scope(exit) free(am);
 
     	for (int i = 0; i < argc; i++)
     	{
@@ -128,23 +136,31 @@ extern (C) int _d_run_main(int argc, char **argv, main_type main_func)
         while (e)
         {
             if (e.file)
-    	        fprintf(stderr, "%.*s(%u): %.*s\n", e.file, e.line, e.msg);
-    	    else
-    	        fprintf(stderr, "%.*s\n", e.toString());
-    	    e = e.next;
-    	}
-	    exit(EXIT_FAILURE);
+            {
+               // fprintf(stderr, "%.*s(%u): %.*s\n", e.file, e.line, e.msg);
+               console (e.file)("(")(e.line)("): ")(e.msg)("\n");
+            }
+            else
+            {
+               // fprintf(stderr, "%.*s\n", e.toString());
+               console (e.toString)("\n");
+            }
+            e = e.next;
+        }
+        exit(EXIT_FAILURE);
     }
     catch (Object o)
     {
-	    fprintf(stderr, "%.*s\n", o.toString());
-	    exit(EXIT_FAILURE);
+        // fprintf(stderr, "%.*s\n", o.toString());
+        console (o.toString)("\n");
+        exit(EXIT_FAILURE);
     }
 
     version (all)
     {
 	    _STD_critical_term();
 	    _STD_monitor_staticdtor();
+        free(am);
     }
     return result;
 }

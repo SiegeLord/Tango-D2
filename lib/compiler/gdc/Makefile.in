@@ -146,6 +146,7 @@ OBJ_BASE= \
 #   trace.o
 
 OBJ_UTIL= \
+    util/console.o \
     util/ctype.o \
     util/string.o \
     util/utf.o

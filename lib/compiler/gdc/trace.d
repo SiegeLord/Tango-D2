@@ -17,7 +17,6 @@ private
     import tango.stdc.stdio;
     import tango.stdc.string;
     import tango.stdc.stdlib;
-    import util.string;
 }
 
 extern (C):
@@ -322,7 +321,9 @@ static void trace_times(Symbol* root)
 	char[] id;
 
 	version (Win32)
-	{   char* p = toStringz(s.Sident);
+	{   
+            //char* p = toStringz(s.Sident);
+            char* p = s.Sident ~ '\0';
 	    p = unmangle_ident(p);
 	    if (p)
 		id = p[0 .. strlen(p)];
@@ -434,7 +435,7 @@ void trace_term()
 
 	// Report results
 	fplog = fopen(trace_logfilename,"w");
-	//fplog = std.c.stdio.stdout;
+	//fplog = tango.stdc.stdio.stdout;
 	if (fplog)
 	{   nsymbols = 0;
 	    trace_report(root);
@@ -489,7 +490,8 @@ static Symbol* trace_addsym(char[] id)
     rover = *parent;
     while (rover != null)		// while we haven't run out of tree
     {
-	cmp = std.string.cmp(id, rover.Sident);
+//	cmp = util.stringutils.StringCompare (id, rover.Sident);
+	cmp = typeid(char[]).compare (id, rover.Sident);
 	if (cmp == 0)
 	{
 	    return rover;
@@ -673,7 +675,7 @@ L1:
 
 static char *skipspace(char *p)
 {
-    while (std.ctype.isspace(*p))
+    while (tango.stdc.ctype.isspace(*p))
 	p++;
     return p;
 }
@@ -729,7 +731,7 @@ static void trace_merge()
 		case '$':
 		case '@':
 		    p = buf;
-		    while (std.ctype.isgraph(*p))
+		    while (tango.stdc.ctype.isgraph(*p))
 			p++;
 		    *p = 0;
 		    //printf("trace_addsym('%s')\n",buf);

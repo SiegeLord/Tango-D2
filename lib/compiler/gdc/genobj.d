@@ -39,8 +39,8 @@ module object;
 
 private
 {
-    extern (C) int memcmp (void*, void*, int);
-    extern (C) int memcpy (void*, void*, int);
+    import tango.stdc.string;
+    import util.stringutils;
 }
 
 // NOTE: For some reason, this declaration method doesn't work
@@ -156,7 +156,7 @@ class TypeInfo
 
     int opCmp(Object o)
     {
-        return cmp(this.classinfo.name, o.classinfo.name);
+        return stringCompare(this.classinfo.name, o.classinfo.name);
     }
 
     int opEquals(Object o)
@@ -312,8 +312,8 @@ class TypeInfo_StaticArray : TypeInfo
 {
     char[] toString()
     {
-        char [16] tmp = void;
-        return next.toString() ~ "[" ~ atoi(tmp, len) ~ "]";
+        char [10] tmp = void;
+        return next.toString() ~ "[" ~ intToString(tmp, len) ~ "]";
     }
 
     hash_t getHash(void *p)
@@ -579,32 +579,4 @@ class Exception : Object
     {
         return msg;
     }
-}
-
-// local function to compare two strings. Invoked by the default opCmp
-private static int cmp (char[] s1, char[] s2)
-{
-    auto len = s1.length;
-
-    if (s2.length < len)
-        len = s2.length;
-
-    int result = memcmp(s1, s2, len);
-
-    if (result == 0)
-        result = cast(int)s1.length - cast(int)s2.length;
-
-    return result;
-}
-
-// local function to convert int to string. Used by Array subclasses
-private static char[] atoi (char[] tmp, uint val)
-{
-    char* p = tmp.ptr + tmp.length;
-
-    do {
-       *--p = (val % 10) + '0';
-       } while (val /= 10);
-
-    return tmp [(p - tmp.ptr) .. $];
 }
