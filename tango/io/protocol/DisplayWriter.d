@@ -123,10 +123,12 @@ class DisplayWriter : Writer
                             break;
 
                        default:
-                            char[128] output = void;
+                            char[256] output = void;
                             auto ti = Type.revert [type];
-                            auto result = Result (output);
+                            auto result = Formatter.Result (output);
+
                             auto width = ti.tsize();
+                            assert ((bytes % width) is 0, "invalid arg[] length");
 
                             bool array = width < bytes;
 

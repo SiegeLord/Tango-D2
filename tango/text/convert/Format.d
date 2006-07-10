@@ -168,69 +168,6 @@ private struct Argument
         {
                 return value_;
         }
-
-}
-
-
-/*******************************************************************************
-
-*******************************************************************************/
-
-struct Result
-{
-        private uint index;
-        private char[] target_;
-
-        /**********************************************************************
-
-        **********************************************************************/
-
-        static Result opCall (char[] target)
-        {
-                Result result;
-
-                result.target_ = target;
-                return result;
-        }
-
-        /**********************************************************************
-
-        **********************************************************************/
-
-        void opCatAssign (char[] rhs)
-        {
-                uint end = index + rhs.length;
-
-                target_[index .. end] = rhs;
-                index = end;
-        }
-
-        /**********************************************************************
-
-        **********************************************************************/
-
-        void opCatAssign (char rhs)
-        {
-                target_[index++] = rhs;
-        }
-
-        /**********************************************************************
-
-        **********************************************************************/
-
-        char[] get ()
-        {
-                return target_[0..index];
-        }
-
-        /**********************************************************************
-
-        **********************************************************************/
-
-        char[] scratch ()
-        {
-                return target_;
-        }
 }
 
 
@@ -311,6 +248,15 @@ private struct ArgumentIterator
 **/
 public struct Formatter
 {
+        /**********************************************************************
+
+        **********************************************************************/
+
+        public static void error (char[] msg)
+        {
+                throw new Exception (msg);
+        }
+
         /**
          * Replaces the _format item in a string with the string equivalent of each argument.
          * Params:
@@ -348,15 +294,6 @@ public struct Formatter
 
         **********************************************************************/
 
-        public static void error (char[] msg)
-        {
-                throw new Exception (msg);
-        }
-
-        /**********************************************************************
-
-        **********************************************************************/
-
         public static uint format (Sink sink, char[] formatStr, ...)
         {
                 return format (sink, _arguments, _argptr, formatStr);
@@ -387,7 +324,7 @@ public struct Formatter
 
         **********************************************************************/
 
-        private static uint spaces (Sink sink, int count)
+        public static uint spaces (Sink sink, int count)
         {
                 uint ret;
 
@@ -399,171 +336,6 @@ public struct Formatter
                       }
                 return ret + sink (Spaces[0..count]);
         }
-
-/+
-        /**********************************************************************
-
-        **********************************************************************/
-
-        private static uint internalFormat (IFormatService formatService, char[] format, inout ArgumentIterator it, Sink sink)
-        {
-                char[256] output = void;
-                auto result = Result (output);
-
-                char c;
-                int pos;
-                uint length;
-		
-		// todo: without the .dup we get a segmentation fault on linux, if format is
-		// a string literal. With the dup, the fault is gone.
-		// Is there a memory write protection for string literal with MMU in linux?
-		// This method need review
-                // original: char[] chars = format;
-                char[] chars = format.dup;
-
-                while (true)
-                      {
-                      int p = pos, i = pos;
-                      while (pos < format.length)
-                            {
-                            c = chars[pos++];
-                            if (c == '{')
-                               {
-                               // Handle '{{' indicating a literal brace char.
-                               if (pos < format.length && chars[pos] == '{')
-                                   pos++;
-                               else
-                                  {
-                                  pos--;
-                                  break;
-                                  }
-                               }
-                            else 
-                               if (c == '}')
-                                  {
-                                  // Handle '}}' indicating a literal brace char.
-                                  if (pos < format.length && chars[pos] == '}')
-                                      pos++;
-                                  }
-                            chars[i++] = c;
-                            }
-
-                      if (i > p)
-                          length += sink (chars[p .. i]);
-
-                      if (pos == format.length)
-                          break;
-                      pos++;
-
-                      if (pos == format.length || (c = chars[pos]) < '0' || c > '9')
-                          throw new Exception("Input string was invalid.");
-
-                     int index;
-                     while (c >= '0' && c <= '9')
-                           {
-                           index = index * 10 + c - '0';
-                           pos++;
-                           c = chars[pos];
-                           }
-
-                     while (pos < format.length)
-                           {
-                           if ((c = chars[pos]) != ' ')
-                                break;
-                           pos++;
-                           }
-
-                     int width;
-                     bool leftAlign;
-
-                     // Alignment.
-                     if (c == ',')
-                        {
-                        pos++;
-                        // Eat spaces.
-                        while (pos < format.length)
-                              {
-                              if ((c = chars[pos]) != ' ')
-                                   break;
-                              pos++;
-                              }
-
-                        c = chars[pos];
-                        if (c == '-')
-                           {
-                           leftAlign = true;
-                           pos++;
-                           c = chars[pos];
-                           }
-
-                        while (c >= '0' && c <= '9')
-                              {
-                              width = width * 10 + c - '0';
-                              pos++;
-                              c = chars[pos];
-                              }
-                        }
-
-                     // Eat spaces.
-                     while (pos < format.length)
-                           {
-                           if ((c = chars[pos]) != ' ')
-                                break;
-                           pos++;
-                           }
-
-                     // Interpolated format.
-                     char[] f;
-                     if (c == ':')
-                        {
-                        pos++;
-                        p = pos, i = pos;
-                        while (true)
-                              {
-                              c = chars[pos++];
-                              if (c == '{')
-                                 {
-                                 if (pos < format.length && chars[pos] == '{')
-                                 pos++;
-                                 }
-                              else 
-                                 if (c == '}')
-                                    {
-                                    if (pos < format.length && chars[pos] == '}')
-                                        pos++;
-                                    else
-                                       {
-                                       pos--;
-                                       break;
-                                       }
-                                    }
-                              chars[i++] = c;
-                              }
-
-                        if (i > p)
-                            f = chars[p .. i];
-                        }
-
-                     pos++;
-
-                     // Convert argument to a string using interpolated format.
-                     Argument arg = it[index];
-                     char[] str = formatArgument (result, f, arg, formatService);
-                     int padding = width - str.length;
-
-                     // If not left aligned, pad out with spaces.
-                     if (! leftAlign && padding > 0)
-                           length += spaces (sink, padding);
-        
-                     length += sink (str);
-        
-                     // Finally, pad out on right.
-                     if (leftAlign && padding > 0)
-                         length += spaces (sink, padding);
-                     }
-                return length;
-        }
-+/
 
         /**********************************************************************
 
@@ -673,6 +445,68 @@ public struct Formatter
 
                 return length;
         }
+
+
+        /**********************************************************************
+
+        **********************************************************************/
+
+        struct Result
+        {       
+                private uint index;
+                private char[] target_;
+
+                /**************************************************************
+
+                **************************************************************/
+
+                static Result opCall (char[] target)
+                {
+                        Result result;
+
+                        result.target_ = target;
+                        return result;
+                }
+
+                /**************************************************************
+
+                **************************************************************/
+
+                void opCatAssign (char[] rhs)
+                {
+                        uint end = index + rhs.length;
+
+                        target_[index .. end] = rhs;
+                        index = end;
+                }
+
+                /**************************************************************
+
+                **************************************************************/
+
+                void opCatAssign (char rhs)
+                {
+                        target_[index++] = rhs;
+                }
+
+                /**************************************************************
+
+                **************************************************************/
+
+                char[] get ()
+                {
+                        return target_[0..index];
+                }
+
+                /**************************************************************
+
+                **************************************************************/
+
+                char[] scratch ()
+                {
+                        return target_;
+                }
+        }
 }
 
 
@@ -681,7 +515,7 @@ public struct Formatter
 *******************************************************************************/
 
 
-private char[] formatArgument (inout Result result, char[] format, inout Argument arg, IFormatService service)
+private char[] formatArgument (inout Formatter.Result result, char[] format, inout Argument arg, IFormatService service)
 {
         switch (arg.getTypeCode())
                {
@@ -1048,7 +882,7 @@ private struct Number
 
         **********************************************************************/
 
-        private char[] toString (inout Result result, char format, int length, NumberFormat nf)
+        private char[] toString (inout Formatter.Result result, char format, int length, NumberFormat nf)
         {
                 switch (format)
                        {
@@ -1109,7 +943,7 @@ private struct Number
 
         **********************************************************************/
 
-        private char[] toStringFormat (inout Result result, char[] format, NumberFormat nf)
+        private char[] toStringFormat (inout Formatter.Result result, char[] format, NumberFormat nf)
         {
                 bool hasGroups;
                 int groupCount;
@@ -1528,7 +1362,7 @@ private char parseFormatSpecifier (char[] format, out int length)
 
 *******************************************************************************/
 
-private char[] formatInteger (inout Result result, long value, char[] format, IFormatService formatService)
+private char[] formatInteger (inout Formatter.Result result, long value, char[] format, IFormatService formatService)
 {
         NumberFormat nf = NumberFormat.getInstance (formatService);
         int length;
@@ -1582,7 +1416,7 @@ version (mlfp)
                 EXP = 0x7ff
                 }
 
-        private char[] formatDouble (inout Result result, double value, char[] format, IFormatService formatService)
+        private char[] formatDouble (inout Formatter.Result result, double value, char[] format, IFormatService formatService)
         {
                 NumberFormat nf = NumberFormat.getInstance (formatService);
                 int length;
@@ -1642,7 +1476,7 @@ version (mlfp)
 
 *******************************************************************************/
 
-private void formatGeneral (inout Number number, inout Result target, int length, char format, NumberFormat nf)
+private void formatGeneral (inout Number number, inout Formatter.Result target, int length, char format, NumberFormat nf)
 {
         int pos = number.scale;
 
@@ -1676,7 +1510,7 @@ private void formatGeneral (inout Number number, inout Result target, int length
 
 *******************************************************************************/
 
-private void formatNumber (inout Number number, inout Result target, int length, NumberFormat nf)
+private void formatNumber (inout Number number, inout Formatter.Result target, int length, NumberFormat nf)
 {
         char[] format = number.sign ? negativeNumberFormats[nf.numberNegativePattern] 
                                     : positiveNumberFormat;
@@ -1706,7 +1540,7 @@ private void formatNumber (inout Number number, inout Result target, int length,
 
 *******************************************************************************/
 
-private void formatCurrency (inout Number number, inout Result target, int length, NumberFormat nf)
+private void formatCurrency (inout Number number, inout Formatter.Result target, int length, NumberFormat nf)
 {
         char[] format = number.sign ? negativeCurrencyFormats[nf.currencyNegativePattern] 
                                     : positiveCurrencyFormats[nf.currencyPositivePattern];
@@ -1740,7 +1574,7 @@ private void formatCurrency (inout Number number, inout Result target, int lengt
 
 *******************************************************************************/
 
-private void formatFixed (inout Number number, inout Result target, int length, 
+private void formatFixed (inout Number number, inout Formatter.Result target, int length, 
                           int[] groupSizes, char[] decimalSeparator, char[] groupSeparator)
 {
         int pos = number.scale;
