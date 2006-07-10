@@ -99,11 +99,11 @@ else
     sem_t suspendCount;
     extern (C) 
 {
-    void suspendHandler(int sig);
+    void thread_suspendHandler(int sig);
 }
     extern (C) 
 {
-    void resumeHandler(int sig)
+    void thread_resumeHandler(int sig)
 in
 {
 assert(sig == SIGUSR2);
@@ -137,7 +137,7 @@ m_call = Call.FN;
 m_dg = dg;
 m_call = Call.DG;
 }
-    final
+        final
 {
     void start();
 }
