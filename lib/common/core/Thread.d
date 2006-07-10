@@ -419,6 +419,30 @@ class Thread
     }
 
 
+    /**
+     * Cleans up any remaining resources used by this object.
+     */
+    ~this()
+    {
+        if( m_addr == m_addr.init )
+        {
+            return;
+        }
+
+        version( Win32 )
+        {
+            m_addr = m_addr.init;
+            CloseHandle( m_hndl );
+            m_hndl = m_hndl.init;
+        }
+        else version( Posix )
+        {
+            pthread_detach( m_addr );
+            m_addr = m_addr.init;
+        }
+    }
+
+
     ////////////////////////////////////////////////////////////////////////////
     // General Actions
     ////////////////////////////////////////////////////////////////////////////
@@ -476,11 +500,22 @@ class Thread
         {
             if( WaitForSingleObject( m_hndl, INFINITE ) != WAIT_OBJECT_0 )
                 throw new ThreadException( "Unable to join thread" );
+            // NOTE: m_addr must be cleared before m_hndl is closed to avoid
+            //       a race condition with isRunning.  The operation is labeled
+            //       volatile to prevent compiler reordering.
+            volatile m_addr = m_addr.init;
+            CloseHandle( m_hndl );
+            m_hndl = m_hndl.init;
         }
         else version( Posix )
         {
             if( pthread_join( m_addr, null ) != 0 )
                 throw new ThreadException( "Unable to join thread" );
+            // NOTE: pthread_join acts as a substitute for pthread_detach,
+            //       which is normally called by the dtor.  Setting m_addr
+            //       to zero ensures that pthread_detach will not be called
+            //       on object destruction.
+            volatile m_addr = m_addr.init;
         }
     }
 
@@ -528,7 +563,7 @@ class Thread
      */
     final bool isRunning()
     {
-        if( !m_addr )
+        if( m_addr == m_addr.init )
         {
             return false;
         }
@@ -940,21 +975,6 @@ private:
         //       however, a thread should never be re-added to the list anyway
         //       and having m_next and m_prev be non-null is a good way to
         //       ensure that.
-
-        // NOTE: Cleanup of any thread resources should occur as soon as the
-        //       thread is detected to no longer be running, and this seemed
-        //       like the most reasonable place to do so.
-        version( Win32 )
-        {
-            CloseHandle( t.m_hndl );
-            t.m_hndl = t.m_hndl.init;
-            t.m_addr = t.m_addr.init;
-        }
-        else version( Posix )
-        {
-            pthread_detach( t.m_addr );
-            t.m_addr = t.m_addr.init;
-        }
     }
 
 
