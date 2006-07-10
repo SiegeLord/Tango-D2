@@ -1046,7 +1046,7 @@ extern (C) void thread_init()
         static if( is( typeof( SA_RESTART ) ) )
             sigusr1.sa_flags = SA_RESTART;
         else
-        sigusr1.sa_flags   = 0;
+            sigusr1.sa_flags   = 0;
         sigusr1.sa_handler = &thread_suspendHandler;
         // NOTE: We want to ignore all signals while in this handler, so fill
         //       sa_mask to indicate this.
