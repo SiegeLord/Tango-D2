@@ -453,7 +453,7 @@ static int lastError ()
 
 *******************************************************************************/
 
-class Socket : Conduit, Conduit.Device
+class Socket : Conduit
 {
         private socket_t sock;
         private AddressFamily _family;

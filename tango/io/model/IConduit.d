@@ -141,20 +141,15 @@ interface IConduit
 
         /***********************************************************************
 
-                Models a handle-oriented device
+                Models a handle-oriented device. We need to revisit this 
+
+                TODO: figure out how to avoid exposing this in the general 
+                case
 
         ***********************************************************************/
-
-        interface Device
-        {
-                /***************************************************************
         
-                        Return the handle of this device
+        Handle getHandle ();
 
-                ***************************************************************/
-
-                Handle getHandle ();
-        }
 
         /***********************************************************************
 

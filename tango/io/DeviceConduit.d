@@ -26,7 +26,7 @@ private import  tango.io.Exception;
         
 *******************************************************************************/
 
-class DeviceConduit : Conduit, Conduit.Device
+class DeviceConduit : Conduit
 {
         // expose conduit.copy() methods also
         alias Conduit.copy  copy;
