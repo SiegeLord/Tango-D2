@@ -1,5 +1,5 @@
 /**
- * The string module provides string manipulation routines in a manner that
+ * The array module provides string manipulation routines in a manner that
  * balances performance and flexibility.
  *
  * Copyright: Copyright (C) 2005-2006 Sean Kelly.  All rights reserved.
@@ -12,13 +12,10 @@ module tango.core.Array;
 private import tango.core.Traits;
 
 
-/**
- * Temporary until a predicate module can be created.
- */
 template equalTo( Elem )
 {
     /**
-     *
+     * Temporary until a predicate module can be created.
      */
     bool equalTo( Elem a, Elem  b )
     {
@@ -27,9 +24,6 @@ template equalTo( Elem )
 }
 
 
-/**
- *
- */
 /+
 template find( Elem )
 {
@@ -43,10 +37,7 @@ template find( Elem )
 }
 
 
-/**
- *
- */
- template find( Elem, Pred )
+template find( Elem, Pred )
 {
     static assert( isCallableType!(Pred) );
 
@@ -76,9 +67,6 @@ unittest
 +/
 
 
-/**
- *
- */
 template find( Elem )
 {
     /**
@@ -92,9 +80,6 @@ template find( Elem )
 }
 
 
-/**
- *
- */
 template find( Elem, Pred )
 {
     static assert( isCallableType!(Pred) );
@@ -215,9 +200,6 @@ unittest
 }
 
 
-/**
- *
- */
  /+
 template rfind( Elem )
 {
@@ -231,9 +213,6 @@ template rfind( Elem )
 }
 
 
-/**
- *
- */
 template rfind( Elem, Pred )
 {
     static assert( isCallableType!(Pred) );
@@ -269,9 +248,6 @@ unittest
 +/
 
 
-/**
- *
- */
 template rfind( Elem )
 {
     /**
@@ -285,9 +261,6 @@ template rfind( Elem )
 }
 
 
-/**
- *
- */
 template rfind( Elem, Pred )
 {
     static assert( isCallableType!(Pred) );
