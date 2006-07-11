@@ -62,6 +62,9 @@ template va_arg( T )
  * This function cleans up any resources allocated by va_start.  It is
  * currently a no-op and exists mostly for syntax compatibility with
  * the variadric argument functions for C.
+ *
+ * Params:
+ *  ap  = The argument pointer.
  */
 void va_end( va_list ap )
 {
