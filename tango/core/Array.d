@@ -30,7 +30,7 @@ template equalTo( Elem )
 /**
  *
  */
-/+
+ /+
 template find( Elem )
 {
     /**
