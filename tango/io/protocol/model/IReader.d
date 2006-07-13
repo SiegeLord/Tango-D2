@@ -49,8 +49,8 @@ interface IArrayAllocator
 
 abstract class IReader   // could be an interface, but that causes poor codegen
 {
-        alias get opShr;
         alias get opCall;
+        //alias get opShr;
 
         /***********************************************************************
         

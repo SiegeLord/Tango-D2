@@ -61,9 +61,9 @@ abstract class INewlineWriter : IPhantomWriter {}
 abstract class IWriter  // could be an interface, but that causes poor codegen
 {
         // alias the put() methods for IOStream and Whisper styles
-        alias newline   cr;
-        alias put       opShl;
         alias put       opCall;
+        // alias newline   cr;
+        // alias put       opShl;
 
         /***********************************************************************
         
