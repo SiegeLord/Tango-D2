@@ -82,7 +82,7 @@ class HttpTriplet : IWritable
 
         void write (IWriter writer)
         {
-               writer(toString).cr();
+               writer(toString).newline();
         }
 
         /**********************************************************************

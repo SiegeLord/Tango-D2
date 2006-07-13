@@ -167,11 +167,11 @@ class AdminServlet : Servlet
                 //List out the currently defined Loggers
                 write("<h1>Mango Server Console - Logger Administrator</h1>"c 
                        "<h2>Existing Loggers</h2><table border='1' cellpadding='3'>")
-                      .cr()
+                      .newline()
                       ("<tr><td>Logger Name</td>"c 
                        "<td>Logger Level</td>"  
                        "<td colspan=\"6\">Change Level to:</td></tr>")
-                      .cr();
+                      .newline();
 
                 //print a table row for each logger
                 foreach (Logger l; Log.getHierarchy())
@@ -198,37 +198,37 @@ class AdminServlet : Servlet
                         }
                                    
                         write("</tr>"c)
-                              .cr();
+                              .newline();
                 }
 
                 write("</table>"c)
-                      .cr()
+                      .newline()
                       ("<h2>Add a new logger</h2>"c)
-                      .cr()
+                      .newline()
                       ("<form method=\"get\" action=\"logger\">"c)
-                      .cr()
+                      .newline()
                       ("<input type=\"hidden\" name=\"action\" value=\"ADD\" />"c)
-                      .cr()
+                      .newline()
                       ("<table><tr><td>Logger Name:</td>" ~ 
                        "<td>Level</td></tr><tr>" ~ 
                        "<td><input type=\"text\" name=\"logger\" />"c)
-                      .cr()
+                      .newline()
                       ("</td><td><select name=\"level\">"c)
-                      .cr();
+                      .newline();
 
                 for (int i = Logger.Level.min; i < Logger.Level.max + 1; i++)
                 {
                      char[] levelStr = Event.LevelNames[i];
                      write("<option value=\""c);
                      write(i);
-                     write("\">" ~ levelStr ~ "</option>").cr();
+                     write("\">" ~ levelStr ~ "</option>").newline();
                 }       
    
                 write("</select></td></tr></table>"c 
                       "<input type=\"submit\" name=\"submit\" value=\"Add Level\" />")
-                      .cr()
+                      .newline()
                       ("</form>"c)
-                      .cr();
+                      .newline();
 
                 // write HTML closure
                 write ("</body></html>"c);

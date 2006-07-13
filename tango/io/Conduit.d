@@ -73,7 +73,17 @@ class Conduit : IConduit, IConduitFilter
 
         protected abstract uint writer (void[] src);               
 
-           
+        /***********************************************************************
+        
+                Models a handle-oriented device. We need to revisit this 
+
+                TODO: figure out how to avoid exposing this in the general 
+                case
+
+        ***********************************************************************/
+
+        abstract Handle getHandle ();               
+
         /***********************************************************************
         
                 Construct a conduit with the given style and seek abilities. 

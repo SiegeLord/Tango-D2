@@ -62,6 +62,12 @@ version(Windows)
 				throw new PipeException("CreatePipe");
 		}
 
+                override Handle getHandle()
+                {
+                        return readHandle();
+
+                }
+
                 override uint bufferSize ()
                 {
                         return 8 * 1024;
@@ -141,6 +147,12 @@ version(Posix)
 			if (pipe(handle) == -1) throw new PipeException("pipe(handle)");
 		}
 		
+                override Handle getHandle()
+                {
+                        return readHandle();
+
+                }
+
                 override uint bufferSize ()
                 {
                         return 8 * 1024;

@@ -271,9 +271,9 @@ class HttpResponse : HttpMessage
 
                 version (ShowHeaders)
                         {
-                        Stdout.put ("###############").cr();
-                        Stdout.put (super.getBuffer.toString).cr();
-                        Stdout.put ("###############").cr();
+                        Stdout.put ("###############").newline();
+                        Stdout.put (super.getBuffer.toString).newline();
+                        Stdout.put ("###############").newline();
                         }
                 writer.flush();
         }
@@ -301,7 +301,7 @@ class HttpResponse : HttpMessage
                          .put (status.code)
                          .put (' ')
                          .put (status.name)
-                         .cr  ();
+                         .newline  ();
 
                    // tell client we don't support keep-alive
                    if (! headers.get (HttpHeader.Connection))
@@ -309,20 +309,20 @@ class HttpResponse : HttpMessage
                   
                    // write the header tokens, followed by a blank line
                    super.write (writer);
-                   writer.cr ();
+                   writer.newline ();
 
                    // send it back to the UA (and empty the buffer)
                    writer.flush();
                         
                    version (ShowHeaders)
                            {
-                           Stdout.put (">>>> output headers"c).cr();
+                           Stdout.put (">>>> output headers"c).newline();
                            Stdout.put (HttpHeader.Version.value)
                                  .put (' ')
                                  .put (status.code)
                                  .put (' ')
                                  .put (status.name)
-                                 .cr  ();
+                                 .newline  ();
                            super.write (Stdout);
                            }
                    }

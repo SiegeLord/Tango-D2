@@ -265,7 +265,7 @@ class HttpTokens : IWritable
                         {
                         char[] content = token.toString;
                         if (content.length)
-                            writer.put(content).cr();
+                            writer.put(content).newline();
                         }                           
         }
 

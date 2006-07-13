@@ -345,7 +345,7 @@ class HttpCookies : IWritable
         void write (IWriter writer)
         {
                 foreach (Cookie cookie; parse)
-                         writer.put (cookie).cr();
+                         writer.put (cookie).newline();
         }
 
         /**********************************************************************
