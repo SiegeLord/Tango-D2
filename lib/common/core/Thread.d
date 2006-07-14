@@ -173,7 +173,7 @@ else version( Posix )
             // for OutOfMemoryError plus something to track whether
             // an exception is in-flight?
 
-            extern (C) void thread_cleanupHandler( void* arg )
+            static extern (C) void thread_cleanupHandler( void* arg )
             {
                 Thread  obj = Thread.getThis();
                 assert( obj );
