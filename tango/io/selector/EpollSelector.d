@@ -442,7 +442,7 @@ version (linux)
 
                     debug (selector)
                         Stdout.format("---   Event 0x{0:x} for handle {1}\n",
-                                      event.events, cast(int) key.conduit.getHandle());
+                                      cast(uint) event.events, cast(int) key.conduit.getHandle());
 
                     rc = dg(key);
                     if (rc != 0)

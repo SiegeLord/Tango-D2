@@ -199,7 +199,7 @@ version (Posix)
         {
             debug (selector)
                 Stdout.format("--- PollSelector.reregister(handle={0}, events=0x{1:x})",
-                              cast(int) conduit.getHandle(), events);
+                              cast(int) conduit.getHandle(), cast(uint) events);
 
             PollSelectionKey* current = (conduit.getHandle() in _keys);
 
@@ -333,7 +333,7 @@ version (Posix)
                             {
                                 debug (selector)
                                     Stdout.format("--- Found events 0x{0:x} for handle {1} (index {2})\n",
-                                                  pfd.revents, cast(int) pfd.fd, i);
+                                                  cast(uint) pfd.revents, cast(int) pfd.fd, i);
 
                                 // Find the key whose handle received an event
                                 key = ((cast(IConduit.Handle) pfd.fd) in _keys);

@@ -491,7 +491,7 @@ public class SelectSelector: AbstractSelector
 
         debug (selector)
             Stdout.format("--- SelectSelector.reregister(handle={0}, events=0x{1:x})\n",
-                          cast(int) handle, events);
+                          cast(int) handle, cast(uint) events);
 
         SelectionKey *key = (handle in _keys);
         if (key !is null)
@@ -575,7 +575,8 @@ public class SelectSelector: AbstractSelector
             IConduit.Handle handle = conduit.getHandle();
 
             debug (selector)
-                Stdout.format("--- SelectSelector.unregister(handle={0})\n", cast(int) handle);
+                Stdout.format("--- SelectSelector.unregister(handle={0})\n",
+                              cast(int) handle);
 
             SelectionKey* removed = (handle in _keys);
 
@@ -793,7 +794,7 @@ private class SelectSelectionSet: ISelectionSet
 
                 debug (selector)
                     Stdout.format("---   Calling foreach delegate with selection key ({0}, 0x{1:x})\n",
-                                  cast(int) handle, events);
+                                  cast(int) handle, cast(uint) events);
 
                 if (dg(current) != 0)
                 {

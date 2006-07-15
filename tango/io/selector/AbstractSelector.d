@@ -343,8 +343,8 @@ abstract class AbstractSelector: ISelector
             default:
                 Sprint sprint = new Sprint(256);
 
-                throw new SelectorException(sprint("Unknown Selector error %d: %s",
-                                            errorCode, OS.error(errno)), file, line);
+                throw new SelectorException(sprint.format("Unknown Selector error {0}: {1}",
+                                                          errorCode, OS.error(errno)), file, line);
                 break;
         }
     }

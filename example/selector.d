@@ -128,7 +128,7 @@ void testSelector(ISelector selector)
                     debug (selector)
                         Stdout.format("[SRV][{0}] Event mask for socket {1} is 0x{2:x4}\n",
                                       i, cast(int) selectionKey.conduit.getHandle(),
-                                      selectionKey.events);
+                                      cast(uint) selectionKey.events);
 
                     if (selectionKey.isReadable())
                     {
@@ -187,7 +187,7 @@ void testSelector(ISelector selector)
                         if (count != IConduit.Eof)
                         {
                             debug (selector)
-                                Stdout.format("[SRV][{0}] Sent PONG to client (%d bytes)\n", i, count);
+                                Stdout.format("[SRV][{0}] Sent PONG to client ({1} bytes)\n", i, count);
 
                             selector.reregister(selectionKey.conduit, Event.Read);
                             sendCount++;
