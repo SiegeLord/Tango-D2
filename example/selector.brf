@@ -1,0 +1,8 @@
+-I..
+-noautoimport
+-op
+-debug=selector
+-g
+-clean
+-version=Posix
+selector.d
