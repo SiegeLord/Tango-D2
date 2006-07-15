@@ -276,15 +276,15 @@ void testSelector(ISelector selector)
 
     Stdout.format("*   Success: connect={0}; recv={1}; send={2}; close={3}\n"
                   "*   Failure: connect={4}, recv={5}; send={6}; error={7}\n",
-           connectCount, receiveCount, sendCount, closeCount,
-           failedConnectCount, failedReceiveCount, failedSendCount, errorCount);
+                  connectCount, receiveCount, sendCount, closeCount,
+                  failedConnectCount, failedReceiveCount, failedSendCount, errorCount);
 
     Interval duration;
 
     duration.now();
     duration -= start;
 
-    Stdout.format("* Total time: {1} ms\n", duration.msec());
+    Stdout.format("* Total time: {0} ms\n", duration.msec());
 
     clientThread.join();
 
