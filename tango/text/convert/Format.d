@@ -113,7 +113,8 @@ private enum TypeCode
         CLASS = 'C',
         STRUCT = 'S',
         ENUM = 'E',
-        POINTER = 'P'
+        POINTER = 'P',
+        TYPEDEF = 'T',
         }
 
 /*******************************************************************************
@@ -136,10 +137,20 @@ private struct Argument
         {
                 Argument arg;
 
-                arg.type_ = type;
                 arg.value_ = value;
-                arg.typeCode_ = cast(TypeCode)type.classinfo.name[9];
+                arg.setType (type);
                 return arg;
+        }
+
+        /**********************************************************************
+
+        **********************************************************************/
+
+        public final TypeInfo setType (TypeInfo type)
+        {
+                typeCode_ = cast(TypeCode)type.classinfo.name[9];
+                type_ = type;
+                return type;
         }
 
         /**********************************************************************
@@ -570,6 +581,10 @@ private char[] formatArgument (inout Formatter.Result result, char[] format, ino
                case TypeCode.POINTER:
                     return arg.getType().toString();
         
+               case TypeCode.TYPEDEF:
+                    arg.setType ((cast(TypeInfo_Typedef) arg.getType).base);
+                    return formatArgument (result, format, arg, service);
+
                default:
                     break;
                }
