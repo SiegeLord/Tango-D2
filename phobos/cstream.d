@@ -10,7 +10,7 @@
 module phobos.cstream;
 
 import phobos.stream;
-import phobos.c.stdio;
+public import phobos.c.stdio;
 
 /**
  * A Stream wrapper for a C file of type FILE*.

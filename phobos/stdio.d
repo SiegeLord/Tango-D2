@@ -15,9 +15,10 @@
 
 module phobos.stdio;
 
-import phobos.c.stdio;
-private import phobos.format;
-private import phobos.utf;
+public import phobos.c.stdio;
+
+import phobos.format;
+import phobos.utf;
 
 version (DigitalMars)
 {

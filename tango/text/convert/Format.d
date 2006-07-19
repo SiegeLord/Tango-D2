@@ -170,7 +170,6 @@ private struct Argument
         {
                 return typeCode_;
         }
-
         /**********************************************************************
 
         **********************************************************************/
@@ -289,6 +288,11 @@ public struct Formatter
         **/
         public static char[] format (char[] formatStr, ...)
         {
+                return format( _arguments, _argptr, formatStr );
+        }
+
+        public static char[] format ( TypeInfo[] arguments, void* args, char[] formatStr)
+        {
                 char[] output;
 
                 uint sink (char[] s)
@@ -297,7 +301,7 @@ public struct Formatter
                         return s.length;
                 }
 
-                format (&sink, _arguments, _argptr, formatStr);
+                format (&sink, arguments, args, formatStr);
                 return output;
         }
 

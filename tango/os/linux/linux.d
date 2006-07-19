@@ -6,7 +6,7 @@
 
 module tango.os.linux.linux;
 
-import tango.os.linux.linuxextern;
+public import tango.os.linux.linuxextern;
 //import tango.stdc.posix.sys.types;
 
 //alias int pid_t;   // use tango.stdc.posix.sys.types instead
@@ -200,11 +200,11 @@ enum
 
 // Values for mlockall()
 
-enum
-{
-	MCL_CURRENT	= 1,
-	MCL_FUTURE	= 2,
-}
+// enum // stdc.posix.sys.mman
+// {
+// 	MCL_CURRENT	= 1,
+// 	MCL_FUTURE	= 2,
+// }
 
 // Values for mremap()
 
@@ -232,10 +232,12 @@ extern (C)
 int mprotect(void*, size_t, int);
 //int msync(void*, size_t, int);
 int madvise(void*, size_t, int);
-int mlock(void*, size_t);
-int munlock(void*, size_t);
-int mlockall(int);
-int munlockall();
+
+//int mlock(void*, size_t);   // stdc.posix.sys.mman
+//int munlock(void*, size_t); // stdc.posix.sys.mman
+//int mlockall(int);          // stdc.posix.sys.mman
+//int munlockall();           // stdc.posix.sys.mman
+
 void* mremap(void*, size_t, size_t, int);
 int mincore(void*, size_t, ubyte*);
 int remap_file_pages(void*, size_t, int, size_t, int);

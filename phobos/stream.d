@@ -72,6 +72,7 @@ private {
   import phobos.system;    // for Endian enumeration
   import phobos.intrinsic; // for bswap
   import phobos.utf;
+  import phobos.stdarg;
 }
 
 version (Windows) {

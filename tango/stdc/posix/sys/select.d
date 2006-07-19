@@ -11,6 +11,8 @@ module tango.stdc.posix.sys.select;
 public import tango.stdc.posix.sys.types; // for time_t
 public import tango.stdc.posix.signal;    // for sigset_t
 public import tango.stdc.time;            // for timespec
+public import tango.stdc.config;          // for c_long
+//public import tango.os.linux.linux;       // for FD_SETSIZE
 
 extern (C):
 
@@ -39,6 +41,7 @@ int  select(int, fd_set*, fd_set*, fd_set*, timeval*);
 
 version( linux )
 {
+    const auto FD_SETSIZE   = 1024;
     struct timeval
     {
         time_t      tv_sec;
@@ -50,12 +53,12 @@ version( linux )
         alias c_long __fd_mask;
         const auto   __NFDBITS = 8 * __fd_mask.sizeof;
 
-        extern (D) auto __FDELT( int d )
+        extern (D) int __FDELT( int d )
         {
             return d / __NFDBITS;
         }
 
-        extern (D) auto __FDMASK( int d )
+        extern (D) int __FDMASK( int d )
         {
             return cast(__fd_mask) 1 << ( d % __NFDBITS );
         }
@@ -73,7 +76,7 @@ version( linux )
 
     extern (D) int  FD_ISSET( int fd, fd_set* fdset )
     {
-        fdset.fds_bits[__FDELT( fd )] & __FDMASK( fd );
+        return fdset.fds_bits[__FDELT( fd )] & __FDMASK( fd );
     }
 
     extern (D) void FD_SET( int fd, fd_set* fdset )

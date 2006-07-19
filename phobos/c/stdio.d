@@ -11,7 +11,7 @@
 
 module phobos.c.stdio;
 
-import tango.stdc.stdio;
+public import tango.stdc.stdio;
 private import phobos.c.stdarg;
 
 extern (C):

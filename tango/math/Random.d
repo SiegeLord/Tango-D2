@@ -42,7 +42,7 @@ version (Win32)
 version (Posix)
         {
                 version (linux)
-                         private import tango.stdc.linux.linux;
+                         private import tango.os.linux.linux;
 
                 version (darwin)
                          private import tango.stdc.darwin.darwin;

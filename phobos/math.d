@@ -53,7 +53,7 @@
 
 
 module phobos.math;
-import tango.stdc.math;
+public import tango.stdc.math;
 //debug=math;		// uncomment to turn on debugging printf's
 /+
 private import phobos.stdio;

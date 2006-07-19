@@ -138,9 +138,18 @@ else version( darwin )
 MCL_CURRENT
 MCL_FUTURE
 
-int mlockall(int);
-int munlockall();
 */
+
+version( linux ){
+    enum {
+        MCL_CURRENT	= 1,
+        MCL_FUTURE	= 2,
+    }
+    
+    int mlockall(int);
+    int munlockall();
+    
+}
 
 version( darwin )
 {
@@ -154,10 +163,10 @@ version( darwin )
 //
 // Range Memory Locking (MLR)
 //
-/*
-int mlock(void*, size_t);
-int munlock(void*, size_t);
-*/
+version( linux ){
+    int mlock(void*, size_t);
+    int munlock(void*, size_t);
+}
 
 version( darwin )
 {

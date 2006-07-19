@@ -84,7 +84,7 @@ struct Unicode
 
         ***********************************************************************/
 
-        private static final void error (char[] msg)
+        package static final void error (char[] msg)
         {
                 static class UnicodeException : Exception
                 {

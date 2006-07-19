@@ -18,7 +18,7 @@
  */
 
 module phobos.intrinsic;
-import std.intrinsic;
+public import std.intrinsic;
 
 ///**
 // * Scans the bits in v starting with bit 0, looking

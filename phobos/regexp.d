@@ -2962,7 +2962,7 @@ public rchar[] replace(rchar[] format)
 
 // Static version that doesn't require a RegExp object to be created
 
-private static rchar[] replace3(rchar[] format, rchar[] input, regmatch_t[] pmatch)
+public static rchar[] replace3(rchar[] format, rchar[] input, regmatch_t[] pmatch)
 {
     rchar[] result;
     uint c2;
