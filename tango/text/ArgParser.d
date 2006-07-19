@@ -105,7 +105,7 @@ class ArgParser{
         
         public uint adapterCallback(char[] value){
             callback();
-            return value.length;
+            return 0;
         }
     }
 
@@ -160,9 +160,16 @@ class ArgParser{
 
         Params:
             arguments = the command line arguments from the application
+            resetOrdinals = if true, all ordinal counts will be set to zero
     */
-    public void parse(char[][] arguments){
+    public void parse(char[][] arguments, bool resetOrdinals = false){
         if (bindings.length == 0) return;
+        if (resetOrdinals) {
+            defaultOrdinal = 0;
+            foreach (key; prefixOrdinals.keys) {
+                prefixOrdinals[key] = 0;
+            }
+        }
 
         foreach (char[] arg; arguments) {
             char[] argData = arg;
@@ -218,14 +225,24 @@ class ArgParser{
     }
 }
 
+debug (UnitTest) {
+    import tango.text.convert.Integer;
+    import tango.io.Stdout; 
+
+    void main() {}
+}
+
 unittest {
 
-    //import mango.text.String;
-
     ArgParser parser = new ArgParser();
-    bool h = h2 = b = bb = false;
+    bool h = false;
+    bool h2 = false;
+    bool b = false;
+    bool bb = false;
     bool boolean = false;
-    int n;
+    int n = -1;
+    int dashOrdinalCount = -1;
+    int ordinalCount = -1;
 
     parser.bind("--", "h2", delegate void(){
         h2 = true;
@@ -239,31 +256,30 @@ unittest {
         bb = true;
     });
 
-    parser.bind("-", "b", delegate void(){
-        b = true;
-    });
-
-    parser.bind("-", "n", delegate uint(char[] value){
-        assert(value.length > 2);
-        assert(value[1] == '=');
-        n = toInt(value[2..5]);
-        return 5;
-    });
-
     parser.bind("-", "bool", delegate uint(char[] value){
-        assert(value.length == 9);
-        assert(value[4] == '=');
-        if (value[5..9] == "true") {
+        assert(value.length == 5);
+        assert(value[0] == '=');
+        if (value[1..5] == "true") {
             boolean = true;
         }
         else {
             assert(false);
         }
-        return 9;
+        return 5;
+    });
+
+    parser.bind("-", "b", delegate void(){
+        b = true;
+    });
+
+    parser.bind("-", "n", delegate uint(char[] value){
+        assert(value[0] == '=');
+        n = Integer.parse(value[1..5]);
+        assert(n == 4349);
+        return 5;
     });
 
     parser.bindDefault(delegate uint(char[] value, uint ordinal){
-        assert (ordinal < 2);
         ordinalCount = ordinal;
         if (ordinal == 0) {
             assert(value == "ordinalTest1");
@@ -275,13 +291,12 @@ unittest {
     });
 
     parser.bindDefault("-", delegate uint(char[] value, uint ordinal){
-        assert(ordinal < 2);
         dashOrdinalCount = ordinal;
         if (ordinal == 0) {
             assert(value == "dashTest1");
         }
         else if (ordinal == 1) {
-            assert(value == "dashTest1");
+            assert(value == "dashTest2");
         }
         return value.length;
     });
@@ -291,6 +306,48 @@ unittest {
         return value.length;
     });
 
-    
+    static char[][] test1 = ["--h2", "-h", "-bb", "-b", "-n=4349", "-bool=true", "ordinalTest1", "ordinalTest2", "-dashTest1", "-dashTest2", "@atTest"];
 
+    parser.parse(test1);
+    assert(h2);
+    assert(h);
+    assert(b);
+    assert(bb);
+    assert(n == 4349);
+    assert(ordinalCount == 1);
+    assert(dashOrdinalCount == 1);
+    
+    h = h2 = b = bb = false;
+    boolean = false;
+    n = ordinalCount = dashOrdinalCount = -1;
+
+    static char[][] test2 = ["-n=4349", "ordinalTest1", "@atTest", "--h2", "-b", "-bb", "-h", "-dashTest1", "-dashTest2", "ordinalTest2", "-bool=true"];
+
+    parser.parse(test2, true);
+    assert(h2 && h && b && bb && boolean && (n ==4349));
+    assert(ordinalCount == 1);
+    assert(dashOrdinalCount == 1);
+ 
+    h = h2 = b = bb = false;
+    boolean = false;
+    n = ordinalCount = dashOrdinalCount = -1;
+
+    static char[][] test3 = ["-n=4349ordinalTest1", "@atTest", "--h2-b-bb-h", "-dashTest1", "-dashTest2", "ordinalTest2", "-bool=true"];
+
+    parser.parse(test3, true);
+    assert(h2 && h && b && bb && boolean && (n ==4349));
+    assert((ordinalCount == 1) && (dashOrdinalCount == 1));
+ 
+    ordinalCount = dashOrdinalCount = -1;
+
+    static char[][] test4 = ["ordinalTest1", "ordinalTest2", "ordinalTest3", "ordinalTest4"];
+    static char[][] test5 = ["-dashTest1", "-dashTest2", "-dashTest3"];
+
+    parser.parse(test4, true);
+    assert(ordinalCount == 3);
+
+    parser.parse(test5, true);
+    assert(dashOrdinalCount == 2);
+
+    Stdout("* tango.text.ArgParser: All unittests passed").newline;
 }
