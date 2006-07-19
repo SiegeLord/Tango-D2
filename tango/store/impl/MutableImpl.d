@@ -98,7 +98,7 @@ public abstract class MutableImplT(T) : MutableCollectionT!(T)
         }
 
 
-        package final static bool isValidArg (T element)
+        protected final static bool isValidArg (T element)
         {
                 static if (is (T : Object))
                           {
