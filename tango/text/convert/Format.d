@@ -11,18 +11,18 @@ Examples:
 Formatter.format("General: {0} Hexadecimal: 0x{0:x4} Numeric: {0:N}", 1000);
 // -> General: 1000 Hexadecimal: 0x03e8 Numeric: 1,000.00
 
-// Format using a custom display format, substituting groups with those
-// appropriate for Germany.
-Formatter.format(Culture.getCulture("de-DE"), "{0:#,#}", 12345678);
-// -> 12.345.678
-
-// Format as a monetary value appropriate for Spain.
-Formatter.format(Culture.getCulture("es-ES"), "{0:C}", 59.99);
-// -> 59,99 €
-
-// Format today's date as appropriate for France.
-Formatter.format(Culture.getCulture("fr-FR"), "{0:D}", DateTime.today);
-// -> vendredi 3 mars 2006
+/+ Not yet implemented +/ // Format using a custom display format, substituting groups with those
+/+ Not yet implemented +/ // appropriate for Germany.
+/+ Not yet implemented +/ Formatter.format(Culture.getCulture("de-DE"), "{0:#,#}", 12345678);
+/+ Not yet implemented +/ // -> 12.345.678
+/+ Not yet implemented +/ 
+/+ Not yet implemented +/ // Format as a monetary value appropriate for Spain.
+/+ Not yet implemented +/ Formatter.format(Culture.getCulture("es-ES"), "{0:C}", 59.99);
+/+ Not yet implemented +/ // -> 59,99 €
+/+ Not yet implemented +/ 
+/+ Not yet implemented +/ // Format today's date as appropriate for France.
+/+ Not yet implemented +/ Formatter.format(Culture.getCulture("fr-FR"), "{0:D}", DateTime.today);
+/+ Not yet implemented +/ // -> vendredi 3 mars 2006
 --------
 **/
 module tango.text.convert.Format;
@@ -1867,25 +1867,27 @@ class NumberFormat
 
 debug (UnitTest)
 {
+    //import tango.text.locale.Core;
 unittest{
+
     assert( Formatter.format( "abc" ) == "abc" );
-    
+
     assert( Formatter.format( "{0}", 1 ) == "1" );
     assert( Formatter.format( "{0}", -1 ) == "-1" );
-    
+
     assert( Formatter.format( "{0}", true ) == "True" );
     assert( Formatter.format( "{0}", false ) == "False" );
-    
+
     assert( Formatter.format( "{0}", cast(byte)-128 ) == "-128" );
     assert( Formatter.format( "{0}", cast(byte)127 ) == "127" );
     assert( Formatter.format( "{0}", cast(ubyte)255 ) == "255" );
-    
+
     assert( Formatter.format( "{0}", cast(short)-32768  ) == "-32768" );
     assert( Formatter.format( "{0}", cast(short)32767 ) == "32767" );
     assert( Formatter.format( "{0}", cast(ushort)65535 ) == "65535" );
     // assert( Formatter.format( "{0:x4}", cast(ushort)0xafe ) == "0afe" );
     // assert( Formatter.format( "{0:X4}", cast(ushort)0xafe ) == "0AFE" );
-    
+
     assert( Formatter.format( "{0}", -2147483648 ) == "-2147483648" );
     assert( Formatter.format( "{0}", 2147483647 ) == "2147483647" );
     assert( Formatter.format( "{0}", 4294967295 ) == "4294967295" );
@@ -1895,60 +1897,63 @@ unittest{
     assert( Formatter.format( "{0}", 9223372036854775807L ) == "9223372036854775807" );
     // Error: prints -1
     // assert( Formatter.format( "{0}", 18446744073709551615UL ) == "18446744073709551615" );
-    
+
     assert( Formatter.format( "{0}", "s" ) == "s" );
     // fragments before and after
     assert( Formatter.format( "d{0}d", "s" ) == "dsd" );
+    assert( Formatter.format( "d{0}d", "1234567890" ) == "d1234567890d" );
+
     // brace escaping
-    assert( Formatter.format( "d{{0}d", "s" ) == "d{0}d");
-    
-    // assert( Formatter.format( "{0:x}", 0xafe0000 ) == "afe0000" );
-    // // todo: is it correct to print 7 instead of 6 chars???
-    // assert( Formatter.format( "{0:x6}", 0xafe0000 ) == "afe0000" );
-    // assert( Formatter.format( "{0:x8}", 0xafe0000 ) == "0afe0000" );
-    // assert( Formatter.format( "{0:X8}", 0xafe0000 ) == "0AFE0000" );
-    // assert( Formatter.format( "{0:X9}", 0xafe0000 ) == "00AFE0000" );
-    // assert( Formatter.format( "{0:X13}", 0xafe0000 ) == "000000AFE0000" );
-    // assert( Formatter.format( "{0:x13}", 0xafe0000 ) == "000000afe0000" );
-    // // compiler error
-    // //assert( Formatter.format( "{0}", -9223372036854775808L) == "-9223372036854775808" );
-    // assert( Formatter.format( "{0}", 0x8000_0000_0000_0000L) == "-9223372036854775808" );
-    // assert( Formatter.format( "{0}", 9223372036854775807L ) == "9223372036854775807" );
-    // assert( Formatter.format( "{0:X}", 0xFFFF_FFFF_FFFF_FFFF) == "FFFFFFFFFFFFFFFF" );
-    // assert( Formatter.format( "{0:x}", 0xFFFF_FFFF_FFFF_FFFF) == "ffffffffffffffff" );
-    // assert( Formatter.format( "{0:x}", 0xFFFF_1234_FFFF_FFFF) == "ffff1234ffffffff" );
-    // assert( Formatter.format( "{0:x19}", 0x1234_FFFF_FFFF) == "00000001234ffffffff" );
-    // // Error: prints -1
-    // // assert( Formatter.format( "{0}", 18446744073709551615UL ) == "18446744073709551615" );
-    // assert( Formatter.format( "{0}", "s" ) == "s" );
-    // // fragments before and after
-    // assert( Formatter.format( "d{0}d", "s" ) == "dsd" );
-    // // brace escaping
-    // assert( Formatter.format( "d{{0}}d", "s" ) == "d{0}d" );
+    assert( Formatter.format( "d{0}d", "<string>" ) == "d<string>d");
+    assert( Formatter.format( "d{{0}d", "<string>" ) == "d{0}d");
+    assert( Formatter.format( "d{{{0}d", "<string>" ) == "d{<string>d");
+    assert( Formatter.format( "d{0}}d", "<string>" ) == "d<string>}d");
+
+    assert( Formatter.format( "{0:x}", 0xafe0000 ) == "afe0000" );
+    // todo: is it correct to print 7 instead of 6 chars???
+    assert( Formatter.format( "{0:x6}", 0xafe0000 ) == "afe0000" );
+    assert( Formatter.format( "{0:x8}", 0xafe0000 ) == "0afe0000" );
+    assert( Formatter.format( "{0:X8}", 0xafe0000 ) == "0AFE0000" );
+    assert( Formatter.format( "{0:X9}", 0xafe0000 ) == "00AFE0000" );
+    assert( Formatter.format( "{0:X13}", 0xafe0000 ) == "000000AFE0000" );
+    assert( Formatter.format( "{0:x13}", 0xafe0000 ) == "000000afe0000" );
+    // compiler error
+    //assert( Formatter.format( "{0}", -9223372036854775808L) == "-9223372036854775808" );
+    assert( Formatter.format( "{0}", 0x8000_0000_0000_0000L) == "-9223372036854775808" );
+    assert( Formatter.format( "{0}", 9223372036854775807L ) == "9223372036854775807" );
+    assert( Formatter.format( "{0:X}", 0xFFFF_FFFF_FFFF_FFFF) == "FFFFFFFFFFFFFFFF" );
+    assert( Formatter.format( "{0:x}", 0xFFFF_FFFF_FFFF_FFFF) == "ffffffffffffffff" );
+    assert( Formatter.format( "{0:x}", 0xFFFF_1234_FFFF_FFFF) == "ffff1234ffffffff" );
+    assert( Formatter.format( "{0:x19}", 0x1234_FFFF_FFFF) == "00000001234ffffffff" );
+    // Error: prints -1
+    // assert( Formatter.format( "{0}", 18446744073709551615UL ) == "18446744073709551615" );
+    assert( Formatter.format( "{0}", "s" ) == "s" );
+    // fragments before and after
+    assert( Formatter.format( "d{0}d", "s" ) == "dsd" );
 
     // argument index
     assert( Formatter.format( "a{0}b{1}c{2}", "x", "y", "z" ) == "axbycz" );
     assert( Formatter.format( "a{2}b{1}c{0}", "x", "y", "z" ) == "azbycx" );
     assert( Formatter.format( "a{1}b{1}c{1}", "x", "y", "z" ) == "aybycy" );
-    
+
     // alignment
     assert( Formatter.format( "->{0,-10}<-", "hello" ) == "->hello     <-" );
     assert( Formatter.format( "->{0,10}<-", "hello" ) == "->     hello<-" );
     assert( Formatter.format( "->{0,-10}<-", 12345 ) == "->12345     <-" );
     assert( Formatter.format( "->{0,10}<-", 12345 ) == "->     12345<-" );
-    
+
     assert( Formatter.format("General: {0} Hexadecimal: 0x{0:x4} Numeric: {0:N}", 1000) 
-	    == "General: 1000 Hexadecimal: 0x03e8 Numeric: 1,000.00" );
-//    assert( Formatter.format(Culture.getCulture("de-DE"), "{0:#,#}", 12345678)
-//	    == "12.345.678" );
-//    assert( Formatter.format(Culture.getCulture("es-ES"), "{0:C}", 59.99)
-//	    == "59,99 €" );
-//    assert( Formatter.format(Culture.getCulture("fr-FR"), "{0:D}", DateTime.today)
-//	    == "vendredi 3 mars 2006" );
-    
+            == "General: 1000 Hexadecimal: 0x03e8 Numeric: 1,000.00" );
+    /+ Not yet implemented +/ //assert( Formatter.format(Culture.getCulture("de-DE"), "{0:#,#}", 12345678)
+    /+ Not yet implemented +/ //        == "12.345.678" );
+    /+ Not yet implemented +/ //assert( Formatter.format(Culture.getCulture("es-ES"), "{0:C}", 59.99)
+    /+ Not yet implemented +/ //        == "59,99 €" );
+    /+ Not yet implemented +/ //assert( Formatter.format(Culture.getCulture("fr-FR"), "{0:D}", DateTime.today)
+    /+ Not yet implemented +/ //        == "vendredi 3 mars 2006" );
+
     version( mlfp ){
-	assert( Formatter.format( "{0:f}", 1.23f ) == "1.23" );
-	assert( Formatter.format( "{0:f}", 1.23 ) == "1.23" );
+        assert( Formatter.format( "{0:f}", 1.23f ) == "1.23" );
+        assert( Formatter.format( "{0:f}", 1.23 ) == "1.23" );
     }
 }
 }
