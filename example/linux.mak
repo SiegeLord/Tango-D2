@@ -55,7 +55,7 @@ SIMPLE_EXAMPLES =       	\
 	./mmap          	\
 	./unifile
 
-PHOBOS_EXAMPLES =       	\
+PHOBOS_EXAMPLES =		\
 	./test_phobos		\
 	./phobos/htmlget 	\
 	./phobos/hello 		\
@@ -66,7 +66,10 @@ PHOBOS_EXAMPLES =       	\
 	./phobos/d2html 	\
 	./phobos/sieve 		\
 	./phobos/wc2 
-	
+
+REFERENCE_EXAMPLES =		\
+	./reference/chapter4
+
 $(SIMPLE_EXAMPLES) : % : %.d
 	@echo "Building : " $@
 	@$(BUILDTOOL) $< $(BUILDOPTS) -T$@
@@ -75,17 +78,21 @@ $(PHOBOS_EXAMPLES) : % : %.d $(ZLIB)
 	@echo "Building : " $@
 	@$(BUILDTOOL) $< $(BUILDOPTS) -T$@ -Mphobos $(ZLIB) -L-ldl
 
+$(REFERENCE_EXAMPLES) : % : %.d
+	@echo "Building : " $@
+	@$(BUILDTOOL) $< $(BUILDOPTS) -T$@
+
 $(ZLIB) :
 	@echo "Building *** Phobos ZLIB ***"
 	$(MAKE) -C $(ZLIB_DIR) -f linux.mak
 
-all : $(SIMPLE_EXAMPLES) $(PHOBOS_EXAMPLES)
-	
+all : $(SIMPLE_EXAMPLES) $(PHOBOS_EXAMPLES) $(REFERENCE_EXAMPLES)
+
 clean :
 	@echo "Removing all examples"
-	rm -f $(SIMPLE_EXAMPLES) $(PHOBOS_EXAMPLES)
+	rm -f $(SIMPLE_EXAMPLES) $(PHOBOS_EXAMPLES) $(REFERENCE_EXAMPLES)
 	rm -f random.bin
-	
+
 
 
 
