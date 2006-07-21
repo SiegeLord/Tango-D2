@@ -14,29 +14,27 @@
 module tango.text.ArgParser;
 
 /**
-    An alias to a delegate taking a char[] as a parameter and returning
-    an uint. The value parameter will hold any chars immediately
-    following the argument. The returned value tell how many chars of 
-    value was used by the callback.
+    An alias to a delegate taking a char[] as a parameter. The value 
+    parameter will hold any chars immediately
+    following the argument. 
 */
-alias uint delegate (char[] value) ArgParserCallback;
+alias void delegate (char[] value) ArgParserCallback;
 
 /**
-    An alias to a delegate taking a char[] as a parameter and returning
-    an uint. The value parameter will hold any chars immediately
-    following the argument. The returned value tell how many chars of 
-    value was used by the callback.
-    
+    An alias to a delegate taking a char[] as a parameter. The value 
+    parameter will hold any chars immediately
+    following the argument.
+
     The ordinal argument represents which default argument this is for
     the given stream of arguments.  The first default argument will
     be ordinal=0 with each successive call to this callback having
-    ordinal values of 1, 2, 3 and so forth.
+    ordinal values of 1, 2, 3 and so forth. This can be reset to zero
+    in new calls to parse.
 */
-alias uint delegate (char[] value,uint ordinal) DefaultArgParserCallback;
+alias void delegate (char[] value,uint ordinal) DefaultArgParserCallback;
 
 /**
-    An alias to a delegate taking no parameters and returning
-    nothing.
+    An alias to a delegate taking no parameters
 */
 alias void delegate () ArgParserSimpleCallback;
 
@@ -44,21 +42,22 @@ alias void delegate () ArgParserSimpleCallback;
     A utility class to parse and handle your command line arguments.
 */
 class ArgParser{
-	/**
-	    A helper struct containing a callback and an id to, corresponding to
-	    the argId passed to one of the bind methods.
-	*/
-	protected struct PrefixCallback {
-	    char[] id;
-	    ArgParserCallback cb;
-	}	
+
+    /**
+	A helper struct containing a callback and an id, corresponding to
+	the argId passed to one of the bind methods.
+    */
+    protected struct PrefixCallback {
+	char[] id;
+	ArgParserCallback cb;
+    }	
 
     protected PrefixCallback[][char[]] bindings;
     protected DefaultArgParserCallback[char[]] defaultBindings;
     protected uint[char[]] prefixOrdinals;
     protected char[][] prefixSearchOrder;
     protected DefaultArgParserCallback defaultbinding;
-	private uint defaultOrdinal = 0;
+    private uint defaultOrdinal = 0;
 
     protected void addBinding(PrefixCallback pcb, char[] argPrefix){
         if (!(argPrefix in bindings)) {
@@ -103,9 +102,8 @@ class ArgParser{
             this.callback = callback; 
         }
         
-        public uint adapterCallback(char[] value){
+        public void adapterCallback(char[] value){
             callback();
-            return 0;
         }
     }
 
@@ -173,54 +171,49 @@ class ArgParser{
 
         foreach (char[] arg; arguments) {
             char[] argData = arg;
-            while (argData.length > 0) {
-                bool found = false;
-                char[] argOrig = argData;
-                foreach (char[] prefix; prefixSearchOrder) {
-                    if(argData.length < prefix.length) continue; 
-                    if(argData[0..prefix.length] != prefix) {
-                        continue;
-                    }
-                    else {
-                        argData = argData[prefix.length..$];
-                    } 
-                    if (prefix in bindings) {
-                        foreach (PrefixCallback cb; bindings[prefix]) {
-                            if (argData.length < cb.id.length) continue;
-                            uint cbil = cb.id.length;
-                            if (cb.id == argData[0..cbil]) {
-                                found = true;
-                                argData = argData[cbil..$];
-                                uint consumed = cb.cb(argData);
-                                argData = argData[consumed..$];
-                                break;
-                            }
-                        }
-                    }
-                    if (found) {
-                        break;
-                    }
-                    else if (prefix in defaultBindings){
-                        uint consumed = defaultBindings[prefix](argData,prefixOrdinals[prefix]);
-                        argData = argData[consumed..$];
-                        prefixOrdinals[prefix]++;
-                        found = true;
-                        break;
-                    }
-                    argData = argOrig;
-                }
-                if (!found) {
-                    if (!(defaultbinding is null)) {
-                        uint consumed = defaultbinding(argData,defaultOrdinal);
-                        argData = argData[consumed..$];
-                        defaultOrdinal++;
-                    }
-                    else {
-                        throw new Exception("Illegal argument "
-                                  ~ argData);
-                    }
-                }
-            }
+	    bool found = false;
+	    char[] argOrig = argData;
+	    foreach (char[] prefix; prefixSearchOrder) {
+		if(argData.length < prefix.length) continue; 
+		if(argData[0..prefix.length] != prefix) {
+		    continue;
+		}
+		else {
+		    argData = argData[prefix.length..$];
+		} 
+		if (prefix in bindings) {
+		    foreach (PrefixCallback cb; bindings[prefix]) {
+			if (argData.length < cb.id.length) continue;
+			uint cbil = cb.id.length;
+			if (cb.id == argData[0..cbil]) {
+			    found = true;
+			    argData = argData[cbil..$];
+			    cb.cb(argData);
+			    break;
+			}
+		    }
+		}
+		if (found) {
+		    break;
+		}
+		else if (prefix in defaultBindings){
+		    defaultBindings[prefix](argData,prefixOrdinals[prefix]);
+		    prefixOrdinals[prefix]++;
+		    found = true;
+		    break;
+		}
+		argData = argOrig;
+	    }
+	    if (!found) {
+		if (defaultbinding !is null) {
+		    defaultbinding(argData,defaultOrdinal);
+		    defaultOrdinal++;
+		}
+		else {
+		    throw new Exception("Illegal argument "
+			      ~ argData);
+		}
+	    }
         }
     }
 }
@@ -256,7 +249,7 @@ unittest {
         bb = true;
     });
 
-    parser.bind("-", "bool", delegate uint(char[] value){
+    parser.bind("-", "bool", delegate void(char[] value){
         assert(value.length == 5);
         assert(value[0] == '=');
         if (value[1..5] == "true") {
@@ -265,21 +258,19 @@ unittest {
         else {
             assert(false);
         }
-        return 5;
     });
 
     parser.bind("-", "b", delegate void(){
         b = true;
     });
 
-    parser.bind("-", "n", delegate uint(char[] value){
+    parser.bind("-", "n", delegate void(char[] value){
         assert(value[0] == '=');
         n = Integer.parse(value[1..5]);
         assert(n == 4349);
-        return 5;
     });
 
-    parser.bindDefault(delegate uint(char[] value, uint ordinal){
+    parser.bindDefault(delegate void(char[] value, uint ordinal){
         ordinalCount = ordinal;
         if (ordinal == 0) {
             assert(value == "ordinalTest1");
@@ -287,10 +278,9 @@ unittest {
         else if (ordinal == 1) {
             assert(value == "ordinalTest2");
         }
-        return value.length;
     });
 
-    parser.bindDefault("-", delegate uint(char[] value, uint ordinal){
+    parser.bindDefault("-", delegate void(char[] value, uint ordinal){
         dashOrdinalCount = ordinal;
         if (ordinal == 0) {
             assert(value == "dashTest1");
@@ -298,12 +288,10 @@ unittest {
         else if (ordinal == 1) {
             assert(value == "dashTest2");
         }
-        return value.length;
     });
 
-    parser.bindDefault("@", delegate uint(char[] value, uint ordinal){
+    parser.bindDefault("@", delegate void(char[] value, uint ordinal){
         assert (value == "atTest");
-        return value.length;
     });
 
     static char[][] test1 = ["--h2", "-h", "-bb", "-b", "-n=4349", "-bool=true", "ordinalTest1", "ordinalTest2", "-dashTest1", "-dashTest2", "@atTest"];
@@ -332,7 +320,7 @@ unittest {
     boolean = false;
     n = ordinalCount = dashOrdinalCount = -1;
 
-    static char[][] test3 = ["-n=4349ordinalTest1", "@atTest", "--h2-b-bb-h", "-dashTest1", "-dashTest2", "ordinalTest2", "-bool=true"];
+    static char[][] test3 = ["-n=4349", "ordinalTest1", "@atTest", "--h2", "-b", "-bb", "-h", "-dashTest1", "-dashTest2", "ordinalTest2", "-bool=true"];
 
     parser.parse(test3, true);
     assert(h2 && h && b && bb && boolean && (n ==4349));
