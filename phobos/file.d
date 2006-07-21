@@ -27,13 +27,15 @@
 
 module phobos.file;
 
-private import tango.stdc.posix.dirent;
-private import tango.stdc.errno;
-private import phobos.c.stdio;
-private import phobos.c.stdlib;
-private import phobos.path;
-private import phobos.string;
-private import phobos.regexp;
+version( Posix ){
+    import tango.stdc.posix.dirent;
+}
+import tango.stdc.errno;
+import phobos.c.stdio;
+import phobos.c.stdlib;
+import phobos.path;
+import phobos.string;
+import phobos.regexp;
 
 /* =========================== Win32 ======================= */
 

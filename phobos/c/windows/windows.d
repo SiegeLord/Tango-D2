@@ -3,7 +3,9 @@
 States and other countries. */
 
 module phobos.c.windows.windows;
+public import tango.os.windows.minwin;
 
+/+++
 version (Windows)
 {
 }
@@ -2719,3 +2721,6 @@ export HANDLE CreateSemaphoreA(LPSECURITY_ATTRIBUTES lpSemaphoreAttributes, LONG
 export HANDLE OpenSemaphoreA(DWORD dwDesiredAccess, BOOL bInheritHandle, LPCTSTR lpName);
 export BOOL ReleaseSemaphore(HANDLE hSemaphore, LONG lReleaseCount, LPLONG lpPreviousCount);
 }
+
+
++++/

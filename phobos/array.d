@@ -28,7 +28,7 @@ class ArrayBoundsError : Exception
  * Called by the compiler generated module assert function.
  * Builds an ArrayBoundsError exception and throws it.
  */
-
+/+
 extern (C) static void _d_array_bounds(char[] filename, uint line)
 {
     //printf("_d_assert(%s, %d)\n", (char *)filename, line);
@@ -36,3 +36,4 @@ extern (C) static void _d_array_bounds(char[] filename, uint line)
     //printf("assertion %p created\n", a);
     throw a;
 }
++/
