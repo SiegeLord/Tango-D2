@@ -1868,6 +1868,7 @@ class NumberFormat
 debug (UnitTest)
 {
     //import tango.text.locale.Core;
+    import tango.stdc.stdio;
 unittest{
 
     assert( Formatter.format( "abc" ) == "abc" );
@@ -1917,6 +1918,17 @@ unittest{
     assert( Formatter.format( "{0:X9}", 0xafe0000 ) == "00AFE0000" );
     assert( Formatter.format( "{0:X13}", 0xafe0000 ) == "000000AFE0000" );
     assert( Formatter.format( "{0:x13}", 0xafe0000 ) == "000000afe0000" );
+    // decimal width
+    assert( Formatter.format( "{0:d6}", 123 ) == "000123" );
+    assert( Formatter.format( "{0,7:d6}", 123 ) == " 000123" );
+    assert( Formatter.format( "{0,-7:d6}", 123 ) == "000123 " );
+
+    assert( Formatter.format( "{0:d6}", -123 ) == "-000123" );
+    assert( Formatter.format( "{0,7:d6}", 123 ) == " 000123" );
+    assert( Formatter.format( "{0,7:d6}", -123 ) == "-000123" );
+    assert( Formatter.format( "{0,8:d6}", -123 ) == " -000123" );
+    assert( Formatter.format( "{0,5:d6}", -123 ) == "-000123" );
+
     // compiler error
     //assert( Formatter.format( "{0}", -9223372036854775808L) == "-9223372036854775808" );
     assert( Formatter.format( "{0}", 0x8000_0000_0000_0000L) == "-9223372036854775808" );
@@ -1937,6 +1949,9 @@ unittest{
     assert( Formatter.format( "a{1}b{1}c{1}", "x", "y", "z" ) == "aybycy" );
 
     // alignment
+    // align does not restrict the length
+    assert( Formatter.format( "{0,5}", "hellohello" ) == "hellohello" );
+    // align fills with spaces
     assert( Formatter.format( "->{0,-10}<-", "hello" ) == "->hello     <-" );
     assert( Formatter.format( "->{0,10}<-", "hello" ) == "->     hello<-" );
     assert( Formatter.format( "->{0,-10}<-", 12345 ) == "->12345     <-" );
