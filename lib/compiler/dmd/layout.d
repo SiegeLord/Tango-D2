@@ -98,14 +98,17 @@ private
     }
     else version( linux )
     {
-        extern (C) int _data;
-        extern (C) int __data_start;
-        extern (C) int _end;
-        extern (C) int _data_start__;
-        extern (C) int _data_end__;
-        extern (C) int _bss_start__;
-        extern (C) int _bss_end__;
-        extern (C) int __fini_array_end;
+        extern (C)
+        {
+            extern int _data;
+            extern int __data_start;
+            extern int _end;
+            extern int _data_start__;
+            extern int _data_end__;
+            extern int _bss_start__;
+            extern int _bss_end__;
+            extern int __fini_array_end;
+        }
 
 	    alias __data_start  Data_Start;
 	    alias _end          Data_End;
