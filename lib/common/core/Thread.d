@@ -195,10 +195,17 @@ else version( Posix )
             //obj.m_bstack = getStackBottom();
             version( X86 )
             {
-                asm
+                static void* getBasePtr()
                 {
-                    mov obj.m_bstack, EBP;
+                    asm
+                    {
+                        naked;
+                        mov EAX, EBP;
+                        ret;
+                    }
                 }
+
+                obj.m_bstack = getBasePtr();
             }
             else version( StackGrowsDown )
                 obj.m_bstack = &obj + 1;
