@@ -13,9 +13,6 @@ version( Posix ) version ( build ) pragma( ignore );
 
 extern (C)
 {
-    extern void* __libc_stack_end;
-    extern int   __data_start;
-    extern int   _end;
     extern int   timezone;
 
     extern void* _deh_beg;

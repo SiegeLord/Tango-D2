@@ -99,10 +99,6 @@ else
 {
     import tango.os.darwin.darwin;
 }
-else
-{
-    import tango.os.linux.linuxextern;
-}
     extern (C)
 {
     void* thread_entryPoint(void* arg);

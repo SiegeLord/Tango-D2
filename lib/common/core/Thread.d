@@ -155,9 +155,9 @@ else version( Posix )
         import tango.stdc.posix.time;
 
         version( darwin )
+        {
             import tango.os.darwin.darwin;
-        else
-            import tango.os.linux.linuxextern;
+        }
 
         //
         // entry point for POSIX threads
