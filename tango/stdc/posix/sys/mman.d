@@ -138,20 +138,20 @@ else version( darwin )
 MCL_CURRENT
 MCL_FUTURE
 
+int mlockall(int);
+int munlockall();
 */
 
-version( linux ){
-    enum {
-        MCL_CURRENT	= 1,
-        MCL_FUTURE	= 2,
-    }
-    
+version( linux )
+{
+    const auto MCL_CURRENT  = 1;
+    const auto MCL_FUTURE   = 2;
+
     int mlockall(int);
     int munlockall();
-    
-}
 
-version( darwin )
+}
+else version( darwin )
 {
     const auto MCL_CURRENT = 0x0001;
     const auto MCL_FUTURE  = 0x0002;
@@ -163,12 +163,17 @@ version( darwin )
 //
 // Range Memory Locking (MLR)
 //
-version( linux ){
+/*
+int mlock(void*, size_t);
+int munlock(void*, size_t);
+*/
+
+version( linux )
+{
     int mlock(void*, size_t);
     int munlock(void*, size_t);
 }
-
-version( darwin )
+else version( darwin )
 {
     int mlock(void*, size_t);
     int munlock(void*, size_t);
