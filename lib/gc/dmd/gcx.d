@@ -50,7 +50,13 @@ version (linux)
     private import gclinux;
 }
 
-private extern (C) void cr_finalize( void* p, bool det = true );
+private
+{
+    extern (C) void cr_finalize( void* p, bool det = true );
+    extern (C) void* os_query_stackBottom();
+    extern (C) void* os_query_stackTop();
+    extern (C) void[] os_query_staticData();
+}
 
 version (MULTI_THREADED)
 {
@@ -182,14 +188,7 @@ class GC
 	gcLock = GCLock.classinfo;
 	gcx = cast(Gcx *)tango.stdc.stdlib.calloc(1, Gcx.sizeof);
 	gcx.initialize();
-	version (Win32)
-	{
-	    setStackBottom(win32.os_query_stackBottom());
-	}
-	version (linux)
-	{
-	    setStackBottom(gclinux.os_query_stackBottom());
-	}
+	setStackBottom(os_query_stackBottom());
     }
 
 
@@ -553,6 +552,7 @@ class GC
 
     static void scanStaticData(gc_t g)
     {
+    /+
 	void *pbot;
 	void *ptop;
 	uint nbytes;
@@ -562,15 +562,22 @@ class GC
 	ptop = pbot + nbytes;
 	g.addRange(pbot, ptop);
 	//debug(PRINTF) printf("-GC.scanStaticData()\n");
+	+/
+	void[] data = os_query_staticData();
+	g.addRange( &data[0], &data[0] + data.length );
     }
 
     static void unscanStaticData(gc_t g)
     {
+    /+
 	void *pbot;
 	uint nbytes;
 
 	os_query_staticdataseg(&pbot, &nbytes);
 	g.removeRange(pbot);
+	+/
+	void[] data = os_query_staticData();
+	g.removeRange( &data[0] );
     }
 
 

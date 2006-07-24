@@ -14,17 +14,30 @@ public
 }
 private
 {
-    extern (C) 
+    extern (C)
 {
     void* memset(void* s, int c, size_t n);
 }
+    extern (C)
+{
+    void* os_query_stackBottom();
+}
+    extern (C)
+{
+    void* os_query_stackTop();
+}
+    void* getStackBottom()
+{
+return os_query_stackBottom();
+}
+    void* getStackTop();
 }
 version (Win32)
 {
     private
 {
     import tango.os.windows.minwin;
-    extern (Windows) 
+    extern (Windows)
 {
     DWORD TlsAlloc();
     PVOID TlsGetValue(DWORD);
@@ -38,25 +51,25 @@ version (Win32)
     DWORD TLS_OUT_OF_INDEXES = -1u;
 }
 }
-    extern (Windows) 
+    extern (Windows)
 {
     alias uint(* btex_fptr)(void*);
 }
     version (X86)
 {
-    extern (C) 
+    extern (C)
 {
     ulong _beginthreadex(void*, uint, btex_fptr, void*, uint, uint*);
 }
 }
 else
 {
-    extern (C) 
+    extern (C)
 {
     uint _beginthreadex(void*, uint, btex_fptr, void*, uint, uint*);
 }
 }
-    extern (Windows) 
+    extern (Windows)
 {
     uint thread_entryPoint(void* arg);
 }
@@ -69,8 +82,6 @@ HANDLE hndl;
 DuplicateHandle(proc,curr,proc,&hndl,0,TRUE,DUPLICATE_SAME_ACCESS);
 return hndl;
 }
-    void* getStackBottom();
-    void* getStackTop();
 }
 }
 else
@@ -92,16 +103,16 @@ else
 {
     import tango.os.linux.linuxextern;
 }
-    extern (C) 
+    extern (C)
 {
     void* thread_entryPoint(void* arg);
 }
     sem_t suspendCount;
-    extern (C) 
+    extern (C)
 {
     void thread_suspendHandler(int sig);
 }
-    extern (C) 
+    extern (C)
 {
     void thread_resumeHandler(int sig)
 in
@@ -112,13 +123,11 @@ body
 {
 }
 }
-    void* getStackBottom();
-    void* getStackTop();
 }
 }
 else
 {
-    static assert(false);
+    static assert(false,"Unknown threading implementation.");
 }
 }
 class Thread
@@ -210,7 +219,7 @@ return getThis().m_local[key] = val;
     protected:
     void run();
     private:
-    enum Call 
+    enum Call
 {
 NO,
 FN,
@@ -288,7 +297,7 @@ return Thread.classinfo;
     uint[8] m_reg;
 }
 }
-extern (C) 
+extern (C)
 {
     void thread_init();
 }
@@ -296,7 +305,7 @@ private
 {
     bool multiThreadedFlag = false;
 }
-extern (C) 
+extern (C)
 {
     bool thread_needLock()
 {
@@ -307,11 +316,11 @@ private
 {
     uint suspendDepth = 0;
 }
-extern (C) 
+extern (C)
 {
     void thread_suspendAll();
 }
-extern (C) 
+extern (C)
 {
     void thread_resumeAll();
 }
@@ -319,7 +328,7 @@ private
 {
     alias void delegate(void*, void*) scanAllThreadsFn;
 }
-extern (C) 
+extern (C)
 {
     void thread_scanAll(scanAllThreadsFn fn, void* curStackTop = null);
 }

@@ -88,6 +88,7 @@ int os_mem_unmap(void *base, uint nbytes)
     return munmap(base, nbytes);
 }
 
+/++++
 
 /**********************************************
  * Determine "bottom" of stack (actually the top on x86 systems).
@@ -123,3 +124,5 @@ void os_query_staticdataseg(void **base, uint *nbytes)
     *base = cast(void *)&__data_start;
     *nbytes = cast(byte *)&_end - cast(byte *)&__data_start;
 }
+
+++++/

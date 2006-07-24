@@ -73,6 +73,7 @@ OBJ_BASE= \
     dmain2.o \
     genobj.o \
     invariant.o \
+    layout.o \
     llmath.o \
     memory.o \
     memset.o \

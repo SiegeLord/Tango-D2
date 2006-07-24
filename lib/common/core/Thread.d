@@ -30,8 +30,36 @@ public
 }
 private
 {
-     // import tango.stdc.string; // for memset
-     extern (C) void* memset(void* s, int c, size_t n);
+    // import tango.stdc.string; // for memset
+    extern (C) void* memset(void* s, int c, size_t n);
+
+    // exposed by compiler runtime
+    extern (C) void* os_query_stackBottom();
+    extern (C) void* os_query_stackTop();
+
+
+    void* getStackBottom()
+    {
+        return os_query_stackBottom();
+    }
+
+
+    void* getStackTop()
+    {
+        version( X86 )
+        {
+            asm
+            {
+                naked;
+                mov EAX, ESP;
+                ret;
+            }
+        }
+        else
+        {
+            return os_query_stackTop();
+        }
+    }
 }
 
 
@@ -114,28 +142,6 @@ version( Win32 )
             DuplicateHandle( proc, curr, proc, &hndl, 0, TRUE, DUPLICATE_SAME_ACCESS );
             return hndl;
         }
-
-
-        void* getStackBottom()
-        {
-            asm
-            {
-                naked;
-                mov EAX, FS:4;
-                ret;
-            }
-        }
-
-
-        void* getStackTop()
-        {
-            asm
-            {
-                naked;
-                mov EAX, ESP;
-                ret;
-            }
-        }
     }
 }
 else version( Posix )
@@ -185,7 +191,19 @@ else version( Posix )
                 obj.m_isRunning = false;
             }
 
-            obj.m_bstack = getStackBottom();
+            // NOTE: For some reason this does not always work for threads.
+            //obj.m_bstack = getStackBottom();
+            version( X86 )
+            {
+                asm
+                {
+                    mov obj.m_bstack, EBP;
+                }
+            }
+            else version( StackGrowsDown )
+                obj.m_bstack = &obj + 1;
+            else
+                obj.m_bstack = &obj - 1;
             obj.m_tstack = obj.m_bstack;
             pthread_setspecific( obj.sm_this, obj );
 
@@ -231,7 +249,7 @@ else version( Posix )
             //}
             else
             {
-                static assert( false );
+                static assert( false, "Architecture not supported." );
             }
 
             // NOTE: Since registers are being pushed and popped from the stack,
@@ -274,7 +292,7 @@ else version( Posix )
             //}
             else
             {
-                static assert( false );
+                static assert( false, "Architecture not supported." );
             }
         }
 
@@ -288,35 +306,6 @@ else version( Posix )
         {
 
         }
-
-
-        // NOTE: this may not work on all versions of linux,
-        //       but apparently the Windows implementation
-        //       does not work in Linux (according to DMD revs)
-        void* getStackBottom()
-        {
-            version( darwin )
-                return _d_gcc_query_stack_origin();
-            else
-                return __libc_stack_end;
-        }
-
-
-        void* getStackTop()
-        {
-            version( X86 )
-            {
-                asm
-                {   naked;
-                    mov EAX, ESP;
-                    ret;
-                }
-            }
-            else
-            {
-                static assert( false );
-            }
-        }
     }
 }
 else
@@ -326,8 +315,7 @@ else
     //       places where version-specific code may be required.  This can be
     //       easily accomlished by searching for 'Windows' or 'Posix'.
 
-    // Unknown threading implementation
-    static assert( false );
+    static assert( false, "Unknown threading implementation." );
 }
 
 

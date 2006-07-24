@@ -62,7 +62,6 @@ int os_mem_unmap(void *base, uint nbytes)
     return VirtualFree(base, 0, MEM_RELEASE) == 0;
 }
 
-
 /********************************************
  */
 
@@ -71,6 +70,8 @@ pthread_t pthread_self()
     //printf("pthread_self() = %x\n", GetCurrentThreadId());
     return cast(pthread_t) GetCurrentThreadId();
 }
+
+/++++
 
 /**********************************************
  * Determine "bottom" of stack (actually the top on Win32 systems).
@@ -102,6 +103,8 @@ void os_query_staticdataseg(void **base, uint *nbytes)
     *base = cast(void *)&_xi_a;
     *nbytes = cast(uint)(cast(char *)&_end - cast(char *)&_xi_a);
 }
+
+++++/
 
 /++++
 
