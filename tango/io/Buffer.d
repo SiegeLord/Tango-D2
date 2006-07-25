@@ -247,6 +247,8 @@ class Buffer : IBuffer
 
         this (IConduit conduit)
         {
+                assert (conduit, "conduit is null");
+
                 this (conduit.bufferSize);
                 setConduit (conduit);
                 this.style = conduit.isTextual ? Text : Binary;
@@ -394,6 +396,8 @@ class Buffer : IBuffer
 
         IBuffer setContent (void[] data, uint readable=0)
         {
+                assert (data.ptr, "data array is null");
+
                 this.data = data;
                 this.limit = readable;
                 this.capacity = data.length;   
