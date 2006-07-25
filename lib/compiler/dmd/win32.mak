@@ -67,7 +67,7 @@ OBJ_BASE= \
     deh.obj \
     dmain2.obj \
     invariant.obj \
-    layout.obj \
+    lifetime.obj \
     memory.obj \
     memset.obj \
     monitor.obj \
