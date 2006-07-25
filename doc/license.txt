@@ -6,4 +6,6 @@ Permission is hereby granted to anyone to use this software for any purpose, inc
 
 2. Altered source versions must be plainly marked as such, and must not be misrepresented as being the original software.
 
-3. This notice may not be removed or altered from any distribution of the source, and applies to all variations including, but not limited to, original source, derived source, and altered source. 
+3. This notice may not be removed or altered from any distribution of the source, and applies to all variations including, but not limited to, original source, derived source, and altered source.
+
+4. Neither the name Tango nor the names of its contributors may be used to endorse or promote products derived from this software without specific prior written permission.
