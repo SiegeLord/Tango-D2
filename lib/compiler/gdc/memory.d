@@ -34,7 +34,7 @@ private
     }
     else version( GC_Use_Stack_GLibC )
     {
-        extern (C) void* __libc_stack_end;
+        extern (C) extern void* __libc_stack_end;
     }
     else
     {
@@ -127,14 +127,17 @@ private
 
     version( GC_Use_Data_Fixed )
     {
-        extern (C) int _data;
-        extern (C) int __data_start;
-        extern (C) int _end;
-        extern (C) int _data_start__;
-        extern (C) int _data_end__;
-        extern (C) int _bss_start__;
-        extern (C) int _bss_end__;
-        extern (C) int __fini_array_end;
+        extern (C)
+        {
+            extern int _data;
+            extern int __data_start;
+            extern int _end;
+            extern int _data_start__;
+            extern int _data_end__;
+            extern int _bss_start__;
+            extern int _bss_end__;
+            extern int __fini_array_end;
+        }
 
         /* %% Move all this to configure script to test if it actually works?
            --enable-gc-data-fixed=Mode,s1,e1,s2,e2

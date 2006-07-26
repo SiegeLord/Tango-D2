@@ -34,7 +34,7 @@ private
 
         version( SimpleLibcStackEnd )
         {
-            extern (C) void* __libc_stack_end;
+            extern (C) extern void* __libc_stack_end;
         }
     }
 }
