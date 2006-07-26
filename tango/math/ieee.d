@@ -43,9 +43,9 @@ private import tango.math.core; // for sin and cos
 package bool mfeq(real x, real y, real precision)
 {
     if (x == y)
-	    return true;
+        return true;
     if (isnan(x) || isnan(y))
-	    return false;
+        return false;
     return fabs(x - y) <= precision;
 }
 
@@ -114,7 +114,7 @@ real frexp(real value, out int exp)
     else
     {
         exp = ex - 0x3FFE;
-	    vu[4] = cast(ushort)((0x8000 & vu[4]) | 0x3FFE);
+        vu[4] = cast(ushort)((0x8000 & vu[4]) | 0x3FFE);
     }
     }
     else if (!*vl)
@@ -339,7 +339,7 @@ real fma(real x, real y, real z)
  * almost twice as fast as calculating sin(y) and cos(y)
  * seperately, and is the preferred method when both are required.
  */
-creal fcis(ireal y)
+creal expi(ireal y)
 {
     version(D_InlineAsm_X86)
     {
@@ -358,8 +358,8 @@ creal fcis(ireal y)
 
 unittest
 {
-    assert(fcis(1.3e5Li)==tango.math.core.cos(1.3e5L)+tango.math.core.sin(1.3e5L)*1i);
-    assert(fcis(0.0Li)==1L+0.0Li);
+    assert(expi(1.3e5Li)==tango.math.core.cos(1.3e5L)+tango.math.core.sin(1.3e5L)*1i);
+    assert(expi(0.0Li)==1L+0.0Li);
 }
 
 /**

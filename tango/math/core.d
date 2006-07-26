@@ -46,17 +46,17 @@ const real E          = 2.7182818284590452354L;  /** e */
 const real LOG2T      = 0x1.a934f0979a3715fcp+1; /** log<sub>2</sub>10 */ // 3.32193 fldl2t
 const real LOG2E      = 0x1.71547652b82fe178p+0; /** log<sub>2</sub>e */ // 1.4427 fldl2e
 const real LOG2       = 0x1.34413509f79fef32p-2; /** log<sub>10</sub>2 */ // 0.30103 fldlg2
-const real LOG10E     = 0.43429448190325182765;  /** log<sub>10</sub>e */
+const real LOG10E     = 0.43429448190325182765L;  /** log<sub>10</sub>e */
 const real LN2        = 0x1.62e42fefa39ef358p-1; /** ln 2 */    // 0.693147 fldln2
-const real LN10       = 2.30258509299404568402;  /** ln 10 */
+const real LN10       = 2.30258509299404568402L;  /** ln 10 */
 const real PI         = 0x1.921fb54442d1846ap+1; /** &pi; */ // 3.14159 fldpi
-const real PI_2       = 1.57079632679489661923;  /** &pi; / 2 */
-const real PI_4       = 0.78539816339744830962;  /** &pi; / 4 */
-const real M_1_PI     = 0.31830988618379067154;  /** 1 / &pi; */
-const real M_2_PI     = 0.63661977236758134308;  /** 2 / &pi; */
-const real M_2_SQRTPI = 1.12837916709551257390;  /** 2 / &radic;&pi; */
-const real SQRT2      = 1.41421356237309504880;  /** &radic;2 */
-const real SQRT1_2    = 0.70710678118654752440;  /** &radic;&frac12 */
+const real PI_2       = 1.57079632679489661923L;  /** &pi; / 2 */
+const real PI_4       = 0.78539816339744830962L;  /** &pi; / 4 */
+const real M_1_PI     = 0.31830988618379067154L;  /** 1 / &pi; */
+const real M_2_PI     = 0.63661977236758134308L;  /** 2 / &pi; */
+const real M_2_SQRTPI = 1.12837916709551257390L;  /** 2 / &radic;&pi; */
+const real SQRT2      = 1.41421356237309504880L;  /** &radic;2 */
+const real SQRT1_2    = 0.70710678118654752440L;  /** &radic;&frac12 */
 
 /*
  * Primitives
@@ -1069,8 +1069,8 @@ body
 {
     version (D_InlineAsm_X86)
     {
-	version (Windows)
-	{
+    version (Windows)
+    {
     asm // assembler by W. Bright
     {
         // EDX = (A.length - 1) * real.sizeof
@@ -1099,32 +1099,32 @@ body
     }
     else
     {
-	    asm	// assembler by W. Bright
-	    {
-		// EDX = (A.length - 1) * real.sizeof
-		mov     ECX,A[EBP]		    ; // ECX = A.length
-		dec     ECX			        ;
-		lea     EDX,[ECX*8]		    ;
-		lea	EDX,[EDX][ECX*4]	    ;
-		add     EDX,A+4[EBP]	    ;
-		fld     real ptr [EDX]	    ; // ST0 = coeff[ECX]
-		jecxz   return_ST		    ;
-		fld     x[EBP]			    ; // ST0 = x
-		fxch    ST(1)			    ; // ST1 = x, ST0 = r
-		align   4			        ;
-	L2:     fmul    ST,ST(1)		; // r *= x
-		fld     real ptr -12[EDX]	;
-		sub     EDX,12			    ; // deg--
-		faddp   ST(1),ST		    ;
-		dec     ECX			        ;
-		jne     L2			        ;
-		fxch    ST(1)			    ; // ST1 = r, ST0 = x
-		fstp    ST(0)			    ; // dump x
-		align   4			        ;
-	return_ST:				        ;
-		;
-	    }
-	}
+        asm // assembler by W. Bright
+        {
+        // EDX = (A.length - 1) * real.sizeof
+        mov     ECX,A[EBP]          ; // ECX = A.length
+        dec     ECX                 ;
+        lea     EDX,[ECX*8]         ;
+        lea EDX,[EDX][ECX*4]        ;
+        add     EDX,A+4[EBP]        ;
+        fld     real ptr [EDX]      ; // ST0 = coeff[ECX]
+        jecxz   return_ST           ;
+        fld     x[EBP]              ; // ST0 = x
+        fxch    ST(1)               ; // ST1 = x, ST0 = r
+        align   4                   ;
+    L2:     fmul    ST,ST(1)        ; // r *= x
+        fld     real ptr -12[EDX]   ;
+        sub     EDX,12              ; // deg--
+        faddp   ST(1),ST            ;
+        dec     ECX                 ;
+        jne     L2                  ;
+        fxch    ST(1)               ; // ST1 = r, ST0 = x
+        fstp    ST(0)               ; // dump x
+        align   4                   ;
+    return_ST:                      ;
+        ;
+        }
+    }
     }
     else
     {

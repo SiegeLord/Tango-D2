@@ -3,14 +3,29 @@
         copyright:      Copyright (c) 2004 Kris Bell. All rights reserved
 
         license:        BSD style: $(LICENSE)
-        
-        version:        Initial release: April 2004      
-        
+
+        version:        Initial release: April 2004
+
         author:         various
 
 *******************************************************************************/
 
 module tango.math.Random;
+
+
+version (Win32)
+        {
+        extern(Windows) int QueryPerformanceCounter (ulong *);
+        }
+
+version (Posix)
+        {
+                version (linux)
+                         private import tango.os.linux.linux;
+
+                version (darwin)
+                         private import tango.stdc.darwin.darwin;
+        }
 
 
 /******************************************************************************
@@ -27,26 +42,12 @@ module tango.math.Random;
                 z(n)=2*z(n-1)+z(n-2) +carry mod 2^32
 
         The y's are a shift register sequence on 32bit binary vectors
-        period 2^32-1; The z's are a simple multiply-with-carry sequence 
-        with period 2^63+2^32-1.  
+        period 2^32-1; The z's are a simple multiply-with-carry sequence
+        with period 2^63+2^32-1.
 
         The period of KISS is thus 2^32*(2^32-1)*(2^63+2^32-1) > 2^127
 
 ******************************************************************************/
-
-version (Win32)
-        {
-        extern(Windows) int QueryPerformanceCounter (ulong *);
-        }
-
-version (Posix)
-        {
-                version (linux)
-                         private import tango.os.linux.linux;
-
-                version (darwin)
-                         private import tango.stdc.darwin.darwin;
-        }
 
 class Random
 {
@@ -62,12 +63,12 @@ class Random
 
         **********************************************************************/
 
-        static this () 
+        static this ()
         {
                 ulong s;
 
                 version (Posix)
-                        {           
+                        {
                         timeval tv;
 
                         gettimeofday (&tv, null);
@@ -83,7 +84,7 @@ class Random
 
         **********************************************************************/
 
-        static final void seed (uint seed) 
+        static final void seed (uint seed)
         {
                 kiss_x = seed | 1;
                 kiss_y = seed | 2;
