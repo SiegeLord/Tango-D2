@@ -1,15 +1,17 @@
-
-/*
- *  Copyright (C) 2004-2005 by Digital Mars, www.digitalmars.com
- *  Written by Walter Bright
+/**
+ * This module exposes functionality for inspecting and manipulating memory.
  *
+ * Copyright: Copyright (C) 2005-2006 Digital Mars, www.digitalmars.com.
+ *            All rights reserved.
+ * License:
  *  This software is provided 'as-is', without any express or implied
  *  warranty. In no event will the authors be held liable for any damages
  *  arising from the use of this software.
  *
  *  Permission is granted to anyone to use this software for any purpose,
  *  including commercial applications, and to alter it and redistribute it
- *  freely, subject to the following restrictions:
+ *  freely, in both source and binary form, subject to the following
+ *  restrictions:
  *
  *  o  The origin of this software must not be misrepresented; you must not
  *     claim that you wrote the original software. If you use this software
@@ -19,757 +21,369 @@
  *     be misrepresented as being the original software.
  *  o  This notice may not be removed or altered from any source
  *     distribution.
+ * Authors:   Walter Bright, Sean Kelly
  */
+module memory;
 
-
-// Storage allocation
 
 private
 {
-    import tango.stdc.stdlib;
-    import tango.stdc.string;
-    import tango.stdc.stdarg;
-    import tango.stdc.stdbool; // TODO: remove this when the old bit code goes away
-    debug import tango.stdc.stdio;
-}
-
-private
-{
-    extern (C) void* gc_malloc( size_t sz, bool df = false );
-    extern (C) void* gc_calloc( size_t sz, bool df = false );
-    extern (C) void* gc_realloc( void* p, size_t sz, bool df = false );
-    extern (C) void gc_free( void* p );
-
-    extern (C) size_t gc_sizeOf( void* p );
-    extern (C) size_t gc_capacityOf( void* p );
-
-    extern (C) bool onCollectResource( Object o );
-    extern (C) void onFinalizeError( ClassInfo c, Exception e );
-    extern (C) void onOutOfMemoryError();
-}
-
-extern (C)
-{
-
-void _d_monitorrelease(Object h);
-
-Object _d_newclass(ClassInfo ci)
-{
-    void *p;
-
-    debug printf("_d_newclass(ci = %p)\n", ci);
-    if (ci.flags & 1)			// if COM object
+    version( GC_Use_Stack_FreeBSD )
     {
-	p = cast(Object)tango.stdc.stdlib.malloc(ci.init.length);
-	if (!p)
-	    onOutOfMemoryError();
+        extern (C) int _d_gcc_gc_freebsd_stack(void**);
+    }
+    else version( GC_Use_Stack_GLibC )
+    {
+        extern (C) void* __libc_stack_end;
     }
     else
     {
-	p = gc_malloc(ci.init.length, true);
-	debug printf(" p = %p\n", p);
+        static assert( false, "Stack query method not supported." );
     }
+}
 
-    debug
+
+public
+{
+    version( GC_Use_Stack_Guess )
     {
-	printf("p = %p\n", p);
-	printf("ci = %p, ci.init = %p, len = %d\n", ci, ci.init, ci.init.length);
-	printf("vptr = %p\n", *cast(void **)ci.init);
-	printf("vtbl[0] = %p\n", (*cast(void ***)ci.init)[0]);
-	printf("vtbl[1] = %p\n", (*cast(void ***)ci.init)[1]);
-	printf("init[0] = %x\n", (cast(uint *)ci.init)[0]);
-	printf("init[1] = %x\n", (cast(uint *)ci.init)[1]);
-	printf("init[2] = %x\n", (cast(uint *)ci.init)[2]);
-	printf("init[3] = %x\n", (cast(uint *)ci.init)[3]);
-	printf("init[4] = %x\n", (cast(uint *)ci.init)[4]);
-    }
-
-
-    // Initialize it
-    (cast(byte*)p)[0 .. ci.init.length] = ci.init[];
-
-    //printf("initialization done\n");
-    return cast(Object)p;
-}
-
-extern (D) alias void (*fp_t)(Object);		// generic function pointer
-
-void _d_delinterface(void** p)
-{
-    if (*p)
-    {
-	Interface *pi = **cast(Interface ***)*p;
-	Object o;
-
-	o = cast(Object)(*p - pi.offset);
-	_d_delclass(&o);
-	*p = null;
+        // NOTE: This method of getting the stack base really stinks and should
+        //       probably just be removed to force the implementer to sort out
+        //       something a bit better for new systems.
+        void* stackOriginGuess;
     }
 }
 
-void _d_delclass(Object *p)
-{
-    if (*p)
-    {
-	debug printf("_d_delclass(%p)\n", *p);
-	version(0)
-	{
-	    ClassInfo **pc = cast(ClassInfo **)*p;
-	    if (*pc)
-	    {
-		ClassInfo c = **pc;
-
-		if (c.deallocator)
-		{
-		    cr_finalize(*p);
-		    fp_t fp = cast(fp_t)c.deallocator;
-		    (*fp)(*p);			// call deallocator
-		    *p = null;
-		    return;
-		}
-	    }
-	}
-	gc_free(*p);
-	*p = null;
-    }
-}
-
-Array _d_new(size_t length, size_t size)
-{
-    void *p;
-    Array result;
-
-    debug printf("_d_new(length = %d, size = %d)\n", length, size);
-    /*
-    if (length == 0 || size == 0)
-	result = 0;
-    else
-    */
-    if (length && size)
-    {
-	p = gc_malloc(length * size + 1);
-	debug printf(" p = %p\n", p);
-	memset(p, 0, length * size);
-	result.length = length;
-	result.data = cast(byte*)p;
-	return result;
-    }
-    return result;
-}
-
-Array _d_newarrayip(size_t length, size_t size, void * init)
-{
-    Array result;
-
-    if (length && size)
-    {
-	result.length = length;
-	result.data = cast(byte*) gc_malloc(length * size + 1);
-	if (size == 1)
-	    memset(result.data, * cast(ubyte*) init, length);
-	else
-	{
-	    void * p = result.data;
-	    for (uint u = 0; u < length; u++)
-	    {
-		memcpy(p, init, size);
-		p += size;
-	    }
-	}
-    }
-    return result;
-}
-
-
-Array _d_newbitarray(size_t length, bit value)
-{
-    void *p;
-    Array result;
-
-    debug printf("_d_newbitarray(length = %d, value = %d)\n", length, value);
-    /*
-    if (length == 0)
-	result = 0;
-    else
-    */
-    if (length)
-    {	size_t size = ((length + 31) >> 5) * 4 + 1; // number of bytes
-        // (not sure what the extra byte is for...)
-	ubyte fill = value ? 0xFF : 0;
-
-	p = gc_malloc(size);
-	debug printf(" p = %p\n", p);
-	memset(p, fill, size);
-	result.length = length;
-	result.data = cast(byte*)p;
-    }
-    return result;
-}
-
-struct Array
-{
-    size_t length;
-    byte *data;
-};
-
-// Perhaps we should get a a size argument like _d_new(), so we
-// can zero out the array?
-
-void _d_delarray(Array *p)
-{
-    if (p)
-    {
-	assert(!p.length || p.data);
-	if (p.data)
-	    gc_free(p.data);
-	p.data = null;
-	p.length = 0;
-    }
-}
-
-
-void _d_delmemory(void* *p)
-{
-    if (*p)
-    {
-	gc_free(*p);
-	*p = null;
-    }
-}
-
-
-}
-
-
-extern (C) void _d_callfinalizer(void *p)
-{
-    cr_finalize( p );
-}
-
-
-extern (C) void cr_finalize(void* p, bool det = true)
-{
-    //printf("cr_finalize(p = %p)\n", p);
-    if (p) // not necessary if called from gc
-    {
-	    ClassInfo** pc = cast(ClassInfo**)p;
-
-	    if (*pc)
-	    {
-	        ClassInfo c = **pc;
-
-	        try
-	        {
-        	    if (det || onCollectResource(cast(Object)p))
-                {
-    		        do
-    		        {
-    		            if (c.destructor)
-    		            {
-    			            fp_t fp = cast(fp_t)c.destructor;
-    			            (*fp)(cast(Object)p); // call destructor
-    		            }
-    		            c = c.base;
-    		        } while (c);
-    		    }
-		        if ((cast(void**)p)[1])	// if monitor is not null
-		            _d_monitorrelease(cast(Object)p);
-	        }
-	        catch (Exception e)
-	        {
-    	        onFinalizeError(**pc, e);
-	        }
-	        finally
-	        {
-		        *pc = null;	// zero vptr
-	        }
-	    }
-    }
-}
-
-/+ ------------------------------------------------ +/
-
-
-/******************************
- * Resize dynamic arrays other than bit[].
- */
-
-extern (C)
-byte[] _d_arraysetlength(size_t newlength, size_t sizeelem, Array *p)
-in
-{
-    assert(sizeelem);
-    assert(!p.length || p.data);
-}
-body
-{
-    byte* newdata;
-
-    debug
-    {
-	printf("_d_arraysetlength(p = %p, sizeelem = %d, newlength = %d)\n", p, sizeelem, newlength);
-	if (p)
-	    printf("\tp.data = %p, p.length = %d\n", p.data, p.length);
-    }
-
-    if (newlength)
-    {
-	version (GNU)
-	{
-	    static char x = 0;
-	    if (x)
-		goto Loverflow;
-	}
-
-	version (D_InlineAsm_X86)
-	{
-	    size_t newsize = void;
-
-	    asm
-	    {
-		mov	EAX,newlength	;
-		mul	EAX,sizeelem	;
-		mov	newsize,EAX	;
-		jc	Loverflow	;
-	    }
-	}
-	else
-	{
-	    size_t newsize = sizeelem * newlength;
-
-	    if (newsize / newlength != sizeelem)
-		goto Loverflow;
-	}
-	//printf("newsize = %x, newlength = %x\n", newsize, newlength);
-
-	if (p.length)
-	{
-	    newdata = p.data;
-	    if (newlength > p.length)
-	    {
-		size_t size = p.length * sizeelem;
-		size_t cap = gc_sizeOf(p.data);
-
-		if (cap <= newsize)
-		{
-		    newdata = cast(byte *)gc_malloc(newsize + 1);
-		    newdata[0 .. size] = p.data[0 .. size];
-		}
-		newdata[size .. newsize] = 0;
-	    }
-	}
-	else
-	{
-	    newdata = cast(byte *)gc_calloc(newsize + 1);
-	}
-    }
-    else
-    {
-	newdata = null;
-    }
-
-    p.data = newdata;
-    p.length = newlength;
-    return newdata[0 .. newlength];
-
-Loverflow:
-    onOutOfMemoryError();
-}
 
 /**
- * For non-zero initializers
+ *
  */
-
-extern (C)
-byte[] _d_arraysetlength2(size_t newlength, size_t sizeelem, Array *p, ...)
-in
+extern (C) void* cr_stackBottom()
 {
-    assert(sizeelem);
-    assert(!p.length || p.data);
-}
-body
-{
-    byte* newdata;
-
-    debug
+    version( GC_Use_Stack_GLibC )
     {
-	printf("_d_arraysetlength2(p = %p, sizeelem = %d, newlength = %d)\n", p, sizeelem, newlength);
-	if (p)
-	    printf("\tp.data = %p, p.length = %d\n", p.data, p.length);
+        return __libc_stack_end;
     }
-
-    if (newlength)
+    else version( GC_Use_Stack_Guess )
     {
-	version (D_InlineAsm_X86)
-	{
-	    size_t newsize = void;
+        return stackOriginGuess;
+    }
+    else version( GC_Use_Stack_FreeBSD )
+    {
+        void* stack_origin;
 
-	    asm
-	    {
-		mov	EAX,newlength	;
-		mul	EAX,sizeelem	;
-		mov	newsize,EAX	;
-		jc	Loverflow	;
-	    }
-	}
-	else
-	{
-	    size_t newsize = sizeelem * newlength;
-
-	    if (newsize / newlength != sizeelem)
-		goto Loverflow;
-	}
-	//printf("newsize = %x, newlength = %x\n", newsize, newlength);
-
-    size_t size = p.length * sizeelem;
-
-	if (p.length)
-	{
-	    newdata = p.data;
-	    if (newlength > p.length)
-	    {
-		size_t cap = gc_sizeOf(p.data);
-
-		if (cap <= newsize)
-		{
-		    newdata = cast(byte *)gc_malloc(newsize + 1);
-		    newdata[0 .. size] = p.data[0 .. size];
-		}
-		newdata[size .. newsize] = 0;
-	    }
-	}
-	else
-	{
-	    newdata = cast(byte *)gc_malloc(newsize + 1);
-	}
-
-	va_list q;
-	va_start!(Array *)(q, p);	// q is pointer to initializer
-
-	if (newsize > size)
-	{
-	    if (sizeelem == 1)
-		newdata[size .. newsize] = *(cast(byte*)q);
-	    else
-	    {
-		for (size_t u = size; u < newsize; u += sizeelem)
-		{
-		    memcpy(newdata + u, q, sizeelem);
-		}
-	    }
-	}
+        if( _d_gcc_gc_freebsd_stack(&stack_origin) )
+            return stack_origin;
+        else // No way to signal an error
+            return null;
+    }
+    else version( GC_Use_Stack_Scan )
+    {
+        static assert( false );
+    }
+    else version( GC_Use_Stack_Fixed )
+    {
+        version( darwin )
+            return cast(void*) 0xc0000000;
+        else
+            static assert( false );
     }
     else
     {
-	newdata = null;
+        static assert( false, "Operating system not supported." );
     }
-
-    p.data = newdata;
-    p.length = newlength;
-    return newdata[0 .. newlength];
-
-Loverflow:
-    onOutOfMemoryError();
 }
 
-/***************************
- * Resize bit[] arrays.
+
+/**
+ *
  */
-
-version (none)
+extern (C) void* cr_stackTop()
 {
-extern (C)
-bit[] _d_arraysetlengthb(size_t newlength, Array *p)
-{
-    byte* newdata;
-    size_t newsize;
-
-    debug printf("p = %p, newlength = %d\n", p, newlength);
-
-    assert(!p.length || p.data);
-    if (newlength)
+    version( X86 )
     {
-	newsize = ((newlength + 31) >> 5) * 4;	// # bytes rounded up to uint
-	if (p.length)
-	{   size_t size = ((p.length + 31) >> 5) * 4;
-
-	    newdata = p.data;
-	    if (newsize > size)
-	    {
-		size_t cap = gc_sizeOf(p.data);
-		if (cap <= newsize)
-		{
-		    newdata = cast(byte *)gc_malloc(newsize + 1);
-		    newdata[0 .. size] = p.data[0 .. size];
-		}
-		newdata[size .. newsize] = 0;
-	    }
-	}
-	else
-	{
-	    newdata = cast(byte *)gc_calloc(newsize + 1);
-	}
+        asm
+        {
+            naked;
+            mov EAX, ESP;
+            ret;
+        }
     }
     else
     {
-	newdata = null;
+	    static assert( false, "Architecture not supported." );
+    }
+}
+
+
+private
+{
+    enum DataSegmentTracking
+    {
+        ExecutableOnly,
+        LoadTimeLibrariesOnly,
+        Dynamic
     }
 
-    p.data = newdata;
-    p.length = newlength;
-    return (cast(bit *)newdata)[0 .. newlength];
-}
+    version( GC_Use_Data_Fixed )
+    {
+        extern (C) int _data;
+        extern (C) int __data_start;
+        extern (C) int _end;
+        extern (C) int _data_start__;
+        extern (C) int _data_end__;
+        extern (C) int _bss_start__;
+        extern (C) int _bss_end__;
+        extern (C) int __fini_array_end;
+
+        /* %% Move all this to configure script to test if it actually works?
+           --enable-gc-data-fixed=Mode,s1,e1,s2,e2
+           .. the Mode can be a version instead of enum trick
+        */
+
+        version( aix )
+        {
+            alias _data Data_Start;
+            alias _end  Data_End;
+
+            enum FM
+            {
+                MinMax = 0,
+                One    = 1,
+                Two    = 0
+            }
+        }
+        else version( cygwin )
+        {
+            alias _data_start__ Data_Start;
+            alias _data_end__   Data_End;
+            alias _bss_start__  Data_Start_2;
+            alias _bss_end__    Data_End_2;
+
+            enum FM
+            {
+                MinMax = 1,
+                One    = 0,
+                Two    = 0
+            }
+        }
+        else version( freebsd )
+        {
+            // use '_etext' if '__fini_array_end' doesn't work
+            /* There is a bunch of read-only data after .data and before .bss, but
+               no linker symbols to find it.  Would have to set up a fault handler
+               and scan... */
+
+            alias __fini_array_end  Data_Start;
+            alias _end              Data_End;
+
+            enum FM
+            {
+                MinMax = 0,
+                One    = 1,
+                Two    = 0
+            }
+        }
+        else version( linux )
+        {
+            alias __data_start  Data_Start;
+            alias _end          Data_End;
+
+            /* possible better way:
+               [__data_start,_DYNAMIC) and [_edata/edata or __bss_start,_end/end)
+               This doesn't really save much.. a better linker script is needed.
+            */
+
+            enum FM
+            {
+                MinMax = 0,
+                One    = 1,
+                Two    = 0
+            }
+        }
+        else version( skyos )
+        {
+            alias _data_start__ Data_Start;
+            alias _bss_end__    Data_End;
+
+            enum FM
+            {
+                MinMax = 0,
+                One    = 1,
+                Two    = 0
+            }
+        }
+    }
+    else version( GC_Use_Data_Dyld )
+    {
+        extern (C) void _d_gcc_dyld_start(DataSegmentTracking mode);
+    }
+    else version( GC_Use_Data_Proc_Maps )
+    {
+        private import tango.stdc.stdlib;
+
+        struct DataSeg
+        {
+            void* beg;
+            void* end;
+        }
+
+        DataSeg* dataSegs;
+    }
+
+    alias void delegate( void*, void* ) scanFn;
+
+    void* dataStart,  dataEnd;
+    void* dataStart2, dataEnd2;
 }
 
-/****************************************
- * Append y[] to array x[].
- * size is size of each array element.
+
+/**
+ *
  */
-extern (C)
-Array _d_arrayappend(Array *px, byte[] y, size_t  size)
+extern (C) void cr_scanStaticData( scanFn scan )
 {
+    scan( dataStart,  dataEnd );
+    scan( dataStart2, dataEnd2 );
+}
 
-    size_t cap = gc_sizeOf(px.data);
-    size_t length = px.length;
-    size_t newlength = length + y.length;
-    if (newlength * size > cap)
+
+void initStaticDataPtrs()
+{
+    // Can't assume the input addresses are word-aligned
+    static void* adjust_up( void* p )
     {
-        //
-        // NOTE: cap will be zero if the GC does not own px.data or if
-        //       px.data represents a slice.  in either case, we cannot
-        //       call realloc to grow the memory block in place.
-        //
-        if (cap > 0)
+        const int S = (void*).sizeof;
+        return p + ((S - (cast(uint)p & (S-1))) & (S-1)); // cast ok even if 64-bit
+    }
+
+    static void * adjust_down( void* p )
+    {
+        const int S = (void*).sizeof;
+        return p - (cast(uint) p & (S-1));
+    }
+
+    version( GC_Use_Data_Dyld )
+    {
+        // TODO: fix this function
+        _d_gcc_dyld_start(DataSegmentTracking.Dynamic);
+    }
+    else version( GC_Use_Data_Fixed )
+    {
+        static if( FM.One )
         {
-	    cap = newCapacity(newlength, size);
-	    assert(cap >= newlength * size);
-	    px.data = cast(byte*)gc_realloc(px.data, cap + 1);
-	    }
-	    else
-	    {
-	    cap = newCapacity(newlength, size);
-	    assert(cap >= newlength * size);
-	    void* newdata = gc_malloc(cap + 1);
-	    memcpy(newdata, px.data, length * size);
-	    px.data = cast(byte*)newdata;
-	    }
-    }
-    px.length = newlength;
-    memcpy(px.data + length * size, y, y.length * size);
-    return *px;
-}
-
-extern (C)
-Array _d_arrayappendb(Array *px, bit[] y)
-{
-
-    size_t cap = gc_sizeOf(px.data);
-    size_t length = px.length;
-    size_t newlength = length + y.length;
-    size_t newsize = (newlength + 7) / 8;
-    if (newsize > cap)
-    {
-        //
-        // NOTE: cap will be zero if the GC does not own px.data or if
-        //       px.data represents a slice.  in either case, we cannot
-        //       call realloc to grow the memory block in place.
-        //
-        if (cap > 0)
+            dataStart = adjust_up( &Data_Start );
+            dataEnd   = adjust_down( &Data_End );
+        }
+        else static if( FM.Two )
         {
-	    cap = newCapacity(newsize, 1);
-	    assert(cap >= newsize);
-	    px.data = cast(byte*)gc_realloc(px.data, cap + 1);
-	    }
-	    else
-	    {
-        cap = newCapacity(newsize, 1);
-	    assert(cap >= newsize);
-	    void* newdata = gc_malloc(cap + 1);
-	    memcpy(newdata, px.data, (length + 7) / 8);
-	    px.data = cast(byte*)newdata;
-	    }
-    }
-    px.length = newlength;
-    if ((length & 7) == 0)
-	// byte aligned, straightforward copy
-	memcpy(px.data + length / 8, y, (y.length + 7) / 8);
-    else
-    {	bit* x = cast(bit*)px.data;
+            dataStart  = adjust_up( &Data_Start );
+            dataEnd    = adjust_down( &Data_End );
 
-	for (size_t u = 0; u < y.length; u++)
-	{
-	    x[length + u] = y[u];
-	}
-    }
-    return *px;
-}
-
-
-size_t newCapacity(size_t newlength, size_t size)
-{
-    version(none)
-    {
-	size_t newcap = newlength * size;
-    }
-    else
-    {
-	/*
-	 * Better version by Dave Fladebo:
-	 * This uses an inverse logorithmic algorithm to pre-allocate a bit more
-	 * space for larger arrays.
-	 * - Arrays smaller than 4096 bytes are left as-is, so for the most
-	 * common cases, memory allocation is 1 to 1. The small overhead added
-	 * doesn't effect small array perf. (it's virutally the same as
-	 * current).
-	 * - Larger arrays have some space pre-allocated.
-	 * - As the arrays grow, the relative pre-allocated space shrinks.
-	 * - The logorithmic algorithm allocates relatively more space for
-	 * mid-size arrays, making it very fast for medium arrays (for
-	 * mid-to-large arrays, this turns out to be quite a bit faster than the
-	 * equivalent realloc() code in C, on Linux at least. Small arrays are
-	 * just as fast as GCC).
-	 * - Perhaps most importantly, overall memory usage and stress on the GC
-	 * is decreased significantly for demanding environments.
-	 */
-	size_t newcap = newlength * size;
-	size_t newext = 0;
-
-	if (newcap > 4096)
-	{
-	    //double mult2 = 1.0 + (size / log10(pow(newcap * 2.0,2.0)));
-
-	    // Redo above line using only integer math
-
-	    static int log2plus1(size_t c)
-	    {   int i;
-
-		if (c == 0)
-		    i = -1;
-		else
-		    for (i = 1; c >>= 1; i++)
-			{   }
-		return i;
-	    }
-
-	    /* The following setting for mult sets how much bigger
-	     * the new size will be over what is actually needed.
-	     * 100 means the same size, more means proportionally more.
-	     * More means faster but more memory consumption.
-	     */
-	    //long mult = 100 + (1000L * size) / (6 * log2plus1(newcap));
-	    long mult = 100 + (1000L * size) / log2plus1(newcap);
-
-	    // testing shows 1.02 for large arrays is about the point of diminishing return
-	    if (mult < 102)
-		mult = 102;
-	    newext = cast(size_t)((newcap * mult) / 100);
-	    newext -= newext % size;
-	    //printf("mult: %2.2f, mult2: %2.2f, alloc: %2.2f\n",mult/100.0,mult2,newext / cast(double)size);
-	}
-	newcap = newext > newcap ? newext : newcap;
-	//printf("newcap = %d, newlength = %d, size = %d\n", newcap, newlength, size);
-    }
-    return newcap;
-}
-
-extern (C)
-byte[] _d_arrayappendcp(inout byte[] x, in size_t size, void *argp)
-{
-    size_t cap = gc_sizeOf(x);
-    size_t length = x.length;
-    size_t newlength = length + 1;
-
-    assert(cap == 0 || length * size <= cap);
-
-    //printf("_d_arrayappendc(size = %d, ptr = %p, length = %d, cap = %d)\n", size, x.ptr, x.length, cap);
-
-    if (newlength * size >= cap)
-    {
-	//printf("_d_arrayappendc(size = %d, newlength = %d, cap = %d)\n", size, newlength, cap);
-        //
-        // NOTE: cap will be zero if the GC does not own px.data or if
-        //       px.data represents a slice.  in either case, we cannot
-        //       call realloc to grow the memory block in place.
-        //
-        if (cap > 0)
+            dataStart2 = adjust_up( &Data_Start_2 );
+            dataEnd2   = adjust_down( &Data_End_2 );
+        }
+        else static if( FM.MinMax )
         {
-	    cap = newCapacity(newlength, size);
-	    assert(cap >= newlength * size);
-	    (cast(void **)(&x))[1] = cast(byte *)gc_realloc((cast(void **)(&x))[1], cap + 1);
-	    }
-	    else
-	    {
-        cap = newCapacity(newlength, size);
-	    assert(cap >= newlength * size);
-	    void* newdata = gc_malloc(cap + 1);
-	    memcpy(newdata, x, length * size);
-	    (cast(void **)(&x))[1] = newdata;
-	    }
+            dataStart = adjust_up( &Data_Start < &Data_Start_2 ? &Data_Start : &Data_Start_2 );
+            dataEnd   = adjust_down( &Data_End > &Data_End_2 ? &Data_End : &Data_End_2 );
+        }
     }
 
-    *cast(size_t *)&x = newlength;
-    (cast(byte *)x)[length * size .. newlength * size] = (cast(byte*)argp)[0 .. size];
-    assert((cast(size_t)x.ptr & 15) == 0);
-    assert(gc_sizeOf(x.ptr) > x.length * size);
-    return x;
-}
-
-extern (C)
-byte[] _d_arraycat(byte[] x, byte[] y, size_t size)
-out (result)
-{
-    //printf("_d_arraycat(%d,%p ~ %d,%p size = %d => %d,%p)\n", x.length, x.ptr, y.length, y.ptr, size, result.length, result.ptr);
-    assert(result.length == x.length + y.length);
-    for (size_t i = 0; i < x.length * size; i++)
-	assert((cast(byte*)result)[i] == (cast(byte*)x)[i]);
-    for (size_t i = 0; i < y.length * size; i++)
-	assert((cast(byte*)result)[x.length * size + i] == (cast(byte*)y)[i]);
-
-    size_t cap = gc_sizeOf(result.ptr);
-    assert(!cap || cap > result.length * size);
-}
-body
-{
-    version (none)
+    version( GC_Use_Data_Proc_Maps )
     {
-	/* Cannot use this optimization because:
-	 *  char[] a, b;
-	 *  char c = 'a';
-	 *	b = a ~ c;
-	 *	c = 'b';
-	 * will change the contents of b.
-	 */
-	if (!y.length)
-	    return x;
-	if (!x.length)
-	    return y;
-    }
-    size_t xlen = x.length * size;
-    size_t ylen = y.length * size;
-    size_t len = xlen + ylen;
-    if (!len)
-	return null;
+        // TODO: fix this to store list of data regions
+        // TODO: Exclude zero-mapped regions
 
-    byte* p = cast(byte*)gc_malloc(len + 1);
-    memcpy(p, x, xlen);
-    memcpy(p + xlen, y, ylen);
-    p[len] = 0;
-    return p[0 .. x.length + y.length];
-}
+        int   fd = open("/proc/self/maps", O_RDONLY);
+        int   count; // %% need to configure ret for read..
+        char  buf[2024];
+        char* p;
+        char* e;
+        char* s;
+        void* start;
+        void* end;
 
+        p = buf;
+        if (fd != -1)
+        {
+            while ( (count = read(fd, p, buf.sizeof - (p - buf.ptr))) > 0 )
+            {
+                e = p + count;
+                p = buf;
+                while (true)
+                {
+                    s = p;
+                    while (p < e && *p != '\n')
+                        p++;
+                    if (p < e)
+                    {
+                        // parse the entry in [s, p)
+                        version( GNU_BitsPerPointer32 )
+                        {
+                            enum Ofs
+                            {
+                                Write_Prot = 19,
+                                Start_Addr = 0,
+                                End_Addr   = 9,
+                                Addr_Len   = 8,
+                            }
+                        }
+                        else version( GNU_BitsPerPointer64 )
+                        {
+                            enum Ofs
+                            {
+                                Write_Prot = 35,
+                                Start_Addr = 0,
+                                End_Addr   = 9,
+                                Addr_Len   = 17,
+                            }
+                        }
+                        else
+                        {
+                            static assert( false );
+                        }
 
-extern (C)
-bit[] _d_arrayappendcb(inout bit[] x, bit b)
-{
-    if (x.length & 7)
-    {
-	*cast(size_t *)&x = x.length + 1;
+                        // %% this is wrong for 64-bit:
+                        // uint   strtoul(char *,char **,int);
+
+                        if( s[Ofs.Write_Prot] == 'w' )
+                        {
+                            s[Ofs.Start_Addr + Ofs.Addr_Len] = '\0';
+                            s[Ofs.End_Addr + Ofs.Addr_Len] = '\0';
+                            start = cast(void*) strtoul(s + Ofs.Start_Addr, null, 16);
+                            end   = cast(void*) strtoul(s + Ofs.End_Addr, null, 16);
+
+                            // 1. Exclude anything overlapping [dataStart, dataEnd)
+                            // 2. Exclude stack
+                            if ( ( !dataEnd ||
+                                   !( dataStart >= start && dataEnd <= end ) ) &&
+                                 !( &buf >= start && & buf < end ) )
+                            {
+                                // we already have static data from this region.  anything else
+                                // is heap (%% check)
+                                debug (ProcMaps) printf("Adding map range %p 0%p\n", start, end);
+                                // TODO: add region here
+                                static assert( false, "GC_Use_Data_Proc_Maps not supported." );
+                                //addRange(start, end);
+                            }
+                        }
+                        p++;
+                    }
+                    else
+                    {
+                        count = p - s;
+                        memmove(buf, s, count);
+                        p = buf.ptr + count;
+                        break;
+                    }
+                }
+            }
+            close(fd);
+        }
     }
     else
     {
-	x.length = x.length + 1;
+        static assert( false, "Operating system not supported." );
     }
-    x[x.length - 1] = b;
-    return x;
 }
-

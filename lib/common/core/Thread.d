@@ -34,13 +34,13 @@ private
     extern (C) void* memset(void* s, int c, size_t n);
 
     // exposed by compiler runtime
-    extern (C) void* os_query_stackBottom();
-    extern (C) void* os_query_stackTop();
+    extern (C) void* cr_stackBottom();
+    extern (C) void* cr_stackTop();
 
 
     void* getStackBottom()
     {
-        return os_query_stackBottom();
+        return cr_stackBottom();
     }
 
 
@@ -57,7 +57,7 @@ private
         }
         else
         {
-            return os_query_stackTop();
+            return cr_stackTop();
         }
     }
 }
@@ -210,7 +210,7 @@ else version( Posix )
             else version( StackGrowsDown )
                 obj.m_bstack = &obj + 1;
             else
-                obj.m_bstack = &obj - 1;
+                obj.m_bstack = &obj;
             obj.m_tstack = obj.m_bstack;
             pthread_setspecific( obj.sm_this, obj );
 
@@ -1356,10 +1356,10 @@ private alias void delegate( void*, void* ) scanAllThreadsFn;
  * will be passed ranges representing both stack and register values.
  *
  * Params:
- *  fn          = The scanner function.  It should scan from p1 through p2 - 1.
+ *  scan        = The scanner function.  It should scan from p1 through p2 - 1.
  *  curStackTop = An optional pointer to the top of the calling thread's stack.
  */
-extern (C) void thread_scanAll( scanAllThreadsFn fn, void* curStackTop = null )
+extern (C) void thread_scanAll( scanAllThreadsFn scan, void* curStackTop = null )
 in
 {
     assert( suspendDepth > 0 );
@@ -1394,16 +1394,16 @@ body
             // NOTE: We can't index past the bottom of the stack
             //       so don't do the "+1" for StackGrowsDown.
             if( t.m_tstack && t.m_tstack < t.m_bstack )
-                fn( t.m_tstack, t.m_bstack );
+                scan( t.m_tstack, t.m_bstack );
         }
         else
         {
             if( t.m_bstack && t.m_bstack < t.m_tstack )
-                fn( t.m_bstack, t.m_tstack + 1 );
+                scan( t.m_bstack, t.m_tstack + 1 );
         }
         version( Win32 )
         {
-            fn( &t.m_reg[0], &t.m_reg[0] + t.m_reg.length );
+            scan( &t.m_reg[0], &t.m_reg[0] + t.m_reg.length );
         }
     }
 }

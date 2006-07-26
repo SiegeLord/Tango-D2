@@ -52,20 +52,23 @@ version (linux)
 
 private
 {
+    extern (C) void* cr_stackBottom();
+    extern (C) void* cr_stackTop();
+
     extern (C) void cr_finalize( void* p, bool det = true );
-    extern (C) void* os_query_stackBottom();
-    extern (C) void* os_query_stackTop();
-    extern (C) void[] os_query_staticData();
-}
 
-version (MULTI_THREADED)
-{
-    private extern (C) bool thread_needLock();
-    private extern (C) void thread_suspendAll();
-    private extern (C) void thread_resumeAll();
+    alias void delegate( void*, void* ) scanFn;
 
-    private alias void delegate( void*, void* ) scanAllThreadsFn;
-    private extern (C) void thread_scanAll( scanAllThreadsFn fn, void* curStackTop = null );
+    extern (C) void cr_scanStaticData( scanFn scan );
+
+    version (MULTI_THREADED)
+    {
+        extern (C) bool thread_needLock();
+        extern (C) void thread_suspendAll();
+        extern (C) void thread_resumeAll();
+
+        extern (C) void thread_scanAll( scanFn fn, void* curStackTop = null );
+    }
 }
 
 alias GC gc_t;
@@ -188,7 +191,7 @@ class GC
 	gcLock = GCLock.classinfo;
 	gcx = cast(Gcx *)tango.stdc.stdlib.calloc(1, Gcx.sizeof);
 	gcx.initialize();
-	setStackBottom(os_query_stackBottom());
+	setStackBottom(cr_stackBottom());
     }
 
 
@@ -553,6 +556,8 @@ class GC
     static void scanStaticData(gc_t g)
     {
     /+
+     + NOTE: Replaced by call to cr_scanStaticData
+     +
 	void *pbot;
 	void *ptop;
 	uint nbytes;
@@ -563,21 +568,19 @@ class GC
 	g.addRange(pbot, ptop);
 	//debug(PRINTF) printf("-GC.scanStaticData()\n");
 	+/
-	void[] data = os_query_staticData();
-	g.addRange( &data[0], &data[0] + data.length );
     }
 
     static void unscanStaticData(gc_t g)
     {
     /+
+     + NOTE: Replaced by call to cr_scanStaticData
+     +
 	void *pbot;
 	uint nbytes;
 
 	os_query_staticdataseg(&pbot, &nbytes);
 	g.removeRange(pbot);
 	+/
-	void[] data = os_query_staticData();
-	g.removeRange( &data[0] );
     }
 
 
@@ -1424,6 +1427,8 @@ struct Gcx
 	    pool = pooltable[n];
 	    pool.mark.copy(&pool.freebits);
 	}
+
+    cr_scanStaticData( &mark );
 
 	version (MULTI_THREADED)
 	{

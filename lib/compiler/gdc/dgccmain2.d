@@ -9,6 +9,7 @@
 
 private
 {
+    import memory;
     import util.console;
 
     import tango.stdc.stddef;
@@ -100,14 +101,18 @@ extern (C) int _d_run_main(int argc, char **argv, main_type main_func)
     int result;
 
     version (GC_Use_Stack_Guess)
-	stackOriginGuess = &argv;
+    {
+	    stackOriginGuess = &argv;
+	}
     version (GNU_CBridge_Stdio)
-	_d_gnu_cbridge_init_stdio();
-    // Win32: original didn't do this -- what about Gcc?
+    {
+	    _d_gnu_cbridge_init_stdio();
+	}
     version (all)
     {
         _STI_monitor_staticctor();
         _STI_critical_init();
+        initStaticDataPtrs();
         gc_init();
     }
 

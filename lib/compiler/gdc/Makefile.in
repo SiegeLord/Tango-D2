@@ -123,6 +123,7 @@ OBJ_BASE= \
     critical.o \
     dgccmain2.o \
     invariant.o \
+    lifetime.o \
     memory.o \
     memset.o \
     monitor.o \

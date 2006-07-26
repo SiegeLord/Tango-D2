@@ -64,16 +64,25 @@ else version (linux)
     private import gclinux;
 }
 
-private extern (C) void cr_finalize( void* p, bool det = true );
-
-version (MULTI_THREADED)
+private
 {
-    private extern (C) bool thread_needLock();
-    private extern (C) void thread_suspendAll();
-    private extern (C) void thread_resumeAll();
+    extern (C) void* cr_stackBottom();
+    extern (C) void* cr_stackTop();
 
-    private alias void delegate( void*, void* ) scanAllThreadsFn;
-    private extern (C) void thread_scanAll( scanAllThreadsFn fn, void* curStackTop = null );
+    extern (C) void cr_finalize( void* p, bool det = true );
+
+    alias void delegate( void*, void* ) scanFn;
+
+    extern (C) void cr_scanStaticData( scanFn scan );
+
+    version (MULTI_THREADED)
+    {
+        extern (C) bool thread_needLock();
+        extern (C) void thread_suspendAll();
+        extern (C) void thread_resumeAll();
+
+        extern (C) void thread_scanAll( scanFn fn, void* curStackTop = null );
+    }
 }
 
 alias GC gc_t;
@@ -198,18 +207,7 @@ class GC
 	gcLock = GCLock.classinfo;
 	gcx = cast(Gcx *)tango.stdc.stdlib.calloc(1, Gcx.sizeof);
 	gcx.initialize();
-	version (Win32)
-	{
-	    setStackBottom(win32.os_query_stackBottom());
-	}
-	else version (GNU)
-	{
-	    setStackBottom(gcgcc.os_query_stackBottom());
-	}
-	else version (linux)
-	{
-	    setStackBottom(gclinux.os_query_stackBottom());
-	}
+	setStackBottom(cr_stackBottom());
     }
 
 
@@ -575,6 +573,9 @@ class GC
 
     static void scanStaticData(gc_t g)
     {
+    /+
+     + NOTE: Replaced by call to cr_scanStaticData
+     +
 	void *pbot;
 	void *ptop;
 	uint nbytes;
@@ -590,10 +591,14 @@ class GC
 	    g.addRange(pbot, ptop);
 	}
 	//debug(PRINTF) printf("-GC.scanStaticData()\n");
+	+/
     }
 
     static void unscanStaticData(gc_t g)
     {
+    /+
+     + NOTE: Replaced by call to cr_scanStaticData
+     +
 	void *pbot;
 	uint nbytes;
 
@@ -605,6 +610,7 @@ class GC
 	} else {
 	    g.removeRange(pbot);
 	}
+	+/
     }
 
 
@@ -1466,6 +1472,8 @@ struct Gcx
 	    pool = pooltable[n];
 	    pool.mark.copy(&pool.freebits);
 	}
+
+    cr_scanStaticData( &mark );
 
 	version (MULTI_THREADED)
 	{

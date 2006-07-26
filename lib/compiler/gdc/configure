@@ -7623,7 +7623,7 @@ rm -f conftest.err conftest.$ac_objext \
 fi
 if test -z "$d_gc_stack"; then
     d_gc_stack=GC_Use_Stack_Guess
-    D_GC_MODULES="$D_GC_MODULES internal/gc/gc_guess_stack.o"
+#    D_GC_MODULES="$D_GC_MODULES internal/gc/gc_guess_stack.o"
 fi
 if test -z "$d_gc_stack"; then
     { { echo "$as_me:$LINENO: error: No usable stack origin information" >&5

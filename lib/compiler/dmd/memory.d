@@ -1,9 +1,27 @@
 /**
- * Thhis module exposes functionality for inspecting and manipulating memory.
+ * This module exposes functionality for inspecting and manipulating memory.
  *
- * Copyright: Copyright (C) 2005-2006 Sean Kelly.  All rights reserved.
- * License:   BSD style: $(LICENSE)
- * Authors:   Sean Kelly
+ * Copyright: Copyright (C) 2005-2006 Digital Mars, www.digitalmars.com.
+ *            All rights reserved.
+ * License:
+ *  This software is provided 'as-is', without any express or implied
+ *  warranty. In no event will the authors be held liable for any damages
+ *  arising from the use of this software.
+ *
+ *  Permission is granted to anyone to use this software for any purpose,
+ *  including commercial applications, and to alter it and redistribute it
+ *  freely, in both source and binary form, subject to the following
+ *  restrictions:
+ *
+ *  o  The origin of this software must not be misrepresented; you must not
+ *     claim that you wrote the original software. If you use this software
+ *     in a product, an acknowledgment in the product documentation would be
+ *     appreciated but is not required.
+ *  o  Altered source versions must be plainly marked as such, and must not
+ *     be misrepresented as being the original software.
+ *  o  This notice may not be removed or altered from any source
+ *     distribution.
+ * Authors:   Walter Bright, Sean Kelly
  */
 module memory;
 
@@ -25,7 +43,7 @@ private
 /**
  *
  */
-extern (C) void* os_query_stackBottom()
+extern (C) void* cr_stackBottom()
 {
     version( Win32 )
     {
@@ -66,7 +84,7 @@ extern (C) void* os_query_stackBottom()
 /**
  *
  */
-extern (C) void* os_query_stackTop()
+extern (C) void* cr_stackTop()
 {
     version( X86 )
     {
@@ -112,46 +130,26 @@ private
 	    alias __data_start  Data_Start;
 	    alias _end          Data_End;
     }
+
+    alias void delegate( void*, void* ) scanFn;
 }
 
 
 /**
  *
  */
-extern (C) void[] os_query_staticData()
+extern (C) void cr_scanStaticData( scanFn scan )
 {
-    static void[] data;
-
-    if( data !is null )
-        return data;
-
     version( Win32 )
     {
-        data = (cast(void*) &_xi_a)[0 .. cast(void*) &_end - cast(void*) &_xi_a];
+        scan( &_xi_a, &_end );
     }
     else version( linux )
     {
-        // Can't assume the input addresses are word-aligned
-        static void* adjust_up( void* p )
-        {
-    	    const int S = (void *).sizeof;
-    	    return p + ((S - (cast(uint)p & (S-1))) & (S-1)); // cast ok even if 64-bit
-        }
-
-        static void * adjust_down( void* p )
-        {
-    	    const int S = (void *).sizeof;
-    	    return p - (cast(uint) p & (S-1));
-        }
-
-	    void* main_data_start = adjust_up( &Data_Start );
-	    void* main_data_end   = adjust_down( &Data_End );
-
-        data = main_data_start[0 .. main_data_end - main_data_start];
+        scan( &__data_start, &_end );
     }
     else
     {
         static assert( false, "Operating system not supported." );
     }
-    return data;
 }

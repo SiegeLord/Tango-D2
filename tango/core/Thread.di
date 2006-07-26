@@ -20,15 +20,15 @@ private
 }
     extern (C)
 {
-    void* os_query_stackBottom();
+    void* cr_stackBottom();
 }
     extern (C)
 {
-    void* os_query_stackTop();
+    void* cr_stackTop();
 }
     void* getStackBottom()
 {
-return os_query_stackBottom();
+return cr_stackBottom();
 }
     void* getStackTop();
 }
@@ -326,7 +326,7 @@ private
 }
 extern (C)
 {
-    void thread_scanAll(scanAllThreadsFn fn, void* curStackTop = null);
+    void thread_scanAll(scanAllThreadsFn scan, void* curStackTop = null);
 }
 class ThreadGroup
 {

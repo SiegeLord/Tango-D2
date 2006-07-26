@@ -153,21 +153,24 @@ extern (C) void _d_delclass(Object* p)
 /**
  *
  */
-extern (C) ulong _d_new(size_t length, size_t size)
+extern (C) Array _d_new(size_t length, size_t size)
 {
-    void* p;
-    ulong result;
+    void *p;
+    Array result;
 
     debug printf("_d_new(length = %d, size = %d)\n", length, size);
-
+    /*
     if (length == 0 || size == 0)
-        result = 0;
+    result = 0;
     else
+    */
+    if (length && size)
     {
         p = gc_malloc(length * size + 1);
         debug printf(" p = %p\n", p);
         memset(p, 0, length * size);
-        result = cast(ulong) length + (cast(ulong) cast(uint) p << 32);
+        result.length = length;
+        result.data = cast(byte*)p;
     }
     return result;
 }
@@ -176,34 +179,25 @@ extern (C) ulong _d_new(size_t length, size_t size)
 /**
  *
  */
-extern (C) ulong _d_newarrayi(size_t length, size_t size, ...)
+extern (C) Array _d_newarrayip(size_t length, size_t size, void* init)
 {
-    void* p;
-    ulong result;
+    Array result;
 
-    debug printf("_d_newarrayi(length = %d, size = %d)\n", length, size);
-
-    if (length == 0 || size == 0)
-        result = 0;
-    else
+    if (length && size)
     {
-        //void* q = cast(void*)(&size + 1); // pointer to initializer
-        va_list q;
-
-        va_start!(size_t)(q, size); // q is pointer to ... initializer
-        p = gc_malloc(length * size + 1);
-        debug printf(" p = %p\n", p);
+        result.length = length;
+        result.data = cast(byte*) gc_malloc(length * size + 1);
         if (size == 1)
-            memset(p, *cast(ubyte*)q, length);
+            memset(result.data, * cast(ubyte*) init, length);
         else
         {
+            void* p = result.data;
             for (uint u = 0; u < length; u++)
             {
-                memcpy(p + u * size, q, size);
+                memcpy(p, init, size);
+                p += size;
             }
         }
-        va_end(q);
-        result = cast(ulong)length + (cast(ulong)cast(uint)p << 32);
     }
     return result;
 }
@@ -212,24 +206,27 @@ extern (C) ulong _d_newarrayi(size_t length, size_t size, ...)
 /**
  *
  */
-extern (C) ulong _d_newbitarray(size_t length, bit value)
+extern (C) Array _d_newbitarray(size_t length, bit value)
 {
-    void* p;
-    ulong result;
+    void *p;
+    Array result;
 
     debug printf("_d_newbitarray(length = %d, value = %d)\n", length, value);
-
+    /*
     if (length == 0)
-        result = 0;
+    result = 0;
     else
+    */
+    if (length)
     {
-        size_t size = (length + 8) >> 3; // number of bytes
-        ubyte  fill = cast(ubyte) (value ? 0xFF : 0);
+        size_t size = ((length + 31) >> 5) * 4 + 1; // number of bytes
+        ubyte  fill = value ? 0xFF : 0; // (not sure what the extra byte is for...)
 
         p = gc_malloc(size);
         debug printf(" p = %p\n", p);
         memset(p, fill, size);
-        result = cast(ulong)length + (cast(ulong)cast(uint)p << 32);
+        result.length = length;
+        result.data = cast(byte*)p;
     }
     return result;
 }
@@ -351,6 +348,12 @@ body
 
     if (newlength)
     {
+        version (GNU)
+        {
+            static char x = 0;
+            if (x)
+                goto Loverflow;
+        }
         version (D_InlineAsm_X86)
         {
             size_t newsize = void;
@@ -558,7 +561,7 @@ version (none)
  * Append y[] to array x[].
  * size is size of each array element.
  */
-extern (C) long _d_arrayappend(Array *px, byte[] y, size_t size)
+extern (C) Array _d_arrayappend(Array *px, byte[] y, size_t  size)
 {
     size_t cap       = gc_sizeOf(px.data);
     size_t length    = px.length;
@@ -586,14 +589,14 @@ extern (C) long _d_arrayappend(Array *px, byte[] y, size_t size)
     }
     px.length = newlength;
     memcpy(px.data + length * size, y, y.length * size);
-    return *cast(long*)px;
+    return *px;
 }
 
 
 /**
  *
  */
-extern (C) long _d_arrayappendb(Array *px, bit[] y)
+extern (C) Array _d_arrayappendb(Array *px, bit[] y)
 {
     size_t cap       = gc_sizeOf(px.data);
     size_t length    = px.length;
@@ -632,7 +635,7 @@ extern (C) long _d_arrayappendb(Array *px, bit[] y)
             x[length + u] = y[u];
         }
     }
-    return *cast(long*)px;
+    return *px;
 }
 
 
@@ -712,7 +715,7 @@ size_t newCapacity(size_t newlength, size_t size)
 /**
  *
  */
-extern (C) byte[] _d_arrayappendc(inout byte[] x, in size_t size, ...)
+extern (C) byte[] _d_arrayappendcp(inout byte[] x, in size_t size, void *argp)
 {
     size_t cap       = gc_sizeOf(x);
     size_t length    = x.length;
@@ -742,10 +745,8 @@ extern (C) byte[] _d_arrayappendc(inout byte[] x, in size_t size, ...)
             (cast(void**)(&x))[1] = newdata;
         }
     }
-    byte *argp = cast(byte *)(&size + 1);
-
     *cast(size_t *)&x = newlength;
-    (cast(byte *)x)[length * size .. newlength * size] = argp[0 .. size];
+    (cast(byte *)x)[length * size .. newlength * size] = (cast(byte*)argp)[0 .. size];
     assert((cast(size_t)x.ptr & 15) == 0);
     assert(gc_sizeOf(x.ptr) > x.length * size);
     return x;
