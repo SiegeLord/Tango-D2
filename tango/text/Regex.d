@@ -2277,14 +2277,9 @@ class Range
 		base = &buf.data[u2];
 		maxb = b + 1;
 		//bits = (cast(bit*)this.base)[0 .. maxc + 1];
-		bits.init((cast(uint*)this.base)[0 .. (maxc + 1) / (uint*).sizeof], maxc + 1);
-		//bits.ptr = cast(uint*)this.base;
+		bits.ptr = cast(uint*)this.base;
 	    }
-	    else
-	    {
-	    bits.length = maxc + 1;
-	    //bits.len = maxc + 1;
-	    }
+	    bits.len = maxc + 1;
 	}
     }
 

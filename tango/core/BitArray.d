@@ -18,6 +18,9 @@ private import tango.core.Intrinsic;
  */
 struct BitArray
 {
+    size_t  len;
+    uint*   ptr;
+
     /**
      *
      */
@@ -935,8 +938,4 @@ struct BitArray
 
     	assert(c == a);
     }
-
-private:
-    size_t  len;
-    uint*   ptr;
 }
