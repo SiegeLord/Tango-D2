@@ -283,7 +283,7 @@ else version( Posix )
                 //       this case it is safe to simply suspend and not worry
                 //       about the stack pointers as the thread will not have
                 //       any references to GC-managed data.
-                if( obj )
+                if( obj !is null )
                 {
                     obj.m_tstack = getStackTop();
                 }
@@ -302,7 +302,7 @@ else version( Posix )
 
                 sigsuspend( &sigres );
 
-                if( obj )
+                if( obj !is null )
                 {
                     obj.m_tstack = obj.m_bstack;
                 }
