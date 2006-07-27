@@ -1,23 +1,21 @@
-/*
- *  Copyright (C) 2005-2006 Don Clugston
+/**
+ * Cylindrical Bessel functions of integral order.
  *
- *  This software is provided 'as-is', without any express or implied
- *  warranty. In no event will the authors be held liable for any damages
- *  arising from the use of this software.
- *
- *  Permission is granted to anyone to use this software for any purpose,
- *  including commercial applications, and to alter it and redistribute it
- *  freely, in both source and binary form, subject to the following
- *  restrictions:
- *
- *  o  The origin of this software must not be misrepresented; you must not
- *     claim that you wrote the original software. If you use this software
- *     in a product, an acknowledgment in the product documentation would be
- *     appreciated but is not required.
- *  o  Altered source versions must be plainly marked as such, and must not
- *     be misrepresented as being the original software.
- *  o  This notice may not be removed or altered from any source
- *     distribution.
+ * Copyright: Copyright (C) 2005-2006 Don Clugston
+ * License:   BSD style: $(LICENSE)
+ * Authors:   Don Clugston
+ */
+
+/**
+ * Macros:
+ *  NAN = $(RED NAN)
+ *  SUP = <span style="vertical-align:super;font-size:smaller">$0</span>
+ *  GAMMA =  &#915;
+ *  INTEGRAL = &#8747;
+ *  INTEGRATE = $(BIG &#8747;<sub>$(SMALL $1)</sub><sup>$2</sup>)
+ *  POWER = $1<sup>$2</sup>
+ *  BIGSUM = $(BIG &Sigma; <sup>$2</sup><sub>$(SMALL $1)</sub>)
+ *  CHOOSE = $(BIG &#40;) <sup>$(SMALL $1)</sup><sub>$(SMALL $2)</sub> $(BIG &#41;)
  */
 
 module tango.math.special;
