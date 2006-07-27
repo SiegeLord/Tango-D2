@@ -106,13 +106,19 @@ version( Win32 )
             assert( obj );
             scope( exit ) Thread.remove( obj );
 
-            // maybe put an auto exception object here (using alloca)
-            // for OutOfMemoryError plus something to track whether
-            // an exception is in-flight?
-
             obj.m_bstack = getStackBottom();
             obj.m_tstack = obj.m_bstack;
             TlsSetValue( Thread.sm_this, obj );
+
+            // NOTE: No GC allocations may occur until the stack pointers have
+            //       been set and Thread.getThis returns a valid reference to
+            //       this thread object (this latter condition is not strictly
+            //       necessary on Win32 but it should be followed for the sake
+            //       of consistency).
+
+            // maybe put an auto exception object here (using alloca)
+            // for OutOfMemoryError plus something to track whether
+            // an exception is in-flight?
 
             try
             {
@@ -175,10 +181,6 @@ else version( Posix )
                 obj.m_isRunning = false;
             }
 
-            // maybe put an auto exception object here (using alloca)
-            // for OutOfMemoryError plus something to track whether
-            // an exception is in-flight?
-
             static extern (C) void thread_cleanupHandler( void* arg )
             {
                 Thread  obj = Thread.getThis();
@@ -190,6 +192,9 @@ else version( Posix )
                 //       with the Windows thread code.
                 obj.m_isRunning = false;
             }
+
+            pthread_cleanup cleanup;
+            cleanup.push( &thread_cleanupHandler, obj );
 
             // NOTE: For some reason this does not always work for threads.
             //obj.m_bstack = getStackBottom();
@@ -214,8 +219,15 @@ else version( Posix )
             obj.m_tstack = obj.m_bstack;
             pthread_setspecific( obj.sm_this, obj );
 
-            pthread_cleanup cleanup;
-            cleanup.push( &thread_cleanupHandler, obj );
+            // NOTE: No GC allocations may occur until the stack pointers have
+            //       been set and Thread.getThis returns a valid reference to
+            //       this thread object (this latter condition is not strictly
+            //       necessary on Win32 but it should be followed for the sake
+            //       of consistency).
+
+            // maybe put an auto exception object here (using alloca)
+            // for OutOfMemoryError plus something to track whether
+            // an exception is in-flight?
 
             try
             {
@@ -264,9 +276,17 @@ else version( Posix )
             //       before the stack cleanup code is called below.
             {
                 Thread  obj = Thread.getThis();
-                assert( obj );
 
-                obj.m_tstack = getStackTop();
+                // NOTE: The thread reference returned by getThis is set within
+                //       the thread startup code, so it is possible that this
+                //       handler may be called before the reference is set.  In
+                //       this case it is safe to simply suspend and not worry
+                //       about the stack pointers as the thread will not have
+                //       any references to GC-managed data.
+                if( obj )
+                {
+                    obj.m_tstack = getStackTop();
+                }
 
                 sigset_t    sigres = void;
                 int         status;
@@ -282,7 +302,10 @@ else version( Posix )
 
                 sigsuspend( &sigres );
 
-                obj.m_tstack = obj.m_bstack;
+                if( obj )
+                {
+                    obj.m_tstack = obj.m_bstack;
+                }
             }
 
             version( X86 )
