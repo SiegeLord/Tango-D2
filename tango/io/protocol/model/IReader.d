@@ -4,8 +4,8 @@
 
         license:        BSD style: $(LICENSE)
 
-        version:        Initial release: March 2004     
-         
+        version:        Initial release: March 2004
+
         author:         Kris
                         Ivan Senji (the "alias get" idea)
 
@@ -18,7 +18,7 @@ public import tango.io.model.IBuffer;
 /*******************************************************************************
 
         Any class implementing IReadable becomes part of the Reader framework
-        
+
 *******************************************************************************/
 
 interface IReadable
@@ -38,7 +38,7 @@ interface IArrayAllocator
 
         abstract bool isMutable (void* x);
 
-        abstract void allocate  (void[]* x, uint size, uint width, uint type, IBuffer.Converter convert);
+        abstract void allocate (void[]* x, uint size, uint width, uint type, IBuffer.Converter convert);
 }
 
 /*******************************************************************************
@@ -53,7 +53,7 @@ abstract class IReader   // could be an interface, but that causes poor codegen
         //alias get opShr;
 
         /***********************************************************************
-        
+
                 These are the basic reader methods
 
         ***********************************************************************/
@@ -90,11 +90,11 @@ abstract class IReader   // could be an interface, but that causes poor codegen
         abstract IReader get (inout dchar[] x,  uint elements = uint.max);
 
         /***********************************************************************
-        
-                This is the mechanism used for binding arbitrary classes 
+
+                This is the mechanism used for binding arbitrary classes
                 to the IO system. If a class implements IReadable, it can
-                be used as a target for IReader get() operations. That is, 
-                implementing IReadable is intended to transform any class 
+                be used as a target for IReader get() operations. That is,
+                implementing IReadable is intended to transform any class
                 into an IReader adaptor for the content held therein.
 
         ***********************************************************************/
@@ -102,7 +102,7 @@ abstract class IReader   // could be an interface, but that causes poor codegen
         abstract IReader get (IReadable x);
 
         /***********************************************************************
-                
+
                 Pause the current thread until some content arrives in
                 the associated input buffer. This may stall forever.
 
@@ -111,7 +111,7 @@ abstract class IReader   // could be an interface, but that causes poor codegen
         abstract void wait ();
 
         /***********************************************************************
-        
+
                 Return the buffer associated with this reader
 
         ***********************************************************************/
@@ -119,12 +119,12 @@ abstract class IReader   // could be an interface, but that causes poor codegen
         abstract IBuffer getBuffer ();
 
         /***********************************************************************
-        
+
                 Get the allocator to use for array management. Arrays are
                 always allocated by the IReader. That is, you cannot read
                 data into an array slice (for example). Instead, a number
                 of IArrayAllocator classes are available to manage memory
-                allocation when reading array content. 
+                allocation when reading array content.
 
                 You might use this to manage the assigned allocator. For
                 example, some allocators benefit from a reset() operation
@@ -132,34 +132,34 @@ abstract class IReader   // could be an interface, but that causes poor codegen
 
         ***********************************************************************/
 
-        abstract IArrayAllocator getAllocator (); 
+        abstract IArrayAllocator getAllocator ();
 
         /***********************************************************************
-        
+
                 Set the allocator to use for array management. Arrays are
                 always allocated by the IReader. That is, you cannot read
                 data into an array slice (for example). Instead, a number
                 of IArrayAllocator classes are available to manage memory
-                allocation when reading array content. 
+                allocation when reading array content.
 
-                By default, an IReader will allocate each array from the 
+                By default, an IReader will allocate each array from the
                 heap. You can change that behavior by calling this method
-                with an IArrayAllocator of choice. For instance, there 
-                is a BufferAllocator which will slice an array directly 
-                from the buffer where possible. Also available is the 
-                record-oriented SliceAllocator, which slices memory from 
+                with an IArrayAllocator of choice. For instance, there
+                is a BufferAllocator which will slice an array directly
+                from the buffer where possible. Also available is the
+                record-oriented SliceAllocator, which slices memory from
                 within a pre-allocated heap area, and should be reset by
-                the client code after each record has been read (to avoid 
+                the client code after each record has been read (to avoid
                 unnecessary growth).
 
                 See ArrayAllocator for more information.
 
         ***********************************************************************/
 
-        abstract void setAllocator (IArrayAllocator memory); 
+        abstract void setAllocator (IArrayAllocator memory);
 
         /***********************************************************************
-        
+
                 Bind an IDecoder to the writer. Decoders are intended to
                 be used as a conversion mechanism between various character
                 representations (encodings).
@@ -169,7 +169,7 @@ abstract class IReader   // could be an interface, but that causes poor codegen
         abstract void setDecoder (AbstractDecoder);
 
         /***********************************************************************
-        
+
                 Return the current decoder type (Type.Raw if not set)
 
         ***********************************************************************/

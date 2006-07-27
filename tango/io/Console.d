@@ -4,9 +4,9 @@
 
         license:        BSD style: $(LICENSE)
 
-        version:        Initial release: Feb 2005 
+        version:        Initial release: Feb 2005
         version:        Heavily revised for unicode; November 2005
-        
+
         author:         Kris
 
 *******************************************************************************/
@@ -27,7 +27,7 @@ private import  tango.io.Buffer,
 
 version (Win32)
 {
-        private extern (Windows) 
+        private extern (Windows)
         {
                 HANDLE GetStdHandle   (DWORD);
                 DWORD  GetConsoleMode (HANDLE, LPDWORD);
@@ -42,19 +42,19 @@ version (Win32)
 
 /*******************************************************************************
 
-        low level console IO support. 
-        
-        Note that for a while this was templated for each of char, wchar, 
+        low level console IO support.
+
+        Note that for a while this was templated for each of char, wchar,
         and dchar. It became clear after some usage that the console is
         more useful if it sticks to Utf8 only. See ConsoleConduit below
         for details.
 
-        Redirecting the standard IO handles (via a shell) operates as one 
+        Redirecting the standard IO handles (via a shell) operates as one
         would expect.
 
 *******************************************************************************/
 
-struct Console 
+struct Console
 {
         /**********************************************************************
 
@@ -66,7 +66,7 @@ struct Console
         class Input : Buffer
         {
                 alias getConduit conduit;
-                
+
                 /**************************************************************
 
                         Attach console input to the provided device
@@ -80,10 +80,10 @@ struct Console
 
                 /**************************************************************
 
-                        Return available input from the console. Note that 
+                        Return available input from the console. Note that
                         you may obtain a slice from the buffer instead by
                         setting copy to false.
-                         
+
                 **************************************************************/
 
                 char[] get (bool copy = true)
@@ -99,7 +99,7 @@ struct Console
 
         /**********************************************************************
 
-                Model console output as a buffer. Note that we accept 
+                Model console output as a buffer. Note that we accept
                 utf8 only: the superclass append() methods are hidden
                 from view. Buffer.consume is left open, for those who
                 require lower-level access ~ along with Buffer.write
@@ -136,8 +136,8 @@ struct Console
                 {
                         super.append(x);
                         return this;
-                } 
-                          
+                }
+
                 /**************************************************************
 
                         Append content
@@ -146,18 +146,18 @@ struct Console
                         other = an object with a useful toString() method
 
                         Returns:
-                        Returns a chaining reference if all content was 
-                        written. Throws an IOException indicating eof or 
+                        Returns a chaining reference if all content was
+                        written. Throws an IOException indicating eof or
                         eob if not.
 
                         Remarks:
-                        Append the result of other.toString() to the console, 
+                        Append the result of other.toString() to the console,
                         and flush.
 
                 **************************************************************/
 
-                Output append (Object o)        
-                {           
+                Output append (Object o)
+                {
                         return append (o.toString);
                 }
 
@@ -166,7 +166,7 @@ struct Console
                         Append a newline
 
                         Returns:
-                        Returns a chaining reference if content was written. 
+                        Returns a chaining reference if content was written.
                         Throws an IOException indicating eof or eob if not.
 
                         Remarks:
@@ -178,14 +178,14 @@ struct Console
                 {
                         super.append ("\n").flush;
                         return this;
-                }           
+                }
         }
 
 
         /***********************************************************************
 
-                Conduit for specifically handling the console devices. This 
-                takes care of certain implementation details on the Win32 
+                Conduit for specifically handling the console devices. This
+                takes care of certain implementation details on the Win32
                 platform.
 
                 Note that the console is fixed at Utf8 for both linux and
@@ -201,7 +201,7 @@ struct Console
         class ConsoleConduit : DeviceConduit
         {
                 /***************************************************************
-        
+
                         Returns true if this conduit is text-based
 
                 ***************************************************************/
@@ -209,8 +209,8 @@ struct Console
                 override bool isTextual ()
                 {
                         return true;
-                }       
-                        
+                }
+
                 /***************************************************************
 
                         Windows-specific code
@@ -226,10 +226,10 @@ struct Console
 
                         /*******************************************************
 
-                                Create a FileConduit on the provided 
-                                FileDevice. 
+                                Create a FileConduit on the provided
+                                FileDevice.
 
-                                This is strictly for adapting existing 
+                                This is strictly for adapting existing
                                 devices such as Stdout and friends
 
                         *******************************************************/
@@ -239,46 +239,46 @@ struct Console
                                 super (device);
                                 input = new wchar [1024 * 1];
                                 output = new wchar [1024 * 1];
-                        }    
+                        }
 
                         /*******************************************************
-        
-                                Return a preferred size for buffering 
-                                console I/O. This must be less than 32KB 
+
+                                Return a preferred size for buffering
+                                console I/O. This must be less than 32KB
                                 for Win32!
 
                         *******************************************************/
 
-                        uint bufferSize ()
+                        override uint bufferSize ()
                         {
                                 return 1024 * 8;
                         }
 
                         /*******************************************************
 
-                                Gain access to the standard IO handles 
+                                Gain access to the standard IO handles
 
                         *******************************************************/
 
                         protected override void reopen (FileDevice device)
                         {
                                 static const DWORD[] id = [
-                                                          cast(DWORD) -10, 
-                                                          cast(DWORD) -11, 
+                                                          cast(DWORD) -10,
+                                                          cast(DWORD) -11,
                                                           cast(DWORD) -12
                                                           ];
                                 static const char[][] f = [
-                                                          "CONIN$\0", 
-                                                          "CONOUT$\0", 
+                                                          "CONIN$\0",
+                                                          "CONOUT$\0",
                                                           "CONOUT$\0"
                                                           ];
 
                                 assert (device.id < 3);
                                 handle = GetStdHandle (id[device.id]);
                                 if (! handle)
-                                      handle = CreateFileA (f[device.id], 
-                                               GENERIC_READ | GENERIC_WRITE,  
-                                               FILE_SHARE_READ | FILE_SHARE_WRITE, 
+                                      handle = CreateFileA (f[device.id],
+                                               GENERIC_READ | GENERIC_WRITE,
+                                               FILE_SHARE_READ | FILE_SHARE_WRITE,
                                                null, OPEN_EXISTING, 0, null);
                                 if (! handle)
                                       error ();
@@ -291,14 +291,14 @@ struct Console
 
                         /*******************************************************
 
-                                Write a chunk of bytes to the console from the 
-                                provided array (typically that belonging to 
+                                Write a chunk of bytes to the console from the
+                                provided array (typically that belonging to
                                 an IBuffer)
 
                         *******************************************************/
 
-                        version (Win32SansUnicode) 
-                                {} 
+                        version (Win32SansUnicode)
+                                {}
                              else
                                 {
                                 protected override uint writer (void[] src)
@@ -318,16 +318,16 @@ struct Console
                                        output.length = i;
 
                                    // convert into output buffer
-                                   i = MultiByteToWideChar (CP_UTF8, 0, src.ptr, i, 
+                                   i = MultiByteToWideChar (CP_UTF8, 0, src.ptr, i,
                                                             output.ptr, output.length);
-                                            
+
                                    // flush produced output
                                    for (wchar* p=output.ptr, end=output.ptr+i; p < end; p+=i)
                                        {
                                        const int MAX = 32767;
 
-                                       // avoid console limitation of 64KB 
-                                       DWORD len = end - p; 
+                                       // avoid console limitation of 64KB
+                                       DWORD len = end - p;
                                        if (len > MAX)
                                           {
                                           len = MAX;
@@ -342,17 +342,17 @@ struct Console
                                    }
                                 }
                                 }
-                        
+
                         /*******************************************************
 
-                                Read a chunk of bytes from the console into the 
-                                provided array (typically that belonging to 
+                                Read a chunk of bytes from the console into the
+                                provided array (typically that belonging to
                                 an IBuffer)
 
                         *******************************************************/
 
-                        version (Win32SansUnicode) 
-                                {} 
+                        version (Win32SansUnicode)
+                                {}
                              else
                                 {
                                 protected override uint reader (void[] dst)
@@ -367,7 +367,7 @@ struct Console
 
                                    if (i > input.length)
                                        i = input.length;
-                                       
+
                                    // read a chunk of wchars from the console
                                    if (! ReadConsoleW (handle, input.ptr, i, &i, null))
                                          error();
@@ -377,7 +377,7 @@ struct Console
                                        return Eof;
 
                                    // translate to utf8, directly into dst
-                                   i = WideCharToMultiByte (CP_UTF8, 0, input.ptr, i, 
+                                   i = WideCharToMultiByte (CP_UTF8, 0, input.ptr, i,
                                                             dst.ptr, dst.length, null, null);
                                    if (i is 0)
                                        error ();
@@ -392,10 +392,10 @@ struct Console
                         {
                         /*******************************************************
 
-                                Create a FileConduit on the provided 
-                                FileDevice. 
+                                Create a FileConduit on the provided
+                                FileDevice.
 
-                                This is strictly for adapting existing 
+                                This is strictly for adapting existing
                                 devices such as Stdout and friends
 
                         *******************************************************/
@@ -419,7 +419,7 @@ static Console.Input    Cin;
 
 ******************************************************************************/
 
-static Console.Output   Cout, 
+static Console.Output   Cout,
                         Cerr;
 
 /******************************************************************************

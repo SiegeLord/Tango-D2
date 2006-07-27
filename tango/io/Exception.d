@@ -4,8 +4,8 @@
 
         license:        BSD style: $(LICENSE)
 
-        version:        Initial release: March 2004      
-        
+        version:        Initial release: March 2004
+
         author:         Kris
 
 *******************************************************************************/
@@ -23,7 +23,7 @@ module tango.io.Exception;
 class IOException : Exception
 {
         /***********************************************************************
-        
+
                 Construct exception with the provided text string
 
         ***********************************************************************/
@@ -45,7 +45,7 @@ class IOException : Exception
 class EofException : IOException
 {
         /***********************************************************************
-        
+
                 Construct exception with the provided text string
 
         ***********************************************************************/
@@ -66,7 +66,7 @@ class EofException : IOException
 class TokenException : IOException
 {
         /***********************************************************************
-        
+
                 Construct exception with the provided text string
 
         ***********************************************************************/
@@ -79,7 +79,7 @@ class TokenException : IOException
 
 /*******************************************************************************
 
-        PickleException is thrown when the PickleRegistry encounters a 
+        PickleException is thrown when the PickleRegistry encounters a
         problem during proxy registration, or when it sees an unregistered
         guid.
 
@@ -88,7 +88,7 @@ class TokenException : IOException
 class PickleException : IOException
 {
         /***********************************************************************
-        
+
                 Construct exception with the provided text string
 
         ***********************************************************************/
@@ -96,6 +96,5 @@ class PickleException : IOException
         this (char[] msg)
         {
                 super (msg);
-        }        
+        }
 }
-

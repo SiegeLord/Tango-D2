@@ -4,8 +4,8 @@
 
         license:        BSD style: $(LICENSE)
 
-        version:        Initial release: March 2004      
-        
+        version:        Initial release: March 2004
+
         author:         Kris
 
 *******************************************************************************/
@@ -23,9 +23,9 @@ private import  tango.core.ByteSwap;
 *******************************************************************************/
 
 class EndianWriter : Writer
-{       
+{
         /***********************************************************************
-        
+
                 Construct EndianWriter upon the given IBuffer
 
         ***********************************************************************/
@@ -36,7 +36,7 @@ class EndianWriter : Writer
         }
 
         /***********************************************************************
-        
+
         ***********************************************************************/
 
         protected override IWriter write (void* src, uint bytes, int type)
@@ -60,7 +60,7 @@ class EndianWriter : Writer
                               //flush if we used all buffer space
                               if (bytes -= buffer.write (&writer))
                                   buffer.makeRoom (bytes);
-                              }                          
+                              }
                 }
 
 
@@ -69,24 +69,24 @@ class EndianWriter : Writer
                        case Type.Short:
                        case Type.UShort:
                        case Type.Utf16:
-                            write (~1, &ByteSwap.swap16);   
+                            write (~1, &ByteSwap.swap16);
                             break;
 
                        case Type.Int:
                        case Type.UInt:
                        case Type.Float:
                        case Type.Utf32:
-                            write (~3, &ByteSwap.swap32);   
+                            write (~3, &ByteSwap.swap32);
                             break;
 
                        case Type.Long:
                        case Type.ULong:
                        case Type.Double:
-                            write (~7, &ByteSwap.swap64);   
+                            write (~7, &ByteSwap.swap64);
                             break;
 
                        case Type.Real:
-                            write (~15, &ByteSwap.swap80);   
+                            write (~15, &ByteSwap.swap80);
                             break;
 
                        default:
@@ -96,4 +96,3 @@ class EndianWriter : Writer
                 return this;
         }
 }
-

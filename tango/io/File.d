@@ -4,7 +4,7 @@
 
         license:        BSD style: $(LICENSE)
 
-        version:        Initial release: March 2005      
+        version:        Initial release: March 2005
 
         author:         Kris
 
@@ -35,7 +35,7 @@ private import  tango.io.Exception,
 class File : FileProxy
 {
         /***********************************************************************
-        
+
                 Construct a File from a text string
 
         ***********************************************************************/
@@ -46,11 +46,11 @@ class File : FileProxy
         }
 
         /***********************************************************************
-        
+
                 Construct a File from the provided FilePath
 
         ***********************************************************************/
-                                  
+
         this (FilePath path)
         {
                 super (path);
@@ -64,7 +64,7 @@ class File : FileProxy
 
         void[] read ()
         {
-                auto conduit = new FileConduit (this);  
+                auto conduit = new FileConduit (this);
                 scope (exit)
                        conduit.close();
 
@@ -85,7 +85,7 @@ class File : FileProxy
 
         File write (void[] content)
         {
-                return write (content, FileConduit.ReadWriteCreate);  
+                return write (content, FileConduit.ReadWriteCreate);
         }
 
         /***********************************************************************
@@ -96,7 +96,7 @@ class File : FileProxy
 
         File append (void[] content)
         {
-                return write (content, FileConduit.WriteAppending);  
+                return write (content, FileConduit.WriteAppending);
         }
 
         /***********************************************************************
@@ -106,8 +106,8 @@ class File : FileProxy
         ***********************************************************************/
 
         private File write (void[] content, FileConduit.Style style)
-        {      
-                auto conduit = new FileConduit (this, style);  
+        {
+                auto conduit = new FileConduit (this, style);
                 scope (exit)
                        conduit.close();
 

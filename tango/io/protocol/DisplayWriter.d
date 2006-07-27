@@ -4,9 +4,9 @@
 
         license:        BSD style: $(LICENSE)
 
-        version:        Initial release: March 2004      
+        version:        Initial release: March 2004
         version:        Rewritten to support format tags; March 2005
-       
+
         author:         Kris
 
 *******************************************************************************/
@@ -22,25 +22,25 @@ public  import  tango.io.protocol.Writer;
 
 /*******************************************************************************
 
-        Format output suitable for presentation. DisplayWriter provide 
-        the means to append formatted  data to an IBuffer, and exposes 
-        a convenient method of handling a variety of data types. 
-        
-        The DisplayWriter itself is a wrapper around the tango.text.convert 
-        package, which should be used directly as desired (Integer, Double, 
-        DGDouble, etc). The latter modules are home to a set of static 
+        Format output suitable for presentation. DisplayWriter provide
+        the means to append formatted  data to an IBuffer, and exposes
+        a convenient method of handling a variety of data types.
+
+        The DisplayWriter itself is a wrapper around the tango.text.convert
+        package, which should be used directly as desired (Integer, Double,
+        DGDouble, etc). The latter modules are home to a set of static
         formatting-methods, making them convenient for ad-hoc application.
 
-        Tango.text.convert also has Format and Sprint modules for working 
+        Tango.text.convert also has Format and Sprint modules for working
         directly with text arrays.
-         
+
 *******************************************************************************/
 
 class DisplayWriter : Writer
 {
         /***********************************************************************
-        
-                Construct a DisplayWriter upon the specified IBuffer. 
+
+                Construct a DisplayWriter upon the specified IBuffer.
                 One can override the default floating-point formatting
                 by providing an appropriate handler to this constructor.
                 For example, one might configure the DGDouble.format()
@@ -52,9 +52,9 @@ class DisplayWriter : Writer
         {
                 super (buffer);
         }
-     
+
         /***********************************************************************
-        
+
                 Construct a DisplayWriter upon the specified IConduit
 
         ***********************************************************************/
@@ -65,38 +65,38 @@ class DisplayWriter : Writer
         }
 
         /***********************************************************************
-        
+
                 Is this Writer text oriented?
 
         ***********************************************************************/
 
-        bool isTextBased()
+        override bool isTextBased()
         {
                 return true;
         }
 
         /***********************************************************************
-        
+
                 Format a set of arguments a la printf(). Please see module
                 tango.text.convert.Format for details
 
         ***********************************************************************/
 
         DisplayWriter format (char[] s, ...)
-        {       
+        {
                 format (s, _arguments, _argptr);
                 return this;
         }
 
         /***********************************************************************
-        
+
                 Format a set of arguments a la printf(). Please see module
                 tango.text.convert.Format for details
 
         ***********************************************************************/
 
         protected int format (char[] s, TypeInfo[] ti, va_list args)
-        {       
+        {
                 uint sink (char[] s)
                 {
                         encode (s.ptr, s.length, Type.Utf8);
@@ -107,7 +107,7 @@ class DisplayWriter : Writer
         }
 
         /***********************************************************************
-        
+
                 Intercept discrete output and convert it to printable form
 
         ***********************************************************************/

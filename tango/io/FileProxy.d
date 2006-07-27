@@ -3,9 +3,9 @@
         copyright:      Copyright (c) 2004 Kris Bell. All rights reserved
 
         license:        BSD style: $(LICENSE)
-                        
-        version:        Initial release: March 2004      
-        
+
+        version:        Initial release: March 2004
+
         author:         $(UL Kris)
                         $(UL Brad Anderson)
                         $(UL teqdruid)
@@ -101,7 +101,7 @@ version (Posix)
 
         Compile with -version=Win32SansUnicode to enable Win95 & Win32s file
         support.
-        
+
 *******************************************************************************/
 
 class FileProxy
@@ -109,18 +109,18 @@ class FileProxy
         private FilePath path;
 
         /***********************************************************************
-        
+
                 Construct a FileProxy from the provided FilePath
 
         ***********************************************************************/
-                                  
+
         this (FilePath path)
         {
                 this.path = path;
         }
 
         /***********************************************************************
-        
+
                 Construct a FileProxy from a text string
 
         ***********************************************************************/
@@ -131,7 +131,7 @@ class FileProxy
         }
 
         /***********************************************************************
-        
+
                 Return the FilePath associated with this FileProxy
 
         ***********************************************************************/
@@ -139,10 +139,10 @@ class FileProxy
         FilePath getPath ()
         {
                 return path;
-        }               
+        }
 
         /***********************************************************************
-        
+
                 Return the name of the associated path
 
         ***********************************************************************/
@@ -150,25 +150,25 @@ class FileProxy
         char[] toString ()
         {
                 return path.toString;
-        }               
+        }
 
         /***********************************************************************
-        
+
                 Does this path currently exist?
 
         ***********************************************************************/
 
-        bool isExisting ()               
+        bool isExisting ()
         {
                 try {
                     getSize();
                     return true;
                     } catch (IOException){}
                 return false;
-        }            
+        }
 
         /***********************************************************************
-        
+
                 List the files contained within the associated path:
 
                 ---
@@ -184,7 +184,7 @@ class FileProxy
         {
 
                 return toList (delegate bool(FilePath fp) {return true;});
-        }              
+        }
 
         /***********************************************************************
 
@@ -229,7 +229,7 @@ class FileProxy
                 }
 
                 /***************************************************************
-                        
+
                         Return the file length (in bytes)
 
                 ***************************************************************/
@@ -240,7 +240,7 @@ class FileProxy
 
                         void size (inout FIND_DATA info)
                         {
-                                _size = (cast(ulong) info.nFileSizeHigh << 32) + 
+                                _size = (cast(ulong) info.nFileSizeHigh << 32) +
                                                      info.nFileSizeLow;
                         }
 
@@ -254,10 +254,10 @@ class FileProxy
 
                 ***************************************************************/
 
-                bool isWritable ()               
+                bool isWritable ()
                 {
                         return cast (bool) ((getInfo(null) & FILE_ATTRIBUTE_READONLY) == 0);
-                }            
+                }
 
                 /***************************************************************
 
@@ -265,10 +265,10 @@ class FileProxy
 
                 ***************************************************************/
 
-                bool isDirectory ()               
+                bool isDirectory ()
                 {
                         return cast(bool) ((getInfo(null) & FILE_ATTRIBUTE_DIRECTORY) != 0);
-                }            
+                }
 
                 /***************************************************************
 
@@ -282,13 +282,13 @@ class FileProxy
 
                         void time (inout FIND_DATA info)
                         {
-                                _time = (cast(ulong) info.ftLastWriteTime.dwHighDateTime << 32) + 
+                                _time = (cast(ulong) info.ftLastWriteTime.dwHighDateTime << 32) +
                                                      info.ftLastWriteTime.dwLowDateTime;
                         }
 
                         getInfo (&time);
                         return _time;
-                }               
+                }
 
                 /***************************************************************
 
@@ -302,13 +302,13 @@ class FileProxy
 
                         void time (inout FIND_DATA info)
                         {
-                                _time = (cast(ulong) info.ftLastAccessTime.dwHighDateTime << 32) + 
+                                _time = (cast(ulong) info.ftLastAccessTime.dwHighDateTime << 32) +
                                                      info.ftLastAccessTime.dwLowDateTime;
                         }
 
                         getInfo (&time);
                         return _time;
-                }               
+                }
 
                 /***************************************************************
 
@@ -322,13 +322,13 @@ class FileProxy
 
                         void time (inout FIND_DATA info)
                         {
-                                _time = (cast(ulong) info.ftCreationTime.dwHighDateTime << 32) + 
+                                _time = (cast(ulong) info.ftCreationTime.dwHighDateTime << 32) +
                                                      info.ftCreationTime.dwLowDateTime;
                         }
 
                         getInfo (&time);
                         return _time;
-                }               
+                }
 
                 /***************************************************************
 
@@ -364,7 +364,7 @@ class FileProxy
                                    }
 
                         return this;
-                }           
+                }
 
                 /***************************************************************
 
@@ -375,7 +375,7 @@ class FileProxy
 
                 FileProxy rename (FilePath dst)
                 {
-                        const int Typical = REPLACE_EXISTING + COPY_ALLOWED + 
+                        const int Typical = REPLACE_EXISTING + COPY_ALLOWED +
                                                                WRITE_THROUGH;
 
                         int result;
@@ -394,7 +394,7 @@ class FileProxy
 
                 /***************************************************************
 
-                        Create a new file 
+                        Create a new file
 
                 ***************************************************************/
 
@@ -403,12 +403,12 @@ class FileProxy
                         HANDLE h;
 
                         version (Win32SansUnicode)
-                                 h = CreateFileA (path.toUtf8, GENERIC_WRITE, 
-                                                  0, null, CREATE_ALWAYS, 
+                                 h = CreateFileA (path.toUtf8, GENERIC_WRITE,
+                                                  0, null, CREATE_ALWAYS,
                                                   FILE_ATTRIBUTE_NORMAL, null);
                              else
-                                h = CreateFileW (path.toUtf16(true), GENERIC_WRITE, 
-                                                 0, null, CREATE_ALWAYS, 
+                                h = CreateFileW (path.toUtf16(true), GENERIC_WRITE,
+                                                 0, null, CREATE_ALWAYS,
                                                  FILE_ATTRIBUTE_NORMAL, null);
 
                         if (h == INVALID_HANDLE_VALUE)
@@ -442,7 +442,7 @@ class FileProxy
                 }
 
                 /***************************************************************
-                        
+
                         List the set of children within this directory. See
                         toList() above.
 
@@ -464,7 +464,7 @@ class FileProxy
                                      else
                                          return FindNextFileW (h, &fileinfo);
                         }
-                        
+
                         list = new FilePath[50];
 
                         version (Win32SansUnicode)
@@ -484,7 +484,7 @@ class FileProxy
                                         else
                                            {
                                            int len = wcslen (fileinfo.cFileName);
-                                           fp = new FilePath (Unicode.toUtf8(fileinfo.cFileName [0 .. len]), false);                                           
+                                           fp = new FilePath (Unicode.toUtf8(fileinfo.cFileName [0 .. len]), false);
                                            }
 
                                    if (i >= list.length)
@@ -538,7 +538,7 @@ class FileProxy
                             dg (stats);
 
                         return stats.st_mode;
-                }               
+                }
 
                 /***************************************************************
 
@@ -565,10 +565,10 @@ class FileProxy
 
                 ***************************************************************/
 
-                bool isWritable ()               
+                bool isWritable ()
                 {
                         return (getInfo(null) & O_RDONLY) == 0;
-                }            
+                }
 
                 /***************************************************************
 
@@ -576,10 +576,10 @@ class FileProxy
 
                 ***************************************************************/
 
-                bool isDirectory ()               
+                bool isDirectory ()
                 {
                         return (getInfo(null) & S_IFDIR) != 0;
-                }            
+                }
 
                 /***************************************************************
 
@@ -598,7 +598,7 @@ class FileProxy
 
                         getInfo (&time);
                         return _time;
-                }               
+                }
 
                 /***************************************************************
 
@@ -617,7 +617,7 @@ class FileProxy
 
                         getInfo (&time);
                         return _time;
-                }               
+                }
 
                 /***************************************************************
 
@@ -636,7 +636,7 @@ class FileProxy
 
                         getInfo (&time);
                         return _time;
-                }               
+                }
 
                 /***************************************************************
 
@@ -651,12 +651,12 @@ class FileProxy
                            if (posix.rmdir (path.toUtf8))
                                exception ();
                            }
-                        else           
+                        else
                            if (tango.stdc.stdio.remove (path.toUtf8) == -1)
                                exception ();
 
                         return this;
-                }              
+                }
 
                 /***************************************************************
 
@@ -676,7 +676,7 @@ class FileProxy
 
                 /***************************************************************
 
-                        Create a new file 
+                        Create a new file
 
                 ***************************************************************/
 
@@ -692,7 +692,7 @@ class FileProxy
                             exception();
 
                         return this;
-                }              
+                }
 
                 /***************************************************************
 
@@ -709,7 +709,7 @@ class FileProxy
                 }
 
                 /***************************************************************
-                
+
                         List the set of children within this directory. See
                         toList() above.
 
@@ -723,7 +723,7 @@ class FileProxy
                         FilePath[]      list;
 
                         dir = opendir (path.toUtf8);
-                        if (! dir) 
+                        if (! dir)
                               exception();
 
                         list = new FilePath [50];
@@ -742,7 +742,7 @@ class FileProxy
                                  list[i] = fp;
                                  ++i;
                                  }
-                              }  
+                              }
 
                         list.length = i;
                         closedir (dir);
@@ -751,4 +751,3 @@ class FileProxy
 
         }
 }
-

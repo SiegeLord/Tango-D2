@@ -3,9 +3,9 @@
         copyright:      Copyright (c) 2004 Kris Bell. All rights reserved
 
         license:        BSD style: $(LICENSE)
-        
+
         version:        Initial release: November 2005
-        
+
         author:         Kris
 
 *******************************************************************************/
@@ -29,7 +29,7 @@ class EndianFilter : ConduitFilter
 
         abstract void swap (void[] x, uint bytes);
 
-        uint reader (void[] dst)
+        override uint reader (void[] dst)
         {
                 //notify ("byte-swapping input ...\n"c);
 
@@ -51,12 +51,12 @@ class EndianFilter : ConduitFilter
                 return ret;
         }
 
-        uint writer (void[] src)
+        override uint writer (void[] src)
         {
                 //notify ("byte-swapping output ...\n"c);
 
                 int     written;
-                int     ret, 
+                int     ret,
                         len = src.length & mask;
 
                 src = src [0..len];
@@ -68,7 +68,7 @@ class EndianFilter : ConduitFilter
                        return ret;
                    } while ((written += ret) < len);
 
-                return len;                        
+                return len;
         }
 }
 
@@ -85,4 +85,3 @@ class EndianFilter32 : EndianFilter
 
         final void swap (void[] x, uint bytes) {ByteSwap.swap32 (x, bytes);}
 }
-

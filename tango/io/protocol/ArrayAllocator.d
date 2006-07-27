@@ -4,8 +4,8 @@
 
         license:        BSD style: $(LICENSE)
 
-        version:        Initial release: October 2004      
-        
+        version:        Initial release: October 2004
+
         author:         Kris
 
 *******************************************************************************/
@@ -26,37 +26,37 @@ class SimpleAllocator : IArrayAllocator
         private IReader reader;
 
         /***********************************************************************
-        
+
         ***********************************************************************/
 
-        void reset ()
+        override void reset ()
         {
         }
 
         /***********************************************************************
-        
+
         ***********************************************************************/
 
-        void bind (IReader reader)
+        override void bind (IReader reader)
         {
                 this.reader = reader;
         }
 
         /***********************************************************************
-        
+
         ***********************************************************************/
 
-        bool isMutable (void* x)
+        override bool isMutable (void* x)
         {
                 return true;
         }
-        
+
         /***********************************************************************
-        
+
         ***********************************************************************/
 
-        void allocate (void[]* x, uint bytes, uint width, uint type, IBuffer.Converter decoder)
-        {       
+        override void allocate (void[]* x, uint bytes, uint width, uint type, IBuffer.Converter decoder)
+        {
                 void[] tmp = new void [bytes];
                 *x = tmp [0 .. decoder (tmp, bytes, type) / width];
         }
@@ -72,7 +72,7 @@ class NativeAllocator : SimpleAllocator
         private bool aliased;
 
         /***********************************************************************
-        
+
         ***********************************************************************/
 
         this (bool aliased = true)
@@ -81,20 +81,20 @@ class NativeAllocator : SimpleAllocator
         }
 
         /***********************************************************************
-        
+
         ***********************************************************************/
 
-        bool isMutable (void* x)
+        override bool isMutable (void* x)
         {
                 return cast(bool) !aliased;
         }
 
         /***********************************************************************
-        
+
         ***********************************************************************/
 
-        void allocate (void[]* x, uint bytes, uint width, uint type, IBuffer.Converter decoder)
-        {      
+        override void allocate (void[]* x, uint bytes, uint width, uint type, IBuffer.Converter decoder)
+        {
                 void[] tmp = *x;
                 tmp.length = bytes;
                 *x = tmp [0 .. decoder (tmp, bytes, type) / width];
@@ -112,7 +112,7 @@ class BufferAllocator : SimpleAllocator
         private uint              width;
 
         /***********************************************************************
-        
+
         ***********************************************************************/
 
         this (int width = 0)
@@ -121,10 +121,10 @@ class BufferAllocator : SimpleAllocator
         }
 
         /***********************************************************************
-        
+
         ***********************************************************************/
 
-        void reset ()
+        override void reset ()
         {
                 IBuffer buffer = reader.getBuffer;
 
@@ -134,31 +134,31 @@ class BufferAllocator : SimpleAllocator
         }
 
         /***********************************************************************
-        
+
         ***********************************************************************/
 
-        void bind (IReader reader)
+        override void bind (IReader reader)
         {
                 raw = &(cast(Reader) reader).read;
                 super.bind (reader);
         }
 
         /***********************************************************************
-        
+
         ***********************************************************************/
 
-        bool isMutable (void* x)
+        override bool isMutable (void* x)
         {
                 void[] content = reader.getBuffer.getContent;
                 return cast(bool) (x < content || x >= (content.ptr + content.length));
         }
 
         /***********************************************************************
-        
+
         ***********************************************************************/
 
-        void allocate (void[]* x, uint bytes, uint width, uint type, IBuffer.Converter decoder)
-        {       
+        override void allocate (void[]* x, uint bytes, uint width, uint type, IBuffer.Converter decoder)
+        {
                 if (decoder == raw)
                     *x = reader.getBuffer.get (bytes) [0..length / width];
                 else
@@ -176,7 +176,7 @@ class SliceAllocator : HeapSlice, IArrayAllocator
         private IReader reader;
 
         /***********************************************************************
-        
+
         ***********************************************************************/
 
         this (int width)
@@ -185,40 +185,40 @@ class SliceAllocator : HeapSlice, IArrayAllocator
         }
 
         /***********************************************************************
-        
+
         ***********************************************************************/
 
-        void bind (IReader reader)
+        override void bind (IReader reader)
         {
                 this.reader = reader;
         }
 
         /***********************************************************************
-        
+
                 Reset content length to zero
 
         ***********************************************************************/
 
-        void reset ()
+        override void reset ()
         {
                 super.reset();
         }
 
         /***********************************************************************
-        
+
         ***********************************************************************/
 
-        bool isMutable (void* x)
+        override bool isMutable (void* x)
         {
                 return false;
         }
 
         /***********************************************************************
-        
+
         ***********************************************************************/
 
-        void allocate (void[]* x, uint bytes, uint width, uint type, IBuffer.Converter decoder)
-        {       
+        override void allocate (void[]* x, uint bytes, uint width, uint type, IBuffer.Converter decoder)
+        {
                 expand (bytes);
                 auto tmp = slice (bytes);
                 *x = tmp [0 .. decoder (tmp, bytes, type) / width];
@@ -230,12 +230,12 @@ class SliceAllocator : HeapSlice, IArrayAllocator
 
 *******************************************************************************/
 
-class ReuseAllocator : SliceAllocator 
+class ReuseAllocator : SliceAllocator
 {
         private uint bytes;
 
         /***********************************************************************
-        
+
         ***********************************************************************/
 
         this (int width)
@@ -244,11 +244,11 @@ class ReuseAllocator : SliceAllocator
         }
 
         /***********************************************************************
-        
+
         ***********************************************************************/
 
-        void allocate (void[]* x, uint bytes, uint width, uint type, IBuffer.Converter decoder)
-        {       
+        override void allocate (void[]* x, uint bytes, uint width, uint type, IBuffer.Converter decoder)
+        {
                 super.reset ();
                 super.allocate (x, bytes, width, type, decoder);
         }
@@ -257,7 +257,7 @@ class ReuseAllocator : SliceAllocator
 
 
 /*******************************************************************************
-        
+
 *******************************************************************************/
 
 private class HeapSlice
@@ -266,7 +266,7 @@ private class HeapSlice
         private void[]  buffer;
 
         /***********************************************************************
-        
+
                 Create with the specified starting size
 
         ***********************************************************************/
@@ -277,7 +277,7 @@ private class HeapSlice
         }
 
         /***********************************************************************
-        
+
                 Reset content length to zero
 
         ***********************************************************************/
@@ -288,7 +288,7 @@ private class HeapSlice
         }
 
         /***********************************************************************
-        
+
                 Potentially expand the content space, and return a pointer
                 to the start of the empty section.
 
@@ -302,9 +302,9 @@ private class HeapSlice
         }
 
         /***********************************************************************
-        
-                Return a slice of the content from the current position 
-                with the specified size. Adjusts the current position to 
+
+                Return a slice of the content from the current position
+                with the specified size. Adjusts the current position to
                 point at an empty zone.
 
         ***********************************************************************/
@@ -316,6 +316,3 @@ private class HeapSlice
                 return buffer [i..used];
         }
 }
-
-
-

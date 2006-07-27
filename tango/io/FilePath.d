@@ -4,8 +4,8 @@
 
         license:        BSD style: $(LICENSE)
 
-        version:        Initial release: March 2004      
-        
+        version:        Initial release: March 2004
+
         author:         Kris
 
 *******************************************************************************/
@@ -20,21 +20,21 @@ private import  tango.text.convert.Unicode;
 
 /*******************************************************************************
 
-        Models a file name. These are expected to be used as the constructor 
+        Models a file name. These are expected to be used as the constructor
         argument to File implementations. The intention is that they easily
         convert to other representations such as absolute, canonical, or Url.
         Note that this class is immutable. Use MutableFilePath if you wish
         to alter specific attributes.
 
-        File paths containing non-ansi characters should be UTF-8 encoded. 
-        Supporting Unicode in this manner was deemed to be more suitable 
-        than providing a wchar version of FilePath, and is both consistent 
+        File paths containing non-ansi characters should be UTF-8 encoded.
+        Supporting Unicode in this manner was deemed to be more suitable
+        than providing a wchar version of FilePath, and is both consistent
         & compatible with the approach taken with the Uri class.
 
 *******************************************************************************/
 
 class FilePath
-{       
+{
         private char[]  fp,                     // utf8 filepath with trailing 0
                         ext,                    // file extension
                         name,                   // file name
@@ -47,7 +47,7 @@ class FilePath
         private alias void delegate (void[]) Consumer;  // simplistic string appender
 
         /***********************************************************************
-        
+
                 Create an empty FilePath. This is strictly for subclass
                 use.
 
@@ -58,7 +58,7 @@ class FilePath
         }
 
         /***********************************************************************
-        
+
                 Create a FilePath through reference to another.
 
         ***********************************************************************/
@@ -79,11 +79,11 @@ class FilePath
         }
 
         /***********************************************************************
-        
+
                 Create a FilePath from the given string. Note the path string
                 is usually duplicated here, though you may specify that it be
-                aliased instead via the second argument. When aliased, you are 
-                expected to provide an immutable copy for the lifetime of this 
+                aliased instead via the second argument. When aliased, you are
+                expected to provide an immutable copy for the lifetime of this
                 object. If you are not certain, ignore the second argument.
 
         ***********************************************************************/
@@ -103,7 +103,7 @@ class FilePath
                     path = -1,
                     root = -1,
                     suffix = -1;
-                
+
                 // mark path segments
                 for (int i=filepath.length; i > 0; --i)
                      switch (filepath[i-1])
@@ -138,7 +138,7 @@ class FilePath
                 // copy the filepath? Add a null if so
                 if (copy)
                     fp = filepath = (filepath ~ '\0');
-                        
+
                 // slice each path segment
                 if (ext >= 0)
                    {
@@ -163,7 +163,7 @@ class FilePath
         }
 
 
-                             
+
 /+
         alias Consume delegate(char[]) Bar;
         typedef Bar delegate (char[]) Consume;
@@ -185,7 +185,7 @@ class FilePath
 
 
         /***********************************************************************
-        
+
                 Create a FilePath from a Uri. Note that the Uri authority
                 is used to house an optional root (device, drive-letter ...)
 
@@ -197,7 +197,7 @@ class FilePath
 
                 if (uri.getHost.length)
                     path = uri.getHost ~ FileConst.RootSeparatorString ~ path;
-                
+
                 this (path);
         }
 
@@ -205,7 +205,7 @@ class FilePath
 
                 Convert this FilePath to a Uri. Note that a root (such as a
                 drive-letter, or device) is placed into the Uri authority
-        
+
         ***********************************************************************/
 
         MutableUri toUri ()
@@ -229,7 +229,7 @@ class FilePath
         }
 +/
         /***********************************************************************
-        
+
                 Convert path separators to the correct format. This mutates
                 the provided 'path' content, so .dup it as necessary.
 
@@ -244,9 +244,9 @@ class FilePath
         }
 
         /***********************************************************************
-        
+
                 Replace all 'from' instances in the provided path with 'to'
-                  
+
         ***********************************************************************/
 
         static char[] replace (char[] path, char from, char to)
@@ -258,7 +258,7 @@ class FilePath
         }
 
         /***********************************************************************
-        
+
                 Clear any cached information in this FilePath
 
         ***********************************************************************/
@@ -269,21 +269,21 @@ class FilePath
         }
 
         /***********************************************************************
-        
-                Returns true if this FilePath is *not* relative to the 
+
+                Returns true if this FilePath is *not* relative to the
                 current working directory.
 
         ***********************************************************************/
 
         bool isAbsolute ()
         {
-                return cast(bool) (root.length || 
+                return cast(bool) (root.length ||
                        (path.length && path[0] is FileConst.PathSeparatorChar)
                        );
-        }               
+        }
 
         /***********************************************************************
-        
+
                 Returns true  if this FilePath is empty
 
         ***********************************************************************/
@@ -294,7 +294,7 @@ class FilePath
         }
 
         /***********************************************************************
-                
+
                 Return the root of this path. Roots are constructs such as
                 "c:".
 
@@ -303,12 +303,12 @@ class FilePath
         char[] getRoot ()
         {
                 return root;
-        }               
+        }
 
         /***********************************************************************
-        
+
                 Return the file path. Paths start with a '/' but do not
-                end with one. The root path is empty. Directory paths 
+                end with one. The root path is empty. Directory paths
                 are split such that the directory name is placed into
                 the 'name' member.
 
@@ -317,10 +317,10 @@ class FilePath
         char[] getPath ()
         {
                 return path;
-        }             
+        }
 
         /***********************************************************************
-        
+
                 Return the name of this file, or directory.
 
         ***********************************************************************/
@@ -328,10 +328,10 @@ class FilePath
         char[] getName ()
         {
                 return name;
-        }               
+        }
 
         /***********************************************************************
-        
+
                 Return the file-extension, sans seperator
 
         ***********************************************************************/
@@ -339,10 +339,10 @@ class FilePath
         char[] getExtension ()
         {
                 return ext;
-        }              
+        }
 
         /***********************************************************************
-        
+
                 Suffix is like extension, except it can include multiple
                 '.' sequences. For example, "wumpus1.foo.bar" has suffix
                 "foo.bar" and extension "bar".
@@ -352,7 +352,7 @@ class FilePath
         char[] getSuffix ()
         {
                 return suffix;
-        }              
+        }
 
         /***********************************************************************
 
@@ -375,7 +375,7 @@ class FilePath
                     consume (FileConst.FileSeparatorString), consume (ext);
 
                 return consume;
-        }               
+        }
 
         /***********************************************************************
 
@@ -386,10 +386,10 @@ class FilePath
         override char[] toString ()
         {
                 return toUtf8 ();
-        }               
+        }
 
         /***********************************************************************
-        
+
                 Return a zero terminated UTF8 version of this file path
 
         ***********************************************************************/
@@ -410,7 +410,7 @@ class FilePath
         }
 
         /***********************************************************************
-        
+
                 Return a zero terminated UTF16 version of this file path
 
         ***********************************************************************/
@@ -425,29 +425,29 @@ class FilePath
         }
 
         /***********************************************************************
-        
+
                 Splice this FilePath onto the end of the provided base path.
                 Output is return as a char[].
 
         ***********************************************************************/
 
         char[] splice (FilePath base)
-        {      
+        {
                 char[] s;
                 s.length = 256, s.length = 0;
                 splice (base, (void[] v){s ~= cast(char[]) v;});
                 return s;
-        }               
+        }
 
         /***********************************************************************
-        
+
                 Splice this FilePath onto the end of the provided base path.
                 Output is handled via the provided Consumer
 
         ***********************************************************************/
 
         Consumer splice (FilePath base, Consumer consume)
-        {      
+        {
                 base.produce (consume);
 
                 if (! base.isEmpty)
@@ -455,7 +455,7 @@ class FilePath
 
                 if (path.length)
                     consume (path);
-                       
+
                 if (name.length)
                     consume (name);
 
@@ -463,10 +463,10 @@ class FilePath
                     consume (FileConst.FileSeparatorString), consume (ext);
 
                 return consume;
-        }               
+        }
 
         /***********************************************************************
-        
+
                 Find the next parent of the FilePath. Returns a valid index
                 to the seperator when present, -1 otherwise.
 
@@ -482,10 +482,10 @@ class FilePath
                            if (path[i] is FileConst.PathSeparatorChar)
                                return i;
                 return -1;
-        }               
+        }
 
         /***********************************************************************
-        
+
                 Returns a FilePath representing the parent of this one. An
                 exception is thrown if there is not parent (at the root).
 
@@ -508,10 +508,10 @@ class FilePath
 
                 // return null? throw exception? return null? Hmmmm ...
                 throw new IOException ("Cannot create parent path for an orphan file");
-        }               
+        }
 
         /***********************************************************************
-                
+
                 Returns true if this FilePath has a parent.
 
         ***********************************************************************/
@@ -519,10 +519,10 @@ class FilePath
         bool isChild ()
         {
                 return cast (bool) (locateParent() >= 0);
-        }               
+        }
 
         /***********************************************************************
-        
+
                 Return a cloned FilePath with a different name.
 
         ***********************************************************************/
@@ -533,7 +533,7 @@ class FilePath
         }
 
         /***********************************************************************
-        
+
                 Return a cloned FilePath with a different name and extension.
                 Note that the suffix is destroyed.
 
@@ -545,13 +545,13 @@ class FilePath
         }
 
         /***********************************************************************
-        
+
                 Return a cloned FilePath with a different name, extension,
                 and suffix.
 
         ***********************************************************************/
 
-        FilePath toSibling (char[] name, char[] ext, char[] suffix) 
+        FilePath toSibling (char[] name, char[] ext, char[] suffix)
         {
                 // don't copy ... we can alias instead
                 FilePath sibling = new FilePath (this);
@@ -569,15 +569,15 @@ class FilePath
 /*******************************************************************************
 
         Mutable version of FilePath, which allows one to change individual
-        attributes. A change to any attribute will cause method toString() 
+        attributes. A change to any attribute will cause method toString()
         to rebuild the output.
 
 *******************************************************************************/
 
 class MutableFilePath : FilePath
-{       
+{
         /***********************************************************************
-        
+
                 Create an empty MutableFilePath
 
         ***********************************************************************/
@@ -587,7 +587,7 @@ class MutableFilePath : FilePath
         }
 
         /***********************************************************************
-        
+
                 Create a MutableFilePath through reference to another.
 
         ***********************************************************************/
@@ -598,7 +598,7 @@ class MutableFilePath : FilePath
         }
 
         /***********************************************************************
-        
+
                 Create a MutableFilePath via a filename.
 
         ***********************************************************************/
@@ -609,20 +609,20 @@ class MutableFilePath : FilePath
         }
 
         /***********************************************************************
-        
+
                 Set the extension of this FilePath.
 
         ***********************************************************************/
 
         private final MutableFilePath set (char[]* x, char[]* v)
-        {       
+        {
                 *x = *v;
                 reset ();
                 return this;
         }
 
         /***********************************************************************
-        
+
                 Set the extension of this FilePath.
 
         ***********************************************************************/
@@ -633,7 +633,7 @@ class MutableFilePath : FilePath
         }
 
         /***********************************************************************
-        
+
                 Set the name of this FilePath.
 
         ***********************************************************************/
@@ -644,7 +644,7 @@ class MutableFilePath : FilePath
         }
 
         /***********************************************************************
-        
+
                 Set the path of this FilePath.
 
         ***********************************************************************/
@@ -655,7 +655,7 @@ class MutableFilePath : FilePath
         }
 
         /***********************************************************************
-        
+
                 Set the root of this FilePath (such as "c:")
 
         ***********************************************************************/
@@ -666,7 +666,7 @@ class MutableFilePath : FilePath
         }
 
         /***********************************************************************
-        
+
                 Set the suffix of this FilePath.
 
         ***********************************************************************/

@@ -4,8 +4,8 @@
 
         license:        BSD style: $(LICENSE)
 
-        version:        Initial release: March 2005      
-        
+        version:        Initial release: March 2005
+
         author:         Kris
 
 *******************************************************************************/
@@ -33,7 +33,7 @@ struct FileConst
 
                 static const char[] NewlineString = "\r\n"c;
         }
-        
+
         version (Posix)
         {
                 static const char PathSeparatorChar = '/';
@@ -45,5 +45,5 @@ struct FileConst
                 static const char[] RootSeparatorString = ":";
 
                 static const char[] NewlineString = "\n";
-        }            
+        }
 }

@@ -4,8 +4,8 @@
 
         license:        BSD style: $(LICENSE)
 
-        version:        Initial release: December 2005      
-        
+        version:        Initial release: December 2005
+
         author:         Kris
 
 *******************************************************************************/
@@ -44,38 +44,38 @@ private import  tango.text.convert.UnicodeBom;
                 $(UL Unicode.UTF_8N)
                 $(UL Unicode.UTF_16)
                 $(UL Unicode.UTF_16BE)
-                $(UL Unicode.UTF_16LE) 
+                $(UL Unicode.UTF_16LE)
                 $(UL Unicode.UTF_32)
                 $(UL Unicode.UTF_32BE)
-                $(UL Unicode.UTF_32LE) 
+                $(UL Unicode.UTF_32LE)
 
         These can be divided into implicit and explicit encodings:
 
                 $(UL Unicode.Unknown)
                 $(UL Unicode.UTF_8)
                 $(UL Unicode.UTF_16)
-                $(UL Unicode.UTF_32) 
+                $(UL Unicode.UTF_32)
 
         The above group of implicit encodings may be used to 'discover'
         an unknown encoding, by examining the first few bytes of the file
-        content for a signature. This signature is optional for all files, 
+        content for a signature. This signature is optional for all files,
         but is often written such that the content is self-describing. When
         the encoding is unknown, using one of the non-explicit encodings will
-        cause the read() method to look for a signature and adjust itself 
-        accordingly. It is possible that a ZWNBSP character might be confused 
-        with the signature; today's files are supposed to use the WORD-JOINER 
+        cause the read() method to look for a signature and adjust itself
+        accordingly. It is possible that a ZWNBSP character might be confused
+        with the signature; today's files are supposed to use the WORD-JOINER
         character instead.
-       
+
                 $(UL Unicode.UTF_8N)
                 $(UL Unicode.UTF_16BE)
-                $(UL Unicode.UTF_16LE) 
+                $(UL Unicode.UTF_16LE)
                 $(UL Unicode.UTF_32BE)
-                $(UL Unicode.UTF_32LE) 
-        
+                $(UL Unicode.UTF_32LE)
+
         This group of explicit encodings are for use when the file encoding is
         known. These *must* be used when writing or appending, since written
         content must be in a known format. It should be noted that, during a
-        read operation, the presence of a signature is in conflict with these 
+        read operation, the presence of a signature is in conflict with these
         explicit varieties.
 
         Method read() returns the current content of the file, whilst write()
@@ -102,13 +102,13 @@ class UnicodeFileT(T) : FileProxy
         private UnicodeBomT!(T) unicode;
 
         /***********************************************************************
-        
-                Construct a UnicodeFile from the provided FilePath. The given 
+
+                Construct a UnicodeFile from the provided FilePath. The given
                 encoding represents the external file encoding, and should
-                be one of the Unicode.xx types 
+                be one of the Unicode.xx types
 
         ***********************************************************************/
-                                  
+
         this (FilePath path, int encoding)
         {
                 super (path);
@@ -116,10 +116,10 @@ class UnicodeFileT(T) : FileProxy
         }
 
         /***********************************************************************
-        
-                Construct a UnicodeFile from a text string. The provided 
+
+                Construct a UnicodeFile from a text string. The provided
                 encoding represents the external file encoding, and should
-                be one of the Unicode.xx types 
+                be one of the Unicode.xx types
 
         ***********************************************************************/
 
@@ -141,10 +141,10 @@ class UnicodeFileT(T) : FileProxy
         {
                 return unicode.getEncoding();
         }
-        
+
         /***********************************************************************
 
-                Return the content of the file. The content is inspected 
+                Return the content of the file. The content is inspected
                 for a BOM signature, which is stripped. An exception is
                 thrown if a signature is present when, according to the
                 encoding type, it should not be. Conversely, An exception
@@ -155,7 +155,7 @@ class UnicodeFileT(T) : FileProxy
 
         T[] read ()
         {
-                auto conduit = new FileConduit (this);  
+                auto conduit = new FileConduit (this);
                 scope (exit)
                        conduit.close();
 
@@ -178,22 +178,22 @@ class UnicodeFileT(T) : FileProxy
 
         UnicodeFileT write (T[] content, bool bom = false)
         {
-                return write (content, FileConduit.ReadWriteCreate, bom);  
+                return write (content, FileConduit.ReadWriteCreate, bom);
         }
 
         /***********************************************************************
 
-                Append content to the file; the content will be encoded 
+                Append content to the file; the content will be encoded
                 accordingly.
 
-                Note that it is your responsibility to ensure the 
+                Note that it is your responsibility to ensure the
                 existing and current encodings are correctly matched.
 
         ***********************************************************************/
 
         UnicodeFileT append (T[] content)
         {
-                return write (content, FileConduit.WriteAppending, false);  
+                return write (content, FileConduit.WriteAppending, false);
         }
 
         /***********************************************************************
@@ -205,12 +205,12 @@ class UnicodeFileT(T) : FileProxy
         ***********************************************************************/
 
         private final UnicodeFileT write (T[] content, FileConduit.Style style, bool bom)
-        {       
+        {
                 // convert to external representation (may throw an exeption)
                 void[] converted = unicode.encode (content);
 
                 // open file after conversion ~ in case of exceptions
-                auto conduit = new FileConduit (this, style);  
+                auto conduit = new FileConduit (this, style);
                 scope (exit)
                        conduit.close();
 

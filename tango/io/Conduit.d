@@ -63,7 +63,7 @@ class Conduit : IConduit, IConduitFilter
 
         ***********************************************************************/
 
-        protected abstract uint reader (void[] dst);               
+        protected abstract override uint reader (void[] dst);               
 
         /***********************************************************************
         
@@ -71,7 +71,7 @@ class Conduit : IConduit, IConduitFilter
 
         ***********************************************************************/
 
-        protected abstract uint writer (void[] src);               
+        protected abstract override uint writer (void[] src);               
 
         /***********************************************************************
         
@@ -82,7 +82,7 @@ class Conduit : IConduit, IConduitFilter
 
         ***********************************************************************/
 
-        abstract Handle getHandle ();               
+        abstract override Handle getHandle ();               
 
         /***********************************************************************
         
@@ -107,7 +107,7 @@ class Conduit : IConduit, IConduitFilter
 
         ***********************************************************************/
 
-        void close ()
+        override void close ()
         {
                 filter.unbind ();
                 filter = this;
@@ -119,7 +119,7 @@ class Conduit : IConduit, IConduitFilter
 
         ***********************************************************************/
 
-        bool flush (void[] src)
+        override bool flush (void[] src)
         {
                 int len = src.length;
 
@@ -137,7 +137,7 @@ class Conduit : IConduit, IConduitFilter
 
         ***********************************************************************/
 
-        void attach (IConduitFilter filter)
+        override void attach (IConduitFilter filter)
         {
                 filter.bind (this, this.filter);
         }
@@ -146,7 +146,7 @@ class Conduit : IConduit, IConduitFilter
         
         ***********************************************************************/
 
-        protected void bind (IConduit conduit, IConduitFilter next)
+        protected override void bind (IConduit conduit, IConduitFilter next)
         {
         }
 
@@ -154,7 +154,7 @@ class Conduit : IConduit, IConduitFilter
         
         ***********************************************************************/
 
-        protected void unbind ()
+        protected override void unbind ()
         {
         }
 
@@ -164,7 +164,7 @@ class Conduit : IConduit, IConduitFilter
 
         ***********************************************************************/
 
-        uint read (void[] dst)
+        override uint read (void[] dst)
         {
                 return filter.reader (dst);
         }              
@@ -175,7 +175,7 @@ class Conduit : IConduit, IConduitFilter
 
         ***********************************************************************/
 
-        uint write (void [] src)
+        override uint write (void [] src)
         {
                 return filter.writer (src);
         }              
@@ -187,7 +187,7 @@ class Conduit : IConduit, IConduitFilter
 
         ***********************************************************************/
 
-        bool isSeekable ()
+        override bool isSeekable ()
         {
                 return seekable;
         }               
@@ -198,7 +198,7 @@ class Conduit : IConduit, IConduitFilter
 
         ***********************************************************************/
 
-        bool isReadable ()
+        override bool isReadable ()
         {
                 return cast(bool) ((access & Access.Read) != 0);
         }               
@@ -209,7 +209,7 @@ class Conduit : IConduit, IConduitFilter
 
         ***********************************************************************/
 
-        bool isWritable ()
+        override bool isWritable ()
         {
                 return cast(bool) ((access & Access.Write) != 0);
         }               
@@ -220,7 +220,7 @@ class Conduit : IConduit, IConduitFilter
 
         ***********************************************************************/
 
-        bool isTextual ()
+        override bool isTextual ()
         {
                 return false;
         }               
@@ -232,7 +232,7 @@ class Conduit : IConduit, IConduitFilter
         
         ***********************************************************************/
 
-        IConduit copy (IConduit source)
+        override IConduit copy (IConduit source)
         {
                 auto buffer = new byte[bufferSize()];
 
@@ -251,7 +251,7 @@ class Conduit : IConduit, IConduitFilter
 
         **********************************************************************/
 	
-        uint fill (void[] dst)
+        override uint fill (void[] dst)
         {
                 uint len;
 
@@ -390,7 +390,7 @@ class ConduitFilter : IConduitFilter
         
         ***********************************************************************/
 
-        uint reader (void[] dst)
+        override uint reader (void[] dst)
         {
                 return next.reader (dst);
         }
@@ -399,7 +399,7 @@ class ConduitFilter : IConduitFilter
         
         ***********************************************************************/
 
-        uint writer (void[] src)
+        override uint writer (void[] src)
         {
                 return next.writer (src);
         }
@@ -408,7 +408,7 @@ class ConduitFilter : IConduitFilter
         
         ***********************************************************************/
 
-        protected void bind (IConduit conduit, IConduitFilter next)
+        override protected void bind (IConduit conduit, IConduitFilter next)
         {
                 this.next = next;
         }
@@ -417,7 +417,7 @@ class ConduitFilter : IConduitFilter
         
         ***********************************************************************/
 
-        protected void unbind ()
+        override protected void unbind ()
         {
                 next.unbind ();
         }
@@ -446,4 +446,3 @@ private static ~this()
 {
         halting = true;
 }
-

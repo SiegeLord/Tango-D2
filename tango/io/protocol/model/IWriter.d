@@ -4,8 +4,8 @@
 
         license:        BSD style: $(LICENSE)
 
-        version:        Initial release: March 2004      
-        
+        version:        Initial release: March 2004
+
         author:         Kris
                         Ivan Senji (the "alias put" idea)
 
@@ -30,7 +30,7 @@ interface IWritable
 
 /*******************************************************************************
 
-        Make a signature for IWritable classes to use when they wish to 
+        Make a signature for IWritable classes to use when they wish to
         avoid being processed by decorating writers, such as TextWriter.
 
 *******************************************************************************/
@@ -50,7 +50,7 @@ abstract class INewlineWriter : IPhantomWriter {}
 
 /*******************************************************************************
 
-        IWriter interface. IWriter provides the means to append formatted 
+        IWriter interface. IWriter provides the means to append formatted
         data to an IBuffer, and exposes a convenient method of handling a
         variety of data types. In addition to writing native types such
         as integer and char[], writers also process any class which has
@@ -66,7 +66,7 @@ abstract class IWriter  // could be an interface, but that causes poor codegen
         // alias put       opShl;
 
         /***********************************************************************
-        
+
                 These are the basic writer methods
 
         ***********************************************************************/
@@ -103,11 +103,11 @@ abstract class IWriter  // could be an interface, but that causes poor codegen
         abstract IWriter put (dchar[] x);
 
         /***********************************************************************
-        
-                This is the mechanism used for binding arbitrary classes 
+
+                This is the mechanism used for binding arbitrary classes
                 to the IO system. If a class implements IWritable, it can
-                be used as a target for IWriter put() operations. That is, 
-                implementing IWritable is intended to transform any class 
+                be used as a target for IWriter put() operations. That is,
+                implementing IWritable is intended to transform any class
                 into an IWriter adaptor for the content held therein.
 
         ***********************************************************************/
@@ -115,18 +115,18 @@ abstract class IWriter  // could be an interface, but that causes poor codegen
         abstract IWriter put (IWritable);
 
         /***********************************************************************
-        
+
                 Bind an IEncoder to the writer. Encoders are intended to
                 be used as a conversion mechanism between various character
-                representations (encodings). Each writer may be configured 
+                representations (encodings). Each writer may be configured
                 with a distinct encoder.
 
         ***********************************************************************/
 
-        abstract void setEncoder (AbstractEncoder); 
+        abstract void setEncoder (AbstractEncoder);
 
         /***********************************************************************
-        
+
                 Return the current encoder type (Type.Raw if not set)
 
         ***********************************************************************/
@@ -135,16 +135,16 @@ abstract class IWriter  // could be an interface, but that causes poor codegen
 
         /***********************************************************************
 
-                Output a newline. Do this indirectly so that it can be 
+                Output a newline. Do this indirectly so that it can be
                 intercepted by subclasses.
-        
+
         ***********************************************************************/
 
         abstract IWriter newline ();
 
         /***********************************************************************
-        
-                Flush the output of this writer. Throws an IOException 
+
+                Flush the output of this writer. Throws an IOException
                 if the operation fails. These are aliases for each other.
 
         ***********************************************************************/
@@ -153,11 +153,10 @@ abstract class IWriter  // could be an interface, but that causes poor codegen
         abstract IWriter flush ();
 
         /***********************************************************************
-        
+
                 Return the associated buffer
 
         ***********************************************************************/
 
         abstract IBuffer getBuffer ();
 }
-

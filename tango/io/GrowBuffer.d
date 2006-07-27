@@ -3,9 +3,9 @@
         copyright:      Copyright (c) 2004 Kris Bell. All rights reserved
 
         license:        BSD style: $(LICENSE)
-      
+
         version:        Initial release: March 2004
-        
+
         author:         Kris
 
 *******************************************************************************/
@@ -28,7 +28,7 @@ class GrowBuffer : Buffer
         private uint increment;
 
         /***********************************************************************
-        
+
                 Create a GrowBuffer with the specified initial size.
 
         ***********************************************************************/
@@ -42,7 +42,7 @@ class GrowBuffer : Buffer
         }
 
         /***********************************************************************
-        
+
                 Create a GrowBuffer with the specified initial size.
 
         ***********************************************************************/
@@ -54,10 +54,10 @@ class GrowBuffer : Buffer
         }
 
         /***********************************************************************
-        
+
                 Read a chunk of data from the buffer, loading from the
                 conduit as necessary. The specified number of bytes is
-                loaded into the buffer, and marked as having been read 
+                loaded into the buffer, and marked as having been read
                 when the 'eat' parameter is set true. When 'eat' is set
                 false, the read position is not adjusted.
 
@@ -66,7 +66,7 @@ class GrowBuffer : Buffer
         ***********************************************************************/
 
         override void[] get (uint size, bool eat = true)
-        {   
+        {
                 if (size > readable)
                    {
                    if (conduit is null)
@@ -85,18 +85,18 @@ class GrowBuffer : Buffer
                 uint i = position;
                 if (eat)
                     position += size;
-                return data [i .. i + size];               
+                return data [i .. i + size];
         }
 
         /***********************************************************************
-        
-                Append an array of data to this buffer. This is often used 
+
+                Append an array of data to this buffer. This is often used
                 in lieu of a Writer.
 
         ***********************************************************************/
 
-        override IBuffer append (void[] src)        
-        {               
+        override IBuffer append (void[] src)
+        {
                 uint size = src.length;
 
                 if (size > writable)
@@ -108,13 +108,13 @@ class GrowBuffer : Buffer
 
         /***********************************************************************
 
-                Try to fill the available buffer with content from the 
-                specified conduit. In particular, we will never ask to 
-                read less than 32 bytes ~ this permits conduit-filters 
-                to operate within a known environment. 
+                Try to fill the available buffer with content from the
+                specified conduit. In particular, we will never ask to
+                read less than 32 bytes ~ this permits conduit-filters
+                to operate within a known environment.
 
                 Returns the number of bytes read, or IConduit.Eof
-        
+
         ***********************************************************************/
 
         override uint fill (IConduit conduit)
@@ -123,12 +123,12 @@ class GrowBuffer : Buffer
                     makeRoom (increment);
 
                 return write (&conduit.read);
-        } 
+        }
 
         /***********************************************************************
 
-                make some room in the buffer
-                        
+                Make some room in the buffer
+
         ***********************************************************************/
 
         override uint makeRoom (uint size)
@@ -137,7 +137,7 @@ class GrowBuffer : Buffer
                     size = increment;
 
                 capacity += size;
-                data.length = capacity;               
+                data.length = capacity;
                 return writable();
         }
 }
