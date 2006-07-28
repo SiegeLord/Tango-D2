@@ -4,8 +4,8 @@
 
         license:        BSD style: $(LICENSE)
 
-        version:        Initial release: March 2004
-
+        version:        Initial release: March 2004      
+        
         author:         Kris
 
 *******************************************************************************/
@@ -23,9 +23,9 @@ private import  tango.core.ByteSwap;
 *******************************************************************************/
 
 class EndianReader : Reader
-{
+{       
         /***********************************************************************
-
+        
                 Construct EndianWriter upon the given IBuffer
 
         ***********************************************************************/
@@ -36,7 +36,7 @@ class EndianReader : Reader
         }
 
         /***********************************************************************
-
+        
         ***********************************************************************/
 
         protected override uint read (void* dst, uint bytes, uint type)
@@ -48,14 +48,14 @@ class EndianReader : Reader
                        case Type.Short:
                        case Type.UShort:
                        case Type.Utf16:
-                            ByteSwap.swap16 (dst, bytes);
+                            ByteSwap.swap16 (dst, bytes);    
                             break;
 
                        case Type.Int:
                        case Type.UInt:
                        case Type.Float:
                        case Type.Utf32:
-                            ByteSwap.swap32 (dst, bytes);
+                            ByteSwap.swap32 (dst, bytes);      
                             break;
 
                        case Type.Long:

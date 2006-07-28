@@ -4,7 +4,7 @@
 
         license:        BSD style: $(LICENSE)
 
-        version:        Initial release: June 2004
+        version:        Initial release: June 2004      
 
         author:         Chris Sauls, Kris
 
@@ -41,13 +41,13 @@ public import   tango.io.File,
         scan.directories (&dirs);
 
         Stdout (CR) ("files:") (CR);
-        scan.files (&files);
+        scan.files (&files);       
         ---
-
+        
 *******************************************************************************/
 
 class FileScan
-{
+{       
         alias sweep opCall;
 
         private char[]          ext;
@@ -61,8 +61,8 @@ class FileScan
                 The list of files and sub-directories found.
 
         ***********************************************************************/
-
-        private struct Dependencies
+        
+        private struct Dependencies 
         {
                 File[]          mods;
                 FilePath[]      pkgs;
@@ -74,7 +74,7 @@ class FileScan
                 path, where the files are filtered by the given extension.
 
         ***********************************************************************/
-
+        
         FileScan sweep (char[] path, char[] ext)
         {
                 return sweep (new FilePath(path), ext);
@@ -84,9 +84,9 @@ class FileScan
 
                 Sweep a set of files and directories from the given parent
                 path, where the files are filtered by the given extension.
-
+        
         ***********************************************************************/
-
+        
         FileScan sweep (FilePath path, char[] ext)
         {
                 this.ext = ext;
@@ -99,7 +99,7 @@ class FileScan
                 path, where the files are filtered by the provided delegate.
 
         ***********************************************************************/
-
+        
         FileScan sweep (FilePath path, Filter filter)
         {
                 deps.mods = null;
@@ -144,11 +144,11 @@ class FileScan
 
         ***********************************************************************/
 
-        private bool simpleFilter (FilePath fp)
+        private bool simpleFilter (FilePath fp) 
         {
                 char[]  sbuf = fp.getExtension;
 
-                if (fp.getName[0] != '.')
+                if (fp.getName[0] != '.')                       
                     if (sbuf.length == 0 || sbuf == ext)
                         return true;
 
@@ -161,7 +161,7 @@ class FileScan
 
         ***********************************************************************/
 
-        private void scanFiles (inout Dependencies deps, FilePath base)
+        private void scanFiles (inout Dependencies deps, FilePath base) 
         {
                 File file = new File (base);
                 FilePath[] paths = file.toList (filter);
@@ -170,17 +170,18 @@ class FileScan
                 if (paths.length)
                     deps.pkgs ~= base;
 
-                foreach (FilePath x; paths)
+                foreach (FilePath x; paths) 
                         {
                         // combine base path with listed file
                         FilePath spliced = new FilePath (x.splice (base), false);
 
                         // recurse if this is a directory ...
                         file = new File (spliced);
-                        if (file.isDirectory)
+                        if (file.isDirectory) 
                             scanFiles (deps, spliced);
-                        else
+                        else 
                            deps.mods ~= file;
                         }
         }
 }
+

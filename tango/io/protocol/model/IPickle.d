@@ -4,8 +4,8 @@
 
         license:        BSD style: $(LICENSE)
 
-        version:        Initial release: March 2004
-
+        version:        Initial release: March 2004      
+        
         author:         Kris
 
 *******************************************************************************/
@@ -19,16 +19,16 @@ public import tango.io.protocol.model.IReader,
 
         Interface for all serializable classes. Such classes are intended
         to be transported over a network, or be frozen in a file for later
-        reconstruction.
+        reconstruction. 
 
 *******************************************************************************/
 
 interface IPickle : IWritable, IReadable
 {
         /***********************************************************************
-
+        
                 Identify this serializable class via a char[]. This should
-                be (per class) unique within the domain. Use version numbers
+                be (per class) unique within the domain. Use version numbers 
                 or similar mechanism to isolate different implementations of
                 the same class.
 
@@ -40,11 +40,11 @@ interface IPickle : IWritable, IReadable
 
 /*******************************************************************************
 
-        Interface for all deserializable classes. Such classes either
+        Interface for all deserializable classes. Such classes either 
         implement the full concrete class instance or they act as a
-        proxy of sorts, creating the true instance only when called
-        upon to do so. An IPickleProxy could perhaps take alternative
-        action when called upon to create an "old" or "unsupported"
+        proxy of sorts, creating the true instance only when called 
+        upon to do so. An IPickleProxy could perhaps take alternative 
+        action when called upon to create an "old" or "unsupported" 
         class guid. The default behaviour is to throw an exception
         when an unknown guid is seen.
 
@@ -53,9 +53,9 @@ interface IPickle : IWritable, IReadable
 interface IPickleFactory
 {
         /***********************************************************************
-
+        
                 Identify this serializable class via a char[]. This should
-                be (per class) unique within the domain. Use version numbers
+                be (per class) unique within the domain. Use version numbers 
                 or similar mechanism to isolate different implementations of
                 the same class.
 
@@ -64,7 +64,7 @@ interface IPickleFactory
         char[] getGuid ();
 
         /***********************************************************************
-
+        
                 This defines the factory method. Each IPickleProxy object
                 provides a factory for creating a deserialized instance.
                 The factory is registered along with the appropriate guid.
@@ -73,3 +73,4 @@ interface IPickleFactory
 
         Object create (IReader reader);
 }
+

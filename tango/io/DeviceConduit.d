@@ -4,16 +4,16 @@
 
         license:        BSD style: $(LICENSE)
 
-        version:        Initial release: May 2005
-
-        author:         Kris
+        version:        Initial release: May 2005      
+        
+        author:         Kris 
 
 *******************************************************************************/
 
 module tango.io.DeviceConduit;
 
 private import  tango.os.OS;
-
+                
 private import  tango.io.Conduit;
 
 private import  tango.io.Exception;
@@ -21,9 +21,9 @@ private import  tango.io.Exception;
 /*******************************************************************************
 
         Implements a means of reading and writing a file device. Conduits
-        are the primary means of accessing external data, and are usually
-        routed through a Buffer.
-
+        are the primary means of accessing external data, and are usually 
+        routed through a Buffer. 
+        
 *******************************************************************************/
 
 class DeviceConduit : Conduit
@@ -34,8 +34,8 @@ class DeviceConduit : Conduit
         alias Conduit.write write;
 
         /***********************************************************************
-
-                Construct a conduit with the given style and seek abilities.
+        
+                Construct a conduit with the given style and seek abilities. 
                 Conduits are either seekable or non-seekable.
 
         ***********************************************************************/
@@ -47,36 +47,36 @@ class DeviceConduit : Conduit
 
         /***********************************************************************
 
-                Create a FileConduit on the provided FileDevice. This is
+                Create a FileConduit on the provided FileDevice. This is 
                 strictly for adapting existing devices such as Stdout and
                 friends.
-
+        
         ***********************************************************************/
 
         this (FileDevice device)
         {
                 // say we're not seekable
                 super (device.access, false);
-
+                
                 // open the file
                 reopen (device);
-        }
+        }    
 
         /***********************************************************************
-
+                
                 Callback to close the file. This is invoked from the Resource
                 base-class when the resource is being closed.
 
         ***********************************************************************/
 
         override void close ()
-        {
+        {       
                 super.close ();
                 _close ();
-        }
-
+        }    
+                   
         /***********************************************************************
-
+        
                 Make a reasonable attempt to clean up
 
         ***********************************************************************/
@@ -86,18 +86,18 @@ class DeviceConduit : Conduit
                 if (! isHalting)
                       _close ();
         }
-
+                   
         /***********************************************************************
-
+        
                 Return a preferred size for buffering conduit I/O
 
         ***********************************************************************/
 
-        override uint bufferSize ()
+        uint bufferSize ()
         {
                 return 1024 * 16;
         }
-
+                     
         /***********************************************************************
 
                 Return the name of this device
@@ -113,7 +113,7 @@ class DeviceConduit : Conduit
         /***********************************************************************
 
                 Windows-specific code
-
+        
         ***********************************************************************/
 
         version (Win32)
@@ -133,11 +133,11 @@ class DeviceConduit : Conduit
 
                 /***************************************************************
 
-                        Return the underlying OS handle of this Conduit
+                        Return the underlying OS handle of this Conduit                
 
                 ***************************************************************/
 
-                final override Handle getHandle ()
+                final Handle getHandle ()
                 {
                         return cast(Handle) handle;
                 }
@@ -209,7 +209,7 @@ class DeviceConduit : Conduit
         /***********************************************************************
 
                  Unix-specific code.
-
+        
         ***********************************************************************/
 
         version (Posix)
@@ -230,11 +230,11 @@ class DeviceConduit : Conduit
 
                 /***************************************************************
 
-                        Return the underlying OS handle of this Conduit
+                        Return the underlying OS handle of this Conduit                
 
                 ***************************************************************/
 
-                final override Handle getHandle ()
+                final Handle getHandle ()
                 {
                         return cast(Handle) handle;
                 }
@@ -307,9 +307,9 @@ class DeviceConduit : Conduit
 
 *******************************************************************************/
 
-class FileDevice
+class FileDevice 
 {
-        private uint            _id;
+        private uint             _id;
         private Conduit.Access  access;
 
         this (uint id, Conduit.Access access)
@@ -320,6 +320,8 @@ class FileDevice
 
         int id()
         {
-              return _id;
+              return _id;  
         }
 }
+
+

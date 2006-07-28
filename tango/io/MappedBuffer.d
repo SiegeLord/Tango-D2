@@ -3,9 +3,9 @@
         copyright:      Copyright (c) 2004 Kris Bell. All rights reserved
 
         license:        BSD style: $(LICENSE)
-
+      
         version:        Initial release: March 2004
-
+        
         author:         Kris
 
 *******************************************************************************/
@@ -26,7 +26,7 @@ public  import  tango.io.FileConduit;
 *******************************************************************************/
 
 version (Win32)
-         private extern (Windows)
+         private extern (Windows) 
                         {
                         BOOL   UnmapViewOfFile    (LPCVOID);
                         BOOL   FlushViewOfFile    (LPCVOID, DWORD);
@@ -35,17 +35,17 @@ version (Win32)
                         }
 
 version (Posix)
-        {
+        {               
         private import tango.stdc.posix.sys.mman;
         }
 
 
 /*******************************************************************************
 
-        Subclass to treat the buffer as a seekable entity, where all
-        capacity is available for reading and/or writing. To achieve
-        this we must effectively disable the 'limit' watermark, and
-        locate write operations around 'position' instead.
+        Subclass to treat the buffer as a seekable entity, where all 
+        capacity is available for reading and/or writing. To achieve 
+        this we must effectively disable the 'limit' watermark, and 
+        locate write operations around 'position' instead. 
 
 *******************************************************************************/
 
@@ -60,8 +60,8 @@ class MappedBuffer : Buffer
 
                 /***************************************************************
 
-                        Construct a MappedBuffer upon the given FileConduit.
-                        One should set the file size using seek() & truncate()
+                        Construct a MappedBuffer upon the given FileConduit. 
+                        One should set the file size using seek() & truncate() 
                         to setup the available working space.
 
                 ***************************************************************/
@@ -93,7 +93,7 @@ class MappedBuffer : Buffer
                         base = MapViewOfFile (mmFile, flags, 0, 0, 0);
                         if (base is null)
                             host.error ();
-
+ 
                         void[] mem = base [0 .. cast(int) size];
                         setValidContent (mem);
                 }
@@ -110,7 +110,7 @@ class MappedBuffer : Buffer
                             UnmapViewOfFile (base);
 
                         if (mmFile)
-                            CloseHandle (mmFile);
+                            CloseHandle (mmFile);       
 
                         mmFile = null;
                         base = null;
@@ -125,7 +125,7 @@ class MappedBuffer : Buffer
 
                 ***************************************************************/
 
-                override IBuffer flush ()
+                IBuffer flush ()
                 {
                         // flush all dirty pages
                         if (! FlushViewOfFile (base, 0))
@@ -136,11 +136,11 @@ class MappedBuffer : Buffer
         }
 
         /***********************************************************************
-
+                
         ***********************************************************************/
 
         version (Posix)
-        {
+        {               
                 // Linux code: not yet tested on other POSIX systems.
                 private void*   base;           // array pointer
                 private ulong   size;           // length of file
@@ -151,40 +151,40 @@ class MappedBuffer : Buffer
 
                         this.host = host;
                         size = host.length;
-
+                        
                         // Make sure the mapping attributes are consistant with
                         // the FileConduit attributes.
-
+                        
                         auto access = host.getAccess();
-
+                        
                         int flags = MAP_SHARED;
                         int protection = PROT_READ;
-
+                        
                         if (access & host.Access.Write)
                             protection |= PROT_WRITE;
-
+                                
                         base = mmap (null, size, protection, flags, host.getHandle(), 0);
                         if (base is null)
                             host.error();
-
+                                
                         void[] mem = base [0 .. cast(int) size];
                         setValidContent (mem);
-                }
+                }    
 
-                void close ()
+                void close () 
                 {
                         // NOTE: When a process ends, all mmaps belonging to that process
                         //       are automatically unmapped by system (Linux).
-                        //       On the other hand, this is NOT the case when the related
+                        //       On the other hand, this is NOT the case when the related 
                         //       file descriptor is closed.  This function unmaps explicitly.
-
+                        
                         if (base)
                             if (munmap (base, size))
                                 host.error();
-                        base = null;
+                        base = null;    
                 }
 
-                override IBuffer flush ()
+                IBuffer flush () 
                 {
                         // MS_ASYNC: delayed flush; equivalent to "add-to-queue"
                         // MS_SYNC: function flushes file immediately; no return until flush complete
@@ -199,18 +199,18 @@ class MappedBuffer : Buffer
 
 
         /***********************************************************************
-
+                
                 Ensure this is closed when GC'd
 
         ***********************************************************************/
-
+        
         ~this ()
         {
-                close ();
+                close ();        
         }
 
         /***********************************************************************
-
+                
                 Set the read/write position
 
         ***********************************************************************/
@@ -221,7 +221,7 @@ class MappedBuffer : Buffer
         }
 
         /***********************************************************************
-
+        
                 Seek to the specified position within the buffer, and return
                 the byte offset of the new location (relative to zero).
 
@@ -243,8 +243,8 @@ class MappedBuffer : Buffer
         }
 
         /***********************************************************************
-
-                Return count of writable bytes available in buffer. This is
+        
+                Return count of writable bytes available in buffer. This is 
                 calculated simply as capacity() - limit()
 
         ***********************************************************************/
@@ -252,10 +252,10 @@ class MappedBuffer : Buffer
         override uint writable ()
         {
                 return capacity - position;
-        }
+        }               
 
         /***********************************************************************
-
+        
                 Bulk copy of data from 'src'. Position is adjusted by 'size'
                 bytes.
 
@@ -269,11 +269,11 @@ class MappedBuffer : Buffer
 
         /***********************************************************************
 
-                Exposes the raw data buffer at the current write position,
+                Exposes the raw data buffer at the current write position, 
                 The delegate is provided with a void[] representing space
                 available within the buffer at the current write position.
 
-                The delegate should return the appropriate number of bytes
+                The delegate should return the appropriate number of bytes 
                 if it writes valid content, or IConduit.Eof on error.
 
                 Returns whatever the delegate returns.
@@ -284,13 +284,13 @@ class MappedBuffer : Buffer
         {
                 int count = dg (data [position..capacity]);
 
-                if (count != IConduit.Eof)
+                if (count != IConduit.Eof) 
                    {
                    position += count;
                    assert (position <= capacity);
                    }
                 return count;
-        }
+        }               
 
         /***********************************************************************
 
@@ -301,7 +301,7 @@ class MappedBuffer : Buffer
         override IBuffer compress ()
         {
                 return this;
-        }
+        }               
 
         /***********************************************************************
 
@@ -312,10 +312,10 @@ class MappedBuffer : Buffer
         override IBuffer clear ()
         {
                 return this;
-        }
+        }               
 
         /***********************************************************************
-
+        
                 Prohibit the setting of another IConduit
 
         ***********************************************************************/

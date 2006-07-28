@@ -3,9 +3,9 @@
         copyright:      Copyright (c) 2004 Kris Bell. All rights reserved
 
         license:        BSD style: $(LICENSE)
-
-        version:        Initial release: Feb 2005
-
+       
+        version:        Initial release: Feb 2005    
+        
         author:         Kris
 
 *******************************************************************************/
@@ -27,18 +27,18 @@ private class Importer : AbstractEncoder
 
         abstract uint type();
 
-        override void bind (IBuffer buffer)
+        void bind (IBuffer buffer)
         {
                 this.buffer = buffer;
         }
 
-        override uint encoder (void* src, uint bytes, uint type)
+        uint encoder (void* src, uint bytes, uint type)
         {
-                buffer.append (src [0..bytes]);
-                return bytes;
+                buffer.append (src [0..bytes]);  
+                return bytes;   
         }
 }
-
+       
 
 /******************************************************************************
 
@@ -50,7 +50,7 @@ private class Exporter : AbstractDecoder
 
         abstract uint type();
 
-        override void bind (IBuffer buffer)
+        void bind (IBuffer buffer)
         {
                 this.buffer = buffer;
         }
@@ -62,12 +62,12 @@ private class Exporter : AbstractDecoder
 
         ***********************************************************************/
 
-        override void[] decoder (void[] src, uint type)
+        void[] decoder (void[] src, uint type)
         {
                 return src;
         }
 
-        override uint decoder (void* dst, uint bytes, uint type)
+        uint decoder (void* dst, uint bytes, uint type)
         {
                 uint length = bytes;
 
@@ -75,7 +75,7 @@ private class Exporter : AbstractDecoder
                       {
                       // get as much as there is available in the buffer
                       uint available = buffer.readable();
-
+                      
                       // cap bytes read
                       if (available > length)
                           available = length;
@@ -95,7 +95,7 @@ private class Exporter : AbstractDecoder
                 return bytes;
         }
 }
-
+       
 
 
 /*******************************************************************************
@@ -166,7 +166,7 @@ class UnicodeExporter(T) : Exporter
 
         ***********************************************************************/
 
-        override void[] decoder (void[] src, uint type)
+        void[] decoder (void[] src, uint type)
         {
                 return from.convert (src, type);
         }
@@ -181,7 +181,7 @@ class UnicodeExporter(T) : Exporter
                         written += from.convert (src, type, dst[written..bytes], &ate).length;
                         return ate;
                 }
-
+        
                 if (type == from.type)
                     return super.decoder (dst, bytes, type);
 
@@ -196,3 +196,4 @@ class UnicodeExporter(T) : Exporter
 }
 
 //alias UnicodeImporter!(wchar) UnicodeImporter16;
+

@@ -4,8 +4,8 @@
 
         license:        BSD style: $(LICENSE)
 
-        version:        Initial release: March 2004
-
+        version:        Initial release: March 2004      
+        
         author:         $(UL Kris)
                         $(UL John Reimer)
                         $(UL Anders F Bjorklund (Darwin patches))
@@ -35,7 +35,7 @@ version (Win32)
 
 /*******************************************************************************
 
-        Defines how a file should be opened. You can use the predefined
+        Defines how a file should be opened. You can use the predefined 
         instances, or create specializations for your own needs.
 
 *******************************************************************************/
@@ -45,15 +45,16 @@ struct FileStyle
 }
 
 
+
 /*******************************************************************************
 
         Implements a means of reading and writing a generic file. Conduits
-        are the primary means of accessing external data, and are usually
+        are the primary means of accessing external data, and are usually 
         routed through a Buffer. File conduit extends the generic conduit
         by providing file-specific methods to set the file size, seek to a
         specific file position, and so on. Also provided is a class for
-        creating a memory-mapped Buffer upon a file.
-
+        creating a memory-mapped Buffer upon a file.     
+        
         Serial input and output is straightforward. In this example we
         copy a file directly to the console:
 
@@ -77,7 +78,7 @@ struct FileStyle
         // copy file
         to.copy (from);
         ---
-
+        
         FileConduit can just as easily handle random IO. Here we see how
         a Reader and Writer are used to perform simple input and output:
 
@@ -131,21 +132,21 @@ struct FileStyle
         ---
 
 
-        See File, FilePath, FileProxy, FileConst, FileScan, and FileSystem for
-        additional functionality related to file manipulation.
-
-        Doxygen has a hard time with D version() statements, so part of this
+        See File, FilePath, FileProxy, FileConst, FileScan, and FileSystem for 
+        additional functionality related to file manipulation. 
+        
+        Doxygen has a hard time with D version() statements, so part of this 
         class is documented within FileConduit::VersionWin32 instead.
 
-        Compile with -version=Win32SansUnicode to enable Win95 & Win32s file
+        Compile with -version=Win32SansUnicode to enable Win95 & Win32s file 
         support.
-
+        
 *******************************************************************************/
 
 class FileConduit : DeviceConduit, DeviceConduit.Seek
 {
         /***********************************************************************
-
+        
                 Fits into 32 bits ...
 
         ***********************************************************************/
@@ -161,7 +162,7 @@ class FileConduit : DeviceConduit, DeviceConduit.Seek
         }
 
         /***********************************************************************
-
+        
         ***********************************************************************/
 
         enum Open : ubyte       {
@@ -172,7 +173,7 @@ class FileConduit : DeviceConduit, DeviceConduit.Seek
                                 };
 
         /***********************************************************************
-
+        
         ***********************************************************************/
 
         enum Share : ubyte      {
@@ -182,7 +183,7 @@ class FileConduit : DeviceConduit, DeviceConduit.Seek
                                 };
 
         /***********************************************************************
-
+        
         ***********************************************************************/
 
         enum Cache : ubyte      {
@@ -193,26 +194,26 @@ class FileConduit : DeviceConduit, DeviceConduit.Seek
                                 };
 
         /***********************************************************************
-
+        
         ***********************************************************************/
 
         const Style ReadExisting = {DeviceConduit.Access.Read, Open.Exists};
         const Style WriteTruncate = {DeviceConduit.Access.Write, Open.Truncate};
         const Style WriteAppending = {DeviceConduit.Access.Write, Open.Append};
-        const Style ReadWriteCreate = {DeviceConduit.Access.ReadWrite, Open.Create};
-        const Style ReadWriteExisting = {DeviceConduit.Access.ReadWrite, Open.Exists};
+        const Style ReadWriteCreate = {DeviceConduit.Access.ReadWrite, Open.Create}; 
+        const Style ReadWriteExisting = {DeviceConduit.Access.ReadWrite, Open.Exists}; 
 
 
-        // the file we're working with
+        // the file we're working with 
         private FilePath path;
 
-        // expose deviceconduit.copy() methods also
+        // expose deviceconduit.copy() methods also 
         alias DeviceConduit.copy      copy;
         alias DeviceConduit.read      read;
         alias DeviceConduit.write     write;
 
         /***********************************************************************
-
+        
                 Create a FileConduit with the provided path and style.
 
         ***********************************************************************/
@@ -223,7 +224,7 @@ class FileConduit : DeviceConduit, DeviceConduit.Seek
         }
 
         /***********************************************************************
-
+        
                 Create a FileConduit from the provided proxy and style.
 
         ***********************************************************************/
@@ -234,7 +235,7 @@ class FileConduit : DeviceConduit, DeviceConduit.Seek
         }
 
         /***********************************************************************
-
+        
                 Create a FileConduit with the provided path and style.
 
         ***********************************************************************/
@@ -243,16 +244,16 @@ class FileConduit : DeviceConduit, DeviceConduit.Seek
         {
                 // say we're seekable
                 super (style.access, true);
-
+                
                 // remember who we are
                 this.path = path;
 
                 // open the file
                 open (style);
-        }
+        }    
 
         /***********************************************************************
-
+        
                 Return the FilePath used by this file.
 
         ***********************************************************************/
@@ -260,10 +261,10 @@ class FileConduit : DeviceConduit, DeviceConduit.Seek
         FilePath getPath ()
         {
                 return path;
-        }
+        }               
 
         /***********************************************************************
-
+        
                 Return the name of the FilePath used by this file.
 
         ***********************************************************************/
@@ -271,42 +272,42 @@ class FileConduit : DeviceConduit, DeviceConduit.Seek
         override char[] toString ()
         {
                 return path.toString;
-        }
+        }               
 
         /***********************************************************************
-
+                
                 Return the current file position.
-
+                
         ***********************************************************************/
 
         ulong getPosition ()
         {
                 return seek (0, Seek.Anchor.Current);
-        }
+        }               
 
         /***********************************************************************
-
+        
                 Return the total length of this file.
 
         ***********************************************************************/
 
         ulong length ()
         {
-                ulong   pos,
+                ulong   pos,    
                         ret;
-
+                        
                 pos = getPosition ();
                 ret = seek (0, Seek.Anchor.End);
                 seek (pos);
                 return ret;
-        }
+        }               
 
         /***********************************************************************
 
                 Transfer the content of another file to this one. Returns a
-                reference to this class on success, or throws an IOException
+                reference to this class on success, or throws an IOException 
                 upon failure.
-
+        
         ***********************************************************************/
 
         FileConduit copy (FilePath source)
@@ -317,10 +318,10 @@ class FileConduit : DeviceConduit, DeviceConduit.Seek
 
                 super.copy (fc);
                 return this;
-        }
+        }               
 
         /***********************************************************************
-
+        
                 Return the name used by this file.
 
         ***********************************************************************/
@@ -328,13 +329,13 @@ class FileConduit : DeviceConduit, DeviceConduit.Seek
         protected override char[] getName ()
         {
                 return path.toString;
-        }
+        }               
 
 
         /***********************************************************************
 
                 Windows-specific code
-
+        
         ***********************************************************************/
 
         version(Win32)
@@ -356,30 +357,30 @@ class FileConduit : DeviceConduit, DeviceConduit.Seek
 
                         alias DWORD[] Flags;
 
-                        static const Flags Access =
+                        static const Flags Access =  
                                         [
                                         0,                      // invalid
                                         GENERIC_READ,
                                         GENERIC_WRITE,
                                         GENERIC_READ | GENERIC_WRITE,
                                         ];
-
-                        static const Flags Create =
+                                                
+                        static const Flags Create =  
                                         [
                                         OPEN_EXISTING,          // must exist
                                         CREATE_ALWAYS,          // create always
                                         TRUNCATE_EXISTING,      // must exist
                                         OPEN_ALWAYS,            // (for appending)
                                         ];
-
-                        static const Flags Share =
+                                                
+                        static const Flags Share =   
                                         [
                                         FILE_SHARE_READ,
                                         FILE_SHARE_WRITE,
                                         FILE_SHARE_READ | FILE_SHARE_WRITE,
                                         ];
-
-                        static const Flags Attr =
+                                                
+                        static const Flags Attr =   
                                         [
                                         0,
                                         FILE_FLAG_RANDOM_ACCESS,
@@ -394,13 +395,13 @@ class FileConduit : DeviceConduit, DeviceConduit.Seek
                         access = Access[style.access];
 
                         version (Win32SansUnicode)
-                                 handle = CreateFileA (path.toUtf8, access, share,
-                                                       null, create,
+                                 handle = CreateFileA (path.toUtf8, access, share, 
+                                                       null, create, 
                                                        attr | FILE_ATTRIBUTE_NORMAL,
                                                        cast(HANDLE) null);
                              else
-                                handle = CreateFileW (path.toUtf16(true), access,
-                                                      share, null, create,
+                                handle = CreateFileW (path.toUtf16(true), access, 
+                                                      share, null, create, 
                                                       attr | FILE_ATTRIBUTE_NORMAL,
                                                       cast(HANDLE) null);
 
@@ -411,7 +412,7 @@ class FileConduit : DeviceConduit, DeviceConduit.Seek
                         if (style.open is Open.Append)
                             appending = true;
                 }
-
+                
                 /***************************************************************
 
                         Write a chunk of bytes to the file from the provided
@@ -419,20 +420,20 @@ class FileConduit : DeviceConduit, DeviceConduit.Seek
 
                 ***************************************************************/
 
-                protected override uint writer (void[] src)
+                protected uint writer (void[] src)
                 {
                         DWORD written;
 
                         // try to emulate the Unix O_APPEND mode
                         if (appending)
                             SetFilePointer (handle, 0, null, Seek.Anchor.End);
-
+                        
                         return super.writer (src);
                 }
-
+            
                 /***************************************************************
 
-                        Set the file size to be that of the current seek
+                        Set the file size to be that of the current seek 
                         position. The file must be writable for this to
                         succeed.
 
@@ -442,35 +443,35 @@ class FileConduit : DeviceConduit, DeviceConduit.Seek
                 {
                         // must have Generic_Write access
                         if (! SetEndOfFile (handle))
-                              error ();
-                }
+                              error ();                            
+                }               
 
                 /***************************************************************
 
                         Set the file seek position to the specified offset
-                        from the given anchor.
+                        from the given anchor. 
 
                 ***************************************************************/
 
                 ulong seek (ulong offset, Seek.Anchor anchor = Seek.Anchor.Begin)
                 {
                         LONG high = cast(LONG) (offset >> 32);
-                        ulong result = SetFilePointer (handle, cast(LONG) offset,
+                        ulong result = SetFilePointer (handle, cast(LONG) offset, 
                                                        &high, anchor);
 
-                        if (result is -1 &&
+                        if (result is -1 && 
                             GetLastError() != ERROR_SUCCESS)
                             error ();
 
                         return result + (cast(ulong) high << 32);
-                }
+                }               
         }
 
 
         /***********************************************************************
 
                  Unix-specific code. Note that some methods are 32bit only
-
+        
         ***********************************************************************/
 
         version (Posix)
@@ -483,36 +484,36 @@ class FileConduit : DeviceConduit, DeviceConduit.Seek
 
                 protected void open (Style style)
                 {
-                        int     share,
+                        int     share, 
                                 access;
 
                         alias int[] Flags;
 
-                        static const Flags Access =
+                        static const Flags Access =  
                                         [
                                         0,              // invalid
                                         O_RDONLY,
                                         O_WRONLY,
                                         O_RDWR,
                                         ];
-
-                        static const Flags Create =
+                                                
+                        static const Flags Create =  
                                         [
                                         0,              // open existing
                                         O_CREAT,        // create always
                                         O_TRUNC,        // must exist
-                                        O_APPEND | O_CREAT,
+                                        O_APPEND | O_CREAT, 
                                         ];
 
                         // this is not the same as Windows sharing,
                         // but it's perhaps a reasonable approximation
-                        static const Flags Share =
+                        static const Flags Share =   
                                         [
                                         0640,           // read access
                                         0620,           // write access
                                         0660,           // read & write
                                         ];
-
+                                                
                         share = Share[style.share];
                         access = Access[style.access] | Create[style.open];
 
@@ -525,7 +526,7 @@ class FileConduit : DeviceConduit, DeviceConduit.Seek
 
                         32bit only ...
 
-                        Set the file size to be that of the current seek
+                        Set the file size to be that of the current seek 
                         position. The file must be writable for this to
                         succeed.
 
@@ -536,14 +537,14 @@ class FileConduit : DeviceConduit, DeviceConduit.Seek
                         // set filesize to be current seek-position
                         if (ftruncate (handle, getPosition()) is -1)
                             error ();
-                }
+                }               
 
                 /***************************************************************
 
                         32bit only ...
 
                         Set the file seek position to the specified offset
-                        from the given anchor.
+                        from the given anchor. 
 
                 ***************************************************************/
 
@@ -553,7 +554,7 @@ class FileConduit : DeviceConduit, DeviceConduit.Seek
                         if (result is -1)
                             error ();
                         return result;
-                }
+                }               
         }
 }
 
@@ -567,7 +568,7 @@ class FileConduit : DeviceConduit, DeviceConduit.Seek
 class TextFileConduit : FileConduit
 {
         /***********************************************************************
-
+        
                 Create a FileConduit with the provided path and style.
 
         ***********************************************************************/
@@ -578,7 +579,7 @@ class TextFileConduit : FileConduit
         }
 
         /***********************************************************************
-
+        
                 Create a FileConduit from the provided proxy and style.
 
         ***********************************************************************/
@@ -589,7 +590,7 @@ class TextFileConduit : FileConduit
         }
 
         /***********************************************************************
-
+        
                 Create a FileConduit with the provided path and style.
 
         ***********************************************************************/
@@ -597,10 +598,10 @@ class TextFileConduit : FileConduit
         this (FilePath path, Style style = ReadExisting)
         {
                 super (path, style);
-        }
+        }    
 
         /***********************************************************************
-
+        
                 Returns true if this conduit is text-based
 
         ***********************************************************************/
@@ -608,6 +609,6 @@ class TextFileConduit : FileConduit
         override bool isTextual ()
         {
                 return true;
-        }
+        }               
 }
 

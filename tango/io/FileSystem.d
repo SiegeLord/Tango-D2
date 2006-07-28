@@ -4,8 +4,8 @@
 
         license:        BSD style: $(LICENSE)
 
-        version:        Initial release: March 2004
-
+        version:        Initial release: March 2004      
+        
         author:         Kris, John Reimer, Chris Sauls (Win95 file support)
 
 *******************************************************************************/
@@ -25,7 +25,7 @@ private import  tango.text.convert.Unicode;
 version (Win32)
         extern (Windows) DWORD GetLogicalDriveStringsA (DWORD, LPTSTR);
      else
-
+    
         extern (C) int strlen (char *);
 	version(Posix){
 	    private import tango.stdc.posix.unistd;
@@ -33,7 +33,7 @@ version (Win32)
 
 /*******************************************************************************
 
-        Models an OS-specific file-system. Included here are methods to
+        Models an OS-specific file-system. Included here are methods to 
         list the system roots ("C:", "D:", etc) and to manipulate the
         current working directory.
 
@@ -44,7 +44,7 @@ class FileSystem
         version (Win32)
         {
                 /***********************************************************************
-
+                        
                         List the set of root devices (C:, D: etc)
 
                 ***********************************************************************/
@@ -91,7 +91,7 @@ class FileSystem
                 /***********************************************************************
 
                         Get the current working directory
-
+                
                 ***********************************************************************/
 
                 static FilePath getDirectory ()
@@ -119,8 +119,8 @@ class FileSystem
                         throw new IOException ("Failed to get current directory");
                 }
         }
-
-
+        
+        
         version (Posix)
         {
                 /***********************************************************************
@@ -152,16 +152,16 @@ class FileSystem
                 /***********************************************************************
 
                         Get the current working directory
-
+                
                 ***********************************************************************/
 
                 static FilePath getDirectory ()
                 {
                         char *s = tango.stdc.posix.unistd.getcwd (null, 0);
-                        if (s)
+                        if (s) 
                             return new FilePath (s[0..strlen(s)]);
 
                         throw new IOException ("Failed to get current directory");
                 }
-        }
+        }   
 }

@@ -3,9 +3,9 @@
         copyright:      Copyright (c) 2004 Kris Bell. All rights reserved
 
         license:        BSD style: $(LICENSE)
-
+        
         version:        Initial release: Nov 2005
-
+        
         author:         Kris
 
 *******************************************************************************/
@@ -23,7 +23,7 @@ private import tango.text.convert.Format;
 
         A bridge between a Format instance and a Buffer. This is used for
         the Stdout & Stderr globals, but can be used for general-purpose
-        buffer-formatting as desired. The Template type 'T' dictates the
+        buffer-formatting as desired. The Template type 'T' dictates the 
         text arrangement within the target buffer ~ one of char, wchar or
         dchar (utf8, utf16, or utf32)
 
@@ -50,7 +50,7 @@ private class BufferedFormat
                 this.target = target;
                 this.flush = flush;
         }
-
+                
         /**********************************************************************
 
         **********************************************************************/
@@ -122,7 +122,7 @@ private class BufferedFormat
         }
 
         /***********************************************************************
-
+        
                 Emit a newline
 
         ***********************************************************************/
@@ -142,7 +142,7 @@ private class BufferedFormat
         final IBuffer buffer ()
         {
                 return target;
-        }
+        }      
 
         /**********************************************************************
 
@@ -153,7 +153,7 @@ private class BufferedFormat
         final IConduit conduit ()
         {
                 return target.getConduit;
-        }
+        }      
 
         /**********************************************************************
 
@@ -166,8 +166,8 @@ private class BufferedFormat
                 if (flush)
                     target.flush;
                 return this;
-        }
-
+        }      
+        
 }
 
 /*******************************************************************************
@@ -177,7 +177,7 @@ private class BufferedFormat
         tango.io.Console directly
 
         Note that both the buffer and conduit in use are exposed by these
-        global instances ~ this can be leveraged, for instance, to copy a
+        global instances ~ this can be leveraged, for instance, to copy a 
         file to the standard output:
 
         ---
@@ -186,7 +186,7 @@ private class BufferedFormat
 
 *******************************************************************************/
 
-public static BufferedFormat Stdout,
+public static BufferedFormat Stdout, 
                              Stderr;
 
 static this()
@@ -194,3 +194,4 @@ static this()
         Stdout = new BufferedFormat (Cout);
         Stderr = new BufferedFormat (Cerr);
 }
+
