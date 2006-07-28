@@ -36,7 +36,6 @@
 module tango.math.ieee;
 
 private import tango.stdc.math;
-private import tango.math.core; // for sin and cos
 
 // Returns true if equal to precision, false if not
 // (This function is used in unit tests)
@@ -352,13 +351,13 @@ creal expi(ireal y)
     }
     else
     {
-        return tango.math.core.cos(y.im) + tango.math.core.sin(y.im)*1i;
+        return tango.stdc.math.cosl(y.im) + tango.stdc.math.sinl(y.im)*1i;
     }
 }
 
 unittest
 {
-    assert(expi(1.3e5Li)==tango.math.core.cos(1.3e5L)+tango.math.core.sin(1.3e5L)*1i);
+    assert(expi(1.3e5Li)==tango.stdc.math.cosl(1.3e5L) + tango.stdc.math.sinl(1.3e5L)*1i);
     assert(expi(0.0Li)==1L+0.0Li);
 }
 

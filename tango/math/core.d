@@ -627,7 +627,7 @@ creal sqrt(creal z) /// ditto
 }
 
 /**
- * Calculates the cube root x.
+ * Calculates the cube root of x.
  *
  *  $(TABLE_SV
  *  <tr> <th> <i>x</i>  <th> cbrt(x)    <th> invalid?
