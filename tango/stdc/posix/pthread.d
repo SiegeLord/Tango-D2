@@ -111,7 +111,7 @@ enum
     PTHREAD_EXPLICIT_SCHED
 }
 
-//const pthread_mutex_t PTHREAD_MUTEX_INITIALIZER = { 0, 0, 0, PTHREAD_MUTEX_TIMED_NP, __LOCK_ALT_INITIALIZER };
+//const pthread_mutex_t PTHREAD_MUTEX_INITIALIZER = { 0, 0, null, PTHREAD_MUTEX_NORMAL, { 0, 0 } };
 
 const auto PTHREAD_ONCE_INIT = 0;
 
@@ -257,13 +257,26 @@ void pthread_testcancel();
 PTHREAD_BARRIER_SERIAL_THREAD
 
 int pthread_barrier_destroy(pthread_barrier_t*);
-int pthread_barrier_init(pthread_barrier_t*, pthread_barrierattr_t*, unsigned);
+int pthread_barrier_init(pthread_barrier_t*, pthread_barrierattr_t*, uint);
 int pthread_barrier_wait(pthread_barrier_t*);
 int pthread_barrierattr_destroy(pthread_barrierattr_t*);
 int pthread_barrierattr_getpshared(pthread_barrierattr_t*, int*); (BAR|TSH)
 int pthread_barrierattr_init(pthread_barrierattr_t*);
 int pthread_barrierattr_setpshared(pthread_barrierattr_t*, int); (BAR|TSH)
 */
+
+version( linux )
+{
+    const auto PTHREAD_BARRIER_SERIAL_THREAD = -1;
+
+    int pthread_barrier_destroy(pthread_barrier_t*);
+    int pthread_barrier_init(pthread_barrier_t*, pthread_barrierattr_t*, uint);
+    int pthread_barrier_wait(pthread_barrier_t*);
+    int pthread_barrierattr_destroy(pthread_barrierattr_t*);
+    int pthread_barrierattr_getpshared(pthread_barrierattr_t*, int*);
+    int pthread_barrierattr_init(pthread_barrierattr_t*);
+    int pthread_barrierattr_setpshared(pthread_barrierattr_t*, int);
+}
 
 //
 // Clock (CS)
@@ -284,6 +297,15 @@ int pthread_spin_trylock(pthread_spinlock_t*);
 int pthread_spin_unlock(pthread_spinlock_t*);
 */
 
+version( linux )
+{
+    int pthread_spin_destroy(pthread_spinlock_t*);
+    int pthread_spin_init(pthread_spinlock_t*, int);
+    int pthread_spin_lock(pthread_spinlock_t*);
+    int pthread_spin_trylock(pthread_spinlock_t*);
+    int pthread_spin_unlock(pthread_spinlock_t*);
+}
+
 //
 // XOpen (XSI)
 //
@@ -301,12 +323,32 @@ int pthread_mutexattr_settype(pthread_mutexattr_t*, int);
 int pthread_setconcurrency(int);
 */
 
+version( linux )
+{
+    const auto PTHREAD_MUTEX_NORMAL     = 0;
+    const auto PTHREAD_MUTEX_RECURSIVE  = 1;
+    const auto PTHREAD_MUTEX_ERRORCHECK = 2;
+    const auto PTHREAD_MUTEX_DEFAULT    = PTHREAD_MUTEX_NORMAL;
+
+    int pthread_attr_getguardsize(pthread_attr_t*, size_t*);
+    int pthread_attr_setguardsize(pthread_attr_t*, size_t);
+    int pthread_getconcurrency();
+    int pthread_mutexattr_gettype(pthread_mutexattr_t*, int*);
+    int pthread_mutexattr_settype(pthread_mutexattr_t*, int);
+    int pthread_setconcurrency(int);
+}
+
 //
 // CPU Time (TCT)
 //
 /*
 int pthread_getcpuclockid(pthread_t, clockid_t*);
 */
+
+version( linux )
+{
+    int pthread_getcpuclockid(pthread_t, clockid_t*);
+}
 
 //
 // Timeouts (TMO)
