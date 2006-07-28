@@ -46,6 +46,9 @@ public class MailAppender : Appender
                 this.from = from;
                 this.subj = subj;
                 this.server = server;
+
+                // Get a unique fingerprint for this appender
+                mask = register (to ~ subj);
         }
 
         /***********************************************************************
