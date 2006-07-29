@@ -164,7 +164,15 @@ tm* getdate(char*);
 char* strptime(char*, char*, tm*);
 */
 
-version( darwin )
+version( linux )
+{
+    extern int      daylight;
+    extern c_long   timezone;
+
+    tm*   getdate(char*);
+    char* strptime(char*, char*, tm*);
+}
+else version( darwin )
 {
     tm*   getdate(char *);
     char* strptime(char*, char*, tm*);

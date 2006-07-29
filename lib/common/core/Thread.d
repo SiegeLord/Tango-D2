@@ -30,9 +30,6 @@ public
 }
 private
 {
-    // import tango.stdc.string; // for memset
-    extern (C) void* memset(void* s, int c, size_t n);
-
     // exposed by compiler runtime
     extern (C) void* cr_stackBottom();
     extern (C) void* cr_stackTop();
@@ -159,11 +156,6 @@ else version( Posix )
         import tango.stdc.posix.signal;
         import tango.stdc.posix.unistd;
         import tango.stdc.posix.time;
-
-        version( darwin )
-        {
-            import tango.os.darwin.darwin;
-        }
 
         //
         // entry point for POSIX threads
@@ -1058,6 +1050,11 @@ extern (C) void thread_init()
         sigaction_t sigusr1 = void;
         sigaction_t sigusr2 = void;
 
+        // This is a quick way to zero-initialize the structs without using
+        // memset or creating a link dependency on their static initializer.
+        (cast(byte*) &sigusr1)[0 .. sigaction_t.sizeof] = 0;
+        (cast(byte*) &sigusr2)[0 .. sigaction_t.sizeof] = 0;
+
         // NOTE: SA_RESTART indicates that system calls should restart if they
         //       are interrupted by a signal, but this is not available on all
         //       Posix systems, even those that support multithreading.
@@ -1326,8 +1323,8 @@ body
                 throw new ThreadException( "Unable to resume thread" );
             }
 
-            t.m_tstack = t.m_bstack;
-            memset( &t.m_reg[0], 0, uint.sizeof * t.m_reg.length );
+            t.m_tstack      = t.m_bstack;
+            t.m_reg[0 .. $] = 0;
         }
         else version( Posix )
         {
@@ -1405,11 +1402,9 @@ body
             thisThread.m_tstack = oldStackTop;
     }
 
-    //
     // NOTE: Synchronizing on Thread.slock is not needed because this
     //       function may only be called after all other threads have
     //       been suspended from within the same lock.
-    //
     for( Thread t = Thread.sm_all; t; t = t.m_next )
     {
         version( StackGrowsDown )
@@ -1466,7 +1461,7 @@ class ThreadGroup
 
 
     /**
-     * Creates and stats a new Thread object that executes dg and
+     * Creates and starts a new Thread object that executes dg and
      * adds it to the list of tracked threads.
      *
      * Params:

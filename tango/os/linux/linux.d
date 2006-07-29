@@ -6,8 +6,7 @@
 
 module tango.os.linux.linux;
 
-public import tango.os.linux.linuxextern;
-//import tango.stdc.posix.sys.types;
+private import tango.stdc.config; // for c_long
 
 //alias int pid_t;   // use tango.stdc.posix.sys.types instead
 //alias int off_t;   // use tango.stdc.posix.sys.types instead
@@ -123,10 +122,10 @@ extern (C)
     int rmdir(char*);
     char* getcwd(char*, int);
     //int chmod(char*, mode_t);      // use tango.stdc.posix.sys.stat
-    //int fork();                    // use tango.stdc.posix.unistd 
-    //int dup(int);                  // use tango.stdc.posix.unistd 
-    //int dup2(int, int);            // use tango.stdc.posix.unistd 
-    //int pipe(int[2]);              // use tango.stdc.posix.unistd 
+    //int fork();                    // use tango.stdc.posix.unistd
+    //int dup(int);                  // use tango.stdc.posix.unistd
+    //int dup2(int, int);            // use tango.stdc.posix.unistd
+    //int pipe(int[2]);              // use tango.stdc.posix.unistd
     //pid_t wait(int*);              // use tango.stdc.posix.sys.wait
     //int waitpid(pid_t, int*, int); // use tango.stdc.posix.sys.wait
 }
@@ -154,6 +153,11 @@ struct tm
 
 extern (C)
 {
+    // These are also defined in tango.stdc.posix.time, but it should be
+    // safe to have them here as well, as they are extern declarations.
+    extern int      daylight;
+    extern c_long   timezone;
+
     int gettimeofday(timeval*, void*);
     int time(int*);
     tm *localtime(int*);

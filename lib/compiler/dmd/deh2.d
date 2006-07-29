@@ -25,9 +25,13 @@
 
 //debug=1;
 
-import tango.os.linux.linuxextern;
+extern (C)
+{
+    extern void* _deh_beg;
+    extern void* _deh_end;
 
-extern (C) int _d_isbaseof(ClassInfo oc, ClassInfo c);
+    int _d_isbaseof(ClassInfo oc, ClassInfo c);
+}
 
 alias int (*fp_t)();   // function pointer in ambient memory model
 

@@ -16,10 +16,6 @@ private
 {
     extern (C)
 {
-    void* memset(void* s, int c, size_t n);
-}
-    extern (C)
-{
     void* cr_stackBottom();
 }
     extern (C)
@@ -95,10 +91,6 @@ else
     import tango.stdc.posix.signal;
     import tango.stdc.posix.unistd;
     import tango.stdc.posix.time;
-    version (darwin)
-{
-    import tango.os.darwin.darwin;
-}
     extern (C)
 {
     void* thread_entryPoint(void* arg);
