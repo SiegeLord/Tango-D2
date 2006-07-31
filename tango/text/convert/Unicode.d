@@ -4,7 +4,7 @@
 
         license:        BSD style: $(LICENSE)
 
-        version:        Initial release: Oct 2004      
+        version:        Initial release: Oct 2004
 
         authors:        Kris
 
@@ -14,40 +14,42 @@ module tango.text.convert.Unicode;
 
 private import tango.text.convert.Type;
 
+private extern (C) void onUnicodeError( char[] msg, size_t idx );
+
 /*******************************************************************************
 
         Fast Unicode transcoders. These are particularly sensitive to
         minor changes on 32bit x86 devices, because the register set of
         those devices is so small. Beware of subtle changes which might
-        extend the execution-period by as much as 200%. Because of this, 
-        three of the six transcoders might read past the end of input by 
-        one, two, or three bytes before arresting themselves. Note that 
-        support for streaming adds a 15% overhead to the dchar => char 
+        extend the execution-period by as much as 200%. Because of this,
+        three of the six transcoders might read past the end of input by
+        one, two, or three bytes before arresting themselves. Note that
+        support for streaming adds a 15% overhead to the dchar => char
         conversion, but has little effect on the others.
 
         These routines were tuned on an Intel P4; other devices may work
         more efficiently with a slightly different approach, though this
         is likely to be reasonably optimal on AMD x86 CPUs also. These
-        algorithms would benefit significantly from those extra AMD64 
+        algorithms would benefit significantly from those extra AMD64
         registers. On a 3GHz P4, the dchar/char conversions take around
         2500ns to process an array of 1000 ASCII elements. Invoking the
-        memory manager doubles that period, and quadruples the time for 
-        arrays of 100 elements. Memory allocation can slow down notably 
+        memory manager doubles that period, and quadruples the time for
+        arrays of 100 elements. Memory allocation can slow down notably
         in a multi-threaded environment, so avoid that where possible.
 
         Surrogate-pairs are dealt with in a non-optimal fashion when
-        transcoding between utf16 and utf8. Such cases are considered 
+        transcoding between utf16 and utf8. Such cases are considered
         to be boundary-conditions for this module.
 
-        There are three common cases where the input may be incomplete, 
+        There are three common cases where the input may be incomplete,
         including each 'widening' case of utf8 => utf16, utf8 => utf32,
         and utf16 => utf32. An edge-case is utf16 => utf8, if surrogate
-        pairs are present. Such cases will throw an exception, unless 
-        streaming-mode is enabled ~ in the latter mode, an additional 
-        integer is returned indicating how many elements of the input 
-        have been consumed. In all cases, a correct slice of the output 
+        pairs are present. Such cases will throw an exception, unless
+        streaming-mode is enabled ~ in the latter mode, an additional
+        integer is returned indicating how many elements of the input
+        have been consumed. In all cases, a correct slice of the output
         is returned.
-                
+
         For details on Unicode processing see:
         $(UL $(LINK http://www.utf-8.com/))
         $(UL $(LINK http://www.hackcraft.net/xmlUnicode/))
@@ -60,15 +62,15 @@ struct Unicode
 {
         // see http://icu.sourceforge.net/docs/papers/forms_of_unicode/#t2
         enum    {
-                Unknown, 
-                UTF_8, 
-                UTF_8N, 
-                UTF_16, 
-                UTF_16BE, 
-                UTF_16LE, 
-                UTF_32, 
+                Unknown,
+                UTF_8,
+                UTF_8N,
+                UTF_16,
+                UTF_16BE,
+                UTF_16LE,
+                UTF_32,
                 UTF_32BE,
-                UTF_32LE, 
+                UTF_32LE,
                 };
 
         /***********************************************************************
@@ -84,29 +86,21 @@ struct Unicode
 
         ***********************************************************************/
 
-        package static final void error (char[] msg)
+        package static final void error (char[] msg, size_t idx = 0)
         {
-                static class UnicodeException : Exception
-                {
-                        this (char[] msg)
-                        {
-                                super (msg);
-                        }
-                }
-
-                throw new UnicodeException (msg);
+                onUnicodeError (msg, idx);
         }
 
         /***********************************************************************
 
-                Encode Utf8 up to a maximum of 4 bytes long (five & six byte 
-                variations are not supported). 
+                Encode Utf8 up to a maximum of 4 bytes long (five & six byte
+                variations are not supported).
 
-                If the output is provided off the stack, it should be large 
-                enough to encompass the entire transcoding; failing to do 
+                If the output is provided off the stack, it should be large
+                enough to encompass the entire transcoding; failing to do
                 so will cause the output to be moved onto the heap instead.
 
-                Returns a slice of the output buffer, corresponding to the 
+                Returns a slice of the output buffer, corresponding to the
                 converted characters. For optimum performance, the returned
                 buffer should be specified as 'output' on subsequent calls.
                 For example:
@@ -137,7 +131,7 @@ struct Unicode
                 char* pMax = pOut + output.length - 3;
 
                 foreach (int eaten, wchar b; input)
-                        { 
+                        {
                         // about to overflow the output?
                         if (pOut > pMax)
                            {
@@ -176,7 +170,7 @@ struct Unicode
                                  // deal with surrogate-pairs
                                  return toUtf8 (toUtf32(input, null, ate), output);
                         }
-                
+
                 // return the produced output
                 return output [0..(pOut - output.ptr)];
         }
@@ -184,13 +178,13 @@ struct Unicode
 
         /***********************************************************************
 
-                Decode Utf8 produced by the above toUtf8() method. 
-        
-                If the output is provided off the stack, it should be large 
-                enough to encompass the entire transcoding; failing to do 
+                Decode Utf8 produced by the above toUtf8() method.
+
+                If the output is provided off the stack, it should be large
+                enough to encompass the entire transcoding; failing to do
                 so will cause the output to be moved onto the heap instead.
 
-                Returns a slice of the output buffer, corresponding to the 
+                Returns a slice of the output buffer, corresponding to the
                 converted characters. For optimum performance, the returned
                 buffer should be specified as 'output' on subsequent calls.
 
@@ -231,33 +225,33 @@ struct Unicode
                                   // deal with surrogate-pairs
                                   return toUtf16 (toUtf32(input, null, ate), output);
 
-                        d = b;          
+                        d = b;
                         ++produced;
 
                         // did we read past the end of the input?
                         if (++pIn >= pMax)
-                            if (pIn > pMax)    
+                            if (pIn > pMax)
                                {
                                // yep ~ return tail or throw error?
                                if (ate)
                                   {
-                                  pIn = pValid; 
+                                  pIn = pValid;
                                   --produced;
                                   break;
                                   }
-                               error ("Unicode.toUtf16 : incomplete utf8 input");  
+                               error ("Unicode.toUtf16 : incomplete utf8 input", pIn - input.ptr);
                                }
                             else
                                break;
                         }
-                       
+
                 // do we still have some input left?
                 if (ate)
                     *ate = pIn - input.ptr;
                 else
                    if (pIn < pMax)
                        // this should never happen!
-                       error ("Unicode.toUtf16 : utf8 overflow");
+                       error ("Unicode.toUtf16 : utf8 overflow", pIn - input.ptr);
 
                 // return the produced output
                 return output [0..produced];
@@ -270,11 +264,11 @@ struct Unicode
                 byte variations are not supported). Throws an exception
                 where the input dchar is greater than 0x10ffff.
 
-                If the output is provided off the stack, it should be large 
-                enough to encompass the entire transcoding; failing to do 
+                If the output is provided off the stack, it should be large
+                enough to encompass the entire transcoding; failing to do
                 so will cause the output to be moved onto the heap instead.
 
-                Returns a slice of the output buffer, corresponding to the 
+                Returns a slice of the output buffer, corresponding to the
                 converted characters. For optimum performance, the returned
                 buffer should be specified as 'output' on subsequent calls.
 
@@ -296,7 +290,7 @@ struct Unicode
                 char* pMax = pOut + output.length - 4;
 
                 foreach (int eaten, dchar b; input)
-                        { 
+                        {
                         // about to overflow the output?
                         if (pOut > pMax)
                            {
@@ -341,9 +335,9 @@ struct Unicode
                                     pOut += 4;
                                     }
                                  else
-                                    error ("Unicode.toUtf8 : invalid dchar");
+                                    error ("Unicode.toUtf8 : invalid dchar", eaten);
                         }
-                
+
                 // return the produced output
                 return output [0..(pOut - output.ptr)];
         }
@@ -351,13 +345,13 @@ struct Unicode
 
         /***********************************************************************
 
-                Decode Utf8 produced by the above toUtf8() method. 
-        
-                If the output is provided off the stack, it should be large 
-                enough to encompass the entire transcoding; failing to do 
+                Decode Utf8 produced by the above toUtf8() method.
+
+                If the output is provided off the stack, it should be large
+                enough to encompass the entire transcoding; failing to do
                 so will cause the output to be moved onto the heap instead.
 
-                Returns a slice of the output buffer, corresponding to the 
+                Returns a slice of the output buffer, corresponding to the
                 converted characters. For optimum performance, the returned
                 buffer should be specified as 'output' on subsequent calls.
 
@@ -402,7 +396,7 @@ struct Unicode
                                   b = (b << 6) | (pIn[3] & 0x3f);
 
                                   if (b >= 0x110000)
-                                      error ("Unicode.toUtf32 : invalid utf8 input");
+                                      error ("Unicode.toUtf32 : invalid utf8 input", pIn - input.ptr);
                                   pIn += 3;
                                   }
 
@@ -411,16 +405,16 @@ struct Unicode
 
                         // did we read past the end of the input?
                         if (++pIn >= pMax)
-                            if (pIn > pMax)   
+                            if (pIn > pMax)
                                {
                                // yep ~ return tail or throw error?
                                if (ate)
                                   {
-                                  pIn = pValid; 
+                                  pIn = pValid;
                                   --produced;
                                   break;
                                   }
-                               error ("Unicode.toUtf32 : incomplete utf8 input");  
+                               error ("Unicode.toUtf32 : incomplete utf8 input", pIn - input.ptr);
                                }
                             else
                                break;
@@ -432,7 +426,7 @@ struct Unicode
                 else
                    if (pIn < pMax)
                        // this should never happen!
-                       error ("Unicode.toUtf32 : utf8 overflow");
+                       error ("Unicode.toUtf32 : utf8 overflow", pIn - input.ptr);
 
                 // return the produced output
                 return output [0..produced];
@@ -443,11 +437,11 @@ struct Unicode
                 Encode Utf16 up to a maximum of 2 bytes long. Throws an exception
                 where the input dchar is greater than 0x10ffff.
 
-                If the output is provided off the stack, it should be large 
-                enough to encompass the entire transcoding; failing to do 
+                If the output is provided off the stack, it should be large
+                enough to encompass the entire transcoding; failing to do
                 so will cause the output to be moved onto the heap instead.
 
-                Returns a slice of the output buffer, corresponding to the 
+                Returns a slice of the output buffer, corresponding to the
                 converted characters. For optimum performance, the returned
                 buffer should be specified as 'output' on subsequent calls.
 
@@ -468,7 +462,7 @@ struct Unicode
                 wchar* pMax = pOut + output.length - 2;
 
                 foreach (int eaten, dchar b; input)
-                        { 
+                        {
                         // about to overflow the output?
                         if (pOut > pMax)
                            {
@@ -496,22 +490,22 @@ struct Unicode
                               pOut += 2;
                               }
                            else
-                              error ("Unicode.toUtf16 : invalid dchar");
+                              error ("Unicode.toUtf16 : invalid dchar", eaten);
                         }
-                
+
                 // return the produced output
                 return output [0..(pOut - output.ptr)];
         }
 
         /***********************************************************************
 
-                Decode Utf16 produced by the above toUtf16() method. 
-        
-                If the output is provided off the stack, it should be large 
-                enough to encompass the entire transcoding; failing to do 
+                Decode Utf16 produced by the above toUtf16() method.
+
+                If the output is provided off the stack, it should be large
+                enough to encompass the entire transcoding; failing to do
                 so will cause the output to be moved onto the heap instead.
 
-                Returns a slice of the output buffer, corresponding to the 
+                Returns a slice of the output buffer, corresponding to the
                 converted characters. For optimum performance, the returned
                 buffer should be specified as 'output' on subsequent calls.
 
@@ -539,22 +533,22 @@ struct Unicode
                             b = ((b - 0xd7c0) << 10) + (*++pIn - 0xdc00);
 
                         if (b >= 0x110000)
-                            error ("Unicode.toUtf32 : invalid utf16 input");
+                            error ("Unicode.toUtf32 : invalid utf16 input", pIn - input.ptr);
 
                         d = b;
                         ++produced;
 
                         if (++pIn >= pMax)
-                            if (pIn > pMax)   
+                            if (pIn > pMax)
                                {
                                // yep ~ return tail or throw error?
                                if (ate)
                                   {
-                                  pIn = pValid; 
+                                  pIn = pValid;
                                   --produced;
                                   break;
                                   }
-                               error ("Unicode.toUtf32 : incomplete utf16 input");  
+                               error ("Unicode.toUtf32 : incomplete utf16 input", pIn - input.ptr);
                                }
                             else
                                break;
@@ -566,8 +560,8 @@ struct Unicode
                 else
                    if (pIn < pMax)
                        // this should never happen!
-                       error ("Unicode.toUtf32 : utf16 overflow");
-                
+                       error ("Unicode.toUtf32 : utf16 overflow", pIn - input.ptr);
+
                 // return the produced output
                 return output [0..produced];
         }
@@ -578,7 +572,7 @@ struct Unicode
                 Convert from an external coding of 'type' to an internally
                 normalized representation of T.
 
-                T refers to the destination, whereas 'type' refers to the 
+                T refers to the destination, whereas 'type' refers to the
                 source.
 
         ***********************************************************************/
@@ -651,7 +645,7 @@ struct Unicode
 
         /***********************************************************************
 
-                Convert to an external coding of 'type' from an internally 
+                Convert to an external coding of 'type' from an internally
                 normalized representation of T.
 
                 T refers to the source, whereas 'type' is the destination.
@@ -731,8 +725,48 @@ struct Unicode
                         return ret;
                 }
         }
+
+
+        /***********************************************************************
+
+                Transcodes the UTF string src to the UTF format required by dst.
+
+                Params:
+                        src = The source string to convert.
+                        dst = The destination buffer.
+                        ate = The number of elements consumed from src.
+
+                Returns:
+                        The converted string.
+
+                Throws:
+                        UnicodeException.
+
+        ***********************************************************************/
+
+        DstElem[] convert (DstElem, SrcElem) (SrcElem[] src, DstElem[] dst=null, uint* ate=null)
+        {
+                static if (is (DstElem == FromElem))
+                          {
+                          return src;
+                          }
+                else
+                          {
+                          DstElem[] ret;
+
+                          static if (is (DstElem == char))
+                                     ret = toUtf8 (src, dst, ate);
+                          else
+                          static if (is (DstElem == wchar))
+                                     ret = toUtf16 (src, dst, ate);
+                          else
+                          static if (is (DstElem == dchar))
+                                     ret = toUtf32 (src, dst, ate);
+                          else
+                                     static assert (false, "Invalid destination type.");
+                          if (ate)
+                              *ate *= Type.widths[type];
+                          return ret;
+                          }
+        }
 }
-
-
-
-
