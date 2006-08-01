@@ -765,7 +765,7 @@ struct Unicode
                           else
                                      static assert (false, "Invalid destination type.");
                           if (ate)
-                              *ate *= Type.widths[type];
+                              *ate *= SrcElem.sizeof;
                           return ret;
                           }
         }
