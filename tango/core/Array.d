@@ -108,7 +108,6 @@ template find( Elem, Pred = bool function( Elem, Elem ) )
 }
 
 
-
 debug( UnitTest )
 {
   unittest
@@ -275,7 +274,6 @@ template kfind( Elem, Pred = bool function( Elem, Elem ) )
 }
 
 
-
 debug( UnitTest )
 {
   unittest
@@ -333,6 +331,22 @@ template rfind_( Elem, Pred )
     }
 
 
+    size_t fn( Elem[] str, Elem chr, Pred pred )
+    {
+        if( str.length == 0 )
+            return size_t.max;
+
+        size_t pos = str.length;
+
+        do
+        {
+            if( pred( str[--pos], chr ) )
+                return pos;
+        } while( pos > 0 );
+        return size_t.max;
+    }
+
+
     size_t fn( Elem[] str, Elem[] pat )
     {
         if( str.length == 0 ||
@@ -357,6 +371,37 @@ template rfind_( Elem, Pred )
                     if( ++pos >= str.length )
                         return size_t.max;
                 } while( str[pos] == pat[mat] );
+                pos -= mat;
+            }
+        } while( pos > 0 );
+        return size_t.max;
+    }
+
+
+    size_t fn( Elem[] str, Elem[] pat, Pred pred )
+    {
+        if( str.length == 0 ||
+            pat.length == 0 ||
+            str.length < pat.length )
+        {
+            return size_t.max;
+        }
+
+        size_t pos = str.length - pat.length + 1;
+
+        do
+        {
+            if( pred( str[--pos], pat[0] ) )
+            {
+                size_t mat = 0;
+
+                do
+                {
+                    if( ++mat >= pat.length )
+                        return pos - pat.length + 1;
+                    if( ++pos >= str.length )
+                        return size_t.max;
+                } while( pred( str[pos], pat[mat] ) );
                 pos -= mat;
             }
         } while( pos > 0 );
