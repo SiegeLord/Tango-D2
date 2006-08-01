@@ -12,84 +12,65 @@ module tango.core.Array;
 private import tango.core.Traits;
 
 
-template equalTo( Elem )
-{
-    /**
-     * Temporary until a predicate module can be created.
-     */
-    bool equalTo( Elem a, Elem  b )
-    {
-        return a == b;
-    }
-}
-
-
-/+
-template find( Elem )
-{
-    /**
-     *
-     */
-    size_t find( Elem[] str, Elem chr )
-    {
-        return find( str, chr, &equalTo!(Elem) );
-    }
-}
-
-
-template find( Elem, Pred )
+template find_( Elem, Pred )
 {
     static assert( isCallableType!(Pred) );
 
-    /**
-     *
-     */
-    size_t find( Elem[] str, Elem chr, Pred pred )
+
+    size_t fn( Elem[] str, Elem chr )
     {
-        for( size_t pos = 0; pos < str.length; ++pos )
+        foreach( size_t pos, Elem cur; str )
         {
-            if( pred( str[pos], chr ) )
+            if( cur == chr )
                 return pos;
         }
         return size_t.max;
     }
-}
 
 
-unittest
-{
-    assert( find!(char)( "", 'a' ) == size_t.max );
-    assert( find!(char)( "abc", 'a' ) == 0 );
-    assert( find!(char)( "abc", 'b' ) == 1 );
-    assert( find!(char)( "abc", 'c' ) == 2 );
-    assert( find!(char)( "abc", 'd' ) == size_t.max );
-}
-+/
-
-
-template find( Elem )
-{
-    /**
-     *
-     */
-    size_t find( Elem[] str, Elem[] pat )
+    size_t fn( Elem[] str, Elem chr, Pred pred )
     {
-        alias bool function( Elem, Elem ) pf;
-        return find!(Elem, pf)( str, pat, &equalTo!(Elem) );
+        foreach( size_t pos, Elem cur; str )
+        {
+            if( pred( cur, chr ) )
+                return pos;
+        }
+        return size_t.max;
     }
-}
 
 
-template find( Elem, Pred )
-{
-    static assert( isCallableType!(Pred) );
+    size_t fn( Elem[] str, Elem[] pat )
+    {
+        if( str.length == 0 ||
+            pat.length == 0 ||
+            str.length < pat.length )
+        {
+            return size_t.max;
+        }
 
-  version( none )
-  {
-    /**
-     *
-     */
-    size_t find( Elem[] str, Elem[] pat, Pred pred )
+        size_t end = str.length - pat.length + 1;
+
+        for( size_t pos = 0; pos < end; ++pos )
+        {
+            if( str[pos] == pat[0] )
+            {
+                size_t mat = 0;
+
+                do
+                {
+                    if( ++mat >= pat.length )
+                        return pos - pat.length + 1;
+                    if( ++pos >= str.length )
+                        return size_t.max;
+                } while( str[pos] == pat[mat] );
+                pos -= mat;
+            }
+        }
+        return size_t.max;
+    }
+
+
+    size_t fn( Elem[] str, Elem[] pat, Pred pred )
     {
         if( str.length == 0 ||
             pat.length == 0 ||
@@ -118,13 +99,128 @@ template find( Elem, Pred )
         }
         return size_t.max;
     }
-  }
-  else
+}
+
+
+template find( Elem, Pred = bool function( Elem, Elem ) )
+{
+    alias find_!(Elem, Pred).fn find;
+}
+
+
+
+debug( UnitTest )
+{
+  unittest
   {
-    /**
-     *
-     */
-    size_t find( Elem[] str, Elem[] pat, Pred pred )
+    // find element
+    assert( find!(char)( "", 'a' ) == size_t.max );
+    assert( find!(char)( "abc", 'a' ) == 0 );
+    assert( find!(char)( "abc", 'b' ) == 1 );
+    assert( find!(char)( "abc", 'c' ) == 2 );
+    assert( find!(char)( "abc", 'd' ) == size_t.max );
+
+    // null parameters
+    assert( find!(char)( "", "" ) == size_t.max );
+    assert( find!(char)( "a", "" ) == size_t.max );
+    assert( find!(char)( "", "a" ) == size_t.max );
+
+    // exact match
+    assert( find!(char)( "abc", "abc" ) == 0 );
+
+    // simple substring match
+    assert( find!(char)( "abc", "a" ) == 0 );
+    assert( find!(char)( "abca", "a" ) == 0 );
+    assert( find!(char)( "abc", "b" ) == 1 );
+    assert( find!(char)( "abc", "c" ) == 2 );
+    assert( find!(char)( "abc", "d" ) == size_t.max );
+
+    // multi-char substring match
+    assert( find!(char)( "abc", "ab" ) == 0 );
+    assert( find!(char)( "abcab", "ab" ) == 0 );
+    assert( find!(char)( "abc", "bc" ) == 1 );
+    assert( find!(char)( "abc", "ac" ) == size_t.max );
+    assert( find!(char)( "abrabracadabra", "abracadabra" ) == 3 );
+  }
+}
+
+
+template kfind_( Elem, Pred )
+{
+    static assert( isCallableType!(Pred) );
+
+
+    size_t fn( Elem[] str, Elem chr )
+    {
+        foreach( size_t pos, Elem cur; str )
+        {
+            if( cur == chr )
+                return pos;
+        }
+        return size_t.max;
+    }
+
+
+    size_t fn( Elem[] str, Elem chr, Pred pred )
+    {
+        foreach( size_t pos, Elem cur; str )
+        {
+            if( pred( cur, chr ) )
+                return pos;
+        }
+        return size_t.max;
+    }
+
+
+    size_t fn( Elem[] str, Elem[] pat )
+    {
+        if( str.length == 0 ||
+            pat.length == 0 ||
+            str.length < pat.length )
+        {
+            return size_t.max;
+        }
+
+        size_t[]    func;
+        scope( exit ) delete func; // force cleanup
+
+        func.length = pat.length + 1;
+        func[0]     = 0;
+
+        //
+        // building prefix-function
+        //
+        for( size_t m = 0, i = 1 ; i < pat.length ; ++i )
+        {
+            while( ( m > 0 ) && ( pat[m] != pat[i] ) )
+                m = func[m - 1];
+            if( pat[m] == pat[i] )
+                ++m;
+            func[i] = m;
+        }
+
+        //
+        // searching
+        //
+        for( size_t m = 0, i = 0; i < str.length; ++i )
+        {
+            while( ( m > 0 ) && ( pat[m] != str[i] ) )
+                m = func[m - 1];
+            if( pat[m] == str[i] )
+            {
+                ++m;
+                if( m == pat.length )
+                {
+                    return i - pat.length + 1;
+        	    }
+            }
+        }
+
+        return size_t.max;
+    }
+
+
+    size_t fn( Elem[] str, Elem[] pat, Pred pred )
     {
         if( str.length == 0 ||
             pat.length == 0 ||
@@ -170,57 +266,169 @@ template find( Elem, Pred )
 
         return size_t.max;
     }
+}
+
+
+template kfind( Elem, Pred = bool function( Elem, Elem ) )
+{
+    alias kfind_!(Elem).fn kfind;
+}
+
+
+
+debug( UnitTest )
+{
+  unittest
+  {
+    // find element
+    assert( kfind!(char)( "", 'a' ) == size_t.max );
+    assert( kfind!(char)( "abc", 'a' ) == 0 );
+    assert( kfind!(char)( "abc", 'b' ) == 1 );
+    assert( kfind!(char)( "abc", 'c' ) == 2 );
+    assert( kfind!(char)( "abc", 'd' ) == size_t.max );
+
+    // null parameters
+    assert( kfind!(char)( "", "" ) == size_t.max );
+    assert( kfind!(char)( "a", "" ) == size_t.max );
+    assert( kfind!(char)( "", "a" ) == size_t.max );
+
+    // exact match
+    assert( kfind!(char)( "abc", "abc" ) == 0 );
+
+    // simple substring match
+    assert( kfind!(char)( "abc", "a" ) == 0 );
+    assert( kfind!(char)( "abca", "a" ) == 0 );
+    assert( kfind!(char)( "abc", "b" ) == 1 );
+    assert( kfind!(char)( "abc", "c" ) == 2 );
+    assert( kfind!(char)( "abc", "d" ) == size_t.max );
+
+    // multi-char substring match
+    assert( kfind!(char)( "abc", "ab" ) == 0 );
+    assert( kfind!(char)( "abcab", "ab" ) == 0 );
+    assert( kfind!(char)( "abc", "bc" ) == 1 );
+    assert( kfind!(char)( "abc", "ac" ) == size_t.max );
+    assert( kfind!(char)( "abrabracadabra", "abracadabra" ) == 3 );
   }
 }
 
 
-unittest
+template rfind_( Elem, Pred )
 {
-    // null parameters
-    assert( find!(char)( "", "" ) == size_t.max );
-    assert( find!(char)( "a", "" ) == size_t.max );
-    assert( find!(char)( "", "a" ) == size_t.max );
-
-    // exact match
-    assert( find!(char)( "abc", "abc" ) == 0 );
-
-    // simple substring match
-    assert( find!(char)( "abc", "a" ) == 0 );
-    assert( find!(char)( "abca", "a" ) == 0 );
-    assert( find!(char)( "abc", "b" ) == 1 );
-    assert( find!(char)( "abc", "c" ) == 2 );
-    assert( find!(char)( "abc", "d" ) == size_t.max );
-
-    // multi-char substring match
-    assert( find!(char)( "abc", "ab" ) == 0 );
-    assert( find!(char)( "abcab", "ab" ) == 0 );
-    assert( find!(char)( "abc", "bc" ) == 1 );
-    assert( find!(char)( "abc", "ac" ) == size_t.max );
-    assert( find!(char)( "abrabracadabra", "abracadabra" ) == 3 );
-}
+    static assert( isCallableType!(Pred) );
 
 
- /+
-template rfind( Elem )
-{
-    /**
-     *
-     */
-    size_t rfind( Elem[] str, Elem chr )
+    size_t fn( Elem[] str, Elem chr )
     {
-        return rfind( str, chr, &equalTo!(Elem) );
+        if( str.length == 0 )
+            return size_t.max;
+
+        size_t pos = str.length;
+
+        do
+        {
+            if( str[--pos] == chr )
+                return pos;
+        } while( pos > 0 );
+        return size_t.max;
+    }
+
+
+    size_t fn( Elem[] str, Elem[] pat )
+    {
+        if( str.length == 0 ||
+            pat.length == 0 ||
+            str.length < pat.length )
+        {
+            return size_t.max;
+        }
+
+        size_t pos = str.length - pat.length + 1;
+
+        do
+        {
+            if( str[--pos] == pat[0] )
+            {
+                size_t mat = 0;
+
+                do
+                {
+                    if( ++mat >= pat.length )
+                        return pos - pat.length + 1;
+                    if( ++pos >= str.length )
+                        return size_t.max;
+                } while( str[pos] == pat[mat] );
+                pos -= mat;
+            }
+        } while( pos > 0 );
+        return size_t.max;
     }
 }
 
 
-template rfind( Elem, Pred )
+template rfind( Elem, Pred = bool function( Elem, Elem ) )
+{
+    alias rfind_!(Elem).fn rfind;
+}
+
+
+debug( UnitTest )
+{
+  unittest
+  {
+    // rfind element
+    assert( rfind!(char)( "", 'a' ) == size_t.max );
+    assert( rfind!(char)( "abc", 'a' ) == 0 );
+    assert( rfind!(char)( "abc", 'b' ) == 1 );
+    assert( rfind!(char)( "abc", 'c' ) == 2 );
+    assert( rfind!(char)( "abc", 'd' ) == size_t.max );
+
+    // null parameters
+    assert( rfind!(char)( "", "" ) == size_t.max );
+    assert( rfind!(char)( "a", "" ) == size_t.max );
+    assert( rfind!(char)( "", "a" ) == size_t.max );
+
+    // exact match
+    assert( rfind!(char)( "abc", "abc" ) == 0 );
+
+    // simple substring match
+    assert( rfind!(char)( "abc", "a" ) == 0 );
+    assert( rfind!(char)( "abca", "a" ) == 3 );
+    assert( rfind!(char)( "abc", "b" ) == 1 );
+    assert( rfind!(char)( "abc", "c" ) == 2 );
+    assert( rfind!(char)( "abc", "d" ) == size_t.max );
+
+    // multi-char substring match
+    assert( rfind!(char)( "abc", "ab" ) == 0 );
+    assert( rfind!(char)( "abcab", "ab" ) == 3 );
+    assert( rfind!(char)( "abc", "bc" ) == 1 );
+    assert( rfind!(char)( "abc", "ac" ) == size_t.max );
+    assert( rfind!(char)( "abracadabrabra", "abracadabra" ) == 0 );
+  }
+}
+
+
+template krfind_( Elem, Pred )
 {
     static assert( isCallableType!(Pred) );
 
-    /**
-     *
-     */
-    size_t rfind( Elem[] str, Elem chr, Pred pred )
+
+    size_t fn( Elem[] str, Elem chr )
+    {
+        if( str.length == 0 )
+            return size_t.max;
+
+        size_t pos = str.length;
+
+        do
+        {
+            if( str[--pos] == chr )
+                return pos;
+        } while( pos > 0 );
+        return size_t.max;
+    }
+
+
+    size_t fn( Elem[] str, Elem chr, Pred pred )
     {
         if( str.length == 0 )
             return size_t.max;
@@ -234,43 +442,9 @@ template rfind( Elem, Pred )
         } while( pos > 0 );
         return size_t.max;
     }
-}
 
 
-unittest
-{
-    assert( rfind!(char)( "", 'a' ) == size_t.max );
-    assert( rfind!(char)( "abc", 'a' ) == 0 );
-    assert( rfind!(char)( "abc", 'b' ) == 1 );
-    assert( rfind!(char)( "abc", 'c' ) == 2 );
-    assert( rfind!(char)( "abc", 'd' ) == size_t.max );
-}
-+/
-
-
-template rfind( Elem )
-{
-    /**
-     *
-     */
-    size_t rfind( Elem[] str, Elem[] pat )
-    {
-        alias bool function( Elem, Elem ) pf;
-        return rfind!(Elem, pf)( str, pat, &equalTo!(Elem) );
-    }
-}
-
-
-template rfind( Elem, Pred )
-{
-    static assert( isCallableType!(Pred) );
-
-  version( none )
-  {
-    /**
-     *
-     */
-    size_t rfind( Elem[] str, Elem[] pat, Pred pred )
+    size_t fn( Elem[] str, Elem[] pat )
     {
         if( str.length == 0 ||
             pat.length == 0 ||
@@ -279,31 +453,49 @@ template rfind( Elem, Pred )
             return size_t.max;
         }
 
-        size_t pos = str.length - pat.length + 1;
+        size_t[]    func;
+        scope( exit ) delete func; // force cleanup
+
+        func.length      = pat.length + 1;
+        func[length - 1] = 0;
+
+        //
+        // building prefix-function
+        //
+        for( size_t m = 0, i = pat.length - 1; i > 0; --i )
+        {
+            while( ( m > 0 ) && ( pat[length - m - 1] != pat[i - 1] ) )
+                m = func[length - m];
+            if( pat[length - m - 1] == pat[i - 1] )
+                ++m;
+            func[i - 1] = m;
+        }
+
+        //
+        // searching
+        //
+        size_t  m = 0;
+        size_t  i = str.length;
         do
         {
-            if( pred( str[--pos], pat[0] ) )
+            --i;
+            while( ( m > 0 ) && ( pat[length - m - 1] != str[i] ) )
+                m = func[length - m - 1];
+            if( ( pat[length - m - 1] == str[i] ) )
             {
-                size_t mat = 0;
-                do
+                ++m;
+                if ( m == pat.length )
                 {
-                    if( ++mat >= pat.length )
-                        return pos - pat.length + 1;
-                    if( ++pos >= str.length )
-                        return size_t.max;
-                } while( pred( str[pos], pat[mat] ) );
-                pos -= mat;
+                    return i;
+                }
             }
-        } while( pos > 0 );
+        } while( i > 0 );
+
         return size_t.max;
     }
-  }
-  else
-  {
-    /**
-     *
-     */
-    size_t rfind( Elem[] str, Elem[] pat, Pred pred )
+
+
+    size_t fn( Elem[] str, Elem[] pat, Pred pred )
     {
         if( str.length == 0 ||
             pat.length == 0 ||
@@ -352,31 +544,46 @@ template rfind( Elem, Pred )
 
         return size_t.max;
     }
-  }
 }
 
 
-unittest
+template krfind( Elem, Pred = bool function( Elem, Elem ) )
 {
+    alias krfind_!(Elem).fn krfind;
+}
+
+
+debug( UnitTest )
+{
+  unittest
+  {
+    // rfind element
+    assert( krfind!(char)( "", 'a' ) == size_t.max );
+    assert( krfind!(char)( "abc", 'a' ) == 0 );
+    assert( krfind!(char)( "abc", 'b' ) == 1 );
+    assert( krfind!(char)( "abc", 'c' ) == 2 );
+    assert( krfind!(char)( "abc", 'd' ) == size_t.max );
+
     // null parameters
-    assert( rfind!(char)( "", "" ) == size_t.max );
-    assert( rfind!(char)( "a", "" ) == size_t.max );
-    assert( rfind!(char)( "", "a" ) == size_t.max );
+    assert( krfind!(char)( "", "" ) == size_t.max );
+    assert( krfind!(char)( "a", "" ) == size_t.max );
+    assert( krfind!(char)( "", "a" ) == size_t.max );
 
     // exact match
-    assert( rfind!(char)( "abc", "abc" ) == 0 );
+    assert( krfind!(char)( "abc", "abc" ) == 0 );
 
     // simple substring match
-    assert( rfind!(char)( "abc", "a" ) == 0 );
-    assert( rfind!(char)( "abca", "a" ) == 3 );
-    assert( rfind!(char)( "abc", "b" ) == 1 );
-    assert( rfind!(char)( "abc", "c" ) == 2 );
-    assert( rfind!(char)( "abc", "d" ) == size_t.max );
+    assert( krfind!(char)( "abc", "a" ) == 0 );
+    assert( krfind!(char)( "abca", "a" ) == 3 );
+    assert( krfind!(char)( "abc", "b" ) == 1 );
+    assert( krfind!(char)( "abc", "c" ) == 2 );
+    assert( krfind!(char)( "abc", "d" ) == size_t.max );
 
     // multi-char substring match
-    assert( rfind!(char)( "abc", "ab" ) == 0 );
-    assert( rfind!(char)( "abcab", "ab" ) == 3 );
-    assert( rfind!(char)( "abc", "bc" ) == 1 );
-    assert( rfind!(char)( "abc", "ac" ) == size_t.max );
-    assert( rfind!(char)( "abracadabrabra", "abracadabra" ) == 0 );
+    assert( krfind!(char)( "abc", "ab" ) == 0 );
+    assert( krfind!(char)( "abcab", "ab" ) == 3 );
+    assert( krfind!(char)( "abc", "bc" ) == 1 );
+    assert( krfind!(char)( "abc", "ac" ) == size_t.max );
+    assert( krfind!(char)( "abracadabrabra", "abracadabra" ) == 0 );
+  }
 }
