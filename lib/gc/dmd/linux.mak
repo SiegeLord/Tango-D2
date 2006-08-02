@@ -1,10 +1,10 @@
-# Makefile to build D runtime library dmd.a for Linux
+# Makefile to build D garbage collector library for Linux
 # Designed to work with GNU make
 # Targets:
 #	make
 #		Same as make all
 #	make lib
-#		Build dmd.a
+#		Build library
 #   make doc
 #       Generate documentation
 #	make clean
@@ -56,7 +56,7 @@ LIB_DEST=..
 
 targets : lib doc
 all     : lib doc
-lib     : dmd.a
+lib     : dmd.lib
 doc     : dmd.doc
 
 ######################################################
@@ -74,7 +74,9 @@ ALL_DOCS=
 
 ######################################################
 
-dmd.a : $(ALL_OBJS)
+dmd.lib : libdmd.a
+
+libdmd.a : $(ALL_OBJS)
 	$(RM) $@
 	$(LC) -r $@ $(ALL_OBJS)
 
@@ -87,8 +89,8 @@ clean :
 	find . -name "*.di" | xargs $(RM)
 	$(RM) $(ALL_OBJS)
 	$(RM) $(ALL_DOCS)
-	$(RM) dmd*.a
+	$(RM) libdmd*.a
 
 install :
 	$(MD) $(LIB_DEST)
-	$(CP) dmd*.a $(LIB_DEST)/.
+	$(CP) libdmd*.a $(LIB_DEST)/.

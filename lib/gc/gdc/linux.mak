@@ -1,10 +1,10 @@
-# Makefile to build D runtime library gdc.a for Linux
+# Makefile to build D garbage collector library for Linux
 # Designed to work with GNU make
 # Targets:
 #	make
 #		Same as make all
 #	make lib
-#		Build gdc.a
+#		Build library
 #   make doc
 #       Generate documentation
 #	make clean
@@ -56,7 +56,7 @@ LIB_DEST=..
 
 targets : lib doc
 all     : lib doc
-lib     : gdc.a
+lib     : gdc.lib
 doc     : gdc.doc
 
 ######################################################
@@ -74,7 +74,9 @@ ALL_DOCS=
 
 ######################################################
 
-gdc.a : $(ALL_OBJS)
+gdc.lib : libgdc.a
+
+libgdc.a : $(ALL_OBJS)
 	$(RM) $@
 	$(LC) -r $@ $(ALL_OBJS)
 
@@ -87,8 +89,8 @@ clean :
 	find . -name "*.di" | xargs $(RM)
 	$(RM) $(ALL_OBJS)
 	$(RM) $(ALL_DOCS)
-	$(RM) gdc*.a
+	$(RM) libgdc*.a
 
 install :
 	$(MD) $(LIB_DEST)
-	$(CP) gdc*.a $(LIB_DEST)/.
+	$(CP) libgdc*.a $(LIB_DEST)/.

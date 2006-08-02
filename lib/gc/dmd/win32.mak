@@ -1,10 +1,10 @@
-# Makefile to build D runtime library dmd.lib for Win32
+# Makefile to build D garbage collector library for Win32
 # Designed to work with DigitalMars make
 # Targets:
 #	make
 #		Same as make all
 #	make lib
-#		Build dmd.lib
+#		Build library
 #   make doc
 #       Generate documentation
 #	make clean

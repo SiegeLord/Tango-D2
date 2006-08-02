@@ -1,10 +1,10 @@
-# Makefile to build D runtime library tango.a for Linux
+# Makefile to build D common runtime library for Linux
 # Designed to work with GNU make
 # Targets:
 #	make
 #		Same as make all
 #	make lib
-#		Build tango.a
+#		Build library
 #   make doc
 #       Generate documentation
 #	make clean
@@ -59,7 +59,7 @@ DOC_DEST=../../doc/tango
 targets : lib doc
 all     : lib doc
 tango   : lib
-lib     : tango.a
+lib     : tango.lib
 doc     : tango.doc
 
 ######################################################
@@ -94,7 +94,9 @@ ALL_DOCS= \
 
 ######################################################
 
-tango.a : $(ALL_OBJS)
+tango.lib : libtango.a
+
+libtango.a : $(ALL_OBJS)
 	$(RM) $@
 	$(LC) -P -r $@ $(ALL_OBJS)
 
@@ -117,7 +119,7 @@ clean :
 	find . -name "*.di" | xargs $(RM)
 	$(RM) $(ALL_OBJS)
 	$(RM) $(ALL_DOCS)
-	find . -name "tango*.a" | xargs $(RM)
+	find . -name "libtango*.a" | xargs $(RM)
 
 install :
 	$(MD) $(INC_DEST)
@@ -125,4 +127,4 @@ install :
 	$(MD) $(DOC_DEST)
 	find . -name "*.html" | cpio -p -u --make-directories $(DOC_DEST)
 	$(MD) $(LIB_DEST)
-	find . -name "tango*.a" | cpio -p -u --make-directories $(LIB_DEST)
+	find . -name "libtango*.a" | cpio -p -u --make-directories $(LIB_DEST)

@@ -1,10 +1,10 @@
-# Makefile to build D runtime library tango.lib for Win32
+# Makefile to build D common runtime library for Win32
 # Designed to work with DigitalMars make
 # Targets:
 #	make
 #		Same as make all
 #	make lib
-#		Build tango.lib
+#		Build library
 #   make doc
 #       Generate documentation
 #	make clean
