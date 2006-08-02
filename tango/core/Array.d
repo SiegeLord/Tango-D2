@@ -17,42 +17,42 @@ template find_( Elem, Pred )
     static assert( isCallableType!(Pred) );
 
 
-    size_t fn( Elem[] str, Elem chr )
+    size_t fn( Elem[] buf, Elem pat )
     {
-        foreach( size_t pos, Elem cur; str )
+        foreach( size_t pos, Elem cur; buf )
         {
-            if( cur == chr )
+            if( cur == pat )
                 return pos;
         }
         return size_t.max;
     }
 
 
-    size_t fn( Elem[] str, Elem chr, Pred pred )
+    size_t fn( Elem[] buf, Elem pat, Pred pred )
     {
-        foreach( size_t pos, Elem cur; str )
+        foreach( size_t pos, Elem cur; buf )
         {
-            if( pred( cur, chr ) )
+            if( pred( cur, pat ) )
                 return pos;
         }
         return size_t.max;
     }
 
 
-    size_t fn( Elem[] str, Elem[] pat )
+    size_t fn( Elem[] buf, Elem[] pat )
     {
-        if( str.length == 0 ||
+        if( buf.length == 0 ||
             pat.length == 0 ||
-            str.length < pat.length )
+            buf.length < pat.length )
         {
             return size_t.max;
         }
 
-        size_t end = str.length - pat.length + 1;
+        size_t end = buf.length - pat.length + 1;
 
         for( size_t pos = 0; pos < end; ++pos )
         {
-            if( str[pos] == pat[0] )
+            if( buf[pos] == pat[0] )
             {
                 size_t mat = 0;
 
@@ -60,9 +60,9 @@ template find_( Elem, Pred )
                 {
                     if( ++mat >= pat.length )
                         return pos - pat.length + 1;
-                    if( ++pos >= str.length )
+                    if( ++pos >= buf.length )
                         return size_t.max;
-                } while( str[pos] == pat[mat] );
+                } while( buf[pos] == pat[mat] );
                 pos -= mat;
             }
         }
@@ -70,20 +70,20 @@ template find_( Elem, Pred )
     }
 
 
-    size_t fn( Elem[] str, Elem[] pat, Pred pred )
+    size_t fn( Elem[] buf, Elem[] pat, Pred pred )
     {
-        if( str.length == 0 ||
+        if( buf.length == 0 ||
             pat.length == 0 ||
-            str.length < pat.length )
+            buf.length < pat.length )
         {
             return size_t.max;
         }
 
-        size_t end = str.length - pat.length + 1;
+        size_t end = buf.length - pat.length + 1;
 
         for( size_t pos = 0; pos < end; ++pos )
         {
-            if( pred( str[pos], pat[0] ) )
+            if( pred( buf[pos], pat[0] ) )
             {
                 size_t mat = 0;
 
@@ -91,9 +91,9 @@ template find_( Elem, Pred )
                 {
                     if( ++mat >= pat.length )
                         return pos - pat.length + 1;
-                    if( ++pos >= str.length )
+                    if( ++pos >= buf.length )
                         return size_t.max;
-                } while( pred( str[pos], pat[mat] ) );
+                } while( pred( buf[pos], pat[mat] ) );
                 pos -= mat;
             }
         }
@@ -149,33 +149,33 @@ template kfind_( Elem, Pred )
     static assert( isCallableType!(Pred) );
 
 
-    size_t fn( Elem[] str, Elem chr )
+    size_t fn( Elem[] buf, Elem pat )
     {
-        foreach( size_t pos, Elem cur; str )
+        foreach( size_t pos, Elem cur; buf )
         {
-            if( cur == chr )
+            if( cur == pat )
                 return pos;
         }
         return size_t.max;
     }
 
 
-    size_t fn( Elem[] str, Elem chr, Pred pred )
+    size_t fn( Elem[] buf, Elem pat, Pred pred )
     {
-        foreach( size_t pos, Elem cur; str )
+        foreach( size_t pos, Elem cur; buf )
         {
-            if( pred( cur, chr ) )
+            if( pred( cur, pat ) )
                 return pos;
         }
         return size_t.max;
     }
 
 
-    size_t fn( Elem[] str, Elem[] pat )
+    size_t fn( Elem[] buf, Elem[] pat )
     {
-        if( str.length == 0 ||
+        if( buf.length == 0 ||
             pat.length == 0 ||
-            str.length < pat.length )
+            buf.length < pat.length )
         {
             return size_t.max;
         }
@@ -201,11 +201,11 @@ template kfind_( Elem, Pred )
         //
         // searching
         //
-        for( size_t m = 0, i = 0; i < str.length; ++i )
+        for( size_t m = 0, i = 0; i < buf.length; ++i )
         {
-            while( ( m > 0 ) && ( pat[m] != str[i] ) )
+            while( ( m > 0 ) && ( pat[m] != buf[i] ) )
                 m = func[m - 1];
-            if( pat[m] == str[i] )
+            if( pat[m] == buf[i] )
             {
                 ++m;
                 if( m == pat.length )
@@ -219,11 +219,11 @@ template kfind_( Elem, Pred )
     }
 
 
-    size_t fn( Elem[] str, Elem[] pat, Pred pred )
+    size_t fn( Elem[] buf, Elem[] pat, Pred pred )
     {
-        if( str.length == 0 ||
+        if( buf.length == 0 ||
             pat.length == 0 ||
-            str.length < pat.length )
+            buf.length < pat.length )
         {
             return size_t.max;
         }
@@ -249,11 +249,11 @@ template kfind_( Elem, Pred )
         //
         // searching
         //
-        for( size_t m = 0, i = 0; i < str.length; ++i )
+        for( size_t m = 0, i = 0; i < buf.length; ++i )
         {
-            while( ( m > 0 ) && !pred( pat[m], str[i] ) )
+            while( ( m > 0 ) && !pred( pat[m], buf[i] ) )
                 m = func[m - 1];
-            if( pred( pat[m], str[i] ) )
+            if( pred( pat[m], buf[i] ) )
             {
                 ++m;
                 if( m == pat.length )
@@ -315,52 +315,52 @@ template rfind_( Elem, Pred )
     static assert( isCallableType!(Pred) );
 
 
-    size_t fn( Elem[] str, Elem chr )
+    size_t fn( Elem[] buf, Elem pat )
     {
-        if( str.length == 0 )
+        if( buf.length == 0 )
             return size_t.max;
 
-        size_t pos = str.length;
+        size_t pos = buf.length;
 
         do
         {
-            if( str[--pos] == chr )
+            if( buf[--pos] == pat )
                 return pos;
         } while( pos > 0 );
         return size_t.max;
     }
 
 
-    size_t fn( Elem[] str, Elem chr, Pred pred )
+    size_t fn( Elem[] buf, Elem pat, Pred pred )
     {
-        if( str.length == 0 )
+        if( buf.length == 0 )
             return size_t.max;
 
-        size_t pos = str.length;
+        size_t pos = buf.length;
 
         do
         {
-            if( pred( str[--pos], chr ) )
+            if( pred( buf[--pos], pat ) )
                 return pos;
         } while( pos > 0 );
         return size_t.max;
     }
 
 
-    size_t fn( Elem[] str, Elem[] pat )
+    size_t fn( Elem[] buf, Elem[] pat )
     {
-        if( str.length == 0 ||
+        if( buf.length == 0 ||
             pat.length == 0 ||
-            str.length < pat.length )
+            buf.length < pat.length )
         {
             return size_t.max;
         }
 
-        size_t pos = str.length - pat.length + 1;
+        size_t pos = buf.length - pat.length + 1;
 
         do
         {
-            if( str[--pos] == pat[0] )
+            if( buf[--pos] == pat[0] )
             {
                 size_t mat = 0;
 
@@ -368,9 +368,9 @@ template rfind_( Elem, Pred )
                 {
                     if( ++mat >= pat.length )
                         return pos - pat.length + 1;
-                    if( ++pos >= str.length )
+                    if( ++pos >= buf.length )
                         return size_t.max;
-                } while( str[pos] == pat[mat] );
+                } while( buf[pos] == pat[mat] );
                 pos -= mat;
             }
         } while( pos > 0 );
@@ -378,20 +378,20 @@ template rfind_( Elem, Pred )
     }
 
 
-    size_t fn( Elem[] str, Elem[] pat, Pred pred )
+    size_t fn( Elem[] buf, Elem[] pat, Pred pred )
     {
-        if( str.length == 0 ||
+        if( buf.length == 0 ||
             pat.length == 0 ||
-            str.length < pat.length )
+            buf.length < pat.length )
         {
             return size_t.max;
         }
 
-        size_t pos = str.length - pat.length + 1;
+        size_t pos = buf.length - pat.length + 1;
 
         do
         {
-            if( pred( str[--pos], pat[0] ) )
+            if( pred( buf[--pos], pat[0] ) )
             {
                 size_t mat = 0;
 
@@ -399,9 +399,9 @@ template rfind_( Elem, Pred )
                 {
                     if( ++mat >= pat.length )
                         return pos - pat.length + 1;
-                    if( ++pos >= str.length )
+                    if( ++pos >= buf.length )
                         return size_t.max;
-                } while( pred( str[pos], pat[mat] ) );
+                } while( pred( buf[pos], pat[mat] ) );
                 pos -= mat;
             }
         } while( pos > 0 );
@@ -457,43 +457,43 @@ template krfind_( Elem, Pred )
     static assert( isCallableType!(Pred) );
 
 
-    size_t fn( Elem[] str, Elem chr )
+    size_t fn( Elem[] buf, Elem pat )
     {
-        if( str.length == 0 )
+        if( buf.length == 0 )
             return size_t.max;
 
-        size_t pos = str.length;
+        size_t pos = buf.length;
 
         do
         {
-            if( str[--pos] == chr )
+            if( buf[--pos] == pat )
                 return pos;
         } while( pos > 0 );
         return size_t.max;
     }
 
 
-    size_t fn( Elem[] str, Elem chr, Pred pred )
+    size_t fn( Elem[] buf, Elem pat, Pred pred )
     {
-        if( str.length == 0 )
+        if( buf.length == 0 )
             return size_t.max;
 
-        size_t pos = str.length;
+        size_t pos = buf.length;
 
         do
         {
-            if( pred( str[--pos], chr ) )
+            if( pred( buf[--pos], pat ) )
                 return pos;
         } while( pos > 0 );
         return size_t.max;
     }
 
 
-    size_t fn( Elem[] str, Elem[] pat )
+    size_t fn( Elem[] buf, Elem[] pat )
     {
-        if( str.length == 0 ||
+        if( buf.length == 0 ||
             pat.length == 0 ||
-            str.length < pat.length )
+            buf.length < pat.length )
         {
             return size_t.max;
         }
@@ -520,13 +520,13 @@ template krfind_( Elem, Pred )
         // searching
         //
         size_t  m = 0;
-        size_t  i = str.length;
+        size_t  i = buf.length;
         do
         {
             --i;
-            while( ( m > 0 ) && ( pat[length - m - 1] != str[i] ) )
+            while( ( m > 0 ) && ( pat[length - m - 1] != buf[i] ) )
                 m = func[length - m - 1];
-            if( ( pat[length - m - 1] == str[i] ) )
+            if( ( pat[length - m - 1] == buf[i] ) )
             {
                 ++m;
                 if ( m == pat.length )
@@ -540,11 +540,11 @@ template krfind_( Elem, Pred )
     }
 
 
-    size_t fn( Elem[] str, Elem[] pat, Pred pred )
+    size_t fn( Elem[] buf, Elem[] pat, Pred pred )
     {
-        if( str.length == 0 ||
+        if( buf.length == 0 ||
             pat.length == 0 ||
-            str.length < pat.length )
+            buf.length < pat.length )
         {
             return size_t.max;
         }
@@ -571,13 +571,13 @@ template krfind_( Elem, Pred )
         // searching
         //
         size_t  m = 0;
-        size_t  i = str.length;
+        size_t  i = buf.length;
         do
         {
             --i;
-            while( ( m > 0 ) && !pred( pat[length - m - 1], str[i] ) )
+            while( ( m > 0 ) && !pred( pat[length - m - 1], buf[i] ) )
                 m = func[length - m - 1];
-            if( pred( pat[length - m - 1], str[i] ) )
+            if( pred( pat[length - m - 1], buf[i] ) )
             {
                 ++m;
                 if ( m == pat.length )
