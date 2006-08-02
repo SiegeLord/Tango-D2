@@ -42,7 +42,7 @@ extern (C)
     int sigismember(sigset_t *set, int);
     int sigaction(int, sigaction_t*, sigaction_t*);
     int sigsuspend(sigset_t*);
-    
+
     // version ( Unix_Pthread )...
     int pthread_attr_init(pthread_attr_t *);
     int pthread_attr_destroy(pthread_attr_t *);
@@ -61,7 +61,7 @@ extern (C)
     int pthread_cancel(pthread_t);
     int pthread_setcancelstate(int state, int *oldstate);
     int pthread_setcanceltype(int type, int *oldtype);
-    void pthread_testcancel();    
+    void pthread_testcancel();
 
     int pthread_cond_init(pthread_cond_t *, pthread_condattr_t *);
     int pthread_cond_destroy(pthread_cond_t *);
@@ -125,7 +125,11 @@ extern (C)
 	void FD_COPY(inout fd_set f, inout fd_set t) { return _d_gnu_fd_copy(& f, & t); }
 	void FD_ZERO(inout fd_set p) { return _d_gnu_fd_zero(& p); }
     }
+    void FD_SET(int n,  fd_set * p) { return _d_gnu_fd_set(n, p); }
+    void FD_CLR(int n,  fd_set * p) { return _d_gnu_fd_clr(n, p); }
+    int FD_ISSET(int n, fd_set * p) { return _d_gnu_fd_isset(n, p); }
     void FD_COPY(fd_set * f, inout fd_set * t) { return _d_gnu_fd_copy(f, t); }
+    void FD_ZERO(fd_set * p) { return _d_gnu_fd_zero(p); }
 
     // from <pwd.h>
     passwd *getpwnam(char *name);
@@ -133,7 +137,7 @@ extern (C)
     int getpwnam_r(char *name, passwd *pwbuf, char *buf, size_t buflen, passwd **pwbufp);
     int getpwuid_r(uid_t uid, passwd *pwbuf, char *buf, size_t buflen, passwd **pwbufp);
 
-    // The following is mostly based on std/c/linux/socket.d    
+    // The following is mostly based on std/c/linux/socket.d
 
     // There doesn't seem to be a need to configure these structs beyond
     // the BsdSockets_salen bit.
@@ -148,9 +152,9 @@ extern (C)
 	    ubyte  sa_len;
 	    ubyte  sa_family;
 	} else {
-	    ushort sa_family;               
+	    ushort sa_family;
 	}
-	char[14] sa_data = [0];             
+	char[14] sa_data = [0];
     }
 
     struct sockaddr_in

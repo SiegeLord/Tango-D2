@@ -1,16 +1,16 @@
 /* GDC -- D front-end for GCC
    Copyright (C) 2004 David Friedman
-   
+
    This program is free software; you can redistribute it and/or modify
    it under the terms of the GNU General Public License as published by
    the Free Software Foundation; either version 2 of the License, or
    (at your option) any later version.
- 
+
    This program is distributed in the hope that it will be useful,
    but WITHOUT ANY WARRANTY; without even the implied warranty of
    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
    GNU General Public License for more details.
- 
+
    You should have received a copy of the GNU General Public License
    along with this program; if not, write to the Free Software
    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -124,7 +124,15 @@ void c_fcntl()
     CES( F_SETFL );
     // todo: locking, signaling, misc features
     printf("}\n");
-    
+
+    printf("enum {\n");
+    CES( F_OK );
+    CES( R_OK );
+    CES( W_OK );
+    CES( X_OK );
+    printf("}\n");
+    printf("\n");
+
     printf("\n");
 }
 
@@ -201,21 +209,21 @@ void c_stat()
     CES( S_IRWXG ); // standard?
     CES( S_IRWXO );
     printf("}\n\n");
-    
+
     FieldInfo fi[13];
     struct stat rec;
-    INT_FIELD(fi[0], st_dev); 
-    INT_FIELD(fi[1], st_ino); 
-    INT_FIELD(fi[2], st_mode); 
-    INT_FIELD(fi[3], st_nlink); 
-    INT_FIELD(fi[4], st_uid); 
-    INT_FIELD(fi[5], st_gid); 
-    INT_FIELD(fi[6], st_rdev); 
-    INT_FIELD(fi[7], st_size); 
-    INT_FIELD(fi[8], st_blksize); 
-    INT_FIELD(fi[9], st_blocks); 
-    INT_FIELD(fi[10], st_atime); 
-    INT_FIELD(fi[11], st_mtime); 
+    INT_FIELD(fi[0], st_dev);
+    INT_FIELD(fi[1], st_ino);
+    INT_FIELD(fi[2], st_mode);
+    INT_FIELD(fi[3], st_nlink);
+    INT_FIELD(fi[4], st_uid);
+    INT_FIELD(fi[5], st_gid);
+    INT_FIELD(fi[6], st_rdev);
+    INT_FIELD(fi[7], st_size);
+    INT_FIELD(fi[8], st_blksize);
+    INT_FIELD(fi[9], st_blocks);
+    INT_FIELD(fi[10], st_atime);
+    INT_FIELD(fi[11], st_mtime);
     INT_FIELD(fi[12], st_ctime);
     finish_struct(fi, 13, sizeof(rec), "struct_stat");
 }
@@ -259,17 +267,17 @@ void c_signal()
     CES( SIGPOLL );
 #else
     CESZ( SIGPOLL );
-#endif    
+#endif
 #ifdef SIGPROF
     CES( SIGPROF );
 #else
     CESZ( SIGPROF );
-#endif    
+#endif
 #ifdef SIGWINCH
     CES( SIGWINCH );
 #else
     CESZ( SIGWINCH );
-#endif    
+#endif
     CES( SIGURG );
 #ifdef SIGXCPU
     CES( SIGXCPU );
@@ -482,7 +490,7 @@ void c_mman()
     CES( MADV_RANDOM );
 #else
     CESZ( MADV_RANDOM );
-#endif 
+#endif
 #ifdef MADV_SEQUENTIAL
     CES( MADV_SEQUENTIAL );
 #else
@@ -499,7 +507,7 @@ void c_mman()
     CESZ( MADV_DONTNEED );
 #endif
     printf("}\n\n");
-    
+
     printf("\n");
 }
 
@@ -524,7 +532,7 @@ void c_errno()
 #ifdef EAGAIN
     CES( EAGAIN );
 #endif
-    
+
     /* etc... */
     printf("}\n");
     printf("\n");
@@ -564,7 +572,7 @@ void c_socket() {
 #define socklen_t int
 #endif
     INT_TYPE(socklen_t);
-    
+
     printf("// from <sys/socket.h>\n");
     printf("const int SOL_SOCKET = %d\n\n;", SOL_SOCKET);
     printf("enum : int {\n");
@@ -674,7 +682,7 @@ void c_afpf() {
     printf("\n");
 
     // Anyone seen a unix where PF_xxx!=AF_xxx?
-    
+
 }
 
 void c_ipproto() {
@@ -693,7 +701,7 @@ void c_ipproto() {
     CES( IPPROTO_IDP );
 #ifndef IPPROTO_IPV6
 #define IPPROTO_IPV6 (-1)
-#endif    
+#endif
     CES( IPPROTO_IPV6 );
     printf("}\n");
     printf("\n");
@@ -707,13 +715,13 @@ void c_ipproto() {
     CESX( INADDR_NONE );
     CESA( ADDR_ANY, INADDR_ANY );
     printf("}\n");
-    
+
     printf("// from <netinet/tcp.h>\n");
     printf("enum : int {\n");
     CES( TCP_NODELAY );
     printf("}\n");
     printf("\n");
-    
+
     printf("// from <netinet6/in6.h>\n");
     printf("enum : int {\n");
     //CES( IPV6_ADDRFORM );
@@ -817,7 +825,7 @@ void c_pwd()
 	ADD_FIELD(fi[5], "char *", pw_dir);
 	ADD_FIELD(fi[6], "char *", pw_shell);
 	finish_struct(fi, 7, sizeof(rec), "passwd");
-    }	
+    }
 }
 
 int main()
@@ -839,6 +847,6 @@ int main()
     c_netdb();
     c_pwd();
     printf("}\n\n");
-    
+
     return 0;
 }

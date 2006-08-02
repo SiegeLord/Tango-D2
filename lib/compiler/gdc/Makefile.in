@@ -83,15 +83,15 @@ all: libgphobos.a
 	$(CC) -o $@ $(OUR_CFLAGS) $(CFLAGS) -c $<
 
 # Changed the gc source path here for Tango
-%.o : %.d $(host_alias)/gcc/config.d $(D_PREREQ_SRCS)
+%.o : %.d $(D_PREREQ_SRCS)
 	$(GDC) -o $@ $(DFLAGS) -I $(srcdir) -I $(srcdir)/../../gc/gdc -I ./$(host_alias) -c $<
 
 # Changed the gc source path here for Tango
-%.t.o : %.d $(host_alias)/gcc/config.d $(D_PREREQ_SRCS)
+%.t.o : %.d $(D_PREREQ_SRCS)
 	$(GDC) -o $@ $(DFLAGS) -fno-release -funittest -I $(srcdir) -I $(srcdir)/../../gc/gdc -I ./$(host_alias) -c $<
 
-# internal/gc/gcx.t.o: $(srcdir)/internal/gc/gcx.d
-# 	$(GDC) -o $@ $(DFLAGS) -funittest -I $(srcdir) -I $(srcdir)/internal/gc -I ./$(host_alias) -c $<
+# internal/gc/gcx.t.o: $(D_PREREQ_SRCS) $(srcdir)/internal/gc/gcx.d
+# 	$(GDC) -o $@ $(DFLAGS) -funittest -I $(srcdir) -I $(srcdir)/../../gc/gdc -I ./$(host_alias) -c $<
 
 %.t.o : %.o
 	cp $< $@
@@ -100,15 +100,13 @@ Makefile: Makefile.in
 	./config.status
 
 unittest: unittest.o libgphobos_t.a
-	$(CC) -o $@ $(CFLAGS) unittest.o -L./ -lgphobos_t $(LIBS)
+	$(GDC) -o $@ $(CFLAGS) unittest.o -L./ -lgphobos_t $(LIBS)
 
 # internal/gc/testgc.o: $(host_alias)/gcc/config.d $(srcdir)/internal/gc/testgc.d
-#	$(GDC) -o $@ $(DFLAGS) -fno-release -I $(srcdir) -I $(srcdir)/internal/gc -I ./$(host_alias) -c $(srcdir)/internal/gc/testgc.d
+#	$(GDC) -o $@ $(DFLAGS) -fno-release -I $(srcdir) -I $(srcdir)/../../gc/gdc -I ./$(host_alias) -c $(srcdir)/internal/gc/testgc.d
 
 # testgc: internal/gc/testgc.o libgphobos_t.a
-#	$(CC) -o $@ $(CFLAGS) internal/gc/testgc.o -L./ -lgphobos_t $(LIBS)
-
-#$(GDC) -o $@ $(DFLAGS) unittest.o -L./
+#	$(GDC) -o $@ $(CFLAGS) unittest.o -L./ -lgphobos_t $(LIBS)
 
 # This should not be linked into a shared library.
 OBJ_CMAIN=cmain.o
@@ -241,7 +239,7 @@ $(config_d_src): $(CONFIG_D_FRAGMENTS) stamp-tgtdir
 	cat $^ > $@
 
 gcc/config.o: $(config_d_src)
-	$(GDC) -o $@ $(DFLAGS) -I $(srcdir) -I $(srcdir)/internal/gc -I ./$(host_alias) -c $<
+	$(GDC) -o $@ $(DFLAGS) -I $(srcdir) -I $(srcdir)/../../gc/gdc -I ./$(host_alias) -c $<
 gcc/config.t.o: gcc/config.o
 	cp gcc/config.o gcc/config.t.o
 
@@ -274,7 +272,7 @@ $(configunix_d_src): $(CONFIG_UNIX_FRAGMENTS) stamp-tgtdir
 	cat $^ > $@
 
 gcc/configunix.o: $(configunix_d_src) $(config_d_src)
-	$(GDC) -o $@ $(DFLAGS) -I $(srcdir) -I $(srcdir)/internal/gc -I ./$(host_alias) -c $<
+	$(GDC) -o $@ $(DFLAGS) -I $(srcdir) -I $(srcdir)/../../gc/gdc -I ./$(host_alias) -c $<
 gcc/configunix.t.o: gcc/configunix.o
 	cp gcc/configunix.o gcc/configunix.t.o
 
@@ -282,9 +280,9 @@ gcc/cbridge_math.o: gcc/cbridge_math.c
 	$(CC) -o $@ $(OUR_CFLAGS) $(CFLAGS) -fno-strict-aliasing -c $<
 
 # std/stream.o: std/stream.d $(D_PREREQ_SRCS)
-#	$(GDC) -o $@ $(DFLAGS) -fdeprecated -I $(srcdir) -I $(srcdir)/internal/gc -I ./$(host_alias) -c $<
+#	$(GDC) -o $@ $(DFLAGS) -fdeprecated -I $(srcdir) -I $(srcdir)/../../gc/gdc -I ./$(host_alias) -c $<
 # std/stream.t.o: std/stream.d $(D_PREREQ_SRCS)
-#	$(GDC) -o $@ $(DFLAGS) -fdeprecated -I $(srcdir) -I $(srcdir)/internal/gc -I ./$(host_alias) -c $<
+#	$(GDC) -o $@ $(DFLAGS) -fdeprecated -I $(srcdir) -I $(srcdir)/../../gc/gdc -I ./$(host_alias) -c $<
 
 COMMON_OBJS= \
     common/convert/dtoa.o \
@@ -356,7 +354,7 @@ clean:
 	echo 'Removing files...'
 	rm -f $(ALL_OBJS) $(OBJ_CMAIN)
 	rm -f $(ALL_OBJS:.o=.t.o)
-	rm -f unittest.o internal/gc/testgc.o
+#	rm -f unittest.o internal/gc/testgc.o
 	rm -f unittest$(EXEEXT) testgc$(EXEEXT)
 	rm -f config/gen_config1.o config/gen_unix.o config/gen_math.o
 	rm -f gen_config1$(EXEEXT) gen_unix$(EXEEXT) gen_math$(EXEEXT)

@@ -1,19 +1,6 @@
+module moduleinit;
 
-/* NOTE: This file has been patched from the original DMD distribution to
-   work with the GDC compiler.
-
-   Modified by David Friedman, September 2004
-*/
-
-module compiler.gdc.moduleinit;
-
-//debug = 1;
-
-private
-{
-    import object;
-    debug import tango.stdc.stdio;
-}
+debug private import tango.stdc.stdio;
 
 enum
 {   MIctorstart = 1,	// we've started constructing it

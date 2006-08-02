@@ -350,6 +350,7 @@ body
     {
         version (GNU)
         {
+	        // required to output the label;
             static char x = 0;
             if (x)
                 goto Loverflow;
@@ -414,7 +415,8 @@ Loverflow:
 /**
  * For non-zero initializers
  */
-extern (C) byte[] _d_arraysetlength2(size_t newlength, size_t sizeelem, Array *p, ...)
+extern (C)
+byte[] _d_arraysetlength2p(size_t newlength, size_t sizeelem, Array *p, void * init)
 in
 {
     assert(sizeelem);
@@ -433,6 +435,13 @@ body
 
     if (newlength)
     {
+	    version (GNU)
+	    {
+    	    // required to output the label;
+	        static char x = 0;
+	        if (x)
+    		    goto Loverflow;
+    	}
         version (D_InlineAsm_X86)
         {
             size_t newsize = void;
@@ -469,7 +478,6 @@ body
                     newdata = cast(byte *)gc_malloc(newsize + 1);
                     newdata[0 .. size] = p.data[0 .. size];
                 }
-                newdata[size .. newsize] = 0;
             }
         }
         else
@@ -477,18 +485,15 @@ body
             newdata = cast(byte *)gc_malloc(newsize + 1);
         }
 
-        va_list q;
-        va_start!(Array *)(q, p);   // q is pointer to initializer
-
         if (newsize > size)
         {
             if (sizeelem == 1)
-                newdata[size .. newsize] = *(cast(byte*)q);
+		        newdata[size .. newsize] = *(cast(byte*)init);
             else
             {
                 for (size_t u = size; u < newsize; u += sizeelem)
                 {
-                    memcpy(newdata + u, q, sizeelem);
+		            memcpy(newdata + u, init, sizeelem);
                 }
             }
         }

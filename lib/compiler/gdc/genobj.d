@@ -40,7 +40,7 @@ module object;
 private
 {
     import tango.stdc.string;
-    import util.stringutils;
+    import util.string;
 }
 
 // NOTE: For some reason, this declaration method doesn't work

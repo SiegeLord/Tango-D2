@@ -7663,6 +7663,7 @@ else
     else
 	D_GENERATE_FRAGMENTS=''
 	case "$d_target_os" in
+	  darwin8*) D_FRAGMENT_SRCDIR='$(srcdir)/config/darwin8' ;;
 	  mingw*) D_FRAGMENT_SRCDIR='$(srcdir)/config/mingw' ;;
 	  skyos*) D_FRAGMENT_SRCDIR='$(srcdir)/config/skyos' ;;
 	  *)      { { echo "$as_me:$LINENO: error: Sorry, you must provide the target-specific configure fragments (--enable-phobos-config-dir)" >&5
