@@ -30,7 +30,7 @@ DOCFLAGS=-version=DDoc -version=Posix
 #DOCFLAGS=-version=DDoc -version=Posix -I..
 
 CC=gcc
-LC=$(AR)
+LC=$(AR) -P -r -s -v
 DC=dmd
 
 INC_DEST=../../tango
@@ -98,7 +98,7 @@ tango.lib : libtango.a
 
 libtango.a : $(ALL_OBJS)
 	$(RM) $@
-	$(LC) -P -r $@ $(ALL_OBJS)
+	$(LC) $@ $(ALL_OBJS)
 
 tango.doc : $(ALL_DOCS)
 	echo Documentation generated.

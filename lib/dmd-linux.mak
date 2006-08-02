@@ -23,7 +23,7 @@ TFLAGS=-O -inline -version=Posix
 DOCFLAGS=-version=DDoc -version=Posix
 
 CC=gcc
-LC=$(AR)
+LC=$(AR) -P -r -s -v
 DC=dmd
 
 LIB_DEST=../lib
@@ -63,15 +63,15 @@ ALL_DOCS=
 
 #lib : $(ALL_OBJS)
 #	find . -name "libphobos*.a" | xargs $(RM)
-#	$(LC) -P -r libphobos.a $(ALL_OBJS)
+#	$(LC) libphobos.a $(ALL_OBJS)
 lib :
 	make -C compiler/dmd -flinux.mak lib
 	make -C gc/dmd -flinux.mak lib
 	make -C common -flinux.mak lib
 	find . -name "libphobos*.a" | xargs $(RM)
-	ar -P -r -s -v libphobos.a `find ./compiler/dmd -name "*.o" | xargs echo`
-	ar -P -r -s -v libphobos.a `find ./gc/dmd -name "*.o" | xargs echo`
-	ar -P -r -s -v libphobos.a `find ./common -name "*.o" | xargs echo`
+	$(LC) libphobos.a `find ./compiler/dmd -name "*.o" | xargs echo`
+	$(LC) libphobos.a `find ./gc/dmd -name "*.o" | xargs echo`
+	$(LC) libphobos.a `find ./common -name "*.o" | xargs echo`
 
 doc : $(ALL_DOCS)
 	echo No documentation available.

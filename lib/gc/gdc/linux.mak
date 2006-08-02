@@ -31,7 +31,7 @@ DOCFLAGS=-version=DDoc -version=Posix
 #DOCFLAGS=-version=DDoc -version=Posix -I..
 
 CC=gcc
-LC=$(AR)
+LC=$(AR) -P -r -s -v
 DC=gdc
 
 LIB_DEST=..
@@ -78,7 +78,7 @@ gdc.lib : libgdc.a
 
 libgdc.a : $(ALL_OBJS)
 	$(RM) $@
-	$(LC) -r $@ $(ALL_OBJS)
+	$(LC) $@ $(ALL_OBJS)
 
 gdc.doc : $(ALL_DOCS)
 	echo No documentation available.

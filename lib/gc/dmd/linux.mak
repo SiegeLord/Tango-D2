@@ -31,7 +31,7 @@ DOCFLAGS=-version=DDoc -version=Posix
 #DOCFLAGS=-version=DDoc -version=Posix -I..
 
 CC=gcc
-LC=$(AR)
+LC=$(AR) -P -r -s -v
 DC=dmd
 
 LIB_DEST=..
@@ -78,7 +78,7 @@ dmd.lib : libdmd.a
 
 libdmd.a : $(ALL_OBJS)
 	$(RM) $@
-	$(LC) -r $@ $(ALL_OBJS)
+	$(LC) $@ $(ALL_OBJS)
 
 dmd.doc : $(ALL_DOCS)
 	echo No documentation available.
