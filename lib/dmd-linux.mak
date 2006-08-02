@@ -61,13 +61,14 @@ ALL_DOCS=
 
 ######################################################
 
-lib : $(ALL_OBJS)
-	find . -name "libphobos*.a" | xargs $(RM)
-	$(LC) -P -r libphobos.a $(ALL_OBJS)
-	find . -name "libphobos*.a" | xargs $(RM)
+#lib : $(ALL_OBJS)
+#	find . -name "libphobos*.a" | xargs $(RM)
+#	$(LC) -P -r libphobos.a $(ALL_OBJS)
+lib :
 	make -C compiler/dmd -flinux.mak lib
 	make -C gc/dmd -flinux.mak lib
 	make -C common -flinux.mak lib
+	find . -name "libphobos*.a" | xargs $(RM)
 	ar -P -r -s -v libphobos.a `find ./compiler/dmd -name "*.o" | xargs echo`
 	ar -P -r -s -v libphobos.a `find ./gc/dmd -name "*.o" | xargs echo`
 	ar -P -r -s -v libphobos.a `find ./common -name "*.o" | xargs echo`

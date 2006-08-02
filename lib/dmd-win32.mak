@@ -61,9 +61,10 @@ ALL_DOCS=
 
 ######################################################
 
-lib : $(ALL_OBJS)
-	$(RM) phobos*.lib
-	$(LC) -c -n phobos.lib $(ALL_OBJS)
+#lib : $(ALL_OBJS)
+#	$(RM) phobos*.lib
+#	$(LC) -c -n phobos.lib $(ALL_OBJS)
+lib :
 	cd compiler\dmd
 	make -fwin32.mak lib
 	cd ..\..
