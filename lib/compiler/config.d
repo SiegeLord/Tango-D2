@@ -14,7 +14,7 @@ version( DigitalMars )
     }
     else version( Posix )
     {
-        const char[] lib = "dmd.a";
+        const char[] lib = "libdmd.a";
     }
     else
     {
