@@ -31,6 +31,7 @@
 
 /*
  *  Modified by Sean Kelly <sean@f4.ca> for use with the Ares project.
+ *  Additional functions added by Don Clugston
  */
 
 module tango.math.ieee;
@@ -257,23 +258,6 @@ real scalbn(real x, int n)
 }
 
 /**
- * Calculates the next representable value after x in the direction of y.
- *
- * If y > x, the result will be the next largest floating-point value;
- * if y < x, the result will be the next smallest value.
- * If x == y, the result is y.
- * The FE_INEXACT and FE_OVERFLOW exceptions will be raised if x is finite and
- * the function result is infinite. The FE_INEXACT and FE_UNDERFLOW
- * exceptions will be raised if the function value is subnormal, and x is
- * not equal to y.
- */
-real nextafter(real x, real y)
-{
-    // BUG: Not implemented in DMD
-    return tango.stdc.math.nextafterl(x, y);
-}
-
-/**
  * Creates a quiet NAN with the information from tagp[] embedded in it.
  */
 real nan(char[] tagp)
@@ -405,4 +389,133 @@ unittest
     assert(isnormal(f));
     assert(isnormal(d));
     assert(isnormal(e));
+}
+
+/**
+ * Calculate the next largest floating point value after x.
+ *
+ * Return the least number greater than x that is representable as a real;
+ * thus, it gives the next point on the IEEE number line.
+ * This function is included in the forthcoming IEEE 754R standard.
+ *
+ * Special values:
+ * -real.infinity   -real.max
+ *  -0.0            real.min*real.epsilon
+ * 0.0              real.min*real.epsilon
+ * real.max         real.infinity
+ * real.infinity    real.infinity
+ * NAN              NAN
+ *
+ */
+real nextup(real x)
+{
+    ushort *pe = cast(ushort *)&x;
+    ulong *ps = cast(ulong *)&x;
+
+    if ((pe[4] & 0x7FFF) == 0x7FFF) {
+        // First, deal with NANs and infinity
+        if (x == -real.infinity) return -real.max;
+        return x; // +INF and NAN are unchanged.
+    }
+    if (pe[4] & 0x8000)  { // Negative number -- need to decrease the mantissa
+        --*ps;
+        // Need to mask with 0x7FFF... so denormals are treated correctly.
+        if ((*ps & 0x7FFFFFFFFFFFFFFF) == 0x7FFFFFFFFFFFFFFF) {
+            if (pe[4] == 0x8000) { // it was negative zero
+//                *ps = 1;  pe[4] = 0;
+                return real.min*real.epsilon; // smallest subnormal.
+            }
+            --pe[4];
+            if (pe[4] == 0x8000) {
+                return x; // it's become a denormal, implied bit stays low.
+            }
+            *ps = 0xFFFFFFFFFFFFFFFF; // set the implied bit
+            return x;
+        }
+        return x;
+    } else {
+        // Positive number -- need to increase the mantissa.
+        // Works automatically for positive zero.
+        ++*ps;
+        if ((*ps & 0x7FFFFFFFFFFFFFFF) == 0) {
+            // change in exponent
+            ++pe[4];
+            *ps = 0x8000000000000000; // set the high bit
+        }
+    }
+    return x;
+}
+
+unittest {
+    assert( isnan(nextup(real.nan)));
+    // negative numbers
+    assert( nextup(-real.infinity)==-real.max);
+    assert(nextup(-1-real.epsilon)== -1.0);
+    assert(nextup(-2)== -2.0 + real.epsilon);
+    // denormals and zero
+    assert( nextup(-real.min) == -real.min*(1-real.epsilon));
+    assert( nextup(-real.min*(1-real.epsilon)==-real.min*(1-2*real.epsilon)));
+    real z  = nextup(-real.min*(1-real.epsilon));
+    assert( isNegZero(nextup(-real.min*real.epsilon)));
+    assert( nextup(-0.0) == real.min*real.epsilon);
+    assert( nextup(0.0) == real.min*real.epsilon);
+    assert( nextup(real.min*(1-real.epsilon)) == real.min);
+    assert( nextup(real.min) == real.min*(1+real.epsilon));
+    // positive numbers
+    assert(nextup(1)== 1.0 + real.epsilon);
+    assert(nextup(2.0-real.epsilon)== 2.0);
+    assert(nextup(real.max) == real.infinity);
+    assert( nextup(real.infinity)==real.infinity);
+}
+
+/**
+ * Calculate the next smallest floating point value after x.
+ *
+ * Return the greatest number less than x that is representable as a real;
+ * thus, it gives the previous point on the IEEE number line.
+ * This function is included in the forthcoming IEEE 754R standard.
+ *
+ * Special values:
+ * real.infinity   real.max
+ * real.min*real.epsilon 0.0
+ * 0.0             -real.min*real.epsilon
+ * -0.0            -real.min*real.epsilon
+ * -real.max        -real.infinity
+ * -real.infinity    -real.infinity
+ * NAN              NAN
+ *
+ */
+real nextdown(real x)
+{
+    return -nextup(-x);
+}
+
+unittest {
+    assert(nextdown(1.0 + real.epsilon)== 1.0);
+}
+
+/**
+ * Calculates the next representable value after x in the direction of y.
+ *
+ * If y > x, the result will be the next largest floating-point value;
+ * if y < x, the result will be the next smallest value.
+ * If x == y, the result is y.
+ *
+ * Remarks:
+ * This function is not generally very useful; it's almost always better to use
+ * the faster functions nextup() or nextdown() instead.
+ *
+ * Not implemented:
+ * The FE_INEXACT and FE_OVERFLOW exceptions will be raised if x is finite and
+ * the function result is infinite. The FE_INEXACT and FE_UNDERFLOW
+ * exceptions will be raised if the function value is subnormal, and x is
+ * not equal to y.
+ */
+real nextafter(real x, real y)
+{
+    if (x==y) return y;
+    return (y>x) ? nextup(x) : nextdown(x);
+
+    // BUG: Not implemented in DMD
+//    return tango.stdc.math.nextafterl(x, y);
 }
