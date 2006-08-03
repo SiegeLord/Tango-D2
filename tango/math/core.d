@@ -53,7 +53,7 @@
 module tango.math.core;
 
 static import tango.stdc.math;
-static import tango.math.ieee;
+private import tango.math.ieee;
 
 /*
  * Constants
