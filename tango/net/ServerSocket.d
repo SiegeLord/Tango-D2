@@ -128,7 +128,10 @@ class TextServerSocket : ServerSocket
 
         protected override Socket createSocket (socket_t handle)
         {
-                auto socket = TextSocketConduit.create (handle);
+                version (IOTextTest)
+                         auto socket = TextSocketConduit.create (handle);
+                     else
+                        auto socket = SocketConduit.create (handle);
 
                 // force abortive closure to avoid prolonged OS scavenging?
                 if (linger >= 0)

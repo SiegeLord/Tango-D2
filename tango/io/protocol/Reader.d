@@ -140,10 +140,13 @@ class Reader : IReader, IArrayAllocator
 
                 setAllocator (this);
 
-                Buffer.Style s = buffer.getStyle;
-                if (s != Buffer.Mixed)
-                    if ((s == Buffer.Text) ^ isTextBased())
-                         buffer.error ("text/binary mismatch between Reader and Buffer");
+                version (IOTextText)
+                        {
+                        Buffer.Style s = buffer.getStyle;
+                        if (s != Buffer.Mixed)
+                            if ((s == Buffer.Text) ^ isTextBased())
+                                 buffer.error ("text/binary mismatch between Reader and Buffer");
+                        }
         }
 
         /***********************************************************************

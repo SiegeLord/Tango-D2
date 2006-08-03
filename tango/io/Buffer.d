@@ -207,8 +207,10 @@ extern (C)
 
 class Buffer : IBuffer
 {
+        version (IOTextTest)
+                protected Style style;          // Text, Binary, Raw
+
         protected void[]        data;           // the raw data
-        protected Style         style;          // Text, Binary, Raw
         protected uint          limit;          // limit of valid content
         protected uint          capacity;       // maximum of limit
         protected uint          position;       // current read position
@@ -251,7 +253,9 @@ class Buffer : IBuffer
 
                 this (conduit.bufferSize);
                 setConduit (conduit);
-                this.style = conduit.isTextual ? Text : Binary;
+ 
+                version (IOTextTest)
+                         this.style = conduit.isTextual ? Text : Binary;
         }
 
         /***********************************************************************
@@ -332,6 +336,8 @@ class Buffer : IBuffer
                 throw new IOException (msg);
         }
 
+        version (IOTextTest)
+        {
         /***********************************************************************
                 
                 Access the buffer style     
@@ -348,6 +354,7 @@ class Buffer : IBuffer
         Style getStyle ()
         {
                 return style;
+        }
         }
 
         /***********************************************************************

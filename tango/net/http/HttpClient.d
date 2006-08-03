@@ -305,7 +305,10 @@ class HttpClient
 
         protected SocketConduit createSocket ()
         {
-                return new TextSocketConduit;
+                version (IOTextTest)
+                         return new TextSocketConduit;
+                     else
+                         return new SocketConduit;
         }
 
         /***********************************************************************

@@ -135,12 +135,15 @@ class Writer : IWriter
         this (IBuffer buffer)
         {
                 this.buffer = buffer;
+                prefixArray = !isTextBased;
 
-                Buffer.Style s = buffer.getStyle;
-                if (s != Buffer.Mixed)
-                    if ((s == Buffer.Text) ^ isTextBased())
-                         error ("text/binary mismatch between Writer and Buffer");
-                prefixArray = cast(bool) !isTextBased;
+                version (IOTextText)
+                        {
+                        Buffer.Style s = buffer.getStyle;
+                        if (s != Buffer.Mixed)
+                            if ((s == Buffer.Text) ^ isTextBased())
+                                 error ("text/binary mismatch between Writer and Buffer");
+                        }
         }
      
         /***********************************************************************

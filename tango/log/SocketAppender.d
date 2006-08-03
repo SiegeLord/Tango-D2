@@ -77,7 +77,11 @@ public class SocketAppender : Appender
                      else
                         {
                         try {
-                            SocketConduit socket = new TextSocketConduit;
+                            version (IOTextTest)
+                                     auto socket = TextSocketConduit.create (handle);
+                                 else
+                                    auto socket = SocketConduit.create (handle);
+
                             socket.connect (address);
                             buffer = new Buffer (socket);
                             } catch (Object x)

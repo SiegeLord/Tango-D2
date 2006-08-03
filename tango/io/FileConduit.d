@@ -559,6 +559,8 @@ class FileConduit : DeviceConduit, DeviceConduit.Seek
 }
 
 
+version (IOTextTest)
+{
 /*******************************************************************************
 
         Open a text-oriented FileConduit
@@ -611,4 +613,4 @@ class TextFileConduit : FileConduit
                 return true;
         }               
 }
-
+}

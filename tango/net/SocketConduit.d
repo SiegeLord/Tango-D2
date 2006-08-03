@@ -177,6 +177,8 @@ class SocketConduit : Socket, ISocketReader
 }
 
 
+version (IOTextTest)
+{
 /*******************************************************************************
 
         Creates a text-oriented socket
@@ -200,6 +202,7 @@ class TextSocketConduit : SocketConduit
         {
                 return true;
         }               
+}
 }
 
 

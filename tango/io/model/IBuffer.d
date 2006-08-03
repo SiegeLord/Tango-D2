@@ -74,11 +74,11 @@ abstract class IBuffer // could be an interface, but that causes poor codegen
         alias flush  opCall;
       
         private typedef byte Style;
-
+/+
         const Style     Mixed  = 0, 
                         Binary = 1,
                         Text   = 2;
-
++/
         /***********************************************************************
                 
                 Return the backing array
@@ -434,20 +434,24 @@ abstract class IBuffer // could be an interface, but that causes poor codegen
         abstract IBuffer setConduit (IConduit conduit);
 
         /***********************************************************************
-                
-                Return style of buffer
-
-        ***********************************************************************/
-
-        abstract Style getStyle ();
-
-        /***********************************************************************
         
                 Throw an exception with the provided message
 
         ***********************************************************************/
 
         abstract void error (char[] msg);
+
+
+        version (IOTextTest)
+        {
+        /***********************************************************************
+                
+                Return style of buffer
+
+        ***********************************************************************/
+
+        abstract Style getStyle ();
+        }
 }
 
 
