@@ -34,7 +34,9 @@
  *  Additional functions added by Don Clugston
  */
 
-/*
+/**
+ * Macros:
+ *
  *  TABLE_SV = <table border=1 cellpadding=4 cellspacing=0>
  *      <caption>Special Values</caption>
  *      $0</table>
@@ -281,7 +283,7 @@ real nan(char[] tagp)
  *
  * Returns:
  * $(TABLE_SV
- *  $(SVH x y, fdim(x, y))
+ *  $(SVH Arguments, fdim(x, y))
  *  $(SV x &gt; y, x - y)
  *  $(SV x &lt;= y, +0.0)
  * )
