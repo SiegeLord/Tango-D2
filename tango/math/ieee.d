@@ -45,7 +45,7 @@
  */
 module tango.math.ieee;
 
-private import tango.stdc.math;
+static import tango.stdc.math;
 
 // Returns true if equal to precision, false if not
 // (This function is used in unit tests)
@@ -354,6 +354,30 @@ unittest
     assert(expi(1.3e5Li)==tango.stdc.math.cosl(1.3e5L) + tango.stdc.math.sinl(1.3e5L)*1i);
     assert(expi(0.0Li)==1L+0.0Li);
 }
+
+/*********************************
+ * Returns !=0 if e is a NaN.
+ */
+
+int isnan(real e)
+{
+    ushort* pe = cast(ushort *)&e;
+    ulong*  ps = cast(ulong *)&e;
+
+    return (pe[4] & 0x7FFF) == 0x7FFF &&
+        *ps & 0x7FFFFFFFFFFFFFFF;
+}
+
+unittest
+{
+    assert(isnan(float.nan));
+    assert(isnan(-double.nan));
+    assert(isnan(real.nan));
+
+    assert(!isnan(53.6));
+    assert(!isnan(float.infinity));
+}
+
 
 /**
  * Returns !=0 if x is normalized.

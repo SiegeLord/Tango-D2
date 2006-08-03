@@ -52,8 +52,8 @@
 
 module tango.math.core;
 
-private import tango.stdc.math;
-private import tango.math.ieee;
+static import tango.stdc.math;
+static import tango.math.ieee;
 
 /*
  * Constants
@@ -476,11 +476,11 @@ unittest
 real asinh(real x)
 {
     if (tango.math.ieee.fabs(x) > 1 / real.epsilon) // beyond this point, x*x + 1 == x*x
-    return copysign(LN2 + log(tango.math.ieee.fabs(x)), x);
+    return tango.math.ieee.copysign(LN2 + log(tango.math.ieee.fabs(x)), x);
     else
     {
     // sqrt(x*x + 1) ==  1 + x * x / ( 1 + sqrt(x*x + 1) )
-    return copysign(log1p(tango.math.ieee.fabs(x) + x*x / (1 + sqrt(x*x + 1)) ), x);
+    return tango.math.ieee.copysign(log1p(tango.math.ieee.fabs(x) + x*x / (1 + sqrt(x*x + 1)) ), x);
     }
 }
 
@@ -978,29 +978,27 @@ real hypot(real x, real y)
      * Direct inquiries to 30 Frost Street, Cambridge, MA 02140
      */
 
-    const int PRECL = 32;
-    const int MAXEXPL = real.max_exp; //16384;
-    const int MINEXPL = real.min_exp; //-16384;
+    const int PRECL = real.mant_dig/2; // = 32
 
     real xx, yy, b, re, im;
     int ex, ey, e;
 
     // Note, hypot(INFINITY, NAN) = INFINITY.
-    if (isinf(x) || isinf(y))
-    return real.infinity;
+    if (tango.math.ieee.isinf(x) || tango.math.ieee.isinf(y))
+        return real.infinity;
 
-    if (isnan(x))
-    return x;
-    if (isnan(y))
-    return y;
+    if (tango.math.ieee.isnan(x))
+        return x;
+    if (tango.math.ieee.isnan(y))
+        return y;
 
     re = tango.math.ieee.fabs(x);
     im = tango.math.ieee.fabs(y);
 
     if (re == 0.0)
-    return im;
+        return im;
     if (im == 0.0)
-    return re;
+        return re;
 
     // Get the exponents of the numbers
     xx = tango.math.ieee.frexp(re, ex);
@@ -1009,9 +1007,9 @@ real hypot(real x, real y)
     // Check if one number is tiny compared to the other
     e = ex - ey;
     if (e > PRECL)
-    return re;
+        return re;
     if (e < -PRECL)
-    return im;
+        return im;
 
     // Find approximate exponent e of the geometric mean.
     e = (ex + ey) >> 1;
@@ -1028,13 +1026,11 @@ real hypot(real x, real y)
     ey = e + ey;
 
     // Check it for overflow and underflow.
-    if (ey > MAXEXPL + 2)
-    {
-    //return __matherr(_OVERFLOW, INFINITY, x, y, "hypotl");
-    return real.infinity;
+    if (ey > real.max_exp + 2) {
+        return real.infinity;
     }
-    if (ey < MINEXPL - 2)
-    return 0.0;
+    if (ey < real.min_exp - 2)
+        return 0.0;
 
     // Undo the scaling
     b = tango.math.ieee.ldexp(b, e);
