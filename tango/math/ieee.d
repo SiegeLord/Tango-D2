@@ -34,6 +34,15 @@
  *  Additional functions added by Don Clugston
  */
 
+/*
+ *  TABLE_SV = <table border=1 cellpadding=4 cellspacing=0>
+ *      <caption>Special Values</caption>
+ *      $0</table>
+ *  SVH = $(TR $(TH $1) $(TH $2))
+ *  SV  = $(TR $(TD $1) $(TD $2))
+ *
+ *  NAN = $(RED NAN)
+ */
 module tango.math.ieee;
 
 private import tango.stdc.math;
@@ -269,12 +278,13 @@ real nan(char[] tagp)
 
 /**
  * Returns the positive difference between x and y.
+ *
  * Returns:
- *  <table border=1 cellpadding=4 cellspacing=0>
- *  <tr> <th> x, y   <th> fdim(x, y)
- *  <tr> <td> x > y  <td> x - y
- *  <tr> <td> x <= y <td> +0.0
- *  </table>
+ * $(TABLE_SV
+ *  $(SVH x y, fdim(x, y))
+ *  $(SV x &gt; y, x - y)
+ *  $(SV x &lt;= y, +0.0)
+ * )
  */
 real fdim(real x, real y)
 {
@@ -391,6 +401,90 @@ unittest
     assert(isnormal(e));
 }
 
+/*********************************
+ * Is number subnormal? (Also called "denormal".)
+ * Subnormals have a 0 exponent and a 0 most significant mantissa bit.
+ */
+
+/* Need one for each format because subnormal floats might
+ * be converted to normal reals.
+ */
+
+int issubnormal(float f)
+{
+    uint *p = cast(uint *)&f;
+
+    //printf("*p = x%x\n", *p);
+    return (*p & 0x7F800000) == 0 && *p & 0x007FFFFF;
+}
+
+unittest
+{
+    float f = 3.0;
+
+    for (f = 1.0; !issubnormal(f); f /= 2)
+    assert(f != 0);
+}
+
+/// ditto
+
+int issubnormal(double d)
+{
+    uint *p = cast(uint *)&d;
+
+    return (p[1] & 0x7FF00000) == 0 && (p[0] || p[1] & 0x000FFFFF);
+}
+
+unittest
+{
+    double f;
+
+    for (f = 1; !issubnormal(f); f /= 2)
+    assert(f != 0);
+}
+
+/// ditto
+
+int issubnormal(real e)
+{
+    ushort* pe = cast(ushort *)&e;
+    long*   ps = cast(long *)&e;
+
+    return (pe[4] & 0x7FFF) == 0 && *ps > 0;
+}
+
+unittest
+{
+    real f;
+
+    for (f = 1; !issubnormal(f); f /= 2)
+    assert(f != 0);
+}
+
+/*********************************
+ * Return !=0 if e is &plusmn;&infin;.
+ */
+
+int isinf(real e)
+{
+    ushort* pe = cast(ushort *)&e;
+    ulong*  ps = cast(ulong *)&e;
+
+    return (pe[4] & 0x7FFF) == 0x7FFF &&
+        *ps == 0x8000000000000000;
+}
+
+unittest
+{
+    assert(isinf(float.infinity));
+    assert(!isinf(float.nan));
+    assert(isinf(double.infinity));
+    assert(isinf(-real.infinity));
+
+    assert(isinf(-1.0 / 0.0));
+}
+
+
 /**
  * Calculate the next largest floating point value after x.
  *
@@ -398,14 +492,14 @@ unittest
  * thus, it gives the next point on the IEEE number line.
  * This function is included in the forthcoming IEEE 754R standard.
  *
- * Special values:
- * -real.infinity   -real.max
- *  -0.0            real.min*real.epsilon
- * 0.0              real.min*real.epsilon
- * real.max         real.infinity
- * real.infinity    real.infinity
- * NAN              NAN
- *
+ *  $(TABLE_SV
+ *    $(SVH x,             nextup(x)   )
+ *    $(SV  -&infin;,      -real.max   )
+ *    $(SV  &plusmn;0.0,   real.min*real.epsilon )
+ *    $(SV  real.max,      real.infinity )
+ *    $(SV  real.infinity, real.infinity )
+ *    $(SV  $(NAN),        $(NAN)        )
+ * )
  */
 real nextup(real x)
 {
@@ -483,7 +577,6 @@ unittest {
  * -real.max        -real.infinity
  * -real.infinity    -real.infinity
  * NAN              NAN
- *
  */
 real nextdown(real x)
 {
@@ -518,4 +611,166 @@ real nextafter(real x, real y)
 
     // BUG: Not implemented in DMD
 //    return tango.stdc.math.nextafterl(x, y);
+}
+
+
+/**************************************
+ * To what precision is x equal to y?
+ *
+ * Returns: the number of mantissa bits which are equal in x and y.
+ * eg, 0x1.F8p+60 and 0x1.F1p+60 are equal to 5 bits of precision.
+ *
+ *  $(TABLE_SV
+ *    $(SVH x,      y,         feqrel(x, y)  )
+ *    $(SV  x,      x,         real.mant_dig )
+ *    $(SV  x,      &gt;= 2*x, 0 )
+ *    $(SV  x,      &lt;= x/2, 0 )
+ *    $(SV  $(NAN), any,       0 )
+ *    $(SV  any,    $(NAN),    0 )
+ *  )
+ *
+ * Remarks:
+ * This is a very fast operation, suitable for use in speed-critical code.
+ *
+ */
+
+int feqrel(real x, real y)
+{
+    /* Public Domain. Author: Don Clugston, 18 Aug 2005.
+     */
+
+    if (x == y) return real.mant_dig; // ensure diff!=0, cope with INF.
+
+    real diff = fabs(x - y);
+
+    ushort *pa = cast(ushort *)(&x);
+    ushort *pb = cast(ushort *)(&y);
+    ushort *pd = cast(ushort *)(&diff);
+
+    // The difference in abs(exponent) between x or y and abs(x-y)
+    // is equal to the number of mantissa bits of x which are
+    // equal to y. If negative, x and y have different exponents.
+    // If positive, x and y are equal to 'bitsdiff' bits.
+    // AND with 0x7FFF to form the absolute value.
+    // To avoid out-by-1 errors, we subtract 1 so it rounds down
+    // if the exponents were different. This means 'bitsdiff' is
+    // always 1 lower than we want, except that if bitsdiff==0,
+    // they could have 0 or 1 bits in common.
+    int bitsdiff = ( ((pa[4]&0x7FFF) + (pb[4]&0x7FFF)-1)>>1) - pd[4];
+
+    if (pd[4] == 0)
+    {   // Difference is denormal
+        // For denormals, we need to add the number of zeros that
+        // lie at the start of diff's mantissa.
+        // We do this by multiplying by 2^real.mant_dig
+        diff *= 0x1p+63;
+        return bitsdiff + real.mant_dig - pd[4];
+    }
+
+    if (bitsdiff > 0)
+        return bitsdiff + 1; // add the 1 we subtracted before
+
+    // Avoid out-by-1 errors when factor is almost 2.
+    return (bitsdiff == 0) ? (pa[4] == pb[4]) : 0;
+}
+
+unittest
+{
+   // Exact equality
+   assert(feqrel(real.max,real.max)==real.mant_dig);
+   assert(feqrel(0,0)==real.mant_dig);
+   assert(feqrel(7.1824,7.1824)==real.mant_dig);
+   assert(feqrel(real.infinity,real.infinity)==real.mant_dig);
+
+   // a few bits away from exact equality
+   real w=1;
+   for (int i=1; i<real.mant_dig-1; ++i) {
+      assert(feqrel(1+w*real.epsilon,1)==real.mant_dig-i);
+      assert(feqrel(1-w*real.epsilon,1)==real.mant_dig-i);
+      assert(feqrel(1,1+(w-1)*real.epsilon)==real.mant_dig-i+1);
+      w*=2;
+   }
+   assert(feqrel(1.5+real.epsilon,1.5)==real.mant_dig-1);
+   assert(feqrel(1.5-real.epsilon,1.5)==real.mant_dig-1);
+   assert(feqrel(1.5-real.epsilon,1.5+real.epsilon)==real.mant_dig-2);
+
+   // Numbers that are close
+   assert(feqrel(0x1.Bp+84, 0x1.B8p+84)==5);
+   assert(feqrel(0x1.8p+10, 0x1.Cp+10)==2);
+   assert(feqrel(1.5*(1-real.epsilon), 1)==2);
+   assert(feqrel(1.5, 1)==1);
+   assert(feqrel(2*(1-real.epsilon), 1)==1);
+
+   // Factors of 2
+   assert(feqrel(real.max,real.infinity)==0);
+   assert(feqrel(2*(1-real.epsilon), 1)==1);
+   assert(feqrel(1, 2)==0);
+   assert(feqrel(4, 1)==0);
+
+   // Extreme inequality
+   assert(feqrel(real.nan,real.nan)==0);
+   assert(feqrel(0,-real.nan)==0);
+   assert(feqrel(real.nan,real.infinity)==0);
+   assert(feqrel(real.infinity,-real.infinity)==0);
+   assert(feqrel(-real.max,real.infinity)==0);
+   assert(feqrel(real.max,-real.max)==0);
+}
+
+
+/*********************************
+ * Return 1 if sign bit of e is set, 0 if not.
+ */
+
+int signbit(real e)
+{
+    ubyte* pe = cast(ubyte *)&e;
+
+//printf("e = %Lg\n", e);
+    return (pe[9] & 0x80) != 0;
+}
+
+unittest
+{
+    debug (math) printf("math.signbit.unittest\n");
+    assert(!signbit(float.nan));
+    assert(signbit(-float.nan));
+    assert(!signbit(168.1234));
+    assert(signbit(-168.1234));
+    assert(!signbit(0.0));
+    assert(signbit(-0.0));
+}
+
+/*********************************
+ * Return a value composed of to with from's sign bit.
+ */
+
+real copysign(real to, real from)
+{
+    ubyte* pto   = cast(ubyte *)&to;
+    ubyte* pfrom = cast(ubyte *)&from;
+
+    pto[9] &= 0x7F;
+    pto[9] |= pfrom[9] & 0x80;
+
+    return to;
+}
+
+unittest
+{
+    real e;
+
+    e = copysign(21, 23.8);
+    assert(e == 21);
+
+    e = copysign(-21, 23.8);
+    assert(e == 21);
+
+    e = copysign(21, -23.8);
+    assert(e == -21);
+
+    e = copysign(-21, -23.8);
+    assert(e == -21);
+
+    e = copysign(real.nan, -23.8);
+    assert(isnan(e) && signbit(e));
 }
