@@ -48,6 +48,9 @@
  *      $0</table>
  *  SVH = $(TR $(TH $1) $(TH $2))
  *  SV  = $(TR $(TD $1) $(TD $2))
+ *  TABLE_DOMRG = <table border=1 cellpadding=4 cellspacing=0>$0</table>
+ *  DOMAIN = $(TR $(TD Domain) $(TD $0))
+ *  RANGE  = $(TR $(TD Range) $(TD $0))
  */
 
 module tango.math.core;
@@ -432,7 +435,8 @@ real tanh(real x)
  *
  * $(TABLE_DOMRG
  *  $(DOMAIN 1..&infin;)
- *  $(RANGE  1..log(real.max), &infin;) )
+ *  $(RANGE  1..log(real.max), &infin; )
+ * )
  *  $(TABLE_SV
  *    $(SVH  x,     acosh(x) )
  *    $(SV  $(NAN), $(NAN) )
