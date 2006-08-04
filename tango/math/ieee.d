@@ -42,7 +42,8 @@
  *      $0</table>
  *  SVH = $(TR $(TH $1) $(TH $2))
  *  SV  = $(TR $(TD $1) $(TD $2))
- *
+ *  SVH3 = $(TR $(TH $1) $(TH $2) $(TH $3))
+ *  SV3  = $(TR $(TD $1) $(TD $2) $(TD $3))
  *  NAN = $(RED NAN)
  */
 module tango.math.ieee;
@@ -647,12 +648,12 @@ real nextafter(real x, real y)
  * eg, 0x1.F8p+60 and 0x1.F1p+60 are equal to 5 bits of precision.
  *
  *  $(TABLE_SV
- *    $(SVH x,      y,         feqrel(x, y)  )
- *    $(SV  x,      x,         real.mant_dig )
- *    $(SV  x,      &gt;= 2*x, 0 )
- *    $(SV  x,      &lt;= x/2, 0 )
- *    $(SV  $(NAN), any,       0 )
- *    $(SV  any,    $(NAN),    0 )
+ *    $(SVH3 x,      y,         feqrel(x, y)  )
+ *    $(SV3  x,      x,         real.mant_dig )
+ *    $(SV3  x,      &gt;= 2*x, 0 )
+ *    $(SV3  x,      &lt;= x/2, 0 )
+ *    $(SV3  $(NAN), any,       0 )
+ *    $(SV3  any,    $(NAN),    0 )
  *  )
  *
  * Remarks:
