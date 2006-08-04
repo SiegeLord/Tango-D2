@@ -5,6 +5,7 @@
         license:        BSD style: $(LICENSE)
       
         version:        Initial release: May 2004
+                        Delegate support proposed by BCS: August 2006 
         
         author:         Kris
 
@@ -62,7 +63,7 @@ public class Logger : ILevel
                 
         ***********************************************************************/
 
-        abstract void trace (char[] msg);
+        abstract Logger trace (char[] msg);
 
         /***********************************************************************
                 
@@ -70,7 +71,7 @@ public class Logger : ILevel
 
         ***********************************************************************/
 
-        abstract void info (char[] msg);
+        abstract Logger info (char[] msg);
 
         /***********************************************************************
 
@@ -78,7 +79,7 @@ public class Logger : ILevel
 
         ***********************************************************************/
 
-        abstract void warn (char[] msg);
+        abstract Logger warn (char[] msg);
 
         /***********************************************************************
 
@@ -86,7 +87,7 @@ public class Logger : ILevel
 
         ***********************************************************************/
 
-        abstract void error (char[] msg);
+        abstract Logger error (char[] msg);
 
         /***********************************************************************
 
@@ -94,7 +95,25 @@ public class Logger : ILevel
 
         ***********************************************************************/
 
-        abstract void fatal (char[] msg);
+        abstract Logger fatal (char[] msg);
+
+        /***********************************************************************
+        
+                Append a message to this logger via its appender list.
+
+        ***********************************************************************/
+
+        abstract Logger append (Level level, char[] s);
+
+        /***********************************************************************
+        
+                Append a message to this logger using a delegate to 
+                provide the content. Does not invoke the delegate if
+                the the logger is not enabled for the specified level.
+
+        ***********************************************************************/
+
+        abstract Logger append (Level level, char[] delegate() dg);
 
         /***********************************************************************
         
@@ -130,7 +149,7 @@ public class Logger : ILevel
 
         ***********************************************************************/
 
-        abstract void setLevel (Level level = Level.Trace);
+        abstract Logger setLevel (Level level = Level.Trace);
 
         /***********************************************************************
         
@@ -141,7 +160,7 @@ public class Logger : ILevel
 
         ***********************************************************************/
 
-        abstract void setLevel (Level level, bool force);
+        abstract Logger setLevel (Level level, bool force);
 
         /***********************************************************************
         
@@ -169,15 +188,7 @@ public class Logger : ILevel
 
         ***********************************************************************/
 
-        abstract void setAdditive (bool enabled);
-
-        /***********************************************************************
-        
-                Remove all appenders from this logger.
-
-        ***********************************************************************/
-
-        abstract void clearAppenders ();
+        abstract Logger setAdditive (bool enabled);
 
         /***********************************************************************
 
@@ -195,7 +206,15 @@ public class Logger : ILevel
                         
         ***********************************************************************/
 
-        abstract void addAppender (Appender appender);
+        abstract Logger addAppender (Appender appender);
+
+        /***********************************************************************
+        
+                Remove all appenders from this logger.
+
+        ***********************************************************************/
+
+        abstract Logger clearAppenders ();
 
         /***********************************************************************
         

@@ -48,12 +48,12 @@ private class Sieve
 
                 void set (byte* f, uint x)
                 {
-                        *(f+(x)/16) |=1 <<(((x)%16)/2);
+                        *(f+(x)/16) |= 1 << (((x)%16)/2);
                 }
 
                 byte test (byte* f, uint x)
                 {
-                        return cast(byte) (*(f+(x)/16) & (1<<(((x)%16)/2)));
+                        return cast(byte) (*(f+(x)/16) & (1 << (((x)%16)/2)));
                 }
 
                 // information level
@@ -91,7 +91,7 @@ private class Sieve
                    {        
                    e = max;
                    count = 0 - 2; 
-                   if (s % 2 == 0) 
+                   if (s % 2 is 0) 
                        count++;
            
                    while ((count+=2) < e) 

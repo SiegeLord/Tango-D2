@@ -5,6 +5,7 @@
         license:        BSD style: $(LICENSE)
       
         version:        Initial release: October 2004
+                        Delegate support proposed by BCS: August 2006 
         
         author:         Kris
 
@@ -103,9 +104,9 @@ private class LoggerInstance : Logger
 
         ***********************************************************************/
 
-        final void trace (char[] msg)
+        final Logger trace (char[] msg)
         {
-                append (Level.Trace, msg);
+                return append (Level.Trace, msg);
         }
 
         /***********************************************************************
@@ -114,9 +115,9 @@ private class LoggerInstance : Logger
 
         ***********************************************************************/
 
-        final void info (char[] msg)
+        final Logger info (char[] msg)
         {
-                append (Level.Info, msg);
+                return append (Level.Info, msg);
         }
 
         /***********************************************************************
@@ -125,9 +126,9 @@ private class LoggerInstance : Logger
 
         ***********************************************************************/
 
-        final void warn (char[] msg)
+        final Logger warn (char[] msg)
         {
-                append (Level.Warn, msg);
+                return append (Level.Warn, msg);
         }
 
         /***********************************************************************
@@ -136,9 +137,9 @@ private class LoggerInstance : Logger
 
         ***********************************************************************/
 
-        final void error (char[] msg)
+        final Logger error (char[] msg)
         {
-                append (Level.Error, msg);
+                return append (Level.Error, msg);
         }
 
         /***********************************************************************
@@ -147,9 +148,9 @@ private class LoggerInstance : Logger
 
         ***********************************************************************/
 
-        final void fatal (char[] msg)
+        final Logger fatal (char[] msg)
         {
-                append (Level.Fatal, msg);
+                return append (Level.Fatal, msg);
         }
 
         /***********************************************************************
@@ -183,9 +184,9 @@ private class LoggerInstance : Logger
 
         ***********************************************************************/
 
-        final void setLevel (Level level = Level.Trace)
+        final Logger setLevel (Level level = Level.Trace)
         {
-                setLevel (level, false);
+                return setLevel (level, false);
         }
 
         /***********************************************************************
@@ -195,10 +196,11 @@ private class LoggerInstance : Logger
 
         ***********************************************************************/
 
-        final void setLevel (Level level, bool force)
+        final Logger setLevel (Level level, bool force)
         {
                 this.level = level;     
                 hierarchy.updateLoggers (this, force);
+                return this;
         }
 
         /***********************************************************************
@@ -207,10 +209,11 @@ private class LoggerInstance : Logger
 
         ***********************************************************************/
 
-        final void setBreakpoint (bool enabled)
+        final Logger setBreakpoint (bool enabled)
         {
                 breakpoint = enabled;     
                 hierarchy.updateLoggers (this, false);
+                return this;
         }
 
         /***********************************************************************
@@ -219,9 +222,10 @@ private class LoggerInstance : Logger
 
         ***********************************************************************/
 
-        final void setAdditive (bool enabled)
+        final Logger setAdditive (bool enabled)
         {
                 additive = enabled;     
+                return this;
         }
 
         /***********************************************************************
@@ -232,11 +236,12 @@ private class LoggerInstance : Logger
 
         ***********************************************************************/
 
-        final void addAppender (Appender next)
+        final Logger addAppender (Appender next)
         {
                 if (appender)
                     next.setNext (appender);
                 appender = next;
+                return this;
         }
 
         /***********************************************************************
@@ -245,9 +250,10 @@ private class LoggerInstance : Logger
 
         ***********************************************************************/
 
-        final void clearAppenders ()
+        final Logger clearAppenders ()
         {
                 appender = null;     
+                return this;
         }
 
 
@@ -264,11 +270,26 @@ private class LoggerInstance : Logger
 
         /***********************************************************************
         
+                Append a message to this logger using a delegate to 
+                provide the content. Does not invoke the delegate if
+                the the logger is not enabled for the specified level.
+
+        ***********************************************************************/
+
+        final Logger append (Level level, char[] delegate() dg)
+        {
+                if (isEnabled (level))
+                    append (level, dg());
+                return this;
+        }
+
+        /***********************************************************************
+        
                 Append a message to this logger via its appender list.
 
         ***********************************************************************/
 
-        private final void append (Level level, char[] s)
+        final Logger append (Level level, char[] s)
         {
                 if (isEnabled (level))
                    {
@@ -304,6 +325,7 @@ private class LoggerInstance : Logger
                         // process all ancestors
                       } while (links.additive && ((links = links.parent) !is null));
                    }
+                return this;
         }
 
         /***********************************************************************
