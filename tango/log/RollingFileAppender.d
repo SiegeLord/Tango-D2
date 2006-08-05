@@ -12,9 +12,6 @@
 
 module tango.log.RollingFileAppender;
 
-version (Isolated){}
-else
-{
 private import  tango.log.Appender,
                 tango.log.FileAppender;
 
@@ -184,4 +181,4 @@ public class RollingFileAppender : FileAppender
                     conduit.truncate();
         }
 }
-}
+

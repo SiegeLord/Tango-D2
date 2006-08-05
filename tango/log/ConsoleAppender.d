@@ -14,10 +14,7 @@ module tango.log.ConsoleAppender;
 
 private import tango.log.Appender;
 
-version (Isolated)
-         private import std.stream;
-      else
-         private import tango.io.Console;
+private import tango.io.Console;
 
 /*******************************************************************************
 
@@ -72,29 +69,12 @@ public class ConsoleAppender : Appender
                  
         ***********************************************************************/
 
-        void append (Event event)
+        synchronized void append (Event event)
         {
-                version (Isolated)
-                {
-                synchronized (stderr)
-                             {
-                             Layout layout = getLayout;
-                             stderr.writeString (layout.header  (event));
-                             stderr.writeString (layout.content (event));
-                             stderr.writeString (layout.footer  (event));
-                             stderr.writeLine (null);
-                             }
-                }
-                else
-                {
-                synchronized (this)
-                             {
-                             Layout layout = getLayout;
-                             Cerr.append (layout.header  (event));
-                             Cerr.append (layout.content (event));
-                             Cerr.append (layout.footer  (event));                        
-                             Cerr.newline;
-                             }
-                }
+                Layout layout = getLayout;
+                Cerr.append (layout.header  (event));
+                Cerr.append (layout.content (event));
+                Cerr.append (layout.footer  (event));                        
+                Cerr.newline;
         }
 }

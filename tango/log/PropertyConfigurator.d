@@ -12,9 +12,6 @@
 
 module tango.log.PropertyConfigurator;
 
-version (Isolated) {}
-else
-{
 private import  tango.text.Properties;
 
 private import  tango.log.Log,
@@ -106,4 +103,4 @@ public class PropertyConfigurator
                 Properties.load (filepath, &loader);
         }
 }
-}
+
