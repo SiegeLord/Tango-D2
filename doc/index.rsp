@@ -71,7 +71,6 @@ tango\io\DeviceConduit.d
 tango\text\convert\Double.d
 tango\core\Traits.d
 mango\net\http\server\HttpResponse.d
-tango\os\linux\linuxextern.d
 tango\io\FileConduit.d
 tango\net\http\HttpStack.d
 tango\text\convert\Integer.d
@@ -81,7 +80,6 @@ tango\log\NullAppender.d
 tango\stdc\complex.d
 tango\log\Admin.d
 tango\net\Socket.d
-tango\core\Unicode.d
 tango\store\impl\MutableSetImpl.d
 tango\stdc\stdio.d
 tango\text\Iterator.d
