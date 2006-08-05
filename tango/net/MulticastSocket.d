@@ -12,9 +12,10 @@
 
 module tango.net.MulticastSocket;
 
-private import  tango.net.Socket,
-                tango.io.Buffer,
-                tango.io.Exception,
+private import  tango.io.Buffer,
+                tango.io.Exception;
+              
+private import  tango.net.InternetAddress,
                 tango.net.DatagramSocket;
 
 /******************************************************************************

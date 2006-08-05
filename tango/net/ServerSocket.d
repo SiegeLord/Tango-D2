@@ -12,9 +12,10 @@
 
 module tango.net.ServerSocket;
 
-public  import  tango.net.Socket;
+public  import  tango.net.InternetAddress;
 
-private import  tango.net.SocketConduit;
+private import  tango.net.Socket,
+                tango.net.SocketConduit;
 
 /*******************************************************************************
 
@@ -93,6 +94,9 @@ class ServerSocket : Socket
 }
 
 
+
+version (IOTextTest)
+{
 /*******************************************************************************
 
         Creates a text-oriented server socket
@@ -140,7 +144,7 @@ class TextServerSocket : ServerSocket
                 return socket;
         }
 }
-
+}
 
 
 

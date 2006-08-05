@@ -13,7 +13,7 @@
 
 module tango.net.SocketConduit;
 
-public  import  tango.net.Socket;
+private import  tango.net.Socket;
 
 private import  tango.io.model.IBuffer;
 
@@ -175,6 +175,7 @@ class SocketConduit : Socket, ISocketReader
                 freelist = s;
         }
 }
+
 
 
 version (IOTextTest)

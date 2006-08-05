@@ -130,7 +130,6 @@ class SocketListener : Thread, IListener
 
                            // time to quit? Note that a v0.95 compiler bug 
                            // prohibits 'break' from exiting the try{} block
-//                         if (quit || Socket.isHalting ())
                            if (quit || 
                               (result is Socket.Eof && !reader.isAlive))
                                lives = 0;
@@ -142,7 +141,6 @@ class SocketListener : Thread, IListener
                               }
                            } catch (Object x)
                                     // time to quit?
-//                                    if (quit || Socket.isHalting ())
                                     if (quit || !reader.isAlive)
                                         break;
                                     else

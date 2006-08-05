@@ -14,18 +14,11 @@ module tango.log.SocketAppender;
 
 private import  tango.log.Appender;
 
-version (Isolated)
-        {
-        private import  std.stream,
-                        std.Socket,
-                        std.SocketStream;
-        }
-     else
-        {
-        private import  tango.io.Buffer,
-                        tango.io.Console,
-                        tango.net.SocketConduit;
-        }
+private import  tango.io.Buffer,
+                tango.io.Console;
+
+private import  tango.net.SocketConduit,
+                tango.net.InternetAddress;
 
 /*******************************************************************************
 
@@ -35,12 +28,8 @@ version (Isolated)
 
 public class SocketAppender : Appender
 {
-        private Mask mask;
-
-        version (Isolated)
-                 private SocketStream stream;
-              else
-                 private IBuffer buffer;
+        private Mask    mask;
+        private IBuffer buffer;
 
         /***********************************************************************
                 
@@ -51,7 +40,7 @@ public class SocketAppender : Appender
         this (InternetAddress address, Layout layout = null)
         {
                 setAddress (address);
-                setLayout (layout);
+                setLayout  (layout);
         }
 
         /***********************************************************************
@@ -62,31 +51,19 @@ public class SocketAppender : Appender
 
         private void setAddress (InternetAddress address)
         {
-                close ();
+                close;
                 
-                version (Isolated)
-                        {
-                        try {
-                            //throw new Exception ("SocketAppender fails with dmd v0.115");
-                            Socket s = new Socket (AddressFamily.INET, SocketType.STREAM, ProtocolType.IP);
-                            s.connect (address);
-                            stream = new SocketStream (s, FileMode.Out);
-                            } catch (Object x)
-                                     printf ("SocketAppender: failed to connect\n");
-                        }
-                     else
-                        {
-                        try {
-                            version (IOTextTest)
-                                     auto socket = TextSocketConduit.create (handle);
-                                 else
-                                    auto socket = SocketConduit.create (handle);
+                try {
+                    version (IOTextTest)
+                             auto conduit = new TextSocketConduit;
+                         else
+                            auto conduit = new SocketConduit;
 
-                            socket.connect (address);
-                            buffer = new Buffer (socket);
-                            } catch (Object x)
-                                     Cerr ("SocketAppender: failed to connect\n"c);
-                        }
+                    buffer = new Buffer (conduit);
+                    conduit.connect (address);
+
+                    } catch (Object x)
+                             Cerr ("SocketAppender: failed to connect\n"c);
 
                 // Get a unique fingerprint for this class
                 mask = register (address.toString);
@@ -122,27 +99,13 @@ public class SocketAppender : Appender
 
         void append (Event event)
         {
-                version (Isolated)
-                        {
-                        if (stream)
-                           {
-                           Layout layout = getLayout;
-                           stream.writeString (layout.header  (event));
-                           stream.writeString (layout.content (event));
-                           stream.writeString (layout.footer  (event));
-                           stream.flush ();
-                           }    
-                        }
-                     else
-                        {
-                        if (buffer)
-                           {
-                           Layout layout = getLayout;
-                           buffer.append (layout.header  (event));
-                           buffer.append (layout.content (event));
-                           buffer.append (layout.footer  (event)).flush();
-                           }    
-                        }
+                if (buffer)
+                   {
+                   Layout layout = getLayout;
+                   buffer.append (layout.header  (event));
+                   buffer.append (layout.content (event));
+                   buffer.append (layout.footer  (event)).flush();
+                   }    
         }
 
         /***********************************************************************
@@ -153,17 +116,8 @@ public class SocketAppender : Appender
 
         void close ()
         {
-                version (Isolated)
-                        {
-                        if (stream)
-                            stream.close ();
-                        stream = null;
-                        }
-                     else
-                        {
-                        if (buffer)
-                            buffer.getConduit.close();
-                        buffer = null;
-                        }
+                if (buffer)
+                    buffer.getConduit.close();
+                buffer = null;
         }
 }

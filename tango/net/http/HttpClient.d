@@ -25,7 +25,8 @@ private import  tango.io.Buffer,
 private import  tango.text.convert.Atoi;
 
 private import  tango.net.Uri,
-                tango.net.SocketConduit;
+                tango.net.SocketConduit,
+                tango.net.InternetAddress;
 
 private import  tango.text.LineIterator;
 

@@ -60,14 +60,11 @@
 
 *******************************************************************************/
 
-
-// MANGO: added all this module & import stuff ...
 module tango.net.Socket;
 
 private import  tango.text.convert.Integer;
 
 private import  tango.os.OS;
-private import  tango.stdc.errno;
 
 private import  tango.core.Interval;
 
@@ -76,7 +73,8 @@ private import  tango.io.Conduit,
 
 private import  tango.io.model.IBuffer;
 
-private import  tango.stdc.stdint;
+private import  tango.stdc.errno,
+                tango.stdc.stdint;
 
 
 /*******************************************************************************
@@ -1229,7 +1227,7 @@ class Socket : Conduit
 
         ***********************************************************************/
 
-        protected bool setGroup (InternetAddress address, Option option)
+        protected bool setGroup (NetAddress address, Option option)
         {
                 struct ip_mreq
                 {
@@ -1303,7 +1301,7 @@ class Socket : Conduit
                 switch(_family)
                 {
                         case AddressFamily.INET:
-                                result = new InternetAddress;
+                                result = new NetAddress;
                                 break;
 
                         default:
@@ -1337,7 +1335,7 @@ class Socket : Conduit
 
         protected static uint hostAddress ()
         {
-                InternetHost ih = new InternetHost;
+                NetHost ih = new NetHost;
 
                 char[] hostname = hostName();
                 ih.getHostByName (hostname);
@@ -1781,7 +1779,7 @@ class UnknownAddress: Address
 
 *******************************************************************************/
 
-class InternetHost
+class NetHost
 {
         char[] name;
         char[][] aliases;
@@ -1915,10 +1913,10 @@ debug (UnitText)
 extern (C) int printf(char*, ...);
 unittest
 {
-        InternetHost ih = new InternetHost;
+        NetHost ih = new NetHost;
         ih.getHostByName(Socket.hostName());
         assert(ih.addrList.length > 0);
-        InternetAddress ia = new InternetAddress(ih.addrList[0], InternetAddress.PORT_ANY);
+        NetAddress ia = new NetAddress(ih.addrList[0], NetAddress.PORT_ANY);
         printf("IP address = %.*s\nname = %.*s\n", ia.toAddrString(), ih.name);
         foreach(int i, char[] s; ih.aliases)
         {
@@ -1942,7 +1940,7 @@ unittest
 
 *******************************************************************************/
 
-class InternetAddress: Address
+class NetAddress: Address
 {
         /+
         #ifdef INCLUDE_ALL_FOR_DOXYGEN
@@ -2052,7 +2050,7 @@ class InternetAddress: Address
                 uint uiaddr = parse(addr);
                 if(ADDR_NONE == uiaddr)
                 {
-                        InternetHost ih = new InternetHost;
+                        NetHost ih = new NetHost;
                         if(!ih.getHostByName(addr))
                                 exception ("Unable to resolve '"~addr~"'");
                         uiaddr = ih.addrList[0];
@@ -2083,20 +2081,6 @@ class InternetAddress: Address
         {
                 sin.sin_addr = 0; //any, "0.0.0.0"
                 sin.sin_port = htons(port);
-        }
-
-        /**********************************************************************
-
-        **********************************************************************/
-
-        static InternetAddress create (char[] host)
-        {
-                foreach (int i, char c; host)
-                         if (c is ':')
-                             return new InternetAddress (host[0..i], cast(int) Integer.parse (host[i+1..$]));
-
-                exception ("missing port specification in "~host);
-                return null;
         }
 
         /***********************************************************************
@@ -2151,7 +2135,7 @@ debug(Unittest)
 {
 unittest
 {
-        InternetAddress ia = new InternetAddress("63.105.9.61", 80);
+        NetAddress ia = new NetAddress("63.105.9.61", 80);
         assert(ia.toString() == "63.105.9.61:80");
 }
 }
