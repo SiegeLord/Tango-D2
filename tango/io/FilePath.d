@@ -17,7 +17,6 @@ private import  tango.io.Exception,
 
 private import  tango.text.convert.Unicode;
 
-
 /*******************************************************************************
 
         Models a file name. These are expected to be used as the constructor 
@@ -419,9 +418,9 @@ class FilePath
         {
                 if (fpWide.length is 0)
                     // convert trailing null also ...
-                    fpWide = Unicode.toUtf16 (toUtf8 (withNull));
+                    fpWide = Unicode.toUtf16 (toUtf8 (true));
 
-                return fpWide;
+                return fpWide [0 .. $ - (withNull ? 0 : 1)];
         }
 
         /***********************************************************************

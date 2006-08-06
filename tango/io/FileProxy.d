@@ -470,7 +470,7 @@ class FileProxy
                         version (Win32SansUnicode)
                                 h = FindFirstFileA (path.toUtf8 ~ "\\*\0", &fileinfo);
                              else
-                                h = FindFirstFileW (path.toUtf16 ~ cast(wchar[]) "\\*\0", &fileinfo);
+                                h = FindFirstFileW (path.toUtf16 ~ "\\*\0", &fileinfo);
 
                         if (h != INVALID_HANDLE_VALUE)
                             try {

@@ -146,7 +146,7 @@ class FileScan
 
         private bool simpleFilter (FilePath fp) 
         {
-                char[]  sbuf = fp.getExtension;
+                auto sbuf = fp.getExtension ();
 
                 if (fp.getName[0] != '.')                       
                     if (sbuf.length == 0 || sbuf == ext)
@@ -163,8 +163,8 @@ class FileScan
 
         private void scanFiles (inout Dependencies deps, FilePath base) 
         {
-                File file = new File (base);
-                FilePath[] paths = file.toList (filter);
+                auto file = new File (base);
+                auto paths = file.toList (filter);
 
                 // add packages only if there's something in them
                 if (paths.length)
@@ -173,7 +173,7 @@ class FileScan
                 foreach (FilePath x; paths) 
                         {
                         // combine base path with listed file
-                        FilePath spliced = new FilePath (x.splice (base), false);
+                        auto spliced = new FilePath (x.splice (base), false);
 
                         // recurse if this is a directory ...
                         file = new File (spliced);
