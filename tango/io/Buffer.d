@@ -38,8 +38,8 @@ extern (C)
         by tango.io.model.IBuffer, and a concrete implementation 
         is provided by this class.
         
-        Buffers can be read and written directly, but a Reader, 
-        Iterator, and/or Writer are often leveraged to apply 
+        Buffers can be read and written directly, but Readers, 
+        Iterators, and/or Writers are often leveraged to apply 
         structure to what might otherwise be simple raw data. 
 
         Readers & writers are bound to a buffer; often the same 
