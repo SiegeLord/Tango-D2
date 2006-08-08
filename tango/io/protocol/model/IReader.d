@@ -59,35 +59,35 @@ abstract class IReader   // could be an interface, but that causes poor codegen
         ***********************************************************************/
 
         abstract IReader get (inout bool x);
-        abstract IReader get (inout byte x);
-        abstract IReader get (inout ubyte x);
-        abstract IReader get (inout short x);
-        abstract IReader get (inout ushort x);
-        abstract IReader get (inout int x);
-        abstract IReader get (inout uint x);
-        abstract IReader get (inout long x);
-        abstract IReader get (inout ulong x);
-        abstract IReader get (inout float x);
-        abstract IReader get (inout double x);
-        abstract IReader get (inout real x);
-        abstract IReader get (inout char x);
-        abstract IReader get (inout wchar x);
-        abstract IReader get (inout dchar x);
+        abstract IReader get (inout byte x);	///ditto
+        abstract IReader get (inout ubyte x);	///ditto
+        abstract IReader get (inout short x);	///ditto
+        abstract IReader get (inout ushort x);	///ditto
+        abstract IReader get (inout int x);	///ditto
+        abstract IReader get (inout uint x);	///ditto
+        abstract IReader get (inout long x);	///ditto
+        abstract IReader get (inout ulong x);	///ditto
+        abstract IReader get (inout float x);	///ditto
+        abstract IReader get (inout double x);	///ditto
+        abstract IReader get (inout real x);	///ditto
+        abstract IReader get (inout char x);	///ditto
+        abstract IReader get (inout wchar x);	///ditto
+        abstract IReader get (inout dchar x);	///ditto
 
-        abstract IReader get (inout byte[] x,   uint elements = uint.max);
-        abstract IReader get (inout short[] x,  uint elements = uint.max);
-        abstract IReader get (inout int[] x,    uint elements = uint.max);
-        abstract IReader get (inout long[] x,   uint elements = uint.max);
-        abstract IReader get (inout ubyte[] x,  uint elements = uint.max);
-        abstract IReader get (inout ushort[] x, uint elements = uint.max);
-        abstract IReader get (inout uint[] x,   uint elements = uint.max);
-        abstract IReader get (inout ulong[] x,  uint elements = uint.max);
-        abstract IReader get (inout float[] x,  uint elements = uint.max);
-        abstract IReader get (inout double[] x, uint elements = uint.max);
-        abstract IReader get (inout real[] x,   uint elements = uint.max);
-        abstract IReader get (inout char[] x,   uint elements = uint.max);
-        abstract IReader get (inout wchar[] x,  uint elements = uint.max);
-        abstract IReader get (inout dchar[] x,  uint elements = uint.max);
+        abstract IReader get (inout byte[] x,   uint elements = uint.max);	///ditto
+        abstract IReader get (inout short[] x,  uint elements = uint.max);	///ditto
+        abstract IReader get (inout int[] x,    uint elements = uint.max);	///ditto
+        abstract IReader get (inout long[] x,   uint elements = uint.max);	///ditto
+        abstract IReader get (inout ubyte[] x,  uint elements = uint.max);	///ditto
+        abstract IReader get (inout ushort[] x, uint elements = uint.max);	///ditto
+        abstract IReader get (inout uint[] x,   uint elements = uint.max);	///ditto
+        abstract IReader get (inout ulong[] x,  uint elements = uint.max);	///ditto
+        abstract IReader get (inout float[] x,  uint elements = uint.max);	///ditto
+        abstract IReader get (inout double[] x, uint elements = uint.max);	///ditto
+        abstract IReader get (inout real[] x,   uint elements = uint.max);	///ditto
+        abstract IReader get (inout char[] x,   uint elements = uint.max);	///ditto
+        abstract IReader get (inout wchar[] x,  uint elements = uint.max);	///ditto
+        abstract IReader get (inout dchar[] x,  uint elements = uint.max);	///ditto
 
         /***********************************************************************
         
