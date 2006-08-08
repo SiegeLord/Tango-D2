@@ -471,7 +471,7 @@ class Buffer : IBuffer
 
                    // populate tail of buffer with new content
                    do {
-                      if (fill(conduit) == IConduit.Eof)
+                      if (fill(conduit) is IConduit.Eof)
                           error (eofRead);
                       } while (size > readable);
                    }
@@ -600,7 +600,7 @@ class Buffer : IBuffer
 
         IBuffer append (IBuffer other)        
         {               
-                return append (other.toString);
+                return append (other.slice);
         }
 
         /***********************************************************************
@@ -638,21 +638,21 @@ class Buffer : IBuffer
                     
         /***********************************************************************
         
-                Retrieve the current content as a string
+                Retrieve the valid content
 
                 Returns:
-                a char[][ slice of the buffer
+                a void[] slice of the buffer
 
                 Remarks:
-                Return a char[] slice of the buffer, from the current position 
+                Return a void[] slice of the buffer, from the current position 
                 up to the limit of valid content. The content remains in the
                 buffer for future extraction.
 
         ***********************************************************************/
 
-        override char[] toString ()
+        void[] slice ()
         {       
-                return cast(char[]) data[position..limit];
+                return  data [position .. limit];
         }
 
         /***********************************************************************

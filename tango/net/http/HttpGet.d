@@ -77,7 +77,7 @@ class HttpGet : HttpClient
         
         ***********************************************************************/
 
-        char[] read (Interval timeout = DefaultReadTimeout)
+        void[] read (Interval timeout = DefaultReadTimeout)
         {
                 auto input = open (timeout);
 
@@ -90,7 +90,7 @@ class HttpGet : HttpClient
                    }
 
                 close ();
-                return input.toString;
+                return input.slice;
         }
 }
 

@@ -272,7 +272,7 @@ class HttpResponse : HttpMessage
                 version (ShowHeaders)
                         {
                         Stdout.put ("###############").newline();
-                        Stdout.put (super.getBuffer.toString).newline();
+                        Stdout.put (super.getBuffer.slice).newline();
                         Stdout.put ("###############").newline();
                         }
                 writer.flush();

@@ -545,7 +545,7 @@ class HttpClient
         {
                 do {
                    length -= input.readable;
-                   sink (input.toString);
+                   sink (input.slice);
                    input.clear ();
                    } while (length > 0 && input.fill() != socket.Eof);
         }

@@ -89,12 +89,12 @@ abstract class IBuffer // could be an interface, but that causes poor codegen
 
         /***********************************************************************
         
-                Return a char[] slice of the buffer up to the limit of
+                Return a void[] slice of the buffer up to the limit of
                 valid content.
 
         ***********************************************************************/
 
-        abstract char[] toString ();
+        abstract void[] slice ();
 
         /***********************************************************************
         

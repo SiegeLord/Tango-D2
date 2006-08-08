@@ -47,7 +47,7 @@ class HttpPost : HttpClient
 
         this (char[] url, uint pageChunk = 16 * 1024)
         {
-                this (new MutableUri (url), pageChunk);
+                this (new MutableUri(url), pageChunk);
         }
 
         /***********************************************************************
@@ -77,7 +77,7 @@ class HttpPost : HttpClient
         
         ***********************************************************************/
 
-        char[] write (void[] content, Interval timeout = DefaultReadTimeout)
+        void[] write (void[] content, Interval timeout = DefaultReadTimeout)
         {
                 return write (delegate void (IBuffer b){b.append(content);}, timeout);
         }
@@ -86,7 +86,7 @@ class HttpPost : HttpClient
         
         ***********************************************************************/
 
-        char[] write (Pump pump, Interval timeout = DefaultReadTimeout)
+        void[] write (Pump pump, Interval timeout = DefaultReadTimeout)
         {
                 auto input = open (timeout, pump);
 
@@ -99,7 +99,7 @@ class HttpPost : HttpClient
                    }
 
                 close ();
-                return input.toString;
+                return input.slice;
         }
 }
 

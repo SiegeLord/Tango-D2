@@ -90,7 +90,7 @@ class HttpTokens : IWritable
 
         this (char separator, bool inclusive = false)
         {
-                stack = new HttpStack();
+                stack = new HttpStack;
 
                 this.inclusive = inclusive;
                 this.separator = separator;
@@ -110,7 +110,7 @@ class HttpTokens : IWritable
 
         this (HttpTokens source)
         {
-                stack = source.stack.clone();
+                stack = source.stack.clone;
                 input = null;
                 output = source.output;
                 parsed = true;
@@ -148,12 +148,12 @@ class HttpTokens : IWritable
 
         void reset ()
         {
-                stack.reset();
+                stack.reset;
                 parsed = false;
 
                 // reset output buffer, if it was configured
                 if (output)
-                    output.clear();
+                    output.clear;
         }
 
         /**********************************************************************
@@ -263,9 +263,9 @@ class HttpTokens : IWritable
         {
                 foreach (Token token; stack)
                         {
-                        char[] content = token.toString;
+                        auto content = token.toString();
                         if (content.length)
-                            writer.put(content).newline();
+                            writer.put(content).newline;
                         }                           
         }
 
@@ -290,7 +290,7 @@ class HttpTokens : IWritable
 
         final private bool split (Token t, inout HttpToken element)
         {
-                char[] s = t.toString();
+                auto s = t.toString();
 
                 if (s.length)
                    {
@@ -490,8 +490,7 @@ class HttpTokens : IWritable
                 dg (output);
 
                 // map new token onto buffer slice
-                int limit = output.getLimit;
-                stack.push (output.toString[prior..limit]);
+                stack.push (cast(char[]) output.slice [prior .. $]);
         }
 
         /**********************************************************************
@@ -518,7 +517,7 @@ class HttpTokens : IWritable
 
         protected void addInt (char[] name, int value)
         {
-                char[16] tmp;
+                char[16] tmp = void;
 
                 add (name, Integer.format (tmp, value));
         }
@@ -531,7 +530,7 @@ class HttpTokens : IWritable
 
         protected void addDate (char[] name, ulong value)
         {
-                char[40] tmp;
+                char[40] tmp = void;
 
                 add (name, Rfc1123.format (tmp, value));
         }
