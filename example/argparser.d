@@ -16,12 +16,11 @@ void main(char[][] args)
     char[] responseFile = null;
     bool coolAction = false;
     bool displayHelp = false;
-    char[] helpText = "Available options:\n\t\t-h\tthis help\n\t\t-cool-option\tdo cool things to your files\n\t\t@filename\tuse filename as a response file with extra arguments\n\t\tall other arguments are handled as files to do cool things with.";
+    char[] helpText = "Available options:\n\t\t-h\tthis help\n\t\t-cool-action\tdo cool things to your files\n\t\t@filename\tuse filename as a response file with extra arguments\n\t\tall other arguments are handled as files to do cool things with.";
 
-    ArgParser parser = new ArgParser(delegate uint(char[] value,uint ordinal){
+    ArgParser parser = new ArgParser(delegate void(char[] value,uint ordinal){
         Stdout.format("Added file number {0} to list of files", ordinal).newline;
 		fileList ~= value;
-		return value.length;
 	});
 
 	parser.bind("-", "h",delegate void(){
@@ -32,12 +31,11 @@ void main(char[][] args)
 		coolAction=true;
 	});
 	
-    parser.bindDefault("@",delegate uint(char[] value, uint ordinal){
+    parser.bindDefault("@",delegate void(char[] value, uint ordinal){
         if (ordinal > 0) {
             throw new Exception("Only one response file can be given.");
         }
         responseFile = value;
-        return value.length;
     });
 
     if (args.length < 2) {
