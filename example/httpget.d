@@ -31,6 +31,6 @@ void main (char[][] args)
         auto page = new HttpGet (url);
 
         // retrieve and display content
-        Cout (page.read);
+        Cout (cast(char[]) page.read);
 }
 
