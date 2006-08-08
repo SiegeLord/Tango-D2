@@ -1227,7 +1227,7 @@ class Socket : Conduit
 
         ***********************************************************************/
 
-        protected bool setGroup (NetAddress address, Option option)
+        protected bool setGroup (IPv4Address address, Option option)
         {
                 struct ip_mreq
                 {
@@ -1301,7 +1301,7 @@ class Socket : Conduit
                 switch(_family)
                 {
                         case AddressFamily.INET:
-                                result = new NetAddress;
+                                result = new IPv4Address;
                                 break;
 
                         default:
@@ -1916,7 +1916,7 @@ unittest
         NetHost ih = new NetHost;
         ih.getHostByName(Socket.hostName());
         assert(ih.addrList.length > 0);
-        NetAddress ia = new NetAddress(ih.addrList[0], NetAddress.PORT_ANY);
+        IPv4Address ia = new IPv4Address(ih.addrList[0], IPv4Address.PORT_ANY);
         printf("IP address = %.*s\nname = %.*s\n", ia.toAddrString(), ih.name);
         foreach(int i, char[] s; ih.aliases)
         {
@@ -1940,7 +1940,7 @@ unittest
 
 *******************************************************************************/
 
-class NetAddress: Address
+class IPv4Address: Address
 {
         /+
         #ifdef INCLUDE_ALL_FOR_DOXYGEN
@@ -2135,7 +2135,7 @@ debug(Unittest)
 {
 unittest
 {
-        NetAddress ia = new NetAddress("63.105.9.61", 80);
+        IPv4Address ia = new IPv4Address("63.105.9.61", 80);
         assert(ia.toString() == "63.105.9.61:80");
 }
 }

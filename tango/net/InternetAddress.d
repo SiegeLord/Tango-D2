@@ -19,7 +19,7 @@ private import tango.net.Socket;
 
 *******************************************************************************/
 
-class InternetAddress : NetAddress
+class InternetAddress : IPv4Address
 {
         /***********************************************************************
 
