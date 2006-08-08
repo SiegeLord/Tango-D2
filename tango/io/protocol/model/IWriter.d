@@ -150,7 +150,7 @@ abstract class IWriter  // could be an interface, but that causes poor codegen
         ***********************************************************************/
 
         abstract IWriter put ();
-        abstract IWriter flush ();
+        abstract IWriter flush ();	///ditto
 
         /***********************************************************************
         
