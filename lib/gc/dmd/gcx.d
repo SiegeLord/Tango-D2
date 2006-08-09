@@ -1373,7 +1373,7 @@ struct Gcx
 
     uint fullcollectshell()
     {
-    if (gcx.disabled > 0)
+    if (disabled > 0)
         return 0;
 	// The purpose of the 'shell' is to ensure all the registers
 	// get put on the stack so they'll be scanned
