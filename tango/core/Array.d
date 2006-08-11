@@ -29,9 +29,9 @@ version( DDoc )
 version( DDoc )
 {
     /**
-     * Performs a linear search of buf from [0 .. buf.length&#41;, returning the
-     * index of the first element matching pat, or size_t.max if no match was
-     * found.  Comparisons will be performed using '=='.
+     * Performs a linear search of buf from $(LB)0 .. buf.length$(RP),
+     * returning the index of the first element matching pat, or size_t.max
+     * if no match was found.  Comparisons will be performed using '=='.
      *
      * Params:
      *  buf = The array to search.
@@ -44,9 +44,10 @@ version( DDoc )
 
 
     /**
-     * Performs a linear search of buf from [0 .. buf.length&#41;, returning the
-     * index of the first element matching pat, or size_t.max if no match was
-     * found.  Comparisons will be performed using the supplied predicate.
+     * Performs a linear search of buf from $(LB)0 .. buf.length$(RP),
+     * returning the index of the first element matching pat, or size_t.max
+     * if no match was found.  Comparisons will be performed using the
+     * supplied predicate.
      *
      * Params:
      *  buf  = The array to search.
@@ -62,9 +63,9 @@ version( DDoc )
 
 
     /**
-     * Performs a linear search of buf from [0 .. buf.length&#41;, returning the
-     * index of the first element matching pat, or size_t.max if no match was
-     * found.  Comparisons will be performed using '=='.
+     * Performs a linear search of buf from $(LB)0 .. buf.length$(RP),
+     * returning the index of the first element matching pat, or size_t.max
+     * if no match was found.  Comparisons will be performed using '=='.
      *
      * Params:
      *  buf = The array to search.
@@ -77,9 +78,10 @@ version( DDoc )
 
 
     /**
-     * Performs a linear search of buf from [0 .. buf.length&#41;, returning the
-     * index of the first element matching pat, or size_t.max if no match was
-     * found.  Comparisons will be performed using the supplied predicate.
+     * Performs a linear search of buf from $(LB)0 .. buf.length$(RP),
+     * returning the index of the first element matching pat, or size_t.max
+     * if no match was found.  Comparisons will be performed using the
+     * supplied predicate.
      *
      * Params:
      *  buf  = The array to search.
@@ -237,9 +239,9 @@ else
 version( DDoc )
 {
     /**
-     * Performs a linear search of buf from &#40;buf.length .. 0], returning the
-     * index of the first element matching pat, or size_t.max if no match was
-     * found.  Comparisons will be performed using '=='.
+     * Performs a linear search of buf from $(LP)buf.length .. 0$(RB),
+     * returning the index of the first element matching pat, or size_t.max
+     * if no match was found.  Comparisons will be performed using '=='.
      *
      * Params:
      *  buf = The array to search.
@@ -252,9 +254,10 @@ version( DDoc )
 
 
     /**
-     * Performs a linear search of buf from &#40;buf.length .. 0], returning the
-     * index of the first element matching pat, or size_t.max if no match was
-     * found.  Comparisons will be performed using the supplied predicate.
+     * Performs a linear search of buf from $(LP)buf.length .. 0$(RB),
+     * returning the index of the first element matching pat, or size_t.max
+     * if no match was found.  Comparisons will be performed using the
+     * supplied predicate.
      *
      * Params:
      *  buf  = The array to search.
@@ -270,9 +273,9 @@ version( DDoc )
 
 
     /**
-     * Performs a linear search of buf from &#40;buf.length .. 0], returning the
-     * index of the first element matching pat, or size_t.max if no match was
-     * found.  Comparisons will be performed using '=='.
+     * Performs a linear search of buf from $(LP)buf.length .. 0$(RB),
+     * returning the index of the first element matching pat, or size_t.max
+     * if no match was found.  Comparisons will be performed using '=='.
      *
      * Params:
      *  buf = The array to search.
@@ -285,9 +288,10 @@ version( DDoc )
 
 
     /**
-     * Performs a linear search of buf from &#40;buf.length .. 0], returning the
-     * index of the first element matching pat, or size_t.max if no match was
-     * found.  Comparisons will be performed using the supplied predicate.
+     * Performs a linear search of buf from $(LP)buf.length .. 0$(RB),
+     * returning the index of the first element matching pat, or size_t.max
+     * if no match was found.  Comparisons will be performed using the
+     * supplied predicate.
      *
      * Params:
      *  buf  = The array to search.
@@ -454,10 +458,10 @@ else
 version( DDoc )
 {
     /**
-     * Performs a linear search of buf from [0 .. buf.length&#41;, returning the
-     * index of the first element matching pat, or size_t.max if no match was
-     * found.  Comparisons will be performed using '=='.  This function is
-     * equivalent to its 'find' counterpart.
+     * Performs a linear search of buf from $(LB)0 .. buf.length$(RP),
+     * returning the index of the first element matching pat, or size_t.max
+     * if no match was found.  Comparisons will be performed using '=='.
+     * This function is equivalent to its 'find' counterpart.
      *
      * Params:
      *  buf = The array to search.
@@ -470,9 +474,10 @@ version( DDoc )
 
 
     /**
-     * Performs a linear search of buf from [0 .. buf.length&#41;, returning the
-     * index of the first element matching pat, or size_t.max if no match was
-     * found.  Comparisons will be performed using the supplied predicate.
+     * Performs a linear search of buf from $(LB)0 .. buf.length$(RP),
+     * returning the index of the first element matching pat, or size_t.max
+     * if no match was found.  Comparisons will be performed using the
+     * supplied predicate.
      *
      * This function uses the KMP algorithm and offers O(M+N) performance but
      * must allocate a temporary buffer of size pat.sizeof to do so.  As the
@@ -497,10 +502,10 @@ version( DDoc )
 
 
     /**
-     * Performs a linear search of buf from [0 .. buf.length&#41;, returning the
-     * index of the first element matching pat, or size_t.max if no match was
-     * found.  Comparisons will be performed using '=='.  This function is
-     * equivalent to its 'find' counterpart.
+     * Performs a linear search of buf from $(LB)0 .. buf.length$(RP),
+     * returning the index of the first element matching pat, or size_t.max
+     * if no match was found.  Comparisons will be performed using '=='.
+     * This function is equivalent to its 'find' counterpart.
      *
      * Params:
      *  buf = The array to search.
@@ -513,9 +518,10 @@ version( DDoc )
 
 
     /**
-     * Performs a linear search of buf from [0 .. buf.length&#41;, returning the
-     * index of the first element matching pat, or size_t.max if no match was
-     * found.  Comparisons will be performed using the supplied predicate.
+     * Performs a linear search of buf from $(LB)0 .. buf.length$(RP),
+     * returning the index of the first element matching pat, or size_t.max
+     * if no match was found.  Comparisons will be performed using the
+     * supplied predicate.
      *
      * This function uses the KMP algorithm and offers O(M+N) performance but
      * must allocate a temporary buffer of size pat.sizeof to do so.  As the
@@ -715,10 +721,10 @@ else
 version( DDoc )
 {
     /**
-     * Performs a linear search of buf from &#40;buf.length .. 0], returning the
-     * index of the first element matching pat, or size_t.max if no match was
-     * found.  Comparisons will be performed using '=='.  This function is
-     * equivalent to its 'rfind' counterpart.
+     * Performs a linear search of buf from $(LP)buf.length .. 0$(RB),
+     * returning the index of the first element matching pat, or size_t.max
+     * if no match was found.  Comparisons will be performed using '=='.
+     * This function is equivalent to its 'rfind' counterpart.
      *
      * Params:
      *  buf = The array to search.
@@ -731,9 +737,10 @@ version( DDoc )
 
 
     /**
-     * Performs a linear search of buf from &#40;buf.length .. 0], returning the
-     * index of the first element matching pat, or size_t.max if no match was
-     * found.  Comparisons will be performed using the supplied predicate.
+     * Performs a linear search of buf from $(LP)buf.length .. 0$(RB),
+     * returning the index of the first element matching pat, or size_t.max
+     * if no match was found.  Comparisons will be performed using the
+     * supplied predicate.
      *
      * This function uses the KMP algorithm and offers O(M+N) performance but
      * must allocate a temporary buffer of size pat.sizeof to do so.  As the
@@ -758,10 +765,10 @@ version( DDoc )
 
 
     /**
-     * Performs a linear search of buf from &#40;buf.length .. 0], returning the
-     * index of the first element matching pat, or size_t.max if no match was
-     * found.  Comparisons will be performed using '=='.  This function is
-     * equivalent to its 'rfind' counterpart.
+     * Performs a linear search of buf from $(LP)buf.length .. 0$(RB),
+     * returning the index of the first element matching pat, or size_t.max
+     * if no match was found.  Comparisons will be performed using '=='.
+     * This function is equivalent to its 'rfind' counterpart.
      *
      * Params:
      *  buf = The array to search.
@@ -774,9 +781,10 @@ version( DDoc )
 
 
     /**
-     * Performs a linear search of buf from &#40;buf.length .. 0], returning the
-     * index of the first element matching pat, or size_t.max if no match was
-     * found.  Comparisons will be performed using the supplied predicate.
+     * Performs a linear search of buf from $(LP)buf.length .. 0$(RB),
+     * returning the index of the first element matching pat, or size_t.max
+     * if no match was found.  Comparisons will be performed using the
+     * supplied predicate.
      *
      * This function uses the KMP algorithm and offers O(M+N) performance but
      * must allocate a temporary buffer of size pat.sizeof to do so.  As the
@@ -992,8 +1000,8 @@ else
 version( DDoc )
 {
     /**
-     * Performs a linear search of buf from [0 .. buf.length&#41;, returning the
-     * index of the first element where pred returns true.
+     * Performs a linear search of buf from $(LB)0 .. buf.length$(RP),
+     * returning the index of the first element where pred returns true.
      *
      * Params:
      *  buf  = The array to search.
@@ -1049,8 +1057,8 @@ else
 version( DDoc )
 {
     /**
-     * Performs a linear search of buf from &#40;buf.length .. 0], returning the
-     * index of the first element where pred returns true.
+     * Performs a linear search of buf from $(LB)buf.length .. 0$(RP),
+     * returning the index of the first element where pred returns true.
      *
      * Params:
      *  buf  = The array to search.
