@@ -108,11 +108,11 @@ version( DDoc )
          * Refreshes the contents of 'val' from main memory.  This operation is
          * both lock-free and atomic.
          *
-         * Returns:
-         *  The loaded value.
-         *
          * Params:
          *  val = The value to load.  This value must be properly aligned.
+         *
+         * Returns:
+         *  The loaded value.
          */
         T atomicLoad( inout T val )
         {
@@ -168,13 +168,13 @@ version( DDoc )
          * Stores 'newval' to the memory referenced by 'val' if val is equal to
          * 'equalTo'.  This operation is both lock-free and atomic.
          *
-         * Returns:
-         *  true if the store occurred, false if not.
-         *
          * Params:
          *  val     = The destination variable.
          *  newval  = The value to store.
          *  equalTo = The comparison value.
+         *
+         * Returns:
+         *  true if the store occurred, false if not.
          */
         bool atomicStoreIf( inout T val, T newval, T equalTo )
         {
@@ -206,14 +206,14 @@ version( DDoc )
          * operation using more traditional means.  This operation is both
          * lock-free and atomic.
          *
+         * Params:
+         *  val = The value to increment.
+         *
          * Returns:
          *  The result of an atomicLoad of val immediately following the
          *  increment operation.  This value is not required to be equal to the
          *  newly stored value.  Thus, competing writes are allowed to occur
          *  between the increment and successive load operation.
-         *
-         * Params:
-         *  val = The value to increment.
          */
         T atomicIncrement( inout T val )
         {
@@ -245,14 +245,14 @@ version( DDoc )
          * operation using more traditional means.  This operation is both
          * lock-free and atomic.
          *
+         * Params:
+         *  val = The value to decrement.
+         *
          * Returns:
          *  The result of an atomicLoad of val immediately following the
          *  increment operation.  This value is not required to be equal to the
          *  newly stored value.  Thus, competing writes are allowed to occur
          *  between the increment and successive load operation.
-         *
-         * Params:
-         *  val = The value to decrement.
          */
         T atomicDecrement( inout T val )
         {
@@ -1365,12 +1365,12 @@ struct Atomic( T )
          * Stores 'newval' to the memory referenced by this value if val is
          * equal to 'equalTo'.  This operation is both lock-free and atomic.
          *
-         * Returns:
-         *  true if the store occurred, false if not.
-         *
          * Params:
          *  newval  = The value to store.
          *  equalTo = The comparison value.
+         *
+         * Returns:
+         *  true if the store occurred, false if not.
          */
         bool storeIf( T newval, T equalTo )
         {
