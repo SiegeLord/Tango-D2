@@ -1,4 +1,4 @@
-DDOC =  
+﻿DDOC =
 <html><head>
 <meta http-equiv="content-type" content="text/html; charset=utf-8">
 <meta content="text/javascript" http-equiv="content-script-type">
@@ -46,7 +46,7 @@ $(DL $0)
 DDOC_PARAM_ID =
 <td nowrap valign="top" style="padding-right: 8px">$0</td>
 
-               
+
 DDOC_PARAM =<span class="funcparam">$0</span>
 ADD_MODULES =<script>$(MODULES)</script>
 MODULE =explorer.packageExplorer.addModule("$0");
@@ -61,6 +61,8 @@ GREY = <font color=grey>$0</font>
 D_STRING = $(NAVY $0)
 D_COMMENT = $(GREY $0)
 D_PSYMBOL = $0
-BLAH=$0
-
-
+BLAH = $0
+LP = (
+RP = )
+LB = [
+RB = ]
