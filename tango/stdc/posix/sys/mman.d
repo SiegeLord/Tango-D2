@@ -33,11 +33,11 @@ POSIX_MADV_DONTNEED
 
 version( darwin )
 {
-    const auto POSIX_MADV_NORMAL        = 0;
-    const auto POSIX_MADV_RANDOM        = 1;
-    const auto POSIX_MADV_SEQUENTIAL    = 2;
-    const auto POSIX_MADV_WILLNEED      = 3;
-    const auto POSIX_MADV_DONTNEED      = 4;
+    const POSIX_MADV_NORMAL     = 0;
+    const POSIX_MADV_RANDOM     = 1;
+    const POSIX_MADV_SEQUENTIAL = 2;
+    const POSIX_MADV_WILLNEED   = 3;
+    const POSIX_MADV_DONTNEED   = 4;
 }
 
 //
@@ -52,17 +52,17 @@ PROT_NONE
 
 version( linux )
 {
-    const auto PROT_NONE    = 0x0;
-    const auto PROT_READ    = 0x1;
-    const auto PROT_WRITE   = 0x2;
-    const auto PROT_EXEC    = 0x4;
+    const PROT_NONE     = 0x0;
+    const PROT_READ     = 0x1;
+    const PROT_WRITE    = 0x2;
+    const PROT_EXEC     = 0x4;
 }
 else version( darwin )
 {
-    const auto PROT_NONE    = 0x00;
-    const auto PROT_READ    = 0x01;
-    const auto PROT_WRITE   = 0x02;
-    const auto PROT_EXEC    = 0x04;
+    const PROT_NONE     = 0x00;
+    const PROT_READ     = 0x01;
+    const PROT_WRITE    = 0x02;
+    const PROT_EXEC     = 0x04;
 }
 
 //
@@ -102,33 +102,33 @@ int msync(void*, size_t, int); (MF|SIO)
 
 version( linux )
 {
-    const auto MAP_SHARED   = 0x01;
-    const auto MAP_PRIVATE  = 0x02;
-    const auto MAP_FIXED    = 0x10;
-    const auto MAP_ANON     = 0x20; // NOTE: this is a nonstandard extension
+    const MAP_SHARED    = 0x01;
+    const MAP_PRIVATE   = 0x02;
+    const MAP_FIXED     = 0x10;
+    const MAP_ANON      = 0x20; // NOTE: this is a nonstandard extension
 
-    const auto MAP_FAILED  = cast(void*) -1;
+    const MAP_FAILED    = cast(void*) -1;
 
     enum
     {
-        MS_ASYNC      = 1,
-        MS_SYNC       = 4,
-        MS_INVALIDATE = 2
+        MS_ASYNC        = 1,
+        MS_SYNC         = 4,
+        MS_INVALIDATE   = 2
     }
 
     int msync(void*, size_t, int);
 }
 else version( darwin )
 {
-    const auto MAP_SHARED   = 0x0001;
-    const auto MAP_PRIVATE  = 0x0002;
-    const auto MAP_FIXED    = 0x0010;
+    const MAP_SHARED    = 0x0001;
+    const MAP_PRIVATE   = 0x0002;
+    const MAP_FIXED     = 0x0010;
 
-    const auto MAP_FAILED = cast(void*)-1;
+    const MAP_FAILED    = cast(void*)-1;
 
-    const auto MS_ASYNC         = 0x0001;
-    const auto MS_INVALIDATE    = 0x0002;
-    const auto MS_SYNC          = 0x0010;
+    const MS_ASYNC      = 0x0001;
+    const MS_INVALIDATE = 0x0002;
+    const MS_SYNC       = 0x0010;
 }
 
 //
@@ -144,8 +144,8 @@ int munlockall();
 
 version( linux )
 {
-    const auto MCL_CURRENT  = 1;
-    const auto MCL_FUTURE   = 2;
+    const MCL_CURRENT   = 1;
+    const MCL_FUTURE    = 2;
 
     int mlockall(int);
     int munlockall();
@@ -153,8 +153,8 @@ version( linux )
 }
 else version( darwin )
 {
-    const auto MCL_CURRENT = 0x0001;
-    const auto MCL_FUTURE  = 0x0002;
+    const MCL_CURRENT   = 0x0001;
+    const MCL_FUTURE    = 0x0002;
 
     int mlockall(int);
     int munlockall();

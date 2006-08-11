@@ -228,27 +228,27 @@ else version( darwin )
         // FIXME: what is LP64, is it important enough to be included?
         version( LP64 )
         {
-            const auto __PTHREAD_SIZE__            = 1168;
-            const auto __PTHREAD_ATTR_SIZE__       = 56;
-            const auto __PTHREAD_MUTEXATTR_SIZE__  = 8;
-            const auto __PTHREAD_MUTEX_SIZE__      = 56;
-            const auto __PTHREAD_CONDATTR_SIZE__   = 8;
-            const auto __PTHREAD_COND_SIZE__       = 40;
-            const auto __PTHREAD_ONCE_SIZE__       = 8;
-            const auto __PTHREAD_RWLOCK_SIZE__     = 192;
-            const auto __PTHREAD_RWLOCKATTR_SIZE__ = 16;
+            const __PTHREAD_SIZE__              = 1168;
+            const __PTHREAD_ATTR_SIZE__         = 56;
+            const __PTHREAD_MUTEXATTR_SIZE__    = 8;
+            const __PTHREAD_MUTEX_SIZE__        = 56;
+            const __PTHREAD_CONDATTR_SIZE__     = 8;
+            const __PTHREAD_COND_SIZE__         = 40;
+            const __PTHREAD_ONCE_SIZE__         = 8;
+            const __PTHREAD_RWLOCK_SIZE__       = 192;
+            const __PTHREAD_RWLOCKATTR_SIZE__   = 16;
         }
         else
         {
-            const auto __PTHREAD_SIZE__            = 596;
-            const auto __PTHREAD_ATTR_SIZE__       = 36;
-            const auto __PTHREAD_MUTEXATTR_SIZE__  = 8;
-            const auto __PTHREAD_MUTEX_SIZE__      = 40;
-            const auto __PTHREAD_CONDATTR_SIZE__   = 4;
-            const auto __PTHREAD_COND_SIZE__       = 24;
-            const auto __PTHREAD_ONCE_SIZE__       = 4;
-            const auto __PTHREAD_RWLOCK_SIZE__     = 124;
-            const auto __PTHREAD_RWLOCKATTR_SIZE__ = 12;
+            const __PTHREAD_SIZE__              = 596;
+            const __PTHREAD_ATTR_SIZE__         = 36;
+            const __PTHREAD_MUTEXATTR_SIZE__    = 8;
+            const __PTHREAD_MUTEX_SIZE__        = 40;
+            const __PTHREAD_CONDATTR_SIZE__     = 4;
+            const __PTHREAD_COND_SIZE__         = 24;
+            const __PTHREAD_ONCE_SIZE__         = 4;
+            const __PTHREAD_RWLOCK_SIZE__       = 124;
+            const __PTHREAD_RWLOCKATTR_SIZE__   = 12;
         }
     }
 

@@ -49,7 +49,7 @@ version( linux )
     private
     {
         alias c_long __fd_mask;
-        const auto   __NFDBITS = 8 * __fd_mask.sizeof;
+        const __NFDBITS = 8 * __fd_mask.sizeof;
 
         extern (D) int __FDELT( int d )
         {
@@ -62,7 +62,7 @@ version( linux )
         }
     }
 
-    const auto FD_SETSIZE   = 1024;
+    const FD_SETSIZE = 1024;
 
     struct fd_set
     {

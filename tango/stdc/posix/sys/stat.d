@@ -130,24 +130,24 @@ version( linux )
       }
     }
 
-    const auto S_IRUSR = 0400;
-    const auto S_IWUSR = 0200;
-    const auto S_IXUSR = 0100;
-    const auto S_IRWXU = S_IRUSR | S_IWUSR | S_IXUSR;
+    const S_IRUSR   = 0400;
+    const S_IWUSR   = 0200;
+    const S_IXUSR   = 0100;
+    const S_IRWXU   = S_IRUSR | S_IWUSR | S_IXUSR;
 
-    const auto S_IRGRP = S_IRUSR >> 3;
-    const auto S_IWGRP = S_IWUSR >> 3;
-    const auto S_IXGRP = S_IXUSR >> 3;
-    const auto S_IRWXG = S_IRWXU >> 3;
+    const S_IRGRP   = S_IRUSR >> 3;
+    const S_IWGRP   = S_IWUSR >> 3;
+    const S_IXGRP   = S_IXUSR >> 3;
+    const S_IRWXG   = S_IRWXU >> 3;
 
-    const auto S_IROTH = S_IRGRP >> 3;
-    const auto S_IWOTH = S_IWGRP >> 3;
-    const auto S_IXOTH = S_IXGRP >> 3;
-    const auto S_IRWXO = S_IRWXG >> 3;
+    const S_IROTH   = S_IRGRP >> 3;
+    const S_IWOTH   = S_IWGRP >> 3;
+    const S_IXOTH   = S_IXGRP >> 3;
+    const S_IRWXO   = S_IRWXG >> 3;
 
-    const auto S_ISUID = 04000;
-    const auto S_ISGID = 02000;
-    const auto S_ISVTX = 01000;
+    const S_ISUID   = 04000;
+    const S_ISGID   = 02000;
+    const S_ISVTX   = 01000;
 
     private
     {
@@ -233,27 +233,27 @@ int mknod(char*, mode_t, dev_t);
 
 version( linux )
 {
-    const auto S_IFMT   = 0170000;
-    const auto S_IFBLK  = 0060000;
-    const auto S_IFCHR  = 0020000;
-    const auto S_IFIFO  = 0010000;
-    const auto S_IFREG  = 0100000;
-    const auto S_IFDIR  = 0040000;
-    const auto S_IFLNK  = 0120000;
-    const auto S_IFSOCK = 0140000;
+    const S_IFMT    = 0170000;
+    const S_IFBLK   = 0060000;
+    const S_IFCHR   = 0020000;
+    const S_IFIFO   = 0010000;
+    const S_IFREG   = 0100000;
+    const S_IFDIR   = 0040000;
+    const S_IFLNK   = 0120000;
+    const S_IFSOCK  = 0140000;
 
     int mknod(char*, mode_t, dev_t);
 }
 else version( darwin )
 {
-    const auto S_IFMT   = 0170000;
-    const auto S_IFBLK  = 0060000;
-    const auto S_IFCHR  = 0020000;
-    const auto S_IFIFO  = 0010000;
-    const auto S_IFREG  = 0100000;
-    const auto S_IFDIR  = 0040000;
-    const auto S_IFLNK  = 0120000;
-    const auto S_IFSOCK = 0140000;
+    const S_IFMT    = 0170000;
+    const S_IFBLK   = 0060000;
+    const S_IFCHR   = 0020000;
+    const S_IFIFO   = 0010000;
+    const S_IFREG   = 0100000;
+    const S_IFDIR   = 0040000;
+    const S_IFLNK   = 0120000;
+    const S_IFSOCK  = 0140000;
 
     int mknod(char*, mode_t, dev_t);
 }

@@ -15,9 +15,9 @@ public import tango.stdc.posix.sys.types; // for size_t, ssize_t, uid_t, gid_t, 
 
 extern (C):
 
-const auto STDIN_FILENO  = 0;
-const auto STDOUT_FILENO = 1;
-const auto STDERR_FILENO = 2;
+const STDIN_FILENO  = 0;
+const STDOUT_FILENO = 1;
+const STDERR_FILENO = 2;
 
 char*   optarg;
 int     optind;

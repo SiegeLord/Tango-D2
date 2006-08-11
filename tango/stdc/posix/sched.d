@@ -44,19 +44,19 @@ version( linux )
         int __sched_priority;
     }
 
-    const auto SCHED_OTHER = 0;
-    const auto SCHED_FIFO  = 1;
-    const auto SCHED_RR    = 2;
+    const SCHED_OTHER   = 0;
+    const SCHED_FIFO    = 1;
+    const SCHED_RR      = 2;
     //SCHED_SPORADIC (SS|TSP)
 }
 else version( darwin )
 {
-    const auto SCHED_OTHER = 1;
-    const auto SCHED_FIFO  = 4;
-    const auto SCHED_RR    = 2;
+    const SCHED_OTHER   = 1;
+    const SCHED_FIFO    = 4;
+    const SCHED_RR      = 2;
     // SCHED_SPORADIC seems to be unavailable
 
-    private const auto __SCHED_PARAM_SIZE__ = 4;
+    private const __SCHED_PARAM_SIZE__ = 4;
 
     struct sched_param
     {

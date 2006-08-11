@@ -103,50 +103,50 @@ alias __libc_current_sigrtmax SIGRTMAX;
 version( linux )
 {
     //SIGABRT (defined in tango.stdc.signal)
-    const auto SIGALRM  = 14;
-    const auto SIGBUS   = 7;
-    const auto SIGCHLD  = 17;
-    const auto SIGCONT  = 18;
+    const SIGALRM   = 14;
+    const SIGBUS    = 7;
+    const SIGCHLD   = 17;
+    const SIGCONT   = 18;
     //SIGFPE (defined in tango.stdc.signal)
-    const auto SIGHUP   = 1;
+    const SIGHUP    = 1;
     //SIGILL (defined in tango.stdc.signal)
     //SIGINT (defined in tango.stdc.signal)
-    const auto SIGKILL  = 9;
-    const auto SIGPIPE  = 13;
-    const auto SIGQUIT  = 3;
+    const SIGKILL   = 9;
+    const SIGPIPE   = 13;
+    const SIGQUIT   = 3;
     //SIGSEGV (defined in tango.stdc.signal)
-    const auto SIGSTOP  = 19;
+    const SIGSTOP   = 19;
     //SIGTERM (defined in tango.stdc.signal)
-    const auto SIGTSTP  = 20;
-    const auto SIGTTIN  = 21;
-    const auto SIGTTOU  = 22;
-    const auto SIGUSR1  = 10;
-    const auto SIGUSR2  = 12;
-    const auto SIGURG   = 23;
+    const SIGTSTP   = 20;
+    const SIGTTIN   = 21;
+    const SIGTTOU   = 22;
+    const SIGUSR1   = 10;
+    const SIGUSR2   = 12;
+    const SIGURG    = 23;
 }
 else version( darwin )
 {
     //SIGABRT (defined in tango.stdc.signal)
-    const auto SIGALRM  = 14;
-    const auto SIGBUS   = 10;
-    const auto SIGCHLD  = 20;
-    const auto SIGCONT  = 19;
+    const SIGALRM   = 14;
+    const SIGBUS    = 10;
+    const SIGCHLD   = 20;
+    const SIGCONT   = 19;
     //SIGFPE (defined in tango.stdc.signal)
-    const auto SIGHUP   = 1;
+    const SIGHUP    = 1;
     //SIGILL (defined in tango.stdc.signal)
     //SIGINT (defined in tango.stdc.signal)
-    const auto SIGKILL  = 9;
-    const auto SIGPIPE  = 13;
-    const auto SIGQUIT  = 3;
+    const SIGKILL   = 9;
+    const SIGPIPE   = 13;
+    const SIGQUIT   = 3;
     //SIGSEGV (defined in tango.stdc.signal)
-    const auto SIGSTOP  = 17;
+    const SIGSTOP   = 17;
     //SIGTERM (defined in tango.stdc.signal)
-    const auto SIGTSTP  = 18;
-    const auto SIGTTIN  = 21;
-    const auto SIGTTOU  = 22;
-    const auto SIGUSR1  = 30;
-    const auto SIGUSR2  = 31;
-    const auto SIGURG   = 16;
+    const SIGTSTP   = 18;
+    const SIGTTIN   = 21;
+    const SIGTTOU   = 22;
+    const SIGUSR1   = 30;
+    const SIGUSR2   = 31;
+    const SIGURG    = 16;
 }
 
 struct sigaction_t
@@ -233,9 +233,9 @@ int sigwait(sigset_t*, int*);
 
 version( linux )
 {
-    const auto SIG_HOLD = cast(sigfn_t) 1;
+    const SIG_HOLD = cast(sigfn_t) 1;
 
-    private const auto _SIGSET_NWORDS = 1024 / (8 * c_ulong.sizeof);
+    private const _SIGSET_NWORDS = 1024 / (8 * c_ulong.sizeof);
 
     struct sigset_t
     {
@@ -251,21 +251,21 @@ version( linux )
     //SIGSEGV (defined in tango.stdc.signal)
     //SIGTERM (defined in tango.stdc.signal)
 
-    const auto SA_NOCLDSTOP = 1; // (CX|XSI)
+    const SA_NOCLDSTOP  = 1; // (CX|XSI)
 
-    const auto SIG_BLOCK    = 0;
-    const auto SIG_UNBLOCK  = 1;
-    const auto SIG_SETMASK  = 2;
+    const SIG_BLOCK     = 0;
+    const SIG_UNBLOCK   = 1;
+    const SIG_SETMASK   = 2;
 
-    private const auto __SI_MAX_SIZE = 128;
+    private const __SI_MAX_SIZE = 128;
 
     static if( false /* __WORDSIZE == 64 */ )
     {
-        private const auto __SI_PAD_SIZE = ((__SI_MAX_SIZE / int.sizeof) - 4);
+        private const __SI_PAD_SIZE = ((__SI_MAX_SIZE / int.sizeof) - 4);
     }
     else
     {
-        private const auto __SI_PAD_SIZE = ((__SI_MAX_SIZE / int.sizeof) - 3);
+        private const __SI_PAD_SIZE = ((__SI_MAX_SIZE / int.sizeof) - 3);
     }
 
     struct siginfo_t
@@ -500,24 +500,24 @@ int sigrelse(int);
 
 version( linux )
 {
-    const auto SIGPOLL      = 29;
-    const auto SIGPROF      = 27;
-    const auto SIGSYS       = 31;
-    const auto SIGTRAP      = 5;
-    const auto SIGVTALRM    = 26;
-    const auto SIGXCPU      = 24;
-    const auto SIGXFSZ      = 25;
+    const SIGPOLL       = 29;
+    const SIGPROF       = 27;
+    const SIGSYS        = 31;
+    const SIGTRAP       = 5;
+    const SIGVTALRM     = 26;
+    const SIGXCPU       = 24;
+    const SIGXFSZ       = 25;
 
-    const auto SA_ONSTACK   = 0x08000000;
-    const auto SA_RESETHAND = 0x80000000;
-    const auto SA_RESTART   = 0x10000000;
-    const auto SA_SIGINFO   = 4;
-    const auto SA_NOCLDWAIT = 2;
-    const auto SA_NODEFER   = 0x40000000;
-    const auto SS_ONSTACK   = 1;
-    const auto SS_DISABLE   = 2;
-    const auto MINSIGSTKSZ  = 2048;
-    const auto SIGSTKSZ     = 8192;
+    const SA_ONSTACK    = 0x08000000;
+    const SA_RESETHAND  = 0x80000000;
+    const SA_RESTART    = 0x10000000;
+    const SA_SIGINFO    = 4;
+    const SA_NOCLDWAIT  = 2;
+    const SA_NODEFER    = 0x40000000;
+    const SS_ONSTACK    = 1;
+    const SS_DISABLE    = 2;
+    const MINSIGSTKSZ   = 2048;
+    const SIGSTKSZ      = 8192;
 
     //ucontext_t (defined in tango.stdc.posix.ucontext)
     //mcontext_t (defined in tango.stdc.posix.ucontext)
@@ -630,15 +630,15 @@ int sigwaitinfo( sigset_t*, siginfo_t*);
 
 version( linux )
 {
-    private const auto __SIGEV_MAX_SIZE = 64;
+    private const __SIGEV_MAX_SIZE = 64;
 
     static if( false /* __WORDSIZE == 64 */ )
     {
-        private const auto __SIGEV_PAD_SIZE = ((__SIGEV_MAX_SIZE / int.sizeof) - 4);
+        private const __SIGEV_PAD_SIZE = ((__SIGEV_MAX_SIZE / int.sizeof) - 4);
     }
     else
     {
-        private const auto __SIGEV_PAD_SIZE = ((__SIGEV_MAX_SIZE / int.sizeof) - 3);
+        private const __SIGEV_PAD_SIZE = ((__SIGEV_MAX_SIZE / int.sizeof) - 3);
     }
 
     struct sigevent

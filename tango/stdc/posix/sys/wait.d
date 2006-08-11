@@ -35,12 +35,12 @@ pid_t waitpid(pid_t, int*, int);
 
 version( linux )
 {
-    const auto WNOHANG      = 1;
-    const auto WUNTRACED    = 2;
+    const WNOHANG       = 1;
+    const WUNTRACED     = 2;
 
     private
     {
-        const auto __W_CONTINUED    = 0xFFFF;
+        const __W_CONTINUED = 0xFFFF;
 
         extern (D) int __WTERMSIG( int status ) { return status & 0x7F; }
     }

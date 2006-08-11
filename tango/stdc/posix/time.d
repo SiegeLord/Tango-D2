@@ -98,8 +98,8 @@ int timer_settime(timer_t, int, itimerspec*, itimerspec*);
 
 version( linux )
 {
-    const auto CLOCK_PROCESS_CPUTIME_ID = 2; // (TMR|CPT)
-    const auto CLOCK_THREAD_CPUTIME_ID  = 3; // (TMR|TCT)
+    const CLOCK_PROCESS_CPUTIME_ID  = 2; // (TMR|CPT)
+    const CLOCK_THREAD_CPUTIME_ID   = 3; // (TMR|TCT)
 
     struct timespec
     {
@@ -113,8 +113,8 @@ version( linux )
         timespec it_value;
     }
 
-    const auto CLOCK_REALTIME   = 0;
-    const auto TIMER_ABSTIME    = 0x01;
+    const CLOCK_REALTIME    = 0;
+    const TIMER_ABSTIME     = 0x01;
 
     alias int clockid_t;
     alias int timer_t;

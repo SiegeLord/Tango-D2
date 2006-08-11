@@ -51,7 +51,7 @@ version( linux )
           c_ulong           status;
         }
 
-        const auto NGREG = 19;
+        const NGREG = 19;
 
         alias int               greg_t;
         alias greg_t[NGREG]     gregset_t;

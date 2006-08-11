@@ -95,7 +95,7 @@ enum
     PTHREAD_CANCEL_ASYNCHRONOUS
 }
 
-const auto PTHREAD_CANCELED = cast(void*) -1;
+const PTHREAD_CANCELED = cast(void*) -1;
 
 //const pthread_mutex_t PTHREAD_COND_INITIALIZER = { __LOCK_ALT_INITIALIZER, 0, "", 0 };
 
@@ -113,7 +113,7 @@ enum
 
 //const pthread_mutex_t PTHREAD_MUTEX_INITIALIZER = { 0, 0, null, PTHREAD_MUTEX_NORMAL, { 0, 0 } };
 
-const auto PTHREAD_ONCE_INIT = 0;
+const PTHREAD_ONCE_INIT = 0;
 
 enum
 {
@@ -267,7 +267,7 @@ int pthread_barrierattr_setpshared(pthread_barrierattr_t*, int); (BAR|TSH)
 
 version( linux )
 {
-    const auto PTHREAD_BARRIER_SERIAL_THREAD = -1;
+    const PTHREAD_BARRIER_SERIAL_THREAD = -1;
 
     int pthread_barrier_destroy(pthread_barrier_t*);
     int pthread_barrier_init(pthread_barrier_t*, pthread_barrierattr_t*, uint);
@@ -325,10 +325,10 @@ int pthread_setconcurrency(int);
 
 version( linux )
 {
-    const auto PTHREAD_MUTEX_NORMAL     = 0;
-    const auto PTHREAD_MUTEX_RECURSIVE  = 1;
-    const auto PTHREAD_MUTEX_ERRORCHECK = 2;
-    const auto PTHREAD_MUTEX_DEFAULT    = PTHREAD_MUTEX_NORMAL;
+    const PTHREAD_MUTEX_NORMAL      = 0;
+    const PTHREAD_MUTEX_RECURSIVE   = 1;
+    const PTHREAD_MUTEX_ERRORCHECK  = 2;
+    const PTHREAD_MUTEX_DEFAULT     = PTHREAD_MUTEX_NORMAL;
 
     int pthread_attr_getguardsize(pthread_attr_t*, size_t*);
     int pthread_attr_setguardsize(pthread_attr_t*, size_t);

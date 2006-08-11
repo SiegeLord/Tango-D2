@@ -68,47 +68,47 @@ int open(char*, int, ...);
 */
 version( linux )
 {
-    const auto F_DUPFD      = 0;
-    const auto F_GETFD      = 1;
-    const auto F_SETFD      = 2;
-    const auto F_GETFL      = 3;
-    const auto F_SETFL      = 4;
+    const F_DUPFD       = 0;
+    const F_GETFD       = 1;
+    const F_SETFD       = 2;
+    const F_GETFL       = 3;
+    const F_SETFL       = 4;
   static if( false /*__USE_FILE_OFFSET64*/ )
   {
-    const auto F_GETLK      = 5;
-    const auto F_SETLK      = 6;
-    const auto F_SETLKW     = 7;
+    const F_GETLK       = 5;
+    const F_SETLK       = 6;
+    const F_SETLKW      = 7;
   }
   else
   {
-    const auto F_GETLK      = 12;
-    const auto F_SETLK      = 13;
-    const auto F_SETLKW     = 14;
+    const F_GETLK       = 12;
+    const F_SETLK       = 13;
+    const F_SETLKW      = 14;
   }
-    const auto F_GETOWN     = 9;
-    const auto F_SETOWN     = 8;
+    const F_GETOWN      = 9;
+    const F_SETOWN      = 8;
 
-    const auto FD_CLOEXEC   = 1;
+    const FD_CLOEXEC    = 1;
 
-    const auto F_RDLCK      = 0;
-    const auto F_UNLCK      = 2;
-    const auto F_WRLCK      = 1;
+    const F_RDLCK       = 0;
+    const F_UNLCK       = 2;
+    const F_WRLCK       = 1;
 
-    const auto O_CREAT      = 0100;
-    const auto O_EXCL       = 0200;
-    const auto O_NOCTTY     = 0400;
-    const auto O_TRUNC      = 01000;
+    const O_CREAT       = 0100;
+    const O_EXCL        = 0200;
+    const O_NOCTTY      = 0400;
+    const O_TRUNC       = 01000;
 
-    const auto O_APPEND     = 02000;
-    const auto O_NONBLOCK   = 04000;
-    const auto O_SYNC       = 010000;
-    const auto O_DSYNC      = O_SYNC;
-    const auto O_RSYNC      = O_SYNC;
+    const O_APPEND      = 02000;
+    const O_NONBLOCK    = 04000;
+    const O_SYNC        = 010000;
+    const O_DSYNC       = O_SYNC;
+    const O_RSYNC       = O_SYNC;
 
-    const auto O_ACCMODE    = 0003;
-    const auto O_RDONLY     = 00;
-    const auto O_WRONLY     = 01;
-    const auto O_RDWR       = 02;
+    const O_ACCMODE     = 0003;
+    const O_RDONLY      = 00;
+    const O_WRONLY      = 01;
+    const O_RDWR        = 02;
 
     struct flock
     {
@@ -121,38 +121,38 @@ version( linux )
 }
 else version( darwin )
 {
-    const auto F_DUPFD      = 0;
-    const auto F_GETFD      = 1;
-    const auto F_SETFD      = 2;
-    const auto F_GETFL      = 3;
-    const auto F_SETFL      = 4;
-    const auto F_GETOWN     = 5;
-    const auto F_SETOWN     = 6;
-    const auto F_GETLK      = 7;
-    const auto F_SETLK      = 8;
-    const auto F_SETLKW     = 9;
+    const F_DUPFD       = 0;
+    const F_GETFD       = 1;
+    const F_SETFD       = 2;
+    const F_GETFL       = 3;
+    const F_SETFL       = 4;
+    const F_GETOWN      = 5;
+    const F_SETOWN      = 6;
+    const F_GETLK       = 7;
+    const F_SETLK       = 8;
+    const F_SETLKW      = 9;
 
-    const auto FD_CLOEXEC   = 1;
+    const FD_CLOEXEC    = 1;
 
-    const auto F_RDLCK      = 1;
-    const auto F_UNLCK      = 2;
-    const auto F_WRLCK      = 3;
+    const F_RDLCK       = 1;
+    const F_UNLCK       = 2;
+    const F_WRLCK       = 3;
 
-    const auto O_CREAT      = 0x0200;
-    const auto O_EXCL       = 0x0800;
-    const auto O_NOCTTY     = 0;
-    const auto O_TRUNC      = 0x0400;
+    const O_CREAT       = 0x0200;
+    const O_EXCL        = 0x0800;
+    const O_NOCTTY      = 0;
+    const O_TRUNC       = 0x0400;
 
-    const auto O_RDONLY     = 0x0000;
-    const auto O_WRONLY     = 0x0001;
-    const auto O_RDWR       = 0x0002;
-    const auto O_ACCMODE    = 0x0003;
+    const O_RDONLY      = 0x0000;
+    const O_WRONLY      = 0x0001;
+    const O_RDWR        = 0x0002;
+    const O_ACCMODE     = 0x0003;
 
-    const auto O_NONBLOCK   = 0x0004;
-    const auto O_APPEND     = 0x0008;
-    const auto O_SYNC       = 0x0080;
-    //const auto O_DSYNC
-    //const auto O_RSYNC
+    const O_NONBLOCK    = 0x0004;
+    const O_APPEND      = 0x0008;
+    const O_SYNC        = 0x0080;
+    //const O_DSYNC
+    //const O_RSYNC
 
     struct flock
     {

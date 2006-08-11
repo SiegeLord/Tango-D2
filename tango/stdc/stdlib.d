@@ -33,10 +33,10 @@ struct lldiv_t
          rem;
 }
 
-const auto EXIT_SUCCESS = 0;
-const auto EXIT_FAILURE = 1;
-const auto RAND_MAX     = 32767;
-const auto MB_CUR_MAX   = 1;
+const EXIT_SUCCESS  = 0;
+const EXIT_FAILURE  = 1;
+const RAND_MAX      = 32767;
+const MB_CUR_MAX    = 1;
 
 double  atof(char* nptr);
 int     atoi(char* nptr);
