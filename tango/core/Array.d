@@ -1043,7 +1043,22 @@ else
     {
       unittest
       {
+        int[5] buf;
 
+        buf[0] = 1;
+        buf[1] = 2;
+        buf[2] = 4;
+        buf[3] = 2;
+        buf[4] = 6;
+
+        alias findIf!(int, bool delegate(int)) test;
+
+        assert( test( buf, ( int x ) { return x == 0; } ) == size_t.max );
+        assert( test( buf, ( int x ) { return x == 1; } ) == 0 );
+        assert( test( buf, ( int x ) { return x == 2; } ) == 1 );
+        assert( test( buf, ( int x ) { return x == 3; } ) == size_t.max );
+        assert( test( buf, ( int x ) { return x == 6; } ) == 4 );
+        assert( test( buf, ( int x ) { return x == 7; } ) == size_t.max );
       }
     }
 }
@@ -1105,7 +1120,124 @@ else
     {
       unittest
       {
+        int[5] buf;
 
+        buf[0] = 1;
+        buf[1] = 2;
+        buf[2] = 4;
+        buf[3] = 2;
+        buf[4] = 6;
+
+        alias findIf!(int, bool delegate(int)) test;
+
+        assert( test( buf, ( int x ) { return x == 0; } ) == size_t.max );
+        assert( test( buf, ( int x ) { return x == 1; } ) == 0 );
+        assert( test( buf, ( int x ) { return x == 2; } ) == 3 );
+        assert( test( buf, ( int x ) { return x == 3; } ) == size_t.max );
+        assert( test( buf, ( int x ) { return x == 6; } ) == 4 );
+        assert( test( buf, ( int x ) { return x == 7; } ) == size_t.max );
+      }
+    }
+}
+
+
+////////////////////////////////////////////////////////////////////////////////
+// Find
+////////////////////////////////////////////////////////////////////////////////
+
+
+version( DDoc )
+{
+    /**
+     * Performs a linear scan of buf from $(LB)0 .. buf.length$(RP), returning
+     * a count of the number of elements matching pat.  Comparisons will be
+     * performed using '=='.
+     *
+     * Params:
+     *  buf = The array to scan.
+     *  pat = The pattern to match.
+     *
+     * Returns:
+     *  The index of the first match or size_t.max if no match was found.
+     */
+    size_t count( Elem[] buf, Elem pat );
+
+
+    /**
+     * Performs a linear scan of buf from $(LB)0 .. buf.length$(RP), returning
+     * a count of the number of elements matching pat.  Comparisons will be
+     * performed using the supplied predicate.
+     *
+     * Params:
+     *  buf  = The array to scan.
+     *  pat  = The pattern to match.
+     *  pred = The evaluation predicate, which should return true if e1 is
+     *         equal to e2 and false if not.  This predicate may be any
+     *         callable type.
+     *
+     * Returns:
+     *  The index of the first match or size_t.max if no match was found.
+     */
+    size_t count( Elem[] buf, Elem pat, PredT2E pred );
+
+}
+else
+{
+    template count_( Elem, Pred )
+    {
+        static assert( isCallableType!(Pred) );
+
+
+        size_t fn( Elem[] buf, Elem pat )
+        {
+            size_t cnt = 0;
+
+            foreach( size_t pos, Elem cur; buf )
+            {
+                if( cur == pat )
+                    ++cnt;
+            }
+            return cnt;
+        }
+
+
+        size_t fn( Elem[] buf, Elem pat, Pred pred )
+        {
+            size_t cnt = 0;
+
+            foreach( size_t pos, Elem cur; buf )
+            {
+                if( pred( cur, pat ) )
+                    ++cnt;
+            }
+            return cnt;
+        }
+    }
+
+
+    template count( Elem, Pred = bool function( Elem, Elem ) )
+    {
+        alias count_!(Elem, Pred).fn count;
+    }
+
+
+    debug( UnitTest )
+    {
+      unittest
+      {
+        int[5] buf;
+
+        buf[0] = 7;
+        buf[1] = 2;
+        buf[2] = 2;
+        buf[3] = 2;
+        buf[4] = 9;
+
+        assert( count!(int)( buf, 0 ) == 0 );
+        assert( count!(int)( buf, 7 ) == 1 );
+        assert( count!(int)( buf, 2 ) == 3 );
+        assert( count!(int)( buf, 9 ) == 1 );
+        assert( count!(int)( buf, 4 ) == 0 );
       }
     }
 }
@@ -1334,6 +1466,97 @@ else
         assert( ubound!(int)( buf, 7 ) == 5 );
         assert( ubound!(int)( buf, 3 ) == 2 );
         assert( ubound!(int)( buf, 4 ) == 3 );
+      }
+    }
+}
+
+
+////////////////////////////////////////////////////////////////////////////////
+// Binay Search
+////////////////////////////////////////////////////////////////////////////////
+
+
+version( DDoc )
+{
+    /**
+     * Performs a binary search of buf, returning true if an element equivalent
+     * to pat is found.  Comparisons will be performed using '<'.
+     *
+     * Params:
+     *  buf = The sorted array to search.
+     *  pat = The pattern to search for.
+     *
+     * Returns:
+     *  True if an element equivalent to pat is found, false if not.
+     */
+    size_t bsearch( Elem[] buf, Elem pat );
+
+
+    /**
+     * Performs a binary search of buf, returning true if an element equivalent
+     * to pat is found.  Comparisons will be performed using the supplied
+     * predicate.
+     *
+     * Params:
+     *  buf = The sorted array to search.
+     *  pat = The pattern to search for.
+     *  pred = The evaluation predicate, which should return true if e1 is
+     *         less than e2 and false if not.  This predicate may be any
+     *         callable type.
+     *
+     * Returns:
+     *  True if an element equivalent to pat is found, false if not.
+     */
+    size_t bsearch( Elem[] buf, Elem pat, PredT2E pred );
+}
+else
+{
+    template bsearch_( Elem, Pred )
+    {
+        static assert( isCallableType!(Pred) );
+
+
+        size_t fn( Elem[] buf, Elem pat )
+        {
+            size_t pos = lbound!(Elem, Pred)( buf, pat );
+            return pos < buf.length && !( pat < buf[pos] );
+        }
+
+
+        size_t fn( Elem[] buf, Elem pat, Pred pred )
+        {
+            size_t pos = lbound!(Elem, Pred)( buf, pat, pred );
+            return pos < buf.length && !( pat < buf[pos] );
+        }
+    }
+
+
+    template bsearch( Elem, Pred = bool function( Elem, Elem ) )
+    {
+        alias bsearch_!(Elem, Pred).fn bsearch;
+    }
+
+
+    debug( UnitTest )
+    {
+      unittest
+      {
+        int[5] buf;
+
+        buf[0] = 1;
+        buf[1] = 2;
+        buf[2] = 4;
+        buf[3] = 5;
+        buf[4] = 6;
+
+        assert( !bsearch!(int)( buf, 0 ) );
+        assert( bsearch!(int)( buf, 1 ) );
+        assert( bsearch!(int)( buf, 2 ) );
+        assert( !bsearch!(int)( buf, 3 ) );
+        assert( bsearch!(int)( buf, 4 ) );
+        assert( bsearch!(int)( buf, 5 ) );
+        assert( bsearch!(int)( buf, 6 ) );
+        assert( !bsearch!(int)( buf, 7 ) );
       }
     }
 }
