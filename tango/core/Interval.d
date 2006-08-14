@@ -25,24 +25,20 @@ module tango.core.Interval;
         sleep (Inteval.second * 5);
         ---
 
-        Intervals can currently extend up to a one-hour period. They're
-        intended to represent short durations of time, such as when one
-        waits for a socket response.
-
 *******************************************************************************/
 
-enum Interval : uint {
-                     // min   = uint.min,       // implied via type
-                     // max   = uint.max,       // implied via type
+enum Interval : ulong 
+                {
+                micro    = 1, 
+                milli    = 1000, 
+                second   = 1_000_000,
+                minute   = 60_000_000,
 
-                     micro    = 1, 
-                     milli    = 1000, 
-                     second   = 1_000_000,
-                     minute   = 60_000_000,
+                infinity = ulong.max,
 
-                     Microsec = micro, 
-                     Millisec = milli, 
-                     Second   = second, 
-                     Minute   = minute
-                     };
+                Microsec = micro, 
+                Millisec = milli, 
+                Second   = second, 
+                Minute   = minute,
+                };
 
