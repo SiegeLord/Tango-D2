@@ -600,7 +600,8 @@ class Thread
 
 
     /**
-     * Suspends the calling thread for at least the supplied time.
+     * Suspends the calling thread for at least the supplied time, up to
+     * a maximum of (uint.max - 1) milliseconds.
      *
      * Params:
      *  interval = The minimum duration the calling thread should be
@@ -608,42 +609,29 @@ class Thread
      */
     static void sleep( Interval interval )
     {
+        const MAXMILLIS = uint.max - 1;
+
         version( Win32 )
         {
-            const INFINITY = uint.max;
-            const MAXSLEEP = uint.max - 1;
-
-            if( interval != Interval.infinity )
-            {
-                interval /= Interval.milli;
-                Sleep( MAXSLEEP < interval ? MAXSLEEP : cast(uint) interval );
-            }
-            else
-            {
-                Sleep( INFINITY );
-            }
+            interval /= Interval.milli;
+            Sleep( MAXMILLIS < interval ? MAXMILLIS : cast(uint) interval );
         }
         else version( Posix )
         {
-            const MAXSLEEP = uint.max;
+            alias tango.stdc.posix.unistd.sleep psleep;
 
-            if( interval != Interval.infinity )
+            if( interval <= uint.max )
             {
-                if( interval <= MAXSLEEP )
-                {
-                    usleep( cast(uint) interval );
-                }
-                else
-                {
-                    interval /= Interval.second;
-                    sleep( interval < MAXSLEEP ? cast(uint) interval : MAXSLEEP );
-                }
+                usleep( cast(uint) interval );
+            }
+            else if( interval / Interval.milli <= MAXMILLIS )
+            {
+                interval /= Interval.second;
+                psleep( cast(uint) interval );
             }
             else
             {
-                // NOTE: There is no unbounded sleep call in Posix, but
-                //       MAXSLEEP seconds is essentially the same thing.
-                sleep( MAXSLEEP );
+                psleep( uint.max / 1000 );
             }
         }
     }
@@ -660,12 +648,9 @@ class Thread
         }
         else version( Posix )
         {
-            // BUG: This implementation will effectively ignore SIGALARM
-            //      and other interrupts.
-            do
-            {
-                sleep( uint.max );
-            } while( true );
+            // NOTE: Posix does not have an unbounded sleep routine, but
+            //       uint.max seconds is long enough to be sufficient.
+            tango.stdc.posix.unistd.sleep( uint.max );
         }
     }
 
