@@ -610,11 +610,41 @@ class Thread
     {
         version( Win32 )
         {
-            Sleep( interval / Interval.milli );
+            const INFINITY = uint.max;
+            const MAXSLEEP = uint.max - 1;
+
+            if( interval != Interval.infinity )
+            {
+                interval /= Interval.milli;
+                Sleep( MAXSLEEP < interval ? MAXSLEEP : cast(uint) interval );
+            }
+            else
+            {
+                Sleep( INFINITY );
+            }
         }
         else version( Posix )
         {
-            usleep( interval );
+            const MAXSLEEP = uint.max;
+
+            if( interval != Interval.infinity )
+            {
+                if( interval <= MAXSLEEP )
+                {
+                    usleep( cast(uint) interval );
+                }
+                else
+                {
+                    interval /= Interval.second;
+                    sleep( interval < MAXSLEEP ? cast(uint) interval : MAXSLEEP );
+                }
+            }
+            else
+            {
+                // NOTE: There is no unbounded sleep call in Posix, but
+                //       MAXSLEEP seconds is essentially the same thing.
+                sleep( MAXSLEEP );
+            }
         }
     }
 
