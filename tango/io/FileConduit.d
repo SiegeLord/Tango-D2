@@ -15,7 +15,7 @@
 
 module tango.io.FileConduit;
 
-private import  tango.os.OS;
+private import  tango.sys.OS;
 
 public  import  tango.io.FileProxy;
 

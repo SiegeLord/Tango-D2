@@ -6,7 +6,7 @@
 
 module tango.io.selector.Interval;
 
-public import tango.os.OS;
+public import tango.sys.OS;
 public import tango.stdc.time;
 
 version (Posix)

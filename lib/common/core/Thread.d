@@ -64,7 +64,7 @@ version( Win32 )
 {
     private
     {
-        import tango.os.windows.minwin;
+        import tango.sys.windows.minwin;
 
         //
         // decls not in minwin
@@ -80,7 +80,7 @@ version( Win32 )
        }
 
         //
-        // avoid multiple imports via tango.os.windows.process
+        // avoid multiple imports via tango.sys.windows.process
         //
         extern (Windows) alias uint function(void*) btex_fptr;
 
@@ -631,7 +631,7 @@ class Thread
             }
             else
             {
-                psleep( uint.max / 1000 );
+                psleep( MAXMILLIS / 1000 );
             }
         }
     }

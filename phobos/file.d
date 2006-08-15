@@ -814,7 +814,7 @@ version (linux)
 
 private import phobos.date;
 private import phobos.c.linux.linux;
-private import tango.os.linux.linux;
+private import tango.sys.linux.linux;
 
 extern (C) char* strerror(int);
 

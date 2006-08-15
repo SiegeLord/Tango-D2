@@ -10,7 +10,7 @@ public import tango.io.model.IConduit;
 public import tango.io.selector.SelectorException;
 
 private import tango.io.selector.model.ISelector;
-private import tango.os.OS;
+private import tango.sys.OS;
 private import tango.text.convert.Sprint;
 private import tango.stdc.errno;
 

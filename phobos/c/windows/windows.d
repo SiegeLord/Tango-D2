@@ -3,7 +3,7 @@
 States and other countries. */
 
 module phobos.c.windows.windows;
-public import tango.os.windows.minwin;
+public import tango.sys.windows.minwin;
 
 /+++
 version (Windows)

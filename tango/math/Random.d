@@ -21,7 +21,7 @@ version (Win32)
 version (Posix)
         {
                 version (linux)
-                         private import tango.os.linux.linux;
+                         private import tango.sys.linux.linux;
 
                 version (darwin)
                          private import tango.stdc.darwin.darwin;

@@ -19,8 +19,8 @@ private
     import tango.net.SocketConduit;
     import tango.net.ServerSocket;
     import tango.core.Thread;
-    import tango.os.OS;
-    import tango.os.linux.linux;
+    import tango.sys.OS;
+    import tango.sys.linux.linux;
     import tango.stdc.errno;
     import tango.text.convert.Unicode;
 }

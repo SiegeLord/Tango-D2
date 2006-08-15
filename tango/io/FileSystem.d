@@ -12,7 +12,7 @@
 
 module tango.io.FileSystem;
 
-private import  tango.os.OS;
+private import  tango.sys.OS;
 
 private import  tango.text.Text;
 

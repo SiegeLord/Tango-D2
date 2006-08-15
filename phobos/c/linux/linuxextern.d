@@ -12,7 +12,7 @@
 
 module phobos.c.linux.linuxextern;
 
-import tango.os.linux.linuxextern;
+import tango.sys.linux.linuxextern;
 //extern (C)
 //{
 //    void* __libc_stack_end;

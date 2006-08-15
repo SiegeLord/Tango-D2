@@ -12,7 +12,7 @@
 
 module tango.io.MappedBuffer;
 
-private import  tango.os.OS;
+private import  tango.sys.OS;
 
 private import  tango.io.Buffer,
                 tango.io.Exception;

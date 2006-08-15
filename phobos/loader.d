@@ -96,7 +96,7 @@ version(Windows)
 }
 else version(linux)
 {
-    import tango.os.linux.linux;
+    import tango.sys.linux.linux;
     extern(C)
     {
         //const int RTLD_NOW  =   0x00002; /* Correct for Red Hat 8 */

@@ -15,7 +15,7 @@ module tango.log.Event;
 
 version = UseEventFreeList;
 
-private import  tango.os.OS;
+private import  tango.sys.OS;
 
 private import  tango.log.model.ILevel,
                 tango.log.model.IHierarchy;

@@ -32,7 +32,7 @@ version (Win32)
 {
     private
 {
-    import tango.os.windows.minwin;
+    import tango.sys.windows.minwin;
     extern (Windows)
 {
     DWORD TlsAlloc();

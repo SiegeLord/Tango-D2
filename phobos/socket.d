@@ -63,7 +63,7 @@ else version(BsdSockets)
 		private import phobos.c.linux.linux, phobos.c.linux.socket;
 		private alias phobos.c.linux.linux.timeval _ctimeval;
 		private import tango.stdc.posix.fcntl;
-		private import tango.os.linux.linux;
+		private import tango.sys.linux.linux;
 	}
 	
 	typedef int32_t socket_t = -1;

@@ -8,7 +8,7 @@
  *  Modified by Sean Kelly <sean@f4.ca> for use with the Ares project.
  */
 
-import tango.os.windows.minwin;
+import tango.sys.windows.minwin;
 
 alias int pthread_t;
 
