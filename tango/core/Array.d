@@ -1,6 +1,7 @@
 /**
- * The array module provides string manipulation routines in a manner that
- * balances performance and flexibility.
+ * The array module provides array manipulation routines in a manner that
+ * balances performance and flexibility.  Operations are provides for sorting,
+ * and for processing both sorted and unsorted arrays.
  *
  * Copyright: Copyright (C) 2005-2006 Sean Kelly.  All rights reserved.
  * License:   BSD style: $(LICENSE)
@@ -933,7 +934,7 @@ else
 version( DDoc )
 {
     /**
-     * Performs a linear search of buf from $(LB)buf.length .. 0$(RP),
+     * Performs a linear search of buf from $(LP)buf.length .. 0$(RB),
      * returning the index of the first element where pred returns true.
      *
      * Params:
