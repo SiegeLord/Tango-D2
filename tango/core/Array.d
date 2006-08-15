@@ -914,12 +914,12 @@ else
         buf[3] = 2;
         buf[4] = 6;
 
-        assert( findIf( buf[0 .. $], ( int x ) { return x == 0; } ) == size_t.max );
-        assert( findIf( buf[0 .. $], ( int x ) { return x == 1; } ) == 0 );
-        assert( findIf( buf[0 .. $], ( int x ) { return x == 2; } ) == 1 );
-        assert( findIf( buf[0 .. $], ( int x ) { return x == 3; } ) == size_t.max );
-        assert( findIf( buf[0 .. $], ( int x ) { return x == 6; } ) == 4 );
-        assert( findIf( buf[0 .. $], ( int x ) { return x == 7; } ) == size_t.max );
+        assert( findIf( buf, ( int x ) { return x == 0; } ) == size_t.max );
+        assert( findIf( buf, ( int x ) { return x == 1; } ) == 0 );
+        assert( findIf( buf, ( int x ) { return x == 2; } ) == 1 );
+        assert( findIf( buf, ( int x ) { return x == 3; } ) == size_t.max );
+        assert( findIf( buf, ( int x ) { return x == 6; } ) == 4 );
+        assert( findIf( buf, ( int x ) { return x == 7; } ) == size_t.max );
       }
     }
 }
@@ -992,12 +992,12 @@ else
         buf[3] = 2;
         buf[4] = 6;
 
-        assert( rfindIf( buf[0 .. $], ( int x ) { return x == 0; } ) == size_t.max );
-        assert( rfindIf( buf[0 .. $], ( int x ) { return x == 1; } ) == 0 );
-        assert( rfindIf( buf[0 .. $], ( int x ) { return x == 2; } ) == 3 );
-        assert( rfindIf( buf[0 .. $], ( int x ) { return x == 3; } ) == size_t.max );
-        assert( rfindIf( buf[0 .. $], ( int x ) { return x == 6; } ) == 4 );
-        assert( rfindIf( buf[0 .. $], ( int x ) { return x == 7; } ) == size_t.max );
+        assert( rfindIf( buf, ( int x ) { return x == 0; } ) == size_t.max );
+        assert( rfindIf( buf, ( int x ) { return x == 1; } ) == 0 );
+        assert( rfindIf( buf, ( int x ) { return x == 2; } ) == 3 );
+        assert( rfindIf( buf, ( int x ) { return x == 3; } ) == size_t.max );
+        assert( rfindIf( buf, ( int x ) { return x == 6; } ) == 4 );
+        assert( rfindIf( buf, ( int x ) { return x == 7; } ) == size_t.max );
       }
     }
 }
@@ -1094,11 +1094,11 @@ else
         buf[3] = 2;
         buf[4] = 9;
 
-        assert( count( buf[0 .. $], 0 ) == 0 );
-        assert( count( buf[0 .. $], 7 ) == 1 );
-        assert( count( buf[0 .. $], 2 ) == 3 );
-        assert( count( buf[0 .. $], 9 ) == 1 );
-        assert( count( buf[0 .. $], 4 ) == 0 );
+        assert( count( buf, 0 ) == 0 );
+        assert( count( buf, 7 ) == 1 );
+        assert( count( buf, 2 ) == 3 );
+        assert( count( buf, 9 ) == 1 );
+        assert( count( buf, 4 ) == 0 );
       }
     }
 }
@@ -1203,10 +1203,10 @@ else
         buf[3] = 5;
         buf[4] = 6;
 
-        assert( lbound( buf[0 .. $], 0 ) == 0 );
-        assert( lbound( buf[0 .. $], 7 ) == 5 );
-        assert( lbound( buf[0 .. $], 3 ) == 2 );
-        assert( lbound( buf[0 .. $], 4 ) == 2 );
+        assert( lbound( buf, 0 ) == 0 );
+        assert( lbound( buf, 7 ) == 5 );
+        assert( lbound( buf, 3 ) == 2 );
+        assert( lbound( buf, 4 ) == 2 );
       }
     }
 }
@@ -1311,10 +1311,10 @@ else
         buf[3] = 5;
         buf[4] = 6;
 
-        assert( ubound( buf[0 .. $], 0 ) == 0 );
-        assert( ubound( buf[0 .. $], 7 ) == 5 );
-        assert( ubound( buf[0 .. $], 3 ) == 2 );
-        assert( ubound( buf[0 .. $], 4 ) == 3 );
+        assert( ubound( buf, 0 ) == 0 );
+        assert( ubound( buf, 7 ) == 5 );
+        assert( ubound( buf, 3 ) == 2 );
+        assert( ubound( buf, 4 ) == 3 );
       }
     }
 }
@@ -1403,14 +1403,14 @@ else
         buf[3] = 5;
         buf[4] = 6;
 
-        assert( !bsearch( buf[0 .. $], 0 ) );
-        assert(  bsearch( buf[0 .. $], 1 ) );
-        assert(  bsearch( buf[0 .. $], 2 ) );
-        assert( !bsearch( buf[0 .. $], 3 ) );
-        assert(  bsearch( buf[0 .. $], 4 ) );
-        assert(  bsearch( buf[0 .. $], 5 ) );
-        assert(  bsearch( buf[0 .. $], 6 ) );
-        assert( !bsearch( buf[0 .. $], 7 ) );
+        assert( !bsearch( buf, 0 ) );
+        assert(  bsearch( buf, 1 ) );
+        assert(  bsearch( buf, 2 ) );
+        assert( !bsearch( buf, 3 ) );
+        assert(  bsearch( buf, 4 ) );
+        assert(  bsearch( buf, 5 ) );
+        assert(  bsearch( buf, 6 ) );
+        assert( !bsearch( buf, 7 ) );
       }
     }
 }
