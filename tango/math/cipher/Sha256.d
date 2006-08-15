@@ -3,14 +3,14 @@
         copyright:      Copyright (c) 2004 Regan Heath. All rights reserved
 
         license:        BSD style: see doc/license.txt for details
-      
+
         version:        Initial release: Feb 2006
-        
+
         author:         Regan Heath, Kris
 
-        This module implements the SHA-256 Algorithm described by Secure Hash 
+        This module implements the SHA-256 Algorithm described by Secure Hash
         Standard, FIPS PUB 180-2
-        
+
 *******************************************************************************/
 
 module tango.math.cipher.Sha256;
@@ -28,40 +28,40 @@ class Sha256Digest : Digest
         private uint[8] digest;
 
         /***********************************************************************
-        
+
                 Construct an Sha256Digest.
 
                 Remarks:
                 Constructs a blank Sha256Digest.
-       
+
         ***********************************************************************/
 
         this() { digest[] = 0; }
-        
+
         /***********************************************************************
-        
+
                 Construct an Sha256Digest.
 
                 Remarks:
                 Constructs an Sha256Digest from binary data
-        
+
         ***********************************************************************/
 
         this(void[] raw) { digest[] = cast(uint[]) raw; }
 
         /***********************************************************************
-        
+
                 Construct an Sha256Digest.
 
                 Remarks:
                 Constructs an Sha256Digest from another Sha256Digest.
-        
+
         ***********************************************************************/
 
-        this(Sha256Digest rhs) { digest[] = rhs.digest[]; }       
+        this(Sha256Digest rhs) { digest[] = rhs.digest[]; }
 
         /***********************************************************************
-        
+
                 Return the string representation
 
                 Returns:
@@ -73,9 +73,9 @@ class Sha256Digest : Digest
         ***********************************************************************/
 
         char[] toString() { return toHexString (cast(ubyte[]) digest); }
-        
+
         /***********************************************************************
-        
+
                 Return the binary representation
 
                 Returns:
@@ -85,9 +85,9 @@ class Sha256Digest : Digest
                 Returns a void[] containing the binary representation of the digest.
 
         ***********************************************************************/
-        
+
         void[] toBinary() { return cast(void[]) digest; }
-        
+
         int opEquals(Object o) { Sha256Digest rhs = cast(Sha256Digest)o; assert(rhs); return digest == rhs.digest; }
 }
 
@@ -108,12 +108,12 @@ class Sha256Cipher : Cipher
         ***********************************************************************/
 
         this() { }
-        
+
         /***********************************************************************
 
                 Construct an Sha1Cipher
 
-                Params: 
+                Params:
                 rhs = an existing Sha1Digest
 
                 Remarks:
@@ -129,12 +129,12 @@ class Sha256Cipher : Cipher
         }
 
         /***********************************************************************
-        
+
                 Initialize the cipher
 
                 Remarks:
                 Returns the cipher state to it's initial value
-        
+
         ***********************************************************************/
 
         override void start()
@@ -142,9 +142,9 @@ class Sha256Cipher : Cipher
                 super.start();
                 context[] = initial[];
         }
-        
+
         /***********************************************************************
-        
+
                 Obtain the digest
 
                 Returns:
@@ -163,16 +163,16 @@ class Sha256Cipher : Cipher
                         ByteSwap.swap32 (digest.ptr, digest.length * uint.sizeof);
                 return new Sha256Digest(digest);
         }
-        
+
         /***********************************************************************
-        
+
                 Cipher block size
 
                 Returns:
                 the block size
 
                 Remarks:
-                Specifies the size (in bytes) of the block of data to pass to 
+                Specifies the size (in bytes) of the block of data to pass to
                 each call to transform(). For SHA256 the blockSize is 64.
 
         ***********************************************************************/
@@ -180,11 +180,11 @@ class Sha256Cipher : Cipher
         protected override uint blockSize() { return 64; }
 
         /***********************************************************************
-        
+
                 Length padding size
 
                 Returns:
-                the length paddding size
+                the length padding size
 
                 Remarks:
                 Specifies the size (in bytes) of the padding which uses the
@@ -196,16 +196,16 @@ class Sha256Cipher : Cipher
         protected override uint addSize()   { return 8;  }
 
         /***********************************************************************
-        
+
                 Pads the cipher data
 
-                Params: 
+                Params:
                 data = a slice of the cipher buffer to fill with padding
-                
+
                 Remarks:
-                Fills the passed buffer slice with the appropriate padding for 
+                Fills the passed buffer slice with the appropriate padding for
                 the final call to transform(). This padding will fill the cipher
-                buffer up to blockSize()-addSize(). 
+                buffer up to blockSize()-addSize().
 
         ***********************************************************************/
 
@@ -216,18 +216,18 @@ class Sha256Cipher : Cipher
         }
 
         /***********************************************************************
-        
+
                 Performs the length padding
 
-                Params: 
+                Params:
                 data   = the slice of the cipher buffer to fill with padding
                 length = the length of the data which has been ciphered
-                
+
                 Remarks:
                 Fills the passed buffer slice with addSize() bytes of padding
                 based on the length in bytes of the input data which has been
                 ciphered.
-        
+
         ***********************************************************************/
 
         protected override void padLength(ubyte[] data, ulong length)
@@ -238,15 +238,15 @@ class Sha256Cipher : Cipher
         }
 
         /***********************************************************************
-        
+
                 Performs the cipher on a block of data
 
-                Params: 
+                Params:
                 data = the block of data to cipher
-                
+
                 Remarks:
                 The actual cipher algorithm is carried out by this method on
-                the passed block of data. This method is called for every 
+                the passed block of data. This method is called for every
                 blockSize() bytes of input data and once more with the remaining
                 data padded to blockSize().
 
@@ -296,7 +296,7 @@ class Sha256Cipher : Cipher
         }
 
         /***********************************************************************
-        
+
         ***********************************************************************/
 
         private static uint Ch(uint x, uint y, uint z)
@@ -305,7 +305,7 @@ class Sha256Cipher : Cipher
         }
 
         /***********************************************************************
-        
+
         ***********************************************************************/
 
         private static uint Maj(uint x, uint y, uint z)
@@ -314,7 +314,7 @@ class Sha256Cipher : Cipher
         }
 
         /***********************************************************************
-        
+
         ***********************************************************************/
 
         private static uint sum0(uint x)
@@ -323,7 +323,7 @@ class Sha256Cipher : Cipher
         }
 
         /***********************************************************************
-        
+
         ***********************************************************************/
 
         private static uint sum1(uint x)
@@ -332,7 +332,7 @@ class Sha256Cipher : Cipher
         }
 
         /***********************************************************************
-        
+
         ***********************************************************************/
 
         private static uint mix0(uint x)
@@ -341,25 +341,25 @@ class Sha256Cipher : Cipher
         }
 
         /***********************************************************************
-        
+
         ***********************************************************************/
 
         private static uint mix1(uint x)
         {
                 return rotateRight(x,17)^rotateRight(x,19)^shiftRight(x,10);
         }
-        
+
         /***********************************************************************
-        
+
         ***********************************************************************/
 
         private static uint rotateRight(uint x, uint n)
         {
                 return (x >> n) | (x << (32-n));
         }
-        
+
         /***********************************************************************
-        
+
         ***********************************************************************/
 
         private static uint shiftRight(uint x, uint n)
@@ -415,20 +415,20 @@ unittest {
                 "BA7816BF8F01CFEA414140DE5DAE2223B00361A396177A9CB410FF61F20015AD",
                 "248D6A61D20638B8E5C026930C3E6039A33CE45964FF2167F6ECEDD419DB06C1"
         ];
-        
+
         Sha256Cipher h = new Sha256Cipher();
         Sha256Digest d,e;
 
         foreach(int i, char[] s; strings) {
                 d = cast(Sha256Digest)h.sum(s);
                 assert(d.toString() == results[i],"Cipher:("~s~")("~d.toString()~")!=("~results[i]~")");
-                
+
                 e = new Sha256Digest(d);
                 assert(d == e,"Digest from Digest:("~d.toString()~")!=("~e.toString()~")");
-                
+
                 e = new Sha256Digest(d.toBinary());
                 assert(d == e,"Digest from Digest binary:("~d.toString()~")!=("~e.toString()~")");
-                
+
                 h = new Sha256Cipher(d);
                 e = h.getDigest();
                 assert(d == e,"Digest from Cipher continue:("~d.toString()~")!=("~e.toString()~")");

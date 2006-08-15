@@ -3,14 +3,14 @@
         copyright:      Copyright (c) 2004 Regan Heath. All rights reserved
 
         license:        BSD style: see doc/license.txt for details
-      
+
         version:        Initial release: Feb 2006
-        
+
         author:         Regan Heath, Kris
 
-        This module implements the Tiger algorithm by Ross Anderson and Eli 
+        This module implements the Tiger algorithm by Ross Anderson and Eli
         Biham.
-        
+
 *******************************************************************************/
 
 module tango.math.cipher.Tiger;
@@ -28,48 +28,48 @@ class TigerDigest : Digest
         private ulong[3] digest;
 
         /***********************************************************************
-        
+
                 Construct a TigerDigest.
 
                 Remarks:
                 Constructs a blank TigerDigest.
-       
+
         ***********************************************************************/
 
         this() { digest[] = 0; }
 
         /***********************************************************************
-        
+
                 Construct a TigerDigest.
 
                 Remarks:
                 Constructs a TigerDigest from binary data
-        
+
         ***********************************************************************/
 
         this(void[] raw) { digest[] = cast(ulong[]) raw; }
-        
-        /*this (ulong[3] context) 
-        { 
-                digest[] = context[]; 
+
+        /*this (ulong[3] context)
+        {
+                digest[] = context[];
 
                 version (LittleEndian)
                          ByteSwap.swap64 (digest.ptr, digest.length * ulong.sizeof);
         }*/
 
         /***********************************************************************
-        
+
                 Construct a TigerDigest.
 
                 Remarks:
                 Constructs a TigerDigest from another TigerDigest.
-        
+
         ***********************************************************************/
 
-        this(TigerDigest rhs) { digest[] = rhs.digest[]; }       
+        this(TigerDigest rhs) { digest[] = rhs.digest[]; }
 
         /***********************************************************************
-        
+
                 Return the string representation
 
                 Returns:
@@ -81,9 +81,9 @@ class TigerDigest : Digest
         ***********************************************************************/
 
         char[] toString() { return toHexString (cast(ubyte[]) digest); }
-        
+
         /***********************************************************************
-        
+
                 Return the binary representation
 
                 Returns:
@@ -93,9 +93,9 @@ class TigerDigest : Digest
                 Returns a void[] containing the binary representation of the digest.
 
         ***********************************************************************/
-        
+
         void[] toBinary() { return cast(void[]) digest; }
-        
+
         int opEquals(Object o) { TigerDigest rhs = cast(TigerDigest)o; assert(rhs); return digest == rhs.digest; }
 }
 
@@ -109,18 +109,18 @@ class TigerCipher : Cipher
         private ulong[3]        context;
         private uint            npass = 3;
         private const uint      padChar = 0x01;
-        
+
         /***********************************************************************
-        
+
         ***********************************************************************/
 
-        private static const ulong[3] initial = 
+        private static const ulong[3] initial =
         [
                 0x0123456789ABCDEF,
                 0xFEDCBA9876543210,
                 0xF096A5B4C3B2E187
         ];
-        
+
         /***********************************************************************
 
                 Construct an TigerCipher
@@ -128,12 +128,12 @@ class TigerCipher : Cipher
         ***********************************************************************/
 
         this() { }
-        
+
         /***********************************************************************
 
                 Construct an TigerCipher
 
-                Params: 
+                Params:
                 rhs = an existing TigerDigest
 
                 Remarks:
@@ -149,12 +149,12 @@ class TigerCipher : Cipher
         }
 
         /***********************************************************************
-        
+
                 Initialize the cipher
 
                 Remarks:
                 Returns the cipher state to it's initial value
-        
+
         ***********************************************************************/
 
         override void start()
@@ -164,7 +164,7 @@ class TigerCipher : Cipher
         }
 
         /***********************************************************************
-        
+
                 Obtain the digest
 
                 Returns:
@@ -183,9 +183,9 @@ class TigerCipher : Cipher
                         ByteSwap.swap64 (digest.ptr, digest.length * ulong.sizeof);
                 return new TigerDigest(digest);
         }
-        
+
         /***********************************************************************
-        
+
                 Get the number of passes being performed
 
                 Returns:
@@ -203,9 +203,9 @@ class TigerCipher : Cipher
         {
                 return npass;
         }
-        
+
         /***********************************************************************
-        
+
                 Set the number of passes to be performed
 
                 Params:
@@ -226,14 +226,14 @@ class TigerCipher : Cipher
         }
 
         /***********************************************************************
-        
+
                 Cipher block size
 
                 Returns:
                 the block size
 
                 Remarks:
-                Specifies the size (in bytes) of the block of data to pass to 
+                Specifies the size (in bytes) of the block of data to pass to
                 each call to transform(). For Tiger the blockSize is 64.
 
         ***********************************************************************/
@@ -241,11 +241,11 @@ class TigerCipher : Cipher
         protected override uint blockSize() { return 64; }
 
         /***********************************************************************
-        
+
                 Length padding size
 
                 Returns:
-                the length paddding size
+                the length padding size
 
                 Remarks:
                 Specifies the size (in bytes) of the padding which uses the
@@ -255,18 +255,18 @@ class TigerCipher : Cipher
         ***********************************************************************/
 
         protected uint addSize()   { return 8;  }
-        
+
         /***********************************************************************
-        
+
                 Pads the cipher data
 
-                Params: 
+                Params:
                 data = a slice of the cipher buffer to fill with padding
-                
+
                 Remarks:
-                Fills the passed buffer slice with the appropriate padding for 
+                Fills the passed buffer slice with the appropriate padding for
                 the final call to transform(). This padding will fill the cipher
-                buffer up to blockSize()-addSize(). 
+                buffer up to blockSize()-addSize().
 
         ***********************************************************************/
 
@@ -277,18 +277,18 @@ class TigerCipher : Cipher
         }
 
         /***********************************************************************
-        
+
                 Performs the length padding
 
-                Params: 
+                Params:
                 data   = the slice of the cipher buffer to fill with padding
                 length = the length of the data which has been ciphered
-                
+
                 Remarks:
                 Fills the passed buffer slice with addSize() bytes of padding
                 based on the length in bytes of the input data which has been
                 ciphered.
-        
+
         ***********************************************************************/
 
         protected override void padLength(ubyte[] at, ulong length)
@@ -298,15 +298,15 @@ class TigerCipher : Cipher
         }
 
         /***********************************************************************
-        
+
                 Performs the cipher on a block of data
 
-                Params: 
+                Params:
                 data = the block of data to cipher
-                
+
                 Remarks:
                 The actual cipher algorithm is carried out by this method on
-                the passed block of data. This method is called for every 
+                the passed block of data. This method is called for every
                 blockSize() bytes of input data and once more with the remaining
                 data padded to blockSize().
 
@@ -329,16 +329,16 @@ class TigerCipher : Cipher
                         pass(a,b,c,x,(i==0)?5:(i==1)?7:9);
                         tmpa = a; a = c; c = b; b = tmpa;
                 }
-                
+
                 context[0] = a ^ context[0];
                 context[1] = b - context[1];
                 context[2] = c + context[2];
-                
-                x[] = 0;        
+
+                x[] = 0;
         }
 
         /***********************************************************************
-        
+
         ***********************************************************************/
 
         private static ubyte getByte(ulong c, uint b1, uint b2 = 0)
@@ -347,7 +347,7 @@ class TigerCipher : Cipher
         }
 
         /***********************************************************************
-        
+
         ***********************************************************************/
 
         private static void round(inout ulong a, inout ulong b, inout ulong c, ulong x, ulong mul)
@@ -359,7 +359,7 @@ class TigerCipher : Cipher
         }
 
         /***********************************************************************
-        
+
         ***********************************************************************/
 
         private static void pass(inout ulong a, inout ulong b, inout ulong c, ulong[8] x, ulong mul)
@@ -375,31 +375,31 @@ class TigerCipher : Cipher
         }
 
         /***********************************************************************
-        
+
         ***********************************************************************/
 
         private static void keySchedule(ulong[8] x)
         {
-                x[0] -= x[7] ^ 0xA5A5A5A5A5A5A5A5; 
-                x[1] ^= x[0]; 
-                x[2] += x[1]; 
-                x[3] -= x[2] ^ ((~x[1])<<19); 
-                x[4] ^= x[3]; 
-                x[5] += x[4]; 
-                x[6] -= x[5] ^ ((~x[4])>>23); 
-                x[7] ^= x[6]; 
-                x[0] += x[7]; 
-                x[1] -= x[0] ^ ((~x[7])<<19); 
-                x[2] ^= x[1]; 
-                x[3] += x[2]; 
-                x[4] -= x[3] ^ ((~x[2])>>23); 
-                x[5] ^= x[4]; 
-                x[6] += x[5]; 
+                x[0] -= x[7] ^ 0xA5A5A5A5A5A5A5A5;
+                x[1] ^= x[0];
+                x[2] += x[1];
+                x[3] -= x[2] ^ ((~x[1])<<19);
+                x[4] ^= x[3];
+                x[5] += x[4];
+                x[6] -= x[5] ^ ((~x[4])>>23);
+                x[7] ^= x[6];
+                x[0] += x[7];
+                x[1] -= x[0] ^ ((~x[7])<<19);
+                x[2] ^= x[1];
+                x[3] += x[2];
+                x[4] -= x[3] ^ ((~x[2])>>23);
+                x[5] ^= x[4];
+                x[6] += x[5];
                 x[7] -= x[6] ^ 0x0123456789ABCDEF;
         }
 
         /***********************************************************************
-        
+
         ***********************************************************************/
 
         private static ulong[] t1() { return table[0..256]; }
@@ -935,7 +935,7 @@ private static ulong[1024] table = [
 
 version (UnitTest)
 {
-unittest {      
+unittest {
         static char[][] strings = [
                 "",
                 "abc",

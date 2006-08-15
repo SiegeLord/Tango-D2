@@ -3,12 +3,12 @@
         copyright:      Copyright (c) 2004 Regan Heath. All rights reserved
 
         license:        BSD style: see doc/license.txt for details
-      
+
         version:        Initial release: Feb 2006
-        
+
         author:         Regan Heath, Kris
 
-        This module implements the SHA-512 Algorithm described by Secure Hash 
+        This module implements the SHA-512 Algorithm described by Secure Hash
         Standard, FIPS PUB 180-2
 
 *******************************************************************************/
@@ -28,40 +28,40 @@ class Sha512Digest : Digest
         private ulong[8] digest;
 
         /***********************************************************************
-        
+
                 Construct an Sha256Digest.
 
                 Remarks:
                 Constructs a blank Sha256Digest.
-       
+
         ***********************************************************************/
 
         this() { digest[] = 0; }
 
         /***********************************************************************
-        
+
                 Construct an Sha512Digest.
 
                 Remarks:
                 Constructs an Sha512Digest from binary data
-        
+
         ***********************************************************************/
 
         this(void[] raw) { digest[] = cast(ulong[]) raw; }
 
         /***********************************************************************
-        
+
                 Construct an Sha256Digest.
 
                 Remarks:
                 Constructs an Sha256Digest from another Sha256Digest.
-        
+
         ***********************************************************************/
 
-        this(Sha512Digest rhs) { digest[] = rhs.digest[]; }       
+        this(Sha512Digest rhs) { digest[] = rhs.digest[]; }
 
         /***********************************************************************
-        
+
                 Return the string representation
 
                 Returns:
@@ -73,9 +73,9 @@ class Sha512Digest : Digest
         ***********************************************************************/
 
         char[] toString() { return toHexString (cast(ubyte[]) digest); }
-        
+
         /***********************************************************************
-        
+
                 Return the binary representation
 
                 Returns:
@@ -85,9 +85,9 @@ class Sha512Digest : Digest
                 Returns a void[] containing the binary representation of the digest.
 
         ***********************************************************************/
-        
+
         void[] toBinary() { return cast(void[]) digest; }
-        
+
         int opEquals(Object o) { Sha512Digest rhs = cast(Sha512Digest)o; assert(rhs); return digest == rhs.digest; }
 }
 
@@ -108,12 +108,12 @@ class Sha512Cipher : Cipher
         ***********************************************************************/
 
         this() { }
-        
+
         /***********************************************************************
 
                 Construct an Sha512Cipher
 
-                Params: 
+                Params:
                 rhs = an existing Sha512Digest
 
                 Remarks:
@@ -129,12 +129,12 @@ class Sha512Cipher : Cipher
         }
 
         /***********************************************************************
-        
+
                 Initialize the cipher
 
                 Remarks:
                 Returns the cipher state to it's initial value
-        
+
         ***********************************************************************/
 
         override void start()
@@ -142,9 +142,9 @@ class Sha512Cipher : Cipher
                 super.start();
                 context[] = initial[];
         }
-        
+
         /***********************************************************************
-        
+
                 Obtain the digest
 
                 Returns:
@@ -165,14 +165,14 @@ class Sha512Cipher : Cipher
         }
 
         /***********************************************************************
-        
+
                 Cipher block size
 
                 Returns:
                 the block size
 
                 Remarks:
-                Specifies the size (in bytes) of the block of data to pass to 
+                Specifies the size (in bytes) of the block of data to pass to
                 each call to transform(). For SHA512 the blockSize is 128.
 
         ***********************************************************************/
@@ -180,11 +180,11 @@ class Sha512Cipher : Cipher
         protected override uint blockSize() { return 128; }
 
         /***********************************************************************
-        
+
                 Length padding size
 
                 Returns:
-                the length paddding size
+                the length padding size
 
                 Remarks:
                 Specifies the size (in bytes) of the padding which uses the
@@ -196,16 +196,16 @@ class Sha512Cipher : Cipher
         protected override uint addSize()   { return 16;  }
 
         /***********************************************************************
-        
+
                 Pads the cipher data
 
-                Params: 
+                Params:
                 data = a slice of the cipher buffer to fill with padding
-                
+
                 Remarks:
-                Fills the passed buffer slice with the appropriate padding for 
+                Fills the passed buffer slice with the appropriate padding for
                 the final call to transform(). This padding will fill the cipher
-                buffer up to blockSize()-addSize(). 
+                buffer up to blockSize()-addSize().
 
         ***********************************************************************/
 
@@ -216,18 +216,18 @@ class Sha512Cipher : Cipher
         }
 
         /***********************************************************************
-        
+
                 Performs the length padding
 
-                Params: 
+                Params:
                 data   = the slice of the cipher buffer to fill with padding
                 length = the length of the data which has been ciphered
-                
+
                 Remarks:
                 Fills the passed buffer slice with addSize() bytes of padding
                 based on the length in bytes of the input data which has been
                 ciphered.
-        
+
         ***********************************************************************/
 
         protected override void padLength(ubyte[] data, ulong length)
@@ -240,15 +240,15 @@ class Sha512Cipher : Cipher
         }
 
         /***********************************************************************
-        
+
                 Performs the cipher on a block of data
 
-                Params: 
+                Params:
                 data = the block of data to cipher
-                
+
                 Remarks:
                 The actual cipher algorithm is carried out by this method on
-                the passed block of data. This method is called for every 
+                the passed block of data. This method is called for every
                 blockSize() bytes of input data and once more with the remaining
                 data padded to blockSize().
 
@@ -299,7 +299,7 @@ class Sha512Cipher : Cipher
         }
 
         /***********************************************************************
-        
+
         ***********************************************************************/
 
         private static ulong Ch(ulong x, ulong y, ulong z)
@@ -308,7 +308,7 @@ class Sha512Cipher : Cipher
         }
 
         /***********************************************************************
-        
+
         ***********************************************************************/
 
         private static ulong Maj(ulong x, ulong y, ulong z)
@@ -317,7 +317,7 @@ class Sha512Cipher : Cipher
         }
 
         /***********************************************************************
-        
+
         ***********************************************************************/
 
         private static ulong sum0(ulong x)
@@ -326,7 +326,7 @@ class Sha512Cipher : Cipher
         }
 
         /***********************************************************************
-        
+
         ***********************************************************************/
 
         private static ulong sum1(ulong x)
@@ -335,7 +335,7 @@ class Sha512Cipher : Cipher
         }
 
         /***********************************************************************
-        
+
         ***********************************************************************/
 
         private static ulong mix0(ulong x)
@@ -344,25 +344,25 @@ class Sha512Cipher : Cipher
         }
 
         /***********************************************************************
-        
+
         ***********************************************************************/
 
         private static ulong mix1(ulong x)
         {
                 return rotateRight(x,19)^rotateRight(x,61)^shiftRight(x,6);
         }
-        
+
         /***********************************************************************
-        
+
         ***********************************************************************/
 
         private static ulong rotateRight(ulong x, uint n)
         {
                 return (x >> n) | (x << (64-n));
         }
-        
+
         /***********************************************************************
-        
+
         ***********************************************************************/
 
         private static ulong shiftRight(ulong x, uint n)
@@ -421,7 +421,7 @@ private static const ulong[8] initial = [
 
 version (UnitTest)
 {
-unittest {      
+unittest {
         static char[][] strings = [
                 "abc",
                 "abcdefghbcdefghicdefghijdefghijkefghijklfghijklmghijklmnhijklmnoijklmnopjklmnopqklmnopqrlmnopqrsmnopqrstnopqrstu"
@@ -430,20 +430,20 @@ unittest {
                 "DDAF35A193617ABACC417349AE20413112E6FA4E89A97EA20A9EEEE64B55D39A2192992A274FC1A836BA3C23A3FEEBBD454D4423643CE80E2A9AC94FA54CA49F",
                 "8E959B75DAE313DA8CF4F72814FC143F8F7779C6EB9F7FA17299AEADB6889018501D289E4900F7E4331B99DEC4B5433AC7D329EEB6DD26545E96E55B874BE909"
         ];
-        
+
         Sha512Cipher h = new Sha512Cipher();
         Sha512Digest d,e;
 
         foreach(int i, char[] s; strings) {
                 d = cast(Sha512Digest)h.sum(s);
                 assert(d.toString() == results[i],"Cipher:("~s~")("~d.toString()~")!=("~results[i]~")");
-                
+
                 e = new Sha512Digest(d);
                 assert(d == e,"Digest from Digest:("~d.toString()~")!=("~e.toString()~")");
-                
+
                 e = new Sha512Digest(d.toBinary());
                 assert(d == e,"Digest from Digest binary:("~d.toString()~")!=("~e.toString()~")");
-                
+
                 h = new Sha512Cipher(d);
                 e = h.getDigest();
                 assert(d == e,"Digest from Cipher continue:("~d.toString()~")!=("~e.toString()~")");

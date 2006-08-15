@@ -3,15 +3,15 @@
         copyright:      Copyright (c) 2004 Regan Heath. All rights reserved
 
         license:        BSD style: see doc/license.txt for details
-      
+
         version:        Initial release: Feb 2006
-        
+
         author:         Regan Heath, Kris
 
-        This module implements the SHA-1 Algorithm described by Secure Hash 
-        Standard, FIPS PUB 180-1, and RFC 3174 US Secure Hash Algorithm 1 
+        This module implements the SHA-1 Algorithm described by Secure Hash
+        Standard, FIPS PUB 180-1, and RFC 3174 US Secure Hash Algorithm 1
         (SHA1). D. Eastlake 3rd, P. Jones. September 2001.
-     
+
 *******************************************************************************/
 
 module tango.math.cipher.Sha1;
@@ -27,7 +27,7 @@ private import tango.core.ByteSwap;
 class Sha1Digest : Sha0Digest
 {
         /***********************************************************************
-        
+
                 Construct an Sha1Digest.
 
                 Remarks:
@@ -38,23 +38,23 @@ class Sha1Digest : Sha0Digest
         this() { }
 
         /***********************************************************************
-        
+
                 Construct an Sha1Digest.
 
                 Remarks:
                 Constructs an Sha1Digest from binary data
-        
+
         ***********************************************************************/
 
         this(void[] raw) { super(raw); }
 
         /***********************************************************************
-        
+
                 Construct an Sha1Digest.
 
                 Remarks:
                 Constructs an Sha1Digest from another Sha1Digest.
-        
+
         ***********************************************************************/
 
         this(Sha1Digest rhs) { super(rhs); }
@@ -74,12 +74,12 @@ class Sha1Cipher : Sha0Cipher
         ***********************************************************************/
 
         this() { }
-        
+
         /***********************************************************************
 
                 Construct an Sha1Cipher
 
-                Params: 
+                Params:
                 rhs = an existing Sha1Digest
 
                 Remarks:
@@ -94,7 +94,7 @@ class Sha1Cipher : Sha0Cipher
         }
 
         /***********************************************************************
-        
+
                 Obtain the digest
 
                 Returns:
@@ -116,7 +116,7 @@ class Sha1Cipher : Sha0Cipher
         }
 
         /***********************************************************************
-        
+
         ***********************************************************************/
 
         protected override void expand (uint W[], uint s)
@@ -151,7 +151,7 @@ unittest {
                 1000000,
                 10
         ];
-        
+
         Sha1Cipher h = new Sha1Cipher();
         Sha1Digest d,e;
 
@@ -162,13 +162,13 @@ unittest {
 
                 d = cast(Sha1Digest)h.finish();
                 assert(d.toString() == results[i],"Cipher:("~s~")("~d.toString()~")!=("~results[i]~")");
-                
+
                 e = new Sha1Digest(d);
                 assert(d == e,"Digest from Digest:("~d.toString()~")!=("~e.toString()~")");
-                
+
                 e = new Sha1Digest(d.toBinary());
                 assert(d == e,"Digest from Digest binary:("~d.toString()~")!=("~e.toString()~")");
-                
+
                 h = new Sha1Cipher(d);
                 e = h.getDigest();
                 assert(d == e,"Digest from Cipher continue:("~d.toString()~")!=("~e.toString()~")");

@@ -3,9 +3,9 @@
         copyright:      Copyright (c) 2004 Regan Heath. All rights reserved
 
         license:        BSD style: see doc/license.txt for details
-      
+
         version:        Initial release: Feb 2006
-        
+
         author:         Regan Heath, Kris
 
         This module implements the MD4 Message Digest Algorithm as described by
@@ -26,7 +26,7 @@ public  import tango.math.cipher.Cipher;
 class Md4Digest : Md2Digest
 {
         /***********************************************************************
-        
+
                 Construct an Md4Digest.
 
                 Remarks:
@@ -35,25 +35,25 @@ class Md4Digest : Md2Digest
         ***********************************************************************/
 
         this() { }
-        
+
         /***********************************************************************
 
                 Construct an Md4Digest.
 
                 Remarks:
                 Constructs an Md4Digest from binary data
-        
+
         ***********************************************************************/
 
         this(void[] raw) { super(raw); }
-        
+
         /***********************************************************************
 
                 Construct an Md4Digest.
 
                 Remarks:
                 Constructs an Md4Digest from another Md4Digest.
-        
+
         ***********************************************************************/
 
         this(Md4Digest rhs) { super(rhs); }
@@ -68,21 +68,21 @@ class Md4Cipher : Cipher
 {
         protected uint[4]       context;
         private const ubyte     padChar = 0x80;
-        
+
 
         /***********************************************************************
-        
+
                 Construct an Md4Cipher
 
         ***********************************************************************/
 
         this() { }
-        
+
         /***********************************************************************
-        
+
                 Construct an Md4Cipher
 
-                Params: 
+                Params:
                 rhs = an existing Md4Digest
 
                 Remarks:
@@ -93,22 +93,22 @@ class Md4Cipher : Cipher
         this(Md4Digest rhs) { context[] = cast(uint[])rhs.toBinary(); }
 
         /***********************************************************************
-        
+
         ***********************************************************************/
 
-        private static const uint[4] initial = 
+        private static const uint[4] initial =
         [
                 0x67452301,
                 0xefcdab89,
                 0x98badcfe,
                 0x10325476
         ];
-        
+
         /***********************************************************************
-        
+
         ***********************************************************************/
 
-        private static enum 
+        private static enum
         {
                 S11 =  3,
                 S12 =  7,
@@ -123,14 +123,14 @@ class Md4Cipher : Cipher
                 S33 = 11,
                 S34 = 15,
         };
-        
+
         /***********************************************************************
-        
+
                 Initialize the cipher
 
                 Remarks:
                 Returns the cipher state to it's initial value
-        
+
         ***********************************************************************/
 
         override void start()
@@ -140,7 +140,7 @@ class Md4Cipher : Cipher
         }
 
         /***********************************************************************
-        
+
                 Obtain the digest
 
                 Returns:
@@ -158,14 +158,14 @@ class Md4Cipher : Cipher
         }
 
         /***********************************************************************
-        
+
                 Cipher block size
 
                 Returns:
                 the block size
 
                 Remarks:
-                Specifies the size (in bytes) of the block of data to pass to 
+                Specifies the size (in bytes) of the block of data to pass to
                 each call to transform(). For MD4 the blockSize is 64.
 
         ***********************************************************************/
@@ -173,11 +173,11 @@ class Md4Cipher : Cipher
         protected override uint blockSize() { return 64; }
 
         /***********************************************************************
-        
+
                 Length padding size
 
                 Returns:
-                the length paddding size
+                the length padding size
 
                 Remarks:
                 Specifies the size (in bytes) of the padding which uses the
@@ -189,16 +189,16 @@ class Md4Cipher : Cipher
         protected override uint addSize()   { return 8;  }
 
         /***********************************************************************
-        
+
                 Pads the cipher data
 
-                Params: 
+                Params:
                 data = a slice of the cipher buffer to fill with padding
-                
+
                 Remarks:
-                Fills the passed buffer slice with the appropriate padding for 
+                Fills the passed buffer slice with the appropriate padding for
                 the final call to transform(). This padding will fill the cipher
-                buffer up to blockSize()-addSize(). 
+                buffer up to blockSize()-addSize().
 
         ***********************************************************************/
 
@@ -207,20 +207,20 @@ class Md4Cipher : Cipher
                 data[0] = padChar;
                 data[1..$] = 0;
         }
-        
+
         /***********************************************************************
-        
+
                 Performs the length padding
 
-                Params: 
+                Params:
                 data   = the slice of the cipher buffer to fill with padding
                 length = the length of the data which has been ciphered
-                
+
                 Remarks:
                 Fills the passed buffer slice with addSize() bytes of padding
                 based on the length in bytes of the input data which has been
                 ciphered.
-        
+
         ***********************************************************************/
 
         protected override void padLength(ubyte[] data, ulong length)
@@ -230,15 +230,15 @@ class Md4Cipher : Cipher
         }
 
         /***********************************************************************
-        
+
                 Performs the cipher on a block of data
 
-                Params: 
+                Params:
                 data = the block of data to cipher
-                
+
                 Remarks:
                 The actual cipher algorithm is carried out by this method on
-                the passed block of data. This method is called for every 
+                the passed block of data. This method is called for every
                 blockSize() bytes of input data and once more with the remaining
                 data padded to blockSize().
 
@@ -250,12 +250,12 @@ class Md4Cipher : Cipher
                 uint[16] x;
 
                 littleEndian32(input,x);
-                
+
                 a = context[0];
                 b = context[1];
                 c = context[2];
                 d = context[3];
-                
+
                 /* Round 1 */
                 ff(a, b, c, d, x[ 0], S11, 0); /* 1 */
                 ff(d, a, b, c, x[ 1], S12, 0); /* 2 */
@@ -273,7 +273,7 @@ class Md4Cipher : Cipher
                 ff(d, a, b, c, x[13], S12, 0); /* 14 */
                 ff(c, d, a, b, x[14], S13, 0); /* 15 */
                 ff(b, c, d, a, x[15], S14, 0); /* 16 */
-                
+
                 /* Round 2 */
                 gg(a, b, c, d, x[ 0], S21, 0x5a827999); /* 17 */
                 gg(d, a, b, c, x[ 4], S22, 0x5a827999); /* 18 */
@@ -285,7 +285,7 @@ class Md4Cipher : Cipher
                 gg(b, c, d, a, x[13], S24, 0x5a827999); /* 24 */
                 gg(a, b, c, d, x[ 2], S21, 0x5a827999); /* 25 */
                 gg(d, a, b, c, x[ 6], S22, 0x5a827999); /* 26 */
-                gg(c, d, a, b, x[10], S23, 0x5a827999); /* 27 */                
+                gg(c, d, a, b, x[10], S23, 0x5a827999); /* 27 */
                 gg(b, c, d, a, x[14], S24, 0x5a827999); /* 28 */
                 gg(a, b, c, d, x[ 3], S21, 0x5a827999); /* 29 */
                 gg(d, a, b, c, x[ 7], S22, 0x5a827999); /* 30 */
@@ -317,9 +317,9 @@ class Md4Cipher : Cipher
 
                 x[] = 0;
         }
-        
+
         /***********************************************************************
-        
+
         ***********************************************************************/
 
         private static uint f(uint x, uint y, uint z)
@@ -328,7 +328,7 @@ class Md4Cipher : Cipher
         }
 
         /***********************************************************************
-        
+
         ***********************************************************************/
 
         private static uint g(uint x, uint y, uint z)
@@ -337,16 +337,16 @@ class Md4Cipher : Cipher
         }
 
         /***********************************************************************
-        
+
         ***********************************************************************/
 
         private static uint h(uint x, uint y, uint z)
-        {               
+        {
                 return x^y^z;
         }
 
         /***********************************************************************
-        
+
         ***********************************************************************/
 
         private static void ff(inout uint a, uint b, uint c, uint d, uint x, uint s, uint ac)
@@ -356,7 +356,7 @@ class Md4Cipher : Cipher
         }
 
         /***********************************************************************
-        
+
         ***********************************************************************/
 
         private static void gg(inout uint a, uint b, uint c, uint d, uint x, uint s, uint ac)
@@ -366,7 +366,7 @@ class Md4Cipher : Cipher
         }
 
         /***********************************************************************
-        
+
         ***********************************************************************/
 
         private static void hh(inout uint a, uint b, uint c, uint d, uint x, uint s, uint ac)
@@ -402,20 +402,20 @@ unittest {
                 "043F8582F241DB351CE627E153E7F0E4",
                 "E33B4DDC9C38F2199C3E7B164FCC0536"
         ];
-        
+
         Md4Cipher h = new Md4Cipher();
         Md4Digest d,e;
 
         foreach(int i, char[] s; strings) {
                 d = cast(Md4Digest)h.sum(s);
                 assert(d.toString() == results[i],"Cipher:("~s~")("~d.toString()~")!=("~results[i]~")");
-                
+
                 e = new Md4Digest(d);
                 assert(d == e,"Digest from Digest:("~d.toString()~")!=("~e.toString()~")");
-                
+
                 e = new Md4Digest(d.toBinary());
                 assert(d == e,"Digest from Digest binary:("~d.toString()~")!=("~e.toString()~")");
-                
+
                 h = new Md4Cipher(d);
                 e = h.getDigest();
                 assert(d == e,"Digest from Cipher continue:("~d.toString()~")!=("~e.toString()~")");

@@ -3,9 +3,9 @@
         copyright:      Copyright (c) 2004 Regan Heath. All rights reserved
 
         license:        BSD style: see doc/license.txt for details
-      
+
         version:        Initial release: Feb 2006
-        
+
         author:         Regan Heath, Kris
 
         This module implements the MD2 Message Digest Algorithm as described by
@@ -22,7 +22,7 @@ class Md2Digest : Digest
         private ubyte[16] digest;
 
         /***********************************************************************
-        
+
                 Construct an Md2Digest.
 
                 Remarks:
@@ -38,7 +38,7 @@ class Md2Digest : Digest
 
                 Remarks:
                 Constructs an Md2Digest from binary data
-        
+
         ***********************************************************************/
 
         this(void[] raw) { digest[] = cast(ubyte[])raw; }
@@ -49,13 +49,13 @@ class Md2Digest : Digest
 
                 Remarks:
                 Constructs an Md2Digest from another Md2Digest.
-        
+
         ***********************************************************************/
 
         this(Md2Digest rhs) { digest[] = rhs.digest[]; }
 
         /***********************************************************************
-        
+
                 Return the string representation
 
                 Returns:
@@ -69,7 +69,7 @@ class Md2Digest : Digest
         char[] toString() { return toHexString(digest); }
 
         /***********************************************************************
-        
+
                 Return the binary representation
 
                 Returns:
@@ -79,9 +79,9 @@ class Md2Digest : Digest
                 Returns a void[] containing the binary representation of the digest.
 
         ***********************************************************************/
-        
+
         void[] toBinary() { return cast(void[]) digest; }
-        
+
         int opEquals(Object o) { Md2Digest rhs = cast(Md2Digest)o; assert(rhs); return digest == rhs.digest; }
 }
 
@@ -94,20 +94,20 @@ class Md2Cipher : Cipher
 {
         private ubyte[16] C,
                           state;
-        
+
         /***********************************************************************
-        
+
                 Construct an Md2Cipher
 
         ***********************************************************************/
 
         this() { }
-        
+
         /***********************************************************************
-        
+
                 Construct an Md2Cipher
 
-                Params: 
+                Params:
                 rhs = an existing Md2Digest
 
                 Remarks:
@@ -116,14 +116,14 @@ class Md2Cipher : Cipher
         ***********************************************************************/
 
         this(Md2Digest rhs) { state[] = cast(ubyte[])rhs.toBinary(); }
-        
+
         /***********************************************************************
 
                 Initialize the cipher
 
                 Remarks:
                 Returns the cipher state to it's initial value
-        
+
         ***********************************************************************/
 
         override void start()
@@ -132,9 +132,9 @@ class Md2Cipher : Cipher
                 state[] = 0;
                 C[] = 0;
         }
-        
+
         /***********************************************************************
-        
+
                 Obtain the digest
 
                 Returns:
@@ -152,29 +152,29 @@ class Md2Cipher : Cipher
         }
 
         /***********************************************************************
-        
+
                 Cipher block size
 
                 Returns:
                 the block size
 
                 Remarks:
-                Specifies the size (in bytes) of the block of data to pass to 
+                Specifies the size (in bytes) of the block of data to pass to
                 each call to transform(). For MD2 the blockSize is 16.
 
         ***********************************************************************/
-        
-        protected override uint blockSize() 
-        { 
-                return 16; 
+
+        protected override uint blockSize()
+        {
+                return 16;
         }
 
         /***********************************************************************
-        
+
                 Length padding size
 
                 Returns:
-                the length paddding size
+                the length padding size
 
                 Remarks:
                 Specifies the size (in bytes) of the padding which uses the
@@ -183,22 +183,22 @@ class Md2Cipher : Cipher
 
         ***********************************************************************/
 
-        protected override uint addSize() 
-        { 
-                return 0;  
-        }       
-        
+        protected override uint addSize()
+        {
+                return 0;
+        }
+
         /***********************************************************************
-        
+
                 Pads the cipher data
 
-                Params: 
+                Params:
                 data = a slice of the cipher buffer to fill with padding
-                
+
                 Remarks:
-                Fills the passed buffer slice with the appropriate padding for 
+                Fills the passed buffer slice with the appropriate padding for
                 the final call to transform(). This padding will fill the cipher
-                buffer up to blockSize()-addSize(). 
+                buffer up to blockSize()-addSize().
 
         ***********************************************************************/
 
@@ -209,19 +209,19 @@ class Md2Cipher : Cipher
                  * becomes congruent to 0, modulo 16. At least one byte and at most 16
                  * 16 bytes are appended.
                  */
-                data[0..$] = cast(ubyte) data.length;  
+                data[0..$] = cast(ubyte) data.length;
         }
-        
+
         /***********************************************************************
-        
+
                 Performs the cipher on a block of data
 
-                Params: 
+                Params:
                 data = the block of data to cipher
-                
+
                 Remarks:
                 The actual cipher algorithm is carried out by this method on
-                the passed block of data. This method is called for every 
+                the passed block of data. This method is called for every
                 blockSize() bytes of input data and once more with the remaining
                 data padded to blockSize().
 
@@ -250,9 +250,9 @@ class Md2Cipher : Cipher
                 for (i = 0; i < 16; i++)
                         t = C[i] ^= PI[input[i] ^ t];
         }
-        
+
         /***********************************************************************
-        
+
                 Final processing of cipher.
 
                 Remarks:
@@ -274,7 +274,7 @@ class Md2Cipher : Cipher
 
 *******************************************************************************/
 
-private const ubyte[256] PI = 
+private const ubyte[256] PI =
 [
          41,  46,  67, 201, 162, 216, 124,   1,  61,  54,  84, 161, 236, 240,   6,
          19,  98, 167,   5, 243, 192, 199, 115, 140, 152, 147,  43, 217, 188,
@@ -322,20 +322,20 @@ unittest {
                 "DA33DEF2A42DF13975352846C30338CD",
                 "D5976F79D83D3A0DC9806C3C66F3EFD8"
         ];
-        
+
         Md2Cipher h = new Md2Cipher();
         Md2Digest d,e;
 
         foreach(int i, char[] s; strings) {
                 d = cast(Md2Digest)h.sum(s);
                 assert(d.toString() == results[i],"Cipher:("~s~")("~d.toString()~")!=("~results[i]~")");
-                
+
                 e = new Md2Digest(d);
                 assert(d == e,"Digest from Digest:("~d.toString()~")!=("~e.toString()~")");
-                
+
                 e = new Md2Digest(d.toBinary());
                 assert(d == e,"Digest from Digest binary:("~d.toString()~")!=("~e.toString()~")");
-                
+
                 h = new Md2Cipher(d);
                 e = h.getDigest();
                 assert(d == e,"Digest from Cipher continue:("~d.toString()~")!=("~e.toString()~")");

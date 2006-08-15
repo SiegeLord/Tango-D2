@@ -3,9 +3,9 @@
         copyright:      Copyright (c) 2004 Regan Heath. All rights reserved
 
         license:        BSD style: see doc/license.txt for details
-      
+
         version:        Initial release: Feb 2006
-        
+
         author:         Regan Heath, Kris
 
         This module implements the MD5 Message Digest Algorithm as described by
@@ -24,7 +24,7 @@ public import tango.math.cipher.Md4;
 class Md5Digest : Md4Digest
 {
         /***********************************************************************
-        
+
                 Construct an Md5Digest.
 
                 Remarks:
@@ -40,7 +40,7 @@ class Md5Digest : Md4Digest
 
                 Remarks:
                 Constructs an Md5Digest from binary data
-        
+
         ***********************************************************************/
 
         this(void[] raw) { super(raw); }
@@ -51,7 +51,7 @@ class Md5Digest : Md4Digest
 
                 Remarks:
                 Constructs an Md5Digest from another Md5Digest.
-        
+
         ***********************************************************************/
 
         this(Md5Digest rhs) { super(rhs); }
@@ -65,7 +65,7 @@ class Md5Digest : Md4Digest
 class Md5Cipher : Md4Cipher
 {
         /***********************************************************************
-        
+
         ***********************************************************************/
 
         private enum {
@@ -99,7 +99,7 @@ class Md5Cipher : Md4Cipher
 
                 Construct an Md5Cipher
 
-                Params: 
+                Params:
                 rhs = an existing Md5Digest
 
                 Remarks:
@@ -128,15 +128,15 @@ class Md5Cipher : Md4Cipher
         }
 
         /***********************************************************************
-        
+
                 Performs the cipher on a block of data
 
-                Params: 
+                Params:
                 data = the block of data to cipher
-                
+
                 Remarks:
                 The actual cipher algorithm is carried out by this method on
-                the passed block of data. This method is called for every 
+                the passed block of data. This method is called for every
                 blockSize() bytes of input data and once more with the remaining
                 data padded to blockSize().
 
@@ -148,12 +148,12 @@ class Md5Cipher : Md4Cipher
                 uint[16] x;
 
                 littleEndian32(input,x);
-                
+
                 a = context[0];
                 b = context[1];
                 c = context[2];
                 d = context[3];
-                
+
                 /* Round 1 */
                 ff(a, b, c, d, x[ 0], S11, 0xd76aa478); /* 1 */
                 ff(d, a, b, c, x[ 1], S12, 0xe8c7b756); /* 2 */
@@ -171,7 +171,7 @@ class Md5Cipher : Md4Cipher
                 ff(d, a, b, c, x[13], S12, 0xfd987193); /* 14 */
                 ff(c, d, a, b, x[14], S13, 0xa679438e); /* 15 */
                 ff(b, c, d, a, x[15], S14, 0x49b40821); /* 16 */
-                
+
                 /* Round 2 */
                 gg(a, b, c, d, x[ 1], S21, 0xf61e2562); /* 17 */
                 gg(d, a, b, c, x[ 6], S22, 0xc040b340); /* 18 */
@@ -183,7 +183,7 @@ class Md5Cipher : Md4Cipher
                 gg(b, c, d, a, x[ 4], S24, 0xe7d3fbc8); /* 24 */
                 gg(a, b, c, d, x[ 9], S21, 0x21e1cde6); /* 25 */
                 gg(d, a, b, c, x[14], S22, 0xc33707d6); /* 26 */
-                gg(c, d, a, b, x[ 3], S23, 0xf4d50d87); /* 27 */                
+                gg(c, d, a, b, x[ 3], S23, 0xf4d50d87); /* 27 */
                 gg(b, c, d, a, x[ 8], S24, 0x455a14ed); /* 28 */
                 gg(a, b, c, d, x[13], S21, 0xa9e3e905); /* 29 */
                 gg(d, a, b, c, x[ 2], S22, 0xfcefa3f8); /* 30 */
@@ -235,7 +235,7 @@ class Md5Cipher : Md4Cipher
         }
 
         /***********************************************************************
-        
+
         ***********************************************************************/
 
         private static uint g(uint x, uint y, uint z)
@@ -244,7 +244,7 @@ class Md5Cipher : Md4Cipher
         }
 
         /***********************************************************************
-        
+
         ***********************************************************************/
 
         private static uint i(uint x, uint y, uint z)
@@ -253,7 +253,7 @@ class Md5Cipher : Md4Cipher
         }
 
         /***********************************************************************
-        
+
         ***********************************************************************/
 
         private static void ff(inout uint a, uint b, uint c, uint d, uint x, uint s, uint ac)
@@ -264,7 +264,7 @@ class Md5Cipher : Md4Cipher
         }
 
         /***********************************************************************
-        
+
         ***********************************************************************/
 
         private static void gg(inout uint a, uint b, uint c, uint d, uint x, uint s, uint ac)
@@ -275,7 +275,7 @@ class Md5Cipher : Md4Cipher
         }
 
         /***********************************************************************
-        
+
         ***********************************************************************/
 
         private static void hh(inout uint a, uint b, uint c, uint d, uint x, uint s, uint ac)
@@ -286,7 +286,7 @@ class Md5Cipher : Md4Cipher
         }
 
         /***********************************************************************
-        
+
         ***********************************************************************/
 
         private static void ii(inout uint a, uint b, uint c, uint d, uint x, uint s, uint ac)
@@ -322,20 +322,20 @@ unittest {
                 "D174AB98D277D9F5A5611C2C9F419D9F",
                 "57EDF4A22BE3C955AC49DA2E2107B67A"
         ];
-        
+
         Md5Cipher h = new Md5Cipher();
         Md5Digest d,e;
 
         foreach(int i, char[] s; strings) {
                 d = cast(Md5Digest)h.sum(s);
                 assert(d.toString() == results[i],"Cipher:("~s~")("~d.toString()~")!=("~results[i]~")");
-                
+
                 e = new Md5Digest(d);
                 assert(d == e,"Digest from Digest:("~d.toString()~")!=("~e.toString()~")");
-                
+
                 e = new Md5Digest(d.toBinary());
                 assert(d == e,"Digest from Digest binary:("~d.toString()~")!=("~e.toString()~")");
-                
+
                 h = new Md5Cipher(d);
                 e = h.getDigest();
                 assert(d == e,"Digest from Cipher continue:("~d.toString()~")!=("~e.toString()~")");

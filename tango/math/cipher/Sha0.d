@@ -3,12 +3,12 @@
         copyright:      Copyright (c) 2004 Regan Heath. All rights reserved
 
         license:        BSD style: see doc/license.txt for details
-      
+
         version:        Initial release: Feb 2006
-        
+
         author:         Regan Heath, Kris
-        
-        This module implements the SHA-0 Algorithm described by Secure Hash 
+
+        This module implements the SHA-0 Algorithm described by Secure Hash
         Standard, FIPS PUB 180
 
 *******************************************************************************/
@@ -28,7 +28,7 @@ class Sha0Digest : Digest
         private ubyte[20] digest;
 
         /***********************************************************************
-        
+
                 Construct an Sha0Digest.
 
                 Remarks:
@@ -39,29 +39,29 @@ class Sha0Digest : Digest
         this() { digest[] = 0; }
 
         /***********************************************************************
-        
+
                 Construct an Sha0Digest.
 
                 Remarks:
                 Constructs an Sha0Digest from binary data
-        
+
         ***********************************************************************/
 
         this(void[] raw) { digest[] = cast(ubyte[])raw; }
 
         /***********************************************************************
-        
+
                 Construct an Sha0Digest.
 
                 Remarks:
                 Constructs an Sha0Digest from another Sha0Digest.
-        
+
         ***********************************************************************/
 
-        this(Sha0Digest rhs) { digest[] = rhs.digest[]; }       
+        this(Sha0Digest rhs) { digest[] = rhs.digest[]; }
 
         /***********************************************************************
-        
+
                 Return the string representation
 
                 Returns:
@@ -75,7 +75,7 @@ class Sha0Digest : Digest
         char[] toString() { return toHexString(digest); }
 
         /***********************************************************************
-        
+
                 Return the binary representation
 
                 Returns:
@@ -85,9 +85,9 @@ class Sha0Digest : Digest
                 Returns a void[] containing the binary representation of the digest.
 
         ***********************************************************************/
-        
+
         void[] toBinary() { return cast(void[]) digest; }
-        
+
         int opEquals(Object o) { Sha0Digest rhs = cast(Sha0Digest)o; assert(rhs); return digest == rhs.digest; }
 }
 
@@ -102,12 +102,12 @@ class Sha0Cipher : Cipher
 
         private const ubyte     padChar = 0x80;
         private const uint      mask = 0x0000000F;
-        
+
         /***********************************************************************
-        
+
         ***********************************************************************/
 
-        private static const uint[] K = 
+        private static const uint[] K =
         [
                 0x5A827999,
                 0x6ED9EBA1,
@@ -116,15 +116,15 @@ class Sha0Cipher : Cipher
         ];
 
         /***********************************************************************
-        
+
         ***********************************************************************/
 
-        private static const uint[5] initial = 
+        private static const uint[5] initial =
         [
-                0x67452301, 
-                0xEFCDAB89, 
-                0x98BADCFE, 
-                0x10325476, 
+                0x67452301,
+                0xEFCDAB89,
+                0x98BADCFE,
+                0x10325476,
                 0xC3D2E1F0
         ];
 
@@ -135,12 +135,12 @@ class Sha0Cipher : Cipher
         ***********************************************************************/
 
         this() { }
-        
+
         /***********************************************************************
 
                 Construct an Sha0Cipher
 
-                Params: 
+                Params:
                 rhs = an existing Sha0Digest
 
                 Remarks:
@@ -156,12 +156,12 @@ class Sha0Cipher : Cipher
         }
 
         /***********************************************************************
-        
+
                 Initialize the cipher
 
                 Remarks:
                 Returns the cipher state to it's initial value
-        
+
         ***********************************************************************/
 
         override void start()
@@ -169,9 +169,9 @@ class Sha0Cipher : Cipher
                 super.start();
                 context[] = initial[];
         }
-        
+
         /***********************************************************************
-        
+
                 Obtain the digest
 
                 Returns:
@@ -190,16 +190,16 @@ class Sha0Cipher : Cipher
                          ByteSwap.swap32 (digest.ptr, digest.length * uint.sizeof);
                 return new Sha0Digest(digest);
         }
-        
+
         /***********************************************************************
-        
+
                 Cipher block size
 
                 Returns:
                 the block size
 
                 Remarks:
-                Specifies the size (in bytes) of the block of data to pass to 
+                Specifies the size (in bytes) of the block of data to pass to
                 each call to transform(). For SHA0 the blockSize is 64.
 
         ***********************************************************************/
@@ -207,11 +207,11 @@ class Sha0Cipher : Cipher
         protected override uint blockSize() { return 64; }
 
         /***********************************************************************
-        
+
                 Length padding size
 
                 Returns:
-                the length paddding size
+                the length padding size
 
                 Remarks:
                 Specifies the size (in bytes) of the padding which uses the
@@ -221,18 +221,18 @@ class Sha0Cipher : Cipher
         ***********************************************************************/
 
         protected override uint addSize()   { return 8;  }
-        
+
         /***********************************************************************
-        
+
                 Pads the cipher data
 
-                Params: 
+                Params:
                 data = a slice of the cipher buffer to fill with padding
-                
+
                 Remarks:
-                Fills the passed buffer slice with the appropriate padding for 
+                Fills the passed buffer slice with the appropriate padding for
                 the final call to transform(). This padding will fill the cipher
-                buffer up to blockSize()-addSize(). 
+                buffer up to blockSize()-addSize().
 
         ***********************************************************************/
 
@@ -243,18 +243,18 @@ class Sha0Cipher : Cipher
         }
 
         /***********************************************************************
-        
+
                 Performs the length padding
 
-                Params: 
+                Params:
                 data   = the slice of the cipher buffer to fill with padding
                 length = the length of the data which has been ciphered
-                
+
                 Remarks:
                 Fills the passed buffer slice with addSize() bytes of padding
                 based on the length in bytes of the input data which has been
                 ciphered.
-        
+
         ***********************************************************************/
 
         protected override void padLength(ubyte[] data, ulong length)
@@ -265,15 +265,15 @@ class Sha0Cipher : Cipher
         }
 
         /***********************************************************************
-        
+
                 Performs the cipher on a block of data
 
-                Params: 
+                Params:
                 data = the block of data to cipher
-                
+
                 Remarks:
                 The actual cipher algorithm is carried out by this method on
-                the passed block of data. This method is called for every 
+                the passed block of data. This method is called for every
                 blockSize() bytes of input data and once more with the remaining
                 data padded to blockSize().
 
@@ -312,7 +312,7 @@ class Sha0Cipher : Cipher
                         s = t & mask;
                         if (t >= 16) expand(W,s);
                         TEMP = rotateLeft(A,5) + f(t,B,C,D) + E + W[s] + K[t/20];
-                        E = D; D = C; C = rotateLeft(B,30); B = A; A = TEMP;                    
+                        E = D; D = C; C = rotateLeft(B,30); B = A; A = TEMP;
                 }
 
                 context[0] += A;
@@ -321,9 +321,9 @@ class Sha0Cipher : Cipher
                 context[3] += D;
                 context[4] += E;
         }
-        
+
         /***********************************************************************
-        
+
         ***********************************************************************/
 
         protected void expand(uint W[], uint s)
@@ -332,7 +332,7 @@ class Sha0Cipher : Cipher
         }
 
         /***********************************************************************
-        
+
         ***********************************************************************/
 
         private static uint f(uint t, uint B, uint C, uint D)
@@ -367,20 +367,20 @@ unittest {
                 "79E966F7A3A990DF33E40E3D7F8F18D2CAEBADFA",
                 "4AA29D14D171522ECE47BEE8957E35A41F3E9CFF",
         ];
-        
+
         Sha0Cipher h = new Sha0Cipher();
         Sha0Digest d,e;
 
         foreach(int i, char[] s; strings) {
                 d = cast(Sha0Digest)h.sum(s);
                 assert(d.toString() == results[i],"Cipher:("~s~")("~d.toString()~")!=("~results[i]~")");
-                
+
                 e = new Sha0Digest(d);
                 assert(d == e,"Digest from Digest:("~d.toString()~")!=("~e.toString()~")");
-                
+
                 e = new Sha0Digest(d.toBinary());
                 assert(d == e,"Digest from Digest binary:("~d.toString()~")!=("~e.toString()~")");
-                
+
                 h = new Sha0Cipher(d);
                 e = h.getDigest();
                 assert(d == e,"Digest from Cipher continue:("~d.toString()~")!=("~e.toString()~")");
