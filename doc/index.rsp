@@ -6,7 +6,7 @@
 -IC:\d\tango\doc\
 -IC:\d\tango\tango\text\convert\
 -IC:\d\tango\tango\core\
--IC:\d\tango\tango\os\
+-IC:\d\tango\tango\sys\
 -IC:\d\tango\tango\io\
 -IC:\d\tango\tango\io\model\
 -IC:\d\tango\tango\io\protocol\model\
@@ -27,7 +27,7 @@
 -IC:\d\tango\mango\net\servlet\cache\model\
 -IC:\d\tango\tango\math\cipher\
 -IC:\d\tango\tango\math\
--IC:\d\tango\tango\os\linux\
+-IC:\d\tango\tango\sys\linux\
 -IC:\d\tango\tango\store\
 -IC:\d\tango\tango\store\model\
 -IC:\d\tango\tango\store\impl\
@@ -36,7 +36,7 @@
 -c
 doc\index.def
 doc\html\candydoc\candy.ddoc
-tango\os\windows\minwin.d
+tango\sys\windows\minwin.d
 tango\store\LinkMap.d
 tango\text\UtfString.d
 tango\core\ByteSwap.d
@@ -107,7 +107,7 @@ tango\stdc\math.d
 tango\store\HashSet.d
 tango\io\MappedBuffer.d
 tango\io\protocol\ArrayAllocator.d
-tango\os\darwin\darwin.d
+tango\sys\darwin\darwin.d
 tango\store\model\Map.d
 tango\math\cipher\Sha512.d
 tango\stdc\signal.d
@@ -116,7 +116,7 @@ tango\io\protocol\EndianReader.d
 tango\text\locale\Core.d
 tango\net\Uri.d
 tango\net\http\HttpResponses.d
-tango\os\linux\socket.d
+tango\sys\linux\socket.d
 tango\store\ArraySeq.d
 tango\store\impl\MutableImpl.d
 tango\text\locale\Constants.d
@@ -198,11 +198,11 @@ tango\log\Hierarchy.d
 mango\net\servlet\Servlet.d
 mango\net\servlet\ServletConfig.d
 tango\text\Text.d
-tango\os\ProcessConduit.d
+tango\sys\ProcessConduit.d
 tango\store\model\Bag.d
 tango\store\model\MutableSeq.d
 tango\core\Atomic.d
-tango\os\linux\linux.d
+tango\sys\linux\linux.d
 tango\store\model\Predicate.d
 tango\store\LinkSeq.d
 tango\store\HashMap.d
@@ -218,7 +218,7 @@ mango\net\servlet\model\IServletResponse.d
 tango\store\impl\RBCell.d
 tango\text\model\UniString.d
 tango\store\model\BinaryFunction.d
-tango\os\OS.d
+tango\sys\OS.d
 mango\net\util\model\IServer.d
 tango\net\http\HttpWriter.d
 tango\log\FileAppender.d
@@ -237,7 +237,7 @@ tango\math\core.d
 mango\net\http\server\ServiceProvider.d
 tango\store\impl\CLCell.d
 mango\net\servlet\cache\PlainCache.d
-tango\os\PipeConduit.d
+tango\sys\PipeConduit.d
 tango\stdc\fenv.d
 tango\text\convert\Atoi.d
 tango\io\protocol\EndianWriter.d
