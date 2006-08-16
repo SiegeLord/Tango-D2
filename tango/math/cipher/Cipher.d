@@ -104,7 +104,7 @@ class Digest
 
                 if (src.length)
                    {
-                   size_t index = -1;
+                   uint index = -1;
                    result = new char [src.length * 2];
                    foreach (b; src)
                            {
