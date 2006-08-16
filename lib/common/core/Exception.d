@@ -62,10 +62,6 @@ class FinalizeException : Exception
 
     this( ClassInfo c, Exception e = null )
     {
-        // NOTE: It is really not ideal to allocate memory here for
-        //       the concatenation.  A better approach would be to
-        //       include a reference to the ClassInfo object and
-        //       construct the message via a specialized toString().
         super( "Finalization error", e );
         info = c;
     }
