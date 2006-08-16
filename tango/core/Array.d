@@ -17,8 +17,8 @@ version( DDoc )
 {
     typedef int Elem;
 
-    alias bool function( Elem )       PredT1E;
-    alias bool function( Elem, Elem ) PredT2E;
+    typedef bool function( Elem )       Pred1E;
+    typedef bool function( Elem, Elem ) Pred2E;
 }
 
 
@@ -59,23 +59,8 @@ version( DDoc )
     /**
      * Performs a linear search of buf from $(LB)0 .. buf.length$(RP),
      * returning the index of the first element matching pat, or size_t.max
-     * if no match was found.  Comparisons will be performed using '=='.
-     *
-     * Params:
-     *  buf = The array to search.
-     *  pat = The pattern to search for.
-     *
-     * Returns:
-     *  The index of the first match or size_t.max if no match was found.
-     */
-    size_t find( Elem[] buf, Elem pat );
-
-
-    /**
-     * Performs a linear search of buf from $(LB)0 .. buf.length$(RP),
-     * returning the index of the first element matching pat, or size_t.max
      * if no match was found.  Comparisons will be performed using the
-     * supplied predicate.
+     * supplied predicate or '==' if none is supplied.
      *
      * Params:
      *  buf  = The array to search.
@@ -87,29 +72,14 @@ version( DDoc )
      * Returns:
      *  The index of the first match or size_t.max if no match was found.
      */
-    size_t find( Elem[] buf, Elem pat, PredT2E pred );
-
-
-    /**
-     * Performs a linear search of buf from $(LB)0 .. buf.length$(RP),
-     * returning the index of the first element matching pat, or size_t.max
-     * if no match was found.  Comparisons will be performed using '=='.
-     *
-     * Params:
-     *  buf = The array to search.
-     *  pat = The pattern to search for.
-     *
-     * Returns:
-     *  The index of the first match or size_t.max if no match was found.
-     */
-    size_t find( Elem[] buf, Elem[] pat );
+    size_t find( Elem[] buf, Elem pat, Pred2E pred = Pred2E.init );
 
 
     /**
      * Performs a linear search of buf from $(LB)0 .. buf.length$(RP),
      * returning the index of the first element matching pat, or size_t.max
      * if no match was found.  Comparisons will be performed using the
-     * supplied predicate.
+     * supplied predicate or '==' if none is supplied.
      *
      * Params:
      *  buf  = The array to search.
@@ -121,7 +91,7 @@ version( DDoc )
      * Returns:
      *  The index of the first match or size_t.max if no match was found.
      */
-    size_t find( Elem[] buf, Elem[] pat, PredT2E pred );
+    size_t find( Elem[] buf, Elem[] pat, Pred2E pred = Pred2E.init );
 
 }
 else
@@ -239,23 +209,8 @@ version( DDoc )
     /**
      * Performs a linear search of buf from $(LP)buf.length .. 0$(RB),
      * returning the index of the first element matching pat, or size_t.max
-     * if no match was found.  Comparisons will be performed using '=='.
-     *
-     * Params:
-     *  buf = The array to search.
-     *  pat = The pattern to search for.
-     *
-     * Returns:
-     *  The index of the first match or size_t.max if no match was found.
-     */
-    size_t rfind( Elem[] buf, Elem pat );
-
-
-    /**
-     * Performs a linear search of buf from $(LP)buf.length .. 0$(RB),
-     * returning the index of the first element matching pat, or size_t.max
      * if no match was found.  Comparisons will be performed using the
-     * supplied predicate.
+     * supplied predicate or '==' if none is supplied.
      *
      * Params:
      *  buf  = The array to search.
@@ -267,29 +222,14 @@ version( DDoc )
      * Returns:
      *  The index of the first match or size_t.max if no match was found.
      */
-    size_t rfind( Elem[] buf, Elem pat, PredT2E pred );
-
-
-    /**
-     * Performs a linear search of buf from $(LP)buf.length .. 0$(RB),
-     * returning the index of the first element matching pat, or size_t.max
-     * if no match was found.  Comparisons will be performed using '=='.
-     *
-     * Params:
-     *  buf = The array to search.
-     *  pat = The pattern to search for.
-     *
-     * Returns:
-     *  The index of the first match or size_t.max if no match was found.
-     */
-    size_t rfind( Elem[] buf, Elem[] pat );
+    size_t rfind( Elem[] buf, Elem pat, Pred2E pred = Pred2E.init );
 
 
     /**
      * Performs a linear search of buf from $(LP)buf.length .. 0$(RB),
      * returning the index of the first element matching pat, or size_t.max
      * if no match was found.  Comparisons will be performed using the
-     * supplied predicate.
+     * supplied predicate or '==' if none is supplied.
      *
      * Params:
      *  buf  = The array to search.
@@ -301,7 +241,7 @@ version( DDoc )
      * Returns:
      *  The index of the first match or size_t.max if no match was found.
      */
-    size_t rfind( Elem[] buf, Elem[] pat, PredT2E pred );
+    size_t rfind( Elem[] buf, Elem[] pat, Pred2E pred = Pred2E.init );
 }
 else
 {
@@ -423,24 +363,8 @@ version( DDoc )
     /**
      * Performs a linear search of buf from $(LB)0 .. buf.length$(RP),
      * returning the index of the first element matching pat, or size_t.max
-     * if no match was found.  Comparisons will be performed using '=='.
-     * This function is equivalent to its 'find' counterpart.
-     *
-     * Params:
-     *  buf = The array to search.
-     *  pat = The pattern to search for.
-     *
-     * Returns:
-     *  The index of the first match or size_t.max if no match was found.
-     */
-    size_t kfind( Elem[] buf, Elem pat );
-
-
-    /**
-     * Performs a linear search of buf from $(LB)0 .. buf.length$(RP),
-     * returning the index of the first element matching pat, or size_t.max
      * if no match was found.  Comparisons will be performed using the
-     * supplied predicate.
+     * supplied predicate or '==' if none is supplied.
      *
      * This function uses the KMP algorithm and offers O(M+N) performance but
      * must allocate a temporary buffer of size pat.sizeof to do so.  As the
@@ -461,30 +385,14 @@ version( DDoc )
      * Returns:
      *  The index of the first match or size_t.max if no match was found.
      */
-    size_t kfind( Elem[] buf, Elem pat, PredT2E pred );
-
-
-    /**
-     * Performs a linear search of buf from $(LB)0 .. buf.length$(RP),
-     * returning the index of the first element matching pat, or size_t.max
-     * if no match was found.  Comparisons will be performed using '=='.
-     * This function is equivalent to its 'find' counterpart.
-     *
-     * Params:
-     *  buf = The array to search.
-     *  pat = The pattern to search for.
-     *
-     * Returns:
-     *  The index of the first match or size_t.max if no match was found.
-     */
-    size_t kfind( Elem[] buf, Elem[] pat );
+    size_t kfind( Elem[] buf, Elem pat, Pred2E pred = Pred2E.init );
 
 
     /**
      * Performs a linear search of buf from $(LB)0 .. buf.length$(RP),
      * returning the index of the first element matching pat, or size_t.max
      * if no match was found.  Comparisons will be performed using the
-     * supplied predicate.
+     * supplied predicate or '==' if none is supplied.
      *
      * This function uses the KMP algorithm and offers O(M+N) performance but
      * must allocate a temporary buffer of size pat.sizeof to do so.  As the
@@ -505,7 +413,7 @@ version( DDoc )
      * Returns:
      *  The index of the first match or size_t.max if no match was found.
      */
-    size_t kfind( Elem[] buf, Elem[] pat, PredT2E pred );
+    size_t kfind( Elem[] buf, Elem[] pat, Pred2E pred = Pred2E.init );
 }
 else
 {
@@ -639,24 +547,8 @@ version( DDoc )
     /**
      * Performs a linear search of buf from $(LP)buf.length .. 0$(RB),
      * returning the index of the first element matching pat, or size_t.max
-     * if no match was found.  Comparisons will be performed using '=='.
-     * This function is equivalent to its 'rfind' counterpart.
-     *
-     * Params:
-     *  buf = The array to search.
-     *  pat = The pattern to search for.
-     *
-     * Returns:
-     *  The index of the first match or size_t.max if no match was found.
-     */
-    size_t krfind( Elem[] buf, Elem pat );
-
-
-    /**
-     * Performs a linear search of buf from $(LP)buf.length .. 0$(RB),
-     * returning the index of the first element matching pat, or size_t.max
      * if no match was found.  Comparisons will be performed using the
-     * supplied predicate.
+     * supplied predicate or '==' if none is supplied.
      *
      * This function uses the KMP algorithm and offers O(M+N) performance but
      * must allocate a temporary buffer of size pat.sizeof to do so.  As the
@@ -677,30 +569,14 @@ version( DDoc )
      * Returns:
      *  The index of the first match or size_t.max if no match was found.
      */
-    size_t krfind( Elem[] buf, Elem pat, PredT2E pred );
-
-
-    /**
-     * Performs a linear search of buf from $(LP)buf.length .. 0$(RB),
-     * returning the index of the first element matching pat, or size_t.max
-     * if no match was found.  Comparisons will be performed using '=='.
-     * This function is equivalent to its 'rfind' counterpart.
-     *
-     * Params:
-     *  buf = The array to search.
-     *  pat = The pattern to search for.
-     *
-     * Returns:
-     *  The index of the first match or size_t.max if no match was found.
-     */
-    size_t krfind( Elem[] buf, Elem[] pat );
+    size_t krfind( Elem[] buf, Elem pat, Pred2E pred = Pred2E.init );
 
 
     /**
      * Performs a linear search of buf from $(LP)buf.length .. 0$(RB),
      * returning the index of the first element matching pat, or size_t.max
      * if no match was found.  Comparisons will be performed using the
-     * supplied predicate.
+     * supplied predicate or '==' if none is supplied.
      *
      * This function uses the KMP algorithm and offers O(M+N) performance but
      * must allocate a temporary buffer of size pat.sizeof to do so.  As the
@@ -721,7 +597,7 @@ version( DDoc )
      * Returns:
      *  The index of the first match or size_t.max if no match was found.
      */
-    size_t krfind( Elem[] buf, Elem[] pat, PredT2E pred );
+    size_t krfind( Elem[] buf, Elem[] pat, Pred2E pred = Pred2E.init );
 }
 else
 {
@@ -873,7 +749,7 @@ version( DDoc )
      * Returns:
      *  The index of the first match or size_t.max if no match was found.
      */
-    size_t findIf( Elem[] buf, PredT1E pred );
+    size_t findIf( Elem[] buf, Pred1E pred );
 }
 else
 {
@@ -946,7 +822,7 @@ version( DDoc )
      * Returns:
      *  The index of the first match or size_t.max if no match was found.
      */
-    size_t rfindIf( Elem[] buf, PredT1E pred );
+    size_t rfindIf( Elem[] buf, Pred1E pred );
 }
 else
 {
@@ -1014,22 +890,7 @@ version( DDoc )
     /**
      * Performs a linear scan of buf from $(LB)0 .. buf.length$(RP), returning
      * a count of the number of elements matching pat.  Comparisons will be
-     * performed using '=='.
-     *
-     * Params:
-     *  buf = The array to scan.
-     *  pat = The pattern to match.
-     *
-     * Returns:
-     *  The index of the first match or size_t.max if no match was found.
-     */
-    size_t count( Elem[] buf, Elem pat );
-
-
-    /**
-     * Performs a linear scan of buf from $(LB)0 .. buf.length$(RP), returning
-     * a count of the number of elements matching pat.  Comparisons will be
-     * performed using the supplied predicate.
+     * performed using the supplied predicate or '==' if none is supplied.
      *
      * Params:
      *  buf  = The array to scan.
@@ -1041,7 +902,7 @@ version( DDoc )
      * Returns:
      *  The index of the first match or size_t.max if no match was found.
      */
-    size_t count( Elem[] buf, Elem pat, PredT2E pred );
+    size_t count( Elem[] buf, Elem pat, Pred2E pred = Pred2E.init );
 
 }
 else
@@ -1117,24 +978,7 @@ version( DDoc )
      * element equivalent to pat.  If pat is less than all elements in
      * buf then 0 will be returned.  If pat is greater than the largest
      * element in buf then buf.length will be returned.  Comparisons will
-     * be performed using '<'.
-     *
-     * Params:
-     *  buf = The sorted array to search.
-     *  pat = The pattern to search for.
-     *
-     * Returns:
-     *  The index of the first match or size_t.max if no match was found.
-     */
-    size_t lbound( Elem[] buf, Elem pat );
-
-
-    /**
-     * Performs a binary search of buf, returning the index of the first
-     * element equivalent to pat.  If pat is less than all elements in
-     * buf then 0 will be returned.  If pat is greater than the largest
-     * element in buf then buf.length will be returned.  Comparisons will
-     * be performed using the supplied predicate.
+     * be performed using the supplied predicate or '<' if none is supplied.
      *
      * Params:
      *  buf = The sorted array to search.
@@ -1146,7 +990,7 @@ version( DDoc )
      * Returns:
      *  The index of the first match or size_t.max if no match was found.
      */
-    size_t lbound( Elem[] buf, Elem pat, PredT2E pred );
+    size_t lbound( Elem[] buf, Elem pat, Pred2E pred = Pred2E.init );
 }
 else
 {
@@ -1225,24 +1069,8 @@ version( DDoc )
      * element equivalent to pat.  If pat is less than all elements in
      * buf then 0 will be returned.  If pat is greater than or equivalent
      * to the largest element in buf then buf.length will be returned.
-     * Comparisons will be performed using '<'.
-     *
-     * Params:
-     *  buf = The sorted array to search.
-     *  pat = The pattern to search for.
-     *
-     * Returns:
-     *  The index of the first match or size_t.max if no match was found.
-     */
-    size_t ubound( Elem[] buf, Elem pat );
-
-
-    /**
-     * Performs a binary search of buf, returning the index of the first
-     * element equivalent to pat.  If pat is less than all elements in
-     * buf then 0 will be returned.  If pat is greater than or equivalent
-     * to the largest element in buf then buf.length will be returned.
-     * Comparisons will be performed using the supplied predicate.
+     * Comparisons will be performed using the supplied predicate or '<'
+     * if none is supplied.
      *
      * Params:
      *  buf = The sorted array to search.
@@ -1254,7 +1082,7 @@ version( DDoc )
      * Returns:
      *  The index of the first match or size_t.max if no match was found.
      */
-    size_t ubound( Elem[] buf, Elem pat, PredT2E pred );
+    size_t ubound( Elem[] buf, Elem pat, Pred2E pred = Pred2E.init );
 }
 else
 {
@@ -1330,22 +1158,8 @@ version( DDoc )
 {
     /**
      * Performs a binary search of buf, returning true if an element equivalent
-     * to pat is found.  Comparisons will be performed using '<'.
-     *
-     * Params:
-     *  buf = The sorted array to search.
-     *  pat = The pattern to search for.
-     *
-     * Returns:
-     *  True if an element equivalent to pat is found, false if not.
-     */
-    size_t bsearch( Elem[] buf, Elem pat );
-
-
-    /**
-     * Performs a binary search of buf, returning true if an element equivalent
      * to pat is found.  Comparisons will be performed using the supplied
-     * predicate.
+     * predicate or '<' if none is supplied.
      *
      * Params:
      *  buf = The sorted array to search.
@@ -1357,7 +1171,7 @@ version( DDoc )
      * Returns:
      *  True if an element equivalent to pat is found, false if not.
      */
-    size_t bsearch( Elem[] buf, Elem pat, PredT2E pred );
+    size_t bsearch( Elem[] buf, Elem pat, Pred2E pred = Pred2E.init );
 }
 else
 {
