@@ -16,6 +16,7 @@ private import  tango.text.Text,
                 tango.text.LineIterator;
 
 private import  tango.io.Buffer,
+                tango.io.FileConst,
                 tango.io.FileConduit;
 
 private import  tango.io.model.IConduit;
@@ -85,5 +86,42 @@ class Properties
                              dg (Text.trim (text[0..i]), Text.trim (text[i+1..text.length]));
                          }
                       }
+        }
+
+        /***********************************************************************
+        
+                Write properties to the provided filepath
+
+        ***********************************************************************/
+
+        static void save (char[] filepath, char[][char[]] properties)
+        {
+                auto fc = new FileConduit (filepath, FileConduit.WriteTruncate);
+                scope (exit)
+                       fc.close;
+                save (fc, properties);
+        }
+
+        /***********************************************************************
+        
+                Write properties to the provided conduit
+
+        ***********************************************************************/
+
+        static void save (IConduit conduit, char[][char[]] properties)
+        {
+                save (new Buffer(conduit), properties);
+        }
+
+        /***********************************************************************
+        
+                Write properties to the provided buffer
+
+        ***********************************************************************/
+
+        static void save (IBuffer emit, char[][char[]] properties)
+        {
+                foreach (key, value; properties)
+                         emit (key) (" = ") (value) (FileConst.NewlineString);
         }
 }
