@@ -386,7 +386,7 @@ class Hierarchy : IHierarchy
                 this.address = "network";
 
                 // insert a root node; the root has an empty name
-                root = new LoggerInstance (this, "");
+                root = new LoggerInstance (this, ".");
         }
 
         /**********************************************************************
