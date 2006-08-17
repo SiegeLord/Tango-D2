@@ -876,8 +876,8 @@ class Socket : Conduit
 
         void setTimeout (Interval us)
         {
-                tv.tv_sec = us / Interval.second;
-                tv.tv_usec = us % Interval.second;
+                tv.tv_sec = cast(int) (us / Interval.second);
+                tv.tv_usec = cast(int) (us % Interval.second);
         }
 
         /***********************************************************************
