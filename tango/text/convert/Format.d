@@ -106,6 +106,7 @@ private enum TypeCode
         INT = 'i',
         ULONG = 'm',
         LONG = 'l',
+        REAL = 'e',
         FLOAT = 'f',
         DOUBLE = 'd',
         CHAR = 'a',
@@ -569,12 +570,16 @@ private char[] formatArgument (inout Formatter.Result result, char[] format, ino
                     return formatInteger(result, *cast(long*)arg.getValue(), format, service);
         
                version (mlfp)
-               case TypeCode.FLOAT:
-                    return formatDouble(result, cast(double)*cast(float*)arg.getValue(), format, service);
+                       {
+                       case TypeCode.FLOAT:
+                            return formatDouble(result, cast(double) *cast(float*) arg.getValue(), format, service);
         
-               version (mlfp)
-               case TypeCode.DOUBLE:
-                    return formatDouble(result, *cast(double*)arg.getValue(), format, service);
+                       case TypeCode.DOUBLE:
+                            return formatDouble(result, *cast(double*) arg.getValue(), format, service);
+        
+                       case TypeCode.REAL:
+                            return formatDouble(result, cast(double) *cast(real*) arg.getValue(), format, service);
+                       }
         
                case TypeCode.CHAR:
                     return (cast(char*)arg.getValue())[0..1];
