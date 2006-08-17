@@ -27,6 +27,9 @@ Formatter.format("General: {0} Hexadecimal: 0x{0:x4} Numeric: {0:N}", 1000);
 **/
 module tango.text.convert.Format;
 
+// enable floating point support
+version = mlfp; 
+
 /+
 import tango.io.Console;
 
@@ -64,8 +67,8 @@ private struct Stdout
                 return *this;
         }
 }
-
 +/
+
 
 /*******************************************************************************
 
