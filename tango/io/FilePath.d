@@ -283,7 +283,7 @@ class FilePath
 
         /***********************************************************************
         
-                Returns true  if this FilePath is empty
+                Returns true if this FilePath is empty
 
         ***********************************************************************/
 
@@ -295,7 +295,7 @@ class FilePath
         /***********************************************************************
                 
                 Return the root of this path. Roots are constructs such as
-                "c:".
+                "c:"
 
         ***********************************************************************/
 
@@ -434,7 +434,7 @@ class FilePath
         {      
                 char[] s;
                 s.length = 256, s.length = 0;
-                splice (base, (void[] v){s ~= cast(char[]) v;});
+                splice (base, (void[] v) {s ~= cast(char[]) v;});
                 return s;
         }               
 
