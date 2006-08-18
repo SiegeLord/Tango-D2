@@ -42,7 +42,6 @@
 
                 // format and layout behind current selection
                 MutableString format (T[] format, ...);
-                MutableString layout (T[] layout ...);
         
                 // insert before current selection
                 MutableString prepend (T[] other);
@@ -117,8 +116,6 @@ private import  tango.text.convert.Type,
                 tango.text.convert.Format,
                 tango.text.convert.Unicode;
 
-private import  tango.text.model.UniString;
-
 /*******************************************************************************
 
 *******************************************************************************/
@@ -149,11 +146,45 @@ private extern (C) void memmove (void* dst, void* src, uint bytes);
 class MutableStringT(T) : StringT!(T)
 {
         public  alias append            opCat;
-        private  alias Unicode.Into!(T) Into;   
+        public  alias get               opIndex;
+        private alias Unicode.Into!(T)  Into;   
+        private alias StringT!(T)       String;
 
-        public  Into                    into;           // unicode converter
-        private T[]                     scratch;        // formatting scratchpad
+        private Into                    into;           // unicode converter
         private T[]                     converts;       // unicode buffer
+
+        // unicode converter and utility functions
+        private Unicode.From!(T)        from;
+        private TextT!(T)               utils;
+
+        private bool                    mutable;
+        private Comparator              comparator;
+        private uint                    selectPoint,
+                                        selectLength,
+                                        contentLength;
+
+        /***********************************************************************
+        
+                Hidden constructor
+
+        ***********************************************************************/
+
+        private this ()
+        {
+                this.comparator = &simpleComparator;
+        }
+
+        /***********************************************************************
+        
+                Create a MutableString via the content of a String. Note 
+                that the default is to assume the content is immutable
+                
+        ***********************************************************************/
+        
+        this (String other)
+        {
+                set (other.get, false);
+        }
 
         /***********************************************************************
         
@@ -162,11 +193,10 @@ class MutableStringT(T) : StringT!(T)
 
         ***********************************************************************/
 
-        this (uint space = 0)
+        this (uint space = 256)
         {
                 content.length = space;
                 mutable = true;
-//                setup ();
         }
 
         /***********************************************************************
@@ -182,7 +212,6 @@ class MutableStringT(T) : StringT!(T)
         this (T[] content, bool mutable = true)
         {
                 set (content, mutable);
-//                setup ();
         }
 
         /***********************************************************************
@@ -197,19 +226,7 @@ class MutableStringT(T) : StringT!(T)
         
         this (MutableStringT other, bool mutable = true)
         {
-                this (other.get, mutable);
-        }
-
-        /***********************************************************************
-        
-                Create a MutableString via the content of a String. Note 
-                that the default is to assume the content is immutable
-                
-        ***********************************************************************/
-        
-        this (StringT!(T) other, bool mutable = false)
-        {
-                this (other.get, mutable);
+                set (other.get, mutable);
         }
 
         /***********************************************************************
@@ -225,7 +242,7 @@ class MutableStringT(T) : StringT!(T)
                 contentLength = chars.length;
                 select (0, contentLength);
 
-                if ((this.mutable = mutable) == true)
+                if ((this.mutable = mutable) is true)
                      content = chars.dup;
                 else
                    content = chars;
@@ -242,7 +259,7 @@ class MutableStringT(T) : StringT!(T)
 
         ***********************************************************************/
 
-        MutableStringT set (StringT!(T) other, bool mutable = true)
+        MutableStringT set (String other, bool mutable = true)
         {
                 return set (other.get, mutable);
         }
@@ -304,7 +321,7 @@ class MutableStringT(T) : StringT!(T)
 
         ***********************************************************************/
 
-        bool select (StringT!(T) other)
+        bool select (String other)
         {
                 return select (other.get);
         }
@@ -359,7 +376,7 @@ class MutableStringT(T) : StringT!(T)
 
         ***********************************************************************/
 
-        bool rselect (StringT!(T) other)
+        bool rselect (String other)
         {
                 return rselect (other.get);
         }
@@ -393,7 +410,7 @@ class MutableStringT(T) : StringT!(T)
 
         ***********************************************************************/
 
-        MutableStringT append (StringT!(T) other)
+        MutableStringT append (String other)
         {
                 return append (other.get);
         }
@@ -530,7 +547,7 @@ class MutableStringT(T) : StringT!(T)
 
         ***********************************************************************/
 
-        MutableStringT prepend (StringT!(T) other)
+        MutableStringT prepend (String other)
         {       
                 return prepend (other.get);
         }
@@ -574,7 +591,7 @@ class MutableStringT(T) : StringT!(T)
 
         ***********************************************************************/
 
-        MutableStringT replace (StringT!(T) other)
+        MutableStringT replace (String other)
         {
                 return replace (other.get);
         }
@@ -633,56 +650,6 @@ class MutableStringT(T) : StringT!(T)
                 return this;
         }
 
-        /**********************************************************************
-
-                Arranges text strings in order, using indices to specify 
-                where each particular argument should be positioned within 
-                the text. This is handy for collating I18N components.
-
-                ---
-                auto string = new MutableString;
-
-                string.layout ("%2 %1", "one", "two");
-                ---
-
-                The index numbers range from one through nine      
-              
-        **********************************************************************/
-
-        MutableStringT layout (T[][] layout ...)
-        {
-                int     args;
-                bool    state;
-
-                args = layout.length - 1;
-                foreach (T c; layout[0])
-                        {
-                        if (state)
-                           {
-                           state = false;
-                           if (c >= '1' || c <= '9')
-                              {
-                              uint index = c - '0';
-                              if (index <= args)
-                                 {
-                                 append (layout[index]);
-                                 continue;
-                                 }
-                              else
-                                 Formatter.error ("TextLayout : invalid argument");
-                              }
-                           }
-                        else
-                           if (c == '%')
-                              {
-                              state = true;
-                              continue;
-                              }
-                        append (c);
-                        }
-                return this;
-        }
-
         /***********************************************************************
         
                 Remove leading and trailing whitespace from this String,
@@ -699,6 +666,15 @@ class MutableStringT(T) : StringT!(T)
 
         /***********************************************************************
         
+        ***********************************************************************/
+
+        MutableStringT clone ()
+        {
+                return new MutableStringT!(T)(get, mutable);
+        }
+
+        /***********************************************************************
+        
                 Return an alias to the content of this MutableString
 
         ***********************************************************************/
@@ -709,177 +685,10 @@ class MutableStringT(T) : StringT!(T)
         }
 
 
-        /* ================================================================== */
+
+        /* ======================= StringT methods ========================== */
 
 
-        /***********************************************************************
-        
-                make room available to insert or append something
-
-        ***********************************************************************/
-
-        private final void expand (uint index, uint count)
-        {
-                if (!mutable || (contentLength + count) > content.length)
-                     realloc (count);
-
-                memmove (content.ptr+index+count, content.ptr+index, (contentLength - index) * T.sizeof);
-                selectLength += count;
-                contentLength += count;                
-        }
-                
-        /***********************************************************************
-                
-                Replace a section of this MutableString with the specified 
-                character
-
-        ***********************************************************************/
-
-        private final MutableStringT set (T chr, uint start, uint count)
-        {
-                content [start..start+count] = chr;
-                return this;
-        }
-
-        /***********************************************************************
-        
-                Allocate memory due to a change in the content. We handle 
-                the distinction between mutable and immutable here.
-
-        ***********************************************************************/
-
-        private final void realloc (uint count = 0)
-        {
-                uint size = (content.length + count + 127) & ~127;
-                
-                if (mutable)
-                    content.length = size;
-                else
-                   {
-                   mutable = true;
-                   T[] x = content;
-                   content = new T[size];
-                   if (contentLength)
-                       content[0..contentLength] = x;
-                   }
-        }
-
-        /***********************************************************************
-        
-                Internal method to support MutableString appending
-
-        ***********************************************************************/
-
-        private final MutableStringT append (T* chars, uint count)
-        {
-                uint point = selectPoint + selectLength;
-                expand (point, count);
-                content[point .. point+count] = chars[0 .. count];
-                return this;
-        }
-/+
-        /***********************************************************************
-        
-                Initialize this MutableString. Allocate conversion buffers
-                and prime the formatter
-
-        ***********************************************************************/
-
-        private void setup (Format.DblFormat df = null)
-        {
-                
-                scratch  = new T[64];
-                converts = new T[256];
-                formatter.ctor (&convert, scratch, df);                
-        }
-+/
-        /**********************************************************************
-
-                Support for the formatter, to convert from one encoding
-                to another
-
-        **********************************************************************/
-
-        private uint convert (void[] v, int type)   
-        {
-                // convert as required
-                auto s = cast(T[]) into.convert (v, type, converts);
-                        
-                // hang onto conversion buffer when it grows
-                if (s.length > converts.length)
-                    converts = s;
-
-                return appender (s);
-        }
-
-        /**********************************************************************
-
-        **********************************************************************/
-
-        private uint appender (T[] s)   
-        {
-                append (s.ptr, s.length);
-                return s.length;
-        }
-}
-
-
-
-/*******************************************************************************
-
-        Immutable string
-
-*******************************************************************************/
-
-class StringT(T) : UniString
-{
-        public alias int delegate (T[] a, T[] b) Comparator;
-        public alias get                opIndex;
-
-        // unicode converter and utility functions
-        public Unicode.From!(T)         from;
-        public TextT!(T)                utils;
-
-        // the core of the String and MutableString attributes. The name 
-        // 'contentLength' is used rather than the more obvious 'length' 
-        // since there is a collision with the noxious array[length] sugar
-        protected T[]                   content;
-        protected uint                  selectPoint,
-                                        selectLength,
-                                        contentLength;
-
-        // this should probably be in MutableString only, but there seems to 
-        // be a compiler bug where it doesn't get initialised correctly,
-        // and it's perhaps useful to have here for when a MutableString is
-        // passed as a String argument.
-        protected bool                  mutable;
-        
-        private Comparator              comparator;
-
-        /***********************************************************************
-        
-                Hidden constructor
-
-        ***********************************************************************/
-
-        private this ()
-        {
-                this.comparator = &simpleComparator;
-        }
-
-        /***********************************************************************
-        
-                Construct read-only wrapper around the given content
-
-        ***********************************************************************/
-
-        this (T[] content)
-        {
-                this();
-                this.content = content;
-                this.selectPoint = 0;
-                this.selectLength = this.contentLength = content.length;
-        }
 
         /***********************************************************************
         
@@ -903,7 +712,7 @@ class StringT(T) : UniString
 
         ***********************************************************************/
 
-        StringT setComparator (Comparator comparator)
+        String setComparator (Comparator comparator)
         {
                 this.comparator = comparator;
                 return this;
@@ -937,7 +746,7 @@ class StringT(T) : UniString
 
         ***********************************************************************/
 
-        bool equals (StringT other)
+        bool equals (String other)
         {
                 if (other is this)
                     return true;
@@ -963,7 +772,7 @@ class StringT(T) : UniString
 
         ***********************************************************************/
 
-        bool ends (StringT other)
+        bool ends (String other)
         {
                 return ends (other.get);
         }
@@ -987,7 +796,7 @@ class StringT(T) : UniString
 
         ***********************************************************************/
 
-        bool starts (StringT other)
+        bool starts (String other)
         {
                 return starts (other.get);
         }
@@ -1014,7 +823,7 @@ class StringT(T) : UniString
 
         ***********************************************************************/
 
-        int compare (StringT other)
+        int compare (String other)
         {
                 if (other is this)
                     return 0;
@@ -1125,9 +934,9 @@ class StringT(T) : UniString
 
         ***********************************************************************/
 
-        final override int opCmp (Object o)
+        int opCmp (Object o)
         {
-                auto other = cast (StringT) o;
+                auto other = cast (String) o;
 
                 if (other is null)
                     return -1;
@@ -1141,9 +950,9 @@ class StringT(T) : UniString
 
         ***********************************************************************/
 
-        final override int opEquals (Object o)
+        int opEquals (Object o)
         {
-                auto other = cast (StringT) o;
+                auto other = cast (String) o;
 
                 if (other is null)
                     return 0;
@@ -1251,7 +1060,7 @@ class StringT(T) : UniString
 
         ***********************************************************************/
 
-        protected final void error (char[] msg)
+        protected void error (char[] msg)
         {
                 static class TextException : Exception
                 {
@@ -1262,17 +1071,6 @@ class StringT(T) : UniString
                 }
 
                 throw new TextException (msg);
-        }
-
-        /***********************************************************************
-        
-                Return the valid content from this String
-
-        ***********************************************************************/
-
-        package final T[] get ()
-        {
-                    return content [0 .. contentLength];
         }
 
         /***********************************************************************
@@ -1313,7 +1111,7 @@ class StringT(T) : UniString
 
         ***********************************************************************/
 
-        protected final int simpleComparator (T[] a, T[] b)
+        private final int simpleComparator (T[] a, T[] b)
         {
                 uint i = a.length;
                 if (b.length < i)
@@ -1325,12 +1123,316 @@ class StringT(T) : UniString
                 
                 return a.length - b.length;
         }
+
+        /***********************************************************************
+        
+                make room available to insert or append something
+
+        ***********************************************************************/
+
+        private final void expand (uint index, uint count)
+        {
+                if (!mutable || (contentLength + count) > content.length)
+                     realloc (count);
+
+                memmove (content.ptr+index+count, content.ptr+index, (contentLength - index) * T.sizeof);
+                selectLength += count;
+                contentLength += count;                
+        }
+                
+        /***********************************************************************
+                
+                Replace a section of this MutableString with the specified 
+                character
+
+        ***********************************************************************/
+
+        private final MutableStringT set (T chr, uint start, uint count)
+        {
+                content [start..start+count] = chr;
+                return this;
+        }
+
+        /***********************************************************************
+        
+                Allocate memory due to a change in the content. We handle 
+                the distinction between mutable and immutable here.
+
+        ***********************************************************************/
+
+        private final void realloc (uint count = 0)
+        {
+                uint size = (content.length + count + 127) & ~127;
+                
+                if (mutable)
+                    content.length = size;
+                else
+                   {
+                   mutable = true;
+                   T[] x = content;
+                   content = new T[size];
+                   if (contentLength)
+                       content[0..contentLength] = x;
+                   }
+        }
+
+        /***********************************************************************
+        
+                Internal method to support MutableString appending
+
+        ***********************************************************************/
+
+        private final MutableStringT append (T* chars, uint count)
+        {
+                uint point = selectPoint + selectLength;
+                expand (point, count);
+                content[point .. point+count] = chars[0 .. count];
+                return this;
+        }
+
+        /**********************************************************************
+
+                Support for the formatter, to convert from one encoding
+                to another
+
+        **********************************************************************/
+
+        private uint convert (void[] v, int type)   
+        {
+                // convert as required
+                auto s = cast(T[]) into.convert (v, type, converts);
+                        
+                // hang onto conversion buffer when it grows
+                if (s.length > converts.length)
+                    converts = s;
+
+                return appender (s);
+        }
+
+        /**********************************************************************
+
+        **********************************************************************/
+
+        private uint appender (T[] s)   
+        {
+                append (s.ptr, s.length);
+                return s.length;
+        }
 }       
 
 
-// convenience alias
-alias StringT!(char) String;
+
+/*******************************************************************************
+
+        Immutable string
+
+*******************************************************************************/
+
+class StringT(T) : UniString
+{
+        private T[] content;
+
+        public typedef int delegate (T[] a, T[] b) Comparator;
+
+        /***********************************************************************
+        
+                Set the comparator delegate
+
+        ***********************************************************************/
+
+        abstract StringT setComparator (Comparator comparator);
+
+        /***********************************************************************
+        
+        ***********************************************************************/
+
+        abstract StringT clone ();
+
+        /***********************************************************************
+        
+                Hash this String
+
+        ***********************************************************************/
+
+        abstract uint toHash ();
+
+        /***********************************************************************
+        
+                Return the length of the valid content
+
+        ***********************************************************************/
+
+        abstract uint length ();
+
+        /***********************************************************************
+        
+                Is this String equal to another?
+
+        ***********************************************************************/
+
+        abstract bool equals (StringT other);
+
+        /***********************************************************************
+        
+                Is this String equal to the the provided text?
+
+        ***********************************************************************/
+
+        abstract bool equals (T[] other);
+
+        /***********************************************************************
+        
+                Does this String end with another?
+
+        ***********************************************************************/
+
+        abstract bool ends (StringT other);
+
+        /***********************************************************************
+        
+                Does this String end with the specified string?
+
+        ***********************************************************************/
+
+        abstract bool ends (T[] chars);
+
+        /***********************************************************************
+        
+                Does this String start with another?
+
+        ***********************************************************************/
+
+        abstract bool starts (StringT other);
+
+        /***********************************************************************
+        
+                Does this String start with the specified string?
+
+        ***********************************************************************/
+
+        abstract bool starts (T[] chars);
+
+        /***********************************************************************
+        
+                Compare this String start with another. Returns 0 if the 
+                content matches, less than zero if this String is "less"
+                than the other, or greater than zero where this String 
+                is "bigger".
+
+        ***********************************************************************/
+
+        abstract int compare (StringT other);
+
+        /***********************************************************************
+        
+                Compare this String start with an array. Returns 0 if the 
+                content matches, less than zero if this String is "less"
+                than the other, or greater than zero where this String 
+                is "bigger".
+
+        ***********************************************************************/
+
+        abstract int compare (T[] chars);
+
+        /***********************************************************************
+        
+                Return content from this String 
+                
+                A slice of dst is returned, representing a copy of the 
+                content. The slice is clipped to the minimum of either 
+                the length of the provided array, or the length of the 
+                content minus the stipulated start point
+
+        ***********************************************************************/
+
+        abstract T[] copy (T[] dst);
+
+        /***********************************************************************
+        
+                Return dup'd content from this String 
+
+        ***********************************************************************/
+
+        abstract T[] copy ();
+
+        /**********************************************************************
+
+                Iterate over the characters in this string. Note that 
+                this is a read-only freachable ~ the worst a user can
+                do is alter the temporary 'c'
+
+        **********************************************************************/
+
+        abstract int opApply (int delegate(inout T) dg);
+
+        /***********************************************************************
+        
+                Compare this String to another
+
+        ***********************************************************************/
+
+        abstract int opCmp (Object o);
+
+        /***********************************************************************
+        
+                Is this String equal to another?
+
+        ***********************************************************************/
+
+        abstract int opEquals (Object o);
+
+        /***********************************************************************
+        
+                Return the valid content from this String
+
+        ***********************************************************************/
+
+        package final T[] get ()
+        {
+                return content;
+        }
+}       
+
+
+/*******************************************************************************
+
+        A string abstraction that converts to anything
+
+*******************************************************************************/
+
+class UniString
+{
+        abstract char[]  utf8  (char[]  dst = null);
+
+        abstract wchar[] utf16 (wchar[] dst = null);
+
+        abstract dchar[] utf32 (dchar[] dst = null);
+
+	abstract uint getEncoding();
+}
+
 
 // convenience alias
-alias MutableStringT!(char) MutableString;
+typedef MutableStringT!(char) MutableString;
 
+
+// convenience alias
+typedef StringT!(char) String;
+
+
+
+debug (UnitTest)
+{
+void main()
+{
+}
+/+
+private import tango.io.Console;
+
+unittest
+{
+        auto s = new MutableString("hello");
+        Cout (s.aliasOf).newline;
+}
++/
+}
