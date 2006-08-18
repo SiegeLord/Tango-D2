@@ -607,8 +607,8 @@ class Buffer : IBuffer
                 Consume content from a producer
 
                 Params:
-                dg = the producing delegate, which should itself accept
-                a callback for consuming char[] content
+                The content to consume. This is consumed verbatim, and in
+                raw binary format ~ no implicit conversions are performed.
 
                 Returns:
                 Returns a chaining reference if all content was written. 
@@ -619,7 +619,7 @@ class Buffer : IBuffer
 
                 This is often used in lieu of a Writer, and enables simple
                 classes, such as FilePath and Uri, to emit content directly
-                into a buffer (thus avoiding potential for heap activity)
+                into a buffer (thus avoiding potential heap activity)
 
                 Examples:
                 ---
