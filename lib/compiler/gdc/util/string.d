@@ -17,7 +17,7 @@ private import tango.stdc.string;
 
 // convert uint to char[], within the given buffer
 // Returns a valid slice of the populated buffer
-char[] intToString (char[] tmp, uint val)
+char[] intToUtf8 (char[] tmp, uint val)
 in {
    assert (tmp.length > 9, "atoi buffer should be 9 or more chars wide");
    }

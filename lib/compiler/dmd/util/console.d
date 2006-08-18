@@ -53,7 +53,7 @@ int console (uint i)
 {
         char[10] tmp = void;
 
-        return console (intToString (tmp, i));
+        return console (intToUtf8 (tmp, i));
 }
 +/
 
@@ -79,7 +79,7 @@ struct Console
     {
             char[10] tmp = void;
 
-            return console (intToString (tmp, i));
+            return console (intToUtf8 (tmp, i));
     }
 }
 

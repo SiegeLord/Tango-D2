@@ -322,7 +322,6 @@ static void trace_times(Symbol* root)
 
 	version (Win32)
 	{
-            //char* p = toStringz(s.Sident);
             char* p = s.Sident ~ '\0';
 	    p = unmangle_ident(p);
 	    if (p)

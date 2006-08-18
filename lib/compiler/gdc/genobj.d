@@ -317,7 +317,7 @@ class TypeInfo_StaticArray : TypeInfo
     char[] toUtf8()
     {
         char [10] tmp = void;
-        return next.toUtf8() ~ "[" ~ intToString(tmp, len) ~ "]";
+        return next.toUtf8() ~ "[" ~ intToUtf8(tmp, len) ~ "]";
     }
 
     hash_t getHash(void *p)
