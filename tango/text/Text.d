@@ -362,12 +362,8 @@ alias TextT!(char) Text;
 
 debug (UnitTest)
 {
-private import tango.io.Console;
-
 unittest
 {
-        try 
-        {
         char[] test = "123456789";
         assert (Text.locate (test, 'a', test.length) == null);
         assert (Text.locate (test, '3', test.length) == &test[2]);
@@ -375,7 +371,5 @@ unittest
 
         assert (Text.equal (test, test, test.length));
         assert (!Text.equal (test, "qwe", 3));
-        } catch (Object o)
-                 Cout (o.toString() ~ "\n");
 }
 }
