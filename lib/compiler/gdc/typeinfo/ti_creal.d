@@ -5,7 +5,7 @@ module typeinfo.ti_creal;
 
 class TypeInfo_c : TypeInfo
 {
-    char[] toString() { return "creal"; }
+    char[] toUtf8() { return "creal"; }
 
     hash_t getHash(void *p)
     {

@@ -5,7 +5,7 @@ module typeinfo.ti_uint;
 
 class TypeInfo_k : TypeInfo
 {
-    char[] toString() { return "uint"; }
+    char[] toUtf8() { return "uint"; }
 
     hash_t getHash(void *p)
     {

@@ -160,8 +160,8 @@ extern (C) int main(int argc, char **argv)
             }
             else
             {
-               // fprintf(stderr, "%.*s\n", e.toString());
-               console (e.toString)("\n");
+               // fprintf(stderr, "%.*s\n", e.toUtf8());
+               console (e.toUtf8)("\n");
             }
             e = e.next;
         }
@@ -169,8 +169,8 @@ extern (C) int main(int argc, char **argv)
     }
     catch (Object o)
     {
-        // fprintf(stderr, "%.*s\n", o.toString());
-        console (o.toString)("\n");
+        // fprintf(stderr, "%.*s\n", o.toUtf8());
+        console (o.toUtf8)("\n");
         exit(EXIT_FAILURE);
     }
 

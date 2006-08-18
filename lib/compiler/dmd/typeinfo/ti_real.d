@@ -7,7 +7,7 @@ private import tango.stdc.math;
 
 class TypeInfo_e : TypeInfo
 {
-    char[] toString() { return "real"; }
+    char[] toUtf8() { return "real"; }
 
     hash_t getHash(void *p)
     {

@@ -29,7 +29,7 @@ private import typeinfo.ti_creal;
 
 class TypeInfo_Ac : TypeInfo
 {
-    char[] toString() { return "creal[]"; }
+    char[] toUtf8() { return "creal[]"; }
 
     hash_t getHash(void *p)
     {	creal[] s = *cast(creal[]*)p;

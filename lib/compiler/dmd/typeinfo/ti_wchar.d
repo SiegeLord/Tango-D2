@@ -4,7 +4,7 @@ module typeinfo.ti_wchar;
 
 class TypeInfo_u : TypeInfo
 {
-    char[] toString() { return "wchar"; }
+    char[] toUtf8() { return "wchar"; }
 
     hash_t getHash(void *p)
     {

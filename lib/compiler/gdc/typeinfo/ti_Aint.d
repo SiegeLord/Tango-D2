@@ -7,7 +7,7 @@ private import tango.stdc.string;
 
 class TypeInfo_Ai : TypeInfo
 {
-    char[] toString() { return "int[]"; }
+    char[] toUtf8() { return "int[]"; }
 
     hash_t getHash(void *p)
     {	int[] s = *cast(int[]*)p;

@@ -70,7 +70,7 @@ class Object
     /**
      * Convert Object to a human readable string.
      */
-    char[] toString()
+    char[] toUtf8()
     {
         return this.classinfo.name;
     }
@@ -201,7 +201,7 @@ class TypeInfo
 
 class TypeInfo_Typedef : TypeInfo
 {
-    char[] toString() { return name; }
+    char[] toUtf8() { return name; }
     hash_t getHash(void *p) { return base.getHash(p); }
     int equals(void *p1, void *p2) { return base.equals(p1, p2); }
     int compare(void *p1, void *p2) { return base.compare(p1, p2); }
@@ -218,7 +218,7 @@ class TypeInfo_Enum : TypeInfo_Typedef
 
 class TypeInfo_Pointer : TypeInfo
 {
-    char[] toString() { return next.toString() ~ "*"; }
+    char[] toUtf8() { return next.toUtf8() ~ "*"; }
 
     hash_t getHash(void *p)
     {
@@ -252,7 +252,7 @@ class TypeInfo_Pointer : TypeInfo
 
 class TypeInfo_Array : TypeInfo
 {
-    char[] toString() { return next.toString() ~ "[]"; }
+    char[] toUtf8() { return next.toUtf8() ~ "[]"; }
 
     hash_t getHash(void *p)
     {   size_t sz = next.tsize();
@@ -314,10 +314,10 @@ class TypeInfo_Array : TypeInfo
 
 class TypeInfo_StaticArray : TypeInfo
 {
-    char[] toString()
+    char[] toUtf8()
     {
         char [10] tmp = void;
-        return next.toString() ~ "[" ~ intToString(tmp, len) ~ "]";
+        return next.toUtf8() ~ "[" ~ intToString(tmp, len) ~ "]";
     }
 
     hash_t getHash(void *p)
@@ -385,9 +385,9 @@ class TypeInfo_StaticArray : TypeInfo
 
 class TypeInfo_AssociativeArray : TypeInfo
 {
-    char[] toString()
+    char[] toUtf8()
     {
-        return next.toString() ~ "[" ~ key.toString() ~ "]";
+        return next.toUtf8() ~ "[" ~ key.toUtf8() ~ "]";
     }
 
     // BUG: need to add the rest of the functions
@@ -403,9 +403,9 @@ class TypeInfo_AssociativeArray : TypeInfo
 
 class TypeInfo_Function : TypeInfo
 {
-    char[] toString()
+    char[] toUtf8()
     {
-        return next.toString() ~ "()";
+        return next.toUtf8() ~ "()";
     }
 
     // BUG: need to add the rest of the functions
@@ -420,9 +420,9 @@ class TypeInfo_Function : TypeInfo
 
 class TypeInfo_Delegate : TypeInfo
 {
-    char[] toString()
+    char[] toUtf8()
     {
-        return next.toString() ~ " delegate()";
+        return next.toUtf8() ~ " delegate()";
     }
 
     // BUG: need to add the rest of the functions
@@ -437,7 +437,7 @@ class TypeInfo_Delegate : TypeInfo
 
 class TypeInfo_Class : TypeInfo
 {
-    char[] toString() { return info.name; }
+    char[] toUtf8() { return info.name; }
 
     hash_t getHash(void *p)
     {
@@ -485,7 +485,7 @@ class TypeInfo_Class : TypeInfo
 
 class TypeInfo_Struct : TypeInfo
 {
-    char[] toString() { return name; }
+    char[] toUtf8() { return name; }
 
     hash_t getHash(void *p)
     {   hash_t h;
@@ -579,7 +579,7 @@ class Exception : Object
         this.line = line;
     }
 
-    char[] toString()
+    char[] toUtf8()
     {
         return msg;
     }

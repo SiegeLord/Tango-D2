@@ -29,7 +29,7 @@ private import typeinfo.ti_real;
 
 class TypeInfo_Ae : TypeInfo
 {
-    char[] toString() { return "real[]"; }
+    char[] toUtf8() { return "real[]"; }
 
     hash_t getHash(void *p)
     {	real[] s = *cast(real[]*)p;
@@ -94,5 +94,5 @@ class TypeInfo_Ae : TypeInfo
 
 class TypeInfo_Aj : TypeInfo_Ae
 {
-    char[] toString() { return "ireal[]"; }
+    char[] toUtf8() { return "ireal[]"; }
 }

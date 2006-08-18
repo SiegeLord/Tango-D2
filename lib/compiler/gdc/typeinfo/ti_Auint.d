@@ -7,7 +7,7 @@ private import tango.stdc.string;
 
 class TypeInfo_Ak : TypeInfo
 {
-    char[] toString() { return "uint[]"; }
+    char[] toUtf8() { return "uint[]"; }
 
     hash_t getHash(void *p)
     {	uint[] s = *cast(uint[]*)p;

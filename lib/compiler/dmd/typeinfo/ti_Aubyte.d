@@ -8,7 +8,7 @@ private import util.string;
 
 class TypeInfo_Ah : TypeInfo
 {
-    char[] toString() { return "ubyte[]"; }
+    char[] toUtf8() { return "ubyte[]"; }
 
     hash_t getHash(void *p)
     {	ubyte[] s = *cast(ubyte[]*)p;
@@ -78,12 +78,12 @@ class TypeInfo_Ah : TypeInfo
 
 class TypeInfo_Av : TypeInfo_Ah
 {
-    char[] toString() { return "void[]"; }
+    char[] toUtf8() { return "void[]"; }
 }
 
 // bool[]
 
 class TypeInfo_Ax : TypeInfo_Ah
 {
-    char[] toString() { return "bool[]"; }
+    char[] toUtf8() { return "bool[]"; }
 }

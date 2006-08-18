@@ -5,7 +5,7 @@ module typeinfo.ti_dchar;
 
 class TypeInfo_w : TypeInfo
 {
-    char[] toString() { return "dchar"; }
+    char[] toUtf8() { return "dchar"; }
 
     hash_t getHash(void *p)
     {

@@ -7,6 +7,6 @@ private import typeinfo.ti_double;
 
 class TypeInfo_p : TypeInfo_d
 {
-    char[] toString() { return "idouble"; }
+    char[] toUtf8() { return "idouble"; }
 }
 

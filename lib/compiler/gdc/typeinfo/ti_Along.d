@@ -7,7 +7,7 @@ private import tango.stdc.string;
 
 class TypeInfo_Al : TypeInfo
 {
-    char[] toString() { return "long[]"; }
+    char[] toUtf8() { return "long[]"; }
 
     hash_t getHash(void *p)
     {	long[] s = *cast(long[]*)p;

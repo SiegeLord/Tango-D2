@@ -8,7 +8,7 @@ private import util.string;
 
 class TypeInfo_Aa : TypeInfo
 {
-    char[] toString() { return "char[]"; }
+    char[] toUtf8() { return "char[]"; }
 
     hash_t getHash(void *p)
     {   char[] s = *cast(char[]*)p;

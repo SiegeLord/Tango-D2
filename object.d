@@ -7,7 +7,7 @@ alias size_t hash_t;
 
 class Object
 {
-    char[] toString();
+    char[] toUtf8();
     hash_t toHash();
     int opCmp(Object o);
     int opEquals(Object o);
@@ -109,5 +109,5 @@ class Exception : Object
 
     this(char[] msg, Exception next = null);
     this(char[] msg, char[] file, size_t line, Exception next = null);
-    char[] toString();
+    char[] toUtf8();
 }

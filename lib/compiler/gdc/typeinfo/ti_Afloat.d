@@ -29,7 +29,7 @@ private import typeinfo.ti_float;
 
 class TypeInfo_Af : TypeInfo
 {
-    char[] toString() { return "float[]"; }
+    char[] toUtf8() { return "float[]"; }
 
     hash_t getHash(void *p)
     {	float[] s = *cast(float[]*)p;
@@ -92,5 +92,5 @@ class TypeInfo_Af : TypeInfo
 
 class TypeInfo_Ao : TypeInfo_Af
 {
-    char[] toString() { return "ifloat[]"; }
+    char[] toUtf8() { return "ifloat[]"; }
 }

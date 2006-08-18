@@ -5,7 +5,7 @@ module typeinfo.ti_cfloat;
 
 class TypeInfo_q : TypeInfo
 {
-    char[] toString() { return "cfloat"; }
+    char[] toUtf8() { return "cfloat"; }
 
     hash_t getHash(void *p)
     {

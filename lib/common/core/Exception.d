@@ -66,7 +66,7 @@ class FinalizeException : Exception
         info = c;
     }
 
-    char[] toString()
+    char[] toUtf8()
     {
         return "An exception was thrown while finalizing an instance of class " ~ info.name;
     }
@@ -83,9 +83,9 @@ class OutOfMemoryException : Exception
         super( "Memory allocation failed", file, line );
     }
 
-    char[] toString()
+    char[] toUtf8()
     {
-        return msg ? super.toString() : "Memory allocation failed";
+        return msg ? super.toUtf8() : "Memory allocation failed";
     }
 }
 

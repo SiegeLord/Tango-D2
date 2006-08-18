@@ -29,7 +29,7 @@ private import typeinfo.ti_cfloat;
 
 class TypeInfo_Aq : TypeInfo
 {
-    char[] toString() { return "cfloat[]"; }
+    char[] toUtf8() { return "cfloat[]"; }
 
     hash_t getHash(void *p)
     {	cfloat[] s = *cast(cfloat[]*)p;

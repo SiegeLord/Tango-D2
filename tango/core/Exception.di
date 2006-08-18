@@ -33,7 +33,7 @@ class FinalizeException : Exception
 super("Finalization error",e);
 info = c;
 }
-    char[] toString()
+    char[] toUtf8()
 {
 return "An exception was thrown while finalizing an instance of class " ~ info.name;
 }
@@ -44,9 +44,9 @@ class OutOfMemoryException : Exception
 {
 super("Memory allocation failed",file,line);
 }
-    char[] toString()
+    char[] toUtf8()
 {
-return msg ? super.toString() : "Memory allocation failed";
+return msg ? super.toUtf8() : "Memory allocation failed";
 }
 }
 class SwitchException : Exception
@@ -73,35 +73,35 @@ void setCollectHandler(collectHandlerType h)
 {
 collectHandler = h;
 }
-extern (C) 
+extern (C)
 {
     void onAssertError(char[] file, uint line);
 }
-extern (C) 
+extern (C)
 {
     void onAssertErrorMsg(char[] file, uint line, char[] msg);
 }
-extern (C) 
+extern (C)
 {
     bool onCollectResource(Object obj);
 }
-extern (C) 
+extern (C)
 {
     void onArrayBoundsError(char[] file, size_t line);
 }
-extern (C) 
+extern (C)
 {
     void onFinalizeError(ClassInfo info, Exception ex);
 }
-extern (C) 
+extern (C)
 {
     void onOutOfMemoryError();
 }
-extern (C) 
+extern (C)
 {
     void onSwitchError(char[] file, size_t line);
 }
-extern (C) 
+extern (C)
 {
     void onUnicodeError(char[] msg, size_t idx);
 }
