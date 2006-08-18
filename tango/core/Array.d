@@ -881,7 +881,7 @@ else
 
 
 ////////////////////////////////////////////////////////////////////////////////
-// Find
+// Count
 ////////////////////////////////////////////////////////////////////////////////
 
 
@@ -961,6 +961,157 @@ else
         assert( count( buf, 2 ) == 3 );
         assert( count( buf, 9 ) == 1 );
         assert( count( buf, 4 ) == 0 );
+      }
+    }
+}
+
+
+////////////////////////////////////////////////////////////////////////////////
+// Sort
+////////////////////////////////////////////////////////////////////////////////
+
+
+version( DDoc )
+{
+    /**
+     * Sorts a range using the supplied predicate or '<' if none is supplied.
+     * The algorithm is not required to be stable.  The current implementation
+     * is based on quicksort, but uses a three-way partitioning scheme to
+     * improve performance for ranges containing duplicate values (Bentley and
+     * McIlroy, 1993).
+     *
+     * Params:
+     *  buf  = The array to sort.  This parameter is not marked 'inout' to
+     *         allow temporary slices to be sorted.  As buf is not resized
+     *         in any way, omitting the 'inout' qualifier has no effect on
+     *         the result of this operation, even though it may be viewed
+     *         as a side-effect.
+     *  pred = The evaluation predicate, which should return true if e1 is
+     *         less than e2 and false if not.  This predicate may be any
+     *         callable type.
+     */
+    void sort( Elem[] buf, Pred2E pred = Pred2E.init );
+}
+else
+{
+    template sort_( Elem, Pred = IsLess!(Elem) )
+    {
+        static assert( isCallableType!(Pred ) );
+
+
+        // NOTE: buf is not 'inout' so subranges can be sorted.  This should
+        //       work for D arrays, since the Array type contains a pointer
+        //       to the referenced data.
+        void fn( Elem[] buf, Pred pred = Pred.init )
+        {
+            bool equiv( Elem p1, Elem p2 )
+            {
+                return !pred( p1, p2 ) && !pred( p2, p1 );
+            }
+
+            void exch( inout Elem p1, inout Elem p2 )
+            {
+                Elem t = p1;
+                p1 = p2;
+                p2 = t;
+            }
+
+            // NOTE: The original algorithm relies on the use of signed index
+            //       values, and modifying it to use unsigned values is non-
+            //       trivial.  For now, signed values will be used, and buf
+            //       simply must be <= ptrdiff_t.max elements in size.
+            void quicksort( ptrdiff_t l, ptrdiff_t r )
+            {
+                if( r <= l )
+                    return;
+
+                // The general goal is to partition the range into three
+                // parts, one each for keys smaller than, equal to, and
+                // larger than the partitioning element:
+                //
+                // |--less than v--|--equal to v--|--greater than v--|
+                // l               j              i                  r
+                //
+                // During partitioning, we maintain:
+                //
+                // |--equal--|--less--|--[###]--|--greater--|--equal--[v]
+                // l         p        i         j           q          r
+
+                Elem        v = buf[r];
+                ptrdiff_t   i = l - 1,
+                            j = r,
+                            p = l - 1,
+                            q = r,
+                            k;
+
+                while( true )
+                {
+                    while( i < r && pred( buf[++i], v ) )
+                        {}
+                    while( j > l && pred( v, buf[--j] ) )
+                        {}
+                    if( i >= j )
+                        break;
+                    exch( buf[i], buf[j] );
+                    if( equiv( buf[i], v ) )
+                        exch( buf[++p], buf[i] );
+                    if( equiv( v, buf[j] ) )
+                        exch( buf[--q], buf[j] );
+                }
+                exch( buf[i], buf[r] );
+                j = i - 1;
+                i = i + 1;
+                for( k = l; k <= p; k++, j-- )
+                    exch( buf[k], buf[j] );
+                for( k = r - 1; k >= q; k--, i++ )
+                    exch( buf[k], buf[i] );
+                quicksort( l, j );
+                quicksort( i, r );
+            }
+
+            if( buf.length > 1 )
+            {
+                quicksort( 0, buf.length - 1 );
+            }
+        }
+    }
+
+
+    template sort( Buf )
+    {
+        void sort( Buf buf )
+        {
+            return sort_!(ElemTypeOf!(Buf)).fn( buf );
+        }
+    }
+
+
+    template sort( Buf, Pred )
+    {
+        void sort( Buf buf, Pred pred )
+        {
+            return sort_!(ElemTypeOf!(Buf), Pred).fn( buf, pred );
+        }
+    }
+
+
+    debug( UnitTest )
+    {
+      unittest
+      {
+        int[5] buf;
+
+        buf[0] = 5;
+        buf[1] = 4;
+        buf[2] = 1;
+        buf[3] = 3;
+        buf[4] = 2;
+
+        sort( buf );
+        foreach( i, v; buf )
+        {
+            assert( v == i + 1 );
+        }
       }
     }
 }
