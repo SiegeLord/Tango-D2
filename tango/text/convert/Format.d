@@ -1875,8 +1875,6 @@ class NumberFormat
 
 debug (UnitTest)
 {
-    //import tango.text.locale.Core;
-    import tango.stdc.stdio;
 unittest{
 
     assert( Formatter.format( "abc" ) == "abc" );
