@@ -30,7 +30,7 @@ void main (char[][] args)
         // open a web-page for reading (see HttpPost for writing)
         auto page = new HttpGet (url);
 
-        // retrieve and display content
-        Cout (cast(char[]) page.read);
+        // retrieve and flush display content
+        Cout (cast(char[]) page.read) ();
 }
 
