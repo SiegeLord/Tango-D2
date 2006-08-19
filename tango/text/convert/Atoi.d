@@ -45,19 +45,19 @@ struct AtoiT(T)
 
                 // strip off whitespace and sign characters
                 for (c = *p; len; c = *++p, --len)
-                     if (c == ' ' || c == '\t')
+                     if (c is ' ' || c is '\t')
                         {}
                      else
-                        if (c == '-')
+                        if (c is '-')
                             sign = true;
                         else
-                           if (c == '+')
+                           if (c is '+')
                                sign = false;
                         else
                            break;
 
                 // strip off a radix specifier also?
-                if (c == '0' && len)
+                if (c is '0' && len > 1)
                     switch (*++p)
                            {
                            case 'x':
@@ -148,7 +148,7 @@ struct AtoiT(T)
                 ulong result = convert (digits[eaten..length], rdx, ate);
 
                 if (ate)
-                    ate += eaten;
+                    *ate += eaten;
 
                 return cast(long) (sign ? -result : result);
         }
