@@ -17,59 +17,59 @@ private import  tango.io.Console;
 private import  tango.io.model.IBuffer,
                 tango.io.model.IConduit;
 
-private import tango.text.convert.Format;
+private import  tango.text.convert.Format;
 
 /*******************************************************************************
 
         A bridge between a Format instance and a Buffer. This is used for
-        the Stdout & Stderr globals, but can be used for general-purpose
+        the Stdout & Stderr globals, but can be used for general purpose
         buffer-formatting as desired. The Template type 'T' dictates the 
         text arrangement within the target buffer ~ one of char, wchar or
         dchar (utf8, utf16, or utf32)
 
 *******************************************************************************/
 
-private class BufferedFormat
+private class BufferedFormat(T)
 {
         public alias print      opCall;
 
-        private IBuffer         target;
-        private bool            autoFlush;
+        private T[]             eol;
+        private IBuffer         output;
 
         /**********************************************************************
 
                 Construct a BufferedFormat instance, tying the provided
-                buffer to a formatter. Set option 'flush' to true if the
-                result should be flushed after each output operation.
+                buffer to a formatter
 
         **********************************************************************/
 
-        this (IBuffer target, bool autoFlush = true)
+        this (IBuffer output, T[] eol = "\n")
         {
-                this.target = target;
-                this.autoFlush = autoFlush;
+                this.output = output;
+                this.eol = eol;
         }
                 
         /**********************************************************************
 
+                Format output using the provided formatting specification
+
         **********************************************************************/
 
-        final BufferedFormat format (char[] fmt, ...)
+        final BufferedFormat format (T[] fmt, ...)
         {
                 Formatter.format (&sink, _arguments, _argptr, fmt);
-
-                if (autoFlush)
-                    target.flush;
                 return this;
         }
 
         /**********************************************************************
 
+                Format output using a default layout
+
         **********************************************************************/
 
         final BufferedFormat print (...)        
         {
-                static  char[][] fmt = 
+                static  T[][] fmt = 
                         [
                         "{0}",
                         "{0}, {1}",
@@ -88,63 +88,57 @@ private class BufferedFormat
 
                 // zero args is just a flush
                 if (count is 0)
-                    target.flush;
+                    output.flush;
                 else
-                   {
                    Formatter.format (&sink, _arguments, _argptr, fmt[count-1]);
-                   if (autoFlush)
-                       target.flush;
-                   }
+
                 return this;
         }
 
         /***********************************************************************
         
-                Emit a newline
+                output a newline
 
         ***********************************************************************/
 
         final BufferedFormat newline ()
         {
-                target.append ("\n");
-
-                if (autoFlush)
-                    target.flush;
+                output(eol).flush;
                 return this;
         }
 
         /**********************************************************************
 
-                Render content -- flush the output buffer
+               Flush the output buffer
 
         **********************************************************************/
 
         final BufferedFormat flush ()
         {
-                target.flush;
+                output.flush;
                 return this;
         }      
         
         /**********************************************************************
 
-                return the associated buffer
+                Return the associated buffer
 
         **********************************************************************/
 
         final IBuffer buffer ()
         {
-                return target;
+                return output;
         }      
 
         /**********************************************************************
 
-                return the associated conduit
+                Return the associated conduit
 
         **********************************************************************/
 
         final IConduit conduit ()
         {
-                return target.getConduit;
+                return output.getConduit;
         }      
 
         /**********************************************************************
@@ -153,9 +147,9 @@ private class BufferedFormat
 
         **********************************************************************/
 
-        private final uint sink (char[] s)
+        private final uint sink (T[] s)
         {
-                target.append (s);
+                output (s);
                 return s.length;
         }
 }
@@ -176,12 +170,12 @@ private class BufferedFormat
 
 *******************************************************************************/
 
-public static BufferedFormat Stdout, 
-                             Stderr;
+public static BufferedFormat!(char)     Stdout, 
+                                        Stderr;
 
 static this()
 {
-        Stdout = new BufferedFormat (Cout);
-        Stderr = new BufferedFormat (Cerr);
+        Stdout = new BufferedFormat!(char) (Cout);
+        Stderr = new BufferedFormat!(char) (Cerr);
 }
 
