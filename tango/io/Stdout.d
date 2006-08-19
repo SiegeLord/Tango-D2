@@ -33,22 +33,21 @@ private class BufferedFormat
 {
         public alias print      opCall;
 
-        private bool            flush;
         private IBuffer         target;
-        private static char[]   One = "{0}";
+        private bool            autoFlush;
 
         /**********************************************************************
 
                 Construct a BufferedFormat instance, tying the provided
-                buffer to a formatter. Set option 'flush' to true if
-                the result should be flushed when complete.
+                buffer to a formatter. Set option 'flush' to true if the
+                result should be flushed after each output operation.
 
         **********************************************************************/
 
-        this (IBuffer target, bool flush = true)
+        this (IBuffer target, bool autoFlush = true)
         {
                 this.target = target;
-                this.flush = flush;
+                this.autoFlush = autoFlush;
         }
                 
         /**********************************************************************
@@ -58,7 +57,10 @@ private class BufferedFormat
         final BufferedFormat format (char[] fmt, ...)
         {
                 Formatter.format (&sink, _arguments, _argptr, fmt);
-                return render;
+
+                if (autoFlush)
+                    target.flush;
+                return this;
         }
 
         /**********************************************************************
@@ -85,9 +87,15 @@ private class BufferedFormat
                 assert (count < 10);
 
                 // zero args is just a flush
-                if (count > 0)
-                    Formatter.format (&sink, _arguments, _argptr, fmt[count-1]);
-                return render;
+                if (count is 0)
+                    target.flush;
+                else
+                   {
+                   Formatter.format (&sink, _arguments, _argptr, fmt[count-1]);
+                   if (autoFlush)
+                       target.flush;
+                   }
+                return this;
         }
 
         /***********************************************************************
@@ -99,9 +107,24 @@ private class BufferedFormat
         final BufferedFormat newline ()
         {
                 target.append ("\n");
-                return render();
+
+                if (autoFlush)
+                    target.flush;
+                return this;
         }
 
+        /**********************************************************************
+
+                Render content -- flush the output buffer
+
+        **********************************************************************/
+
+        final BufferedFormat flush ()
+        {
+                target.flush;
+                return this;
+        }      
+        
         /**********************************************************************
 
                 return the associated buffer
@@ -135,20 +158,6 @@ private class BufferedFormat
                 target.append (s);
                 return s.length;
         }
-
-        /**********************************************************************
-
-                Render content -- flush the output buffer
-
-        **********************************************************************/
-
-        private final BufferedFormat render ()
-        {
-                if (flush)
-                    target.flush;
-                return this;
-        }      
-        
 }
 
 /*******************************************************************************
