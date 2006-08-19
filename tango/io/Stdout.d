@@ -31,7 +31,7 @@ private import tango.text.convert.Format;
 
 private class BufferedFormat
 {
-        public alias print opCall;
+        public alias print      opCall;
 
         private bool            flush;
         private IBuffer         target;
@@ -57,68 +57,37 @@ private class BufferedFormat
 
         final BufferedFormat format (char[] fmt, ...)
         {
-                uint sink (char[] s)
-                {
-                        target.append (s);
-                        return s.length;
-                }
-
                 Formatter.format (&sink, _arguments, _argptr, fmt);
-                return render();
+                return render;
         }
 
         /**********************************************************************
 
         **********************************************************************/
 
-        final BufferedFormat print (bool v)
+        final BufferedFormat print (...)        
         {
-                return format (One, v);
-        }
+                static  char[][] fmt = 
+                        [
+                        "{0}",
+                        "{0}, {1}",
+                        "{0}, {1}, {2}",
+                        "{0}, {1}, {2}, {3}",
+                        "{0}, {1}, {2}, {3}, {4}",
+                        "{0}, {1}, {2}, {3}, {4}, {5}",
+                        "{0}, {1}, {2}, {3}, {4}, {5}, {6}",
+                        "{0}, {1}, {2}, {3}, {4}, {5}, {6}, {7}",
+                        "{0}, {1}, {2}, {3}, {4}, {5}, {6}, {7}, {8}",
+                        "{0}, {1}, {2}, {3}, {4}, {5}, {6}, {7}, {8}, {9}",
+                        ];
 
-        /**********************************************************************
+                int count = _arguments.length;
+                assert (count < 10);
 
-        **********************************************************************/
-
-        final BufferedFormat print (int v)
-        {
-                return format (One, v);
-        }
-
-        /**********************************************************************
-
-        **********************************************************************/
-
-        final BufferedFormat print (long v)
-        {
-                return format (One, v);
-        }
-
-        /**********************************************************************
-
-        **********************************************************************/
-
-        final BufferedFormat print (double v)
-        {
-                return format (One, v);
-        }
-
-        /**********************************************************************
-
-        **********************************************************************/
-
-        final BufferedFormat print (Object v)
-        {
-                return format (One, v);
-        }
-
-        /**********************************************************************
-
-        **********************************************************************/
-
-        final BufferedFormat print (char[] v)
-        {
-                return format (One, v);
+                // zero args is just a flush
+                if (count > 0)
+                    Formatter.format (&sink, _arguments, _argptr, fmt[count-1]);
+                return render;
         }
 
         /***********************************************************************
@@ -157,11 +126,23 @@ private class BufferedFormat
 
         /**********************************************************************
 
+                Sink for passing to the formatter
+
+        **********************************************************************/
+
+        private final uint sink (char[] s)
+        {
+                target.append (s);
+                return s.length;
+        }
+
+        /**********************************************************************
+
                 Render content -- flush the output buffer
 
         **********************************************************************/
 
-        private BufferedFormat render ()
+        private final BufferedFormat render ()
         {
                 if (flush)
                     target.flush;
