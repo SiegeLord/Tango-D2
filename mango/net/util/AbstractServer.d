@@ -83,7 +83,7 @@ class AbstractServer : IServer
 
         **********************************************************************/
 
-        protected abstract char[] toString();
+        protected abstract char[] toUtf8();
 
         /**********************************************************************
 
@@ -187,8 +187,8 @@ class AbstractServer : IServer
                 for (int i=threads; --i >= 0;)
                      createThread (socket).execute;
 
-                char[] info = "Server "~toString()~" started on "~
-                               socket.localAddress().toString()~
+                char[] info = "Server "~toUtf8()~" started on "~
+                               socket.localAddress().toUtf8()~
                                " with "~Integer.format(new char[5], threads)~" accept threads, "~
                                Integer.format(new char[5], backlog)~" backlogs";
 

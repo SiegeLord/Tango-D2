@@ -80,7 +80,7 @@ class TigerDigest : Digest
 
         ***********************************************************************/
 
-        char[] toString() { return toHexString (cast(ubyte[]) digest); }
+        char[] toUtf8() { return toHexString (cast(ubyte[]) digest); }
 
         /***********************************************************************
 
@@ -964,17 +964,17 @@ unittest {
 
         foreach(int i, char[] s; strings) {
                 d = cast(TigerDigest)h.sum(s);
-                assert(d.toString() == results[i],"Cipher:("~s~")("~d.toString()~")!=("~results[i]~")");
+                assert(d.toUtf8() == results[i],"Cipher:("~s~")("~d.toUtf8()~")!=("~results[i]~")");
 
                 e = new TigerDigest(d);
-                assert(d == e,"Digest from Digest:("~d.toString()~")!=("~e.toString()~")");
+                assert(d == e,"Digest from Digest:("~d.toUtf8()~")!=("~e.toUtf8()~")");
 
                 e = new TigerDigest(d.toBinary());
-                assert(d == e,"Digest from Digest binary:("~d.toString()~")!=("~e.toString()~")");
+                assert(d == e,"Digest from Digest binary:("~d.toUtf8()~")!=("~e.toUtf8()~")");
 
                 h = new TigerCipher(d);
                 e = h.getDigest();
-                assert(d == e,"Digest from Cipher continue:("~d.toString()~")!=("~e.toString()~")");
+                assert(d == e,"Digest from Cipher continue:("~d.toUtf8()~")!=("~e.toUtf8()~")");
         }
 
         ubyte[65536] buffer;
@@ -983,7 +983,7 @@ unittest {
                 buffer[i] = cast(ubyte) i;
 
         d = cast(TigerDigest)h.sum(buffer);
-        assert(d.toString() == "8EF43951B3F5F4FD1D41AFE51B420E710462F233C3AAA8E1",
-                "Cipher:(65k)("~d.toString()~")!=(8EF43951B3F5F4FD1D41AFE51B420E710462F233C3AAA8E1)");
+        assert(d.toUtf8() == "8EF43951B3F5F4FD1D41AFE51B420E710462F233C3AAA8E1",
+                "Cipher:(65k)("~d.toUtf8()~")!=(8EF43951B3F5F4FD1D41AFE51B420E710462F233C3AAA8E1)");
 }
 }

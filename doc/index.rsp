@@ -216,7 +216,6 @@ tango\store\model\Set.d
 tango\core\Array.d
 mango\net\servlet\model\IServletResponse.d
 tango\store\impl\RBCell.d
-tango\text\model\UniString.d
 tango\store\model\BinaryFunction.d
 tango\sys\OS.d
 mango\net\util\model\IServer.d

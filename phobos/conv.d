@@ -49,7 +49,7 @@ $(I UnsignedInteger):
 
 module phobos.conv;
 
-private import phobos.string;  // for atof(), toString()
+private import phobos.string;  // for atof(), toUtf8()
 private import phobos.c.stdlib;
 private import phobos.math;  // for fabs(), isnan()
 private import phobos.stdio; // for writefln() and printf()
@@ -877,7 +877,7 @@ float toFloat(in char[] s)
     char* sz;
 
     //writefln("toFloat('%s')", s);
-    sz = toStringz(s);
+    sz = toUtf8z(s);
     if (phobos.ctype.isspace(*sz))
 	goto Lerr;
 
@@ -923,11 +923,11 @@ unittest
     assert(feq(cast(real)f, cast(real)1.17549e-38));
     assert(feq(cast(real)f, cast(real)float.min));
     f = toFloat("3.40282e+38");
-    assert(toString(f) == toString(3.40282e+38));
+    assert(toUtf8(f) == toUtf8(3.40282e+38));
 
     // nan
     f = toFloat("nan");
-    assert(toString(f) == toString(float.nan));
+    assert(toUtf8(f) == toUtf8(float.nan));
 }
 
 /*******************************************************
@@ -941,7 +941,7 @@ double toDouble(in char[] s)
     char* sz;
 
     //writefln("toDouble('%s')", s);
-    sz = toStringz(s);
+    sz = toUtf8z(s);
     if (phobos.ctype.isspace(*sz))
 	goto Lerr;
 
@@ -988,12 +988,12 @@ unittest
     assert(feq(cast(real)d, cast(real)2.22507e-308));
     assert(feq(cast(real)d, cast(real)double.min));
     d = toDouble("1.79769e+308");
-    assert(toString(d) == toString(1.79769e+308));
-    assert(toString(d) == toString(double.max));
+    assert(toUtf8(d) == toUtf8(1.79769e+308));
+    assert(toUtf8(d) == toUtf8(double.max));
 
     // nan
     d = toDouble("nan");
-    assert(toString(d) == toString(double.nan));
+    assert(toUtf8(d) == toUtf8(double.nan));
     //assert(cast(real)d == cast(real)double.nan);
 }
 
@@ -1007,7 +1007,7 @@ real toReal(in char[] s)
     char* sz;
 
     //writefln("toReal('%s')", s);
-    sz = toStringz(s);
+    sz = toUtf8z(s);
     if (phobos.ctype.isspace(*sz))
 	goto Lerr;
 
@@ -1049,22 +1049,22 @@ unittest
 
     r = toReal("1.23456e+2");
     assert(feq(r,  1.23456e+2L));
-    r = toReal(toString(real.max / 2L));
-    assert(toString(r) == toString(real.max / 2L));
+    r = toReal(toUtf8(real.max / 2L));
+    assert(toUtf8(r) == toUtf8(real.max / 2L));
 
     // min and max
-    r = toReal(toString(real.min));
-    assert(toString(r) == toString(real.min));
-    r = toReal(toString(real.max));
-    assert(toString(r) == toString(real.max));
+    r = toReal(toUtf8(real.min));
+    assert(toUtf8(r) == toUtf8(real.min));
+    r = toReal(toUtf8(real.max));
+    assert(toUtf8(r) == toUtf8(real.max));
 
     // nan
     r = toReal("nan");
-    assert(toString(r) == toString(real.nan));
+    assert(toUtf8(r) == toUtf8(real.nan));
     //assert(r == real.nan);
 
-    r = toReal(toString(real.nan));
-    assert(toString(r) == toString(real.nan));
+    r = toReal(toUtf8(real.nan));
+    assert(toUtf8(r) == toUtf8(real.nan));
     //assert(r == real.nan);
 }
 
@@ -1073,7 +1073,7 @@ version (none)
      * what to do about the 'i' suffix. Should it be there?
      * Should it not? What about 'nan', should it be 'nani'?
      * 'infinity' or 'infinityi'?
-     * Should it match what toString(ifloat) does with the 'i' suffix?
+     * Should it match what toUtf8(ifloat) does with the 'i' suffix?
      */
 
 /*******************************************************
@@ -1090,27 +1090,27 @@ unittest
     debug(conv) writefln("conv.toIfloat.unittest");
     ifloat ift;
     
-    ift = toIfloat(toString(123.45));
-    assert(toString(ift) == toString(123.45i));
+    ift = toIfloat(toUtf8(123.45));
+    assert(toUtf8(ift) == toUtf8(123.45i));
 
-    ift = toIfloat(toString(456.77i));
-    assert(toString(ift) == toString(456.77i));
+    ift = toIfloat(toUtf8(456.77i));
+    assert(toUtf8(ift) == toUtf8(456.77i));
 
     // min and max
-    ift = toIfloat(toString(ifloat.min));
-    assert(toString(ift) == toString(ifloat.min) );
+    ift = toIfloat(toUtf8(ifloat.min));
+    assert(toUtf8(ift) == toUtf8(ifloat.min) );
     assert(feq(cast(ireal)ift, cast(ireal)ifloat.min));
 
-    ift = toIfloat(toString(ifloat.max));
-    assert(toString(ift) == toString(ifloat.max));
+    ift = toIfloat(toUtf8(ifloat.max));
+    assert(toUtf8(ift) == toUtf8(ifloat.max));
     assert(feq(cast(ireal)ift, cast(ireal)ifloat.max));
    
     // nan
     ift = toIfloat("nani");
     assert(cast(real)ift == cast(real)ifloat.nan);
 
-    ift = toIfloat(toString(ifloat.nan));
-    assert(toString(ift) == toString(ifloat.nan));
+    ift = toIfloat(toUtf8(ifloat.nan));
+    assert(toUtf8(ift) == toUtf8(ifloat.nan));
     assert(feq(cast(ireal)ift, cast(ireal)ifloat.nan));
 }
 
@@ -1128,20 +1128,20 @@ unittest
     debug(conv) writefln("conv.toIdouble.unittest");
     idouble id;
 
-    id = toIdouble(toString("123.45"));
+    id = toIdouble(toUtf8("123.45"));
     assert(id == 123.45i);
 
-    id = toIdouble(toString("123.45e+302i"));
+    id = toIdouble(toUtf8("123.45e+302i"));
     assert(id == 123.45e+302i);
 
     // min and max
-    id = toIdouble(toString(idouble.min));
-    assert(toString( id ) == toString(idouble.min));
+    id = toIdouble(toUtf8(idouble.min));
+    assert(toUtf8( id ) == toUtf8(idouble.min));
     assert(feq(cast(ireal)id.re, cast(ireal)idouble.min.re));
     assert(feq(cast(ireal)id.im, cast(ireal)idouble.min.im));
     
-    id = toIdouble(toString(idouble.max));
-    assert(toString(id) == toString(idouble.max));
+    id = toIdouble(toUtf8(idouble.max));
+    assert(toUtf8(id) == toUtf8(idouble.max));
     assert(feq(cast(ireal)id.re, cast(ireal)idouble.max.re));
     assert(feq(cast(ireal)id.im, cast(ireal)idouble.max.im));
     
@@ -1149,8 +1149,8 @@ unittest
     id = toIdouble("nani");
     assert(cast(real)id == cast(real)idouble.nan);
 
-    id = toIdouble(toString(idouble.nan));
-    assert(toString(id) == toString(idouble.nan));
+    id = toIdouble(toUtf8(idouble.nan));
+    assert(toUtf8(id) == toUtf8(idouble.nan));
 }
 
 /*******************************************************
@@ -1167,21 +1167,21 @@ unittest
     debug(conv) writefln("conv.toIreal.unittest");
     ireal ir;
 
-    ir = toIreal(toString("123.45"));
+    ir = toIreal(toUtf8("123.45"));
     assert(feq(cast(real)ir.re, cast(real)123.45i)); 
 
-    ir = toIreal(toString("123.45e+82i"));
-    assert(toString(ir) == toString(123.45e+82i));
+    ir = toIreal(toUtf8("123.45e+82i"));
+    assert(toUtf8(ir) == toUtf8(123.45e+82i));
     //assert(ir == 123.45e+82i);
 
     // min and max
-    ir = toIreal(toString(ireal.min));
-    assert(toString(ir) == toString(ireal.min));
+    ir = toIreal(toUtf8(ireal.min));
+    assert(toUtf8(ir) == toUtf8(ireal.min));
     assert(feq(cast(real)ir.re, cast(real)ireal.min.re));
     assert(feq(cast(real)ir.im, cast(real)ireal.min.im));
 
-    ir = toIreal(toString(ireal.max));
-    assert(toString(ir) == toString(ireal.max));
+    ir = toIreal(toUtf8(ireal.max));
+    assert(toUtf8(ir) == toUtf8(ireal.max));
     assert(feq(cast(real)ir.re, cast(real)ireal.max.re));
     //assert(feq(cast(real)ir.im, cast(real)ireal.max.im));
 
@@ -1189,8 +1189,8 @@ unittest
     ir = toIreal("nani");
     assert(cast(real)ir == cast(real)ireal.nan);
 
-    ir = toIreal(toString(ireal.nan));
-    assert(toString(ir) == toString(ireal.nan));
+    ir = toIreal(toUtf8(ireal.nan));
+    assert(toUtf8(ir) == toUtf8(ireal.nan));
 }
 
 
@@ -1248,28 +1248,28 @@ unittest
     debug(conv) writefln("conv.toCfloat.unittest");
     cfloat cf;
 
-    cf = toCfloat(toString("1.2345e-5+0i"));
-    assert(toString(cf) == toString(1.2345e-5+0i));
+    cf = toCfloat(toUtf8("1.2345e-5+0i"));
+    assert(toUtf8(cf) == toUtf8(1.2345e-5+0i));
     assert(feq(cf, 1.2345e-5+0i));
 
     // min and max
-    cf = toCfloat(toString(cfloat.min));
-    assert(toString(cf) == toString(cfloat.min));
+    cf = toCfloat(toUtf8(cfloat.min));
+    assert(toUtf8(cf) == toUtf8(cfloat.min));
 
-    cf = toCfloat(toString(cfloat.max));
-    assert(toString(cf) == toString(cfloat.max));
+    cf = toCfloat(toUtf8(cfloat.max));
+    assert(toUtf8(cf) == toUtf8(cfloat.max));
    
     // nan ( nan+nani )
     cf = toCfloat("nani");
     //writefln("toCfloat() cf=%g, cf=\"%s\", nan=%s", 
-    //         cf, toString(cf), toString(cfloat.nan));
-    assert(toString(cf) == toString(cfloat.nan));
+    //         cf, toUtf8(cf), toUtf8(cfloat.nan));
+    assert(toUtf8(cf) == toUtf8(cfloat.nan));
 
     cf = toCdouble("nan+nani");
-    assert(toString(cf) == toString(cfloat.nan));
+    assert(toUtf8(cf) == toUtf8(cfloat.nan));
 
-    cf = toCfloat(toString(cfloat.nan));
-    assert(toString(cf) == toString(cfloat.nan));
+    cf = toCfloat(toUtf8(cfloat.nan));
+    assert(toUtf8(cf) == toUtf8(cfloat.nan));
     assert(feq(cast(creal)cf, cast(creal)cfloat.nan));
 }
 
@@ -1323,28 +1323,28 @@ unittest
     debug(conv) writefln("conv.toCdouble.unittest");
     cdouble cd;
 
-    cd = toCdouble(toString("1.2345e-5+0i"));
-    assert(toString( cd ) == toString(1.2345e-5+0i));
+    cd = toCdouble(toUtf8("1.2345e-5+0i"));
+    assert(toUtf8( cd ) == toUtf8(1.2345e-5+0i));
     assert(feq(cd, 1.2345e-5+0i));
 
     // min and max
-    cd = toCdouble(toString(cdouble.min));
-    assert(toString(cd) == toString(cdouble.min));
+    cd = toCdouble(toUtf8(cdouble.min));
+    assert(toUtf8(cd) == toUtf8(cdouble.min));
     assert(feq(cast(creal)cd, cast(creal)cdouble.min));
 
-    cd = toCdouble(toString(cdouble.max));
-    assert(toString( cd ) == toString(cdouble.max));
+    cd = toCdouble(toUtf8(cdouble.max));
+    assert(toUtf8( cd ) == toUtf8(cdouble.max));
     assert(feq(cast(creal)cd, cast(creal)cdouble.max));
 
     // nan ( nan+nani )
     cd = toCdouble("nani");
-    assert(toString(cd) == toString(cdouble.nan));
+    assert(toUtf8(cd) == toUtf8(cdouble.nan));
 
     cd = toCdouble("nan+nani");
-    assert(toString(cd) == toString(cdouble.nan));
+    assert(toUtf8(cd) == toUtf8(cdouble.nan));
 
-    cd = toCdouble(toString(cdouble.nan));
-    assert(toString(cd) == toString(cdouble.nan));
+    cd = toCdouble(toUtf8(cdouble.nan));
+    assert(toUtf8(cd) == toUtf8(cdouble.nan));
     assert(feq(cast(creal)cd, cast(creal)cdouble.nan));
 }
 
@@ -1399,12 +1399,12 @@ unittest
     debug(conv) writefln("conv.toCreal.unittest");
     creal cr;
 
-    cr = toCreal(toString("1.2345e-5+0i"));
-    assert(toString(cr) == toString(1.2345e-5+0i));
+    cr = toCreal(toUtf8("1.2345e-5+0i"));
+    assert(toUtf8(cr) == toUtf8(1.2345e-5+0i));
     assert(feq(cr, 1.2345e-5+0i));
 
-    cr = toCreal(toString("0.0e-0+0i"));
-    assert(toString(cr) == toString(0.0e-0+0i));
+    cr = toCreal(toUtf8("0.0e-0+0i"));
+    assert(toUtf8(cr) == toUtf8(0.0e-0+0i));
     assert(cr == 0.0e-0+0i);
     assert(feq(cr, 0.0e-0+0i));
     
@@ -1418,23 +1418,23 @@ unittest
     assert(cr == -78);
 
     // min and max
-    cr = toCreal(toString(creal.min));
-    assert(toString(cr) == toString(creal.min));
+    cr = toCreal(toUtf8(creal.min));
+    assert(toUtf8(cr) == toUtf8(creal.min));
     assert(feq(cr, creal.min));
     
-    cr = toCreal(toString(creal.max));
-    assert(toString(cr) == toString(creal.max));
+    cr = toCreal(toUtf8(creal.max));
+    assert(toUtf8(cr) == toUtf8(creal.max));
     assert(feq(cr, creal.max));
 
     // nan ( nan+nani )
     cr = toCreal("nani");
-    assert(toString(cr) == toString(creal.nan));
+    assert(toUtf8(cr) == toUtf8(creal.nan));
 
     cr = toCreal("nan+nani");
-    assert(toString(cr) == toString(creal.nan));
+    assert(toUtf8(cr) == toUtf8(creal.nan));
 
-    cr = toCreal(toString(cdouble.nan));
-    assert(toString(cr) == toString(creal.nan));
+    cr = toCreal(toUtf8(cdouble.nan));
+    assert(toUtf8(cr) == toUtf8(creal.nan));
     assert(feq(cr, creal.nan));
 }
 

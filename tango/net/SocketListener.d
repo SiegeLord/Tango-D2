@@ -145,7 +145,7 @@ class SocketListener : Thread, IListener
                                         break;
                                     else
                                        {
-                                       exception (x.toString);
+                                       exception (x.toUtf8);
                                        if (--lives is 0)
                                            exception ("listener thread aborting");
                                        }

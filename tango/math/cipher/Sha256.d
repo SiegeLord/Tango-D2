@@ -72,7 +72,7 @@ class Sha256Digest : Digest
 
         ***********************************************************************/
 
-        char[] toString() { return toHexString (cast(ubyte[]) digest); }
+        char[] toUtf8() { return toHexString (cast(ubyte[]) digest); }
 
         /***********************************************************************
 
@@ -421,17 +421,17 @@ unittest {
 
         foreach(int i, char[] s; strings) {
                 d = cast(Sha256Digest)h.sum(s);
-                assert(d.toString() == results[i],"Cipher:("~s~")("~d.toString()~")!=("~results[i]~")");
+                assert(d.toUtf8() == results[i],"Cipher:("~s~")("~d.toUtf8()~")!=("~results[i]~")");
 
                 e = new Sha256Digest(d);
-                assert(d == e,"Digest from Digest:("~d.toString()~")!=("~e.toString()~")");
+                assert(d == e,"Digest from Digest:("~d.toUtf8()~")!=("~e.toUtf8()~")");
 
                 e = new Sha256Digest(d.toBinary());
-                assert(d == e,"Digest from Digest binary:("~d.toString()~")!=("~e.toString()~")");
+                assert(d == e,"Digest from Digest binary:("~d.toUtf8()~")!=("~e.toUtf8()~")");
 
                 h = new Sha256Cipher(d);
                 e = h.getDigest();
-                assert(d == e,"Digest from Cipher continue:("~d.toString()~")!=("~e.toString()~")");
+                assert(d == e,"Digest from Cipher continue:("~d.toUtf8()~")!=("~e.toUtf8()~")");
         }
 }
 }

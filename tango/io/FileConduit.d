@@ -269,9 +269,9 @@ class FileConduit : DeviceConduit, DeviceConduit.Seek
 
         ***********************************************************************/
 
-        override char[] toString ()
+        override char[] toUtf8 ()
         {
-                return path.toString;
+                return path.toUtf8;
         }               
 
         /***********************************************************************
@@ -328,7 +328,7 @@ class FileConduit : DeviceConduit, DeviceConduit.Seek
 
         protected override char[] getName ()
         {
-                return path.toString;
+                return path.toUtf8;
         }               
 
 

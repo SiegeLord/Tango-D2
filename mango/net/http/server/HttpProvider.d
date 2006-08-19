@@ -67,7 +67,7 @@ class HttpProvider : ServiceProvider
 
         **********************************************************************/
 
-        override char[] toString()
+        override char[] toUtf8()
         {
                 return "Naked";
         }

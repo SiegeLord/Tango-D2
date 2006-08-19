@@ -10,7 +10,7 @@ class OutOfMemoryException : Exception
 	super(s);
     }
 
-    char[] toString()
+    char[] toUtf8()
     {
 	return s;
     }

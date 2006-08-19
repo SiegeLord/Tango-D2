@@ -169,7 +169,7 @@ class MutableStringT(T) : StringT!(T)
 
         ***********************************************************************/
 
-        private this ()
+        this ()
         {
                 this.comparator = &simpleComparator;
         }
@@ -193,7 +193,7 @@ class MutableStringT(T) : StringT!(T)
 
         ***********************************************************************/
 
-        this (uint space = 256)
+        this (uint space)
         {
                 content.length = space;
                 mutable = true;

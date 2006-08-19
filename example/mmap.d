@@ -17,7 +17,7 @@ void main (char[][] args)
            auto mmap = new MappedBuffer (new FileConduit (args[1]));
 
            // copy content to console
-           Cout (mmap.toString);
+           Cout (mmap.toUtf8);
            }
         else
            Cout ("usage is: mmap filename");

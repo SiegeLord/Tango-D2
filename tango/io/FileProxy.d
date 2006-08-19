@@ -147,9 +147,9 @@ class FileProxy
 
         ***********************************************************************/
 
-        char[] toString ()
+        char[] toUtf8 ()
         {
-                return path.toString;
+                return path.toUtf8;
         }               
 
         /***********************************************************************
@@ -200,7 +200,7 @@ class FileProxy
 
                 private void exception ()
                 {
-                        throw new IOException (path.toString ~ ": " ~ OS.error);
+                        throw new IOException (path.toUtf8 ~ ": " ~ OS.error);
                 }
 
                 /***************************************************************
@@ -518,7 +518,7 @@ class FileProxy
 
                 private void exception ()
                 {
-                        throw new IOException (path.toString ~ ": " ~ OS.error);
+                        throw new IOException (path.toUtf8 ~ ": " ~ OS.error);
                 }
 
                 /***************************************************************

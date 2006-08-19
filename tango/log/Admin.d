@@ -154,7 +154,7 @@ class AdminServlet : Servlet
                     response.sendRedirect("/admin/logger");
                 else
                    // now list the loggers for the next go round
-                   log.trace ("request to logadmin with uri: " ~ uri.toString());
+                   log.trace ("request to logadmin with uri: " ~ uri.toUtf8());
 
                 // say we're writing html
                 response.setContentType ("text/html");

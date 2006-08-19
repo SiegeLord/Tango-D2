@@ -838,7 +838,7 @@ class FileException : Exception
 
     this(char[] name, uint errno)
     {	char* s = strerror(errno);
-	this(name, phobos.string.toString(s).dup);
+	this(name, phobos.string.toUtf8(s).dup);
 	this.errno = errno;
     }
 }
@@ -858,7 +858,7 @@ void[] read(char[] name)
     byte[] buf;
     char *namez;
 
-    namez = toStringz(name);
+    namez = toUtf8z(name);
     //printf("file.read('%s')\n",namez);
     fd = phobos.c.linux.linux.open(namez, O_RDONLY);
     if (fd == -1)
@@ -912,7 +912,7 @@ void write(char[] name, void[] buffer)
     int numwritten;
     char *namez;
 
-    namez = toStringz(name);
+    namez = toUtf8z(name);
     fd = phobos.c.linux.linux.open(namez, O_CREAT | O_WRONLY | O_TRUNC, 0660);
     if (fd == -1)
         goto err;
@@ -943,7 +943,7 @@ void append(char[] name, void[] buffer)
     int numwritten;
     char *namez;
 
-    namez = toStringz(name);
+    namez = toUtf8z(name);
     fd = phobos.c.linux.linux.open(namez, O_APPEND | O_WRONLY | O_CREAT, 0660);
     if (fd == -1)
         goto err;
@@ -970,8 +970,8 @@ err:
 
 void rename(char[] from, char[] to)
 {
-    char *fromz = toStringz(from);
-    char *toz = toStringz(to);
+    char *fromz = toUtf8z(from);
+    char *toz = toUtf8z(to);
 
     if (phobos.c.stdio.rename(fromz, toz) == -1)
 	throw new FileException(to, errno());
@@ -984,7 +984,7 @@ void rename(char[] from, char[] to)
 
 void remove(char[] name)
 {
-    if (phobos.c.stdio.remove(toStringz(name)) == -1)
+    if (phobos.c.stdio.remove(toUtf8z(name)) == -1)
 	throw new FileException(name, errno());
 }
 
@@ -1000,7 +1000,7 @@ ulong getSize(char[] name)
     struct_stat statbuf;
     char *namez;
 
-    namez = toStringz(name);
+    namez = toUtf8z(name);
     //printf("file.getSize('%s')\n",namez);
     fd = phobos.c.linux.linux.open(namez, O_RDONLY);
     if (fd == -1)
@@ -1042,7 +1042,7 @@ uint getAttributes(char[] name)
     struct_stat statbuf;
     char *namez;
 
-    namez = toStringz(name);
+    namez = toUtf8z(name);
     if (phobos.c.linux.linux.stat(namez, &statbuf))
     {
 	throw new FileException(name, errno());
@@ -1057,13 +1057,13 @@ uint getAttributes(char[] name)
 
 int exists(char[] name)
 {
-    return access(toStringz(name),0) == 0;
+    return access(toUtf8z(name),0) == 0;
 
 /+
     struct_stat statbuf;
     char *namez;
 
-    namez = toStringz(name);
+    namez = toUtf8z(name);
     if (phobos.c.linux.linux.stat(namez, &statbuf))
     {
 	return 0;
@@ -1101,7 +1101,7 @@ int isdir(char[] name)
 
 void chdir(char[] pathname)
 {
-    if (phobos.c.linux.linux.chdir(toStringz(pathname)))
+    if (phobos.c.linux.linux.chdir(toUtf8z(pathname)))
     {
 	throw new FileException(pathname, errno());
     }
@@ -1113,7 +1113,7 @@ void chdir(char[] pathname)
 
 void mkdir(char[] pathname)
 {
-    if (phobos.c.linux.linux.mkdir(toStringz(pathname), 0777))
+    if (phobos.c.linux.linux.mkdir(toUtf8z(pathname), 0777))
     {
 	throw new FileException(pathname, errno());
     }
@@ -1125,7 +1125,7 @@ void mkdir(char[] pathname)
 
 void rmdir(char[] pathname)
 {
-    if (phobos.c.linux.linux.rmdir(toStringz(pathname)))
+    if (phobos.c.linux.linux.rmdir(toUtf8z(pathname)))
     {
 	throw new FileException(pathname, errno());
     }
@@ -1220,7 +1220,7 @@ struct DirEntry
 	struct_stat statbuf;
 	char* namez;
 
-	namez = toStringz(name);
+	namez = toUtf8z(name);
 	if (phobos.c.linux.linux.stat(namez, &statbuf))
 	{
 	    //printf("\tstat error, errno = %d\n",errno());
@@ -1306,7 +1306,7 @@ void listdir(char[] pathname, bool delegate(DirEntry* de) callback)
     dirent* fdata;
     DirEntry de;
 
-    h = opendir(toStringz(pathname));
+    h = opendir(toUtf8z(pathname));
     if (h)
     {
 	try

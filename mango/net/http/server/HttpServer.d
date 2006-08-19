@@ -90,9 +90,9 @@ class HttpServer : AbstractServer
 
         **********************************************************************/
 
-        override char[] toString()
+        override char[] toUtf8()
         {
-                return getProtocol()~"::"~provider.toString();
+                return getProtocol()~"::"~provider.toUtf8();
         }
 
         /**********************************************************************

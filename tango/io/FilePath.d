@@ -377,17 +377,6 @@ class FilePath
         }               
 
         /***********************************************************************
-
-                Convert this FilePath to a char[]
-
-        ***********************************************************************/
-
-        override char[] toString ()
-        {
-                return toUtf8 ();
-        }               
-
-        /***********************************************************************
         
                 Return a zero terminated UTF8 version of this file path
 
@@ -568,7 +557,7 @@ class FilePath
 /*******************************************************************************
 
         Mutable version of FilePath, which allows one to change individual
-        attributes. A change to any attribute will cause method toString() 
+        attributes. A change to any attribute will cause method toUtf8() 
         to rebuild the output.
 
 *******************************************************************************/

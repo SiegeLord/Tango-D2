@@ -66,7 +66,7 @@ public class SocketAppender : Appender
                              Cerr ("SocketAppender: failed to connect\n"c);
 
                 // Get a unique fingerprint for this class
-                mask = register (address.toString);
+                mask = register (address.toUtf8);
         }
 
         /***********************************************************************

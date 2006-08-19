@@ -12,12 +12,12 @@ void main(char[][] args)
 {       
         void files (File file)
         {
-                Cout (file.toString).newline;
+                Cout (file.toUtf8).newline;
         }
 
         void dirs (FilePath path)
         {
-                Cout (path.toString).newline;
+                Cout (path.toUtf8).newline;
         }
 
         char[] dir = (args.length == 2) ? args[1] : ".";

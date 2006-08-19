@@ -3134,7 +3134,7 @@ private
     /*********************************
      * Convert array of chars s[] to a C-style 0 terminated string.
      */
-    char* toStringz(char[] s)
+    char* toUtf8z(char[] s)
         in
         {
         }
@@ -3176,16 +3176,16 @@ private
 
     unittest
     {
-        debug(string) printf("string.toStringz.unittest\n");
+        debug(string) printf("string.toUtf8z.unittest\n");
 
-        char* p = toStringz("foo");
+        char* p = toUtf8z("foo");
         assert(strlen(p) == 3);
         char foo[] = "abbzxyzzy";
-        p = toStringz(foo[3..5]);
+        p = toUtf8z(foo[3..5]);
         assert(strlen(p) == 2);
 
         char[] test = "";
-        p = toStringz(test);
+        p = toUtf8z(test);
         assert(*p == 0);
     }
 
@@ -3492,9 +3492,9 @@ private
          * Convert internal buffer to array of chars.
          */
 
-        char[] toString()
+        char[] toUtf8()
         {
-    	//printf("OutBuffer.toString()\n");
+    	//printf("OutBuffer.toUtf8()\n");
     	return cast(char[])data[0 .. offset];
         }
 
@@ -3510,7 +3510,7 @@ private
     	uint psize;
     	int count;
 
-    	f = toStringz(format);
+    	f = toUtf8z(format);
     	p = buffer;
     	psize = buffer.length;
     	for (;;)
@@ -3599,7 +3599,7 @@ private
         buf.write(cast(byte)0x20);
         buf.write("world");
         buf.printf(" %d", 6);
-        //printf("buf = '%.*s'\n", buf.toString());
-        assert(cmp(buf.toString(), "hello world 6") == 0);
+        //printf("buf = '%.*s'\n", buf.toUtf8());
+        assert(cmp(buf.toUtf8(), "hello world 6") == 0);
     }
 }

@@ -349,7 +349,7 @@ uint32_t ntohl(uint32_t x)
 
 private extern (C) int strlen(char*);
 
-private static char[] toString(char* s)
+private static char[] toUtf8(char* s)
 {
         return s ? s[0 .. strlen(s)] : cast(char[])null;
 }
@@ -1006,7 +1006,7 @@ class Socket : Conduit
 
         ***********************************************************************/
 
-        override char[] toString()
+        override char[] toUtf8()
         {
                 return "Socket";
         }
@@ -1701,7 +1701,7 @@ abstract class Address
         protected sockaddr* name();
         protected int nameLen();
         Socket.AddressFamily addressFamily();
-        char[] toString();
+        char[] toUtf8();
 
         /***********************************************************************
 
@@ -1767,7 +1767,7 @@ class UnknownAddress: Address
 
         ***********************************************************************/
 
-        char[] toString()
+        char[] toUtf8()
         {
                 return "Unknown";
         }
@@ -1808,7 +1808,7 @@ class NetHost
                 int i;
                 char* p;
 
-                name = .toString(he.h_name);
+                name = .toUtf8(he.h_name);
 
                 for(i = 0;; i++)
                 {
@@ -1822,7 +1822,7 @@ class NetHost
                         aliases = new char[][i];
                         for(i = 0; i != aliases.length; i++)
                         {
-                                aliases[i] = .toString(he.h_aliases[i]);
+                                aliases[i] = .toUtf8(he.h_aliases[i]);
                         }
                 }
                 else
@@ -2090,7 +2090,7 @@ class IPv4Address: Address
 
         char[] toAddrString()
         {
-                return .toString(inet_ntoa(sin.sin_addr)).dup;
+                return .toUtf8(inet_ntoa(sin.sin_addr)).dup;
         }
 
 
@@ -2110,7 +2110,7 @@ class IPv4Address: Address
 
         ***********************************************************************/
 
-        char[] toString()
+        char[] toUtf8()
         {
                 return toAddrString() ~ ":" ~ toPortString();
         }
@@ -2136,7 +2136,7 @@ debug(Unittest)
 unittest
 {
         IPv4Address ia = new IPv4Address("63.105.9.61", 80);
-        assert(ia.toString() == "63.105.9.61:80");
+        assert(ia.toUtf8() == "63.105.9.61:80");
 }
 }
 

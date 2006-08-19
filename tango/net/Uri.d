@@ -394,7 +394,7 @@ class Uri
 
         ***********************************************************************/
 
-        override char[] toString ()
+        override char[] toUtf8 ()
         {
                 char[] s;
 

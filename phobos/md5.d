@@ -52,7 +52,7 @@ void MDFile(char[] filename)
     ubyte[4 * 1024] buffer;
     ubyte digest[16];
 
-    if ((file = fopen(phobos.string.toStringz(filename), "rb")) == null)
+    if ((file = fopen(phobos.string.toUtf8z(filename), "rb")) == null)
 	writefln("%s can't be opened", filename);
     else
     {

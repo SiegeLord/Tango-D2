@@ -392,7 +392,7 @@ protected class QueuedEntry : Payload
 
         **********************************************************************/
 
-        override char[] toString()
+        override char[] toUtf8()
         {
                 return key;
         }

@@ -27,7 +27,7 @@ private import tango.log.model.ILevel;
         Logger myLogger = Logger.getLogger ("my.logger");
 
         myLogger.info  ("an informational message");
-        myLogger.error ("an exception message: " ~ exception.toString);
+        myLogger.error ("an exception message: " ~ exception.toUtf8);
 
         etc ...
         ---

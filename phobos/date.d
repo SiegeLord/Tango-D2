@@ -466,11 +466,11 @@ d_time TimeClip(d_time time)
   // Grab the date and time relative to UTC
   lNow = std.date.getUTCtime();
   // Convert this into the local date and time for display.
-  lNowString = std.date.toString(lNow);
+  lNowString = std.date.toUtf8(lNow);
  * ------------------------------------
  */
 
-char[] toString(d_time time)
+char[] toUtf8(d_time time)
 {
     d_time t;
     char sign;

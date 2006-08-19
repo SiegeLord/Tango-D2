@@ -53,7 +53,7 @@ public class RollingFileAppender : FileAppender
         body
         {
                 // Get a unique fingerprint for this instance
-                mask = register (p.toString);
+                mask = register (p.toUtf8);
 
                 char[1] x;
                 ulong mostRecent;

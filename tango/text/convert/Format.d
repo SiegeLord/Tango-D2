@@ -543,7 +543,7 @@ private char[] formatArgument (inout Formatter.Result result, char[] format, ino
                     if (arg.getType() is typeid(char[]))
                         return *cast(char[]*)arg.getValue();
 
-                    return arg.getType().toString();
+                    return arg.getType().toUtf8();
         
                case TypeCode.BOOL:
                     return *cast(bool*)arg.getValue() ? "True" : "False";
@@ -588,10 +588,10 @@ private char[] formatArgument (inout Formatter.Result result, char[] format, ino
                     return (cast(char*)arg.getValue())[0..1];
         
                case TypeCode.CLASS:
-                    return (*cast(Object*)arg.getValue()).toString();
+                    return (*cast(Object*)arg.getValue()).toUtf8();
         
                case TypeCode.POINTER:
-                    return arg.getType().toString();
+                    return arg.getType().toUtf8();
         
                case TypeCode.TYPEDEF:
                     arg.setType ((cast(TypeInfo_Typedef) arg.getType).base);
@@ -909,7 +909,7 @@ private struct Number
 
         **********************************************************************/
 
-        private char[] toString (inout Formatter.Result result, char format, int length, NumberFormat nf)
+        private char[] toUtf8 (inout Formatter.Result result, char format, int length, NumberFormat nf)
         {
                 switch (format)
                        {
@@ -970,7 +970,7 @@ private struct Number
 
         **********************************************************************/
 
-        private char[] toStringFormat (inout Formatter.Result result, char[] format, NumberFormat nf)
+        private char[] toUtf8Format (inout Formatter.Result result, char[] format, NumberFormat nf)
         {
                 bool hasGroups;
                 int groupCount;
@@ -1403,9 +1403,9 @@ private char[] formatInteger (inout Formatter.Result result, long value, char[] 
                        {
                        Number number = Number (value);
                        if (specifier != char.init)
-                           return number.toString (result, specifier, length, nf);
+                           return number.toUtf8 (result, specifier, length, nf);
         
-                       return number.toStringFormat (result, format, nf);
+                       return number.toUtf8Format (result, format, nf);
                        }
                     // Fall through.
 
@@ -1423,9 +1423,9 @@ private char[] formatInteger (inout Formatter.Result result, long value, char[] 
 
         Number number = Number (value);
         if (specifier != char.init)
-            return number.toString (result, specifier, length, nf);
+            return number.toUtf8 (result, specifier, length, nf);
 
-        return number.toStringFormat (result, format, nf);
+        return number.toUtf8Format (result, format, nf);
 }
 
 /*******************************************************************************
@@ -1466,10 +1466,10 @@ version (mlfp)
                             double d;
                             number.toDouble(d);
                             if (d == value)
-                                return number.toString (result, 'G', 15, nf);
+                                return number.toUtf8 (result, 'G', 15, nf);
 
                             number = Number(value, 17);
-                            return number.toString (result, 'G', 17, nf);
+                            return number.toUtf8 (result, 'G', 17, nf);
 
                        case 'g':
                        case 'G':
@@ -1491,9 +1491,9 @@ version (mlfp)
                                        : nf.positiveInfinitySymbol;
 
                 if (specifier != char.init)
-                    return number.toString (result, specifier, length, nf);
+                    return number.toUtf8 (result, specifier, length, nf);
 
-                return number.toStringFormat (result, format, nf);
+                return number.toUtf8Format (result, format, nf);
         }
 
 } // version (mlfp)

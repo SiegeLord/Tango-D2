@@ -203,7 +203,7 @@ template TelnetUtilities(TelnetException)
 
 		// No socket, no data.  Can't do anything about that.
 		if (this.socket is null)
-			throw new TelnetException("CLIENT: Unable to connect within the specified time limit (" ~ std.string.toString(this.timeout * 1_000) ~ " ms.)");
+			throw new TelnetException("CLIENT: Unable to connect within the specified time limit (" ~ std.string.toUtf8(this.timeout * 1_000) ~ " ms.)");
 
 		// Make it blocking again, because that's the norm.
 		this.socket.blocking = true;

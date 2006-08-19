@@ -148,7 +148,7 @@ public enum ORJ_FLAG
 /**
  *
  */
-public char[] toString(ORJ_FLAG f)
+public char[] toUtf8(ORJ_FLAG f)
 {
     const EnumString    strings[] = 
     [
@@ -176,7 +176,7 @@ public enum ORJRC
 /**
  *
  */
-public char[] toString(ORJRC f)
+public char[] toUtf8(ORJRC f)
 {
     const EnumString    strings[] = 
     [
@@ -207,7 +207,7 @@ public enum ORJ_PARSE_ERROR
 /**
  *
  */
-public char[] toString(ORJ_PARSE_ERROR f)
+public char[] toUtf8(ORJ_PARSE_ERROR f)
 {
     const EnumString    strings[] = 
     [
@@ -251,11 +251,11 @@ class DatabaseException
 private:
     this(char[] details, ORJRC rc)
     {
-//printf("DatabaseException(0: %.*s, %.*s)\n", details, phobos.openrj.toString(rc));
+//printf("DatabaseException(0: %.*s, %.*s)\n", details, phobos.openrj.toUtf8(rc));
 
         char[]  message    =   phobos.string.format(   "Database creation failed; error: %s, %s"
                                                 ,   cast(int)rc
-                                                ,   phobos.openrj.toString(rc));
+                                                ,   phobos.openrj.toUtf8(rc));
 
         m_rc        =   rc;
         m_pe        =   ORJ_PARSE_ERROR.SUCCESS;
@@ -266,12 +266,12 @@ private:
 
     this(ORJRC rc, int lineNum)
     {
-//printf("DatabaseException(1: %.*s, %d)\n", phobos.openrj.toString(rc), lineNum);
+//printf("DatabaseException(1: %.*s, %d)\n", phobos.openrj.toUtf8(rc), lineNum);
 
         char[]  message    =   phobos.string.format(   "Database creation failed, at line %s; error: %s, %s"
                                                 ,   lineNum
                                                 ,   cast(int)rc
-                                                ,   phobos.openrj.toString(rc));
+                                                ,   phobos.openrj.toUtf8(rc));
 
         m_rc        =   rc;
         m_pe        =   ORJ_PARSE_ERROR.SUCCESS;
@@ -282,12 +282,12 @@ private:
 
     this(ORJ_PARSE_ERROR pe, int lineNum)
     {
-//printf("DatabaseException(2: %.*s, %d)\n", phobos.openrj.toString(pe), lineNum);
+//printf("DatabaseException(2: %.*s, %d)\n", phobos.openrj.toUtf8(pe), lineNum);
 
         char[]  message    =   phobos.string.format(   "Parsing error in database, at line %s; parse error: %s, %s"
                                                 ,   lineNum
                                                 ,   cast(int)pe
-                                                ,   phobos.openrj.toString(pe));
+                                                ,   phobos.openrj.toUtf8(pe));
 
         m_rc        =   ORJRC.PARSE_ERROR;
         m_pe        =   pe;
@@ -298,12 +298,12 @@ private:
 
     this(char[] details, ORJ_PARSE_ERROR pe, int lineNum)
     {
-//printf("DatabaseException(3: %.*s, %.*s, %d)\n", details, phobos.openrj.toString(rc), lineNum);
+//printf("DatabaseException(3: %.*s, %.*s, %d)\n", details, phobos.openrj.toUtf8(rc), lineNum);
 
         char[]  message    =   phobos.string.format(   "Parsing error in database, at line %s; parse error: %s, %s; %s"
                                                 ,   lineNum
                                                 ,   cast(int)pe
-                                                ,   phobos.openrj.toString(pe)
+                                                ,   phobos.openrj.toUtf8(pe)
                                                 ,   details);
 
         m_rc        =   ORJRC.PARSE_ERROR;
@@ -1134,7 +1134,7 @@ version(MainTest)
             }
             catch(Exception x)
             {
-                printf("Exception: %.*s\n", x.toString());
+                printf("Exception: %.*s\n", x.toUtf8());
             }
         }
 

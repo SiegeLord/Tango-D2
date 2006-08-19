@@ -345,7 +345,7 @@ $(I FormatChar):
 	    to use in the result.
 	    <dt>classes derived from $(B Object)
 	    <dd>The result is the string returned from the class instance's
-	    $(B .toString()) method.
+	    $(B .toUtf8()) method.
 	    A $(I Precision) specifies the maximum number of characters
 	    to use in the result.
 	    <dt>non-string static and dynamic arrays
@@ -696,7 +696,7 @@ void doFormat(void delegate(dchar) putc, TypeInfo[] arguments, va_list argptr)
 
 	    case Mangle.Tclass:
 		vobject = va_arg!(Object)(argptr);
-		s = vobject.toString();
+		s = vobject.toUtf8();
 		goto Lputstr;
 
 	    case Mangle.Tpointer:

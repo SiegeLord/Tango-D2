@@ -51,7 +51,7 @@ class Crc32Digest : Digest
          * Returns:
          *      The digest in string form.
          */
-        override char[] toString ()
+        override char[] toUtf8 ()
         {
                 return toHexString(cast(ubyte[])toBinary());
         }

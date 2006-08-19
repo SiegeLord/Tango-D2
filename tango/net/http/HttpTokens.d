@@ -263,7 +263,7 @@ class HttpTokens : IWritable
         {
                 foreach (Token token; stack)
                         {
-                        auto content = token.toString();
+                        auto content = token.toUtf8();
                         if (content.length)
                             writer.put(content).newline;
                         }                           
@@ -290,7 +290,7 @@ class HttpTokens : IWritable
 
         final private bool split (Token t, inout HttpToken element)
         {
-                auto s = t.toString();
+                auto s = t.toUtf8();
 
                 if (s.length)
                    {
@@ -453,7 +453,7 @@ class HttpTokens : IWritable
 
                 foreach (Token token; stack)
                         {
-                        char[] content = token.toString;
+                        char[] content = token.toUtf8;
                         if (content.length)
                            {
                            dst.append(content).append(delim);
@@ -462,7 +462,7 @@ class HttpTokens : IWritable
                         }    
 
                 dst.truncate (dst.getLimit - adjust);
-                return dst.toString;
+                return dst.toUtf8;
         }
 
         /**********************************************************************

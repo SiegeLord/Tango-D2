@@ -27,5 +27,5 @@ void main (char[][] args)
                     Cout (line).newline;
            }
         else
-           Cout ("usage: lineio filename");
+           Cout ("usage: lineio filename").newline;
 }

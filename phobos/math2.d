@@ -913,7 +913,7 @@ unittest
  * Convert float to string
  */
  
-char[] toString(real x)
+char[] toUtf8(real x)
 {
 // BUG: this code is broken, returning a pointer into the stack
 	char[1024] buffer;
@@ -952,6 +952,6 @@ char[] toString(real x)
 
 unittest
 {
-	assert(!cmp(toString(123.456), "123.456"));
+	assert(!cmp(toUtf8(123.456), "123.456"));
 }
 

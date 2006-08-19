@@ -1412,7 +1412,7 @@ unittest
 /******************************************
  * Creates a quiet NAN with the information from tagp[] embedded in it.
  */
-real nan(char[] tagp) { return phobos.c.math.nanl(toStringz(tagp)); }
+real nan(char[] tagp) { return phobos.c.math.nanl(toUtf8z(tagp)); }
 
 /******************************************
  * Calculates the next representable value after x in the direction of y. 

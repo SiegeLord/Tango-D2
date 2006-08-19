@@ -379,7 +379,7 @@ public class Culture : IFormatService {
    * Returns the name of the Culture.
    * Returns: A string containing the name of the Culture in the format &lt;language&gt;"-"&lt;region&gt;.
    */
-  public override char[] toString() {
+  public override char[] toUtf8() {
     return cultureData_.name;
   }
 
@@ -849,7 +849,7 @@ public class Region {
    * Returns a string containing the ISO 3166 code, or the $(LINK2 #Region_name, name), of the current Region.
    * Returns: A string containing the ISO 3166 code, or the name, of the current Region.
    */
-  public override char[] toString() {
+  public override char[] toUtf8() {
     return name_;
   }
 
@@ -4147,7 +4147,7 @@ public struct DateTime {
    *
    * See $(LINK2 datetimeformat.html, DateTime Formatting) for more information about date and time formatting.
    */
-  public char[] toString(IFormatService formatService = null) {
+  public char[] toUtf8(IFormatService formatService = null) {
     return formatDateTime(*this, null, DateTimeFormat.getInstance(formatService));
   }
 
@@ -4166,23 +4166,23 @@ public struct DateTime {
    *   Culture culture = Culture.current;
    *   DateTime now = DateTime.now;
    *
-   *   Println("Current date and time: %s", now.toString());
+   *   Println("Current date and time: %s", now.toUtf8());
    *   Println();
    *
    *   // Format the current date and time in a number of ways.
    *   Println("Culture: %s", culture.englishName);
    *   Println();
    *
-   *   Println("Short date:              %s", now.toString("d"));
-   *   Println("Long date:               %s", now.toString("D"));
-   *   Println("Short time:              %s", now.toString("t"));
-   *   Println("Long time:               %s", now.toString("T"));
-   *   Println("General date short time: %s", now.toString("g"));
-   *   Println("General date long time:  %s", now.toString("G"));
-   *   Println("Month:                   %s", now.toString("M"));
-   *   Println("RFC1123:                 %s", now.toString("R"));
-   *   Println("Sortable:                %s", now.toString("s"));
-   *   Println("Year:                    %s", now.toString("Y"));
+   *   Println("Short date:              %s", now.toUtf8("d"));
+   *   Println("Long date:               %s", now.toUtf8("D"));
+   *   Println("Short time:              %s", now.toUtf8("t"));
+   *   Println("Long time:               %s", now.toUtf8("T"));
+   *   Println("General date short time: %s", now.toUtf8("g"));
+   *   Println("General date long time:  %s", now.toUtf8("G"));
+   *   Println("Month:                   %s", now.toUtf8("M"));
+   *   Println("RFC1123:                 %s", now.toUtf8("R"));
+   *   Println("Sortable:                %s", now.toUtf8("s"));
+   *   Println("Year:                    %s", now.toUtf8("Y"));
    *   Println();
    *
    *   // Display the same values using a different culture.
@@ -4190,16 +4190,16 @@ public struct DateTime {
    *   Println("Culture: %s", culture.englishName);
    *   Println();
    *
-   *   Println("Short date:              %s", now.toString("d", culture));
-   *   Println("Long date:               %s", now.toString("D", culture));
-   *   Println("Short time:              %s", now.toString("t", culture));
-   *   Println("Long time:               %s", now.toString("T", culture));
-   *   Println("General date short time: %s", now.toString("g", culture));
-   *   Println("General date long time:  %s", now.toString("G", culture));
-   *   Println("Month:                   %s", now.toString("M", culture));
-   *   Println("RFC1123:                 %s", now.toString("R", culture));
-   *   Println("Sortable:                %s", now.toString("s", culture));
-   *   Println("Year:                    %s", now.toString("Y", culture));
+   *   Println("Short date:              %s", now.toUtf8("d", culture));
+   *   Println("Long date:               %s", now.toUtf8("D", culture));
+   *   Println("Short time:              %s", now.toUtf8("t", culture));
+   *   Println("Long time:               %s", now.toUtf8("T", culture));
+   *   Println("General date short time: %s", now.toUtf8("g", culture));
+   *   Println("General date long time:  %s", now.toUtf8("G", culture));
+   *   Println("Month:                   %s", now.toUtf8("M", culture));
+   *   Println("RFC1123:                 %s", now.toUtf8("R", culture));
+   *   Println("Sortable:                %s", now.toUtf8("s", culture));
+   *   Println("Year:                    %s", now.toUtf8("Y", culture));
    *   Println();
    * }
    *
@@ -4233,7 +4233,7 @@ public struct DateTime {
    * // Year:                    mai 2006
    * ---
    */
-  public char[] toString(char[] format, IFormatService formatService = null) {
+  public char[] toUtf8(char[] format, IFormatService formatService = null) {
     return formatDateTime(*this, format, DateTimeFormat.getInstance(formatService));
   }
 
@@ -4255,11 +4255,11 @@ public struct DateTime {
    *
    *   Culture.current = Culture.getCulture("en-GB");
    *   DateTime ukDate = DateTime.parse(ukDateValue);
-   *   Println("UK date: %s", ukDate.toString());
+   *   Println("UK date: %s", ukDate.toUtf8());
 
    *   Culture.current = Culture.getCulture("en-US");
    *   DateTime usDate = DateTime.parse(usDateValue);
-   *   Println("US date: %s", usDate.toString());
+   *   Println("US date: %s", usDate.toUtf8());
    * }
    *
    * // Produces the following output:
@@ -4461,8 +4461,8 @@ public struct DateTime {
    *
    *   // Display the local and UTC time using a custom pattern.
    *   char[] pattern = "d/M/yyyy hh:mm:ss tt";
-   *   Println("Local time: %s", localTime.toString(pattern));
-   *   Println("UTC time:   %s", utcTime.toString(pattern));
+   *   Println("Local time: %s", localTime.toUtf8(pattern));
+   *   Println("UTC time:   %s", utcTime.toUtf8(pattern));
    * }
    *
    * // Produces the following output:

@@ -402,8 +402,6 @@ class Buffer : IBuffer
 
         IBuffer setContent (void[] data, uint readable=0)
         {
-                assert (data.ptr, "data array is null");
-
                 this.data = data;
                 this.limit = readable;
                 this.capacity = data.length;   

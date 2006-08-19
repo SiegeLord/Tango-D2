@@ -267,11 +267,11 @@ void testSelector(ISelector selector)
     }
     catch (SelectorException e)
     {
-        Stdout.format("  Selector exception caught:\n{0}\n", e.toString());
+        Stdout.format("  Selector exception caught:\n{0}\n", e.toUtf8());
     }
     catch (Exception e)
     {
-        Stdout.format("  Exception caught:\n{0}\n", e.toString());
+        Stdout.format("  Exception caught:\n{0}\n", e.toUtf8());
     }
 
     Stdout.format("*   Success: connect={0}; recv={1}; send={2}; close={3}\n"
@@ -380,7 +380,7 @@ void clientThreadFunc()
     catch (Exception e)
     {
         debug (selector)
-            Stdout.format("[CLI] Exception caught:\n{0}\n", e.toString());
+            Stdout.format("[CLI] Exception caught:\n{0}\n", e.toUtf8());
     }
     debug (selector)
         Stdout.format("[CLI] Leaving thread\n");

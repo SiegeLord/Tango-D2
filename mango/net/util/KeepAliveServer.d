@@ -94,10 +94,10 @@ class KeepAliveThread : Thread
 
                     } catch (IOException x)
                              if (! Socket.isHalting)
-                                   logger.trace (client ~ " '" ~ x.toString() ~ "'");
+                                   logger.trace (client ~ " '" ~ x.toUtf8() ~ "'");
 
                       catch (Object x)
-                             logger.fatal (client ~ " '" ~ x.toString() ~ "'");
+                             logger.fatal (client ~ " '" ~ x.toUtf8() ~ "'");
 
                 // log our halt status
                 logger.info (client ~ " halting service handler");
@@ -179,7 +179,7 @@ class KeepAliveServer : AbstractServer
 
         **********************************************************************/
 
-        override char[] toString()
+        override char[] toUtf8()
         {
                 return getProtocol ~ "::host";
         }

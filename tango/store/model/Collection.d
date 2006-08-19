@@ -33,7 +33,7 @@ private import tango.store.model.ImplementationCheckable;
 public interface CollectionT(T) : ImplementationCheckable
 {
 
-        public char[] toString();
+        public char[] toUtf8();
 
         /**
          * public version of java.lang.T.clone

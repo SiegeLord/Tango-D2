@@ -423,7 +423,7 @@ in
 }
 body
 {
-    LPCSTR  lpSrc       =   toStringz(value);
+    LPCSTR  lpSrc       =   toUtf8z(value);
     DWORD   cchRequired =   ExpandEnvironmentStringsA(lpSrc, null, 0);
     char[]  newValue    =   new char[cchRequired];
 
@@ -499,7 +499,7 @@ in
 }
 body
 {
-    return RegCreateKeyExA( hkey, toStringz(subKey), RESERVED, RESERVED
+    return RegCreateKeyExA( hkey, toUtf8z(subKey), RESERVED, RESERVED
                         ,   dwOptions, samDesired, lpsa, hkeyResult
                         ,   disposition);
 }
@@ -512,7 +512,7 @@ in
 }
 body
 {
-    return RegDeleteKeyA(hkey, toStringz(subKey));
+    return RegDeleteKeyA(hkey, toUtf8z(subKey));
 }
 
 private LONG Reg_DeleteValueA_(in HKEY hkey, in char[] valueName)
@@ -523,7 +523,7 @@ in
 }
 body
 {
-    return RegDeleteValueA(hkey, toStringz(valueName));
+    return RegDeleteValueA(hkey, toUtf8z(valueName));
 }
 
 private HKEY Reg_Dup_(HKEY hkey)
@@ -650,7 +650,7 @@ in
 body
 {
     DWORD   cbData  =   0;
-    LONG    res     =   RegQueryValueExA(   hkey, toStringz(name), RESERVED, type
+    LONG    res     =   RegQueryValueExA(   hkey, toUtf8z(name), RESERVED, type
                                         ,   cast(byte*)0, cbData);
 
     if(ERROR_MORE_DATA == res)
@@ -670,7 +670,7 @@ in
 }
 body
 {
-    return RegOpenKeyExA(hkey, toStringz(subKey), RESERVED, samDesired, hkeyResult);
+    return RegOpenKeyExA(hkey, toUtf8z(subKey), RESERVED, samDesired, hkeyResult);
 }
 
 private void Reg_QueryValue_(   in HKEY hkey, in char[] name, out char[] value
@@ -689,14 +689,14 @@ body
     U       u;
     void    *data   =   &u.qw;
     DWORD   cbData  =   U.qw.sizeof;
-    LONG    res     =   RegQueryValueExA(   hkey, toStringz(name), RESERVED
+    LONG    res     =   RegQueryValueExA(   hkey, toUtf8z(name), RESERVED
                                         ,   type, data, cbData);
 
     if(ERROR_MORE_DATA == res)
     {
         data = new byte[cbData];
 
-        res = RegQueryValueExA( hkey, toStringz(name), RESERVED, type, data
+        res = RegQueryValueExA( hkey, toUtf8z(name), RESERVED, type, data
                             ,   cbData);
     }
 
@@ -715,28 +715,28 @@ body
 
             case    REG_VALUE_TYPE.REG_SZ:
             case    REG_VALUE_TYPE.REG_EXPAND_SZ:
-                value = phobos.string.toString(cast(char*)data);
+                value = phobos.string.toUtf8(cast(char*)data);
                 break;
 version(LittleEndian)
 {
             case    REG_VALUE_TYPE.REG_DWORD_LITTLE_ENDIAN:
-                value = phobos.string.toString(u.dw);
+                value = phobos.string.toUtf8(u.dw);
                 break;
             case    REG_VALUE_TYPE.REG_DWORD_BIG_ENDIAN:
-                value = phobos.string.toString(swap(u.dw));
+                value = phobos.string.toUtf8(swap(u.dw));
                 break;
 }
 version(BigEndian)
 {
             case    REG_VALUE_TYPE.REG_DWORD_LITTLE_ENDIAN:
-                value = phobos.string.toString(swap(u.dw));
+                value = phobos.string.toUtf8(swap(u.dw));
                 break;
             case    REG_VALUE_TYPE.REG_DWORD_BIG_ENDIAN:
-                value = phobos.string.toString(u.dw);
+                value = phobos.string.toUtf8(u.dw);
                 break;
 }
             case    REG_VALUE_TYPE.REG_QWORD_LITTLE_ENDIAN:
-                value = phobos.string.toString(u.qw);
+                value = phobos.string.toUtf8(u.qw);
                 break;
         }
     }
@@ -752,14 +752,14 @@ body
 {
     char[]  data    =   new char[256];
     DWORD   cbData  =   data.sizeof;
-    LONG    res     =   RegQueryValueExA(   hkey, toStringz(name), RESERVED, type
+    LONG    res     =   RegQueryValueExA(   hkey, toUtf8z(name), RESERVED, type
                                         ,   data, cbData);
 
     if(ERROR_MORE_DATA == res)
     {
         data.length = cbData;
 
-        res = RegQueryValueExA(hkey, toStringz(name), RESERVED, type, data, cbData);
+        res = RegQueryValueExA(hkey, toUtf8z(name), RESERVED, type, data, cbData);
     }
     else if(ERROR_SUCCESS == res)
     {
@@ -795,7 +795,7 @@ in
 body
 {
     DWORD   cbData  =   value.sizeof;
-    LONG    res     =   RegQueryValueExA(   hkey, toStringz(name), RESERVED, type
+    LONG    res     =   RegQueryValueExA(   hkey, toUtf8z(name), RESERVED, type
                                         ,   &value, cbData);
 
     if(ERROR_SUCCESS != res)
@@ -838,7 +838,7 @@ in
 body
 {
     DWORD   cbData  =   value.sizeof;
-    LONG    res     =   RegQueryValueExA(   hkey, toStringz(name), RESERVED, type
+    LONG    res     =   RegQueryValueExA(   hkey, toUtf8z(name), RESERVED, type
                                         ,   &value, cbData);
 
     if(ERROR_SUCCESS != res)
@@ -868,14 +868,14 @@ body
 {
     byte[]  data    =   new byte[100];
     DWORD   cbData  =   data.sizeof;
-    LONG    res     =   RegQueryValueExA(   hkey, toStringz(name), RESERVED, type
+    LONG    res     =   RegQueryValueExA(   hkey, toUtf8z(name), RESERVED, type
                                         ,   data, cbData);
 
     if(ERROR_MORE_DATA == res)
     {
         data.length = cbData;
 
-        res = RegQueryValueExA(hkey, toStringz(name), RESERVED, type, data, cbData);
+        res = RegQueryValueExA(hkey, toUtf8z(name), RESERVED, type, data, cbData);
     }
 
     if(ERROR_SUCCESS != res)
@@ -906,7 +906,7 @@ in
 }
 body
 {
-    LONG    res =   RegSetValueExA( hkey, toStringz(subKey), RESERVED, type
+    LONG    res =   RegSetValueExA( hkey, toUtf8z(subKey), RESERVED, type
                                 ,   lpData, cbData);
 
     if(ERROR_SUCCESS != res)
@@ -966,7 +966,7 @@ unittest
         catch(RegistryException x)
         {
             assert(x.error == code);
-            if(string != x.toString())
+            if(string != x.toUtf8())
             {
                 printf( "UnitTest failure for RegistryException:\n"
                         "  x.message [%d;\"%.*s\"] does not equal [%d;\"%.*s\"]\n"
@@ -1476,7 +1476,7 @@ public:
         return value;
  +/
 
-        LPCSTR  lpSrc       =   toStringz(value);
+        LPCSTR  lpSrc       =   toUtf8z(value);
         DWORD   cchRequired =   ExpandEnvironmentStringsA(lpSrc, null, 0);
         char[]  newValue    =   new char[cchRequired];
 

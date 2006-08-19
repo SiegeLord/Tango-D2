@@ -180,7 +180,7 @@ class Echo : Servlet
 
                 // log everything to the output
                 output ("------------------------"c).newline()
-                       ("Uri: "c) (uri.toString).newline()
+                       ("Uri: "c) (uri.toUtf8).newline()
                        ("------------------------"c).newline()
                        ("Headers:"c).newline()
                        (request.getHeaders)

@@ -91,11 +91,11 @@ class ServerThread : Thread, IRunnable
 
                            } catch (IOException x)
                                    {
-                                   server.getLogger.error ("IOException: "~x.toString);
+                                   server.getLogger.error ("IOException: "~x.toUtf8);
                                    }
                             catch (Object x)
                                    {
-                                   server.getLogger.fatal ("Exception: "~x.toString);
+                                   server.getLogger.fatal ("Exception: "~x.toUtf8);
                                    }
         }
 }

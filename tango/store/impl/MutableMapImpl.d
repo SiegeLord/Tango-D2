@@ -182,7 +182,7 @@ public abstract class MutableMapImplT(K, T) : MutableImplT!(T), MutableMapT!(K, 
         // Object methods
 
         /**
-         * Default implementation of toString for Collections. Not
+         * Default implementation of toUtf8 for Collections. Not
          * very pretty, but parenthesizing each element means that
          * for most kinds of elements, it's conceivable that the
          * strings could be parsed and used to build other store.
@@ -191,7 +191,7 @@ public abstract class MutableMapImplT(K, T) : MutableImplT!(T), MutableMapT!(K, 
          * to get at elements/keys
         **/
 
-        public final char[] toString()
+        public final char[] toUtf8()
         {
                 auto buf = new MutableString;
                 buf.append("( (class: "c).append(this.classinfo.name).append(")"c);
@@ -208,12 +208,12 @@ public abstract class MutableMapImplT(K, T) : MutableImplT!(T), MutableMapT!(K, 
                              buf.append(" ("c);
 
                              buf.append(" ("c);
-                             buf.append ("key"c); //buf.append(k.key().toString());
+                             buf.append ("key"c); //buf.append(k.key().toUtf8());
                              k.key();
                              buf.append(")"c);
                              
                              buf.append(" ("c);
-                             buf.append ("value"c);//buf.append(k.value().toString());
+                             buf.append ("value"c);//buf.append(k.value().toUtf8());
                              k.value();
                              buf.append(")"c);
                              

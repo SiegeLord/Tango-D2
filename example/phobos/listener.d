@@ -65,7 +65,7 @@ int main(char[][] args)
 					try
 					{
 						//if the connection closed due to an error, remoteAddress() could fail
-						printf("Connection from %.*s closed.\n", reads[i].remoteAddress().toString());
+						printf("Connection from %.*s closed.\n", reads[i].remoteAddress().toUtf8());
 					}
 					catch
 					{
@@ -85,7 +85,7 @@ int main(char[][] args)
 				}
 				else
 				{
-					printf("Received %d bytes from %.*s: \"%.*s\"\n", read, reads[i].remoteAddress().toString(), buf[0 .. read]);
+					printf("Received %d bytes from %.*s: \"%.*s\"\n", read, reads[i].remoteAddress().toUtf8(), buf[0 .. read]);
 				}
 			}
 		}
@@ -98,7 +98,7 @@ int main(char[][] args)
 				if(reads.length < MAX_CONNECTIONS)
 				{
 					sn = listener.accept();
-					printf("Connection from %.*s established.\n", sn.remoteAddress().toString());
+					printf("Connection from %.*s established.\n", sn.remoteAddress().toUtf8());
 					assert(sn.isAlive);
 					assert(listener.isAlive);
 					
@@ -108,7 +108,7 @@ int main(char[][] args)
 				else
 				{
 					sn = listener.accept();
-					printf("Rejected connection from %.*s; too many connections.\n", sn.remoteAddress().toString());
+					printf("Rejected connection from %.*s; too many connections.\n", sn.remoteAddress().toUtf8());
 					assert(sn.isAlive);
 					
 					sn.close();
@@ -118,7 +118,7 @@ int main(char[][] args)
 			}
 			catch(Exception e)
 			{
-				printf("Error accepting: %.*s\n", e.toString());
+				printf("Error accepting: %.*s\n", e.toUtf8());
 				
 				if(sn)
 					sn.close();

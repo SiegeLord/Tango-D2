@@ -60,7 +60,7 @@ int main(char[][] args)
 	}
 	
 	debug(HTMLGET)
-		printf("Connecting to " ~ domain ~ " on port " ~ phobos.string.toString(port) ~ "...\n");
+		printf("Connecting to " ~ domain ~ " on port " ~ phobos.string.toUtf8(port) ~ "...\n");
 	
 	auto Socket sock = new TcpSocket(new InternetAddress(domain, port));
 	Stream ss = new SocketStream(sock);
@@ -69,7 +69,7 @@ int main(char[][] args)
 		printf("Connected!\nRequesting URL \"" ~ url ~ "\"...\n");
 	
 	if(port != 80)
-		domain = domain ~ ":" ~ phobos.string.toString(port);
+		domain = domain ~ ":" ~ phobos.string.toUtf8(port);
 	ss.writeString("GET " ~ url ~ " HTTP/1.1\r\n"
 		"Host: " ~ domain ~ "\r\n"
 		"\r\n");

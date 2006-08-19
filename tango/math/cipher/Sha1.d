@@ -161,17 +161,17 @@ unittest {
                         h.update(s);
 
                 d = cast(Sha1Digest)h.finish();
-                assert(d.toString() == results[i],"Cipher:("~s~")("~d.toString()~")!=("~results[i]~")");
+                assert(d.toUtf8() == results[i],"Cipher:("~s~")("~d.toUtf8()~")!=("~results[i]~")");
 
                 e = new Sha1Digest(d);
-                assert(d == e,"Digest from Digest:("~d.toString()~")!=("~e.toString()~")");
+                assert(d == e,"Digest from Digest:("~d.toUtf8()~")!=("~e.toUtf8()~")");
 
                 e = new Sha1Digest(d.toBinary());
-                assert(d == e,"Digest from Digest binary:("~d.toString()~")!=("~e.toString()~")");
+                assert(d == e,"Digest from Digest binary:("~d.toUtf8()~")!=("~e.toUtf8()~")");
 
                 h = new Sha1Cipher(d);
                 e = h.getDigest();
-                assert(d == e,"Digest from Cipher continue:("~d.toString()~")!=("~e.toString()~")");
+                assert(d == e,"Digest from Cipher continue:("~d.toUtf8()~")!=("~e.toUtf8()~")");
         }
 }
 }

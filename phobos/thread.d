@@ -967,7 +967,7 @@ class Thread
 	catch (Object o)
 	{
 	    printf("Error: ");
-	    printf( o.toString() );
+	    printf( o.toUtf8() );
 	    result = 1;
 	}
 

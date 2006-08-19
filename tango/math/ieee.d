@@ -274,7 +274,7 @@ real scalbn(real x, int n)
  */
 real nan(char[] tagp)
 {
-    // NOTE: Should use toStringz
+    // NOTE: Should use toUtf8z
     char[] tmp = tagp ~ '\0';
     return tango.stdc.math.nanl(tmp);
 }

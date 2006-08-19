@@ -177,7 +177,7 @@ public struct Formatter {
           // Currently we only format char[] arrays.
           if (arg.getType() is typeid(char[]))
             return *cast(char[]*)arg.getValue();
-          return arg.getType().toString();
+          return arg.getType().toUtf8();
         case TypeCode.BOOL:
           return *cast(bool*)arg.getValue() ? "True" : "False";
         case TypeCode.UBYTE:
@@ -205,14 +205,14 @@ public struct Formatter {
         case TypeCode.CHAR:
           return stringOf(*cast(char*)arg.getValue());
         case TypeCode.CLASS:
-          return (*cast(Object*)arg.getValue()).toString();
+          return (*cast(Object*)arg.getValue()).toUtf8();
         case TypeCode.STRUCT:
           // Special case for DateTime.
           if (arg.getType() is typeid(DateTime))
-            return (*cast(DateTime*)arg.getValue()).toString(format, formatService);
-          return arg.getType().toString();
+            return (*cast(DateTime*)arg.getValue()).toUtf8(format, formatService);
+          return arg.getType().toUtf8();
         case TypeCode.POINTER:
-          return arg.getType().toString();
+          return arg.getType().toUtf8();
         default:
           break;
       }
@@ -583,7 +583,7 @@ private struct Number {
     return true;
   }
 
-  private char[] toString(char format, int length, NumberFormat nf) {
+  private char[] toUtf8(char format, int length, NumberFormat nf) {
     char[] result;
 
     switch (format) {
@@ -630,7 +630,7 @@ private struct Number {
     return result;
   }
   
-  private char[] toStringFormat(char[] format, NumberFormat nf) {
+  private char[] toUtf8Format(char[] format, NumberFormat nf) {
     bool hasGroups;
     int groupCount;
     int groupPos = -1, pointPos = -1;
@@ -938,8 +938,8 @@ private char[] formatInteger(long value, char[] format, IFormatService formatSer
       if (length > 0) {
         Number number = Number(value);
         if (specifier != char.init)
-          return number.toString(specifier, length, nf);
-        return number.toStringFormat(format, nf);
+          return number.toUtf8(specifier, length, nf);
+        return number.toUtf8Format(format, nf);
       }
       // Fall through.
     case 'd':
@@ -954,8 +954,8 @@ private char[] formatInteger(long value, char[] format, IFormatService formatSer
 
   Number number = Number(value);
   if (specifier != char.init)
-    return number.toString(specifier, length, nf);
-  return number.toStringFormat(format, nf);
+    return number.toUtf8(specifier, length, nf);
+  return number.toUtf8Format(format, nf);
 }
 
 // Only if floating-point support is enabled.
@@ -986,10 +986,10 @@ private char[] formatDouble(double value, char[] format, IFormatService formatSe
       double d;
       number.toDouble(d);
       if (d == value)
-        return number.toString('G', 15, nf);
+        return number.toUtf8('G', 15, nf);
 
       number = Number(value, 17);
-      return number.toString('G', 17, nf);
+      return number.toUtf8('G', 17, nf);
     case 'g':
     case 'G':
       if (length > 15)
@@ -1007,8 +1007,8 @@ private char[] formatDouble(double value, char[] format, IFormatService formatSe
     return number.sign ? nf.negativeInfinitySymbol : nf.positiveInfinitySymbol;
 
   if (specifier != char.init)
-    return number.toString(specifier, length, nf);
-  return number.toStringFormat(format, nf);
+    return number.toUtf8(specifier, length, nf);
+  return number.toUtf8Format(format, nf);
 }
 
 } // version (mlfp)

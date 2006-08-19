@@ -54,6 +54,6 @@ interface ServiceProvider
               
         **********************************************************************/
 
-        char[] toString ();
+        char[] toUtf8 ();
 }
 

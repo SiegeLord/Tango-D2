@@ -212,7 +212,7 @@ class MmFile
 		}
 		else version (linux)
 		{
-			char* namez = toStringz(filename);
+			char* namez = toUtf8z(filename);
 			void* p;
 			int oflag;
 			int fmode;

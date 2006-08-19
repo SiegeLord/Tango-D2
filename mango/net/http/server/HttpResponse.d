@@ -142,7 +142,7 @@ class HttpResponse : HttpMessage
 
         void sendError (inout HttpStatus status, Exception ex)
         {
-                sendError (status, status.name, ex.toString());
+                sendError (status, status.name, ex.toUtf8());
         }
 
         /**********************************************************************

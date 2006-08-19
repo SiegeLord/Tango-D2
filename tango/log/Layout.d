@@ -52,7 +52,7 @@ public class Layout
 
         char[] content (Event event)
         {
-                return event.toString;
+                return event.toUtf8;
         }
 
         /***********************************************************************

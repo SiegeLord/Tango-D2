@@ -302,7 +302,7 @@ version (VERBOSE)
         // Object methods
 
         /**
-         * Default implementation of toString for Collections. Not
+         * Default implementation of toUtf8 for Collections. Not
          * very pretty, but parenthesizing each element means that
          * for most kinds of elements, it's conceivable that the
          * strings could be parsed and used to build other store.
@@ -311,10 +311,10 @@ version (VERBOSE)
          * to get at elements/keys
         **/
 
-        public char[] toString()
+        public char[] toUtf8()
         {
                 auto buf = new MutableString;
-                buf.append("<class "c).append(this.classinfo.name).append(':').append(typeid(T).toString);
+                buf.append("<class "c).append(this.classinfo.name).append(':').append(typeid(T).toUtf8);
                 buf.append(" size:"c).append(size());
                 buf.append(" elements:"c);
 
@@ -324,7 +324,7 @@ version (VERBOSE)
                        while (e.more)
                              {
                              buf.append(" ("c);
-                             buf.append ("value"c);//buf.append(e.value().toString());
+                             buf.append ("value"c);//buf.append(e.value().toUtf8());
                              e.value();
                              buf.append(")"c);
                              }

@@ -244,7 +244,7 @@ public class Event : ILevel
 
         ***********************************************************************/
 
-        final override char[] toString ()
+        final override char[] toUtf8 ()
         {
                 return msg;
         }

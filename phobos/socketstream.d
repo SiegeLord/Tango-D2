@@ -129,9 +129,9 @@ class SocketStream: Stream
 	 * Does not return the entire stream because that would
 	 * require the remote connection to be closed.
 	 */
-	override char[] toString()
+	override char[] toUtf8()
 	{
-		return sock.toString();
+		return sock.toUtf8();
 	}
 	
 	/**

@@ -346,7 +346,7 @@ class ServletContext
 
         ServletContext log (char[] msg, Object error)
         {
-                logger.error (msg ~ error.toString());
+                logger.error (msg ~ error.toUtf8());
                 return this;
         }
 

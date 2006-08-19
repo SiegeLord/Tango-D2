@@ -298,7 +298,7 @@ private class LoggerInstance : Logger
                           Event.deallocate (event);
 
                    // set the event attributes
-                   event.set (hierarchy, level, s, name[0..name.length-1]);
+                   event.set (hierarchy, level, s, name.length ? name[0..$-1] : "root");
 
                    // combine appenders from all ancestors
                    auto links = this;
@@ -386,7 +386,7 @@ class Hierarchy : IHierarchy
                 this.address = "network";
 
                 // insert a root node; the root has an empty name
-                root = new LoggerInstance (this, ".");
+                root = new LoggerInstance (this, "");
         }
 
         /**********************************************************************

@@ -120,7 +120,7 @@ interface IHTMLImgElement : public IDispatch {
 }
 
 interface IHTMLElementCollection : public IDispatch {
-	HRESULT toString(BSTR*);
+	HRESULT toUtf8(BSTR*);
 	HRESULT put_length(long);
 	HRESULT get_length(long*);
 	HRESULT get__newEnum(IUnknown**);
@@ -239,7 +239,7 @@ interface IHTMLDocument2 : public IHTMLDocument {
 	HRESULT get_onbeforeupdate(VARIANT*);
 	HRESULT put_onerrorupdate(VARIANT);
 	HRESULT get_onerrorupdate(VARIANT*);
-	HRESULT toString(BSTR*);
+	HRESULT toUtf8(BSTR*);
 	HRESULT createStyleSheet(BSTR,long,LPHTMLSTYLESHEET*);
 }
 
@@ -350,7 +350,7 @@ interface IHTMLElement : public IDispatch {
 	HRESULT get_filters(LPHTMLFILTERSCOLLECTION*);
 	HRESULT put_ondragstart(VARIANT);
 	HRESULT get_ondragstart(VARIANT*);
-	HRESULT toString(BSTR*);
+	HRESULT toUtf8(BSTR*);
 	HRESULT put_onbeforeupdate(VARIANT);
 	HRESULT get_onbeforeupdate(VARIANT*);
 	HRESULT put_onafterupdate(VARIANT);
@@ -439,7 +439,7 @@ interface IHTMLWindow2 : public IHTMLFramesCollection2 {
 	HRESULT put_offscreenBuffering(VARIANT);
 	HRESULT get_offscreenBuffering(VARIANT*);
 	HRESULT execScript(BSTR,BSTR,VARIANT*);
-	HRESULT toString(BSTR*);
+	HRESULT toUtf8(BSTR*);
 	HRESULT scrollBy(long,long);
 	HRESULT scrollTo(long,long);
 	HRESULT moveTo(long,long);

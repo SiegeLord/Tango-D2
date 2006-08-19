@@ -343,7 +343,7 @@ class FTPConnection
 	body
 	{
 		// Convert our octal parameter to a string.
-		this.send_command("SITE CHMOD", format("%03s", std.string.toString(cast(long) mode, 8u)), path);
+		this.send_command("SITE CHMOD", format("%03s", std.string.toUtf8(cast(long) mode, 8u)), path);
 		this.read_response("200");
 	}
 
@@ -644,7 +644,7 @@ class FTPConnection
 			delete connect_to;
 
 		debug (ftp_connection)
-			writefln("[FTP]     (Connecting to %s)", connect_to.toString());
+			writefln("[FTP]     (Connecting to %s)", connect_to.toUtf8());
 
 		// This will throw an exception if it cannot connect.
 		return new TcpSocket(connect_to);
@@ -772,7 +772,7 @@ class FTPConnection
 	///    offset =          the number of bytes to seek forward
 	public void restart_seek(size_t offset)
 	{
-		this.send_command("REST", std.string.toString(offset));
+		this.send_command("REST", std.string.toUtf8(offset));
 		this.read_response("350");
 
 		// Set this for later use.
@@ -792,7 +792,7 @@ class FTPConnection
 	}
 	body
 	{
-		this.send_command("ALLO", std.string.toString(bytes));
+		this.send_command("ALLO", std.string.toUtf8(bytes));
 		auto response = this.read_response();
 
 		// For our purposes 200 and 202 are both fine.
@@ -1793,7 +1793,7 @@ class FTPException: Exception
 	}
 
 	/// A string representation of the error.
-	char[] toString()
+	char[] toUtf8()
 	{
 		char[] buffer = new char[this.msg.length + 4];
 

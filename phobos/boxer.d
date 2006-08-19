@@ -21,7 +21,7 @@ real r = unbox!(real)(b);
  * cast. 
  *
  * This therefore means that attempting to unbox an int as a string will throw
- * an error instead of formatting it. In general, you can call the toString method
+ * an error instead of formatting it. In general, you can call the toUtf8 method
  * on the box and receive a good result, depending upon whether phobos.string.format
  * accepts it. 
  *
@@ -85,7 +85,7 @@ private import phobos.utf;
   *     int j = unbox!(int)(Box(i)); // Do the exact same thing at runtime.
   *
   * This therefore means that attempting to unbox an int as a string will
-  * throw an error and not format it.  In general, you can call the toString
+  * throw an error and not format it.  In general, you can call the toUtf8
   * method on the box and receive a good result, depending upon whether
   * phobos.string.format accepts it.
   * 
@@ -178,8 +178,8 @@ struct Box
         }
         else
         {
-            /* Use the name returned from toString, which might (but hopefully doesn't) include an allocation. */
-            switch (type.toString)
+            /* Use the name returned from toUtf8, which might (but hopefully doesn't) include an allocation. */
+            switch (type.toUtf8)
             {
                 case "bool": return TypeClass.Bool;
                 case "byte", "ubyte", "short", "ushort", "int", "uint", "long", "ulong": return TypeClass.Integer;
@@ -256,7 +256,7 @@ struct Box
      * this will throw if that function cannot handle it. If the box is
      * uninitialized then this returns "".    
      */
-    char[] toString()
+    char[] toUtf8()
     {
         if (type is null)
             return "<empty box>";
@@ -297,7 +297,7 @@ struct Box
             
             if (ta <= TypeClass.Integer && tb <= TypeClass.Integer)
             {
-                char[] na = type.toString, nb = other.type.toString;
+                char[] na = type.toUtf8, nb = other.type.toUtf8;
                 
                 if (na == "ulong" || nb == "ulong")
                     return unbox!(ulong)(*this) == unbox!(ulong)(other);
@@ -737,13 +737,13 @@ private template unboxTest(T)
         catch (UnboxException error)
         {
             if (unboxable)
-                throw new Exception ("Could not unbox " ~ value.type.toString ~ " as " ~ typeid(T).toString ~ "; however, unboxable says it would work.");
+                throw new Exception ("Could not unbox " ~ value.type.toUtf8 ~ " as " ~ typeid(T).toUtf8 ~ "; however, unboxable says it would work.");
             assert (!unboxable);
             throw error;
         }
         
         if (!unboxable)
-            throw new Exception ("Unboxed " ~ value.type.toString ~ " as " ~ typeid(T).toString ~ "; however, unboxable says it should fail.");
+            throw new Exception ("Unboxed " ~ value.type.toUtf8 ~ " as " ~ typeid(T).toUtf8 ~ "; however, unboxable says it should fail.");
         return result;
     }
 }
@@ -773,8 +773,8 @@ unittest
     assert (a == a);
     assert (a < b);
     
-    /* Check that toString works properly. */
-    assert (b.toString == "32");
+    /* Check that toUtf8 works properly. */
+    assert (b.toUtf8 == "32");
     
     /* Assert that unboxable works. */
     assert (unboxable!(char[])(box("foobar")));

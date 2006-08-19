@@ -71,7 +71,7 @@ char* toMBSz(char[] s, uint codePage = 0)
 	    return result;
 	}
     }
-    return phobos.string.toStringz(s);
+    return phobos.string.toUtf8z(s);
 }
 
 

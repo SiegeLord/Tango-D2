@@ -126,6 +126,6 @@ void main()
             } catch (Exception x)
                     {
                     // log the exception as an error
-                    logger.error ("Exception: " ~ x.toString);
+                    logger.error ("Exception: " ~ x.toUtf8);
                     }
 }

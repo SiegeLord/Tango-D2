@@ -31,9 +31,10 @@ void main()
 
            // display response
            client.read (&Cout.consume, length);
+           Cout.newline;
            }
         else
-           Cout ("failed to return the D home page");  
+           Cout ("failed to return the D home page").newline;  
 
         client.close(); 
 }

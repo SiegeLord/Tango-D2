@@ -216,7 +216,7 @@ version(Windows)
     }
     body
     {
-        HXModule hmod = cast(HXModule)LoadLibraryA(toStringz(moduleName));
+        HXModule hmod = cast(HXModule)LoadLibraryA(toUtf8z(moduleName));
 
         if(null is hmod)
         {
@@ -257,7 +257,7 @@ version(Windows)
     }
     body
     {
-        void    *symbol = GetProcAddress(cast(HModule_)hModule, toStringz(symbolName));
+        void    *symbol = GetProcAddress(cast(HModule_)hModule, toUtf8z(symbolName));
 
         if(null is symbol)
         {
@@ -346,7 +346,7 @@ else version(linux)
         }
         else
         {
-            HModule_    hmod = dlopen(toStringz(moduleName), RTLD_NOW);
+            HModule_    hmod = dlopen(toUtf8z(moduleName), RTLD_NOW);
 
             if(null is hmod)
             {
@@ -440,7 +440,7 @@ else version(linux)
     body
     {
         ExeModuleInfo   mi      =   cast(ExeModuleInfo)hModule;
-        void *symbol = dlsym(mi.m_hmod, toStringz(symbolName));
+        void *symbol = dlsym(mi.m_hmod, toUtf8z(symbolName));
 
         if(null == symbol)
         {
@@ -497,7 +497,7 @@ public:
 
     this(uint errcode)
     {
-	super(phobos.string.toString(strerror(errcode)).dup);
+	super(phobos.string.toUtf8(strerror(errcode)).dup);
     }
 }
 
@@ -524,7 +524,7 @@ public:
 	    version (Windows)
 	    {
 		char[] path = Path();
-		m_hModule = cast(HXModule)LoadLibraryA(toStringz(path));
+		m_hModule = cast(HXModule)LoadLibraryA(toUtf8z(path));
 		if (m_hModule == null)
 		    throw new ExeModuleException(GetLastError());
 	    }
@@ -546,7 +546,7 @@ public:
     {
 	version (Windows)
 	{
-	    m_hModule = cast(HXModule)LoadLibraryA(toStringz(moduleName));
+	    m_hModule = cast(HXModule)LoadLibraryA(toUtf8z(moduleName));
 	    if (null is m_hModule)
 		throw new ExeModuleException(GetLastError());
 	}
@@ -605,7 +605,7 @@ public:
     {
 	version (Windows)
 	{
-	    void *symbol = GetProcAddress(cast(HModule_)m_hModule, toStringz(symbolName));
+	    void *symbol = GetProcAddress(cast(HModule_)m_hModule, toUtf8z(symbolName));
 	    if(null is symbol)
 	    {
 		throw new ExeModuleException(GetLastError());

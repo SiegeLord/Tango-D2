@@ -66,7 +66,7 @@ class Md2Digest : Digest
 
         ***********************************************************************/
 
-        char[] toString() { return toHexString(digest); }
+        char[] toUtf8() { return toHexString(digest); }
 
         /***********************************************************************
 
@@ -328,17 +328,17 @@ unittest {
 
         foreach(int i, char[] s; strings) {
                 d = cast(Md2Digest)h.sum(s);
-                assert(d.toString() == results[i],"Cipher:("~s~")("~d.toString()~")!=("~results[i]~")");
+                assert(d.toUtf8() == results[i],"Cipher:("~s~")("~d.toUtf8()~")!=("~results[i]~")");
 
                 e = new Md2Digest(d);
-                assert(d == e,"Digest from Digest:("~d.toString()~")!=("~e.toString()~")");
+                assert(d == e,"Digest from Digest:("~d.toUtf8()~")!=("~e.toUtf8()~")");
 
                 e = new Md2Digest(d.toBinary());
-                assert(d == e,"Digest from Digest binary:("~d.toString()~")!=("~e.toString()~")");
+                assert(d == e,"Digest from Digest binary:("~d.toUtf8()~")!=("~e.toUtf8()~")");
 
                 h = new Md2Cipher(d);
                 e = h.getDigest();
-                assert(d == e,"Digest from Cipher continue:("~d.toString()~")!=("~e.toString()~")");
+                assert(d == e,"Digest from Cipher continue:("~d.toUtf8()~")!=("~e.toUtf8()~")");
         }
 }
 }

@@ -125,7 +125,7 @@ class ServletProvider : ServiceProvider
 
         **********************************************************************/
 
-        override char[] toString()
+        override char[] toUtf8()
         {
                 return "Servlet";
         }
@@ -422,7 +422,7 @@ class ServletProvider : ServiceProvider
                         cache.put (pm.path, pm);
 
                     } catch (UnavailableException ux)
-                             response.sendError (HttpResponses.ServiceUnavailable, ux.toString);
+                             response.sendError (HttpResponses.ServiceUnavailable, ux.toUtf8);
 
                       catch (ServletException sx)
                              error (response, sx);
@@ -439,7 +439,7 @@ class ServletProvider : ServiceProvider
 
         private void error (ServletResponse response, Object x)
         {
-                response.sendError (HttpResponses.InternalServerError, x.toString);
+                response.sendError (HttpResponses.InternalServerError, x.toUtf8);
                 getDefaultContext().log ("Internal error:", x);
         }
 }

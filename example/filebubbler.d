@@ -20,7 +20,7 @@ void main(char[][] args)
         void process (File file)
         {
                 // get a mutated target filename
-                auto dst = file.getPath.replace (file.toString.dup, FileConst.PathSeparatorChar, '.');
+                auto dst = file.getPath.replace (file.toUtf8.dup, FileConst.PathSeparatorChar, '.');
 
                 // rename the file
                 file.rename (new FilePath (dst));

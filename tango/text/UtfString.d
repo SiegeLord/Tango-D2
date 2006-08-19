@@ -35,7 +35,7 @@ private import  tango.text.convert.Type,
 
 private import  tango.io.protocol.model.IWriter;
 
-private import  tango.text.model.UniString;
+private import  tango.text.String;
 
 
 /*******************************************************************************

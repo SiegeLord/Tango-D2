@@ -13,5 +13,5 @@ private import tango.text.locale.Core;
 
 void main ()
 {
-        Cout (DateTime.now.toString ("ddd, dd MMMM yyyy HH:mm:ss z")).newline;
+        Cout (DateTime.now.toUtf8 ("ddd, dd MMMM yyyy HH:mm:ss z")).newline;
 }

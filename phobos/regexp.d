@@ -572,7 +572,7 @@ class RegExp
 	}
 	catch (RegExpException ree)
 	{
-	    msg = ree.toString();
+	    msg = ree.toUtf8();
 	    //writefln("message: %s", ree);
 	}
 	assert(msg == "unrecognized attribute");
