@@ -63,7 +63,7 @@
                 MutableString trim ();
 
                 // return content
-                T[] aliasOf ();
+                T[] slice ();
         }
 
         class String(T) : UniString
@@ -678,7 +678,7 @@ class MutableStringT(T) : StringT!(T)
 
         ***********************************************************************/
 
-        T[] aliasOf ()
+        T[] slice ()
         {
                 return get ();
         }
@@ -1428,6 +1428,6 @@ unittest
         auto s = new MutableString("hello");
         s.select ("hello");
         s.replace ("1");
-        assert (s.aliasOf == "1");
+        assert (s.slice == "1");
 }
 }
