@@ -1009,11 +1009,13 @@ else
                 return !pred( p1, p2 ) && !pred( p2, p1 );
             }
 
-            void exch( inout Elem p1, inout Elem p2 )
+            // NOTE: Indexes are passed instead of references because DMD does
+            //       not inline the reference-based version.
+            void exch( ptrdiff_t p1, ptrdiff_t p2 )
             {
-                Elem t = p1;
-                p1 = p2;
-                p2 = t;
+                Elem t  = buf[p1];
+                buf[p1] = buf[p2];
+                buf[p2] = t;
             }
 
             // NOTE: The original algorithm relies on the use of signed index
@@ -1052,19 +1054,19 @@ else
                         {}
                     if( i >= j )
                         break;
-                    exch( buf[i], buf[j] );
+                    exch( i, j );
                     if( equiv( buf[i], v ) )
-                        exch( buf[++p], buf[i] );
+                        exch( i, j );
                     if( equiv( v, buf[j] ) )
-                        exch( buf[--q], buf[j] );
+                        exch( --q, j );
                 }
-                exch( buf[i], buf[r] );
+                exch( i, r );
                 j = i - 1;
                 i = i + 1;
                 for( k = l; k <= p; k++, j-- )
-                    exch( buf[k], buf[j] );
+                    exch( k, j );
                 for( k = r - 1; k >= q; k--, i++ )
-                    exch( buf[k], buf[i] );
+                    exch( k, i );
                 quicksort( l, j );
                 quicksort( i, r );
             }
