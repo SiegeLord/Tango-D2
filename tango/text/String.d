@@ -160,8 +160,7 @@ class MutableStringT(T) : StringT!(T)
         private bool                    mutable;
         private Comparator              comparator;
         private uint                    selectPoint,
-                                        selectLength,
-                                        contentLength;
+                                        selectLength;
 
         /***********************************************************************
         
@@ -1230,7 +1229,8 @@ class MutableStringT(T) : StringT!(T)
 
 class StringT(T) : UniString
 {
-        private T[] content;
+        private T[]     content;
+        private uint    contentLength;
 
         public typedef int delegate (T[] a, T[] b) Comparator;
 
@@ -1389,7 +1389,7 @@ class StringT(T) : UniString
 
         package final T[] get ()
         {
-                return content;
+                return content [0 .. contentLength];
         }
 }       
 
@@ -1423,16 +1423,11 @@ typedef StringT!(char) String;
 
 debug (UnitTest)
 {
-void main()
-{
-}
-/+
-private import tango.io.Console;
-
 unittest
 {
         auto s = new MutableString("hello");
-        Cout (s.aliasOf).newline;
+        s.select ("hello");
+        s.replace ("1");
+        assert (s.aliasOf == "1");
 }
-+/
 }
