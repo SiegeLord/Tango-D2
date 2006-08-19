@@ -11,14 +11,14 @@ private import  tango.io.Console,
 
 void main (char[][] args)
 {
-        if (args.length == 2)
+        if (args.length is 2)
            {
            // open a file for reading
            auto mmap = new MappedBuffer (new FileConduit (args[1]));
 
            // copy content to console
-           Cout (mmap.toUtf8);
+           Cout (cast(char[]) mmap.slice) ();
            }
         else
-           Cout ("usage is: mmap filename");
+           Cout ("usage is: mmap filename").newline;
 }
