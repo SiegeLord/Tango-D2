@@ -68,7 +68,8 @@ PHOBOS_EXAMPLES =		\
 	./phobos/wc2 
 
 REFERENCE_EXAMPLES =		\
-	./reference/chapter4
+	./reference/chapter4	\
+	./reference/chapter11
 
 $(SIMPLE_EXAMPLES) : % : %.d
 	@echo "Building : " $@
