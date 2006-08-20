@@ -99,7 +99,7 @@ class Object
 	    //return cast(int)cast(void*)this - cast(int)cast(void*)o;
 
 	    //throw new Exception("need opCmp for class " ~ this.classinfo.name);
-	    return this is o;
+	    return this !is o;
     }
 
     /**
