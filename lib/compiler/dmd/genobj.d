@@ -81,9 +81,7 @@ class Object
     hash_t toHash()
     {
         // BUG: this prevents a compacting GC from working, needs to be fixed
-        //return cast(hash_t)cast(void*)this;
-
-        throw new Exception("need toHash for class " ~ this.classinfo.name);
+        return cast(hash_t)cast(void*)this;
     }
 
     /**
@@ -100,7 +98,8 @@ class Object
 	    // BUG: this prevents a compacting GC from working, needs to be fixed
 	    //return cast(int)cast(void*)this - cast(int)cast(void*)o;
 
-	    throw new Exception("need opCmp for class " ~ this.classinfo.name);
+	    //throw new Exception("need opCmp for class " ~ this.classinfo.name);
+	    return this is o;
     }
 
     /**
