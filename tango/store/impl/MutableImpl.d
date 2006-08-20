@@ -334,7 +334,7 @@ version (VERBOSE)
                                }
                    }
                 buf.append(">"c);
-                return buf.aliasOf();
+                return buf.slice();
         }
 
         // protected operations on version_ and count_
