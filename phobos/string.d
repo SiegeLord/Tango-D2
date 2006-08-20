@@ -93,7 +93,7 @@ int iswhite(dchar c)
 
 long atoi(char[] s)
 {
-    return phobos.c.stdlib.atoi(toUtf8z(s));
+    return phobos.c.stdlib.atoi(toStringz(s));
 }
 
 /*************************************
@@ -103,7 +103,7 @@ long atoi(char[] s)
 real atof(char[] s)
 {   char* endptr;
 
-    auto result = strtold(toUtf8z(s), &endptr);
+    auto result = strtold(toStringz(s), &endptr);
     return result;
 }
 
@@ -193,19 +193,19 @@ unittest
 
 /* ********************************
  * Converts a D array of chars to a C-style 0 terminated string.
- * Deprecated: replaced with toUtf8z().
+ * Deprecated: replaced with toStringz().
  */
 
 deprecated char* toCharz(char[] s)
 {
-    return toUtf8z(s);
+    return toStringz(s);
 }
 
 /*********************************
  * Convert array of chars s[] to a C-style 0 terminated string.
  */
 
-char* toUtf8z(char[] s)
+char* toStringz(char[] s)
     in
     {
     }
@@ -247,16 +247,16 @@ char* toUtf8z(char[] s)
 
 unittest
 {
-    debug(string) printf("string.toUtf8z.unittest\n");
+    debug(string) printf("string.toStringz.unittest\n");
 
-    char* p = toUtf8z("foo");
+    char* p = toStringz("foo");
     assert(strlen(p) == 3);
     char foo[] = "abbzxyzzy";
-    p = toUtf8z(foo[3..5]);
+    p = toStringz(foo[3..5]);
     assert(strlen(p) == 2);
 
     char[] test = "";
-    p = toUtf8z(test);
+    p = toStringz(test);
     assert(*p == 0);
 }
 
@@ -2205,13 +2205,13 @@ unittest
  * Convert to char[].
  */
 
-char[] toUtf8(bool b)
+char[] toString(bool b)
 {
     return b ? "true" : "false";
 }
 
 /// ditto
-char[] toUtf8(char c)
+char[] toString(char c)
 {
     char[] result = new char[2];
     result[0] = c;
@@ -2221,23 +2221,23 @@ char[] toUtf8(char c)
 
 unittest
 {
-    debug(string) printf("string.toUtf8(char).unittest\n");
+    debug(string) printf("string.toString(char).unittest\n");
 
     char[] s = "foo";
     char[] s2;
     foreach (char c; s)
     {
-	s2 ~= phobos.string.toUtf8(c);
+	s2 ~= phobos.string.toString(c);
     }
     //printf("%.*s", s2);
     assert(s2 == "foo");
 }
 
-char[] toUtf8(ubyte ub)  { return toUtf8(cast(uint) ub); } /// ditto
-char[] toUtf8(ushort us) { return toUtf8(cast(uint) us); } /// ditto
+char[] toString(ubyte ub)  { return toString(cast(uint) ub); } /// ditto
+char[] toString(ushort us) { return toString(cast(uint) us); } /// ditto
 
 /// ditto
-char[] toUtf8(uint u)
+char[] toString(uint u)
 {   char[uint.sizeof * 3] buffer = void;
     int ndigits;
     char c;
@@ -2264,33 +2264,33 @@ char[] toUtf8(uint u)
 
 unittest
 {
-    debug(string) printf("string.toUtf8(uint).unittest\n");
+    debug(string) printf("string.toString(uint).unittest\n");
 
     char[] r;
     int i;
 
-    r = toUtf8(0u);
+    r = toString(0u);
     i = cmp(r, "0");
     assert(i == 0);
 
-    r = toUtf8(9u);
+    r = toString(9u);
     i = cmp(r, "9");
     assert(i == 0);
 
-    r = toUtf8(123u);
+    r = toString(123u);
     i = cmp(r, "123");
     assert(i == 0);
 }
 
 /// ditto
-char[] toUtf8(ulong u)
+char[] toString(ulong u)
 {   char[ulong.sizeof * 3] buffer;
     int ndigits;
     char c;
     char[] result;
 
     if (u < 0x1_0000_0000)
-	return toUtf8(cast(uint)u);
+	return toString(cast(uint)u);
     ndigits = 0;
     while (u)
     {
@@ -2306,35 +2306,35 @@ char[] toUtf8(ulong u)
 
 unittest
 {
-    debug(string) printf("string.toUtf8(ulong).unittest\n");
+    debug(string) printf("string.toString(ulong).unittest\n");
 
     char[] r;
     int i;
 
-    r = toUtf8(0uL);
+    r = toString(0uL);
     i = cmp(r, "0");
     assert(i == 0);
 
-    r = toUtf8(9uL);
+    r = toString(9uL);
     i = cmp(r, "9");
     assert(i == 0);
 
-    r = toUtf8(123uL);
+    r = toString(123uL);
     i = cmp(r, "123");
     assert(i == 0);
 }
 
-char[] toUtf8(byte b)  { return toUtf8(cast(int) b); } /// ditto
-char[] toUtf8(short s) { return toUtf8(cast(int) s); } /// ditto
+char[] toString(byte b)  { return toString(cast(int) b); } /// ditto
+char[] toString(short s) { return toString(cast(int) s); } /// ditto
 
 /// ditto
-char[] toUtf8(int i)
+char[] toString(int i)
 {   char[1 + int.sizeof * 3] buffer;
     char c;
     char[] result;
 
     if (i >= 0)
-	return toUtf8(cast(uint)i);
+	return toString(cast(uint)i);
 
     uint u = -i;
     int ndigits = 1;
@@ -2353,46 +2353,46 @@ char[] toUtf8(int i)
 
 unittest
 {
-    debug(string) printf("string.toUtf8(int).unittest\n");
+    debug(string) printf("string.toString(int).unittest\n");
 
     char[] r;
     int i;
 
-    r = toUtf8(0);
+    r = toString(0);
     i = cmp(r, "0");
     assert(i == 0);
 
-    r = toUtf8(9);
+    r = toString(9);
     i = cmp(r, "9");
     assert(i == 0);
 
-    r = toUtf8(123);
+    r = toString(123);
     i = cmp(r, "123");
     assert(i == 0);
 
-    r = toUtf8(-0);
+    r = toString(-0);
     i = cmp(r, "0");
     assert(i == 0);
 
-    r = toUtf8(-9);
+    r = toString(-9);
     i = cmp(r, "-9");
     assert(i == 0);
 
-    r = toUtf8(-123);
+    r = toString(-123);
     i = cmp(r, "-123");
     assert(i == 0);
 }
 
 /// ditto
-char[] toUtf8(long i)
+char[] toString(long i)
 {   char[1 + long.sizeof * 3] buffer;
     char c;
     char[] result;
 
     if (i >= 0)
-	return toUtf8(cast(ulong)i);
+	return toString(cast(ulong)i);
     if (cast(int)i == i)
-	return toUtf8(cast(int)i);
+	return toString(cast(int)i);
 
     ulong u = cast(ulong)(-i);
     int ndigits = 1;
@@ -2411,97 +2411,97 @@ char[] toUtf8(long i)
 
 unittest
 {
-    debug(string) printf("string.toUtf8(long).unittest\n");
+    debug(string) printf("string.toString(long).unittest\n");
 
     char[] r;
     int i;
 
-    r = toUtf8(0L);
+    r = toString(0L);
     i = cmp(r, "0");
     assert(i == 0);
 
-    r = toUtf8(9L);
+    r = toString(9L);
     i = cmp(r, "9");
     assert(i == 0);
 
-    r = toUtf8(123L);
+    r = toString(123L);
     i = cmp(r, "123");
     assert(i == 0);
 
-    r = toUtf8(-0L);
+    r = toString(-0L);
     i = cmp(r, "0");
     assert(i == 0);
 
-    r = toUtf8(-9L);
+    r = toString(-9L);
     i = cmp(r, "-9");
     assert(i == 0);
 
-    r = toUtf8(-123L);
+    r = toString(-123L);
     i = cmp(r, "-123");
     assert(i == 0);
 }
 
 /// ditto
-char[] toUtf8(float f) { return toUtf8(cast(double) f); }
+char[] toString(float f) { return toString(cast(double) f); }
 
 /// ditto
-char[] toUtf8(double d)
+char[] toString(double d)
 {
     char[20] buffer;
 
     sprintf(buffer, "%g", d);
-    return phobos.string.toUtf8(buffer).dup;
+    return phobos.string.toString(buffer).dup;
 }
 
 /// ditto
-char[] toUtf8(real r)
+char[] toString(real r)
 {
     char[20] buffer;
 
     sprintf(buffer, "%Lg", r);
-    return phobos.string.toUtf8(buffer).dup;
+    return phobos.string.toString(buffer).dup;
 }
 
 /// ditto
-char[] toUtf8(ifloat f) { return toUtf8(cast(idouble) f); }
+char[] toString(ifloat f) { return toString(cast(idouble) f); }
 
 /// ditto
-char[] toUtf8(idouble d)
+char[] toString(idouble d)
 {
     char[21] buffer;
 
     sprintf(buffer, "%gi", d);
-    return phobos.string.toUtf8(buffer).dup;
+    return phobos.string.toString(buffer).dup;
 }
 
 /// ditto
-char[] toUtf8(ireal r)
+char[] toString(ireal r)
 {
     char[21] buffer;
 
     sprintf(buffer, "%Lgi", r);
-    return phobos.string.toUtf8(buffer).dup;
+    return phobos.string.toString(buffer).dup;
 }
 
 /// ditto
-char[] toUtf8(cfloat f) { return toUtf8(cast(cdouble) f); }
+char[] toString(cfloat f) { return toString(cast(cdouble) f); }
 
 /// ditto
-char[] toUtf8(cdouble d)
+char[] toString(cdouble d)
 {
     char[20 + 1 + 20 + 1] buffer;
 
     sprintf(buffer, "%g+%gi", d.re, d.im);
-    return phobos.string.toUtf8(buffer).dup;
+    return phobos.string.toString(buffer).dup;
 }
 
 /// ditto
-char[] toUtf8(creal r)
+char[] toString(creal r)
 {
     char[20 + 1 + 20 + 1] buffer;
 
     sprintf(buffer, "%Lg+%Lgi", r.re, r.im);
-    return phobos.string.toUtf8(buffer).dup;
+    return phobos.string.toString(buffer).dup;
 }
 
 
@@ -2512,7 +2512,7 @@ char[] toUtf8(creal r)
  * value is treated as a signed value only if radix is 10.
  * The characters A through Z are used to represent values 10 through 36.
  */
-char[] toUtf8(long value, uint radix)
+char[] toString(long value, uint radix)
 in
 {
     assert(radix >= 2 && radix <= 36);
@@ -2520,12 +2520,12 @@ in
 body
 {
     if (radix == 10)
-	return toUtf8(value);		// handle signed cases only for radix 10
-    return toUtf8(cast(ulong)value, radix);
+	return toString(value);		// handle signed cases only for radix 10
+    return toString(cast(ulong)value, radix);
 }
 
 /// ditto
-char[] toUtf8(ulong value, uint radix)
+char[] toString(ulong value, uint radix)
 in
 {
     assert(radix >= 2 && radix <= 36);
@@ -2551,23 +2551,23 @@ body
 
 unittest
 {
-    debug(string) printf("string.toUtf8(ulong, uint).unittest\n");
+    debug(string) printf("string.toString(ulong, uint).unittest\n");
 
     char[] r;
     int i;
 
-    r = toUtf8(-10L, 10u);
+    r = toString(-10L, 10u);
     assert(r == "-10");
 
-    r = toUtf8(15L, 2u);
+    r = toString(15L, 2u);
     //writefln("r = '%s'", r);
     assert(r == "1111");
 
-    r = toUtf8(1L, 2u);
+    r = toString(1L, 2u);
     //writefln("r = '%s'", r);
     assert(r == "1");
 
-    r = toUtf8(0x1234AFL, 16u);
+    r = toString(0x1234AFL, 16u);
     //writefln("r = '%s'", r);
     assert(r == "1234AF");
 }
@@ -2576,23 +2576,23 @@ unittest
  * Convert C-style 0 terminated string s to char[] string.
  */
 
-char[] toUtf8(char *s)
+char[] toString(char *s)
 {
     return s ? s[0 .. strlen(s)] : cast(char[])null;
 }
 
 unittest
 {
-    debug(string) printf("string.toUtf8(char*).unittest\n");
+    debug(string) printf("string.toString(char*).unittest\n");
 
     char[] r;
     int i;
 
-    r = toUtf8(null);
+    r = toString(null);
     i = cmp(r, "");
     assert(i == 0);
 
-    r = toUtf8("foo\0");
+    r = toString("foo\0");
     i = cmp(r, "foo");
     assert(i == 0);
 }
@@ -3519,9 +3519,9 @@ unittest
     assert(isNumeric("123f") == true);
     assert(isNumeric("123.u") == false);
 
-    assert(isNumeric(phobos.string.toUtf8(real.nan)) == true);
-    assert(isNumeric(phobos.string.toUtf8(-real.infinity)) == true);
-    assert(isNumeric(phobos.string.toUtf8(123e+2+1234.78Li)) == true);
+    assert(isNumeric(phobos.string.toString(real.nan)) == true);
+    assert(isNumeric(phobos.string.toString(-real.infinity)) == true);
+    assert(isNumeric(phobos.string.toString(123e+2+1234.78Li)) == true);
 
     s = "$250.99-";
     assert(isNumeric(s[1..s.length - 2]) == true);

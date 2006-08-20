@@ -195,7 +195,7 @@ class Protocol
 	void populate(protoent* proto)
 	{
 		type = cast(ProtocolType)proto.p_proto;
-		name = phobos.string.toUtf8(proto.p_name).dup;
+		name = phobos.string.toString(proto.p_name).dup;
 		
 		int i;
 		for(i = 0;; i++)
@@ -209,7 +209,7 @@ class Protocol
 			aliases = new char[][i];
 			for(i = 0; i != aliases.length; i++)
 			{
-				aliases[i] = phobos.string.toUtf8(proto.p_aliases[i]).dup;
+				aliases[i] = phobos.string.toString(proto.p_aliases[i]).dup;
 			}
 		}
 		else
@@ -222,7 +222,7 @@ class Protocol
 	bool getProtocolByName(char[] name)
 	{
 		protoent* proto;
-		proto = getprotobyname(toUtf8z(name));
+		proto = getprotobyname(toStringz(name));
 		if(!proto)
 			return false;
 		populate(proto);
@@ -270,9 +270,9 @@ class Service
 	
 	void populate(servent* serv)
 	{
-		name = phobos.string.toUtf8(serv.s_name).dup;
+		name = phobos.string.toString(serv.s_name).dup;
 		port = ntohs(cast(ushort)serv.s_port);
-		protocolName = phobos.string.toUtf8(serv.s_proto).dup;
+		protocolName = phobos.string.toString(serv.s_proto).dup;
 		
 		int i;
 		for(i = 0;; i++)
@@ -286,7 +286,7 @@ class Service
 			aliases = new char[][i];
 			for(i = 0; i != aliases.length; i++)
 			{
-				aliases[i] = phobos.string.toUtf8(serv.s_aliases[i]).dup;
+				aliases[i] = phobos.string.toString(serv.s_aliases[i]).dup;
 			}
 		}
 		else
@@ -302,7 +302,7 @@ class Service
 	bool getServiceByName(char[] name, char[] protocolName)
 	{
 		servent* serv;
-		serv = getservbyname(toUtf8z(name), toUtf8z(protocolName));
+		serv = getservbyname(toStringz(name), toStringz(protocolName));
 		if(!serv)
 			return false;
 		populate(serv);
@@ -315,7 +315,7 @@ class Service
 	bool getServiceByName(char[] name)
 	{
 		servent* serv;
-		serv = getservbyname(toUtf8z(name), null);
+		serv = getservbyname(toStringz(name), null);
 		if(!serv)
 			return false;
 		populate(serv);
@@ -327,7 +327,7 @@ class Service
 	bool getServiceByPort(ushort port, char[] protocolName)
 	{
 		servent* serv;
-		serv = getservbyport(port, toUtf8z(protocolName));
+		serv = getservbyport(port, toStringz(protocolName));
 		if(!serv)
 			return false;
 		populate(serv);
@@ -406,7 +406,7 @@ class InternetHost
 		int i;
 		char* p;
 		
-		name = phobos.string.toUtf8(he.h_name).dup;
+		name = phobos.string.toString(he.h_name).dup;
 		
 		for(i = 0;; i++)
 		{
@@ -420,7 +420,7 @@ class InternetHost
 			aliases = new char[][i];
 			for(i = 0; i != aliases.length; i++)
 			{
-				aliases[i] = phobos.string.toUtf8(he.h_aliases[i]).dup;
+				aliases[i] = phobos.string.toString(he.h_aliases[i]).dup;
 			}
 		}
 		else
@@ -454,7 +454,7 @@ class InternetHost
 	 */	
 	bool getHostByName(char[] name)
 	{
-		hostent* he = gethostbyname(toUtf8z(name));
+		hostent* he = gethostbyname(toStringz(name));
 		if(!he)
 			return false;
 		validHostent(he);
@@ -485,7 +485,7 @@ class InternetHost
 	 */	
 	bool getHostByAddr(char[] addr)
 	{
-		uint x = inet_addr(phobos.string.toUtf8z(addr));
+		uint x = inet_addr(phobos.string.toStringz(addr));
 		hostent* he = gethostbyaddr(&x, 4, cast(int)AddressFamily.INET);
 		if(!he)
 			return false;
@@ -540,7 +540,7 @@ abstract class Address
 	protected sockaddr* name();
 	protected int nameLen();
 	AddressFamily addressFamily();	/// Family of this address.
-	char[] toUtf8();		/// Human readable string representing this address.
+	char[] toString();		/// Human readable string representing this address.
 }
 
 /**
@@ -571,7 +571,7 @@ class UnknownAddress: Address
 	}
 	
 	
-	char[] toUtf8()
+	char[] toString()
 	{
 		return "Unknown";
 	}
@@ -671,17 +671,17 @@ class InternetAddress: Address
 	/// Human readable string representing the IPv4 address in dotted-decimal form.	
 	char[] toAddrString()
 	{
-		return phobos.string.toUtf8(inet_ntoa(sin.sin_addr)).dup;
+		return phobos.string.toString(inet_ntoa(sin.sin_addr)).dup;
 	}
 	
 	/// Human readable string representing the IPv4 port.
 	char[] toPortString()
 	{
-		return phobos.string.toUtf8(port());
+		return phobos.string.toString(port());
 	}
 	
 	/// Human readable string representing the IPv4 address and port in the form $(I a.b.c.d:e).
-	char[] toUtf8()
+	char[] toString()
 	{
 		return toAddrString() ~ ":" ~ toPortString();
 	}
@@ -694,7 +694,7 @@ class InternetAddress: Address
 	 */
 	static uint parse(char[] addr)
 	{
-		return ntohl(inet_addr(phobos.string.toUtf8z(addr)));
+		return ntohl(inet_addr(phobos.string.toStringz(addr)));
 	}
 }
 
@@ -702,7 +702,7 @@ class InternetAddress: Address
 unittest
 {
 	InternetAddress ia = new InternetAddress("63.105.9.61", 80);
-	assert(ia.toUtf8() == "63.105.9.61:80");
+	assert(ia.toString() == "63.105.9.61:80");
 }
 
 
@@ -1042,7 +1042,7 @@ class Socket
 	this(AddressFamily af, SocketType type, char[] protocolName)
 	{
 		protoent* proto;
-		proto = getprotobyname(toUtf8z(protocolName));
+		proto = getprotobyname(toStringz(protocolName));
 		if(!proto)
 			throw new SocketException("Unable to find the protocol", _lasterr());
 		this(af, type, cast(ProtocolType)proto.p_proto);
@@ -1270,7 +1270,7 @@ class Socket
 		char[256] result; // Host names are limited to 255 chars.
 		if(_SOCKET_ERROR == .gethostname(result, result.length))
 			throw new SocketException("Unable to obtain host name", _lasterr());
-		return phobos.string.toUtf8(cast(char*)result).dup;
+		return phobos.string.toString(cast(char*)result).dup;
 	}
 	
 	/// Remote endpoint Address.

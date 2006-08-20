@@ -34,7 +34,7 @@
 
 module phobos.thread;
 
-import tango.core.Thread;
+public import tango.core.Thread;
 
 /+
 //debug=thread;

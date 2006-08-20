@@ -877,7 +877,7 @@ float toFloat(in char[] s)
     char* sz;
 
     //writefln("toFloat('%s')", s);
-    sz = toUtf8z(s);
+    sz = toStringz(s);
     if (phobos.ctype.isspace(*sz))
 	goto Lerr;
 
@@ -941,7 +941,7 @@ double toDouble(in char[] s)
     char* sz;
 
     //writefln("toDouble('%s')", s);
-    sz = toUtf8z(s);
+    sz = toStringz(s);
     if (phobos.ctype.isspace(*sz))
 	goto Lerr;
 
@@ -1007,7 +1007,7 @@ real toReal(in char[] s)
     char* sz;
 
     //writefln("toReal('%s')", s);
-    sz = toUtf8z(s);
+    sz = toStringz(s);
     if (phobos.ctype.isspace(*sz))
 	goto Lerr;
 

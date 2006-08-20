@@ -1,10 +1,11 @@
-private import  tango.net.Socket;
+import  tango.net.Socket;
 
-private import  tango.core.Thread;
+import  tango.core.Thread;
 
-private import  tango.log.Log,
-                tango.log.XmlLayout,
-                tango.log.SocketAppender;
+import  tango.log.Log,
+        tango.log.XmlLayout,
+        tango.net.InternetAddress,
+        tango.log.SocketAppender;
 
 
 version (Win32)

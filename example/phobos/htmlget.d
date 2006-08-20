@@ -69,7 +69,7 @@ int main(char[][] args)
 		printf("Connected!\nRequesting URL \"" ~ url ~ "\"...\n");
 	
 	if(port != 80)
-		domain = domain ~ ":" ~ phobos.string.toUtf8(port);
+		domain = domain ~ ":" ~ phobos.string.toString(port);
 	ss.writeString("GET " ~ url ~ " HTTP/1.1\r\n"
 		"Host: " ~ domain ~ "\r\n"
 		"\r\n");

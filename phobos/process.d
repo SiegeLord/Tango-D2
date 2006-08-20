@@ -45,14 +45,14 @@ private import phobos.c.process;
 
 int system(char[] command)
 {
-    return phobos.c.process.system(toUtf8z(command));
+    return phobos.c.process.system(toStringz(command));
 }
 
 private void toAStringz(char[][] a, char**az)
 {
     foreach(char[] s; a)
     {
-        *az++ = toUtf8z(s);
+        *az++ = toStringz(s);
     }
     *az = null;
 }
@@ -68,7 +68,7 @@ private void toAStringz(char[][] a, char**az)
 //
 //	toAStringz(argv, argv_);
 //
-//	return phobos.c.process.spawnvp(mode, toUtf8z(pathname), argv_);
+//	return phobos.c.process.spawnvp(mode, toStringz(pathname), argv_);
 //    }
 //}
 
@@ -85,11 +85,11 @@ int spawnvp(int mode, char[] pathname, char[][] argv)
 
     version(linux)
     {
-        return _spawnvp(mode, toUtf8z(pathname), argv_);
+        return _spawnvp(mode, toStringz(pathname), argv_);
     }
     else
     {
-        return phobos.c.process.spawnvp(mode, toUtf8z(pathname), argv_);
+        return phobos.c.process.spawnvp(mode, toStringz(pathname), argv_);
     }
 }
 
@@ -142,7 +142,7 @@ int _spawnvp(int mode, char *pathname, char **argv)
 
 Lerror:
     retval = getErrno;
-    throw new Exception("Cannot spawn " ~ toUtf8(pathname) ~ "; " ~ toUtf8(strerror(retval)) ~ " [errno " ~ toUtf8(retval) ~ "]");
+    throw new Exception("Cannot spawn " ~ toString(pathname) ~ "; " ~ toString(strerror(retval)) ~ " [errno " ~ toString(retval) ~ "]");
 }   // _spawnvp
 private
 {
@@ -169,7 +169,7 @@ int execv(char[] pathname, char[][] argv)
 
     toAStringz(argv, argv_);
 
-    return phobos.c.process.execv(toUtf8z(pathname), argv_);
+    return phobos.c.process.execv(toStringz(pathname), argv_);
 }
 
 /** ditto */
@@ -181,7 +181,7 @@ int execve(char[] pathname, char[][] argv, char[][] envp)
     toAStringz(argv, argv_);
     toAStringz(envp, envp_);
 
-    return phobos.c.process.execve(toUtf8z(pathname), argv_, envp_);
+    return phobos.c.process.execve(toStringz(pathname), argv_, envp_);
 }
 
 /** ditto */
@@ -191,7 +191,7 @@ int execvp(char[] pathname, char[][] argv)
 
     toAStringz(argv, argv_);
 
-    return phobos.c.process.execvp(toUtf8z(pathname), argv_);
+    return phobos.c.process.execvp(toStringz(pathname), argv_);
 }
 
 /** ditto */
@@ -208,7 +208,7 @@ version(linux)
     else
     {
         // No, so must traverse PATHs, looking for first match
-        char[][]    envPaths    =   phobos.string.split(phobos.string.toUtf8(phobos.c.stdlib.getenv("PATH")), ":");
+        char[][]    envPaths    =   phobos.string.split(phobos.string.toString(phobos.c.stdlib.getenv("PATH")), ":");
         int         iRet        =   0;
 
         // Note: if any call to execve() succeeds, this process will cease 
@@ -237,7 +237,7 @@ else version(Windows)
     toAStringz(argv, argv_);
     toAStringz(envp, envp_);
 
-    return phobos.c.process.execvpe(toUtf8z(pathname), argv_, envp_);
+    return phobos.c.process.execvpe(toStringz(pathname), argv_, envp_);
 }
 else
 {

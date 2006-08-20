@@ -226,9 +226,9 @@ class OutBuffer
      * Convert internal buffer to array of chars.
      */
 
-    char[] toUtf8()
+    char[] toString()
     {
-	//printf("OutBuffer.toUtf8()\n");
+	//printf("OutBuffer.toString()\n");
 	return cast(char[])data[0 .. offset];
     }
 
@@ -244,7 +244,7 @@ class OutBuffer
 	uint psize;
 	int count;
 
-	f = toUtf8z(format);
+	f = toStringz(format);
 	p = buffer;
 	psize = buffer.length;
 	for (;;)
@@ -333,6 +333,6 @@ unittest
     buf.write(cast(byte)0x20);
     buf.write("world");
     buf.printf(" %d", 6);
-    //printf("buf = '%.*s'\n", buf.toUtf8());
-    assert(cmp(buf.toUtf8(), "hello world 6") == 0);
+    //printf("buf = '%.*s'\n", buf.toString());
+    assert(cmp(buf.toString(), "hello world 6") == 0);
 }

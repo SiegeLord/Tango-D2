@@ -373,7 +373,7 @@ interface OutputStream {
  * Seeking:
  * These methods require that the seekable flag be set.
  * Problems with seeking result in a SeekException being thrown.
- * seek, seekSet, seekCur, seekEnd, position, size, toUtf8, toHash
+ * seek, seekSet, seekCur, seekEnd, position, size, toString, toHash
  */
 
 // not really abstract, but its instances will do nothing useful
@@ -1120,7 +1120,7 @@ class Stream : InputStream, OutputStream {
     // by Walter's permission
     char[1024] buffer;
     char* p = buffer;
-    char* f = toUtf8z(format);
+    char* f = toStringz(format);
     size_t psize = buffer.length;
     size_t count;
     while (true) {
@@ -1850,7 +1850,7 @@ class File: Stream {
       isopen = hFile != INVALID_HANDLE_VALUE;
     }
     version (linux) {
-      hFile = phobos.c.linux.linux.open(toUtf8z(filename), access | createMode, share);
+      hFile = phobos.c.linux.linux.open(toStringz(filename), access | createMode, share);
       isopen = hFile != -1;
     }
     if (!isopen)
@@ -2649,7 +2649,7 @@ class MemoryStream: TArrayStream!(ubyte[]) {
     m.position = 0;
     assert (m.available == 42);
     m.writef("%d %d %s",100,345,"hello");
-    char[] str = m.toUtf8;
+    char[] str = m.toString;
     assert (str[0..13] == "100 345 hello");
     assert (m.available == 29);
     assert (m.position == 13);
@@ -2659,12 +2659,12 @@ class MemoryStream: TArrayStream!(ubyte[]) {
     m2 = new MemoryStream ();
     m2.writeString("before");
     m2.copyFrom(m,10);
-    str = m2.toUtf8;
+    str = m2.toString;
     assert (str[0..16] == "before 345 hello");
     m2.position = 3;
     m2.copyFrom(m);
-    char[] str2 = m.toUtf8;
-    str = m2.toUtf8;
+    char[] str2 = m.toString;
+    str = m2.toString;
     assert (str == ("bef" ~ str2));
   }
 }
@@ -2900,7 +2900,7 @@ class SliceStream : FilterStream {
 
     s = new SliceStream (m, 4);
     assert (s.size () == 14);
-    assert (s.toUtf8 () == "Vrooorld\nBlaho");
+    assert (s.toString () == "Vrooorld\nBlaho");
     s.seekEnd (0);
     assert (s.available == 0);
 
@@ -2910,7 +2910,7 @@ class SliceStream : FilterStream {
     assert (s.size () == 25);
     assert (m.position () == 18);
     assert (m.size () == 29);
-    assert (m.toUtf8() == "HellVrooorld\nBlaho, etcetera.");
+    assert (m.toString() == "HellVrooorld\nBlaho, etcetera.");
   }
 }
 
