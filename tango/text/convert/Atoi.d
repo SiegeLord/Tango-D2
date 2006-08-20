@@ -162,3 +162,68 @@ struct AtoiT(T)
 ******************************************************************************/
 
 alias AtoiT!(char) Atoi;
+
+
+debug (UnitTest)
+{
+unittest{
+
+    assert( Atoi.parse( "0" ) ==  0 );
+    assert( Atoi.parse( "1" ) ==  1 );
+    assert( Atoi.parse( "-1" ) ==  -1 );
+    assert( Atoi.parse( "+1" ) ==  1 );
+
+    // numerical limits
+    assert( Atoi.parse( "-2147483648" ) == int.min );
+    assert( Atoi.parse(  "2147483647" ) == int.max );
+    assert( Atoi.parse(  "4294967295" ) == uint.max );
+
+    assert( Atoi.parse( "-9223372036854775808" ) == long.min );
+    assert( Atoi.parse( "9223372036854775807" ) == long.max );
+    assert( Atoi.parse( "18446744073709551615" ) == ulong.max );
+
+    // hex
+    assert( Atoi.parse( "a", 16 ) == 0x0A );
+    assert( Atoi.parse( "b", 16 ) == 0x0B );
+    assert( Atoi.parse( "c", 16 ) == 0x0C );
+    assert( Atoi.parse( "d", 16 ) == 0x0D );
+    assert( Atoi.parse( "e", 16 ) == 0x0E );
+    assert( Atoi.parse( "f", 16 ) == 0x0F );
+    assert( Atoi.parse( "A", 16 ) == 0x0A );
+    assert( Atoi.parse( "B", 16 ) == 0x0B );
+    assert( Atoi.parse( "C", 16 ) == 0x0C );
+    assert( Atoi.parse( "D", 16 ) == 0x0D );
+    assert( Atoi.parse( "E", 16 ) == 0x0E );
+    assert( Atoi.parse( "F", 16 ) == 0x0F );
+    assert( Atoi.parse( "FFFF", 16 ) == ushort.max );
+    assert( Atoi.parse( "ffffFFFF", 16 ) == uint.max );
+    assert( Atoi.parse( "ffffFFFFffffFFFF", 16 ) == ulong.max );
+    // oct
+    assert( Atoi.parse( "55", 8 ) == 055 );
+    assert( Atoi.parse( "100", 8 ) == 0100 );
+    // bin
+    assert( Atoi.parse( "10000", 2 ) == 0x10 );
+    // trim
+    assert( Atoi.parse( "    \t20" ) == 20 );
+    assert( Atoi.parse( "    \t-20" ) == -20 );
+    assert( Atoi.parse( "-    \t 20" ) == -20 );
+    // recognise radix prefix
+    assert( Atoi.parse( "0xFFFF" ) == ushort.max );
+    assert( Atoi.parse( "0XffffFFFF" ) == uint.max );
+    assert( Atoi.parse( "0o55", 8 ) == 055 );
+    assert( Atoi.parse( "0O55", 8 ) == 055 );
+    assert( Atoi.parse( "0b10000", 2 ) == 0x10 );
+    assert( Atoi.parse( "0B10000", 2 ) == 0x10 );
+
+    // regression tests
+
+    // ticket #90
+    char[] str = "0x";
+    assert( Atoi.parse( str[0..1] ) ==  0 );
+
+}
+}
+
+
+
+
