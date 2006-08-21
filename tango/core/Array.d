@@ -58,7 +58,7 @@ version( DDoc )
 {
     /**
      * Performs a linear search of buf from $(LB)0 .. buf.length$(RP),
-     * returning the index of the first element matching pat, or size_t.max
+     * returning the index of the first element matching pat, or buf.length
      * if no match was found.  Comparisons will be performed using the
      * supplied predicate or '==' if none is supplied.
      *
@@ -70,14 +70,14 @@ version( DDoc )
      *         callable type.
      *
      * Returns:
-     *  The index of the first match or size_t.max if no match was found.
+     *  The index of the first match or buf.length if no match was found.
      */
     size_t find( Elem[] buf, Elem pat, Pred2E pred = Pred2E.init );
 
 
     /**
      * Performs a linear search of buf from $(LB)0 .. buf.length$(RP),
-     * returning the index of the first element matching pat, or size_t.max
+     * returning the index of the first element matching pat, or buf.length
      * if no match was found.  Comparisons will be performed using the
      * supplied predicate or '==' if none is supplied.
      *
@@ -89,7 +89,7 @@ version( DDoc )
      *         callable type.
      *
      * Returns:
-     *  The index of the first match or size_t.max if no match was found.
+     *  The index of the first match or buf.length if no match was found.
      */
     size_t find( Elem[] buf, Elem[] pat, Pred2E pred = Pred2E.init );
 
@@ -108,7 +108,7 @@ else
                 if( pred( cur, pat ) )
                     return pos;
             }
-            return size_t.max;
+            return buf.length;
         }
 
 
@@ -118,7 +118,7 @@ else
                 pat.length == 0 ||
                 buf.length < pat.length )
             {
-                return size_t.max;
+                return buf.length;
             }
 
             size_t end = buf.length - pat.length + 1;
@@ -134,12 +134,12 @@ else
                         if( ++mat >= pat.length )
                             return pos - pat.length + 1;
                         if( ++pos >= buf.length )
-                            return size_t.max;
+                            return buf.length;
                     } while( pred( buf[pos], pat[mat] ) );
                     pos -= mat;
                 }
             }
-            return size_t.max;
+            return buf.length;
         }
     }
 
@@ -167,16 +167,16 @@ else
       unittest
       {
         // find element
-        assert( find( "", 'a' ) == size_t.max );
+        assert( find( "", 'a' ) == 0 );
         assert( find( "abc", 'a' ) == 0 );
         assert( find( "abc", 'b' ) == 1 );
         assert( find( "abc", 'c' ) == 2 );
-        assert( find( "abc", 'd' ) == size_t.max );
+        assert( find( "abc", 'd' ) == 3 );
 
         // null parameters
-        assert( find( "", "" ) == size_t.max );
-        assert( find( "a", "" ) == size_t.max );
-        assert( find( "", "a" ) == size_t.max );
+        assert( find( "", "" ) == 0 );
+        assert( find( "a", "" ) == 1 );
+        assert( find( "", "a" ) == 0 );
 
         // exact match
         assert( find( "abc", "abc" ) == 0 );
@@ -186,13 +186,13 @@ else
         assert( find( "abca", "a" ) == 0 );
         assert( find( "abc", "b" ) == 1 );
         assert( find( "abc", "c" ) == 2 );
-        assert( find( "abc", "d" ) == size_t.max );
+        assert( find( "abc", "d" ) == 3 );
 
         // multi-char substring match
         assert( find( "abc", "ab" ) == 0 );
         assert( find( "abcab", "ab" ) == 0 );
         assert( find( "abc", "bc" ) == 1 );
-        assert( find( "abc", "ac" ) == size_t.max );
+        assert( find( "abc", "ac" ) == 3 );
         assert( find( "abrabracadabra", "abracadabra" ) == 3 );
       }
     }
@@ -208,7 +208,7 @@ version( DDoc )
 {
     /**
      * Performs a linear search of buf from $(LP)buf.length .. 0$(RB),
-     * returning the index of the first element matching pat, or size_t.max
+     * returning the index of the first element matching pat, or buf.length
      * if no match was found.  Comparisons will be performed using the
      * supplied predicate or '==' if none is supplied.
      *
@@ -220,14 +220,14 @@ version( DDoc )
      *         callable type.
      *
      * Returns:
-     *  The index of the first match or size_t.max if no match was found.
+     *  The index of the first match or buf.length if no match was found.
      */
     size_t rfind( Elem[] buf, Elem pat, Pred2E pred = Pred2E.init );
 
 
     /**
      * Performs a linear search of buf from $(LP)buf.length .. 0$(RB),
-     * returning the index of the first element matching pat, or size_t.max
+     * returning the index of the first element matching pat, or buf.length
      * if no match was found.  Comparisons will be performed using the
      * supplied predicate or '==' if none is supplied.
      *
@@ -239,7 +239,7 @@ version( DDoc )
      *         callable type.
      *
      * Returns:
-     *  The index of the first match or size_t.max if no match was found.
+     *  The index of the first match or buf.length if no match was found.
      */
     size_t rfind( Elem[] buf, Elem[] pat, Pred2E pred = Pred2E.init );
 }
@@ -253,7 +253,7 @@ else
         size_t fn( Elem[] buf, Elem pat, Pred pred = Pred.init )
         {
             if( buf.length == 0 )
-                return size_t.max;
+                return buf.length;
 
             size_t pos = buf.length;
 
@@ -262,7 +262,7 @@ else
                 if( pred( buf[--pos], pat ) )
                     return pos;
             } while( pos > 0 );
-            return size_t.max;
+            return buf.length;
         }
 
 
@@ -272,7 +272,7 @@ else
                 pat.length == 0 ||
                 buf.length < pat.length )
             {
-                return size_t.max;
+                return buf.length;
             }
 
             size_t pos = buf.length - pat.length + 1;
@@ -288,12 +288,12 @@ else
                         if( ++mat >= pat.length )
                             return pos - pat.length + 1;
                         if( ++pos >= buf.length )
-                            return size_t.max;
+                            return buf.length;
                     } while( pred( buf[pos], pat[mat] ) );
                     pos -= mat;
                 }
             } while( pos > 0 );
-            return size_t.max;
+            return buf.length;
         }
     }
 
@@ -321,16 +321,16 @@ else
       unittest
       {
         // rfind element
-        assert( rfind( "", 'a' ) == size_t.max );
+        assert( rfind( "", 'a' ) == 0 );
         assert( rfind( "abc", 'a' ) == 0 );
         assert( rfind( "abc", 'b' ) == 1 );
         assert( rfind( "abc", 'c' ) == 2 );
-        assert( rfind( "abc", 'd' ) == size_t.max );
+        assert( rfind( "abc", 'd' ) == 3 );
 
         // null parameters
-        assert( rfind( "", "" ) == size_t.max );
-        assert( rfind( "a", "" ) == size_t.max );
-        assert( rfind( "", "a" ) == size_t.max );
+        assert( rfind( "", "" ) == 0 );
+        assert( rfind( "a", "" ) == 1 );
+        assert( rfind( "", "a" ) == 0 );
 
         // exact match
         assert( rfind( "abc", "abc" ) == 0 );
@@ -340,13 +340,13 @@ else
         assert( rfind( "abca", "a" ) == 3 );
         assert( rfind( "abc", "b" ) == 1 );
         assert( rfind( "abc", "c" ) == 2 );
-        assert( rfind( "abc", "d" ) == size_t.max );
+        assert( rfind( "abc", "d" ) == 3 );
 
         // multi-char substring match
         assert( rfind( "abc", "ab" ) == 0 );
         assert( rfind( "abcab", "ab" ) == 3 );
         assert( rfind( "abc", "bc" ) == 1 );
-        assert( rfind( "abc", "ac" ) == size_t.max );
+        assert( rfind( "abc", "ac" ) == 3 );
         assert( rfind( "abracadabrabra", "abracadabra" ) == 0 );
       }
     }
@@ -362,7 +362,7 @@ version( DDoc )
 {
     /**
      * Performs a linear search of buf from $(LB)0 .. buf.length$(RP),
-     * returning the index of the first element matching pat, or size_t.max
+     * returning the index of the first element matching pat, or buf.length
      * if no match was found.  Comparisons will be performed using the
      * supplied predicate or '==' if none is supplied.
      *
@@ -383,14 +383,14 @@ version( DDoc )
      *         callable type.
      *
      * Returns:
-     *  The index of the first match or size_t.max if no match was found.
+     *  The index of the first match or buf.length if no match was found.
      */
     size_t kfind( Elem[] buf, Elem pat, Pred2E pred = Pred2E.init );
 
 
     /**
      * Performs a linear search of buf from $(LB)0 .. buf.length$(RP),
-     * returning the index of the first element matching pat, or size_t.max
+     * returning the index of the first element matching pat, or buf.length
      * if no match was found.  Comparisons will be performed using the
      * supplied predicate or '==' if none is supplied.
      *
@@ -411,7 +411,7 @@ version( DDoc )
      *         callable type.
      *
      * Returns:
-     *  The index of the first match or size_t.max if no match was found.
+     *  The index of the first match or buf.length if no match was found.
      */
     size_t kfind( Elem[] buf, Elem[] pat, Pred2E pred = Pred2E.init );
 }
@@ -429,7 +429,7 @@ else
                 if( pred( cur, pat ) )
                     return pos;
             }
-            return size_t.max;
+            return buf.length;
         }
 
 
@@ -439,7 +439,7 @@ else
                 pat.length == 0 ||
                 buf.length < pat.length )
             {
-                return size_t.max;
+                return buf.length;
             }
 
             size_t[]    func;
@@ -477,7 +477,7 @@ else
                 }
             }
 
-            return size_t.max;
+            return buf.length;
         }
     }
 
@@ -505,16 +505,16 @@ else
       unittest
       {
         // find element
-        assert( kfind( "", 'a' ) == size_t.max );
+        assert( kfind( "", 'a' ) == 0 );
         assert( kfind( "abc", 'a' ) == 0 );
         assert( kfind( "abc", 'b' ) == 1 );
         assert( kfind( "abc", 'c' ) == 2 );
-        assert( kfind( "abc", 'd' ) == size_t.max );
+        assert( kfind( "abc", 'd' ) == 3 );
 
         // null parameters
-        assert( kfind( "", "" ) == size_t.max );
-        assert( kfind( "a", "" ) == size_t.max );
-        assert( kfind( "", "a" ) == size_t.max );
+        assert( kfind( "", "" ) == 0 );
+        assert( kfind( "a", "" ) == 1 );
+        assert( kfind( "", "a" ) == 0 );
 
         // exact match
         assert( kfind( "abc", "abc" ) == 0 );
@@ -524,13 +524,13 @@ else
         assert( kfind( "abca", "a" ) == 0 );
         assert( kfind( "abc", "b" ) == 1 );
         assert( kfind( "abc", "c" ) == 2 );
-        assert( kfind( "abc", "d" ) == size_t.max );
+        assert( kfind( "abc", "d" ) == 3 );
 
         // multi-char substring match
         assert( kfind( "abc", "ab" ) == 0 );
         assert( kfind( "abcab", "ab" ) == 0 );
         assert( kfind( "abc", "bc" ) == 1 );
-        assert( kfind( "abc", "ac" ) == size_t.max );
+        assert( kfind( "abc", "ac" ) == 3 );
         assert( kfind( "abrabracadabra", "abracadabra" ) == 3 );
       }
     }
@@ -546,7 +546,7 @@ version( DDoc )
 {
     /**
      * Performs a linear search of buf from $(LP)buf.length .. 0$(RB),
-     * returning the index of the first element matching pat, or size_t.max
+     * returning the index of the first element matching pat, or buf.length
      * if no match was found.  Comparisons will be performed using the
      * supplied predicate or '==' if none is supplied.
      *
@@ -567,14 +567,14 @@ version( DDoc )
      *         callable type.
      *
      * Returns:
-     *  The index of the first match or size_t.max if no match was found.
+     *  The index of the first match or buf.length if no match was found.
      */
     size_t krfind( Elem[] buf, Elem pat, Pred2E pred = Pred2E.init );
 
 
     /**
      * Performs a linear search of buf from $(LP)buf.length .. 0$(RB),
-     * returning the index of the first element matching pat, or size_t.max
+     * returning the index of the first element matching pat, or buf.length
      * if no match was found.  Comparisons will be performed using the
      * supplied predicate or '==' if none is supplied.
      *
@@ -595,7 +595,7 @@ version( DDoc )
      *         callable type.
      *
      * Returns:
-     *  The index of the first match or size_t.max if no match was found.
+     *  The index of the first match or buf.length if no match was found.
      */
     size_t krfind( Elem[] buf, Elem[] pat, Pred2E pred = Pred2E.init );
 }
@@ -609,7 +609,7 @@ else
         size_t fn( Elem[] buf, Elem pat, Pred pred = Pred.init )
         {
             if( buf.length == 0 )
-                return size_t.max;
+                return buf.length;
 
             size_t pos = buf.length;
 
@@ -618,7 +618,7 @@ else
                 if( pred( buf[--pos], pat ) )
                     return pos;
             } while( pos > 0 );
-            return size_t.max;
+            return buf.length;
         }
 
 
@@ -628,7 +628,7 @@ else
                 pat.length == 0 ||
                 buf.length < pat.length )
             {
-                return size_t.max;
+                return buf.length;
             }
 
             size_t[]    func;
@@ -669,7 +669,7 @@ else
                 }
             } while( i > 0 );
 
-            return size_t.max;
+            return buf.length;
         }
     }
 
@@ -697,16 +697,16 @@ else
       unittest
       {
         // rfind element
-        assert( krfind( "", 'a' ) == size_t.max );
+        assert( krfind( "", 'a' ) == 0 );
         assert( krfind( "abc", 'a' ) == 0 );
         assert( krfind( "abc", 'b' ) == 1 );
         assert( krfind( "abc", 'c' ) == 2 );
-        assert( krfind( "abc", 'd' ) == size_t.max );
+        assert( krfind( "abc", 'd' ) == 3 );
 
         // null parameters
-        assert( krfind( "", "" ) == size_t.max );
-        assert( krfind( "a", "" ) == size_t.max );
-        assert( krfind( "", "a" ) == size_t.max );
+        assert( krfind( "", "" ) == 0 );
+        assert( krfind( "a", "" ) == 1 );
+        assert( krfind( "", "a" ) == 0 );
 
         // exact match
         assert( krfind( "abc", "abc" ) == 0 );
@@ -716,13 +716,13 @@ else
         assert( krfind( "abca", "a" ) == 3 );
         assert( krfind( "abc", "b" ) == 1 );
         assert( krfind( "abc", "c" ) == 2 );
-        assert( krfind( "abc", "d" ) == size_t.max );
+        assert( krfind( "abc", "d" ) == 3 );
 
         // multi-char substring match
         assert( krfind( "abc", "ab" ) == 0 );
         assert( krfind( "abcab", "ab" ) == 3 );
         assert( krfind( "abc", "bc" ) == 1 );
-        assert( krfind( "abc", "ac" ) == size_t.max );
+        assert( krfind( "abc", "ac" ) == 3 );
         assert( krfind( "abracadabrabra", "abracadabra" ) == 0 );
       }
     }
@@ -747,7 +747,7 @@ version( DDoc )
      *         may be any callable type.
      *
      * Returns:
-     *  The index of the first match or size_t.max if no match was found.
+     *  The index of the first match or buf.length if no match was found.
      */
     size_t findIf( Elem[] buf, Pred1E pred );
 }
@@ -765,7 +765,7 @@ else
                 if( pred( cur ) )
                     return pos;
             }
-            return size_t.max;
+            return buf.length;
         }
     }
 
@@ -791,12 +791,12 @@ else
         buf[3] = 2;
         buf[4] = 6;
 
-        assert( findIf( buf, ( int x ) { return x == 0; } ) == size_t.max );
+        assert( findIf( buf, ( int x ) { return x == 0; } ) == 5 );
         assert( findIf( buf, ( int x ) { return x == 1; } ) == 0 );
         assert( findIf( buf, ( int x ) { return x == 2; } ) == 1 );
-        assert( findIf( buf, ( int x ) { return x == 3; } ) == size_t.max );
+        assert( findIf( buf, ( int x ) { return x == 3; } ) == 5 );
         assert( findIf( buf, ( int x ) { return x == 6; } ) == 4 );
-        assert( findIf( buf, ( int x ) { return x == 7; } ) == size_t.max );
+        assert( findIf( buf, ( int x ) { return x == 7; } ) == 5 );
       }
     }
 }
@@ -820,7 +820,7 @@ version( DDoc )
      *         may be any callable type.
      *
      * Returns:
-     *  The index of the first match or size_t.max if no match was found.
+     *  The index of the first match or buf.length if no match was found.
      */
     size_t rfindIf( Elem[] buf, Pred1E pred );
 }
@@ -834,7 +834,7 @@ else
         size_t fn( Elem[] buf, Pred pred )
         {
             if( buf.length == 0 )
-                return size_t.max;
+                return buf.length;
 
             size_t pos = buf.length;
 
@@ -843,7 +843,7 @@ else
                 if( pred( buf[--pos] ) )
                     return pos;
             } while( pos > 0 );
-            return size_t.max;
+            return buf.length;
         }
     }
 
@@ -869,12 +869,93 @@ else
         buf[3] = 2;
         buf[4] = 6;
 
-        assert( rfindIf( buf, ( int x ) { return x == 0; } ) == size_t.max );
+        assert( rfindIf( buf, ( int x ) { return x == 0; } ) == 5 );
         assert( rfindIf( buf, ( int x ) { return x == 1; } ) == 0 );
         assert( rfindIf( buf, ( int x ) { return x == 2; } ) == 3 );
-        assert( rfindIf( buf, ( int x ) { return x == 3; } ) == size_t.max );
+        assert( rfindIf( buf, ( int x ) { return x == 3; } ) == 5 );
         assert( rfindIf( buf, ( int x ) { return x == 6; } ) == 4 );
-        assert( rfindIf( buf, ( int x ) { return x == 7; } ) == size_t.max );
+        assert( rfindIf( buf, ( int x ) { return x == 7; } ) == 5 );
+      }
+    }
+}
+
+
+////////////////////////////////////////////////////////////////////////////////
+// Find Adjacent
+////////////////////////////////////////////////////////////////////////////////
+
+
+version( DDoc )
+{
+    /**
+     * Performs a linear search of buf from $(LB)0 .. buf.length$(RP),
+     * returning the index of the first element that compares equal to the
+     * element immediately following it.  Comparisons will be performed using
+     * the supplied predicate or '==' if none is supplied.
+     *
+     * Params:
+     *  buf  = The array to scan.
+     *  pred = The evaluation predicate, which should return true if e1 is
+     *         equal to e2 and false if not.  This predicate may be any
+     *         callable type.
+     *
+     * Returns:
+     *  The index of the first match or buf.length if no match was found.
+     */
+    size_t findAdj( Elem[] buf, Elem pat, Pred2E pred = Pred2E.init );
+
+}
+else
+{
+    template findAdj_( Elem, Pred = IsEqual!(Elem) )
+    {
+        static assert( isCallableType!(Pred) );
+
+
+        size_t fn( Elem[] buf, Pred pred = Pred.init )
+        {
+            if( buf.length < 2 )
+                return buf.length;
+
+            Elem sav = buf[0];
+
+            foreach( size_t pos, Elem cur; buf[1 .. $] )
+            {
+                if( pred( cur, sav ) )
+                    return pos;
+                sav = cur;
+            }
+            return buf.length;
+        }
+    }
+
+
+    template findAdj( Buf )
+    {
+        size_t findAdj( Buf buf )
+        {
+            return findAdj_!(ElemTypeOf!(Buf)).fn( buf );
+        }
+    }
+
+
+    template findAdj( Buf, Pred )
+    {
+        size_t findAdj( Buf buf, Pred pred )
+        {
+            return findAdj_!(ElemTypeOf!(Buf), Pred).fn( buf, pred );
+        }
+    }
+
+
+    debug( UnitTest )
+    {
+      unittest
+      {
+        assert( findAdj( "aabcdef" ) == 0 );
+        assert( findAdj( "abcddef" ) == 3 );
+        assert( findAdj( "abcdeff" ) == 5 );
+        assert( findAdj( "abcdefg" ) == 7 );
       }
     }
 }
@@ -900,7 +981,7 @@ version( DDoc )
      *         callable type.
      *
      * Returns:
-     *  The index of the first match or size_t.max if no match was found.
+     *  The index of the first match or buf.length if no match was found.
      */
     size_t count( Elem[] buf, Elem pat, Pred2E pred = Pred2E.init );
 
@@ -1141,7 +1222,7 @@ version( DDoc )
      *         callable type.
      *
      * Returns:
-     *  The index of the first match or size_t.max if no match was found.
+     *  The index of the first match or buf.length if no match was found.
      */
     size_t lbound( Elem[] buf, Elem pat, Pred2E pred = Pred2E.init );
 }
@@ -1233,7 +1314,7 @@ version( DDoc )
      *         callable type.
      *
      * Returns:
-     *  The index of the first match or size_t.max if no match was found.
+     *  The index of the first match or buf.length if no match was found.
      */
     size_t ubound( Elem[] buf, Elem pat, Pred2E pred = Pred2E.init );
 }
