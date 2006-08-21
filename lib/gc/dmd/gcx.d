@@ -264,7 +264,7 @@ class GC
 		p = gcx.bucket[bin];
 		if (p == null)
 		{
-		    if (!gcx.allocPage(bin))	// try to find a new page
+		    if (!gcx.allocPage(bin) && !gcx.disabled)	// try to find a new page
 		    {
 			if (!thread_needLock())
 			{
@@ -1145,6 +1145,10 @@ struct Gcx
 	    switch (state)
 	    {
 		case 0:
+		    if (disabled)
+		    {	state = 1;
+			continue;
+		    }
 		    // Try collecting
 		    freedpages = fullcollectshell();
 		    if (freedpages >= npools * ((POOLSIZE / PAGESIZE) / 4))
@@ -1373,8 +1377,6 @@ struct Gcx
 
     uint fullcollectshell()
     {
-    if (disabled > 0)
-        return 0;
 	// The purpose of the 'shell' is to ensure all the registers
 	// get put on the stack so they'll be scanned
 	void *sp;
