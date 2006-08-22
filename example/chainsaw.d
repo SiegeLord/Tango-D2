@@ -1,11 +1,11 @@
-import  tango.net.Socket;
-
 import  tango.core.Thread;
 
 import  tango.log.Log,
         tango.log.XmlLayout,
-        tango.net.InternetAddress,
         tango.log.SocketAppender;
+
+import  tango.net.Socket,
+        tango.net.InternetAddress;
 
 
 version (Win32)
