@@ -15,6 +15,7 @@ private import tango.core.Traits;
 
 version( DDoc )
 {
+    typedef int Num;
     typedef int Elem;
 
     typedef bool function( Elem )       Pred1E;
@@ -783,20 +784,12 @@ else
     {
       unittest
       {
-        int[5] buf;
-
-        buf[0] = 1;
-        buf[1] = 2;
-        buf[2] = 4;
-        buf[3] = 2;
-        buf[4] = 6;
-
-        assert( findIf( buf, ( int x ) { return x == 0; } ) == 5 );
-        assert( findIf( buf, ( int x ) { return x == 1; } ) == 0 );
-        assert( findIf( buf, ( int x ) { return x == 2; } ) == 1 );
-        assert( findIf( buf, ( int x ) { return x == 3; } ) == 5 );
-        assert( findIf( buf, ( int x ) { return x == 6; } ) == 4 );
-        assert( findIf( buf, ( int x ) { return x == 7; } ) == 5 );
+        assert( findIf( "bcecg", ( int x ) { return x == 'a'; } ) == 5 );
+        assert( findIf( "bcecg", ( int x ) { return x == 'b'; } ) == 0 );
+        assert( findIf( "bcecg", ( int x ) { return x == 'c'; } ) == 1 );
+        assert( findIf( "bcecg", ( int x ) { return x == 'd'; } ) == 5 );
+        assert( findIf( "bcecg", ( int x ) { return x == 'g'; } ) == 4 );
+        assert( findIf( "bcecg", ( int x ) { return x == 'h'; } ) == 5 );
       }
     }
 }
@@ -861,20 +854,12 @@ else
     {
       unittest
       {
-        int[5] buf;
-
-        buf[0] = 1;
-        buf[1] = 2;
-        buf[2] = 4;
-        buf[3] = 2;
-        buf[4] = 6;
-
-        assert( rfindIf( buf, ( int x ) { return x == 0; } ) == 5 );
-        assert( rfindIf( buf, ( int x ) { return x == 1; } ) == 0 );
-        assert( rfindIf( buf, ( int x ) { return x == 2; } ) == 3 );
-        assert( rfindIf( buf, ( int x ) { return x == 3; } ) == 5 );
-        assert( rfindIf( buf, ( int x ) { return x == 6; } ) == 4 );
-        assert( rfindIf( buf, ( int x ) { return x == 7; } ) == 5 );
+        assert( rfindIf( "bcecg", ( int x ) { return x == 'a'; } ) == 5 );
+        assert( rfindIf( "bcecg", ( int x ) { return x == 'b'; } ) == 0 );
+        assert( rfindIf( "bcecg", ( int x ) { return x == 'c'; } ) == 3 );
+        assert( rfindIf( "bcecg", ( int x ) { return x == 'd'; } ) == 5 );
+        assert( rfindIf( "bcecg", ( int x ) { return x == 'g'; } ) == 4 );
+        assert( rfindIf( "bcecg", ( int x ) { return x == 'h'; } ) == 5 );
       }
     }
 }
@@ -1029,19 +1014,145 @@ else
     {
       unittest
       {
-        int[5] buf;
+        assert( count( "gbbbi", 'a' ) == 0 );
+        assert( count( "gbbbi", 'g' ) == 1 );
+        assert( count( "gbbbi", 'b' ) == 3 );
+        assert( count( "gbbbi", 'i' ) == 1 );
+        assert( count( "gbbbi", 'd' ) == 0 );
+      }
+    }
+}
 
-        buf[0] = 7;
-        buf[1] = 2;
-        buf[2] = 2;
-        buf[3] = 2;
-        buf[4] = 9;
 
-        assert( count( buf, 0 ) == 0 );
-        assert( count( buf, 7 ) == 1 );
-        assert( count( buf, 2 ) == 3 );
-        assert( count( buf, 9 ) == 1 );
-        assert( count( buf, 4 ) == 0 );
+////////////////////////////////////////////////////////////////////////////////
+// Select
+////////////////////////////////////////////////////////////////////////////////
+
+
+version( DDoc )
+{
+    /**
+     * Partitions the array with num - 1 as a pivot such that the first num
+     * elements will be less than or equal to the remaining elements in the
+     * array.  Comparisons will be performed using the supplied predicate or
+     * '<' if none is supplied.  The algorithm is not required to be stable.
+     *
+     * Params:
+     *  buf  = The array to partition.  This parameter is not marked 'inout'
+     *         to allow temporary slices to be sorted.  As buf is not resized
+     *         in any way, omitting the 'inout' qualifier has no effect on
+     *         the result of this operation, even though it may be viewed
+     *         as a side-effect.
+     *  num  = The number of elements which are considered significant in
+     *         this array, where num - 1 is the pivot around which partial
+     *         sorting will occur.  For example, if num is buf.length / 2
+     *         then select will effectively partition the array around its
+     *         median value, with the elements in the first half of the array
+     *         evaluating as less than or equal to the elements in the second
+     *         half.
+     *  pred = The evaluation predicate, which should return true if e1 is
+     *         less than e2 and false if not.  This predicate may be any
+     *         callable type.
+     */
+    void select( Elem[] buf, Num num, Pred2E pred = Pred2E.init );
+}
+else
+{
+    template select_( Elem, Pred = IsLess!(Elem) )
+    {
+        static assert( isCallableType!(Pred ) );
+
+
+        // NOTE: buf is not 'inout' so subranges can be partitioned.  This
+        //       should work for D arrays, since the Array type contains a
+        //       pointer to the referenced data.
+        void fn( Elem[] buf, size_t num, Pred pred = Pred.init )
+        in
+        {
+            // NOTE: The original algorithm relies on the use of signed index
+            //       values, and modifying it to use unsigned values is non-
+            //       trivial.  For now, signed values will be used, and buf
+            //       simply must be <= ptrdiff_t.max elements in size.
+            assert( buf.length <= ptrdiff_t.max );
+        }
+        body
+        {
+            bool equiv( Elem p1, Elem p2 )
+            {
+                return !pred( p1, p2 ) && !pred( p2, p1 );
+            }
+
+            // NOTE: Indexes are passed instead of references because DMD does
+            //       not inline the reference-based version.
+            void exch( ptrdiff_t p1, ptrdiff_t p2 )
+            {
+                Elem t  = buf[p1];
+                buf[p1] = buf[p2];
+                buf[p2] = t;
+            }
+
+            if( buf.length < 2 )
+                return;
+
+            ptrdiff_t   l = 0,
+                        r = buf.length - 1,
+                        k = num;
+
+            while( r > l )
+            {
+                ptrdiff_t   i = l - 1,
+                            j = r;
+                Elem        v = buf[r];
+                while( true )
+                {
+                    while( i < r && pred( buf[++i], v ) )
+                        {}
+                    while( j > l && pred( v, buf[--j] ) )
+                        {}
+                    if( i >= j )
+                        break;
+                    exch( i, j );
+                }
+                exch( i, r );
+                if( i >= k )
+                    r = i - 1;
+                if( i <= k )
+                    l = i + 1;
+            }
+        }
+    }
+
+
+    template select( Buf, Num )
+    {
+        void select( Buf buf, Num num )
+        {
+            return select_!(ElemTypeOf!(Buf)).fn( buf, num );
+        }
+    }
+
+
+    template select( Buf, Num, Pred )
+    {
+        void select( Buf buf, Num num, Pred pred )
+        {
+            return select_!(ElemTypeOf!(Buf), Pred).fn( buf, num, pred );
+        }
+    }
+
+
+    debug( UnitTest )
+    {
+      unittest
+      {
+        char[] buf = "efedcaabca";
+        size_t num = buf.length / 2;
+
+        select( buf, num );
+        foreach( char cur; buf[0 .. num - 1] )
+            assert( cur <= buf[num - 1] );
+        foreach( char cur; buf[num - 1 .. $] )
+            assert( cur >= buf[num - 1] );
       }
     }
 }
@@ -1084,6 +1195,15 @@ else
         //       work for D arrays, since the Array type contains a pointer
         //       to the referenced data.
         void fn( Elem[] buf, Pred pred = Pred.init )
+        in
+        {
+            // NOTE: The original algorithm relies on the use of signed index
+            //       values, and modifying it to use unsigned values is non-
+            //       trivial.  For now, signed values will be used, and buf
+            //       simply must be <= ptrdiff_t.max elements in size.
+            assert( buf.length <= ptrdiff_t.max );
+        }
+        body
         {
             bool equiv( Elem p1, Elem p2 )
             {
@@ -1099,10 +1219,6 @@ else
                 buf[p2] = t;
             }
 
-            // NOTE: The original algorithm relies on the use of signed index
-            //       values, and modifying it to use unsigned values is non-
-            //       trivial.  For now, signed values will be used, and buf
-            //       simply must be <= ptrdiff_t.max elements in size.
             void quicksort( ptrdiff_t l, ptrdiff_t r )
             {
                 if( r <= l )
@@ -1182,18 +1298,12 @@ else
     {
       unittest
       {
-        int[5] buf;
-
-        buf[0] = 5;
-        buf[1] = 4;
-        buf[2] = 1;
-        buf[3] = 3;
-        buf[4] = 2;
+        char[] buf = "edacb";
 
         sort( buf );
         foreach( i, v; buf )
         {
-            assert( v == i + 1 );
+            assert( v == 'a' + i );
         }
       }
     }
@@ -1274,18 +1384,10 @@ else
     {
       unittest
       {
-        int[5] buf;
-
-        buf[0] = 1;
-        buf[1] = 2;
-        buf[2] = 4;
-        buf[3] = 5;
-        buf[4] = 6;
-
-        assert( lbound( buf, 0 ) == 0 );
-        assert( lbound( buf, 7 ) == 5 );
-        assert( lbound( buf, 3 ) == 2 );
-        assert( lbound( buf, 4 ) == 2 );
+        assert( lbound( "bcefg", 'a' ) == 0 );
+        assert( lbound( "bcefg", 'h' ) == 5 );
+        assert( lbound( "bcefg", 'd' ) == 2 );
+        assert( lbound( "bcefg", 'e' ) == 2 );
       }
     }
 }
@@ -1366,18 +1468,10 @@ else
     {
       unittest
       {
-        int[5] buf;
-
-        buf[0] = 1;
-        buf[1] = 2;
-        buf[2] = 4;
-        buf[3] = 5;
-        buf[4] = 6;
-
-        assert( ubound( buf, 0 ) == 0 );
-        assert( ubound( buf, 7 ) == 5 );
-        assert( ubound( buf, 3 ) == 2 );
-        assert( ubound( buf, 4 ) == 3 );
+        assert( ubound( "bcefg", 'a' ) == 0 );
+        assert( ubound( "bcefg", 'h' ) == 5 );
+        assert( ubound( "bcefg", 'd' ) == 2 );
+        assert( ubound( "bcefg", 'e' ) == 3 );
       }
     }
 }
@@ -1444,22 +1538,14 @@ else
     {
       unittest
       {
-        int[5] buf;
-
-        buf[0] = 1;
-        buf[1] = 2;
-        buf[2] = 4;
-        buf[3] = 5;
-        buf[4] = 6;
-
-        assert( !bsearch( buf, 0 ) );
-        assert(  bsearch( buf, 1 ) );
-        assert(  bsearch( buf, 2 ) );
-        assert( !bsearch( buf, 3 ) );
-        assert(  bsearch( buf, 4 ) );
-        assert(  bsearch( buf, 5 ) );
-        assert(  bsearch( buf, 6 ) );
-        assert( !bsearch( buf, 7 ) );
+        assert( !bsearch( "bcefg", 'a' ) );
+        assert(  bsearch( "bcefg", 'b' ) );
+        assert(  bsearch( "bcefg", 'c' ) );
+        assert( !bsearch( "bcefg", 'd' ) );
+        assert(  bsearch( "bcefg", 'e' ) );
+        assert(  bsearch( "bcefg", 'f' ) );
+        assert(  bsearch( "bcefg", 'g' ) );
+        assert( !bsearch( "bcefg", 'h' ) );
       }
     }
 }
