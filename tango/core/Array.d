@@ -1202,7 +1202,7 @@ else
                 buf[p2] = t;
             }
 
-            void quicksort( size_t l, size_t r )
+            void quicksort( ptrdiff_t l, ptrdiff_t r )
             {
                 if( r <= l )
                     return;
@@ -1227,37 +1227,36 @@ else
                 // unsigned values.  This allows for a larger upper bound on
                 // array size with essentially no additional complexity.
 
-                Elem    v = buf[r];
-                size_t  i = l,
-                        j = r - 1,
-                        p = l,
-                        q = r - 1;
+                Elem        v = buf[r];
+                ptrdiff_t   i = l - 1,
+                            j = r,
+                            p = l - 1,
+                            q = r,
+                            k;
 
                 while( true )
                 {
-                    while( i < r && pred( buf[i], v ) )
-                        ++i;
-                    while( j > l && pred( v, buf[j] ) )
-                        --j;
+                    while( i < r && pred( buf[++i], v ) )
+                        {}
+                    while( j > l && pred( v, buf[--j] ) )
+                        {}
                     if( i >= j )
                         break;
                     exch( i, j );
                     if( equiv( buf[i], v ) )
-                        exch( p++, i );
+                        exch( ++p, i );
                     if( equiv( v, buf[j] ) )
-                        exch( q--, j );
-                    ++i; --j;
+                        exch( --q, j );
                 }
                 exch( i, r );
                 j = i - 1;
                 i = i + 1;
-                for( size_t k = l; k < p; k++ )
+                for( k = l; k <= p; k++, j-- )
                     exch( k, j );
-                for( size_t k = r - 1; k > q; k-- )
+                for( k = r - 1; k >= q; k--, i++ )
                     exch( k, i );
-                if( j > p - l )
-                    quicksort( l, j - p + l );
-                quicksort( i + r - 1 - q, r );
+                quicksort( l, j );
+                quicksort( i, r );
             }
 
             if( buf.length > 1 )
