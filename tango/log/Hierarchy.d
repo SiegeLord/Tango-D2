@@ -275,14 +275,14 @@ private class LoggerInstance : Logger
                 the the logger is not enabled for the specified level.
 
         ***********************************************************************/
-
+/+
         final Logger append (Level level, char[] delegate() dg)
         {
                 if (isEnabled (level))
                     append (level, dg());
                 return this;
         }
-
++/
         /***********************************************************************
         
                 Append a message to this logger via its appender list.
