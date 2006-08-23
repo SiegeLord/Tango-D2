@@ -1253,7 +1253,7 @@ else
                         break;
                     exch( i, j );
                     if( equiv( buf[i], v ) )
-                        exch( i, j );
+                        exch( ++p, i );
                     if( equiv( v, buf[j] ) )
                         exch( --q, j );
                 }
