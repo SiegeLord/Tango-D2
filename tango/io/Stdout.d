@@ -71,8 +71,7 @@ private class BufferedFormat(T)
         final BufferedFormat formatln (T[] fmt, ...)
         {
                 Formatter.format (&sink, _arguments, _argptr, fmt);
-                newline();
-                return this;
+                return newline();
         }
 
         /**********************************************************************
