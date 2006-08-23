@@ -113,7 +113,7 @@ public class Logger : ILevel
 
         ***********************************************************************/
 
-        abstract Logger append (Level level, char[] delegate() dg);
+        // abstract Logger append (Level level, char[] delegate() dg);
 
         /***********************************************************************
         
