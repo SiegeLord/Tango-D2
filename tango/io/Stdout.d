@@ -63,6 +63,20 @@ private class BufferedFormat(T)
 
         /**********************************************************************
 
+                Format output using the provided formatting specification
+                and append a newline
+
+        **********************************************************************/
+
+        final BufferedFormat formatln (T[] fmt, ...)
+        {
+                Formatter.format (&sink, _arguments, _argptr, fmt);
+                newline();
+                return this;
+        }
+
+        /**********************************************************************
+
                 Format output using a default layout
 
         **********************************************************************/
