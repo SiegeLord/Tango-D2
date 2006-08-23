@@ -1067,15 +1067,6 @@ else
         //       should work for D arrays, since the Array type contains a
         //       pointer to the referenced data.
         void fn( Elem[] buf, size_t num, Pred pred = Pred.init )
-        in
-        {
-            // NOTE: The original algorithm relies on the use of signed index
-            //       values, and modifying it to use unsigned values is non-
-            //       trivial.  For now, signed values will be used, and buf
-            //       simply must be <= ptrdiff_t.max elements in size.
-            assert( buf.length <= ptrdiff_t.max );
-        }
-        body
         {
             bool equiv( Elem p1, Elem p2 )
             {
@@ -1084,7 +1075,7 @@ else
 
             // NOTE: Indexes are passed instead of references because DMD does
             //       not inline the reference-based version.
-            void exch( ptrdiff_t p1, ptrdiff_t p2 )
+            void exch( size_t p1, size_t p2 )
             {
                 Elem t  = buf[p1];
                 buf[p1] = buf[p2];
@@ -1094,24 +1085,25 @@ else
             if( buf.length < 2 )
                 return;
 
-            ptrdiff_t   l = 0,
-                        r = buf.length - 1,
-                        k = num;
+            size_t  l = 0,
+                    r = buf.length - 1,
+                    k = num;
 
             while( r > l )
             {
-                ptrdiff_t   i = l - 1,
-                            j = r;
-                Elem        v = buf[r];
+                size_t  i = l,
+                        j = r - 1;
+                Elem    v = buf[r];
+
                 while( true )
                 {
-                    while( i < r && pred( buf[++i], v ) )
-                        {}
-                    while( j > l && pred( v, buf[--j] ) )
-                        {}
+                    while( i < r && pred( buf[i], v ) )
+                        ++i;
+                    while( j > l && pred( v, buf[j] ) )
+                        --j;
                     if( i >= j )
                         break;
-                    exch( i, j );
+                    exch( i++, j-- );
                 }
                 exch( i, r );
                 if( i >= k )
@@ -1195,15 +1187,6 @@ else
         //       work for D arrays, since the Array type contains a pointer
         //       to the referenced data.
         void fn( Elem[] buf, Pred pred = Pred.init )
-        in
-        {
-            // NOTE: The original algorithm relies on the use of signed index
-            //       values, and modifying it to use unsigned values is non-
-            //       trivial.  For now, signed values will be used, and buf
-            //       simply must be <= ptrdiff_t.max elements in size.
-            assert( buf.length <= ptrdiff_t.max );
-        }
-        body
         {
             bool equiv( Elem p1, Elem p2 )
             {
@@ -1212,60 +1195,69 @@ else
 
             // NOTE: Indexes are passed instead of references because DMD does
             //       not inline the reference-based version.
-            void exch( ptrdiff_t p1, ptrdiff_t p2 )
+            void exch( size_t p1, size_t p2 )
             {
                 Elem t  = buf[p1];
                 buf[p1] = buf[p2];
                 buf[p2] = t;
             }
 
-            void quicksort( ptrdiff_t l, ptrdiff_t r )
+            void quicksort( size_t l, size_t r )
             {
                 if( r <= l )
                     return;
 
-                // The general goal is to partition the range into three
-                // parts, one each for keys smaller than, equal to, and
-                // larger than the partitioning element:
+                // This implementation of quicksort improves upon the classic
+                // algorithm by partitioning the array into three parts, one
+                // each for keys smaller than, equal to, and larger than the
+                // partitioning element, v:
                 //
-                // |--less than v--|--equal to v--|--greater than v--|
-                // l               j              i                  r
+                // |--less than v--|--equal to v--|--greater than v--[v]
+                // l               j              i                   r
                 //
-                // During partitioning, we maintain:
+                // This approach sorts ranges containing duplicate elements
+                // more quickly.  During processing, the following situation
+                // is maintained:
                 //
                 // |--equal--|--less--|--[###]--|--greater--|--equal--[v]
                 // l         p        i         j           q          r
+                //
+                // Please note that this implementation varies from the typical
+                // algorithm by replacing the use of signed index values with
+                // unsigned values.  This allows for a larger upper bound on
+                // array size with essentially no additional complexity.
 
-                Elem        v = buf[r];
-                ptrdiff_t   i = l - 1,
-                            j = r,
-                            p = l - 1,
-                            q = r,
-                            k;
+                Elem    v = buf[r];
+                size_t  i = l,
+                        j = r - 1,
+                        p = l,
+                        q = r - 1;
 
                 while( true )
                 {
-                    while( i < r && pred( buf[++i], v ) )
-                        {}
-                    while( j > l && pred( v, buf[--j] ) )
-                        {}
+                    while( i < r && pred( buf[i], v ) )
+                        ++i;
+                    while( j > l && pred( v, buf[j] ) )
+                        --j;
                     if( i >= j )
                         break;
                     exch( i, j );
                     if( equiv( buf[i], v ) )
-                        exch( ++p, i );
+                        exch( p++, i );
                     if( equiv( v, buf[j] ) )
-                        exch( --q, j );
+                        exch( q--, j );
+                    ++i; --j;
                 }
                 exch( i, r );
                 j = i - 1;
                 i = i + 1;
-                for( k = l; k <= p; k++, j-- )
+                for( size_t k = l; k < p; k++ )
                     exch( k, j );
-                for( k = r - 1; k >= q; k--, i++ )
+                for( size_t k = r - 1; k > q; k-- )
                     exch( k, i );
-                quicksort( l, j );
-                quicksort( i, r );
+                if( j > p - l )
+                    quicksort( l, j - p + l );
+                quicksort( i + r - 1 - q, r );
             }
 
             if( buf.length > 1 )
@@ -1298,12 +1290,14 @@ else
     {
       unittest
       {
-        char[] buf = "edacb";
+        char[] buf = "efedcaabca";
 
         sort( buf );
+        char s = buf[0];
         foreach( i, v; buf )
         {
-            assert( v == 'a' + i );
+            assert( v >= s );
+            s = v;
         }
       }
     }
