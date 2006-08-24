@@ -1202,7 +1202,7 @@ else
                 buf[p2] = t;
             }
 
-            void quicksort( ptrdiff_t l, ptrdiff_t r )
+            void quicksort( size_t l, size_t r )
             {
                 if( r <= l )
                     return;
@@ -1224,39 +1224,43 @@ else
                 //
                 // Please note that this implementation varies from the typical
                 // algorithm by replacing the use of signed index values with
-                // unsigned values.  This allows for a larger upper bound on
-                // array size with essentially no additional complexity.
+                // unsigned values.
 
-                Elem        v = buf[r];
-                ptrdiff_t   i = l - 1,
-                            j = r,
-                            p = l - 1,
-                            q = r,
-                            k;
+                Elem    v = buf[r];
+                size_t  i = l,
+                        j = r,
+                        p = l,
+                        q = r;
 
                 while( true )
                 {
-                    while( i < r && pred( buf[++i], v ) )
-                        {}
-                    while( j > l && pred( v, buf[--j] ) )
-                        {}
+                    while( pred( buf[i], v ) )
+                        ++i;
+                    while( pred( v, buf[--j] ) )
+                        if( j == l ) break;
                     if( i >= j )
                         break;
                     exch( i, j );
                     if( equiv( buf[i], v ) )
-                        exch( ++p, i );
+                        exch( p++, i );
                     if( equiv( v, buf[j] ) )
                         exch( --q, j );
+                    ++i;
                 }
                 exch( i, r );
-                j = i - 1;
-                i = i + 1;
-                for( k = l; k <= p; k++, j-- )
-                    exch( k, j );
-                for( k = r - 1; k >= q; k--, i++ )
-                    exch( k, i );
-                quicksort( l, j );
-                quicksort( i, r );
+                if( p < i )
+                {
+                    j = i - 1;
+                    for( size_t k = l; k < p; k++, j-- )
+                        exch( k, j );
+                    quicksort( l, j );
+                }
+                if( ++i < q )
+                {
+                    for( size_t k = r - 1; k >= q; k--, i++ )
+                        exch( k, i );
+                    quicksort( i, r );
+                }
             }
 
             if( buf.length > 1 )
@@ -1289,15 +1293,22 @@ else
     {
       unittest
       {
-        char[] buf = "efedcaabca";
-
-        sort( buf );
-        char s = buf[0];
-        foreach( i, v; buf )
+        void test( char[] buf )
         {
-            assert( v >= s );
-            s = v;
+            sort( buf );
+            char s = buf[0];
+            foreach( i, v; buf )
+            {
+                assert( v >= s );
+                s = v;
+            }
         }
+
+        test( "mkcvalsidivjoaisjdvmzlksvdjioawmdsvmsdfefewv" );
+        test( "asdfasdfasdfasdfasdfasdfasdfasdfasdfasdfasdf" );
+        test( "the quick brown fox jumped over the lazy dog" );
+        test( "abcdefghijklmnopqrstuvwxyz" );
+        test( "zyxwvutsrqponmlkjihgfedcba" );
       }
     }
 }
