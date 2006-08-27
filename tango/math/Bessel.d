@@ -591,8 +591,8 @@ body {
     phase = poly( xx, j1phasen) / poly( xx, j1phased);
     modulus = poly( z, j1modulusn) / poly( z, j1modulusd);
 
-    const real M_3PI_4= 3* PI_4;
-    static assert( 2.35619449019234492885L== M_3PI_4);
+    const real M_3PI_4 = 3 * PI_4;
+    static assert( 2.35619449019234492885L == M_3PI_4);
 
     z = modulus * sin( x -  M_3PI_4 + z*phase) / sqrt(x);
     return z;
@@ -621,24 +621,24 @@ real cylBessel_jn(int n, real x )
     real pkm2, pkm1, pk, xk, r, ans;
     int k, sign;
 
-    if( n < 0 ) {
-    n = -n;
-    if( (n & 1) == 0 )  /* -1**n */
-        sign = 1;
-    else
-        sign = -1;
+    if ( n < 0 ) {
+        n = -n;
+        if ( (n & 1) == 0 )  /* -1**n */
+            sign = 1;
+        else
+            sign = -1;
     } else
         sign = 1;
 
-    if( x < 0.0L ) {
-        if( n & 1 )
+    if ( x < 0.0L ) {
+        if ( n & 1 )
             sign = -sign;
         x = -x;
     }
 
     if ( n == 0 )
         return sign * cylBessel_j0(x);
-    if( n == 1 )
+    if ( n == 1 )
         return sign * cylBessel_j1(x);
     if ( n == 2 )
         return sign * (2.0L * cylBessel_j1(x) / x  -  cylBessel_j0(x));
@@ -672,7 +672,7 @@ real cylBessel_jn(int n, real x )
         r -= 2.0L;
     } while( --k > 0 );
 
-    if( fabs(pk) > fabs(pkm1) )
+    if ( fabs(pk) > fabs(pkm1) )
         ans = cylBessel_j1(x)/pk;
     else
         ans = cylBessel_j0(x)/pkm1;

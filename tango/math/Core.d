@@ -853,14 +853,14 @@ real pow(real x, real y)
 {
     version (linux) // C pow() often does not handle special values correctly
     {
-    if (isnan(y))
+    if (isNaN(y))
         return real.nan;
 
     if (y == 0)
         return 1;       // even if x is $(NAN)
-    if (isnan(x) && y != 0)
+    if (isNaN(x) && y != 0)
         return real.nan;
-    if (isinf(y))
+    if (isInfinite(y))
     {
         if (tango.math.IEEE.fabs(x) > 1)
         {
@@ -881,7 +881,7 @@ real pow(real x, real y)
             return +0.0;
         }
     }
-    if (isinf(x))
+    if (isInfinite(x))
     {
         if (signbit(x))
         {   long i;
@@ -988,12 +988,12 @@ real hypot(real x, real y)
     int ex, ey, e;
 
     // Note, hypot(INFINITY, NAN) = INFINITY.
-    if (tango.math.IEEE.isinf(x) || tango.math.IEEE.isinf(y))
+    if (tango.math.IEEE.isInfinite(x) || tango.math.IEEE.isInfinite(y))
         return real.infinity;
 
-    if (tango.math.IEEE.isnan(x))
+    if (tango.math.IEEE.isNaN(x))
         return x;
-    if (tango.math.IEEE.isnan(y))
+    if (tango.math.IEEE.isNaN(y))
         return y;
 
     re = tango.math.IEEE.fabs(x);

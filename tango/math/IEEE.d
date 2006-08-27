@@ -64,13 +64,13 @@ package bool mfeq(real x, real y, real precision)
 // Returns true if x is +0.0 (This function is used in unit tests)
 package bool isPosZero(real x)
 {
-    return (x == 0) && (signbit(x) == 0);
+    return isIdentical(0.0L);
 }
 
 // Returns true if x is -0.0 (This function is used in unit tests)
 package bool isNegZero(real x)
 {
-    return (x == 0) && signbit(x);
+    return isIdentical(-0.0L);
 }
 
 /**
@@ -362,7 +362,7 @@ unittest
  * Returns !=0 if e is a NaN.
  */
 
-int isnan(real e)
+int isNaN(real e)
 {
     ushort* pe = cast(ushort *)&e;
     ulong*  ps = cast(ulong *)&e;
@@ -373,12 +373,12 @@ int isnan(real e)
 
 unittest
 {
-    assert(isnan(float.nan));
-    assert(isnan(-double.nan));
-    assert(isnan(real.nan));
+    assert(isNaN(float.nan));
+    assert(isNaN(-double.nan));
+    assert(isNaN(real.nan));
 
-    assert(!isnan(53.6));
-    assert(!isnan(float.infinity));
+    assert(!isNaN(53.6));
+    assert(!isNaN(float.infinity));
 }
 
 
@@ -388,7 +388,7 @@ unittest
  * (Need one for each format because subnormal
  *  floats might be converted to normal reals)
  */
-int isnormal(float x)
+int isNormal(float x)
 {
     uint *p = cast(uint *)&x;
     uint e;
@@ -399,7 +399,7 @@ int isnormal(float x)
 }
 
 /** ditto */
-int isnormal(double d)
+int isNormal(double d)
 {
     uint *p = cast(uint *)&d;
     uint e;
@@ -409,7 +409,7 @@ int isnormal(double d)
 }
 
 /** ditto */
-int isnormal(real e)
+int isNormal(real e)
 {
     ushort* pe = cast(ushort *)&e;
     long*   ps = cast(long *)&e;
@@ -423,9 +423,9 @@ unittest
     double d = 500;
     real e = 10e+48;
 
-    assert(isnormal(f));
-    assert(isnormal(d));
-    assert(isnormal(e));
+    assert(isNormal(f));
+    assert(isNormal(d));
+    assert(isNormal(e));
 }
 
 /*********************************
@@ -462,7 +462,7 @@ unittest {
  * be converted to normal reals.
  */
 
-int issubnormal(float f)
+int isSubnormal(float f)
 {
     uint *p = cast(uint *)&f;
 
@@ -474,13 +474,13 @@ unittest
 {
     float f = 3.0;
 
-    for (f = 1.0; !issubnormal(f); f /= 2)
+    for (f = 1.0; !isSubnormal(f); f /= 2)
     assert(f != 0);
 }
 
 /// ditto
 
-int issubnormal(double d)
+int isSubnormal(double d)
 {
     uint *p = cast(uint *)&d;
 
@@ -491,13 +491,13 @@ unittest
 {
     double f;
 
-    for (f = 1; !issubnormal(f); f /= 2)
+    for (f = 1; !isSubnormal(f); f /= 2)
     assert(f != 0);
 }
 
 /// ditto
 
-int issubnormal(real e)
+int isSubnormal(real e)
 {
     ushort* pe = cast(ushort *)&e;
     long*   ps = cast(long *)&e;
@@ -509,7 +509,7 @@ unittest
 {
     real f;
 
-    for (f = 1; !issubnormal(f); f /= 2)
+    for (f = 1; !isSubnormal(f); f /= 2)
     assert(f != 0);
 }
 
@@ -517,7 +517,7 @@ unittest
  * Return !=0 if e is &plusmn;&infin;.
  */
 
-int isinf(real e)
+int isInfinite(real e)
 {
     ushort* pe = cast(ushort *)&e;
     ulong*  ps = cast(ulong *)&e;
@@ -528,12 +528,12 @@ int isinf(real e)
 
 unittest
 {
-    assert(isinf(float.infinity));
-    assert(!isinf(float.nan));
-    assert(isinf(double.infinity));
-    assert(isinf(-real.infinity));
+    assert(isInfinite(float.infinity));
+    assert(!isInfinite(float.nan));
+    assert(isInfinite(double.infinity));
+    assert(isInfinite(-real.infinity));
 
-    assert(isinf(-1.0 / 0.0));
+    assert(isInfinite(-1.0 / 0.0));
 }
 
 
@@ -553,7 +553,7 @@ unittest
  *    $(SV  $(NAN),        $(NAN)        )
  * )
  */
-real nextup(real x)
+real nextUp(real x)
 {
     ushort *pe = cast(ushort *)&x;
     ulong *ps = cast(ulong *)&x;
@@ -593,25 +593,25 @@ real nextup(real x)
 }
 
 unittest {
-    assert( isnan(nextup(real.nan)));
+    assert( isNaN(nextUp(real.nan)));
     // negative numbers
-    assert( nextup(-real.infinity)==-real.max);
-    assert(nextup(-1-real.epsilon)== -1.0);
-    assert(nextup(-2)== -2.0 + real.epsilon);
+    assert( nextUp(-real.infinity) == -real.max );
+    assert( nextUp(-1-real.epsilon) == -1.0 );
+    assert( nextUp(-2) == -2.0 + real.epsilon);
     // denormals and zero
-    assert( nextup(-real.min) == -real.min*(1-real.epsilon));
-    assert( nextup(-real.min*(1-real.epsilon)==-real.min*(1-2*real.epsilon)));
-    real z  = nextup(-real.min*(1-real.epsilon));
-    assert( isNegZero(nextup(-real.min*real.epsilon)));
-    assert( nextup(-0.0) == real.min*real.epsilon);
-    assert( nextup(0.0) == real.min*real.epsilon);
-    assert( nextup(real.min*(1-real.epsilon)) == real.min);
-    assert( nextup(real.min) == real.min*(1+real.epsilon));
+    assert( nextUp(-real.min) == -real.min*(1-real.epsilon) );
+    assert( nextUp(-real.min*(1-real.epsilon) == -real.min*(1-2*real.epsilon)) );
+    real z  = nextUp(-real.min*(1-real.epsilon) );
+    assert( isIdentical(-0.0L, nextUp(-real.min*real.epsilon) );
+    assert( nextUp(-0.0) == real.min*real.epsilon );
+    assert( nextUp(0.0) == real.min*real.epsilon );
+    assert( nextUp(real.min*(1-real.epsilon)) == real.min );
+    assert( nextUp(real.min) == real.min*(1+real.epsilon) );
     // positive numbers
-    assert(nextup(1)== 1.0 + real.epsilon);
-    assert(nextup(2.0-real.epsilon)== 2.0);
-    assert(nextup(real.max) == real.infinity);
-    assert( nextup(real.infinity)==real.infinity);
+    assert( nextUp(1) == 1.0 + real.epsilon );
+    assert( nextUp(2.0-real.epsilon) == 2.0 );
+    assert( nextUp(real.max) == real.infinity );
+    assert( nextUp(real.infinity)==real.infinity );
 }
 
 /**
@@ -630,13 +630,13 @@ unittest {
  * -real.infinity    -real.infinity
  * NAN              NAN
  */
-real nextdown(real x)
+real nextDown(real x)
 {
-    return -nextup(-x);
+    return -nextUp(-x);
 }
 
 unittest {
-    assert(nextdown(1.0 + real.epsilon)== 1.0);
+    assert( nextDown(1.0 + real.epsilon) == 1.0);
 }
 
 /**
@@ -824,5 +824,5 @@ unittest
     assert(e == -21);
 
     e = copysign(real.nan, -23.8);
-    assert(isnan(e) && signbit(e));
+    assert(isNaN(e) && signbit(e));
 }
