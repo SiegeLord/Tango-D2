@@ -53,10 +53,10 @@
  *  RANGE  = $(TR $(TD Range) $(TD $0))
  */
 
-module tango.math.core;
+module tango.math.Core;
 
 static import tango.stdc.math;
-private import tango.math.ieee;
+private import tango.math.IEEE;
 
 /*
  * Constants
@@ -90,7 +90,7 @@ const real SQRT1_2    = 0.70710678118654752440L;  /** &radic;&frac12 */
  */
 real abs(real x)
 {
-    return tango.math.ieee.fabs(x);
+    return tango.math.IEEE.fabs(x);
 }
 
 /** ditto */
@@ -114,7 +114,7 @@ real abs(creal z)
 /** ditto */
 real abs(ireal y)
 {
-    return tango.math.ieee.fabs(y.im);
+    return tango.math.IEEE.fabs(y.im);
 }
 
 unittest
@@ -479,12 +479,12 @@ unittest
  */
 real asinh(real x)
 {
-    if (tango.math.ieee.fabs(x) > 1 / real.epsilon) // beyond this point, x*x + 1 == x*x
-    return tango.math.ieee.copysign(LN2 + log(tango.math.ieee.fabs(x)), x);
+    if (tango.math.IEEE.fabs(x) > 1 / real.epsilon) // beyond this point, x*x + 1 == x*x
+    return tango.math.IEEE.copysign(LN2 + log(tango.math.IEEE.fabs(x)), x);
     else
     {
     // sqrt(x*x + 1) ==  1 + x * x / ( 1 + sqrt(x*x + 1) )
-    return tango.math.ieee.copysign(log1p(tango.math.ieee.fabs(x) + x*x / (1 + sqrt(x*x + 1)) ), x);
+    return tango.math.IEEE.copysign(log1p(tango.math.IEEE.fabs(x) + x*x / (1 + sqrt(x*x + 1)) ), x);
     }
 }
 
@@ -603,8 +603,8 @@ creal sqrt(creal z) /// ditto
     {   real z_re = z.re;
     real z_im = z.im;
 
-    x = tango.math.ieee.fabs(z_re);
-    y = tango.math.ieee.fabs(z_im);
+    x = tango.math.IEEE.fabs(z_re);
+    y = tango.math.IEEE.fabs(z_im);
     if (x >= y)
     {
         r = y / x;
@@ -862,14 +862,14 @@ real pow(real x, real y)
         return real.nan;
     if (isinf(y))
     {
-        if (tango.math.ieee.fabs(x) > 1)
+        if (tango.math.IEEE.fabs(x) > 1)
         {
         if (signbit(y))
             return +0.0;
         else
             return real.infinity;
         }
-        else if (tango.math.ieee.fabs(x) == 1)
+        else if (tango.math.IEEE.fabs(x) == 1)
         {
         return real.nan;
         }
@@ -988,16 +988,16 @@ real hypot(real x, real y)
     int ex, ey, e;
 
     // Note, hypot(INFINITY, NAN) = INFINITY.
-    if (tango.math.ieee.isinf(x) || tango.math.ieee.isinf(y))
+    if (tango.math.IEEE.isinf(x) || tango.math.IEEE.isinf(y))
         return real.infinity;
 
-    if (tango.math.ieee.isnan(x))
+    if (tango.math.IEEE.isnan(x))
         return x;
-    if (tango.math.ieee.isnan(y))
+    if (tango.math.IEEE.isnan(y))
         return y;
 
-    re = tango.math.ieee.fabs(x);
-    im = tango.math.ieee.fabs(y);
+    re = tango.math.IEEE.fabs(x);
+    im = tango.math.IEEE.fabs(y);
 
     if (re == 0.0)
         return im;
@@ -1005,8 +1005,8 @@ real hypot(real x, real y)
         return re;
 
     // Get the exponents of the numbers
-    xx = tango.math.ieee.frexp(re, ex);
-    yy = tango.math.ieee.frexp(im, ey);
+    xx = tango.math.IEEE.frexp(re, ex);
+    yy = tango.math.IEEE.frexp(im, ey);
 
     // Check if one number is tiny compared to the other
     e = ex - ey;
@@ -1019,14 +1019,14 @@ real hypot(real x, real y)
     e = (ex + ey) >> 1;
 
     // Rescale so mean is about 1
-    xx = tango.math.ieee.ldexp(re, -e);
-    yy = tango.math.ieee.ldexp(im, -e);
+    xx = tango.math.IEEE.ldexp(re, -e);
+    yy = tango.math.IEEE.ldexp(im, -e);
 
     // Hypotenuse of the right triangle
     b = sqrt(xx * xx  +  yy * yy);
 
     // Compute the exponent of the answer.
-    yy = tango.math.ieee.frexp(b, ey);
+    yy = tango.math.IEEE.frexp(b, ey);
     ey = e + ey;
 
     // Check it for overflow and underflow.
@@ -1037,7 +1037,7 @@ real hypot(real x, real y)
         return 0.0;
 
     // Undo the scaling
-    b = tango.math.ieee.ldexp(b, e);
+    b = tango.math.IEEE.ldexp(b, e);
     return b;
 }
 

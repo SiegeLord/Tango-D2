@@ -46,7 +46,7 @@
  *  SV3  = $(TR $(TD $1) $(TD $2) $(TD $3))
  *  NAN = $(RED NAN)
  */
-module tango.math.ieee;
+module tango.math.IEEE;
 
 static import tango.stdc.math;
 

@@ -9,7 +9,7 @@
 
 module tango.math.Bessel;
 
-import tango.std.math;
+import tango.math.Core;
 
 private {
 /*
