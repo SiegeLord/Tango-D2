@@ -272,7 +272,7 @@ real scalbn(real x, int n)
 /**
  * Creates a quiet NAN with the information from tagp[] embedded in it.
  */
-real nan(char[] tagp)
+real makeNaN(char[] tagp)
 {
     // NOTE: Should use toUtf8z
     char[] tmp = tagp ~ '\0';
@@ -426,6 +426,31 @@ unittest
     assert(isnormal(f));
     assert(isnormal(d));
     assert(isnormal(e));
+}
+
+/*********************************
+ * Is the binary representation of x identical to y?
+ *
+ * Same as ==, except that positive and negative zero are not identical,
+ * and two $(NAN)s are identical if they have the same 'payload'.
+ */
+
+bool isIdentical(real x, real y)
+{
+    ushort* pxe = cast(ushort *)&x;
+    long*   pxs = cast(long *)&x;
+    ushort* pye = cast(ushort *)&y;
+    long*   pys = cast(long *)&y;
+    return pxe[4]==pye[4] && pxs[0]==pys[0];
+}
+
+unittest {
+    assert(isIdentical(0.0, 0.0));
+    assert(!isIdentical(0.0, -0.0));
+    assert(isIdentical(makeNaN("abc"), makeNaN("abc")));
+    assert(!isIdentical(makeNaN("abc"), makeNaN("xyz")));
+    assert(isIdentical(1.234e56, 1.234e56));
+    assert(isnan(makeNaN("abcdefghijklmn")));
 }
 
 /*********************************
