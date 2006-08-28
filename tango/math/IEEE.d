@@ -56,7 +56,7 @@ package bool mfeq(real x, real y, real precision)
 {
     if (x == y)
         return true;
-    if (isnan(x) || isnan(y))
+    if (isNaN(x) || isNaN(y))
         return false;
     return fabs(x - y) <= precision;
 }
@@ -438,7 +438,7 @@ unittest {
     assert(isIdentical(makeNaN("abc"), makeNaN("abc")));
     assert(!isIdentical(makeNaN("abc"), makeNaN("xyz")));
     assert(isIdentical(1.234e56, 1.234e56));
-    assert(isnan(makeNaN("abcdefghijklmn")));
+    assert(isNaN(makeNaN("abcdefghijklmn")));
 }
 
 /*********************************
@@ -502,10 +502,21 @@ unittest
 }
 
 /*********************************
+ * Return !=0 if x is &plusmn;0.
+ */
+int isZero(real x)
+{
+    ushort* pe = cast(ushort *)&e;
+    ulong*  ps = cast(ulong *)&e;
+    return (pe[4]&0x7FFF) == 0 && *ps == 0;
+}
+
+
+/*********************************
  * Return !=0 if e is &plusmn;&infin;.
  */
 
-int isInfinite(real e)
+int isInfinity(real e)
 {
     ushort* pe = cast(ushort *)&e;
     ulong*  ps = cast(ulong *)&e;
@@ -516,12 +527,12 @@ int isInfinite(real e)
 
 unittest
 {
-    assert(isInfinite(float.infinity));
-    assert(!isInfinite(float.nan));
-    assert(isInfinite(double.infinity));
-    assert(isInfinite(-real.infinity));
+    assert(isInfinity(float.infinity));
+    assert(!isInfinity(float.nan));
+    assert(isInfinity(double.infinity));
+    assert(isInfinity(-real.infinity));
 
-    assert(isInfinite(-1.0 / 0.0));
+    assert(isInfinity(-1.0 / 0.0));
 }
 
 

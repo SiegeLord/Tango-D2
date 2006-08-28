@@ -120,7 +120,7 @@ real abs(ireal y)
 unittest
 {
     assert(isIdentical(0.0L,abs(-0.0L)));
-    assert(isnan(abs(real.nan)));
+    assert(isNaN(abs(real.nan)));
     assert(abs(-real.infinity) == real.infinity);
     assert(abs(-3.2Li) == 3.2L);
     assert(abs(71.6Li) == 71.6L);
@@ -455,8 +455,8 @@ real acosh(real x)
 
 unittest
 {
-    assert(isnan(acosh(0.9)));
-    assert(isnan(acosh(real.nan)));
+    assert(isNaN(acosh(0.9)));
+    assert(isNaN(acosh(real.nan)));
     assert(acosh(1)==0.0);
     assert(acosh(real.infinity) == real.infinity);
 }
@@ -494,7 +494,7 @@ unittest
     assert(isIdentical(-0.0L,asinh(-0.0)));
     assert(asinh(real.infinity) == real.infinity);
     assert(asinh(-real.infinity) == -real.infinity);
-    assert(isnan(asinh(real.nan)));
+    assert(isNaN(asinh(real.nan)));
 }
 
 /**
@@ -524,7 +524,7 @@ unittest
 {
     assert(isIdentical(0.0L, atanh(0.0)));
     assert(isIdentical(-0.0L,atanh(-0.0)));
-    assert(isnan(atanh(real.nan)));
+    assert(isNaN(atanh(real.nan)));
     assert(isIdentical(-0.0L, atanh(-real.infinity)));
 }
 
@@ -860,7 +860,7 @@ real pow(real x, real y)
         return 1;       // even if x is $(NAN)
     if (isNaN(x) && y != 0)
         return real.nan;
-    if (isInfinite(y))
+    if (isInfinity(y))
     {
         if (tango.math.IEEE.fabs(x) > 1)
         {
@@ -881,7 +881,7 @@ real pow(real x, real y)
             return +0.0;
         }
     }
-    if (isInfinite(x))
+    if (isInfinity(x))
     {
         if (signbit(x))
         {   long i;
@@ -988,7 +988,7 @@ real hypot(real x, real y)
     int ex, ey, e;
 
     // Note, hypot(INFINITY, NAN) = INFINITY.
-    if (tango.math.IEEE.isInfinite(x) || tango.math.IEEE.isInfinite(y))
+    if (tango.math.IEEE.isInfinity(x) || tango.math.IEEE.isInfinity(y))
         return real.infinity;
 
     if (tango.math.IEEE.isNaN(x))
