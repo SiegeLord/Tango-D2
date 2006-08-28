@@ -61,18 +61,6 @@ package bool mfeq(real x, real y, real precision)
     return fabs(x - y) <= precision;
 }
 
-// Returns true if x is +0.0 (This function is used in unit tests)
-package bool isPosZero(real x)
-{
-    return isIdentical(0.0L);
-}
-
-// Returns true if x is -0.0 (This function is used in unit tests)
-package bool isNegZero(real x)
-{
-    return isIdentical(-0.0L);
-}
-
 /**
  * Returns x rounded to a long value using the FE_TONEAREST rounding mode.
  * If the integer value of x is

@@ -119,7 +119,7 @@ real abs(ireal y)
 
 unittest
 {
-    assert(isPosZero(abs(-0.0L)));
+    assert(isIdentical(0.0L,abs(-0.0L)));
     assert(isnan(abs(real.nan)));
     assert(abs(-real.infinity) == real.infinity);
     assert(abs(-3.2Li) == 3.2L);
@@ -490,8 +490,8 @@ real asinh(real x)
 
 unittest
 {
-    assert(isPosZero(asinh(0.0)));
-    assert(isNegZero(asinh(-0.0)));
+    assert(isIdentical(0.0L,asinh(0.0)));
+    assert(isIdentical(-0.0L,asinh(-0.0)));
     assert(asinh(real.infinity) == real.infinity);
     assert(asinh(-real.infinity) == -real.infinity);
     assert(isnan(asinh(real.nan)));
@@ -522,10 +522,10 @@ real atanh(real x)
 
 unittest
 {
-    assert(isPosZero(atanh(0.0)));
-    assert(isNegZero(atanh(-0.0)));
+    assert(isIdentical(0.0L, atanh(0.0)));
+    assert(isIdentical(-0.0L,atanh(-0.0)));
     assert(isnan(atanh(real.nan)));
-    assert(isNegZero(atanh(-real.infinity)));
+    assert(isIdentical(-0.0L, atanh(-real.infinity)));
 }
 
 /*
