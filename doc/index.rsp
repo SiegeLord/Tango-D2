@@ -250,3 +250,4 @@ tango\store\iterator\InterleavingIterator.d
 tango\io\protocol\Reader.d
 tango\store\model\KeySortedCollection.d
 tango\store\model\MutableMap.d
+tango\core\Tuple.d

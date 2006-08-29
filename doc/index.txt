@@ -14,6 +14,7 @@ tango.core
  * [http://svn.dsource.org/projects/tango/trunk/doc/html/tango.core.Memory.html Memory]
  * [http://svn.dsource.org/projects/tango/trunk/doc/html/tango.core.Thread.html Thread]
  * [http://svn.dsource.org/projects/tango/trunk/doc/html/tango.core.Traits.html Traits]
+ * [http://svn.dsource.org/projects/tango/trunk/doc/html/tango.core.Tuple.html Tuple]
  * [http://svn.dsource.org/projects/tango/trunk/doc/html/tango.core.Unicode.html Unicode]
  * [http://svn.dsource.org/projects/tango/trunk/doc/html/tango.core.Vararg.html Vararg]
 tango.io

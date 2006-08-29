@@ -17,6 +17,7 @@ import tango.core.Epoch;
 import tango.core.Interval;
 import tango.core.Intrinsic;
 import tango.core.Traits;
+import tango.core.Tuple;
 import tango.core.Unicode;
 import tango.core.Vararg;
 
