@@ -205,7 +205,7 @@ class FileConduit : DeviceConduit, DeviceConduit.Seek
 
 
         // the file we're working with 
-        private FilePath path;
+        private FilePathView path;
 
         // expose deviceconduit.copy() methods also 
         alias DeviceConduit.copy      copy;
@@ -240,7 +240,7 @@ class FileConduit : DeviceConduit, DeviceConduit.Seek
 
         ***********************************************************************/
 
-        this (FilePath path, Style style = ReadExisting)
+        this (FilePathView path, Style style = ReadExisting)
         {
                 // say we're seekable
                 super (style.access, true);
@@ -258,7 +258,7 @@ class FileConduit : DeviceConduit, DeviceConduit.Seek
 
         ***********************************************************************/
 
-        FilePath getPath ()
+        FilePathView getPath ()
         {
                 return path;
         }               

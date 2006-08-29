@@ -417,7 +417,7 @@ class HttpTokens : IWritable
         /**********************************************************************
                 
                 Set the output buffer for adding tokens to. This is used
-                by the various MutableXXXX classes.
+                by the various mutating classes.
 
         **********************************************************************/
 

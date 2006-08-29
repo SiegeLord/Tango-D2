@@ -89,7 +89,7 @@ class ServletRequest : HttpRequest, IServletRequest
 
         **********************************************************************/
 
-        HttpParams getParameters ()
+        HttpParamsView getParameters ()
         {
                 return super.getInputParameters();
         }
@@ -98,7 +98,7 @@ class ServletRequest : HttpRequest, IServletRequest
 
         **********************************************************************/
 
-        HttpHeaders getHeaders ()
+        HttpHeadersView getHeaders ()
         {
                 return super.getInputHeaders();
         }
@@ -107,7 +107,7 @@ class ServletRequest : HttpRequest, IServletRequest
 
         **********************************************************************/
 
-        HttpCookies getCookies ()
+        HttpCookiesView getCookies ()
         {
                 return super.getInputCookies();
         }

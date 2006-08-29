@@ -62,7 +62,7 @@ public class RollingFileAppender : FileAppender
                     {
                     x[0] = '0' + i;
 
-                    auto clone = new MutableFilePath (p);
+                    auto clone = new FilePath (p);
                     clone.setName (clone.getName ~ x);
                     paths ~= clone;
 

@@ -313,7 +313,7 @@ version (VERBOSE)
 
         public char[] toUtf8()
         {
-                auto buf = new MutableString;
+                auto buf = new String;
                 buf.append("<class "c).append(this.classinfo.name).append(':').append(typeid(T).toUtf8);
                 buf.append(" size:"c).append(size());
                 buf.append(" elements:"c);

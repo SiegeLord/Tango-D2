@@ -54,7 +54,7 @@ class FileScan
         private Dependencies    deps;
         private Filter          filter;
 
-        typedef bool delegate (FilePath) Filter;
+        typedef bool delegate (FilePathView) Filter;
 
         /***********************************************************************
 
@@ -65,7 +65,7 @@ class FileScan
         private struct Dependencies 
         {
                 File[]          mods;
-                FilePath[]      pkgs;
+                FilePathView[]  pkgs;
         }
 
         /***********************************************************************
@@ -77,7 +77,7 @@ class FileScan
         
         FileScan sweep (char[] path, char[] ext)
         {
-                return sweep (new FilePath(path), ext);
+                return sweep (new FilePathView(path), ext);
         }
 
         /***********************************************************************
@@ -87,7 +87,7 @@ class FileScan
         
         ***********************************************************************/
         
-        FileScan sweep (FilePath path, char[] ext)
+        FileScan sweep (FilePathView path, char[] ext)
         {
                 this.ext = ext;
                 return sweep (path, &simpleFilter);
@@ -100,7 +100,7 @@ class FileScan
 
         ***********************************************************************/
         
-        FileScan sweep (FilePath path, Filter filter)
+        FileScan sweep (FilePathView path, Filter filter)
         {
                 deps.mods = null;
                 deps.pkgs = null;
@@ -130,9 +130,9 @@ class FileScan
 
         ***********************************************************************/
 
-        public FileScan directories (void delegate (FilePath) visit)
+        public FileScan directories (void delegate (FilePathView) visit)
         {
-                foreach (FilePath path; deps.pkgs)
+                foreach (FilePathView path; deps.pkgs)
                          visit (path);
                 return this;
         }
@@ -144,7 +144,7 @@ class FileScan
 
         ***********************************************************************/
 
-        private bool simpleFilter (FilePath fp) 
+        private bool simpleFilter (FilePathView fp) 
         {
                 auto sbuf = fp.getExtension ();
 
@@ -161,7 +161,7 @@ class FileScan
 
         ***********************************************************************/
 
-        private void scanFiles (inout Dependencies deps, FilePath base) 
+        private void scanFiles (inout Dependencies deps, FilePathView base) 
         {
                 auto file = new File (base);
                 auto paths = file.toList (filter);
@@ -170,10 +170,10 @@ class FileScan
                 if (paths.length)
                     deps.pkgs ~= base;
 
-                foreach (FilePath x; paths) 
+                foreach (FilePathView x; paths) 
                         {
                         // combine base path with listed file
-                        auto spliced = new FilePath (x.splice (base), false);
+                        auto spliced = new FilePathView (x.splice (base), false);
 
                         // recurse if this is a directory ...
                         file = new File (spliced);

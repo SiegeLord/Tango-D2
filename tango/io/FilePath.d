@@ -22,17 +22,17 @@ private import  tango.text.convert.Unicode;
         Models a file name. These are expected to be used as the constructor 
         argument to File implementations. The intention is that they easily
         convert to other representations such as absolute, canonical, or Url.
-        Note that this class is immutable. Use MutableFilePath if you wish
+        Note that this class is immutable. Use FilePath if you wish
         to alter specific attributes.
 
         File paths containing non-ansi characters should be UTF-8 encoded. 
         Supporting Unicode in this manner was deemed to be more suitable 
-        than providing a wchar version of FilePath, and is both consistent 
+        than providing a wchar version of FilePathView, and is both consistent 
         & compatible with the approach taken with the Uri class.
 
 *******************************************************************************/
 
-class FilePath
+class FilePathView
 {       
         private char[]  fp,                     // utf8 filepath with trailing 0
                         ext,                    // file extension
@@ -47,7 +47,7 @@ class FilePath
 
         /***********************************************************************
         
-                Create an empty FilePath. This is strictly for subclass
+                Create an empty FilePathView. This is strictly for subclass
                 use.
 
         ***********************************************************************/
@@ -58,11 +58,11 @@ class FilePath
 
         /***********************************************************************
         
-                Create a FilePath through reference to another.
+                Create a FilePathView through reference to another.
 
         ***********************************************************************/
 
-        this (FilePath other)
+        this (FilePathView other)
         in {
            assert (other);
            }
@@ -79,7 +79,7 @@ class FilePath
 
         /***********************************************************************
         
-                Create a FilePath from the given string. Note the path string
+                Create a FilePathView from the given string. Note the path string
                 is usually duplicated here, though you may specify that it be
                 aliased instead via the second argument. When aliased, you are 
                 expected to provide an immutable copy for the lifetime of this 
@@ -185,14 +185,14 @@ class FilePath
 
         /***********************************************************************
         
-                Create a FilePath from a Uri. Note that the Uri authority
+                Create a FilePathView from a Uri. Note that the Uri authority
                 is used to house an optional root (device, drive-letter ...)
 
         ***********************************************************************/
 
-        this (Uri uri)
+        this (UriView uri)
         {
-                char[] path = uri.getPath();
+                auto path = uri.getPath();
 
                 if (uri.getHost.length)
                     path = uri.getHost ~ FileConst.RootSeparatorString ~ path;
@@ -202,14 +202,14 @@ class FilePath
 
         /***********************************************************************
 
-                Convert this FilePath to a Uri. Note that a root (such as a
+                Convert this FilePathView to a Uri. Note that a root (such as a
                 drive-letter, or device) is placed into the Uri authority
         
         ***********************************************************************/
 
-        MutableUri toUri ()
+        Uri toUri ()
         {
-                MutableUri uri = new MutableUri();
+                auto uri = new Uri;
 
                 if (isAbsolute)
                     uri.setScheme ("file");
@@ -258,7 +258,7 @@ class FilePath
 
         /***********************************************************************
         
-                Clear any cached information in this FilePath
+                Clear any cached information in this FilePathView
 
         ***********************************************************************/
 
@@ -269,7 +269,7 @@ class FilePath
 
         /***********************************************************************
         
-                Returns true if this FilePath is *not* relative to the 
+                Returns true if this FilePathView is *not* relative to the 
                 current working directory.
 
         ***********************************************************************/
@@ -283,7 +283,7 @@ class FilePath
 
         /***********************************************************************
         
-                Returns true if this FilePath is empty
+                Returns true if this FilePathView is empty
 
         ***********************************************************************/
 
@@ -355,7 +355,7 @@ class FilePath
 
         /***********************************************************************
 
-                Convert this FilePath to a char[] via the provided Consumer
+                Convert this FilePathView to a char[] via the provided Consumer
 
         ***********************************************************************/
 
@@ -414,12 +414,12 @@ class FilePath
 
         /***********************************************************************
         
-                Splice this FilePath onto the end of the provided base path.
+                Splice this FilePathView onto the end of the provided base path.
                 Output is return as a char[].
 
         ***********************************************************************/
 
-        char[] splice (FilePath base)
+        char[] splice (FilePathView base)
         {      
                 char[] s;
                 s.length = 256, s.length = 0;
@@ -429,12 +429,12 @@ class FilePath
 
         /***********************************************************************
         
-                Splice this FilePath onto the end of the provided base path.
+                Splice this FilePathView onto the end of the provided base path.
                 Output is handled via the provided Consumer
 
         ***********************************************************************/
 
-        Consumer splice (FilePath base, Consumer consume)
+        Consumer splice (FilePathView base, Consumer consume)
         {      
                 base.produce (consume);
 
@@ -455,7 +455,7 @@ class FilePath
 
         /***********************************************************************
         
-                Find the next parent of the FilePath. Returns a valid index
+                Find the next parent of the FilePathView. Returns a valid index
                 to the seperator when present, -1 otherwise.
 
         ***********************************************************************/
@@ -474,19 +474,19 @@ class FilePath
 
         /***********************************************************************
         
-                Returns a FilePath representing the parent of this one. An
+                Returns a FilePathView representing the parent of this one. An
                 exception is thrown if there is not parent (at the root).
 
         ***********************************************************************/
 
-        FilePath toParent ()
+        FilePathView toParent ()
         {
                 // set new path to rightmost PathSeparator
                 int i = locateParent();
 
                 if (i >= 0)
                    {
-                   FilePath parent = new FilePath (this);
+                   FilePathView parent = new FilePathView (this);
 
                    // slice path subsection
                    parent.path = path [0..i+1];
@@ -500,7 +500,7 @@ class FilePath
 
         /***********************************************************************
                 
-                Returns true if this FilePath has a parent.
+                Returns true if this FilePathView has a parent.
 
         ***********************************************************************/
 
@@ -511,38 +511,38 @@ class FilePath
 
         /***********************************************************************
         
-                Return a cloned FilePath with a different name.
+                Return a cloned FilePathView with a different name.
 
         ***********************************************************************/
 
-        FilePath toSibling (char[] name)
+        FilePathView toSibling (char[] name)
         {
                 return toSibling (name, ext, suffix);
         }
 
         /***********************************************************************
         
-                Return a cloned FilePath with a different name and extension.
+                Return a cloned FilePathView with a different name and extension.
                 Note that the suffix is destroyed.
 
         ***********************************************************************/
 
-        FilePath toSibling (char[] name, char[] ext)
+        FilePathView toSibling (char[] name, char[] ext)
         {
                 return toSibling (name, ext, suffix);
         }
 
         /***********************************************************************
         
-                Return a cloned FilePath with a different name, extension,
+                Return a cloned FilePathView with a different name, extension,
                 and suffix.
 
         ***********************************************************************/
 
-        FilePath toSibling (char[] name, char[] ext, char[] suffix) 
+        FilePathView toSibling (char[] name, char[] ext, char[] suffix) 
         {
                 // don't copy ... we can alias instead
-                FilePath sibling = new FilePath (this);
+                FilePathView sibling = new FilePathView (this);
 
                 sibling.suffix = suffix;
                 sibling.name = name;
@@ -556,17 +556,17 @@ class FilePath
 
 /*******************************************************************************
 
-        Mutable version of FilePath, which allows one to change individual
+        Mutable version of FilePathView, which allows one to change individual
         attributes. A change to any attribute will cause method toUtf8() 
         to rebuild the output.
 
 *******************************************************************************/
 
-class MutableFilePath : FilePath
+class FilePath : FilePathView
 {       
         /***********************************************************************
         
-                Create an empty MutableFilePath
+                Create an empty FilePath
 
         ***********************************************************************/
 
@@ -576,18 +576,18 @@ class MutableFilePath : FilePath
 
         /***********************************************************************
         
-                Create a MutableFilePath through reference to another.
+                Create a FilePath through reference to another.
 
         ***********************************************************************/
 
-        this (FilePath other)
+        this (FilePathView other)
         {
                 super (other);
         }
 
         /***********************************************************************
         
-                Create a MutableFilePath via a filename.
+                Create a FilePath via a filename.
 
         ***********************************************************************/
 
@@ -598,11 +598,11 @@ class MutableFilePath : FilePath
 
         /***********************************************************************
         
-                Set the extension of this FilePath.
+                Set the extension of this FilePathView.
 
         ***********************************************************************/
 
-        private final MutableFilePath set (char[]* x, char[]* v)
+        private final FilePath set (char[]* x, char[]* v)
         {       
                 *x = *v;
                 reset ();
@@ -611,55 +611,55 @@ class MutableFilePath : FilePath
 
         /***********************************************************************
         
-                Set the extension of this FilePath.
+                Set the extension of this FilePathView.
 
         ***********************************************************************/
 
-        MutableFilePath setExt (char[] ext)
+        FilePath setExt (char[] ext)
         {
                 return set (&this.ext, &ext);
         }
 
         /***********************************************************************
         
-                Set the name of this FilePath.
+                Set the name of this FilePathView.
 
         ***********************************************************************/
 
-        MutableFilePath setName (char[] name)
+        FilePath setName (char[] name)
         {
                 return set (&this.name, &name);
         }
 
         /***********************************************************************
         
-                Set the path of this FilePath.
+                Set the path of this FilePathView.
 
         ***********************************************************************/
 
-        MutableFilePath setPath (char[] path)
+        FilePath setPath (char[] path)
         {
                 return set (&this.path, &path);
         }
 
         /***********************************************************************
         
-                Set the root of this FilePath (such as "c:")
+                Set the root of this FilePathView (such as "c:")
 
         ***********************************************************************/
 
-        MutableFilePath setRoot (char[] root)
+        FilePath setRoot (char[] root)
         {
                 return set (&this.root, &root);
         }
 
         /***********************************************************************
         
-                Set the suffix of this FilePath.
+                Set the suffix of this FilePathView.
 
         ***********************************************************************/
 
-        MutableFilePath setSuffix (char[] suffix)
+        FilePath setSuffix (char[] suffix)
         {
                 return set (&this.suffix, &suffix);
         }

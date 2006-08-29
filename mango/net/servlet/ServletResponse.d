@@ -62,7 +62,7 @@ class ServletResponse : HttpResponse, IServletResponse
 
         **********************************************************************/
 
-        HttpMutableParams getParameters ()
+        HttpParams getParameters ()
         {
                 return super.getOutputParams();
         }
@@ -71,7 +71,7 @@ class ServletResponse : HttpResponse, IServletResponse
 
         **********************************************************************/
 
-        HttpMutableCookies getCookies ()
+        HttpCookies getCookies ()
         {
                 return super.getOutputCookies();
         }
@@ -80,7 +80,7 @@ class ServletResponse : HttpResponse, IServletResponse
 
         **********************************************************************/
 
-        HttpMutableHeaders getHeaders ()
+        HttpHeaders getHeaders ()
         {
                 return super.getOutputHeaders();
         }

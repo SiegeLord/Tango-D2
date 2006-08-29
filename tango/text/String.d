@@ -10,17 +10,17 @@
 
 
         ---
-        class MutableString(T) : String!(T)
+        class String(T) : StringView!(T)
         {
                 // set or reset the content 
-                MutableString set (T[] chars, bool mutable=true);
-                MutableString set (String other, bool mutable=true);
+                String set (T[] chars, bool mutable=true);
+                String set (String other, bool mutable=true);
 
                 // get the index and length of the current selection
                 uint selection (inout int length);
 
                 // make a selection
-                MutableString select (int start=0, int length=int.max);
+                String select (int start=0, int length=int.max);
 
                 // move the selection around
                 bool select (T c);
@@ -31,36 +31,36 @@
                 bool rselect (String other);
 
                 // append behind current selection
-                MutableString append (String other);
-                MutableString append (char[] other);
-                MutableString append (wchar[] other);
-                MutableString append (dchar[] other);
-                MutableString append (T chr, int count=1);
-                MutableString append (int value, T[] format=null);
-                MutableString append (long value, T[] format=null);
-                MutableString append (double value, T[] format=null);
+                String append (String other);
+                String append (char[] other);
+                String append (wchar[] other);
+                String append (dchar[] other);
+                String append (T chr, int count=1);
+                String append (int value, T[] format=null);
+                String append (long value, T[] format=null);
+                String append (double value, T[] format=null);
 
                 // format and layout behind current selection
-                MutableString format (T[] format, ...);
+                String format (T[] format, ...);
         
                 // insert before current selection
-                MutableString prepend (T[] other);
-                MutableString prepend (String other);
-                MutableString prepend (T chr, int count=1);
+                String prepend (T[] other);
+                String prepend (String other);
+                String prepend (T chr, int count=1);
 
                 // replace current selection
-                MutableString replace (T chr);
-                MutableString replace (T[] other);
-                MutableString replace (String other);
+                String replace (T chr);
+                String replace (T[] other);
+                String replace (String other);
 
                 // remove current selection
-                MutableString remove ();
+                String remove ();
 
                 // truncate at point, or current selection
-                MutableString truncate (int point = int.max);
+                String truncate (int point = int.max);
 
                 // trim content
-                MutableString trim ();
+                String trim ();
 
                 // return content
                 T[] slice ();
@@ -125,7 +125,7 @@ private extern (C) void memmove (void* dst, void* src, uint bytes);
 
 /*******************************************************************************
 
-        MutableString is a string class that stores Unicode characters.
+        String is a string class that stores Unicode characters.
 
         Indexes and lengths of strings always count code units, not code 
         points. This is similar to traditional multi-byte string handling. 
@@ -133,7 +133,7 @@ private extern (C) void memmove (void* dst, void* src, uint bytes);
         the approach taken here is based upon pattern-matching rather than
         direct indexing.
 
-        MutableString maintains a current "selection", controlled via the 
+        String maintains a current "selection", controlled via the 
         select() and rselect() methods. Append(), prepend(), replace() and
         remove() each operate with respect to the selection. The select()
         methods themselves operate with respect to the current selection
@@ -143,12 +143,12 @@ private extern (C) void memmove (void* dst, void* src, uint bytes);
        
 *******************************************************************************/
 
-class MutableStringT(T) : StringT!(T)
+class StringT(T) : StringViewT!(T)
 {
         public  alias append            opCat;
         public  alias get               opIndex;
         private alias Unicode.Into!(T)  Into;   
-        private alias StringT!(T)       String;
+        private alias StringViewT!(T)       String;
 
         private Into                    into;           // unicode converter
         private T[]                     converts;       // unicode buffer
@@ -175,7 +175,7 @@ class MutableStringT(T) : StringT!(T)
 
         /***********************************************************************
         
-                Create a MutableString via the content of a String. Note 
+                Create a String via the content of a String. Note 
                 that the default is to assume the content is immutable
                 
         ***********************************************************************/
@@ -187,7 +187,7 @@ class MutableStringT(T) : StringT!(T)
 
         /***********************************************************************
         
-                Create an empty MutableString with the specified available 
+                Create an empty String with the specified available 
                 space
 
         ***********************************************************************/
@@ -200,7 +200,7 @@ class MutableStringT(T) : StringT!(T)
 
         /***********************************************************************
         
-                Create a MutableString upon the provided content. If said 
+                Create a String upon the provided content. If said 
                 content is immutable (read-only) then you might consider 
                 setting the 'mutable' parameter to false. Doing so will 
                 avoid allocating heap-space for the content until it is 
@@ -215,15 +215,15 @@ class MutableStringT(T) : StringT!(T)
 
         /***********************************************************************
         
-                Create a MutableString via the content of a MutableString. 
+                Create a String via the content of a String. 
                 If said content is immutable (read-only) then you might 
                 consider setting the 'mutable' parameter to false. Doing 
                 so will avoid allocating heap-space for the content until 
-                it is modified via MutableString methods.
+                it is modified via String methods.
 
         ***********************************************************************/
         
-        this (MutableStringT other, bool mutable = true)
+        this (StringT other, bool mutable = true)
         {
                 set (other.get, mutable);
         }
@@ -236,7 +236,7 @@ class MutableStringT(T) : StringT!(T)
                      
         ***********************************************************************/
 
-        MutableStringT set (T[] chars, bool mutable = true)
+        StringT set (T[] chars, bool mutable = true)
         {
                 contentLength = chars.length;
                 select (0, contentLength);
@@ -250,7 +250,7 @@ class MutableStringT(T) : StringT!(T)
 
         /***********************************************************************
         
-                Replace the content of this MutableString. If the new content
+                Replace the content of this String. If the new content
                 is immutable (read-only) then you might consider setting the
                 'mutable' parameter to false. Doing so will avoid allocating
                 heap-space for the content until it is modified via one of
@@ -258,7 +258,7 @@ class MutableStringT(T) : StringT!(T)
 
         ***********************************************************************/
 
-        MutableStringT set (String other, bool mutable = true)
+        StringT set (String other, bool mutable = true)
         {
                 return set (other.get, mutable);
         }
@@ -281,7 +281,7 @@ class MutableStringT(T) : StringT!(T)
 
         ***********************************************************************/
 
-        MutableStringT select (int start=0, int length=int.max)
+        StringT select (int start=0, int length=int.max)
         {
                 pinIndices (start, length);
                 selectPoint = start;
@@ -405,22 +405,22 @@ class MutableStringT(T) : StringT!(T)
 
         /***********************************************************************
         
-                Append partial text to this MutableString
+                Append partial text to this String
 
         ***********************************************************************/
 
-        MutableStringT append (String other)
+        StringT append (String other)
         {
                 return append (other.get);
         }
 
         /***********************************************************************
         
-                Append text to this MutableString
+                Append text to this String
 
         ***********************************************************************/
 
-        MutableStringT append (char[] chars)
+        StringT append (char[] chars)
         {
                 convert (chars, Type.Utf8);
                 return this;
@@ -428,11 +428,11 @@ class MutableStringT(T) : StringT!(T)
 
         /***********************************************************************
         
-                Append text to this MutableString
+                Append text to this String
 
         ***********************************************************************/
 
-        MutableStringT append (wchar[] chars)
+        StringT append (wchar[] chars)
         {
                 convert (chars, Type.Utf16);
                 return this;
@@ -440,11 +440,11 @@ class MutableStringT(T) : StringT!(T)
 
         /***********************************************************************
         
-                Append text to this MutableString
+                Append text to this String
 
         ***********************************************************************/
 
-        MutableStringT append (dchar[] chars)
+        StringT append (dchar[] chars)
         {
                 convert (chars, Type.Utf32);
                 return this;
@@ -452,11 +452,11 @@ class MutableStringT(T) : StringT!(T)
 
         /***********************************************************************
         
-                Append a count of characters to this MutableString
+                Append a count of characters to this String
 
         ***********************************************************************/
 
-        MutableStringT append (T chr, int count=1)
+        StringT append (T chr, int count=1)
         {
                 uint point = selectPoint + selectLength;
                 expand (point, count);
@@ -465,36 +465,36 @@ class MutableStringT(T) : StringT!(T)
 
         /***********************************************************************
         
-                Append an integer to this MutableString, using standard 
+                Append an integer to this String, using standard 
                 printf() notation
 
         ***********************************************************************/
 
-        MutableStringT append (int v, T[] fmt=null)
+        StringT append (int v, T[] fmt=null)
         {
                 return format (fmt, v);
         }
 
         /***********************************************************************
         
-                Append a long to this MutableString, using standard 
+                Append a long to this String, using standard 
                 printf() notation
 
         ***********************************************************************/
 
-        MutableStringT append (long v, T[] fmt=null)
+        StringT append (long v, T[] fmt=null)
         {
                 return format (fmt, v);
         }
 
         /***********************************************************************
         
-                Append a double to this MutableString, using standard 
+                Append a double to this String, using standard 
                 printf() notation
 
         ***********************************************************************/
 
-        MutableStringT append (double v, T[] fmt=null)
+        StringT append (double v, T[] fmt=null)
         {
                 return format (fmt, v);
         }
@@ -506,7 +506,7 @@ class MutableStringT(T) : StringT!(T)
 
         **********************************************************************/
 
-        MutableStringT format (T[] fmt, ...)
+        StringT format (T[] fmt, ...)
         {
                 if (fmt.ptr is null)
                     fmt = "{0}";
@@ -517,11 +517,11 @@ class MutableStringT(T) : StringT!(T)
 
         /***********************************************************************
         
-                Insert characters into this MutableString
+                Insert characters into this String
 
         ***********************************************************************/
 
-        MutableStringT prepend (T chr, uint count=1)
+        StringT prepend (T chr, uint count=1)
         {
                 expand (selectPoint, count);
                 return set (chr, selectPoint, count);
@@ -529,11 +529,11 @@ class MutableStringT(T) : StringT!(T)
 
         /***********************************************************************
         
-                Insert text into this MutableString
+                Insert text into this String
 
         ***********************************************************************/
 
-        MutableStringT prepend (T[] other)
+        StringT prepend (T[] other)
         {
                 expand (selectPoint, other.length);
                 content[selectPoint..selectPoint+other.length] = other;
@@ -542,35 +542,35 @@ class MutableStringT(T) : StringT!(T)
 
         /***********************************************************************
         
-                Insert another String into this MutableString
+                Insert another String into this String
 
         ***********************************************************************/
 
-        MutableStringT prepend (String other)
+        StringT prepend (String other)
         {       
                 return prepend (other.get);
         }
 
         /***********************************************************************
                 
-                Replace a section of this MutableString with the specified 
+                Replace a section of this String with the specified 
                 character
 
         ***********************************************************************/
 
-        MutableStringT replace (T chr)
+        StringT replace (T chr)
         {
                 return set (chr, selectPoint, selectLength);
         }
 
         /***********************************************************************
                 
-                Replace a section of this MutableString with the specified 
+                Replace a section of this String with the specified 
                 array
 
         ***********************************************************************/
 
-        MutableStringT replace (T[] chars)
+        StringT replace (T[] chars)
         {
                 int chunk = chars.length - selectLength;
                 if (chunk >= 0)
@@ -585,24 +585,24 @@ class MutableStringT(T) : StringT!(T)
 
         /***********************************************************************
                 
-                Replace a section of this MutableString with the specified 
+                Replace a section of this String with the specified 
                 String
 
         ***********************************************************************/
 
-        MutableStringT replace (String other)
+        StringT replace (String other)
         {
                 return replace (other.get);
         }
 
         /***********************************************************************
         
-                Remove the selection from this MutableString and reset the
+                Remove the selection from this String and reset the
                 selection to zero length
 
         ***********************************************************************/
 
-        MutableStringT remove ()
+        StringT remove ()
         {
                 remove (selectLength);
                 select (selectPoint, 0);
@@ -611,7 +611,7 @@ class MutableStringT(T) : StringT!(T)
 
         /***********************************************************************
         
-                Remove the selection from this MutableString and reset the
+                Remove the selection from this String and reset the
                 selection to zero length
 
         ***********************************************************************/
@@ -639,7 +639,7 @@ class MutableStringT(T) : StringT!(T)
 
         ***********************************************************************/
 
-        MutableStringT truncate (int index = int.max)
+        StringT truncate (int index = int.max)
         {
                 if (index is int.max)
                     index = selectPoint + selectLength;
@@ -656,7 +656,7 @@ class MutableStringT(T) : StringT!(T)
 
         ***********************************************************************/
 
-        MutableStringT trim ()
+        StringT trim ()
         {
                 content = utils.trim (get());
                 select (0, contentLength = content.length);
@@ -667,14 +667,14 @@ class MutableStringT(T) : StringT!(T)
         
         ***********************************************************************/
 
-        MutableStringT clone ()
+        StringT clone ()
         {
-                return new MutableStringT!(T)(get, mutable);
+                return new StringT!(T)(get, mutable);
         }
 
         /***********************************************************************
         
-                Return an alias to the content of this MutableString
+                Return an alias to the content of this String
 
         ***********************************************************************/
 
@@ -685,7 +685,7 @@ class MutableStringT(T) : StringT!(T)
 
 
 
-        /* ======================= StringT methods ========================== */
+        /* ======================= StringViewT methods ========================== */
 
 
 
@@ -1141,12 +1141,12 @@ class MutableStringT(T) : StringT!(T)
                 
         /***********************************************************************
                 
-                Replace a section of this MutableString with the specified 
+                Replace a section of this String with the specified 
                 character
 
         ***********************************************************************/
 
-        private final MutableStringT set (T chr, uint start, uint count)
+        private final StringT set (T chr, uint start, uint count)
         {
                 content [start..start+count] = chr;
                 return this;
@@ -1177,11 +1177,11 @@ class MutableStringT(T) : StringT!(T)
 
         /***********************************************************************
         
-                Internal method to support MutableString appending
+                Internal method to support String appending
 
         ***********************************************************************/
 
-        private final MutableStringT append (T* chars, uint count)
+        private final StringT append (T* chars, uint count)
         {
                 uint point = selectPoint + selectLength;
                 expand (point, count);
@@ -1227,7 +1227,7 @@ class MutableStringT(T) : StringT!(T)
 
 *******************************************************************************/
 
-class StringT(T) : UniString
+class StringViewT(T) : UniString
 {
         private T[]     content;
         private uint    contentLength;
@@ -1240,13 +1240,13 @@ class StringT(T) : UniString
 
         ***********************************************************************/
 
-        abstract StringT setComparator (Comparator comparator);
+        abstract StringViewT setComparator (Comparator comparator);
 
         /***********************************************************************
         
         ***********************************************************************/
 
-        abstract StringT clone ();
+        abstract StringViewT clone ();
 
         /***********************************************************************
         
@@ -1270,7 +1270,7 @@ class StringT(T) : UniString
 
         ***********************************************************************/
 
-        abstract bool equals (StringT other);
+        abstract bool equals (StringViewT other);
 
         /***********************************************************************
         
@@ -1286,7 +1286,7 @@ class StringT(T) : UniString
 
         ***********************************************************************/
 
-        abstract bool ends (StringT other);
+        abstract bool ends (StringViewT other);
 
         /***********************************************************************
         
@@ -1302,7 +1302,7 @@ class StringT(T) : UniString
 
         ***********************************************************************/
 
-        abstract bool starts (StringT other);
+        abstract bool starts (StringViewT other);
 
         /***********************************************************************
         
@@ -1321,7 +1321,7 @@ class StringT(T) : UniString
 
         ***********************************************************************/
 
-        abstract int compare (StringT other);
+        abstract int compare (StringViewT other);
 
         /***********************************************************************
         
@@ -1413,11 +1413,11 @@ class UniString
 
 
 // convenience alias
-typedef MutableStringT!(char) MutableString;
+typedef StringT!(char) String;
 
 
 // convenience alias
-typedef StringT!(char) String;
+typedef StringViewT!(char) StringView;
 
 
 
@@ -1425,7 +1425,7 @@ debug (UnitTest)
 {
 unittest
 {
-        auto s = new MutableString("hello");
+        auto s = new String("hello");
         s.select ("hello");
         s.replace ("1");
         assert (s.slice == "1");

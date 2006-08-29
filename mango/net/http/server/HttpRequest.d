@@ -50,11 +50,11 @@ class HttpRequest : HttpMessage, IWritable
                                         gulped;
 
         // these are per-thread instances also
-        private MutableUri              uri;
+        private Uri                     uri;
         private LineIterator            line;
         private HttpReader              reader;
         private HttpQueryParams         params;
-        private HttpCookies             cookies;
+        private HttpCookiesView         cookies;
         private StartLine               startLine;
 
         static private InvalidStateException InvalidState;
@@ -84,7 +84,7 @@ class HttpRequest : HttpMessage, IWritable
                 super (bridge, null);
                 
                 // workspace for parsing the request URI
-                uri = new MutableUri; 
+                uri = new Uri; 
 
                 // HTTP request start-line (e.g. "GET / HTTP/1.1")      
                 startLine = new StartLine;
@@ -99,7 +99,7 @@ class HttpRequest : HttpMessage, IWritable
                 line = new LineIterator;
 
                 // Cookie parser. This is a wrapper around the Headers
-                cookies = new HttpCookies (getHeader);
+                cookies = new HttpCookiesView (getHeader);
         }
 
         /**********************************************************************
@@ -187,7 +187,7 @@ class HttpRequest : HttpMessage, IWritable
 
         **********************************************************************/
 
-        HttpCookies getInputCookies()
+        HttpCookiesView getInputCookies()
         {
                 if (gulped)
                     throw InvalidState;
@@ -200,7 +200,7 @@ class HttpRequest : HttpMessage, IWritable
 
         **********************************************************************/
 
-        HttpHeaders getInputHeaders()
+        HttpHeadersView getInputHeaders()
         {
                 if (gulped)
                     throw InvalidState;
@@ -214,7 +214,7 @@ class HttpRequest : HttpMessage, IWritable
 
         **********************************************************************/
 
-        HttpParams getInputParameters()
+        HttpParamsView getInputParameters()
         {
                 // parse Query or Post parameters
                 if (! params.isParsed)

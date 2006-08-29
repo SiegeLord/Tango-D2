@@ -74,7 +74,7 @@ class FileSystem
 
                 ***********************************************************************/
 
-                static void setDirectory (FilePath fp)
+                static void setDirectory (FilePathView fp)
                 {
                         version (Win32SansUnicode)
                                 {
@@ -94,7 +94,7 @@ class FileSystem
                 
                 ***********************************************************************/
 
-                static FilePath getDirectory ()
+                static FilePathView getDirectory ()
                 {
                         version (Win32SansUnicode)
                                 {
@@ -103,7 +103,7 @@ class FileSystem
                                    {
                                    char[] dir = new char [length];
                                    GetCurrentDirectoryA (length, dir);
-                                   return new FilePath (dir, false);
+                                   return new FilePathView (dir, false);
                                    }
                                 }
                              else
@@ -113,7 +113,7 @@ class FileSystem
                                    {
                                    wchar[] dir = new wchar [length];
                                    GetCurrentDirectoryW (length, dir);
-                                   return new FilePath (Unicode.toUtf8 (dir), false);
+                                   return new FilePathView (Unicode.toUtf8 (dir), false);
                                    }
                                 }
                         throw new IOException ("Failed to get current directory");
@@ -155,11 +155,11 @@ class FileSystem
                 
                 ***********************************************************************/
 
-                static FilePath getDirectory ()
+                static FilePathView getDirectory ()
                 {
                         char *s = tango.stdc.posix.unistd.getcwd (null, 0);
                         if (s) 
-                            return new FilePath (s[0..strlen(s)]);
+                            return new FilePathView (s[0..strlen(s)]);
 
                         throw new IOException ("Failed to get current directory");
                 }

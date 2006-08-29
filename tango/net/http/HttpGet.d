@@ -29,6 +29,12 @@ private import  tango.net.http.HttpClient,
         HTTP server. The following is a usage example:
 
         ---
+        // open a web-page for reading (see HttpPost for writing)
+        auto page = new HttpGet ("http://www.digitalmars.com/d/intro.html");
+
+        // retrieve and flush display content
+        Cout (cast(char[]) page.read) ();
+
         ---
 
 *******************************************************************************/
@@ -47,7 +53,7 @@ class HttpGet : HttpClient
 
         this (char[] url, uint pageChunk = 16 * 1024)
         {
-                this (new MutableUri (url), pageChunk);
+                this (new Uri (url), pageChunk);
         }
 
         /***********************************************************************
@@ -58,7 +64,7 @@ class HttpGet : HttpClient
 
         ***********************************************************************/
 
-        this (MutableUri uri, uint pageChunk = 16 * 1024)
+        this (Uri uri, uint pageChunk = 16 * 1024)
         {
                 super (HttpClient.Get, uri);
                 this.pageChunk = pageChunk;

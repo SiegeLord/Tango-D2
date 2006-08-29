@@ -29,7 +29,7 @@ extern (C) char* memchr (char *, char, uint);
         for more information. 
 
         The implementation fails the spec on two counts: it doesn't insist
-        on a scheme being present in the Uri, and it doesn't implement the
+        on a scheme being present in the UriView, and it doesn't implement the
         "Relative References" support noted in section 5.2. 
         
         Note that IRI support can be implied by assuming each of userinfo, path, 
@@ -37,12 +37,12 @@ extern (C) char* memchr (char *, char, uint);
         (see <A HREF="http://www.w3.org/2001/Talks/0912-IUC-IRI/paper.html">
         this page</A> for further details).
 
-        Use the MutableUri derivative where you need to alter specific uri
+        Use the Uri derivative where you need to alter specific uri
         attributes. 
 
 *******************************************************************************/
 
-class Uri
+class UriView
 {
         public const int        InvalidPort = -1;
 
@@ -122,7 +122,7 @@ class Uri
 
         /***********************************************************************
         
-                Initialize the Uri character maps and so on
+                Initialize the UriView character maps and so on
 
         ***********************************************************************/
 
@@ -204,7 +204,7 @@ class Uri
         
         /***********************************************************************
         
-                Construct a Uri from the provided character string
+                Construct a UriView from the provided character string
 
         ***********************************************************************/
 
@@ -330,7 +330,7 @@ class Uri
 
         /***********************************************************************
         
-                Return whether or not the Uri scheme is considered generic.
+                Return whether or not the UriView scheme is considered generic.
 
         ***********************************************************************/
 
@@ -341,7 +341,7 @@ class Uri
 
         /***********************************************************************
         
-                Emit the content of this Uri via the provided Consumer. The
+                Emit the content of this UriView via the provided Consumer. The
                 output is constructed per RFC 2396.
 
         ***********************************************************************/
@@ -389,7 +389,7 @@ class Uri
 
         /***********************************************************************
         
-                Emit the content of this Uri via the provided Consumer. The
+                Emit the content of this UriView via the provided Consumer. The
                 output is constructed per RFC 2396.
 
         ***********************************************************************/
@@ -645,15 +645,15 @@ class Uri
 
 /*******************************************************************************
 
-        Mutable version of Uri
+        Mutable version of UriView
 
 *******************************************************************************/
 
-class MutableUri : Uri
+class Uri : UriView
 {
         /***********************************************************************
         
-                Create an empty Uri
+                Create an empty UriView
 
         ***********************************************************************/
 
@@ -664,7 +664,7 @@ class MutableUri : Uri
 
         /***********************************************************************
         
-                Create a Uri from the provided text string.
+                Create a UriView from the provided text string.
 
         ***********************************************************************/
 
@@ -675,7 +675,7 @@ class MutableUri : Uri
 
         /***********************************************************************
         
-                Construct a Uri from the given components. The query is
+                Construct a UriView from the given components. The query is
                 optional.
                 
         ***********************************************************************/
@@ -692,16 +692,16 @@ class MutableUri : Uri
 
         /***********************************************************************
         
-                Clone another Uri. This can be used to make a MutableUri
-                from an immutable Uri.
+                Clone another UriView. This can be used to make a Uri
+                from an immutable UriView.
 
         ***********************************************************************/
 
-        static MutableUri clone (Uri uri)
+        static Uri clone (UriView uri)
         {
                 with (uri)
                      {
-                     MutableUri ret = new MutableUri (scheme, host, path, query);
+                     Uri ret = new Uri (scheme, host, path, query);
                      ret.userinfo = userinfo;
                      ret.fragment = fragment;
                      ret.port = port;
@@ -728,7 +728,7 @@ class MutableUri : Uri
 
         ***********************************************************************/
 
-        MutableUri parse (char[] uri)
+        Uri parse (char[] uri)
         {       
                 super.parse (uri);
                 return this;
@@ -740,7 +740,7 @@ class MutableUri : Uri
 
         ***********************************************************************/
 
-        MutableUri relParse (char[] uri)
+        Uri relParse (char[] uri)
         {
                 super.parse (uri, true);
                 return this;
@@ -748,11 +748,11 @@ class MutableUri : Uri
         
         /***********************************************************************
                 
-                Set the Uri scheme
+                Set the UriView scheme
 
         ***********************************************************************/
 
-        MutableUri setScheme (char[] scheme)
+        Uri setScheme (char[] scheme)
         {
                 this.scheme = scheme;
                 return this;
@@ -760,11 +760,11 @@ class MutableUri : Uri
 
         /***********************************************************************
         
-                Set the Uri host
+                Set the UriView host
 
         ***********************************************************************/
 
-        MutableUri setHost (char[] host)
+        Uri setHost (char[] host)
         {
                 this.host = host;
                 return this;
@@ -772,11 +772,11 @@ class MutableUri : Uri
 
         /***********************************************************************
         
-                Set the Uri port
+                Set the UriView port
 
         ***********************************************************************/
 
-        MutableUri setPort (int port)
+        Uri setPort (int port)
         {
                 this.port = port;
                 return this;
@@ -784,11 +784,11 @@ class MutableUri : Uri
 
         /***********************************************************************
         
-                Set the Uri userinfo
+                Set the UriView userinfo
 
         ***********************************************************************/
 
-        MutableUri setUserInfo(char[] userinfo)
+        Uri setUserInfo(char[] userinfo)
         {
                 this.userinfo = userinfo;
                 return this;
@@ -796,11 +796,11 @@ class MutableUri : Uri
 
         /***********************************************************************
         
-                Set the Uri query
+                Set the UriView query
 
         ***********************************************************************/
 
-        MutableUri setQuery (char[] query)
+        Uri setQuery (char[] query)
         {
                 this.query = query;
                 return this;
@@ -808,7 +808,7 @@ class MutableUri : Uri
 
         /***********************************************************************
         
-                Extend the Uri query
+                Extend the UriView query
 
         ***********************************************************************/
 
@@ -824,11 +824,11 @@ class MutableUri : Uri
 
         /***********************************************************************
         
-                Set the Uri path
+                Set the UriView path
 
         ***********************************************************************/
 
-        MutableUri setPath (char[] path)
+        Uri setPath (char[] path)
         {
                 this.path = path;
                 return this;
@@ -836,11 +836,11 @@ class MutableUri : Uri
 
         /***********************************************************************
         
-                Set the Uri fragment
+                Set the UriView fragment
 
         ***********************************************************************/
 
-        MutableUri setFragment (char[] fragment)
+        Uri setFragment (char[] fragment)
         {
                 this.fragment = fragment;
                 return this;

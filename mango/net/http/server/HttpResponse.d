@@ -45,11 +45,11 @@ private static const int HeaderBufferSize = 4 * 1024;
 
 class HttpResponse : HttpMessage
 {
-        private HttpMutableParams       params;
-        private HttpMutableCookies      cookies;
-        private HttpStatus              status;
-        private HttpWriter              writer;
-        private bool                    commited;
+        private HttpParams      params;
+        private HttpCookies     cookies;
+        private HttpStatus      status;
+        private HttpWriter      writer;
+        private bool            commited;
 
         static private InvalidStateException InvalidState;
 
@@ -79,16 +79,16 @@ class HttpResponse : HttpMessage
                 super (bridge, new Buffer(HeaderBufferSize));
 
                 // create a default output writer
-                writer = new HttpWriter (super.getBuffer());
+                writer = new HttpWriter (super.getBuffer);
         
                 // create a cached query-parameter processor. We
                 // support a maximum output parameter list of 1K bytes
-                params = new HttpMutableParams (new Buffer(ParamsBufferSize));
+                params = new HttpParams (new Buffer(ParamsBufferSize));
         
                 // create a wrapper for output cookies. This is more akin 
                 // to a specialized writer, since it just adds additional
                 // content to the output headers.
-                cookies = new HttpMutableCookies (super.getHeader());
+                cookies = new HttpCookies (super.getHeader);
         }
 
         /**********************************************************************
@@ -189,7 +189,7 @@ class HttpResponse : HttpMessage
 
         **********************************************************************/
 
-        HttpMutableParams getOutputParams()
+        HttpParams getOutputParams()
         {
                 return params;
         }
@@ -200,7 +200,7 @@ class HttpResponse : HttpMessage
 
         **********************************************************************/
 
-        HttpMutableCookies getOutputCookies()
+        HttpCookies getOutputCookies()
         {
                 return cookies;
         }
@@ -211,12 +211,12 @@ class HttpResponse : HttpMessage
 
         **********************************************************************/
 
-        HttpMutableHeaders getOutputHeaders()
+        HttpHeaders getOutputHeaders()
         {
                 // can't access headers after commiting
                 if (commited)
                     throw InvalidState;
-                return super.getHeader();
+                return super.getHeader;
         }
 
         /**********************************************************************
@@ -292,8 +292,8 @@ class HttpResponse : HttpMessage
                    // say we've send headers on this response
                    commited = true;
 
-                   char[]               header;
-                   HttpMutableHeaders   headers = getHeader();
+                   char[]       header;
+                   HttpHeaders  headers = getHeader();
 
                    // write the response header
                    writer.put (HttpHeader.Version.value)

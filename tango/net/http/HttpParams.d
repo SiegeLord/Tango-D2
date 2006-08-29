@@ -21,7 +21,7 @@ private import  tango.net.http.HttpTokens;
 /******************************************************************************
 
         Maintains a set of query parameters, parsed from an HTTP request.
-        Use HttpMutableParams instead for output parameters.
+        Use HttpParams instead for output parameters.
 
         Note that these input params may have been encoded by the user-
         agent. Unfortunately there has been little consensus on what that
@@ -31,7 +31,7 @@ private import  tango.net.http.HttpTokens;
 
 ******************************************************************************/
 
-class HttpParams : HttpTokens
+class HttpParamsView : HttpTokens
 {
         // tell compiler to used super.parse() also
         alias HttpTokens.parse parse;
@@ -55,24 +55,24 @@ class HttpParams : HttpTokens
 
         /**********************************************************************
                 
-                Clone a source set of HttpParams
+                Clone a source set of HttpParamsView
 
         **********************************************************************/
 
-        this (HttpParams source)
+        this (HttpParamsView source)
         {
                 super (source);
         }
 
         /**********************************************************************
                 
-                Clone this set of HttpParams
+                Clone this set of HttpParamsView
 
         **********************************************************************/
 
-        HttpParams clone ()
+        HttpParamsView clone ()
         {
-                return new HttpParams (this);
+                return new HttpParamsView (this);
         }
 
         /**********************************************************************
@@ -95,13 +95,13 @@ class HttpParams : HttpTokens
 
 /******************************************************************************
 
-        HttpMutableParams are used for output purposes. This can be used
+        HttpParams are used for output purposes. This can be used
         to add a set of queries and then combine then into a text string
         using method write().
 
 ******************************************************************************/
 
-class HttpMutableParams : HttpParams
+class HttpParams : HttpParamsView
 {      
         /**********************************************************************
                 
@@ -117,24 +117,24 @@ class HttpMutableParams : HttpParams
         
         /**********************************************************************
                 
-                Clone a source set of HttpMutableParams
+                Clone a source set of HttpParams
 
         **********************************************************************/
 
-        this (HttpMutableParams source)
+        this (HttpParams source)
         {
                 super (source);
         }
 
         /**********************************************************************
                 
-                Clone this set of HttpMutableParams
+                Clone this set of HttpParams
 
         **********************************************************************/
 
-        HttpMutableParams clone ()
+        HttpParams clone ()
         {
-                return new HttpMutableParams (this);
+                return new HttpParams (this);
         }
 
         /**********************************************************************

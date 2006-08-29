@@ -23,7 +23,7 @@ private import  tango.net.http.HttpTokens;
 
 ******************************************************************************/
 
-class HttpQueryParams : HttpParams
+class HttpQueryParams : HttpParamsView
 {
         /**********************************************************************
                 
@@ -43,7 +43,7 @@ class HttpQueryParams : HttpParams
 
         **********************************************************************/
 
-        this (HttpParams source)
+        this (HttpParamsView source)
         {
                 super (source);
         }

@@ -47,7 +47,7 @@ class HttpPost : HttpClient
 
         this (char[] url, uint pageChunk = 16 * 1024)
         {
-                this (new MutableUri(url), pageChunk);
+                this (new Uri(url), pageChunk);
         }
 
         /***********************************************************************
@@ -58,7 +58,7 @@ class HttpPost : HttpClient
 
         ***********************************************************************/
 
-        this (MutableUri uri, uint pageChunk = 16 * 1024)
+        this (Uri uri, uint pageChunk = 16 * 1024)
         {
                 super (HttpClient.Post, uri);
                 this.pageChunk = pageChunk;

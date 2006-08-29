@@ -123,7 +123,7 @@ struct HeaderElement
 
 ******************************************************************************/
 
-class HttpHeaders : HttpTokens
+class HttpHeadersView : HttpTokens
 {
         // tell compiler to used super.parse() also
         alias HttpTokens.parse parse;
@@ -153,20 +153,20 @@ class HttpHeaders : HttpTokens
 
         **********************************************************************/
 
-        this (HttpHeaders source)
+        this (HttpHeadersView source)
         {
                 super (source);
         }
 
         /**********************************************************************
                 
-                Clone this set of HttpHeaders
+                Clone this set of HttpHeadersView
 
         **********************************************************************/
 
-        HttpHeaders clone ()
+        HttpHeadersView clone ()
         {
-                return new HttpHeaders (this);
+                return new HttpHeadersView (this);
         }
 
         /**********************************************************************
@@ -273,7 +273,7 @@ class HttpHeaders : HttpTokens
 
                 **************************************************************/
 
-                this (HttpHeaders headers, HttpHeaderName header)
+                this (HttpHeadersView headers, HttpHeaderName header)
                 {
                         super (headers, header.value);
                 }
@@ -315,7 +315,7 @@ class HttpHeaders : HttpTokens
 
 ******************************************************************************/
 
-class HttpMutableHeaders : HttpHeaders
+class HttpHeaders : HttpHeadersView
 {
         /**********************************************************************
                 
@@ -332,24 +332,24 @@ class HttpMutableHeaders : HttpHeaders
 
         /**********************************************************************
                 
-                Clone a source set of HttpMutableHeaders
+                Clone a source set of HttpHeaders
 
         **********************************************************************/
 
-        this (HttpMutableHeaders source)
+        this (HttpHeaders source)
         {
                 super (source);
         }
 
         /**********************************************************************
                 
-                Clone this set of HttpMutableHeaders
+                Clone this set of HttpHeaders
 
         **********************************************************************/
 
-        HttpMutableHeaders clone ()
+        HttpHeaders clone ()
         {
-                return new HttpMutableHeaders (this);
+                return new HttpHeaders (this);
         }
 
         /**********************************************************************

@@ -87,17 +87,17 @@ class HttpClient
         }    
                         
         // class members; there's a surprising amount of stuff here!
-        private MutableUri              uri;
+        private Uri                     uri;
         private IBuffer                 tmp,
                                         input,
                                         output;
         private SocketConduit           socket;
         private RequestMethod           method;
         private InternetAddress         address;
-        private HttpMutableParams       paramsOut;
-        private HttpHeaders             headersIn;
-        private HttpMutableHeaders      headersOut;
-        private HttpMutableCookies      cookiesOut;
+        private HttpParams              paramsOut;
+        private HttpHeadersView         headersIn;
+        private HttpHeaders             headersOut;
+        private HttpCookies             cookiesOut;
         private ResponseLine            responseLine;
 
         // should we perform internal redirection?
@@ -129,7 +129,7 @@ class HttpClient
 
         this (RequestMethod method, char[] url)
         {
-                this (method, new MutableUri(url));
+                this (method, new Uri(url));
         }
 
         /***********************************************************************
@@ -140,23 +140,23 @@ class HttpClient
 
         ***********************************************************************/
 
-        this (RequestMethod method, MutableUri uri)
+        this (RequestMethod method, Uri uri)
         {
                 this.uri = uri;
                 this.method = method;
 
                 responseLine = new ResponseLine ();
-                headersIn    = new HttpHeaders  ();
+                headersIn    = new HttpHeadersView ();
 
                 tmp          = new Buffer (1024 * 1);
-                paramsOut    = new HttpMutableParams  (new Buffer (1024 * 1));
-                headersOut   = new HttpMutableHeaders (new Buffer (1024 * 4));
-                cookiesOut   = new HttpMutableCookies (headersOut);
+                paramsOut    = new HttpParams  (new Buffer (1024 * 1));
+                headersOut   = new HttpHeaders (new Buffer (1024 * 4));
+                cookiesOut   = new HttpCookies (headersOut);
 
                 // decode the host name (may take a second or two)
                 auto host = uri.getHost ();
                 if (host)
-                    address = new InternetAddress (host, uri.getValidPort());
+                    address = new InternetAddress (host, uri.getValidPort);
                 else
                    responseLine.error ("invalid url provided to HttpClient ctor");
         }
@@ -167,7 +167,7 @@ class HttpClient
 
         ***********************************************************************/
 
-        HttpHeaders getResponseHeaders()
+        HttpHeadersView getResponseHeaders()
         {
                 return headersIn;
         }
@@ -179,7 +179,7 @@ class HttpClient
 
         ***********************************************************************/
 
-        HttpMutableHeaders getRequestHeaders()
+        HttpHeaders getRequestHeaders()
         {
                 return headersOut;
         }
@@ -193,7 +193,7 @@ class HttpClient
 
         ***********************************************************************/
 
-        HttpMutableParams getRequestParams()
+        HttpParams getRequestParams()
         {
                 return paramsOut;
         }
@@ -204,7 +204,7 @@ class HttpClient
 
         ***********************************************************************/
 
-        Uri getUri()
+        UriView getUri()
         {
                 return uri;
         }

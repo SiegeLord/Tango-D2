@@ -106,7 +106,7 @@ version (Posix)
 
 class FileProxy
 {
-        private FilePath path;
+        private FilePathView path;
 
         /***********************************************************************
         
@@ -114,7 +114,7 @@ class FileProxy
 
         ***********************************************************************/
                                   
-        this (FilePath path)
+        this (FilePathView path)
         {
                 this.path = path;
         }
@@ -127,7 +127,7 @@ class FileProxy
 
         this (char[] path)
         {
-                this (new FilePath (path));
+                this (new FilePathView (path));
         }
 
         /***********************************************************************
@@ -136,7 +136,7 @@ class FileProxy
 
         ***********************************************************************/
 
-        FilePath getPath ()
+        FilePathView getPath ()
         {
                 return path;
         }               
@@ -174,16 +174,16 @@ class FileProxy
                 ---
                 FileProxy proxy = new FileProxy (".");
 
-                foreach (FilePath path; proxy.toList())
-                         Stdout.put(path).cr();
+                foreach (path; proxy.toList)
+                         Stdout (path).cr;
                 ---
 
         ***********************************************************************/
 
-        FilePath[] toList ()
+        FilePathView[] toList ()
         {
 
-                return toList (delegate bool(FilePath fp) {return true;});
+                return toList (delegate bool(FilePathView fp) {return true;});
         }              
 
         /***********************************************************************
@@ -373,7 +373,7 @@ class FileProxy
 
                 ***************************************************************/
 
-                FileProxy rename (FilePath dst)
+                FileProxy rename (FilePathView dst)
                 {
                         const int Typical = REPLACE_EXISTING + COPY_ALLOWED + 
                                                                WRITE_THROUGH;
@@ -448,13 +448,13 @@ class FileProxy
 
                 ***************************************************************/
 
-                FilePath[] toList (bool delegate(FilePath fp) filter)
+                FilePathView[] toList (bool delegate(FilePathView fp) filter)
                 {
                         int                     i;
                         wchar[]                 c;
                         HANDLE                  h;
-                        FilePath                fp;
-                        FilePath[]              list;
+                        FilePathView            fp;
+                        FilePathView[]          list;
                         FIND_DATA               fileinfo;
 
                         int next()
@@ -465,7 +465,7 @@ class FileProxy
                                          return FindNextFileW (h, &fileinfo);
                         }
                         
-                        list = new FilePath[50];
+                        list = new FilePathView[50];
 
                         version (Win32SansUnicode)
                                 h = FindFirstFileA (path.toUtf8 ~ "\\*\0", &fileinfo);
@@ -479,12 +479,12 @@ class FileProxy
                                    version (Win32SansUnicode)
                                            {
                                            int len = strlen (fileinfo.cFileName);
-                                           fp = new FilePath (fileinfo.cFileName [0 .. len]);
+                                           fp = new FilePathView (fileinfo.cFileName [0 .. len]);
                                            }
                                         else
                                            {
                                            int len = wcslen (fileinfo.cFileName);
-                                           fp = new FilePath (Unicode.toUtf8(fileinfo.cFileName [0 .. len]), false);                                           
+                                           fp = new FilePathView (Unicode.toUtf8(fileinfo.cFileName [0 .. len]), false);                                           
                                            }
 
                                    if (i >= list.length)
@@ -665,7 +665,7 @@ class FileProxy
 
                 ***************************************************************/
 
-                FileProxy rename (FilePath dst)
+                FileProxy rename (FilePathView dst)
                 {
                         if (tango.stdc.stdio.rename (path.toUtf8, dst.toUtf8) == -1)
                             exception ();
@@ -715,24 +715,24 @@ class FileProxy
 
                 ***************************************************************/
 
-                FilePath[] toList (bool delegate(FilePath fp) filter)
+                FilePathView[] toList (bool delegate(FilePathView fp) filter)
                 {
                         int             i;
                         DIR*            dir;
                         dirent*         entry;
-                        FilePath[]      list;
+                        FilePathView[]  list;
 
                         dir = opendir (path.toUtf8);
                         if (! dir) 
                               exception();
 
-                        list = new FilePath [50];
+                        list = new FilePathView [50];
                         while ((entry = readdir(dir)) != null)
                               {
                               int len = strlen (entry.d_name.ptr);
 
                               // make a copy of the file name for listing
-                              FilePath fp = new FilePath (entry.d_name[0 ..len]);
+                              auto fp = new FilePathView (entry.d_name[0 ..len]);
 
                               if (i >= list.length)
                                   list.length = list.length * 2;

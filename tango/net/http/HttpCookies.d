@@ -312,12 +312,12 @@ class CookieStack
 
 *******************************************************************************/
 
-class HttpCookies : IWritable
+class HttpCookiesView : IWritable
 {
         private bool                    parsed;
         private CookieStack             stack;
         private CookieParser            parser;
-        private HttpHeaders             headers;
+        private HttpHeadersView         headers;
 
         /**********************************************************************
 
@@ -325,7 +325,7 @@ class HttpCookies : IWritable
 
         **********************************************************************/
 
-        this (HttpHeaders headers)
+        this (HttpHeadersView headers)
         {
                 this.headers = headers;
 
@@ -390,10 +390,10 @@ class HttpCookies : IWritable
 
 *******************************************************************************/
 
-class HttpMutableCookies
+class HttpCookies
 {
-        private HttpWriter              writer;
-        private HttpMutableHeaders      headers;
+        private HttpWriter      writer;
+        private HttpHeaders     headers;
 
         /**********************************************************************
 
@@ -403,7 +403,7 @@ class HttpMutableCookies
 
         **********************************************************************/
 
-        this (HttpMutableHeaders headers)
+        this (HttpHeaders headers)
         {
                 this.headers = headers;
                 writer = new HttpWriter (headers.getOutputBuffer);

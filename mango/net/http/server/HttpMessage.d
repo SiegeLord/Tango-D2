@@ -60,12 +60,12 @@ class InvalidStateException : IOException
 
 class HttpMessage : IWritable
 {
-        private Buffer                  buffer;
-        private ServiceBridge           bridge;
-        private HttpMutableHeaders      headers;
+        private Buffer          buffer;
+        private ServiceBridge   bridge;
+        private HttpHeaders     headers;
 
-        private char[]                  encoding,
-                                        mimeType;
+        private char[]          encoding,
+                                mimeType;
 
         /**********************************************************************
 
@@ -87,7 +87,7 @@ class HttpMessage : IWritable
                     headerSpace = buffer;
 
                 // create instance of bidi headers 
-                headers = new HttpMutableHeaders (headerSpace);
+                headers = new HttpHeaders (headerSpace);
         }
 
         /**********************************************************************
@@ -149,7 +149,7 @@ class HttpMessage : IWritable
 
         **********************************************************************/
 
-        protected final HttpMutableHeaders getHeader()
+        protected final HttpHeaders getHeader()
         {
                 return headers;
         }
