@@ -506,8 +506,8 @@ unittest
  */
 int isZero(real x)
 {
-    ushort* pe = cast(ushort *)&e;
-    ulong*  ps = cast(ulong *)&e;
+    ushort* pe = cast(ushort *)&x;
+    ulong*  ps = cast(ulong *)&x;
     return (pe[4]&0x7FFF) == 0 && *ps == 0;
 }
 
@@ -601,7 +601,7 @@ unittest {
     assert( nextUp(-real.min) == -real.min*(1-real.epsilon) );
     assert( nextUp(-real.min*(1-real.epsilon) == -real.min*(1-2*real.epsilon)) );
     real z  = nextUp(-real.min*(1-real.epsilon) );
-    assert( isIdentical(-0.0L, nextUp(-real.min*real.epsilon) );
+    assert( isIdentical(-0.0L, nextUp(-real.min*real.epsilon)) );
     assert( nextUp(-0.0) == real.min*real.epsilon );
     assert( nextUp(0.0) == real.min*real.epsilon );
     assert( nextUp(real.min*(1-real.epsilon)) == real.min );
@@ -658,7 +658,7 @@ unittest {
 real nextafter(real x, real y)
 {
     if (x==y) return y;
-    return (y>x) ? nextup(x) : nextdown(x);
+    return (y>x) ? nextUp(x) : nextDown(x);
 
     // BUG: Not implemented in DMD
 //    return tango.stdc.math.nextafterl(x, y);
