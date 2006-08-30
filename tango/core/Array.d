@@ -43,6 +43,15 @@ private
     }
 
 
+    struct IsGreater( T )
+    {
+        bool opCall( T p1, T p2 )
+        {
+            return p1 > p2;
+        }
+    }
+
+
     template ElemTypeOf( T )
     {
         alias typeof(T[0]) ElemTypeOf;
@@ -1550,6 +1559,128 @@ else
         assert(  bsearch( "bcefg", 'f' ) );
         assert(  bsearch( "bcefg", 'g' ) );
         assert( !bsearch( "bcefg", 'h' ) );
+      }
+    }
+}
+
+
+////////////////////////////////////////////////////////////////////////////////
+// Make Heap
+////////////////////////////////////////////////////////////////////////////////
+
+
+version( DDoc )
+{
+    /**
+     * Converts the supplied range to a heap using the supplied predicate or
+     * '>' if none is supplied.  This has the effect of sorting the range on
+     * the supplied predicate, and a less-than predicate may be supplied to
+     * perform a traditional sort using the heap sort algorithm.
+     *
+     * Params:
+     *  buf  = The array to sort.  This parameter is not marked 'inout' to
+     *         allow temporary slices to be sorted.  As buf is not resized
+     *         in any way, omitting the 'inout' qualifier has no effect on
+     *         the result of this operation, even though it may be viewed
+     *         as a side-effect.
+     *  pred = The evaluation predicate, which should return true if e1 is
+     *         greater than e2 and false if not.  This predicate may be any
+     *         callable type.
+     */
+    void makeHeap( Elem[] buf, Pred2E pred = Pred2E.init );
+}
+else
+{
+    template makeHeap_( Elem, Pred = IsGreater!(Elem) )
+    {
+        static assert( isCallableType!(Pred ) );
+
+
+        void fn( Elem[] buf, Pred pred = Pred.init )
+        {
+            // NOTE: Indexes are passed instead of references because DMD does
+            //       not inline the reference-based version.
+            void exch( size_t p1, size_t p2 )
+            {
+                Elem t  = buf[p1];
+                buf[p1] = buf[p2];
+                buf[p2] = t;
+            }
+
+            void fixDown( size_t pos, size_t len )
+            {
+                while( pos <= len / 2 )
+                {
+                    size_t nxt = pos * 2;
+
+                    if( nxt < len && pred( buf[nxt], buf[nxt + 1] ) )
+                        ++nxt;
+                    if( !pred( buf[pos], buf[nxt] ) )
+                        break;
+                    exch( pos, nxt );
+                    pos = nxt;
+                }
+            }
+
+            if( buf.length < 2 )
+                return;
+
+            size_t  len = buf.length - 1,
+                    pos = len / 2 + 1;
+
+            do
+            {
+                fixDown( --pos, len );
+            } while( pos > 0 );
+
+            while( len > 0 )
+            {
+                exch( 0, len );
+                fixDown( 0, --len );
+            }
+
+        }
+    }
+
+
+    template makeHeap( Buf )
+    {
+        void makeHeap( Buf buf )
+        {
+            return makeHeap_!(ElemTypeOf!(Buf)).fn( buf );
+        }
+    }
+
+
+    template makeHeap( Buf, Pred )
+    {
+        void makeHeap( Buf buf, Pred pred )
+        {
+            return makeHeap_!(ElemTypeOf!(Buf), Pred).fn( buf, pred );
+        }
+    }
+
+
+    debug( UnitTest )
+    {
+      unittest
+      {
+        void test( char[] buf )
+        {
+            makeHeap( buf );
+            char s = buf[0];
+            foreach( i, v; buf )
+            {
+                assert( v <= s );
+                s = v;
+            }
+        }
+
+        test( "mkcvalsidivjoaisjdvmzlksvdjioawmdsvmsdfefewv" );
+        test( "asdfasdfasdfasdfasdfasdfasdfasdfasdfasdfasdf" );
+        test( "the quick brown fox jumped over the lazy dog" );
+        test( "abcdefghijklmnopqrstuvwxyz" );
+        test( "zyxwvutsrqponmlkjihgfedcba" );
       }
     }
 }
