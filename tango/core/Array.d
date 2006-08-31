@@ -43,15 +43,6 @@ private
     }
 
 
-    struct IsGreater( T )
-    {
-        bool opCall( T p1, T p2 )
-        {
-            return p1 > p2;
-        }
-    }
-
-
     template ElemTypeOf( T )
     {
         alias typeof(T[0]) ElemTypeOf;
@@ -67,10 +58,10 @@ private
 version( DDoc )
 {
     /**
-     * Performs a linear search of buf from $(LB)0 .. buf.length$(RP),
-     * returning the index of the first element matching pat, or buf.length
-     * if no match was found.  Comparisons will be performed using the
-     * supplied predicate or '==' if none is supplied.
+     * Performs a linear scan of buf from $(LB)0 .. buf.length$(RP), returning
+     * the index of the first element matching pat, or buf.length if no match
+     * was found.  Comparisons will be performed using the supplied predicate
+     * or '==' if none is supplied.
      *
      * Params:
      *  buf  = The array to search.
@@ -86,10 +77,10 @@ version( DDoc )
 
 
     /**
-     * Performs a linear search of buf from $(LB)0 .. buf.length$(RP),
-     * returning the index of the first element matching pat, or buf.length
-     * if no match was found.  Comparisons will be performed using the
-     * supplied predicate or '==' if none is supplied.
+     * Performs a linear scan of buf from $(LB)0 .. buf.length$(RP), returning
+     * the index of the first element matching pat, or buf.length if no match
+     * was found.  Comparisons will be performed using the supplied predicate
+     * or '==' if none is supplied.
      *
      * Params:
      *  buf  = The array to search.
@@ -217,10 +208,10 @@ else
 version( DDoc )
 {
     /**
-     * Performs a linear search of buf from $(LP)buf.length .. 0$(RB),
-     * returning the index of the first element matching pat, or buf.length
-     * if no match was found.  Comparisons will be performed using the
-     * supplied predicate or '==' if none is supplied.
+     * Performs a linear scan of buf from $(LP)buf.length .. 0$(RB), returning
+     * the index of the first element matching pat, or buf.length if no match
+     * was found.  Comparisons will be performed using the supplied predicate
+     * or '==' if none is supplied.
      *
      * Params:
      *  buf  = The array to search.
@@ -236,10 +227,10 @@ version( DDoc )
 
 
     /**
-     * Performs a linear search of buf from $(LP)buf.length .. 0$(RB),
-     * returning the index of the first element matching pat, or buf.length
-     * if no match was found.  Comparisons will be performed using the
-     * supplied predicate or '==' if none is supplied.
+     * Performs a linear scan of buf from $(LP)buf.length .. 0$(RB), returning
+     * the index of the first element matching pat, or buf.length if no match
+     * was found.  Comparisons will be performed using the supplied predicate
+     * or '==' if none is supplied.
      *
      * Params:
      *  buf  = The array to search.
@@ -371,10 +362,10 @@ else
 version( DDoc )
 {
     /**
-     * Performs a linear search of buf from $(LB)0 .. buf.length$(RP),
-     * returning the index of the first element matching pat, or buf.length
-     * if no match was found.  Comparisons will be performed using the
-     * supplied predicate or '==' if none is supplied.
+     * Performs a linear scan of buf from $(LB)0 .. buf.length$(RP), returning
+     * the index of the first element matching pat, or buf.length if no match
+     * was found.  Comparisons will be performed using the supplied predicate
+     * or '==' if none is supplied.
      *
      * This function uses the KMP algorithm and offers O(M+N) performance but
      * must allocate a temporary buffer of size pat.sizeof to do so.  As the
@@ -399,10 +390,10 @@ version( DDoc )
 
 
     /**
-     * Performs a linear search of buf from $(LB)0 .. buf.length$(RP),
-     * returning the index of the first element matching pat, or buf.length
-     * if no match was found.  Comparisons will be performed using the
-     * supplied predicate or '==' if none is supplied.
+     * Performs a linear scan of buf from $(LB)0 .. buf.length$(RP), returning
+     * the index of the first element matching pat, or buf.length if no match
+     * was found.  Comparisons will be performed using the supplied predicate
+     * or '==' if none is supplied.
      *
      * This function uses the KMP algorithm and offers O(M+N) performance but
      * must allocate a temporary buffer of size pat.sizeof to do so.  As the
@@ -555,10 +546,10 @@ else
 version( DDoc )
 {
     /**
-     * Performs a linear search of buf from $(LP)buf.length .. 0$(RB),
-     * returning the index of the first element matching pat, or buf.length
-     * if no match was found.  Comparisons will be performed using the
-     * supplied predicate or '==' if none is supplied.
+     * Performs a linear scan of buf from $(LP)buf.length .. 0$(RB), returning
+     * the index of the first element matching pat, or buf.length if no match
+     * was found.  Comparisons will be performed using the supplied predicate
+     * or '==' if none is supplied.
      *
      * This function uses the KMP algorithm and offers O(M+N) performance but
      * must allocate a temporary buffer of size pat.sizeof to do so.  As the
@@ -583,10 +574,10 @@ version( DDoc )
 
 
     /**
-     * Performs a linear search of buf from $(LP)buf.length .. 0$(RB),
-     * returning the index of the first element matching pat, or buf.length
-     * if no match was found.  Comparisons will be performed using the
-     * supplied predicate or '==' if none is supplied.
+     * Performs a linear scan of buf from $(LP)buf.length .. 0$(RB), returning
+     * the index of the first element matching pat, or buf.length if no match
+     * was found.  Comparisons will be performed using the supplied predicate
+     * or '==' if none is supplied.
      *
      * This function uses the KMP algorithm and offers O(M+N) performance but
      * must allocate a temporary buffer of size pat.sizeof to do so.  As the
@@ -747,8 +738,8 @@ else
 version( DDoc )
 {
     /**
-     * Performs a linear search of buf from $(LB)0 .. buf.length$(RP),
-     * returning the index of the first element where pred returns true.
+     * Performs a linear scan of buf from $(LB)0 .. buf.length$(RP), returning
+     * the index of the first element where pred returns true.
      *
      * Params:
      *  buf  = The array to search.
@@ -812,8 +803,8 @@ else
 version( DDoc )
 {
     /**
-     * Performs a linear search of buf from $(LP)buf.length .. 0$(RB),
-     * returning the index of the first element where pred returns true.
+     * Performs a linear scan of buf from $(LP)buf.length .. 0$(RB), returning
+     * the index of the first element where pred returns true.
      *
      * Params:
      *  buf  = The array to search.
@@ -882,10 +873,10 @@ else
 version( DDoc )
 {
     /**
-     * Performs a linear search of buf from $(LB)0 .. buf.length$(RP),
-     * returning the index of the first element that compares equal to the
-     * element immediately following it.  Comparisons will be performed using
-     * the supplied predicate or '==' if none is supplied.
+     * Performs a linear scan of buf from $(LB)0 .. buf.length$(RP), returning
+     * the index of the first element that compares equal to the next element
+     * in the sequence.  Comparisons will be performed using the supplied
+     * predicate or '==' if none is supplied.
      *
      * Params:
      *  buf  = The array to scan.
@@ -1041,10 +1032,10 @@ else
 version( DDoc )
 {
     /**
-     * Partitions the array with num - 1 as a pivot such that the first num
-     * elements will be less than or equal to the remaining elements in the
-     * array.  Comparisons will be performed using the supplied predicate or
-     * '<' if none is supplied.  The algorithm is not required to be stable.
+     * Partitions buf with num - 1 as a pivot such that the first num elements
+     * will be less than or equal to the remaining elements in the array.
+     * Comparisons will be performed using the supplied predicate or '<' if
+     * none is supplied.  The algorithm is not required to be stable.
      *
      * Params:
      *  buf  = The array to partition.  This parameter is not marked 'inout'
@@ -1072,9 +1063,6 @@ else
         static assert( isCallableType!(Pred ) );
 
 
-        // NOTE: buf is not 'inout' so subranges can be partitioned.  This
-        //       should work for D arrays, since the Array type contains a
-        //       pointer to the referenced data.
         void fn( Elem[] buf, size_t num, Pred pred = Pred.init )
         {
             bool equiv( Elem p1, Elem p2 )
@@ -1146,7 +1134,7 @@ else
     {
       unittest
       {
-        char[] buf = "efedcaabca";
+        char[] buf = "efedcaabca".dup;
         size_t num = buf.length / 2;
 
         select( buf, num );
@@ -1167,11 +1155,11 @@ else
 version( DDoc )
 {
     /**
-     * Sorts a range using the supplied predicate or '<' if none is supplied.
-     * The algorithm is not required to be stable.  The current implementation
-     * is based on quicksort, but uses a three-way partitioning scheme to
-     * improve performance for ranges containing duplicate values (Bentley and
-     * McIlroy, 1993).
+     * Sorts buf using the supplied predicate or '<' if none is supplied.  The
+     * algorithm is not required to be stable.  The current implementation is
+     * based on quicksort, but uses a three-way partitioning scheme to improve
+     * performance for ranges containing duplicate values (Bentley and McIlroy,
+     * 1993).
      *
      * Params:
      *  buf  = The array to sort.  This parameter is not marked 'inout' to
@@ -1192,9 +1180,6 @@ else
         static assert( isCallableType!(Pred ) );
 
 
-        // NOTE: buf is not 'inout' so subranges can be sorted.  This should
-        //       work for D arrays, since the Array type contains a pointer
-        //       to the referenced data.
         void fn( Elem[] buf, Pred pred = Pred.init )
         {
             bool equiv( Elem p1, Elem p2 )
@@ -1313,11 +1298,11 @@ else
             }
         }
 
-        test( "mkcvalsidivjoaisjdvmzlksvdjioawmdsvmsdfefewv" );
-        test( "asdfasdfasdfasdfasdfasdfasdfasdfasdfasdfasdf" );
-        test( "the quick brown fox jumped over the lazy dog" );
-        test( "abcdefghijklmnopqrstuvwxyz" );
-        test( "zyxwvutsrqponmlkjihgfedcba" );
+        test( "mkcvalsidivjoaisjdvmzlksvdjioawmdsvmsdfefewv".dup );
+        test( "asdfasdfasdfasdfasdfasdfasdfasdfasdfasdfasdf".dup );
+        test( "the quick brown fox jumped over the lazy dog".dup );
+        test( "abcdefghijklmnopqrstuvwxyz".dup );
+        test( "zyxwvutsrqponmlkjihgfedcba".dup );
       }
     }
 }
@@ -1572,26 +1557,24 @@ else
 version( DDoc )
 {
     /**
-     * Converts the supplied range to a heap using the supplied predicate or
-     * '>' if none is supplied.  This has the effect of sorting the range on
-     * the supplied predicate, and a less-than predicate may be supplied to
-     * perform a traditional sort using the heap sort algorithm.
+     * Converts buf to a heap using the supplied predicate or '<' if none is
+     * supplied.
      *
      * Params:
-     *  buf  = The array to sort.  This parameter is not marked 'inout' to
-     *         allow temporary slices to be sorted.  As buf is not resized
-     *         in any way, omitting the 'inout' qualifier has no effect on
-     *         the result of this operation, even though it may be viewed
-     *         as a side-effect.
+     *  buf  = The array to convert.  This parameter is not marked 'inout' to
+     *         allow temporary slices to be sorted.  As buf is not resized in
+     *         any way, omitting the 'inout' qualifier has no effect on the
+     *         result of this operation, even though it may be viewed as a
+     *         side-effect.
      *  pred = The evaluation predicate, which should return true if e1 is
-     *         greater than e2 and false if not.  This predicate may be any
+     *         less than e2 and false if not.  This predicate may be any
      *         callable type.
      */
     void makeHeap( Elem[] buf, Pred2E pred = Pred2E.init );
 }
 else
 {
-    template makeHeap_( Elem, Pred = IsGreater!(Elem) )
+    template makeHeap_( Elem, Pred = IsLess!(Elem) )
     {
         static assert( isCallableType!(Pred ) );
 
@@ -1607,15 +1590,17 @@ else
                 buf[p2] = t;
             }
 
-            void fixDown( size_t pos, size_t len )
+            void fixDown( size_t pos, size_t end )
             {
-                while( pos <= len / 2 )
+                if( end <= pos )
+                    return;
+                while( pos <= ( end - 1 ) / 2 )
                 {
-                    size_t nxt = pos * 2;
+                    size_t nxt = 2 * pos + 1;
 
-                    if( nxt < len && pred( buf[nxt], buf[nxt + 1] ) )
+                    if( nxt < end && pred( buf[nxt + 1], buf[nxt] ) )
                         ++nxt;
-                    if( !pred( buf[pos], buf[nxt] ) )
+                    if( pred( buf[pos], buf[nxt] ) )
                         break;
                     exch( pos, nxt );
                     pos = nxt;
@@ -1625,20 +1610,13 @@ else
             if( buf.length < 2 )
                 return;
 
-            size_t  len = buf.length - 1,
-                    pos = len / 2 + 1;
+            size_t  end = buf.length - 1,
+                    pos = end / 2 + 2;
 
             do
             {
-                fixDown( --pos, len );
+                fixDown( --pos, end );
             } while( pos > 0 );
-
-            while( len > 0 )
-            {
-                exch( 0, len );
-                fixDown( 0, --len );
-            }
-
         }
     }
 
@@ -1665,22 +1643,281 @@ else
     {
       unittest
       {
-        void test( char[] buf )
+        void basic( char[] buf )
         {
-            makeHeap( buf );
-            char s = buf[0];
-            foreach( i, v; buf )
+            if( buf.length < 2 )
+                return;
+
+            size_t  pos = 0,
+                    end = buf.length - 1;
+
+            while( pos <= ( end - 1 ) / 2 )
             {
-                assert( v <= s );
-                s = v;
+                assert( buf[pos] <= buf[2 * pos + 1] );
+                if( 2 * pos + 1 < end )
+                {
+                    assert( buf[pos] <= buf[2 * pos + 2] );
+                }
+                ++pos;
             }
         }
 
-        test( "mkcvalsidivjoaisjdvmzlksvdjioawmdsvmsdfefewv" );
-        test( "asdfasdfasdfasdfasdfasdfasdfasdfasdfasdfasdf" );
-        test( "the quick brown fox jumped over the lazy dog" );
-        test( "abcdefghijklmnopqrstuvwxyz" );
-        test( "zyxwvutsrqponmlkjihgfedcba" );
+        void test( char[] buf )
+        {
+            makeHeap( buf );
+            basic( buf );
+        }
+
+        test( "mkcvalsidivjoaisjdvmzlksvdjioawmdsvmsdfefewv".dup );
+        test( "asdfasdfasdfasdfasdfasdfasdfasdfasdfasdfasdf".dup );
+        test( "the quick brown fox jumped over the lazy dog".dup );
+        test( "abcdefghijklmnopqrstuvwxyz".dup );
+        test( "zyxwvutsrqponmlkjihgfedcba".dup );
+        test( "ba".dup );
+        test( "a".dup );
+        test( "".dup );
+      }
+    }
+}
+
+
+////////////////////////////////////////////////////////////////////////////////
+// Push Heap
+////////////////////////////////////////////////////////////////////////////////
+
+
+version( DDoc )
+{
+    /**
+     * Adds val to buf by appending it and adjusting it up the heap.
+     *
+     * Params:
+     *  buf  = The heap to modify.  This parameter is marked 'inout' because
+     *         buf.length will be altered.
+     *  val  = The element to push onto buf.
+     *  pred = The evaluation predicate, which should return true if e1 is
+     *         less than e2 and false if not.  This predicate may be any
+     *         callable type.
+     */
+    void pushHeap( Elem[] buf, Elem val, Pred2E pred = Pred2E.init );
+}
+else
+{
+    template pushHeap_( Elem, Pred = IsLess!(Elem) )
+    {
+        static assert( isCallableType!(Pred ) );
+
+
+        void fn( inout Elem[] buf, Elem val, Pred pred = Pred.init )
+        {
+            // NOTE: Indexes are passed instead of references because DMD does
+            //       not inline the reference-based version.
+            void exch( size_t p1, size_t p2 )
+            {
+                Elem t  = buf[p1];
+                buf[p1] = buf[p2];
+                buf[p2] = t;
+            }
+
+            void fixUp( size_t pos )
+            {
+                if( pos < 1 )
+                    return;
+                size_t par = ( pos - 1 ) / 2;
+                while( pos > 0 && pred( buf[pos], buf[par] ) )
+                {
+                    exch( pos, par );
+                    pos = par;
+                    par = ( pos - 1 ) / 2;
+                }
+            }
+
+            buf ~= val;
+            if( buf.length > 1 )
+            {
+                fixUp( buf.length - 1 );
+            }
+        }
+    }
+
+
+    template pushHeap( Buf, Val )
+    {
+        void pushHeap( inout Buf buf, Val val )
+        {
+            return pushHeap_!(ElemTypeOf!(Buf)).fn( buf, val );
+        }
+    }
+
+
+    template pushHeap( Buf, Val, Pred )
+    {
+        void pushHeap( inout Buf buf, Val val, Pred pred )
+        {
+            return pushHeap_!(ElemTypeOf!(Buf), Pred).fn( buf, val, pred );
+        }
+    }
+
+
+    debug( UnitTest )
+    {
+      unittest
+      {
+        void basic( char[] buf )
+        {
+            if( buf.length < 2 )
+                return;
+
+            size_t  pos = 0,
+                    end = buf.length - 1;
+
+            while( pos <= ( end - 1 ) / 2 )
+            {
+                assert( buf[pos] <= buf[2 * pos + 1] );
+                if( 2 * pos + 1 < end )
+                {
+                    assert( buf[pos] <= buf[2 * pos + 2] );
+                }
+                ++pos;
+            }
+        }
+
+        char[] buf;
+
+        foreach( chr; "abcdefghijklmnopqrstuvwxyz" )
+        {
+            pushHeap( buf, chr );
+            basic( buf );
+        }
+
+        buf.length = 0;
+
+        foreach( chr; "zyxwvutsrqponmlkjihgfedcba" )
+        {
+            pushHeap( buf, chr );
+            basic( buf );
+        }
+      }
+    }
+}
+
+
+////////////////////////////////////////////////////////////////////////////////
+// Pop Heap
+////////////////////////////////////////////////////////////////////////////////
+
+
+version( DDoc )
+{
+    /**
+     * Removes the top element from buf by swapping it with the bottom element,
+     * adjusting it down the heap, and reducing the length of buf by one.
+     *
+     * Params:
+     *  buf  = The heap to modify.  This parameter is marked 'inout' because
+     *         buf.length will be altered.
+     *  pred = The evaluation predicate, which should return true if e1 is
+     *         less than e2 and false if not.  This predicate may be any
+     *         callable type.
+     */
+    void popHeap( Elem[] buf, Pred2E pred = Pred2E.init );
+}
+else
+{
+    template popHeap_( Elem, Pred = IsLess!(Elem) )
+    {
+        static assert( isCallableType!(Pred ) );
+
+
+        void fn( inout Elem[] buf, Pred pred = Pred.init )
+        {
+            // NOTE: Indexes are passed instead of references because DMD does
+            //       not inline the reference-based version.
+            void exch( size_t p1, size_t p2 )
+            {
+                Elem t  = buf[p1];
+                buf[p1] = buf[p2];
+                buf[p2] = t;
+            }
+
+            void fixDown( size_t pos, size_t end )
+            {
+                if( end <= pos )
+                    return;
+                while( pos <= ( end - 1 ) / 2 )
+                {
+                    size_t nxt = 2 * pos + 1;
+
+                    if( nxt < end && pred( buf[nxt + 1], buf[nxt] ) )
+                        ++nxt;
+                    if( pred( buf[pos], buf[nxt] ) )
+                        break;
+                    exch( pos, nxt );
+                    pos = nxt;
+                }
+            }
+
+            if( buf.length > 1 )
+            {
+                exch( 0, buf.length - 1 );
+                fixDown( 0, buf.length - 2 );
+            }
+            if( buf.length > 0 )
+            {
+                buf.length = buf.length - 1;
+            }
+        }
+    }
+
+
+    template popHeap( Buf )
+    {
+        void popHeap( inout Buf buf )
+        {
+            return popHeap_!(ElemTypeOf!(Buf)).fn( buf );
+        }
+    }
+
+
+    template popHeap( Buf, Pred )
+    {
+        void popHeap( inout Buf buf, Pred pred )
+        {
+            return popHeap_!(ElemTypeOf!(Buf), Pred).fn( buf, pred );
+        }
+    }
+
+
+    debug( UnitTest )
+    {
+      unittest
+      {
+        void test( char[] buf )
+        {
+            if( buf.length < 2 )
+                return;
+
+            size_t  pos = 0,
+                    end = buf.length - 1;
+
+            while( pos <= ( end - 1 ) / 2 )
+            {
+                assert( buf[pos] <= buf[2 * pos + 1] );
+                if( 2 * pos + 1 < end )
+                {
+                    assert( buf[pos] <= buf[2 * pos + 2] );
+                }
+                ++pos;
+            }
+        }
+
+        char[] buf = "abcdefghijklmnopqrstuvwxyz".dup;
+
+        while( buf.length > 0 )
+        {
+            popHeap( buf );
+            test( buf );
+        }
       }
     }
 }
