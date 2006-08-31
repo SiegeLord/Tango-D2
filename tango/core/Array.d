@@ -1598,9 +1598,9 @@ else
                 {
                     size_t nxt = 2 * pos + 1;
 
-                    if( nxt < end && pred( buf[nxt + 1], buf[nxt] ) )
+                    if( nxt < end && pred( buf[nxt], buf[nxt + 1] ) )
                         ++nxt;
-                    if( pred( buf[pos], buf[nxt] ) )
+                    if( !pred( buf[pos], buf[nxt] ) )
                         break;
                     exch( pos, nxt );
                     pos = nxt;
@@ -1653,10 +1653,10 @@ else
 
             while( pos <= ( end - 1 ) / 2 )
             {
-                assert( buf[pos] <= buf[2 * pos + 1] );
+                assert( buf[pos] >= buf[2 * pos + 1] );
                 if( 2 * pos + 1 < end )
                 {
-                    assert( buf[pos] <= buf[2 * pos + 2] );
+                    assert( buf[pos] >= buf[2 * pos + 2] );
                 }
                 ++pos;
             }
@@ -1724,9 +1724,9 @@ else
                 if( pos < 1 )
                     return;
                 size_t par = ( pos - 1 ) / 2;
-                while( pos > 0 && pred( buf[pos], buf[par] ) )
+                while( pos > 0 && pred( buf[par], buf[pos] ) )
                 {
-                    exch( pos, par );
+                    exch( par, pos );
                     pos = par;
                     par = ( pos - 1 ) / 2;
                 }
@@ -1773,10 +1773,10 @@ else
 
             while( pos <= ( end - 1 ) / 2 )
             {
-                assert( buf[pos] <= buf[2 * pos + 1] );
+                assert( buf[pos] >= buf[2 * pos + 1] );
                 if( 2 * pos + 1 < end )
                 {
-                    assert( buf[pos] <= buf[2 * pos + 2] );
+                    assert( buf[pos] >= buf[2 * pos + 2] );
                 }
                 ++pos;
             }
@@ -1848,9 +1848,9 @@ else
                 {
                     size_t nxt = 2 * pos + 1;
 
-                    if( nxt < end && pred( buf[nxt + 1], buf[nxt] ) )
+                    if( nxt < end && pred( buf[nxt], buf[nxt + 1] ) )
                         ++nxt;
-                    if( pred( buf[pos], buf[nxt] ) )
+                    if( !pred( buf[pos], buf[nxt] ) )
                         break;
                     exch( pos, nxt );
                     pos = nxt;
@@ -1902,21 +1902,130 @@ else
 
             while( pos <= ( end - 1 ) / 2 )
             {
-                assert( buf[pos] <= buf[2 * pos + 1] );
+                assert( buf[pos] >= buf[2 * pos + 1] );
                 if( 2 * pos + 1 < end )
                 {
-                    assert( buf[pos] <= buf[2 * pos + 2] );
+                    assert( buf[pos] >= buf[2 * pos + 2] );
                 }
                 ++pos;
             }
         }
 
-        char[] buf = "abcdefghijklmnopqrstuvwxyz".dup;
+        char[] buf = "zyxwvutsrqponmlkjihgfedcba".dup;
 
         while( buf.length > 0 )
         {
             popHeap( buf );
             test( buf );
+        }
+      }
+    }
+}
+
+
+////////////////////////////////////////////////////////////////////////////////
+// Sort Heap
+////////////////////////////////////////////////////////////////////////////////
+
+
+version( DDoc )
+{
+    /**
+     * Sorts buf as a heap using the supplied predicate or '<' if none is
+     * supplied.  Calling makeHeap and sortHeap on an array in succession
+     * has the effect of sorting the array using the heapsort algorithm.
+     *
+     * Params:
+     *  buf  = The heap to sort.  This parameter is not marked 'inout' to
+     *         allow temporary slices to be sorted.  As buf is not resized
+     *         in any way, omitting the 'inout' qualifier has no effect on
+     *         the result of this operation, even though it may be viewed
+     *         as a side-effect.
+     *  pred = The evaluation predicate, which should return true if e1 is
+     *         less than e2 and false if not.  This predicate may be any
+     *         callable type.
+     */
+    void sortHeap( Elem[] buf, Pred2E pred = Pred2E.init );
+}
+else
+{
+    template sortHeap_( Elem, Pred = IsLess!(Elem) )
+    {
+        static assert( isCallableType!(Pred ) );
+
+
+        void fn( Elem[] buf, Pred pred = Pred.init )
+        {
+            // NOTE: Indexes are passed instead of references because DMD does
+            //       not inline the reference-based version.
+            void exch( size_t p1, size_t p2 )
+            {
+                Elem t  = buf[p1];
+                buf[p1] = buf[p2];
+                buf[p2] = t;
+            }
+
+            void fixDown( size_t pos, size_t end )
+            {
+                if( end <= pos )
+                    return;
+                while( pos <= ( end - 1 ) / 2 )
+                {
+                    size_t nxt = 2 * pos + 1;
+
+                    if( nxt < end && pred( buf[nxt], buf[nxt + 1] ) )
+                        ++nxt;
+                    if( !pred( buf[pos], buf[nxt] ) )
+                        break;
+                    exch( pos, nxt );
+                    pos = nxt;
+                }
+            }
+
+            if( buf.length < 2 )
+                return;
+
+            size_t  pos = buf.length - 1;
+
+            while( pos > 0 )
+            {
+                exch( 0, pos );
+                fixDown( 0, --pos );
+            }
+        }
+    }
+
+
+    template sortHeap( Buf )
+    {
+        void sortHeap( Buf buf )
+        {
+            return sortHeap_!(ElemTypeOf!(Buf)).fn( buf );
+        }
+    }
+
+
+    template sortHeap( Buf, Pred )
+    {
+        void sortHeap( Buf buf, Pred pred )
+        {
+            return sortHeap_!(ElemTypeOf!(Buf), Pred).fn( buf, pred );
+        }
+    }
+
+
+    debug( UnitTest )
+    {
+      unittest
+      {
+        char[] buf = "zyxwvutsrqponmlkjihgfedcba".dup;
+
+        sortHeap( buf );
+        char s = buf[0];
+        foreach( i, v; buf )
+        {
+            assert( v >= s );
+            s = v;
         }
       }
     }
