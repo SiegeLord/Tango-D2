@@ -1699,7 +1699,7 @@ version( DDoc )
      *         less than e2 and false if not.  This predicate may be any
      *         callable type.
      */
-    void pushHeap( Elem[] buf, Elem val, Pred2E pred = Pred2E.init );
+    void pushHeap( inout Elem[] buf, Elem val, Pred2E pred = Pred2E.init );
 }
 else
 {
@@ -1820,7 +1820,7 @@ version( DDoc )
      *         less than e2 and false if not.  This predicate may be any
      *         callable type.
      */
-    void popHeap( Elem[] buf, Pred2E pred = Pred2E.init );
+    void popHeap( inout Elem[] buf, Pred2E pred = Pred2E.init );
 }
 else
 {
