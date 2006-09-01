@@ -14,8 +14,8 @@ CP=cp -f
 RM=rm -f
 MD=mkdir -p
 
-#CFLAGS=-mn -6 -r
-#CFLAGS=-g -mn -6 -r
+CFLAGS=-O -m32
+#CFLAGS=-g -m32
 
 ### warnings disabled because gcx has issues ###
 

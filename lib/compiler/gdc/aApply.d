@@ -114,9 +114,9 @@ extern (C) int _aApplywc1(wchar[] aa, dg_t dg)
 
 	    d = decode(aa, i);
 	    b = toUTF8(buf, d);
-	    foreach (char c; b)
+	    foreach (char c2; b)
 	    {
-		result = dg(cast(void *)&c);
+		result = dg(cast(void *)&c2);
 		if (result)
 		    return result;
 	    }
@@ -147,9 +147,9 @@ extern (C) int _aApplydc1(dchar[] aa, dg_t dg)
 	    char[] b;
 
 	    b = toUTF8(buf, d);
-	    foreach (char c; b)
+	    foreach (char c2; b)
 	    {
-		result = dg(cast(void *)&c);
+		result = dg(cast(void *)&c2);
 		if (result)
 		    return result;
 	    }
@@ -307,9 +307,9 @@ extern (C) int _aApplywc2(wchar[] aa, dg2_t dg)
 	    d = decode(aa, n);
 	    n -= i;
 	    b = toUTF8(buf, d);
-	    foreach (char c; b)
+	    foreach (char c2; b)
 	    {
-		result = dg(&i, cast(void *)&c);
+		result = dg(&i, cast(void *)&c2);
 		if (result)
 		    return result;
 	    }
@@ -343,9 +343,9 @@ extern (C) int _aApplydc2(dchar[] aa, dg2_t dg)
 	    char[] b;
 
 	    b = toUTF8(buf, d);
-	    foreach (char c; b)
+	    foreach (char c2; b)
 	    {
-		result = dg(&i, cast(void *)&c);
+		result = dg(&i, cast(void *)&c2);
 		if (result)
 		    return result;
 	    }
