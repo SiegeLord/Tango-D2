@@ -32,6 +32,7 @@ else {
 
 import tango.sys.windows.winbase;
 import tango.sys.windows.windef;
+import tango.sys.windows.basetyps;
 
 // NOTE: This header is NOT to be inluded with winsock.
 alias char u_char;

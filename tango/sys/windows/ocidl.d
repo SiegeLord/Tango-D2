@@ -13,6 +13,11 @@ module tango.sys.windows.ocidl;
 private import tango.sys.windows.ole2;
 private import tango.sys.windows.wingdi; // for TEXTMETRICW
 private import tango.sys.windows.winuser; // for LPMSG
+private import tango.sys.windows.windef, tango.sys.windows.wtypes;
+private import tango.sys.windows.objidl; // for CLIPFORMAT
+private import tango.sys.windows.oleidl;
+private import tango.sys.windows.oaidl;
+private import tango.sys.windows.objfwd;
 
 interface IBindHost : public IUnknown {}
 interface IServiceProvider {}

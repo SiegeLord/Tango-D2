@@ -10,7 +10,7 @@
 module tango.sys.windows.ras;
 private import tango.sys.windows.lmcons;
 private import tango.sys.windows.w32api;
-private import tango.sys.windows.windef;
+private import tango.sys.windows.windef, tango.sys.windows.basetyps;
 
 pragma(lib, "rasapi32.lib");
 

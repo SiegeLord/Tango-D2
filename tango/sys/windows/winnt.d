@@ -12,10 +12,11 @@
 // FIXME: clean up Windows version support
 
 module tango.sys.windows.winnt;
+
 private import tango.sys.windows.w32api;
-private import tango.sys.windows.windef;
-import tango.sys.windows.winerror;
-import tango.sys.windows.basetsd;
+public import tango.sys.windows.windef;
+public import tango.sys.windows.winerror;
+public import tango.sys.windows.basetsd;
 
 /* Translation Notes:
 The following macros are unneeded for D:

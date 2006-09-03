@@ -16,6 +16,7 @@ private import tango.sys.windows.winbase; // for SYSTEMTIME
 private import tango.sys.windows.commctrl;
 private import tango.sys.windows.winreg;
 private import tango.sys.windows.prsht;
+private import tango.sys.windows.basetyps;
 
 /*static if(_WIN32_WINNT < _WIN32_WINDOWS) {
 	const UINT _SETUPAPI_VER = _WIN32_WINNT; // SetupAPI version follows Windows NT version

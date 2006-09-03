@@ -158,6 +158,8 @@ extern (Windows) {
 	LPARAM ReuseDDElParam(LPARAM, UINT, UINT, UINT_PTR, UINT_PTR);
 }
 
+version(WindowsUnitTest) {
+    
 unittest {
 	DDEACK ddeack;
 
@@ -210,4 +212,5 @@ unittest {
 		assert (fRelease == false);
 		assert (fReserved == 1);
 	}
+}
 }

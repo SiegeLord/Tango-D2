@@ -11,6 +11,8 @@
 module tango.sys.windows.comcat;
 
 import tango.sys.windows.windows, tango.sys.windows.ole2;
+private import tango.sys.windows.unknwn, tango.sys.windows.windef, tango.sys.windows.basetyps;
+private import tango.sys.windows.cguid, tango.sys.windows.objbase, tango.sys.windows.wtypes;
 
 alias IEnumGUID* LPENUMGUID;
 

@@ -12,7 +12,7 @@ module tango.sys.windows.exdisp;
 import tango.sys.windows.oaidl;
 import tango.sys.windows.ocidl;
 import tango.sys.windows.docobj;
-private import tango.sys.windows.wtypes;
+private import tango.sys.windows.wtypes, tango.sys.windows.basetyps, tango.sys.windows.windef;
 
 
 enum BrowserNavConstants {

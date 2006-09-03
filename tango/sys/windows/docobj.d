@@ -13,6 +13,7 @@ private import tango.sys.windows.wtypes;
 private import tango.sys.windows.oleidl;
 private import tango.sys.windows.objidl;
 private import tango.sys.windows.oaidl;
+private import tango.sys.windows.windef, tango.sys.windows.basetyps;
 
 // FIXME: remove inherited methods from interface definitions
 

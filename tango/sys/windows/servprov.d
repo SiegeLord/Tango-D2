@@ -9,7 +9,7 @@
 \***********************************************************************/
 module tango.sys.windows.servprov;
 private import tango.sys.windows.unknwn;
-private import tango.sys.windows.wtypes;
+private import tango.sys.windows.wtypes, tango.sys.windows.basetyps, tango.sys.windows.windef;
 
 extern (C) {
 	extern IID IID_IServiceProvider;

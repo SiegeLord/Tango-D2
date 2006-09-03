@@ -13,6 +13,9 @@
 
 module tango.sys.windows.oleidl;
 
+private import tango.sys.windows.objfwd; // for LPMONIKER
+private import tango.sys.windows.windef;
+private import tango.sys.windows.basetyps;
 private import tango.sys.windows.unknwn;
 private import tango.sys.windows.wtypes;
 private import tango.sys.windows.objidl;

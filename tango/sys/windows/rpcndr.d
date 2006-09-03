@@ -21,6 +21,7 @@ import tango.sys.windows.rpcnsip;
 private import tango.sys.windows.objidl; // for IRpcChannelBuffer, IRpcStubBuffer
 private import tango.sys.windows.rpcdce;
 private import tango.sys.windows.unknwn;
+private import tango.sys.windows.windef;
 
 pragma(lib,"rpcrt4.lib");
 

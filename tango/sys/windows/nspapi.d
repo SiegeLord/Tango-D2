@@ -10,6 +10,7 @@
 \***********************************************************************/
 module tango.sys.windows.nspapi;
 
+private import tango.sys.windows.windef, tango.sys.windows.basetyps;
 // FIXME: check types of constants
 
 enum {

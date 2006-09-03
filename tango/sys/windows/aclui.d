@@ -13,6 +13,10 @@ pragma(lib, "aclui.lib");
 
 import tango.sys.windows.objbase, tango.sys.windows.commctrl, tango.sys.windows.accctrl;
 private import tango.sys.windows.winuser;
+private import tango.sys.windows.windef;
+private import tango.sys.windows.basetyps;
+private import tango.sys.windows.unknwn;
+private import tango.sys.windows.prsht;
 
 struct SI_OBJECT_INFO {
 	DWORD     dwFlags;

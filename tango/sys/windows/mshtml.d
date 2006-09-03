@@ -11,7 +11,8 @@ module tango.sys.windows.mshtml;
 
 private import tango.sys.windows.unknwn;
 private import tango.sys.windows.wtypes;
-private import tango.sys.windows.oaidl;
+private import tango.sys.windows.oaidl, tango.sys.windows.basetyps, tango.sys.windows.windef;
+
 
 // These are used in this file, but not defined in MinGW.
 interface IHTMLStyleSheet {};

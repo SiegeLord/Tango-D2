@@ -9,3 +9,4 @@
 *                       Placed into public domain                       *
 \***********************************************************************/
 module tango.sys.windows.nddeapi;
+version { }

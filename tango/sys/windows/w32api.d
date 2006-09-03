@@ -82,8 +82,10 @@ version (IE6) {
 	const uint _WIN32_IE = 0;
 }
 
+version(WindowsUnitTest) {
 unittest {
 	printf("Windows NT version: %03x\n", _WIN32_WINNT);
 	printf("Windows 9x version: %03x\n", _WIN32_WINDOWS);
 	printf("IE version:         %03x\n", _WIN32_IE);
+}
 }

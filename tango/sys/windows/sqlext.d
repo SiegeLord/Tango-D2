@@ -15,7 +15,7 @@
    creating a circular dependency!
 */
 module tango.sys.windows.sqlext;
-import tango.sys.windows.sql;
+public import tango.sys.windows.sql;
 private import tango.sys.windows.windef;
 
 const SQL_SPEC_MAJOR = 3;

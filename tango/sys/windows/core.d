@@ -17,14 +17,15 @@
 */
 module tango.sys.windows.core;
 
-import tango.sys.windows.windef;
-import tango.sys.windows.wincon;
-import tango.sys.windows.winbase;
-import tango.sys.windows.wingdi;
-import tango.sys.windows.winuser;
-import tango.sys.windows.winnls;
-import tango.sys.windows.winver;
-import tango.sys.windows.winnetwk;
+public import tango.sys.windows.windef;
+public import tango.sys.windows.winnt;
+public import tango.sys.windows.wincon;
+public import tango.sys.windows.winbase;
+public import tango.sys.windows.wingdi;
+public import tango.sys.windows.winuser;
+public import tango.sys.windows.winnls;
+public import tango.sys.windows.winver;
+public import tango.sys.windows.winnetwk;
 
 // We can't use static if for imports, build gets confused.
 // static if (_WIN32_WINNT_ONLY) import tango.sys.windows.winsvc;
@@ -37,5 +38,5 @@ version (Windows2003) {
 }
 
 version (WIN32_WINNT_ONLY) {
-	import tango.sys.windows.winsvc;
+	public import tango.sys.windows.winsvc;
 }

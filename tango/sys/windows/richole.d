@@ -12,6 +12,8 @@ private import tango.sys.windows.unknwn;
 private import tango.sys.windows.windef;
 private import tango.sys.windows.ole2;
 private import tango.sys.windows.richedit; // for CHARRANGE
+private import tango.sys.windows.objfwd;
+private import tango.sys.windows.objidl;
 
 align(4):
 

@@ -12,7 +12,8 @@
 */
 
 module tango.sys.windows.sqltypes;
-private import tango.sys.windows.wtypes; // for GUID
+private import tango.sys.windows.basetyps;
+private import tango.sys.windows.windef;
 
 alias byte SCHAR;
 alias int SDWORD;

@@ -13,6 +13,7 @@ import tango.sys.windows.windef;
 
 import tango.sys.windows.objfwd;
 import tango.sys.windows.wtypes;
+private import tango.sys.windows.basetyps;
 
 extern (Windows) {
 	void* MIDL_user_allocate(size_t);

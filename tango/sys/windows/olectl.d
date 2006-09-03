@@ -18,6 +18,9 @@ private import tango.sys.windows.wingdi;
 private import tango.sys.windows.wtypes;
 private import tango.sys.windows.oleauto;
 private import tango.sys.windows.winuser;
+private import tango.sys.windows.winerror;
+private import tango.sys.windows.windef, tango.sys.windows.wtypes, tango.sys.windows.unknwn, tango.sys.windows.basetyps;
+private import tango.sys.windows.oaidl, tango.sys.windows.objfwd;
 
 
 private {

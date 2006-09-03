@@ -16,6 +16,8 @@ import tango.sys.windows.ole2;
 
 import tango.sys.windows.dlgs;
 import tango.sys.windows.prsht;
+private import tango.sys.windows.winnt, tango.sys.windows.objidl, tango.sys.windows.objfwd;
+private import tango.sys.windows.winbase;
 
 // FIXME: remove inherited methods from interface definitions
 

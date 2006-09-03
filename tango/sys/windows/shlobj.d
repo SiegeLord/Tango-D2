@@ -19,6 +19,8 @@ private import tango.sys.windows.unknwn;
 private import tango.sys.windows.winuser;
 private import tango.sys.windows.winbase;
 private import tango.sys.windows.winnetwk; // for NETRESOURCE
+private import tango.sys.windows.winnt, tango.sys.windows.wtypes, tango.sys.windows.objfwd, tango.sys.windows.objidl;
+private import tango.sys.windows.prsht;
 
 import tango.sys.windows.ole2;
 import tango.sys.windows.shlguid;

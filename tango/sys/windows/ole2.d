@@ -9,12 +9,18 @@
 \***********************************************************************/
 module tango.sys.windows.ole2;
 pragma(lib, "ole32.lib");
-import tango.sys.windows.winerror;
-import tango.sys.windows.objbase;
-import tango.sys.windows.olectlid;
-import tango.sys.windows.oleauto;
-import tango.sys.windows.oleidl;
+public import tango.sys.windows.winerror;
+public import tango.sys.windows.objbase;
+public import tango.sys.windows.olectlid;
+public import tango.sys.windows.oleauto;
+public import tango.sys.windows.oleidl;
 private import tango.sys.windows.winuser; // for LPMSG
+private import tango.sys.windows.windef;
+private import tango.sys.windows.objfwd;
+private import tango.sys.windows.objidl;
+private import tango.sys.windows.wtypes;
+public import tango.sys.windows.unknwn;
+public import tango.sys.windows.basetyps;
 
 
 const E_DRAW = VIEW_E_DRAW;

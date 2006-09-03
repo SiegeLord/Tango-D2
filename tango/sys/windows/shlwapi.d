@@ -29,6 +29,7 @@ import tango.sys.windows.shlobj;
 private import tango.sys.windows.windef;
 private import tango.sys.windows.winbase;
 private import tango.sys.windows.winreg;
+private import tango.sys.windows.unknwn, tango.sys.windows.objidl, tango.sys.windows.basetyps;
 
 const DLLVER_PLATFORM_WINDOWS = 0x00000001;
 const DLLVER_PLATFORM_NT      = 0x00000002;

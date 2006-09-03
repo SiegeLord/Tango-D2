@@ -8,7 +8,7 @@
 *                       Placed into public domain                       *
 \***********************************************************************/
 module tango.sys.windows.sql;
-import tango.sys.windows.sqltypes;
+public import tango.sys.windows.sqltypes;
 private import tango.sys.windows.windef;
 
 const ODBCVER = 0x0351;

@@ -12,6 +12,9 @@ pragma(lib, "oleacc.lib");
 
 private import tango.sys.windows.oaidl;
 private import tango.sys.windows.wtypes;
+private import tango.sys.windows.basetyps;
+private import tango.sys.windows.windef;
+private import tango.sys.windows.unknwn;
 
 enum {
 	DISPID_ACC_PARENT           = -5000,

@@ -15,6 +15,8 @@ module tango.sys.windows.objidl;
 
 import tango.sys.windows.unknwn;
 import tango.sys.windows.objfwd;
+private import tango.sys.windows.windef;
+private import tango.sys.windows.basetyps;
 private import tango.sys.windows.oleidl;
 private import tango.sys.windows.wtypes;
 private import tango.sys.windows.winbase; // for FILETIME

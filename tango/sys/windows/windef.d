@@ -10,7 +10,7 @@
 \***********************************************************************/
 module tango.sys.windows.windef;
 
-import tango.sys.windows.winnt;
+public import tango.sys.windows.winnt;
 private import tango.sys.windows.w32api;
 
 const size_t MAX_PATH = 260;

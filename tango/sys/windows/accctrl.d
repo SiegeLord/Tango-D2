@@ -11,6 +11,7 @@
 module tango.sys.windows.accctrl;
 
 private import tango.sys.windows.w32api, tango.sys.windows.winbase, tango.sys.windows.windef;
+private import tango.sys.windows.basetyps;
 
 // FIXME: check types and grouping of constants
 // FIXME: check Windows version support

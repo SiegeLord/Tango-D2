@@ -10,10 +10,11 @@
 \***********************************************************************/
 module tango.sys.windows.d3d9;
 
-import tango.sys.windows.objbase;
-import tango.sys.windows.d3d9types;
-import tango.sys.windows.d3d9caps;
-private import tango.sys.windows.wingdi;
+private import tango.sys.windows.objbase;
+public import tango.sys.windows.d3d9types;
+public import tango.sys.windows.d3d9caps;
+private import tango.sys.windows.wingdi, tango.sys.windows.windef;
+private import tango.sys.windows.basetyps, tango.sys.windows.unknwn;
 
 // FIXME: check types and gropuing of some constants
 // FIXME: check Windows version support

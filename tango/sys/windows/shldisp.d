@@ -8,7 +8,7 @@
 *                       Placed into public domain                       *
 \***********************************************************************/
 module tango.sys.windows.shldisp;
-private import tango.sys.windows.unknwn;
+private import tango.sys.windows.unknwn, tango.sys.windows.windef, tango.sys.windows.wtypes;
 
 // options for IAutoComplete2
 const DWORD ACO_AUTOSUGGEST = 0x01;

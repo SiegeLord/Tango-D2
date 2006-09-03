@@ -23,6 +23,17 @@ class Crc32Digest : Digest
          * Create a new digest.
          *
          * Params:
+         *      digest = An existing Crc32Digest.
+         */
+        this (Crc32Digest digest)
+        {
+                this.digest = digest.digest;
+        }
+
+        /**
+         * Create a new digest.
+         *
+         * Params:
          *      digest = A uint representing the digest.
          */
         this (uint digest)
@@ -64,12 +75,12 @@ class Crc32Digest : Digest
          */
         override void[] toBinary ()
         {
-		ubyte[] result;
-		result.length = 4;
-		result[0] = cast(ubyte)((digest & 0xFF000000) >> 24);
-		result[1] = cast(ubyte)((digest & 0x00FF0000) >> 16);
-		result[2] = cast(ubyte)((digest & 0x0000FF00) >> 8);
-		result[3] = cast(ubyte)(digest & 0x000000FF);
+                ubyte[] result;
+                result.length = 4;
+                result[0] = cast(ubyte)((digest & 0xFF000000) >> 24);
+                result[1] = cast(ubyte)((digest & 0x00FF0000) >> 16);
+                result[2] = cast(ubyte)((digest & 0x0000FF00) >> 8);
+                result[3] = cast(ubyte)(digest & 0x000000FF);
                 return result;
         }
 
@@ -109,6 +120,19 @@ class Crc32Cipher : Cipher
         private uint CrcResult = uint.max;
 
         /**
+         * Create a new Crc32Cipher based on an existing Crc32Cipher.
+         *
+         * Params:
+         *      cipher = An existing Crc32Cipher.
+         */
+        this (Crc32Cipher cipher)
+        {
+                this.CrcTable = cipher.CrcTable;
+                this.CrcPolynomial = cipher.CrcPolynomial;
+                this.CrcResult = cipher.CrcResult;
+        }
+
+        /**
          * Prepare Crc32Cipher to checksum the data with a given polynomial.
          *
          * Params:
@@ -146,7 +170,7 @@ class Crc32Cipher : Cipher
          * Returns:
          *      The current digest.
          */
-        override Digest getDigest ()
+        override Crc32Digest getDigest ()
         {
                 return new Crc32Digest(~CrcResult);
         }

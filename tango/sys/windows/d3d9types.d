@@ -10,7 +10,7 @@
 \***********************************************************************/
 module tango.sys.windows.d3d9types;
 
-private import tango.sys.windows.windef;
+private import tango.sys.windows.windef, tango.sys.windows.basetyps;
 
 // FIXME: check types and grouping of constants
 // FIXME: check types of translated macros
