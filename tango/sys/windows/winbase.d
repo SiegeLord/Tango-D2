@@ -16,7 +16,7 @@ LockSegment(w), MakeProcInstance(p, i), UnlockResource(h), UnlockSegment(w)
 FreeModule(m), FreeProcInstance(p), GetFreeSpace(w), DefineHandleTable(w)
 SetSwapAreaSize(w), LimitEmsPages(n), Yield()
 
-// The following Win16 functions are obselete in tango.sys.windows.
+// The following Win16 functions are obselete in Win32.
 
  int _hread(HFILE, LPVOID, int);
  int _hwrite(HFILE, LPCSTR, int);
