@@ -20,9 +20,13 @@ private
     extern (C) void gc_disable();
     extern (C) void gc_collect();
 
-    extern (C) void* gc_malloc( size_t sz, bool df = false );
-    extern (C) void* gc_calloc( size_t sz, bool df = false );
-    extern (C) void* gc_realloc( void* p, size_t sz, bool df = false );
+    extern (C) uint gc_getAttr( void* p );
+    extern (C) uint gc_setAttr( void* p, uint a );
+    extern (C) uint gc_clrAttr( void* p, uint a );
+
+    extern (C) void* gc_malloc( size_t sz, uint ba = 0 );
+    extern (C) void* gc_calloc( size_t sz, uint ba = 0 );
+    extern (C) void* gc_realloc( void* p, size_t sz, uint ba = 0 );
     extern (C) void gc_free( void* p );
 
     extern (C) size_t gc_sizeOf( void* p );
@@ -33,9 +37,6 @@ private
 
     extern (C) void gc_removeRoot( void* p );
     extern (C) void gc_removeRange( void* pbeg, void* pend );
-
-    extern (C) void gc_pin( void* p );
-    extern (C) void gc_unpin( void* p );
 }
 
 
@@ -83,6 +84,75 @@ struct GC
 
 
     /**
+     * Elements for a bit field representing memory block attributes.  These
+     * are manipulated via the getAttr, setAttr, clrAttr functions.
+     */
+    enum BlkAttr : uint
+    {
+        FINALIZE = 0b0000_0001, /// Finalize the data in this block when free.
+        NO_SCAN  = 0b0000_0010, /// Do not scan through this block on collect.
+        NO_MOVE  = 0b0000_0100  /// Do not move this memory block on collect.
+    }
+
+
+    /**
+     * Returns a bit field representing all block attributes set for the memory
+     * referenced by p.  If p references memory not originally allocated by this
+     * garbage collector, points to the interior of a memory block, or if p is
+     * null, zero will be returned.
+     *
+     * Params:
+     *  p = A pointer to the root of a valid memory block or to null.
+     *
+     * Returns:
+     *  A bit field containing any bits set for the memory block referenced by
+     *  p or zero on error.
+     */
+    uint getAttr( void* p )
+    {
+        return gc_getAttr( p );
+    }
+
+
+    /**
+     * Sets the specified bits for the memory references by p.  If p references
+     * memory not originally allocated by this garbage collector, points to the
+     * interior of a memory block, or if p is null, no action will be performed.
+     *
+     * Params:
+     *  p = A pointer to the root of a valid memory block or to null.
+     *  a = A bit field containing any bits to set for this memory block.
+     *
+     *  The result of a call to getAttr after the specified bits have been
+     *  set.
+     */
+    uint setAttr( void* p, uint a )
+    {
+        return gc_setAttr( p, a );
+    }
+
+
+    /**
+     * Clears the specified bits for the memory references by p.  If p
+     * references memory not originally allocated by this garbage collector,
+     * points to the interior of a memory block, or if p is null, no action
+     * will be performed.
+     *
+     * Params:
+     *  p = A pointer to the root of a valid memory block or to null.
+     *  a = A bit field containing any bits to clear for this memory block.
+     *
+     * Returns:
+     *  The result of a call to getAttr after the specified bits have been
+     *  cleared.
+     */
+    uint clrAttr( void* p, uint a )
+    {
+        return gc_clrAttr( p, a );
+    }
+
+
+    /**
      * Requests an aligned block of managed memory from the garbage collector.
      * This memory may be deleted at will with a call to free, or it may be
      * discarded and cleaned up automatically during a collection run.  If
@@ -91,7 +161,7 @@ struct GC
      *
      * Params:
      *  sz = The desired allocation size in bytes.
-     *  df = True if this memory block should be finalized.
+     *  ba = A bitmask of the attributes to set on this block.
      *
      * Returns:
      *  A reference to the allocated memory or null if insufficient memory
@@ -100,9 +170,9 @@ struct GC
      * Throws:
      *  OutOfMemoryException on allocation failure.
      */
-    void* malloc( size_t sz, bool df = false )
+    void* malloc( size_t sz, uint ba = 0 )
     {
-        return gc_malloc( sz, df );
+        return gc_malloc( sz, ba );
     }
 
 
@@ -116,7 +186,7 @@ struct GC
      *
      * Params:
      *  sz = The desired allocation size in bytes.
-     *  df = True if this memory block should be finalized.
+     *  ba = A bitmask of the attributes to set on this block.
      *
      * Returns:
      *  A reference to the allocated memory or null if insufficient memory
@@ -125,9 +195,9 @@ struct GC
      * Throws:
      *  OutOfMemoryException on allocation failure.
      */
-    void* calloc( size_t sz, bool df = false )
+    void* calloc( size_t sz, uint ba = 0 )
     {
-        return gc_calloc( sz, df );
+        return gc_calloc( sz, ba );
     }
 
 
@@ -143,12 +213,18 @@ struct GC
      * If allocation fails, this function will call onOutOfMemory which is
      * expected to throw an OutOfMemoryException.  If p references memory not
      * originally allocated by this garbage collector, or if it points to the
-     * interior of a memory block, no action will be taken.
+     * interior of a memory block, no action will be taken.  If ba is zero
+     * (the default) and p references the head of a valid, known memory block
+     * then any bits set on the current block will be set on the new block if a
+     * reallocation is required.  If ba is not zero and p references the head
+     * of a valid, known memory block then the bits in ba will replace those on
+     * the current memory block and will also be set on the new block if a
+     * reallocation is required.
      *
      * Params:
      *  p  = A pointer to the root of a valid memory block or to null.
      *  sz = The desired allocation size in bytes.
-     *  df = True if this memory block should be finalized.
+     *  ba = A bitmask of the attributes to set on this block.
      *
      * Returns:
      *  A reference to the allocated memory on success or null if sz is
@@ -157,9 +233,9 @@ struct GC
      * Throws:
      *  OutOfMemoryException on allocation failure.
      */
-    void* realloc( void* p, size_t sz, bool df = false )
+    void* realloc( void* p, size_t sz, uint ba = 0 )
     {
-        return gc_realloc( p, sz, df );
+        return gc_realloc( p, sz, ba );
     }
 
 
@@ -181,8 +257,8 @@ struct GC
     /**
      * Determines the allocated size of a memory block, equivalent to
      * the length property for arrays.  If p references memory not originally
-     * allocated by this garbage collector, or if it points to the interior
-     * of a memory block, zero will be returned.
+     * allocated by this garbage collector, points to the interior of a memory
+     * block, or if p is null, zero will be returned.
      *
      * Params:
      *  p = A pointer to the root of a valid memory block or to null.
@@ -199,10 +275,10 @@ struct GC
     /**
      * Determines the free space including and immediately following the memory
      * block referenced by p.  If p references memory not originally allocated
-     * by this garbage collector, or if it points to the interior of a memory
-     * block, zero will be returned.  The purpose of this function is to provide
-     * a means to determine the maximum number of bytes for which a call to
-     * realloc may resize the existing block in place.
+     * by this garbage collector, points to the interior of a memory block, or
+     * if p is null, zero will be returned.  The purpose of this function is to
+     * provide a means to determine the maximum number of bytes for which a call
+     * to realloc may resize the existing block in place.
      *
      * Params:
      *  p = A pointer to the root of a valid memory block or to null.
@@ -275,37 +351,6 @@ struct GC
     void remove( void* pbeg, void* pend )
     {
         gc_removeRange( pbeg, pend );
-    }
-
-
-    /**
-     * Ensures that the memory referenced by p will not be moved by the
-     * garbage collector.  This function is reentrant, but unpin must be
-     * called once for each call to pin.  If p is null, no operation is
-     * performed.
-     *
-     * Params:
-     *  p = A pointer to the root of a valid memory block or to null.
-     */
-    void pin( void* p )
-    {
-        gc_pin( p );
-    }
-
-
-    /**
-     * Allows the garbage collector to move the memory block referenced
-     * by p during a collection, if pin has previously been called with
-     * the supplied value of p as a parameter.  This function is reentrant,
-     * and must be called once for every call to pin before the garbage
-     * collector is free to move this block.
-     *
-     * Params:
-     *  p = A pointer to the root of a valid memory block or to null.
-     */
-    void unpin( void* p )
-    {
-        gc_unpin( p );
     }
 }
 

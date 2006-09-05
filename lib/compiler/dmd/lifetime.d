@@ -39,9 +39,21 @@ private
 
 private
 {
-    extern (C) void* gc_malloc( size_t sz, bool df = false );
-    extern (C) void* gc_calloc( size_t sz, bool df = false );
-    extern (C) void* gc_realloc( void* p, size_t sz, bool df = false );
+    enum BlkAttr : uint
+    {
+        FINALIZE = 0b0000_0001,
+        NO_SCAN  = 0b0000_0010,
+        NO_MOVE  = 0b0000_0100,
+        ALL_BITS = 0b1111_1111
+    }
+
+    extern (C) uint gc_getAttr( void* p );
+    extern (C) uint gc_setAttr( void* p, uint a );
+    extern (C) uint gc_clrAttr( void* p, uint a );
+
+    extern (C) void* gc_malloc( size_t sz, uint ba = 0 );
+    extern (C) void* gc_calloc( size_t sz, uint ba = 0 );
+    extern (C) void* gc_realloc( void* p, size_t sz, uint ba = 0 );
     extern (C) void gc_free( void* p );
 
     extern (C) size_t gc_sizeOf( void* p );
@@ -72,7 +84,7 @@ extern (C) Object _d_newclass(ClassInfo ci)
     }
     else
     {
-        p = gc_malloc(ci.init.length, true);
+        p = gc_malloc(ci.init.length, BlkAttr.FINALIZE);
         debug printf(" p = %p\n", p);
     }
 
@@ -164,7 +176,7 @@ extern (C) ulong _d_new(size_t length, size_t size)
         result = 0;
     else
     {
-        p = gc_malloc(length * size + 1);
+        p = gc_malloc(length * size + 1, size < (void*).sizeof ? BlkAttr.NO_SCAN : 0);
         debug printf(" p = %p\n", p);
         memset(p, 0, length * size);
         result = cast(ulong) length + (cast(ulong) cast(uint) p << 32);
@@ -191,7 +203,7 @@ extern (C) ulong _d_newarrayi(size_t length, size_t size, ...)
         va_list q;
 
         va_start!(size_t)(q, size); // q is pointer to ... initializer
-        p = gc_malloc(length * size + 1);
+        p = gc_malloc(length * size + 1, size < (void*).sizeof ? BlkAttr.NO_SCAN : 0);
         debug printf(" p = %p\n", p);
         if (size == 1)
             memset(p, *cast(ubyte*)q, length);
@@ -226,7 +238,7 @@ extern (C) ulong _d_newbitarray(size_t length, bit value)
         size_t size = (length + 8) >> 3; // number of bytes
         ubyte  fill = cast(ubyte) (value ? 0xFF : 0);
 
-        p = gc_malloc(size);
+        p = gc_malloc(size, BlkAttr.NO_SCAN);
         debug printf(" p = %p\n", p);
         memset(p, fill, size);
         result = cast(ulong)length + (cast(ulong)cast(uint)p << 32);
@@ -383,7 +395,7 @@ body
 
                 if (cap <= newsize)
                 {
-                    newdata = cast(byte *)gc_malloc(newsize + 1);
+                    newdata = cast(byte *)gc_malloc(newsize + 1, sizeelem < (void*).sizeof ? BlkAttr.NO_SCAN : 0);
                     newdata[0 .. size] = p.data[0 .. size];
                 }
                 newdata[size .. newsize] = 0;
@@ -391,7 +403,7 @@ body
         }
         else
         {
-            newdata = cast(byte *)gc_calloc(newsize + 1);
+            newdata = cast(byte *)gc_calloc(newsize + 1, sizeelem < (void*).sizeof ? BlkAttr.NO_SCAN : 0);
         }
     }
     else
@@ -463,7 +475,7 @@ body
 
                 if (cap <= newsize)
                 {
-                    newdata = cast(byte *)gc_malloc(newsize + 1);
+                    newdata = cast(byte *)gc_malloc(newsize + 1, sizeelem < (void*).sizeof ? BlkAttr.NO_SCAN : 0);
                     newdata[0 .. size] = p.data[0 .. size];
                 }
                 newdata[size .. newsize] = 0;
@@ -471,7 +483,7 @@ body
         }
         else
         {
-            newdata = cast(byte *)gc_malloc(newsize + 1);
+            newdata = cast(byte *)gc_malloc(newsize + 1, sizeelem < (void*).sizeof ? BlkAttr.NO_SCAN : 0);
         }
 
         va_list q;
@@ -531,7 +543,7 @@ version (none)
                     size_t cap = gc_sizeOf(p.data);
                     if (cap <= newsize)
                     {
-                        newdata = cast(byte *)gc_malloc(newsize + 1);
+                        newdata = cast(byte *)gc_malloc(newsize + 1, BlkAttr.NO_SCAN);
                         newdata[0 .. size] = p.data[0 .. size];
                     }
                     newdata[size .. newsize] = 0;
@@ -539,7 +551,7 @@ version (none)
             }
             else
             {
-                newdata = cast(byte *)gc_calloc(newsize + 1);
+                newdata = cast(byte *)gc_calloc(newsize + 1, BlkAttr.NO_SCAN);
             }
         }
         else
@@ -579,7 +591,7 @@ extern (C) long _d_arrayappend(Array *px, byte[] y, size_t size)
         {
             cap = newCapacity(newlength, size);
             assert(cap >= newlength * size);
-            void* newdata = gc_malloc(cap + 1);
+            void* newdata = gc_malloc(cap + 1, size < (void*).sizeof ? BlkAttr.NO_SCAN : 0);
             memcpy(newdata, px.data, length * size);
             px.data = cast(byte*)newdata;
         }
@@ -615,7 +627,7 @@ extern (C) long _d_arrayappendb(Array *px, bit[] y)
         {
             cap = newCapacity(newsize, 1);
             assert(cap >= newsize);
-            void* newdata = gc_malloc(cap + 1);
+            void* newdata = gc_malloc(cap + 1, BlkAttr.NO_SCAN);
             memcpy(newdata, px.data, (length + 7) / 8);
             px.data = cast(byte*)newdata;
         }
@@ -737,7 +749,7 @@ extern (C) byte[] _d_arrayappendc(inout byte[] x, in size_t size, ...)
         {
             cap = newCapacity(newlength, size);
             assert(cap >= newlength * size);
-            void* newdata = gc_malloc(cap + 1);
+            void* newdata = gc_malloc(cap + 1, size < (void*).sizeof ? BlkAttr.NO_SCAN : 0);
             memcpy(newdata, x, length * size);
             (cast(void**)(&x))[1] = newdata;
         }
@@ -793,7 +805,7 @@ body
     if (!len)
         return null;
 
-    byte* p = cast(byte*)gc_malloc(len + 1);
+    byte* p = cast(byte*)gc_malloc(len + 1, size < (void*).sizeof ? BlkAttr.NO_SCAN : 0);
     memcpy(p, x, xlen);
     memcpy(p + xlen, y, ylen);
     p[len] = 0;

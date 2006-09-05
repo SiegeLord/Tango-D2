@@ -41,19 +41,18 @@ extern (C) void thread_init();
 extern (C) void gc_init()
 {
     version (GCCLASS)
-    {	void* p;
-	ClassInfo ci = GC.classinfo;
+    {   void* p;
+        ClassInfo ci = GC.classinfo;
 
-	p = tango.stdc.stdlib.malloc(ci.init.length);
-	(cast(byte*)p)[0 .. ci.init.length] = ci.init[];
-	_gc = cast(GC)p;
+        p = tango.stdc.stdlib.malloc(ci.init.length);
+        (cast(byte*)p)[0 .. ci.init.length] = ci.init[];
+        _gc = cast(GC)p;
     }
     else
     {
-	_gc = cast(GC *) tango.stdc.stdlib.calloc(1, GC.sizeof);
+        _gc = cast(GC*) tango.stdc.stdlib.calloc(1, GC.sizeof);
     }
     _gc.initialize();
-    GC.scanStaticData(_gc);
     // NOTE: The GC must initialize the thread library
     //       before its first collection.
     thread_init();
@@ -79,19 +78,34 @@ extern (C) void gc_collect()
     _gc.fullCollect();
 }
 
-extern (C) void* gc_malloc( size_t sz, bool df = false )
+extern (C) uint gc_getAttr( void* p )
 {
-    return _gc.malloc( sz, df );
+    return _gc.getAttr( p );
 }
 
-extern (C) void* gc_calloc( size_t sz, bool df = false )
+extern (C) uint gc_setAttr( void* p, uint a )
 {
-    return _gc.calloc( sz, df );
+    return _gc.setAttr( p, a );
 }
 
-extern (C) void* gc_realloc( void* p, size_t sz, bool df = false )
+extern (C) uint gc_clrAttr( void* p, uint a )
 {
-    return _gc.realloc( p, sz, df );
+    return _gc.clrAttr( p, a );
+}
+
+extern (C) void* gc_malloc( size_t sz, uint ba = 0 )
+{
+    return _gc.malloc( sz, ba );
+}
+
+extern (C) void* gc_calloc( size_t sz, uint ba = 0 )
+{
+    return _gc.calloc( sz, ba );
+}
+
+extern (C) void* gc_realloc( void* p, size_t sz, uint ba = 0 )
+{
+    return _gc.realloc( p, sz, ba );
 }
 
 extern (C) void gc_free( void* p )
@@ -127,14 +141,4 @@ extern (C) void gc_removeRoot( void *p )
 extern (C) void gc_removeRange( void *pbeg, void *pend )
 {
     _gc.removeRange( pbeg );
-}
-
-extern (C) void gc_pin( void* p )
-{
-
-}
-
-extern (C) void gc_unpin( void* p )
-{
-
 }
