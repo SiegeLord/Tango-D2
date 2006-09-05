@@ -2,77 +2,81 @@
 module tango.core.Memory;
 private
 {
-    extern (C) 
+    extern (C)
 {
     void gc_init();
 }
-    extern (C) 
+    extern (C)
 {
     void gc_term();
 }
-    extern (C) 
+    extern (C)
 {
     void gc_setFinalizer(void* p);
 }
-    extern (C) 
+    extern (C)
 {
     void gc_enable();
 }
-    extern (C) 
+    extern (C)
 {
     void gc_disable();
 }
-    extern (C) 
+    extern (C)
 {
     void gc_collect();
 }
-    extern (C) 
+    extern (C)
 {
-    void* gc_malloc(size_t sz, bool df = false);
+    uint gc_getAttr(void* p);
 }
-    extern (C) 
+    extern (C)
 {
-    void* gc_calloc(size_t sz, bool df = false);
+    uint gc_setAttr(void* p, uint a);
 }
-    extern (C) 
+    extern (C)
 {
-    void* gc_realloc(void* p, size_t sz, bool df = false);
+    uint gc_clrAttr(void* p, uint a);
 }
-    extern (C) 
+    extern (C)
+{
+    void* gc_malloc(size_t sz, uint ba = 0);
+}
+    extern (C)
+{
+    void* gc_calloc(size_t sz, uint ba = 0);
+}
+    extern (C)
+{
+    void* gc_realloc(void* p, size_t sz, uint ba = 0);
+}
+    extern (C)
 {
     void gc_free(void* p);
 }
-    extern (C) 
+    extern (C)
 {
     size_t gc_sizeOf(void* p);
 }
-    extern (C) 
+    extern (C)
 {
     size_t gc_capacityOf(void* p);
 }
-    extern (C) 
+    extern (C)
 {
     void gc_addRoot(void* p);
 }
-    extern (C) 
+    extern (C)
 {
     void gc_addRange(void* pbeg, void* pend);
 }
-    extern (C) 
+    extern (C)
 {
     void gc_removeRoot(void* p);
 }
-    extern (C) 
+    extern (C)
 {
     void gc_removeRange(void* pbeg, void* pend);
-}
-    extern (C) 
-{
-    void gc_pin(void* p);
-}
-    extern (C) 
-{
-    void gc_unpin(void* p);
 }
 }
 struct GC
@@ -89,17 +93,35 @@ gc_disable();
 {
 gc_collect();
 }
-    void* malloc(size_t sz, bool df = false)
+    enum BlkAttr : uint
 {
-return gc_malloc(sz,df);
+FINALIZE = 1,
+NO_SCAN = 2,
+NO_MOVE = 4,
 }
-    void* calloc(size_t sz, bool df = false)
+    uint getAttr(void* p)
 {
-return gc_calloc(sz,df);
+return gc_getAttr(p);
 }
-    void* realloc(void* p, size_t sz, bool df = false)
+    uint setAttr(void* p, uint a)
 {
-return gc_realloc(p,sz,df);
+return gc_setAttr(p,a);
+}
+    uint clrAttr(void* p, uint a)
+{
+return gc_clrAttr(p,a);
+}
+    void* malloc(size_t sz, uint ba = 0)
+{
+return gc_malloc(sz,ba);
+}
+    void* calloc(size_t sz, uint ba = 0)
+{
+return gc_calloc(sz,ba);
+}
+    void* realloc(void* p, size_t sz, uint ba = 0)
+{
+return gc_realloc(p,sz,ba);
 }
     void free(void* p)
 {
@@ -128,14 +150,6 @@ gc_removeRoot(p);
     void remove(void* pbeg, void* pend)
 {
 gc_removeRange(pbeg,pend);
-}
-    void pin(void* p)
-{
-gc_pin(p);
-}
-    void unpin(void* p)
-{
-gc_unpin(p);
 }
 }
 GC gc;
