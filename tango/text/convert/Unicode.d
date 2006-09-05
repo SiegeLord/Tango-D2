@@ -434,6 +434,81 @@ struct Unicode
 
         /***********************************************************************
 
+                Get a Utf32 dchar from a Utf8 Array char[].
+
+                Decodes and returns character starting at input[aIndex]. 
+                aIndex is advanced past the decoded character. 
+
+                If the character is not well formed, 
+                an UtfException is thrown and idx remains unchanged.
+
+        ***********************************************************************/
+        static final dchar decode (char[] input, inout uint aIndex )
+        {
+                uint idx = aIndex;
+                dchar b = cast(dchar) input[ idx++ ];
+
+                void error()
+                {
+                        Unicode.error ("Unicode.toUtf32 : invalid utf8 input", idx-1 );
+                }
+
+                void check( bool aCondition )
+                {
+                        if( !aCondition ){
+                                error();
+                        }
+                }
+
+                // Get one more byte and shift it into the result. Increment idx.
+                void oneMore()
+                {
+                        dchar t = input[ idx++ ];
+                        check((t & 0xC0 ) == 0x80 );
+                        b = (b << 6) | ( t & 0x3f);
+                }
+
+                if (( b & 0x80 ) == 0x00 )
+                {
+                        // do nothing, we are complete
+                }
+                else if (( b & 0xE0 ) == 0xC0 )
+                {
+                        b &= 0x1f;
+                        oneMore();
+                }
+                else if (( b & 0xF0 ) == 0xE0 )
+                {
+                        b &= 0x0f;
+                        oneMore();
+                        oneMore();
+                }
+                else if (( b & 0xF8 ) == 0xF0 )
+                {
+                        b &= 0x07;
+                        oneMore();
+                        oneMore();
+                        oneMore();
+                }
+                else
+                {
+                        error();
+                }
+
+                // did we exceed the valid range
+                check (b < 0x110000);
+                // did we read past the end of the input?
+                check ( idx <= input.length );
+
+                // populate the eaten bytes
+                aIndex = idx;
+
+                // return the produced output
+                return b;
+        }
+
+        /***********************************************************************
+
                 Encode Utf16 up to a maximum of 2 bytes long. Throws an exception
                 where the input dchar is greater than 0x10ffff.
 
