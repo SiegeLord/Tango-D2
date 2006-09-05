@@ -24,8 +24,8 @@ void *os_mem_map(uint nbytes)
 /***********************************
  * Commit memory.
  * Returns:
- *	0	success
- *	!=0	failure
+ *      0       success
+ *      !=0     failure
  */
 
 int os_mem_commit(void *base, uint offset, uint nbytes)
@@ -40,8 +40,8 @@ int os_mem_commit(void *base, uint offset, uint nbytes)
 /***********************************
  * Decommit memory.
  * Returns:
- *	0	success
- *	!=0	failure
+ *      0       success
+ *      !=0     failure
  */
 
 int os_mem_decommit(void *base, uint offset, uint nbytes)
@@ -53,8 +53,8 @@ int os_mem_decommit(void *base, uint offset, uint nbytes)
  * Unmap memory allocated with os_mem_map().
  * Memory must have already been decommitted.
  * Returns:
- *	0	success
- *	!=0	failure
+ *      0       success
+ *      !=0     failure
  */
 
 int os_mem_unmap(void *base, uint nbytes)

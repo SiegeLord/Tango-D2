@@ -12,7 +12,7 @@
 
 #include "gc_c.h"
 
-const static struct { 
+const static struct {
         const char *seg;
         const char *sect;
 } GC_dyld_sections[] = {
@@ -30,20 +30,20 @@ on_dyld_add_image(const struct mach_header* hdr, intptr_t slide) {
     const struct section *sec;
 
     for (i = 0;
-	 i < sizeof(GC_dyld_sections) / sizeof(GC_dyld_sections[0]);
-	 i++) {
-	
-	sec = getsectbynamefromheader(hdr, GC_dyld_sections[i].seg,
-	    GC_dyld_sections[i].sect);
-	if (sec == NULL || sec->size == 0)
-	    continue;
-	start = slide + sec->addr;
-	end = start + sec->size;
-	    
+         i < sizeof(GC_dyld_sections) / sizeof(GC_dyld_sections[0]);
+         i++) {
+
+        sec = getsectbynamefromheader(hdr, GC_dyld_sections[i].seg,
+            GC_dyld_sections[i].sect);
+        if (sec == NULL || sec->size == 0)
+            continue;
+        start = slide + sec->addr;
+        end = start + sec->size;
+
         GC_add_range((void*) start, (void*) end);
     }
 }
-    
+
 /* This should never be called by a thread holding the lock */
 static void
 on_dyld_remove_image(const struct mach_header* hdr, intptr_t slide) {
@@ -52,17 +52,17 @@ on_dyld_remove_image(const struct mach_header* hdr, intptr_t slide) {
     const struct section *sec;
 
     for(i = 0;
-	i < sizeof(GC_dyld_sections) / sizeof(GC_dyld_sections[0]);
-	i++) {
+        i < sizeof(GC_dyld_sections) / sizeof(GC_dyld_sections[0]);
+        i++) {
 
         sec = getsectbynamefromheader(hdr,
-	    GC_dyld_sections[i].seg, GC_dyld_sections[i].sect);
-	if (sec == NULL || sec->size == 0)
-	    continue;
-	start = slide + sec->addr;
-	end = start + sec->size;
+            GC_dyld_sections[i].seg, GC_dyld_sections[i].sect);
+        if (sec == NULL || sec->size == 0)
+            continue;
+        start = slide + sec->addr;
+        end = start + sec->size;
 
-	GC_remove_range((void*) start);//, (void*) end);
+        GC_remove_range((void*) start);//, (void*) end);
     }
 }
 
@@ -71,10 +71,10 @@ void _d_gcc_dyld_start(enum DataSegmentTracking mode)
     static int started = 0;
 
     if (! started) {
-	started = 1;
-	_dyld_register_func_for_add_image(on_dyld_add_image);
-	_dyld_register_func_for_remove_image(on_dyld_remove_image);
+        started = 1;
+        _dyld_register_func_for_add_image(on_dyld_add_image);
+        _dyld_register_func_for_remove_image(on_dyld_remove_image);
     }
 
-    // (for LoadTimeLibrariesOnly:) Can't unregister callbacks 
+    // (for LoadTimeLibrariesOnly:) Can't unregister callbacks
 }

@@ -20,7 +20,7 @@ extern (C)
     // from <bits/mman.h>
     enum { PROT_NONE = 0, PROT_READ = 1, PROT_WRITE = 2, PROT_EXEC = 4 }
     enum { MAP_SHARED = 1, MAP_PRIVATE = 2, MAP_TYPE = 0x0F,
-	   MAP_FIXED = 0x10, MAP_FILE = 0, MAP_ANON = 0x20 }
+           MAP_FIXED = 0x10, MAP_FILE = 0, MAP_ANON = 0x20 }
 }
 +/
 
@@ -30,7 +30,7 @@ extern (C)
      * See http://www.opengroup.org/onlinepubs/007908799/xsh/dlsym.html
      */
 
-    const int RTLD_NOW = 0x00002;	// Correct for Red Hat 8
+    const int RTLD_NOW = 0x00002;       // Correct for Red Hat 8
 
     void* dlopen(char* file, int mode);
     int   dlclose(void* handle);
@@ -53,8 +53,8 @@ void *os_mem_map(uint nbytes)
 /***********************************
  * Commit memory.
  * Returns:
- *	0	success
- *	!=0	failure
+ *      0       success
+ *      !=0     failure
  */
 
 int os_mem_commit(void *base, uint offset, uint nbytes)
@@ -66,8 +66,8 @@ int os_mem_commit(void *base, uint offset, uint nbytes)
 /***********************************
  * Decommit memory.
  * Returns:
- *	0	success
- *	!=0	failure
+ *      0       success
+ *      !=0     failure
  */
 
 int os_mem_decommit(void *base, uint offset, uint nbytes)
@@ -78,8 +78,8 @@ int os_mem_decommit(void *base, uint offset, uint nbytes)
 /***********************************
  * Unmap memory allocated with os_mem_map().
  * Returns:
- *	0	success
- *	!=0	failure
+ *      0       success
+ *      !=0     failure
  */
 
 int os_mem_unmap(void *base, uint nbytes)

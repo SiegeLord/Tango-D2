@@ -13,22 +13,22 @@ version (GC_Use_Alloc_MMap)
     private import tango.stdc.posix.sys.mman;
     void *os_mem_map(uint nbytes)
     {   void *p;
-	p = mmap(null, nbytes, PROT_READ | PROT_WRITE, MAP_PRIVATE | MAP_ANON, -1, 0);
-	return (p == MAP_FAILED) ? null : p;
+        p = mmap(null, nbytes, PROT_READ | PROT_WRITE, MAP_PRIVATE | MAP_ANON, -1, 0);
+        return (p == MAP_FAILED) ? null : p;
     }
     int os_mem_commit(void *base, uint offset, uint nbytes)
     {
-	return 0;
+        return 0;
     }
 
     int os_mem_decommit(void *base, uint offset, uint nbytes)
     {
-	return 0;
+        return 0;
     }
 
     int os_mem_unmap(void *base, uint nbytes)
     {
-	return munmap(base, nbytes);
+        return munmap(base, nbytes);
     }
 }
 else version (GC_Use_Alloc_Valloc)
@@ -52,25 +52,25 @@ else version (GC_Use_Alloc_Malloc)
 
     void *os_mem_map(uint nbytes)
     {   byte * p, q;
-	p = cast(byte *) malloc(nbytes + PAGESIZE);
-	q = p + ((PAGESIZE - ((cast(size_t) p & PAGE_MASK))) & PAGE_MASK);
-	* cast(void**)(q + nbytes) = p;
-	return q;
+        p = cast(byte *) malloc(nbytes + PAGESIZE);
+        q = p + ((PAGESIZE - ((cast(size_t) p & PAGE_MASK))) & PAGE_MASK);
+        * cast(void**)(q + nbytes) = p;
+        return q;
     }
     int os_mem_commit(void *base, uint offset, uint nbytes)
     {
-	return 0;
+        return 0;
     }
 
     int os_mem_decommit(void *base, uint offset, uint nbytes)
     {
-	return 0;
+        return 0;
     }
 
     int os_mem_unmap(void *base, uint nbytes)
     {
-	free( * cast(void**)( cast(byte*) base + nbytes ) );
-	return 0;
+        free( * cast(void**)( cast(byte*) base + nbytes ) );
+        return 0;
     }
 }
 else version (GC_Use_Alloc_Fixed_Heap)
