@@ -1,13 +1,3 @@
-private import gcgccextern;
-private import gc;
-private import tango.stdc.stdlib;
-private import tango.stdc.string; // for memmove
-
-debug(ProcMaps)
-    private import tango.stdc.stdio;
-
-/* ------- Memory allocation ------------- */
-
 version (GC_Use_Alloc_MMap)
 {
     private import tango.stdc.posix.sys.mman;
@@ -47,6 +37,7 @@ else version (GC_Use_Alloc_Malloc)
        end after PAGESIZE bytes used by the GC. */
 
     private import gcx; // for PAGESIZE
+    private import tango.stdc.stdlib; // for malloc, free
 
     const uint PAGE_MASK = PAGESIZE - 1;
 
