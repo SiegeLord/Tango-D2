@@ -60,10 +60,6 @@ private
 }
     extern (C)
 {
-    size_t gc_capacityOf(void* p);
-}
-    extern (C)
-{
     void gc_addRoot(void* p);
 }
     extern (C)
@@ -130,10 +126,6 @@ gc_free(p);
     size_t sizeOf(void* p)
 {
 return gc_sizeOf(p);
-}
-    size_t capacityOf(void* p)
-{
-return gc_capacityOf(p);
 }
     void add(void* p)
 {

@@ -30,7 +30,6 @@ private
     extern (C) void gc_free( void* p );
 
     extern (C) size_t gc_sizeOf( void* p );
-    extern (C) size_t gc_capacityOf( void* p );
 
     extern (C) void gc_addRoot( void* p );
     extern (C) void gc_addRange( void* pbeg, void* pend );
@@ -255,10 +254,11 @@ struct GC
 
 
     /**
-     * Determines the allocated size of a memory block, equivalent to
-     * the length property for arrays.  If p references memory not originally
-     * allocated by this garbage collector, points to the interior of a memory
-     * block, or if p is null, zero will be returned.
+     * Returns the true size of the memory block referenced by p.  This value
+     * represents the maximum number of bytes for which a call to realloc may
+     * resize the existing block in place.  If p references memory not
+     * originally allocated by this garbage collector, points to the interior
+     * of a memory block, or if p is null, zero will be returned.
      *
      * Params:
      *  p = A pointer to the root of a valid memory block or to null.
@@ -269,26 +269,6 @@ struct GC
     size_t sizeOf( void* p )
     {
         return gc_sizeOf( p );
-    }
-
-
-    /**
-     * Determines the free space including and immediately following the memory
-     * block referenced by p.  If p references memory not originally allocated
-     * by this garbage collector, points to the interior of a memory block, or
-     * if p is null, zero will be returned.  The purpose of this function is to
-     * provide a means to determine the maximum number of bytes for which a call
-     * to realloc may resize the existing block in place.
-     *
-     * Params:
-     *  p = A pointer to the root of a valid memory block or to null.
-     *
-     * Returns:
-     *  The size in bytes of the memory block referenced by p or zero on error.
-     */
-    size_t capacityOf( void* p )
-    {
-        return gc_capacityOf( p );
     }
 
 

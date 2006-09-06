@@ -53,11 +53,9 @@ private
 
     extern (C) void* gc_malloc( size_t sz, uint ba = 0 );
     extern (C) void* gc_calloc( size_t sz, uint ba = 0 );
-    extern (C) void* gc_realloc( void* p, size_t sz, uint ba = 0 );
-    extern (C) void gc_free( void* p );
+    extern (C) void  gc_free( void* p );
 
     extern (C) size_t gc_sizeOf( void* p );
-    extern (C) size_t gc_capacityOf( void* p );
 
     extern (C) bool onCollectResource( Object o );
     extern (C) void onFinalizeError( ClassInfo c, Exception e );
@@ -578,23 +576,11 @@ extern (C) long _d_arrayappend(Array *px, byte[] y, size_t size)
 
     if (newlength * size > cap)
     {
-        // NOTE: cap will be zero if the GC does not own px.data or if
-        //       px.data represents a slice.  in either case, we cannot
-        //       call realloc to grow the memory block in place.
-        if (cap > 0)
-        {
-            cap = newCapacity(newlength, size);
-            assert(cap >= newlength * size);
-            px.data = cast(byte*)gc_realloc(px.data, cap + 1);
-        }
-        else
-        {
-            cap = newCapacity(newlength, size);
-            assert(cap >= newlength * size);
-            void* newdata = gc_malloc(cap + 1, size < (void*).sizeof ? BlkAttr.NO_SCAN : 0);
-            memcpy(newdata, px.data, length * size);
-            px.data = cast(byte*)newdata;
-        }
+        cap = newCapacity(newlength, size);
+        assert(cap >= newlength * size);
+        void* newdata = gc_malloc(cap + 1, size < (void*).sizeof ? BlkAttr.NO_SCAN : 0);
+        memcpy(newdata, px.data, length * size);
+        px.data = cast(byte*)newdata;
     }
     px.length = newlength;
     memcpy(px.data + length * size, y, y.length * size);
@@ -614,23 +600,11 @@ extern (C) long _d_arrayappendb(Array *px, bit[] y)
 
     if (newsize > cap)
     {
-        // NOTE: cap will be zero if the GC does not own px.data or if
-        //       px.data represents a slice.  in either case, we cannot
-        //       call realloc to grow the memory block in place.
-        if (cap > 0)
-        {
-            cap = newCapacity(newsize, 1);
-            assert(cap >= newsize);
-            px.data = cast(byte*)gc_realloc(px.data, cap + 1);
-        }
-        else
-        {
-            cap = newCapacity(newsize, 1);
-            assert(cap >= newsize);
-            void* newdata = gc_malloc(cap + 1, BlkAttr.NO_SCAN);
-            memcpy(newdata, px.data, (length + 7) / 8);
-            px.data = cast(byte*)newdata;
-        }
+        cap = newCapacity(newsize, 1);
+        assert(cap >= newsize);
+        void* newdata = gc_malloc(cap + 1, BlkAttr.NO_SCAN);
+        memcpy(newdata, px.data, (length + 7) / 8);
+        px.data = cast(byte*)newdata;
     }
     px.length = newlength;
     if ((length & 7) == 0) // byte aligned, straightforward copy
@@ -712,7 +686,7 @@ size_t newCapacity(size_t newlength, size_t size)
                 mult = 102;
             newext = cast(size_t)((newcap * mult) / 100);
             newext -= newext % size;
-            debug printf("mult: %2.2f, mult2: %2.2f, alloc: %2.2f\n",mult/100.0,mult2,newext / cast(double)size);
+            debug printf("mult: %2.2f, alloc: %2.2f\n",mult/100.0,newext / cast(double)size);
         }
         newcap = newext > newcap ? newext : newcap;
         debug printf("newcap = %d, newlength = %d, size = %d\n", newcap, newlength, size);
@@ -736,23 +710,11 @@ extern (C) byte[] _d_arrayappendc(inout byte[] x, in size_t size, ...)
 
     if (newlength * size >= cap)
     {
-        // NOTE: cap will be zero if the GC does not own px.data or if
-        //       px.data represents a slice.  in either case, we cannot
-        //       call realloc to grow the memory block in place.
-        if (cap > 0)
-        {
-            cap = newCapacity(newlength, size);
-            assert(cap >= newlength * size);
-            (cast(void**)(&x))[1] = cast(byte *)gc_realloc((cast(void**)(&x))[1], cap + 1);
-        }
-        else
-        {
-            cap = newCapacity(newlength, size);
-            assert(cap >= newlength * size);
-            void* newdata = gc_malloc(cap + 1, size < (void*).sizeof ? BlkAttr.NO_SCAN : 0);
-            memcpy(newdata, x, length * size);
-            (cast(void**)(&x))[1] = newdata;
-        }
+        cap = newCapacity(newlength, size);
+        assert(cap >= newlength * size);
+        void* newdata = gc_malloc(cap + 1, size < (void*).sizeof ? BlkAttr.NO_SCAN : 0);
+        memcpy(newdata, x, length * size);
+        (cast(void**)(&x))[1] = newdata;
     }
     byte *argp = cast(byte *)(&size + 1);
 
