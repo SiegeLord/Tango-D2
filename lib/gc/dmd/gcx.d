@@ -1641,7 +1641,7 @@ struct Gcx
                     {
                         //if (log) debug(PRINTF) printf("\t\tmarking %x\n", p);
                         pool.mark.set(biti);
-                        if (!pool.noscan.nbits || pool.noscan.test(biti))
+                        if (!pool.noscan.nbits || !pool.noscan.test(biti))
                         {
                             pool.scan.set(biti);
                             changes = 1;
