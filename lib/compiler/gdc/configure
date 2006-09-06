@@ -7326,7 +7326,7 @@ D_GC_FLAGS=
 
 case "$target_os" in
   mingw*)
-	    D_GC_MODULES=internal/gc/win32.o
+	    D_GC_MODULES=gc/gdc/win32.o
 	    need_to_cfgr_gc=''
 	    ;;
   *)        need_to_cfgr_gc=yes
@@ -7347,11 +7347,11 @@ case "$d_target_os" in
 	    ;;
   cygwin*)  d_gc_data="$d_gc_data GC_Use_Data_Fixed"
 	    ;;
-  darwin*)  D_GC_MODULES="$D_GC_MODULES internal/gc/gc_dyld.o"
+  darwin*)  D_GC_MODULES="$D_GC_MODULES memory_dyld.o"
 	    d_gc_stack=GC_Use_Stack_Fixed
 	    d_gc_data="$d_gc_data GC_Use_Data_Dyld"
 	    ;;
-  freebsd*) D_GC_MODULES="$D_GC_MODULES internal/gc/gc_freebsd.o"
+  freebsd*) D_GC_MODULES="$D_GC_MODULES memory_freebsd.o"
 	    d_gc_stack=GC_Use_Stack_FreeBSD
 	    d_gc_data="$d_gc_data GC_Use_Data_Fixed"
 	    	    ;;
@@ -7362,7 +7362,7 @@ case "$d_target_os" in
 	    ;;
   skyos*)   d_gc_data="$d_gc_data GC_Use_Data_Fixed"
 	    ;;
-  *)        D_GC_MODULES=internal/gc/gcgcc.o
+  *)        D_GC_MODULES=gc/gdc/gcgcc.o
             ;;
 esac
 
@@ -7623,7 +7623,6 @@ rm -f conftest.err conftest.$ac_objext \
 fi
 if test -z "$d_gc_stack"; then
     d_gc_stack=GC_Use_Stack_Guess
-#    D_GC_MODULES="$D_GC_MODULES internal/gc/gc_guess_stack.o"
 fi
 if test -z "$d_gc_stack"; then
     { { echo "$as_me:$LINENO: error: No usable stack origin information" >&5

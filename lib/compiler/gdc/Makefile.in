@@ -90,7 +90,7 @@ all: libgphobos.a
 %.t.o : %.d $(D_PREREQ_SRCS)
 	$(GDC) -o $@ $(DFLAGS) -fno-release -funittest -I $(srcdir) -I $(srcdir)/../../gc/gdc -I ./$(host_alias) -c $<
 
-# internal/gc/gcx.t.o: $(D_PREREQ_SRCS) $(srcdir)/internal/gc/gcx.d
+# gc/gdc/gcx.t.o: $(D_PREREQ_SRCS) $(srcdir)/gc/gdc/gcx.d
 # 	$(GDC) -o $@ $(DFLAGS) -funittest -I $(srcdir) -I $(srcdir)/../../gc/gdc -I ./$(host_alias) -c $<
 
 %.t.o : %.o
@@ -102,10 +102,10 @@ Makefile: Makefile.in
 unittest: unittest.o libgphobos_t.a
 	$(GDC) -o $@ $(CFLAGS) unittest.o -L./ -lgphobos_t $(LIBS)
 
-# internal/gc/testgc.o: $(host_alias)/gcc/config.d $(srcdir)/internal/gc/testgc.d
-#	$(GDC) -o $@ $(DFLAGS) -fno-release -I $(srcdir) -I $(srcdir)/../../gc/gdc -I ./$(host_alias) -c $(srcdir)/internal/gc/testgc.d
+# gc/gdc/testgc.o: $(host_alias)/gcc/config.d $(srcdir)/gc/gdc/testgc.d
+#	$(GDC) -o $@ $(DFLAGS) -fno-release -I $(srcdir) -I $(srcdir)/../../gc/gdc -I ./$(host_alias) -c $(srcdir)/gc/gdc/testgc.d
 
-# testgc: internal/gc/testgc.o libgphobos_t.a
+# testgc: gc/gdc/testgc.o libgphobos_t.a
 #	$(GDC) -o $@ $(CFLAGS) unittest.o -L./ -lgphobos_t $(LIBS)
 
 # This should not be linked into a shared library.
@@ -354,7 +354,7 @@ clean:
 	echo 'Removing files...'
 	rm -f $(ALL_OBJS) $(OBJ_CMAIN)
 	rm -f $(ALL_OBJS:.o=.t.o)
-#	rm -f unittest.o internal/gc/testgc.o
+#	rm -f unittest.o gc/gdc/testgc.o
 	rm -f unittest$(EXEEXT) testgc$(EXEEXT)
 	rm -f config/gen_config1.o config/gen_unix.o config/gen_math.o
 	rm -f gen_config1$(EXEEXT) gen_unix$(EXEEXT) gen_math$(EXEEXT)

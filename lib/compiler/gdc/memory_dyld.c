@@ -10,7 +10,11 @@
 #include <mach-o/getsect.h>
 #include <stdlib.h>
 
-#include "gc_c.h"
+enum DataSegmentTracking {
+    ExecutableOnly,
+    LoadTimeLibrariesOnly,
+    Dynamic
+};
 
 const static struct {
         const char *seg;
