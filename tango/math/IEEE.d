@@ -50,6 +50,42 @@ module tango.math.IEEE;
 
 static import tango.stdc.math;
 
+private {
+/* Constants describing the storage of a IEEE floating-point types
+ * These values will differ depending on whether 'real' is 64, 80, or 128 bits,
+ * and whether it is a big-endian or little-endian architecture.
+ */
+template float_traits(T)
+{
+    static if (T.mant_dig == 53) {
+        // IEEE double (64 bits)
+        const uint mant_bytes = 7;
+        typedef ulong mant_type;
+        typedef uint exp_type;
+     version (LittleEndian) {
+        const uint mant_offset = 0;
+        const int exp_offset = 1;
+        const ulong mant_mask = 0x000F_FFFF_FFFF_FFFF;
+        const uint exp_mask = 0x7FF0_0000;
+    }
+        const bool has_implied_bit = false;
+    } else static if (T.mant_dig == 64) {
+        // IEEE double extended (80-bits)
+        const uint mant_bytes = 8;
+        typedef ulong mant_type;
+        typedef ushort exp_type;
+     version (LittleEndian) {
+        const uint mant_offset = 0;
+        const int exp_offset = 4;
+        const ulong mant_mask = 0xFFFF_FFFF_FFFF_FFFF;
+        const ulong exp_mask = 0x7FFF;
+     }
+        const bool has_implied_bit = true;
+    } else static assert(0, "Unsupported floating point size - must be 64 or 80 bits");
+}
+
+}
+
 // Returns true if equal to precision, false if not
 // (This function is used in unit tests)
 package bool mfeq(real x, real y, real precision)
@@ -255,16 +291,6 @@ real scalbn(real x, int n)
 {
     // BUG: Not implemented in DMD
     return tango.stdc.math.scalbnl(x, n);
-}
-
-/**
- * Creates a quiet NAN with the information from tagp[] embedded in it.
- */
-real makeNaN(char[] tagp)
-{
-    // NOTE: Should use toUtf8z
-    char[] tmp = tagp ~ '\0';
-    return tango.stdc.math.nanl(tmp);
 }
 
 /**
@@ -824,4 +850,73 @@ unittest
 
     e = copysign(real.nan, -23.8);
     assert(isNaN(e) && signbit(e));
+}
+
+// Functions for NaN payloads
+
+/**
+ * Returns true if x has a char [] payload.
+ * Returns false if x is not a NaN, or has an integral payload.
+ */
+bool isNaNPayloadString(real x)
+{
+    ushort* px = cast(ushort *)(&x);
+    return (px[4] & 0x7FFF == 0x7FFF) && (px[3] & 0x4000 == 0x4000);
+}
+
+/**
+ *  Make a NaN with a string payload.
+ *
+ * Storage space in the payload is strictly limited. Only the low 7 bits of
+ * each character are stored in the payload, and at most 8 characters can be
+ * stored.
+ */
+real makeNaN(char [] str)
+{
+    ulong v = 7; // implied bit, then signalling bit, then 1 for string NaN
+    int n = str.length;
+
+    if (n>8) n=8;
+    for (int i=0; i < n; ++i) {
+        v <<= 7;
+        v |= (str[i] & 0x7F);
+        if (i==6) {
+            v <<=1;
+        }
+    }
+    for (int i=n; i < 8; ++i) {
+        v <<=7;
+        if (i==7) v<<=1;
+    }
+    v <<=4;
+
+    real x = real.nan;
+    *cast(ulong *)(&x) = v;
+    return x;
+}
+
+/**
+ * Extracts the character payload and stores the first buff.length
+ * characters into it. The string is not null-terminated.
+ * Returns the slice that was written to.
+ */
+char [] getNaNPayloadString(real x, char[] buff)
+{
+    assert(isNaNPayloadString(x));
+    ulong m = *cast(ulong *)(&x);
+    // Skip implicit bit, quiet bit, and character bit
+    m &= 0x1FFF_FFFF_FFFF_FFFF;
+    m <<= 2; // Move the first byte to the top
+    ulong q;
+    int i=0;
+    while (m!=0 && i< buff.length) {
+        q =( m & 0x7F00_0000_0000_0000);
+        m -= q;
+        m <<= 7;
+        if (i==6) m <<=1;
+        q >>>= 7*8;
+        buff[i] = cast(ubyte)q;
+        ++i;
+    }
+    return buff[0..i];
 }
