@@ -52,8 +52,7 @@ all     : lib doc
 
 ######################################################
 
-ALL_OBJS= \
-    config.obj
+ALL_OBJS=
 
 ######################################################
 
@@ -68,21 +67,21 @@ lib :
 	cd compiler\dmd
 	make -fwin32.mak lib
 	cd ..\..
-	cd gc\dmd
+	cd gc\basic
 	make -fwin32.mak lib
 	cd ..\..
 	cd common
 	make -fwin32.mak lib
 	cd ..
 	$(RM) phobos*.lib
-	$(LC) -c -n phobos.lib common\tango.lib compiler\dmd\dmd.lib gc\dmd\dmd.lib
+	$(LC) -c -n phobos.lib common\tango.lib compiler\dmd\dmd.lib gc\basic\basic.lib
 
 doc : $(ALL_DOCS)
 	@echo No documentation available.
 	cd compiler\dmd
 	make -fwin32.mak doc
 	cd ..\..
-	cd gc\dmd
+	cd gc\basic
 	make -fwin32.mak doc
 	cd ..\..
 	cd common
@@ -98,7 +97,7 @@ clean :
 	cd compiler\dmd
 	make -fwin32.mak clean
 	cd ..\..
-	cd gc\dmd
+	cd gc\basic
 	make -fwin32.mak clean
 	cd ..\..
 	cd common
@@ -111,7 +110,7 @@ install :
 	cd compiler\dmd
 	make -fwin32.mak install
 	cd ..\..
-	cd gc\dmd
+	cd gc\basic
 	make -fwin32.mak install
 	cd ..\..
 	cd common

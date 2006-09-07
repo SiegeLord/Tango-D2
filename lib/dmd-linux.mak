@@ -52,8 +52,7 @@ all     : lib doc
 
 ######################################################
 
-ALL_OBJS= \
-    config.o
+ALL_OBJS=
 
 ######################################################
 
@@ -66,18 +65,18 @@ ALL_DOCS=
 #	$(LC) libphobos.a $(ALL_OBJS)
 lib :
 	make -C compiler/dmd -flinux.mak lib
-	make -C gc/dmd -flinux.mak lib
-	make -C common -flinux.mak lib
+	make -C gc/basic -fposix.mak lib
+	make -C common -fposix.mak lib
 	find . -name "libphobos*.a" | xargs $(RM)
 	$(LC) libphobos.a `find ./compiler/dmd -name "*.o" | xargs echo`
-	$(LC) libphobos.a `find ./gc/dmd -name "*.o" | xargs echo`
+	$(LC) libphobos.a `find ./gc/basic -name "*.o" | xargs echo`
 	$(LC) libphobos.a `find ./common -name "*.o" | xargs echo`
 
 doc : $(ALL_DOCS)
 	echo No documentation available.
 	make -C compiler/dmd -flinux.mak doc
-	make -C gc/dmd -flinux.mak doc
-	make -C common -flinux.mak doc
+	make -C gc/basic -fposix.mak doc
+	make -C common -fposix.mak doc
 
 ######################################################
 
@@ -86,13 +85,13 @@ clean :
 	$(RM) $(ALL_OBJS)
 	$(RM) $(ALL_DOCS)
 	make -C compiler/dmd -flinux.mak clean
-	make -C gc/dmd -flinux.mak clean
-	make -C common -flinux.mak clean
+	make -C gc/basic -fposix.mak clean
+	make -C common -fposix.mak clean
 #	$(RM) libphobos*.a
 
 install :
 	$(MD) $(LIB_DEST)
 	make -C compiler/dmd -flinux.mak install
-	make -C gc/dmd -flinux.mak install
-	make -C common -flinux.mak install
+	make -C gc/basic -fposix.mak install
+	make -C common -fposix.mak install
 #	$(CP) libphobos*.a $(LIB_DEST)/.
