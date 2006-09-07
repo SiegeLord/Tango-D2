@@ -83,8 +83,7 @@ DOC_CORE= \
     core\Memory.html \
     core\Thread.html
 
-ALL_DOCS= \
-    $(DOC_CORE)
+ALL_DOCS=
 
 ######################################################
 
