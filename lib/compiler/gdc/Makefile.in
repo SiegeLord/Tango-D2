@@ -25,18 +25,16 @@ RANLIB = @RANLIB@
 
 CFLAGS=@CFLAGS@
 OUR_CFLAGS=@DEFS@ -I . -I $(srcdir)/gcc
-D_GC_FLAGS=@D_GC_FLAGS@
+D_MEM_FLAGS=@D_MEM_FLAGS@
 
 # Because parts of Phobos are generated (and are in flux), we need
 # to prevent this build from getting tripped up on an already installed
 # version.  Add -nostdinc to handle this.
 
-# Only the GC routines need D_GC_FLAGS
-
 # FIXME: The Posix version flag should be added through configuration, probably
 # FIXME: The -I.. flag is needed to build the Tango version of libgphobos, but
 # there might possibly be a more streamlined way to do this
-DFLAGS=@DFLAGS@  $(D_GC_FLAGS) -nostdinc --version=Posix -I..
+DFLAGS=@DFLAGS@  $(D_MEM_FLAGS) -nostdinc --version=Posix -I..
 
 D_GENERATE_FRAGMENTS=@D_GENERATE_FRAGMENTS@
 D_FRAGMENT_SRCDIR=@D_FRAGMENT_SRCDIR@
@@ -199,9 +197,7 @@ ALL_OBJS= \
     $(OBJ_UTIL) \
     $(OBJ_TI)
 
-GC_OBJS= gc/gdc/gc.o gc/gdc/gcx.o \
-	gc/gdc/gcbits.o
-GC_OBJS += @D_GC_MODULES@
+MEM_OBJS= @D_MEM_MODULES@
 
 # Removed std/c/dirent.o for Tango
 GCC_OBJS = gcc/config.o gcc/unwind.o gcc/deh.o gcc/threadsem.o \
@@ -298,7 +294,7 @@ ALL_OBJS = \
     $(D_EXTRA_OBJS) \
     $(GCC_OBJS) \
     $(MAIN_OBJS) \
-    $(GC_OBJS) \
+    $(MEM_OBJS) \
     $(WEAK_OBJS) \
     $(COMMON_OBJS)
 

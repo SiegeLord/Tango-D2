@@ -309,7 +309,7 @@ ac_includes_default="\
 # include <unistd.h>
 #endif"
 
-ac_subst_vars='SHELL PATH_SEPARATOR PACKAGE_NAME PACKAGE_TARNAME PACKAGE_VERSION PACKAGE_STRING PACKAGE_BUGREPORT exec_prefix prefix program_transform_name bindir sbindir libexecdir datadir sysconfdir sharedstatedir localstatedir libdir includedir oldincludedir infodir mandir build_alias host_alias target_alias DEFS ECHO_C ECHO_N ECHO_T LIBS build build_cpu build_vendor build_os host host_cpu host_vendor host_os target target_cpu target_vendor target_os AR RANLIB ac_ct_RANLIB INSTALL_PROGRAM INSTALL_SCRIPT INSTALL_DATA SET_MAKE CC CFLAGS LDFLAGS CPPFLAGS ac_ct_CC EXEEXT OBJEXT GDC gdc_include_dir phobos_toolexecdir phobos_toolexeclibdir CPP EGREP D_EXTRA_OBJS D_PREREQ_SRCS DCFG_TRUNC DCFG_NEARBYINT DCFG_ROUND DCFG_TGAMMA DCFG_NAN DCFG_EXP2_LOG2 DCFG_EXECVPE DCFG_SPAWNVP DCFG_FWIDE DCFG_STRTOLD DCFG_CBRIDGE_STDIO DCFG_PTHREAD_SUSPEND DCFG_SA_LEN DCFG_SEMAPHORE_IMPL DCFG_MMAP DCFG_GETPWNAM_R DCFG_UNIX DFLAGS srcdir D_GC_FLAGS D_GC_MODULES D_GENERATE_FRAGMENTS D_FRAGMENT_SRCDIR LIBOBJS LTLIBOBJS'
+ac_subst_vars='SHELL PATH_SEPARATOR PACKAGE_NAME PACKAGE_TARNAME PACKAGE_VERSION PACKAGE_STRING PACKAGE_BUGREPORT exec_prefix prefix program_transform_name bindir sbindir libexecdir datadir sysconfdir sharedstatedir localstatedir libdir includedir oldincludedir infodir mandir build_alias host_alias target_alias DEFS ECHO_C ECHO_N ECHO_T LIBS build build_cpu build_vendor build_os host host_cpu host_vendor host_os target target_cpu target_vendor target_os AR RANLIB ac_ct_RANLIB INSTALL_PROGRAM INSTALL_SCRIPT INSTALL_DATA SET_MAKE CC CFLAGS LDFLAGS CPPFLAGS ac_ct_CC EXEEXT OBJEXT GDC gdc_include_dir phobos_toolexecdir phobos_toolexeclibdir CPP EGREP D_EXTRA_OBJS D_PREREQ_SRCS DCFG_TRUNC DCFG_NEARBYINT DCFG_ROUND DCFG_TGAMMA DCFG_NAN DCFG_EXP2_LOG2 DCFG_EXECVPE DCFG_SPAWNVP DCFG_FWIDE DCFG_STRTOLD DCFG_CBRIDGE_STDIO DCFG_PTHREAD_SUSPEND DCFG_SA_LEN DCFG_SEMAPHORE_IMPL DCFG_MMAP DCFG_GETPWNAM_R DCFG_UNIX DFLAGS srcdir D_MEM_FLAGS D_MEM_MODULES D_GENERATE_FRAGMENTS D_FRAGMENT_SRCDIR LIBOBJS LTLIBOBJS'
 ac_subst_files='DCFG_LONG_DOUBLE_FUNCS DCFG_SQRTF'
 
 # Initialize some variables set by options.
@@ -7321,22 +7321,23 @@ done
 
 # Garbage collection configuration
 
-D_GC_MODULES=
-D_GC_FLAGS=
+D_MEM_MODULES=
+D_MEM_FLAGS=
 
 case "$target_os" in
   mingw*)
-	    D_GC_MODULES=gc/gdc/win32.o
+#	    D_MEM_MODULES=gc/gdc/win32.o
 	    need_to_cfgr_gc=''
 	    ;;
-  *)        need_to_cfgr_gc=yes
+  *)
+        need_to_cfgr_gc=yes
 	    ;;
 esac
 
 if test "$need_to_cfgr_gc" = yes; then
 
 # Changed path for Tango
-D_GC_MODULES=gc/gdc/gcgcc.o
+#D_MEM_MODULES=gc/gdc/gcgcc.o
 
 d_gc_alloc=
 d_gc_stack=
@@ -7347,11 +7348,11 @@ case "$d_target_os" in
 	    ;;
   cygwin*)  d_gc_data="$d_gc_data GC_Use_Data_Fixed"
 	    ;;
-  darwin*)  D_GC_MODULES="$D_GC_MODULES memory_dyld.o"
+  darwin*)  D_MEM_MODULES="$D_MEM_MODULES memory_dyld.o"
 	    d_gc_stack=GC_Use_Stack_Fixed
 	    d_gc_data="$d_gc_data GC_Use_Data_Dyld"
 	    ;;
-  freebsd*) D_GC_MODULES="$D_GC_MODULES memory_freebsd.o"
+  freebsd*) D_MEM_MODULES="$D_MEM_MODULES memory_freebsd.o"
 	    d_gc_stack=GC_Use_Stack_FreeBSD
 	    d_gc_data="$d_gc_data GC_Use_Data_Fixed"
 	    	    ;;
@@ -7360,10 +7361,12 @@ case "$d_target_os" in
 	    d_gc_data="$d_gc_data GC_Use_Data_Fixed"
 	    #have_proc_maps=1
 	    ;;
-  skyos*)   d_gc_data="$d_gc_data GC_Use_Data_Fixed"
+  skyos*)
+        d_gc_data="$d_gc_data GC_Use_Data_Fixed"
 	    ;;
-  *)        D_GC_MODULES=gc/gdc/gcgcc.o
-            ;;
+  *)
+#        D_MEM_MODULES=gc/gdc/gcgcc.o
+        ;;
 esac
 
 if test -z "$d_gc_alloc"; then
@@ -7644,7 +7647,7 @@ fi
 
 f="-fversion=$d_gc_alloc -fversion=$d_gc_stack"
 for m in $d_gc_data; do f="$f -fversion=$m"; done
-D_GC_FLAGS=$f
+D_MEM_FLAGS=$f
 
 
 fi
@@ -8342,8 +8345,8 @@ s,@DCFG_GETPWNAM_R@,$DCFG_GETPWNAM_R,;t t
 s,@DCFG_UNIX@,$DCFG_UNIX,;t t
 s,@DFLAGS@,$DFLAGS,;t t
 s,@srcdir@,$srcdir,;t t
-s,@D_GC_FLAGS@,$D_GC_FLAGS,;t t
-s,@D_GC_MODULES@,$D_GC_MODULES,;t t
+s,@D_MEM_FLAGS@,$D_MEM_FLAGS,;t t
+s,@D_MEM_MODULES@,$D_MEM_MODULES,;t t
 s,@D_GENERATE_FRAGMENTS@,$D_GENERATE_FRAGMENTS,;t t
 s,@D_FRAGMENT_SRCDIR@,$D_FRAGMENT_SRCDIR,;t t
 s,@LIBOBJS@,$LIBOBJS,;t t
