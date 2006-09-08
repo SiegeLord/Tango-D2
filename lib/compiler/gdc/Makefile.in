@@ -34,7 +34,7 @@ D_MEM_FLAGS=@D_MEM_FLAGS@
 # FIXME: The Posix version flag should be added through configuration, probably
 # FIXME: The -I.. flag is needed to build the Tango version of libgdc, but
 # there might possibly be a more streamlined way to do this
-DFLAGS=@DFLAGS@  $(D_MEM_FLAGS) -nostdinc --version=Posix -I.. -I../.. -I../../..
+DFLAGS=@DFLAGS@  $(D_MEM_FLAGS) -nostdinc -finline-functions -fversion=Posix -I.. -I../.. -I../../..
 
 D_GENERATE_FRAGMENTS=@D_GENERATE_FRAGMENTS@
 D_FRAGMENT_SRCDIR=@D_FRAGMENT_SRCDIR@
