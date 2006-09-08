@@ -201,7 +201,7 @@ struct TextT(T)
 
         **********************************************************************/
 
-        version (X86)
+        version (D_InlineAsm_X86)
         {
                 static if (is(T == char))
                 {
