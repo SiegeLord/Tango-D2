@@ -18,7 +18,7 @@ CFLAGS=-O -m32
 #CFLAGS=-g -m32
 
 #DFLAGS=-release -O -inline -version=Posix -version=Rtai -w
-DFLAGS=-release -O -inline -version=Posix -w
+DFLAGS=-release -O -inline -version=Posix -w -I../..
 #DFLAGS=-release -O -inline -version=Posix -I.. -w
 #DFLAGS=-g -release -version=Posix -I.. -w
 

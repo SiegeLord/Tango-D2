@@ -42,6 +42,13 @@ enum {
   F_GETFL = 3,
   F_SETFL = 4,
 }
+enum {
+  F_OK = 0,
+  R_OK = 4,
+  W_OK = 2,
+  X_OK = 1,
+}
+
 
 alias int time_t;
 struct timespec {
@@ -512,7 +519,7 @@ extern (C)
     int sigismember(sigset_t *set, int);
     int sigaction(int, sigaction_t*, sigaction_t*);
     int sigsuspend(sigset_t*);
-    
+
     // version ( Unix_Pthread )...
     int pthread_attr_init(pthread_attr_t *);
     int pthread_attr_destroy(pthread_attr_t *);
@@ -531,7 +538,7 @@ extern (C)
     int pthread_cancel(pthread_t);
     int pthread_setcancelstate(int state, int *oldstate);
     int pthread_setcanceltype(int type, int *oldtype);
-    void pthread_testcancel();    
+    void pthread_testcancel();
 
     int pthread_cond_init(pthread_cond_t *, pthread_condattr_t *);
     int pthread_cond_destroy(pthread_cond_t *);
@@ -607,7 +614,7 @@ extern (C)
     int getpwnam_r(char *name, passwd *pwbuf, char *buf, size_t buflen, passwd **pwbufp);
     int getpwuid_r(uid_t uid, passwd *pwbuf, char *buf, size_t buflen, passwd **pwbufp);
 
-    // The following is mostly based on std/c/linux/socket.d    
+    // The following is mostly based on std/c/linux/socket.d
 
     // There doesn't seem to be a need to configure these structs beyond
     // the BsdSockets_salen bit.
@@ -622,9 +629,9 @@ extern (C)
 	    ubyte  sa_len;
 	    ubyte  sa_family;
 	} else {
-	    ushort sa_family;               
+	    ushort sa_family;
 	}
-	char[14] sa_data = [0];             
+	char[14] sa_data = [0];
     }
 
     struct sockaddr_in

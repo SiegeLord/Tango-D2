@@ -292,8 +292,7 @@ void initStaticDataPtrs()
             dataEnd   = adjust_down( &Data_End > &Data_End_2 ? &Data_End : &Data_End_2 );
         }
     }
-
-    version( GC_Use_Data_Proc_Maps )
+    else version( GC_Use_Data_Proc_Maps )
     {
         // TODO: fix this to store list of data regions
         // TODO: Exclude zero-mapped regions

@@ -34,7 +34,7 @@ D_MEM_FLAGS=@D_MEM_FLAGS@
 # FIXME: The Posix version flag should be added through configuration, probably
 # FIXME: The -I.. flag is needed to build the Tango version of libgdc, but
 # there might possibly be a more streamlined way to do this
-DFLAGS=@DFLAGS@  $(D_MEM_FLAGS) -nostdinc --version=Posix -I..
+DFLAGS=@DFLAGS@  $(D_MEM_FLAGS) -nostdinc --version=Posix -I.. -I../.. -I../../..
 
 D_GENERATE_FRAGMENTS=@D_GENERATE_FRAGMENTS@
 D_FRAGMENT_SRCDIR=@D_FRAGMENT_SRCDIR@
@@ -124,7 +124,6 @@ OBJ_BASE= \
     memset.o \
     monitor.o \
     obj.o \
-    object.o \
     qsortg.o \
     rundmain.o \
     switch.o \
@@ -280,11 +279,8 @@ gcc/cbridge_math.o: gcc/cbridge_math.c
 # std/stream.t.o: std/stream.d $(D_PREREQ_SRCS)
 #	$(GDC) -o $@ $(DFLAGS) -fdeprecated -I $(srcdir) -I $(srcdir)/../../gc/gdc -I ./$(host_alias) -c $<
 
-COMMON_OBJS= \
-    common/convert/dtoa.o \
-    common/core/Exception.o \
-    common/core/Memory.o \
-    common/core/Thread.o
+# Will be included elsewhere
+COMMON_OBJS=
 
 # GCC_OBJS (gcc/config.o) first so I don't have to write more deps
 ALL_OBJS = \

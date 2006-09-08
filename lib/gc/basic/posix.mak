@@ -19,7 +19,7 @@ CFLAGS=-O -m32
 
 ### warnings disabled because gcx has issues ###
 
-DFLAGS=-release -O -inline -version=Posix
+DFLAGS=-release -O -inline -version=Posix -I../../..
 #DFLAGS=-release -O -inline -version=Posix -I..
 #DFLAGS=-g -release -version=Posix -I..
 

@@ -22,7 +22,7 @@
 module gcc.deh; 
 private import gcc.unwind;
 private import gcc.builtins;
-private import gc;
+//private import gc;
 private import tango.stdc.stdlib;
 
 // User code creates the exception and there's no copy method, so we'll

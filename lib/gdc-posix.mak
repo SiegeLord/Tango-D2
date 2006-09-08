@@ -24,7 +24,7 @@ DOCFLAGS=-version=DDoc -version=Posix
 
 CC=gcc
 LC=$(AR) -P -r -s -v
-DC=dmd
+DC=gdmd
 
 LIB_DEST=../lib
 DOC_DEST=../doc
@@ -65,8 +65,8 @@ ALL_DOCS=
 #	$(LC) libgphobos.a $(ALL_OBJS)
 lib :
 	make -C compiler/gdc
-	make -C gc/basic -fposix.mak lib
-	make -C common -fposix.mak lib
+	make -C gc/basic -fposix.mak lib DC=$(DC)
+	make -C common -fposix.mak lib DC=$(DC)
 	find . -name "libgphobos*.a" | xargs $(RM)
 	$(LC) libgphobos.a `find ./compiler/gdc -name "*.o" | xargs echo`
 	$(LC) libgphobos.a `find ./gc/basic -name "*.o" | xargs echo`
@@ -74,9 +74,9 @@ lib :
 
 doc : $(ALL_DOCS)
 	echo No documentation available.
-	make -C compiler/gdc -flinux.mak doc
-	make -C gc/basic -fposix.mak doc
-	make -C common -fposix.mak doc
+	#make -C compiler/gdc -flinux.mak doc
+	make -C gc/basic -fposix.mak doc DC=$(DC)
+	make -C common -fposix.mak doc DC=$(DC)
 
 ######################################################
 
@@ -84,14 +84,14 @@ clean :
 	find . -name "*.di" | xargs $(RM)
 	$(RM) $(ALL_OBJS)
 	$(RM) $(ALL_DOCS)
-	make -C compiler/gdc -flinux.mak clean
-	make -C gc/basic -fposix.mak clean
-	make -C common -fposix.mak clean
+	make -C compiler/gdc clean
+	make -C gc/basic -fposix.mak clean DC=$(DC)
+	make -C common -fposix.mak clean DC=$(DC)
 #	$(RM) libgphobos*.a
 
 install :
 	$(MD) $(LIB_DEST)
-	make -C compiler/gdc -flinux.mak install
-	make -C gc/basic -fposix.mak install
-	make -C common -fposix.mak install
+	#make -C compiler/gdc -flinux.mak install
+	make -C gc/basic -fposix.mak install DC=$(DC)
+	make -C common -fposix.mak install DC=$(DC)
 #	$(CP) libgphobos*.a $(LIB_DEST)/.
