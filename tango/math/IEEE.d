@@ -861,7 +861,7 @@ unittest
 bool isNaNPayloadString(real x)
 {
     ushort* px = cast(ushort *)(&x);
-    return (px[4] & 0x7FFF == 0x7FFF) && (px[3] & 0x4000 == 0x4000);
+    return (px[4] & 0x7FFF) == 0x7FFF && (px[3] & 0x2000)== 0x2000;
 }
 
 /**
@@ -873,7 +873,7 @@ bool isNaNPayloadString(real x)
  */
 real makeNaN(char [] str)
 {
-    ulong v = 7; // implied bit, then signalling bit, then 1 for string NaN
+    ulong v = 7; // implied bit = 1 , signalling bit = 1, string NaN = 1
     int n = str.length;
 
     if (n>8) n=8;
@@ -894,6 +894,46 @@ real makeNaN(char [] str)
     *cast(ulong *)(&x) = v;
     return x;
 }
+
+/* Create a NaN with an integral payload.
+ *
+ */
+real makeNaN(ulong payload)
+{
+    ulong v = 6; // implied bit = 1, quiet bit = 1, string NaN = 0
+
+    ulong a = payload;
+
+    // Float bits
+    ulong w = a & 0xF_FFFF;
+    v <<=20;
+    v |= w;
+    a -= w;
+    a >>=20;
+
+    v<<=1;
+    if (a!=0) v |= 1; // FloatMoreBits
+
+    // Double bits
+    v <<=28;
+    w = a & 0xFFF_FFFF;
+    v |= w;
+    a -= w;
+    a >>=28;
+
+    v <<=1;
+    if (a!=0) v |= 1; // DoubleMoreBits
+
+    // Extended real bits
+    v <<=11;
+    a &= 0x7FF;
+    v |= a;
+
+    real x = real.nan;
+    * cast(ulong *)(&x) = v;
+    return x;
+}
+
 
 /**
  * Extracts the character payload and stores the first buff.length
@@ -919,4 +959,18 @@ char [] getNaNPayloadString(real x, char[] buff)
         ++i;
     }
     return buff[0..i];
+}
+
+unittest {
+    // String NaNs
+    real nan1 = 3.4 * makeNaN("qweRtyuip");
+    assert(isNaN(nan1));
+    assert(isNaNPayloadString(nan1));
+    char [8] buff8;
+    assert(getNaNPayloadString(nan1, buff8)== "qweRtyui");
+    // Test narrow casting
+    double nan2 = nan1;
+    assert(getNaNPayloadString(nan2, buff8)== "qweRtyu");
+    float nan3 = nan1;
+    assert(getNaNPayloadString(nan3, buff8)== "qwe");
 }
