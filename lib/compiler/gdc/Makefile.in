@@ -118,6 +118,7 @@ OBJ_BASE= \
     cast.o \
     critical.o \
     dgccmain2.o \
+    genobj.o \
     invariant.o \
     lifetime.o \
     memory.o \
