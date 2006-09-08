@@ -32,7 +32,7 @@ D_MEM_FLAGS=@D_MEM_FLAGS@
 # version.  Add -nostdinc to handle this.
 
 # FIXME: The Posix version flag should be added through configuration, probably
-# FIXME: The -I.. flag is needed to build the Tango version of libgphobos, but
+# FIXME: The -I.. flag is needed to build the Tango version of libgdc, but
 # there might possibly be a more streamlined way to do this
 DFLAGS=@DFLAGS@  $(D_MEM_FLAGS) -nostdinc --version=Posix -I..
 
@@ -75,7 +75,7 @@ configunix_d_src=$(host_alias)/gcc/configunix.d
 
 D_PREREQ_SRCS=@D_PREREQ_SRCS@
 
-all: libgphobos.a
+all: libgdc.a
 
 %.o : %.c
 	$(CC) -o $@ $(OUR_CFLAGS) $(CFLAGS) -c $<
@@ -97,13 +97,13 @@ all: libgphobos.a
 Makefile: Makefile.in
 	./config.status
 
-unittest: unittest.o libgphobos_t.a
+unittest: unittest.o libgdc_t.a
 	$(GDC) -o $@ $(CFLAGS) unittest.o -L./ -lgphobos_t $(LIBS)
 
 # gc/gdc/testgc.o: $(host_alias)/gcc/config.d $(srcdir)/gc/gdc/testgc.d
 #	$(GDC) -o $@ $(DFLAGS) -fno-release -I $(srcdir) -I $(srcdir)/../../gc/gdc -I ./$(host_alias) -c $(srcdir)/gc/gdc/testgc.d
 
-# testgc: gc/gdc/testgc.o libgphobos_t.a
+# testgc: gc/gdc/testgc.o libgdc_t.a
 #	$(GDC) -o $@ $(CFLAGS) unittest.o -L./ -lgphobos_t $(LIBS)
 
 # This should not be linked into a shared library.
@@ -298,11 +298,11 @@ ALL_OBJS = \
     $(WEAK_OBJS) \
     $(COMMON_OBJS)
 
-libgphobos.a : $(ALL_OBJS) $(OBJ_CMAIN)
+libgdc.a : $(ALL_OBJS) $(OBJ_CMAIN)
 	$(AR) -r $@ $(ALL_OBJS) $(OBJ_CMAIN)
 	$(RANLIB) $@
 
-libgphobos_t.a : $(ALL_OBJS:.o=.t.o) $(OBJ_CMAIN)
+libgdc_t.a : $(ALL_OBJS:.o=.t.o) $(OBJ_CMAIN)
 	$(AR) -r $@ $(ALL_OBJS:.o=.t.o) $(OBJ_CMAIN)
 	$(RANLIB) $@
 
@@ -326,7 +326,7 @@ maintainer-clean: clean
 
 # 3.3.x install-sh can't handle multiple source arguments
 # $(INSTALL_HEADER) $(srcdir)/$$i/*.[hd] $(DESTDIR)$(gdc_include_dir)/$$i; done
-#install: $(D_PREREQ_SRCS) libgphobos.a
+#install: $(D_PREREQ_SRCS) libgdc.a
 #	for i in etc etc/c \
 #		etc/c/stlsoft etc/c/zlib \
 #		gcc std std/c \
@@ -342,9 +342,12 @@ maintainer-clean: clean
 #	if test -f $(configunix_d_src); then $(INSTALL_HEADER) $(host_alias)/gcc/configunix.d $(DESTDIR)$(gdc_include_dir)/$(host_alias)/gcc; fi
 #	$(INSTALL) phobos-ver-syms $(DESTDIR)$(gdc_include_dir)/$(host_alias)
 #	$(mkinstalldirs) $(DESTDIR)$(toolexeclibdir)
-#	$(INSTALL) libgphobos.a $(DESTDIR)$(toolexeclibdir)
-#	$(RANLIB) $(DESTDIR)$(toolexeclibdir)/libgphobos.a
-#	$(INSTALL) libgphobos.spec $(DESTDIR)$(toolexeclibdir)
+#	$(INSTALL) libgdc.a $(DESTDIR)$(toolexeclibdir)
+#	$(RANLIB) $(DESTDIR)$(toolexeclibdir)/libgdc.a
+#	$(INSTALL) libgdc.spec $(DESTDIR)$(toolexeclibdir)
+
+install:
+	cp -f libgdc*.a ../.
 
 clean:
 	echo 'Removing files...'
@@ -356,5 +359,5 @@ clean:
 	rm -f gen_config1$(EXEEXT) gen_unix$(EXEEXT) gen_math$(EXEEXT)
 	rm -f frag-gen frag-math frag-unix
 	rm -f $(config_d_src) $(configunix_d_src)
-	rm -f libgphobos.a
-	rm -f libgphobos_t.a
+	rm -f libgdc.a
+	rm -f libgdc_t.a

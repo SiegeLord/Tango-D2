@@ -7677,7 +7677,7 @@ fi
 
 
 
-                                        ac_config_files="$ac_config_files Makefile frag-ac phobos-ver-syms libgphobos.spec"
+                                        ac_config_files="$ac_config_files Makefile frag-ac phobos-ver-syms libgdc.spec"
 cat >confcache <<\_ACEOF
 # This file is a shell script that caches the results of configure
 # tests run on this system so they can be shared between configure
@@ -8206,7 +8206,7 @@ do
   "Makefile" ) CONFIG_FILES="$CONFIG_FILES Makefile" ;;
   "frag-ac" ) CONFIG_FILES="$CONFIG_FILES frag-ac" ;;
   "phobos-ver-syms" ) CONFIG_FILES="$CONFIG_FILES phobos-ver-syms" ;;
-  "libgphobos.spec" ) CONFIG_FILES="$CONFIG_FILES libgphobos.spec" ;;
+  "libgdc.spec" ) CONFIG_FILES="$CONFIG_FILES libgdc.spec" ;;
   "config.h" ) CONFIG_HEADERS="$CONFIG_HEADERS config.h" ;;
   *) { { echo "$as_me:$LINENO: error: invalid argument: $ac_config_target" >&5
 echo "$as_me: error: invalid argument: $ac_config_target" >&2;}
