@@ -143,11 +143,11 @@ extern (C) int main(int argc, char **argv)
 
     try
     {
-            _moduleCtor();
-            _moduleUnitTests();
-            result = main(args);
-            _moduleDtor();
-            gc_term();
+        _moduleCtor();
+        _moduleUnitTests();
+        result = main(args);
+        _moduleDtor();
+        gc_term();
     }
     catch (Exception e)
     {
