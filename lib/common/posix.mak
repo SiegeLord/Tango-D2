@@ -70,7 +70,8 @@ OBJ_CONVERT= \
 OBJ_CORE= \
     core/Exception.o \
     core/Memory.o \
-    core/Thread.o
+    core/Thread.o \
+    core/pthread.o
 
 OBJ_STDC= \
     stdc/stdio.o \
@@ -111,6 +112,11 @@ stdc/stdio.o : stdc/stdio.d
 
 stdc/stdlib.o : stdc/stdlib.d
 	$(DC) -c $(DFLAGS) stdc/stdlib.d -of$@
+
+### pthread
+
+core/pthread.o : ../../tango/stdc/posix/pthread.d
+	$(DC) -c $(DFLAGS) ../../tango/stdc/posix/pthread.d -of$@
 
 ######################################################
 
