@@ -118,7 +118,7 @@ else static if (is(typeof(mmap)))  // else version (GC_Use_Alloc_MMap)
     void *os_mem_map(uint nbytes)
     {   void *p;
 
-        mmap(null, nbytes, PROT_READ | PROT_WRITE, MAP_PRIVATE | MAP_ANON, -1, 0);
+        p = mmap(null, nbytes, PROT_READ | PROT_WRITE, MAP_PRIVATE | MAP_ANON, -1, 0);
         return (p == MAP_FAILED) ? null : p;
     }
 
@@ -162,7 +162,8 @@ else static if (is(typeof(valloc))) // else version (GC_Use_Alloc_Valloc)
 
     int os_mem_unmap(void *base, uint nbytes)
     {
-        free(base); return 0;
+        free(base);
+        return 0;
     }
 }
 else static if (is(typeof(malloc))) // else version (GC_Use_Alloc_Malloc)
@@ -202,7 +203,7 @@ else static if (is(typeof(malloc))) // else version (GC_Use_Alloc_Malloc)
 
     int os_mem_unmap(void *base, uint nbytes)
     {
-        free( * cast(void**)( cast(byte*) base + nbytes ) );
+        free( *cast(void**)( cast(byte*) base + nbytes ) );
         return 0;
     }
 }
