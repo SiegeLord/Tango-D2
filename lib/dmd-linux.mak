@@ -14,38 +14,9 @@ CP=cp -f
 RM=rm -f
 MD=mkdir -p
 
-#CFLAGS=-mn -6 -r
-
-DFLAGS=-release -O -inline -version=Posix
-
-TFLAGS=-O -inline -version=Posix
-
-DOCFLAGS=-version=DDoc -version=Posix
-
-CC=gcc
-LC=$(AR) -P -r -s -v
+CC=dmc
+LC=lib
 DC=dmd
-
-LIB_DEST=../lib
-DOC_DEST=../doc
-
-.SUFFIXES: .asm .c .cpp .d .html .o
-
-.asm.o:
-	$(CC) -c $<
-
-.c.o:
-	$(CC) -c $(CFLAGS) $< -o$@
-
-.cpp.o:
-	g++ -c $(CFLAGS) $< -o$@
-
-.d.o:
-	$(DC) -c $(DFLAGS) $< -of$@
-
-.d.html:
-	$(DC) -c -o- $(DOCFLAGS) -Df$*.html $<
-#	$(DC) -c -o- $(DOCFLAGS) -Df$*.html tango.ddoc $<
 
 targets : lib doc
 all     : lib doc
@@ -60,10 +31,7 @@ ALL_DOCS=
 
 ######################################################
 
-#lib : $(ALL_OBJS)
-#	find . -name "libphobos*.a" | xargs $(RM)
-#	$(LC) libphobos.a $(ALL_OBJS)
-lib :
+lib : $(ALL_OBJS)
 	make -C compiler/dmd -flinux.mak lib
 	make -C gc/basic -fposix.mak lib
 	make -C common -fposix.mak lib

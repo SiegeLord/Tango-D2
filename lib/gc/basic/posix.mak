@@ -19,16 +19,15 @@ CFLAGS=-O -m32
 
 ### warnings disabled because gcx has issues ###
 
-DFLAGS=-release -O -inline -version=Posix -I../../..
-#DFLAGS=-release -O -inline -version=Posix -I..
-#DFLAGS=-g -release -version=Posix -I..
+ADDFLAGS=
 
-TFLAGS=-O -inline -version=Posix
-#TFLAGS=-O -inline -version=Posix -I..
-#TFLAGS=-g -version=Posix -I..
+DFLAGS=-release -O -inline -version=Posix $(ADDFLAGS)
+#DFLAGS=-g -version=Posix
+
+TFLAGS=-O -inline -version=Posix $(ADDFLAGS)
+#TFLAGS=-g -version=Posix
 
 DOCFLAGS=-version=DDoc -version=Posix
-#DOCFLAGS=-version=DDoc -version=Posix -I..
 
 CC=gcc
 LC=$(AR) -P -r -s -v

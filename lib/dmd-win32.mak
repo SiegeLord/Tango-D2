@@ -14,38 +14,9 @@ CP=xcopy /y
 RM=del /f
 MD=mkdir
 
-CFLAGS=-mn -6 -r
-
-DFLAGS=-release -O -inline
-
-TFLAGS=-O -inline
-
-DOCFLAGS=-version=DDoc
-
 CC=dmc
 LC=lib
 DC=dmd
-
-LIB_DEST=..\lib
-DOC_DEST=..\doc
-
-.DEFAULT: .asm .c .cpp .d .html .obj
-
-.asm.obj:
-	$(CC) -c $<
-
-.c.obj:
-	$(CC) -c $(CFLAGS) $< -o$@
-
-.cpp.obj:
-	$(CC) -c $(CFLAGS) $< -o$@
-
-.d.obj:
-	$(DC) -c $(DFLAGS) $< -of$@
-
-.d.html:
-	$(DC) -c -o- $(DOCFLAGS) -Df$*.html $<
-#	$(DC) -c -o- $(DOCFLAGS) -Df$*.html tango.ddoc $<
 
 targets : lib doc
 all     : lib doc
@@ -60,10 +31,7 @@ ALL_DOCS=
 
 ######################################################
 
-#lib : $(ALL_OBJS)
-#	$(RM) phobos*.lib
-#	$(LC) -c -n phobos.lib $(ALL_OBJS)
-lib :
+lib : $(ALL_OBJS)
 	cd compiler\dmd
 	make -fwin32.mak lib
 	cd ..\..

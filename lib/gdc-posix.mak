@@ -14,38 +14,11 @@ CP=cp -f
 RM=rm -f
 MD=mkdir -p
 
-#CFLAGS=-mn -6 -r
-
-DFLAGS=-release -O -inline -version=Posix
-
-TFLAGS=-O -inline -version=Posix
-
-DOCFLAGS=-version=DDoc -version=Posix
-
-CC=gcc
-LC=$(AR) -P -r -s -v
+CC=dmc
+LC=lib
 DC=gdmd
 
-LIB_DEST=../lib
-DOC_DEST=../doc
-
-.SUFFIXES: .asm .c .cpp .d .html .o
-
-.asm.o:
-	$(CC) -c $<
-
-.c.o:
-	$(CC) -c $(CFLAGS) $< -o$@
-
-.cpp.o:
-	g++ -c $(CFLAGS) $< -o$@
-
-.d.o:
-	$(DC) -c $(DFLAGS) $< -of$@
-
-.d.html:
-	$(DC) -c -o- $(DOCFLAGS) -Df$*.html $<
-#	$(DC) -c -o- $(DOCFLAGS) -Df$*.html tango.ddoc $<
+ADDFLAGS=-nostdinc -I../..
 
 targets : lib doc
 all     : lib doc
@@ -60,14 +33,11 @@ ALL_DOCS=
 
 ######################################################
 
-#lib : $(ALL_OBJS)
-#	find . -name "libgphobos*.a" | xargs $(RM)
-#	$(LC) libgphobos.a $(ALL_OBJS)
-lib :
+lib : $(ALL_OBJS)
 	make -C compiler/gdc
 	$(RM) compiler/gdc/config/*.o
-	make -C gc/basic -fposix.mak lib DC=$(DC)
-	make -C common -fposix.mak lib DC=$(DC)
+	make -C gc/basic -fposix.mak lib DC=$(DC) ADDFLAGS=$(ADDFLAGS)
+	make -C common -fposix.mak lib DC=$(DC) ADDFLAGS=$(ADDFLAGS)
 	find . -name "libgphobos*.a" | xargs $(RM)
 	$(LC) libgphobos.a `find ./compiler/gdc -name "*.o" | xargs echo`
 	$(LC) libgphobos.a `find ./gc/basic -name "*.o" | xargs echo`

@@ -132,28 +132,29 @@ int pthread_cancel(pthread_t);
 
 version( linux )
 {
-    private
+    // NOTE: This template is intended to be used as a mixin.
+    //       It will not work properly otherwise.
+    template pthread_cleanup()
     {
-        struct _pthread_cleanup_buffer
+        private extern (C)
         {
-            void function(void*)        __routine;
-            void*                       __arg;
-            int                         __canceltype;
-            _pthread_cleanup_buffer*    __prev;
+            struct _pthread_cleanup_buffer
+            {
+                void function(void*)        __routine;
+                void*                       __arg;
+                int                         __canceltype;
+                _pthread_cleanup_buffer*    __prev;
+            }
+
+            alias void function(void*) routine_t;
+
+            void _pthread_cleanup_push(_pthread_cleanup_buffer*, routine_t, void*);
+            void _pthread_cleanup_pop(_pthread_cleanup_buffer*, int);
+
+            _pthread_cleanup_buffer buffer;
         }
 
-        void _pthread_cleanup_push(_pthread_cleanup_buffer*, void function(void*), void*);
-        void _pthread_cleanup_pop(_pthread_cleanup_buffer*, int);
-    }
-
-    //
-    // NOTE: this might be better done as a mixin, but there's a bug
-    //       that prevents this from working correctly in DMD 147, see
-    //       http://www.digitalmars.com/drn-bin/wwwnews?digitalmars.D.bugs/6360
-    //
-    struct pthread_cleanup
-    {
-        void push( void function(void*) routine, void* arg )
+        void push( routine_t routine, void* arg )
         {
             _pthread_cleanup_push( &buffer, routine, arg );
         }
@@ -162,26 +163,30 @@ version( linux )
         {
             _pthread_cleanup_pop ( &buffer, execute );
         }
-
-    private _pthread_cleanup_buffer buffer;
     }
 }
 else version( darwin )
 {
-    private struct pthread_handler_rec
+    // NOTE: This template is intended to be used as a mixin.
+    //       It will not work properly otherwise.
+    template pthread_cleanup()
     {
-      void function(void*)  __routine;
-      void*                 __arg;
-      pthread_handler_rec*  __next;
-    }
+        private extern (C)
+        {
+            struct pthread_handler_rec
+            {
+              void function(void*)  __routine;
+              void*                 __arg;
+              pthread_handler_rec*  __next;
+            }
 
-    // NOTE: this might be better done as a mixin, but there's a bug
-    //       that prevents this from working correctly in DMD 147, see
-    //       http://www.digitalmars.com/drn-bin/wwwnews?digitalmars.D.bugs/6360
-    //
-    struct pthread_cleanup
-    {
-        void push( void function(void*) routine, void* arg )
+            alias void function(void*) routine_t;
+
+            pthread_handler_rec handler;
+            pthread_t           self = pthread_self();
+        }
+
+        void push( routine_t routine, void* arg )
         {
             handler.__routine    = routine;
             handler.__arg        = arg;
@@ -199,10 +204,6 @@ else version( darwin )
                 handler.__routine( handler.__arg );
             }
         }
-
-    private:
-        pthread_handler_rec handler;
-        pthread_t           self = pthread_self();
     }
 }
 else
