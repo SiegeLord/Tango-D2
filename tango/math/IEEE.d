@@ -853,8 +853,16 @@ unittest
 }
 
 // Functions for NaN payloads
+/*
+ * A 'payload' can be stored in the mantissa of a $(NAN). One bit is required
+ * to distinguish between a quiet and a signalling $(NAN). This leaves 22 bits
+ * of payload for a float; 51 bits for a double; 62 bits for an 80-bit real;
+ * and 111 bits for a 128-bit quad.
+*/
 
 /**
+ * Is this a $(NAN) with a string payload?
+ *
  * Returns true if x has a char [] payload.
  * Returns false if x is not a NaN, or has an integral payload.
  */
@@ -865,7 +873,7 @@ bool isNaNPayloadString(real x)
 }
 
 /**
- *  Make a NaN with a string payload.
+ *  Make a $(NAN) with a string payload.
  *
  * Storage space in the payload is strictly limited. Only the low 7 bits of
  * each character are stored in the payload, and at most 8 characters can be
@@ -895,7 +903,8 @@ real makeNaN(char [] str)
     return x;
 }
 
-/* Create a NaN with an integral payload.
+/**
+ * Create a $(NAN) with an integral payload.
  *
  */
 real makeNaN(ulong payload)
@@ -906,13 +915,13 @@ real makeNaN(ulong payload)
 
     // Float bits
     ulong w = a & 0xF_FFFF;
-    v <<=20;
-    v |= w;
     a -= w;
-    a >>=20;
-
     v<<=1;
     if (a!=0) v |= 1; // FloatMoreBits
+
+    v <<=20;
+    v |= w;
+    a >>=20;
 
     // Double bits
     v <<=28;
@@ -936,9 +945,12 @@ real makeNaN(ulong payload)
 
 
 /**
+ * Extract a string payload from a $(NAN)
+ *
  * Extracts the character payload and stores the first buff.length
  * characters into it. The string is not null-terminated.
  * Returns the slice that was written to.
+ *
  */
 char [] getNaNPayloadString(real x, char[] buff)
 {
@@ -973,4 +985,64 @@ unittest {
     assert(getNaNPayloadString(nan2, buff8)== "qweRtyu");
     float nan3 = nan1;
     assert(getNaNPayloadString(nan3, buff8)== "qwe");
+}
+
+/**
+ * Extract an integral payload from a $(NAN).
+ *
+ * Returns:
+ * the integer payload as a long. If the return value is negative,
+ * it means that data has been lost in narrowing conversions.
+ * For 80-bit reals, the largest payload is 0x7FF_FFFF_FFFF_FFFF.
+ * For doubles, it is 0xFFFF_FFFF_FFFF.
+ * For floats, it is 0xF_FFFF.
+ *
+ * Return values between -1 and -2^20 were originally > 2^20, but
+ * the low 20 bits are still valid. Values between -2^20 and -2^50 were
+ * originally > 2^50^, but the low 50 bits are still valid.
+ */
+long getNaNPayloadLong(real x)
+{
+    assert(isNaN(x) && !isNaNPayloadString(x));
+    ulong m = *cast(ulong *)(&x);
+    // Skip implicit bit, quiet bit, and character bit
+    bool bMore = false;
+    if ( m & 0x1000_0000_0000_0000L) bMore = true;
+    ulong f = m & 0x0FFF_FF00_0000_0000L;
+    long w = f>>>40;
+    if (!bMore) return w;
+    if ((m & 0x00FF_FFFF_F7FFL) == 0) {
+        // There are two cases:
+        if ((m & 0x0800)==0) {
+            // the double bits were lost
+            return -w;
+        }
+        // the real80 bits were lost and the double bits were all zero.
+        // Set an extra high bit to distinguish it from the case above.
+        return -(w | 0x1_0000_0000_0000);
+    }
+    w |= (m& 0x00FF_FFFF_F000L)<<(20-12);
+    bMore = false;
+    if (m& 0x0800) bMore = true;
+    m&= 0x7FF;
+    if (!bMore) return w;
+    if (m==0) return -w; // the real80 bits were lost
+    w |= (m << 48);
+
+    return w;
+}
+
+unittest {
+  real nan4 = makeNaN(0x789_ABCD_EF12_3456);
+  assert (getNaNPayloadLong(nan4) == 0x789_ABCD_EF12_3456);
+  double nan5 = nan4;
+  assert (getNaNPayloadLong(nan5) == -0xABCD_EF12_3456);
+  float nan6 = nan4;
+  assert (getNaNPayloadLong(nan6) == -0x2_3456);
+  nan4 = makeNaN(0xFABCD);
+  assert (getNaNPayloadLong(nan4) == 0xFABCD);
+  nan6 = nan4;
+  assert (getNaNPayloadLong(nan6) == 0xFABCD);
+  nan5 = makeNaN(0x100_0000_0000_3456);
+  assert(getNaNPayloadLong(nan5) == -0x1_0000_0000_3456);
 }
