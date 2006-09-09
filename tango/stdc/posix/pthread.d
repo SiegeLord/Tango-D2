@@ -132,29 +132,29 @@ int pthread_cancel(pthread_t);
 
 version( linux )
 {
+    extern (C)
+    {
+        alias void function(void*) _pthread_cleanup_routine;
+    }
+
+    struct _pthread_cleanup_buffer
+    {
+        _pthread_cleanup_routine    __routine;
+        void*                       __arg;
+        int                         __canceltype;
+        _pthread_cleanup_buffer*    __prev;
+    }
+
+    void _pthread_cleanup_push(_pthread_cleanup_buffer*, _pthread_cleanup_routine, void*);
+    void _pthread_cleanup_pop(_pthread_cleanup_buffer*, int);
+
     // NOTE: This template is intended to be used as a mixin.
     //       It will not work properly otherwise.
     template pthread_cleanup()
     {
-        private extern (C)
-        {
-            struct _pthread_cleanup_buffer
-            {
-                void function(void*)        __routine;
-                void*                       __arg;
-                int                         __canceltype;
-                _pthread_cleanup_buffer*    __prev;
-            }
+        _pthread_cleanup_buffer buffer;
 
-            alias void function(void*) routine_t;
-
-            void _pthread_cleanup_push(_pthread_cleanup_buffer*, routine_t, void*);
-            void _pthread_cleanup_pop(_pthread_cleanup_buffer*, int);
-
-            _pthread_cleanup_buffer buffer;
-        }
-
-        void push( routine_t routine, void* arg )
+        void push( _pthread_cleanup_routine routine, void* arg )
         {
             _pthread_cleanup_push( &buffer, routine, arg );
         }
@@ -167,26 +167,29 @@ version( linux )
 }
 else version( darwin )
 {
+    extern (C)
+    {
+        alias void function(void*) _pthread_handler_fn;
+    }
+
+    struct _pthread_handler_rec
+    {
+      _pthread_handler_fn   __routine;
+      void*                 __arg;
+      _pthread_handler_rec* __next;
+    }
+
+    void _pthread_cleanup_push(_pthread_handler_rec*, _pthread_handler_fn, void*);
+    void _pthread_cleanup_pop(_pthread_handler_rec*, int);
+
     // NOTE: This template is intended to be used as a mixin.
     //       It will not work properly otherwise.
     template pthread_cleanup()
     {
-        private extern (C)
-        {
-            struct pthread_handler_rec
-            {
-              void function(void*)  __routine;
-              void*                 __arg;
-              pthread_handler_rec*  __next;
-            }
+        _pthread_handler_rec    handler;
+        pthread_t               self = pthread_self();
 
-            alias void function(void*) routine_t;
-
-            pthread_handler_rec handler;
-            pthread_t           self = pthread_self();
-        }
-
-        void push( routine_t routine, void* arg )
+        void push( _pthread_handler_fn routine, void* arg )
         {
             handler.__routine    = routine;
             handler.__arg        = arg;
