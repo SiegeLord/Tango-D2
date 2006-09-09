@@ -14,8 +14,8 @@ CP=cp -f
 RM=rm -f
 MD=mkdir -p
 
-CC=dmc
-LC=lib
+CC=gcc
+LC=$(AR) -P -r -s -v
 DC=dmd
 
 targets : lib doc
