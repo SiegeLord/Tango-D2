@@ -132,10 +132,7 @@ int pthread_cancel(pthread_t);
 
 version( linux )
 {
-    extern (C)
-    {
-        alias void function(void*) _pthread_cleanup_routine;
-    }
+    alias void function(void*) _pthread_cleanup_routine;
 
     struct _pthread_cleanup_buffer
     {
@@ -148,8 +145,6 @@ version( linux )
     void _pthread_cleanup_push(_pthread_cleanup_buffer*, _pthread_cleanup_routine, void*);
     void _pthread_cleanup_pop(_pthread_cleanup_buffer*, int);
 
-    // NOTE: This template is intended to be used as a mixin.
-    //       It will not work properly otherwise.
     template pthread_cleanup()
     {
         _pthread_cleanup_buffer buffer;
@@ -161,50 +156,45 @@ version( linux )
 
         void pop( int execute )
         {
-            _pthread_cleanup_pop ( &buffer, execute );
+            _pthread_cleanup_pop( &buffer, execute );
         }
     }
 }
 else version( darwin )
 {
-    extern (C)
+    alias void function(void*) _pthread_cleanup_routine;
+
+    struct _pthread_cleanup_buffer
     {
-        alias void function(void*) _pthread_handler_fn;
+        _pthread_cleanup_routine    __routine;
+        void*                       __arg;
+        _pthread_cleanup_buffer*    __next;
     }
 
-    struct _pthread_handler_rec
-    {
-      _pthread_handler_fn   __routine;
-      void*                 __arg;
-      _pthread_handler_rec* __next;
-    }
+    void _pthread_cleanup_push(_pthread_cleanup_buffer*, _pthread_cleanup_routine, void*);
+    void _pthread_cleanup_pop(_pthread_cleanup_buffer*, int);
 
-    void _pthread_cleanup_push(_pthread_handler_rec*, _pthread_handler_fn, void*);
-    void _pthread_cleanup_pop(_pthread_handler_rec*, int);
-
-    // NOTE: This template is intended to be used as a mixin.
-    //       It will not work properly otherwise.
     template pthread_cleanup()
     {
-        _pthread_handler_rec    handler;
+        _pthread_cleanup_buffer buffer;
         pthread_t               self = pthread_self();
 
-        void push( _pthread_handler_fn routine, void* arg )
+        void push( _pthread_cleanup_routine routine, void* arg )
         {
-            handler.__routine    = routine;
-            handler.__arg        = arg;
-            handler.__next       = self.__cleanup_stack;
-            self.__cleanup_stack = &handler;
+            buffer.__routine    = routine;
+            buffer.__arg        = arg;
+            buffer.__next       = self.__cleanup_stack;
+            self.__cleanup_stack = &buffer;
 
             _pthread_cleanup_push( &buffer, routine, arg );
         }
 
         void pop( int execute )
         {
-            self.__cleanup_stack = handler.__next;
+            self.__cleanup_stack = buffer.__next;
             if( execute )
             {
-                handler.__routine( handler.__arg );
+                buffer.__routine( buffer.__arg );
             }
         }
     }
