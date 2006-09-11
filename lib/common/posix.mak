@@ -68,12 +68,9 @@ OBJ_CONVERT= \
 OBJ_CORE= \
     core/Exception.o \
     core/Memory.o \
-    core/Thread.o \
-    core/pthread.o
+    core/Thread.o
 
 OBJ_STDC= \
-    stdc/stdio.o \
-    stdc/stdlib.o \
     stdc/wrap.o
 
 ALL_OBJS= \
