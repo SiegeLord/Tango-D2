@@ -49,6 +49,7 @@
 module tango.math.IEEE;
 
 static import tango.stdc.math;
+//import tango.stdc.stdio;
 
 private {
 /* Constants describing the storage of a IEEE floating-point types
@@ -84,17 +85,6 @@ template float_traits(T)
     } else static assert(0, "Unsupported floating point size - must be 64 or 80 bits");
 }
 
-}
-
-// Returns true if equal to precision, false if not
-// (This function is used in unit tests)
-package bool mfeq(real x, real y, real precision)
-{
-    if (x == y)
-        return true;
-    if (isNaN(x) || isNaN(y))
-        return false;
-    return fabs(x - y) <= precision;
 }
 
 /**
@@ -182,8 +172,8 @@ unittest
     [1.0,   .5, 1],
     [-1.0,  -.5,    1],
     [2.0,   .5, 2],
-    [155.67e20, 0x1.A5F1C2EB3FE4Fp-1,   74],    // normal
-    [1.0e-320,  0.98829225,     -1063],
+    [0x1.a5f1c2eb3fe4efp+73, 0x1.A5F1C2EB3FE4EFp-1,   74],    // normal
+    [0x1.fa01712e8f0471ap-1064,  0x1.fa01712e8f0471ap-1,     -1063],
     [real.min,  .5,     -16381],
     [real.min/2.0L, .5,     -16382],    // denormal
 
@@ -205,9 +195,8 @@ unittest
     int exp = cast(int)vals[i][2];
     int eptr;
     real v = frexp(x, eptr);
-
-    //printf("frexp(%Lg) = %.8Lg, should be %.8Lg, eptr = %d, should be %d\n", x, v, e, eptr, exp);
-    assert(mfeq(e, v, .0000001));
+//    printf("frexp(%La) = %La, should be %La, eptr = %d, should be %d\n", x, v, e, eptr, exp);
+    assert(isIdentical(e, v));
     assert(exp == eptr);
     }
 }
@@ -242,7 +231,7 @@ real ldexp(real n, int exp) /* intrinsic */
  *  $(TABLE_SV
  *  <tr> <th> x               <th>ilogb(x)     <th> Range error?
  *  <tr> <td> 0               <td> FP_ILOGB0   <td> yes
- *  <tr> <td> &plusmn;&infin; <td> +&infin;    <td> no
+ *  <tr> <td> &plusmn;&infin; <td> int.max     <td> no
  *  <tr> <td> $(NAN)          <td> FP_ILOGBNAN <td> no
  *  )
  */
@@ -461,10 +450,10 @@ bool isIdentical(real x, real y)
 unittest {
     assert(isIdentical(0.0, 0.0));
     assert(!isIdentical(0.0, -0.0));
-    assert(isIdentical(makeNaN("abc"), makeNaN("abc")));
-    assert(!isIdentical(makeNaN("abc"), makeNaN("xyz")));
+    assert(isIdentical(NaN("abc"), NaN("abc")));
+    assert(!isIdentical(NaN("abc"), NaN("xyz")));
     assert(isIdentical(1.234e56, 1.234e56));
-    assert(isNaN(makeNaN("abcdefghijklmn")));
+    assert(isNaN(NaN("abcdefghijklmn")));
 }
 
 /*********************************
@@ -879,7 +868,7 @@ bool isNaNPayloadString(real x)
  * each character are stored in the payload, and at most 8 characters can be
  * stored.
  */
-real makeNaN(char [] str)
+real NaN(char [] str)
 {
     ulong v = 7; // implied bit = 1 , signalling bit = 1, string NaN = 1
     int n = str.length;
@@ -907,7 +896,7 @@ real makeNaN(char [] str)
  * Create a $(NAN) with an integral payload.
  *
  */
-real makeNaN(ulong payload)
+real NaN(ulong payload)
 {
     ulong v = 6; // implied bit = 1, quiet bit = 1, string NaN = 0
 
@@ -975,7 +964,7 @@ char [] getNaNPayloadString(real x, char[] buff)
 
 unittest {
     // String NaNs
-    real nan1 = 3.4 * makeNaN("qweRtyuip");
+    real nan1 = 3.4 * NaN("qweRtyuip");
     assert(isNaN(nan1));
     assert(isNaNPayloadString(nan1));
     char [8] buff8;
@@ -1033,16 +1022,16 @@ long getNaNPayloadLong(real x)
 }
 
 unittest {
-  real nan4 = makeNaN(0x789_ABCD_EF12_3456);
+  real nan4 = NaN(0x789_ABCD_EF12_3456);
   assert (getNaNPayloadLong(nan4) == 0x789_ABCD_EF12_3456);
   double nan5 = nan4;
   assert (getNaNPayloadLong(nan5) == -0xABCD_EF12_3456);
   float nan6 = nan4;
   assert (getNaNPayloadLong(nan6) == -0x2_3456);
-  nan4 = makeNaN(0xFABCD);
+  nan4 = NaN(0xFABCD);
   assert (getNaNPayloadLong(nan4) == 0xFABCD);
   nan6 = nan4;
   assert (getNaNPayloadLong(nan6) == 0xFABCD);
-  nan5 = makeNaN(0x100_0000_0000_3456);
+  nan5 = NaN(0x100_0000_0000_3456);
   assert(getNaNPayloadLong(nan5) == -0x1_0000_0000_3456);
 }
