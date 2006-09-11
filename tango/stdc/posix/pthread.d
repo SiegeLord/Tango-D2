@@ -147,7 +147,7 @@ version( linux )
 
     template pthread_cleanup()
     {
-        _pthread_cleanup_buffer buffer;
+        _pthread_cleanup_buffer buffer = void;
 
         void push( _pthread_cleanup_routine routine, void* arg )
         {
@@ -176,8 +176,8 @@ else version( darwin )
 
     template pthread_cleanup()
     {
-        _pthread_cleanup_buffer buffer;
-        pthread_t               self = pthread_self();
+        _pthread_cleanup_buffer buffer = void;
+        pthread_t               self   = pthread_self();
 
         void push( _pthread_cleanup_routine routine, void* arg )
         {
