@@ -14,8 +14,6 @@ private
     extern (C) void gc_init();
     extern (C) void gc_term();
 
-    extern (C) void gc_setFinalizer( void *p );
-
     extern (C) void gc_enable();
     extern (C) void gc_disable();
     extern (C) void gc_collect();
@@ -32,10 +30,10 @@ private
     extern (C) size_t gc_sizeOf( void* p );
 
     extern (C) void gc_addRoot( void* p );
-    extern (C) void gc_addRange( void* pbeg, void* pend );
+    extern (C) void gc_addRange( void* p, size_t sz );
 
     extern (C) void gc_removeRoot( void* p );
-    extern (C) void gc_removeRange( void* pbeg, void* pend );
+    extern (C) void gc_removeRange( void* p );
 }
 
 
@@ -273,64 +271,60 @@ struct GC
 
 
     /**
-     * Adds the memory block referenced by p to an internal list of roots to
+     * Adds the memory address referenced by p to an internal list of roots to
      * be scanned during a collection.  If p is null, no operation is
      * performed.
      *
      * Params:
-     *  p = A pointer to the root of a valid memory block or to null.
+     *  p = A pointer to a valid memory address or to null.
      */
-    void add( void* p )
+    void addRoot( void* p )
     {
         gc_addRoot( p );
     }
 
 
     /**
-     * Adds the memory range beginning with pbeg and ending immediately
-     * before pend to to an internal list of memory blocks to be scanned
-     * during a collection.  If pbeg and pend are null, no operation is
-     * performed.
+     * Adds the memory block referenced by p and of size sz to an internal list
+     * of ranges to be scanned during a collection.  If p is null, no operation
+     * is performed.
      *
      * Params:
-     *  pbeg = A pointer to the a valid memory location or to null.
-     *  pend = A pointer to one past the end of a valid memory block,
-     *         or null if pbeg is null.
+     *  p  = A pointer to a valid memory address or to null.
+     *  sz = The size in bytes of the block to add.  If sz is zero then the
+     *       no operation will occur.  If p is null then sz must be zero.
      */
-    void add( void* pbeg, void* pend )
+    void addRange( void* p, size_t sz )
     {
-        gc_addRange( pbeg, pend );
+        gc_addRange( p, sz );
     }
 
 
     /**
      * Removes the memory block referenced by p from an internal list of roots
-     * to be scanned during a collection.  If p is null, no operation is
-     * performed.
+     * to be scanned during a collection.  If p is null or does not represent
+     * a value previously passed to add(void*) then no operation is performed.
      *
-     *  p = A pointer to the root of a valid memory block or to null.
+     *  p  = A pointer to a valid memory address or to null.
      */
-    void remove( void* p )
+    void removeRoot( void* p )
     {
         gc_removeRoot( p );
     }
 
 
     /**
-     * Removes the memory range beginning with pbeg and ending immediately
-     * before pend from an internal list of roots to be scanned during a
-     * collection.  If pbeg and pend were not previously passed to the garbage
-     * collector by a call to add, the result is undefined.  If pbeg and pend
-     * are null, no operation is performed.
+     * Removes the memory block referenced by p from an internal list of ranges
+     * to be scanned during a collection.  If p is null or does not represent
+     * a value previously passed to add(void*, size_t) then no operation is
+     * performed.
      *
      * Params:
-     *  pbeg = A pointer to the a valid memory location or to null.
-     *  pend = A pointer to one past the end of a valid memory block,
-     *         or null if pbeg is null.
+     *  p  = A pointer to a valid memory address or to null.
      */
-    void remove( void* pbeg, void* pend )
+    void removeRange( void* p )
     {
-        gc_removeRange( pbeg, pend );
+        gc_removeRange( p );
     }
 }
 

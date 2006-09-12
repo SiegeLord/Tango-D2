@@ -123,9 +123,9 @@ extern (C) void gc_addRoot( void* p )
     _gc.addRoot( p );
 }
 
-extern (C) void gc_addRange( void* pbeg, void* pend )
+extern (C) void gc_addRange( void* p, size_t sz )
 {
-    _gc.addRange( pbeg, pend );
+    _gc.addRange( p, sz );
 }
 
 extern (C) void gc_removeRoot( void *p )
@@ -133,7 +133,7 @@ extern (C) void gc_removeRoot( void *p )
     _gc.removeRoot( p );
 }
 
-extern (C) void gc_removeRange( void *pbeg, void *pend )
+extern (C) void gc_removeRange( void *p )
 {
-    _gc.removeRange( pbeg );
+    _gc.removeRange( p );
 }

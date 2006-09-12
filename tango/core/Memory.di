@@ -12,10 +12,6 @@ private
 }
     extern (C)
 {
-    void gc_setFinalizer(void* p);
-}
-    extern (C)
-{
     void gc_enable();
 }
     extern (C)
@@ -64,7 +60,7 @@ private
 }
     extern (C)
 {
-    void gc_addRange(void* pbeg, void* pend);
+    void gc_addRange(void* p, size_t sz);
 }
     extern (C)
 {
@@ -72,7 +68,7 @@ private
 }
     extern (C)
 {
-    void gc_removeRange(void* pbeg, void* pend);
+    void gc_removeRange(void* p);
 }
 }
 struct GC
@@ -127,21 +123,21 @@ gc_free(p);
 {
 return gc_sizeOf(p);
 }
-    void add(void* p)
+    void addRoot(void* p)
 {
 gc_addRoot(p);
 }
-    void add(void* pbeg, void* pend)
+    void addRange(void* p, size_t sz)
 {
-gc_addRange(pbeg,pend);
+gc_addRange(p,sz);
 }
-    void remove(void* p)
+    void removeRoot(void* p)
 {
 gc_removeRoot(p);
 }
-    void remove(void* pbeg, void* pend)
+    void removeRange(void* p)
 {
-gc_removeRange(pbeg,pend);
+gc_removeRange(p);
 }
 }
 GC gc;
