@@ -214,6 +214,7 @@ real ldexp(real n, int exp) /* intrinsic */
             fild exp;
             fld n;
             fscale;
+            fstp st(1), st(0);
         }
     }
     else

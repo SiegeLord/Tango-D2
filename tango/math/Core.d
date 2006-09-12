@@ -78,22 +78,6 @@ const real M_2_SQRTPI = 1.12837916709551257390L;  /** 2 / &radic;&pi; */
 const real SQRT2      = 1.41421356237309504880L;  /** &radic;2 */
 const real SQRT1_2    = 0.70710678118654752440L;  /** &radic;&frac12 */
 
-
-
-
-// Returns true if equal to precision, false if not
-// (This function is used in unit tests)
-private bool mfeq(real x, real y, real precision)
-{
-    if (x == y)
-        return true;
-    if (isNaN(x) || isNaN(y))
-        return false;
-    return fabs(x - y) <= precision;
-}
-
-
-
 /*
  * Primitives
  */
@@ -278,6 +262,18 @@ Lret:
 
 unittest
 {
+// Returns true if equal to precision, false if not
+// (Used only in unit test for tan())
+bool mfeq(real x, real y, real precision)
+{
+    if (x == y)
+        return true;
+    if (isNaN(x) || isNaN(y))
+        return false;
+    return fabs(x - y) <= precision;
+}
+
+
     static real vals[][2] = // angle,tan
     [
         [   0,   0],
@@ -526,10 +522,10 @@ unittest
  *  $(DOMAIN -&infin;..&infin;)
  *  $(RANGE  -1..1) )
  *  $(TABLE_SV
- *    $(SVH  x,     acosh(x) )
+ *    $(SVH  x,     atanh(x) )
  *    $(SV  $(NAN), $(NAN) )
  *    $(SV  &plusmn;0, &plusmn;0)
- *    $(SV  -&infin;, -0)
+ *    $(SV  &plusmn;1, &plusmn;&infin;)
  *  )
  */
 real atanh(real x)
@@ -543,7 +539,9 @@ unittest
     assert(isIdentical(0.0L, atanh(0.0)));
     assert(isIdentical(-0.0L,atanh(-0.0)));
     assert(isNaN(atanh(real.nan)));
-    assert(isIdentical(-0.0L, atanh(-real.infinity))); // FAILS - returns NaN
+    assert(isIdentical(atanh(-1),-real.infinity));
+    assert(isIdentical(atanh(1),real.infinity));
+    assert(isNaN(atanh(-real.infinity)));
 }
 
 /*
@@ -1063,28 +1061,25 @@ unittest
 {
     static real vals[][3] = // x,y,hypot
     [
-    [   0,  0,  0],
-    [   0,  -0, 0],
-    [   3,  4,  5],
-    [   -300,   -400,   500],
-    [   real.min, real.min, 4.75473e-4932L],
-    [   real.max/2, real.max/2, 0x1.6a09e667f3bcc908p+16383L /*8.41267e+4931L*/],
-    [   real.infinity, real.nan, real.infinity],
-    [   real.nan, real.nan, real.nan],
+        [   0,  0,  0],
+        [   0,  -0, 0],
+        [   3,  4,  5],
+        [   -300,   -400,   500],
+        [   real.min, real.min,  0x1.6a09e667f3bcc908p-16382L],
+        [   real.max/2, real.max/2, 0x1.6a09e667f3bcc908p+16383L /*8.41267e+4931L*/],
+        [   real.infinity, real.nan, real.infinity],
+        [   real.nan, real.nan, real.nan],
     ];
-    int i;
 
-    for (i = 0; i < vals.length; i++)
+    for (int i = 0; i < vals.length; i++)
     {
-    real x = vals[i][0];
-    real y = vals[i][1];
-    real z = vals[i][2];
-    real h = hypot(x, y);
+        real x = vals[i][0];
+        real y = vals[i][1];
+        real z = vals[i][2];
+        real h = hypot(x, y);
 
-    //printf("hypot(%Lg, %Lg) = %Lg, should be %Lg\n", x, y, h, z);
-    //if (!mfeq(z, h, .0000001))
-        //printf("%La\n", h);
-    assert(mfeq(z, h, .0000001));
+//    printf("hypot(%La, %La) = %La, should be %La\n", x, y, h, z);
+        assert(isIdentical(z, h));
     }
 }
 
@@ -1178,7 +1173,9 @@ unittest
 {
     debug (math) printf("math.poly.unittest\n");
     real x = 3.1;
-    static real pp[] = [56.1, 32.7, 6];
+    const real pp[] = [56.1L, 32.7L, 6L];
+
+    real compiler_bugfix_DMD166 = poly(x, pp); // otherwise assert fails
 
     assert( poly(x, pp) == (56.1L + (32.7L + 6L * x) * x) );
 }
