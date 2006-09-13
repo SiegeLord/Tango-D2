@@ -25,8 +25,23 @@
  *  Modified by Sean Kelly <sean@f4.ca> for use with the Ares project.
  */
 
-private import tango.stdc.string;
-private import tango.stdc.stdbool; // TODO: remove this when the old bit code goes away
+private
+{
+    import tango.stdc.string;
+    import tango.stdc.stdbool; // TODO: remove this when the old bit code goes away
+
+    enum BlkAttr : uint
+    {
+        FINALIZE = 0b0000_0001,
+        NO_SCAN  = 0b0000_0010,
+        NO_MOVE  = 0b0000_0100,
+        ALL_BITS = 0b1111_1111
+    }
+
+    extern (C) void* gc_malloc( size_t sz, uint ba = 0 );
+    extern (C) void* gc_calloc( size_t sz, uint ba = 0 );
+    extern (C) void  gc_free( void* p );
+}
 
 extern (C):
 
@@ -47,7 +62,7 @@ byte[] _d_arraycatn(uint size, uint n, ...)
     if (!length)
 	return null;
 
-    a = new byte[length * size];
+    a = (cast(byte*) gc_malloc(length * size, size < (void*).sizeof ? BlkAttr.NO_SCAN : 0))[0 .. length * size];
     p = cast(byte[]*)(&n + 1);
 
     uint j = 0;

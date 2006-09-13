@@ -42,6 +42,18 @@ private
     import tango.stdc.stdlib;
     import tango.stdc.stdbool; // TODO: remove this when the old bit code goes away
     import util.utf;
+
+    enum BlkAttr : uint
+    {
+        FINALIZE = 0b0000_0001,
+        NO_SCAN  = 0b0000_0010,
+        NO_MOVE  = 0b0000_0100,
+        ALL_BITS = 0b1111_1111
+    }
+
+    extern (C) void* gc_malloc( size_t sz, uint ba = 0 );
+    extern (C) void* gc_calloc( size_t sz, uint ba = 0 );
+    extern (C) void  gc_free( void* p );
 }
 
 
@@ -397,7 +409,7 @@ extern (C) Array _adReverse(Array a, int szelem)
 		//version (Win32)
 		    tmp = cast(byte*) alloca(szelem);
 		//else
-		    //tmp = new byte[szelem];
+		    //tmp = gc_malloc(szelem);
 	    }
 
 	    for (; lo < hi; lo += szelem, hi -= szelem)
@@ -415,7 +427,7 @@ extern (C) Array _adReverse(Array a, int szelem)
 		//if (szelem > 16)
 		    // BUG: bad code is generate for delete pointer, tries
 		    // to call delclass.
-		    //delete tmp;
+		    //gc_free(tmp);
 	    }
 	}
 	return a;
@@ -573,7 +585,7 @@ extern (C) Array _adDup(Array a, int szelem)
 	Array r;
 
 	auto size = a.length * szelem;
-	r.ptr = cast(void *) new byte[size];
+	r.ptr = gc_malloc(size, szelem < (void*).sizeof ? BlkAttr.NO_SCAN : 0);
 	r.length = a.length;
 	memcpy(r.ptr, a.ptr, size);
 	return r;

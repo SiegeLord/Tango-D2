@@ -26,7 +26,22 @@
  *  Modified by Sean Kelly <sean@f4.ca> for use with the Ares project.
  */
 
-private import tango.stdc.string;
+private
+{
+    import tango.stdc.string;
+
+    enum BlkAttr : uint
+    {
+        FINALIZE = 0b0000_0001,
+        NO_SCAN  = 0b0000_0010,
+        NO_MOVE  = 0b0000_0100,
+        ALL_BITS = 0b1111_1111
+    }
+
+    extern (C) void* gc_malloc( size_t sz, uint ba = 0 );
+    extern (C) void* gc_calloc( size_t sz, uint ba = 0 );
+    extern (C) void  gc_free( void* p );
+}
 
 // Implementation of associative array
 // Auto-rehash and pre-allocate - Dave Fladebo
@@ -268,7 +283,10 @@ void* _aaGet(AA* aa, TypeInfo keyti, size_t valuesize, ...)
 
 	// Not found, create new elem
 	//printf("create new one\n");
-	e = cast(aaA *) cast(void*) new byte[aaA.sizeof + keysize + valuesize];
+	size_t size = aaA.sizeof + keysize + valuesize;
+	uint   bits = keysize   < (void*).sizeof &&
+	              valuesize < (void*).sizeof ? BlkAttr.NO_SCAN : 0;
+	e = cast(aaA *) gc_malloc(size, bits);
 	memcpy(e + 1, pkey, keysize);
 	e.hash = key_hash;
 	*pe = e;
@@ -481,7 +499,7 @@ long _aaValues(AA aa, size_t keysize, size_t valuesize)
 	if (aa.a)
 	{
 	    a.length = _aaLen(aa);
-	    a.ptr = new byte[a.length * valuesize];
+	    a.ptr = cast(byte*) gc_malloc(a.length * valuesize, valuesize < (void*).sizeof ? BlkAttr.NO_SCAN : 0);
 	    resi = 0;
 	    foreach (e; aa.a.b)
 	    {
@@ -618,7 +636,7 @@ long _aaKeys(AA aa, size_t keysize)
 	auto len = _aaLen(aa);
 	if (!len)
 	    return 0;
-	res = new byte[len * keysize];
+	res = (cast(byte*) gc_malloc(len * keysize, keysize < (void*).sizeof ? BlkAttr.NO_SCAN : 0))[0 .. len * keysize];
 	resi = 0;
 	foreach (e; aa.a.b)
 	{
