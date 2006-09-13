@@ -291,7 +291,7 @@ void *_aaGetp(AA* aa, TypeInfo keyti, size_t valuesize, void *pkey)
 	size_t size = aaA.sizeof + keysize + valuesize;
 	uint   bits = keysize   < (void*).sizeof &&
 	              valuesize < (void*).sizeof ? BlkAttr.NO_SCAN : 0;
-	e = cast(aaA *) gc_malloc(size, bits);
+	e = cast(aaA *) gc_calloc(size, bits);
 	memcpy(e + 1, pkey, keysize);
 	e.hash = key_hash;
 	*pe = e;
