@@ -52,7 +52,6 @@ tango\core\Interval.d
 tango\stdc\stdbool.d
 mango\net\http\server\HttpRequest.d
 tango\store\model\Seq.d
-tango\math\ieee.d
 tango\net\DatagramSocket.d
 tango\io\protocol\model\IWriter.d
 tango\store\TreeMap.d
