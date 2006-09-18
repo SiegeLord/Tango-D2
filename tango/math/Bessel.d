@@ -10,6 +10,7 @@
 module tango.math.Bessel;
 
 import tango.math.Core;
+private import tango.math.IEEE;
 
 private {
 /*
