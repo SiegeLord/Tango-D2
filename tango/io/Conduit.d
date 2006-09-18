@@ -215,17 +215,6 @@ class Conduit : IConduit, IConduitFilter
         }               
 
         /***********************************************************************
-        
-                Returns true if this conduit is text-based
-
-        ***********************************************************************/
-
-        bool isTextual ()
-        {
-                return false;
-        }               
-
-        /***********************************************************************
 
                 Transfer the content of another conduit to this one. Returns 
                 a reference to this class, and throws IOException on failure.
