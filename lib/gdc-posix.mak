@@ -18,7 +18,7 @@ CC=gcc
 LC=$(AR) -P -r -s -v
 DC=gdmd
 
-ADDFLAGS=-nostdinc -I../..
+ADDFLAGS=-q,-nostdinc -I`pwd`/.. -I`pwd`/compiler/gdc
 
 targets : lib doc
 all     : lib doc
@@ -36,8 +36,8 @@ ALL_DOCS=
 lib : $(ALL_OBJS)
 	make -C compiler/gdc
 	$(RM) compiler/gdc/config/*.o
-	make -C gc/basic -fposix.mak lib DC=$(DC) ADDFLAGS=$(ADDFLAGS)
-	make -C common -fposix.mak lib DC=$(DC) ADDFLAGS=$(ADDFLAGS)
+	make -C gc/basic -fposix.mak lib DC=$(DC) ADDFLAGS="$(ADDFLAGS)"
+	make -C common -fposix.mak lib DC=$(DC) ADDFLAGS="$(ADDFLAGS)"
 	find . -name "libgphobos*.a" | xargs $(RM)
 	$(LC) libgphobos.a `find ./compiler/gdc -name "*.o" | xargs echo`
 	$(LC) libgphobos.a `find ./gc/basic -name "*.o" | xargs echo`
@@ -61,7 +61,7 @@ clean :
 #	$(RM) libgphobos*.a
 
 install :
-	$(MD) $(LIB_DEST)
+	#$(MD) $(LIB_DEST)
 	#make -C compiler/gdc -flinux.mak install
 	make -C gc/basic -fposix.mak install DC=$(DC)
 	make -C common -fposix.mak install DC=$(DC)
