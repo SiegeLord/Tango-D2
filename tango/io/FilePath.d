@@ -378,11 +378,24 @@ class FilePathView
 
         /***********************************************************************
         
-                Return a zero terminated UTF8 version of this file path
+                Return a null terminated utf8 version of this file path, where
+                the length does not include the trailing null
 
         ***********************************************************************/
 
-        char[] toUtf8 (bool withNull = false)
+        override char[] toUtf8 ()
+        {
+                return toUtf8 (false);
+        }
+        
+        /***********************************************************************
+        
+                Return a null terminated utf8 version of this file path, where
+                the length optionally includes the trailing null
+                
+        ***********************************************************************/
+
+        char[] toUtf8 (bool withNull)
         {
                 if (fp.length is 0)
                    {
@@ -399,7 +412,8 @@ class FilePathView
 
         /***********************************************************************
         
-                Return a zero terminated UTF16 version of this file path
+                Return a null terminated utf16 version of this file path, where
+                the length optionally includes the trailing null
 
         ***********************************************************************/
 

@@ -24,25 +24,41 @@ public import   tango.io.File,
         ---
         void files (File file)
         {
-                Stdout (file.getPath) (CR);
+                Cout (file).newline;
         }
 
-        void dirs (FilePath path)
+        void dirs (FilePathView path)
         {
-                Stdout (path) (CR);
+                Cout (path).newline;
         }
 
-        FileScan scan = new FileScan;
+        auto scan = new FileScan;
 
         // find all files with a 'd' extension
-        scan ((args.length == 2) ? args[1] : ".", "d");
+        scan ((args.length is 2) ? args[1] : ".", "d");
 
-        Stdout ("directories:") (CR);
+        Cout ("directories:").newline;
         scan.directories (&dirs);
 
-        Stdout (CR) ("files:") (CR);
-        scan.files (&files);       
+        Cout ("files:").newline;
+        scan.files (&files);   
         ---
+
+        Using D implicit-delegate syntax, this can be also be written as
+
+        ---
+        auto scan = new FileScan;
+        
+        // find all files with a 'd' extension
+        scan ((args.length is 2) ? args[1] : ".", "d");
+
+        Cout ("Directories:").newline;
+        scan.directories ((FilePathView path) {Cout (path).newline;});
+
+        Cout ("Files:").newline;
+        scan.files ((File file) {Cout (file).newline;});
+        ---
+        
         
 *******************************************************************************/
 
@@ -124,7 +140,7 @@ class FileScan
         }
 
         /***********************************************************************
-
+        
                 Visit all directories found in the last scan. The delegate
                 should return false to terminate early.
 

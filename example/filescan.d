@@ -4,31 +4,20 @@ private import  tango.io.Console,
 /*******************************************************************************
 
         Recursively scan files and directories, adding filtered files to
-        an output structure as we go. Thanks to Chris S for this.
+        an output structure as we go. Thanks to Chris S for this
         
 *******************************************************************************/
 
 void main(char[][] args)
 {       
-        void files (File file)
-        {
-                Cout (file.toUtf8).newline;
-        }
-
-        void dirs (FilePath path)
-        {
-                Cout (path.toUtf8).newline;
-        }
-
-        char[] dir = (args.length == 2) ? args[1] : ".";
-
-        FileScan scan = new FileScan;
-        scan (dir, "d");
+        auto scan = new FileScan;
+        
+        scan ((args.length is 2) ? args[1] : ".", "d");
 
         Cout ("Directories:").newline;
-        scan.directories (&dirs);
+        scan.directories ((FilePathView path) {Cout (path).newline;});
 
         Cout ("\nFiles:").newline;
-        scan.files (&files);       
+        scan.files ((File file) {Cout (file).newline;});
 }
 
