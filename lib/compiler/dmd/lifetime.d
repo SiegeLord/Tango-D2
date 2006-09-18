@@ -222,6 +222,121 @@ extern (C) ulong _d_newarrayi(size_t length, size_t size, ...)
 /**
  *
  */
+ulong _d_newm(size_t size, int ndims, ...)
+{
+    ulong result;
+
+    debug printf("_d_newm(size = %d, ndims = %d)\n", size, ndims);
+
+    if (size == 0 || ndims == 0)
+        result = 0;
+    else
+    {   va_list q;
+        va_start!(int)(q, ndims);
+
+        void[] foo(size_t* pdim, int ndims)
+        {
+            size_t dim = *pdim;
+            void[] p;
+
+            if (ndims == 1)
+            {   p = gc_malloc(dim * size + 1, size < (void*).sizeof ? BlkAttr.NO_SCAN : 0)[0 .. dim];
+                memset(p.ptr, 0, dim * size + 1);
+            }
+            else
+            {
+                p = gc_malloc(dim * (void[]).sizeof + 1)[0 .. dim]; // always scan
+                for (int i = 0; i < dim; i++)
+                {
+                    (cast(void[]*)p.ptr)[i] = foo(pdim + 1, ndims - 1);
+                }
+            }
+            return p;
+        }
+
+        size_t* pdim = cast(size_t *)q;
+        result = cast(ulong)foo(pdim, ndims);
+        debug printf("result = %llx\n", result);
+
+        version (none)
+        {
+            for (int i = 0; i < ndims; i++)
+            {
+                printf("index %d: %d\n", i, va_arg!(int)(q));
+            }
+        }
+        va_end(q);
+    }
+    return result;
+}
+
+
+/**
+ *
+ */
+ulong _d_newarraymi(size_t size, int ndims, ...)
+{
+    ulong result;
+
+    debug printf("_d_newarraymi(size = %d, ndims = %d)\n", size, ndims);
+
+    if (size == 0 || ndims == 0)
+        result = 0;
+    else
+    {   void* pinit; // pointer to initializer
+        va_list q;
+        va_start!(int)(q, ndims);
+
+        void[] foo(size_t* pdim, int ndims)
+        {
+            size_t dim = *pdim;
+            void[] p;
+
+            if (ndims == 1)
+            {   p = gc_malloc(dim * size + 1, size < (void*).sizeof ? BlkAttr.NO_SCAN : 0)[0 .. dim];
+                if (size == 1)
+                    memset(p.ptr, *cast(ubyte*)pinit, dim);
+                else
+                {
+                    for (size_t u = 0; u < dim; u++)
+                    {
+                        memcpy(p.ptr + u * size, pinit, size);
+                    }
+                }
+            }
+            else
+            {
+                p = gc_malloc(dim * (void[]).sizeof + 1)[0 .. dim]; // always scan
+                for (int i = 0; i < dim; i++)
+                {
+                    (cast(void[]*)p.ptr)[i] = foo(pdim + 1, ndims - 1);
+                }
+            }
+            return p;
+        }
+
+        size_t* pdim = cast(size_t *)q;
+        pinit = pdim + ndims;
+        result = cast(ulong)foo(pdim, ndims);
+        debug printf("result = %llx\n", result);
+
+        version (none)
+        {
+            for (int i = 0; i < ndims; i++)
+            {
+                printf("index %d: %d\n", i, va_arg!(int)(q));
+                printf("init = %d\n", va_arg!(int)(q));
+            }
+        }
+        va_end(q);
+    }
+    return result;
+}
+
+
+/**
+ *
+ */
 extern (C) ulong _d_newbitarray(size_t length, bit value)
 {
     void* p;
@@ -340,7 +455,7 @@ extern (C) void cr_finalize(void* p, bool det = true)
 
 
 /**
- * Resize dynamic arrays other than bit[].
+ * Resize dynamic arrays with 0 initializers.
  */
 extern (C) byte[] _d_arraysetlength(size_t newlength, size_t sizeelem, Array *p)
 in
@@ -419,7 +534,8 @@ Loverflow:
 
 
 /**
- * For non-zero initializers
+ * Resize arrays for non-zero initializers.
+ * (obsolete, replaced by _d_arraysetlength3)
  */
 extern (C) byte[] _d_arraysetlength2(size_t newlength, size_t sizeelem, Array *p, ...)
 in
@@ -591,34 +707,146 @@ extern (C) long _d_arrayappend(Array *px, byte[] y, size_t size)
 /**
  *
  */
-extern (C) long _d_arrayappendb(Array *px, bit[] y)
+version (none)
 {
-    size_t cap       = gc_sizeOf(px.data);
-    size_t length    = px.length;
-    size_t newlength = length + y.length;
-    size_t newsize   = (newlength + 7) / 8;
-
-    if (newsize > cap)
+    extern (C) long _d_arrayappendb(Array *px, bit[] y)
     {
-        cap = newCapacity(newsize, 1);
-        assert(cap >= newsize);
-        void* newdata = gc_malloc(cap + 1, BlkAttr.NO_SCAN);
-        memcpy(newdata, px.data, (length + 7) / 8);
-        px.data = cast(byte*)newdata;
-    }
-    px.length = newlength;
-    if ((length & 7) == 0) // byte aligned, straightforward copy
-        memcpy(px.data + length / 8, y, (y.length + 7) / 8);
-    else
-    {
-        bit* x = cast(bit*)px.data;
+        size_t cap       = gc_sizeOf(px.data);
+        size_t length    = px.length;
+        size_t newlength = length + y.length;
+        size_t newsize   = (newlength + 7) / 8;
 
-        for (size_t u = 0; u < y.length; u++)
+        if (newsize > cap)
         {
-            x[length + u] = y[u];
+            cap = newCapacity(newsize, 1);
+            assert(cap >= newsize);
+            void* newdata = gc_malloc(cap + 1, BlkAttr.NO_SCAN);
+            memcpy(newdata, px.data, (length + 7) / 8);
+            px.data = cast(byte*)newdata;
+        }
+        px.length = newlength;
+        if ((length & 7) == 0) // byte aligned, straightforward copy
+            memcpy(px.data + length / 8, y, (y.length + 7) / 8);
+        else
+        {
+            bit* x = cast(bit*)px.data;
+
+            for (size_t u = 0; u < y.length; u++)
+            {
+                x[length + u] = y[u];
+            }
+        }
+        return *cast(long*)px;
+    }
+}
+
+
+/**
+ * Resize arrays for non-zero initializers.
+ *      p               pointer to array lvalue to be updated
+ *      newlength       new .length property of array
+ *      sizeelem        size of each element of array
+ *      initsize        size of initializer
+ *      ...             initializer
+ */
+extern (C) byte[] _d_arraysetlength3(size_t newlength, size_t sizeelem, Array *p, size_t initsize, ...)
+in
+{
+    assert(sizeelem);
+    assert(initsize);
+    assert(initsize <= sizeelem);
+    assert((sizeelem / initsize) * initsize == sizeelem);
+    assert(!p.length || p.data);
+}
+body
+{
+    byte* newdata;
+
+    debug
+    {
+        printf("_d_arraysetlength3(p = %p, sizeelem = %d, newlength = %d, initsize = %d)\n",
+               p, sizeelem, newlength, initsize);
+        if (p)
+        {
+            printf("\tp.data = %p, p.length = %d\n", p.data, p.length);
         }
     }
-    return *cast(long*)px;
+
+    if (newlength)
+    {
+        version (D_InlineAsm_X86)
+        {
+            size_t newsize = void;
+
+            asm
+            {
+                mov     EAX,newlength   ;
+                mul     EAX,sizeelem    ;
+                mov     newsize,EAX     ;
+                jc      Loverflow       ;
+            }
+        }
+        else
+        {
+            size_t newsize = sizeelem * newlength;
+
+            if (newsize / newlength != sizeelem)
+                goto Loverflow;
+        }
+
+        debug printf("newsize = %x, newlength = %x\n", newsize, newlength);
+
+        size_t size = p.length * sizeelem;
+        if (p.length)
+        {
+            newdata = p.data;
+            if (newlength > p.length)
+            {
+                size_t cap = gc_sizeOf(p.data);
+
+                if (cap <= newsize)
+                {
+                    newdata = cast(byte *) gc_malloc(newsize + 1, sizeelem < (void*).sizeof ? BlkAttr.NO_SCAN : 0);
+                    newdata[0 .. size] = p.data[0 .. size];
+                }
+            }
+        }
+        else
+        {
+            newdata = cast(byte *) gc_malloc(newsize + 1, sizeelem < (void*).sizeof ? BlkAttr.NO_SCAN : 0);
+        }
+
+        va_list q;
+        va_start!(size_t)(q, initsize); // q is pointer to initializer
+
+        if (newsize > size)
+        {
+            if (initsize == 1)
+            {
+                debug printf("newdata = %p, size = %d, newsize = %d, *q = %d\n",
+                             newdata, size, newsize, *cast(byte*)q);
+                newdata[size .. newsize] = *(cast(byte*)q);
+            }
+            else
+            {
+                for (size_t u = size; u < newsize; u += initsize)
+                {
+                    memcpy(newdata + u, q, initsize);
+                }
+            }
+        }
+    }
+    else
+    {
+        newdata = null;
+    }
+
+    p.data = newdata;
+    p.length = newlength;
+    return newdata[0 .. newlength];
+
+Loverflow:
+    onOutOfMemoryError();
 }
 
 
@@ -778,16 +1006,19 @@ body
 /**
  *
  */
-extern (C) bit[] _d_arrayappendcb(inout bit[] x, bit b)
+version (none)
 {
-    if (x.length & 7)
+    extern (C) bit[] _d_arrayappendcb(inout bit[] x, bit b)
     {
-        *cast(size_t *)&x = x.length + 1;
+        if (x.length & 7)
+        {
+            *cast(size_t *)&x = x.length + 1;
+        }
+        else
+        {
+            x.length = x.length + 1;
+        }
+        x[x.length - 1] = b;
+        return x;
     }
-    else
-    {
-        x.length = x.length + 1;
-    }
-    x[x.length - 1] = b;
-    return x;
 }

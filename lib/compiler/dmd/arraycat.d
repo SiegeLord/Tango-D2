@@ -29,6 +29,7 @@ private
 {
     import tango.stdc.string;
     import tango.stdc.stdbool; // TODO: remove this when the old bit code goes away
+    import tango.stdc.stdarg;
 
     enum BlkAttr : uint
     {
@@ -190,3 +191,37 @@ bit[] _d_arraysetbit2(bit[] ba, bit value)
     return ba;
 }
 
+void* _d_arrayliteral(size_t size, size_t length, ...)
+{
+    byte[] result;
+
+    //printf("_d_arrayliteral(size = %d, length = %d)\n", size, length);
+    if (length == 0 || size == 0)
+	result = null;
+    else
+    {
+	result = (cast(byte*) gc_malloc(length * size, size < (void*).sizeof ? BlkAttr.NO_SCAN : 0))[0 .. length * size];
+	*cast(size_t *)&result = length;	// jam length
+
+	va_list q;
+	va_start!(size_t)(q, length);
+
+	size_t stacksize = (size + int.sizeof - 1) & ~(int.sizeof - 1);
+
+	if (stacksize == size)
+	{
+	    memcpy(result.ptr, q, length * size);
+	}
+	else
+	{
+	    for (size_t i = 0; i < length; i++)
+	    {
+		memcpy(result.ptr + i * size, q, size);
+		q += stacksize;
+	    }
+	}
+
+	va_end(q);
+    }
+    return result.ptr;
+}

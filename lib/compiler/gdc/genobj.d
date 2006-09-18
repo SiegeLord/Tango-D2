@@ -556,6 +556,7 @@ class TypeInfo_Struct : TypeInfo
     hash_t function(void*) xtoHash;
     int function(void*,void*) xopEquals;
     int function(void*,void*) xopCmp;
+    char[] function(void*) xtoString;
 }
 
 class Exception : Object

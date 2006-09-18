@@ -98,6 +98,7 @@ class TypeInfo_Struct : TypeInfo
     uint function(void*)      xtoHash;
     int function(void*,void*) xopEquals;
     int function(void*,void*) xopCmp;
+    char[] function(void*)    xtoString;
 }
 
 class Exception : Object
