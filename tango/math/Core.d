@@ -36,6 +36,7 @@
 /**
  * Macros:
  *  NAN = $(RED NAN)
+ *  TEXTNAN = $(RED NAN:$1 )
  *  SUP = <span style="vertical-align:super;font-size:smaller">$0</span>
  *  GAMMA =  &#915;
  *  INTEGRAL = &#8747;
@@ -222,7 +223,7 @@ real sin(real x) /* intrinsic */
  *  <tr> <th> x               <th> tan(x)      <th> invalid?
  *  <tr> <td> $(NAN)          <td> $(NAN)      <td> yes
  *  <tr> <td> &plusmn;0.0     <td> &plusmn;0.0 <td> no
- *  <tr> <td> &plusmn;&infin; <td> $(NAN)      <td> yes
+ *  <tr> <td> &plusmn;&infin; <td> $(TEXTNAN tanINF) <td> yes
  *  )
  */
 real tan(real x)
@@ -252,9 +253,10 @@ SC17:   fprem1          ;
     jmp SC18            ;
 
 trigerr:
-    fstp    ST(0)       ; // dump theta
+    jnp Lret            ; // if x is NaN, return x.
+    fstp    ST(0)       ; // dump x, which will be infinity
     }
-    return real.nan;
+    return NaN("tanINF");
 
 Lret:
     ;
@@ -305,7 +307,6 @@ bool mfeq(real x, real y, real precision)
         // overflow
         [   real.infinity,  real.nan],
         [   real.nan,   real.nan],
-//        [   1e+100,     real.nan], // This test fails!
     ];
     int i;
 
@@ -326,6 +327,8 @@ bool mfeq(real x, real y, real precision)
     if (isNaN(r)) assert(isNaN(t));
     else assert(mfeq(r, t, .0000001));
     }
+    assert(isIdentical(tan(NaN("abc")), NaN("abc")));
+    assert(isIdentical(tan(real.infinity), NaN("tanINF")));
 }
 
 /**
@@ -800,14 +803,13 @@ real pow(real x, uint n)
 
     default:
         p = 1.0;
-        while (1)
-        {
-        if (n & 1)
-            p *= x;
-        n >>= 1;
-        if (!n)
-            break;
-        x *= x;
+        while (1){
+            if (n & 1)
+                p *= x;
+            n >>= 1;
+            if (!n)
+                break;
+            x *= x;
         }
         break;
     }
@@ -817,10 +819,8 @@ real pow(real x, uint n)
 /** ditto */
 real pow(real x, int n)
 {
-    if (n < 0)
-    return pow(x, cast(real)n);
-    else
-    return pow(x, cast(uint)n);
+    if (n < 0) return pow(x, cast(real)n);
+    else return pow(x, cast(uint)n);
 }
 
 /**
@@ -880,80 +880,81 @@ real pow(real x, real y)
     {
         if (tango.math.IEEE.fabs(x) > 1)
         {
-        if (signbit(y))
-            return +0.0;
-        else
-            return real.infinity;
+            if (signbit(y))
+                return +0.0;
+            else
+                return real.infinity;
         }
         else if (tango.math.IEEE.fabs(x) == 1)
         {
-        return real.nan;
+            return real.nan;
         }
         else // < 1
         {
-        if (signbit(y))
-            return real.infinity;
-        else
-            return +0.0;
+            if (signbit(y))
+                return real.infinity;
+            else
+                return +0.0;
         }
     }
     if (isInfinity(x))
     {
         if (signbit(x))
-        {   long i;
-
-        i = cast(long)y;
-        if (y > 0)
         {
-            if (i == y && i & 1)
-            return -real.infinity;
-            else
-            return real.infinity;
-        }
-        else if (y < 0)
-        {
-            if (i == y && i & 1)
-            return -0.0;
-            else
-            return +0.0;
-        }
+            long i;
+            i = cast(long)y;
+            if (y > 0)
+            {
+                if (i == y && i & 1)
+                return -real.infinity;
+                else
+                return real.infinity;
+            }
+            else if (y < 0)
+            {
+                if (i == y && i & 1)
+                return -0.0;
+                else
+                return +0.0;
+            }
         }
         else
         {
-        if (y > 0)
-            return real.infinity;
-        else if (y < 0)
-            return +0.0;
+            if (y > 0)
+                return real.infinity;
+            else if (y < 0)
+                return +0.0;
         }
     }
 
     if (x == 0.0)
     {
         if (signbit(x))
-        {   long i;
+        {
+            long i;
 
-        i = cast(long)y;
-        if (y > 0)
-        {
-            if (i == y && i & 1)
-            return -0.0;
-            else
-            return +0.0;
-        }
-        else if (y < 0)
-        {
-            if (i == y && i & 1)
-            return -real.infinity;
-            else
-            return real.infinity;
-        }
+            i = cast(long)y;
+            if (y > 0)
+            {
+                if (i == y && i & 1)
+                return -0.0;
+                else
+                return +0.0;
+            }
+            else if (y < 0)
+            {
+                if (i == y && i & 1)
+                return -real.infinity;
+                else
+                return real.infinity;
+            }
         }
         else
         {
-        if (y > 0)
-            return +0.0;
-        else if (y < 0)
-            return real.infinity;
+            if (y > 0)
+                return +0.0;
+            else if (y < 0)
+                return real.infinity;
         }
     }
     }
@@ -1158,14 +1159,14 @@ body
     }
     else
     {
-    int i = A.length - 1;
-    real r = A[i];
-    while (--i >= 0)
-    {
-        r *= x;
-        r += A[i];
-    }
-    return r;
+        int i = A.length - 1;
+        real r = A[i];
+        while (--i >= 0)
+        {
+            r *= x;
+            r += A[i];
+        }
+        return r;
     }
 }
 
