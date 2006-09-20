@@ -538,6 +538,10 @@ real fabs(real x) /* intrinsic */
     }
 }
 
+unittest {
+    assert(isIdentical(fabs(NaN("abc")), NaN("abc")));
+}
+
 /**
  * Returns (x * y) + z, rounding only once according to the
  * current rounding mode.
@@ -554,7 +558,7 @@ real fma(real x, real y, real z)
  * almost twice as fast as calculating sin(y) and cos(y)
  * seperately, and is the preferred method when both are required.
  */
-creal expi(ireal y)
+creal expi(real y)
 {
     version(D_InlineAsm_X86)
     {
@@ -567,15 +571,15 @@ creal expi(ireal y)
     }
     else
     {
-        return tango.stdc.math.cosl(y.im) + tango.stdc.math.sinl(y.im)*1i;
+        return tango.stdc.math.cosl(y) + tango.stdc.math.sinl(y)*1i;
     }
 }
 
 version(UnitTest) {
 unittest
 {
-    assert(expi(1.3e5Li)==tango.stdc.math.cosl(1.3e5L) + tango.stdc.math.sinl(1.3e5L)*1i);
-    assert(expi(0.0Li)==1L+0.0Li);
+    assert(expi(1.3e5L)==tango.stdc.math.cosl(1.3e5L) + tango.stdc.math.sinl(1.3e5L)*1i);
+    assert(expi(0.0L)==1L+0.0Li);
 }
 }
 
@@ -838,7 +842,7 @@ real nextUp(real x)
 
 version(UnitTest) {
 unittest {
-    assert( isNaN(nextUp(real.nan)));
+    assert(isIdentical(nextUp(NaN("abc")), NaN("abc")));
     // negative numbers
     assert( nextUp(-real.infinity) == -real.max );
     assert( nextUp(-1-real.epsilon) == -1.0 );

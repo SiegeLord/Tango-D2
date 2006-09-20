@@ -187,6 +187,11 @@ real cos(real x) /* intrinsic */
     }
 }
 
+unittest {
+    // NaN payloads
+    assert(isIdentical(cos(NaN("abc")), NaN("abc")));
+}
+
 /**
  * Returns sine of x. x is in radians.
  *
@@ -215,6 +220,10 @@ real sin(real x) /* intrinsic */
     }
 }
 
+unittest {
+    // NaN payloads
+    assert(isIdentical(sin(NaN("abc")), NaN("abc")));
+}
 
 /**
  * Returns tangent of x. x is in radians.
@@ -331,6 +340,54 @@ bool mfeq(real x, real y, real precision)
     assert(isIdentical(tan(real.infinity), NaN("tanINF")));
 }
 
+/***********************************
+ *  sine, complex and imaginary
+ *
+ *  sin(z) = sin(z.re)*cosh(z.im) + cos(z.re)*sinh(z.im)i
+ *
+ * If both sin(&theta;) and cos(&theta;) are required,
+ * it is most efficient to use expi(&theta).
+ */
+creal sin(creal z)
+{
+  creal cs = expi(z.re);
+  return cs.im * cosh(z.im) + cs.re * sinh(z.im) * 1i;
+}
+
+/** ditto */
+ireal sin(ireal y)
+{
+  return cosh(y.im)*1i;
+}
+
+unittest {
+  assert(sin(0.0+0.0i) == 0.0);
+  assert(sin(2.0+0.0i) == sin(2.0L) );
+}
+
+/***********************************
+ *  cosine, complex and imaginary
+ *
+ *  cos(z) = cos(z.re)*cosh(z.im) + sin(z.re)*sinh(z.im)i
+ */
+creal cos(creal z)
+{
+  creal cs = expi(z.re);
+  return cs.re * cosh(z.im) + cs.im * sinh(z.im) * 1i;
+}
+
+/** ditto */
+real cos(ireal y)
+{
+  return cosh(y.im);
+}
+
+unittest{
+  assert(cos(0.0+0.0i)==1.0);
+  assert(cos(1.3L+0.0i)==cos(1.3L));
+  assert(cos(5.2Li)== cosh(5.2L));
+}
+
 /**
  * Calculates the arc cosine of x,
  * returning a value ranging from -&pi;/2 to &pi;/2.
@@ -346,6 +403,12 @@ real acos(real x)
 {
     return tango.stdc.math.acosl(x);
 }
+
+unittest {
+    // NaN payloads
+    assert(isIdentical(acos(NaN("abc")), NaN("abc")));
+}
+
 
 /**
  * Calculates the arc sine of x,
@@ -363,6 +426,12 @@ real asin(real x)
     return tango.stdc.math.asinl(x);
 }
 
+unittest {
+    // NaN payloads
+    assert(isIdentical(asin(NaN("abc")), NaN("abc")));
+}
+
+
 /**
  * Calculates the arc tangent of x,
  * returning a value ranging from -&pi;/2 to &pi;/2.
@@ -377,6 +446,12 @@ real atan(real x)
 {
     return tango.stdc.math.atanl(x);
 }
+
+unittest {
+    // NaN payloads
+    assert(isIdentical(atan(NaN("abc")), NaN("abc")));
+}
+
 
 /**
  * Calculates the arc tangent of y / x,
@@ -404,6 +479,39 @@ real atan2(real x, real y)
     return tango.stdc.math.atan2l(x,y);
 }
 
+unittest {
+    // NaN payloads
+    assert(isIdentical(atan2(5.3, NaN("abc")), NaN("abc")));
+    assert(isIdentical(atan2(NaN("abc"), 2.18), NaN("abc")));
+}
+
+/***********************************
+ * Complex inverse sine
+ *
+ * asin(z) = -i log( sqrt(1-$(POWER z, 2)) + iz)
+ * where both log and sqrt are complex.
+ */
+creal asin(creal z)
+{
+    return -log(sqrt(1-z*z) + z*1i)*1i;
+}
+
+unittest {
+//   writefln(sin(0+0i), "   ", asin(sin(0+0i)));
+   assert(asin(sin(0+0i)) == 0 + 0i);
+}
+
+/***********************************
+ * Complex inverse cosine
+ *
+ * acos(z) = &pi/2 - asin(z)
+ */
+creal acos(creal z)
+{
+    return PI_2 - asin(z);
+}
+
+
 /**
  * Calculates the hyperbolic cosine of x.
  *
@@ -416,6 +524,12 @@ real cosh(real x)
 {
     return tango.stdc.math.coshl(x);
 }
+
+unittest {
+    // NaN payloads
+    assert(isIdentical(cosh(NaN("abc")), NaN("abc")));
+}
+
 
 /**
  * Calculates the hyperbolic sine of x.
@@ -431,6 +545,12 @@ real sinh(real x)
     return tango.stdc.math.sinhl(x);
 }
 
+unittest {
+    // NaN payloads
+    assert(isIdentical(sinh(NaN("abc")), NaN("abc")));
+}
+
+
 /**
  * Calculates the hyperbolic tangent of x.
  *
@@ -444,6 +564,57 @@ real tanh(real x)
 {
     return tango.stdc.math.tanhl(x);
 }
+
+unittest {
+    // NaN payloads
+    assert(isIdentical(tanh(NaN("abc")), NaN("abc")));
+}
+
+
+/***********************************
+ *  hyperbolic sine, complex and imaginary
+ *
+ *  sinh(z) = cos(z.im)*sinh(z.re) + sin(z.im)*cosh(z.re)i
+ */
+creal sinh(creal z)
+{
+  creal cs = expi(z.im);
+  return cs.re * sinh(z.re) + cs.im * cosh(z.re) * 1i;
+}
+
+/** ditto */
+ireal sinh(ireal y)
+{
+  return sin(y.im)*1i;
+}
+
+unittest {
+  assert(sinh(4.2L + 0i)==sinh(4.2L));
+}
+
+
+/***********************************
+ *  hyperbolic cosine, complex and imaginary
+ *
+ *  cosh(z) = cos(z.im)*cosh(z.re) + sin(z.im)*sinh(z.re)i
+ */
+creal cosh(creal z)
+{
+  creal cs = expi(z.im);
+  return cs.re * cosh(z.re) + cs.im * sinh(z.re) * 1i;
+}
+
+/** ditto */
+real cosh(ireal y)
+{
+  return cos(y.im);
+}
+
+unittest {
+  assert(cosh(8.3L + 0i)==cosh(8.3L));
+}
+
+
 
 /**
  * Calculates the inverse hyperbolic cosine of x.
@@ -476,6 +647,8 @@ unittest
     assert(isNaN(acosh(real.nan)));
     assert(acosh(1)==0.0);
     assert(acosh(real.infinity) == real.infinity);
+    // NaN payloads
+    assert(isIdentical(acosh(NaN("abc")), NaN("abc")));
 }
 
 /**
@@ -512,6 +685,8 @@ unittest
     assert(asinh(real.infinity) == real.infinity);
     assert(asinh(-real.infinity) == -real.infinity);
     assert(isNaN(asinh(real.nan)));
+    // NaN payloads
+    assert(isIdentical(asinh(NaN("abc")), NaN("abc")));
 }
 
 /**
@@ -545,7 +720,10 @@ unittest
     assert(isIdentical(atanh(-1),-real.infinity));
     assert(isIdentical(atanh(1),real.infinity));
     assert(isNaN(atanh(-real.infinity)));
+    // NaN payloads
+    assert(isIdentical(atanh(NaN("abc")), NaN("abc")));
 }
+
 
 /*
  * Powers and Roots
@@ -649,6 +827,12 @@ creal sqrt(creal z) /// ditto
     return c;
 }
 
+unittest {
+    // NaN payloads
+    assert(isIdentical(sqrt(NaN("abc")), NaN("abc")));
+}
+
+
 /**
  * Calculates the cube root of x.
  *
@@ -664,6 +848,13 @@ real cbrt(real x)
     return tango.stdc.math.cbrtl(x);
 }
 
+
+unittest {
+    // NaN payloads
+    assert(isIdentical(cbrt(NaN("abc")), NaN("abc")));
+}
+
+
 /**
  * Calculates e$(SUP x).
  *
@@ -677,6 +868,12 @@ real exp(real x)
 {
     return tango.stdc.math.expl(x);
 }
+
+unittest {
+    // NaN payloads
+    assert(isIdentical(exp(NaN("abc")), NaN("abc")));
+}
+
 
 /**
  * Calculates the value of the natural logarithm base (e)
@@ -697,6 +894,12 @@ real expm1(real x)
     return tango.stdc.math.expm1l(x);
 }
 
+unittest {
+    // NaN payloads
+    assert(isIdentical(expm1(NaN("abc")), NaN("abc")));
+}
+
+
 /**
  * Calculates 2$(SUP x).
  *
@@ -710,6 +913,12 @@ real exp2(real x)
 {
     return tango.stdc.math.exp2l(x);
 }
+
+unittest {
+    // NaN payloads
+    assert(isIdentical(exp2(NaN("abc")), NaN("abc")));
+}
+
 
 /*
  * Powers and Roots
@@ -730,6 +939,12 @@ real log(real x)
     return tango.stdc.math.logl(x);
 }
 
+unittest {
+    // NaN payloads
+    assert(isIdentical(log(NaN("abc")), NaN("abc")));
+}
+
+
 /**
  *  Calculates the natural logarithm of 1 + x.
  *
@@ -749,6 +964,12 @@ real log1p(real x)
     return tango.stdc.math.log1pl(x);
 }
 
+unittest {
+    // NaN payloads
+    assert(isIdentical(log1p(NaN("abc")), NaN("abc")));
+}
+
+
 /**
  * Calculates the base-2 logarithm of x:
  * log<sub>2</sub>x
@@ -765,6 +986,12 @@ real log2(real x)
     return tango.stdc.math.log2l(x);
 }
 
+unittest {
+    // NaN payloads
+    assert(isIdentical(log2(NaN("abc")), NaN("abc")));
+}
+
+
 /**
  * Calculate the base-10 logarithm of x.
  *
@@ -778,6 +1005,82 @@ real log2(real x)
 real log10(real x)
 {
     return tango.stdc.math.log10l(x);
+}
+
+unittest {
+    // NaN payloads
+    assert(isIdentical(log10(NaN("abc")), NaN("abc")));
+}
+
+/***********************************
+ * Exponential, complex and imaginary
+ *
+ * For complex numbers, the exponential function is defined as
+ *
+ *  exp(z) = exp(z.re)cos(z.im) + exp(z.re)sin(z.im)i.
+ *
+ *  For a pure imaginary argument,
+ *  exp(&theta;i)  = cos(&theta;) + sin(&theta;)i.
+ *
+ */
+creal exp(ireal y)
+{
+   return expi(y.im);
+}
+
+/** ditto */
+creal exp(creal z)
+{
+  return expi(z.im) * exp(z.re);
+}
+
+unittest {
+    assert(exp(1.3e5Li)==cos(1.3e5L)+sin(1.3e5L)*1i);
+    assert(exp(0.0Li)==1L+0.0Li);
+    assert(exp(7.2 + 0.0i) == exp(7.2L));
+    creal c = exp(ireal.nan);
+    assert(isNaN(c.re) && isNaN(c.im));
+    c = exp(ireal.infinity);
+    assert(isNaN(c.re) && isNaN(c.im));
+}
+
+/***********************************
+ *  Natural logarithm, complex
+ *
+ * Returns complex logarithm to the base e (2.718...) of
+ * the complex argument x.
+ *
+ * If z = x + iy, then
+ *       log(z) = log(abs(z)) + i arctan(y/x).
+ *
+ * The arctangent ranges from -PI to +PI.
+ * There are branch cuts along both the negative real and negative
+ * imaginary axes. For pure imaginary arguments, use one of the
+ * following forms, depending on which branch is required.
+ * ------------
+ *    log( 0.0 + yi) = log(-y) + PI_2i  // y<=-0.0
+ *    log(-0.0 + yi) = log(-y) - PI_2i  // y<=-0.0
+ * ------------
+ */
+creal log(creal z)
+{
+  return log(abs(z)) + atan2(z.im, z.re)*1i;
+}
+
+unittest {
+    /*
+ * feqrel for complex numbers. Returns the worst relative
+ * equality of the two components.
+ */
+int cfeqrel(creal a, creal b)
+{
+    int intmin(int a, int b) { return a<b? a: b; }
+    return intmin(feqrel(a.re, b.re), feqrel(a.im, b.im));
+}
+
+  assert(log(3.0L +0i) == log(3.0L)+0i);
+  assert(cfeqrel(log(0.0L-2i),( log(2.0L)-PI_2*1i)) >= real.mant_dig-10);
+  assert(cfeqrel(log(0.0L+2i),( log(2.0L)+PI_2*1i)) >= real.mant_dig-10);
 }
 
 /**
@@ -970,6 +1273,8 @@ unittest
     assert(pow(x,2) == x * x);
     assert(pow(x,3) == x * x * x);
     assert(pow(x,8) == (x * x) * (x * x) * (x * x) * (x * x));
+    // NaN payloads
+    assert(isIdentical(pow(NaN("abc"), 19), NaN("abc")));
 }
 
 /**
@@ -1082,6 +1387,9 @@ unittest
 //    printf("hypot(%La, %La) = %La, should be %La\n", x, y, h, z);
         assert(isIdentical(z, h));
     }
+    // NaN payloads
+    assert(isIdentical(hypot(NaN("abc"), 3.14), NaN("abc")));
+    assert(isIdentical(hypot(7.6e39, NaN("abc")), NaN("abc")));
 }
 
 /**
@@ -1179,6 +1487,9 @@ unittest
     real compiler_bugfix_DMD166 = poly(x, pp); // otherwise assert fails
 
     assert( poly(x, pp) == (56.1L + (32.7L + 6L * x) * x) );
+
+    assert(isIdentical(poly(NaN("abc"), pp), NaN("abc")));
+
 }
 
 /*
@@ -1194,6 +1505,10 @@ real floor(real x)
     return tango.stdc.math.floorl(x);
 }
 
+unittest {
+    assert(isIdentical(floor(NaN("abc")), NaN("abc")));
+}
+
 /**
  * Returns the value of x rounded upward to the next integer
  * (toward positive infinity).
@@ -1201,6 +1516,10 @@ real floor(real x)
 real ceil(real x)
 {
     return tango.stdc.math.ceill(x);
+}
+
+unittest {
+    assert(isIdentical(ceil(NaN("abc")), NaN("abc")));
 }
 
 /**
@@ -1213,6 +1532,11 @@ real round(real x)
     return tango.stdc.math.roundl(x);
 }
 
+unittest {
+    assert(isIdentical(round(NaN("abc")), NaN("abc")));
+}
+
+
 /**
  * Returns the integer portion of x, dropping the fractional portion.
  *
@@ -1222,6 +1546,11 @@ real trunc(real x)
 {
     return tango.stdc.math.truncl(x);
 }
+
+unittest {
+    assert(isIdentical(trunc(NaN("abc")), NaN("abc")));
+}
+
 
 /**
 * Rounds x to the nearest int or long.
