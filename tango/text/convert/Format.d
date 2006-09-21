@@ -15,11 +15,11 @@ Formatter.format("General: {0} Hexadecimal: 0x{0:x4} Numeric: {0:N}", 1000);
 /+ Not yet implemented +/ // appropriate for Germany.
 /+ Not yet implemented +/ Formatter.format(Culture.getCulture("de-DE"), "{0:#,#}", 12345678);
 /+ Not yet implemented +/ // -> 12.345.678
-/+ Not yet implemented +/ 
+/+ Not yet implemented +/
 /+ Not yet implemented +/ // Format as a monetary value appropriate for Spain.
 /+ Not yet implemented +/ Formatter.format(Culture.getCulture("es-ES"), "{0:C}", 59.99);
 /+ Not yet implemented +/ // -> 59,99 €
-/+ Not yet implemented +/ 
+/+ Not yet implemented +/
 /+ Not yet implemented +/ // Format today's date as appropriate for France.
 /+ Not yet implemented +/ Formatter.format(Culture.getCulture("fr-FR"), "{0:D}", DateTime.today);
 /+ Not yet implemented +/ // -> vendredi 3 mars 2006
@@ -28,7 +28,12 @@ Formatter.format("General: {0} Hexadecimal: 0x{0:x4} Numeric: {0:N}", 1000);
 module tango.text.convert.Format;
 
 // enable floating point support
-version = mlfp; 
+version = mlfp;
+
+version (mlfp)
+{
+    import tango.math.IEEE;
+}
 
 /+
 import tango.io.Console;
@@ -97,7 +102,7 @@ version (mlfp)
 
 *******************************************************************************/
 
-private enum TypeCode 
+private enum TypeCode
         {
         EMPTY = 0,
         BOOL = 'x',
@@ -376,16 +381,16 @@ public struct Formatter
 
                 while (true)
                       {
-                      while (s < end && *s != '{') 
+                      while (s < end && *s != '{')
                              ++s;
 
                       // emit fragment
-                      length += sink (fragment [0 .. s - fragment]); 
+                      length += sink (fragment [0 .. s - fragment]);
 
                       // all done?
                       if (s is end)
                           break;
-                          
+
                       // check for "{{" and skip if so
                       if (*++s is '{')
                          {
@@ -393,7 +398,7 @@ public struct Formatter
                          continue;
                          }
 
-                      // extract index 
+                      // extract index
                       int index;
                       while (*s >= '0' && *s <= '9')
                              index = index * 10 + *s++ -'0';
@@ -401,7 +406,7 @@ public struct Formatter
                       // skip spaces
                       while (s < end && *s is ' ')
                              ++s;
-                      
+
                       int  width;
                       bool leftAlign;
 
@@ -423,8 +428,8 @@ public struct Formatter
                          // skip spaces
                          while (s < end && *s is ' ')
                                 ++s;
-                         }    
-                      
+                         }
+
                       char[] format;
 
                       // has a format string?
@@ -436,12 +441,12 @@ public struct Formatter
                          while (s < end && *s != '}')
                                 ++s;
                          format = fs [0 .. s - fs];
-                         }   
-                        
+                         }
+
                       // insist on a closing brace
                       if (*s != '}')
                           throw new Exception ("Invalid format string in Formatter.parse()");
-                        
+
                       // next char is start of following fragment
                       fragment = ++s;
 
@@ -453,10 +458,10 @@ public struct Formatter
                       // if not left aligned, pad out with spaces
                       if (! leftAlign && padding > 0)
                             length += spaces (sink, padding);
-         
+
                       // emit formatted argument
                       length += sink (str);
-        
+
                       // finally, pad out on right
                       if (leftAlign && padding > 0)
                           length += spaces (sink, padding);
@@ -471,7 +476,7 @@ public struct Formatter
         **********************************************************************/
 
         struct Result
-        {       
+        {
                 private uint index;
                 private char[] target_;
 
@@ -544,55 +549,55 @@ private char[] formatArgument (inout Formatter.Result result, char[] format, ino
                         return *cast(char[]*)arg.getValue();
 
                     return arg.getType().toUtf8();
-        
+
                case TypeCode.BOOL:
                     return *cast(bool*)arg.getValue() ? "True" : "False";
-        
+
                case TypeCode.UBYTE:
                     return formatInteger(result, cast(long)*cast(ubyte*)arg.getValue(), format, service);
-        
+
                case TypeCode.BYTE:
                     return formatInteger(result, cast(long)*cast(byte*)arg.getValue(), format, service);
-        
+
                case TypeCode.USHORT:
                     return formatInteger(result, cast(long)*cast(ushort*)arg.getValue(), format, service);
-        
+
                case TypeCode.SHORT:
                     return formatInteger(result, cast(long)*cast(short*)arg.getValue(), format, service);
-        
+
                case TypeCode.UINT:
                     return formatInteger(result, cast(long)*cast(uint*)arg.getValue(), format, service);
-        
+
                case TypeCode.INT:
                     return formatInteger(result, cast(long)*cast(int*)arg.getValue(), format, service);
-        
+
                case TypeCode.ULONG:
                     return formatInteger(result, cast(long)*cast(ulong*)arg.getValue(), format, service);
-        
+
                case TypeCode.LONG:
                     return formatInteger(result, *cast(long*)arg.getValue(), format, service);
-        
+
                version (mlfp)
                        {
                        case TypeCode.FLOAT:
                             return formatDouble(result, cast(double) *cast(float*) arg.getValue(), format, service);
-        
+
                        case TypeCode.DOUBLE:
                             return formatDouble(result, *cast(double*) arg.getValue(), format, service);
-        
+
                        case TypeCode.REAL:
                             return formatDouble(result, cast(double) *cast(real*) arg.getValue(), format, service);
                        }
-        
+
                case TypeCode.CHAR:
                     return (cast(char*)arg.getValue())[0..1];
-        
+
                case TypeCode.CLASS:
                     return (*cast(Object*)arg.getValue()).toUtf8();
-        
+
                case TypeCode.POINTER:
                     return arg.getType().toUtf8();
-        
+
                case TypeCode.TYPEDEF:
                     arg.setType ((cast(TypeInfo_Typedef) arg.getType).base);
                     return formatArgument (result, format, arg, service);
@@ -600,7 +605,7 @@ private char[] formatArgument (inout Formatter.Result result, char[] format, ino
                default:
                     break;
                }
-        
+
         // For everything else, return an empty string.
         return "<unknown argument type>";
 }
@@ -696,7 +701,7 @@ private struct Number
         version (mlfp)
         private bool toDouble(out double value)
         {
-                const   ulong[] pow10 = 
+                const   ulong[] pow10 =
                         [
                         0xa000000000000000UL,
                         0xc800000000000000UL,
@@ -750,13 +755,13 @@ private struct Number
                         0x81842f29f2cce373UL,
                         0x8fcac257558ee4e2UL,
                         ];
-        
-                const   uint[] pow10Exp = 
+
+                const   uint[] pow10Exp =
                         [
                         4, 7, 10, 14, 17, 20, 24, 27, 30, 34,
                         37, 40, 44, 47, 50, 54, 107, 160, 213, 266,
                         319, 373, 426, 479, 532, 585, 638, 691, 745, 798,
-                        851, 904, 957, 1010, 1064, 1117 
+                        851, 904, 957, 1010, 1064, 1117
                         ];
 
                 uint getDigits(char* p, int len)
@@ -797,7 +802,7 @@ private struct Number
 
                 // If the digits consist of nothing but zeros...
                 if (left == 0)
-                   {       
+                   {
                    value = 0.0;
                    return true;
                    }
@@ -873,7 +878,7 @@ private struct Number
                       bits <<= 1;
                       bexp--;
                       }
-                   } 
+                   }
 
                 // Round and scale.
                 if (cast(uint)bits & (1 << 10) != 0)
@@ -1079,7 +1084,7 @@ private struct Number
                       int groupSize = groupSizesTotal;
                       int digitsTotal = pos + ((extra < 0) ? extra : 0);
                       int digitCount = (first > digitsTotal) ? first : digitsTotal;
-        
+
                       int sizeIndex;
                       while (digitCount > groupSizesTotal)
                             {
@@ -1113,7 +1118,7 @@ private struct Number
                          while (extra > 0)
                                {
                                result ~= (*p != '\0') ? *p++ : '0';
-        
+
                                if (hasGroups && pos > 1 && groupIndex >= 0)
                                   {
                                   if (pos == groupPositions[groupIndex] + 1)
@@ -1142,7 +1147,7 @@ private struct Number
                                   if (c != char.init)
                                      {
                                      result ~= c;
-        
+
                                      if (hasGroups && pos > 1 && groupIndex >= 0)
                                         {
                                         if (pos == groupPositions[groupIndex] + 1)
@@ -1199,10 +1204,10 @@ private struct Number
                        index++;
 
                 if (index == pos && digits[index] >= '5')
-                   {       
+                   {
                    while (index > 0 && digits[index - 1] == '9')
                           index--;
-                   
+
                    if (index > 0)
                        digits[index - 1]++;
                    else
@@ -1220,7 +1225,7 @@ private struct Number
                    {
                    scale = 0;
                    sign = false;
-                   }       
+                   }
 
                 digits[index] = '\0';
         }
@@ -1235,23 +1240,23 @@ private struct Number
 private const   char[] positiveNumberFormat = "#";
 
 // Must match NumberFormat.decimalNegativePattern
-private const   char[][] negativeNumberFormats = 
-                [ 
-                "(#)", "-#", "- #", "#-", "# -" 
+private const   char[][] negativeNumberFormats =
+                [
+                "(#)", "-#", "- #", "#-", "# -"
                 ];
 
 // Must match NumberFormat.currencyPositivePattern
-private const   char[][] positiveCurrencyFormats = 
-                [ 
-                "$#", "#$", "$ #", "# $" 
+private const   char[][] positiveCurrencyFormats =
+                [
+                "$#", "#$", "$ #", "# $"
                 ];
 
 // Must match NumberFormat.currencyNegativePattern
-private const   char[][] negativeCurrencyFormats = 
-                [ 
-                "($#)", "-$#", "$-#", "$#-", "(#$)", 
-                "-#$", "#-$", "#$-", "-# $", "-$ #", 
-                "# $-", "$ #-", "$ -#", "#- $", "($ #)", "(# $)" 
+private const   char[][] negativeCurrencyFormats =
+                [
+                "($#)", "-$#", "$-#", "$#-", "(#$)",
+                "-#$", "#-$", "#$-", "-# $", "-$ #",
+                "# $-", "$ #-", "$ -#", "#- $", "($ #)", "(# $)"
                 ];
 
 
@@ -1349,7 +1354,7 @@ private char parseFormatSpecifier (char[] format, out int length)
            {
            int pos = 0;
            char c = format[pos];
-        
+
            if (c >= 'A' && c <= 'Z' || c >= 'a' && c <= 'z')
               {
               specifier = c;
@@ -1404,7 +1409,7 @@ private char[] formatInteger (inout Formatter.Result result, long value, char[] 
                        Number number = Number (value);
                        if (specifier != char.init)
                            return number.toUtf8 (result, specifier, length, nf);
-        
+
                        return number.toUtf8Format (result, format, nf);
                        }
                     // Fall through.
@@ -1436,7 +1441,7 @@ private char[] formatInteger (inout Formatter.Result result, long value, char[] 
 version (mlfp)
 {
 
-        private enum 
+        private enum
                 {
                 NAN_FLAG = 0x80000000,
                 INFINITY_FLAG = 0x7fffffff,
@@ -1458,9 +1463,9 @@ version (mlfp)
 
                             if (number.scale == NAN_FLAG)
                                 return nf.nanSymbol;
-                         
+
                             if (number.scale == INFINITY_FLAG)
-                                return number.sign ? nf.negativeInfinitySymbol 
+                                return number.sign ? nf.negativeInfinitySymbol
                                                    : nf.positiveInfinitySymbol;
 
                             double d;
@@ -1480,14 +1485,30 @@ version (mlfp)
                        default:
                             break;
                 }
+                if (isNaN(value))
+                    {
+                    if (isNaNPayloadString(value))
+                        {
+                        result ~= "NaN:";
+                        // Payload strings are always in UTF8 format.
+                        result ~= getNaNPayloadString(value, result.scratch);
+                        return result.get;
+                       }
+                    else
+                       {
+                        long w = getNaNPayloadLong(value);
+                        result ~= "NaN";
+                        // If the payload is zero, don't display any payload.
+                        // (this happens with real.init, machine NaN, and real.nan).
+                        if (w!=0) result ~= longToString (result.scratch, w, length, nf.negativeSign);
+                        return result.get;
+                       }
+                    }
 
                 Number number = Number(value, precision);
 
-                if (number.scale == NAN_FLAG)
-                    return nf.nanSymbol;
-
                 if (number.scale == INFINITY_FLAG)
-                    return number.sign ? nf.negativeInfinitySymbol 
+                    return number.sign ? nf.negativeInfinitySymbol
                                        : nf.positiveInfinitySymbol;
 
                 if (specifier != char.init)
@@ -1527,7 +1548,7 @@ private void formatGeneral (inout Number number, inout Formatter.Result target, 
                  target ~= '0';
                  pos++;
                  }
-                        
+
            while (*p != '\0')
                   target ~= *p++;
            }
@@ -1539,7 +1560,7 @@ private void formatGeneral (inout Number number, inout Formatter.Result target, 
 
 private void formatNumber (inout Number number, inout Formatter.Result target, int length, NumberFormat nf)
 {
-        char[] format = number.sign ? negativeNumberFormats[nf.numberNegativePattern] 
+        char[] format = number.sign ? negativeNumberFormats[nf.numberNegativePattern]
                                     : positiveNumberFormat;
 
         // Parse the format.
@@ -1548,7 +1569,7 @@ private void formatNumber (inout Number number, inout Formatter.Result target, i
                 switch (c)
                        {
                        case '#':
-                            formatFixed (number, target, length, nf.numberGroupSizes, 
+                            formatFixed (number, target, length, nf.numberGroupSizes,
                                          nf.numberDecimalSeparator, nf.numberGroupSeparator);
                             break;
 
@@ -1569,7 +1590,7 @@ private void formatNumber (inout Number number, inout Formatter.Result target, i
 
 private void formatCurrency (inout Number number, inout Formatter.Result target, int length, NumberFormat nf)
 {
-        char[] format = number.sign ? negativeCurrencyFormats[nf.currencyNegativePattern] 
+        char[] format = number.sign ? negativeCurrencyFormats[nf.currencyNegativePattern]
                                     : positiveCurrencyFormats[nf.currencyPositivePattern];
 
         // Parse the format.
@@ -1578,7 +1599,7 @@ private void formatCurrency (inout Number number, inout Formatter.Result target,
                 switch (c)
                        {
                        case '#':
-                            formatFixed (number, target, length, nf.currencyGroupSizes, 
+                            formatFixed (number, target, length, nf.currencyGroupSizes,
                                          nf.currencyDecimalSeparator, nf.currencyGroupSeparator);
                             break;
 
@@ -1601,7 +1622,7 @@ private void formatCurrency (inout Number number, inout Formatter.Result target,
 
 *******************************************************************************/
 
-private void formatFixed (inout Number number, inout Formatter.Result target, int length, 
+private void formatFixed (inout Number number, inout Formatter.Result target, int length,
                           int[] groupSizes, char[] decimalSeparator, char[] groupSeparator)
 {
         int pos = number.scale;
@@ -1633,7 +1654,7 @@ private void formatFixed (inout Number number, inout Formatter.Result target, in
               int end = charTerm(p);
               int start = (pos < end) ? pos : end;
 
-        
+
               char[] separator = groupSeparator;
               index = 0;
 
@@ -1653,10 +1674,10 @@ private void formatFixed (inout Number number, inout Formatter.Result target, in
                         uint iii = ii - separator.length;
                         temp[iii .. ii] = separator;
                         ii = iii;
- 
+
                         if (index < groupSizes.length - 1)
                             size = groupSizes[++index];
- 
+
                         c = 0;
                         }
                      }
@@ -1963,7 +1984,7 @@ unittest{
     assert( Formatter.format( "->{0,-10}<-", 12345 ) == "->12345     <-" );
     assert( Formatter.format( "->{0,10}<-", 12345 ) == "->     12345<-" );
 
-    assert( Formatter.format("General: {0} Hexadecimal: 0x{0:x4} Numeric: {0:N}", 1000) 
+    assert( Formatter.format("General: {0} Hexadecimal: 0x{0:x4} Numeric: {0:N}", 1000)
             == "General: 1000 Hexadecimal: 0x03e8 Numeric: 1,000.00" );
     /+ Not yet implemented +/ //assert( Formatter.format(Culture.getCulture("de-DE"), "{0:#,#}", 12345678)
     /+ Not yet implemented +/ //        == "12.345.678" );
