@@ -79,6 +79,10 @@ const real M_2_SQRTPI = 1.12837916709551257390L;  /** 2 / &radic;&pi; */
 const real SQRT2      = 1.41421356237309504880L;  /** &radic;2 */
 const real SQRT1_2    = 0.70710678118654752440L;  /** &radic;&frac12 */
 
+const real MAXLOG = 0x1.62e42fefa39ef358p+13;  /** log(real.max) */
+const real MINLOG = -0x1.6436716d5406e6d8p+13; /** log(real.min*real.epsilon) */
+
+
 /*
  * Primitives
  */
@@ -457,6 +461,10 @@ unittest {
  * Calculates the arc tangent of y / x,
  * returning a value ranging from -&pi;/2 to &pi;/2.
  *
+ * Remarks:
+ *  The Complex Argument of a complex number z is given by
+ *  Arg(z) = atan2(z.re, z.im)
+ *
  *  $(TABLE_SV
  *  <tr> <th> x           <th> y         <th> atan(x, y)
  *  <tr> <td> $(NAN)      <td> anything  <td> $(NAN)
@@ -716,7 +724,6 @@ unittest
 {
     assert(isIdentical(0.0L, atanh(0.0)));
     assert(isIdentical(-0.0L,atanh(-0.0)));
-    assert(isNaN(atanh(real.nan)));
     assert(isIdentical(atanh(-1),-real.infinity));
     assert(isIdentical(atanh(1),real.infinity));
     assert(isNaN(atanh(-real.infinity)));
@@ -724,6 +731,17 @@ unittest
     assert(isIdentical(atanh(NaN("abc")), NaN("abc")));
 }
 
+creal atanh(ireal y)
+{
+    // Not optimised for accuracy or speed
+    return 0.5*(log(1+y) - log(1-y));
+}
+
+creal atanh(creal z)
+{
+    // Not optimised for accuracy or speed
+    return 0.5 * (log(1 + z) - log(1-z));
+}
 
 /*
  * Powers and Roots
@@ -1173,12 +1191,12 @@ real pow(real x, real y)
     version (linux) // C pow() often does not handle special values correctly
     {
     if (isNaN(y))
-        return real.nan;
+        return y;
 
     if (y == 0)
         return 1;       // even if x is $(NAN)
     if (isNaN(x) && y != 0)
-        return real.nan;
+        return x;
     if (isInfinity(y))
     {
         if (tango.math.IEEE.fabs(x) > 1)
@@ -1190,7 +1208,7 @@ real pow(real x, real y)
         }
         else if (tango.math.IEEE.fabs(x) == 1)
         {
-            return real.nan;
+            return NaN("pow1INF");
         }
         else // < 1
         {

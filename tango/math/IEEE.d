@@ -121,7 +121,7 @@ private:
        version(D_InlineAsm_X86) {
            asm {
               fstsw AX;
-              // If compiler supports SSE2, need to OR the result with
+              // NOTE: If compiler supports SSE2, need to OR the result with
               // the SSE2 status register.
               // Clear all irrelevant bits
               and EAX, 0x03D;
@@ -357,15 +357,16 @@ real ldexp(real n, int exp) /* intrinsic */
  * If x is not a special value, the result is the same as
  * <tt>cast(int)logb(x)</tt>.
  *
- * Remarks: This differs from the C function of the same name
+ * Remarks: This function is consistent with IEEE754R, but it
+ * differs from the C function of the same name
  * in the return value of infinity. (in C, ilogb(real.infinity)== int.max).
  * Note that the special return values may all be equal.
  *
  *  $(TABLE_SV
- *  <tr> <th> x               <th>ilogb(x)
- *  <tr> <td> 0               <td> FP_ILOGB0
- *  <tr> <td> &plusmn;&infin; <td> FP_ILOGBINFINITY
- *  <tr> <td> $(NAN)          <td> FP_ILOGBNAN
+ *  <tr> <th> x               <th>ilogb(x)           <th>invalid?
+     *  <tr> <td> 0               <td> FP_ILOGB0     <th> yes
+ *  <tr> <td> &plusmn;&infin; <td> FP_ILOGBINFINITY  <th> yes
+ *  <tr> <td> $(NAN)          <td> FP_ILOGBNAN       <th> yes
  *  )
  */
 int ilogb(real x)
@@ -378,19 +379,25 @@ int ilogb(real x)
                 fld x;
                 fxtract;
                 fstp ST(0), ST; // drop significand
-                fistp y, ST(0);
+                fistp y, ST(0); // and return the exponent
             }
             return y;
         } else {
             short e = (cast(short *)&x)[4] & 0x7FFF;
             if (e == 0x7FFF) {
+                // BUG: should also set the invalid exception
                 ulong s = *cast(ulong *)&x;
-                if (s == 0x8000_0000_0000_0000) return FP_ILOGBINFINITY;
+                if (s == 0x8000_0000_0000_0000) {
+                    return FP_ILOGBINFINITY;
+                }
                 else return FP_ILOGBNAN;
             }
             if (e==0) {
                 ulong s = *cast(ulong *)&x;
-                if (s == 0x0000_0000_0000_0000) return FP_ILOGB0;
+                if (s == 0x0000_0000_0000_0000) {
+                    // BUG: should also set the invalid exception
+                    return FP_ILOGB0;
+                }
                 // Denormals
                 x *= 0x1p+63;
                 short f = (cast(short *)&x)[4];

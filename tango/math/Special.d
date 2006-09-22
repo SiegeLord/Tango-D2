@@ -27,26 +27,10 @@
 
 module tango.math.Special;
 static import tango.math.GammaFunction;
+public import tango.math.ErrorFunction;
 public import tango.math.Bessel;
-
 private import tango.stdc.math;
 
-
-/**
- * Returns the error function of x.
- */
-real erf(real x)
-{
-    return tango.stdc.math.erfl(x);
-}
-
-/**
- * Returns the complementary error function of x, which is 1 - erf(x).
- */
-real erfc(real x)
-{
-    return tango.stdc.math.erfcl(x);
-}
 
 /**
  *  The Gamma function, $(GAMMA)(x)
