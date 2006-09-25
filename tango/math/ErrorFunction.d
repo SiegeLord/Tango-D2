@@ -27,7 +27,7 @@ module tango.math.ErrorFunction;
 import tango.math.Core;
 import tango.math.IEEE;  // only required for unit tests
 
-const real SQRT2PI =   0x1.40d931ff62705966p+1;    // 2.5066282746310005024
+const real SQRT2PI = 0x1.40d931ff62705966p+1;    // 2.5066282746310005024
 const real EXP_2  = 0.13533528323661269189L; /* exp(-2) */
 
 
@@ -187,29 +187,33 @@ real normalDistribution(real a)
  */
 real erfc(real a)
 {
-    if (a == real.infinity) return 0.0;
-    if (a == -real.infinity) return 2.0;
+    if (a == real.infinity)
+        return 0.0;
+    if (a == -real.infinity)
+        return 2.0;
 
-    real p,q,x,y,z;
+
+    real p,q,x,z;
 
     if (a < 0.0L )
         x = -a;
     else
         x = a;
-    if (x < 1.0) return 1.0 - erf(a);
+    if (x < 1.0)
+        return 1.0 - erf(a);
 
     z = -a * a;
 
     if (z < -MAXLOG){
-under:
 //    mtherr( "erfcl", UNDERFLOW );
-    if (a < 0) return 2.0;
-    else return 0.0;
+        if (a < 0) return 2.0;
+        else return 0.0;
     }
 
     /* Compute z = exp(z).  */
     z = expx2(a, -1);
-    y = 1.0/x;
+    real y = 1.0/x;
+
 
     if( x < 8.0 ) {
         p = poly( y, P);
@@ -223,10 +227,16 @@ under:
 
     if (a < 0.0L)
         y = 2.0L - y;
-    if (y == 0.0L)
-        goto under;
+
+    if (y == 0.0) {
+//    mtherr( "erfcl", UNDERFLOW );
+        if (a < 0) return 2.0;
+        else return 0.0;
+    }
+
     return y;
 }
+
 
 private {
 /* Exponentially scaled erfc function
@@ -274,7 +284,8 @@ real erfce(real x)
  */
 real erf(real x)
 {
-    if (x == 0.0) return x; // deal with negative zero
+    if (x == 0.0)
+        return x; // deal with negative zero
     if (x == -real.infinity)
         return -1.0;
     if (x == real.infinity)
@@ -284,6 +295,47 @@ real erf(real x)
 
     real z = x * x;
     return x * poly(z, T) / poly(z, U);
+}
+
+import tango.stdc.stdio;
+
+unittest {
+   // High resolution test points.
+    const real erfc0_250 = 0.723663330078125 + 1.0279753638067014931732235184287934646022E-5;
+    const real erfc0_375 = 0.5958709716796875 + 1.2118885490201676174914080878232469565953E-5;
+    const real erfc0_500 = 0.4794921875 + 7.9346869534623172533461080354712635484242E-6;
+    const real erfc0_625 = 0.3767547607421875 + 4.3570693945275513594941232097252997287766E-6;
+    const real erfc0_750 = 0.2888336181640625 + 1.0748182422368401062165408589222625794046E-5;
+    const real erfc0_875 = 0.215911865234375 + 1.3073705765341685464282101150637224028267E-5;
+    const real erfc1_000 = 0.15728759765625 + 1.1609394035130658779364917390740703933002E-5;
+    const real erfc1_125 = 0.111602783203125 + 8.9850951672359304215530728365232161564636E-6;
+
+    const real erf0_875  = (1-0.215911865234375) - 1.3073705765341685464282101150637224028267E-5;
+
+
+    assert(feqrel(erfc(0.250L), erfc0_250 )>=real.mant_dig-1);
+    assert(feqrel(erfc(0.375L), erfc0_375 )>=real.mant_dig-0);
+    assert(feqrel(erfc(0.500L), erfc0_500 )>=real.mant_dig-1);
+    assert(feqrel(erfc(0.625L), erfc0_625 )>=real.mant_dig-1);
+    assert(feqrel(erfc(0.750L), erfc0_750 )>=real.mant_dig-1);
+    assert(feqrel(erfc(0.875L), erfc0_875 )>=real.mant_dig-4);
+    assert(feqrel(erfc(1.000L), erfc1_000 )>=real.mant_dig-0);
+    assert(feqrel(erfc(1.125L), erfc1_125 )>=real.mant_dig-2);
+    assert(feqrel(erf(0.875L), erf0_875 )>=real.mant_dig-1);
+    // The DMC implementation of erfc() fails this next test (just)
+    assert(feqrel(erfc(4.1L),0.67000276540848983727e-8L)>=real.mant_dig-4);
+
+    assert(isIdentical(erf(0.0),0.0));
+    assert(isIdentical(erf(-0.0),-0.0));
+    assert(erf(real.infinity) == 1.0);
+    assert(erf(-real.infinity) == -1.0);
+    assert(isIdentical(erf(NaN("xyz")),NaN("xyz")));
+version(CompilerBug) {} else {
+    assert(isIdentical(erfc(NaN("xyz")),NaN("xyz"))); // fails for DMD .167
+}
+    assert(isIdentical(erfc(real.infinity),0.0));
+    assert(erfc(-real.infinity) == 2.0);
+    assert(erfc(0) == 1.0);
 }
 
 /*
@@ -308,7 +360,7 @@ real expx2(real x, int sign)
     Copyright 2000 by Stephen L. Moshier
     */
     const real M = 32768.0;
-    const real MINV = 3.0517578125e-5;
+    const real MINV = 3.0517578125e-5L;
 
     real u, u1, m, f;
 
@@ -483,7 +535,6 @@ body
     } else if( x < 32.0L ) {
         x1 = z * poly( z, P2)/poly( z, Q2);
     } else {
-//  assert(0);
         x1 = z * poly( z, P3)/poly( z, Q3);
     }
     x = x0 - x1;
