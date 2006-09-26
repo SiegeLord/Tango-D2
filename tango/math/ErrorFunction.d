@@ -138,23 +138,21 @@ Journal of Statistical Software <b>11</b>, (July 2004).
 */
 real normalDistribution(real a)
 {
-    real y;
-
     real x = a * SQRT1_2;
     real z = abs(x);
 
     if( z < 1.0 )
-        y = 0.5L + 0.5L * erf(x);
+        return 0.5L + 0.5L * erf(x);
     else {
         /* See below for erfce. */
-        y = 0.5L * erfce(z);
+        real y = 0.5L * erfce(z);
         /* Multiply by exp(-x^2 / 2)  */
         z = expx2(a, -1);
         y = y * sqrt(z);
         if( x > 0.0L )
             y = 1.0L - y;
+        return y;
     }
-    return y;
 }
 
 
@@ -192,8 +190,7 @@ real erfc(real a)
     if (a == -real.infinity)
         return 2.0;
 
-
-    real p,q,x,z;
+    real x;
 
     if (a < 0.0L )
         x = -a;
@@ -202,7 +199,7 @@ real erfc(real a)
     if (x < 1.0)
         return 1.0 - erf(a);
 
-    z = -a * a;
+    real z = -a * a;
 
     if (z < -MAXLOG){
 //    mtherr( "erfcl", UNDERFLOW );
@@ -214,6 +211,7 @@ real erfc(real a)
     z = expx2(a, -1);
     real y = 1.0/x;
 
+    real p, q;
 
     if( x < 8.0 ) {
         p = poly( y, P);
@@ -246,9 +244,9 @@ private {
 
 real erfce(real x)
 {
-    real p, q, y;
+    real p, q;
 
-    y = 1.0/x;
+    real y = 1.0/x;
 
     if (x < 8.0) {
         p = poly( y, P);
@@ -362,8 +360,6 @@ real expx2(real x, int sign)
     const real M = 32768.0;
     const real MINV = 3.0517578125e-5L;
 
-    real u, u1, m, f;
-
     x = abs(x);
     if (sign < 0)
         x = -x;
@@ -371,12 +367,12 @@ real expx2(real x, int sign)
   /* Represent x as an exact multiple of M plus a residual.
      M is a power of 2 chosen so that exp(m * m) does not overflow
      or underflow and so that |x - m| is small.  */
-    m = MINV * floor(M * x + 0.5L);
-    f = x - m;
+    real m = MINV * floor(M * x + 0.5L);
+    real f = x - m;
 
     /* x^2 = m^2 + 2mf + f^2 */
-    u = m * m;
-    u1 = 2 * m * f  +  f * f;
+    real u = m * m;
+    real u1 = 2 * m * f  +  f * f;
 
     if (sign < 0) {
         u = -u;
@@ -511,7 +507,6 @@ body
     if( p == 1.0L ) {
         return real.infinity;
     }
-    real x, z, y2, x0, x1;
     int code = 1;
     real y = p;
     if( y > (1.0L - EXP_2) ) {
@@ -519,18 +514,19 @@ body
         code = 0;
     }
 
+    real x, z, y2, x0, x1;
+
     if ( y > EXP_2 ) {
         y = y - 0.5L;
         y2 = y * y;
         x = y + y * (y2 * poly( y2, P0)/poly( y2, Q0));
-        x = x * SQRT2PI;
-        return x;
+        return x * SQRT2PI;
     }
 
     x = sqrt( -2.0L * log(y) );
     x0 = x - log(x)/x;
     z = 1.0L/x;
-    if( x < 8.0L ) {
+    if ( x < 8.0L ) {
         x1 = z * poly( z, P1)/poly( z, Q1);
     } else if( x < 32.0L ) {
         x1 = z * poly( z, P2)/poly( z, Q2);
@@ -538,7 +534,7 @@ body
         x1 = z * poly( z, P3)/poly( z, Q3);
     }
     x = x0 - x1;
-    if( code != 0 ) {
+    if ( code != 0 ) {
         x = -x;
     }
     return x;
