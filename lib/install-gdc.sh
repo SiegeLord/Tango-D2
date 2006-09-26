@@ -95,7 +95,7 @@ then
     SPECINCDIR="$PREFIX/include/d/tango"
 else
     SPECLIBDIR="$PWD"
-    SEPCINCDIR="$PWD/.."
+    SPECINCDIR="$PWD/.."
 fi
 
 # Install the new specfile
