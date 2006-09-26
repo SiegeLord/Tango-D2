@@ -1,4 +1,11 @@
 #!/bin/bash
+
+# A simple script to install Tango for GDC
+# Copyright (C) 2006  Gregor Richards
+# Permission is granted to do anything you please with this software.
+# This software is provided with no warranty, express or implied, within the
+# bounds of applicable law.
+
 die() {
     echo "$1"
     exit $2
