@@ -8,18 +8,6 @@
 module tango.core.Thread;
 
 
-/**
- * All exceptions thrown from this module derive from this class.
- */
-class ThreadException : Exception
-{
-    this( char[] msg )
-    {
-        super( msg );
-    }
-}
-
-
 // this should be true for most architectures
 version = StackGrowsDown;
 
@@ -43,7 +31,7 @@ private
 
     void* getStackTop()
     {
-        version( X86 )
+        version( D_InlineAsm_X86 )
         {
             asm
             {
@@ -58,6 +46,11 @@ private
         }
     }
 }
+
+
+////////////////////////////////////////////////////////////////////////////////
+// Thread Entry Point and Signal Handlers
+////////////////////////////////////////////////////////////////////////////////
 
 
 version( Win32 )
@@ -190,7 +183,7 @@ else version( Posix )
 
             // NOTE: For some reason this does not always work for threads.
             //obj.m_bstack = getStackBottom();
-            version( X86 )
+            version( D_InlineAsm_X86 )
             {
                 static void* getBasePtr()
                 {
@@ -246,7 +239,7 @@ else version( Posix )
         }
         body
         {
-            version( X86 )
+            version( D_InlineAsm_X86 )
             {
                 asm
                 {
@@ -300,7 +293,7 @@ else version( Posix )
                 }
             }
 
-            version( X86 )
+            version( D_InlineAsm_X86 )
             {
                 asm
                 {
@@ -342,6 +335,23 @@ else
 
 
 ////////////////////////////////////////////////////////////////////////////////
+// Thread Exception
+////////////////////////////////////////////////////////////////////////////////
+
+
+/**
+ * All exceptions thrown from the Thread class derive from this class.
+ */
+class ThreadException : Exception
+{
+    this( char[] msg )
+    {
+        super( msg );
+    }
+}
+
+
+////////////////////////////////////////////////////////////////////////////////
 // Thread
 ////////////////////////////////////////////////////////////////////////////////
 
@@ -359,6 +369,12 @@ else
  *
  * class DerivedThread : Thread
  * {
+ *     this()
+ *     {
+ *         super( &run );
+ *     }
+ *
+ * private:
  *     void run()
  *     {
  *         printf( "Derived thread running.\n" );
@@ -392,23 +408,18 @@ class Thread
 
 
     /**
-     * Initializes a thread object which has no associated executable
-     * function.
-     */
-    this()
-    {
-        m_call = Call.NO;
-    }
-
-
-    /**
-     * Initialized a thread object which is associated with a static
+     * Initializes a thread object which is associated with a static
      * D function.
      *
      * Params:
      *  fn = The thread function.
      */
     this( void function() fn )
+    in
+    {
+        assert( fn !is null );
+    }
+    body
     {
         m_fn   = fn;
         m_call = Call.FN;
@@ -423,6 +434,11 @@ class Thread
      *  dg = The thread function.
      */
     this( void delegate() dg )
+    in
+    {
+        assert( dg !is null );
+    }
+    body
     {
         m_dg   = dg;
         m_call = Call.DG;
@@ -459,8 +475,7 @@ class Thread
 
 
     /**
-     * Starts the thread with run() as the target method.  The default
-     * behavior of this is to run the function or delegate passed upon
+     * Starts the thread and invokes the function or delegate passed upon
      * construction.
      *
      * In:
@@ -607,7 +622,7 @@ class Thread
      *  interval = The minimum duration the calling thread should be
      *             suspended.
      */
-    static void sleep( Interval interval )
+    static void sleep( /*Interval*/ ulong interval )
     {
         const MAXMILLIS = uint.max - 1;
 
@@ -849,14 +864,22 @@ class Thread
     }
 
 
-protected:
-    /**
-     * This is the entry point for the newly invoked thread.  Default
-     * behavior is to call the function or delegate passed on object
-     * construction.  This function may be overridden to create custom
-     * thread objects via subclassing.
-     */
-    void run()
+private:
+    //
+    // Initializes a thread object which has no associated executable function.
+    // This is used for the main thread initialized in thread_init().
+    //
+    this()
+    {
+        m_call = Call.NO;
+    }
+
+
+    //
+    // Thread entry point.  Invokes the function or delegate passed on
+    // construction (if any).
+    //
+    final void run()
     {
         switch( m_call )
         {
@@ -874,7 +897,7 @@ protected:
 
 private:
     //
-    // The type of function pointer passed on thread construction.
+    // The type of routine passed on thread construction.
     //
     enum Call
     {

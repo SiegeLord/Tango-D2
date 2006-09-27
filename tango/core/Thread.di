@@ -1,12 +1,5 @@
 // D import file generated from 'core\Thread.d'
 module tango.core.Thread;
-class ThreadException : Exception
-{
-    this(char[] msg)
-{
-super(msg);
-}
-}
 version = StackGrowsDown;
 public
 {
@@ -118,18 +111,31 @@ else
     static assert(false,"Unknown threading implementation.");
 }
 }
+class ThreadException : Exception
+{
+    this(char[] msg)
+{
+super(msg);
+}
+}
 class Thread
 {
-    this()
-{
-m_call = Call.NO;
-}
     this(void(* fn)())
+in
+{
+assert(fn !is null);
+}
+body
 {
 m_fn = fn;
 m_call = Call.FN;
 }
     this(void delegate() dg)
+in
+{
+assert(dg !is null);
+}
+body
 {
 m_dg = dg;
 m_call = Call.DG;
@@ -156,7 +162,7 @@ m_call = Call.DG;
 }
     static
 {
-    void sleep(Interval interval);
+    void sleep(ulong interval);
 }
     static
 {
@@ -204,8 +210,15 @@ return getThis().m_local[key];
 return getThis().m_local[key] = val;
 }
 }
-    protected:
+    private:
+    this()
+{
+m_call = Call.NO;
+}
+    final
+{
     void run();
+}
     private:
     enum Call
 {
