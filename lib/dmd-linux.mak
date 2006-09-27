@@ -41,7 +41,6 @@ lib : $(ALL_OBJS)
 	$(LC) libphobos.a `find ./common -name "*.o" | xargs echo`
 
 doc : $(ALL_DOCS)
-	echo No documentation available.
 	make -C compiler/dmd -flinux.mak doc
 	make -C gc/basic -fposix.mak doc
 	make -C common -fposix.mak doc
@@ -58,7 +57,6 @@ clean :
 #	$(RM) libphobos*.a
 
 install :
-	$(MD) $(LIB_DEST)
 	make -C compiler/dmd -flinux.mak install
 	make -C gc/basic -fposix.mak install
 	make -C common -fposix.mak install

@@ -45,7 +45,6 @@ lib : $(ALL_OBJS)
 	$(LC) -c -n phobos.lib common\tango.lib compiler\dmd\dmd.lib gc\basic\basic.lib
 
 doc : $(ALL_DOCS)
-	@echo No documentation available.
 	cd compiler\dmd
 	make -fwin32.mak doc
 	cd ..\..
@@ -74,7 +73,6 @@ clean :
 #	$(RM) phobos*.lib
 
 install :
-	$(MD) $(LIB_DEST)
 	cd compiler\dmd
 	make -fwin32.mak install
 	cd ..\..
