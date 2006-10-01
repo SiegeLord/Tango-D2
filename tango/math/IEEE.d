@@ -245,44 +245,30 @@ real frexp(real value, out int exp)
 
     // If exponent is non-zero
     ex = vu[4] & 0x7FFF;
-    if (ex)
-    {
-    if (ex == 0x7FFF)
-    {   // infinity or NaN
-        if (*vl &  0x7FFFFFFFFFFFFFFF)  // if NaN
-        {   *vl |= 0xC000000000000000;  // convert $(NAN)S to $(NAN)Q
-        exp = int.min;
+    if (ex) {
+        if (ex == 0x7FFF) {   // infinity or NaN
+            if (*vl &  0x7FFFFFFFFFFFFFFF) {  // if NaN
+                *vl |= 0xC000000000000000;  // convert $(NAN)S to $(NAN)Q
+                exp = int.min;
+            } else if (vu[4] & 0x8000) {   // negative infinity
+                exp = int.min;
+            } else {   // positive infinity
+                exp = int.max;
+            }
+        } else {
+            exp = ex - 0x3FFE;
+            vu[4] = cast(ushort)((0x8000 & vu[4]) | 0x3FFE);
         }
-        else if (vu[4] & 0x8000)
-        {   // negative infinity
-        exp = int.min;
-        }
-        else
-        {   // positive infinity
-        exp = int.max;
-        }
-    }
-    else
-    {
-        exp = ex - 0x3FFE;
-        vu[4] = cast(ushort)((0x8000 & vu[4]) | 0x3FFE);
-    }
-    }
-    else if (!*vl)
-    {
-    // value is +-0.0
-    exp = 0;
-    }
-    else
-    {   // denormal
-    int i = -0x3FFD;
-
-    do
-    {
-        i--;
-        *vl <<= 1;
-    } while (*vl > 0);
-    exp = i;
+    } else if (!*vl) {
+        // value is +-0.0
+        exp = 0;
+    } else {   // denormal
+        int i = -0x3FFD;
+        do {
+            i--;
+            *vl <<= 1;
+        } while (*vl > 0);
+        exp = i;
         vu[4] = cast(ushort)((0x8000 & vu[4]) | 0x3FFE);
     }
     return value;
@@ -375,7 +361,7 @@ int ilogb(real x)
         version(D_InlineAsm_X86)
         {
             int y;
-           asm {
+            asm {
                 fld x;
                 fxtract;
                 fstp ST(0), ST; // drop significand
@@ -457,7 +443,7 @@ real logb(real x)
 {
     version(D_InlineAsm_X86)
     {
-       asm {
+        asm {
             fld x;
             fxtract;
             fstp ST(0), ST; // drop significand
@@ -921,7 +907,6 @@ real nextafter(real x, real y)
     return (y>x) ? nextUp(x) : nextDown(x);
 }
 
-
 /**************************************
  * To what precision is x equal to y?
  *
@@ -1033,8 +1018,6 @@ unittest
 int signbit(real e)
 {
     ubyte* pe = cast(ubyte *)&e;
-
-//printf("e = %Lg\n", e);
     return (pe[9] & 0x80) != 0;
 }
 
