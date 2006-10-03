@@ -72,7 +72,7 @@ void main(char[][] args)
             Stdout ("Cool and secret action performed.").newline;
         }
         if (varx !is null) {
-            Stdout.format("User set the X factor to \"{0}\"", varx).newline;
+            Stdout.format("User set the X factor to \"{0}\".", varx).newline;
         }
     }	
 }
