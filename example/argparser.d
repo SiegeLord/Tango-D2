@@ -14,24 +14,29 @@ void main(char[][] args)
 {
     char[][] fileList;
     char[] responseFile = null;
+    char[] varx = null;
     bool coolAction = false;
     bool displayHelp = false;
     char[] helpText = "Available options:\n\t\t-h\tthis help\n\t\t-cool-action\tdo cool things to your files\n\t\t@filename\tuse filename as a response file with extra arguments\n\t\tall other arguments are handled as files to do cool things with.";
 
-    ArgParser parser = new ArgParser(delegate void(char[] value,uint ordinal){
+    ArgParser parser = new ArgParser((char[] value,uint ordinal){
         Stdout.format("Added file number {0} to list of files", ordinal).newline;
 		fileList ~= value;
 	});
 
-	parser.bind("-", "h",delegate void(){
+	parser.bind("-", "h",{
 		displayHelp=true;
 	});
 
-	parser.bind("-", "cool-action",delegate void(){
+	parser.bind("-", "cool-action",{
 		coolAction=true;
 	});
+
+    parser.bind("-", "X=",(char[] value){
+        varx = value;
+    });
 	
-    parser.bindDefault("@",delegate void(char[] value, uint ordinal){
+    parser.bindDefault("@",(char[] value, uint ordinal){
         if (ordinal > 0) {
             throw new Exception("Only one response file can be given.");
         }
@@ -65,6 +70,9 @@ void main(char[][] args)
                 Stdout.format("{0}. {1}", id + 1, file).newline;
             }
             Stdout ("Cool and secret action performed.").newline;
+        }
+        if (varx !is null) {
+            Stdout.format("User set the X factor to \"{0}\"", varx).newline;
         }
     }	
 }
