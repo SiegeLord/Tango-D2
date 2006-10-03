@@ -26,7 +26,7 @@ public class SelectorException: Exception
      */
     public this(char[] msg, char[] file, uint line)
     {
-        super(msg);
+        super(msg, file, line);
     }
 }
 

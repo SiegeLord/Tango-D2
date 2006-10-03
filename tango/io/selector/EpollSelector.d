@@ -351,11 +351,12 @@ version (linux)
          */
         public int select(Interval timeout)
         {
+            int to = (timeout != Interval.infinity ? (timeout / Interval.milli) : -1);
+
             while (true)
             {
                 // FIXME: add support for the wakeup() call.
-                _eventCount = epoll_wait(_epfd, _events.ptr, _events.length,
-                                         (timeout != Interval.infinity ? timeout.msec() : -1));
+                _eventCount = epoll_wait(_epfd, _events.ptr, _events.length, to);
                 if (_eventCount >= 0)
                 {
                     break;

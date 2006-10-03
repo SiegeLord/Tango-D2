@@ -7,7 +7,7 @@
 module tango.io.selector.model.ISelector;
 
 public import tango.io.model.IConduit;
-public import tango.io.selector.Interval;
+public import tango.core.Interval;
 
 /**
  * Events that are used to register a Conduit to a selector and are returned

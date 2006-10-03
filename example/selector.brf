@@ -2,7 +2,7 @@
 -noautoimport
 -op
 -debug=selector
--g
+-gc
 -clean
 -version=Posix
 selector.d

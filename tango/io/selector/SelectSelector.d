@@ -12,6 +12,7 @@ private import tango.io.selector.model.ISelector;
 private import tango.io.selector.AbstractSelector;
 private import tango.io.selector.SelectorException;
 private import tango.sys.OS;
+private import tango.sys.TimeConverter;
 private import tango.stdc.errno;
 
 debug (selector)
@@ -651,10 +652,11 @@ public class SelectSelector: AbstractSelector
         fd_set *readfds;
         fd_set *writefds;
         fd_set *exceptfds;
+        timeval tv;
 
         debug (selector)
             Stdout.format("--- SelectSelector.select(timeout={0} usec)\n",
-                          (timeout != Interval.infinity ? timeout.usec() : -1));
+                          (timeout != Interval.infinity ? timeout / Interval.milli : -1));
 
         if (_readSet !is null)
         {
@@ -678,7 +680,7 @@ public class SelectSelector: AbstractSelector
             {
                 // FIXME: add support for the wakeup() call.
                 _eventCount = .select(_maxfd + 1, readfds, writefds, exceptfds,
-                                      (timeout != Interval.infinity ? timeout.toTimeval() : null));
+                                      (timeout != Interval.infinity ? toTimeval(&tv, timeout) : null));
                 debug (selector)
                     Stdout.format("---   .select() returned {0} (maxfd={1})\n",
                                   _eventCount, cast(int) _maxfd);
@@ -702,7 +704,7 @@ public class SelectSelector: AbstractSelector
         {
             // FIXME: Can a system call be interrupted on Windows?
             _eventCount = .select(IConduit.Handle.max, writefds, exceptfds,
-                                  (timeout != Interval.infinity ? timeout.toTimeval() : null));
+                                  (timeout != Interval.infinity ? toTimeval(&tv, timeout) : null));
             debug (selector)
                 Stdout.format("---   .select() returned {0}\n", _eventCount);
         }

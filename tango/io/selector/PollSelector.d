@@ -304,16 +304,17 @@ version (Posix)
          */
         public int select(Interval timeout)
         {
+            int to = (timeout != Interval.infinity ? (timeout / Interval.milli) : -1);
+
             debug (selector)
                 Stdout.format("--- PollSelector.select({0} ms): waiting on {1} handles\n",
-                              timeout.msec(), _count);
+                              to, _count);
 
             // We run the call to poll() inside a loop in case the system call
             // was interrupted by a signal and we need to restart it.
             while (true)
             {
-                _eventCount = poll(_pfds.ptr, _count,
-                                   (timeout != Interval.infinity ? timeout.msec() : -1));
+                _eventCount = poll(_pfds.ptr, _count, to);
                 if (_eventCount > 0)
                 {
                     int i = 0;

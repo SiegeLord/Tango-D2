@@ -21,11 +21,10 @@ private
     import tango.core.Thread;
     import tango.sys.OS;
     import tango.sys.linux.linux;
+    import tango.sys.TimeConverter;
     import tango.stdc.errno;
     import tango.text.convert.Unicode;
 }
-
-alias tango.io.selector.Interval.Interval Interval;
 
 
 const uint      HANDLE_COUNT    = 4;
@@ -86,19 +85,17 @@ void testSelector(ISelector selector)
     uint        failedSendCount     = 0;
     uint        closeCount          = 0;
     uint        errorCount          = 0;
+    Interval    start               = currentTime();
     Thread      clientThread;
-    Interval    start;
 
     selector.open(HANDLE_COUNT, EVENT_COUNT);
-
-    start.now();
 
     clientThread = new Thread(&clientThreadFunc);
     clientThread.start();
 
     try
     {
-        Interval            timeout         = Interval(1_000_000); // 1 sec
+        Interval            timeout         = cast(Interval) (Interval.second * 1); // 1 sec
         InternetAddress     addr            = new InternetAddress(SERVER_ADDR, SERVER_PORT);
         ServerSocket        serverSocket    = new ServerSocket(addr, 5);
         SocketConduit       clientSocket;
@@ -279,12 +276,7 @@ void testSelector(ISelector selector)
                   connectCount, receiveCount, sendCount, closeCount,
                   failedConnectCount, failedReceiveCount, failedSendCount, errorCount);
 
-    Interval duration;
-
-    duration.now();
-    duration -= start;
-
-    Stdout.format("* Total time: {0} ms\n", duration.msec());
+    Stdout.format("* Total time: {0} ms\n", cast(uint) ((currentTime() - start) / Interval.milli));
 
     clientThread.join();
 
@@ -299,7 +291,7 @@ void clientThreadFunc()
 {
     SocketConduit socket = new SocketConduit();
 
-    Thread.sleep(10_000);      // in microseconds
+    Thread.sleep(Interval.milli * 10);      // 10 milliseconds
 
     try
     {
