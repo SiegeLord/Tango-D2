@@ -48,6 +48,8 @@
  */
 module tango.math.IEEE;
 
+import tango.stdc.math;
+
 version (D_InlineAsm_X86) {
     version(UnitTest) {
         static import tango.stdc.math;
@@ -55,6 +57,14 @@ version (D_InlineAsm_X86) {
 } else {
     // BUG: DMD 0.167 imports this regardless of version!
 //   static import tango.stdc.math;
+}
+
+version(DigitalMars)
+{
+    version(D_InlineAsm_X86)
+    {
+        version = DigitalMars_D_InlineAsm_X86;
+    }
 }
 
 /** IEEE exception status flags
@@ -321,7 +331,7 @@ unittest
  */
 real ldexp(real n, int exp) /* intrinsic */
 {
-    version(D_InlineAsm_X86)
+    version(DigitalMars_D_InlineAsm_X86)
     {
         asm
         {
@@ -358,7 +368,7 @@ real ldexp(real n, int exp) /* intrinsic */
 int ilogb(real x)
 {
     version (X86) {
-        version(D_InlineAsm_X86)
+        version(DigitalMars_D_InlineAsm_X86)
         {
             int y;
             asm {
@@ -441,7 +451,7 @@ unittest {
  */
 real logb(real x)
 {
-    version(D_InlineAsm_X86)
+    version(DigitalMars_D_InlineAsm_X86)
     {
         asm {
             fld x;
@@ -553,7 +563,7 @@ real fma(real x, real y, real z)
  */
 creal expi(real y)
 {
-    version(D_InlineAsm_X86)
+    version(DigitalMars_D_InlineAsm_X86)
     {
         asm
         {

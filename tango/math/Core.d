@@ -59,6 +59,14 @@ module tango.math.Core;
 static import tango.stdc.math;
 private import tango.math.IEEE;
 
+version(DigitalMars)
+{
+    version(D_InlineAsm_X86)
+    {
+        version = DigitalMars_D_InlineAsm_X86;
+    }
+}
+
 /*
  * Constants
  */
@@ -1581,7 +1589,7 @@ unittest {
 */
 int rndint(real x)
 {
-    version(D_InlineAsm_X86)
+    version(DigitalMars_D_InlineAsm_X86)
     {
         int n;
         asm
@@ -1600,7 +1608,7 @@ int rndint(real x)
 /** ditto */
 long rndlong(real x)
 {
-    version(D_InlineAsm_X86)
+    version(DigitalMars_D_InlineAsm_X86)
     {
         long n;
         asm

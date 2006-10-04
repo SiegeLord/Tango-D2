@@ -77,7 +77,7 @@ struct SprintStructT(T)
 
         T[] format (T[] fmt, ...)
         {
-                return format (fmt, _arguments, _argptr);
+                return format (fmt, _arguments, cast(va_list) _argptr);
         }
 
         /**********************************************************************
@@ -185,7 +185,7 @@ class SprintClassT(T)
 
         T[] format (T[] fmt, ...)
         {
-                return format (fmt, _arguments, _argptr);
+                return format (fmt, _arguments, cast(va_list) _argptr);
         }
 
         /**********************************************************************

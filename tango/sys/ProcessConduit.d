@@ -15,7 +15,8 @@ module tango.sys.ProcessConduit;
 
 private import tango.sys.OS;
 private import tango.io.Conduit;
-private import tango.stdc.stdlib;
+private import tango.stdc.stdlib,
+               tango.stdc.string;
 
 private import tango.sys.PipeConduit;
 

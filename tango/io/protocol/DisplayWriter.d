@@ -84,7 +84,7 @@ class DisplayWriter : Writer
 
         DisplayWriter format (char[] s, ...)
         {       
-                format (s, _arguments, _argptr);
+                format (s, _arguments, cast(va_list) _argptr);
                 return this;
         }
 
