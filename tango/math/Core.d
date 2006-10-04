@@ -1510,8 +1510,6 @@ unittest
     real x = 3.1;
     const real pp[] = [56.1L, 32.7L, 6L];
 
-    real compiler_bugfix_DMD166 = poly(x, pp); // otherwise assert fails
-
     assert( poly(x, pp) == (56.1L + (32.7L + 6L * x) * x) );
 
     assert(isIdentical(poly(NaN("abc"), pp), NaN("abc")));

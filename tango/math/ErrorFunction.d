@@ -328,9 +328,7 @@ unittest {
     assert(erf(real.infinity) == 1.0);
     assert(erf(-real.infinity) == -1.0);
     assert(isIdentical(erf(NaN("xyz")),NaN("xyz")));
-version(CompilerBug) {} else {
-    assert(isIdentical(erfc(NaN("xyz")),NaN("xyz"))); // fails for DMD .167
-}
+    assert(isIdentical(erfc(NaN("xyz")),NaN("xyz"))); // failed for DMD .167
     assert(isIdentical(erfc(real.infinity),0.0));
     assert(erfc(-real.infinity) == 2.0);
     assert(erfc(0) == 1.0);
