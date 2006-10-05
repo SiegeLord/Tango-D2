@@ -1550,6 +1550,439 @@ else
 
 
 ////////////////////////////////////////////////////////////////////////////////
+// Contains
+////////////////////////////////////////////////////////////////////////////////
+
+
+version( DDoc )
+{
+    /**
+     * Performs a linear scan of setA from $(LB)0 .. setA.length$(RP), returning
+     * true if setA contains all elements in setB and false if not.  Both setA and
+     * setB are required to be sorted, and duplicates in setB require an equal
+     * number of duplicates in setA.  Comparisons will be performed using the
+     * supplied predicate or '<' if none is supplied.
+     *
+     * Params:
+     *  setA = The sorted array to evaluate.
+     *  setB = The sorted array to match against.
+     *  pred = The evaluation predicate, which should return true if e1 is
+     *         less than e2 and false if not.  This predicate may be any
+     *         callable type.
+     *
+     * Returns:
+     *  true if setA contains all elements in setB, false if not.
+     */
+    bool contains( Elem[] setA, Elem[] setB, Pred2E pred = Pred2E.init );
+}
+else
+{
+    template contains_( Elem, Pred = IsLess!(Elem) )
+    {
+        static assert( isCallableType!(Pred ) );
+
+
+        bool fn( Elem[] setA, Elem[] setB, Pred pred = Pred.init )
+        {
+            size_t  posA = 0,
+                    posB = 0;
+
+            while( posA < setA.length && posB < setB.length )
+            {
+                if( pred( setB[posB], setA[posA] ) )
+                    return false;
+                else if( pred( setA[posA], setB[posB] ) )
+                    ++posA;
+                else
+                    ++posA, ++posB;
+            }
+            return posB == setB.length;
+        }
+    }
+
+
+    template contains( Buf )
+    {
+        bool contains( Buf setA, Buf setB )
+        {
+            return contains_!(ElemTypeOf!(Buf)).fn( setA, setB );
+        }
+    }
+
+
+    template contains( Buf, Pred )
+    {
+        bool contains( Buf setA, Buf setB, Pred pred )
+        {
+            return contains_!(ElemTypeOf!(Buf), Pred).fn( setA, setB, pred );
+        }
+    }
+
+
+    debug( UnitTest )
+    {
+      unittest
+      {
+        assert( contains( "abcdefg".dup, "a".dup ) );
+        assert( contains( "abcdefg".dup, "g".dup ) );
+        assert( contains( "abcdefg".dup, "d".dup ) );
+        assert( contains( "abcdefg".dup, "abcdefg".dup ) );
+        assert( contains( "aaaabbbcdddefgg".dup, "abbbcdefg".dup ) );
+
+        assert( !contains( "abcdefg".dup, "aaabcdefg".dup ) );
+        assert( !contains( "abcdefg".dup, "abcdefggg".dup ) );
+        assert( !contains( "abbbcdefg".dup, "abbbbcdefg".dup ) );
+      }
+    }
+}
+
+
+////////////////////////////////////////////////////////////////////////////////
+// Union Of
+////////////////////////////////////////////////////////////////////////////////
+
+
+version( DDoc )
+{
+    /**
+     * Computes the union of setA and setB as a set operation and returns the
+     * retult in a new sorted array.  Both setA and setB are required to be
+     * sorted.  If either setA or setB contain duplicates, the result will
+     * contain the larger number of duplicates from setA and setB.  When an
+     * overlap occurs, entries will be copied from setA.  Comparisons will be
+     * performed using the supplied predicate or '<' if none is supplied.
+     *
+     * Params:
+     *  setA = The first sorted array to evaluate.
+     *  setB = The second sorted array to evaluate.
+     *  pred = The evaluation predicate, which should return true if e1 is
+     *         less than e2 and false if not.  This predicate may be any
+     *         callable type.
+     *
+     * Returns:
+     *  A new array containing the union of setA and setB.
+     */
+    Elem[] unionOf( Elem[] setA, Elem[] setB, Pred2E pred = Pred2E.init );
+}
+else
+{
+    template unionOf_( Elem, Pred = IsLess!(Elem) )
+    {
+        static assert( isCallableType!(Pred ) );
+
+
+        Elem[] fn( Elem[] setA, Elem[] setB, Pred pred = Pred.init )
+        {
+            size_t  posA = 0,
+                    posB = 0;
+            Elem[]  setU;
+
+            while( posA < setA.length && posB < setB.length )
+            {
+                if( pred( setA[posA], setB[posB] ) )
+                    setU ~= setA[posA++];
+                else if( pred( setB[posB], setA[posA] ) )
+                    setU ~= setB[posB++];
+                else
+                    setU ~= setA[posA++], posB++;
+            }
+            setU ~= setA[posA .. $];
+            setU ~= setB[posB .. $];
+            return setU;
+        }
+    }
+
+
+    template unionOf( Buf )
+    {
+        Buf unionOf( Buf setA, Buf setB )
+        {
+            return unionOf_!(ElemTypeOf!(Buf)).fn( setA, setB );
+        }
+    }
+
+
+    template unionOf( Buf, Pred )
+    {
+        Buf unionOf( Buf setA, Buf setB, Pred pred )
+        {
+            return unionOf_!(ElemTypeOf!(Buf), Pred).fn( setA, setB, pred );
+        }
+    }
+
+
+    debug( UnitTest )
+    {
+      unittest
+      {
+        assert( unionOf( "".dup, "".dup ) == "" );
+        assert( unionOf( "abc".dup, "def".dup ) == "abcdef" );
+        assert( unionOf( "abbbcd".dup, "aadeefg".dup ) == "aabbbcdeefg" );
+      }
+    }
+}
+
+
+////////////////////////////////////////////////////////////////////////////////
+// Intersection Of
+////////////////////////////////////////////////////////////////////////////////
+
+
+version( DDoc )
+{
+    /**
+     * Computes the intersection of setA and setB as a set operation and
+     * returns the retult in a new sorted array.  Both setA and setB are
+     * required to be sorted.  If either setA or setB contain duplicates, the
+     * result will contain the smaller number of duplicates from setA and setB.
+     * All entries will be copied from setA.  Comparisons will be performed
+     * using the supplied predicate or '<' if none is supplied.
+     *
+     * Params:
+     *  setA = The first sorted array to evaluate.
+     *  setB = The second sorted array to evaluate.
+     *  pred = The evaluation predicate, which should return true if e1 is
+     *         less than e2 and false if not.  This predicate may be any
+     *         callable type.
+     *
+     * Returns:
+     *  A new array containing the intersection of setA and setB.
+     */
+    Elem[] intersectionOf( Elem[] setA, Elem[] setB, Pred2E pred = Pred2E.init );
+}
+else
+{
+    template intersectionOf_( Elem, Pred = IsLess!(Elem) )
+    {
+        static assert( isCallableType!(Pred ) );
+
+
+        Elem[] fn( Elem[] setA, Elem[] setB, Pred pred = Pred.init )
+        {
+            size_t  posA = 0,
+                    posB = 0;
+            Elem[]  setI;
+
+            while( posA < setA.length && posB < setB.length )
+            {
+                if( pred( setA[posA], setB[posB] ) )
+                    ++posA;
+                else if( pred( setB[posB], setA[posA] ) )
+                    ++posB;
+                else
+                    setI ~= setA[posA++], posB++;
+            }
+            return setI;
+        }
+    }
+
+
+    template intersectionOf( Buf )
+    {
+        Buf intersectionOf( Buf setA, Buf setB )
+        {
+            return intersectionOf_!(ElemTypeOf!(Buf)).fn( setA, setB );
+        }
+    }
+
+
+    template intersectionOf( Buf, Pred )
+    {
+        Buf intersectionOf( Buf setA, Buf setB, Pred pred )
+        {
+            return intersectionOf_!(ElemTypeOf!(Buf), Pred).fn( setA, setB, pred );
+        }
+    }
+
+
+    debug( UnitTest )
+    {
+      unittest
+      {
+        assert( intersectionOf( "".dup, "".dup ) == "" );
+        assert( intersectionOf( "abc".dup, "def".dup ) == "" );
+        assert( intersectionOf( "abbbcd".dup, "aabdddeefg".dup ) == "abd" );
+      }
+    }
+}
+
+
+////////////////////////////////////////////////////////////////////////////////
+// Missing From
+////////////////////////////////////////////////////////////////////////////////
+
+
+version( DDoc )
+{
+    /**
+     * Returns a new array containing all elements in setA which are not
+     * present in setB.  Both setA and setB are required to be sorted.
+     * Comparisons will be performed using the supplied predicate or '<'
+     * if none is supplied.
+     *
+     * Params:
+     *  setA = The first sorted array to evaluate.
+     *  setB = The second sorted array to evaluate.
+     *  pred = The evaluation predicate, which should return true if e1 is
+     *         less than e2 and false if not.  This predicate may be any
+     *         callable type.
+     *
+     * Returns:
+     *  A new array containing the elements in setA that are not in setB.
+     */
+    Elem[] missingFrom( Elem[] setA, Elem[] setB, Pred2E pred = Pred2E.init );
+}
+else
+{
+    template missingFrom_( Elem, Pred = IsLess!(Elem) )
+    {
+        static assert( isCallableType!(Pred ) );
+
+
+        Elem[] fn( Elem[] setA, Elem[] setB, Pred pred = Pred.init )
+        {
+            size_t  posA = 0,
+                    posB = 0;
+            Elem[]  setM;
+
+            while( posA < setA.length && posB < setB.length )
+            {
+                if( pred( setA[posA], setB[posB] ) )
+                    setM ~= setA[posA++];
+                else if( pred( setB[posB], setA[posA] ) )
+                    ++posB;
+                else
+                    ++posA, ++posB;
+            }
+            return setM;
+        }
+    }
+
+
+    template missingFrom( Buf )
+    {
+        Buf missingFrom( Buf setA, Buf setB )
+        {
+            return missingFrom_!(ElemTypeOf!(Buf)).fn( setA, setB );
+        }
+    }
+
+
+    template missingFrom( Buf, Pred )
+    {
+        Buf missingFrom( Buf setA, Buf setB, Pred pred )
+        {
+            return missingFrom_!(ElemTypeOf!(Buf), Pred).fn( setA, setB, pred );
+        }
+    }
+
+
+    debug( UnitTest )
+    {
+      unittest
+      {
+        assert( missingFrom( "".dup, "".dup ) == "" );
+        assert( missingFrom( "".dup, "abc".dup ) == "" );
+        assert( missingFrom( "abc".dup, "".dup ) == "" );
+        assert( missingFrom( "abc".dup, "abc".dup ) == "" );
+        assert( missingFrom( "abc".dup, "def".dup ) == "abc" );
+        assert( missingFrom( "abbbcd".dup, "abd".dup ) == "bbc" );
+      }
+    }
+}
+
+
+////////////////////////////////////////////////////////////////////////////////
+// Difference Of
+////////////////////////////////////////////////////////////////////////////////
+
+
+version( DDoc )
+{
+   /**
+     * Returns a new array containing all elements in setA which are not
+     * present in setB and the elements in setB which are not present in
+     * setA.  Both setA and setB are required to be sorted.  Comparisons
+     * will be performed using the supplied predicate or '<' if none is
+     * supplied.
+     *
+     * Params:
+     *  setA = The first sorted array to evaluate.
+     *  setB = The second sorted array to evaluate.
+     *  pred = The evaluation predicate, which should return true if e1 is
+     *         less than e2 and false if not.  This predicate may be any
+     *         callable type.
+     *
+     * Returns:
+     *  A new array containing the elements in setA that are not in setB
+     *  and the elements in setB that are not in setA.
+     */
+    Elem[] differenceOf( Elem[] setA, Elem[] setB, Pred2E pred = Pred2E.init );
+}
+else
+{
+    template differenceOf_( Elem, Pred = IsLess!(Elem) )
+    {
+        static assert( isCallableType!(Pred ) );
+
+
+        Elem[] fn( Elem[] setA, Elem[] setB, Pred pred = Pred.init )
+        {
+            size_t  posA = 0,
+                    posB = 0;
+            Elem[]  setD;
+
+            while( posA < setA.length && posB < setB.length )
+            {
+                if( pred( setA[posA], setB[posB] ) )
+                    setD ~= setA[posA++];
+                else if( pred( setB[posB], setA[posA] ) )
+                    setD ~= setB[posB++];
+                else
+                    ++posA, ++posB;
+            }
+            setD ~= setA[posA .. $];
+            setD ~= setB[posB .. $];
+            return setD;
+        }
+    }
+
+
+    template differenceOf( Buf )
+    {
+        Buf differenceOf( Buf setA, Buf setB )
+        {
+            return differenceOf_!(ElemTypeOf!(Buf)).fn( setA, setB );
+        }
+    }
+
+
+    template differenceOf( Buf, Pred )
+    {
+        Buf differenceOf( Buf setA, Buf setB, Pred pred )
+        {
+            return differenceOf_!(ElemTypeOf!(Buf), Pred).fn( setA, setB, pred );
+        }
+    }
+
+
+    debug( UnitTest )
+    {
+      unittest
+      {
+        assert( differenceOf( "".dup, "".dup ) == "" );
+        assert( differenceOf( "".dup, "abc".dup ) == "abc" );
+        assert( differenceOf( "abc".dup, "".dup ) == "abc" );
+        assert( differenceOf( "abc".dup, "abc".dup ) == "" );
+        assert( differenceOf( "abc".dup, "def".dup ) == "abcdef" );
+        assert( differenceOf( "abbbcd".dup, "abd".dup ) == "bbc" );
+        assert( differenceOf( "abd".dup, "abbbcd".dup ) == "bbc" );
+      }
+    }
+}
+
+
+////////////////////////////////////////////////////////////////////////////////
 // Make Heap
 ////////////////////////////////////////////////////////////////////////////////
 
