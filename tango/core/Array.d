@@ -966,7 +966,7 @@ version( DDoc )
      *         callable type.
      *
      * Returns:
-     *  The index of the first match or buf.length if no match was found.
+     *  The number of elements matching pat.
      */
     size_t count( Elem[] buf, Elem pat, Pred2E pred = Pred2E.init );
 
@@ -1019,6 +1019,88 @@ else
         assert( count( "gbbbi", 'b' ) == 3 );
         assert( count( "gbbbi", 'i' ) == 1 );
         assert( count( "gbbbi", 'd' ) == 0 );
+      }
+    }
+}
+
+
+////////////////////////////////////////////////////////////////////////////////
+// Replace
+////////////////////////////////////////////////////////////////////////////////
+
+
+version( DDoc )
+{
+    /**
+     * Performs a linear scan of buf from $(LB)0 .. buf.length$(RP), replacing
+     * occurrences of pat with val.  Comparisons will be performed using the
+     * supplied predicate or '==' if none is supplied.
+     *
+     * Params:
+     *  buf  = The array to scan.
+     *  pat  = The pattern to match.
+     *  val  = The value to substitute.
+     *  pred = The evaluation predicate, which should return true if e1 is
+     *         equal to e2 and false if not.  This predicate may be any
+     *         callable type.
+     *
+     * Returns:
+     *  The number of elements replaced.
+     */
+    size_t replace( Elem[] buf, Elem pat, Elem val, Pred2E pred = Pred2E.init );
+
+}
+else
+{
+    template replace_( Elem, Pred = IsEqual!(Elem) )
+    {
+        static assert( isCallableType!(Pred) );
+
+
+        size_t fn( Elem[] buf, Elem pat, Elem rep, Pred pred = Pred.init )
+        {
+            size_t cnt = 0;
+
+            foreach( size_t pos, inout Elem cur; buf )
+            {
+                if( pred( cur, pat ) )
+                {
+                    cur = rep;
+                    ++cnt;
+                }
+            }
+            return cnt;
+        }
+    }
+
+
+    template replace( Buf, Elem )
+    {
+        size_t replace( Buf buf, Elem pat, Elem rep )
+        {
+            return replace_!(ElemTypeOf!(Buf)).fn( buf, pat, rep );
+        }
+    }
+
+
+    template replace( Buf, Elem, Pred )
+    {
+        size_t replace( Buf buf, Elem pat, Elem rep, Pred pred )
+        {
+            return replace_!(ElemTypeOf!(Buf), Pred).fn( buf, pat, rep, pred );
+        }
+    }
+
+
+    debug( UnitTest )
+    {
+      unittest
+      {
+        assert( replace( "gbbbi".dup, 'a', 'b' ) == 0 );
+        assert( replace( "gbbbi".dup, 'g', 'h' ) == 1 );
+        assert( replace( "gbbbi".dup, 'b', 'c' ) == 3 );
+        assert( replace( "gbbbi".dup, 'i', 'j' ) == 1 );
+        assert( replace( "gbbbi".dup, 'd', 'e' ) == 0 );
       }
     }
 }
@@ -1601,20 +1683,20 @@ else
     }
 
 
-    template contains( Buf )
+    template contains( BufA, BufB )
     {
-        bool contains( Buf setA, Buf setB )
+        bool contains( BufA setA, BufB setB )
         {
-            return contains_!(ElemTypeOf!(Buf)).fn( setA, setB );
+            return contains_!(ElemTypeOf!(BufA)).fn( setA, setB );
         }
     }
 
 
-    template contains( Buf, Pred )
+    template contains( BufA, BufB, Pred )
     {
-        bool contains( Buf setA, Buf setB, Pred pred )
+        bool contains( BufA setA, BufB setB, Pred pred )
         {
-            return contains_!(ElemTypeOf!(Buf), Pred).fn( setA, setB, pred );
+            return contains_!(ElemTypeOf!(BufA), Pred).fn( setA, setB, pred );
         }
     }
 
@@ -1623,15 +1705,15 @@ else
     {
       unittest
       {
-        assert( contains( "abcdefg".dup, "a".dup ) );
-        assert( contains( "abcdefg".dup, "g".dup ) );
-        assert( contains( "abcdefg".dup, "d".dup ) );
-        assert( contains( "abcdefg".dup, "abcdefg".dup ) );
-        assert( contains( "aaaabbbcdddefgg".dup, "abbbcdefg".dup ) );
+        assert( contains( "abcdefg", "a" ) );
+        assert( contains( "abcdefg", "g" ) );
+        assert( contains( "abcdefg", "d" ) );
+        assert( contains( "abcdefg", "abcdefg" ) );
+        assert( contains( "aaaabbbcdddefgg", "abbbcdefg" ) );
 
-        assert( !contains( "abcdefg".dup, "aaabcdefg".dup ) );
-        assert( !contains( "abcdefg".dup, "abcdefggg".dup ) );
-        assert( !contains( "abbbcdefg".dup, "abbbbcdefg".dup ) );
+        assert( !contains( "abcdefg", "aaabcdefg" ) );
+        assert( !contains( "abcdefg", "abcdefggg" ) );
+        assert( !contains( "abbbcdefg", "abbbbcdefg" ) );
       }
     }
 }
@@ -1693,20 +1775,20 @@ else
     }
 
 
-    template unionOf( Buf )
+    template unionOf( BufA, BufB )
     {
-        Buf unionOf( Buf setA, Buf setB )
+        ElemTypeOf!(BufA)[] unionOf( BufA setA, BufB setB )
         {
-            return unionOf_!(ElemTypeOf!(Buf)).fn( setA, setB );
+            return unionOf_!(ElemTypeOf!(BufA)).fn( setA, setB );
         }
     }
 
 
-    template unionOf( Buf, Pred )
+    template unionOf( BufA, BufB, Pred )
     {
-        Buf unionOf( Buf setA, Buf setB, Pred pred )
+        ElemTypeOf!(BufA)[] unionOf( BufA setA, BufB setB, Pred pred )
         {
-            return unionOf_!(ElemTypeOf!(Buf), Pred).fn( setA, setB, pred );
+            return unionOf_!(ElemTypeOf!(BufA), Pred).fn( setA, setB, pred );
         }
     }
 
@@ -1715,9 +1797,9 @@ else
     {
       unittest
       {
-        assert( unionOf( "".dup, "".dup ) == "" );
-        assert( unionOf( "abc".dup, "def".dup ) == "abcdef" );
-        assert( unionOf( "abbbcd".dup, "aadeefg".dup ) == "aabbbcdeefg" );
+        assert( unionOf( "", "" ) == "" );
+        assert( unionOf( "abc", "def" ) == "abcdef" );
+        assert( unionOf( "abbbcd", "aadeefg" ) == "aabbbcdeefg" );
       }
     }
 }
@@ -1777,20 +1859,20 @@ else
     }
 
 
-    template intersectionOf( Buf )
+    template intersectionOf( BufA, BufB )
     {
-        Buf intersectionOf( Buf setA, Buf setB )
+        ElemTypeOf!(BufA)[] intersectionOf( BufA setA, BufB setB )
         {
-            return intersectionOf_!(ElemTypeOf!(Buf)).fn( setA, setB );
+            return intersectionOf_!(ElemTypeOf!(BufA)).fn( setA, setB );
         }
     }
 
 
-    template intersectionOf( Buf, Pred )
+    template intersectionOf( BufA, BufB, Pred )
     {
-        Buf intersectionOf( Buf setA, Buf setB, Pred pred )
+        ElemTypeOf!(BufA)[] intersectionOf( BufA setA, BufB setB, Pred pred )
         {
-            return intersectionOf_!(ElemTypeOf!(Buf), Pred).fn( setA, setB, pred );
+            return intersectionOf_!(ElemTypeOf!(BufA), Pred).fn( setA, setB, pred );
         }
     }
 
@@ -1799,9 +1881,9 @@ else
     {
       unittest
       {
-        assert( intersectionOf( "".dup, "".dup ) == "" );
-        assert( intersectionOf( "abc".dup, "def".dup ) == "" );
-        assert( intersectionOf( "abbbcd".dup, "aabdddeefg".dup ) == "abd" );
+        assert( intersectionOf( "", "" ) == "" );
+        assert( intersectionOf( "abc", "def" ) == "" );
+        assert( intersectionOf( "abbbcd", "aabdddeefg" ) == "abd" );
       }
     }
 }
@@ -1859,20 +1941,20 @@ else
     }
 
 
-    template missingFrom( Buf )
+    template missingFrom( BufA, BufB )
     {
-        Buf missingFrom( Buf setA, Buf setB )
+        ElemTypeOf!(BufA)[] missingFrom( BufA setA, BufB setB )
         {
-            return missingFrom_!(ElemTypeOf!(Buf)).fn( setA, setB );
+            return missingFrom_!(ElemTypeOf!(BufA)).fn( setA, setB );
         }
     }
 
 
-    template missingFrom( Buf, Pred )
+    template missingFrom( BufA, BufB, Pred )
     {
-        Buf missingFrom( Buf setA, Buf setB, Pred pred )
+        ElemTypeOf!(BufA)[] missingFrom( BufA setA, BufB setB, Pred pred )
         {
-            return missingFrom_!(ElemTypeOf!(Buf), Pred).fn( setA, setB, pred );
+            return missingFrom_!(ElemTypeOf!(BufA), Pred).fn( setA, setB, pred );
         }
     }
 
@@ -1881,12 +1963,12 @@ else
     {
       unittest
       {
-        assert( missingFrom( "".dup, "".dup ) == "" );
-        assert( missingFrom( "".dup, "abc".dup ) == "" );
-        assert( missingFrom( "abc".dup, "".dup ) == "" );
-        assert( missingFrom( "abc".dup, "abc".dup ) == "" );
-        assert( missingFrom( "abc".dup, "def".dup ) == "abc" );
-        assert( missingFrom( "abbbcd".dup, "abd".dup ) == "bbc" );
+        assert( missingFrom( "", "" ) == "" );
+        assert( missingFrom( "", "abc" ) == "" );
+        assert( missingFrom( "abc", "" ) == "" );
+        assert( missingFrom( "abc", "abc" ) == "" );
+        assert( missingFrom( "abc", "def" ) == "abc" );
+        assert( missingFrom( "abbbcd", "abd" ) == "bbc" );
       }
     }
 }
@@ -1948,20 +2030,20 @@ else
     }
 
 
-    template differenceOf( Buf )
+    template differenceOf( BufA, BufB )
     {
-        Buf differenceOf( Buf setA, Buf setB )
+        ElemTypeOf!(BufA)[] differenceOf( BufA setA, BufB setB )
         {
-            return differenceOf_!(ElemTypeOf!(Buf)).fn( setA, setB );
+            return differenceOf_!(ElemTypeOf!(BufA)).fn( setA, setB );
         }
     }
 
 
-    template differenceOf( Buf, Pred )
+    template differenceOf( BufA, BufB, Pred )
     {
-        Buf differenceOf( Buf setA, Buf setB, Pred pred )
+        ElemTypeOf!(BufA)[] differenceOf( BufA setA, BufB setB, Pred pred )
         {
-            return differenceOf_!(ElemTypeOf!(Buf), Pred).fn( setA, setB, pred );
+            return differenceOf_!(ElemTypeOf!(BufA), Pred).fn( setA, setB, pred );
         }
     }
 
@@ -1970,13 +2052,13 @@ else
     {
       unittest
       {
-        assert( differenceOf( "".dup, "".dup ) == "" );
-        assert( differenceOf( "".dup, "abc".dup ) == "abc" );
-        assert( differenceOf( "abc".dup, "".dup ) == "abc" );
-        assert( differenceOf( "abc".dup, "abc".dup ) == "" );
-        assert( differenceOf( "abc".dup, "def".dup ) == "abcdef" );
-        assert( differenceOf( "abbbcd".dup, "abd".dup ) == "bbc" );
-        assert( differenceOf( "abd".dup, "abbbcd".dup ) == "bbc" );
+        assert( differenceOf( "", "" ) == "" );
+        assert( differenceOf( "", "abc" ) == "abc" );
+        assert( differenceOf( "abc", "" ) == "abc" );
+        assert( differenceOf( "abc", "abc" ) == "" );
+        assert( differenceOf( "abc", "def" ) == "abcdef" );
+        assert( differenceOf( "abbbcd", "abd" ) == "bbc" );
+        assert( differenceOf( "abd", "abbbcd" ) == "bbc" );
       }
     }
 }
