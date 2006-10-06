@@ -1107,6 +1107,108 @@ else
 
 
 ////////////////////////////////////////////////////////////////////////////////
+// Partition
+////////////////////////////////////////////////////////////////////////////////
+
+
+version( DDoc )
+{
+    /**
+     * Partitions buf such that all elements that satisfy pred will be placed
+     * before the elements that do not satisfy pred.  The algorithm is not
+     * required to be stable.
+     *
+     * Params:
+     *  buf  = The array to partition.  This parameter is not marked 'inout'
+     *         to allow temporary slices to be sorted.  As buf is not resized
+     *         in any way, omitting the 'inout' qualifier has no effect on
+     *         the result of this operation, even though it may be viewed
+     *         as a side-effect.
+     *  pred = The evaluation predicate, which should return true if the
+     *         element satisfies the condition and false if not.  This
+     *         predicate may be any callable type.
+     *
+     * Returns:
+     *  The number of elements in buf that satisfy pred.
+     */
+    void partition( Elem[] buf, Pred1E pred );
+}
+else
+{
+    template partition_( Elem, Pred = IsLess!(Elem) )
+    {
+        static assert( isCallableType!(Pred ) );
+
+
+        size_t fn( Elem[] buf, Pred pred )
+        {
+            // NOTE: Indexes are passed instead of references because DMD does
+            //       not inline the reference-based version.
+            void exch( size_t p1, size_t p2 )
+            {
+                Elem t  = buf[p1];
+                buf[p1] = buf[p2];
+                buf[p2] = t;
+            }
+
+            if( buf.length < 2 )
+                return 0;
+
+            size_t  l = 0,
+                    r = buf.length,
+                    i = l,
+                    j = r - 1;
+
+            while( true )
+            {
+                while( i < r && pred( buf[i] ) )
+                    ++i;
+                while( j > l && !pred( buf[j] ) )
+                    --j;
+                if( i >= j )
+                    break;
+                exch( i++, j-- );
+            }
+            return i;
+        }
+    }
+
+
+    template partition( Buf, Pred )
+    {
+        size_t partition( Buf buf, Pred pred )
+        {
+            return partition_!(ElemTypeOf!(Buf), Pred).fn( buf, pred );
+        }
+    }
+
+
+    debug( UnitTest )
+    {
+      unittest
+      {
+        void test( char[] buf, bool delegate( char ) dg, size_t num )
+        {
+            assert( partition( buf, dg ) == num );
+            for( size_t pos = 0; pos < buf.length; ++pos )
+            {
+                assert( pos < num ? dg( buf[pos] ) : !dg( buf[pos] ) );
+            }
+        }
+
+        test( "abcdefg".dup, ( char c ) { return c < 'a'; }, 0 );
+        test( "gfedcba".dup, ( char c ) { return c < 'a'; }, 0 );
+        test( "abcdefg".dup, ( char c ) { return c < 'h'; }, 7 );
+        test( "gfedcba".dup, ( char c ) { return c < 'h'; }, 7 );
+        test( "abcdefg".dup, ( char c ) { return c < 'd'; }, 3 );
+        test( "gfedcba".dup, ( char c ) { return c < 'd'; }, 3 );
+        test( "bbdaabc".dup, ( char c ) { return c < 'c'; }, 5 );
+      }
+    }
+}
+
+
+////////////////////////////////////////////////////////////////////////////////
 // Select
 ////////////////////////////////////////////////////////////////////////////////
 
@@ -1147,11 +1249,6 @@ else
 
         void fn( Elem[] buf, size_t num, Pred pred = Pred.init )
         {
-            bool equiv( Elem p1, Elem p2 )
-            {
-                return !pred( p1, p2 ) && !pred( p2, p1 );
-            }
-
             // NOTE: Indexes are passed instead of references because DMD does
             //       not inline the reference-based version.
             void exch( size_t p1, size_t p2 )
