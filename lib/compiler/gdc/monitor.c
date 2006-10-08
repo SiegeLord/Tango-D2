@@ -1,4 +1,4 @@
-// Copyright (c) 2000-2004 by Digital Mars
+// Copyright (c) 2000-2006 by Digital Mars
 // All Rights Reserved
 // written by Walter Bright
 // www.digitalmars.com
@@ -54,7 +54,7 @@ void _d_monitorenter(Object *h)
 	EnterCriticalSection(&_monitor_critsec);
 	if (!h->monitor)	// if, in the meantime, another thread didn't set it
 	{
-	    h->monitor = (unsigned)cs;
+	    h->monitor = (void *)cs;
 	    InitializeCriticalSection(cs);
 	    cs = NULL;
 	}
@@ -144,7 +144,7 @@ void _d_monitorenter(Object *h)
 	pthread_mutex_lock(&_monitor_critsec);
 	if (!h->monitor)	// if, in the meantime, another thread didn't set it
 	{
-	    h->monitor = (unsigned)cs;
+	    h->monitor = (void *)cs;
 #ifndef PTHREAD_MUTEX_ALREADY_RECURSIVE
 	    pthread_mutex_init(cs, & _monitors_attr);
 #else

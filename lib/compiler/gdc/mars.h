@@ -1,9 +1,11 @@
 
 /*
  * Placed into the Public Domain
- * written by Walter Bright
+ * written by Walter Bright, Digital Mars
  * www.digitalmars.com
  */
+
+#include <stddef.h>
 
 #if __cplusplus
 extern "C" {
@@ -14,7 +16,7 @@ struct Vtbl;
 
 typedef struct Vtbl
 {
-    unsigned len;
+    size_t len;
     void **vptr;
 } Vtbl;
 
@@ -28,22 +30,22 @@ typedef struct Interface
 typedef struct Object
 {
     void **vptr;
-    unsigned monitor;
+    void *monitor;
 } Object;
 
 typedef struct ClassInfo
 {
     Object object;
 
-    unsigned initlen;
+    size_t initlen;
     void *init;
 
-    unsigned namelen;
+    size_t namelen;
     char *name;
 
     Vtbl vtbl;
 
-    unsigned interfacelen;
+    size_t interfacelen;
     Interface *interfaces;
 
     struct ClassInfo *baseClass;
@@ -58,10 +60,10 @@ typedef struct Exception
 {
     Object object;
 
-    unsigned msglen;
+    size_t msglen;
     char *msg;
 
-    unsigned filelen;
+    size_t filelen;
     char *file;
 
     size_t line;
