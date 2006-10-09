@@ -35,7 +35,7 @@ ALL_DOCS=
 
 lib : $(ALL_OBJS)
 	make -C compiler/gdc
-	$(RM) compiler/gdc/config/*.o
+	$(RM) compiler/gdc/config/*.o compiler/gdc/gcc/configunix.o
 	make -C gc/basic -fposix.mak lib DC=$(DC) ADDFLAGS="$(ADDFLAGS)"
 	make -C common -fposix.mak lib DC=$(DC) ADDFLAGS="$(ADDFLAGS)"
 	find . -name "libgphobos*.a" | xargs $(RM)

@@ -671,7 +671,7 @@ body
 
     if (newlength)
     {
-        version (D_InlineAsm_X86)
+        version (D_InlineAsm_X86_NONFUNCTIONAL)
         {
             size_t newsize = void;
 
