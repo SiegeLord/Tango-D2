@@ -68,8 +68,9 @@ then
     fi
     if [ "$INPLACE" = "0" ]
     then
-        rm -rf $PREFIX/lib/tango $PREFIX/include/d/$GDC_VER/object.d
+        rm -rf $GPHOBOS_DIR/libgphobos.a $GPHOBOS_DIR/libtango.a $PREFIX/include/d/$GDC_VER/object.d
         mv $PREFIX/include/d/$GDC_VER/object.d.phobos $PREFIX/include/d/$GDC_VER/object.d
+        mv $GPHOBOS_DIR/libgphobos.a.phobos $GPHOBOS_DIR/libgphobos.a
     fi
     mv -f $GPHOBOS_DIR/libgphobos.spec.phobos $GPHOBOS_DIR/libgphobos.spec
     die "Done!" 0
@@ -88,6 +89,7 @@ then
     die "You must uninstall your old copy of Tango before installing a new one." 4
 fi
 mv -f $GPHOBOS_DIR/libgphobos.spec $GPHOBOS_DIR/libgphobos.spec.phobos
+mv -f $GPHOBOS_DIR/libgphobos.a $GPHOBOS_DIR/libgphobos.a.phobos
 
 # Install ...
 SPECLIBDIR=
@@ -95,13 +97,12 @@ SPECINCDIR=
 if [ "$INPLACE" = "0" ]
 then
     echo 'Copying files...'
-    mkdir -p $PREFIX/lib/tango || die "Failed to create lib/tango (maybe you need root privileges?" 5
-    mkdir -p $PREFIX/include/d/$GDC_VER || die "Failed to create include/d/$GDC_VER" 6
-    cp -avf libgphobos.a libtango.a $PREFIX/lib/tango || die "Failed to copy libraries" 7
+    mkdir -p $PREFIX/include/d/$GDC_VER || die "Failed to create include/d/$GDC_VER (maybe you need root privileges?)" 5
+    cp -avf libgphobos.a libtango.a $GPHOBOS_DIR || die "Failed to copy libraries" 7
     mv $PREFIX/include/d/$GDC_VER/object.d $PREFIX/include/d/$GDC_VER/object.d.phobos || die "Failed to move Phobos' object.d" 8
     cp -avf ../object.d $PREFIX/include/d/$GDC_VER || die "Failed to copy source" 8
 
-    SPECLIBDIR="$PREFIX/lib/tango"
+    SPECLIBDIR="$GPHOBOS_DIR"
     SPECINCDIR="$PREFIX/include/d/$GDC_VER"
 else
     SPECLIBDIR="$PWD"
