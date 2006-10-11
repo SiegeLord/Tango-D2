@@ -115,7 +115,7 @@ extern (C) int main(int argc, char **argv)
         size_t    cargl = WideCharToMultiByte(65001, 0, wcbuf, wclen, null, 0, null, 0);
 
         cargp = cast(char*) alloca(cargl);
-        args  = (cast(char[]*) alloca(wargc * (char[]).sizeof))[0 .. wargc];
+        args  = ((cast(char[]*) alloca(wargc * (char[]).sizeof)))[0 .. wargc];
 
         for (size_t i = 0, p = 0; i < wargc; i++)
         {
