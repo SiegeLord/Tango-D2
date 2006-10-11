@@ -11,6 +11,7 @@ module tango.core.Array;
 
 
 private import tango.core.Traits;
+private import tango.stdc.stdlib : alloca;
 
 
 version( DDoc )
@@ -368,13 +369,9 @@ version( DDoc )
      * or '==' if none is supplied.
      *
      * This function uses the KMP algorithm and offers O(M+N) performance but
-     * must allocate a temporary buffer of size pat.sizeof to do so.  As the
-     * cost of dynamic allocations is potentially quite high, the standard
-     * find operation may be preferable.
-     *
-     * Implementor's Note: If stack allocation could be used, this algorithm
-     * would be far more appealing.  Consider using alloca or restricting
-     * pattern length and employing a fixed internal buffer.
+     * must allocate a temporary buffer of size pat.sizeof to do so.  If it is
+     * available on the target system, alloca will be used for the allocation,
+     * otherwise a standard dynamic memory allocation will occur.
      *
      * Params:
      *  buf  = The array to search.
@@ -396,13 +393,9 @@ version( DDoc )
      * or '==' if none is supplied.
      *
      * This function uses the KMP algorithm and offers O(M+N) performance but
-     * must allocate a temporary buffer of size pat.sizeof to do so.  As the
-     * cost of dynamic allocations is potentially quite high, the standard
-     * find operation may be preferable.
-     *
-     * Implementor's Note: If stack allocation could be used, this algorithm
-     * would be far more appealing.  Consider using alloca or restricting
-     * pattern length and employing a fixed internal buffer.
+     * must allocate a temporary buffer of size pat.sizeof to do so.  If it is
+     * available on the target system, alloca will be used for the allocation,
+     * otherwise a standard dynamic memory allocation will occur.
      *
      * Params:
      *  buf  = The array to search.
@@ -443,11 +436,17 @@ else
                 return buf.length;
             }
 
-            size_t[]    func;
-            scope( exit ) delete func; // force cleanup
+            static if( is( alloca ) )
+                size_t[] func = (cast(size_t*) alloca( (pat.length + 1) * size_t.sizeof ))[0 .. pat.length + 1];
+            else
+                size_t[] func = new size_t[pat.length + 1];
+            // HACK: Workaround for scope exit bug.  Once the bug is fixed, the
+            //       scoped delete operation below can go inside the else block
+            //       above.
+            static if( !is( alloca ) )
+                scope( exit ) delete func; // force cleanup
 
-            func.length = pat.length + 1;
-            func[0]     = 0;
+            func[0] = 0;
 
             //
             // building prefix-function
@@ -552,13 +551,9 @@ version( DDoc )
      * or '==' if none is supplied.
      *
      * This function uses the KMP algorithm and offers O(M+N) performance but
-     * must allocate a temporary buffer of size pat.sizeof to do so.  As the
-     * cost of dynamic allocations is potentially quite high, the standard
-     * find operation may be preferable.
-     *
-     * Implementor's Note: If stack allocation could be used, this algorithm
-     * would be far more appealing.  Consider using alloca or restricting
-     * pattern length and employing a fixed internal buffer.
+     * must allocate a temporary buffer of size pat.sizeof to do so.  If it is
+     * available on the target system, alloca will be used for the allocation,
+     * otherwise a standard dynamic memory allocation will occur.
      *
      * Params:
      *  buf  = The array to search.
@@ -580,13 +575,9 @@ version( DDoc )
      * or '==' if none is supplied.
      *
      * This function uses the KMP algorithm and offers O(M+N) performance but
-     * must allocate a temporary buffer of size pat.sizeof to do so.  As the
-     * cost of dynamic allocations is potentially quite high, the standard
-     * find operation may be preferable.
-     *
-     * Implementor's Note: If stack allocation could be used, this algorithm
-     * would be far more appealing.  Consider using alloca or restricting
-     * pattern length and employing a fixed internal buffer.
+     * must allocate a temporary buffer of size pat.sizeof to do so.  If it is
+     * available on the target system, alloca will be used for the allocation,
+     * otherwise a standard dynamic memory allocation will occur.
      *
      * Params:
      *  buf  = The array to search.
@@ -632,11 +623,17 @@ else
                 return buf.length;
             }
 
-            size_t[]    func;
-            scope( exit ) delete func; // force cleanup
+            static if( is( alloca ) )
+                size_t[] func = (cast(size_t*) alloca( (pat.length + 1) * size_t.sizeof ))[0 .. pat.length + 1];
+            else
+                size_t[] func = new size_t[pat.length + 1];
+            // HACK: Workaround for scope exit bug.  Once the bug is fixed, the
+            //       scoped delete operation below can go inside the else block
+            //       above.
+            static if( !is( alloca ) )
+                scope( exit ) delete func; // force cleanup
 
-            func.length      = pat.length + 1;
-            func[length - 1] = 0;
+            func[$ - 1] = 0;
 
             //
             // building prefix-function
@@ -1107,6 +1104,199 @@ else
 
 
 ////////////////////////////////////////////////////////////////////////////////
+// Remove
+////////////////////////////////////////////////////////////////////////////////
+
+
+version( DDoc )
+{
+    /**
+     * Performs a linear scan of buf from $(LB)0 .. buf.length$(RP), moving all
+     * elements matching pat to the end of the sequence.  The relative order of
+     * elements not matching pat will be preserved.  Comparisons will be
+     * performed using the supplied predicate or '==' if none is supplied.
+     *
+     * Params:
+     *  buf  = The array to scan.  This parameter is not marked 'inout'
+     *         to allow temporary slices to be modified.  As buf is not resized
+     *         in any way, omitting the 'inout' qualifier has no effect on the
+     *         result of this operation, even though it may be viewed as a
+     *         side-effect.
+     *  pat  = The pattern to match against.
+     *  pred = The evaluation predicate, which should return true if e1 is
+     *         equal to e2 and false if not.  This predicate may be any
+     *         callable type.
+     *
+     * Returns:
+     *  The number of elements matching pat.
+     */
+    size_t remove( Elem[] buf, Elem pat, Pred2E pred = Pred2E.init );
+}
+else
+{
+    template remove_( Elem, Pred = IsEqual!(Elem) )
+    {
+        static assert( isCallableType!(Pred) );
+
+
+        size_t fn( Elem[] buf, Elem pat, Pred pred = Pred.init )
+        {
+            // NOTE: Indexes are passed instead of references because DMD does
+            //       not inline the reference-based version.
+            void exch( size_t p1, size_t p2 )
+            {
+                Elem t  = buf[p1];
+                buf[p1] = buf[p2];
+                buf[p2] = t;
+            }
+
+            size_t cnt = 0;
+
+            for( size_t pos = 0, len = buf.length; pos < len; ++pos )
+            {
+                if( pred( buf[pos], pat ) )
+                    ++cnt;
+                else
+                    exch( pos, pos - cnt );
+            }
+            return cnt;
+        }
+    }
+
+
+    template remove( Buf, Pat )
+    {
+        size_t remove( Buf buf, Pat pat )
+        {
+            return remove_!(ElemTypeOf!(Buf)).fn( buf, pat );
+        }
+    }
+
+
+    template remove( Buf, Pat, Pred )
+    {
+        size_t remove( Buf buf, Pat pat, Pred pred )
+        {
+            return remove_!(ElemTypeOf!(Buf), Pred).fn( buf, pat, pred );
+        }
+    }
+
+
+    debug( UnitTest )
+    {
+      unittest
+      {
+        void test( char[] buf, char pat, size_t num )
+        {
+            assert( remove( buf, pat ) == num );
+            foreach( pos, cur; buf )
+            {
+                assert( pos < (buf.length - num) ? cur != pat : cur == pat );
+            }
+        }
+
+        test( "abcdefghij".dup, 'x', 0 );
+        test( "xabcdefghi".dup, 'x', 1 );
+        test( "abcdefghix".dup, 'x', 1 );
+        test( "abxxcdefgh".dup, 'x', 2 );
+        test( "xaxbcdxxex".dup, 'x', 5 );
+      }
+    }
+}
+
+
+////////////////////////////////////////////////////////////////////////////////
+// Remove-If
+////////////////////////////////////////////////////////////////////////////////
+
+
+version( DDoc )
+{
+    /**
+     * Performs a linear scan of buf from $(LB)0 .. buf.length$(RP), moving all
+     * elements that satisfy pred to the end of the sequence.  The relative
+     * order of elements that do not satisfy pred will be preserved.
+     *
+     * Params:
+     *  buf  = The array to scan.  This parameter is not marked 'inout'
+     *         to allow temporary slices to be modified.  As buf is not resized
+     *         in any way, omitting the 'inout' qualifier has no effect on the
+     *         result of this operation, even though it may be viewed as a
+     *         side-effect.
+     *  pred = The evaluation predicate, which should return true if the
+     *         element satisfies the condition and false if not.  This
+     *         predicate may be any callable type.
+     *
+     * Returns:
+     *  The number of elements that satisfy pred.
+     */
+    size_t removeIf( Elem[] buf, Pred1E pred );
+}
+else
+{
+    template removeIf_( Elem, Pred )
+    {
+        static assert( isCallableType!(Pred) );
+
+
+        size_t fn( Elem[] buf, Pred pred )
+        {
+            // NOTE: Indexes are passed instead of references because DMD does
+            //       not inline the reference-based version.
+            void exch( size_t p1, size_t p2 )
+            {
+                Elem t  = buf[p1];
+                buf[p1] = buf[p2];
+                buf[p2] = t;
+            }
+
+            size_t cnt = 0;
+
+            for( size_t pos = 0, len = buf.length; pos < len; ++pos )
+            {
+                if( pred( buf[pos] ) )
+                    ++cnt;
+                else
+                    exch( pos, pos - cnt );
+            }
+            return cnt;
+        }
+    }
+
+
+    template removeIf( Buf, Pred )
+    {
+        size_t removeIf( Buf buf, Pred pred )
+        {
+            return removeIf_!(ElemTypeOf!(Buf), Pred).fn( buf, pred );
+        }
+    }
+
+
+    debug( UnitTest )
+    {
+      unittest
+      {
+        void test( char[] buf, bool delegate( char ) dg, size_t num )
+        {
+            assert( removeIf( buf, dg ) == num );
+            foreach( pos, cur; buf )
+            {
+                assert( pos < (buf.length - num) ? !dg( cur ) : dg( cur ) );
+            }
+        }
+
+        test( "abcdefghij".dup, ( char c ) { return c == 'x'; }, 0 );
+        test( "xabcdefghi".dup, ( char c ) { return c == 'x'; }, 1 );
+        test( "abcdefghix".dup, ( char c ) { return c == 'x'; }, 1 );
+        test( "abxxcdefgh".dup, ( char c ) { return c == 'x'; }, 2 );
+        test( "xaxbcdxxex".dup, ( char c ) { return c == 'x'; }, 5 );
+      }
+    }
+}
+
+
+////////////////////////////////////////////////////////////////////////////////
 // Partition
 ////////////////////////////////////////////////////////////////////////////////
 
@@ -1129,7 +1319,7 @@ version( DDoc )
      *         predicate may be any callable type.
      *
      * Returns:
-     *  The number of elements in buf that satisfy pred.
+     *  The number of elements that satisfy pred.
      */
     void partition( Elem[] buf, Pred1E pred );
 }
@@ -1317,9 +1507,9 @@ else
         size_t num = buf.length / 2;
 
         select( buf, num );
-        foreach( char cur; buf[0 .. num - 1] )
+        foreach( cur; buf[0 .. num - 1] )
             assert( cur <= buf[num - 1] );
-        foreach( char cur; buf[num - 1 .. $] )
+        foreach( cur; buf[num - 1 .. $] )
             assert( cur >= buf[num - 1] );
       }
     }
@@ -1469,11 +1659,11 @@ else
         void test( char[] buf )
         {
             sort( buf );
-            char s = buf[0];
-            foreach( i, v; buf )
+            char sav = buf[0];
+            foreach( cur; buf )
             {
-                assert( v >= s );
-                s = v;
+                assert( cur >= sav );
+                sav = cur;
             }
         }
 
@@ -2396,17 +2586,17 @@ else
 
         char[] buf;
 
-        foreach( chr; "abcdefghijklmnopqrstuvwxyz" )
+        foreach( cur; "abcdefghijklmnopqrstuvwxyz" )
         {
-            pushHeap( buf, chr );
+            pushHeap( buf, cur );
             basic( buf );
         }
 
         buf.length = 0;
 
-        foreach( chr; "zyxwvutsrqponmlkjihgfedcba" )
+        foreach( cur; "zyxwvutsrqponmlkjihgfedcba" )
         {
-            pushHeap( buf, chr );
+            pushHeap( buf, cur );
             basic( buf );
         }
       }
@@ -2633,11 +2823,11 @@ else
         char[] buf = "zyxwvutsrqponmlkjihgfedcba".dup;
 
         sortHeap( buf );
-        char s = buf[0];
-        foreach( i, v; buf )
+        char sav = buf[0];
+        foreach( cur; buf )
         {
-            assert( v >= s );
-            s = v;
+            assert( cur >= sav );
+            sav = cur;
         }
       }
     }
