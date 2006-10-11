@@ -222,7 +222,7 @@ extern (C) ulong _d_newarrayi(size_t length, size_t size, ...)
 /**
  *
  */
-ulong _d_newm(size_t size, int ndims, ...)
+extern(C) ulong _d_newm(size_t size, int ndims, ...)
 {
     ulong result;
 
@@ -274,7 +274,7 @@ ulong _d_newm(size_t size, int ndims, ...)
 /**
  *
  */
-ulong _d_newarraymi(size_t size, int ndims, ...)
+extern(C) ulong _d_newarraymi(size_t size, int ndims, ...)
 {
     ulong result;
 
