@@ -213,8 +213,8 @@ extern (C) Array _d_newarrayip(size_t length, size_t size, void* init)
 }
 
 
-//ulong _d_newm(size_t size, int ndims, ...)
-//ulong _d_newarraymi(size_t size, int ndims, ...)
+//extern (C) ulong _d_newm(size_t size, int ndims, ...)
+//extern (C) ulong _d_newarraymi(size_t size, int ndims, ...)
 
 
 /**
@@ -430,8 +430,7 @@ Loverflow:
  * Resize arrays for non-zero initializers.
  * (obsolete, replaced by _d_arraysetlength3)
  */
-extern (C)
-byte[] _d_arraysetlength2p(size_t newlength, size_t sizeelem, Array *p, void * init)
+extern (C) byte[] _d_arraysetlength2p(size_t newlength, size_t sizeelem, Array *p, void * init)
 in
 {
     assert(sizeelem);
