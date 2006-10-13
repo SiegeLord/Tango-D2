@@ -311,16 +311,15 @@ unittest
     ];
     int i;
 
-    for (i = 0; i < vals.length; i++)
-    {
-    real x = vals[i][0];
-    real e = vals[i][1];
-    int exp = cast(int)vals[i][2];
-    int eptr;
-    real v = frexp(x, eptr);
-//    printf("frexp(%La) = %La, should be %La, eptr = %d, should be %d\n", x, v, e, eptr, exp);
-    assert(isIdentical(e, v));
-    assert(exp == eptr);
+    for (i = 0; i < vals.length; i++) {
+        real x = vals[i][0];
+        real e = vals[i][1];
+        int exp = cast(int)vals[i][2];
+        int eptr;
+        real v = frexp(x, eptr);
+    //    printf("frexp(%La) = %La, should be %La, eptr = %d, should be %d\n", x, v, e, eptr, exp);
+        assert(isIdentical(e, v));
+        assert(exp == eptr);
     }
 }
 }
@@ -1231,7 +1230,7 @@ unittest {
  *
  * Return values between -1 and -2^20 were originally > 2^20, but
  * the low 20 bits are still valid. Values between -2^20 and -2^50 were
- * originally > 2^50^, but the low 50 bits are still valid.
+ * originally > 2^50, but the low 50 bits are still valid.
  */
 long getNaNPayloadLong(real x)
 {
