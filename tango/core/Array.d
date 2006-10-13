@@ -1,6 +1,6 @@
 /**
  * The array module provides array manipulation routines in a manner that
- * balances performance and flexibility.  Operations are provides for sorting,
+ * balances performance and flexibility.  Operations are provided for sorting,
  * and for processing both sorted and unsorted arrays.
  *
  * Copyright: Copyright (C) 2005-2006 Sean Kelly.  All rights reserved.
@@ -473,7 +473,7 @@ else
                     if( m == pat.length )
                     {
                         return i - pat.length + 1;
-            	    }
+                    }
                 }
             }
 
@@ -1845,7 +1845,7 @@ else
 
 
 ////////////////////////////////////////////////////////////////////////////////
-// Binay Search
+// Binary Search
 ////////////////////////////////////////////////////////////////////////////////
 
 
