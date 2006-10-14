@@ -220,7 +220,7 @@ public struct Formatter {
       return "";
     }
 
-    char[] result, chars = format;
+    char[] result, chars = format.dup;
     int pos;
     char c;
 
