@@ -1403,7 +1403,7 @@ public class NumberFormat : IFormatService {
  */
 public class DateTimeFormat : IFormatService {
 
-  private const char[] rfc1123Pattern_ = "ddd, dd MMMM yyyy HH':'mm':'ss 'GMT'";
+  private const char[] rfc1123Pattern_ = "ddd, dd MMM yyyy HH':'mm':'ss 'GMT'";
   private const char[] sortableDateTimePattern_ = "yyyy'-'MM'-'dd'T'HH':'mm':'ss";
   private const char[] universalSortableDateTimePattern_ = "yyyy'-'MM'-'dd' 'HH':'mm':'ss'Z'";
 
@@ -4049,7 +4049,7 @@ public struct DateTime {
    * Returns: A DateTime whose value is the sum of the date and time of this instance and the number of milliseconds in value.
    */
   public DateTime addMilliseconds(double value) {
-    return addTicks(cast(ulong)(value += (value > 0) ? 0.5 : -0.5) * TICKS_PER_MILLISECOND);
+    return addTicks(cast(ulong)(cast(long)(value + ((value >= 0) ? 0.5 : -0.5))) * TICKS_PER_MILLISECOND);
   }
 
   /**
@@ -4727,14 +4727,37 @@ public class TimeZone {
    * Returns: A DaylightSavingTime instance containing the start and end for daylight saving in year.
    */
   public DaylightSavingTime getDaylightChanges(int year) {
-    if (!(year in changesCache_)) {
-      if (changesData_ == null)
-        changesCache_[year] = new DaylightSavingTime(DateTime.min, DateTime.max, TimeSpan.init);
-      else
-        changesCache_[year] = new DaylightSavingTime(DateTime(year, changesData_[1], changesData_[3], changesData_[4], changesData_[5], changesData_[6], changesData_[7]), DateTime(year, changesData_[9], changesData_[11], changesData_[12], changesData_[13], changesData_[14], changesData_[15]), TimeSpan(changesData_[16] * TICKS_PER_MINUTE));
-    }
-    return changesCache_[year];
-  }
+      
+     DateTime getSunday(int year, int month, int day, int sunday, int hour, int minute, int second, int millisecond) {
+        DateTime result;
+        if (sunday > 4) {
+          result = DateTime(year, month, GregorianCalendar.getDefaultInstance().getDaysInMonth(year, month), hour, minute, second, millisecond);
+          int change = cast(int)result.dayOfWeek - day;
+          if (change < 0)
+            change += 7;
+          if (change > 0)
+            result = result.addDays(-change);
+        }
+        else {
+         result = DateTime(year, month, 1, hour, minute, second, millisecond);
+         int change = day - cast(int)result.dayOfWeek;
+         if (change < 0)
+           change += 7;
+         change += 7 * (sunday - 1);
+         if (change > 0)
+           result = result.addDays(change);
+        }
+        return result;
+     }
+  
+     if (!(year in changesCache_)) {
+       if (changesData_ == null)
+         changesCache_[year] = new DaylightSavingTime(DateTime.min, DateTime.max, TimeSpan.init);
+       else
+         changesCache_[year] = new DaylightSavingTime(getSunday(year, changesData_[1], changesData_[2], changesData_[3], changesData_[4], changesData_[5], changesData_[6], changesData_[7]), getSunday(year, changesData_[9], changesData_[10], changesData_[11], changesData_[12], changesData_[13], changesData_[14], changesData_[15]), TimeSpan(changesData_[16] * TICKS_PER_MINUTE));
+     }
+     return changesCache_[year];
+   }
 
   /**
    * Returns the local _time representing the specified UTC _time.

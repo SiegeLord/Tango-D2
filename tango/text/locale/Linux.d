@@ -47,10 +47,10 @@ void setUserCulture(int lcid) {
 }
 
 ulong getUtcTime() {
-  time_t t;
-  time(&t);
-  gmtime(&t);
-  return (cast(long)t * 10000000L) + 116444736000000000L;
+   int t;
+   time(&t);
+   gmtime(&t);
+   return cast(ulong)((cast(long)t * 10000000L) + 116444736000000000L);
 }
 
 short[] getDaylightChanges() {
