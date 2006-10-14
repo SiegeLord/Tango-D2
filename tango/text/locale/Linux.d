@@ -21,6 +21,9 @@ int getUserCulture() {
   char* p = env;
   int len;
   while (*p) {
+    if (*p == '.'){
+      break;
+    }
     if (*p == '_'){
       *p = '-';
     }
