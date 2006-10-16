@@ -1240,7 +1240,7 @@ long getNaNPayloadLong(real x)
     bool bMore = false;
     if ( m & 0x1000_0000_0000_0000L) bMore = true;
     ulong f = m & 0x0FFF_FF00_0000_0000L;
-    long w = f>>>40;
+    long w = cast(long)f>>>40;
     if (!bMore) return w;
     if ((m & 0x00FF_FFFF_F7FFL) == 0) {
         // There are two cases:
