@@ -708,16 +708,20 @@ public class LinkSeqT(T) : MutableSeqImplT!(T), SortableCollectionT!(T)
 
                 public final bool more()
                 {
-                        if (cell)
+                        if ( start !is null )
+                        {
+                            cell = start;
+                            start = null;
+                            // do not call decRemaining for the first cell.
+                            return true;
+                        }
+                        else if (cell !is null )
+                        {
                             cell = cell.next();
-                        else
-                           if (start)
-                               cell = start, start = null;
-                           else
-                              return false;
-                                                              
+                        }
+
                         decRemaining();
-                        return true;
+                        return cell !is null;
                 }
 
                 public final T value()
