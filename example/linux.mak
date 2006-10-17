@@ -18,7 +18,7 @@
 TANGO_DIR = ..
 
 # The build tool executable from dsource.org/projects/build
-BUILDTOOL = build302
+BUILDTOOL = bud
 BUILDOPTS = -noautoimport -op -clean -I$(TANGO_DIR)
 
 PHOBOS_DIR = $(TANGO_DIR)/phobos
@@ -73,15 +73,15 @@ REFERENCE_EXAMPLES =		\
 
 $(SIMPLE_EXAMPLES) : % : %.d
 	@echo "Building : " $@
-	@$(BUILDTOOL) $< $(BUILDOPTS) -T$@
+	$(BUILDTOOL) $< $(BUILDOPTS) -T$@
 
 $(PHOBOS_EXAMPLES) : % : %.d $(ZLIB)
 	@echo "Building : " $@
-	@$(BUILDTOOL) $< $(BUILDOPTS) -T$@ -Mphobos $(ZLIB) -L-ldl
+	$(BUILDTOOL) $< $(BUILDOPTS) -T$@ -Mphobos $(ZLIB) -L-ldl
 
 $(REFERENCE_EXAMPLES) : % : %.d
 	@echo "Building : " $@
-	@$(BUILDTOOL) $< $(BUILDOPTS) -T$@
+	$(BUILDTOOL) $< $(BUILDOPTS) -T$@
 
 $(ZLIB) :
 	@echo "Building *** Phobos ZLIB ***"
