@@ -241,7 +241,7 @@ else
 }
     static
 {
-    ubyte[LOCAL_MAX] sm_local;
+    bool[LOCAL_MAX] sm_local;
 }
     static
 {
@@ -332,6 +332,40 @@ private
 extern (C)
 {
     void thread_scanAll(scanAllThreadsFn scan, void* curStackTop = null);
+}
+template ThreadLocal(T)
+{
+class ThreadLocal
+{
+    this(T def = T.init)
+{
+m_def = def;
+m_key = Thread.createLocal();
+}
+        T val()
+{
+Wrap* wrap = cast(Wrap*)Thread.getLocal(m_key);
+return wrap ? wrap.val : m_def;
+}
+    T val(T newval)
+{
+Wrap* wrap = cast(Wrap*)Thread.getLocal(m_key);
+if (wrap is null)
+{
+wrap = new Wrap;
+Thread.setLocal(m_key,wrap);
+}
+wrap.val = newval;
+return newval;
+}
+    private:
+    struct Wrap
+{
+    T val;
+}
+    T m_def;
+    uint m_key;
+}
 }
 class ThreadGroup
 {

@@ -792,7 +792,7 @@ class Thread
     {
         synchronized( slock )
         {
-            foreach( uint key, inout ubyte set; sm_local )
+            foreach( uint key, inout bool set; sm_local )
             {
                 if( !set )
                 {
@@ -925,7 +925,7 @@ private:
     //
     // Local storage
     //
-    static ubyte[LOCAL_MAX] sm_local;
+    static bool[LOCAL_MAX]  sm_local;
     static TLSKey           sm_this;
 
     void*[LOCAL_MAX]        m_local;
@@ -1462,6 +1462,106 @@ body
             scan( &t.m_reg[0], &t.m_reg[0] + t.m_reg.length );
         }
     }
+}
+
+
+////////////////////////////////////////////////////////////////////////////////
+// Thread Local
+////////////////////////////////////////////////////////////////////////////////
+
+
+/**
+ * This class encapsulates the operations required to initialize, access, and
+ * destroy thread local data.
+ */
+class ThreadLocal( T )
+{
+    ////////////////////////////////////////////////////////////////////////////
+    // Initialization
+    ////////////////////////////////////////////////////////////////////////////
+
+
+    /**
+     * Initializes thread local storage for the indicated value which will be
+     * initialized to def for all threads.
+     *
+     * Params:
+     *  def = The default value to return if no value has been explicitly set.
+     */
+    this( T def = T.init )
+    {
+        m_def = def;
+        m_key = Thread.createLocal();
+    }
+
+
+    ~this()
+    {
+        Thread.deleteLocal( m_key );
+    }
+
+
+    ////////////////////////////////////////////////////////////////////////////
+    // Accessors
+    ////////////////////////////////////////////////////////////////////////////
+
+
+    /**
+     * Gets the value last set by the calling thread, or def if no such value
+     * has been set.
+     *
+     * Returns:
+     *  The stored value or def if no value is stored.
+     */
+    T val()
+    {
+        Wrap* wrap = cast(Wrap*) Thread.getLocal( m_key );
+
+        return wrap ? wrap.val : m_def;
+    }
+
+
+    /**
+     * Copies newval to a location specific to the calling thread, and returns
+     * newval.
+     *
+     * Params:
+     *  newval = The value to set.
+     *
+     * Returns:
+     *  The value passed to this function.
+     */
+    T val( T newval )
+    {
+        Wrap* wrap = cast(Wrap*) Thread.getLocal( m_key );
+
+        if( wrap is null )
+        {
+            wrap = new Wrap;
+            Thread.setLocal( m_key, wrap );
+        }
+        wrap.val = newval;
+        return newval;
+    }
+
+
+private:
+    //
+    // A wrapper for the stored data.  This is needed for determining whether
+    // set has ever been called for this thread (and therefore whether the
+    // default value should be returned) and also to flatten the differences
+    // between data that is smaller and larger than (void*).sizeof.  The
+    // obvious tradeoff here is an extra per-thread allocation for each
+    // ThreadLocal value as compared to calling the Thread routines directly.
+    //
+    struct Wrap
+    {
+        T   val;
+    }
+
+
+    T       m_def;
+    uint    m_key;
 }
 
 
