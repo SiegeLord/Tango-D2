@@ -414,7 +414,7 @@ body
     }
     else
     {
-        newdata = null;
+	newdata = p.data;
     }
 
     p.data = newdata;
@@ -514,7 +514,7 @@ body
     }
     else
     {
-        newdata = null;
+	newdata = p.data;
     }
 
     p.data = newdata;
@@ -734,7 +734,7 @@ body
     }
     else
     {
-        newdata = null;
+	newdata = p.data;
     }
 
     p.data = newdata;

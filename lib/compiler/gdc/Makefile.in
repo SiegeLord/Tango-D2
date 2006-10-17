@@ -112,6 +112,7 @@ OBJ_CMAIN=cmain.o
 OBJ_BASE= \
     aaA.o \
     aApply.o \
+    aApplyR.o \
     adi.o \
     arraycast.o \
     arraycat.o \

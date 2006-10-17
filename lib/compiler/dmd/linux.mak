@@ -61,6 +61,7 @@ doc     : dmd.doc
 OBJ_BASE= \
     aaA.o \
     aApply.o \
+    aApplyR.o \
     adi.o \
     alloca.o \
     arraycast.o \

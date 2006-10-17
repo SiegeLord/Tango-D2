@@ -58,6 +58,7 @@ doc     : dmd.doc
 OBJ_BASE= \
     aaA.obj \
     aApply.obj \
+    aApplyR.obj \
     adi.obj \
     arraycast.obj \
     arraycat.obj \

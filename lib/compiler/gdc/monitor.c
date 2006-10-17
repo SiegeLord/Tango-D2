@@ -1,7 +1,10 @@
-// Copyright (c) 2000-2006 by Digital Mars
-// All Rights Reserved
-// written by Walter Bright
+// D programming language runtime library
+// Public Domain
+// written by Walter Bright, Digital Mars
 // www.digitalmars.com
+
+// This is written in C because nobody has written a pthreads interface
+// to D yet.
 
 /* NOTE: This file has been patched from the original DMD distribution to
    work with the GDC compiler.
@@ -16,16 +19,48 @@
 #include <stdlib.h>
 #include <assert.h>
 
+#if _WIN32
+#elif linux
+#define USE_PTHREADS	1
+#elif PHOBOS_USE_PTHREADS
+#define USE_PTHREADS	1
+#endif
+
+#if _WIN32
+#include <windows.h>
+#endif
+
+#if USE_PTHREADS
+#include <pthread.h>
+#endif
+
+#include "mars.h"
+
+// This is what the monitor reference in Object points to
+typedef struct Monitor
+{
+    Array delegates;	// for the notification system
+
+#if _WIN32
+    CRITICAL_SECTION mon;
+#endif
+
+#if USE_PTHREADS
+    pthread_mutex_t mon;
+#endif
+} Monitor;
+
+#define MONPTR(h)	(&((Monitor *)(h)->monitor)->mon)
+
+static volatile int inited;
+
+void _d_notify_release(Object *);
+
 /* =============================== Win32 ============================ */
 
 #if _WIN32
 
-#include <windows.h>
-
-#include "mars.h"
-
 static CRITICAL_SECTION _monitor_critsec;
-static volatile int inited;
 
 void _STI_monitor_staticctor()
 {
@@ -47,15 +82,15 @@ void _d_monitorenter(Object *h)
 {
     //printf("_d_monitorenter(%p), %p\n", h, h->monitor);
     if (!h->monitor)
-    {	CRITICAL_SECTION *cs;
+    {	Monitor *cs;
 
-	cs = (CRITICAL_SECTION *)calloc(sizeof(CRITICAL_SECTION), 1);
+	cs = (Monitor *)calloc(sizeof(Monitor), 1);
 	assert(cs);
 	EnterCriticalSection(&_monitor_critsec);
 	if (!h->monitor)	// if, in the meantime, another thread didn't set it
 	{
 	    h->monitor = (void *)cs;
-	    InitializeCriticalSection(cs);
+	    InitializeCriticalSection(&cs->mon);
 	    cs = NULL;
 	}
 	LeaveCriticalSection(&_monitor_critsec);
@@ -63,7 +98,7 @@ void _d_monitorenter(Object *h)
 	    free(cs);
     }
     //printf("-_d_monitorenter(%p)\n", h);
-    EnterCriticalSection((CRITICAL_SECTION *)h->monitor);
+    EnterCriticalSection(MONPTR(h));
     //printf("-_d_monitorenter(%p)\n", h);
 }
 
@@ -71,7 +106,7 @@ void _d_monitorexit(Object *h)
 {
     //printf("_d_monitorexit(%p)\n", h);
     assert(h->monitor);
-    LeaveCriticalSection((CRITICAL_SECTION *)h->monitor);
+    LeaveCriticalSection(MONPTR(h));
 }
 
 /***************************************
@@ -81,12 +116,15 @@ void _d_monitorexit(Object *h)
 void _d_monitorrelease(Object *h)
 {
     if (h->monitor)
-    {	DeleteCriticalSection((CRITICAL_SECTION *)h->monitor);
+    {
+	_d_notify_release(h);
+
+	DeleteCriticalSection(MONPTR(h));
 
 	// We can improve this by making a free list of monitors
 	free((void *)h->monitor);
 
-	h->monitor = 0;
+	h->monitor = NULL;
     }
 }
 
@@ -94,12 +132,7 @@ void _d_monitorrelease(Object *h)
 
 /* =============================== linux ============================ */
 
-// needs to be else..
-#if linux || PHOBOS_USE_PTHREADS
-
-#include <pthread.h>
-
-#include "mars.h"
+#if USE_PTHREADS
 
 #ifndef HAVE_PTHREAD_MUTEX_RECURSIVE
 #define PTHREAD_MUTEX_RECURSIVE PTHREAD_MUTEX_RECURSIVE_NP
@@ -107,7 +140,6 @@ void _d_monitorrelease(Object *h)
 
 static pthread_mutex_t _monitor_critsec;
 static pthread_mutexattr_t _monitors_attr;
-static volatile int inited;
 
 void _STI_monitor_staticctor()
 {
@@ -137,18 +169,18 @@ void _d_monitorenter(Object *h)
 {
     //printf("_d_monitorenter(%p), %p\n", h, h->monitor);
     if (!h->monitor)
-    {	pthread_mutex_t *cs;
+    {	Monitor *cs;
 
-	cs = (pthread_mutex_t *)calloc(sizeof(pthread_mutex_t), 1);
+	cs = (Monitor *)calloc(sizeof(Monitor), 1);
 	assert(cs);
 	pthread_mutex_lock(&_monitor_critsec);
 	if (!h->monitor)	// if, in the meantime, another thread didn't set it
 	{
 	    h->monitor = (void *)cs;
 #ifndef PTHREAD_MUTEX_ALREADY_RECURSIVE
-	    pthread_mutex_init(cs, & _monitors_attr);
+	    pthread_mutex_init(&cs->mon, & _monitors_attr);
 #else
-	    pthread_mutex_init(cs, NULL);
+	    pthread_mutex_init(&cs->mon, NULL);
 #endif
 	    cs = NULL;
 	}
@@ -157,7 +189,7 @@ void _d_monitorenter(Object *h)
 	    free(cs);
     }
     //printf("-_d_monitorenter(%p)\n", h);
-    pthread_mutex_lock((pthread_mutex_t *)h->monitor);
+    pthread_mutex_lock(MONPTR(h));
     //printf("-_d_monitorenter(%p)\n", h);
 }
 
@@ -165,7 +197,7 @@ void _d_monitorexit(Object *h)
 {
     //printf("+_d_monitorexit(%p)\n", h);
     assert(h->monitor);
-    pthread_mutex_unlock((pthread_mutex_t *)h->monitor);
+    pthread_mutex_unlock(MONPTR(h));
     //printf("-_d_monitorexit(%p)\n", h);
 }
 
@@ -176,12 +208,15 @@ void _d_monitorexit(Object *h)
 void _d_monitorrelease(Object *h)
 {
     if (h->monitor)
-    {	pthread_mutex_destroy((pthread_mutex_t *)h->monitor);
+    {
+	_d_notify_release(h);
+
+	pthread_mutex_destroy(MONPTR(h));
 
 	// We can improve this by making a free list of monitors
 	free((void *)h->monitor);
 
-	h->monitor = 0;
+	h->monitor = NULL;
     }
 }
 

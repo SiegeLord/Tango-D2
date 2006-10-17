@@ -71,6 +71,18 @@ typedef struct Exception
     struct Exception *next;
 } Exception;
 
+typedef struct Array
+{
+    size_t length;
+    void *ptr;
+} Array;
+
+typedef struct Delegate
+{
+    void *thisptr;
+    void (*funcptr)();
+} Delegate;
+
 void _d_monitorenter(Object *h);
 void _d_monitorexit(Object *h);
 void _d_monitorrelease(Object *h);
