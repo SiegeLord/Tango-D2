@@ -498,7 +498,7 @@ body
 
         debug printf("newsize = %x, newlength = %x\n", newsize, newlength);
 
-        if (p.length)
+        if (p.data)
         {
             newdata = p.data;
             if (newlength > p.length)
@@ -580,7 +580,7 @@ body
 
         size_t size = p.length * sizeelem;
 
-        if (p.length)
+        if (p.data)
         {
             newdata = p.data;
             if (newlength > p.length)
@@ -797,7 +797,7 @@ body
         debug printf("newsize = %x, newlength = %x\n", newsize, newlength);
 
         size_t size = p.length * sizeelem;
-        if (p.length)
+	if (p.data)
         {
             newdata = p.data;
             if (newlength > p.length)
