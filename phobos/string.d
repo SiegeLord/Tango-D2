@@ -3401,7 +3401,7 @@ final bool isNumeric(in char[] s, in bool bAllowSep = false)
 /// Allow any object as a parameter
 bool isNumeric(...)
 {
-    return isNumeric(_arguments, _argptr);
+    return isNumeric(_arguments, cast(va_list) _argptr);
 }
 
 /// Check only the first parameter, all others will be ignored. 

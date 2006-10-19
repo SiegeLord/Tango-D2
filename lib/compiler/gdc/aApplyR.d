@@ -71,6 +71,7 @@ extern (C) int _aApplyRcd1(char[] aa, dg_t dg)
     return result;
 }
 
+/+
 unittest
 {
     debug(apply) printf("_aApplyRcd1.unittest\n");
@@ -947,5 +948,5 @@ unittest
     }
     assert(i == 5);
 }
-
++/
 
