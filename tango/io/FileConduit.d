@@ -35,24 +35,11 @@ version (Win32)
 
 /*******************************************************************************
 
-        Defines how a file should be opened. You can use the predefined 
-        instances, or create specializations for your own needs.
-
-*******************************************************************************/
-
-struct FileStyle
-{
-}
-
-
-
-/*******************************************************************************
-
         Implements a means of reading and writing a generic file. Conduits
         are the primary means of accessing external data, and are usually 
-        routed through a Buffer. File conduit extends the generic conduit
+        routed through a Buffer. FileConduit extends the generic conduit
         by providing file-specific methods to set the file size, seek to a
-        specific file position, and so on. Also provided is a class for
+        specific file position and so on. Also provided is a class for
         creating a memory-mapped Buffer upon a file.     
         
         Serial input and output is straightforward. In this example we
@@ -60,7 +47,7 @@ struct FileStyle
 
         ---
         // open a file for reading
-        FileConduit from = new FileConduit ("test.txt");
+        auto from = new FileConduit ("test.txt");
 
         // stream directly to console
         Stdout.conduit.copy (from);
@@ -70,10 +57,10 @@ struct FileStyle
 
         ---
         // open a file for reading
-        FileConduit from = new FileConduit ("test.txt");
+        auto from = new FileConduit ("test.txt");
 
         // open another for writing
-        FileConduit to = new FileConduit ("copy.txt", FileStyle.WriteTruncate);
+        auto to = new FileConduit ("copy.txt", FileConduit.WriteTruncate);
 
         // copy file
         to.copy (from);
@@ -84,11 +71,11 @@ struct FileStyle
 
         ---
         // open a file for reading
-        FileConduit fc = new FileConduit ("random.bin", FileStyle.ReadWriteCreate);
+        auto fc = new FileConduit ("random.bin", FileConduit.ReadWriteCreate);
 
         // construct (binary) reader & writer upon this conduit
-        Reader read = new Reader (fc);
-        Writer write = new Writer (fc);
+        auto read = new Reader (fc);
+        auto write = new Writer (fc);
 
         int x=10, y=20;
 
@@ -101,8 +88,8 @@ struct FileStyle
         // read data back again, but swap destinations
         read (y) (x);
 
-        assert (y==10);
-        assert (x==20);
+        assert (y is 10);
+        assert (x is 20);
 
         fc.close();
         ---
@@ -112,31 +99,28 @@ struct FileStyle
 
         ---
         // open file for reading
-        FileConduit fc = new FileConduit ("test.txt");
+        auto fc = new FileConduit ("test.txt");
 
         // create an array to house the entire file
-        char[] content = new char[fc.length];
+        auto content = new char[fc.length];
 
         // read the file content. Return value is the number of bytes read
-        int bytesRead = fc.read (content);
+        auto bytesRead = fc.read (content);
         ---
 
         Conversely, one may write directly to a FileConduit, like so:
 
         ---
         // open file for writing
-        FileConduit to = new FileConduit ("text.txt", FileStyle.WriteTruncate);
+        auto to = new FileConduit ("text.txt", FileConduit.WriteTruncate);
 
         // write an array of content to it
-        int bytesWritten = fc.write (content);
+        auto bytesWritten = fc.write (content);
         ---
 
 
         See File, FilePath, FileProxy, FileConst, FileScan, and FileSystem for 
         additional functionality related to file manipulation. 
-        
-        Doxygen has a hard time with D version() statements, so part of this 
-        class is documented within FileConduit::VersionWin32 instead.
 
         Compile with -version=Win32SansUnicode to enable Win95 & Win32s file 
         support.

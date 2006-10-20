@@ -129,7 +129,8 @@ abstract class IConduit
 
         ***********************************************************************/
 
-        abstract bool isTextual ();
+        version (IOTextTest)
+                 abstract bool isTextual ();
 
         /***********************************************************************
                 

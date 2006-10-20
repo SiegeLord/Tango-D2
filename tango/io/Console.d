@@ -200,6 +200,8 @@ struct Console
 
         class ConsoleConduit : DeviceConduit
         {
+                version (IOTextTest)
+                {
                 /***************************************************************
         
                         Returns true if this conduit is text-based
@@ -210,7 +212,8 @@ struct Console
                 {
                         return true;
                 }       
-                        
+                }
+                
                 /***************************************************************
 
                         Windows-specific code
