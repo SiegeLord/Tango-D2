@@ -1,7 +1,8 @@
 
+private import  tango.io.FileConduit;
+
 private import  tango.io.protocol.Reader,
-                tango.io.protocol.Writer,
-                tango.io.FileConduit;
+                tango.io.protocol.Writer;
 
 /*******************************************************************************
 
@@ -13,11 +14,11 @@ private import  tango.io.protocol.Reader,
 void main()
 {
         // open a file for reading
-        FileConduit fc = new FileConduit ("random.bin", FileConduit.ReadWriteCreate);
+        auto fc = new FileConduit ("random.bin", FileConduit.ReadWriteCreate);
 
         // construct (binary) reader & writer upon this conduit
-        Reader read  = new Reader (fc);
-        Writer write = new Writer (fc);
+        auto read  = new Reader (fc);
+        auto write = new Writer (fc);
 
         int x=10, y=20;
 
@@ -30,8 +31,8 @@ void main()
         // read data back again, but swap destinations
         read (y) (x);
 
-        assert (y==10);
-        assert (x==20);
+        assert (y is 10);
+        assert (x is 20);
 
         fc.close();
 }

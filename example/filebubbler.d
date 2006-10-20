@@ -7,7 +7,7 @@ private import  tango.io.Console,
 
         This example sweeps a named sub-directory tree for html files,
         and moves them to the current directory. The existing directory 
-        hierarchy is flattened into a naming sheme where a '.' is used
+        hierarchy is flattened into a naming scheme where a '.' is used
         to replace the traditional path-separator
 
         Used by the Tango project to help manage renderings of the source 

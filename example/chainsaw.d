@@ -4,8 +4,7 @@ import  tango.log.Log,
         tango.log.XmlLayout,
         tango.log.SocketAppender;
 
-import  tango.net.Socket,
-        tango.net.InternetAddress;
+import  tango.net.InternetAddress;
 
 
 version (Win32)

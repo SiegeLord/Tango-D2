@@ -10,7 +10,7 @@ private import  tango.io.Console,
 
 void main (char[][] args)
 {
-        if (args.length == 2)
+        if (args.length is 2)
            {
            // open a file for reading
            auto fc = new FileConduit (args[1]);
@@ -19,5 +19,5 @@ void main (char[][] args)
            Cout.conduit.copy (fc);
            }
         else
-           Cout ("usage is: filecopy filename");
+           Cout ("usage is: filecopy filename").newline;
 }

@@ -12,14 +12,14 @@ private import  tango.io.Console,
 
 void main (char[][] args)
 {
-        if (args.length == 2)
+        if (args.length is 2)
            {
            // open a file for reading
            auto file = new UnicodeFile (args[1], Unicode.Unknown);
 
            // display on console
-           Cout (file.read);
+           Cout (file.read).newline;
            }
         else
-           Cout ("usage is: unifile filename");
+           Cout ("usage is: unifile filename").newline;
 }
