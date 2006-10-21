@@ -66,7 +66,7 @@
                 T[] slice ();
         }
 
-        class String(T) : UniString
+        class StringView(T) : UniString
         {
                 // iterate across content
                 opApply (int delegate(inout T) dg);
