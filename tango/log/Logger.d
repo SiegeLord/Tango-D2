@@ -202,7 +202,7 @@ public class Logger : ILevel
                 That is, only one from a set of identical loggers 
                 will execute.
 
-                Use clearAttributes() to remove all from a given logger.
+                Use clearAppenders() to remove all from a given logger.
                         
         ***********************************************************************/
 
