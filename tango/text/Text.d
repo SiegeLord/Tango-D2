@@ -12,6 +12,8 @@
 
 module tango.text.Text;
 
+debug private import tango.stdc.stdio;
+
 /******************************************************************************
 
         Placeholder for a variety of wee functions. Some of these are

@@ -3342,7 +3342,7 @@ byte GetKValue(COLORREF cmyk) {
     return cast(byte)(cmyk>>24);
 }
 
-COLORREF RGB(byte r, byte g, byte b) {
+COLORREF RGB(BYTE r, BYTE g, BYTE b) {
     return cast(COLORREF)(r|(g<<8)|(b<<16));
 }
 
@@ -3362,7 +3362,7 @@ COLORREF PALETTEINDEX(WORD i) {
     return 0x01000000|cast(COLORREF)(i);
 }
 
-COLORREF PALETTERGB(byte r, byte g, byte b) {
+COLORREF PALETTERGB(BYTE r, BYTE g, BYTE b) {
     return 0x02000000|RGB(r, g, b);
 }
 
