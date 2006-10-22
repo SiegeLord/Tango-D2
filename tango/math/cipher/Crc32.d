@@ -127,7 +127,7 @@ class Crc32Cipher : Cipher
          */
         this (Crc32Cipher cipher)
         {
-                this.CrcTable = cipher.CrcTable;
+                this.CrcTable[0 .. 254] = cipher.CrcTable[0 .. 254];
                 this.CrcPolynomial = cipher.CrcPolynomial;
                 this.CrcResult = cipher.CrcResult;
         }
