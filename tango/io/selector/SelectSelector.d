@@ -11,7 +11,7 @@ public import tango.io.model.IConduit;
 private import tango.io.selector.model.ISelector;
 private import tango.io.selector.AbstractSelector;
 private import tango.io.selector.SelectorException;
-private import tango.sys.OS;
+private import tango.sys.Common;
 private import tango.sys.TimeConverter;
 private import tango.stdc.errno;
 

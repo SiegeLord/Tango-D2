@@ -19,7 +19,7 @@ private
     import tango.net.SocketConduit;
     import tango.net.ServerSocket;
     import tango.core.Thread;
-    import tango.sys.OS;
+    import tango.sys.Common;
     import tango.sys.linux.linux;
     import tango.sys.TimeConverter;
     import tango.stdc.errno;

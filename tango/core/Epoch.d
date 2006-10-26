@@ -18,7 +18,7 @@ module tango.core.Epoch;
 
 *******************************************************************************/
 
-private import tango.sys.OS;
+private import tango.sys.Common;
 
 version (Posix)
 {

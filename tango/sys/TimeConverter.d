@@ -9,7 +9,7 @@ module tango.sys.TimeConverter;
 
 public import tango.core.Interval;
 public import tango.stdc.time;
-public import tango.sys.OS;
+public import tango.sys.Common;
 
 version (Posix)
     public import tango.stdc.posix.time;

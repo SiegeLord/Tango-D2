@@ -64,7 +64,7 @@ module tango.net.Socket;
 
 private import  tango.text.convert.Integer;
 
-private import  tango.sys.OS;
+private import  tango.sys.Common;
 
 private import  tango.core.Interval;
 

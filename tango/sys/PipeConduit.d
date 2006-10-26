@@ -14,7 +14,7 @@
 module tango.sys.PipeConduit;
 
 
-import tango.sys.OS;
+import tango.sys.Common;
 import tango.io.Conduit;
 import tango.io.Exception;
 

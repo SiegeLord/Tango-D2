@@ -115,7 +115,7 @@ import tango.sys.darwin.darwin;
 import tango.sys.linux.linux;
 import tango.sys.linux.linuxextern;
 import tango.sys.linux.socket;
-import tango.sys.OS;
+import tango.sys.Common;
 import tango.sys.PipeConduit;
 import tango.sys.ProcessConduit;
 

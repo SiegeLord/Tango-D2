@@ -12,7 +12,7 @@
 
 module tango.io.DeviceConduit;
 
-private import  tango.sys.OS;
+private import  tango.sys.Common;
                 
 private import  tango.io.Conduit;
 
