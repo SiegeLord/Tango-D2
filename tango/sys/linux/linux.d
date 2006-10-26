@@ -88,11 +88,6 @@ struct struct_stat	// distinguish it from the stat() function
     uint __unused5;
 }
 
-unittest
-{
-    assert(struct_stat.sizeof == 88);
-}
-
 enum : int
 {
     S_IFIFO  = 0010000,

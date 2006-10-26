@@ -13,8 +13,11 @@
  */
 private
 {
+    version( Win32 )
+        import tango.sys.windows.minwin;
+    else version( linux )
+        import tango.sys.linux.linux;
     import tango.core.Intrinsic;
-    import tango.sys.Common;
     import tango.stdc.stdio;
     import util.utf;
 
@@ -23,14 +26,14 @@ private
         size_t  len;
         uint*   ptr;
 
-        bool opIndex(size_t i)
+        bool opIndex( size_t i )
         in
         {
-            assert(i < len);
+            assert( i < len );
         }
         body
         {
-            return cast(bool)bt(ptr, i);
+            return cast(bool) bt( ptr, i );
         }
     }
 
@@ -360,6 +363,5 @@ char[] expandTabs( char[] string, int tabsize = 8 )
                 break;
         }
     }
-
     return result;
 }
