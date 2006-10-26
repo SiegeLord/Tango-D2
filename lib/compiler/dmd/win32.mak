@@ -64,6 +64,7 @@ OBJ_BASE= \
     arraycat.obj \
     cast.obj \
     complex.obj \
+    cover.obj \
     critical.obj \
     deh.obj \
     dmain2.obj \
@@ -78,9 +79,10 @@ OBJ_BASE= \
     switch.obj \
     moduleinit.obj \
     trace.obj
-# NOTE: trace.obj is not necessary for a successful build
-# NOTE: a pre-compiled minit.obj has been provided in dmd
-#   minit.obj
+# NOTE: trace.obj and cover.obj are not necessary for a successful build
+#       as both are used for debugging features (profiling and coverage)
+# NOTE: a pre-compiled minit.obj has been provided in dmd for Win32 and
+#       minit.asm is not used by dmd for linux
 
 OBJ_UTIL= \
     util\console.obj \

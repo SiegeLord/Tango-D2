@@ -69,6 +69,7 @@ OBJ_BASE= \
     cast.o \
     cmath2.o \
     complex.o \
+    cover.o \
     critical.o \
     deh2.o \
     dmain2.o \
@@ -84,12 +85,11 @@ OBJ_BASE= \
     switch.o \
     moduleinit.o \
     trace.o
-# NOTE: trace.o is not necessary for a successful build
-# NOTE: a pre-compiled minit.obj has been provided in dmd
-#       but is only needed for Win32
-#   minit.obj
-# NOTE: deh.o is only needed for Win32, instead, deh2.o
-#	is used
+# NOTE: trace.obj and cover.obj are not necessary for a successful build
+#       as both are used for debugging features (profiling and coverage)
+# NOTE: a pre-compiled minit.obj has been provided in dmd for Win32 and
+#       minit.asm is not used by dmd for linux
+# NOTE: deh.o is only needed for Win32, linux uses deh2.o
 
 OBJ_UTIL= \
     util/console.o \
