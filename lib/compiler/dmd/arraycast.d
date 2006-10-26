@@ -22,7 +22,7 @@
  */
 
 /*
- *  Modified by Sean Kelly <sean@f4.ca> for use with the Ares project.
+ *  Modified by Sean Kelly <sean@f4.ca> for use with Tango.
  */
 
 /******************************************
@@ -45,7 +45,7 @@ void[] _d_arraycast(uint tsize, uint fsize, void[] a)
     throw new Exception("array cast misalignment");
     }
     length = nbytes / tsize;
-    *cast(uint *)&a = length;	// jam new length
+    *cast(uint *)&a = length;   // jam new length
     return a;
 }
 
@@ -83,7 +83,7 @@ void[] _d_arraycast_frombit(uint tsize, void[] a)
     throw new Exception("bit[] array cast misalignment");
     }
     length /= 8 * tsize;
-    *cast(uint *)&a = length;	// jam new length
+    *cast(uint *)&a = length;   // jam new length
     return a;
 }
 
@@ -102,5 +102,3 @@ unittest
     assert(s.length == 6);
     }
 }
-
-

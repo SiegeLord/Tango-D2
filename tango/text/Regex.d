@@ -24,7 +24,7 @@
  */
 
 /*
- *  Modified by Sean Kelly <sean@f4.ca> for use with the Ares project.
+ *  Modified by Sean Kelly <sean@f4.ca> for use with Tango.
  */
 
 /**********************************************

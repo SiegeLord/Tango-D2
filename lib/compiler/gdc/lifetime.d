@@ -364,7 +364,7 @@ body
     {
         version (GNU)
         {
-	        // required to output the label;
+                // required to output the label;
             static char x = 0;
             if (x)
                 goto Loverflow;
@@ -414,7 +414,7 @@ body
     }
     else
     {
-	newdata = p.data;
+        newdata = p.data;
     }
 
     p.data = newdata;
@@ -449,13 +449,13 @@ body
 
     if (newlength)
     {
-	    version (GNU)
-	    {
-    	    // required to output the label;
-	        static char x = 0;
-	        if (x)
-    		    goto Loverflow;
-    	}
+            version (GNU)
+            {
+            // required to output the label;
+                static char x = 0;
+                if (x)
+                    goto Loverflow;
+        }
         version (D_InlineAsm_X86)
         {
             size_t newsize = void;
@@ -502,19 +502,19 @@ body
         if (newsize > size)
         {
             if (sizeelem == 1)
-		        newdata[size .. newsize] = *(cast(byte*)init);
+                        newdata[size .. newsize] = *(cast(byte*)init);
             else
             {
                 for (size_t u = size; u < newsize; u += sizeelem)
                 {
-		            memcpy(newdata + u, init, sizeelem);
+                            memcpy(newdata + u, init, sizeelem);
                 }
             }
         }
     }
     else
     {
-	newdata = p.data;
+        newdata = p.data;
     }
 
     p.data = newdata;
@@ -734,7 +734,7 @@ body
     }
     else
     {
-	newdata = p.data;
+        newdata = p.data;
     }
 
     p.data = newdata;

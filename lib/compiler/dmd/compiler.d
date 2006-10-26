@@ -16,7 +16,7 @@ const
     // Master list of D compiler vendors
     enum Vendor
     {
-	DigitalMars = 1
+        DigitalMars = 1
     }
 
     // Which vendor we are

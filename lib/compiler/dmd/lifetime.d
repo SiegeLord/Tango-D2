@@ -521,7 +521,7 @@ body
     }
     else
     {
-	newdata = p.data;
+        newdata = p.data;
     }
 
     p.data = newdata;
@@ -618,7 +618,7 @@ body
     }
     else
     {
-	newdata = p.data;
+        newdata = p.data;
     }
 
     p.data = newdata;
@@ -797,7 +797,7 @@ body
         debug printf("newsize = %x, newlength = %x\n", newsize, newlength);
 
         size_t size = p.length * sizeelem;
-	if (p.data)
+        if (p.data)
         {
             newdata = p.data;
             if (newlength > p.length)
@@ -838,7 +838,7 @@ body
     }
     else
     {
-	newdata = p.data;
+        newdata = p.data;
     }
 
     p.data = newdata;

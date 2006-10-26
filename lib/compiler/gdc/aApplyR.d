@@ -26,6 +26,10 @@
  *     distribution.
  */
 
+/*
+ *  Modified by Sean Kelly <sean@f4.ca> for use with Tango.
+ */
+
 /* This code handles decoding UTF strings for foreach_reverse loops.
  * There are 6 combinations of conversions between char, wchar,
  * and dchar, and 2 of each of those.

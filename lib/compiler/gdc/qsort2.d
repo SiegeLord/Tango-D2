@@ -10,7 +10,7 @@
  */
 
 /*
- *  Modified by Sean Kelly <sean@f4.ca> for use with the Ares project.
+ *  Modified by Sean Kelly <sean@f4.ca> for use with Tango.
  */
 
 //debug=qsort;
@@ -34,8 +34,8 @@ extern (C) long _adSort(Array a, TypeInfo ti)
 {
     synchronized
     {
-	tiglobal = ti;
-	tango.stdc.stdlib.qsort(a.ptr, a.length, cast(size_t)ti.tsize(), &cmp);
+        tiglobal = ti;
+        tango.stdc.stdlib.qsort(a.ptr, a.length, cast(size_t)ti.tsize(), &cmp);
     }
     return *cast(long*)(&a);
 }
@@ -63,9 +63,8 @@ unittest
 
     for (int i = 0; i < a.length - 1; i++)
     {
-	//printf("i = %d", i);
-	//printf(" %d %d\n", a[i], a[i + 1]);
-	assert(a[i] <= a[i + 1]);
+        //printf("i = %d", i);
+        //printf(" %d %d\n", a[i], a[i + 1]);
+        assert(a[i] <= a[i + 1]);
     }
 }
-

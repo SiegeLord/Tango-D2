@@ -30,8 +30,8 @@
  */
 
 /*
- *  Modified by Sean Kelly <sean@f4.ca> for use with the Ares project.
- *  Additional functions added by Don Clugston
+ *  Modified by Sean Kelly <sean@f4.ca> for use with Tango.
+ *  Additional functions added by Don Clugston.
  */
 
 /**

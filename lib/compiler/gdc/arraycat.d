@@ -22,7 +22,7 @@
  */
 
 /*
- *  Modified by Sean Kelly <sean@f4.ca> for use with the Ares project.
+ *  Modified by Sean Kelly <sean@f4.ca> for use with Tango.
  */
 
 private
@@ -57,11 +57,11 @@ byte[] _d_arraycatn(uint size, uint n, ...)
 
     for (i = 0; i < n; i++)
     {
-	b = va_arg!(typeof(b))(va);
-	length += b.length;
+        b = va_arg!(typeof(b))(va);
+        length += b.length;
     }
     if (!length)
-	return null;
+        return null;
 
     a = (cast(byte*) gc_malloc(length * size, size < (void*).sizeof ? BlkAttr.NO_SCAN : 0))[0 .. length * size];
     va_start!(typeof(n))(va, n);
@@ -69,15 +69,15 @@ byte[] _d_arraycatn(uint size, uint n, ...)
     uint j = 0;
     for (i = 0; i < n; i++)
     {
-	b = va_arg!(typeof(b))(va);
-	if (b.length)
-	{
-	    memcpy(&a[j], b, b.length * size);
-	    j += b.length * size;
-	}
+        b = va_arg!(typeof(b))(va);
+        if (b.length)
+        {
+            memcpy(&a[j], b, b.length * size);
+            j += b.length * size;
+        }
     }
 
-    *cast(int *)&a = length;	// jam length
+    *cast(int *)&a = length;    // jam length
     //a.length = length;
     return a;
 }
@@ -88,21 +88,21 @@ bit[] _d_arraycatb(bit[] x, bit[] y)
     uint x_bytes;
 
     if (!x.length)
-	return y;
+        return y;
     if (!y.length)
-	return x;
+        return x;
 
     a_length = x.length + y.length;
     a = new bit[a_length];
     x_bytes = (x.length + 7) >> 3;
     memcpy(a.ptr, x.ptr, x_bytes);
     if ((x.length & 7) == 0)
-	memcpy(cast(void*)a.ptr + x_bytes, y.ptr, (y.length + 7) >> 3);
+        memcpy(cast(void*)a.ptr + x_bytes, y.ptr, (y.length + 7) >> 3);
     else
-    {	uint x_length = x.length;
-	uint y_length = y.length;
-	for (uint i = 0; i < y_length; i++)
-	    a[x_length + i] = y[i];
+    {   uint x_length = x.length;
+        uint y_length = y.length;
+        for (uint i = 0; i < y_length; i++)
+            a[x_length + i] = y[i];
     }
     return a;
 }
@@ -113,16 +113,16 @@ byte[] _d_arraycopy(uint size, byte[] from, byte[] to)
 
     if (to.length != from.length)
     {
-	throw new Exception("lengths don't match for array copy");
+        throw new Exception("lengths don't match for array copy");
     }
     else if (cast(byte *)to + to.length * size <= cast(byte *)from ||
-	cast(byte *)from + from.length * size <= cast(byte *)to)
+        cast(byte *)from + from.length * size <= cast(byte *)to)
     {
-	memcpy(cast(byte *)to, cast(byte *)from, to.length * size);
+        memcpy(cast(byte *)to, cast(byte *)from, to.length * size);
     }
     else
     {
-	throw new Exception("overlapping array copy");
+        throw new Exception("overlapping array copy");
 }
     return to;
 }
@@ -134,32 +134,32 @@ bit[] _d_arraycopybit(bit[] from, bit[] to)
 
     if (to.length != from.length)
     {
-	throw new Exception("lengths don't match for array copy");
+        throw new Exception("lengths don't match for array copy");
     }
     else
     {
-	nbytes = (to.length + 7) / 8;
-	if (cast(void *)to + nbytes <= cast(void *)from ||
-	    cast(void *)from + nbytes <= cast(void *)to)
-	{
-	    nbytes = to.length / 8;
-	    if (nbytes)
-		memcpy(cast(void *)to, cast(void *)from, nbytes);
+        nbytes = (to.length + 7) / 8;
+        if (cast(void *)to + nbytes <= cast(void *)from ||
+            cast(void *)from + nbytes <= cast(void *)to)
+        {
+            nbytes = to.length / 8;
+            if (nbytes)
+                memcpy(cast(void *)to, cast(void *)from, nbytes);
 
-	    if (to.length & 7)
-	    {
-		/* Copy trailing bits.
-		 */
-		static ubyte[8] masks = [0,1,3,7,0x0F,0x1F,0x3F,0x7F];
-		ubyte mask = masks[to.length & 7];
-		(cast(ubyte*)to)[nbytes] &= ~mask;
-		(cast(ubyte*)to)[nbytes] |= (cast(ubyte*)from)[nbytes] & mask;
-	    }
-	}
-	else
-	{
+            if (to.length & 7)
+            {
+                /* Copy trailing bits.
+                 */
+                static ubyte[8] masks = [0,1,3,7,0x0F,0x1F,0x3F,0x7F];
+                ubyte mask = masks[to.length & 7];
+                (cast(ubyte*)to)[nbytes] &= ~mask;
+                (cast(ubyte*)to)[nbytes] |= (cast(ubyte*)from)[nbytes] & mask;
+            }
+        }
+        else
+        {
     throw new Exception("overlapping array copy");
-	}
+        }
     }
     return to;
 }
@@ -175,7 +175,7 @@ body
 {
     // Inefficient; lots of room for improvement here
     for (uint i = lwr; i < upr; i++)
-	ba[i] = value;
+        ba[i] = value;
 
     return ba;
 }
@@ -187,7 +187,7 @@ bit[] _d_arraysetbit2(bit[] ba, bit value)
     uint val = -cast(int)value;
     memset(ba.ptr, val, len >> 3);
     for (uint i = len & ~7; i < len; i++)
-	ba[i] = value;
+        ba[i] = value;
     return ba;
 }
 
@@ -197,31 +197,31 @@ void* _d_arrayliteral(size_t size, size_t length, ...)
 
     //printf("_d_arrayliteral(size = %d, length = %d)\n", size, length);
     if (length == 0 || size == 0)
-	result = null;
+        result = null;
     else
     {
-	result = (cast(byte*) gc_malloc(length * size, size < (void*).sizeof ? BlkAttr.NO_SCAN : 0))[0 .. length * size];
-	*cast(size_t *)&result = length;	// jam length
+        result = (cast(byte*) gc_malloc(length * size, size < (void*).sizeof ? BlkAttr.NO_SCAN : 0))[0 .. length * size];
+        *cast(size_t *)&result = length;        // jam length
 
-	va_list q;
-	va_start!(size_t)(q, length);
+        va_list q;
+        va_start!(size_t)(q, length);
 
-	size_t stacksize = (size + int.sizeof - 1) & ~(int.sizeof - 1);
+        size_t stacksize = (size + int.sizeof - 1) & ~(int.sizeof - 1);
 
-	if (stacksize == size)
-	{
-	    memcpy(result.ptr, q, length * size);
-	}
-	else
-	{
-	    for (size_t i = 0; i < length; i++)
-	    {
-		memcpy(result.ptr + i * size, q, size);
-		q += stacksize;
-	    }
-	}
+        if (stacksize == size)
+        {
+            memcpy(result.ptr, q, length * size);
+        }
+        else
+        {
+            for (size_t i = 0; i < length; i++)
+            {
+                memcpy(result.ptr + i * size, q, size);
+                q += stacksize;
+            }
+        }
 
-	va_end(q);
+        va_end(q);
     }
     return result.ptr;
 }

@@ -49,9 +49,9 @@ extern (C) void* cr_stackBottom()
     {
         asm
         {
-    	    naked;
-    	    mov	EAX,FS:4;
-    	    ret;
+            naked;
+            mov EAX,FS:4;
+            ret;
         }
     }
     else version( linux )
@@ -63,15 +63,15 @@ extern (C) void* cr_stackBottom()
         else
         {
             // See discussion: http://autopackage.org/forums/viewtopic.php?t=22
-	        static void** libc_stack_end;
+                static void** libc_stack_end;
 
-	        if( libc_stack_end == libc_stack_end.init )
-	        {
-	            void* handle = dlopen( null, RTLD_NOW );
-	            libc_stack_end = cast(void**) dlsym( handle, "__libc_stack_end" );
-	            dlclose( handle );
-	        }
-	        return *libc_stack_end;
+                if( libc_stack_end == libc_stack_end.init )
+                {
+                    void* handle = dlopen( null, RTLD_NOW );
+                    libc_stack_end = cast(void**) dlsym( handle, "__libc_stack_end" );
+                    dlclose( handle );
+                }
+                return *libc_stack_end;
         }
     }
     else
@@ -97,7 +97,7 @@ extern (C) void* cr_stackTop()
     }
     else
     {
-	    static assert( false, "Architecture not supported." );
+            static assert( false, "Architecture not supported." );
     }
 }
 
@@ -108,9 +108,9 @@ private
     {
         extern (C)
         {
-            extern int _xi_a;	// &_xi_a just happens to be start of data segment
-            extern int _edata;	// &_edata is start of BSS segment
-            extern int _end;	// &_end is past end of BSS
+            extern int _xi_a;   // &_xi_a just happens to be start of data segment
+            extern int _edata;  // &_edata is start of BSS segment
+            extern int _end;    // &_end is past end of BSS
         }
     }
     else version( linux )
@@ -127,8 +127,8 @@ private
             extern int __fini_array_end;
         }
 
-	    alias __data_start  Data_Start;
-	    alias _end          Data_End;
+            alias __data_start  Data_Start;
+            alias _end          Data_End;
     }
 
     alias void delegate( void*, void* ) scanFn;

@@ -3,10 +3,10 @@ module moduleinit;
 debug private import tango.stdc.stdio;
 
 enum
-{   MIctorstart = 1,	// we've started constructing it
-    MIctordone = 2,	// finished construction
-    MIstandalone = 4,	// module ctor does not depend on other module
-			// ctors being done first
+{   MIctorstart = 1,    // we've started constructing it
+    MIctordone = 2,     // finished construction
+    MIstandalone = 4,   // module ctor does not depend on other module
+                        // ctors being done first
 }
 
 class ModuleInfo
@@ -15,7 +15,7 @@ class ModuleInfo
     ModuleInfo importedModules[];
     ClassInfo localClasses[];
 
-    uint flags;		// initialization state
+    uint flags;         // initialization state
 
     void (*ctor)();
     void (*dtor)();
@@ -41,11 +41,11 @@ version (ModRefStyle)
     // into the .ctor list by the compiler.
     struct ModuleReference
     {
-	ModuleReference* next;
-	ModuleInfo mod;
+        ModuleReference* next;
+        ModuleInfo mod;
     }
 
-    extern (C) ModuleReference *_Dmodule_ref;	// start of linked list
+    extern (C) ModuleReference *_Dmodule_ref;   // start of linked list
 }
 
 ModuleInfo[] _moduleinfo_dtors;
@@ -63,23 +63,23 @@ extern (C) void _moduleCtor()
     debug printf("_moduleCtor()\n");
     version (ModRefStyle)
     {
-	int len = 0;
-	ModuleReference *mr;
+        int len = 0;
+        ModuleReference *mr;
 
-	for (mr = _Dmodule_ref; mr; mr = mr.next)
-	    len++;
-	_moduleinfo_array = new ModuleInfo[len];
-	len = 0;
-	for (mr = _Dmodule_ref; mr; mr = mr.next)
-	{   _moduleinfo_array[len] = mr.mod;
-	    len++;
-	}
+        for (mr = _Dmodule_ref; mr; mr = mr.next)
+            len++;
+        _moduleinfo_array = new ModuleInfo[len];
+        len = 0;
+        for (mr = _Dmodule_ref; mr; mr = mr.next)
+        {   _moduleinfo_array[len] = mr.mod;
+            len++;
+        }
     }
 
     version (Win32)
     {
-	// Ensure module destructors also get called on program termination
-	//_fatexit(&_STD_moduleDtor);
+        // Ensure module destructors also get called on program termination
+        //_fatexit(&_STD_moduleDtor);
     }
 
     _moduleinfo_dtors = new ModuleInfo[_moduleinfo_array.length];
@@ -92,41 +92,41 @@ void _moduleCtor2(ModuleInfo[] mi, int skip)
     debug printf("_moduleCtor2(): %d modules\n", mi.length);
     for (uint i = 0; i < mi.length; i++)
     {
-	ModuleInfo m = mi[i];
+        ModuleInfo m = mi[i];
 
-	debug printf("\tmodule[%d] = '%p'\n", i, m);
-	if (!m)
-	    continue;
-	debug printf("\tmodule[%d] = '%.*s'\n", i, m.name);
-	if (m.flags & MIctordone)
-	    continue;
-	debug printf("\tmodule[%d] = '%.*s', m = x%x\n", i, m.name, m);
+        debug printf("\tmodule[%d] = '%p'\n", i, m);
+        if (!m)
+            continue;
+        debug printf("\tmodule[%d] = '%.*s'\n", i, m.name);
+        if (m.flags & MIctordone)
+            continue;
+        debug printf("\tmodule[%d] = '%.*s', m = x%x\n", i, m.name, m);
 
-	if (m.ctor || m.dtor)
-	{
-	    if (m.flags & MIctorstart)
-	    {	if (skip || m.flags & MIstandalone)
-		    continue;
-		    throw new Exception( "Cyclic dependency in module " ~ m.name );
-	    }
+        if (m.ctor || m.dtor)
+        {
+            if (m.flags & MIctorstart)
+            {   if (skip || m.flags & MIstandalone)
+                    continue;
+                    throw new Exception( "Cyclic dependency in module " ~ m.name );
+            }
 
-	    m.flags |= MIctorstart;
-	    _moduleCtor2(m.importedModules, 0);
-	    if (m.ctor)
-		(*m.ctor)();
-	    m.flags &= ~MIctorstart;
-	    m.flags |= MIctordone;
+            m.flags |= MIctorstart;
+            _moduleCtor2(m.importedModules, 0);
+            if (m.ctor)
+                (*m.ctor)();
+            m.flags &= ~MIctorstart;
+            m.flags |= MIctordone;
 
-	    // Now that construction is done, register the destructor
-	    //printf("\tadding module dtor x%x\n", m);
-	    assert(_moduleinfo_dtors_i < _moduleinfo_dtors.length);
-	    _moduleinfo_dtors[_moduleinfo_dtors_i++] = m;
-	}
-	else
-	{
-	    m.flags |= MIctordone;
-	    _moduleCtor2(m.importedModules, 1);
-	}
+            // Now that construction is done, register the destructor
+            //printf("\tadding module dtor x%x\n", m);
+            assert(_moduleinfo_dtors_i < _moduleinfo_dtors.length);
+            _moduleinfo_dtors[_moduleinfo_dtors_i++] = m;
+        }
+        else
+        {
+            m.flags |= MIctordone;
+            _moduleCtor2(m.importedModules, 1);
+        }
     }
 }
 
@@ -143,13 +143,13 @@ extern (C) void _moduleDtor()
     debug printf("_moduleDtor(): %d modules\n", _moduleinfo_dtors_i);
     for (uint i = _moduleinfo_dtors_i; i-- != 0;)
     {
-	ModuleInfo m = _moduleinfo_dtors[i];
+        ModuleInfo m = _moduleinfo_dtors[i];
 
-	debug printf("\tmodule[%d] = '%.*s', x%x\n", i, m.name, m);
-	if (m.dtor)
-	{
-	    (*m.dtor)();
-	}
+        debug printf("\tmodule[%d] = '%.*s', x%x\n", i, m.name, m);
+        if (m.dtor)
+        {
+            (*m.dtor)();
+        }
     }
     debug printf("_moduleDtor() done\n");
 }
@@ -163,16 +163,16 @@ extern (C) void _moduleUnitTests()
     debug printf("_moduleUnitTests()\n");
     for (uint i = 0; i < _moduleinfo_array.length; i++)
     {
-	ModuleInfo m = _moduleinfo_array[i];
+        ModuleInfo m = _moduleinfo_array[i];
 
-	if (!m)
-	    continue;
+        if (!m)
+            continue;
 
-	debug printf("\tmodule[%d] = '%.*s'\n", i, m.name);
-	if (m.unitTest)
-	{
-	    (*m.unitTest)();
-	}
+        debug printf("\tmodule[%d] = '%.*s'\n", i, m.name);
+        if (m.unitTest)
+        {
+            (*m.unitTest)();
+        }
     }
 }
 
