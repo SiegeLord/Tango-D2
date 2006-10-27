@@ -36,10 +36,6 @@ private
     {
         extern (C) extern void* __libc_stack_end;
     }
-    else
-    {
-        static assert( false, "Stack query method not supported." );
-    }
 }
 
 
