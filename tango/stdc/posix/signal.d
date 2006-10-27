@@ -10,9 +10,9 @@ module tango.stdc.posix.signal;
 
 private import tango.stdc.config;
 public import tango.stdc.signal;
-public import tango.stdc.stddef; // needed for size_t
+public import tango.stdc.stddef;          // for size_t
 public import tango.stdc.posix.sys.types; // for pid_t
-public import tango.stdc.posix.time; // for timespec
+//public import tango.stdc.posix.time;      // for timespec, now defined here
 
 extern (C):
 
@@ -608,6 +608,29 @@ version( linux )
     int siginterrupt(int, int);
     int sigpause(int);
     int sigrelse(int);
+}
+
+//
+// Timer (TMR)
+//
+/*
+NOTE: This should actually be defined in tango.stdc.posix.time.
+      It is defined here instead to break a circular import.
+
+struct timespec
+{
+    time_t  tv_sec;
+    int     tv_nsec;
+}
+*/
+
+version( linux )
+{
+    struct timespec
+    {
+        time_t  tv_sec;
+        c_long  tv_nsec;
+    }
 }
 
 //

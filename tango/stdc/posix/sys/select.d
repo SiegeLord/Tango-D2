@@ -8,10 +8,10 @@
  */
 module tango.stdc.posix.sys.select;
 
+private import tango.stdc.config;
+public import tango.stdc.time;            // for timespec
 public import tango.stdc.posix.sys.types; // for time_t
 public import tango.stdc.posix.signal;    // for sigset_t
-public import tango.stdc.time;            // for timespec
-public import tango.stdc.config;          // for c_long
 
 extern (C):
 

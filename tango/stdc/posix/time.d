@@ -67,6 +67,9 @@ CLOCK_MONOTONIC
 CLOCK_PROCESS_CPUTIME_ID (TMR|CPT)
 CLOCK_THREAD_CPUTIME_ID (TMR|TCT)
 
+NOTE: timespec must be defined in tango.stdc.posix.signal to break
+      a circular import.
+
 struct timespec
 {
     time_t  tv_sec;
@@ -101,11 +104,13 @@ version( linux )
     const CLOCK_PROCESS_CPUTIME_ID  = 2; // (TMR|CPT)
     const CLOCK_THREAD_CPUTIME_ID   = 3; // (TMR|TCT)
 
-    struct timespec
-    {
-        time_t  tv_sec;
-        c_long  tv_nsec;
-    }
+    // NOTE: See above for why this is commented out.
+    //
+    //struct timespec
+    //{
+    //    time_t  tv_sec;
+    //    c_long  tv_nsec;
+    //}
 
     struct itimerspec
     {

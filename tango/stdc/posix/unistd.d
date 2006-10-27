@@ -11,7 +11,7 @@ module tango.stdc.posix.unistd;
 private import tango.stdc.config;
 private import tango.stdc.stddef;
 public import tango.stdc.posix.inttypes;  // for intptr_t
-public import tango.stdc.posix.sys.types; // for size_t, ssize_t, uid_t, gid_t, off_t, pid_t, and useconds_t
+public import tango.stdc.posix.sys.types; // for size_t, ssize_t, uid_t, gid_t, off_t, pid_t, useconds_t
 
 extern (C):
 

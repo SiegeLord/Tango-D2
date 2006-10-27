@@ -8,10 +8,10 @@
  */
 module tango.stdc.posix.sys.types;
 
-private import tango.stdc.stdint;
 private import tango.stdc.config;
-public import tango.stdc.stddef; // needed for size_t
-public import tango.stdc.time;   // needed for clock_t, time_t
+private import tango.stdc.stdint;
+public import tango.stdc.stddef; // for size_t
+public import tango.stdc.time;   // for clock_t, time_t
 
 extern (C):
 
