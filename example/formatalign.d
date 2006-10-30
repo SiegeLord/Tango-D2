@@ -2,6 +2,8 @@
 
   Example showing how the alignment component in a format string argument works.
 
+  Put into public domain by Lars Ivar Igesund
+
 */
 
 import tango.io.Stdout;

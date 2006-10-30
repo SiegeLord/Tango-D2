@@ -3,6 +3,8 @@
   Example showing how to use format specifier components in a format string's 
   argument.
 
+  Put into public domain by Lars Ivar Igesund
+
 */
 
 import tango.io.Stdout;
