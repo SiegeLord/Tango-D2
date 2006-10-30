@@ -69,9 +69,7 @@ else
 version (Posix)
         {
         private import tango.stdc.errno;
-
-        extern (C) char *strerror (int);
-        extern (C) int strlen (char *);
+        private import tango.stdc.string;
         }
 else
    static assert(0);
