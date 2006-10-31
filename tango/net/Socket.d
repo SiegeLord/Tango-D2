@@ -1554,7 +1554,7 @@ class Socket : Conduit
 
         protected static void exception (char[] msg)
         {
-                throw new SocketException (msg ~ OS.error (lastError));
+                throw new SocketException (msg ~ sysErrorMsg (lastError));
         }
 
 
