@@ -186,6 +186,12 @@ struct DoubleT(T)
                 uint            radix;
                 double          value = 0.0;
 
+                //BUG: The current implementation does not check for src
+                // boundaries. It stops scanning if the input isn't plausible any
+                // more. The following line is a workaround, but it is bad for performance.
+                // This needs more investigating. See also ticket #130
+                src = src ~ \x00;
+
                 // remove leading space, and sign
                 c = *(p = src.ptr + Atoi.trim (src, sign, radix));
 
