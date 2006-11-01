@@ -200,7 +200,7 @@ class FileProxy
 
                 private void exception ()
                 {
-                        throw new IOException (path.toUtf8 ~ ": " ~ OS.error);
+                        throw new IOException (path.toUtf8 ~ ": " ~ lastSysErrorMsg());
                 }
 
                 /***************************************************************
@@ -518,7 +518,7 @@ class FileProxy
 
                 private void exception ()
                 {
-                        throw new IOException (path.toUtf8 ~ ": " ~ OS.error);
+                        throw new IOException (path.toUtf8 ~ ": " ~ lastSysErrorMsg());
                 }
 
                 /***************************************************************
