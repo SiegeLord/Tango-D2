@@ -128,7 +128,7 @@ class DeviceConduit : Conduit
 
                 final void error ()
                 {
-                        throw new IOException (getName() ~ ": " ~ OS.error);
+                        throw new IOException (getName() ~ ": " ~ lastSysErrorMsg());
                 }
 
                 /***************************************************************
