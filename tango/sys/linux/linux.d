@@ -112,10 +112,10 @@ extern (C)
     int fstat(int, struct_stat*);
     int lstat(char*, struct_stat*);
     int stat(char*, struct_stat*);
-    int chdir(char*);
+    //int chdir(char*);              // use tango.stdc.posix.unistd
     int mkdir(char*, int);
     int rmdir(char*);
-    char* getcwd(char*, int);
+    //char* getcwd(char*, int);      // use tango.stdc.posix.unistd
     //int chmod(char*, mode_t);      // use tango.stdc.posix.sys.stat
     //int fork();                    // use tango.stdc.posix.unistd
     //int dup(int);                  // use tango.stdc.posix.unistd
