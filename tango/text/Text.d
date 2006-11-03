@@ -3,14 +3,16 @@
         copyright:      Copyright (c) 2004 Kris Bell. All rights reserved
 
         license:        BSD style: $(LICENSE)
-        
-        version:        Initial release: April 2004      
-        
+
+        version:        Initial release: April 2004
+
         author:         Kris
 
 *******************************************************************************/
 
 module tango.text.Text;
+
+private import tango.stdc.string;
 
 debug private import tango.stdc.stdio;
 
@@ -18,14 +20,14 @@ debug private import tango.stdc.stdio;
 
         Placeholder for a variety of wee functions. Some of these are
         handy for Java programmers, but the primary reason for their
-        existance is that they don't allocate memory ~ processing is 
+        existance is that they don't allocate memory ~ processing is
         performed in-place.
 
 ******************************************************************************/
 
 struct TextT(T)
 {
-        static if (!is (T == char) && !is (T == wchar) && !is (T == dchar)) 
+        static if (!is (T == char) && !is (T == wchar) && !is (T == dchar))
                     pragma (msg, "Template type must be char, wchar, or dchar");
 
 
@@ -54,7 +56,7 @@ struct TextT(T)
 
                 Return the index of the next instance of 'match', starting
                 at position 'start'
-                
+
         **********************************************************************/
 
         final static int indexOf (T[] source, T match, int start=0)
@@ -72,7 +74,7 @@ struct TextT(T)
 
                 Return the index of the next instance of 'match', starting
                 at position 'start'
-                
+
         **********************************************************************/
 
         final static int indexOf (T[] source, T[] match, int start=0)
@@ -80,7 +82,7 @@ struct TextT(T)
                 T*      p;
                 int     length = match.length;
                 int     extent = source.length - length + 1;
-                
+
                 if (length && extent >= 0)
                     for (; start < extent; ++start)
                            if ((p = locate (source.ptr+start, match[0], extent-start)) != null)
@@ -96,7 +98,7 @@ struct TextT(T)
 
                 Return the index of the prior instance of 'match', starting
                 at position 'start'
-                
+
         **********************************************************************/
 
         final static int rIndexOf (T[] source, T match, int start=int.max)
@@ -115,7 +117,7 @@ struct TextT(T)
 
                 Return the index of the prior instance of 'match', starting
                 at position 'start'
-                
+
         **********************************************************************/
 
         final static int rIndexOf (T[] source, T[] match, int start=int.max)
@@ -154,7 +156,7 @@ struct TextT(T)
 
         /**********************************************************************
 
-                Trim the provided string by stripping whitespace from 
+                Trim the provided string by stripping whitespace from
                 both ends. Returns a slice of the original content.
 
         **********************************************************************/
@@ -171,13 +173,13 @@ struct TextT(T)
 
                    while (back > front && isSpace(source[back-1]))
                           --back;
-                   } 
+                   }
                 return source [front .. back];
         }
 
         /**********************************************************************
 
-                
+
         **********************************************************************/
 
         final static T[][] split (T[] src, T[] delim)
@@ -188,7 +190,7 @@ struct TextT(T)
 
                 assert (delim.length);
                 while ((pos = indexOf (src, delim, pos)) >= 0)
-                      { 
+                      {
                       ret ~= src [mark..pos];
                       pos += delim.length;
                       mark = pos;
@@ -196,7 +198,7 @@ struct TextT(T)
 
                 if (mark < src.length)
                     ret ~= src [mark..src.length];
-                return ret;                                      
+                return ret;
         }
 
         /**********************************************************************
@@ -209,10 +211,10 @@ struct TextT(T)
                 {
                         static char* locate (char* s, char match, int length)
                         {
-                                asm 
+                                asm
                                 {
                                 mov   EDI, s;
-                                mov   ECX, length; 
+                                mov   ECX, length;
                                 movzx EAX, match;
 
                                 cld;
@@ -229,11 +231,11 @@ struct TextT(T)
 
                         static bool equal (char* s, char* d, int length)
                         {
-                                asm 
+                                asm
                                 {
                                 mov   EDI, s;
                                 mov   ESI, d;
-                                mov   ECX, length; 
+                                mov   ECX, length;
                                 xor   EAX, EAX;
 
                                 cld;
@@ -244,16 +246,16 @@ struct TextT(T)
                         fail:;
                                 }
                         }
-                }        
+                }
 
                 static if (is(T == wchar))
                 {
                         static wchar* locate (wchar* s, wchar match, int length)
                         {
-                                asm 
+                                asm
                                 {
                                 mov   EDI, s;
-                                mov   ECX, length; 
+                                mov   ECX, length;
                                 movzx EAX, match;
 
                                 cld;
@@ -270,11 +272,11 @@ struct TextT(T)
 
                         static bool equal (wchar* s, wchar* d, int length)
                         {
-                                asm 
+                                asm
                                 {
                                 mov   EDI, s;
                                 mov   ESI, d;
-                                mov   ECX, length; 
+                                mov   ECX, length;
                                 xor   EAX, EAX;
 
                                 cld;
@@ -285,16 +287,16 @@ struct TextT(T)
                         fail:;
                                 }
                         }
-                }        
+                }
 
                 static if (is(T == dchar))
                 {
                         static dchar* locate (dchar* s, dchar match, int length)
                         {
-                                asm 
+                                asm
                                 {
                                 mov   EDI, s;
-                                mov   ECX, length; 
+                                mov   ECX, length;
                                 mov   EAX, match;
 
                                 cld;
@@ -311,11 +313,11 @@ struct TextT(T)
 
                         static bool equal (dchar* s, dchar* d, int length)
                         {
-                                asm 
+                                asm
                                 {
                                 mov   EDI, s;
                                 mov   ESI, d;
-                                mov   ECX, length; 
+                                mov   ECX, length;
                                 xor   EAX, EAX;
 
                                 cld;
@@ -326,7 +328,7 @@ struct TextT(T)
                         fail:;
                                 }
                         }
-                }    
+                }
         }
         else
         {
@@ -337,7 +339,7 @@ struct TextT(T)
                                    return s-1;
                         return null;
                 }
-                
+
                 static bool equal (T* s, T* d, int len)
                 {
                         while (len--)
@@ -345,8 +347,8 @@ struct TextT(T)
                                    return false;
                         return true;
                 }
-                
-        }    
+
+        }
 }
 
 
@@ -354,7 +356,7 @@ struct TextT(T)
 
         Placeholder for a variety of wee functions. Some of these are
         handy for Java programmers, but the primary reason for their
-        existance is that they don't allocate memory ~ processing is 
+        existance is that they don't allocate memory ~ processing is
         performed in-place.
 
 ******************************************************************************/
@@ -374,6 +376,67 @@ unittest
         assert (Text.equal (test, test, test.length));
         assert (!Text.equal (test, "qwe", 3));
 }
+}
+
+
+/*********************************
+ * Convert array of chars s[] to a C-style 0 terminated string.
+ */
+
+char* toUtf8z(char[] s)
+in
+{
+}
+out (result)
+{
+    if (result)
+    {
+        assert(strlen(result) == s.length);
+        assert(memcmp(result, s, s.length) == 0);
+    }
+}
+body
+{
+    char[] copy;
+
+    if (s.length == 0)
+        return "";
+
+    /+ Unfortunately, this isn't reliable.
+       We could make this work if string literals are put
+       in read-only memory and we test if s[] is pointing into
+       that.
+
+        /* Peek past end of s[], if it's 0, no conversion necessary.
+         * Note that the compiler will put a 0 past the end of static
+         * strings, and the storage allocator will put a 0 past the end
+         * of newly allocated char[]'s.
+         */
+        char* p = &s[0] + s.length;
+        if (*p == 0)
+        return s;
+    +/
+
+    // Need to make a copy
+    copy = new char[s.length + 1];
+    copy[0..s.length] = s;
+    copy[s.length] = 0;
+    return copy;
+}
+
+unittest
+{
+    debug(string) printf("Text.toStringz.unittest\n");
+
+    char* p = toStringz("foo");
+    assert(strlen(p) == 3);
+    char foo[] = "abbzxyzzy";
+    p = toStringz(foo[3..5]);
+    assert(strlen(p) == 2);
+
+    char[] test = "";
+    p = toStringz(test);
+    assert(*p == 0);
 }
 
 
