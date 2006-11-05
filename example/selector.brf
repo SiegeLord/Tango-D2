@@ -1,7 +1,7 @@
 -I..
 -noautoimport
 -op
--debug=selector
+-debug
 -gc
 -clean
 -version=Posix
