@@ -1,0 +1,8 @@
+-I..
+-noautoimport
+-op
+-debug
+-gc
+-clean
+-version=Posix
+process.d
