@@ -27,10 +27,7 @@
 
 module phobos.file;
 
-version( Posix ){
-    import tango.stdc.posix.dirent;
-}
-import tango.stdc.errno;
+//import tango.stdc.errno;
 import phobos.c.stdio;
 import phobos.c.stdlib;
 import phobos.path;
@@ -813,10 +810,12 @@ version (linux)
 {
 
 private import phobos.date;
-private import phobos.c.linux.linux;
 private import tango.sys.linux.linux;
-
-extern (C) char* strerror(int);
+private import tango.stdc.posix.dirent;
+private import tango.stdc.posix.unistd;
+private import tango.stdc.posix.sys.stat;
+private import tango.stdc.posix.fcntl;
+private import tango.sys.Common;
 
 /***********************************
  */
@@ -837,7 +836,7 @@ class FileException : Exception
     }
 
     this(char[] name, uint errno)
-    {	char* s = strerror(errno);
+    {	char* s = tango.sys.Common.sysErrorMsg(errno);
 	this(name, phobos.string.toString(s).dup);
 	this.errno = errno;
     }
@@ -851,16 +850,16 @@ class FileException : Exception
 
 void[] read(char[] name)
 {
-    uint size;
+    size_t size;
     uint numread;
     int fd;
-    struct_stat statbuf;
+    stat_t statbuf;
     byte[] buf;
     char *namez;
 
     namez = toStringz(name);
     //printf("file.read('%s')\n",namez);
-    fd = phobos.c.linux.linux.open(namez, O_RDONLY);
+    fd = tango.stdc.posix.fcntl.open(namez, tango.stdc.posix.fcntl.O_RDONLY);
     if (fd == -1)
     {
         //printf("\topen error, errno = %d\n",errno());
@@ -868,7 +867,7 @@ void[] read(char[] name)
     }
 
     //printf("\tfile opened\n");
-    if (phobos.c.linux.linux.fstat(fd, &statbuf))
+    if (tango.stdc.posix.sys.stat.fstat(fd, &statbuf))
     {
         //printf("\tfstat error, errno = %d\n",errno());
         goto err2;
@@ -876,14 +875,14 @@ void[] read(char[] name)
     size = statbuf.st_size;
     buf = new byte[size];
 
-    numread = phobos.c.linux.linux.read(fd, cast(char*)buf, size);
+    numread = tango.stdc.posix.unistd.read(fd, cast(void*)buf, size);
     if (numread != size)
     {
         //printf("\tread error, errno = %d\n",errno());
         goto err2;
     }
 
-    if (phobos.c.linux.linux.close(fd) == -1)
+    if (tango.stdc.posix.unistd.close(fd) == -1)
     {
 	//printf("\tclose error, errno = %d\n",errno());
         goto err;
@@ -892,12 +891,12 @@ void[] read(char[] name)
     return buf;
 
 err2:
-    phobos.c.linux.linux.close(fd);
+    tango.stdc.posix.unistd.close(fd);
 err:
     delete buf;
 
 err1:
-    throw new FileException(name, errno());
+    throw new FileException(name, lastSysError());
 }
 
 /*********************************************
@@ -913,7 +912,10 @@ void write(char[] name, void[] buffer)
     char *namez;
 
     namez = toStringz(name);
-    fd = phobos.c.linux.linux.open(namez, O_CREAT | O_WRONLY | O_TRUNC, 0660);
+    fd = tango.stdc.posix.fcntl.open(namez, 
+            tango.stdc.posix.fcntl.O_CREAT | 
+            tango.stdc.posix.fcntl.O_WRONLY |
+            tango.stdc.posix.fcntl.O_TRUNC, 0660);
     if (fd == -1)
         goto err;
 
@@ -921,15 +923,15 @@ void write(char[] name, void[] buffer)
     if (buffer.length != numwritten)
         goto err2;
 
-    if (phobos.c.linux.linux.close(fd) == -1)
+    if (tango.stdc.posix.unistd.close(fd) == -1)
         goto err;
 
     return;
 
 err2:
-    phobos.c.linux.linux.close(fd);
+    tango.stdc.posix.unistd.close(fd);
 err:
-    throw new FileException(name, errno());
+    throw new FileException(name, lastSysError());
 }
 
 
@@ -944,7 +946,10 @@ void append(char[] name, void[] buffer)
     char *namez;
 
     namez = toStringz(name);
-    fd = phobos.c.linux.linux.open(namez, O_APPEND | O_WRONLY | O_CREAT, 0660);
+    fd = tango.stdc.posix.fcntl.open(namez,
+            tango.stdc.posix.fcntl.O_APPEND |
+            tango.stdc.posix.fcntl.O_WRONLY |
+            tango.stdc.posix.fcntl.O_CREAT, 0660);
     if (fd == -1)
         goto err;
 
@@ -952,15 +957,15 @@ void append(char[] name, void[] buffer)
     if (buffer.length != numwritten)
         goto err2;
 
-    if (phobos.c.linux.linux.close(fd) == -1)
+    if (tango.stdc.posix.unistd.close(fd) == -1)
         goto err;
 
     return;
 
 err2:
-    phobos.c.linux.linux.close(fd);
+    tango.stdc.posix.unistd.close(fd);
 err:
-    throw new FileException(name, errno());
+    throw new FileException(name, lastSysError());
 }
 
 
@@ -974,7 +979,7 @@ void rename(char[] from, char[] to)
     char *toz = toStringz(to);
 
     if (phobos.c.stdio.rename(fromz, toz) == -1)
-	throw new FileException(to, errno());
+	throw new FileException(to, lastSysError());
 }
 
 
@@ -985,7 +990,7 @@ void rename(char[] from, char[] to)
 void remove(char[] name)
 {
     if (phobos.c.stdio.remove(toStringz(name)) == -1)
-	throw new FileException(name, errno());
+	throw new FileException(name, lastSysError());
 }
 
 
@@ -997,39 +1002,39 @@ ulong getSize(char[] name)
 {
     uint size;
     int fd;
-    struct_stat statbuf;
+    stat_t statbuf;
     char *namez;
 
     namez = toStringz(name);
     //printf("file.getSize('%s')\n",namez);
-    fd = phobos.c.linux.linux.open(namez, O_RDONLY);
+    fd = tango.stdc.posix.fcntl.open(namez, tango.stdc.posix.fcntl.O_RDONLY);
     if (fd == -1)
     {
-        //printf("\topen error, errno = %d\n",errno());
+        //printf("\topen error, errno = %d\n",lastSysError());
         goto err1;
     }
 
     //printf("\tfile opened\n");
-    if (phobos.c.linux.linux.fstat(fd, &statbuf))
+    if (tango.stdc.posix.sys.stat.fstat(fd, &statbuf))
     {
-        //printf("\tfstat error, errno = %d\n",errno());
+        //printf("\tfstat error, errno = %d\n",lastSysError());
         goto err2;
     }
     size = statbuf.st_size;
 
-    if (phobos.c.linux.linux.close(fd) == -1)
+    if (tango.stdc.posix.unistd.close(fd) == -1)
     {
-	//printf("\tclose error, errno = %d\n",errno());
+	//printf("\tclose error, errno = %d\n",lastSysError());
         goto err;
     }
 
     return size;
 
 err2:
-    phobos.c.linux.linux.close(fd);
+    tango.stdc.posix.unistd.close(fd);
 err:
 err1:
-    throw new FileException(name, errno());
+    throw new FileException(name, lastSysError());
 }
 
 
@@ -1039,13 +1044,13 @@ err1:
 
 uint getAttributes(char[] name)
 {
-    struct_stat statbuf;
+    stat_t statbuf;
     char *namez;
 
     namez = toStringz(name);
-    if (phobos.c.linux.linux.stat(namez, &statbuf))
+    if (tango.stdc.posix.sys.stat.stat(namez, &statbuf))
     {
-	throw new FileException(name, errno());
+        throw new FileException(name, lastSysError());
     }
 
     return statbuf.st_mode;
@@ -1057,7 +1062,7 @@ uint getAttributes(char[] name)
 
 int exists(char[] name)
 {
-    return access(toStringz(name),0) == 0;
+    return tango.stdc.posix.unistd.access(toStringz(name),0) == 0;
 
 /+
     struct_stat statbuf;
@@ -1083,7 +1088,7 @@ unittest
 
 int isfile(char[] name)
 {
-    return (getAttributes(name) & S_IFMT) == S_IFREG;	// regular file
+    return (getAttributes(name) & tango.stdc.posix.sys.stat.S_IFMT) == tango.stdc.posix.sys.stat.S_IFREG;	// regular file
 }
 
 /****************************************************
@@ -1092,7 +1097,7 @@ int isfile(char[] name)
 
 int isdir(char[] name)
 {
-    return (getAttributes(name) & S_IFMT) == S_IFDIR;
+    return (getAttributes(name) & tango.stdc.posix.sys.stat.S_IFMT) == tango.stdc.posix.sys.stat.S_IFDIR;
 }
 
 /****************************************************
@@ -1101,9 +1106,9 @@ int isdir(char[] name)
 
 void chdir(char[] pathname)
 {
-    if (phobos.c.linux.linux.chdir(toStringz(pathname)))
+    if (tango.stdc.posix.unistd.chdir(toStringz(pathname)))
     {
-	throw new FileException(pathname, errno());
+        throw new FileException(pathname, lastSysError());
     }
 }
 
@@ -1113,9 +1118,9 @@ void chdir(char[] pathname)
 
 void mkdir(char[] pathname)
 {
-    if (phobos.c.linux.linux.mkdir(toStringz(pathname), 0777))
+    if (tango.stdc.posix.sys.stat.mkdir(toStringz(pathname), 0777))
     {
-	throw new FileException(pathname, errno());
+        throw new FileException(pathname, lastSysError());
     }
 }
 
@@ -1125,9 +1130,9 @@ void mkdir(char[] pathname)
 
 void rmdir(char[] pathname)
 {
-    if (phobos.c.linux.linux.rmdir(toStringz(pathname)))
+    if (tango.stdc.posix.unistd.rmdir(toStringz(pathname)))
     {
-	throw new FileException(pathname, errno());
+        throw new FileException(pathname, lastSysError());
     }
 }
 
@@ -1138,10 +1143,10 @@ void rmdir(char[] pathname)
 char[] getcwd()
 {   char* p;
 
-    p = phobos.c.linux.linux.getcwd(null, 0);
+    p = tango.stdc.posix.unistd.getcwd(null, 0);
     if (!p)
     {
-	throw new FileException("cannot get cwd", errno());
+        throw new FileException("cannot get cwd", lastSysError());
     }
 
     size_t len = phobos.string.strlen(p);
@@ -1223,7 +1228,7 @@ struct DirEntry
 	namez = toStringz(name);
 	if (phobos.c.linux.linux.stat(namez, &statbuf))
 	{
-	    //printf("\tstat error, errno = %d\n",errno());
+	    //printf("\tstat error, errno = %d\n",lastSysError());
 	    return;
 	}
 	_size = statbuf.st_size;
@@ -1330,7 +1335,7 @@ void listdir(char[] pathname, bool delegate(DirEntry* de) callback)
     }
     else
     {
-        throw new FileException(pathname, errno());
+        throw new FileException(pathname, lastSysError());
     }
 }
 
