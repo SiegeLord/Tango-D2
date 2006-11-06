@@ -19,7 +19,7 @@ TANGO_DIR = ..
 
 # The build tool executable from dsource.org/projects/build
 BUILDTOOL = bud
-BUILDOPTS = -noautoimport -op -clean -I$(TANGO_DIR)
+BUILDOPTS = -noautoimport -op -clean -full -g -debug -I$(TANGO_DIR)
 
 PHOBOS_DIR = $(TANGO_DIR)/phobos
 ZLIB_DIR = $(PHOBOS_DIR)/etc/c/zlib
@@ -32,27 +32,31 @@ all :
 
 
 SIMPLE_EXAMPLES =       	\
-	./hello         	\
-	./filecat       	\
-	./stdout        	\
-	./servletserver 	\
+	./argparser     	\
 	./chainsaw      	\
 	./composite     	\
-	./httpserver    	\
-	./servlets      	\
-	./randomio      	\
-	./localtime     	\
-	./filecopy      	\
 	./filebubbler   	\
-	./localetime    	\
-	./lineio        	\
-	./httpget       	\
-	./socketserver  	\
-	./token         	\
+	./filecat       	\
+	./filecopy      	\
 	./filescan      	\
+	./formatalign		\
+	./formatindex		\
+	./hello         	\
 	./homepage      	\
+	./httpget       	\
+	./httpserver    	\
+	./lineio        	\
+	./localetime    	\
+	./localtime     	\
 	./logging       	\
 	./mmap          	\
+	./randomio      	\
+	./servlets      	\
+	./servletserver 	\
+	./sockethello 		\
+	./socketserver  	\
+	./stdout        	\
+	./token         	\
 	./unifile
 
 PHOBOS_EXAMPLES =		\

@@ -47,6 +47,7 @@ class ServerThread : Thread, IRunnable
         {
                 this.server = server;
                 this.socket = socket;
+                super( & doJob );
         }
 
         /**********************************************************************
@@ -69,7 +70,7 @@ class ServerThread : Thread, IRunnable
 
         **********************************************************************/
 
-        override void run ()
+        void doJob ()
         {
                 while (true)
                        try {
