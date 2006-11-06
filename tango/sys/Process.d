@@ -136,6 +136,24 @@ class Process
     }
 
     /**
+     * Constructor (variadic version).
+     *
+     * Params:
+     * args     = array of strings with the process' arguments; the first
+     *            argument must be the process' name; the arguments can be
+     *            empty.
+     *
+     * Examples:
+     * ---
+     * auto p = new Process("myprogram", "first argument", "second", "third")
+     * ---
+     */
+    public this(char[][] args ...)
+    {
+        _args = args;
+    }
+
+    /**
      * Constructor.
      *
      * Params:
@@ -272,11 +290,40 @@ class Process
     }
 
     /**
+     * Set the process' arguments from the arguments received by the method.
+     *
+     * Remarks:
+     * The first element of the array must be the name of the process'
+     * executable.
+     *
+     * Examples:
+     * ---
+     * p.args("myprogram", "first", "second argument", "third");
+     * ---
+     */
+    public void args(char[][] args ...)
+    {
+        _args = args;
+    }
+
+    /**
      * Set the process' arguments from an array of arguments.
      *
      * Remarks:
      * The first element of the array must be the name of the process'
      * executable.
+     *
+     * Examples:
+     * ---
+     * char[][] args;
+     *
+     * args ~= "myprogram";
+     * args ~= "first";
+     * args ~= "second argument";
+     * args ~= "third";
+     *
+     * p.args = args;
+     * ---
      */
     public void args(char[][] args)
     {
@@ -313,6 +360,25 @@ class Process
     public char[][] env()
     {
         return _env;
+    }
+
+    /**
+     * Set the process' environment variables from the arguments received by
+     * the method.
+     *
+     * Params:
+     * env  = array of string containing the environment variables for the
+     *        process. Each string must include the name and the value of each
+     *        variable in the following format: <name>=<value>.
+     *
+     * Examples:
+     * ---
+     * p.env("VAR1=VALUE1", "VAR2=VALUE2");
+     * ---
+     */
+    public void env(char[][] env ...)
+    {
+        _env = env;
     }
 
     /**
@@ -446,6 +512,37 @@ class Process
     }
 
     /**
+     * Execute a process using the arguments as parameters to this method.
+     *
+     * Once the process is executed successfully, its input and output can be
+     * manipulated through the stdin, stdout and
+     * stderr member PipeConduit's.
+     *
+     * Throws:
+     * ProcessCreateException if the process could not be created
+     * successfully; ProcessForkException if the call to the fork()
+     * system call failed (on POSIX-compatible platforms).
+     *
+     * Remarks:
+     * The process must not be running and the provided list of arguments must
+     * not be empty. If there was any argument already present in the args
+     * member, they will be replaced by the arguments supplied to the method.
+     */
+    public void execute(char[][] args ...)
+    in
+    {
+        assert(!_running);
+    }
+    body
+    {
+        if (args !is null && args[0] !is null)
+        {
+            _args = args;
+        }
+        executeInternal();
+    }
+
+    /**
      * Execute a process using the arguments that were supplied to the
      * constructor or to the args property.
      *
@@ -462,7 +559,7 @@ class Process
      * The process must not be running and the list of arguments must
      * not be empty before calling this method.
      */
-    public void execute()
+    protected void executeInternal()
     in
     {
         assert(!_running);
