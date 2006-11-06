@@ -53,11 +53,21 @@ version( linux )
     {
 	    // Managed by OS
     }
+
+  static if( false /*__USE_FILE_OFFSET64*/ )
+  {
+    dirent* readdir(DIR*);
+  }
+  else
+  {
+    dirent* readdir64(DIR*);
+    alias readdir64 readdir;
+  }
 }
 
 int     closedir(DIR*);
 DIR*    opendir(char*);
-dirent* readdir(DIR*);
+//dirent* readdir(DIR*);
 void    rewinddir(DIR*);
 
 //
@@ -66,6 +76,19 @@ void    rewinddir(DIR*);
 /*
 int readdir_r(DIR*, dirent*, dirent**);
 */
+
+version( linux )
+{
+  static if( false /*__USE_FILE_OFFSET64*/ )
+  {
+    int readdir_r(DIR*, dirent*, dirent**);
+  }
+  else
+  {
+    int readdir64_r(DIR*, dirent*, dirent**);
+    alias readdir64_r readdir_r;
+  }
+}
 
 //
 // XOpen (XSI)

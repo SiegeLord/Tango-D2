@@ -152,9 +152,17 @@ else version( darwin )
 /*
 char* asctime_r(tm*, char*);
 char* ctime_r(time_t*, char*);
-tm* gmtime_r(time_t*, tm*);
-tm* localtime_r(time_t*, tm*);
+tm*   gmtime_r(time_t*, tm*);
+tm*   localtime_r(time_t*, tm*);
 */
+
+version( linux )
+{
+    char* asctime_r(tm*, char*);
+    char* ctime_r(time_t*, char*);
+    tm*   gmtime_r(time_t*, tm*);
+    tm*   localtime_r(time_t*, tm*);
+}
 
 //
 // XOpen (XSI)
