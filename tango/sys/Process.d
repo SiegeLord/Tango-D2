@@ -38,33 +38,29 @@ else version (Posix)
 
 
 /**
- * The $D_CODE(Process) class is used to start external programs and
- * communicate with them via their standard input, output and error
- * streams.
+ * The Process class is used to start external programs and communicate with
+ * them via their standard input, output and error streams.
  *
  * You can pass either the command line or an array of arguments to execute,
- * either in the constructor or to the $D_CODE(args) property. The environment
- * variables can be set in a similar way using the $D_CODE(env) property and
- * you can set the program's working directory via the $D_CODE(workDir)
- * property.
+ * either in the constructor or to the args property. The environment
+ * variables can be set in a similar way using the env property and you can
+ * set the program's working directory via the workDir property.
  *
- * To actually start a process you need to use the $D_CODE(execute()) method.
- * Once the program is running you will be able to write to its standard input
- * via the $D_CODE(stdin) $D_CODE(PipeConduit) and you will be able to read
- * from its standard output and error through the $D_CODE(stdout) and
- * $D_CODE(stderr) $D_CODE(PipeConduit)'s respectively.
+ * To actually start a process you need to use the execute() method. Once the
+ * program is running you will be able to write to its standard input via the
+ * stdin PipeConduit and you will be able to read from its standard output and
+ * error through the stdout and stderr PipeConduit's respectively.
  *
- * You can check whether the process is running or not with the
- * $D_CODE(isRunning()) method and you can get its process ID via the $(pid)
- * property.
+ * You can check whether the process is running or not with the isRunning()
+ * method and you can get its process ID via the pid property.
  *
  * After you are done with the process of if you just want to wait for it to
- * end you need to call the $D_CODE(wait()) method, which will return once the
- * process is no longer running.
+ * end you need to call the wait() method, which will return once the process
+ * is no longer running.
  *
- * To stop a running process you must use the $D_CODE(kill()) method. If you do
- * this you cannot call the $D_CODE(wait()) method. Once the $D_CODE(kill())
- * method returns the process will be already dead.
+ * To stop a running process you must use kill() method. If you do this you
+ * cannot call the wait() method. Once the kill() method returns the process
+ * will be already dead.
  *
  * Examples:
  * ---
@@ -395,7 +391,7 @@ class Process
     /**
      * Return the running process' standard input pipe.
      *
-     * Returns: a write-only $D_CODE(PipeConduit) connected to the child
+     * Returns: a write-only PipeConduit connected to the child
      *          process' stdin.
      *
      * Remarks:
@@ -414,7 +410,7 @@ class Process
     /**
      * Return the running process' standard output pipe.
      *
-     * Returns: a read-only $D_CODE(PipeConduit) connected to the child
+     * Returns: a read-only PipeConduit connected to the child
      *          process' stdout.
      *
      * Remarks:
@@ -433,7 +429,7 @@ class Process
     /**
      * Return the running process' standard error pipe.
      *
-     * Returns: a read-only $D_CODE(PipeConduit) connected to the child
+     * Returns: a read-only PipeConduit connected to the child
      *          process' stderr.
      *
      * Remarks:
@@ -451,15 +447,15 @@ class Process
 
     /**
      * Execute a process using the arguments that were supplied to the
-     * constructor or to the $D_CODE(args) property.
+     * constructor or to the args property.
      *
      * Once the process is executed successfully, its input and output can be
-     * manipulated through the $D_CODE(stdin), $D_CODE(stdout) and
-     * $D_CODE(stderr) member $D_CODE(PipeConduit)'s.
+     * manipulated through the stdin, stdout and
+     * stderr member PipeConduit's.
      *
      * Throws:
-     * $D_CODE(ProcessCreateException) if the process could not be created
-     * successfully; $D_CODE(ProcessForkException) if the call to the fork()
+     * ProcessCreateException if the process could not be created
+     * successfully; ProcessForkException if the call to the fork()
      * system call failed (on POSIX-compatible platforms).
      *
      * Remarks:
@@ -669,36 +665,36 @@ class Process
      * status code why the process ended.
      *
      * Returns:
-     * The return value is a $D_CODE(Result) struct, which has two members:
-     * $D_CODE(reason) and $D_CODE(status). The $D_CODE(reason) can take the
+     * The return value is a Result struct, which has two members:
+     * reason and status. The reason can take the
      * following values:
      *
      * Process.Result.Reason.Exit: the child process exited normally;
-     *                             $D_CODE(status) has the process' return
+     *                             status has the process' return
      *                             code.
      *
      * Process.Result.Reason.Signal: the child process was killed by a signal;
-     *                               $D_CODE(status) has the signal number
+     *                               status has the signal number
      *                               that killed the process.
      *
-     * Process.Result.Reason.Stop: the process was stopped; $D_CODE(status)
+     * Process.Result.Reason.Stop: the process was stopped; status
      *                             has the signal number that was used to stop
      *                             the process.
      *
      * Process.Result.Reason.Continue: the process had been previously stopped
      *                                 and has now been restarted;
-     *                                 $D_CODE(status) has the signal number
+     *                                 status has the signal number
      *                                 that was used to continue the process.
      *
      * Process.Result.Reason.Error: We could not properly wait on the child
-     *                              process; $D_CODE(status) has the
-     *                              $D_CODE(errno) value if the process was
+     *                              process; status has the
+     *                              errno value if the process was
      *                              running and -1 if not.
      *
      * Remarks:
-     * You can only call $D_CODE(wait()) on a running process once.
-     * The $D_CODE(Signal), $D_CODE(Stop) and $D_CODE(Continue) reasons will
-     * only be returned on POSIX-compatible platforms.
+     * You can only call wait() on a running process once. The Signal, Stop
+     * and Continue reasons will only be returned on POSIX-compatible
+     * platforms.
      */
     public Result wait()
     {
@@ -833,13 +829,13 @@ class Process
      * has been killed.
      *
      * Throws:
-     * $D_CODE(ProcessKillException) if the process could not be killed;
-     * $D_CODE(ProcessWaitException) if we could not wait on the process after
+     * ProcessKillException if the process could not be killed;
+     * ProcessWaitException if we could not wait on the process after
      * killing it.
      *
      * Remarks:
-     * After calling this method you will not be able to call $D_CODE(wait())
-     * on the process.
+     * After calling this method you will not be able to call wait() on the
+     * process.
      */
     public void kill()
     {
