@@ -239,6 +239,14 @@ void wolf() {
         static assert(prettynameof!(fox)== "class void " ~ THISFILE ~ ".wolf().fox!(cfloat, int = 21).fox");
         static assert(qualifiednameof!(fox)== THISFILE ~ ".wolf.fox.fox");
         static assert(symbolnameof!(fox)== "fox");
+
+        int dingo;
+        static assert(demangleType!(rawmanglednameof!(dingo)) ==
+        "void function (class void " ~ THISFILE ~ ".wolf().rawmanglednameof!("
+        ~ "void " ~ THISFILE ~ ".wolf().dingo).outer!("
+        ~ "void " ~ THISFILE ~ ".wolf().dingo).inner!("
+        ~ "void " ~ THISFILE ~ ".wolf().dingo).inner)*");
+
 }
 }
 

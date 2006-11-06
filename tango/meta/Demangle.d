@@ -208,6 +208,13 @@ template get_DnameConsumed(char [] str)
         + demangleTypeConsumed!(str[2+getQualifedNameConsumed!(str[2..$])..$]);
 }
 
+
+template getInnerFunc_DnameConsumed(char [] str)
+{
+    const int getInnerFunc_DnameConsumed = 2 + getQualifiedNameConsumed!(str[2..$])
+    + 2 + demangleTypeConsumed!(str[2 + getQualifiedNameConsumed!(str[2..$])+2..$]);
+}
+
 // If Lname is a template, shows it as a template
 template prettyLname(char [] str, MangledNameType wantQualifiedNames)
 {
@@ -277,10 +284,10 @@ template getQualifiedNameConsumed (char [] str)
         } else {
             const int getQualifiedNameConsumed = getLnameConsumed!(str);
         }
-    } /*else static if (str.length>1 && str[0]=='_' && str[1]=='D') {
-        const int getQualifiedNameConsumed = get_DnameConsumed!(str)
-            + getQualifiedNameConsumed!(str[1+get_DnameConsumed!(str)..$]);
-    }*/ else static assert(0);
+    } else static if (str.length>1 && str[0]=='_' && str[1]=='D') {
+        const int getQualifiedNameConsumed = getInnerFunc_DnameConsumed!(str)
+            + getQualifiedNameConsumed!(str[getInnerFunc_DnameConsumed!(str)..$]);
+    } else static assert(0, "Qualified name:" ~ str);
 }
 
 // ----------------------------------------
