@@ -287,7 +287,7 @@ template getQualifiedNameConsumed (char [] str)
     } else static if (str.length>1 && str[0]=='_' && str[1]=='D') {
         const int getQualifiedNameConsumed = getInnerFunc_DnameConsumed!(str)
             + getQualifiedNameConsumed!(str[getInnerFunc_DnameConsumed!(str)..$]);
-    } else static assert(0, "Qualified name:" ~ str);
+    } else static assert(0, "Error in Qualified name:" ~ str);
 }
 
 // ----------------------------------------
@@ -318,7 +318,7 @@ template demangleFunctionParamType(char[] str, MangledNameType wantQualifiedName
     else const char [] demangleFunctionParamType = demangleType!(str, wantQualifiedNames);
 }
 
-// Deal with 'out' and 'inout' parameters
+// Deal with 'out','inout', and 'lazy' parameters
 template demangleFunctionParamTypeConsumed(char[] str)
 {
     static if (str[0]=='K' || str[0]=='J' || str[0]=='L')
@@ -343,7 +343,7 @@ template demangleExtern(char c)
 }
 
 // Skip through the string until we find the return value. It can either be Z for normal
-// functions, or Y for vararg functions.
+// functions, or Y for vararg functions, or X for lazy vararg functions.
 template demangleReturnValue(char [] str, MangledNameType wantQualifiedNames)
 {
     static assert(str.length>=1, "Demangle error(Function): No return value found");
@@ -367,7 +367,7 @@ template demangleParamList(char [] str, MangledNameType wantQualifiedNames, char
             ~ demangleParamList!(str[demangleFunctionParamTypeConsumed!(str)..$], wantQualifiedNames, ", ");
 }
 
-// How many characters are used in the parameter list and return value
+// How many characters are used in the parameter list and return value?
 template demangleParamListAndRetValConsumed(char [] str)
 {
     static assert (str.length>0, "Demangle error(ParamList): No return value found");
@@ -389,7 +389,7 @@ template templateValueArgConsumed(char [] str)
     else static if (str[0]=='N') const int templateValueArgConsumed = 1 + countLeadingDigits!(str[1..$]);
     else static if (str[0]=='e') const int templateValueArgConsumed = 1 + 20;
     else static if (str[0]=='c') const int templateValueArgConsumed = 1 + 40;
-    else static assert(0, "Unknown character in template value argument");
+    else static assert(0, "Unknown character in template value argument:" ~ str);
 }
 
 // pretty-print a template value argument.
@@ -398,9 +398,16 @@ template prettyValueArg(char [] str)
     static if (str[0]=='n') const char [] prettyValueArg = "null";
     else static if (beginsWithDigit!(str)) const char [] prettyValueArg = str;
     else static if ( str[0]=='N') const char [] prettyValueArg = "-" ~ str[1..$];
-    else static if ( str[0]=='e') const char [] prettyValueArg = "0x" ~ str[1..$];
-    else static if ( str[0]=='c') const char [] prettyValueArg = "0x" ~ str[1..22] ~ " + 0x" ~ str[21..41] ~ "i";
+    else static if ( str[0]=='e') const char [] prettyValueArg = prettyFloatValueArg!(str[1..$]);
+    else static if ( str[0]=='c') const char [] prettyValueArg = prettyFloatValueArg!(str[1..22]) ~ " + " ~ prettyFloatValueArg!(str[21..41]) ~ "i";
     else const char [] prettyValueArg = "Value arg {" ~ str[0..$] ~ "}";
+}
+
+// Display the floating point number in %a format (eg 0x1.ABCp-35);
+template prettyFloatValueArg(char [] str)
+{
+    // BUG: Need to extract exponent and mantissa.
+    const char [] prettyFloatValueArg = "0x" ~ str;
 }
 
 // Pretty-print a template argument
