@@ -102,12 +102,12 @@ extern (C) int _d_run_main(int argc, char **argv, main_type main_func)
 
     version (GC_Use_Stack_Guess)
     {
-            stackOriginGuess = &argv;
-        }
+        stackOriginGuess = &argv;
+    }
     version (GNU_CBridge_Stdio)
     {
-            _d_gnu_cbridge_init_stdio();
-        }
+        _d_gnu_cbridge_init_stdio();
+    }
     version (all)
     {
         _STI_monitor_staticctor();
@@ -125,16 +125,16 @@ extern (C) int _d_run_main(int argc, char **argv, main_type main_func)
             int len = strlen(argv[i]);
             am[i] = argv[i][0 .. len];
         }
-            args = am[0 .. argc];
-        }
+        args = am[0 .. argc];
+    }
 
     try
     {
-            _moduleCtor();
-            _moduleUnitTests();
+        _moduleCtor();
+        _moduleUnitTests();
         result = main_func(args);
-            _moduleDtor();
-            gc_term();
+        _moduleDtor();
+        gc_term();
     }
     catch (Exception e)
     {
@@ -163,8 +163,8 @@ extern (C) int _d_run_main(int argc, char **argv, main_type main_func)
 
     version (all)
     {
-            _STD_critical_term();
-            _STD_monitor_staticdtor();
+        _STD_critical_term();
+        _STD_monitor_staticdtor();
         free(am);
     }
     return result;
