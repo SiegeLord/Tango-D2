@@ -105,6 +105,20 @@ template demangleBasicType(char [] str)
     else static assert(0, "Demangle Error: '" ~ str ~ "' is not a recognised basic type");
 }
 
+template isMangledBasicType(char [] str)
+{
+    const bool isMangledBasicType = ((str == "v")
+     || (str == "b") || (str == "x")
+     || (str == "g") || (str == "h") || (str == "s") || (str == "t")
+     || (str == "i") || (str == "k") || (str == "l") || (str == "m")
+     || (str == "e") || (str == "d") || (str == "f")
+     || (str == "j") || (str == "p") || (str == "o")
+     || (str == "c") || (str == "r") || (str == "q")
+     || (str == "a") || (str == "u") || (str == "w")
+    );
+}
+
+
 template demangleTypeConsumed(char [] str)
 {
     static if (str[0]=='A')
@@ -123,8 +137,9 @@ template demangleTypeConsumed(char [] str)
         const int demangleTypeConsumed = 1 + getQualifiedNameConsumed!(str[1..$]);
     else static if (str[0]=='F' && str.length>1)
         const int demangleTypeConsumed = 1 + demangleParamListAndRetValConsumed!(str[1..$]);
-    else // it's a Basic Type
+    else static if (isMangledBasicType!(str[0..1])) // it's a Basic Type
         const int demangleTypeConsumed = 1;
+    else static assert(0, "Demangle Error: '" ~ str ~ "' is not a recognised basic type");
 }
 
 // --------------------------------------------
@@ -202,19 +217,22 @@ template pretty_Dfunction(char [] str, int dotnameconsumed, int paramlistconsume
  }
 
 // for an Lname that begins with "_D"
-template get_DnameConsumed(char [] str)
+// Special case: if the following type is a function, the D name continues, because
+// it's allowed to contain inner functions
+template get_DQualifiedNameConsumed (char [] str)
 {
-    const int get_DnameConsumed = 2 + getQualifiedNameConsumed!(str[2..$])
-        + demangleTypeConsumed!(str[2+getQualifedNameConsumed!(str[2..$])..$]);
+    static if ( str.length<1) const int get_DQualifiedNameConsumed = 0;
+    else static if ( beginsWithDigit!(str) ) {
+        const int get_DQualifiedNameConsumed = getLnameConsumed!(str) + get_DQualifiedNameConsumed!(str[getLnameConsumed!(str)..$]);
+    } else static if (isMangledFunction!((str[0]))) {
+        static if (demangleTypeConsumed!(str)!=str.length && beginsWithDigit!(str[demangleTypeConsumed!(str)..$])) {
+            const int get_DQualifiedNameConsumed = demangleTypeConsumed!(str) + get_DQualifiedNameConsumed!(str[demangleTypeConsumed!(str)..$]);
+        } else const int get_DQualifiedNameConsumed = 0;
+    } else const int get_DQualifiedNameConsumed = 0;
 }
 
 
-template getInnerFunc_DnameConsumed(char [] str)
-{
-    const int getInnerFunc_DnameConsumed = 2 + getQualifiedNameConsumed!(str[2..$])
-    + 2 + demangleTypeConsumed!(str[2 + getQualifiedNameConsumed!(str[2..$])+2..$]);
-}
-
+// BUG: Need to display _D inner functions.
 // If Lname is a template, shows it as a template
 template prettyLname(char [] str, MangledNameType wantQualifiedNames)
 {
@@ -233,6 +251,7 @@ template prettyLname(char [] str, MangledNameType wantQualifiedNames)
     } else static if ( beginsWithDigit!( str ) )
         const char [] prettyLname = getQualifiedName!(str[0..getQualifiedNameConsumed!(str)], wantQualifiedNames);
     else const char [] prettyLname = str;
+
 }
 
 // str must start with an lname: first chars give the length
@@ -285,8 +304,7 @@ template getQualifiedNameConsumed (char [] str)
             const int getQualifiedNameConsumed = getLnameConsumed!(str);
         }
     } else static if (str.length>1 && str[0]=='_' && str[1]=='D') {
-        const int getQualifiedNameConsumed = getInnerFunc_DnameConsumed!(str)
-            + getQualifiedNameConsumed!(str[getInnerFunc_DnameConsumed!(str)..$]);
+        const int getQualifiedNameConsumed = 2+get_DQualifiedNameConsumed!(str[2..$]);
     } else static assert(0, "Error in Qualified name:" ~ str);
 }
 
@@ -403,11 +421,89 @@ template prettyValueArg(char [] str)
     else const char [] prettyValueArg = "Value arg {" ~ str[0..$] ~ "}";
 }
 
+/* ******************
+  Functions from meta.Convert.
+*/
+template decimaldigit(int n) { const char [] decimaldigit = "0123456789"[n..n+1]; }
+template hexdigit(int n, bool upperCase=true) {
+    static if (upperCase) const char [] hexdigit = "0123456789ABCDEF"[n..n+1];
+    else                  const char [] hexdigit = "0123456789abcdef"[n..n+1];
+}
+
+/* *****************************************************
+ *  char [] uintToString!(ulong n);
+ */
+template uintToString(ulong n) {
+    static if (n<10L)
+        const char [] uintToString = decimaldigit!(n);
+    else
+        const char [] uintToString = uintToString!(n/10L) ~ decimaldigit!(n%10L);
+}
+
+template toHexString(ulong n)
+{
+    static if (n<16L)
+        const char [] toHexString = hexdigit!(n);
+    else
+        const char [] toHexString = toHexString!(n >> 4) ~ hexdigit!(n&0xF);
+}
+
+template toZeroPaddedHexString(ulong n, int len)
+{
+    const char[] toZeroPaddedHexString = "0000000000000000"[0..len-toHexString!(n).length] ~ toHexString!(n);
+}
+
+template signeditoa(long n)
+{
+    static if (n>=0) const char [] signeditoa = "+" ~ uintToString!(n);
+    else const char [] signeditoa = "-" ~ uintToString!(-n);
+}
+
+
+template hexCharToInteger(char c)
+{
+    static if (c>='a' && c<='f') const int hexCharToInteger = 10+ c -'a';
+    else static if (c>='A' && c<='F') const int hexCharToInteger = 10+ c -'A';
+    else static if (c>='0' && c<='9') const int hexCharToInteger = c -'0';
+    else static assert(0, "Invalid hexadecimal character");
+
+}
+
+template hexToInteger(char [] str)
+{
+    static if (str.length==1) const ulong hexToInteger= hexCharToInteger!((str[0]));
+    else const ulong hexToInteger= hexCharToInteger!((str[0]))*16 + hexToInteger!(str[1..$]);
+}
+
+
+template getRawExponent(char [] str)
+{
+    const int getRawExponent = hexCharToInteger!((str[0]))*16 + hexCharToInteger!((str[1]))
+    + 256 *(hexCharToInteger!((str[2]))*16 + hexCharToInteger!((str[3])));
+}
+
+template getMangleFloatSign(char [] str)
+{
+    static if ((getRawExponent!(str)&0x7FFF)!=0) {
+        const char [] getMangleFloatSign="-";
+    } else const char [] getMangleFloatSign="";
+}
+
+template getMangleFloatDigits(char [] str)
+{
+    const char [] getMangleFloatDigits =
+    toZeroPaddedHexString!((getRawExponent!(str[12..16])&0x7FFF)* 0x2_0000_0000_0000L + getRawExponent!(str[8..12])*0x2_0000_0000L + getRawExponent!(str[4..8])*0x2_0000L + 2* getRawExponent!(str[0..4]), 16);
+}
+
+
 // Display the floating point number in %a format (eg 0x1.ABCp-35);
 template prettyFloatValueArg(char [] str)
 {
-    // BUG: Need to extract exponent and mantissa.
-    const char [] prettyFloatValueArg = "0x" ~ str;
+    static if ((getRawExponent!(str[12..16])&0x8000)==0) {
+        const char [] prettyFloatValueArg = getMangleFloatSign!(str[16..$])~ "0x0." ~ getMangleFloatDigits!(str) ~ "p" ~ signeditoa!((getRawExponent!(str[16..$])&0x7FFF)-0x3FFF);
+    } else {
+        const char [] prettyFloatValueArg = getMangleFloatSign!(str[16..$])~ "0x1." ~ getMangleFloatDigits!(str) ~ "p" ~ signeditoa!((getRawExponent!(str[16..$])&0x7FFF)-0x3FFF);
+    }
 }
 
 // Pretty-print a template argument
@@ -467,7 +563,7 @@ private {
    */
 template beginsWithDigit(char [] s)
 {
-  static if (s[0]>='0' && s[0]<='9')
+  static if (s.length>0 && s[0]>='0' && s[0]<='9')
     const bool beginsWithDigit = true;
   else const bool beginsWithDigit = false;
 }
@@ -517,12 +613,13 @@ static assert( demangleType!((CPPFunc).mangleof) == "extern (C++) cfloat functio
 // Interfaces are mangled as classes
 static assert( demangleType!(SomeInterface.mangleof) == "class " ~ THISFILE ~ ".SomeInterface");
 
+
 template ComplexTemplate(real a, creal b)
 {
     class ComplexTemplate {}
 }
 
-static assert( demangleType!((ComplexTemplate!(1.23, 4.56+3.2i)).mangleof) == "class " ~ THISFILE ~ ".ComplexTemplate!(double = 0xa4703d0ad7a3709dff3f, cdouble = 0x85eb51b81e85eb910140c + 0xcdcccccccccccccc0040i).ComplexTemplate");
+static assert( demangleType!((ComplexTemplate!(-0x1.23456789ABCDFFFEp-456, 0x1p-16390L+3.2i)).mangleof) == "class " ~ THISFILE ~ ".ComplexTemplate!(double = -0x1.23456789ABCDFFFEp-456, creal = 0x0.0100000000000000p-16383 + -0x1.999999999999999Ap+1i).ComplexTemplate");
 
-}
-}
+}}
+
