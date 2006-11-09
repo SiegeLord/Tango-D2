@@ -18,6 +18,10 @@ private import  tango.text.SimpleIterator;
 
 private import  tango.net.http.HttpTokens;
 
+private import  tango.io.protocol.model.IWriter;
+
+public  import  tango.net.http.model.HttpParamsView;
+
 /******************************************************************************
 
         Maintains a set of query parameters, parsed from an HTTP request.
@@ -31,9 +35,9 @@ private import  tango.net.http.HttpTokens;
 
 ******************************************************************************/
 
-class HttpParamsView : HttpTokens
+class HttpParams : HttpTokens, HttpParamsView
 {
-        // tell compiler to used super.parse() also
+        // tell compiler to expose super.parse() also
         alias HttpTokens.parse parse;
 
         private SimpleIterator amp;
@@ -55,24 +59,14 @@ class HttpParamsView : HttpTokens
 
         /**********************************************************************
                 
-                Clone a source set of HttpParamsView
+                Construct output params upon the provided IBuffer
 
         **********************************************************************/
 
-        this (HttpParamsView source)
+        this (IBuffer output)
         {
-                super (source);
-        }
-
-        /**********************************************************************
-                
-                Clone this set of HttpParamsView
-
-        **********************************************************************/
-
-        HttpParamsView clone ()
-        {
-                return new HttpParamsView (this);
+                this();
+                setOutputBuffer (output);
         }
 
         /**********************************************************************
@@ -89,52 +83,6 @@ class HttpParamsView : HttpTokens
 
                 while (amp.next || amp.get.length)
                        stack.push (amp.get);
-        }
-}
-
-
-/******************************************************************************
-
-        HttpParams are used for output purposes. This can be used
-        to add a set of queries and then combine then into a text string
-        using method write().
-
-******************************************************************************/
-
-class HttpParams : HttpParamsView
-{      
-        /**********************************************************************
-                
-                Construct output params upon the provided IBuffer
-
-        **********************************************************************/
-
-        this (IBuffer output)
-        {
-                super();
-                super.setOutputBuffer (output);
-        }
-        
-        /**********************************************************************
-                
-                Clone a source set of HttpParams
-
-        **********************************************************************/
-
-        this (HttpParams source)
-        {
-                super (source);
-        }
-
-        /**********************************************************************
-                
-                Clone this set of HttpParams
-
-        **********************************************************************/
-
-        HttpParams clone ()
-        {
-                return new HttpParams (this);
         }
 
         /**********************************************************************
@@ -169,5 +117,52 @@ class HttpParams : HttpParamsView
         void addDate (char[] name, ulong value)
         {
                 super.addDate (name, value);
+        }
+
+        /**********************************************************************
+                
+                Return the value of the provided header, or null if the
+                header does not exist
+
+        **********************************************************************/
+
+        char[] get (char[] name, char[] ret = null)
+        {
+                return super.get (name, ret);
+        }
+
+        /**********************************************************************
+                
+                Return the integer value of the provided header, or the 
+                provided default-value if the header does not exist
+
+        **********************************************************************/
+
+        int getInt (char[] name, int ret = -1)
+        {
+                return super.getInt (name, ret);
+        }
+
+        /**********************************************************************
+                
+                Return the date value of the provided header, or the 
+                provided default-value if the header does not exist
+
+        **********************************************************************/
+
+        ulong getDate (char[] name, ulong ret = -1)
+        {
+                return super.getDate (name, ret);
+        }
+
+        /**********************************************************************
+
+                Output the token list to the provided writer
+
+        **********************************************************************/
+
+        void write (IWriter writer)
+        {
+                super.write (writer);
         }
 }

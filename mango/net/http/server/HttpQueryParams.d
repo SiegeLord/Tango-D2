@@ -19,35 +19,11 @@ private import  tango.net.http.HttpTokens;
 
         Maintains a set of HTTP query parameters. This is a specialization
         of HttpParams, with support for parameters without a '=' separator
-        as would normally be expected.
 
 ******************************************************************************/
 
-class HttpQueryParams : HttpParamsView
+class HttpQueryParams : HttpParams
 {
-        /**********************************************************************
-                
-                Construct parameters by telling the TokenStack that
-                name/value pairs are seperated by a '=' character.
-
-        **********************************************************************/
-
-        this ()
-        {
-                super ();
-        }
-
-        /**********************************************************************
-                
-                Clone a source set of HttpParams
-
-        **********************************************************************/
-
-        this (HttpParamsView source)
-        {
-                super (source);
-        }
-
         /**********************************************************************
 
                 overridable method to handle the case where a token does

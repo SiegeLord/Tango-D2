@@ -14,95 +14,13 @@ module tango.net.http.HttpHeaders;
 
 private import  tango.text.LineIterator;
 
-private import  tango.io.model.IBuffer,
-                tango.io.protocol.model.IWriter;
+private import  tango.io.model.IBuffer;
 
-private import  tango.net.http.HttpStack;
+private import  tango.io.protocol.model.IWriter;
 
 private import  tango.net.http.HttpTokens;
 
-/*******************************************************************************
-
-        Headers are distinct types in their own right. This is because they
-        are somewhat optimized via a trailing ':' character.
-
-*******************************************************************************/
-
-struct HttpHeaderName
-{
-        char[]     value;  
-}
-
-/*******************************************************************************
-
-        Define the traditional set of HTTP header names
-        
-*******************************************************************************/
-
-struct HttpHeader
-{   
-        // size of both the request & response buffer (per thread)
-        static const int IOBufferSize                 = 16 * 1024;
-
-        // maximum length for POST parameters (to avoid DOS ...)
-        static const int MaxPostParamSize             = 4 * 1024;
-
-        static const HttpHeaderName Version           = {"HTTP/1.0"};
-        static const HttpHeaderName TextHtml          = {"text/html"};
-
-        static const HttpHeaderName Accept            = {"Accept:"};
-        static const HttpHeaderName AcceptCharset     = {"Accept-Charset:"};
-        static const HttpHeaderName AcceptEncoding    = {"Accept-Encoding:"};
-        static const HttpHeaderName AcceptLanguage    = {"Accept-Language:"};
-        static const HttpHeaderName AcceptRanges      = {"Accept-Ranges:"};
-        static const HttpHeaderName Age               = {"Age:"};
-        static const HttpHeaderName Allow             = {"Allow:"};
-        static const HttpHeaderName Authorization     = {"Authorization:"};
-        static const HttpHeaderName CacheControl      = {"Cache-Control:"};
-        static const HttpHeaderName Connection        = {"Connection:"};
-        static const HttpHeaderName ContentEncoding   = {"Content-Encoding:"};
-        static const HttpHeaderName ContentLanguage   = {"Content-Language:"};
-        static const HttpHeaderName ContentLength     = {"Content-Length:"};
-        static const HttpHeaderName ContentLocation   = {"Content-Location:"};
-        static const HttpHeaderName ContentRange      = {"Content-Range:"};
-        static const HttpHeaderName ContentType       = {"Content-Type:"};
-        static const HttpHeaderName Cookie            = {"Cookie:"};
-        static const HttpHeaderName Date              = {"Date:"};
-        static const HttpHeaderName ETag              = {"ETag:"};
-        static const HttpHeaderName Expect            = {"Expect:"};
-        static const HttpHeaderName Expires           = {"Expires:"};
-        static const HttpHeaderName From              = {"From:"};
-        static const HttpHeaderName Host              = {"Host:"};
-        static const HttpHeaderName Identity          = {"identity:"};
-        static const HttpHeaderName IfMatch           = {"If-Match:"};
-        static const HttpHeaderName IfModifiedSince   = {"If-Modified-Since:"};
-        static const HttpHeaderName IfNoneMatch       = {"If-None-Match:"};
-        static const HttpHeaderName IfRange           = {"If-Range:"};
-        static const HttpHeaderName IfUnmodifiedSince = {"If-Unmodified-Since:"};
-        static const HttpHeaderName LastModified      = {"Last-Modified:"};
-        static const HttpHeaderName Location          = {"Location:"};
-        static const HttpHeaderName MaxForwards       = {"Max-Forwards:"};
-        static const HttpHeaderName MimeVersion       = {"MIME-Version:"};
-        static const HttpHeaderName Pragma            = {"Pragma:"};
-        static const HttpHeaderName ProxyAuthenticate = {"Proxy-Authenticate:"};
-        static const HttpHeaderName ProxyConnection   = {"Proxy-Connection:"};
-        static const HttpHeaderName Range             = {"Range:"};
-        static const HttpHeaderName Referrer          = {"Referer:"};
-        static const HttpHeaderName RetryAfter        = {"Retry-After:"};
-        static const HttpHeaderName Server            = {"Server:"};
-        static const HttpHeaderName ServletEngine     = {"Servlet-Engine:"};
-        static const HttpHeaderName SetCookie         = {"Set-Cookie:"};
-        static const HttpHeaderName SetCookie2        = {"Set-Cookie2:"};
-        static const HttpHeaderName TE                = {"TE:"};
-        static const HttpHeaderName Trailer           = {"Trailer:"};
-        static const HttpHeaderName TransferEncoding  = {"Transfer-Encoding:"};
-        static const HttpHeaderName Upgrade           = {"Upgrade:"};
-        static const HttpHeaderName UserAgent         = {"User-Agent:"};
-        static const HttpHeaderName Vary              = {"Vary:"};
-        static const HttpHeaderName Warning           = {"Warning:"};
-        static const HttpHeaderName WwwAuthenticate   = {"WWW-Authenticate:"};
-}
-
+public  import  tango.net.http.model.HttpConst;
 
 /******************************************************************************
 

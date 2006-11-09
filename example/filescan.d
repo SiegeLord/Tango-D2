@@ -15,7 +15,7 @@ void main(char[][] args)
         scan ((args.length is 2) ? args[1] : ".", "d");
 
         Cout ("Directories:").newline;
-        scan.directories ((FilePathView path) {Cout (path).newline;});
+        scan.directories ((FilePath path) {Cout (path).newline;});
 
         Cout ("\nFiles:").newline;
         scan.files ((File file) {Cout (file).newline;});

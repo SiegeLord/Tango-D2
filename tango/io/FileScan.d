@@ -27,7 +27,7 @@ public import   tango.io.File,
                 Cout (file).newline;
         }
 
-        void dirs (FilePathView path)
+        void dirs (FilePath path)
         {
                 Cout (path).newline;
         }
@@ -43,6 +43,7 @@ public import   tango.io.File,
         Cout ("files:").newline;
         scan.files (&files);   
         ---
+        
 
         Using D implicit-delegate syntax, this can be also be written as
 
@@ -53,12 +54,11 @@ public import   tango.io.File,
         scan ((args.length is 2) ? args[1] : ".", "d");
 
         Cout ("Directories:").newline;
-        scan.directories ((FilePathView path) {Cout (path).newline;});
+        scan.directories ((FilePath path) {Cout (path).newline;});
 
         Cout ("Files:").newline;
         scan.files ((File file) {Cout (file).newline;});
         ---
-        
         
 *******************************************************************************/
 
@@ -66,11 +66,10 @@ class FileScan
 {       
         alias sweep opCall;
 
-        private char[]          ext;
         private Dependencies    deps;
         private Filter          filter;
 
-        typedef bool delegate (FilePathView) Filter;
+        typedef bool delegate (FilePath) Filter;
 
         /***********************************************************************
 
@@ -81,7 +80,7 @@ class FileScan
         private struct Dependencies 
         {
                 File[]          mods;
-                FilePathView[]  pkgs;
+                FilePath[]      pkgs;
         }
 
         /***********************************************************************
@@ -93,7 +92,7 @@ class FileScan
         
         FileScan sweep (char[] path, char[] ext)
         {
-                return sweep (new FilePathView(path), ext);
+                return sweep (new FilePath(path), ext);
         }
 
         /***********************************************************************
@@ -103,10 +102,20 @@ class FileScan
         
         ***********************************************************************/
         
-        FileScan sweep (FilePathView path, char[] ext)
+        FileScan sweep (FilePath path, char[] ext)
         {
-                this.ext = ext;
-                return sweep (path, &simpleFilter);
+                bool extFilter (FilePath fp) 
+                {
+                        auto sbuf = fp.getExtension ();
+
+                        if (fp.getName[0] != '.')                       
+                            if (sbuf.length == 0 || sbuf == ext)
+                                return true;
+
+                        return false;
+                }
+
+                return sweep (path, &extFilter);
         }
 
         /***********************************************************************
@@ -116,7 +125,7 @@ class FileScan
 
         ***********************************************************************/
         
-        FileScan sweep (FilePathView path, Filter filter)
+        FileScan sweep (FilePath path, Filter filter)
         {
                 deps.mods = null;
                 deps.pkgs = null;
@@ -146,29 +155,11 @@ class FileScan
 
         ***********************************************************************/
 
-        public FileScan directories (void delegate (FilePathView) visit)
+        public FileScan directories (void delegate (FilePath) visit)
         {
-                foreach (FilePathView path; deps.pkgs)
+                foreach (FilePath path; deps.pkgs)
                          visit (path);
                 return this;
-        }
-
-        /***********************************************************************
-
-                Local delegate for filtering files based upon a provided
-                extension
-
-        ***********************************************************************/
-
-        private bool simpleFilter (FilePathView fp) 
-        {
-                auto sbuf = fp.getExtension ();
-
-                if (fp.getName[0] != '.')                       
-                    if (sbuf.length == 0 || sbuf == ext)
-                        return true;
-
-                return false;
         }
 
         /***********************************************************************
@@ -177,7 +168,7 @@ class FileScan
 
         ***********************************************************************/
 
-        private void scanFiles (inout Dependencies deps, FilePathView base) 
+        private void scanFiles (inout Dependencies deps, FilePath base) 
         {
                 auto file = new File (base);
                 auto paths = file.toList (filter);
@@ -186,10 +177,10 @@ class FileScan
                 if (paths.length)
                     deps.pkgs ~= base;
 
-                foreach (FilePathView x; paths) 
+                foreach (FilePath x; paths) 
                         {
                         // combine base path with listed file
-                        auto spliced = new FilePathView (x.splice (base), false);
+                        auto spliced = new FilePath (x.splice (base), false);
 
                         // recurse if this is a directory ...
                         file = new File (spliced);

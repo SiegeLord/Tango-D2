@@ -17,13 +17,13 @@ private import  tango.text.Text,
 
 private import  tango.text.convert.Atoi;
 
-private import  tango.net.Uri,
-                tango.io.Buffer,
+private import  tango.io.Buffer,
                 tango.io.Exception;
 
-private import  tango.io.model.IBuffer;
+private import  tango.io.protocol.model.IReader,
+                tango.io.protocol.model.IWriter;
 
-private import  tango.io.protocol.model.IWriter;
+private import  tango.net.Uri;
 
 private import  tango.net.http.HttpReader,
 		tango.net.http.HttpHeaders,
@@ -174,7 +174,7 @@ class HttpRequest : HttpMessage, IWritable
 
         **********************************************************************/
 
-        HttpReader getReader()
+        IReader getReader()
         {
                 // User is reading input. Cannot read headers anymore
                 gulped = true;

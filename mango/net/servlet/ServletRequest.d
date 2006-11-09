@@ -12,18 +12,19 @@
 
 module mango.net.servlet.ServletRequest;
 
-private import  tango.net.Uri;
+private import  tango.net.model.UriView;
 
 private import  tango.io.model.IBuffer;
                
+private import  tango.io.protocol.model.IReader;
+
+private import  tango.net.http.HttpParams,
+                tango.net.http.HttpCookies,
+                tango.net.http.HttpHeaders;
+
 private import  mango.net.servlet.ServletContext;
 
 private import  mango.net.servlet.model.IServletRequest;
-
-private import  tango.net.http.HttpReader,
-                tango.net.http.HttpParams,
-                tango.net.http.HttpCookies,
-                tango.net.http.HttpHeaders;
 
 private import  mango.net.http.server.HttpRequest,
                 mango.net.http.server.ServiceBridge;
@@ -71,7 +72,7 @@ class ServletRequest : HttpRequest, IServletRequest
         
         ***********************************************************************/
 
-        Uri getUri()
+        UriView getUri()
         {
                 return super.getExplicitUri();
         }
@@ -80,7 +81,7 @@ class ServletRequest : HttpRequest, IServletRequest
 
         **********************************************************************/
 
-        ServletContext getContext ()
+        IServletContext getContext ()
         {
                 return context;
         }
@@ -179,7 +180,7 @@ class ServletRequest : HttpRequest, IServletRequest
         
         ***********************************************************************/
 
-        HttpReader getReader ()
+        IReader getReader ()
         {
                 return super.getReader();
         }

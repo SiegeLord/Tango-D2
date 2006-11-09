@@ -179,13 +179,13 @@ class ServletResponse : HttpResponse, IServletResponse
         
         ***********************************************************************/
 
-        bool copyFile (ServletContext context, char[] path)
+        bool copyFile (IServletContext context, char[] path)
         {
                 FileConduit conduit;
 
                 try {
                     // does the file exist?
-                    conduit = context.getResourceAsFile (path);
+                    conduit = new FileConduit (context.getResourceAsPath (path));
 
                     // set expected output size
                     setContentLength (cast(int) conduit.length());

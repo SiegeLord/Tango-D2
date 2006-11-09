@@ -95,9 +95,7 @@ version (Posix)
 /*******************************************************************************
 
         Models a generic file. Use this to manipulate files and directories
-        in conjunction with FilePath, FileSystem and FileConduit. Doxygen
-        has a hard time with D version() statements, so part of this class
-        is documented in FileProxy::VersionWin32 instead.
+        in conjunction with FilePath, FileSystem and FileConduit. 
 
         Compile with -version=Win32SansUnicode to enable Win95 & Win32s file
         support.
@@ -127,7 +125,7 @@ class FileProxy
 
         this (char[] path)
         {
-                this (new FilePathView (path));
+                this (new FilePath (path));
         }
 
         /***********************************************************************
@@ -172,18 +170,18 @@ class FileProxy
                 List the files contained within the associated path:
 
                 ---
-                FileProxy proxy = new FileProxy (".");
+                auto proxy = new FileProxy (".");
 
                 foreach (path; proxy.toList)
-                         Stdout (path).cr;
+                         Stdout (path).newline;
                 ---
 
         ***********************************************************************/
 
-        FilePathView[] toList ()
+        FilePath[] toList ()
         {
 
-                return toList (delegate bool(FilePathView fp) {return true;});
+                return toList (delegate bool(FilePath fp) {return true;});
         }              
 
         /***********************************************************************
@@ -443,18 +441,17 @@ class FileProxy
 
                 /***************************************************************
                         
-                        List the set of children within this directory. See
-                        toList() above.
+                        List the set of children within this directory. 
 
                 ***************************************************************/
 
-                FilePathView[] toList (bool delegate(FilePathView fp) filter)
+                FilePath[] toList (bool delegate(FilePath fp) filter)
                 {
                         int                     i;
                         wchar[]                 c;
                         HANDLE                  h;
-                        FilePathView            fp;
-                        FilePathView[]          list;
+                        FilePath                fp;
+                        FilePath[]              list;
                         FIND_DATA               fileinfo;
 
                         int next()
@@ -465,7 +462,7 @@ class FileProxy
                                          return FindNextFileW (h, &fileinfo);
                         }
                         
-                        list = new FilePathView[50];
+                        list = new FilePath[50];
 
                         version (Win32SansUnicode)
                                 h = FindFirstFileA (path.toUtf8 ~ "\\*\0", &fileinfo);
@@ -479,12 +476,12 @@ class FileProxy
                                    version (Win32SansUnicode)
                                            {
                                            int len = strlen (fileinfo.cFileName);
-                                           fp = new FilePathView (fileinfo.cFileName [0 .. len]);
+                                           fp = new FilePath (fileinfo.cFileName [0 .. len]);
                                            }
                                         else
                                            {
                                            int len = wcslen (fileinfo.cFileName);
-                                           fp = new FilePathView (Unicode.toUtf8(fileinfo.cFileName [0 .. len]), false);                                           
+                                           fp = new FilePath (Unicode.toUtf8(fileinfo.cFileName [0 .. len]), false);                                           
                                            }
 
                                    if (i >= list.length)
@@ -504,6 +501,7 @@ class FileProxy
                 }
         }
 
+                
         /***********************************************************************
 
         ***********************************************************************/
@@ -710,8 +708,7 @@ class FileProxy
 
                 /***************************************************************
                 
-                        List the set of children within this directory. See
-                        toList() above.
+                        List the set of children within this directory. 
 
                 ***************************************************************/
 
@@ -726,13 +723,13 @@ class FileProxy
                         if (! dir) 
                               exception();
 
-                        list = new FilePathView [50];
+                        list = new FilePath [50];
                         while ((entry = readdir(dir)) != null)
                               {
                               int len = strlen (entry.d_name.ptr);
 
                               // make a copy of the file name for listing
-                              auto fp = new FilePathView (entry.d_name[0 ..len]);
+                              auto fp = new FilePath (entry.d_name[0 ..len]);
 
                               if (i >= list.length)
                                   list.length = list.length * 2;
@@ -748,7 +745,6 @@ class FileProxy
                         closedir (dir);
                         return list;
                 }
-
         }
 }
 

@@ -197,7 +197,6 @@ tango\log\Hierarchy.d
 mango\net\servlet\Servlet.d
 mango\net\servlet\ServletConfig.d
 tango\text\Text.d
-tango\sys\ProcessConduit.d
 tango\store\model\Bag.d
 tango\store\model\MutableSeq.d
 tango\core\Atomic.d
@@ -216,7 +215,7 @@ tango\core\Array.d
 mango\net\servlet\model\IServletResponse.d
 tango\store\impl\RBCell.d
 tango\store\model\BinaryFunction.d
-tango\sys\OS.d
+tango\sys\Common.d
 mango\net\util\model\IServer.d
 tango\net\http\HttpWriter.d
 tango\log\FileAppender.d
@@ -235,7 +234,6 @@ tango\math\core.d
 mango\net\http\server\ServiceProvider.d
 tango\store\impl\CLCell.d
 mango\net\servlet\cache\PlainCache.d
-tango\sys\PipeConduit.d
 tango\stdc\fenv.d
 tango\text\convert\Atoi.d
 tango\io\protocol\EndianWriter.d

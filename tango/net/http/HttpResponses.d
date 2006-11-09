@@ -12,6 +12,9 @@
 
 module tango.net.http.HttpResponses;
 
+public import tango.net.http.model.HttpConst;
+
+/+
 /*******************************************************************************
 
         Declare the traditional set of HTTP response codes
@@ -123,4 +126,5 @@ struct HttpResponses
         static final HttpStatus VersionNotSupported          = {HttpResponseCode.VersionNotSupported, "VersionNotSupported"};
 }
 
-
++/
+   

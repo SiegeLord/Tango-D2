@@ -79,13 +79,13 @@
 
                 // compare content
                 bool equals  (T[] other);
-                bool equals  (String other);
+                bool equals  (StringView other);
                 bool ends    (T[] other);
-                bool ends    (String other);
+                bool ends    (StringView other);
                 bool starts  (T[] other);
-                bool starts  (String other);
+                bool starts  (StringView other);
                 int compare  (T[] other);
-                int compare  (String other);
+                int compare  (StringView other);
                 int opEquals (Object other);
                 int opCmp    (Object other);
 
@@ -94,7 +94,7 @@
                 T[] copy ();
 
                 // replace the comparison algorithm 
-                String setComparator (Comparator comparator);
+                StringView setComparator (Comparator comparator);
         }
 
         abstract class UniString
@@ -148,7 +148,7 @@ class StringT(T) : StringViewT!(T)
         public  alias append            opCat;
         public  alias get               opIndex;
         private alias Unicode.Into!(T)  Into;   
-        private alias StringViewT!(T)       String;
+        private alias StringViewT!(T)   String;
 
         private Into                    into;           // unicode converter
         private T[]                     converts;       // unicode buffer

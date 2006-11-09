@@ -148,7 +148,7 @@ class AdminServlet : Servlet
                             break;
                        }
                 
-                Uri uri = request.getUri();
+                auto uri = request.getUri();
 
                 if (action != "L")
                     response.sendRedirect("/admin/logger");

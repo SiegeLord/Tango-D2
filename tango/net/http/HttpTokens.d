@@ -16,13 +16,14 @@ private import  tango.text.Text;
 
 private import  tango.io.Buffer;
 
+private import  tango.io.model.IBuffer;
+
+private import  tango.net.http.HttpStack;
+
 private import  tango.text.convert.Integer,
                 tango.text.convert.Rfc1123;
 
-private import  tango.io.model.IBuffer,
-                tango.io.protocol.model.IWriter;
-
-private import  tango.net.http.HttpStack;
+private import  tango.io.protocol.model.IWriter;
 
 /******************************************************************************
 
@@ -39,17 +40,16 @@ struct HttpToken
 /******************************************************************************
 
         Maintains a set of HTTP tokens. These tokens include headers, query-
-        parameters, and anything else vaguely similar. Both input and output
+        parameters, and anything else vaguely related. Both input and output
         are supported, though a subclass may choose to expose as read-only.
 
         All tokens are mapped directly onto a buffer, so there is no memory
         allocation or copying involved. 
 
-        Note that this class does not support deleting tokens. Supporting
-        such operations require a different approach, such as mapping the
-        tokens into a temporary buffer, and then setting token content in
-        the stack to be null when it is deleted. This could be implemented
-        as a wrapper upon the subclasses of HttpToken.
+        Note that this class does not support deleting tokens, per se. Instead
+        it marks tokens as being 'unused' by setting content to null, avoiding 
+        unwarranted reshaping of the token stack. The token stack is reused as
+        time goes on, so there's only minor runtime overhead.
 
 ******************************************************************************/
 
@@ -63,18 +63,7 @@ class HttpTokens : IWritable
         private bool            inclusive;
         private char            separator;
         private char[1]         sepString;
-        static private char[]   emptyString;
-
-        /**********************************************************************
-                
-                Setup an empty character array for later assignment.
-
-        **********************************************************************/
-
-        static this ()
-        {
-                emptyString = new char[0];
-        }
+        static private char[]   emptyString = "";
 
         /**********************************************************************
                 
@@ -441,7 +430,7 @@ class HttpTokens : IWritable
                 
                 Return a char[] representing the output. An empty array
                 is returned if output was not configured. This perhaps
-                could just return out 'output' buffer content, but that
+                could just return our 'output' buffer content, but that
                 would not reflect deletes, or seperators. Better to do 
                 it like this instead, for a small cost.
 

@@ -12,15 +12,20 @@
 
 module tango.net.Uri;
 
+public  import  tango.net.model.UriView;
+
 private import  tango.io.Exception;
 
 private import  tango.text.convert.Integer;
 
 /*******************************************************************************
 
+        external links
+        
 *******************************************************************************/
 
 extern (C) char* memchr (char *, char, uint);
+
 
 /*******************************************************************************
 
@@ -29,7 +34,7 @@ extern (C) char* memchr (char *, char, uint);
         for more information. 
 
         The implementation fails the spec on two counts: it doesn't insist
-        on a scheme being present in the UriView, and it doesn't implement the
+        on a scheme being present in the Uri, and it doesn't implement the
         "Relative References" support noted in section 5.2. 
         
         Note that IRI support can be implied by assuming each of userinfo, path, 
@@ -37,15 +42,12 @@ extern (C) char* memchr (char *, char, uint);
         (see <A HREF="http://www.w3.org/2001/Talks/0912-IUC-IRI/paper.html">
         this page</A> for further details).
 
-        Use the Uri derivative where you need to alter specific uri
-        attributes. 
+        Use the UriView subset where you need a readonly perspective. 
 
 *******************************************************************************/
 
-class UriView
+class Uri : UriView
 {
-        public const int        InvalidPort = -1;
-
         private int             port;
         private char[]          host,
                                 path,
@@ -57,7 +59,6 @@ class UriView
 
         private static ubyte    map[256];
 
-                    
         private static short[char[]] genericSchemes;
 
         private static const char[] hexDigits = "0123456789abcdef";
@@ -122,7 +123,7 @@ class UriView
 
         /***********************************************************************
         
-                Initialize the UriView character maps and so on
+                Initialize the Uri character maps and so on
 
         ***********************************************************************/
 
@@ -204,14 +205,61 @@ class UriView
         
         /***********************************************************************
         
-                Construct a UriView from the provided character string
+                Create an empty Uri
+
+        ***********************************************************************/
+
+        this ()
+        {
+                port = InvalidPort;
+                decoded = new HeapSlice (256);
+        }
+
+        /***********************************************************************
+        
+                Construct a Uri from the provided character string
 
         ***********************************************************************/
 
         this (char[] uri)
         {
-                this();
+                this ();
                 parse (uri);
+        }
+
+        /***********************************************************************
+        
+                Construct a Uri from the given components. The query is
+                optional.
+                
+        ***********************************************************************/
+
+        this (char[] scheme, char[] host, char[] path, char[] query = null)
+        {
+                this ();
+
+                this.scheme = scheme;
+                this.query = query;
+                this.host = host;
+                this.path = path;
+        }
+
+        /***********************************************************************
+        
+                Clone another Uri. This can be used to make a mutable Uri
+                from an immutable UriView.
+
+        ***********************************************************************/
+
+        this (UriView other)
+        {
+                with (other)
+                     {
+                     this (getScheme, getHost, getPath, getQuery);
+                     this.userinfo = getUserInfo;
+                     this.fragment = getFragment;
+                     this.port = getPort;
+                     }
         }
 
         /***********************************************************************
@@ -222,7 +270,7 @@ class UriView
 
         ***********************************************************************/
 
-        final static int getDefaultPort (char[] scheme)
+        int getDefaultPort (char[] scheme)
         {
                 short* port = scheme in genericSchemes; 
                 if (port is null)
@@ -330,7 +378,7 @@ class UriView
 
         /***********************************************************************
         
-                Return whether or not the UriView scheme is considered generic.
+                Return whether or not the Uri scheme is considered generic.
 
         ***********************************************************************/
 
@@ -341,7 +389,7 @@ class UriView
 
         /***********************************************************************
         
-                Emit the content of this UriView via the provided Consumer. The
+                Emit the content of this Uri via the provided Consumer. The
                 output is constructed per RFC 2396.
 
         ***********************************************************************/
@@ -389,12 +437,12 @@ class UriView
 
         /***********************************************************************
         
-                Emit the content of this UriView via the provided Consumer. The
+                Emit the content of this Uri via the provided Consumer. The
                 output is constructed per RFC 2396.
 
         ***********************************************************************/
 
-        override char[] toUtf8 ()
+        char[] toUtf8 ()
         {
                 char[] s;
 
@@ -492,18 +540,6 @@ class UriView
 
         /***********************************************************************
         
-                This should not be exposed outside of this module!
-
-        ***********************************************************************/
-
-        private this ()
-        {
-                port = InvalidPort;
-                decoded = new HeapSlice (256);
-        }
-
-        /***********************************************************************
-        
                 Parsing is performed according to RFC 2396
                 
                 ---
@@ -522,7 +558,7 @@ class UriView
                 
         ***********************************************************************/
 
-        private void parse (char[] uri, bool relative = false)
+        Uri parse (char[] uri, bool relative = false)
         {
                 char    c;
                 int     i, 
@@ -569,8 +605,134 @@ class UriView
                 // isolate fragment
                 if (mark < len && uri[mark] is '#')
                     fragment = decode (uri[mark+1..len]);
+
+                return this;
         }
 
+        /***********************************************************************
+        
+                Clear everything to null.
+
+        ***********************************************************************/
+
+        void reset()
+        {
+                decoded.reset();
+                port = InvalidPort;
+                host = path = query = scheme = userinfo = fragment = null;
+        }
+
+        /***********************************************************************
+        
+                Parse the given uri, with support for relative URLs
+
+        ***********************************************************************/
+
+        Uri relParse (char[] uri)
+        {
+                return parse (uri, true);
+        }
+        
+        /***********************************************************************
+                
+                Set the Uri scheme
+
+        ***********************************************************************/
+
+        Uri setScheme (char[] scheme)
+        {
+                this.scheme = scheme;
+                return this;
+        }
+
+        /***********************************************************************
+        
+                Set the Uri host
+
+        ***********************************************************************/
+
+        Uri setHost (char[] host)
+        {
+                this.host = host;
+                return this;
+        }
+
+        /***********************************************************************
+        
+                Set the Uri port
+
+        ***********************************************************************/
+
+        Uri setPort (int port)
+        {
+                this.port = port;
+                return this;
+        }
+
+        /***********************************************************************
+        
+                Set the Uri userinfo
+
+        ***********************************************************************/
+
+        Uri setUserInfo (char[] userinfo)
+        {
+                this.userinfo = userinfo;
+                return this;
+        }
+
+        /***********************************************************************
+        
+                Set the Uri query
+
+        ***********************************************************************/
+
+        Uri setQuery (char[] query)
+        {
+                this.query = query;
+                return this;
+        }
+
+        /***********************************************************************
+        
+                Extend the Uri query
+
+        ***********************************************************************/
+
+        char[] extendQuery (char[] tail)
+        {
+                if (tail.length)
+                    if (query.length)
+                        query = query ~ "&" ~ tail;
+                    else
+                       query = tail;
+                return query;
+        }
+
+        /***********************************************************************
+        
+                Set the Uri path
+
+        ***********************************************************************/
+
+        Uri setPath (char[] path)
+        {
+                this.path = path;
+                return this;
+        }
+
+        /***********************************************************************
+        
+                Set the Uri fragment
+
+        ***********************************************************************/
+
+        Uri setFragment (char[] fragment)
+        {
+                this.fragment = fragment;
+                return this;
+        }
+        
         /***********************************************************************
         
                 Authority is the section after the scheme, but before the 
@@ -618,7 +780,7 @@ class UriView
 
         **********************************************************************/
 
-        private char[] toLastSlash (char[] path)
+        private final char[] toLastSlash (char[] path)
         {
                 for (char*p = path.ptr+path.length; --p >= path.ptr;)
                      if (*p is '/')
@@ -632,218 +794,12 @@ class UriView
 
         **********************************************************************/
 
-        final static char[] toLower (inout char[] src)
+        private final static char[] toLower (inout char[] src)
         {
                 foreach (inout char c; src)
                          if (c >= 'A' && c <= 'Z')
                              c = c + ('a' - 'A');
                 return src;
-        }
-}
-
-
-
-/*******************************************************************************
-
-        Mutable version of UriView
-
-*******************************************************************************/
-
-class Uri : UriView
-{
-        /***********************************************************************
-        
-                Create an empty UriView
-
-        ***********************************************************************/
-
-        this ()
-        {
-                super();
-        }
-
-        /***********************************************************************
-        
-                Create a UriView from the provided text string.
-
-        ***********************************************************************/
-
-        this (char[] uri)
-        {
-                super (uri);
-        }
-
-        /***********************************************************************
-        
-                Construct a UriView from the given components. The query is
-                optional.
-                
-        ***********************************************************************/
-
-        this (char[] scheme, char[] host, char[] path, char[] query = null)
-        {
-                super();
-
-                this.scheme = scheme;
-                this.query = query;
-                this.host = host;
-                this.path = path;
-        }
-
-        /***********************************************************************
-        
-                Clone another UriView. This can be used to make a Uri
-                from an immutable UriView.
-
-        ***********************************************************************/
-
-        static Uri clone (UriView uri)
-        {
-                with (uri)
-                     {
-                     Uri ret = new Uri (scheme, host, path, query);
-                     ret.userinfo = userinfo;
-                     ret.fragment = fragment;
-                     ret.port = port;
-                     return ret;
-                     }
-        }
-
-        /***********************************************************************
-        
-                Clear everything to null.
-
-        ***********************************************************************/
-
-        void reset()
-        {
-                decoded.reset();
-                port = InvalidPort;
-                host = path = query = scheme = userinfo = fragment = null;
-        }
-
-        /***********************************************************************
-        
-                Parse the given uri string
-
-        ***********************************************************************/
-
-        Uri parse (char[] uri)
-        {       
-                super.parse (uri);
-                return this;
-        }
-
-        /***********************************************************************
-        
-                Parse the given uri, with support for relative URLs
-
-        ***********************************************************************/
-
-        Uri relParse (char[] uri)
-        {
-                super.parse (uri, true);
-                return this;
-        }
-        
-        /***********************************************************************
-                
-                Set the UriView scheme
-
-        ***********************************************************************/
-
-        Uri setScheme (char[] scheme)
-        {
-                this.scheme = scheme;
-                return this;
-        }
-
-        /***********************************************************************
-        
-                Set the UriView host
-
-        ***********************************************************************/
-
-        Uri setHost (char[] host)
-        {
-                this.host = host;
-                return this;
-        }
-
-        /***********************************************************************
-        
-                Set the UriView port
-
-        ***********************************************************************/
-
-        Uri setPort (int port)
-        {
-                this.port = port;
-                return this;
-        }
-
-        /***********************************************************************
-        
-                Set the UriView userinfo
-
-        ***********************************************************************/
-
-        Uri setUserInfo(char[] userinfo)
-        {
-                this.userinfo = userinfo;
-                return this;
-        }
-
-        /***********************************************************************
-        
-                Set the UriView query
-
-        ***********************************************************************/
-
-        Uri setQuery (char[] query)
-        {
-                this.query = query;
-                return this;
-        }
-
-        /***********************************************************************
-        
-                Extend the UriView query
-
-        ***********************************************************************/
-
-        char[] extendQuery (char[] tail)
-        {
-                if (tail.length)
-                    if (query.length)
-                        query = query ~ "&" ~ tail;
-                    else
-                       query = tail;
-                return query;
-        }
-
-        /***********************************************************************
-        
-                Set the UriView path
-
-        ***********************************************************************/
-
-        Uri setPath (char[] path)
-        {
-                this.path = path;
-                return this;
-        }
-
-        /***********************************************************************
-        
-                Set the UriView fragment
-
-        ***********************************************************************/
-
-        Uri setFragment (char[] fragment)
-        {
-                this.fragment = fragment;
-                return this;
         }
 }
 

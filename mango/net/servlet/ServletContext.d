@@ -21,6 +21,8 @@ private import  tango.io.FileConduit;
 private import  mango.net.servlet.Dictionary,
                 mango.net.servlet.ServletException;
 
+public  import  mango.net.servlet.model.IServletContext;
+
 /******************************************************************************
 
         Provided equivalent functionality of the Java class by the same 
@@ -28,7 +30,7 @@ private import  mango.net.servlet.Dictionary,
 
 ******************************************************************************/
 
-class ServletContext
+class ServletContext : IServletContext
 {
         private char[]                  name,
                                         basePath;
@@ -322,8 +324,23 @@ class ServletContext
 
         FileConduit getResourceAsFile (char[] path)
         {
+                return new FileConduit (getResourceAsPath(path));
+        }
+
+        /***********************************************************************
+        
+                Return a FileConduit for the given path. The file is located
+                via the base-path. 
+
+                Throws an IOException if the path is invalid, or there's a
+                problem of some kind with the file.
+
+        ***********************************************************************/
+
+        FilePathView getResourceAsPath (char[] path)
+        {
                 checkPath (path);
-                return new FileConduit (basePath~path, FileConduit.ReadExisting);
+                return new FilePath (basePath~path);
         }
 
         /***********************************************************************
@@ -332,7 +349,7 @@ class ServletContext
 
         ***********************************************************************/
 
-        ServletContext log (char[] msg)
+        IServletContext log (char[] msg)
         {
                 logger.info (msg);
                 return this;
@@ -344,7 +361,7 @@ class ServletContext
 
         ***********************************************************************/
 
-        ServletContext log (char[] msg, Object error)
+        IServletContext log (char[] msg, Object error)
         {
                 logger.error (msg ~ error.toUtf8());
                 return this;
@@ -369,7 +386,7 @@ class ServletContext
 
         ***********************************************************************/
 
-        ServletContext checkPath (char[] path)
+        IServletContext checkPath (char[] path)
         {
                 if (path.length == 0)
                     throw irp;

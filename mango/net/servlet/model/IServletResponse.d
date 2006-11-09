@@ -18,9 +18,9 @@ private import  tango.net.http.HttpWriter,
                 tango.net.http.HttpParams,
                 tango.net.http.HttpCookies,
                 tango.net.http.HttpHeaders,
-                tango.net.http.HttpResponses;
+                tango.net.http.model.HttpConst;
 
-private import  mango.net.servlet.ServletContext;
+private import  mango.net.servlet.model.IServletContext;
 
 /******************************************************************************
 
@@ -98,5 +98,5 @@ interface IServletResponse
         
         ***********************************************************************/
 
-        bool copyFile (ServletContext context, char[] path);
+        bool copyFile (IServletContext context, char[] path);
 }

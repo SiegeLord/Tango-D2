@@ -272,7 +272,7 @@ class CookieStack
         
         /**********************************************************************
 
-                Resize the stack such that is has more room.
+                Resize the stack such that it has more room.
 
         **********************************************************************/
 

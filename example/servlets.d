@@ -165,7 +165,7 @@ class Echo : Servlet
 
         void service (IServletRequest request, IServletResponse response)
         {
-                Uri uri = request.getUri;
+                auto uri = request.getUri();
 
                 logger.info ("request for echo");
 

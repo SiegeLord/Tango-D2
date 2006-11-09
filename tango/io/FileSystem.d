@@ -94,7 +94,7 @@ class FileSystem
                 
                 ***********************************************************************/
 
-                static FilePathView getDirectory ()
+                static FilePath getDirectory ()
                 {
                         version (Win32SansUnicode)
                                 {
@@ -103,7 +103,7 @@ class FileSystem
                                    {
                                    char[] dir = new char [length];
                                    GetCurrentDirectoryA (length, dir);
-                                   return new FilePathView (dir, false);
+                                   return new FilePath (dir, false);
                                    }
                                 }
                              else
@@ -113,7 +113,7 @@ class FileSystem
                                    {
                                    wchar[] dir = new wchar [length];
                                    GetCurrentDirectoryW (length, dir);
-                                   return new FilePathView (Unicode.toUtf8 (dir), false);
+                                   return new FilePath (Unicode.toUtf8 (dir), false);
                                    }
                                 }
                         throw new IOException ("Failed to get current directory");
@@ -143,7 +143,7 @@ class FileSystem
 
                 ***********************************************************************/
 
-                static void setDirectory (FilePath fp)
+                static void setDirectory (FilePathView fp)
                 {
                         if (tango.stdc.posix.unistd.chdir (fp.toUtf8))
                             throw new IOException ("Failed to set current directory");
@@ -155,11 +155,11 @@ class FileSystem
                 
                 ***********************************************************************/
 
-                static FilePathView getDirectory ()
+                static FilePath getDirectory ()
                 {
                         char *s = tango.stdc.posix.unistd.getcwd (null, 0);
                         if (s) 
-                            return new FilePathView (s[0..strlen(s)]);
+                            return new FilePath (s[0..strlen(s)]);
 
                         throw new IOException ("Failed to get current directory");
                 }
