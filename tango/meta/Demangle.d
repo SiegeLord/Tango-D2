@@ -62,7 +62,7 @@ template demangleType(char[] str, MangledNameType wantQualifiedNames = MangledNa
         const char [] demangleType = demangleFunctionOrDelegate!(str[1..$], "function ", wantQualifiedNames);
     else static if (str[0]=='P') // only after we've dealt with function pointers
         const char [] demangleType = demangleType!(str[1..$], wantQualifiedNames) ~ "*";
-    else static if (str[0]=='F')
+    else static if (isMangledFunction!((str[0])))
         const char [] demangleType = demangleFunctionOrDelegate!(str, "", wantQualifiedNames);
     else const char [] demangleType = demangleBasicType!(str);
 }
@@ -135,7 +135,7 @@ template demangleTypeConsumed(char [] str)
         const int demangleTypeConsumed = 1 + demangleTypeConsumed!(str[1..$]);
     else static if (str[0]=='C' || str[0]=='S' || str[0]=='E' || str[0]=='T')
         const int demangleTypeConsumed = 1 + getQualifiedNameConsumed!(str[1..$]);
-    else static if (str[0]=='F' && str.length>1)
+    else static if (isMangledFunction!((str[0])) && str.length>1)
         const int demangleTypeConsumed = 1 + demangleParamListAndRetValConsumed!(str[1..$]);
     else static if (isMangledBasicType!(str[0..1])) // it's a Basic Type
         const int demangleTypeConsumed = 1;
@@ -175,46 +175,13 @@ template getLname(char [] str)
             str[4..((str[0]-'0')*1000 + (str[1]-'0')*100 + (str[2]-'0')*10 + (str[3]-'0') + 4)];
 }
 
-// Deal with the case where an Lname contains an embedded "__D".
-// This can happen when classes, typedefs, etc are declared inside a function.
-template pretty_Dname(char [] str, int dotnameconsumed, MangledNameType wantQualifiedNames)
+// True if str is a continuation of a _D name.
+template continues_Dname(char [] str)
 {
-    static if ( isMangledFunction!( (str[2+dotnameconsumed]))) {
-        const char [] pretty_Dname = pretty_Dfunction!(str, dotnameconsumed,
-            demangleParamListAndRetValConsumed!(str[3+dotnameconsumed..$]), wantQualifiedNames);
-    } else {
-        static if (wantQualifiedNames == MangledNameType.PrettyName) {
-            const char [] pretty_Dname =
-                demangleType!(str[2+dotnameconsumed..$], wantQualifiedNames)
-                ~ " " ~ getQualifiedName!(str[2..$], wantQualifiedNames);
-        } else {
-            const char [] pretty_Dname = getQualifiedName!(str[2..$], wantQualifiedNames);
-        }
-    }
+    static if (str.length>0) {
+        const bool continues_Dname = (isMangledFunction!( (str[0])) || beginsWithDigit!(str));
+    } else static assert(0);
 }
-
-// Deal with the case where an Lname contains an embedded ("__D") function.
-// Split into a seperate function because it's so complicated.
-template pretty_Dfunction(char [] str, int dotnameconsumed, int paramlistconsumed,
-    MangledNameType wantQualifiedNames)
-{
-    static if (wantQualifiedNames == MangledNameType.PrettyName) {
-        const char [] pretty_Dfunction =
-            demangleFunctionOrDelegate!(str[2 + dotnameconsumed .. 3 + dotnameconsumed + paramlistconsumed],
-                getQualifiedName!(str[2..2+dotnameconsumed], wantQualifiedNames), wantQualifiedNames)
-                // BUG: This shouldn't be necessary, the string length is wrong somewhere
-            ~ getQualifiedName!(str[3 + dotnameconsumed + paramlistconsumed .. $], wantQualifiedNames, ".");
-    } else static if (wantQualifiedNames == MangledNameType.QualifiedName) {
-        // Qualified name
-        const char [] pretty_Dfunction = getQualifiedName!(str[2..2+dotnameconsumed], wantQualifiedNames)
-            ~ getQualifiedName!(str[3 + dotnameconsumed + paramlistconsumed .. $], wantQualifiedNames, ".");
-    } else { // symbol name
-        static if (3 + dotnameconsumed + paramlistconsumed == str.length)
-            const char [] pretty_Dfunction = getQualifiedName!(str[2..2+dotnameconsumed], wantQualifiedNames);
-        else const char [] pretty_Dfunction = getQualifiedName!(
-            str[3 + dotnameconsumed + paramlistconsumed .. $], wantQualifiedNames);
-    }
- }
 
 // for an Lname that begins with "_D"
 // Special case: if the following type is a function, the D name continues, because
@@ -225,33 +192,94 @@ template get_DQualifiedNameConsumed (char [] str)
     else static if ( beginsWithDigit!(str) ) {
         const int get_DQualifiedNameConsumed = getLnameConsumed!(str) + get_DQualifiedNameConsumed!(str[getLnameConsumed!(str)..$]);
     } else static if (isMangledFunction!((str[0]))) {
-        static if (demangleTypeConsumed!(str)!=str.length && beginsWithDigit!(str[demangleTypeConsumed!(str)..$])) {
+        static if (demangleTypeConsumed!(str)!=str.length && continues_Dname!(str[demangleTypeConsumed!(str)..$])) {
             const int get_DQualifiedNameConsumed = demangleTypeConsumed!(str) + get_DQualifiedNameConsumed!(str[demangleTypeConsumed!(str)..$]);
         } else const int get_DQualifiedNameConsumed = 0;
     } else const int get_DQualifiedNameConsumed = 0;
 }
 
+// don't display return value.
+template prettyInner_DFunc(char [] funcname, char [] functype, MangledNameType wantQualifiedNames)
+{
+    static if (wantQualifiedNames == MangledNameType.PrettyName) {
+        const char [] prettyInner_DFunc = demangleExtern!((functype[0])) ~ getQualifiedName!(funcname, wantQualifiedNames) ~ "(" ~ demangleParamList!(functype[1..$], MangledNameType.PrettyName)~ ")";
+    } else const char [] prettyInner_DFunc = getQualifiedName!(funcname, wantQualifiedNames);
+}
 
-// BUG: Need to display _D inner functions.
+template qualifiedAndFuncConsumed(char [] str)
+{
+    const int qualifiedAndFuncConsumed =
+            getQualifiedNameConsumed!(str) + 1 + demangleParamListAndRetValConsumed!(str[1+getQualifiedNameConsumed!(str)..$]);
+}
+
+// Deal with the case where an Lname contains an embedded "__D".
+// This can happen when classes, typedefs, etc are declared inside a function.
+// It always starts with a qualified name, but it may be an inner function.
+template pretty_Dname(char [] str, MangledNameType wantQualifiedNames)
+{
+    static if (getQualifiedNameConsumed!(str)==str.length) {
+            const char [] pretty_Dname = getQualifiedName!(str, wantQualifiedNames);
+    } else static if ( !isMangledFunction!( (str[getQualifiedNameConsumed!(str)]))) {
+        static assert(0, "Demangle error, not a qualified name or inner function: " ~ str);
+    } else {
+        // Inner function
+        static if(continues_Dname!(str[qualifiedAndFuncConsumed!(str)..$])) {
+            static if (wantQualifiedNames == MangledNameType.SymbolName) {
+                const char [] pretty_Dname =
+                    pretty_Dname!(str[qualifiedAndFuncConsumed!(str)..$], wantQualifiedNames);
+            } else {
+                const char [] pretty_Dname =
+                    prettyInner_DFunc!(
+                        str[0..getQualifiedNameConsumed!(str)],
+                        str[getQualifiedNameConsumed!(str)..qualifiedAndFuncConsumed!(str)], wantQualifiedNames
+                    )
+                    ~ "." ~ pretty_Dname!(str[qualifiedAndFuncConsumed!(str)..$], wantQualifiedNames);
+            }
+        } else {
+            static assert(0);
+        }
+    }
+}
+
+template showTypeWithName(char [] namestr, char [] typestr, MangledNameType wantQualifiedNames)
+{
+    static if (wantQualifiedNames == MangledNameType.PrettyName) {
+        static if ( isMangledFunction!( (typestr[0])) ) {
+            const char [] showTypeWithName = demangleReturnValue!(typestr[1..$], wantQualifiedNames)
+                ~ " " ~ pretty_Dname!(namestr, wantQualifiedNames)
+                ~ "(" ~ demangleParamList!(typestr[1..$], MangledNameType.PrettyName)~ ")";
+        } else {
+            const char [] showTypeWithName = demangleType!(typestr) ~ " " ~ pretty_Dname!(namestr, wantQualifiedNames);
+        }
+    } else const char [] showTypeWithName = getQualifiedName!(namestr, wantQualifiedNames);
+}
+
 // If Lname is a template, shows it as a template
 template prettyLname(char [] str, MangledNameType wantQualifiedNames)
 {
     static if (str.length>3 && str[0..3] == "__T") // Template instance name
         static if (wantQualifiedNames == MangledNameType.PrettyName) {
             const char [] prettyLname =
-                prettyLname!(str[3..$], wantQualifiedNames) ~ "!("
+                prettyLname!(str[3..3+getQualifiedNameConsumed!(str[3..$])], wantQualifiedNames) ~ "!("
                 ~ prettyTemplateArgList!(str[3+getQualifiedNameConsumed!(str[3..$])..$], wantQualifiedNames)
                 ~ ")";
         } else {
             const char [] prettyLname =
-                prettyLname!(str[3..$], wantQualifiedNames);
+                prettyLname!(str[3..3+getQualifiedNameConsumed!(str[3..$])], wantQualifiedNames);
         }
     else static if (str.length>2 && str[0..2] == "_D") {
-        const char [] prettyLname = pretty_Dname!(str, getQualifiedNameConsumed!(str[2..$]), wantQualifiedNames);
-    } else static if ( beginsWithDigit!( str ) )
-        const char [] prettyLname = getQualifiedName!(str[0..getQualifiedNameConsumed!(str)], wantQualifiedNames);
+        static if (2+get_DQualifiedNameConsumed!(str[2..$])== str.length) {
+            // it's just a name
+            const char [] prettyLname = pretty_Dname!(str[2..2+get_DQualifiedNameConsumed!(str[2..$])], wantQualifiedNames);
+        } else { // it has type information following
+              const char [] prettyLname = showTypeWithName!(str[2..2+get_DQualifiedNameConsumed!(str[2..$])], str[2+get_DQualifiedNameConsumed!(str[2..$])..$], wantQualifiedNames);
+        }
+    } else static if ( beginsWithDigit!( str ) ) {
+        static if (getQualifiedNameConsumed!(str)==str.length) {
+            const char [] prettyLname = getQualifiedName!(str, wantQualifiedNames);
+        } else static assert(0, "Demangle Error: Unexpected " ~ str);
+    }
     else const char [] prettyLname = str;
-
 }
 
 // str must start with an lname: first chars give the length
@@ -273,8 +301,6 @@ template getLnameConsumed(char [] str)
 template getQualifiedName(char [] str, MangledNameType wantQualifiedNames, char [] dotstr = "")
 {
     static if (str.length==0) const char [] getQualifiedName="";
-//    else static if (str.length>2 && str[0]=='_' && str[1]=='D')
-//        const char [] getDotName = getQualifiedName!(str[2..$], wantQualifiedNames);
     else {
         static assert (beginsWithDigit!(str));
         static if ( getLnameConsumed!(str) < str.length && beginsWithDigit!(str[getLnameConsumed!(str)..$]) ) {
@@ -289,6 +315,7 @@ template getQualifiedName(char [] str, MangledNameType wantQualifiedNames, char 
                     ~ getQualifiedName!(str[getLnameConsumed!(str) .. $], wantQualifiedNames, ".");
             }
         } else {
+            static assert(getLnameConsumed!(str)==str.length, "Dmangle error: Unexpected "~ str[getLnameConsumed!(str) .. $]);
             const char [] getQualifiedName = dotstr ~ prettyLname!(getLname!(str), wantQualifiedNames);
         }
     }
@@ -517,6 +544,7 @@ template prettyTemplateArg(char [] str, MangledNameType wantQualifiedNames)
             ~ " = " ~ prettyValueArg!(str[1+demangleTypeConsumed!(str[1..$])..$]);
     else static if (str[0]=='T') // type
         const char [] prettyTemplateArg = demangleType!(str[1..$], wantQualifiedNames);
+
     else static assert(0, "Unrecognised template argument type: {" ~ str ~ "}");
 }
 
@@ -574,7 +602,7 @@ template beginsWithDigit(char [] s)
 // --------------------------------------------
 //              UNIT TESTS
 
-debug(UnitTest){
+//debug(UnitTest){
 
 private {
 
@@ -621,5 +649,5 @@ template ComplexTemplate(real a, creal b)
 
 static assert( demangleType!((ComplexTemplate!(-0x1.23456789ABCDFFFEp-456, 0x1p-16390L+3.2i)).mangleof) == "class " ~ THISFILE ~ ".ComplexTemplate!(double = -0x1.23456789ABCDFFFEp-456, creal = 0x0.0100000000000000p-16383 + -0x1.999999999999999Ap+1i).ComplexTemplate");
 
-}}
+}//}
 
