@@ -379,66 +379,6 @@ unittest
 }
 
 
-/*********************************
- * Convert array of chars s[] to a C-style 0 terminated string.
- */
-
-char* toUtf8z(char[] s)
-in
-{
-}
-out (result)
-{
-    if (result)
-    {
-        assert(strlen(result) == s.length);
-        assert(memcmp(result, s, s.length) == 0);
-    }
-}
-body
-{
-    char[] copy;
-
-    if (s.length == 0)
-        return "";
-
-    /+ Unfortunately, this isn't reliable.
-       We could make this work if string literals are put
-       in read-only memory and we test if s[] is pointing into
-       that.
-
-        /* Peek past end of s[], if it's 0, no conversion necessary.
-         * Note that the compiler will put a 0 past the end of static
-         * strings, and the storage allocator will put a 0 past the end
-         * of newly allocated char[]'s.
-         */
-        char* p = &s[0] + s.length;
-        if (*p == 0)
-        return s;
-    +/
-
-    // Need to make a copy
-    copy = new char[s.length + 1];
-    copy[0..s.length] = s;
-    copy[s.length] = 0;
-    return copy;
-}
-
-unittest
-{
-    debug(string) printf("Text.toStringz.unittest\n");
-
-    char* p = toStringz("foo");
-    assert(strlen(p) == 3);
-    char foo[] = "abbzxyzzy";
-    p = toStringz(foo[3..5]);
-    assert(strlen(p) == 2);
-
-    char[] test = "";
-    p = toStringz(test);
-    assert(*p == 0);
-}
-
 
 bool isDigit( dchar c ){
     if( c >= '0' && c <= '9' ){
@@ -953,5 +893,56 @@ unittest
     }
 }
 
+/******************************************************************************
 
+ Convert a C string with null termination into a char[]
 
+******************************************************************************/
+public char[] fromCStr( char* p )
+{
+    return p[ 0 ..  strlen( p ) ];
+}
+
+/******************************************************************************
+
+ Convert a char[] to C string with appending a null.
+
+******************************************************************************/
+public char* toCStr( char[] p )
+{
+    // check if a copy and allocation really is necessary
+    if( *( p.ptr + p.length ) == \x00 )
+    {
+        return p;
+    }
+    else
+    {
+        return p ~ \x00;
+    }
+}
+
+/******************************************************************************
+
+ Replacement for the C strlen function
+ Returns: offset of first found 0 character or if not found int.max
+
+******************************************************************************/
+public int cstrLen( char* p, uint maxvalue = int.max )
+{
+    return Text!(char).locate( p, 0, maxvalue ) - p;
+}
+
+version(UnitTest)
+{
+unittest{
+    char* p = toCStr("foo");
+    assert(strlen(p) == 3);
+    char foo[] = "abbzxyzzy";
+    p = toCStr(foo[3..5]);
+    assert(strlen(p) == 2);
+
+    char[] test = "";
+    p = toCStr(test);
+    assert(*p == 0);
+}
+}
