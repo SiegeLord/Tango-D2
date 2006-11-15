@@ -1,4 +1,3 @@
-
 module object;
 
 alias typeof(int.sizeof)                    size_t;
@@ -112,7 +111,7 @@ class TypeInfo_Struct : TypeInfo
 
 class TypeInfo_Tuple : TypeInfo
 {
-    TypeInfo[] elements;
+    TypeInfo[]  elements;
 }
 
 class Exception : Object

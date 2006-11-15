@@ -1,4 +1,3 @@
-
 /**
  * Part of the D programming language runtime library.
  * Forms the symbols available to all D programs. Includes
@@ -726,15 +725,15 @@ class TypeInfo_Tuple : TypeInfo
 
     char[] toUtf8()
     {
-	char[] s;
-	s = "(";
-	foreach (i, element; elements)
-	{
-	    if (i)
-		s ~= ',';
+        char[] s;
+        s = "(";
+        foreach (i, element; elements)
+        {
+            if (i)
+                s ~= ',';
 	    s ~= element.toUtf8();
-	}
-	s ~= ")";
+        }
+        s ~= ")";
         return s;
     }
 

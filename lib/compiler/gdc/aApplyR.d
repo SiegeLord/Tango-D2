@@ -92,6 +92,7 @@ unittest
             case 2:     assert(d == 'l'); break;
             case 3:     assert(d == 'e'); break;
             case 4:     assert(d == 'h'); break;
+            default:    assert(0);
         }
         i++;
     }
@@ -108,6 +109,7 @@ unittest
             case 1:     assert(d == '\U00100456'); break;
             case 2:     assert(d == '\u1234'); break;
             case 3:     assert(d == 'a'); break;
+            default:    assert(0);
         }
         i++;
     }
@@ -154,6 +156,7 @@ unittest
             case 2:     assert(d == 'l'); break;
             case 3:     assert(d == 'e'); break;
             case 4:     assert(d == 'h'); break;
+            default:    assert(0);
         }
         i++;
     }
@@ -170,6 +173,7 @@ unittest
             case 1:     assert(d == '\U00100456'); break;
             case 2:     assert(d == '\u1234'); break;
             case 3:     assert(d == 'a'); break;
+            default:    assert(0);
         }
         i++;
     }
@@ -238,6 +242,7 @@ unittest
             case 2:     assert(d == 'l'); break;
             case 3:     assert(d == 'e'); break;
             case 4:     assert(d == 'h'); break;
+            default:    assert(0);
         }
         i++;
     }
@@ -255,6 +260,7 @@ unittest
             case 2:     assert(d == 0xDC56); break;
             case 3:     assert(d == 0x1234); break;
             case 4:     assert(d == 'a'); break;
+            default:    assert(0);
         }
         i++;
     }
@@ -318,6 +324,7 @@ unittest
             case 2:     assert(d == 'l'); break;
             case 3:     assert(d == 'e'); break;
             case 4:     assert(d == 'h'); break;
+            default:    assert(0);
         }
         i++;
     }
@@ -339,6 +346,7 @@ unittest
             case 6:     assert(d == 0x88); break;
             case 7:     assert(d == 0xB4); break;
             case 8:     assert(d == 'a'); break;
+            default:    assert(0);
         }
         i++;
     }
@@ -396,6 +404,7 @@ unittest
             case 2:     assert(d == 'l'); break;
             case 3:     assert(d == 'e'); break;
             case 4:     assert(d == 'h'); break;
+            default:    assert(0);
         }
         i++;
     }
@@ -417,6 +426,7 @@ unittest
             case 6:     assert(d == 0x88); break;
             case 7:     assert(d == 0xB4); break;
             case 8:     assert(d == 'a'); break;
+            default:    assert(0);
         }
         i++;
     }
@@ -466,6 +476,7 @@ unittest
             case 2:     assert(d == 'l'); break;
             case 3:     assert(d == 'e'); break;
             case 4:     assert(d == 'h'); break;
+            default:    assert(0);
         }
         i++;
     }
@@ -483,6 +494,7 @@ unittest
             case 2:     assert(d == 0xDC56); break;
             case 3:     assert(d == 0x1234); break;
             case 4:     assert(d == 'a'); break;
+            default:    assert(0);
         }
         i++;
     }
@@ -547,6 +559,7 @@ unittest
             case 2:     assert(d == 'l'); break;
             case 3:     assert(d == 'e'); break;
             case 4:     assert(d == 'h'); break;
+            default:    assert(0);
         }
         i++;
     }
@@ -563,6 +576,7 @@ unittest
             case 1:     assert(d == '\U00100456'); assert(k == 4); break;
             case 2:     assert(d == '\u1234'); assert(k == 1); break;
             case 3:     assert(d == 'a'); assert(k == 0); break;
+            default:    assert(0);
         }
         i++;
     }
@@ -611,6 +625,7 @@ unittest
             case 2:     assert(d == 'l'); break;
             case 3:     assert(d == 'e'); break;
             case 4:     assert(d == 'h'); break;
+            default:    assert(0);
         }
         i++;
     }
@@ -627,6 +642,7 @@ unittest
             case 1:     assert(k == 2); assert(d == '\U00100456'); break;
             case 2:     assert(k == 1); assert(d == '\u1234'); break;
             case 3:     assert(k == 0); assert(d == 'a'); break;
+            default:    assert(0);
         }
         i++;
     }
@@ -697,6 +713,7 @@ unittest
             case 2:     assert(d == 'l'); break;
             case 3:     assert(d == 'e'); break;
             case 4:     assert(d == 'h'); break;
+            default:    assert(0);
         }
         i++;
     }
@@ -714,6 +731,7 @@ unittest
             case 2:     assert(k == 4); assert(d == 0xDC56); break;
             case 3:     assert(k == 1); assert(d == 0x1234); break;
             case 4:     assert(k == 0); assert(d == 'a'); break;
+            default:    assert(0);
         }
         i++;
     }
@@ -779,6 +797,7 @@ unittest
             case 2:     assert(d == 'l'); break;
             case 3:     assert(d == 'e'); break;
             case 4:     assert(d == 'h'); break;
+            default:    assert(0);
         }
         i++;
     }
@@ -800,6 +819,7 @@ unittest
             case 6:     assert(k == 1); assert(d == 0x88); break;
             case 7:     assert(k == 1); assert(d == 0xB4); break;
             case 8:     assert(k == 0); assert(d == 'a'); break;
+            default:    assert(0);
         }
         i++;
     }
@@ -858,6 +878,7 @@ unittest
             case 2:     assert(d == 'l'); break;
             case 3:     assert(d == 'e'); break;
             case 4:     assert(d == 'h'); break;
+            default:    assert(0);
         }
         i++;
     }
@@ -879,6 +900,7 @@ unittest
             case 6:     assert(k == 1); assert(d == 0x88); break;
             case 7:     assert(k == 1); assert(d == 0xB4); break;
             case 8:     assert(k == 0); assert(d == 'a'); break;
+            default:    assert(0);
         }
         i++;
     }
@@ -930,6 +952,7 @@ unittest
             case 2:     assert(d == 'l'); break;
             case 3:     assert(d == 'e'); break;
             case 4:     assert(d == 'h'); break;
+            default:    assert(0);
         }
         i++;
     }
@@ -947,6 +970,7 @@ unittest
             case 2:     assert(k == 2); assert(d == 0xDC56); break;
             case 3:     assert(k == 1); assert(d == 0x1234); break;
             case 4:     assert(k == 0); assert(d == 'a'); break;
+            default:    assert(0);
         }
         i++;
     }
