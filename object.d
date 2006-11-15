@@ -1,3 +1,4 @@
+
 module object;
 
 alias typeof(int.sizeof)                    size_t;
@@ -107,6 +108,11 @@ class TypeInfo_Struct : TypeInfo
     int function(void*,void*) xopEquals;
     int function(void*,void*) xopCmp;
     char[] function(void*)    xtoString;
+}
+
+class TypeInfo_Tuple : TypeInfo
+{
+    TypeInfo[] elements;
 }
 
 class Exception : Object

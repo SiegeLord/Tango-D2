@@ -1,3 +1,4 @@
+
 /**
  * Part of the D programming language runtime library.
  * Forms the symbols available to all D programs. Includes
@@ -717,6 +718,50 @@ class TypeInfo_Struct : TypeInfo
     int function(void*,void*) xopEquals;
     int function(void*,void*) xopCmp;
     char[] function(void*)    xtoString;
+}
+
+class TypeInfo_Tuple : TypeInfo
+{
+    TypeInfo[] elements;
+
+    char[] toUtf8()
+    {
+	char[] s;
+	s = "(";
+	foreach (i, element; elements)
+	{
+	    if (i)
+		s ~= ',';
+	    s ~= element.toUtf8();
+	}
+	s ~= ")";
+        return s;
+    }
+
+    hash_t getHash(void *p)
+    {
+        assert(0);
+    }
+
+    int equals(void *p1, void *p2)
+    {
+        assert(0);
+    }
+
+    int compare(void *p1, void *p2)
+    {
+        assert(0);
+    }
+
+    size_t tsize()
+    {
+        assert(0);
+    }
+
+    void swap(void *p1, void *p2)
+    {
+        assert(0);
+    }
 }
 
 class Exception : Object
