@@ -1,16 +1,15 @@
 /**
  *  Convert any D symbol or type to a human-readable string, at compile time.
  *
- *   Given any D symbol (class, template, function, module name, or non-local variable)
+ *   Given any D symbol (class, template, function, module name, global, static or local variable)
  *   or any D type, convert it to a compile-time string literal,
  *   optionally containing the fully qualified and decorated name.
  *
- *   Limitations (as of DMD 0.167):
- *   1. Names of local variables cannot be determined, because they are not permitted
- *      as template alias parameters. Technically, it's possible to determine the name by using
- *      a mixin hack, but it's so ugly that it cannot be recommended.
- *   2. The name mangling for symbols declared inside extern(Windows), extern(C) and extern(Pascal)
+ *   Limitations (as of DMD 0.173):
+ *   1. The name mangling for symbols declared inside extern(Windows), extern(C) and extern(Pascal)
  *      functions is inherently ambiguous, so such inner symbols are not always correctly displayed.
+ *   2. Every symbol converted in this way creates an usued enum in the obj file. (It is
+ *      discardarded at link time).
  *
  * License:   BSD style: $(LICENSE)
  * Authors:   Don Clugston
@@ -22,42 +21,34 @@ private import tango.meta.Demangle;
 private {
     // --------------------------------------------
     // Here's the magic...
-    //
-    // Make a unique type for each identifier; but don't actually
-    // use the identifier for anything.
-    // This works because any class always needs to be fully qualified.
-    template inner(alias F)
+    template Mang(alias F)
     {
-      class inner { }
-    }
-
-    // If you take the .mangleof an alias parameter, you are only
-    // told that it is an alias.
-    // So, we put the type as a function parameter.
-    template outer(alias B)
-    {
-      void function( inner!(B) ) outer;
-    }
-
-    // We will get the .mangleof for a pointer to this function pointer.
-    template rawmanglednameof(alias A)
-    {
-      const char [] rawmanglednameof  =
-                 typeof(&outer!(A)).mangleof;
+        // Make a unique type for each identifier; but don't actually
+        // use the identifier for anything.
+        // This works because any class, struct or enum always needs to be fully qualified.
+        enum mange { ignore }
+        // If you take the .mangleof an alias parameter, you are only
+        // told that it is an alias.
+        // So, we put the type as a function parameter.
+        alias void function(mange ) mangF;
+        // We get the .mangleof for this function pointer. We do this
+        // from inside this same template, so that we avoid
+        // compilications with alias parameters from inner functions.
+        const char [] mangledname = typeof(mangF).mangleof;
     }
 
 // If the identifier is "MyIdentifier" and this module is "QualModule"
 // The return value will be:
-//  "PPF"   -- because it's a pointer to a pointer to a function
-//   "C"     -- because the first parameter is a class
+//  "PF"   -- because it's a pointer to a function
+//   "E"     -- because the first parameter is an enum
 //    "10QualModule"  -- the name of this module
 //      "45" -- the number of characters in the remainder of the mangled name.
 //         Note that this could be more than 2 characters, but will be at least "10".
 //      "__T"    -- because it's a class inside a template
-//       "5inner" -- the name of the template "inner"
+//       "4Mang" -- the name of the template "Mang"
 //       "T" MyIdentifer -- Here's our prize!
-//       "Z"  -- marks the end of the template parameters for "inner"
-//    "5inner" -- this is the class "inner"
+//       "Z"  -- marks the end of the template parameters for "Mang"
+//    "5mange" -- this is the enum "mange"
 //  "Z"  -- the return value of the function is coming
 //  "v"  -- the function returns void
 
@@ -74,9 +65,9 @@ private {
     const int modulemanglelength = establishMangle.mangleof.length - "C15establishMangle".length;
 
     // Get the number of chars at the start relating to the pointer
-    const int pointerstartlength = "PPFC".length + modulemanglelength + "__T5inner".length;
+    const int pointerstartlength = "PFC".length + modulemanglelength + "__T4Mang".length;
     // And the number of chars at the end
-    const int pointerendlength = "Z5innerZv".length;
+    const int pointerendlength = "Z5mangeZv".length;
 }
 
 // --------------------------------------------------------------
@@ -88,13 +79,13 @@ private {
  */
 template manglednameof(alias A)
 {
-    static if (rawmanglednameof!(A).length - pointerstartlength <= 100 + 1) {
+    static if (Mang!(A).mangledname.length - pointerstartlength <= 100 + 1) {
         // the length of the template argument requires 2 characters
         const char [] manglednameof  =
-             rawmanglednameof!(A)[ pointerstartlength + 2 .. $ - pointerendlength];
+             Mang!(A).mangledname[ pointerstartlength + 2 .. $ - pointerendlength];
     } else
         const char [] manglednameof  =
-             rawmanglednameof!(A)[ pointerstartlength + 3 .. $ - pointerendlength];
+             Mang!(A).mangledname[ pointerstartlength + 3 .. $ - pointerendlength];
 }
 
 /**
@@ -142,8 +133,12 @@ template symbolnameof(alias A)
 //                Unit Tests
 //----------------------------------------------
 
-debug (UnitTest)
-{
+debug(UnitTest) {
+
+// remove the ".d" from the end
+const char [] THISFILE = "tango.meta.Nameof";
+
+
 private {
 // Declare some structs, classes, enums, functions, and templates.
 
@@ -172,8 +167,6 @@ template MyInt(int F)
 enum SomeEnum { ABC = 2 }
 SomeEnum SomeInt;
 
-// remove the ".d" from the end
-const char [] THISFILE = "tango.meta.Nameof";
 
 static assert( prettytypeof!(real) == "real");
 static assert( prettytypeof!(OuterClass.SomeClass) == "class " ~ THISFILE ~".OuterClass.SomeClass");
@@ -182,14 +175,9 @@ static assert( prettytypeof!(OuterClass.SomeClass) == "class " ~ THISFILE ~".Out
 static assert( qualifiednameof!(tango.meta.Nameof) == "tango.meta.Nameof");
 static assert( symbolnameof!(tango.meta.Nameof) == "Nameof");
 
-static assert( prettynameof!(SomeInt)
-    == "enum " ~ THISFILE ~ ".SomeEnum " ~ THISFILE ~ ".SomeInt");
+static assert( prettynameof!(SomeInt) == "enum " ~ THISFILE ~ ".SomeEnum " ~ THISFILE ~ ".SomeInt");
 static assert( qualifiednameof!(OuterClass) == THISFILE ~".OuterClass");
 static assert( symbolnameof!(SomeInt) == "SomeInt");
-
-static assert( prettynameof!(inner!( MyInt!(68u) ))
-    ==  "class " ~ THISFILE ~ ".inner!(" ~ THISFILE ~ ".MyInt!(uint = 68)).inner");
-static assert( symbolnameof!(inner!( MyInt!(68u) )) ==  "inner");
 static assert( prettynameof!(ClassTemplate!(OuterClass.SomeClass))
     == "class "~ THISFILE ~ ".ClassTemplate!(class "~ THISFILE ~ ".OuterClass.SomeClass).ClassTemplate");
 static assert( symbolnameof!(ClassTemplate!(OuterClass.SomeClass))  == "ClassTemplate");
@@ -216,11 +204,11 @@ static assert( prettynameof!(dig) == "dig");
 extern (Windows) {
 template aardvark(X) {
     int aardvark(short goon) {
-        class wolf {}
-        static assert(prettynameof!(wolf)== "class extern (Windows) int " ~ THISFILE ~ ".aardvark!(struct "
-            ~ THISFILE ~ ".OuterClass).aardvark(short).wolf");
-        static assert(qualifiednameof!(wolf)== THISFILE ~ ".aardvark.aardvark.wolf");
-        static assert( symbolnameof!(wolf) == "wolf");
+        class ant {}
+        static assert(prettynameof!(ant)== "class extern (Windows) " ~ THISFILE ~ ".aardvark!(struct "
+            ~ THISFILE ~ ".OuterClass).aardvark(short).ant");
+        static assert(qualifiednameof!(ant)== THISFILE ~ ".aardvark.aardvark.ant");
+        static assert( symbolnameof!(ant) == "ant");
         return 3;
         }
     }
@@ -234,20 +222,23 @@ template fox(B, ushort C) {
     class fox {}
 }
 
-void wolf() {
+}
+
+creal wolf(uint a) {
+
         mixin fox!(cfloat, 21);
-        static assert(prettynameof!(fox)== "class void " ~ THISFILE ~ ".wolf().fox!(cfloat, int = 21).fox");
+        static assert(prettynameof!(fox)== "class " ~ THISFILE ~ ".wolf(uint).fox!(cfloat, int = 21).fox");
         static assert(qualifiednameof!(fox)== THISFILE ~ ".wolf.fox.fox");
         static assert(symbolnameof!(fox)== "fox");
-
-        int dingo;
-        static assert(demangleType!(rawmanglednameof!(dingo)) ==
-        "void function (class void " ~ THISFILE ~ ".wolf().rawmanglednameof!("
-        ~ "void " ~ THISFILE ~ ".wolf().dingo).outer!("
-        ~ "void " ~ THISFILE ~ ".wolf().dingo).inner!("
-        ~ "void " ~ THISFILE ~ ".wolf().dingo).inner)*");
-
-}
+        ushort innerfunc(...)
+        {
+            wchar innervar;
+            static assert(prettynameof!(innervar)== "wchar " ~ THISFILE ~ ".wolf(uint).innerfunc(...).innervar");
+            static assert(symbolnameof!(innervar)== "innervar");
+            static assert(qualifiednameof!(innervar)== THISFILE ~ ".wolf.innerfunc.innervar");
+            return 0;
+        }
+        return 0+0i;
 }
 
 }
