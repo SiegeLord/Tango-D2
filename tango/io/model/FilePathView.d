@@ -164,4 +164,21 @@ abstract class FilePathView
         ***********************************************************************/
 
         abstract char[] splice (FilePathView base);
+
+        /***********************************************************************
+
+            Returns the base name of this file path, that is name and suffix.
+
+        ***********************************************************************/
+
+        abstract FilePathView getFile();
+
+        /***********************************************************************
+
+            Returns the directory name, that is root and path. It is returned
+            as a FilePathView with empty name, suffix and extension.
+
+        ***********************************************************************/
+
+        abstract FilePathView getDirectory();
 }

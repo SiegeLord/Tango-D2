@@ -6,7 +6,7 @@
 
         version:        Initial release: March 2004      
         
-        author:         Kris
+        author:         Kris, Lars Ivar Igesund
 
 *******************************************************************************/
 
@@ -99,9 +99,18 @@ class FilePath : FilePathView
                 expected to provide an immutable copy for the lifetime of this 
                 object. If you are not certain, ignore the second argument.
 
+                If it is known that the filepath is a directory, construct the 
+                FilePath with the isdir parameter set to true, and the part
+                after the last path separator will become part of the path
+                component. Name will then be empty.
+
+                To find if the file path exists as either a file or a directory,
+                pass the FilePath instance to File in tango.io.File and use
+                the methods there.
+
         ***********************************************************************/
 
-        this (char[] filepath, bool copy = true)
+        this (char[] filepath, bool copy = true, bool isdir = false)
         in {
            assert (filepath);
            assert(filepath.length > 0);
@@ -122,6 +131,8 @@ class FilePath : FilePathView
                      switch (filepath[i-1])
                             {
                             case FileConst.FileSeparatorChar:
+                                 if (isdir)
+                                     break;
                                  if (path < 0)
                                     {
                                     if (ext < 0)
@@ -168,16 +179,18 @@ class FilePath : FilePathView
                    root = 0;
 
                 if (path >= root)
-                    this.path = filepath [root..path];
+                    this.path = filepath [root..isdir ? $ : path-1];
                 else
                    path = root;
 
-                this.name = filepath [path..ext];
+                this.name = filepath [isdir ? ext : path..ext];
         }
 
 
                              
 /+
+        Will most likely be fully removed.
+
         alias Consume delegate(char[]) Bar;
         typedef Bar delegate (char[]) Consume;
 
@@ -243,12 +256,13 @@ class FilePath : FilePathView
 +/
         /***********************************************************************
         
-                Convert path separators to the correct format. This mutates
-                the provided 'path' content, so .dup it as necessary.
+                Convert path separators to the correct format according to
+                the current platform. This mutates the provided 'path' content, 
+                so .dup it as necessary.
 
         ***********************************************************************/
 
-        static char[] normalize (char[] path)
+        static char[] normalizeSlash (char[] path)
         {
                 version (Win32)
                          return replace (path, '/', '\\');
@@ -331,10 +345,10 @@ class FilePath : FilePathView
 
         /***********************************************************************
         
-                Return the file path. Paths start with a '/' but do not
+                Return the file path. Paths can start with a '/' but do not
                 end with one. The root path is empty. Directory paths 
                 are split such that the directory name is placed into
-                the 'name' member.
+                the 'name' member. 
 
         ***********************************************************************/
 
@@ -380,6 +394,56 @@ class FilePath : FilePathView
 
         /***********************************************************************
 
+            Returns the base name of this file path, that is name and suffix.
+
+            Examples:
+
+            ------
+
+            FilePath fp = new FilePath("/home/foo/bar.txt");
+            FilePath basename = fp.getFile();  // => bar.txt
+            
+            ------
+
+        ***********************************************************************/
+ 
+        FilePathView getFile ()
+        {
+            FilePath fp = new FilePath(this);
+            fp.setRoot("");
+            fp.setPath("");
+            fp.reset();
+            return fp;
+        }
+
+        /***********************************************************************
+
+            Returns the directory name, that is root and path. It is returned
+            as a FilePathView with empty name, suffix and extension.
+
+            Examples:
+
+            ------
+
+            FilePath fp = new FilePath("/home/foo/bar");
+            char[] dirname = fp.getDirectory().toUtf8(); // => /home/foo
+
+            ------
+ 
+        ***********************************************************************/
+ 
+        FilePathView getDirectory ()
+        {
+            FilePath fp = new FilePath(this);
+            fp.setName("");
+            fp.setExtension("");
+            fp.setSuffix("");
+            fp.reset();
+            return fp;
+        }
+
+        /***********************************************************************
+
                 Convert this FilePath to a char[] via the provided Consumer
 
         ***********************************************************************/
@@ -393,7 +457,7 @@ class FilePath : FilePathView
                     consume (path);
 
                 if (name.length)
-                    consume (name);
+                    consume (FileConst.PathSeparatorString), consume (name);
 
                 if (ext.length)
                     consume (FileConst.FileSeparatorString), consume (ext);
@@ -456,10 +520,15 @@ class FilePath : FilePathView
                 Splice this FilePath onto the end of the provided base path.
                 Output is return as a char[].
 
+                Assumes that base is a directory name. If this is an absolute
+                path, it is returned, ignoring base.
+
         ***********************************************************************/
 
         char[] splice (FilePathView base)
         {      
+                if (isAbsolute)
+                    return toUtf8();
                 char[] s;
                 s.length = 256, s.length = 0;
                 splice (base, (void[] v) {s ~= cast(char[]) v;});
@@ -471,10 +540,16 @@ class FilePath : FilePathView
                 Splice this FilePath onto the end of the provided base path.
                 Output is handled via the provided Consumer
 
+                Assumes that base is a directory name. If this is an absolute
+                path, it is returned, ignoring base.
+
         ***********************************************************************/
 
         Consumer splice (FilePathView base, Consumer consume)
         {      
+                if (isAbsolute) 
+                    return produce(consume);
+                
                 base.produce (consume);
 
                 if (! base.isEmpty)
@@ -486,8 +561,8 @@ class FilePath : FilePathView
                 if (name.length)
                     consume (name);
 
-                if (ext.length)
-                    consume (FileConst.FileSeparatorString), consume (ext);
+                if (suffix.length)
+                    consume (FileConst.FileSeparatorString), consume (suffix);
 
                 return consume;
         }               
@@ -576,7 +651,7 @@ class FilePath : FilePathView
 
         ***********************************************************************/
 
-        FilePath setExt (char[] ext)
+        FilePath setExtension (char[] ext)
         {
                 return set (&this.ext, &ext);
         }
@@ -624,4 +699,66 @@ class FilePath : FilePathView
         {
                 return set (&this.suffix, &suffix);
         }
+
+        /***********************************************************************
+        
+                Returns true if all fields are equal.
+
+        ***********************************************************************/
+
+        int opEquals(Object filepath)
+        {
+                FilePathView fp = cast(FilePathView)filepath;
+                return (root == fp.getRoot() &&
+                        path == fp.getPath() &&
+                        name == fp.getName() &&
+                        ext == fp.getExtension());
+        }
+}
+
+debug (UnitTest) {
+
+unittest {
+
+    version (Posix) {
+    auto fp = new FilePath("/home/foo/bar/john");
+    assert (fp.isAbsolute());
+    assert (fp.getName() == "john");
+    assert (fp.getPath() == "/home/foo/bar", fp.getPath());
+    assert (fp.toUtf8() == "/home/foo/bar/john", fp.toUtf8());
+    assert (fp.getDirectory().toUtf8() == "/home/foo/bar");
+
+    fp = new FilePath("foo/bar/john");
+    assert (!fp.isAbsolute());
+    assert (fp.getName() == "john");
+    assert (fp.getPath() == "foo/bar");
+    assert (fp.toUtf8() == "foo/bar/john");
+
+    fp = new FilePath("foo/bar/john", false, true);
+    assert (fp.getDirectory().toUtf8() == "foo/bar/john");
+    assert (fp.getName() == "");
+    }
+
+    version (Win32) {
+    auto fp = new FilePath(r"C:\home\foo\bar\john");
+    assert (fp.isAbsolute());
+    assert (fp.getName() == "john");
+    assert (fp.getPath() == r"C:\home\foo\bar");
+    assert (fp.toUtf8() == r"C:\home\foo\bar\john");
+    assert (fp.getDirectory().toUtf8() == r"C:\home\foo\bar");
+
+    fp = new FilePath(r"foo\bar\john");
+    assert (!fp.isAbsolute());
+    assert (fp.getName() == "john");
+    assert (fp.getPath() == r"foo\bar");
+    assert (fp.toUtf8() == r"foo\bar\john");
+
+    fp = new FilePath(r"foo\bar\john", false, true);
+    assert (fp.getDirectory().toUtf8() == r"foo\bar\john");
+    assert (fp.getName() == "");
+
+    }
+
+}
+
 }
