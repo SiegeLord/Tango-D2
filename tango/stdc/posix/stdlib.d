@@ -6,11 +6,13 @@
  * Authors:   Sean Kelly
  * Standards: The Open Group Base Specifications Issue 6, IEEE Std 1003.1, 2004 Edition
  */
-module tango.stdc.posix.dirent;
+module tango.stdc.posix.stdlib;
 
 private import tango.stdc.config;
 public import tango.stdc.stdlib;
 public import tango.stdc.posix.sys.wait;
+
+extern (C):
 
 //
 // Required (defined in tango.stdc.stdlib)
