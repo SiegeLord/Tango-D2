@@ -114,9 +114,9 @@ version( Win32 )
             {
                 obj.run();
             }
-            catch
+            catch( Object o )
             {
-                // error should really print to stderr
+                obj.m_unhandled = o;
             }
             return 0;
         }
@@ -218,9 +218,9 @@ else version( Posix )
             {
                 obj.run();
             }
-            catch
+            catch( Object o )
             {
-                // error should really print to stderr
+                obj.m_unhandled = o;
             }
             return null;
         }
@@ -514,10 +514,12 @@ class Thread
 
 
     /**
-     * Waits for this thread to complete.
+     * Waits for this thread to complete.  If the thread terminated as the
+     * result of an unhandled exception, this exception will be rethrown.
      *
      * Throws:
      *  ThreadException if the operation fails.
+     *  Any exception not handled by the joined thread.
      */
     final void join()
     {
@@ -541,6 +543,10 @@ class Thread
             //       to zero ensures that pthread_detach will not be called
             //       on object destruction.
             volatile m_addr = m_addr.init;
+        }
+        if( m_unhandled !is null )
+        {
+            throw m_unhandled;
         }
     }
 
@@ -950,6 +956,7 @@ private:
     {
         bool            m_isRunning;
     }
+    Object              m_unhandled;
 
 
 private:
