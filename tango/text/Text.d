@@ -203,6 +203,9 @@ struct TextT(T)
 
         /**********************************************************************
 
+            Returns pointer to the first found occurance of the searched char.
+            If Length is reached, null will be returned. 
+
         **********************************************************************/
 
         version (D_InlineAsm_X86)
@@ -911,7 +914,7 @@ public char[] fromCStr( char* p )
 public char* toCStr( char[] p )
 {
     // check if a copy and allocation really is necessary
-    if( *( p.ptr + p.length ) == \x00 )
+    if( p.ptr[ p.length ] == 0 )
     {
         return p;
     }
@@ -929,20 +932,36 @@ public char* toCStr( char[] p )
 ******************************************************************************/
 public int cstrLen( char* p, uint maxvalue = int.max )
 {
-    return Text!(char).locate( p, 0, maxvalue ) - p;
+    char* last = TextT!(char).locate( p, 0, maxvalue );
+    if( last is null )
+    {
+        return maxvalue;
+    }
+    else
+    { 
+        return last - p;
+    }
 }
 
 version(UnitTest)
 {
-unittest{
-    char* p = toCStr("foo");
-    assert(strlen(p) == 3);
-    char foo[] = "abbzxyzzy";
-    p = toCStr(foo[3..5]);
-    assert(strlen(p) == 2);
+    import tango.stdc.string;
+    unittest{
+        char* p = toCStr("foo");
+        assert(strlen(p) == 3);
+        assert(strlen(p) == cstrLen(p) );
+        assert(cstrLen(p, 1 ) == 1 );
 
-    char[] test = "";
-    p = toCStr(test);
-    assert(*p == 0);
-}
+        char foo[] = "abbzxyzzy";
+        p = toCStr(foo[3..5]);
+        assert(strlen(p) == 2);
+        assert( p !is foo.ptr );
+
+        p = toCStr(foo);
+        assert( p is foo.ptr );
+
+        char[] test = "";
+        p = toCStr(test);
+        assert(*p == 0);
+    }
 }
