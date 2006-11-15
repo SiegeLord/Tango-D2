@@ -54,9 +54,8 @@ version (Win32)
 
 version (Posix)
         {
-        private extern (C) int strlen (char *s);
-
         private import tango.stdc.stdio;
+        private import tango.stdc.string;
         private import tango.stdc.posix.dirent;
 
         version (darwin)
@@ -481,7 +480,7 @@ class FileProxy
                                         else
                                            {
                                            int len = wcslen (fileinfo.cFileName);
-                                           fp = new FilePath (Unicode.toUtf8(fileinfo.cFileName [0 .. len]), false);                                           
+                                           fp = new FilePath (Unicode.toUtf8(fileinfo.cFileName [0 .. len]), false);
                                            }
 
                                    if (i >= list.length)
@@ -712,24 +711,24 @@ class FileProxy
 
                 ***************************************************************/
 
-                FilePathView[] toList (bool delegate(FilePathView fp) filter)
+                FilePath[] toList (bool delegate(FilePath fp) filter)
                 {
                         int             i;
                         DIR*            dir;
                         dirent*         entry;
-                        FilePathView[]  list;
+                        FilePath[]  list;
 
-                        dir = opendir (path.toUtf8);
+                        dir = tango.stdc.posix.dirent.opendir (path.toUtf8);
                         if (! dir) 
                               exception();
 
                         list = new FilePath [50];
-                        while ((entry = readdir(dir)) != null)
-                              {
-                              int len = strlen (entry.d_name.ptr);
+                        while ((entry = tango.stdc.posix.dirent.readdir(dir)) != null)
+                        {
+                              int len = tango.stdc.string.strlen (entry.d_name.ptr);
 
                               // make a copy of the file name for listing
-                              auto fp = new FilePath (entry.d_name[0 ..len]);
+                              auto fp = new FilePath (path.toUtf8, entry.d_name[0 ..len], true );
 
                               if (i >= list.length)
                                   list.length = list.length * 2;
@@ -739,10 +738,10 @@ class FileProxy
                                  list[i] = fp;
                                  ++i;
                                  }
-                              }  
+                        }
 
                         list.length = i;
-                        closedir (dir);
+                        tango.stdc.posix.dirent.closedir (dir);
                         return list;
                 }
         }

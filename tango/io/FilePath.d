@@ -81,6 +81,20 @@ class FilePath : FilePathView
         
                 Create a FilePath from the given string. Note the path string
                 is usually duplicated here, though you may specify that it be
+                aliased instead via the third argument. When aliased, you are 
+                expected to provide an immutable copy for the lifetime of this 
+                object. If you are not certain, ignore the third argument.
+
+        ***********************************************************************/
+        this (char[] parentpath, char[] filename, bool copy = true)
+        {
+            this( parentpath ~ FileConst.PathSeparatorString ~ filename, copy );
+        }
+
+        /***********************************************************************
+        
+                Create a FilePathView from the given string. Note the path string
+                is usually duplicated here, though you may specify that it be
                 aliased instead via the second argument. When aliased, you are 
                 expected to provide an immutable copy for the lifetime of this 
                 object. If you are not certain, ignore the second argument.
