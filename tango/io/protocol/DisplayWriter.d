@@ -91,6 +91,19 @@ class DisplayWriter : Writer
         /***********************************************************************
         
                 Format a set of arguments a la printf(). Please see module
+                tango.text.convert.Format for details.
+
+        ***********************************************************************/
+        DisplayWriter formatln (char[] s, ...)
+        {
+                format (s, _arguments, cast(va_list) _argptr);
+                newline;
+                return this;
+        }
+
+        /***********************************************************************
+        
+                Format a set of arguments a la printf(). Please see module
                 tango.text.convert.Format for details
 
         ***********************************************************************/
