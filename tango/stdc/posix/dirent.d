@@ -64,6 +64,10 @@ version( linux )
     alias readdir64 readdir;
   }
 }
+else
+{
+    dirent* readdir(DIR*);
+}
 
 int     closedir(DIR*);
 DIR*    opendir(char*);
