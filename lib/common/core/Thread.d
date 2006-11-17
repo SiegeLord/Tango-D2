@@ -517,11 +517,15 @@ class Thread
      * Waits for this thread to complete.  If the thread terminated as the
      * result of an unhandled exception, this exception will be rethrown.
      *
+     * Params:
+     *  rethrow = Rethrow any unhandled exception which may have caused this
+     *            thread to terminate.
+     *
      * Throws:
      *  ThreadException if the operation fails.
      *  Any exception not handled by the joined thread.
      */
-    final void join()
+    final void join( bool rethrow = true )
     {
         version( Win32 )
         {
@@ -544,7 +548,7 @@ class Thread
             //       on object destruction.
             volatile m_addr = m_addr.init;
         }
-        if( m_unhandled !is null )
+        if( rethrow && m_unhandled !is null )
         {
             throw m_unhandled;
         }
@@ -1583,8 +1587,8 @@ private:
 class ThreadGroup
 {
     /**
-     * Creates and starts a new Thread object that executes fn and
-     * adds it to the list of tracked threads.
+     * Creates and starts a new Thread object that executes fn and adds it to
+     * the list of tracked threads.
      *
      * Params:
      *  fn = The thread function.
@@ -1606,8 +1610,8 @@ class ThreadGroup
 
 
     /**
-     * Creates and starts a new Thread object that executes dg and
-     * adds it to the list of tracked threads.
+     * Creates and starts a new Thread object that executes dg and adds it to
+     * the list of tracked threads.
      *
      * Params:
      *  dg = The thread function.
@@ -1629,8 +1633,7 @@ class ThreadGroup
 
 
     /**
-     * Add t to the list of tracked threads if it is not already being
-     * tracked.
+     * Add t to the list of tracked threads if it is not already being tracked.
      *
      * Params:
      *  t = The thread to add.
@@ -1699,13 +1702,17 @@ class ThreadGroup
 
 
     /**
-     * Iteratively joins all tracked threads.  This function
-     * will block add, remove, and opApply until it completes.
+     * Iteratively joins all tracked threads.  This function will block add,
+     * remove, and opApply until it completes.
      *
      * Params:
-     *  preserve = Preserve thread references.
+     *  rethrow = Rethrow any unhandled exception which may have caused the
+     *            current thread to terminate.
+     *
+     * Throws:
+     *  Any exception not handled by the joined threads.
      */
-    void joinAll( bool preserve = true )
+    void joinAll( bool rethrow = true )
     {
         synchronized
         {
@@ -1713,9 +1720,7 @@ class ThreadGroup
             //       Thread object for both the key and the mapped value.
             foreach( Thread t; m_all.keys ) // foreach( Thread t; m_all )
             {
-                t.join();
-                if( !preserve )
-                    m_all.remove( t );
+                t.join( rethrow );
             }
         }
     }
