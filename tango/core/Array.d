@@ -62,55 +62,39 @@ version( DDoc )
      *
      * Params:
      *  T    = template argument for the result array element type
-     *  U    = template argument for the source array element type
      *  buf  = The array to cast.
      *
      * Returns:
      *  The index of the first match or buf.length if no match was found.
+     *
+     * Todo: this template only works for one dimensional arrays. Should be
+     *       enhanced to work with more dimensions.
      */
     Elem[] arraycast( Elem[] buf );
 }
 else
 {
     // implementation with array element arguments
-    T[] arraycast( T, U )( U[] u ){
-        static if(
-            ( is( T == interface ) && is( U == interface )) ||
-            ( is( T == class     ) && is( U == class     )))
-        {
-            return cast( T[] )u;
-        }
-        else
-        {
-            int l = u.length;
-            T[] res;
-            res.length = l;
-            for( int i = 0; i < l; i++ ){
-                res[i] = cast(T)u[i];
+    template arraycast( T ){
+        T[] arraycast( U )( U[] u ){
+            static if(
+                ( is( T == interface ) && is( U == interface )) ||
+                ( is( T == class     ) && is( U == class     )))
+            {
+                return cast( T[] )u;
             }
-            return res;
+            else
+            {
+                int l = u.length;
+                T[] res;
+                res.length = l;
+                for( int i = 0; i < l; i++ ){
+                    res[i] = cast(T)u[i];
+                }
+                return res;
+            }
         }
     }
-
-
-    // implementation with array arguments
-    //T arraycast( T , U )( U u ){
-    //    static if(
-    //            ( is( ElemTypeOf!(T) == interface ) && is( ElemTypeOf!(U) == interface )) ||
-    //            ( is( ElemTypeOf!(T) == class )     && is( ElemTypeOf!(U) == class ))){
-    //        return cast( T )u;
-    //    }
-    //    else
-    //    {
-    //        int l = u.length;
-    //        T res;
-    //        res.length = l;
-    //        for( int i = 0; i < l; i++ ){
-    //            res[i] = cast(ElemTypeOf!(T))u[i];
-    //        }
-    //        return res;
-    //    }
-    //}
 }
 
 ////////////////////////////////////////////////////////////////////////////////
