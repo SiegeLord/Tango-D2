@@ -50,52 +50,6 @@ private
     }
 }
 
-////////////////////////////////////////////////////////////////////////////////
-// arraycast
-////////////////////////////////////////////////////////////////////////////////
-version( DDoc )
-{
-    /**
-     * Cast an array of reference to another type. If it makes a cast from class types
-     * to interface types or vice versa an piece-wise cast, with building a new array 
-     * as the result is necessary.
-     *
-     * Params:
-     *  T    = template argument for the result array element type
-     *  buf  = The array to cast.
-     *
-     * Returns:
-     *  The index of the first match or buf.length if no match was found.
-     *
-     * Todo: this template only works for one dimensional arrays. Should be
-     *       enhanced to work with more dimensions.
-     */
-    Elem[] arraycast( Elem[] buf );
-}
-else
-{
-    // implementation with array element arguments
-    template arraycast( T ){
-        T[] arraycast( U )( U[] u ){
-            static if(
-                ( is( T == interface ) && is( U == interface )) ||
-                ( is( T == class     ) && is( U == class     )))
-            {
-                return cast( T[] )u;
-            }
-            else
-            {
-                int l = u.length;
-                T[] res;
-                res.length = l;
-                for( int i = 0; i < l; i++ ){
-                    res[i] = cast(T)u[i];
-                }
-                return res;
-            }
-        }
-    }
-}
 
 ////////////////////////////////////////////////////////////////////////////////
 // Find
