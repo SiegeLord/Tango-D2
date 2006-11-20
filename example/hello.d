@@ -15,7 +15,7 @@
 
 *******************************************************************************/
 
-private import tango.io.Console;
+import tango.io.Console;
 
 void main()
 {
