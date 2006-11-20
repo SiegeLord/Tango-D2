@@ -87,6 +87,7 @@ version( linux )
   {
     int readdir64_r(DIR*, dirent*, dirent**);
     alias readdir64_r readdir_r;
+  }
   else
   {
     int readdir_r(DIR*, dirent*, dirent**);
