@@ -56,12 +56,12 @@ version( linux )
 
   static if( false /*__USE_FILE_OFFSET64*/ )
   {
-    dirent* readdir(DIR*);
+    dirent* readdir64(DIR*);
+    alias readdir64 readdir;
   }
   else
   {
-    dirent* readdir64(DIR*);
-    alias readdir64 readdir;
+    dirent* readdir(DIR*);
   }
 }
 else
