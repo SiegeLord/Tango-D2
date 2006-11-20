@@ -85,12 +85,11 @@ version( linux )
 {
   static if( false /*__USE_FILE_OFFSET64*/ )
   {
-    int readdir_r(DIR*, dirent*, dirent**);
-  }
-  else
-  {
     int readdir64_r(DIR*, dirent*, dirent**);
     alias readdir64_r readdir_r;
+  else
+  {
+    int readdir_r(DIR*, dirent*, dirent**);
   }
 }
 
