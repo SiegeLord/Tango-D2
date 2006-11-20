@@ -16,13 +16,11 @@ private import  tango.sys.Common;
 
 private import  tango.text.Text;
 
-private import  tango.io.File,
-                tango.io.FilePath,
+private import  tango.io.FilePath,
                 tango.io.FileConst,
                 tango.io.Exception;
 
-private import  tango.text.convert.Unicode,
-                tango.text.convert.Atoi;
+private import  tango.text.convert.Unicode;
 
 version (Win32)
         private extern (Windows) DWORD GetLogicalDriveStringsA (DWORD, LPTSTR);
@@ -30,7 +28,9 @@ version (Win32)
         private import tango.stdc.string;
         
 version(Posix){
+    private import tango.io.File;
     private import tango.stdc.posix.unistd;
+    private import tango.text.convert.Atoi;
 }
 
 /*******************************************************************************
