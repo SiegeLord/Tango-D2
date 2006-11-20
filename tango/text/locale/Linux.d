@@ -6,7 +6,7 @@ alias tango.text.locale.Linux nativeMethods;
 
 private import tango.text.locale.Data;
 private import tango.stdc.ctype;
-private import tango.stdc.stdlib;
+private import tango.stdc.posix.stdlib;
 private import tango.stdc.string;
 private import tango.stdc.time;
 private import tango.stdc.locale;
