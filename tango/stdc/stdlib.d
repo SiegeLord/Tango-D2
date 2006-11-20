@@ -71,6 +71,7 @@ int     atexit(void function() func);
 void    _Exit(int status);
 
 char*   getenv(char* name);
+void    putenv(char* env);
 int     system(char* string);
 
 void*   bsearch(void* key, void* base, size_t nmemb, size_t size, int function(void*, void*) compar);

@@ -16,20 +16,22 @@ private import  tango.sys.Common;
 
 private import  tango.text.Text;
 
-private import  tango.io.FilePath,
+private import  tango.io.File,
+                tango.io.FilePath,
                 tango.io.FileConst,
                 tango.io.Exception;
 
-private import  tango.text.convert.Unicode;
+private import  tango.text.convert.Unicode,
+                tango.text.convert.Atoi;
 
 version (Win32)
-        extern (Windows) DWORD GetLogicalDriveStringsA (DWORD, LPTSTR);
+        private extern (Windows) DWORD GetLogicalDriveStringsA (DWORD, LPTSTR);
      else
-    
-        extern (C) int strlen (char *);
-	version(Posix){
-	    private import tango.stdc.posix.unistd;
-	}
+        private import tango.stdc.string;
+        
+version(Posix){
+    private import tango.stdc.posix.unistd;
+}
 
 /*******************************************************************************
 
@@ -127,14 +129,43 @@ class FileSystem
 
                         List the set of root devices.
 
-                        @todo not currently implemented.
-
-                ***********************************************************************/
+                 ***********************************************************************/
 
                 static char[][] listRoots ()
                 {
-                        assert(0);
-                        return null;
+                        version(darwin)
+                        {
+                            assert(0);
+                            return null;
+                        }
+                        else
+                        {
+                            char[] path = "", content = cast(char[]) (new File("/etc/mtab")).read();
+                            char[][] list;
+                            int spaces;
+   
+                            for(int i = 0; i < content.length; i++)
+                            {
+                                if(content[i] == ' ') spaces++;
+                                else if(content[i] == '\n')
+                                {
+                                    spaces = 0;
+                                    list ~= path;
+                                    path = "";
+                                }
+                                else if(spaces == 1)
+                                {
+                                    if(content[i] == '\\')
+                                    {
+                                        path ~= Atoi.parse(content[++i..i+3], 8);
+                                        i += 2;
+                                    }
+                                    else path ~= content[i];
+                                }
+                            }
+                            
+                            return list;
+                        }
                 }
 
                 /***********************************************************************

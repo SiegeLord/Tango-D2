@@ -38,12 +38,18 @@ struct lconv
     byte  int_n_sign_posn;
 }
 
-const LC_CTYPE      = 0;
-const LC_NUMERIC    = 1;
-const LC_TIME       = 2;
-const LC_COLLATE    = 3;
-const LC_MONETARY   = 4;
-const LC_ALL        = 6;
+const LC_CTYPE          = 0;
+const LC_NUMERIC        = 1;
+const LC_TIME           = 2;
+const LC_COLLATE        = 3;
+const LC_MONETARY       = 4;
+const LC_ALL            = 6;
+const LC_PAPER          = 7;
+const LC_NAME           = 8;
+const LC_ADDRESS        = 9;
+const LC_TELEPHONE      = 10;
+const LC_MEASUREMENT    = 11;
+const LC_IDENTIFICATION = 12;
 
 char*  setlocale( int category, char* locale );
 lconv* localeconv();
