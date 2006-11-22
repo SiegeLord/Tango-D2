@@ -213,8 +213,112 @@ extern (C) Array _d_newarrayip(size_t length, size_t size, void* init)
 }
 
 
-//extern (C) ulong _d_newm(size_t size, int ndims, ...)
-//extern (C) ulong _d_newarraymi(size_t size, int ndims, ...)
+/**
+ *
+ */
+extern (C) void[] _d_newmp(size_t size, int ndims, size_t* pdim)
+{
+    void[] result = void;
+
+    debug printf("_d_newm(size = %d, ndims = %d)\n", size, ndims);
+
+    if (size == 0 || ndims == 0)
+        result = null;
+    else
+    {
+
+        void[] foo(size_t* pdim, int ndims)
+        {
+            size_t dim = *pdim;
+            void[] p;
+
+            if (ndims == 1)
+            {   p = gc_malloc(dim * size + 1, size < (void*).sizeof ? BlkAttr.NO_SCAN : 0)[0 .. dim];
+                memset(p.ptr, 0, dim * size + 1);
+            }
+            else
+            {
+                p = gc_malloc(dim * (void[]).sizeof + 1)[0 .. dim]; // always scan
+                for (int i = 0; i < dim; i++)
+                {
+                    (cast(void[]*)p.ptr)[i] = foo(pdim + 1, ndims - 1);
+                }
+            }
+            return p;
+        }
+
+        result = foo(pdim, ndims);
+        debug printf("result = %llx\n", result);
+
+        version (none)
+        {
+            for (int i = 0; i < ndims; i++)
+            {
+                printf("index %d: %d\n", i, pdim[i]);
+            }
+        }
+    }
+    return result;
+}
+
+
+/**
+ *
+ */
+extern (C) void[] _d_newarraymip(size_t size, int ndims, size_t* pdim, size_t mult, void* pinit)
+{
+    void[] result = void;
+
+    debug printf("_d_newarraymi(size = %d, ndims = %d)\n", size, ndims);
+
+    if (size == 0 || ndims == 0)
+        result = null;
+    else
+    {
+
+        void[] foo(size_t* pdim, int ndims)
+        {
+            size_t dim = *pdim;
+            void[] p;
+
+            if (ndims == 1)
+            {   p = gc_malloc(dim * mult * size + 1, size < (void*).sizeof ? BlkAttr.NO_SCAN : 0)[0 .. dim];
+                if (size == 1)
+                    memset(p.ptr, *cast(ubyte*)pinit, dim);
+                else
+                {
+                    size_t n = dim * mult;
+                    for (size_t u = 0; u < n; u++)
+                    {
+                        memcpy(p.ptr + u * size, pinit, size);
+                    }
+                }
+            }
+            else
+            {
+                p = gc_malloc(dim * (void[]).sizeof + 1)[0 .. dim]; // always scan
+                for (int i = 0; i < dim; i++)
+                {
+                    (cast(void[]*)p.ptr)[i] = foo(pdim + 1, ndims - 1);
+                }
+            }
+            return p;
+        }
+
+        result = foo(pdim, ndims);
+        debug printf("result = %llx\n", result);
+
+        version (none)
+        {
+            for (int i = 0; i < ndims; i++)
+            {
+                printf("index %d: %d\n", i, pdim[i]);
+                printf("init = %d\n", *cast(int*)pinit);
+            }
+        }
+    }
+    return result;
+}
 
 
 /**
@@ -449,12 +553,12 @@ body
 
     if (newlength)
     {
-            version (GNU)
-            {
+        version (GNU)
+        {
             // required to output the label;
-                static char x = 0;
-                if (x)
-                    goto Loverflow;
+            static char x = 0;
+            if (x)
+                goto Loverflow;
         }
         version (D_InlineAsm_X86)
         {
@@ -502,12 +606,12 @@ body
         if (newsize > size)
         {
             if (sizeelem == 1)
-                        newdata[size .. newsize] = *(cast(byte*)init);
+                newdata[size .. newsize] = *(cast(byte*)init);
             else
             {
                 for (size_t u = size; u < newsize; u += sizeelem)
                 {
-                            memcpy(newdata + u, init, sizeelem);
+                    memcpy(newdata + u, init, sizeelem);
                 }
             }
         }

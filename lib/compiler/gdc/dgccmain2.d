@@ -87,7 +87,7 @@ extern (C) alias int function(char[][] args) main_type;
    to the D main function as in the DMD version.  The actual C
    main is in cmain.d
 
-   This servers two purposes:
+   This serves two purposes:
    1) Special applications that have a C main declared elsewhere.
 
    2) It is possible to create D shared libraries that can be used

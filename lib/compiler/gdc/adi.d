@@ -525,7 +525,7 @@ unittest
  * Sort array of chars.
  */
 
-extern (C) Array _adSortChar(char[] a)
+extern (C) char[] _adSortChar(char[] a)
 {
     if (a.length > 1)
     {
@@ -540,14 +540,14 @@ extern (C) Array _adSortChar(char[] a)
         }
         delete da;
     }
-    return *cast(Array*)(&a);
+    return a;
 }
 
 /**********************************************
  * Sort array of wchars.
  */
 
-extern (C) Array _adSortWchar(wchar[] a)
+extern (C) wchar[] _adSortWchar(wchar[] a)
 {
     if (a.length > 1)
     {
@@ -562,7 +562,7 @@ extern (C) Array _adSortWchar(wchar[] a)
         }
         delete da;
     }
-    return *cast(Array*)(&a);
+    return a;
 }
 
 /**********************************************

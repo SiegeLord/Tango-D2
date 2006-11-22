@@ -19,10 +19,10 @@
 /* eventually #ifdef HAVE_SYS_MMAN... */
 #include "config.h"
 
-#include <dirent.h>
 #include <stdio.h>
 #include <string.h>
 #include <sys/types.h>
+#include <dirent.h>
 #include <signal.h>
 #include <sys/signal.h>
 #include <sys/mman.h>
@@ -31,6 +31,7 @@
 #include <unistd.h>
 #include <assert.h>
 #include <time.h>
+#include <utime.h>
 #include <sys/time.h>
 #include <sys/socket.h>
 #include <netinet/in.h>
@@ -161,28 +162,16 @@ void c_time() {
 	INT_FIELD(fi[1], tz_dsttime);
 	finish_struct(fi, 2, sizeof(rec), "timezone");
     }
+}
+
+void c_utime()
     {
-	FieldInfo fi[11];
-	unsigned n;
-	struct tm rec;
-	INT_FIELD(fi[0], tm_sec);
-	INT_FIELD(fi[1], tm_min);
-	INT_FIELD(fi[2], tm_hour);
-	INT_FIELD(fi[3], tm_mday);
-	INT_FIELD(fi[4], tm_mon);
-	INT_FIELD(fi[5], tm_year);
-	INT_FIELD(fi[6], tm_wday);
-	INT_FIELD(fi[7], tm_yday);
-	INT_FIELD(fi[8], tm_isdst);
-	n = 9;
-	// just check for BSD?
-#ifdef HAVE_TM_GMTOFF_AND_ZONE
-	INT_FIELD(fi[n], tm_gmtoff);
-	n++;
-	ADD_FIELD(fi[n], "char *", tm_zone);
-	n++;
-#endif
-	finish_struct(fi, n, sizeof(rec), "tm");
+    {
+	FieldInfo fi[2];
+	struct utimbuf rec;
+	INT_FIELD(fi[0], actime);
+	INT_FIELD(fi[1], modtime);
+	finish_struct(fi, 2, sizeof(rec), "utimbuf");
     }
 }
 
@@ -835,6 +824,7 @@ int main()
     c_dirent();
     c_fcntl();
     c_time();
+    c_utime();
     c_stat();
     c_signal();
     c_mman();
