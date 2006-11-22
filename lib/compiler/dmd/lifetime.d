@@ -592,7 +592,6 @@ body
                     newdata = cast(byte *)gc_malloc(newsize + 1, sizeelem < (void*).sizeof ? BlkAttr.NO_SCAN : 0);
                     newdata[0 .. size] = p.data[0 .. size];
                 }
-                newdata[size .. newsize] = 0;
             }
         }
         else
