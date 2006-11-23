@@ -73,7 +73,9 @@ void setUserCulture(int lcid) {
   setlocale(LC_TIME, name.ptr);
   setlocale(LC_COLLATE, name.ptr);
   setlocale(LC_MONETARY, name.ptr);
-  setlocale(LC_MESSAGES, name.ptr);
+  version (GNU) {} else {
+      setlocale(LC_MESSAGES, name.ptr);
+  }
   setlocale(LC_PAPER, name.ptr);
   setlocale(LC_NAME, name.ptr);
   setlocale(LC_ADDRESS, name.ptr);
