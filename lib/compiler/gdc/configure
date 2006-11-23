@@ -2625,8 +2625,8 @@ case "$target" in
 esac
 
 
-GDC=$CC
-GDC=`echo $CC | sed s/xgcc/gdc/`
+#GDC=$CC
+GDC=`echo $CC | sed s/gcc/gdc/`
 
 echo "$as_me:$LINENO: checking If $GDC can compile D sources" >&5
 echo $ECHO_N "checking If $GDC can compile D sources... $ECHO_C" >&6
