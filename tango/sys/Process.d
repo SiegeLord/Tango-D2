@@ -721,7 +721,7 @@ class Process
                         if (rc == -1)
                         {
                             Stdout.formatln("Failed to exec {0}: {1}",
-                                            _args[0], lastSysErrorMsg());
+                                            _args[0], SysError.lastMsg);
 
                             try
                             {
@@ -740,7 +740,7 @@ class Process
                     else
                     {
                         Stdout.formatln("Failed to set notification pipe to close-on-exec for {0}: {1}",
-                                        _args[0], lastSysErrorMsg());
+                                        _args[0], SysError.lastMsg);
                         exit(errno);
                     }
                 }
@@ -901,7 +901,7 @@ class Process
 
                     debug (Process)
                         Stdout.formatln("Could not wait on child process '{0}' ({1}): ({2}) {3}",
-                                        _args[0], _pid, result.status, lastSysErrorMsg());
+                                        _args[0], _pid, result.status, SysError.lastMsg);
                 }
                 clean();
             }
@@ -1315,12 +1315,12 @@ class ProcessException: Exception
 {
     protected this(char[] msg, pid_t pid)
     {
-        super(Formatter.format(msg, pid, lastSysErrorMsg()));
+        super(Formatter.format(msg, pid, SysError.lastMsg));
     }
 
     protected this(char[] msg, char[] command)
     {
-        super(Formatter.format(msg, command, lastSysErrorMsg()));
+        super(Formatter.format(msg, command, SysError.lastMsg));
     }
 }
 

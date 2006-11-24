@@ -128,7 +128,7 @@ class DeviceConduit : Conduit
 
                 final void error ()
                 {
-                        throw new IOException (getName() ~ ": " ~ lastSysErrorMsg());
+                        throw new IOException (getName() ~ ": " ~ SysError.lastMsg);
                 }
 
                 /***************************************************************
@@ -224,8 +224,7 @@ class DeviceConduit : Conduit
 
                 final void error ()
                 {
-                        throw new IOException (getName() ~ ": " ~
-                                               lastSysErrorMsg);
+                        throw new IOException (getName()~": "~SysError.lastMsg);
                 }
 
                 /***************************************************************

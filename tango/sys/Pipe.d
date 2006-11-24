@@ -151,7 +151,7 @@ class Pipe
      */
     private final void error ()
     {
-        throw new IOException("Pipe error: " ~ lastSysErrorMsg());
+        throw new IOException("Pipe error: " ~ SysError.lastMsg);
     }
 }
 

@@ -51,19 +51,19 @@ version (Win32)
         private const LANG_NEUTRAL = 0x00;
         private const SUBLANG_DEFAULT = 0x01;
 
-        extern (Windows)
-               {
-               DWORD FormatMessageA (DWORD dwFlags,
-                                     LPCVOID lpSource,
-                                     DWORD dwMessageId,
-                                     DWORD dwLanguageId,
-                                     LPTSTR lpBuffer,
-                                     DWORD nSize,
-                                     LPCVOID args
-                                     );
+        private extern (Windows)
+                       {
+                       DWORD FormatMessageA (DWORD dwFlags,
+                                             LPCVOID lpSource,
+                                             DWORD dwMessageId,
+                                             DWORD dwLanguageId,
+                                             LPTSTR lpBuffer,
+                                             DWORD nSize,
+                                             LPCVOID args
+                                             );
 
-               HLOCAL LocalFree(HLOCAL hMem);
-               }
+                       HLOCAL LocalFree(HLOCAL hMem);
+                       }
         }
 else
 version (Posix)
@@ -74,69 +74,77 @@ version (Posix)
 else
    static assert(0);
 
+   
 /*******************************************************************************
 
 *******************************************************************************/
 
-uint lastSysError ()
-{
-        version (Win32)
-                 return GetLastError;
-             else
-                 return errno;
-}
+struct SysError
+{   
+        /***********************************************************************
 
-/*******************************************************************************
+        ***********************************************************************/
 
-*******************************************************************************/
+        static uint lastCode ()
+        {
+                version (Win32)
+                         return GetLastError;
+                     else
+                         return errno;
+        }
 
-char[] lastSysErrorMsg ()
-{
-        return sysErrorMsg (lastSysError);
-}
+        /***********************************************************************
 
-/*******************************************************************************
+        ***********************************************************************/
 
-*******************************************************************************/
+        static char[] lastMsg ()
+        {
+                return lookup (lastCode);
+        }
 
-char[] sysErrorMsg (uint errcode)
-{
-        char[] text;
+        /***********************************************************************
 
-        version (Win32)
-                {
-                DWORD  r;
-                LPVOID lpMsgBuf;
+        ***********************************************************************/
 
-                r = FormatMessageA (
-                        FORMAT_MESSAGE_ALLOCATE_BUFFER |
-                        FORMAT_MESSAGE_FROM_SYSTEM |
-                        FORMAT_MESSAGE_IGNORE_INSERTS,
-                        null,
-                        errcode,
-                        MAKELANGID(LANG_NEUTRAL, SUBLANG_DEFAULT), // Default language
-                        cast(LPTSTR)&lpMsgBuf,
-                        0,
-                        null);
+        static char[] lookup (uint errcode)
+        {
+                char[] text;
 
-                /* Remove \r\n from error string */
-                if (r >= 2) r-= 2;
-                text = (cast(char *)lpMsgBuf)[0..r].dup;
-                LocalFree(cast(HLOCAL)lpMsgBuf);
-                }
-             else
-                {
-                uint  r;
-                char* pemsg;
+                version (Win32)
+                        {
+                        DWORD  r;
+                        LPVOID lpMsgBuf;
 
-                pemsg = strerror(errcode);
-                r = strlen(pemsg);
+                        r = FormatMessageA (
+                                FORMAT_MESSAGE_ALLOCATE_BUFFER |
+                                FORMAT_MESSAGE_FROM_SYSTEM |
+                                FORMAT_MESSAGE_IGNORE_INSERTS,
+                                null,
+                                errcode,
+                                MAKELANGID(LANG_NEUTRAL, SUBLANG_DEFAULT), // Default language
+                                cast(LPTSTR)&lpMsgBuf,
+                                0,
+                                null);
 
-                /* Remove \r\n from error string */
-                if (pemsg[r-1] == '\n') r--;
-                if (pemsg[r-1] == '\r') r--;
-                text = pemsg[0..r].dup;
-                }
+                        /* Remove \r\n from error string */
+                        if (r >= 2) r-= 2;
+                        text = (cast(char *)lpMsgBuf)[0..r].dup;
+                        LocalFree(cast(HLOCAL)lpMsgBuf);
+                        }
+                     else
+                        {
+                        uint  r;
+                        char* pemsg;
 
-        return text;
+                        pemsg = strerror(errcode);
+                        r = strlen(pemsg);
+
+                        /* Remove \r\n from error string */
+                        if (pemsg[r-1] == '\n') r--;
+                        if (pemsg[r-1] == '\r') r--;
+                        text = pemsg[0..r].dup;
+                        }
+
+                return text;
+        }
 }
