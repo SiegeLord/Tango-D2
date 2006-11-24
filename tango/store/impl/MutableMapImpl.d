@@ -193,7 +193,7 @@ public abstract class MutableMapImplT(K, T) : MutableImplT!(T), MutableMapT!(K, 
 
         public final char[] toUtf8()
         {
-                auto buf = new String;
+                auto buf = new String!(char);
                 buf.append("( (class: "c).append(this.classinfo.name).append(")"c);
                 buf.append(" (size:"c).append(size()).append(")"c);
                 buf.append(" (elements:"c);
