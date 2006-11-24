@@ -65,50 +65,50 @@ class FilePath : FilePathView
         ***********************************************************************/
 
         this (FilePathView other)
-        in {
-           assert (other);
-           }
-        body
         {
-//                fp = other.fp;
+                assert (other);
                 ext = other.getExtension;
                 name = other.getName;
                 path = other.getPath;
                 root = other.getRoot;
                 suffix = other.getSuffix;
-//                fpWide = other.fpWide;
         }
 
         /***********************************************************************
         
-                Create a FilePath from the given string. Note the path string
-                is usually duplicated here, though you may specify that it be
-                aliased instead via the third argument. When aliased, you are 
-                expected to provide an immutable copy for the lifetime of this 
-                object. If you are not certain, ignore the third argument.
+                Create a FilePath from the given strings
 
         ***********************************************************************/
-        this (char[] parentpath, char[] filename, bool copy = true)
+        
+        this (char[] dir, char[] filename)
         {
-            this( parentpath ~ FileConst.PathSeparatorString ~ filename, copy );
+                this (filename);
+                setPath (dir.dup);
         }
 
         /***********************************************************************
         
-                Create a FilePathView from the given string. Note the path string
-                is usually duplicated here, though you may specify that it be
-                aliased instead via the second argument. When aliased, you are 
-                expected to provide an immutable copy for the lifetime of this 
-                object. If you are not certain, ignore the second argument.
+                Create a FilePath from the given string. Note the path
+                string is usually duplicated here, though you may specify
+                that it be aliased instead via the second argument. When
+                aliased, you are expected to provide an immutable copy for
+                the lifetime of this object. If not certain, ignore the
+                second argument.
 
-                If it is known that the filepath is a directory, construct the 
-                FilePath with the isdir parameter set to true, and the part
-                after the last path separator will become part of the path
-                component. Name will then be empty.
+                FilePath normally assumes a filename is present, and therefore
+                may split what is otherwise a logically valid path. That is,
+                the 'name' of a file is typically the path segment following
+                a rightmost path-seperator. The intent is to treat files and
+                directories in the same manner -- as a name with an optional
+                ancestral structure. To bias processing such that the 'path'
+                is always fully retained, construct a FilePath with parameter
+                isdir set to true: the segment beyond the rightmost separator
+                will become part of the path component, and 'name' will become
+                empty.                 
 
-                To find if the file path exists as either a file or a directory,
-                pass the FilePath instance to File in tango.io.File and use
-                the methods there.
+                To ascertain if a FilePath exists on a system, or to access
+                various other physical attributes, use methods exposed via
+                tango.io.FileProxy or tango.io.File
 
         ***********************************************************************/
 
@@ -409,19 +409,16 @@ class FilePath : FilePathView
 
         ***********************************************************************/
  
-        FilePathView getFile ()
+        FilePath getFile ()
         {
-            FilePath fp = new FilePath(this);
-            fp.setRoot("");
-            fp.setPath("");
-            fp.reset();
-            return fp;
+                auto fp = new FilePath(this);
+                return fp.setRoot(null).setPath(null);
         }
 
         /***********************************************************************
 
             Returns the directory name, that is root and path. It is returned
-            as a FilePathView with empty name, suffix and extension.
+            as a FilePath with empty name, suffix and extension.
 
             Examples:
 
@@ -434,14 +431,9 @@ class FilePath : FilePathView
  
         ***********************************************************************/
  
-        FilePathView getDirectory ()
+        FilePath getDirectory ()
         {
-            FilePath fp = new FilePath(this);
-            fp.setName("");
-            fp.setExtension("");
-            fp.setSuffix("");
-            fp.reset();
-            return fp;
+                return toSibling (null);
         }
 
         /***********************************************************************
@@ -456,10 +448,16 @@ class FilePath : FilePathView
                     consume (root), consume (FileConst.RootSeparatorString);
 
                 if (path.length)
-                    consume (path);
+                   {
+                   consume (path);
+
+                   // don't emit a separator where there's no name
+                   if (name.length)
+                       consume (FileConst.PathSeparatorString);
+                   }
 
                 if (name.length)
-                    consume (FileConst.PathSeparatorString), consume (name);
+                    consume (name);
 
                 if (ext.length)
                     consume (FileConst.FileSeparatorString), consume (ext);
@@ -708,9 +706,9 @@ class FilePath : FilePathView
 
         ***********************************************************************/
 
-        int opEquals(Object filepath)
+        int opEquals (Object filepath)
         {
-                FilePathView fp = cast(FilePathView)filepath;
+                auto fp = cast(FilePathView) filepath;
                 return (root == fp.getRoot() &&
                         path == fp.getPath() &&
                         name == fp.getName() &&
@@ -718,6 +716,7 @@ class FilePath : FilePathView
         }
 }
 
+            
 debug (UnitTest) {
 
 unittest {
@@ -745,9 +744,9 @@ unittest {
     auto fp = new FilePath(r"C:\home\foo\bar\john");
     assert (fp.isAbsolute());
     assert (fp.getName() == "john");
-    assert (fp.getPath() == r"C:\home\foo\bar");
+    assert (fp.getPath() == r"\home\foo\bar", fp.getPath);
     assert (fp.toUtf8() == r"C:\home\foo\bar\john");
-    assert (fp.getDirectory().toUtf8() == r"C:\home\foo\bar");
+    assert (fp.getDirectory().toUtf8() == r"C:\home\foo\bar", fp.getDirectory().toUtf8);
 
     fp = new FilePath(r"foo\bar\john");
     assert (!fp.isAbsolute());
