@@ -6,7 +6,7 @@ import tango.text.convert.Integer;
 import tango.text.convert.Rfc1123;
 import tango.text.convert.Sprint;
 import tango.text.convert.Type;
-import tango.text.convert.Unicode;
+import tango.text.convert.Utf;
 import tango.text.convert.UnicodeBom;
 
 import tango.core.Array;

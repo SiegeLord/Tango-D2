@@ -38,7 +38,6 @@ doc\index.def
 doc\html\candydoc\candy.ddoc
 tango\sys\windows\minwin.d
 tango\store\LinkMap.d
-tango\text\UtfString.d
 tango\core\ByteSwap.d
 tango\math\cipher\Sha0.d
 tango\store\model\Keyed.d
@@ -206,6 +205,7 @@ tango\store\LinkSeq.d
 tango\store\HashMap.d
 tango\math\cipher\Tiger.d
 tango\text\QuoteIterator.d
+tango\text\convert\Utf.d
 tango\text\convert\UnicodeBom.d
 tango\io\Buffer.d
 tango\store\model\Immutable.d
@@ -226,7 +226,6 @@ mango\net\servlet\ServletException.d
 mango\net\servlet\ServletRequest.d
 tango\text\LineIterator.d
 tango\math\cipher\Md2.d
-tango\text\convert\Unicode.d
 tango\log\Configurator.d
 tango\text\ArgParser.d
 tango\io\GrowBuffer.d

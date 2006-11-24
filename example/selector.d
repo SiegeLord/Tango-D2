@@ -23,7 +23,6 @@ private
     import tango.sys.linux.linux;
     import tango.sys.TimeConverter;
     import tango.stdc.errno;
-    import tango.text.convert.Unicode;
 }
 
 

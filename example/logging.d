@@ -44,7 +44,7 @@ private class Sieve
                         s=0,
                         e = 1;
                 int     count;
-                auto    sprint = new Sprint (256);
+                auto    sprint = new Sprint!(char);
 
                 void set (byte* f, uint x)
                 {

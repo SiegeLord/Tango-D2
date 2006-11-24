@@ -43,18 +43,10 @@ void main () {
 
     /* String formatting , replaces vsprintf() style functions*/
 
-    // struct based sprint with no precision specifiers, all stack based
-    char [256] stackSprintString;
-    SprintStruct stackSprint;
-    stackSprint.ctor(stackSprintString);
-    char [] stringWithNoPrecision = stackSprint("{0} {1} {2} - {3} ","All your base","are","belong to us",2100 );
+    // sprint
+    auto sprint = new Sprint!(char);
+    auto stringWithNoPrecision = stackSprint("{0} {1} {2} - {3} ","All your base","are","belong to us",2100 );
     Stdout(stringWithNoPrecision).newline;
-    // class based sprint with precision specifiers, we use Double.format
-
-    //Sprint sprint = new Sprint(256, &Double.format);
-    //char [] stringWithPrecision = sprint ( "{0} is {1} times {2:f.3}","Julio",32, 5.68732 );
-    //Stdout(stringWithPrecision).newline;
-
 
     /* converting to / from UTF8, UTF16, UTF32, both Big Endian and Little Endian */
     char [] str = "Marry had a little endian";
@@ -63,16 +55,6 @@ void main () {
     char [] newStr = Unicode.toUtf8(wstr); // and back again
     newStr = Unicode.toUtf8(dstr); //and back again
     Stdout(newStr).newline;
-
-    // or the alternate way
-    Unicode.Into!(char) into; //  char is what converting into
-    char [] catchAllConverter = cast(char[])into.convert(
-            /* what you want to convert*/
-            cast(void[])wstr,
-            /* the type the your converting _from_ */
-            Type.Utf16
-            );
-    Stdout(catchAllConverter).newline;
 
 
     /* Converting content to unicode for writing files.  See alsio tango.io.UnicodeFile .*/
@@ -83,7 +65,7 @@ void main () {
     // ( if we were reading in the encoding would be figured out by the BOM )
     // have to sepcify big or little endian
 
-    UnicodeBomT!(char) bom = new UnicodeBomT!(char)(Unicode.UTF_16BE);
+    UnicodeBom!(char) bom = new UnicodeBom!(char)(Unicode.UTF_16BE);
 
     void [] encoded = bom.encode(bubbleBoy );
 

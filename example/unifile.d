@@ -15,7 +15,7 @@ void main (char[][] args)
         if (args.length is 2)
            {
            // open a file for reading
-           auto file = new UnicodeFile (args[1], Unicode.Unknown);
+           auto file = new UnicodeFile!(char) (args[1], Encoding.Unknown);
 
            // display on console
            Cout (file.read).newline;
