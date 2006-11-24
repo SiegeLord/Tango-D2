@@ -19,14 +19,14 @@ private import  tango.io.model.IConduit;
 /*******************************************************************************
 
         Conduit abstract base-class, implementing interface IConduit.
-        Only the conduit-specific read, write, and buffer-factory
+        Only the conduit-specific reader(), writer(), and bufferSize()
         need to be implemented for a concrete conduit implementation.
         See FileConduit for an example.
 
         Conduits provide virtualized access to external content, and
         represent things like files or Internet connections. Conduits
         are modelled by tango.io.model.IConduit, and implemented via
-        classes FileConduit and SocketConduit.
+        classes FileConduit, SocketConduit, etc
 
         Additional kinds of conduit are easy to construct: one either
         subclasses tango.io.Conduit, or implements tango.io.model.IConduit.
@@ -91,7 +91,7 @@ class Conduit : IConduit, IConduitFilter
 
         ***********************************************************************/
 
-        this (Access access, bool seekable)
+        this (Access access, bool seekable = false)
         {
                 filter = this;
                 this.access = access;
@@ -139,7 +139,11 @@ class Conduit : IConduit, IConduitFilter
 
         void attach (IConduitFilter filter)
         {
+                // hook new filter to current one
                 filter.bind (this, this.filter);
+
+                // make this the head filter
+                this.filter = filter;
         }
 
         /***********************************************************************
@@ -212,17 +216,6 @@ class Conduit : IConduit, IConduitFilter
         bool isWritable ()
         {
                 return cast(bool) ((access & Access.Write) != 0);
-        }
-
-        /***********************************************************************
-
-                Returns true if this conduit is text-based
-
-        ***********************************************************************/
-
-        bool isTextual ()
-        {
-                return false;
         }
 
         /***********************************************************************
