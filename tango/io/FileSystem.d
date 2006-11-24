@@ -20,7 +20,7 @@ private import  tango.io.FilePath,
                 tango.io.FileConst,
                 tango.io.Exception;
 
-private import  tango.text.convert.Unicode;
+private import  tango.text.convert.Utf;
 
 version (Win32)
         private extern (Windows) DWORD GetLogicalDriveStringsA (DWORD, LPTSTR);
@@ -43,6 +43,8 @@ version(Posix){
 
 class FileSystem
 {
+        private alias tango.text.convert.Utf Utf;
+        
         version (Win32)
         {
                 /***********************************************************************
@@ -115,7 +117,7 @@ class FileSystem
                                    {
                                    wchar[] dir = new wchar [length];
                                    GetCurrentDirectoryW (length, dir);
-                                   return new FilePath (Unicode.toUtf8 (dir), false);
+                                   return new FilePath (Utf.toUtf8 (dir), false);
                                    }
                                 }
                         throw new IOException ("Failed to get current directory");

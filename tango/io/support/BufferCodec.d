@@ -13,7 +13,7 @@
 module tango.io.support.BufferCodec;
 
 private import  tango.text.convert.Type,
-                tango.text.convert.Unicode;
+                tango.text.convert.Utf;
 
 private import  tango.io.model.IBuffer;
 
@@ -104,8 +104,6 @@ private class Exporter : AbstractDecoder
 
 class UnicodeImporter(T) : Importer
 {
-        Unicode.Into!(T) into;
-
         this (IBuffer buffer = null)
         {
                 bind (buffer);
@@ -138,6 +136,83 @@ class UnicodeImporter(T) : Importer
                       }
                 return eaten;
         }
+
+        /***********************************************************************
+
+                Convert from an external coding of 'type' to an internally
+                normalized representation of T.
+
+                T refers to the destination, whereas 'type' refers to the
+                source.
+
+        ***********************************************************************/
+
+        struct Into(T)
+        {
+                /***************************************************************
+
+                ***************************************************************/
+
+                static uint type ()
+                {
+                        static if (is (T == char))
+                                   return Type.Utf8;
+                        static if (is (T == wchar))
+                                   return Type.Utf16;
+                        static if (is (T == dchar))
+                                   return Type.Utf32;
+                }
+
+                /***************************************************************
+
+                ***************************************************************/
+
+                static void[] convert (void[] x, uint type, void[] dst=null, uint* ate=null)
+                {
+                        void[] ret;
+
+                        static if (is (T == char))
+                                  {
+                                  if (type == Type.Utf8)
+                                      return x;
+
+                                  if (type == Type.Utf16)
+                                      ret = toUtf8 (cast(wchar[]) x, cast(char[]) dst, ate);
+                                  else
+                                  if (type == Type.Utf32)
+                                      ret = toUtf8 (cast(dchar[]) x, cast(char[]) dst, ate);
+                                  }
+
+                        static if (is (T == wchar))
+                                  {
+                                  if (type == Type.Utf16)
+                                      return x;
+
+                                  if (type == Type.Utf8)
+                                      ret = toUtf16 (cast(char[]) x, cast(wchar[]) dst, ate);
+                                  else
+                                  if (type == Type.Utf32)
+                                      ret = toUtf16 (cast(dchar[]) x, cast(wchar[]) dst, ate);
+                                  }
+
+                        static if (is (T == dchar))
+                                  {
+                                  if (type == Type.Utf32)
+                                      return x;
+
+                                  if (type == Type.Utf8)
+                                      ret = toUtf32 (cast(char[]) x, cast(dchar[]) dst, ate);
+                                  else
+                                  if (type == Type.Utf16)
+                                      ret = toUtf32 (cast(wchar[]) x, cast(dchar[]) dst, ate);
+                                  }
+                        if (ate)
+                            *ate *= Type.widths[type];
+                        return ret;
+                }
+        }
+
+        Into!(T) into;
 }
 
 
@@ -147,8 +222,6 @@ class UnicodeImporter(T) : Importer
 
 class UnicodeExporter(T) : Exporter
 {
-        Unicode.From!(T) from;
-
         this (IBuffer buffer = null)
         {
                 bind (buffer);
@@ -193,7 +266,92 @@ class UnicodeExporter(T) : Exporter
                       }
                 return written;
         }
+
+        /***********************************************************************
+
+                Convert to an external coding of 'type' from an internally
+                normalized representation of T.
+
+                T refers to the source, whereas 'type' is the destination.
+
+        ***********************************************************************/
+
+        struct From(T)
+        {
+                /***************************************************************
+
+                ***************************************************************/
+
+                static uint type ()
+                {
+                        static if (is (T == char))
+                                   return Type.Utf8;
+                        static if (is (T == wchar))
+                                   return Type.Utf16;
+                        static if (is (T == dchar))
+                                   return Type.Utf32;
+                }
+
+                /***************************************************************
+
+                ***************************************************************/
+
+                static void[] convert (void[] x, uint type, void[] dst=null, uint* ate=null)
+                {
+                        void[] ret;
+
+                        static if (is (T == char))
+                                  {
+                                  if (type == Type.Utf8)
+                                      return x;
+
+                                  if (type == Type.Utf16)
+                                      ret = toUtf16 (cast(char[]) x, cast(wchar[]) dst, ate);
+                                  else
+                                  if (type == Type.Utf32)
+                                      ret = toUtf32 (cast(char[]) x, cast(dchar[]) dst, ate);
+                                  }
+
+                        static if (is (T == wchar))
+                                  {
+                                  if (type == Type.Utf16)
+                                      return x;
+
+                                  if (type == Type.Utf8)
+                                      ret = toUtf8 (cast(wchar[]) x, cast(char[]) dst, ate);
+                                  else
+                                  if (type == Type.Utf32)
+                                      ret = toUtf32 (cast(wchar[]) x, cast(dchar[]) dst, ate);
+                                  }
+
+                        static if (is (T == dchar))
+                                  {
+                                  if (type == Type.Utf32)
+                                      return x;
+
+                                  if (type == Type.Utf8)
+                                      ret = toUtf8 (cast(dchar[]) x, cast(char[]) dst, ate);
+                                  else
+                                  if (type == Type.Utf16)
+                                      ret = toUtf16 (cast(dchar[]) x, cast(wchar[]) dst, ate);
+                                  }
+
+                        static if (is (T == wchar))
+                                  {
+                                  if (ate)
+                                      *ate *= 2;
+                                  }
+                        static if (is (T == dchar))
+                                  {
+                                  if (ate)
+                                      *ate *= 4;
+                                  }
+                        return ret;
+                }
+        }
+
+        From!(T) from;
 }
 
-//alias UnicodeImporter!(wchar) UnicodeImporter16;
-
+// alias UnicodeImporter!(char) imp;
+// alias UnicodeExporter!(char) exp;

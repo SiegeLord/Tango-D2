@@ -12,12 +12,12 @@
 
 module tango.io.FilePath;
 
-public  import  tango.io.model.FilePathView;
-
 private import  tango.io.Exception,
                 tango.io.FileConst;
 
-private import  tango.text.convert.Unicode;
+private import  tango.text.convert.Utf;
+
+public  import  tango.io.model.FilePathView;
 
 /*******************************************************************************
 
@@ -45,6 +45,8 @@ class FilePath : FilePathView
 
         private wchar[] fpWide;                 // utf 16 with trailing 0
 
+        private alias tango.text.convert.Utf Utf;
+        
         /***********************************************************************
         
                 Create an empty FilePath
@@ -510,7 +512,7 @@ class FilePath : FilePathView
         {
                 if (fpWide.length is 0)
                     // convert trailing null also ...
-                    fpWide = Unicode.toUtf16 (toUtf8 (true));
+                    fpWide = Utf.toUtf16 (toUtf8 (true));
 
                 return fpWide [0 .. $ - (withNull ? 0 : 1)];
         }

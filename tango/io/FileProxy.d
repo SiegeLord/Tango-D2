@@ -22,7 +22,7 @@ public  import  tango.io.FilePath;
 
 private import  tango.io.Exception;
 
-private import  tango.text.convert.Unicode;
+private import  tango.text.convert.Utf;
 
 
 /*******************************************************************************
@@ -104,6 +104,8 @@ version (Posix)
 class FileProxy
 {
         private FilePathView path;
+
+        private alias tango.text.convert.Utf Utf;
 
         /***********************************************************************
         
@@ -480,7 +482,7 @@ class FileProxy
                                         else
                                            {
                                            int len = wcslen (fileinfo.cFileName);
-                                           fp = new FilePath (Unicode.toUtf8(fileinfo.cFileName [0 .. len]), false);
+                                           fp = new FilePath (Utf.toUtf8(fileinfo.cFileName [0 .. len]), false);
                                            }
 
                                    if (i >= list.length)

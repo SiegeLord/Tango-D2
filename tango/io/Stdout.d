@@ -35,6 +35,7 @@ private class BufferedFormat(T)
 
         private T[]             eol;
         private IBuffer         output;
+        private Format!(T)      convert;
 
         /**********************************************************************
 
@@ -43,8 +44,9 @@ private class BufferedFormat(T)
 
         **********************************************************************/
 
-        this (IBuffer output, T[] eol = "\n")
+        this (Format!(T) convert, IBuffer output, T[] eol = "\n")
         {
+                this.convert = convert;
                 this.output = output;
                 this.eol = eol;
         }
@@ -57,7 +59,7 @@ private class BufferedFormat(T)
 
         final BufferedFormat format (T[] fmt, ...)
         {
-                Formatter.format (&sink, _arguments, _argptr, fmt);
+                convert (&sink, _arguments, _argptr, fmt);
                 return this;
         }
 
@@ -70,7 +72,7 @@ private class BufferedFormat(T)
 
         final BufferedFormat formatln (T[] fmt, ...)
         {
-                Formatter.format (&sink, _arguments, _argptr, fmt);
+                convert (&sink, _arguments, _argptr, fmt);
                 return newline();
         }
 
@@ -103,7 +105,7 @@ private class BufferedFormat(T)
                 if (count is 0)
                     output.flush;
                 else
-                   Formatter.format (&sink, _arguments, _argptr, fmt[count-1]);
+                   convert (&sink, _arguments, _argptr, fmt[count-1]);
 
                 return this;
         }
@@ -188,7 +190,7 @@ public static BufferedFormat!(char)     Stdout,
 
 static this()
 {
-        Stdout = new BufferedFormat!(char) (Cout);
-        Stderr = new BufferedFormat!(char) (Cerr);
+        Stdout = new BufferedFormat!(char) (Formatter, Cout);
+        Stderr = new BufferedFormat!(char) (Formatter, Cerr);
 }
 

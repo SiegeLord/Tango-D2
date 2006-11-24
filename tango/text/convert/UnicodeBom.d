@@ -12,11 +12,29 @@
 
 module tango.text.convert.UnicodeBom;
 
-private import  tango.text.convert.Type;
-
 private import  tango.core.ByteSwap;
 
-public  import  tango.text.convert.Unicode;
+private import  tango.text.convert.Utf,
+                tango.text.convert.Type;
+
+
+/*******************************************************************************
+
+        see http://icu.sourceforge.net/docs/papers/forms_of_unicode/#t2
+
+*******************************************************************************/
+
+enum Encoding {
+              Unknown,
+              UTF_8,
+              UTF_8N,
+              UTF_16,
+              UTF_16BE,
+              UTF_16LE,
+              UTF_32,
+              UTF_32BE,
+              UTF_32LE,
+              };
 
 /*******************************************************************************
 
@@ -32,31 +50,31 @@ public  import  tango.text.convert.Unicode;
         returns an array of the type, while encode() expect an array of said 
         type.
 
-        Supported external encodings are as follow (from Unicode.d):
+        Supported external encodings are as follow:
 
-                Unicode.Unknown 
-                Unicode.UTF_8
-                Unicode.UTF_8N
-                Unicode.UTF_16
-                Unicode.UTF_16BE
-                Unicode.UTF_16LE 
-                Unicode.UTF_32 
-                Unicode.UTF_32BE
-                Unicode.UTF_32LE 
+                Encoding.Unknown 
+                Encoding.UTF_8
+                Encoding.UTF_8N
+                Encoding.UTF_16
+                Encoding.UTF_16BE
+                Encoding.UTF_16LE 
+                Encoding.UTF_32 
+                Encoding.UTF_32BE
+                Encoding.UTF_32LE 
 
         These can be divided into non-explicit and explicit encodings:
 
-                Unicode.Unknown 
-                Unicode.UTF_8
-                Unicode.UTF_16
-                Unicode.UTF_32 
+                Encoding.Unknown 
+                Encoding.UTF_8
+                Encoding.UTF_16
+                Encoding.UTF_32 
 
 
-                Unicode.UTF_8N
-                Unicode.UTF_16BE
-                Unicode.UTF_16LE 
-                Unicode.UTF_32BE
-                Unicode.UTF_32LE 
+                Encoding.UTF_8N
+                Encoding.UTF_16BE
+                Encoding.UTF_16LE 
+                Encoding.UTF_32BE
+                Encoding.UTF_32LE 
         
         The former group of non-explicit encodings may be used to 'discover'
         an unknown encoding, by examining the first few bytes of the content
@@ -83,51 +101,51 @@ public  import  tango.text.convert.Unicode;
 
 *******************************************************************************/
 
-class UnicodeBomT(T) 
+class UnicodeBom(T) 
 {
+        private alias tango.text.convert.Utf Utf;
+
         static if (!is (T == char) && !is (T == wchar) && !is (T == dchar)) 
                     pragma (msg, "Template type must be char, wchar, or dchar");
 
 
-        private int     encoding;       // the current encoding
-        private Info*   settings;       // pointer to encoding configuration
-
-        private Unicode.From!(T) from;
-        private Unicode.Into!(T) into;
+        private Encoding encoding;      // the current encoding
+        private Info*    settings;      // pointer to encoding configuration
 
         private struct  Info
                 {
-                int     type;           // type of element (char/wchar/dchar)
-                int     encoding;       // Unicode.xx encoding
-                char[]  bom;            // pattern to match for signature
-                bool    test,           // should we test for this encoding?
-                        endian,         // this encoding have endian concerns?
-                        bigEndian;      // is this a big-endian encoding?
-                int     fallback;       // can this encoding be defaulted?
+                int      type;          // type of element (char/wchar/dchar)
+                Encoding encoding;      // Encoding.xx encoding
+                char[]   bom;           // pattern to match for signature
+                bool     test,          // should we test for this encoding?
+                         endian,        // this encoding have endian concerns?
+                         bigEndian;     // is this a big-endian encoding?
+                Encoding fallback;      // can this encoding be defaulted?
                 };
+
 
         private const Info[] lookup =
         [
-        {Type.Utf8,  Unicode.Unknown,  null,        true, false, false, Unicode.UTF_8N},
-        {Type.Utf8,  Unicode.UTF_8,    null,        true, false, false, Unicode.UTF_8N},
-        {Type.Utf8,  Unicode.UTF_8N,   x"efbbbf",   false},
-        {Type.Utf16, Unicode.UTF_16,   null,        true, false, false, Unicode.UTF_16BE},
-        {Type.Utf16, Unicode.UTF_16BE, x"feff",     false, true, true},
-        {Type.Utf16, Unicode.UTF_16LE, x"fffe",     false, true},
-        {Type.Utf32, Unicode.UTF_32,   null,        true, false, false, Unicode.UTF_32BE},
-        {Type.Utf32, Unicode.UTF_32BE, x"0000feff", false, true, true},
-        {Type.Utf32, Unicode.UTF_32LE, x"fffe0000", false, true},
+        {Type.Utf8,  Encoding.Unknown,  null,        true,  false, false, Encoding.UTF_8N},
+        {Type.Utf8,  Encoding.UTF_8,    null,        true,  false, false, Encoding.UTF_8N},
+        {Type.Utf8,  Encoding.UTF_8N,   x"efbbbf",   false},
+        {Type.Utf16, Encoding.UTF_16,   null,        true,  false, false, Encoding.UTF_16BE},
+        {Type.Utf16, Encoding.UTF_16BE, x"feff",     false, true, true},
+        {Type.Utf16, Encoding.UTF_16LE, x"fffe",     false, true},
+        {Type.Utf32, Encoding.UTF_32,   null,        true,  false, false, Encoding.UTF_32BE},
+        {Type.Utf32, Encoding.UTF_32BE, x"0000feff", false, true, true},
+        {Type.Utf32, Encoding.UTF_32LE, x"fffe0000", false, true},
         ];
 
 
         /***********************************************************************
         
                 Construct a instance using the given external encoding ~ one 
-                of the Unicode.xx types 
+                of the Encoding.xx types 
 
         ***********************************************************************/
                                   
-        this (int encoding)
+        this (Encoding encoding)
         {
                 setup (encoding);
         }
@@ -141,7 +159,7 @@ class UnicodeBomT(T)
 
         ***********************************************************************/
 
-        final int getEncoding ()
+        final Encoding getEncoding ()
         {
                 return encoding;
         }
@@ -168,7 +186,7 @@ class UnicodeBomT(T)
 
         ***********************************************************************/
 
-        final T[] decode (void[] content, void[] dst=null, uint* ate=null)
+        final T[] decode (void[] content, T[] dst=null)
         {
                 // look for a BOM
                 auto info = test (content);
@@ -188,14 +206,14 @@ class UnicodeBomT(T)
                        if (settings.fallback)
                            setup (settings.fallback);
                        else
-                          Unicode.error ("UnicodeBom.decode :: unknown or missing BOM");
+                          onUnicodeError ("UnicodeBom.decode :: unknown or missing BOM");
                 else
                    if (info)
                        // found a BOM when using an explicit encoding
-                       Unicode.error ("UnicodeBom.decode :: explicit encoding does not permit BOM");   
+                       onUnicodeError ("UnicodeBom.decode :: explicit encoding does not permit BOM");   
                 
                 // convert it to internal representation
-                return cast(T[]) into.convert (swapBytes(content), settings.type, dst, ate);
+                return into (swapBytes(content), settings.type, dst);
         }
 
         /***********************************************************************
@@ -205,13 +223,13 @@ class UnicodeBomT(T)
 
         ***********************************************************************/
 
-        final void[] encode (T[] content, void[] dst=null, uint* ate=null)
+        final void[] encode (T[] content, void[] dst=null)
         {
                 if (settings.test)
-                    Unicode.error ("UnicodeBom.encode :: cannot write to a non-specific encoding");
+                    onUnicodeError ("UnicodeBom.encode :: cannot write to a non-specific encoding");
 
                 // convert it to external representation, and write
-               return swapBytes (from.convert (content, settings.type, dst, ate));
+               return swapBytes (from (content, settings.type, dst));
         }
 
         /***********************************************************************
@@ -264,12 +282,106 @@ class UnicodeBomT(T)
 
         ***********************************************************************/
 
-        public final void setup (int encoding)
+        public final void setup (Encoding encoding)
         {
-                assert (Unicode.isValid (encoding));
-
                 this.settings = &lookup[encoding];
                 this.encoding = encoding;
+        }
+        
+        /***********************************************************************
+      
+
+        ***********************************************************************/
+
+        static T[] into (void[] x, uint type, T[] dst=null)
+        {
+                T[] ret;
+
+                static if (is (T == char))
+                          {
+                          if (type == Type.Utf8)
+                              return cast(T[]) x;
+
+                          if (type == Type.Utf16)
+                              ret = Utf.toUtf8 (cast(wchar[]) x, dst);
+                          else
+                          if (type == Type.Utf32)
+                              ret = Utf.toUtf8 (cast(dchar[]) x, dst);
+                          }
+
+                static if (is (T == wchar))
+                          {
+                          if (type == Type.Utf16)
+                              return cast(T[]) x;
+
+                          if (type == Type.Utf8)
+                              ret = Utf.toUtf16 (cast(char[]) x, dst);
+                          else
+                          if (type == Type.Utf32)
+                              ret = Utf.toUtf16 (cast(dchar[]) x, dst);
+                          }
+
+                static if (is (T == dchar))
+                          {
+                          if (type == Type.Utf32)
+                              return cast(T[]) x;
+
+                          if (type == Type.Utf8)
+                              ret = Utf.toUtf32 (cast(char[]) x, dst);
+                          else
+                          if (type == Type.Utf16)
+                              ret = Utf.toUtf32 (cast(wchar[]) x, dst);
+                          }
+
+                return ret;
+        }
+
+
+        /***********************************************************************
+
+        ***********************************************************************/
+
+        static void[] from (T[] x, uint type, void[] dst=null)
+        {
+                void[] ret;
+
+                static if (is (T == char))
+                          {
+                          if (type == Type.Utf8)
+                              return x;
+
+                          if (type == Type.Utf16)
+                              ret = Utf.toUtf16 (x, cast(wchar[]) dst);
+                          else
+                          if (type == Type.Utf32)
+                              ret = Utf.toUtf32 (x, cast(dchar[]) dst);
+                          }
+
+                static if (is (T == wchar))
+                          {
+                          if (type == Type.Utf16)
+                              return x;
+
+                          if (type == Type.Utf8)
+                              ret = Utf.toUtf8 (x, cast(char[]) dst);
+                          else
+                          if (type == Type.Utf32)
+                              ret = Utf.toUtf32 (x, cast(dchar[]) dst);
+                          }
+
+                static if (is (T == dchar))
+                          {
+                          if (type == Type.Utf32)
+                              return x;
+
+                          if (type == Type.Utf8)
+                              ret = Utf.toUtf8 (x, cast(char[]) dst);
+                          else
+                          if (type == Type.Utf16)
+                              ret = Utf.toUtf16 (x, cast(wchar[]) dst);
+                          }
+
+                return ret;
         }
 }
 

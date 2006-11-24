@@ -32,13 +32,11 @@
 
                 // append behind current selection
                 String append (String other);
-                String append (char[] other);
-                String append (wchar[] other);
-                String append (dchar[] other);
+                String append (T[] other);
                 String append (T chr, int count=1);
-                String append (int value, T[] format=null);
-                String append (long value, T[] format=null);
-                String append (double value, T[] format=null);
+                String append (int value);
+                String append (long value);
+                String append (double value);
 
                 // format and layout behind current selection
                 String format (T[] format, ...);
@@ -94,10 +92,10 @@
                 T[] copy ();
 
                 // replace the comparison algorithm 
-                StringView setComparator (Comparator comparator);
+                Comparator setComparator (Comparator comparator);
         }
 
-        abstract class UniString
+        class UniString
         {
                 // convert content
                 abstract char[]  utf8  (char[]  dst = null);
@@ -112,9 +110,8 @@ module tango.text.String;
 
 private import  tango.text.Text;
 
-private import  tango.text.convert.Type,
-                tango.text.convert.Format,
-                tango.text.convert.Unicode;
+private import  tango.text.convert.Utf,
+                tango.text.convert.Format;
 
 /*******************************************************************************
 
@@ -127,12 +124,6 @@ private extern (C) void memmove (void* dst, void* src, uint bytes);
 
         String is a string class that stores Unicode characters.
 
-        Indexes and lengths of strings always count code units, not code 
-        points. This is similar to traditional multi-byte string handling. 
-        Operations on strings do not test for code point boundaries since
-        the approach taken here is based upon pattern-matching rather than
-        direct indexing.
-
         String maintains a current "selection", controlled via the 
         select() and rselect() methods. Append(), prepend(), replace() and
         remove() each operate with respect to the selection. The select()
@@ -141,27 +132,30 @@ private extern (C) void memmove (void* dst, void* src, uint bytes);
         reset the selection to the entire string, use the select() method 
         with no arguments. 
        
+        Indexes and lengths of content always count code units, not code 
+        points. This is similar to traditional uni-byte string handling. 
+        Note that substring indexing is generally implied as opposed to
+        being exposed directly. This allows for a more streamlined model
+        with regard to surrogates.
+
 *******************************************************************************/
 
-class StringT(T) : StringViewT!(T)
+class String(T = char) : StringView!(T)
 {
         public  alias append            opCat;
         public  alias get               opIndex;
-        private alias Unicode.Into!(T)  Into;   
-        private alias StringViewT!(T)   String;
+        private alias StringView!(T)    StringViewT;
 
-        private Into                    into;           // unicode converter
-        private T[]                     converts;       // unicode buffer
+        private alias tango.text.convert.Utf Utf;
 
-        // unicode converter and utility functions
-        private Unicode.From!(T)        from;
+
         private TextT!(T)               utils;
-
+        private Format!(T)              convert;
         private bool                    mutable;
         private Comparator              comparator;
         private uint                    selectPoint,
                                         selectLength;
-
+        
         /***********************************************************************
         
                 Hidden constructor
@@ -171,18 +165,6 @@ class StringT(T) : StringViewT!(T)
         this ()
         {
                 this.comparator = &simpleComparator;
-        }
-
-        /***********************************************************************
-        
-                Create a String via the content of a String. Note 
-                that the default is to assume the content is immutable
-                
-        ***********************************************************************/
-        
-        this (String other)
-        {
-                set (other.get, false);
         }
 
         /***********************************************************************
@@ -202,46 +184,60 @@ class StringT(T) : StringViewT!(T)
         
                 Create a String upon the provided content. If said 
                 content is immutable (read-only) then you might consider 
-                setting the 'mutable' parameter to false. Doing so will 
+                setting the 'copy' parameter to false. Doing so will 
                 avoid allocating heap-space for the content until it is 
-                modified.
+                modified via String methods.
 
         ***********************************************************************/
 
-        this (T[] content, bool mutable = true)
+        this (T[] content, bool copy = true)
         {
-                set (content, mutable);
+                set (content, copy);
         }
 
         /***********************************************************************
         
-                Create a String via the content of a String. 
+                Create a String via the content of another.
+                
                 If said content is immutable (read-only) then you might 
-                consider setting the 'mutable' parameter to false. Doing 
+                consider setting the 'copy' parameter to false. Doing 
                 so will avoid allocating heap-space for the content until 
                 it is modified via String methods.
 
         ***********************************************************************/
         
-        this (StringT other, bool mutable = true)
+        this (StringViewT other, bool copy = true)
         {
-                set (other.get, mutable);
+                set (other.get, copy);
         }
 
         /***********************************************************************
    
-                Set the content to the provided array. Parameter 'mutable'
-                specifies whether the given array is likely to change. If 
-                not, the array is aliased until such time it is altered.
+                Configure the formatter for this String instance
                      
         ***********************************************************************/
 
-        StringT set (T[] chars, bool mutable = true)
+        String setFormatter (Format!(T) convert)
+        {
+                this.convert = convert;
+                return this;
+        }
+        
+        /***********************************************************************
+   
+                Set the content to the provided array. Parameter 'copy'
+                specifies whether the given array is likely to change. If 
+                not, the array is aliased until such time it is altered via
+                this class.
+                     
+        ***********************************************************************/
+
+        String set (T[] chars, bool copy = true)
         {
                 contentLength = chars.length;
                 select (0, contentLength);
 
-                if ((this.mutable = mutable) is true)
+                if ((this.mutable = copy) is true)
                      content = chars.dup;
                 else
                    content = chars;
@@ -252,15 +248,15 @@ class StringT(T) : StringViewT!(T)
         
                 Replace the content of this String. If the new content
                 is immutable (read-only) then you might consider setting the
-                'mutable' parameter to false. Doing so will avoid allocating
+                'copy' parameter to false. Doing so will avoid allocating
                 heap-space for the content until it is modified via one of
                 these methods.
 
         ***********************************************************************/
 
-        StringT set (String other, bool mutable = true)
+        String set (StringViewT other, bool copy = true)
         {
-                return set (other.get, mutable);
+                return set (other.get, copy);
         }
 
         /***********************************************************************
@@ -281,7 +277,7 @@ class StringT(T) : StringViewT!(T)
 
         ***********************************************************************/
 
-        StringT select (int start=0, int length=int.max)
+        String select (int start=0, int length=int.max)
         {
                 pinIndices (start, length);
                 selectPoint = start;
@@ -320,7 +316,7 @@ class StringT(T) : StringViewT!(T)
 
         ***********************************************************************/
 
-        bool select (String other)
+        bool select (StringViewT other)
         {
                 return select (other.get);
         }
@@ -375,7 +371,7 @@ class StringT(T) : StringViewT!(T)
 
         ***********************************************************************/
 
-        bool rselect (String other)
+        bool rselect (StringViewT other)
         {
                 return rselect (other.get);
         }
@@ -409,7 +405,7 @@ class StringT(T) : StringViewT!(T)
 
         ***********************************************************************/
 
-        StringT append (String other)
+        String append (StringViewT other)
         {
                 return append (other.get);
         }
@@ -420,34 +416,9 @@ class StringT(T) : StringViewT!(T)
 
         ***********************************************************************/
 
-        StringT append (char[] chars)
+        String append (T[] chars)
         {
-                convert (chars, Type.Utf8);
-                return this;
-        }
-
-        /***********************************************************************
-        
-                Append text to this String
-
-        ***********************************************************************/
-
-        StringT append (wchar[] chars)
-        {
-                convert (chars, Type.Utf16);
-                return this;
-        }
-
-        /***********************************************************************
-        
-                Append text to this String
-
-        ***********************************************************************/
-
-        StringT append (dchar[] chars)
-        {
-                convert (chars, Type.Utf32);
-                return this;
+                return append (chars.ptr, chars.length);
         }
 
         /***********************************************************************
@@ -456,7 +427,7 @@ class StringT(T) : StringViewT!(T)
 
         ***********************************************************************/
 
-        StringT append (T chr, int count=1)
+        String append (T chr, int count=1)
         {
                 uint point = selectPoint + selectLength;
                 expand (point, count);
@@ -465,53 +436,49 @@ class StringT(T) : StringViewT!(T)
 
         /***********************************************************************
         
-                Append an integer to this String, using standard 
-                printf() notation
+                Append an integer to this String
 
         ***********************************************************************/
 
-        StringT append (int v, T[] fmt=null)
+        String append (int v)
         {
-                return format (fmt, v);
+                return format ("{0}", v);
         }
 
         /***********************************************************************
         
-                Append a long to this String, using standard 
-                printf() notation
+                Append a long to this String
 
         ***********************************************************************/
 
-        StringT append (long v, T[] fmt=null)
+        String append (long v)
         {
-                return format (fmt, v);
+                return format ("{0}", v);
         }
 
         /***********************************************************************
         
-                Append a double to this String, using standard 
-                printf() notation
+                Append a double to this String
 
         ***********************************************************************/
 
-        StringT append (double v, T[] fmt=null)
+        String append (double v)
         {
-                return format (fmt, v);
+                return format ("{0}", v);
         }
 
         /**********************************************************************
 
-                Format a set of arguments using the standard printf()
-                formatting notation
+                Format a set of arguments using the configured formatter
 
         **********************************************************************/
 
-        StringT format (T[] fmt, ...)
+        String format (T[] fmt, ...)
         {
-                if (fmt.ptr is null)
-                    fmt = "{0}";
+                if (convert is null)
+                    convert = new Format!(T);
                 
-                Formatter.format (&appender, _arguments, _argptr, fmt);
+                convert (&appender, _arguments, _argptr, fmt);
                 return this;
         }
 
@@ -521,7 +488,7 @@ class StringT(T) : StringViewT!(T)
 
         ***********************************************************************/
 
-        StringT prepend (T chr, uint count=1)
+        String prepend (T chr, int count=1)
         {
                 expand (selectPoint, count);
                 return set (chr, selectPoint, count);
@@ -533,7 +500,7 @@ class StringT(T) : StringViewT!(T)
 
         ***********************************************************************/
 
-        StringT prepend (T[] other)
+        String prepend (T[] other)
         {
                 expand (selectPoint, other.length);
                 content[selectPoint..selectPoint+other.length] = other;
@@ -546,7 +513,7 @@ class StringT(T) : StringViewT!(T)
 
         ***********************************************************************/
 
-        StringT prepend (String other)
+        String prepend (StringViewT other)
         {       
                 return prepend (other.get);
         }
@@ -558,7 +525,7 @@ class StringT(T) : StringViewT!(T)
 
         ***********************************************************************/
 
-        StringT replace (T chr)
+        String replace (T chr)
         {
                 return set (chr, selectPoint, selectLength);
         }
@@ -570,7 +537,7 @@ class StringT(T) : StringViewT!(T)
 
         ***********************************************************************/
 
-        StringT replace (T[] chars)
+        String replace (T[] chars)
         {
                 int chunk = chars.length - selectLength;
                 if (chunk >= 0)
@@ -590,7 +557,7 @@ class StringT(T) : StringViewT!(T)
 
         ***********************************************************************/
 
-        StringT replace (String other)
+        String replace (StringViewT other)
         {
                 return replace (other.get);
         }
@@ -602,7 +569,7 @@ class StringT(T) : StringViewT!(T)
 
         ***********************************************************************/
 
-        StringT remove ()
+        String remove ()
         {
                 remove (selectLength);
                 select (selectPoint, 0);
@@ -639,7 +606,7 @@ class StringT(T) : StringViewT!(T)
 
         ***********************************************************************/
 
-        StringT truncate (int index = int.max)
+        String truncate (int index = int.max)
         {
                 if (index is int.max)
                     index = selectPoint + selectLength;
@@ -656,7 +623,7 @@ class StringT(T) : StringViewT!(T)
 
         ***********************************************************************/
 
-        StringT trim ()
+        String trim ()
         {
                 content = utils.trim (get());
                 select (0, contentLength = content.length);
@@ -667,9 +634,9 @@ class StringT(T) : StringViewT!(T)
         
         ***********************************************************************/
 
-        StringT clone ()
+        String clone ()
         {
-                return new StringT!(T)(get, mutable);
+                return new String!(T)(get);
         }
 
         /***********************************************************************
@@ -685,7 +652,7 @@ class StringT(T) : StringViewT!(T)
 
 
 
-        /* ======================= StringViewT methods ========================== */
+        /* ====================== StringView methods ======================== */
 
 
 
@@ -695,14 +662,9 @@ class StringT(T) : StringViewT!(T)
 
         ***********************************************************************/	
 
-	uint getEncoding()
+	TypeInfo getEncoding()
 	{
-		static if( is( T == char ))
-			return Type.Utf8;
-		else static if( is( T == wchar ))
-			return Type.Utf16;
-		else static if( is( T == dchar ))
-			return Type.Utf32;
+                return typeid(T);
 	}
 
         /***********************************************************************
@@ -711,10 +673,11 @@ class StringT(T) : StringViewT!(T)
 
         ***********************************************************************/
 
-        String setComparator (Comparator comparator)
+        Comparator setComparator (Comparator comparator)
         {
+                auto tmp = this.comparator;
                 this.comparator = comparator;
-                return this;
+                return tmp;
         }
 
         /***********************************************************************
@@ -745,7 +708,7 @@ class StringT(T) : StringViewT!(T)
 
         ***********************************************************************/
 
-        bool equals (String other)
+        bool equals (StringViewT other)
         {
                 if (other is this)
                     return true;
@@ -771,7 +734,7 @@ class StringT(T) : StringViewT!(T)
 
         ***********************************************************************/
 
-        bool ends (String other)
+        bool ends (StringViewT other)
         {
                 return ends (other.get);
         }
@@ -795,7 +758,7 @@ class StringT(T) : StringViewT!(T)
 
         ***********************************************************************/
 
-        bool starts (String other)
+        bool starts (StringViewT other)
         {
                 return starts (other.get);
         }
@@ -822,7 +785,7 @@ class StringT(T) : StringViewT!(T)
 
         ***********************************************************************/
 
-        int compare (String other)
+        int compare (StringViewT other)
         {
                 if (other is this)
                     return 0;
@@ -877,14 +840,15 @@ class StringT(T) : StringViewT!(T)
 
         /***********************************************************************
 
-                Convert to the AbstractString types. The optional argument
+                Convert to the UniString types. The optional argument
                 dst will be resized as required to house the conversion. 
-                To minimize heap allocation, use the following pattern:
+                To minimize heap allocation during subsequent conversions,
+                apply the following pattern:
 
                         String  string;
 
                         wchar[] buffer;
-                        wchar[] result = string.toUtf16 (buffer);
+                        wchar[] result = string.utf16 (buffer);
 
                         if (result.length > buffer.length)
                             buffer = result;
@@ -896,17 +860,38 @@ class StringT(T) : StringViewT!(T)
 
         char[] utf8 (char[] dst = null)
         {
-                return cast(char[]) from.convert (get(), Type.Utf8, dst);
+                static if (is (T == char))
+                           return get();
+                
+                static if (is (T == wchar))
+                           return Utf.toUtf8 (get(), dst);
+                
+                static if (is (T == dchar))
+                           return Utf.toUtf8 (get(), dst);
         }
-
+        
         wchar[] utf16 (wchar[] dst = null)
         {
-                return cast(wchar[]) from.convert (get(), Type.Utf16, dst);
+                static if (is (T == char))
+                           return Utf.toUtf16 (get(), dst);
+                
+                static if (is (T == wchar))
+                           return get();
+                
+                static if (is (T == dchar))
+                           return Utf.toUtf16 (get(), dst);
         }
-
+        
         dchar[] utf32 (dchar[] dst = null)
         {
-                return cast(dchar[]) from.convert (get(), Type.Utf32, dst);
+                static if (is (T == char))
+                           return Utf.toUtf32 (get(), dst);
+                
+                static if (is (T == wchar))
+                           return Utf.toUtf32 (get(), dst);
+                
+                static if (is (T == dchar))
+                           return get();
         }
 
         /**********************************************************************
@@ -935,7 +920,7 @@ class StringT(T) : StringViewT!(T)
 
         int opCmp (Object o)
         {
-                auto other = cast (String) o;
+                auto other = cast (StringViewT) o;
 
                 if (other is null)
                     return -1;
@@ -951,7 +936,7 @@ class StringT(T) : StringViewT!(T)
 
         int opEquals (Object o)
         {
-                auto other = cast (String) o;
+                auto other = cast (StringViewT) o;
 
                 if (other is null)
                     return 0;
@@ -1146,7 +1131,7 @@ class StringT(T) : StringViewT!(T)
 
         ***********************************************************************/
 
-        private final StringT set (T chr, uint start, uint count)
+        private final String set (T chr, uint start, uint count)
         {
                 content [start..start+count] = chr;
                 return this;
@@ -1181,7 +1166,7 @@ class StringT(T) : StringViewT!(T)
 
         ***********************************************************************/
 
-        private final StringT append (T* chars, uint count)
+        private final String append (T* chars, uint count)
         {
                 uint point = selectPoint + selectLength;
                 expand (point, count);
@@ -1191,24 +1176,7 @@ class StringT(T) : StringViewT!(T)
 
         /**********************************************************************
 
-                Support for the formatter, to convert from one encoding
-                to another
-
-        **********************************************************************/
-
-        private uint convert (void[] v, int type)   
-        {
-                // convert as required
-                auto s = cast(T[]) into.convert (v, type, converts);
-                        
-                // hang onto conversion buffer when it grows
-                if (s.length > converts.length)
-                    converts = s;
-
-                return appender (s);
-        }
-
-        /**********************************************************************
+        Sink function for the Formatter
 
         **********************************************************************/
 
@@ -1227,7 +1195,7 @@ class StringT(T) : StringViewT!(T)
 
 *******************************************************************************/
 
-class StringViewT(T) : UniString
+class StringView(T) : UniString
 {
         private T[]     content;
         private uint    contentLength;
@@ -1240,13 +1208,13 @@ class StringViewT(T) : UniString
 
         ***********************************************************************/
 
-        abstract StringViewT setComparator (Comparator comparator);
+        abstract Comparator setComparator (Comparator comparator);
 
         /***********************************************************************
         
         ***********************************************************************/
 
-        abstract StringViewT clone ();
+        abstract StringView clone ();
 
         /***********************************************************************
         
@@ -1270,7 +1238,7 @@ class StringViewT(T) : UniString
 
         ***********************************************************************/
 
-        abstract bool equals (StringViewT other);
+        abstract bool equals (StringView other);
 
         /***********************************************************************
         
@@ -1286,7 +1254,7 @@ class StringViewT(T) : UniString
 
         ***********************************************************************/
 
-        abstract bool ends (StringViewT other);
+        abstract bool ends (StringView other);
 
         /***********************************************************************
         
@@ -1302,7 +1270,7 @@ class StringViewT(T) : UniString
 
         ***********************************************************************/
 
-        abstract bool starts (StringViewT other);
+        abstract bool starts (StringView other);
 
         /***********************************************************************
         
@@ -1321,7 +1289,7 @@ class StringViewT(T) : UniString
 
         ***********************************************************************/
 
-        abstract int compare (StringViewT other);
+        abstract int compare (StringView other);
 
         /***********************************************************************
         
@@ -1367,7 +1335,7 @@ class StringViewT(T) : UniString
 
         /***********************************************************************
         
-                Compare this String to another
+                Compare this StringView to another
 
         ***********************************************************************/
 
@@ -1408,24 +1376,15 @@ class UniString
 
         abstract dchar[] utf32 (dchar[] dst = null);
 
-	abstract uint getEncoding();
+	abstract TypeInfo getEncoding();
 }
-
-
-// convenience alias
-typedef StringT!(char) String;
-
-
-// convenience alias
-typedef StringViewT!(char) StringView;
-
 
 
 debug (UnitTest)
 {
 unittest
 {
-        auto s = new String("hello");
+        auto s = new String!(char)("hello");
         s.select ("hello");
         s.replace ("1");
         assert (s.slice == "1");

@@ -116,7 +116,7 @@ class DisplayWriter : Writer
                         return s.length;
                 }
 
-                return Formatter.format (&sink, ti, args, s);
+                return Formatter (&sink, ti, args, s);
         }
 
         /***********************************************************************
@@ -137,8 +137,9 @@ class DisplayWriter : Writer
 
                        default:
                             char[256] output = void;
+                            char[256] convert = void;
                             auto ti = Type.revert [type];
-                            auto result = Formatter.Result (output);
+                            auto result = Formatter.Result (output, convert);
 
                             auto width = ti.tsize();
                             assert ((bytes % width) is 0, "invalid arg[] length");
@@ -150,7 +151,7 @@ class DisplayWriter : Writer
 
                             while (bytes)
                                   {
-                                  auto s = Formatter.format (result, ti, src);
+                                  auto s = Formatter (result, ti, src);
                                   encode (s.ptr, s.length, Type.Utf8);
 
                                   bytes -= width;

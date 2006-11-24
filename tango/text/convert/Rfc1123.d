@@ -14,7 +14,7 @@ module tango.text.convert.Rfc1123;
 
 private import tango.core.Epoch;
 
-private import tango.text.convert.Sprint;
+private import tango.text.convert.Format;
 
 extern (C) int memcmp (char *, char *, uint);
 
@@ -58,20 +58,17 @@ class Rfc1123 : Epoch
                 Fields fields;
                 fields.setUtcTime (time);
 
-                // point formatter at the output buffer
-                SprintStruct sprint;
-                sprint.ctor (output);
-                        
                 // format fields according to RFC 1123
-                return sprint.format ("{0,3}, {1:d2} {2,3} {3:d4} {4:d2}:{5:d2}:{6:d2} GMT",
-                                      fields.toDowName,
-                                      fields.day,
-                                      fields.toMonthName,
-                                      fields.year,
-                                      fields.hour, 
-                                      fields.min,
-                                      fields.sec
-                                      );
+                return Formatter.sprint (output,
+                                         "{0,3}, {1:d2} {2,3} {3:d4} {4:d2}:{5:d2}:{6:d2} GMT",
+                                         fields.toDowName,
+                                         fields.day,
+                                         fields.toMonthName,
+                                         fields.year,
+                                         fields.hour, 
+                                         fields.min,
+                                         fields.sec
+                                        );
         }
 
         /**********************************************************************
