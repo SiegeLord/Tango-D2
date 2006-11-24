@@ -7,7 +7,6 @@
         version:        Initial release: March 2004      
         
         author:         Kris
-                        Anders F Bjorklund (Darwin patches)
 
 *******************************************************************************/
 

@@ -48,7 +48,7 @@ class Properties
 
         /***********************************************************************
         
-                Load properties from the provided conduit, and pass them to
+                Load properties from the given conduit, and pass them to
                 the provided delegate.
 
         ***********************************************************************/
@@ -60,32 +60,40 @@ class Properties
 
         /***********************************************************************
         
-                Load properties from the provided conduit, and pass them to
-                the provided delegate.
+                Load properties from the provided buffer, and pass them to
+                the specified delegate.
 
+                We use an iterator to sweep text lines, and extract lValue
+                and rValue pairs from each one, The expected file format is
+                as follows:
+
+                ---
+                x = y
+                abc = 123
+                x.y.z = this is a single property
+                
+                # this is a comment line
+                ---
+                
         ***********************************************************************/
 
         static void load (IBuffer buffer, void delegate (char[]name, char[] value) dg)
         {
-                // bind the input to a line tokenizer
-                auto line = new LineIterator (buffer);
-
-                // scan all lines
-                while (line.next)
-                      {
-                      char[] text = line.trim.get;
+                foreach (line; new LineIterator (buffer))
+                        {
+                        auto text = Text.trim (line);
                         
-                      // comments require '#' as the first non-whitespace char 
-                      if (text.length && (text[0] != '#'))
-                         {
-                         // find the '=' char
-                         int i = Text.indexOf (text, '=');
+                        // comments require '#' as the first non-whitespace char 
+                        if (text.length && (text[0] != '#'))
+                           {
+                           // find the '=' char
+                           int i = Text.indexOf (text, '=');
 
-                         // ignore if not found ...
-                         if (i > 0)
-                             dg (Text.trim (text[0..i]), Text.trim (text[i+1..text.length]));
-                         }
-                      }
+                           // ignore if not found ...
+                           if (i > 0)
+                               dg (Text.trim (text[0..i]), Text.trim (text[i+1..text.length]));
+                           }
+                        }
         }
 
         /***********************************************************************
