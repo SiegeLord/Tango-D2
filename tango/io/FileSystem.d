@@ -28,7 +28,7 @@ version (Win32)
         private import tango.stdc.string;
         
 version(Posix){
-    private import tango.io.File;
+    private import tango.io.FileConduit;
     private import tango.stdc.posix.unistd;
     private import tango.text.convert.Atoi;
 }
@@ -142,10 +142,17 @@ class FileSystem
                         }
                         else
                         {
-                            char[] path = "", content = cast(char[]) (new File("/etc/mtab")).read();
+                            char[] path = "";
                             char[][] list;
                             int spaces;
-   
+
+                            auto fc = new FileConduit("/etc/mtab");
+                            scope (exit)
+                                   fc.close;
+                            
+                            auto content = new char[cast(int) fc.length];
+                            fc.fill (content);
+                            
                             for(int i = 0; i < content.length; i++)
                             {
                                 if(content[i] == ' ') spaces++;
