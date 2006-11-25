@@ -1,6 +1,6 @@
 /**
- * The string module provides string manipulation routines in a manner that
- * balances performance and flexibility.
+ * This module contains a packed bit array implementation in the style of D's
+ * built-in dynamic arrays.
  *
  * Copyright: Copyright (C) 2005-2006 Digital Mars, www.digitalmars.com.
  *            All rights reserved.
