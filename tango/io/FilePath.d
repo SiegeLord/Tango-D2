@@ -26,15 +26,14 @@ private import tango.io.FileConst;
         than providing a wchar version of FilePath, and is both consistent 
         & compatible with the approach taken with the Uri class.
 
-        FilePath is immutable, since each mutating method returns a seperate
-        entity. This ensures that a FilePath instance cannot be inadvertantly
-        altered, making it reasonably thread-safe. The design reflects
-        experience with typical FilePath instances as read-mostly entities.
-
-        However, getPath() et. al. return slices of the internal content,
-        rather than invoking .dup -- protecting said content from mutation
+        A FilePath is intended to be immutable, thus each mutating method
+        returns a distinct entity. This approach reflects experience with
+        typical FilePath instances as read-mostly entities, and suggests
+        FilePath instances should be reasonably thread-safe. However, the
+        getXYZ methods return slices of the internal content rather than
+        provoking heap activity -- protecting said content from mutation
         is considered to be beyond the realm of this module.
-        
+
 *******************************************************************************/
 
 class FilePath
@@ -44,8 +43,9 @@ class FilePath
         private int     end,                    // before the trailing 0
                         path,                   // path before name
                         name,                   // file/dir name
-                        suffix;                 // from leftmost '.'
+                        suffix;                 // inclusive of leftmost '.'
 
+        
         /***********************************************************************
         
                 Create a FilePath from a copy of the provided string. 
@@ -54,7 +54,7 @@ class FilePath
                 may split what is otherwise a logically valid path. That is,
                 the 'name' of a file is typically the path segment following
                 a rightmost path-separator. The intent is to treat files and
-                directories in the same manner: as a name with an optional
+                directories in the same manner; as a name with an optional
                 ancestral structure. It is possible to bias the interpretation
                 by adding a trailing path-separator to the argument. Doing so
                 will result in an empty name attribute.
@@ -63,11 +63,47 @@ class FilePath
                 various other physical attributes, use methods exposed via
                 tango.io.FileProxy and tango.io.File
 
+                With regard to the filepath copy, we found the common case to
+                be an explicit .dup, whereas aliasing appeared to be rare by
+                comparison. We also noted a large proportion interacting with
+                C-oriented OS calls, implying the postfix of a null terminator.
+                Thus, FilePath combines both as a single operation.
+
         ***********************************************************************/
 
         this (char[] filepath)
         {
-                parse (filepath ~ '\0');
+                path = 0;
+                name = suffix = -1;
+                fp   = filepath ~ '\0';
+                end  = filepath.length;
+                
+                for (int i=end; --i >= 0;)
+                     switch (filepath[i])
+                            {
+                            case FileConst.FileSeparatorChar:
+                                 if (name < 0)
+                                     suffix = i;
+                                 break;
+
+                            case FileConst.PathSeparatorChar:
+                                 if (name < 0)
+                                     name = i + 1;
+                                 break;
+
+                            case FileConst.RootSeparatorChar:
+                                 path = i + 1;
+                                 break;
+                                 
+                            default:
+                                 break;
+                            }
+
+                if (name < 0)
+                    name = path;
+                
+                if (suffix < 0)
+                    suffix = end;
         }
         
         /***********************************************************************
@@ -173,7 +209,7 @@ class FilePath
 
         final override int opEquals (Object o)
         {
-                return toUtf8() == o.toUtf8();
+                return (this is o) || (o != null && toUtf8 == o.toUtf8);
         }
 
         /***********************************************************************
@@ -396,54 +432,6 @@ class FilePath
                              c = to;
                 return path;
         }
-                           
-        /***********************************************************************
-
-                parse() assumes both path & name are present, and therefore
-                may split what is otherwise a logically valid path. That is,
-                the 'name' of a file is typically the path segment following
-                a rightmost path-separator. The intent is to treat files and
-                directories in the same manner: as a name with an optional
-                ancestral structure. It is possible to bias the interpretation
-                by adding a trailing path-separator to the argument. Doing so
-                will result in an empty name attribute.
-
-        ***********************************************************************/
-
-        private void parse (char[] filepath)
-        {
-                path = 0;
-                fp   = filepath;
-                name = suffix = -1;
-                end  = filepath.length - 1;
-                
-                for (int i=end; --i >= 0;)
-                     switch (filepath[i])
-                            {
-                            case FileConst.FileSeparatorChar:
-                                 if (name < 0)
-                                     suffix = i;
-                                 break;
-
-                            case FileConst.PathSeparatorChar:
-                                 if (name < 0)
-                                     name = i + 1;
-                                 break;
-
-                            case FileConst.RootSeparatorChar:
-                                 path = i + 1;
-                                 break;
-                                 
-                            default:
-                                 break;
-                            }
-
-                if (name < 0)
-                    name = path;
-                
-                if (suffix < 0)
-                    suffix = end;
-        }
 }
 
                                      
@@ -454,10 +442,6 @@ class FilePath
 
 debug (UnitTest)
 {
-        void main()
-        {
-        }
-
         unittest
         {
         version (Win32)
