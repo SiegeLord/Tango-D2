@@ -1,4 +1,13 @@
-/*
+/**
+ * Elementary Mathematical Functions
+ *
+ * Copyright: Portions Copyright (C) 2001-2005 Digital Mars.
+ * License:   BSD style: $(LICENSE), Digital Mars.
+ * Authors:   Walter Bright, Don Clugston, Sean Kelly
+ */
+/* Portions of this code were taken from Phobos std.math, which has the following
+ * copyright notice:
+ *
  * Author:
  *  Walter Bright
  * Copyright:
@@ -27,10 +36,6 @@
  *       distribution.
  *  </li>
  *  </ul>
- */
-
-/*
- *  Modified by Sean Kelly <sean@f4.ca> for use with Tango.
  */
 
 /**

@@ -1,4 +1,13 @@
-/*
+/**
+ * Low-level Mathematical Functions which take advantage of the IEEE754 ABI.
+ *
+ * Copyright: Portions Copyright (C) 2001-2005 Digital Mars.
+ * License:   BSD style: $(LICENSE), Digital Mars.
+ * Authors:   Don Clugston, Walter Bright, Sean Kelly
+ */
+/* Portions of this code were taken from Phobos std.math, which has the following
+ * copyright notice:
+ *
  * Author:
  *  Walter Bright
  * Copyright:
@@ -27,11 +36,6 @@
  *       distribution.
  *  </li>
  *  </ul>
- */
-
-/*
- *  Modified by Sean Kelly <sean@f4.ca> for use with Tango.
- *  Additional functions added by Don Clugston.
  */
 
 /**
@@ -170,7 +174,75 @@ IeeeFlags ieeeFlags() { return IeeeFlags.getIeeeFlags(); }
 /// Set all of the floating-point status flags to false.
 void resetIeeeFlags() { IeeeFlags.resetIeeeFlags; }
 
+/** IEEE rounding modes.
+ * The default mode is ROUNDTONEAREST.
+ */
+enum RoundingMode : short { ROUNDTONEAREST = 0x0000, ROUNDDOWN = 0x0400, ROUNDUP=0x0800, ROUNDTOZERO=0x0C00 };
+
+/** Change the rounding mode used for all floating-point operations.
+ *
+ * Returns the old rounding mode.
+ *
+ * When changing the rounding mode, it is almost always necessary to restore it
+ * at the end of the function. Typical usage:
+---
+    auto oldrounding = setIeeeRounding(RoundingMode.ROUNDDOWN);
+    scope (exit) setIeeeRounding(oldrounding);
+---
+  This pattern could also be encapsulated into a class:
+---
+scope class UseRoundingMode
+{
+    RoundingMode oldrounding;
+    this(RoundingMode mode) { oldrounding = setIeeeRounding(mode); }
+    ~this() { setIeeeRounding(oldrounding); }
+}
+
+// Usage:
+
+    scope  = new UseRoundingMode(RoundingMode.ROUNDDOWN);
+---
++/
+
+ */
+RoundingMode setIeeeRounding(RoundingMode roundingmode) {
+   version(D_InlineAsm_X86) {
+        // TODO: For SSE/SSE2, do we also need to set the SSE rounding mode?
+        short cont;
+        asm {
+            fstcw cont;
+            mov CX, cont;
+            mov AX, cont;
+            and EAX, 0x0C00; // Form the return value
+            and CX, 0xF3FF;
+            or CX, roundingmode;
+            mov cont, CX;
+            fldcw cont;
+        }
+    } else {
+           assert(0, "Not yet supported");
+    }
+}
+
+/** Get the IEEE rounding mode which is in use.
+ *
+ */
+RoundingMode getIeeeRounding() {
+   version(D_InlineAsm_X86) {
+        // TODO: For SSE/SSE2, do we also need to check the SSE rounding mode?
+        short cont;
+        asm {
+            mov EAX, 0x0C00;
+            fstcw cont;
+            and AX, cont;
+        }
+    } else {
+           assert(0, "Not yet supported");
+    }
+}
+
 version(UnitTest) {
+static import tango.math.Core;
 unittest {
     real a=3.5;
     resetIeeeFlags();
@@ -181,6 +253,21 @@ unittest {
     a*=0.0L;
     assert(ieeeFlags.invalid);
     assert(isNaN(a));
+
+    int r = getIeeeRounding;
+    assert(r==RoundingMode.ROUNDTONEAREST);
+    real b = 5.5;
+    int cnear = tango.math.Core.rndint(b);
+    assert(cnear == 6);
+    auto oldrounding = setIeeeRounding(RoundingMode.ROUNDDOWN);
+    scope (exit) setIeeeRounding(oldrounding);
+
+    assert(getIeeeRounding==RoundingMode.ROUNDDOWN);
+
+
+    int cdown = tango.math.Core.rndint(b);
+    assert(cdown==5);
+
 }
 }
 
@@ -219,7 +306,6 @@ template float_traits(T)
 }
 
 }
-
 
 
 /**
