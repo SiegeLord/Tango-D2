@@ -6,7 +6,7 @@
 
         version:        Initial release: March 2004      
         
-        author:         Kris, John Reimer, Chris Sauls (Win95 file support)
+        author:         Kris, Chris Sauls (Win95 file support)
 
 *******************************************************************************/
 
@@ -14,25 +14,22 @@ module tango.io.FileSystem;
 
 private import  tango.sys.Common;
 
-private import  tango.text.Text;
-
 private import  tango.io.FilePath,
-                tango.io.FileConst,
                 tango.io.Exception;
 
-private import  tango.text.convert.Utf;
 
 version (Win32)
-        private extern (Windows) DWORD GetLogicalDriveStringsA (DWORD, LPTSTR);
+        {
+        private import tango.text.convert.Utf;
+        private alias  tango.text.convert.Utf Utf;
+        }
      else
+        {
         private import tango.stdc.string;
-        
-version(Posix){
-    private import tango.io.FileConduit;
-    private import tango.stdc.posix.unistd;
-    private import tango.text.convert.Atoi;
-}
+        private import tango.stdc.posix.unistd;
+        }
 
+        
 /*******************************************************************************
 
         Models an OS-specific file-system. Included here are methods to 
@@ -43,40 +40,29 @@ version(Posix){
 
 class FileSystem
 {
-        private alias tango.text.convert.Utf Utf;
-        
+        /***********************************************************************
+
+                Convert the provided path to an absolute path, using the
+                current working directory. If the given path is already
+                an absolute path, return it intact.
+
+        ***********************************************************************/
+
+        FilePath absolutePath (FilePath path)
+        {
+                if (path.isAbsolute)
+                    return path;
+                
+                return path.join (getDirectory);
+        }
+
         version (Win32)
         {
-                /***********************************************************************
-                        
-                        List the set of root devices (C:, D: etc)
-
-                ***********************************************************************/
-
-                static char[][] listRoots ()
-                {
-                        int             len;
-                        char[]          str;
-                        char[][]        roots;
-
-                        // acquire drive strings
-                        len = GetLogicalDriveStringsA (0, null);
-                        if (len)
-                           {
-                           str = new char [len];
-                           GetLogicalDriveStringsA (len, str);
-
-                           // split roots into seperate strings
-                           roots = Text.split (str [0..str.length-1], "\0");
-                           }
-                        return roots;
-                }
-
-                /***********************************************************************
+                /***************************************************************
 
                         Set the current working directory
 
-                ***********************************************************************/
+                ***************************************************************/
 
                 static void setDirectory (FilePath fp)
                 {
@@ -94,11 +80,11 @@ class FileSystem
                                 }
                 }
 
-                /***********************************************************************
+                /***************************************************************
 
                         Get the current working directory
                 
-                ***********************************************************************/
+                ***************************************************************/
 
                 static FilePath getDirectory ()
                 {
@@ -107,9 +93,9 @@ class FileSystem
                                 int length = GetCurrentDirectoryA (0, null);
                                 if (length)
                                    {
-                                   char[] dir = new char [length];
+                                   auto dir = new char [length];
                                    GetCurrentDirectoryA (length, dir);
-                                   return new FilePath (dir, false);
+                                   return new FilePath (dir);
                                    }
                                 }
                              else
@@ -118,7 +104,7 @@ class FileSystem
                                 if (length)
                                    {
                                    char[256] tmp = void;
-                                   wchar[] dir = new wchar [length];
+                                   auto dir = new wchar [length];
                                    
                                    GetCurrentDirectoryW (length, dir);
                                    return new FilePath (Utf.toUtf8 (dir, tmp));
@@ -131,61 +117,11 @@ class FileSystem
         
         version (Posix)
         {
-                /***********************************************************************
-
-                        List the set of root devices.
-
-                 ***********************************************************************/
-
-                static char[][] listRoots ()
-                {
-                        version(darwin)
-                        {
-                            assert(0);
-                            return null;
-                        }
-                        else
-                        {
-                            char[] path = "";
-                            char[][] list;
-                            int spaces;
-
-                            auto fc = new FileConduit("/etc/mtab");
-                            scope (exit)
-                                   fc.close;
-                            
-                            auto content = new char[cast(int) fc.length];
-                            fc.fill (content);
-                            
-                            for(int i = 0; i < content.length; i++)
-                            {
-                                if(content[i] == ' ') spaces++;
-                                else if(content[i] == '\n')
-                                {
-                                    spaces = 0;
-                                    list ~= path;
-                                    path = "";
-                                }
-                                else if(spaces == 1)
-                                {
-                                    if(content[i] == '\\')
-                                    {
-                                        path ~= Atoi.parse(content[++i..i+3], 8);
-                                        i += 2;
-                                    }
-                                    else path ~= content[i];
-                                }
-                            }
-                            
-                            return list;
-                        }
-                }
-
-                /***********************************************************************
+                /***************************************************************
 
                         Set the current working directory
 
-                ***********************************************************************/
+                ***************************************************************/
 
                 static void setDirectory (FilePath fp)
                 {
@@ -193,11 +129,11 @@ class FileSystem
                             throw new IOException ("Failed to set current directory");
                 }
 
-                /***********************************************************************
+                /***************************************************************
 
                         Get the current working directory
                 
-                ***********************************************************************/
+                ***************************************************************/
 
                 static FilePath getDirectory ()
                 {
@@ -209,3 +145,4 @@ class FileSystem
                 }
         }   
 }
+
