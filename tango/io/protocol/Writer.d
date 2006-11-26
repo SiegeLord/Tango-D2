@@ -35,7 +35,7 @@ public  import  tango.io.protocol.model.IWriter;
         fundamental array variants. Operations may be chained back-to-back.
 
         Writers support a C++ iostream type syntax, along with Java-esque 
-        put() notation. However, the Mango style is to place IO elements 
+        put() notation. However, the Tango style is to place IO elements 
         within their own parenthesis, like so:
         
                 write (count) (" green bottles");
@@ -100,9 +100,7 @@ public  import  tango.io.protocol.model.IWriter;
         Lastly, each Writer may be configured with a text encoder. These
         encoders convert between an internal text representation, and the
         char/wchar/dchar representaion. BufferCodec.d contains classes for
-        handling utf8, utf16, and utf32. The icu.UMango module has support
-        for a wide variety of converters. Stdout is pre-configured with
-        utf16 & utf8 encoders for Win32 and Posix respectively.
+        handling utf8, utf16, and utf32. 
         
 *******************************************************************************/
 

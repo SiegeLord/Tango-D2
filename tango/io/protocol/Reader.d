@@ -37,7 +37,7 @@ private import  tango.io.Exception;
         this topic.
 
         Readers support a C++ iostream type syntax, along with Java-esque 
-        get() notation. However, the Mango style is to place IO elements 
+        get() notation. However, the Tango style is to place IO elements 
         within their own parenthesis, like so:
         
                 int count;
@@ -104,7 +104,7 @@ private import  tango.io.Exception;
         Lastly, each Reader may be configured with a text decoder. These
         decoders convert between an internal text representation, and the
         char/wchar/dchar representaion. BufferCodec.d contains classes for
-        handling utf8, utf16, and utf32. The icu.UMango module has support
+        handling utf8, utf16, and utf32. The icu.UTango module has support
         for a wide variety of converters.
         
 *******************************************************************************/

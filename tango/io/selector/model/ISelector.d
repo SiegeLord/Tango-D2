@@ -228,9 +228,9 @@ interface ISelectionSet
  *
  * Examples:
  * ---
- * import mango.io.selector.model.ISelector;
- * import mango.io.SocketConduit;
- * import mango.io.Stdout;
+ * import tango.io.selector.model.ISelector;
+ * import tango.io.SocketConduit;
+ * import tango.io.Stdout;
  *
  * ISelector selector;
  * SocketConduit conduit1;

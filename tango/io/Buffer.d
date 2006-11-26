@@ -194,7 +194,7 @@ extern (C)
                  Cout(line).newline;
         ---                 
 
-        Buffers are useful for many purposes within Mango, but there
+        Buffers are useful for many purposes within Tango, but there
         are times when it may be more appropriate to sidestep them. For 
         such cases, conduit derivatives (such as FileConduit) support 
         direct array-based IO via a pair of read() and write() methods. 

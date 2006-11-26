@@ -15,7 +15,7 @@ module tango.io.Exception;
 /*******************************************************************************
 
         The basic exception thrown by the tango.io package. One should
-        try to ensure that all Mango exceptions related to IO are derived
+        try to ensure that all Tango exceptions related to IO are derived
         from this one.
 
 *******************************************************************************/

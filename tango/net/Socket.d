@@ -36,13 +36,13 @@
 
         The original code has been modified in several ways:
 
-        1) It has been altered to fit within the Mango environment, meaning
+        1) It has been altered to fit within the Tango environment, meaning
            that certain original classes have been reorganized, and/or have
-           subclassed Mango base-classes. For example, the original Socket
+           subclassed Tango base-classes. For example, the original Socket
            class has been wrapped with three distinct subclasses, and now
            derives from class tango.io.Resource.
 
-        2) All exception instances now subclass the Mango IOException.
+        2) All exception instances now subclass the Tango IOException.
 
         3) Construction of new Socket instances via accept() is now
            overloadable.
@@ -53,7 +53,7 @@
         5) changed Socket.select() to loop if it was interrupted.
 
 
-        All changes within the main body of code all marked with "MANGO:"
+        All changes within the main body of code all marked with "Tango:"
 
         For a good tutorial on socket-programming I highly recommend going
         here: http://www.ecst.csuchico.edu/~beej/guide/net/
@@ -447,7 +447,7 @@ static int lastError ()
 
 /*******************************************************************************
 
-        MANGO: socket now subclasses tango.io.Resource
+        Tango: socket now subclasses tango.io.Resource
 
 *******************************************************************************/
 
@@ -766,7 +766,7 @@ class Socket : Conduit
 
         protected this (socket_t sock)
         {
-                // MANGO: exposed the constructor functionality: see below.
+                // Tango: exposed the constructor functionality: see below.
                 set (sock);
 
                 super (Access.ReadWrite, false);
@@ -907,7 +907,7 @@ class Socket : Conduit
         
         /***********************************************************************
         
-                MANGO: moved this out from the above constructor so that it
+                Tango: moved this out from the above constructor so that it
                 can be called from the FreeList version of SocketConduit
 
         ***********************************************************************/
@@ -919,7 +919,7 @@ class Socket : Conduit
 
         /***********************************************************************
 
-                MANGO: added to reset socket
+                Tango: added to reset socket
 
         ***********************************************************************/
 
@@ -960,7 +960,7 @@ class Socket : Conduit
 
         /***********************************************************************
 
-                MANGO: added for multicast support
+                Tango: added for multicast support
 
         ***********************************************************************/
 
@@ -1131,7 +1131,7 @@ class Socket : Conduit
 
         /***********************************************************************
 
-                MANGO: added
+                Tango: added
 
         ***********************************************************************/
 
@@ -1149,14 +1149,14 @@ class Socket : Conduit
         {
                 socket_t newsock = .accept (sock, null, null);
                 if(INVALID_SOCKET == newsock)
-                   // MANGO: return null rather than throwing an exception because
+                   // Tango: return null rather than throwing an exception because
                    // this is a valid condition upon thread-termination.
                   {
                   return null;
                   //exception("Unable to accept socket connection.");
                   }
 
-                // MANGO: changed to indirect construction
+                // Tango: changed to indirect construction
                 Socket newSocket = createSocket (newsock);
 
                 version(Win32)
@@ -1189,7 +1189,7 @@ class Socket : Conduit
 
         /***********************************************************************
 
-                MANGO: added
+                Tango: added
 
         ***********************************************************************/
 
@@ -1207,7 +1207,7 @@ class Socket : Conduit
         /***********************************************************************
 
 
-                MANGO: added
+                Tango: added
 
         ***********************************************************************/
 
@@ -1223,7 +1223,7 @@ class Socket : Conduit
                 Helper function to handle the adding and dropping of group
                 membership.
 
-                MANGO: Added
+                Tango: Added
 
         ***********************************************************************/
 
@@ -1313,7 +1313,7 @@ class Socket : Conduit
 
         /***********************************************************************
 
-                Mango: added this to return the hostname
+                Tango: added this to return the hostname
 
         ***********************************************************************/
 
@@ -1329,7 +1329,7 @@ class Socket : Conduit
 
         /***********************************************************************
 
-                Mango: added this to return the default host address (IPv4)
+                Tango: added this to return the default host address (IPv4)
 
         ***********************************************************************/
 
@@ -1548,7 +1548,7 @@ class Socket : Conduit
 
         /***********************************************************************
 
-                Mango: added this common function
+                Tango: added this common function
 
         ***********************************************************************/
 
@@ -1606,7 +1606,7 @@ class Socket : Conduit
 
                 int result;
 
-                // MANGO: if select() was interrupted, we now try again
+                // Tango: if select() was interrupted, we now try again
                 version(Win32)
                 {
                         while ((result = .select (socket_t.max - 1, fr, fw, fe, tv)) == -1)
@@ -1638,7 +1638,7 @@ class Socket : Conduit
                 {
                         static assert(0);
                 }
-                // MANGO: don't throw an exception here ... wait until we get
+                // Tango: don't throw an exception here ... wait until we get
                 // a bit further back along the control path
                 //if(SOCKET_ERROR == result)
                 //   throw new SocketException("Socket select error.");
@@ -1705,7 +1705,7 @@ abstract class Address
 
         /***********************************************************************
 
-                Mango: added this common function
+                Tango: added this common function
 
         ***********************************************************************/
 
