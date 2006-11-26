@@ -140,7 +140,7 @@ private extern (C) void memmove (void* dst, void* src, uint bytes);
 
 *******************************************************************************/
 
-class String(T = char) : StringView!(T)
+class String(T) : StringView!(T)
 {
         public  alias append            opCat;
         public  alias get               opIndex;
@@ -162,7 +162,7 @@ class String(T = char) : StringView!(T)
 
         ***********************************************************************/
 
-        this ()
+        private this ()
         {
                 this.comparator = &simpleComparator;
         }
