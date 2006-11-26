@@ -1,10 +1,7 @@
 module tango.text.Path;
 
-private import tango.io.FilePath;
-private import tango.io.FileSystem;
 private import tango.io.FileConst;
-private import tango.text.Text;
-private import tango.core.Exception;
+private import tango.text.UniChar;
 
 version (Posix)
 {
@@ -15,7 +12,7 @@ version (Posix)
     private import tango.stdc.errno;
     private import tango.core.Exception;
 
-    extern (C) int strlen (char *);
+    private extern (C) int strlen (char *);
 }
 
 class NormalizeException : Exception {
@@ -30,12 +27,17 @@ class NormalizeException : Exception {
 
 ***********************************************************************/
 
-char[] normalizeSlashes(char[] path)
+private char[] normalizeSlashes(char[] path)
 {
-    version (Win32)
-             return Text.replace (path, '/', '\\');
-         else
-             return Text.replace (path, '\\', '/');
+        version (Win32)
+                 char from = '/', to = '\\';
+             else
+                char to = '/', from = '\\';
+
+             foreach (inout c; path)
+                      if (c is from)
+                          c = to;
+             return path;
 }
 
 /***********************************************************************
@@ -206,72 +208,6 @@ unittest {
     assert (normalize ("../../../foo/bar") == "../../../foo/bar");
 }
 
-}
-
-/**********************************************************************
-
-    Joins two file paths.
-    
-    Internally, join(FilePath, FilePath) is used. If the first path
-    should be interpreted as a file name, set isdir parameter to false.
-
-    Throws: Nothing
-
-**********************************************************************/
-
-char[] join(char[] path1, char[] path2, bool isdir = true)
-{
-    return (join(new FilePath(path1, false, isdir), 
-                 new FilePath(path2))).toUtf8();
-}
-
-/**********************************************************************
-
-    Joins two file paths.
-
-    If the second path is absolute, it is returned.
-
-    The function checks the isDirectory property on the first path,
-    and if true, the file path name property is considered part of
-    the path itself.
-
-    Throws: Nothing.
-
-    Examples:
-    -----
-    version(Win32)
-    {
-     join(new FilePath(r"c:\foo"), new FilePath("bar")) => "c:\foo\bar"
-     join(new FilePath("foo"), new FilePath(r"d:\bar")) => "d:\bar"
-    }
-    version(Posix)
-    {
-     join("/foo/", "bar") => "/foo/bar"
-     join("/foo", "/bar") => "/bar"
-    }
-    ----- 
-**********************************************************************/
-
-FilePath join(FilePath path1, FilePath path2)
-in {
-    assert(path1 !is null);
-    assert(path2 !is null);
-}
-body {
-        return path2.join (path1);
-}
-
-/**********************************************************************
-
-    Turns a relative path into an absolute path by joining it with the
-    current directory. If the input path already is absolute, it is
-    returned as is.
-
-**********************************************************************/
-
-FilePath absolutePath(FilePath path)
-{
-        return path.join (FileSystem.getDirectory);
 }
 
 /**********************************************************************
