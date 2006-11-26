@@ -230,10 +230,6 @@ private const int SOCKET_ERROR = -1;
 
 
 
-/+
-#ifdef INCLUDE_ALL_FOR_DOXYGEN
-+/
-
 /*******************************************************************************
 
         Internal structs:
@@ -335,11 +331,6 @@ uint32_t ntohl(uint32_t x)
 {
         return htonl(x);
 }
-
-/+
-#endif
-+/
-
 
 
 /*******************************************************************************
@@ -463,10 +454,6 @@ class Socket : Conduit
 
 
         ***********************************************************************/
-
-        /+
-        #ifdef INCLUDE_ALL_FOR_DOXYGEN
-        +/
 
         version (Win32)
         {
@@ -750,12 +737,6 @@ class Socket : Conduit
                         }
                 } // end version
         }
-
-        /+
-        #endif
-        +/
-
-
 
         /***********************************************************************
 
@@ -1942,9 +1923,6 @@ unittest
 
 class IPv4Address: Address
 {
-        /+
-        #ifdef INCLUDE_ALL_FOR_DOXYGEN
-        +/
         protected:
         char[8] _port;
 
@@ -1960,9 +1938,6 @@ class IPv4Address: Address
                 uint sin_addr; //in_addr
                 char[8] sin_zero = [0];
         }
-        /+
-        #endif
-        +/
 
         sockaddr_in sin;
 
