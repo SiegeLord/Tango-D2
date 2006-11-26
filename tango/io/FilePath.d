@@ -242,9 +242,9 @@ class FilePath
 
         ***********************************************************************/
 
-        final FilePath join (FilePath path)
+        final FilePath join (FilePath prefix)
         {
-                return join (path.toUtf8);
+                return join (prefix.toUtf8);
         }               
 
         /***********************************************************************
@@ -307,6 +307,11 @@ class FilePath
         ***********************************************************************/
 
         final char[] asRoot (char[] s)
+        in {
+           if (s.length)
+               assert (s[$-1] is FileConst.RootSeparatorChar, "root must end with a separator");
+           }
+        body
         {
                 return s ~ fp[path .. end];
         }
@@ -322,6 +327,11 @@ class FilePath
         ***********************************************************************/
 
         final char[] asSuffix (char[] s)
+        in {
+           if (s.length)
+               assert (s[0] is FileConst.FileSeparatorChar, "suffix must begin with a separator");
+           }
+        body
         {
                 return fp[0 .. suffix] ~ s;
         }

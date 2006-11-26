@@ -52,7 +52,8 @@ module tango.text.convert.Utf;
 
 public extern (C) void onUnicodeError (char[] msg, size_t idx = 0);
 
-/***********************************************************************
+
+/*******************************************************************************
 
         Encode Utf8 up to a maximum of 4 bytes long (five & six byte
         variations are not supported).
@@ -66,6 +67,7 @@ public extern (C) void onUnicodeError (char[] msg, size_t idx = 0);
         buffer should be specified as 'output' on subsequent calls.
         For example:
 
+        ---
         char[] output;
 
         char[] result = toUtf8 (input, output);
@@ -73,8 +75,9 @@ public extern (C) void onUnicodeError (char[] msg, size_t idx = 0);
         // reset output after a realloc
         if (result.length > output.length)
             output = result;
+        ---
 
-***********************************************************************/
+*******************************************************************************/
 
 char[] toUtf8 (wchar[] input, char[] output=null, uint* ate=null)
 {
@@ -136,7 +139,7 @@ char[] toUtf8 (wchar[] input, char[] output=null, uint* ate=null)
         return output [0..(pOut - output.ptr)];
 }
 
-/***********************************************************************
+/*******************************************************************************
 
         Decode Utf8 produced by the above toUtf8() method.
 
@@ -148,7 +151,7 @@ char[] toUtf8 (wchar[] input, char[] output=null, uint* ate=null)
         converted characters. For optimum performance, the returned
         buffer should be specified as 'output' on subsequent calls.
 
-***********************************************************************/
+*******************************************************************************/
 
 wchar[] toUtf16 (char[] input, wchar[] output=null, uint* ate=null)
 {
@@ -218,7 +221,7 @@ wchar[] toUtf16 (char[] input, wchar[] output=null, uint* ate=null)
 }
 
 
-/***********************************************************************
+/*******************************************************************************
 
         Encode Utf8 up to a maximum of 4 bytes long (five & six
         byte variations are not supported). Throws an exception
@@ -232,7 +235,7 @@ wchar[] toUtf16 (char[] input, wchar[] output=null, uint* ate=null)
         converted characters. For optimum performance, the returned
         buffer should be specified as 'output' on subsequent calls.
 
-***********************************************************************/
+*******************************************************************************/
 
 char[] toUtf8 (dchar[] input, char[] output=null, uint* ate=null)
 {
@@ -303,7 +306,7 @@ char[] toUtf8 (dchar[] input, char[] output=null, uint* ate=null)
 }
 
 
-/***********************************************************************
+/*******************************************************************************
 
         Decode Utf8 produced by the above toUtf8() method.
 
@@ -315,7 +318,7 @@ char[] toUtf8 (dchar[] input, char[] output=null, uint* ate=null)
         converted characters. For optimum performance, the returned
         buffer should be specified as 'output' on subsequent calls.
 
-***********************************************************************/
+*******************************************************************************/
 
 dchar[] toUtf32 (char[] input, dchar[] output=null, uint* ate=null)
 {
@@ -392,7 +395,7 @@ dchar[] toUtf32 (char[] input, dchar[] output=null, uint* ate=null)
         return output [0..produced];
 }
 
-/***********************************************************************
+/*******************************************************************************
 
         Encode Utf16 up to a maximum of 2 bytes long. Throws an exception
         where the input dchar is greater than 0x10ffff.
@@ -405,7 +408,7 @@ dchar[] toUtf32 (char[] input, dchar[] output=null, uint* ate=null)
         converted characters. For optimum performance, the returned
         buffer should be specified as 'output' on subsequent calls.
 
-***********************************************************************/
+*******************************************************************************/
 
 wchar[] toUtf16 (dchar[] input, wchar[] output=null, uint* ate=null)
 {
@@ -457,7 +460,7 @@ wchar[] toUtf16 (dchar[] input, wchar[] output=null, uint* ate=null)
         return output [0..(pOut - output.ptr)];
 }
 
-/***********************************************************************
+/*******************************************************************************
 
         Decode Utf16 produced by the above toUtf16() method.
 
@@ -469,7 +472,7 @@ wchar[] toUtf16 (dchar[] input, wchar[] output=null, uint* ate=null)
         converted characters. For optimum performance, the returned
         buffer should be specified as 'output' on subsequent calls.
 
-***********************************************************************/
+*******************************************************************************/
 
 dchar[] toUtf32 (wchar[] input, dchar[] output=null, uint* ate=null)
 {
