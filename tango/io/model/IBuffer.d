@@ -165,9 +165,9 @@ abstract class IBuffer // could be an interface, but that causes poor codegen
 
                 Examples:
                 ---
-                auto path = new FilePath (somepath);
+                auto uri = new Uri (someuri);
 
-                path.produce (&buffer.consume);
+                uri.produce (&buffer.consume);
                 ---
 
         ***********************************************************************/

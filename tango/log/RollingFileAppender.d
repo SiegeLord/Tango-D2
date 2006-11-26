@@ -62,8 +62,7 @@ public class RollingFileAppender : FileAppender
                     {
                     x[0] = '0' + i;
 
-                    auto clone = new FilePath (p);
-                    clone.setName (clone.getName ~ x);
+                    auto clone = new FilePath (p.asName(p.getName ~ x));
                     paths ~= clone;
 
                     // use the most recent file in the set

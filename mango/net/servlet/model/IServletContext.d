@@ -12,8 +12,7 @@
 
 module mango.net.servlet.model.IServletContext;
 
-private import  tango.io.model.FilePathView;
-              
+
 /******************************************************************************
 
         Provided equivalent functionality of the Java class by the same 
@@ -58,15 +57,15 @@ abstract class IServletContext
 
         /***********************************************************************
         
-                Return a FilePath for the given path. The file is located
-                via the base-path. 
+                Return a qualified version of the given path by prefixing
+                the base-path
 
                 Throws an IOException if the path is invalid, or there's a
                 problem of some kind with the file.
 
         ***********************************************************************/
 
-        abstract FilePathView getResourceAsPath (char[] path);
+        abstract char[] getResourceAsPath (char[] path);
 
         /***********************************************************************
         

@@ -90,9 +90,9 @@ class FileScan
 
         ***********************************************************************/
         
-        FileScan sweep (char[] path, char[] ext)
+        FileScan sweep (char[] path, char[] suffix)
         {
-                return sweep (new FilePath(path), ext);
+                return sweep (new FilePath(path), suffix);
         }
 
         /***********************************************************************
@@ -102,20 +102,20 @@ class FileScan
         
         ***********************************************************************/
         
-        FileScan sweep (FilePath path, char[] ext)
+        FileScan sweep (FilePath path, char[] match)
         {
-                bool extFilter (FilePath fp) 
+                bool filter (FilePath fp) 
                 {
-                        auto sbuf = fp.getExtension ();
+                        auto suffix = fp.getSuffix ();
 
-                        if (fp.getName[0] != '.')                       
-                            if (sbuf.length == 0 || sbuf == ext)
+                        if (fp.getName.length)                       
+                            if (suffix.length == 0 || suffix == match)
                                 return true;
 
                         return false;
                 }
 
-                return sweep (path, &extFilter);
+                return sweep (path, &filter);
         }
 
         /***********************************************************************
@@ -180,12 +180,12 @@ class FileScan
                 foreach (FilePath x; paths) 
                         {
                         // combine base path with listed file
-                        auto spliced = new FilePath (x.splice (base), false);
+                        auto spliced = x.join (base.toUtf8);
 
                         // recurse if this is a directory ...
                         file = new File (spliced);
                         if (file.isDirectory) 
-                            scanFiles (deps, spliced);
+                            scanFiles (deps, file.getPath);
                         else 
                            deps.mods ~= file;
                         }

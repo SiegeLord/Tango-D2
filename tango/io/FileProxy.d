@@ -103,7 +103,8 @@ version (Posix)
 
 class FileProxy
 {
-        private FilePathView path;
+        private FilePath path;
+        private wchar[]  name16;
 
         private alias tango.text.convert.Utf Utf;
 
@@ -113,9 +114,10 @@ class FileProxy
 
         ***********************************************************************/
                                   
-        this (FilePathView path)
+        this (FilePath path)
         {
                 this.path = path;
+                name16 = Utf.toUtf16 (path.cString);
         }
 
         /***********************************************************************
@@ -135,7 +137,7 @@ class FileProxy
 
         ***********************************************************************/
 
-        FilePathView getPath ()
+        FilePath getPath ()
         {
                 return path;
         }               
@@ -213,9 +215,9 @@ class FileProxy
                         FIND_DATA info;
 
                         version (Win32SansUnicode)
-                                 HANDLE h = FindFirstFileA (path.toUtf8, &info);
+                                 HANDLE h = FindFirstFileA (path.cString, &info);
                              else
-                                HANDLE h = FindFirstFileW (path.toUtf16(true), &info);
+                                HANDLE h = FindFirstFileW (name16, &info);
 
                         if (h == INVALID_HANDLE_VALUE)
                             exception ();
@@ -341,24 +343,24 @@ class FileProxy
                            {
                            version (Win32SansUnicode)
                                    {
-                                   if (! RemoveDirectoryA (path.toUtf8))
+                                   if (! RemoveDirectoryA (path.cString))
                                          exception();
                                    }
                                 else
                                    {
-                                   if (! RemoveDirectoryW (path.toUtf16(true)))
+                                   if (! RemoveDirectoryW (name16))
                                          exception();
                                    }
                            }
                         else
                            version (Win32SansUnicode)
                                    {
-                                   if (! DeleteFileA (path.toUtf8))
+                                   if (! DeleteFileA (path.cString))
                                          exception();
                                    }
                                 else
                                    {
-                                   if (! DeleteFileW (path.toUtf16(true)))
+                                   if (! DeleteFileW (name16))
                                          exception();
                                    }
 
@@ -372,7 +374,7 @@ class FileProxy
 
                 ***************************************************************/
 
-                FileProxy rename (FilePathView dst)
+                FileProxy rename (FilePath dst)
                 {
                         const int Typical = REPLACE_EXISTING + COPY_ALLOWED + 
                                                                WRITE_THROUGH;
@@ -380,9 +382,9 @@ class FileProxy
                         int result;
 
                         version (Win32SansUnicode)
-                                 result = MoveFileExA (path.toUtf8, dst.toUtf8, Typical);
+                                 result = MoveFileExA (path.cString, dst.cString, Typical);
                              else
-                                result = MoveFileExW (path.toUtf16(true), dst.toUtf16(true), Typical);
+                                result = MoveFileExW (name16, Utf.toUtf16(dst.cString), Typical);
 
                         if (! result)
                               exception();
@@ -402,11 +404,11 @@ class FileProxy
                         HANDLE h;
 
                         version (Win32SansUnicode)
-                                 h = CreateFileA (path.toUtf8, GENERIC_WRITE, 
+                                 h = CreateFileA (path.cString, GENERIC_WRITE, 
                                                   0, null, CREATE_ALWAYS, 
                                                   FILE_ATTRIBUTE_NORMAL, null);
                              else
-                                h = CreateFileW (path.toUtf16(true), GENERIC_WRITE, 
+                                h = CreateFileW (name16, GENERIC_WRITE, 
                                                  0, null, CREATE_ALWAYS, 
                                                  FILE_ATTRIBUTE_NORMAL, null);
 
@@ -429,12 +431,12 @@ class FileProxy
                 {
                         version (Win32SansUnicode)
                                 {
-                                if (! CreateDirectoryA (path.toUtf8, null))
+                                if (! CreateDirectoryA (path.cString, null))
                                       exception();
                                 }
                              else
                                 {
-                                if (! CreateDirectoryW (path.toUtf16(true), null))
+                                if (! CreateDirectoryW (name16, null))
                                       exception();
                                 }
                         return this;
@@ -468,7 +470,7 @@ class FileProxy
                         version (Win32SansUnicode)
                                 h = FindFirstFileA (path.toUtf8 ~ "\\*\0", &fileinfo);
                              else
-                                h = FindFirstFileW (path.toUtf16 ~ "\\*\0", &fileinfo);
+                                h = FindFirstFileW (name16[0..$-1] ~ "\\*\0", &fileinfo);
 
                         if (h != INVALID_HANDLE_VALUE)
                             try {
@@ -482,7 +484,7 @@ class FileProxy
                                         else
                                            {
                                            int len = wcslen (fileinfo.cFileName);
-                                           fp = new FilePath (Utf.toUtf8(fileinfo.cFileName [0 .. len]), false);
+                                           fp = new FilePath (Utf.toUtf8(fileinfo.cFileName [0 .. len]));
                                            }
 
                                    if (i >= list.length)
@@ -530,7 +532,7 @@ class FileProxy
                 {
                         struct_stat stats;
 
-                        if (posix.stat (path.toUtf8, &stats))
+                        if (posix.stat (path.cString, &stats))
                             exception();
 
                         if (dg)
@@ -647,11 +649,11 @@ class FileProxy
                 {
                         if (isDirectory())
                            {
-                           if (posix.rmdir (path.toUtf8))
+                           if (posix.rmdir (path.cString))
                                exception ();
                            }
                         else           
-                           if (tango.stdc.stdio.remove (path.toUtf8) == -1)
+                           if (tango.stdc.stdio.remove (path.cString) == -1)
                                exception ();
 
                         return this;
@@ -664,9 +666,9 @@ class FileProxy
 
                 ***************************************************************/
 
-                FileProxy rename (FilePathView dst)
+                FileProxy rename (FilePath dst)
                 {
-                        if (tango.stdc.stdio.rename (path.toUtf8, dst.toUtf8) == -1)
+                        if (tango.stdc.stdio.rename (path.cString, dst.cString) == -1)
                             exception ();
 
                         path = dst;
@@ -683,7 +685,7 @@ class FileProxy
                 {
                         int fd;
 
-                        fd = posix.open (path.toUtf8, O_CREAT | O_WRONLY | O_TRUNC, 0660);
+                        fd = posix.open (path.cString, O_CREAT | O_WRONLY | O_TRUNC, 0660);
                         if (fd == -1)
                             exception();
 
@@ -701,7 +703,7 @@ class FileProxy
 
                 FileProxy createDirectory ()
                 {
-                        if (posix.mkdir (path.toUtf8, 0777))
+                        if (posix.mkdir (path.cString, 0777))
                             exception();
 
                         return this;
@@ -718,9 +720,9 @@ class FileProxy
                         int             i;
                         DIR*            dir;
                         dirent*         entry;
-                        FilePath[]  list;
+                        FilePath[]      list;
 
-                        dir = tango.stdc.posix.dirent.opendir (path.toUtf8);
+                        dir = tango.stdc.posix.dirent.opendir (path.cString);
                         if (! dir) 
                               exception();
 
@@ -730,7 +732,7 @@ class FileProxy
                               int len = tango.stdc.string.strlen (entry.d_name.ptr);
 
                               // make a copy of the file name for listing
-                              auto fp = new FilePath (path.toUtf8, entry.d_name[0 ..len], true );
+                              auto fp = new FilePath (entry.d_name[0 ..len]);
 
                               if (i >= list.length)
                                   list.length = list.length * 2;

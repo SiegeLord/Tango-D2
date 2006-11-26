@@ -1,8 +1,7 @@
 
 private import  tango.io.Console,
                 tango.io.FileScan,
-                tango.io.FileConst,
-                tango.text.Text;
+                tango.io.FileConst;
 
 /*******************************************************************************
 
@@ -21,7 +20,7 @@ void main(char[][] args)
         void process (File file)
         {
                 // rename the file
-                file.rename (new FilePath (Text.replace( file.toUtf8.dup, FileConst.PathSeparatorChar, '.') ));
+                file.rename (new FilePath (file.replace(file.toUtf8.dup, FileConst.PathSeparatorChar, '.')));
         }
 
 

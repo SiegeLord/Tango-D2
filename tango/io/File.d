@@ -51,7 +51,7 @@ class File : FileProxy
 
         ***********************************************************************/
                                   
-        this (FilePathView path)
+        this (FilePath path)
         {
                 super (path);
         }

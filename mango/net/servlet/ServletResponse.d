@@ -188,12 +188,12 @@ class ServletResponse : HttpResponse, IServletResponse
                     conduit = new FileConduit (context.getResourceAsPath (path));
 
                     // set expected output size
-                    setContentLength (cast(int) conduit.length());
+                    setContentLength (cast(int) conduit.length);
 
                     // set content-type if not already set
-                    if (super.getContentType() is null)
+                    if (super.getContentType is null)
                        {
-                       char[] mime = context.getMimeType (conduit.getPath.getExtension());
+                       char[] mime = context.getMimeType (conduit.getPath.getSuffix);
                        if (mime is null)
                            mime = "text/plain";        
                        
@@ -211,7 +211,7 @@ class ServletResponse : HttpResponse, IServletResponse
                       finally 
                             {
                             if (conduit)
-                                conduit.close();
+                                conduit.close;
                             }
                 return false;
         }

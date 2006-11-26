@@ -78,16 +78,18 @@ class FileSystem
 
                 ***********************************************************************/
 
-                static void setDirectory (FilePathView fp)
+                static void setDirectory (FilePath fp)
                 {
                         version (Win32SansUnicode)
                                 {
-                                if (! SetCurrentDirectoryA (fp.toUtf8))
+                                if (! SetCurrentDirectoryA (fp.cString))
                                        throw new IOException ("Failed to set current directory");
                                 }
                              else
                                 {
-                                if (! SetCurrentDirectoryW (fp.toUtf16(true)))
+                                wchar[256] tmp = void;
+                        
+                                if (! SetCurrentDirectoryW (Utf.toUtf16(fp.cString, tmp)))
                                       throw new IOException ("Failed to set current directory");
                                 }
                 }
@@ -115,9 +117,11 @@ class FileSystem
                                 int length = GetCurrentDirectoryW (0, null);
                                 if (length)
                                    {
+                                   char[256] tmp = void;
                                    wchar[] dir = new wchar [length];
+                                   
                                    GetCurrentDirectoryW (length, dir);
-                                   return new FilePath (Utf.toUtf8 (dir), false);
+                                   return new FilePath (Utf.toUtf8 (dir, tmp));
                                    }
                                 }
                         throw new IOException ("Failed to get current directory");
@@ -183,9 +187,9 @@ class FileSystem
 
                 ***********************************************************************/
 
-                static void setDirectory (FilePathView fp)
+                static void setDirectory (FilePath fp)
                 {
-                        if (tango.stdc.posix.unistd.chdir (fp.toUtf8))
+                        if (tango.stdc.posix.unistd.chdir (fp.cString))
                             throw new IOException ("Failed to set current directory");
                 }
 

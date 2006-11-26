@@ -252,25 +252,13 @@ char[] join(char[] path1, char[] path2, bool isdir = true)
     ----- 
 **********************************************************************/
 
-FilePathView join(FilePathView path1, FilePathView path2)
+FilePath join(FilePath path1, FilePath path2)
 in {
     assert(path1 !is null);
     assert(path2 !is null);
 }
 body {
-
-    if (path2.isAbsolute()) {
-        return new FilePath(path2);
-    }
-
-    FilePath fp = new FilePath(path1);
-    fp.setPath(cast(char[])(fp.getPath() ~ FileConst.PathSeparatorString 
-                ~ (fp.getName().length ? FileConst.PathSeparatorString ~
-                    fp.getName() : "") ~ path2.getPath()));
-    fp.setName(path2.getName());
-    fp.setSuffix(path2.getSuffix());
-
-    return fp;
+        return path2.join (path1);
 }
 
 /**********************************************************************
@@ -281,13 +269,9 @@ body {
 
 **********************************************************************/
 
-FilePathView absolutePath(FilePathView path)
+FilePath absolutePath(FilePath path)
 {
-    if (path.isAbsolute()) 
-        return path;
-
-    FilePathView fpath = FileSystem.getDirectory();
-    return join(fpath, path);
+        return path.join (FileSystem.getDirectory);
 }
 
 /**********************************************************************

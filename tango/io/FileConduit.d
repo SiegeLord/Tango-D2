@@ -21,6 +21,8 @@ public  import  tango.io.FileProxy;
 
 private import  tango.io.DeviceConduit;
 
+private import  tango.text.convert.Utf;
+
 /*******************************************************************************
 
         Other O/S functions
@@ -189,12 +191,14 @@ class FileConduit : DeviceConduit, DeviceConduit.Seek
 
 
         // the file we're working with 
-        private FilePathView path;
+        private FilePath path;
 
         // expose deviceconduit.copy() methods also 
         alias DeviceConduit.copy      copy;
         alias DeviceConduit.read      read;
         alias DeviceConduit.write     write;
+
+        private alias tango.text.convert.Utf Utf;
 
         /***********************************************************************
         
@@ -224,7 +228,7 @@ class FileConduit : DeviceConduit, DeviceConduit.Seek
 
         ***********************************************************************/
 
-        this (FilePathView path, Style style = ReadExisting)
+        this (FilePath path, Style style = ReadExisting)
         {
                 // say we're seekable
                 super (style.access, true);
@@ -242,7 +246,7 @@ class FileConduit : DeviceConduit, DeviceConduit.Seek
 
         ***********************************************************************/
 
-        FilePathView getPath ()
+        FilePath getPath ()
         {
                 return path;
         }               
@@ -379,15 +383,19 @@ class FileConduit : DeviceConduit, DeviceConduit.Seek
                         access = Access[style.access];
 
                         version (Win32SansUnicode)
-                                 handle = CreateFileA (path.toUtf8, access, share, 
+                                 handle = CreateFileA (path.cString, access, share, 
                                                        null, create, 
                                                        attr | FILE_ATTRIBUTE_NORMAL,
                                                        cast(HANDLE) null);
                              else
-                                handle = CreateFileW (path.toUtf16(true), access, 
-                                                      share, null, create, 
+                                {
+                                wchar[256] tmp = void;
+                                auto name = Utf.toUtf16 (path.cString, tmp);
+                                handle = CreateFileW (name, access, share,
+                                                      null, create, 
                                                       attr | FILE_ATTRIBUTE_NORMAL,
                                                       cast(HANDLE) null);
+                                }
 
                         if (handle is INVALID_HANDLE_VALUE)
                             error ();
@@ -501,7 +509,7 @@ class FileConduit : DeviceConduit, DeviceConduit.Seek
                         share = Share[style.share];
                         access = Access[style.access] | Create[style.open];
 
-                        handle = posix.open (path.toUtf8, access, share);
+                        handle = posix.open (path.cString, access, share);
                         if (handle is -1)
                             error ();
                 }

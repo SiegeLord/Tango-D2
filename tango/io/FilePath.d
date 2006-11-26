@@ -4,258 +4,328 @@
 
         license:        BSD style: $(LICENSE)
 
-        version:        Initial release: March 2004      
+        version:        Initial version: October 2004
+                        Australian version: November 2006
         
-        author:         Kris, Lars Ivar Igesund
+        author:         Kris
 
 *******************************************************************************/
 
 module tango.io.FilePath;
 
-private import  tango.io.Exception,
-                tango.io.FileConst;
-
-private import  tango.text.convert.Utf;
-
-public  import  tango.io.model.FilePathView;
+private import tango.io.FileConst;
 
 /*******************************************************************************
 
-        Models a file name. These are expected to be used as the constructor 
-        argument to File implementations. The intention is that they easily
+        Models a file path. These are expected to be used as the constructor 
+        argument to various file classes. The intention is that they easily
         convert to other representations such as absolute, canonical, or Url.
-        A change to any attribute will cause method toUtf8() to rebuild the
-        output.
 
         File paths containing non-ansi characters should be UTF-8 encoded. 
         Supporting Unicode in this manner was deemed to be more suitable 
         than providing a wchar version of FilePath, and is both consistent 
         & compatible with the approach taken with the Uri class.
 
+        FilePath is immutable, since each mutating method returns a seperate
+        entity. This ensures that a FilePath instance cannot be inadvertantly
+        altered, making it reasonably thread-safe. The design reflects
+        experience with typical FilePath instances as read-mostly entities.
+
+        However, getPath() et. al. return slices of the internal content,
+        rather than invoking .dup -- protecting said content from mutation
+        is considered to be beyond the realm of this module.
+        
 *******************************************************************************/
 
-class FilePath : FilePathView
+class FilePath
 {       
-        private char[]  fp,                     // utf8 filepath with trailing 0
-                        ext,                    // file extension
-                        name,                   // file name
+        private char[]  fp;                     // filepath with trailing 0
+        
+        private int     end,                    // before the trailing 0
                         path,                   // path before name
-                        root,                   // C: D: etc
-                        suffix;                 // from first '.'
-
-        private wchar[] fpWide;                 // utf 16 with trailing 0
-
-        private alias tango.text.convert.Utf Utf;
-        
-        /***********************************************************************
-        
-                Create an empty FilePath
-
-        ***********************************************************************/
-
-        this ()
-        {
-        }
+                        name,                   // file/dir name
+                        suffix;                 // from leftmost '.'
 
         /***********************************************************************
         
-                Create a FilePath through reference to another. This can be
-                used to make a mutable version of an immutable FilePathView
+                Create a FilePath from a copy of the provided string. 
 
-        ***********************************************************************/
-
-        this (FilePathView other)
-        {
-                assert (other);
-                ext = other.getExtension;
-                name = other.getName;
-                path = other.getPath;
-                root = other.getRoot;
-                suffix = other.getSuffix;
-        }
-
-        /***********************************************************************
-        
-                Create a FilePath from the given strings
-
-        ***********************************************************************/
-        
-        this (char[] dir, char[] filename)
-        {
-                this (filename);
-                setPath (dir.dup);
-        }
-
-        /***********************************************************************
-        
-                Create a FilePath from the given string. Note the path
-                string is usually duplicated here, though you may specify
-                that it be aliased instead via the second argument. When
-                aliased, you are expected to provide an immutable copy for
-                the lifetime of this object. If not certain, ignore the
-                second argument.
-
-                FilePath normally assumes a filename is present, and therefore
+                FilePath assumes both path & name are present, and therefore
                 may split what is otherwise a logically valid path. That is,
                 the 'name' of a file is typically the path segment following
-                a rightmost path-seperator. The intent is to treat files and
-                directories in the same manner -- as a name with an optional
-                ancestral structure. To bias processing such that the 'path'
-                is always fully retained, construct a FilePath with parameter
-                isdir set to true: the segment beyond the rightmost separator
-                will become part of the path component, and 'name' will become
-                empty.                 
+                a rightmost path-separator. The intent is to treat files and
+                directories in the same manner: as a name with an optional
+                ancestral structure. It is possible to bias the interpretation
+                by adding a trailing path-separator to the argument. Doing so
+                will result in an empty name attribute.
 
                 To ascertain if a FilePath exists on a system, or to access
                 various other physical attributes, use methods exposed via
-                tango.io.FileProxy or tango.io.File
+                tango.io.FileProxy and tango.io.File
 
         ***********************************************************************/
 
-        this (char[] filepath, bool copy = true, bool isdir = false)
-        in {
-           assert (filepath);
-           assert(filepath.length > 0);
-           }
-        out {
-            if (root)
-                assert (root.length > 0);
-            }
-        body
+        this (char[] filepath)
         {
-                int ext = -1,
-                    path = -1,
-                    root = -1,
-                    suffix = -1;
+                parse (filepath ~ '\0');
+        }
+        
+        /***********************************************************************
+        
+                Return the complete text of this filepath
+
+        ***********************************************************************/
+
+        final override char[] toUtf8 ()
+        {
+                return fp [0 .. end];
+        }
+        
+        /***********************************************************************
                 
-                // mark path segments
-                for (int i=filepath.length; i > 0; --i)
-                     switch (filepath[i-1])
-                            {
-                            case FileConst.FileSeparatorChar:
-                                 if (isdir)
-                                     break;
-                                 if (path < 0)
-                                    {
-                                    if (ext < 0)
-                                       {
-                                       // check for '..' sequence
-                                       if (i > 1 && filepath[i-2] != FileConst.FileSeparatorChar)
-                                           ext = i;
-                                       }
-                                    suffix = i;
-                                    }
-                                 break;
+                Return the root of this path. Roots are constructs such as
+                "c:"
 
-                            case FileConst.PathSeparatorChar:
-                                 if (path < 0)
-                                     path = i;
-                                 break;
+        ***********************************************************************/
 
-                            case FileConst.RootSeparatorChar:
-                                 root = i;
-                            default:
-                                 break;
-                            }
-
-                // hang onto original length ...
-                int i = filepath.length;
-
-                // copy the filepath? Add a null if so
-                if (copy)
-                    fp = filepath = (filepath ~ '\0');
-                        
-                // slice each path segment
-                if (ext >= 0)
-                   {
-                   this.ext = filepath [ext..i];
-                   this.suffix = filepath [suffix..i];
-                   --ext;
-                   }
-                else
-                   ext = i;
-
-                if (root >= 1)
-                    this.root = filepath [0..root-1];
-                else
-                   root = 0;
-
-                if (path >= root)
-                    this.path = filepath [root..isdir ? $ : path-1];
-                else
-                   path = root;
-
-                this.name = filepath [isdir ? ext : path..ext];
-        }
-
-
-                             
-/+
-        Will most likely be fully removed.
-
-        alias Consume delegate(char[]) Bar;
-        typedef Bar delegate (char[]) Consume;
-
-        Consume emit (Consume consume)
+        final char[] getRoot ()
         {
-                return consume ("1") ("2") ("3") ("4");
-        }
-
-        void other ()
-        {
-                Bar t (char[] v)
-                {
-                        return cast(Bar) &t;
-                }
-
-                emit (&t);
-        }
-
+                return fp[0 .. path];
+        }               
 
         /***********************************************************************
         
-                Create a FilePath from a Uri. Note that the Uri authority
-                is used to house an optional root (device, drive-letter ...)
+                Return the file path. Paths may start and end with a "/".
+                The root path is "/" and an unspecified path is returned as
+                an empty string. Directory paths may be split such that the
+                directory name is placed into the 'name' member; directory
+                paths are treated no differently than file paths
 
         ***********************************************************************/
 
-        this (UriView uri)
+        final char[] getPath ()
         {
-                auto path = uri.getPath();
-
-                if (uri.getHost.length)
-                    path = uri.getHost ~ FileConst.RootSeparatorString ~ path;
-                
-                this (path);
-        }
+                return fp[path .. name];
+        }             
 
         /***********************************************************************
 
-                Convert this FilePath to a Uri. Note that a root (such as a
-                drive-letter, or device) is placed into the Uri authority
+                return the root + path combination
+
+        ***********************************************************************/
+ 
+        final char[] getFullPath ()
+        {
+                return fp[0 .. name];
+        }
+
+        /***********************************************************************
         
+                Return the name of this file, or directory. 
+
         ***********************************************************************/
 
-        Uri toUri ()
+        final char[] getName ()
         {
-                auto uri = new Uri;
+                return fp[name .. suffix];
+        }               
 
+        /***********************************************************************
+        
+                Suffix is like an extension, except it may include multiple
+                '.' sequences and the dot-prefix is included in the suffix.
+                For example, "wumpus.foo.bar" has suffix ".foo.bar"
+
+        ***********************************************************************/
+
+        final char[] getSuffix ()
+        {
+                return fp [suffix .. end];
+        }              
+
+        /***********************************************************************
+
+                return the name + suffix combination
+                
+        ***********************************************************************/
+ 
+        final char[] getFullName ()
+        {
+                return fp[name .. end];
+        }
+
+        /***********************************************************************
+        
+                Return a null-terminated version of this file path
+                
+        ***********************************************************************/
+
+        final char[] cString ()
+        {
+                return fp;
+        }
+
+        /***********************************************************************
+        
+                Returns true if all fields are equal.
+
+        ***********************************************************************/
+
+        final override int opEquals (Object o)
+        {
+                return toUtf8() == o.toUtf8();
+        }
+
+        /***********************************************************************
+        
+                Returns true if this FilePath is *not* relative to the 
+                current working directory.
+
+        ***********************************************************************/
+
+        final bool isAbsolute ()
+        {
+                return (path > 0) || 
+                       (path < end && fp[path] is FileConst.PathSeparatorChar);
+        }               
+
+        /***********************************************************************
+        
+                Returns true if this FilePath is empty
+
+        ***********************************************************************/
+
+        final bool isEmpty ()
+        {
+                return end is 0;
+        }
+
+        /***********************************************************************
+                
+                Returns true if this FilePath has a parent
+
+        ***********************************************************************/
+
+        final bool isChild ()
+        {
+                auto path = getPath();
+                
+                for (int i=path.length; --i > 0;)
+                     if (path[i] is FileConst.PathSeparatorChar)
+                         return true;
+                return false;
+        }               
+
+        /***********************************************************************
+        
+                Join this FilePath with the provided prefix.
+
+                Assumes prefix is a directory name. If this is an absolute
+                path it will be returned intact, ignoring prefix.
+
+        ***********************************************************************/
+
+        final FilePath join (char[] prefix)
+        {      
                 if (isAbsolute)
-                    uri.setScheme ("file");
+                    return this;
 
-                if (root.length)
-                    uri.setHost (root);
+                return new FilePath (asPadded(prefix) ~ toUtf8);
+        }               
 
-                char[] s = path~name;
-                if (ext.length)
-                    s ~= FileConst.FileSeparatorString ~ ext;
+        /***********************************************************************
+        
+                Join this FilePath with the provided prefix.
 
-                version (Win32)
-                         Text.replace (s, FileConst.PathSeparatorChar, '/');
-                uri.setPath (s);
-                return uri;
+                Assumes prefix is a directory name. If this is an absolute
+                path it will be returned intact, ignoring prefix.
+
+        ***********************************************************************/
+
+        final FilePath join (FilePath path)
+        {
+                return join (path.toUtf8);
+        }               
+
+        /***********************************************************************
+        
+                Returns a path representing the parent of this one.
+                
+                Note that this returns a path suitable for splitting into
+                path and name components (there's no trailing separator).                
+                
+        ***********************************************************************/
+
+        final char[] asParent ()
+        {
+                return asStripped (getFullPath);
+        }               
+
+        /***********************************************************************
+        
+                Return a path with a different name and suffix.
+
+        ***********************************************************************/
+
+        final char[] asSibling (char[] s) 
+        {
+                return getFullPath() ~ s;
         }
-+/
+
+        /***********************************************************************
+        
+                Change the name of this FilePath. The prior suffix is
+                retained
+
+                Note that "." and ".." patterns are expected to be represented
+                via the suffix rather than via the name.
+                
+        ***********************************************************************/
+
+        final char[] asName (char[] s)
+        {
+                return getFullPath() ~ s ~ getSuffix();
+        }
+
+        /***********************************************************************
+        
+                Change the path of this FilePath. Non-empty paths are
+                potentially adjusted to have a trailing separator
+
+        ***********************************************************************/
+
+        final char[] asPath (char[] s)
+        {
+                return getRoot() ~ asPadded(s) ~ getFullName();
+        }
+
+        /***********************************************************************
+        
+                Change the root of this FilePath. The root should have an
+                appropriate trailing seperator
+
+        ***********************************************************************/
+
+        final char[] asRoot (char[] s)
+        {
+                return s ~ fp[path .. end];
+        }
+
+        /***********************************************************************
+        
+                Change the suffix of this FilePath. A non-empty suffix should
+                start with a suffix separator (e.g. a '.' character).
+
+                Note that "." and ".." patterns are expected to be represented
+                via the suffix rather than via the name.
+
+        ***********************************************************************/
+
+        final char[] asSuffix (char[] s)
+        {
+                return fp[0 .. suffix] ~ s;
+        }
+
         /***********************************************************************
         
                 Convert path separators to the correct format according to
@@ -264,7 +334,7 @@ class FilePath : FilePathView
 
         ***********************************************************************/
 
-        static char[] normalizeSlash (char[] path)
+        static char[] asNormal (char[] path)
         {
                 version (Win32)
                          return replace (path, '/', '\\');
@@ -273,8 +343,39 @@ class FilePath : FilePathView
         }
 
         /***********************************************************************
+
+                Return an adjusted path such that non-empty instances always
+                have a trailing separator
         
-                Replace all 'from' instances in the provided path with 'to'
+        ***********************************************************************/
+
+        static char[] asPadded (char[] path)
+        {
+                if (path.length)
+                    if (path[$-1] != FileConst.PathSeparatorChar)
+                        path ~= FileConst.PathSeparatorChar;
+                return path;
+        }
+        
+        /***********************************************************************
+
+                Return an adjusted path such that non-empty instances do not
+                have a trailing separator
+                
+        ***********************************************************************/
+
+        static char[] asStripped (char[] path)
+        {
+                if (path.length > 1)
+                    if (path[$ - 1] is FileConst.PathSeparatorChar)
+                        path = path [0 .. $ - 1];
+                return path;
+        }               
+
+        /***********************************************************************
+        
+                Replace all 'from' instances in the provided path with 'to'.
+                This mutates the provided 'path', so apply .dup as necessary
                   
         ***********************************************************************/
 
@@ -285,481 +386,363 @@ class FilePath : FilePathView
                              c = to;
                 return path;
         }
-
+                           
         /***********************************************************************
-        
-                Clear any cached information in this FilePath
+
+                parse() assumes both path & name are present, and therefore
+                may split what is otherwise a logically valid path. That is,
+                the 'name' of a file is typically the path segment following
+                a rightmost path-separator. The intent is to treat files and
+                directories in the same manner: as a name with an optional
+                ancestral structure. It is possible to bias the interpretation
+                by adding a trailing path-separator to the argument. Doing so
+                will result in an empty name attribute.
 
         ***********************************************************************/
 
-        protected void reset ()
+        private void parse (char[] filepath)
         {
-                fp.length = fpWide.length = 0;
-        }
-
-        /***********************************************************************
-        
-                Returns true if this FilePath is *not* relative to the 
-                current working directory.
-
-        ***********************************************************************/
-
-        bool isAbsolute ()
-        {
-                return cast(bool) (root.length || 
-                       (path.length && path[0] is FileConst.PathSeparatorChar)
-                       );
-        }               
-
-        /***********************************************************************
-        
-                Returns true if this FilePath is empty
-
-        ***********************************************************************/
-
-        bool isEmpty ()
-        {
-                return (path.length + name.length + ext.length) is 0;
-        }
-
-        /***********************************************************************
+                path = 0;
+                fp   = filepath;
+                name = suffix = -1;
+                end  = filepath.length - 1;
                 
-                Returns true if this FilePath has a parent.
+                for (int i=end; --i >= 0;)
+                     switch (filepath[i])
+                            {
+                            case FileConst.FileSeparatorChar:
+                                 if (name < 0)
+                                     suffix = i;
+                                 break;
 
-        ***********************************************************************/
+                            case FileConst.PathSeparatorChar:
+                                 if (name < 0)
+                                     name = i + 1;
+                                 break;
 
-        bool isChild ()
-        {
-                return cast (bool) (locateParent() >= 0);
-        }               
+                            case FileConst.RootSeparatorChar:
+                                 path = i + 1;
+                                 break;
+                                 
+                            default:
+                                 break;
+                            }
 
-        /***********************************************************************
+                if (name < 0)
+                    name = path;
                 
-                Return the root of this path. Roots are constructs such as
-                "c:"
-
-        ***********************************************************************/
-
-        char[] getRoot ()
-        {
-                return root;
-        }               
-
-        /***********************************************************************
-        
-                Return the file path. Paths can start with a '/' but do not
-                end with one. The root path is empty. Directory paths 
-                are split such that the directory name is placed into
-                the 'name' member. 
-
-        ***********************************************************************/
-
-        char[] getPath ()
-        {
-                return path;
-        }             
-
-        /***********************************************************************
-        
-                Return the name of this file, or directory.
-
-        ***********************************************************************/
-
-        char[] getName ()
-        {
-                return name;
-        }               
-
-        /***********************************************************************
-        
-                Return the file-extension, sans seperator
-
-        ***********************************************************************/
-
-        char[] getExtension ()
-        {
-                return ext;
-        }              
-
-        /***********************************************************************
-        
-                Suffix is like extension, except it can include multiple
-                '.' sequences. For example, "wumpus1.foo.bar" has suffix
-                "foo.bar" and extension "bar".
-
-        ***********************************************************************/
-
-        char[] getSuffix ()
-        {
-                return suffix;
-        }              
-
-        /***********************************************************************
-
-            Returns the base name of this file path, that is name and suffix.
-
-            Examples:
-
-            ------
-
-            FilePath fp = new FilePath("/home/foo/bar.txt");
-            FilePath basename = fp.getFile();  // => bar.txt
-            
-            ------
-
-        ***********************************************************************/
- 
-        FilePath getFile ()
-        {
-                auto fp = new FilePath(this);
-                return fp.setRoot(null).setPath(null);
-        }
-
-        /***********************************************************************
-
-            Returns the directory name, that is root and path. It is returned
-            as a FilePath with empty name, suffix and extension.
-
-            Examples:
-
-            ------
-
-            FilePath fp = new FilePath("/home/foo/bar");
-            char[] dirname = fp.getDirectory().toUtf8(); // => /home/foo
-
-            ------
- 
-        ***********************************************************************/
- 
-        FilePath getDirectory ()
-        {
-                return toSibling (null);
-        }
-
-        /***********************************************************************
-
-                Convert this FilePath to a char[] via the provided Consumer
-
-        ***********************************************************************/
-
-        Consumer produce (Consumer consume)
-        {
-                if (root.length)
-                    consume (root), consume (FileConst.RootSeparatorString);
-
-                if (path.length)
-                   {
-                   consume (path);
-
-                   // don't emit a separator where there's no name
-                   if (name.length)
-                       consume (FileConst.PathSeparatorString);
-                   }
-
-                if (name.length)
-                    consume (name);
-
-                if (ext.length)
-                    consume (FileConst.FileSeparatorString), consume (ext);
-
-                return consume;
-        }               
-
-        /***********************************************************************
-        
-                Return a null terminated utf8 version of this file path, where
-                the length does not include the trailing null
-
-        ***********************************************************************/
-
-        override char[] toUtf8 ()
-        {
-                return toUtf8 (false);
-        }
-        
-        /***********************************************************************
-        
-                Return a null terminated utf8 version of this file path, where
-                the length optionally includes the trailing null
-                
-        ***********************************************************************/
-
-        char[] toUtf8 (bool withNull)
-        {
-                if (fp.length is 0)
-                   {
-                   // preallocate some space
-                   fp.length = 256, fp.length = 0;
-
-                   // concatenate segments
-                   produce ((void[] v){fp ~= cast(char[]) v;}) ("\0");
-                   }
-
-                // return with or without trailing null
-                return fp [0 .. $ - (withNull ? 0 : 1)];
-        }
-
-        /***********************************************************************
-        
-                Return a null terminated utf16 version of this file path, where
-                the length optionally includes the trailing null
-
-        ***********************************************************************/
-
-        wchar[] toUtf16 (bool withNull = false)
-        {
-                if (fpWide.length is 0)
-                    // convert trailing null also ...
-                    fpWide = Utf.toUtf16 (toUtf8 (true));
-
-                return fpWide [0 .. $ - (withNull ? 0 : 1)];
-        }
-
-        /***********************************************************************
-        
-                Splice this FilePath onto the end of the provided base path.
-                Output is return as a char[].
-
-                Assumes that base is a directory name. If this is an absolute
-                path, it is returned, ignoring base.
-
-        ***********************************************************************/
-
-        char[] splice (FilePathView base)
-        {      
-                if (isAbsolute)
-                    return toUtf8();
-                char[] s;
-                s.length = 256, s.length = 0;
-                splice (base, (void[] v) {s ~= cast(char[]) v;});
-                return s;
-        }               
-
-        /***********************************************************************
-        
-                Splice this FilePath onto the end of the provided base path.
-                Output is handled via the provided Consumer
-
-                Assumes that base is a directory name. If this is an absolute
-                path, it is returned, ignoring base.
-
-        ***********************************************************************/
-
-        Consumer splice (FilePathView base, Consumer consume)
-        {      
-                if (isAbsolute) 
-                    return produce(consume);
-                
-                base.produce (consume);
-
-                if (! base.isEmpty)
-                      consume (FileConst.PathSeparatorString);
-
-                if (path.length)
-                    consume (path);
-                       
-                if (name.length)
-                    consume (name);
-
-                if (suffix.length)
-                    consume (FileConst.FileSeparatorString), consume (suffix);
-
-                return consume;
-        }               
-
-        /***********************************************************************
-        
-                Find the next parent of the FilePath. Returns a valid index
-                to the seperator when present, -1 otherwise.
-
-        ***********************************************************************/
-
-        private int locateParent ()
-        {
-                int i = path.length;
-
-                // set new path to rightmost PathSeparator
-                if (--i > 0)
-                    while (--i >= 0)
-                           if (path[i] is FileConst.PathSeparatorChar)
-                               return i;
-                return -1;
-        }               
-
-        /***********************************************************************
-        
-                Returns a FilePath representing the parent of this one. An
-                exception is thrown if there is not parent (at the root).
-
-        ***********************************************************************/
-
-        FilePath toParent ()
-        {
-                // set new path to rightmost PathSeparator
-                int i = locateParent();
-
-                if (i >= 0)
-                   {
-                   auto parent = new FilePath (this);
-
-                   // slice path subsection
-                   parent.path = path [0..i+1];
-                   parent.reset ();
-                   return parent;
-                   }
-
-                // return null? throw exception? return null? Hmmmm ...
-                throw new IOException ("Cannot create parent path for an orphan file");
-        }               
-
-        /***********************************************************************
-        
-                Return a cloned FilePath with a different name, extension,
-                and suffix.
-
-        ***********************************************************************/
-
-        FilePath toSibling (char[] name, char[] ext=null, char[] suffix=null) 
-        {
-                // don't copy ... we can alias instead
-                auto sibling = new FilePath (this);
-
-                sibling.suffix = suffix;
-                sibling.name = name;
-                sibling.ext = ext;
-                sibling.reset ();
-
-                return sibling;
-        }
-
-        /***********************************************************************
-        
-                Set the extension of this FilePath.
-
-        ***********************************************************************/
-
-        private final FilePath set (char[]* x, char[]* v)
-        {       
-                *x = *v;
-                reset ();
-                return this;
-        }
-
-        /***********************************************************************
-        
-                Set the extension of this FilePath.
-
-        ***********************************************************************/
-
-        FilePath setExtension (char[] ext)
-        {
-                return set (&this.ext, &ext);
-        }
-
-        /***********************************************************************
-        
-                Set the name of this FilePath.
-
-        ***********************************************************************/
-
-        FilePath setName (char[] name)
-        {
-                return set (&this.name, &name);
-        }
-
-        /***********************************************************************
-        
-                Set the path of this FilePath.
-
-        ***********************************************************************/
-
-        FilePath setPath (char[] path)
-        {
-                return set (&this.path, &path);
-        }
-
-        /***********************************************************************
-        
-                Set the root of this FilePath (such as "c:")
-
-        ***********************************************************************/
-
-        FilePath setRoot (char[] root)
-        {
-                return set (&this.root, &root);
-        }
-
-        /***********************************************************************
-        
-                Set the suffix of this FilePath.
-
-        ***********************************************************************/
-
-        FilePath setSuffix (char[] suffix)
-        {
-                return set (&this.suffix, &suffix);
-        }
-
-        /***********************************************************************
-        
-                Returns true if all fields are equal.
-
-        ***********************************************************************/
-
-        int opEquals (Object filepath)
-        {
-                auto fp = cast(FilePathView) filepath;
-                return (root == fp.getRoot() &&
-                        path == fp.getPath() &&
-                        name == fp.getName() &&
-                        ext == fp.getExtension());
+                if (suffix < 0)
+                    suffix = end;
         }
 }
 
-            
-debug (UnitTest) {
+                                     
 
-unittest {
+/*******************************************************************************
 
-    version (Posix) {
-    auto fp = new FilePath("/home/foo/bar/john");
-    assert (fp.isAbsolute());
-    assert (fp.getName() == "john");
-    assert (fp.getPath() == "/home/foo/bar", fp.getPath());
-    assert (fp.toUtf8() == "/home/foo/bar/john", fp.toUtf8());
-    assert (fp.getDirectory().toUtf8() == "/home/foo/bar");
+*******************************************************************************/
 
-    fp = new FilePath("foo/bar/john");
-    assert (!fp.isAbsolute());
-    assert (fp.getName() == "john");
-    assert (fp.getPath() == "foo/bar");
-    assert (fp.toUtf8() == "foo/bar/john");
+debug (UnitTest)
+{
+        void main()
+        {
+        }
 
-    fp = new FilePath("foo/bar/john", false, true);
-    assert (fp.getDirectory().toUtf8() == "foo/bar/john");
-    assert (fp.getName() == "");
-    }
+        unittest
+        {
+        version (Win32)
+                {
+                auto fp = new FilePath(r"C:\home\foo\bar\john\");
+                assert (fp.isAbsolute);
+                assert (fp.getName == "");
+                assert (fp.getPath == r"\home\foo\bar\john\");
+                assert (fp.toUtf8 == r"C:\home\foo\bar\john\");
+                assert (fp.getFullPath == r"C:\home\foo\bar\john\");
+                assert (fp.getFullName == r"");
+                assert (fp.getSuffix == r"");
+                assert (fp.getRoot == r"C:");
+                assert (fp.isChild);
 
-    version (Win32) {
-    auto fp = new FilePath(r"C:\home\foo\bar\john");
-    assert (fp.isAbsolute());
-    assert (fp.getName() == "john");
-    assert (fp.getPath() == r"\home\foo\bar", fp.getPath);
-    assert (fp.toUtf8() == r"C:\home\foo\bar\john");
-    assert (fp.getDirectory().toUtf8() == r"C:\home\foo\bar", fp.getDirectory().toUtf8);
+                fp = new FilePath(r"C:\home\foo\bar\john");
+                assert (fp.isAbsolute);
+                assert (fp.getName == "john");
+                assert (fp.getPath == r"\home\foo\bar\");
+                assert (fp.toUtf8 == r"C:\home\foo\bar\john");
+                assert (fp.getFullPath == r"C:\home\foo\bar\");
+                assert (fp.getFullName == r"john");
+                assert (fp.getSuffix == r"");
+                assert (fp.isChild);
 
-    fp = new FilePath(r"foo\bar\john");
-    assert (!fp.isAbsolute());
-    assert (fp.getName() == "john");
-    assert (fp.getPath() == r"foo\bar");
-    assert (fp.toUtf8() == r"foo\bar\john");
+                fp = new FilePath(fp.asParent);
+                assert (fp.isAbsolute);
+                assert (fp.getName == "bar");
+                assert (fp.getPath == r"\home\foo\");
+                assert (fp.toUtf8 == r"C:\home\foo\bar");
+                assert (fp.getFullPath == r"C:\home\foo\");
+                assert (fp.getFullName == r"bar");
+                assert (fp.getSuffix == r"");
+                assert (fp.isChild);
 
-    fp = new FilePath(r"foo\bar\john", false, true);
-    assert (fp.getDirectory().toUtf8() == r"foo\bar\john");
-    assert (fp.getName() == "");
+                fp = new FilePath(fp.asParent);
+                assert (fp.isAbsolute);
+                assert (fp.getName == "foo");
+                assert (fp.getPath == r"\home\");
+                assert (fp.toUtf8 == r"C:\home\foo");
+                assert (fp.getFullPath == r"C:\home\");
+                assert (fp.getFullName == r"foo");
+                assert (fp.getSuffix == r"");
+                assert (fp.isChild);
 
-    }
+                fp = new FilePath(fp.asParent);
+                assert (fp.isAbsolute);
+                assert (fp.getName == "home");
+                assert (fp.getPath == r"\");
+                assert (fp.toUtf8 == r"C:\home");
+                assert (fp.getFullPath == r"C:\");
+                assert (fp.getFullName == r"home");
+                assert (fp.getSuffix == r"");
+                assert (!fp.isChild);
 
-}
+                fp = new FilePath(r"foo\bar\john.doe");
+                assert (!fp.isAbsolute);
+                assert (fp.getName == "john");
+                assert (fp.getPath == r"foo\bar\");
+                assert (fp.getSuffix == r".doe");
+                assert (fp.getFullName == r"john.doe");
+                assert (fp.toUtf8 == r"foo\bar\john.doe");
+                assert (fp.isChild);
 
+                fp = new FilePath(r"c:doe");
+                assert (fp.isAbsolute);
+                assert (fp.getSuffix == r"");
+                assert (fp.toUtf8 == r"c:doe");        
+                assert (fp.getPath == r"");
+                assert (fp.getName == "doe");
+                assert (fp.getFullName == r"doe");
+                assert (!fp.isChild);
+
+                fp = new FilePath(r"\doe");
+                assert (fp.isAbsolute);
+                assert (fp.getSuffix == r"");
+                assert (fp.toUtf8 == r"\doe");
+                assert (fp.getName == "doe");
+                assert (fp.getPath == r"\");
+                assert (fp.getFullName == r"doe");
+                assert (!fp.isChild);
+
+                fp = new FilePath(r"john.doe.foo");
+                assert (!fp.isAbsolute);
+                assert (fp.getName == "john");
+                assert (fp.getPath == r"");
+                assert (fp.getSuffix == r".doe.foo");
+                assert (fp.toUtf8 == r"john.doe.foo");
+                assert (fp.getFullName == r"john.doe.foo");
+                assert (!fp.isChild);
+
+                fp = new FilePath(r".doe");
+                assert (!fp.isAbsolute);
+                assert (fp.getSuffix == r".doe");
+                assert (fp.toUtf8 == r".doe");
+                assert (fp.getName == "");
+                assert (fp.getPath == r"");
+                assert (fp.getFullName == r".doe");
+                assert (!fp.isChild);
+
+                fp = new FilePath(r"doe");
+                assert (!fp.isAbsolute);
+                assert (fp.getSuffix == r"");
+                assert (fp.toUtf8 == r"doe");
+                assert (fp.getName == "doe");
+                assert (fp.getPath == r"");
+                assert (fp.getFullName == r"doe");
+                assert (!fp.isChild);
+
+                fp = new FilePath(r".");
+                assert (!fp.isAbsolute);
+                assert (fp.getSuffix == r".");
+                assert (fp.toUtf8 == r".");
+                assert (fp.getName == "");
+                assert (fp.getPath == r"");
+                assert (fp.getFullName == r".");
+                assert (!fp.isChild);
+
+                fp = new FilePath(r"..");
+                assert (!fp.isAbsolute);
+                assert (fp.getSuffix == r"..");
+                assert (fp.toUtf8 == r"..");
+                assert (fp.getName == "");
+                assert (fp.getPath == r"");
+                assert (fp.getFullName == r"..");
+                assert (!fp.isChild);
+
+                fp = new FilePath(r"C:\foo\bar\test.bar");
+                fp = new FilePath(fp.asPath ("foo"));
+                assert (fp.getName == r"test");
+                assert (fp.getPath == r"foo\");
+                assert (fp.getFullPath == r"C:foo\");
+
+                fp = new FilePath(fp.asPath (""));
+                assert (fp.getName == r"test");
+                assert (fp.getPath == r"");
+                assert (fp.getFullPath == r"C:");
+
+                fp = new FilePath(null);
+                assert (fp.isEmpty);
+                assert (!fp.isChild);
+                assert (!fp.isAbsolute);
+                assert (fp.getSuffix == r"");
+                assert (fp.toUtf8 == r"");
+                assert (fp.getName == "");
+                assert (fp.getPath == r"");
+                assert (fp.getFullName == r"");
+                }
+
+
+        version (Posix)
+                {
+                auto fp = new FilePath(r"C:/home/foo/bar/john/");
+                assert (fp.isAbsolute);
+                assert (fp.getName == "");
+                assert (fp.getPath == r"/home/foo/bar/john/");
+                assert (fp.toUtf8 == r"C:/home/foo/bar/john/");
+                assert (fp.getFullPath == r"C:/home/foo/bar/john/");
+                assert (fp.getFullName == r"");
+                assert (fp.getSuffix == r"");
+                assert (fp.getRoot == r"C:");
+                assert (fp.isChild);
+
+                fp = new FilePath(r"C:/home/foo/bar/john");
+                assert (fp.isAbsolute);
+                assert (fp.getName == "john");
+                assert (fp.getPath == r"/home/foo/bar/");
+                assert (fp.toUtf8 == r"C:/home/foo/bar/john");
+                assert (fp.getFullPath == r"C:/home/foo/bar/");
+                assert (fp.getFullName == r"john");
+                assert (fp.getSuffix == r"");
+                assert (fp.isChild);
+
+                fp = new FilePath(fp.asParent);
+                assert (fp.isAbsolute);
+                assert (fp.getName == "bar");
+                assert (fp.getPath == r"/home/foo/");
+                assert (fp.toUtf8 == r"C:/home/foo/bar");
+                assert (fp.getFullPath == r"C:/home/foo/");
+                assert (fp.getFullName == r"bar");
+                assert (fp.getSuffix == r"");
+                assert (fp.isChild);
+
+                fp = new FilePath(fp.asParent);
+                assert (fp.isAbsolute);
+                assert (fp.getName == "foo");
+                assert (fp.getPath == r"/home/");
+                assert (fp.toUtf8 == r"C:/home/foo");
+                assert (fp.getFullPath == r"C:/home/");
+                assert (fp.getFullName == r"foo");
+                assert (fp.getSuffix == r"");
+                assert (fp.isChild);
+
+                fp = new FilePath(fp.asParent);
+                assert (fp.isAbsolute);
+                assert (fp.getName == "home");
+                assert (fp.getPath == r"/");
+                assert (fp.toUtf8 == r"C:/home");
+                assert (fp.getFullPath == r"C:/");
+                assert (fp.getFullName == r"home");
+                assert (fp.getSuffix == r"");
+                assert (!fp.isChild);
+
+                fp = new FilePath(r"foo/bar/john.doe");
+                assert (!fp.isAbsolute);
+                assert (fp.getName == "john");
+                assert (fp.getPath == r"foo/bar/");
+                assert (fp.getSuffix == r".doe");
+                assert (fp.getFullName == r"john.doe");
+                assert (fp.toUtf8 == r"foo/bar/john.doe");
+                assert (fp.isChild);
+
+                fp = new FilePath(r"c:doe");
+                assert (fp.isAbsolute);
+                assert (fp.getSuffix == r"");
+                assert (fp.toUtf8 == r"c:doe");        
+                assert (fp.getPath == r"");
+                assert (fp.getName == "doe");
+                assert (fp.getFullName == r"doe");
+                assert (!fp.isChild);
+
+                fp = new FilePath(r"/doe");
+                assert (fp.isAbsolute);
+                assert (fp.getSuffix == r"");
+                assert (fp.toUtf8 == r"/doe");
+                assert (fp.getName == "doe");
+                assert (fp.getPath == r"/");
+                assert (fp.getFullName == r"doe");
+                assert (!fp.isChild);
+
+                fp = new FilePath(r"john.doe.foo");
+                assert (!fp.isAbsolute);
+                assert (fp.getName == "john");
+                assert (fp.getPath == r"");
+                assert (fp.getSuffix == r".doe.foo");
+                assert (fp.toUtf8 == r"john.doe.foo");
+                assert (fp.getFullName == r"john.doe.foo");
+                assert (!fp.isChild);
+
+                fp = new FilePath(r".doe");
+                assert (!fp.isAbsolute);
+                assert (fp.getSuffix == r".doe");
+                assert (fp.toUtf8 == r".doe");
+                assert (fp.getName == "");
+                assert (fp.getPath == r"");
+                assert (fp.getFullName == r".doe");
+                assert (!fp.isChild);
+
+                fp = new FilePath(r"doe");
+                assert (!fp.isAbsolute);
+                assert (fp.getSuffix == r"");
+                assert (fp.toUtf8 == r"doe");
+                assert (fp.getName == "doe");
+                assert (fp.getPath == r"");
+                assert (fp.getFullName == r"doe");
+                assert (!fp.isChild);
+
+                fp = new FilePath(r".");
+                assert (!fp.isAbsolute);
+                assert (fp.getSuffix == r".");
+                assert (fp.toUtf8 == r".");
+                assert (fp.getName == "");
+                assert (fp.getPath == r"");
+                assert (fp.getFullName == r".");
+                assert (!fp.isChild);
+
+                fp = new FilePath(r"..");
+                assert (!fp.isAbsolute);
+                assert (fp.getSuffix == r"..");
+                assert (fp.toUtf8 == r"..");
+                assert (fp.getName == "");
+                assert (fp.getPath == r"");
+                assert (fp.getFullName == r"..");
+                assert (!fp.isChild);
+
+                fp = new FilePath(r"C:/foo/bar/test.bar");
+                fp = new FilePath(fp.asPath ("foo"));
+                assert (fp.getName == r"test");
+                assert (fp.getPath == r"foo/");
+                assert (fp.getFullPath == r"C:foo/");
+
+                fp = new FilePath(fp.asPath (""));
+                assert (fp.getName == r"test");
+                assert (fp.getPath == r"");
+                assert (fp.getFullPath == r"C:");
+
+                fp = new FilePath(null);
+                assert (fp.isEmpty);
+                assert (!fp.isChild);
+                assert (!fp.isAbsolute);
+                assert (fp.getSuffix == r"");
+                assert (fp.toUtf8 == r"");
+                assert (fp.getName == "");
+                assert (fp.getPath == r"");
+                assert (fp.getFullName == r"");
+                }
+        }
 }
