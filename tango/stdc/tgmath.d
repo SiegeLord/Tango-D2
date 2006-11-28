@@ -9,8 +9,8 @@
 module tango.stdc.tgmath;
 
 private import tango.stdc.config;
-private import tango.stdc.math : math;
-private import tango.stdc.complex : complex;
+private static import tango.stdc.math;
+private static import tango.stdc.complex;
 
 extern (C):
 
@@ -146,9 +146,9 @@ alias tango.stdc.math.log           log;
 alias tango.stdc.math.logf          log;
 alias tango.stdc.math.logl          log;
 
-alias tango.stdc.math.clog          log;
-alias tango.stdc.math.clogf         log;
-alias tango.stdc.math.clogl         log;
+alias tango.stdc.complex.clog       log;
+alias tango.stdc.complex.clogf      log;
+alias tango.stdc.complex.clogl      log;
 
 alias tango.stdc.math.log10         log10;
 alias tango.stdc.math.log10f        log10;
