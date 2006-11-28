@@ -779,6 +779,101 @@ class Thread
     }
 
 
+    ////////////////////////////////////////////////////////////////////////////
+    // Local Storage Actions
+    ////////////////////////////////////////////////////////////////////////////
+
+
+    /**
+     * Indicates the number of local storage pointers available at program
+     * startup.  It is recommended that this number be at least 64.
+     */
+    const uint LOCAL_MAX = 64;
+
+
+    /**
+     * Reserves a local storage pointer for use and initializes this
+     * location to null for all running threads.
+     *
+     * Returns:
+     *  A key representing the array offset of this memory location.
+     */
+    static uint createLocal()
+    {
+        synchronized( slock )
+        {
+            foreach( uint key, inout bool set; sm_local )
+            {
+                if( !set )
+                {
+                    foreach( Thread t; sm_all )
+                    {
+                        t.m_local[key] = null;
+                    }
+                    set = true;
+                    return key;
+                }
+            }
+            throw new ThreadException( "No more local storage slots available" );
+        }
+    }
+
+
+    /**
+     * Marks the supplied key as available and sets the associated location
+     * to null for all running threads.  It is assumed that any key passed
+     * to this function is valid.  The result of calling this function for
+     * a key which is still in use is undefined.
+     *
+     * Params:
+     *  key = The key to delete.
+     */
+    static void deleteLocal( uint key )
+    {
+        synchronized( slock )
+        {
+            sm_local[key] = false;
+            foreach( Thread t; sm_all )
+            {
+                t.m_local[key] = null;
+            }
+        }
+    }
+
+
+    /**
+     * Gets the data associated with the supplied key value.  It is assumed
+     * that any key passed to this function is valid.
+     *
+     * Params:
+     *  key = The location which holds the desired data.
+     *
+     * Returns:
+     *  The data associated with the supplied key.
+     */
+    static void* getLocal( uint key )
+    {
+        return getThis().m_local[key];
+    }
+
+
+    /**
+     * Stores the supplied value in the specified location.  It is assumed
+     * that any key passed to this function is valid.
+     *
+     * Params:
+     *  key = The location to store the supplied data.
+     *  val = The data to store.
+     *
+     * Returns:
+     *  A copy of the data which has just been stored.
+     */
+    static void* setLocal( uint key, void* val )
+    {
+        return getThis().m_local[key] = val;
+    }
+
+
 private:
     //
     // Initializes a thread object which has no associated executable function.
@@ -840,7 +935,10 @@ private:
     //
     // Local storage
     //
+    static bool[LOCAL_MAX]  sm_local;
     static TLSKey           sm_this;
+
+    void*[LOCAL_MAX]        m_local;
 
 
     //
@@ -1404,35 +1502,13 @@ class ThreadLocal( T )
     this( T def = T.init )
     {
         m_def = def;
-
-        version( Win32 )
-        {
-            m_key = TlsAlloc();
-            if( m_key == TLS_OUT_OF_INDEXES )
-            {
-                throw new ThreadException( "No more local storage slots available" );
-            }
-        }
-        else version( Posix )
-        {
-            if( pthread_key_create( &m_key, null ) != 0 )
-            {
-                throw new ThreadException( "No more local storage slots available" );
-            }
-        }
+        m_key = Thread.createLocal();
     }
 
 
     ~this()
     {
-        version( Win32 )
-        {
-            TlsFree( m_key );
-        }
-        else version( Posix )
-        {
-            pthread_key_delete( m_key );
-        }
+        Thread.deleteLocal( m_key );
     }
 
 
@@ -1450,15 +1526,15 @@ class ThreadLocal( T )
      */
     T val()
     {
-        Wrap* wrap = getWrap();
+        Wrap* wrap = cast(Wrap*) Thread.getLocal( m_key );
+
         return wrap ? wrap.val : m_def;
     }
 
 
     /**
      * Copies newval to a location specific to the calling thread, and returns
-     * newval.  Please note that storage may be allocated during each thread's
-     * first call to this routine.
+     * newval.
      *
      * Params:
      *  newval = The value to set.
@@ -1468,18 +1544,12 @@ class ThreadLocal( T )
      */
     T val( T newval )
     {
-        Wrap* wrap = getWrap();
+        Wrap* wrap = cast(Wrap*) Thread.getLocal( m_key );
 
         if( wrap is null )
         {
             wrap = new Wrap;
-            setWrap( wrap );
-
-            synchronized
-            {
-                wrap.next = m_all;
-                m_all = wrap.next;
-            }
+            Thread.setLocal( m_key, wrap );
         }
         wrap.val = newval;
         return newval;
@@ -1487,38 +1557,6 @@ class ThreadLocal( T )
 
 
 private:
-    Wrap* getWrap()
-    {
-        version( Win32 )
-        {
-            return cast(Wrap*) TlsGetValue( m_key );
-        }
-        else version( Posix )
-        {
-            return cast(Wrap*) pthread_getspecific( m_key );
-        }
-    }
-
-
-    void setWrap( Wrap* wrap )
-    {
-        version( Win32 )
-        {
-            if( TlsSetValue( m_key, wrap ) == 0 )
-            {
-                throw new ThreadException( "Unable to store value in local storage" );
-            }
-        }
-        else version( Posix )
-        {
-            if( pthread_setspecific( m_key, wrap ) != 0 )
-            {
-                throw new ThreadException( "Unable to store value in local storage" );
-            }
-        }
-    }
-
-
     //
     // A wrapper for the stored data.  This is needed for determining whether
     // set has ever been called for this thread (and therefore whether the
@@ -1527,26 +1565,14 @@ private:
     // obvious tradeoff here is an extra per-thread allocation for each
     // ThreadLocal value as compared to calling the Thread routines directly.
     //
-    static struct Wrap
+    struct Wrap
     {
-        void*   next;
-        T       val;
-    }
-
-
-    version( Win32 )
-    {
-        alias uint TLSKey;
-    }
-    else version( Posix )
-    {
-        alias pthread_key_t TLSKey;
+        T   val;
     }
 
 
     T       m_def;
-    TLSKey  m_key;
-    Wrap*   m_all;
+    uint    m_key;
 }
 
 
