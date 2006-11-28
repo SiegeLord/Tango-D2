@@ -842,11 +842,6 @@ private:
     //
     static TLSKey           sm_this;
 
-    // NOTE: m_chain is used to chain instances of ThreadLocal.Wrap so elements
-    //       in thread local storage are scanned by the GC on collections.  See
-    //       ThreadLocal for more information.
-    void*                   m_chain;
-
 
     //
     // Standard thead data
@@ -1462,7 +1457,8 @@ class ThreadLocal( T )
 
     /**
      * Copies newval to a location specific to the calling thread, and returns
-     * newval.
+     * newval.  Please note that storage may be allocated during each thread's
+     * first call to this routine.
      *
      * Params:
      *  newval = The value to set.
@@ -1479,12 +1475,11 @@ class ThreadLocal( T )
             wrap = new Wrap;
             setWrap( wrap );
 
-            // NOTE: The following will ensure that all wrapper objects will be
-            //       scanned by the GC, since the thread object is scanned and
-            //       the GC will follow pointers through GCed memory.
-            Thread t = Thread.getThis();
-            wrap.next = t.m_chain;
-            t.m_chain = wrap;
+            synchronized
+            {
+                wrap.next = m_all;
+                m_all = wrap.next;
+            }
         }
         wrap.val = newval;
         return newval;
@@ -1551,6 +1546,7 @@ private:
 
     T       m_def;
     TLSKey  m_key;
+    Wrap*   m_all;
 }
 
 
