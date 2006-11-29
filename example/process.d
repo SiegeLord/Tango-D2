@@ -23,7 +23,7 @@ void main()
 
     try
     {
-        auto p = new Process(command);
+        auto p = new Process(command, null);
 
         Stdout.formatln("Executing {0}", p.toUtf8());
         p.execute();

@@ -1,15 +1,8 @@
-/*
- * Copyright (c) 2005 Regan Heath
- * Copyright (c) 2006 Juan Jose Comellas <juanjo@comellas.com.ar>
- *
- * Permission to use, copy, modify, distribute and sell this software
- * and its documentation for any purpose is hereby granted without fee,
- * provided that the above copyright notice appear in all copies and
- * that both that copyright notice and this permission notice appear
- * in supporting documentation.  Author makes no representations about
- * the suitability of this software for any purpose. It is provided
- * "as is" without express or implied warranty.
- */
+/*******************************************************************************
+  copyright:   Copyright (c) 2006 Juan Jose Comellas. All rights reserved
+  license:     BSD style: $(LICENSE)
+  author:      Juan Jose Comellas <juanjo@comellas.com.ar>
+*******************************************************************************/
 
 module tango.sys.Process;
 
@@ -23,6 +16,7 @@ private import tango.text.Text;
 
 private import tango.stdc.stdlib;
 private import tango.stdc.string;
+private import tango.stdc.stringz;
 
 version (Windows)
 {
@@ -68,7 +62,7 @@ else version (Posix)
  * {
  *     uint i = 0;
  *
- *     auto p = new Process("ls -al");
+ *     auto p = new Process("ls -al", null);
  *
  *     p.execute();
  *
@@ -175,7 +169,7 @@ class Process
      * auto p = new Process(command, env)
      * ---
      */
-    public this(char[] command, char[][] env = null)
+    public this(char[] command, char[][] env)
     in
     {
         assert(command.length > 0);
@@ -191,7 +185,8 @@ class Process
      *
      * Params:
      * args     = array of strings with the process' arguments; the first
-     *            argument must be the process' name.
+     *            argument must be the process' name; the arguments can be
+     *            empty.
      * env      = array of strings with the process' environment variables;
      *            each element must follow the following format:
      *            <NAME>=<VALUE>
@@ -215,7 +210,7 @@ class Process
      * auto p = new Process(args, env)
      * ---
      */
-    public this(char[][] args, char[][] env = null)
+    public this(char[][] args, char[][] env)
     in
     {
         assert(args.length > 0);
@@ -307,54 +302,6 @@ class Process
     }
 
     /**
-     * Set the process' arguments from an array of arguments.
-     *
-     * Remarks:
-     * The first element of the array must be the name of the process'
-     * executable.
-     *
-     * Examples:
-     * ---
-     * char[][] args;
-     *
-     * args ~= "myprogram";
-     * args ~= "first";
-     * args ~= "second argument";
-     * args ~= "third";
-     *
-     * p.args = args;
-     * ---
-     */
-    public void args(char[][] args)
-    {
-        _args = args;
-    }
-
-    /**
-     * Set the process' arguments from a command line.
-     *
-     * Params:
-     * command  = command line of the process to be executed; each argument
-     *            must be separated by a space and arguments that contain
-     *            spaces must be enclosed in double quotes; the first element
-     *            of the array must be the name of the process' executable.
-     *
-     * Examples:
-     * ---
-     * p.args("myprogram first \"second argument\" third");
-     * ---
-     */
-    public void args(char[] command)
-    in
-    {
-        assert(command.length > 0);
-    }
-    body
-    {
-        _args = splitArgs(command);
-    }
-
-    /**
      * Return an array with the process' environment variables.
      */
     public char[][] env()
@@ -382,29 +329,6 @@ class Process
     }
 
     /**
-     * Set the process' environment variables from an array of string.
-     *
-     * Params:
-     * env  = array of string containing the environment variables for the
-     *        process. Each string must include the name and the value of each
-     *        variable in the following format: <name>=<value>.
-     *
-     * Examples:
-     * ---
-     * char[][] vars;
-     *
-     * vars ~= "VAR1=VALUE1";
-     * vars ~= "VAR2=VALUE2";
-     *
-     * p.env = vars;
-     * ---
-     */
-    public void env(char[][] env)
-    {
-        _env = env;
-    }
-
-    /**
      * Return an UTF-8 string with the process' command line.
      */
     public char[] toUtf8()
@@ -417,7 +341,7 @@ class Process
             {
                 command ~= ' ';
             }
-            if (find(_args[i], ' ') || _args[i].length == 0)
+            if (Text.indexOf(_args[i], ' ') >= 0 || _args[i].length == 0)
             {
                 command ~= '"';
                 command ~= _args[i];
@@ -535,10 +459,100 @@ class Process
     }
     body
     {
-        if (args !is null && args[0] !is null)
+        if (args.length > 0 && args[0] !is null)
         {
             _args = args;
         }
+        executeInternal();
+    }
+
+    /**
+     * Execute a process using the command line arguments as parameters to
+     * this method.
+     *
+     * Once the process is executed successfully, its input and output can be
+     * manipulated through the stdin, stdout and
+     * stderr member PipeConduit's.
+     *
+     * Params:
+     * command  = string with the process' command line; arguments that have
+     *            embedded whitespace must be enclosed in inside double-quotes (").
+     * env      = array of strings with the process' environment variables;
+     *            each element must follow the following format:
+     *            <NAME>=<VALUE>
+     *
+     * Throws:
+     * ProcessCreateException if the process could not be created
+     * successfully; ProcessForkException if the call to the fork()
+     * system call failed (on POSIX-compatible platforms).
+     *
+     * Remarks:
+     * The process must not be running and the provided list of arguments must
+     * not be empty. If there was any argument already present in the args
+     * member, they will be replaced by the arguments supplied to the method.
+     */
+    public void execute(char[] command, char[][] env)
+    in
+    {
+        assert(!_running);
+        assert(command.length > 0);
+    }
+    body
+    {
+        _args = splitArgs(command);
+        _env = env;
+
+        executeInternal();
+    }
+
+    /**
+     * Execute a process using the command line arguments as parameters to
+     * this method.
+     *
+     * Once the process is executed successfully, its input and output can be
+     * manipulated through the stdin, stdout and
+     * stderr member PipeConduit's.
+     *
+     * Params:
+     * args     = array of strings with the process' arguments; the first
+     *            argument must be the process' name; the arguments can be
+     *            empty.
+     * env      = array of strings with the process' environment variables;
+     *            each element must follow the following format:
+     *            <NAME>=<VALUE>
+     *
+     * Throws:
+     * ProcessCreateException if the process could not be created
+     * successfully; ProcessForkException if the call to the fork()
+     * system call failed (on POSIX-compatible platforms).
+     *
+     * Remarks:
+     * The process must not be running and the provided list of arguments must
+     * not be empty. If there was any argument already present in the args
+     * member, they will be replaced by the arguments supplied to the method.
+     *
+     * Examples:
+     * ---
+     * auto p = new Process();
+     * char[][] args;
+     *
+     * args ~= "ls";
+     * args ~= "-l";
+     *
+     * p.execute(args, null);
+     * ---
+     */
+    public void execute(char[][] args, char[][] env)
+    in
+    {
+        assert(!_running);
+        assert(args.length > 0);
+    }
+    body
+    {
+        _args = args;
+        _env = env;
+
         executeInternal();
     }
 
@@ -563,7 +577,7 @@ class Process
     in
     {
         assert(!_running);
-        assert(_args !is null && _args[0] !is null);
+        assert(_args.length > 0 && _args[0] !is null);
     }
     body
     {
@@ -1025,7 +1039,7 @@ class Process
     protected static char[][] splitArgs(inout char[] command, char[] delims = " \t\r\n")
     in
     {
-        assert(find(delims, '"') == false,
+        assert((Text.indexOf(delims, '"') < 0),
                "The argument delimiter string cannot contain a double quotes ('\"') character");
     }
     body
@@ -1090,7 +1104,7 @@ class Process
                     {
                         state = State.InsideQuotes;
                     }
-                    else if (!find(delims, c))
+                    else if (Text.indexOf(delims, c) < 0)
                     {
                         start = i;
                         state = State.FindDelimiter;
@@ -1117,7 +1131,7 @@ class Process
                         }
                         state = State.InsideQuotes;
                     }
-                    else if (find(delims, c))
+                    else if (Text.indexOf(delims, c) >= 0)
                     {
                         appendChunksAsArg();
                         state = State.Start;
@@ -1145,19 +1159,6 @@ class Process
         appendChunksAsArg();
 
         return args;
-    }
-
-    /**
-     * Find a character in a string.
-     */
-    protected static bool find (char[] list, char match)
-    {
-        foreach (c; list)
-        {
-            if (c is match)
-                return true;
-        }
-        return false;
     }
 
     /**
@@ -1262,14 +1263,14 @@ class Process
         protected static int execvpe(char[] filename, char*[] argv, char*[] envp)
         in
         {
-            assert(filename !is null);
+            assert(filename.length > 0);
         }
         body
         {
             int rc = -1;
             char* str;
 
-            if (!find(filename, FileConst.PathSeparatorChar) &&
+            if ((Text.indexOf(filename, FileConst.PathSeparatorChar) < 0) &&
                 (str = getenv("PATH")) !is null)
             {
                 char[]  envPath = str[0 .. strlen(str)];
@@ -1315,12 +1316,12 @@ class ProcessException: Exception
 {
     protected this(char[] msg, pid_t pid)
     {
-        super(Formatter.format(msg, pid, SysError.lastMsg));
+        super(Formatter.convert(msg, pid, SysError.lastMsg));
     }
 
     protected this(char[] msg, char[] command)
     {
-        super(Formatter.format(msg, command, SysError.lastMsg));
+        super(Formatter.convert(msg, command, SysError.lastMsg));
     }
 }
 
@@ -1399,7 +1400,7 @@ debug (UnitTest)
 
         try
         {
-            auto p = new Process(command);
+            auto p = new Process(command, null);
 
             p.execute();
 
