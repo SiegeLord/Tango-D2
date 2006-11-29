@@ -167,7 +167,7 @@ void write(char[] name, void[] buffer)
 
     if (buffer.length != numwritten)
 	goto err2;
-    
+
     if (!CloseHandle(h))
 	goto err;
     return;
@@ -211,7 +211,7 @@ void append(char[] name, void[] buffer)
 
     if (buffer.length != numwritten)
 	goto err2;
-    
+
     if (!CloseHandle(h))
 	goto err;
     return;
@@ -543,13 +543,13 @@ struct DirEntry
 char[][] listdir(char[] pathname)
 {
     char[][] result;
-    
+
     bool listing(char[] filename)
     {
 	result ~= filename;
 	return true; // continue
     }
-    
+
     listdir(pathname, &listing);
     return result;
 }
@@ -598,7 +598,7 @@ char[][] listdir(char[] pathname)
 
 char[][] listdir(char[] pathname, char[] pattern)
 {   char[][] result;
-    
+
     bool callback(DirEntry* de)
     {
 	if (de.isdir)
@@ -609,7 +609,7 @@ char[][] listdir(char[] pathname, char[] pattern)
 	}
 	return true; // continue
     }
-    
+
     listdir(pathname, &callback);
     return result;
 }
@@ -618,7 +618,7 @@ char[][] listdir(char[] pathname, char[] pattern)
 
 char[][] listdir(char[] pathname, RegExp r)
 {   char[][] result;
-    
+
     bool callback(DirEntry* de)
     {
 	if (de.isdir)
@@ -629,7 +629,7 @@ char[][] listdir(char[] pathname, RegExp r)
 	}
 	return true; // continue
     }
-    
+
     listdir(pathname, &callback);
     return result;
 }
@@ -836,7 +836,7 @@ class FileException : Exception
     }
 
     this(char[] name, uint errno)
-    {	char* s = tango.sys.Common.sysErrorMsg(errno);
+    {	char* s = tango.sys.Common.SystemError.lookup(errno);
 	this(name, phobos.string.toString(s).dup);
 	this.errno = errno;
     }
@@ -912,8 +912,8 @@ void write(char[] name, void[] buffer)
     char *namez;
 
     namez = toStringz(name);
-    fd = tango.stdc.posix.fcntl.open(namez, 
-            tango.stdc.posix.fcntl.O_CREAT | 
+    fd = tango.stdc.posix.fcntl.open(namez,
+            tango.stdc.posix.fcntl.O_CREAT |
             tango.stdc.posix.fcntl.O_WRONLY |
             tango.stdc.posix.fcntl.O_TRUNC, 0660);
     if (fd == -1)
@@ -1248,20 +1248,20 @@ struct DirEntry
 char[][] listdir(char[] pathname)
 {
     char[][] result;
-    
+
     bool listing(char[] filename)
     {
 	result ~= filename;
 	return true; // continue
     }
-    
+
     listdir(pathname, &listing);
     return result;
 }
 
 char[][] listdir(char[] pathname, char[] pattern)
 {   char[][] result;
-    
+
     bool callback(DirEntry* de)
     {
 	if (de.isdir)
@@ -1272,14 +1272,14 @@ char[][] listdir(char[] pathname, char[] pattern)
 	}
 	return true; // continue
     }
-    
+
     listdir(pathname, &callback);
     return result;
 }
 
 char[][] listdir(char[] pathname, RegExp r)
 {   char[][] result;
-    
+
     bool callback(DirEntry* de)
     {
 	if (de.isdir)
@@ -1290,7 +1290,7 @@ char[][] listdir(char[] pathname, RegExp r)
 	}
 	return true; // continue
     }
-    
+
     listdir(pathname, &callback);
     return result;
 }
@@ -1324,7 +1324,7 @@ void listdir(char[] pathname, bool delegate(DirEntry* de) callback)
 			continue;
 
 		de.init(pathname, fdata);
-		if (!callback(&de))	    
+		if (!callback(&de))
 		    break;
 	    }
 	}
