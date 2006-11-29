@@ -232,7 +232,7 @@ public class Format(T)
 
         public final T[] sprint (T[] result, T[] formatStr, ...)
         {
-                return sprint (result, formatStr, _arguments, _argptr);
+                return sprint (result, formatStr, _arguments, cast(void*) _argptr);
         }
         
         /**********************************************************************
