@@ -343,7 +343,7 @@ abstract class AbstractSelector: ISelector
             default:
                 char[128] buf = void;
                 throw new SelectorException(Formatter.sprint(buf, "Unknown Selector error {0}: {1}",
-                                                             errorCode, SysError.lookup(errno)), file, line);
+                                                             errorCode, SysError.lookup(errorCode)), file, line);
                 break;
         }
     }
