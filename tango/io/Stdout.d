@@ -3,9 +3,9 @@
         copyright:      Copyright (c) 2004 Kris Bell. All rights reserved
 
         license:        BSD style: $(LICENSE)
-        
+
         version:        Initial release: Nov 2005
-        
+
         author:         Kris
 
 *******************************************************************************/
@@ -23,7 +23,7 @@ private import  tango.text.convert.Format;
 
         A bridge between a Format instance and a Buffer. This is used for
         the Stdout & Stderr globals, but can be used for general purpose
-        buffer-formatting as desired. The Template type 'T' dictates the 
+        buffer-formatting as desired. The Template type 'T' dictates the
         text arrangement within the target buffer ~ one of char, wchar or
         dchar (utf8, utf16, or utf32)
 
@@ -50,7 +50,7 @@ private class BufferedFormat(T)
                 this.output = output;
                 this.eol = eol;
         }
-                
+
         /**********************************************************************
 
                 Format output using the provided formatting specification
@@ -78,13 +78,49 @@ private class BufferedFormat(T)
 
         /**********************************************************************
 
+                Format output using a default layout (variadic version)
+
+        **********************************************************************/
+
+        final BufferedFormat print (...)
+        {
+                if (_arguments.length > 0)
+                    print(&sink, _arguments, _argptr);
+                else
+                    // zero args is just a flush
+                    output.flush();
+
+                return this;
+        }
+
+        /**********************************************************************
+
+                Format output using a default layout and append a newline
+
+        **********************************************************************/
+
+        final BufferedFormat println (...)
+        {
+                if (_arguments.length > 0)
+                    print(&sink, _arguments, _argptr);
+
+                return newline();
+        }
+
+        /**********************************************************************
+
                 Format output using a default layout
 
         **********************************************************************/
 
-        final BufferedFormat print (...)        
+        protected final BufferedFormat print (Formatter.Sink sink, TypeInfo[] arguments, void* argptr)
+        in
         {
-                static  T[][] fmt = 
+                assert(arguments.length > 0 && arguments.length < 10);
+        }
+        body
+        {
+                static  T[][] fmt =
                         [
                         "{0}",
                         "{0}, {1}",
@@ -98,20 +134,12 @@ private class BufferedFormat(T)
                         "{0}, {1}, {2}, {3}, {4}, {5}, {6}, {7}, {8}, {9}",
                         ];
 
-                int count = _arguments.length;
-                assert (count < 10);
-
-                // zero args is just a flush
-                if (count is 0)
-                    output.flush;
-                else
-                   convert (&sink, _arguments, _argptr, fmt[count-1]);
-
+                convert(sink, arguments, argptr, fmt[arguments.length - 1]);
                 return this;
         }
 
         /***********************************************************************
-        
+
                 output a newline
 
         ***********************************************************************/
@@ -132,8 +160,8 @@ private class BufferedFormat(T)
         {
                 output.flush;
                 return this;
-        }      
-        
+        }
+
         /**********************************************************************
 
                 Return the associated buffer
@@ -143,7 +171,7 @@ private class BufferedFormat(T)
         final IBuffer buffer ()
         {
                 return output;
-        }      
+        }
 
         /**********************************************************************
 
@@ -154,7 +182,7 @@ private class BufferedFormat(T)
         final IConduit conduit ()
         {
                 return output.getConduit;
-        }      
+        }
 
         /**********************************************************************
 
@@ -176,7 +204,7 @@ private class BufferedFormat(T)
         tango.io.Console directly
 
         Note that both the buffer and conduit in use are exposed by these
-        global instances ~ this can be leveraged, for instance, to copy a 
+        global instances ~ this can be leveraged, for instance, to copy a
         file to the standard output:
 
         ---
@@ -185,7 +213,7 @@ private class BufferedFormat(T)
 
 *******************************************************************************/
 
-public static BufferedFormat!(char)     Stdout, 
+public static BufferedFormat!(char)     Stdout,
                                         Stderr;
 
 static this()
