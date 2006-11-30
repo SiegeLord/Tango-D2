@@ -1,3 +1,17 @@
+/*******************************************************************************
+
+        copyright:      Copyright (c) 2006 Lars Ivar Igesund, Thomas Kühne,
+                                            Grzegorz Adam Hankiewicz 
+
+        license:        BSD style: $(LICENSE)
+
+        version:        Initial release: December 2006      
+        
+        author:         Lars Ivar Igesund, Thomas Kühne, 
+                        Grzegorz Adam Hankiewicz 
+
+*******************************************************************************/
+
 module tango.text.Path;
 
 private import tango.io.FileConst;
@@ -189,8 +203,6 @@ body {
 }
 
 debug (UnitTest) {
-
-    void main() {}
 
 unittest {
 
