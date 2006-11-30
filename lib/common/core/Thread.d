@@ -491,6 +491,11 @@ class Thread
     }
     body
     {
+        // NOTE: This operation needs to be synchronized to avoid a race
+        //       condition with the GC.  Without this lock, the thread
+        //       could start and allocate memory before being added to
+        //       the global thread list, preventing it from being scanned
+        //       and causing memory to be collected that is still in use.
         synchronized( slock )
         {
             version( Win32 )
@@ -942,7 +947,7 @@ private:
 
 
     //
-    // Standard thead data
+    // Standard thread data
     //
     version( Win32 )
     {
