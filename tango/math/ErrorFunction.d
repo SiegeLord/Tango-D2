@@ -495,7 +495,7 @@ static real Q3[] = [
  */
 real normalDistributionInv(real p)
 in {
-  assert(p>=0.0L && p<=1.0L); // domain error
+  assert(p>=0.0L && p<=1.0L, "Domain error");
 }
 body
 {

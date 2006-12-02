@@ -200,7 +200,7 @@ scope class UseRoundingMode
 
 // Usage:
 
-    scope  = new UseRoundingMode(RoundingMode.ROUNDDOWN);
+    scope xxx = new UseRoundingMode(RoundingMode.ROUNDDOWN);
 ---
 +/
 
@@ -269,6 +269,33 @@ unittest {
     assert(cdown==5);
 
 }
+}
+
+// Note: Itanium supports more precision options than this. SSE/SSE2 does not support any.
+enum PrecisionControl : short { PRECISION80=0x300, PRECISION64=0x200, PRECISION32=0x000 };
+
+/** Set the number of bits of precision used by 'real'.
+ *
+ * Returns: the old precision.
+ * This is not supported on all platforms.
+ */
+PrecisionControl reduceRealPrecision(PrecisionControl prec) {
+   version(D_InlineAsm_X86) {
+        // TODO: For SSE/SSE2, do we also need to set the SSE rounding mode?
+        short cont;
+        asm {
+            fstcw cont;
+            mov CX, cont;
+            mov AX, cont;
+            and EAX, 0x0300; // Form the return value
+            and CX, 0xFCFF;
+            or CX, prec;
+            mov cont, CX;
+            fldcw cont;
+        }
+    } else {
+           assert(0, "Not yet supported");
+    }
 }
 
 private {
@@ -445,7 +472,7 @@ real ldexp(real n, int exp) /* intrinsic */
  *
  *  $(TABLE_SV
  *  <tr> <th> x               <th>ilogb(x)           <th>invalid?
-     *  <tr> <td> 0               <td> FP_ILOGB0     <th> yes
+ *  <tr> <td> 0               <td> FP_ILOGB0         <th> yes
  *  <tr> <td> &plusmn;&infin; <td> FP_ILOGBINFINITY  <th> yes
  *  <tr> <td> $(NAN)          <td> FP_ILOGBNAN       <th> yes
  *  )
