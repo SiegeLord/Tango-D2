@@ -21,6 +21,12 @@
  *     distribution.
  */
 
+/* NOTE: This file has been patched from the original DMD distribution to
+   work with the GDC compiler.
+
+   Modified by David Friedman, November 2006
+*/
+
 /*
  *  Modified by Sean Kelly <sean@f4.ca> for use with Tango.
  */
@@ -191,6 +197,10 @@ bit[] _d_arraysetbit2(bit[] ba, bit value)
     return ba;
 }
 
+
+
+version (GNU) { /* _d_arrayliteral not used; can't always be compiled */ }
+else
 void* _d_arrayliteral(size_t size, size_t length, ...)
 {
     byte[] result;

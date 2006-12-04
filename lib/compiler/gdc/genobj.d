@@ -544,7 +544,7 @@ class TypeInfo_AssociativeArray : TypeInfo
 
     size_t tsize()
     {
-        return (void[]).sizeof;
+        return (char[int]).sizeof;
     }
 
     TypeInfo next;

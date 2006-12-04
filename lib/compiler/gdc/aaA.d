@@ -62,6 +62,13 @@ static uint[] prime_list = [
     1610612741UL, 4294967291UL
 ];
 
+/* This is the type of the return value for dynamic arrays.
+ * It should be a type that is returned in registers.
+ * Although DMD will return types of Array in registers,
+ * gcc will not, so we instead use a 'long'.
+ */
+alias long ArrayRet_t;
+
 struct Array
 {
     size_t length;
@@ -97,7 +104,7 @@ struct AA
     {
         // This is here only to retain binary compatibility with the
         // old way we did AA's. Should eventually be removed.
-        int reserved;
+        //int reserved;
     }
 }
 
