@@ -15,7 +15,7 @@ RM=rm -f
 MD=mkdir -p
 
 CC=gcc
-LC=$(AR) -P -r -s -v
+LC=$(AR) -Prsv
 DC=gdmd
 
 ADDFLAGS=-q,-nostdinc -I`pwd`/.. -I`pwd`/compiler/gdc

@@ -28,7 +28,7 @@ TFLAGS=-O -inline -version=Posix $(ADDFLAGS)
 DOCFLAGS=-version=DDoc -version=Posix
 
 CC=gcc
-LC=$(AR) -P -r -s -v
+LC=$(AR) -Prsv
 DC=dmd
 
 INC_DEST=../../tango
