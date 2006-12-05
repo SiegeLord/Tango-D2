@@ -25,14 +25,14 @@ module tango.core.Atomic;
  */
 enum msync
 {
+    raw,    /// not sequenced
     hlb,    /// hoist-load barrier
-    ddhlb,  /// hoist-load barrier with data-dependency "hint"
     hsb,    /// hoist-store barrier
     slb,    /// sink-load barrier
     ssb,    /// sink-store barrier
     acq,    /// hoist-load + hoist-store barrier
     rel,    /// sink-load + sink-store barrier
-    none    /// naked
+    seq,    /// fully sequenced (acq + rel)
 }
 
 
@@ -66,10 +66,10 @@ private
 
     template isHoistOp( msync ms )
     {
-        const bool isHoistOp = ms == msync.hlb   ||
-                               ms == msync.ddhlb ||
-                               ms == msync.hsb   ||
-                               ms == msync.acq;
+        const bool isHoistOp = ms == msync.hlb ||
+                               ms == msync.hsb ||
+                               ms == msync.acq ||
+                               ms == msync.seq;
     }
 
 
@@ -77,7 +77,8 @@ private
     {
         const bool isSinkOp = ms == msync.slb ||
                               ms == msync.ssb ||
-                              ms == msync.rel;
+                              ms == msync.rel ||
+                              ms == msync.seq;
     }
   }
 }
@@ -97,10 +98,10 @@ version( DDoc )
 
     /**
      * Supported msync values:
-     *  msync.none
+     *  msync.raw
      *  msync.hlb
-     *  msync.ddhlb
      *  msync.acq
+     *  msync.seq
      */
     template atomicLoad( msync ms, T )
     {
@@ -128,10 +129,11 @@ version( DDoc )
 
     /**
      * Supported msync values:
-     *  msync.none
+     *  msync.raw
      *  msync.ssb
      *  msync.acq
      *  msync.rel
+     *  msync.seq
      */
     template atomicStore( msync ms, T )
     {
@@ -157,10 +159,11 @@ version( DDoc )
 
     /**
      * Supported msync values:
-     *  msync.none
+     *  msync.raw
      *  msync.ssb
      *  msync.acq
      *  msync.rel
+     *  msync.seq
      */
     template atomicStoreIf( msync ms, T )
     {
@@ -190,10 +193,11 @@ version( DDoc )
 
     /**
      * Supported msync values:
-     *  msync.none
+     *  msync.raw
      *  msync.ssb
      *  msync.acq
      *  msync.rel
+     *  msync.seq
      */
     template atomicIncrement( msync ms, T )
     {
@@ -229,10 +233,11 @@ version( DDoc )
 
     /**
      * Supported msync values:
-     *  msync.none
+     *  msync.raw
      *  msync.ssb
      *  msync.acq
      *  msync.rel
+     *  msync.seq
      */
     template atomicDecrement( msync ms, T )
     {
@@ -1251,34 +1256,38 @@ else version( D_InlineAsm_X86 )
     // NOTE: x86 loads implicitly have acquire semantics so a membar is only necessary on release
     //
 
-    template atomicLoad( msync ms : msync.none, T )  { alias doAtomicLoad!(isSinkOp!(ms),T) atomicLoad; }
-    template atomicLoad( msync ms : msync.hlb, T )   { alias doAtomicLoad!(isSinkOp!(ms),T) atomicLoad; }
-    template atomicLoad( msync ms : msync.ddhlb, T ) { alias doAtomicLoad!(isSinkOp!(ms),T) atomicLoad; }
-    template atomicLoad( msync ms : msync.acq, T )   { alias doAtomicLoad!(isSinkOp!(ms),T) atomicLoad; }
+    template atomicLoad( msync ms : msync.raw, T ) { alias doAtomicLoad!(isSinkOp!(ms),T) atomicLoad; }
+    template atomicLoad( msync ms : msync.hlb, T ) { alias doAtomicLoad!(isSinkOp!(ms),T) atomicLoad; }
+    template atomicLoad( msync ms : msync.acq, T ) { alias doAtomicLoad!(isSinkOp!(ms),T) atomicLoad; }
+    template atomicLoad( msync ms : msync.seq, T ) { alias doAtomicLoad!(true,T)          atomicLoad; }
 
     //
     // NOTE: x86 stores implicitly have release semantics so a membar is only necessary on acquires
     //
 
-    template atomicStore( msync ms : msync.none, T ) { alias doAtomicStore!(isHoistOp!(ms),T) atomicStore; }
-    template atomicStore( msync ms : msync.ssb, T )  { alias doAtomicStore!(isHoistOp!(ms),T) atomicStore; }
-    template atomicStore( msync ms : msync.acq, T )  { alias doAtomicStore!(isHoistOp!(ms),T) atomicStore; }
-    template atomicStore( msync ms : msync.rel, T )  { alias doAtomicStore!(isHoistOp!(ms),T) atomicStore; }
+    template atomicStore( msync ms : msync.raw, T ) { alias doAtomicStore!(isHoistOp!(ms),T) atomicStore; }
+    template atomicStore( msync ms : msync.ssb, T ) { alias doAtomicStore!(isHoistOp!(ms),T) atomicStore; }
+    template atomicStore( msync ms : msync.acq, T ) { alias doAtomicStore!(isHoistOp!(ms),T) atomicStore; }
+    template atomicStore( msync ms : msync.rel, T ) { alias doAtomicStore!(isHoistOp!(ms),T) atomicStore; }
+    template atomicStore( msync ms : msync.seq, T ) { alias doAtomicStore!(true,T)           atomicStore; }
 
-    template atomicStoreIf( msync ms : msync.none, T ) { alias doAtomicStoreIf!(ms!=msync.none,T) atomicStoreIf; }
-    template atomicStoreIf( msync ms : msync.ssb, T )  { alias doAtomicStoreIf!(ms!=msync.none,T) atomicStoreIf; }
-    template atomicStoreIf( msync ms : msync.acq, T )  { alias doAtomicStoreIf!(ms!=msync.none,T) atomicStoreIf; }
-    template atomicStoreIf( msync ms : msync.rel, T )  { alias doAtomicStoreIf!(ms!=msync.none,T) atomicStoreIf; }
+    template atomicStoreIf( msync ms : msync.raw, T ) { alias doAtomicStoreIf!(ms!=msync.raw,T) atomicStoreIf; }
+    template atomicStoreIf( msync ms : msync.ssb, T ) { alias doAtomicStoreIf!(ms!=msync.raw,T) atomicStoreIf; }
+    template atomicStoreIf( msync ms : msync.acq, T ) { alias doAtomicStoreIf!(ms!=msync.raw,T) atomicStoreIf; }
+    template atomicStoreIf( msync ms : msync.rel, T ) { alias doAtomicStoreIf!(ms!=msync.raw,T) atomicStoreIf; }
+    template atomicStoreIf( msync ms : msync.seq, T ) { alias doAtomicStoreIf!(true,T)          atomicStoreIf; }
 
-    template atomicIncrement( msync ms : msync.none, T ) { alias doAtomicIncrement!(ms!=msync.none,T) atomicIncrement; }
-    template atomicIncrement( msync ms : msync.ssb, T )  { alias doAtomicIncrement!(ms!=msync.none,T) atomicIncrement; }
-    template atomicIncrement( msync ms : msync.acq, T )  { alias doAtomicIncrement!(ms!=msync.none,T) atomicIncrement; }
-    template atomicIncrement( msync ms : msync.rel, T )  { alias doAtomicIncrement!(ms!=msync.none,T) atomicIncrement; }
+    template atomicIncrement( msync ms : msync.raw, T ) { alias doAtomicIncrement!(ms!=msync.raw,T) atomicIncrement; }
+    template atomicIncrement( msync ms : msync.ssb, T ) { alias doAtomicIncrement!(ms!=msync.raw,T) atomicIncrement; }
+    template atomicIncrement( msync ms : msync.acq, T ) { alias doAtomicIncrement!(ms!=msync.raw,T) atomicIncrement; }
+    template atomicIncrement( msync ms : msync.rel, T ) { alias doAtomicIncrement!(ms!=msync.raw,T) atomicIncrement; }
+    template atomicIncrement( msync ms : msync.seq, T ) { alias doAtomicIncrement!(true,T)          atomicIncrement; }
 
-    template atomicDecrement( msync ms : msync.none, T ) { alias doAtomicDecrement!(ms!=msync.none,T) atomicDecrement; }
-    template atomicDecrement( msync ms : msync.ssb, T )  { alias doAtomicDecrement!(ms!=msync.none,T) atomicDecrement; }
-    template atomicDecrement( msync ms : msync.acq, T )  { alias doAtomicDecrement!(ms!=msync.none,T) atomicDecrement; }
-    template atomicDecrement( msync ms : msync.rel, T )  { alias doAtomicDecrement!(ms!=msync.none,T) atomicDecrement; }
+    template atomicDecrement( msync ms : msync.raw, T ) { alias doAtomicDecrement!(ms!=msync.raw,T) atomicDecrement; }
+    template atomicDecrement( msync ms : msync.ssb, T ) { alias doAtomicDecrement!(ms!=msync.raw,T) atomicDecrement; }
+    template atomicDecrement( msync ms : msync.acq, T ) { alias doAtomicDecrement!(ms!=msync.raw,T) atomicDecrement; }
+    template atomicDecrement( msync ms : msync.rel, T ) { alias doAtomicDecrement!(ms!=msync.raw,T) atomicDecrement; }
+    template atomicDecrement( msync ms : msync.seq, T ) { alias doAtomicDecrement!(true,T)          atomicDecrement; }
 }
 
 
@@ -1307,9 +1316,9 @@ struct Atomic( T )
 
     template load( msync ms )
     {
-        static assert( ms == msync.none  || ms == msync.hlb ||
-                       ms == msync.ddhlb || ms == msync.acq,
-                       "ms must be one of: msync.none, msync.hlb, msync.ddhlb, msync.acq" );
+        static assert( ms == msync.raw || ms == msync.hlb ||
+                       ms == msync.acq || ms == msync.seq,
+                       "ms must be one of: msync.raw, msync.hlb, msync.acq, msync.seq" );
 
         /**
          * Refreshes the contents of this value from main memory.  This
@@ -1332,9 +1341,10 @@ struct Atomic( T )
 
     template store( msync ms )
     {
-        static assert( ms == msync.none || ms == msync.ssb ||
-                       ms == msync.acq  || ms == msync.rel,
-                       "ms must be one of: msync.none, msync.ssb, msync.acq, msync.rel" );
+        static assert( ms == msync.raw || ms == msync.ssb ||
+                       ms == msync.acq || ms == msync.rel ||
+                       ms == msync.seq,
+                       "ms must be one of: msync.raw, msync.ssb, msync.acq, msync.rel, msync.seq" );
 
         /**
          * Stores 'newval' to the memory referenced by this value.  This
@@ -1357,9 +1367,10 @@ struct Atomic( T )
 
     template storeIf( msync ms )
     {
-        static assert( ms == msync.none || ms == msync.ssb ||
-                       ms == msync.acq  || ms == msync.rel,
-                       "ms must be one of: msync.none, msync.ssb, msync.acq, msync.rel" );
+        static assert( ms == msync.raw || ms == msync.ssb ||
+                       ms == msync.acq || ms == msync.rel ||
+                       ms == msync.seq,
+                       "ms must be one of: msync.raw, msync.ssb, msync.acq, msync.rel, msync.seq" );
 
         /**
          * Stores 'newval' to the memory referenced by this value if val is
@@ -1396,9 +1407,10 @@ struct Atomic( T )
 
         template increment( msync ms )
         {
-            static assert( ms == msync.none || ms == msync.ssb ||
-                           ms == msync.acq  || ms == msync.rel,
-                           "ms must be one of: msync.none, msync.ssb, msync.acq, msync.rel" );
+            static assert( ms == msync.raw || ms == msync.ssb ||
+                           ms == msync.acq || ms == msync.rel ||
+                           ms == msync.seq,
+                           "ms must be one of: msync.raw, msync.ssb, msync.acq, msync.rel, msync.seq" );
 
             /**
              * This operation is only legal for built-in value and pointer
@@ -1429,9 +1441,10 @@ struct Atomic( T )
 
         template decrement( msync ms )
         {
-            static assert( ms == msync.none || ms == msync.ssb ||
-                           ms == msync.acq  || ms == msync.rel,
-                           "ms must be one of: msync.none, msync.ssb, msync.acq, msync.rel" );
+            static assert( ms == msync.raw || ms == msync.ssb ||
+                           ms == msync.acq || ms == msync.rel ||
+                           ms == msync.seq,
+                           "ms must be one of: msync.raw, msync.ssb, msync.acq, msync.rel, msync.seq" );
 
             /**
              * This operation is only legal for built-in value and pointer
@@ -1554,22 +1567,22 @@ private
     {
         void testType( T val = T.init  +1 )
         {
-            testLoad!(msync.none, T)( val );
+            testLoad!(msync.raw, T)( val );
             testLoad!(msync.acq, T)( val );
 
-            testStore!(msync.none, T)( val );
+            testStore!(msync.raw, T)( val );
             testStore!(msync.acq, T)( val );
             testStore!(msync.rel, T)( val );
 
-            testStoreIf!(msync.none, T)( val );
+            testStoreIf!(msync.raw, T)( val );
             testStoreIf!(msync.acq, T)( val );
 
             static if( isValidNumericType!(T) )
             {
-                testIncrement!(msync.none, T)( val );
+                testIncrement!(msync.raw, T)( val );
                 testIncrement!(msync.acq, T)( val );
 
-                testDecrement!(msync.none, T)( val );
+                testDecrement!(msync.raw, T)( val );
                 testDecrement!(msync.acq, T)( val );
             }
         }
@@ -1583,8 +1596,10 @@ private
 ////////////////////////////////////////////////////////////////////////////////
 
 
-unittest
+debug( UnitTest )
 {
+  unittest
+  {
     testType!(bool)();
 
     testType!(byte)();
@@ -1605,20 +1620,24 @@ unittest
 
     version( X86_64 )
     {
-        testLoad!(msync.none, long)();
+        testLoad!(msync.raw, long)();
         testLoad!(msync.acq, long)();
+        testLoad!(msync.seq, long)();
 
-        testStore!(msync.none, long)();
+        testStore!(msync.raw, long)();
         testStore!(msync.acq, long)();
         testStore!(msync.rel, long)();
+        testStore!(msync.seq, long)();
 
-        testIncrement!(msync.none, long)();
+        testIncrement!(msync.raw, long)();
         testDecrement!(msync.acq, long)();
+        testDecrement!(msync.seq, long)();
     }
     version( X86 )
     {
-        testStoreIf!(msync.none, long)();
+        testStoreIf!(msync.raw, long)();
         testStoreIf!(msync.acq, long)();
+        testStoreIf!(msync.seq, long)();
     }
 
     //
@@ -1627,19 +1646,24 @@ unittest
 
     version( X86_64 )
     {
-        testLoad!(msync.none, ulong)();
+        testLoad!(msync.raw, ulong)();
         testLoad!(msync.acq, ulong)();
+        testLoad!(msync.seq, ulong)();
 
-        testStore!(msync.none, ulong)();
+        testStore!(msync.raw, ulong)();
         testStore!(msync.acq, ulong)();
         testStore!(msync.rel, ulong)();
+        testStore!(msync.seq, ulong)();
 
-        testIncrement!(msync.none, ulong)();
+        testIncrement!(msync.raw, ulong)();
         testDecrement!(msync.acq, ulong)();
+        testDecrement!(msync.seq, ulong)();
     }
     version( X86 )
     {
-        testStoreIf!(msync.none, ulong)();
+        testStoreIf!(msync.raw, ulong)();
         testStoreIf!(msync.acq, ulong)();
+        testStoreIf!(msync.seq, ulong)();
     }
+  }
 }
