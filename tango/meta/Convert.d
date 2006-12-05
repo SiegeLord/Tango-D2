@@ -37,7 +37,7 @@ template hexToUint(char [] str)
     static if (str.length==1) const uint hexToUint = hexCharToInteger!((str[0]));
     else const uint hexToUint = hexCharToInteger!((str[0]))*16 + hexToUint!(str[1..$]);
 }
-
+/+
 /** uint toUint!(char [] str)
  * Convert a decimal string to an unsigned number
  */
@@ -46,7 +46,7 @@ template toUint(char [] str)
     static assert(str[0]>='0' && str[0]<='9');
     static if(str.length==1) const uint toUint = (str[0]-'0');
     else {
-        static assert(result <= (uint.max - s[0]+'0')/10, "toUint: Number is > uint.max");
+//        static assert(result <= (uint.max - s[0]+'0')/10, "toUint: Number is > uint.max");
          const uint toUint = (str[0]-'0')*10 + toUint!(str[1..$]);
      }
 }
@@ -55,6 +55,7 @@ debug(UnitTest) {
 static assert(toUint!("23")==23);
 static assert(toUint!("4294967295")==uint.max);
 }
++/
 
 /**
  *  char [] uintToString!(ulong n);
