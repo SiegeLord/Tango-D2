@@ -22,6 +22,9 @@
 # 3. This notice may not be removed or altered from any source distribution.
 #
 
+
+set -x
+
 # local directories
 PREFIX=/usr/local
 MAN_DIR=/usr/share/man/man1
@@ -192,11 +195,11 @@ dmd_conf_install() {
 		echo "..no dmd.conf found, installing default one to /etc/dmd.conf..."
 
 		# no dmd.conf installed yet, install a fresh one!
-		echo "[Environment]" > /etc/dmd.conf || die "Error writing to /etc/dmd.conf."
-		echo ";DFLAGS=-I\"${PREFIX}/include/phobos -L-L${PREFIX}/lib\"" >> /etc/dmd.conf || die "Error writing to /etc/dmd.conf."
-		echo "DFLAGS=-I\"${PREFIX}/include/tango -L-L${PREFIX}/lib/\"" >> /etc/dmd.conf || die "Error writing to /etc/dmd.conf."
+		echo -n "[Environment]" > /etc/dmd.conf || die "Error writing to /etc/dmd.conf."
+		echo -n ";DFLAGS=-I\"${PREFIX}/include/phobos -L-L${PREFIX}/lib\"" >> /etc/dmd.conf || die "Error writing to /etc/dmd.conf."
+		echo -n "DFLAGS=-I\"${PREFIX}/include/tango -L-L${PREFIX}/lib/\"" >> /etc/dmd.conf || die "Error writing to /etc/dmd.conf."
 	else
-		echo "..dmd.conf found: `whereis dmd | tr ' ' '\n' | grep dmd.conf -m 1` -- doing sed magic."
+		echo -n "..dmd.conf found: `whereis dmd | tr ' ' '\n' | grep dmd.conf -m 1` -- doing sed magic."
 
 		sed -e 's/DFLAGS=-I.*phobos.*/;&\nDFLAGS=-I"\${PREFIX}\/include\/tango\/ -L-L\${PREFIX}\/lib\/"/g' `whereis dmd | tr ' ' '\n' | grep -v X | grep -m 1 dmd.conf` > _dmd.conf || die
 		mv _dmd.conf `whereis dmd | tr ' ' '\n' | grep -v X | grep -m 1 dmd.conf` || die # replace old dmd.conf with changed dmd.conf
@@ -275,13 +278,13 @@ do
 			NOROOT=1
 		;;
 		--version=*)
-			VERSION=`echo "$i" | sed 's/^--version=\([0-9]\?\.\)\?\([0-9]\{3\}\)/\2/p'` 
+			VERSION=`echo -n "${i}" | sed -n 's/^--version=[0-9]\?\.\?\([0-9]\{3\}\)/\1/p'` 
 			
-			if [ ! "$VERSION" ]
+			if [  -n "${VERSION}" ]
 			then
-				DMD_FILE="dmd.zip"
-			else
 				DMD_FILENAME="dmd.${VERSION}.zip"
+			else
+				DMD_FILENAME="dmd.zip"
 			fi
 		;;
 		--help)
