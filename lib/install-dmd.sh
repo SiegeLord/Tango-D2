@@ -96,7 +96,7 @@ install_dmd() {
 }
 
 unzip_dmd() {
-	if [ ! -f dmd.zip ]
+	if [ ! -f ${DMD_FILENAME} ]
 	then
 		die "Could not find dmd.zip. Please use --download-dmd or manually download the file from ${DMD_MIRROR}. Aborting."
 	fi
