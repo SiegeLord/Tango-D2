@@ -68,7 +68,7 @@ usage() {
 
 download_dmd() {
 	echo "Downloading dmd.zip from ${DMD_MIRROR}..."
-	wget ${DMD_MIRROR}/${DMD_FILENAME} || die "Error downloading DMD. Aborting."
+	wget -c ${DMD_MIRROR}/${DMD_FILENAME} || die "Error downloading DMD. Aborting."
 }
 
 download_tango() {
@@ -178,7 +178,7 @@ install_tango() {
 		else
 			echo "....everything fine; doing svn export..."
 			mkdir -p ${PREFIX}/include
-			svn export . ${PREFIX}/include/tango || die "Error exporting Tango via svn export."
+			svn export --force . ${PREFIX}/include/tango || die "Error exporting Tango via svn export."
 		fi
 	else
 		"...no subversion files found, using normal copy method..."
@@ -197,9 +197,9 @@ dmd_conf_install() {
 		echo "..no dmd.conf found, installing default one to /etc/dmd.conf..."
 
 		# no dmd.conf installed yet, install a fresh one!
-		echo -n "[Environment]" > /etc/dmd.conf || die "Error writing to /etc/dmd.conf."
-		echo -n ";DFLAGS=-I\"${PREFIX}/include/phobos -L-L${PREFIX}/lib\"" >> /etc/dmd.conf || die "Error writing to /etc/dmd.conf."
-		echo -n "DFLAGS=-I\"${PREFIX}/include/tango -L-L${PREFIX}/lib/\"" >> /etc/dmd.conf || die "Error writing to /etc/dmd.conf."
+		echo "[Environment]" > /etc/dmd.conf || die "Error writing to /etc/dmd.conf."
+		echo ";DFLAGS=-I\"${PREFIX}/include/phobos -L-L${PREFIX}/lib\"" >> /etc/dmd.conf || die "Error writing to /etc/dmd.conf."
+		echo "DFLAGS=-I\"${PREFIX}/include/tango -L-L${PREFIX}/lib/\"" >> /etc/dmd.conf || die "Error writing to /etc/dmd.conf."
 	else
 		echo -n "..dmd.conf found: `whereis dmd | tr ' ' '\n' | grep dmd.conf -m 1` -- doing sed magic."
 
