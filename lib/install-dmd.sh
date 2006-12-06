@@ -22,14 +22,11 @@
 # 3. This notice may not be removed or altered from any source distribution.
 #
 
-
-set -x
-
 # local directories
 PREFIX=/usr/local
 MAN_DIR=/usr/share/man/man1
 # mirrors & filename
-DMD_MIRROR=http://ftp.digitalmars.com/
+DMD_MIRROR=http://ftp.digitalmars.com
 DMD_FILENAME=dmd.zip
 TANGO_REPOSITORY=http://svn.dsource.org/projects/tango/trunk/
 # state variables (changable through --flags)
@@ -101,11 +98,11 @@ install_dmd() {
 unzip_dmd() {
 	if [ ! -f dmd.zip ]
 	then
-		die "Could not find dmd.zip. Please use --download or manually download the file from ${DMD_MIRROR}. Aborting."
+		die "Could not find dmd.zip. Please use --download-dmd or manually download the file from ${DMD_MIRROR}. Aborting."
 	fi
 
 	echo "Extracting dmd.zip..."
-	unzip -q -d . ${FILENAME} || die 'Could not unzip dmd.zip. Aborting.'
+	unzip -q -d . ${DMD_FILENAME} || die 'Could not unzip dmd.zip. Aborting.'
 }
 
 copy_dmd() {
