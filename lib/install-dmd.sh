@@ -46,6 +46,7 @@ usage() {
 	echo '         If you want to download DMD yourself, please go to http://digitalmars.com/d/ .'
 	echo '  --download: checkout a fresh copy of Tango (subversion required)'
 	echo '  --download-dmd: Download a fresh copy of DMD (implies --dmd)'
+	echo '  --version=[x[.]]xxx : Download a specific version of DMD (for example 0.176 will download dmd.176.zip)'
 	echo '  --download-all: Download DMD and checkout a fresh copy of Tango
 	(implies --dmd, too)'
 	echo '  --no-root: Do not install /etc/dmd.conf'
