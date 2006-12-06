@@ -275,7 +275,7 @@ do
 			NOROOT=1
 		;;
 		--version=*)
-			VERSION=`echo "$i" | sed 's/^--version=\([0-9]\?\.\)\?\([0-9]\{3\}\)/\1/p'` 
+			VERSION=`echo "$i" | sed 's/^--version=\([0-9]\?\.\)\?\([0-9]\{3\}\)/\2/p'` 
 			
 			if [ ! "$VERSION" ]
 			then
