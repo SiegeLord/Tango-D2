@@ -22,7 +22,8 @@
 # 3. This notice may not be removed or altered from any source distribution.
 #
 
-DMD_MIRROR=http://ftp.digitalmars.com/dmd.zip
+DMD_MIRROR=http://ftp.digitalmars.com/
+DMD_FILENAME=dmd.zip
 TANGO_REPOSITORY=http://svn.dsource.org/projects/tango/trunk/
 MAN_DIR=/usr/share/man/man1
 PREFIX=/usr/local
@@ -30,6 +31,7 @@ NOROOT=0
 DMD_DOWNLOAD=0
 TANGO_DOWNLOAD=0
 DMD_INSTALL=0
+#
 
 die() {
 	echo "$1"
@@ -54,7 +56,7 @@ usage() {
 
 download_dmd() {
 	echo "Downloading dmd.zip from ${DMD_MIRROR}..."
-	wget ${DMD_MIRROR} || die "Error downloading DMD. Aborting."
+	wget ${DMD_MIRROR}/${DMD_FILENAME} || die "Error downloading DMD. Aborting."
 }
 
 download_tango() {
@@ -229,6 +231,8 @@ else
 	die "Need at least a prefix"
 fi
 
+
+
 for i in $*; 
 do
 	case "$i" in
@@ -249,6 +253,16 @@ do
 		;;
 		--no-root)
 			NOROOT=1
+		;;
+		--version=*)
+			VERSION=`echo "$i" | sed 's/^--version=\([0-9]\?\.\)\?\([0-9]\{3\}\)/\1/p'` 
+			
+			if [ ! "$VERSION" ]
+			then
+				DMD_FILE="dmd.zip"
+			else
+				DMD_FILENAME="dmd.${VERSION}.zip"
+			fi
 		;;
 	esac
 done
