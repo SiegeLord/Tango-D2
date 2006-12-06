@@ -30,10 +30,12 @@ DMD_MIRROR=http://ftp.digitalmars.com
 DMD_FILENAME=dmd.zip
 TANGO_REPOSITORY=http://svn.dsource.org/projects/tango/trunk/
 # state variables (changable through --flags)
-NOROOT=0
+ROOT=1
 DMD_DOWNLOAD=0
 TANGO_DOWNLOAD=0
 DMD_INSTALL=0
+#
+CLEANALL=1
 #
 
 ## HELPER FUNCTIONS
@@ -59,6 +61,7 @@ usage() {
 	echo '  --no-root: Do not install /etc/dmd.conf'
 	echo '  --uninstall: Uninstall Tango'
 	echo '  --uninstall-all: Uninstall Tango and DMD'
+	echo '  --no-clean: Do not remove DMD archive or Tango copy'
 	echo '  --help: Display this text'
 	echo ' '
 }
@@ -91,7 +94,6 @@ install_dmd() {
 	copy_dmd_include
 	copy_dmd_lib
 	copy_dmd_doc
-	dmd_conf_install
 	cleanup_dmd
 }
 
@@ -101,8 +103,8 @@ unzip_dmd() {
 		die "Could not find dmd.zip. Please use --download-dmd or manually download the file from ${DMD_MIRROR}. Aborting."
 	fi
 
-	echo "Extracting dmd.zip..."
-	unzip -q -d . ${DMD_FILENAME} || die 'Could not unzip dmd.zip. Aborting.'
+	echo "Extracting zip file..."
+	unzip -q -d . ${DMD_FILENAME} || die 'Could not extract zip file. Aborting.'
 }
 
 copy_dmd() {
@@ -112,7 +114,7 @@ copy_dmd() {
 	mkdir -p ${PREFIX}/bin || die "Error creating directory (${PREFIX}/bin)."
 
 	echo "..settin executable flag for dmd, objasm, dumpobj and rdmd..."
-	chmod +x dmd/bin/{dmd,objasm,dumpobj,rdmd} || die "Error chmod-ing (dmd, objasm, dumpobj, rdmd)."
+	chmod +x dmd/bin/{dmd,obj2asm,dumpobj,rdmd} || die "Error chmod-ing (dmd, objasm, dumpobj, rdmd)."
 
 	echo "..copying executable files to ${PREFIX}/bin..."
 	cp dmd/bin/dmd ${PREFIX}/bin || die "Error copying dmd/bin/dmd."
@@ -128,18 +130,18 @@ copy_dmd_include() {
 	mkdir -p ${PREFIX}/include || die "Error creating ${PREFIX}/include."
 
 	echo "..copying files"
-	cp dmd/src/phobos ${PREFIX}/include || die "Error copying library sources to ${PREFIX}/include."
+	cp -r dmd/src/phobos ${PREFIX}/include || die "Error copying library sources to ${PREFIX}/include."
 }
 
 copy_dmd_doc() {
 	echo "Copying documentation and samples..."
 
 	echo "..creating directories ${PREFIX}/doc/dmd/{src,samples}..."
-	mkdir -p {${PREFIX}/doc/dmd/samples, ${PREFIX}/doc/dmd/src} || die "Error creating documentation directories."
+	mkdir -p {${PREFIX}/doc/dmd/samples,${PREFIX}/doc/dmd/src} || die "Error creating documentation directories."
 
-	cp dmd/html/d/* ${PREFIX}/doc/dmd/ || die "Error copying documentation."
-	cp dmd/samples/d/* ${PREFIX}/doc/dmd/samples/ || die "Error copying samples."
-	cp dmd/src/dmd/* ${PREFIX}/dmd/src/ || die "Error copying source."
+	cp -r dmd/html/d/* ${PREFIX}/doc/dmd/ || die "Error copying documentation."
+	cp -r dmd/samples/d/* ${PREFIX}/doc/dmd/samples/ || die "Error copying samples."
+	cp -r dmd/src/dmd/* ${PREFIX}/doc/dmd/src/ || die "Error copying source."
 }
 
 copy_dmd_lib() {
@@ -218,7 +220,7 @@ cleanup_dmd() {
 	if [ ${CLEANALL} = 1 ]
 	then
 		echo "Removing dmd.zip too..."
-		rm -r dmd.zip || die "Error while removing dmd.zip."
+		rm -r ${DMD_FILENAME} || die "Error while removing dmd.zip."
 	fi
 }
 
@@ -272,7 +274,10 @@ do
 			TANGO_DOWNLOAD=1
 		;;
 		--no-root)
-			NOROOT=1
+			ROOT=0
+		;;
+		--no-clean)
+			CLEANALL=0
 		;;
 		--version=*)
 			VERSION=`echo -n "${i}" | sed -n 's/^--version=[0-9]\?\.\?\([0-9]\{3\}\)/\1/p'` 
@@ -308,7 +313,7 @@ fi
 
 install_tango
 
-if [ ${NOROOT} = 0 ]
+if [ ${ROOT} = 1 ]
 then
 	dmd_conf_install
 fi
