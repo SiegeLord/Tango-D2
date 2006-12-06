@@ -82,10 +82,13 @@ download_tango() {
 	cd tango || die "Error while changing directory (tango/)."
 
 	echo "..checking out tango/trunk quietly .. this may take some time..."
-	svn checkout ${TANGO_REPOSITORY} || die "Error while checking out."
+	svn checkout -q ${TANGO_REPOSITORY} || die "Error while checking out."
 
 	echo "..changing directory to tango/trunk/..."
 	cd trunk || die "Error while changing directory (tango/trunk/)."
+
+	echo "..moving dmd archive to current directory..."
+	mv ../../${DMD_FILENAME} . || die "Error moving dmd archive to tango/trunk/."
 }
 
 install_dmd() {
