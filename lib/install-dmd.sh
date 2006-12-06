@@ -22,22 +22,29 @@
 # 3. This notice may not be removed or altered from any source distribution.
 #
 
+# local directories
+PREFIX=/usr/local
+MAN_DIR=/usr/share/man/man1
+# mirrors & filename
 DMD_MIRROR=http://ftp.digitalmars.com/
 DMD_FILENAME=dmd.zip
 TANGO_REPOSITORY=http://svn.dsource.org/projects/tango/trunk/
-MAN_DIR=/usr/share/man/man1
-PREFIX=/usr/local
+# state variables (changable through --flags)
 NOROOT=0
 DMD_DOWNLOAD=0
 TANGO_DOWNLOAD=0
 DMD_INSTALL=0
 #
 
+## HELPER FUNCTIONS
+
+# 'exception', prints first parameter and exits script totally.
 die() {
 	echo "$1"
 	exit 0
 }
 
+# prints usage
 usage() {
 	echo 'Usage: install-dmd.sh <install prefix> [OPTIONS]'
 	echo ''
@@ -94,7 +101,7 @@ unzip_dmd() {
 	fi
 
 	echo "Extracting dmd.zip..."
-	unzip -q -d . dmd.zip || die 'Could not unzip dmd.zip. Aborting.'
+	unzip -q -d . ${FILENAME} || die 'Could not unzip dmd.zip. Aborting.'
 }
 
 copy_dmd() {
@@ -147,7 +154,7 @@ copy_dmd_lib() {
 
 copy_dmd_man() {
 	echo "Copying manpages to ${MAN_DIR}"
-	cp d/dmd/man/man1/* ${MAN_DIR} || die "Error copying manpages."
+	cp dmd/man/man1/* ${MAN_DIR} || die "Error copying manpages."
 }
 
 install_tango() {
@@ -221,19 +228,29 @@ finished() {
 	echo "You can find documentation at http://dsource.org/projects/tango,"
 	echo "or locally in ${PREFIX}/include/tango/doc/."
 	echo ""
+	echo "General D documentation is found at:"
+	echo "  o http://digitalmars.com/d/"
+	echo "  o http://dsource.org/projects/tutorials/wiki"
+	echo "  o http://dprogramming.com/"
+	echo "  o http://www.prowiki.org/wiki4d/wiki.cgi?FrontPage"
+	echo ""
 	echo "Enjoy your stay in the Tango dancing club! \\\\o \\o/ o//"
 }
+
+############################################################################################
+############################################################################################
+# ACTUAL START OF THE SCRIPT (or end of functions, depends on your pessimism/optimism ;) )
+############################################################################################
+############################################################################################
 
 if [ -n "$1" ]
 then
 	PREFIX=$1
 else
 	usage
-	die "Need at least a prefix"
 fi
 
-
-
+# Check for flags
 for i in $*; 
 do
 	case "$i" in
