@@ -59,6 +59,7 @@ usage() {
 	echo '  --no-root: Do not install /etc/dmd.conf'
 	echo '  --uninstall: Uninstall Tango'
 	echo '  --uninstall-all: Uninstall Tango and DMD'
+	echo '  --help: Display this text'
 	echo ' '
 }
 
@@ -248,6 +249,7 @@ then
 	PREFIX=$1
 else
 	usage
+	die
 fi
 
 # Check for flags
@@ -281,6 +283,10 @@ do
 			else
 				DMD_FILENAME="dmd.${VERSION}.zip"
 			fi
+		;;
+		--help)
+			usage
+			die
 		;;
 	esac
 done
