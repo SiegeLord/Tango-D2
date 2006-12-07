@@ -28,6 +28,7 @@ MAN_DIR=/usr/share/man/man1
 # mirrors & filename
 DMD_MIRROR=http://ftp.digitalmars.com
 DMD_FILENAME=dmd.zip
+DMD_CONF=/etc/dmd.conf
 TANGO_REPOSITORY=http://svn.dsource.org/projects/tango/trunk/
 # state variables (changable through --flags)
 ROOT=1
@@ -36,6 +37,10 @@ TANGO_DOWNLOAD=0
 DMD_INSTALL=0
 #
 CLEANALL=1
+#
+DEBUG=0
+#
+SIMULATE=0
 #
 
 ## HELPER FUNCTIONS
@@ -66,6 +71,23 @@ usage() {
 	echo ' '
 }
 
+# gets printed after installation is finished successfully
+finished() {
+	echo ""
+	echo "-----------------------------------------------------------------"
+	echo "Tango has been installed successfully."
+	echo "You can find documentation at http://dsource.org/projects/tango,"
+	echo "or locally in ${PREFIX}/include/tango/doc/."
+	echo ""
+	echo "General D documentation is found at:"
+	echo "  o http://digitalmars.com/d/"
+	echo "  o http://dsource.org/projects/tutorials/wiki"
+	echo "  o http://dprogramming.com/"
+	echo "  o http://www.prowiki.org/wiki4d/wiki.cgi?FrontPage"
+	echo ""
+	echo "Enjoy your stay in the Tango dancing club! \\\\o \\o/ o//"
+}
+
 download_dmd() {
 	echo "Downloading dmd.zip from ${DMD_MIRROR}..."
 	wget -c ${DMD_MIRROR}/${DMD_FILENAME} || die "Error downloading DMD. Aborting."
@@ -74,14 +96,16 @@ download_dmd() {
 download_tango() {
 	echo "Downloading Tango from ${TANGO_MIRROR} (subversion required)..."
 
-
 	echo "..creating temporary directory tango/..."
 	mkdir -p tango || die "Error while creating temporary directory."
 
 	echo "..changing directory to tango/..."
-	cd tango || die "Error while changing directory (tango/)."
+	if [ ${SIMULATE} = 0 ]
+	then
+		cd tango || die "Error while changing directory (tango/)."
+	fi
 
-	echo "..checking out tango/trunk quietly .. this may take some time..."
+	echo "..checking out tango/trunk (quietly). This may take some time..."
 	svn checkout -q ${TANGO_REPOSITORY} || die "Error while checking out."
 
 	echo "..changing directory to tango/trunk/..."
@@ -103,7 +127,7 @@ install_dmd() {
 unzip_dmd() {
 	if [ ! -f ${DMD_FILENAME} ]
 	then
-		die "Could not find dmd.zip. Please use --download-dmd or manually download the file from ${DMD_MIRROR}. Aborting."
+		die "Could not find dmd archive. Please use --download-dmd or manually download the file from ${DMD_MIRROR}. Aborting."
 	fi
 
 	echo "Extracting zip file..."
@@ -137,7 +161,7 @@ copy_dmd_include() {
 }
 
 copy_dmd_doc() {
-	echo "Copying documentation and samples..."
+	echo "Copying D documentation and samples (Phobos)..."
 
 	echo "..creating directories ${PREFIX}/doc/dmd/{src,samples}..."
 	mkdir -p {${PREFIX}/doc/dmd/samples,${PREFIX}/doc/dmd/src} || die "Error creating documentation directories."
@@ -153,9 +177,9 @@ copy_dmd_lib() {
 	echo "..creating ${PREFIX}/lib..."
 	mkdir -p ${PREFIX}/lib || die "Error creating directory for runtime library (${PREFIX}/lib)."
 
-	echo "..copying libphobos.a and phobos.lib"
+	echo "..copying original libphobos.a"
 	cp dmd/lib/libphobos.a ${PREFIX}/lib/ || die "Error copying libphobos.a."
-	cp dmd/lib/phobos.lib ${PREFIX}/lib/ || die "Error copying phobos.lib."
+#	cp dmd/lib/phobos.lib ${PREFIX}/lib/ || die "Error copying phobos.lib."
 }
 
 copy_dmd_man() {
@@ -186,6 +210,20 @@ install_tango() {
 		mkdir -p ${PREFIX}/include/tango || die "Error creating Tango directory."
 		cp -r ./* ${PREFIX}/include/tango || die "Error copying Tango to new directory."
 	fi
+
+	if [ ! -f "lib/libphobos.a" ]
+	then
+		cd lib/
+		./build-dmd.sh || die "Error building library."
+		cd ../
+	fi
+	
+	if [ -f "${PREFIX}/lib/libphobos.a" ]
+	then
+		mv ${PREFIX}/lib/libphobos.a ${PREFIX}/lib/original_libphobos.a || die "Error renaming original libphobos.a"
+	fi
+
+	cp lib/libphobos.a ${PREFIX}/lib/libphobos.a || die "Error copying Tango's libphobos.a replacement to ${PREFIX}/lib/libphobos.a"
 }
 
 dmd_conf_install() {
@@ -197,9 +235,9 @@ dmd_conf_install() {
 		echo "..no dmd.conf found, installing default one to /etc/dmd.conf..."
 
 		# no dmd.conf installed yet, install a fresh one!
-		echo "[Environment]" > /etc/dmd.conf || die "Error writing to /etc/dmd.conf."
-		echo ";DFLAGS=-I\"${PREFIX}/include/phobos -L-L${PREFIX}/lib\"" >> /etc/dmd.conf || die "Error writing to /etc/dmd.conf."
-		echo "DFLAGS=-I\"${PREFIX}/include/tango -L-L${PREFIX}/lib/\"" >> /etc/dmd.conf || die "Error writing to /etc/dmd.conf."
+		echo "[Environment]" > ${DMD_CONF} || die "Error writing to ${DMD_CONF}."
+		echo ";DFLAGS=-I\"${PREFIX}/include/phobos -L-L${PREFIX}/lib\"" >> ${DMD_CONF} || die "Error writing to ${DMD_CONF}."
+		echo "DFLAGS=-I\"${PREFIX}/include/tango -L-L${PREFIX}/lib/\"" >> ${DMD_CONF} || die "Error writing to ${DMD_CONF}."
 	else
 		echo -n "..dmd.conf found: `whereis dmd | tr ' ' '\n' | grep dmd.conf -m 1` -- doing sed magic."
 
@@ -222,25 +260,9 @@ cleanup_dmd() {
 
 	if [ ${CLEANALL} = 1 ]
 	then
-		echo "Removing dmd.zip too..."
+		echo "Removing dmd archive..."
 		rm -r ${DMD_FILENAME} || die "Error while removing dmd.zip."
 	fi
-}
-
-finished() {
-	echo ""
-	echo "-----------------------------------------------------------------"
-	echo "Tango has been installed successfully."
-	echo "You can find documentation at http://dsource.org/projects/tango,"
-	echo "or locally in ${PREFIX}/include/tango/doc/."
-	echo ""
-	echo "General D documentation is found at:"
-	echo "  o http://digitalmars.com/d/"
-	echo "  o http://dsource.org/projects/tutorials/wiki"
-	echo "  o http://dprogramming.com/"
-	echo "  o http://www.prowiki.org/wiki4d/wiki.cgi?FrontPage"
-	echo ""
-	echo "Enjoy your stay in the Tango dancing club! \\\\o \\o/ o//"
 }
 
 ############################################################################################
@@ -295,6 +317,12 @@ do
 		--help)
 			usage
 			die
+		;;
+		--debug)
+			DEBUG=1
+		;;
+		--simulate)
+			SIMULATE=1
 		;;
 	esac
 done
