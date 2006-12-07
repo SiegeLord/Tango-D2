@@ -158,11 +158,11 @@ class String(T) : StringView!(T)
         
         /***********************************************************************
         
-                Hidden constructor
+                Default ctor
 
         ***********************************************************************/
 
-        private this ()
+        this ()
         {
                 this.comparator = &simpleComparator;
         }
