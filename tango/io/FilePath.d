@@ -589,6 +589,23 @@ debug (UnitTest)
                 assert (fp.getName == "");
                 assert (fp.getPath == r"");
                 assert (fp.getFullName == r"");
+
+                fp = new FilePath(r"foo\bar\");
+                assert(fp.join(r"c:\joe\bar").toUtf8 == r"c:\joe\bar\foo\bar\");
+                assert(fp.join(new FilePath(r"c:\joe\bar")).toUtf8 == r"c:\joe\bar\foo\bar\");
+                fp = new FilePath(r"c:\joe\bar");
+                assert(fp.join(r"foo\bar\").toUtf8 == r"c:\joe\bar");
+                assert(fp.join(new FilePath(r"foo\bar")).toUtf8 == r"c:\joe\bar");
+
+                fp = new FilePath(r"c:\bar");
+                assert(fp.join(r"foo").toUtf8 == r"c:\bar");
+                assert(fp.join(new FilePath(r"foo")).toUtf8 == r"c:\bar");
+
+                fp = new FilePath(r"bar\");
+                assert(fp.join(r"c:\foo").toUtf8 == r"c:\foo\bar\");
+                assert(fp.join(new FilePath(r"c:\foo")).toUtf8 == r"c:\foo\bar\");
+
+
                 }
 
 
@@ -737,6 +754,22 @@ debug (UnitTest)
                 assert (fp.getName == "");
                 assert (fp.getPath == r"");
                 assert (fp.getFullName == r"");
+
+                fp = new FilePath("foo/bar/");
+                assert(fp.join("/joe/bar").toUtf8 == "/joe/bar/foo/bar/");
+                assert(fp.join(new FilePath("/joe/bar")).toUtf8 == "/joe/bar/foo/bar/");
+                fp = new FilePath("/joe/bar");
+                assert(fp.join("foo/bar/").toUtf8 == "/joe/bar");
+                assert(fp.join(new FilePath("foo/bar")).toUtf8 == "/joe/bar");
+
+                fp = new FilePath("/bar");
+                assert(fp.join("foo").toUtf8 == "/bar");
+                assert(fp.join(new FilePath("foo")).toUtf8 == "/bar");
+
+                fp = new FilePath("bar/");
+                assert(fp.join("/foo").toUtf8 == "/foo/bar/");
+                assert(fp.join(new FilePath("/foo")).toUtf8 == "/foo/bar/");
+
                 }
         }
 }
