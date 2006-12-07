@@ -4,7 +4,8 @@
 
         license:        BSD style: $(LICENSE)
 
-        version:        Initial release: October 2004    
+        version:        Initial release: October 2004
+                        Outback release: December 2006
         
         author:         Kris 
 
@@ -12,11 +13,10 @@
 
 module tango.io.protocol.Writer;
 
+private import  tango.io.Buffer,
+                tango.io.FileConst;
+
 private import  tango.text.convert.Type;
-
-private import  tango.io.Exception;
-
-private import  tango.io.Buffer;
 
 public  import  tango.io.model.IBuffer,
                 tango.io.model.IConduit;
@@ -34,24 +34,23 @@ public  import  tango.io.protocol.model.IWriter;
         All writers support the full set of native data types, plus their
         fundamental array variants. Operations may be chained back-to-back.
 
-        Writers support a C++ iostream type syntax, along with Java-esque 
-        put() notation. However, the Tango style is to place IO elements 
-        within their own parenthesis, like so:
-        
-                write (count) (" green bottles");
+        Writers support a Java-esque put() notation. However, the Tango style
+        is to place IO elements within their own parenthesis, like so:
 
-        Note that each element is distict; this enables "strong typing", 
-        which should catch any typo errors at compile-time. The style is
-        affectionately called "whisper".
+        ---
+        write (count) (" green bottles");
+        ---
 
-        The code below illustrates basic operation upon a memory buffer:
+        Note that each written element is distict; this style is affectionately
+        known as "whisper". The code below illustrates basic operation upon a
+        memory buffer:
         
         ---
-        Buffer buf = new Buffer (256);
+        auto buf = new Buffer (256);
 
         // map same buffer into both reader and writer
-        IReader read = new Reader(buf);
-        IWriter write = new Writer(buf);
+        auto read = new Reader (buf);
+        auto write = new Writer (buf);
 
         int i = 10;
         long j = 20;
@@ -64,17 +63,6 @@ public  import  tango.io.protocol.model.IWriter;
         // read them back again
         read (c) (i) (j) (d);
 
-        // reset
-        buf.clear();
-
-        // same thing again, but using iostream syntax instead
-        write << c << i << j << d;
-
-        // read them back again
-        read >> c >> i >> j >> d;
-
-        // reset
-        buf.clear();
 
         // same thing again, but using put() syntax instead
         write.put(c).put(i).put(j).put(d);
@@ -83,45 +71,20 @@ public  import  tango.io.protocol.model.IWriter;
         ---
 
         Writers may also be used with any class implementing the IWritable
-        interface. See PickleReader for an example of how this can be put
-        to good use.
+        interface. See PickleReader for an example of how this can be used.
 
         Note that 'newlines' are emitted via the standard "\n" approach. 
-        However, one might consider using the public CR element instead.
-
-        Writers also support formatted output via the DisplayWriter module,
-        which has full support for printf() syntax:
-
-        ---
-        auto write = new DisplayWriter (buf);
-        write.format ("{0} green bottles", 10);
-        ---
-        
-        Lastly, each Writer may be configured with a text encoder. These
-        encoders convert between an internal text representation, and the
-        char/wchar/dchar representaion. BufferCodec.d contains classes for
-        handling utf8, utf16, and utf32. 
+        However, one might consider using the newline() method instead:
+        doing so allows subclasses to intercept newlines more efficiently
         
 *******************************************************************************/
 
 class Writer : IWriter
 {     
-        alias newline                   cr;    
-
         // the buffer associated with this writer. Note that this
         // should not change over the lifetime of the reader, since
         // it is assumed to be immutable elsewhere 
-        protected IBuffer               buffer;
-
-        // should arrays be prefixed with a length?
-        private   bool                  prefixArray;
-
-        // String encoder
-        private   IBuffer.Converter     textEncoder;
-
-        // current encoder type (reset via setEncoder)
-        private   int                   encoderType = Type.Raw;
-
+        protected IBuffer buffer;
 
         /***********************************************************************
         
@@ -133,15 +96,6 @@ class Writer : IWriter
         this (IBuffer buffer)
         {
                 this.buffer = buffer;
-                prefixArray = !isTextBased;
-
-                version (IOTextText)
-                        {
-                        Buffer.Style s = buffer.getStyle;
-                        if (s != Buffer.Mixed)
-                            if ((s == Buffer.Text) ^ isTextBased())
-                                 error ("text/binary mismatch between Writer and Buffer");
-                        }
         }
      
         /***********************************************************************
@@ -153,16 +107,7 @@ class Writer : IWriter
 
         this (IConduit conduit)
         {
-                this (new Buffer(conduit));
-        }
-
-        /***********************************************************************
-        
-        ***********************************************************************/
-
-        final void error (char[] msg)
-        {
-                buffer.error (msg);
+                this (new Buffer (conduit));
         }
 
         /***********************************************************************
@@ -178,61 +123,14 @@ class Writer : IWriter
 
         /***********************************************************************
         
-        ***********************************************************************/
-
-        final IConduit conduit ()
-        {
-                return buffer.getConduit();
-        }
-
-        /***********************************************************************
-        
-                Bind an IEncoder to the writer. Encoders are intended to
-                be used as a conversion mechanism between various character
-                representations (encodings). Each writer may be configured 
-                with a distinct encoder.
-
-        ***********************************************************************/
-
-        final void setEncoder (AbstractEncoder e) 
-        {
-                e.bind (buffer);
-                encoderType = e.type;
-                textEncoder = &e.encoder;
-        }
-
-        /***********************************************************************
-        
-                Return the current encoder type (Type.Raw if not set)
-
-        ***********************************************************************/
-
-        final int getEncoderType ()
-        {
-                return encoderType;
-        }
-
-        /***********************************************************************
-        
-                Is this Writer text oriented?
-
-        ***********************************************************************/
-
-        bool isTextBased()
-        {
-                return false;
-        }
-
-        /***********************************************************************
-        
                 Flush the output of this writer. Returns false if the 
                 operation failed, true otherwise.
 
         ***********************************************************************/
 
-        IWriter flush ()
+        final IWriter flush ()
         {  
-                buffer.flush ();
+                buffer.flush;
                 return this;
         }
 
@@ -245,7 +143,7 @@ class Writer : IWriter
 
         IWriter newline ()
         {
-                return put (CR);
+                return put (cast(char[]) FileConst.NewlineString);
         }
 
         /***********************************************************************
@@ -255,9 +153,9 @@ class Writer : IWriter
                 
         ***********************************************************************/
 
-        IWriter put () 
+        final IWriter put () 
         {
-                return flush ();
+                return flush;
         }
 
         /***********************************************************************
@@ -266,9 +164,11 @@ class Writer : IWriter
                 
         ***********************************************************************/
 
-        IWriter put (IWritable x) 
+        final IWriter put (IWritable x) 
         {
-                assert (x);
+                if (x is null)
+                    buffer.error ("Writer.put :: attempt to write a null IWritable object");
+                
                 x.write (this); 
                 return this;
         }
@@ -279,7 +179,7 @@ class Writer : IWriter
                 
         ***********************************************************************/
 
-        IWriter put (bool x)
+        final IWriter put (bool x)
         {
                 return write (&x, x.sizeof, Type.Bool);
         }
@@ -290,7 +190,7 @@ class Writer : IWriter
                                 
         ***********************************************************************/
 
-        IWriter put (ubyte x)
+        final IWriter put (ubyte x)
         {
                 return write (&x, x.sizeof, Type.UByte);
         }
@@ -301,7 +201,7 @@ class Writer : IWriter
                 
         ***********************************************************************/
 
-        IWriter put (byte x)
+        final IWriter put (byte x)
         {
                 return write (&x, x.sizeof, Type.Byte);
         }
@@ -312,7 +212,7 @@ class Writer : IWriter
                 
         ***********************************************************************/
 
-        IWriter put (ushort x)
+        final IWriter put (ushort x)
         {
                 return write (&x, x.sizeof, Type.UShort);
         }
@@ -323,7 +223,7 @@ class Writer : IWriter
                 
         ***********************************************************************/
 
-        IWriter put (short x)
+        final IWriter put (short x)
         {
                 return write (&x, x.sizeof, Type.Short);
         }
@@ -334,7 +234,7 @@ class Writer : IWriter
                 
         ***********************************************************************/
 
-        IWriter put (uint x)
+        final IWriter put (uint x)
         {
                 return write (&x, x.sizeof, Type.UInt);
         }
@@ -345,7 +245,7 @@ class Writer : IWriter
                 
         ***********************************************************************/
 
-        IWriter put (int x)
+        final IWriter put (int x)
         {
                 return write (&x, x.sizeof, Type.Int);
         }
@@ -356,7 +256,7 @@ class Writer : IWriter
                 
         ***********************************************************************/
 
-        IWriter put (ulong x)
+        final IWriter put (ulong x)
         {
                 return write (&x, x.sizeof, Type.ULong);
         }
@@ -367,7 +267,7 @@ class Writer : IWriter
                 
         ***********************************************************************/
 
-        IWriter put (long x)
+        final IWriter put (long x)
         {
                 return write (&x, x.sizeof, Type.Long);
         }
@@ -378,7 +278,7 @@ class Writer : IWriter
                 
         ***********************************************************************/
 
-        IWriter put (float x)
+        final IWriter put (float x)
         {
                 return write (&x, x.sizeof, Type.Float);
         }
@@ -389,7 +289,7 @@ class Writer : IWriter
                 
         ***********************************************************************/
 
-        IWriter put (double x)
+        final IWriter put (double x)
         {
                 return write (&x, x.sizeof, Type.Double);
         }
@@ -400,7 +300,7 @@ class Writer : IWriter
                 
         ***********************************************************************/
 
-        IWriter put (real x)
+        final IWriter put (real x)
         {
                 return write (&x, x.sizeof, Type.Real);
         }
@@ -411,9 +311,9 @@ class Writer : IWriter
                 
         ***********************************************************************/
 
-        IWriter put (char x)
+        final IWriter put (char x)
         {
-                return encode (&x, char.sizeof, Type.Utf8);
+                return write (&x, x.sizeof, Type.Utf8);
         }
 
         /***********************************************************************
@@ -422,9 +322,9 @@ class Writer : IWriter
                 
         ***********************************************************************/
 
-        IWriter put (wchar x)
+        final IWriter put (wchar x)
         {
-                return encode (&x, wchar.sizeof, Type.Utf16);
+                return write (&x, x.sizeof, Type.Utf16);
         }
 
         /***********************************************************************
@@ -433,9 +333,20 @@ class Writer : IWriter
                 
         ***********************************************************************/
 
-        IWriter put (dchar x)
+        final IWriter put (dchar x)
         {
-                return encode (&x, dchar.sizeof, Type.Utf32);
+                return write (&x, x.sizeof, Type.Utf32);
+        }
+
+        /***********************************************************************
+        
+                Write a boolean array to the current buffer-position     
+                                
+        ***********************************************************************/
+
+        final IWriter put (bool[] x)
+        {
+                return writeArray (x, x.length, x.length * bool.sizeof, Type.Bool);
         }
 
         /***********************************************************************
@@ -444,9 +355,9 @@ class Writer : IWriter
                                 
         ***********************************************************************/
 
-        IWriter put (byte[] x)
+        final IWriter put (byte[] x)
         {
-                return write (x, length (x.length) * byte.sizeof, Type.Byte);
+                return writeArray (x, x.length, x.length * byte.sizeof, Type.Byte);
         }
 
         /***********************************************************************
@@ -455,9 +366,9 @@ class Writer : IWriter
                                 
         ***********************************************************************/
 
-        IWriter put (ubyte[] x)
+        final IWriter put (ubyte[] x)
         {
-                return write (x, length (x.length) * ubyte.sizeof, Type.UByte);
+                return writeArray (x, x.length, x.length * ubyte.sizeof, Type.UByte);
         }
 
         /***********************************************************************
@@ -466,9 +377,9 @@ class Writer : IWriter
                 
         ***********************************************************************/
 
-        IWriter put (short[] x)
+        final IWriter put (short[] x)
         {
-                return write (x, length (x.length) * short.sizeof, Type.Short);
+                return writeArray (x, x.length, x.length * short.sizeof, Type.Short);
         }
 
         /***********************************************************************
@@ -477,9 +388,9 @@ class Writer : IWriter
                 
         ***********************************************************************/
 
-        IWriter put (ushort[] x)
+        final IWriter put (ushort[] x)
         {
-                return write (x, length (x.length) * ushort.sizeof, Type.UShort);
+                return writeArray (x, x.length, x.length * ushort.sizeof, Type.UShort);
         }
 
         /***********************************************************************
@@ -488,9 +399,9 @@ class Writer : IWriter
                 
         ***********************************************************************/
 
-        IWriter put (int[] x)
+        final IWriter put (int[] x)
         {
-                return write (x, length (x.length) * int.sizeof, Type.Int);
+                return writeArray (x, x.length, x.length * int.sizeof, Type.Int);
         }
 
         /***********************************************************************
@@ -499,9 +410,9 @@ class Writer : IWriter
                 
         ***********************************************************************/
 
-        IWriter put (uint[] x)
+        final IWriter put (uint[] x)
         {
-                return write (x, length (x.length) * uint.sizeof, Type.UInt);
+                return writeArray (x, x.length, x.length * uint.sizeof, Type.UInt);
         }
 
         /***********************************************************************
@@ -510,20 +421,20 @@ class Writer : IWriter
                 
         ***********************************************************************/
 
-        IWriter put (long[] x)
+        final IWriter put (long[] x)
         {
-                return write (x, length (x.length) * long.sizeof, Type.Long);
+                return writeArray (x, x.length, x.length * long.sizeof, Type.Long);
         }
 
         /***********************************************************************
-        
+         
                 Write an unsigned long array to the current buffer-position
                 
         ***********************************************************************/
 
-        IWriter put (ulong[] x)
+        final IWriter put (ulong[] x)
         {
-                return write (x, length (x.length) * ulong.sizeof, Type.ULong);
+                return writeArray (x, x.length, x.length * ulong.sizeof, Type.ULong);
         }
 
         /***********************************************************************
@@ -532,9 +443,9 @@ class Writer : IWriter
                 
         ***********************************************************************/
 
-        IWriter put (float[] x)
+        final IWriter put (float[] x)
         {
-                return write (x, length (x.length) * float.sizeof, Type.Float);
+                return writeArray (x, x.length, x.length * float.sizeof, Type.Float);
         }
 
         /***********************************************************************
@@ -543,9 +454,9 @@ class Writer : IWriter
                 
         ***********************************************************************/
 
-        IWriter put (double[] x)
+        final IWriter put (double[] x)
         {
-                return write (x, length (x.length) * double.sizeof, Type.Double);
+                return writeArray (x, x.length, x.length * double.sizeof, Type.Double);
         }
 
         /***********************************************************************
@@ -554,9 +465,9 @@ class Writer : IWriter
                 
         ***********************************************************************/
 
-        IWriter put (real[] x)
+        final IWriter put (real[] x)
         {
-                return write (x, length (x.length) * real.sizeof, Type.Real);
+                return writeArray (x, x.length, x.length * real.sizeof, Type.Real);
         }
 
         /***********************************************************************
@@ -565,9 +476,9 @@ class Writer : IWriter
                 
         ***********************************************************************/
 
-        IWriter put (char[] x) 
+        final IWriter put (char[] x) 
         {
-                return encode (x.ptr, length(x.length) * char.sizeof, Type.Utf8);
+                return writeArray (x, x.length, x.length * char.sizeof, Type.Utf8);
         }
 
         /***********************************************************************
@@ -576,9 +487,9 @@ class Writer : IWriter
                 
         ***********************************************************************/
 
-        IWriter put (wchar[] x) 
+        final IWriter put (wchar[] x) 
         {
-                return encode (x.ptr, length(x.length) * wchar.sizeof, Type.Utf16);
+                return writeArray (x, x.length, x.length * wchar.sizeof, Type.Utf16);
         }
 
         /***********************************************************************
@@ -587,131 +498,33 @@ class Writer : IWriter
                 
         ***********************************************************************/
 
-        IWriter put (dchar[] x)
+        final IWriter put (dchar[] x)
         {
-                return encode (x.ptr, length(x.length) * dchar.sizeof, Type.Utf32);
+                return writeArray (x, x.length, x.length * dchar.sizeof, Type.Utf32);
         }
 
         /***********************************************************************
         
-                Dump content into the buffer. This is intercepted by a 
-                variety of subclasses 
+                Dump array content into the buffer. Note that the default
+                behaviour is to prefix with the element count 
 
         ***********************************************************************/
 
-        protected IWriter write (void* src, uint bytes, int type)
+        protected IWriter writeArray (void* src, uint elements, uint bytes, uint type)
+        {
+                put (elements);
+                return write (src, bytes, type);
+        }
+
+        /***********************************************************************
+        
+                Dump content into the buffer
+
+        ***********************************************************************/
+
+        protected IWriter write (void* src, uint bytes, uint type)
         {
                 buffer.append (src [0 .. bytes]);
                 return this;
         }
-
-        /***********************************************************************
-        
-                Handle text output. This is intended to be intercepted
-                by subclasses, though they should always pump content
-                through here to take advantage of configured encoding
-
-        ***********************************************************************/
-
-        protected IWriter encode (void* src, uint bytes, int type)
-        {
-                if (textEncoder)
-                    textEncoder (src, bytes, type);
-                else
-                   buffer.append (src [0 .. bytes]);
-                return this;
-        }
-
-        /***********************************************************************
-        
-                Emit the length of an array: used for raw binary output
-                of arrays. Array lengths are written into the buffer as
-                a guide for when reading it back again
-                
-        ***********************************************************************/
-
-        private final uint length (uint len)
-        {
-                if (prefixArray)
-                    put (len);
-                return len;
-        }
 }
-
-
-/*******************************************************************************
-
-        A class to handle newline output. One might reasonably expect to 
-        emit a char[] for newlines; FileConst.NewlineString for example.
-        Turns out that it's much more efficient to intercept line-breaks
-        when they're implemented in a more formal manner (such as this).
-
-        For example, ColumnWriter() and TextWriter() both must intercept 
-        newline output so they can adjust formatting appropriately. It is 
-        much more efficient for such writers to intercept the IWritable 
-        put() method instead of scanning each char[] for the various \\n 
-        combinations.
-        
-        Please use the INewlineWriter interface for emitting newlines.
-
-*******************************************************************************/
-
-private import tango.io.FileConst;
-
-class NewlineWriter : INewlineWriter
-{
-        private char[]  fmt;
-
-        /***********************************************************************
-
-                Construct a default newline, using the char[] defined 
-                by FileConst.NewlineString
-        
-        ***********************************************************************/
-
-        this ()
-        {
-                version (Posix)
-                         this (cast(char[]) FileConst.NewlineString);
-                else
-                   this (cast(char[]) FileConst.NewlineString);                   
-        }
-
-        /***********************************************************************
-        
-                Construct a newline using the provided character array
-
-        ***********************************************************************/
-
-        this (char[] fmt)
-        {
-                this.fmt = fmt;
-        }
-
-        /***********************************************************************
-        
-                Write this newline through the provided writer. This makes
-                NewlineWriter IWritable compatible.
-
-        ***********************************************************************/
-
-        void write (IWriter w)
-        {
-                w.put (fmt);
-        }     
-}
-
-
-/*******************************************************************************
-
-        public newline adaptor
-
-*******************************************************************************/
-
-public static NewlineWriter CR;
-
-static this ()
-{
-        CR = new NewlineWriter;
-}
-

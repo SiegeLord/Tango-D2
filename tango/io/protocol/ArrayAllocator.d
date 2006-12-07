@@ -5,25 +5,49 @@
         license:        BSD style: $(LICENSE)
 
         version:        Initial release: October 2004      
+                        Outback release: December 2006
         
         author:         Kris
+
+        Allocators to use in conjunction with the Reader class. These are
+        intended to manage array allocation for a variety of Reader.get()
+        methods. 
 
 *******************************************************************************/
 
 module tango.io.protocol.ArrayAllocator;
 
-private import  tango.io.protocol.Reader;
-
-private import  tango.io.model.IBuffer,
-                tango.io.protocol.model.IReader;
+private import  tango.io.protocol.model.IReader;
 
 /*******************************************************************************
 
+        Null allocator does not allocate at all. Instead, the application
+        is expected to provide an input array indicating the extent of
+        data to be loaded. Note that the application should take care of
+        reading any array prefix (the element count), since the Reader
+        assumes it has already been consumed
+        
 *******************************************************************************/
 
-class SimpleAllocator : IArrayAllocator
+class NullAllocator : IReader.Allocator
 {
         private IReader reader;
+        
+        /***********************************************************************
+
+                Is memory managed by this allocator? If so, an integer will
+                be read from the input representing the array length, and
+                the allocator will be used to provide array space. If not,
+                the array length is assumed to be provided by the target
+                array itself (application managed); both the integer and
+                allocator are ignored
+
+        ***********************************************************************/
+
+        bool isManaged ()
+        {
+                return false;
+        }
 
         /***********************************************************************
         
@@ -46,78 +70,36 @@ class SimpleAllocator : IArrayAllocator
         
         ***********************************************************************/
 
-        bool isMutable (void* x)
+        void[] allocate (uint bytes)
+        {
+                reader.getBuffer.error ("NullAlocator.allocate :: illegal invocation");
+                return null;
+        }
+}
+
+
+/*******************************************************************************
+
+        Simple allocator, using the heap for each array
+        
+*******************************************************************************/
+
+class SimpleAllocator : IReader.Allocator
+{
+        /***********************************************************************
+
+                Is memory managed by this allocator? If so, an integer will
+                be read from the input representing the array length, and
+                the allocator will be used to provide array space. If not,
+                the array length is assumed to be provided by the target
+                array itself (application managed); both the integer and
+                allocator are ignored
+
+        ***********************************************************************/
+
+        bool isManaged ()
         {
                 return true;
-        }
-        
-        /***********************************************************************
-        
-        ***********************************************************************/
-
-        void allocate (void[]* x, uint bytes, uint width, uint type, IBuffer.Converter decoder)
-        {       
-                void[] tmp = new void [bytes];
-                *x = tmp [0 .. decoder (tmp, bytes, type) / width];
-        }
-}
-
-
-/*******************************************************************************
-
-*******************************************************************************/
-
-class NativeAllocator : SimpleAllocator
-{
-        private bool aliased;
-
-        /***********************************************************************
-        
-        ***********************************************************************/
-
-        this (bool aliased = true)
-        {
-                this.aliased = aliased;
-        }
-
-        /***********************************************************************
-        
-        ***********************************************************************/
-
-        bool isMutable (void* x)
-        {
-                return cast(bool) !aliased;
-        }
-
-        /***********************************************************************
-        
-        ***********************************************************************/
-
-        void allocate (void[]* x, uint bytes, uint width, uint type, IBuffer.Converter decoder)
-        {      
-                void[] tmp = *x;
-                tmp.length = bytes;
-                *x = tmp [0 .. decoder (tmp, bytes, type) / width];
-        }
-}
-
-
-/*******************************************************************************
-
-*******************************************************************************/
-
-class BufferAllocator : SimpleAllocator
-{
-        private IBuffer.Converter raw;
-        private uint              width;
-
-        /***********************************************************************
-        
-        ***********************************************************************/
-
-        this (int width = 0)
-        {
-                this.width = width;
         }
 
         /***********************************************************************
@@ -126,11 +108,6 @@ class BufferAllocator : SimpleAllocator
 
         void reset ()
         {
-                IBuffer buffer = reader.getBuffer;
-
-                // ensure there's enough room for another record
-                if (buffer.writable < width)
-                    buffer.compress ();
         }
 
         /***********************************************************************
@@ -139,49 +116,124 @@ class BufferAllocator : SimpleAllocator
 
         void bind (IReader reader)
         {
-                raw = &(cast(Reader) reader).read;
-                super.bind (reader);
         }
 
         /***********************************************************************
         
         ***********************************************************************/
 
-        bool isMutable (void* x)
+        void[] allocate (uint bytes)
         {
-                void[] content = reader.getBuffer.getContent;
-                return cast(bool) (x < content || x >= (content.ptr + content.length));
-        }
-
-        /***********************************************************************
-        
-        ***********************************************************************/
-
-        void allocate (void[]* x, uint bytes, uint width, uint type, IBuffer.Converter decoder)
-        {       
-                if (decoder == raw)
-                    *x = reader.getBuffer.get (bytes) [0..length / width];
-                else
-                   super.allocate (x, bytes, width, type, decoder);
+                return new void [bytes];
         }
 }
 
 
 /*******************************************************************************
 
+        Alias directly from the buffer instead of allocating from the heap.
+        This avoids heap activity, but requires some care in terms of usage.
+        See methods allocate() for details
+        
 *******************************************************************************/
 
-class SliceAllocator : HeapSlice, IArrayAllocator
+class BufferAllocator : SimpleAllocator
 {
         private IReader reader;
+
+        /***********************************************************************
+
+                Is memory managed by this allocator? If so, an integer will
+                be read from the input representing the array length, and
+                the allocator will be used to provide array space. If not,
+                the array length is assumed to be provided by the target
+                array itself (application managed); both the integer and
+                allocator are ignored
+
+        ***********************************************************************/
+
+        bool isManaged ()
+        {
+                return true;
+        }
 
         /***********************************************************************
         
         ***********************************************************************/
 
-        this (int width)
+        void reset ()
+        {
+                reader.getBuffer.compress;
+        }
+
+        /***********************************************************************
+        
+        ***********************************************************************/
+
+        void bind (IReader reader)
+        {
+                this.reader = reader;
+        }
+
+        /***********************************************************************
+
+                No allocation: alias directly from the buffer. Note that this
+                should be used only in scenarios where content is known to fit
+                within a buffer, and there is no conversion of said content
+                (e.g. take care when using with EndianReader since it will
+                convert within the buffer, potentially confusing additional
+                buffer clients)
+                
+        ***********************************************************************/
+
+        void[] allocate (uint bytes)
+        {
+                return reader.getBuffer.get (bytes);
+        }
+}
+
+
+/*******************************************************************************
+
+        Allocate from within a private heap space. This supports reading
+        data as 'records', reusing the same chunk of memory for each record
+        loaded. The ctor takes an argument defining the initial allocation
+        made, and this will be increased as necessary to accomodate larger
+        records. Use the reset() method to indicate end of record (reuse
+        memory for subsequent requests), or set the autoReset flag to reuse
+        upon each array request.
+        
+*******************************************************************************/
+
+class SliceAllocator : HeapSlice, IReader.Allocator
+{
+        private IReader         reader;
+        private bool            autoReset;
+
+        /***********************************************************************
+        
+        ***********************************************************************/
+
+        this (int width, bool autoReset = true)
         {
                 super (width);
+                this.autoReset = autoReset;
+        }
+
+        /***********************************************************************
+
+                Is memory managed by this allocator? If so, an integer will
+                be read from the input representing the array length, and
+                the allocator will be used to provide array space. If not,
+                the array length is assumed to be provided by the target
+                array itself (application managed); both the integer and
+                allocator are ignored
+
+        ***********************************************************************/
+
+        bool isManaged ()
+        {
+                return true;
         }
 
         /***********************************************************************
@@ -201,63 +253,28 @@ class SliceAllocator : HeapSlice, IArrayAllocator
 
         void reset ()
         {
-                super.reset();
+                super.reset;
         }
 
         /***********************************************************************
         
         ***********************************************************************/
 
-        bool isMutable (void* x)
+        void[] allocate (uint bytes)
         {
-                return false;
-        }
-
-        /***********************************************************************
-        
-        ***********************************************************************/
-
-        void allocate (void[]* x, uint bytes, uint width, uint type, IBuffer.Converter decoder)
-        {       
+                if (autoReset)
+                    super.reset;
+                
                 expand (bytes);
-                auto tmp = slice (bytes);
-                *x = tmp [0 .. decoder (tmp, bytes, type) / width];
+                return slice (bytes);
         }
 }
 
 
 /*******************************************************************************
 
-*******************************************************************************/
+        Internal helper to maintain a simple heap
 
-class ReuseAllocator : SliceAllocator 
-{
-        private uint bytes;
-
-        /***********************************************************************
-        
-        ***********************************************************************/
-
-        this (int width)
-        {
-                super (width);
-        }
-
-        /***********************************************************************
-        
-        ***********************************************************************/
-
-        void allocate (void[]* x, uint bytes, uint width, uint type, IBuffer.Converter decoder)
-        {       
-                super.reset ();
-                super.allocate (x, bytes, width, type, decoder);
-        }
-
-}
-
-
-/*******************************************************************************
-        
 *******************************************************************************/
 
 private class HeapSlice

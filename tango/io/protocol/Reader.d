@@ -5,6 +5,7 @@
         license:        BSD style: $(LICENSE)
 
         version:        Initial release: October 2004      
+                        Outback release: December 2006
         
         author:         Kris
 
@@ -12,120 +13,101 @@
 
 module tango.io.protocol.Reader;
 
-public  import  tango.io.Buffer;
+private import  tango.io.Buffer;
+
+private import  tango.text.convert.Type;
 
 public  import  tango.io.model.IBuffer,
                 tango.io.model.IConduit;
 
 public  import  tango.io.protocol.model.IReader;
 
-
-private import  tango.text.convert.Type;
-
-private import  tango.io.Exception;
-
 /*******************************************************************************
 
         Reader base-class. Each reader operates upon an IBuffer, which is
-        provided at construction time. Said buffer is intended to remain 
-        consistent over the reader lifetime.
+        provided at construction time. Readers are simple converters
+        of data, and have reasonably rigid rules regarding data format. For
+        example, each request for data expects the content to be available;
+        nd exception is thrown where this is not the case. If the data is
+        arranged in a more relaxed fashion, consider using IBuffer directly
+        instead.
 
         All readers support the full set of native data types, plus a full
         selection of array types. The latter can be configured to produce
         either a copy (.dup) of the buffer content, or a slice. See class
-        SimpleAllocator, BufferAllocator and SliceAllocator for more on 
-        this topic.
+        NullAllocator, SimpleAllocator, BufferAllocator and SliceAllocator
+        for more on this topic. Note that a NullAllocator disables memory
+        management for arrays, and the application is expected to take on
+        that role.
 
-        Readers support a C++ iostream type syntax, along with Java-esque 
-        get() notation. However, the Tango style is to place IO elements 
-        within their own parenthesis, like so:
-        
-                int count;
-                char[] verse;
-
-                read (verse) (count);
-
-        Note that each element is distict; this enables "strong typing", 
-        which should catch any typo errors at compile-time. The style is
-        affectionately called "whisper".
-
-        The code below illustrates basic operation upon a memory buffer:
+        Readers support Java-esque get() notation. However, the Tango
+        style is to place IO elements within their own parenthesis, like
+        so:
         
         ---
-        Buffer buf = new Buffer (256);
+        int count;
+        char[] verse;
+        
+        read (verse) (count);
+        ---
+
+        Note that each element read is distict; this style is affectionately
+        known as "whisper". The code below illustrates basic operation upon a
+        memory buffer:
+        
+        ---
+        auto buf = new Buffer (256);
 
         // map same buffer into both reader and writer
-        IReader read = new Reader (buf);
-        IWriter write = new Writer (buf);
+        auto read = new Reader (buf);
+        auto write = new Writer (buf);
 
         int i = 10;
         long j = 20;
         double d = 3.14159;
         char[] c = "fred";
 
-        // write data types out
+        // write data using whisper syntax
         write (c) (i) (j) (d);
 
         // read them back again
         read (c) (i) (j) (d);
 
-        // reset
-        buf.clear();
-
-        // same thing again, but using iostream syntax instead
-        write << c << i << j << d;
-
-        // read them back again
-        read >> c >> i >> j >> d;
-
-        // reset
-        buf.clear();
-
+        
         // same thing again, but using put() syntax instead
         write.put(c).put(i).put(j).put(d);
         read.get(c).get(i).get(j).get(d);
-
         ---
 
         Note that certain Readers, such as the basic binary implementation, 
-        expect to retrieve the number of array elements from the source. 
-        For example; when reading an array from a file, the number of elements 
-        is read from the file also. If the content is not arranged in such a 
-        manner, you may specify how many elements to read via a second argument:
+        expect to retrieve the number of array elements from the source. For
+        example: when reading an array from a file, the number of elements 
+        is read from the file also, and the configurable memory-manager is
+        invoked to provide the array space. If content is not arranged in
+        such a manner you may read array content directly either through the
+        use of NullAllocator (to disable memory management) or by accessing
+        buffer content directly via the methods exposed there e.g.
 
         ---
-                read (myArray, 11);
+        void[10] data;
+                
+        getBuffer.get (data);
         ---
 
         Readers may also be used with any class implementing the IReadable
-        interface. See PickleReader for an example of how this can be put
-        to good use.
-
-        Lastly, each Reader may be configured with a text decoder. These
-        decoders convert between an internal text representation, and the
-        char/wchar/dchar representaion. BufferCodec.d contains classes for
-        handling utf8, utf16, and utf32. The icu.UTango module has support
-        for a wide variety of converters.
+        interface. See PickleReader for an example of how this can be used
         
 *******************************************************************************/
 
-class Reader : IReader, IArrayAllocator 
+class Reader : IReader, IReader.Allocator
 {       
         // the buffer associated with this reader. Note that this
         // should not change over the lifetime of the reader, since
         // it is assumed to be immutable elsewhere 
-        protected IBuffer               buffer;         
+        protected IBuffer       buffer;         
 
         // memory-manager for array requests
-        private IArrayAllocator         memory;
-
-        // string decoder
-        protected AbstractDecoder       decoder;
-        private IBuffer.Converter       textDecoder;
-
-        // current decoder type (reset via setDecoder)
-        private   int                   decoderType = Type.Raw;
-
+        private Allocator       memory;
 
         /***********************************************************************
         
@@ -136,17 +118,8 @@ class Reader : IReader, IArrayAllocator
         this (IBuffer buffer)
         {
                 this.buffer = buffer;
-                textDecoder = &read;
 
                 setAllocator (this);
-
-                version (IOTextText)
-                        {
-                        Buffer.Style s = buffer.getStyle;
-                        if (s != Buffer.Mixed)
-                            if ((s == Buffer.Text) ^ isTextBased())
-                                 buffer.error ("text/binary mismatch between Reader and Buffer");
-                        }
         }
 
         /***********************************************************************
@@ -158,7 +131,7 @@ class Reader : IReader, IArrayAllocator
 
         this (IConduit conduit)
         {
-                this (new Buffer(conduit));
+                this (new Buffer (conduit));
         }
 
         /***********************************************************************
@@ -174,23 +147,19 @@ class Reader : IReader, IArrayAllocator
         
         /***********************************************************************
         
-                Is this Reader text oriented?
+                Get the allocator to use for array management. Arrays are
+                generally allocated by the IReader, via configured manager.
+                A number of Allocator classes are available to manage memory
+                when reading array content, including a NullAllocator which
+                hands responsibility over to the application instead. 
+
+                Gaining access to the allocator can expose some additional
+                controls. For example, some allocators benefit from a reset
+                operation after each data 'record' has been processed.
 
         ***********************************************************************/
 
-        bool isTextBased()
-        {
-                return false;
-        }
-
-        /***********************************************************************
-        
-                Return the allocator associated with this reader. See 
-                ArrayAllocator for more information.
-
-        ***********************************************************************/
-
-        final IArrayAllocator getAllocator ()
+        final Allocator getAllocator ()
         {
                 return memory;
         }
@@ -198,69 +167,32 @@ class Reader : IReader, IArrayAllocator
         /***********************************************************************
         
                 Set the allocator to use for array management. Arrays are
-                always allocated by the IReader. That is, you cannot read
-                data into an array slice (for example). Instead, a number
-                of IArrayAllocator classes are available to manage memory
-                allocation when reading array content. 
+                generally allocated by the IReader, so you generally cannot
+                read into an array slice (for example). Instead, a number
+                of Allocators are available to manage memory allocation
+                when reading array content. 
 
                 By default, an IReader will allocate each array from the 
                 heap. You can change that behavior by calling this method
-                with an IArrayAllocator of choice. For instance, there 
+                with an Allocator of choice. For instance, there 
                 is a BufferAllocator which will slice an array directly 
                 from the buffer where possible. Also available is the 
                 record-oriented SliceAllocator, which slices memory from 
                 within a pre-allocated heap area, and should be reset by
                 the client code after each record has been read (to avoid 
-                unnecessary growth).
+                unnecessary growth). There is also a NullAlocator, which
+                disables internal memory management and turns responsiblity
+                over to the application instead. In the latter case, array
+                slices provided by the application are populated.
 
-                See ArrayAllocator for more information.
+                See module ArrayAllocator for more information
 
         ***********************************************************************/
 
-        final void setAllocator (IArrayAllocator memory) 
+        final void setAllocator (Allocator memory) 
         {
-                memory.bind (this);
                 this.memory = memory;
-        }
-
-        /***********************************************************************
-        
-                Bind an IDecoder to the writer. Decoders are intended to
-                be used as a conversion mechanism between various character
-                representations (encodings).
-
-        ***********************************************************************/
-
-        final void setDecoder (AbstractDecoder d) 
-        {
-                d.bind (buffer);
-                textDecoder = &d.decoder;
-                decoderType = d.type;
-                decoder = d;
-        }
-
-        /***********************************************************************
-        
-                Return the current decoder type (Type.Raw if not set)
-
-        ***********************************************************************/
-
-        final int getDecoderType ()
-        {
-                return decoderType;
-        }
-
-        /***********************************************************************
-        
-                Wait for something to arrive in the buffer. This may stall
-                the current thread forever, although usage of SocketConduit 
-                will take advantage of the timeout facilities provided there.
-
-        ***********************************************************************/
-
-        final void wait ()
-        {       
-                buffer.get (1, false);
+                memory.bind (this);
         }
 
         /***********************************************************************
@@ -271,7 +203,9 @@ class Reader : IReader, IArrayAllocator
 
         final IReader get (IReadable x) 
         {
-                assert (x);
+                if (x is null)
+                    buffer.error ("Reader.get :: attempt to read a null IReadable object");
+                
                 x.read (this); 
                 return this;
         }
@@ -282,10 +216,9 @@ class Reader : IReader, IArrayAllocator
                 
         ***********************************************************************/
 
-        IReader get (inout bool x)
+        final IReader get (inout bool x)
         {
-                read (&x, x.sizeof, Type.Bool);
-                return this;
+                return read (&x, x.sizeof, Type.Bool);
         }
 
         /***********************************************************************
@@ -294,10 +227,9 @@ class Reader : IReader, IArrayAllocator
                                 
         ***********************************************************************/
 
-        IReader get (inout ubyte x) 
+        final IReader get (inout ubyte x) 
         {       
-                read (&x, x.sizeof, Type.UByte);
-                return this;
+                return read (&x, x.sizeof, Type.UByte);
         }
 
         /***********************************************************************
@@ -306,10 +238,9 @@ class Reader : IReader, IArrayAllocator
                 
         ***********************************************************************/
 
-        IReader get (inout byte x)
+        final IReader get (inout byte x)
         {
-                read (&x, x.sizeof, Type.Byte);
-                return this;
+                return read (&x, x.sizeof, Type.Byte);
         }
 
         /***********************************************************************
@@ -318,10 +249,9 @@ class Reader : IReader, IArrayAllocator
                 
         ***********************************************************************/
 
-        IReader get (inout ushort x)
+        final IReader get (inout ushort x)
         {
-                read (&x, x.sizeof, Type.UShort);
-                return this;
+                return read (&x, x.sizeof, Type.UShort);
         }
 
         /***********************************************************************
@@ -330,10 +260,9 @@ class Reader : IReader, IArrayAllocator
                 
         ***********************************************************************/
 
-        IReader get (inout short x)
+        final IReader get (inout short x)
         {
-                read (&x, x.sizeof, Type.Short);
-                return this;
+                return read (&x, x.sizeof, Type.Short);
         }
 
         /***********************************************************************
@@ -342,10 +271,9 @@ class Reader : IReader, IArrayAllocator
                 
         ***********************************************************************/
 
-        IReader get (inout uint x)
+        final IReader get (inout uint x)
         {
-                read (&x, x.sizeof, Type.UInt);
-                return this;
+                return read (&x, x.sizeof, Type.UInt);
         }
 
         /***********************************************************************
@@ -354,10 +282,9 @@ class Reader : IReader, IArrayAllocator
                 
         ***********************************************************************/
 
-        IReader get (inout int x)
+        final IReader get (inout int x)
         {
-                read (&x, x.sizeof, Type.Int);
-                return this;
+                return read (&x, x.sizeof, Type.Int);
         }
 
         /***********************************************************************
@@ -366,10 +293,9 @@ class Reader : IReader, IArrayAllocator
                 
         ***********************************************************************/
 
-        IReader get (inout ulong x)
+        final IReader get (inout ulong x)
         {
-                read (&x, x.sizeof, Type.ULong);
-                return this;
+                return read (&x, x.sizeof, Type.ULong);
         }
 
         /***********************************************************************
@@ -378,10 +304,9 @@ class Reader : IReader, IArrayAllocator
                 
         ***********************************************************************/
 
-        IReader get (inout long x)
+        final IReader get (inout long x)
         {
-                read (&x, x.sizeof, Type.Long);
-                return this;
+                return read (&x, x.sizeof, Type.Long);
         }
 
         /***********************************************************************
@@ -390,10 +315,9 @@ class Reader : IReader, IArrayAllocator
                 
         ***********************************************************************/
 
-        IReader get (inout float x)
+        final IReader get (inout float x)
         {
-                read (&x, x.sizeof, Type.Float);
-                return this;
+                return read (&x, x.sizeof, Type.Float);
         }
 
         /***********************************************************************
@@ -402,10 +326,9 @@ class Reader : IReader, IArrayAllocator
                 
         ***********************************************************************/
 
-        IReader get (inout double x)
+        final IReader get (inout double x)
         {
-                read (&x, x.sizeof, Type.Double);
-                return this;
+                return read (&x, x.sizeof, Type.Double);
         }
 
         /***********************************************************************
@@ -414,10 +337,9 @@ class Reader : IReader, IArrayAllocator
                 
         ***********************************************************************/
 
-        IReader get (inout real x)
+        final IReader get (inout real x)
         {
-                read (&x, x.sizeof, Type.Real);
-                return this;
+                return read (&x, x.sizeof, Type.Real);
         }
 
         /***********************************************************************
@@ -426,10 +348,9 @@ class Reader : IReader, IArrayAllocator
                 
         ***********************************************************************/
 
-        IReader get (inout char x)
+        final IReader get (inout char x)
         {
-                textDecoder (&x, x.sizeof, Type.Utf8);
-                return this;
+                return read (&x, x.sizeof, Type.Utf8);
         }
 
         /***********************************************************************
@@ -438,10 +359,9 @@ class Reader : IReader, IArrayAllocator
                 
         ***********************************************************************/
 
-        IReader get (inout wchar x)
+        final IReader get (inout wchar x)
         {
-                textDecoder (&x, x.sizeof, Type.Utf16);
-                return this;
+                return read (&x, x.sizeof, Type.Utf16);
         }
 
         /***********************************************************************
@@ -450,10 +370,20 @@ class Reader : IReader, IArrayAllocator
                 
         ***********************************************************************/
 
-        IReader get (inout dchar x)
+        final IReader get (inout dchar x)
         {
-                textDecoder (&x, x.sizeof, Type.Utf32);
-                return this;
+                return read (&x, x.sizeof, Type.Utf32);
+        }
+
+        /***********************************************************************
+
+                Extract an boolean array from the current read-position   
+                                
+        ***********************************************************************/
+
+        final IReader get (inout bool[] x) 
+        {
+                return readArray (cast(void[]*) &x, bool.sizeof, Type.Bool);
         }
 
         /***********************************************************************
@@ -462,11 +392,9 @@ class Reader : IReader, IArrayAllocator
                                 
         ***********************************************************************/
 
-        IReader get (inout ubyte[] x, uint elements = uint.max) 
+        final IReader get (inout ubyte[] x) 
         {
-                memory.allocate (cast(void[]*) &x, count(elements)*ubyte.sizeof, 
-                                 ubyte.sizeof, Type.UByte, &read);
-                return this;
+                return readArray (cast(void[]*) &x, ubyte.sizeof, Type.UByte);
         }
 
         /***********************************************************************
@@ -475,11 +403,9 @@ class Reader : IReader, IArrayAllocator
                 
         ***********************************************************************/
 
-        IReader get (inout byte[] x, uint elements = uint.max)
+        final IReader get (inout byte[] x)
         {
-                memory.allocate (cast(void[]*) &x, count(elements)*byte.sizeof, 
-                                 byte.sizeof, Type.Byte, &read);
-                return this;
+                return readArray (cast(void[]*) &x, byte.sizeof, Type.Byte);
         }
 
         /***********************************************************************
@@ -488,11 +414,9 @@ class Reader : IReader, IArrayAllocator
                 
         ***********************************************************************/
 
-        IReader get (inout ushort[] x, uint elements = uint.max)
+        final IReader get (inout ushort[] x)
         {
-                memory.allocate (cast(void[]*) &x, count(elements)*ushort.sizeof, 
-                                 ushort.sizeof, Type.UShort, &read);
-                return this;
+                return readArray (cast(void[]*) &x, ushort.sizeof, Type.UShort);
         }
 
         /***********************************************************************
@@ -501,11 +425,9 @@ class Reader : IReader, IArrayAllocator
                 
         ***********************************************************************/
 
-        IReader get (inout short[] x, uint elements = uint.max)
+        final IReader get (inout short[] x)
         {
-                memory.allocate (cast(void[]*) &x, count(elements)*short.sizeof, 
-                                 short.sizeof, Type.Short, &read);
-                return this;
+                return readArray (cast(void[]*) &x, short.sizeof, Type.Short);
         }
 
         /***********************************************************************
@@ -514,12 +436,10 @@ class Reader : IReader, IArrayAllocator
                 
         ***********************************************************************/
 
-        IReader get (inout uint[] x, uint elements = uint.max)
+        final IReader get (inout uint[] x)
         {
-                memory.allocate (cast(void[]*) &x, count(elements)*uint.sizeof, 
-                                 uint.sizeof, Type.UInt, &read);
-                return this;
-        }
+                return readArray (cast(void[]*) &x, uint.sizeof, Type.UInt);
+        } 
 
         /***********************************************************************
         
@@ -527,11 +447,9 @@ class Reader : IReader, IArrayAllocator
                 
         ***********************************************************************/
 
-        IReader get (inout int[] x, uint elements = uint.max)
+        final IReader get (inout int[] x)
         {
-                memory.allocate (cast(void[]*) &x, count(elements)*int.sizeof, 
-                                 int.sizeof, Type.Int, &read);
-                return this;
+                return readArray (cast(void[]*) &x, int.sizeof, Type.Int);
         }
 
         /***********************************************************************
@@ -540,11 +458,9 @@ class Reader : IReader, IArrayAllocator
                 
         ***********************************************************************/
 
-        IReader get (inout ulong[] x, uint elements = uint.max)
+        final IReader get (inout ulong[] x)
         {
-                memory.allocate (cast(void[]*) &x, count(elements)*ulong.sizeof, 
-                                 ulong.sizeof, Type.ULong, &read);
-                return this;
+                return readArray (cast(void[]*) &x, ulong.sizeof, Type.ULong);
         }
 
         /***********************************************************************
@@ -553,11 +469,9 @@ class Reader : IReader, IArrayAllocator
                 
         ***********************************************************************/
 
-        IReader get (inout long[] x, uint elements = uint.max)
+        final IReader get (inout long[] x)
         {
-                memory.allocate (cast(void[]*) &x, count(elements)*long.sizeof, 
-                                 long.sizeof, Type.Long, &read);
-                return this;
+                return readArray (cast(void[]*) &x,long.sizeof, Type.Long);
         }
 
         /***********************************************************************
@@ -566,11 +480,9 @@ class Reader : IReader, IArrayAllocator
                 
         ***********************************************************************/
 
-        IReader get (inout float[] x, uint elements = uint.max)
+        final IReader get (inout float[] x)
         {
-                memory.allocate (cast(void[]*) &x, count(elements)*float.sizeof, 
-                                 float.sizeof, Type.Float, &read);
-                return this;
+                return readArray (cast(void[]*) &x, float.sizeof, Type.Float);
         }
 
         /***********************************************************************
@@ -579,11 +491,9 @@ class Reader : IReader, IArrayAllocator
                 
         ***********************************************************************/
 
-        IReader get (inout double[] x, uint elements = uint.max)
+        final IReader get (inout double[] x)
         {
-                memory.allocate (cast(void[]*) &x, count(elements)*double.sizeof, 
-                                 double.sizeof, Type.Double, &read);
-                return this;
+                return readArray (cast(void[]*) &x, double.sizeof, Type.Double);
         }
 
         /***********************************************************************
@@ -592,98 +502,134 @@ class Reader : IReader, IArrayAllocator
                 
         ***********************************************************************/
 
-        IReader get (inout real[] x, uint elements = uint.max)
+        final IReader get (inout real[] x)
         {
-                memory.allocate (cast(void[]*) &x, count(elements)*real.sizeof, 
-                                 real.sizeof, Type.Real, &read);
-                return this;
+                return readArray (cast(void[]*) &x, real.sizeof, Type.Real);
         }
 
         /***********************************************************************
         
+                Extract a char array from the current read-position
+                
         ***********************************************************************/
 
-        IReader get (inout char[] x, uint elements = uint.max)
+        final IReader get (inout char[] x)
         {
-                memory.allocate (cast(void[]*) &x, count(elements)*char.sizeof, 
-                                 char.sizeof, Type.Utf8, textDecoder);
-                return this;
+                return readArray (cast(void[]*) &x, char.sizeof, Type.Utf8);
         }
 
         /***********************************************************************
         
+                Extract a wchar array from the current read-position
+                
         ***********************************************************************/
 
-        IReader get (inout wchar[] x, uint elements = uint.max)
+        final IReader get (inout wchar[] x)
         {
-                memory.allocate (cast(void[]*) &x, count(elements)*wchar.sizeof, 
-                                 wchar.sizeof, Type.Utf16, textDecoder);
-                return this;
+                return readArray (cast(void[]*) &x, wchar.sizeof, Type.Utf16);
         }
 
         /***********************************************************************
         
+                Extract a dchar array from the current read-position
+                
         ***********************************************************************/
 
-        IReader get (inout dchar[] x, uint elements = uint.max)
+        final IReader get (inout dchar[] x)
         {
-                memory.allocate (cast(void[]*) &x, count(elements)*dchar.sizeof, 
-                                 dchar.sizeof, Type.Utf32, textDecoder);
-                return this;
+                return readArray (cast(void[]*) &x, dchar.sizeof, Type.Utf32);
         }
 
         /***********************************************************************
+
+                Read an array from the current buffer position. We typically
+                expect a leading integer, indicating how many elements follow.
+                This policy can be overridden by configuring the reader with a
+                NullAllocator, which requires the application to manage array
+                memory instead. See module ArrayAllocator for more info
+
+        ***********************************************************************/
+
+        protected IReader readArray (void[]* x, uint width, uint type)
+        {
+                uint bytes;
+
+                if (memory.isManaged)
+                   {
+                   uint count;
+                   get (count);
+                   bytes = count * width;
+                   *x = memory.allocate (bytes) [0 .. count]; 
+                   }
+                else
+                   bytes = x.length * width;
+                
+                return read (x.ptr, bytes, type);
+        }
+
+        /***********************************************************************
+
+                Transfer a stream of bytes into a destination. Note that
+                the Reader/Writer protocol expects all requested data to be
+                available, and an exception is thrown where this is not the
+                case. Use Buffer directly where this is not applicable, or
+                a combination of Reader & Buffer access (they stay in synch)
+
+                All Reader requests are funneled through here -- so override
+                this method to mutate content as it is read from the buffer.
+                For an example, see EndianReader
         
         ***********************************************************************/
 
-        protected uint read (void *dst, uint bytes, uint type)
+        protected IReader read (void *dst, uint bytes, uint type)
         {
-                uint i = bytes;
-                while (i)
+                while (bytes)
                       {
                       // get as much as there is available in the buffer
-                      uint available = buffer.readable();
+                      auto available = buffer.readable();
                       
                       // cap bytes read
-                      if (available > i)
-                          available = i;
+                      if (available > bytes)
+                          available = bytes;
 
                       // copy them over
                       dst[0..available] = buffer.get (available);
 
                       // bump counters
                       dst += available;
-                      i -= available;
+                      bytes -= available;
 
                       // if we need more, prime the input by reading
-                      if (i)
-                          if (buffer.fill () == IConduit.Eof)
-                              buffer.error ("end of input");
+                      if (bytes && (buffer.fill is IConduit.Eof))
+                          buffer.error ("Reader.read :: unexpected end of input");
                       }
-                return bytes;
+                return this;
         }
 
-        /***********************************************************************
+
         
-                Read and return an integer from the input stream. This is
-                used to extract the element count of a subsequent array.
+        /************************ Allocator methods ***************************/
+
+
+        /***********************************************************************
+
+                Is memory managed by this allocator? If so, an integer will
+                be read from the input representing the array length, and
+                the allocator will be used to provide array space. If not,
+                the array length is assumed to be provided by the target
+                array itself (application managed); both the integer and
+                allocator are ignored
 
         ***********************************************************************/
 
-        private uint count (uint elements)
+        bool isManaged ()
         {
-                if (elements == uint.max)
-                    get (elements);
-                return elements;
+                return true;
         }
-
-
-        /******************** IArrayAllocator methods *************************/
-
 
         /***********************************************************************
         
-                IArrayAllocator method
+                default Allocator method: do nothing
                                         
         ***********************************************************************/
 
@@ -693,7 +639,7 @@ class Reader : IReader, IArrayAllocator
 
         /***********************************************************************
         
-                IArrayAllocator method
+                default Allocator method: do nothing
                                         
         ***********************************************************************/
 
@@ -703,24 +649,13 @@ class Reader : IReader, IArrayAllocator
 
         /***********************************************************************
         
-                IArrayAllocator method
+                default Allocator method: use heap memory
                                         
         ***********************************************************************/
 
-        protected final bool isMutable (void* x)
-        {
-                return true;
-        }
-        
-        /***********************************************************************
-        
-                IArrayAllocator method
-                                        
-        ***********************************************************************/
-
-        protected final void allocate (void[]* x, uint bytes, uint width, uint type, IBuffer.Converter decoder)
+        protected final void[] allocate (uint bytes)
         {       
-                void[] tmp = new void [bytes];
-                *x = tmp [0 .. decoder (tmp, bytes, type) / width];
+                return new void [bytes];
         }
 }
+

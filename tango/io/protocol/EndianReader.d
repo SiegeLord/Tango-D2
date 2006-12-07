@@ -12,11 +12,11 @@
 
 module tango.io.protocol.EndianReader;
 
-public  import  tango.io.protocol.Reader;
+private import  tango.core.ByteSwap;
 
 private import  tango.text.convert.Type;
 
-private import  tango.core.ByteSwap;
+private import  tango.io.protocol.Reader;
 
 /*******************************************************************************
 
@@ -39,7 +39,7 @@ class EndianReader : Reader
         
         ***********************************************************************/
 
-        protected override uint read (void* dst, uint bytes, uint type)
+        protected override IReader read (void* dst, uint bytes, uint type)
         {
                 super.read (dst, bytes, type);
 
@@ -72,6 +72,6 @@ class EndianReader : Reader
                             break;
                        }
 
-                return bytes;
+                return this;
         }
 }

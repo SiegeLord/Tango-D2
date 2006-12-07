@@ -5,7 +5,8 @@
         license:        BSD style: $(LICENSE)
 
         version:        Initial release: March 2004      
-        
+                        Outback release: December 2006
+                        
         author:         $(UL Kris)
                         $(UL John Reimer)
                         $(UL Anders F Bjorklund (Darwin patches))
@@ -548,61 +549,4 @@ class FileConduit : DeviceConduit, DeviceConduit.Seek
                         return result;
                 }               
         }
-}
-
-
-version (IOTextTest)
-{
-/*******************************************************************************
-
-        Open a text-oriented FileConduit
-
-*******************************************************************************/
-
-class TextFileConduit : FileConduit
-{
-        /***********************************************************************
-        
-                Create a FileConduit with the provided path and style.
-
-        ***********************************************************************/
-
-        this (char[] name, Style style = ReadExisting)
-        {
-                super (name, style);
-        }
-
-        /***********************************************************************
-        
-                Create a FileConduit from the provided proxy and style.
-
-        ***********************************************************************/
-
-        this (FileProxy proxy, Style style = ReadExisting)
-        {
-                super (proxy, style);
-        }
-
-        /***********************************************************************
-        
-                Create a FileConduit with the provided path and style.
-
-        ***********************************************************************/
-
-        this (FilePath path, Style style = ReadExisting)
-        {
-                super (path, style);
-        }    
-
-        /***********************************************************************
-        
-                Returns true if this conduit is text-based
-
-        ***********************************************************************/
-
-        override bool isTextual ()
-        {
-                return true;
-        }               
-}
 }

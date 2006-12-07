@@ -5,6 +5,7 @@
         license:        BSD style: $(LICENSE)
 
         version:        Initial release: March 2004
+                        Outback release: December 2006
 
         authors:        Kris
         
@@ -206,9 +207,6 @@ extern (C)
 
 class Buffer : IBuffer
 {
-        version (IOTextTest)
-                protected Style style;          // Text, Binary, Raw
-
         protected void[]        data;           // the raw data
         protected uint          limit;          // limit of valid content
         protected uint          capacity;       // maximum of limit
@@ -252,9 +250,6 @@ class Buffer : IBuffer
 
                 this (conduit.bufferSize);
                 setConduit (conduit);
- 
-                version (IOTextTest)
-                         this.style = conduit.isTextual ? Text : Binary;
         }
 
         /***********************************************************************
@@ -333,27 +328,6 @@ class Buffer : IBuffer
         final void error (char[] msg)
         {
                 throw new IOException (msg);
-        }
-
-        version (IOTextTest)
-        {
-        /***********************************************************************
-                
-                Access the buffer style     
-
-                Returns: 
-                the style of this buffer
-
-                Remarks: 
-                Return style of buffer. This is either Text, Binary, or Raw.
-                The style is initially set via a constructor
-
-        ***********************************************************************/
-
-        Style getStyle ()
-        {
-                return style;
-        }
         }
 
         /***********************************************************************

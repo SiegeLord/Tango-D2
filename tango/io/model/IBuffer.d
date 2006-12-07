@@ -4,7 +4,8 @@
 
         license:        BSD style: $(LICENSE)
 
-        version:        Initial release: March 2004      
+        version:        Initial release: March 2004
+                        Outback release: December 2006
         
         author:         Kris
 
@@ -73,12 +74,6 @@ abstract class IBuffer // could be an interface, but that causes poor codegen
         alias append opCall;
         alias flush  opCall;
       
-        private typedef byte Style;
-/+
-        const Style     Mixed  = 0, 
-                        Binary = 1,
-                        Text   = 2;
-+/
         /***********************************************************************
                 
                 Return the backing array
@@ -440,56 +435,6 @@ abstract class IBuffer // could be an interface, but that causes poor codegen
         ***********************************************************************/
 
         abstract void error (char[] msg);
-
-
-        version (IOTextTest)
-        {
-        /***********************************************************************
-                
-                Return style of buffer
-
-        ***********************************************************************/
-
-        abstract Style getStyle ();
-        }
 }
 
 
-/*******************************************************************************
-
-        Any class implementing IDecoder can be bound to a reader using
-        the setDecoder() method.
-        
-*******************************************************************************/
-
-abstract class AbstractDecoder
-{       
-        alias decoder opCall;
-
-        abstract uint type ();
-
-        abstract void bind (IBuffer buffer);
-
-        abstract void[] decoder (void[] src, uint type);
-
-        abstract uint decoder (void* dst, uint bytes, uint type);
-}
-
-
-/*******************************************************************************
-
-        Any class implementing IEncoder can be bound to a writer using
-        the bind() method.
-        
-*******************************************************************************/
-
-abstract class AbstractEncoder
-{
-        alias encoder opCall;
-
-        abstract uint type ();
-
-        abstract void bind (IBuffer buffer);
-
-        abstract uint encoder (void* src, uint bytes, uint type);
-}

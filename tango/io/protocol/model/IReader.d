@@ -5,6 +5,7 @@
         license:        BSD style: $(LICENSE)
 
         version:        Initial release: March 2004     
+                        Outback release: December 2006
          
         author:         Kris
                         Ivan Senji (the "alias get" idea)
@@ -17,40 +18,83 @@ public import tango.io.model.IBuffer;
 
 /*******************************************************************************
 
-        Any class implementing IReadable becomes part of the Reader framework
+        IReader interface. Each reader operates upon an IBuffer, which is
+        provided at construction time. Readers are simple converters of data,
+        and have reasonably rigid rules regarding data format. For example,
+        each request for data expects the content to be available; an exception
+        is thrown where this is not the case. If the data is arranged in a more
+        relaxed fashion, consider using IBuffer directly instead.
+
+        All readers support the full set of native data types, plus a full
+        selection of array types. The latter can be configured to produce
+        either a copy (.dup) of the buffer content, or a slice. See class
+        NullAllocator, SimpleAllocator, BufferAllocator and SliceAllocator
+        for more on this topic. Note that a NullAllocator disables memory
+        management for arrays, and the application is expected to take on
+        that role.
+
+        Readers support Java-esque get() notation. However, the Tango
+        style is to place IO elements within their own parenthesis, like
+        so:
         
-*******************************************************************************/
+        ---
+        int count;
+        char[] verse;
+        
+        read (verse) (count);
+        ---
 
-interface IReadable
-{
-        abstract void read (IReader input);
-}
+        Note that each element read is distict; this style is affectionately
+        known as "whisper". The code below illustrates basic operation upon a
+        memory buffer:
+        
+        ---
+        auto buf = new Buffer (256);
 
-/*******************************************************************************
+        // map same buffer into both reader and writer
+        auto read = new Reader (buf);
+        auto write = new Writer (buf);
 
-*******************************************************************************/
+        int i = 10;
+        long j = 20;
+        double d = 3.14159;
+        char[] c = "fred";
 
-interface IArrayAllocator
-{
-        abstract void reset ();
+        // write data using whisper syntax
+        write (c) (i) (j) (d);
 
-        abstract void bind (IReader input);
+        // read them back again
+        read (c) (i) (j) (d);
 
-        abstract bool isMutable (void* x);
 
-        abstract void allocate  (void[]* x, uint size, uint width, uint type, IBuffer.Converter convert);
-}
+        // same thing again, but using put() syntax instead
+        write.put(c).put(i).put(j).put(d);
+        read.get(c).get(i).get(j).get(d);
+        ---
 
-/*******************************************************************************
+        Note that certain Readers, such as the basic binary implementation, 
+        expect to retrieve the number of array elements from the source. For
+        example: when reading an array from a file, the number of elements 
+        is read from the file also, and the configurable memory-manager is
+        invoked to provide the array space. If content is not arranged in
+        such a manner you may read array content directly either through the
+        use of NullAllocator (to disable memory management) or by accessing
+        buffer content directly via the methods exposed there e.g.
 
-        All reader instances should implement this interface.
+        ---
+        void[10] data;
+                
+        getBuffer.get (data);
+        ---
 
+        Readers may also be used with any class implementing the IReadable
+        interface. See PickleReader for an example of how this can be used
+        
 *******************************************************************************/
 
 abstract class IReader   // could be an interface, but that causes poor codegen
 {
         alias get opCall;
-        //alias get opShr;
 
         /***********************************************************************
         
@@ -59,35 +103,36 @@ abstract class IReader   // could be an interface, but that causes poor codegen
         ***********************************************************************/
 
         abstract IReader get (inout bool x);
-        abstract IReader get (inout byte x);	///ditto
-        abstract IReader get (inout ubyte x);	///ditto
-        abstract IReader get (inout short x);	///ditto
-        abstract IReader get (inout ushort x);	///ditto
-        abstract IReader get (inout int x);	///ditto
-        abstract IReader get (inout uint x);	///ditto
-        abstract IReader get (inout long x);	///ditto
-        abstract IReader get (inout ulong x);	///ditto
-        abstract IReader get (inout float x);	///ditto
-        abstract IReader get (inout double x);	///ditto
-        abstract IReader get (inout real x);	///ditto
-        abstract IReader get (inout char x);	///ditto
-        abstract IReader get (inout wchar x);	///ditto
-        abstract IReader get (inout dchar x);	///ditto
+        abstract IReader get (inout byte x);		/// ditto
+        abstract IReader get (inout ubyte x);		/// ditto
+        abstract IReader get (inout short x);		/// ditto
+        abstract IReader get (inout ushort x);		/// ditto
+        abstract IReader get (inout int x);		/// ditto
+        abstract IReader get (inout uint x);		/// ditto
+        abstract IReader get (inout long x);		/// ditto
+        abstract IReader get (inout ulong x);		/// ditto
+        abstract IReader get (inout float x);		/// ditto
+        abstract IReader get (inout double x);		/// ditto
+        abstract IReader get (inout real x);		/// ditto
+        abstract IReader get (inout char x);		/// ditto
+        abstract IReader get (inout wchar x);		/// ditto
+        abstract IReader get (inout dchar x);		/// ditto
 
-        abstract IReader get (inout byte[] x,   uint elements = uint.max);	///ditto
-        abstract IReader get (inout short[] x,  uint elements = uint.max);	///ditto
-        abstract IReader get (inout int[] x,    uint elements = uint.max);	///ditto
-        abstract IReader get (inout long[] x,   uint elements = uint.max);	///ditto
-        abstract IReader get (inout ubyte[] x,  uint elements = uint.max);	///ditto
-        abstract IReader get (inout ushort[] x, uint elements = uint.max);	///ditto
-        abstract IReader get (inout uint[] x,   uint elements = uint.max);	///ditto
-        abstract IReader get (inout ulong[] x,  uint elements = uint.max);	///ditto
-        abstract IReader get (inout float[] x,  uint elements = uint.max);	///ditto
-        abstract IReader get (inout double[] x, uint elements = uint.max);	///ditto
-        abstract IReader get (inout real[] x,   uint elements = uint.max);	///ditto
-        abstract IReader get (inout char[] x,   uint elements = uint.max);	///ditto
-        abstract IReader get (inout wchar[] x,  uint elements = uint.max);	///ditto
-        abstract IReader get (inout dchar[] x,  uint elements = uint.max);	///ditto
+        abstract IReader get (inout bool[] x);          /// ditto
+        abstract IReader get (inout byte[] x);          /// ditto
+        abstract IReader get (inout short[] x);         /// ditto
+        abstract IReader get (inout int[] x);           /// ditto
+        abstract IReader get (inout long[] x);          /// ditto
+        abstract IReader get (inout ubyte[] x);         /// ditto
+        abstract IReader get (inout ushort[] x);	/// ditto
+        abstract IReader get (inout uint[] x);          /// ditto
+        abstract IReader get (inout ulong[] x);         /// ditto
+        abstract IReader get (inout float[] x);         /// ditto
+        abstract IReader get (inout double[] x);	/// ditto
+        abstract IReader get (inout real[] x);          /// ditto
+        abstract IReader get (inout char[] x);          /// ditto
+        abstract IReader get (inout wchar[] x);         /// ditto
+        abstract IReader get (inout dchar[] x);         /// ditto
 
         /***********************************************************************
         
@@ -102,15 +147,6 @@ abstract class IReader   // could be an interface, but that causes poor codegen
         abstract IReader get (IReadable x);
 
         /***********************************************************************
-                
-                Pause the current thread until some content arrives in
-                the associated input buffer. This may stall forever.
-
-        ***********************************************************************/
-
-        abstract void wait ();
-
-        /***********************************************************************
         
                 Return the buffer associated with this reader
 
@@ -121,58 +157,79 @@ abstract class IReader   // could be an interface, but that causes poor codegen
         /***********************************************************************
         
                 Get the allocator to use for array management. Arrays are
-                always allocated by the IReader. That is, you cannot read
-                data into an array slice (for example). Instead, a number
-                of IArrayAllocator classes are available to manage memory
-                allocation when reading array content. 
+                generally allocated by the IReader, via configured manager.
+                A number of Allocator classes are available to manage memory
+                when reading array content, including a NullAllocator which
+                hands responsibility over to the application instead. 
 
-                You might use this to manage the assigned allocator. For
-                example, some allocators benefit from a reset() operation
-                after each data 'record' has been processed.
+                Gaining access to the allocator can expose some additional
+                controls. For example, some allocators benefit from a reset
+                operation after each data 'record' has been processed.
 
         ***********************************************************************/
 
-        abstract IArrayAllocator getAllocator (); 
+        abstract Allocator getAllocator (); 
 
         /***********************************************************************
         
                 Set the allocator to use for array management. Arrays are
-                always allocated by the IReader. That is, you cannot read
-                data into an array slice (for example). Instead, a number
-                of IArrayAllocator classes are available to manage memory
-                allocation when reading array content. 
+                generally allocated by the IReader, so you generally cannot
+                read into an array slice (for example). Instead, a number
+                of Allocators are available to manage memory allocation
+                when reading array content. 
 
                 By default, an IReader will allocate each array from the 
                 heap. You can change that behavior by calling this method
-                with an IArrayAllocator of choice. For instance, there 
+                with an Allocator of choice. For instance, there 
                 is a BufferAllocator which will slice an array directly 
                 from the buffer where possible. Also available is the 
                 record-oriented SliceAllocator, which slices memory from 
                 within a pre-allocated heap area, and should be reset by
                 the client code after each record has been read (to avoid 
-                unnecessary growth).
+                unnecessary growth). There is also a NullAlocator, which
+                disables internal memory management and turns responsiblity
+                over to the application instead. In the latter case, array
+                slices provided by the application are populated.
 
-                See ArrayAllocator for more information.
+                See module ArrayAllocator for more information
 
         ***********************************************************************/
 
-        abstract void setAllocator (IArrayAllocator memory); 
+        abstract void setAllocator (Allocator memory); 
 
-        /***********************************************************************
         
-                Bind an IDecoder to the writer. Decoders are intended to
-                be used as a conversion mechanism between various character
-                representations (encodings).
-
-        ***********************************************************************/
-
-        abstract void setDecoder (AbstractDecoder);
-
         /***********************************************************************
-        
-                Return the current decoder type (Type.Raw if not set)
 
+                Helper to allocate arrays for get() methods. A default
+                allocator is configured, but can be overridden via the
+                setAllocator() method. Assign an Allocator to a Reader
+                to optimize for application-specific scenarios.
+
+                A NullAllocator is available to effectively disable array
+                allocation where appropriate
+                
         ***********************************************************************/
 
-        abstract int getDecoderType ();
+        interface Allocator
+        {
+                void reset ();
+
+                bool isManaged ();
+                
+                void bind (IReader input);
+
+                void[] allocate (uint bytes);
+        }
 }
+
+/*******************************************************************************
+
+        Any class implementing IReadable becomes part of the Reader framework
+        
+*******************************************************************************/
+
+interface IReadable
+{
+        void read (IReader input);
+}
+

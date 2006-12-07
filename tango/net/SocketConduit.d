@@ -6,6 +6,7 @@
 
         version:        Initial release: March 2004      
         version:        Jan 1st 2005 - Added RedShodan patch for timeout query
+                        Outback release: December 2006
         
         author:         Kris
 
@@ -175,36 +176,3 @@ class SocketConduit : Socket, ISocketReader
                 freelist = s;
         }
 }
-
-
-
-version (IOTextTest)
-{
-/*******************************************************************************
-
-        Creates a text-oriented socket
-
-*******************************************************************************/
-
-class TextSocketConduit : SocketConduit
-{       
-        this ()
-        {
-                super();
-        }
-
-        /***********************************************************************
-        
-                Returns true if this conduit is text-based
-
-        ***********************************************************************/
-
-        override bool isTextual ()
-        {
-                return true;
-        }               
-}
-}
-
-
-

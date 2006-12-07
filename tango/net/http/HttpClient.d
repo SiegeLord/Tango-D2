@@ -5,6 +5,7 @@
         license:        BSD style: $(LICENSE)
 
         version:        Initial release: April 2004      
+                        Outback release: December 2006
         
         author:         Kris    - original module
         author:         h3r3tic - fixed a number of Post issues and
@@ -306,10 +307,7 @@ class HttpClient
 
         protected SocketConduit createSocket ()
         {
-                version (IOTextTest)
-                         return new TextSocketConduit;
-                     else
-                         return new SocketConduit;
+                return new SocketConduit;
         }
 
         /***********************************************************************

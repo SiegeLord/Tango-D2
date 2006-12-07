@@ -12,11 +12,11 @@
 
 module tango.io.protocol.EndianWriter;
 
-public  import  tango.io.protocol.Writer;
+private import  tango.core.ByteSwap;
 
 private import  tango.text.convert.Type;
 
-private import  tango.core.ByteSwap;
+private import  tango.io.protocol.Writer;
 
 /*******************************************************************************
 
@@ -39,7 +39,7 @@ class EndianWriter : Writer
         
         ***********************************************************************/
 
-        protected override IWriter write (void* src, uint bytes, int type)
+        protected override IWriter write (void* src, uint bytes, uint type)
         {
                 void write (int mask, void function (void* dst, uint bytes) mutate)
                 {
@@ -93,6 +93,7 @@ class EndianWriter : Writer
                             super.write (src, bytes, type);
                             break;
                        }
+
                 return this;
         }
 }

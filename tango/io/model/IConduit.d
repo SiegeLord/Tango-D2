@@ -5,6 +5,7 @@
         license:        BSD style: $(LICENSE)
 
         version:        Initial release: March 2004      
+                        Outback release: December 2006
         
         author:         Kris
 
@@ -122,15 +123,6 @@ abstract class IConduit
         ***********************************************************************/
 
         abstract bool isSeekable ();
-
-        /***********************************************************************
-        
-                Returns true if this conduit is text-based
-
-        ***********************************************************************/
-
-        version (IOTextTest)
-                 abstract bool isTextual ();
 
         /***********************************************************************
                 

@@ -15,8 +15,6 @@ module tango.net.http.HttpWriter;
 
 private import  tango.io.protocol.DisplayWriter;
 
-private import  tango.io.model.IBuffer;
-
 /******************************************************************************
 
         Not strictly necessary at this point, but will perhaps come in 

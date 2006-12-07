@@ -54,10 +54,7 @@ public class SocketAppender : Appender
                 close;
                 
                 try {
-                    version (IOTextTest)
-                             auto conduit = new TextSocketConduit;
-                         else
-                            auto conduit = new SocketConduit;
+                    auto conduit = new SocketConduit;
 
                     buffer = new Buffer (conduit);
                     conduit.connect (address);

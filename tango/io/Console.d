@@ -6,6 +6,7 @@
 
         version:        Initial release: Feb 2005 
         version:        Heavily revised for unicode; November 2005
+                        Outback release: December 2006
         
         author:         Kris
 
@@ -200,20 +201,6 @@ struct Console
 
         class ConsoleConduit : DeviceConduit
         {
-                version (IOTextTest)
-                {
-                /***************************************************************
-        
-                        Returns true if this conduit is text-based
-
-                ***************************************************************/
-
-                override bool isTextual ()
-                {
-                        return true;
-                }       
-                }
-                
                 /***************************************************************
 
                         Windows-specific code

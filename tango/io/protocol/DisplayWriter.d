@@ -5,7 +5,8 @@
         license:        BSD style: $(LICENSE)
 
         version:        Initial release: March 2004      
-        version:        Rewritten to support format tags; March 2005
+        version:        Rewritten to support alternate formatter; July 2006
+                        Outback release: December 2006
        
         author:         Kris
 
@@ -18,21 +19,26 @@ private import  tango.core.Vararg;
 private import  tango.text.convert.Type,
                 tango.text.convert.Format;
 
-public  import  tango.io.protocol.Writer;
+private import  tango.io.protocol.Writer;
+
+public  import  tango.io.model.IBuffer,
+                tango.io.model.IConduit;
+
+public  import  tango.io.protocol.model.IWriter;
 
 /*******************************************************************************
 
-        Format output suitable for presentation. DisplayWriter provide 
-        the means to append formatted  data to an IBuffer, and exposes 
+        Format output suitable for presentation. DisplayWriter provides 
+        a means to append formatted data to an IBuffer, and exposes 
         a convenient method of handling a variety of data types. 
         
         The DisplayWriter itself is a wrapper around the tango.text.convert 
         package, which should be used directly as desired (Integer, Double, 
-        DGDouble, etc). The latter modules are home to a set of static 
-        formatting-methods, making them convenient for ad-hoc application.
+        etc). The latter modules are home to a set of formatting-methods,
+        making them convenient for ad-hoc application.
 
-        Tango.text.convert also has Format and Sprint modules for working 
-        directly with text arrays.
+        Tango.text.convert also has a Sprint module for working more directly
+        with text arrays.
          
 *******************************************************************************/
 
@@ -41,10 +47,6 @@ class DisplayWriter : Writer
         /***********************************************************************
         
                 Construct a DisplayWriter upon the specified IBuffer. 
-                One can override the default floating-point formatting
-                by providing an appropriate handler to this constructor.
-                For example, one might configure the DGDouble.format()
-                function instead.
 
         ***********************************************************************/
 
@@ -66,18 +68,7 @@ class DisplayWriter : Writer
 
         /***********************************************************************
         
-                Is this Writer text oriented?
-
-        ***********************************************************************/
-
-        bool isTextBased()
-        {
-                return true;
-        }
-
-        /***********************************************************************
-        
-                Format a set of arguments a la printf(). Please see module
+                Format a set of arguments. Please see module
                 tango.text.convert.Format for details
 
         ***********************************************************************/
@@ -90,10 +81,11 @@ class DisplayWriter : Writer
 
         /***********************************************************************
         
-                Format a set of arguments a la printf(). Please see module
+                Format a set of arguments. Please see module
                 tango.text.convert.Format for details.
 
         ***********************************************************************/
+
         DisplayWriter formatln (char[] s, ...)
         {
                 format (s, _arguments, cast(va_list) _argptr);
@@ -103,7 +95,7 @@ class DisplayWriter : Writer
 
         /***********************************************************************
         
-                Format a set of arguments a la printf(). Please see module
+                Format a set of arguments. Please see module
                 tango.text.convert.Format for details
 
         ***********************************************************************/
@@ -112,7 +104,7 @@ class DisplayWriter : Writer
         {       
                 uint sink (char[] s)
                 {
-                        encode (s.ptr, s.length, Type.Utf8);
+                        write (s.ptr, s.length, Type.Utf8);
                         return s.length;
                 }
 
@@ -121,18 +113,30 @@ class DisplayWriter : Writer
 
         /***********************************************************************
         
+                Intercept array writing, to supress the output of array
+                lengths
+
+        ***********************************************************************/
+
+        protected override IWriter writeArray (void* src, uint elements, uint bytes, uint type)
+        {
+                return write (src, bytes, type);
+        }
+        
+        /***********************************************************************
+        
                 Intercept discrete output and convert it to printable form
 
         ***********************************************************************/
 
-        protected override IWriter write (void* src, uint bytes, int type)
+        protected override IWriter write (void* src, uint bytes, uint type)
         {
                 switch (type)
                        {
                        case Type.Utf8:
                        case Type.Utf16:
                        case Type.Utf32:
-                            encode (src, bytes, type);
+                            write (src, bytes, type);
                             break;
 
                        default:
@@ -147,22 +151,22 @@ class DisplayWriter : Writer
                             bool array = width < bytes;
 
                             if (array)
-                                encode ("[".ptr, 1, Type.Utf8);
+                                write ("[".ptr, 1, Type.Utf8);
 
                             while (bytes)
                                   {
                                   auto s = Formatter (result, ti, src);
-                                  encode (s.ptr, s.length, Type.Utf8);
+                                  write (s.ptr, s.length, Type.Utf8);
 
                                   bytes -= width;
                                   src += width;
 
                                   if (bytes > 0)
-                                      encode (", ".ptr, 2, Type.Utf8);
+                                      write (", ".ptr, 2, Type.Utf8);
                                   }
 
                             if (array)
-                                encode ("]".ptr, 1, Type.Utf8);
+                                write ("]".ptr, 1, Type.Utf8);
                             break;
                        }
                 return this;

@@ -5,6 +5,7 @@
         license:        BSD style: $(LICENSE)
 
         version:        Initial release: March 2004      
+                        Outback release: December 2006
         
         author:         Kris
 
@@ -92,59 +93,3 @@ class ServerSocket : Socket
                 return socket;
         }
 }
-
-
-
-version (IOTextTest)
-{
-/*******************************************************************************
-
-        Creates a text-oriented server socket
-
-*******************************************************************************/
-
-class TextServerSocket : ServerSocket
-{       
-        /***********************************************************************
-        
-                Construct a ServerSocket on the given address, with the
-                specified number of backlog connections supported. The
-                socket is bound to the given address, and set to listen
-                for incoming connections. Note that the socket address 
-                can be setup for reuse, so that a halted server may be 
-                restarted immediately.
-
-        ***********************************************************************/
-
-        this (InternetAddress addr, int backlog=32, bool socketReuse=false)
-        {
-                super (addr, backlog, socketReuse);
-        }
-
-
-        /***********************************************************************
-        
-                Overrides the default socket behaviour to create a socket
-                for an incoming connection. Here we provide a text-based
-                SocketConduit instead.
-
-        ***********************************************************************/
-
-        protected override Socket createSocket (socket_t handle)
-        {
-                version (IOTextTest)
-                         auto socket = TextSocketConduit.create (handle);
-                     else
-                        auto socket = SocketConduit.create (handle);
-
-                // force abortive closure to avoid prolonged OS scavenging?
-                if (linger >= 0)
-                    socket.setLingerPeriod (linger);
-
-                return socket;
-        }
-}
-}
-
-
-
