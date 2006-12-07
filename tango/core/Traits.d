@@ -23,13 +23,69 @@ template isCharType( T )
 /**
  *
  */
+template isSignedIntegerType( T )
+{
+    const bool isSignedIntegerType = is( T == byte )  ||
+                                     is( T == short ) ||
+                                     is( T == int )   ||
+                                     is( T == long )/+||
+                                     is( T == cent  )+/;
+}
+
+
+/**
+ *
+ */
+template isUnsignedIntegerType( T )
+{
+    const bool isUnsignedIntegerType = is( T == ubyte )  ||
+                                       is( T == ushort ) ||
+                                       is( T == uint )   ||
+                                       is( T == ulong )/+||
+                                       is( T == ucent  )+/;
+}
+
+
+/**
+ *
+ */
 template isIntegerType( T )
 {
-    const bool isIntegerType = is( T == byte )  || is( T == ubyte )  ||
-                               is( T == short ) || is( T == ushort ) ||
-                               is( T == int )   || is( T == uint )   ||
-                               is( T == long )  || is( T == ulong )/+||
-                               is( T == cent )  || is( T == ucent )+/;
+    const bool isIntegerType = isSignedIntegerType!(T) ||
+                               isUnsignedIntegerType!(T);
+}
+
+
+/**
+ *
+ */
+template isRealType( T )
+{
+    const bool isRealType = is( T == float )  ||
+                            is( T == double ) ||
+                            is( T == real );
+}
+
+
+/**
+ *
+ */
+template isComplexType( T )
+{
+    const bool isImaginaryType = is( T == cfloat )  ||
+                                 is( T == cdouble ) ||
+                                 is( T == creal );
+}
+
+
+/**
+ *
+ */
+template isImaginaryType( T )
+{
+    const bool isImaginaryType = is( T == ifloat )  ||
+                                 is( T == idouble ) ||
+                                 is( T == ireal );
 }
 
 
@@ -38,9 +94,9 @@ template isIntegerType( T )
  */
 template isDecimalType( T )
 {
-    const bool isDecimalType = is( T == float )  || is( T == cfloat )  || is( T == ifloat )  ||
-                               is( T == double ) || is( T == cdouble ) || is( T == idouble ) ||
-                               is( T == real )   || is( T == creal )   || is( T == ireal );
+    const bool isDecimalType = isRealType!(T)    ||
+                               isComplexType!(T) ||
+                               isImaginaryType!(T);
 }
 
 
@@ -63,6 +119,33 @@ template isReferenceType( T )
                                is( T == class )     ||
                                is( T == interface ) ||
                                is( T == delegate );
+}
+
+
+/**
+ *
+ */
+template isDynamicArrayType( T )
+{
+    const bool isDynamicArrayType = is( typeof(T.init[0])[] == T );
+}
+
+
+/**
+ *
+ */
+template isStaticArrayType( T )
+{
+    const bool isStaticArrayType = is( typeof(T.init)[(T).sizeof / typeof(T.init).sizeof] == T );
+}
+
+
+/**
+ *
+ */
+private template isAssocArrayType( T )
+{
+    const bool isAssocArrayType = is( typeof(T.init.values[0])[typeof(T.init.keys[0])] == T );
 }
 
 
