@@ -136,7 +136,7 @@ class DisplayWriter : Writer
                        case Type.Utf8:
                        case Type.Utf16:
                        case Type.Utf32:
-                            write (src, bytes, type);
+                            super.write (src, bytes, type);
                             break;
 
                        default:
