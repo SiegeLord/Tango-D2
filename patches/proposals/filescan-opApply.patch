@@ -1,0 +1,119 @@
+Index: tango/io/FileScan.d
+===================================================================
+--- tango/io/FileScan.d	(revision 1054)
++++ tango/io/FileScan.d	(working copy)
+@@ -38,28 +38,14 @@
+         scan ((args.length is 2) ? args[1] : ".", "d");
+ 
+         Cout ("directories:").newline;
+-        scan.directories (&dirs);
++        foreach (FilePath path; scan)
++                Cout (path).newline;
+ 
+         Cout ("files:").newline;
+-        scan.files (&files);   
++        foreach (File file; scan)
++                Cout (file).newline;
+         ---
+         
+-
+-        Using D implicit-delegate syntax, this can be also be written as
+-
+-        ---
+-        auto scan = new FileScan;
+-        
+-        // find all files with a 'd' extension
+-        scan ((args.length is 2) ? args[1] : ".", "d");
+-
+-        Cout ("Directories:").newline;
+-        scan.directories ((FilePath path) {Cout (path).newline;});
+-
+-        Cout ("Files:").newline;
+-        scan.files ((File file) {Cout (file).newline;});
+-        ---
+-        
+ *******************************************************************************/
+ 
+ class FileScan
+@@ -69,7 +55,7 @@
+         private Dependencies    deps;
+         private Filter          filter;
+ 
+-        typedef bool delegate (FilePath) Filter;
++        alias bool delegate (FilePath) Filter;
+ 
+         /***********************************************************************
+ 
+@@ -133,37 +119,8 @@
+                 scanFiles (deps, path);
+                 return this;
+         }
+-
+         /***********************************************************************
+ 
+-                Visit all the files found in the last scan. The delegate
+-                should return false to terminate early.
+-
+-        ***********************************************************************/
+-
+-        public FileScan files (void delegate (File) visit)
+-        {
+-                foreach (File file; deps.mods)
+-                         visit (file);
+-                return this;
+-        }
+-
+-        /***********************************************************************
+-        
+-                Visit all directories found in the last scan. The delegate
+-                should return false to terminate early.
+-
+-        ***********************************************************************/
+-
+-        public FileScan directories (void delegate (FilePath) visit)
+-        {
+-                foreach (FilePath path; deps.pkgs)
+-                         visit (path);
+-                return this;
+-        }
+-
+-        /***********************************************************************
+-
+                 Recursive routine to locate files and sub-directories.
+ 
+         ***********************************************************************/
+@@ -190,5 +147,34 @@
+                            deps.mods ~= file;
+                         }
+         }
++
++        public int opApply(int delegate(inout File) dg)
++        {   
++                int result = 0;
++
++                foreach (File file; deps.mods) 
++                    {
++                    result = dg (file);
++                    if (result)
++                        break;
++                    }
++
++                return result;
++        }
++
++        public int opApply(int delegate(inout FilePath) dg)
++        {
++                int result = 0;
++
++                foreach (FilePath dir; deps.pkgs) 
++                    {
++                    result = dg (dir);
++                    if (result)
++                        break;
++                    }
++
++                return result;
++        }
++
+ }
+ 
