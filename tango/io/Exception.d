@@ -36,28 +36,6 @@ class IOException : Exception
 
 /*******************************************************************************
 
-        This exception is thrown by Readers whenever the file content is
-        terminated unexpectedly. A Writer throws the exception when it
-        fails to append data to an externl conduit.
-
-*******************************************************************************/
-
-class EofException : IOException
-{
-        /***********************************************************************
-        
-                Construct exception with the provided text string
-
-        ***********************************************************************/
-
-        this (char[] msg)
-        {
-                super (msg);
-        }
-}
-
-/*******************************************************************************
-
         These exceptions are thrown by the Token subsystem, typically for
         invalid data formatting or other content related issues.
 
