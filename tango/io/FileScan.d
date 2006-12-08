@@ -69,7 +69,7 @@ class FileScan
         private Dependencies    deps;
         private Filter          filter;
 
-        typedef bool delegate (FilePath) Filter;
+        alias bool delegate (FilePath) Filter;
 
         /***********************************************************************
 
