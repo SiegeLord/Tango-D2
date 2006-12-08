@@ -35,7 +35,7 @@ public import   tango.io.File,
         auto scan = new FileScan;
 
         // find all files with a 'd' extension
-        scan ((args.length is 2) ? args[1] : ".", "d");
+        scan ((args.length is 2) ? args[1] : ".", ".d");
 
         Cout ("directories:").newline;
         scan.directories (&dirs);
@@ -51,7 +51,7 @@ public import   tango.io.File,
         auto scan = new FileScan;
         
         // find all files with a 'd' extension
-        scan ((args.length is 2) ? args[1] : ".", "d");
+        scan ((args.length is 2) ? args[1] : ".", ".d");
 
         Cout ("Directories:").newline;
         scan.directories ((FilePath path) {Cout (path).newline;});
@@ -136,8 +136,7 @@ class FileScan
 
         /***********************************************************************
 
-                Visit all the files found in the last scan. The delegate
-                should return false to terminate early.
+                Visit all the files found in the last scan. 
 
         ***********************************************************************/
 
@@ -150,8 +149,7 @@ class FileScan
 
         /***********************************************************************
         
-                Visit all directories found in the last scan. The delegate
-                should return false to terminate early.
+                Visit all directories found in the last scan. 
 
         ***********************************************************************/
 
