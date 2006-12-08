@@ -29,7 +29,7 @@ private import  tango.text.convert.Format;
 
 *******************************************************************************/
 
-private class BufferedFormat(T)
+class BufferedFormat(T)
 {
         public alias print      opCall;
 
