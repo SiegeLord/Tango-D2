@@ -74,9 +74,6 @@ template demangleBasicType(char [] str)
 {
          static if (str == "v") const char [] demangleBasicType = "void";
     else static if (str == "b") const char [] demangleBasicType = "bool";
-    // Only applies to function bools.(Bug in D name mangling algorithm).
-    else static if (str == "x") const char [] demangleBasicType = "bool";
-
     // integral types
     else static if (str == "g") const char [] demangleBasicType = "byte";
     else static if (str == "h") const char [] demangleBasicType = "ubyte";
@@ -108,8 +105,7 @@ template demangleBasicType(char [] str)
 
 template isMangledBasicType(char [] str)
 {
-    const bool isMangledBasicType = ((str == "v")
-     || (str == "b") || (str == "x")
+    const bool isMangledBasicType =    ((str == "v") || (str == "b")
      || (str == "g") || (str == "h") || (str == "s") || (str == "t")
      || (str == "i") || (str == "k") || (str == "l") || (str == "m")
      || (str == "e") || (str == "d") || (str == "f")
