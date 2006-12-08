@@ -24,7 +24,7 @@ public import tango.io.protocol.model.IPickle;
 
 ******************************************************************************/
 
-interface IPayload : IPickle, IPickleFactory
+interface IPayload : IPickle
 {
         /***********************************************************************
 
@@ -41,7 +41,7 @@ interface IPayload : IPickle, IPickleFactory
         /**********************************************************************
 
                 Perform whatever cleanup is necessary. Could use ~this()
-                instead, but I prefer it to be truly explicit.
+                instead, but we prefer it to be explicit.
 
         **********************************************************************/
 
