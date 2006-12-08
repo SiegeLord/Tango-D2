@@ -1,14 +1,14 @@
 Index: tango/io/FileScan.d
 ===================================================================
---- tango/io/FileScan.d	(revision 1054)
+--- tango/io/FileScan.d	(revision 1069)
 +++ tango/io/FileScan.d	(working copy)
 @@ -38,28 +38,14 @@
-         scan ((args.length is 2) ? args[1] : ".", "d");
+         scan ((args.length is 2) ? args[1] : ".", ".d");
  
          Cout ("directories:").newline;
 -        scan.directories (&dirs);
 +        foreach (FilePath path; scan)
-+                Cout (path).newline;
++                 Cout (path).newline;
  
          Cout ("files:").newline;
 -        scan.files (&files);   
@@ -23,7 +23,7 @@ Index: tango/io/FileScan.d
 -        auto scan = new FileScan;
 -        
 -        // find all files with a 'd' extension
--        scan ((args.length is 2) ? args[1] : ".", "d");
+-        scan ((args.length is 2) ? args[1] : ".", ".d");
 -
 -        Cout ("Directories:").newline;
 -        scan.directories ((FilePath path) {Cout (path).newline;});
@@ -35,24 +35,11 @@ Index: tango/io/FileScan.d
  *******************************************************************************/
  
  class FileScan
-@@ -69,7 +55,7 @@
-         private Dependencies    deps;
-         private Filter          filter;
- 
--        typedef bool delegate (FilePath) Filter;
-+        alias bool delegate (FilePath) Filter;
+@@ -136,32 +122,6 @@
  
          /***********************************************************************
  
-@@ -133,37 +119,8 @@
-                 scanFiles (deps, path);
-                 return this;
-         }
--
-         /***********************************************************************
- 
--                Visit all the files found in the last scan. The delegate
--                should return false to terminate early.
+-                Visit all the files found in the last scan. 
 -
 -        ***********************************************************************/
 -
@@ -65,8 +52,7 @@ Index: tango/io/FileScan.d
 -
 -        /***********************************************************************
 -        
--                Visit all directories found in the last scan. The delegate
--                should return false to terminate early.
+-                Visit all directories found in the last scan. 
 -
 -        ***********************************************************************/
 -
@@ -82,7 +68,7 @@ Index: tango/io/FileScan.d
                  Recursive routine to locate files and sub-directories.
  
          ***********************************************************************/
-@@ -190,5 +147,34 @@
+@@ -188,5 +148,34 @@
                             deps.mods ~= file;
                          }
          }
