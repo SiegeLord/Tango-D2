@@ -18,7 +18,9 @@ public
 }
 private
 {
+    //
     // exposed by compiler runtime
+    //
     extern (C) void* cr_stackBottom();
     extern (C) void* cr_stackTop();
 
@@ -96,8 +98,11 @@ version( Win32 )
             assert( obj );
             scope( exit ) Thread.remove( obj );
 
-            obj.m_bstack = getStackBottom();
-            obj.m_tstack = obj.m_bstack;
+            obj.m_main.bstack = getStackBottom();
+            obj.m_main.tstack = obj.m_main.bstack;
+            assert( obj.m_curr == &obj.m_main );
+            Thread.add( &obj.m_main );
+
             TlsSetValue( Thread.sm_this, obj );
 
             // NOTE: No GC allocations may occur until the stack pointers have
@@ -106,9 +111,9 @@ version( Win32 )
             //       necessary on Win32 but it should be followed for the sake
             //       of consistency).
 
-            // maybe put an auto exception object here (using alloca)
-            // for OutOfMemoryError plus something to track whether
-            // an exception is in-flight?
+            // TODO: Consider putting an auto exception object here (using
+            //       alloca) forOutOfMemoryError plus something to track
+            //       whether an exception is in-flight?
 
             try
             {
@@ -123,9 +128,8 @@ version( Win32 )
 
 
         //
-        // copy of the same-named function in phobos.std.thread,
-        // it uses the Windows naming convention to be consistent
-        // with GetCurrentThreadId
+        // copy of the same-named function in phobos.std.thread--it uses the
+        // Windows naming convention to be consistent with GetCurrentThreadId
         //
         HANDLE GetCurrentThreadHandle()
         {
@@ -150,6 +154,12 @@ else version( Posix )
         import tango.stdc.posix.unistd;
         import tango.stdc.posix.time;
 
+        version( GCC )
+        {
+            import gcc.builtins;
+        }
+
+
         //
         // entry point for POSIX threads
         //
@@ -168,7 +178,7 @@ else version( Posix )
 
             static extern (C) void thread_cleanupHandler( void* arg )
             {
-                Thread  obj = Thread.getThis();
+                Thread  obj = cast(Thread) arg;
                 assert( obj );
 
                 // NOTE: If the thread terminated abnormally, just set it as
@@ -182,7 +192,7 @@ else version( Posix )
             cleanup.push( &thread_cleanupHandler, obj );
 
             // NOTE: For some reason this does not always work for threads.
-            //obj.m_bstack = getStackBottom();
+            //obj.m_main.bstack = getStackBottom();
             version( D_InlineAsm_X86 )
             {
                 static void* getBasePtr()
@@ -195,13 +205,16 @@ else version( Posix )
                     }
                 }
 
-                obj.m_bstack = getBasePtr();
+                obj.m_main.bstack = getBasePtr();
             }
             else version( StackGrowsDown )
-                obj.m_bstack = &obj + 1;
+                obj.m_main.bstack = &obj + 1;
             else
-                obj.m_bstack = &obj;
-            obj.m_tstack = obj.m_bstack;
+                obj.m_main.bstack = &obj;
+            obj.m_main.tstack = obj.m_main.bstack;
+            assert( obj.m_curr == &obj.m_main );
+            Thread.add( &obj.m_main );
+
             pthread_setspecific( obj.sm_this, obj );
 
             // NOTE: No GC allocations may occur until the stack pointers have
@@ -210,9 +223,9 @@ else version( Posix )
             //       necessary on Win32 but it should be followed for the sake
             //       of consistency).
 
-            // maybe put an auto exception object here (using alloca)
-            // for OutOfMemoryError plus something to track whether
-            // an exception is in-flight?
+            // TODO: Consider putting an auto exception object here (using
+            //       alloca) forOutOfMemoryError plus something to track
+            //       whether an exception is in-flight?
 
             try
             {
@@ -246,11 +259,10 @@ else version( Posix )
                     pushad;
                 }
             }
-            // TODO: darwin/ppc support
-            //else version( PPC )
-            //{
-            //    __builtin_unwind_init();
-            //}
+            else version( GCC )
+            {
+                __builtin_unwind_init();
+            }
             else
             {
                 static assert( false, "Architecture not supported." );
@@ -270,7 +282,7 @@ else version( Posix )
                 //       any references to GC-managed data.
                 if( obj !is null )
                 {
-                    obj.m_tstack = getStackTop();
+                    obj.m_curr.tstack = getStackTop();
                 }
 
                 sigset_t    sigres = void;
@@ -289,7 +301,7 @@ else version( Posix )
 
                 if( obj !is null )
                 {
-                    obj.m_tstack = obj.m_bstack;
+                    obj.m_curr.tstack = obj.m_curr.bstack;
                 }
             }
 
@@ -300,11 +312,10 @@ else version( Posix )
                     popad;
                 }
             }
-            // TODO: darwin/ppc support
-            //else version( PPC )
-            //{
-            //    __builtin_unwind_init();
-            //}
+            else version( GCC )
+            {
+                // registers will be popped automatically
+            }
             else
             {
                 static assert( false, "Architecture not supported." );
@@ -329,7 +340,6 @@ else
     //       version is added, the module code will need to be searched for
     //       places where version-specific code may be required.  This can be
     //       easily accomlished by searching for 'Windows' or 'Posix'.
-
     static assert( false, "Unknown threading implementation." );
 }
 
@@ -423,6 +433,7 @@ class Thread
     {
         m_fn   = fn;
         m_call = Call.FN;
+        m_curr = &m_main;
     }
 
 
@@ -442,6 +453,7 @@ class Thread
     {
         m_dg   = dg;
         m_call = Call.DG;
+        m_curr = &m_main;
     }
 
 
@@ -487,7 +499,7 @@ class Thread
     final void start()
     in
     {
-        assert( !m_next && !m_prev );
+        assert( !next && !prev );
     }
     body
     {
@@ -745,7 +757,7 @@ class Thread
         synchronized( slock )
         {
             size_t   pos = 0;
-            Thread[] buf = new Thread[sm_len];
+            Thread[] buf = new Thread[sm_tlen];
 
             foreach( Thread t; Thread )
             {
@@ -773,7 +785,7 @@ class Thread
         {
             int ret = 0;
 
-            for( Thread t = sm_all; t; t = t.m_next )
+            for( Thread t = sm_tbeg; t; t = t.next )
             {
                 ret = dg( t );
                 if( ret )
@@ -811,7 +823,7 @@ class Thread
             {
                 if( !set )
                 {
-                    foreach( Thread t; sm_all )
+                    foreach( Thread t; sm_tbeg )
                     {
                         t.m_local[key] = null;
                     }
@@ -838,7 +850,7 @@ class Thread
         synchronized( slock )
         {
             sm_local[key] = false;
-            foreach( Thread t; sm_all )
+            foreach( Thread t; sm_tbeg )
             {
                 t.m_local[key] = null;
             }
@@ -887,6 +899,7 @@ private:
     this()
     {
         m_call = Call.NO;
+        m_curr = &m_main;
     }
 
 
@@ -970,17 +983,149 @@ private:
 
 private:
     ////////////////////////////////////////////////////////////////////////////
-    // Global Thread List
+    // Thread Context and GC Scanning Support
     ////////////////////////////////////////////////////////////////////////////
 
 
+    static struct Context
+    {
+        void*           bstack,
+                        tstack;
+        Context*        within;
+        Context*        next,
+                        prev;
+    }
+
+
+    Context             m_main;
+    Context*            m_curr;
+
+    version( Win32 )
+    {
+        uint[8]         m_reg; // edi,esi,ebp,esp,ebx,edx,ecx,eax
+    }
+
+
+private:
+    ////////////////////////////////////////////////////////////////////////////
+    // GC Scanning Support
+    ////////////////////////////////////////////////////////////////////////////
+
+
+    // NOTE: The GC scanning process works like so:
     //
-    // All use of the global thread list should synchronize on this lock.
+    //          1. Suspend all threads.
+    //          2. Scan the stacks of all suspended threads for roots.
+    //          3. Resume all threads.
+    //
+    //       Step 1 and 3 require a list of all threads in the system, while
+    //       step 2 requires a list of all thread stacks (each represented by
+    //       a Context struct).  Traditionally, there was one stack per thread
+    //       and the Context structs were not necessary.  However, Fibers have
+    //       changed things so that each thread has its own 'main' stack plus
+    //       an arbitrary number of nested stacks (normally referenced via
+    //       m_curr).  Also, there may be 'free-floating' stacks in the system,
+    //       which are Fibers that are not currently executing on any specific
+    //       thread but are still being processed and still contain valid
+    //       roots.
+    //
+    //       To support all of this, the Context struct has been created to
+    //       represent a stack range, and a global list of Context structs has
+    //       been added to enable scanning of these stack ranges.  The lifetime
+    //       (and presence in the Context list) of a thread's 'main' stack will
+    //       be equivalent to the thread's lifetime.  So the Ccontext will be
+    //       added to the list on thread entry, and removed from the list on
+    //       thread exit (which is essentially the same as the presence of a
+    //       Thread object in its own global list).  The lifetime of a Fiber's
+    //       context, however, will be tied to the lifetime of the Fiber object
+    //       itself, and Fibers are expected to add/remove their Context struct
+    //       on construction/deletion.
+
+
+    //
+    // All use of the global lists should synchronize on this lock.
     //
     static Object slock()
     {
         return Thread.classinfo;
     }
+
+
+    static Context*     sm_cbeg;
+    static size_t       sm_clen;
+
+    static Thread       sm_tbeg;
+    static size_t       sm_tlen;
+
+    //
+    // Used for ordering threads in the global thread list.
+    //
+    Thread              prev;
+    Thread              next;
+
+
+    ////////////////////////////////////////////////////////////////////////////
+    // Global Context List Operations
+    ////////////////////////////////////////////////////////////////////////////
+
+
+    //
+    // Add a context to the global context list.
+    //
+    static void add( Context* c )
+    in
+    {
+        assert( c !is null );
+        assert( !c.next && !c.prev );
+    }
+    body
+    {
+        synchronized( slock )
+        {
+            if( sm_cbeg )
+            {
+                c.next = sm_cbeg;
+                sm_cbeg.prev = c;
+            }
+            sm_cbeg = c;
+            ++sm_clen;
+        }
+    }
+
+
+    //
+    // Remove a context from the global context list.
+    //
+    static void remove( Context* c )
+    in
+    {
+        assert( c !is null );
+        assert( c.next || c.prev );
+    }
+    body
+    {
+        synchronized( slock )
+        {
+            if( c.prev )
+                c.prev.next = c.next;
+            if( c.next )
+                c.next.prev = c.prev;
+            if( sm_cbeg == c )
+                sm_cbeg = c.next;
+            --sm_clen;
+        }
+        // NOTE: Don't null out c.next or c.prev because opApply currently
+        //       follows c.next after removing a node.  This could be easily
+        //       addressed by simply returning the next node from this function,
+        //       however, a context should never be re-added to the list anyway
+        //       and having next and prev be non-null is a good way to
+        //       ensure that.
+    }
+
+
+    ////////////////////////////////////////////////////////////////////////////
+    // Global Thread List Operations
+    ////////////////////////////////////////////////////////////////////////////
 
 
     //
@@ -989,20 +1134,21 @@ private:
     static void add( Thread t )
     in
     {
-        assert( !t.m_next && !t.m_prev );
+        assert( t !is null );
+        assert( !t.next && !t.prev );
         assert( t.isRunning );
     }
     body
     {
         synchronized( slock )
         {
-            if( sm_all )
+            if( sm_tbeg )
             {
-                t.m_next = sm_all;
-                sm_all.m_prev = t;
+                t.next = sm_tbeg;
+                sm_tbeg.prev = t;
             }
-            sm_all = t;
-            ++sm_len;
+            sm_tbeg = t;
+            ++sm_tlen;
         }
     }
 
@@ -1013,7 +1159,8 @@ private:
     static void remove( Thread t )
     in
     {
-        assert( t.m_next || t.m_prev );
+        assert( t !is null );
+        assert( t.next || t.prev );
         version( Win32 )
         {
             // NOTE: This doesn't work for Posix as m_isRunning must be set to
@@ -1025,45 +1172,31 @@ private:
     {
         synchronized( slock )
         {
-            if( t.m_prev )
-                t.m_prev.m_next = t.m_next;
-            if( t.m_next )
-                t.m_next.m_prev = t.m_prev;
-            if( sm_all == t )
-                sm_all = t.m_next;
-            --sm_len;
+            // NOTE: When a thread is removed from the global thread list its
+            //       main context is invalid and should be removed as well.
+            //       It is possible that t.m_curr could reference more
+            //       than just the main context if the thread exited abnormally
+            //       (if it was terminated), but we must assume that the user
+            //       retains a reference to them and that they may be re-used
+            //       elsewhere.  Therefore, it is the responsibility of any
+            //       object that creates contexts to clean them up properly
+            //       when it is done with them.
+            remove( &t.m_main );
+
+            if( t.prev )
+                t.prev.next = t.next;
+            if( t.next )
+                t.next.prev = t.prev;
+            if( sm_tbeg == t )
+                sm_tbeg = t.next;
+            --sm_tlen;
         }
-        // NOTE: Don't null out t.m_next or t.m_prev because opApply currently
-        //       follows t.m_next after removing a node.  This could be easily
+        // NOTE: Don't null out t.next or t.prev because opApply currently
+        //       follows t.next after removing a node.  This could be easily
         //       addressed by simply returning the next node from this function,
         //       however, a thread should never be re-added to the list anyway
-        //       and having m_next and m_prev be non-null is a good way to
+        //       and having next and prev be non-null is a good way to
         //       ensure that.
-    }
-
-
-    //
-    // Global thread list data
-    //
-    static Thread       sm_all;
-    static size_t       sm_len;
-
-    Thread              m_prev;
-    Thread              m_next;
-
-
-private:
-    ////////////////////////////////////////////////////////////////////////////
-    // GC Scanning Support
-    ////////////////////////////////////////////////////////////////////////////
-
-
-    void*               m_bstack,
-                        m_tstack;
-
-    version( Win32 )
-    {
-        uint[8]         m_reg; // edi,esi,ebp,esp,ebx,edx,ecx,eax
     }
 }
 
@@ -1091,12 +1224,16 @@ extern (C) void thread_init()
         Thread.sm_this = TlsAlloc();
         assert( Thread.sm_this != TLS_OUT_OF_INDEXES );
 
-        Thread main   = new Thread();
-        main.m_addr   = GetCurrentThreadId();
-        main.m_hndl   = GetCurrentThreadHandle();
-        main.m_bstack = getStackBottom();
-        main.m_tstack = main.m_bstack;
-        TlsSetValue( Thread.sm_this, main );
+        Thread          mainThread  = new Thread();
+        Thread.Context* mainContext = &mainThread.m_main;
+        assert( mainContext == mainThread.m_curr );
+
+        mainThread.m_addr    = GetCurrentThreadId();
+        mainThread.m_hndl    = GetCurrentThreadHandle();
+        mainContext.bstack = getStackBottom();
+        mainContext.tstack = mainContext.bstack;
+
+        TlsSetValue( Thread.sm_this, mainThread );
     }
     else version( Posix )
     {
@@ -1144,17 +1281,22 @@ extern (C) void thread_init()
         status = pthread_key_create( &Thread.sm_this, null );
         assert( status == 0 );
 
-        Thread main      = new Thread();
-        main.m_addr      = pthread_self();
-        main.m_bstack    = getStackBottom();
-        main.m_tstack    = main.m_bstack;
-        main.m_isRunning = true;
+        Thread          mainThread  = new Thread();
+        Thread.Context* mainContext = mainThread.m_curr;
+        assert( mainContext == &mainThread.m_main );
 
-        status = pthread_setspecific( Thread.sm_this, main );
+        mainThread.m_addr    = pthread_self();
+        mainContext.bstack = getStackBottom();
+        mainContext.tstack = mainContext.bstack;
+
+        mainThread.m_isRunning = true;
+
+        status = pthread_setspecific( Thread.sm_this, mainThread );
         assert( status == 0 );
     }
 
-    Thread.add( main );
+    Thread.add( mainThread );
+    Thread.add( mainContext );
 }
 
 
@@ -1167,7 +1309,7 @@ static ~this()
     //       operable after this dtor completes.  Therefore, only minimal
     //       cleanup may occur.
 
-    for( Thread t = Thread.sm_all; t; t = t.m_next ) // foreach( Thread t; Thread )
+    for( Thread t = Thread.sm_tbeg; t; t = t.next )
     {
         if( !t.isRunning )
             Thread.remove( t );
@@ -1242,7 +1384,7 @@ extern (C) void thread_suspendAll()
 
             if( !GetThreadContext( t.m_hndl, &context ) )
                 throw new ThreadException( "Unable to load thread context" );
-            t.m_tstack = cast(void*) context.Esp;
+            t.m_curr.tstack = cast(void*) context.Esp;
             // edi,esi,ebp,esp,ebx,edx,ecx,eax
             t.m_reg[0] = context.Edi;
             t.m_reg[1] = context.Esi;
@@ -1271,13 +1413,16 @@ extern (C) void thread_suspendAll()
                 //       them all and wait once at the end.  However, semaphores
                 //       don't really work this way, and the obvious alternative
                 //       (looping on an atomic suspend count) requires either
-                //       the atomic module (which only works on x86) or
-                //       other specialized functionality.
+                //       the atomic module (which only works on x86) or other
+                //       specialized functionality.  It would also be possible
+                //       to simply loop on sem_wait at the end, but I'm not
+                //       convinced that this would be much faster than the
+                //       current approach.
                 sem_wait( &suspendCount );
             }
             else
             {
-                t.m_tstack = getStackTop();
+                t.m_curr.tstack = getStackTop();
             }
         }
     }
@@ -1290,13 +1435,13 @@ extern (C) void thread_suspendAll()
     //       and thread_resumeAll must be callable before thread_init completes,
     //       with the assumption that no other GC memory has yet been allocated
     //       by the system, and thus there is no risk of losing data if the
-    //       global thread list is empty.  The check of Thread.sm_all below is
-    //       done to ensure thread_init has completed, and therefore that
-    //       calling Thread.getThis will not result in an error.  For the
-    //       short time when Thread.sm_all is null, there is no reason not to
-    //       simply call the multithreaded code below, with the expectation
-    //       that the foreach loop will never be entered.
-    if( !multiThreadedFlag && Thread.sm_all )
+    //       global thread list is empty.  The check of Thread.sm_tbeg
+    //       below is done to ensure thread_init has completed, and therefore
+    //       that calling Thread.getThis will not result in an error.  For the
+    //       short time when Thread.sm_tbeg is null, there is no reason
+    //       not to simply call the multithreaded code below, with the
+    //       expectation that the foreach loop will never be entered.
+    if( !multiThreadedFlag && Thread.sm_tbeg )
     {
         if( ++suspendDepth == 1 )
             suspend( Thread.getThis() );
@@ -1314,7 +1459,7 @@ extern (C) void thread_suspendAll()
         //       the same thread to be suspended twice, which would likely
         //       cause the second suspend to fail, the garbage collection to
         //       abort, and Bad Things to occur.
-        for( Thread t = Thread.sm_all; t; t = t.m_next ) // foreach( Thread t; Thread )
+        for( Thread t = Thread.sm_tbeg; t; t = t.next )
         {
             if( t.isRunning )
                 suspend( t );
@@ -1377,7 +1522,7 @@ body
                 throw new ThreadException( "Unable to resume thread" );
             }
 
-            t.m_tstack      = t.m_bstack;
+            t.m_curr.tstack = t.m_curr.bstack;
             t.m_reg[0 .. $] = 0;
         }
         else version( Posix )
@@ -1396,14 +1541,14 @@ body
             }
             else
             {
-                t.m_tstack = t.m_bstack;
+                t.m_curr.tstack = t.m_curr.bstack;
             }
         }
     }
 
 
     // NOTE: See thread_suspendAll for the logic behind this.
-    if( !multiThreadedFlag && Thread.sm_all )
+    if( !multiThreadedFlag && Thread.sm_tbeg )
     {
         if( --suspendDepth == 0 )
             resume( Thread.getThis() );
@@ -1414,7 +1559,7 @@ body
         if( --suspendDepth > 0 )
             return;
 
-        for( Thread t = Thread.sm_all; t; t = t.m_next ) // foreach( Thread t; Thread )
+        for( Thread t = Thread.sm_tbeg; t; t = t.next )
         {
             resume( t );
         }
@@ -1443,37 +1588,42 @@ body
     Thread  thisThread  = null;
     void*   oldStackTop = null;
 
-    if( curStackTop && Thread.sm_all )
+    if( curStackTop && Thread.sm_tbeg )
     {
         thisThread  = Thread.getThis();
-        oldStackTop = thisThread.m_tstack;
-        thisThread.m_tstack = curStackTop;
+        oldStackTop = thisThread.m_curr.tstack;
+        thisThread.m_curr.tstack = curStackTop;
     }
 
     scope( exit )
     {
-        if( curStackTop && Thread.sm_all )
-            thisThread.m_tstack = oldStackTop;
+        if( curStackTop && Thread.sm_tbeg )
+        {
+            thisThread.m_curr.tstack = oldStackTop;
+        }
     }
 
     // NOTE: Synchronizing on Thread.slock is not needed because this
     //       function may only be called after all other threads have
     //       been suspended from within the same lock.
-    for( Thread t = Thread.sm_all; t; t = t.m_next )
+    for( Thread.Context* c = Thread.sm_cbeg; c; c = c.next )
     {
         version( StackGrowsDown )
         {
             // NOTE: We can't index past the bottom of the stack
             //       so don't do the "+1" for StackGrowsDown.
-            if( t.m_tstack && t.m_tstack < t.m_bstack )
-                scan( t.m_tstack, t.m_bstack );
+            if( c.tstack && c.tstack < c.bstack )
+                scan( c.tstack, c.bstack );
         }
         else
         {
-            if( t.m_bstack && t.m_bstack < t.m_tstack )
-                scan( t.m_bstack, t.m_tstack + 1 );
+            if( c.bstack && c.bstack < c.tstack )
+                scan( c.bstack, c.tstack + 1 );
         }
-        version( Win32 )
+    }
+    version( Win32 )
+    {
+        for( Thread t = Thread.sm_tbeg; t; t = t.next )
         {
             scan( &t.m_reg[0], &t.m_reg[0] + t.m_reg.length );
         }
@@ -1695,7 +1845,7 @@ class ThreadGroup
 
             // NOTE: This loop relies on the knowledge that m_all uses the
             //       Thread object for both the key and the mapped value.
-            foreach( Thread t; m_all.keys ) // foreach( Thread t; m_all )
+            foreach( Thread t; m_all.keys )
             {
                 ret = dg( t ); // ret = dg( t );
                 if( ret )
@@ -1723,7 +1873,7 @@ class ThreadGroup
         {
             // NOTE: This loop relies on the knowledge that m_all uses the
             //       Thread object for both the key and the mapped value.
-            foreach( Thread t; m_all.keys ) // foreach( Thread t; m_all )
+            foreach( Thread t; m_all.keys )
             {
                 t.join( rethrow );
             }
