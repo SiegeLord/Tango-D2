@@ -35,8 +35,8 @@ public  import  tango.io.protocol.model.IReader;
         All readers support the full set of native data types, plus a full
         selection of array types. The latter can be configured to produce
         either a copy (.dup) of the buffer content, or a slice. See class
-        NullAllocator, SimpleAllocator, BufferAllocator and SliceAllocator
-        for more on this topic. Note that a NullAllocator disables memory
+        SimpleAllocator, BufferAllocator and SliceAllocator for more on
+        this topic. Note that setting a null Allocator disables memory
         management for arrays, and the application is expected to take on
         that role.
 
@@ -84,8 +84,8 @@ public  import  tango.io.protocol.model.IReader;
         example: when reading an array from a file, the number of elements 
         is read from the file also, and the configurable memory-manager is
         invoked to provide the array space. If content is not arranged in
-        such a manner you may read array content directly either through the
-        use of NullAllocator (to disable memory management) or by accessing
+        such a manner you may read array content directly either by setting
+        a Allocator to null (to disable memory management) or by accessing
         buffer content directly via the methods exposed there e.g.
 
         ---
@@ -145,12 +145,12 @@ class Reader : IReader, IReader.Allocator
                 return buffer;
         }
         
-        /***********************************************************************
+        /***********************************************************************       
         
                 Get the allocator to use for array management. Arrays are
-                generally allocated by the IReader, via configured manager.
+                generally allocated by the IReader, via configured managers.
                 A number of Allocator classes are available to manage memory
-                when reading array content, including a NullAllocator which
+                when reading array content. Alternatively, a null Allocator
                 hands responsibility over to the application instead. 
 
                 Gaining access to the allocator can expose some additional
@@ -167,23 +167,21 @@ class Reader : IReader, IReader.Allocator
         /***********************************************************************
         
                 Set the allocator to use for array management. Arrays are
-                generally allocated by the IReader, so you generally cannot
-                read into an array slice (for example). Instead, a number
-                of Allocators are available to manage memory allocation
-                when reading array content. 
+                generally allocated via the IReader itself, and a variety
+                of Allocators are provided to expose different policies.
 
                 By default, an IReader will allocate each array from the 
                 heap. You can change that behavior by calling this method
-                with an Allocator of choice. For instance, there 
-                is a BufferAllocator which will slice an array directly 
-                from the buffer where possible. Also available is the 
-                record-oriented SliceAllocator, which slices memory from 
-                within a pre-allocated heap area, and should be reset by
-                the client code after each record has been read (to avoid 
-                unnecessary growth). There is also a NullAlocator, which
-                disables internal memory management and turns responsiblity
-                over to the application instead. In the latter case, array
-                slices provided by the application are populated.
+                with an Allocator of choice. For instance, there is a
+                BufferAllocator which will slice an array directly from
+                the buffer where possible. Also available is the record-
+                oriented SliceAllocator, which slices memory from within
+                a pre-allocated heap area, and should be reset by the client
+                code after each record has been read (to avoid unnecessary
+                growth). Setting the Allocator to null disables internal
+                memory management entirely, and turns responsiblity over to
+                the application instead. In the latter case, array slices
+                provided by the application are populated.
 
                 See module ArrayAllocator for more information
 
@@ -545,8 +543,8 @@ class Reader : IReader, IReader.Allocator
                 Read an array from the current buffer position. We typically
                 expect a leading integer, indicating how many elements follow.
                 This policy can be overridden by configuring the reader with a
-                NullAllocator, which requires the application to manage array
-                memory instead. See module ArrayAllocator for more info
+                null Allocator, which requires the application to manage array
+                memory instead
 
         ***********************************************************************/
 
@@ -554,7 +552,7 @@ class Reader : IReader, IReader.Allocator
         {
                 uint bytes;
 
-                if (memory.isManaged)
+                if (memory)
                    {
                    uint count;
                    get (count);
@@ -610,22 +608,6 @@ class Reader : IReader, IReader.Allocator
         
         /************************ Allocator methods ***************************/
 
-
-        /***********************************************************************
-
-                Is memory managed by this allocator? If so, an integer will
-                be read from the input representing the array length, and
-                the allocator will be used to provide array space. If not,
-                the array length is assumed to be provided by the target
-                array itself (application managed); both the integer and
-                allocator are ignored
-
-        ***********************************************************************/
-
-        bool isManaged ()
-        {
-                return true;
-        }
 
         /***********************************************************************
         

@@ -19,64 +19,6 @@ module tango.io.protocol.ArrayAllocator;
 
 private import  tango.io.protocol.model.IReader;
 
-/*******************************************************************************
-
-        Null allocator does not allocate at all. Instead, the application
-        is expected to provide an input array indicating the extent of
-        data to be loaded. Note that the application should take care of
-        reading any array prefix (the element count), since the Reader
-        assumes it has already been consumed
-        
-*******************************************************************************/
-
-class NullAllocator : IReader.Allocator
-{
-        private IReader reader;
-        
-        /***********************************************************************
-
-                Is memory managed by this allocator? If so, an integer will
-                be read from the input representing the array length, and
-                the allocator will be used to provide array space. If not,
-                the array length is assumed to be provided by the target
-                array itself (application managed); both the integer and
-                allocator are ignored
-
-        ***********************************************************************/
-
-        bool isManaged ()
-        {
-                return false;
-        }
-
-        /***********************************************************************
-        
-        ***********************************************************************/
-
-        void reset ()
-        {
-        }
-
-        /***********************************************************************
-        
-        ***********************************************************************/
-
-        void bind (IReader reader)
-        {
-                this.reader = reader;
-        }
-
-        /***********************************************************************
-        
-        ***********************************************************************/
-
-        void[] allocate (uint bytes)
-        {
-                reader.getBuffer.error ("NullAlocator.allocate :: illegal invocation");
-                return null;
-        }
-}
-
 
 /*******************************************************************************
 
@@ -86,22 +28,6 @@ class NullAllocator : IReader.Allocator
 
 class SimpleAllocator : IReader.Allocator
 {
-        /***********************************************************************
-
-                Is memory managed by this allocator? If so, an integer will
-                be read from the input representing the array length, and
-                the allocator will be used to provide array space. If not,
-                the array length is assumed to be provided by the target
-                array itself (application managed); both the integer and
-                allocator are ignored
-
-        ***********************************************************************/
-
-        bool isManaged ()
-        {
-                return true;
-        }
-
         /***********************************************************************
         
         ***********************************************************************/
@@ -140,22 +66,6 @@ class SimpleAllocator : IReader.Allocator
 class BufferAllocator : SimpleAllocator
 {
         private IReader reader;
-
-        /***********************************************************************
-
-                Is memory managed by this allocator? If so, an integer will
-                be read from the input representing the array length, and
-                the allocator will be used to provide array space. If not,
-                the array length is assumed to be provided by the target
-                array itself (application managed); both the integer and
-                allocator are ignored
-
-        ***********************************************************************/
-
-        bool isManaged ()
-        {
-                return true;
-        }
 
         /***********************************************************************
         
@@ -207,8 +117,8 @@ class BufferAllocator : SimpleAllocator
 
 class SliceAllocator : HeapSlice, IReader.Allocator
 {
-        private IReader         reader;
-        private bool            autoReset;
+        private IReader reader;
+        private bool    autoReset;
 
         /***********************************************************************
         
@@ -218,22 +128,6 @@ class SliceAllocator : HeapSlice, IReader.Allocator
         {
                 super (width);
                 this.autoReset = autoReset;
-        }
-
-        /***********************************************************************
-
-                Is memory managed by this allocator? If so, an integer will
-                be read from the input representing the array length, and
-                the allocator will be used to provide array space. If not,
-                the array length is assumed to be provided by the target
-                array itself (application managed); both the integer and
-                allocator are ignored
-
-        ***********************************************************************/
-
-        bool isManaged ()
-        {
-                return true;
         }
 
         /***********************************************************************
