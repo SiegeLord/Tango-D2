@@ -110,8 +110,10 @@ tango\store\model\Map.d
 tango\math\cipher\Sha512.d
 tango\stdc\signal.d
 tango\io\FileScan.d
+tango\io\protocol\PickleReader.d
+tango\io\protocol\PickleWriter.d
+tango\io\protocol\PickleRegistry.d
 tango\io\protocol\EndianReader.d
-tango\text\locale\Core.d
 tango\net\Uri.d
 tango\net\http\HttpResponses.d
 tango\sys\linux\socket.d
@@ -188,7 +190,6 @@ tango\net\http\HttpCookies.d
 mango\net\servlet\cache\QueuedCache.d
 tango\text\convert\Rfc1123.d
 tango\io\FileSystem.d
-tango\io\support\BufferCodec.d
 tango\text\locale\Win32.d
 tango\log\PropertyConfigurator.d
 tango\log\DateLayout.d
