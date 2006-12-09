@@ -13,6 +13,8 @@ private import tango.stdc.locale;
 private import tango.stdc.posix.time;
 private import tango.io.File;
 private import tango.io.protocol.EndianReader;
+private import tango.io.protocol.model.IReader;
+private import tango.io.Buffer;
 
 /*private extern(C) char* setlocale(int type, char* locale);
 private extern(C) void putenv(char*);

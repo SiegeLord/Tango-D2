@@ -85,7 +85,7 @@ class BufferedFormat(T)
         final BufferedFormat print (...)
         {
                 if (_arguments.length > 0)
-                    print(&sink, _arguments, _argptr);
+                    print(&sink, _arguments, cast(void*) _argptr);
                 else
                     // zero args is just a flush
                     output.flush();
@@ -102,7 +102,7 @@ class BufferedFormat(T)
         final BufferedFormat println (...)
         {
                 if (_arguments.length > 0)
-                    print(&sink, _arguments, _argptr);
+                    print(&sink, _arguments, cast(void*) _argptr);
 
                 return newline();
         }
