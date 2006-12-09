@@ -59,7 +59,7 @@ in
         {
             int ci;
 
-            ci = memcmp(table[j - 1], table[j], len1);
+            ci = memcmp(table[j - 1].ptr, table[j].ptr, len1);
             assert(ci < 0); // ci==0 means a duplicate
         }
     }
@@ -76,7 +76,7 @@ out (result)
         for (i = 0; i < table.length; i++)
         {
             if (table[i].length == ca.length)
-            {   cj = memcmp(table[i], ca, ca.length);
+            {   cj = memcmp(table[i].ptr, ca.ptr, ca.length);
                 assert(cj != 0);
             }
         }
@@ -89,7 +89,7 @@ out (result)
             assert(i < table.length);
             if (table[i].length == ca.length)
             {
-                cj = memcmp(table[i], ca, ca.length);
+                cj = memcmp(table[i].ptr, ca.ptr, ca.length);
                 if (cj == 0)
                 {
                     assert(i == result);
@@ -141,7 +141,7 @@ body
                 c = cast(byte)c1 - cast(byte)pca[0];
                 if (c == 0)
                 {
-                    c = memcmp(ca, pca, ca.length);
+                    c = memcmp(ca.ptr, pca.ptr, ca.length);
                     if (c == 0)
                     {   //printf("found %d\n", mid);
                         return mid;
@@ -160,7 +160,7 @@ body
     }
 
     //printf("not found\n");
-    return -1;              // not found
+    return -1; // not found
 }
 
 unittest
@@ -197,7 +197,7 @@ in
         {
             int c;
 
-            c = memcmp(table[j - 1], table[j], len1 * wchar.sizeof);
+            c = memcmp(table[j - 1].ptr, table[j].ptr, len1 * wchar.sizeof);
             assert(c < 0);  // c==0 means a duplicate
         }
     }
@@ -214,7 +214,7 @@ out (result)
         for (i = 0; i < table.length; i++)
         {
             if (table[i].length == ca.length)
-            {   c = memcmp(table[i], ca, ca.length * wchar.sizeof);
+            {   c = memcmp(table[i].ptr, ca.ptr, ca.length * wchar.sizeof);
                 assert(c != 0);
             }
         }
@@ -227,7 +227,7 @@ out (result)
             assert(i < table.length);
             if (table[i].length == ca.length)
             {
-                c = memcmp(table[i], ca, ca.length * wchar.sizeof);
+                c = memcmp(table[i].ptr, ca.ptr, ca.length * wchar.sizeof);
                 if (c == 0)
                 {
                     assert(i == result);
@@ -267,7 +267,7 @@ body
         c = ca.length - pca.length;
         if (c == 0)
         {
-            c = memcmp(ca, pca, ca.length * wchar.sizeof);
+            c = memcmp(ca.ptr, pca.ptr, ca.length * wchar.sizeof);
             if (c == 0)
             {   //printf("found %d\n", mid);
                 return mid;
@@ -322,7 +322,7 @@ in
         {
             int c;
 
-            c = memcmp(table[j - 1], table[j], len1 * dchar.sizeof);
+            c = memcmp(table[j - 1].ptr, table[j].ptr, len1 * dchar.sizeof);
             assert(c < 0);  // c==0 means a duplicate
         }
     }
@@ -339,7 +339,7 @@ out (result)
         for (i = 0; i < table.length; i++)
         {
             if (table[i].length == ca.length)
-            {   c = memcmp(table[i], ca, ca.length * dchar.sizeof);
+            {   c = memcmp(table[i].ptr, ca.ptr, ca.length * dchar.sizeof);
                 assert(c != 0);
             }
         }
@@ -352,7 +352,7 @@ out (result)
             assert(i < table.length);
             if (table[i].length == ca.length)
             {
-                c = memcmp(table[i], ca, ca.length * dchar.sizeof);
+                c = memcmp(table[i].ptr, ca.ptr, ca.length * dchar.sizeof);
                 if (c == 0)
                 {
                     assert(i == result);
@@ -392,7 +392,7 @@ body
         c = ca.length - pca.length;
         if (c == 0)
         {
-            c = memcmp(ca, pca, ca.length * dchar.sizeof);
+            c = memcmp(ca.ptr, pca.ptr, ca.length * dchar.sizeof);
             if (c == 0)
             {   //printf("found %d\n", mid);
                 return mid;
@@ -408,7 +408,7 @@ body
         }
     }
     //printf("not found\n");
-    return -1;              // not found
+    return -1; // not found
 }
 
 

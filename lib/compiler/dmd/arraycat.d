@@ -1,3 +1,7 @@
+/**
+ * Part of the D programming language runtime library.
+ */
+
 /*
  *  Copyright (C) 2004-2006 by Digital Mars, www.digitalmars.com
  *  Written by Walter Bright
@@ -72,7 +76,7 @@ byte[] _d_arraycatn(uint size, uint n, ...)
         b = *p++;
         if (b.length)
         {
-            memcpy(&a[j], b, b.length * size);
+            memcpy(&a[j], b.ptr, b.length * size);
             j += b.length * size;
         }
     }
@@ -87,6 +91,7 @@ bit[] _d_arraycatb(bit[] x, bit[] y)
     uint a_length;
     uint x_bytes;
 
+    //printf("_d_arraycatb(x.ptr = %p, x.length = %d, y.ptr = %p, y.length = %d)\n", x.ptr, x.length, y.ptr, y.length);
     if (!x.length)
         return y;
     if (!y.length)

@@ -34,7 +34,7 @@ class TypeInfo_Ae : TypeInfo
     hash_t getHash(void *p)
     {	real[] s = *cast(real[]*)p;
 	size_t len = s.length;
-	real *str = s;
+	real *str = s.ptr;
 	hash_t hash = 0;
 
 	while (len)

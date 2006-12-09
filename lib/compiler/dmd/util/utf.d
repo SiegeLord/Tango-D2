@@ -710,7 +710,7 @@ wchar* toUTF16z(char[] s)
 	}
     }
     r ~= "\000";
-    return r;
+    return r.ptr;
 }
 
 wchar[] toUTF16(wchar[] s)

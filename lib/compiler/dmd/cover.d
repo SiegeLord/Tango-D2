@@ -154,7 +154,7 @@ static ~this()
             }
         }
 
-        FILE* flst = fopen( c.filename ~ ".lst", "wb" );
+        FILE* flst = fopen( (c.filename ~ ".lst").ptr, "wb" );
 
         if( !flst )
             continue; //throw new Exception( "Error opening file for write: " ~ lstfn );

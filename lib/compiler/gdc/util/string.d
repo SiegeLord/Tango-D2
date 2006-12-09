@@ -41,7 +41,7 @@ int stringCompare (char[] s1, char[] s2)
     if (s2.length < len)
         len = s2.length;
 
-    int result = memcmp(s1, s2, len);
+    int result = memcmp(s1.ptr, s2.ptr, len);
 
     if (result == 0)
         result = cast(int)s1.length - cast(int)s2.length;

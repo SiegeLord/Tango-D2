@@ -12,7 +12,7 @@ class TypeInfo_Ai : TypeInfo
     hash_t getHash(void *p)
     {	int[] s = *cast(int[]*)p;
 	size_t len = s.length;
-	int *str = s;
+	int *str = s.ptr;
 	hash_t hash = 0;
 
 	while (len)

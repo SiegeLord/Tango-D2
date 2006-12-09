@@ -698,7 +698,7 @@ extern (C) long _d_arrayappend(Array *px, byte[] y, size_t size)
         px.data = cast(byte*)newdata;
     }
     px.length = newlength;
-    memcpy(px.data + length * size, y, y.length * size);
+    memcpy(px.data + length * size, y.ptr, y.length * size);
     return *cast(long*)px;
 }
 
@@ -927,7 +927,7 @@ size_t newCapacity(size_t newlength, size_t size)
  */
 extern (C) byte[] _d_arrayappendc(inout byte[] x, in size_t size, ...)
 {
-    size_t cap       = gc_sizeOf(x);
+    size_t cap       = gc_sizeOf(x.ptr);
     size_t length    = x.length;
     size_t newlength = length + 1;
 
@@ -940,7 +940,7 @@ extern (C) byte[] _d_arrayappendc(inout byte[] x, in size_t size, ...)
         cap = newCapacity(newlength, size);
         assert(cap >= newlength * size);
         void* newdata = gc_malloc(cap + 1, size < (void*).sizeof ? BlkAttr.NO_SCAN : 0);
-        memcpy(newdata, x, length * size);
+        memcpy(newdata, x.ptr, length * size);
         (cast(void**)(&x))[1] = newdata;
     }
     byte *argp = cast(byte *)(&size + 1);
@@ -995,8 +995,8 @@ body
         return null;
 
     byte* p = cast(byte*)gc_malloc(len + 1, size < (void*).sizeof ? BlkAttr.NO_SCAN : 0);
-    memcpy(p, x, xlen);
-    memcpy(p + xlen, y, ylen);
+    memcpy(p, x.ptr, xlen);
+    memcpy(p + xlen, y.ptr, ylen);
     p[len] = 0;
     return p[0 .. x.length + y.length];
 }

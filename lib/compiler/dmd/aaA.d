@@ -1,5 +1,10 @@
 //_ aaA.d
 
+/**
+ * Part of the D programming language runtime library.
+ * Implementation of associative arrays.
+ */
+
 /*
  *  Copyright (C) 2000-2006 by Digital Mars, www.digitalmars.com
  *  Written by Walter Bright
@@ -43,7 +48,6 @@ private
     extern (C) void  gc_free( void* p );
 }
 
-// Implementation of associative array
 // Auto-rehash and pre-allocate - Dave Fladebo
 
 static uint[] prime_list = [
@@ -272,20 +276,16 @@ void* _aaGet(AA* aa, TypeInfo keyti, size_t valuesize, ...)
         i = key_hash % aa.a.b.length;
         auto pe = &aa.a.b[i];
         while ((e = *pe) != null)
-        {   int c;
-
-            c = key_hash - e.hash;
-            if (c == 0)
+        {
+            if (key_hash == e.hash)
             {
-                c = keyti.compare(pkey, e + 1);
+                auto c = keyti.compare(pkey, e + 1);
                 if (c == 0)
                     goto Lret;
+                pe = (c < 0) ? &e.left : &e.right;
             }
-
-            if (c < 0)
-                pe = &e.left;
             else
-                pe = &e.right;
+                pe = (key_hash < e.hash) ? &e.left : &e.right;
         }
 
         // Not found, create new elem
@@ -331,20 +331,16 @@ void* _aaGetRvalue(AA aa, TypeInfo keyti, size_t valuesize, ...)
         size_t i = key_hash % len;
         auto e = aa.a.b[i];
         while (e != null)
-        {   int c;
-
-            c = key_hash - e.hash;
-            if (c == 0)
+        {
+            if (key_hash == e.hash)
             {
-                c = keyti.compare(pkey, e + 1);
-                if (c == 0)
-                    return cast(void *)(e + 1) + keysize;
+                auto c = keyti.compare(pkey, e + 1);
+            if (c == 0)
+                return cast(void *)(e + 1) + keysize;
+                e = (c < 0) ? e.left : e.right;
             }
-
-            if (c < 0)
-                e = e.left;
             else
-                e = e.right;
+                e = (key_hash < e.hash) ? e.left : e.right;
         }
     }
     return null;    // not found, caller will throw exception
@@ -382,20 +378,16 @@ body
             size_t i = key_hash % len;
             auto e = aa.a.b[i];
             while (e != null)
-            {   int c;
-
-                c = key_hash - e.hash;
-                if (c == 0)
+            {
+                if (key_hash == e.hash)
                 {
-                    c = keyti.compare(pkey, e + 1);
+                    auto c = keyti.compare(pkey, e + 1);
                     if (c == 0)
                         return cast(void *)(e + 1) + aligntsize(keyti.tsize());
+                    e = (c < 0) ? e.left : e.right;
                 }
-
-                if (c < 0)
-                    e = e.left;
                 else
-                    e = e.right;
+                    e = (key_hash < e.hash) ? e.left : e.right;
             }
         }
     }
@@ -421,12 +413,10 @@ void _aaDel(AA aa, TypeInfo keyti, ...)
         size_t i = key_hash % aa.a.b.length;
         auto pe = &aa.a.b[i];
         while ((e = *pe) != null)   // null means not found
-        {   int c;
-
-            c = key_hash - e.hash;
-            if (c == 0)
+        {
+            if (key_hash == e.hash)
             {
-                c = keyti.compare(pkey, e + 1);
+                auto c = keyti.compare(pkey, e + 1);
                 if (c == 0)
                 {
                     if (!e.left && !e.right)
@@ -459,12 +449,10 @@ void _aaDel(AA aa, TypeInfo keyti, ...)
                     // Should notify GC that e can be free'd now
                     break;
                 }
+                pe = (c < 0) ? &e.left : &e.right;
             }
-
-            if (c < 0)
-                pe = &e.left;
             else
-                pe = &e.right;
+                pe = (key_hash < e.hash) ? &e.left : &e.right;
         }
     }
 }
@@ -540,42 +528,40 @@ body
     {
         while (1)
         {
-                    auto left = olde.left;
-                    auto right = olde.right;
+            auto left = olde.left;
+            auto right = olde.right;
             olde.left = null;
             olde.right = null;
 
             aaA *e;
 
             //printf("rehash %p\n", olde);
-                    auto key_hash = olde.hash;
-                    size_t i = key_hash % newb.b.length;
-                    auto pe = &newb.b[i];
+            auto key_hash = olde.hash;
+            size_t i = key_hash % newb.b.length;
+            auto pe = &newb.b[i];
             while ((e = *pe) != null)
-            {   int c;
-
+            {
                 //printf("\te = %p, e.left = %p, e.right = %p\n", e, e.left, e.right);
                 assert(e.left != e);
                 assert(e.right != e);
-                c = key_hash - e.hash;
-                if (c == 0)
-                    c = keyti.compare(olde + 1, e + 1);
-                if (c < 0)
-                    pe = &e.left;
-                else if (c > 0)
-                    pe = &e.right;
+                if (key_hash == e.hash)
+                {
+                    auto c = keyti.compare(olde + 1, e + 1);
+                    assert(c != 0);
+                    pe = (c < 0) ? &e.left : &e.right;
+                }
                 else
-                    assert(0);
+                    pe = (key_hash < e.hash) ? &e.left : &e.right;
             }
             *pe = olde;
 
             if (right)
             {
-                        if (!left)
-                        {   olde = right;
-                            continue;
-                        }
-                        _aaRehash_x(right);
+                if (!left)
+                {   olde = right;
+                    continue;
+                }
+                _aaRehash_x(right);
             }
             if (!left)
                 break;
@@ -654,7 +640,7 @@ ArrayRet_t _aaKeys(AA aa, size_t keysize)
 
     Array a;
     a.length = len;
-    a.ptr = res;
+        a.ptr = res.ptr;
         return *cast(ArrayRet_t*)(&a);
 }
 

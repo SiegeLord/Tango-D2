@@ -323,7 +323,7 @@ static void trace_times(Symbol* root)
 
         version (Win32)
         {
-            char* p = s.Sident ~ '\0';
+            char* p = (s.Sident ~ '\0').ptr;
             p = unmangle_ident(p);
             if (p)
                 id = p[0 .. strlen(p)];
@@ -362,7 +362,7 @@ else
             calls,tl,tr,fl,fr,pl,pr,id);
 }
         if (id !is s.Sident)
-            free(id);
+            free(id.ptr);
     }
 }
 
@@ -434,7 +434,7 @@ void trace_term()
         trace_merge();
 
         // Report results
-        fplog = fopen(trace_logfilename,"w");
+        fplog = fopen(trace_logfilename.ptr, "w");
         //fplog = tango.stdc.stdio.stdout;
         if (fplog)
         {   nsymbols = 0;
@@ -445,7 +445,7 @@ void trace_term()
         }
 
         // Output function link order
-        fpdef = fopen(trace_deffilename,"w");
+        fpdef = fopen(trace_deffilename.ptr,"w");
         if (fpdef)
         {   fprintf(fpdef,"\nFUNCTIONS\n");
             trace_order(root);
@@ -691,7 +691,7 @@ static void trace_merge()
     SymPair *sfanin;
     SymPair **psp;
 
-    if (trace_logfilename && (fp = fopen(trace_logfilename,"r")) != null)
+    if (trace_logfilename && (fp = fopen(trace_logfilename.ptr,"r")) != null)
     {
         buf = null;
         sfanin = null;
