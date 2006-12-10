@@ -205,9 +205,12 @@ GCC_OBJS = gcc/config.o gcc/unwind.o gcc/deh.o gcc/threadsem.o \
 	gcc/cbridge_time.o
 
 # std.c.linux.linux, std.loader, gcc.cbridge*
-WINDOWS_OBJS=std/c/windows/windows.o std/c/windows/com.o std/c/windows/winsock.o \
-	std/windows/iunknown.o std/windows/registry.o std/windows/syserror.o \
-	std/windows/charset.o
+
+# Cleared WINDOWS_OBJS for Tango -- not needed
+#WINDOWS_OBJS=std/c/windows/windows.o std/c/windows/com.o std/c/windows/winsock.o \
+#	std/windows/iunknown.o std/windows/registry.o std/windows/syserror.o \
+#	std/windows/charset.o
+
 D_EXTRA_OBJS=@D_EXTRA_OBJS@
 
 # needed until instrinsics are implemented
