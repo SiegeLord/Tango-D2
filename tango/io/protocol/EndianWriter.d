@@ -51,7 +51,7 @@ class EndianWriter : Writer
                                     len = bytes;
 
                                 dst [0..len] = src [0..len];
-                                mutate (dst, len);
+                                mutate (dst.ptr, len);
                                 return len;
                         }
 

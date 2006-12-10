@@ -510,7 +510,7 @@ class FileConduit : DeviceConduit, DeviceConduit.Seek
                         share = Share[style.share];
                         access = Access[style.access] | Create[style.open];
 
-                        handle = posix.open (path.cString, access, share);
+                        handle = posix.open (path.cString.ptr, access, share);
                         if (handle is -1)
                             error ();
                 }

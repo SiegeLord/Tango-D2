@@ -76,13 +76,13 @@ class EndianFilter16 : EndianFilter
 {
         this () {super (2);}
 
-        final void swap (void[] x, uint bytes) {ByteSwap.swap16 (x, bytes);}
+        final void swap (void[] x, uint bytes) {ByteSwap.swap16 (x.ptr, bytes);}
 }
 
 class EndianFilter32 : EndianFilter
 {
         this () {super (4);}
 
-        final void swap (void[] x, uint bytes) {ByteSwap.swap32 (x, bytes);}
+        final void swap (void[] x, uint bytes) {ByteSwap.swap32 (x.ptr, bytes);}
 }
 

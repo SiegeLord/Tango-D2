@@ -547,7 +547,7 @@ class Buffer : IBuffer
                     else
                        error (overflow);
 
-                copy (src, size);
+                copy (src.ptr, size);
                 return this;
         }
 

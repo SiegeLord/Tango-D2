@@ -36,7 +36,7 @@ struct TextT(T)
         final static T[] replace (T[] source, T match, T replacement)
         {
                 T*  p;
-                T*  scan = source;
+                T*  scan = source.ptr;
                 int length = source.length;
 
                 while ((p = locate (scan, match, length)) != null)
@@ -130,7 +130,7 @@ struct TextT(T)
                       if (found < 0)
                           break;
                       else
-                         if (equal (match, source.ptr + found, length))
+                         if (equal (match.ptr, source.ptr + found, length))
                              return found;
                          else
                             start = found;

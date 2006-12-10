@@ -346,7 +346,7 @@ class Writer : IWriter
 
         final IWriter put (bool[] x)
         {
-                return writeArray (x, x.length, x.length * bool.sizeof, Type.Bool);
+                return writeArray (x.ptr, x.length, x.length * bool.sizeof, Type.Bool);
         }
 
         /***********************************************************************
@@ -357,7 +357,7 @@ class Writer : IWriter
 
         final IWriter put (byte[] x)
         {
-                return writeArray (x, x.length, x.length * byte.sizeof, Type.Byte);
+                return writeArray (x.ptr, x.length, x.length * byte.sizeof, Type.Byte);
         }
 
         /***********************************************************************
@@ -368,7 +368,7 @@ class Writer : IWriter
 
         final IWriter put (ubyte[] x)
         {
-                return writeArray (x, x.length, x.length * ubyte.sizeof, Type.UByte);
+                return writeArray (x.ptr, x.length, x.length * ubyte.sizeof, Type.UByte);
         }
 
         /***********************************************************************
@@ -379,7 +379,7 @@ class Writer : IWriter
 
         final IWriter put (short[] x)
         {
-                return writeArray (x, x.length, x.length * short.sizeof, Type.Short);
+                return writeArray (x.ptr, x.length, x.length * short.sizeof, Type.Short);
         }
 
         /***********************************************************************
@@ -390,7 +390,7 @@ class Writer : IWriter
 
         final IWriter put (ushort[] x)
         {
-                return writeArray (x, x.length, x.length * ushort.sizeof, Type.UShort);
+                return writeArray (x.ptr, x.length, x.length * ushort.sizeof, Type.UShort);
         }
 
         /***********************************************************************
@@ -401,7 +401,7 @@ class Writer : IWriter
 
         final IWriter put (int[] x)
         {
-                return writeArray (x, x.length, x.length * int.sizeof, Type.Int);
+                return writeArray (x.ptr, x.length, x.length * int.sizeof, Type.Int);
         }
 
         /***********************************************************************
@@ -412,7 +412,7 @@ class Writer : IWriter
 
         final IWriter put (uint[] x)
         {
-                return writeArray (x, x.length, x.length * uint.sizeof, Type.UInt);
+                return writeArray (x.ptr, x.length, x.length * uint.sizeof, Type.UInt);
         }
 
         /***********************************************************************
@@ -423,7 +423,7 @@ class Writer : IWriter
 
         final IWriter put (long[] x)
         {
-                return writeArray (x, x.length, x.length * long.sizeof, Type.Long);
+                return writeArray (x.ptr, x.length, x.length * long.sizeof, Type.Long);
         }
 
         /***********************************************************************
@@ -434,7 +434,7 @@ class Writer : IWriter
 
         final IWriter put (ulong[] x)
         {
-                return writeArray (x, x.length, x.length * ulong.sizeof, Type.ULong);
+                return writeArray (x.ptr, x.length, x.length * ulong.sizeof, Type.ULong);
         }
 
         /***********************************************************************
@@ -445,7 +445,7 @@ class Writer : IWriter
 
         final IWriter put (float[] x)
         {
-                return writeArray (x, x.length, x.length * float.sizeof, Type.Float);
+                return writeArray (x.ptr, x.length, x.length * float.sizeof, Type.Float);
         }
 
         /***********************************************************************
@@ -456,7 +456,7 @@ class Writer : IWriter
 
         final IWriter put (double[] x)
         {
-                return writeArray (x, x.length, x.length * double.sizeof, Type.Double);
+                return writeArray (x.ptr, x.length, x.length * double.sizeof, Type.Double);
         }
 
         /***********************************************************************
@@ -467,7 +467,7 @@ class Writer : IWriter
 
         final IWriter put (real[] x)
         {
-                return writeArray (x, x.length, x.length * real.sizeof, Type.Real);
+                return writeArray (x.ptr, x.length, x.length * real.sizeof, Type.Real);
         }
 
         /***********************************************************************
@@ -478,7 +478,7 @@ class Writer : IWriter
 
         final IWriter put (char[] x) 
         {
-                return writeArray (x, x.length, x.length * char.sizeof, Type.Utf8);
+                return writeArray (x.ptr, x.length, x.length * char.sizeof, Type.Utf8);
         }
 
         /***********************************************************************
@@ -489,7 +489,7 @@ class Writer : IWriter
 
         final IWriter put (wchar[] x) 
         {
-                return writeArray (x, x.length, x.length * wchar.sizeof, Type.Utf16);
+                return writeArray (x.ptr, x.length, x.length * wchar.sizeof, Type.Utf16);
         }
 
         /***********************************************************************
@@ -500,7 +500,7 @@ class Writer : IWriter
 
         final IWriter put (dchar[] x)
         {
-                return writeArray (x, x.length, x.length * dchar.sizeof, Type.Utf32);
+                return writeArray (x.ptr, x.length, x.length * dchar.sizeof, Type.Utf32);
         }
 
         /***********************************************************************

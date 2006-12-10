@@ -125,7 +125,7 @@ class FileSystem
 
                 static void setDirectory (FilePath fp)
                 {
-                        if (tango.stdc.posix.unistd.chdir (fp.cString))
+                        if (tango.stdc.posix.unistd.chdir (fp.cString.ptr))
                             throw new IOException ("Failed to set current directory");
                 }
 

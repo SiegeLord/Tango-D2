@@ -503,7 +503,7 @@ char[] toUtf8(d_time time)
 
     //printf("hr = %d, offset = %g, LocalTZA = %g, dst = %g, + = %g\n", hr, offset, LocalTZA, dst, LocalTZA + dst);
 
-    len = sprintf(buffer, "%.3s %.3s %02d %02d:%02d:%02d GMT%c%02d%02d %d",
+    len = sprintf(buffer.ptr, "%.3s %.3s %02d %02d:%02d:%02d GMT%c%02d%02d %d",
 	&daystr[WeekDay(t) * 3],
 	&monstr[MonthFromTime(t) * 3],
 	DateFromTime(t),
@@ -533,7 +533,7 @@ char[] toUTCString(d_time t)
     if (t == d_time_nan)
 	return "Invalid Date";
 
-    len = sprintf(buffer, "%.3s, %02d %.3s %d %02d:%02d:%02d UTC",
+    len = sprintf(buffer.ptr, "%.3s, %02d %.3s %d %02d:%02d:%02d UTC",
 	&daystr[WeekDay(t) * 3], DateFromTime(t),
 	&monstr[MonthFromTime(t) * 3],
 	YearFromTime(t),
@@ -569,7 +569,7 @@ char[] toDateString(d_time time)
     offset = LocalTZA + dst;
     t = time + offset;
 
-    len = sprintf(buffer, "%.3s %.3s %02d %d",
+    len = sprintf(buffer.ptr, "%.3s %.3s %02d %d",
 	&daystr[WeekDay(t) * 3],
 	&monstr[MonthFromTime(t) * 3],
 	DateFromTime(t),
@@ -619,7 +619,7 @@ char[] toTimeString(d_time time)
 
     //printf("hr = %d, offset = %g, LocalTZA = %g, dst = %g, + = %g\n", hr, offset, LocalTZA, dst, LocalTZA + dst);
 
-    len = sprintf(buffer, "%02d:%02d:%02d GMT%c%02d%02d",
+    len = sprintf(buffer.ptr, "%02d:%02d:%02d GMT%c%02d%02d",
 	HourFromTime(t), MinFromTime(t), SecFromTime(t),
 	sign, hr, mn);
 

@@ -156,7 +156,7 @@ char[] toUtf8 (wchar[] input, char[] output=null, uint* ate=null)
 wchar[] toUtf16 (char[] input, wchar[] output=null, uint* ate=null)
 {
         int     produced;
-        char*   pIn = input;
+        char*   pIn = input.ptr;
         char*   pMax = pIn + input.length;
         char*   pValid;
 
@@ -323,7 +323,7 @@ char[] toUtf8 (dchar[] input, char[] output=null, uint* ate=null)
 dchar[] toUtf32 (char[] input, dchar[] output=null, uint* ate=null)
 {
         int     produced;
-        char*   pIn = input;
+        char*   pIn = input.ptr;
         char*   pMax = pIn + input.length;
         char*   pValid;
 
@@ -477,7 +477,7 @@ wchar[] toUtf16 (dchar[] input, wchar[] output=null, uint* ate=null)
 dchar[] toUtf32 (wchar[] input, dchar[] output=null, uint* ate=null)
 {
         int     produced;
-        wchar*  pIn = input;
+        wchar*  pIn = input.ptr;
         wchar*  pMax = pIn + input.length;
         wchar*  pValid;
 

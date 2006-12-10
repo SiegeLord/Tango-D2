@@ -102,7 +102,7 @@ class GrowBuffer : Buffer
                 if (size > writable)
                     makeRoom (size);
 
-                copy (src, size);
+                copy (src.ptr, size);
                 return this;
         }
 

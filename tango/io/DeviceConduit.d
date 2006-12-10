@@ -272,7 +272,7 @@ class DeviceConduit : Conduit
 
                 protected override uint reader (void[] dst)
                 {
-                        int read = posix.read (handle, dst, dst.length);
+                        int read = posix.read (handle, dst.ptr, dst.length);
                         if (read == -1)
                             error ();
                         else
@@ -290,7 +290,7 @@ class DeviceConduit : Conduit
 
                 protected override uint writer (void[] src)
                 {
-                        int written = posix.write (handle, src, src.length);
+                        int written = posix.write (handle, src.ptr, src.length);
                         if (written == -1)
                             error ();
                         return written;

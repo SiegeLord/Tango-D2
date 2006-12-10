@@ -254,7 +254,7 @@ bool readFile( char[] name, inout char[] buf )
         char[]  namez = new char[name.length + 1];
                         namez[0 .. name.length] = name;
                         namez[$ - 1] = 0;
-        int     file = open( namez, O_RDONLY );
+        int     file = open( namez.ptr, O_RDONLY );
 
         delete namez;
         if( file == -1 )

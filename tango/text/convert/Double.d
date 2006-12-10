@@ -105,7 +105,7 @@ struct DoubleT(T)
                        scientific = true;
                    }
 
-                T* p = dst;
+                T* p = dst.ptr;
                 int count = 0;
 
                 // emit sign

@@ -836,7 +836,7 @@ class FileException : Exception
     }
 
     this(char[] name, uint errno)
-    {	char* s = tango.sys.Common.SystemError.lookup(errno);
+    {	char* s = tango.sys.Common.SysError.lookup(errno).ptr;
 	this(name, phobos.string.toString(s).dup);
 	this.errno = errno;
     }
@@ -896,7 +896,7 @@ err:
     delete buf;
 
 err1:
-    throw new FileException(name, lastSysError());
+    throw new FileException(name, SysError.lastMsg());
 }
 
 /*********************************************
@@ -919,7 +919,7 @@ void write(char[] name, void[] buffer)
     if (fd == -1)
         goto err;
 
-    numwritten = phobos.c.linux.linux.write(fd, buffer, buffer.length);
+    numwritten = phobos.c.linux.linux.write(fd, buffer.ptr, buffer.length);
     if (buffer.length != numwritten)
         goto err2;
 
@@ -931,7 +931,7 @@ void write(char[] name, void[] buffer)
 err2:
     tango.stdc.posix.unistd.close(fd);
 err:
-    throw new FileException(name, lastSysError());
+    throw new FileException(name, SysError.lastMsg());
 }
 
 
@@ -953,7 +953,7 @@ void append(char[] name, void[] buffer)
     if (fd == -1)
         goto err;
 
-    numwritten = phobos.c.linux.linux.write(fd, buffer, buffer.length);
+    numwritten = phobos.c.linux.linux.write(fd, buffer.ptr, buffer.length);
     if (buffer.length != numwritten)
         goto err2;
 
@@ -965,7 +965,7 @@ void append(char[] name, void[] buffer)
 err2:
     tango.stdc.posix.unistd.close(fd);
 err:
-    throw new FileException(name, lastSysError());
+    throw new FileException(name, SysError.lastMsg());
 }
 
 
@@ -979,7 +979,7 @@ void rename(char[] from, char[] to)
     char *toz = toStringz(to);
 
     if (phobos.c.stdio.rename(fromz, toz) == -1)
-	throw new FileException(to, lastSysError());
+        throw new FileException(to, SysError.lastMsg());
 }
 
 
@@ -990,7 +990,7 @@ void rename(char[] from, char[] to)
 void remove(char[] name)
 {
     if (phobos.c.stdio.remove(toStringz(name)) == -1)
-	throw new FileException(name, lastSysError());
+        throw new FileException(name, SysError.lastMsg());
 }
 
 
@@ -1034,7 +1034,7 @@ err2:
     tango.stdc.posix.unistd.close(fd);
 err:
 err1:
-    throw new FileException(name, lastSysError());
+    throw new FileException(name, SysError.lastMsg());
 }
 
 
@@ -1050,7 +1050,7 @@ uint getAttributes(char[] name)
     namez = toStringz(name);
     if (tango.stdc.posix.sys.stat.stat(namez, &statbuf))
     {
-        throw new FileException(name, lastSysError());
+        throw new FileException(name, SysError.lastMsg());
     }
 
     return statbuf.st_mode;
@@ -1108,7 +1108,7 @@ void chdir(char[] pathname)
 {
     if (tango.stdc.posix.unistd.chdir(toStringz(pathname)))
     {
-        throw new FileException(pathname, lastSysError());
+        throw new FileException(pathname, SysError.lastMsg());
     }
 }
 
@@ -1120,7 +1120,7 @@ void mkdir(char[] pathname)
 {
     if (tango.stdc.posix.sys.stat.mkdir(toStringz(pathname), 0777))
     {
-        throw new FileException(pathname, lastSysError());
+        throw new FileException(pathname, SysError.lastMsg());
     }
 }
 
@@ -1132,7 +1132,7 @@ void rmdir(char[] pathname)
 {
     if (tango.stdc.posix.unistd.rmdir(toStringz(pathname)))
     {
-        throw new FileException(pathname, lastSysError());
+        throw new FileException(pathname, SysError.lastMsg());
     }
 }
 
@@ -1146,7 +1146,7 @@ char[] getcwd()
     p = tango.stdc.posix.unistd.getcwd(null, 0);
     if (!p)
     {
-        throw new FileException("cannot get cwd", lastSysError());
+        throw new FileException("cannot get cwd", SysError.lastMsg());
     }
 
     size_t len = phobos.string.strlen(p);
@@ -1171,7 +1171,7 @@ struct DirEntry
     ubyte didstat;			// done lazy evaluation of stat()
 
     void init(char[] path, dirent *fd)
-    {	size_t len = phobos.string.strlen(fd.d_name);
+    {	size_t len = phobos.string.strlen(fd.d_name.ptr);
 	name = phobos.path.join(path, fd.d_name[0 .. len]);
 	d_type = fd.d_type;
 	didstat = 0;
@@ -1319,8 +1319,8 @@ void listdir(char[] pathname, bool delegate(DirEntry* de) callback)
 	    while((fdata = readdir(h)) != null)
 	    {
 		// Skip "." and ".."
-		if (!phobos.string.strcmp(fdata.d_name, ".") ||
-		    !phobos.string.strcmp(fdata.d_name, ".."))
+		if (!phobos.string.strcmp(fdata.d_name.ptr, ".") ||
+		    !phobos.string.strcmp(fdata.d_name.ptr, ".."))
 			continue;
 
 		de.init(pathname, fdata);
@@ -1335,7 +1335,7 @@ void listdir(char[] pathname, bool delegate(DirEntry* de) callback)
     }
     else
     {
-        throw new FileException(pathname, lastSysError());
+        throw new FileException(pathname, SysError.lastMsg());
     }
 }
 

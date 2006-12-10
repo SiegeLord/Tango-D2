@@ -2,9 +2,9 @@ module tango.net.ftp.ftp;
 
 private import tango.net.ftp.telnet;
 
-private import std.socket, std.date;
-private import std.stdio, std.stream, std.file, std.cstream;
-private import std.regexp, std.string, std.conv;
+private import phobos.socket, phobos.date;
+private import phobos.stdio, phobos.stream, phobos.file, phobos.cstream;
+private import phobos.regexp, phobos.string, phobos.conv;
 
 /// An FTP progress delegate.
 ///

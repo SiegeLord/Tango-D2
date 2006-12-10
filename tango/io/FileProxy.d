@@ -532,7 +532,7 @@ class FileProxy
                 {
                         struct_stat stats;
 
-                        if (posix.stat (path.cString, &stats))
+                        if (posix.stat (path.cString.ptr, &stats))
                             exception();
 
                         if (dg)
@@ -649,11 +649,11 @@ class FileProxy
                 {
                         if (isDirectory())
                            {
-                           if (posix.rmdir (path.cString))
+                           if (posix.rmdir (path.cString.ptr))
                                exception ();
                            }
                         else           
-                           if (tango.stdc.stdio.remove (path.cString) == -1)
+                           if (tango.stdc.stdio.remove (path.cString.ptr) == -1)
                                exception ();
 
                         return this;
@@ -668,7 +668,7 @@ class FileProxy
 
                 FileProxy rename (FilePath dst)
                 {
-                        if (tango.stdc.stdio.rename (path.cString, dst.cString) == -1)
+                        if (tango.stdc.stdio.rename (path.cString.ptr, dst.cString.ptr) == -1)
                             exception ();
 
                         path = dst;
@@ -685,7 +685,7 @@ class FileProxy
                 {
                         int fd;
 
-                        fd = posix.open (path.cString, O_CREAT | O_WRONLY | O_TRUNC, 0660);
+                        fd = posix.open (path.cString.ptr, O_CREAT | O_WRONLY | O_TRUNC, 0660);
                         if (fd == -1)
                             exception();
 
@@ -703,7 +703,7 @@ class FileProxy
 
                 FileProxy createDirectory ()
                 {
-                        if (posix.mkdir (path.cString, 0777))
+                        if (posix.mkdir (path.cString.ptr, 0777))
                             exception();
 
                         return this;
@@ -722,7 +722,7 @@ class FileProxy
                         dirent*         entry;
                         FilePath[]      list;
 
-                        dir = tango.stdc.posix.dirent.opendir (path.cString);
+                        dir = tango.stdc.posix.dirent.opendir (path.cString.ptr);
                         if (! dir) 
                               exception();
 

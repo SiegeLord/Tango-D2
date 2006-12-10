@@ -241,7 +241,7 @@ public class Format(T)
 
         public final T[] sprint (T[] result, T[] formatStr, TypeInfo[] arguments, void* args)
         {
-                T* p = result;
+                T* p = result.ptr;
 
                 uint sink (T[] s)
                 {
@@ -292,7 +292,7 @@ public class Format(T)
                 
                 int length;
 
-                T* s = layout;
+                T* s = layout.ptr;
                 T* fragment = s;
                 T* end = s + layout.length;
 
@@ -747,7 +747,7 @@ public class Format(T)
         {
                 int pos = number.scale;
 
-                T* p = number.digits;
+                T* p = number.digits.ptr;
                 if (pos > 0)
                    {
                    while (pos > 0)
@@ -845,7 +845,7 @@ public class Format(T)
                                   int[] groupSizes, T[] decimalSeparator, T[] groupSeparator)
         {
                 int pos = number.scale;
-                T* p = number.digits;
+                T* p = number.digits.ptr;
 
                 if (pos > 0)
                    {
@@ -1050,7 +1050,7 @@ public class Format(T)
                         Number number;
                         number.precision = precision;
 
-                        T* p = number.digits;
+                        T* p = number.digits.ptr;
                         long bits = *cast(long*) & value;
                         long mant = bits & 0x000FFFFFFFFFFFFFL;
                         int exp = cast(int)((bits >> 52) & EXP);
@@ -1172,7 +1172,7 @@ public class Format(T)
                                 return v;
                         }
 
-                        T* p = digits;
+                        T* p = digits.ptr;
                         int count = charTerm(p);
                         int left = count;
 
@@ -1427,7 +1427,7 @@ public class Format(T)
                         if (sign)
                             result ~= fmt.textAttr.negativeSign;
 
-                        T* p = digits;
+                        T* p = digits.ptr;
                         n = 0;
                         bool pointWritten;
 

@@ -37,7 +37,7 @@ struct AtoiT(T)
         static uint trim (T[] digits, out bool sign, out uint radix)
         {
                 T       c;
-                T*      p = digits;
+                T*      p = digits.ptr;
                 int     len = digits.length;
 
                 // set default radix

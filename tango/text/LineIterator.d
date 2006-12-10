@@ -129,7 +129,7 @@ class LineIteratorT(T) : IteratorT!(T)
                             int slice = i;
                             if (i && content[i-1] is '\r')
                                 --slice;
-                            set (content, 0, slice);
+                            set (content.ptr, 0, slice);
                             return found (i);
                             }
 
