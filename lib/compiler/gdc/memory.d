@@ -130,7 +130,18 @@ private
         Dynamic
     }
 
-    version( GC_Use_Data_Fixed )
+    version( Win32 )
+    {
+        extern (C)
+        {
+            extern int _data_start__;
+            extern int _bss_end__;
+        }
+
+        alias _data_start__ Data_Start;
+        alias _bss_end__    Data_End;
+    }
+    else version( GC_Use_Data_Fixed )
     {
         extern (C)
         {
@@ -271,10 +282,15 @@ void initStaticDataPtrs()
         return p - (cast(uint) p & (S-1));
     }
 
-    version( GC_Use_Data_Dyld )
+    version( Win32 )
+    {
+        dataStart = adjust_up( &Data_Start );
+        dataEnd   = adjust_down( &Data_End );
+    }
+    else version( GC_Use_Data_Dyld )
     {
         // TODO: fix this function
-        _d_gcc_dyld_start(DataSegmentTracking.Dynamic);
+        _d_gcc_dyld_start( DataSegmentTracking.Dynamic );
     }
     else version( GC_Use_Data_Fixed )
     {
