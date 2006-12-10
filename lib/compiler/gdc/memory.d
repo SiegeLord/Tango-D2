@@ -56,7 +56,16 @@ public
  */
 extern (C) void* cr_stackBottom()
 {
-    version( GC_Use_Stack_GLibC )
+    version( Win32 )
+    {
+        asm
+        {
+            naked;
+            mov EAX,FS:4;
+            ret;
+        }
+    }
+    else version( GC_Use_Stack_GLibC )
     {
         return __libc_stack_end;
     }
@@ -96,7 +105,7 @@ extern (C) void* cr_stackBottom()
  */
 extern (C) void* cr_stackTop()
 {
-    version( X86 )
+    version( D_InlineAsm_X86 )
     {
         asm
         {

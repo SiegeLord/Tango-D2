@@ -86,7 +86,7 @@ extern (C) void* cr_stackBottom()
  */
 extern (C) void* cr_stackTop()
 {
-    version( X86 )
+    version( D_InlineAsm_X86 )
     {
         asm
         {
