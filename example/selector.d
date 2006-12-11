@@ -40,7 +40,7 @@ int main(char[][] args)
     for (int i = 0; i < 5; i++)
     {
         // Testing the SelectSelector
-        Stdout.format("* Pass {0}: Testing the select-based selector\n", i + 1);
+        Stdout.formatln("* Pass {0}: Testing the select-based selector", i + 1);
         selector = new SelectSelector();
         testSelector(selector);
     }
@@ -50,7 +50,7 @@ int main(char[][] args)
         // Testing the PollSelector
         version (Posix)
         {
-            Stdout.format("* Pass {0}: Testing the poll-based selector\n", i + 1);
+            Stdout.formatln("* Pass {0}: Testing the poll-based selector", i + 1);
             selector = new PollSelector();
             testSelector(selector);
         }
@@ -61,7 +61,7 @@ int main(char[][] args)
         // Testing the EpollSelector
         version (linux)
         {
-            Stdout.format("* Pass {0}: Testing the epoll-based selector\n", i + 1);
+            Stdout.formatln("* Pass {0}: Testing the epoll-based selector", i + 1);
             selector = new EpollSelector();
             testSelector(selector);
         }
@@ -104,34 +104,34 @@ void testSelector(ISelector selector)
         int                 i = 0;
 
         debug (selector)
-            Stdout.print("[SRV] Registering server socket to Selector\n");
+            Stdout.println("[SRV] Registering server socket to Selector");
         selector.register(serverSocket, Event.Read);
 
         while (true)
         {
             debug (selector)
-                Stdout.format("[SRV][{0}] Waiting for events from Selector\n", i);
+                Stdout.formatln("[SRV][{0}] Waiting for events from Selector", i);
 
             eventCount = selector.select(timeout);
 
             debug (selector)
-                Stdout.format("[SRV][{0}] {1} events received from Selector\n", i, eventCount);
+                Stdout.formatln("[SRV][{0}] {1} events received from Selector", i, eventCount);
 
             if (eventCount > 0)
             {
                 foreach (SelectionKey selectionKey; selector.selectedSet())
                 {
                     debug (selector)
-                        Stdout.format("[SRV][{0}] Event mask for socket {1} is 0x{2:x4}\n",
-                                      i, cast(int) selectionKey.conduit.getHandle(),
-                                      cast(uint) selectionKey.events);
+                        Stdout.formatln("[SRV][{0}] Event mask for socket {1} is 0x{2:x4}",
+                                        i, cast(int) selectionKey.conduit.getHandle(),
+                                        cast(uint) selectionKey.events);
 
                     if (selectionKey.isReadable())
                     {
                         if (selectionKey.conduit is serverSocket)
                         {
                             debug (selector)
-                                Stdout.format("[SRV][{0}] New connection from client\n", i);
+                                Stdout.formatln("[SRV][{0}] New connection from client", i);
 
                             clientSocket = serverSocket.accept();
                             if (clientSocket !is null)
@@ -142,7 +142,7 @@ void testSelector(ISelector selector)
                             else
                             {
                                 debug (selector)
-                                    Stdout.format("[SRV][{0}] New connection attempt failed\n", i);
+                                    Stdout.formatln("[SRV][{0}] New connection attempt failed", i);
                                 failedConnectCount++;
                             }
                         }
@@ -150,22 +150,22 @@ void testSelector(ISelector selector)
                         {
                             // Reading from a client socket
                             debug (selector)
-                                Stdout.format("[SRV][{0}] Receiving message from client\n", i);
+                                Stdout.formatln("[SRV][{0}] Receiving message from client", i);
 
                             count = selectionKey.conduit.read(buffer);
                             if (count != IConduit.Eof)
                             {
                                 debug (selector)
-                                    Stdout.format("[SRV][{0}] Received {1} from client ({2} bytes)\n",
-                                                  i, buffer[0..count], count);
+                                    Stdout.formatln("[SRV][{0}] Received {1} from client ({2} bytes)",
+                                                    i, buffer[0..count], count);
                                 selector.reregister(selectionKey.conduit, Event.Write);
                                 receiveCount++;
                             }
                             else
                             {
                                 debug (selector)
-                                    Stdout.format("[SRV][{0}] Handle {1} was closed; removing it from Selector\n",
-                                                  i, cast(int) selectionKey.conduit.getHandle());
+                                    Stdout.formatln("[SRV][{0}] Handle {1} was closed; removing it from Selector",
+                                                    i, cast(int) selectionKey.conduit.getHandle());
                                 selector.unregister(selectionKey.conduit);
                                 selectionKey.conduit.close();
                                 failedReceiveCount++;
@@ -177,13 +177,13 @@ void testSelector(ISelector selector)
                     if (selectionKey.isWritable())
                     {
                         debug (selector)
-                            Stdout.format("[SRV][{0}] Sending PONG to client\n", i);
+                            Stdout.formatln("[SRV][{0}] Sending PONG to client", i);
 
                         count = selectionKey.conduit.write("PONG");
                         if (count != IConduit.Eof)
                         {
                             debug (selector)
-                                Stdout.format("[SRV][{0}] Sent PONG to client ({1} bytes)\n", i, count);
+                                Stdout.formatln("[SRV][{0}] Sent PONG to client ({1} bytes)", i, count);
 
                             selector.reregister(selectionKey.conduit, Event.Read);
                             sendCount++;
@@ -191,8 +191,8 @@ void testSelector(ISelector selector)
                         else
                         {
                             debug (selector)
-                                Stdout.format("[SRV][{0}] Handle {1} was closed; removing it from Selector\n",
-                                              i, selectionKey.conduit.getHandle());
+                                Stdout.formatln("[SRV][{0}] Handle {1} was closed; removing it from Selector",
+                                                i, selectionKey.conduit.getHandle());
                             selector.unregister(selectionKey.conduit);
                             selectionKey.conduit.close();
                             failedSendCount++;
@@ -220,11 +220,11 @@ void testSelector(ISelector selector)
 
                         debug (selector)
                         {
-                            Stdout.format("[SRV][{0}] {1} in handle {2} from Selector\n",
-                                          i, status, cast(int) selectionKey.conduit.getHandle());
+                            Stdout.formatln("[SRV][{0}] {1} in handle {2} from Selector",
+                                            i, status, cast(int) selectionKey.conduit.getHandle());
 
-                            Stdout.format("[SRV][{0}] Unregistering handle {1} from Selector\n",
-                                          i, cast(int) selectionKey.conduit.getHandle());
+                            Stdout.formatln("[SRV][{0}] Unregistering handle {1} from Selector",
+                                            i, cast(int) selectionKey.conduit.getHandle());
                         }
                         selector.unregister(selectionKey.conduit);
                         selectionKey.conduit.close();
@@ -243,7 +243,7 @@ void testSelector(ISelector selector)
             else
             {
                 debug (selector)
-                    Stdout.format("[SRV][{0}] No more pending events in Selector; aborting\n", i);
+                    Stdout.formatln("[SRV][{0}] No more pending events in Selector; aborting", i);
                 break;
             }
             i++;
@@ -263,19 +263,19 @@ void testSelector(ISelector selector)
     }
     catch (SelectorException e)
     {
-        Stdout.format("  Selector exception caught:\n{0}\n", e.toUtf8());
+        Stdout.formatln("  Selector exception caught:\n{0}", e.toUtf8());
     }
     catch (Exception e)
     {
-        Stdout.format("  Exception caught:\n{0}\n", e.toUtf8());
+        Stdout.formatln("  Exception caught:\n{0}", e.toUtf8());
     }
 
-    Stdout.format("*   Success: connect={0}; recv={1}; send={2}; close={3}\n"
-                  "*   Failure: connect={4}, recv={5}; send={6}; error={7}\n",
-                  connectCount, receiveCount, sendCount, closeCount,
-                  failedConnectCount, failedReceiveCount, failedSendCount, errorCount);
+    Stdout.formatln("*   Success: connect={0}; recv={1}; send={2}; close={3}\n"
+                    "*   Failure: connect={4}, recv={5}; send={6}; error={7}",
+                    connectCount, receiveCount, sendCount, closeCount,
+                    failedConnectCount, failedReceiveCount, failedSendCount, errorCount);
 
-    Stdout.format("* Total time: {0} ms\n", cast(uint) ((currentTime() - start) / Interval.milli));
+    Stdout.formatln("* Total time: {0} ms", cast(uint) ((currentTime() - start) / Interval.milli));
 
     clientThread.join();
 
@@ -300,14 +300,14 @@ void clientThreadFunc()
         int i;
 
         debug (selector)
-            Stdout.format("[CLI][{0}] Connecting to server\n", i);
+            Stdout.formatln("[CLI][{0}] Connecting to server", i);
 
         socket.connect(addr);
 
         for (i = 1; i <= LOOP_COUNT; i++)
         {
             debug (selector)
-                Stdout.format("[CLI][{0}] Sending PING to server\n", i);
+                Stdout.formatln("[CLI][{0}] Sending PING to server", i);
 
             while (true)
             {
@@ -326,9 +326,9 @@ void clientThreadFunc()
             {
                 debug (selector)
                 {
-                    Stdout.format("[CLI][{0}] Sent PING to server ({1} bytes)\n", i, count);
+                    Stdout.formatln("[CLI][{0}] Sent PING to server ({1} bytes)", i, count);
 
-                    Stdout.format("[CLI][{0}] Receiving message from server\n", i);
+                    Stdout.formatln("[CLI][{0}] Receiving message from server", i);
                 }
                 while (true)
                 {
@@ -346,22 +346,22 @@ void clientThreadFunc()
                 if (count != IConduit.Eof)
                 {
                     debug (selector)
-                        Stdout.format("[CLI][{0}] Received {1} from server ({2} bytes)\n",
-                                      i, buffer[0..count], count);
+                        Stdout.formatln("[CLI][{0}] Received {1} from server ({2} bytes)",
+                                        i, buffer[0..count], count);
                 }
                 else
                 {
                     debug (selector)
-                        Stdout.format("[CLI][{0}] Handle was closed; aborting\n",
-                                      i, socket.getHandle());
+                        Stdout.formatln("[CLI][{0}] Handle was closed; aborting",
+                                        i, socket.getHandle());
                     break;
                 }
             }
             else
             {
                 debug (selector)
-                    Stdout.format("[CLI][{0}] Handle {1} was closed; aborting\n",
-                                  i, socket.getHandle());
+                    Stdout.formatln("[CLI][{0}] Handle {1} was closed; aborting",
+                                    i, socket.getHandle());
                 break;
             }
         }
@@ -371,10 +371,10 @@ void clientThreadFunc()
     catch (Exception e)
     {
         debug (selector)
-            Stdout.format("[CLI] Exception caught:\n{0}\n", e.toUtf8());
+            Stdout.formatln("[CLI] Exception caught:\n{0}", e.toUtf8());
     }
     debug (selector)
-        Stdout.format("[CLI] Leaving thread\n");
+        Stdout.formatln("[CLI] Leaving thread");
 
     return 0;
 }
