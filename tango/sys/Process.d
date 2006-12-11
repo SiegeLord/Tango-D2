@@ -92,10 +92,10 @@ class Process
     public struct Result
     {
         /**
-         * Reason returned by wait() indicating why the process is no
+         * Reasons returned by wait() indicating why the process is no
          * longer running.
          */
-        public enum Reason: short
+        public enum
         {
             Exit,
             Signal,
@@ -104,8 +104,45 @@ class Process
             Error
         }
 
-        Reason  reason;
-        int     status;
+        public int reason;
+        public int status;
+
+        /**
+         * Returns a string with a description of the process execution result.
+         */
+        public char[] toUtf8()
+        {
+            char[] str;
+
+            switch (reason)
+            {
+                case Exit:
+                    str = Formatter.convert("Process exited normally with return code {0}", status);
+                    break;
+
+                case Signal:
+                    str = Formatter.convert("Process was killed with signal {0}", status);
+                    break;
+
+                case Stop:
+                    str = Formatter.convert("Process was stopped with signal {0}", status);
+                    break;
+
+                case Continue:
+                    str = Formatter.convert("Process was resumed with signal {0}", status);
+                    break;
+
+                case Error:
+                    str = Formatter.convert("Process failed with error code {0}: {1}",
+                                            status, SysError.lookup(status));
+                    break;
+
+                default:
+                    str = Formatter.convert("Unknown process result {0}, status {1}", reason, status);
+                    break;
+            }
+            return str;
+        }
     }
 
     static const uint DefaultStdinBufferSize    = 512;
@@ -780,27 +817,27 @@ class Process
      * reason and status. The reason can take the
      * following values:
      *
-     * Process.Result.Reason.Exit: the child process exited normally;
-     *                             status has the process' return
-     *                             code.
+     * Process.Result.Exit: the child process exited normally;
+     *                      status has the process' return
+     *                      code.
      *
-     * Process.Result.Reason.Signal: the child process was killed by a signal;
-     *                               status has the signal number
-     *                               that killed the process.
+     * Process.Result.Signal: the child process was killed by a signal;
+     *                        status has the signal number
+     *                        that killed the process.
      *
-     * Process.Result.Reason.Stop: the process was stopped; status
-     *                             has the signal number that was used to stop
-     *                             the process.
+     * Process.Result.Stop: the process was stopped; status
+     *                      has the signal number that was used to stop
+     *                      the process.
      *
-     * Process.Result.Reason.Continue: the process had been previously stopped
-     *                                 and has now been restarted;
-     *                                 status has the signal number
-     *                                 that was used to continue the process.
+     * Process.Result.Continue: the process had been previously stopped
+     *                          and has now been restarted;
+     *                          status has the signal number
+     *                          that was used to continue the process.
      *
-     * Process.Result.Reason.Error: We could not properly wait on the child
-     *                              process; status has the
-     *                              errno value if the process was
-     *                              running and -1 if not.
+     * Process.Result.Error: We could not properly wait on the child
+     *                       process; status has the
+     *                       errno value if the process was
+     *                       running and -1 if not.
      *
      * Remarks:
      * You can only call wait() on a running process once. The Signal, Stop
@@ -825,19 +862,19 @@ class Process
                 {
                     GetExitCodeProcess(_info.hProcess, &exitCode);
 
-                    result.reason = Result.Reason.Exit;
+                    result.reason = Result.Exit;
                     result.status = cast(typeof(result.status)) exitCode;
                 }
                 else if (rc == WAIT_FAILED)
                 {
-                    result.reason = Result.Reason.Error;
+                    result.reason = Result.Error;
                     result.status = cast(short) GetLastError();
                 }
                 clean();
             }
             else
             {
-                result.reason = Result.Reason.Error;
+                result.reason = Result.Error;
                 result.status = -1;
             }
             return result;
@@ -855,7 +892,7 @@ class Process
                 {
                     if (WIFEXITED(rc))
                     {
-                        result.reason = Result.Reason.Exit;
+                        result.reason = Result.Exit;
                         result.status = WEXITSTATUS(rc);
                         if (result.status != 0)
                         {
@@ -868,7 +905,7 @@ class Process
                     {
                         if (WIFSIGNALED(rc))
                         {
-                            result.reason = Result.Reason.Signal;
+                            result.reason = Result.Signal;
                             result.status = WTERMSIG(rc);
 
                             debug (Process)
@@ -878,7 +915,7 @@ class Process
                         }
                         else if (WIFSTOPPED(rc))
                         {
-                            result.reason = Result.Reason.Stop;
+                            result.reason = Result.Stop;
                             result.status = WSTOPSIG(rc);
 
                             debug (Process)
@@ -888,7 +925,7 @@ class Process
                         }
                         else if (WIFCONTINUED(rc))
                         {
-                            result.reason = Result.Reason.Stop;
+                            result.reason = Result.Stop;
                             result.status = WSTOPSIG(rc);
 
                             debug (Process)
@@ -898,7 +935,7 @@ class Process
                         }
                         else
                         {
-                            result.reason = Result.Reason.Error;
+                            result.reason = Result.Error;
                             result.status = rc;
 
                             debug (Process)
@@ -910,7 +947,7 @@ class Process
                 }
                 else
                 {
-                    result.reason = Result.Reason.Error;
+                    result.reason = Result.Error;
                     result.status = errno;
 
                     debug (Process)
@@ -921,7 +958,7 @@ class Process
             }
             else
             {
-                result.reason = Result.Reason.Error;
+                result.reason = Result.Error;
                 result.status = -1;
 
                 debug (Process)
@@ -1412,7 +1449,7 @@ debug (UnitTest)
 
             auto result = p.wait();
 
-            assert(result.reason == Process.Result.Reason.Exit && result.status == 0);
+            assert(result.reason == Process.Result.Exit && result.status == 0);
         }
         catch (ProcessException e)
         {

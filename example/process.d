@@ -40,8 +40,8 @@ void main()
 
         auto result = p.wait();
 
-        Stdout.formatln("Process '{0}' ({1}) exited with reason {2}, status {3}",
-                        p.programName, p.pid, cast(int) result.reason, result.status);
+        Stdout.formatln("Process '{0}' ({1}) finished: {2}",
+                        p.programName, p.pid, result.toUtf8());
     }
     catch (ProcessException e)
     {
