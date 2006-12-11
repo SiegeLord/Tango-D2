@@ -116,7 +116,8 @@ extern (C) void* cr_stackTop()
     }
     else
     {
-            static assert( false, "Architecture not supported." );
+        void*   ptr;
+        return &ptr;
     }
 }
 
