@@ -631,6 +631,116 @@ Loverflow:
 
 
 /**
+ * Resize arrays for non-zero initializers.
+ *      p               pointer to array lvalue to be updated
+ *      newlength       new .length property of array
+ *      sizeelem        size of each element of array
+ *      initsize        size of initializer
+ *      ...             initializer
+ */
+extern (C) byte[] _d_arraysetlength3p(size_t newlength, size_t sizeelem, Array *p,
+                                      size_t initsize, void *init)
+in
+{
+    assert(sizeelem);
+    assert(initsize);
+    assert(initsize <= sizeelem);
+    assert((sizeelem / initsize) * initsize == sizeelem);
+    assert(!p.length || p.data);
+}
+body
+{
+    byte* newdata;
+
+    debug
+    {
+        printf("_d_arraysetlength3(p = %p, sizeelem = %d, newlength = %d, initsize = %d)\n", p, sizeelem, newlength, initsize);
+        if (p)
+            printf("\tp.data = %p, p.length = %d\n", p.data, p.length);
+    }
+
+    if (newlength)
+    {
+        version (GNU)
+        {
+            // required to output the label;
+            static char x = 0;
+            if (x)
+                goto Loverflow;
+        }
+
+        version (D_InlineAsm_X86)
+        {
+            size_t newsize = void;
+
+            asm
+            {
+                mov     EAX,newlength   ;
+                mul     EAX,sizeelem    ;
+                mov     newsize,EAX     ;
+                jc      Loverflow       ;
+            }
+        }
+        else
+        {
+            size_t newsize = sizeelem * newlength;
+
+            if (newsize / newlength != sizeelem)
+                goto Loverflow;
+        }
+        //printf("newsize = %x, newlength = %x\n", newsize, newlength);
+
+        size_t size = p.length * sizeelem;
+        if (p.data)
+        {
+            newdata = p.data;
+            if (newlength > p.length)
+            {
+                size_t cap = gc_sizeOf(p.data);
+
+                if (cap <= newsize)
+                {
+                    newdata = cast(byte *)gc_malloc(newsize + 1, sizeelem < (void*).sizeof ? BlkAttr.NO_SCAN : 0);
+                    newdata[0 .. size] = p.data[0 .. size];
+                }
+            }
+        }
+        else
+        {
+            newdata = cast(byte *)gc_malloc(newsize + 1, sizeelem < (void*).sizeof ? BlkAttr.NO_SCAN : 0);
+        }
+
+        if (newsize > size)
+        {
+            if (initsize == 1)
+            {
+                //printf("newdata = %p, size = %d, newsize = %d, *q = %d\n", newdata, size, newsize, *cast(byte*)q);
+                newdata[size .. newsize] = *(cast(byte*)init);
+            }
+            else
+            {
+                for (size_t u = size; u < newsize; u += initsize)
+                {
+                    memcpy(newdata + u, init, initsize);
+                }
+            }
+        }
+    }
+    else
+    {
+        newdata = p.data;
+    }
+
+    p.data = newdata;
+    p.length = newlength;
+    return newdata[0 .. newlength];
+
+Loverflow:
+    onOutOfMemoryError();
+}
+
+
+/**
  * Resize bit[] arrays.
  */
 version (none)
@@ -738,115 +848,6 @@ version (none)
         }
         return *px;
     }
-}
-
-
-/**
- * Resize arrays for non-zero initializers.
- *      p               pointer to array lvalue to be updated
- *      newlength       new .length property of array
- *      sizeelem        size of each element of array
- *      initsize        size of initializer
- *      ...             initializer
- */
-extern (C) byte[] _d_arraysetlength3(size_t newlength, size_t sizeelem, Array *p, size_t initsize, ...)
-in
-{
-    assert(sizeelem);
-    assert(initsize);
-    assert(initsize <= sizeelem);
-    assert((sizeelem / initsize) * initsize == sizeelem);
-    assert(!p.length || p.data);
-}
-body
-{
-    byte* newdata;
-
-    debug
-    {
-        printf("_d_arraysetlength3(p = %p, sizeelem = %d, newlength = %d, initsize = %d)\n",
-               p, sizeelem, newlength, initsize);
-        if (p)
-        {
-            printf("\tp.data = %p, p.length = %d\n", p.data, p.length);
-        }
-    }
-
-    if (newlength)
-    {
-        version (D_InlineAsm_X86_NONFUNCTIONAL)
-        {
-            size_t newsize = void;
-
-            asm
-            {
-                mov     EAX,newlength   ;
-                mul     EAX,sizeelem    ;
-                mov     newsize,EAX     ;
-                jc      Loverflow       ;
-            }
-        }
-        else
-        {
-            size_t newsize = sizeelem * newlength;
-
-            if (newsize / newlength != sizeelem)
-                goto Loverflow;
-        }
-
-        debug printf("newsize = %x, newlength = %x\n", newsize, newlength);
-
-        size_t size = p.length * sizeelem;
-        if (p.data)
-        {
-            newdata = p.data;
-            if (newlength > p.length)
-            {
-                size_t cap = gc_sizeOf(p.data);
-
-                if (cap <= newsize)
-                {
-                    newdata = cast(byte *) gc_malloc(newsize + 1, sizeelem < (void*).sizeof ? BlkAttr.NO_SCAN : 0);
-                    newdata[0 .. size] = p.data[0 .. size];
-                }
-            }
-        }
-        else
-        {
-            newdata = cast(byte *) gc_malloc(newsize + 1, sizeelem < (void*).sizeof ? BlkAttr.NO_SCAN : 0);
-        }
-
-        va_list q;
-        va_start!(size_t)(q, initsize); // q is pointer to initializer
-
-        if (newsize > size)
-        {
-            if (initsize == 1)
-            {
-                debug printf("newdata = %p, size = %d, newsize = %d, *q = %d\n",
-                             newdata, size, newsize, *cast(byte*)q);
-                newdata[size .. newsize] = *(cast(byte*)q);
-            }
-            else
-            {
-                for (size_t u = size; u < newsize; u += initsize)
-                {
-                    memcpy(newdata + u, q, initsize);
-                }
-            }
-        }
-    }
-    else
-    {
-        newdata = p.data;
-    }
-
-    p.data = newdata;
-    p.length = newlength;
-    return newdata[0 .. newlength];
-
-Loverflow:
-    onOutOfMemoryError();
 }
 
 
