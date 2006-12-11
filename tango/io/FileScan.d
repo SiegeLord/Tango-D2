@@ -69,6 +69,13 @@ class FileScan
         private Dependencies    deps;
         private Filter          filter;
 
+        /***********************************************************************
+
+            alias for Filter delegate. Takes a FilePath as argument and returns
+            a bool.
+
+        ***********************************************************************/
+
         alias bool delegate (FilePath) Filter;
 
         /***********************************************************************
