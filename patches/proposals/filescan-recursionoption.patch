@@ -1,0 +1,75 @@
+Index: FileScan.d
+===================================================================
+--- FileScan.d	(revision 1077)
++++ FileScan.d	(working copy)
+@@ -19,7 +19,12 @@
+ 
+         Recursively scan files and directories, adding filtered files to
+         an output structure as we go. This can be used to produce a list
+-        of subdirectories and the files contained therein. Usage example:
++        of subdirectories and the files contained therein. 
++        
++        Recursion can be turned off either through constructor or setRecursion
++        method.
++        
++        Usage example:
+ 
+         ---
+         void files (File file)
+@@ -68,11 +73,47 @@
+ 
+         private Dependencies    deps;
+         private Filter          filter;
++        private bool            recurse;
+ 
+         alias bool delegate (FilePath) Filter;
+ 
+         /***********************************************************************
+ 
++            Constructs a FileScan instance. By default it will scan directories
++            recursively, set recurse to false if this is not wanted.
++
++        ***********************************************************************/
++
++        this(bool recurse = true)
++        {
++            this.recurse = recurse;
++        }
++
++        /***********************************************************************
++            
++            Reset the recursing option to the value of recurse
++
++        ***********************************************************************/
++
++        void setRecursion(bool recurse)
++        {
++            this.recurse = recurse;
++        }
++
++        /***********************************************************************
++            
++            Returns whether this instance is set to recurse.
++
++        ***********************************************************************/
++
++        bool isRecursing()
++        {
++            return this.recurse;
++        }
++
++
++        /***********************************************************************
++
+                 The list of files and sub-directories found.
+ 
+         ***********************************************************************/
+@@ -182,7 +223,7 @@
+ 
+                         // recurse if this is a directory ...
+                         file = new File (spliced);
+-                        if (file.isDirectory) 
++                        if (recurse && file.isDirectory) 
+                             scanFiles (deps, file.getPath);
+                         else 
+                            deps.mods ~= file;
