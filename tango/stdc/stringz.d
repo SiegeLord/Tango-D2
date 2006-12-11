@@ -22,7 +22,7 @@ debug private import tango.stdc.stdio;
 
 char* toUtf8z (char[] s)
 {
-        return s ~ '\0';
+        return (s ~ '\0').ptr;
 }
 
 /*********************************
