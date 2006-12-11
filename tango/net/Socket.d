@@ -26,10 +26,10 @@
         copyright:      Copyright (c) 2004 Kris Bell. All rights reserved
 
         license:        BSD style: $(LICENSE)
-      
+
         version:        Initial release: March 2004
-        
-        author:         Christopher Miller 
+
+        author:         Christopher Miller
                         Kris Bell
                         Anders F Bjorklund (Darwin patches)
 
@@ -884,10 +884,10 @@ class Socket : Conduit
                 int type, typesize = type.sizeof;
                 return cast(bool) (getsockopt (sock, SOL_SOCKET, SO_TYPE, cast(char*) &type, &typesize) != SOCKET_ERROR);
         }
-        
-        
+
+
         /***********************************************************************
-        
+
                 Tango: moved this out from the above constructor so that it
                 can be called from the FreeList version of SocketConduit
 
@@ -1302,9 +1302,9 @@ class Socket : Conduit
         {
                 char[64] name;
 
-                if(SOCKET_ERROR == .gethostname (name, name.length))
+                if(SOCKET_ERROR == .gethostname (name.ptr, name.length))
                    exception ("Unable to obtain host name: ");
-                return name [0 .. strlen(name)].dup;
+                return name [0 .. strlen(name.ptr)].dup;
         }
 
 
@@ -1365,7 +1365,7 @@ class Socket : Conduit
 
         protected int send (void[] buf, Flags flags = Flags.NONE)
         {
-                int sent = .send (sock, buf, buf.length, cast(int)flags);
+                int sent = .send (sock, buf.ptr, buf.length, cast(int)flags);
                 return sent;
         }
 
@@ -1378,7 +1378,7 @@ class Socket : Conduit
 
         protected int sendTo (void[] buf, Flags flags, Address to)
         {
-                int sent = .sendto (sock, buf, buf.length, cast(int)flags, to.name(), to.nameLen());
+                int sent = .sendto (sock, buf.ptr, buf.length, cast(int)flags, to.name(), to.nameLen());
                 return sent;
         }
 
@@ -1403,7 +1403,7 @@ class Socket : Conduit
 
         protected int sendTo (void[] buf, Flags flags = Flags.NONE)
         {
-                int sent = .sendto (sock, buf, buf.length, cast(int)flags, null, 0);
+                int sent = .sendto (sock, buf.ptr, buf.length, cast(int)flags, null, 0);
                 return sent;
         }
 
@@ -1419,7 +1419,7 @@ class Socket : Conduit
         {
                 if(!buf.length) //return 0 and don't think the connection closed
                         return 0;
-                int read = .recv(sock, buf, buf.length, cast(int)flags);
+                int read = .recv(sock, buf.ptr, buf.length, cast(int)flags);
                 if (read == SOCKET_ERROR)
                     exception ("during socket recieve: ");
                 // if(!read) //connection closed
@@ -1443,7 +1443,7 @@ class Socket : Conduit
                         }
                 from = newFamilyObject ();
                 int nameLen = from.nameLen ();
-                int read = .recvfrom (sock, buf, buf.length, cast(int)flags, from.name(), &nameLen);
+                int read = .recvfrom (sock, buf.ptr, buf.length, cast(int)flags, from.name(), &nameLen);
                 version (TraceLinux)
                         {
                         printf ("recvFrom returns %d\n", read);
@@ -1479,7 +1479,7 @@ class Socket : Conduit
         {
                 if(!buf.length) //return 0 and don't think the connection closed
                         return 0;
-                int read = .recvfrom (sock, buf, buf.length, cast(int)flags, null, null);
+                int read = .recvfrom (sock, buf.ptr, buf.length, cast(int)flags, null, null);
                 if (read == SOCKET_ERROR)
                     exception ("during socket recieve: ");
                 // if(!read) //connection closde
@@ -1509,7 +1509,7 @@ class Socket : Conduit
         protected int getOption (OptionLevel level, Option option, void[] result)
         {
                 int len = result.length;
-                if(SOCKET_ERROR == .getsockopt (sock, cast(int)level, cast(int)option, result, &len))
+                if(SOCKET_ERROR == .getsockopt (sock, cast(int)level, cast(int)option, result.ptr, &len))
                    exception ("Unable to get socket option: ");
                 return len;
         }
@@ -1522,7 +1522,7 @@ class Socket : Conduit
 
         protected void setOption (OptionLevel level, Option option, void[] value)
         {
-                if(SOCKET_ERROR == .setsockopt (sock, cast(int)level, cast(int)option, value, value.length))
+                if(SOCKET_ERROR == .setsockopt (sock, cast(int)level, cast(int)option, value.ptr, value.length))
                    exception ("Unable to set socket option: ");
         }
 
@@ -2178,7 +2178,7 @@ class SocketSet
                 }
         }
 
-        
+
         public:
         /***********************************************************************
 
@@ -2199,7 +2199,7 @@ class SocketSet
                                 nbytes = 32 * uint.sizeof;
                         else
                                 nbytes = max * uint.sizeof;
-                        buf = new byte[nbytes];
+                        buf = (new byte[nbytes]).ptr;
                         nfdbits = nbytes * 8;
                         //clear(); //new initializes to 0
                 }
@@ -2435,7 +2435,7 @@ class SocketSet
 
 
 /******************************************************************************/
-/******************* additions for the tango.io package  **********************/           
+/******************* additions for the tango.io package  **********************/
 /******************************************************************************/
 
 
