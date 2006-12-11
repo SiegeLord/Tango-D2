@@ -342,7 +342,7 @@ class Rfc1123 : Epoch
         private static int parseFullDay (inout char* p)
         {
                 foreach (int i, char[] day; Fields.Days)
-                         if (memcmp (day, p, day.length) == 0)
+                         if (memcmp (day.ptr, p, day.length) == 0)
                             {
                             p += day.length;
                             return i;

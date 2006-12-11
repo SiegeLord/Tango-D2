@@ -128,7 +128,7 @@ class QuoteIteratorT(T) : Iterator
         {
                 foreach (int i, T c; content)
                          if (c is quote)
-                             return found (set (content, 0, i) + 1);
+                             return found (set (content.ptr, 0, i) + 1);
 
                 return notFound (content);
         }
@@ -143,11 +143,11 @@ class QuoteIteratorT(T) : Iterator
 
                 foreach (int i, T c; content)
                          if (has (delim, c))
-                             return found (set (content, 0, i));
+                             return found (set (content.ptr, 0, i));
                          else
                             if (c is '"' || c is '\'')
                                 if (i)
-                                    return found (set (content, 0, i));
+                                    return found (set (content.ptr, 0, i));
                                 else
                                    return pair (content[1 .. content.length], c);
 

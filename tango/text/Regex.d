@@ -742,7 +742,7 @@ public void compile(rchar[] pattern, rchar[] attributes)
 
     if (re_nsub > oldre_nsub)
     {
-        if (pmatch is &gmatch)
+        if (pmatch.ptr is &gmatch)
             pmatch = null;
         pmatch.length = re_nsub + 1;
     }
@@ -1696,13 +1696,13 @@ int trymatch(int pc, int pcend)
                     for (; count < m; count++)
                     {   int s1;
 
-                        memcpy(psave, pmatch, (re_nsub + 1) * regmatch_t.sizeof);
+                        memcpy(psave, pmatch.ptr, (re_nsub + 1) * regmatch_t.sizeof);
                         s1 = src;
 
                         if (trymatch(pop + len, program.length))
                         {
                             src = s1;
-                            memcpy(pmatch, psave, (re_nsub + 1) * regmatch_t.sizeof);
+                            memcpy(pmatch.ptr, psave, (re_nsub + 1) * regmatch_t.sizeof);
                             break;
                         }
 
@@ -1725,7 +1725,7 @@ int trymatch(int pc, int pcend)
                     {   int s1;
                         int s2;
 
-                        memcpy(psave, pmatch, (re_nsub + 1) * regmatch_t.sizeof);
+                        memcpy(psave, pmatch.ptr, (re_nsub + 1) * regmatch_t.sizeof);
                         s1 = src;
                         if (!trymatch(pop, pop + len))
                         {   debug(Regex) printf("\tdoesn't match subexpression\n");
@@ -1748,7 +1748,7 @@ int trymatch(int pc, int pcend)
                             if (trymatch(pop + len, program.length))
                             {
                                 src = s1;               // no match
-                                memcpy(pmatch, psave, (re_nsub + 1) * regmatch_t.sizeof);
+                                memcpy(pmatch.ptr, psave, (re_nsub + 1) * regmatch_t.sizeof);
                                 break;
                             }
                         }
@@ -3066,7 +3066,7 @@ private
         //printf("cmp('%.*s', '%.*s')\n", s1, s2);
         if (s2.length < len)
         len = s2.length;
-        result = memcmp(s1, s2, len);
+        result = memcmp(s1.ptr, s2.ptr, len);
         if (result == 0)
         result = cast(int)s1.length - cast(int)s2.length;
         return result;
@@ -3142,7 +3142,7 @@ private
         {
         if (result)
         {   assert(strlen(result) == s.length);
-            assert(memcmp(result, s, s.length) == 0);
+            assert(memcmp(result, s.ptr, s.length) == 0);
         }
         }
         body
@@ -3171,7 +3171,7 @@ private
         copy = new char[s.length + 1];
         copy[0..s.length] = s;
         copy[s.length] = 0;
-        return copy;
+        return copy.ptr;
         }
 
     unittest
@@ -3511,7 +3511,7 @@ private
         int count;
 
         f = toUtf8z(format);
-        p = buffer;
+        p = buffer.ptr;
         psize = buffer.length;
         for (;;)
         {

@@ -129,7 +129,7 @@ struct DGDouble
                   
                 str = dtoa (x, mode, decimals, &decpt, &sign, &end);
                 
-                char *p = dst;
+                char *p = dst.ptr;
                 int len = end - str;
 
                 if (sign)

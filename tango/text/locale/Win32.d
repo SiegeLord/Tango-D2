@@ -81,7 +81,7 @@ int compareString(int lcid, char[] stringA, uint offsetA, uint lengthA, char[] s
     char* chars = string.ptr + offset;
     int required = MultiByteToWideChar(0, 0, chars, length, null, 0);
     wchar[] result = new wchar[required];
-    translated = MultiByteToWideChar(0, 0, chars, length, result, required);
+    translated = MultiByteToWideChar(0, 0, chars, length, result.ptr, required);
     return result;
   }
 
@@ -92,5 +92,5 @@ int compareString(int lcid, char[] stringA, uint offsetA, uint lengthA, char[] s
   wchar[] string1 = toUnicode(stringA, offsetA, lengthA, len1);
   wchar[] string2 = toUnicode(stringB, offsetB, lengthB, len2);
 
-  return CompareStringW(sortId, ignoreCase ? 0x1 : 0x0, string1, len1, string2, len2) - 2;
+  return CompareStringW(sortId, ignoreCase ? 0x1 : 0x0, string1.ptr, len1, string2.ptr, len2) - 2;
 }

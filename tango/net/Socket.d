@@ -772,41 +772,44 @@ class Socket : Conduit
 
         private SocketSet       ss;
         private timeval         tv;
-	private bool		timeout;
+		private bool		timeout;
 
         protected uint reader (void[] dst)
         {
                 // ensure just one read at a time
                 synchronized (this)
                 {
-		// reset timeout; we assume there's no thread contention
-		timeout = false;
+					// reset timeout; we assume there's no thread contention
+					timeout = false;
 
-                // did user disable timeout checks?
-                if (tv.tv_usec)
-                   {
-                   // nope: ensure we have a SocketSet
-                   if (ss is null)
-                       ss = new SocketSet (1);
+                	// did user disable timeout checks?
+                	if (tv.tv_usec)
+                    {
+                 		// nope: ensure we have a SocketSet
+                   		if (ss is null)
+                       	ss = new SocketSet (1);
 
-                   ss.reset ();
-                   ss.add (this);
+                   		ss.reset ();
+                   		ss.add (this);
 
-                   // wait until data is available, or a timeout occurs
-                   int i = select (ss, null, null, &tv);
-		   if (i <= 0)
-                      {
-		      if (i == 0)
-			  timeout = true;
-                      return Eof;
-                      }
-                   }
+                   		// wait until data is available, or a timeout occurs
+                   		int i = select (ss, null, null, &tv);
+		   
+						if (i <= 0)
+						{
+							if (i == 0)
+								timeout = true;
+			                    return Eof;
+            	        }
+                	}
 
-                int count = receive (dst);
-                if (count <= 0)
-                    count = Eof;
-                return count;
-                }
+	                int count = receive (dst);
+    
+					if (count <= 0)
+						count = Eof;
+
+					return count;
+				}
         }
 
         /***********************************************************************

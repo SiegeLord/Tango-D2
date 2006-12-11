@@ -134,7 +134,7 @@ class RegexIteratorT(T) : IteratorT!(T)
                    {
                    int start = regex.pmatch[0].rm_so;
                    int finish = regex.pmatch[0].rm_eo;
-                   set (content, 0, start);
+                   set (content.ptr, 0, start);
                    return found (finish);        
                    }
 

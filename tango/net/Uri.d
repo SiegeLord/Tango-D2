@@ -510,7 +510,7 @@ class Uri : UriView
                 int length = s.length;
 
                 // take a peek first, to see if there's work to do
-                if (length && memchr (s, '%', length))
+                if (length && memchr (s.ptr, '%', length))
                    {
                    char* p;
                    int   j;

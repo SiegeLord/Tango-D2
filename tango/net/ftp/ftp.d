@@ -5,6 +5,7 @@ private import tango.net.ftp.telnet;
 private import phobos.socket, phobos.date;
 private import phobos.stdio, phobos.stream, phobos.file, phobos.cstream;
 private import phobos.regexp, phobos.string, phobos.conv;
+alias phobos std;
 
 /// An FTP progress delegate.
 ///

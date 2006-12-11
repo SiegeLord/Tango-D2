@@ -740,7 +740,7 @@ private struct Number {
     if (sign)
       result ~= nf.negativeSign;
 
-    char* p = digits;
+    char* p = digits.ptr;
     n = 0;
     bool pointWritten;
     while (n < format.length) {
@@ -1016,7 +1016,7 @@ private char[] formatDouble(double value, char[] format, IFormatService formatSe
 private void formatGeneral(inout Number number, inout char[] target, int length, char format, NumberFormat nf) {
   int pos = number.scale;
 
-  char* p = number.digits;
+  char* p = number.digits.ptr;
   if (pos > 0) {
     while (pos > 0) {
       target ~= (*p != '\0') ? *p++ : '0';
@@ -1080,7 +1080,7 @@ private void formatCurrency(inout Number number, inout char[] target, int length
 
 private void formatFixed(inout Number number, inout char[] target, int length, int[] groupSizes, char[] decimalSeparator, char[] groupSeparator) {
   int pos = number.scale;
-  char* p = number.digits;
+  char* p = number.digits.ptr;
 
   if (pos > 0) {
     if (groupSizes.length != 0) {

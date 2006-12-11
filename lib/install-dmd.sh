@@ -29,18 +29,20 @@ MAN_DIR=/usr/share/man/man1
 DMD_MIRROR=http://ftp.digitalmars.com
 DMD_FILENAME=dmd.zip
 DMD_CONF=/etc/dmd.conf
-TANGO_REPOSITORY=http://svn.dsource.org/projects/tango/trunk/
+TANGO_REPOSITORY='http://svn.dsource.org/projects/tango/trunk/'
+DSSS_ARCHIVE='http://svn.dsource.org/projects/dsss/downloads/0.9/dsss-0.9-dmd-gnuWlinux.tar.gz'
 # state variables (changable through --flags)
 ROOT=1
 DMD_DOWNLOAD=0
 TANGO_DOWNLOAD=0
 DMD_INSTALL=0
+DSSS_INSTALL=0
 #
 CLEANALL=1
 #
-DEBUG=0
+#DEBUG=0
 #
-SIMULATE=0
+#SIMULATE=0
 #
 
 ## HELPER FUNCTIONS
@@ -53,39 +55,57 @@ die() {
 
 # prints usage
 usage() {
-	echo 'Usage: install-dmd.sh <install prefix> [OPTIONS]'
-	echo ''
-	echo 'Options:'
-	echo '  --dmd: install DMD too (requires a dmd.zip in the current directory; use --download to get a fresh copy)'
-	echo '         If you want to download DMD yourself, please go to http://digitalmars.com/d/ .'
-	echo '  --download: checkout a fresh copy of Tango (subversion required)'
-	echo '  --download-dmd: Download a fresh copy of DMD (implies --dmd)'
-	echo '  --version=[x[.]]xxx : Download a specific version of DMD (for example 0.176 will download dmd.176.zip)'
-	echo '  --download-all: Download DMD and checkout a fresh copy of Tango
-	(implies --dmd, too)'
-	echo '  --no-root: Do not install /etc/dmd.conf'
-	echo '  --uninstall: Uninstall Tango'
-	echo '  --uninstall-all: Uninstall Tango and DMD'
-	echo '  --no-clean: Do not remove DMD archive or Tango copy'
-	echo '  --help: Display this text'
-	echo ' '
+	cat <<EOF
+Usage: $0 <install prefix> [OPTIONS]
+
+Options:
+	  --with-dmd: install DMD too (requires a dmd.zip in the current directory; use --download to get a fresh copy)
+	              If you want to download DMD yourself, please go to http://digitalmars.com/d/ .
+	  --version=[x[.]]xxx : Use a specific version of DMD
+	                        Examples:
+                               --version=0.176
+                               --version=.176
+                               --version=0176
+
+	  --with-dsss: install DSSS (D Shared Software System) too. Requires an internet connection, for now.
+	               See http://dsource.org/projects/dsss/ for more information on DSSS!
+
+	  --no-root: Do not install a global dmd.conf (default: /etc/dmd.conf)
+	  --no-clean: Do not remove DMD archive or Tango copy
+
+	  --download: checkout a fresh copy of Tango (subversion required)
+	  --download-dmd: Download a fresh copy of DMD (implies --with-dmd)
+	  --download-all: Download DMD and checkout a fresh copy of Tango (implies --dmd, too)
+
+	  --uninstall: Uninstall Tango
+	  --uninstall-dmd: Uninstall Tango and DMD
+	  --uninstall-dsss: Uninstall DSSS only
+	  --uninstall-all: Uninstall Tango, DMD and DSSS
+
+	  --help: Display this text
+	
+EOF
+
 }
 
 # gets printed after installation is finished successfully
 finished() {
-	echo ""
-	echo "-----------------------------------------------------------------"
-	echo "Tango has been installed successfully."
-	echo "You can find documentation at http://dsource.org/projects/tango,"
-	echo "or locally in ${PREFIX}/include/tango/doc/."
-	echo ""
-	echo "General D documentation is found at:"
-	echo "  o http://digitalmars.com/d/"
-	echo "  o http://dsource.org/projects/tutorials/wiki"
-	echo "  o http://dprogramming.com/"
-	echo "  o http://www.prowiki.org/wiki4d/wiki.cgi?FrontPage"
-	echo ""
-	echo "Enjoy your stay in the Tango dancing club! \\\\o \\o/ o//"
+	cat <<EOF
+
+-----------------------------------------------------------------
+Tango has been installed successfully.
+You can find documentation at http://dsource.org/projects/tango,
+or locally in ${PREFIX}/include/tango/doc/.
+
+General D documentation can be found at:
+  o http://digitalmars.com/d/
+  o http://dsource.org/projects/tutorials/wiki
+  o http://dprogramming.com/
+  o http://www.prowiki.org/wiki4d/wiki.cgi?FrontPage"
+
+Enjoy your stay in the Tango dancing club! \\\\o \\o/ o//
+
+EOF
 }
 
 download_dmd() {
@@ -265,6 +285,35 @@ cleanup_dmd() {
 	fi
 }
 
+install_dsss() {
+	echo "Installing DSSS to ${PREFIX}..."
+
+	echo "..trying to download archive (this may take a while)..."
+	wget -c ${DSSS_ARCHIVE} || die "Error downloading DSSS binary archive."
+
+	echo "..extracting archive..."
+	unzip -d dsss/ ${DSSS_ARCHIVE##*/} || die "Error extracting DSSS binary archive."
+
+	echo "..copying files over to ${PREFIX}/..."
+	cp -r dsss/dsss-0.9-dmd-gnuWlinux/* ${PREFIX}/ || die "Error copying DSSS to ${PREFIX}."
+
+	echo "..cleaning up..."
+	rm -rf dsss/ || die "Error while cleaning up DSSS temporaries."
+
+	echo "DSSS installed."
+	echo ""
+}
+
+## TO BE DONE ##
+#uninstall_tango() {
+	
+#}
+
+## TO BE DONE ##
+#uninstall_dmd() {
+
+#}
+
 ############################################################################################
 ############################################################################################
 # ACTUAL START OF THE SCRIPT (or end of functions, depends on your pessimism/optimism ;) )
@@ -283,8 +332,11 @@ fi
 for i in $*; 
 do
 	case "$i" in
-		--dmd)
+		--with-dmd)
 			DMD_INSTALL=1
+		;;
+		--with-dsss)
+			DSSS_INSTALL=1
 		;;
 		--download)
 			TANGO_DOWNLOAD=1
