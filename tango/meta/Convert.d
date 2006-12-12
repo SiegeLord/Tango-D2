@@ -135,4 +135,12 @@ template countLeadingDigits(char [] str)
         const int countLeadingDigits = 1 + countLeadingDigits!( str[1..$]);
     else const int countLeadingDigits = 0;
 }
+
+// Count the number of decimal digits at the start of the string (eg, return 3 for "674A")
+template countLeadingHexDigits(char [] str)
+{
+    static if (str.length>0 && ((str[0]>='0' && str[0]<='9') || (str[0]>='A' && str[0]<='F')))
+        const int countLeadingHexDigits = 1 + countLeadingHexDigits!( str[1..$]);
+    else const int countLeadingHexDigits = 0;
+}
 }

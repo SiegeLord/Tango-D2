@@ -63,10 +63,39 @@ template demangleType(char[] str, MangledNameType wantQualifiedNames = MangledNa
         const char [] demangleType = demangleFunctionOrDelegate!(str[1..$], "function ", wantQualifiedNames);
     else static if (str[0]=='P') // only after we've dealt with function pointers
         const char [] demangleType = demangleType!(str[1..$], wantQualifiedNames) ~ "*";
+    else static if (str[0]=='M' && isMangledFunction!((str[1])))
+        const char [] demangleType = "MANG[" ~ str ~"] ";
+ //       const char [] demangleType = demangleFunctionOrDelegate!(str[1..$], "", wantQualifiedNames);
     else static if (isMangledFunction!((str[0])))
         const char [] demangleType = demangleFunctionOrDelegate!(str, "", wantQualifiedNames);
     else const char [] demangleType = demangleBasicType!(str);
 }
+
+// When str contains a mangled function, function pointer, or delegate,
+// return the type of the mangled first parameter.
+template extractParameterList(char [] str)
+{
+    static if (str[0]=='D' && str.length>2 && isMangledFunction!(( str[1] )) ) // delegate
+        const char [] extractParameterList = str[2..2+demangleParamListConsumed!(str[2..$])];
+    else static if (str[0]=='P' && str.length>2 && isMangledFunction!(( str[1] )) ) // function pointer
+        const char [] extractParameterList = str[2..2+demangleParamListConsumed!(str[2..$])];
+    else static if (isMangledFunction!((str[0])))
+        const char [] extractParameterList = str[1..1+demangleParamListConsumed!(str[1..$])];
+    else static assert("Not a function or delegate");
+}
+
+// How many characters are used in the parameter list and return value?
+template demangleParamListConsumed(char [] str)
+{
+    static assert (str.length>0, "Demangle error(ParamList): No return value found");
+    static if (str[0]=='Z' || str[0]=='Y' || str[0]=='X')
+        const int demangleParamListConsumed = 0;
+    else {
+        const int demangleParamListConsumed = demangleFunctionParamTypeConsumed!(str)
+            + demangleParamListConsumed!(str[demangleFunctionParamTypeConsumed!(str)..$]);
+    }
+}
+
 
 // split these off because they're numerous and simple
 // Note: For portability, could replace "v" with void.mangleof, etc.
@@ -131,6 +160,8 @@ template demangleTypeConsumed(char [] str)
         const int demangleTypeConsumed = 1 + demangleTypeConsumed!(str[1..$]);
     else static if (str[0]=='C' || str[0]=='S' || str[0]=='E' || str[0]=='T')
         const int demangleTypeConsumed = 1 + getDotNameConsumed!(str[1..$]);
+    else static if (str[0]=='M' && isMangledFunction!((str[1])))
+        const int demangleTypeConsumed = 2 + demangleParamListAndRetValConsumed!(str[2..$]);
     else static if (isMangledFunction!((str[0])) && str.length>1)
         const int demangleTypeConsumed = 1 + demangleParamListAndRetValConsumed!(str[1..$]);
     else static if (isMangledBasicType!(str[0..1])) // it's a Basic Type
@@ -180,7 +211,7 @@ template getLnameConsumed(char [] str)
 template continues_Dname(char [] str)
 {
     static if (str.length>0) {
-        const bool continues_Dname = (isMangledFunction!( (str[0])) || beginsWithDigit!(str));
+        const bool continues_Dname = (str[0]=='M') || (isMangledFunction!( (str[0])) || beginsWithDigit!(str));
     } else static assert(0);
 }
 
@@ -192,6 +223,13 @@ template get_DQualifiedNameConsumed (char [] str)
     static if ( str.length<1) const int get_DQualifiedNameConsumed = 0;
     else static if ( beginsWithDigit!(str) ) {
         const int get_DQualifiedNameConsumed = getLnameConsumed!(str) + get_DQualifiedNameConsumed!(str[getLnameConsumed!(str)..$]);
+    } else static if (str[0]=='M' && isMangledFunction!((str[1]))) {
+//FIXME
+        static if (demangleTypeConsumed!(str)!=str.length && continues_Dname!(str[demangleTypeConsumed!(str)..$])) {
+//            static assert(0, str[demangleTypeConsumed!(str)..$]);
+            const int get_DQualifiedNameConsumed = demangleTypeConsumed!(str) + get_DQualifiedNameConsumed!(str[demangleTypeConsumed!(str)..$]);
+        } else const int get_DQualifiedNameConsumed = 0;
+
     } else static if (isMangledFunction!((str[0]))) {
         static if (demangleTypeConsumed!(str)!=str.length && continues_Dname!(str[demangleTypeConsumed!(str)..$])) {
             const int get_DQualifiedNameConsumed = demangleTypeConsumed!(str) + get_DQualifiedNameConsumed!(str[demangleTypeConsumed!(str)..$]);
@@ -216,6 +254,28 @@ template qualifiedAndFuncConsumed(char [] str)
             getDotNameConsumed!(str) + 1 + demangleParamListAndRetValConsumed!(str[1+getDotNameConsumed!(str)..$]);
 }
 
+
+// Given a dotname, extract the last component of it.
+template extractLastPartOfDotName(char [] str)
+{
+    static if ( getLnameConsumed!(str) < str.length && beginsWithDigit!(str[getLnameConsumed!(str)..$]) ) {
+                const char [] extractLastPartOfDotName =
+                    extractLastPartOfDotName!(str[getLnameConsumed!(str) .. $], wantQualifiedNames, "");
+    } else const char [] extractLastPartOfDotName = extractLname!(str);
+}
+
+// str must be a qualified name
+template extractDLastPart(char [] str)
+{
+    static if (getLnameConsumed!(str)==str.length) {
+        const char [] extractDLastPart =  extractLastPartOfDotName!(str);
+    } else static if (beginsWithDigit!(str[getLnameConsumed!(str)..$])){
+        const char [] extractDLastPart = extractDLastPart!(str[getLnameConsumed!(str)..$]);
+    } else static if (continues_Dname!(str[qualifiedAndFuncConsumed!(str)..$])) {
+        const char [] extractDLastPart = extractDLastPart!(str[qualifiedAndFuncConsumed!(str)..$]);
+    } else const char [] extractDLastPart = extractLname!(str[0..qualifiedAndFuncConsumed!(str)]);
+}
+
 // Deal with the case where an Lname contains an embedded "__D".
 // This can happen when classes, typedefs, etc are declared inside a function.
 // It always starts with a qualified name, but it may be an inner function.
@@ -223,10 +283,14 @@ template pretty_Dname(char [] str, MangledNameType wantQualifiedNames)
 {
     static if (getDotNameConsumed!(str)==str.length) {
         const char [] pretty_Dname = prettyDotName!(str, wantQualifiedNames);
-    } else static if ( !isMangledFunction!( (str[getDotNameConsumed!(str)]))) {
+    } else static if ( str[getDotNameConsumed!(str)]!='M' && !isMangledFunction!( (str[getDotNameConsumed!(str)]))) {
         static assert(0, "Demangle error, not a qualified name or inner function: " ~ str);
     } else {
         // Inner function
+        static if (str[getDotNameConsumed!(str)]=='M') {
+            static assert(0, str);
+        }
+        else
         static if(continues_Dname!(str[qualifiedAndFuncConsumed!(str)..$])) {
             static if (wantQualifiedNames == MangledNameType.SymbolName) {
                 const char [] pretty_Dname =
@@ -488,14 +552,29 @@ template templateArgListConsumed(char [] str)
             + templateArgListConsumed!(str[templateArgConsumed!(str)..$]);
 }
 
+template templateFloatExponentConsumed(char [] str)
+{
+    static if (str[0]=='N')
+        const int templateFloatExponentConsumed = 1 + countLeadingDigits!(str[1..$]);
+    else const int templateFloatExponentConsumed = countLeadingDigits!(str);
+}
+
+template templateFloatArgConsumed(char [] str)
+{
+    static if (str.length>=3 && str[0..3]=="NAN") const int templateFloatArgConsumed = 3;
+    else static if (str[0]=='N')
+        const int templateFloatArgConsumed = 1 + templateFloatArgConsumed!(str[1..$]);
+    else static if (str.length>=3 && str[0..3]=="INF") const int templateFloatArgConsumed = 3;
+    else const int templateFloatArgConsumed = countLeadingHexDigits!(str) + 1 + templateFloatExponentConsumed!(str[countLeadingHexDigits!(str) + 1..$]);
+}
 
 template templateValueArgConsumed(char [] str)
 {
     static if (str[0]=='n') const int templateValueArgConsumed = 1;
     else static if (beginsWithDigit!(str)) const int templateValueArgConsumed = countLeadingDigits!(str);
     else static if (str[0]=='N') const int templateValueArgConsumed = 1 + countLeadingDigits!(str[1..$]);
-    else static if (str[0]=='e') const int templateValueArgConsumed = 1 + 20;
-    else static if (str[0]=='c') const int templateValueArgConsumed = 1 + 40;
+    else static if (str[0]=='e') const int templateValueArgConsumed = 1 + templateFloatArgConsumed!(str[1..$]);
+    else static if (str[0]=='c') const int templateValueArgConsumed = 2 + templateFloatArgConsumed!(str[1..$]) + templateFloatArgConsumed!(str[2+ templateFloatArgConsumed!(str[1..$])..$]);
     else static assert(0, "Unknown character in template value argument:" ~ str);
 }
 
@@ -506,7 +585,9 @@ template prettyValueArg(char [] str)
     else static if (beginsWithDigit!(str)) const char [] prettyValueArg = str;
     else static if ( str[0]=='N') const char [] prettyValueArg = "-" ~ str[1..$];
     else static if ( str[0]=='e') const char [] prettyValueArg = prettyFloatValueArg!(str[1..$]);
-    else static if ( str[0]=='c') const char [] prettyValueArg = prettyFloatValueArg!(str[1..22]) ~ " + " ~ prettyFloatValueArg!(str[21..41]) ~ "i";
+    else static if ( str[0]=='c') const char [] prettyValueArg =
+        prettyComplexArg!(str[1 .. 1+templateFloatArgConsumed!(str[1..$])],
+                          str[2+templateFloatArgConsumed!(str[1..$]) .. $]);
     else const char [] prettyValueArg = "Value arg {" ~ str[0..$] ~ "}";
 }
 
@@ -514,28 +595,31 @@ template prettyValueArg(char [] str)
 // Template float value arguments
 
 private {
-// Float value arguments are are mangled big-endian within a byte, but the bytes
-// are mangled in little-endian order (!)
-template bigEndianHexToShort(char [] str)
+
+template prettyComplexArg(char [] realstr, char [] imagstr)
 {
-    const int bigEndianHexToShort = hexCharToInteger!((str[0]))*16 + hexCharToInteger!((str[1]))
-    + 256 *(hexCharToInteger!((str[2]))*16 + hexCharToInteger!((str[3])));
+    static if (imagstr[0]=='N') {
+        const char [] prettyComplexArg = prettyFloatValueArg!(realstr) ~ " - "
+            ~ prettyFloatValueArg!(imagstr[1..$]) ~ "i";
+    } else
+    const char [] prettyComplexArg = prettyFloatValueArg!(realstr) ~ " + "
+    ~ prettyFloatValueArg!(imagstr) ~ "i";
 }
 
-template getMangleFloatDigits(char [] str)
+template prettyFloatExponent(char [] str)
 {
-    // Multiply by 2 to ignore the implicit bit.
-    const ulong getMangleFloatDigits =
-     (bigEndianHexToShort!(str[12..16])&0x7FFF)* 0x2_0000_0000_0000L
-    + bigEndianHexToShort!(str[8..12]) * 0x2_0000_0000L
-    + bigEndianHexToShort!(str[4..8])  * 0x2_0000L
-    + bigEndianHexToShort!(str[0..4])  * 2;
+    static if (str[0]=='N') const char [] prettyFloatExponent = "p-" ~ str[1..$];
+    else const char [] prettyFloatExponent = "p+" ~ str;
 }
 
 // Display the floating point number in %a format (eg 0x1.ABCp-35);
 template prettyFloatValueArg(char [] str)
 {
-    const char [] prettyFloatValueArg = rawFloatToHexString!(bigEndianHexToShort!(str[16..$]), getMangleFloatDigits!(str[0..16]));
+    static if (str.length==3 && str=="NAN") const char [] prettyFloatValueArg="NaN";
+    else static if (str[0]=='N') const char [] prettyFloatValueArg = "-" ~ prettyFloatValueArg!(str[1..$]);
+    else static if (str.length==3 && str=="INF") const char [] prettyFloatValueArg="Inf";
+    else const char [] prettyFloatValueArg = "0x" ~ str[0] ~ "." ~ str[1..countLeadingHexDigits!(str)]
+       ~ prettyFloatExponent!(str[1+countLeadingHexDigits!(str)..$]);
 }
 
 }
@@ -588,7 +672,8 @@ template ComplexTemplate(real a, creal b)
     class ComplexTemplate {}
 }
 
-static assert( demangleType!((ComplexTemplate!(-0x1.23456789ABCDFFFEp-456, 0x1p-16390L-3.2i)).mangleof) == "class " ~ THISFILE ~ ".ComplexTemplate!(double = -0x1.23456789ABCDFFFEp-456, creal = 0x0.0100000000000000p-16383 + -0x1.999999999999999Ap+1i).ComplexTemplate");
+static assert( demangleType!((ComplexTemplate!(-0x1.23456789ABCDFFFEp-456, 0x1.12345p-16380L-3.2i)).mangleof) == "class " ~ THISFILE ~ ".ComplexTemplate!(double = -0x1.23456789ABCDFFFEp-456, creal = 0x1.12345p-16380 - 0x1.999999999999999Ap+1i).ComplexTemplate");
+static assert( demangleType!((ComplexTemplate!(float.nan, -real.infinity+ireal.infinity)).mangleof) == "class " ~ THISFILE ~ ".ComplexTemplate!(float = NaN, creal = -Inf + Infi).ComplexTemplate");
 
 }
 }
