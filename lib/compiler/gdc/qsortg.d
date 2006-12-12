@@ -8,7 +8,7 @@ struct Array
 extern (C) Array _adSort(Array a, TypeInfo ti)
 {
     static const uint Qsort_Threshold = 7;
-    
+
     struct StackEntry {
 	byte *l;
 	byte *r;
@@ -16,12 +16,12 @@ extern (C) Array _adSort(Array a, TypeInfo ti)
 
     size_t elem_size = ti.tsize();
     size_t qsort_limit = elem_size * Qsort_Threshold;
-    
+
     static assert(ubyte.sizeof == 1);
     static assert(ubyte.max == 255);
-    
+
     StackEntry[size_t.sizeof * 8] stack; // log2( size_t.max )
-    StackEntry * sp = stack;
+    StackEntry * sp = stack.ptr;
     byte* lbound = cast(byte *) a.ptr;
     byte* rbound = cast(byte *) a.ptr + a.length * elem_size;
     byte* li = void;
@@ -36,7 +36,7 @@ extern (C) Array _adSort(Array a, TypeInfo ti)
 			  ((rbound - lbound) >>> 1) -
 			  (((rbound - lbound) >>> 1) % elem_size)
 			  ));
-	    
+
 	    li = lbound + elem_size;
 	    ri = rbound - elem_size;
 
@@ -57,7 +57,7 @@ extern (C) Array _adSort(Array a, TypeInfo ti)
 		while (ti.compare(ri, lbound) > 0);
 		if (li > ri)
 		    break;
-		ti.swap(li, ri);		    
+		ti.swap(li, ri);
 	    }
 	    ti.swap(lbound, ri);
 	    if (ri - lbound > rbound - li)
@@ -86,8 +86,8 @@ extern (C) Array _adSort(Array a, TypeInfo ti)
 		    if (ri == lbound)
 			break;
 		}
-	    }	    
-	    if (sp != stack)
+	    }
+	    if (sp != stack.ptr)
 	    {
 		--sp;
 		lbound = sp.l;
@@ -105,11 +105,11 @@ unittest
 	for (uint i = 1; i < a.length; i++)
 	    assert(a[i-1] <= a[i]);
     }
-    
+
     static int[] t1 = [ 4, 3, 19, 7, 6, 20, 11, 1, 2, 5 ];
     int[] a;
 
     a = t1;
     a.sort;
-    check(a);    
+    check(a);
 }
