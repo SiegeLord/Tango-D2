@@ -233,6 +233,8 @@ class Conduit : IConduit, IConduitFilter
                 while ((i = source.read (buffer)) != Eof)
                         if (! flush (buffer [0..i]))
                               throw new IOException ("target Eof while copying conduit");
+                
+                delete buffer;
                 return this;
         }
 
