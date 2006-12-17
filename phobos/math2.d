@@ -917,7 +917,7 @@ char[] toUtf8(real x)
 {
 // BUG: this code is broken, returning a pointer into the stack
 	char[1024] buffer;
-	char* p = buffer;
+	char* p = buffer.ptr;
 	uint psize = buffer.length;
 	int count;
 	while (true)

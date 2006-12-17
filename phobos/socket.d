@@ -812,7 +812,7 @@ class SocketSet
 			nbytes = max / NFDBITS * socket_t.sizeof;
 			if(max % NFDBITS)
 				nbytes += socket_t.sizeof;
-			buf = new byte[nbytes]; // new initializes to 0.
+			buf = (new byte[nbytes]).ptr; // new initializes to 0.
 		}
 	}
 	
@@ -1268,7 +1268,7 @@ class Socket
 	static char[] hostName() // getter
 	{
 		char[256] result; // Host names are limited to 255 chars.
-		if(_SOCKET_ERROR == .gethostname(result, result.length))
+		if(_SOCKET_ERROR == .gethostname(result.ptr, result.length))
 			throw new SocketException("Unable to obtain host name", _lasterr());
 		return phobos.string.toString(cast(char*)result).dup;
 	}
@@ -1306,7 +1306,7 @@ class Socket
 	//returns number of bytes actually sent, or -1 on error
 	int send(void[] buf, SocketFlags flags)
 	{
-		int sent = .send(sock, buf, buf.length, cast(int)flags);
+		int sent = .send(sock, buf.ptr, buf.length, cast(int)flags);
 		return sent;
 	}
 	
@@ -1321,7 +1321,7 @@ class Socket
 	 */
 	int sendTo(void[] buf, SocketFlags flags, Address to)
 	{
-		int sent = .sendto(sock, buf, buf.length, cast(int)flags, to.name(), to.nameLen());
+		int sent = .sendto(sock, buf.ptr, buf.length, cast(int)flags, to.name(), to.nameLen());
 		return sent;
 	}
 	
@@ -1336,7 +1336,7 @@ class Socket
 	/// ditto
 	int sendTo(void[] buf, SocketFlags flags)
 	{
-		int sent = .sendto(sock, buf, buf.length, cast(int)flags, null, 0);
+		int sent = .sendto(sock, buf.ptr, buf.length, cast(int)flags, null, 0);
 		return sent;
 	}
 	
@@ -1360,7 +1360,7 @@ class Socket
 	{
 		if(!buf.length) //return 0 and don't think the connection closed
 			return 0;
-		int read = .recv(sock, buf, buf.length, cast(int)flags);
+		int read = .recv(sock, buf.ptr, buf.length, cast(int)flags);
 		// if(!read) //connection closed
 		return read;
 	}
@@ -1380,7 +1380,7 @@ class Socket
 			return 0;
 		from = newFamilyObject();
 		int nameLen = from.nameLen();
-		int read = .recvfrom(sock, buf, buf.length, cast(int)flags, from.name(), &nameLen);
+		int read = .recvfrom(sock, buf.ptr, buf.length, cast(int)flags, from.name(), &nameLen);
 		assert(from.addressFamily() == _family);
 		// if(!read) //connection closed
 		return read;
@@ -1400,7 +1400,7 @@ class Socket
 	{
 		if(!buf.length) //return 0 and don't think the connection closed
 			return 0;
-		int read = .recvfrom(sock, buf, buf.length, cast(int)flags, null, null);
+		int read = .recvfrom(sock, buf.ptr, buf.length, cast(int)flags, null, null);
 		// if(!read) //connection closed
 		return read;
 	}
@@ -1419,7 +1419,7 @@ class Socket
 	int getOption(SocketOptionLevel level, SocketOption option, void[] result)
 	{
 		int len = result.length;
-		if(_SOCKET_ERROR == .getsockopt(sock, cast(int)level, cast(int)option, result, &len))
+		if(_SOCKET_ERROR == .getsockopt(sock, cast(int)level, cast(int)option, result.ptr, &len))
 			throw new SocketException("Unable to get socket option", _lasterr());
 		return len;
 	}
@@ -1442,7 +1442,7 @@ class Socket
 	// Set a socket option.
 	void setOption(SocketOptionLevel level, SocketOption option, void[] value)
 	{
-		if(_SOCKET_ERROR == .setsockopt(sock, cast(int)level, cast(int)option, value, value.length))
+		if(_SOCKET_ERROR == .setsockopt(sock, cast(int)level, cast(int)option, value.ptr, value.length))
 			throw new SocketException("Unable to set socket option", _lasterr());
 	}
 	

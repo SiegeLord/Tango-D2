@@ -106,7 +106,7 @@ private char[] URI_Encode(dchar[] string, uint unescapedSet)
 
     len = string.length;
 
-    R = buffer;
+    R = buffer.ptr;
     Rsize = buffer.length;
     Rlen = 0;
 
@@ -121,7 +121,7 @@ private char[] URI_Encode(dchar[] string, uint unescapedSet)
 
 		Rsize *= 2;
 		if (Rsize > 1024)
-		    R2 = new char[Rsize];
+		    R2 = (new char[Rsize]).ptr;
 		else
 		{   R2 = cast(char *)alloca(Rsize * char.sizeof);
 		    if (!R2)
@@ -196,7 +196,7 @@ private char[] URI_Encode(dchar[] string, uint unescapedSet)
 
 		Rsize = 2 * (Rlen + L * 3);
 		if (Rsize > 1024)
-		    R2 = new char[Rsize];
+		    R2 = (new char[Rsize]).ptr;
 		else
 		{   R2 = cast(char *)alloca(Rsize * char.sizeof);
 		    if (!R2)
@@ -248,90 +248,93 @@ private dchar[] URI_Decode(char[] string, uint reservedSet)
     uint Rsize;	// alloc'd size
 
     len = string.length;
-    s = string;
+    s = string.ptr;
 
     // Preallocate result buffer R guaranteed to be large enough for result
     Rsize = len;
     if (Rsize > 1024 / dchar.sizeof)
-	R = new dchar[Rsize];
+		R = (new dchar[Rsize]).ptr;
     else
-    {	R = cast(dchar *)alloca(Rsize * dchar.sizeof);
-	if (!R)
-	    goto LthrowURIerror;
+    {	
+		R = cast(dchar *)alloca(Rsize * dchar.sizeof);
+
+		if (!R)
+			goto LthrowURIerror;
     }
+
     Rlen = 0;
 
     for (k = 0; k != len; k++)
     {	char B;
-	uint start;
+		uint start;
 
-	C = s[k];
-	if (C != '%')
-	{   R[Rlen] = C;
-	    Rlen++;
-	    continue;
-	}
-	start = k;
-	if (k + 2 >= len)
-	    goto LthrowURIerror;
-	if (!isxdigit(s[k + 1]) || !isxdigit(s[k + 2]))
-	    goto LthrowURIerror;
-	B = cast(char)((ascii2hex(s[k + 1]) << 4) + ascii2hex(s[k + 2]));
-	k += 2;
-	if ((B & 0x80) == 0)
-	{
-	    C = B;
-	}
-	else
-	{   uint n;
-
-	    for (n = 1; ; n++)
-	    {
-		if (n > 4)
-		    goto LthrowURIerror;
-		if (((B << n) & 0x80) == 0)
-		{
-		    if (n == 1)
-			goto LthrowURIerror;
-		    break;
+		C = s[k];
+		if (C != '%')
+		{   R[Rlen] = C;
+			Rlen++;
+			continue;
 		}
-	    }
-
-	    // Pick off (7 - n) significant bits of B from first byte of octet
-	    V = B & ((1 << (7 - n)) - 1);	// (!!!)
-
-	    if (k + (3 * (n - 1)) >= len)
-		goto LthrowURIerror;
-	    for (j = 1; j != n; j++)
-	    {
-		k++;
-		if (s[k] != '%')
-		    goto LthrowURIerror;
+		start = k;
+		if (k + 2 >= len)
+			goto LthrowURIerror;
 		if (!isxdigit(s[k + 1]) || !isxdigit(s[k + 2]))
-		    goto LthrowURIerror;
+			goto LthrowURIerror;
 		B = cast(char)((ascii2hex(s[k + 1]) << 4) + ascii2hex(s[k + 2]));
-		if ((B & 0xC0) != 0x80)
-		    goto LthrowURIerror;
 		k += 2;
-		V = (V << 6) | (B & 0x3F);
-	    }
-	    if (V > 0x10FFFF)
-		goto LthrowURIerror;
-	    C = V;
-	}
-	if (C < uri_flags.length && uri_flags[C] & reservedSet)
-	{
-	    // R ~= s[start .. k + 1];
-	    int width = (k + 1) - start;
-	    for (int ii = 0; ii < width; ii++)
-		R[Rlen + ii] = s[start + ii];
-	    Rlen += width;
-	}
-	else
-	{
-	    R[Rlen] = C;
-	    Rlen++;
-	}
+		if ((B & 0x80) == 0)
+		{
+			C = B;
+		}
+		else
+		{   uint n;
+
+			for (n = 1; ; n++)
+			{
+			if (n > 4)
+				goto LthrowURIerror;
+			if (((B << n) & 0x80) == 0)
+			{
+				if (n == 1)
+				goto LthrowURIerror;
+				break;
+			}
+			}
+
+			// Pick off (7 - n) significant bits of B from first byte of octet
+			V = B & ((1 << (7 - n)) - 1);	// (!!!)
+
+			if (k + (3 * (n - 1)) >= len)
+			goto LthrowURIerror;
+			for (j = 1; j != n; j++)
+			{
+			k++;
+			if (s[k] != '%')
+				goto LthrowURIerror;
+			if (!isxdigit(s[k + 1]) || !isxdigit(s[k + 2]))
+				goto LthrowURIerror;
+			B = cast(char)((ascii2hex(s[k + 1]) << 4) + ascii2hex(s[k + 2]));
+			if ((B & 0xC0) != 0x80)
+				goto LthrowURIerror;
+			k += 2;
+			V = (V << 6) | (B & 0x3F);
+			}
+			if (V > 0x10FFFF)
+			goto LthrowURIerror;
+			C = V;
+		}
+		if (C < uri_flags.length && uri_flags[C] & reservedSet)
+		{
+			// R ~= s[start .. k + 1];
+			int width = (k + 1) - start;
+			for (int ii = 0; ii < width; ii++)
+			R[Rlen + ii] = s[start + ii];
+			Rlen += width;
+		}
+		else
+		{
+			R[Rlen] = C;
+			Rlen++;
+		}
     }
     assert(Rlen <= Rsize);	// enforce our preallocation size guarantee
 

@@ -17,7 +17,7 @@ class SwitchError : Exception
 	this.filename = filename;
 
 	char[] buffer = new char[17 + filename.length + linnum.sizeof * 3 + 1];
-	int len = sprintf(buffer, "Switch Default %.*s(%u)", filename, linnum);
+	int len = sprintf(buffer.ptr, "Switch Default %.*s(%u)", filename, linnum);
 	super(buffer[0..len]);
     }
 
