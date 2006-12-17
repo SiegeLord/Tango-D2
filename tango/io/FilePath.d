@@ -41,6 +41,7 @@ class FilePath
         private char[]  fp;                     // filepath with trailing 0
         
         private int     end,                    // before the trailing 0
+                        ext,                    // after rightmost '.'
                         path,                   // path before name
                         name,                   // file/dir name
                         suffix;                 // inclusive of leftmost '.'
@@ -74,16 +75,20 @@ class FilePath
         this (char[] filepath)
         {
                 path = 0;
-                name = suffix = -1;
                 fp   = filepath ~ '\0';
                 end  = filepath.length;
+                name = suffix = ext = -1;
                 
                 for (int i=end; --i >= 0;)
                      switch (filepath[i])
                             {
                             case FileConst.FileSeparatorChar:
                                  if (name < 0)
-                                     suffix = i;
+                                    {
+                                    suffix = i;
+                                    if (ext < 0)
+                                        ext = i + 1;
+                                    }
                                  break;
 
                             case FileConst.PathSeparatorChar:
@@ -104,6 +109,9 @@ class FilePath
                 
                 if (suffix < 0)
                     suffix = end;
+
+                if (ext < 0)
+                    ext = end;
         }
         
         /***********************************************************************
@@ -177,6 +185,18 @@ class FilePath
         final char[] getSuffix ()
         {
                 return fp [suffix .. end];
+        }              
+
+        /***********************************************************************
+        
+                Ext is the tail of the filename, rightward of the rightmost
+                '.' separator. For example, "wumpus.foo.bar" has ext "bar"
+
+        ***********************************************************************/
+
+        final char[] getExt ()
+        {
+                return fp [ext .. end];
         }              
 
         /***********************************************************************
@@ -374,6 +394,25 @@ class FilePath
 
         /***********************************************************************
         
+                Change the extension of this FilePath. The extension provided
+                should exclude a leading separator -- use asSuffix() instead
+                where a separator is embedded
+
+                Note that providing an empty extension will strip a trailing
+                separator from the returned path                
+
+        ***********************************************************************/
+
+        final char[] asExt (char[] s)
+        {
+                if (s.length)
+                    return asPadded (fp[0 .. ext], FileConst.FileSeparatorChar) ~ s;
+                
+                return asStripped (fp[0 .. ext], FileConst.FileSeparatorChar);
+        }
+
+        /***********************************************************************
+        
                 Convert path separators to the correct format according to
                 the current platform. This mutates the provided 'path' content, 
                 so .dup it as necessary.
@@ -395,11 +434,10 @@ class FilePath
         
         ***********************************************************************/
 
-        static char[] asPadded (char[] path)
+        static char[] asPadded (char[] path, char c = FileConst.PathSeparatorChar)
         {
-                if (path.length)
-                    if (path[$-1] != FileConst.PathSeparatorChar)
-                        path ~= FileConst.PathSeparatorChar;
+                if (path.length && path[$-1] != c)
+                    path ~= c;
                 return path;
         }
         
@@ -410,11 +448,10 @@ class FilePath
                 
         ***********************************************************************/
 
-        static char[] asStripped (char[] path)
+        static char[] asStripped (char[] path, char c = FileConst.PathSeparatorChar)
         {
-                if (path.length > 1)
-                    if (path[$ - 1] is FileConst.PathSeparatorChar)
-                        path = path [0 .. $ - 1];
+                if (path.length > 1 && path[$-1] is c) 
+                    path = path [0 .. $-1];
                 return path;
         }               
 
@@ -442,6 +479,8 @@ class FilePath
 
 debug (UnitTest)
 {
+        void main() {}
+        
         unittest
         {
         version (Win32)
@@ -455,6 +494,7 @@ debug (UnitTest)
                 assert (fp.getFullName == r"");
                 assert (fp.getSuffix == r"");
                 assert (fp.getRoot == r"C:");
+                assert (fp.getExt == "", fp.getExt);
                 assert (fp.isChild);
 
                 fp = new FilePath(r"C:\home\foo\bar\john");
@@ -465,6 +505,7 @@ debug (UnitTest)
                 assert (fp.getFullPath == r"C:\home\foo\bar\");
                 assert (fp.getFullName == r"john");
                 assert (fp.getSuffix == r"");
+                assert (fp.getExt == "");
                 assert (fp.isChild);
 
                 fp = new FilePath(fp.asParent);
@@ -475,6 +516,7 @@ debug (UnitTest)
                 assert (fp.getFullPath == r"C:\home\foo\");
                 assert (fp.getFullName == r"bar");
                 assert (fp.getSuffix == r"");
+                assert (fp.getExt == "");
                 assert (fp.isChild);
 
                 fp = new FilePath(fp.asParent);
@@ -485,6 +527,7 @@ debug (UnitTest)
                 assert (fp.getFullPath == r"C:\home\");
                 assert (fp.getFullName == r"foo");
                 assert (fp.getSuffix == r"");
+                assert (fp.getExt == "");
                 assert (fp.isChild);
 
                 fp = new FilePath(fp.asParent);
@@ -495,6 +538,7 @@ debug (UnitTest)
                 assert (fp.getFullPath == r"C:\");
                 assert (fp.getFullName == r"home");
                 assert (fp.getSuffix == r"");
+                assert (fp.getExt == "");
                 assert (!fp.isChild);
 
                 fp = new FilePath(r"foo\bar\john.doe");
@@ -504,6 +548,7 @@ debug (UnitTest)
                 assert (fp.getSuffix == r".doe");
                 assert (fp.getFullName == r"john.doe");
                 assert (fp.toUtf8 == r"foo\bar\john.doe");
+                assert (fp.getExt == "doe");
                 assert (fp.isChild);
 
                 fp = new FilePath(r"c:doe");
@@ -513,6 +558,7 @@ debug (UnitTest)
                 assert (fp.getPath == r"");
                 assert (fp.getName == "doe");
                 assert (fp.getFullName == r"doe");
+                assert (fp.getExt == "");
                 assert (!fp.isChild);
 
                 fp = new FilePath(r"\doe");
@@ -522,6 +568,7 @@ debug (UnitTest)
                 assert (fp.getName == "doe");
                 assert (fp.getPath == r"\");
                 assert (fp.getFullName == r"doe");
+                assert (fp.getExt == "");
                 assert (!fp.isChild);
 
                 fp = new FilePath(r"john.doe.foo");
@@ -531,6 +578,7 @@ debug (UnitTest)
                 assert (fp.getSuffix == r".doe.foo");
                 assert (fp.toUtf8 == r"john.doe.foo");
                 assert (fp.getFullName == r"john.doe.foo");
+                assert (fp.getExt == "foo");
                 assert (!fp.isChild);
 
                 fp = new FilePath(r".doe");
@@ -540,6 +588,7 @@ debug (UnitTest)
                 assert (fp.getName == "");
                 assert (fp.getPath == r"");
                 assert (fp.getFullName == r".doe");
+                assert (fp.getExt == "doe");
                 assert (!fp.isChild);
 
                 fp = new FilePath(r"doe");
@@ -549,6 +598,7 @@ debug (UnitTest)
                 assert (fp.getName == "doe");
                 assert (fp.getPath == r"");
                 assert (fp.getFullName == r"doe");
+                assert (fp.getExt == "");
                 assert (!fp.isChild);
 
                 fp = new FilePath(r".");
@@ -558,6 +608,7 @@ debug (UnitTest)
                 assert (fp.getName == "");
                 assert (fp.getPath == r"");
                 assert (fp.getFullName == r".");
+                assert (fp.getExt == "");
                 assert (!fp.isChild);
 
                 fp = new FilePath(r"..");
@@ -567,6 +618,7 @@ debug (UnitTest)
                 assert (fp.getName == "");
                 assert (fp.getPath == r"");
                 assert (fp.getFullName == r"..");
+                assert (fp.getExt == "");
                 assert (!fp.isChild);
 
                 fp = new FilePath(r"C:\foo\bar\test.bar");
@@ -574,11 +626,13 @@ debug (UnitTest)
                 assert (fp.getName == r"test");
                 assert (fp.getPath == r"foo\");
                 assert (fp.getFullPath == r"C:foo\");
+                assert (fp.getExt == "bar");
 
                 fp = new FilePath(fp.asPath (""));
                 assert (fp.getName == r"test");
                 assert (fp.getPath == r"");
                 assert (fp.getFullPath == r"C:");
+                assert (fp.getExt == "bar");
 
                 fp = new FilePath(null);
                 assert (fp.isEmpty);
@@ -589,6 +643,7 @@ debug (UnitTest)
                 assert (fp.getName == "");
                 assert (fp.getPath == r"");
                 assert (fp.getFullName == r"");
+                assert (fp.getExt == "");
 
                 fp = new FilePath(r"foo\bar\");
                 assert(fp.join(r"c:\joe\bar").toUtf8 == r"c:\joe\bar\foo\bar\");
@@ -605,7 +660,9 @@ debug (UnitTest)
                 assert(fp.join(r"c:\foo").toUtf8 == r"c:\foo\bar\");
                 assert(fp.join(new FilePath(r"c:\foo")).toUtf8 == r"c:\foo\bar\");
 
-
+                fp = new FilePath(r"C:\foo\bar\test.bar");
+                assert (fp.asExt(null) == r"C:\foo\bar\test");
+                assert (fp.asExt("foo") == r"C:\foo\bar\test.foo");
                 }
 
 
@@ -620,6 +677,7 @@ debug (UnitTest)
                 assert (fp.getFullName == r"");
                 assert (fp.getSuffix == r"");
                 assert (fp.getRoot == r"C:");
+                assert (fp.getExt == "", fp.getExt);
                 assert (fp.isChild);
 
                 fp = new FilePath(r"C:/home/foo/bar/john");
@@ -630,6 +688,7 @@ debug (UnitTest)
                 assert (fp.getFullPath == r"C:/home/foo/bar/");
                 assert (fp.getFullName == r"john");
                 assert (fp.getSuffix == r"");
+                assert (fp.getExt == "");
                 assert (fp.isChild);
 
                 fp = new FilePath(fp.asParent);
@@ -640,6 +699,7 @@ debug (UnitTest)
                 assert (fp.getFullPath == r"C:/home/foo/");
                 assert (fp.getFullName == r"bar");
                 assert (fp.getSuffix == r"");
+                assert (fp.getExt == "");
                 assert (fp.isChild);
 
                 fp = new FilePath(fp.asParent);
@@ -650,6 +710,7 @@ debug (UnitTest)
                 assert (fp.getFullPath == r"C:/home/");
                 assert (fp.getFullName == r"foo");
                 assert (fp.getSuffix == r"");
+                assert (fp.getExt == "");
                 assert (fp.isChild);
 
                 fp = new FilePath(fp.asParent);
@@ -660,6 +721,7 @@ debug (UnitTest)
                 assert (fp.getFullPath == r"C:/");
                 assert (fp.getFullName == r"home");
                 assert (fp.getSuffix == r"");
+                assert (fp.getExt == "");
                 assert (!fp.isChild);
 
                 fp = new FilePath(r"foo/bar/john.doe");
@@ -669,6 +731,7 @@ debug (UnitTest)
                 assert (fp.getSuffix == r".doe");
                 assert (fp.getFullName == r"john.doe");
                 assert (fp.toUtf8 == r"foo/bar/john.doe");
+                assert (fp.getExt == "doe");
                 assert (fp.isChild);
 
                 fp = new FilePath(r"c:doe");
@@ -678,6 +741,7 @@ debug (UnitTest)
                 assert (fp.getPath == r"");
                 assert (fp.getName == "doe");
                 assert (fp.getFullName == r"doe");
+                assert (fp.getExt == "");
                 assert (!fp.isChild);
 
                 fp = new FilePath(r"/doe");
@@ -687,6 +751,7 @@ debug (UnitTest)
                 assert (fp.getName == "doe");
                 assert (fp.getPath == r"/");
                 assert (fp.getFullName == r"doe");
+                assert (fp.getExt == "");
                 assert (!fp.isChild);
 
                 fp = new FilePath(r"john.doe.foo");
@@ -696,6 +761,7 @@ debug (UnitTest)
                 assert (fp.getSuffix == r".doe.foo");
                 assert (fp.toUtf8 == r"john.doe.foo");
                 assert (fp.getFullName == r"john.doe.foo");
+                assert (fp.getExt == "foo");
                 assert (!fp.isChild);
 
                 fp = new FilePath(r".doe");
@@ -705,6 +771,7 @@ debug (UnitTest)
                 assert (fp.getName == "");
                 assert (fp.getPath == r"");
                 assert (fp.getFullName == r".doe");
+                assert (fp.getExt == "doe");
                 assert (!fp.isChild);
 
                 fp = new FilePath(r"doe");
@@ -714,6 +781,7 @@ debug (UnitTest)
                 assert (fp.getName == "doe");
                 assert (fp.getPath == r"");
                 assert (fp.getFullName == r"doe");
+                assert (fp.getExt == "");
                 assert (!fp.isChild);
 
                 fp = new FilePath(r".");
@@ -723,6 +791,7 @@ debug (UnitTest)
                 assert (fp.getName == "");
                 assert (fp.getPath == r"");
                 assert (fp.getFullName == r".");
+                assert (fp.getExt == "");
                 assert (!fp.isChild);
 
                 fp = new FilePath(r"..");
@@ -732,6 +801,7 @@ debug (UnitTest)
                 assert (fp.getName == "");
                 assert (fp.getPath == r"");
                 assert (fp.getFullName == r"..");
+                assert (fp.getExt == "");
                 assert (!fp.isChild);
 
                 fp = new FilePath(r"C:/foo/bar/test.bar");
@@ -739,11 +809,13 @@ debug (UnitTest)
                 assert (fp.getName == r"test");
                 assert (fp.getPath == r"foo/");
                 assert (fp.getFullPath == r"C:foo/");
+                assert (fp.getExt == "bar");
 
                 fp = new FilePath(fp.asPath (""));
                 assert (fp.getName == r"test");
                 assert (fp.getPath == r"");
                 assert (fp.getFullPath == r"C:");
+                assert (fp.getExt == "bar");
 
                 fp = new FilePath(null);
                 assert (fp.isEmpty);
@@ -754,22 +826,26 @@ debug (UnitTest)
                 assert (fp.getName == "");
                 assert (fp.getPath == r"");
                 assert (fp.getFullName == r"");
+                assert (fp.getExt == "");
 
-                fp = new FilePath("foo/bar/");
-                assert(fp.join("/joe/bar").toUtf8 == "/joe/bar/foo/bar/");
-                assert(fp.join(new FilePath("/joe/bar")).toUtf8 == "/joe/bar/foo/bar/");
-                fp = new FilePath("/joe/bar");
-                assert(fp.join("foo/bar/").toUtf8 == "/joe/bar");
-                assert(fp.join(new FilePath("foo/bar")).toUtf8 == "/joe/bar");
+                fp = new FilePath(r"foo/bar/");
+                assert(fp.join(r"c:/joe/bar").toUtf8 == r"c:/joe/bar/foo/bar/");
+                assert(fp.join(new FilePath(r"c:/joe/bar")).toUtf8 == r"c:/joe/bar/foo/bar/");
+                fp = new FilePath(r"c:/joe/bar");
+                assert(fp.join(r"foo/bar/").toUtf8 == r"c:/joe/bar");
+                assert(fp.join(new FilePath(r"foo/bar")).toUtf8 == r"c:/joe/bar");
 
-                fp = new FilePath("/bar");
-                assert(fp.join("foo").toUtf8 == "/bar");
-                assert(fp.join(new FilePath("foo")).toUtf8 == "/bar");
+                fp = new FilePath(r"c:/bar");
+                assert(fp.join(r"foo").toUtf8 == r"c:/bar");
+                assert(fp.join(new FilePath(r"foo")).toUtf8 == r"c:/bar");
 
-                fp = new FilePath("bar/");
-                assert(fp.join("/foo").toUtf8 == "/foo/bar/");
-                assert(fp.join(new FilePath("/foo")).toUtf8 == "/foo/bar/");
+                fp = new FilePath(r"bar/");
+                assert(fp.join(r"c:/foo").toUtf8 == r"c:/foo/bar/");
+                assert(fp.join(new FilePath(r"c:/foo")).toUtf8 == r"c:/foo/bar/");
 
+                fp = new FilePath(r"C:/foo/bar/test.bar");
+                assert (fp.asExt(null) == r"C:/foo/bar/test");
+                assert (fp.asExt("foo") == r"C:/foo/bar/test.foo");
                 }
         }
 }
