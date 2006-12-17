@@ -547,12 +547,15 @@ public class TreeMap(K, T) : MapCollection!(K, T), SortedKeys!(K, T)
                 public this (TreeMap map)
                 {
                         super (map);
-                        pair = cast(RBPairT) map.tree.leftmost;
+
+                        if (map.tree)
+                            pair = cast(RBPairT) map.tree.leftmost;
                 }
 
                 public final V get(inout K key)
                 {
-                        key = pair.key;
+                        if (pair)
+                            key = pair.key;
                         return get();
                 }
 

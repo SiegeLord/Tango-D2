@@ -886,7 +886,7 @@ debug(Test)
 void main()
 {
         auto map = new HashMap!(char[], double);
-        map.add ("foo", 3.14);
+        //map.add ("foo", 3.14);
         
         foreach (key, value; map.keys) {typeof(key) x; x = key;}
 

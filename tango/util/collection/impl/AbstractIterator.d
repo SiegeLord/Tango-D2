@@ -24,7 +24,7 @@ private import  tango.util.collection.model.View,
 
 /**
  *
- * A convenient base class for implementations of CollectionIterator
+ * A convenient base class for implementations of GuardIterator
  * 
         author: Doug Lea
  * @version 0.93
@@ -69,7 +69,7 @@ public abstract class AbstractIterator(T) : GuardIterator!(T)
 
         public final bool corrupted()
         {
-                return mutation !is view.mutation();
+                return mutation != view.mutation;
         }
 
         /**
@@ -88,7 +88,7 @@ public abstract class AbstractIterator(T) : GuardIterator!(T)
         **/
         public final bool more()
         {
-                return !corrupted() && togo > 0;
+                return togo > 0 && mutation == view.mutation;
         }
 
         /**
@@ -99,13 +99,11 @@ public abstract class AbstractIterator(T) : GuardIterator!(T)
         **/
         protected final void decRemaining()
         {
-                if (corrupted())
-                   throw new CorruptedIteratorException("Collection modified during iteration");
-                else
-                   if (togo <= 0)
-                       throw new NoSuchElementException("exhausted enumeration");
-                   else
-                      --togo;
+                if (mutation != view.mutation)
+                    throw new CorruptedIteratorException ("Collection modified during iteration");
+
+                if (--togo < 0)
+                    throw new NoSuchElementException ("exhausted enumeration");
         }
 
 

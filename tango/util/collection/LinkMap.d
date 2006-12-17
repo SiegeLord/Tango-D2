@@ -479,7 +479,8 @@ public class LinkMap(K, T) : MapCollection!(K, T) // , IReadable, IWritable
 
                 public final V get(inout K key)
                 {
-                        key = pair.key;
+                        if (pair)
+                            key = pair.key;
                         return get();
                 }
 

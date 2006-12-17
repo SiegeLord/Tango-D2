@@ -534,7 +534,8 @@ public class ArrayBag(T) : BagCollection!(T)
                 public this (ArrayBag bag)
                 {
                         super(bag);
-                        cell = bag.tail;  
+                        cell = bag.tail;
+                        
                         if (cell)
                             buff = cell.element();  
                 }

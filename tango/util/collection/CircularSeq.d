@@ -718,7 +718,7 @@ public class CircularSeq(T) : SeqCollection!(T)
                 public final T get()
                 {
                         decRemaining();
-                        auto v = cell.element;
+                        auto v = cell.element();
                         cell = cell.next();
                         return v;
                 }

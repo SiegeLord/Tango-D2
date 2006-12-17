@@ -47,7 +47,7 @@ public class TreeBag(T) : BagCollection!(T), SortedValues!(T)
          * The root of the tree. Null if empty.
         **/
 
-        package RBCellT tree_;
+        package RBCellT tree;
 
         /**
          * The comparator to use for ordering.
@@ -99,7 +99,7 @@ public class TreeBag(T) : BagCollection!(T), SortedValues!(T)
         {
                 super(s);
                 count = n;
-                tree_ = t;
+                tree = t;
                 if (cmp !is null)
                     cmp_ = cmp;
                 else
@@ -115,7 +115,7 @@ public class TreeBag(T) : BagCollection!(T), SortedValues!(T)
                 if (count is 0)
                     return new TreeBag!(T)(screener, cmp_);
                 else
-                   return new TreeBag!(T)(screener, cmp_, tree_.copyTree(), count);
+                   return new TreeBag!(T)(screener, cmp_, tree.copyTree(), count);
         }
 
 
@@ -132,7 +132,7 @@ public class TreeBag(T) : BagCollection!(T), SortedValues!(T)
                 if (!isValidArg(element) || count is 0)
                      return false;
 
-                return tree_.find(element, cmp_) !is null;
+                return tree.find(element, cmp_) !is null;
         }
 
         /**
@@ -145,7 +145,7 @@ public class TreeBag(T) : BagCollection!(T), SortedValues!(T)
                 if (!isValidArg(element) || count is 0)
                      return 0;
 
-                return tree_.count(element, cmp_);
+                return tree.count(element, cmp_);
         }
 
         /**
@@ -188,8 +188,8 @@ public class TreeBag(T) : BagCollection!(T), SortedValues!(T)
                    if (count !is 0)
                       {       // must rebuild tree!
                       incVersion();
-                      RBCellT t = tree_.leftmost();
-                      tree_ = null;
+                      RBCellT t = tree.leftmost();
+                      tree = null;
                       count = 0;
                       while (t !is null)
                             {
@@ -211,7 +211,7 @@ public class TreeBag(T) : BagCollection!(T), SortedValues!(T)
         public final void clear()
         {
                 setCount(0);
-                tree_ = null;
+                tree = null;
         }
 
         /**
@@ -265,9 +265,9 @@ public class TreeBag(T) : BagCollection!(T), SortedValues!(T)
         {
                 if (count !is 0)
                    {
-                   RBCellT p = tree_.leftmost();
+                   RBCellT p = tree.leftmost();
                    T v = p.element();
-                   tree_ = p.remove(tree_);
+                   tree = p.remove(tree);
                    decCount();
                    return v;
                    }
@@ -307,14 +307,14 @@ public class TreeBag(T) : BagCollection!(T), SortedValues!(T)
         {
                 checkElement(element);
 
-                if (tree_ is null)
+                if (tree is null)
                    {
-                   tree_ = new RBCellT(element);
+                   tree = new RBCellT(element);
                    incCount();
                    }
                 else
                    {
-                   RBCellT t = tree_;
+                   RBCellT t = tree;
 
                    for (;;)
                        {
@@ -328,7 +328,7 @@ public class TreeBag(T) : BagCollection!(T), SortedValues!(T)
                                  t = t.left();
                              else
                                 {
-                                tree_ = t.insertLeft(new RBCellT(element), tree_);
+                                tree = t.insertLeft(new RBCellT(element), tree);
                                 incCount();
                                 return ;
                                 }
@@ -339,7 +339,7 @@ public class TreeBag(T) : BagCollection!(T), SortedValues!(T)
                                  t = t.right();
                               else
                                  {
-                                 tree_ = t.insertRight(new RBCellT(element), tree_);
+                                 tree = t.insertRight(new RBCellT(element), tree);
                                  incCount();
                                  return ;
                                  }
@@ -356,11 +356,11 @@ public class TreeBag(T) : BagCollection!(T), SortedValues!(T)
 
                 while (count > 0)
                       {
-                      RBCellT p = tree_.find(element, cmp_);
+                      RBCellT p = tree.find(element, cmp_);
 
                       if (p !is null)
                          {
-                         tree_ = p.remove(tree_);
+                         tree = p.remove(tree);
                          decCount();
                          if (!allOccurrences)
                              return ;
@@ -395,14 +395,14 @@ public class TreeBag(T) : BagCollection!(T), SortedValues!(T)
 
                 super.checkImplementation();
                 assert(cmp_ !is null);
-                assert(((count is 0) is (tree_ is null)));
-                assert((tree_ is null || tree_.size() is count));
+                assert(((count is 0) is (tree is null)));
+                assert((tree is null || tree.size() is count));
 
-                if (tree_ !is null)
+                if (tree !is null)
                    {
-                   tree_.checkImplementation();
+                   tree.checkImplementation();
                    T last = T.init;
-                   RBCellT t = tree_.leftmost();
+                   RBCellT t = tree.leftmost();
                    while (t !is null)
                          {
                          T v = t.element();
@@ -432,7 +432,9 @@ public class TreeBag(T) : BagCollection!(T), SortedValues!(T)
                 public this (TreeBag bag)
                 {
                         super(bag);
-                        cell = bag.tree_.leftmost();
+
+                        if (bag.tree)
+                            cell = bag.tree.leftmost;
                 }
 
                 public final T get()
