@@ -875,7 +875,7 @@ public class HashMap(K, V) : MapCollection!(K, V), HashParams
                         while (pair is null)
                                pair = table [row++];
 
-                        return pair.element;
+                        return pair.element();
                 }
         }
 }

@@ -427,28 +427,20 @@ public class TreeBag(T) : BagCollection!(T), SortedValues!(T)
         **/
         private static class CellIterator(T) : AbstractIterator!(T)
         {
-                private RBCellT cell,
-                                start;
+                private RBCellT cell;
 
                 public this (TreeBag bag)
                 {
                         super(bag);
-                        start = bag.tree_;
+                        cell = bag.tree_.leftmost();
                 }
 
                 public final T get()
                 {
                         decRemaining();
-
-                        if (cell)
-                            cell = cell.successor();
-                        else
-                           if (start)
-                               cell = start.leftmost(), start = null;
-                           else
-                              throw new Exception ("invalid iterator");
-                                                              
-                        return cell.element;
+                        auto v = cell.element();
+                        cell = cell.successor();
+                        return v;
                 }
         }
 }

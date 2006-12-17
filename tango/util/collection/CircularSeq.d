@@ -707,28 +707,20 @@ public class CircularSeq(T) : SeqCollection!(T)
 
         static class CellIterator(T) : AbstractIterator!(T)
         {
-                private CLCellT cell,
-                                start;
+                private CLCellT cell;
 
                 public this (CircularSeq seq)
                 {
                         super (seq);
-                        start = seq.list;
+                        cell = seq.list;
                 }
 
                 public final T get()
                 {
                         decRemaining();
-
-                        if (cell)
-                            cell = cell.next();
-                        else
-                           if (start)
-                               cell = start, start = null;
-                           else
-                              throw new Exception ("Invalid iterator");
-                                                              
-                        return cell.element;
+                        auto v = cell.element;
+                        cell = cell.next();
+                        return v;
                 }
         }
 }

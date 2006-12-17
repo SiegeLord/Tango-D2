@@ -689,30 +689,20 @@ public class LinkSeq(T) : SeqCollection!(T), Sortable!(T)
 
         private static class CellIterator(T) : AbstractIterator!(T)
         {
-                private LLCellT cell,
-                                start;
+                private LLCellT cell;
 
                 public this (LinkSeq seq)
                 {
                         super (seq);
-                        start = seq.list;
+                        cell = seq.list;
                 }
 
                 public final T get()
                 {
-                        if ( start !is null )
-                        {
-                            cell = start;
-                            start = null;
-                            // do not call decRemaining for the first cell.
-                        }
-                        else if (cell !is null )
-                        {
-                            decRemaining();
-                            cell = cell.next();
-                        }
-                        
-                        return cell.element;
+                        decRemaining();
+                        auto v = cell.element();
+                        cell = cell.next();
+                        return v;
                 }
         }
 }

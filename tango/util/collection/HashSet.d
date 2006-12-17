@@ -504,19 +504,14 @@ public class HashSet(T) : SetCollection!(T), HashParams
 
                 public final T get()
                 {
-                        if (remaining)
-                           {
-                           decRemaining();
-                           if (cell)
-                               cell = cell.next();
+                        decRemaining();
 
-                           while (cell is null)
-                                  cell = table [row++];
+                        while (cell is null)
+                               cell = table [row++];
 
-                           return cell.element;
-                           }
-
-                        throw new Exception ("Invalid Iterator"); 
+                        auto v = cell.element();
+                        cell = cell.next();
+                        return v;
                 }
         }
 }

@@ -844,8 +844,8 @@ public class ArraySeq(T) : SeqCollection!(T), Sortable!(T)
         **/
         static class ArrayIterator(T) : AbstractIterator!(T)
         {
+                private int row;
                 private T[] array;
-                private int row = -1;
 
                 public this (ArraySeq seq)
                 {
@@ -856,8 +856,7 @@ public class ArraySeq(T) : SeqCollection!(T), Sortable!(T)
                 public final T get()
                 {
                         decRemaining();
-                        ++row;
-                        return array[row];
+                        return array[row++];
                 }
         }
 }

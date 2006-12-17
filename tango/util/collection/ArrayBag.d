@@ -527,9 +527,9 @@ public class ArrayBag(T) : BagCollection!(T)
 
         static class ArrayIterator(T) : AbstractIterator!(T)
         {
-                private CLCellT  cell;
+                private CLCellT cell;
                 private T[]     buff;
-                private int     index = -1;
+                private int     index;
 
                 public this (ArrayBag bag)
                 {
@@ -541,18 +541,14 @@ public class ArrayBag(T) : BagCollection!(T)
 
                 public final T get()
                 {
-                        if (remaining)
+                        decRemaining();
+                        if (index >= buff.length)
                            {
-                           decRemaining();
-                           if (++index >= buff.length)
-                              {
-                              cell = cell.next();
-                              buff = cell.element();
-                              index = 0;
-                              }
-                           return buff[index];
+                           cell = cell.next();
+                           buff = cell.element();
+                           index = 0;
                            }
-                        throw new Exception ("Invalid Interator");
+                        return buff[index++];
                 }
         }
 }

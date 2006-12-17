@@ -542,35 +542,26 @@ public class TreeMap(K, T) : MapCollection!(K, T), SortedKeys!(K, T)
 
         private static class MapIterator(K, V) : AbstractMapIterator!(K, V)
         {
-                private RBPairT pair,
-                                start;
+                private RBPairT pair;
 
                 public this (TreeMap map)
                 {
                         super (map);
-                        start = map.tree;
+                        pair = cast(RBPairT) map.tree.leftmost;
                 }
 
                 public final V get(inout K key)
                 {
-                        auto v = get();
                         key = pair.key;
-                        return v;
+                        return get();
                 }
 
                 public final V get()
                 {
                         decRemaining();
-
-                        if (pair)
-                            pair = cast(RBPairT) pair.successor();
-                        else
-                           if (start)
-                               pair = cast(RBPairT) start.leftmost(), start = null;
-                           else
-                              throw new Exception ("invalid tree iterator");
-                                                              
-                        return pair.element;
+                        auto v = pair.element();
+                        pair = cast(RBPairT) pair.successor();
+                        return v;
                 }
         }
 }

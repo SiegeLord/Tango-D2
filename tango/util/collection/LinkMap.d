@@ -469,33 +469,26 @@ public class LinkMap(K, T) : MapCollection!(K, T) // , IReadable, IWritable
 
         private static class MapIterator(K, V) : AbstractMapIterator!(K, V)
         {
-                private LLPairT pair, 
-                                start;
+                private LLPairT pair;
                 
                 public this (LinkMap map)
                 {
                         super (map);
-                        start = map.list;
+                        pair = map.list;
                 } 
 
                 public final V get(inout K key)
                 {
-                        auto v = get();
                         key = pair.key;
-                        return v;
+                        return get();
                 }
 
                 public final V get()
                 {
                         decRemaining();
-
-                        if (pair)
-                            pair = cast(LLPairT)(pair.next);
-                        else
-                           if (start)
-                               pair = start, start = null;
-
-                        return pair.element;
+                        auto v = pair.element();
+                        pair = cast(LLPairT) pair.next();
+                        return v;
                 }
         }
 }
