@@ -7,8 +7,8 @@
  * Authors:   Don Clugston
  * Copyright: Copyright (C) 2005-2006 Don Clugston
  */
-module tango.meta.Demangle;
-private import tango.meta.Convert;
+module tango.util.meta.Demangle;
+private import tango.util.meta.Convert;
 /*
  Implementation is via pairs of metafunctions:
  a 'demangle' metafunction, which returns a const char [],

@@ -8,7 +8,7 @@
  * Authors:   Don Clugston
  * Copyright: Copyright (C) 2005-2006 Don Clugston
  */
-module tango.meta.Ctype;
+module tango.util.meta.Ctype;
 // Naive implementation. This works fine, because it is only executed at compile time.
 
 template isalnum(dchar c)

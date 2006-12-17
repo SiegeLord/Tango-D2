@@ -13,8 +13,8 @@
  * Authors:   Don Clugston
  * Copyright: Copyright (C) 2005-2006 Don Clugston
  */
-module tango.meta.Nameof;
-private import tango.meta.Demangle;
+module tango.util.meta.Nameof;
+private import tango.util.meta.Demangle;
 
 
 private {

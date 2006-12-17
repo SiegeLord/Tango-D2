@@ -5,7 +5,7 @@
  * Authors:   Don Clugston
  * Copyright: Copyright (C) 2005-2006 Don Clugston
  */
-module tango.meta.Convert;
+module tango.util.meta.Convert;
 
 private {
 

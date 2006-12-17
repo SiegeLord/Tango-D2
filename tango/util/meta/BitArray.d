@@ -9,7 +9,7 @@
  * Copyright: Copyright (C) 2005-2006 Don Clugston
  *
  */
-module tango.meta.BitArray;
+module tango.util.meta.BitArray;
 
 /** Return true if bit b of bitarray is set.
  */
