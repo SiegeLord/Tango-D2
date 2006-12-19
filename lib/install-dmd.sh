@@ -39,7 +39,7 @@ DMD_INSTALL=0
 DSSS_INSTALL=0
 #
 CLEANALL=1
-#
+# 42.
 #DEBUG=0
 #
 #SIMULATE=0
@@ -257,11 +257,11 @@ dmd_conf_install() {
 		# no dmd.conf installed yet, install a fresh one!
 		echo "[Environment]" > ${DMD_CONF} || die "Error writing to ${DMD_CONF}."
 		echo ";DFLAGS=-I\"${PREFIX}/include/phobos -L-L${PREFIX}/lib\"" >> ${DMD_CONF} || die "Error writing to ${DMD_CONF}."
-		echo "DFLAGS=-I\"${PREFIX}/include/tango -L-L${PREFIX}/lib/\"" >> ${DMD_CONF} || die "Error writing to ${DMD_CONF}."
+		echo "DFLAGS=-I\"${PREFIX}/include/tango -L-L${PREFIX}/lib/\" -version=Posix -version=Tango" >> ${DMD_CONF} || die "Error writing to ${DMD_CONF}."
 	else
 		echo -n "..dmd.conf found: `whereis dmd | tr ' ' '\n' | grep dmd.conf -m 1` -- doing sed magic."
 
-		sed -e 's/DFLAGS=-I.*phobos.*/;&\nDFLAGS=-I"\${PREFIX}\/include\/tango\/ -L-L\${PREFIX}\/lib\/"/g' `whereis dmd | tr ' ' '\n' | grep -v X | grep -m 1 dmd.conf` > _dmd.conf || die
+		sed -e 's/DFLAGS=-I.*phobos.*/;&\nDFLAGS=-I"\${PREFIX}\/include\/tango\/ -L-L\${PREFIX}\/lib\/ -version=Posix -version=Tango"/g' `whereis dmd | tr ' ' '\n' | grep -v X | grep -m 1 dmd.conf` > _dmd.conf || die
 		mv _dmd.conf `whereis dmd | tr ' ' '\n' | grep -v X | grep -m 1 dmd.conf` || die # replace old dmd.conf with changed dmd.conf
 	fi
 }
