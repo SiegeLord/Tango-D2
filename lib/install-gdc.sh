@@ -42,7 +42,7 @@ do
     then
         SETPREFIX=1
         shift
-        
+
         PREFIX="$1"
     elif [ "$1" = "--uninstall" ]
     then
@@ -116,7 +116,7 @@ cat $GPHOBOS_DIR/libgphobos.spec.phobos |
   sed 's|:|: %{!nostdlib:-lc| ; s|\%(.*|-L'$SPECLIBDIR' '$SPECLIBDIR'/libtango.a '$SPECLIBDIR'/libgphobos.a}|g' >> $GPHOBOS_DIR/libgphobos.spec
 echo '
 %rename cc1_options orig_options
-*cc1_options: %{!nostdinc:-nostdinc -I'$SPECINCDIR'} -fversion=Posix %(orig_options)' >> $GPHOBOS_DIR/libgphobos.spec
+*cc1_options: %{!nostdinc:-nostdinc -I'$SPECINCDIR'} -fversion=Tango -fversion=Posix %(orig_options)' >> $GPHOBOS_DIR/libgphobos.spec
 
 die "Done!" 0
 
