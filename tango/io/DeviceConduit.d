@@ -177,7 +177,7 @@ class DeviceConduit : Conduit
                 protected override uint reader (void[] dst)
                 {
                         DWORD read;
-                        void *p = dst;
+                        void *p = dst.ptr;
 
                         if (! ReadFile (handle, p, dst.length, &read, null))
                               error ();
@@ -198,7 +198,7 @@ class DeviceConduit : Conduit
                 {
                         DWORD written;
 
-                        if (! WriteFile (handle, src, src.length, &written, null))
+                        if (! WriteFile (handle, src.ptr, src.length, &written, null))
                               error ();
 
                         return written;

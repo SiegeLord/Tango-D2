@@ -217,7 +217,7 @@ class FileProxy
                         version (Win32SansUnicode)
                                  HANDLE h = FindFirstFileA (path.cString, &info);
                              else
-                                HANDLE h = FindFirstFileW (name16, &info);
+                                HANDLE h = FindFirstFileW (name16.ptr, &info);
 
                         if (h == INVALID_HANDLE_VALUE)
                             exception ();
@@ -348,7 +348,7 @@ class FileProxy
                                    }
                                 else
                                    {
-                                   if (! RemoveDirectoryW (name16))
+                                   if (! RemoveDirectoryW (name16.ptr))
                                          exception();
                                    }
                            }
@@ -360,7 +360,7 @@ class FileProxy
                                    }
                                 else
                                    {
-                                   if (! DeleteFileW (name16))
+                                   if (! DeleteFileW (name16.ptr))
                                          exception();
                                    }
 
@@ -384,7 +384,7 @@ class FileProxy
                         version (Win32SansUnicode)
                                  result = MoveFileExA (path.cString, dst.cString, Typical);
                              else
-                                result = MoveFileExW (name16, Utf.toUtf16(dst.cString), Typical);
+                                result = MoveFileExW (name16.ptr, Utf.toUtf16(dst.cString).ptr, Typical);
 
                         if (! result)
                               exception();
@@ -408,7 +408,7 @@ class FileProxy
                                                   0, null, CREATE_ALWAYS, 
                                                   FILE_ATTRIBUTE_NORMAL, null);
                              else
-                                h = CreateFileW (name16, GENERIC_WRITE, 
+                                h = CreateFileW (name16.ptr, GENERIC_WRITE, 
                                                  0, null, CREATE_ALWAYS, 
                                                  FILE_ATTRIBUTE_NORMAL, null);
 
@@ -436,7 +436,7 @@ class FileProxy
                                 }
                              else
                                 {
-                                if (! CreateDirectoryW (name16, null))
+                                if (! CreateDirectoryW (name16.ptr, null))
                                       exception();
                                 }
                         return this;
@@ -468,9 +468,9 @@ class FileProxy
                         list = new FilePath[50];
 
                         version (Win32SansUnicode)
-                                h = FindFirstFileA (path.toUtf8 ~ "\\*\0", &fileinfo);
+                                h = FindFirstFileA ((path.toUtf8 ~ "\\*\0").ptr, &fileinfo);
                              else
-                                h = FindFirstFileW (name16[0..$-1] ~ "\\*\0", &fileinfo);
+                                h = FindFirstFileW ((name16[0..$-1] ~ "\\*\0").ptr, &fileinfo);
 
                         if (h != INVALID_HANDLE_VALUE)
                             try {
@@ -483,7 +483,7 @@ class FileProxy
                                            }
                                         else
                                            {
-                                           int len = wcslen (fileinfo.cFileName);
+                                           int len = wcslen (fileinfo.cFileName.ptr);
                                            fp = new FilePath (Utf.toUtf8(fileinfo.cFileName [0 .. len]));
                                            }
 

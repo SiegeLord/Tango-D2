@@ -392,7 +392,7 @@ class FileConduit : DeviceConduit, DeviceConduit.Seek
                                 {
                                 wchar[256] tmp = void;
                                 auto name = Utf.toUtf16 (path.cString, tmp);
-                                handle = CreateFileW (name, access, share,
+                                handle = CreateFileW (name.ptr, access, share,
                                                       null, create, 
                                                       attr | FILE_ATTRIBUTE_NORMAL,
                                                       cast(HANDLE) null);

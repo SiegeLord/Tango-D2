@@ -266,7 +266,7 @@ struct Console
                                 assert (device.id < 3);
                                 handle = GetStdHandle (id[device.id]);
                                 if (! handle)
-                                      handle = CreateFileA (f[device.id], 
+                                      handle = CreateFileA (f[device.id].ptr, 
                                                GENERIC_READ | GENERIC_WRITE,  
                                                FILE_SHARE_READ | FILE_SHARE_WRITE, 
                                                null, OPEN_EXISTING, 0, null);
