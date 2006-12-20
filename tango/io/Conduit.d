@@ -220,6 +220,17 @@ class Conduit : IConduit, IConduitFilter
 
         /***********************************************************************
 
+                Is the conduit alive?
+
+        ***********************************************************************/
+
+        bool isAlive ()
+        {
+                return true;
+        }
+
+        /***********************************************************************
+
                 Transfer the content of another conduit to this one. Returns
                 a reference to this class, and throws IOException on failure.
 
@@ -232,7 +243,7 @@ class Conduit : IConduit, IConduitFilter
                 uint i;
                 while ((i = source.read (buffer)) != Eof)
                         if (! flush (buffer [0..i]))
-                              throw new IOException ("target Eof while copying conduit");
+                              exception ("target Eof while copying conduit");
                 
                 delete buffer;
                 return this;
@@ -281,6 +292,15 @@ class Conduit : IConduit, IConduitFilter
         static bool isHalting ()
         {
                 return halting;
+        }
+
+        /***********************************************************************
+
+        ***********************************************************************/
+
+        protected static void exception (char[] msg)
+        {
+                throw new IOException (msg);
         }
 }
 
