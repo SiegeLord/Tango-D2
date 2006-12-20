@@ -1,5 +1,39 @@
 
-private import std.c.darwin.ldblcompat;
+private
+{
+version (PPC)
+{
+    version (GNU_WantLongDoubleFormat128)
+	version = GNU_UseLongDoubleFormat128;
+    else version (GNU_WantLongDoubleFormat64)
+	{ }
+    else
+    {
+	version (GNU_LongDouble128)
+	    version = GNU_UseLongDoubleFormat128;
+    }
+}
+
+version (GNU_UseLongDoubleFormat128)
+{
+    // Currently, the following test from cdefs.h is not supported:
+    //# if __ENVIRONMENT_MAC_OS_X_VERSION_MIN_REQUIRED__-0 < 1040
+    version (all)
+	const char[] __DARWIN_LDBL_COMPAT  = "$LDBL128";
+    else
+	const char[] __DARWIN_LDBL_COMPAT  = "$LDBLStub";
+    const char[] __DARWIN_LDBL_COMPAT2 = "$LDBL128";
+
+    const char[] __LIBMLDBL_COMPAT = "$LDBL128";
+}
+else
+{
+    const char[] __DARWIN_LDBL_COMPAT  = "";
+    const char[] __DARWIN_LDBL_COMPAT2 = "";
+
+    const char[] __LIBMLDBL_COMPAT = "";
+}
+}
 
 extern (C) {
 
@@ -124,7 +158,7 @@ pragma(GNU_asm,"_fdiml" ~ __LIBMLDBL_COMPAT) real fdiml( real, real );
 pragma(GNU_asm,"_fmaxl" ~ __LIBMLDBL_COMPAT) real fmaxl( real, real );
 pragma(GNU_asm,"_fminl" ~ __LIBMLDBL_COMPAT) real fminl( real, real );
 pragma(GNU_asm,"_fmal" ~ __LIBMLDBL_COMPAT) real fmal( real, real, real );
-*/  
+*/
 
 alias __builtin_sqrt sqrt;
 }
