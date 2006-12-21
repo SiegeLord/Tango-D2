@@ -5684,9 +5684,9 @@ esac
 #
 # in Make: .win.o maybe... to get a separate rule
 
-if test -n "$d_module_mach"; then
-  D_EXTRA_OBJS="$D_EXTRA_OBJS std/c/mach/mach.o"
-fi
+#if test -n "$d_module_mach"; then
+#  D_EXTRA_OBJS="$D_EXTRA_OBJS std/c/mach/mach.o"
+#fi
 
 if test -n "$d_have_unix" && test "$enable_unix" = auto ; then
   enable_unix=yes
@@ -6875,7 +6875,7 @@ echo "${ECHO_T}$ac_cv_func_pthread_cond_wait" >&6
 	     d_module_mach=1 ;;
       pthreads) DCFG_SEMAPHORE_IMPL="GNU_Sempahore_Pthreads" ;;
       skyos) DCFG_SEMAPHORE_IMPL="GNU_Sempahore_Pthreads"
-	     D_EXTRA_OBJS="$D_EXTRA_OBJS std/c/skyos/compat.o"
+	     #D_EXTRA_OBJS="$D_EXTRA_OBJS std/c/skyos/compat.o"
 	     ;;
       *)     { { echo "$as_me:$LINENO: error: No usable semaphore implementation" >&5
 echo "$as_me: error: No usable semaphore implementation" >&2;}

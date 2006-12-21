@@ -122,7 +122,7 @@ if true; then
 	     d_module_mach=1 ;;
       pthreads) DCFG_SEMAPHORE_IMPL="GNU_Sempahore_Pthreads" ;;
       skyos) DCFG_SEMAPHORE_IMPL="GNU_Sempahore_Pthreads"
-	     D_EXTRA_OBJS="$D_EXTRA_OBJS std/c/skyos/compat.o"
+	     #D_EXTRA_OBJS="$D_EXTRA_OBJS std/c/skyos/compat.o"
 	     ;;
       *)     AC_MSG_ERROR([No usable semaphore implementation]) ;;
     esac
@@ -181,7 +181,7 @@ case "$d_target_os" in
 	    d_gc_data="$d_gc_data GC_Use_Data_Fixed"
 	    dnl maybe just GC_Use_Stack_ExternC
 	    ;;
-  linux*)   
+  linux*)
   	    #d_gc_stack=GC_Use_Stack_Proc_Stat
 	    d_gc_data="$d_gc_data GC_Use_Data_Fixed"
 	    #have_proc_maps=1

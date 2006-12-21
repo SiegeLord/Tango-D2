@@ -248,7 +248,7 @@ AC_SUBST(DCFG_ROUND)
 
 AC_CHECK_FUNC(tgamma,DCFG_TGAMMA="",[
 	DCFG_TGAMMA="GNU_Need_tgamma"
-	D_EXTRA_OBJS="$D_EXTRA_OBJS etc/gamma.o"	
+	D_EXTRA_OBJS="$D_EXTRA_OBJS etc/gamma.o"
 	])
 AC_SUBST(DCFG_TGAMMA)
 
@@ -394,9 +394,9 @@ esac
 #
 # in Make: .win.o maybe... to get a separate rule
 
-if test -n "$d_module_mach"; then
-  D_EXTRA_OBJS="$D_EXTRA_OBJS std/c/mach/mach.o"
-fi
+#if test -n "$d_module_mach"; then
+#  D_EXTRA_OBJS="$D_EXTRA_OBJS std/c/mach/mach.o"
+#fi
 
 if test -n "$d_have_unix" && test "$enable_unix" = auto ; then
   enable_unix=yes
@@ -413,7 +413,7 @@ AC_SUBST(DCFG_GETPWNAM_R)
 
 
 AC_SUBST(DCFG_UNIX)
-	
+
 if test -z "$DFLAGS"; then
     DFLAGS="-g -frelease -O2"
 fi
@@ -441,7 +441,7 @@ AC_SUBST(srcdir)
 
 # Cross stuff
 # if test -n "$d_cross_comp"; then
-#	
+#
 # fi
 
 # Garbage collection configuration
