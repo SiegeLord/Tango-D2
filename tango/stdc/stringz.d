@@ -31,7 +31,7 @@ char* toUtf8z (char[] s)
 
 char[] fromUtf8z (char* s)
 {
-        return s[0..strlen(s)];
+        return s ? s[0..strlen(s)] : null;
 }
 
 unittest
