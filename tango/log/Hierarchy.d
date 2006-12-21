@@ -72,7 +72,7 @@ private class LoggerInstance : Logger
 
         final bool isEnabled (Level level)
         {
-                return cast(bool) (level >= this.level);
+                return level >= this.level;
         }
 
         /***********************************************************************
@@ -265,7 +265,7 @@ private class LoggerInstance : Logger
 
         final ulong getRuntime ()
         {
-                return Event.getRuntime();
+                return Event.getRuntime;
         }
 
         /***********************************************************************
@@ -589,6 +589,4 @@ class Hierarchy : IHierarchy
                    }
         }
 }
-
-
 

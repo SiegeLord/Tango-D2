@@ -24,26 +24,54 @@ private import tango.log.model.ILevel;
         methods to modify specific Logger attributes. 
         
         ---
-        Logger myLogger = Logger.getLogger ("my.logger");
+        import tango.log.Log;
+        
+        auto log = Log.getLogger ("my.logger");
 
-        myLogger.info  ("an informational message");
-        myLogger.error ("an exception message: " ~ exception.toUtf8);
+        log.info  ("an informational message");
+        log.error ("an exception message: " ~ exception.toUtf8);
 
         etc ...
         ---
+        
+        It is considered good form to assign the logger instances during
+        static construction. For example: if it were appropriate to have
+        one logger instance per module, each might be assigned from within
+        the module ctor
+
+        ---
+        private Log log;
+        
+        static this()
+        {
+            log = Log.getLogger (nameOfThisModule);
+        }
+        ---
 
         Messages passed to a Logger are assumed to be pre-formatted. You 
-        may find that the TextFormat class is handy for collating various 
-        components of the message. 
+        may find that the Sprint class is handy for collating various 
+        components of the message (or use Formatter.sprint() directly): 
         
         ---
-        TextFormat tf = new TextFormat (256);
+        static this()
+        {
+            sprint = new Sprint (256);
+            log = Log.getLogger (nameOfThisModule);
+        }
 
-        myLogger.warn (tf.format("temperature is %d degrees!", 101));
+        log.warn (sprint("temperature is {0} degrees!", 101));
         ---
 
-        You may also need to use one of the two classes BasicConfigurator 
-        and PropertyConfigurator, along with the various Layout & Appender 
+        To avoid overhead when constructing formatted messages, check to
+        see if the logger is active first
+
+        ---
+        if (isActive (log))
+            log.warn (sprint("temperature is {0} degrees!", 101));
+        ---
+
+       
+        You may also need to use one of the various Layout & Appender 
         implementations to support your exact rendering needs.
         
         tango.log closely follows both the API and the behaviour as documented 
@@ -109,7 +137,7 @@ public class Logger : ILevel
         
                 Append a message to this logger using a delegate to 
                 provide the content. Does not invoke the delegate if
-                the the logger is not enabled for the specified level.
+                the logger is not enabled for the specified level.
 
         ***********************************************************************/
 
