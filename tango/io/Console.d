@@ -152,8 +152,7 @@ struct Console
                         eob if not.
 
                         Remarks:
-                        Append the result of other.toUtf8() to the console, 
-                        and flush.
+                        Append the result of other.toUtf8() to the console
 
                 **************************************************************/
 
@@ -171,7 +170,7 @@ struct Console
                         Throws an IOException indicating eof or eob if not.
 
                         Remarks:
-                        Emit a platform-specific newline into the buffer
+                        Emit a newline into the buffer
 
                 **************************************************************/
 
