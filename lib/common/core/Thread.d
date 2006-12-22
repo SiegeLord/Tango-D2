@@ -2073,7 +2073,7 @@ class FiberException : ThreadException
  *
  * ----------------------------------------------------------------------
  *
- * Authors: The design of this class is based on one by Mikola Lysenko.
+ * Authors: Based on a design by Mikola Lysenko.
  */
 class Fiber
 {
@@ -2210,6 +2210,7 @@ class Fiber
     {
         m_state = State.HOLD;
         initStack();
+        m_unhandled = null;
     }
 
 
