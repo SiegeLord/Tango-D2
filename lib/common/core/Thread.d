@@ -2419,7 +2419,7 @@ private:
             m_pmem = mmap( null,
                            sz,
                            PROT_READ | PROT_WRITE | PROT_EXEC,
-                           MAP_PRIVATE | MAP_ANONYMOUS,
+                           MAP_PRIVATE | MAP_ANON,
                            0,
                            0 );
             if( m_pmem == MAP_FAILED )
