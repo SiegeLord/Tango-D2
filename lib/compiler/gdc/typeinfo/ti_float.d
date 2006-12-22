@@ -3,8 +3,6 @@
 
 module typeinfo.ti_float;
 
-private import tango.stdc.math;
-
 class TypeInfo_f : TypeInfo
 {
     char[] toUtf8() { return "float"; }
@@ -17,15 +15,15 @@ class TypeInfo_f : TypeInfo
     static int _equals(float f1, float f2)
     {
 	return f1 == f2 ||
-		(isnan(f1) && isnan(f2));
+		(f1 !<>= f1 && f2 !<>= f2);
     }
 
     static int _compare(float d1, float d2)
     {
 	if (d1 !<>= d2)		// if either are NaN
 	{
-	    if (isnan(d1))
-	    {	if (isnan(d2))
+	    if (d1 !<>= d1)
+	    {	if (d2 !<>= d2)
 		    return 0;
 		return -1;
 	    }

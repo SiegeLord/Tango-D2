@@ -3,8 +3,6 @@
 
 module typeinfo.ti_double;
 
-private import tango.stdc.math;
-
 class TypeInfo_d : TypeInfo
 {
     char[] toUtf8() { return "double"; }
@@ -17,15 +15,15 @@ class TypeInfo_d : TypeInfo
     static int _equals(double f1, double f2)
     {
 	return f1 == f2 ||
-		(isnan(f1) && isnan(f2));
+		(f1 !<>= f1 && f2 !<>= f2);
     }
 
     static int _compare(double d1, double d2)
     {
 	if (d1 !<>= d2)		// if either are NaN
 	{
-	    if (isnan(d1))
-	    {	if (isnan(d2))
+	    if (d1 !<>= d1)
+	    {	if (d2 !<>= d2)
 		    return 0;
 		return -1;
 	    }
