@@ -280,7 +280,7 @@ else version( Posix )
                 //       this case it is safe to simply suspend and not worry
                 //       about the stack pointers as the thread will not have
                 //       any references to GC-managed data.
-                if( obj !is null )
+                if( obj && !obj.m_lock )
                 {
                     obj.m_curr.tstack = getStackTop();
                 }
@@ -299,7 +299,7 @@ else version( Posix )
 
                 sigsuspend( &sigres );
 
-                if( obj !is null )
+                if( obj && !obj.m_lock )
                 {
                     obj.m_curr.tstack = obj.m_curr.bstack;
                 }
@@ -423,11 +423,14 @@ class Thread
      *
      * Params:
      *  fn = The thread function.
+     *
+     * In:
+     *  fn must not be null.
      */
     this( void function() fn )
     in
     {
-        assert( fn !is null );
+        assert( fn );
     }
     body
     {
@@ -443,11 +446,14 @@ class Thread
      *
      * Params:
      *  dg = The thread function.
+     *
+     * In:
+     *  dg must not be null.
      */
     this( void delegate() dg )
     in
     {
-        assert( dg !is null );
+        assert( dg );
     }
     body
     {
@@ -565,7 +571,7 @@ class Thread
             //       on object destruction.
             volatile m_addr = m_addr.init;
         }
-        if( rethrow && m_unhandled !is null )
+        if( rethrow && m_unhandled )
         {
             throw m_unhandled;
         }
@@ -987,6 +993,42 @@ private:
     ////////////////////////////////////////////////////////////////////////////
 
 
+    final void pushContext( Context* c )
+    in
+    {
+        assert( !c.within );
+    }
+    body
+    {
+        c.within = m_curr;
+        m_curr = c;
+    }
+
+
+    final void popContext()
+    in
+    {
+        assert( m_curr && m_curr.within );
+    }
+    body
+    {
+        Context* c = m_curr;
+        m_curr = c.within;
+        c.within = null;
+    }
+
+
+    final Context* topContext()
+    in
+    {
+        assert( m_curr );
+    }
+    body
+    {
+        return m_curr;
+    }
+
+
     static struct Context
     {
         void*           bstack,
@@ -999,6 +1041,7 @@ private:
 
     Context             m_main;
     Context*            m_curr;
+    bool                m_lock;
 
     version( Win32 )
     {
@@ -1075,7 +1118,7 @@ private:
     static void add( Context* c )
     in
     {
-        assert( c !is null );
+        assert( c );
         assert( !c.next && !c.prev );
     }
     body
@@ -1099,7 +1142,7 @@ private:
     static void remove( Context* c )
     in
     {
-        assert( c !is null );
+        assert( c );
         assert( c.next || c.prev );
     }
     body
@@ -1134,7 +1177,7 @@ private:
     static void add( Thread t )
     in
     {
-        assert( t !is null );
+        assert( t );
         assert( !t.next && !t.prev );
         assert( t.isRunning );
     }
@@ -1159,7 +1202,7 @@ private:
     static void remove( Thread t )
     in
     {
-        assert( t !is null );
+        assert( t );
         assert( t.next || t.prev );
         version( Win32 )
         {
@@ -1384,7 +1427,8 @@ extern (C) void thread_suspendAll()
 
             if( !GetThreadContext( t.m_hndl, &context ) )
                 throw new ThreadException( "Unable to load thread context" );
-            t.m_curr.tstack = cast(void*) context.Esp;
+            if( !t.m_lock )
+                t.m_curr.tstack = cast(void*) context.Esp;
             // edi,esi,ebp,esp,ebx,edx,ecx,eax
             t.m_reg[0] = context.Edi;
             t.m_reg[1] = context.Esi;
@@ -1420,7 +1464,7 @@ extern (C) void thread_suspendAll()
                 //       current approach.
                 sem_wait( &suspendCount );
             }
-            else
+            else if( !t.m_lock )
             {
                 t.m_curr.tstack = getStackTop();
             }
@@ -1482,7 +1526,7 @@ extern (C) void thread_suspendAll()
  * call to thread_suspendAll before the threads are actually resumed.
  *
  * In:
- *  assert( suspendDepth > 0 );
+ *  This routine must be preceded by a call to thread_suspendAll.
  *
  * Throws:
  *  ThreadException if the resume operation fails for a running thread.
@@ -1522,7 +1566,8 @@ body
                 throw new ThreadException( "Unable to resume thread" );
             }
 
-            t.m_curr.tstack = t.m_curr.bstack;
+            if( !t.m_lock )
+                t.m_curr.tstack = t.m_curr.bstack;
             t.m_reg[0 .. $] = 0;
         }
         else version( Posix )
@@ -1539,7 +1584,7 @@ body
                     throw new ThreadException( "Unable to resume thread" );
                 }
             }
-            else
+            else if( !t.m_lock )
             {
                 t.m_curr.tstack = t.m_curr.bstack;
             }
@@ -1577,6 +1622,9 @@ private alias void delegate( void*, void* ) scanAllThreadsFn;
  * Params:
  *  scan        = The scanner function.  It should scan from p1 through p2 - 1.
  *  curStackTop = An optional pointer to the top of the calling thread's stack.
+ *
+ * In:
+ *  This routine must be preceded by a call to thread_suspendAll.
  */
 extern (C) void thread_scanAll( scanAllThreadsFn scan, void* curStackTop = null )
 in
@@ -1591,15 +1639,21 @@ body
     if( curStackTop && Thread.sm_tbeg )
     {
         thisThread  = Thread.getThis();
-        oldStackTop = thisThread.m_curr.tstack;
-        thisThread.m_curr.tstack = curStackTop;
+        if( !thisThread.m_lock )
+        {
+            oldStackTop = thisThread.m_curr.tstack;
+            thisThread.m_curr.tstack = curStackTop;
+        }
     }
 
     scope( exit )
     {
         if( curStackTop && Thread.sm_tbeg )
         {
-            thisThread.m_curr.tstack = oldStackTop;
+            if( !thisThread.m_lock )
+            {
+                thisThread.m_curr.tstack = oldStackTop;
+            }
         }
     }
 
@@ -1732,7 +1786,7 @@ private:
 
 
 ////////////////////////////////////////////////////////////////////////////////
-// ThreadGroup
+// Thread Group
 ////////////////////////////////////////////////////////////////////////////////
 
 
@@ -1751,7 +1805,7 @@ class ThreadGroup
      * Returns:
      *  A reference to the newly created thread.
      */
-    Thread create( void function() fn )
+    final Thread create( void function() fn )
     {
         Thread t = new Thread( fn );
 
@@ -1774,7 +1828,7 @@ class ThreadGroup
      * Returns:
      *  A reference to the newly created thread.
      */
-    Thread create( void delegate() dg )
+    final Thread create( void delegate() dg )
     {
         Thread t = new Thread( dg );
 
@@ -1794,9 +1848,9 @@ class ThreadGroup
      *  t = The thread to add.
      *
      * In:
-     *  assert( t );
+     *  t must not be null.
      */
-    void add( Thread t )
+    final void add( Thread t )
     in
     {
         assert( t );
@@ -1818,9 +1872,9 @@ class ThreadGroup
      *  t = The thread to remove.
      *
      * In:
-     *  assert( t );
+     *  t must not be null.
      */
-    void remove( Thread t )
+    final void remove( Thread t )
     in
     {
         assert( t );
@@ -1837,7 +1891,7 @@ class ThreadGroup
     /**
      * Operates on all threads currently tracked by this object.
      */
-    int opApply( int delegate( inout Thread ) dg )
+    final int opApply( int delegate( inout Thread ) dg )
     {
         synchronized
         {
@@ -1867,7 +1921,7 @@ class ThreadGroup
      * Throws:
      *  Any exception not handled by the joined threads.
      */
-    void joinAll( bool rethrow = true )
+    final void joinAll( bool rethrow = true )
     {
         synchronized
         {
@@ -1883,4 +1937,799 @@ class ThreadGroup
 
 private:
     Thread[Thread]  m_all;
+}
+
+
+////////////////////////////////////////////////////////////////////////////////
+// Fiber Platform Detection
+////////////////////////////////////////////////////////////////////////////////
+
+
+version( D_InlineAsm_X86 )
+{
+    version( X86_64 )
+    {
+
+    }
+    else
+    {
+        version( DigitalMars )
+        {
+            version( Win32 )
+                version = AsmX86_Win32;
+            else version( linux )
+                version = AsmX86_Linux;
+        }
+    }
+}
+
+
+version( Posix )
+{
+    private import tango.stdc.posix.sys.mman;
+}
+
+
+////////////////////////////////////////////////////////////////////////////////
+// Fiber Entry Point
+////////////////////////////////////////////////////////////////////////////////
+
+
+private
+{
+    extern (C) void fiber_entryPoint()
+    {
+        Fiber   obj = Fiber.getThis();
+        assert( obj );
+
+        obj.m_state = Fiber.State.EXEC;
+
+        try
+        {
+            obj.run();
+        }
+        catch( Object o )
+        {
+            obj.m_unhandled = o;
+        }
+
+        obj.m_state = Fiber.State.TERM;
+        obj.switchOut();
+    }
+}
+
+
+////////////////////////////////////////////////////////////////////////////////
+// Fiber Exception
+////////////////////////////////////////////////////////////////////////////////
+
+
+/**
+ * All exceptions thrown from the Fiber class derive from this class.
+ */
+class FiberException : ThreadException
+{
+    this( char[] msg )
+    {
+        super( msg );
+    }
+}
+
+
+////////////////////////////////////////////////////////////////////////////////
+// Fiber
+////////////////////////////////////////////////////////////////////////////////
+
+
+/**
+ * This class provides a cooperative concurrency mechanism integrated with the
+ * threading and garbage collection functionality.  Calling a fiber may be
+ * considered a blocking operation that returns when the fiber yields (via
+ * Fiber.yield()).  Execution occurs within the context of the calling thread
+ * so synchronization is not necessary to guarantee memory visibility so long
+ * as the same thread calls the fiber each time.  Please note that there is no
+ * requirement that a fiber be bound to one specific thread.  Rather, fibers
+ * may be freely passed between threads so long as they are not currently
+ * executing.  Like threads, a new fiber thread may be created using either
+ * derivation or composition, as in the following example.
+ *
+ * Example:
+ * ----------------------------------------------------------------------
+ *
+ * class DerivedFiber : Fiber
+ * {
+ *     this()
+ *     {
+ *         super( &run );
+ *     }
+ *
+ * private:
+ *     void run()
+ *     {
+ *         printf( "Derived fiber running.\n" );
+ *     }
+ * }
+ *
+ * void threadFunc()
+ * {
+ *     printf( "Composed fiber running.\n" );
+ *     Fiber.yield();
+ *     printf( "Composed fiber running.\n" );
+ * }
+ *
+ * // create instances of each type
+ * Fiber derived = new DerivedFiber();
+ * Fiber composed = new Fiber( &threadFunc );
+ *
+ * // call both fibers once
+ * derived.call();
+ * composed.call();
+ * printf( "Execution returned to calling context.\n" );
+ * composed.call();
+ *
+ * // since each fiber has run to completion, each should have state TERM
+ * assert( derived.state == Fiber.State.TERM );
+ * assert( composed.state == Fiber.State.TERM );
+ *
+ * ----------------------------------------------------------------------
+ *
+ * Authors: The design of this class is based on one by Mikola Lysenko.
+ */
+class Fiber
+{
+    const size_t DEFAULT_STACKSIZE = 4096;
+
+
+    ////////////////////////////////////////////////////////////////////////////
+    // Initialization
+    ////////////////////////////////////////////////////////////////////////////
+
+
+    /**
+     * Initializes a fiber object which is associated with a static
+     * D function.
+     *
+     * Params:
+     *  fn = The thread function.
+     *  sz = The stack size for this fiber.
+     *
+     * In:
+     *  fn must not be null.
+     */
+    this( void function() fn, size_t sz = DEFAULT_STACKSIZE )
+    in
+    {
+        assert( fn );
+    }
+    body
+    {
+        m_fn    = fn;
+        m_call  = Call.FN;
+        m_state = State.HOLD;
+        allocStack( sz );
+        initStack();
+    }
+
+
+    /**
+     * Initializes a fiber object which is associated with a dynamic
+     * D function.
+     *
+     * Params:
+     *  dg = The thread function.
+     *  sz = The stack size for this fiber.
+     *
+     * In:
+     *  dg must not be null.
+     */
+    this( void delegate() dg, size_t sz = DEFAULT_STACKSIZE )
+    in
+    {
+        assert( dg );
+    }
+    body
+    {
+        m_dg    = dg;
+        m_call  = Call.DG;
+        m_state = State.HOLD;
+        allocStack( sz );
+        initStack();
+    }
+
+
+    /**
+     * Cleans up any remaining resources used by this object.
+     */
+    ~this()
+    {
+        freeStack();
+    }
+
+
+    ////////////////////////////////////////////////////////////////////////////
+    // General Actions
+    ////////////////////////////////////////////////////////////////////////////
+
+
+    /**
+     * Transfers execution to this fiber object.  The calling context will be
+     * suspended until the fiber calls Fiber.yield() or until it terminates
+     * via an unhandled exception.
+     *
+     * Params:
+     *  rethrow = Rethrow any unhandled exception which may have caused this
+     *            fiber to terminate.
+     *
+     * In:
+     *  This fiber must be in state HOLD.
+     *
+     * Throws:
+     *  Any exception not handled by the joined thread.
+     */
+    final void call( bool rethrow = true )
+    in
+    {
+        assert( m_state == State.HOLD );
+    }
+    body
+    {
+        Fiber   obj = getThis();
+
+        setThis( this );
+        this.switchIn();
+        setThis( obj );
+
+        if( rethrow && m_unhandled )
+        {
+            throw m_unhandled;
+        }
+    }
+
+
+    /**
+     * Resets this fiber so that it may be re-used.  This routine may only be
+     * called for fibers that have terminated, as doing otherwise could result
+     * in scope-dependent functionality that is not executed.  Stack-based
+     * classes, for example, may not be cleaned up properly if a fiber is reset
+     * before it has terminated.
+     *
+     * In:
+     *  This fiber must be in state TERM.
+     */
+    final void reset()
+    in
+    {
+        assert( m_state == State.TERM );
+        // NOTE: Currently, this should be true for any context which is not
+        //       frozen by the GC.  However, if things change so that tstack
+        //       is no longer reset when resume is called then this routine
+        //       will need to reset tstack.  This assert is here as a reminer.
+        assert( m_ctxt.tstack == m_ctxt.bstack );
+    }
+    body
+    {
+        m_state = State.HOLD;
+        initStack();
+    }
+
+
+    ////////////////////////////////////////////////////////////////////////////
+    // General Properties
+    ////////////////////////////////////////////////////////////////////////////
+
+
+    /**
+     * A fiber may occupy one of three states: HOLD, EXEC, and TERM.  The HOLD
+     * state applies to any fiber that is suspended and ready to be called.
+     * The EXEC state will be set for any fiber that is currently executing.
+     * And the TERM state is set when a fiber terminates.  Once a fiber
+     * terminates, it must be reset before it may be called again.
+     */
+    enum State
+    {
+        HOLD,   ///
+        EXEC,   ///
+        TERM    ///
+    }
+
+
+    /**
+     * Gets the current state of this fiber.
+     *
+     * Returns:
+     *  The state of this fiber as an enumerated value.
+     */
+    final State state()
+    {
+        return m_state;
+    }
+
+
+    ////////////////////////////////////////////////////////////////////////////
+    // Actions on Calling Fiber
+    ////////////////////////////////////////////////////////////////////////////
+
+
+    /**
+     * Forces a context switch to occur away from the calling fiber.
+     */
+    static void yield()
+    {
+        Fiber   obj = getThis();
+        assert( obj, "Fiber.yield() called with no active fiber" );
+        assert( obj.m_state == State.EXEC );
+
+        obj.m_state = State.HOLD;
+        obj.switchOut();
+        obj.m_state = State.EXEC;
+    }
+
+
+    ////////////////////////////////////////////////////////////////////////////
+    // Static Initialization
+    ////////////////////////////////////////////////////////////////////////////
+
+
+    static this()
+    {
+        version( Win32 )
+        {
+            sm_this = TlsAlloc();
+            assert( sm_this != TLS_OUT_OF_INDEXES );
+        }
+        else version( Posix )
+        {
+            int status;
+
+            status = pthread_key_create( &sm_this, null );
+            assert( status == 0 );
+        }
+    }
+
+
+private:
+    //
+    // Initializes a fiber object which has no associated executable function.
+    //
+    this()
+    {
+        m_call = Call.NO;
+    }
+
+
+    //
+    // Fiber entry point.  Invokes the function or delegate passed on
+    // construction (if any).
+    //
+    final void run()
+    {
+        switch( m_call )
+        {
+        case Call.FN:
+            m_fn();
+            break;
+        case Call.DG:
+            m_dg();
+            break;
+        default:
+            break;
+        }
+    }
+
+
+private:
+    //
+    // The type of routine passed on fiber construction.
+    //
+    enum Call
+    {
+        NO,
+        FN,
+        DG
+    }
+
+
+    //
+    // Standard fiber data
+    //
+    Call                m_call;
+    union
+    {
+        void function() m_fn;
+        void delegate() m_dg;
+    }
+    bool                m_isRunning;
+    Object              m_unhandled;
+    State               m_state;
+
+
+private:
+    ////////////////////////////////////////////////////////////////////////////
+    // Stack Management
+    ////////////////////////////////////////////////////////////////////////////
+
+
+    //
+    // Allocate a new stack for this fiber.
+    //
+    final void allocStack( size_t sz )
+    in
+    {
+        assert( !m_pmem );
+    }
+    body
+    {
+        version( Win32 )
+        {
+            const size_t PAGESIZE = 4096;
+
+            sz += PAGESIZE - 1;
+            sz -= sz % PAGESIZE;
+
+            // reserve memory for stack
+            m_pmem = VirtualAlloc( null,
+                                   sz + PAGESIZE,
+                                   MEM_RESERVE,
+                                   PAGE_NOACCESS );
+            if( !m_pmem )
+            {
+                throw new FiberException( "Unable to reserve memory for stack" );
+            }
+
+            version( StackGrowsDown )
+            {
+                void* stack = m_pmem + PAGESIZE;
+                void* guard = m_pmem;
+                void* pbase = stack + sz;
+            }
+            else
+            {
+                void* stack = m_pmem;
+                void* guard = m_pmem + sz;
+                void* pbase = stack;
+            }
+
+            // allocate reserved stack segment
+            stack = VirtualAlloc( stack,
+                                  sz,
+                                  MEM_COMMIT,
+                                  PAGE_READWRITE );
+            if( !stack )
+            {
+                throw new FiberException( "Unable to allocate memory for stack" );
+            }
+
+            // allocate reserved guard page
+            guard = VirtualAlloc( guard,
+                                  PAGESIZE,
+                                  MEM_COMMIT,
+                                  PAGE_READWRITE | PAGE_GUARD );
+            if( !guard )
+            {
+                throw new FiberException( "Unable to create guard page for stack" );
+            }
+
+            m_ctxt.bstack = pbase;
+            m_ctxt.tstack = pbase;
+            m_size = sz;
+        }
+        else version( Posix )
+        {
+            m_pmem = mmap( null,
+                           sz,
+                           PROT_READ | PROT_WRITE | PROT_EXEC,
+                           MAP_PRIVATE | MAP_ANONYMOUS,
+                           0,
+                           0 );
+            if( m_pmem == MAP_FAILED )
+            {
+                m_pmem = null;
+                throw new FiberException( "Unable to allocate memory for stack" );
+            }
+
+            version( StackGrowsDown )
+            {
+                m_ctxt.bstack = m_pmem + sz;
+                m_ctxt.tstack = m_pmem + sz;
+            }
+            else
+            {
+                m_ctxt.bstack = m_pmem;
+                m_ctxt.tstack = m_pmem;
+            }
+            m_size = sz;
+        }
+
+        Thread.add( &m_ctxt );
+    }
+
+
+    //
+    // Free this fiber's stack.
+    //
+    final void freeStack()
+    {
+        // NOTE: Since this routine is only ever expected to be called from
+        //       the dtor, pointers to freed data are not set to null.
+
+        Thread.remove( &m_ctxt );
+
+        version( Win32 )
+        {
+            VirtualFree( m_pmem, 0, MEM_RELEASE );
+        }
+        else version( Posix )
+        {
+            munmap( m_pmem, m_size );
+        }
+    }
+
+
+    //
+    // Initialize the allocated stack.
+    //
+    final void initStack()
+    in
+    {
+        assert( m_ctxt.tstack && m_ctxt.tstack == m_ctxt.bstack );
+        assert( cast(size_t) m_ctxt.bstack % (void*).sizeof == 0 );
+    }
+    body
+    {
+        void* pstack = m_ctxt.tstack;
+        scope( exit )  m_ctxt.tstack = pstack;
+
+        void push( size_t val )
+        {
+            version( StackGrowsDown )
+            {
+                pstack -= size_t.sizeof;
+                *(cast(size_t*) pstack) = val;
+            }
+            else
+            {
+                *(cast(size_t*) pstack) = val;
+                pstack += size_t.sizeof;
+            }
+        }
+
+        version( AsmX86_Win32 )
+        {
+            push( 0x00000000 );                                 // oldp
+            push( 0x00000000 );                                 // newp
+            push( cast(size_t) &fiber_entryPoint );             // EIP
+            push( 0xFFFFFFFF );                                 // EBP
+            push( 0x00000000 );                                 // EAX
+            push( 0xFFFFFFFF );                                 // FS:[0]
+            // BUG: Are the frame pointers the same for both versions?
+            version( StackGrowsDown )
+            {
+                push( cast(size_t) m_ctxt.bstack );             // FS:[4]
+                push( cast(size_t) m_ctxt.bstack + m_size );    // FS:[8]
+            }
+            else
+            {
+                push( cast(size_t) m_ctxt.bstack );             // FS:[4]
+                push( cast(size_t) m_ctxt.bstack + m_size );    // FS:[8]
+            }
+            push( 0x00000000 );                                 // EBX
+            push( 0x00000000 );                                 // ESI
+            push( 0x00000000 );                                 // EDI
+        }
+        else version( AsmX86_Linux )
+        {
+            push( 0x00000000 );                                 // oldp
+            push( 0x00000000 );                                 // newp
+            push( cast(size_t) &fiber_entryPoint );             // EIP
+            push( 0x00000000 );                                 // EBP
+            push( 0x00000000 );                                 // EAX
+            push( 0x00000000 );                                 // EBX
+            push( 0x00000000 );                                 // ESI
+            push( 0x00000000 );                                 // EDI
+        }
+    }
+
+
+    Thread.Context  m_ctxt;
+    size_t          m_size;
+    void*           m_pmem;
+
+
+private:
+    ////////////////////////////////////////////////////////////////////////////
+    // Storage of Active Fiber
+    ////////////////////////////////////////////////////////////////////////////
+
+
+    //
+    // Gets a reference to the active fiber in the calling thread.
+    //
+    static Fiber getThis()
+    {
+        version( Win32 )
+        {
+            return cast(Fiber) TlsGetValue( sm_this );
+        }
+        else version( Posix )
+        {
+            return cast(Fiber) pthread_getspecific( sm_this );
+        }
+    }
+
+
+    //
+    // Sets a reference to the active fiber in the calling thread.
+    //
+    static void setThis( Fiber f )
+    {
+        version( Win32 )
+        {
+            TlsSetValue( sm_this, f );
+        }
+        else version( Posix )
+        {
+            pthread_setspecific( sm_this, f );
+        }
+    }
+
+
+    static Thread.TLSKey    sm_this;
+
+
+private:
+    ////////////////////////////////////////////////////////////////////////////
+    // Context Switching
+    ////////////////////////////////////////////////////////////////////////////
+
+
+    //
+    // Switches into the stack held by this fiber.
+    //
+    final void switchIn()
+    {
+        Thread  tobj = Thread.getThis();
+        void**  oldp = &tobj.m_curr.tstack;
+        void*   newp = m_ctxt.tstack;
+
+        // NOTE: The order of operations here is very important.  The current
+        //       stack top must be stored before m_lock is set, and pushContext
+        //       must not be called until after m_lock is set.  This process
+        //       is intended to prevent a race condition with the suspend
+        //       mechanism used for garbage collection.  If it is not followed,
+        //       a badly timed collection could cause the GC to scan from the
+        //       bottom of one stack to the top of another, or to miss scanning
+        //       a stack that still contains valid data.  The old stack pointer
+        //       oldp will be set again before the context switch to guarantee
+        //       that it points to exactly the correct stack location so the
+        //       successive pop operations will succeed.
+        *oldp = getStackTop();
+        volatile tobj.m_lock = true;
+        tobj.pushContext( &m_ctxt );
+
+        doSwitch( *oldp, newp );
+
+        // NOTE: As above, these operations must be performed in a strict order
+        //       to prevent Bad Things from happening.
+        tobj.popContext();
+        volatile tobj.m_lock = false;
+        tobj.m_curr.tstack = tobj.m_curr.bstack;
+    }
+
+
+    //
+    // Switches out of the current stack and into the enclosing stack.
+    //
+    final void switchOut()
+    {
+        Thread  tobj = Thread.getThis();
+        void**  oldp = &m_ctxt.tstack;
+        void*   newp = tobj.m_curr.within.tstack;
+
+        // NOTE: The order of operations here is very important.  The current
+        //       stack top must be stored before m_lock is set, and pushContext
+        //       must not be called until after m_lock is set.  This process
+        //       is intended to prevent a race condition with the suspend
+        //       mechanism used for garbage collection.  If it is not followed,
+        //       a badly timed collection could cause the GC to scan from the
+        //       bottom of one stack to the top of another, or to miss scanning
+        //       a stack that still contains valid data.  The old stack pointer
+        //       oldp will be set again before the context switch to guarantee
+        //       that it points to exactly the correct stack location so the
+        //       successive pop operations will succeed.
+        *oldp = getStackTop();
+        volatile tobj.m_lock = true;
+
+        doSwitch( *oldp, newp );
+
+        // NOTE: As above, these operations must be performed in a strict order
+        //       to prevent Bad Things from happening.
+        volatile tobj.m_lock = false;
+        tobj.m_curr.tstack = tobj.m_curr.bstack;
+    }
+
+
+    //
+    // Actually perform the context switch by storing the current stack pointer
+    // into oldp and loading the stack pointer from newp.  Any relevant stack
+    // data will also be saved.
+    //
+    final void doSwitch( inout void* oldp, void* newp )
+    {
+        // NOTE: The data pushed and popped in this routine must match the
+        //       default stack created by initStack or the initial switch
+        //       into a new stack will fail.
+
+        version( AsmX86_Win32 )
+        {
+            asm
+            {
+                naked;
+
+                // save current stack state
+                push EBP;
+                mov  EBP, ESP;
+                push EAX;
+                push dword ptr FS:[0];
+                push dword ptr FS:[4];
+                push dword ptr FS:[8];
+                push EBX;
+                push ESI;
+                push EDI;
+
+                // store oldp again with more accurate address
+                mov EAX, dword ptr 12[EBP];
+                mov [EAX], ESP;
+                // load newp to begin context switch
+                mov ESP, dword ptr 8[EBP];
+
+                // load saved state from new stack
+                pop EDI;
+                pop ESI;
+                pop EBX;
+                pop dword ptr FS:[8];
+                pop dword ptr FS:[4];
+                pop dword ptr FS:[0];
+                pop EAX;
+                pop EBP;
+
+                // 'return' to complete switch
+                ret 8;
+            }
+        }
+        else version( AsmX86_Linux )
+        {
+            asm
+            {
+                naked;
+
+                // save current stack state
+                push EBP;
+                mov  EBP, ESP;
+                push EAX;
+                push EBX;
+                push ESI;
+                push EDI;
+
+                // store oldp again with more accurate address
+                mov EAX, dword ptr 12[EBP];
+                mov [EAX], ESP;
+                // load newp to begin context switch
+                mov ESP, dword ptr 8[EBP];
+
+                // load saved state from new stack
+                pop EDI;
+                pop ESI;
+                pop EBX;
+                pop EAX;
+                pop EBP;
+
+                // 'return' to complete switch
+                ret 8;
+            }
+        }
+        else
+        {
+            // call setjmp, longjmp
+        }
+    }
 }
