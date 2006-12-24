@@ -146,6 +146,7 @@ template isStaticArrayType( T )
 private template isAssocArrayType( T )
 {
     const bool isAssocArrayType = is( typeof(T.init.values[0])[typeof(T.init.keys[0])] == T );
+    //is( T == typeof(T.values[$])[typeof(T.keys[$])] )
 }
 
 

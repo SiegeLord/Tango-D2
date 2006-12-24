@@ -829,13 +829,13 @@ else version( D_InlineAsm_X86 )
                         {
                             volatile asm
                             {
-                                lea	EDI, newval;
-                                mov	EBX, [EDI];
-                                mov	ECX, 4[EDI];
-                                lea	EDI, equalTo;
-                                mov	EAX, [EDI];
-                                mov	EDX, 4[EDI];
-                                mov	EDI, val;
+                                lea EDI, newval;
+                                mov EBX, [EDI];
+                                mov ECX, 4[EDI];
+                                lea EDI, equalTo;
+                                mov EAX, [EDI];
+                                mov EDX, 4[EDI];
+                                mov EDI, val;
                                 lock;
                                 cmpxch8b [EDI];
                                 setz AL;
@@ -845,13 +845,13 @@ else version( D_InlineAsm_X86 )
                         {
                             volatile asm
                             {
-                                lea	EDI, newval;
-                                mov	EBX, [EDI];
-                                mov	ECX, 4[EDI];
-                                lea	EDI, equalTo;
-                                mov	EAX, [EDI];
-                                mov	EDX, 4[EDI];
-                                mov	EDI, val;
+                                lea EDI, newval;
+                                mov EBX, [EDI];
+                                mov ECX, 4[EDI];
+                                lea EDI, equalTo;
+                                mov EAX, [EDI];
+                                mov EDX, 4[EDI];
+                                mov EDI, val;
                                 lock; // lock needed to make this op atomic
                                 cmpxch8b [EDI];
                                 setz AL;
