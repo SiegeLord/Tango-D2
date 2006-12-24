@@ -7,10 +7,6 @@ import  mango.net.http.server.HttpServer,
         mango.net.http.server.HttpResponse,
         mango.net.http.server.HttpProvider;
 
-
-version (Win32)
-         pragma (lib, "wsock32");
-
 /*******************************************************************************
 
         Create a simple HttpServer, that responds with a trivial HTML page.

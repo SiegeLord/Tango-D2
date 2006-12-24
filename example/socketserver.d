@@ -14,10 +14,6 @@ private import  tango.io.Console;
 private import  tango.net.ServerSocket,
                 tango.net.SocketConduit;
 
-version (Win32)
-         pragma (lib, "wsock32");
-
-
 /*******************************************************************************
 
         Create a socket server, and have it respond to a request

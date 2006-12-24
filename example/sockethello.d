@@ -10,10 +10,6 @@ private import  tango.io.Console;
 private import  tango.net.SocketConduit, 
                 tango.net.InternetAddress;
 
-version (Win32)
-         pragma (lib, "wsock32");
-
-
 /*******************************************************************************
 
 *******************************************************************************/

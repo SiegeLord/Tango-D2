@@ -8,10 +8,6 @@ import  mango.net.servlet.ServletProvider;
 import  mango.net.http.server.HttpServer,
         mango.net.http.server.HttpProvider;
 
-version (Win32)
-         pragma (lib, "wsock32");
-
-
 /*******************************************************************************
 
         Create a simple Servlet engine to respond to file requests. The server 

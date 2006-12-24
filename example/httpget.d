@@ -4,15 +4,6 @@ private import  tango.net.http.HttpGet;
 
 /*******************************************************************************
 
-        Directive to include the winsock library
-
-*******************************************************************************/
-
-version (Win32)
-         pragma (lib, "wsock32");
-
-/*******************************************************************************
-
         Read a page from a website, gathering the entire page before 
         returning any content. This illustrates a high-level approach
         to retrieving web-content, whereas the homepage example shows

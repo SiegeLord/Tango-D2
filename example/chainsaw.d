@@ -7,10 +7,6 @@ import  tango.log.Log,
 import  tango.net.InternetAddress;
 
 
-version (Win32)
-         pragma (lib, "wsock32");
-
-
 /*******************************************************************************
 
         Hooks up to Chainsaw for remote log capture. Chainsaw should be 
