@@ -181,7 +181,7 @@ class FileProxy
 
         ***********************************************************************/
 
-        FilePath[] toList ()
+        char[][] toList ()
         {
 
                 return toList (delegate bool(FilePath fp) {return true;});
@@ -448,15 +448,15 @@ class FileProxy
 
                 ***************************************************************/
 
-                FilePath[] toList (bool delegate(FilePath fp) filter)
+                char[][] toList (bool delegate(FilePath fp) filter)
                 {
                         int                     i;
                         wchar[]                 c;
                         HANDLE                  h;
-                        FilePath                fp;
-                        FilePath[]              list;
+                        scope FilePath          fp;
+                        char[][]                list;
                         FIND_DATA               fileinfo;
-
+                        
                         int next()
                         {
                                 version (Win32SansUnicode)
@@ -465,7 +465,7 @@ class FileProxy
                                          return FindNextFileW (h, &fileinfo);
                         }
                         
-                        list = new FilePath[50];
+                        list = new char[][50];
 
                         version (Win32SansUnicode)
                                 h = FindFirstFileA ((path.toUtf8 ~ "\\*\0").ptr, &fileinfo);
@@ -478,7 +478,6 @@ class FileProxy
                                    // make a copy of the file name for listing
                                    version (Win32SansUnicode)
                                            {
-                                           int len = strlen (fileinfo.cFileName);
                                            fp = new FilePath (fileinfo.cFileName [0 .. len]);
                                            }
                                         else
@@ -492,7 +491,7 @@ class FileProxy
 
                                    if (filter (fp))
                                       {
-                                      list[i] = fp;
+                                      list[i] = fp.toUtf8;
                                       ++i;
                                       }
                                    } while (next);
@@ -715,31 +714,31 @@ class FileProxy
 
                 ***************************************************************/
 
-                FilePath[] toList (bool delegate(FilePath fp) filter)
+                char[][] toList (bool delegate(FilePath fp) filter)
                 {
                         int             i;
                         DIR*            dir;
+                        char[][]        list;
                         dirent*         entry;
-                        FilePath[]      list;
 
                         dir = tango.stdc.posix.dirent.opendir (path.cString.ptr);
                         if (! dir) 
                               exception();
 
-                        list = new FilePath [50];
+                        list = new char[][50];
                         while ((entry = tango.stdc.posix.dirent.readdir(dir)) != null)
                         {
                               int len = tango.stdc.string.strlen (entry.d_name.ptr);
 
-                              // make a copy of the file name for listing
-                              auto fp = new FilePath (entry.d_name[0 ..len]);
+                              // prepare the filename for filtering (stack class)
+                              scope auto fp = new FilePath (entry.d_name[0 ..len]);
 
                               if (i >= list.length)
                                   list.length = list.length * 2;
 
                               if (filter (fp))
                                  {
-                                 list[i] = fp;
+                                 list[i] = fp.toUtf8;
                                  ++i;
                                  }
                         }

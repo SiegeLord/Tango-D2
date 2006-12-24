@@ -66,8 +66,7 @@ class FileScan
 {       
         alias sweep opCall;
 
-        private Dependencies    deps;
-        private Filter          filter;
+        private Dependencies deps;
 
         /***********************************************************************
 
@@ -93,13 +92,17 @@ class FileScan
         /***********************************************************************
 
                 Sweep a set of files and directories from the given parent
-                path, where the files are filtered by the given extension.
+                path, where the files are filtered by the provided delegate.
 
         ***********************************************************************/
         
-        FileScan sweep (char[] path, char[] suffix)
+        FileScan sweep (FilePath path, Filter filter)
         {
-                return sweep (new FilePath(path), suffix);
+                deps.mods = null;
+                deps.pkgs = null;
+
+                scanFiles (deps, path, filter);
+                return this;
         }
 
         /***********************************************************************
@@ -118,27 +121,10 @@ class FileScan
                         if (fp.getName.length)                       
                             if (suffix.length == 0 || suffix == match)
                                 return true;
-
                         return false;
                 }
 
                 return sweep (path, &filter);
-        }
-
-        /***********************************************************************
-
-                Sweep a set of files and directories from the given parent
-                path, where the files are filtered by the provided delegate.
-
-        ***********************************************************************/
-        
-        FileScan sweep (FilePath path, Filter filter)
-        {
-                deps.mods = null;
-                deps.pkgs = null;
-                this.filter = filter;
-                scanFiles (deps, path);
-                return this;
         }
 
         /***********************************************************************
@@ -169,11 +155,11 @@ class FileScan
 
         /***********************************************************************
 
-                Recursive routine to locate files and sub-directories.
+                Recursive routine to locate files and sub-directories
 
         ***********************************************************************/
 
-        private void scanFiles (inout Dependencies deps, FilePath base) 
+        private void scanFiles (inout Dependencies deps, FilePath base, Filter filter) 
         {
                 auto file = new File (base);
                 auto paths = file.toList (filter);
@@ -182,17 +168,32 @@ class FileScan
                 if (paths.length)
                     deps.pkgs ~= base;
 
-                foreach (FilePath x; paths) 
+                foreach (entry; paths) 
                         {
+                        scope auto x = new FilePath (entry);
+                        
                         // combine base path with listed file
                         auto spliced = x.join (base.toUtf8);
 
-                        // recurse if this is a directory ...
+                        // add to list of files?
                         file = new File (spliced);
-                        if (file.isDirectory) 
-                            scanFiles (deps, file.getPath);
-                        else 
-                           deps.mods ~= file;
+                        if (! file.isDirectory) 
+                              deps.mods ~= file;
+                        else
+                           {
+                           auto path = file.getPath();
+                           
+                           // skip directories composed only of dots
+                           if (path.getName.length is 0)
+                              {
+                              char[] suffix = path.getSuffix;
+                              if (suffix == "..."[0 .. suffix.length])
+                                  continue;
+                              }
+                           
+                           // recurse directories
+                           scanFiles (deps, path, filter);
+                           }
                         }
         }
 }

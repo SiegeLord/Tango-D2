@@ -74,9 +74,21 @@ class FilePath
 
         this (char[] filepath)
         {
+                this (filepath ~ '\0', filepath.length + 1);
+        }
+
+        /***********************************************************************
+
+                As above, but with C-style interface to bypass heap activity.
+                The provided path and length must include a null terminator.
+                
+        ***********************************************************************/
+
+        package this (char* filepath, int l)
+        {
                 path = 0;
-                fp   = filepath ~ '\0';
-                end  = filepath.length;
+                end  = l-1;
+                fp   = filepath[0 .. l];
                 name = suffix = ext = -1;
                 
                 for (int i=end; --i >= 0;)
