@@ -1,7 +1,7 @@
 /**
  * Part of the D programming language runtime library.
  * Forms the symbols available to all D programs. Includes
- * Object, which is the root of the class object heirarchy.
+ * Object, which is the root of the class object hierarchy.
  *
  * This module is implicitly imported.
  * Macros:
@@ -625,7 +625,7 @@ class TypeInfo_Class : TypeInfo
         Object o1 = *cast(Object*)p1;
         Object o2 = *cast(Object*)p2;
 
-        return o1 == o2 || (o1 && o1.opCmp(o2) == 0);
+        return (o1 is o2) || (o1 && o1.opEquals(o2));
     }
 
     int compare(void *p1, void *p2)
@@ -635,7 +635,7 @@ class TypeInfo_Class : TypeInfo
         int c = 0;
 
         // Regard null references as always being "less than"
-        if (o1 != o2)
+        if (o1 !is o2)
         {
             if (o1)
             {   if (!o2)
@@ -796,7 +796,7 @@ class TypeInfo_Struct : TypeInfo
     }
 
     char[] name;
-    byte[] init;        // initializer; init.ptr == null if 0 initialize
+    byte[] init; // initializer; init.ptr == null if 0 initialize
 
     hash_t function(void*)    xtoHash;
     int function(void*,void*) xopEquals;
