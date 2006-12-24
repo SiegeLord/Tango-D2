@@ -28,13 +28,13 @@ class InternetAddress : IPv4Address
 
         ***********************************************************************/
 
-        this (char[] addr, int port = PORT_ANY)
+        this (char[] addr, ushort port = PORT_ANY)
         {
                 foreach (int i, char c; addr)
                          if (c is ':')
                             {
                             addr = addr [0 .. i];
-                            port = parse (addr [i+1 .. $]);
+                            port = cast(ushort) parse (addr [i+1 .. $]);
                             break;
                             }
 
@@ -60,15 +60,6 @@ class InternetAddress : IPv4Address
         this (ushort port)
         {
                 super (port);
-        }
-
-        /**********************************************************************
-
-        **********************************************************************/
-
-        static InternetAddress create (char[] host)
-        {       
-                return new InternetAddress (host);
         }
 
         /**********************************************************************

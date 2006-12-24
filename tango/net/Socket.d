@@ -62,25 +62,34 @@
 
 module tango.net.Socket;
 
-private import  tango.text.convert.Integer;
-
 private import  tango.sys.Common;
-
-private import  tango.core.Interval;
-
-private import  tango.io.Conduit,
-                tango.io.Exception;
-
-private import  tango.io.model.IBuffer;
 
 private import  tango.stdc.errno,
                 tango.stdc.stdint;
+
+private import  tango.net.Exception;
 
 
 /*******************************************************************************
 
 
 *******************************************************************************/
+
+version=Tango;
+version (Tango)
+{
+        private {
+        char[] toString (char[] tmp, int i)
+        {
+                int j = tmp.length;
+                do {
+                   tmp[--j] = i % 10 + '0';
+                   } while (i /= 10);
+
+                return tmp [j .. $];
+        }
+        }
+}
 
 version (linux)
          version = BsdSockets;
@@ -99,6 +108,8 @@ version (Posix)
 
 version (Win32)
         {
+        pragma(lib, "ws2_32.lib");
+        
         private typedef int socket_t = ~0;
 
         private const int IOCPARM_MASK =  0x7f;
@@ -367,62 +378,6 @@ public:
 
 *******************************************************************************/
 
-class HostException: IOException
-{
-        this(char[] msg)
-        {
-                super(msg);
-        }
-}
-
-
-/*******************************************************************************
-
-
-*******************************************************************************/
-
-class SocketException: IOException
-{
-        this(char[] msg)
-        {
-                super(msg);
-        }
-}
-
-
-/*******************************************************************************
-
-
-*******************************************************************************/
-
-class AddressException: SocketException
-{
-        this(char[] msg)
-        {
-                super(msg);
-        }
-}
-
-
-/*******************************************************************************
-
-
-*******************************************************************************/
-
-class SocketAcceptException: SocketException
-{
-        this(char[] msg)
-        {
-                super(msg);
-        }
-}
-
-
-/*******************************************************************************
-
-
-*******************************************************************************/
-
 static int lastError ()
 {
         version (Win32)
@@ -436,444 +391,357 @@ static int lastError ()
 }
 
 
-/*******************************************************************************
+/***********************************************************************
 
-        Tango: socket now subclasses tango.io.Resource
 
-*******************************************************************************/
+***********************************************************************/
 
-class Socket : Conduit
+version (Win32)
 {
-        private socket_t sock;
-        private AddressFamily _family;
-
-        version(Win32)
-                private bool _blocking = false;
-
-        /***********************************************************************
+        /***************************************************************
 
 
-        ***********************************************************************/
+        ***************************************************************/
 
-        version (Win32)
+        enum SocketOption: int
         {
-                /***************************************************************
+                //consistent
+                SO_DEBUG =         0x1,
 
+                //possibly Winsock-only values
+                SO_BROADCAST =  0x20,
+                SO_REUSEADDR =  0x4,
+                SO_LINGER =     0x80,
+                SO_DONTLINGER = ~(SO_LINGER),
+                SO_OOBINLINE =  0x100,
+                SO_SNDBUF =     0x1001,
+                SO_RCVBUF =     0x1002,
+                SO_ERROR =      0x1007,
 
-                ***************************************************************/
+                SO_ACCEPTCONN =    0x2, // ?
+                SO_KEEPALIVE =     0x8, // ?
+                SO_DONTROUTE =     0x10, // ?
+                SO_TYPE =          0x1008, // ?
 
-                enum Option: int
-                {
-                        //consistent
-                        SO_DEBUG =         0x1,
-
-                        //possibly Winsock-only values
-                        SO_BROADCAST =  0x20,
-                        SO_REUSEADDR =  0x4,
-                        SO_LINGER =     0x80,
-                        SO_DONTLINGER = ~(SO_LINGER),
-                        SO_OOBINLINE =  0x100,
-                        SO_SNDBUF =     0x1001,
-                        SO_RCVBUF =     0x1002,
-                        SO_ERROR =      0x1007,
-
-                        SO_ACCEPTCONN =    0x2, // ?
-                        SO_KEEPALIVE =     0x8, // ?
-                        SO_DONTROUTE =     0x10, // ?
-                        SO_TYPE =          0x1008, // ?
-
-                        // OptionLevel.IP settings
-                        IP_MULTICAST_LOOP = 0x4,
-                        IP_ADD_MEMBERSHIP = 0x5,
-                        IP_DROP_MEMBERSHIP = 0x6,
-                }
-
-                /***************************************************************
-
-
-                ***************************************************************/
-
-                union linger
-                {
-                        struct {
-                               ushort l_onoff;          // option on/off
-                               ushort l_linger;         // linger time
-                               };
-                        ushort[2]       array;          // combined
-                }
-
-                /***************************************************************
-
-
-                ***************************************************************/
-
-                enum OptionLevel
-                {
-                        SOCKET =  0xFFFF,
-                        IP =      0,
-                        TCP =     6,
-                        UDP =     17,
-                }
-        }
-        else version (darwin)
-        {
-                enum Option: int
-                {
-                        SO_DEBUG        = 0x0001,		/* turn on debugging info recording */
-                        SO_BROADCAST    = 0x0020,		/* permit sending of broadcast msgs */
-                        SO_REUSEADDR    = 0x0004,		/* allow local address reuse */
-                        SO_LINGER       = 0x0080,		/* linger on close if data present */
-                        SO_DONTLINGER   = ~(SO_LINGER),
-                        SO_OOBINLINE    = 0x0100,		/* leave received OOB data in line */
-                        SO_ACCEPTCONN   = 0x0002,		/* socket has had listen() */
-                        SO_KEEPALIVE    = 0x0008,		/* keep connections alive */
-                        SO_DONTROUTE    = 0x0010,		/* just use interface addresses */
-                      //SO_TYPE
-
-                        /*
-                         * Additional options, not kept in so_options.
-                         */
-                        SO_SNDBUF       = 0x1001,		/* send buffer size */
-                        SO_RCVBUF       = 0x1002,		/* receive buffer size */
-                        SO_ERROR        = 0x1007,		/* get error status and clear */
-
-                        // OptionLevel.IP settings
-                        IP_MULTICAST_LOOP = 11,
-                        IP_ADD_MEMBERSHIP = 12,
-                        IP_DROP_MEMBERSHIP = 13,
-                }
-
-                /***************************************************************
-
-
-                ***************************************************************/
-
-                union linger
-                {
-                        struct {
-                               int l_onoff;             // option on/off
-                               int l_linger;            // linger time
-                               };
-                        int[2]          array;          // combined
-                }
-
-                /***************************************************************
-
-                        Question: are these correct for Darwin?
-
-                ***************************************************************/
-
-                enum OptionLevel
-                {
-                        SOCKET =  1,  // correct for linux on x86
-                        IP =      0,  // appears to be correct
-                        TCP =     6,  // appears to be correct
-                        UDP =     17, // appears to be correct
-                }
-        }
-        else version (linux)
-        {
-                /***************************************************************
-
-                        these appear to be compatible with x86 platforms,
-                        but not others!
-
-                ***************************************************************/
-
-                enum Option: int
-                {
-                        //consistent
-                        SO_DEBUG        = 1,
-                        SO_BROADCAST    = 6,
-                        SO_REUSEADDR    = 2,
-                        SO_LINGER       = 13,
-                        SO_DONTLINGER   = ~(SO_LINGER),
-                        SO_OOBINLINE    = 10,
-                        SO_SNDBUF       = 7,
-                        SO_RCVBUF       = 8,
-                        SO_ERROR        = 4,
-
-                        SO_ACCEPTCONN   = 30,
-                        SO_KEEPALIVE    = 9,
-                        SO_DONTROUTE    = 5,
-                        SO_TYPE         = 3,
-
-                        // OptionLevel.IP settings
-                        IP_MULTICAST_LOOP = 34,
-                        IP_ADD_MEMBERSHIP = 35,
-                        IP_DROP_MEMBERSHIP = 36,
-                }
-
-                /***************************************************************
-
-
-                ***************************************************************/
-
-                union linger
-                {
-                        struct {
-                               int l_onoff;             // option on/off
-                               int l_linger;            // linger time
-                               };
-                        int[2]          array;          // combined
-                }
-
-                /***************************************************************
-
-
-                ***************************************************************/
-
-                enum OptionLevel
-                {
-                        SOCKET =  1,  // correct for linux on x86
-                        IP =      0,  // appears to be correct
-                        TCP =     6,  // appears to be correct
-                        UDP =     17, // appears to be correct
-                }
-        } // end versioning
-
-        /***********************************************************************
-
-
-        ***********************************************************************/
-
-        enum Shutdown: int
-        {
-                RECEIVE =  0,
-                SEND =     1,
-                BOTH =     2,
+                // OptionLevel.IP settings
+                IP_MULTICAST_LOOP = 0x4,
+                IP_ADD_MEMBERSHIP = 0x5,
+                IP_DROP_MEMBERSHIP = 0x6,
         }
 
-        /***********************************************************************
+        /***************************************************************
 
 
-        ***********************************************************************/
+        ***************************************************************/
 
-        enum Flags: int
+        union linger
         {
-                NONE =           0,
-                OOB =            0x1, //out of band
-                PEEK =           0x02, //only for receiving
-                DONTROUTE =      0x04, //only for sending
+                struct {
+                       ushort l_onoff;          // option on/off
+                       ushort l_linger;         // linger time
+                       };
+                ushort[2]       array;          // combined
         }
 
-        /***********************************************************************
+        /***************************************************************
 
 
-        ***********************************************************************/
+        ***************************************************************/
 
-        enum Type: int
+        enum SocketOptionLevel
         {
-                STREAM =     1,
-                DGRAM =      2,
-                RAW =        3,
-                RDM =        4,
-                SEQPACKET =  5,
+                SOCKET =  0xFFFF,
+                IP =      0,
+                TCP =     6,
+                UDP =     17,
+        }
+}
+else version (darwin)
+{
+        enum SocketOption: int
+        {
+                SO_DEBUG        = 0x0001,		/* turn on debugging info recording */
+                SO_BROADCAST    = 0x0020,		/* permit sending of broadcast msgs */
+                SO_REUSEADDR    = 0x0004,		/* allow local address reuse */
+                SO_LINGER       = 0x0080,		/* linger on close if data present */
+                SO_DONTLINGER   = ~(SO_LINGER),
+                SO_OOBINLINE    = 0x0100,		/* leave received OOB data in line */
+                SO_ACCEPTCONN   = 0x0002,		/* socket has had listen() */
+                SO_KEEPALIVE    = 0x0008,		/* keep connections alive */
+                SO_DONTROUTE    = 0x0010,		/* just use interface addresses */
+              //SO_TYPE
+
+                /*
+                 * Additional options, not kept in so_options.
+                 */
+                SO_SNDBUF       = 0x1001,		/* send buffer size */
+                SO_RCVBUF       = 0x1002,		/* receive buffer size */
+                SO_ERROR        = 0x1007,		/* get error status and clear */
+
+                // OptionLevel.IP settings
+                IP_MULTICAST_LOOP = 11,
+                IP_ADD_MEMBERSHIP = 12,
+                IP_DROP_MEMBERSHIP = 13,
         }
 
+        /***************************************************************
 
-        /***********************************************************************
 
+        ***************************************************************/
 
-        ***********************************************************************/
-
-        enum Protocol: int
+        union linger
         {
-                IP =    0,
-                ICMP =  1,      // apparently a no-no for linux?
-                IGMP =  2,
-                GGP =   3,
-                TCP =   6,
-                PUP =   12,
-                UDP =   17,
-                IDP =   22,
-                ND =    77,
-                RAW =   255,
-                MAX =   256,
+                struct {
+                       int l_onoff;             // option on/off
+                       int l_linger;            // linger time
+                       };
+                int[2]          array;          // combined
         }
 
+        /***************************************************************
 
-        /***********************************************************************
+                Question: are these correct for Darwin?
+
+        ***************************************************************/
+
+        enum SocketOptionLevel
+        {
+                SOCKET =  1,  // correct for linux on x86
+                IP =      0,  // appears to be correct
+                TCP =     6,  // appears to be correct
+                UDP =     17, // appears to be correct
+        }
+}
+else version (linux)
+{
+        /***************************************************************
+
+                these appear to be compatible with x86 platforms,
+                but not others!
+
+        ***************************************************************/
+
+        enum SocketOption: int
+        {
+                //consistent
+                SO_DEBUG        = 1,
+                SO_BROADCAST    = 6,
+                SO_REUSEADDR    = 2,
+                SO_LINGER       = 13,
+                SO_DONTLINGER   = ~(SO_LINGER),
+                SO_OOBINLINE    = 10,
+                SO_SNDBUF       = 7,
+                SO_RCVBUF       = 8,
+                SO_ERROR        = 4,
+
+                SO_ACCEPTCONN   = 30,
+                SO_KEEPALIVE    = 9,
+                SO_DONTROUTE    = 5,
+                SO_TYPE         = 3,
+
+                // OptionLevel.IP settings
+                IP_MULTICAST_LOOP = 34,
+                IP_ADD_MEMBERSHIP = 35,
+                IP_DROP_MEMBERSHIP = 36,
+        }
+
+        /***************************************************************
 
 
-        ***********************************************************************/
+        ***************************************************************/
 
-        version(Win32)
+        union linger
+        {
+                struct {
+                       int l_onoff;             // option on/off
+                       int l_linger;            // linger time
+                       };
+                int[2]          array;          // combined
+        }
+
+        /***************************************************************
+
+
+        ***************************************************************/
+
+        enum SocketOptionLevel
+        {
+                SOCKET =  1,  // correct for linux on x86
+                IP =      0,  // appears to be correct
+                TCP =     6,  // appears to be correct
+                UDP =     17, // appears to be correct
+        }
+} // end versioning
+
+/***********************************************************************
+
+
+***********************************************************************/
+
+enum SocketShutdown: int
+{
+        RECEIVE =  0,
+        SEND =     1,
+        BOTH =     2,
+}
+
+/***********************************************************************
+
+
+***********************************************************************/
+
+enum SocketFlags: int
+{
+        NONE =           0,
+        OOB =            0x1, //out of band
+        PEEK =           0x02, //only for receiving
+        DONTROUTE =      0x04, //only for sending
+}
+
+/***********************************************************************
+
+         Communication semantics
+
+***********************************************************************/
+
+enum SocketType: int
+{
+        STREAM =     1,       /// sequenced, reliable, two-way communication-based byte streams
+        DGRAM =      2,        /// connectionless, unreliable datagrams with a fixed maximum length; data may be lost or arrive out of order
+        RAW =        3,          /// raw protocol access
+        RDM =        4,          /// reliably-delivered message datagrams
+        SEQPACKET =  5,    /// sequenced, reliable, two-way connection-based datagrams with a fixed maximum length
+}
+
+
+/***********************************************************************
+
+        Protocol
+        
+***********************************************************************/
+
+enum ProtocolType: int
+{
+        IP =    0,     /// internet protocol version 4
+        ICMP =  1,   /// internet control message protocol
+        IGMP =  2,   /// internet group management protocol
+        GGP =   3,    /// gateway to gateway protocol
+        TCP =   6,    /// transmission control protocol
+        PUP =   12,    /// PARC universal packet protocol
+        UDP =   17,    /// user datagram protocol
+        IDP =   22,    /// Xerox NS protocol
+}
+
+
+/***********************************************************************
+
+
+***********************************************************************/
+
+version(Win32)
+{
+        enum AddressFamily: int
+        {
+                UNSPEC =     0,
+                UNIX =       1,
+                INET =       2,
+                IPX =        6,
+                APPLETALK =  16,
+                //INET6 =      ? // Need Windows XP ?
+        }
+}
+else version(BsdSockets)
+{
+        version (darwin)
         {
                 enum AddressFamily: int
                 {
                         UNSPEC =     0,
                         UNIX =       1,
                         INET =       2,
-                        IPX =        6,
+                        IPX =        23,
                         APPLETALK =  16,
-                        //INET6 =      ? // Need Windows XP ?
+                        //INET6 =      10,
                 }
         }
-        else version(BsdSockets)
+        else version (linux)
         {
-                version (darwin)
+                enum AddressFamily: int
                 {
-                        enum AddressFamily: int
-                        {
-                                UNSPEC =     0,
-                                UNIX =       1,
-                                INET =       2,
-                                IPX =        23,
-                                APPLETALK =  16,
-                                //INET6 =      10,
-                        }
+                        UNSPEC =     0,
+                        UNIX =       1,
+                        INET =       2,
+                        IPX =        4,
+                        APPLETALK =  5,
+                        //INET6 =      10,
                 }
-                else version (linux)
-                {
-                        enum AddressFamily: int
-                        {
-                                UNSPEC =     0,
-                                UNIX =       1,
-                                INET =       2,
-                                IPX =        4,
-                                APPLETALK =  5,
-                                //INET6 =      10,
-                        }
-                } // end version
-        }
+        } // end version
+}
 
-        /***********************************************************************
 
-                Construct a Socket from a handle. This is used internally
-                to create new Sockets via an accept().
 
-        ***********************************************************************/
+/*******************************************************************************
 
-        protected this (socket_t sock)
+        Tango: socket now subclasses tango.io.Resource
+
+*******************************************************************************/
+
+class Socket
+{
+        socket_t        sock;
+        SocketType      type;
+        AddressFamily   family;
+        ProtocolType    protocol;
+
+        version(Win32)
+                private bool _blocking = false;
+
+        // For use with accept().
+        this()
         {
-                // Tango: exposed the constructor functionality: see below.
-                set (sock);
-
-                super (Access.ReadWrite, false);
         }
-
-       /***********************************************************************
-
-                Callback routine to read content from the socket. Note
-                that the operation may timeout if method setTimeout()
-                has been invoked with a non-zero value.
-
-                Returns the number of bytes read from the socket, or
-                IConduit.Eof where there's no more content available
-
-		Note that a timeout is equivalent to Eof. Isolating
-		a timeout condition can be achieved via hadTimeout()
-
-		Note also that a zero return value is not legitimate;
-		such a value indicates Eof
-
-        ***********************************************************************/
-
-        private SocketSet       ss;
-        private timeval         tv;
-		private bool		timeout;
-
-        protected uint reader (void[] dst)
+        
+        
+        /**
+         * Describe a socket flavor. If a single protocol type exists to support
+         * this socket type within the address family, the ProtocolType may be
+         * omitted.
+         */
+        this(AddressFamily family, SocketType type, ProtocolType protocol)
         {
-                // ensure just one read at a time
-                synchronized (this)
-                {
-					// reset timeout; we assume there's no thread contention
-					timeout = false;
-
-                	// did user disable timeout checks?
-                	if (tv.tv_usec)
-                    {
-                 		// nope: ensure we have a SocketSet
-                   		if (ss is null)
-                       	ss = new SocketSet (1);
-
-                   		ss.reset ();
-                   		ss.add (this);
-
-                   		// wait until data is available, or a timeout occurs
-                   		int i = select (ss, null, null, &tv);
-		   
-						if (i <= 0)
-						{
-							if (i == 0)
-								timeout = true;
-			                    return Eof;
-            	        }
-                	}
-
-	                int count = receive (dst);
-    
-					if (count <= 0)
-						count = Eof;
-
-					return count;
-				}
+                this.type = type;
+                this.family = family;
+                this.protocol = protocol;
         }
-
-        /***********************************************************************
-
-                Callback routine to write the provided content to the
-                socket. This will stall until the socket responds in
-                some manner. Returns the number of bytes sent to the
-                output, or IConduit.Eof if the socket cannot write.
-
-        ***********************************************************************/
-
-        protected uint writer (void[] src)
+        
+        
+        /**
+         * Create a blocking socket
+         */
+        Socket create (socket_t sock = sock.init)
         {
-                int count = send (src);
-                if (count <= 0)
-                    count = Eof;
-                return count;
+                if (this.sock)
+                    close();
+
+                if (sock is sock.init)
+                   {
+                   sock = cast(socket_t) socket(family, type, protocol);
+                   if (sock is sock.init)
+                       throw new SocketException("Unable to create socket", lastError());
+                   }
+                this.sock = sock;
+                return this;
         }
-
-        /***********************************************************************
-
-                Return a preferred size for buffering conduit I/O
-
-        ***********************************************************************/
-
-        uint bufferSize ()
-        {
-                return 1024 * 8;
-        }
-
+        
         /***********************************************************************
 
                 Return the underlying OS handle of this Conduit
 
         ***********************************************************************/
 
-        final Handle getHandle ()
+        socket_t getHandle ()
         {
-                return cast(Handle) sock;
-        }
-
-        /***********************************************************************
-
-                Set the read timeout to the specified microseconds. Set a
-                value of zero to disable timeout support.
-
-        ***********************************************************************/
-
-        void setTimeout (Interval us)
-        {
-                tv.tv_sec = cast(int) (us / Interval.second);
-                tv.tv_usec = cast(int) (us % Interval.second);
-        }
-
-        /***********************************************************************
-
-		Did the last operation result in a timeout? Note that this
-		assumes there is no thread contention on this object.
-
-        ***********************************************************************/
-
-        bool hadTimeout ()
-        {
-		return timeout;
+                return sock;
         }
 
         /***********************************************************************
@@ -891,95 +759,11 @@ class Socket : Conduit
 
         /***********************************************************************
 
-                Tango: moved this out from the above constructor so that it
-                can be called from the FreeList version of SocketConduit
-
-        ***********************************************************************/
-
-        protected void set (socket_t sock)
-        {
-                this.sock = sock;
-        }
-
-        /***********************************************************************
-
-                Tango: added to reset socket
-
-        ***********************************************************************/
-
-        protected void reset ()
-        {
-                this.sock = INVALID_SOCKET;
-
-                // dump all filters
-                super.close();
-        }
-
-
-        /***********************************************************************
-
-
-        ***********************************************************************/
-
-        protected this (AddressFamily af, Type type, Protocol protocol)
-        {
-                create (af, type, protocol);
-
-                super (Access.ReadWrite, false);
-        }
-
-
-        /***********************************************************************
-
-                Create a new socket for binding during another join() or
-                connect(), since there doesn't appear to be another means
-
-        ***********************************************************************/
-
-        protected void create ()
-        {
-                // can't be abstract, so throw excepion instead
-                throw new SocketException ("Socket.create() must be overridden");
-        }
-
-        /***********************************************************************
-
-                Tango: added for multicast support
-
-        ***********************************************************************/
-
-        protected void create (AddressFamily af, Type type, Protocol protocol)
-        {
-                sock = socket (af, type, protocol);
-                if(sock == sock.init)
-                   exception("Unable to create socket: ");
-                _family = af;
-        }
-
-
-        /***********************************************************************
-
-                Re-open this socket
-
-        ***********************************************************************/
-
-        void reopen ()
-        {
-                // drop the original socket handle
-                close ();
-
-                // create a new socket for binding or connecting, since
-                // there doesn't appear to be a means of unbinding
-                create ();
-        }
-
-        /***********************************************************************
-
                 get underlying socket handle
 
         ***********************************************************************/
 
-        protected socket_t handle()
+        socket_t handle()
         {
                 return sock;
         }
@@ -1002,7 +786,7 @@ class Socket : Conduit
 
         ***********************************************************************/
 
-        protected bool blocking()
+        bool blocking()
         {
                 version(Win32)
                 {
@@ -1021,7 +805,7 @@ class Socket : Conduit
 
         ***********************************************************************/
 
-        protected void blocking(bool byes)
+        void blocking(bool byes)
         {
                 version(Win32)
                 {
@@ -1052,9 +836,9 @@ class Socket : Conduit
 
         ***********************************************************************/
 
-        protected AddressFamily addressFamily()
+        AddressFamily addressFamily()
         {
-                return _family;
+                return family;
         }
 
 
@@ -1063,10 +847,11 @@ class Socket : Conduit
 
         ***********************************************************************/
 
-        protected void bind(Address addr)
+        Socket bind(Address addr)
         {
                 if(SOCKET_ERROR == .bind (sock, addr.name(), addr.nameLen()))
                    exception ("Unable to bind socket: ");
+                return this;
         }
 
 
@@ -1075,7 +860,7 @@ class Socket : Conduit
 
         ***********************************************************************/
 
-        void connect(Address to)
+        Socket connect(Address to)
         {
                 if(SOCKET_ERROR == .connect (sock, to.name(), to.nameLen()))
                 {
@@ -1084,12 +869,12 @@ class Socket : Conduit
                                 version(Win32)
                                 {
                                         if(WSAEWOULDBLOCK == WSAGetLastError())
-                                                return;
+                                                return this;
                                 }
                                 else version (Posix)
                                 {
                                         if(EINPROGRESS == errno)
-                                                return;
+                                                return this;
                                 }
                                 else
                                 {
@@ -1098,6 +883,7 @@ class Socket : Conduit
                         }
                         exception ("Unable to connect socket: ");
                 }
+                return this;
         }
 
 
@@ -1107,67 +893,44 @@ class Socket : Conduit
 
         ***********************************************************************/
 
-        protected void listen(int backlog)
+        Socket listen(int backlog)
         {
                 if(SOCKET_ERROR == .listen (sock, backlog))
                    exception ("Unable to listen on socket: ");
+                return this;
         }
 
-        /***********************************************************************
-
-                Tango: added
-
-        ***********************************************************************/
-
-        protected Socket createSocket (socket_t handle)
+        /**
+         * Accept an incoming connection. If the socket is blocking, accept
+         * waits for a connection request. Throws SocketAcceptException if unable
+         * to accept. See accepting for use with derived classes.
+         */
+        Socket accept (Socket target)
         {
-                return new Socket (handle);
-        }
+                auto newsock = cast(socket_t).accept(sock, null, null); // DMD 0.101 error: found '(' when expecting ';' following 'statement
+                if (socket_t.init == newsock)
+                   throw new SocketAcceptException("Unable to accept socket connection", lastError());
 
-        /***********************************************************************
-
-
-        ***********************************************************************/
-
-        protected Socket accept()
-        {
-                socket_t newsock = .accept (sock, null, null);
-                if(INVALID_SOCKET == newsock)
-                   // Tango: return null rather than throwing an exception because
-                   // this is a valid condition upon thread-termination.
-                  {
-                  return null;
-                  //exception("Unable to accept socket connection.");
-                  }
-
-                // Tango: changed to indirect construction
-                Socket newSocket = createSocket (newsock);
-
+                target.create (newsock);
                 version(Win32)
-                        newSocket._blocking = _blocking; //inherits blocking mode
-                newSocket._family = _family; //same family
-                return newSocket;
+                        target._blocking = _blocking;  //inherits blocking mode
+                
+                target.protocol = protocol;            //same protocol
+                target.family = family;                //same family
+                target.type = type;                    //same type
+
+                return target;                         //return configured target
         }
-
-
+        
         /***********************************************************************
 
 
         ***********************************************************************/
 
-        void shutdown()
-        {       //printf ("shutdown\n");
-                .shutdown (sock, cast(int) Shutdown.BOTH);
-        }
-
-        /***********************************************************************
-
-
-        ***********************************************************************/
-
-        protected void shutdown(Shutdown how)
+        Socket shutdown(SocketShutdown how)
         {
-                .shutdown (sock, cast(int)how);
+                .shutdown (sock, how);
+                return this;
         }
 
 
@@ -1177,14 +940,15 @@ class Socket : Conduit
 
         ***********************************************************************/
 
-        void setLingerPeriod (int period)
+        Socket setLingerPeriod (int period)
         {
                 linger l;
 
                 l.l_onoff = 1;                          //option on/off
                 l.l_linger = cast(ushort) period;       //linger time
 
-                setOption (OptionLevel.SOCKET, Option.SO_LINGER, l.array);
+                setOption (SocketOptionLevel.SOCKET, SocketOption.SO_LINGER, l.array);
+                return this;
         }
 
 
@@ -1195,10 +959,11 @@ class Socket : Conduit
 
         ***********************************************************************/
 
-        protected void setAddressReuse (bool enabled)
+        Socket setAddressReuse (bool enabled)
         {
                 int[1] x = enabled;
-                setOption (OptionLevel.SOCKET, Option.SO_REUSEADDR, x);
+                setOption (SocketOptionLevel.SOCKET, SocketOption.SO_REUSEADDR, x);
+                return this;
         }
 
 
@@ -1211,7 +976,7 @@ class Socket : Conduit
 
         ***********************************************************************/
 
-        protected bool setGroup (IPv4Address address, Option option)
+        bool joinGroup (IPv4Address address, bool onOff)
         {
                 struct ip_mreq
                 {
@@ -1221,9 +986,10 @@ class Socket : Conduit
 
                 ip_mreq mrq;
 
+                auto option = (onOff) ? SocketOption.IP_ADD_MEMBERSHIP : SocketOption.IP_DROP_MEMBERSHIP;
                 mrq.imr_interface = 0;
                 mrq.imr_multiaddr = address.sin.sin_addr;
-                return cast(bool) (.setsockopt(handle(), OptionLevel.IP, option, &mrq, mrq.sizeof) != SOCKET_ERROR);
+                return .setsockopt(handle(), SocketOptionLevel.IP, option, &mrq, mrq.sizeof) != SOCKET_ERROR;
         }
 
 
@@ -1234,17 +1000,7 @@ class Socket : Conduit
 
         ***********************************************************************/
 
-        override void close ()
-        {
-                super.close ();
-                collect ();
-        }
-
-        /***********************************************************************
-
-        ***********************************************************************/
-
-        private void collect ()
+        void close ()
         {
                 if (sock != sock.init)
                    {
@@ -1266,23 +1022,13 @@ class Socket : Conduit
 
         /***********************************************************************
 
-        ***********************************************************************/
-
-        ~this ()
-        {
-                if (! isHalting)
-                       collect ();
-        }
-
-        /***********************************************************************
-
 
         ***********************************************************************/
 
-        private Address newFamilyObject ()
+        Address newFamilyObject ()
         {
                 Address result;
-                switch(_family)
+                switch(family)
                 {
                         case AddressFamily.INET:
                                 result = new IPv4Address;
@@ -1301,7 +1047,7 @@ class Socket : Conduit
 
         ***********************************************************************/
 
-        protected static char[] hostName ()
+        static char[] hostName ()
         {
                 char[64] name;
 
@@ -1317,7 +1063,7 @@ class Socket : Conduit
 
         ***********************************************************************/
 
-        protected static uint hostAddress ()
+        static uint hostAddress ()
         {
                 NetHost ih = new NetHost;
 
@@ -1339,7 +1085,7 @@ class Socket : Conduit
                 int nameLen = addr.nameLen ();
                 if(SOCKET_ERROR == .getpeername (sock, addr.name(), &nameLen))
                    exception ("Unable to obtain remote socket address: ");
-                assert (addr.addressFamily() == _family);
+                assert (addr.addressFamily() == family);
                 return addr;
         }
 
@@ -1355,153 +1101,92 @@ class Socket : Conduit
                 int nameLen = addr.nameLen();
                 if(SOCKET_ERROR == .getsockname (sock, addr.name(), &nameLen))
                    exception ("Unable to obtain local socket address: ");
-                assert (addr.addressFamily() == _family);
+                assert (addr.addressFamily() == family);
                 return addr;
         }
 
 
-        /***********************************************************************
-
-                returns number of bytes actually sent, or -1 on error
-
-        ***********************************************************************/
-
-        protected int send (void[] buf, Flags flags = Flags.NONE)
+        /**
+         * Send data on the connection. Returns the number of bytes actually
+         * sent, or ERROR on failure. If the socket is blocking and there is no
+         * buffer space left, send waits.
+         */
+        //returns number of bytes actually sent, or -1 on error
+        int send(void[] buf, SocketFlags flags=SocketFlags.NONE)
         {
-                int sent = .send (sock, buf.ptr, buf.length, cast(int)flags);
-                return sent;
+                return .send(sock, buf, buf.length, cast(int)flags);
         }
-
-
-        /***********************************************************************
-
-                -to- is ignored if connected ?
-
-        ***********************************************************************/
-
-        protected int sendTo (void[] buf, Flags flags, Address to)
+        
+        /**
+         * Send data to a specific destination Address. If the destination address is not specified, a connection must have been made and that address is used. If the socket is blocking and there is no buffer space left, sendTo waits.
+         */
+        int sendTo(void[] buf, SocketFlags flags, Address to)
         {
-                int sent = .sendto (sock, buf.ptr, buf.length, cast(int)flags, to.name(), to.nameLen());
-                return sent;
+                return .sendto(sock, buf, buf.length, cast(int)flags, to.name(), to.nameLen());
         }
-
-
-        /***********************************************************************
-
-                -to- is ignored if connected ?
-
-        ***********************************************************************/
-
-        protected int sendTo (void[] buf, Address to)
+        
+        /// ditto
+        int sendTo(void[] buf, Address to)
         {
-                return sendTo (buf, Flags.NONE, to);
+                return sendTo(buf, SocketFlags.NONE, to);
         }
-
-
-        /***********************************************************************
-
-                assumes you connect()ed
-
-        ***********************************************************************/
-
-        protected int sendTo (void[] buf, Flags flags = Flags.NONE)
+        
+        
+        //assumes you connect()ed
+        /// ditto
+        int sendTo(void[] buf, SocketFlags flags=SocketFlags.NONE)
         {
-                int sent = .sendto (sock, buf.ptr, buf.length, cast(int)flags, null, 0);
-                return sent;
+                return .sendto(sock, buf, buf.length, cast(int)flags, null, 0);
         }
-
-
-        /***********************************************************************
-
-                returns number of bytes actually received, 0 on connection
-                closure, or -1 on error
-
-        ***********************************************************************/
-
-        protected int receive (void[] buf, Flags flags = Flags.NONE)
+        
+        
+        /**
+         * Receive data on the connection. Returns the number of bytes actually
+         * received, 0 if the remote side has closed the connection, or ERROR on
+         * failure. If the socket is blocking, receive waits until there is data
+         * to be received.
+         */
+        //returns number of bytes actually received, 0 on connection closure, or -1 on error
+        int receive(void[] buf, SocketFlags flags=SocketFlags.NONE)
         {
-                if(!buf.length) //return 0 and don't think the connection closed
-                        return 0;
-                int read = .recv(sock, buf.ptr, buf.length, cast(int)flags);
-                if (read == SOCKET_ERROR)
-                    exception ("during socket recieve: ");
-                // if(!read) //connection closed
-                return read;
+                if (!buf.length) //return 0 and don't think the connection closed
+                     return 0;
+                
+                return .recv(sock, buf, buf.length, cast(int)flags);
         }
-
-
-        /***********************************************************************
-
-                -from- is ignored if connected ?
-
-        ***********************************************************************/
-
-        protected int receiveFrom (void[] buf, Flags flags, out Address from)
+        
+        /**
+         * Receive data and get the remote endpoint Address. Returns the number of bytes actually received, 0 if the remote side has closed the connection, or ERROR on failure. If the socket is blocking, receiveFrom waits until there is data to be received.
+         */
+        int receiveFrom(void[] buf, SocketFlags flags, Address from)
         {
-                if(!buf.length) //return 0 and don't think the connection closed
-                        return 0;
-                version (TraceLinux)
-                        {
-                        printf ("executing recvFrom() \n");
-                        }
-                from = newFamilyObject ();
-                int nameLen = from.nameLen ();
-                int read = .recvfrom (sock, buf.ptr, buf.length, cast(int)flags, from.name(), &nameLen);
-                version (TraceLinux)
-                        {
-                        printf ("recvFrom returns %d\n", read);
-                        }
-                if (read == SOCKET_ERROR)
-                    exception ("during socket recieve: ");
-
-                assert (from.addressFamily() == _family);
-                // if(!read) //connection closed
-                return read;
+                if (!buf.length) //return 0 and don't think the connection closed
+                     return 0;
+                
+                assert(from.addressFamily() == family);
+                int nameLen = from.nameLen();
+                return .recvfrom(sock, buf, buf.length, cast(int)flags, from.name(), &nameLen);
         }
-
-
-        /***********************************************************************
-
-                -from- is ignored if connected ?
-
-        ***********************************************************************/
-
-        protected int receiveFrom (void[] buf, out Address from)
+        
+        
+        /// ditto
+        int receiveFrom(void[] buf, out Address from)
         {
-                return receiveFrom (buf, Flags.NONE, from);
+                return receiveFrom(buf, SocketFlags.NONE, from);
         }
-
-
-        /***********************************************************************
-
-                assumes you connect()ed
-
-        ***********************************************************************/
-
-        protected int receiveFrom (void[] buf, Flags flags)
+        
+        
+        //assumes you connect()ed
+        /// ditto
+        int receiveFrom(void[] buf, SocketFlags flags = SocketFlags.NONE)
         {
-                if(!buf.length) //return 0 and don't think the connection closed
-                        return 0;
-                int read = .recvfrom (sock, buf.ptr, buf.length, cast(int)flags, null, null);
-                if (read == SOCKET_ERROR)
-                    exception ("during socket recieve: ");
-                // if(!read) //connection closde
-                return read;
+                if (!buf.length) //return 0 and don't think the connection closed
+                     return 0;
+                
+                return .recvfrom(sock, buf, buf.length, cast(int)flags, null, null);
         }
-
-
-        /***********************************************************************
-
-                assumes you connect()ed
-
-        ***********************************************************************/
-
-        protected int receiveFrom (void[] buf)
-        {
-                return receiveFrom (buf, Flags.NONE);
-        }
-
-
+        
+        
         /***********************************************************************
 
                 returns the length, in bytes, of the actual result - very
@@ -1509,7 +1194,7 @@ class Socket : Conduit
 
         ***********************************************************************/
 
-        protected int getOption (OptionLevel level, Option option, void[] result)
+        int getOption (SocketOptionLevel level, SocketOption option, void[] result)
         {
                 int len = result.length;
                 if(SOCKET_ERROR == .getsockopt (sock, cast(int)level, cast(int)option, result.ptr, &len))
@@ -1523,10 +1208,11 @@ class Socket : Conduit
 
         ***********************************************************************/
 
-        protected void setOption (OptionLevel level, Option option, void[] value)
+        Socket setOption (SocketOptionLevel level, SocketOption option, void[] value)
         {
                 if(SOCKET_ERROR == .setsockopt (sock, cast(int)level, cast(int)option, value.ptr, value.length))
                    exception ("Unable to set socket option: ");
+                return this;
         }
 
 
@@ -1538,7 +1224,7 @@ class Socket : Conduit
 
         protected static void exception (char[] msg)
         {
-                throw new SocketException (msg ~ SysError.lookup (lastError));
+                throw new SocketException (msg, lastError);
         }
 
 
@@ -1556,7 +1242,7 @@ class Socket : Conduit
 
         ***********************************************************************/
 
-        protected static int select (SocketSet checkRead, SocketSet checkWrite, SocketSet checkError, timeval* tv)
+        static int select (SocketSet checkRead, SocketSet checkWrite, SocketSet checkError, timeval* tv)
         in
         {
                 //make sure none of the SocketSet's are the same object
@@ -1636,7 +1322,7 @@ class Socket : Conduit
 
         ***********************************************************************/
 
-        protected static int select (SocketSet checkRead, SocketSet checkWrite, SocketSet checkError, int microseconds)
+        static int select (SocketSet checkRead, SocketSet checkWrite, SocketSet checkError, int microseconds)
         {
                 timeval tv;
                 tv.tv_sec = 0;
@@ -1651,26 +1337,10 @@ class Socket : Conduit
 
         ***********************************************************************/
 
-        protected static int select (SocketSet checkRead, SocketSet checkWrite, SocketSet checkError)
+        static int select (SocketSet checkRead, SocketSet checkWrite, SocketSet checkError)
         {
                 return select (checkRead, checkWrite, checkError, null);
         }
-
-
-        /***********************************************************************
-
-
-        ***********************************************************************/
-
-        /+
-        bool poll (events)
-        {
-                int WSAEventSelect(socket_t s, WSAEVENT hEventObject, int lNetworkEvents); // Winsock 2 ?
-                int poll(pollfd* fds, int nfds, int timeout); // Unix ?
-        }
-        +/
-
-
 }
 
 
@@ -1684,7 +1354,7 @@ abstract class Address
 {
         protected sockaddr* name();
         protected int nameLen();
-        Socket.AddressFamily addressFamily();
+        AddressFamily addressFamily();
         char[] toUtf8();
 
         /***********************************************************************
@@ -1693,7 +1363,7 @@ abstract class Address
 
         ***********************************************************************/
 
-        protected static void exception (char[] msg)
+        static void exception (char[] msg)
         {
                 throw new AddressException (msg);
         }
@@ -1740,9 +1410,9 @@ class UnknownAddress: Address
 
         ***********************************************************************/
 
-        Socket.AddressFamily addressFamily()
+        AddressFamily addressFamily()
         {
-                return cast(Socket.AddressFamily)sa.sa_family;
+                return cast(AddressFamily) sa.sa_family;
         }
 
 
@@ -1777,7 +1447,7 @@ class NetHost
 
         protected void validHostent(hostent* he)
         {
-                if(he.h_addrtype != cast(int)Socket.AddressFamily.INET || he.h_length != 4)
+                if(he.h_addrtype != cast(int)AddressFamily.INET || he.h_length != 4)
                         throw new HostException("Address family mismatch.");
         }
 
@@ -1862,7 +1532,7 @@ class NetHost
         bool getHostByAddr(uint addr)
         {
                 uint x = htonl(addr);
-                hostent* he = gethostbyaddr(&x, 4, cast(int)Socket.AddressFamily.INET);
+                hostent* he = gethostbyaddr(&x, 4, cast(int)AddressFamily.INET);
                 if(!he)
                         return false;
                 validHostent(he);
@@ -1882,7 +1552,7 @@ class NetHost
                 char[64] tmp;
 
                 uint x = inet_addr(convert2C (addr, tmp));
-                hostent* he = gethostbyaddr(&x, 4, cast(int)Socket.AddressFamily.INET);
+                hostent* he = gethostbyaddr(&x, 4, cast(int)AddressFamily.INET);
                 if(!he)
                         return false;
                 validHostent(he);
@@ -1936,7 +1606,7 @@ class IPv4Address: Address
 
         struct sockaddr_in
         {
-                ushort sin_family = cast(ushort)Socket.AddressFamily.INET;
+                ushort sinfamily = AddressFamily.INET;
                 ushort sin_port;
                 uint sin_addr; //in_addr
                 char[8] sin_zero = [0];
@@ -1967,6 +1637,8 @@ class IPv4Address: Address
         }
 
 
+        public:
+
         /***********************************************************************
 
 
@@ -1977,7 +1649,6 @@ class IPv4Address: Address
         }
 
 
-        public:
         const uint ADDR_ANY = 0;
         const uint ADDR_NONE = cast(uint)-1;
         const ushort PORT_ANY = 0;
@@ -1988,9 +1659,9 @@ class IPv4Address: Address
 
         ***********************************************************************/
 
-        Socket.AddressFamily addressFamily()
+        AddressFamily addressFamily()
         {
-                return Socket.AddressFamily.INET;
+                return AddressFamily.INET;
         }
 
 
@@ -2079,7 +1750,7 @@ class IPv4Address: Address
 
         char[] toPortString()
         {
-                return Integer.format(_port, port());
+                return toString (_port, port());
         }
 
 
@@ -2193,7 +1864,7 @@ class SocketSet
                 version(Win32)
                 {
                         nbytes = max * socket_t.sizeof;
-                        buf = (new byte[nbytes + uint.sizeof]).ptr;
+                        buf = new byte[nbytes + uint.sizeof];
                         count = 0;
                 }
                 else version (Posix)
@@ -2433,55 +2104,4 @@ class SocketSet
                 return cast(fd_set*)buf;
         }
 }
-
-
-
-
-/******************************************************************************/
-/******************* additions for the tango.io package  **********************/
-/******************************************************************************/
-
-
-/******************************************************************************
-
-******************************************************************************/
-
-interface IListener
-{
-        /***********************************************************************
-
-                Stop listening; this may be delayed until after the next
-                valid read operation.
-
-        ***********************************************************************/
-
-        void cancel ();
-}
-
-
-/******************************************************************************
-
-******************************************************************************/
-
-interface ISocketReader
-{
-        /***********************************************************************
-
-                Polymorphic contract for readers handed to a listener.
-                Should return the number of bytes read, or -1 on error.
-
-        ***********************************************************************/
-
-        uint read (IBuffer buffer);
-
-        /***********************************************************************
-
-                Is this socket still alive?
-
-        ***********************************************************************/
-
-        bool isAlive();
-}
-
-
 

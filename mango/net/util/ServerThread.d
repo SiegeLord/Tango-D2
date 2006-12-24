@@ -47,7 +47,6 @@ class ServerThread : Thread, IRunnable
         {
                 this.server = server;
                 this.socket = socket;
-                super( & doJob );
         }
 
         /**********************************************************************
@@ -70,12 +69,12 @@ class ServerThread : Thread, IRunnable
 
         **********************************************************************/
 
-        void doJob ()
+        override void run ()
         {
                 while (true)
                        try {
                            // should we bail out?
-                           if (socket.isHalting)
+                           if (isHalting)
                                return 0;
 
                            // wait for a socket connection
@@ -87,7 +86,7 @@ class ServerThread : Thread, IRunnable
                                server.service (this, sc);
                            else
                               // server may be halting ...
-                              if (socket.isAlive)
+                              if (socket.getSocket.isAlive)
                                   server.getLogger.error ("Socket accept() failed");
 
                            } catch (IOException x)
@@ -99,4 +98,17 @@ class ServerThread : Thread, IRunnable
                                    server.getLogger.fatal ("Exception: "~x.toUtf8);
                                    }
         }
+}
+
+/******************************************************************************
+
+        Sentinel for application halting
+
+******************************************************************************/
+
+private bool isHalting;
+
+static ~this()
+{
+        isHalting = true;
 }

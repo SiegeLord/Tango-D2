@@ -4,9 +4,9 @@
 
         license:        BSD style: $(LICENSE)
 
-        version:        Initial release: March 2004      
-        version:        Jan 1st 2005 - Added RedShodan patch for timeout query
-                        Outback release: December 2006
+        version:        Mar 2004 : Initial release
+        version:        Jan 2005 : RedShodan patch for timeout query
+        version:        Dec 2006 : Outback release
         
         author:         Kris
 
@@ -16,23 +16,27 @@ module tango.net.SocketConduit;
 
 private import  tango.net.Socket;
 
-private import  tango.io.model.IBuffer;
+private import  tango.io.Conduit;
 
+private import  tango.core.Interval;
 
 /*******************************************************************************
 
         A wrapper around the bare Socket to implement the IConduit abstraction
-        and add socket-specific functionality. SocketConduit data-transfer is 
-        typically performed in conjunction with an IBuffer instance, but can 
-        be handled directly using raw arrays if preferred. See FileConduit for 
-        examples of both approaches.
+        and add socket-specific functionality.
 
+        SocketConduit data-transfer is typically performed in conjunction with
+        an IBuffer, but can happily be handled directly using void array where
+        preferred
+        
 *******************************************************************************/
 
-class SocketConduit : Socket, ISocketReader
-{       
-        // expose Conduit read()
-        alias Socket.read               read;
+class SocketConduit : Conduit
+{
+        private timeval                 tv;
+        private SocketSet               ss;
+        package Socket                  socket;
+        private bool                    timeout;
 
         // freelist support
         private SocketConduit           next;   
@@ -47,25 +51,223 @@ class SocketConduit : Socket, ISocketReader
 
         this ()
         {
-                super (AddressFamily.INET, Type.STREAM, Protocol.IP);                
+                this (Access.ReadWrite, SocketType.STREAM);
+        }
+
+        /***********************************************************************
+        
+                Create an Internet Socket. Used by subclasses and by
+                ServerSocket; the latter via method allocate() below
+
+        ***********************************************************************/
+
+        protected this (Access access, SocketType type, bool create = true)
+        {
+                super (access);
+                socket = new Socket (AddressFamily.INET, type, ProtocolType.TCP);
+                if (create)
+                    socket.create ();
+        }
+
+       /***********************************************************************
+
+                Callback routine to read content from the socket. Note
+                that the operation may timeout if method setTimeout()
+                has been invoked with a non-zero value.
+
+                Returns the number of bytes read from the socket, or
+                IConduit.Eof where there's no more content available
+
+                Note that a timeout is equivalent to Eof. Isolating
+                a timeout condition can be achieved via hadTimeout()
+
+                Note also that a zero return value is not legitimate;
+                such a value indicates Eof
+
+        ***********************************************************************/
+
+        protected override uint reader (void[] dst)
+        {
+                // ensure just one read at a time
+                synchronized (this)
+                {
+                // reset timeout; we assume there's no thread contention
+                timeout = false;
+
+                // did user disable timeout checks?
+                if (tv.tv_usec)
+                   {
+                   // nope: ensure we have a SocketSet
+                   if (ss is null)
+                       ss = new SocketSet (1);
+
+                   ss.reset ();
+                   ss.add (socket);
+
+                   // wait until data is available, or a timeout occurs
+                   int i = socket.select (ss, null, null, &tv);
+                       
+                   if (i <= 0)
+                      {
+                      if (i is 0)
+                          timeout = true;
+                      return Eof;
+                      }
+                   }       
+
+                int count = socket.receive (dst);
+                if (count <= 0)
+                    count = Eof;
+                return count;
+                }
         }
 
         /***********************************************************************
 
-                Override closure() to deallocate this SocketConduit 
-                when it has been closed. Note that one should *not* 
-                delete a SocketConduit when FreeList is enabled ...
+                Callback routine to write the provided content to the
+                socket. This will stall until the socket responds in
+                some manner. Returns the number of bytes sent to the
+                output, or IConduit.Eof if the socket cannot write.
+
+        ***********************************************************************/
+
+        protected override uint writer (void[] src)
+        {
+                int count = socket.send (src);
+                if (count <= 0)
+                    count = Eof;
+                return count;
+        }
+
+        /***********************************************************************
+
+                Return a preferred size for buffering conduit I/O
+
+        ***********************************************************************/
+
+        uint bufferSize ()
+        {
+                return 1024 * 8;
+        }
+
+        /***********************************************************************
+
+                Models a handle-oriented device. We need to revisit this.
+
+                TODO: figure out how to avoid exposing this in the general
+                case
+
+        ***********************************************************************/
+
+        Handle getHandle ()
+        {
+                return cast(Handle) socket.handle;
+        }
+
+        /***********************************************************************
+
+                Set the read timeout to the specified microseconds. Set a
+                value of zero to disable timeout support.
+
+        ***********************************************************************/
+
+        void setTimeout (Interval us)
+        {
+                tv.tv_sec = cast(int) (us / Interval.second);
+                tv.tv_usec = cast(int) (us % Interval.second);
+        }
+
+        /***********************************************************************
+
+                Did the last operation result in a timeout? Note that this
+                assumes there is no thread contention on this object.
+
+        ***********************************************************************/
+
+        bool hadTimeout ()
+        {
+                return timeout;
+        }
+
+        /***********************************************************************
+
+                Is this socket still alive?
+
+        ***********************************************************************/
+
+        override bool isAlive ()
+        {
+                return socket.isAlive;
+        }
+
+        /***********************************************************************
+
+                Connect the socket to the provided endpoint
+        
+        ***********************************************************************/
+
+        SocketConduit connect (Address addr)
+        {
+                socket.connect (addr);
+                return this;
+        }
+
+        /***********************************************************************
+
+                Bind the socket. This is typically used to configure a
+                listening socket (such as a server or multicast socket).
+                The address given should describe a local adapter, or
+                specify the port alone (ADDR_ANY) to have the OS assign
+                a local adapter address.
+        
+        ***********************************************************************/
+
+        SocketConduit bind (Address address)
+        {
+                socket.bind (address);
+                return this;
+        }
+
+        /***********************************************************************
+
+                Inform other end we're no longer available. In general,
+                this should be invoked for streaming connections before
+                method close() is invoked
+        
+        ***********************************************************************/
+
+        SocketConduit shutdown ()
+        {
+                socket.shutdown (SocketShutdown.BOTH);
+                return this;
+        }
+
+        /***********************************************************************
+
+                return the socket wrapper
+                
+        ***********************************************************************/
+
+        Socket getSocket()
+        {
+                return socket;
+        }
+
+        /***********************************************************************
+
+                Deallocate this SocketConduit when it is been closed.
+
+                Note that one should always close a SocketConduit under
+                normal conditions, and generally invoke shutdown upon it
+                beforehand
 
         ***********************************************************************/
 
         override void close ()
         {       
-                // be a nice client, and tell the server?
-                //super.shutdown();
-
                 // do this first cos' we're gonna' reset the
                 // socket handle during deallocate()
-                super.close ();
+                socket.close;
 
 
                 // deallocate if this came from the free-list,
@@ -75,76 +277,15 @@ class SocketConduit : Socket, ISocketReader
         }
 
         /***********************************************************************
-        
-                Read from conduit into a target buffer. Note that this 
-                uses SocketSet to handle timeouts, such that the socket
-                does not stall forever.
-        
-                (for the ISocketReader interface)
+
+                Allocate a SocketConduit from a list rather than creating
+                a new one. Note that the socket itself is not opened; only
+                the wrappers. This is because the socket is often assigned
+                directly via accept()
 
         ***********************************************************************/
 
-        uint read (IBuffer target)
-        {
-                return target.fill (this);
-        }
-
-        /***********************************************************************
-
-                Is this socket still alive?
-
-        ***********************************************************************/
-
-        bool isAlive()
-        {
-                return super.isAlive();
-        }
-
-        /***********************************************************************
-        
-                Construct this SocketConduit with the given socket handle;
-                this is for FreeList and ServerSocket support.
-
-        ***********************************************************************/
-
-        protected static SocketConduit create (socket_t handle)
-        {
-                // allocate one from the free-list
-                return allocate (handle);
-        }
-
-        /***********************************************************************
-       
-                Create a new socket for binding during another join() or
-                connect(), since there doesn't appear to be another means
-         
-        ***********************************************************************/
-
-        protected override void create ()
-        {
-                super.create (AddressFamily.INET, Type.STREAM, Protocol.IP);                
-        }
-
-        /***********************************************************************
-        
-                Construct this SocketConduit with the given socket handle;
-                this is for FreeList and ServerSocket support.
-
-        ***********************************************************************/
-
-        private this (socket_t handle)
-        {
-                super (handle);                
-        }
-     
-        /***********************************************************************
-
-                Allocate a SocketConduit from a list rather than 
-                creating a new one
-
-        ***********************************************************************/
-
-        private static synchronized SocketConduit allocate (socket_t sock)
+        package static synchronized SocketConduit allocate ()
         {       
                 SocketConduit s;
 
@@ -152,11 +293,10 @@ class SocketConduit : Socket, ISocketReader
                    {
                    s = freelist;
                    freelist = s.next;
-                   s.set (sock);
                    }
                 else
                    {
-                   s = new SocketConduit (sock);
+                   s = new SocketConduit (Access.ReadWrite, SocketType.STREAM, false);
                    s.fromList = true;
                    }
                 return s;
@@ -170,9 +310,8 @@ class SocketConduit : Socket, ISocketReader
 
         private static synchronized void deallocate (SocketConduit s)
         {
-                // socket handle is no longer valid
-                s.reset ();
                 s.next = freelist;
                 freelist = s;
         }
 }
+

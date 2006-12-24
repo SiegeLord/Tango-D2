@@ -14,9 +14,9 @@ module tango.net.SocketListener;
 
 private import  tango.core.Thread;
 
-private import  tango.net.Socket;
-
-private import  tango.io.model.IBuffer;
+private import  tango.io.model.IBuffer,
+                tango.io.model.IConduit,
+                tango.io.model.IListener;
 
 /******************************************************************************
 
@@ -35,7 +35,7 @@ class SocketListener : Thread, IListener
 {
         private bool                    quit;
         private IBuffer                 buffer;
-        private ISocketReader           reader;
+        private IConduit                conduit;
         private int                     limit = 3;
 
         /**********************************************************************
@@ -47,15 +47,14 @@ class SocketListener : Thread, IListener
 
         **********************************************************************/
 
-        this (ISocketReader reader, IBuffer buffer)
+        this (IBuffer buffer)
         in {
-           assert (reader);
            assert (buffer);
            }
         body
         {
                 this.buffer = buffer;
-                this.reader = reader;
+                this.conduit = buffer.getConduit;
         }
 
         /***********************************************************************
@@ -106,7 +105,7 @@ class SocketListener : Thread, IListener
         /**********************************************************************
 
                 Execution of this thread is typically stalled on the
-                read() method belonging to the ISocketReader specified
+                read() method belonging to the conduit specified
                 during construction. You can invoke cancel() to indicate
                 execution should not proceed further, but that will not
                 actually interrupt a blocked read() operation.
@@ -123,15 +122,15 @@ class SocketListener : Thread, IListener
                 while (lives > 0)
                        try {
                            // start with a clean slate
-                           buffer.clear ();
+                           buffer.compress ();
 
                            // wait for incoming content
-                           auto result = reader.read (buffer);
+                           auto result = buffer.write (&conduit.read);
 
                            // time to quit? Note that a v0.95 compiler bug 
                            // prohibits 'break' from exiting the try{} block
                            if (quit || 
-                              (result is Socket.Eof && !reader.isAlive))
+                              (result is conduit.Eof && !conduit.isAlive))
                                lives = 0;
                            else
                               {
@@ -141,7 +140,7 @@ class SocketListener : Thread, IListener
                               }
                            } catch (Object x)
                                     // time to quit?
-                                    if (quit || !reader.isAlive)
+                                    if (quit || !conduit.isAlive)
                                         break;
                                     else
                                        {

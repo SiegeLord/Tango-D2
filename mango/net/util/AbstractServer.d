@@ -23,8 +23,6 @@ private import  tango.io.model.IConduit;
 private import  tango.net.ServerSocket,
                 tango.net.SocketConduit;
 
-//private import  mango.net.util.ServerThread;
-
 private import  mango.net.util.model.IServer,
                 mango.net.util.model.IRunnable;
 
@@ -117,8 +115,8 @@ class AbstractServer : IServer
 
         char[] getRemoteAddress (IConduit conduit)
         {
-                SocketConduit socket = cast(SocketConduit) conduit;
-                InternetAddress addr = cast(InternetAddress) socket.remoteAddress();
+                auto socket = cast(SocketConduit) conduit;
+                auto addr = cast(InternetAddress) socket.getSocket.remoteAddress();
 
                 if (addr)
                     return addr.toAddrString();
@@ -145,7 +143,7 @@ class AbstractServer : IServer
 
         int getPort ()
         {
-                InternetAddress addr = cast(InternetAddress) socket.localAddress();
+                auto addr = cast(InternetAddress) socket.getSocket.localAddress();
                 return addr.port();
         }
 
@@ -157,7 +155,7 @@ class AbstractServer : IServer
 
         char[] getHost ()
         {
-                InternetAddress addr = cast(InternetAddress) socket.localAddress();
+                InternetAddress addr = cast(InternetAddress) socket.getSocket.localAddress();
                 return addr.toAddrString();
         }
 
@@ -188,7 +186,7 @@ class AbstractServer : IServer
                      createThread (socket).execute;
 
                 char[] info = "Server "~toUtf8()~" started on "~
-                               socket.localAddress().toUtf8()~
+                               socket.getSocket.localAddress().toUtf8()~
                                " with "~Integer.format(new char[5], threads)~" accept threads, "~
                                Integer.format(new char[5], backlog)~" backlogs";
 

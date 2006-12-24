@@ -26,9 +26,9 @@ private import  tango.io.protocol.model.IReader,
 private import  tango.net.Uri;
 
 private import  tango.net.http.HttpReader,
-		tango.net.http.HttpHeaders,
+                tango.net.http.HttpHeaders,
                 tango.net.http.HttpCookies,
-		tango.net.http.HttpTriplet;
+                tango.net.http.HttpTriplet;
 
 private import  mango.net.http.server.HttpMessage,
                 mango.net.http.server.ServiceBridge,
