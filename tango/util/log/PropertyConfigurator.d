@@ -10,17 +10,17 @@
 
 *******************************************************************************/
 
-module tango.log.PropertyConfigurator;
+module tango.util.log.PropertyConfigurator;
 
 private import  tango.text.Properties;
 
-private import  tango.log.Log,
-                tango.log.Layout,
-                tango.log.DateLayout,
-                tango.log.Configurator,
-                tango.log.ConsoleAppender;
+private import  tango.util.log.Log,
+                tango.util.log.Layout,
+                tango.util.log.DateLayout,
+                tango.util.log.Configurator,
+                tango.util.log.ConsoleAppender;
 
-private import  tango.log.model.ILevel;
+private import  tango.util.log.model.ILevel;
 
 /*******************************************************************************
 

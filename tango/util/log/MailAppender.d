@@ -10,9 +10,9 @@
 
 *******************************************************************************/
 
-module tango.log.MailAppender;
+module tango.util.log.MailAppender;
 
-private import  tango.log.Appender;
+private import  tango.util.log.Appender;
 
 private import  tango.io.Buffer,
                 tango.net.SocketConduit,

@@ -15,14 +15,14 @@
 
 *******************************************************************************/
 
-module tango.log.Admin;
+module tango.util.log.Admin;
 
 private import  tango.net.Uri;
 
 private import  tango.io.protocol.model.IWriter;
 
-private import  tango.log.Log,
-                tango.log.Event;
+private import  tango.util.log.Log,
+                tango.util.log.Event;
 
 private import  mango.net.servlet.Servlet,
                 mango.net.servlet.ServletContext,

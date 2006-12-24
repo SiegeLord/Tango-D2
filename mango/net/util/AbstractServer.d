@@ -12,7 +12,7 @@
 
 module mango.net.util.AbstractServer;
 
-private import  tango.log.Log;
+private import  tango.util.log.Log;
 
 private import  tango.io.Exception;
 

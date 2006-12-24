@@ -11,11 +11,11 @@
 
 *******************************************************************************/
 
-module tango.log.Logger;
+module tango.util.log.Logger;
 
-private import tango.log.Appender;
+private import tango.util.log.Appender;
 
-private import tango.log.model.ILevel;
+private import tango.util.log.model.ILevel;
 
 /*******************************************************************************
 
@@ -24,7 +24,7 @@ private import tango.log.model.ILevel;
         methods to modify specific Logger attributes. 
         
         ---
-        import tango.log.Log;
+        import tango.util.log.Log;
         
         auto log = Log.getLogger ("my.logger");
 

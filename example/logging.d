@@ -4,8 +4,8 @@
 
 *******************************************************************************/
 
-private import tango.log.Log,
-               tango.log.Configurator;
+private import tango.util.log.Log,
+               tango.util.log.Configurator;
 
 private import tango.text.convert.Sprint;
 

@@ -41,9 +41,9 @@ import  tango.net.Uri,
         tango.net.Socket;
 
         //for logging
-import  tango.log.Log,
-        tango.log.Admin,
-        tango.log.Configurator;
+import  tango.util.log.Log,
+        tango.util.log.Admin,
+        tango.util.log.Configurator;
 
         // for html responses
 import  tango.io.protocol.DisplayWriter;

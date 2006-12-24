@@ -1,8 +1,8 @@
 import  tango.core.Thread;
 
-import  tango.log.Log,
-        tango.log.XmlLayout,
-        tango.log.SocketAppender;
+import  tango.util.log.Log,
+        tango.util.log.XmlLayout,
+        tango.util.log.SocketAppender;
 
 import  tango.net.InternetAddress;
 

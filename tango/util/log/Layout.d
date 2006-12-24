@@ -10,9 +10,9 @@
 
 *******************************************************************************/
 
-module tango.log.Layout;
+module tango.util.log.Layout;
 
-private import tango.log.Event;
+private import tango.util.log.Event;
 
 /*******************************************************************************
 

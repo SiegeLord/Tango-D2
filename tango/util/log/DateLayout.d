@@ -10,10 +10,10 @@
 
 *******************************************************************************/
 
-module tango.log.DateLayout;
+module tango.util.log.DateLayout;
 
-private import  tango.log.Event,
-                tango.log.Layout;
+private import  tango.util.log.Event,
+                tango.util.log.Layout;
 
 private import  tango.core.Epoch;
 

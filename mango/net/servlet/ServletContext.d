@@ -12,7 +12,7 @@
 
 module mango.net.servlet.ServletContext;
 
-private import  tango.log.Log;
+private import  tango.util.log.Log;
 
 private import  tango.text.Text;
 

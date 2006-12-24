@@ -10,10 +10,10 @@
 
 *******************************************************************************/
 
-module tango.log.RollingFileAppender;
+module tango.util.log.RollingFileAppender;
 
-private import  tango.log.Appender,
-                tango.log.FileAppender;
+private import  tango.util.log.Appender,
+                tango.util.log.FileAppender;
 
 private import  tango.io.FilePath,
                 tango.io.FileConst,

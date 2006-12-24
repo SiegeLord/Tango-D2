@@ -14,7 +14,7 @@ module mango.net.http.server.HttpServer;
 
 public  import  tango.net.InternetAddress;
 
-private import  tango.log.Logger;
+private import  tango.util.log.Logger;
 
 private import  tango.io.Exception;
 

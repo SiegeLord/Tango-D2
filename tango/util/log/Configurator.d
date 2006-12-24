@@ -10,11 +10,11 @@
 
 *******************************************************************************/
 
-module tango.log.Configurator;
+module tango.util.log.Configurator;
 
-private import  tango.log.Log,
-                tango.log.Layout,
-                tango.log.ConsoleAppender;
+private import  tango.util.log.Log,
+                tango.util.log.Layout,
+                tango.util.log.ConsoleAppender;
 
 /*******************************************************************************
 

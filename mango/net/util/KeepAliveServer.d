@@ -12,7 +12,7 @@
 
 module mango.net.util.KeepAliveServer;
 
-public  import  tango.log.Logger;
+public  import  tango.util.log.Logger;
 
 public  import  tango.io.model.IConduit;
 

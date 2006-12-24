@@ -10,10 +10,10 @@
 
 *******************************************************************************/
 
-module tango.log.XmlLayout;
+module tango.util.log.XmlLayout;
 
-private import  tango.log.Event,
-                tango.log.Layout;
+private import  tango.util.log.Event,
+                tango.util.log.Layout;
 
 private import  tango.core.Thread;
 

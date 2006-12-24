@@ -10,9 +10,9 @@
 
 *******************************************************************************/
 
-module tango.log.SocketAppender;
+module tango.util.log.SocketAppender;
 
-private import  tango.log.Appender;
+private import  tango.util.log.Appender;
 
 private import  tango.io.Buffer,
                 tango.io.Console;

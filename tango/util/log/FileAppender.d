@@ -10,9 +10,9 @@
 
 *******************************************************************************/
 
-module tango.log.FileAppender;
+module tango.util.log.FileAppender;
 
-private import  tango.log.Appender;
+private import  tango.util.log.Appender;
 
 private import  tango.io.Buffer,
                 tango.io.FileConst,

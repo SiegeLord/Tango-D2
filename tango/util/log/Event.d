@@ -11,14 +11,14 @@
 
 *******************************************************************************/
 
-module tango.log.Event;
+module tango.util.log.Event;
 
 version = UseEventFreeList;
 
 private import  tango.sys.Common;
 
-private import  tango.log.model.ILevel,
-                tango.log.model.IHierarchy;
+private import  tango.util.log.model.ILevel,
+                tango.util.log.model.IHierarchy;
 
 
 version (Win32)

@@ -11,12 +11,12 @@
 
 *******************************************************************************/
 
-module tango.log.Hierarchy;
+module tango.util.log.Hierarchy;
 
-private import  tango.log.Logger,
-                tango.log.Appender;
+private import  tango.util.log.Logger,
+                tango.util.log.Appender;
 
-private import  tango.log.model.IHierarchy;
+private import  tango.util.log.model.IHierarchy;
 
 /*******************************************************************************
 

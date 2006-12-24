@@ -11,12 +11,12 @@
 
 *******************************************************************************/
 
-module tango.log.Log;
+module tango.util.log.Log;
 
-public  import  tango.log.Logger;
+public  import  tango.util.log.Logger;
 
-private import  tango.log.Event,
-                tango.log.Hierarchy;
+private import  tango.util.log.Event,
+                tango.util.log.Hierarchy;
 
 /*******************************************************************************
 

@@ -10,22 +10,32 @@
 
 *******************************************************************************/
 
-module tango.log.ConsoleAppender;
+module tango.util.log.NullAppender;
 
-private import tango.log.Appender;
-
-private import tango.io.Console;
+private import tango.util.log.Appender;
 
 /*******************************************************************************
 
-        Append to the console. This will use either streams or tango.io
-        depending upon configuration
+        An appender that does nothing. This is useful for cutting and
+        pasting, and for benchmarking the tango.log environment.
 
 *******************************************************************************/
 
-public class ConsoleAppender : Appender
+public class NullAppender : Appender
 {
         private Mask mask;
+
+        /***********************************************************************
+               
+                Construct a NullAppender
+
+        ***********************************************************************/
+
+        this ()
+        {
+                // Get a unique fingerprint for this class
+                mask = register (getName);
+        }
 
         /***********************************************************************
                 
@@ -33,11 +43,8 @@ public class ConsoleAppender : Appender
 
         ***********************************************************************/
 
-        this (Layout layout = null)
+        this (Layout layout)
         {
-                // Get a unique fingerprint for this class
-                mask = register (getName);
-
                 setLayout (layout);
         }
 
@@ -64,17 +71,16 @@ public class ConsoleAppender : Appender
         }
                 
         /***********************************************************************
-               
+                
                 Append an event to the output.
                  
         ***********************************************************************/
 
-        synchronized void append (Event event)
+        void append (Event event)
         {
                 Layout layout = getLayout;
-                Cerr.append (layout.header  (event));
-                Cerr.append (layout.content (event));
-                Cerr.append (layout.footer  (event));                        
-                Cerr.newline;
+                layout.header  (event);
+                layout.content (event);
+                layout.footer  (event);
         }
 }

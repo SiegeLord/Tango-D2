@@ -10,10 +10,10 @@
 
 *******************************************************************************/
 
-module tango.log.Appender;
+module tango.util.log.Appender;
 
-public import   tango.log.Event,
-                tango.log.Layout;
+public import   tango.util.log.Event,
+                tango.util.log.Layout;
 
 /*******************************************************************************
 
