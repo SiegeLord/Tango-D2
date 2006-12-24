@@ -1114,7 +1114,7 @@ class Socket
         //returns number of bytes actually sent, or -1 on error
         int send(void[] buf, SocketFlags flags=SocketFlags.NONE)
         {
-                return .send(sock, buf, buf.length, cast(int)flags);
+                return .send(sock, buf.ptr, buf.length, cast(int)flags);
         }
         
         /**
@@ -1122,7 +1122,7 @@ class Socket
          */
         int sendTo(void[] buf, SocketFlags flags, Address to)
         {
-                return .sendto(sock, buf, buf.length, cast(int)flags, to.name(), to.nameLen());
+                return .sendto(sock, buf.ptr, buf.length, cast(int)flags, to.name(), to.nameLen());
         }
         
         /// ditto
@@ -1136,7 +1136,7 @@ class Socket
         /// ditto
         int sendTo(void[] buf, SocketFlags flags=SocketFlags.NONE)
         {
-                return .sendto(sock, buf, buf.length, cast(int)flags, null, 0);
+                return .sendto(sock, buf.ptr, buf.length, cast(int)flags, null, 0);
         }
         
         
@@ -1152,7 +1152,7 @@ class Socket
                 if (!buf.length) //return 0 and don't think the connection closed
                      return 0;
                 
-                return .recv(sock, buf, buf.length, cast(int)flags);
+                return .recv(sock, buf.ptr, buf.length, cast(int)flags);
         }
         
         /**
@@ -1165,7 +1165,7 @@ class Socket
                 
                 assert(from.addressFamily() == family);
                 int nameLen = from.nameLen();
-                return .recvfrom(sock, buf, buf.length, cast(int)flags, from.name(), &nameLen);
+                return .recvfrom(sock, buf.ptr, buf.length, cast(int)flags, from.name(), &nameLen);
         }
         
         
@@ -1183,7 +1183,7 @@ class Socket
                 if (!buf.length) //return 0 and don't think the connection closed
                      return 0;
                 
-                return .recvfrom(sock, buf, buf.length, cast(int)flags, null, null);
+                return .recvfrom(sock, buf.ptr, buf.length, cast(int)flags, null, null);
         }
         
         
