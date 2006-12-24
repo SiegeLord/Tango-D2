@@ -67,7 +67,7 @@ public abstract class Collection(T) : Dispenser!(T), IReadable, IWritable
 
         /***********************************************************************
 
-		count holds the number of elements.
+                count holds the number of elements.
 
         ************************************************************************/
 
@@ -77,7 +77,7 @@ public abstract class Collection(T) : Dispenser!(T), IReadable, IWritable
 
         /***********************************************************************
 
-		Initialize at version 0, an empty count, and supplied screener
+                Initialize at version 0, an empty count, and supplied screener
 
         ************************************************************************/
 
@@ -105,9 +105,9 @@ public abstract class Collection(T) : Dispenser!(T), IReadable, IWritable
 
         /***********************************************************************
 
-		Implements store.Collection.drained.
-		Time complexity: O(1).
-		@see store.Collection#drained
+                Implements store.Collection.drained.
+                Time complexity: O(1).
+                @see store.Collection#drained
 
         ************************************************************************/
 
@@ -118,9 +118,9 @@ public abstract class Collection(T) : Dispenser!(T), IReadable, IWritable
 
         /***********************************************************************
 
-		Implements store.Collection.size.
-		Time complexity: O(1).
-		@see store.Collection#size
+                Implements store.Collection.size.
+                Time complexity: O(1).
+                @see store.Collection#size
 
         ************************************************************************/
 
@@ -131,9 +131,9 @@ public abstract class Collection(T) : Dispenser!(T), IReadable, IWritable
 
         /***********************************************************************
 
-		Implements store.Collection.allows.
-		Time complexity: O(1) + time of screener, if present
-		@see store.Collection#allows
+                Implements store.Collection.allows.
+                Time complexity: O(1) + time of screener, if present
+                @see store.Collection#allows
 
         ************************************************************************/
 
@@ -146,17 +146,17 @@ public abstract class Collection(T) : Dispenser!(T), IReadable, IWritable
         
         /***********************************************************************
 
-		Implements store.Collection.matches
-		Time complexity: O(n).
-		Default implementation. Fairly sleazy approach.
-		(Defensible only when you remember that it is just a default impl.)
-		It tries to cast to one of the known collection interface types
-		and then applies the corresponding comparison rules.
-		This suffices for all currently supported collection types,
-		but must be overridden if you define new Collection subinterfaces
-		and/or implementations.
-		
-		@see store.Collection#matches
+                Implements store.Collection.matches
+                Time complexity: O(n).
+                Default implementation. Fairly sleazy approach.
+                (Defensible only when you remember that it is just a default impl.)
+                It tries to cast to one of the known collection interface types
+                and then applies the corresponding comparison rules.
+                This suffices for all currently supported collection types,
+                but must be overridden if you define new Collection subinterfaces
+                and/or implementations.
+                
+                @see store.Collection#matches
 
         ************************************************************************/
 
@@ -203,9 +203,9 @@ public abstract class Collection(T) : Dispenser!(T), IReadable, IWritable
 
         /***********************************************************************
 
-		Implements store.MutableCollection.version.
-		Time complexity: O(1).
-		@see store.MutableCollection#version
+                Implements store.MutableCollection.version.
+                Time complexity: O(1).
+                @see store.MutableCollection#version
 
         ************************************************************************/
 
@@ -218,13 +218,13 @@ public abstract class Collection(T) : Dispenser!(T), IReadable, IWritable
 
         /***********************************************************************
 
-		Default implementation of toUtf8 for Collections. Not
-		very pretty, but parenthesizing each element means that
-		for most kinds of elements, it's conceivable that the
-		strings could be parsed and used to build other store.
-		<P>
-		Not a very pretty implementation either. Casts are used
-		to get at elements/keys
+                Default implementation of toUtf8 for Collections. Not
+                very pretty, but parenthesizing each element means that
+                for most kinds of elements, it's conceivable that the
+                strings could be parsed and used to build other store.
+                <P>
+                Not a very pretty implementation either. Casts are used
+                to get at elements/keys
 
         ************************************************************************/
 
@@ -264,7 +264,7 @@ public abstract class Collection(T) : Dispenser!(T), IReadable, IWritable
 
         /***********************************************************************
 
-		change the version number
+                change the version number
 
         ************************************************************************/
 
@@ -276,7 +276,7 @@ public abstract class Collection(T) : Dispenser!(T), IReadable, IWritable
 
         /***********************************************************************
 
-		Increment the element count and update version
+                Increment the element count and update version
 
         ************************************************************************/
 
@@ -288,7 +288,7 @@ public abstract class Collection(T) : Dispenser!(T), IReadable, IWritable
 
         /***********************************************************************
 
-		Decrement the element count and update version
+                Decrement the element count and update version
 
         ************************************************************************/
 
@@ -301,7 +301,7 @@ public abstract class Collection(T) : Dispenser!(T), IReadable, IWritable
 
         /***********************************************************************
 
-		add to the element count and update version if changed
+                add to the element count and update version if changed
 
         ************************************************************************/
 
@@ -317,7 +317,7 @@ public abstract class Collection(T) : Dispenser!(T), IReadable, IWritable
 
         /***********************************************************************
 
-		set the element count and update version if changed
+                set the element count and update version if changed
 
         ************************************************************************/
 
@@ -422,9 +422,9 @@ public abstract class Collection(T) : Dispenser!(T), IReadable, IWritable
 
         /***********************************************************************
 
-		Principal method to throw a NoSuchElementException.
-		Besides index checks in Seqs, you can use it to check for
-		operations on empty collections via checkIndex(0)
+                Principal method to throw a NoSuchElementException.
+                Besides index checks in Seqs, you can use it to check for
+                operations on empty collections via checkIndex(0)
 
         ************************************************************************/
 
@@ -448,7 +448,7 @@ public abstract class Collection(T) : Dispenser!(T), IReadable, IWritable
         
         /***********************************************************************
 
-		Principal method to throw a IllegalElementException
+                Principal method to throw a IllegalElementException
 
         ************************************************************************/
 
@@ -465,8 +465,8 @@ public abstract class Collection(T) : Dispenser!(T), IReadable, IWritable
         /+
         /***********************************************************************
 
-		Implements store.ImplementationCheckable.assert.
-		@see store.ImplementationCheckable#assert
+                Implements store.ImplementationCheckable.assert.
+                @see store.ImplementationCheckable#assert
 
         ************************************************************************/
 
@@ -498,8 +498,8 @@ public abstract class Collection(T) : Dispenser!(T), IReadable, IWritable
                         
         /***********************************************************************
 
-		Implements store.ImplementationCheckable.checkImplementation.
-		@see store.ImplementationCheckable#checkImplementation
+                Implements store.ImplementationCheckable.checkImplementation.
+                @see store.ImplementationCheckable#checkImplementation
 
         ************************************************************************/
 
@@ -510,12 +510,12 @@ public abstract class Collection(T) : Dispenser!(T), IReadable, IWritable
 
         /***********************************************************************
 
-		Cause the collection to become empty. 
-		@return condition:
-		<PRE>
-		drained() &&
-		Version change iff !PREV(this).drained();
-		</PRE>
+                Cause the collection to become empty. 
+                @return condition:
+                <PRE>
+                drained() &&
+                Version change iff !PREV(this).drained();
+                </PRE>
 
         ************************************************************************/
 
@@ -524,16 +524,16 @@ public abstract class Collection(T) : Dispenser!(T), IReadable, IWritable
         
         /***********************************************************************
 
-		Exclude all occurrences of the indicated element from the collection. 
-		No effect if element not present.
-		@param element the element to exclude.
-		@return condition: 
-		<PRE>
-		!has(element) &&
-		size() == PREV(this).size() - PREV(this).instances(element) &&
-		no other element changes &&
-		Version change iff PREV(this).has(element)
-		</PRE>
+                Exclude all occurrences of the indicated element from the collection. 
+                No effect if element not present.
+                @param element the element to exclude.
+                @return condition: 
+                <PRE>
+                !has(element) &&
+                size() == PREV(this).size() - PREV(this).instances(element) &&
+                no other element changes &&
+                Version change iff PREV(this).has(element)
+                </PRE>
 
         ************************************************************************/
 
@@ -542,17 +542,17 @@ public abstract class Collection(T) : Dispenser!(T), IReadable, IWritable
 
         /***********************************************************************
 
-		Remove an instance of the indicated element from the collection. 
-		No effect if !has(element)
-		@param element the element to remove
-		@return condition: 
-		<PRE>
-		let occ = max(1, instances(element)) in
-		 size() == PREV(this).size() - occ &&
-		 instances(element) == PREV(this).instances(element) - occ &&
-		 no other element changes &&
-		 version change iff occ == 1
-		</PRE>
+                Remove an instance of the indicated element from the collection. 
+                No effect if !has(element)
+                @param element the element to remove
+                @return condition: 
+                <PRE>
+                let occ = max(1, instances(element)) in
+                 size() == PREV(this).size() - occ &&
+                 instances(element) == PREV(this).instances(element) - occ &&
+                 no other element changes &&
+                 version change iff occ == 1
+                </PRE>
 
         ************************************************************************/
 
@@ -561,24 +561,24 @@ public abstract class Collection(T) : Dispenser!(T), IReadable, IWritable
         
         /***********************************************************************
 
-		Replace an occurrence of oldElement with newElement.
-		No effect if does not hold oldElement or if oldElement.equals(newElement).
-		The operation has a consistent, but slightly special interpretation
-		when applied to Sets. For Sets, because elements occur at
-		most once, if newElement is already included, replacing oldElement with
-		with newElement has the same effect as just removing oldElement.
-		@return condition:
-		<PRE>
-		let int delta = oldElement.equals(newElement)? 0 : 
-		              max(1, PREV(this).instances(oldElement) in
-		 instances(oldElement) == PREV(this).instances(oldElement) - delta &&
-		 instances(newElement) ==  (this instanceof Set) ? 
-		        max(1, PREV(this).instances(oldElement) + delta):
-		               PREV(this).instances(oldElement) + delta) &&
-		 no other element changes &&
-		 Version change iff delta != 0
-		</PRE>
-		@exception IllegalElementException if has(oldElement) and !allows(newElement)
+                Replace an occurrence of oldElement with newElement.
+                No effect if does not hold oldElement or if oldElement.equals(newElement).
+                The operation has a consistent, but slightly special interpretation
+                when applied to Sets. For Sets, because elements occur at
+                most once, if newElement is already included, replacing oldElement with
+                with newElement has the same effect as just removing oldElement.
+                @return condition:
+                <PRE>
+                let int delta = oldElement.equals(newElement)? 0 : 
+                              max(1, PREV(this).instances(oldElement) in
+                 instances(oldElement) == PREV(this).instances(oldElement) - delta &&
+                 instances(newElement) ==  (this instanceof Set) ? 
+                        max(1, PREV(this).instances(oldElement) + delta):
+                               PREV(this).instances(oldElement) + delta) &&
+                 no other element changes &&
+                 Version change iff delta != 0
+                </PRE>
+                @exception IllegalElementException if has(oldElement) and !allows(newElement)
 
         ************************************************************************/
 
@@ -587,24 +587,24 @@ public abstract class Collection(T) : Dispenser!(T), IReadable, IWritable
 
         /***********************************************************************
 
-		Replace all occurrences of oldElement with newElement.
-		No effect if does not hold oldElement or if oldElement.equals(newElement).
-		The operation has a consistent, but slightly special interpretation
-		when applied to Sets. For Sets, because elements occur at
-		most once, if newElement is already included, replacing oldElement with
-		with newElement has the same effect as just removing oldElement.
-		@return condition:
-		<PRE>
-		let int delta = oldElement.equals(newElement)? 0 : 
+                Replace all occurrences of oldElement with newElement.
+                No effect if does not hold oldElement or if oldElement.equals(newElement).
+                The operation has a consistent, but slightly special interpretation
+                when applied to Sets. For Sets, because elements occur at
+                most once, if newElement is already included, replacing oldElement with
+                with newElement has the same effect as just removing oldElement.
+                @return condition:
+                <PRE>
+                let int delta = oldElement.equals(newElement)? 0 : 
                            PREV(this).instances(oldElement) in
-		 instances(oldElement) == PREV(this).instances(oldElement) - delta &&
-		 instances(newElement) ==  (this instanceof Set) ? 
-		        max(1, PREV(this).instances(oldElement) + delta):
-		               PREV(this).instances(oldElement) + delta) &&
-		 no other element changes &&
-		 Version change iff delta != 0
-		</PRE>
-		@exception IllegalElementException if has(oldElement) and !allows(newElement)
+                 instances(oldElement) == PREV(this).instances(oldElement) - delta &&
+                 instances(newElement) ==  (this instanceof Set) ? 
+                        max(1, PREV(this).instances(oldElement) + delta):
+                               PREV(this).instances(oldElement) + delta) &&
+                 no other element changes &&
+                 Version change iff delta != 0
+                </PRE>
+                @exception IllegalElementException if has(oldElement) and !allows(newElement)
 
         ************************************************************************/
 
@@ -619,8 +619,8 @@ public abstract class Collection(T) : Dispenser!(T), IReadable, IWritable
                 while (e.more()) removeAll(e.get());
                 @param e the enumeration of elements to exclude.
                 @exception CorruptedIteratorException is propagated if thrown
-		Implements store.MutableCollection.removeAll
-		@see store.MutableCollection#removeAll
+                Implements store.MutableCollection.removeAll
+                @see store.MutableCollection#removeAll
 
         ************************************************************************/
 
@@ -643,18 +643,18 @@ public abstract class Collection(T) : Dispenser!(T), IReadable, IWritable
    
         /***********************************************************************
 
-		Remove and return an element.  Implementations
-		may strengthen the guarantee about the nature of this element.
-		but in general it is the most convenient or efficient element to remove.
-		<P>
-		Example usage. One way to transfer all elements from 
-		MutableCollection a to MutableBag b is:
-		<PRE>
-		while (!a.empty()) b.add(a.take());
-		</PRE>
-		@return an element v such that PREV(this).has(v) 
-		and the postconditions of removeOneOf(v) hold.
-		@exception NoSuchElementException iff drained.
+                Remove and return an element.  Implementations
+                may strengthen the guarantee about the nature of this element.
+                but in general it is the most convenient or efficient element to remove.
+                <P>
+                Example usage. One way to transfer all elements from 
+                MutableCollection a to MutableBag b is:
+                <PRE>
+                while (!a.empty()) b.add(a.take());
+                </PRE>
+                @return an element v such that PREV(this).has(v) 
+                and the postconditions of removeOneOf(v) hold.
+                @exception NoSuchElementException iff drained.
 
         ************************************************************************/
 

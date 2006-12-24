@@ -103,20 +103,20 @@ abstract class IReader   // could be an interface, but that causes poor codegen
         ***********************************************************************/
 
         abstract IReader get (inout bool x);
-        abstract IReader get (inout byte x);		/// ditto
-        abstract IReader get (inout ubyte x);		/// ditto
-        abstract IReader get (inout short x);		/// ditto
-        abstract IReader get (inout ushort x);		/// ditto
-        abstract IReader get (inout int x);		/// ditto
-        abstract IReader get (inout uint x);		/// ditto
-        abstract IReader get (inout long x);		/// ditto
-        abstract IReader get (inout ulong x);		/// ditto
-        abstract IReader get (inout float x);		/// ditto
-        abstract IReader get (inout double x);		/// ditto
-        abstract IReader get (inout real x);		/// ditto
-        abstract IReader get (inout char x);		/// ditto
-        abstract IReader get (inout wchar x);		/// ditto
-        abstract IReader get (inout dchar x);		/// ditto
+        abstract IReader get (inout byte x);            /// ditto
+        abstract IReader get (inout ubyte x);           /// ditto
+        abstract IReader get (inout short x);           /// ditto
+        abstract IReader get (inout ushort x);          /// ditto
+        abstract IReader get (inout int x);             /// ditto
+        abstract IReader get (inout uint x);            /// ditto
+        abstract IReader get (inout long x);            /// ditto
+        abstract IReader get (inout ulong x);           /// ditto
+        abstract IReader get (inout float x);           /// ditto
+        abstract IReader get (inout double x);          /// ditto
+        abstract IReader get (inout real x);            /// ditto
+        abstract IReader get (inout char x);            /// ditto
+        abstract IReader get (inout wchar x);           /// ditto
+        abstract IReader get (inout dchar x);           /// ditto
 
         abstract IReader get (inout bool[] x);          /// ditto
         abstract IReader get (inout byte[] x);          /// ditto
@@ -124,11 +124,11 @@ abstract class IReader   // could be an interface, but that causes poor codegen
         abstract IReader get (inout int[] x);           /// ditto
         abstract IReader get (inout long[] x);          /// ditto
         abstract IReader get (inout ubyte[] x);         /// ditto
-        abstract IReader get (inout ushort[] x);	/// ditto
+        abstract IReader get (inout ushort[] x);        /// ditto
         abstract IReader get (inout uint[] x);          /// ditto
         abstract IReader get (inout ulong[] x);         /// ditto
         abstract IReader get (inout float[] x);         /// ditto
-        abstract IReader get (inout double[] x);	/// ditto
+        abstract IReader get (inout double[] x);        /// ditto
         abstract IReader get (inout real[] x);          /// ditto
         abstract IReader get (inout char[] x);          /// ditto
         abstract IReader get (inout wchar[] x);         /// ditto

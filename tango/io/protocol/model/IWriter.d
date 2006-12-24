@@ -83,36 +83,36 @@ abstract class IWriter  // could be an interface, but that causes poor codegen
         ***********************************************************************/
 
         abstract IWriter put (bool x);
-        abstract IWriter put (ubyte x);		///ditto
-        abstract IWriter put (byte x);		///ditto
-        abstract IWriter put (ushort x);	///ditto
-        abstract IWriter put (short x);		///ditto
-        abstract IWriter put (uint x);		///ditto
-        abstract IWriter put (int x);		///ditto
-        abstract IWriter put (ulong x);		///ditto
-        abstract IWriter put (long x);		///ditto
-        abstract IWriter put (float x);		///ditto
-        abstract IWriter put (double x);	///ditto
-        abstract IWriter put (real x);		///ditto
-        abstract IWriter put (char x);		///ditto
-        abstract IWriter put (wchar x);		///ditto
-        abstract IWriter put (dchar x);		///ditto
+        abstract IWriter put (ubyte x);         ///ditto
+        abstract IWriter put (byte x);          ///ditto
+        abstract IWriter put (ushort x);        ///ditto
+        abstract IWriter put (short x);         ///ditto
+        abstract IWriter put (uint x);          ///ditto
+        abstract IWriter put (int x);           ///ditto
+        abstract IWriter put (ulong x);         ///ditto
+        abstract IWriter put (long x);          ///ditto
+        abstract IWriter put (float x);         ///ditto
+        abstract IWriter put (double x);        ///ditto
+        abstract IWriter put (real x);          ///ditto
+        abstract IWriter put (char x);          ///ditto
+        abstract IWriter put (wchar x);         ///ditto
+        abstract IWriter put (dchar x);         ///ditto
 
         abstract IWriter put (bool[] x);
-        abstract IWriter put (byte[] x);	///ditto
-        abstract IWriter put (short[] x);	///ditto
-        abstract IWriter put (int[] x);		///ditto
-        abstract IWriter put (long[] x);	///ditto
-        abstract IWriter put (ubyte[] x);	///ditto
-        abstract IWriter put (ushort[] x);	///ditto
-        abstract IWriter put (uint[] x);	///ditto
-        abstract IWriter put (ulong[] x);	///ditto
-        abstract IWriter put (float[] x);	///ditto
-        abstract IWriter put (double[] x);	///ditto
-        abstract IWriter put (real[] x);	///ditto
-        abstract IWriter put (char[] x);	///ditto
-        abstract IWriter put (wchar[] x);	///ditto
-        abstract IWriter put (dchar[] x);	///ditto
+        abstract IWriter put (byte[] x);        ///ditto
+        abstract IWriter put (short[] x);       ///ditto
+        abstract IWriter put (int[] x);         ///ditto
+        abstract IWriter put (long[] x);        ///ditto
+        abstract IWriter put (ubyte[] x);       ///ditto
+        abstract IWriter put (ushort[] x);      ///ditto
+        abstract IWriter put (uint[] x);        ///ditto
+        abstract IWriter put (ulong[] x);       ///ditto
+        abstract IWriter put (float[] x);       ///ditto
+        abstract IWriter put (double[] x);      ///ditto
+        abstract IWriter put (real[] x);        ///ditto
+        abstract IWriter put (char[] x);        ///ditto
+        abstract IWriter put (wchar[] x);       ///ditto
+        abstract IWriter put (dchar[] x);       ///ditto
 
         /***********************************************************************
         
@@ -143,7 +143,7 @@ abstract class IWriter  // could be an interface, but that causes poor codegen
         ***********************************************************************/
 
         abstract IWriter flush ();
-        abstract IWriter put ();	///ditto
+        abstract IWriter put ();        ///ditto
 
         /***********************************************************************
         

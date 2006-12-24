@@ -100,8 +100,8 @@ version (VERBOSE)
 
         /***********************************************************************
 
-		Implements store.MutableCollection.removeAll
-		@see store.MutableCollection#removeAll
+                Implements store.MutableCollection.removeAll
+                @see store.MutableCollection#removeAll
 
                 Has to be here rather than in the superclass to satisfy
                 D interface idioms
@@ -116,8 +116,8 @@ version (VERBOSE)
 
         /***********************************************************************
 
-		Implements store.MutableCollection.removeElements
-		@see store.MutableCollection#removeElements
+                Implements store.MutableCollection.removeElements
+                @see store.MutableCollection#removeElements
 
                 Has to be here rather than in the superclass to satisfy
                 D interface idioms

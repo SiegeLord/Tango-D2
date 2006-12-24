@@ -53,14 +53,14 @@ struct IntegerT(T)
                 None    = 0,                    // no flags
                 Fill    = 1,                    // do some kind of padding
                 Left    = Fill << 1,            // left justify
-                Prec	= Left << 1,            // precision was provided
-                Hash	= Prec << 1,            // prefix integer with type
-                Space	= Hash << 1,            // prefix with space
-                Zero	= Space << 1,           // prefix integer with zero
-                Sign	= Zero << 1,            // unused
-                Comma	= Sign << 1,            // unused
-                Plus	= Comma << 1,           // prefix decimal with '+'
-                Array	= Plus << 1,            // array flag
+                Prec    = Left << 1,            // precision was provided
+                Hash    = Prec << 1,            // prefix integer with type
+                Space   = Hash << 1,            // prefix with space
+                Zero    = Space << 1,           // prefix integer with zero
+                Sign    = Zero << 1,            // unused
+                Comma   = Sign << 1,            // unused
+                Plus    = Comma << 1,           // prefix decimal with '+'
+                Array   = Plus << 1,            // array flag
         }
 
 

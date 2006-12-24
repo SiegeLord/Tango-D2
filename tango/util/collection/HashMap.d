@@ -34,9 +34,9 @@ private import  tango.util.collection.impl.LLCell,
 /*******************************************************************************
 
          Hash table implementation of Map
-		
+                
          author: Doug Lea
-		@version 0.94
+                @version 0.94
 
          <P> For an introduction to this package see <A HREF="index.html"
          > Overview </A>.
@@ -53,7 +53,7 @@ public class HashMap(K, V) : MapCollection!(K, V), HashParams
 
         /***********************************************************************
 
-		The table. Each entry is a list. Null if no table allocated
+                The table. Each entry is a list. Null if no table allocated
 
         ************************************************************************/
   
@@ -61,7 +61,7 @@ public class HashMap(K, V) : MapCollection!(K, V), HashParams
 
         /***********************************************************************
 
-		The threshold load factor
+                The threshold load factor
 
         ************************************************************************/
 
@@ -72,9 +72,9 @@ public class HashMap(K, V) : MapCollection!(K, V), HashParams
 
         /***********************************************************************
 
-		Make a new empty map to use given element screener.
+                Make a new empty map to use given element screener.
         
-	************************************************************************/
+        ************************************************************************/
 
         public this (Predicate screener = null)
         {
@@ -83,9 +83,9 @@ public class HashMap(K, V) : MapCollection!(K, V), HashParams
 
         /***********************************************************************
 
-		Special version of constructor needed by clone()
+                Special version of constructor needed by clone()
         
-	************************************************************************/
+        ************************************************************************/
 
         protected this (Predicate s, float f)
         {
@@ -96,10 +96,10 @@ public class HashMap(K, V) : MapCollection!(K, V), HashParams
 
         /***********************************************************************
 
-		Make an independent copy of the table. Elements themselves
+                Make an independent copy of the table. Elements themselves
                 are not cloned.
         
-	************************************************************************/
+        ************************************************************************/
 
         public final HashMap!(K, V) duplicate()
         {
@@ -125,12 +125,12 @@ public class HashMap(K, V) : MapCollection!(K, V), HashParams
 
         /***********************************************************************
 
-		Implements util.collection.HashParams.buckets.
-		Time complexity: O(1).
+                Implements util.collection.HashParams.buckets.
+                Time complexity: O(1).
                 
-		@see util.collection.HashParams#buckets.
+                @see util.collection.HashParams#buckets.
         
-	************************************************************************/
+        ************************************************************************/
 
         public final int buckets()
         {
@@ -139,12 +139,12 @@ public class HashMap(K, V) : MapCollection!(K, V), HashParams
 
         /***********************************************************************
 
-		Implements util.collection.HashParams.buckets.
-		Time complexity: O(n).
+                Implements util.collection.HashParams.buckets.
+                Time complexity: O(n).
                 
-		@see util.collection.HashParams#buckets.
+                @see util.collection.HashParams#buckets.
         
-	************************************************************************/
+        ************************************************************************/
 
         public final void buckets(int newCap)
         {
@@ -159,12 +159,12 @@ public class HashMap(K, V) : MapCollection!(K, V), HashParams
 
         /***********************************************************************
 
-		Implements util.collection.HashParams.thresholdLoadfactor
-		Time complexity: O(1).
+                Implements util.collection.HashParams.thresholdLoadfactor
+                Time complexity: O(1).
                 
-		@see util.collection.HashParams#thresholdLoadfactor
+                @see util.collection.HashParams#thresholdLoadfactor
         
-	************************************************************************/
+        ************************************************************************/
 
         public final float thresholdLoadFactor()
         {
@@ -173,12 +173,12 @@ public class HashMap(K, V) : MapCollection!(K, V), HashParams
 
         /***********************************************************************
 
-		Implements util.collection.HashParams.thresholdLoadfactor
-		Time complexity: O(n).
+                Implements util.collection.HashParams.thresholdLoadfactor
+                Time complexity: O(n).
                 
-		@see util.collection.HashParams#thresholdLoadfactor
+                @see util.collection.HashParams#thresholdLoadfactor
         
-	************************************************************************/
+        ************************************************************************/
 
         public final void thresholdLoadFactor(float desired)
         {
@@ -197,12 +197,12 @@ public class HashMap(K, V) : MapCollection!(K, V), HashParams
 
         /***********************************************************************
 
-		Implements util.collection.View.contains.
-		Time complexity: O(1) average; O(n) worst.
+                Implements util.collection.View.contains.
+                Time complexity: O(1) average; O(n) worst.
                 
-		@see util.collection.View#contains
+                @see util.collection.View#contains
         
-	************************************************************************/
+        ************************************************************************/
         
         public final bool contains(V element)
         {
@@ -220,12 +220,12 @@ public class HashMap(K, V) : MapCollection!(K, V), HashParams
 
         /***********************************************************************
 
-		Implements util.collection.View.instances.
-		Time complexity: O(n).
+                Implements util.collection.View.instances.
+                Time complexity: O(n).
                 
-		@see util.collection.View#instances
+                @see util.collection.View#instances
         
-	************************************************************************/
+        ************************************************************************/
         
         public final int instances(V element)
         {
@@ -244,12 +244,12 @@ public class HashMap(K, V) : MapCollection!(K, V), HashParams
 
         /***********************************************************************
 
-		Implements util.collection.View.elements.
-		Time complexity: O(1).
+                Implements util.collection.View.elements.
+                Time complexity: O(1).
                 
-		@see util.collection.View#elements
+                @see util.collection.View#elements
         
-	************************************************************************/
+        ************************************************************************/
         
         public final GuardIterator!(V) elements()
         {
@@ -261,12 +261,12 @@ public class HashMap(K, V) : MapCollection!(K, V), HashParams
 
         /***********************************************************************
 
-		Implements util.collection.Map.containsKey.
-		Time complexity: O(1) average; O(n) worst.
+                Implements util.collection.Map.containsKey.
+                Time complexity: O(1) average; O(n) worst.
                 
-		@see util.collection.Map#containsKey
+                @see util.collection.Map#containsKey
         
-	************************************************************************/
+        ************************************************************************/
         
         public final bool containsKey(K key)
         {
@@ -282,12 +282,12 @@ public class HashMap(K, V) : MapCollection!(K, V), HashParams
 
         /***********************************************************************
 
-		Implements util.collection.Map.containsPair
-		Time complexity: O(1) average; O(n) worst.
+                Implements util.collection.Map.containsPair
+                Time complexity: O(1) average; O(n) worst.
                 
-		@see util.collection.Map#containsPair
+                @see util.collection.Map#containsPair
         
-	************************************************************************/
+        ************************************************************************/
         
         public final bool containsPair(K key, V element)
         {
@@ -303,12 +303,12 @@ public class HashMap(K, V) : MapCollection!(K, V), HashParams
 
         /***********************************************************************
 
-		Implements util.collection.Map.keys.
-		Time complexity: O(1).
+                Implements util.collection.Map.keys.
+                Time complexity: O(1).
                 
-		@see util.collection.Map#keys
+                @see util.collection.Map#keys
         
-	************************************************************************/
+        ************************************************************************/
         
         public final PairIterator!(K, V) keys()
         {
@@ -317,12 +317,12 @@ public class HashMap(K, V) : MapCollection!(K, V), HashParams
 
         /***********************************************************************
 
-		Implements util.collection.Map.get.
-		Time complexity: O(1) average; O(n) worst.
+                Implements util.collection.Map.get.
+                Time complexity: O(1) average; O(n) worst.
                 
-		@see util.collection.Map#at
+                @see util.collection.Map#at
         
-	************************************************************************/
+        ************************************************************************/
         
         public final V get(K key)
         {
@@ -343,11 +343,11 @@ public class HashMap(K, V) : MapCollection!(K, V), HashParams
 
         /***********************************************************************
 
-		Return the element associated with Key key. 
-		@param key a key
-		@return whether the key is contained or not
+                Return the element associated with Key key. 
+                @param key a key
+                @return whether the key is contained or not
         
-	************************************************************************/
+        ************************************************************************/
 
         public bool get(K key, inout V element)
         {
@@ -372,12 +372,12 @@ public class HashMap(K, V) : MapCollection!(K, V), HashParams
 
         /***********************************************************************
 
-		Implements util.collection.Map.keyOf.
-		Time complexity: O(n).
+                Implements util.collection.Map.keyOf.
+                Time complexity: O(n).
                 
-		@see util.collection.Map#akyOf
+                @see util.collection.Map#akyOf
         
-	************************************************************************/
+        ************************************************************************/
         
         public final K keyOf(V element)
         {
@@ -403,12 +403,12 @@ public class HashMap(K, V) : MapCollection!(K, V), HashParams
 
         /***********************************************************************
 
-		Implements util.collection.Collection.clear.
-		Time complexity: O(1).
+                Implements util.collection.Collection.clear.
+                Time complexity: O(1).
                 
-		@see util.collection.Collection#clear
+                @see util.collection.Collection#clear
         
-	************************************************************************/
+        ************************************************************************/
         
         public final void clear()
         {
@@ -418,12 +418,12 @@ public class HashMap(K, V) : MapCollection!(K, V), HashParams
 
         /***********************************************************************
 
-		Implements util.collection.Collection.removeAll.
-		Time complexity: O(n).
+                Implements util.collection.Collection.removeAll.
+                Time complexity: O(n).
                 
-		@see util.collection.Collection#removeAll
+                @see util.collection.Collection#removeAll
         
-	************************************************************************/
+        ************************************************************************/
         
         public final void removeAll (V element)
         {
@@ -433,12 +433,12 @@ public class HashMap(K, V) : MapCollection!(K, V), HashParams
 
         /***********************************************************************
 
-		Implements util.collection.Collection.removeOneOf.
-		Time complexity: O(n).
+                Implements util.collection.Collection.removeOneOf.
+                Time complexity: O(n).
                 
-		@see util.collection.Collection#removeOneOf
+                @see util.collection.Collection#removeOneOf
         
-	************************************************************************/
+        ************************************************************************/
         
         public final void remove (V element)
         {
@@ -448,12 +448,12 @@ public class HashMap(K, V) : MapCollection!(K, V), HashParams
 
         /***********************************************************************
 
-		Implements util.collection.Collection.replaceOneOf.
-		Time complexity: O(n).
+                Implements util.collection.Collection.replaceOneOf.
+                Time complexity: O(n).
                 
-		@see util.collection.Collection#replaceOneOf
+                @see util.collection.Collection#replaceOneOf
         
-	************************************************************************/
+        ************************************************************************/
 
         public final void replace (V oldElement, V newElement)
         {
@@ -462,12 +462,12 @@ public class HashMap(K, V) : MapCollection!(K, V), HashParams
 
         /***********************************************************************
 
-		Implements util.collection.Collection.replaceOneOf.
-		Time complexity: O(n).
+                Implements util.collection.Collection.replaceOneOf.
+                Time complexity: O(n).
                 
-		@see util.collection.Collection#replaceOneOf
+                @see util.collection.Collection#replaceOneOf
         
-	************************************************************************/
+        ************************************************************************/
 
         public final void replaceAll (V oldElement, V newElement)
         {
@@ -476,12 +476,12 @@ public class HashMap(K, V) : MapCollection!(K, V), HashParams
 
         /***********************************************************************
 
-		Implements util.collection.Collection.take.
-		Time complexity: O(number of buckets).
+                Implements util.collection.Collection.take.
+                Time complexity: O(number of buckets).
                 
-		@see util.collection.Collection#take
+                @see util.collection.Collection#take
         
-	************************************************************************/
+        ************************************************************************/
         
         public final V take()
         {
@@ -506,12 +506,12 @@ public class HashMap(K, V) : MapCollection!(K, V), HashParams
 
         /***********************************************************************
 
-		Implements util.collection.Map.add.
-		Time complexity: O(1) average; O(n) worst.
+                Implements util.collection.Map.add.
+                Time complexity: O(1) average; O(n) worst.
                 
-		@see util.collection.Map#add
+                @see util.collection.Map#add
         
-	************************************************************************/
+        ************************************************************************/
         
         public final void add (K key, V element)
         {
@@ -552,12 +552,12 @@ public class HashMap(K, V) : MapCollection!(K, V), HashParams
 
         /***********************************************************************
 
-		Implements util.collection.Map.remove.
-		Time complexity: O(1) average; O(n) worst.
+                Implements util.collection.Map.remove.
+                Time complexity: O(1) average; O(n) worst.
                 
-		@see util.collection.Map#remove
+                @see util.collection.Map#remove
         
-	************************************************************************/
+        ************************************************************************/
         
         public final void removeKey (K key)
         {
@@ -591,12 +591,12 @@ public class HashMap(K, V) : MapCollection!(K, V), HashParams
 
         /***********************************************************************
 
-		Implements util.collection.Map.replaceElement.
-		Time complexity: O(1) average; O(n) worst.
+                Implements util.collection.Map.replaceElement.
+                Time complexity: O(1) average; O(n) worst.
                 
-		@see util.collection.Map#replaceElement
+                @see util.collection.Map#replaceElement
         
-	************************************************************************/
+        ************************************************************************/
         
         public final void replacePair (K key, V oldElement, V newElement)
         {
@@ -620,12 +620,12 @@ public class HashMap(K, V) : MapCollection!(K, V), HashParams
 
         /***********************************************************************
 
-		Check to see if we are past load factor threshold. If so,
+                Check to see if we are past load factor threshold. If so,
                 resize so that we are at half of the desired threshold.
-		Also while at it, check to see if we are empty so can just
-		unlink table.
+                Also while at it, check to see if we are empty so can just
+                unlink table.
         
-	************************************************************************/
+        ************************************************************************/
         
         protected final void checkLoadFactor()
         {
@@ -649,10 +649,10 @@ public class HashMap(K, V) : MapCollection!(K, V), HashParams
 
         /***********************************************************************
 
-		Mask off and remainder the hashCode for element
-		so it can be used as table index
+                Mask off and remainder the hashCode for element
+                so it can be used as table index
         
-	************************************************************************/
+        ************************************************************************/
 
         protected final int hashOf(K key)
         {
@@ -804,11 +804,11 @@ public class HashMap(K, V) : MapCollection!(K, V), HashParams
 
         /***********************************************************************
 
-		Implements util.collection.ImplementationCheckable.checkImplementation.
+                Implements util.collection.ImplementationCheckable.checkImplementation.
                 
-		@see util.collection.ImplementationCheckable#checkImplementation
+                @see util.collection.ImplementationCheckable#checkImplementation
         
-	************************************************************************/
+        ************************************************************************/
                         
         public override void checkImplementation()
         {

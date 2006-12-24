@@ -660,12 +660,12 @@ class String(T) : StringView!(T)
         
                 Get the encoding type
 
-        ***********************************************************************/	
+        ***********************************************************************/        
 
-	TypeInfo getEncoding()
-	{
+        TypeInfo getEncoding()
+        {
                 return typeid(T);
-	}
+        }
 
         /***********************************************************************
         
@@ -1376,7 +1376,7 @@ class UniString
 
         abstract dchar[] utf32 (dchar[] dst = null);
 
-	abstract TypeInfo getEncoding();
+        abstract TypeInfo getEncoding();
 }
 
 

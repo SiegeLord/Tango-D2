@@ -378,7 +378,7 @@ body
             not = 0;
             pi++;
             if (pattern[pi] == '!')
-            {	
+            {   
                 not = 1;
                 pi++;
             }
@@ -421,9 +421,9 @@ debug (UnitTest) {
 unittest
 {
     version (Win32)
-	assert(patternMatch("foo", "Foo"));
+        assert(patternMatch("foo", "Foo"));
     version (Posix)
-	assert(!patternMatch("foo", "Foo"));
+        assert(!patternMatch("foo", "Foo"));
     assert(patternMatch("foo", "*"));
     assert(patternMatch("foo.bar", "*"));
     assert(patternMatch("foo.bar", "*.*"));

@@ -44,13 +44,13 @@ alias void delegate () ArgParserSimpleCallback;
 class ArgParser{
 
     /**
-	A helper struct containing a callback and an id, corresponding to
-	the argId passed to one of the bind methods.
+        A helper struct containing a callback and an id, corresponding to
+        the argId passed to one of the bind methods.
     */
     protected struct PrefixCallback {
-	char[] id;
-	ArgParserCallback cb;
-    }	
+        char[] id;
+        ArgParserCallback cb;
+    }   
 
     protected PrefixCallback[][char[]] bindings;
     protected DefaultArgParserCallback[char[]] defaultBindings;
@@ -171,49 +171,49 @@ class ArgParser{
 
         foreach (char[] arg; arguments) {
             char[] argData = arg;
-	    bool found = false;
-	    char[] argOrig = argData;
-	    foreach (char[] prefix; prefixSearchOrder) {
-		if(argData.length < prefix.length) continue; 
-		if(argData[0..prefix.length] != prefix) {
-		    continue;
-		}
-		else {
-		    argData = argData[prefix.length..$];
-		} 
-		if (prefix in bindings) {
-		    foreach (PrefixCallback cb; bindings[prefix]) {
-			if (argData.length < cb.id.length) continue;
-			uint cbil = cb.id.length;
-			if (cb.id == argData[0..cbil]) {
-			    found = true;
-			    argData = argData[cbil..$];
-			    cb.cb(argData);
-			    break;
-			}
-		    }
-		}
-		if (found) {
-		    break;
-		}
-		else if (prefix in defaultBindings){
-		    defaultBindings[prefix](argData,prefixOrdinals[prefix]);
-		    prefixOrdinals[prefix]++;
-		    found = true;
-		    break;
-		}
-		argData = argOrig;
-	    }
-	    if (!found) {
-		if (defaultbinding !is null) {
-		    defaultbinding(argData,defaultOrdinal);
-		    defaultOrdinal++;
-		}
-		else {
-		    throw new Exception("Illegal argument "
-			      ~ argData);
-		}
-	    }
+            bool found = false;
+            char[] argOrig = argData;
+            foreach (char[] prefix; prefixSearchOrder) {
+                if(argData.length < prefix.length) continue; 
+                if(argData[0..prefix.length] != prefix) {
+                    continue;
+                }
+                else {
+                    argData = argData[prefix.length..$];
+                } 
+                if (prefix in bindings) {
+                    foreach (PrefixCallback cb; bindings[prefix]) {
+                        if (argData.length < cb.id.length) continue;
+                        uint cbil = cb.id.length;
+                        if (cb.id == argData[0..cbil]) {
+                            found = true;
+                            argData = argData[cbil..$];
+                            cb.cb(argData);
+                            break;
+                        }
+                    }
+                }
+                if (found) {
+                    break;
+                }
+                else if (prefix in defaultBindings){
+                    defaultBindings[prefix](argData,prefixOrdinals[prefix]);
+                    prefixOrdinals[prefix]++;
+                    found = true;
+                    break;
+                }
+                argData = argOrig;
+            }
+            if (!found) {
+                if (defaultbinding !is null) {
+                    defaultbinding(argData,defaultOrdinal);
+                    defaultOrdinal++;
+                }
+                else {
+                    throw new Exception("Illegal argument "
+                              ~ argData);
+                }
+            }
         }
     }
 }

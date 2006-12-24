@@ -205,11 +205,11 @@ class IteratorT(T)
         int opApply (int delegate(inout uint, inout T[]) dg)
         {
                 int result = 0;
-		uint count = 0;
+                uint count = 0;
 
                 while (next)
                       {
-		      count++;
+                      count++;
                       T[] t = get ();
                       result = dg (count, t);
                       if (result)

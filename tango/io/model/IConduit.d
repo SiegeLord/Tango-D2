@@ -80,7 +80,7 @@ abstract class IConduit
                 Eof has been reached and zero thereafter
 
         **********************************************************************/
-	
+        
         abstract uint fill (void[] dst);
 
         /***********************************************************************

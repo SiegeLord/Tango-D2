@@ -31,9 +31,9 @@ private import  tango.util.collection.model.Map,
 
         MapCollection extends Collection to provide default implementations of
         some Map operations. 
-		
+                
         author: Doug Lea
-		@version 0.93
+                @version 0.93
 
         <P> For an introduction to this package see <A HREF="index.html"
         > Overview </A>.
@@ -49,7 +49,7 @@ public abstract class MapCollection(K, T) : Collection!(T), Map!(K, T)
 
         /***********************************************************************
 
-		Initialize at version 0, an empty count, and null screener
+                Initialize at version 0, an empty count, and null screener
 
         ************************************************************************/
 
@@ -60,7 +60,7 @@ public abstract class MapCollection(K, T) : Collection!(T), Map!(K, T)
 
         /***********************************************************************
 
-		Initialize at version 0, an empty count, and supplied screener
+                Initialize at version 0, an empty count, and supplied screener
 
         ************************************************************************/
 
@@ -71,10 +71,10 @@ public abstract class MapCollection(K, T) : Collection!(T), Map!(K, T)
 
         /***********************************************************************
 
-		Implements util.collection.Map.allowsKey.
-		Default key-screen. Just checks for null.
-		
-		@see util.collection.Map#allowsKey
+                Implements util.collection.Map.allowsKey.
+                Default key-screen. Just checks for null.
+                
+                @see util.collection.Map#allowsKey
 
         ************************************************************************/
 
@@ -95,7 +95,7 @@ public abstract class MapCollection(K, T) : Collection!(T), Map!(K, T)
 
         /***********************************************************************
 
-		Principal method to throw a IllegalElementException for keys
+                Principal method to throw a IllegalElementException for keys
 
         ************************************************************************/
 
@@ -109,17 +109,17 @@ public abstract class MapCollection(K, T) : Collection!(T), Map!(K, T)
 
         /***********************************************************************
 
-		Implements util.collection.Collection.matches
-		Time complexity: O(n).
-		Default implementation. Fairly sleazy approach.
-		(Defensible only when you remember that it is just a default impl.)
-		It tries to cast to one of the known collection interface types
-		and then applies the corresponding comparison rules.
-		This suffices for all currently supported collection types,
-		but must be overridden if you define new Collection subinterfaces
-		and/or implementations.
-		
-		@see util.collection.Collection#matches
+                Implements util.collection.Collection.matches
+                Time complexity: O(n).
+                Default implementation. Fairly sleazy approach.
+                (Defensible only when you remember that it is just a default impl.)
+                It tries to cast to one of the known collection interface types
+                and then applies the corresponding comparison rules.
+                This suffices for all currently supported collection types,
+                but must be overridden if you define new Collection subinterfaces
+                and/or implementations.
+                
+                @see util.collection.Collection#matches
 
         ************************************************************************/
 
@@ -185,13 +185,13 @@ public abstract class MapCollection(K, T) : Collection!(T), Map!(K, T)
 
         /***********************************************************************
 
-		Default implementation of toUtf8 for Collections. Not
-		very pretty, but parenthesizing each element means that
-		for most kinds of elements, it's conceivable that the
-		strings could be parsed and used to build other util.collection.
-		<P>
-		Not a very pretty implementation either. Casts are used
-		to get at elements/keys
+                Default implementation of toUtf8 for Collections. Not
+                very pretty, but parenthesizing each element means that
+                for most kinds of elements, it's conceivable that the
+                strings could be parsed and used to build other util.collection.
+                <P>
+                Not a very pretty implementation either. Casts are used
+                to get at elements/keys
 
         ************************************************************************/
 
@@ -222,8 +222,8 @@ public abstract class MapCollection(K, T) : Collection!(T), Map!(K, T)
 
         /***********************************************************************
 
-		Implements store.MutableCollection.removeAll
-		@see store.MutableCollection#removeAll
+                Implements store.MutableCollection.removeAll
+                @see store.MutableCollection#removeAll
 
                 Has to be here rather than in the superclass to satisfy
                 D interface idioms
@@ -238,8 +238,8 @@ public abstract class MapCollection(K, T) : Collection!(T), Map!(K, T)
 
         /***********************************************************************
 
-		Implements store.MutableCollection.removeElements
-		@see store.MutableCollection#removeElements
+                Implements store.MutableCollection.removeElements
+                @see store.MutableCollection#removeElements
 
                 Has to be here rather than in the superclass to satisfy
                 D interface idioms
