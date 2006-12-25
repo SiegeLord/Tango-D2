@@ -108,11 +108,12 @@ class FilePath
                                  if (name < 0)
                                      name = i + 1;
                                  break;
-
-                            case FileConst.RootSeparatorChar:
-                                 path = i + 1;
-                                 break;
-                                 
+                            version (Win32)
+                            {
+                                 case FileConst.RootSeparatorChar:
+                                      path = i + 1;
+                                      break;
+                            }
                             default:
                                  break;
                             }
@@ -377,8 +378,10 @@ class FilePath
 
         final char[] asRoot (char[] s)
         in {
-           if (s.length)
-               assert (s[$-1] is FileConst.RootSeparatorChar, "root must end with a separator");
+           version( Win32 ){
+               if (s.length)
+                   assert (s[$-1] is FileConst.RootSeparatorChar, "root must end with a separator");
+               }
            }
         body
         {

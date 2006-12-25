@@ -36,12 +36,12 @@ struct FileConst
 
                 static const char[] NewlineString = "\r\n"c;
         }
-        
+
         version (Posix)
         {
                 static const char PathSeparatorChar = '/';
                 static const char FileSeparatorChar = '.';
-                static const char RootSeparatorChar = ':';
+                // Note: root separator does not exist
                 static const char CurrentDirChar = '.';
 
                 static const char[] PathSeparatorString = "/";
@@ -51,5 +51,5 @@ struct FileConst
                 static const char[] ParentDirString = "..";
 
                 static const char[] NewlineString = "\n";
-        }            
+        }
 }
