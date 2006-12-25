@@ -17,7 +17,7 @@ class SocketException: IOException
                 errorCode = err;
                 
                 if (errorCode > 0)
-                    msg = msg ~ ": " ~ SysError.lookup (errorCode);
+                    msg = msg ~ SysError.lookup (errorCode);
                 
                 super(msg);
         }

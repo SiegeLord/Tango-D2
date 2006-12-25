@@ -171,7 +171,7 @@ version (Win32)
         {
                 WSADATA wd;
                 if (WSAStartup (0x0101, &wd))
-                    throw new SocketException("Unable to initialize socket library.");
+                    throw new SocketException("Unable to initialize socket library");
         }
 
 
@@ -727,7 +727,7 @@ class Socket
                    {
                    sock = cast(socket_t) socket(family, type, protocol);
                    if (sock is sock.init)
-                       throw new SocketException("Unable to create socket", lastError());
+                       exception ("Unable to create socket: ");
                    }
                 this.sock = sock;
                 return this;
@@ -909,7 +909,7 @@ class Socket
         {
                 auto newsock = cast(socket_t).accept(sock, null, null); // DMD 0.101 error: found '(' when expecting ';' following 'statement
                 if (socket_t.init == newsock)
-                   throw new SocketAcceptException("Unable to accept socket connection", lastError());
+                   throw new SocketAcceptException("Unable to accept socket connection: ", lastError());
 
                 target.create (newsock);
                 version(Win32)

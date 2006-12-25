@@ -1,7 +1,7 @@
 /*******************************************************************************
 
         Shows how to create a basic socket client, and how to converse with
-        a remote server. 
+        a remote server. The server must be running for this to succeed
 
 *******************************************************************************/
 
@@ -9,10 +9,6 @@ private import  tango.io.Console;
 
 private import  tango.net.SocketConduit, 
                 tango.net.InternetAddress;
-
-/*******************************************************************************
-
-*******************************************************************************/
 
 void main()
 {
