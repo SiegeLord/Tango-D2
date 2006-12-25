@@ -4,61 +4,42 @@
 
         license:        BSD style: $(LICENSE)
 
-        version:        Initial release: June 2004      
+        version:        Jun 2004: Initial release
+        version:        Dec 2006: South Pacific rewrite
 
-        author:         Chris Sauls, Kris
+        author:         Kris
 
 *******************************************************************************/
 
 module tango.io.FileScan;
 
 public import   tango.io.File,
-                tango.io.FilePath;
+                tango.io.FilePath,
+                tango.io.FileProxy;
 
 /*******************************************************************************
 
         Recursively scan files and directories, adding filtered files to
         an output structure as we go. This can be used to produce a list
-        of subdirectories and the files contained therein. Usage example:
+        of subdirectories and the files contained therein. The following
+        example lists all files with suffix ".d" located via the current
+        directory, along with the folders containing them:
 
         ---
-        void files (File file)
-        {
-                Cout (file).newline;
-        }
+        auto root = new FilePath (".");
+        auto scan = (new FileScan)(root, ".d");
 
-        void dirs (FilePath path)
-        {
-                Cout (path).newline;
-        }
+        Stdout.formatln ("{0} Folders", scan.folders.length);
+        foreach (file; scan.folders)
+                 Stdout.formatln ("{0}", file);
 
-        auto scan = new FileScan;
-
-        // find all files with a 'd' extension
-        scan ((args.length is 2) ? args[1] : ".", ".d");
-
-        Cout ("directories:").newline;
-        scan.directories (&dirs);
-
-        Cout ("files:").newline;
-        scan.files (&files);   
+        Stdout.formatln ("\n{0} Files", scan.files.length);
+        foreach (file; scan.files)
+                 Stdout.formatln ("{0}", file);
         ---
-        
 
-        Using D implicit-delegate syntax, this can be also be written as
-
-        ---
-        auto scan = new FileScan;
-        
-        // find all files with a 'd' extension
-        scan ((args.length is 2) ? args[1] : ".", ".d");
-
-        Cout ("Directories:").newline;
-        scan.directories ((FilePath path) {Cout (path).newline;});
-
-        Cout ("Files:").newline;
-        scan.files ((File file) {Cout (file).newline;});
-        ---
+        This is not the most efficient method to scan a large number of
+        files, but operates in a convenient manner
         
 *******************************************************************************/
 
@@ -70,38 +51,70 @@ class FileScan
 
         /***********************************************************************
 
-            alias for Filter delegate. Takes a FilePath as argument and returns
-            a bool.
+            alias for Filter delegate. Takes a File as argument and returns
+            a bool
 
         ***********************************************************************/
 
-        alias bool delegate (FilePath) Filter;
+        alias bool delegate (File, bool) Filter;
 
         /***********************************************************************
 
-                The list of files and sub-directories found.
+                The list of files and sub-directories found
 
         ***********************************************************************/
         
         private struct Dependencies 
         {
-                File[]          mods;
-                FilePath[]      pkgs;
+                int             total;
+                File[]          files,
+                                folders;
+        }
+
+        /***********************************************************************
+
+                Return all the files found in the last scan
+
+        ***********************************************************************/
+
+        public int inspected ()
+        {
+                return deps.total;
+        }
+
+        /***********************************************************************
+
+                Return all the files found in the last scan
+
+        ***********************************************************************/
+
+        public File[] files ()
+        {
+                return deps.files;
+        }
+
+        /***********************************************************************
+        
+                Return all directories found in the last scan
+
+        ***********************************************************************/
+
+        public FileProxy[] folders ()
+        {
+                return deps.folders;
         }
 
         /***********************************************************************
 
                 Sweep a set of files and directories from the given parent
-                path, where the files are filtered by the provided delegate.
+                path, where the files are filtered by the provided delegate
 
         ***********************************************************************/
         
         FileScan sweep (FilePath path, Filter filter)
         {
-                deps.mods = null;
-                deps.pkgs = null;
-
-                scanFiles (deps, path, filter);
+                deps.files = deps.folders = null;
+                scanFiles (new File(path), filter);
                 return this;
         }
 
@@ -114,14 +127,13 @@ class FileScan
         
         FileScan sweep (FilePath path, char[] match)
         {
-                bool filter (FilePath fp) 
+                bool filter (File fp, bool isDir) 
                 {
-                        auto suffix = fp.getSuffix ();
-
-                        if (fp.getName.length)                       
-                            if (suffix.length == 0 || suffix == match)
-                                return true;
-                        return false;
+                        if (isDir)
+                            return true;
+                        
+                        auto path = fp.getPath ();
+                        return path.getName.length && path.getSuffix == match;
                 }
 
                 return sweep (path, &filter);
@@ -129,72 +141,52 @@ class FileScan
 
         /***********************************************************************
 
-                Visit all the files found in the last scan. 
-
+                Internal routine to locate files and sub-directories. We
+                skip system files, plus folders composed only of '.' chars
+                        
         ***********************************************************************/
 
-        public FileScan files (void delegate (File) visit)
+        private void scanFiles (File folder, Filter filter) 
         {
-                foreach (File file; deps.mods)
-                         visit (file);
-                return this;
-        }
-
-        /***********************************************************************
-        
-                Visit all directories found in the last scan. 
-
-        ***********************************************************************/
-
-        public FileScan directories (void delegate (FilePath) visit)
-        {
-                foreach (FilePath path; deps.pkgs)
-                         visit (path);
-                return this;
-        }
-
-        /***********************************************************************
-
-                Recursive routine to locate files and sub-directories
-
-        ***********************************************************************/
-
-        private void scanFiles (inout Dependencies deps, FilePath base, Filter filter) 
-        {
-                auto file = new File (base);
-                auto paths = file.toList (filter);
-
-                // add packages only if there's something in them
-                if (paths.length)
-                    deps.pkgs ~= base;
-
+                bool isDir;
+                auto paths = folder.toList();
+                auto count = deps.files.length;
+                deps.total += paths.length;
+                
                 foreach (entry; paths) 
                         {
-                        scope auto x = new FilePath (entry);
-                        
-                        // combine base path with listed file
-                        auto spliced = x.join (base.toUtf8);
+                        // temporaries, allocated on stack 
+                        scope auto x = new FilePath (entry, entry.length+1);
+                        scope auto f = new File (x);
 
-                        // add to list of files?
-                        file = new File (spliced);
-                        if (! file.isDirectory) 
-                              deps.mods ~= file;
-                        else
+                        // skip system files
+                        if (f.isVisible && filter(f, isDir = f.isDirectory))
                            {
-                           auto path = file.getPath();
-                           
-                           // skip directories composed only of dots
-                           if (path.getName.length is 0)
+                           // create persistent instance for returning. We
+                           // map onto the previously allocated filepath
+                           auto file = new File (new FilePath (entry, entry.length+1));
+
+                           if (isDir)
                               {
-                              char[] suffix = path.getSuffix;
-                              if (suffix == "..."[0 .. suffix.length])
+                              auto path = file.getPath();
+
+                              // skip dirs composed only of '.'
+                              auto suffix = path.getSuffix();
+                              if (path.getName.length is 0 &&
+                                  suffix.length <= 3       &&
+                                  suffix == "..."[0..suffix.length])
                                   continue;
+
+                              // recurse directories
+                              scanFiles (file, filter);
                               }
-                           
-                           // recurse directories
-                           scanFiles (deps, path, filter);
+                           else
+                              deps.files ~= file;
                            }
                         }
+                
+                // add packages only if there's something in them
+                if (deps.files.length > count)
+                    deps.folders ~= folder;
         }
 }
-

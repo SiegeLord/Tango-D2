@@ -22,15 +22,15 @@ public  import  tango.io.FilePath;
 
 private import  tango.io.Exception;
 
-private import  tango.text.convert.Utf;
-
-
 /*******************************************************************************
 
 *******************************************************************************/
 
 version (Win32)
         {
+        private import tango.text.convert.Utf;
+        private alias tango.text.convert.Utf Utf;
+
         extern (Windows) BOOL   MoveFileExA (LPCSTR,LPCSTR,DWORD);
         extern (Windows) BOOL   MoveFileExW (LPCWSTR,LPCWSTR,DWORD);
 
@@ -41,11 +41,13 @@ version (Win32)
 
         version (Win32SansUnicode)
                 {
+                alias char T;
                 private extern (C) int strlen (char *s);
                 private alias WIN32_FIND_DATA FIND_DATA;
                 }
              else
                 {
+                alias wchar T;
                 private extern (C) int wcslen (wchar *s);
                 private alias WIN32_FIND_DATAW FIND_DATA;
                 }
@@ -104,9 +106,6 @@ version (Posix)
 class FileProxy
 {
         private FilePath path;
-        private wchar[]  name16;
-
-        private alias tango.text.convert.Utf Utf;
 
         /***********************************************************************
         
@@ -117,7 +116,6 @@ class FileProxy
         this (FilePath path)
         {
                 this.path = path;
-                name16 = Utf.toUtf16 (path.cString);
         }
 
         /***********************************************************************
@@ -169,30 +167,28 @@ class FileProxy
         }            
 
         /***********************************************************************
-        
-                List the files contained within the associated path:
-
-                ---
-                auto proxy = new FileProxy (".");
-
-                foreach (path; proxy.toList)
-                         Stdout (path).newline;
-                ---
-
-        ***********************************************************************/
-
-        char[][] toList ()
-        {
-
-                return toList (delegate bool(FilePath fp) {return true;});
-        }              
-
-        /***********************************************************************
 
         ***********************************************************************/
 
         version (Win32)
         {
+                // have to convert the filepath to utf16
+                private wchar[] widepath;
+                private wchar[262] widepathsink = void;
+                
+                /***************************************************************
+
+                        Cache a wchar[] instance of the filepath
+
+                ***************************************************************/
+
+                private wchar[] name16()
+                {
+                        if (widepath is null)
+                            widepath = Utf.toUtf16 (path.cString, widepathsink);
+                        return widepath;
+                }
+
                 /***************************************************************
 
                         Throw an exception using the last known error
@@ -210,23 +206,30 @@ class FileProxy
 
                 ***************************************************************/
 
-                private uint getInfo (void delegate (inout FIND_DATA info) dg)
+                private void getInfo (inout FIND_DATA info)
                 {
-                        FIND_DATA info;
-
                         version (Win32SansUnicode)
-                                 HANDLE h = FindFirstFileA (path.cString, &info);
+                                 HANDLE h = FindFirstFileA (path.cString.ptr, &info);
                              else
                                 HANDLE h = FindFirstFileW (name16.ptr, &info);
 
                         if (h == INVALID_HANDLE_VALUE)
                             exception ();
-
-                        if (dg)
-                            dg (info);
                         FindClose (h);
+                }
 
-                        return info.dwFileAttributes;
+                /***************************************************************
+
+                        Get flags for this path
+
+                ***************************************************************/
+
+                private DWORD getFlags ()
+                {
+                        version (Win32SansUnicode)
+                                 return GetFileAttributesA (path.cString.ptr);
+                             else
+                                return GetFileAttributesW (name16.ptr);
                 }
 
                 /***************************************************************
@@ -237,16 +240,11 @@ class FileProxy
 
                 ulong getSize ()
                 {
-                        ulong _size;
-
-                        void size (inout FIND_DATA info)
-                        {
-                                _size = (cast(ulong) info.nFileSizeHigh << 32) + 
-                                                     info.nFileSizeLow;
-                        }
-
-                        getInfo (&size);
-                        return _size;
+                        FIND_DATA info;
+                        
+                        getInfo (info);
+                        return (cast(ulong) info.nFileSizeHigh << 32) + 
+                                            info.nFileSizeLow;
                 }
 
                 /***************************************************************
@@ -257,7 +255,7 @@ class FileProxy
 
                 bool isWritable ()               
                 {
-                        return cast (bool) ((getInfo(null) & FILE_ATTRIBUTE_READONLY) == 0);
+                        return (getFlags() & FILE_ATTRIBUTE_READONLY) == 0;
                 }            
 
                 /***************************************************************
@@ -268,7 +266,18 @@ class FileProxy
 
                 bool isDirectory ()               
                 {
-                        return cast(bool) ((getInfo(null) & FILE_ATTRIBUTE_DIRECTORY) != 0);
+                        return (getFlags() & FILE_ATTRIBUTE_DIRECTORY) != 0;
+                }            
+
+                /***************************************************************
+
+                        Is this file visible to users?
+
+                ***************************************************************/
+
+                bool isVisible ()               
+                {
+                        return (getFlags() & (FILE_ATTRIBUTE_SYSTEM | FILE_ATTRIBUTE_HIDDEN)) == 0;
                 }            
 
                 /***************************************************************
@@ -279,16 +288,11 @@ class FileProxy
 
                 ulong getModifiedTime ()
                 {
-                        ulong _time;
-
-                        void time (inout FIND_DATA info)
-                        {
-                                _time = (cast(ulong) info.ftLastWriteTime.dwHighDateTime << 32) + 
-                                                     info.ftLastWriteTime.dwLowDateTime;
-                        }
-
-                        getInfo (&time);
-                        return _time;
+                        FIND_DATA info;
+                        
+                        getInfo (info);
+                        return (cast(ulong) info.ftLastWriteTime.dwHighDateTime << 32) + 
+                                            info.ftLastWriteTime.dwLowDateTime;
                 }               
 
                 /***************************************************************
@@ -299,16 +303,11 @@ class FileProxy
 
                 ulong getAccessedTime ()
                 {
-                        ulong _time;
-
-                        void time (inout FIND_DATA info)
-                        {
-                                _time = (cast(ulong) info.ftLastAccessTime.dwHighDateTime << 32) + 
-                                                     info.ftLastAccessTime.dwLowDateTime;
-                        }
-
-                        getInfo (&time);
-                        return _time;
+                        FIND_DATA info;
+                        
+                        getInfo (info);
+                        return (cast(ulong) info.ftLastAccessTime.dwHighDateTime << 32) + 
+                                            info.ftLastAccessTime.dwLowDateTime;
                 }               
 
                 /***************************************************************
@@ -319,16 +318,11 @@ class FileProxy
 
                 ulong getCreatedTime ()
                 {
-                        ulong _time;
-
-                        void time (inout FIND_DATA info)
-                        {
-                                _time = (cast(ulong) info.ftCreationTime.dwHighDateTime << 32) + 
-                                                     info.ftCreationTime.dwLowDateTime;
-                        }
-
-                        getInfo (&time);
-                        return _time;
+                        FIND_DATA info;
+                        
+                        getInfo (info);
+                        return (cast(ulong) info.ftCreationTime.dwHighDateTime << 32) + 
+                                            info.ftCreationTime.dwLowDateTime;
                 }               
 
                 /***************************************************************
@@ -343,7 +337,7 @@ class FileProxy
                            {
                            version (Win32SansUnicode)
                                    {
-                                   if (! RemoveDirectoryA (path.cString))
+                                   if (! RemoveDirectoryA (path.cString.ptr))
                                          exception();
                                    }
                                 else
@@ -355,7 +349,7 @@ class FileProxy
                         else
                            version (Win32SansUnicode)
                                    {
-                                   if (! DeleteFileA (path.cString))
+                                   if (! DeleteFileA (path.cString.ptr))
                                          exception();
                                    }
                                 else
@@ -382,7 +376,7 @@ class FileProxy
                         int result;
 
                         version (Win32SansUnicode)
-                                 result = MoveFileExA (path.cString, dst.cString, Typical);
+                                 result = MoveFileExA (path.cString.ptr, dst.cString.ptr, Typical);
                              else
                                 result = MoveFileExW (name16.ptr, Utf.toUtf16(dst.cString).ptr, Typical);
 
@@ -404,7 +398,7 @@ class FileProxy
                         HANDLE h;
 
                         version (Win32SansUnicode)
-                                 h = CreateFileA (path.cString, GENERIC_WRITE, 
+                                 h = CreateFileA (path.cString.ptr, GENERIC_WRITE, 
                                                   0, null, CREATE_ALWAYS, 
                                                   FILE_ATTRIBUTE_NORMAL, null);
                              else
@@ -427,11 +421,11 @@ class FileProxy
 
                 ***************************************************************/
 
-                FileProxy createDirectory ()
+                FileProxy createFolder ()
                 {
                         version (Win32SansUnicode)
                                 {
-                                if (! CreateDirectoryA (path.cString, null))
+                                if (! CreateDirectoryA (path.cString.ptr, null))
                                       exception();
                                 }
                              else
@@ -444,60 +438,74 @@ class FileProxy
 
                 /***************************************************************
                         
-                        List the set of children within this directory. 
+                        List the set of filenames within this directory. All
+                        filenames are null terminated, though the null itself
+                        is hidden at the end of each name (not exposed by the
+                        length property)
 
+                        Each filename includes the parent prefix
+                        
                 ***************************************************************/
 
-                char[][] toList (bool delegate(FilePath fp) filter)
+                char[][] toList ()
                 {
-                        int                     i;
-                        wchar[]                 c;
-                        HANDLE                  h;
-                        scope FilePath          fp;
-                        char[][]                list;
-                        FIND_DATA               fileinfo;
-                        
+                        int             i;
+                        HANDLE          h;
+                        char[][]        list;
+                        char[]          prefix;
+                        FIND_DATA       fileinfo;
+                        char[262]       tmp = void;
+
                         int next()
                         {
-                                version (Win32SansUnicode)
-                                         return FindNextFileA (h, &fileinfo);
-                                     else
-                                         return FindNextFileW (h, &fileinfo);
-                        }
-                        
-                        list = new char[][50];
-
                         version (Win32SansUnicode)
-                                h = FindFirstFileA ((path.toUtf8 ~ "\\*\0").ptr, &fileinfo);
+                                 return FindNextFileA (h, &fileinfo);
                              else
-                                h = FindFirstFileW ((name16[0..$-1] ~ "\\*\0").ptr, &fileinfo);
+                                return FindNextFileW (h, &fileinfo);
+                        }
 
-                        if (h != INVALID_HANDLE_VALUE)
-                            try {
-                                do {
-                                   // make a copy of the file name for listing
-                                   version (Win32SansUnicode)
-                                           {
-                                           fp = new FilePath (fileinfo.cFileName [0 .. len]);
-                                           }
-                                        else
-                                           {
-                                           int len = wcslen (fileinfo.cFileName.ptr);
-                                           fp = new FilePath (Utf.toUtf8(fileinfo.cFileName [0 .. len]));
-                                           }
+                        static T[] padded (T[] s, T[] ext)
+                        {
+                                if (s.length is 0 || s[$-1] != '\\')
+                                    return s ~ "\\" ~ ext;
+                                return s ~ ext;
+                        }
+                                
+                        version (Win32SansUnicode)
+                                 h = FindFirstFileA (padded(path.toUtf8, "*\0").ptr, &fileinfo);
+                             else
+                                h = FindFirstFileW (padded(name16[0..$-1], "*\0").ptr, &fileinfo);
 
-                                   if (i >= list.length)
-                                      list.length = list.length * 2;
+                        if (h is INVALID_HANDLE_VALUE)
+                            exception();
 
-                                   if (filter (fp))
-                                      {
-                                      list[i] = fp.toUtf8;
-                                      ++i;
-                                      }
-                                   } while (next);
-                                } finally {
-                                          FindClose (h);
-                                          }
+                        scope (exit)
+                               FindClose (h);
+                        
+                        list = new char[][1024];
+                        prefix = FilePath.asPadded(path.toUtf8);
+                        do {
+                           version (Win32SansUnicode)
+                                   {
+                                   // ensure we include the null
+                                   auto len = strlen (fileinfo.cFileName.ptr) + 1;
+                                   auto str = fileinfo.cFileName.ptr [0 .. len];
+                                   }
+                                else
+                                   {
+                                   // ensure we include the null
+                                   auto len = wcslen (fileinfo.cFileName.ptr) + 1;
+                                   auto str = Utf.toUtf8 (fileinfo.cFileName [0 .. len], tmp);
+                                   }
+
+                           if (i >= list.length)
+                               list.length = list.length * 2;
+
+                           // duplicate the path, including the null. Note that
+                           // the saved length *excludes* the terminator
+                           list[i++] = (prefix ~ str) [0 .. $-1];
+                           } while (next);
+
                         list.length = i;
                         return list;
                 }
@@ -527,15 +535,10 @@ class FileProxy
 
                 ***************************************************************/
 
-                private uint getInfo (void delegate (inout struct_stat info) dg)
+                private uint getInfo (inout struct_stat stats)
                 {
-                        struct_stat stats;
-
-                        if (posix.stat (path.cString.ptr, &stats))
+                        if (posix.stat (path.cString.ptr, stats))
                             exception();
-
-                        if (dg)
-                            dg (stats);
 
                         return stats.st_mode;
                 }               
@@ -548,15 +551,10 @@ class FileProxy
 
                 ulong getSize ()
                 {
-                        ulong _size;
+                        struct_stat stats;
 
-                        void size (inout struct_stat info)
-                        {
-                                _size = cast(ulong) info.st_size;    // 32 bits only
-                        }
-
-                        getInfo (&size);
-                        return _size;
+                        getInfo (stats);
+                        return cast(ulong) stats.st_size;    // 32 bits only
                 }
 
                 /***************************************************************
@@ -567,7 +565,9 @@ class FileProxy
 
                 bool isWritable ()               
                 {
-                        return (getInfo(null) & O_RDONLY) == 0;
+                        struct_stat stats;
+
+                        return (getInfo(stats) & O_RDONLY) == 0;
                 }            
 
                 /***************************************************************
@@ -578,7 +578,20 @@ class FileProxy
 
                 bool isDirectory ()               
                 {
-                        return (getInfo(null) & S_IFDIR) != 0;
+                        struct_stat stats;
+
+                        return (getInfo(stats) & S_IFDIR) != 0;
+                }            
+
+                /***************************************************************
+
+                        Is this file visible to users?
+
+                ***************************************************************/
+
+                bool isVisible ()               
+                {
+                        return true;
                 }            
 
                 /***************************************************************
@@ -589,15 +602,10 @@ class FileProxy
 
                 ulong getModifiedTime ()
                 {
-                        ulong _time;
+                        struct_stat stats;
 
-                        void time (inout struct_stat info)
-                        {
-                               _time = cast(ulong) info.st_mtime;
-                        }
-
-                        getInfo (&time);
-                        return _time;
+                        getInfo (stats);
+                        return cast(ulong) stats.st_mtime;
                 }               
 
                 /***************************************************************
@@ -608,15 +616,10 @@ class FileProxy
 
                 ulong getAccessedTime ()
                 {
-                        ulong _time;
+                        struct_stat stats;
 
-                        void time (inout struct_stat info)
-                        {
-                               _time = cast(ulong) info.st_atime;
-                        }
-
-                        getInfo (&time);
-                        return _time;
+                        getInfo (stats);
+                        return cast(ulong) stats.st_atime;
                 }               
 
                 /***************************************************************
@@ -627,15 +630,10 @@ class FileProxy
 
                 ulong getCreatedTime ()
                 {
-                        ulong _time;
+                        struct_stat stats;
 
-                        void time (inout struct_stat info)
-                        {
-                               _time = cast(ulong) info.st_ctime;
-                        }
-
-                        getInfo (&time);
-                        return _time;
+                        getInfo (stats);
+                        return cast(ulong) stats.st_ctime;
                 }               
 
                 /***************************************************************
@@ -700,7 +698,7 @@ class FileProxy
 
                 ***************************************************************/
 
-                FileProxy createDirectory ()
+                FileProxy createFolder ()
                 {
                         if (posix.mkdir (path.cString.ptr, 0777))
                             exception();
@@ -710,41 +708,46 @@ class FileProxy
 
                 /***************************************************************
                 
-                        List the set of children within this directory. 
+                        List the set of filenames within this directory. All
+                        filenames are null terminated, though the null itself
+                        is hidden at the end of each name (not exposed by the
+                        length property)
 
+                        Each filename includes the parent prefix
+                        
                 ***************************************************************/
 
-                char[][] toList (bool delegate(FilePath fp) filter)
+                char[][] toList ()
                 {
                         int             i;
                         DIR*            dir;
                         char[][]        list;
                         dirent*         entry;
+                        char[]          prefix;
 
                         dir = tango.stdc.posix.dirent.opendir (path.cString.ptr);
                         if (! dir) 
                               exception();
 
-                        list = new char[][50];
+                        list = new char[][1024];
+                        prefix = FilePath.asPadded (path.toUtf8);
+                        
                         while ((entry = tango.stdc.posix.dirent.readdir(dir)) != null)
-                        {
-                              int len = tango.stdc.string.strlen (entry.d_name.ptr);
-
-                              // prepare the filename for filtering (stack class)
-                              scope auto fp = new FilePath (entry.d_name[0 ..len]);
+                              {
+                              // ensure we include the terminating null ...
+                              auto len = tango.stdc.string.strlen (entry.d_name.ptr)+1;
+                              auto str = entry.d_name.ptr [0 .. len];
 
                               if (i >= list.length)
                                   list.length = list.length * 2;
 
-                              if (filter (fp))
-                                 {
-                                 list[i] = fp.toUtf8;
-                                 ++i;
-                                 }
-                        }
+                              // duplicate the path, including the null. Note that
+                              // the saved length *excludes* the terminator
+                              list[i++] = (prefix ~ str) [0 .. $-1];
+                              }
 
-                        list.length = i;
                         tango.stdc.posix.dirent.closedir (dir);
+                        list.length = i;
                         return list;
                 }
         }
