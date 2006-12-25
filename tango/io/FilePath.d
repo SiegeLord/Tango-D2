@@ -4,8 +4,8 @@
 
         license:        BSD style: $(LICENSE)
 
-        version:        Initial version: October 2004
-                        Australian version: November 2006
+        version:        Oct 2004: Initial version
+        version:        Nov 2006: Australian version
         
         author:         Kris
 
@@ -14,7 +14,6 @@
 module tango.io.FilePath;
 
 private import tango.io.FileConst;
-private static import tango.stdc.stringz;
 
 /*******************************************************************************
 
@@ -75,22 +74,25 @@ class FilePath
 
         this (char[] filepath)
         {
-                this ( tango.stdc.stringz.toUtf8z(filepath), filepath.length + 1);
+                this ((filepath ~ '\0').ptr, filepath.length + 1);
         }
 
         /***********************************************************************
 
                 As above, but with C-style interface to bypass heap activity.
-                The provided path and length must include a null terminator.
+                The provided path and length *must* include a null terminator
                 
         ***********************************************************************/
 
-        package this (char* filepath, int l)
+        package this (char* filepath, int len)
         {
                 path = 0;
-                end  = l-1;
-                fp   = filepath[0 .. l];
+                end  = len-1;
                 name = suffix = ext = -1;
+                fp   = filepath [0 .. len];
+
+                // check for terminating null
+                assert (*(filepath+end) is 0);
                 
                 for (int i=end; --i >= 0;)
                      switch (filepath[i])
@@ -108,12 +110,13 @@ class FilePath
                                  if (name < 0)
                                      name = i + 1;
                                  break;
+
                             version (Win32)
-                            {
-                                 case FileConst.RootSeparatorChar:
-                                      path = i + 1;
-                                      break;
-                            }
+                                    {
+                                    case FileConst.RootSeparatorChar:
+                                         path = i + 1;
+                                         break;
+                                    }
                             default:
                                  break;
                             }
@@ -466,7 +469,7 @@ class FilePath
 
         static char[] asStripped (char[] path, char c = FileConst.PathSeparatorChar)
         {
-                if (path.length > 1 && path[$-1] is c) 
+                if (path.length && path[$-1] is c) 
                     path = path [0 .. $-1];
                 return path;
         }               
