@@ -17,6 +17,8 @@ module tango.io.FileConst;
         A set of file-system specific constants for file and path
         separators (chars and strings).
 
+        Keep these constants mirrored for each OS
+        
 *******************************************************************************/
 
 struct FileConst
@@ -41,7 +43,7 @@ struct FileConst
         {
                 static const char PathSeparatorChar = '/';
                 static const char FileSeparatorChar = '.';
-                // Note: root separator does not exist
+                static const char RootSeparatorChar = ':';
                 static const char CurrentDirChar = '.';
 
                 static const char[] PathSeparatorString = "/";
