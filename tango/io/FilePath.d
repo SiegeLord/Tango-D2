@@ -14,6 +14,7 @@
 module tango.io.FilePath;
 
 private import tango.io.FileConst;
+private static import tango.stdc.stringz;
 
 /*******************************************************************************
 
@@ -74,7 +75,7 @@ class FilePath
 
         this (char[] filepath)
         {
-                this (filepath ~ '\0', filepath.length + 1);
+                this ( tango.stdc.stringz.toUtf8z(filepath), filepath.length + 1);
         }
 
         /***********************************************************************
