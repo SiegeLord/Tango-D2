@@ -13,7 +13,7 @@
 */
 
 
-module tango.store.HashSet;
+module tango.util.collection.HashSet;
 
 private import  tango.util.collection.Exception;
 
