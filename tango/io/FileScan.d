@@ -156,7 +156,7 @@ class FileScan
                 foreach (entry; paths) 
                         {
                         // temporaries, allocated on stack 
-                        scope auto x = new FilePath (entry, entry.length+1);
+                        scope auto x = new FilePath (entry.ptr, entry.length+1);
                         scope auto f = new File (x);
 
                         // skip system files
@@ -164,7 +164,7 @@ class FileScan
                            {
                            // create persistent instance for returning. We
                            // map onto the previously allocated filepath
-                           auto file = new File (new FilePath (entry, entry.length+1));
+                           auto file = new File (new FilePath (entry.ptr, entry.length+1));
 
                            if (isDir)
                               {
