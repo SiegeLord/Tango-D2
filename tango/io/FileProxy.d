@@ -537,7 +537,7 @@ class FileProxy
 
                 private uint getInfo (inout struct_stat stats)
                 {
-                        if (posix.stat (path.cString.ptr, stats))
+                        if (posix.stat (path.cString.ptr, &stats))
                             exception();
 
                         return stats.st_mode;
