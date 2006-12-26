@@ -1864,7 +1864,7 @@ class SocketSet
                 version(Win32)
                 {
                         nbytes = max * socket_t.sizeof;
-                        buf = new byte[nbytes + uint.sizeof];
+                        buf = (new byte[nbytes + uint.sizeof]).ptr;
                         count = 0;
                 }
                 else version (Posix)
