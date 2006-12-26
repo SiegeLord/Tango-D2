@@ -7,10 +7,10 @@
  * License:   BSD style: $(LICENSE)
  * Authors:   Sean Kelly
  */
-module tango.core.Array;
+module tango.core.Algorithm;
 
 
-private import tango.core.Traits;
+private import tango.util.meta.Traits;
 private import tango.stdc.stdlib : alloca;
 
 

@@ -6,7 +6,7 @@
  * License:   BSD style: $(LICENSE)
  * Authors:   Sean Kelly
  */
-module tango.core.Traits;
+module tango.util.meta.Traits;
 
 
 /**
@@ -92,11 +92,11 @@ template isImaginaryType( T )
 /**
  *
  */
-template isDecimalType( T )
+template isFloatingPointType( T )
 {
-    const bool isDecimalType = isRealType!(T)    ||
-                               isComplexType!(T) ||
-                               isImaginaryType!(T);
+    const bool isFloatingPointType = isRealType!(T)    ||
+                                     isComplexType!(T) ||
+                                     isImaginaryType!(T);
 }
 
 
@@ -146,7 +146,6 @@ template isStaticArrayType( T )
 private template isAssocArrayType( T )
 {
     const bool isAssocArrayType = is( typeof(T.init.values[0])[typeof(T.init.keys[0])] == T );
-    //is( T == typeof(T.values[$])[typeof(T.keys[$])] )
 }
 
 
