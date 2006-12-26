@@ -12,10 +12,11 @@
 
 module mango.net.http.server.HttpRequest;
 
-private import  tango.text.Text,
-                tango.text.LineIterator;
+private import  tango.text.Text;
 
 private import  tango.text.convert.Atoi;
+
+private import  tango.text.stream.LineIterator;
 
 private import  tango.io.Buffer,
                 tango.io.Exception;
@@ -51,7 +52,7 @@ class HttpRequest : HttpMessage, IWritable
 
         // these are per-thread instances also
         private Uri                     uri;
-        private LineIterator            line;
+        private LineIterator!(char)     line;
         private HttpReader              reader;
         private HttpQueryParams         params;
         private HttpCookiesView         cookies;
@@ -96,7 +97,7 @@ class HttpRequest : HttpMessage, IWritable
                 reader = new HttpReader (super.getBuffer);
         
                 // construct a line tokenizer
-                line = new LineIterator;
+                line = new LineIterator!(char);
 
                 // Cookie parser. This is a wrapper around the Headers
                 cookies = new HttpCookiesView (getHeader);

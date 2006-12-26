@@ -23,13 +23,9 @@ private import  tango.core.Interval;
 private import  tango.io.Buffer,
                 tango.io.Exception;
 
-private import  tango.text.convert.Atoi;
-
 private import  tango.net.Uri,
                 tango.net.SocketConduit,
                 tango.net.InternetAddress;
-
-private import  tango.text.LineIterator;
 
 private import  tango.net.http.HttpParams,  
                 tango.net.http.HttpWriter,
@@ -38,6 +34,10 @@ private import  tango.net.http.HttpParams,
                 tango.net.http.HttpCookies,                
                 tango.net.http.HttpResponses;
               
+private import  tango.text.convert.Atoi;
+
+private import  tango.text.stream.LineIterator;
+
 /*******************************************************************************
 
         Supports the basic needs of a client making requests of an HTTP
@@ -462,7 +462,7 @@ class HttpClient
                     emit.flush ();
 
                     // Token for initial parsing of input header lines
-                    auto line = new LineIterator (input);
+                    auto line = new LineIterator!(char) (input);
 
                     // skip any blank lines
                     while (line.next && line.get.length is 0) 

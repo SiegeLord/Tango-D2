@@ -14,7 +14,7 @@ module tango.net.http.HttpParams;
 
 private import  tango.io.model.IBuffer;
 
-private import  tango.text.SimpleIterator;
+private import  tango.text.stream.SimpleIterator;
 
 private import  tango.net.http.HttpTokens;
 
@@ -40,7 +40,7 @@ class HttpParams : HttpTokens, HttpParamsView
         // tell compiler to expose super.parse() also
         alias HttpTokens.parse parse;
 
-        private SimpleIterator amp;
+        private SimpleIterator!(char) amp;
 
         /**********************************************************************
                 
@@ -54,7 +54,7 @@ class HttpParams : HttpTokens, HttpParamsView
                 super ('=');
 
                 // construct a line tokenizer for later usage
-                amp = new SimpleIterator ("&");
+                amp = new SimpleIterator!(char) ("&");
         }
 
         /**********************************************************************

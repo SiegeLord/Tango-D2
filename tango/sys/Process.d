@@ -11,7 +11,7 @@ private import tango.io.Stdout;
 private import tango.sys.Common;
 private import tango.sys.Pipe;
 private import tango.text.convert.Format;
-private import tango.text.SimpleIterator;
+private import tango.text.stream.SimpleIterator;
 private import tango.text.Text;
 
 private import tango.stdc.stdlib;
@@ -68,7 +68,7 @@ else version (Posix)
  *
  *     Stdout.formatln("Output from {0}:", p.programName);
  *
- *     foreach (line; new LineIterator(p.stdout))
+ *     foreach (line; new LineIterator!(char)(p.stdout))
  *     {
  *         Stdout.formatln("line {0}: '{1}'", i++, line);
  *     }
@@ -1318,7 +1318,7 @@ class Process
                 path.length = 64 + filename.length;
                 path.length = 0;
 
-                foreach (path; new SimpleIterator(envPath, ":"))
+                foreach (path; new SimpleIterator!(char)(envPath, ":"))
                 {
                     if (path[path.length - 1] != FileConst.PathSeparatorChar)
                     {
@@ -1412,7 +1412,7 @@ class ProcessWaitException: ProcessException
 
 debug (UnitTest)
 {
-    private import tango.text.LineIterator;
+    private import tango.text.stream.LineIterator;
 
     unittest
     {
@@ -1442,7 +1442,7 @@ debug (UnitTest)
             p.execute();
 
             i = 0;
-            foreach (line; new LineIterator(p.stdout))
+            foreach (line; new LineIterator!(char)(p.stdout))
             {
                 assert(line == params[i++]);
             }

@@ -12,8 +12,9 @@
 
 module tango.text.Properties;
 
-private import  tango.text.Text,
-                tango.text.LineIterator;
+private import  tango.text.Text;
+
+private import  tango.text.stream.LineIterator;
 
 private import  tango.io.Buffer,
                 tango.io.FileConst,
@@ -79,7 +80,7 @@ class Properties
 
         static void load (IBuffer buffer, void delegate (char[]name, char[] value) dg)
         {
-                foreach (line; new LineIterator (buffer))
+                foreach (line; new LineIterator!(char) (buffer))
                         {
                         auto text = Text.trim (line);
                         

@@ -12,7 +12,7 @@
 
 module tango.net.http.HttpHeaders;
 
-private import  tango.text.LineIterator;
+private import  tango.text.stream.LineIterator;
 
 private import  tango.io.model.IBuffer;
 
@@ -46,7 +46,7 @@ class HttpHeadersView : HttpTokens
         // tell compiler to used super.parse() also
         alias HttpTokens.parse parse;
 
-        private LineIterator line;
+        private LineIterator!(char) line;
 
         /**********************************************************************
                 
@@ -62,7 +62,7 @@ class HttpHeadersView : HttpTokens
                 super (':', true);
 
                 // construct a line tokenizer for later usage
-                line = new LineIterator;
+                line = new LineIterator!(char);
         }
 
         /**********************************************************************

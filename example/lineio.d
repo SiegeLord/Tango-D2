@@ -2,7 +2,7 @@
 private import  tango.io.Console,
                 tango.io.FileConduit;
 
-private import  tango.text.LineIterator;
+private import  tango.text.stream.LineIterator;
 
 /*******************************************************************************
 
@@ -23,7 +23,7 @@ void main (char[][] args)
            auto file = new FileConduit (args[1]);
 
            // process file one line at a time
-           foreach (line; new LineIterator (file))
+           foreach (line; new LineIterator!(char)(file))
                     Cout (line).newline;
            }
         else

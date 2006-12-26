@@ -6,7 +6,8 @@
 
 private import tango.io.Stdout;
 private import tango.sys.Process;
-private import tango.text.LineIterator;
+
+private import tango.text.stream.LineIterator;
 
 
 /**
@@ -31,7 +32,7 @@ void main()
         Stdout.formatln("Output from process: {0} (pid {1})\n---",
                         p.programName, p.pid);
 
-        foreach (line; new LineIterator(p.stdout))
+        foreach (line; new LineIterator!(char)(p.stdout))
         {
             Stdout.formatln("{0}", line);
         }

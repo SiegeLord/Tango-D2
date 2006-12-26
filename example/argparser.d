@@ -8,7 +8,8 @@
 import tango.text.ArgParser;
 import tango.io.Stdout;
 import tango.io.FileConduit;
-import tango.text.LineIterator;
+
+import tango.text.stream.LineIterator;
 
 void main(char[][] args)
 {
@@ -56,7 +57,7 @@ void main(char[][] args)
         if (responseFile !is null) {
             auto file = new FileConduit(responseFile);
             // create an iterator and bind it to the file
-            auto lines = new LineIterator(file);
+            auto lines = new LineIterator!(char)(file);
             // process file one line at a time
             char[][] arguments;
             foreach (line; lines) {

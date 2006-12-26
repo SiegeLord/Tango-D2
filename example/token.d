@@ -9,16 +9,16 @@
 
 private import tango.io.Console;
 
-private import tango.text.QuoteIterator;
+private import tango.text.stream.QuoteIterator;
   
 void main()
 {
         // flush the console output, since we have no newline present
         Cout ("Please enter some space-delimited tokens: ") ();
 
-        // create quote-aware tokenizer for handling space-delimited
+        // create quote-aware iterator for handling space-delimited
         // tokens from the console input
-        auto token = new QuoteIterator (Cin.get, " \t");
+        auto token = new QuoteIterator!(char) (Cin.get, " \t");
         
         // scan and display trimmed tokens
         Cout ("You entered: ");

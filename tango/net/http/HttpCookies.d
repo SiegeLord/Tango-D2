@@ -16,18 +16,20 @@ private import  tango.stdc.ctype;
 
 private import  tango.io.Buffer;
 
-private import  tango.text.Text,
-                tango.text.Iterator;
-
-private import  tango.io.protocol.model.IWriter,
-                tango.io.model.IBuffer,
-                tango.io.model.IConduit;
+private import  tango.text.Text;
 
 private import  tango.text.convert.Integer;
+
+private import  tango.text.stream.StreamIterator;
+
+private import  tango.io.model.IBuffer,
+                tango.io.model.IConduit;
 
 private import  tango.net.http.HttpWriter;
 
 private import  tango.net.http.HttpHeaders;
+
+private import  tango.io.protocol.model.IWriter;
 
 
 /*******************************************************************************
@@ -436,7 +438,7 @@ class HttpCookies
 
 *******************************************************************************/
 
-class CookieParser : IteratorT!(char)
+class CookieParser : StreamIterator!(char)
 {
         private enum State {Begin, LValue, Equals, RValue, Token, SQuote, DQuote};
 
