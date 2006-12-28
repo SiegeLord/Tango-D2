@@ -154,7 +154,7 @@ else version( Posix )
         import tango.stdc.posix.unistd;
         import tango.stdc.posix.time;
 
-        version( GCC )
+        version( GNU )
         {
             import gcc.builtins;
         }
@@ -259,7 +259,7 @@ else version( Posix )
                     pushad;
                 }
             }
-            else version( GCC )
+            else version( GNU )
             {
                 __builtin_unwind_init();
             }
@@ -312,7 +312,7 @@ else version( Posix )
                     popad;
                 }
             }
-            else version( GCC )
+            else version( GNU )
             {
                 // registers will be popped automatically
             }
