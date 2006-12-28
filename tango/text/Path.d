@@ -1,14 +1,14 @@
-/*******************************************************************************
+﻿/*******************************************************************************
 
         copyright:      Copyright (c) 2006 Lars Ivar Igesund, Thomas Kühne,
-                                            Grzegorz Adam Hankiewicz 
+                                            Grzegorz Adam Hankiewicz
 
         license:        BSD style: $(LICENSE)
 
-        version:        Initial release: December 2006      
-        
-        author:         Lars Ivar Igesund, Thomas Kühne, 
-                        Grzegorz Adam Hankiewicz 
+        version:        Initial release: December 2006
+
+        author:         Lars Ivar Igesund, Thomas Kühne,
+                        Grzegorz Adam Hankiewicz
 
 *******************************************************************************/
 
@@ -20,7 +20,7 @@ private import tango.text.UniChar;
 version (Posix)
 {
     private import tango.stdc.stdlib;
-    private import tango.core.Array;
+    private import tango.core.Algorithm;
     private import tango.sys.linux.linux; // TODO: Shouldn't be necessary
     private import tango.stdc.posix.stdlib;
     private import tango.stdc.errno;
@@ -66,10 +66,10 @@ private char[] normalizeSlashes(char[] path)
     Unless normSlash is set to false, all slashes will be converted
     to the systems path separator character.
 
-    Note that any number of ../ segments at the front is ignored, 
+    Note that any number of ../ segments at the front is ignored,
     unless it is an absolute path, in which case an exception will
     be thrown. A relative path with ../ segments at the front is only
-    considered valid if it can be joined with a path such that it can 
+    considered valid if it can be joined with a path such that it can
     be fully normalized.
 
     Throws: NormalizeException if the root separator is followed by ..
@@ -78,13 +78,13 @@ private char[] normalizeSlashes(char[] path)
     -----
     version(Win32)
     {
-     normalize(r"home\foo\bar\..\john\..\doe"); // => "home\foo\doe"  
+     normalize(r"home\foo\bar\..\john\..\doe"); // => "home\foo\doe"
     }
     version(Posix)
     {
      normalize("/home/foo/./bar/../../john/doe"); // => "/home/john/doe"
     }
-    ----- 
+    -----
 
 ***********************************************************************/
 
@@ -147,7 +147,7 @@ body {
                 // no more /., return path
                 return path;
             }
-            return removeDots(path, idx); 
+            return removeDots(path, idx);
         }
         else if (path[start..start+2] == "..") {
             // found /.. sequence
@@ -184,13 +184,13 @@ body {
                     return path;
                 }
                 // examine next /.
-                return removeDots(path, idx); 
+                return removeDots(path, idx);
             }
         }
     }
 
     // if path starts with ./, remove
-    if (normpath.length > 1 && normpath[0] == '.' && 
+    if (normpath.length > 1 && normpath[0] == '.' &&
         normpath[1] == FileConst.PathSeparatorChar) {
         normpath = normpath[2..$];
     }
@@ -225,7 +225,7 @@ unittest {
 /**********************************************************************
 
      Matches filename characters.
-     
+
      Under Windows, the comparison is done ignoring case. Under Linux
      an exact match is performed.
 
@@ -358,7 +358,7 @@ body
                 goto match;
             for (j = ni; j < filename.length; j++)
             {
-                if (patternMatch(filename[j .. filename.length], 
+                if (patternMatch(filename[j .. filename.length],
                             pattern[pi + 1 .. pattern.length]))
                     goto match;
             }
@@ -378,7 +378,7 @@ body
             not = 0;
             pi++;
             if (pattern[pi] == '!')
-            {   
+            {
                 not = 1;
                 pi++;
             }
@@ -570,7 +570,7 @@ version (Posix)
 {
 
 /***********************************************************************
-        Replaces the tilde from path with the environment variable 
+        Replaces the tilde from path with the environment variable
         HOME.
 
  **********************************************************************/
@@ -578,7 +578,7 @@ static private char[] expandFromEnvironment(char[] path)
 {
     assert(path.length >= 1);
     assert(path[0] == '~');
-    
+
     // Get HOME and use that to replace the tilde.
     char* home = getenv("HOME");
     if (home == null)
@@ -590,7 +590,7 @@ static private char[] expandFromEnvironment(char[] path)
 
 /***********************************************************************
         Joins a path from a C string to the remainder of path.
- 
+
         The last path separator from c_path is discarded. The result
         is joined to path[char_pos .. length] if char_pos is smaller
         than length, otherwise path is not appended to c_path.
@@ -621,9 +621,9 @@ static private char[] combineCPathWithDPath(char* cPath, char[] path, int charPo
 
 /***********************************************************************
 
-        Replaces the tilde from path with the path from the user 
+        Replaces the tilde from path with the path from the user
         database.
- 
+
  **********************************************************************/
 static private char[] expandFromDatabase(char[] path)
 {
@@ -645,7 +645,7 @@ static private char[] expandFromDatabase(char[] path)
         }
 
     assert(last_char > 1);
-    
+
     // Reserve C memory for the getpwnam_r() function.
     passwd result;
     int extra_memory_size = 5 * 1024;
