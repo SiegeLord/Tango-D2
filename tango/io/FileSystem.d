@@ -56,6 +56,16 @@ class FileSystem
                 return path.join (getDirectory);
         }
 
+        /***********************************************************************
+
+        ***********************************************************************/
+
+        package void exception (char[] msg)
+        {
+                throw new IOException (msg);
+        }
+
+        
         version (Win32)
         {
                 /***************************************************************
@@ -69,14 +79,14 @@ class FileSystem
                         version (Win32SansUnicode)
                                 {
                                 if (! SetCurrentDirectoryA (fp.cString))
-                                       throw new IOException ("Failed to set current directory");
+                                       exception ("Failed to set current directory");
                                 }
                              else
                                 {
-                                wchar[256] tmp = void;
+                                wchar[262] tmp = void;
                         
-                                if (! SetCurrentDirectoryW (Utf.toUtf16(fp.cString, tmp)))
-                                      throw new IOException ("Failed to set current directory");
+                                if (! SetCurrentDirectoryW (Utf.toUtf16(fp.cString, tmp).ptr))
+                                      exception ("Failed to set current directory");
                                 }
                 }
 
@@ -103,14 +113,15 @@ class FileSystem
                                 int length = GetCurrentDirectoryW (0, null);
                                 if (length)
                                    {
-                                   char[256] tmp = void;
+                                   char[262] tmp = void;
                                    auto dir = new wchar [length];
                                    
-                                   GetCurrentDirectoryW (length, dir);
+                                   GetCurrentDirectoryW (length, dir.ptr);
                                    return new FilePath (Utf.toUtf8 (dir, tmp));
                                    }
                                 }
-                        throw new IOException ("Failed to get current directory");
+                        exception ("Failed to get current directory");
+                        return null;
                 }
         }
         
@@ -126,7 +137,7 @@ class FileSystem
                 static void setDirectory (FilePath fp)
                 {
                         if (tango.stdc.posix.unistd.chdir (fp.cString.ptr))
-                            throw new IOException ("Failed to set current directory");
+                            exception ("Failed to set current directory");
                 }
 
                 /***************************************************************
@@ -141,7 +152,7 @@ class FileSystem
                         if (s) 
                             return new FilePath (s[0..strlen(s)]);
 
-                        throw new IOException ("Failed to get current directory");
+                        exception ("Failed to get current directory");
                 }
         }   
 }

@@ -3084,7 +3084,7 @@ private
         len = s2.length;
         version (Win32)
         {
-        result = memicmp(s1, s2, len);
+        result = memicmp(s1.ptr, s2.ptr, len);
         }
         version (linux)
         {
