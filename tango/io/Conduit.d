@@ -59,6 +59,17 @@ class Conduit : IConduit, IConduitFilter
 
         /***********************************************************************
 
+                Models a handle-oriented device. We need to revisit this
+
+                TODO: figure out how to avoid exposing this in the general
+                case
+
+        ***********************************************************************/
+
+        abstract Handle getHandle ();
+
+        /***********************************************************************
+
                 conduit-specific reader
 
         ***********************************************************************/
@@ -72,17 +83,6 @@ class Conduit : IConduit, IConduitFilter
         ***********************************************************************/
 
         protected abstract uint writer (void[] src);
-
-        /***********************************************************************
-
-                Models a handle-oriented device. We need to revisit this
-
-                TODO: figure out how to avoid exposing this in the general
-                case
-
-        ***********************************************************************/
-
-        abstract Handle getHandle ();
 
         /***********************************************************************
 
@@ -204,7 +204,7 @@ class Conduit : IConduit, IConduitFilter
 
         bool isReadable ()
         {
-                return cast(bool) ((access & Access.Read) != 0);
+                return (access & Access.Read) != 0;
         }
 
         /***********************************************************************
@@ -215,7 +215,7 @@ class Conduit : IConduit, IConduitFilter
 
         bool isWritable ()
         {
-                return cast(bool) ((access & Access.Write) != 0);
+                return (access & Access.Write) != 0;
         }
 
         /***********************************************************************
@@ -238,7 +238,7 @@ class Conduit : IConduit, IConduitFilter
 
         IConduit copy (IConduit source)
         {
-                auto buffer = new byte[bufferSize()];
+                auto buffer = new byte[bufferSize];
 
                 uint i;
                 while ((i = source.read (buffer)) != Eof)
@@ -435,15 +435,6 @@ class ConduitFilter : IConduitFilter
         protected void unbind ()
         {
                 next.unbind ();
-        }
-
-        /***********************************************************************
-
-        ***********************************************************************/
-
-        protected final void error (char[] msg)
-        {
-                throw new IOException (msg);
         }
 }
 

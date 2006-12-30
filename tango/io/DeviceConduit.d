@@ -28,11 +28,6 @@ private import  tango.io.Exception;
 
 class DeviceConduit : Conduit
 {
-        // expose conduit.copy() methods also
-        alias Conduit.copy  copy;
-        alias Conduit.read  read;
-        alias Conduit.write write;
-
         /***********************************************************************
 
                 Construct a conduit with the given style and seek abilities.
@@ -128,7 +123,7 @@ class DeviceConduit : Conduit
 
                 final void error ()
                 {
-                        throw new IOException (getName() ~ ": " ~ SysError.lastMsg);
+                        super.exception (getName() ~ ": " ~ SysError.lastMsg);
                 }
 
                 /***************************************************************
@@ -224,7 +219,7 @@ class DeviceConduit : Conduit
 
                 final void error ()
                 {
-                        throw new IOException (getName()~": "~SysError.lastMsg);
+                        super.exception (getName()~": "~SysError.lastMsg);
                 }
 
                 /***************************************************************

@@ -39,11 +39,9 @@ version (Win32)
 /*******************************************************************************
 
         Implements a means of reading and writing a generic file. Conduits
-        are the primary means of accessing external data, and are usually 
-        routed through a Buffer. FileConduit extends the generic conduit
-        by providing file-specific methods to set the file size, seek to a
-        specific file position and so on. Also provided is a class for
-        creating a memory-mapped Buffer upon a file.     
+        are the primary means of accessing external data and FileConduit
+        extends the basic pattern by providing file-specific methods to
+        set the file size, seek to a specific file position and so on. 
         
         Serial input and output is straightforward. In this example we
         copy a file directly to the console:
@@ -69,36 +67,7 @@ version (Win32)
         to.copy (from);
         ---
         
-        FileConduit can just as easily handle random IO. Here we see how
-        a Reader and Writer are used to perform simple input and output:
-
-        ---
-        // open a file for reading
-        auto fc = new FileConduit ("random.bin", FileConduit.ReadWriteCreate);
-
-        // construct (binary) reader & writer upon this conduit
-        auto read = new Reader (fc);
-        auto write = new Writer (fc);
-
-        int x=10, y=20;
-
-        // write some data, and flush output since IO is buffered
-        write (x) (y) ();
-
-        // rewind to file start
-        fc.seek (0);
-
-        // read data back again, but swap destinations
-        read (y) (x);
-
-        assert (y is 10);
-        assert (x is 20);
-
-        fc.close();
-        ---
-
-        FileConduits can also be used directly, without Readers, Writers, or
-        Buffers. To load a file directly into local-memory one might do this:
+        To load a file directly into memory one might do this:
 
         ---
         // open file for reading
@@ -118,7 +87,34 @@ version (Win32)
         auto to = new FileConduit ("text.txt", FileConduit.WriteTruncate);
 
         // write an array of content to it
-        auto bytesWritten = fc.write (content);
+        auto bytesWritten = to.write (content);
+        ---
+
+
+        FileConduit can just as easily handle random IO. Here we use seek()
+        to relocate the file pointer and, for variation, apply a protocol to
+        perform simple input and output:
+
+        ---
+        // open a file for reading
+        auto fc = new FileConduit ("random.bin", FileConduit.ReadWriteCreate);
+
+        // construct (binary) reader & writer upon this conduit
+        auto read = new Reader (fc);
+        auto write = new Writer (fc);
+
+        int x=10, y=20;
+
+        // write some data, and flush output since protocol IO is buffered
+        write (x) (y) ();
+
+        // rewind to file start
+        fc.seek (0);
+
+        // read data back again
+        read (x) (y);
+
+        fc.close();
         ---
 
 
@@ -195,9 +191,7 @@ class FileConduit : DeviceConduit, DeviceConduit.Seek
         private FilePath path;
 
         // expose deviceconduit.copy() methods also 
-        alias DeviceConduit.copy      copy;
-        alias DeviceConduit.read      read;
-        alias DeviceConduit.write     write;
+        alias DeviceConduit.copy copy;
 
         private alias tango.text.convert.Utf Utf;
 
@@ -413,7 +407,7 @@ class FileConduit : DeviceConduit, DeviceConduit.Seek
 
                 ***************************************************************/
 
-                protected uint writer (void[] src)
+                protected override uint writer (void[] src)
                 {
                         DWORD written;
 

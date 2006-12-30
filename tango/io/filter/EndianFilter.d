@@ -13,21 +13,24 @@
 module tango.io.filter.EndianFilter;
 
 private import  tango.io.Buffer,
-                tango.io.Conduit;
+                tango.io.Conduit,
+                tango.io.Exception;
 
 private import  tango.core.ByteSwap;
 
 
 class EndianFilter : ConduitFilter
 {
-        private uint mask;
+        alias void function (void*, uint) Swap;
 
-        private this (uint width)
+        private uint mask;
+        private Swap swap;
+        
+        private this (uint width, Swap swapper)
         {
                 mask = ~(width - 1);
+                swap = swapper;
         }
-
-        abstract void swap (void[] x, uint bytes);
 
         uint reader (void[] dst)
         {
@@ -44,10 +47,10 @@ class EndianFilter : ConduitFilter
                     do {
                        ret1 = next.reader (dst[ret..ret+1]);
                        if (ret1 == Conduit.Eof)
-                           error ("odd number of bytes!");
+                           throw new IOException ("EndianFilter.reader :: truncated input");
                        } while (ret1 == 0);
 
-                swap (dst, ret + ret1);
+                swap (dst.ptr, ret + ret1);
                 return ret;
         }
 
@@ -60,7 +63,7 @@ class EndianFilter : ConduitFilter
                         len = src.length & mask;
 
                 src = src [0..len];
-                swap (src, len);
+                swap (src.ptr, len);
 
                 do {
                    ret = next.writer (src[written..len]);
@@ -74,15 +77,11 @@ class EndianFilter : ConduitFilter
 
 class EndianFilter16 : EndianFilter
 {
-        this () {super (2);}
-
-        final void swap (void[] x, uint bytes) {ByteSwap.swap16 (x.ptr, bytes);}
+        this () {super (2, &ByteSwap.swap16);}
 }
 
 class EndianFilter32 : EndianFilter
 {
-        this () {super (4);}
-
-        final void swap (void[] x, uint bytes) {ByteSwap.swap32 (x.ptr, bytes);}
+        this () {super (4, &ByteSwap.swap32);}
 }
 
