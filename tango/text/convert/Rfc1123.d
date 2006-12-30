@@ -14,10 +14,7 @@ module tango.text.convert.Rfc1123;
 
 private import tango.core.Epoch;
 
-private import tango.text.convert.Format;
-
-extern (C) int memcmp (char *, char *, uint);
-
+private import tango.text.convert.Integer;
 
 /******************************************************************************
 
@@ -32,43 +29,54 @@ extern (C) int memcmp (char *, char *, uint);
 
 ******************************************************************************/
 
-class Rfc1123 : Epoch
+struct Rfc1123
 {
+        public alias Epoch.InvalidEpoch InvalidEpoch;
+        
         /**********************************************************************
 
-                RFC 1123 formatted time
+                RFC1123 formatted time
 
                 Converts to the format "Sun, 06 Nov 1994 08:49:37 GMT", and
-                returns a populated slice of the provided buffer; with zero
-                length if the date was invalid.
+                returns a populated slice of the provided buffer. Note that
+                RFC1123 format is always in absolute GMT time, and a thirty-
+                element buffer is sufficient for the produced output
 
-                Note that RFC 1123 format is always in absolute GMT time.
-
-                A 40-element buffer is sufficient for the longest string.
+                Throws an exception where the supplied time is invalid
 
         **********************************************************************/
 
         final static char[] format (char[] output, ulong time)
         {
-                // ignore invalid time values
-                if (time == InvalidEpoch)
-                    return "";
+                Epoch.Fields    fields;
+                char[4]         tmp = void;
+                char*           p = output.ptr;
+
+                assert (output.length >= 29);
+
+                if (time is InvalidEpoch)
+                    Epoch.exception ("Rfc1123.format :: invalid epoch argument");
 
                 // convert time to field values
-                Fields fields;
                 fields.setUtcTime (time);
 
-                // format fields according to RFC 1123
-                return Formatter.sprint (output,
-                                         "{0,3}, {1:d2} {2,3} {3:d4} {4:d2}:{5:d2}:{6:d2} GMT",
-                                         fields.toDowName,
-                                         fields.day,
-                                         fields.toMonthName,
-                                         fields.year,
-                                         fields.hour, 
-                                         fields.min,
-                                         fields.sec
-                                        );
+                // build output string; less expensive than using Format
+                p = append (p, fields.toDowName[0..3]);
+                p = append (p, ", ");
+                p = append (p, Integer.format (tmp[0..2], fields.day, Integer.Format.Unsigned, Integer.Flags.Zero));
+                p = append (p, " ");
+                p = append (p, fields.toMonthName[0..3]);
+                p = append (p, " ");
+                p = append (p, Integer.format (tmp[0..4], fields.year, Integer.Format.Unsigned, Integer.Flags.Zero));
+                p = append (p, " ");
+                p = append (p, Integer.format (tmp[0..2], fields.hour, Integer.Format.Unsigned, Integer.Flags.Zero));
+                p = append (p, ":");
+                p = append (p, Integer.format (tmp[0..2], fields.min, Integer.Format.Unsigned, Integer.Flags.Zero));
+                p = append (p, ":");
+                p = append (p, Integer.format (tmp[0..2], fields.sec, Integer.Format.Unsigned, Integer.Flags.Zero));
+                p = append (p, " GMT");
+                
+                return output [0 .. p - output.ptr];
         }
 
         /**********************************************************************
@@ -108,13 +116,12 @@ class Rfc1123 : Epoch
 
         private static int rfc1123 (char[] src, inout ulong value)
         {
-                Fields fields;
-                char* p = src.ptr;
+                Epoch.Fields    fields;
+                char*           p = src.ptr;
 
                 bool date (inout char* p)
                 {
-                        return cast(bool)
-                                ((fields.day = parseInt(p)) > 0    &&
+                        return ((fields.day = parseInt(p)) > 0     &&
                                  *p++ == ' '                       &&
                                 (fields.month = parseMonth(p)) > 0 &&
                                  *p++ == ' '                       &&
@@ -147,13 +154,12 @@ class Rfc1123 : Epoch
 
         private static int rfc850 (char[] src, inout ulong value)
         {
-                Fields fields;
-                char* p = src.ptr;
+                Epoch.Fields    fields;
+                char*           p = src.ptr;
 
                 bool date (inout char* p)
                 {
-                        return cast(bool)
-                                ((fields.day = parseInt(p)) > 0    &&
+                        return ((fields.day = parseInt(p)) > 0     &&
                                  *p++ == '-'                       &&
                                 (fields.month = parseMonth(p)) > 0 &&
                                  *p++ == '-'                       &&
@@ -192,13 +198,12 @@ class Rfc1123 : Epoch
 
         private static int asctime (char[] src, inout ulong value)
         {
-                Fields fields;
-                char* p = src.ptr;
+                Epoch.Fields    fields;
+                char*           p = src.ptr;
 
                 bool date (inout char* p)
                 {
-                        return cast(bool)
-                                ((fields.month = parseMonth(p)) > 0 &&
+                        return ((fields.month = parseMonth(p)) > 0  &&
                                  *p++ == ' '                        &&
                                 ((fields.day = parseInt(p)) > 0     ||
                                 (*p++ == ' '                        &&
@@ -226,10 +231,9 @@ class Rfc1123 : Epoch
 
         **********************************************************************/
 
-        private static bool time (inout Fields fields, inout char* p)
+        private static bool time (inout Epoch.Fields fields, inout char* p)
         {
-                return cast(bool) 
-                       ((fields.hour = parseInt(p)) > 0 &&
+                return ((fields.hour = parseInt(p)) > 0 &&
                          *p++ == ':'                    &&
                         (fields.min = parseInt(p)) > 0  &&
                          *p++ == ':'                    &&
@@ -341,15 +345,14 @@ class Rfc1123 : Epoch
 
         private static int parseFullDay (inout char* p)
         {
-                foreach (int i, char[] day; Fields.Days)
-                         if (memcmp (day.ptr, p, day.length) == 0)
+                foreach (int i, char[] day; Epoch.Fields.Days)
+                         if (day == p[0..day.length])
                             {
                             p += day.length;
                             return i;
                             }
                 return -1;
         }
-
 
         /**********************************************************************
               
@@ -364,5 +367,32 @@ class Rfc1123 : Epoch
                 while (*p >= '0' && *p <= '9')
                        value = value * 10 + *p++ - '0';
                 return value;
+        }
+
+        /**********************************************************************
+              
+                Append text to an array. We use this as a featherweight
+                alternative to tango.text.convert.Format
+
+        **********************************************************************/
+
+        private static char* append (char* p, char[] s)
+        {
+                p[0..s.length] = s[];
+                return p + s.length;
+        }
+}
+
+
+debug (UnitTest)
+{
+        unittest
+        {
+                char[30] tmp;
+                char[] test = "Sun, 06 Nov 1994 08:49:37 GMT";
+                
+                auto time = Rfc1123.parse (test);
+                auto text = Rfc1123.format (tmp, time);
+                assert (text == test);
         }
 }
