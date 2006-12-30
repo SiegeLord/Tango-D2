@@ -25,23 +25,18 @@ struct AtoiT(T)
         /**********************************************************************
         
                 Strip leading whitespace, extract an optional +/- sign,
-                and an optional radix prefix.
-
-                This can be used as a precursor to the conversion of digits
-                into a number.
+                and an optional radix prefix. This can be used as a
+                precursor to the conversion of digits into a number.
 
                 Returns the number of matching characters.
 
         **********************************************************************/
 
-        static uint trim (T[] digits, out bool sign, out uint radix)
+        static uint trim (T[] digits, inout bool sign, inout uint radix)
         {
                 T       c;
                 T*      p = digits.ptr;
                 int     len = digits.length;
-
-                // set default radix
-                radix = 10;
 
                 // strip off whitespace and sign characters
                 for (c = *p; len; c = *++p, --len)
@@ -98,8 +93,8 @@ struct AtoiT(T)
 
         static ulong convert (T[] digits, int radix=10, uint* ate=null)
         {
-                ulong value;
                 uint  eaten;
+                ulong value;
 
                 foreach (T c; digits)
                         {
@@ -126,31 +121,26 @@ struct AtoiT(T)
 
         /**********************************************************************
 
-                Parse an integer value from the provided 'src' string. The
-                string is also inspected for a sign and radix (defaults to 
-                10), which can be overridden by setting 'radix' to non-zero. 
+                Parse an integer value from the provided 'digits' string.
+                The string is inspected for a sign and radix, where the
+                latter will override the default radix provided.
 
-                Returns the value and updates 'ate' with the number of
-                characters parsed.
+                Returns the parsed value and updates 'ate' with the number
+                of characters consumed
 
         **********************************************************************/
 
-        static long parse (T[] digits, uint radix=0, uint* ate=null)
+        static long parse (T[] digits, uint radix=10, uint* ate=null)
         {
-                uint rdx;
                 bool sign;
 
-                int eaten = trim (digits, sign, rdx);
-
-                if (radix)
-                    rdx = radix;
-
-                ulong result = convert (digits[eaten..length], rdx, ate);
+                auto eaten = trim (digits, sign, radix);
+                auto value = convert (digits[eaten..$], radix, ate);
 
                 if (ate)
                     *ate += eaten;
 
-                return cast(long) (sign ? -result : result);
+                return cast(long) (sign ? -value : value);
         }
 }
 

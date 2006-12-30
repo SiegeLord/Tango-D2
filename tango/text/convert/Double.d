@@ -180,17 +180,12 @@ struct DoubleT(T)
         final static double parse (T[] src, uint* ate=null)
         {
                 T               c;
-                T*              p;
+                T*              p,
+                                end;
                 int             exp;
                 bool            sign;
-                uint            radix;
+                uint            radix = 10;
                 double          value = 0.0;
-
-                //BUG: The current implementation does not check for src
-                // boundaries. It stops scanning if the input isn't plausible any
-                // more. The following line is a workaround, but it is bad for performance.
-                // This needs more investigating. See also ticket #130
-                src = src ~ \x00;
 
                 // remove leading space, and sign
                 c = *(p = src.ptr + Atoi.trim (src, sign, radix));
@@ -202,16 +197,19 @@ struct DoubleT(T)
                    return *cast(double*) &v;
                    }
 
+                // set end check
+                end = src.ptr + src.length;
+
                 // read leading digits; note that leading
-                // zeros are simply multiplied away.
-                while (c >= '0' && c <= '9')
+                // zeros are simply multiplied away
+                while (c >= '0' && c <= '9' && p < end)
                       {
                       value = value * 10 + (c - '0');
                       c = *++p;
                       }
 
                 // gobble up the point
-                if (c == '.')
+                if (c is '.' && p < end)
                     c = *++p;
 
                 // read fractional digits; note that we accumulate
@@ -220,8 +218,8 @@ struct DoubleT(T)
                 // expect. A prior version limited the digit count,
                 // but did not show marked improvement. For maximum
                 // accuracy when reading and writing, use David Gay's
-                // dtoa package instead.
-                while (c >= '0' && c <= '9')
+                // dtoa package instead
+                while (c >= '0' && c <= '9' && p < end)
                       {
                       value = value * 10 + (c - '0');
                       c = *++p;
@@ -232,7 +230,7 @@ struct DoubleT(T)
                 if (value)
                    {
                    // parse base10 exponent?
-                   if (c == 'e' || c == 'E')
+                   if (c is 'e' || c is 'E')
                       {
                       uint eaten;
                       exp += Atoi.parse (src[(p-src.ptr)+1..length], 0, &eaten);
@@ -248,7 +246,7 @@ struct DoubleT(T)
                    }
                 else
                    // was it was nan instead?
-                   if (p == src.ptr)
+                   if (p is src.ptr)
                        if (p[0..3] == "inf")
                            p += 3, value = double.infinity;
                        else

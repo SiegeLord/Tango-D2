@@ -23,8 +23,6 @@ private import tango.text.convert.Atoi;
 
 struct IntegerT(T)
 {       
-        private alias AtoiT!(T) Atoi;
-
         /**********************************************************************
 
                 Format identifiers 
@@ -198,22 +196,22 @@ struct IntegerT(T)
                 dst [len .. len + prefix.length] = prefix[];
 
                 // return slice of provided output buffer
-                return dst [len .. dst.length];                               
+                return dst [len .. $];                               
         } 
 
 
         /**********************************************************************
 
                 Parse an integer value from the provided 'src' string. 
-                The string is also inspected for a radix (defaults to 10), 
-                which can be overridden by setting 'radix' to non-zero. 
+                The string is inspected for a sign and radix, where the
+                latter will override the default radix provided.
 
                 A non-null 'ate' will return the number of characters used
                 to construct the returned value.
 
         **********************************************************************/
 
-        final static long parse (T[] src, uint radix=0, uint* ate=null)
+        final static long parse (T[] src, uint radix=10, uint* ate=null)
         {
                 return Atoi.parse (src, radix, ate);
         }
