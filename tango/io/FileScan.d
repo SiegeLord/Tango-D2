@@ -5,7 +5,7 @@
         license:        BSD style: $(LICENSE)
 
         version:        Jun 2004: Initial release
-        version:        Dec 2006: South Pacific rewrite
+        version:        Dec 2006: Pacific release
 
         author:         Kris
 
@@ -26,8 +26,9 @@ public import   tango.io.File,
         directory, along with the folders containing them:
 
         ---
-        auto root = new FilePath (".");
-        auto scan = (new FileScan)(root, ".d");
+        auto scan = new FileScan;
+
+        scan (new FilePath ("."), ".d");
 
         Stdout.formatln ("{0} Folders", scan.folders.length);
         foreach (file; scan.folders)
@@ -38,7 +39,7 @@ public import   tango.io.File,
                  Stdout.formatln ("{0}", file);
         ---
 
-        This is not the most efficient method to scan a large number of
+        This is unlikely the most efficient method to scan a vast number of
         files, but operates in a convenient manner
         
 *******************************************************************************/
@@ -47,8 +48,10 @@ class FileScan
 {       
         alias sweep opCall;
 
-        private Dependencies deps;
-
+        uint            total_;
+        File[]          files_,
+                        folders_;
+        
         /***********************************************************************
 
             alias for Filter delegate. Takes a File as argument and returns
@@ -56,20 +59,7 @@ class FileScan
 
         ***********************************************************************/
 
-        alias bool delegate (File, bool) Filter;
-
-        /***********************************************************************
-
-                The list of files and sub-directories found
-
-        ***********************************************************************/
-        
-        private struct Dependencies 
-        {
-                int             total;
-                File[]          files,
-                                folders;
-        }
+        alias bool delegate (FileProxy, bool) Filter;
 
         /***********************************************************************
 
@@ -77,9 +67,9 @@ class FileScan
 
         ***********************************************************************/
 
-        public int inspected ()
+        public uint inspected ()
         {
-                return deps.total;
+                return total_;
         }
 
         /***********************************************************************
@@ -90,7 +80,7 @@ class FileScan
 
         public File[] files ()
         {
-                return deps.files;
+                return files_;
         }
 
         /***********************************************************************
@@ -101,7 +91,7 @@ class FileScan
 
         public FileProxy[] folders ()
         {
-                return deps.folders;
+                return folders_;
         }
 
         /***********************************************************************
@@ -113,30 +103,23 @@ class FileScan
         
         FileScan sweep (FilePath path, Filter filter)
         {
-                deps.files = deps.folders = null;
-                scanFiles (new File(path), filter);
+                total_ = 0;
+                files_ = folders_ = null;
+                scan (new File(path), filter);
                 return this;
         }
 
         /***********************************************************************
 
                 Sweep a set of files and directories from the given parent
-                path, where the files are filtered by the given extension.
+                path, where the files are filtered by the given suffix
         
         ***********************************************************************/
         
         FileScan sweep (FilePath path, char[] match)
         {
-                bool filter (File fp, bool isDir) 
-                {
-                        if (isDir)
-                            return true;
-                        
-                        auto path = fp.getPath ();
-                        return path.getName.length && path.getSuffix == match;
-                }
-
-                return sweep (path, &filter);
+                return sweep (path, (FileProxy fp, bool isDir)
+                             {return isDir || fp.getPath.getSuffix == match;});
         }
 
         /***********************************************************************
@@ -146,25 +129,25 @@ class FileScan
                         
         ***********************************************************************/
 
-        private void scanFiles (File folder, Filter filter) 
+        private void scan (File folder, Filter filter) 
         {
-                bool isDir;
                 auto paths = folder.toList();
-                auto count = deps.files.length;
-                deps.total += paths.length;
+                auto count = files_.length;
+                total_ += paths.length;
                 
                 foreach (entry; paths) 
                         {
                         // temporaries, allocated on stack 
                         scope auto x = new FilePath (entry.ptr, entry.length+1);
-                        scope auto f = new File (x);
+                        scope auto p = new FileProxy (x);
 
                         // skip system files
-                        if (f.isVisible && filter(f, isDir = f.isDirectory))
+                        bool isDir = p.isDirectory;
+                        if (p.isVisible && filter (p, isDir))
                            {
                            // create persistent instance for returning. We
-                           // map onto the previously allocated filepath
-                           auto file = new File (new FilePath (entry.ptr, entry.length+1));
+                           // map onto the filepath allocated via toList()
+                           auto file = new File (new FilePath (x));
 
                            if (isDir)
                               {
@@ -172,21 +155,20 @@ class FileScan
 
                               // skip dirs composed only of '.'
                               auto suffix = path.getSuffix();
-                              if (path.getName.length is 0 &&
-                                  suffix.length <= 3       &&
+                              if (path.getName.length is 0 && suffix.length <= 3 &&
                                   suffix == "..."[0..suffix.length])
                                   continue;
 
                               // recurse directories
-                              scanFiles (file, filter);
+                              scan (file, filter);
                               }
                            else
-                              deps.files ~= file;
+                              files_ ~= file;
                            }
                         }
                 
                 // add packages only if there's something in them
-                if (deps.files.length > count)
-                    deps.folders ~= folder;
+                if (files_.length > count)
+                    folders_ ~= folder;
         }
 }

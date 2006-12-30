@@ -132,6 +132,23 @@ class FilePath
         }
         
         /***********************************************************************
+
+                Alias the content of another FilePath. This can be used to
+                avoid rescanning the path
+                
+        ***********************************************************************/
+
+        this (FilePath other)
+        {
+                fp = other.fp;
+                end = other.end;
+                ext = other.ext;
+                path = other.path;
+                name = other.name;
+                suffix = other.suffix;
+        }
+        
+        /***********************************************************************
         
                 Return the complete text of this filepath
 
