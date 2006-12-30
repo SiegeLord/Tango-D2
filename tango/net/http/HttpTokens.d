@@ -12,7 +12,7 @@
 
 module tango.net.http.HttpTokens;
 
-private import  tango.text.Text;
+private import  tango.text.Goodies;
 
 private import  tango.io.Buffer;
 
@@ -65,6 +65,8 @@ class HttpTokens : IWritable
         private char[1]         sepString;
         static private char[]   emptyString = "";
 
+        private alias tango.text.Goodies Text;
+        
         /**********************************************************************
                 
                 Construct a set of tokens based upon the given delimeter, 
@@ -283,14 +285,14 @@ class HttpTokens : IWritable
 
                 if (s.length)
                    {
-                   int i = Text.indexOf (s, separator);
+                   auto i = Text.find (s, separator);
 
                    // we should always find the separator
-                   if (i > 0)
+                   if (i)
                       {
-                      int j = (inclusive) ? i+1 : i;
+                      int j = (inclusive) ? i : i-1;
                       element.name = s[0..j];
-                      element.value = (i < s.length) ? s[i+1..s.length] : emptyString;
+                      element.value = (i <= s.length) ? s[i..s.length] : emptyString;
                       return true;
                       }
                    else

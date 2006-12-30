@@ -17,7 +17,8 @@ private import tango.sys.Common;
 
 version (Win32)
         {
-        private import tango.text.Text;
+        private import tango.text.Goodies;
+        private alias tango.text.Goodies Text;
         private extern (Windows) DWORD GetLogicalDriveStringsA (DWORD, LPTSTR);
         }
      else
@@ -59,7 +60,7 @@ class FileRoots
                            GetLogicalDriveStringsA (len, str);
 
                            // split roots into seperate strings
-                           roots = Text.split (str [0..str.length-1], "\0");
+                           roots = Text.split (str [0..str.length-1], '\0');
                            }
                         return roots;
                 }

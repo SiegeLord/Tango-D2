@@ -253,9 +253,9 @@ class HttpStack
                     return false;
 
                 version (Win32)
-                         return cast(bool) (memicmp (target, match, length) == 0);
+                         return memicmp (target.ptr, match.ptr, length) is 0;
                 version (Posix)
-                         return cast(bool) (strncasecmp (cast(char *)target, cast(char *)match, length) == 0);
+                         return strncasecmp (target.ptr, match.ptr, length) is 0;
         }
         
         /**********************************************************************

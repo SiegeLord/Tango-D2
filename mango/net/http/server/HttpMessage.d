@@ -12,7 +12,7 @@
 
 module mango.net.http.server.HttpMessage;
 
-private import  tango.text.Text;
+private import  tango.text.Goodies;
 
 private import  tango.io.Buffer,
                 tango.io.Exception;
@@ -66,6 +66,8 @@ class HttpMessage : IWritable
 
         private char[]          encoding,
                                 mimeType;
+
+        private alias tango.text.Goodies Text;
 
         /**********************************************************************
 
@@ -224,18 +226,17 @@ class HttpMessage : IWritable
 
                 if (type)
                    {
-                   int semi = Text.indexOf (type, ';');
-                   if (semi >= 0)
+                   auto semi = Text.find (type, ';');
+                   if (semi)
                       {
+                      --semi;
                       mimeType = Text.trim (type[0..semi]);
-                      int cs = Text.indexOf (type, "charset=", semi);
-                      if (cs >= 0)
+                      auto cs = Text.search (type, "charset=", semi);
+                      if (cs)
                          {
-                         cs += 8;
-                         int end = Text.indexOf (type, ' ', cs);
-                         if (end < 0)
-                             end = type.length;
-                         encoding = type[cs..end];
+                         cs += 7;
+                         auto end = Text.find (type, ' ', cs);
+                         encoding = end ? type[cs..end-1] : type[cs..$];
                          }
                       }
                    }

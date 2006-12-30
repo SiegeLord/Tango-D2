@@ -12,13 +12,13 @@
 
 module tango.text.Properties;
 
-private import  tango.text.Text;
-
 private import  tango.io.Buffer,
                 tango.io.FileConst,
                 tango.io.FileConduit;
 
 private import  tango.io.model.IConduit;
+
+private import  tango.text.Goodies;
 
 private import  tango.text.stream.LineIterator;
 
@@ -31,6 +31,8 @@ private import  tango.text.stream.LineIterator;
 
 class Properties
 {
+        private alias tango.text.Goodies Text;
+        
         /***********************************************************************
         
                 Load properties from the named file, and pass each of them
@@ -88,11 +90,11 @@ class Properties
                         if (text.length && (text[0] != '#'))
                            {
                            // find the '=' char
-                           int i = Text.indexOf (text, '=');
+                           auto i = Text.find (text, '=');
 
                            // ignore if not found ...
-                           if (i > 0)
-                               dg (Text.trim (text[0..i]), Text.trim (text[i+1..text.length]));
+                           if (i)
+                               dg (Text.trim (text[0..i-1]), Text.trim (text[i..text.length]));
                            }
                         }
         }

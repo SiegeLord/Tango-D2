@@ -26,9 +26,9 @@
                 bool select (T c);
                 bool select (T[] chars);
                 bool select (String other);
-                bool rselect (T c);
-                bool rselect (T[] chars);
-                bool rselect (String other);
+                bool selectPrior (T c);
+                bool selectPrior (T[] chars);
+                bool selectPrior (String other);
 
                 // append behind current selection
                 String append (String other);
@@ -108,7 +108,7 @@
 
 module tango.text.String;
 
-private import  tango.text.Text;
+private import  tango.text.Goodies;
 
 private import  tango.text.convert.Utf,
                 tango.text.convert.Format;
@@ -142,14 +142,13 @@ private extern (C) void memmove (void* dst, void* src, uint bytes);
 
 class String(T) : StringView!(T)
 {
+        private alias tango.text.convert.Utf Utf;
+        private alias tango.text.Goodies    Util;
+
         public  alias append            opCat;
         public  alias get               opIndex;
         private alias StringView!(T)    StringViewT;
 
-        private alias tango.text.convert.Utf Utf;
-
-
-        private TextT!(T)               utils;
         private Format!(T)              convert;
         private bool                    mutable;
         private Comparator              comparator;
@@ -295,10 +294,10 @@ class String(T) : StringView!(T)
 
         bool select (T c)
         {
-                int x = utils.indexOf (get(), c, selectPoint);
-                if (x >= 0)
+                auto x = Util.find (get(), c, selectPoint);
+                if (x)
                    {
-                   select (x, 1);
+                   select (x-1, 1);
                    return true;
                    }
                 return false;
@@ -335,10 +334,10 @@ class String(T) : StringView!(T)
 
         bool select (T[] chars)
         {
-                int x = utils.indexOf (get(), chars, selectPoint);
-                if (x >= 0)
+                auto x = utils.find (get(), chars, selectPoint);
+                if (x)
                    {
-                   select (x, chars.length);
+                   select (x-1, chars.length);
                    return true;
                    }
                 return false;
@@ -352,12 +351,12 @@ class String(T) : StringView!(T)
 
         ***********************************************************************/
 
-        bool rselect (T c)
+        bool selectPrior (T c)
         {
-                int x = utils.rIndexOf (get(), c, selectPoint+selectLength);               
-                if (x >= 0)
+                auto x = Util.findPrior (get(), c, selectPoint+selectLength);               
+                if (x)
                    {
-                   select (x, 1);
+                   select (x-1, 1);
                    return true;
                    }
                 return false;
@@ -371,9 +370,9 @@ class String(T) : StringView!(T)
 
         ***********************************************************************/
 
-        bool rselect (StringViewT other)
+        bool selectPrior (StringViewT other)
         {
-                return rselect (other.get);
+                return selectPrior (other.get);
         }
 
         /***********************************************************************
@@ -388,12 +387,12 @@ class String(T) : StringView!(T)
 
         ***********************************************************************/
 
-        bool rselect (T[] chars)
+        bool selectPrior (T[] chars)
         {
-                int x = utils.rIndexOf (get(), chars, selectPoint+selectLength);
-                if (x >= 0)
+                auto x = Util.searchPrior (get(), chars, selectPoint+selectLength);
+                if (x)
                    {
-                   select (x, chars.length);
+                   select (x-1, chars.length);
                    return true;
                    }
                 return false;
@@ -625,7 +624,7 @@ class String(T) : StringView!(T)
 
         String trim ()
         {
-                content = utils.trim (get());
+                content = Util.trim (get());
                 select (0, contentLength = content.length);
                 return this;
         }
@@ -724,7 +723,7 @@ class String(T) : StringView!(T)
         bool equals (T[] other)
         {
                 if (other.length == contentLength)
-                    return utils.equal (other.ptr, content.ptr, contentLength);
+                    return !Util.mismatch (other.ptr, content.ptr, contentLength);
                 return false;
         }
 
@@ -748,7 +747,7 @@ class String(T) : StringView!(T)
         bool ends (T[] chars)
         {
                 if (chars.length <= contentLength)
-                    return utils.equal (content.ptr+(contentLength-chars.length), chars.ptr, chars.length);
+                    return !Util.mismatch (content.ptr+(contentLength-chars.length), chars.ptr, chars.length);
                 return false;
         }
 
@@ -772,7 +771,7 @@ class String(T) : StringView!(T)
         bool starts (T[] chars)
         {
                 if (chars.length <= contentLength)                
-                    return utils.equal (content.ptr, chars.ptr, chars.length);
+                    return !Util.mismatch (content.ptr, chars.ptr, chars.length);
                 return false;
         }
 

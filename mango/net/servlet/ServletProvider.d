@@ -14,8 +14,8 @@ module mango.net.servlet.ServletProvider;
 
 private import  tango.net.Uri;
 
-private import  tango.text.Text,
-                tango.text.Regex;
+private import  tango.text.Regex,
+                tango.text.Goodies;                
    
 private import  tango.io.Exception;
 
@@ -228,16 +228,16 @@ class ServletProvider : ServiceProvider
                 if (pattern is null || pattern == "/")
                     pattern = "";
 
-                int i = Text.indexOf (pattern, '*');
-                if (i == 0)
+                auto i = tango.text.Goodies.find (pattern, '*');
+                if (i is 1)
                     // file extension 
-                    pattern = "/.+\\" ~ pattern[1..pattern.length] ~ "$";
+                    pattern = "/.+\\" ~ pattern[1..$] ~ "$";
                 else
-                   if (i > 0)
+                   if (i > 1)
                        // path extension
-                       pattern = pattern[0..i] ~ ".*";
+                       pattern = pattern[0..i-1] ~ ".*";
                    else
-                      if (pattern.length == 0)
+                      if (pattern.length is 0)
                           // default
                           pattern = "/.*";
                       else

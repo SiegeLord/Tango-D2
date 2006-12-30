@@ -16,8 +16,6 @@ private import  tango.stdc.ctype;
 
 private import  tango.io.Buffer;
 
-private import  tango.text.Text;
-
 private import  tango.text.convert.Integer;
 
 private import  tango.text.stream.StreamIterator;
