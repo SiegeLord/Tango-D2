@@ -682,8 +682,6 @@ else version(BsdSockets)
 
 /*******************************************************************************
 
-        Tango: socket now subclasses tango.io.Resource
-
 *******************************************************************************/
 
 class Socket
@@ -697,7 +695,7 @@ class Socket
                 private bool _blocking = false;
 
         // For use with accept().
-        this()
+        package this()
         {
         }
         
@@ -707,18 +705,20 @@ class Socket
          * this socket type within the address family, the ProtocolType may be
          * omitted.
          */
-        this(AddressFamily family, SocketType type, ProtocolType protocol)
+        this(AddressFamily family, SocketType type, ProtocolType protocol, bool create=true)
         {
                 this.type = type;
                 this.family = family;
                 this.protocol = protocol;
+                if (create)
+                    initialize ();
         }
         
         
         /**
-         * Create a blocking socket
+         * Create or assign a socket
          */
-        Socket create (socket_t sock = sock.init)
+        private void initialize (socket_t sock = sock.init)
         {
                 if (this.sock)
                     close();
@@ -729,8 +729,8 @@ class Socket
                    if (sock is sock.init)
                        exception ("Unable to create socket: ");
                    }
+                
                 this.sock = sock;
-                return this;
         }
         
         /***********************************************************************
@@ -911,7 +911,7 @@ class Socket
                 if (socket_t.init == newsock)
                    throw new SocketAcceptException("Unable to accept socket connection: ", lastError());
 
-                target.create (newsock);
+                target.initialize (newsock);
                 version(Win32)
                         target._blocking = _blocking;  //inherits blocking mode
                 

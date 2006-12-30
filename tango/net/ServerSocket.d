@@ -50,7 +50,7 @@ class ServerSocket
         this (InternetAddress addr, int backlog=32, bool reuse=false)
         {
                 socket = new Socket (AddressFamily.INET, SocketType.STREAM, ProtocolType.IP);
-                socket.create.setAddressReuse(reuse).bind(addr).listen(backlog);
+                socket.setAddressReuse(reuse).bind(addr).listen(backlog);
         }
 
         /***********************************************************************

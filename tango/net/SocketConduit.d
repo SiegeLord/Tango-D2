@@ -61,14 +61,162 @@ class SocketConduit : Conduit
 
         ***********************************************************************/
 
-        protected this (Access access, SocketType type, bool create = true)
+        protected this (Access access, SocketType type, bool create=true)
         {
                 super (access);
-                socket = new Socket (AddressFamily.INET, type, ProtocolType.TCP);
-                if (create)
-                    socket.create ();
+                socket = new Socket (AddressFamily.INET, type, ProtocolType.TCP, create);
         }
 
+        /***********************************************************************
+
+                Return a preferred size for buffering conduit I/O
+
+        ***********************************************************************/
+
+        uint bufferSize ()
+        {
+                return 1024 * 8;
+        }
+
+        /***********************************************************************
+
+                Return the socket wrapper
+                
+        ***********************************************************************/
+
+        Socket getSocket ()
+        {
+                return socket;
+        }
+
+        /***********************************************************************
+
+                Models a handle-oriented device. We need to revisit this.
+
+                TODO: figure out how to avoid exposing this in the general
+                case
+
+        ***********************************************************************/
+
+        Handle getHandle ()
+        {
+                return cast(Handle) socket.handle;
+        }
+
+        /***********************************************************************
+
+                Set the read timeout to the specified microseconds. Set a
+                value of zero to disable timeout support.
+
+                Note that only a fairly short timeout period is supported: 
+                (2^32 / 1_000_000) seconds
+
+        ***********************************************************************/
+
+        void setTimeout (Interval us)
+        {
+                tv.tv_sec = cast(int) (us / Interval.second);
+                tv.tv_usec = cast(int) (us % Interval.second);
+        }
+
+        /***********************************************************************
+
+                Did the last operation result in a timeout? 
+
+        ***********************************************************************/
+
+        bool hadTimeout ()
+        {
+                return timeout;
+        }
+
+        /***********************************************************************
+
+                Is this socket still alive?
+
+        ***********************************************************************/
+
+        override bool isAlive ()
+        {
+                return socket.isAlive;
+        }
+
+        /***********************************************************************
+
+                Connect to the provided endpoint
+        
+        ***********************************************************************/
+
+        SocketConduit connect (Address addr)
+        {
+                socket.connect (addr);
+                return this;
+        }
+
+        /***********************************************************************
+
+                Bind the socket. This is typically used to configure a
+                listening socket (such as a server or multicast socket).
+                The address given should describe a local adapter, or
+                specify the port alone (ADDR_ANY) to have the OS assign
+                a local adapter address.
+        
+        ***********************************************************************/
+
+        SocketConduit bind (Address address)
+        {
+                socket.bind (address);
+                return this;
+        }
+
+        /***********************************************************************
+
+                Inform other end of a connected socket that we're no longer
+                available. In general, this should be invoked before close()
+                is invoked
+        
+        ***********************************************************************/
+
+        SocketConduit shutdown ()
+        {
+                socket.shutdown (SocketShutdown.BOTH);
+                return this;
+        }
+
+        /***********************************************************************
+
+                Deallocate this SocketConduit when it is been closed.
+
+                Note that one should always close a SocketConduit under
+                normal conditions, and generally invoke shutdown on all
+                connected sockets beforehand
+
+        ***********************************************************************/
+
+        override void close ()
+        {
+                super.close;
+                socket.close;
+
+                // deallocate if this came from the free-list,
+                // otherwise just wait for the GC to handle it
+                if (fromList)
+                    deallocate (this);
+        }
+
+        /***********************************************************************
+
+                Read content from socket. This is implemented as a callback
+                from the reader() method so we can expose the timout support
+                to subclasses
+                
+        ***********************************************************************/
+
+        protected uint socketReader (void[] dst)
+        {
+                return socket.receive (dst);
+        }
+        
        /***********************************************************************
 
                 Callback routine to read content from the socket. Note
@@ -115,13 +263,14 @@ class SocketConduit : Conduit
                       }
                    }       
 
-                int count = socket.receive (dst);
+                // invoke the actual read op
+                int count = socketReader (dst);
                 if (count <= 0)
                     count = Eof;
                 return count;
                 }
         }
-
+        
         /***********************************************************************
 
                 Callback routine to write the provided content to the
@@ -137,143 +286,6 @@ class SocketConduit : Conduit
                 if (count <= 0)
                     count = Eof;
                 return count;
-        }
-
-        /***********************************************************************
-
-                Return a preferred size for buffering conduit I/O
-
-        ***********************************************************************/
-
-        uint bufferSize ()
-        {
-                return 1024 * 8;
-        }
-
-        /***********************************************************************
-
-                Models a handle-oriented device. We need to revisit this.
-
-                TODO: figure out how to avoid exposing this in the general
-                case
-
-        ***********************************************************************/
-
-        Handle getHandle ()
-        {
-                return cast(Handle) socket.handle;
-        }
-
-        /***********************************************************************
-
-                Set the read timeout to the specified microseconds. Set a
-                value of zero to disable timeout support.
-
-        ***********************************************************************/
-
-        void setTimeout (Interval us)
-        {
-                tv.tv_sec = cast(int) (us / Interval.second);
-                tv.tv_usec = cast(int) (us % Interval.second);
-        }
-
-        /***********************************************************************
-
-                Did the last operation result in a timeout? Note that this
-                assumes there is no thread contention on this object.
-
-        ***********************************************************************/
-
-        bool hadTimeout ()
-        {
-                return timeout;
-        }
-
-        /***********************************************************************
-
-                Is this socket still alive?
-
-        ***********************************************************************/
-
-        override bool isAlive ()
-        {
-                return socket.isAlive;
-        }
-
-        /***********************************************************************
-
-                Connect the socket to the provided endpoint
-        
-        ***********************************************************************/
-
-        SocketConduit connect (Address addr)
-        {
-                socket.connect (addr);
-                return this;
-        }
-
-        /***********************************************************************
-
-                Bind the socket. This is typically used to configure a
-                listening socket (such as a server or multicast socket).
-                The address given should describe a local adapter, or
-                specify the port alone (ADDR_ANY) to have the OS assign
-                a local adapter address.
-        
-        ***********************************************************************/
-
-        SocketConduit bind (Address address)
-        {
-                socket.bind (address);
-                return this;
-        }
-
-        /***********************************************************************
-
-                Inform other end we're no longer available. In general,
-                this should be invoked for streaming connections before
-                method close() is invoked
-        
-        ***********************************************************************/
-
-        SocketConduit shutdown ()
-        {
-                socket.shutdown (SocketShutdown.BOTH);
-                return this;
-        }
-
-        /***********************************************************************
-
-                return the socket wrapper
-                
-        ***********************************************************************/
-
-        Socket getSocket()
-        {
-                return socket;
-        }
-
-        /***********************************************************************
-
-                Deallocate this SocketConduit when it is been closed.
-
-                Note that one should always close a SocketConduit under
-                normal conditions, and generally invoke shutdown upon it
-                beforehand
-
-        ***********************************************************************/
-
-        override void close ()
-        {       
-                // do this first cos' we're gonna' reset the
-                // socket handle during deallocate()
-                socket.close;
-
-
-                // deallocate if this came from the free-list,
-                // otherwise just wait for the GC to handle it
-                if (fromList)
-                    deallocate (this);
         }
 
         /***********************************************************************

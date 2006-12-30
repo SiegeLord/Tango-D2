@@ -47,7 +47,7 @@ class DatagramConduit : SocketConduit
 
         this ()
         {
-                super (Access.Read, SocketType.DGRAM);
+                super (Access.Write, SocketType.DGRAM);
         }
 
         /***********************************************************************
@@ -129,26 +129,25 @@ class DatagramConduit : SocketConduit
 
         /***********************************************************************
 
-                Conduit contract:
+                SocketConduit override:
                 
-                Read available datagram bytes into a provided array. The
-                'from' address specified to the ctor will be updated with
-                an address representing the content origin. If 'from' is
-                null we assume the datagram has been connected instead.
+                Read available datagram bytes into a provided array. Returns
+                the number of bytes read from the input, or Eof if the socket
+                cannot read.
 
-                Returns the number of bytes read from the input, or Eof if
-                the socket cannot read
+                Note that we're taking advantage of timout support within the
+                superclass 
 
         ***********************************************************************/
 
-        protected override uint reader (void[] dst)
+        protected override uint socketReader (void[] dst)
         {
                 return read (dst, src);
         }
 
         /***********************************************************************
 
-                Conduit contract:
+                SocketConduit override:
 
                 Write the provided content to the socket. This will stall
                 until the socket responds in some manner. If there is no
