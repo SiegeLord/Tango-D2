@@ -254,8 +254,8 @@ private bool charMatch(char c1, char c2)
         
         if (c1 != c2)
         {
-            return ((c1 >= 'A' && c1 <= 'Z') ? c1 - ('a' - 'A') : c1) ==
-                   ((c2 >= 'A' && c2 <= 'Z') ? c2 - ('a' - 'A') : c2);
+            return ((c1 >= 'a' && c1 <= 'z') ? c1 - ('a' - 'A') : c1) ==
+                   ((c2 >= 'a' && c2 <= 'z') ? c2 - ('a' - 'A') : c2);
         }
         return true;
     }
