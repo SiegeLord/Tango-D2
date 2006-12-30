@@ -277,7 +277,7 @@ abstract class Epoch
                                 ms = time % 1000;                                
                                 int utc = time / 1000;
 
-                                synchronized (lock)
+                                synchronized (Epoch.classinfo)
                                              {
                                              tm* t = gmtime (&utc);
                                              assert (t);
@@ -304,7 +304,7 @@ abstract class Epoch
                                 ms = time % 1000;                                
                                 int utc = time / 1000;
 
-                                synchronized (lock)
+                                synchronized (Epoch.classinfo)
                                              {
                                              tm* t = localtime (&utc);
                                              year = t.tm_year + 1900;
@@ -331,7 +331,18 @@ abstract class Epoch
                 return beginTime;
         }
 
+        /***********************************************************************
+                
+                Throw an exception 
 
+        ***********************************************************************/
+
+        static void exception (char[] msg)
+        {
+                throw new Exception (msg);
+        }
+
+        
         /***********************************************************************
                         
                 Basic functions for epoch time
@@ -341,6 +352,33 @@ abstract class Epoch
         version (Win32)
         {
                 private static ulong epochOffset;
+
+                /***************************************************************
+                
+                        Construct an offset representing epoch time
+
+                ***************************************************************/
+
+                static this ()
+                {
+                        SYSTEMTIME sTime;
+                        FILETIME   fTime;
+
+                        // first second of 1970 ...
+                        sTime.wYear = 1970;
+                        sTime.wMonth = 1;
+                        sTime.wDayOfWeek = 0;
+                        sTime.wDay = 1;
+                        sTime.wHour = 0;
+                        sTime.wMinute = 0;
+                        sTime.wSecond = 0;
+                        sTime.wMilliseconds = 0;
+                        SystemTimeToFileTime (&sTime, &fTime);
+
+                        epochOffset = (cast(ulong) fTime.dwHighDateTime) << 32 | 
+                                                   fTime.dwLowDateTime;
+                        beginTime = utcMilli();
+                }
 
                 /***************************************************************
                 
@@ -389,34 +427,6 @@ abstract class Epoch
 
                 /***************************************************************
                 
-                        Construct an offset representing epoch time
-
-                ***************************************************************/
-
-                static this ()
-                {
-                        SYSTEMTIME sTime;
-                        FILETIME   fTime;
-
-                        // first second of 1970 ...
-                        sTime.wYear = 1970;
-                        sTime.wMonth = 1;
-                        sTime.wDayOfWeek = 0;
-                        sTime.wDay = 1;
-                        sTime.wHour = 0;
-                        sTime.wMinute = 0;
-                        sTime.wSecond = 0;
-                        sTime.wMilliseconds = 0;
-                        SystemTimeToFileTime (&sTime, &fTime);
-
-                        epochOffset = (cast(ulong) fTime.dwHighDateTime) << 32 | 
-                                                   fTime.dwLowDateTime;
-//                        printf ("epoch: %llu\n", epochOffset / 10_000_000);
-                        beginTime = utcMilli();
-                }
-
-                /***************************************************************
-                
                         Convert filetime to epoch time
                          
                 ***************************************************************/
@@ -456,17 +466,14 @@ abstract class Epoch
                 //extern (C) int timezone;
                 //extern (C) int daylight;
 
-                private static Object lock;
-
                 /***************************************************************
                 
-                        Create a synch object for fields.setTime()
+                        set start time
 
                 ***************************************************************/
 
                 static this()
                 {
-                        lock = new Object;
                         beginTime = utcMilli();
                 }
 
@@ -494,7 +501,7 @@ abstract class Epoch
                         timeval tv;
 
                         if (gettimeofday (&tv, null))
-                            throw new Exception ("linux timer is not available");
+                            exception ("Epoch.utcMicro :: linux timer is not available");
 
                         return 1_000_000L * cast(ulong) tv.tv_sec + tv.tv_usec;
                 }
@@ -507,7 +514,6 @@ abstract class Epoch
 
                 static int tzMinutes ()
                 {
-                        // this may need to be negated?
                         return -timezone / 60;
                 }
         }
