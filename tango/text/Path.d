@@ -15,7 +15,6 @@
 module tango.text.Path;
 
 private import tango.io.FileConst;
-private import tango.text.UniChar;
 
 version (Posix)
 {
@@ -248,13 +247,15 @@ unittest {
      -----
 **********************************************************************/
 
-bool charMatch(dchar c1, dchar c2)
+private bool charMatch(char c1, char c2)
 {
     version (Win32)
     {
+        
         if (c1 != c2)
         {
-            return toUniLower(c1) == toUniLower(c2);
+            return ((c1 >= 'A' && c1 <= 'Z') ? c1 - ('a' - 'A') : c1) ==
+                   ((c2 >= 'A' && c2 <= 'Z') ? c2 - ('a' - 'A') : c2);
         }
         return true;
     }
