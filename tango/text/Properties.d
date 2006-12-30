@@ -14,13 +14,13 @@ module tango.text.Properties;
 
 private import  tango.text.Text;
 
-private import  tango.text.stream.LineIterator;
-
 private import  tango.io.Buffer,
                 tango.io.FileConst,
                 tango.io.FileConduit;
 
 private import  tango.io.model.IConduit;
+
+private import  tango.text.stream.LineIterator;
 
 /*******************************************************************************
         
@@ -119,7 +119,7 @@ class Properties
 
         static void save (IConduit conduit, char[][char[]] properties)
         {
-                save (new Buffer(conduit), properties);
+                save (new Buffer(conduit), properties).flush;
         }
 
         /***********************************************************************
@@ -128,9 +128,10 @@ class Properties
 
         ***********************************************************************/
 
-        static void save (IBuffer emit, char[][char[]] properties)
+        static IBuffer save (IBuffer emit, char[][char[]] properties)
         {
                 foreach (key, value; properties)
                          emit (key) (" = ") (value) (FileConst.NewlineString);
+                return emit;
         }
 }

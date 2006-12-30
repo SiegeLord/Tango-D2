@@ -30,7 +30,7 @@ module tango.text.Layout;
         
 *******************************************************************************/
 
-struct TextLayoutT(T)
+struct TextLayout(T)
 {       
         /**********************************************************************
               
@@ -98,6 +98,4 @@ struct TextLayoutT(T)
         }
 }
 
-
-alias TextLayoutT!(char) TextLayout;
 

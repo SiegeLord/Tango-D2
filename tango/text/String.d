@@ -662,7 +662,7 @@ class String(T) : StringView!(T)
 
         ***********************************************************************/        
 
-        TypeInfo getEncoding()
+        TypeInfo encoding()
         {
                 return typeid(T);
         }
@@ -1176,7 +1176,7 @@ class String(T) : StringView!(T)
 
         /**********************************************************************
 
-        Sink function for the Formatter
+                Sink function for the Formatter
 
         **********************************************************************/
 
@@ -1376,7 +1376,7 @@ class UniString
 
         abstract dchar[] utf32 (dchar[] dst = null);
 
-        abstract TypeInfo getEncoding();
+        abstract TypeInfo encoding();
 }
 
 
