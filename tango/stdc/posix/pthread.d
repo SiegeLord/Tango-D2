@@ -181,17 +181,17 @@ else version( darwin )
 
         void push( _pthread_cleanup_routine routine, void* arg )
         {
-            buffer.__routine    = routine;
-            buffer.__arg        = arg;
-            buffer.__next       = self.__cleanup_stack;
-            self.__cleanup_stack = &buffer;
+            buffer.__routine     = routine;
+            buffer.__arg         = arg;
+            buffer.__next        = cast(_pthread_cleanup_buffer*) self.__cleanup_stack;
+            self.__cleanup_stack = cast(pthread_handler_rec*) &buffer;
 
             _pthread_cleanup_push( &buffer, routine, arg );
         }
 
         void pop( int execute )
         {
-            self.__cleanup_stack = buffer.__next;
+            self.__cleanup_stack = cast(pthread_handler_rec*) buffer.__next;
             if( execute )
             {
                 buffer.__routine( buffer.__arg );
