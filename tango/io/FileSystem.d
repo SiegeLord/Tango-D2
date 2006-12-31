@@ -15,7 +15,6 @@ module tango.io.FileSystem;
 private import  tango.sys.Common;
 
 private import  tango.io.FilePath,
-                tango.io.FileConst,
                 tango.io.Exception;
 
 
@@ -84,7 +83,7 @@ class FileSystem
                                 }
                              else
                                 {
-                                wchar[FileConst.PathMaxLength] tmp = void;
+                                wchar[MAX_PATH+1] tmp = void;
                         
                                 if (! SetCurrentDirectoryW (Utf.toUtf16(fp.cString, tmp).ptr))
                                       exception ("Failed to set current directory");
@@ -114,7 +113,7 @@ class FileSystem
                                 int length = GetCurrentDirectoryW (0, null);
                                 if (length)
                                    {
-                                   char[FileConst.PathMaxLength] tmp = void;
+                                   char[MAX_PATH] tmp = void;
                                    auto dir = new wchar [length];
                                    
                                    GetCurrentDirectoryW (length, dir.ptr);

@@ -29,7 +29,6 @@ private import  tango.io.Exception;
 version (Win32)
         {
         private import tango.text.convert.Utf;
-        private import tango.io.FileConst;
         private alias tango.text.convert.Utf Utf;
 
         extern (Windows) BOOL   MoveFileExA (LPCSTR,LPCSTR,DWORD);
@@ -174,8 +173,8 @@ class FileProxy
         version (Win32)
         {
                 // have to convert the filepath to utf16
-                private wchar[] widepath;
-                private wchar[FileConst.PathMaxLength] widepathsink = void;
+                private wchar[]         widepath;
+                private wchar[MAX_PATH] widepathsink = void;
                 
                 /***************************************************************
 
@@ -450,12 +449,12 @@ class FileProxy
 
                 char[][] toList ()
                 {
-                        int                             i;
-                        HANDLE                          h;
-                        char[][]                        list;
-                        char[]                          prefix;
-                        FIND_DATA                       fileinfo;
-                        char[FileConst.PathMaxLength]   tmp = void;
+                        int                     i;
+                        HANDLE                  h;
+                        char[][]                list;
+                        char[]                  prefix;
+                        FIND_DATA               fileinfo;
+                        char[MAX_PATH+1]        tmp = void;
 
                         int next()
                         {

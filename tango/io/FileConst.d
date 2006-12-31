@@ -25,7 +25,6 @@ struct FileConst
 {
         version (Win32)
         {
-                static const uint PathMaxLength = 262;
                 static const char PathSeparatorChar = '\\';
                 static const char FileSeparatorChar = '.';
                 static const char RootSeparatorChar = ':';
@@ -37,12 +36,11 @@ struct FileConst
                 static const char[] CurrentDirString = ".";
                 static const char[] ParentDirString = "..";
 
-                static const char[] NewlineString = "\r\n"c;
+                static const char[] NewlineString = "\r\n";
         }
 
         version (Posix)
         {
-                static const uint PathMaxLength = 4096;
                 static const char PathSeparatorChar = '/';
                 static const char FileSeparatorChar = '.';
                 static const char RootSeparatorChar = ':';
