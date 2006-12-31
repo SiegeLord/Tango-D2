@@ -516,8 +516,6 @@ class FilePath
 
 debug (UnitTest)
 {
-        void main() {}
-        
         unittest
         {
         version (Win32)
