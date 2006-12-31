@@ -20,7 +20,6 @@ private import  tango.sys.Common;
 
 public  import  tango.io.FilePath;
 
-private import  tango.io.FileConst;
 private import  tango.io.Exception;
 
 /*******************************************************************************
@@ -30,6 +29,7 @@ private import  tango.io.Exception;
 version (Win32)
         {
         private import tango.text.convert.Utf;
+        private import tango.io.FileConst;
         private alias tango.text.convert.Utf Utf;
 
         extern (Windows) BOOL   MoveFileExA (LPCSTR,LPCSTR,DWORD);
@@ -730,7 +730,7 @@ class FileProxy
                         if (! dir) 
                               exception();
 
-                        list = new char[][FileConst.PathMaxLength];
+                        list = new char[][1024];
                         prefix = FilePath.asPadded (path.toUtf8);
                         
                         while ((entry = tango.stdc.posix.dirent.readdir(dir)) != null)
