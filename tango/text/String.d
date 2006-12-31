@@ -108,7 +108,7 @@
 
 module tango.text.String;
 
-private import  tango.text.Goodies;
+private import  Util = tango.text.Goodies;
 
 private import  tango.text.convert.Utf,
                 tango.text.convert.Format;
@@ -143,7 +143,7 @@ private extern (C) void memmove (void* dst, void* src, uint bytes);
 class String(T) : StringView!(T)
 {
         private alias tango.text.convert.Utf Utf;
-        private alias tango.text.Goodies    Util;
+//        private alias tango.text.Goodies    Util;
 
         public  alias append            opCat;
         public  alias get               opIndex;
@@ -334,7 +334,7 @@ class String(T) : StringView!(T)
 
         bool select (T[] chars)
         {
-                auto x = utils.find (get(), chars, selectPoint);
+                auto x = Util.search (get(), chars, selectPoint);
                 if (x)
                    {
                    select (x-1, chars.length);
@@ -345,7 +345,7 @@ class String(T) : StringView!(T)
 
         /***********************************************************************
         
-                Find the last occurrence of a BMP code point in a string.
+                Find a prior occurrence of a BMP code point in a string.
                 A surrogate code point is found only if its match in the 
                 text is not part of a surrogate pair.
 
@@ -353,7 +353,7 @@ class String(T) : StringView!(T)
 
         bool selectPrior (T c)
         {
-                auto x = Util.findPrior (get(), c, selectPoint+selectLength);               
+                auto x = Util.findPrior (get(), c, selectPoint);               
                 if (x)
                    {
                    select (x-1, 1);
@@ -364,7 +364,7 @@ class String(T) : StringView!(T)
 
         /***********************************************************************
         
-                Find the last occurrence of a BMP code point in a string.
+                Find a prior occurrence of a BMP code point in a string.
                 A surrogate code point is found only if its match in the 
                 text is not part of a surrogate pair.
 
@@ -377,7 +377,7 @@ class String(T) : StringView!(T)
 
         /***********************************************************************
         
-                Find the last occurrence of a substring in a string. 
+                Find a prior occurrence of a substring in a string. 
 
                 The substring is found at code point boundaries. That means 
                 that if the substring begins with a trail surrogate or ends 
@@ -389,7 +389,7 @@ class String(T) : StringView!(T)
 
         bool selectPrior (T[] chars)
         {
-                auto x = Util.searchPrior (get(), chars, selectPoint+selectLength);
+                auto x = Util.searchPrior (get(), chars, selectPoint);
                 if (x)
                    {
                    select (x-1, chars.length);

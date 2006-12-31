@@ -47,7 +47,7 @@ template trim (T)
 /******************************************************************************
 
         quick & dirty text-to-unsigned converter. Use only when you
-        know what the content is, or use tango.convert.Atoi instead
+        know what the content is, or use tango.convert.Integer instead
         
 ******************************************************************************/
 
@@ -163,8 +163,11 @@ template search (T)
    
 /******************************************************************************
 
-        Return the index of the prior instance of 'match', starting
-        at position 'start'
+        Return the index of the prior instance of 'match' starting
+        just before 'start', or zero where there is no match. Note
+        that the returned index is 1-based, not 0-based
+
+        Parameter 'start' defaults to source.length
 
 ******************************************************************************/
 
@@ -444,7 +447,7 @@ unittest
         assert (mismatch ("abc".ptr, "acc".ptr, 3u) is 2);
         assert (mismatch ("abc".ptr, "ccc".ptr, 3u) is 1);
 
-        assert (atou ("12345") is 12345);
+        assert (qadu ("12345") is 12345);
 
         assert (trim (" abc  ") == "abc");
         assert (trim ("   ") == "");
