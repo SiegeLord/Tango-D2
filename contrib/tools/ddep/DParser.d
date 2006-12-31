@@ -31,7 +31,7 @@ module ddep.DParser;
 import tango.io.Stdout;
 
 import ddep.TokenReader;
-import tango.text.convert.Atoi;
+import Integer = tango.text.convert.Integer;
 
 
 class DParser
@@ -91,7 +91,7 @@ class DParser
     private bool setVerNumber(char[] t)
     {
         if (isNumber(t)) {
-            int num = Atoi.parse(t);
+            int num = Integer.parse(t);
             vernum = num;
             return true;
         }
@@ -117,7 +117,7 @@ class DParser
     private bool setDebugNumber(char[] t)
     {
         if (isNumber(t)) {
-            int num = Atoi.parse(t);
+            int num = Integer.parse(t);
             debugnum = num;
             return true;
         }
@@ -130,7 +130,7 @@ class DParser
         if (t == "none") return false;
         if (t == "all") return true;
         if (isNumber(t)) {
-            int num = Atoi.parse(t);
+            int num = Integer.parse(t);
             if (num >= vernum) { return true; }
             else return false;
         }
@@ -142,7 +142,7 @@ class DParser
         if (t == "none") return false;
         if (t == "all") return true;
         if (isNumber(t)) {
-            int num = Atoi.parse(t);
+            int num = Integer.parse(t);
             Stdout("Found debug number: ")(num).newline;
             if (debugnum >= num) { return true; }
             else return false;

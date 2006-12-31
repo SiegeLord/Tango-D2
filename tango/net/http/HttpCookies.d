@@ -29,6 +29,7 @@ private import  tango.net.http.HttpHeaders;
 
 private import  tango.io.protocol.model.IWriter;
 
+private alias   tango.text.convert.Integer Integer;
 
 /*******************************************************************************
 
@@ -190,7 +191,7 @@ class Cookie : IWritable
                    {
                    char[32] tmp;
 
-                   writer.put (";Version="c).put(Integer.format(tmp, vrsn));
+                   writer.put (";Version="c).put(Integer.format(tmp, cast(long) vrsn));
 
                    if (comment.length)
                        writer.put (";Comment=\""c).put(comment).put('"');

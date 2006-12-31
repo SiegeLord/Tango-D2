@@ -14,7 +14,7 @@ module mango.net.http.server.HttpRequest;
 
 private import  tango.text.Goodies;
 
-private import  tango.text.convert.Atoi;
+private import  tango.text.convert.Integer;
 
 private import  tango.text.stream.LineIterator;
 
@@ -60,7 +60,8 @@ class HttpRequest : HttpMessage, IWritable
 
         static private InvalidStateException InvalidState;
 
-        private alias tango.text.Goodies Text;
+        private alias tango.text.Goodies                Text;
+        private alias tango.text.convert.Integer        Integer;
 
         /**********************************************************************
 
@@ -424,7 +425,7 @@ class HttpRequest : HttpMessage, IWritable
                    if (colon)
                       {
                       if (colon <= host.length)
-                          port = cast(int) Atoi.convert (host[colon..host.length]);
+                          port = cast(int) Integer.convert (host[colon..host.length]);
 
                       host = host[0..colon-1];
                       }

@@ -25,8 +25,8 @@ version (Win32)
         {
         private import tango.stdc.string;
         private import tango.io.FileConduit;
-        private import tango.text.convert.Atoi;
         private import tango.stdc.posix.unistd;
+        private import tango.text.convert.Integer;
         }
         
 /*******************************************************************************
@@ -108,7 +108,7 @@ class FileRoots
                                 {
                                     if(content[i] == '\\')
                                     {
-                                        path ~= Atoi.parse(content[++i..i+3], 8);
+                                        path ~= Integer.parse(content[++i..i+3], 8);
                                         i += 2;
                                     }
                                     else path ~= content[i];

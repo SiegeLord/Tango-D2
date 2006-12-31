@@ -219,8 +219,8 @@ class ArgParser{
 }
 
 debug (UnitTest) {
-    import tango.text.convert.Integer;
     import tango.io.Stdout; 
+    import Integer = tango.text.convert.Integer;
 
     void main() {}
 }

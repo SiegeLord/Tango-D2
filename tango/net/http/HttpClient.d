@@ -34,9 +34,11 @@ private import  tango.net.http.HttpParams,
                 tango.net.http.HttpCookies,                
                 tango.net.http.HttpResponses;
               
-private import  tango.text.convert.Atoi;
+private import  tango.text.convert.Integer;
 
 private import  tango.text.stream.LineIterator;
+
+private alias   tango.text.convert.Integer Integer;
 
 /*******************************************************************************
 
@@ -623,10 +625,10 @@ private class ResponseLine : HttpTriplet
         {
                 vers = tokens[0];
                 reason = tokens[2];
-                status = cast(int) Atoi.convert (tokens[1]);
+                status = cast(int) Integer.convert (tokens[1]);
                 if (status is 0)
                    {
-                   status = cast(int) Atoi.convert (tokens[2]);
+                   status = cast(int) Integer.convert (tokens[2]);
                    if (status is 0)
                        error ("Invalid HTTP response: '"~tokens[0]~"' '"~tokens[1]~"' '" ~tokens[2] ~"'");
                    }

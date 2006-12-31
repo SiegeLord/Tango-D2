@@ -8,16 +8,6 @@
       
         author:         Kris
 
-*******************************************************************************/
-
-module tango.text.convert.Rfc1123;
-
-private import tango.core.Epoch;
-
-private import tango.text.convert.Integer;
-
-/******************************************************************************
-
         Converts between native and text representations of HTTP time
         values. Internally, time is represented as UTC with an epoch 
         fixed at Jan 1st 1970. The text representation is formatted in
@@ -27,69 +17,116 @@ private import tango.text.convert.Integer;
         See http://www.w3.org/Protocols/rfc2616/rfc2616-sec3.html for
         further detail.
 
+*******************************************************************************/
+
+module tango.text.convert.TimeStamp;
+
+private import tango.core.Epoch;
+
+private import tango.text.convert.Integer;
+
+private alias tango.text.convert.Integer Integer;
+
+public alias Epoch.InvalidEpoch InvalidEpoch;
+
+
+/******************************************************************************
+
+        RFC1123 formatted time
+
+        Converts to the format "Sun, 06 Nov 1994 08:49:37 GMT", and
+        returns a populated slice of the provided buffer. Note that
+        RFC1123 format is always in absolute GMT time, and a thirty-
+        element buffer is sufficient for the produced output
+
+        Throws an exception where the supplied time is invalid
+
 ******************************************************************************/
 
-struct Rfc1123
-{
-        public alias Epoch.InvalidEpoch InvalidEpoch;
-        
-        /**********************************************************************
-
-                RFC1123 formatted time
-
-                Converts to the format "Sun, 06 Nov 1994 08:49:37 GMT", and
-                returns a populated slice of the provided buffer. Note that
-                RFC1123 format is always in absolute GMT time, and a thirty-
-                element buffer is sufficient for the produced output
-
-                Throws an exception where the supplied time is invalid
-
-        **********************************************************************/
-
-        final static char[] format (char[] output, ulong time)
+template format (T)
+{        
+        T[] format (T[] output, ulong time)
         {
-                Epoch.Fields    fields;
-                char[4]         tmp = void;
-                char*           p = output.ptr;
-
                 assert (output.length >= 29);
 
+                Epoch.Fields    fields;
+                T[4]            tmp = void;
+                T*              p = output.ptr;
+
+                // these used to reside in Epoch, but
+                //are better off being templated here
+                static T[][] Days = 
+                [
+                        "Sun",
+                        "Mon",
+                        "Tue",
+                        "Wed",
+                        "Thu",
+                        "Fri",
+                        "Sat",
+                ];
+                
+                static T[][] Months = 
+                [
+                        "Jan",
+                        "Feb",
+                        "Mar",
+                        "Apr",
+                        "May",
+                        "Jun",
+                        "Jul",
+                        "Aug",
+                        "Sep",
+                        "Oct",
+                        "Nov",
+                        "Dec",
+                ];
+
+                static T[] Comma = ", ",
+                           Space = " ",
+                           Colon = ":",
+                           Gmt   = " GMT";
+                
                 if (time is InvalidEpoch)
-                    Epoch.exception ("Rfc1123.format :: invalid epoch argument");
+                    throw new Exception ("Rfc1123.format :: invalid epoch argument");
 
                 // convert time to field values
-                fields.setUtcTime (time);
+                fields.asUtcTime (time);
 
-                // build output string; less expensive than using Format
-                p = append (p, fields.toDowName[0..3]);
-                p = append (p, ", ");
-                p = append (p, Integer.format (tmp[0..2], fields.day, Integer.Format.Unsigned, Integer.Flags.Zero));
-                p = append (p, " ");
-                p = append (p, fields.toMonthName[0..3]);
-                p = append (p, " ");
-                p = append (p, Integer.format (tmp[0..4], fields.year, Integer.Format.Unsigned, Integer.Flags.Zero));
-                p = append (p, " ");
-                p = append (p, Integer.format (tmp[0..2], fields.hour, Integer.Format.Unsigned, Integer.Flags.Zero));
-                p = append (p, ":");
-                p = append (p, Integer.format (tmp[0..2], fields.min, Integer.Format.Unsigned, Integer.Flags.Zero));
-                p = append (p, ":");
-                p = append (p, Integer.format (tmp[0..2], fields.sec, Integer.Format.Unsigned, Integer.Flags.Zero));
-                p = append (p, " GMT");
+                // build output string manually; much less expensive than binding Format
+                p = append (p, Days[fields.dow]);
+                p = append (p, Comma);
+                p = append (p, Integer.format (tmp[0..2], cast(long) fields.day, Integer.Format.Unsigned, Integer.Flags.Zero));
+                p = append (p, Space);
+                p = append (p, Months[fields.month-1]);
+                p = append (p, Space);
+                p = append (p, Integer.format (tmp[0..4], cast(long) fields.year, Integer.Format.Unsigned, Integer.Flags.Zero));
+                p = append (p, Space);
+                p = append (p, Integer.format (tmp[0..2], cast(long) fields.hour, Integer.Format.Unsigned, Integer.Flags.Zero));
+                p = append (p, Colon);
+                p = append (p, Integer.format (tmp[0..2], cast(long) fields.min, Integer.Format.Unsigned, Integer.Flags.Zero));
+                p = append (p, Colon);
+                p = append (p, Integer.format (tmp[0..2], cast(long) fields.sec, Integer.Format.Unsigned, Integer.Flags.Zero));
+                p = append (p, Gmt);
                 
                 return output [0 .. p - output.ptr];
         }
+}
 
-        /**********************************************************************
-              
-              Parse provided input and return a UTC epoch time. A return 
-              value of InvalidEpoch indicated a parse-failure.
-              
-              An option is provided to return the count of characters
-              parsed ~ a zero value here also indicates invalid input.
+/******************************************************************************
 
-        **********************************************************************/
+      Parse provided input and return a UTC epoch time. A return 
+      value of InvalidEpoch indicated a parse-failure.
 
-        static ulong parse (char[] date, uint* ate = null)
+      An option is provided to return the count of characters
+      parsed - an unchanged value here also indicates invalid
+      input.
+
+******************************************************************************/
+
+template parse (T)
+{
+        ulong parse (T[] date, uint* ate = null)
         {
                 int     len;
                 ulong   value;
@@ -104,22 +141,24 @@ struct Rfc1123
                    }
                 return InvalidEpoch;
         }
+}
 
+/******************************************************************************
 
-        /**********************************************************************
-              
-                RFC 822, updated by RFC 1123
+        RFC 822, updated by RFC 1123 :: "Sun, 06 Nov 1994 08:49:37 GMT"
 
-                "Sun, 06 Nov 1994 08:49:37 GMT"
-                  
-        **********************************************************************/
+        Returns the number of elements consumed by the parse
 
-        private static int rfc1123 (char[] src, inout ulong value)
+******************************************************************************/
+
+template rfc1123 (T)
+{
+        int rfc1123 (T[] src, inout ulong value)
         {
                 Epoch.Fields    fields;
-                char*           p = src.ptr;
+                T*              p = src.ptr;
 
-                bool date (inout char* p)
+                bool date (inout T* p)
                 {
                         return ((fields.day = parseInt(p)) > 0     &&
                                  *p++ == ' '                       &&
@@ -137,27 +176,30 @@ struct Rfc1123
                     *p++ == ' '           &&
                     p[0..3] == "GMT")
                     {
-                    value = fields.getUtcTime;
+                    value = fields.toUtcTime;
                     return (p+3) - src.ptr;
                     }
 
                 return 0;
         }
+}
 
-        /**********************************************************************
-              
-                RFC 850, obsoleted by RFC 1036
+/******************************************************************************
 
-                "Sunday, 06-Nov-94 08:49:37 GMT"
+        RFC 850, obsoleted by RFC 1036 :: "Sunday, 06-Nov-94 08:49:37 GMT"
 
-        **********************************************************************/
+        Returns the number of elements consumed by the parse
 
-        private static int rfc850 (char[] src, inout ulong value)
+******************************************************************************/
+
+template rfc850 (T)
+{
+        int rfc850 (T[] src, inout ulong value)
         {
                 Epoch.Fields    fields;
-                char*           p = src.ptr;
+                T*              p = src.ptr;
 
-                bool date (inout char* p)
+                bool date (inout T* p)
                 {
                         return ((fields.day = parseInt(p)) > 0     &&
                                  *p++ == '-'                       &&
@@ -181,27 +223,30 @@ struct Rfc1123
                        if (fields.year <= 99)
                            fields.year += 1900;
 
-                    value = fields.getUtcTime;
+                    value = fields.toUtcTime;
                     return (p+3) - src.ptr;
                     }
 
                 return 0;
         }
+}
 
-        /**********************************************************************
-              
-                ANSI C's asctime() format
+/******************************************************************************
 
-                "Sun Nov  6 08:49:37 1994"
+        ANSI C's asctime() format :: "Sun Nov  6 08:49:37 1994"
 
-        **********************************************************************/
+        Returns the number of elements consumed by the parse
 
-        private static int asctime (char[] src, inout ulong value)
+******************************************************************************/
+
+template asctime (T)
+{
+        int asctime (T[] src, inout ulong value)
         {
                 Epoch.Fields    fields;
-                char*           p = src.ptr;
+                T*              p = src.ptr;
 
-                bool date (inout char* p)
+                bool date (inout T* p)
                 {
                         return ((fields.month = parseMonth(p)) > 0  &&
                                  *p++ == ' '                        &&
@@ -218,20 +263,23 @@ struct Rfc1123
                     *p++ == ' '           &&
                     (fields.year = parseInt (p)) > 0)
                     {
-                    value = fields.getUtcTime;
+                    value = fields.toUtcTime;
                     return p - src.ptr;
                     }
 
                 return 0;
         }
+}
 
-        /**********************************************************************
-              
-                Parse a time field
+/******************************************************************************
 
-        **********************************************************************/
+        Parse a time field
 
-        private static bool time (inout Epoch.Fields fields, inout char* p)
+******************************************************************************/
+
+private template time (T)
+{
+        bool time (inout Epoch.Fields fields, inout T* p)
         {
                 return ((fields.hour = parseInt(p)) > 0 &&
                          *p++ == ':'                    &&
@@ -239,14 +287,17 @@ struct Rfc1123
                          *p++ == ':'                    &&
                         (fields.sec = parseInt(p)) > 0);
         }
+}
 
-        /**********************************************************************
-              
-                Match a month from the input
+/******************************************************************************
 
-        **********************************************************************/
+        Match a month from the input
 
-        private static int parseMonth (inout char* p)
+******************************************************************************/
+
+private template parseMonth (T)
+{
+        int parseMonth (inout T* p)
         {
                 int month;
 
@@ -295,14 +346,17 @@ struct Rfc1123
                 p += 3;
                 return month;
         }
+}
 
-        /**********************************************************************
-              
-                Match a day from the input
+/******************************************************************************
 
-        **********************************************************************/
+        Match a day from the input
 
-        private static int parseShortDay (inout char* p)
+******************************************************************************/
+
+private template parseShortDay (T)
+{
+        int parseShortDay (inout T* p)
         {
                 int day;
 
@@ -336,16 +390,30 @@ struct Rfc1123
                 p += 3;
                 return day;
         }
+}
 
-        /**********************************************************************
-              
-                Match a day from the input
+/******************************************************************************
 
-        **********************************************************************/
+        Match a day from the input. Sunday is 0
 
-        private static int parseFullDay (inout char* p)
+******************************************************************************/
+
+private template parseFullDay (T)
+{
+        int parseFullDay (inout T* p)
         {
-                foreach (int i, char[] day; Epoch.Fields.Days)
+                static T[][] days =
+                [
+                "Sunday", 
+                "Monday", 
+                "Tuesday", 
+                "Wednesday", 
+                "Thursday", 
+                "Friday", 
+                "Saturday", 
+                ];
+                
+                foreach (i, day; days)
                          if (day == p[0..day.length])
                             {
                             p += day.length;
@@ -353,14 +421,17 @@ struct Rfc1123
                             }
                 return -1;
         }
+}
 
-        /**********************************************************************
-              
-                Extract an integer from the input
+/******************************************************************************
 
-        **********************************************************************/
+        Extract an integer from the input
 
-        private static int parseInt (inout char* p)
+******************************************************************************/
+
+private template parseInt (T)
+{
+        private static int parseInt (inout T* p)
         {
                 int value;
 
@@ -368,15 +439,18 @@ struct Rfc1123
                        value = value * 10 + *p++ - '0';
                 return value;
         }
+}
 
-        /**********************************************************************
-              
-                Append text to an array. We use this as a featherweight
-                alternative to tango.text.convert.Format
+/******************************************************************************
 
-        **********************************************************************/
+        Append text to an array. We use this as a featherweight
+        alternative to tango.text.convert.Format
 
-        private static char* append (char* p, char[] s)
+******************************************************************************/
+
+private template append (T)
+{
+        private static T* append (T* p, T[] s)
         {
                 p[0..s.length] = s[];
                 return p + s.length;
@@ -384,15 +458,19 @@ struct Rfc1123
 }
 
 
+/******************************************************************************
+
+******************************************************************************/
+
 debug (UnitTest)
 {
         unittest
         {
-                char[30] tmp;
-                char[] test = "Sun, 06 Nov 1994 08:49:37 GMT";
+                wchar[30] tmp;
+                wchar[] test = "Sun, 06 Nov 1994 08:49:37 GMT";
                 
-                auto time = Rfc1123.parse (test);
-                auto text = Rfc1123.format (tmp, time);
+                auto time = parse (test);
+                auto text = format (tmp, time);
                 assert (text == test);
         }
 }

@@ -26,22 +26,56 @@ version (Posix)
         extern (C) tm *gmtime (int *);
 }
 
-
 /******************************************************************************
 
         Represents UTC time relative to Jan 1st 1970, and converts between
         the native time format (a long integer) and a set of fields. The
-        native time is accurate to the millisecond level.
+        native time is expected to be accurate to the millisecond level,
+        though this is OS dependent. Note that Epoch is independent of a
+        local time, unless you happen to live at GMT + 0.
 
-        See http://en.wikipedia.org/wiki/Unix_time for details on UTC time.
+        Epoch is wrapped in a struct purely to maintain a namespace; there
+        is no need to instantiate it since all methods are static. The inner
+        struct Fields is a traditional struct, and should be instantiated in
+        the normal fashion. To set all fields to the current local time, for
+        example:
+        
+        ---
+        Epoch.Fields fields;
+
+        fields.asLocalTime (Epoch.utcMilli);
+        ---
+
+        Attributes exposed by the Fields struct include year, month, day,
+        hour, minute, second, millisecond, and day of week. Epoch itself
+        exposes methods for retriving time in milliseconds & microseconds,
+        and for retrieving the local GMT offset in minutes.
+
+        Note that Epoch does not provide conversion to and from textual
+        representations, since that requires support for both I18N and
+        wide characters. 
+
+        See TimeStamp.d for an example of a simple derivation, and see 
+        http://en.wikipedia.org/wiki/Unix_time for details on UTC time.
 
 ******************************************************************************/
 
-abstract class Epoch
+struct Epoch
 {
         private static ulong beginTime;
 
         const ulong InvalidEpoch = -1;
+
+        /***********************************************************************
+                
+                        Utc time this executable started 
+
+        ***********************************************************************/
+
+        final static ulong startTime ()
+        {
+                return beginTime;
+        }
 
         /***********************************************************************
                      
@@ -61,42 +95,6 @@ abstract class Epoch
                         ms,             // 0 through 999
                         dow;            // 0 through 6; sunday == 0
 
-
-                /**************************************************************
-
-                **************************************************************/
-
-                private static char[][] Days = 
-                [
-                        "Sunday",
-                        "Monday",
-                        "Tuesday",
-                        "Wednesday",
-                        "Thursday",
-                        "Friday",
-                        "Saturday",
-                ];
-
-                /**************************************************************
-
-                **************************************************************/
-
-                private static char[][] Months = 
-                [
-                        "null",
-                        "January",
-                        "February",
-                        "March",
-                        "April",
-                        "May",
-                        "June",
-                        "July",
-                        "August",
-                        "September",
-                        "October",
-                        "November",
-                        "December",
-                ];
 
                 /**************************************************************
 
@@ -136,28 +134,6 @@ abstract class Epoch
                         this.ms = ms;
                 }
 
-                /**************************************************************
-
-                        Retrieve English name for the Day of Week
-
-                **************************************************************/
-
-                char[] toDowName ()
-                {
-                        return Days[dow];
-                }
-
-                /**************************************************************
-
-                        Retrieve English name for the month
-
-                **************************************************************/
-
-                char[] toMonthName ()
-                {
-                        return Months[month];
-                }
-
                 /***************************************************************
 
                         Win32 implementation
@@ -173,7 +149,7 @@ abstract class Epoch
 
                         *******************************************************/
 
-                        ulong getUtcTime ()
+                        ulong toUtcTime ()
                         {
                                 SYSTEMTIME sTime;
                                 FILETIME   fTime;
@@ -199,7 +175,7 @@ abstract class Epoch
                                 
                         *******************************************************/
 
-                        void setUtcTime (ulong time)
+                        void asUtcTime (ulong time)
                         {
                                 SYSTEMTIME sTime;
                                 FILETIME   fTime;
@@ -224,14 +200,14 @@ abstract class Epoch
 
                         *******************************************************/
 
-                        void setLocalTime (ulong time)
+                        void asLocalTime (ulong time)
                         {
                                 FILETIME fTime,
                                          local;
 
                                 toFileTime (&fTime, time);
                                 FileTimeToLocalFileTime (&fTime, &local);
-                                setUtcTime (fromFileTime (&local));
+                                asUtcTime (fromFileTime (&local));
                         }
                 }
 
@@ -251,7 +227,7 @@ abstract class Epoch
 
                         *******************************************************/
 
-                        ulong getUtcTime ()
+                        ulong toUtcTime ()
                         {
                                 tm t;
 
@@ -272,7 +248,7 @@ abstract class Epoch
 
                         *******************************************************/
 
-                        void setUtcTime (ulong time)
+                        void asUtcTime (ulong time)
                         {
                                 ms = time % 1000;                                
                                 int utc = time / 1000;
@@ -299,7 +275,7 @@ abstract class Epoch
 
                         *******************************************************/
 
-                        void setLocalTime (ulong time)
+                        void asLocalTime (ulong time)
                         {
                                 ms = time % 1000;                                
                                 int utc = time / 1000;
@@ -320,29 +296,6 @@ abstract class Epoch
         }
 
 
-        /***********************************************************************
-                
-                        Utc time this executable started 
-
-        ***********************************************************************/
-
-        final static ulong startTime ()
-        {
-                return beginTime;
-        }
-
-        /***********************************************************************
-                
-                Throw an exception 
-
-        ***********************************************************************/
-
-        static void exception (char[] msg)
-        {
-                throw new Exception (msg);
-        }
-
-        
         /***********************************************************************
                         
                 Basic functions for epoch time
@@ -394,7 +347,7 @@ abstract class Epoch
 
                 /***************************************************************
                 
-                        Return the current time as UTC milliseconds since 
+                        Return the current time as UTC microsecs since 
                         the epoch
 
                 ***************************************************************/
@@ -501,7 +454,7 @@ abstract class Epoch
                         timeval tv;
 
                         if (gettimeofday (&tv, null))
-                            exception ("Epoch.utcMicro :: linux timer is not available");
+                            throw new Exception ("Epoch.utcMicro :: linux timer is not available");
 
                         return 1_000_000L * cast(ulong) tv.tv_sec + tv.tv_usec;
                 }

@@ -8,47 +8,37 @@
 
         author:         Kris
 
+        A set of functions for converting between string and floating-
+        point values.
+        
 *******************************************************************************/
 
-module tango.text.convert.Double;
+module tango.text.convert.Float;
 
-private import tango.text.convert.Atoi;
+private import tango.text.convert.Integer;
 
 private extern (C) double log10(double x);
 
+private alias tango.text.convert.Integer Integer;
+
 /******************************************************************************
 
-        A set of functions for converting between string and floating-
-        point values. 
+        Convert a float to a string. This produces pretty
+        good results for the most part, though one should
+        use David Gay's dtoa package for best accuracy.
+
+        Note that the approach first normalizes a base10
+        mantissa, then pulls digits from the left side
+        whilst emitting them (rightward) to the output.
 
 ******************************************************************************/
 
-struct DoubleT(T)
+template format (T)
 {
-        static if (!is (T == char) && !is (T == wchar) && !is (T == dchar)) 
-                    pragma (msg, "Template type must be char, wchar, or dchar");
-
-
-        private alias AtoiT!(T) Atoi;
-
-        /**********************************************************************
-
-                Convert a float to a string. This produces pretty
-                good results for the most part, though one should
-                use David Gay's dtoa package for best accuracy.
-
-                Note that the approach first normalizes a base10
-                mantissa, then pulls digits from the left side
-                whilst emitting them (rightward) to the output.
-
-        **********************************************************************/
-
-        static final T[] format (T[] dst, double x, uint decimals = 6, bool scientific = false)
-        in {
-           assert (dst.length >= 32);
-           }
-        body
+        T[] format (T[] dst, double x, uint decimals = 6, bool scientific = false)
         {
+                assert (dst.length >= 32);
+                
                 // function to strip digits from the
                 // left of a normalized base-10 number
                 static int toDigit (inout double v, inout int count)
@@ -166,18 +156,20 @@ struct DoubleT(T)
 
                 return dst [0..(p - dst.ptr)];
         }
+}
 
+/******************************************************************************
 
-        /**********************************************************************
+        Convert a formatted string of digits to a floating-
+        point number. Good for general use, but use David
+        Gay's dtoa package if serious rounding adjustments
+        should be applied.
 
-                Convert a formatted string of digits to a floating-
-                point number. Good for general use, but use David
-                Gay's dtoa package if serious rounding adjustments
-                should be applied.
+******************************************************************************/
 
-        **********************************************************************/
-
-        final static double parse (T[] src, uint* ate=null)
+template parse (T)
+{
+        double parse (T[] src, uint* ate=null)
         {
                 T               c;
                 T*              p,
@@ -188,12 +180,12 @@ struct DoubleT(T)
                 double          value = 0.0;
 
                 // remove leading space, and sign
-                c = *(p = src.ptr + Atoi.trim (src, sign, radix));
+                c = *(p = src.ptr + Integer.trim (src, sign, radix));
 
                 // handle non-decimal representations
                 if (radix != 10)
                    {
-                   long v = Atoi.parse (src, radix, ate); 
+                   long v = Integer.parse (src, radix, ate); 
                    return *cast(double*) &v;
                    }
 
@@ -233,7 +225,7 @@ struct DoubleT(T)
                    if (c is 'e' || c is 'E')
                       {
                       uint eaten;
-                      exp += Atoi.parse (src[(p-src.ptr)+1..length], 0, &eaten);
+                      exp += Integer.parse (src[(p-src.ptr)+1..length], 10u, &eaten);
                       p += eaten;
                       }
 
@@ -258,44 +250,41 @@ struct DoubleT(T)
                     *ate = p - src.ptr;
                 return sign ? -value : value; 
         }
+}
 
+/******************************************************************************
 
-        /**********************************************************************
+        Internal function to convert an exponent specifier to 
+        a floating point value.
 
-                Internal function to convert an exponent specifier to 
-                a floating point value.
-                 
-        **********************************************************************/
+******************************************************************************/
 
-        private static final double pow10 (uint exp)
-        in {
-           assert (exp < 512);
-           }    
-        body
-        {
-                static  double[] Powers = 
-                        [
-                        1.0e1,
-                        1.0e2,
-                        1.0e4,
-                        1.0e8,
-                        1.0e16,
-                        1.0e32,
-                        1.0e64,
-                        1.0e128,
-                        1.0e256,
-                        ];
+private double pow10 (uint exp)
+{
+        static  double[] Powers = 
+                [
+                1.0e1,
+                1.0e2,
+                1.0e4,
+                1.0e8,
+                1.0e16,
+                1.0e32,
+                1.0e64,
+                1.0e128,
+                1.0e256,
+                ];
 
-                double mult = 1.0;
-                foreach (double power; Powers)
-                        {
-                        if (exp & 1)
-                            mult *= power;
-                        if ((exp >>= 1) is 0)
-                             break;
-                        }
-                return mult;
-        }
+        assert (exp < 512);
+        
+        double mult = 1.0;
+        foreach (double power; Powers)
+                {
+                if (exp & 1)
+                    mult *= power;
+                if ((exp >>= 1) is 0)
+                     break;
+                }
+        return mult;
 }
 
 
@@ -303,6 +292,15 @@ struct DoubleT(T)
 
 ******************************************************************************/
 
-alias DoubleT!(char) Double;
+debug (UnitTest)
+{
+        unittest
+        {
+                char[64] tmp;
+                assert (format (tmp, 3.14159) == "3.141590");
+                assert (format (tmp, 3.14159, 4u) == "3.1416");
+                assert (parse ("3.14159") == 3.14159);
+        }
+}
 
 

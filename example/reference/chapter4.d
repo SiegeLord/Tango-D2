@@ -1,26 +1,22 @@
-import tango.text.convert.Atoi,
-       tango.text.convert.Double,
-       tango.text.convert.DGDouble,
-       tango.text.convert.Format,
-       tango.text.convert.Integer,
-       tango.text.convert.Rfc1123,
+import tango.text.convert.Format,
        tango.text.convert.Sprint,
-       tango.text.convert.Unicode,
        tango.text.convert.UnicodeBom,
-       tango.text.convert.Type,
        tango.io.Stdout;
+
+import Integer   = tango.text.convert.Integer,
+       Unicode   = tango.text.convert.Utf,
+       Float     = tango.text.convert.Float,
+       TimeStamp = tango.text.convert.TimeStamp;
 
 void main () {
     char [] i = "+2100";
     char [] r = "2006.21";
-    char [] d = "2006.314159";
 
     /* String to Number conversions */
-    int integer = Atoi.parse(i);
+    int integer = Integer.parse(i);
     int alternate = Integer.parse(i);
-    double double_ = Double.parse(r);
-    real real_ = DGDouble.parse(d); // for extended accuracy
-    Stdout.format("Integer [ {0}:{1} ], DGDouble [ {2} ], Double [ {3} ]",integer,alternate,real_ , double_).newline;
+    double double_ = Float.parse(r);
+    Stdout.format("Integer [ {0}:{1} ], Double [ {3} ]",integer,alternate, double_).newline;
 
     /* Number to String conversions */
     char [64] intBuffer;
@@ -28,16 +24,15 @@ void main () {
     char [64] realBuffer;
 
     char [] intString = Integer.format(intBuffer,32 );
-    char [] floatString = Double.format(floatBuffer,45 );
-    char [] realString = DGDouble.format(realBuffer,32.65798,3 );
+    char [] floatString = Float.format(floatBuffer,45 );
 
-    Stdout.format("Integer [ {0} ], Double [ {1} ], DGDouble [ {2} ] ",intString,floatString,realString ).newline;
+    Stdout.format("Integer [ {0} ], Float [ {1} ]",intString,floatString ).newline;
 
     /* HTTP date conversions , accepts strings in RFC1123 format*/
     char [] date = "Sun, 06 Nov 1994 08:49:37 GMT";
-    ulong secondsSinceEpoch = Rfc1123.parse(date);
+    ulong secondsSinceEpoch = TimeStamp.parse(date);
     char [256] dateBuffer;
-    char [] dateString = Rfc1123.format(dateBuffer,secondsSinceEpoch);
+    char [] dateString = TimeStamp.format(dateBuffer,secondsSinceEpoch);
 
     Stdout.format("secondsSinceEpoch [ {0}] , dateString [ {1} ]",secondsSinceEpoch,dateString ).newline;
 
@@ -49,7 +44,7 @@ void main () {
     Stdout(stringWithNoPrecision).newline;
 
     /* converting to / from UTF8, UTF16, UTF32, both Big Endian and Little Endian */
-    char [] str = "Marry had a little endian";
+    char [] str = "Mary had a little endian";
     wchar [] wstr = Unicode.toUtf16(str);
     dchar [] dstr = Unicode.toUtf32(str);
     char [] newStr = Unicode.toUtf8(wstr); // and back again
@@ -59,7 +54,7 @@ void main () {
 
     /* Converting content to unicode for writing files.  See alsio tango.io.UnicodeFile .*/
 
-    char [] bubbleBoy = "What you've never seen anyone in a bubble  before ?";
+    char [] bubbleBoy = "What you've never seen anyone in a bubble before ?";
 
     // since were just encoding and not reading in
     // ( if we were reading in the encoding would be figured out by the BOM )

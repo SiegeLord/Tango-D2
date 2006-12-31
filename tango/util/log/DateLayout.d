@@ -39,7 +39,7 @@ public class DateLayout : Layout
                 Epoch.Fields fields;
 
                 // convert time to field values
-                fields.setUtcTime (event.getEpochTime);
+                fields.asUtcTime (event.getEpochTime);
                                 
                 // format fields according to ISO-8601
                 return Formatter.sprint (event.scratch.content, "{0:d4}-{1:d2}-{2:d2} {3:d2}:{4:d2}:{5:d2},{6:d3} {7,-6} {8} - ",

@@ -21,7 +21,7 @@ private import  tango.io.model.IBuffer;
 private import  tango.net.http.HttpStack;
 
 private import  tango.text.convert.Integer,
-                tango.text.convert.Rfc1123;
+                tango.text.convert.TimeStamp;
 
 private import  tango.io.protocol.model.IWriter;
 
@@ -65,7 +65,9 @@ class HttpTokens : IWritable
         private char[1]         sepString;
         static private char[]   emptyString = "";
 
-        private alias tango.text.Goodies Text;
+        private alias tango.text.Goodies                Text;
+        private alias tango.text.convert.Integer        Integer;
+        private alias tango.text.convert.TimeStamp      TimeStamp;
         
         /**********************************************************************
                 
@@ -213,12 +215,12 @@ class HttpTokens : IWritable
 
         **********************************************************************/
 
-        ulong getDate (char[] name, ulong date = Rfc1123.InvalidEpoch)
+        ulong getDate (char[] name, ulong date = TimeStamp.InvalidEpoch)
         {
                 char[] value = get (name);
 
                 if (value.length)
-                    date = Rfc1123.parse (value);
+                    date = TimeStamp.parse (value);
 
                 return date;
         }
@@ -510,7 +512,7 @@ class HttpTokens : IWritable
         {
                 char[16] tmp = void;
 
-                add (name, Integer.format (tmp, value));
+                add (name, Integer.format (tmp, cast(long) value));
         }
 
         /**********************************************************************
@@ -523,7 +525,7 @@ class HttpTokens : IWritable
         {
                 char[40] tmp = void;
 
-                add (name, Rfc1123.format (tmp, value));
+                add (name, TimeStamp.format (tmp, value));
         }
 
         /**********************************************************************

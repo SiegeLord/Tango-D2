@@ -33,7 +33,7 @@ public  import  tango.io.protocol.model.IWriter;
         a convenient method of handling a variety of data types. 
         
         The DisplayWriter itself is a wrapper around the tango.text.convert 
-        package, which should be used directly as desired (Integer, Double, 
+        package, which should be used directly as desired (Integer, Float, 
         etc). The latter modules are home to a set of formatting-methods,
         making them convenient for ad-hoc application.
 

@@ -8,95 +8,72 @@
         
         author:         Kris
 
+        A set of functions for converting between string and integer 
+        values. 
+
 *******************************************************************************/
 
 module tango.text.convert.Integer;
 
-private import tango.text.convert.Atoi;
-
 /******************************************************************************
 
-        A set of functions for converting between string and integer 
-        values. 
+        Format identifiers 
 
 ******************************************************************************/
 
-struct IntegerT(T)
-{       
-        /**********************************************************************
+enum Format 
+{
+        Signed,                         /// signed decimal
+        Binary,                         /// binary output
+        Octal,                          /// octal output
+        Hex,                            /// lowercase hexadecimal
+        HexUpper,                       /// uppercase hexadecimal
+        Unsigned,                       /// unsigned integer
+}
 
-                Format identifiers 
+/******************************************************************************
 
-        **********************************************************************/
+        Style flags 
 
-        enum Format 
-        {
-                Integer  = 'd', 
-                String   = 's',
-                Binary   = 'b', 
-                Octal    = 'o', 
-                Hex      = 'x', 
-                HexUpper = 'X', 
-                Unsigned = 'u', 
-        }
+******************************************************************************/
 
-        /**********************************************************************
+enum Flags 
+{
+        None    = 0,                    /// no flags
+        Prefix  = 1,                    /// prefix value with type
+        Zero    = 2,                    /// prefix value with zeroes
+        Plus    = 4,                    /// prefix decimal with '+'
+        Space   = 8,                    /// prefix decimal with space
+}
 
-                Style flags 
+/*******************************************************************************
 
-        **********************************************************************/
+        Format numeric values into the provided output buffer. The
+        following types are supported:
 
-        enum Flags 
-        {
-                None    = 0,                    // no flags
-                Fill    = 1,                    // do some kind of padding
-                Left    = Fill << 1,            // left justify
-                Prec    = Left << 1,            // precision was provided
-                Hash    = Prec << 1,            // prefix integer with type
-                Space   = Hash << 1,            // prefix with space
-                Zero    = Space << 1,           // prefix integer with zero
-                Sign    = Zero << 1,            // unused
-                Comma   = Sign << 1,            // unused
-                Plus    = Comma << 1,           // prefix decimal with '+'
-                Array   = Plus << 1,            // array flag
-        }
+        Unsigned        - unsigned decimal
+        Signed          - signed decimal
+        Octal           - octal
+        Hex             - lowercase hexadecimal
+        HexUpper        - uppercase hexadecimal
+        Binary          - binary
 
+        Modifiers supported include:
 
-        /***********************************************************************
-        
-                Format numeric values into the provided output buffer. The
-                traditional printf() conversion specifiers are adhered to,
-                and the following types are supported:
+        Prefix          - prefix the conversion with a type identifier
+        Plus            - prefix positive decimals with a '+'
+        Space           - prefix positive decimals with one space
+        Zero            - left-pad the number with zeros
 
-                u - unsigned decimal
-                d - signed decimal
-                o - octal
-                x - lowercase hexadecimal
-                X - uppercase hexadecimal
-                b - binary
+        The provided 'dst' buffer should be sufficiently large
+        enough to house the output. A 64-element array is often
+        the maximum required (for a padded binary 64-bit string)
 
-                Modifiers supported include:
+*******************************************************************************/
 
-                #      : prefix the conversion with a type identifier
-                +      : prefix positive decimals with a '+'
-                space  : prefix positive decimals with one space
-                0      : left-pad the number with zeros
-
-                These modifiers are specifed via the 'flags' provided, 
-                and are represented via these identifiers:
-
-                #     : Flags.Hash
-                +     : Flags.Plus
-                space : Flags.Space
-                0     : Flags.Zero
-
-                The provided 'dst' buffer should be sufficiently large
-                enough to house the output. A 64-element array is often
-                the maximum required (for a padded binary 64-bit string)
-
-        ***********************************************************************/
-
-        final static T[] format (T[] dst, long i, Format fmt = Format.Integer, Flags flags = Flags.None)
+template format (T)
+{                        
+        T[] format (T[] dst, long i, Format fmt=Format.Signed, Flags flags=Flags.None)
         {
                 T[]     prefix;
                 int     len = dst.length;
@@ -110,8 +87,8 @@ struct IntegerT(T)
                    // pre-conversion setup
                    switch (fmt)
                           {
-                          case Format.Integer:
-                          case Format.String:
+                          default:
+                          case Format.Signed:
                                if (i < 0)
                                   {
                                   prefix = "-";
@@ -130,36 +107,27 @@ struct IntegerT(T)
 
                           case Format.Binary:
                                radix = 2;
-                               if (flags & Flags.Hash)
+                               if (flags & Flags.Prefix)
                                    prefix = "0b";
                                break;
 
                           case Format.Octal:
                                radix = 8;
-                               if (flags & Flags.Hash)
+                               if (flags & Flags.Prefix)
                                    prefix = "0o";
                                break;
 
                           case Format.Hex:
                                radix = 16;
-                               if (flags & Flags.Hash)
+                               if (flags & Flags.Prefix)
                                    prefix = "0x";
                                break;
 
                           case Format.HexUpper:
                                radix = 16;
                                numbers = "0123456789ABCDEF";
-                               if (flags & Flags.Hash)
+                               if (flags & Flags.Prefix)
                                    prefix = "0X";
-                               break;
-
-                          default:
-                               // raw output; no formatting
-                               if (fmt >= 2 && fmt <= 16)
-                                   radix = fmt;
-                               else
-                                  error ("Integer.format : invalid numeric format identifier '"~cast(char) fmt~
-                                         "'. Expected s, u, d, o, x, X, b, or a radix between 2 and 16");
                                break;
                           }
         
@@ -183,7 +151,7 @@ struct IntegerT(T)
 
                 // are we about to overflow?
                 if (--len < 0 || 0 > (len -= prefix.length))
-                    error ("Integer.format : output buffer too small");
+                    throw new Exception ("Integer.format : output buffer too small");
 
                 // prefix number with zeros? 
                 if (flags & Flags.Zero)
@@ -198,43 +166,183 @@ struct IntegerT(T)
                 // return slice of provided output buffer
                 return dst [len .. $];                               
         } 
+}
 
+/******************************************************************************
 
-        /**********************************************************************
+        Parse an integer value from the provided 'digits' string. 
+        The string is inspected for a sign and radix, where the
+        latter will override the default radix provided.
 
-                Parse an integer value from the provided 'src' string. 
-                The string is inspected for a sign and radix, where the
-                latter will override the default radix provided.
+        A non-null 'ate' will return the number of characters used
+        to construct the returned value.
 
-                A non-null 'ate' will return the number of characters used
-                to construct the returned value.
+******************************************************************************/
 
-        **********************************************************************/
-
-        final static long parse (T[] src, uint radix=10, uint* ate=null)
+template parse (T)
+{
+        static long parse (T[] digits, uint radix=10, uint* ate=null)
         {
-                return Atoi.parse (src, radix, ate);
+                bool sign;
+
+                auto eaten = trim (digits, sign, radix);
+                auto value = convert (digits[eaten..$], radix, ate);
+
+                if (ate)
+                    *ate += eaten;
+
+                return cast(long) (sign ? -value : value);
         }
+}
 
+/******************************************************************************
 
-        /**********************************************************************
+        Convert the provided 'digits' into an integer value,
+        without looking for a sign or radix.
 
-                Throw a format error. This is used by a number of other
-                modules in this package
+        Returns the value and updates 'ate' with the number
+        of characters parsed.
 
-        **********************************************************************/
+******************************************************************************/
 
-        package final static void error (char[] msg)
+template convert (T)
+{
+        ulong convert (T[] digits, uint radix=10, uint* ate=null)
         {
-                static class FormatException : Exception
-                {
-                        this (char[] msg)
-                        {
-                                super (msg);
-                        }
-                }
+                uint  eaten;
+                ulong value;
 
-                throw new FormatException (msg);
+                foreach (c; digits)
+                        {
+                        if (c >= '0' && c <= '9')
+                           {}
+                        else
+                           if (c >= 'a' && c <= 'f')
+                               c -= 39;
+                           else
+                              if (c >= 'A' && c <= 'F')
+                                  c -= 7;
+                              else
+                                 break;
+
+                        value = value * radix + (c - '0');
+                        ++eaten;
+                        }
+
+                if (ate)
+                    *ate = eaten;
+
+                return value;
+        }
+}
+
+/******************************************************************************
+
+        Strip leading whitespace, extract an optional +/- sign,
+        and an optional radix prefix. This can be used as a
+        precursor to the conversion of digits into a number.
+
+        Returns the number of matching characters.
+
+******************************************************************************/
+
+template trim (T)
+{
+        uint trim (T[] digits, inout bool sign, inout uint radix)
+        {
+                T       c;
+                T*      p = digits.ptr;
+                int     len = digits.length;
+
+                // strip off whitespace and sign characters
+                for (c = *p; len; c = *++p, --len)
+                     if (c is ' ' || c is '\t')
+                        {}
+                     else
+                        if (c is '-')
+                            sign = true;
+                        else
+                           if (c is '+')
+                               sign = false;
+                        else
+                           break;
+
+                // strip off a radix specifier also?
+                if (c is '0' && len > 1)
+                    switch (*++p)
+                           {
+                           case 'x':
+                           case 'X':
+                                ++p;
+                                radix = 16;
+                                break;
+
+                           case 'b':
+                           case 'B':
+                                ++p;
+                                radix = 2;
+                                break;
+
+                           case 'o':
+                           case 'O':
+                                ++p;
+                                radix = 8;
+                                break;
+
+                           default:
+                                break;
+                           } 
+
+                // return number of characters eaten
+                return (p - digits.ptr);
+        }
+}
+
+/******************************************************************************
+
+        quick & dirty text-to-unsigned int converter. Use only when you
+        know what the content is, or use parse() or convert() instead.
+
+        Return the parsed uint
+        
+******************************************************************************/
+
+template qadtu (T)
+{
+        uint qadtu (T[] s)
+        {
+                uint value;
+
+                foreach (c; s)
+                         if (c >= '0' && c <= '9')
+                             value = value * 10 + (c - '0');
+                         else
+                            break;
+                return value;
+        }
+}
+
+
+/******************************************************************************
+
+        quick & dirty unsigned to text converter, where the provided output
+        must be large enough to house the result (10 digits in the largest
+        case). For mainstream use, consider utilizing format() instead.
+
+        Returns a populated slice of the provided output
+        
+******************************************************************************/
+
+template qadut (T)
+{
+        T[] qadut (T[] output, uint value)
+        {
+                T* p = output.ptr + output.length;
+
+                do {
+                   *--p = value % 10 + '0';
+                   } while (value /= 10);
+                return output[p-output.ptr .. $];
         }
 }
 
@@ -243,5 +351,81 @@ struct IntegerT(T)
 
 ******************************************************************************/
 
-alias IntegerT!(char) Integer;
+debug (UnitTest)
+{
+        unittest
+        {
+        char[64] tmp;
+        
+        assert (qadtu ("12345") is 12345);
+        assert (qadut (tmp, 12345u) == "12345");
+
+        assert(parse( "0"w ) ==  0 );
+        assert(parse( "1"w ) ==  1 );
+        assert(parse( "-1"w ) ==  -1 );
+        assert(parse( "+1"w ) ==  1 );
+
+        // numerical limits
+        assert(parse( "-2147483648" ) == int.min );
+        assert(parse(  "2147483647" ) == int.max );
+        assert(parse(  "4294967295" ) == uint.max );
+
+        assert(parse( "-9223372036854775808" ) == long.min );
+        assert(parse( "9223372036854775807" ) == long.max );
+        assert(parse( "18446744073709551615" ) == ulong.max );
+
+        // hex
+        assert(parse( "a", 16u ) == 0x0A );
+        assert(parse( "b", 16u ) == 0x0B );
+        assert(parse( "c", 16u ) == 0x0C );
+        assert(parse( "d", 16u ) == 0x0D );
+        assert(parse( "e", 16u ) == 0x0E );
+        assert(parse( "f", 16u ) == 0x0F );
+        assert(parse( "A", 16u ) == 0x0A );
+        assert(parse( "B", 16u ) == 0x0B );
+        assert(parse( "C", 16u ) == 0x0C );
+        assert(parse( "D", 16u ) == 0x0D );
+        assert(parse( "E", 16u ) == 0x0E );
+        assert(parse( "F", 16u ) == 0x0F );
+        assert(parse( "FFFF", 16u ) == ushort.max );
+        assert(parse( "ffffFFFF", 16u ) == uint.max );
+        assert(parse( "ffffFFFFffffFFFF", 16u ) == ulong.max );
+        // oct
+        assert(parse( "55", 8u ) == 055 );
+        assert(parse( "100", 8u ) == 0100 );
+        // bin
+        assert(parse( "10000", 2u ) == 0x10 );
+        // trim
+        assert(parse( "    \t20" ) == 20 );
+        assert(parse( "    \t-20" ) == -20 );
+        assert(parse( "-    \t 20" ) == -20 );
+        // recognise radix prefix
+        assert(parse( "0xFFFF" ) == ushort.max );
+        assert(parse( "0XffffFFFF" ) == uint.max );
+        assert(parse( "0o55") == 055 );
+        assert(parse( "0O55" ) == 055 );
+        assert(parse( "0b10000") == 0x10 );
+        assert(parse( "0B10000") == 0x10 );
+
+        // regression tests
+
+        // ticket #90
+        char[] str = "0x";
+        assert(parse( str[0..1] ) ==  0 );
+
+        assert (format (tmp, 12345L) == "12345");
+        assert (format (tmp, 0L) == "0");
+        assert (format (tmp, 0x10101L, Format.Hex) == "10101");
+        assert (format (tmp, 0xfafaL, Format.Hex) == "fafa");
+        assert (format (tmp, 0xfafaL, Format.HexUpper, Flags.Prefix) == "0XFAFA");
+        assert (format (tmp, -1L, Format.HexUpper, Flags.Prefix) == "0XFFFFFFFFFFFFFFFF");
+        assert (format (tmp, -101L) == "-101");
+        assert (format (tmp, 101L, Format.Signed, Flags.Plus) == "+101");
+        assert (format (tmp, 101L, Format.Signed, Flags.Space) == " 101");
+        assert (format (tmp[0..8], 0x5L, Format.Binary, Flags.Prefix | Flags.Zero) == "0b000101");
+        }
+}
+
+
+
 

@@ -18,6 +18,8 @@ private import  tango.io.Exception;
 
 private import  tango.text.convert.Integer;
 
+private alias   tango.text.convert.Integer Integer;
+
 /*******************************************************************************
 
         external links
@@ -413,7 +415,7 @@ class Uri : UriView
                    if (port != InvalidPort && port != getDefaultPort(scheme))
                       {
                       char[4] tmp;
-                      consume (":"), consume (Integer.format (tmp, port));
+                      consume (":"), consume (Integer.format (tmp, cast(long) port));
                       }
                    }
 

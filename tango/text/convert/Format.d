@@ -422,8 +422,8 @@ public class Format(T)
                             return fromUtf8 (type.toUtf8, result);
 
                        case TypeCode.BOOL:
-                            static T[] t = "True";
-                            static T[] f = "False";
+                            static T[] t = "true";
+                            static T[] f = "false";
                             return (*cast(bool*) p) ? t : f;
 
                        case TypeCode.BYTE:
@@ -485,8 +485,8 @@ public class Format(T)
                             break;
                        }
 
-                // For everything else, return an empty string.
-                return "<unknown argument type>";
+                // For everything else, return an error string.
+                return "<unknown argument type> " ~ fromUtf8 (arg.getType.toUtf8, result);
         }
 
 
@@ -1863,7 +1863,7 @@ template charTerm (T)
 private enum TypeCode
         {
         EMPTY = 0,
-        BOOL = 'x',
+        BOOL = 'b',
         UBYTE = 'h',
         BYTE = 'g',
         USHORT = 't',
@@ -2029,8 +2029,8 @@ unittest{
     assert( Formatter( "{0}", 1 ) == "1" );
     assert( Formatter( "{0}", -1 ) == "-1" );
 
-    assert( Formatter( "{0}", true ) == "True" );
-    assert( Formatter( "{0}", false ) == "False" );
+    assert( Formatter( "{0}", true ) == "true" , Formatter( "{0}", true ));
+    assert( Formatter( "{0}", false ) == "false" );
 
     assert( Formatter( "{0}", cast(byte)-128 ) == "-128" );
     assert( Formatter( "{0}", cast(byte)127 ) == "127" );

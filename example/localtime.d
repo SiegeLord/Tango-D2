@@ -20,7 +20,7 @@ void main ()
         Epoch.Fields fields;
 
         // get current time and convert to local
-        fields.setLocalTime (Epoch.utcMilli);
+        fields.asLocalTime (Epoch.utcMilli);
 
         // get GMT difference
         int tz = Epoch.tzMinutes;
@@ -29,7 +29,6 @@ void main ()
             tz = -tz, sign = '-';
 
         // format fields
-//        Stdout.format ("%.3s %.3s %02d %02d:%02d:%02d GMT%c%02d%02d %d",
         Stdout.format ("{0}, {1} {2:d2} {3:d2}:{4:d2}:{5:d2} GMT{6}{7:d2}{8:d2} {9}",
                         fields.toDowName,
                         fields.toMonthName,

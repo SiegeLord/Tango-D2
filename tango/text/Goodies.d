@@ -46,25 +46,6 @@ template trim (T)
 
 /******************************************************************************
 
-        quick & dirty text-to-unsigned converter. Use only when you
-        know what the content is, or use tango.convert.Integer instead
-        
-******************************************************************************/
-
-template qadu (T)
-{
-        uint qadu (T[] s)
-        {
-                uint value;
-
-                foreach (c; s)
-                         value = value * 10 + (c - '0');
-                return value;
-        }
-}
-
-/******************************************************************************
-
         Replace all instances of one char with another (in place)
 
 ******************************************************************************/
@@ -446,8 +427,6 @@ unittest
         assert (mismatch ("abc".ptr, "abd".ptr, 3u) is 3);
         assert (mismatch ("abc".ptr, "acc".ptr, 3u) is 2);
         assert (mismatch ("abc".ptr, "ccc".ptr, 3u) is 1);
-
-        assert (qadu ("12345") is 12345);
 
         assert (trim (" abc  ") == "abc");
         assert (trim ("   ") == "");
