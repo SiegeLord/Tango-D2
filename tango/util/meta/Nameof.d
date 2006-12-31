@@ -5,10 +5,6 @@
  *   or any D type, convert it to a compile-time string literal,
  *   optionally containing the fully qualified and decorated name.
  *
- *   Limitations:
- *   1. Extern symbols are displayed with no type information. (In theory, this
- *       is fixable).
- *
  * License:   BSD style: $(LICENSE)
  * Authors:   Don Clugston
  * Copyright: Copyright (C) 2005-2006 Don Clugston
@@ -85,7 +81,12 @@ template prettytypeof(A)
  */
 template prettynameof(alias A)
 {
-  const char [] prettynameof = prettyTemplateArg!(manglednameof!(A), MangledNameType.PrettyName);
+    // For symbols that don't have D linkage, the type information is not included
+    // in the mangled name, so we add it in manually.
+  static if (isNonD_SymbolTemplateArg!(manglednameof!(A)) && is(typeof(&A)))
+    const char [] prettynameof = prettytypeof!(typeof(A)) ~ " " ~ prettyTemplateArg!(manglednameof!(A), MangledNameType.PrettyName);
+  else
+    const char [] prettynameof = prettyTemplateArg!(manglednameof!(A), MangledNameType.PrettyName);
 }
 
 /**
@@ -107,7 +108,7 @@ template qualifiednameof(alias A)
  */
 template symbolnameof(alias A)
 {
-  const char [] symbolnameof = prettyTemplateArg!(manglednameof!(A), MangledNameType.SymbolName);
+    const char [] symbolnameof = prettyTemplateArg!(manglednameof!(A), MangledNameType.SymbolName);
 }
 
 //----------------------------------------------
@@ -117,7 +118,7 @@ template symbolnameof(alias A)
 debug(UnitTest) {
 
 // remove the ".d" from the end
-const char [] THISFILE = "tango.meta.Nameof";
+const char [] THISFILE = "tango.util.meta.Nameof";
 
 
 private {
@@ -153,8 +154,9 @@ static assert( prettytypeof!(real) == "real");
 static assert( prettytypeof!(OuterClass.SomeClass) == "class " ~ THISFILE ~".OuterClass.SomeClass");
 
 // Test that it works with module names (for example, this module)
-static assert( qualifiednameof!(tango.meta.Nameof) == "tango.meta.Nameof");
-static assert( symbolnameof!(tango.meta.Nameof) == "Nameof");
+static assert( qualifiednameof!(tango.util.meta.Nameof) == "tango.util.meta.Nameof");
+static assert( symbolnameof!(tango.util.meta.Nameof) == "Nameof");
+static assert( prettynameof!(tango.util.meta.Nameof) == "tango.util.meta.Nameof");
 
 static assert( prettynameof!(SomeInt) == "enum " ~ THISFILE ~ ".SomeEnum " ~ THISFILE ~ ".SomeInt");
 static assert( qualifiednameof!(OuterClass) == THISFILE ~".OuterClass");
@@ -171,23 +173,22 @@ static assert( prettynameof!(pog) == "int " ~ THISFILE ~ ".pog");
 static assert( symbolnameof!(pig) == "pig");
 
 // Extern(Windows) declarations contain no type information.
-extern (Windows) {
-    extern int dog() {
-        // FIXME: This case fails
-/*
-        extern(C)
+extern (C) {
+    extern int dog(cfloat c) {
+        extern(Windows)
         void fog() {
         int fig;
-        static assert( prettynameof!(fig) == "fig");
+        static assert( prettynameof!(fig) == "int extern (C) " ~ THISFILE
+        ~ ".dog(cfloat).fog().fig");
     }
-*/
+
         return 0;
     }
     extern int dig;
 }
 
-static assert( prettynameof!(dog) == "dog");
-static assert( prettynameof!(dig) == "dig");
+static assert( prettynameof!(dig) == "int dig");
+static assert( prettynameof!(dog) == "extern (C) int (cfloat) dog");
 
 // There are some nasty corner cases involving classes that are inside functions.
 // Corner case #1: class inside nested function inside template
@@ -196,10 +197,12 @@ extern (Windows) {
 template aardvark(X) {
     int aardvark(short goon) {
         class ant {}
+/*
         static assert(prettynameof!(ant)== "class extern (Windows) " ~ THISFILE ~ ".aardvark!(struct "
             ~ THISFILE ~ ".OuterClass).aardvark(short).ant");
         static assert(qualifiednameof!(ant)== THISFILE ~ ".aardvark.aardvark.ant");
         static assert( symbolnameof!(ant) == "ant");
+*/
         return 3;
         }
     }
@@ -218,17 +221,15 @@ template fox(B, ushort C) {
 creal wolf(uint a) {
 
         mixin fox!(cfloat, 21);
-        static assert(prettynameof!(fox)== "class " ~ THISFILE ~ ".wolf(uint).fox!(cfloat, int = 21).fox");
-        static assert(qualifiednameof!(fox)== THISFILE ~ ".wolf.fox.fox");
-        static assert(symbolnameof!(fox)== "fox");
+//        static assert(prettynameof!(fox)== "class " ~ THISFILE ~ ".wolf(uint).fox!(cfloat, int = 21).fox");
+//        static assert(qualifiednameof!(fox)== THISFILE ~ ".wolf.fox.fox");
+//        static assert(symbolnameof!(fox)== "fox");
         ushort innerfunc(...)
         {
             wchar innervar;
-            // FIXME: This case fails.
-//            pragma(msg, manglednameof!(innervar));
-//            static assert(prettynameof!(innervar)== "wchar " ~ THISFILE ~ ".wolf(uint).innerfunc(...).innervar");
-//            static assert(symbolnameof!(innervar)== "innervar");
-//            static assert(qualifiednameof!(innervar)== THISFILE ~ ".wolf.innerfunc.innervar");
+            static assert(prettynameof!(innervar)== "wchar " ~ THISFILE ~ ".wolf(uint).innerfunc(...).innervar");
+            static assert(symbolnameof!(innervar)== "innervar");
+            static assert(qualifiednameof!(innervar)== THISFILE ~ ".wolf.innerfunc.innervar");
             return 0;
         }
         return 0+0i;

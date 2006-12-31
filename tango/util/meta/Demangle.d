@@ -63,9 +63,6 @@ template demangleType(char[] str, MangledNameType wantQualifiedNames = MangledNa
         const char [] demangleType = demangleFunctionOrDelegate!(str[1..$], "function ", wantQualifiedNames);
     else static if (str[0]=='P') // only after we've dealt with function pointers
         const char [] demangleType = demangleType!(str[1..$], wantQualifiedNames) ~ "*";
-    else static if (str[0]=='M' && isMangledFunction!((str[1])))
-        const char [] demangleType = "MANG[" ~ str ~"] ";
- //       const char [] demangleType = demangleFunctionOrDelegate!(str[1..$], "", wantQualifiedNames);
     else static if (isMangledFunction!((str[0])))
         const char [] demangleType = demangleFunctionOrDelegate!(str, "", wantQualifiedNames);
     else const char [] demangleType = demangleBasicType!(str);
@@ -211,7 +208,7 @@ template getLnameConsumed(char [] str)
 template continues_Dname(char [] str)
 {
     static if (str.length>0) {
-        const bool continues_Dname = (str[0]=='M') || (isMangledFunction!( (str[0])) || beginsWithDigit!(str));
+        const bool continues_Dname = (str[0]=='M') || beginsWithDigit!(str);
     } else static assert(0);
 }
 
@@ -228,16 +225,13 @@ template get_DQualifiedNameConsumed (char [] str)
         static if (demangleTypeConsumed!(str)!=str.length && continues_Dname!(str[demangleTypeConsumed!(str)..$])) {
 //            static assert(0, str[demangleTypeConsumed!(str)..$]);
             const int get_DQualifiedNameConsumed = demangleTypeConsumed!(str) + get_DQualifiedNameConsumed!(str[demangleTypeConsumed!(str)..$]);
-        } else const int get_DQualifiedNameConsumed = 0;
+        } else static assert(0, "Bad qualified name: " ~ str); //const int get_DQualifiedNameConsumed = 0;
 
     } else static if (isMangledFunction!((str[0]))) {
         static if (demangleTypeConsumed!(str)!=str.length && continues_Dname!(str[demangleTypeConsumed!(str)..$])) {
             const int get_DQualifiedNameConsumed = demangleTypeConsumed!(str) + get_DQualifiedNameConsumed!(str[demangleTypeConsumed!(str)..$]);
         } else const int get_DQualifiedNameConsumed = 0;
-    } else static if (str.length>=4 && str[0..4]=="main") {
-        const int get_DQualifiedNameConsumed = 4 +  + get_DQualifiedNameConsumed!(str[4..$]);
-    }
-    else const int get_DQualifiedNameConsumed = 0;
+    } else const int get_DQualifiedNameConsumed = 0;
 }
 
 // don't display return value.
@@ -288,7 +282,7 @@ template pretty_Dname(char [] str, MangledNameType wantQualifiedNames)
     } else {
         // Inner function
         static if (str[getDotNameConsumed!(str)]=='M') {
-            static assert(0, str);
+            static assert(0, "Inner function, not yet implemented: " ~ str);
         }
         else
         static if(continues_Dname!(str[qualifiedAndFuncConsumed!(str)..$])) {
@@ -352,7 +346,7 @@ template prettyLname(char [] str, MangledNameType wantQualifiedNames)
     } else static if ( beginsWithDigit!( str ) ) {
         static if (getDotNameConsumed!(str)==str.length) {
             const char [] prettyLname = prettyDotName!(str, wantQualifiedNames);
-        } else static assert(0, "Demangle Error: Unexpected " ~ str);
+        } else static assert(0, "Demangle Error: Wrong dot name length for: " ~ str ~ " Consumed=" ~str[0..getDotNameConsumed!(str)]);
     } else {
          // For extern(Pascal/Windows/C) functions.
          // BUG: This case is ambiguous, since type information is lost.
@@ -364,19 +358,8 @@ template prettyLname(char [] str, MangledNameType wantQualifiedNames)
 template prettyDotName(char [] str, MangledNameType wantQualifiedNames, char [] dotstr = "")
 {
     static if (str.length==0) const char [] prettyDotName="";
-    else static if (str.length>=4 && str[0..4]=="main") {
-            static if (wantQualifiedNames == MangledNameType.SymbolName) {
-                // For symbol names, only display the last symbol
-                const char [] prettyDotName =
-                    prettyDotName!(str[4 .. $], wantQualifiedNames, "");
-            } else {
-                // Qualified and pretty names display everything
-                const char [] prettyDotName = dotstr
-                    ~ "main"
-                    ~ prettyDotName!(str[4 .. $], wantQualifiedNames, ".");
-            }
-    } else {
-        static assert (beginsWithDigit!(str));
+    else {
+   //     static assert (beginsWithDigit!(str));
         static if ( getLnameConsumed!(str) < str.length && beginsWithDigit!(str[getLnameConsumed!(str)..$]) ) {
             static if (wantQualifiedNames == MangledNameType.SymbolName) {
                 // For symbol names, only display the last symbol
@@ -388,26 +371,58 @@ template prettyDotName(char [] str, MangledNameType wantQualifiedNames, char [] 
                     ~ prettyLname!(extractLname!(str), wantQualifiedNames)
                     ~ prettyDotName!(str[getLnameConsumed!(str) .. $], wantQualifiedNames, ".");
             }
-        } else {
-            static assert(getLnameConsumed!(str)==str.length, "Demangle error: Unexpected "~ str[getLnameConsumed!(str) .. $]);
+        } else static if (getLnameConsumed!(str) < str.length && str[getLnameConsumed!(str)]=='M') {
+            static if (wantQualifiedNames == MangledNameType.SymbolName) {
+                // For symbol names, only display the last symbol
+                const char [] prettyDotName =
+                    prettyDotName!(str[getLnameConsumed!(str)+1+demangleTypeConsumed!(str[getLnameConsumed!(str)+1..$]) .. $], wantQualifiedNames, "");
+            } else static if (wantQualifiedNames == MangledNameType.QualifiedName) {
+                const char [] prettyDotName = dotstr
+                    ~ prettyLname!(extractLname!(str), wantQualifiedNames)
+                    ~ prettyDotName!(str[getLnameConsumed!(str)+1+demangleTypeConsumed!(str[getLnameConsumed!(str)+1..$]) .. $], wantQualifiedNames, ".");
+            } else {
+                // Pretty names display everything
+                const char [] prettyDotName = dotstr
+                    ~ prettyLname!(extractLname!(str), wantQualifiedNames) ~ "("
+                    ~ demangleParamList!(str[getLnameConsumed!(str)+2..$], wantQualifiedNames) ~ ")"
+                    ~ prettyDotName!(str[getLnameConsumed!(str)+1+demangleTypeConsumed!(str[getLnameConsumed!(str)+1..$]) .. $], wantQualifiedNames, ".");
+            }
+//            static assert(0, "UnfinishedM : " ~ str);
+        }else {
+            static assert(getLnameConsumed!(str)==str.length, "Demangle error: Unexpected "~ str);
             const char [] prettyDotName = dotstr ~ prettyLname!(extractLname!(str), wantQualifiedNames);
         }
     }
 }
 
+// previous letter was an 'M'.
+template getDotNameMConsumed(char [] str)
+{
+    const int getDotNameMConsumed = demangleTypeConsumed!(str)
+    + getDotNameConsumed!(str[demangleTypeConsumed!(str)..$]);
+}
+
 template getDotNameConsumed (char [] str)
 {
     static if ( str.length>1 &&  beginsWithDigit!(str) ) {
-        static if (getLnameConsumed!(str) < str.length && beginsWithDigit!( str[getLnameConsumed!(str)..$])) {
+        static if (getLnameConsumed!(str) == str.length)
+            const int getDotNameConsumed = str.length;
+        else static if (beginsWithDigit!( str[getLnameConsumed!(str)..$])) {
             const int getDotNameConsumed = getLnameConsumed!(str)
-                + getDotNameConsumed!(str[getLnameConsumed!(str) .. $]);
-        } else {
+                    + getDotNameConsumed!(str[getLnameConsumed!(str) .. $]);
+        } else static if (str[getLnameConsumed!(str)]=='M') {
+            const int getDotNameConsumed = getLnameConsumed!(str) + 1 +
+                getDotNameMConsumed!(str[1+getLnameConsumed!(str)..$]);
+/*
+            const int getDotNameConsumed = getLnameConsumed!(str) + 1
+                + demangleTypeConsumed!(str[getLnameConsumed!(str)..$])
+            + getDotNameConsumed!(str[getLnameConsumed!(str)+1 + demangleTypeConsumed!(str[getLnameConsumed!(str)..$])..$]);
+*/
+        }else {
             const int getDotNameConsumed = getLnameConsumed!(str);
         }
     } else static if (str.length>1 && str[0..2] == "_D" ) {
-        const int getDotNameConsumed = 2+get_DQualifiedNameConsumed!(str[2..$]);
-    } else static if (str.length>=4 && str[0..4] == "main") {
-        const int getDotNameConsumed = 4+get_DQualifiedNameConsumed!(str[4..$]);
+        const int getDotNameConsumed = 2 + get_DQualifiedNameConsumed!(str[2..$]);
     } else static assert(0, "Error in Dot name:" ~ str);
 }
 
@@ -530,6 +545,14 @@ template templateArgConsumed(char [] str)
     else static assert(0, "Unrecognised template argument type: {" ~ str ~ "}");
 }
 
+// Return true if it is a symbol of something without D linkage
+template isNonD_SymbolTemplateArg(char [] str)
+{
+    static if (str[0]!='S') const bool isNonD_SymbolTemplateArg = false;
+    else static if (extractLname!(str[1..$]).length<2) const bool isNonD_SymbolTemplateArg = false;
+    else const bool isNonD_SymbolTemplateArg = extractLname!(str[1..$])[0..2]!="_D";
+}
+
 // Like function parameter lists, template parameter lists also end in a Z,
 // but they don't have a return value at the end.
 template prettyTemplateArgList(char [] str, MangledNameType wantQualifiedNames, char [] commastr="")
@@ -631,7 +654,7 @@ debug(UnitTest){
 
 private {
 
-const char [] THISFILE = "tango.meta.Demangle";
+const char [] THISFILE = "tango.util.meta.Demangle";
 
 ireal SomeFunc(ushort u) { return -3i; }
 idouble SomeFunc2(inout ushort u, ubyte w) { return -3i; }
