@@ -140,6 +140,7 @@ class FilePath
 
         this (FilePath other)
         {
+                assert (other);
                 fp = other.fp;
                 end = other.end;
                 ext = other.ext;
@@ -670,7 +671,7 @@ debug (UnitTest)
                 assert (fp.getFullPath == r"C:");
                 assert (fp.getExt == "bar");
 
-                fp = new FilePath(null);
+                fp = new FilePath("");
                 assert (fp.isEmpty);
                 assert (!fp.isChild);
                 assert (!fp.isAbsolute);
@@ -853,7 +854,7 @@ debug (UnitTest)
                 assert (fp.getFullPath == r"C:");
                 assert (fp.getExt == "bar");
 
-                fp = new FilePath(null);
+                fp = new FilePath("");
                 assert (fp.isEmpty);
                 assert (!fp.isChild);
                 assert (!fp.isAbsolute);
