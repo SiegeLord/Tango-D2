@@ -20,6 +20,7 @@ private import  tango.sys.Common;
 
 public  import  tango.io.FilePath;
 
+private import  tango.io.FileConst;
 private import  tango.io.Exception;
 
 /*******************************************************************************
@@ -174,7 +175,7 @@ class FileProxy
         {
                 // have to convert the filepath to utf16
                 private wchar[] widepath;
-                private wchar[PathMaxLength] widepathsink = void;
+                private wchar[FileConst.PathMaxLength] widepathsink = void;
                 
                 /***************************************************************
 
@@ -454,7 +455,7 @@ class FileProxy
                         char[][]        list;
                         char[]          prefix;
                         FIND_DATA       fileinfo;
-                        char[PathMaxLength]       tmp = void;
+                        char[FileConst.PathMaxLength]       tmp = void;
 
                         int next()
                         {
@@ -729,7 +730,7 @@ class FileProxy
                         if (! dir) 
                               exception();
 
-                        list = new char[][PathMaxLength];
+                        list = new char[][FileConst.PathMaxLength];
                         prefix = FilePath.asPadded (path.toUtf8);
                         
                         while ((entry = tango.stdc.posix.dirent.readdir(dir)) != null)
