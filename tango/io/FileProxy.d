@@ -450,12 +450,12 @@ class FileProxy
 
                 char[][] toList ()
                 {
-                        int             i;
-                        HANDLE          h;
-                        char[][]        list;
-                        char[]          prefix;
-                        FIND_DATA       fileinfo;
-                        char[FileConst.PathMaxLength]       tmp = void;
+                        int                             i;
+                        HANDLE                          h;
+                        char[][]                        list;
+                        char[]                          prefix;
+                        FIND_DATA                       fileinfo;
+                        char[FileConst.PathMaxLength]   tmp = void;
 
                         int next()
                         {
