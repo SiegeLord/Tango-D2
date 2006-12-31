@@ -174,7 +174,7 @@ class FileProxy
         {
                 // have to convert the filepath to utf16
                 private wchar[] widepath;
-                private wchar[262] widepathsink = void;
+                private wchar[PathMaxLength] widepathsink = void;
                 
                 /***************************************************************
 
@@ -454,7 +454,7 @@ class FileProxy
                         char[][]        list;
                         char[]          prefix;
                         FIND_DATA       fileinfo;
-                        char[262]       tmp = void;
+                        char[PathMaxLength]       tmp = void;
 
                         int next()
                         {
@@ -729,7 +729,7 @@ class FileProxy
                         if (! dir) 
                               exception();
 
-                        list = new char[][1024];
+                        list = new char[][PathMaxLength];
                         prefix = FilePath.asPadded (path.toUtf8);
                         
                         while ((entry = tango.stdc.posix.dirent.readdir(dir)) != null)

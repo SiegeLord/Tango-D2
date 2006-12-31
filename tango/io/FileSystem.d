@@ -83,7 +83,7 @@ class FileSystem
                                 }
                              else
                                 {
-                                wchar[262] tmp = void;
+                                wchar[PathMaxLength] tmp = void;
                         
                                 if (! SetCurrentDirectoryW (Utf.toUtf16(fp.cString, tmp).ptr))
                                       exception ("Failed to set current directory");
@@ -113,7 +113,7 @@ class FileSystem
                                 int length = GetCurrentDirectoryW (0, null);
                                 if (length)
                                    {
-                                   char[262] tmp = void;
+                                   char[PathMaxLength] tmp = void;
                                    auto dir = new wchar [length];
                                    
                                    GetCurrentDirectoryW (length, dir.ptr);
