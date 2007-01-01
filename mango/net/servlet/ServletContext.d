@@ -14,7 +14,7 @@ module mango.net.servlet.ServletContext;
 
 private import  tango.util.log.Log;
 
-private import  tango.text.Goodies;
+private import  Text = tango.text.Goodies;
 
 private import  tango.io.FileConduit;
               
@@ -388,9 +388,9 @@ class ServletContext : IServletContext
                     throw irp;
 
                 char c = path [path.length-1];
-                if (tango.text.Goodies.search (path, "..") || 
-                    c == '/'                                ||
-                    c == '\\'                               ||
+                if (Text.search (path, "..") || 
+                    c == '/'                 ||
+                    c == '\\'                ||
                     c == '.')
                     throw irp;
 

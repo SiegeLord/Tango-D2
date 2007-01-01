@@ -12,9 +12,9 @@
 
 module mango.net.http.server.HttpRequest;
 
-private import  tango.text.Goodies;
+private import  Text = tango.text.Goodies;
 
-private import  tango.text.convert.Integer;
+private import  Integer = tango.text.convert.Integer;
 
 private import  tango.text.stream.LineIterator;
 
@@ -59,9 +59,6 @@ class HttpRequest : HttpMessage, IWritable
         private StartLine               startLine;
 
         static private InvalidStateException InvalidState;
-
-        private alias tango.text.Goodies                Text;
-        private alias tango.text.convert.Integer        Integer;
 
         /**********************************************************************
 

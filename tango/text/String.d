@@ -108,10 +108,10 @@
 
 module tango.text.String;
 
-private import  tango.text.Goodies;
+private import  Util = tango.text.Goodies;
 
-private import  tango.text.convert.Utf,
-                tango.text.convert.Format;
+private import  tango.text.convert.Format,
+                Utf = tango.text.convert.Utf;
 
 /*******************************************************************************
 
@@ -142,9 +142,6 @@ private extern (C) void memmove (void* dst, void* src, uint bytes);
 
 class String(T) : StringView!(T)
 {
-        private alias tango.text.convert.Utf Utf;
-        private alias tango.text.Goodies    Util;
-
         public  alias append            opCat;
         public  alias get               opIndex;
         private alias StringView!(T)    StringViewT;

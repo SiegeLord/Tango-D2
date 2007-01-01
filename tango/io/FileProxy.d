@@ -28,8 +28,7 @@ private import  tango.io.Exception;
 
 version (Win32)
         {
-        private import tango.text.convert.Utf;
-        private alias tango.text.convert.Utf Utf;
+        private import Utf = tango.text.convert.Utf;
 
         extern (Windows) BOOL   MoveFileExA (LPCSTR,LPCSTR,DWORD);
         extern (Windows) BOOL   MoveFileExW (LPCWSTR,LPCWSTR,DWORD);

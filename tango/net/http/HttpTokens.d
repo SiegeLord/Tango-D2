@@ -12,18 +12,18 @@
 
 module tango.net.http.HttpTokens;
 
-private import  tango.text.Goodies;
-
 private import  tango.io.Buffer;
 
 private import  tango.io.model.IBuffer;
 
 private import  tango.net.http.HttpStack;
 
-private import  tango.text.convert.Integer,
-                tango.text.convert.TimeStamp;
+private import  Text = tango.text.Goodies;
 
 private import  tango.io.protocol.model.IWriter;
+
+private import  Integer = tango.text.convert.Integer,
+                TimeStamp = tango.text.convert.TimeStamp;
 
 /******************************************************************************
 
@@ -65,10 +65,6 @@ class HttpTokens : IWritable
         private char[1]         sepString;
         static private char[]   emptyString = "";
 
-        private alias tango.text.Goodies                Text;
-        private alias tango.text.convert.Integer        Integer;
-        private alias tango.text.convert.TimeStamp      TimeStamp;
-        
         /**********************************************************************
                 
                 Construct a set of tokens based upon the given delimeter, 

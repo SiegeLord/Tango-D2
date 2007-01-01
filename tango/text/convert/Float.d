@@ -15,11 +15,9 @@
 
 module tango.text.convert.Float;
 
-private import tango.text.convert.Integer;
+private import Integer = tango.text.convert.Integer;
 
 private extern (C) double log10(double x);
-
-private alias tango.text.convert.Integer Integer;
 
 /******************************************************************************
 

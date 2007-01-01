@@ -22,7 +22,7 @@ public  import  tango.io.FileProxy;
 
 private import  tango.io.DeviceConduit;
 
-private import  tango.text.convert.Utf;
+private import  Utf = tango.text.convert.Utf;
 
 /*******************************************************************************
 
@@ -192,8 +192,6 @@ class FileConduit : DeviceConduit, DeviceConduit.Seek
 
         // expose deviceconduit.copy() methods also 
         alias DeviceConduit.copy copy;
-
-        private alias tango.text.convert.Utf Utf;
 
         /***********************************************************************
         

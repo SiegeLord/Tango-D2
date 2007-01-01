@@ -34,11 +34,9 @@ private import  tango.net.http.HttpParams,
                 tango.net.http.HttpCookies,                
                 tango.net.http.HttpResponses;
               
-private import  tango.text.convert.Integer;
-
 private import  tango.text.stream.LineIterator;
 
-private alias   tango.text.convert.Integer Integer;
+private import  Integer = tango.text.convert.Integer;
 
 /*******************************************************************************
 

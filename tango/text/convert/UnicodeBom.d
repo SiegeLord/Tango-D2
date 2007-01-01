@@ -14,8 +14,8 @@ module tango.text.convert.UnicodeBom;
 
 private import  tango.core.ByteSwap;
 
-private import  tango.text.convert.Utf,
-                tango.text.convert.Type;
+private import  tango.text.convert.Type,
+                Utf = tango.text.convert.Utf;
 
 
 /*******************************************************************************
@@ -103,8 +103,6 @@ enum Encoding {
 
 class UnicodeBom(T) 
 {
-        private alias tango.text.convert.Utf Utf;
-
         static if (!is (T == char) && !is (T == wchar) && !is (T == dchar)) 
                     pragma (msg, "Template type must be char, wchar, or dchar");
 

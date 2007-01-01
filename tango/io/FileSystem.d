@@ -20,8 +20,7 @@ private import  tango.io.FilePath,
 
 version (Win32)
         {
-        private import tango.text.convert.Utf;
-        private alias  tango.text.convert.Utf Utf;
+        private import Utf = tango.text.convert.Utf;
         }
      else
         {

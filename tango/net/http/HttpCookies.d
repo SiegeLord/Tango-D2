@@ -16,10 +16,6 @@ private import  tango.stdc.ctype;
 
 private import  tango.io.Buffer;
 
-private import  tango.text.convert.Integer;
-
-private import  tango.text.stream.StreamIterator;
-
 private import  tango.io.model.IBuffer,
                 tango.io.model.IConduit;
 
@@ -29,7 +25,9 @@ private import  tango.net.http.HttpHeaders;
 
 private import  tango.io.protocol.model.IWriter;
 
-private alias   tango.text.convert.Integer Integer;
+private import  tango.text.stream.StreamIterator;
+
+private import  Integer = tango.text.convert.Integer;
 
 /*******************************************************************************
 

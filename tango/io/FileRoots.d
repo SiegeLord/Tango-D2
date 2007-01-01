@@ -17,8 +17,8 @@ private import tango.sys.Common;
 
 version (Win32)
         {
-        private import tango.text.Goodies;
-        private alias tango.text.Goodies Text;
+        private import Text = tango.text.Goodies;
+
         private extern (Windows) DWORD GetLogicalDriveStringsA (DWORD, LPTSTR);
         }
      else
@@ -26,7 +26,7 @@ version (Win32)
         private import tango.stdc.string;
         private import tango.io.FileConduit;
         private import tango.stdc.posix.unistd;
-        private import tango.text.convert.Integer;
+        private import Integer = tango.text.convert.Integer;
         }
         
 /*******************************************************************************

@@ -16,9 +16,7 @@ public  import  tango.net.model.UriView;
 
 private import  tango.io.Exception;
 
-private import  tango.text.convert.Integer;
-
-private alias   tango.text.convert.Integer Integer;
+private import  Integer = tango.text.convert.Integer;
 
 /*******************************************************************************
 

@@ -12,7 +12,7 @@
 
 module mango.net.http.server.HttpMessage;
 
-private import  tango.text.Goodies;
+private import  Text = tango.text.Goodies;
 
 private import  tango.io.Buffer,
                 tango.io.Exception;
@@ -66,8 +66,6 @@ class HttpMessage : IWritable
 
         private char[]          encoding,
                                 mimeType;
-
-        private alias tango.text.Goodies Text;
 
         /**********************************************************************
 

@@ -14,7 +14,7 @@ module tango.text.stream.StreamIterator;
 
 public  import tango.io.Buffer;
 
-private import tango.text.Goodies;
+private import Text = tango.text.Goodies;
 
 /*******************************************************************************
 
@@ -156,7 +156,7 @@ class StreamIterator(T)
 
         StreamIterator trim ()
         {
-                slice = tango.text.Goodies.trim (slice);
+                slice = Text.trim (slice);
                 return this;
         }
 

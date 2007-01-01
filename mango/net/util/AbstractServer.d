@@ -16,8 +16,6 @@ private import  tango.util.log.Log;
 
 private import  tango.io.Exception;
 
-private import  tango.text.convert.Integer;
-
 private import  tango.io.model.IConduit;
 
 private import  tango.net.ServerSocket,
@@ -26,6 +24,7 @@ private import  tango.net.ServerSocket,
 private import  mango.net.util.model.IServer,
                 mango.net.util.model.IRunnable;
 
+private import  Integer = tango.text.convert.Integer;
 
 /******************************************************************************
 

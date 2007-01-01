@@ -18,7 +18,7 @@ private import  tango.io.Buffer,
 
 private import  tango.io.model.IConduit;
 
-private import  tango.text.Goodies;
+private import  Text = tango.text.Goodies;
 
 private import  tango.text.stream.LineIterator;
 
@@ -31,8 +31,6 @@ private import  tango.text.stream.LineIterator;
 
 class Properties
 {
-        private alias tango.text.Goodies Text;
-        
         /***********************************************************************
         
                 Load properties from the named file, and pass each of them

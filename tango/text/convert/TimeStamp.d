@@ -23,12 +23,9 @@ module tango.text.convert.TimeStamp;
 
 private import tango.core.Epoch;
 
-private import tango.text.convert.Integer;
-
-private alias tango.text.convert.Integer Integer;
+private import Integer = tango.text.convert.Integer;
 
 public alias Epoch.InvalidEpoch InvalidEpoch;
-
 
 /******************************************************************************
 
