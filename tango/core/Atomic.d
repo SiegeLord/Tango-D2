@@ -1539,7 +1539,7 @@ private
 
             atom.m_val = val;
             assert( atom.m_val == base && incr == base );
-            base = base + 1;
+            base = cast(T)( base + 1 );
             incr = atom.increment!(ms)();
             assert( atom.m_val == base && incr == base );
         }
@@ -1556,7 +1556,7 @@ private
 
             atom.m_val = val;
             assert( atom.m_val == base && decr == base );
-            base = base - 1;
+            base = cast(T)( base - 1 );
             decr = atom.decrement!(ms)();
             assert( atom.m_val == base && decr == base );
         }
