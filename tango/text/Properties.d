@@ -13,10 +13,12 @@
 module tango.text.Properties;
 
 private import  tango.io.Buffer,
+                tango.io.FilePath,
                 tango.io.FileConst,
                 tango.io.FileConduit;
 
-private import  tango.io.model.IConduit;
+private import  tango.io.model.IBuffer,
+                tango.io.model.IConduit;
 
 private import  Text = tango.text.Goodies;
 
@@ -38,9 +40,9 @@ class Properties
 
         ***********************************************************************/
 
-        static void load (char[] filepath, void delegate (char[]name, char[] value) dg)
+        static void load (FilePath path, void delegate (char[]name, char[] value) dg)
         {
-                auto fc = new FileConduit (filepath, FileConduit.ReadExisting);
+                auto fc = new FileConduit (path);
                 scope (exit)
                        fc.close;
                 
@@ -103,9 +105,9 @@ class Properties
 
         ***********************************************************************/
 
-        static void save (char[] filepath, char[][char[]] properties)
+        static void save (FilePath path, char[][char[]] properties)
         {
-                auto fc = new FileConduit (filepath, FileConduit.WriteTruncate);
+                auto fc = new FileConduit (path, FileConduit.WriteTruncate);
                 scope (exit)
                        fc.close;
                 save (fc, properties);

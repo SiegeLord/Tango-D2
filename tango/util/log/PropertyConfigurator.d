@@ -14,6 +14,8 @@ module tango.util.log.PropertyConfigurator;
 
 private import  tango.text.Properties;
 
+private import  tango.io.FilePath;
+
 private import  tango.util.log.Log,
                 tango.util.log.Layout,
                 tango.util.log.DateLayout,
@@ -30,11 +32,11 @@ private import  tango.util.log.model.ILevel;
         PropertyConfigurator parses a much simplified version of the 
         property file. tango.log only supports the settings of Logger 
         levels at this time; setup of Appenders and Layouts are currently 
-        done "in the code", though this should not be a major hardship. 
+        done "in the code"
 
 *******************************************************************************/
 
-public class PropertyConfigurator
+struct PropertyConfigurator
 {
         private static ILevel.Level[char[]] map;
 
@@ -64,43 +66,44 @@ public class PropertyConfigurator
         
                 Add a default StdioAppender, with a SimpleTimerLayout, to 
                 the root node. The activity levels of all nodes are set
-                via a property file with name=value pairs specified that
-                follow this format:
+                via a property file with name=value pairs specified in the
+                following format:
 
-                name: the actual logger name, in dot notation format. The
-                name "root" is reserved to match the root logger node.
+                    name: the actual logger name, in dot notation
+                          format. The name "root" is reserved to
+                          match the root logger node.
 
-                value: one of TRACE, INFO, WARN, ERROR, FATAL or NONE (or
-                the lowercase equivalents).
+                   value: one of TRACE, INFO, WARN, ERROR, FATAL
+                          or NONE (or the lowercase equivalents).
 
                 For example, the declaration
 
-                tango.unittest=INFO
-
-                sets the level of the logger called "tango.unittest".
+                ---
+                tango.unittest = INFO
+                myApp.SocketActivity = TRACE
+                ---
+                
+                sets the level of the loggers called tango.unittest and
+                myApp.SocketActivity
 
         ***********************************************************************/
 
-        static void configure (char[] filepath)
+        static void configure (FilePath path)
         {
                 void loader (char[] name, char[] value)
                 {
-                        Logger l;
+                        auto l = (name == "root") ? Log.getRootLogger
+                                                  : Log.getLogger (name);
 
-                        if (name == "root")
-                            l = Log.getRootLogger ();                            
-                        else
-                           l = Log.getLogger (name);
-
-                        if (l && value in map)
+                        if (l && (value in map))
                             l.setLevel (map[value]);
                 }
 
                 // setup the basic stuff
-                Configurator.defaultAppender ();
+                Configurator.defaultAppender;
 
                 // read and parse properties from file
-                Properties.load (filepath, &loader);
+                Properties.load (path, &loader);
         }
 }
 
