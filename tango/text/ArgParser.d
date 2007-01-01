@@ -223,7 +223,6 @@ debug (UnitTest) {
     import Integer = tango.text.convert.Integer;
 
     void main() {}
-}
 
 unittest {
 
@@ -338,4 +337,5 @@ unittest {
     assert(dashOrdinalCount == 2);
 
     Stdout("* tango.text.ArgParser: All unittests passed").newline;
+}
 }
