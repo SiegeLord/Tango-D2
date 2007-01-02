@@ -137,21 +137,19 @@ extern (C) void _d_delclass(Object* p)
     {
         debug printf("_d_delclass(%p)\n", *p);
 
-        version(0)
-        {
-            ClassInfo **pc = cast(ClassInfo **)*p;
-            if (*pc)
-            {
-                ClassInfo c = **pc;
+        cr_finalize(*p);
 
-                if (c.deallocator)
-                {
-                    cr_finalize(*p);
-                    fp_t fp = cast(fp_t)c.deallocator;
-                    (*fp)(*p); // call deallocator
-                    *p = null;
-                    return;
-                }
+        ClassInfo **pc = cast(ClassInfo **)*p;
+        if (*pc)
+        {
+            ClassInfo c = **pc;
+
+            if (c.deallocator)
+            {
+                fp_t fp = cast(fp_t)c.deallocator;
+                (*fp)(*p); // call deallocator
+                *p = null;
+                return;
             }
         }
         gc_free(*p);

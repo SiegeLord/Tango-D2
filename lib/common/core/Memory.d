@@ -86,7 +86,7 @@ struct GC
      */
     enum BlkAttr : uint
     {
-        FINALIZE = 0b0000_0001, /// Finalize the data in this block when free.
+        FINALIZE = 0b0000_0001, /// Finalize the data in this block on collect.
         NO_SCAN  = 0b0000_0010, /// Do not scan through this block on collect.
         NO_MOVE  = 0b0000_0100  /// Do not move this memory block on collect.
     }
@@ -240,7 +240,9 @@ struct GC
      * Deallocates the memory referenced by p.  If p is null, no action
      * occurs.  If p references memory not originally allocated by this
      * garbage collector, or if it points to the interior of a memory block,
-     * no action will be taken.
+     * no action will be taken.  The block will not be finalized regardless
+     * of whether the FINALIZE attribute is set.  If finalization is desired,
+     * use delete instead.
      *
      * Params:
      *  p = A pointer to the root of a valid memory block or to null.

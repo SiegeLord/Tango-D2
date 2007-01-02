@@ -706,16 +706,8 @@ class GC
         sentinel_Invariant(p);
         p = sentinel_sub(p);
         pagenum = (p - pool.baseAddr) / PAGESIZE;
-
-        synchronized (gcLock)
-        {
-        if (pool.finals.nbits)
-        {
-            biti = cast(uint)(p - pool.baseAddr) / 16;
-            if (pool.finals.testClear(biti))
-                cr_finalize(sentinel_add(p));
-            gcx.clrBits(pool, biti, BlkAttr.ALL_BITS);
-        }
+        biti = cast(uint)(p - pool.baseAddr) / 16;
+        gcx.clrBits(pool, biti, BlkAttr.ALL_BITS);
 
         bin = cast(Bins)pool.pagetable[pagenum];
         if (bin == B_PAGE)              // if large alloc
@@ -738,7 +730,6 @@ class GC
 
             list.next = gcx.bucket[bin];
             gcx.bucket[bin] = list;
-        }
         }
         gcx.log_free(sentinel_add(p));
     }
@@ -1064,32 +1055,29 @@ class GC
         //debug(PRINTF) printf("getStats()\n");
         memset(&stats, 0, GCStats.sizeof);
 
-        synchronized (gcLock)
-        {
-            for (n = 0; n < gcx.npools; n++)
-            {   Pool *pool = gcx.pooltable[n];
+        for (n = 0; n < gcx.npools; n++)
+        {   Pool *pool = gcx.pooltable[n];
 
-                psize += pool.ncommitted * PAGESIZE;
-                for (uint j = 0; j < pool.ncommitted; j++)
-                {
-                    Bins bin = cast(Bins)pool.pagetable[j];
-                    if (bin == B_FREE)
-                        stats.freeblocks++;
-                    else if (bin == B_PAGE)
-                        stats.pageblocks++;
-                    else if (bin < B_PAGE)
-                        bsize += PAGESIZE;
-                }
-            }
-
-            for (n = 0; n < B_PAGE; n++)
+            psize += pool.ncommitted * PAGESIZE;
+            for (uint j = 0; j < pool.ncommitted; j++)
             {
-                //debug(PRINTF) printf("bin %d\n", n);
-                for (List *list = gcx.bucket[n]; list; list = list.next)
-                {
-                    //debug(PRINTF) printf("\tlist %x\n", list);
-                    flsize += binsize[n];
-                }
+                Bins bin = cast(Bins)pool.pagetable[j];
+                if (bin == B_FREE)
+                    stats.freeblocks++;
+                else if (bin == B_PAGE)
+                    stats.pageblocks++;
+                else if (bin < B_PAGE)
+                    bsize += PAGESIZE;
+            }
+        }
+
+        for (n = 0; n < B_PAGE; n++)
+        {
+            //debug(PRINTF) printf("bin %d\n", n);
+            for (List *list = gcx.bucket[n]; list; list = list.next)
+            {
+                //debug(PRINTF) printf("\tlist %x\n", list);
+                flsize += binsize[n];
             }
         }
 
