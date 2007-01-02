@@ -142,7 +142,7 @@ public class TreeMap(K, T) : MapCollection!(K, T), SortedKeys!(K, T)
          * Time complexity: O(log n).
          * @see store.Collection#instances
         **/
-        public final int instances(T element)
+        public final uint instances(T element)
         {
                 if (!isValidArg(element) || count is 0)
                      return 0;
@@ -157,6 +157,37 @@ public class TreeMap(K, T) : MapCollection!(K, T), SortedKeys!(K, T)
         public final GuardIterator!(T) elements()
         {
                 return keys();
+        }
+
+        /***********************************************************************
+
+                Implements util.collection.View.opApply
+                Time complexity: O(n)
+                
+                @see util.collection.View#opApply
+        
+        ************************************************************************/
+        
+        int opApply (int delegate (inout T value) dg)
+        {
+                auto scope iterator = new MapIterator!(K, T)(this);
+                return iterator.opApply (dg);
+        }
+
+
+        /***********************************************************************
+
+                Implements util.collection.MapView.opApply
+                Time complexity: O(n)
+                
+                @see util.collection.MapView#opApply
+        
+        ************************************************************************/
+        
+        int opApply (int delegate (inout K key, inout T value) dg)
+        {
+                auto scope iterator = new MapIterator!(K, T)(this);
+                return iterator.opApply (dg);
         }
 
         // KeySortedCollection methods
@@ -540,6 +571,13 @@ public class TreeMap(K, T) : MapCollection!(K, T), SortedKeys!(K, T)
         }
 
 
+        /***********************************************************************
+
+                opApply() has migrated here to mitigate the virtual call
+                on method get()
+                
+        ************************************************************************/
+
         private static class MapIterator(K, V) : AbstractMapIterator!(K, V)
         {
                 private RBPairT pair;
@@ -566,6 +604,33 @@ public class TreeMap(K, T) : MapCollection!(K, T), SortedKeys!(K, T)
                         pair = cast(RBPairT) pair.successor();
                         return v;
                 }
+
+                int opApply (int delegate (inout V value) dg)
+                {
+                        int result;
+
+                        for (auto i=remaining(); i--;)
+                            {
+                            auto value = get();
+                            if ((result = dg(value)) != 0)
+                                 break;
+                            }
+                        return result;
+                }
+
+                int opApply (int delegate (inout K key, inout V value) dg)
+                {
+                        K   key;
+                        int result;
+
+                        for (auto i=remaining(); i--;)
+                            {
+                            auto value = get(key);
+                            if ((result = dg(key, value)) != 0)
+                                 break;
+                            }
+                        return result;
+                }
         }
 }
 
@@ -573,23 +638,31 @@ public class TreeMap(K, T) : MapCollection!(K, T), SortedKeys!(K, T)
 
 debug (Test)
 {
-void main()
-{
-        auto map = new TreeMap!(char[], double);
-        map.add ("foo", 1);
-        map.add ("bar", 2);
-        map.add ("wumpus", 3);
+        import tango.io.Console;
         
-        foreach (key, value; map.keys) {typeof(key) x; x = key;}
+        void main()
+        {
+                auto map = new TreeMap!(char[], double);
+                map.add ("foo", 1);
+                map.add ("baz", 1);
+                map.add ("bar", 2);
+                map.add ("wumpus", 3);
 
-        foreach (value; map.keys) {}
+                foreach (key, value; map.keys) {typeof(key) x; x = key;}
 
-        foreach (value; map.elements) {}
+                foreach (value; map.keys) {}
 
-        auto keys = map.keys();
-        while (keys.more)
-               auto v = keys.get();
+                foreach (value; map.elements) {}
 
-        map.checkImplementation();
-}
+                auto keys = map.keys();
+                while (keys.more)
+                       auto v = keys.get();
+
+                foreach (value; map) {}
+
+                foreach (key, value; map)
+                         Cout (key).newline;
+                
+                map.checkImplementation();
+        }
 }

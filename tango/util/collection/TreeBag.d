@@ -140,7 +140,7 @@ public class TreeBag(T) : BagCollection!(T), SortedValues!(T)
          * Time complexity: O(log n).
          * @see store.Collection#instances
         **/
-        public final int instances(T element)
+        public final uint instances(T element)
         {
                 if (!isValidArg(element) || count is 0)
                      return 0;
@@ -156,6 +156,17 @@ public class TreeBag(T) : BagCollection!(T), SortedValues!(T)
         public final GuardIterator!(T) elements()
         {
                 return new CellIterator!(T)(this);
+        }
+
+        /**
+         * Implements store.Collection.View.opApply
+         * Time complexity: O(n).
+         * @see store.Collection.View#opApply
+        **/
+        int opApply (int delegate (inout T value) dg)
+        {
+                auto scope iterator = new CellIterator!(T)(this);
+                return iterator.opApply (dg);
         }
 
 
@@ -415,16 +426,13 @@ public class TreeBag(T) : BagCollection!(T), SortedValues!(T)
         }
 
 
-        /**
-         *
-         *
-         * Enumerator for collections based on RBCellTs
-         * 
-        author: Doug Lea
-         * @version 0.93
-         *
-         * <P> For an introduction to this package see <A HREF="index.html"> Overview </A>.
-        **/
+        /***********************************************************************
+
+                opApply() has migrated here to mitigate the virtual call
+                on method get()
+                
+        ************************************************************************/
+
         private static class CellIterator(T) : AbstractIterator!(T)
         {
                 private RBCellT cell;
@@ -444,6 +452,19 @@ public class TreeBag(T) : BagCollection!(T), SortedValues!(T)
                         cell = cell.successor();
                         return v;
                 }
+
+                int opApply (int delegate (inout T value) dg)
+                {
+                        int result;
+
+                        for (auto i=remaining(); i--;)
+                            {
+                            auto value = get();
+                            if ((result = dg(value)) != 0)
+                                 break;
+                            }
+                        return result;
+                }
         }
 }
 
@@ -451,19 +472,24 @@ public class TreeBag(T) : BagCollection!(T), SortedValues!(T)
 
 debug (Test)
 {
-void main()
-{
-        auto bag = new TreeBag!(char[]);
-        bag.add ("foo");
-        bag.add ("bar");
-        bag.add ("wumpus");
+        import tango.io.Console;
         
-        foreach (value; bag.elements) {}
+        void main()
+        {
+                auto bag = new TreeBag!(char[]);
+                bag.add ("bar");
+                bag.add ("barrel");
+                bag.add ("foo");
 
-        auto elements = bag.elements();
-        while (elements.more)
-               auto v = elements.get();
+                foreach (value; bag.elements) {}
 
-        bag.checkImplementation();
-}
+                auto elements = bag.elements();
+                while (elements.more)
+                       auto v = elements.get();
+
+                foreach (value; bag.elements)
+                         Cout (value).newline;
+                     
+                bag.checkImplementation();
+        }
 }

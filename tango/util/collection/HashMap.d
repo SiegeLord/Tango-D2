@@ -227,13 +227,13 @@ public class HashMap(K, V) : MapCollection!(K, V), HashParams
         
         ************************************************************************/
         
-        public final int instances(V element)
+        public final uint instances(V element)
         {
                 if (!isValidArg(element) || count is 0)
                     return 0;
     
-                int c = 0;
-                for (int i = 0; i < table.length; ++i)
+                uint c = 0;
+                for (uint i = 0; i < table.length; ++i)
                     {
                     LLPairT hd = table[i];
                     if (hd !is null)
@@ -254,6 +254,37 @@ public class HashMap(K, V) : MapCollection!(K, V), HashParams
         public final GuardIterator!(V) elements()
         {
                 return keys();
+        }
+
+        /***********************************************************************
+
+                Implements util.collection.View.opApply
+                Time complexity: O(n)
+                
+                @see util.collection.View#opApply
+        
+        ************************************************************************/
+        
+        int opApply (int delegate (inout V value) dg)
+        {
+                auto scope iterator = new MapIterator!(K, V)(this);
+                return iterator.opApply (dg);
+        }
+
+
+        /***********************************************************************
+
+                Implements util.collection.MapView.opApply
+                Time complexity: O(n)
+                
+                @see util.collection.MapView#opApply
+        
+        ************************************************************************/
+        
+        int opApply (int delegate (inout K key, inout V value) dg)
+        {
+                auto scope iterator = new MapIterator!(K, V)(this);
+                return iterator.opApply (dg);
         }
 
 
@@ -844,6 +875,9 @@ public class HashMap(K, V) : MapCollection!(K, V), HashParams
 
         /***********************************************************************
 
+                opApply() has migrated here to mitigate the virtual call
+                on method get()
+                
         ************************************************************************/
 
         private static class MapIterator(K, V) : AbstractMapIterator!(K, V)
@@ -877,27 +911,64 @@ public class HashMap(K, V) : MapCollection!(K, V), HashParams
 
                         return pair.element();
                 }
+
+                int opApply (int delegate (inout V value) dg)
+                {
+                        int result;
+
+                        for (auto i=remaining(); i--;)
+                            {
+                            auto value = get();
+                            if ((result = dg(value)) != 0)
+                                 break;
+                            }
+                        return result;
+                }
+
+                int opApply (int delegate (inout K key, inout V value) dg)
+                {
+                        K   key;
+                        int result;
+
+                        for (auto i=remaining(); i--;)
+                            {
+                            auto value = get(key);
+                            if ((result = dg(key, value)) != 0)
+                                 break;
+                            }
+                        return result;
+                }
         }
 }
 
 
 debug(Test)
 {
-void main()
-{
-        auto map = new HashMap!(char[], double);
-        //map.add ("foo", 3.14);
-        
-        foreach (key, value; map.keys) {typeof(key) x; x = key;}
+        import tango.io.Console;
+                        
+        void main()
+        {
+                auto map = new HashMap!(char[], double);
+                map.add ("foo", 3.14);
+                map.add ("bar", 6.28);
 
-        foreach (value; map.keys) {}
+                foreach (key, value; map.keys) {typeof(key) x; x = key;}
 
-        foreach (value; map.elements) {}
+                foreach (value; map.keys) {}
 
-        auto keys = map.keys();
-        while (keys.more)
-               auto v = keys.get();
+                foreach (value; map.elements) {}
 
-        map.checkImplementation();
-}
+                auto keys = map.keys();
+                while (keys.more)
+                       auto v = keys.get();
+
+                foreach (value; map) {}
+
+                foreach (key, value; map)
+                         Cout (key).newline;
+
+                map.checkImplementation();
+
+                Cout (map).newline;
+        }
 }

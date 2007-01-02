@@ -72,7 +72,13 @@ public interface MapView(K, V) : View!(V)
 
         public PairIterator!(K, V) keys();
 
+        /**
+         traverse the collection content. This is cheaper than using an
+         iterator since there is no creation cost involved.
+        **/
 
+        int opApply (int delegate (inout K key, inout V value) dg);
+        
         /**
          * Return the element associated with Key key. 
          * @param key a key

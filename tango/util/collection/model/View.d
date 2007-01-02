@@ -51,7 +51,7 @@ public interface View(T)
          * No other spurious effects.
          * @return number of elements
         **/
-        public int size ();
+        public uint size ();
 
         /**
          * Report whether this View has no elements.
@@ -86,7 +86,7 @@ public interface View(T)
          * @return the version number
         **/
 
-        public int mutation ();
+        public uint mutation ();
         
         /**
          * Report whether the View COULD contain element,
@@ -108,7 +108,7 @@ public interface View(T)
          * @param element the element to look for
          * @return the number of occurrences (always nonnegative)
         **/
-        public int instances (T element);
+        public uint instances (T element);
 
         /**
          * Return an enumeration that may be used to traverse through
@@ -157,6 +157,13 @@ public interface View(T)
         **/
 
         public GuardIterator!(T) elements ();
+
+        /**
+         traverse the collection content. This is cheaper than using an
+         iterator since there is no creation cost involved.
+        **/
+
+        public int opApply (int delegate (inout T value) dg);
 
         /**
          * Report whether other has the same element structure as this.

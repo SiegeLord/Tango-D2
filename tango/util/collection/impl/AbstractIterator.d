@@ -44,14 +44,14 @@ public abstract class AbstractIterator(T) : GuardIterator!(T)
          * The version number of the collection we got upon construction
         **/
 
-        private int mutation;
+        private uint mutation;
 
         /**
          * The number of elements we think we have left.
          * Initialized to view.size() upon construction
         **/
 
-        private int togo;
+        private uint togo;
         
 
         protected this (View!(T) v)
@@ -76,7 +76,7 @@ public abstract class AbstractIterator(T) : GuardIterator!(T)
          * Implements store.CollectionIterator.numberOfRemaingingElements.
          * @see store.CollectionIterator#remaining
         **/
-        public final int remaining()
+        public final uint remaining()
         {
                 return togo;
         }
@@ -88,7 +88,7 @@ public abstract class AbstractIterator(T) : GuardIterator!(T)
         **/
         public final bool more()
         {
-                return togo > 0 && mutation == view.mutation;
+                return togo > 0 && mutation is view.mutation;
         }
 
         /**
@@ -102,22 +102,10 @@ public abstract class AbstractIterator(T) : GuardIterator!(T)
                 if (mutation != view.mutation)
                     throw new CorruptedIteratorException ("Collection modified during iteration");
 
-                if (--togo < 0)
+                if (togo is 0)
                     throw new NoSuchElementException ("exhausted enumeration");
-        }
 
-
-        int opApply (int delegate (inout T value) dg)
-        {
-                int result;
-
-                for (int i=togo; i--;)
-                    {
-                    auto value = get();
-                    if ((result = dg(value)) != 0)
-                         break;
-                    }
-                return result;
+                --togo;
         }
 }
 
@@ -129,19 +117,5 @@ public abstract class AbstractMapIterator(K, V) : AbstractIterator!(V), PairIter
         protected this (View!(V) c)
         {
                 super (c);
-        }
-
-        int opApply (int delegate (inout K key, inout V value) dg)
-        {
-                K   key;
-                int result;
-
-                for (int i=togo; i--;)
-                    {
-                    auto value = get(key);
-                    if ((result = dg(key, value)) != 0)
-                         break;
-                    }
-                return result;
         }
 }

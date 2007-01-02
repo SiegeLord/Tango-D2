@@ -196,13 +196,13 @@ public class ArraySeq(T) : SeqCollection!(T), Sortable!(T)
          * Time complexity: O(n).
          * @see store.Collection#instances
         **/
-        public final int instances(T element)
+        public final uint instances(T element)
         {
                 if (! isValidArg(element))
                       return 0;
 
-                int c = 0;
-                for (int i = 0; i < count; ++i)
+                uint c = 0;
+                for (uint i = 0; i < count; ++i)
                      if (array[i] == (element))
                          ++c;
                 return c;
@@ -218,6 +218,16 @@ public class ArraySeq(T) : SeqCollection!(T), Sortable!(T)
                 return new ArrayIterator!(T)(this);
         }
 
+        /**
+         * Implements store.Collection.View.opApply
+         * Time complexity: O(n).
+         * @see store.Collection.View#opApply
+        **/
+        int opApply (int delegate (inout T value) dg)
+        {
+                auto scope iterator = new ArrayIterator!(T)(this);
+                return iterator.opApply (dg);
+        }
 
 
         // Seq methods:
@@ -833,15 +843,13 @@ public class ArraySeq(T) : SeqCollection!(T), Sortable!(T)
                     }
         }
 
-        /**
-         *
-         * Enumerator for collections based on dynamic arrays.
-         * 
-        author: Doug Lea
-         * @version 0.93
-         *
-         * <P> For an introduction to this package see <A HREF="index.html"> Overview </A>.
-        **/
+        /***********************************************************************
+
+                opApply() has migrated here to mitigate the virtual call
+                on method get()
+                
+        ************************************************************************/
+
         static class ArrayIterator(T) : AbstractIterator!(T)
         {
                 private int row;
@@ -858,6 +866,19 @@ public class ArraySeq(T) : SeqCollection!(T), Sortable!(T)
                         decRemaining();
                         return array[row++];
                 }
+
+                int opApply (int delegate (inout T value) dg)
+                {
+                        int result;
+
+                        for (auto i=remaining(); i--;)
+                            {
+                            auto value = get();
+                            if ((result = dg(value)) != 0)
+                                 break;
+                            }
+                        return result;
+                }
         }
 }
 
@@ -865,19 +886,24 @@ public class ArraySeq(T) : SeqCollection!(T), Sortable!(T)
 
 debug (Test)
 {
-void main()
-{
-        auto array = new ArraySeq!(char[]);
-        array.append ("foo");
-        array.append ("bar");
-        array.append ("wumpus");
+        import tango.io.Console;
         
-        foreach (value; array.elements) {}
+        void main()
+        {
+                auto array = new ArraySeq!(char[]);
+                array.append ("foo");
+                array.append ("bar");
+                array.append ("wumpus");
 
-        auto elements = array.elements();
-        while (elements.more)
-               auto v = elements.get();
+                foreach (value; array.elements) {}
 
-        array.checkImplementation();
-}
+                auto elements = array.elements();
+                while (elements.more)
+                       auto v = elements.get();
+
+                foreach (value; array)
+                         Cout (value).newline;
+
+                array.checkImplementation();
+        }
 }

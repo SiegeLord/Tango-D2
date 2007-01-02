@@ -117,7 +117,7 @@ public class LinkMap(K, T) : MapCollection!(K, T) // , IReadable, IWritable
          * Time complexity: O(n).
          * @see util.collection.Collection#instances
         **/
-        public final int instances(T element)
+        public final uint instances(T element)
         {
                 if (!isValidArg(element) || list is null)
                      return 0;
@@ -134,6 +134,38 @@ public class LinkMap(K, T) : MapCollection!(K, T) // , IReadable, IWritable
         {
                 return keys();
         }
+
+        /***********************************************************************
+
+                Implements util.collection.View.opApply
+                Time complexity: O(n)
+                
+                @see util.collection.View#opApply
+        
+        ************************************************************************/
+        
+        int opApply (int delegate (inout T value) dg)
+        {
+                auto scope iterator = new MapIterator!(K, T)(this);
+                return iterator.opApply (dg);
+        }
+
+
+        /***********************************************************************
+
+                Implements util.collection.MapView.opApply
+                Time complexity: O(n)
+                
+                @see util.collection.MapView#opApply
+        
+        ************************************************************************/
+        
+        int opApply (int delegate (inout K key, inout T value) dg)
+        {
+                auto scope iterator = new MapIterator!(K, T)(this);
+                return iterator.opApply (dg);
+        }
+
 
         // Map methods
 
@@ -467,6 +499,13 @@ public class LinkMap(K, T) : MapCollection!(K, T) // , IReadable, IWritable
         }
 
 
+        /***********************************************************************
+
+                opApply() has migrated here to mitigate the virtual call
+                on method get()
+                
+        ************************************************************************/
+
         private static class MapIterator(K, V) : AbstractMapIterator!(K, V)
         {
                 private LLPairT pair;
@@ -491,6 +530,33 @@ public class LinkMap(K, T) : MapCollection!(K, T) // , IReadable, IWritable
                         pair = cast(LLPairT) pair.next();
                         return v;
                 }
+
+                int opApply (int delegate (inout V value) dg)
+                {
+                        int result;
+
+                        for (auto i=remaining(); i--;)
+                            {
+                            auto value = get();
+                            if ((result = dg(value)) != 0)
+                                 break;
+                            }
+                        return result;
+                }
+
+                int opApply (int delegate (inout K key, inout V value) dg)
+                {
+                        K   key;
+                        int result;
+
+                        for (auto i=remaining(); i--;)
+                            {
+                            auto value = get(key);
+                            if ((result = dg(key, value)) != 0)
+                                 break;
+                            }
+                        return result;
+                }
         }
 }
 
@@ -498,21 +564,23 @@ public class LinkMap(K, T) : MapCollection!(K, T) // , IReadable, IWritable
          
 debug(Test)
 {
-void main()
-{
-        auto map = new LinkMap!(Object, double);
+        void main()
+        {
+                auto map = new LinkMap!(Object, double);
 
-        foreach (key, value; map.keys) {typeof(key) x; x = key;}
+                foreach (key, value; map.keys) {typeof(key) x; x = key;}
 
-        foreach (value; map.keys) {}
+                foreach (value; map.keys) {}
 
-        foreach (value; map.elements) {}
+                foreach (value; map.elements) {}
 
-        auto keys = map.keys();
-        while (keys.more)
-               auto v = keys.get();
+                auto keys = map.keys();
+                while (keys.more)
+                       auto v = keys.get();
 
-        keys.keyType e;
-        while (keys.get(e)) {}
-}
+                foreach (value; map) {}
+                foreach (key, value; map) {}
+
+                map.checkImplementation();
+        }
 }

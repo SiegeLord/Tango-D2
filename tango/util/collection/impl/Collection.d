@@ -55,7 +55,7 @@ public abstract class Collection(T) : Dispenser!(T), IReadable, IWritable
 
         ************************************************************************/
 
-        protected int vershion;
+        protected uint vershion;
 
         /***********************************************************************
 
@@ -71,7 +71,7 @@ public abstract class Collection(T) : Dispenser!(T), IReadable, IWritable
 
         ************************************************************************/
 
-        protected int count;
+        protected uint count;
 
         // constructors
 
@@ -124,7 +124,7 @@ public abstract class Collection(T) : Dispenser!(T), IReadable, IWritable
 
         ************************************************************************/
 
-        public final int size()
+        public final uint size()
         {
                 return count;
         }
@@ -209,7 +209,7 @@ public abstract class Collection(T) : Dispenser!(T), IReadable, IWritable
 
         ************************************************************************/
 
-        public final int mutation()
+        public final uint mutation()
         {
                 return vershion;
         }
@@ -228,21 +228,11 @@ public abstract class Collection(T) : Dispenser!(T), IReadable, IWritable
 
         ************************************************************************/
 
-        public char[] toUtf8()
+        public override char[] toUtf8()
         {
-                char[]   buf;
                 char[16] tmp;
                 
-                buf ~= "<class " ~ this.classinfo.name ~ ':' ~ typeid(T).toUtf8 ~ " size:" ~ itoa(tmp, size()) ~ " elements:";
-
-                foreach (value; elements)
-                        {
-                        buf ~= " (";
-                        //buf.append(e.value().toUtf8());
-                        buf ~= ')';
-                        }
-                buf ~= '>';
-                return buf;
+                return "<" ~ this.classinfo.name ~ ", size:" ~ itoa(tmp, size()) ~ ">";
         }
 
 
@@ -250,12 +240,12 @@ public abstract class Collection(T) : Dispenser!(T), IReadable, IWritable
 
         ************************************************************************/
 
-        protected final char[] itoa(char[] buf, int i)
+        protected final char[] itoa(char[] buf, uint i)
         {
-                int j = buf.length;
+                auto j = buf.length;
                 
                 do {
-                   buf[--j] = i % 10;
+                   buf[--j] = i % 10 + '0';
                    } while (i /= 10);
                 return buf [j..$];
         }
@@ -305,7 +295,7 @@ public abstract class Collection(T) : Dispenser!(T), IReadable, IWritable
 
         ************************************************************************/
 
-        protected final void addToCount(int c)
+        protected final void addToCount(uint c)
         {
                 if (c !is 0)
                    {
@@ -321,7 +311,7 @@ public abstract class Collection(T) : Dispenser!(T), IReadable, IWritable
 
         ************************************************************************/
 
-        protected final void setCount(int c)
+        protected final void setCount(uint c)
         {
                 if (c !is count)
                    {
@@ -461,20 +451,6 @@ public abstract class Collection(T) : Dispenser!(T), IReadable, IWritable
                    }
         }
 
-
-        /+
-        /***********************************************************************
-
-                Implements store.ImplementationCheckable.assert.
-                @see store.ImplementationCheckable#assert
-
-        ************************************************************************/
-
-        public final void assert(bool pred)
-        {
-                ImplementationError.assert(this, pred);
-        }
-        +/
 
         /***********************************************************************
 

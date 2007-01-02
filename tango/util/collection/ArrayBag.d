@@ -215,12 +215,12 @@ public class ArrayBag(T) : BagCollection!(T)
          * Time complexity: O(n).
          * @see store.Collection#instances
         **/
-        public final int instances(T element)
+        public final uint instances(T element)
         {
                 if (!isValidArg(element) || count is 0)
                     return 0;
 
-                int c = 0;
+                uint c = 0;
                 CLCellT p = tail.next();
 
                 for (;;)
@@ -256,6 +256,17 @@ public class ArrayBag(T) : BagCollection!(T)
         public final GuardIterator!(T) elements()
         {
                 return new ArrayIterator!(T)(this);
+        }
+
+        /**
+         * Implements store.Collection.View.opApply
+         * Time complexity: O(n).
+         * @see store.Collection.View#opApply
+        **/
+        int opApply (int delegate (inout T value) dg)
+        {
+                auto scope iterator = new ArrayIterator!(T)(this);
+                return iterator.opApply (dg);
         }
 
         // MutableCollection methods
@@ -525,6 +536,13 @@ public class ArrayBag(T) : BagCollection!(T)
 
 
 
+        /***********************************************************************
+
+                opApply() has migrated here to mitigate the virtual call
+                on method get()
+                
+        ************************************************************************/
+
         static class ArrayIterator(T) : AbstractIterator!(T)
         {
                 private CLCellT cell;
@@ -551,7 +569,47 @@ public class ArrayBag(T) : BagCollection!(T)
                            }
                         return buff[index++];
                 }
+
+                int opApply (int delegate (inout T value) dg)
+                {
+                        int result;
+
+                        for (auto i=remaining(); i--;)
+                            {
+                            auto value = get();
+                            if ((result = dg(value)) != 0)
+                                 break;
+                            }
+                        return result;
+                }
         }
 }
 
 
+
+
+debug (Test)
+{
+        import tango.io.Console;
+        
+        void main()
+        {
+                auto bag = new ArrayBag!(char[]);
+                bag.add ("foo");
+                bag.add ("bar");
+                bag.add ("wumpus");
+
+                foreach (value; bag.elements) {}
+
+                auto elements = bag.elements();
+                while (elements.more)
+                       auto v = elements.get();
+
+                foreach (value; bag)
+                         Cout (value).newline;
+
+                bag.checkImplementation();
+
+                Cout (bag).newline;
+        }
+}

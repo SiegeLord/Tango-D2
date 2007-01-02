@@ -109,7 +109,7 @@ public class CircularSeq(T) : SeqCollection!(T)
          * Time complexity: O(n).
          * @see store.Collection#instances
         **/
-        public final int instances(T element)
+        public final uint instances(T element)
         {
                 if (!isValidArg(element) || list is null)
                     return 0;
@@ -124,6 +124,17 @@ public class CircularSeq(T) : SeqCollection!(T)
         public final GuardIterator!(T) elements()
         {
                 return new CellIterator!(T)(this);
+        }
+
+        /**
+         * Implements store.Collection.View.opApply
+         * Time complexity: O(n).
+         * @see store.Collection.View#opApply
+        **/
+        int opApply (int delegate (inout T value) dg)
+        {
+                auto scope iterator = new CellIterator!(T)(this);
+                return iterator.opApply (dg);
         }
 
 
@@ -705,6 +716,13 @@ public class CircularSeq(T) : SeqCollection!(T)
         }
 
 
+        /***********************************************************************
+
+                opApply() has migrated here to mitigate the virtual call
+                on method get()
+                
+        ************************************************************************/
+
         static class CellIterator(T) : AbstractIterator!(T)
         {
                 private CLCellT cell;
@@ -722,7 +740,44 @@ public class CircularSeq(T) : SeqCollection!(T)
                         cell = cell.next();
                         return v;
                 }
+
+                int opApply (int delegate (inout T value) dg)
+                {
+                        int result;
+
+                        for (auto i=remaining(); i--;)
+                            {
+                            auto value = get();
+                            if ((result = dg(value)) != 0)
+                                 break;
+                            }
+                        return result;
+                }
         }
 }
 
 
+
+debug (Test)
+{
+        import tango.io.Console;
+        
+        void main()
+        {
+                auto array = new CircularSeq!(char[]);
+                array.append ("foo");
+                array.append ("bar");
+                array.append ("wumpus");
+
+                foreach (value; array.elements) {}
+
+                auto elements = array.elements();
+                while (elements.more)
+                       auto v = elements.get();
+
+                foreach (value; array)
+                         Cout (value).newline;
+
+                array.checkImplementation();
+        }
+}

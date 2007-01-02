@@ -113,7 +113,7 @@ public class LinkSeq(T) : SeqCollection!(T), Sortable!(T)
          * Time complexity: O(n).
          * @see store.Collection#instances
         **/
-        public final int instances(T element)
+        public final uint instances(T element)
         {
                 if (!isValidArg(element) || count is 0)
                     return 0;
@@ -131,6 +131,16 @@ public class LinkSeq(T) : SeqCollection!(T), Sortable!(T)
                 return new CellIterator!(T)(this);
         }
 
+        /**
+         * Implements store.Collection.View.opApply
+         * Time complexity: O(n).
+         * @see store.Collection.View#opApply
+        **/
+        int opApply (int delegate (inout T value) dg)
+        {
+                auto scope iterator = new CellIterator!(T)(this);
+                return iterator.opApply (dg);
+        }
 
 
         // Seq Methods
@@ -687,6 +697,13 @@ public class LinkSeq(T) : SeqCollection!(T), Sortable!(T)
         }
 
 
+        /***********************************************************************
+
+                opApply() has migrated here to mitigate the virtual call
+                on method get()
+                
+        ************************************************************************/
+
         private static class CellIterator(T) : AbstractIterator!(T)
         {
                 private LLCellT cell;
@@ -704,6 +721,46 @@ public class LinkSeq(T) : SeqCollection!(T), Sortable!(T)
                         cell = cell.next();
                         return v;
                 }
+
+                int opApply (int delegate (inout T value) dg)
+                {
+                        int result;
+
+                        for (auto i=remaining(); i--;)
+                            {
+                            auto value = get();
+                            if ((result = dg(value)) != 0)
+                                 break;
+                            }
+                        return result;
+                }
         }
 }
 
+
+
+
+debug (Test)
+{
+        import tango.io.Console;
+        
+        void main()
+        {
+                auto seq = new LinkSeq!(char[]);
+                seq.append ("foo");
+                seq.append ("wumpus");
+                seq.append ("bar");
+
+                foreach (value; seq.elements) {}
+
+                auto elements = seq.elements();
+                while (elements.more)
+                       auto v = elements.get();
+
+                foreach (value; seq)
+                         Cout (value).newline;
+
+                seq.checkImplementation();
+        }
+}
+                

@@ -185,43 +185,6 @@ public abstract class MapCollection(K, T) : Collection!(T), Map!(K, T)
 
         /***********************************************************************
 
-                Default implementation of toUtf8 for Collections. Not
-                very pretty, but parenthesizing each element means that
-                for most kinds of elements, it's conceivable that the
-                strings could be parsed and used to build other util.collection.
-                <P>
-                Not a very pretty implementation either. Casts are used
-                to get at elements/keys
-
-        ************************************************************************/
-
-        public final char[] toUtf8()
-        {
-                char[]          buf;
-                char[16]        tmp;
-                
-                buf ~= "( (class: " ~ this.classinfo.name ~ ")" ~ " (size:" ~ itoa(tmp, size()) ~ ")" ~ " (elements:";
-
-                foreach (key, value; keys)
-                        {
-                        buf ~= " (";
-                        buf ~= " (";
-                        buf ~= "key"; //buf.append(key.toUtf8());
-                        buf ~= ")";
-
-                        buf ~= " (";
-                        buf ~= "value";//buf.append(value.toUtf8());
-                        buf ~= ")";
-
-                        buf ~= " )";
-                        }
-
-                buf ~= " ) )";
-                return buf;
-        }
-
-        /***********************************************************************
-
                 Implements store.MutableCollection.removeAll
                 @see store.MutableCollection#removeAll
 

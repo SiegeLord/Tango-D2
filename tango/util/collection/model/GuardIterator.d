@@ -62,17 +62,13 @@ public interface GuardIterator(V) : Iterator!(V)
          * @return the number of untraversed elements
         **/
 
-        public int remaining();
+        public uint remaining();
 }
 
 
 public interface PairIterator(K, V) : GuardIterator!(V)
 {
-        typedef K keyType;
-        typedef V valueType;
-                      
-        alias GuardIterator!(V).get get;
-        
+        alias GuardIterator!(V).get     get;
         alias GuardIterator!(V).opApply opApply;
         
         public V get (inout K key);

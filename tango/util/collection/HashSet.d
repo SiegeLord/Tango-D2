@@ -196,7 +196,7 @@ public class HashSet(T) : SetCollection!(T), HashParams
          * Time complexity: O(n).
          * @see store.Collection#instances
         **/
-        public final int instances(T element)
+        public final uint instances(T element)
         {
                 if (contains(element))
                     return 1;
@@ -212,6 +212,17 @@ public class HashSet(T) : SetCollection!(T), HashParams
         public final GuardIterator!(T) elements()
         {
                 return new CellIterator!(T)(this);
+        }
+
+        /**
+         * Implements store.Collection.View.opApply
+         * Time complexity: O(n).
+         * @see store.Collection.View#opApply
+        **/
+        int opApply (int delegate (inout T value) dg)
+        {
+                auto scope iterator = new CellIterator!(T)(this);
+                return iterator.opApply (dg);
         }
 
         // MutableCollection methods
@@ -490,6 +501,13 @@ public class HashSet(T) : SetCollection!(T), HashParams
 
 
 
+        /***********************************************************************
+
+                opApply() has migrated here to mitigate the virtual call
+                on method get()
+                
+        ************************************************************************/
+
         private static class CellIterator(T) : AbstractIterator!(T)
         {
                 private int             row;
@@ -513,6 +531,19 @@ public class HashSet(T) : SetCollection!(T), HashParams
                         cell = cell.next();
                         return v;
                 }
+
+                int opApply (int delegate (inout T value) dg)
+                {
+                        int result;
+
+                        for (auto i=remaining(); i--;)
+                            {
+                            auto value = get();
+                            if ((result = dg(value)) != 0)
+                                 break;
+                            }
+                        return result;
+                }
         }
 }
 
@@ -520,19 +551,24 @@ public class HashSet(T) : SetCollection!(T), HashParams
 
 debug (Test)
 {
-void main()
-{
-        auto set = new HashSet!(char[]);
-        set.add ("foo");
-        set.add ("bar");
-        set.add ("wumpus");
+        import tango.io.Console;
         
-        foreach (value; set.elements) {}
+        void main()
+        {
+                auto set = new HashSet!(char[]);
+                set.add ("foo");
+                set.add ("bar");
+                set.add ("wumpus");
 
-        auto elements = set.elements();
-        while (elements.more)
-               auto v = elements.get();
+                foreach (value; set.elements) {}
 
-        set.checkImplementation();
-}
+                auto elements = set.elements();
+                while (elements.more)
+                       auto v = elements.get();
+
+                set.checkImplementation();
+
+                foreach (value; set)
+                         Cout (value).newline;
+        }
 }
