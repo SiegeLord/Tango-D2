@@ -437,14 +437,14 @@ else
             }
 
             static if( is( alloca ) )
+            {
                 size_t[] func = (cast(size_t*) alloca( (pat.length + 1) * size_t.sizeof ))[0 .. pat.length + 1];
+            }
             else
+            {
                 size_t[] func = new size_t[pat.length + 1];
-            // HACK: Workaround for scope exit bug.  Once the bug is fixed, the
-            //       scoped delete operation below can go inside the else block
-            //       above.
-            static if( !is( alloca ) )
                 scope( exit ) delete func; // force cleanup
+            }
 
             func[0] = 0;
 
@@ -624,14 +624,14 @@ else
             }
 
             static if( is( alloca ) )
+            {
                 size_t[] func = (cast(size_t*) alloca( (pat.length + 1) * size_t.sizeof ))[0 .. pat.length + 1];
+            }
             else
+            {
                 size_t[] func = new size_t[pat.length + 1];
-            // HACK: Workaround for scope exit bug.  Once the bug is fixed, the
-            //       scoped delete operation below can go inside the else block
-            //       above.
-            static if( !is( alloca ) )
                 scope( exit ) delete func; // force cleanup
+            }
 
             func[$ - 1] = 0;
 

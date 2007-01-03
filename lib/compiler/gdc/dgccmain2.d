@@ -119,6 +119,7 @@ extern (C) int _d_run_main(int argc, char **argv, main_type main_func)
     version (all)
     {
         char[]* am = cast(char[]*) malloc(argc * (char[]).sizeof);
+        scope(exit) free(am);
 
         for (int i = 0; i < argc; i++)
         {
@@ -165,7 +166,6 @@ extern (C) int _d_run_main(int argc, char **argv, main_type main_func)
     {
         _STD_critical_term();
         _STD_monitor_staticdtor();
-        free(am);
     }
     return result;
 }
