@@ -19,7 +19,7 @@ private import tango.io.FileConst;
 version (Posix)
 {
     private import tango.stdc.stdlib;
-    private import tango.core.Algorithm;
+    private import tango.core.Array;
     private import tango.sys.linux.linux; // TODO: Shouldn't be necessary
     private import tango.stdc.posix.stdlib;
     private import tango.stdc.errno;
@@ -251,7 +251,7 @@ private bool charMatch(char c1, char c2)
 {
     version (Win32)
     {
-        
+
         if (c1 != c2)
         {
             return ((c1 >= 'a' && c1 <= 'z') ? c1 - ('a' - 'A') : c1) ==
