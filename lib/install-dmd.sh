@@ -25,21 +25,23 @@
 # local directories
 PREFIX=/usr/local
 MAN_DIR=/usr/share/man/man1
+
 # mirrors & filename
 DMD_MIRROR=http://ftp.digitalmars.com
 DMD_FILENAME=dmd.zip
 DMD_CONF=/etc/dmd.conf
 TANGO_REPOSITORY='http://svn.dsource.org/projects/tango/trunk/'
 DSSS_ARCHIVE='http://svn.dsource.org/projects/dsss/downloads/0.9/dsss-0.9-dmd-gnuWlinux.tar.gz'
+
 # state variables (changable through --flags)
 ROOT=1
 DMD_DOWNLOAD=0
 TANGO_DOWNLOAD=0
 DMD_INSTALL=0
 DSSS_INSTALL=0
+# 42.
 #
 CLEANALL=1
-# 42.
 #DEBUG=0
 #
 #SIMULATE=0
@@ -91,6 +93,7 @@ EOF
 # gets printed after installation is finished successfully
 finished() {
 	cat <<EOF
+
 
 -----------------------------------------------------------------
 Tango has been installed successfully.
@@ -356,8 +359,17 @@ do
 		--no-clean)
 			CLEANALL=0
 		;;
+		--version=1.00)
+			VERSION="1.00"
+
+			DMD_FILENAME="dmd.1.00.zip"
+		;;
 		--version=*)
+			# This version is /not/ 1.0 ready (only supporting 0.123 thingies)
 			VERSION=`echo -n "${i}" | sed -n 's/^--version=[0-9]\?\.\?\([0-9]\{3\}\)/\1/p'` 
+
+			# Don't use this one yet - it isn't tested...
+			#VERSION=`echo -n "${i}" | sed -n 's/^--version=\(\([1-9]\{1\}\)\.\{1\}\([0-9]\{1,3\}\)|\([0-9]\?\.\?\([0-9]\{3\}\)\)\)/\1/p'`
 			
 			if [  -n "${VERSION}" ]
 			then
@@ -365,6 +377,11 @@ do
 			else
 				DMD_FILENAME="dmd.zip"
 			fi
+		;;
+		-v1)
+			VERSION="1.00"
+
+			DMD_FILENAME="dmd.1.00.zip"
 		;;
 		--help)
 			usage
