@@ -1297,6 +1297,115 @@ else
 
 
 ////////////////////////////////////////////////////////////////////////////////
+// Unique
+////////////////////////////////////////////////////////////////////////////////
+
+
+version( DDoc )
+{
+    /**
+     * Performs a linear scan of buf from $(LB)0 .. buf.length$(RP), moving all
+     * but the first element of each consecutive group of duplicate elements to
+     * the end of the sequence.  The relative order of all remaining elements
+     * will be preserved.  Comparisons will be performed using the supplied
+     * predicate or '==' if none is supplied.
+     *
+     * Params:
+     *  buf  = The array to scan.  This parameter is not marked 'inout'
+     *         to allow temporary slices to be modified.  As buf is not resized
+     *         in any way, omitting the 'inout' qualifier has no effect on the
+     *         result of this operation, even though it may be viewed as a
+     *         side-effect.
+     *  pred = The evaluation predicate, which should return true if e1 is
+     *         equal to e2 and false if not.  This predicate may be any
+     *         callable type.
+     *
+     * Returns:
+     *  The number of unique elements in buf.
+     */
+    size_t unique( Elem[] buf, Pred2E pred = Pred2E.init );
+}
+else
+{
+    template unique_( Elem, Pred = IsEqual!(Elem) )
+    {
+        static assert( isCallableType!(Pred) );
+
+
+        size_t fn( Elem[] buf, Pred pred = Pred.init )
+        {
+            // NOTE: Indexes are passed instead of references because DMD does
+            //       not inline the reference-based version.
+            void exch( size_t p1, size_t p2 )
+            {
+                Elem t  = buf[p1];
+                buf[p1] = buf[p2];
+                buf[p2] = t;
+            }
+
+            if( buf.length < 2 )
+                return buf.length;
+
+            size_t cnt = 0;
+            Elem   pat = buf[0];
+
+            for( size_t pos = 1, len = buf.length; pos < len; ++pos )
+            {
+                if( pred( buf[pos], pat ) )
+                    ++cnt;
+                else
+                {
+                    pat = buf[pos];
+                    exch( pos, pos - cnt );
+                }
+            }
+            return buf.length - cnt;
+        }
+    }
+
+
+    template unique( Buf )
+    {
+        size_t unique( Buf buf )
+        {
+            return unique_!(ElemTypeOf!(Buf)).fn( buf );
+        }
+    }
+
+
+    template unique( Buf, Pred )
+    {
+        size_t unique( Buf buf, Pred pred )
+        {
+            return unique_!(ElemTypeOf!(Buf), Pred).fn( buf, pred );
+        }
+    }
+
+
+    debug( UnitTest )
+    {
+      unittest
+      {
+        void test( char[] buf, char[] pat )
+        {
+            assert( unique( buf ) == pat.length );
+            foreach( pos, cur; pat )
+            {
+                assert( buf[pos] == cur );
+            }
+        }
+
+        test( "abcdefghij".dup, "abcdefghij" );
+        test( "aabcdefghi".dup, "abcdefghi" );
+        test( "bcdefghijj".dup, "bcdefghij" );
+        test( "abccdefghi".dup, "abcdefghi" );
+        test( "abccdddefg".dup, "abcdefg" );
+      }
+    }
+}
+
+
+////////////////////////////////////////////////////////////////////////////////
 // Partition
 ////////////////////////////////////////////////////////////////////////////////
 
