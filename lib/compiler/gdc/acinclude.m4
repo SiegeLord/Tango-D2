@@ -12,6 +12,12 @@ pthread_mutexattr_settype(&attr, PTHREAD_MUTEX_RECURSIVE);],
    AC_MSG_RESULT([PTHREAD_MUTEX_RECURSIVE])],
   [AC_MSG_RESULT([PTHREAD_MUTEX_RECURSIVE_NP])])
 
+AC_CHECK_TYPES([pthread_barrier_t, pthread_barrierattr_t,
+		pthread_rwlock_t, pthread_rwlockattr_t,
+		pthread_spinlock_t],,,[#include <pthread.h>])
+
+AC_CHECK_TYPES([clockid_t],,,[#include <pthread.h>])
+
 dnl -pthread doesn't work because, by putting it in specs, it is passed
 dnl to the linker instead of being interpreted by the driver...
 dnl -lc_r ins't quite right because there is also a -lc_r_p

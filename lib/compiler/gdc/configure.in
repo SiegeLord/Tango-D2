@@ -293,6 +293,7 @@ else
 	i*86 ) ;;
 	powerpc* ) ;;
 	ppc* ) ;;
+	x86_64 ) ;;
 	*) AC_MSG_ERROR([Missing fpclassify and signbit]) ;;
     esac
     # Removed internal dir for fpmath.o for Tango
@@ -468,9 +469,9 @@ D_MEM_FLAGS=$D_GC_FLAGS
 AC_SUBST(D_MEM_FLAGS)
 AC_SUBST(D_MEM_MODULES)
 
-if test -n "$phobos_config_dir"; then
+if test -n "$enable_phobos_config_dir"; then
     D_GENERATE_FRAGMENTS=''
-    D_FRAGMENT_SRCDIR=$phobos_config_dir
+    D_FRAGMENT_SRCDIR=$enable_phobos_config_dir
 else
     if test "$d_cross_comp" != "yes"; then
 	D_GENERATE_FRAGMENTS='yes'

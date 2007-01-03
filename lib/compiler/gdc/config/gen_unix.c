@@ -546,12 +546,53 @@ void c_pthread() {
     OPAQUE_TYPE(pthread_condattr_t);
     OPAQUE_TYPE(pthread_mutex_t);
     OPAQUE_TYPE(pthread_mutexattr_t);
+    {
+	struct sched_param rec;
+	FieldInfo fi[1];
+	INT_FIELD(fi[0],sched_priority);
+	finish_struct(fi, 1, sizeof(rec), "sched_param");
+    }
+#if HAVE_PTHREAD_BARRIER_T
+    OPAQUE_TYPE(pthread_barrier_t);
+#else
+    printf("struct pthread_barrier_t;\n");
+#endif
+#if HAVE_PTHREAD_BARRIERATTR_T
+    OPAQUE_TYPE(pthread_barrierattr_t);
+#else
+    printf("struct pthread_barrierattr_t;\n");
+#endif
+#if HAVE_PTHREAD_RWLOCK_T
+    OPAQUE_TYPE(pthread_rwlock_t);
+#else
+    printf("struct pthread_rwlock_t;\n");
+#endif
+#if HAVE_PTHREAD_RWLOCKATTR_T
+    OPAQUE_TYPE(pthread_rwlockattr_t);
+#else
+    printf("struct pthread_rwlockattr_t;\n");
+#endif
+#if HAVE_PTHREAD_SPINLOCK_T
+    OPAQUE_TYPE(pthread_spinlock_t);
+#else
+    printf("struct pthread_spinlock_t;\n");
+#endif
+
+    printf("\n");
     printf("\nenum : int {\n");
     CES( PTHREAD_CANCEL_ENABLE );
     CES( PTHREAD_CANCEL_DISABLE );
     CES( PTHREAD_CANCEL_DEFERRED );
     CES( PTHREAD_CANCEL_ASYNCHRONOUS );
     printf("}\n\n");
+
+    // not pthreads, but currently only needed for a pthread func:
+#if HAVE_CLOCKID_T
+    INT_TYPE(clockid_t);
+#else
+    printf("alias Culong_t clockid_t;\n");
+#endif
+
 #endif
 }
 

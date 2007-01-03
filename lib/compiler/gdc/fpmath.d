@@ -31,6 +31,12 @@ struct Info {
 	    real f;
 	    struct { uint li, mi, hi; }
 	}
+    } else version (X86_64) {
+	static const RealFormat realFormat = RealFormat.Intel80;
+	union real_rec {
+	    real f;
+	    struct { uint li, mi, hi; }
+	}
     } else {
 	static assert(0);
     }
@@ -44,16 +50,16 @@ union float_rec {
 int signbit(float f)
 {
     float_rec r = void;
-    r.f = f;    
+    r.f = f;
     return r.i & 0x80000000;
 }
 
 int fpclassify(float f)
 {
     float_rec r = void;
-    r.f = f;    
+    r.f = f;
     uint i = r.i & 0x7fffffff;
-    
+
     if (! i)
 	return FP_ZERO;
     else if (i < 0x00800000)
@@ -79,16 +85,16 @@ union double_rec {
 int signbit(double f)
 {
     double_rec r = void;
-    r.f = f;    
+    r.f = f;
     return r.hi & 0x80000000;
 }
 
 int fpclassify(double f)
 {
     double_rec r = void;
-    r.f = f;    
+    r.f = f;
     uint i = r.hi & 0x7fffffff;
-    
+
     if (! (i | r.li))
 	return FP_ZERO;
     else if (i <  0x00100000)
@@ -151,7 +157,7 @@ unittest
     } else static if (Info.realFormat == RealFormat.Intel80) {
 	const real xrsn = 0x1p-16390;
     }
-    
+
     static float[]  xfi = [ float.nan, -float.nan, float.infinity, -float.infinity,
 	0.0f, -0.0f, 0x1p-135f, -0x1p-135f, 4.2f, -4.2f ];
     static double[] xdi = [ double.nan, -double.nan, double.infinity, -double.infinity,

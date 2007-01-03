@@ -197,6 +197,15 @@ extern (C) Array _d_newarrayip(size_t length, size_t size, void* init)
         result.data = cast(byte*) gc_malloc(length * size + 1, size < (void*).sizeof ? BlkAttr.NO_SCAN : 0);
         if (size == 1)
             memset(result.data, * cast(ubyte*) init, length);
+        else if (size == int.sizeof)
+        {
+            int init_val = *cast(int*)init;
+            void * p = result.data;
+            for (uint u = 0; u < length; u++)
+            {
+                (cast(int*)p)[u] = init_val;
+            }
+        }
         else
         {
             void* p = result.data;

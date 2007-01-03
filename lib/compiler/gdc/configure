@@ -4842,6 +4842,7 @@ else
 	i*86 ) ;;
 	powerpc* ) ;;
 	ppc* ) ;;
+	x86_64 ) ;;
 	*) { { echo "$as_me:$LINENO: error: Missing fpclassify and signbit" >&5
 echo "$as_me: error: Missing fpclassify and signbit" >&2;}
    { (exit 1); exit 1; }; } ;;
@@ -5906,6 +5907,400 @@ echo "$as_me:$LINENO: result: PTHREAD_MUTEX_RECURSIVE_NP" >&5
 echo "${ECHO_T}PTHREAD_MUTEX_RECURSIVE_NP" >&6
 fi
 rm -f conftest.err conftest.$ac_objext conftest.$ac_ext
+
+echo "$as_me:$LINENO: checking for pthread_barrier_t" >&5
+echo $ECHO_N "checking for pthread_barrier_t... $ECHO_C" >&6
+if test "${ac_cv_type_pthread_barrier_t+set}" = set; then
+  echo $ECHO_N "(cached) $ECHO_C" >&6
+else
+  cat >conftest.$ac_ext <<_ACEOF
+/* confdefs.h.  */
+_ACEOF
+cat confdefs.h >>conftest.$ac_ext
+cat >>conftest.$ac_ext <<_ACEOF
+/* end confdefs.h.  */
+#include <pthread.h>
+
+int
+main ()
+{
+if ((pthread_barrier_t *) 0)
+  return 0;
+if (sizeof (pthread_barrier_t))
+  return 0;
+  ;
+  return 0;
+}
+_ACEOF
+rm -f conftest.$ac_objext
+if { (eval echo "$as_me:$LINENO: \"$ac_compile\"") >&5
+  (eval $ac_compile) 2>conftest.er1
+  ac_status=$?
+  grep -v '^ *+' conftest.er1 >conftest.err
+  rm -f conftest.er1
+  cat conftest.err >&5
+  echo "$as_me:$LINENO: \$? = $ac_status" >&5
+  (exit $ac_status); } &&
+	 { ac_try='test -z "$ac_c_werror_flag"
+			 || test ! -s conftest.err'
+  { (eval echo "$as_me:$LINENO: \"$ac_try\"") >&5
+  (eval $ac_try) 2>&5
+  ac_status=$?
+  echo "$as_me:$LINENO: \$? = $ac_status" >&5
+  (exit $ac_status); }; } &&
+	 { ac_try='test -s conftest.$ac_objext'
+  { (eval echo "$as_me:$LINENO: \"$ac_try\"") >&5
+  (eval $ac_try) 2>&5
+  ac_status=$?
+  echo "$as_me:$LINENO: \$? = $ac_status" >&5
+  (exit $ac_status); }; }; then
+  ac_cv_type_pthread_barrier_t=yes
+else
+  echo "$as_me: failed program was:" >&5
+sed 's/^/| /' conftest.$ac_ext >&5
+
+ac_cv_type_pthread_barrier_t=no
+fi
+rm -f conftest.err conftest.$ac_objext conftest.$ac_ext
+fi
+echo "$as_me:$LINENO: result: $ac_cv_type_pthread_barrier_t" >&5
+echo "${ECHO_T}$ac_cv_type_pthread_barrier_t" >&6
+if test $ac_cv_type_pthread_barrier_t = yes; then
+
+cat >>confdefs.h <<_ACEOF
+#define HAVE_PTHREAD_BARRIER_T 1
+_ACEOF
+
+
+fi
+echo "$as_me:$LINENO: checking for pthread_barrierattr_t" >&5
+echo $ECHO_N "checking for pthread_barrierattr_t... $ECHO_C" >&6
+if test "${ac_cv_type_pthread_barrierattr_t+set}" = set; then
+  echo $ECHO_N "(cached) $ECHO_C" >&6
+else
+  cat >conftest.$ac_ext <<_ACEOF
+/* confdefs.h.  */
+_ACEOF
+cat confdefs.h >>conftest.$ac_ext
+cat >>conftest.$ac_ext <<_ACEOF
+/* end confdefs.h.  */
+#include <pthread.h>
+
+int
+main ()
+{
+if ((pthread_barrierattr_t *) 0)
+  return 0;
+if (sizeof (pthread_barrierattr_t))
+  return 0;
+  ;
+  return 0;
+}
+_ACEOF
+rm -f conftest.$ac_objext
+if { (eval echo "$as_me:$LINENO: \"$ac_compile\"") >&5
+  (eval $ac_compile) 2>conftest.er1
+  ac_status=$?
+  grep -v '^ *+' conftest.er1 >conftest.err
+  rm -f conftest.er1
+  cat conftest.err >&5
+  echo "$as_me:$LINENO: \$? = $ac_status" >&5
+  (exit $ac_status); } &&
+	 { ac_try='test -z "$ac_c_werror_flag"
+			 || test ! -s conftest.err'
+  { (eval echo "$as_me:$LINENO: \"$ac_try\"") >&5
+  (eval $ac_try) 2>&5
+  ac_status=$?
+  echo "$as_me:$LINENO: \$? = $ac_status" >&5
+  (exit $ac_status); }; } &&
+	 { ac_try='test -s conftest.$ac_objext'
+  { (eval echo "$as_me:$LINENO: \"$ac_try\"") >&5
+  (eval $ac_try) 2>&5
+  ac_status=$?
+  echo "$as_me:$LINENO: \$? = $ac_status" >&5
+  (exit $ac_status); }; }; then
+  ac_cv_type_pthread_barrierattr_t=yes
+else
+  echo "$as_me: failed program was:" >&5
+sed 's/^/| /' conftest.$ac_ext >&5
+
+ac_cv_type_pthread_barrierattr_t=no
+fi
+rm -f conftest.err conftest.$ac_objext conftest.$ac_ext
+fi
+echo "$as_me:$LINENO: result: $ac_cv_type_pthread_barrierattr_t" >&5
+echo "${ECHO_T}$ac_cv_type_pthread_barrierattr_t" >&6
+if test $ac_cv_type_pthread_barrierattr_t = yes; then
+
+cat >>confdefs.h <<_ACEOF
+#define HAVE_PTHREAD_BARRIERATTR_T 1
+_ACEOF
+
+
+fi
+echo "$as_me:$LINENO: checking for pthread_rwlock_t" >&5
+echo $ECHO_N "checking for pthread_rwlock_t... $ECHO_C" >&6
+if test "${ac_cv_type_pthread_rwlock_t+set}" = set; then
+  echo $ECHO_N "(cached) $ECHO_C" >&6
+else
+  cat >conftest.$ac_ext <<_ACEOF
+/* confdefs.h.  */
+_ACEOF
+cat confdefs.h >>conftest.$ac_ext
+cat >>conftest.$ac_ext <<_ACEOF
+/* end confdefs.h.  */
+#include <pthread.h>
+
+int
+main ()
+{
+if ((pthread_rwlock_t *) 0)
+  return 0;
+if (sizeof (pthread_rwlock_t))
+  return 0;
+  ;
+  return 0;
+}
+_ACEOF
+rm -f conftest.$ac_objext
+if { (eval echo "$as_me:$LINENO: \"$ac_compile\"") >&5
+  (eval $ac_compile) 2>conftest.er1
+  ac_status=$?
+  grep -v '^ *+' conftest.er1 >conftest.err
+  rm -f conftest.er1
+  cat conftest.err >&5
+  echo "$as_me:$LINENO: \$? = $ac_status" >&5
+  (exit $ac_status); } &&
+	 { ac_try='test -z "$ac_c_werror_flag"
+			 || test ! -s conftest.err'
+  { (eval echo "$as_me:$LINENO: \"$ac_try\"") >&5
+  (eval $ac_try) 2>&5
+  ac_status=$?
+  echo "$as_me:$LINENO: \$? = $ac_status" >&5
+  (exit $ac_status); }; } &&
+	 { ac_try='test -s conftest.$ac_objext'
+  { (eval echo "$as_me:$LINENO: \"$ac_try\"") >&5
+  (eval $ac_try) 2>&5
+  ac_status=$?
+  echo "$as_me:$LINENO: \$? = $ac_status" >&5
+  (exit $ac_status); }; }; then
+  ac_cv_type_pthread_rwlock_t=yes
+else
+  echo "$as_me: failed program was:" >&5
+sed 's/^/| /' conftest.$ac_ext >&5
+
+ac_cv_type_pthread_rwlock_t=no
+fi
+rm -f conftest.err conftest.$ac_objext conftest.$ac_ext
+fi
+echo "$as_me:$LINENO: result: $ac_cv_type_pthread_rwlock_t" >&5
+echo "${ECHO_T}$ac_cv_type_pthread_rwlock_t" >&6
+if test $ac_cv_type_pthread_rwlock_t = yes; then
+
+cat >>confdefs.h <<_ACEOF
+#define HAVE_PTHREAD_RWLOCK_T 1
+_ACEOF
+
+
+fi
+echo "$as_me:$LINENO: checking for pthread_rwlockattr_t" >&5
+echo $ECHO_N "checking for pthread_rwlockattr_t... $ECHO_C" >&6
+if test "${ac_cv_type_pthread_rwlockattr_t+set}" = set; then
+  echo $ECHO_N "(cached) $ECHO_C" >&6
+else
+  cat >conftest.$ac_ext <<_ACEOF
+/* confdefs.h.  */
+_ACEOF
+cat confdefs.h >>conftest.$ac_ext
+cat >>conftest.$ac_ext <<_ACEOF
+/* end confdefs.h.  */
+#include <pthread.h>
+
+int
+main ()
+{
+if ((pthread_rwlockattr_t *) 0)
+  return 0;
+if (sizeof (pthread_rwlockattr_t))
+  return 0;
+  ;
+  return 0;
+}
+_ACEOF
+rm -f conftest.$ac_objext
+if { (eval echo "$as_me:$LINENO: \"$ac_compile\"") >&5
+  (eval $ac_compile) 2>conftest.er1
+  ac_status=$?
+  grep -v '^ *+' conftest.er1 >conftest.err
+  rm -f conftest.er1
+  cat conftest.err >&5
+  echo "$as_me:$LINENO: \$? = $ac_status" >&5
+  (exit $ac_status); } &&
+	 { ac_try='test -z "$ac_c_werror_flag"
+			 || test ! -s conftest.err'
+  { (eval echo "$as_me:$LINENO: \"$ac_try\"") >&5
+  (eval $ac_try) 2>&5
+  ac_status=$?
+  echo "$as_me:$LINENO: \$? = $ac_status" >&5
+  (exit $ac_status); }; } &&
+	 { ac_try='test -s conftest.$ac_objext'
+  { (eval echo "$as_me:$LINENO: \"$ac_try\"") >&5
+  (eval $ac_try) 2>&5
+  ac_status=$?
+  echo "$as_me:$LINENO: \$? = $ac_status" >&5
+  (exit $ac_status); }; }; then
+  ac_cv_type_pthread_rwlockattr_t=yes
+else
+  echo "$as_me: failed program was:" >&5
+sed 's/^/| /' conftest.$ac_ext >&5
+
+ac_cv_type_pthread_rwlockattr_t=no
+fi
+rm -f conftest.err conftest.$ac_objext conftest.$ac_ext
+fi
+echo "$as_me:$LINENO: result: $ac_cv_type_pthread_rwlockattr_t" >&5
+echo "${ECHO_T}$ac_cv_type_pthread_rwlockattr_t" >&6
+if test $ac_cv_type_pthread_rwlockattr_t = yes; then
+
+cat >>confdefs.h <<_ACEOF
+#define HAVE_PTHREAD_RWLOCKATTR_T 1
+_ACEOF
+
+
+fi
+echo "$as_me:$LINENO: checking for pthread_spinlock_t" >&5
+echo $ECHO_N "checking for pthread_spinlock_t... $ECHO_C" >&6
+if test "${ac_cv_type_pthread_spinlock_t+set}" = set; then
+  echo $ECHO_N "(cached) $ECHO_C" >&6
+else
+  cat >conftest.$ac_ext <<_ACEOF
+/* confdefs.h.  */
+_ACEOF
+cat confdefs.h >>conftest.$ac_ext
+cat >>conftest.$ac_ext <<_ACEOF
+/* end confdefs.h.  */
+#include <pthread.h>
+
+int
+main ()
+{
+if ((pthread_spinlock_t *) 0)
+  return 0;
+if (sizeof (pthread_spinlock_t))
+  return 0;
+  ;
+  return 0;
+}
+_ACEOF
+rm -f conftest.$ac_objext
+if { (eval echo "$as_me:$LINENO: \"$ac_compile\"") >&5
+  (eval $ac_compile) 2>conftest.er1
+  ac_status=$?
+  grep -v '^ *+' conftest.er1 >conftest.err
+  rm -f conftest.er1
+  cat conftest.err >&5
+  echo "$as_me:$LINENO: \$? = $ac_status" >&5
+  (exit $ac_status); } &&
+	 { ac_try='test -z "$ac_c_werror_flag"
+			 || test ! -s conftest.err'
+  { (eval echo "$as_me:$LINENO: \"$ac_try\"") >&5
+  (eval $ac_try) 2>&5
+  ac_status=$?
+  echo "$as_me:$LINENO: \$? = $ac_status" >&5
+  (exit $ac_status); }; } &&
+	 { ac_try='test -s conftest.$ac_objext'
+  { (eval echo "$as_me:$LINENO: \"$ac_try\"") >&5
+  (eval $ac_try) 2>&5
+  ac_status=$?
+  echo "$as_me:$LINENO: \$? = $ac_status" >&5
+  (exit $ac_status); }; }; then
+  ac_cv_type_pthread_spinlock_t=yes
+else
+  echo "$as_me: failed program was:" >&5
+sed 's/^/| /' conftest.$ac_ext >&5
+
+ac_cv_type_pthread_spinlock_t=no
+fi
+rm -f conftest.err conftest.$ac_objext conftest.$ac_ext
+fi
+echo "$as_me:$LINENO: result: $ac_cv_type_pthread_spinlock_t" >&5
+echo "${ECHO_T}$ac_cv_type_pthread_spinlock_t" >&6
+if test $ac_cv_type_pthread_spinlock_t = yes; then
+
+cat >>confdefs.h <<_ACEOF
+#define HAVE_PTHREAD_SPINLOCK_T 1
+_ACEOF
+
+
+fi
+
+
+echo "$as_me:$LINENO: checking for clockid_t" >&5
+echo $ECHO_N "checking for clockid_t... $ECHO_C" >&6
+if test "${ac_cv_type_clockid_t+set}" = set; then
+  echo $ECHO_N "(cached) $ECHO_C" >&6
+else
+  cat >conftest.$ac_ext <<_ACEOF
+/* confdefs.h.  */
+_ACEOF
+cat confdefs.h >>conftest.$ac_ext
+cat >>conftest.$ac_ext <<_ACEOF
+/* end confdefs.h.  */
+#include <pthread.h>
+
+int
+main ()
+{
+if ((clockid_t *) 0)
+  return 0;
+if (sizeof (clockid_t))
+  return 0;
+  ;
+  return 0;
+}
+_ACEOF
+rm -f conftest.$ac_objext
+if { (eval echo "$as_me:$LINENO: \"$ac_compile\"") >&5
+  (eval $ac_compile) 2>conftest.er1
+  ac_status=$?
+  grep -v '^ *+' conftest.er1 >conftest.err
+  rm -f conftest.er1
+  cat conftest.err >&5
+  echo "$as_me:$LINENO: \$? = $ac_status" >&5
+  (exit $ac_status); } &&
+	 { ac_try='test -z "$ac_c_werror_flag"
+			 || test ! -s conftest.err'
+  { (eval echo "$as_me:$LINENO: \"$ac_try\"") >&5
+  (eval $ac_try) 2>&5
+  ac_status=$?
+  echo "$as_me:$LINENO: \$? = $ac_status" >&5
+  (exit $ac_status); }; } &&
+	 { ac_try='test -s conftest.$ac_objext'
+  { (eval echo "$as_me:$LINENO: \"$ac_try\"") >&5
+  (eval $ac_try) 2>&5
+  ac_status=$?
+  echo "$as_me:$LINENO: \$? = $ac_status" >&5
+  (exit $ac_status); }; }; then
+  ac_cv_type_clockid_t=yes
+else
+  echo "$as_me: failed program was:" >&5
+sed 's/^/| /' conftest.$ac_ext >&5
+
+ac_cv_type_clockid_t=no
+fi
+rm -f conftest.err conftest.$ac_objext conftest.$ac_ext
+fi
+echo "$as_me:$LINENO: result: $ac_cv_type_clockid_t" >&5
+echo "${ECHO_T}$ac_cv_type_clockid_t" >&6
+if test $ac_cv_type_clockid_t = yes; then
+
+cat >>confdefs.h <<_ACEOF
+#define HAVE_CLOCKID_T 1
+_ACEOF
+
+
+fi
+
 
 # -pthread
 
@@ -7657,9 +8052,9 @@ D_MEM_FLAGS=$D_GC_FLAGS
 
 
 
-if test -n "$phobos_config_dir"; then
+if test -n "$enable_phobos_config_dir"; then
     D_GENERATE_FRAGMENTS=''
-    D_FRAGMENT_SRCDIR=$phobos_config_dir
+    D_FRAGMENT_SRCDIR=$enable_phobos_config_dir
 else
     if test "$d_cross_comp" != "yes"; then
 	D_GENERATE_FRAGMENTS='yes'
