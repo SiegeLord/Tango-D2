@@ -2173,15 +2173,20 @@ class Fiber
     }
     body
     {
-        Fiber   obj = getThis();
+        Fiber   cur = getThis();
 
         setThis( this );
         this.switchIn();
-        setThis( obj );
+        setThis( cur );
 
-        if( rethrow && m_unhandled )
+        if( m_unhandled )
         {
-            throw m_unhandled;
+            Object obj  = m_unhandled;
+            m_unhandled = null;
+            if( rethrow )
+            {
+                throw obj;
+            }
         }
     }
 
@@ -2256,13 +2261,41 @@ class Fiber
      */
     static void yield()
     {
-        Fiber   obj = getThis();
-        assert( obj, "Fiber.yield() called with no active fiber" );
-        assert( obj.m_state == State.EXEC );
+        Fiber   cur = getThis();
+        assert( cur, "Fiber.yield() called with no active fiber" );
+        assert( cur.m_state == State.EXEC );
 
-        obj.m_state = State.HOLD;
-        obj.switchOut();
-        obj.m_state = State.EXEC;
+        cur.m_state = State.HOLD;
+        cur.switchOut();
+        cur.m_state = State.EXEC;
+    }
+
+
+    /**
+     * Forces a context switch to occur away from the calling fiber and then
+     * throws obj in the calling fiber.
+     *
+     * Params:
+     *  obj = The object to throw.
+     *
+     * In:
+     *  obj must not be null.
+     */
+    static void yieldAndThrow( Object obj )
+    in
+    {
+        assert( obj );
+    }
+    body
+    {
+        Fiber   cur = getThis();
+        assert( cur, "Fiber.yield() called with no active fiber" );
+        assert( cur.m_state == State.EXEC );
+
+        cur.m_unhandled = obj;
+        cur.m_state = State.HOLD;
+        cur.switchOut();
+        cur.m_state = State.EXEC;
     }
 
 
