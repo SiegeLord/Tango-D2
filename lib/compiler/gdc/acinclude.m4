@@ -178,11 +178,15 @@ case "$d_target_os" in
 	    ;;
   cygwin*)  d_gc_data="$d_gc_data GC_Use_Data_Fixed"
 	    ;;
-  darwin*)  D_GC_MODULES="$D_GC_MODULES internal/gc/gc_dyld.o"
+  darwin*)
+        # Not for Tango
+        # D_GC_MODULES="$D_GC_MODULES internal/gc/gc_dyld.o"
 	    d_gc_stack=GC_Use_Stack_Fixed
 	    d_gc_data="$d_gc_data GC_Use_Data_Dyld"
 	    ;;
-  freebsd*) D_GC_MODULES="$D_GC_MODULES internal/gc/gc_freebsd.o"
+  freebsd*)
+        # Not for Tango
+        # D_GC_MODULES="$D_GC_MODULES internal/gc/gc_freebsd.o"
 	    d_gc_stack=GC_Use_Stack_FreeBSD
 	    d_gc_data="$d_gc_data GC_Use_Data_Fixed"
 	    dnl maybe just GC_Use_Stack_ExternC
@@ -192,9 +196,12 @@ case "$d_target_os" in
 	    d_gc_data="$d_gc_data GC_Use_Data_Fixed"
 	    #have_proc_maps=1
 	    ;;
-  skyos*)   d_gc_data="$d_gc_data GC_Use_Data_Fixed"
+  skyos*)
+        d_gc_data="$d_gc_data GC_Use_Data_Fixed"
 	    ;;
-  *)        D_GC_MODULES=internal/gc/gcgcc.o
+  *)
+        # Not for Tango
+        # D_GC_MODULES=internal/gc/gcgcc.o
             ;;
 esac
 
@@ -223,7 +230,8 @@ if test -z "$d_gc_stack"; then
 fi
 if test -z "$d_gc_stack"; then
     d_gc_stack=GC_Use_Stack_Guess
-    D_GC_MODULES="$D_GC_MODULES internal/gc/gc_guess_stack.o"
+    # Not for Tango
+    # D_GC_MODULES="$D_GC_MODULES internal/gc/gc_guess_stack.o"
 fi
 if test -z "$d_gc_stack"; then
     AC_MSG_ERROR([No usable stack origin information])

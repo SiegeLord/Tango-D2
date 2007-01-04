@@ -123,8 +123,8 @@ clean :
 
 install :
 	$(MD) $(INC_DEST)
-	find . -name "*.di" | cpio -p -u --make-directories $(INC_DEST)
+	find . -name "*.di" | cpio -p -u -d $(INC_DEST)
 	$(MD) $(DOC_DEST)
-	find . -name "*.html" | cpio -p -u --make-directories $(DOC_DEST)
+	find . -name "*.html" | cpio -p -u -d $(DOC_DEST)
 	$(MD) $(LIB_DEST)
-	find . -name "libtango*.a" | cpio -p -u --make-directories $(LIB_DEST)
+	find . -name "libtango*.a" | cpio -p -u -d $(LIB_DEST)

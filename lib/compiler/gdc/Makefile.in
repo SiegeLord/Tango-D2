@@ -201,8 +201,8 @@ ALL_OBJS= \
 MEM_OBJS= @D_MEM_MODULES@
 
 # Removed std/c/dirent.o for Tango
-GCC_OBJS = gcc/config.o gcc/unwind.o gcc/deh.o gcc/threadsem.o \
-	gcc/cbridge_time.o
+# Removed gcc/threadsem.o for Tango
+GCC_OBJS = gcc/config.o gcc/unwind.o gcc/deh.o gcc/cbridge_time.o
 
 # std.c.linux.linux, std.loader, gcc.cbridge*
 
