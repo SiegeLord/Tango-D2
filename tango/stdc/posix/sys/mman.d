@@ -123,6 +123,7 @@ else version( darwin )
     const MAP_SHARED    = 0x0001;
     const MAP_PRIVATE   = 0x0002;
     const MAP_FIXED     = 0x0010;
+    const MAP_ANON      = 0x1000; // NOTE: this is a nonstandard extension
 
     const MAP_FAILED    = cast(void*)-1;
 
