@@ -15,7 +15,7 @@ RM=rm -f
 MD=mkdir -p
 
 CC=gcc
-LC=$(AR) -Prsv
+LC=$(AR) -rsv
 DC=dmd
 
 targets : lib doc

@@ -29,7 +29,7 @@ DOCFLAGS=-version=DDoc -version=Posix
 #DOCFLAGS=-version=DDoc -version=Posix -I..
 
 CC=gcc
-LC=$(AR) -Prsv
+LC=$(AR) -rsv
 DC=dmd
 
 LIB_DEST=..
