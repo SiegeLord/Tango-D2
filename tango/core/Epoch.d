@@ -60,7 +60,7 @@ version (Posix)
 
 ******************************************************************************/
 
-struct Epoch
+class Epoch
 {
         private static ulong beginTime;
 
