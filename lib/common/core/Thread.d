@@ -1974,6 +1974,12 @@ version( Posix )
     version( X86 )
     {
         version = JmpX86_Posix;
+        // NOTE: The setjmp implementation is necessarily reliant on specific
+        //       knowledge of how the sigjmp_buf is defined.  Therefore, this
+        //       code must be explicitly modified for every configuration on
+        //       which it will be used.  The advantage is that it does not
+        //       require inline assembly support for the target architecture,
+        //       so it is theoretically more portable than the asm version.
         private import tango.stdc.posix.setjmp;
     }
 }
@@ -2572,9 +2578,14 @@ private:
         }
         else version( JmpX86_Posix )
         {
-            // Mash a jmp_buf struct into the new stack space so tstack
-            // points to the struct when all is done.  The jmp_buf data
+            // Mash a sigjmp_buf struct into the new stack space so tstack
+            // points to the struct when all is done.  The sigjmp_buf data
             // must be modified so that EIP has the correct address.
+            version( StackGrowsDown )
+            {
+                pstack -= sigjmp_buf.sizeof;
+            }
+            (cast(int*) pstack)[5] = cast(int) &fiber_entryPoint;
         }
     }
 
@@ -2778,12 +2789,14 @@ private:
         }
         else version( JmpX86_Posix )
         {
-            // call setjmp, longjmp
-
-            // Basically, oldp will be the address of the current jmp_buf
-            // and newp will be the address of the new jmp_buf. This means
-            // that tstack will effectively point to a jmp_buf if the
+            sigjmp_buf buf;
+            oldp    = &buf;
+            // Basically, oldp will be the address of the current sigjmp_buf
+            // and newp will be the address of the new sigjmp_buf. This means
+            // that tstack will effectively point to a sigjmp_buf if the
             // context has been swapped out via this Fiber code.
+            if( !sigsetjmp( *(cast(sigjmp_buf*) oldp), 0 ) )
+                siglongjmp( *(cast(sigjmp_buf*) newp), 1 );
         }
     }
 }
