@@ -30,7 +30,7 @@ TFLAGS=-O -inline -version=Posix $(ADDFLAGS)
 DOCFLAGS=-version=DDoc -version=Posix
 
 CC=gcc
-LC=$(AR) -sv
+LC=$(AR) -qsv
 DC=dmd
 
 LIB_DEST=..
