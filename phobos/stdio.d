@@ -1,4 +1,5 @@
-// build302 ../example/phobos/wc.d -Tt -Mphobos -L-lpthread -op ../phobos/errno.o
+
+// Written in the D programming language.
 
 /* Written by Walter Bright
  * www.digitalmars.com

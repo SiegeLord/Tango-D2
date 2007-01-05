@@ -118,7 +118,7 @@ void[] read(char[] name)
 
     buf = new byte[size];
 
-    if (ReadFile(h,buf,size,&numread,null) != 1)
+    if (ReadFile(h,buf.ptr,size,&numread,null) != 1)
 	goto err2;
 
     if (numread != size)
@@ -162,7 +162,7 @@ void write(char[] name, void[] buffer)
     if (h == INVALID_HANDLE_VALUE)
 	goto err;
 
-    if (WriteFile(h,buffer,buffer.length,&numwritten,null) != 1)
+    if (WriteFile(h,buffer.ptr,buffer.length,&numwritten,null) != 1)
 	goto err2;
 
     if (buffer.length != numwritten)
@@ -206,7 +206,7 @@ void append(char[] name, void[] buffer)
 
     SetFilePointer(h, 0, null, FILE_END);
 
-    if (WriteFile(h,buffer,buffer.length,&numwritten,null) != 1)
+    if (WriteFile(h,buffer.ptr,buffer.length,&numwritten,null) != 1)
 	goto err2;
 
     if (buffer.length != numwritten)
@@ -294,6 +294,42 @@ ulong getSize(char[] name)
     FindClose(findhndl);
     return (cast(ulong)resulth << 32) + resultl;
 }
+
+/*************************
+ * Get creation/access/modified times of file name[].
+ * Throws: FileException on error.
+ */
+
+void getTimes(char[] name, out d_time ftc, out d_time fta, out d_time ftm)
+{
+    HANDLE findhndl;
+
+    if (useWfuncs)
+    {
+	WIN32_FIND_DATAW filefindbuf;
+
+	findhndl = FindFirstFileW(phobos.utf.toUTF16z(name), &filefindbuf);
+	ftc = phobos.date.FILETIME2d_time(&filefindbuf.ftCreationTime);
+	fta = phobos.date.FILETIME2d_time(&filefindbuf.ftLastAccessTime);
+	ftm = phobos.date.FILETIME2d_time(&filefindbuf.ftLastWriteTime);
+    }
+    else
+    {
+	WIN32_FIND_DATA filefindbuf;
+
+	findhndl = FindFirstFileA(toMBSz(name), &filefindbuf);
+	ftc = phobos.date.FILETIME2d_time(&filefindbuf.ftCreationTime);
+	fta = phobos.date.FILETIME2d_time(&filefindbuf.ftLastAccessTime);
+	ftm = phobos.date.FILETIME2d_time(&filefindbuf.ftLastWriteTime);
+    }
+
+    if (findhndl == cast(HANDLE)-1)
+    {
+	throw new FileException(name, GetLastError());
+    }
+    FindClose(findhndl);
+}
+
 
 /***************************************************
  * Does file name[] (or directory) exist?
@@ -427,7 +463,7 @@ char[] getcwd()
 	if (!len)
 	    goto Lerr;
 	dir = new wchar[len];
-	len = GetCurrentDirectoryW(len, dir);
+	len = GetCurrentDirectoryW(len, dir.ptr);
 	if (!len)
 	    goto Lerr;
 	return phobos.utf.toUTF8(dir[0 .. len]); // leave off terminating 0
@@ -442,7 +478,7 @@ char[] getcwd()
 	if (!len)
 	    goto Lerr;
 	dir = new char[len];
-	len = GetCurrentDirectoryA(len, dir);
+	len = GetCurrentDirectoryA(len, dir.ptr);
 	if (!len)
 	    goto Lerr;
 	return dir[0 .. len];		// leave off terminating 0
@@ -472,13 +508,13 @@ struct DirEntry
 	size_t wlength;
 	size_t n;
 
-	clength = phobos.string.strlen(fd.cFileName);
+	clength = phobos.string.strlen(fd.cFileName.ptr);
 
 	// Convert cFileName[] to unicode
-	wlength = MultiByteToWideChar(0,0,fd.cFileName,clength,null,0);
+	wlength = MultiByteToWideChar(0,0,fd.cFileName.ptr,clength,null,0);
 	if (wlength > wbuf.length)
 	    wbuf.length = wlength;
-	n = MultiByteToWideChar(0,0,fd.cFileName,clength,cast(wchar*)wbuf,wlength);
+	n = MultiByteToWideChar(0,0,fd.cFileName.ptr,clength,cast(wchar*)wbuf,wlength);
 	assert(n == wlength);
 	// toUTF8() returns a new buffer
 	name = phobos.path.join(path, phobos.utf.toUTF8(wbuf[0 .. wlength]));
@@ -492,7 +528,7 @@ struct DirEntry
 
     void init(char[] path, WIN32_FIND_DATAW *fd)
     {
-	size_t clength = phobos.string.wcslen(fd.cFileName);
+	size_t clength = phobos.string.wcslen(fd.cFileName.ptr);
 	name = phobos.path.join(path, phobos.utf.toUTF8(fd.cFileName[0 .. clength]));
 	size = (cast(ulong)fd.nFileSizeHigh << 32) | fd.nFileSizeLow;
 	creationTime = phobos.date.FILETIME2d_time(&fd.ftCreationTime);
@@ -532,7 +568,7 @@ struct DirEntry
  *
  * void main(char[][] args)
  * {
- *    auto dirs = std.file.listdir(args[1]);
+ *    auto dirs = phobos.file.listdir(args[1]);
  *
  *    foreach (d; dirs)
  *	writefln(d);
@@ -562,7 +598,7 @@ char[][] listdir(char[] pathname)
  *	pathname = Directory name
  *	pattern = String with wildcards, such as $(RED "*.d"). The supported
  *		wildcard strings are described under fnmatch() in
- *		$(LINK2 std_path.html, std.path).
+ *		$(LINK2 std_path.html, phobos.path).
  *	r = Regular expression, for more powerful _pattern matching.
  * Example:
  *	This program lists all the files with a "d" extension in
@@ -573,7 +609,7 @@ char[][] listdir(char[] pathname)
  *
  * void main(char[][] args)
  * {
- *    auto d_source_files = std.file.listdir(args[1], "*.d");
+ *    auto d_source_files = phobos.file.listdir(args[1], "*.d");
  *
  *    foreach (d; d_source_files)
  *	writefln(d);
@@ -588,7 +624,7 @@ char[][] listdir(char[] pathname)
  *
  * void main(char[][] args)
  * {
- *    auto d_source_files = std.file.listdir(args[1], RegExp(r"\.(d|obj)$"));
+ *    auto d_source_files = phobos.file.listdir(args[1], RegExp(r"\.(d|obj)$"));
  *
  *    foreach (d; d_source_files)
  *	writefln(d);
@@ -656,7 +692,7 @@ char[][] listdir(char[] pathname, RegExp r)
  *
  *    bool listing(char[] filename)
  *    {
- *      result ~= std.path.join(pathname, filename);
+ *      result ~= phobos.path.join(pathname, filename);
  *      return true; // continue
  *    }
  *
@@ -727,8 +763,8 @@ void listdir(char[] pathname, bool delegate(DirEntry* de) callback)
 		do
 		{
 		    // Skip "." and ".."
-		    if (phobos.string.wcscmp(fileinfo.cFileName, ".") == 0 ||
-			phobos.string.wcscmp(fileinfo.cFileName, "..") == 0)
+		    if (phobos.string.wcscmp(fileinfo.cFileName.ptr, ".") == 0 ||
+			phobos.string.wcscmp(fileinfo.cFileName.ptr, "..") == 0)
 			continue;
 
 		    de.init(pathname, &fileinfo);
@@ -754,8 +790,8 @@ void listdir(char[] pathname, bool delegate(DirEntry* de) callback)
 		do
 		{
 		    // Skip "." and ".."
-		    if (phobos.string.strcmp(fileinfo.cFileName, ".") == 0 ||
-			phobos.string.strcmp(fileinfo.cFileName, "..") == 0)
+		    if (phobos.string.strcmp(fileinfo.cFileName.ptr, ".") == 0 ||
+			phobos.string.strcmp(fileinfo.cFileName.ptr, "..") == 0)
 			continue;
 
 		    de.init(pathname, &fileinfo);
@@ -776,7 +812,7 @@ void listdir(char[] pathname, bool delegate(DirEntry* de) callback)
  * to wchar, then convert to multibyte using the current code
  * page.
  * (Thanks to yaneurao for this)
- * Deprecated: use std.windows.charset.toMBSz instead.
+ * Deprecated: use phobos.windows.charset.toMBSz instead.
  */
 
 char* toMBSz(char[] s)
@@ -810,7 +846,7 @@ version (linux)
 {
 
 private import phobos.date;
-private import tango.sys.linux.linux;
+//private import tango.sys.linux.linux;
 private import tango.stdc.posix.dirent;
 private import tango.stdc.posix.unistd;
 private import tango.stdc.posix.sys.stat;
@@ -1056,6 +1092,28 @@ uint getAttributes(char[] name)
     return statbuf.st_mode;
 }
 
+/*************************
+ * Get creation/access/modified times of file name[].
+ * Throws: FileException on error.
+ */
+
+void getTimes(char[] name, out d_time ftc, out d_time fta, out d_time ftm)
+{
+    stat_t statbuf;
+    char *namez;
+
+    namez = toStringz(name);
+    if (phobos.c.linux.linux.stat(namez, &statbuf))
+    {
+	throw new FileException(name, getErrno());
+    }
+
+    ftc = cast(d_time)statbuf.st_ctime * phobos.date.TicksPerSecond;
+    fta = cast(d_time)statbuf.st_atime * phobos.date.TicksPerSecond;
+    ftm = cast(d_time)statbuf.st_mtime * phobos.date.TicksPerSecond;
+}
+
+
 /****************************************************
  * Does file/directory exist?
  */
@@ -1222,7 +1280,7 @@ struct DirEntry
     void doStat()
     {
 	int fd;
-	struct_stat statbuf;
+	stat_t statbuf;
 	char* namez;
 
 	namez = toStringz(name);
@@ -1341,23 +1399,141 @@ void listdir(char[] pathname, bool delegate(DirEntry* de) callback)
 
 
 /***************************************************
- * Copy a file.
- * Bugs:
- *	If the file is very large, this won't work.
- *	Doesn't maintain the file timestamps.
+ * Copy a file. File timestamps are preserved.
  */
 
 void copy(char[] from, char[] to)
 {
+  version (all)
+  {
+    stat_t statbuf;
+
+    char* fromz = toStringz(from);
+    char* toz = toStringz(to);
+    //printf("file.copy(from='%s', to='%s')\n", fromz, toz);
+
+    int fd = phobos.c.linux.linux.open(fromz, O_RDONLY);
+    if (fd == -1)
+    {
+        //printf("\topen error, errno = %d\n",getErrno());
+        goto err1;
+    }
+
+    //printf("\tfile opened\n");
+    if (phobos.c.linux.linux.fstat(fd, &statbuf))
+    {
+        //printf("\tfstat error, errno = %d\n",getErrno());
+        goto err2;
+    }
+
+    int fdw = phobos.c.linux.linux.open(toz, O_CREAT | O_WRONLY | O_TRUNC, 0660);
+    if (fdw == -1)
+    {
+        //printf("\topen error, errno = %d\n",getErrno());
+        goto err2;
+    }
+
+    size_t BUFSIZ = 4069 * 16;
+    void* buf = phobos.c.stdlib.malloc(BUFSIZ);
+    if (!buf)
+    {	BUFSIZ = 4096;
+	buf = phobos.c.stdlib.malloc(BUFSIZ);
+    }
+    if (!buf)
+    {
+        //printf("\topen error, errno = %d\n",getErrno());
+        goto err4;
+    }
+
+    for (size_t size = statbuf.st_size; size; )
+    {	size_t toread = (size > BUFSIZ) ? BUFSIZ : size;
+
+	auto n = phobos.c.linux.linux.read(fd, buf, toread);
+	if (n != toread)
+	{
+	    //printf("\tread error, errno = %d\n",getErrno());
+	    goto err5;
+	}
+	n = phobos.c.linux.linux.write(fdw, buf, toread);
+	if (n != toread)
+	{
+	    //printf("\twrite error, errno = %d\n",getErrno());
+	    goto err5;
+	}
+	size -= toread;
+    }
+
+    phobos.c.stdlib.free(buf);
+
+    if (phobos.c.linux.linux.close(fdw) == -1)
+    {
+	//printf("\tclose error, errno = %d\n",getErrno());
+        goto err2;
+    }
+
+    utimbuf utim;
+    utim.actime = cast(__time_t)statbuf.st_atime;
+    utim.modtime = cast(__time_t)statbuf.st_mtime;
+    if (utime(toz, &utim) == -1)
+    {
+	//printf("\tutime error, errno = %d\n",getErrno());
+	goto err3;
+    }
+
+    if (phobos.c.linux.linux.close(fd) == -1)
+    {
+	//printf("\tclose error, errno = %d\n",getErrno());
+        goto err1;
+    }
+
+    return;
+
+err5:
+    phobos.c.stdlib.free(buf);
+err4:
+    phobos.c.linux.linux.close(fdw);
+err3:
+    phobos.c.stdio.remove(toz);
+err2:
+    phobos.c.linux.linux.close(fd);
+err1:
+    throw new FileException(from, getErrno());
+  }
+  else
+  {
     void[] buffer;
 
     buffer = read(from);
     write(to, buffer);
     delete buffer;
+  }
 }
 
 
 
+}
+
+unittest
+{
+    //printf("phobos.file.unittest\n");
+    void[] buf;
+
+    buf = new void[10];
+    (cast(byte[])buf)[] = 3;
+    write("unittest_write.tmp", buf);
+    void buf2[] = read("unittest_write.tmp");
+    assert(buf == buf2);
+
+    copy("unittest_write.tmp", "unittest_write2.tmp");
+    buf2 = read("unittest_write2.tmp");
+    assert(buf == buf2);
+
+    remove("unittest_write.tmp");
+    if (exists("unittest_write.tmp"))
+	assert(0);
+    remove("unittest_write2.tmp");
+    if (exists("unittest_write2.tmp"))
+	assert(0);
 }
 
 unittest

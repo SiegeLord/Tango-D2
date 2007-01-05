@@ -63,7 +63,7 @@ else version(BsdSockets)
 		private import phobos.c.linux.linux, phobos.c.linux.socket;
 		private alias phobos.c.linux.linux.timeval _ctimeval;
 		private import tango.stdc.posix.fcntl;
-		private import tango.sys.linux.linux;
+		//private import tango.sys.linux.linux;
 	}
 	
 	typedef int32_t socket_t = -1;
@@ -85,7 +85,6 @@ else
 class SocketException: Exception
 {
 	int errorCode; /// Platform-specific error code.
-	
 	
 	this(char[] msg, int err = 0)
 	{
@@ -720,7 +719,7 @@ enum SocketShutdown: int
 {
 	RECEIVE =  SD_RECEIVE,	/// socket receives are disallowed
 	SEND =     SD_SEND,	/// socket sends are disallowed
-	BOTH =     SD_RECEIVE,	/// both RECEIVE and SEND
+	BOTH =     SD_BOTH,	/// both RECEIVE and SEND
 }
 
 
@@ -804,7 +803,7 @@ class SocketSet
 		version(Win32)
 		{
 			nbytes = max * socket_t.sizeof;
-			buf = new byte[nbytes + uint.sizeof];
+			buf = (new byte[nbytes + uint.sizeof]).ptr;
 			count = 0;
 		}
 		else version(BsdSockets)
@@ -892,7 +891,7 @@ class SocketSet
 	}
 	
 
-	// Return maximum amount of sockets that can be added, like FD_SETSIZE.
+	/// Return maximum amount of sockets that can be added, like FD_SETSIZE.
 	uint max()
 	{
 		version(Win32)
@@ -1055,14 +1054,20 @@ class Socket
 	}
 	
 	
-	// Get underlying socket handle.
-	socket_t handle() // getter
+	/// Get underlying socket handle.
+	socket_t handle()
 	{
 		return sock;
 	}
-	
-	
-	bool blocking() // getter
+
+	/**
+	 * Get/set socket's blocking flag.
+	 *
+	 * When a socket is blocking, calls to receive(), accept(), and send()
+	 * will block and wait for data/action.
+	 * A non-blocking socket will immediately return instead of blocking. 
+	 */
+	bool blocking()
 	{
 		version(Win32)
 		{
@@ -1074,8 +1079,8 @@ class Socket
 		}
 	}
 	
-	
-	void blocking(bool byes) // setter
+	/// ditto
+	void blocking(bool byes)
 	{
 		version(Win32)
 		{
@@ -1372,7 +1377,11 @@ class Socket
 	}
 	
 	/**
-	 * Receive data and get the remote endpoint Address. Returns the number of bytes actually received, 0 if the remote side has closed the connection, or ERROR on failure. If the socket is blocking, receiveFrom waits until there is data to be received.
+	 * Receive data and get the remote endpoint Address.
+	 * If the socket is blocking, receiveFrom waits until there is data to
+	 * be received.
+	 * Returns: the number of bytes actually received,
+	 * 0 if the remote side has closed the connection, or ERROR on failure.
 	 */
 	int receiveFrom(void[] buf, SocketFlags flags, out Address from)
 	{

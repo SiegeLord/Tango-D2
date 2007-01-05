@@ -1,4 +1,6 @@
 
+// Written in the D programming language.
+
 /**
  * Dates are represented in several formats. The date implementation revolves
  * around a central type, d_time, from which other formats are converted to and
@@ -10,7 +12,7 @@
  *	WIKI = Phobos/StdDate
  */
 
-// Copyright (c) 1999-2005 by Digital Mars
+// Copyright (c) 1999-2006 by Digital Mars
 // All Rights Reserved
 // written by Walter Bright
 // www.digitalmars.com
@@ -49,8 +51,7 @@ struct Date
     int minute;		/// 0..59
     int second;		/// 0..59
     int ms;		/// 0..999
-    int weekday;	/// 0: not specified
-			/// 1..7: Sunday..Saturday
+    int weekday;	/// 0: not specified, 1..7: Sunday..Saturday
     int tzcorrection = int.min;	/// -1200..1200 correction in hours
 
     /// Parse date out of string s[] and store it in this Date instance.
@@ -231,6 +232,9 @@ d_time TimeFromYear(int y)
 
 int YearFromTime(d_time t)
 {   int y;
+
+    if (t == d_time_nan)
+	return 0;
 
     // Hazard a guess
     //y = 1970 + cast(int) (t / (365.2425 * msPerDay));
@@ -838,7 +842,7 @@ version (linux)
 
     d_time getLocalTZA()
     {
-	int t;
+	__time_t t;
 
 	time(&t);
 	localtime(&t);	// this will set timezone
@@ -852,13 +856,13 @@ version (linux)
     int DaylightSavingTA(d_time dt)
     {
 	tm *tmp;
-	int t;
+	phobos.c.linux.linux.__time_t t;
 	int dst = 0;
 
 	if (dt != d_time_nan)
 	{
 	    d_time seconds = dt / TicksPerSecond;
-	    t = cast(int) seconds;
+	    t = cast(__time_t) seconds;
 	    if (t == seconds)	// if in range
 	    {
 		tmp = localtime(&t);

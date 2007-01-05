@@ -99,10 +99,10 @@ private char[] URI_Encode(dchar[] string, uint unescapedSet)
     dchar C;
 
     // result buffer
-    char *R;
+    char[50] buffer = void;
+    char* R;
     uint Rlen;
     uint Rsize;	// alloc'd size
-    char buffer[50];
 
     len = string.length;
 
@@ -253,7 +253,7 @@ private dchar[] URI_Decode(char[] string, uint reservedSet)
     // Preallocate result buffer R guaranteed to be large enough for result
     Rsize = len;
     if (Rsize > 1024 / dchar.sizeof)
-		R = (new dchar[Rsize]).ptr;
+	R = (new dchar[Rsize]).ptr;
     else
     {	
 		R = cast(dchar *)alloca(Rsize * dchar.sizeof);

@@ -244,6 +244,7 @@ SC17:	fprem1				;
 	jmp	SC18			;
 
 trigerr:
+	jnp	Lret			; // if theta is NAN, return theta
 	fstp	ST(0)			; // dump theta
     }
     return real.nan;
@@ -285,7 +286,7 @@ unittest
 	    // overflow
 	    [   real.infinity,	real.nan],
 	    [   real.nan,	real.nan],
-	    [   1e+100,		real.nan],
+	    //[   1e+100,	real.nan],
     ];
     int i;
 
@@ -348,24 +349,24 @@ real atan(real x)		{ return phobos.c.math.atanl(x); }
  * Calculates the arc tangent of y / x,
  * returning a value ranging from -&pi;/2 to &pi;/2.
  *
- *	$(TABLE_SV
- *	<tr> <th> x           <th> y         <th> atan(x, y)
- *	<tr> <td> $(NAN)      <td> anything  <td> $(NAN) 
- *	<tr> <td> anything    <td> $(NAN)    <td> $(NAN) 
- *	<tr> <td> &plusmn;0.0       <td> &gt; 0.0  <td> &plusmn;0.0 
- *	<tr> <td> &plusmn;0.0       <td> &plusmn;0.0     <td> &plusmn;0.0 
- *	<tr> <td> &plusmn;0.0       <td> &lt; 0.0  <td> &plusmn;&pi; 
- *	<tr> <td> &plusmn;0.0       <td> -0.0      <td> &plusmn;&pi;
- *	<tr> <td> &gt; 0.0    <td> &plusmn;0.0     <td> &pi;/2 
- *	<tr> <td> &lt; 0.0    <td> &plusmn;0.0     <td> &pi;/2 
- *	<tr> <td> &gt; 0.0    <td> &infin;  <td> &plusmn;0.0 
- *	<tr> <td> &plusmn;&infin;  <td> anything  <td> &plusmn;&pi;/2 
- *	<tr> <td> &gt; 0.0    <td> -&infin; <td> &plusmn;&pi; 
- *	<tr> <td> &plusmn;&infin;  <td> &infin;  <td> &plusmn;&pi;/4 	
- *	<tr> <td> &plusmn;&infin;  <td> -&infin; <td> &plusmn;3&pi;/4
+ *      $(TABLE_SV
+ *      <tr> <th> y           <th> x         <th> atan(y, x)
+ *      <tr> <td> $(NAN)      <td> anything  <td> $(NAN) 
+ *      <tr> <td> anything    <td> $(NAN)    <td> $(NAN) 
+ *      <tr> <td> &plusmn;0.0       <td> &gt; 0.0  <td> &plusmn;0.0 
+ *      <tr> <td> &plusmn;0.0       <td> &plusmn;0.0     <td> &plusmn;0.0 
+ *      <tr> <td> &plusmn;0.0       <td> &lt; 0.0  <td> &plusmn;&pi; 
+ *      <tr> <td> &plusmn;0.0       <td> -0.0      <td> &plusmn;&pi;
+ *      <tr> <td> &gt; 0.0    <td> &plusmn;0.0     <td> &pi;/2 
+ *      <tr> <td> &lt; 0.0    <td> &plusmn;0.0     <td> &pi;/2 
+ *      <tr> <td> &gt; 0.0    <td> &infin;  <td> &plusmn;0.0 
+ *      <tr> <td> &plusmn;&infin;  <td> anything  <td> &plusmn;&pi;/2 
+ *      <tr> <td> &gt; 0.0    <td> -&infin; <td> &plusmn;&pi; 
+ *      <tr> <td> &plusmn;&infin;  <td> &infin;  <td> &plusmn;&pi;/4    
+ *      <tr> <td> &plusmn;&infin;  <td> -&infin; <td> &plusmn;3&pi;/4
  *      )
  */
-real atan2(real x, real y)	{ return phobos.c.math.atan2l(x,y); }
+real atan2(real y, real x)	{ return phobos.c.math.atan2l(y,x); }
 
 /***********************************
  * Calculates the hyperbolic cosine of x.
@@ -499,7 +500,7 @@ unittest
     assert(isPosZero(atanh(0.0)));
     assert(isNegZero(atanh(-0.0)));
     assert(isnan(atanh(real.nan)));
-    assert(isNegZero(atanh(-real.infinity))); 
+    assert(isnan(atanh(-real.infinity))); 
 }
 
 /*****************************************
@@ -734,7 +735,7 @@ unittest
  *	$(TABLE_SV
  *	<tr> <th> x               <th>ilogb(x)     <th> Range error?
  *	<tr> <td> 0               <td> FP_ILOGB0   <td> yes
- *	<tr> <td> &plusmn;&infin; <td> +&infin;    <td> no
+ *	<tr> <td> &plusmn;&infin; <td> int.max     <td> no
  *	<tr> <td> $(NAN)          <td> FP_ILOGBNAN <td> no
  *	)
  */
@@ -1558,12 +1559,12 @@ real pow(real x, real y)
     version (linux) // C pow() often does not handle special values correctly
     {
 	if (isnan(y))
-	    return real.nan;
+	    return y;
 
 	if (y == 0)
 	    return 1;		// even if x is $(NAN)
 	if (isnan(x) && y != 0)
-	    return real.nan;
+	    return x;
 	if (isinf(y))
 	{
 	    if (fabs(x) > 1)

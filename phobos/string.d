@@ -1,4 +1,6 @@
 
+// Written in the D programming language.
+
 /**
  * String handling functions.
  *
@@ -74,7 +76,7 @@ const dchar PS = '\u2029';	/// UTF paragraph separator
 version (Windows)
     const char[2] newline = "\r\n";
 else version (linux)
-    const char[2] newline = "\n";
+    const char[1] newline = "\n";
 
 /**********************************
  * Returns !=0 if c is whitespace
@@ -144,7 +146,7 @@ int icmp(char[] s1, char[] s2)
 	len = s2.length;
     version (Win32)
     {
-	result = memicmp(s1, s2, len);
+	result = memicmp(s1.ptr, s2.ptr, len);
     }
     version (linux)
     {
@@ -175,19 +177,19 @@ unittest
     int result;
 
     debug(string) printf("string.cmp.unittest\n");
-    result = cmp("abc", "abc");
+    result = icmp("abc", "abc");
     assert(result == 0);
-    result = cmp(null, null);
+    result = icmp(null, null);
     assert(result == 0);
-    result = cmp("", "");
+    result = icmp("", "");
     assert(result == 0);
-    result = cmp("abc", "abcd");
+    result = icmp("abc", "abcd");
     assert(result < 0);
-    result = cmp("abcd", "abc");
+    result = icmp("abcd", "abc");
     assert(result > 0);
-    result = cmp("abc", "abd");
+    result = icmp("abc", "abd");
     assert(result < 0);
-    result = cmp("bbc", "abc");
+    result = icmp("bbc", "abc");
     assert(result > 0);
 }
 
@@ -807,36 +809,40 @@ unittest
 
 char[] tolower(char[] s)
 {
-    int changed;
-    int i;
-    char[] r = s;
+    bool changed;
+    auto r = s;
 
-    changed = 0;
-    for (i = 0; i < s.length; i++)
+    for (size_t i = 0; i < s.length; i++)
     {
 	auto c = s[i];
 	if ('A' <= c && c <= 'Z')
 	{
 	    if (!changed)
-	    {	r = s.dup;
-		changed = 1;
+	    {
+		r = s.dup;
+		changed = true;
 	    }
 	    r[i] = c + (cast(char)'a' - 'A');
 	}
 	else if (c >= 0x7F)
 	{
-	    foreach (size_t j, dchar dc; s[i .. length])
+	    foreach(size_t j, dchar dc; s[i .. length])
 	    {
-		if (!changed)
+		if (phobos.uni.isUniUpper(dc))
 		{
-		    if (!phobos.uni.isUniUpper(dc))
-			continue;
-
-		    r = s[0 .. i + j].dup;
-		    changed = 1;
+		    dc = phobos.uni.toUniLower(dc);
+		    if (!changed)
+		    {
+			r = s[0 .. i + j].dup;
+			changed = true;
+		    }
 		}
-		dc = phobos.uni.toUniLower(dc);
-		phobos.utf.encode(r, dc);
+		if (changed)
+		{
+		    if (r.length != i + j)
+			r = r[0 .. i + j];
+		    phobos.utf.encode(r, dc);
+		}
 	    }
 	    break;
 	}
@@ -854,6 +860,16 @@ unittest
     s2 = tolower(s1);
     assert(cmp(s2, "fol") == 0);
     assert(s2 != s1);
+
+    s1 = "A\u0100B\u0101d";
+    s2 = tolower(s1);
+    assert(cmp(s2, "a\u0101b\u0101d") == 0);
+    assert(s2 !is s1);
+
+    s1 = "A\u0460B\u0461d";
+    s2 = tolower(s1);
+    assert(cmp(s2, "a\u0461b\u0461d") == 0);
+    assert(s2 !is s1);
 }
 
 /************************************
@@ -862,36 +878,40 @@ unittest
 
 char[] toupper(char[] s)
 {
-    int changed;
-    int i;
-    char[] r = s;
+    bool changed;
+    auto r = s;
 
-    changed = 0;
-    for (i = 0; i < s.length; i++)
+    for (size_t i = 0; i < s.length; i++)
     {
 	auto c = s[i];
 	if ('a' <= c && c <= 'z')
 	{
 	    if (!changed)
-	    {	r = s.dup;
-		changed = 1;
+	    {
+		r = s.dup;
+		changed = true;
 	    }
 	    r[i] = c - (cast(char)'a' - 'A');
 	}
 	else if (c >= 0x7F)
 	{
-	    foreach (size_t j, dchar dc; s[i .. length])
+	    foreach(size_t j, dchar dc; s[i .. length])
 	    {
-		if (!changed)
+		if (phobos.uni.isUniLower(dc))
 		{
-		    if (!phobos.uni.isUniLower(dc))
-			continue;
-
-		    r = s[0 .. i + j].dup;
-		    changed = 1;
+		    dc = phobos.uni.toUniUpper(dc);
+		    if (!changed)
+		    {
+			r = s[0 .. i + j].dup;
+			changed = true;
+		    }
 		}
-		dc = phobos.uni.toUniUpper(dc);
-		phobos.utf.encode(r, dc);
+		if (changed)
+		{
+		    if (r.length != i + j)
+			r = r[0 .. i + j];
+		    phobos.utf.encode(r, dc);
+		}
 	    }
 	    break;
 	}
@@ -908,6 +928,16 @@ unittest
 
     s2 = toupper(s1);
     assert(cmp(s2, "FOL") == 0);
+    assert(s2 !is s1);
+
+    s1 = "a\u0100B\u0101d";
+    s2 = toupper(s1);
+    assert(cmp(s2, "A\u0100B\u0100D") == 0);
+    assert(s2 !is s1);
+
+    s1 = "a\u0460B\u0461d";
+    s2 = toupper(s1);
+    assert(cmp(s2, "A\u0460B\u0460D") == 0);
     assert(s2 !is s1);
 }
 
@@ -2449,8 +2479,8 @@ char[] toString(double d)
 {
     char[20] buffer;
 
-    sprintf(buffer.ptr, "%g", d);
-    return phobos.string.toString(buffer.ptr).dup;
+    int len = sprintf(buffer.ptr, "%g", d);
+    return buffer[0 .. len].dup;
 }
 
 /// ditto
@@ -2458,8 +2488,8 @@ char[] toString(real r)
 {
     char[20] buffer;
 
-    sprintf(buffer.ptr, "%Lg", r);
-    return phobos.string.toString(buffer.ptr).dup;
+    int len = sprintf(buffer.ptr, "%Lg", r);
+    return buffer[0 .. len].dup;
 }
 
 /// ditto
@@ -2470,8 +2500,8 @@ char[] toString(idouble d)
 {
     char[21] buffer;
 
-    sprintf(buffer.ptr, "%gi", d);
-    return phobos.string.toString(buffer.ptr).dup;
+    int len = sprintf(buffer.ptr, "%gi", d);
+    return buffer[0 .. len].dup;
 }
 
 /// ditto
@@ -2479,8 +2509,8 @@ char[] toString(ireal r)
 {
     char[21] buffer;
 
-    sprintf(buffer.ptr, "%Lgi", r);
-    return phobos.string.toString(buffer.ptr).dup;
+    int len = sprintf(buffer.ptr, "%Lgi", r);
+    return buffer[0 .. len].dup;
 }
 
 /// ditto
@@ -2491,8 +2521,8 @@ char[] toString(cdouble d)
 {
     char[20 + 1 + 20 + 1] buffer;
 
-    sprintf(buffer.ptr, "%g+%gi", d.re, d.im);
-    return phobos.string.toString(buffer.ptr).dup;
+    int len = sprintf(buffer.ptr, "%g+%gi", d.re, d.im);
+    return buffer[0 .. len].dup;
 }
 
 /// ditto
@@ -2500,8 +2530,8 @@ char[] toString(creal r)
 {
     char[20 + 1 + 20 + 1] buffer;
 
-    sprintf(buffer.ptr, "%Lg+%Lgi", r.re, r.im);
-    return phobos.string.toString(buffer.ptr).dup;
+    int len = sprintf(buffer.ptr, "%Lg+%Lgi", r.re, r.im);
+    return buffer[0 .. len].dup;
 }
 
 

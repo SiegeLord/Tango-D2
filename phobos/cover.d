@@ -124,14 +124,14 @@ static ~this()
 		if (i >= c.data.length)
 		    break;
 		int count = 0;
-		foreach (char c_; lstlines[i])
+		foreach (char c2; lstlines[i])
 		{
-		    switch (c_)
+		    switch (c2)
 		    {	case ' ':
 			    continue;
 			case '0': case '1': case '2': case '3': case '4':
 			case '5': case '6': case '7': case '8': case '9':
-			    count = count * 10 + c_ - '0';
+			    count = count * 10 + c2 - '0';
 			    continue;
 			default:
 			    break;
@@ -143,7 +143,7 @@ static ~this()
 	    }
 	}
 
-	FILE *flst = phobos.c.stdio.fopen(lstfilename, "wb");
+	FILE *flst = phobos.c.stdio.fopen(lstfilename.ptr, "wb");
 	if (!flst)
 	    throw new phobos.file.FileException(lstfilename, "cannot open for write");
 

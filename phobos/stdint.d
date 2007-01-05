@@ -118,7 +118,8 @@
  */
 
 module phobos.stdint;
-
+public import tango.stdc.stdint;
+/++++
 /* Exact sizes */
 
 alias  byte   int8_t;
@@ -161,4 +162,8 @@ alias uint uintptr_t;
 
 alias  long  intmax_t;
 alias ulong uintmax_t;
+
+++++/
+
+
 

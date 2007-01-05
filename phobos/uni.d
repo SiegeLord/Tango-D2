@@ -1,3 +1,6 @@
+
+// Written in the D programming language.
+
 /*
  * Placed into the Public Domain.
  * Digital Mars, www.digitalmars.com
@@ -52,7 +55,7 @@ dchar toUniLower(dchar c)
     {
         c += 32;
     }
-    if (c >= 0x00C0)
+    else if (c >= 0x00C0)
     {
 	if ((c >= 0x00C0 && c <= 0x00D6) || (c >= 0x00D8 && c<=0x00DE))
 	{
@@ -118,7 +121,7 @@ dchar toUniUpper(dchar c)
     {
 	c -= 32;
     }
-    if (c >= 0x00E0)
+    else if (c >= 0x00E0)
     {
 	if ((c >= 0x00E0 && c <= 0x00F6) || (c >= 0x00F8 && c <= 0x00FE))
 	{
@@ -488,12 +491,12 @@ Lisnot:
 Lis:
     debug
     {
-	for (int i = 0; i < table.length; i++)
+	for (int i = 0; 1; i++)
 	{
+	    assert(i < table.length);	// should have been in table
 	    if (u >= table[i][0] && u <= table[i][1])
-		return 1;
+		break;
 	}
-	assert(0);		// should have been in table
     }
     return 1;
 }

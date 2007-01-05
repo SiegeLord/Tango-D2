@@ -9,7 +9,11 @@
 module phobos.c.linux.linux;
 
 public import phobos.c.linux.linuxextern;
-public import tango.sys.linux.linux;
+//public import tango.sys.linux.linux;
+public import tango.stdc.posix.sys.select;
+public import tango.stdc.posix.sys.stat;
+public import tango.stdc.posix.unistd;
+public import tango.stdc.posix.fcntl;
 
 //alias int pid_t;
 //alias int off_t;

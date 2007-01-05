@@ -7,7 +7,7 @@
  */
 
 /*
- *  Copyright (C) 2004-2005 by Digital Mars, www.digitalmars.com
+ *  Copyright (C) 2004-2006 by Digital Mars, www.digitalmars.com
  *  Written by Walter Bright
  *
  *  This software is provided 'as-is', without any express or implied
@@ -696,7 +696,10 @@ void doFormat(void delegate(dchar) putc, TypeInfo[] arguments, va_list argptr)
 
 	    case Mangle.Tclass:
 		vobject = va_arg!(Object)(argptr);
-		s = vobject.toUtf8();
+		if (vobject is null)
+		    s = "null";
+		else
+		    s = vobject.toUtf8();
 		goto Lputstr;
 
 	    case Mangle.Tpointer:
@@ -788,6 +791,19 @@ void doFormat(void delegate(dchar) putc, TypeInfo[] arguments, va_list argptr)
 		m = cast(Mangle)ti.classinfo.name[9];
 		formatArg(fc);
 		return;
+
+	    case Mangle.Tenum:
+		ti = (cast(TypeInfo_Enum)ti).base;
+		m = cast(Mangle)ti.classinfo.name[9];
+		formatArg(fc);
+		return;
+
+	    case Mangle.Tstruct:
+	    {	TypeInfo_Struct tis = cast(TypeInfo_Struct)ti;
+		s = tis.xtoString(argptr);
+		argptr += (tis.tsize() + 3) & ~3;
+		goto Lputstr;
+	    }
 
 	    default:
 		goto Lerror;
@@ -1356,5 +1372,16 @@ unittest
     assert(r == "f");
     r = phobos.string.format("%X", 15);
     assert(r == "F");
+
+    Object c = null;
+    r = phobos.string.format(c);
+    assert(r == "null");
+
+    enum TestEnum
+    {
+	    Value1, Value2
+    }
+    r = phobos.string.format("%s", TestEnum.Value2);
+    assert(r == "1");
 }
 

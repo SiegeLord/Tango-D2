@@ -250,7 +250,7 @@ struct MD5_CTX
 	    transform (buffer.ptr);
 
 	    for (i = partLen; i + 63 < inputLen; i += 64)
-	       transform (((cast(ubyte[])input)[i .. i + 64]).ptr);
+	       transform ((cast(ubyte[])input)[i .. i + 64].ptr);
 
 	    index = 0;
       }
