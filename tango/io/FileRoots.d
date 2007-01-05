@@ -57,7 +57,7 @@ class FileRoots
                         if (len)
                            {
                            str = new char [len];
-                           GetLogicalDriveStringsA (len, str);
+                           GetLogicalDriveStringsA (len, str.ptr);
 
                            // split roots into seperate strings
                            roots = Text.split (str [0..str.length-1], '\0');
