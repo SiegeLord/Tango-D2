@@ -1967,6 +1967,15 @@ version( D_InlineAsm_X86 )
 version( Posix )
 {
     private import tango.stdc.posix.sys.mman;
+
+    version( AsmX86_Win32 ) {} else
+    version( AsmX86_Linux ) {} else
+    version( X86_64 ) {} else
+    version( X86 )
+    {
+        version = JmpX86_Posix;
+        private import tango.stdc.posix.setjmp;
+    }
 }
 
 
@@ -2561,6 +2570,12 @@ private:
             push( 0x00000000 );                                 // ESI
             push( 0x00000000 );                                 // EDI
         }
+        else version( JmpX86_Posix )
+        {
+            // Mash a jmp_buf struct into the new stack space so tstack
+            // points to the struct when all is done.  The jmp_buf data
+            // must be modified so that EIP has the correct address.
+        }
     }
 
 
@@ -2761,9 +2776,14 @@ private:
                 ret 8;
             }
         }
-        else
+        else version( JmpX86_Posix )
         {
             // call setjmp, longjmp
+
+            // Basically, oldp will be the address of the current jmp_buf
+            // and newp will be the address of the new jmp_buf. This means
+            // that tstack will effectively point to a jmp_buf if the
+            // context has been swapped out via this Fiber code.
         }
     }
 }
