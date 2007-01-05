@@ -108,7 +108,7 @@ class FileRoots
                                 {
                                     if(content[i] == '\\')
                                     {
-                                        path ~= Integer.parse(content[++i..i+3], 8);
+                                        path ~= Integer.parse(content[++i..i+3], 8u);
                                         i += 2;
                                     }
                                     else path ~= content[i];
