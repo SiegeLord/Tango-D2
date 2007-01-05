@@ -5,7 +5,7 @@
   <title>Tango API Index</title>
  </head>
  <body>
-  <a href="../../">Back to Project Page</a>
+  <a href="../../">Project Pages</a>
   <h2>Tango API Index</h2>
   <p>Use the Browser incremental search facility to quickly locate a particular
     module name.</p>

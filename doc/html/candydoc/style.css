@@ -91,13 +91,48 @@ span.funcparam
         color: #331200 
 }
 
+#left {
+	position: fixed;
+	padding-right: 1em;
+}
+
+#nav {
+	padding-bottom: 0.5em;
+}
+
+#main {
+	padding-top: 2em;
+}
+
+/* Style applied to div that contains tabs of explorer. Note that if
+   you want to change it's position you have to change position of
+   #explorerclient, #content and corresponding values in ie56hack.css */
+#tabarea {
+	width: 205px;
+	cursor: default;
+}
+
+
+/* Style applied to div that contains tree in explorer. Note that if
+   you want to change it's position you have to change position of
+   #tabarea, #content and corresponding values in ie56hack.css */
+#explorerclient 
+{
+	width: 205px;
+	overflow: auto;
+	background-color: #fefeff;
+	border: dotted 1px #a0a0a0;
+	padding: 4px;
+	cursor: default;
+	color: Black;
+}
+
 /* Style for div that actualy contains documenation. */
 #content
 {
-	padding-right: 8px;
 	position: absolute;
-	left: 245px;
-	top: 8px;
+	left: 230px;
+	padding-right: 8px;
 	text-align: justify;
 }
 
@@ -151,35 +186,6 @@ span.inactivetab
 	margin-right: 1px;
 }
 
-/* Style applied to div that contains tabs of explorer. Note that if
-   you want to change it's position you have to change position of
-   #explorerclient, #content and corresponding values in ie56hack.css */
-#tabarea
-{
-	position: fixed;
-	top: 8px;
-	width: 205px;
-	height: 16px;
-	cursor: default;
-}
-
-
-/* Style applied to div that contains tree in explorer. Note that if
-   you want to change it's position you have to change position of
-   #tabarea, #content and corresponding values in ie56hack.css */
-#explorerclient 
-{
-	position: fixed;
-	top: 24px;
-	bottom: 8px;
-	width: 205px;
-	overflow: auto;
-	background-color: #fefeff;
-	border: dotted 1px #a0a0a0;
-	padding: 4px;
-	cursor: default;
-	color: Black;
-}
 
 /* Following 3 styles control appearance of marker that appears
    if you click some entity in outline window. */
