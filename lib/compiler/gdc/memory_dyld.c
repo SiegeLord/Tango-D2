@@ -32,7 +32,7 @@ void _d_gcc_gc_remove_range( void* beg );
 static void
 on_dyld_add_image(const struct mach_header* hdr, intptr_t slide) {
     unsigned i;
-    void* start, end;
+    void *start, *end;
     const struct section *sec;
 
     for (i = 0;
@@ -54,7 +54,7 @@ on_dyld_add_image(const struct mach_header* hdr, intptr_t slide) {
 static void
 on_dyld_remove_image(const struct mach_header* hdr, intptr_t slide) {
     unsigned i;
-    void* start, end;
+    void *start, *end;
     const struct section *sec;
 
     for(i = 0;
