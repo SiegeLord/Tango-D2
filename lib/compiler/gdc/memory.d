@@ -258,7 +258,7 @@ private
 
         extern (C) void _d_gcc_gc_add_range( void* beg, void* end )
         {
-            void* ptr = realloc( allSegs, numSegs + DataSeg.sizeof );
+            void* ptr = realloc( allSegs, (numSegs + 1) * DataSeg.sizeof );
 
             if( ptr ) // if realloc fails, we have problems
             {
