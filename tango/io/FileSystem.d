@@ -4,8 +4,8 @@
 
         license:        BSD style: $(LICENSE)
 
-        version:        Initial release: March 2004      
-        
+        version:        Initial release: March 2004
+
         author:         Kris, Chris Sauls (Win95 file support)
 
 *******************************************************************************/
@@ -28,10 +28,10 @@ version (Win32)
         private import tango.stdc.posix.unistd;
         }
 
-        
+
 /*******************************************************************************
 
-        Models an OS-specific file-system. Included here are methods to 
+        Models an OS-specific file-system. Included here are methods to
         list the system roots ("C:", "D:", etc) and to manipulate the
         current working directory.
 
@@ -47,11 +47,11 @@ class FileSystem
 
         ***********************************************************************/
 
-        FilePath absolutePath (FilePath path)
+        static FilePath absolutePath (FilePath path)
         {
                 if (path.isAbsolute)
                     return path;
-                
+
                 return path.join (getDirectory);
         }
 
@@ -59,12 +59,12 @@ class FileSystem
 
         ***********************************************************************/
 
-        package void exception (char[] msg)
+        package static void exception (char[] msg)
         {
                 throw new IOException (msg);
         }
 
-        
+
         version (Win32)
         {
                 /***************************************************************
@@ -83,7 +83,7 @@ class FileSystem
                              else
                                 {
                                 wchar[MAX_PATH+1] tmp = void;
-                        
+
                                 if (! SetCurrentDirectoryW (Utf.toUtf16(fp.cString, tmp).ptr))
                                       exception ("Failed to set current directory");
                                 }
@@ -92,7 +92,7 @@ class FileSystem
                 /***************************************************************
 
                         Get the current working directory
-                
+
                 ***************************************************************/
 
                 static FilePath getDirectory ()
@@ -114,7 +114,7 @@ class FileSystem
                                    {
                                    char[MAX_PATH] tmp = void;
                                    auto dir = new wchar [length];
-                                   
+
                                    GetCurrentDirectoryW (length, dir.ptr);
                                    return new FilePath (Utf.toUtf8 (dir, tmp));
                                    }
@@ -123,8 +123,8 @@ class FileSystem
                         return null;
                 }
         }
-        
-        
+
+
         version (Posix)
         {
                 /***************************************************************
@@ -142,17 +142,17 @@ class FileSystem
                 /***************************************************************
 
                         Get the current working directory
-                
+
                 ***************************************************************/
 
                 static FilePath getDirectory ()
                 {
                         char *s = tango.stdc.posix.unistd.getcwd (null, 0);
-                        if (s) 
+                        if (s)
                             return new FilePath (s[0..strlen(s)]);
 
                         exception ("Failed to get current directory");
                 }
-        }   
+        }
 }
 
