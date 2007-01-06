@@ -79,30 +79,6 @@ class File : FileProxy
 
         /***********************************************************************
 
-                Return the content of the file.
-
-        ***********************************************************************/
-
-        static void[] read ( char[] path )
-        {
-                scope File file = new File( path );
-                return file.read();
-        }
-
-        /***********************************************************************
-
-                Return the content of the file.
-
-        ***********************************************************************/
-
-        static void[] read ( FilePath path )
-        {
-                scope File file = new File( path );
-                return file.read();
-        }
-
-        /***********************************************************************
-
                 Set the file content and length to reflect the given array.
 
         ***********************************************************************/
