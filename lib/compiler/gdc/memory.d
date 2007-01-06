@@ -262,9 +262,9 @@ private
 
             if( ptr ) // if realloc fails, we have problems
             {
-                ptr[numSegs].beg = beg;
-                ptr[numSegs].end = end;
-                allSegs = ptr;
+                allSegs = cast(DataSeg*) ptr;
+                allSegs[numSegs].beg = beg;
+                allSegs[numSegs].end = end;
                 numSegs++;
             }
         }
