@@ -17,16 +17,10 @@ private import  tango.io.Console,
 
 void main(char[][] args)
 {
-        void process (File file)
-        {
-                // rename the file
-                file.rename (new FilePath (file.replace(file.toUtf8.dup, FileConst.PathSeparatorChar, '.')));
-        }
-
-
         // sweep all html files in the specified subdir
         if (args.length is 2)
-           (new FileScan).sweep(args[1], "html").files(&process);       
+            foreach (proxy; (new FileScan).sweep (new FilePath(args[1]), ".html").files)
+                     proxy.rename (new FilePath (FilePath.replace (proxy.toUtf8, FileConst.PathSeparatorChar, '.')));
         else
            Cout ("usage is filebubbler subdir").newline;
 }
