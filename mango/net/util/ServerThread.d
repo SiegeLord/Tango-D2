@@ -31,8 +31,9 @@ private import  mango.net.util.model.IRunnable;
 
 ******************************************************************************/
 
-class ServerThread : Thread, IRunnable
+class ServerThread : IRunnable
 {
+        private Thread          thread;
         private ServerSocket    socket;
         private AbstractServer  server;
 
@@ -47,6 +48,7 @@ class ServerThread : Thread, IRunnable
         {
                 this.server = server;
                 this.socket = socket;
+                thread = new Thread (&run);
         }
 
         /**********************************************************************
@@ -55,7 +57,7 @@ class ServerThread : Thread, IRunnable
 
         void execute ()
         {
-                super.start();
+                thread.start();
         }
 
         /**********************************************************************
@@ -69,7 +71,7 @@ class ServerThread : Thread, IRunnable
 
         **********************************************************************/
 
-        override void run ()
+        void run ()
         {
                 while (true)
                        try {

@@ -37,8 +37,8 @@ private import  Integer = tango.text.convert.Integer;
 class AbstractServer : IServer
 {
         private InternetAddress bind;
-        private int             threads;
-        private int             backlog;
+        private uint            threads;
+        private uint            backlog;
         private ServerSocket    socket;
         private Logger          logger;
 
@@ -181,13 +181,13 @@ class AbstractServer : IServer
                 socket = createSocket (bind, backlog);
                 
                 // instantiate and start all threads
-                for (int i=threads; --i >= 0;)
+                for (auto i=threads; i-- > 0;)
                      createThread (socket).execute;
 
                 char[] info = "Server "~toUtf8()~" started on "~
                                socket.getSocket.localAddress().toUtf8()~
-                               " with "~Integer.format(new char[5], threads)~" accept threads, "~
-                               Integer.format(new char[5], backlog)~" backlogs";
+                               " with "~Integer.format(new char[5], cast(long) threads)~" accept threads, "~
+                               Integer.format(new char[5], cast(long) backlog)~" backlogs";
 
                 // indicate what's going on 
                 logger.info (info);

@@ -50,8 +50,9 @@ class Dictionary
 
         char[] get (char[] name)
         {
-                if (name in dictionary)
-                    return dictionary[name];
+                auto ptr = name in dictionary;
+                if (ptr)
+                    return *ptr;
                 return null;
         }
 
@@ -64,6 +65,9 @@ class Dictionary
         void optimize ()
         {
                 dictionary.rehash;
+
+                foreach (key, value; dictionary)
+                        {}
         }
 
         /**********************************************************************
@@ -72,21 +76,13 @@ class Dictionary
 
         **********************************************************************/
 
-        int opApply (int delegate(inout DElement element) dg)
+        int opApply (int delegate(inout char[] key, inout char[] value) dg)
         {
-                DElement        element;
-                int             result = 0;
-                char[][]        keys = dictionary.keys;
-
-                for (int i=0; i < keys.length; ++i)
-                    {
-                    element.name = keys[i];
-                    element.value = dictionary[element.name];
-
-                    result = dg (element);
-                    if (result)
-                        break;
-                    }
+                int result;
+                
+                foreach (key, value; dictionary)
+                         if ((result = dg (key, value)) != 0)
+                              break;
                 return result;
         }
 }
@@ -127,10 +123,10 @@ class MutableDictionary : Dictionary
 
         void remove (char[] name)
         {
-                dictionary[name] = null;
+                //dictionary[name] = null;
                 dictionary.remove(name);
         }
-
+/+
         /**********************************************************************
 
                 Clear all dictionary entries
@@ -147,7 +143,7 @@ class MutableDictionary : Dictionary
                 //  Ben Hinkle's wizardry (reprise)
                 dictionary = cast(char[][char[]]) tmp; 
         }
-
++/
         /**********************************************************************
 
                 loader for use with Properties.load ()
