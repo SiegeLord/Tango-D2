@@ -59,7 +59,7 @@ private class Sieve
                 // information level
                 logger.info (sprint ("Searching prime numbers to : {0}", max));
 
-                feld = new byte[max / 16 + 1];
+                feld = (new byte[max / 16 + 1]).ptr;
 
                 // get milliseconds since application began
                 ulong begin = logger.getRuntime();
