@@ -181,14 +181,14 @@ case "$d_target_os" in
   darwin*)
         # Not for Tango
         # D_GC_MODULES="$D_GC_MODULES internal/gc/gc_dyld.o"
-        D_MEM_MODULES="$D_MEM_MODULES memory_dyld.o"
+	    D_MEM_MODULES="$D_MEM_MODULES memory_dyld.o"
 	    d_gc_stack=GC_Use_Stack_Fixed
 	    d_gc_data="$d_gc_data GC_Use_Data_Dyld"
 	    ;;
   freebsd*)
         # Not for Tango
         # D_GC_MODULES="$D_GC_MODULES internal/gc/gc_freebsd.o"
-        D_MEM_MODULES="$D_MEM_MODULES memory_freebsd.o"
+	    D_MEM_MODULES="$D_MEM_MODULES memory_freebsd.o"
 	    d_gc_stack=GC_Use_Stack_FreeBSD
 	    d_gc_data="$d_gc_data GC_Use_Data_Fixed"
 	    dnl maybe just GC_Use_Stack_ExternC
@@ -261,6 +261,8 @@ fi
 
 f="-fversion=$d_gc_alloc -fversion=$d_gc_stack"
 for m in $d_gc_data; do f="$f -fversion=$m"; done
-D_GC_FLAGS=$f
+# Not for Tango.  Instead, set D_MEM_FLAGS directly.
+#D_GC_FLAGS=$f
+D_MEM_FLAGS=$f
 
 ])

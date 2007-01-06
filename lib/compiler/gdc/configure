@@ -8052,7 +8052,9 @@ fi
 
 f="-fversion=$d_gc_alloc -fversion=$d_gc_stack"
 for m in $d_gc_data; do f="$f -fversion=$m"; done
-D_GC_FLAGS=$f
+# Not for Tango.  Instead, set D_MEM_FLAGS directly.
+#D_GC_FLAGS=$f
+D_MEM_FLAGS=$f
 
 
 fi
