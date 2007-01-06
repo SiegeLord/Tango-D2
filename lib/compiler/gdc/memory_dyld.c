@@ -25,13 +25,14 @@ const static struct {
         { SEG_DATA, SECT_COMMON }
 };
 
-void gc_addRange( void* p, size_t sz );
+void _d_gcc_gc_add_range( void* beg, void* end );
+void _d_gcc_gc_remove_range( void* beg );
 
 /* This should never be called by a thread holding the lock */
 static void
 on_dyld_add_image(const struct mach_header* hdr, intptr_t slide) {
     unsigned i;
-    unsigned long start, end;
+    void* start, end;
     const struct section *sec;
 
     for (i = 0;
@@ -42,10 +43,10 @@ on_dyld_add_image(const struct mach_header* hdr, intptr_t slide) {
             GC_dyld_sections[i].sect);
         if (sec == NULL || sec->size == 0)
             continue;
-        start = slide + sec->addr;
-        end = start + sec->size;
+        start = (void*)( sec->addr + slide );
+        end = (void*)( start + sec->size );
 
-        gc_addRange((void*) start, ((void*) end) - ((void*) start));
+        _d_gcc_gc_add_range((void*) start, (void*) end);
     }
 }
 
@@ -53,7 +54,7 @@ on_dyld_add_image(const struct mach_header* hdr, intptr_t slide) {
 static void
 on_dyld_remove_image(const struct mach_header* hdr, intptr_t slide) {
     unsigned i;
-    unsigned long start, end;
+    void* start, end;
     const struct section *sec;
 
     for(i = 0;
@@ -64,10 +65,10 @@ on_dyld_remove_image(const struct mach_header* hdr, intptr_t slide) {
             GC_dyld_sections[i].seg, GC_dyld_sections[i].sect);
         if (sec == NULL || sec->size == 0)
             continue;
-        start = slide + sec->addr;
-        end = start + sec->size;
+        start = (void*)( sec->addr + slide );
+        end = (void*)( start + sec->size );
 
-        gc_removeRange((void*) start);
+        _d_gcc_gc_remove_range((void*) start);
     }
 }
 

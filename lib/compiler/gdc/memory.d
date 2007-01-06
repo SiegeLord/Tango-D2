@@ -237,8 +237,13 @@ private
     else version( GC_Use_Data_Dyld )
     {
         extern (C) void _d_gcc_dyld_start(DataSegmentTracking mode);
+        version = GC_Use_Dynamic_Ranges;
     }
     else version( GC_Use_Data_Proc_Maps )
+    {
+        version = GC_Use_Dynamic_Ranges;
+    }
+    version( GC_Use_Dynamic_Ranges )
     {
         private import tango.stdc.stdlib;
 
@@ -248,7 +253,37 @@ private
             void* end;
         }
 
-        DataSeg* dataSegs;
+        DataSeg* allSegs = null;
+        size_t   numSegs = 0;
+
+        extern (C) void _d_gcc_gc_add_range( void* beg, void* end )
+        {
+            void* ptr = realloc( allSegs, numSegs + DataSeg.sizeof );
+
+            if( ptr ) // if realloc fails, we have problems
+            {
+                ptr[numSegs].beg = beg;
+                ptr[numSegs].end = end;
+                allSegs = ptr;
+                numSegs++;
+            }
+        }
+
+        extern (C) void _d_gcc_gc_remove_range( void* beg )
+        {
+            for( size_t pos = 0; pos < numSegs; ++pos )
+            {
+                if( beg == allSegs[pos].beg )
+                {
+                    while( ++pos < numSegs )
+                    {
+                        allSegs[pos-1] = allSegs[pos];
+                    }
+                    numSegs--;
+                    return;
+                }
+            }
+        }
     }
 
     alias void delegate( void*, void* ) scanFn;
@@ -265,6 +300,14 @@ extern (C) void cr_scanStaticData( scanFn scan )
 {
     scan( dataStart,  dataEnd );
     scan( dataStart2, dataEnd2 );
+
+    version( GC_Use_Dynamic_Ranges )
+    {
+        for( size_t pos = 0; pos < numSegs; ++pos )
+        {
+            scan( allSegs[pos].beg, allSegs[pos].end );
+        }
+    }
 }
 
 
