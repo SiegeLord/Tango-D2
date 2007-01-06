@@ -271,7 +271,7 @@ void testServletEngine ()
 
 *******************************************************************************/
 
-int main ()
+void main ()
 {
         Configurator ();
         mainLogger = Log.getLogger ("tango.servlets");
@@ -282,8 +282,5 @@ int main ()
 
             mainLogger.info ("Done");
             } catch (Exception x)
-                    {
-                    mainLogger.error (x.msg);
-                    }
-        return 0;
+                     mainLogger.error (x.toUtf8);
 }
