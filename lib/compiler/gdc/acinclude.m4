@@ -181,12 +181,14 @@ case "$d_target_os" in
   darwin*)
         # Not for Tango
         # D_GC_MODULES="$D_GC_MODULES internal/gc/gc_dyld.o"
+        D_MEM_MODULES="$D_MEM_MODULES memory_dyld.o"
 	    d_gc_stack=GC_Use_Stack_Fixed
 	    d_gc_data="$d_gc_data GC_Use_Data_Dyld"
 	    ;;
   freebsd*)
         # Not for Tango
         # D_GC_MODULES="$D_GC_MODULES internal/gc/gc_freebsd.o"
+        D_MEM_MODULES="$D_MEM_MODULES memory_freebsd.o"
 	    d_gc_stack=GC_Use_Stack_FreeBSD
 	    d_gc_data="$d_gc_data GC_Use_Data_Fixed"
 	    dnl maybe just GC_Use_Stack_ExternC

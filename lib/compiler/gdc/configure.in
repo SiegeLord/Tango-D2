@@ -463,8 +463,9 @@ esac
 if test "$need_to_cfgr_gc" = yes; then
     DPHOBOS_CONFIGURE_GC
 fi
-D_MEM_MODULES=$D_GC_MODULES
-D_MEM_FLAGS=$D_GC_FLAGS
+# Not for Tango.  Instead, set D_MEM_MODULES directly.
+#D_MEM_MODULES=$D_GC_MODULES
+#D_MEM_FLAGS=$D_GC_FLAGS
 
 AC_SUBST(D_MEM_FLAGS)
 AC_SUBST(D_MEM_MODULES)

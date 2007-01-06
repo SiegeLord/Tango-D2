@@ -7732,7 +7732,7 @@ esac
 if test "$need_to_cfgr_gc" = yes; then
 
 
-# Not for Tango
+# Not for Tango.  Instead, set D_MEM_MODULES directly.
 #D_GC_MODULES=internal/gc/gcgcc.o
 
 d_gc_alloc=
@@ -7745,14 +7745,16 @@ case "$d_target_os" in
   cygwin*)  d_gc_data="$d_gc_data GC_Use_Data_Fixed"
 	    ;;
   darwin*)
-        # Not for Tango
+        # Not for Tango.  Instead, set D_MEM_MODULES directly.
         # D_GC_MODULES="$D_GC_MODULES internal/gc/gc_dyld.o"
+        D_MEM_MODULES="$D_MEM_MODULES memory_dyld.o"
 	    d_gc_stack=GC_Use_Stack_Fixed
 	    d_gc_data="$d_gc_data GC_Use_Data_Dyld"
 	    ;;
   freebsd*)
-        # Not for Tango
+        # Not for Tango.  Instead, set D_MEM_MODULES directly.
         # D_GC_MODULES="$D_GC_MODULES internal/gc/gc_freebsd.o"
+        D_MEM_MODULES="$D_MEM_MODULES memory_freebsd.o"
 	    d_gc_stack=GC_Use_Stack_FreeBSD
 	    d_gc_data="$d_gc_data GC_Use_Data_Fixed"
 	    	    ;;
@@ -8054,8 +8056,9 @@ D_GC_FLAGS=$f
 
 
 fi
-D_MEM_MODULES=$D_GC_MODULES
-D_MEM_FLAGS=$D_GC_FLAGS
+# Not for Tango.  Instead, set D_MEM_MODULES directly.
+#D_MEM_MODULES=$D_GC_MODULES
+#D_MEM_FLAGS=$D_GC_FLAGS
 
 
 

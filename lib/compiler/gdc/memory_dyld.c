@@ -25,6 +25,7 @@ const static struct {
         { SEG_DATA, SECT_COMMON }
 };
 
+void gc_addRange( void* p, size_t sz );
 
 /* This should never be called by a thread holding the lock */
 static void
@@ -44,7 +45,7 @@ on_dyld_add_image(const struct mach_header* hdr, intptr_t slide) {
         start = slide + sec->addr;
         end = start + sec->size;
 
-        GC_add_range((void*) start, (void*) end);
+        gc_addRange((void*) start, ((void*) end) - ((void*) start));
     }
 }
 
@@ -66,7 +67,7 @@ on_dyld_remove_image(const struct mach_header* hdr, intptr_t slide) {
         start = slide + sec->addr;
         end = start + sec->size;
 
-        GC_remove_range((void*) start);//, (void*) end);
+        gc_removeRange((void*) start);
     }
 }
 

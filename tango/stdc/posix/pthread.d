@@ -171,9 +171,6 @@ else version( darwin )
         _pthread_cleanup_buffer*    __next;
     }
 
-    void _pthread_cleanup_push(_pthread_cleanup_buffer*, _pthread_cleanup_routine, void*);
-    void _pthread_cleanup_pop(_pthread_cleanup_buffer*, int);
-
     template pthread_cleanup()
     {
         _pthread_cleanup_buffer buffer = void;
@@ -185,8 +182,6 @@ else version( darwin )
             buffer.__arg         = arg;
             buffer.__next        = cast(_pthread_cleanup_buffer*) self.__cleanup_stack;
             self.__cleanup_stack = cast(pthread_handler_rec*) &buffer;
-
-            _pthread_cleanup_push( &buffer, routine, arg );
         }
 
         void pop( int execute )
