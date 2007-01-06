@@ -64,8 +64,9 @@ template replace (T)
 /******************************************************************************
 
         Return the index of the next instance of 'match' starting
-        at position 'start', or zero where there is no match. Note
-        that the returned index is 1-based, not 0-based.
+        the search at position 'start'. It returns zero if there is no match.
+        Note: that the returned index is 1-based, not 0-based. The returned
+        index starts counting at the begin of source.
 
         Parameter 'start' defaults to 0
 
@@ -75,9 +76,12 @@ template find (T)
 {
         uint find (T[] source, T match, uint start=0)
         {
-                assert (start < source.length);
-                
-                return locate (&source[start], match, source.length - start);
+                if( source.length <= start ){
+                    // if source is "" or null
+                    return 0;
+                }
+                uint loc = locate (&source[start], match, source.length - start);
+                return loc ? loc + start : 0;
         }
 }
 
@@ -187,7 +191,6 @@ template searchPrior (T)
         from each of the segments
 
 ******************************************************************************/
-
 template split (T)
 {
         T[][] split (T[] src, T delim)
@@ -433,16 +436,22 @@ unittest
 
         assert (replace ("abc".dup, 'b', ':') == "a:c");
 
+        assert (find ("", '?') is 0);
         assert (find ("abc", 'c') is 3);
         assert (find ("abc", 'a') is 1);
         assert (find ("abc", 'd') is 0);
-        
+        assert (find ("abcdabcd", 'd', 2u ) is 4);
+        assert (find ("abcdabcd", 'd', 4u ) is 8);
+
         assert (findPrior ("abc", 'c') is 3);
         assert (findPrior ("abc", 'a') is 1);
         assert (findPrior ("abc", 'd') is 0);
 
-        auto x = split ("a:b", ':');
-        assert (x.length is 2 && x[0] == "a" && x[1] == "b");
+        auto x = split ("a:b:c", ':');
+        assert (x.length is 3 );
+        assert ( x[0] == "a" );
+        assert ( x[1] == "b" );
+        assert ( x[2] == "c" );
 
         assert (search ("abcdefg", "") is 0);
         assert (search ("abcdefg", "abcdefg") is 1);
