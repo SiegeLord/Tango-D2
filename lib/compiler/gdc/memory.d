@@ -333,7 +333,6 @@ void initStaticDataPtrs()
     }
     else version( GC_Use_Data_Dyld )
     {
-        // TODO: fix this function
         _d_gcc_dyld_start( DataSegmentTracking.Dynamic );
     }
     else version( GC_Use_Data_Fixed )
@@ -359,7 +358,6 @@ void initStaticDataPtrs()
     }
     else version( GC_Use_Data_Proc_Maps )
     {
-        // TODO: fix this to store list of data regions
         // TODO: Exclude zero-mapped regions
 
         int   fd = open("/proc/self/maps", O_RDONLY);
@@ -430,9 +428,7 @@ void initStaticDataPtrs()
                                 // we already have static data from this region.  anything else
                                 // is heap (%% check)
                                 debug (ProcMaps) printf("Adding map range %p 0%p\n", start, end);
-                                // TODO: add region here
-                                static assert( false, "GC_Use_Data_Proc_Maps not supported." );
-                                //addRange(start, end);
+                                _d_gcc_gc_add_range(start, end);
                             }
                         }
                         p++;
