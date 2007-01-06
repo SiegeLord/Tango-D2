@@ -18,6 +18,8 @@ private import  tango.text.convert.Type,
                 Utf = tango.text.convert.Utf;
 
 
+private extern (C) void onUnicodeError (char[] msg, size_t idx = 0);
+
 /*******************************************************************************
 
         see http://icu.sourceforge.net/docs/papers/forms_of_unicode/#t2
@@ -239,7 +241,7 @@ class UnicodeBom(T)
 
         private final Info* test (void[] content)
         {
-                for (Info* info=lookup.ptr+lookup.length; --info >= lookup;)
+                for (Info* info=lookup.ptr+lookup.length; --info >= lookup.ptr;)
                      if (info.bom)
                         {
                         int len = info.bom.length;
@@ -267,9 +269,9 @@ class UnicodeBom(T)
                 if (endian && swap)
                    {
                    if (settings.type == Type.Utf16)
-                       ByteSwap.swap16 (content, content.length);
+                       ByteSwap.swap16 (content.ptr, content.length);
                    else
-                       ByteSwap.swap32 (content, content.length);
+                       ByteSwap.swap32 (content.ptr, content.length);
                    }
                 return content;
         }
