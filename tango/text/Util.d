@@ -53,7 +53,7 @@
         ---
         trim (source)
         strip (source, match)
-        split (source, delimeter)
+        split (source, delimeters)
         replace (source, match, replacement)
         contains (source, match)
         locate (source, match, start)
@@ -93,20 +93,20 @@ T[] trim(T) (T[] source)
 
 /******************************************************************************
 
-        Trim the provided string by stripping the provided chr from
+        Trim the given string by stripping the provided match from
         both ends. Returns a slice of the original content
 
 ******************************************************************************/
 
-T[] strip(T) (T[] source, T chr)
+T[] strip(T) (T[] source, T match)
 {
         T*   head = source.ptr,
              tail = head + source.length;
 
-        while (head < tail && *head is chr)
+        while (head < tail && *head is match)
                ++head;
 
-        while (tail > head && *(tail-1) is chr)
+        while (tail > head && *(tail-1) is match)
                --tail;
 
         return head [0 .. tail - head];
@@ -240,23 +240,36 @@ uint locatePatternPrior(T) (T[] source, T[] match, uint start=uint.max)
 
 /******************************************************************************
 
-        Split the provided array wherever a delim instance is found
-        and return the resultant segments. The delimeter is excluded
-        from each of the segments
+        Split the provided array wherever a delimeter-set instance is
+        found, and return the resultant segments. The delimeters are
+        excluded from each of the segments. Note that delimeters are
+        matched as a set of alternates rather than as a pattern.
+
+        Splitting on a single delimeter is considerably faster than
+        splitting upon a set of alternatives
 
 ******************************************************************************/
 
-T[][] split(T) (T[] src, T delim)
+T[][] split(T) (T[] src, T[] delims)
 {
         uint    pos,
                 mark;
         T[][]   result;
 
-        while ((pos = locate (src, delim, pos)) != src.length)
-              {
-              result ~= src [mark .. pos];
-              mark = pos += 1;
-              }
+        if (delims.length is 1)
+            while ((pos = locate (src, delims[0], mark)) != src.length)
+                  {
+                  result ~= src [mark .. pos];
+                  mark = pos + 1;
+                  }
+        else
+           if (delims.length > 1)
+               foreach (i, elem; src)
+                        if (contains (delims, elem))
+                           {
+                           result ~= src [mark .. i];
+                           mark = i + 1;
+                           }
 
         if (mark < src.length)
             result ~= src [mark .. $];
@@ -523,14 +536,17 @@ debug (UnitTest)
         assert (locatePrior ("abce", 'c', 2u) is 4);
         assert (locatePrior ("", 'c') is 0);
 
-        auto x = split ("a:bc:d", ':');
+        auto x = split ("::b", ":");
+        assert (x.length is 3 && x[0] == "" && x[1] == "" && x[2] == "b");
+        x = split ("a:bc:d", ":");
         assert (x.length is 3 && x[0] == "a" && x[1] == "bc" && x[2] == "d");
-
-        x = split ("abcd", ':');
+        x = split ("abcd", ":");
         assert (x.length is 1 && x[0] == "abcd");
-
-        x = split ("abcd:", ':');
+        x = split ("abcd:", ":");
         assert (x.length is 1 && x[0] == "abcd");
+        x = split ("a;b$c#d:e@f", ";:$#@");
+        assert (x.length is 6 && x[0]=="a" && x[1]=="b" && x[2]=="c" &&
+                                 x[3]=="d" && x[4]=="e" && x[5]=="f");
 
         assert (locatePattern ("abcdefg", "") is 7);
         assert (locatePattern ("abcdefg", "abcdefg") is 0);
