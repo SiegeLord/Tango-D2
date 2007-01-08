@@ -11,6 +11,14 @@
         A set of functions for converting between string and integer 
         values. 
 
+        Applying the D "import alias" mechanism to this module is highly
+        recommended, in order to limit namespace pollution:
+        ---
+        import Integer = tango.text.convert.Integer;
+
+        auto i = Integer.parse ("32767");
+        ---
+        
 *******************************************************************************/
 
 module tango.text.convert.Integer;
@@ -71,102 +79,100 @@ enum Flags
 
 *******************************************************************************/
 
-template format (T)
-{                        
-        T[] format (T[] dst, long i, Format fmt=Format.Signed, Flags flags=Flags.None)
-        {
-                T[]     prefix;
-                int     len = dst.length;
-                   
-                // must have some buffer space to operate within! 
-                if (len)
-                   {
-                   uint radix;
-                   T[]  numbers = "0123456789abcdef";
+T[] format(T) (T[] dst, long i, Format fmt=Format.Signed, Flags flags=Flags.None)
+{
+        T[]     prefix;
+        int     len = dst.length;
 
-                   // pre-conversion setup
-                   switch (fmt)
+        // must have some buffer space to operate within! 
+        if (len)
+           {
+           uint radix;
+           T[]  numbers = "0123456789abcdef";
+
+           // pre-conversion setup
+           switch (fmt)
+                  {
+                  default:
+                  case Format.Signed:
+                       if (i < 0)
                           {
-                          default:
-                          case Format.Signed:
-                               if (i < 0)
-                                  {
-                                  prefix = "-";
-                                  i = -i;
-                                  }
-                               else
-                                  if (flags & Flags.Space)
-                                      prefix = " ";
-                                  else
-                                     if (flags & Flags.Plus)
-                                         prefix = "+";
-                               // fall through!
-                          case Format.Unsigned:
-                               radix = 10;
-                               break;
-
-                          case Format.Binary:
-                               radix = 2;
-                               if (flags & Flags.Prefix)
-                                   prefix = "0b";
-                               break;
-
-                          case Format.Octal:
-                               radix = 8;
-                               if (flags & Flags.Prefix)
-                                   prefix = "0o";
-                               break;
-
-                          case Format.Hex:
-                               radix = 16;
-                               if (flags & Flags.Prefix)
-                                   prefix = "0x";
-                               break;
-
-                          case Format.HexUpper:
-                               radix = 16;
-                               numbers = "0123456789ABCDEF";
-                               if (flags & Flags.Prefix)
-                                   prefix = "0X";
-                               break;
+                          prefix = "-";
+                          i = -i;
                           }
-        
-                   // convert number to text
-                   T* p = dst.ptr + len;
-                   if (uint.max >= cast(ulong) i)
-                      {
-                      uint v = cast (uint) i;
-                      do {
-                         *--p = numbers[v % radix];
-                         } while ((v /= radix) && --len);
-                      }
-                   else
-                      {
-                      ulong v = cast (ulong) i;
-                      do {
-                         *--p = numbers[cast(uint) (v % radix)];
-                         } while ((v /= radix) && --len);
-                      }
-                   }
+                       else
+                          if (flags & Flags.Space)
+                              prefix = " ";
+                          else
+                             if (flags & Flags.Plus)
+                                 prefix = "+";
+                       // fall through!
+                  case Format.Unsigned:
+                       radix = 10;
+                       break;
 
-                // are we about to overflow?
-                if (--len < 0 || 0 > (len -= prefix.length))
-                    throw new Exception ("Integer.format : output buffer too small");
+                  case Format.Binary:
+                       radix = 2;
+                       if (flags & Flags.Prefix)
+                           prefix = "0b";
+                       break;
 
-                // prefix number with zeros? 
-                if (flags & Flags.Zero)
-                   {
-                   dst [prefix.length .. len + prefix.length] = '0';
-                   len = 0;
-                   }
-                
-                // write optional prefix string ...
-                dst [len .. len + prefix.length] = prefix[];
+                  case Format.Octal:
+                       radix = 8;
+                       if (flags & Flags.Prefix)
+                           prefix = "0o";
+                       break;
 
-                // return slice of provided output buffer
-                return dst [len .. $];                               
-        } 
-}
+                  case Format.Hex:
+                       radix = 16;
+                       if (flags & Flags.Prefix)
+                           prefix = "0x";
+                       break;
+
+                  case Format.HexUpper:
+                       radix = 16;
+                       numbers = "0123456789ABCDEF";
+                       if (flags & Flags.Prefix)
+                           prefix = "0X";
+                       break;
+                  }
+
+           // convert number to text
+           T* p = dst.ptr + len;
+           if (uint.max >= cast(ulong) i)
+              {
+              uint v = cast (uint) i;
+              do {
+                 *--p = numbers[v % radix];
+                 } while ((v /= radix) && --len);
+              }
+           else
+              {
+              ulong v = cast (ulong) i;
+              do {
+                 *--p = numbers[cast(uint) (v % radix)];
+                 } while ((v /= radix) && --len);
+              }
+           }
+
+        // are we about to overflow?
+        if (--len < 0 || 0 > (len -= prefix.length))
+            throw new Exception ("Integer.format : output buffer too small");
+
+        // prefix number with zeros? 
+        if (flags & Flags.Zero)
+           {
+           dst [prefix.length .. len + prefix.length] = '0';
+           len = 0;
+           }
+
+        // write optional prefix string ...
+        dst [len .. len + prefix.length] = prefix[];
+
+        // return slice of provided output buffer
+        return dst [len .. $];                               
+} 
+
 
 /******************************************************************************
 
@@ -179,21 +185,19 @@ template format (T)
 
 ******************************************************************************/
 
-template parse (T)
+long parse(T) (T[] digits, uint radix=10, uint* ate=null)
 {
-        static long parse (T[] digits, uint radix=10, uint* ate=null)
-        {
-                bool sign;
+        bool sign;
 
-                auto eaten = trim (digits, sign, radix);
-                auto value = convert (digits[eaten..$], radix, ate);
+        auto eaten = trim (digits, sign, radix);
+        auto value = convert (digits[eaten..$], radix, ate);
 
-                if (ate)
-                    *ate += eaten;
+        if (ate)
+            *ate += eaten;
 
-                return cast(long) (sign ? -value : value);
-        }
+        return cast(long) (sign ? -value : value);
 }
+
 
 /******************************************************************************
 
@@ -205,36 +209,34 @@ template parse (T)
 
 ******************************************************************************/
 
-template convert (T)
+ulong convert(T) (T[] digits, uint radix=10, uint* ate=null)
 {
-        ulong convert (T[] digits, uint radix=10, uint* ate=null)
-        {
-                uint  eaten;
-                ulong value;
+        uint  eaten;
+        ulong value;
 
-                foreach (c; digits)
-                        {
-                        if (c >= '0' && c <= '9')
-                           {}
-                        else
-                           if (c >= 'a' && c <= 'f')
-                               c -= 39;
-                           else
-                              if (c >= 'A' && c <= 'F')
-                                  c -= 7;
-                              else
-                                 break;
+        foreach (c; digits)
+                {
+                if (c >= '0' && c <= '9')
+                   {}
+                else
+                   if (c >= 'a' && c <= 'f')
+                       c -= 39;
+                   else
+                      if (c >= 'A' && c <= 'F')
+                          c -= 7;
+                      else
+                         break;
 
-                        value = value * radix + (c - '0');
-                        ++eaten;
-                        }
+                value = value * radix + (c - '0');
+                ++eaten;
+                }
 
-                if (ate)
-                    *ate = eaten;
+        if (ate)
+            *ate = eaten;
 
-                return value;
-        }
+        return value;
 }
+
 
 /******************************************************************************
 
@@ -246,57 +248,55 @@ template convert (T)
 
 ******************************************************************************/
 
-template trim (T)
+uint trim(T) (T[] digits, inout bool sign, inout uint radix)
 {
-        uint trim (T[] digits, inout bool sign, inout uint radix)
-        {
-                T       c;
-                T*      p = digits.ptr;
-                int     len = digits.length;
+        T       c;
+        T*      p = digits.ptr;
+        int     len = digits.length;
 
-                // strip off whitespace and sign characters
-                for (c = *p; len; c = *++p, --len)
-                     if (c is ' ' || c is '\t')
-                        {}
-                     else
-                        if (c is '-')
-                            sign = true;
-                        else
-                           if (c is '+')
-                               sign = false;
-                        else
-                           break;
+        // strip off whitespace and sign characters
+        for (c = *p; len; c = *++p, --len)
+             if (c is ' ' || c is '\t')
+                {}
+             else
+                if (c is '-')
+                    sign = true;
+                else
+                   if (c is '+')
+                       sign = false;
+                else
+                   break;
 
-                // strip off a radix specifier also?
-                if (c is '0' && len > 1)
-                    switch (*++p)
-                           {
-                           case 'x':
-                           case 'X':
-                                ++p;
-                                radix = 16;
-                                break;
+        // strip off a radix specifier also?
+        if (c is '0' && len > 1)
+            switch (*++p)
+                   {
+                   case 'x':
+                   case 'X':
+                        ++p;
+                        radix = 16;
+                        break;
 
-                           case 'b':
-                           case 'B':
-                                ++p;
-                                radix = 2;
-                                break;
+                   case 'b':
+                   case 'B':
+                        ++p;
+                        radix = 2;
+                        break;
 
-                           case 'o':
-                           case 'O':
-                                ++p;
-                                radix = 8;
-                                break;
+                   case 'o':
+                   case 'O':
+                        ++p;
+                        radix = 8;
+                        break;
 
-                           default:
-                                break;
-                           } 
+                   default:
+                        break;
+                   } 
 
-                // return number of characters eaten
-                return (p - digits.ptr);
-        }
+        // return number of characters eaten
+        return (p - digits.ptr);
 }
+
 
 /******************************************************************************
 
@@ -307,19 +307,16 @@ template trim (T)
         
 ******************************************************************************/
 
-template qadtu (T)
+uint atoi(T) (T[] s)
 {
-        uint qadtu (T[] s)
-        {
-                uint value;
+        uint value;
 
-                foreach (c; s)
-                         if (c >= '0' && c <= '9')
-                             value = value * 10 + (c - '0');
-                         else
-                            break;
-                return value;
-        }
+        foreach (c; s)
+                 if (c >= '0' && c <= '9')
+                     value = value * 10 + (c - '0');
+                 else
+                    break;
+        return value;
 }
 
 
@@ -333,17 +330,14 @@ template qadtu (T)
         
 ******************************************************************************/
 
-template qadut (T)
+T[] itoa(T) (T[] output, uint value)
 {
-        T[] qadut (T[] output, uint value)
-        {
-                T* p = output.ptr + output.length;
+        T* p = output.ptr + output.length;
 
-                do {
-                   *--p = value % 10 + '0';
-                   } while (value /= 10);
-                return output[p-output.ptr .. $];
-        }
+        do {
+           *--p = value % 10 + '0';
+           } while (value /= 10);
+        return output[p-output.ptr .. $];
 }
 
 

@@ -17,6 +17,14 @@
         See http://www.w3.org/Protocols/rfc2616/rfc2616-sec3.html for
         further detail.
 
+        Applying the D "import alias" mechanism to this module is highly
+        recommended, in order to limit namespace pollution:
+        ---
+        import TimeStamp = tango.text.convert.TimeStamp;
+
+        auto t = TimeStamp.parse ("Sun, 06 Nov 1994 08:49:37 GMT");
+        ---
+        
 *******************************************************************************/
 
 module tango.text.convert.TimeStamp;
@@ -40,75 +48,73 @@ public alias Epoch.InvalidEpoch InvalidEpoch;
 
 ******************************************************************************/
 
-template format (T)
-{        
-        T[] format (T[] output, ulong time)
-        {
-                assert (output.length >= 29);
+T[] format(T) (T[] output, ulong time)
+{
+        assert (output.length >= 29);
 
-                Epoch.Fields    fields;
-                T[4]            tmp = void;
-                T*              p = output.ptr;
+        Epoch.Fields    fields;
+        T[4]            tmp = void;
+        T*              p = output.ptr;
 
-                // these used to reside in Epoch, but
-                //are better off being templated here
-                static T[][] Days = 
-                [
-                        "Sun",
-                        "Mon",
-                        "Tue",
-                        "Wed",
-                        "Thu",
-                        "Fri",
-                        "Sat",
-                ];
-                
-                static T[][] Months = 
-                [
-                        "Jan",
-                        "Feb",
-                        "Mar",
-                        "Apr",
-                        "May",
-                        "Jun",
-                        "Jul",
-                        "Aug",
-                        "Sep",
-                        "Oct",
-                        "Nov",
-                        "Dec",
-                ];
+        // these arrays also reside in Epoch, but need to be templated here
+        static T[][] Days = 
+        [
+                "Sun",
+                "Mon",
+                "Tue",
+                "Wed",
+                "Thu",
+                "Fri",
+                "Sat",
+        ];
 
-                static T[] Comma = ", ",
-                           Space = " ",
-                           Colon = ":",
-                           Gmt   = " GMT";
-                
-                if (time is InvalidEpoch)
-                    throw new Exception ("Rfc1123.format :: invalid epoch argument");
+        // ditto
+        static T[][] Months = 
+        [
+                "Jan",
+                "Feb",
+                "Mar",
+                "Apr",
+                "May",
+                "Jun",
+                "Jul",
+                "Aug",
+                "Sep",
+                "Oct",
+                "Nov",
+                "Dec",
+        ];
 
-                // convert time to field values
-                fields.asUtcTime (time);
+        static T[] Comma = ", ",
+                   Space = " ",
+                   Colon = ":",
+                   Gmt   = " GMT";
 
-                // build output string manually; much less expensive than binding Format
-                p = append (p, Days[fields.dow]);
-                p = append (p, Comma);
-                p = append (p, Integer.format (tmp[0..2], cast(long) fields.day, Integer.Format.Unsigned, Integer.Flags.Zero));
-                p = append (p, Space);
-                p = append (p, Months[fields.month-1]);
-                p = append (p, Space);
-                p = append (p, Integer.format (tmp[0..4], cast(long) fields.year, Integer.Format.Unsigned, Integer.Flags.Zero));
-                p = append (p, Space);
-                p = append (p, Integer.format (tmp[0..2], cast(long) fields.hour, Integer.Format.Unsigned, Integer.Flags.Zero));
-                p = append (p, Colon);
-                p = append (p, Integer.format (tmp[0..2], cast(long) fields.min, Integer.Format.Unsigned, Integer.Flags.Zero));
-                p = append (p, Colon);
-                p = append (p, Integer.format (tmp[0..2], cast(long) fields.sec, Integer.Format.Unsigned, Integer.Flags.Zero));
-                p = append (p, Gmt);
-                
-                return output [0 .. p - output.ptr];
-        }
+        if (time is InvalidEpoch)
+            throw new Exception ("Rfc1123.format :: invalid epoch argument");
+
+        // convert time to field values
+        fields.asUtcTime (time);
+
+        // build output string manually; much less expensive than binding Format
+        p = append (p, Days[fields.dow]);
+        p = append (p, Comma);
+        p = append (p, Integer.format (tmp[0..2], cast(long) fields.day, Integer.Format.Unsigned, Integer.Flags.Zero));
+        p = append (p, Space);
+        p = append (p, Months[fields.month-1]);
+        p = append (p, Space);
+        p = append (p, Integer.format (tmp[0..4], cast(long) fields.year, Integer.Format.Unsigned, Integer.Flags.Zero));
+        p = append (p, Space);
+        p = append (p, Integer.format (tmp[0..2], cast(long) fields.hour, Integer.Format.Unsigned, Integer.Flags.Zero));
+        p = append (p, Colon);
+        p = append (p, Integer.format (tmp[0..2], cast(long) fields.min, Integer.Format.Unsigned, Integer.Flags.Zero));
+        p = append (p, Colon);
+        p = append (p, Integer.format (tmp[0..2], cast(long) fields.sec, Integer.Format.Unsigned, Integer.Flags.Zero));
+        p = append (p, Gmt);
+
+        return output [0 .. p - output.ptr];
 }
+
 
 /******************************************************************************
 
@@ -121,24 +127,22 @@ template format (T)
 
 ******************************************************************************/
 
-template parse (T)
+ulong parse(T) (T[] date, uint* ate = null)
 {
-        ulong parse (T[] date, uint* ate = null)
-        {
-                int     len;
-                ulong   value;
+        int     len;
+        ulong   value;
 
-                if ((len = rfc1123 (date, value)) > 0 || 
-                    (len = rfc850  (date, value)) > 0 || 
-                    (len = asctime (date, value)) > 0)
-                   {
-                   if (ate)
-                       *ate = len;
-                   return value;
-                   }
-                return InvalidEpoch;
-        }
+        if ((len = rfc1123 (date, value)) > 0 || 
+            (len = rfc850  (date, value)) > 0 || 
+            (len = asctime (date, value)) > 0)
+           {
+           if (ate)
+               *ate = len;
+           return value;
+           }
+        return InvalidEpoch;
 }
+
 
 /******************************************************************************
 
@@ -148,38 +152,36 @@ template parse (T)
 
 ******************************************************************************/
 
-template rfc1123 (T)
+int rfc1123(T) (T[] src, inout ulong value)
 {
-        int rfc1123 (T[] src, inout ulong value)
+        Epoch.Fields    fields;
+        T*              p = src.ptr;
+
+        bool date (inout T* p)
         {
-                Epoch.Fields    fields;
-                T*              p = src.ptr;
-
-                bool date (inout T* p)
-                {
-                        return ((fields.day = parseInt(p)) > 0     &&
-                                 *p++ == ' '                       &&
-                                (fields.month = parseMonth(p)) > 0 &&
-                                 *p++ == ' '                       &&
-                                (fields.year = parseInt(p)) > 0);
-                }
-
-                if (parseShortDay(p) >= 0 &&
-                    *p++ == ','           &&
-                    *p++ == ' '           &&
-                    date (p)              &&
-                    *p++ == ' '           &&
-                    time (fields, p)      &&
-                    *p++ == ' '           &&
-                    p[0..3] == "GMT")
-                    {
-                    value = fields.toUtcTime;
-                    return (p+3) - src.ptr;
-                    }
-
-                return 0;
+                return ((fields.day = parseInt(p)) > 0     &&
+                         *p++ == ' '                       &&
+                        (fields.month = parseMonth(p)) > 0 &&
+                         *p++ == ' '                       &&
+                        (fields.year = parseInt(p)) > 0);
         }
+
+        if (parseShortDay(p) >= 0 &&
+            *p++ == ','           &&
+            *p++ == ' '           &&
+            date (p)              &&
+            *p++ == ' '           &&
+            time (fields, p)      &&
+            *p++ == ' '           &&
+            p[0..3] == "GMT")
+            {
+            value = fields.toUtcTime;
+            return (p+3) - src.ptr;
+            }
+
+        return 0;
 }
+
 
 /******************************************************************************
 
@@ -189,44 +191,42 @@ template rfc1123 (T)
 
 ******************************************************************************/
 
-template rfc850 (T)
+int rfc850(T) (T[] src, inout ulong value)
 {
-        int rfc850 (T[] src, inout ulong value)
+        Epoch.Fields    fields;
+        T*              p = src.ptr;
+
+        bool date (inout T* p)
         {
-                Epoch.Fields    fields;
-                T*              p = src.ptr;
-
-                bool date (inout T* p)
-                {
-                        return ((fields.day = parseInt(p)) > 0     &&
-                                 *p++ == '-'                       &&
-                                (fields.month = parseMonth(p)) > 0 &&
-                                 *p++ == '-'                       &&
-                                (fields.year = parseInt(p)) > 0);
-                }
-
-                if (parseFullDay(p) >= 0 &&
-                    *p++ == ','          &&
-                    *p++ == ' '          &&
-                    date (p)             &&
-                    *p++ == ' '          &&
-                    time (fields, p)     &&
-                    *p++ == ' '          &&
-                    p[0..3] == "GMT")
-                    {
-                    if (fields.year <= 70)
-                        fields.year += 2000;
-                    else
-                       if (fields.year <= 99)
-                           fields.year += 1900;
-
-                    value = fields.toUtcTime;
-                    return (p+3) - src.ptr;
-                    }
-
-                return 0;
+                return ((fields.day = parseInt(p)) > 0     &&
+                         *p++ == '-'                       &&
+                        (fields.month = parseMonth(p)) > 0 &&
+                         *p++ == '-'                       &&
+                        (fields.year = parseInt(p)) > 0);
         }
+
+        if (parseFullDay(p) >= 0 &&
+            *p++ == ','          &&
+            *p++ == ' '          &&
+            date (p)             &&
+            *p++ == ' '          &&
+            time (fields, p)     &&
+            *p++ == ' '          &&
+            p[0..3] == "GMT")
+            {
+            if (fields.year <= 70)
+                fields.year += 2000;
+            else
+               if (fields.year <= 99)
+                   fields.year += 1900;
+
+            value = fields.toUtcTime;
+            return (p+3) - src.ptr;
+            }
+
+        return 0;
 }
+
 
 /******************************************************************************
 
@@ -236,36 +236,33 @@ template rfc850 (T)
 
 ******************************************************************************/
 
-template asctime (T)
+int asctime(T) (T[] src, inout ulong value)
 {
-        int asctime (T[] src, inout ulong value)
+        Epoch.Fields    fields;
+        T*              p = src.ptr;
+
+        bool date (inout T* p)
         {
-                Epoch.Fields    fields;
-                T*              p = src.ptr;
-
-                bool date (inout T* p)
-                {
-                        return ((fields.month = parseMonth(p)) > 0  &&
-                                 *p++ == ' '                        &&
-                                ((fields.day = parseInt(p)) > 0     ||
-                                (*p++ == ' '                        &&
-                                (fields.day = parseInt(p)) > 0)));
-                }
-
-                if (parseShortDay(p) >= 0 &&
-                    *p++ == ' '           &&
-                    date (p)              &&
-                    *p++ == ' '           &&
-                    time (fields, p)      &&
-                    *p++ == ' '           &&
-                    (fields.year = parseInt (p)) > 0)
-                    {
-                    value = fields.toUtcTime;
-                    return p - src.ptr;
-                    }
-
-                return 0;
+                return ((fields.month = parseMonth(p)) > 0  &&
+                         *p++ == ' '                        &&
+                        ((fields.day = parseInt(p)) > 0     ||
+                        (*p++ == ' '                        &&
+                        (fields.day = parseInt(p)) > 0)));
         }
+
+        if (parseShortDay(p) >= 0 &&
+            *p++ == ' '           &&
+            date (p)              &&
+            *p++ == ' '           &&
+            time (fields, p)      &&
+            *p++ == ' '           &&
+            (fields.year = parseInt (p)) > 0)
+            {
+            value = fields.toUtcTime;
+            return p - src.ptr;
+            }
+
+        return 0;
 }
 
 /******************************************************************************
@@ -274,17 +271,15 @@ template asctime (T)
 
 ******************************************************************************/
 
-private template time (T)
+private bool time(T) (inout Epoch.Fields fields, inout T* p)
 {
-        bool time (inout Epoch.Fields fields, inout T* p)
-        {
-                return ((fields.hour = parseInt(p)) > 0 &&
-                         *p++ == ':'                    &&
-                        (fields.min = parseInt(p)) > 0  &&
-                         *p++ == ':'                    &&
-                        (fields.sec = parseInt(p)) > 0);
-        }
+        return ((fields.hour = parseInt(p)) > 0 &&
+                 *p++ == ':'                    &&
+                (fields.min = parseInt(p)) > 0  &&
+                 *p++ == ':'                    &&
+                (fields.sec = parseInt(p)) > 0);
 }
+
 
 /******************************************************************************
 
@@ -292,58 +287,56 @@ private template time (T)
 
 ******************************************************************************/
 
-private template parseMonth (T)
+private int parseMonth(T) (inout T* p)
 {
-        int parseMonth (inout T* p)
-        {
-                int month;
+        int month;
 
-                switch (p[0..3])
-                       {
-                       case "Jan":
-                            month = 1;
-                            break; 
-                       case "Feb":
-                            month = 2;
-                            break; 
-                       case "Mar":
-                            month = 3;
-                            break; 
-                       case "Apr":
-                            month = 4;
-                            break; 
-                       case "May":
-                            month = 5;
-                            break; 
-                       case "Jun":
-                            month = 6;
-                            break; 
-                       case "Jul":
-                            month = 7;
-                            break; 
-                       case "Aug":
-                            month = 8;
-                            break; 
-                       case "Sep":
-                            month = 9;
-                            break; 
-                       case "Oct":
-                            month = 10;
-                            break; 
-                       case "Nov":
-                            month = 11;
-                            break; 
-                       case "Dec":
-                            month = 12;
-                            break; 
-                       default:
-                            return month;
-                       }
+        switch (p[0..3])
+               {
+               case "Jan":
+                    month = 1;
+                    break; 
+               case "Feb":
+                    month = 2;
+                    break; 
+               case "Mar":
+                    month = 3;
+                    break; 
+               case "Apr":
+                    month = 4;
+                    break; 
+               case "May":
+                    month = 5;
+                    break; 
+               case "Jun":
+                    month = 6;
+                    break; 
+               case "Jul":
+                    month = 7;
+                    break; 
+               case "Aug":
+                    month = 8;
+                    break; 
+               case "Sep":
+                    month = 9;
+                    break; 
+               case "Oct":
+                    month = 10;
+                    break; 
+               case "Nov":
+                    month = 11;
+                    break; 
+               case "Dec":
+                    month = 12;
+                    break; 
+               default:
+                    return month;
+               }
 
-                p += 3;
-                return month;
-        }
+        p += 3;
+        return month;
 }
+
 
 /******************************************************************************
 
@@ -351,43 +344,41 @@ private template parseMonth (T)
 
 ******************************************************************************/
 
-private template parseShortDay (T)
+private int parseShortDay(T) (inout T* p)
 {
-        int parseShortDay (inout T* p)
-        {
-                int day;
+        int day;
 
-                switch (p[0..3])
-                       {
-                       case "Sun":
-                            day = 0;
-                            break;
-                       case "Mon":
-                            day = 1;
-                            break; 
-                       case "Tue":
-                            day = 2;
-                            break; 
-                       case "Wed":
-                            day = 3;
-                            break; 
-                       case "Thu":
-                            day = 4;
-                            break; 
-                       case "Fri":
-                            day = 5;
-                            break; 
-                       case "Sat":
-                            day = 6;
-                            break; 
-                       default:
-                            return -1;
-                       }
+        switch (p[0..3])
+               {
+               case "Sun":
+                    day = 0;
+                    break;
+               case "Mon":
+                    day = 1;
+                    break; 
+               case "Tue":
+                    day = 2;
+                    break; 
+               case "Wed":
+                    day = 3;
+                    break; 
+               case "Thu":
+                    day = 4;
+                    break; 
+               case "Fri":
+                    day = 5;
+                    break; 
+               case "Sat":
+                    day = 6;
+                    break; 
+               default:
+                    return -1;
+               }
 
-                p += 3;
-                return day;
-        }
+        p += 3;
+        return day;
 }
+
 
 /******************************************************************************
 
@@ -395,30 +386,28 @@ private template parseShortDay (T)
 
 ******************************************************************************/
 
-private template parseFullDay (T)
+private int parseFullDay(T) (inout T* p)
 {
-        int parseFullDay (inout T* p)
-        {
-                static T[][] days =
-                [
-                "Sunday", 
-                "Monday", 
-                "Tuesday", 
-                "Wednesday", 
-                "Thursday", 
-                "Friday", 
-                "Saturday", 
-                ];
-                
-                foreach (i, day; days)
-                         if (day == p[0..day.length])
-                            {
-                            p += day.length;
-                            return i;
-                            }
-                return -1;
-        }
+        static T[][] days =
+        [
+        "Sunday", 
+        "Monday", 
+        "Tuesday", 
+        "Wednesday", 
+        "Thursday", 
+        "Friday", 
+        "Saturday", 
+        ];
+
+        foreach (i, day; days)
+                 if (day == p[0..day.length])
+                    {
+                    p += day.length;
+                    return i;
+                    }
+        return -1;
 }
+
 
 /******************************************************************************
 
@@ -426,17 +415,15 @@ private template parseFullDay (T)
 
 ******************************************************************************/
 
-private template parseInt (T)
+private static int parseInt(T) (inout T* p)
 {
-        private static int parseInt (inout T* p)
-        {
-                int value;
+        int value;
 
-                while (*p >= '0' && *p <= '9')
-                       value = value * 10 + *p++ - '0';
-                return value;
-        }
+        while (*p >= '0' && *p <= '9')
+               value = value * 10 + *p++ - '0';
+        return value;
 }
+
 
 /******************************************************************************
 
@@ -445,13 +432,10 @@ private template parseInt (T)
 
 ******************************************************************************/
 
-private template append (T)
+private static T* append(T) (T* p, T[] s)
 {
-        private static T* append (T* p, T[] s)
-        {
-                p[0..s.length] = s[];
-                return p + s.length;
-        }
+        p[0..s.length] = s[];
+        return p + s.length;
 }
 
 

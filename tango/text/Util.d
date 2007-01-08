@@ -41,8 +41,9 @@
         errors. Also note that name overloading is not supported by IFTI
         at this time, so is not applicable here.
 
-        Lastly: it is *highly* recommended to apply the D "import alias"
-        mechanism to this module, in order to limit namespace pollution:
+
+        Applying the D "import alias" mechanism to this module is highly
+        recommended, in order to limit namespace pollution:
         ---
         import Util = tango.text.Util;
 
@@ -56,6 +57,7 @@
         split (source, delimeters)
         replace (source, match, replacement)
         contains (source, match)
+        containPattern (source, match)
         locate (source, match, start)
         locatePrior (source, match, start)
         locatePattern (source, match, start);
