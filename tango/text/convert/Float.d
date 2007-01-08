@@ -220,10 +220,10 @@ template parse (T)
                 if (value)
                    {
                    // parse base10 exponent?
-                   if (c is 'e' || c is 'E')
+                   if ((c is 'e' || c is 'E') && p < end )
                       {
                       uint eaten;
-                      exp += Integer.parse (src[(p-src.ptr)+1..length], 10u, &eaten);
+                      exp += Integer.parse (src[(p-src.ptr)+1 .. $], 10u, &eaten);
                       p += eaten;
                       }
 
