@@ -452,7 +452,7 @@ class HttpClient
 
                     // user has additional data to send?
                     if (pump)
-                        pump (emit.getBuffer);
+                        pump (emit.buffer);
                     else
                        // send POST data?
                        if (method is Post && query.length)

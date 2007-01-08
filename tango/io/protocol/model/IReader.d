@@ -4,9 +4,9 @@
 
         license:        BSD style: $(LICENSE)
 
-        version:        Initial release: March 2004     
-                        Outback release: December 2006
-         
+        version:        Oct 2004: Initial release      
+                        Dec 2006: Outback release
+        
         author:         Kris
                         Ivan Senji (the "alias get" idea)
 
@@ -15,6 +15,8 @@
 module tango.io.protocol.model.IReader;
 
 public import tango.io.model.IBuffer;
+
+private import tango.io.protocol.model.IProtocol;
 
 /*******************************************************************************
 
@@ -27,11 +29,11 @@ public import tango.io.model.IBuffer;
 
         All readers support the full set of native data types, plus a full
         selection of array types. The latter can be configured to produce
-        either a copy (.dup) of the buffer content, or a slice. See class
-        SimpleAllocator, BufferAllocator and SliceAllocator for more on
-        this topic. Note that setting a null Allocator disables memory
-        management for arrays, and the application is expected to take on
-        that role.
+        either a copy (.dup) of the buffer content, or a slice. See classes
+        HeapCopy, BufferSlice and HeapSlice for more on this topic. Applications
+        can disable memory management by configuring a Reader with one of the
+        binary oriented protocols, and ensuring the optional protocol 'prefix'
+        is disabled.
 
         Readers support Java-esque get() notation. However, the Tango
         style is to place IO elements within their own parenthesis, like
@@ -72,23 +74,24 @@ public import tango.io.model.IBuffer;
         read.get(c).get(i).get(j).get(d);
         ---
 
-        Note that certain Readers, such as the basic binary implementation, 
+        Note that certain protocols, such as the basic binary implementation, 
         expect to retrieve the number of array elements from the source. For
         example: when reading an array from a file, the number of elements 
         is read from the file also, and the configurable memory-manager is
         invoked to provide the array space. If content is not arranged in
-        such a manner you may read array content directly either by setting
-        a Allocator to null (to disable memory management) or by accessing
-        buffer content directly via the methods exposed there e.g.
+        such a manner you may read array content directly either by creating
+        a Reader with a protocol configured to sidestep array-prefixing, or
+        by accessing buffer content directly (via the methods exposed there)
+        e.g.
 
         ---
         void[10] data;
                 
-        getBuffer.get (data);
+        reader.buffer.fill (data);
         ---
 
         Readers may also be used with any class implementing the IReadable
-        interface. See PickleReader for an example of how this can be used
+        interface, along with any struct implementing an equivalent method
         
 *******************************************************************************/
 
@@ -144,7 +147,11 @@ abstract class IReader   // could be an interface, but that causes poor codegen
 
         ***********************************************************************/
 
-        abstract IReader get (IReadable x);
+        abstract IReader get (IReadable);
+
+        alias void delegate (IReader) Closure;
+
+        abstract IReader get (Closure);
 
         /***********************************************************************
         
@@ -152,70 +159,37 @@ abstract class IReader   // could be an interface, but that causes poor codegen
 
         ***********************************************************************/
 
-        abstract IBuffer getBuffer ();
+        abstract IBuffer buffer ();
 
         /***********************************************************************
         
                 Get the allocator to use for array management. Arrays are
                 generally allocated by the IReader, via configured managers.
                 A number of Allocator classes are available to manage memory
-                when reading array content. Alternatively, a null Allocator
-                hands responsibility over to the application instead. 
+                when reading array content. Alternatively, the application
+                may obtain responsibility for allocation by selecting one of
+                the NativeProtocol deriviatives and setting 'prefix' to be
+                false. The latter disables internal array management.
 
                 Gaining access to the allocator can expose some additional
                 controls. For example, some allocators benefit from a reset
                 operation after each data 'record' has been processed.
 
-        ***********************************************************************/
-
-        abstract Allocator getAllocator (); 
-
-        /***********************************************************************
-              
-                Set the allocator to use for array management. Arrays are
-                generally allocated via the IReader itself, and a variety
-                of Allocators are provided to expose different policies.
-
                 By default, an IReader will allocate each array from the 
-                heap. You can change that behavior by calling this method
+                heap. You can change that by constructing the Reader
                 with an Allocator of choice. For instance, there is a
-                BufferAllocator which will slice an array directly from
+                BufferSlice which will slice an array directly from
                 the buffer where possible. Also available is the record-
-                oriented SliceAllocator, which slices memory from within
+                oriented HeaoSlice, which slices memory from within
                 a pre-allocated heap area, and should be reset by the client
                 code after each record has been read (to avoid unnecessary
-                growth). Setting the Allocator to null disables internal
-                memory management entirely, and turns responsiblity over to
-                the application instead. In the latter case, array slices
-                provided by the application are populated.
+                growth). 
 
-                See module ArrayAllocator for more information
+                See module tango.io.protocol.Allocator for more information
 
         ***********************************************************************/
 
-        abstract void setAllocator (Allocator memory); 
-
-        
-        /***********************************************************************
-
-                Helper to allocate arrays for get() methods. A default
-                allocator is configured, but can be overridden via the
-                setAllocator() method. Assign an Allocator to a Reader
-                to optimize for application-specific scenarios.
-
-                A NullAllocator is available to effectively disable array
-                allocation where appropriate
-                
-        ***********************************************************************/
-
-        interface Allocator
-        {
-                void reset ();
-
-                void bind (IReader input);
-
-                void[] allocate (uint bytes);
-        }
+        abstract IAllocator allocator (); 
 }
 
 /*******************************************************************************

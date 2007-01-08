@@ -46,7 +46,8 @@ import  tango.util.log.Log,
         tango.util.log.Configurator;
 
         // for html responses
-import  tango.io.protocol.DisplayWriter;
+import  tango.io.protocol.Writer;
+import  tango.io.protocol.PrintProtocol;
 
         // for testing the http server
 import  mango.net.http.server.HttpServer;
@@ -63,11 +64,11 @@ private Logger mainLogger;
 
 /*******************************************************************************
 
-        an HTML wrapper built upon a DisplayWriter
+        an HTML wrapper built upon a PrintProtocol
 
 *******************************************************************************/
 
-class HtmlWriter : DisplayWriter
+class HtmlWriter : Writer
 {
         /***********************************************************************
 
@@ -75,7 +76,7 @@ class HtmlWriter : DisplayWriter
 
         this (IWriter writer)
         {
-                super (writer.getBuffer);
+                super (new PrintProtocol(writer.buffer));
         }
 
         /***********************************************************************

@@ -12,14 +12,14 @@
 
 module tango.util.log.RollingFileAppender;
 
-private import  tango.util.log.Appender,
-                tango.util.log.FileAppender;
-
 private import  tango.io.FilePath,
                 tango.io.FileConst,
                 tango.io.FileConduit;
 
-private import  tango.io.protocol.DisplayWriter;
+private import  tango.io.model.IBuffer;
+
+private import  tango.util.log.Appender,
+                tango.util.log.FileAppender;
 
 /*******************************************************************************
 
@@ -140,7 +140,7 @@ public class RollingFileAppender : FileAppender
                 // bump file size
                 fileSize += FileConst.NewlineString.length;
 
-                // writer log message and flush it
+                // write log message and flush it
                 Layout layout = getLayout;
                 msg = layout.header (event);
                 fileSize += msg.length;

@@ -129,7 +129,7 @@ class HttpMessage : IWritable
 
         protected final IConduit getConduit ()
         {
-                return buffer.getConduit();
+                return buffer.conduit;
         }
 
         /**********************************************************************

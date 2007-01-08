@@ -301,7 +301,7 @@ class HttpResponse : HttpMessage
                          .put (status.code)
                          .put (' ')
                          .put (status.name)
-                         .newline  ();
+                         .newline;
 
                    // tell client we don't support keep-alive
                    if (! headers.get (HttpHeader.Connection))
@@ -309,7 +309,7 @@ class HttpResponse : HttpMessage
                   
                    // write the header tokens, followed by a blank line
                    super.write (writer);
-                   writer.newline ();
+                   writer.newline;
 
                    // send it back to the UA (and empty the buffer)
                    writer.flush();

@@ -114,7 +114,7 @@ public class SocketAppender : Appender
         void close ()
         {
                 if (buffer)
-                    buffer.getConduit.close();
+                    buffer.conduit.close();
                 buffer = null;
         }
 }

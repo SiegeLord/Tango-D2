@@ -1,8 +1,8 @@
 module ddep.Configuration;
 
-import tango.io.protocol.DisplayWriter;
+import tango.io.protocol.Writer;
+import tango.io.protocol.PrintProtocol;
 import tango.io.FileConduit;
-import tango.io.Stdout;
 import tango.io.File;
 import tango.text.stream.LineIterator;
 import tango.sys.Process;
@@ -16,7 +16,7 @@ char[][] getSetVersions()
 {
     char[][] ids;
     auto fc = new FileConduit("versions_tmp.d", FileConduit.WriteAppending);
-    auto writer = new DisplayWriter(fc);
+    auto writer = new Writer(new PrintProtocol(fc));
 
     foreach (id; VERSION_IDS) {
         writer("version("c)(id)(") pragma(msg,\""c)(id)("\");"c).newline;

@@ -32,7 +32,7 @@ public class FileAppender : Appender
 {
         private Mask            mask;
         private Buffer          buffer;
-        private IConduit        conduit;
+        private IConduit        conduit_;
 
         /***********************************************************************
 
@@ -76,9 +76,9 @@ public class FileAppender : Appender
 
         ***********************************************************************/
 
-        IConduit getConduit ()
+        IConduit conduit ()
         {
-                return conduit;
+                return conduit_;
         }
 
         /***********************************************************************
@@ -90,7 +90,7 @@ public class FileAppender : Appender
         protected Buffer setConduit (IConduit conduit)
         {
                 // create a new buffer upon this conduit
-                this.conduit = conduit;
+                conduit_ = conduit;
                 return (buffer = new Buffer(conduit));
         }
 
@@ -140,10 +140,10 @@ public class FileAppender : Appender
 
         synchronized void close ()
         {
-                if (conduit)
+                if (conduit_)
                    {
-                   conduit.close();
-                   conduit = null;
+                   conduit_.close();
+                   conduit_ = null;
                    }
         }
 }

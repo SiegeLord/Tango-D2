@@ -14,10 +14,6 @@ module tango.net.http.HttpReader;
 
 private import  tango.io.protocol.Reader;
 
-private import  tango.text.convert.Type;
-
-private import  tango.io.model.IBuffer;
-
 /******************************************************************************
 
         There's no real need at this time to provide an http-specific 

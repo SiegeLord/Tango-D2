@@ -14,8 +14,7 @@ module tango.text.convert.UnicodeBom;
 
 private import  tango.core.ByteSwap;
 
-private import  tango.text.convert.Type,
-                Utf = tango.text.convert.Utf;
+private import  Utf = tango.text.convert.Utf;
 
 
 private extern (C) void onUnicodeError (char[] msg, size_t idx = 0);

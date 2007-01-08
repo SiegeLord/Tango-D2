@@ -319,7 +319,7 @@ class HttpRequest : HttpMessage, IWritable
 
         char[] getRemoteAddr()
         {
-                return getBridge().getServer().getRemoteAddress(getConduit());
+                return getBridge().getServer().getRemoteAddress(getConduit);
         }
 
         /**********************************************************************
@@ -330,7 +330,7 @@ class HttpRequest : HttpMessage, IWritable
 
         char[] getRemoteHost()
         {
-                return getBridge().getServer().getRemoteHost(getConduit());
+                return getBridge().getServer().getRemoteHost(getConduit);
         }
 
         /**********************************************************************

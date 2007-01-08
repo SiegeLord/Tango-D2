@@ -201,7 +201,7 @@ class ServletResponse : HttpResponse, IServletResponse
                        }
 
                     // copy file to output conduit
-                    getWriter.getBuffer.getConduit.copy (conduit);
+                    getWriter.buffer.conduit.copy (conduit);
                     return true;
 
                     } catch (IOException x)

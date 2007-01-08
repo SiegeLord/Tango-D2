@@ -4,8 +4,8 @@
 
         license:        BSD style: $(LICENSE)
 
-        version:        Initial release: March 2004      
-                        Outback release: December 2006
+        version:        Mar 2004: Initial release      
+                        Dec 2006: Outback release
         
         author:         Kris
                         Ivan Senji (the "alias put" idea)
@@ -64,11 +64,7 @@ public import tango.io.model.IBuffer;
         ---
 
         Writers may also be used with any class implementing the IWritable
-        interface. See PickleReader for an example of how this can be used.
-
-        Note that 'newlines' are emitted via the standard "\n" approach. 
-        However, one might consider using the newline() method instead:
-        doing so allows subclasses to intercept newlines more efficiently
+        interface, along with any struct implementing an equivalent function.
 
 *******************************************************************************/
 
@@ -126,15 +122,18 @@ abstract class IWriter  // could be an interface, but that causes poor codegen
 
         abstract IWriter put (IWritable);
 
-        /***********************************************************************
+        alias void delegate (IWriter) Closure;
 
-                Output a newline. Do this indirectly so that it can be 
-                intercepted by subclasses
+        abstract IWriter put (Closure);
+
+        /***********************************************************************
         
+                Emit a newline
+                
         ***********************************************************************/
 
         abstract IWriter newline ();
-
+        
         /***********************************************************************
         
                 Flush the output of this writer. Throws an IOException 
@@ -151,7 +150,7 @@ abstract class IWriter  // could be an interface, but that causes poor codegen
 
         ***********************************************************************/
 
-        abstract IBuffer getBuffer ();
+        abstract IBuffer buffer ();
 }
 
 

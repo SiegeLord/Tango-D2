@@ -4,8 +4,8 @@
 
         license:        BSD style: $(LICENSE)
 
-        version:        Initial release: March 2004
-                        Outback release: December 2006
+        version:        Mar 2004: Initial release
+                        Dec 2006: Outback release
 
         authors:        Kris
         
@@ -55,7 +55,9 @@ extern (C)
         framework by implementing the IReadable and/or IWritable 
         interfaces. Each of these specify just a single method.
         Once compatable, the class can simply be passed to the 
-        reader/writer as if it were native data.
+        reader/writer as if it were native data. Structs can be
+        made compatible in a similar manner by exposing an
+        appropriate function signature.
         
         Buffers may also be tokenized by applying an Iterator. 
         This can be handy when one is dealing with text input, 
@@ -100,12 +102,10 @@ extern (C)
         virtual memory exposed via the OS. This can be used to 
         address large files as an array of content.
 
-        Readers & writers may have a transcoder attached. The
-        role of a transcoder is to aid in converting between each
-        representation of text (utf8, utf16, utf32). They're used
-        to normalize string I/O according to a standard text-type.
-        By default there is no transcoder attached, and the type
-        is therefore considered "raw".
+        Readers & writers may have a protocol attached. The role
+        of a protocol is to format (and parse) data according to
+        the specific protocol, and there are both binary and text
+        oriented protocol to select from. 
 
         Direct buffer manipulation typically involves appending, 
         as in the following example:
@@ -125,12 +125,6 @@ extern (C)
         ---
         auto write = new Writer (new Buffer(256));
         write ("now is the time for all good men "c) (foo);
-        ---
-
-        Or, using formatted output via a text oriented DisplayWriter:
-        ---
-        auto writer = new DisplayWriter (new Buffer(256));
-        writer.format ("now is the time for {0} good men {1}", 3, foo);
         ---
 
         One might use a GrowBuffer instead, where one wishes to append
@@ -155,8 +149,8 @@ extern (C)
         explicit construction is unecessary in common cases. See both 
         Reader and Writer for examples of formatted IO.
 
-        Stdout is a predefined DisplayWriter, attached to a conduit
-        representing the console. Thus, all conduit operations are
+        Stdout is a more specialized converter, attached to a conduit
+        representing the console. However, all conduit operations are
         legitimate on Stdout and Stderr. For example:
         ---
         Stdout.conduit.copy (new FileConduit ("readme.txt"));
@@ -173,7 +167,7 @@ extern (C)
         Stdout is attached to a specific buffer, which in turn is attached 
         to a specific conduit. This buffer is known as Cout, and is attached 
         to a conduit representing the console. Cout can be used directly, 
-        bypassing the formatting layer if so desired. 
+        bypassing the Stdout formatting layer if so desired (it is lightweight)
         
         Cout has relatives named Cerr and Cin, which are attached to 
         the corresponding console conduits. Writer Stderr, and reader 
@@ -201,8 +195,6 @@ extern (C)
         direct array-based IO via a pair of read() and write() methods. 
         These alternate methods will also invoke any attached filters.
 
-        <hr/>
-
 *******************************************************************************/
 
 class Buffer : IBuffer
@@ -211,7 +203,8 @@ class Buffer : IBuffer
         protected uint          limit;          // limit of valid content
         protected uint          capacity;       // maximum of limit
         protected uint          position;       // current read position
-        protected IConduit      conduit;        // optional conduit
+        protected uint          threshhold;     // whether to buffer or not
+        protected IConduit      conduit_;        // optional conduit
 
         
         protected static char[] overflow  = "output buffer overflow";
@@ -378,7 +371,8 @@ class Buffer : IBuffer
         {
                 this.data = data;
                 this.limit = readable;
-                this.capacity = data.length;   
+                this.capacity = data.length;
+                threshhold = data.length / 2;
 
                 // reset to start of input
                 this.position = 0;
@@ -427,7 +421,7 @@ class Buffer : IBuffer
         {   
                 if (size > readable)
                    {
-                   if (conduit is null)
+                   if (conduit_ is null)
                        error (underflow);
 
                    // make some space? This will try to leave as much content
@@ -442,7 +436,7 @@ class Buffer : IBuffer
 
                    // populate tail of buffer with new content
                    do {
-                      if (fill(conduit) is IConduit.Eof)
+                      if (fill(conduit_) is IConduit.Eof)
                           error (eofRead);
                       } while (size > readable);
                    }
@@ -472,7 +466,7 @@ class Buffer : IBuffer
 
         ***********************************************************************/
 
-        uint get (void[] dst)
+        uint fill (void[] dst)
         {   
                 // copy the buffer remains
                 int i = readable ();
@@ -482,11 +476,40 @@ class Buffer : IBuffer
 
                 // and get the rest directly from conduit
                 if (i < dst.length)
-                    if (conduit)
-                        i += conduit.fill (dst [i..$]);
+                    if (conduit_)
+                        i += conduit_.fill (dst [i..$]);
                 return i;
         }
 
+        /***********************************************************************
+
+                Access buffer content
+
+                Params: 
+                dst = destination of the content
+                bytes = size of dst
+
+                Returns:
+                A reference to the populated content
+
+                Remarks:
+                Fill the provided array with content. We try to satisfy 
+                the request from the buffer content, and read directly
+                from an attached conduit where more is required.
+
+        ***********************************************************************/
+
+        void[] extract (void* dst, uint bytes)
+        {
+                if (bytes < threshhold)
+                    dst [0 .. bytes] = get (bytes);
+                else
+                   if (fill (dst [0 .. bytes]) != bytes)
+                       error (eofRead);
+
+                return dst [0 .. bytes];
+        }
+        
         /***********************************************************************
         
                 Wait for input
@@ -521,33 +544,54 @@ class Buffer : IBuffer
                 Throws an IOException indicating eof or eob if not.
 
                 Remarks:
-                Append another buffer to this one, and flush to the
+                Append an array to this buffer, and flush to the
                 conduit as necessary. This is often used in lieu of 
                 a Writer.
 
         ***********************************************************************/
 
-        IBuffer append (void[] src)        
-        {               
-                uint size = src.length;
+        IBuffer append (void[] src)
+        {
+                return append (src.ptr, src.length);
+        }
+        
+        /***********************************************************************
+        
+                Append content
 
-                if (size > writable)
+                Params:
+                src = the content to _append
+                length = the number of bytes in src
+
+                Returns a chaining reference if all content was written. 
+                Throws an IOException indicating eof or eob if not.
+
+                Remarks:
+                Append an array to this buffer, and flush to the
+                conduit as necessary. This is often used in lieu of 
+                a Writer.
+
+        ***********************************************************************/
+
+        IBuffer append (void* src, uint length)
+        {               
+                if (length > writable)
                     // can we write externally?
-                    if (conduit)
+                    if (conduit_)
                        {
                        flush ();
 
                        // check for pathological case
-                       if (size > capacity)
+                       if (length > capacity)
                           {
-                          conduit.flush (src);
+                          conduit_.flush (src [0 .. length]);
                           return this;
                           }
                        }
                     else
                        error (overflow);
 
-                copy (src.ptr, size);
+                copy (src, length);
                 return this;
         }
 
@@ -691,7 +735,7 @@ class Buffer : IBuffer
         bool next (uint delegate (void[]) scan)
         {
                 while (read(scan) is IConduit.Eof)
-                       if (conduit is null)
+                       if (conduit_ is null)
                           {
                           skip (readable);
                           return false;
@@ -708,7 +752,7 @@ class Buffer : IBuffer
                                  error ("Token is too large to fit within buffer");
 
                           // read another chunk of data
-                          if (fill(conduit) is IConduit.Eof)
+                          if (fill(conduit_) is IConduit.Eof)
                              {
                              skip (readable);
                              return false;
@@ -863,8 +907,8 @@ class Buffer : IBuffer
 
         uint fill ()
         {
-                if (conduit)
-                    return fill (conduit);
+                if (conduit_)
+                    return fill (conduit_);
 
                 return IConduit.Eof;
         }
@@ -920,7 +964,7 @@ class Buffer : IBuffer
 
         uint makeRoom (uint space)
         {
-                if (conduit)
+                if (conduit_)
                     drain ();
                 else
                    error (overflow);
@@ -943,8 +987,8 @@ class Buffer : IBuffer
 
         uint drain ()
         {
-                uint ret = read (&conduit.write);
-                if (ret is conduit.Eof)
+                uint ret = read (&conduit_.write);
+                if (ret is conduit_.Eof)
                     error (eofWrite);
 
                 compress ();
@@ -966,8 +1010,8 @@ class Buffer : IBuffer
 
         IBuffer flush ()
         {
-                if (conduit)
-                    if (conduit.flush (data [position..limit]))
+                if (conduit_)
+                    if (conduit_.flush (data [position..limit]))
                         clear();
                     else
                        error (eofWrite);
@@ -1089,9 +1133,9 @@ class Buffer : IBuffer
 
         ***********************************************************************/
 
-        IConduit getConduit ()
+        IConduit conduit ()
         {
-                return conduit;
+                return conduit_;
         }
 
         /***********************************************************************
@@ -1112,7 +1156,7 @@ class Buffer : IBuffer
 
         IBuffer setConduit (IConduit conduit)
         {
-                this.conduit = conduit;
+                conduit_ = conduit;
                 return this;
         }
 

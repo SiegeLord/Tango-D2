@@ -245,7 +245,7 @@ class UString : UText, IStringOther
                         // IReadable adapter to perform the conversion
                         protected void read (IReader r)
                         {
-                                load (r.getBuffer);
+                                load (r.buffer);
                         }
 
                         // read from the provided buffer until we 

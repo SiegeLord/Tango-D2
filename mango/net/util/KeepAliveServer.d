@@ -38,11 +38,12 @@ private import  tango.net.ServerSocket;
 
 ******************************************************************************/
 
-class KeepAliveThread : Thread
+class KeepAliveThread
 {
-        public GrowBuffer      buffer;
-        public Logger          logger;
-        public char[]          client;
+        public GrowBuffer       buffer;
+        public Logger           logger;
+        public char[]           client;
+        private Thread          thread;
 
         /**********************************************************************
 
@@ -68,6 +69,17 @@ class KeepAliveThread : Thread
 
                 // save state
                 logger = server.getLogger();
+
+                thread = new Thread (&run);
+        }
+
+        /**********************************************************************
+
+        **********************************************************************/
+
+        void exceute ()
+        {
+                thread.start;
         }
 
         /**********************************************************************
@@ -76,7 +88,7 @@ class KeepAliveThread : Thread
 
         **********************************************************************/
 
-        override void run ()
+        private void run ()
         {
                 logger.info (client ~ " starting service handler");
 
@@ -103,7 +115,7 @@ class KeepAliveThread : Thread
                 logger.info (client ~ " halting service handler");
 
                 // make sure we close the conduit ~ the client will see this also
-                buffer.getConduit.close ();
+                buffer.conduit.close ();
         }
 
         /**********************************************************************
@@ -220,7 +232,7 @@ class KeepAliveServer : AbstractServer
 
         void service (ServerThread socketOpener, IConduit conduit)
         {
-                createWorker(conduit).start();
+                createWorker(conduit).execute;
         }
 }
 

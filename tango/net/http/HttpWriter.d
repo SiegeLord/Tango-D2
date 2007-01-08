@@ -7,13 +7,13 @@
         version:        Initial release: April 2004      
         
         author:         Kris
-                        h3r3tic
 
 *******************************************************************************/
 
 module tango.net.http.HttpWriter;
 
-private import  tango.io.protocol.DisplayWriter;
+private import  tango.io.protocol.Writer,
+                tango.io.protocol.PrintProtocol;
 
 /******************************************************************************
 
@@ -22,7 +22,7 @@ private import  tango.io.protocol.DisplayWriter;
 
 ******************************************************************************/
 
-class HttpWriter : DisplayWriter
+class HttpWriter : Writer
 {
         alias newline cr;   
  
@@ -34,7 +34,7 @@ class HttpWriter : DisplayWriter
 
         this (IBuffer buffer)
         {
-               super (buffer);
+               super (new PrintProtocol(buffer));
         }
 
 

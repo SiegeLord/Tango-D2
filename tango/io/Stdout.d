@@ -181,7 +181,7 @@ class BufferedFormat(T)
 
         final IConduit conduit ()
         {
-                return output.getConduit;
+                return output.conduit;
         }
 
         /**********************************************************************

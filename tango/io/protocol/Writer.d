@@ -4,8 +4,8 @@
 
         license:        BSD style: $(LICENSE)
 
-        version:        Initial release: October 2004
-                        Outback release: December 2006
+        version:        Oct 2004: Initial release      
+                        Dec 2006: Outback release
         
         author:         Kris 
 
@@ -16,12 +16,12 @@ module tango.io.protocol.Writer;
 private import  tango.io.Buffer,
                 tango.io.FileConst;
 
-private import  tango.text.convert.Type;
-
 public  import  tango.io.model.IBuffer,
                 tango.io.model.IConduit;
 
 public  import  tango.io.protocol.model.IWriter;
+
+private import  tango.io.protocol.model.IProtocol;
 
 /*******************************************************************************
 
@@ -71,12 +71,8 @@ public  import  tango.io.protocol.model.IWriter;
         ---
 
         Writers may also be used with any class implementing the IWritable
-        interface. See PickleReader for an example of how this can be used.
+        interface, along with any struct implementing an equivalent function.
 
-        Note that 'newlines' are emitted via the standard "\n" approach. 
-        However, one might consider using the newline() method instead:
-        doing so allows subclasses to intercept newlines more efficiently
-        
 *******************************************************************************/
 
 class Writer : IWriter
@@ -84,7 +80,11 @@ class Writer : IWriter
         // the buffer associated with this writer. Note that this
         // should not change over the lifetime of the reader, since
         // it is assumed to be immutable elsewhere 
-        protected IBuffer buffer;
+        private IBuffer                 buffer_;
+        
+        private IProtocol.ArrayWriter   arrays;
+        private IProtocol.Writer        elements;
+        
 
         /***********************************************************************
         
@@ -95,7 +95,9 @@ class Writer : IWriter
 
         this (IBuffer buffer)
         {
-                this.buffer = buffer;
+                buffer_ = buffer;
+                arrays = &writeArray;
+                elements = &writeElement;
         }
      
         /***********************************************************************
@@ -116,9 +118,33 @@ class Writer : IWriter
 
         ***********************************************************************/
 
-        final IBuffer getBuffer ()
+        this (IProtocol protocol)
+        {
+                buffer_ = protocol.buffer;
+                elements = &protocol.write;
+                arrays = &protocol.writeArray;
+        }
+
+        /***********************************************************************
+        
+                Return the associated buffer
+
+        ***********************************************************************/
+
+        final IBuffer buffer ()
         {     
-                return buffer;
+                return buffer_;
+        }
+
+        /***********************************************************************
+        
+                Emit a newline
+                
+        ***********************************************************************/
+
+        IWriter newline ()
+        {  
+                return put (FileConst.NewlineString);
         }
 
         /***********************************************************************
@@ -130,20 +156,8 @@ class Writer : IWriter
 
         final IWriter flush ()
         {  
-                buffer.flush;
+                buffer_.flush;
                 return this;
-        }
-
-        /***********************************************************************
-        
-                Output a newline. Do this indirectly so that it can be 
-                intercepted by subclasses.
-
-        ***********************************************************************/
-
-        IWriter newline ()
-        {
-                return put (cast(char[]) FileConst.NewlineString);
         }
 
         /***********************************************************************
@@ -160,6 +174,18 @@ class Writer : IWriter
 
         /***********************************************************************
         
+                Write via a delegate to the current buffer-position
+                
+        ***********************************************************************/
+
+        final IWriter put (IWriter.Closure dg) 
+        {
+                dg (this);
+                return this;
+        }
+
+        /***********************************************************************
+        
                 Write a class to the current buffer-position
                 
         ***********************************************************************/
@@ -167,10 +193,9 @@ class Writer : IWriter
         final IWriter put (IWritable x) 
         {
                 if (x is null)
-                    buffer.error ("Writer.put :: attempt to write a null IWritable object");
-                
-                x.write (this); 
-                return this;
+                    buffer_.error ("Writer.put :: attempt to write a null IWritable object");
+
+                return put (&x.write);
         }
 
         /***********************************************************************
@@ -181,7 +206,8 @@ class Writer : IWriter
 
         final IWriter put (bool x)
         {
-                return write (&x, x.sizeof, Type.Bool);
+                elements (&x, x.sizeof, IProtocol.Type.Bool);
+                return this;
         }
 
         /***********************************************************************
@@ -192,7 +218,8 @@ class Writer : IWriter
 
         final IWriter put (ubyte x)
         {
-                return write (&x, x.sizeof, Type.UByte);
+                elements (&x, x.sizeof, IProtocol.Type.UByte);
+                return this;
         }
 
         /***********************************************************************
@@ -203,7 +230,8 @@ class Writer : IWriter
 
         final IWriter put (byte x)
         {
-                return write (&x, x.sizeof, Type.Byte);
+                elements (&x, x.sizeof, IProtocol.Type.Byte);
+                return this;
         }
 
         /***********************************************************************
@@ -214,7 +242,8 @@ class Writer : IWriter
 
         final IWriter put (ushort x)
         {
-                return write (&x, x.sizeof, Type.UShort);
+                elements (&x, x.sizeof, IProtocol.Type.UShort);
+                return this;
         }
 
         /***********************************************************************
@@ -225,7 +254,8 @@ class Writer : IWriter
 
         final IWriter put (short x)
         {
-                return write (&x, x.sizeof, Type.Short);
+                elements (&x, x.sizeof, IProtocol.Type.Short);
+                return this;
         }
 
         /***********************************************************************
@@ -236,7 +266,8 @@ class Writer : IWriter
 
         final IWriter put (uint x)
         {
-                return write (&x, x.sizeof, Type.UInt);
+                elements (&x, x.sizeof, IProtocol.Type.UInt);
+                return this;
         }
 
         /***********************************************************************
@@ -247,7 +278,8 @@ class Writer : IWriter
 
         final IWriter put (int x)
         {
-                return write (&x, x.sizeof, Type.Int);
+                elements (&x, x.sizeof, IProtocol.Type.Int);
+                return this;
         }
 
         /***********************************************************************
@@ -258,7 +290,8 @@ class Writer : IWriter
 
         final IWriter put (ulong x)
         {
-                return write (&x, x.sizeof, Type.ULong);
+                elements (&x, x.sizeof, IProtocol.Type.ULong);
+                return this;
         }
 
         /***********************************************************************
@@ -269,7 +302,8 @@ class Writer : IWriter
 
         final IWriter put (long x)
         {
-                return write (&x, x.sizeof, Type.Long);
+                elements (&x, x.sizeof, IProtocol.Type.Long);
+                return this;
         }
 
         /***********************************************************************
@@ -280,7 +314,8 @@ class Writer : IWriter
 
         final IWriter put (float x)
         {
-                return write (&x, x.sizeof, Type.Float);
+                elements (&x, x.sizeof, IProtocol.Type.Float);
+                return this;
         }
 
         /***********************************************************************
@@ -291,7 +326,8 @@ class Writer : IWriter
 
         final IWriter put (double x)
         {
-                return write (&x, x.sizeof, Type.Double);
+                elements (&x, x.sizeof, IProtocol.Type.Double);
+                return this;
         }
 
         /***********************************************************************
@@ -302,7 +338,8 @@ class Writer : IWriter
 
         final IWriter put (real x)
         {
-                return write (&x, x.sizeof, Type.Real);
+                elements (&x, x.sizeof, IProtocol.Type.Real);
+                return this;
         }
 
         /***********************************************************************
@@ -313,7 +350,8 @@ class Writer : IWriter
 
         final IWriter put (char x)
         {
-                return write (&x, x.sizeof, Type.Utf8);
+                elements (&x, x.sizeof, IProtocol.Type.Utf8);
+                return this;
         }
 
         /***********************************************************************
@@ -324,7 +362,8 @@ class Writer : IWriter
 
         final IWriter put (wchar x)
         {
-                return write (&x, x.sizeof, Type.Utf16);
+                elements (&x, x.sizeof, IProtocol.Type.Utf16);
+                return this;
         }
 
         /***********************************************************************
@@ -335,7 +374,8 @@ class Writer : IWriter
 
         final IWriter put (dchar x)
         {
-                return write (&x, x.sizeof, Type.Utf32);
+                elements (&x, x.sizeof, IProtocol.Type.Utf32);
+                return this;
         }
 
         /***********************************************************************
@@ -346,7 +386,8 @@ class Writer : IWriter
 
         final IWriter put (bool[] x)
         {
-                return writeArray (x.ptr, x.length, x.length * bool.sizeof, Type.Bool);
+                arrays (x.ptr, x.length * bool.sizeof, IProtocol.Type.Bool);
+                return this;
         }
 
         /***********************************************************************
@@ -357,7 +398,8 @@ class Writer : IWriter
 
         final IWriter put (byte[] x)
         {
-                return writeArray (x.ptr, x.length, x.length * byte.sizeof, Type.Byte);
+                arrays (x.ptr, x.length * byte.sizeof, IProtocol.Type.Byte);
+                return this;
         }
 
         /***********************************************************************
@@ -368,7 +410,8 @@ class Writer : IWriter
 
         final IWriter put (ubyte[] x)
         {
-                return writeArray (x.ptr, x.length, x.length * ubyte.sizeof, Type.UByte);
+                arrays (x.ptr, x.length * ubyte.sizeof, IProtocol.Type.UByte);
+                return this;
         }
 
         /***********************************************************************
@@ -379,7 +422,8 @@ class Writer : IWriter
 
         final IWriter put (short[] x)
         {
-                return writeArray (x.ptr, x.length, x.length * short.sizeof, Type.Short);
+                arrays (x.ptr, x.length * short.sizeof, IProtocol.Type.Short);
+                return this;
         }
 
         /***********************************************************************
@@ -390,7 +434,8 @@ class Writer : IWriter
 
         final IWriter put (ushort[] x)
         {
-                return writeArray (x.ptr, x.length, x.length * ushort.sizeof, Type.UShort);
+                arrays (x.ptr, x.length * ushort.sizeof, IProtocol.Type.UShort);
+                return this;
         }
 
         /***********************************************************************
@@ -401,7 +446,8 @@ class Writer : IWriter
 
         final IWriter put (int[] x)
         {
-                return writeArray (x.ptr, x.length, x.length * int.sizeof, Type.Int);
+                arrays (x.ptr, x.length * int.sizeof, IProtocol.Type.Int);
+                return this;
         }
 
         /***********************************************************************
@@ -412,7 +458,8 @@ class Writer : IWriter
 
         final IWriter put (uint[] x)
         {
-                return writeArray (x.ptr, x.length, x.length * uint.sizeof, Type.UInt);
+                arrays (x.ptr, x.length * uint.sizeof, IProtocol.Type.UInt);
+                return this;
         }
 
         /***********************************************************************
@@ -423,7 +470,8 @@ class Writer : IWriter
 
         final IWriter put (long[] x)
         {
-                return writeArray (x.ptr, x.length, x.length * long.sizeof, Type.Long);
+                arrays (x.ptr, x.length * long.sizeof, IProtocol.Type.Long);
+                return this;
         }
 
         /***********************************************************************
@@ -434,7 +482,8 @@ class Writer : IWriter
 
         final IWriter put (ulong[] x)
         {
-                return writeArray (x.ptr, x.length, x.length * ulong.sizeof, Type.ULong);
+                arrays (x.ptr, x.length * ulong.sizeof, IProtocol.Type.ULong);
+                return this;
         }
 
         /***********************************************************************
@@ -445,7 +494,8 @@ class Writer : IWriter
 
         final IWriter put (float[] x)
         {
-                return writeArray (x.ptr, x.length, x.length * float.sizeof, Type.Float);
+                arrays (x.ptr, x.length * float.sizeof, IProtocol.Type.Float);
+                return this;
         }
 
         /***********************************************************************
@@ -456,7 +506,8 @@ class Writer : IWriter
 
         final IWriter put (double[] x)
         {
-                return writeArray (x.ptr, x.length, x.length * double.sizeof, Type.Double);
+                arrays (x.ptr, x.length * double.sizeof, IProtocol.Type.Double);
+                return this;
         }
 
         /***********************************************************************
@@ -467,7 +518,8 @@ class Writer : IWriter
 
         final IWriter put (real[] x)
         {
-                return writeArray (x.ptr, x.length, x.length * real.sizeof, Type.Real);
+                arrays (x.ptr, x.length * real.sizeof, IProtocol.Type.Real);
+                return this;
         }
 
         /***********************************************************************
@@ -478,7 +530,8 @@ class Writer : IWriter
 
         final IWriter put (char[] x) 
         {
-                return writeArray (x.ptr, x.length, x.length * char.sizeof, Type.Utf8);
+                arrays (x.ptr, x.length * char.sizeof, IProtocol.Type.Utf8);
+                return this;
         }
 
         /***********************************************************************
@@ -489,7 +542,8 @@ class Writer : IWriter
 
         final IWriter put (wchar[] x) 
         {
-                return writeArray (x.ptr, x.length, x.length * wchar.sizeof, Type.Utf16);
+                arrays (x.ptr, x.length * wchar.sizeof, IProtocol.Type.Utf16);
+                return this;
         }
 
         /***********************************************************************
@@ -500,7 +554,8 @@ class Writer : IWriter
 
         final IWriter put (dchar[] x)
         {
-                return writeArray (x.ptr, x.length, x.length * dchar.sizeof, Type.Utf32);
+                arrays (x.ptr, x.length * dchar.sizeof, IProtocol.Type.Utf32);
+                return this;
         }
 
         /***********************************************************************
@@ -510,10 +565,10 @@ class Writer : IWriter
 
         ***********************************************************************/
 
-        protected IWriter writeArray (void* src, uint elements, uint bytes, uint type)
+        private void writeArray (void* src, uint bytes, IProtocol.Type type)
         {
-                put (elements);
-                return write (src, bytes, type);
+                put (bytes);
+                writeElement (src, bytes, type);
         }
 
         /***********************************************************************
@@ -522,9 +577,8 @@ class Writer : IWriter
 
         ***********************************************************************/
 
-        protected IWriter write (void* src, uint bytes, uint type)
+        private void writeElement (void* src, uint bytes, IProtocol.Type type)
         {
-                buffer.append (src [0 .. bytes]);
-                return this;
+                buffer_.append (src [0 .. bytes]);
         }
 }

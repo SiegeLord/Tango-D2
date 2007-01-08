@@ -31,9 +31,10 @@ private import  tango.io.model.IBuffer,
 
 ******************************************************************************/
 
-class SocketListener : Thread, IListener
+class SocketListener : IListener
 {
         private bool                    quit;
+        private Thread                  thread;
         private IBuffer                 buffer;
         private IConduit                conduit;
         private int                     limit = 3;
@@ -54,7 +55,8 @@ class SocketListener : Thread, IListener
         body
         {
                 this.buffer = buffer;
-                this.conduit = buffer.getConduit;
+                this.conduit = buffer.conduit;
+                thread = new Thread (&run);
         }
 
         /***********************************************************************
@@ -74,6 +76,17 @@ class SocketListener : Thread, IListener
         ***********************************************************************/
 
         abstract void exception (char[] msg);
+
+        /**********************************************************************
+             
+                Start this listener
+
+        **********************************************************************/
+
+        void execute ()
+        {
+                thread.start;
+        }
 
         /**********************************************************************
              
@@ -115,7 +128,7 @@ class SocketListener : Thread, IListener
 
         **********************************************************************/
 
-        void run ()
+        private void run ()
         {
                 int lives = limit;
 

@@ -66,8 +66,6 @@ struct Console
 
         class Input : Buffer
         {
-                alias getConduit conduit;
-                
                 /**************************************************************
 
                         Attach console input to the provided device
@@ -112,7 +110,6 @@ struct Console
                 alias newline    nl;
                 alias flush      opCall;
                 alias append     opCall;
-                alias getConduit conduit;
 
                 /**************************************************************
 

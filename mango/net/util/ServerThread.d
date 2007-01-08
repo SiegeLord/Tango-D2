@@ -71,7 +71,7 @@ class ServerThread : IRunnable
 
         **********************************************************************/
 
-        void run ()
+        private void run ()
         {
                 while (true)
                        try {
