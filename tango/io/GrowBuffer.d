@@ -95,14 +95,12 @@ class GrowBuffer : Buffer
 
         ***********************************************************************/
 
-        override IBuffer append (void[] src)        
+        override IBuffer append (void *src, uint length)        
         {               
-                uint size = src.length;
+                if (length > writable)
+                    makeRoom (length);
 
-                if (size > writable)
-                    makeRoom (size);
-
-                copy (src.ptr, size);
+                copy (src, length);
                 return this;
         }
 
