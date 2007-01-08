@@ -140,6 +140,18 @@ bool contains(T) (T[] source, T match)
 
 /******************************************************************************
 
+        Returns whether or not the provided array contains an instance
+        of the given match
+        
+******************************************************************************/
+
+bool containsPattern(T) (T[] source, T[] match)
+{
+        return locatePattern (source, match) != source.length;
+}
+
+/******************************************************************************
+
         Return the index of the next instance of 'match' starting at
         position 'start', or source.length where there is no match.
 
@@ -490,9 +502,7 @@ uint mismatch(T) (T* s1, T* s2, uint length)
 
 debug (UnitTest)
 {
-        void main() {}
-        
-        unittest       
+        unittest
         {
         assert (isSpace (' ') && !isSpace ('d'));
 
@@ -513,6 +523,14 @@ debug (UnitTest)
         assert (contains ("abc", 'b'));
         assert (contains ("abc", 'c'));
         assert (contains ("abc", 'd') is false);
+
+        assert (containsPattern ("abc", "ab"));
+        assert (containsPattern ("abc", "bc"));
+        assert (containsPattern ("abc", "abc"));
+        assert (containsPattern ("abc", "zabc") is false);
+        assert (containsPattern ("abc", "abcd") is false);
+        assert (containsPattern ("abc", "za") is false);
+        assert (containsPattern ("abc", "cd") is false);
 
         assert (trim ("") == "");
         assert (trim (" abc  ") == "abc");
