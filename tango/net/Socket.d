@@ -739,7 +739,7 @@ class Socket
 
         ***********************************************************************/
 
-        socket_t getHandle ()
+        socket_t fileHandle ()
         {
                 return sock;
         }

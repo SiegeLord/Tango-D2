@@ -91,14 +91,14 @@ class SocketConduit : Conduit
 
         /***********************************************************************
 
-                Models a handle-oriented device. We need to revisit this.
+                Models a handle-oriented device.
 
                 TODO: figure out how to avoid exposing this in the general
                 case
 
         ***********************************************************************/
 
-        Handle getHandle ()
+        Handle fileHandle ()
         {
                 return cast(Handle) socket.handle;
         }

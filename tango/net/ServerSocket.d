@@ -16,6 +16,8 @@ module tango.net.ServerSocket;
 private import  tango.net.Socket,
                 tango.net.SocketConduit;
 
+private import  tango.io.model.IConduit;
+
 public  import  tango.net.InternetAddress;
 
 /*******************************************************************************
@@ -31,7 +33,7 @@ public  import  tango.net.InternetAddress;
 
 *******************************************************************************/
 
-class ServerSocket
+class ServerSocket : ISelectable
 {
         private Socket  socket;
         private int     linger = -1;
@@ -51,6 +53,20 @@ class ServerSocket
         {
                 socket = new Socket (AddressFamily.INET, SocketType.STREAM, ProtocolType.IP);
                 socket.setAddressReuse(reuse).bind(addr).listen(backlog);
+        }
+
+        /***********************************************************************
+
+                Models a handle-oriented device.
+
+                TODO: figure out how to avoid exposing this in the general
+                case
+
+        ***********************************************************************/
+
+        Handle fileHandle ()
+        {
+                return cast(Handle) socket.fileHandle;
         }
 
         /***********************************************************************

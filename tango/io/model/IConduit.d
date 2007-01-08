@@ -28,10 +28,8 @@ module tango.io.model.IConduit;
 
 *******************************************************************************/
 
-abstract class IConduit
+abstract class IConduit : ISelectable
 {
-        typedef int Handle = -1;        /// opaque OS file-handle
-
         /***********************************************************************
         
                 Declare the End Of File identifer
@@ -142,14 +140,14 @@ abstract class IConduit
 
         /***********************************************************************
 
-                Models a handle-oriented device. We need to revisit this 
+                Models a handle-oriented device. 
 
                 TODO: figure out how to avoid exposing this in the general 
                 case
 
         ***********************************************************************/
         
-        abstract Handle getHandle ();
+        abstract Handle fileHandle ();
 
         /***********************************************************************
 
@@ -188,6 +186,30 @@ abstract class IConduit
 
                 ulong seek (ulong offset, Anchor anchor = Anchor.Begin);
         }
+}
+
+
+/*******************************************************************************
+
+        Describes how to make an IO entity usable with selectors
+        
+*******************************************************************************/
+
+interface ISelectable
+{
+        /// opaque OS file-handle        
+        typedef int Handle = -1;        
+
+        /***********************************************************************
+
+                Models a handle-oriented device. 
+
+                TODO: figure out how to avoid exposing this in the general
+                case
+
+        ***********************************************************************/
+
+        Handle fileHandle ();
 }
 
 

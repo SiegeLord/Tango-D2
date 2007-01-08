@@ -132,7 +132,7 @@ class DeviceConduit : Conduit
 
                 ***************************************************************/
 
-                final Handle getHandle ()
+                final Handle fileHandle ()
                 {
                         return cast(Handle) handle;
                 }
@@ -228,7 +228,7 @@ class DeviceConduit : Conduit
 
                 ***************************************************************/
 
-                final Handle getHandle ()
+                final Handle fileHandle ()
                 {
                         return cast(Handle) handle;
                 }

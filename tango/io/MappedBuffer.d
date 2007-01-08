@@ -81,7 +81,7 @@ class MappedBuffer : Buffer
                         if (access & host.Access.Write)
                             flags = PAGE_READWRITE;
 
-                        auto handle = cast(HANDLE) host.getHandle();
+                        auto handle = cast(HANDLE) host.fileHandle();
                         mmFile = CreateFileMappingA (handle, null, flags, 0, 0, null);
                         if (mmFile is null)
                             host.error ();
@@ -163,7 +163,7 @@ class MappedBuffer : Buffer
                         if (access & host.Access.Write)
                             protection |= PROT_WRITE;
                                 
-                        base = mmap (null, size, protection, flags, host.getHandle(), 0);
+                        base = mmap (null, size, protection, flags, host.fileHandle(), 0);
                         if (base is null)
                             host.error();
                                 
