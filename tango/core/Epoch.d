@@ -96,6 +96,57 @@ class Epoch
                         dow;            // 0 through 6; sunday == 0
 
 
+                // list of english day names
+                static char[][] Days = 
+                [
+                        "Sun",
+                        "Mon",
+                        "Tue",
+                        "Wed",
+                        "Thu",
+                        "Fri",
+                        "Sat",
+                ];
+                
+                // list of english month names
+                static char[][] Months = 
+                [
+                        "Jan",
+                        "Feb",
+                        "Mar",
+                        "Apr",
+                        "May",
+                        "Jun",
+                        "Jul",
+                        "Aug",
+                        "Sep",
+                        "Oct",
+                        "Nov",
+                        "Dec",
+                ];
+
+                /**************************************************************
+
+                        Get the english short month name
+                        
+                **************************************************************/
+
+                char[] toShortMonth ()
+                {
+                        return Months [month-1];
+                }
+                
+                /**************************************************************
+
+                        Get the english short day name
+                        
+                **************************************************************/
+
+                char[] toShortDay ()
+                {
+                        return Days [dow];
+                }
+                
                 /**************************************************************
 
                         Set the date-related values
@@ -256,7 +307,7 @@ class Epoch
                                 synchronized (Epoch.classinfo)
                                              {
                                              tm* t = gmtime (&utc);
-                                             assert (t);
+                                             assert (t, "gmtime failed");
 
                                              year = t.tm_year + 1900;
                                              month = t.tm_mon + 1;
