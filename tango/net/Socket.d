@@ -759,18 +759,6 @@ class Socket
 
         /***********************************************************************
 
-                get underlying socket handle
-
-        ***********************************************************************/
-
-        socket_t handle()
-        {
-                return sock;
-        }
-
-
-        /***********************************************************************
-
 
         ***********************************************************************/
 
@@ -989,7 +977,7 @@ class Socket
                 auto option = (onOff) ? SocketOption.IP_ADD_MEMBERSHIP : SocketOption.IP_DROP_MEMBERSHIP;
                 mrq.imr_interface = 0;
                 mrq.imr_multiaddr = address.sin.sin_addr;
-                return .setsockopt(handle(), SocketOptionLevel.IP, option, &mrq, mrq.sizeof) != SOCKET_ERROR;
+                return .setsockopt(sock, SocketOptionLevel.IP, option, &mrq, mrq.sizeof) != SOCKET_ERROR;
         }
 
 

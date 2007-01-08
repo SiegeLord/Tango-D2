@@ -100,7 +100,7 @@ class SocketConduit : Conduit
 
         Handle fileHandle ()
         {
-                return cast(Handle) socket.handle;
+                return cast(Handle) socket.fileHandle;
         }
 
         /***********************************************************************
