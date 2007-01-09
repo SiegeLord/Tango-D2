@@ -18,7 +18,7 @@ private import  tango.io.model.IBuffer;
 
 private import  tango.net.http.HttpStack;
 
-private import  Text = tango.text.Goodies;
+private import  Text = tango.text.Util;
 
 private import  tango.io.protocol.model.IWriter;
 
@@ -63,7 +63,6 @@ class HttpTokens : IWritable
         private bool            inclusive;
         private char            separator;
         private char[1]         sepString;
-        static private char[]   emptyString = "";
 
         /**********************************************************************
                 
@@ -283,14 +282,14 @@ class HttpTokens : IWritable
 
                 if (s.length)
                    {
-                   auto i = Text.find (s, separator);
+                   auto i = Text.locate (s, separator);
 
                    // we should always find the separator
-                   if (i)
+                   if (i < s.length)
                       {
-                      int j = (inclusive) ? i : i-1;
-                      element.name = s[0..j];
-                      element.value = (i <= s.length) ? s[i..s.length] : emptyString;
+                      auto j = (inclusive) ? i+1 : i;
+                      element.name = s[0 .. j];
+                      element.value = s[i .. $];
                       return true;
                       }
                    else

@@ -17,10 +17,7 @@ private import  tango.io.Buffer,
                 tango.io.FileConst,
                 tango.io.FileConduit;
 
-private import  tango.io.model.IBuffer,
-                tango.io.model.IConduit;
-
-private import  Text = tango.text.Goodies;
+private import  Text = tango.text.Util;
 
 private import  tango.text.stream.LineIterator;
 
@@ -90,11 +87,11 @@ class Properties
                         if (text.length && (text[0] != '#'))
                            {
                            // find the '=' char
-                           auto i = Text.find (text, '=');
+                           auto i = Text.locate (text, '=');
 
                            // ignore if not found ...
                            if (i)
-                               dg (Text.trim (text[0..i-1]), Text.trim (text[i..text.length]));
+                               dg (Text.trim (text[0 .. i]), Text.trim (text[i+1 .. $]));
                            }
                         }
         }

@@ -12,7 +12,7 @@
 
 module mango.net.http.server.HttpRequest;
 
-private import  Text = tango.text.Goodies;
+private import  Text = tango.text.Util;
 
 private import  Integer = tango.text.convert.Integer;
 
@@ -418,19 +418,17 @@ class HttpRequest : HttpMessage, IWritable
 
                 if (host.length)
                    {
-                   auto colon = Text.find (host, ':');
-                   if (colon)
+                   auto colon = Text.locate (host, ':');
+                   if (colon < host.length)
                       {
-                      if (colon <= host.length)
-                          port = cast(int) Integer.convert (host[colon..host.length]);
-
-                      host = host[0..colon-1];
+                      port = cast(int) Integer.convert (host[colon+1 .. $]);
+                      host = host[0 .. colon];
                       }
-                    return host;
-                    }
-
-                // return host from server connection
-                host = getBridge().getServer().getHost();
+                   }
+                else
+                   // return host from server connection
+                   host = getBridge().getServer().getHost();
+                
                 return host;
         }
 }

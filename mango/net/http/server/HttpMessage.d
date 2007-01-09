@@ -12,7 +12,7 @@
 
 module mango.net.http.server.HttpMessage;
 
-private import  Text = tango.text.Goodies;
+private import  Text = tango.text.Util;
 
 private import  tango.io.Buffer,
                 tango.io.Exception;
@@ -224,17 +224,15 @@ class HttpMessage : IWritable
 
                 if (type)
                    {
-                   auto semi = Text.find (type, ';');
-                   if (semi)
+                   auto semi = Text.locate (type, ';');
+                   if (semi < type.length)
                       {
-                      --semi;
-                      mimeType = Text.trim (type[0..semi]);
-                      auto cs = Text.search (type, "charset=", semi);
-                      if (cs)
+                      mimeType = Text.trim (type[0 .. semi]);
+                      auto cs = Text.locatePattern (type, "charset=", semi);
+                      if (cs < type.length)
                          {
-                         cs += 7;
-                         auto end = Text.find (type, ' ', cs);
-                         encoding = end ? type[cs..end-1] : type[cs..$];
+                         cs += 8;
+                         encoding = type [cs .. Text.locate (type, ' ', cs)];
                          }
                       }
                    }

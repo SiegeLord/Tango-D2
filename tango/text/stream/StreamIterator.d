@@ -14,7 +14,7 @@ module tango.text.stream.StreamIterator;
 
 public  import tango.io.Buffer;
 
-private import Text = tango.text.Goodies;
+private import Text = tango.text.Util;
 
 /*******************************************************************************
 

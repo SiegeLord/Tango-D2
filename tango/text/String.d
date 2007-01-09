@@ -108,7 +108,7 @@
 
 module tango.text.String;
 
-private import  Util = tango.text.Goodies;
+private import  Util = tango.text.Util;
 
 private import  tango.text.convert.Format,
                 Utf = tango.text.convert.Utf;
@@ -291,10 +291,11 @@ class String(T) : StringView!(T)
 
         bool select (T c)
         {
-                auto x = Util.find (get(), c, selectPoint);
-                if (x)
+                auto s = get;
+                auto x = Util.locate (s, c, selectPoint);
+                if (x < s.length)
                    {
-                   select (x-1, 1);
+                   select (x, 1);
                    return true;
                    }
                 return false;
@@ -331,10 +332,11 @@ class String(T) : StringView!(T)
 
         bool select (T[] chars)
         {
-                auto x = Util.search (get(), chars, selectPoint);
-                if (x)
+                auto s = get();
+                auto x = Util.locatePattern (s, chars, selectPoint);
+                if (x < s.length)
                    {
-                   select (x-1, chars.length);
+                   select (x, chars.length);
                    return true;
                    }
                 return false;
@@ -350,10 +352,11 @@ class String(T) : StringView!(T)
 
         bool selectPrior (T c)
         {
-                auto x = Util.findPrior (get(), c, selectPoint);               
-                if (x)
+                auto s = get();
+                auto x = Util.locatePrior (s, c, selectPoint);               
+                if (x < s.length)
                    {
-                   select (x-1, 1);
+                   select (x, 1);
                    return true;
                    }
                 return false;
@@ -386,10 +389,11 @@ class String(T) : StringView!(T)
 
         bool selectPrior (T[] chars)
         {
-                auto x = Util.searchPrior (get(), chars, selectPoint);
-                if (x)
+                auto s = get();
+                auto x = Util.locatePatternPrior (s, chars, selectPoint);
+                if (x < s.length)
                    {
-                   select (x-1, chars.length);
+                   select (x, chars.length);
                    return true;
                    }
                 return false;
@@ -720,7 +724,7 @@ class String(T) : StringView!(T)
         bool equals (T[] other)
         {
                 if (other.length == contentLength)
-                    return !Util.mismatch (other.ptr, content.ptr, contentLength);
+                    return Util.matching (other.ptr, content.ptr, contentLength);
                 return false;
         }
 
@@ -744,7 +748,7 @@ class String(T) : StringView!(T)
         bool ends (T[] chars)
         {
                 if (chars.length <= contentLength)
-                    return !Util.mismatch (content.ptr+(contentLength-chars.length), chars.ptr, chars.length);
+                    return Util.matching (content.ptr+(contentLength-chars.length), chars.ptr, chars.length);
                 return false;
         }
 
@@ -768,7 +772,7 @@ class String(T) : StringView!(T)
         bool starts (T[] chars)
         {
                 if (chars.length <= contentLength)                
-                    return !Util.mismatch (content.ptr, chars.ptr, chars.length);
+                    return Util.matching (content.ptr, chars.ptr, chars.length);
                 return false;
         }
 
