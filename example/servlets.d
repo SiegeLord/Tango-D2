@@ -257,7 +257,7 @@ void testServletEngine ()
         // map echo requests to our echo servlet
         sp.addMapping ("/echo", sp.addServlet (new Echo, "echo", example));
 
-        // point the default context to the mango help files
+        // point the default context to the tango help files
         sp.addContext (new ServletContext ("", "../doc/html"));
 
         // map all other requests to our file servlet
