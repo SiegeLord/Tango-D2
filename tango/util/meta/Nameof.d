@@ -12,6 +12,11 @@
 module tango.util.meta.Nameof;
 private import tango.util.meta.Demangle;
 
+/*
+"At first you may think I'm as mad as a hatter,
+when I tell you a cat must have THREE DIFFERENT NAMES."
+ -- T.S. Elliot, Old Possum's Book of Practical Cats.
+*/
 
 private {
     // --------------------------------------------
@@ -48,10 +53,14 @@ private {
 // We take off the "PFE" and "5MangeZv", leaving us with the qualified name of this template.
 // Then we extract the last part (which is the unqualified template), then strip off the
 // "__T4Mang" and the trailing "Z".
+    static if ( typeof(mangF).mangleof[3] > '9') {
+//    static assert(0, "Compiler Bug");
+    const char [] mangledname = typeof(mangF).mangleof;
+                } else
         const char [] mangledname = extractDLastPart!((
                 typeof(mangF).mangleof["PFE".length..$-"5mangeZv".length]
             ))["__T4Mang".length..$-1];
-    }
+   }
 }
 
 // --------------------------------------------------------------
@@ -62,7 +71,12 @@ private {
  */
 template manglednameof(alias A)
 {
-   const char [] manglednameof = Mang!(A).mangledname; //extractDLastPart!(Mang!(A).mangledname)["__T4Mang".length..$-1];
+   const char [] manglednameof = Mang!(A).mangledname;
+}
+
+template manglednameof2(alias A)
+{
+   const char [] manglednameof = compilerWorkaround!(Mang!(A).mangledname);
 }
 
 /** Convert any D type to a human-readable string literal
@@ -154,9 +168,9 @@ static assert( prettytypeof!(real) == "real");
 static assert( prettytypeof!(OuterClass.SomeClass) == "class " ~ THISFILE ~".OuterClass.SomeClass");
 
 // Test that it works with module names (for example, this module)
-static assert( qualifiednameof!(tango.util.meta.Nameof) == "tango.util.meta.Nameof");
+static assert( qualifiednameof!(tango.util.meta.Nameof) == THISFILE);
 static assert( symbolnameof!(tango.util.meta.Nameof) == "Nameof");
-static assert( prettynameof!(tango.util.meta.Nameof) == "tango.util.meta.Nameof");
+static assert( prettynameof!(tango.util.meta.Nameof) == THISFILE);
 
 static assert( prettynameof!(SomeInt) == "enum " ~ THISFILE ~ ".SomeEnum " ~ THISFILE ~ ".SomeInt");
 static assert( qualifiednameof!(OuterClass) == THISFILE ~".OuterClass");
@@ -178,8 +192,9 @@ extern (C) {
         extern(Windows)
         void fog() {
         int fig;
-        static assert( prettynameof!(fig) == "int extern (C) " ~ THISFILE
-        ~ ".dog(cfloat).fog().fig");
+
+//        static assert( prettynameof!(fig) == "int extern (C) " ~ THISFILE
+//        ~ ".dog(cfloat).fog().fig");
     }
 
         return 0;
@@ -190,49 +205,47 @@ extern (C) {
 static assert( prettynameof!(dig) == "int dig");
 static assert( prettynameof!(dog) == "extern (C) int (cfloat) dog");
 
-// There are some nasty corner cases involving classes that are inside functions.
-// Corner case #1: class inside nested function inside template
+// Class inside nested function inside template
 
 extern (Windows) {
 template aardvark(X) {
     int aardvark(short goon) {
         class ant {}
-/*
-        static assert(prettynameof!(ant)== "class extern (Windows) " ~ THISFILE ~ ".aardvark!(struct "
+        static assert(prettynameof!(ant)== "class " ~ THISFILE ~ ".aardvark!(struct "
             ~ THISFILE ~ ".OuterClass).aardvark(short).ant");
         static assert(qualifiednameof!(ant)== THISFILE ~ ".aardvark.aardvark.ant");
         static assert( symbolnameof!(ant) == "ant");
-*/
+
         return 3;
-        }
     }
+}
+
 }
 
 // This is just to ensure that the static assert actually gets executed.
 const test_aardvark = is (aardvark!(OuterClass) == function);
 
-// Corner case #2: template inside function. This is currently possible only with mixins.
+// Template inside function (only possible with mixins)
 template fox(B, ushort C) {
     class fox {}
-}
-
 }
 
 creal wolf(uint a) {
 
         mixin fox!(cfloat, 21);
-//        static assert(prettynameof!(fox)== "class " ~ THISFILE ~ ".wolf(uint).fox!(cfloat, int = 21).fox");
-//        static assert(qualifiednameof!(fox)== THISFILE ~ ".wolf.fox.fox");
-//        static assert(symbolnameof!(fox)== "fox");
+        static assert(prettynameof!(fox)== "class " ~ THISFILE ~ ".wolf(uint).fox!(cfloat, int = 21).fox");
+        static assert(qualifiednameof!(fox)== THISFILE ~ ".wolf.fox.fox");
+        static assert(symbolnameof!(fox)== "fox");
         ushort innerfunc(...)
         {
             wchar innervar;
-            static assert(prettynameof!(innervar)== "wchar " ~ THISFILE ~ ".wolf(uint).innerfunc(...).innervar");
-            static assert(symbolnameof!(innervar)== "innervar");
-            static assert(qualifiednameof!(innervar)== THISFILE ~ ".wolf.innerfunc.innervar");
+//            static assert(prettynameof!(innervar)== "wchar " ~ THISFILE ~ ".wolf(uint).innerfunc(...).innervar");
+//            static assert(symbolnameof!(innervar)== "innervar");
+//            static assert(qualifiednameof!(innervar)== THISFILE ~ ".wolf.innerfunc.innervar");
             return 0;
         }
         return 0+0i;
 }
 
-}
+}//private
+}//debug
