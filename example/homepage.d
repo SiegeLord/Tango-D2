@@ -13,19 +13,19 @@ private import  tango.net.http.HttpClient,
 void main()
 {
         auto client = new HttpClient (HttpClient.Get, "http://www.digitalmars.com/d/intro.html");
-        client.open ();
-
+        client.open;
+        scope (exit)
+               client.close;
+        
         if (client.isResponseOK)
            {
            // extract content length
            int length = client.getResponseHeaders.getInt (HttpHeader.ContentLength, int.max);
 
            // display response
-           client.read (&Cout.consume, length);
+           client.read (&Cout.buffer.consume, length);
            Cout.newline;
            }
         else
            Cout ("failed to return the D home page").newline;  
-
-        client.close(); 
 }
