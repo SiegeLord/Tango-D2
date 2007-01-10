@@ -246,7 +246,7 @@ class UCalendar : ICU
         {
                 Error e;
 
-                handle = ucal_open (zone.name, zone.name.length, toString(locale.name), type, e);
+                handle = ucal_open (zone.name.ptr, zone.name.length, toString(locale.name), type, e);
                 testError (e, "failed to open calendar");
         }
 
@@ -282,7 +282,7 @@ class UCalendar : ICU
         {
                 Error e;
 
-                ucal_setTimeZone (handle, zone.name, zone.name.length, e);
+                ucal_setTimeZone (handle, zone.name.ptr, zone.name.length, e);
                 testError (e, "failed to set calendar time zone");
         }
 

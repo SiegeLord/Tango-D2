@@ -224,7 +224,7 @@ class UNormalize : ICU
         {
                 uint fmt (wchar* dst, uint len, inout Error e)
                 {
-                        return unorm_normalize (src.get, src.len, mode, o, dst, len, e);
+                        return unorm_normalize (src.get.ptr, src.len, mode, o, dst, len, e);
                 }
 
                 dst.format (&fmt, "failed to normalize");
@@ -249,7 +249,7 @@ class UNormalize : ICU
         {      
                 Error e; 
 
-                Check c = cast(Check) unorm_quickCheckWithOptions (t.get, t.len, mode, o, e);
+                Check c = cast(Check) unorm_quickCheckWithOptions (t.get.ptr, t.len, mode, o, e);
                 testError (e, "failed to perform normalization check");
                 return c;
         }
@@ -270,7 +270,7 @@ class UNormalize : ICU
         {      
                 Error e; 
 
-                byte b = unorm_isNormalizedWithOptions (t.get, t.len, mode, o, e);
+                byte b = unorm_isNormalizedWithOptions (t.get.ptr, t.len, mode, o, e);
                 testError (e, "failed to perform normalization test");
                 return b != 0;
         }
@@ -299,7 +299,7 @@ class UNormalize : ICU
         {      
                 uint fmt (wchar* p, uint len, inout Error e)
                 {
-                        return unorm_concatenate (left.get, left.len, right.get, right.len, p, len, mode, o, e);
+                        return unorm_concatenate (left.get.ptr, left.len, right.get.ptr, right.len, p, len, mode, o, e);
                 }
 
                 dst.format (&fmt, "failed to concatenate");
@@ -329,7 +329,7 @@ class UNormalize : ICU
         {      
                 Error e; 
 
-                int i = unorm_compare (left.get, left.len, right.get, right.len, o, e);
+                int i = unorm_compare (left.get.ptr, left.len, right.get.ptr, right.len, o, e);
                 testError (e, "failed to compare");
                 return i;
         }

@@ -8,11 +8,10 @@
 
 *******************************************************************************/
 
-import tango.util.ArgParser;
+import tango.io.File;
 import tango.io.Stdout;
-import tango.io.FileConduit;
-
-import tango.text.stream.LineIterator;
+import tango.util.ArgParser;
+import Text = tango.text.Util;
 
 void main(char[][] args)
 {
@@ -21,7 +20,7 @@ void main(char[][] args)
     char[] varx = null;
     bool coolAction = false;
     bool displayHelp = false;
-    char[] helpText = "Available options:\n\t\t-h\tthis help\n\t\t-cool-action\tdo cool things to your files\n\t\t@filename\tuse filename as a response file with extra arguments\n\t\tall other arguments are handled as files to do cool things with.";
+    char[] helpText = "Available options:\n -h\t\tthis help\n -cool\t\tdo cool things to your files\n @filename\tuse filename as a response file with extra arguments\n\n all other arguments are treated as files to do cool things with";
 
     ArgParser parser = new ArgParser((char[] value,uint ordinal){
         Stdout.format("Added file number {0} to list of files", ordinal).newline;
@@ -32,7 +31,7 @@ void main(char[][] args)
 		displayHelp=true;
 	});
 
-	parser.bind("-", "cool-action",{
+	parser.bind("-", "cool",{
 		coolAction=true;
 	});
 
@@ -58,13 +57,12 @@ void main(char[][] args)
     }
     else {
         if (responseFile !is null) {
-            auto file = new FileConduit(responseFile);
-            // create an iterator and bind it to the file
-            auto lines = new LineIterator!(char)(file);
-            // process file one line at a time
             char[][] arguments;
-            foreach (line; lines) {
-                arguments ~= line;
+            auto file = new File(responseFile);
+
+            // process file one line at a time
+            foreach (line; Text.lines(cast(char[]) file.read)) {
+                     arguments ~= line;
             }
             parser.parse(arguments);
         }

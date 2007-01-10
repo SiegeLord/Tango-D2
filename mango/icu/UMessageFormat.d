@@ -116,7 +116,7 @@ class UMessageFormat : ICU
         {       
                 Error e;
 
-                handle = umsg_open (pattern, pattern.length, toString(locale.name), null, e);
+                handle = umsg_open (pattern.ptr, pattern.length, toString(locale.name), null, e);
                 testError (e, "failed to open message formatter");
         }
 
@@ -179,7 +179,7 @@ class UMessageFormat : ICU
         {
                 Error e;
 
-                umsg_applyPattern (handle, pattern.get(), pattern.len, null, e);
+                umsg_applyPattern (handle, pattern.get.ptr, pattern.len, null, e);
                 testError (e, "failed to set formatter pattern");
                 return this;
         }
@@ -214,7 +214,7 @@ class UMessageFormat : ICU
         {
                 uint fmt (wchar* dst, uint length, inout Error e)
                 {
-                        return umsg_vformat (handle, dst, length, list.args, e);
+                        return umsg_vformat (handle, dst, length, list.args.ptr, e);
                 }
 
                 s.format (&fmt, "failed to format pattern");

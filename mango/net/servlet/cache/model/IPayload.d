@@ -12,7 +12,8 @@
 
 module mango.net.servlet.cache.model.IPayload;
 
-public import tango.io.protocol.model.IPickle;
+public import tango.io.protocol.model.IReader,
+              tango.io.protocol.model.IWriter;
 
 /******************************************************************************
 
@@ -24,8 +25,19 @@ public import tango.io.protocol.model.IPickle;
 
 ******************************************************************************/
 
-interface IPayload : IPickle
+interface IPayload : IReadable, IWritable
 {
+        /***********************************************************************
+        
+                Identify this serializable class via a char[]. This should
+                be (per class) unique within the domain. Use version numbers 
+                or similar mechanism to isolate different implementations of
+                the same class.
+
+        ***********************************************************************/
+
+        char[] getGuid ();
+        
         /***********************************************************************
 
         ***********************************************************************/

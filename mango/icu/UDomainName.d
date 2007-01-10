@@ -155,7 +155,7 @@ class UDomainName : ICU
         {
                 uint fmt (wchar* p, uint len, inout Error e)
                 {
-                        return uidna_toASCII (text.get, text.len, p, len, o, null, e);
+                        return uidna_toASCII (text.get.ptr, text.len, p, len, o, null, e);
                 }
                 
                 dst.format (&fmt, "failed to convert IDN to ASCII");
@@ -178,7 +178,7 @@ class UDomainName : ICU
         {
                 uint fmt (wchar* p, uint len, inout Error e)
                 {
-                        return uidna_toUnicode (text.get, text.len, p, len, o, null, e);
+                        return uidna_toUnicode (text.get.ptr, text.len, p, len, o, null, e);
                 }
                 
                 dst.format (&fmt, "failed to convert IDN to Unicode");
@@ -209,7 +209,7 @@ class UDomainName : ICU
         {
                 uint fmt (wchar* p, uint len, inout Error e)
                 {
-                        return uidna_IDNToASCII (text.get, text.len, p, len, o, null, e);
+                        return uidna_IDNToASCII (text.get.ptr, text.len, p, len, o, null, e);
                 }
                 
                 dst.format (&fmt, "failed to convert IDN to ASCII");
@@ -236,7 +236,7 @@ class UDomainName : ICU
         {
                 uint fmt (wchar* p, uint len, inout Error e)
                 {
-                        return uidna_IDNToUnicode (text.get, text.len, p, len, o, null, e);
+                        return uidna_IDNToUnicode (text.get.ptr, text.len, p, len, o, null, e);
                 }
                 
                 dst.format (&fmt, "failed to convert IDN to Unicode");
@@ -259,7 +259,7 @@ class UDomainName : ICU
         int compare (UString other, Options o = Options.Strict)
         {
                 Error e;
-                int i = uidna_compare (text.get, text.len, other.get, other.len, o, e);
+                int i = uidna_compare (text.get.ptr, text.len, other.get.ptr, other.len, o, e);
                 testError (e, "failed to compare IDN strings");
                 return i;
         }

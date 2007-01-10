@@ -7,8 +7,9 @@
 
 *****************************************************************/
 
-import tango.text.Path;
 import tango.io.Stdout;
+
+import tango.util.PathUtil;
 
 int main()
 {

@@ -113,7 +113,7 @@ class UTransform : ICU
         {
                 Error e;
 
-                handle = utrans_openU (id.get(), id.len, 0, null, 0, null, e);
+                handle = utrans_openU (id.get.ptr, id.len, 0, null, 0, null, e);
                 testError (e, "failed to open ID transform");
         }
 
@@ -125,7 +125,7 @@ class UTransform : ICU
         {
                 Error e;
 
-                handle = utrans_openU (null, 0, dir, rule.get(), rule.len, null, e);
+                handle = utrans_openU (null, 0, dir, rule.get.ptr, rule.len, null, e);
                 testError (e, "failed to open rule-based transform");
         }
 
@@ -158,7 +158,7 @@ class UTransform : ICU
                 Error e;
 
                 if (filter.length)
-                    utrans_setFilter (handle, filter.get, filter.len, e);
+                    utrans_setFilter (handle, filter.get.ptr, filter.len, e);
                 else
                    utrans_setFilter (handle, null, 0, e);
                    
@@ -175,7 +175,7 @@ class UTransform : ICU
                 Error   e;
                 uint    textLen = text.len;
 
-                utrans_transUChars (handle, text.get, &textLen, text.content.length, 0, &text.len, e);
+                utrans_transUChars (handle, text.get.ptr, &textLen, text.content.length, 0, &text.len, e);
                 testError (e, "failed to execute transform");
                 return this;
         }

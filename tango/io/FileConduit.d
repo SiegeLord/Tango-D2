@@ -376,7 +376,7 @@ class FileConduit : DeviceConduit, DeviceConduit.Seek
                         access = Access[style.access];
 
                         version (Win32SansUnicode)
-                                 handle = CreateFileA (path.cString, access, share, 
+                                 handle = CreateFileA (path.cString.ptr, access, share, 
                                                        null, create, 
                                                        attr | FILE_ATTRIBUTE_NORMAL,
                                                        cast(HANDLE) null);

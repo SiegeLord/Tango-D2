@@ -126,7 +126,7 @@ body {
         else if (path[start..start+2] == "..") {
             // found /.. sequence
             if (start-2 < 0) { // && path[start-1] == FileConst.PathSeparatorChar) {
-                throw new Exception("Invalid absolute path, root separator can not be followed by ..");
+                throw new Exception("PathUtil :: Invalid absolute path, root separator can not be followed by ..");
             }
             int idx = findSlash(path, start - 2);
             if (start + 2 == path.length) {
@@ -161,6 +161,7 @@ body {
                 return removeDots(path, idx);
             }
         }
+        assert(false, "PathUtil :: invalid code path");
     }
 
     char[] normpath = path.dup;

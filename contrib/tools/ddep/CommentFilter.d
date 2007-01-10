@@ -38,7 +38,7 @@ class CommentFilter : Reader
 
     public CommentFilter peek(inout char c)
     {
-		c = (cast(char[])getBuffer.get(1,false))[0];
+		c = (cast(char[])buffer.get(1,false))[0];
         return this;
     }
 	

@@ -186,7 +186,7 @@ protected class ICU
                 static char[] empty = "";
 
                 if (! string.length)
-                      return (string.ptr) ? empty : cast(char*) null;
+                      return (string.ptr) ? empty.ptr : null;
 
 //                if (* (&string[0] + string.length))
                    {
@@ -196,7 +196,7 @@ protected class ICU
                    copy [string.length] = 0;
                    string = copy;
                    }
-                return string;
+                return string.ptr;
         }
 
         /***********************************************************************
@@ -208,7 +208,7 @@ protected class ICU
                 static wchar[] empty = "";
 
                 if (! string.length)
-                      return (string.ptr) ? empty : cast(wchar*) null;
+                      return (string.ptr) ? empty.ptr : null;
 
 //                if (* (&string[0] + string.length))
                    {
@@ -218,7 +218,7 @@ protected class ICU
                    copy [string.length] = 0;
                    string = copy;
                    }
-                return string;
+                return string.ptr;
         }
 
         /***********************************************************************
@@ -322,7 +322,7 @@ version (Win32)
                         foreach (Bind b; targets)
                                 {
                                 char[] name = b.name ~ ICUSig;
-                                *b.fnc = GetProcAddress (lib, name);
+                                *b.fnc = GetProcAddress (lib, name.ptr);
                                 if (*b.fnc)
                                    {}// printf ("bound '%.*s'\n", name);
                                 else

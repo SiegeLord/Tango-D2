@@ -16,7 +16,7 @@ module tango.io.protocol.PickleRegistry;
 private import  tango.io.Exception;
         
 public  import  tango.io.protocol.model.IReader,
-                tango.io.protocol.model.IPickle;
+                tango.io.protocol.model.IWriter;
 
 /*******************************************************************************
 
@@ -85,6 +85,21 @@ class PickleRegistry
 
         /***********************************************************************
         
+                Serialize an Object. Objects are written in Network-order, 
+                and are prefixed by the guid exposed via the IPickle
+                interface. This guid is used to identify the appropriate
+                factory when reconstructing the instance. 
+
+        ***********************************************************************/
+
+        static void freeze (IWriter output, IWritable obj, char[] guid)
+        {
+                output (guid);
+                obj.write (output);
+        }
+        
+        /***********************************************************************
+        
                 Create a new instance of a registered class from the content
                 made available via the given reader. The factory is located
                 using the provided guid, which must match an enrolled Factory.
@@ -95,12 +110,15 @@ class PickleRegistry
 
         ***********************************************************************/
 
-        static Object create (IReader reader, char[] guid)
+        static Object thaw (IReader input)
         {
-                // locate the appropriate Proxy. 
+                char[] guid;
+
+                // locate appropriate Proxy and invoke it 
+                input (guid);
                 auto factory = lookup (guid);
                 if (factory)
-                    return factory (reader);
+                    return factory (input);
 
                 throw new PickleException ("PickleRegistry.create :: attempt to unpickle via unregistered guid '"~guid~"'");
         }

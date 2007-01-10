@@ -122,18 +122,19 @@ class UnicodeBom(T)
                 Encoding fallback;      // can this encoding be defaulted?
                 };
 
-
+        enum {Utf8, Utf16, Utf32};
+        
         private const Info[] lookup =
         [
-        {Type.Utf8,  Encoding.Unknown,  null,        true,  false, false, Encoding.UTF_8N},
-        {Type.Utf8,  Encoding.UTF_8,    null,        true,  false, false, Encoding.UTF_8N},
-        {Type.Utf8,  Encoding.UTF_8N,   x"efbbbf",   false},
-        {Type.Utf16, Encoding.UTF_16,   null,        true,  false, false, Encoding.UTF_16BE},
-        {Type.Utf16, Encoding.UTF_16BE, x"feff",     false, true, true},
-        {Type.Utf16, Encoding.UTF_16LE, x"fffe",     false, true},
-        {Type.Utf32, Encoding.UTF_32,   null,        true,  false, false, Encoding.UTF_32BE},
-        {Type.Utf32, Encoding.UTF_32BE, x"0000feff", false, true, true},
-        {Type.Utf32, Encoding.UTF_32LE, x"fffe0000", false, true},
+        {Utf8,  Encoding.Unknown,  null,        true,  false, false, Encoding.UTF_8N},
+        {Utf8,  Encoding.UTF_8,    null,        true,  false, false, Encoding.UTF_8N},
+        {Utf8,  Encoding.UTF_8N,   x"efbbbf",   false},
+        {Utf16, Encoding.UTF_16,   null,        true,  false, false, Encoding.UTF_16BE},
+        {Utf16, Encoding.UTF_16BE, x"feff",     false, true, true},
+        {Utf16, Encoding.UTF_16LE, x"fffe",     false, true},
+        {Utf32, Encoding.UTF_32,   null,        true,  false, false, Encoding.UTF_32BE},
+        {Utf32, Encoding.UTF_32BE, x"0000feff", false, true, true},
+        {Utf32, Encoding.UTF_32LE, x"fffe0000", false, true},
         ];
 
 
@@ -267,7 +268,7 @@ class UnicodeBom(T)
 
                 if (endian && swap)
                    {
-                   if (settings.type == Type.Utf16)
+                   if (settings.type == Utf16)
                        ByteSwap.swap16 (content.ptr, content.length);
                    else
                        ByteSwap.swap32 (content.ptr, content.length);
@@ -298,37 +299,37 @@ class UnicodeBom(T)
 
                 static if (is (T == char))
                           {
-                          if (type == Type.Utf8)
+                          if (type == Utf8)
                               return cast(T[]) x;
 
-                          if (type == Type.Utf16)
+                          if (type == Utf16)
                               ret = Utf.toUtf8 (cast(wchar[]) x, dst);
                           else
-                          if (type == Type.Utf32)
+                          if (type == Utf32)
                               ret = Utf.toUtf8 (cast(dchar[]) x, dst);
                           }
 
                 static if (is (T == wchar))
                           {
-                          if (type == Type.Utf16)
+                          if (type == Utf16)
                               return cast(T[]) x;
 
-                          if (type == Type.Utf8)
+                          if (type == Utf8)
                               ret = Utf.toUtf16 (cast(char[]) x, dst);
                           else
-                          if (type == Type.Utf32)
+                          if (type == Utf32)
                               ret = Utf.toUtf16 (cast(dchar[]) x, dst);
                           }
 
                 static if (is (T == dchar))
                           {
-                          if (type == Type.Utf32)
+                          if (type == Utf32)
                               return cast(T[]) x;
 
-                          if (type == Type.Utf8)
+                          if (type == Utf8)
                               ret = Utf.toUtf32 (cast(char[]) x, dst);
                           else
-                          if (type == Type.Utf16)
+                          if (type == Utf16)
                               ret = Utf.toUtf32 (cast(wchar[]) x, dst);
                           }
 
@@ -346,37 +347,37 @@ class UnicodeBom(T)
 
                 static if (is (T == char))
                           {
-                          if (type == Type.Utf8)
+                          if (type == Utf8)
                               return x;
 
-                          if (type == Type.Utf16)
+                          if (type == Utf16)
                               ret = Utf.toUtf16 (x, cast(wchar[]) dst);
                           else
-                          if (type == Type.Utf32)
+                          if (type == Utf32)
                               ret = Utf.toUtf32 (x, cast(dchar[]) dst);
                           }
 
                 static if (is (T == wchar))
                           {
-                          if (type == Type.Utf16)
+                          if (type == Utf16)
                               return x;
 
-                          if (type == Type.Utf8)
+                          if (type == Utf8)
                               ret = Utf.toUtf8 (x, cast(char[]) dst);
                           else
-                          if (type == Type.Utf32)
+                          if (type == Utf32)
                               ret = Utf.toUtf32 (x, cast(dchar[]) dst);
                           }
 
                 static if (is (T == dchar))
                           {
-                          if (type == Type.Utf32)
+                          if (type == Utf32)
                               return x;
 
-                          if (type == Type.Utf8)
+                          if (type == Utf8)
                               ret = Utf.toUtf8 (x, cast(char[]) dst);
                           else
-                          if (type == Type.Utf16)
+                          if (type == Utf16)
                               ret = Utf.toUtf16 (x, cast(wchar[]) dst);
                           }
 

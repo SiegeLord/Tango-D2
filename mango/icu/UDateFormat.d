@@ -181,7 +181,7 @@ private class UDateFormat : ICU
         {
                 Error e;
 
-                handle = udat_open (time, date, toString(locale.name), tz.name, tz.name.length, pattern.get, pattern.length, e);
+                handle = udat_open (time, date, toString(locale.name), tz.name.ptr, tz.name.length, pattern.get.ptr, pattern.length, e);
                 testError (e, "failed to create DateFormat");
         }
 
@@ -222,7 +222,7 @@ private class UDateFormat : ICU
         {
                 Error e;
 
-                UDate x = udat_parse (handle, src.content, src.len, index, e); 
+                UDate x = udat_parse (handle, src.content.ptr, src.len, index, e); 
                 testError (e, "failed to parse date");
                 return x;
         }
@@ -320,7 +320,7 @@ private class UDateFormat : ICU
 
         void setPattern (UText pattern, bool localized)
         {
-                udat_applyPattern (handle, localized, pattern.get, pattern.length);        
+                udat_applyPattern (handle, localized, pattern.get.ptr, pattern.length);        
         }
 
         /***********************************************************************

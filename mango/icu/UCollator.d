@@ -200,7 +200,7 @@ class UCollator : ICU
         {
                 Error e;
 
-                handle = ucol_openRules (rules.get, rules.len, mode, strength, null, e);
+                handle = ucol_openRules (rules.get.ptr, rules.len, mode, strength, null, e);
                 testError (e, "failed to open rules-based collator");
         }
 
@@ -279,7 +279,7 @@ class UCollator : ICU
 
         int strcoll (UText source, UText target)
         {
-                return ucol_strcoll (handle, source.get, source.len, target.get, target.len);
+                return ucol_strcoll (handle, source.get.ptr, source.len, target.get.ptr, target.len);
         }
        
         /***********************************************************************
@@ -291,7 +291,7 @@ class UCollator : ICU
 
         bool greater (UText source, UText target)
         {
-                return ucol_greater (handle, source.get, source.len, target.get, target.len) != 0;
+                return ucol_greater (handle, source.get.ptr, source.len, target.get.ptr, target.len) != 0;
         }
        
         /***********************************************************************
@@ -303,7 +303,7 @@ class UCollator : ICU
 
         bool greaterOrEqual (UText source, UText target)
         {
-                return ucol_greaterOrEqual (handle, source.get, source.len, target.get, target.len) != 0;
+                return ucol_greaterOrEqual (handle, source.get.ptr, source.len, target.get.ptr, target.len) != 0;
         }
        
         /***********************************************************************
@@ -314,7 +314,7 @@ class UCollator : ICU
 
         bool equal (UText source, UText target)
         {
-                return ucol_equal (handle, source.get, source.len, target.get, target.len) != 0;
+                return ucol_equal (handle, source.get.ptr, source.len, target.get.ptr, target.len) != 0;
         }
        
         /***********************************************************************
@@ -354,7 +354,7 @@ class UCollator : ICU
         {
                 uint fmt (wchar* p, uint len, inout Error e)
                 {
-                        return ucol_getDisplayName (toString(obj.name), toString(display.name), dst.get, dst.len, e);
+                        return ucol_getDisplayName (toString(obj.name), toString(display.name), dst.get.ptr, dst.len, e);
                 }
 
                 dst.format (&fmt, "failed to get collator display name");
@@ -371,7 +371,7 @@ class UCollator : ICU
         {
                 uint fmt (wchar* p, uint len, inout Error e)
                 {
-                        uint needed = ucol_getRulesEx (handle, o, dst.get, dst.len);
+                        uint needed = ucol_getRulesEx (handle, o, dst.get.ptr, dst.len);
                         if (needed > len)
                             e = e.BufferOverflow;
                         return needed;
@@ -400,7 +400,7 @@ class UCollator : ICU
                 Error    e;
                 char[64] dst;
 
-                uint len = ucol_getShortDefinitionString (handle, toString(locale.name), dst, dst.length, e);
+                uint len = ucol_getShortDefinitionString (handle, toString(locale.name), dst.ptr, dst.length, e);
                 testError (e, "failed to get collator short name");
                 return dst[0..len].dup;
         }
@@ -419,7 +419,7 @@ class UCollator : ICU
                 Error    e;
                 char[64] dst;
 
-                uint len = ucol_normalizeShortDefinitionString (toString(source), dst, dst.length, null, e);
+                uint len = ucol_normalizeShortDefinitionString (toString(source), dst.ptr, dst.length, null, e);
                 testError (e, "failed to normalize collator short name");
                 return dst[0..len].dup;
         }
@@ -433,7 +433,7 @@ class UCollator : ICU
 
         ubyte[] getSortKey (UText t, ubyte[] result)
         {
-                uint len = ucol_getSortKey (handle, t.get, t.len, result, result.length);
+                uint len = ucol_getSortKey (handle, t.get.ptr, t.len, result.ptr, result.length);
                 if (len < result.length) 
                     return result [0..len];
                  return null;
@@ -458,7 +458,7 @@ class UCollator : ICU
 
         ubyte[] mergeSortkeys (ubyte[] left, ubyte[] right, ubyte[] result)
         {
-                uint len = ucol_mergeSortkeys (left, left.length, right, right.length, result, result.length);
+                uint len = ucol_mergeSortkeys (left.ptr, left.length, right.ptr, right.length, result.ptr, result.length);
                 if (len < result.length) 
                     return result [0..len];
                  return null;
@@ -488,7 +488,7 @@ class UCollator : ICU
         {
                 Error e;
 
-                uint len = ucol_getBound (source, source.length, mode, levels, result, result.length, e);
+                uint len = ucol_getBound (source.ptr, source.length, mode, levels, result.ptr, result.length, e);
                 testError (e, "failed to get sortkey bound");
                 if (len < result.length) 
                     return result [0..len];
@@ -563,7 +563,7 @@ class UCollator : ICU
         {
                 Error e;
 
-                ucol_setVariableTop (handle, t.get, t.len, e);
+                ucol_setVariableTop (handle, t.get.ptr, t.len, e);
                 testError (e, "failed to set variable-top");
         }
 

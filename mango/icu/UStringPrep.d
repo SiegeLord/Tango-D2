@@ -189,7 +189,7 @@ class UStringPrep : ICU
         {
                 uint fmt (wchar* p, uint len, inout Error e)
                 {
-                        return usprep_prepare (handle, src.get, src.len, p, len, o, null, e);
+                        return usprep_prepare (handle, src.get.ptr, src.len, p, len, o, null, e);
                 }
                 
                 dst.format (&fmt, "failed to prepare text");

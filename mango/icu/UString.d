@@ -392,7 +392,7 @@ class UString : UText, IStringOther
 
         UString opCat (wchar[] chars)
         {
-                return opCat (chars, chars.length);
+                return opCat (chars.ptr, chars.length);
         }
 
         /***********************************************************************
@@ -407,7 +407,7 @@ class UString : UText, IStringOther
                 {
                         uint x;
 
-                        u_strFromUTF8 (dst, len, &x, chars, chars.length, e);
+                        u_strFromUTF8 (dst, len, &x, chars.ptr, chars.length, e);
                         return x;
                 }
 
@@ -545,7 +545,7 @@ class UString : UText, IStringOther
         UString padLeading (uint count, wchar padChar = 0x0020)
         {
                 expand  (count);
-                memmove (&content[count], content, len * wchar.sizeof);
+                memmove (&content[count], content.ptr, len * wchar.sizeof);
                 len += count;
                 return setTo (padChar, 0, count);
         }
@@ -879,7 +879,7 @@ class UText : ICU, ITextOther
 
         final int compare (wchar[] other, bool codePointOrder=false)
         {
-                return u_strCompare (content, len, other, other.length, codePointOrder); 
+                return u_strCompare (content.ptr, len, other.ptr, other.length, codePointOrder); 
         }
 
         /***********************************************************************
@@ -979,7 +979,7 @@ class UText : ICU, ITextOther
                 pinIndex (start);
                 wchar* s = u_memchr (&content[start], c, len-start);
                 if (s)
-                    return s - cast(wchar*) content;
+                    return s - content.ptr;
                 return uint.max;
         }
 
@@ -1015,9 +1015,9 @@ class UText : ICU, ITextOther
         final uint indexOf (wchar[] chars, uint start=0)
         {
                 pinIndex (start);
-                wchar* s = u_strFindFirst (&content[start], len-start, chars, chars.length);
+                wchar* s = u_strFindFirst (&content[start], len-start, chars.ptr, chars.length);
                 if (s)
-                    return s - cast(wchar*) content;
+                    return s - content.ptr;
                 return uint.max;
         }
 
@@ -1032,9 +1032,9 @@ class UText : ICU, ITextOther
         final uint lastIndexOf (wchar c, uint start=uint.max)
         {
                 pinIndex (start);
-                wchar* s = u_memrchr (content, c, start);
+                wchar* s = u_memrchr (content.ptr, c, start);
                 if (s)
-                    return s - cast(wchar*) content;
+                    return s - content.ptr;
                 return uint.max;
         }
 
@@ -1066,9 +1066,9 @@ class UText : ICU, ITextOther
         final uint lastIndexOf (wchar[] chars, uint start=uint.max)
         {
                 pinIndex (start);
-                wchar* s = u_strFindLast (content, start, chars, chars.length);
+                wchar* s = u_strFindLast (content.ptr, start, chars.ptr, chars.length);
                 if (s)
-                    return s - cast(wchar*) content;
+                    return s - content.ptr;
                 return uint.max;
         }
 
@@ -1105,7 +1105,7 @@ class UText : ICU, ITextOther
         {
                 uint lower (wchar* dst, uint length, inout Error e)
                 {
-                        return u_strToLower (dst, length, content, len, toString(locale.name), e);
+                        return u_strToLower (dst, length, content.ptr, len, toString(locale.name), e);
                 }
 
                 dst.expand (len + 32);
@@ -1145,7 +1145,7 @@ class UText : ICU, ITextOther
         {
                 uint upper (wchar* dst, uint length, inout Error e)
                 {
-                        return u_strToUpper (dst, length, content, len, toString(locale.name), e);
+                        return u_strToUpper (dst, length, content.ptr, len, toString(locale.name), e);
                 }
 
                 dst.expand (len + 32);
@@ -1171,7 +1171,7 @@ class UText : ICU, ITextOther
         {
                 uint fold (wchar* dst, uint length, inout Error e)
                 {
-                        return u_strFoldCase (dst, length, content, len, option, e);
+                        return u_strFoldCase (dst, length, content.ptr, len, option, e);
                 }
 
                 dst.expand (len + 32);
@@ -1200,7 +1200,7 @@ class UText : ICU, ITextOther
                 if (! cast(char*) dst)
                       dst = new char[len * 4];
                       
-                u_strToUTF8 (dst, dst.length, &x, content, len, e);
+                u_strToUTF8 (dst.ptr, dst.length, &x, content.ptr, len, e);
                 testError (e, "failed to convert to UTF8");
                 return dst [0..x];
         }
@@ -1412,7 +1412,7 @@ class UText : ICU, ITextOther
         {
                 Error e;
 
-                int x = u_strCaseCompare (s1, s1.length, s2, s2.length, option, e);
+                int x = u_strCaseCompare (s1.ptr, s1.length, s2.ptr, s2.length, option, e);
                 testError (e, "compareFolded failed");
                 return x; 
         }

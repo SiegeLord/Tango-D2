@@ -36,7 +36,7 @@ import tango.io.Buffer;
 import tango.io.GrowBuffer;
 import tango.io.FileConduit;
 
-import tango.text.Text;
+import Text = tango.text.Util;
 
 class TokenReader {
 
@@ -56,7 +56,7 @@ class TokenReader {
         charread = false;
     }
 	
-    TokenReader next(out char[] token)
+    void next(out char[] token)
     {
         if (!charread) {
             read(c);

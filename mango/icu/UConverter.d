@@ -356,7 +356,7 @@ class UConverter : ICU
                 uint    len;
                 char*   name;
 
-                name = ucnv_detectUnicodeSignature (input, input.length, len, e);
+                name = ucnv_detectUnicodeSignature (input.ptr, input.length, len, e);
                 if (name == null || isError (e))
                     return null;
                 return toArray (name);                
@@ -441,8 +441,8 @@ class UConverter : ICU
         bool encode (wchar[] input, void[] output, inout UAdjust x, bool flush)
         {
                 Error   e;
-                wchar*  src = input;
-                void*   dst = output;
+                wchar*  src = input.ptr;
+                void*   dst = output.ptr;
                 wchar*  srcLimit = src + input.length;
                 void*   dstLimit = dst + output.length;
 
@@ -474,7 +474,7 @@ class UConverter : ICU
                 Error e;
                 uint  len;
 
-                len = ucnv_fromUChars (handle, output, output.length, input, input.length, e);
+                len = ucnv_fromUChars (handle, output.ptr, output.length, input.ptr, input.length, e);
                 testError (e, "failed to encode");
                 return len;                
         }
@@ -552,8 +552,8 @@ class UConverter : ICU
         bool decode (void[] input, wchar[] output, inout UAdjust x, bool flush)
         {
                 Error   e;
-                void*   src = input;
-                wchar*  dst = output;
+                void*   src = input.ptr;
+                wchar*  dst = output.ptr;
                 void*   srcLimit = src + input.length;
                 wchar*  dstLimit = dst + output.length;
 
@@ -585,7 +585,7 @@ class UConverter : ICU
                 Error e;
                 uint  len;
 
-                len = ucnv_toUChars (handle, output, output.length, input, input.length, e);
+                len = ucnv_toUChars (handle, output.ptr, output.length, input.ptr, input.length, e);
                 testError (e, "failed to decode");
                 return len;                
         }
@@ -657,8 +657,8 @@ class UConverter : ICU
                 bool convert (void[] input, void[] output, inout UAdjust x, bool flush)
                 {
                         Error   e;
-                        void*   src = input;
-                        void*   dst = output;
+                        void*   src = input.ptr;
+                        void*   dst = output.ptr;
                         void*   srcLimit = src + input.length;
                         void*   dstLimit = dst + output.length;
 

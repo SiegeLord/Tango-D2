@@ -32,8 +32,7 @@ version (Win32)
 /*******************************************************************************
 
         Models an OS-specific file-system. Included here are methods to
-        list the system roots ("C:", "D:", etc) and to manipulate the
-        current working directory.
+        manipulate the current working directory.
 
 *******************************************************************************/
 
@@ -77,7 +76,7 @@ class FileSystem
                 {
                         version (Win32SansUnicode)
                                 {
-                                if (! SetCurrentDirectoryA (fp.cString))
+                                if (! SetCurrentDirectoryA (fp.cString.ptr))
                                        exception ("Failed to set current directory");
                                 }
                              else
@@ -103,7 +102,7 @@ class FileSystem
                                 if (length)
                                    {
                                    auto dir = new char [length];
-                                   GetCurrentDirectoryA (length, dir);
+                                   GetCurrentDirectoryA (length, dir.ptr);
                                    return new FilePath (dir);
                                    }
                                 }

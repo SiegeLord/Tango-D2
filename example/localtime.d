@@ -29,7 +29,7 @@ void main ()
             tz = -tz, sign = '-';
 
         // format fields
-        Stdout.format ("{0}, {1} {2:d2} {3:d2}:{4:d2}:{5:d2} GMT{6}{7:d2}{8:d2} {9}",
+        Stdout.format ("{0}, {1} {2:d2} {3:d2}:{4:d2}:{5:d2} GMT{6}{7:d2}:{8:d2} {9}",
                         fields.toShortDay,
                         fields.toShortMonth,
                         fields.day,

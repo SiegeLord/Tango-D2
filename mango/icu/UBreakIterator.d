@@ -257,7 +257,7 @@ class URuleIterator : UBreakIterator
         {
                 Error e;
 
-                handle = ubrk_openRules (rules.get, rules.length, text.get, text.length, null, e);
+                handle = ubrk_openRules (rules.get.ptr, rules.length, text.get.ptr, text.length, null, e);
                 testError (e, "failed to open rule iterator");
         }
 }
@@ -345,7 +345,7 @@ private class UBreakIterator : ICU
         {
                 Error e;
 
-                handle = ubrk_open (type, toString(locale.name), text.get, text.length, e);
+                handle = ubrk_open (type, toString(locale.name), text.get.ptr, text.length, e);
                 testError (e, "failed to create break iterator");
         }
 
@@ -369,7 +369,7 @@ private class UBreakIterator : ICU
         void setText (UText text)
         {
                 Error e;
-                ubrk_setText (handle, text.get, text.length, e);
+                ubrk_setText (handle, text.get.ptr, text.length, e);
                 testError (e, "failed to set iterator text");
         }
 

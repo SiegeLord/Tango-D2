@@ -114,7 +114,7 @@ class UDecimalFormat : UCommonFormat
         {
                 Error e;
 
-                unum_applyPattern (handle, localized, pattern.get, pattern.length, null, e);        
+                unum_applyPattern (handle, localized, pattern.get.ptr, pattern.length, null, e);        
                 testError (e, "failed to set numeric pattern");
         }
 }
@@ -772,7 +772,7 @@ class UNumberFormat : ICU
         {
                 Error e;
 
-                handle = unum_open (style, pattern, pattern.length, toString(locale.name), null, e);
+                handle = unum_open (style, pattern.ptr, pattern.length, toString(locale.name), null, e);
                 testError (e, "failed to create NumberFormat");
         }
 
@@ -835,7 +835,7 @@ class UNumberFormat : ICU
         {
                 Error e;
 
-                return unum_parse (handle, src.content, src.len, index, e); 
+                return unum_parse (handle, src.content.ptr, src.len, index, e); 
         }
 
         /***********************************************************************
@@ -846,7 +846,7 @@ class UNumberFormat : ICU
         {
                 Error e;
 
-                return unum_parseInt64 (handle, src.content, src.len, index, e); 
+                return unum_parseInt64 (handle, src.content.ptr, src.len, index, e); 
         }
 
         /***********************************************************************
@@ -857,7 +857,7 @@ class UNumberFormat : ICU
         {
                 Error e;
 
-                return unum_parseDouble (handle, src.content, src.len, index, e); 
+                return unum_parseDouble (handle, src.content.ptr, src.len, index, e); 
         }
 
 

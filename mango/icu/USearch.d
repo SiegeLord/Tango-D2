@@ -210,7 +210,7 @@ class USearch : ICU
                 Error e;
 
                 this.iterator = iterator;
-                handle = usearch_open (pattern.get, pattern.length, text.get, text.length, toString(locale.name), iterator, e);
+                handle = usearch_open (pattern.get.ptr, pattern.length, text.get.ptr, text.length, toString(locale.name), iterator, e);
                 testError (e, "failed to open search");
         }
 
@@ -226,7 +226,7 @@ class USearch : ICU
                 Error e;
 
                 this.iterator = iterator;
-                handle = usearch_openFromCollator (pattern.get, pattern.length, text.get, text.length, col.handle, iterator, e);
+                handle = usearch_openFromCollator (pattern.get.ptr, pattern.length, text.get.ptr, text.length, col.handle, iterator, e);
                 testError (e, "failed to open search from collator");
         }
 
@@ -318,7 +318,7 @@ class USearch : ICU
         {       
                 Error e;
 
-                usearch_setText (handle, t.get, t.length, e);
+                usearch_setText (handle, t.get.ptr, t.length, e);
                 testError (e, "failed to set search text");
         }
 
@@ -347,7 +347,7 @@ class USearch : ICU
         {       
                 Error e;
 
-                usearch_setPattern (handle, t.get, t.length, e);
+                usearch_setPattern (handle, t.get.ptr, t.length, e);
                 testError (e, "failed to set search pattern");
         }
 

@@ -156,7 +156,7 @@ class USet : ICU
         {
                 Error e;
 
-                handle = uset_openPatternOptions (pattern.get, pattern.len, o, e);
+                handle = uset_openPatternOptions (pattern.get.ptr, pattern.len, o, e);
                 testError (e, "failed to open pattern-based charset");
         }
 
@@ -196,7 +196,7 @@ class USet : ICU
         {
                 Error e;
 
-                uset_applyPattern (handle, pattern.get, pattern.len, o, e);
+                uset_applyPattern (handle, pattern.get.ptr, pattern.len, o, e);
                 testError (e, "failed to apply pattern");
         }
 
@@ -267,7 +267,7 @@ class USet : ICU
 
         void addString (UText t)
         {
-                uset_addString (handle, t.get, t.len);
+                uset_addString (handle, t.get.ptr, t.len);
         }
 
         /***********************************************************************
@@ -303,7 +303,7 @@ class USet : ICU
 
         void removeString (UText t)
         {
-                uset_removeString (handle, t.get, t.len);
+                uset_removeString (handle, t.get.ptr, t.len);
         }
 
         /***********************************************************************
@@ -374,7 +374,7 @@ class USet : ICU
 
         bool containsString (UText t)
         {
-                return uset_containsString (handle, t.get, t.len) != 0;
+                return uset_containsString (handle, t.get.ptr, t.len) != 0;
         }
 
         /***********************************************************************

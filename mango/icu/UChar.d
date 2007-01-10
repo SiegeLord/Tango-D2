@@ -674,7 +674,7 @@ class UChar : ICU
         {
                 Error e;
 
-                uint len = u_charName (c, choice, dst, dst.length, e);
+                uint len = u_charName (c, choice, dst.ptr, dst.length, e);
                 testError (e, "failed to extract char name (buffer too small?)");
                 return dst [0..len];
         }
@@ -689,7 +689,7 @@ class UChar : ICU
         {
                 Error e;
 
-                uint len = u_getISOComment (c, dst, dst.length, e);
+                uint len = u_getISOComment (c, dst.ptr, dst.length, e);
                 testError (e, "failed to extract comment (buffer too small?)");
                 return dst [0..len];
         }

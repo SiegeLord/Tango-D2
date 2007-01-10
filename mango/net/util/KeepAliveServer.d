@@ -12,21 +12,22 @@
 
 module mango.net.util.KeepAliveServer;
 
-public  import  tango.util.log.Logger;
+private import  tango.core.Thread;
+
+private import  tango.io.Buffer,
+                tango.io.Conduit,
+                tango.io.Exception,
+                tango.io.GrowBuffer;
+
+private import  tango.net.ServerSocket;
+
+private import  tango.util.log.Logger;
 
 public  import  tango.io.model.IConduit;
 
 public  import  mango.net.util.ServerThread,
                 mango.net.util.AbstractServer;
 
-
-private import  tango.core.Thread;
-
-private import  tango.io.Buffer,
-                tango.io.Exception,
-                tango.io.GrowBuffer;
-
-private import  tango.net.ServerSocket;
 
 /******************************************************************************
 
@@ -77,7 +78,7 @@ class KeepAliveThread
 
         **********************************************************************/
 
-        void exceute ()
+        void execute ()
         {
                 thread.start;
         }
@@ -105,7 +106,7 @@ class KeepAliveThread
                           }
 
                     } catch (IOException x)
-                             if (! Socket.isHalting)
+                             if (! Conduit.isHalting)
                                    logger.trace (client ~ " '" ~ x.toUtf8() ~ "'");
 
                       catch (Object x)

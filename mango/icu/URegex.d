@@ -298,7 +298,7 @@ class URegex : Groups
                 Error e;
 
                 theText = t;
-                uregex_setText (handle, t.get, t.length, e);
+                uregex_setText (handle, t.get.ptr, t.length, e);
                 testError (e, "failed to set regex text");
         }
 
@@ -539,7 +539,7 @@ class URegex : Groups
         {
                 Error e;
 
-                uint len = uregex_replaceAll (handle, replace.get, replace.length, result.get, result.length, e);
+                uint len = uregex_replaceAll (handle, replace.get.ptr, replace.length, result.get.ptr, result.length, e);
                 testError (e, "failed during regex replace");  
                 result.truncate (len);
                 return len;
@@ -577,7 +577,7 @@ class URegex : Groups
         {
                 Error e;
 
-                uint len = uregex_replaceFirst (handle, replace.get, replace.length, result.get, result.length, e);
+                uint len = uregex_replaceFirst (handle, replace.get.ptr, replace.length, result.get.ptr, result.length, e);
                 testError (e, "failed during regex replace");  
                 result.truncate (len);
                 return len;
@@ -595,24 +595,24 @@ class URegex : Groups
         uint split (wchar[][] fields)
         {     
                 Error           e;
-                wchar[]*        s;
                 uint            pos,
                                 count;
                 wchar[]         content = theText.get;
 
-                for (s = fields; count < fields.length;)
-                     if (uregex_findNext (handle, e) && e == e.OK)
-                        {
-                        uint i = start();
-                        *s = content[pos..i];
-                        pos = end ();
+                while (count < fields.length)
+                       if (uregex_findNext (handle, e) && e == e.OK)
+                          {
+                          uint i = start();
+                          fields[count] = content[pos..i];
+                          pos = end ();
 
-                        // ignore leading delimiter
-                        if (i)
-                            ++s, ++count;
-                        }
-                     else
-                        break;
+                          // ignore leading delimiter
+                          if (i)
+                              ++count;
+                          }
+                       else
+                          break;
+                
                 testError (e, "failed during split");  
                 return count;
         }
