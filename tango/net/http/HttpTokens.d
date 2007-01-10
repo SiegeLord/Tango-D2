@@ -66,8 +66,8 @@ class HttpTokens : IWritable
 
         /**********************************************************************
                 
-                Construct a set of tokens based upon the given delimeter, 
-                and an indication of whether said delimeter should be
+                Construct a set of tokens based upon the given delimiter, 
+                and an indication of whether said delimiter should be
                 considered part of the left side (effectively the name).
         
                 The latter is useful with headers, since the seperating

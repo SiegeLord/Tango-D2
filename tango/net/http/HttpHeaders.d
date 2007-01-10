@@ -51,7 +51,7 @@ class HttpHeadersView : HttpTokens
         /**********************************************************************
                 
                 Construct this set of headers, using a HttpStack based
-                upon a ':' delimeter   
+                upon a ':' delimiter   
               
         **********************************************************************/
 
