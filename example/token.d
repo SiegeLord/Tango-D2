@@ -3,27 +3,23 @@
         Tokenize input from the console. There are a variety of handy
         tokenizers in the tango.text package ~ this illustrates usage
         of an iterator that recognizes quoted-strings within an input
-        array, and splits tokens on a provided set of delimeters
+        array, and splits elements on a provided set of delimiters
 
 *******************************************************************************/
 
-private import tango.io.Console;
+import tango.io.Console;
 
-private import tango.text.stream.QuoteIterator;
+import Text = tango.text.Util;
   
 void main()
 {
         // flush the console output, since we have no newline present
-        Cout ("Please enter some space-delimited tokens: ") ();
+        Cout ("Please enter some space-separated tokens: ") ();
 
         // create quote-aware iterator for handling space-delimited
         // tokens from the console input
-        auto token = new QuoteIterator!(char) (Cin.get, " \t");
+        foreach (element; Text.quotes (Text.trim(Cin.get), " \t"))
+                 Cout ("<") (element) ("> ");
         
-        // scan and display trimmed tokens
-        Cout ("You entered: ");
-        while (token.next)
-               Cout ("{") (token.trim.get) ("} ");
-
         Cout.newline;
 }
