@@ -218,7 +218,7 @@ public static BufferedFormat!(char)     Stdout,
 
 static this()
 {
-        Stdout = new BufferedFormat!(char) (Formatter, Cout);
-        Stderr = new BufferedFormat!(char) (Formatter, Cerr);
+        Stdout = new BufferedFormat!(char) (Formatter, Cout.buffer);
+        Stderr = new BufferedFormat!(char) (Formatter, Cerr.buffer);
 }
 

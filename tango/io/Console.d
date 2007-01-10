@@ -64,8 +64,10 @@ struct Console
 
         **********************************************************************/
 
-        class Input : Buffer
+        class Input
         {
+                private Buffer buffer_;
+                
                 /**************************************************************
 
                         Attach console input to the provided device
@@ -74,7 +76,29 @@ struct Console
 
                 private this (FileDevice device)
                 {
-                        super (new ConsoleConduit (device));
+                        buffer_ = new Buffer (new ConsoleConduit (device));
+                }
+
+                /**************************************************************
+
+                        Return the associated buffer (with attached conduit)
+
+                **************************************************************/
+
+                Buffer buffer ()
+                {
+                        return buffer_;
+                }
+
+                /**************************************************************
+
+                        Return the associated conduit
+
+                **************************************************************/
+
+                IConduit conduit ()
+                {
+                        return buffer_.conduit;
                 }
 
                 /**************************************************************
@@ -87,10 +111,11 @@ struct Console
 
                 char[] get (bool copy = true)
                 {
-                        if (readable is 0)
-                            fill ();
+                        auto len = buffer_.readable;
+                        if (len is 0)
+                            buffer_.fill;
 
-                        auto x = cast(char[]) super.get (readable);
+                        auto x = cast(char[]) buffer_.get (len);
                         return (copy ? x.dup : x);
                 }
         }
@@ -105,11 +130,12 @@ struct Console
 
         **********************************************************************/
 
-        class Output : Buffer
+        class Output
         {
-                alias newline    nl;
-                alias flush      opCall;
-                alias append     opCall;
+                private Buffer  buffer_;
+                
+                alias flush     opCall;
+                alias append    opCall;
 
                 /**************************************************************
 
@@ -119,7 +145,29 @@ struct Console
 
                 private this (FileDevice device)
                 {
-                        super (new ConsoleConduit (device));
+                        buffer_ = new Buffer (new ConsoleConduit (device));
+                }
+
+                /**************************************************************
+
+                        Return the associated buffer (with attached conduit)
+
+                **************************************************************/
+
+                Buffer buffer ()
+                {
+                        return buffer_;
+                }
+
+                /**************************************************************
+
+                        Return the associated conduit
+
+                **************************************************************/
+
+                IConduit conduit ()
+                {
+                        return buffer_.conduit;
                 }
 
                 /**************************************************************
@@ -132,7 +180,7 @@ struct Console
 
                 Output append (char[] x)
                 {
-                        super.append(x);
+                        buffer_.append (x);
                         return this;
                 } 
                           
@@ -173,7 +221,25 @@ struct Console
 
                 Output newline ()
                 {
-                        super.append ("\n").flush;
+                        return append ("\n").flush;
+                }           
+
+                /**************************************************************
+
+                        Flush console output
+
+                        Returns:
+                        Returns a chaining reference if content was written. 
+                        Throws an IOException indicating eof or eob if not.
+
+                        Remarks:
+                        Flushes the console buffer to attached conduit
+
+                **************************************************************/
+
+                Output flush ()
+                {
+                        buffer_.flush;
                         return this;
                 }           
         }
