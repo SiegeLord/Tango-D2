@@ -18,14 +18,12 @@ private import tango.sys.Common;
 version (Win32)
         {
         private import Text = tango.text.Util;
-
         private extern (Windows) DWORD GetLogicalDriveStringsA (DWORD, LPTSTR);
         }
-     else
+
+version (Posix)
         {
-        private import tango.stdc.string;
         private import tango.io.FileConduit;
-        private import tango.stdc.posix.unistd;
         private import Integer = tango.text.convert.Integer;
         }
         
