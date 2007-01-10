@@ -753,7 +753,7 @@ class Socket
         bool isAlive()
         {
                 int type, typesize = type.sizeof;
-                return cast(bool) (getsockopt (sock, SOL_SOCKET, SO_TYPE, cast(char*) &type, &typesize) != SOCKET_ERROR);
+                return getsockopt (sock, SOL_SOCKET, SO_TYPE, cast(char*) &type, &typesize) != SOCKET_ERROR;
         }
 
 
