@@ -14,17 +14,15 @@ module tango.math.Random;
 
 
 version (Win32)
-        {
-        extern(Windows) int QueryPerformanceCounter (ulong *);
-        }
+         private extern(Windows) int QueryPerformanceCounter (ulong *);
 
 version (Posix)
         {
-                version (linux)
-                         private import tango.sys.linux.linux;
+        version (linux)
+                 private import tango.sys.linux.linux;
 
-                version (darwin)
-                         private import tango.stdc.darwin.darwin;
+        version (darwin)
+                 private import tango.stdc.darwin.darwin;
         }
 
 
@@ -51,19 +49,19 @@ version (Posix)
 
 class Random
 {
-        private static uint kiss_x = 1;
-        private static uint kiss_y = 2;
-        private static uint kiss_z = 4;
-        private static uint kiss_w = 8;
-        private static uint kiss_carry = 0;
-        private static uint kiss_k;
-        private static uint kiss_m;
+        private uint kiss_x = 1;
+        private uint kiss_y = 2;
+        private uint kiss_z = 4;
+        private uint kiss_w = 8;
+        private uint kiss_carry = 0;
+        private uint kiss_k;
+        private uint kiss_m;
 
         /**********************************************************************
 
         **********************************************************************/
 
-        static this ()
+        this ()
         {
                 ulong s;
 
@@ -84,7 +82,7 @@ class Random
 
         **********************************************************************/
 
-        static final void seed (uint seed)
+        final void seed (uint seed)
         {
                 kiss_x = seed | 1;
                 kiss_y = seed | 2;
@@ -97,16 +95,16 @@ class Random
 
         **********************************************************************/
 
-        static final uint get (uint limit)
+        final uint next (uint limit)
         {
-                return get() % limit;
+                return next() % limit;
         }
 
         /**********************************************************************
 
         **********************************************************************/
 
-        static final uint get ()
+        final uint next ()
         {
                 kiss_x = kiss_x * 69069 + 1;
                 kiss_y ^= kiss_y << 13;
