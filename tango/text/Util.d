@@ -54,7 +54,8 @@
         ---
         trim (source)
         strip (source, match)
-        split (source, delimeters)
+        split (source, delimiters)
+        delineate (source);
         replace (source, match, replacement)
         contains (source, match)
         containPattern (source, match)
@@ -66,6 +67,9 @@
         mismatch (s1*, s2*, length)
         matching (s1*, s2*, length)
         isSpace (match)
+        lines (str)
+        quotes (str, delims)
+        elements (str, delims)
         ---
 
 *******************************************************************************/
@@ -254,42 +258,49 @@ uint locatePatternPrior(T) (T[] source, T[] match, uint start=uint.max)
 
 /******************************************************************************
 
-        Split the provided array wherever a delimeter-set instance is
-        found, and return the resultant segments. The delimeters are
-        excluded from each of the segments. Note that delimeters are
+        Split the provided array wherever a delimiter-set instance is
+        found, and return the resultant segments. The delimiters are
+        excluded from each of the segments. Note that delimiters are
         matched as a set of alternates rather than as a pattern.
 
-        Splitting on a single delimeter is considerably faster than
+        Splitting on a single delimiter is considerably faster than
         splitting upon a set of alternatives
 
 ******************************************************************************/
 
 T[][] split(T) (T[] src, T[] delims)
 {
-        uint    pos,
-                mark;
-        T[][]   result;
+        T[][] result;
 
-        if (delims.length is 1)
-            while ((pos = locate (src, delims[0], mark)) != src.length)
-                  {
-                  result ~= src [mark .. pos];
-                  mark = pos + 1;
-                  }
-        else
-           if (delims.length > 1)
-               foreach (i, elem; src)
-                        if (contains (delims, elem))
-                           {
-                           result ~= src [mark .. i];
-                           mark = i + 1;
-                           }
+        foreach (element; elements (src, delims))
+                 result ~= element;
+        return result;
+}
 
-        if (mark < src.length)
-            result ~= src [mark .. $];
+/******************************************************************************
+
+        Convert text into a set of lines, where each line is identified
+        by a \n or \r\n combination. The line terminator is stripped from
+        each resultant array
+
+******************************************************************************/
+
+T[][] delineate (T) (T[] src)
+{
+        int count;
+        
+        foreach (line; lines (src))
+                 ++count;
+        
+        T[][] result = new T[][count];
+
+        count = 0;
+        foreach (line; lines (src))
+                 result [count++] = line;
 
         return result;
 }
+
 
 /******************************************************************************
 
@@ -299,7 +310,10 @@ T[][] split(T) (T[] src, T[] delims)
 
 bool isSpace(T) (T c)
 {
-        return (c is ' ' | c is '\t' | c is '\r' | c is '\n');
+        static if (T.sizeof is 1)
+                   return (c <= 32 && (c is ' ' | c is '\t' | c is '\r' | c is '\n' | c is '\f'));
+        else
+           return (c <= 32 && (c is ' ' | c is '\t' | c is '\r' | c is '\n' | c is '\f')) || (c is '\u2028' | c is '\u2029');
 }
 
 /******************************************************************************
@@ -497,13 +511,213 @@ uint mismatch(T) (T* s1, T* s2, uint length)
         }
 }
 
+/******************************************************************************
+
+        Freachable iterator to isolate lines.
+
+        Converts text into a set of lines, where each line is identified
+        by a \n or \r\n combination. The line terminator is stripped from
+        each resultant array.
+
+        ---
+        foreach (line; lines ("one\ntwo\nthree"))
+                 ...
+        ---
+        
+******************************************************************************/
+
+LineFreach!(T) lines(T) (T[] src)
+{
+        LineFreach!(T) lines;
+        lines.src = src;
+        return lines;
+}
+
+/******************************************************************************
+
+        Freachable iterator to isolate text elements.
+
+        Splits the provided array wherever a delimiter-set instance is
+        found, and return the resultant segments. The delimiters are
+        excluded from each of the segments. Note that delimiters are
+        matched as a set of alternates rather than as a pattern.
+
+        Splitting on a single delimiter is considerably faster than
+        splitting upon a set of alternatives.
+
+        ---
+        foreach (element; elements ("one,two;three", ",;"))
+                 ...
+        ---
+        
+******************************************************************************/
+
+ElementFreach!(T) elements(T) (T[] src, T[] delims)
+{
+        ElementFreach!(T) elements;
+        elements.delims = delims;
+        elements.src = src;
+        return elements;
+}
+
+/******************************************************************************
+
+        Freachable iterator to isolate optionally quoted text elements.
+
+        As per elements(), but with the extension of being quote-aware;
+        the set of delimiters is ignored inside a pair of quotes. Note
+        that an unterminated quote will consume remaining content.
+        
+        ---
+        foreach (quote; quotes ("one two 'three four' five", " "))
+                 ...
+        ---
+        
+******************************************************************************/
+
+QuoteFreach!(T) quotes(T) (T[] src, T[] delims)
+{
+        QuoteFreach!(T) quotes;
+        quotes.delims = delims;
+        quotes.src = src;
+        return quotes;
+}
+
+/******************************************************************************
+
+        Helper struct for iterator lines()
+         
+******************************************************************************/
+
+private struct LineFreach(T)
+{
+        private T[] src;
+
+        int opApply (int delegate (inout T[] line) dg)
+        {
+                uint    ret,
+                        pos,
+                        mark;
+                T[]     line;
+
+                while ((pos = locate (src, '\n', mark)) < src.length)
+                      {
+                      auto end = pos;
+                      if (end && src[end-1] is '\r')
+                          --end;
+
+                      line = src [mark .. end];
+                      if ((ret = dg (line)) != 0)
+                           return ret;
+                      mark = pos + 1;
+                      }
+
+                line = src [mark .. $];
+                if (mark < src.length)
+                    ret = dg (line);
+
+                return ret;
+        }
+}
+
+/******************************************************************************
+
+        Helper struct for iterator elements()
+        
+******************************************************************************/
+
+private struct ElementFreach(T)
+{
+        private T[] src;
+        private T[] delims;
+
+        int opApply (int delegate (inout T[] token) dg)
+        {
+                uint    ret,
+                        pos,
+                        mark;
+                T[]     token;
+
+                // optimize for single delimiter case
+                if (delims.length is 1)
+                    while ((pos = locate (src, delims[0], mark)) < src.length)
+                          {
+                          token = src [mark .. pos];
+                          if ((ret = dg (token)) != 0)
+                               return ret;
+                          mark = pos + 1;
+                          }
+                else
+                   if (delims.length > 1)
+                       foreach (i, elem; src)
+                                if (contains (delims, elem))
+                                   {
+                                   token = src [mark .. i];
+                                   if ((ret = dg (token)) != 0)
+                                        return ret;
+                                   mark = i + 1;
+                                   }
+
+                token = src [mark .. $];
+                if (mark < src.length)
+                    ret = dg (token);
+
+                return ret;
+        }
+}
+
+/******************************************************************************
+
+        Helper struct for iterator quotes()
+        
+******************************************************************************/
+
+private struct QuoteFreach(T)
+{
+        private T[] src;
+        private T[] delims;
+        
+        int opApply (int delegate (inout T[] token) dg)
+        {
+                int ret,
+                    mark;
+                T[] token;
+
+                if (delims.length)
+                    for (uint i=0; i < src.length; ++i)
+                        {
+                        T c = src[i];
+                        if (c is '"' || c is '\'')
+                            i = locate (src, c, i+1);
+                        else
+                           if (contains (delims, c))
+                              {
+                              token = src [mark .. i];
+                              if ((ret = dg (token)) != 0)
+                                   return ret;
+                              mark = i + 1;
+                              }
+                        }
+                
+                token = src [mark .. $];
+                if (mark < src.length)
+                    ret = dg (token);
+
+                return ret;
+        }
+}
+
 
 /******************************************************************************
 
 ******************************************************************************/
 
+//extern (C) int printf(char*, ...);
+
 debug (UnitTest)
 {
+//        void main() {}
+        
         unittest
         {
         assert (isSpace (' ') && !isSpace ('d'));
@@ -581,6 +795,18 @@ debug (UnitTest)
         assert (locatePatternPrior ("abcdefgcde", "cde", 6u) is 2);
         assert (locatePatternPrior ("abcdefgcde", "cde", 4u) is 2);
         assert (locatePatternPrior ("abcdefg", "abcdefgx") is 7);
-        assert (locatePatternPrior ("abcdefg", "abcdefg") is 0);
+
+        x = delineate ("a\nb\n");
+        assert (x.length is 2 && x[0] == "a" && x[1] == "b");
+        x = delineate ("a\r\n");
+        assert (x.length is 1 && x[0] == "a");
+        x = delineate ("a");
+        assert (x.length is 1 && x[0] == "a");
+        x = delineate ("");
+        assert (x.length is 0);
+/+
+        foreach (element; quotes ("1 2 3 4 'avcc   cc ' 5", " "))
+                 printf (">%.*s<\n", element);
++/
         }
 }
