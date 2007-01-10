@@ -37,7 +37,6 @@
  *  </li>
  *  </ul>
  */
-
 /**
  * Macros:
  *
@@ -52,15 +51,13 @@
  */
 module tango.math.IEEE;
 
-import tango.stdc.math;
-
 version (D_InlineAsm_X86) {
-    version(UnitTest) {
+    debug(UnitTest) {
         static import tango.stdc.math;
     }
 } else {
-    // BUG: DMD 0.167 imports this regardless of version!
-//   static import tango.stdc.math;
+    // Needed for cos() and sin()
+   static import tango.stdc.math;
 }
 
 version(DigitalMars)
@@ -110,20 +107,20 @@ private:
     int m_flags;
     version (X86) {
         // Applies to both x87 status word (16 bits) and SSE2 status word(32 bits).
-        const int INEXACT_MASK = 0x20;
+        const int INEXACT_MASK   = 0x20;
         const int UNDERFLOW_MASK = 0x10;
-        const int OVERFLOW_MASK = 0x08;
+        const int OVERFLOW_MASK  = 0x08;
         const int DIVBYZERO_MASK = 0x04;
-        const int INVALID_MASK = 0x01;
+        const int INVALID_MASK   = 0x01;
         // Don't bother about denormals, they are not supported on all CPUs.
         //const int DENORMAL_MASK = 0x02;
     } else version (PPC) {
         // PowerPC FPSCR is a 32-bit register.
-        const int INEXACT_MASK = 0x600;
-        const int UNDERFLOW_MASK = 0x10;
-        const int OVERFLOW_MASK = 0x08;
-        const int DIVBYZERO_MASK = 0x20;
-        const int INVALID_MASK = 0xF80;
+        const int INEXACT_MASK   = 0x600;
+        const int UNDERFLOW_MASK = 0x010;
+        const int OVERFLOW_MASK  = 0x008;
+        const int DIVBYZERO_MASK = 0x020;
+        const int INVALID_MASK   = 0xF80;
     }
 private:
     static IeeeFlags getIeeeFlags()
@@ -177,7 +174,12 @@ void resetIeeeFlags() { IeeeFlags.resetIeeeFlags; }
 /** IEEE rounding modes.
  * The default mode is ROUNDTONEAREST.
  */
-enum RoundingMode : short { ROUNDTONEAREST = 0x0000, ROUNDDOWN = 0x0400, ROUNDUP=0x0800, ROUNDTOZERO=0x0C00 };
+enum RoundingMode : short {
+    ROUNDTONEAREST = 0x0000,
+    ROUNDDOWN      = 0x0400,
+    ROUNDUP        = 0x0800,
+    ROUNDTOZERO    = 0x0C00
+};
 
 /** Change the rounding mode used for all floating-point operations.
  *
@@ -241,7 +243,7 @@ RoundingMode getIeeeRounding() {
     }
 }
 
-version(UnitTest) {
+debug(UnitTest) {
 static import tango.math.Core;
 unittest {
     real a=3.5;
@@ -272,7 +274,11 @@ unittest {
 }
 
 // Note: Itanium supports more precision options than this. SSE/SSE2 does not support any.
-enum PrecisionControl : short { PRECISION80=0x300, PRECISION64=0x200, PRECISION32=0x000 };
+enum PrecisionControl : short {
+    PRECISION80 = 0x300,
+    PRECISION64 = 0x200,
+    PRECISION32 = 0x000
+};
 
 /** Set the number of bits of precision used by 'real'.
  *
@@ -281,7 +287,6 @@ enum PrecisionControl : short { PRECISION80=0x300, PRECISION64=0x200, PRECISION3
  */
 PrecisionControl reduceRealPrecision(PrecisionControl prec) {
    version(D_InlineAsm_X86) {
-        // TODO: For SSE/SSE2, do we also need to set the SSE rounding mode?
         short cont;
         asm {
             fstcw cont;
@@ -302,7 +307,17 @@ private {
 /* Constants describing the storage of a IEEE floating-point types
  * These values will differ depending on whether 'real' is 64, 80, or 128 bits,
  * and whether it is a big-endian or little-endian architecture.
+ * Only three 'real' ABIs are currently supported:
+ * 64 bit Big-endian    (eg PowerPC)
+ * 64 bit Little-endian
+ * 80 bit Little-endian, with implied bit (eg x87, Itanium).
  */
+
+static if (real.max==double.max) {
+    version = Real64;
+}
+
+
 template float_traits(T)
 {
     static if (T.mant_dig == 53) {
@@ -397,7 +412,7 @@ real frexp(real value, out int exp)
     return value;
 }
 
-version(UnitTest) {
+debug(UnitTest) {
 
 unittest
 {
@@ -530,7 +545,7 @@ version (X86)
     const int FP_ILOGBINFINITY = int.max;
 }
 
-version(UnitTest) {
+debug(UnitTest) {
 unittest {
     assert(ilogb(1.0) == 0);
     assert(ilogb(65536) == 16);
@@ -575,7 +590,7 @@ real logb(real x)
     }
 }
 
-version(UnitTest) {
+debug(UnitTest) {
 unittest {
     assert(logb(real.infinity)== real.infinity);
     assert(isNaN(logb(real.nan)));
@@ -690,7 +705,7 @@ creal expi(real y)
     }
 }
 
-version(UnitTest) {
+debug(UnitTest) {
 unittest
 {
     assert(expi(1.3e5L)==tango.stdc.math.cosl(1.3e5L) + tango.stdc.math.sinl(1.3e5L)*1i);
@@ -702,16 +717,22 @@ unittest
  * Returns !=0 if e is a NaN.
  */
 
-int isNaN(real e)
+int isNaN(real x)
 {
-    ushort* pe = cast(ushort *)&e;
-    ulong*  ps = cast(ulong *)&e;
+  version(Real64) {
+        ulong*  p = cast(ulong *)&x;
+        return (*p & 0x7FF0_0000 == 0x7FF0_0000) && *p & 0x000F_FFFF;
+  } else {
+    ushort* pe = cast(ushort *)&x;
+    ulong*  ps = cast(ulong *)&x;
 
     return (pe[4] & 0x7FFF) == 0x7FFF &&
         *ps & 0x7FFFFFFFFFFFFFFF;
+  }
 }
 
-version(UnitTest) {
+
+debug(UnitTest) {
 unittest
 {
     assert(isNaN(float.nan));
@@ -750,15 +771,19 @@ int isNormal(double d)
 }
 
 /** ditto */
-int isNormal(real e)
+int isNormal(real x)
 {
-    ushort* pe = cast(ushort *)&e;
-    long*   ps = cast(long *)&e;
+    version(Real64) {
+        return isNormal(cast(double)x);
+    } else {
+        ushort* pe = cast(ushort *)&x;
+        long*   ps = cast(long *)&x;
 
-    return (pe[4] & 0x7FFF) != 0x7FFF && *ps < 0;
+        return (pe[4] & 0x7FFF) != 0x7FFF && *ps < 0;
+    }
 }
 
-version(UnitTest) {
+debug(UnitTest) {
 unittest
 {
     float f = 3;
@@ -780,14 +805,18 @@ unittest
 
 bool isIdentical(real x, real y)
 {
-    ushort* pxe = cast(ushort *)&x;
     long*   pxs = cast(long *)&x;
-    ushort* pye = cast(ushort *)&y;
     long*   pys = cast(long *)&y;
+  version(Real64) {
+    return pxs[0]==pys[0];
+  } else {
+    ushort* pxe = cast(ushort *)&x;
+    ushort* pye = cast(ushort *)&y;
     return pxe[4]==pye[4] && pxs[0]==pys[0];
+  }
 }
 
-version(UnitTest) {
+debug(UnitTest) {
 unittest {
     assert(isIdentical(0.0, 0.0));
     assert(!isIdentical(0.0, -0.0));
@@ -815,7 +844,7 @@ int isSubnormal(float f)
     return (*p & 0x7F800000) == 0 && *p & 0x007FFFFF;
 }
 
-version(UnitTest) {
+debug(UnitTest) {
 unittest
 {
     float f = 3.0;
@@ -834,7 +863,7 @@ int isSubnormal(double d)
     return (p[1] & 0x7FF00000) == 0 && (p[0] || p[1] & 0x000FFFFF);
 }
 
-version(UnitTest) {
+debug(UnitTest) {
 unittest
 {
     double f;
@@ -854,7 +883,7 @@ int isSubnormal(real e)
     return (pe[4] & 0x7FFF) == 0 && *ps > 0;
 }
 
-version(UnitTest) {
+debug(UnitTest) {
 unittest
 {
     real f;
@@ -888,7 +917,7 @@ int isInfinity(real e)
         *ps == 0x8000_0000_0000_0000;
 }
 
-version(UnitTest) {
+debug(UnitTest) {
 unittest
 {
     assert(isInfinity(float.infinity));
@@ -955,7 +984,7 @@ real nextUp(real x)
     return x;
 }
 
-version(UnitTest) {
+debug(UnitTest) {
 unittest {
     assert(isIdentical(nextUp(NaN("abc")), NaN("abc")));
     // negative numbers
@@ -1000,7 +1029,7 @@ real nextDown(real x)
     return -nextUp(-x);
 }
 
-version(UnitTest) {
+debug(UnitTest) {
 unittest {
     assert( nextDown(1.0 + real.epsilon) == 1.0);
 }
@@ -1089,7 +1118,7 @@ int feqrel(real x, real y)
     return (bitsdiff == 0) ? (pa[4] == pb[4]) : 0;
 }
 
-version(UnitTest) {
+debug(UnitTest) {
 unittest
 {
    // Exact equality
@@ -1143,7 +1172,7 @@ int signbit(real e)
     return (pe[9] & 0x80) != 0;
 }
 
-version(UnitTest) {
+debug(UnitTest) {
 unittest
 {
     debug (math) printf("math.signbit.unittest\n");
@@ -1171,7 +1200,7 @@ real copysign(real to, real from)
     return to;
 }
 
-version(UnitTest) {
+debug(UnitTest) {
 unittest
 {
     real e;
@@ -1314,7 +1343,7 @@ char [] getNaNPayloadString(real x, char[] buff)
     return buff[0..i];
 }
 
-version(UnitTest) {
+debug(UnitTest) {
 unittest {
     // String NaNs
     real nan1 = 3.4 * NaN("qweRtyuip");
@@ -1337,7 +1366,7 @@ unittest {
  * the integer payload as a long. If the return value is negative,
  * it means that data has been lost in narrowing conversions.
  *
- * For 80-bit reals, the largest payload is 0x7FF_FFFF_FFFF_FFFF.
+ * For 80-bit or 128-bit reals, the largest payload is 0x7FF_FFFF_FFFF_FFFF.
  * For doubles, it is 0xFFFF_FFFF_FFFF.
  * For floats, it is 0xF_FFFF.
  *
@@ -1376,7 +1405,7 @@ long getNaNPayloadLong(real x)
     return w;
 }
 
-version(UnitTest) {
+debug(UnitTest) {
 unittest {
   real nan4 = NaN(0x789_ABCD_EF12_3456);
   assert (getNaNPayloadLong(nan4) == 0x789_ABCD_EF12_3456);
