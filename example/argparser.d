@@ -1,11 +1,14 @@
 /*******************************************************************************
-        Illustrates use of the tango.text.ArgParser class. It shows the
+
+        Illustrates use of the tango.util.ArgParser class. It shows the
         different ways of binding parameters, and also shows some more
         advanced use by loading arguments from a file using tango.io.
 
+        Put into to public domain by Lars Ivar Igesund
+
 *******************************************************************************/
 
-import tango.text.ArgParser;
+import tango.util.ArgParser;
 import tango.io.Stdout;
 import tango.io.FileConduit;
 
