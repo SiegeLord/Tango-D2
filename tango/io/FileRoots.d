@@ -36,7 +36,7 @@ version (Win32)
 
 *******************************************************************************/
 
-class FileRoots
+struct FileRoots
 {
         version (Win32)
         {

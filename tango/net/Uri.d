@@ -35,10 +35,11 @@ extern (C) char* memchr (char *, char, uint);
 
         The implementation fails the spec on two counts: it doesn't insist
         on a scheme being present in the Uri, and it doesn't implement the
-        "Relative References" support noted in section 5.2. 
+        "Relative References" support noted in section 5.2. The latter can
+        be found in tango.util.PathUtil instead.
         
-        Note that IRI support can be implied by assuming each of userinfo, path, 
-        query, and fragment are UTF-8 encoded 
+        Note that IRI support can be implied by assuming each of userinfo,
+        path, query, and fragment are UTF-8 encoded 
         (see <A HREF="http://www.w3.org/2001/Talks/0912-IUC-IRI/paper.html">
         this page</A> for further details).
 
@@ -384,7 +385,7 @@ class Uri : UriView
 
         bool isGeneric ()
         {
-                return cast(bool) ((scheme in genericSchemes) !is null);
+                return (scheme in genericSchemes) !is null;
         }
 
         /***********************************************************************
@@ -412,8 +413,8 @@ class Uri : UriView
 
                    if (port != InvalidPort && port != getDefaultPort(scheme))
                       {
-                      char[4] tmp;
-                      consume (":"), consume (Integer.format (tmp, cast(long) port));
+                      char[8] tmp;
+                      consume (":"), consume (Integer.itoa (tmp, cast(uint) port));
                       }
                    }
 
@@ -569,16 +570,16 @@ class Uri : UriView
                 for (i=0; i < len && !(map[c = uri[i]] & ExcScheme); ++i) {}
                 if (c is ':')
                    {
-                   scheme = uri [mark..i];
+                   scheme = uri [mark .. i];
                    toLower (scheme);
                    mark = i + 1;
                    }
 
                 // isolate authority
-                if (mark < len-1  &&  uri[mark] is '/'  &&  uri[mark+1] is '/')
+                if (mark < len-1 && uri[mark] is '/' && uri[mark+1] is '/')
                    {
                    for (mark+=2, i=mark; i < len && !(map[uri[i]] & ExcAuthority); ++i) {}
-                   parseAuthority (uri[mark..i]); 
+                   parseAuthority (uri[mark .. i]); 
                    mark = i;
                    }
                 else
@@ -591,20 +592,20 @@ class Uri : UriView
 
                 // isolate path
                 for (i=mark; i < len && !(map[uri[i]] & ExcPath); ++i) {}
-                path = decode (uri[mark..i]);
+                path = decode (uri[mark .. i]);
                 mark = i;
 
                 // isolate query
                 if (mark < len && uri[mark] is '?')
                    {
                    for (++mark, i=mark; i < len && uri[i] != '#'; ++i) {}
-                   query = decode (uri[mark..i]);
+                   query = decode (uri[mark .. i]);
                    mark = i;
                    }
 
                 // isolate fragment
                 if (mark < len && uri[mark] is '#')
-                    fragment = decode (uri[mark+1..len]);
+                    fragment = decode (uri[mark+1 .. len]);
 
                 return this;
         }
@@ -758,7 +759,7 @@ class Uri : UriView
                 foreach (int i, char c; auth)
                          if (c is '@')
                             {
-                            userinfo = decode (auth[0..i]);
+                            userinfo = decode (auth[0 .. i]);
                             mark = i + 1;
                             break;
                             }
@@ -767,7 +768,7 @@ class Uri : UriView
                 for (int i=mark; i < len; ++i)
                      if (auth [i] is ':')
                         {
-                        port = cast(int) Integer.parse (auth [i+1..len]);
+                        port = Integer.atoi (auth [i+1 .. len]);
                         len = i;
                         break;
                         }
