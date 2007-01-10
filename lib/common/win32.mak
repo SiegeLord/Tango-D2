@@ -60,9 +60,6 @@ doc     : tango.doc
 
 ######################################################
 
-OBJ_CONVERT= \
-    convert\dtoa.obj
-
 OBJ_CORE= \
     core\Exception.obj \
     core\Memory.obj \
@@ -72,7 +69,6 @@ OBJ_STDC= \
     stdc\wrap.obj
 
 ALL_OBJS= \
-    $(OBJ_CONVERT) \
     $(OBJ_CORE) \
     $(OBJ_STDC)
 
