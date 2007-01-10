@@ -69,23 +69,27 @@ Options:
                                --version=.176
                                --version=0176
 
-	  --with-dsss: install DSSS (D Shared Software System) too. Requires an internet connection, for now.
-	               See http://dsource.org/projects/dsss/ for more information on DSSS!
+      --v1: use version 1.00 of DMD (implies that another file name is used [dmd.1.00.zip])
+
+#	  --with-dsss: install DSSS (D Shared Software System) too. Requires an internet connection, for now.
+#	               See http://dsource.org/projects/dsss/ for more information on DSSS!
 
 	  --no-root: Do not install a global dmd.conf (default: /etc/dmd.conf)
 	  --no-clean: Do not remove DMD archive or Tango copy
 
 	  --download: checkout a fresh copy of Tango (subversion required)
 	  --download-dmd: Download a fresh copy of DMD (implies --with-dmd)
-	  --download-all: Download DMD and checkout a fresh copy of Tango (implies --dmd, too)
+	  --download-all: Download DMD and checkout a fresh copy of Tango (implies --with-dmd)
 
-	  --uninstall: Uninstall Tango
-	  --uninstall-dmd: Uninstall Tango and DMD
-	  --uninstall-dsss: Uninstall DSSS only
-	  --uninstall-all: Uninstall Tango, DMD and DSSS
+#	  --uninstall: Uninstall Tango
+#	  --uninstall-dmd: Uninstall Tango and DMD
+#	  --uninstall-dsss: Uninstall DSSS only
+#	  --uninstall-all: Uninstall Tango, DMD and DSSS
 
 	  --help: Display this text
-	
+
+
+	  # => not yet implemented
 EOF
 
 }

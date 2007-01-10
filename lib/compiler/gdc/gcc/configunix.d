@@ -2,6 +2,7 @@ module gcc.configunix;
 private import gcc.config;
 
 alias gcc.config.Coff_t off_t;
+alias gcc.config.tm tm;
 extern(C) {
 
 const int NFDBITS = 32;
@@ -81,31 +82,14 @@ static assert(timezone.tz_dsttime.offsetof == 4);
 static assert(timezone.sizeof == 8);
 
 
-struct tm {
-    int tm_sec;
-    int tm_min;
-    int tm_hour;
-    int tm_mday;
-    int tm_mon;
-    int tm_year;
-    int tm_wday;
-    int tm_yday;
-    int tm_isdst;
-    int tm_gmtoff;
-    char * tm_zone;
+struct utimbuf {
+    int actime;
+    int modtime;
 }
 
-static assert(tm.tm_sec.offsetof == 0);
-static assert(tm.tm_min.offsetof == 4);
-static assert(tm.tm_hour.offsetof == 8);
-static assert(tm.tm_mday.offsetof == 12);
-static assert(tm.tm_mon.offsetof == 16);
-static assert(tm.tm_year.offsetof == 20);
-static assert(tm.tm_wday.offsetof == 24);
-static assert(tm.tm_yday.offsetof == 28);
-static assert(tm.tm_isdst.offsetof == 32);
-static assert(tm.tm_gmtoff.offsetof == 36);
-static assert(tm.sizeof == 44);
+static assert(utimbuf.actime.offsetof == 0);
+static assert(utimbuf.modtime.offsetof == 4);
+static assert(utimbuf.sizeof == 8);
 
 
 enum {
@@ -307,6 +291,20 @@ struct pthread_cond_t { ubyte[48] opaque; }
 struct pthread_condattr_t { ubyte[4] opaque; }
 struct pthread_mutex_t { ubyte[24] opaque; }
 struct pthread_mutexattr_t { ubyte[4] opaque; }
+struct sched_param {
+    int sched_priority;
+}
+
+static assert(sched_param.sched_priority.offsetof == 0);
+static assert(sched_param.sizeof == 4);
+
+
+struct pthread_barrier_t { ubyte[20] opaque; }
+struct pthread_barrierattr_t { ubyte[4] opaque; }
+struct pthread_rwlock_t { ubyte[32] opaque; }
+struct pthread_rwlockattr_t { ubyte[8] opaque; }
+struct pthread_spinlock_t { ubyte[4] opaque; }
+
 
 enum : int {
   PTHREAD_CANCEL_ENABLE = 0,
@@ -315,6 +313,7 @@ enum : int {
   PTHREAD_CANCEL_ASYNCHRONOUS = 1,
 }
 
+alias int clockid_t;
 alias uint socklen_t;
 // from <sys/socket.h>
 const int SOL_SOCKET = 1
@@ -483,6 +482,7 @@ extern (C)
     int close(int);
     off_t lseek(int, off_t, int);
     int access(char *path, int mode);
+    int utime(char *path, utimbuf *buf);
     int fstat(int, struct_stat*);
     int stat(char*, struct_stat*);
     int	lstat(char *, struct_stat *);
@@ -519,6 +519,8 @@ extern (C)
     int sigismember(sigset_t *set, int);
     int sigaction(int, sigaction_t*, sigaction_t*);
     int sigsuspend(sigset_t*);
+
+    Clong_t sysconf(int name);
 
     // version ( Unix_Pthread )...
     int pthread_attr_init(pthread_attr_t *);
