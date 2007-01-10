@@ -447,8 +447,8 @@ class UConverter : ICU
                 void*   dstLimit = dst + output.length;
 
                 ucnv_fromUnicode (handle, &dst, dstLimit, &src, srcLimit, null, flush, e);
-                x.input = src - cast(wchar*) input;
-                x.output = dst - cast(void*) output;
+                x.input = src - input.ptr;
+                x.output = dst - output.ptr;
 
                 if (e == e.BufferOverflow)
                     return true;
@@ -558,8 +558,8 @@ class UConverter : ICU
                 wchar*  dstLimit = dst + output.length;
 
                 ucnv_toUnicode (handle, &dst, dstLimit, &src, srcLimit, null, flush, e);
-                x.input = src - cast(void*) input;
-                x.output = dst - cast(wchar*) output;
+                x.input = src - input.ptr;
+                x.output = dst - output.ptr;
 
                 if (e == e.BufferOverflow)
                     return true;
@@ -666,8 +666,8 @@ class UConverter : ICU
                                         &src, srcLimit, null, null, null, null, 
                                         clear, flush, e);
                         clear = false;
-                        x.input = src - cast(void*) input;
-                        x.output = dst - cast(void*) output;
+                        x.input = src - input.ptr;
+                        x.output = dst - output.ptr;
 
                         if (e == e.BufferOverflow)
                             return true;
