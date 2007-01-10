@@ -83,7 +83,6 @@ class PrintProtocol : IProtocol
         void[] read (void* dst, uint bytes, Type type)
         {
                 throw new Exception ("PrintProtocol is write only");
-                return null;
         }
         
         /***********************************************************************
