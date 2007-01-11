@@ -54,8 +54,20 @@ class FileScan
         
         /***********************************************************************
 
-            alias for Filter delegate. Takes a File as argument and returns
-            a bool
+            alias for Filter delegate. Takes a FileProxy and a bool as arguments
+            , and returns a bool.
+
+            The FileProxy argument represents a file found by the scan, and the
+            bool whether the FileProxy represents a diretory.
+
+            The filter should return true, if matched by the filter. Note that
+            returning false if the FileProxy is a directory, means that the
+            directory isn't matched, and thus not recursed into. To always
+            recurse, do something in the vein of
+
+            ---
+            return (isDir || match(fp.getPath));
+            ---
 
         ***********************************************************************/
 
@@ -63,7 +75,7 @@ class FileScan
 
         /***********************************************************************
 
-                Return all the files found in the last scan
+                Return the number of files found in the last scan
 
         ***********************************************************************/
 
