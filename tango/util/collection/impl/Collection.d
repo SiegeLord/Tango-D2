@@ -23,7 +23,7 @@ private import  tango.util.collection.Exception;
 private import  tango.io.protocol.model.IReader,
                 tango.io.protocol.model.IWriter;
 
-private import  tango.util.collection.model.View.View,
+private import  tango.util.collection.model.View,
                 tango.util.collection.model.Iterator,
                 tango.util.collection.model.Dispenser;
 

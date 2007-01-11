@@ -21,7 +21,7 @@ private import tango.util.collection.Exception;
 private import  tango.io.protocol.model.IReader,
                 tango.io.protocol.model.IWriter;
 
-private import  tango.util.collection.model.View.View,
+private import  tango.util.collection.model.View,
                 tango.util.collection.model.GuardIterator;
 
 private import  tango.util.collection.impl.LLCell,

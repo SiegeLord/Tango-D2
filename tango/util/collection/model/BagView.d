@@ -14,7 +14,7 @@
 
 module tango.util.collection.model.BagView;
 
-private import tango.util.collection.model.View.View;
+private import tango.util.collection.model.View;
 
 
 /**

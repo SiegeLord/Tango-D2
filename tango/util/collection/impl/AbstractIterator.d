@@ -17,7 +17,7 @@ module tango.util.collection.impl.AbstractIterator;
 
 private import  tango.util.collection.Exception;
 
-private import  tango.util.collection.model.View.View,
+private import  tango.util.collection.model.View,
                 tango.util.collection.model.GuardIterator;
                 
 
