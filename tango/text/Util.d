@@ -67,6 +67,7 @@
         mismatch (s1*, s2*, length)
         matching (s1*, s2*, length)
         isSpace (match)
+        layout (destination, format ...)
         lines (str)
         quotes (str, delims)
         elements (str, delims)
@@ -300,7 +301,6 @@ T[][] delineate (T) (T[] src)
 
         return result;
 }
-
 
 /******************************************************************************
 
@@ -583,6 +583,176 @@ QuoteFreach!(T) quotes(T) (T[] src, T[] delims)
         return quotes;
 }
 
+/*******************************************************************************
+
+        Arranges text strings in order, using indices to specify where
+        each particular argument should be positioned within the text. 
+        This is handy for collating I18N components, or as a simplistic
+        and lightweight formatter. Indices range from zero through nine. 
+        
+        ---
+        // write ordered text to the console
+        char[64] tmp;
+
+        Cout (layout (tmp, "%1 is after %0", "zero", "one")).newline;
+        ---
+
+*******************************************************************************/
+
+T[] layout(T) (T[] output, T[][] layout ...)
+{
+        static void error (char[] msg) {throw new Exception (msg);}
+
+        static char[] badarg   = "Util.format :: index out of range";
+        static char[] toosmall = "Util.format :: output buffer too small";
+        
+        int     pos,
+                args;
+        bool    state;
+
+        args = layout.length - 1;
+        foreach (c; layout[0])
+                {
+                if (state)
+                   {
+                   state = false;
+                   if (c >= '0' && c <= '9')
+                      {
+                      uint index = c - '0';
+                      if (index < args)
+                         {
+                         T[] x = layout[index+1];
+
+                         int limit = pos + x.length;
+                         if (limit < output.length)
+                            {
+                            output [pos .. limit] = x;
+                            pos = limit;
+                            continue;
+                            } 
+                         else
+                            error (toosmall);
+                         }
+                      else
+                         error (badarg);
+                      }
+                   }
+                else
+                   if (c is '%')
+                      {
+                      state = true;
+                      continue;
+                      }
+
+                if (pos < output.length)
+                   {
+                   output[pos] = c;
+                   ++pos;
+                   }
+                else     
+                   error (toosmall);
+                }
+
+        return output [0..pos];
+}
+
+/******************************************************************************
+
+        jhash() -- hash a variable-length key into a 32-bit value
+
+          k     : the key (the unaligned variable-length array of bytes)
+          len   : the length of the key, counting by bytes
+          level : can be any 4-byte value
+
+        Returns a 32-bit value.  Every bit of the key affects every bit of
+        the return value.  Every 1-bit and 2-bit delta achieves avalanche.
+
+        About 4.3*len + 80 X86 instructions, with excellent pipelining
+
+        The best hash table sizes are powers of 2.  There is no need to do
+        mod a prime (mod is sooo slow!).  If you need less than 32 bits,
+        use a bitmask.  For example, if you need only 10 bits, do
+
+                    h = (h & hashmask(10));
+
+        In which case, the hash table should have hashsize(10) elements.
+        If you are hashing n strings (ub1 **)k, do it like this:
+
+                    for (i=0, h=0; i<n; ++i) h = hash( k[i], len[i], h);
+
+        By Bob Jenkins, 1996.  bob_jenkins@burtleburtle.net.  You may use 
+        this code any way you wish, private, educational, or commercial.  
+        It's free.
+
+        See http://burlteburtle.net/bob/hash/evahash.html
+        Use for hash table lookup, or anything where one collision in 2^32 
+        is acceptable. Do NOT use for cryptographic purposes.
+
+******************************************************************************/
+
+uint jhash (ubyte* k, uint len, uint c = 0)
+{
+        uint a = 0x9e3779b9,
+             b = 0x9e3779b9,
+             i = len;
+
+        // handle most of the key 
+        while (i >= 12) 
+              {
+              a += *cast(uint *)(k+0);
+              b += *cast(uint *)(k+4);
+              c += *cast(uint *)(k+8);
+
+              a -= b; a -= c; a ^= (c>>13); 
+              b -= c; b -= a; b ^= (a<<8); 
+              c -= a; c -= b; c ^= (b>>13); 
+              a -= b; a -= c; a ^= (c>>12);  
+              b -= c; b -= a; b ^= (a<<16); 
+              c -= a; c -= b; c ^= (b>>5); 
+              a -= b; a -= c; a ^= (c>>3);  
+              b -= c; b -= a; b ^= (a<<10); 
+              c -= a; c -= b; c ^= (b>>15); 
+              k += 12; i -= 12;
+              }
+
+        // handle the last 11 bytes 
+        c += len;
+        switch (i)
+               {
+               case 11: c+=(cast(uint)k[10]<<24);
+               case 10: c+=(cast(uint)k[9]<<16);
+               case 9 : c+=(cast(uint)k[8]<<8);
+               case 8 : b+=(cast(uint)k[7]<<24);
+               case 7 : b+=(cast(uint)k[6]<<16);
+               case 6 : b+=(cast(uint)k[5]<<8);
+               case 5 : b+=(cast(uint)k[4]);
+               case 4 : a+=(cast(uint)k[3]<<24);
+               case 3 : a+=(cast(uint)k[2]<<16);
+               case 2 : a+=(cast(uint)k[1]<<8);
+               case 1 : a+=(cast(uint)k[0]);
+               default:
+               }
+
+        a -= b; a -= c; a ^= (c>>13); 
+        b -= c; b -= a; b ^= (a<<8); 
+        c -= a; c -= b; c ^= (b>>13); 
+        a -= b; a -= c; a ^= (c>>12);  
+        b -= c; b -= a; b ^= (a<<16); 
+        c -= a; c -= b; c ^= (b>>5); 
+        a -= b; a -= c; a ^= (c>>3);  
+        b -= c; b -= a; b ^= (a<<10); 
+        c -= a; c -= b; c ^= (b>>15); 
+
+        return c;
+}
+
+/// ditto
+uint jhash (void[] x, uint c = 0)
+{
+        return jhash (cast(ubyte*) x.ptr, x.length, c);
+}
+
+        
 /******************************************************************************
 
         Helper struct for iterator lines()
@@ -600,10 +770,13 @@ private struct LineFreach(T)
                         mark;
                 T[]     line;
 
-                while ((pos = locate (src, '\n', mark)) < src.length)
+                const T nl = '\n';
+                const T cr = '\r';
+
+                while ((pos = locate (src, nl, mark)) < src.length)
                       {
                       auto end = pos;
-                      if (end && src[end-1] is '\r')
+                      if (end && src[end-1] is cr)
                           --end;
 
                       line = src [mark .. end];
@@ -708,6 +881,7 @@ private struct QuoteFreach(T)
 }
 
 
+
 /******************************************************************************
 
 ******************************************************************************/
@@ -720,6 +894,8 @@ debug (UnitTest)
         
         unittest
         {
+        char[64] tmp;
+
         assert (isSpace (' ') && !isSpace ('d'));
 
         assert (indexOf ("abc".ptr, 'a', 3u) is 0);
@@ -804,9 +980,12 @@ debug (UnitTest)
         assert (x.length is 1 && x[0] == "a");
         x = delineate ("");
         assert (x.length is 0);
-/+
-        foreach (element; quotes ("1 2 3 4 'avcc   cc ' 5", " "))
-                 printf (">%.*s<\n", element);
-+/
+
+        char[][] q;
+        foreach (element; quotes ("1 'avcc   cc ' 3", " "))
+                 q ~= element;
+        assert (q.length is 3 && q[0] == "1" && q[1] == "'avcc   cc '" && q[2] == "3");
+
+        assert (layout (tmp, "%1,%%%c %0", "abc", "efg") == "efg,%c abc");
         }
 }
