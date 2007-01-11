@@ -174,9 +174,9 @@ public class ArrayBag(T) : BagCollection!(T)
         */
 
         /**
-         * Implements store.Collection.contains.
+         * Implements tango.util.collection.impl.Collection.Collection.contains
          * Time complexity: O(n).
-         * @see store.Collection#contains
+         * See_Also: tango.util.collection.impl.Collection.Collection.contains
         **/
         public final bool contains(T element)
         {
@@ -211,9 +211,9 @@ public class ArrayBag(T) : BagCollection!(T)
         }
 
         /**
-         * Implements store.Collection.instances.
+         * Implements tango.util.collection.impl.Collection.Collection.instances
          * Time complexity: O(n).
-         * @see store.Collection#instances
+         * See_Also: tango.util.collection.impl.Collection.instances
         **/
         public final uint instances(T element)
         {
@@ -249,9 +249,9 @@ public class ArrayBag(T) : BagCollection!(T)
         }
 
         /**
-         * Implements store.Collection.elements.
+         * Implements tango.util.collection.impl.Collection.Collection.elements
          * Time complexity: O(1).
-         * @see store.Collection#elements
+         * See_Also: tango.util.collection.impl.Collection.Collection.elements
         **/
         public final GuardIterator!(T) elements()
         {
@@ -259,9 +259,9 @@ public class ArrayBag(T) : BagCollection!(T)
         }
 
         /**
-         * Implements store.Collection.View.opApply
+         * Implements tango.util.collection.model.View.View.opApply
          * Time complexity: O(n).
-         * @see store.Collection.View#opApply
+         * See_Also: tango.util.collection.model.View.View.opApply
         **/
         int opApply (int delegate (inout T value) dg)
         {
@@ -272,9 +272,9 @@ public class ArrayBag(T) : BagCollection!(T)
         // MutableCollection methods
 
         /**
-         * Implements store.MutableCollection.clear.
+         * Implements tango.util.collection.impl.Collection.Collection.clear.
          * Time complexity: O(1).
-         * @see store.MutableCollection#clear
+         * See_Also: tango.util.collection.impl.Collection.Collection.clear
         **/
         public final void clear()
         {
@@ -284,9 +284,9 @@ public class ArrayBag(T) : BagCollection!(T)
         }
 
         /**
-         * Implements store.MutableCollection.removeAll.
+         * Implements tango.util.collection.impl.Collection.Collection.removeAll.
          * Time complexity: O(n).
-         * @see store.MutableCollection#removeAll
+         * See_Also: tango.util.collection.impl.Collection.Collection.removeAll
         **/
         public final void removeAll (T element)
         {
@@ -295,9 +295,9 @@ public class ArrayBag(T) : BagCollection!(T)
 
 
         /**
-         * Implements store.MutableCollection.removeOneOf.
+         * Implements tango.util.collection.impl.Collection.Collection.removeOneOf.
          * Time complexity: O(n).
-         * @see store.MutableCollection#removeOneOf
+         * See_Also: tango.util.collection.impl.Collection.Collection.removeOneOf
         **/
         public final void remove(T element)
         {
@@ -305,9 +305,9 @@ public class ArrayBag(T) : BagCollection!(T)
         }
 
         /**
-         * Implements store.MutableCollection.replaceOneOf
+         * Implements tango.util.collection.impl.Collection.Collection.replaceOneOf
          * Time complexity: O(n).
-         * @see store.MutableCollection#replaceOneOf
+         * See_Also: tango.util.collection.impl.Collection.Collection.replaceOneOf
         **/
         public final void replace(T oldElement, T newElement)
         {
@@ -315,9 +315,9 @@ public class ArrayBag(T) : BagCollection!(T)
         }
 
         /**
-         * Implements store.MutableCollection.replaceAllOf.
+         * Implements tango.util.collection.impl.Collection.Collection.replaceAllOf.
          * Time complexity: O(n).
-         * @see store.MutableCollection#replaceAllOf
+         * See_Also: tango.util.collection.impl.Collection.Collection.replaceAllOf
         **/
         public final void replaceAll(T oldElement, T newElement)
         {
@@ -325,10 +325,10 @@ public class ArrayBag(T) : BagCollection!(T)
         }
 
         /**
-         * Implements store.MutableCollection.take.
+         * Implements tango.util.collection.impl.Collection.Collection.take.
          * Time complexity: O(1).
          * Takes the least element.
-         * @see store.MutableCollection#take
+         * See_Also: tango.util.collection.impl.Collection.Collection.take
         **/
         public final T take()
         {
@@ -349,9 +349,9 @@ public class ArrayBag(T) : BagCollection!(T)
         // MutableBag methods
 
         /**
-         * Implements store.MutableBag.addIfAbsent.
+         * Implements tango.util.collection.MutableBag.addIfAbsent.
          * Time complexity: O(n).
-         * @see store.MutableBag#addIfAbsent
+         * See_Also: tango.util.collection.MutableBag.addIfAbsent
         **/
         public final void addIf(T element)
         {
@@ -361,9 +361,9 @@ public class ArrayBag(T) : BagCollection!(T)
 
 
         /**
-         * Implements store.MutableBag.add.
+         * Implements tango.util.collection.MutableBag.add.
          * Time complexity: O(1).
-         * @see store.MutableBag#add
+         * See_Also: tango.util.collection.MutableBag.add
         **/
         public final void add (T element)
         {
@@ -489,8 +489,8 @@ public class ArrayBag(T) : BagCollection!(T)
         // ImplementationCheckable methods
 
         /**
-         * Implements store.ImplementationCheckable.checkImplementation.
-         * @see store.ImplementationCheckable#checkImplementation
+         * Implements tango.util.collection.model.View.View.checkImplementation.
+         * See_Also: tango.util.collection.model.View.View.checkImplementation
         **/
         public override void checkImplementation()
         {

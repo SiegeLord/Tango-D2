@@ -7,7 +7,7 @@
 
  History:
  Date     Who                What
- 24Sep95  dl@cs.oswego.edu   Create from store.d  working file
+ 24Sep95  dl@cs.oswego.edu   Create from tango.util.collection.d  working file
  13Oct95  dl                 Changed protection statuses
 
 */
@@ -110,9 +110,9 @@ public class HashSet(T) : SetCollection!(T), HashParams
         // HashTableParams methods
 
         /**
-         * Implements store.HashTableParams.buckets.
+         * Implements tango.util.collection.HashTableParams.buckets.
          * Time complexity: O(1).
-         * @see store.HashTableParams#buckets.
+         * See_Also: tango.util.collection.HashTableParams.buckets.
         **/
 
         public final int buckets()
@@ -121,9 +121,9 @@ public class HashSet(T) : SetCollection!(T), HashParams
         }
 
         /**
-         * Implements store.HashTableParams.buckets.
+         * Implements tango.util.collection.HashTableParams.buckets.
          * Time complexity: O(n).
-         * @see store.HashTableParams#buckets.
+         * See_Also: tango.util.collection.HashTableParams.buckets.
         **/
 
         public final void buckets(int newCap)
@@ -141,9 +141,9 @@ public class HashSet(T) : SetCollection!(T), HashParams
         }
 
         /**
-         * Implements store.HashTableParams.thresholdLoadfactor
+         * Implements tango.util.collection.HashTableParams.thresholdLoadfactor
          * Time complexity: O(1).
-         * @see store.HashTableParams#thresholdLoadfactor
+         * See_Also: tango.util.collection.HashTableParams.thresholdLoadfactor
         **/
 
         public final float thresholdLoadFactor()
@@ -152,9 +152,9 @@ public class HashSet(T) : SetCollection!(T), HashParams
         }
 
         /**
-         * Implements store.HashTableParams.thresholdLoadfactor
+         * Implements tango.util.collection.HashTableParams.thresholdLoadfactor
          * Time complexity: O(n).
-         * @see store.HashTableParams#thresholdLoadfactor
+         * See_Also: tango.util.collection.HashTableParams.thresholdLoadfactor
         **/
 
         public final void thresholdLoadFactor(float desired)
@@ -175,9 +175,9 @@ public class HashSet(T) : SetCollection!(T), HashParams
         // Collection methods
 
         /**
-         * Implements store.Collection.contains.
+         * Implements tango.util.collection.impl.Collection.Collection.contains
          * Time complexity: O(1) average; O(n) worst.
-         * @see store.Collection#contains
+         * See_Also: tango.util.collection.impl.Collection.Collection.contains
         **/
         public final bool contains(T element)
         {
@@ -192,9 +192,9 @@ public class HashSet(T) : SetCollection!(T), HashParams
         }
 
         /**
-         * Implements store.Collection.instances.
+         * Implements tango.util.collection.impl.Collection.Collection.instances
          * Time complexity: O(n).
-         * @see store.Collection#instances
+         * See_Also: tango.util.collection.impl.Collection.Collection.instances
         **/
         public final uint instances(T element)
         {
@@ -205,9 +205,9 @@ public class HashSet(T) : SetCollection!(T), HashParams
         }
 
         /**
-         * Implements store.Collection.elements.
+         * Implements tango.util.collection.impl.Collection.Collection.elements
          * Time complexity: O(1).
-         * @see store.Collection#elements
+         * See_Also: tango.util.collection.impl.Collection.Collection.elements
         **/
         public final GuardIterator!(T) elements()
         {
@@ -215,9 +215,9 @@ public class HashSet(T) : SetCollection!(T), HashParams
         }
 
         /**
-         * Implements store.Collection.View.opApply
+         * Implements tango.util.collection.model.View.View.opApply
          * Time complexity: O(n).
-         * @see store.Collection.View#opApply
+         * See_Also: tango.util.collection.model.View.View.opApply
         **/
         int opApply (int delegate (inout T value) dg)
         {
@@ -228,9 +228,9 @@ public class HashSet(T) : SetCollection!(T), HashParams
         // MutableCollection methods
 
         /**
-         * Implements store.MutableCollection.clear.
+         * Implements tango.util.collection.impl.Collection.Collection.clear.
          * Time complexity: O(1).
-         * @see store.MutableCollection#clear
+         * See_Also: tango.util.collection.impl.Collection.Collection.clear
         **/
         public final void clear()
         {
@@ -239,9 +239,9 @@ public class HashSet(T) : SetCollection!(T), HashParams
         }
 
         /**
-         * Implements store.MutableCollection.exclude.
+         * Implements tango.util.collection.impl.Collection.Collection.exclude.
          * Time complexity: O(1) average; O(n) worst.
-         * @see store.MutableCollection#exclude
+         * See_Also: tango.util.collection.impl.Collection.Collection.exclude
         **/
         public final void removeAll(T element)
         {
@@ -301,9 +301,9 @@ public class HashSet(T) : SetCollection!(T), HashParams
         }
 
         /**
-         * Implements store.MutableCollection.take.
+         * Implements tango.util.collection.impl.Collection.Collection.take.
          * Time complexity: O(number of buckets).
-         * @see store.MutableCollection#take
+         * See_Also: tango.util.collection.impl.Collection.Collection.take
         **/
         public final T take()
         {
@@ -329,9 +329,9 @@ public class HashSet(T) : SetCollection!(T), HashParams
         // MutableSet methods
 
         /**
-         * Implements store.MutableSet.add.
+         * Implements tango.util.collection.impl.SetCollection.SetCollection.add.
          * Time complexity: O(1) average; O(n) worst.
-         * @see store.MutableSet#add
+         * See_Also: tango.util.collection.impl.SetCollection.SetCollection.add
         **/
         public final void add(T element)
         {
@@ -470,8 +470,8 @@ public class HashSet(T) : SetCollection!(T), HashParams
         // ImplementationCheckable methods
 
         /**
-         * Implements store.ImplementationCheckable.checkImplementation.
-         * @see store.ImplementationCheckable#checkImplementation
+         * Implements tango.util.collection.model.View.View.checkImplementation.
+         * See_Also: tango.util.collection.model.View.View.checkImplementation
         **/
         public override void checkImplementation()
         {

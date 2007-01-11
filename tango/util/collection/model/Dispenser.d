@@ -14,7 +14,7 @@
 
 module tango.util.collection.model.Dispenser;
 
-private import  tango.util.collection.model.View,
+private import  tango.util.collection.model.View.View,
                 tango.util.collection.model.Iterator;
 
 /**
@@ -23,9 +23,7 @@ private import  tango.util.collection.model.View,
  * collections that may have elements dynamically added, removed,
  * and/or replaced in accord with their collection semantics.
  *
- * 
-        author: Doug Lea
- * @version 0.93
+ * author: Doug Lea
  *
  * <P> For an introduction to this package see <A HREF="index.html"> Overview </A>.
 **/

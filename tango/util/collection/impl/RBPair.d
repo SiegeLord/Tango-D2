@@ -7,7 +7,7 @@
 
  History:
  Date     Who                What
- 24Sep95  dl@cs.oswego.edu   Create from store.d  working file
+ 24Sep95  dl@cs.oswego.edu   Create from tango.util.collection.d  working file
  13Oct95  dl                 Changed protection statuses
 
 */
@@ -84,7 +84,7 @@ public class RBPair(K, T) : RBCell!(T)
          * Override RBCell version since we are ordered on keys, not elements, so
          * element find has to search whole tree.
          * comparator argument not actually used.
-         * @see RBCell#find
+         * See_Also: RBCell.find
         **/
 
         public final override RBCell!(T) find(T element, Comparator!(T) cmp)
@@ -116,7 +116,7 @@ public class RBPair(K, T) : RBCell!(T)
 
         /**
          * Implements RBCell.count.
-         * @see RBCell#count
+         * See_Also: RBCell.count
         **/
         public final override int count(T element, Comparator!(T) cmp)
         {

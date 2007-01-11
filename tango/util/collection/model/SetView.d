@@ -14,7 +14,7 @@
 
 module tango.util.collection.model.SetView;
 
-private import tango.util.collection.model.View;
+private import tango.util.collection.model.View.View;
 
 /**
  * Sets provide an include operations for adding

@@ -57,8 +57,8 @@ public abstract class SetCollection(T) : Collection!(T), Set!(T)
         }
 
         /**
-         * Implements store.MutableSet.includeElements
-         * @see store.MutableSet#includeElements
+         * Implements tango.util.collection.impl.SetCollection.SetCollection.includeElements
+         * See_Also: tango.util.collection.impl.SetCollection.SetCollection.includeElements
         **/
 
         public void add (Iterator!(T) e)
@@ -73,8 +73,8 @@ public abstract class SetCollection(T) : Collection!(T), Set!(T)
         // Default implementations of Set methods
 
         /**
-         * Implements store.Set.including
-         * @see store.Set#including
+         * Implements tango.util.collection.Set.including
+         * See_Also: tango.util.collection.Set.including
         **/
         public final Set including (T element)
         {
@@ -86,8 +86,8 @@ public abstract class SetCollection(T) : Collection!(T), Set!(T)
 
         /***********************************************************************
 
-                Implements store.MutableCollection.removeAll
-                @see store.MutableCollection#removeAll
+                Implements tango.util.collection.impl.Collection.Collection.removeAll
+                See_Also: tango.util.collection.impl.Collection.Collection.removeAll
 
                 Has to be here rather than in the superclass to satisfy
                 D interface idioms
@@ -102,8 +102,8 @@ public abstract class SetCollection(T) : Collection!(T), Set!(T)
 
         /***********************************************************************
 
-                Implements store.MutableCollection.removeElements
-                @see store.MutableCollection#removeElements
+                Implements tango.util.collection.impl.Collection.Collection.removeElements
+                See_Also: tango.util.collection.impl.Collection.Collection.removeElements
 
                 Has to be here rather than in the superclass to satisfy
                 D interface idioms

@@ -7,7 +7,7 @@
 
  History:
  Date     Who                What
- 24Sep95  dl@cs.oswego.edu   Create from store.d  working file
+ 24Sep95  dl@cs.oswego.edu   Create from tango.util.collection.d  working file
 
 */
 
@@ -31,13 +31,8 @@ private import  tango.util.collection.model.Iterator,
  * don't swap Cell contents or use special dummy nilnodes. 
  * <P>
  * It is a pure implementation class. For harnesses, see:
- * @see RBTree
- * 
-        author: Doug Lea
- * @version 0.93
- *
- * <P> For an introduction to this package see <A HREF="index.html"> Overview </A>.
- *
+ * See_Also: RBTree
+ * Authors: Doug Lea
 **/
 
 
@@ -128,7 +123,7 @@ public class RBCell(T) : Cell!(T)
 
 
         /**
-         * @see store.ImplementationCheckable.checkImplementation.
+         * See_Also: tango.util.collection.model.View.View.checkImplementation.
         **/
         public void checkImplementation()
         {
@@ -157,10 +152,6 @@ public class RBCell(T) : Cell!(T)
         }
 
         /+
-        /**
-         * Implements store.ImplementationCheckable.assert.
-         * @see store.ImplementationCheckable#assert
-        **/
         public final void assert(bool pred)
         {
                 ImplementationError.assert(this, pred);

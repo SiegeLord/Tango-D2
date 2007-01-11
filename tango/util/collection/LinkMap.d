@@ -7,7 +7,7 @@
 
  History:
  Date     Who                What
- 24Sep95  dl@cs.oswego.edu   Create from store.d  working file
+ 24Sep95  dl@cs.oswego.edu   Create from tango.util.collection.d  working file
  13Oct95  dl                 Changed protection statuses
  21Oct95  dl                 Fixed error in remove
 
@@ -21,7 +21,7 @@ private import tango.util.collection.Exception;
 private import  tango.io.protocol.model.IReader,
                 tango.io.protocol.model.IWriter;
 
-private import  tango.util.collection.model.View,
+private import  tango.util.collection.model.View.View,
                 tango.util.collection.model.GuardIterator;
 
 private import  tango.util.collection.impl.LLCell,
@@ -30,17 +30,9 @@ private import  tango.util.collection.impl.LLCell,
                 tango.util.collection.impl.AbstractIterator;
 
 /**
- *
- *
  * Linked lists of (key, element) pairs
- * 
-        author: Doug Lea
- * @version 0.93
- *
- * <P> For an introduction to this package see <A HREF="index.html"> Overview </A>.
+ * author: Doug Lea
 **/
-
-
 public class LinkMap(K, T) : MapCollection!(K, T) // , IReadable, IWritable
 {
         alias LLCell!(T)               LLCellT;
@@ -100,9 +92,9 @@ public class LinkMap(K, T) : MapCollection!(K, T) // , IReadable, IWritable
         // Collection methods
 
         /**
-         * Implements util.collection.Collection.contains.
+         * Implements tango.util.collection.impl.Collection.Collection.contains.
          * Time complexity: O(n).
-         * @see util.collection.Collection#contains
+         * See_Also: tango.util.collection.impl.Collection.Collection.contains
         **/
         public final bool contains(T element)
         {
@@ -113,9 +105,9 @@ public class LinkMap(K, T) : MapCollection!(K, T) // , IReadable, IWritable
         }
 
         /**
-         * Implements util.collection.Collection.instances.
+         * Implements tango.util.collection.impl.Collection.Collection.instances.
          * Time complexity: O(n).
-         * @see util.collection.Collection#instances
+         * See_Also: tango.util.collection.impl.Collection.Collection.instances
         **/
         public final uint instances(T element)
         {
@@ -126,9 +118,9 @@ public class LinkMap(K, T) : MapCollection!(K, T) // , IReadable, IWritable
         }
 
         /**
-         * Implements util.collection.Collection.elements.
+         * Implements tango.util.collection.impl.Collection.Collection.elements.
          * Time complexity: O(1).
-         * @see util.collection.Collection#elements
+         * See_Also: tango.util.collection.impl.Collection.Collection.elements
         **/
         public final GuardIterator!(T) elements()
         {
@@ -137,10 +129,10 @@ public class LinkMap(K, T) : MapCollection!(K, T) // , IReadable, IWritable
 
         /***********************************************************************
 
-                Implements util.collection.View.opApply
+                Implements tango.util.collection.model.View.View.opApply
                 Time complexity: O(n)
                 
-                @see util.collection.View#opApply
+                See_Also: tango.util.collection.model.View.View.opApply
         
         ************************************************************************/
         
@@ -153,10 +145,10 @@ public class LinkMap(K, T) : MapCollection!(K, T) // , IReadable, IWritable
 
         /***********************************************************************
 
-                Implements util.collection.MapView.opApply
+                Implements tango.util.collection.MapView.opApply
                 Time complexity: O(n)
                 
-                @see util.collection.MapView#opApply
+                See_Also: tango.util.collection.MapView.opApply
         
         ************************************************************************/
         
@@ -171,9 +163,9 @@ public class LinkMap(K, T) : MapCollection!(K, T) // , IReadable, IWritable
 
 
         /**
-         * Implements util.collection.Map.containsKey.
+         * Implements tango.util.collection.Map.containsKey.
          * Time complexity: O(n).
-         * @see util.collection.Map#containsKey
+         * See_Also: tango.util.collection.Map.containsKey
         **/
         public final bool containsKey(K key)
         {
@@ -184,9 +176,9 @@ public class LinkMap(K, T) : MapCollection!(K, T) // , IReadable, IWritable
         }
 
         /**
-         * Implements util.collection.Map.containsPair
+         * Implements tango.util.collection.Map.containsPair
          * Time complexity: O(n).
-         * @see util.collection.Map#containsPair
+         * See_Also: tango.util.collection.Map.containsPair
         **/
         public final bool containsPair(K key, T element)
         {
@@ -196,9 +188,9 @@ public class LinkMap(K, T) : MapCollection!(K, T) // , IReadable, IWritable
         }
 
         /**
-         * Implements util.collection.Map.keys.
+         * Implements tango.util.collection.Map.keys.
          * Time complexity: O(1).
-         * @see util.collection.Map#keys
+         * See_Also: tango.util.collection.Map.keys
         **/
         public final PairIterator!(K, T) keys()
         {
@@ -206,9 +198,9 @@ public class LinkMap(K, T) : MapCollection!(K, T) // , IReadable, IWritable
         }
 
         /**
-         * Implements util.collection.Map.get.
+         * Implements tango.util.collection.Map.get.
          * Time complexity: O(n).
-         * @see util.collection.Map#get
+         * See_Also: tango.util.collection.Map.get
         **/
         public final T get(K key)
         {
@@ -246,9 +238,9 @@ public class LinkMap(K, T) : MapCollection!(K, T) // , IReadable, IWritable
 
 
         /**
-         * Implements util.collection.Map.keyOf.
+         * Implements tango.util.collection.Map.keyOf.
          * Time complexity: O(n).
-         * @see util.collection.Map#keyOf
+         * See_Also: tango.util.collection.Map.keyOf
         **/
         public final K keyOf(T element)
         {
@@ -266,9 +258,9 @@ public class LinkMap(K, T) : MapCollection!(K, T) // , IReadable, IWritable
         // MutableCollection methods
 
         /**
-         * Implements util.collection.MutableCollection.clear.
+         * Implements tango.util.collection.impl.Collection.Collection.clear.
          * Time complexity: O(1).
-         * @see util.collection.MutableCollection#clear
+         * See_Also: tango.util.collection.impl.Collection.Collection.clear
         **/
         public final void clear()
         {
@@ -277,9 +269,9 @@ public class LinkMap(K, T) : MapCollection!(K, T) // , IReadable, IWritable
         }
 
         /**
-         * Implements util.collection.MutableCollection.replaceOneOf
+         * Implements tango.util.collection.impl.Collection.Collection.replaceOneOf
          * Time complexity: O(n).
-         * @see util.collection.MutableCollection#replaceOneOf
+         * See_Also: tango.util.collection.impl.Collection.Collection.replaceOneOf
         **/
         public final void replace (T oldElement, T newElement)
         {
@@ -287,9 +279,9 @@ public class LinkMap(K, T) : MapCollection!(K, T) // , IReadable, IWritable
         }
 
         /**
-         * Implements util.collection.MutableCollection.replaceAllOf.
+         * Implements tango.util.collection.impl.Collection.Collection.replaceAllOf.
          * Time complexity: O(n).
-         * @see util.collection.MutableCollection#replaceAllOf
+         * See_Also: tango.util.collection.impl.Collection.Collection.replaceAllOf
         **/
         public final void replaceAll(T oldElement, T newElement)
         {
@@ -297,9 +289,9 @@ public class LinkMap(K, T) : MapCollection!(K, T) // , IReadable, IWritable
         }
 
         /**
-         * Implements util.collection.MutableCollection.removeAll.
+         * Implements tango.util.collection.impl.Collection.Collection.removeAll.
          * Time complexity: O(n).
-         * @see util.collection.MutableCollection#removeAll
+         * See_Also: tango.util.collection.impl.Collection.Collection.removeAll
         **/
         public final void removeAll(T element)
         {
@@ -307,9 +299,9 @@ public class LinkMap(K, T) : MapCollection!(K, T) // , IReadable, IWritable
         }
 
         /**
-         * Implements util.collection.MutableCollection.removeOneOf.
+         * Implements tango.util.collection.impl.Collection.Collection.removeOneOf.
          * Time complexity: O(n).
-         * @see util.collection.MutableCollection#removeOneOf
+         * See_Also: tango.util.collection.impl.Collection.Collection.removeOneOf
         **/
         public final void remove(T element)
         {
@@ -317,10 +309,10 @@ public class LinkMap(K, T) : MapCollection!(K, T) // , IReadable, IWritable
         }
 
         /**
-         * Implements util.collection.MutableCollection.take.
+         * Implements tango.util.collection.impl.Collection.Collection.take.
          * Time complexity: O(1).
          * takes the first element on the list
-         * @see util.collection.MutableCollection#take
+         * See_Also: tango.util.collection.impl.Collection.Collection.take
         **/
         public final T take()
         {
@@ -339,9 +331,9 @@ public class LinkMap(K, T) : MapCollection!(K, T) // , IReadable, IWritable
         // MutableMap methods
 
         /**
-         * Implements util.collection.MutableMap.add.
+         * Implements tango.util.collection.impl.MapCollection.MapCollection.add.
          * Time complexity: O(n).
-         * @see util.collection.MutableMap#add
+         * See_Also: tango.util.collection.impl.MapCollection.MapCollection.add
         **/
         public final void add (K key, T element)
         {
@@ -367,9 +359,9 @@ public class LinkMap(K, T) : MapCollection!(K, T) // , IReadable, IWritable
 
 
         /**
-         * Implements util.collection.MutableMap.remove.
+         * Implements tango.util.collection.impl.MapCollection.MapCollection.remove.
          * Time complexity: O(n).
-         * @see util.collection.MutableMap#remove
+         * See_Also: tango.util.collection.impl.MapCollection.MapCollection.remove
         **/
         public final void removeKey (K key)
         {
@@ -400,9 +392,9 @@ public class LinkMap(K, T) : MapCollection!(K, T) // , IReadable, IWritable
         }
 
         /**
-         * Implements util.collection.MutableMap.replaceElement.
+         * Implements tango.util.collection.impl.MapCollection.MapCollection.replaceElement.
          * Time complexity: O(n).
-         * @see util.collection.MutableMap#replaceElement
+         * See_Also: tango.util.collection.impl.MapCollection.MapCollection.replaceElement
         **/
         public final void replacePair (K key, T oldElement, T newElement)
         {
@@ -477,8 +469,8 @@ public class LinkMap(K, T) : MapCollection!(K, T) // , IReadable, IWritable
         // ImplementationCheckable methods
 
         /**
-         * Implements util.collection.ImplementationCheckable.checkImplementation.
-         * @see util.collection.ImplementationCheckable#checkImplementation
+         * Implements tango.util.collection.model.View.View.checkImplementation.
+         * See_Also: tango.util.collection.model.View.View.checkImplementation
         **/
         public override void checkImplementation()
         {

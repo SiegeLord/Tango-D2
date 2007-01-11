@@ -125,10 +125,10 @@ public class HashMap(K, V) : MapCollection!(K, V), HashParams
 
         /***********************************************************************
 
-                Implements util.collection.HashParams.buckets.
+                Implements tango.util.collection.HashParams.buckets.
                 Time complexity: O(1).
                 
-                @see util.collection.HashParams#buckets.
+                See_Also: tango.util.collection.HashParams.buckets.
         
         ************************************************************************/
 
@@ -139,10 +139,10 @@ public class HashMap(K, V) : MapCollection!(K, V), HashParams
 
         /***********************************************************************
 
-                Implements util.collection.HashParams.buckets.
+                Implements tango.util.collection.HashParams.buckets.
                 Time complexity: O(n).
                 
-                @see util.collection.HashParams#buckets.
+                See_Also: tango.util.collection.HashParams.buckets.
         
         ************************************************************************/
 
@@ -159,10 +159,10 @@ public class HashMap(K, V) : MapCollection!(K, V), HashParams
 
         /***********************************************************************
 
-                Implements util.collection.HashParams.thresholdLoadfactor
+                Implements tango.util.collection.HashParams.thresholdLoadfactor
                 Time complexity: O(1).
                 
-                @see util.collection.HashParams#thresholdLoadfactor
+                See_Also: tango.util.collection.HashParams.thresholdLoadfactor
         
         ************************************************************************/
 
@@ -173,10 +173,10 @@ public class HashMap(K, V) : MapCollection!(K, V), HashParams
 
         /***********************************************************************
 
-                Implements util.collection.HashParams.thresholdLoadfactor
+                Implements tango.util.collection.HashParams.thresholdLoadfactor
                 Time complexity: O(n).
                 
-                @see util.collection.HashParams#thresholdLoadfactor
+                See_Also: tango.util.collection.HashParams.thresholdLoadfactor
         
         ************************************************************************/
 
@@ -197,10 +197,10 @@ public class HashMap(K, V) : MapCollection!(K, V), HashParams
 
         /***********************************************************************
 
-                Implements util.collection.View.contains.
+                Implements tango.util.collection.model.View.View.contains.
                 Time complexity: O(1) average; O(n) worst.
                 
-                @see util.collection.View#contains
+                See_Also: tango.util.collection.model.View.View.contains
         
         ************************************************************************/
         
@@ -220,10 +220,10 @@ public class HashMap(K, V) : MapCollection!(K, V), HashParams
 
         /***********************************************************************
 
-                Implements util.collection.View.instances.
+                Implements tango.util.collection.model.View.View.instances.
                 Time complexity: O(n).
                 
-                @see util.collection.View#instances
+                See_Also: tango.util.collection.model.View.View.instances
         
         ************************************************************************/
         
@@ -244,10 +244,10 @@ public class HashMap(K, V) : MapCollection!(K, V), HashParams
 
         /***********************************************************************
 
-                Implements util.collection.View.elements.
+                Implements tango.util.collection.model.View.View.elements.
                 Time complexity: O(1).
                 
-                @see util.collection.View#elements
+                See_Also: tango.util.collection.model.View.View.elements
         
         ************************************************************************/
         
@@ -258,10 +258,10 @@ public class HashMap(K, V) : MapCollection!(K, V), HashParams
 
         /***********************************************************************
 
-                Implements util.collection.View.opApply
+                Implements tango.util.collection.model.View.View.opApply
                 Time complexity: O(n)
                 
-                @see util.collection.View#opApply
+                See_Also: tango.util.collection.model.View.View.opApply
         
         ************************************************************************/
         
@@ -274,10 +274,10 @@ public class HashMap(K, V) : MapCollection!(K, V), HashParams
 
         /***********************************************************************
 
-                Implements util.collection.MapView.opApply
+                Implements tango.util.collection.MapView.opApply
                 Time complexity: O(n)
                 
-                @see util.collection.MapView#opApply
+                See_Also: tango.util.collection.MapView.opApply
         
         ************************************************************************/
         
@@ -292,10 +292,10 @@ public class HashMap(K, V) : MapCollection!(K, V), HashParams
 
         /***********************************************************************
 
-                Implements util.collection.Map.containsKey.
+                Implements tango.util.collection.Map.containsKey.
                 Time complexity: O(1) average; O(n) worst.
                 
-                @see util.collection.Map#containsKey
+                See_Also: tango.util.collection.Map.containsKey
         
         ************************************************************************/
         
@@ -313,10 +313,10 @@ public class HashMap(K, V) : MapCollection!(K, V), HashParams
 
         /***********************************************************************
 
-                Implements util.collection.Map.containsPair
+                Implements tango.util.collection.Map.containsPair
                 Time complexity: O(1) average; O(n) worst.
                 
-                @see util.collection.Map#containsPair
+                See_Also: tango.util.collection.Map.containsPair
         
         ************************************************************************/
         
@@ -334,10 +334,10 @@ public class HashMap(K, V) : MapCollection!(K, V), HashParams
 
         /***********************************************************************
 
-                Implements util.collection.Map.keys.
+                Implements tango.util.collection.Map.keys.
                 Time complexity: O(1).
                 
-                @see util.collection.Map#keys
+                See_Also: tango.util.collection.Map.keys
         
         ************************************************************************/
         
@@ -348,10 +348,10 @@ public class HashMap(K, V) : MapCollection!(K, V), HashParams
 
         /***********************************************************************
 
-                Implements util.collection.Map.get.
+                Implements tango.util.collection.Map.get.
                 Time complexity: O(1) average; O(n) worst.
                 
-                @see util.collection.Map#at
+                See_Also: tango.util.collection.Map.at
         
         ************************************************************************/
         
@@ -403,10 +403,10 @@ public class HashMap(K, V) : MapCollection!(K, V), HashParams
 
         /***********************************************************************
 
-                Implements util.collection.Map.keyOf.
+                Implements tango.util.collection.Map.keyOf.
                 Time complexity: O(n).
                 
-                @see util.collection.Map#akyOf
+                See_Also: tango.util.collection.Map.akyOf
         
         ************************************************************************/
         
@@ -434,10 +434,10 @@ public class HashMap(K, V) : MapCollection!(K, V), HashParams
 
         /***********************************************************************
 
-                Implements util.collection.Collection.clear.
+                Implements tango.util.collection.impl.Collection.Collection.clear.
                 Time complexity: O(1).
                 
-                @see util.collection.Collection#clear
+                See_Also: tango.util.collection.impl.Collection.Collection.clear
         
         ************************************************************************/
         
@@ -449,10 +449,10 @@ public class HashMap(K, V) : MapCollection!(K, V), HashParams
 
         /***********************************************************************
 
-                Implements util.collection.Collection.removeAll.
+                Implements tango.util.collection.impl.Collection.Collection.removeAll.
                 Time complexity: O(n).
                 
-                @see util.collection.Collection#removeAll
+                See_Also: tango.util.collection.impl.Collection.Collection.removeAll
         
         ************************************************************************/
         
@@ -464,10 +464,10 @@ public class HashMap(K, V) : MapCollection!(K, V), HashParams
 
         /***********************************************************************
 
-                Implements util.collection.Collection.removeOneOf.
+                Implements tango.util.collection.impl.Collection.Collection.removeOneOf.
                 Time complexity: O(n).
                 
-                @see util.collection.Collection#removeOneOf
+                See_Also: tango.util.collection.impl.Collection.Collection.removeOneOf
         
         ************************************************************************/
         
@@ -479,10 +479,10 @@ public class HashMap(K, V) : MapCollection!(K, V), HashParams
 
         /***********************************************************************
 
-                Implements util.collection.Collection.replaceOneOf.
+                Implements tango.util.collection.impl.Collection.Collection.replaceOneOf.
                 Time complexity: O(n).
                 
-                @see util.collection.Collection#replaceOneOf
+                See_Also: tango.util.collection.impl.Collection.Collection.replaceOneOf
         
         ************************************************************************/
 
@@ -493,10 +493,10 @@ public class HashMap(K, V) : MapCollection!(K, V), HashParams
 
         /***********************************************************************
 
-                Implements util.collection.Collection.replaceOneOf.
+                Implements tango.util.collection.impl.Collection.Collection.replaceOneOf.
                 Time complexity: O(n).
                 
-                @see util.collection.Collection#replaceOneOf
+                See_Also: tango.util.collection.impl.Collection.Collection.replaceOneOf
         
         ************************************************************************/
 
@@ -507,10 +507,10 @@ public class HashMap(K, V) : MapCollection!(K, V), HashParams
 
         /***********************************************************************
 
-                Implements util.collection.Collection.take.
+                Implements tango.util.collection.impl.Collection.Collection.take.
                 Time complexity: O(number of buckets).
                 
-                @see util.collection.Collection#take
+                See_Also: tango.util.collection.impl.Collection.Collection.take
         
         ************************************************************************/
         
@@ -537,10 +537,10 @@ public class HashMap(K, V) : MapCollection!(K, V), HashParams
 
         /***********************************************************************
 
-                Implements util.collection.Map.add.
+                Implements tango.util.collection.Map.add.
                 Time complexity: O(1) average; O(n) worst.
                 
-                @see util.collection.Map#add
+                See_Also: tango.util.collection.Map.add
         
         ************************************************************************/
         
@@ -583,10 +583,10 @@ public class HashMap(K, V) : MapCollection!(K, V), HashParams
 
         /***********************************************************************
 
-                Implements util.collection.Map.remove.
+                Implements tango.util.collection.Map.remove.
                 Time complexity: O(1) average; O(n) worst.
                 
-                @see util.collection.Map#remove
+                See_Also: tango.util.collection.Map.remove
         
         ************************************************************************/
         
@@ -622,10 +622,10 @@ public class HashMap(K, V) : MapCollection!(K, V), HashParams
 
         /***********************************************************************
 
-                Implements util.collection.Map.replaceElement.
+                Implements tango.util.collection.Map.replaceElement.
                 Time complexity: O(1) average; O(n) worst.
                 
-                @see util.collection.Map#replaceElement
+                See_Also: tango.util.collection.Map.replaceElement
         
         ************************************************************************/
         
@@ -835,9 +835,9 @@ public class HashMap(K, V) : MapCollection!(K, V), HashParams
 
         /***********************************************************************
 
-                Implements util.collection.ImplementationCheckable.checkImplementation.
+                Implements tango.util.collection.model.View.View.checkImplementation.
                 
-                @see util.collection.ImplementationCheckable#checkImplementation
+                See_Also: tango.util.collection.model.View.View.checkImplementation
         
         ************************************************************************/
                         

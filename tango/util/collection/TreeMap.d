@@ -7,7 +7,7 @@
 
  History:
  Date     Who                What
- 24Sep95  dl@cs.oswego.edu   Create from store.d  working file
+ 24Sep95  dl@cs.oswego.edu   Create from tango.util.collection.d  working file
  13Oct95  dl                 Changed protection statuses
 
 */
@@ -126,9 +126,9 @@ public class TreeMap(K, T) : MapCollection!(K, T), SortedKeys!(K, T)
         // Collection methods
 
         /**
-         * Implements store.Collection.contains.
+         * Implements tango.util.collection.impl.Collection.Collection.contains
          * Time complexity: O(log n).
-         * @see store.Collection#contains
+         * See_Also: tango.util.collection.impl.Collection.Collection.contains
         **/
         public final bool contains(T element)
         {
@@ -138,9 +138,9 @@ public class TreeMap(K, T) : MapCollection!(K, T), SortedKeys!(K, T)
         }
 
         /**
-         * Implements store.Collection.instances.
+         * Implements tango.util.collection.impl.Collection.Collection.instances
          * Time complexity: O(log n).
-         * @see store.Collection#instances
+         * See_Also: tango.util.collection.impl.Collection.Collection.instances
         **/
         public final uint instances(T element)
         {
@@ -150,9 +150,9 @@ public class TreeMap(K, T) : MapCollection!(K, T), SortedKeys!(K, T)
         }
 
         /**
-         * Implements store.Collection.elements.
+         * Implements tango.util.collection.impl.Collection.Collection.elements
          * Time complexity: O(1).
-         * @see store.Collection#elements
+         * See_Also: tango.util.collection.impl.Collection.Collection.elements
         **/
         public final GuardIterator!(T) elements()
         {
@@ -161,10 +161,10 @@ public class TreeMap(K, T) : MapCollection!(K, T), SortedKeys!(K, T)
 
         /***********************************************************************
 
-                Implements util.collection.View.opApply
+                Implements tango.util.collection.model.View.View.opApply
                 Time complexity: O(n)
                 
-                @see util.collection.View#opApply
+                See_Also: tango.util.collection.model.View.View.opApply
         
         ************************************************************************/
         
@@ -177,10 +177,10 @@ public class TreeMap(K, T) : MapCollection!(K, T), SortedKeys!(K, T)
 
         /***********************************************************************
 
-                Implements util.collection.MapView.opApply
+                Implements tango.util.collection.MapView.opApply
                 Time complexity: O(n)
                 
-                @see util.collection.MapView#opApply
+                See_Also: tango.util.collection.MapView.opApply
         
         ************************************************************************/
         
@@ -193,9 +193,9 @@ public class TreeMap(K, T) : MapCollection!(K, T), SortedKeys!(K, T)
         // KeySortedCollection methods
 
         /**
-         * Implements store.KeySortedCollection.comparator
+         * Implements tango.util.collection.KeySortedCollection.comparator
          * Time complexity: O(1).
-         * @see store.KeySortedCollection#comparator
+         * See_Also: tango.util.collection.KeySortedCollection.comparator
         **/
         public final ComparatorT comparator()
         {
@@ -232,9 +232,9 @@ public class TreeMap(K, T) : MapCollection!(K, T), SortedKeys!(K, T)
         // Map methods
 
         /**
-         * Implements store.Map.containsKey.
+         * Implements tango.util.collection.Map.containsKey.
          * Time complexity: O(log n).
-         * @see store.Map#containsKey
+         * See_Also: tango.util.collection.Map.containsKey
         **/
         public final bool containsKey(K key)
         {
@@ -244,9 +244,9 @@ public class TreeMap(K, T) : MapCollection!(K, T), SortedKeys!(K, T)
         }
 
         /**
-         * Implements store.Map.containsPair.
+         * Implements tango.util.collection.Map.containsPair.
          * Time complexity: O(n).
-         * @see store.Map#containsPair
+         * See_Also: tango.util.collection.Map.containsPair
         **/
         public final bool containsPair(K key, T element)
         {
@@ -256,9 +256,9 @@ public class TreeMap(K, T) : MapCollection!(K, T), SortedKeys!(K, T)
         }
 
         /**
-         * Implements store.Map.keys.
+         * Implements tango.util.collection.Map.keys.
          * Time complexity: O(1).
-         * @see store.Map#keys
+         * See_Also: tango.util.collection.Map.keys
         **/
         public final PairIterator!(K, T) keys()
         {
@@ -266,9 +266,9 @@ public class TreeMap(K, T) : MapCollection!(K, T), SortedKeys!(K, T)
         }
 
         /**
-         * Implements store.Map.get.
+         * Implements tango.util.collection.Map.get.
          * Time complexity: O(log n).
-         * @see store.Map#get
+         * See_Also: tango.util.collection.Map.get
         **/
         public final T get(K key)
         {
@@ -304,9 +304,9 @@ public class TreeMap(K, T) : MapCollection!(K, T), SortedKeys!(K, T)
 
 
         /**
-         * Implements store.Map.keyOf.
+         * Implements tango.util.collection.Map.keyOf.
          * Time complexity: O(n).
-         * @see store.Map#keyOf
+         * See_Also: tango.util.collection.Map.keyOf
         **/
         public final K keyOf(T element)
         {
@@ -324,9 +324,9 @@ public class TreeMap(K, T) : MapCollection!(K, T), SortedKeys!(K, T)
         // MutableCollection methods
 
         /**
-         * Implements store.MutableCollection.clear.
+         * Implements tango.util.collection.impl.Collection.Collection.clear.
          * Time complexity: O(1).
-         * @see store.MutableCollection#clear
+         * See_Also: tango.util.collection.impl.Collection.Collection.clear
         **/
         public final void clear()
         {
@@ -336,9 +336,9 @@ public class TreeMap(K, T) : MapCollection!(K, T), SortedKeys!(K, T)
 
 
         /**
-         * Implements store.MutableCollection.removeAll.
+         * Implements tango.util.collection.impl.Collection.Collection.removeAll.
          * Time complexity: O(n).
-         * @see store.MutableCollection#removeAll
+         * See_Also: tango.util.collection.impl.Collection.Collection.removeAll
         **/
         public final void removeAll(T element)
         {
@@ -357,9 +357,9 @@ public class TreeMap(K, T) : MapCollection!(K, T), SortedKeys!(K, T)
         }
 
         /**
-         * Implements store.MutableCollection.removeOneOf.
+         * Implements tango.util.collection.impl.Collection.Collection.removeOneOf.
          * Time complexity: O(n).
-         * @see store.MutableCollection#removeOneOf
+         * See_Also: tango.util.collection.impl.Collection.Collection.removeOneOf
         **/
         public final void remove (T element)
         {
@@ -376,9 +376,9 @@ public class TreeMap(K, T) : MapCollection!(K, T), SortedKeys!(K, T)
 
 
         /**
-         * Implements store.MutableCollection.replaceOneOf.
+         * Implements tango.util.collection.impl.Collection.Collection.replaceOneOf.
          * Time complexity: O(n).
-         * @see store.MutableCollection#replaceOneOf
+         * See_Also: tango.util.collection.impl.Collection.Collection.replaceOneOf
         **/
         public final void replace(T oldElement, T newElement)
         {
@@ -395,9 +395,9 @@ public class TreeMap(K, T) : MapCollection!(K, T), SortedKeys!(K, T)
         }
 
         /**
-         * Implements store.MutableCollection.replaceAllOf.
+         * Implements tango.util.collection.impl.Collection.Collection.replaceAllOf.
          * Time complexity: O(n).
-         * @see store.MutableCollection#replaceAllOf
+         * See_Also: tango.util.collection.impl.Collection.Collection.replaceAllOf
         **/
         public final void replaceAll(T oldElement, T newElement)
         {
@@ -412,10 +412,10 @@ public class TreeMap(K, T) : MapCollection!(K, T), SortedKeys!(K, T)
         }
 
         /**
-         * Implements store.MutableCollection.take.
+         * Implements tango.util.collection.impl.Collection.Collection.take.
          * Time complexity: O(log n).
          * Takes the element associated with the least key.
-         * @see store.MutableCollection#take
+         * See_Also: tango.util.collection.impl.Collection.Collection.take
         **/
         public final T take()
         {
@@ -436,9 +436,9 @@ public class TreeMap(K, T) : MapCollection!(K, T), SortedKeys!(K, T)
         // MutableMap methods
 
         /**
-         * Implements store.MutableMap.add.
+         * Implements tango.util.collection.impl.MapCollection.MapCollection.add.
          * Time complexity: O(log n).
-         * @see store.MutableMap#add
+         * See_Also: tango.util.collection.impl.MapCollection.MapCollection.add
         **/
         public final void add(K key, T element)
         {
@@ -447,9 +447,9 @@ public class TreeMap(K, T) : MapCollection!(K, T), SortedKeys!(K, T)
 
 
         /**
-         * Implements store.MutableMap.remove.
+         * Implements tango.util.collection.impl.MapCollection.MapCollection.remove.
          * Time complexity: O(log n).
-         * @see store.MutableMap#remove
+         * See_Also: tango.util.collection.impl.MapCollection.MapCollection.remove
         **/
         public final void removeKey (K key)
         {
@@ -466,9 +466,9 @@ public class TreeMap(K, T) : MapCollection!(K, T), SortedKeys!(K, T)
 
 
         /**
-         * Implements store.MutableMap.replaceElement.
+         * Implements tango.util.collection.impl.MapCollection.MapCollection.replaceElement.
          * Time complexity: O(log n).
-         * @see store.MutableMap#replaceElement
+         * See_Also: tango.util.collection.impl.MapCollection.MapCollection.replaceElement
         **/
         public final void replacePair (K key, T oldElement,
                                               T newElement)
@@ -544,8 +544,8 @@ public class TreeMap(K, T) : MapCollection!(K, T), SortedKeys!(K, T)
         // ImplementationCheckable methods
 
         /**
-         * Implements store.ImplementationCheckable.checkImplementation.
-         * @see store.ImplementationCheckable#checkImplementation
+         * Implements tango.util.collection.model.View.View.checkImplementation.
+         * See_Also: tango.util.collection.model.View.View.checkImplementation
         **/
         public override void checkImplementation()
         {

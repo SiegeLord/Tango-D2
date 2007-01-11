@@ -62,8 +62,8 @@ public abstract class SeqCollection(T) : Collection!(T), Seq!(T)
 version (VERBOSE)
 {
         /**
-         * Implements store.Seq.insertingAt.
-         * @see store.Seq#insertingAt
+         * Implements tango.util.collection.model.Seq.Seq.insertingAt.
+         * See_Also: tango.util.collection.model.Seq.Seq.insertingAt
         **/
         public final Seq insertingAt(int index, T element)
         {
@@ -75,8 +75,8 @@ version (VERBOSE)
         }
 
         /**
-         * Implements store.Seq.removingAt.
-         * @see store.Seq#removingAt
+         * Implements tango.util.collection.model.Seq.Seq.removingAt.
+         * See_Also: tango.util.collection.model.Seq.Seq.removingAt
         **/
         public final Seq removingAt(int index)
         {
@@ -89,8 +89,8 @@ version (VERBOSE)
 
 
         /**
-         * Implements store.Seq.replacingAt
-         * @see store.Seq#replacingAt
+         * Implements tango.util.collection.model.Seq.Seq.replacingAt
+         * See_Also: tango.util.collection.model.Seq.Seq.replacingAt
         **/
         public final Seq replacingAt(int index, T element)
         {
@@ -104,8 +104,8 @@ version (VERBOSE)
 
         /***********************************************************************
 
-                Implements store.MutableCollection.removeAll
-                @see store.MutableCollection#removeAll
+                Implements tango.util.collection.impl.Collection.Collection.removeAll
+                See_Also: tango.util.collection.impl.Collection.Collection.removeAll
 
                 Has to be here rather than in the superclass to satisfy
                 D interface idioms
@@ -120,8 +120,8 @@ version (VERBOSE)
 
         /***********************************************************************
 
-                Implements store.MutableCollection.removeElements
-                @see store.MutableCollection#removeElements
+                Implements tango.util.collection.impl.Collection.Collection.removeElements
+                See_Also: tango.util.collection.impl.Collection.Collection.removeElements
 
                 Has to be here rather than in the superclass to satisfy
                 D interface idioms

@@ -43,7 +43,7 @@ private import tango.util.collection.model.Iterator;
  *  boolean predicate(Object v) { return (v instanceof Panel); }
  * }
  * </PRE>
- * @see store.Predicate#predicate
+ * See_Also: tango.util.collection.Predicate.predicate
  * 
         author: Doug Lea
  * @version 0.93

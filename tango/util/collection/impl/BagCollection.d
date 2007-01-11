@@ -57,8 +57,8 @@ public abstract class BagCollection(V) : Collection!(V), Bag!(V)
         }
 
         /**
-         * Implements store.MutableBag.addElements
-         * @see store.MutableBag#addElements
+         * Implements tango.util.collection.MutableBag.addElements
+         * See_Also: tango.util.collection.MutableBag.addElements
         **/
 
         public final void add(Iterator!(V) e)
@@ -73,8 +73,8 @@ public abstract class BagCollection(V) : Collection!(V), Bag!(V)
 version (VERBOSE)
 {
         /**
-         * Implements store.Bag.addingIfAbsent
-         * @see store.Bag#addingIfAbsent
+         * Implements tango.util.collection.Bag.addingIfAbsent
+         * See_Also: tango.util.collection.Bag.addingIfAbsent
         **/
         public final Bag addingIf(V element)
         {
@@ -85,8 +85,8 @@ version (VERBOSE)
 
 
         /**
-         * Implements store.Bag.adding
-         * @see store.Bag#adding
+         * Implements tango.util.collection.Bag.adding
+         * See_Also: tango.util.collection.Bag.adding
         **/
 
         public final Bag adding(V element)
@@ -100,8 +100,8 @@ version (VERBOSE)
 
         /***********************************************************************
 
-                Implements store.MutableCollection.removeAll
-                @see store.MutableCollection#removeAll
+                Implements tango.util.collection.impl.Collection.Collection.removeAll
+                See_Also: tango.util.collection.impl.Collection.Collection.removeAll
 
                 Has to be here rather than in the superclass to satisfy
                 D interface idioms
@@ -116,8 +116,8 @@ version (VERBOSE)
 
         /***********************************************************************
 
-                Implements store.MutableCollection.removeElements
-                @see store.MutableCollection#removeElements
+                Implements tango.util.collection.impl.Collection.Collection.removeElements
+                See_Also: tango.util.collection.impl.Collection.Collection.removeElements
 
                 Has to be here rather than in the superclass to satisfy
                 D interface idioms

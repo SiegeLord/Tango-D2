@@ -7,7 +7,7 @@
 
  History:
  Date     Who                What
- 24Sep95  dl@cs.oswego.edu   Create from store.d  working file
+ 24Sep95  dl@cs.oswego.edu   Create from tango.util.collection.d  working file
  13Oct95  dl                 Changed protection statuses
 
 */
@@ -48,8 +48,8 @@ public class ArrayIterator(T) : GuardIterator!(T)
         }
 
         /**
-         * Implements store.CollectionIterator.remaining
-         * @see store.CollectionIterator#remaining
+         * Implements tango.util.collection.impl.Collection.CollectionIterator.remaining
+         * See_Also: tango.util.collection.impl.Collection.CollectionIterator.remaining
         **/
         public int remaining()
         {
@@ -58,7 +58,7 @@ public class ArrayIterator(T) : GuardIterator!(T)
 
         /**
          * Implements java.util.Iterator.more.
-         * @see java.util.Iterator#more
+         * See_Also: java.util.Iterator.more
         **/
         public bool more()
         {
@@ -66,10 +66,10 @@ public class ArrayIterator(T) : GuardIterator!(T)
         }
 
         /**
-         * Implements store.CollectionIterator.corrupted.
+         * Implements tango.util.collection.impl.Collection.CollectionIterator.corrupted.
          * Always false. Inconsistency cannot be reliably detected for arrays
          * @return false
-         * @see store.CollectionIterator#corrupted
+         * See_Also: tango.util.collection.impl.Collection.CollectionIterator.corrupted
         **/
 
         public bool corrupted()
@@ -79,7 +79,7 @@ public class ArrayIterator(T) : GuardIterator!(T)
 
         /**
          * Implements java.util.Iterator.get().
-         * @see java.util.Iterator#get()
+         * See_Also: java.util.Iterator.get()
         **/
         public T get()
         {

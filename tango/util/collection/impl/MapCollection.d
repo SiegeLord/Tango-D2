@@ -21,7 +21,7 @@ private import  tango.util.collection.Exception;
 private import  tango.util.collection.impl.Collection;
 
 private import  tango.util.collection.model.Map,
-                tango.util.collection.model.View,
+                tango.util.collection.model.View.View,
                 tango.util.collection.model.MapView,
                 tango.util.collection.model.Iterator,
                 tango.util.collection.model.SortedKeys;
@@ -71,10 +71,10 @@ public abstract class MapCollection(K, T) : Collection!(T), Map!(K, T)
 
         /***********************************************************************
 
-                Implements util.collection.Map.allowsKey.
+                Implements tango.util.collection.Map.allowsKey.
                 Default key-screen. Just checks for null.
                 
-                @see util.collection.Map#allowsKey
+                See_Also: tango.util.collection.Map.allowsKey
 
         ************************************************************************/
 
@@ -109,7 +109,7 @@ public abstract class MapCollection(K, T) : Collection!(T), Map!(K, T)
 
         /***********************************************************************
 
-                Implements util.collection.Collection.matches
+                Implements tango.util.collection.impl.Collection.Collection.matches
                 Time complexity: O(n).
                 Default implementation. Fairly sleazy approach.
                 (Defensible only when you remember that it is just a default impl.)
@@ -119,7 +119,7 @@ public abstract class MapCollection(K, T) : Collection!(T), Map!(K, T)
                 but must be overridden if you define new Collection subinterfaces
                 and/or implementations.
                 
-                @see util.collection.Collection#matches
+                See_Also: tango.util.collection.impl.Collection.Collection.matches
 
         ************************************************************************/
 
@@ -185,8 +185,8 @@ public abstract class MapCollection(K, T) : Collection!(T), Map!(K, T)
 
         /***********************************************************************
 
-                Implements store.MutableCollection.removeAll
-                @see store.MutableCollection#removeAll
+                Implements tango.util.collection.impl.Collection.Collection.removeAll
+                See_Also: tango.util.collection.impl.Collection.Collection.removeAll
 
                 Has to be here rather than in the superclass to satisfy
                 D interface idioms
@@ -201,8 +201,8 @@ public abstract class MapCollection(K, T) : Collection!(T), Map!(K, T)
 
         /***********************************************************************
 
-                Implements store.MutableCollection.removeElements
-                @see store.MutableCollection#removeElements
+                Implements tango.util.collection.impl.Collection.Collection.removeElements
+                See_Also: tango.util.collection.impl.Collection.Collection.removeElements
 
                 Has to be here rather than in the superclass to satisfy
                 D interface idioms

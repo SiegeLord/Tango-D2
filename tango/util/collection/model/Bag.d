@@ -19,14 +19,8 @@ private import  tango.util.collection.model.BagView,
                 tango.util.collection.model.Dispenser;
 
 /**
- *
  * Bags are collections supporting multiple occurrences of elements.
- * 
-        author: Doug Lea
- * @version 0.93
- *
- * <P> For an introduction to this package see <A HREF="index.html"> Overview </A>.
- *
+ * author: Doug Lea
 **/
 
 public interface Bag(V) : BagView!(V), Dispenser!(V)

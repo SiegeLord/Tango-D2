@@ -14,7 +14,7 @@
 
 module tango.util.collection.model.MapView;
 
-private import  tango.util.collection.model.View,
+private import  tango.util.collection.model.View.View,
                 tango.util.collection.model.GuardIterator;
 
 

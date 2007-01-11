@@ -8,7 +8,7 @@
 
         History:
         Date     Who                What
-        24Sep95  dl@cs.oswego.edu   Create from store.d  working file
+        24Sep95  dl@cs.oswego.edu   Create from tango.util.collection.d  working file
         13Oct95  dl                 Add assert
         22Oct95  dl                 Add excludeElements, removeElements
         28jan97  dl                 make class public; isolate version changes
@@ -23,7 +23,7 @@ private import  tango.util.collection.Exception;
 private import  tango.io.protocol.model.IReader,
                 tango.io.protocol.model.IWriter;
 
-private import  tango.util.collection.model.View,
+private import  tango.util.collection.model.View.View,
                 tango.util.collection.model.Iterator,
                 tango.util.collection.model.Dispenser;
 
@@ -105,9 +105,9 @@ public abstract class Collection(T) : Dispenser!(T), IReadable, IWritable
 
         /***********************************************************************
 
-                Implements store.Collection.drained.
+                Implements tango.util.collection.impl.Collection.Collection.drained
                 Time complexity: O(1).
-                @see store.Collection#drained
+                See_Also: tango.util.collection.impl.Collection.Collection.drained
 
         ************************************************************************/
 
@@ -118,9 +118,9 @@ public abstract class Collection(T) : Dispenser!(T), IReadable, IWritable
 
         /***********************************************************************
 
-                Implements store.Collection.size.
+                Implements tango.util.collection.impl.Collection.Collection.size
                 Time complexity: O(1).
-                @see store.Collection#size
+                See_Also: tango.util.collection.impl.Collection.Collection.size
 
         ************************************************************************/
 
@@ -131,9 +131,9 @@ public abstract class Collection(T) : Dispenser!(T), IReadable, IWritable
 
         /***********************************************************************
 
-                Implements store.Collection.allows.
+                Implements tango.util.collection.impl.Collection.Collection.allows
                 Time complexity: O(1) + time of screener, if present
-                @see store.Collection#allows
+                See_Also: tango.util.collection.impl.Collection.Collection.allows
 
         ************************************************************************/
 
@@ -146,7 +146,7 @@ public abstract class Collection(T) : Dispenser!(T), IReadable, IWritable
         
         /***********************************************************************
 
-                Implements store.Collection.matches
+                Implements tango.util.collection.matches
                 Time complexity: O(n).
                 Default implementation. Fairly sleazy approach.
                 (Defensible only when you remember that it is just a default impl.)
@@ -156,7 +156,7 @@ public abstract class Collection(T) : Dispenser!(T), IReadable, IWritable
                 but must be overridden if you define new Collection subinterfaces
                 and/or implementations.
                 
-                @see store.Collection#matches
+                See_Also: tango.util.collection.impl.Collection.Collection.matches
 
         ************************************************************************/
 
@@ -203,9 +203,9 @@ public abstract class Collection(T) : Dispenser!(T), IReadable, IWritable
 
         /***********************************************************************
 
-                Implements store.MutableCollection.version.
+                Implements tango.util.collection.impl.Collection.Collection.version.
                 Time complexity: O(1).
-                @see store.MutableCollection#version
+                See_Also: tango.util.collection.impl.Collection.Collection.version
 
         ************************************************************************/
 
@@ -221,7 +221,7 @@ public abstract class Collection(T) : Dispenser!(T), IReadable, IWritable
                 Default implementation of toUtf8 for Collections. Not
                 very pretty, but parenthesizing each element means that
                 for most kinds of elements, it's conceivable that the
-                strings could be parsed and used to build other store.
+                strings could be parsed and used to build other tango.util.collection.
                 <P>
                 Not a very pretty implementation either. Casts are used
                 to get at elements/keys
@@ -474,8 +474,8 @@ public abstract class Collection(T) : Dispenser!(T), IReadable, IWritable
                         
         /***********************************************************************
 
-                Implements store.ImplementationCheckable.checkImplementation.
-                @see store.ImplementationCheckable#checkImplementation
+                Implements tango.util.collection.model.View.View.checkImplementation.
+                See_Also: tango.util.collection.model.View.View.checkImplementation
 
         ************************************************************************/
 
@@ -595,8 +595,8 @@ public abstract class Collection(T) : Dispenser!(T), IReadable, IWritable
                 while (e.more()) removeAll(e.get());
                 @param e the enumeration of elements to exclude.
                 @exception CorruptedIteratorException is propagated if thrown
-                Implements store.MutableCollection.removeAll
-                @see store.MutableCollection#removeAll
+                Implements tango.util.collection.impl.Collection.Collection.removeAll
+                See_Also: tango.util.collection.impl.Collection.Collection.removeAll
 
         ************************************************************************/
 

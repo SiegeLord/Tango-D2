@@ -11,7 +11,6 @@
  13Oct95  dl                 Changed protection statuses
 */
 
-
 module tango.util.collection.CircularSeq;
 
 private import  tango.util.collection.model.Iterator,
@@ -23,18 +22,10 @@ private import  tango.util.collection.impl.CLCell,
 
 
 /**
- *
  * Circular linked lists. Publically Implement only those
  * methods defined in interfaces.
- *
- * 
-        author: Doug Lea
- * @version 0.93
- *
- * <P> For an introduction to this package see <A HREF="index.html"> Overview </A>.
+ * author: Doug Lea
 **/
-
-
 public class CircularSeq(T) : SeqCollection!(T)
 {
         alias CLCell!(T) CLCellT;
@@ -52,7 +43,6 @@ public class CircularSeq(T) : SeqCollection!(T)
         /**
          * Make an empty list with no element screener
         **/
-
         public this ()
         {
                 this(null, null, 0);
@@ -69,7 +59,6 @@ public class CircularSeq(T) : SeqCollection!(T)
         /**
          * Special version of constructor needed by clone()
         **/
-
         protected this (Predicate s, CLCellT h, int c)
         {
                 super(s);
@@ -80,7 +69,6 @@ public class CircularSeq(T) : SeqCollection!(T)
         /**
          * Make an independent copy of the list. Elements themselves are not cloned
         **/
-
         public final CircularSeq duplicate()
         {
                 if (list is null)
@@ -93,9 +81,9 @@ public class CircularSeq(T) : SeqCollection!(T)
         // Collection methods
 
         /**
-         * Implements store.Collection.contains.
+         * Implements tango.util.collection.impl.Collection.Collection.contains
          * Time complexity: O(n).
-         * @see store.Collection#contains
+         * See_Also: tango.util.collection.impl.Collection.Collection.contains
         **/
         public final bool contains(T element)
         {
@@ -105,9 +93,9 @@ public class CircularSeq(T) : SeqCollection!(T)
         }
 
         /**
-         * Implements store.Collection.instances.
+         * Implements tango.util.collection.impl.Collection.Collection.instances
          * Time complexity: O(n).
-         * @see store.Collection#instances
+         * See_Also: tango.util.collection.impl.Collection.Collection.instances
         **/
         public final uint instances(T element)
         {
@@ -117,9 +105,9 @@ public class CircularSeq(T) : SeqCollection!(T)
         }
 
         /**
-         * Implements store.Collection.elements.
+         * Implements tango.util.collection.impl.Collection.Collection.elements
          * Time complexity: O(1).
-         * @see store.Collection#elements
+         * See_Also: tango.util.collection.impl.Collection.Collection.elements
         **/
         public final GuardIterator!(T) elements()
         {
@@ -127,9 +115,9 @@ public class CircularSeq(T) : SeqCollection!(T)
         }
 
         /**
-         * Implements store.Collection.View.opApply
+         * Implements tango.util.collection.model.View.View.opApply
          * Time complexity: O(n).
-         * @see store.Collection.View#opApply
+         * See_Also: tango.util.collection.model.View.View.opApply
         **/
         int opApply (int delegate (inout T value) dg)
         {
@@ -141,9 +129,9 @@ public class CircularSeq(T) : SeqCollection!(T)
         // Seq methods
 
         /**
-         * Implements store.Seq.head.
+         * Implements tango.util.collection.model.Seq.Seq.head.
          * Time complexity: O(1).
-         * @see store.Seq#head
+         * See_Also: tango.util.collection.model.Seq.Seq.head
         **/
         public final T head()
         {
@@ -151,9 +139,9 @@ public class CircularSeq(T) : SeqCollection!(T)
         }
 
         /**
-         * Implements store.Seq.tail.
+         * Implements tango.util.collection.model.Seq.Seq.tail.
          * Time complexity: O(1).
-         * @see store.Seq#tail
+         * See_Also: tango.util.collection.model.Seq.Seq.tail
         **/
         public final T tail()
         {
@@ -161,9 +149,9 @@ public class CircularSeq(T) : SeqCollection!(T)
         }
 
         /**
-         * Implements store.Seq.get.
+         * Implements tango.util.collection.model.Seq.Seq.get.
          * Time complexity: O(n).
-         * @see store.Seq#get
+         * See_Also: tango.util.collection.model.Seq.Seq.get
         **/
         public final T get(int index)
         {
@@ -171,9 +159,9 @@ public class CircularSeq(T) : SeqCollection!(T)
         }
 
         /**
-         * Implements store.Seq.first.
+         * Implements tango.util.collection.model.Seq.Seq.first.
          * Time complexity: O(n).
-         * @see store.Seq#first
+         * See_Also: tango.util.collection.model.Seq.Seq.first
         **/
         public final int first(T element, int startingIndex = 0)
         {
@@ -198,9 +186,9 @@ public class CircularSeq(T) : SeqCollection!(T)
 
 
         /**
-         * Implements store.Seq.last.
+         * Implements tango.util.collection.model.Seq.Seq.last.
          * Time complexity: O(n).
-         * @see store.Seq#last
+         * See_Also: tango.util.collection.model.Seq.Seq.last
         **/
         public final int last(T element, int startingIndex = 0)
         {
@@ -232,9 +220,9 @@ public class CircularSeq(T) : SeqCollection!(T)
         }
 
         /**
-         * Implements store.Seq.subseq.
+         * Implements tango.util.collection.model.Seq.Seq.subseq.
          * Time complexity: O(length).
-         * @see store.Seq#subseq
+         * See_Also: tango.util.collection.model.Seq.Seq.subseq
         **/
         public final CircularSeq subset (int from, int _length)
         {
@@ -263,9 +251,9 @@ public class CircularSeq(T) : SeqCollection!(T)
         // MutableCollection methods
 
         /**
-         * Implements store.MutableCollection.clear.
+         * Implements tango.util.collection.impl.Collection.Collection.clear.
          * Time complexity: O(1).
-         * @see store.MutableCollection#clear
+         * See_Also: tango.util.collection.impl.Collection.Collection.clear
         **/
         public final void clear()
         {
@@ -274,9 +262,9 @@ public class CircularSeq(T) : SeqCollection!(T)
         }
 
         /**
-         * Implements store.MutableCollection.exclude.
+         * Implements tango.util.collection.impl.Collection.Collection.exclude.
          * Time complexity: O(n).
-         * @see store.MutableCollection#exclude
+         * See_Also: tango.util.collection.impl.Collection.Collection.exclude
         **/
         public final void removeAll (T element)
         {
@@ -284,9 +272,9 @@ public class CircularSeq(T) : SeqCollection!(T)
         }
 
         /**
-         * Implements store.MutableCollection.removeOneOf.
+         * Implements tango.util.collection.impl.Collection.Collection.removeOneOf.
          * Time complexity: O(n).
-         * @see store.MutableCollection#removeOneOf
+         * See_Also: tango.util.collection.impl.Collection.Collection.removeOneOf
         **/
         public final void remove (T element)
         {
@@ -294,9 +282,9 @@ public class CircularSeq(T) : SeqCollection!(T)
         }
 
         /**
-         * Implements store.MutableCollection.replaceOneOf
+         * Implements tango.util.collection.impl.Collection.Collection.replaceOneOf
          * Time complexity: O(n).
-         * @see store.MutableCollection#replaceOneOf
+         * See_Also: tango.util.collection.impl.Collection.Collection.replaceOneOf
         **/
         public final void replace (T oldElement, T newElement)
         {
@@ -304,9 +292,9 @@ public class CircularSeq(T) : SeqCollection!(T)
         }
 
         /**
-         * Implements store.MutableCollection.replaceAllOf.
+         * Implements tango.util.collection.impl.Collection.Collection.replaceAllOf.
          * Time complexity: O(n).
-         * @see store.MutableCollection#replaceAllOf
+         * See_Also: tango.util.collection.impl.Collection.Collection.replaceAllOf
         **/
         public final void replaceAll (T oldElement, T newElement)
         {
@@ -315,10 +303,10 @@ public class CircularSeq(T) : SeqCollection!(T)
 
 
         /**
-         * Implements store.MutableCollection.take.
+         * Implements tango.util.collection.impl.Collection.Collection.take.
          * Time complexity: O(1).
          * takes the last element on the list.
-         * @see store.MutableCollection#take
+         * See_Also: tango.util.collection.impl.Collection.Collection.take
         **/
         public final T take()
         {
@@ -332,9 +320,9 @@ public class CircularSeq(T) : SeqCollection!(T)
         // MutableSeq methods
 
         /**
-         * Implements store.MutableSeq.prepend.
+         * Implements tango.util.collection.impl.SeqCollection.SeqCollection.prepend.
          * Time complexity: O(1).
-         * @see store.MutableSeq#prepend
+         * See_Also: tango.util.collection.impl.SeqCollection.SeqCollection.prepend
         **/
         public final void prepend(T element)
         {
@@ -347,9 +335,9 @@ public class CircularSeq(T) : SeqCollection!(T)
         }
 
         /**
-         * Implements store.MutableSeq.replaceHead.
+         * Implements tango.util.collection.impl.SeqCollection.SeqCollection.replaceHead.
          * Time complexity: O(1).
-         * @see store.MutableSeq#replaceHead
+         * See_Also: tango.util.collection.impl.SeqCollection.SeqCollection.replaceHead
         **/
         public final void replaceHead(T element)
         {
@@ -359,9 +347,9 @@ public class CircularSeq(T) : SeqCollection!(T)
         }
 
         /**
-         * Implements store.MutableSeq.removeHead.
+         * Implements tango.util.collection.impl.SeqCollection.SeqCollection.removeHead.
          * Time complexity: O(1).
-         * @see store.MutableSeq#removeHead
+         * See_Also: tango.util.collection.impl.SeqCollection.SeqCollection.removeHead
         **/
         public final void removeHead()
         {
@@ -377,9 +365,9 @@ public class CircularSeq(T) : SeqCollection!(T)
         }
 
         /**
-         * Implements store.MutableSeq.append.
+         * Implements tango.util.collection.impl.SeqCollection.SeqCollection.append.
          * Time complexity: O(1).
-         * @see store.MutableSeq#append
+         * See_Also: tango.util.collection.impl.SeqCollection.SeqCollection.append
         **/
         public final void append(T element)
         {
@@ -394,9 +382,9 @@ public class CircularSeq(T) : SeqCollection!(T)
         }
 
         /**
-         * Implements store.MutableSeq.replaceTail.
+         * Implements tango.util.collection.impl.SeqCollection.SeqCollection.replaceTail.
          * Time complexity: O(1).
-         * @see store.MutableSeq#replaceTail
+         * See_Also: tango.util.collection.impl.SeqCollection.SeqCollection.replaceTail
         **/
         public final void replaceTail(T element)
         {
@@ -407,9 +395,9 @@ public class CircularSeq(T) : SeqCollection!(T)
 
 
         /**
-         * Implements store.MutableSeq.removeTail.
+         * Implements tango.util.collection.impl.SeqCollection.SeqCollection.removeTail.
          * Time complexity: O(1).
-         * @see store.MutableSeq#removeTail
+         * See_Also: tango.util.collection.impl.SeqCollection.SeqCollection.removeTail
         **/
         public final void removeTail()
         {
@@ -422,9 +410,9 @@ public class CircularSeq(T) : SeqCollection!(T)
         }
 
         /**
-         * Implements store.MutableSeq.addAt.
+         * Implements tango.util.collection.impl.SeqCollection.SeqCollection.addAt.
          * Time complexity: O(n).
-         * @see store.MutableSeq#addAt
+         * See_Also: tango.util.collection.impl.SeqCollection.SeqCollection.addAt
         **/
         public final void addAt(int index, T element)
         {
@@ -439,9 +427,9 @@ public class CircularSeq(T) : SeqCollection!(T)
         }
 
         /**
-         * Implements store.MutableSeq.replaceAt.
+         * Implements tango.util.collection.impl.SeqCollection.SeqCollection.replaceAt.
          * Time complexity: O(n).
-         * @see store.MutableSeq#replaceAt
+         * See_Also: tango.util.collection.impl.SeqCollection.SeqCollection.replaceAt
         **/
         public final void replaceAt(int index, T element)
         {
@@ -451,9 +439,9 @@ public class CircularSeq(T) : SeqCollection!(T)
         }
 
         /**
-         * Implements store.MutableSeq.removeAt.
+         * Implements tango.util.collection.impl.SeqCollection.SeqCollection.removeAt.
          * Time complexity: O(n).
-         * @see store.MutableSeq#removeAt
+         * See_Also: tango.util.collection.impl.SeqCollection.SeqCollection.removeAt
         **/
         public final void removeAt(int index)
         {
@@ -467,9 +455,9 @@ public class CircularSeq(T) : SeqCollection!(T)
         }
 
         /**
-         * Implements store.MutableSeq.prepend.
+         * Implements tango.util.collection.impl.SeqCollection.SeqCollection.prepend.
          * Time complexity: O(number of elements in e).
-         * @see store.MutableSeq#prepend
+         * See_Also: tango.util.collection.impl.SeqCollection.SeqCollection.prepend
         **/
         public final void prepend(Iterator!(T) e)
         {
@@ -509,9 +497,9 @@ public class CircularSeq(T) : SeqCollection!(T)
         }
 
         /**
-         * Implements store.MutableSeq.append.
+         * Implements tango.util.collection.impl.SeqCollection.SeqCollection.append.
          * Time complexity: O(number of elements in e).
-         * @see store.MutableSeq#append
+         * See_Also: tango.util.collection.impl.SeqCollection.SeqCollection.append
         **/
         public final void append(Iterator!(T) e)
         {
@@ -532,9 +520,9 @@ public class CircularSeq(T) : SeqCollection!(T)
         }
 
         /**
-         * Implements store.MutableSeq.addAt.
+         * Implements tango.util.collection.impl.SeqCollection.SeqCollection.addAt.
          * Time complexity: O(size() + number of elements in e).
-         * @see store.MutableSeq#addAt
+         * See_Also: tango.util.collection.impl.SeqCollection.SeqCollection.addAt
         **/
         public final void addAt(int index, Iterator!(T) e)
         {
@@ -556,9 +544,9 @@ public class CircularSeq(T) : SeqCollection!(T)
 
 
         /**
-         * Implements store.MutableSeq.removeFromTo.
+         * Implements tango.util.collection.impl.SeqCollection.SeqCollection.removeFromTo.
          * Time complexity: O(n).
-         * @see store.MutableSeq#removeFromTo
+         * See_Also: tango.util.collection.impl.SeqCollection.SeqCollection.removeFromTo
         **/
         public final void removeRange (int fromIndex, int toIndex)
         {
@@ -686,8 +674,8 @@ public class CircularSeq(T) : SeqCollection!(T)
         // ImplementationCheckable methods
 
         /**
-         * Implements store.ImplementationCheckable.checkImplementation.
-         * @see store.ImplementationCheckable#checkImplementation
+         * Implements tango.util.collection.model.View.View.checkImplementation.
+         * See_Also: tango.util.collection.model.View.View.checkImplementation
         **/
 
         public override void checkImplementation()

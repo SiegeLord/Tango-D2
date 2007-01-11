@@ -7,7 +7,7 @@
 
  History:
  Date     Who                What
- 24Sep95  dl@cs.oswego.edu   Create from store.d  working file
+ 24Sep95  dl@cs.oswego.edu   Create from tango.util.collection.d  working file
  13Oct95  dl                 Changed protection statuses
   9Apr97  dl                 made class public
 */
@@ -17,7 +17,7 @@ module tango.util.collection.impl.AbstractIterator;
 
 private import  tango.util.collection.Exception;
 
-private import  tango.util.collection.model.View,
+private import  tango.util.collection.model.View.View,
                 tango.util.collection.model.GuardIterator;
                 
 
@@ -62,9 +62,9 @@ public abstract class AbstractIterator(T) : GuardIterator!(T)
         }
 
         /**
-         * Implements store.CollectionIterator.corrupted.
+         * Implements tango.util.collection.impl.Collection.CollectionIterator.corrupted.
          * Claim corruption if version numbers differ
-         * @see store.CollectionIterator#corrupted
+         * See_Also: tango.util.collection.impl.Collection.CollectionIterator.corrupted
         **/
 
         public final bool corrupted()
@@ -73,8 +73,8 @@ public abstract class AbstractIterator(T) : GuardIterator!(T)
         }
 
         /**
-         * Implements store.CollectionIterator.numberOfRemaingingElements.
-         * @see store.CollectionIterator#remaining
+         * Implements tango.util.collection.impl.Collection.CollectionIterator.numberOfRemaingingElements.
+         * See_Also: tango.util.collection.impl.Collection.CollectionIterator.remaining
         **/
         public final uint remaining()
         {
@@ -84,7 +84,7 @@ public abstract class AbstractIterator(T) : GuardIterator!(T)
         /**
          * Implements java.util.Iterator.more.
          * Return true if remaining > 0 and not corrupted
-         * @see java.util.Iterator#more
+         * See_Also: java.util.Iterator.more
         **/
         public final bool more()
         {

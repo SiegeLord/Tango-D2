@@ -58,7 +58,7 @@ public interface GuardIterator(V) : Iterator!(V)
          * </PRE>
          * <P>
          * For the converse case, 
-         * @see ArrayIterator
+         * See_Also: tango.util.collection.iterator.ArrayIterator.ArrayIterator
          * @return the number of untraversed elements
         **/
 

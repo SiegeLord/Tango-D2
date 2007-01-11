@@ -7,7 +7,7 @@ Inc, Loral, and everyone contributing, testing, and using this code.
 
 History:
 Date     Who                What
-24Sep95  dl@cs.oswego.edu   Create from store.d  working file
+24Sep95  dl@cs.oswego.edu   Create from tango.util.collection.d  working file
 9Apr97   dl                 made Serializable
 
 */
