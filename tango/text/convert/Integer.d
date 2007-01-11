@@ -351,8 +351,8 @@ debug (UnitTest)
         {
         char[64] tmp;
         
-        assert (qadtu ("12345") is 12345);
-        assert (qadut (tmp, 12345u) == "12345");
+        assert (atoi ("12345") is 12345);
+        assert (itoa (tmp, 12345u) == "12345");
 
         assert(parse( "0"w ) ==  0 );
         assert(parse( "1"w ) ==  1 );
