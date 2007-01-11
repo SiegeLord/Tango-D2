@@ -73,7 +73,7 @@ version( linux )
 {
     alias jmp_buf sigjmp_buf;
 
-    private int __sigsetjmp(sigjmp_buf, int);
+    int __sigsetjmp(sigjmp_buf, int);
     alias __sigsetjmp sigsetjmp;
     void siglongjmp(sigjmp_buf, int);
 }

@@ -2544,37 +2544,37 @@ private:
 
         version( AsmX86_Win32 )
         {
-            push( 0x00000000 );                                 // oldp
-            push( 0x00000000 );                                 // newp
-            push( cast(size_t) &fiber_entryPoint );             // EIP
-            push( 0xFFFFFFFF );                                 // EBP
-            push( 0x00000000 );                                 // EAX
-            push( 0xFFFFFFFF );                                 // FS:[0]
+            push( 0x00000000 );                                     // oldp
+            push( 0x00000000 );                                     // newp
+            push( cast(size_t) &fiber_entryPoint );                 // EIP
+            push( 0xFFFFFFFF );                                     // EBP
+            push( 0x00000000 );                                     // EAX
+            push( 0xFFFFFFFF );                                     // FS:[0]
             // BUG: Are the frame pointers the same for both versions?
             version( StackGrowsDown )
             {
-                push( cast(size_t) m_ctxt.bstack );             // FS:[4]
-                push( cast(size_t) m_ctxt.bstack + m_size );    // FS:[8]
+                push( cast(size_t) m_ctxt.bstack );                 // FS:[4]
+                push( cast(size_t) m_ctxt.bstack + m_size );        // FS:[8]
             }
             else
             {
-                push( cast(size_t) m_ctxt.bstack );             // FS:[4]
-                push( cast(size_t) m_ctxt.bstack + m_size );    // FS:[8]
+                push( cast(size_t) m_ctxt.bstack );                 // FS:[4]
+                push( cast(size_t) m_ctxt.bstack + m_size );        // FS:[8]
             }
-            push( 0x00000000 );                                 // EBX
-            push( 0x00000000 );                                 // ESI
-            push( 0x00000000 );                                 // EDI
+            push( 0x00000000 );                                     // EBX
+            push( 0x00000000 );                                     // ESI
+            push( 0x00000000 );                                     // EDI
         }
         else version( AsmX86_Linux )
         {
-            push( 0x00000000 );                                 // oldp
-            push( 0x00000000 );                                 // newp
-            push( cast(size_t) &fiber_entryPoint );             // EIP
-            push( 0x00000000 );                                 // EBP
-            push( 0x00000000 );                                 // EAX
-            push( 0x00000000 );                                 // EBX
-            push( 0x00000000 );                                 // ESI
-            push( 0x00000000 );                                 // EDI
+            push( 0x00000000 );                                     // oldp
+            push( 0x00000000 );                                     // newp
+            push( cast(size_t) &fiber_entryPoint );                 // EIP
+            push( 0x00000000 );                                     // EBP
+            push( 0x00000000 );                                     // EAX
+            push( 0x00000000 );                                     // EBX
+            push( 0x00000000 );                                     // ESI
+            push( 0x00000000 );                                     // EDI
         }
         else version( JmpX86_Posix )
         {
@@ -2585,7 +2585,10 @@ private:
             {
                 pstack -= sigjmp_buf.sizeof;
             }
-            (cast(int*) pstack)[5] = cast(int) &fiber_entryPoint;
+            (cast(byte*) pstack)[0 .. sigjmp_buf.sizeof] = 0;
+            (cast(int*) pstack)[3] = cast(int) m_ctxt.bstack;       // EBP
+            (cast(int*) pstack)[4] = cast(int) m_ctxt.bstack;       // ESP
+            (cast(int*) pstack)[5] = cast(int) &fiber_entryPoint;   // EIP
         }
     }
 
@@ -2789,7 +2792,7 @@ private:
         }
         else version( JmpX86_Posix )
         {
-            sigjmp_buf buf;
+            sigjmp_buf buf = void;
             oldp    = &buf;
             // Basically, oldp will be the address of the current sigjmp_buf
             // and newp will be the address of the new sigjmp_buf. This means
