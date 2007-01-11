@@ -26,57 +26,6 @@
  */
 
 module tango.math.Special;
-static import tango.math.GammaFunction;
+public import tango.math.GammaFunction;
 public import tango.math.ErrorFunction;
 public import tango.math.Bessel;
-private import tango.stdc.math;
-
-
-/**
- *  The Gamma function, $(GAMMA)(x)
- *
- *  $(GAMMA)(x) is a generalisation of the factorial function
- *  to real and complex numbers.
- *  Like x!, $(GAMMA)(x+1) = x*$(GAMMA)(x).
- *
- *  Mathematically, if z.re > 0 then
- *   $(GAMMA)(z) =<big>$(INTEGRAL)<sub><small>0</small></sub><sup>&infin;</sup></big>t<sup>z-1</sup>e<sup>-t</sup>dt
- *
- *  $(TABLE_SV
- *  <tr> <th> x               <th> $(GAMMA)(x)
- *  <tr> <td> $(NAN)          <td> $(NAN)
- *  <tr> <td> &plusmn;0.0     <td> &plusmn;&infin;
- *  <tr> <td> integer > 0     <td> (x-1)!
- *  <tr> <td> integer < 0     <td> $(NAN)
- *  <tr> <td> +&infin;        <td> +&infin;
- *  <tr> <td> -&infin;        <td> $(NAN)
- *  )
- *
- *  References:
- *  $(LINK http://en.wikipedia.org/wiki/Gamma_function),
- *  $(LINK http://www.netlib.org/cephes/ldoubdoc.html#gamma)
- */
-real gamma(real x)
-{
-    return tango.math.GammaFunction.tgamma(x);
-}
-
-/**
- * Natural logarithm of gamma function.
- *
- * Returns the base e (2.718...) logarithm of the absolute
- * value of the gamma function of the argument.
- *
- * For reals, logGamma is equivalent to log(fabs(gamma(x))).
- *
- *  $(TABLE_SV
- *  <tr> <th> x               <th> logGamma(x)
- *  <tr> <td> $(NAN)          <td> $(NAN)
- *  <tr> <td> integer <= 0    <td> +&infin;
- *  <tr> <td> &plusmn;&infin; <td> +&infin;
- *  )
- */
-real logGamma(real x)
-{
-    return tango.math.GammaFunction.lgamma(x);
-}

@@ -1,5 +1,5 @@
 /**
- * Implementation of lgamma() and tgamma()
+ * Implementation of logGamma() and gamma()
  *
  * Copyright: Copyright (C) 2005-2006 Don Clugston,
  * Derived from C code in the Cephes library,
@@ -25,11 +25,13 @@ import tango.math.Core;
 import tango.math.IEEE;
 
 //------------------------------------------------------------------
+
+/// The maximum value of x for which gamma(x) < real.infinity.
+const real MAXGAMMA = 1755.5483429L;
+
 private {
 
 const real SQRT2PI = 2.50662827463100050242E0L; // sqrt(2pi)
-// exp(gamma(x)) == inf if x>MAXGAMMA
-const real MAXGAMMA = 1755.455L;
 
 // Polynomial approximations for gamma and loggamma.
 
@@ -54,28 +56,6 @@ const real GammaDenominatorCoeffs[] = [
     -0x1.447b4d2230a77ddap-10, // -0.0012377992466531522311
     0x1.ec1d45bb85e06696p-13,  // 0.00023465840591606352443
     -0x1.d4ce24d05bd0a8e6p-17  // -1.3971485174761704409e-05
-];
-
-const real SmallStirlingCoeffs[] = [
-    0x1.55555555555543aap-4,      // 0.083333333333333318004
-    0x1.c71c71c720dd8792p-9,      // 0.0034722222222300753277
-    -0x1.5f7268f0b5907438p-9,  // -0.0026813271618763044182
-    -0x1.e13cd410e0477de6p-13, // -0.00022947197478731854057
-    0x1.9b0f31643442616ep-11,  // 0.00078403348427447530038
-    0x1.2527623a3472ae08p-14,  // 6.9893322606231931717e-05
-    -0x1.37f6bc8ef8b374dep-11, // -0.00059502375540563301557
-    -0x1.8c968886052b872ap-16, // -2.3638488095017590616e-05
-    0x1.76baa9c6d3eeddbcp-11      // 0.0007147391378143610789
-];
-
-const real LargeStirlingCoeffs[] = [
-    1.0L,
-    8.33333333333333333333E-2L,
-    3.47222222222222222222E-3L,
-    -2.68132716049382716049E-3L,
-    -2.29472093621399176955E-4L,
-    7.84039221720066627474E-4L,
-    6.97281375836585777429E-5L
 ];
 
 const real GammaSmallCoeffs[] = [
@@ -145,6 +125,28 @@ real gammaStirling(real x)
 {
     // CEPHES code Copyright 1994 by Stephen L. Moshier
 
+    const real SmallStirlingCoeffs[] = [
+        0x1.55555555555543aap-4,   // 0.083333333333333318004
+        0x1.c71c71c720dd8792p-9,   // 0.0034722222222300753277
+        -0x1.5f7268f0b5907438p-9,  // -0.0026813271618763044182
+        -0x1.e13cd410e0477de6p-13, // -0.00022947197478731854057
+        0x1.9b0f31643442616ep-11,  // 0.00078403348427447530038
+        0x1.2527623a3472ae08p-14,  // 6.9893322606231931717e-05
+        -0x1.37f6bc8ef8b374dep-11, // -0.00059502375540563301557
+        -0x1.8c968886052b872ap-16, // -2.3638488095017590616e-05
+        0x1.76baa9c6d3eeddbcp-11   // 0.0007147391378143610789
+    ];
+
+    const real LargeStirlingCoeffs[] = [
+        1.0L,
+        8.33333333333333333333E-2L,
+        3.47222222222222222222E-3L,
+        -2.68132716049382716049E-3L,
+        -2.29472093621399176955E-4L,
+        7.84039221720066627474E-4L,
+        6.97281375836585777429E-5L
+    ];
+
     real w = 1.0L/x;
     real y = exp(x);
     if ( x > 1024.0L ) {
@@ -177,12 +179,12 @@ real sgnGamma(real x)
     if (x > 0) return 1.0;
     if (x < -1/real.epsilon) {
         // Large negatives lose all precision
-        return real.nan;
+        return NaN("sgnGamma");
     }
 //  if (remquo(x, -1.0, n) == 0) {
     int n = cast(int)(x);
     if (x == n) {
-        return x == 0 ?  copysign(1, x) : real.nan;
+        return x == 0 ?  copysign(1, x) : NaN("sgnGamma");
     }
     return n & 1 ? 1.0 : -1.0;
 }
@@ -193,7 +195,7 @@ unittest {
     assert(sgnGamma(-0.1) == -1.0);
     assert(sgnGamma(-55.1) == 1.0);
     assert(isNaN(sgnGamma(-real.infinity)));
-    assert(isNaN(sgnGamma(real.nan)));
+    assert(isIdentical(sgnGamma(NaN("abc")), NaN("abc")));
 }
 
 /*****************************************************
@@ -216,7 +218,7 @@ unittest {
  *    $(SV -&infin;,     $(NAN)      )
  *  )
  */
-real tgamma(real x)
+real gamma(real x)
 {
 /* Author: Don Clugston. Based on code from the CEPHES library.
  * CEPHES code Copyright 1994 by Stephen L. Moshier
@@ -230,7 +232,7 @@ real tgamma(real x)
 
     real q, z;
     if (isNaN(x)) return x;
-    if (x == -x.infinity) return real.nan;
+    if (x == -x.infinity) return NaN("gamINF");
     if ( fabs(x) > MAXGAMMA ) return real.infinity;
     if (x==0) return 1.0/x; // +- infinity depending on sign of x, create an exception.
 
@@ -245,7 +247,7 @@ real tgamma(real x)
             int sgngam = 1; // sign of gamma.
             real p  = floor(q);
             if (p == q)
-                  return real.nan; // poles for all integers <0.
+                  return NaN("gamPOLE"); // poles for all integers <0.
             int intpart = cast(int)(p);
             if ( (intpart & 1) == 0 )
                 sgngam = -1;
@@ -280,7 +282,7 @@ real tgamma(real x)
 
     if ( x <= 0.03125L ) {
         if ( x == 0.0L )
-            return real.nan;
+            return NaN("gamma");
         else {
             if ( x < 0.0L ) {
                 x = -x;
@@ -306,29 +308,31 @@ unittest {
     real fact = 1.0L;
     for (int i=1; fact<real.max; ++i) {
         // Require exact equality for small factorials
-        if (i<14) assert(tgamma(i*1.0L) == fact);
-        assert(feqrel(tgamma(i*1.0L), fact) > real.mant_dig-15);
+        if (i<14) assert(gamma(i*1.0L) == fact);
+        assert(feqrel(gamma(i*1.0L), fact) > real.mant_dig-15);
         fact *= (i*1.0L);
     }
-    assert(tgamma(0.0) == real.infinity);
-    assert(tgamma(-0.0) == -real.infinity);
-    assert(isNaN(tgamma(-1.0)));
-    assert(isNaN(tgamma(-15.0)));
-    assert(isNaN(tgamma(real.nan)));
-    assert(tgamma(real.infinity) == real.infinity);
-    assert(tgamma(real.max) == real.infinity);
-    assert(isNaN(tgamma(-real.infinity)));
-    assert(tgamma(real.min*real.epsilon) == real.infinity);
+    assert(gamma(0.0) == real.infinity);
+    assert(gamma(-0.0) == -real.infinity);
+    assert(isNaN(gamma(-1.0)));
+    assert(isNaN(gamma(-15.0)));
+    assert(isIdentical(gamma(NaN("abc")), NaN("abc")));
+    assert(gamma(real.infinity) == real.infinity);
+    assert(gamma(real.max) == real.infinity);
+    assert(isNaN(gamma(-real.infinity)));
+    assert(gamma(real.min*real.epsilon) == real.infinity);
+    assert(gamma(MAXGAMMA)< real.infinity);
+    assert(gamma(MAXGAMMA*2) == real.infinity);
 
     // Test some high-precision values (50 decimal digits)
     const real SQRT_PI = 1.77245385090551602729816748334114518279754945612238L;
 
-    assert(feqrel(tgamma(0.5L), SQRT_PI) == real.mant_dig);
+    assert(feqrel(gamma(0.5L), SQRT_PI) == real.mant_dig);
 
-    assert(feqrel(tgamma(1.0/3.L),  2.67893853470774763365569294097467764412868937795730L) >= real.mant_dig-2);
-    assert(feqrel(tgamma(0.25L),
+    assert(feqrel(gamma(1.0/3.L),  2.67893853470774763365569294097467764412868937795730L) >= real.mant_dig-2);
+    assert(feqrel(gamma(0.25L),
         3.62560990822190831193068515586767200299516768288006) >= real.mant_dig-1);
-    assert(feqrel(tgamma(1.0/5.0L),
+    assert(feqrel(gamma(1.0/5.0L),
         4.59084371199880305320475827592915200343410999829340L) >= real.mant_dig-1);
 }
 
@@ -338,16 +342,16 @@ unittest {
  * Returns the base e (2.718...) logarithm of the absolute
  * value of the gamma function of the argument.
  *
- * For reals, lgamma is equivalent to log(fabs(gamma(x))).
+ * For reals, logGamma is equivalent to log(fabs(gamma(x))).
  *
  *  $(TABLE_SV
- *    $(SVH  x,             lgamma(x)   )
+ *    $(SVH  x,             logGamma(x)   )
  *    $(SV  $(NAN),         $(NAN)      )
  *    $(SV integer <= 0,    +&infin;    )
  *    $(SV &plusmn;&infin;, +&infin;    )
  *  )
  */
-real lgamma(real x)
+real logGamma(real x)
 {
     /* Author: Don Clugston. Based on code from the CEPHES library.
      * CEPHES code Copyright 1994 by Stephen L. Moshier
@@ -367,7 +371,7 @@ real lgamma(real x)
 
     if( x < -34.0L ) {
         q = -x;
-        w = lgamma(q);
+        w = logGamma(q);
         real p = floor(q);
         if ( p == q ) return real.infinity;
         int intpart = cast(int)(p);
@@ -430,15 +434,15 @@ real lgamma(real x)
 }
 
 unittest {
-    assert(isNaN(lgamma(real.nan)));
-    assert(lgamma(real.infinity) == real.infinity);
-    assert(lgamma(-1.0) == real.infinity);
-    assert(lgamma(0.0) == real.infinity);
-    assert(lgamma(-50.0) == real.infinity);
-    assert(isIdentical(0.0L, lgamma(1.0L)));
-    assert(isIdentical(0.0L, lgamma(2.0L)));
-    assert(lgamma(real.min*real.epsilon) == real.infinity);
-    assert(lgamma(-real.min*real.epsilon) == real.infinity);
+    assert(isIdentical(logGamma(NaN("zyx")), NaN("zyx")));
+    assert(logGamma(real.infinity) == real.infinity);
+    assert(logGamma(-1.0) == real.infinity);
+    assert(logGamma(0.0) == real.infinity);
+    assert(logGamma(-50.0) == real.infinity);
+    assert(isIdentical(0.0L, logGamma(1.0L)));
+    assert(isIdentical(0.0L, logGamma(2.0L)));
+    assert(logGamma(real.min*real.epsilon) == real.infinity);
+    assert(logGamma(-real.min*real.epsilon) == real.infinity);
 
     // x, correct loggamma(x), correct d/dx loggamma(x).
     static real[] testpoints = [
@@ -461,13 +465,13 @@ unittest {
     ];
    // TODO: test derivatives as well.
     for (int i=0; i<testpoints.length; i+=3) {
-        assert( feqrel(lgamma(testpoints[i]), testpoints[i+1]) > real.mant_dig-5);
+        assert( feqrel(logGamma(testpoints[i]), testpoints[i+1]) > real.mant_dig-5);
         if (testpoints[i]<MAXGAMMA) {
-            assert( feqrel(log(fabs(tgamma(testpoints[i]))), testpoints[i+1]) > real.mant_dig-5);
+            assert( feqrel(log(fabs(gamma(testpoints[i]))), testpoints[i+1]) > real.mant_dig-5);
         }
     }
-    assert(lgamma(-50.2) == log(fabs(tgamma(-50.2))));
-    assert(lgamma(-0.008) == log(fabs(tgamma(-0.008))));
-    assert(feqrel(lgamma(-38.8),log(fabs(tgamma(-38.8)))) > real.mant_dig-4);
-    assert(feqrel(lgamma(1500.0L),log(tgamma(1500.0L))) > real.mant_dig-2);
+    assert(logGamma(-50.2) == log(fabs(gamma(-50.2))));
+    assert(logGamma(-0.008) == log(fabs(gamma(-0.008))));
+    assert(feqrel(logGamma(-38.8),log(fabs(gamma(-38.8)))) > real.mant_dig-4);
+    assert(feqrel(logGamma(1500.0L),log(gamma(1500.0L))) > real.mant_dig-2);
 }
