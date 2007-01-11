@@ -214,10 +214,10 @@ int rfc850(T) (T[] src, inout ulong value)
             *p++ == ' '          &&
             p[0..3] == "GMT")
             {
-            if (fields.year <= 70)
+            if (fields.year < 70)
                 fields.year += 2000;
             else
-               if (fields.year <= 99)
+               if (fields.year < 100)
                    fields.year += 1900;
 
             value = fields.toUtcTime;
@@ -260,6 +260,51 @@ int asctime(T) (T[] src, inout ulong value)
             {
             value = fields.toUtcTime;
             return p - src.ptr;
+            }
+
+        return 0;
+}
+
+/******************************************************************************
+
+        DOS time format :: "12-31-06 08:49AM"
+
+        Returns the number of elements consumed by the parse
+
+******************************************************************************/
+
+int dostime(T) (T[] src, inout ulong value)
+{
+        Epoch.Fields    fields;
+        T*              p = src.ptr;
+
+        bool date (inout T* p)
+        {
+                return ((fields.month = parseInt(p)) > 0    &&
+                         *p++ == '-'                        &&
+                        ((fields.day = parseInt(p)) > 0     &&
+                        (*p++ == '-'                        &&
+                        (fields.year = parseInt(p)) > 0)));
+        }
+
+        if (date(p) >= 0                    &&
+            *p++ == ' '                     &&
+            (fields.hour = parseInt(p)) > 0 &&
+            *p++ == ':'                     &&
+            (fields.min = parseInt(p)) > 0  &&
+            (*p == 'A' || *p == 'P'))
+            {
+            if (*p is 'P')
+                fields.hour += 12;
+            
+            if (fields.year < 70)
+                fields.year += 2000;
+            else
+               if (fields.year < 100)
+                   fields.year += 1900;
+            
+            value = fields.toUtcTime;
+            return (p+2) - src.ptr;
             }
 
         return 0;
