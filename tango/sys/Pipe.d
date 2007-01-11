@@ -31,7 +31,7 @@ else
  */
 class PipeConduit: DeviceConduit
 {
-    alias DeviceConduit.getHandle   write;
+    alias DeviceConduit.fileHandle  fileHandle;
     alias DeviceConduit.copy        copy;
     alias DeviceConduit.read        read;
     alias DeviceConduit.write       write;

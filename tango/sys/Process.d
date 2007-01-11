@@ -12,7 +12,7 @@ private import tango.sys.Common;
 private import tango.sys.Pipe;
 private import tango.text.convert.Format;
 private import tango.text.stream.SimpleIterator;
-private import tango.text.Text;
+private import tango.text.Util;
 
 private import tango.stdc.stdlib;
 private import tango.stdc.string;
@@ -378,7 +378,7 @@ class Process
             {
                 command ~= ' ';
             }
-            if (Text.indexOf(_args[i], ' ') >= 0 || _args[i].length == 0)
+            if (contains(_args[i], ' ') || _args[i].length == 0)
             {
                 command ~= '"';
                 command ~= _args[i];
@@ -632,17 +632,17 @@ class Process
 
             // Replace stdin with the "read" pipe
             _stdin = pin.sink;
-            startup.hStdInput = cast(HANDLE) _stdin.getHandle();
+            startup.hStdInput = cast(HANDLE) _stdin.fileHandle();
             pin.source.close();
 
             // Replace stdout with the "write" pipe
             _stdout = pout.source;
-            startup.hStdOutput = cast(HANDLE) _stdout.getHandle();
+            startup.hStdOutput = cast(HANDLE) _stdout.fileHandle();
             pout.sink.close();
 
             // Replace stderr with the "write" pipe
             _stderr = perr.source;
-            startup.hStdError = cast(HANDLE) _stderr.getHandle();
+            startup.hStdError = cast(HANDLE) _stderr.fileHandle();
             perr.sink.close();
 
             startup.dwFlags = STARTF_USESTDHANDLES;
@@ -729,19 +729,19 @@ class Process
                     char*[] envptr;
 
                     // Replace stdin with the "read" pipe
-                    dup2(pin.source.getHandle(), STDIN_FILENO);
+                    dup2(pin.source.fileHandle(), STDIN_FILENO);
                     pin.sink().close();
                     scope(exit)
                         pin.source.close();
 
                     // Replace stdout with the "write" pipe
-                    dup2(pout.sink.getHandle(), STDOUT_FILENO);
+                    dup2(pout.sink.fileHandle(), STDOUT_FILENO);
                     pout.source.close();
                     scope(exit)
                         pout.sink.close();
 
                     // Replace stderr with the "write" pipe
-                    dup2(perr.sink.getHandle(), STDERR_FILENO);
+                    dup2(perr.sink.fileHandle(), STDERR_FILENO);
                     perr.source.close();
                     scope(exit)
                         perr.sink.close();
@@ -752,7 +752,7 @@ class Process
                         pexec.sink.close();
                     // Set the "write" pipe so that it closes upon a successful
                     // call to execv*()
-                    if (fcntl(cast(int) pexec.sink.getHandle(), F_SETFD, FD_CLOEXEC) == 0)
+                    if (fcntl(cast(int) pexec.sink.fileHandle(), F_SETFD, FD_CLOEXEC) == 0)
                     {
                         // Convert the arguments and the environment variables to
                         // the format expected by the execv() family of functions.
@@ -1076,7 +1076,7 @@ class Process
     protected static char[][] splitArgs(inout char[] command, char[] delims = " \t\r\n")
     in
     {
-        assert((Text.indexOf(delims, '"') < 0),
+        assert(!contains(delims, '"'),
                "The argument delimiter string cannot contain a double quotes ('\"') character");
     }
     body
@@ -1141,7 +1141,7 @@ class Process
                     {
                         state = State.InsideQuotes;
                     }
-                    else if (Text.indexOf(delims, c) < 0)
+                    else if (!contains(delims, c))
                     {
                         start = i;
                         state = State.FindDelimiter;
@@ -1168,7 +1168,7 @@ class Process
                         }
                         state = State.InsideQuotes;
                     }
-                    else if (Text.indexOf(delims, c) >= 0)
+                    else if (contains(delims, c))
                     {
                         appendChunksAsArg();
                         state = State.Start;
@@ -1307,7 +1307,7 @@ class Process
             int rc = -1;
             char* str;
 
-            if ((Text.indexOf(filename, FileConst.PathSeparatorChar) < 0) &&
+            if (!contains(filename, FileConst.PathSeparatorChar) &&
                 (str = getenv("PATH")) !is null)
             {
                 char[]  envPath = str[0 .. strlen(str)];
