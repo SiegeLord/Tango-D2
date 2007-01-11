@@ -1,0 +1,671 @@
+/** Beta function, incomplete beta integral, and its inverse
+ *
+ * Copyright: Copyright (C) 1984, 1995 Stephen L. Moshier
+ *   Code taken from the Cephes Math Library Release 2.3:  January, 1995
+ * License:   BSD style: $(LICENSE)
+ * Authors:   Stephen L. Moshier, ported to D by Don Clugston
+ */
+/**
+ * Macros:
+ *  NAN = $(RED NAN)
+ *  SUP = <span style="vertical-align:super;font-size:smaller">$0</span>
+ *  GAMMA =  &#915;
+ *  INTEGRAL = &#8747;
+ *  INTEGRATE = $(BIG &#8747;<sub>$(SMALL $1)</sub><sup>$2</sup>)
+ *  POWER = $1<sup>$2</sup>
+ *  BIGSUM = $(BIG &Sigma; <sup>$2</sup><sub>$(SMALL $1)</sub>)
+ *  CHOOSE = $(BIG &#40;) <sup>$(SMALL $1)</sup><sub>$(SMALL $2)</sub> $(BIG &#41;)
+ *  TABLE_SV = <table border=1 cellpadding=4 cellspacing=0>
+ *      <caption>Special Values</caption>
+ *      $0</table>
+ *  SVH = $(TR $(TH $1) $(TH $2))
+ *  SV  = $(TR $(TD $1) $(TD $2))
+ */
+module tango.math.BetaFunction;
+
+import tango.math.Core;
+import tango.math.IEEE;
+import tango.math.ErrorFunction;
+import tango.math.GammaFunction;
+
+private {
+const real MAXLOG = 0x1.62e42fefa39ef358p+13L;  // log(real.max)
+const real MINLOG = -0x1.6436716d5406e6d8p+13L; // log(real.min*real.epsilon) = log(smallest denormal)
+const real big = 9.223372036854775808e18L;
+const real biginv = 1.084202172485504434007e-19L;
+}
+
+/** Beta function
+ *
+ * The beta function is defined as
+ *
+ * beta(x, y) = (&Gamma;(x) &Gamma;(y))/&Gamma;(x + y)
+ */
+real beta(real x, real y)
+{
+    if ((x+y)> MAXGAMMA) {
+        return exp(logGamma(x) + logGamma(y) - logGamma(x+y));
+    } else return gamma(x)*gamma(y)/gamma(x+y);
+}
+
+unittest {
+    assert(isIdentical(beta(NaN("abc"), 4), NaN("abc")));
+    assert(isIdentical(beta(2, NaN("abc")), NaN("abc")));
+}
+
+/** Incomplete beta integral
+ *
+ * Returns incomplete beta integral of the arguments, evaluated
+ * from zero to x. The regularized incomplete beta function is defined as
+ *
+ * betaIncomplete(a, b, x) = &Gamma;(a+b)/(&Gamma;(a) &Gamma;(b)) *
+ * $(INTEGRATE 0, x) $(POWER t, a-1)$(POWER (1-t),b-1) dt
+ *
+ * and is the same as the the cumulative distribution function:
+
+ * The domain of definition is 0 <= x <= 1.  In this
+ * implementation a and b are restricted to positive values.
+ * The integral from x to 1 may be obtained by the symmetry
+ * relation
+ *
+ *    betaIncompleteCompl(a, b, x )  =  betaIncomplete( b, a, 1-x )
+ *
+ * The integral is evaluated by a continued fraction expansion
+ * or, when b*x is small, by a power series.
+ */
+real betaIncomplete(real aa, real bb, real xx )
+{
+    if (!(aa>0 && bb>0)) {
+         if (isNaN(aa)) return aa;
+         if (isNaN(bb)) return bb;
+         return NaN("beta"); // domain error
+    }
+    if (!(xx>0 && xx<1.0)) {
+        if (isNaN(xx)) return xx;
+        if ( xx == 0.0L ) return 0.0;
+        if ( xx == 1.0L )  return 1.0;
+        return NaN("beta"); // domain error
+    }
+    if ( (bb * xx) <= 1.0L && xx <= 0.95L)   {
+        return betaDistPowerSeries(aa, bb, xx);
+    }
+    real x;
+    real xc; // = 1 - x
+
+    real a, b;
+    int flag = 0;
+
+    /* Reverse a and b if x is greater than the mean. */
+    if( xx > (aa/(aa+bb)) ) {
+        // here x > aa/(aa+bb) and (bb*x>1 or x>0.95)
+        flag = 1;
+        a = bb;
+        b = aa;
+        xc = xx;
+        x = 1.0L - xx;
+    } else {
+        a = aa;
+        b = bb;
+        xc = 1.0L - xx;
+        x = xx;
+    }
+
+    if( flag == 1 && (b * x) <= 1.0L && x <= 0.95L) {
+        // here xx > aa/(aa+bb) and  ((bb*xx>1) or xx>0.95) and (aa*(1-xx)<=1) and xx > 0.05
+        return 1.0 - betaDistPowerSeries(a, b, x); // note loss of precision
+    }
+
+    real w;
+    // Choose expansion for optimal convergence
+    // One is for x * (a+b+2) < (a+1),
+    // the other is for x * (a+b+2) > (a+1).
+    real y = x * (a+b-2.0L) - (a-1.0L);
+    if( y < 0.0L ) {
+        w = betaDistExpansion1( a, b, x );
+    } else {
+        w = betaDistExpansion2( a, b, x ) / xc;
+    }
+
+    /* Multiply w by the factor
+         a      b
+        x  (1-x)   Gamma(a+b) / ( a Gamma(a) Gamma(b) ) .   */
+
+    y = a * log(x);
+    real t = b * log(xc);
+    if ( (a+b) < MAXGAMMA && fabs(y) < MAXLOG && fabs(t) < MAXLOG ) {
+        t = pow(xc,b);
+        t *= pow(x,a);
+        t /= a;
+        t *= w;
+        t *= gamma(a+b) / (gamma(a) * gamma(b));
+    } else {
+        /* Resort to logarithms.  */
+        y += t + logGamma(a+b) - logGamma(a) - logGamma(b);
+        y += log(w/a);
+
+        // DAC: There was a bug in Cephes at this point.
+        // Problems occur for y > MAXLOG, not y < MINLOG.
+        t = exp(y);
+/+      // Cephes bug
+        if( y < MINLOG ) {
+            t = 0.0L;
+        } else {
+            t = exp(y);
+        }
++/
+    }
+    if( flag == 1 ) {
+/+   // CEPHES includes this code, but I think it is erroneous.
+        if( t <= real.epsilon ) {
+            t = 1.0L - real.epsilon;
+        } else
++/
+        t = 1.0L - t;
+    }
+    return t;
+}
+
+/** Inverse of incomplete beta integral
+ *
+ * Given y, the function finds x such that
+ *
+ *  betaIncomplete(a, b, x) == y
+ *
+ *  Newton iterations or interval halving is used.
+ */
+real betaIncompleteInv(real aa, real bb, real yy0 )
+{
+    real a, b, y0, d, y, x, x0, x1, lgm, yp, di, dithresh, yl, yh, xt;
+    int i, rflg, dir, nflg;
+
+    if (isNaN(yy0)) return yy0;
+    if (isNaN(aa)) return aa;
+    if (isNaN(bb)) return bb;
+    if( yy0 <= 0.0L )
+        return 0.0L;
+    if( yy0 >= 1.0L )
+        return 1.0L;
+    x0 = 0.0L;
+    yl = 0.0L;
+    x1 = 1.0L;
+    yh = 1.0L;
+    if( aa <= 1.0L || bb <= 1.0L ) {
+        dithresh = 1.0e-7L;
+        rflg = 0;
+        a = aa;
+        b = bb;
+        y0 = yy0;
+        x = a/(a+b);
+        y = betaIncomplete( a, b, x );
+        nflg = 0;
+        goto ihalve;
+    } else {
+        nflg = 0;
+        dithresh = 1.0e-4L;
+    }
+
+    /* approximation to inverse function */
+
+    yp = -normalDistributionInv( yy0 );
+
+    if( yy0 > 0.5L ) {
+        rflg = 1;
+        a = bb;
+        b = aa;
+        y0 = 1.0L - yy0;
+        yp = -yp;
+    } else {
+        rflg = 0;
+        a = aa;
+        b = bb;
+        y0 = yy0;
+    }
+
+    lgm = (yp * yp - 3.0L)/6.0L;
+    x = 2.0L/( 1.0L/(2.0L * a-1.0L)  +  1.0L/(2.0L * b - 1.0L) );
+    d = yp * sqrt( x + lgm ) / x
+        - ( 1.0L/(2.0L * b - 1.0L) - 1.0L/(2.0L * a - 1.0L) )
+        * (lgm + (5.0L/6.0L) - 2.0L/(3.0L * x));
+    d = 2.0L * d;
+    if( d < MINLOG ) {
+        x = 1.0L;
+        goto under;
+    }
+    x = a/( a + b * exp(d) );
+    y = betaIncomplete( a, b, x );
+    yp = (y - y0)/y0;
+    if( fabs(yp) < 0.2 )
+        goto newt;
+
+    /* Resort to interval halving if not close enough. */
+ihalve:
+
+    dir = 0;
+    di = 0.5L;
+    for( i=0; i<400; i++ ) {
+        if( i != 0 ) {
+            x = x0  +  di * (x1 - x0);
+            if( x == 1.0L ) {
+                x = 1.0L - real.epsilon;
+            }
+            if( x == 0.0L ) {
+                di = 0.5;
+                x = x0  +  di * (x1 - x0);
+                if( x == 0.0 )
+                    goto under;
+            }
+            y = betaIncomplete( a, b, x );
+            yp = (x1 - x0)/(x1 + x0);
+            if( fabs(yp) < dithresh )
+                goto newt;
+            yp = (y-y0)/y0;
+            if( fabs(yp) < dithresh )
+                goto newt;
+        }
+        if( y < y0 ) {
+            x0 = x;
+            yl = y;
+            if( dir < 0 ) {
+                dir = 0;
+                di = 0.5L;
+            } else if( dir > 3 )
+                di = 1.0L - (1.0L - di) * (1.0L - di);
+            else if( dir > 1 )
+                di = 0.5L * di + 0.5L;
+            else
+                di = (y0 - y)/(yh - yl);
+            dir += 1;
+            if( x0 > 0.95L ) {
+                if( rflg == 1 ) {
+                    rflg = 0;
+                    a = aa;
+                    b = bb;
+                    y0 = yy0;
+                } else {
+                    rflg = 1;
+                    a = bb;
+                    b = aa;
+                    y0 = 1.0 - yy0;
+                }
+                x = 1.0L - x;
+                y = betaIncomplete( a, b, x );
+                x0 = 0.0;
+                yl = 0.0;
+                x1 = 1.0;
+                yh = 1.0;
+                goto ihalve;
+            }
+        } else {
+            x1 = x;
+            if( rflg == 1 && x1 < real.epsilon ) {
+                x = 0.0L;
+                goto done;
+            }
+            yh = y;
+            if( dir > 0 ) {
+                dir = 0;
+                di = 0.5L;
+            }
+            else if( dir < -3 )
+                di = di * di;
+            else if( dir < -1 )
+                di = 0.5L * di;
+            else
+                di = (y - y0)/(yh - yl);
+            dir -= 1;
+            }
+        }
+    // loss of precision has occurred
+
+    //mtherr( "incbil", PLOSS );
+    if( x0 >= 1.0L ) {
+        x = 1.0L - real.epsilon;
+        goto done;
+    }
+    if( x <= 0.0L ) {
+under:
+        // underflow has occurred
+        //mtherr( "incbil", UNDERFLOW );
+        x = 0.0L;
+        goto done;
+    }
+
+newt:
+
+    if ( nflg ) {
+        goto done;
+    }
+    nflg = 1;
+    lgm = logGamma(a+b) - logGamma(a) - logGamma(b);
+
+    for( i=0; i<15; i++ ) {
+        /* Compute the function at this point. */
+        if ( i != 0 )
+            y = betaIncomplete(a,b,x);
+        if ( y < yl ) {
+            x = x0;
+            y = yl;
+        } else if( y > yh ) {
+            x = x1;
+            y = yh;
+        } else if( y < y0 ) {
+            x0 = x;
+            yl = y;
+        } else {
+            x1 = x;
+            yh = y;
+        }
+        if( x == 1.0L || x == 0.0L )
+            break;
+        /* Compute the derivative of the function at this point. */
+        d = (a - 1.0L) * log(x) + (b - 1.0L) * log(1.0L - x) + lgm;
+        if ( d < MINLOG ) {
+            goto done;
+        }
+        if ( d > MAXLOG ) {
+            break;
+        }
+        d = exp(d);
+        /* Compute the step to the next approximation of x. */
+        d = (y - y0)/d;
+        xt = x - d;
+        if ( xt <= x0 ) {
+            y = (x - x0) / (x1 - x0);
+            xt = x0 + 0.5L * y * (x - x0);
+            if( xt <= 0.0L )
+                break;
+        }
+        if ( xt >= x1 ) {
+            y = (x1 - x) / (x1 - x0);
+            xt = x1 - 0.5L * y * (x1 - x);
+            if ( xt >= 1.0L )
+                break;
+        }
+        x = xt;
+        if ( fabs(d/x) < (128.0L * real.epsilon) )
+            goto done;
+        }
+    /* Did not converge.  */
+    dithresh = 256.0L * real.epsilon;
+    goto ihalve;
+
+done:
+    if ( rflg ) {
+        if( x <= real.epsilon )
+            x = 1.0L - real.epsilon;
+        else
+            x = 1.0L - x;
+    }
+    return x;
+}
+
+unittest { // also tested by the normal distribution
+  // check NaN propagation
+  assert(isIdentical(betaIncomplete(NaN("xyz"),2,3), NaN("xyz")));
+  assert(isIdentical(betaIncomplete(7,NaN("xyz"),3), NaN("xyz")));
+  assert(isIdentical(betaIncomplete(7,15,NaN("xyz")), NaN("xyz")));
+  assert(isIdentical(betaIncompleteInv(NaN("xyz"),1,17), NaN("xyz")));
+  assert(isIdentical(betaIncompleteInv(2,NaN("xyz"),8), NaN("xyz")));
+  assert(isIdentical(betaIncompleteInv(2,3, NaN("xyz")), NaN("xyz")));
+
+  assert(isNaN(betaIncomplete(-1, 2, 3)));
+
+  assert(betaIncomplete(1, 2, 0)==0);
+  assert(betaIncomplete(1, 2, 1)==1);
+  assert(isNaN(betaIncomplete(1, 2, 3)));
+  assert(betaIncompleteInv(1, 1, 0)==0);
+  assert(betaIncompleteInv(1, 1, 1)==1);
+
+  // Test some values against Microsoft Excel 2003.
+
+  assert(fabs(betaIncomplete(8, 10, 0.2) - 0.010_934_315_236_957_2L) < 0.000_000_000_5);
+  assert(fabs(betaIncomplete(2, 2.5, 0.9) - 0.989_722_597_604_107L) < 0.000_000_000_000_5);
+  assert(fabs(betaIncomplete(1000, 800, 0.5) - 1.17914088832798E-06L) < 0.000_000_05e-6);
+
+  assert(fabs(betaIncomplete(0.0001, 10000, 0.0001) - 0.999978059369989L) < 0.000_000_000_05);
+
+  assert(fabs(betaIncompleteInv(5, 10, 0.2) - 0.229121208190918L) < 0.000_000_5L);
+  assert(fabs(betaIncompleteInv(4, 7, 0.8) - 0.483657360076904L) < 0.000_000_5L);
+
+    // Coverage tests. I don't have correct values for these tests, but
+    // these values cover most of the code, so they are useful for
+    // regression testing.
+    // Extensive testing failed to increase the coverage. It seems likely that about
+    // half the code in this function is unnecessary; there is potential for
+    // significant improvement over the original CEPHES code.
+
+// Excel 2003 gives clearly erroneous results (betadist>1) when a and x are tiny and b is huge.
+// The correct results are for these next tests are unknown.
+
+//    real testpoint1 = betaIncomplete(1e-10, 5e20, 8e-21);
+//    assert(testpoint1 == 0x1.ffff_ffff_c906_404cp-1L);
+
+
+
+    assert(betaIncomplete(0.01, 327726.7, 0.545113) == 1.0);
+    assert(betaIncompleteInv(0.01, 8e-48, 5.45464e-20)==1-real.epsilon);
+    assert(betaIncompleteInv(0.01, 8e-48, 9e-26)==1-real.epsilon);
+
+    assert(betaIncomplete(0.01, 498.437, 0.0121433) == 0x1.ffff_8f72_19197402p-1);
+    assert(1- betaIncomplete(0.01, 328222, 4.0375e-5) == 0x1.5f62926b4p-30);
+    assert(betaIncompleteInv(0x1.b3d151fbba0eb18p+1, 1.2265e-19, 2.44859e-18)==0x1.c0110c8531d0952cp-1);
+    assert(betaIncompleteInv(0x1.ff1275ae5b939bcap-41, 4.6713e18, 0.0813601)==0x1.f97749d90c7adba8p-63);
+    real a1;
+    a1 = 3.40483;
+    assert(betaIncompleteInv(a1, 4.0640301659679627772e19L, 0.545113)== 0x1.ba8c08108aaf5d14p-109);
+    real b1;
+    b1= 2.82847e-25;
+    assert(betaIncompleteInv(0.01, b1, 9e-26) == 0x1.549696104490aa9p-830);
+
+    // --- Problematic cases ---
+    // This is a situation where the series expansion fails to converge
+    assert( isNaN(betaIncompleteInv(0.12167, 4.0640301659679627772e19L, 0.0813601)));
+    // This next result is almost certainly erroneous.
+    assert(betaIncomplete(1.16251e20, 2.18e39, 5.45e-20)==-real.infinity);
+}
+
+private {
+// Implementation functions
+
+// Continued fraction expansion #1 for incomplete beta integral
+// Use when x < (a+1)/(a+b+2)
+real betaDistExpansion1(real a, real b, real x )
+{
+    real xk, pk, pkm1, pkm2, qk, qkm1, qkm2;
+    real k1, k2, k3, k4, k5, k6, k7, k8;
+    real r, t, ans;
+    int n;
+
+    k1 = a;
+    k2 = a + b;
+    k3 = a;
+    k4 = a + 1.0L;
+    k5 = 1.0L;
+    k6 = b - 1.0L;
+    k7 = k4;
+    k8 = a + 2.0L;
+
+    pkm2 = 0.0L;
+    qkm2 = 1.0L;
+    pkm1 = 1.0L;
+    qkm1 = 1.0L;
+    ans = 1.0L;
+    r = 1.0L;
+    n = 0;
+    const real thresh = 3.0L * real.epsilon;
+    do  {
+        xk = -( x * k1 * k2 )/( k3 * k4 );
+        pk = pkm1 +  pkm2 * xk;
+        qk = qkm1 +  qkm2 * xk;
+        pkm2 = pkm1;
+        pkm1 = pk;
+        qkm2 = qkm1;
+        qkm1 = qk;
+
+        xk = ( x * k5 * k6 )/( k7 * k8 );
+        pk = pkm1 +  pkm2 * xk;
+        qk = qkm1 +  qkm2 * xk;
+        pkm2 = pkm1;
+        pkm1 = pk;
+        qkm2 = qkm1;
+        qkm1 = qk;
+
+        if( qk != 0.0L )
+            r = pk/qk;
+        if( r != 0.0L ) {
+            t = fabs( (ans - r)/r );
+            ans = r;
+        } else {
+           t = 1.0L;
+        }
+
+        if( t < thresh )
+            return ans;
+
+        k1 += 1.0L;
+        k2 += 1.0L;
+        k3 += 2.0L;
+        k4 += 2.0L;
+        k5 += 1.0L;
+        k6 -= 1.0L;
+        k7 += 2.0L;
+        k8 += 2.0L;
+
+        if( (fabs(qk) + fabs(pk)) > big ) {
+            pkm2 *= biginv;
+            pkm1 *= biginv;
+            qkm2 *= biginv;
+            qkm1 *= biginv;
+            }
+        if( (fabs(qk) < biginv) || (fabs(pk) < biginv) ) {
+            pkm2 *= big;
+            pkm1 *= big;
+            qkm2 *= big;
+            qkm1 *= big;
+            }
+        }
+    while( ++n < 400 );
+// loss of precision has occurred
+// mtherr( "incbetl", PLOSS );
+    return ans;
+}
+
+// Continued fraction expansion #2 for incomplete beta integral
+// Use when x > (a+1)/(a+b+2)
+real betaDistExpansion2(real a, real b, real x )
+{
+    real  xk, pk, pkm1, pkm2, qk, qkm1, qkm2;
+    real k1, k2, k3, k4, k5, k6, k7, k8;
+    real r, t, ans, z;
+
+    k1 = a;
+    k2 = b - 1.0L;
+    k3 = a;
+    k4 = a + 1.0L;
+    k5 = 1.0L;
+    k6 = a + b;
+    k7 = a + 1.0L;
+    k8 = a + 2.0L;
+
+    pkm2 = 0.0L;
+    qkm2 = 1.0L;
+    pkm1 = 1.0L;
+    qkm1 = 1.0L;
+    z = x / (1.0L-x);
+    ans = 1.0L;
+    r = 1.0L;
+    int n = 0;
+    const real thresh = 3.0L * real.epsilon;
+    do {
+
+        xk = -( z * k1 * k2 )/( k3 * k4 );
+        pk = pkm1 +  pkm2 * xk;
+        qk = qkm1 +  qkm2 * xk;
+        pkm2 = pkm1;
+        pkm1 = pk;
+        qkm2 = qkm1;
+        qkm1 = qk;
+
+        xk = ( z * k5 * k6 )/( k7 * k8 );
+        pk = pkm1 +  pkm2 * xk;
+        qk = qkm1 +  qkm2 * xk;
+        pkm2 = pkm1;
+        pkm1 = pk;
+        qkm2 = qkm1;
+        qkm1 = qk;
+
+        if( qk != 0.0L )
+            r = pk/qk;
+        if( r != 0.0L ) {
+            t = fabs( (ans - r)/r );
+            ans = r;
+        } else
+            t = 1.0L;
+
+        if( t < thresh )
+            return ans;
+        k1 += 1.0L;
+        k2 -= 1.0L;
+        k3 += 2.0L;
+        k4 += 2.0L;
+        k5 += 1.0L;
+        k6 += 1.0L;
+        k7 += 2.0L;
+        k8 += 2.0L;
+
+        if( (fabs(qk) + fabs(pk)) > big ) {
+            pkm2 *= biginv;
+            pkm1 *= biginv;
+            qkm2 *= biginv;
+            qkm1 *= biginv;
+        }
+        if( (fabs(qk) < biginv) || (fabs(pk) < biginv) ) {
+            pkm2 *= big;
+            pkm1 *= big;
+            qkm2 *= big;
+            qkm1 *= big;
+        }
+    } while( ++n < 400 );
+// loss of precision has occurred
+//mtherr( "incbetl", PLOSS );
+    return ans;
+}
+
+/* Power series for incomplete gamma integral.
+   Use when b*x is small.  */
+real betaDistPowerSeries(real a, real b, real x )
+{
+    real ai = 1.0L / a;
+    real u = (1.0L - b) * x;
+    real v = u / (a + 1.0L);
+    real t1 = v;
+    real t = u;
+    real n = 2.0L;
+    real s = 0.0L;
+    real z = real.epsilon * ai;
+    while( fabs(v) > z ) {
+        u = (n - b) * x / n;
+        t *= u;
+        v = t / (a + n);
+        s += v;
+        n += 1.0L;
+    }
+    s += t1;
+    s += ai;
+
+    u = a * log(x);
+    if ( (a+b) < MAXGAMMA && fabs(u) < MAXLOG ) {
+        t = gamma(a+b)/(gamma(a)*gamma(b));
+        s = s * t * pow(x,a);
+    } else {
+        t = logGamma(a+b) - logGamma(a) - logGamma(b) + u + log(s);
+
+        if( t < MINLOG ) {
+            s = 0.0L;
+        } else
+            s = exp(t);
+    }
+    return s;
+}
+
+}
