@@ -212,7 +212,7 @@ version (linux)
         public void register(IConduit conduit, Event events, Object attachment = null)
         in
         {
-            assert(conduit !is null && conduit.getHandle() > 0);
+            assert(conduit !is null && conduit.fileHandle() > 0);
         }
         body
         {
@@ -224,14 +224,14 @@ version (linux)
             // retrieve it efficiently when we get events for this handle.
             event.data.ptr = key;
 
-            if (epoll_ctl(_epfd, EPOLL_CTL_ADD, conduit.getHandle(), &event) == 0)
+            if (epoll_ctl(_epfd, EPOLL_CTL_ADD, conduit.fileHandle(), &event) == 0)
             {
                 // We keep the keys in a map to make sure that the key is not
                 // garbage collected while there is still a reference to it in
                 // an epoll_event. This also allows to to efficiently find the
                 // key corresponding to a handle in methods where this
                 // association is not provided automatically.
-                _keys[conduit.getHandle()] = key;
+                _keys[conduit.fileHandle()] = key;
             }
             else
             {
@@ -269,11 +269,11 @@ version (linux)
         public void reregister(IConduit conduit, Event events, Object attachment = null)
         in
         {
-            assert(conduit !is null && conduit.getHandle() > 0);
+            assert(conduit !is null && conduit.fileHandle() > 0);
         }
         body
         {
-            SelectionKey* key = (conduit.getHandle() in _keys);
+            SelectionKey* key = (conduit.fileHandle() in _keys);
 
             if (key !is null)
             {
@@ -285,7 +285,7 @@ version (linux)
                 event.events = events;
                 event.data.ptr = *key;
 
-                if (epoll_ctl(_epfd, EPOLL_CTL_MOD, conduit.getHandle(), &event) != 0)
+                if (epoll_ctl(_epfd, EPOLL_CTL_MOD, conduit.fileHandle(), &event) != 0)
                 {
                     checkErrno(__FILE__, __LINE__);
                 }
@@ -316,9 +316,9 @@ version (linux)
         {
             if (conduit !is null)
             {
-                if (epoll_ctl(_epfd, EPOLL_CTL_DEL, conduit.getHandle(), null) == 0)
+                if (epoll_ctl(_epfd, EPOLL_CTL_DEL, conduit.fileHandle(), null) == 0)
                 {
-                    _keys.remove(conduit.getHandle());
+                    _keys.remove(conduit.fileHandle());
                 }
                 else
                 {
@@ -397,7 +397,7 @@ version (linux)
          */
         public SelectionKey key(IConduit conduit)
         {
-            return (conduit !is null ? _keys[conduit.getHandle()] : null);
+            return (conduit !is null ? _keys[conduit.fileHandle()] : null);
         }
 
         unittest
@@ -443,7 +443,7 @@ version (linux)
 
                     debug (selector)
                         Stdout.format("---   Event 0x{0:x} for handle {1}\n",
-                                      cast(uint) event.events, cast(int) key.conduit.getHandle());
+                                      cast(uint) event.events, cast(int) key.conduit.fileHandle());
 
                     rc = dg(key);
                     if (rc != 0)

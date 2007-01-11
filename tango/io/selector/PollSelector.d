@@ -136,26 +136,26 @@ version (Posix)
         public void register(IConduit conduit, Event events, Object attachment = null)
         in
         {
-            assert(conduit !is null && conduit.getHandle() >= 0);
+            assert(conduit !is null && conduit.fileHandle() >= 0);
         }
         body
         {
             debug (selector)
                 Stdout.format("--- PollSelector.register(handle={0}, events=0x{1:x})\n",
-                              cast(int) conduit.getHandle(), cast(uint) events);
+                              cast(int) conduit.fileHandle(), cast(uint) events);
 
             // We make sure that the conduit is not already registered to
             // the Selector
-            if ((conduit.getHandle() in _keys) is null)
+            if ((conduit.fileHandle() in _keys) is null)
             {
                 if (_count == _pfds.length)
                     _pfds.length = _pfds.length + 1;
 
-                _pfds[_count].fd = conduit.getHandle();
+                _pfds[_count].fd = conduit.fileHandle();
                 _pfds[_count].events = cast(short) events;
                 _pfds[_count].revents = 0;
 
-                _keys[conduit.getHandle()] = new PollSelectionKey(conduit, events, _count, attachment);
+                _keys[conduit.fileHandle()] = new PollSelectionKey(conduit, events, _count, attachment);
                 _count++;
             }
             else
@@ -193,15 +193,15 @@ version (Posix)
         public void reregister(IConduit conduit, Event events, Object attachment = null)
         in
         {
-            assert(conduit !is null && conduit.getHandle() >= 0);
+            assert(conduit !is null && conduit.fileHandle() >= 0);
         }
         body
         {
             debug (selector)
                 Stdout.format("--- PollSelector.reregister(handle={0}, events=0x{1:x})",
-                              cast(int) conduit.getHandle(), cast(uint) events);
+                              cast(int) conduit.fileHandle(), cast(uint) events);
 
-            PollSelectionKey* current = (conduit.getHandle() in _keys);
+            PollSelectionKey* current = (conduit.fileHandle() in _keys);
 
             if (current !is null)
             {
@@ -243,9 +243,9 @@ version (Posix)
                 {
                     debug (selector)
                         Stdout.format("--- PollSelector.unregister(handle={0})\n",
-                                      cast(int) conduit.getHandle());
+                                      cast(int) conduit.fileHandle());
 
-                    PollSelectionKey* removed = (conduit.getHandle() in _keys);
+                    PollSelectionKey* removed = (conduit.fileHandle() in _keys);
 
                     if (removed !is null)
                     {
@@ -259,13 +259,13 @@ version (Posix)
                         }
                         _count--;
 
-                        _keys.remove(conduit.getHandle());
+                        _keys.remove(conduit.fileHandle());
                     }
                     else
                     {
                         debug (selector)
                             Stdout.format("--- PollSelector.unregister(handle={0}): conduit was not found\n",
-                                          cast(int) conduit.getHandle());
+                                          cast(int) conduit.fileHandle());
                         throw new UnregisteredConduitException(__FILE__, __LINE__);
                     }
                 }
@@ -273,7 +273,7 @@ version (Posix)
                 {
                     debug (selector)
                         Stdout.format("--- Exception inside PollSelector.unregister(handle={0}): {1}",
-                                      cast(int) conduit.getHandle(), e.toUtf8());
+                                      cast(int) conduit.fileHandle(), e.toUtf8());
 
                     throw new UnregisteredConduitException(__FILE__, __LINE__);
                 }
@@ -412,7 +412,7 @@ version (Posix)
          */
         public SelectionKey key(IConduit conduit)
         {
-            return (conduit !is null ? _keys[conduit.getHandle()] : null);
+            return (conduit !is null ? _keys[conduit.fileHandle()] : null);
         }
 
         unittest

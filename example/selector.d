@@ -123,7 +123,7 @@ void testSelector(ISelector selector)
                 {
                     debug (selector)
                         Stdout.formatln("[SRV][{0}] Event mask for socket {1} is 0x{2:x4}",
-                                        i, cast(int) selectionKey.conduit.getHandle(),
+                                        i, cast(int) selectionKey.conduit.fileHandle(),
                                         cast(uint) selectionKey.events);
 
                     if (selectionKey.isReadable())
@@ -165,7 +165,7 @@ void testSelector(ISelector selector)
                             {
                                 debug (selector)
                                     Stdout.formatln("[SRV][{0}] Handle {1} was closed; removing it from Selector",
-                                                    i, cast(int) selectionKey.conduit.getHandle());
+                                                    i, cast(int) selectionKey.conduit.fileHandle());
                                 selector.unregister(selectionKey.conduit);
                                 selectionKey.conduit.close();
                                 failedReceiveCount++;
@@ -192,7 +192,7 @@ void testSelector(ISelector selector)
                         {
                             debug (selector)
                                 Stdout.formatln("[SRV][{0}] Handle {1} was closed; removing it from Selector",
-                                                i, selectionKey.conduit.getHandle());
+                                                i, selectionKey.conduit.fileHandle());
                             selector.unregister(selectionKey.conduit);
                             selectionKey.conduit.close();
                             failedSendCount++;
@@ -221,10 +221,10 @@ void testSelector(ISelector selector)
                         debug (selector)
                         {
                             Stdout.formatln("[SRV][{0}] {1} in handle {2} from Selector",
-                                            i, status, cast(int) selectionKey.conduit.getHandle());
+                                            i, status, cast(int) selectionKey.conduit.fileHandle());
 
                             Stdout.formatln("[SRV][{0}] Unregistering handle {1} from Selector",
-                                            i, cast(int) selectionKey.conduit.getHandle());
+                                            i, cast(int) selectionKey.conduit.fileHandle());
                         }
                         selector.unregister(selectionKey.conduit);
                         selectionKey.conduit.close();
@@ -353,7 +353,7 @@ void clientThreadFunc()
                 {
                     debug (selector)
                         Stdout.formatln("[CLI][{0}] Handle was closed; aborting",
-                                        i, socket.getHandle());
+                                        i, socket.fileHandle());
                     break;
                 }
             }
@@ -361,7 +361,7 @@ void clientThreadFunc()
             {
                 debug (selector)
                     Stdout.formatln("[CLI][{0}] Handle {1} was closed; aborting",
-                                    i, socket.getHandle());
+                                    i, socket.fileHandle());
                 break;
             }
         }

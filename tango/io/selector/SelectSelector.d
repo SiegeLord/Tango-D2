@@ -394,11 +394,11 @@ public class SelectSelector: AbstractSelector
     public void register(IConduit conduit, Event events, Object attachment = null)
     in
     {
-        assert(conduit !is null && conduit.getHandle() >= 0);
+        assert(conduit !is null && conduit.fileHandle() >= 0);
     }
     body
     {
-        IConduit.Handle handle = conduit.getHandle();
+        IConduit.Handle handle = conduit.fileHandle();
 
         debug (selector)
             Stdout.format("--- SelectSelector.register(handle={0}, events=0x{1:x})\n",
@@ -406,7 +406,7 @@ public class SelectSelector: AbstractSelector
 
         // We make sure that the conduit is not already registered to
         // the Selector
-        SelectionKey* key = (conduit.getHandle() in _keys);
+        SelectionKey* key = (conduit.fileHandle() in _keys);
 
         if (key is null)
         {
@@ -484,11 +484,11 @@ public class SelectSelector: AbstractSelector
     public void reregister(IConduit conduit, Event events, Object attachment = null)
     in
     {
-        assert(conduit !is null && conduit.getHandle() >= 0);
+        assert(conduit !is null && conduit.fileHandle() >= 0);
     }
     body
     {
-        IConduit.Handle handle = conduit.getHandle();
+        IConduit.Handle handle = conduit.fileHandle();
 
         debug (selector)
             Stdout.format("--- SelectSelector.reregister(handle={0}, events=0x{1:x})\n",
@@ -573,7 +573,7 @@ public class SelectSelector: AbstractSelector
     {
         if (conduit !is null)
         {
-            IConduit.Handle handle = conduit.getHandle();
+            IConduit.Handle handle = conduit.fileHandle();
 
             debug (selector)
                 Stdout.format("--- SelectSelector.unregister(handle={0})\n",
@@ -619,7 +619,7 @@ public class SelectSelector: AbstractSelector
             {
                 debug (selector)
                     Stdout.format("--- SelectSelector.unregister(handle={0}): conduit was not found\n",
-                                  cast(int) conduit.getHandle());
+                                  cast(int) conduit.fileHandle());
                 throw new UnregisteredConduitException(__FILE__, __LINE__);
             }
         }
@@ -735,7 +735,7 @@ public class SelectSelector: AbstractSelector
      */
     public SelectionKey key(IConduit conduit)
     {
-        return (conduit !is null ? _keys[conduit.getHandle()] : null);
+        return (conduit !is null ? _keys[conduit.fileHandle()] : null);
     }
 }
 
@@ -776,7 +776,7 @@ private class SelectSelectionSet: ISelectionSet
 
         foreach (SelectionKey current; _keys)
         {
-            handle = current.conduit.getHandle();
+            handle = current.conduit.fileHandle();
 
             if (_readSet !is null && _readSet.isSet(handle))
                 events = Event.Read;
