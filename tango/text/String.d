@@ -1,6 +1,6 @@
 /*******************************************************************************
 
-        copyright:      Copyright (c) 2004 Kris Bell. All rights reserved
+        copyright:      Copyright (c) 2005 Kris Bell. All rights reserved
 
         license:        BSD style: $(LICENSE)
 
@@ -34,13 +34,15 @@
                 String append (String other);
                 String append (T[] other);
                 String append (T chr, int count=1);
-                String append (int value);
-                String append (long value);
-                String append (double value);
+                String append (int value, options);
+                String append (long value, options);
+                String append (double value, options);
 
-                // format and layout behind current selection
-                String format (T[] format, ...);
-        
+                // transcode behind current selection
+                String encode (char[]);
+                String encode (wchar[]);
+                String encode (dchar[]);
+                
                 // insert before current selection
                 String prepend (T[] other);
                 String prepend (String other);
@@ -54,11 +56,14 @@
                 // remove current selection
                 String remove ();
 
-                // truncate at point, or current selection
-                String truncate (int point = int.max);
+                // clear content
+                String clear ();
 
                 // trim content
                 String trim ();
+
+                // truncate at point, or current selection
+                String truncate (int point = int.max);
 
                 // return content
                 T[] slice ();
@@ -90,6 +95,8 @@
                 // copy content
                 T[] copy (T[] dst);
                 T[] copy ();
+                
+                String!(T) clone ();
 
                 // replace the comparison algorithm 
                 Comparator setComparator (Comparator comparator);
@@ -98,9 +105,9 @@
         class UniString
         {
                 // convert content
-                abstract char[]  utf8  (char[]  dst = null);
-                abstract wchar[] utf16 (wchar[] dst = null);
-                abstract dchar[] utf32 (dchar[] dst = null);
+                abstract char[]  toUtf8  (char[]  dst = null);
+                abstract wchar[] toUtf16 (wchar[] dst = null);
+                abstract dchar[] toUtf32 (dchar[] dst = null);
         }
         ---
 
@@ -110,8 +117,11 @@ module tango.text.String;
 
 private import  Util = tango.text.Util;
 
-private import  tango.text.convert.Format,
-                Utf = tango.text.convert.Utf;
+private import  Utf = tango.text.convert.Utf;
+
+private import  Float = tango.text.convert.Float;
+
+private import  Integer = tango.text.convert.Integer;
 
 /*******************************************************************************
 
@@ -122,7 +132,7 @@ private extern (C) void memmove (void* dst, void* src, uint bytes);
 
 /*******************************************************************************
 
-        String is a string class that stores Unicode characters.
+        String is a class for storing and manipulating Unicode characters.
 
         String maintains a current "selection", controlled via the 
         select() and rselect() methods. Append(), prepend(), replace() and
@@ -133,25 +143,24 @@ private extern (C) void memmove (void* dst, void* src, uint bytes);
         with no arguments. 
        
         Indexes and lengths of content always count code units, not code 
-        points. This is similar to traditional uni-byte string handling. 
-        Note that substring indexing is generally implied as opposed to
-        being exposed directly. This allows for a more streamlined model
-        with regard to surrogates.
+        points. This is similar to traditional ascii string handling, yet
+        indexing is rarely used in practice due to the selection idiom:
+        substring indexing is generally implied as opposed to manipulated
+        directly. This allows for a more streamlined model with regard to
+        surrogates.
 
 *******************************************************************************/
 
 class String(T) : StringView!(T)
 {
-        public  alias append            opCat;
         public  alias get               opIndex;
         private alias StringView!(T)    StringViewT;
 
-        private Format!(T)              convert;
         private bool                    mutable;
         private Comparator              comparator;
         private uint                    selectPoint,
                                         selectLength;
-        
+
         /***********************************************************************
         
                 Default ctor
@@ -172,8 +181,9 @@ class String(T) : StringView!(T)
 
         this (uint space)
         {
-                content.length = space;
+                this();
                 mutable = true;
+                content.length = space;
         }
 
         /***********************************************************************
@@ -188,6 +198,7 @@ class String(T) : StringView!(T)
 
         this (T[] content, bool copy = true)
         {
+                this();
                 set (content, copy);
         }
 
@@ -204,21 +215,10 @@ class String(T) : StringView!(T)
         
         this (StringViewT other, bool copy = true)
         {
+                this();
                 set (other.get, copy);
         }
 
-        /***********************************************************************
-   
-                Configure the formatter for this String instance
-                     
-        ***********************************************************************/
-
-        String setFormatter (Format!(T) convert)
-        {
-                this.convert = convert;
-                return this;
-        }
-        
         /***********************************************************************
    
                 Set the content to the provided array. Parameter 'copy'
@@ -228,7 +228,7 @@ class String(T) : StringView!(T)
                      
         ***********************************************************************/
 
-        String set (T[] chars, bool copy = true)
+        final String set (T[] chars, bool copy = true)
         {
                 contentLength = chars.length;
                 select (0, contentLength);
@@ -250,7 +250,7 @@ class String(T) : StringView!(T)
 
         ***********************************************************************/
 
-        String set (StringViewT other, bool copy = true)
+        final String set (StringViewT other, bool copy = true)
         {
                 return set (other.get, copy);
         }
@@ -261,7 +261,7 @@ class String(T) : StringView!(T)
 
         ***********************************************************************/
 
-        uint selection (inout int length)
+        final uint selection (inout int length)
         {
                 length = selectLength;
                 return selectPoint;
@@ -273,7 +273,7 @@ class String(T) : StringView!(T)
 
         ***********************************************************************/
 
-        String select (int start=0, int length=int.max)
+        final String select (int start=0, int length=int.max)
         {
                 pinIndices (start, length);
                 selectPoint = start;
@@ -283,15 +283,17 @@ class String(T) : StringView!(T)
 
         /***********************************************************************
         
-                Find the first occurrence of a BMP code point in a string.
-                A surrogate code point is found only if its match in the 
-                text is not part of a surrogate pair.
+                Find and select the next occurrence of a BMP code point
+                in a string. A surrogate code point is found only if its
+                match in the text is not part of a surrogate pair.
+
+                Return true if found, false otherwise
 
         ***********************************************************************/
 
-        bool select (T c)
+        final bool select (T c)
         {
-                auto s = get;
+                auto s = get();
                 auto x = Util.locate (s, c, selectPoint);
                 if (x < s.length)
                    {
@@ -303,7 +305,7 @@ class String(T) : StringView!(T)
 
         /***********************************************************************
         
-                Find the first occurrence of a substring in a string. 
+                Find and select the next substring occurrence. 
 
                 The substring is found at code point boundaries. That means 
                 that if the substring begins with a trail surrogate or ends 
@@ -311,16 +313,18 @@ class String(T) : StringView!(T)
                 surrogates stand alone in the text. Otherwise, the substring 
                 edge units would be matched against halves of surrogate pairs.
 
+                Return true if found, false otherwise
+
         ***********************************************************************/
 
-        bool select (StringViewT other)
+        final bool select (StringViewT other)
         {
                 return select (other.get);
         }
 
         /***********************************************************************
         
-                Find the first occurrence of a substring in a string. 
+                Find and select the next substring occurrence. 
 
                 The substring is found at code point boundaries. That means 
                 that if the substring begins with a trail surrogate or ends 
@@ -328,9 +332,11 @@ class String(T) : StringView!(T)
                 surrogates stand alone in the text. Otherwise, the substring 
                 edge units would be matched against halves of surrogate pairs.
 
+                Return true if found, false otherwise
+
         ***********************************************************************/
 
-        bool select (T[] chars)
+        final bool select (T[] chars)
         {
                 auto s = get();
                 auto x = Util.locatePattern (s, chars, selectPoint);
@@ -344,13 +350,15 @@ class String(T) : StringView!(T)
 
         /***********************************************************************
         
-                Find a prior occurrence of a BMP code point in a string.
-                A surrogate code point is found only if its match in the 
-                text is not part of a surrogate pair.
+                Find and select a prior occurrence of a BMP code point
+                in a string. A surrogate code point is found only if
+                its match in the text is not part of a surrogate pair.
+
+                Return true if found, false otherwise
 
         ***********************************************************************/
 
-        bool selectPrior (T c)
+        final bool selectPrior (T c)
         {
                 auto s = get();
                 auto x = Util.locatePrior (s, c, selectPoint);               
@@ -364,20 +372,7 @@ class String(T) : StringView!(T)
 
         /***********************************************************************
         
-                Find a prior occurrence of a BMP code point in a string.
-                A surrogate code point is found only if its match in the 
-                text is not part of a surrogate pair.
-
-        ***********************************************************************/
-
-        bool selectPrior (StringViewT other)
-        {
-                return selectPrior (other.get);
-        }
-
-        /***********************************************************************
-        
-                Find a prior occurrence of a substring in a string. 
+                Find and select a prior substring occurrence. 
 
                 The substring is found at code point boundaries. That means 
                 that if the substring begins with a trail surrogate or ends 
@@ -385,9 +380,30 @@ class String(T) : StringView!(T)
                 surrogates stand alone in the text. Otherwise, the substring 
                 edge units would be matched against halves of surrogate pairs.
 
+                Return true if found, false otherwise
+
         ***********************************************************************/
 
-        bool selectPrior (T[] chars)
+        final bool selectPrior (StringViewT other)
+        {
+                return selectPrior (other.get);
+        }
+
+        /***********************************************************************
+        
+                Find and select a prior substring occurrence. 
+
+                The substring is found at code point boundaries. That means 
+                that if the substring begins with a trail surrogate or ends 
+                with a lead surrogate, then it is found only if these 
+                surrogates stand alone in the text. Otherwise, the substring 
+                edge units would be matched against halves of surrogate pairs.
+
+                Return true if found, false otherwise
+
+        ***********************************************************************/
+
+        final bool selectPrior (T[] chars)
         {
                 auto s = get();
                 auto x = Util.locatePatternPrior (s, chars, selectPoint);
@@ -405,7 +421,7 @@ class String(T) : StringView!(T)
 
         ***********************************************************************/
 
-        String append (StringViewT other)
+        final String append (StringViewT other)
         {
                 return append (other.get);
         }
@@ -416,7 +432,7 @@ class String(T) : StringView!(T)
 
         ***********************************************************************/
 
-        String append (T[] chars)
+        final String append (T[] chars)
         {
                 return append (chars.ptr, chars.length);
         }
@@ -427,7 +443,7 @@ class String(T) : StringView!(T)
 
         ***********************************************************************/
 
-        String append (T chr, int count=1)
+        final String append (T chr, int count=1)
         {
                 uint point = selectPoint + selectLength;
                 expand (point, count);
@@ -440,9 +456,9 @@ class String(T) : StringView!(T)
 
         ***********************************************************************/
 
-        String append (int v)
+        final String append (int v, Integer.Format fmt=Integer.Format.Signed)
         {
-                return format ("{0}", v);
+                return append (cast(long) v, fmt);
         }
 
         /***********************************************************************
@@ -451,9 +467,10 @@ class String(T) : StringView!(T)
 
         ***********************************************************************/
 
-        String append (long v)
+        final String append (long v, Integer.Format fmt=Integer.Format.Signed)
         {
-                return format ("{0}", v);
+                T[64] tmp = void;
+                return append (Integer.format(tmp, v, fmt));
         }
 
         /***********************************************************************
@@ -462,24 +479,10 @@ class String(T) : StringView!(T)
 
         ***********************************************************************/
 
-        String append (double v)
+        final String append (double v, uint decimals=6, bool scientific=false)
         {
-                return format ("{0}", v);
-        }
-
-        /**********************************************************************
-
-                Format a set of arguments using the configured formatter
-
-        **********************************************************************/
-
-        String format (T[] fmt, ...)
-        {
-                if (convert is null)
-                    convert = new Format!(T);
-                
-                convert (&appender, _arguments, _argptr, fmt);
-                return this;
+                T[64] tmp = void;
+                return append (Float.format(tmp, v, decimals, scientific));
         }
 
         /***********************************************************************
@@ -488,7 +491,7 @@ class String(T) : StringView!(T)
 
         ***********************************************************************/
 
-        String prepend (T chr, int count=1)
+        final String prepend (T chr, int count=1)
         {
                 expand (selectPoint, count);
                 return set (chr, selectPoint, count);
@@ -500,7 +503,7 @@ class String(T) : StringView!(T)
 
         ***********************************************************************/
 
-        String prepend (T[] other)
+        final String prepend (T[] other)
         {
                 expand (selectPoint, other.length);
                 content[selectPoint..selectPoint+other.length] = other;
@@ -513,11 +516,70 @@ class String(T) : StringView!(T)
 
         ***********************************************************************/
 
-        String prepend (StringViewT other)
+        final String prepend (StringViewT other)
         {       
                 return prepend (other.get);
         }
 
+        /***********************************************************************
+
+                Append encoded text at the current selection point. The text
+                is converted as necessary to the appropritate utf encoding.
+
+                Returns a chaining reference
+                
+        ***********************************************************************/
+
+        final String encode (char[] s)
+        {
+                T[1024] tmp = void;
+                
+                static if (is (T == char))
+                           return append(s);
+                
+                static if (is (T == wchar))
+                           return append (Utf.toUtf16(s, tmp));
+                
+                static if (is (T == dchar))
+                           return append (Utf.toUtf32(s, tmp));
+        }
+
+        /// ditto
+        final String encode (wchar[] s)
+        {
+                T[1024] tmp = void;
+                                
+                static if (is (T == char))
+                           return append (Utf.toUtf8(s, tmp));
+                
+                static if (is (T == wchar))
+                           return append (s);
+                
+                static if (is (T == dchar))
+                           return append (Utf.toUtf32(s, tmp));
+        }
+        
+        /// ditto
+        final String encode (dchar[] s)
+        {
+                T[1024] tmp = void;
+                                
+                static if (is (T == char))
+                           return append (Utf.toUtf8(s, tmp));
+                
+                static if (is (T == wchar))
+                           return append (Utf.toUtf16(s, tmp));
+                
+                static if (is (T == dchar))
+                           return append (s);
+        }
+
+        /// ditto
+        final String encode (Object o)
+        {
+                return encode (o.toUtf8);
+        }
+        
         /***********************************************************************
                 
                 Replace a section of this String with the specified 
@@ -525,7 +587,7 @@ class String(T) : StringView!(T)
 
         ***********************************************************************/
 
-        String replace (T chr)
+        final String replace (T chr)
         {
                 return set (chr, selectPoint, selectLength);
         }
@@ -537,7 +599,7 @@ class String(T) : StringView!(T)
 
         ***********************************************************************/
 
-        String replace (T[] chars)
+        final String replace (T[] chars)
         {
                 int chunk = chars.length - selectLength;
                 if (chunk >= 0)
@@ -557,7 +619,7 @@ class String(T) : StringView!(T)
 
         ***********************************************************************/
 
-        String replace (StringViewT other)
+        final String replace (StringViewT other)
         {
                 return replace (other.get);
         }
@@ -569,11 +631,10 @@ class String(T) : StringView!(T)
 
         ***********************************************************************/
 
-        String remove ()
+        final String remove ()
         {
                 remove (selectLength);
-                select (selectPoint, 0);
-                return this;
+                return select (selectPoint, 0);
         }
 
         /***********************************************************************
@@ -602,18 +663,29 @@ class String(T) : StringView!(T)
         /***********************************************************************
         
                 Truncate this string. Default behaviour is to truncate at 
-                the current append point
+                the current append point. Current selection is moved to the
+                truncation point, with length 0
 
         ***********************************************************************/
 
-        String truncate (int index = int.max)
+        final String truncate (int index = int.max)
         {
                 if (index is int.max)
                     index = selectPoint + selectLength;
 
                 pinIndex (index);
-                contentLength = index;
-                return this;
+                return select (contentLength = index, 0);
+        }
+
+        /***********************************************************************
+        
+                Clear the string content
+
+        ***********************************************************************/
+
+        final String clear ()
+        {
+                return select (contentLength = 0, 0);
         }
 
         /***********************************************************************
@@ -623,7 +695,7 @@ class String(T) : StringView!(T)
 
         ***********************************************************************/
 
-        String trim ()
+        final String trim ()
         {
                 content = Util.trim (get());
                 select (0, contentLength = content.length);
@@ -632,20 +704,11 @@ class String(T) : StringView!(T)
 
         /***********************************************************************
         
-        ***********************************************************************/
-
-        String clone ()
-        {
-                return new String!(T)(get);
-        }
-
-        /***********************************************************************
-        
                 Return an alias to the content of this String
 
         ***********************************************************************/
 
-        T[] slice ()
+        final T[] slice ()
         {
                 return get ();
         }
@@ -662,7 +725,7 @@ class String(T) : StringView!(T)
 
         ***********************************************************************/        
 
-        TypeInfo encoding()
+        final TypeInfo encoding()
         {
                 return typeid(T);
         }
@@ -673,8 +736,10 @@ class String(T) : StringView!(T)
 
         ***********************************************************************/
 
-        Comparator setComparator (Comparator comparator)
+        final Comparator setComparator (Comparator comparator)
         {
+                assert (comparator);
+                
                 auto tmp = this.comparator;
                 this.comparator = comparator;
                 return tmp;
@@ -688,7 +753,7 @@ class String(T) : StringView!(T)
 
         override uint toHash ()
         {
-                return hash (content [0 .. contentLength]);
+                return Util.jhash (cast(ubyte*) content.ptr, contentLength * T.sizeof);
         }
 
         /***********************************************************************
@@ -697,7 +762,7 @@ class String(T) : StringView!(T)
 
         ***********************************************************************/
 
-        uint length ()
+        final uint length ()
         {
                 return contentLength;
         }
@@ -708,7 +773,7 @@ class String(T) : StringView!(T)
 
         ***********************************************************************/
 
-        bool equals (StringViewT other)
+        final bool equals (StringViewT other)
         {
                 if (other is this)
                     return true;
@@ -721,7 +786,7 @@ class String(T) : StringView!(T)
 
         ***********************************************************************/
 
-        bool equals (T[] other)
+        final bool equals (T[] other)
         {
                 if (other.length == contentLength)
                     return Util.matching (other.ptr, content.ptr, contentLength);
@@ -734,7 +799,7 @@ class String(T) : StringView!(T)
 
         ***********************************************************************/
 
-        bool ends (StringViewT other)
+        final bool ends (StringViewT other)
         {
                 return ends (other.get);
         }
@@ -745,7 +810,7 @@ class String(T) : StringView!(T)
 
         ***********************************************************************/
 
-        bool ends (T[] chars)
+        final bool ends (T[] chars)
         {
                 if (chars.length <= contentLength)
                     return Util.matching (content.ptr+(contentLength-chars.length), chars.ptr, chars.length);
@@ -758,7 +823,7 @@ class String(T) : StringView!(T)
 
         ***********************************************************************/
 
-        bool starts (StringViewT other)
+        final bool starts (StringViewT other)
         {
                 return starts (other.get);
         }
@@ -769,7 +834,7 @@ class String(T) : StringView!(T)
 
         ***********************************************************************/
 
-        bool starts (T[] chars)
+        final bool starts (T[] chars)
         {
                 if (chars.length <= contentLength)                
                     return Util.matching (content.ptr, chars.ptr, chars.length);
@@ -785,7 +850,7 @@ class String(T) : StringView!(T)
 
         ***********************************************************************/
 
-        int compare (StringViewT other)
+        final int compare (StringViewT other)
         {
                 if (other is this)
                     return 0;
@@ -802,7 +867,7 @@ class String(T) : StringView!(T)
 
         ***********************************************************************/
 
-        int compare (T[] chars)
+        final int compare (T[] chars)
         {
                 return comparator (get(), chars);
         }
@@ -818,7 +883,7 @@ class String(T) : StringView!(T)
 
         ***********************************************************************/
 
-        T[] copy (T[] dst)
+        final T[] copy (T[] dst)
         {
                 uint i = contentLength;
                 if (i > dst.length)
@@ -833,9 +898,20 @@ class String(T) : StringView!(T)
 
         ***********************************************************************/
 
-        T[] copy ()
+        final T[] copy ()
         {
                 return content [0 .. contentLength].dup;
+        }
+
+        /***********************************************************************
+
+                Clone this string, with a copy of the content also
+                
+        ***********************************************************************/
+
+        final String clone ()
+        {
+                return new String!(T)(get);
         }
 
         /***********************************************************************
@@ -858,7 +934,7 @@ class String(T) : StringView!(T)
 
         ***********************************************************************/
 
-        char[] utf8 (char[] dst = null)
+        final char[] toUtf8 (char[] dst = null)
         {
                 static if (is (T == char))
                            return get();
@@ -870,7 +946,8 @@ class String(T) : StringView!(T)
                            return Utf.toUtf8 (get(), dst);
         }
         
-        wchar[] utf16 (wchar[] dst = null)
+        /// ditto
+        final wchar[] toUtf16 (wchar[] dst = null)
         {
                 static if (is (T == char))
                            return Utf.toUtf16 (get(), dst);
@@ -882,7 +959,8 @@ class String(T) : StringView!(T)
                            return Utf.toUtf16 (get(), dst);
         }
         
-        dchar[] utf32 (dchar[] dst = null)
+        /// ditto
+        final dchar[] toUtf32 (dchar[] dst = null)
         {
                 static if (is (T == char))
                            return Utf.toUtf32 (get(), dst);
@@ -897,12 +975,12 @@ class String(T) : StringView!(T)
         /**********************************************************************
 
                 Iterate over the characters in this string. Note that 
-                this is a read-only freachable ~ the worst a user can
+                this is a read-only freachable: the worst a user can
                 do is alter the temporary 'c'
 
         **********************************************************************/
 
-        int opApply (int delegate(inout T) dg)
+        final int opApply (int delegate(inout T) dg)
         {
                 int result = 0;
 
@@ -914,11 +992,12 @@ class String(T) : StringView!(T)
 
         /***********************************************************************
         
-                Compare this String to another
+                Compare this String to another. We compare against other
+                Strings only. Literals and other objects are not supported
 
         ***********************************************************************/
 
-        int opCmp (Object o)
+        override int opCmp (Object o)
         {
                 auto other = cast (StringViewT) o;
 
@@ -930,130 +1009,36 @@ class String(T) : StringView!(T)
 
         /***********************************************************************
         
-                Is this String equal to another?
+                Is this String equal to the text of something else?
 
         ***********************************************************************/
 
-        int opEquals (Object o)
+        override int opEquals (Object o)
         {
                 auto other = cast (StringViewT) o;
 
-                if (other is null)
-                    return 0;
+                if (other)
+                    return equals (other);
 
-                return equals (other);
+                // this can become expensive ...
+                char[1024] tmp = void;
+                return this.toUtf8(tmp) == o.toUtf8;
         }
 
-        /**********************************************************************
-
-            hash() -- hash a variable-length key into a 32-bit value
-
-              k     : the key (the unaligned variable-length array of bytes)
-              len   : the length of the key, counting by bytes
-              level : can be any 4-byte value
-
-            Returns a 32-bit value.  Every bit of the key affects every bit of
-            the return value.  Every 1-bit and 2-bit delta achieves avalanche.
-
-            About 4.3*len + 80 X86 instructions, with excellent pipelining
-
-            The best hash table sizes are powers of 2.  There is no need to do
-            mod a prime (mod is sooo slow!).  If you need less than 32 bits,
-            use a bitmask.  For example, if you need only 10 bits, do
-
-                        h = (h & hashmask(10));
-
-            In which case, the hash table should have hashsize(10) elements.
-            If you are hashing n strings (ub1 **)k, do it like this:
-
-                        for (i=0, h=0; i<n; ++i) h = hash( k[i], len[i], h);
-
-            By Bob Jenkins, 1996.  bob_jenkins@burtleburtle.net.  You may use 
-            this code any way you wish, private, educational, or commercial.  
-            It's free.
-            
-            See http://burlteburtle.net/bob/hash/evahash.html
-            Use for hash table lookup, or anything where one collision in 2^32 
-            is acceptable. Do NOT use for cryptographic purposes.
-
-        **********************************************************************/
-
-        static final uint hash (void[] x, uint c = 0)
+        /// ditto
+        final int opEquals (T[] s)
         {
-            uint    a,
-                    b;
-
-            a = b = 0x9e3779b9; 
-
-            uint len = x.length;
-            ubyte* k = cast(ubyte *) x.ptr;
-
-            // handle most of the key 
-            while (len >= 12) 
-                  {
-                  a += *cast(uint *)(k+0);
-                  b += *cast(uint *)(k+4);
-                  c += *cast(uint *)(k+8);
-
-                  a -= b; a -= c; a ^= (c>>13); 
-                  b -= c; b -= a; b ^= (a<<8); 
-                  c -= a; c -= b; c ^= (b>>13); 
-                  a -= b; a -= c; a ^= (c>>12);  
-                  b -= c; b -= a; b ^= (a<<16); 
-                  c -= a; c -= b; c ^= (b>>5); 
-                  a -= b; a -= c; a ^= (c>>3);  
-                  b -= c; b -= a; b ^= (a<<10); 
-                  c -= a; c -= b; c ^= (b>>15); 
-                  k += 12; len -= 12;
-                  }
-
-            // handle the last 11 bytes 
-            c += x.length;
-            switch (len)
-                   {
-                   case 11: c+=(cast(uint)k[10]<<24);
-                   case 10: c+=(cast(uint)k[9]<<16);
-                   case 9 : c+=(cast(uint)k[8]<<8);
-                   case 8 : b+=(cast(uint)k[7]<<24);
-                   case 7 : b+=(cast(uint)k[6]<<16);
-                   case 6 : b+=(cast(uint)k[5]<<8);
-                   case 5 : b+=k[4];
-                   case 4 : a+=(cast(uint)k[3]<<24);
-                   case 3 : a+=(cast(uint)k[2]<<16);
-                   case 2 : a+=(cast(uint)k[1]<<8);
-                   case 1 : a+=k[0];
-                   default:
-                   }
-
-            a -= b; a -= c; a ^= (c>>13); 
-            b -= c; b -= a; b ^= (a<<8); 
-            c -= a; c -= b; c ^= (b>>13); 
-            a -= b; a -= c; a ^= (c>>12);  
-            b -= c; b -= a; b ^= (a<<16); 
-            c -= a; c -= b; c ^= (b>>5); 
-            a -= b; a -= c; a ^= (c>>3);  
-            b -= c; b -= a; b ^= (a<<10); 
-            c -= a; c -= b; c ^= (b>>15); 
-
-            return c;
+                return get() == s;
         }
-
+        
         /***********************************************************************
         
                 Throw an exception
 
         ***********************************************************************/
 
-        protected void error (char[] msg)
+        final void error (char[] msg)
         {
-                static class TextException : Exception
-                {
-                        this (char[] msg)
-                        {
-                                super (msg);
-                        }
-                }
-
                 throw new TextException (msg);
         }
 
@@ -1063,7 +1048,7 @@ class String(T) : StringView!(T)
 
         ***********************************************************************/
 
-        protected final void pinIndex (inout int x)
+        private void pinIndex (inout int x)
         {
                 if (x > contentLength)
                     x = contentLength;
@@ -1075,7 +1060,7 @@ class String(T) : StringView!(T)
 
         ***********************************************************************/
 
-        protected final void pinIndices (inout int start, inout int length)
+        private void pinIndices (inout int start, inout int length)
         {
                 if (start > contentLength) 
                     start = contentLength;
@@ -1095,7 +1080,7 @@ class String(T) : StringView!(T)
 
         ***********************************************************************/
 
-        private final int simpleComparator (T[] a, T[] b)
+        private int simpleComparator (T[] a, T[] b)
         {
                 uint i = a.length;
                 if (b.length < i)
@@ -1114,7 +1099,7 @@ class String(T) : StringView!(T)
 
         ***********************************************************************/
 
-        private final void expand (uint index, uint count)
+        private void expand (uint index, uint count)
         {
                 if (!mutable || (contentLength + count) > content.length)
                      realloc (count);
@@ -1131,7 +1116,7 @@ class String(T) : StringView!(T)
 
         ***********************************************************************/
 
-        private final String set (T chr, uint start, uint count)
+        private String set (T chr, uint start, uint count)
         {
                 content [start..start+count] = chr;
                 return this;
@@ -1144,7 +1129,7 @@ class String(T) : StringView!(T)
 
         ***********************************************************************/
 
-        private final void realloc (uint count = 0)
+        private void realloc (uint count = 0)
         {
                 uint size = (content.length + count + 127) & ~127;
                 
@@ -1166,24 +1151,12 @@ class String(T) : StringView!(T)
 
         ***********************************************************************/
 
-        private final String append (T* chars, uint count)
+        private String append (T* chars, uint count)
         {
                 uint point = selectPoint + selectLength;
                 expand (point, count);
                 content[point .. point+count] = chars[0 .. count];
                 return this;
-        }
-
-        /**********************************************************************
-
-                Sink function for the Formatter
-
-        **********************************************************************/
-
-        private uint appender (T[] s)   
-        {
-                append (s.ptr, s.length);
-                return s.length;
         }
 }       
 
@@ -1214,7 +1187,7 @@ class StringView(T) : UniString
         
         ***********************************************************************/
 
-        abstract StringView clone ();
+        abstract String!(T) clone ();
 
         /***********************************************************************
         
@@ -1329,7 +1302,7 @@ class StringView(T) : UniString
                 this is a read-only freachable ~ the worst a user can
                 do is alter the temporary 'c'
 
-        **********************************************************************/
+        ***********************************************************************/
 
         abstract int opApply (int delegate(inout T) dg);
 
@@ -1347,7 +1320,15 @@ class StringView(T) : UniString
 
         ***********************************************************************/
 
-        abstract int opEquals (Object o);
+        abstract int opEquals (Object other);
+
+        /***********************************************************************
+        
+                Is this String equal to another?
+
+        ***********************************************************************/
+
+        abstract int opEquals (T[] other);
 
         /***********************************************************************
         
@@ -1355,7 +1336,7 @@ class StringView(T) : UniString
 
         ***********************************************************************/
 
-        package final T[] get ()
+        private final T[] get ()
         {
                 return content [0 .. contentLength];
         }
@@ -1370,23 +1351,56 @@ class StringView(T) : UniString
 
 class UniString
 {
-        abstract char[]  utf8  (char[]  dst = null);
+        abstract char[]  toUtf8  (char[]  dst = null);
 
-        abstract wchar[] utf16 (wchar[] dst = null);
+        abstract wchar[] toUtf16 (wchar[] dst = null);
 
-        abstract dchar[] utf32 (dchar[] dst = null);
+        abstract dchar[] toUtf32 (dchar[] dst = null);
 
         abstract TypeInfo encoding();
 }
 
 
+/*******************************************************************************
+
+        Exception thrown by String et al
+
+*******************************************************************************/
+
+class TextException : Exception
+{
+        this (char[] msg)
+        {
+                super (msg);
+        }
+}
+
+
+
+/*******************************************************************************
+
+*******************************************************************************/
+
 debug (UnitTest)
 {
         unittest
         {
-        auto s = new String!(char)("hello");
+        auto s = new String!(dchar)("hello");
+        
         s.select ("hello");
         s.replace ("1");
-        assert (s.slice == "1");
+        assert (s == "1");
+
+        assert (s.clear == "");
+
+        assert (s.append(12345) == "12345");
+        
+        assert (s.clear.append(1.2345, 4) == "1.2345");
+        
+        assert (s.clear.append(0xf0, Integer.Format.Binary) == "11110000");
+        
+        assert (s.clear.encode("one"d).toUtf8 == "one");
+
+        assert (Util.delineate(s.clear.append("a\nb").slice).length is 2);
         }
 }
