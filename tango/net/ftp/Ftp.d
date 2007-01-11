@@ -1272,14 +1272,14 @@ class FTPConnection : Telnet
                                 if (pos == fact.length)
                                         continue;
 
-                                info.facts[Ascii.tolower(fact[0 .. pos])] = fact[pos + 1 .. fact.length];
+                                info.facts[Ascii.toLower(fact[0 .. pos])] = fact[pos + 1 .. fact.length];
                         }
 
                         // Do we have a type?
                         if ("type" in info.facts)
                         {
                                 // Some reflection might be nice here.
-                                switch (Ascii.tolower(info.facts["type"]))
+                                switch (Ascii.toLower(info.facts["type"]))
                                 {
                                 case "file":
                                         info.type = ftp_file_type.file;

@@ -32,7 +32,7 @@ version (Posix)
 
 ******************************************************************************/
 
-char[] tolower (char[] src, char[] dst = null)
+char[] toLower (char[] src, char[] dst = null)
 {
         if (dst.ptr)
            {
@@ -55,7 +55,7 @@ char[] tolower (char[] src, char[] dst = null)
 
 ******************************************************************************/
 
-char[] toupper (char[] src, char[] dst = null)
+char[] toUpper (char[] src, char[] dst = null)
 {
         if (dst.ptr)
            {
