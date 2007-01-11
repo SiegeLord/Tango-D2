@@ -4,8 +4,8 @@
 
         license:        BSD style: $(LICENSE)
 
-        version:        Initial release: December 2005      
-        
+        version:        Initial release: December 2005
+
         author:         Kris
 
 *******************************************************************************/
@@ -18,9 +18,9 @@ private import Text = tango.text.Util;
 
 /*******************************************************************************
 
-        The base class for a set of pattern tokenizers. 
+        The base class for a set of pattern tokenizers.
 
-        There are two types of tokenizers supported ~ exclusive and 
+        There are two types of tokenizers supported ~ exclusive and
         inclusive. The former are the more common kind, where a token
         is delimited by elements that are considered foreign. Examples
         include space, comma, and end-of-line delineation. Inclusive
@@ -33,8 +33,8 @@ private import Text = tango.text.Util;
         The content provided to Tokenizers is supposed to be entirely
         read-only. All current tokenizers abide by this rule, but it's
         possible a user could mutate the content through a token slice.
-        To enforce the desired read-only aspect, the code would have to 
-        introduce redundant copying or the compiler would have to support 
+        To enforce the desired read-only aspect, the code would have to
+        introduce redundant copying or the compiler would have to support
         read-only arrays.
 
         See LineIterator, CharIterator, RegexIterator, QuotedIterator,
@@ -48,7 +48,7 @@ class StreamIterator(T)
         protected IBuffer       buffer;
 
         /***********************************************************************
-        
+
                 The pattern scanner, implemented via subclasses
 
         ***********************************************************************/
@@ -56,7 +56,7 @@ class StreamIterator(T)
         abstract protected uint scan (void[] data);
 
         /***********************************************************************
-        
+
                 Uninitialized instance ~ use set() to configure input
 
         ***********************************************************************/
@@ -64,7 +64,7 @@ class StreamIterator(T)
         this () {}
 
         /***********************************************************************
-        
+
                 Instantiate with a buffer
 
         ***********************************************************************/
@@ -75,7 +75,7 @@ class StreamIterator(T)
         }
 
         /***********************************************************************
-        
+
                 Instantiate with a conduit
 
         ***********************************************************************/
@@ -86,7 +86,7 @@ class StreamIterator(T)
         }
 
         /***********************************************************************
-        
+
                 Instantiate with a string
 
         ***********************************************************************/
@@ -97,7 +97,7 @@ class StreamIterator(T)
         }
 
         /***********************************************************************
-        
+
                 Set the provided string as the scanning source
 
         ***********************************************************************/
@@ -111,7 +111,7 @@ class StreamIterator(T)
         }
 
         /***********************************************************************
-        
+
                 Set the provided conduit as the scanning source
 
         ***********************************************************************/
@@ -125,7 +125,7 @@ class StreamIterator(T)
         }
 
         /***********************************************************************
-        
+
                 Set the current buffer to scan
 
         ***********************************************************************/
@@ -136,9 +136,9 @@ class StreamIterator(T)
         }
 
         /***********************************************************************
-        
+
                 Return the current token as a slice of the content
-        
+
         ***********************************************************************/
 
         final T[] get ()
@@ -147,11 +147,11 @@ class StreamIterator(T)
         }
 
         /***********************************************************************
- 
+
                 Trim spaces from the left and right of the current token.
                 Note that this is done in-place on the current slice. The
                 content itself is not affected
-        
+
         ***********************************************************************/
 
         StreamIterator trim ()
@@ -161,7 +161,7 @@ class StreamIterator(T)
         }
 
         /***********************************************************************
-                
+
                 Return the associated buffer. This can be provided to
                 a Reader or another Iterator ~ each will stay in synch
                 with one another
@@ -235,70 +235,70 @@ class StreamIterator(T)
 
         /***********************************************************************
 
-                Locate the next token. 
+                Locate the next token.
 
                 Returns true if a token is found; false otherwise
-                
+
         ***********************************************************************/
 
         final bool next ()
-        {       
+        {
                 return buffer.next (&scan) || slice.length > 0;
         }
 
         /***********************************************************************
-        
+
                 Set the content of the current slice
 
         ***********************************************************************/
 
         protected final uint set (T* content, uint start, uint end)
-        {       
+        {
                 slice = content [start .. end];
                 return end;
         }
 
         /***********************************************************************
-        
+
                 Convert void[] from buffer into an appropriate array
 
         ***********************************************************************/
 
         protected final T[] convert (void[] data)
-        {       
+        {
                 return cast(T[]) data [0 .. data.length & ~(T.sizeof-1)];
         }
 
         /***********************************************************************
-        
-                Called when a scanner fails to find a matching pattern. 
+
+                Called when a scanner fails to find a matching pattern.
                 This may cause more content to be loaded, and a rescan
                 initiated
 
         ***********************************************************************/
 
         protected final uint notFound (T[] content)
-        {       
+        {
                 slice = content;
                 return IConduit.Eof;
         }
 
         /***********************************************************************
-        
+
                 Invoked when a scanner matches a pattern. The provided
-                value should be the index of the last element of the 
+                value should be the index of the last element of the
                 matching pattern, which is converted back to a void[]
                 index.
 
         ***********************************************************************/
 
         protected final uint found (uint i)
-        {       
+        {
                 return (i + 1) * T.sizeof;
         }
 
         /***********************************************************************
-        
+
                 See if set of characters holds a particular instance
 
         ***********************************************************************/
