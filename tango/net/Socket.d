@@ -893,6 +893,11 @@ class Socket
          * waits for a connection request. Throws SocketAcceptException if unable
          * to accept. See accepting for use with derived classes.
          */
+        Socket accept ()
+        {
+                return accept (new Socket);
+        }
+        
         Socket accept (Socket target)
         {
                 auto newsock = cast(socket_t).accept(sock, null, null); // DMD 0.101 error: found '(' when expecting ';' following 'statement
@@ -1093,6 +1098,9 @@ class Socket
                 return addr;
         }
 
+        /// Send or receive error code.
+        const int ERROR = SOCKET_ERROR;
+        
 
         /**
          * Send data on the connection. Returns the number of bytes actually

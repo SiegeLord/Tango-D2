@@ -13,6 +13,8 @@
 
 module tango.net.DatagramConduit;
 
+public  import  tango.io.Conduit;
+
 package import  tango.net.Socket,
                 tango.net.SocketConduit;
 

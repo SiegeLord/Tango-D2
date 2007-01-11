@@ -14,7 +14,7 @@ module tango.io.DeviceConduit;
 
 private import  tango.sys.Common;
 
-private import  tango.io.Conduit;
+public  import  tango.io.Conduit;
 
 private import  tango.io.Exception;
 
@@ -301,12 +301,12 @@ class DeviceConduit : Conduit
 
 *******************************************************************************/
 
-class FileDevice
+package class FileDevice
 {
         private uint             _id;
         private Conduit.Access  access;
 
-        this (uint id, Conduit.Access access)
+        package this (uint id, Conduit.Access access)
         {
                 this.access = access;
                 this._id = id;

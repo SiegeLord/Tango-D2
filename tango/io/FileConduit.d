@@ -20,7 +20,7 @@ private import  tango.sys.Common;
 
 public  import  tango.io.FileProxy;
 
-private import  tango.io.DeviceConduit;
+public  import  tango.io.DeviceConduit;
 
 private import  Utf = tango.text.convert.Utf;
 
