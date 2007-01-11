@@ -1162,7 +1162,7 @@ int chr(inout uint si, rchar c)
 
 void printProgram(ubyte[] prog)
 {
-  //debug(Regex)
+  debug(Regex)
   {
     uint pc;
     uint len;
