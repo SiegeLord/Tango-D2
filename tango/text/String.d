@@ -14,44 +14,50 @@
         {
                 // set or reset the content 
                 String set (T[] chars, bool mutable=true);
-                String set (String other, bool mutable=true);
+                String set (StringView other, bool mutable=true);
 
+                // retreive currently selected text
+                T[] selection ();
+                
                 // get the index and length of the current selection
                 uint selection (inout int length);
 
-                // make a selection
-                String select (int start=0, int length=int.max);
+                // mark a selection
+                String mark (int start=0, int length=int.max);
 
                 // move the selection around
                 bool select (T c);
-                bool select (T[] chars);
-                bool select (String other);
+                bool select (T[] pattern);
+                bool select (StringView other);
                 bool selectPrior (T c);
-                bool selectPrior (T[] chars);
-                bool selectPrior (String other);
+                bool selectPrior (T[] pattern);
+                bool selectPrior (StringView other);
 
                 // append behind current selection
-                String append (String other);
-                String append (T[] other);
+                String append (StringView other);
+                String append (T[] text);
                 String append (T chr, int count=1);
                 String append (int value, options);
                 String append (long value, options);
                 String append (double value, options);
 
+                // append text with replacements
+                String append (T[] text, T[] pattern, T[] sub);
+                
                 // transcode behind current selection
                 String encode (char[]);
                 String encode (wchar[]);
                 String encode (dchar[]);
                 
                 // insert before current selection
-                String prepend (T[] other);
-                String prepend (String other);
+                String prepend (T[] text);
+                String prepend (StringView other);
                 String prepend (T chr, int count=1);
 
                 // replace current selection
                 String replace (T chr);
-                String replace (T[] other);
-                String replace (String other);
+                String replace (T[] text);
+                String replace (StringView other);
 
                 // remove current selection
                 String remove ();
@@ -59,21 +65,21 @@
                 // clear content
                 String clear ();
 
-                // trim content
+                // trim leading and trailing whitespace 
                 String trim ();
+
+                // trim leading and trailing chr instances
+                String strip (T chr);
 
                 // truncate at point, or current selection
                 String truncate (int point = int.max);
 
-                // return content
-                T[] slice ();
+                // reserve some space for inserts/additions
+                String reserve (int extra);
         }
 
         class StringView(T) : UniString
         {
-                // iterate across content
-                opApply (int delegate(inout T) dg);
-
                 // hash content
                 uint toHash ();
 
@@ -81,13 +87,13 @@
                 uint length ();
 
                 // compare content
-                bool equals  (T[] other);
+                bool equals  (T[] text);
                 bool equals  (StringView other);
-                bool ends    (T[] other);
+                bool ends    (T[] text);
                 bool ends    (StringView other);
-                bool starts  (T[] other);
+                bool starts  (T[] text);
                 bool starts  (StringView other);
-                int compare  (T[] other);
+                int compare  (T[] text);
                 int compare  (StringView other);
                 int opEquals (Object other);
                 int opCmp    (Object other);
@@ -95,11 +101,18 @@
                 // copy content
                 T[] copy (T[] dst);
                 T[] copy ();
-                
-                String!(T) clone ();
+
+                // deep copy
+                String clone ();
+
+                // return content
+                T[] slice ();
+
+                // return data type
+                typeinfo encoding ();
 
                 // replace the comparison algorithm 
-                Comparator setComparator (Comparator comparator);
+                Comparator comparator (Comparator other);
         }
 
         class UniString
@@ -134,12 +147,12 @@ private extern (C) void memmove (void* dst, void* src, uint bytes);
 
         String is a class for storing and manipulating Unicode characters.
 
-        String maintains a current "selection", controlled via the 
-        select() and rselect() methods. Append(), prepend(), replace() and
-        remove() each operate with respect to the selection. The select()
-        methods themselves operate with respect to the current selection
+        String maintains a current "selection", controlled via the mark(), 
+        select() and selectPrior() methods. Each of append(), prepend(),
+        replace() and remove() operate with respect to the selection. The
+        select() methods operate with respect to the current selection
         also, providing a means of iterating across matched patterns. To
-        reset the selection to the entire string, use the select() method 
+        set a selection across the entire content, use the mark() method 
         with no arguments. 
        
         Indexes and lengths of content always count code units, not code 
@@ -149,15 +162,60 @@ private extern (C) void memmove (void* dst, void* src, uint bytes);
         directly. This allows for a more streamlined model with regard to
         surrogates.
 
+        Strings support a range of functionality, from insert and removal
+        to utf encoding and decoding. There is also an immutable subset
+        called StringView, intended to simplify life in a multi-threaded
+        environment. However, StringView must expose the raw content as
+        needed and thus immutability depends to an extent upon so-called
+        "honour" of a callee. D does not enable immutability enforcement
+        at this time, but this class will be modified to support such a
+        feature when it arrives - via the slice() method.
+
+        The class is templated for use with char[], wchar[], and dchar[],
+        and should migrate across encodings seamlessly. In particular, all
+        functions in tango.text.Util are compatible with String content in
+        any of the supported encodings. This class will likely become the
+        principal gateway to the extensive ICU unicode library.
+
+        Note that several common text operations can be constructed through
+        combining tango.text.String with tango.text.Util e.g. lines of text
+        can be processed thusly:
+
+        ---
+        auto source = new String!(char)("one\ntwo\nthree");
+
+        foreach (line; Util.lines(source.slice))
+                 // do something with line
+        ---
+
+        Substituting patterns within text can be implemented simply and 
+        efficiently:
+        
+        ---
+        auto dst = new String!(char)(64);
+
+        foreach (element; Util.patterns ("all cows eat grass", "eat", "chew"))
+                 dst.append (element);
+        ---
+
+        Speaking like Yoda can be accomplished as follows:
+
+        ---
+        auto dst = new String!(char)(64);
+
+        foreach (element; Util.delims ("all cows eat grass", " "))
+                 dst.prepend (element);
+        ---
+
 *******************************************************************************/
 
 class String(T) : StringView!(T)
 {
-        public  alias get               opIndex;
+        public  alias slice             opIndex;
         private alias StringView!(T)    StringViewT;
 
         private bool                    mutable;
-        private Comparator              comparator;
+        private Comparator              comparator_;
         private uint                    selectPoint,
                                         selectLength;
 
@@ -169,7 +227,7 @@ class String(T) : StringView!(T)
 
         this ()
         {
-                this.comparator = &simpleComparator;
+                this.comparator_ = &simpleComparator;
         }
 
         /***********************************************************************
@@ -192,7 +250,8 @@ class String(T) : StringView!(T)
                 content is immutable (read-only) then you might consider 
                 setting the 'copy' parameter to false. Doing so will 
                 avoid allocating heap-space for the content until it is 
-                modified via String methods.
+                modified via String methods. This can be useful when
+                wrapping an array "temporarily" with a stack-based String
 
         ***********************************************************************/
 
@@ -209,14 +268,15 @@ class String(T) : StringView!(T)
                 If said content is immutable (read-only) then you might 
                 consider setting the 'copy' parameter to false. Doing 
                 so will avoid allocating heap-space for the content until 
-                it is modified via String methods.
+                it is modified via String methods. This can be useful when
+                wrapping an array "temporarily" with a stack-based String
 
         ***********************************************************************/
         
         this (StringViewT other, bool copy = true)
         {
                 this();
-                set (other.get, copy);
+                set (other.slice, copy);
         }
 
         /***********************************************************************
@@ -224,20 +284,19 @@ class String(T) : StringView!(T)
                 Set the content to the provided array. Parameter 'copy'
                 specifies whether the given array is likely to change. If 
                 not, the array is aliased until such time it is altered via
-                this class.
+                this class. This can be useful when wrapping an array
+                "temporarily" with a stack-based String
                      
         ***********************************************************************/
 
         final String set (T[] chars, bool copy = true)
         {
-                contentLength = chars.length;
-                select (0, contentLength);
-
                 if ((this.mutable = copy) is true)
                      content = chars.dup;
                 else
                    content = chars;
-                return this;
+
+                return mark (0, contentLength = chars.length);
         }
 
         /***********************************************************************
@@ -246,13 +305,39 @@ class String(T) : StringView!(T)
                 is immutable (read-only) then you might consider setting the
                 'copy' parameter to false. Doing so will avoid allocating
                 heap-space for the content until it is modified via one of
-                these methods.
+                these methods. This can be useful when wrapping an array
+                "temporarily" with a stack-based String
 
         ***********************************************************************/
 
         final String set (StringViewT other, bool copy = true)
         {
-                return set (other.get, copy);
+                return set (other.slice, copy);
+        }
+
+        /***********************************************************************
+
+                Explicitly set the current selection
+
+        ***********************************************************************/
+
+        final String mark (int start=0, int length=int.max)
+        {
+                pinIndices (start, length);
+                selectPoint = start;
+                selectLength = length;                
+                return this;
+        }
+
+        /***********************************************************************
+
+                Return the currently selected content
+
+        ***********************************************************************/
+
+        final T[] selection ()
+        {
+                return slice [selectPoint .. selectPoint+selectLength];
         }
 
         /***********************************************************************
@@ -268,36 +353,19 @@ class String(T) : StringView!(T)
         }
 
         /***********************************************************************
-
-                Explicitly set the current selection
-
-        ***********************************************************************/
-
-        final String select (int start=0, int length=int.max)
-        {
-                pinIndices (start, length);
-                selectPoint = start;
-                selectLength = length;                
-                return this;
-        }
-
-        /***********************************************************************
         
                 Find and select the next occurrence of a BMP code point
-                in a string. A surrogate code point is found only if its
-                match in the text is not part of a surrogate pair.
-
-                Return true if found, false otherwise
+                in a string. Returns true if found, false otherwise
 
         ***********************************************************************/
 
         final bool select (T c)
         {
-                auto s = get();
+                auto s = slice();
                 auto x = Util.locate (s, c, selectPoint);
                 if (x < s.length)
                    {
-                   select (x, 1);
+                   mark (x, 1);
                    return true;
                    }
                 return false;
@@ -305,44 +373,30 @@ class String(T) : StringView!(T)
 
         /***********************************************************************
         
-                Find and select the next substring occurrence. 
-
-                The substring is found at code point boundaries. That means 
-                that if the substring begins with a trail surrogate or ends 
-                with a lead surrogate, then it is found only if these 
-                surrogates stand alone in the text. Otherwise, the substring 
-                edge units would be matched against halves of surrogate pairs.
-
-                Return true if found, false otherwise
+                Find and select the next substring occurrence.  Returns
+                true if found, false otherwise
 
         ***********************************************************************/
 
         final bool select (StringViewT other)
         {
-                return select (other.get);
+                return select (other);
         }
 
         /***********************************************************************
         
-                Find and select the next substring occurrence. 
-
-                The substring is found at code point boundaries. That means 
-                that if the substring begins with a trail surrogate or ends 
-                with a lead surrogate, then it is found only if these 
-                surrogates stand alone in the text. Otherwise, the substring 
-                edge units would be matched against halves of surrogate pairs.
-
-                Return true if found, false otherwise
+                Find and select the next substring occurrence. Returns
+                true if found, false otherwise
 
         ***********************************************************************/
 
         final bool select (T[] chars)
         {
-                auto s = get();
+                auto s = slice();
                 auto x = Util.locatePattern (s, chars, selectPoint);
                 if (x < s.length)
                    {
-                   select (x, chars.length);
+                   mark (x, chars.length);
                    return true;
                    }
                 return false;
@@ -351,20 +405,17 @@ class String(T) : StringView!(T)
         /***********************************************************************
         
                 Find and select a prior occurrence of a BMP code point
-                in a string. A surrogate code point is found only if
-                its match in the text is not part of a surrogate pair.
-
-                Return true if found, false otherwise
+                in a string. Returns true if found, false otherwise
 
         ***********************************************************************/
 
         final bool selectPrior (T c)
         {
-                auto s = get();
+                auto s = slice();
                 auto x = Util.locatePrior (s, c, selectPoint);               
                 if (x < s.length)
                    {
-                   select (x, 1);
+                   mark (x, 1);
                    return true;
                    }
                 return false;
@@ -372,44 +423,30 @@ class String(T) : StringView!(T)
 
         /***********************************************************************
         
-                Find and select a prior substring occurrence. 
-
-                The substring is found at code point boundaries. That means 
-                that if the substring begins with a trail surrogate or ends 
-                with a lead surrogate, then it is found only if these 
-                surrogates stand alone in the text. Otherwise, the substring 
-                edge units would be matched against halves of surrogate pairs.
-
-                Return true if found, false otherwise
+                Find and select a prior substring occurrence. Returns
+                true if found, false otherwise
 
         ***********************************************************************/
 
         final bool selectPrior (StringViewT other)
         {
-                return selectPrior (other.get);
+                return selectPrior (other.slice);
         }
 
         /***********************************************************************
         
-                Find and select a prior substring occurrence. 
-
-                The substring is found at code point boundaries. That means 
-                that if the substring begins with a trail surrogate or ends 
-                with a lead surrogate, then it is found only if these 
-                surrogates stand alone in the text. Otherwise, the substring 
-                edge units would be matched against halves of surrogate pairs.
-
-                Return true if found, false otherwise
+                Find and select a prior substring occurrence. Returns
+                true if found, false otherwise
 
         ***********************************************************************/
 
         final bool selectPrior (T[] chars)
         {
-                auto s = get();
+                auto s = slice();
                 auto x = Util.locatePatternPrior (s, chars, selectPoint);
                 if (x < s.length)
                    {
-                   select (x, chars.length);
+                   mark (x, chars.length);
                    return true;
                    }
                 return false;
@@ -417,13 +454,13 @@ class String(T) : StringView!(T)
 
         /***********************************************************************
         
-                Append partial text to this String
+                Append text to this String
 
         ***********************************************************************/
 
         final String append (StringViewT other)
         {
-                return append (other.get);
+                return append (other.slice);
         }
 
         /***********************************************************************
@@ -518,7 +555,7 @@ class String(T) : StringView!(T)
 
         final String prepend (StringViewT other)
         {       
-                return prepend (other.get);
+                return prepend (other.slice);
         }
 
         /***********************************************************************
@@ -605,11 +642,10 @@ class String(T) : StringView!(T)
                 if (chunk >= 0)
                     expand (selectPoint, chunk);
                 else
-                   remove (-chunk);
+                   remove (selectPoint, -chunk);
 
                 content [selectPoint .. selectPoint+chars.length] = chars;
-                select (selectPoint, chars.length);
-                return this;
+                return mark (selectPoint, chars.length);
         }
 
         /***********************************************************************
@@ -621,7 +657,7 @@ class String(T) : StringView!(T)
 
         final String replace (StringViewT other)
         {
-                return replace (other.get);
+                return replace (other.slice);
         }
 
         /***********************************************************************
@@ -633,20 +669,18 @@ class String(T) : StringView!(T)
 
         final String remove ()
         {
-                remove (selectLength);
-                return select (selectPoint, 0);
+                remove (selectPoint, selectLength);
+                return mark (selectPoint, 0);
         }
 
         /***********************************************************************
         
-                Remove the selection from this String and reset the
-                selection to zero length
+                Remove the selection from this String 
 
         ***********************************************************************/
 
-        private int remove (int count)
+        private String remove (int start, int count)
         {
-                int start = selectPoint;
                 pinIndices (start, count);
                 if (count > 0)
                    {
@@ -657,7 +691,7 @@ class String(T) : StringView!(T)
                    memmove (content.ptr+start, content.ptr+i, (contentLength-i) * T.sizeof);
                    contentLength -= count;
                    }
-                return count;
+                return this;
         }
 
         /***********************************************************************
@@ -674,7 +708,7 @@ class String(T) : StringView!(T)
                     index = selectPoint + selectLength;
 
                 pinIndex (index);
-                return select (contentLength = index, 0);
+                return mark (contentLength = index, 0);
         }
 
         /***********************************************************************
@@ -685,7 +719,7 @@ class String(T) : StringView!(T)
 
         final String clear ()
         {
-                return select (contentLength = 0, 0);
+                return mark (contentLength = 0, 0);
         }
 
         /***********************************************************************
@@ -697,24 +731,39 @@ class String(T) : StringView!(T)
 
         final String trim ()
         {
-                content = Util.trim (get());
-                select (0, contentLength = content.length);
+                content = Util.trim (slice);
+                mark (0, contentLength = content.length);
                 return this;
         }
 
         /***********************************************************************
         
-                Return an alias to the content of this String
+                Remove leading and trailing matches from this String,
+                and reset the selection to the stripped content
 
         ***********************************************************************/
 
-        final T[] slice ()
+        final String strip (T matches)
         {
-                return get ();
+                content = Util.strip (slice, matches);
+                mark (0, contentLength = content.length);
+                return this;
+        }
+
+        /***********************************************************************
+        
+                Reserve some extra room 
+                
+        ***********************************************************************/
+
+        final String reserve (uint extra)
+        {
+                realloc (extra);
+                return this;
         }
 
 
-
+        
         /* ====================== StringView methods ======================== */
 
 
@@ -732,16 +781,16 @@ class String(T) : StringView!(T)
 
         /***********************************************************************
         
-                Set the comparator delegate
+                Set the comparator delegate. Where other is null, we behave
+                as a getter only
 
         ***********************************************************************/
 
-        final Comparator setComparator (Comparator comparator)
+        final Comparator comparator (Comparator other)
         {
-                assert (comparator);
-                
-                auto tmp = this.comparator;
-                this.comparator = comparator;
+                auto tmp = comparator_;
+                if (other)
+                    comparator_ = other;
                 return tmp;
         }
 
@@ -777,12 +826,12 @@ class String(T) : StringView!(T)
         {
                 if (other is this)
                     return true;
-                return equals (other.get);
+                return equals (other.slice);
         }
 
         /***********************************************************************
         
-                Is this String equal to the the provided text?
+                Is this String equal to the provided text?
 
         ***********************************************************************/
 
@@ -801,7 +850,7 @@ class String(T) : StringView!(T)
 
         final bool ends (StringViewT other)
         {
-                return ends (other.get);
+                return ends (other.slice);
         }
 
         /***********************************************************************
@@ -825,7 +874,7 @@ class String(T) : StringView!(T)
 
         final bool starts (StringViewT other)
         {
-                return starts (other.get);
+                return starts (other.slice);
         }
 
         /***********************************************************************
@@ -855,7 +904,7 @@ class String(T) : StringView!(T)
                 if (other is this)
                     return 0;
 
-                return compare (other.get);
+                return compare (other.slice);
         }
 
         /***********************************************************************
@@ -869,7 +918,7 @@ class String(T) : StringView!(T)
 
         final int compare (T[] chars)
         {
-                return comparator (get(), chars);
+                return comparator_ (slice, chars);
         }
 
         /***********************************************************************
@@ -905,13 +954,14 @@ class String(T) : StringView!(T)
 
         /***********************************************************************
 
-                Clone this string, with a copy of the content also
+                Clone this string, with a copy of the content also. Return
+                as a mutable instance
                 
         ***********************************************************************/
 
         final String clone ()
         {
-                return new String!(T)(get);
+                return new String!(T)(slice);
         }
 
         /***********************************************************************
@@ -937,57 +987,39 @@ class String(T) : StringView!(T)
         final char[] toUtf8 (char[] dst = null)
         {
                 static if (is (T == char))
-                           return get();
+                           return slice();
                 
                 static if (is (T == wchar))
-                           return Utf.toUtf8 (get(), dst);
+                           return Utf.toUtf8 (slice, dst);
                 
                 static if (is (T == dchar))
-                           return Utf.toUtf8 (get(), dst);
+                           return Utf.toUtf8 (slice, dst);
         }
         
         /// ditto
         final wchar[] toUtf16 (wchar[] dst = null)
         {
                 static if (is (T == char))
-                           return Utf.toUtf16 (get(), dst);
+                           return Utf.toUtf16 (slice, dst);
                 
                 static if (is (T == wchar))
-                           return get();
+                           return slice;
                 
                 static if (is (T == dchar))
-                           return Utf.toUtf16 (get(), dst);
+                           return Utf.toUtf16 (slice, dst);
         }
         
         /// ditto
         final dchar[] toUtf32 (dchar[] dst = null)
         {
                 static if (is (T == char))
-                           return Utf.toUtf32 (get(), dst);
+                           return Utf.toUtf32 (slice, dst);
                 
                 static if (is (T == wchar))
-                           return Utf.toUtf32 (get(), dst);
+                           return Utf.toUtf32 (slice, dst);
                 
                 static if (is (T == dchar))
-                           return get();
-        }
-
-        /**********************************************************************
-
-                Iterate over the characters in this string. Note that 
-                this is a read-only freachable: the worst a user can
-                do is alter the temporary 'c'
-
-        **********************************************************************/
-
-        final int opApply (int delegate(inout T) dg)
-        {
-                int result = 0;
-
-                foreach (T c; get())
-                         if ((result = dg (c)) != 0)
-                             break;
-                return result;
+                           return slice;
         }
 
         /***********************************************************************
@@ -1028,7 +1060,7 @@ class String(T) : StringView!(T)
         /// ditto
         final int opEquals (T[] s)
         {
-                return get() == s;
+                return slice == s;
         }
         
         /***********************************************************************
@@ -1177,28 +1209,6 @@ class StringView(T) : UniString
 
         /***********************************************************************
         
-                Set the comparator delegate
-
-        ***********************************************************************/
-
-        abstract Comparator setComparator (Comparator comparator);
-
-        /***********************************************************************
-        
-        ***********************************************************************/
-
-        abstract String!(T) clone ();
-
-        /***********************************************************************
-        
-                Hash this String
-
-        ***********************************************************************/
-
-        abstract uint toHash ();
-
-        /***********************************************************************
-        
                 Return the length of the valid content
 
         ***********************************************************************/
@@ -1290,25 +1300,23 @@ class StringView(T) : UniString
 
         /***********************************************************************
         
-                Return dup'd content from this String 
+                Return dup'd content from this String
 
         ***********************************************************************/
 
         abstract T[] copy ();
 
-        /**********************************************************************
+        /***********************************************************************
 
-                Iterate over the characters in this string. Note that 
-                this is a read-only freachable ~ the worst a user can
-                do is alter the temporary 'c'
-
+                Make a deep copy of this String, and return as a mutable
+                
         ***********************************************************************/
 
-        abstract int opApply (int delegate(inout T) dg);
+        abstract String!(T) clone ();
 
         /***********************************************************************
         
-                Compare this StringView to another
+                Compare this String to another
 
         ***********************************************************************/
 
@@ -1332,11 +1340,38 @@ class StringView(T) : UniString
 
         /***********************************************************************
         
-                Return the valid content from this String
+                Get the encoding type
+
+        ***********************************************************************/        
+
+        abstract TypeInfo encoding();
+                        
+        /***********************************************************************
+        
+                Set the comparator delegate
 
         ***********************************************************************/
 
-        private final T[] get ()
+        abstract Comparator comparator (Comparator other);
+
+        /***********************************************************************
+        
+                Hash this String
+
+        ***********************************************************************/
+
+        abstract uint toHash ();
+
+        /***********************************************************************
+        
+                Return an alias to the content of this StringView. Note
+                that you are bound by honour to leave this content wholly
+                unmolested. D surely needs some way to enforce immutability
+                upon array references
+
+        ***********************************************************************/
+
+        final T[] slice ()
         {
                 return content [0 .. contentLength];
         }
@@ -1385,15 +1420,28 @@ debug (UnitTest)
 {
         unittest
         {
-        auto s = new String!(dchar)("hello");
+        auto s = new String!(char)("hello");
         
         s.select ("hello");
+        assert (s.selection == "hello");
         s.replace ("1");
+        assert (s.selection == "1");
         assert (s == "1");
 
         assert (s.clear == "");
 
         assert (s.append(12345) == "12345");
+        assert (s.selection == "12345");
+
+        s.append ("fubar");
+        assert (s.selection == "12345fubar");
+        assert (s.select('5'));
+        assert (s.selection == "5");
+        assert (s.remove == "1234fubar");
+        assert (s.select("fubar"));
+        assert (s.selection == "fubar");
+        assert (s.select("wumpus") is false);
+        assert (s.selection == "fubar");
         
         assert (s.clear.append(1.2345, 4) == "1.2345");
         
@@ -1402,5 +1450,10 @@ debug (UnitTest)
         assert (s.clear.encode("one"d).toUtf8 == "one");
 
         assert (Util.delineate(s.clear.append("a\nb").slice).length is 2);
+        
+        assert (s.mark.replace("almost ") == "almost ");
+        foreach (element; Util.patterns ("all cows eat grass", "eat", "chew"))
+                 s.append (element);
+        assert (s.selection == "almost all cows chew grass");
         }
 }
