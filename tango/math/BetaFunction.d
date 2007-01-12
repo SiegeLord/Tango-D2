@@ -1,4 +1,4 @@
-/** Beta function, incomplete beta integral, and its inverse
+/** Beta function, incomplete beta integral, and related statistical functions
  *
  * Copyright: Copyright (C) 1984, 1995 Stephen L. Moshier
  *   Code taken from the Cephes Math Library Release 2.3:  January, 1995
@@ -668,4 +668,273 @@ real betaDistPowerSeries(real a, real b, real x )
     return s;
 }
 
+}
+
+/** Student's t cumulative distribution function
+ *
+ * Computes the integral from minus infinity to t of the Student
+ * t distribution with integer nu > 0 degrees of freedom:
+ *
+ *   $(GAMMA)( (nu+1)/2) / ( sqrt(nu &pi;) $(GAMMA)(nu/2) ) *
+ * $(INTEGRATE -&infin;, t) $(POWER (1+$(POWER x, 2)/nu), -(nu+1)/2) dx
+ *
+ * It is related to the incomplete beta integral:
+ *        1 - studentsDistribution(nu,t) = 0.5 * betaDistribution( nu/2, 1/2, z )
+ * where
+ *        z = nu/(nu + t<sup>2</sup>).
+ *
+ * For t < -1.6, this is the method of computation.  For higher t,
+ * a direct method is derived from integration by parts.
+ * Since the function is symmetric about t=0, the area under the
+ * right tail of the density is found by calling the function
+ * with -t instead of t.
+ */
+real studentsDistribution(int nu, real t)
+{
+  // Author: Don Clugston. Public domain.
+  /* Based on code from Cephes Math Library Release 2.3:  January, 1995
+     Copyright 1984, 1995 by Stephen L. Moshier
+ */
+
+
+    if ( nu <= 0 ) return real.nan; // domain error -- or should it return 0?
+    if ( t == 0.0 )  return 0.5;
+
+    real rk, z, p;
+
+    if ( t < -1.6 ) {
+        rk = nu;
+        z = rk / (rk + t * t);
+        return 0.5L * betaIncomplete( 0.5L*rk, 0.5L, z );
+    }
+
+    /*  compute integral from -t to + t */
+
+    rk = nu;    /* degrees of freedom */
+
+    real x;
+    if (t < 0) x = -t; else x = t;
+    z = 1.0L + ( x * x )/rk;
+
+    real f, tz;
+    int j;
+
+    if ( nu & 1)    {
+        /*  computation for odd nu  */
+        real xsqk = x/sqrt(rk);
+        p = atan( xsqk );
+        if ( nu > 1 )   {
+            f = 1.0L;
+            tz = 1.0L;
+            j = 3;
+            while(  (j<=(nu-2)) && ( (tz/f) > real.epsilon )  ) {
+                tz *= (j-1)/( z * j );
+                f += tz;
+                j += 2;
+            }
+            p += f * xsqk/z;
+            }
+        p *= 2.0L/PI;
+    } else {
+        /*  computation for even nu */
+        f = 1.0L;
+        tz = 1.0L;
+        j = 2;
+
+        while ( ( j <= (nu-2) ) && ( (tz/f) > real.epsilon )  ) {
+            tz *= (j - 1)/( z * j );
+            f += tz;
+            j += 2;
+        }
+        p = f * x/sqrt(z*rk);
+    }
+    if ( t < 0.0L )
+        p = -p; /* note destruction of relative accuracy */
+
+    p = 0.5L + 0.5L * p;
+    return p;
+}
+
+/** Inverse of Student's t distribution
+ *
+ * Given probability p and degrees of freedom nu,
+ * finds the argument t such that the one-sided
+ * studentsDistribution(nu,t) is equal to p.
+ * Used to test whether two distributions have the same
+ * standard deviation.
+ *
+ * Params:
+ * nu = degrees of freedom. Must be >1
+ * p  = probability. 0 < p < 1
+ */
+real studentsDistributionInv(int nu, real p )
+// Author: Don Clugston. Public domain.
+in {
+   assert(nu>0);
+   assert(p>=0.0L && p<=1.0L);
+}
+body
+{
+    if (p==0) return -real.infinity;
+    if (p==1) return real.infinity;
+
+    real rk, z;
+    rk =  nu;
+
+    if ( p > 0.25L && p < 0.75L ) {
+        if ( p == 0.5L ) return 0;
+        z = 1.0L - 2.0L * p;
+        z = betaIncompleteInv( 0.5L, 0.5L*rk, fabs(z) );
+        real t = sqrt( rk*z/(1.0L-z) );
+        if( p < 0.5L )
+            t = -t;
+        return t;
+    }
+    int rflg = -1; // sign of the result
+    if (p >= 0.5L) {
+        p = 1.0L - p;
+        rflg = 1;
+    }
+    z = betaIncompleteInv( 0.5L*rk, 0.5L, 2.0L*p );
+
+    if (z<0) return rflg * real.infinity;
+    return rflg * sqrt( rk/z - rk );
+}
+
+unittest {
+
+// There are simple forms for nu = 1 and nu = 2.
+
+// if (nu == 1), tDistribution(x) = 0.5 + atan(x)/PI
+//              so tDistributionInv(p) = tan( PI * (p-0.5) );
+// nu==2: tDistribution(x) = 0.5 * (1 + x/ sqrt(2+x*x) )
+
+assert( studentsDistribution(1, -0.4)== 0.5 + atan(-0.4)/PI);
+assert(studentsDistribution(2, 0.9) == 0.5L * (1 + 0.9L/sqrt(2.0L + 0.9*0.9)) );
+assert(studentsDistribution(2, -5.4) == 0.5L * (1 - 5.4L/sqrt(2.0L + 5.4*5.4)) );
+
+// return true if a==b to given number of places.
+bool isfeqabs(real a, real b, real diff)
+{
+  return fabs(a-b) < diff;
+}
+
+// Check a few spot values with statsoft.com (Mathworld values are wrong!!)
+// According to statsoft.com, studentsDistributionInv(10, 0.995)= 3.16927.
+
+// The remaining values listed here are from Excel, and are unlikely to be accurate
+// in the last decimal places. However, they are helpful as a sanity check.
+
+//  Microsoft Excel 2003 gives TINV(2*(1-0.995), 10) == 3.16927267160917
+assert(isfeqabs(studentsDistributionInv(10, 0.995), 3.169_272_67L, 0.000_000_005L));
+
+
+assert(isfeqabs(studentsDistributionInv(8, 0.6), 0.261_921_096_769_043L,0.000_000_000_05L));
+// -TINV(2*0.4, 18) ==  -0.257123042655869
+
+assert(isfeqabs(studentsDistributionInv(18, 0.4), -0.257_123_042_655_869L, 0.000_000_000_05L));
+assert( feqrel(studentsDistribution(18, studentsDistributionInv(18, 0.4L)),0.4L)
+ > real.mant_dig-2 );
+assert( feqrel(studentsDistribution(11, studentsDistributionInv(11, 0.9L)),0.9L)
+  > real.mant_dig-2);
+
+}
+
+/** The Fisher distribution, its complement, and inverse.
+ *
+ * The F density function (also known as Snedcor's density or the
+ * variance ratio density) is the density
+ * of x = (u1/df1)/(u2/df2), where u1 and u2 are random
+ * variables having $(POWER &chi;,2) distributions with df1
+ * and df2 degrees of freedom, respectively.
+ *
+ * fDistribution returns the area from zero to x under the F density
+ * function.   The complementary function,
+ * fDistributionCompl, returns the area from x to &infin; under the F density function.
+ *
+ * The inverse of the complemented Fisher distribution,
+ * fDistributionComplInv, finds the argument x such that the integral
+ * from x to infinity of the F density is equal to the given probability y.
+
+ * Params:
+ *  df1 = Degrees of freedom of the first variable. Must be >= 1
+ *  df2 = Degrees of freedom of the second variable. Must be >= 1
+ *  x  = Must be >= 0
+ */
+real fDistribution(int df1, int df2, real x)
+in {
+ assert(df1>=1 && df2>=1);
+ assert(x>=0);
+}
+body{
+    real a = cast(real)(df1);
+    real b = cast(real)(df2);
+    real w = a * x;
+    w = w/(b + w);
+    return betaIncomplete(0.5L*a, 0.5L*b, w);
+}
+
+/** ditto */
+real fDistributionCompl(int df1, int df2, real x)
+in {
+ assert(df1>=1 && df2>=1);
+ assert(x>=0);
+}
+body{
+    real a = cast(real)(df1);
+    real b = cast(real)(df2);
+    real w = b / (b + a * x);
+    return betaIncomplete( 0.5L*b, 0.5L*a, w );
+}
+
+/*
+ * Inverse of complemented Fisher distribution
+ *
+ * Finds the F density argument x such that the integral
+ * from x to infinity of the F density is equal to the
+ * given probability p.
+ *
+ * This is accomplished using the inverse beta integral
+ * function and the relations
+ *
+ *      z = betaIncompleteInv( df2/2, df1/2, p ),
+ *      x = df2 (1-z) / (df1 z).
+ *
+ * Note that the following relations hold for the inverse of
+ * the uncomplemented F distribution:
+ *
+ *      z = betaIncompleteInv( df1/2, df2/2, p ),
+ *      x = df2 z / (df1 (1-z)).
+*/
+
+/** ditto */
+real fDistributionComplInv(int df1, int df2, real p )
+in {
+ assert(df1>=1 && df2>=1);
+ assert(p>=0 && p<=1.0);
+}
+body{
+    real a = df1;
+    real b = df2;
+    /* Compute probability for x = 0.5.  */
+    real w = betaIncomplete( 0.5L*b, 0.5L*a, 0.5L );
+    /* If that is greater than p, then the solution w < .5.
+       Otherwise, solve at 1-p to remove cancellation in (b - b*w).  */
+    if ( w > p || p < 0.001L) {
+        w = betaIncompleteInv( 0.5L*b, 0.5L*a, p );
+        return (b - b*w)/(a*w);
+    } else {
+        w = betaIncompleteInv( 0.5L*a, 0.5L*b, 1.0L - p );
+        return b*w/(a*(1.0L-w));
+    }
+}
+
+unittest {
+// fDistCompl(df1, df2, x) = Excel's FDIST(x, df1, df2)
+  assert(fabs(fDistributionCompl(6, 4, 16.5) - 0.00858719177897249L)< 0.0000000000005L);
+  assert(fabs((1-fDistribution(12, 23, 0.1)) - 0.99990562845505L)< 0.0000000000005L);
+  assert(fabs(fDistributionComplInv(8, 34, 0.2) - 1.48267037661408L)< 0.0000000005L);
+  assert(fabs(fDistributionComplInv(4, 16, 0.008) - 5.043_537_593_48596L)< 0.0000000005L);
+  // Regression test: This one used to fail because of a bug in the definition of MINLOG.
+  assert(feqrel(fDistributionCompl(4, 16, fDistributionComplInv(4,16, 0.008)), 0.008)>=real.mant_dig-3);
 }
