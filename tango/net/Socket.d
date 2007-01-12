@@ -782,7 +782,7 @@ class Socket
                 }
                 else version(BsdSockets)
                 {
-                        return !(fcntl(handle, F_GETFL, 0) & O_NONBLOCK);
+                        return !(fcntl(sock, F_GETFL, 0) & O_NONBLOCK);
                 }
         }
 
@@ -804,7 +804,7 @@ class Socket
                 }
                 else version(BsdSockets)
                 {
-                        int x = fcntl(handle, F_GETFL, 0);
+                        int x = fcntl(sock, F_GETFL, 0);
                         if(byes)
                                 x &= ~O_NONBLOCK;
                         else
