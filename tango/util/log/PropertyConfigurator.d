@@ -103,7 +103,7 @@ struct PropertyConfigurator
                 Configurator.defaultAppender;
 
                 // read and parse properties from file
-                Properties.load (path, &loader);
+                Properties!(char).load (path, &loader);
         }
 }
 

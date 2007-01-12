@@ -28,7 +28,7 @@ private import  tango.text.stream.LineIterator;
 
 *******************************************************************************/
 
-class Properties
+class Properties(T)
 {
         /***********************************************************************
         
@@ -37,7 +37,7 @@ class Properties
 
         ***********************************************************************/
 
-        static void load (FilePath path, void delegate (char[]name, char[] value) dg)
+        static void load (FilePath path, void delegate (T[] name, T[] value) dg)
         {
                 auto fc = new FileConduit (path);
                 scope (exit)
@@ -53,7 +53,7 @@ class Properties
 
         ***********************************************************************/
 
-        static void load (IConduit conduit, void delegate (char[]name, char[] value) dg)
+        static void load (IConduit conduit, void delegate (T[] name, T[] value) dg)
         {
                 load (new Buffer(conduit), dg);
         }
@@ -77,9 +77,9 @@ class Properties
                 
         ***********************************************************************/
 
-        static void load (IBuffer buffer, void delegate (char[]name, char[] value) dg)
+        static void load (IBuffer buffer, void delegate (T[] name, T[] value) dg)
         {
-                foreach (line; new LineIterator!(char) (buffer))
+                foreach (line; new LineIterator!(T) (buffer))
                         {
                         auto text = Text.trim (line);
                         
@@ -102,7 +102,7 @@ class Properties
 
         ***********************************************************************/
 
-        static void save (FilePath path, char[][char[]] properties)
+        static void save (FilePath path, T[][T[]] properties)
         {
                 auto fc = new FileConduit (path, FileConduit.WriteTruncate);
                 scope (exit)
@@ -116,7 +116,7 @@ class Properties
 
         ***********************************************************************/
 
-        static void save (IConduit conduit, char[][char[]] properties)
+        static void save (IConduit conduit, T[][T[]] properties)
         {
                 save (new Buffer(conduit), properties).flush;
         }
@@ -127,10 +127,16 @@ class Properties
 
         ***********************************************************************/
 
-        static IBuffer save (IBuffer emit, char[][char[]] properties)
+        static IBuffer save (IBuffer emit, T[][T[]] properties)
         {
+                const T[] equals = " = ";
+                version (Win32)
+                         const T[] NL = "\r\n";
+                version (Posix)
+                         const T[] NL = "\n";
+                
                 foreach (key, value; properties)
-                         emit (key) (" = ") (value) (FileConst.NewlineString);
+                         emit (key) (equals) (NL);
                 return emit;
         }
 }
