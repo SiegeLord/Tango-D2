@@ -12,8 +12,8 @@ private import tango.stdc.time;
 private import tango.stdc.locale;
 private import tango.stdc.posix.time;
 private import tango.io.File;
-private import tango.io.protocol.EndianReader;
-private import tango.io.protocol.model.IReader;
+private import tango.io.protocol.EndianProtocol;
+private import tango.io.protocol.Reader;
 private import tango.io.Buffer;
 
 /*private extern(C) char* setlocale(int type, char* locale);
@@ -103,7 +103,7 @@ short[] getDaylightChanges() {
         ubyte   isdst;
         ubyte   abbrind;
         
-        void read(IReader r)
+        void read(Reader r)
         {
             r.get(gmtoff).get(isdst).get(abbrind);
         }
@@ -119,7 +119,7 @@ short[] getDaylightChanges() {
         file = "/etc/localtime";
     }
 
-    IReader r = new EndianReader(new Buffer((new File(file)).read()));
+    auto r = new Reader(new EndianProtocol(new Buffer((new File(file)).read)));
     r.buffer.get(20); // skipping first 20 bytes of file, they are not used
     
     
