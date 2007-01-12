@@ -21,7 +21,7 @@ private import  tango.util.collection.Exception;
 private import  tango.util.collection.impl.Collection;
 
 private import  tango.util.collection.model.Map,
-                tango.util.collection.model.View.View,
+                tango.util.collection.model.View,
                 tango.util.collection.model.MapView,
                 tango.util.collection.model.Iterator,
                 tango.util.collection.model.SortedKeys;
