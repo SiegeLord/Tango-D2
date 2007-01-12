@@ -50,27 +50,30 @@
         auto s = Util.trim ("  foo ");
         ---
                 
+
         Function templates:
         ---
-        trim (source)
-        strip (source, match)
-        split (source, delimiters)
-        delineate (source);
-        replace (source, match, replacement)
-        contains (source, match)
-        containPattern (source, match)
-        locate (source, match, start)
-        locatePrior (source, match, start)
-        locatePattern (source, match, start);
-        locatePatternPrior (source, match, start);
-        indexOf (s*, match, length)
-        mismatch (s1*, s2*, length)
-        matching (s1*, s2*, length)
-        isSpace (match)
-        layout (destination, format ...)
-        lines (str)
-        quotes (str, delims)
-        elements (str, delims)
+        trim (source)                               // trim whitespace
+        strip (source, match)                       // trim elements
+        delineate (source);                         // split on lines
+        delimit (source, delimiters)                // split on delims
+        demarcate (source, pattern)                 // split on pattern
+        replace (source, match, replacement)        // replace chars
+        contains (source, match)                    // has char?
+        containsPattern (source, match)             // has pattern?
+        locate (source, match, start)               // find char
+        locatePrior (source, match, start)          // find prior char
+        locatePattern (source, match, start);       // find pattern
+        locatePatternPrior (source, match, start);  // find prior pattern
+        indexOf (s*, match, length)                 // low-level lookup
+        mismatch (s1*, s2*, length)                 // low-level compare
+        matching (s1*, s2*, length)                 // low-level compare
+        isSpace (match)                             // is whitespace?
+        layout (destination, format ...)            // featherweight printf
+        lines (str)                                 // foreach lines
+        quotes (str, set)                           // foreach quotes
+        delims (str, set)                           // foreach delimiters
+        patterns (str, pattern)                     // foreach patterns
         ---
 
 *******************************************************************************/
@@ -209,20 +212,18 @@ uint locatePattern(T) (T[] source, T[] match, uint start=0)
         T*      p = source.ptr + start;
         uint    extent = source.length - start - match.length + 1;
 
-        if (extent >= source.length || match.length is 0)
-            return source.length;
-
-        while (extent)
-               if ((idx = indexOf (p, match[0], extent)) is extent)
-                    break;
-               else
-                  if (matching (p+=idx, match.ptr, match.length))
-                      return p - source.ptr;
-                  else
-                     {
-                     extent -= (idx+1);
-                     ++p;
-                     }
+        if (match.length && extent < source.length)
+            while (extent)
+                   if ((idx = indexOf (p, match[0], extent)) is extent)
+                        break;
+                   else
+                      if (matching (p+=idx, match.ptr, match.length))
+                          return p - source.ptr;
+                      else
+                         {
+                         extent -= (idx+1);
+                         ++p;
+                         }
 
         return source.length;
 }
@@ -250,8 +251,9 @@ uint locatePatternPrior(T) (T[] source, T[] match, uint start=uint.max)
                   if (start is len)
                       break;
                   else
-                     if (matching (source.ptr+start, match.ptr, match.length))
-                         return start;
+                     if ((start + match.length) <= len)
+                          if (matching (source.ptr+start, match.ptr, match.length))
+                              return start;
                   }
 
         return len;
@@ -269,12 +271,29 @@ uint locatePatternPrior(T) (T[] source, T[] match, uint start=uint.max)
 
 ******************************************************************************/
 
-T[][] split(T) (T[] src, T[] delims)
+T[][] delimit(T) (T[] src, T[] set)
 {
         T[][] result;
 
-        foreach (element; elements (src, delims))
-                 result ~= element;
+        foreach (segment; delims (src, set))
+                 result ~= segment;
+        return result;
+}
+
+/******************************************************************************
+
+        Split the provided array wherever a pattern instance is
+        found, and return the resultant segments. The pattern is
+        excluded from each of the segments.
+        
+******************************************************************************/
+
+T[][] demarcate(T) (T[] src, T[] pattern)
+{
+        T[][] result;
+
+        foreach (segment; patterns (src, pattern))
+                 result ~= segment;
         return result;
 }
 
@@ -286,7 +305,7 @@ T[][] split(T) (T[] src, T[] delims)
 
 ******************************************************************************/
 
-T[][] delineate (T) (T[] src)
+T[][] delineate(T) (T[] src)
 {
         int count;
         
@@ -546,16 +565,40 @@ LineFreach!(T) lines(T) (T[] src)
         splitting upon a set of alternatives.
 
         ---
-        foreach (element; elements ("one,two;three", ",;"))
+        foreach (segment; delims ("one,two;three", ",;"))
                  ...
         ---
         
 ******************************************************************************/
 
-ElementFreach!(T) elements(T) (T[] src, T[] delims)
+DelimFreach!(T) delims(T) (T[] src, T[] set)
 {
-        ElementFreach!(T) elements;
-        elements.delims = delims;
+        DelimFreach!(T) elements;
+        elements.set = set;
+        elements.src = src;
+        return elements;
+}
+
+/******************************************************************************
+
+        Freachable iterator to isolate text elements.
+
+        Split the provided array wherever a pattern instance is
+        found, and return the resultant segments. The pattern is
+        excluded from each of the segments.
+        
+        ---
+        foreach (segment; patterns ("one, two, three", ", "))
+                 ...
+        ---
+        
+******************************************************************************/
+
+PatternFreach!(T) patterns(T) (T[] src, T[] pattern, T[] sub=null)
+{
+        PatternFreach!(T) elements;
+        elements.pattern = pattern;
+        elements.sub = sub;
         elements.src = src;
         return elements;
 }
@@ -575,10 +618,10 @@ ElementFreach!(T) elements(T) (T[] src, T[] delims)
         
 ******************************************************************************/
 
-QuoteFreach!(T) quotes(T) (T[] src, T[] delims)
+QuoteFreach!(T) quotes(T) (T[] src, T[] set)
 {
         QuoteFreach!(T) quotes;
-        quotes.delims = delims;
+        quotes.set = set;
         quotes.src = src;
         return quotes;
 }
@@ -603,8 +646,8 @@ T[] layout(T) (T[] output, T[][] layout ...)
 {
         static void error (char[] msg) {throw new Exception (msg);}
 
-        static char[] badarg   = "Util.format :: index out of range";
-        static char[] toosmall = "Util.format :: output buffer too small";
+        static char[] badarg   = "Util.layout :: index out of range";
+        static char[] toosmall = "Util.layout :: output buffer too small";
         
         int     pos,
                 args;
@@ -752,7 +795,7 @@ uint jhash (void[] x, uint c = 0)
         return jhash (cast(ubyte*) x.ptr, x.length, c);
 }
 
-        
+
 /******************************************************************************
 
         Helper struct for iterator lines()
@@ -795,14 +838,14 @@ private struct LineFreach(T)
 
 /******************************************************************************
 
-        Helper struct for iterator elements()
+        Helper struct for iterator delims()
         
 ******************************************************************************/
 
-private struct ElementFreach(T)
+private struct DelimFreach(T)
 {
         private T[] src;
-        private T[] delims;
+        private T[] set;
 
         int opApply (int delegate (inout T[] token) dg)
         {
@@ -812,8 +855,8 @@ private struct ElementFreach(T)
                 T[]     token;
 
                 // optimize for single delimiter case
-                if (delims.length is 1)
-                    while ((pos = locate (src, delims[0], mark)) < src.length)
+                if (set.length is 1)
+                    while ((pos = locate (src, set[0], mark)) < src.length)
                           {
                           token = src [mark .. pos];
                           if ((ret = dg (token)) != 0)
@@ -821,15 +864,63 @@ private struct ElementFreach(T)
                           mark = pos + 1;
                           }
                 else
-                   if (delims.length > 1)
+                   if (set.length > 1)
                        foreach (i, elem; src)
-                                if (contains (delims, elem))
+                                if (contains (set, elem))
                                    {
                                    token = src [mark .. i];
                                    if ((ret = dg (token)) != 0)
                                         return ret;
                                    mark = i + 1;
                                    }
+
+                token = src [mark .. $];
+                if (mark < src.length)
+                    ret = dg (token);
+
+                return ret;
+        }
+}
+
+/******************************************************************************
+
+        Helper struct for iterator patterns()
+        
+******************************************************************************/
+
+private struct PatternFreach(T)
+{
+        private T[] src,
+                    sub,
+                    pattern;
+
+        int opApply (int delegate (inout T[] token) dg)
+        {
+                uint    ret,
+                        pos,
+                        mark;
+                T[]     token;
+
+                // optimize for single-element pattern
+                if (pattern.length is 1)
+                    while ((pos = locate (src, pattern[0], mark)) < src.length)
+                          {
+                          token = src [mark .. pos];
+                          dg (token);
+                          if (sub.ptr)
+                              dg (sub);
+                          mark = pos + 1;
+                          }
+                else
+                   if (pattern.length > 1)
+                       while ((pos = locatePattern (src, pattern, mark)) < src.length)
+                             {
+                             token = src [mark .. pos];
+                             dg (token);
+                             if (sub.ptr)
+                                 dg (sub);
+                             mark = pos + pattern.length;
+                             }
 
                 token = src [mark .. $];
                 if (mark < src.length)
@@ -848,7 +939,7 @@ private struct ElementFreach(T)
 private struct QuoteFreach(T)
 {
         private T[] src;
-        private T[] delims;
+        private T[] set;
         
         int opApply (int delegate (inout T[] token) dg)
         {
@@ -856,14 +947,14 @@ private struct QuoteFreach(T)
                     mark;
                 T[] token;
 
-                if (delims.length)
+                if (set.length)
                     for (uint i=0; i < src.length; ++i)
                         {
                         T c = src[i];
                         if (c is '"' || c is '\'')
                             i = locate (src, c, i+1);
                         else
-                           if (contains (delims, c))
+                           if (contains (set, c))
                               {
                               token = src [mark .. i];
                               if ((ret = dg (token)) != 0)
@@ -885,8 +976,6 @@ private struct QuoteFreach(T)
 /******************************************************************************
 
 ******************************************************************************/
-
-//extern (C) int printf(char*, ...);
 
 debug (UnitTest)
 {
@@ -946,15 +1035,15 @@ debug (UnitTest)
         assert (locatePrior ("abce", 'c', 2u) is 4);
         assert (locatePrior ("", 'c') is 0);
 
-        auto x = split ("::b", ":");
+        auto x = delimit ("::b", ":");
         assert (x.length is 3 && x[0] == "" && x[1] == "" && x[2] == "b");
-        x = split ("a:bc:d", ":");
+        x = delimit ("a:bc:d", ":");
         assert (x.length is 3 && x[0] == "a" && x[1] == "bc" && x[2] == "d");
-        x = split ("abcd", ":");
+        x = delimit ("abcd", ":");
         assert (x.length is 1 && x[0] == "abcd");
-        x = split ("abcd:", ":");
+        x = delimit ("abcd:", ":");
         assert (x.length is 1 && x[0] == "abcd");
-        x = split ("a;b$c#d:e@f", ";:$#@");
+        x = delimit ("a;b$c#d:e@f", ";:$#@");
         assert (x.length is 6 && x[0]=="a" && x[1]=="b" && x[2]=="c" &&
                                  x[3]=="d" && x[4]=="e" && x[5]=="f");
 
@@ -987,5 +1076,13 @@ debug (UnitTest)
         assert (q.length is 3 && q[0] == "1" && q[1] == "'avcc   cc '" && q[2] == "3");
 
         assert (layout (tmp, "%1,%%%c %0", "abc", "efg") == "efg,%c abc");
+
+        x = demarcate ("one, two, three", ",");
+        assert (x.length is 3 && x[0] == "one" && x[1] == " two" && x[2] == " three");
+        x = demarcate ("one, two, three", ", ");
+        assert (x.length is 3 && x[0] == "one" && x[1] == "two" && x[2] == "three");
+        x = demarcate ("one, two, three", ",,");
+        assert (x.length is 1 && x[0] == "one, two, three");
         }
 }
+
