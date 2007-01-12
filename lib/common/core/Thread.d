@@ -375,7 +375,7 @@ class ThreadException : Exception
  * in the following example.
  *
  * Example:
- * ----------------------------------------------------------------------
+ * -----------------------------------------------------------------------------
  *
  * class DerivedThread : Thread
  * {
@@ -408,7 +408,7 @@ class ThreadException : Exception
  * derived.join();
  * composed.join();
  *
- * ----------------------------------------------------------------------
+ * -----------------------------------------------------------------------------
  */
 class Thread
 {
@@ -648,12 +648,34 @@ class Thread
 
 
     /**
-     * Suspends the calling thread for at least the supplied time, up to
-     * a maximum of (uint.max - 1) milliseconds.
+     * Suspends the calling thread for at least the supplied time, up to a
+     * maximum of (uint.max - 1) milliseconds.  If an interval of less than one
+     * second is interrupted by the system, this call may return early.
+     * Interruptions of intervals greater than one second will be resumed, if
+     * possible, until the full duration has been reached.
+     *
+     * Please note that garbage collection on some systems (notably POSIX
+     * systems) typically involves the use of signals to coordinate "stop the
+     * world" collection cycles in multithreaded programs.  In such cases, a
+     * signal received by the garbage collector will interrupt the sleep
+     * operation within this routine.  As described above, sleep intervals of
+     * at least one second will be automatically resumed, but sub-second
+     * intervals are sufficiently small that an attempt to resume may result
+     * in longer than expected sleep times.  Therefore, sub-second intervals
+     * will not be resumed even if prematurely interrupted.
+     *
      *
      * Params:
      *  interval = The minimum duration the calling thread should be
      *             suspended.
+     *
+     * Example:
+     * -------------------------------------------------------------------------
+     *
+     * Thread.sleep( Interval.milli * 50 ); // sleep for 50 milliseconds
+     * Thread.sleep( Interval.second * 1 ); // sleep for 1 second
+     *
+     * -------------------------------------------------------------------------
      */
     static void sleep( /*Interval*/ ulong interval )
     {
@@ -667,19 +689,27 @@ class Thread
         else version( Posix )
         {
             alias tango.stdc.posix.unistd.sleep psleep;
+            const MAXUSLEEP = 1_000_000 - 1;
 
-            if( interval <= uint.max )
+            if( interval <= MAXUSLEEP )
             {
                 usleep( cast(uint) interval );
             }
             else if( interval / Interval.milli <= MAXMILLIS )
             {
                 interval /= Interval.second;
-                psleep( cast(uint) interval );
+                do
+                {
+                    interval = psleep( cast(uint) interval );
+                } while( interval > 0 );
             }
             else
             {
-                psleep( MAXMILLIS / 1000 );
+                interval = MAXMILLIS / 1000;
+                do
+                {
+                    interval = psleep( cast(uint) interval );
+                } while( interval > 0 );
             }
         }
     }
