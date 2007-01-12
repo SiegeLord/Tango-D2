@@ -1263,7 +1263,7 @@ class FTPConnection : Telnet
                 // Everything else is frosting on top.
                 if (filename_pos > 1)
                 {
-                        char[][] temp_facts = Text.split(line[0 .. filename_pos - 1], ";");
+                        char[][] temp_facts = Text.delimit(line[0 .. filename_pos - 1], ";");
 
                         // Go through each fact and parse them into the array.
                         foreach (char[] fact; temp_facts)

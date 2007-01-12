@@ -58,7 +58,7 @@ struct FileRoots
                            GetLogicalDriveStringsA (len, str.ptr);
 
                            // split roots into seperate strings
-                           roots = Text.split (str [0 .. $-1], "\0");
+                           roots = Text.delimit (str [0 .. $-1], "\0");
                            }
                         return roots;
                 }
