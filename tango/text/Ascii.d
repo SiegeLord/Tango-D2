@@ -27,7 +27,7 @@ version (Posix)
 
 /******************************************************************************
 
-        Convert to lowercase. Returns the converted content in dst, and
+        Convert to lowercase. Returns the converted content in dst,
         performing an in-place conversion if dst is null
 
 ******************************************************************************/
@@ -50,7 +50,7 @@ char[] toLower (char[] src, char[] dst = null)
 
 /******************************************************************************
 
-        Convert to uppercase. Returns the converted content in dst, and
+        Convert to uppercase. Returns the converted content in dst,
         performing an in-place conversion if dst is null
 
 ******************************************************************************/
@@ -88,4 +88,26 @@ int icompare (char[] s1, char[] s2)
         if (result is 0)
             result = s1.length - s2.length;
         return result;
+}
+
+
+
+/******************************************************************************
+
+******************************************************************************/
+
+debug (UnitTest)
+{
+        unittest
+        {
+        assert (toLower("1bac") == "1bac");
+        assert (toLower("1BAC") == "1bac");
+        assert (toUpper("1bac") == "1BAC");
+        assert (toUpper("1BAC") == "1BAC");
+        assert (icompare ("ABC", "abc") is 0);
+        assert (icompare ("abc", "abc") is 0);
+        assert (icompare ("abcd", "abc") > 0);
+        assert (icompare ("abc", "abcd") < 0);
+        assert (icompare ("ACC", "abc") > 0);
+        }
 }
