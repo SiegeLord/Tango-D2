@@ -119,8 +119,8 @@ debug (UnitTest)
                 auto output = new Writer (protocol);
 
                 char[] foo;
-                output.write ("testing testing 123");
-                input.read (foo);
+                output ("testing testing 123"c);
+                input (foo);
                 assert (foo == "testing testing 123");
         }
 }
