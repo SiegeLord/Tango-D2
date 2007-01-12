@@ -166,7 +166,7 @@ class PrintProtocol : IProtocol
 
 debug (UnitTest)
 {
-        class Writer
+        class MyWriter
         {
                 IBuffer   buffer;
                 IProtocol protocol;
@@ -200,7 +200,7 @@ debug (UnitTest)
         }
 
 
-        class Reader
+        class MyReader
         {
                 IBuffer                 buffer;
                 IProtocol               protocol;
@@ -240,7 +240,7 @@ debug (UnitTest)
                         *cast(void[]*) &x = protocol.readArray (x.ptr, x.length, protocol.Type.Utf8, allocator);
                 }
 
-                private void[] allocate (IProtocol.Reader reader, uint bytes, IProtocol.Type type)
+                private void[] allocate (IProtocol.MyReader reader, uint bytes, IProtocol.Type type)
                 {
                         return reader ((new void[bytes]).ptr, bytes, type);
                 }
@@ -265,7 +265,7 @@ debug (UnitTest)
                         return protocol_;
                 }
 
-                void[] allocate (IProtocol.Reader reader, uint bytes, IProtocol.Type type)
+                void[] allocate (IProtocol.MyReader reader, uint bytes, IProtocol.Type type)
                 {
                         return protocol_.buffer.get (bytes);
                 }
@@ -278,8 +278,8 @@ debug (UnitTest)
         unittest
         {
                 auto protocol = new PrintProtocol (Cout);
-                auto input  = new Reader (protocol);
-                auto output = new Writer (protocol);
+                auto input  = new MyReader (protocol);
+                auto output = new MyWriter (protocol);
 
                 char[] foo;
                 output.write ("testing testing ");
