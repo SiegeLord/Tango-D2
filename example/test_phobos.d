@@ -35,7 +35,6 @@ import phobos.format;
 import phobos.intrinsic;
 import phobos.loader;
 import phobos.math;
-import phobos.math2;
 import phobos.md5;
 import phobos.mmfile;
 import phobos.openrj;
