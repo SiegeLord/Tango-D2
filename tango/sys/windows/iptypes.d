@@ -11,7 +11,7 @@
 module tango.sys.windows.iptypes;
 
 import tango.sys.windows.windef;
-private import std.c.time;
+private import tango.stdc.time;
 //#include <sys/types.h>
 
 const size_t
