@@ -31,9 +31,12 @@ module tango.text.convert.TimeStamp;
 
 private import tango.core.Epoch;
 
-private import Integer = tango.text.convert.Integer;
+private import Util = tango.text.Util;
+
+private import Int = tango.text.convert.Integer;
 
 public alias Epoch.InvalidEpoch InvalidEpoch;
+
 
 /******************************************************************************
 
@@ -50,71 +53,47 @@ public alias Epoch.InvalidEpoch InvalidEpoch;
 
 T[] format(T) (T[] output, ulong time)
 {
-        assert (output.length >= 29);
-
-        Epoch.Fields    fields;
-        T[4]            tmp = void;
-        T*              p = output.ptr;
+        // ditto
+        static T[][] Months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun",
+                               "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
 
         // these arrays also reside in Epoch, but need to be templated here
-        static T[][] Days = 
-        [
-                "Sun",
-                "Mon",
-                "Tue",
-                "Wed",
-                "Thu",
-                "Fri",
-                "Sat",
-        ];
+        static T[][] Days = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
 
-        // ditto
-        static T[][] Months = 
-        [
-                "Jan",
-                "Feb",
-                "Mar",
-                "Apr",
-                "May",
-                "Jun",
-                "Jul",
-                "Aug",
-                "Sep",
-                "Oct",
-                "Nov",
-                "Dec",
-        ];
-
-        static T[] Comma = ", ",
-                   Space = " ",
-                   Colon = ":",
-                   Gmt   = " GMT";
+        assert (output.length >= 29);
 
         if (time is InvalidEpoch)
-            throw new Exception ("Rfc1123.format :: invalid epoch argument");
+            throw new Exception ("TimeStamp.format :: invalid epoch argument");
+
+
+        Epoch.Fields fields;
+        T[14]        tmp = void;
 
         // convert time to field values
         fields.asUtcTime (time);
 
-        // build output string manually; much less expensive than binding Format
-        p = append (p, Days[fields.dow]);
-        p = append (p, Comma);
-        p = append (p, Integer.format (tmp[0..2], cast(long) fields.day, Integer.Format.Unsigned, Integer.Flags.Zero));
-        p = append (p, Space);
-        p = append (p, Months[fields.month-1]);
-        p = append (p, Space);
-        p = append (p, Integer.format (tmp[0..4], cast(long) fields.year, Integer.Format.Unsigned, Integer.Flags.Zero));
-        p = append (p, Space);
-        p = append (p, Integer.format (tmp[0..2], cast(long) fields.hour, Integer.Format.Unsigned, Integer.Flags.Zero));
-        p = append (p, Colon);
-        p = append (p, Integer.format (tmp[0..2], cast(long) fields.min, Integer.Format.Unsigned, Integer.Flags.Zero));
-        p = append (p, Colon);
-        p = append (p, Integer.format (tmp[0..2], cast(long) fields.sec, Integer.Format.Unsigned, Integer.Flags.Zero));
-        p = append (p, Gmt);
-
-        return output [0 .. p - output.ptr];
+        // use the featherweight formatter ...
+        return Util.layout (output, "%0, %1 %2 %3 %4:%5:%6 GMT", 
+                            Days[fields.dow],
+                            convert (tmp[0..2], fields.day),
+                            Months[fields.month-1],
+                            convert (tmp[2..6], fields.year),
+                            convert (tmp[6..8], fields.hour),
+                            convert (tmp[8..10], fields.min),
+                            convert (tmp[10..12], fields.sec)
+                           );
 }
 
+/******************************************************************************
+
+        Convert an integer to a zero prefixed text representation
+        
+******************************************************************************/
+
+private T[] convert(T) (T[] tmp, int i)
+{
+        return Int.format (tmp, cast(long) i, Int.Format.Unsigned, Int.Flags.Zero);
+}
 
 /******************************************************************************
 
@@ -148,7 +127,8 @@ ulong parse(T) (T[] date, uint* ate = null)
 
         RFC 822, updated by RFC 1123 :: "Sun, 06 Nov 1994 08:49:37 GMT"
 
-        Returns the number of elements consumed by the parse
+        Returns the number of elements consumed by the parse; zero if
+        the parse failed
 
 ******************************************************************************/
 
@@ -187,7 +167,8 @@ int rfc1123(T) (T[] src, inout ulong value)
 
         RFC 850, obsoleted by RFC 1036 :: "Sunday, 06-Nov-94 08:49:37 GMT"
 
-        Returns the number of elements consumed by the parse
+        Returns the number of elements consumed by the parse; zero if
+        the parse failed
 
 ******************************************************************************/
 
@@ -232,7 +213,8 @@ int rfc850(T) (T[] src, inout ulong value)
 
         ANSI C's asctime() format :: "Sun Nov  6 08:49:37 1994"
 
-        Returns the number of elements consumed by the parse
+        Returns the number of elements consumed by the parse; zero if
+        the parse failed
 
 ******************************************************************************/
 
@@ -269,7 +251,8 @@ int asctime(T) (T[] src, inout ulong value)
 
         DOS time format :: "12-31-06 08:49AM"
 
-        Returns the number of elements consumed by the parse
+        Returns the number of elements consumed by the parse; zero if
+        the parse failed
 
 ******************************************************************************/
 
@@ -305,6 +288,42 @@ int dostime(T) (T[] src, inout ulong value)
             
             value = fields.toUtcTime;
             return (p+2) - src.ptr;
+            }
+
+        return 0;
+}
+
+/******************************************************************************
+
+        ISO-8601 format :: "2006-01-31 14:49:30,001"
+
+        Returns the number of elements consumed by the parse; zero if
+        the parse failed
+
+******************************************************************************/
+
+int iso8601(T) (T[] src, inout ulong value)
+{
+        Epoch.Fields    fields;
+        T*              p = src.ptr;
+
+        bool date (inout T* p)
+        {
+                return ((fields.year = parseInt(p)) > 0     &&
+                         *p++ == '-'                        &&
+                        ((fields.month = parseInt(p)) > 0   &&
+                        (*p++ == '-'                        &&
+                        (fields.day = parseInt(p)) > 0)));
+        }
+
+        if (date(p) >= 0                    &&
+            *p++ == ' '                     &&
+            time (fields, p)                &&
+            *p++ == ','                     &&
+            (fields.ms = parseInt(p)) > 0)
+            {
+            value = fields.toUtcTime;
+            return p - src.ptr;
             }
 
         return 0;
@@ -472,24 +491,12 @@ private static int parseInt(T) (inout T* p)
 
 /******************************************************************************
 
-        Append text to an array. We use this as a featherweight
-        alternative to tango.text.convert.Format
-
-******************************************************************************/
-
-private static T* append(T) (T* p, T[] s)
-{
-        p[0..s.length] = s[];
-        return p + s.length;
-}
-
-
-/******************************************************************************
-
 ******************************************************************************/
 
 debug (UnitTest)
 {
+        //void main() {}
+        
         unittest
         {
                 wchar[30] tmp;
