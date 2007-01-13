@@ -1,8 +1,6 @@
 /**
  * The thread module provides support for thread creation and management.
  *
- * Mik: GDC assembler added.
- *
  * Copyright: Copyright (C) 2005-2006 Sean Kelly.  All rights reserved.
  * License:   BSD style: $(LICENSE)
  * Authors:   Sean Kelly
@@ -154,6 +152,11 @@ else version( Posix )
         import tango.stdc.posix.signal;
         import tango.stdc.posix.unistd;
         import tango.stdc.posix.time;
+
+	version( darwin )
+	{
+	   import tango.stdc.stdlib;
+	}
 
         version( GNU )
         {
@@ -376,7 +379,7 @@ class ThreadException : Exception
  * in the following example.
  *
  * Example:
- * ----------------------------------------------------------------------
+ * -----------------------------------------------------------------------------
  *
  * class DerivedThread : Thread
  * {
@@ -409,7 +412,7 @@ class ThreadException : Exception
  * derived.join();
  * composed.join();
  *
- * ----------------------------------------------------------------------
+ * -----------------------------------------------------------------------------
  */
 class Thread
 {
@@ -649,12 +652,34 @@ class Thread
 
 
     /**
-     * Suspends the calling thread for at least the supplied time, up to
-     * a maximum of (uint.max - 1) milliseconds.
+     * Suspends the calling thread for at least the supplied time, up to a
+     * maximum of (uint.max - 1) milliseconds.  If an interval of less than one
+     * second is interrupted by the system, this call may return early.
+     * Interruptions of intervals greater than one second will be resumed, if
+     * possible, until the full duration has been reached.
+     *
+     * Please note that garbage collection on some systems (notably POSIX
+     * systems) typically involves the use of signals to coordinate "stop the
+     * world" collection cycles in multithreaded programs.  In such cases, a
+     * signal received by the garbage collector will interrupt the sleep
+     * operation within this routine.  As described above, sleep intervals of
+     * at least one second will be automatically resumed, but sub-second
+     * intervals are sufficiently small that an attempt to resume may result
+     * in longer than expected sleep times.  Therefore, sub-second intervals
+     * will not be resumed even if prematurely interrupted.
+     *
      *
      * Params:
      *  interval = The minimum duration the calling thread should be
      *             suspended.
+     *
+     * Example:
+     * -------------------------------------------------------------------------
+     *
+     * Thread.sleep( Interval.milli * 50 ); // sleep for 50 milliseconds
+     * Thread.sleep( Interval.second * 1 ); // sleep for 1 second
+     *
+     * -------------------------------------------------------------------------
      */
     static void sleep( /*Interval*/ ulong interval )
     {
@@ -668,19 +693,27 @@ class Thread
         else version( Posix )
         {
             alias tango.stdc.posix.unistd.sleep psleep;
+            const MAXUSLEEP = 1_000_000 - 1;
 
-            if( interval <= uint.max )
+            if( interval <= MAXUSLEEP )
             {
                 usleep( cast(uint) interval );
             }
             else if( interval / Interval.milli <= MAXMILLIS )
             {
                 interval /= Interval.second;
-                psleep( cast(uint) interval );
+                do
+                {
+                    interval = psleep( cast(uint) interval );
+                } while( interval > 0 );
             }
             else
             {
-                psleep( MAXMILLIS / 1000 );
+                interval = MAXMILLIS / 1000;
+                do
+                {
+                    interval = psleep( cast(uint) interval );
+                } while( interval > 0 );
             }
         }
     }
@@ -1966,8 +1999,8 @@ version( D_InlineAsm_X86 )
         {
             version ( Win32 )
                 static assert (false, "Not yet supported.");
-            else version( linux )
-                version = AsmX86_Linux_GDC;
+            else version( Posix )
+                version = AsmX86_Posix_GDC;
         }
     }
 }
@@ -1979,7 +2012,7 @@ version( Posix )
 
     version( AsmX86_Win32 ) {} else
     version( AsmX86_Linux ) {} else
-    version( AsmX86_Linux_GDC ) {} else
+    version( AsmX86_Posix_GDC ) {} else
     version( X86_64 ) {} else
     version( X86 )
     {
@@ -2474,12 +2507,20 @@ private:
         }
         else version( Posix )
         {
-            m_pmem = mmap( null,
-                           sz,
-                           PROT_READ | PROT_WRITE | PROT_EXEC,
-                           MAP_PRIVATE | MAP_ANON,
-                           0,
-                           0 );
+	    version( darwin )
+	    {
+		m_pmem = malloc(sz);
+	    }
+	    else
+	    {
+               m_pmem = mmap(  null,
+                               sz,
+                               PROT_READ | PROT_WRITE | PROT_EXEC,
+                               MAP_PRIVATE | MAP_ANON,
+                               0,
+                               0 );
+	    }
+
             if( m_pmem == MAP_FAILED )
             {
                 m_pmem = null;
@@ -2498,6 +2539,10 @@ private:
             }
             m_size = sz;
         }
+	else
+	{
+		static assert(false, "Unsupported system");
+	}
 
         Thread.add( &m_ctxt );
     }
@@ -2517,6 +2562,10 @@ private:
         {
             VirtualFree( m_pmem, 0, MEM_RELEASE );
         }
+	else version( darwin )
+	{
+		free( m_pmem );
+	}
         else version( Posix )
         {
             munmap( m_pmem, m_size );
@@ -2586,7 +2635,8 @@ private:
             push( 0x00000000 );                                     // ESI
             push( 0x00000000 );                                     // EDI
         }
-        else version( AsmX86_Linux_GDC )
+	// Mik: Context does not have to store as much, since GDC uses the	// simpler C calling convention.
+        else version( AsmX86_Posix_GDC )
         {
             push( cast(size_t) &fiber_entryPoint );             // EIP
             push( 0x00000000 );                                 // EBP
@@ -2683,8 +2733,8 @@ private:
         *oldp = getStackTop();
         volatile tobj.m_lock = true;
         tobj.pushContext( &m_ctxt );
-        
-        doSwitch( oldp, newp );
+
+        doSwitch( *oldp, newp );
 
         // NOTE: As above, these operations must be performed in a strict order
         //       to prevent Bad Things from happening.
@@ -2717,7 +2767,7 @@ private:
         *oldp = getStackTop();
         volatile tobj.m_lock = true;
 
-        doSwitch( oldp, newp );
+        doSwitch( *oldp, newp );
 
         // NOTE: As above, these operations must be performed in a strict order
         //       to prevent Bad Things from happening.
@@ -2731,7 +2781,7 @@ private:
     // into oldp and loading the stack pointer from newp.  Any relevant stack
     // data will also be saved.
     //
-    final void doSwitch( void** oldp, void* newp )
+    final void doSwitch( inout void* oldp, void* newp )
     {
         // NOTE: The data pushed and popped in this routine must match the
         //       default stack created by initStack or the initial switch
@@ -2808,7 +2858,7 @@ private:
         // Mik: Linux GDC code added 
         // (note: this pointer is passed on stack with other arguments)
         // (also: arguments are in reverse order)
-        else version( AsmX86_Linux_GDC )
+        else version( AsmX86_Posix_GDC )
         {
             asm
             {
