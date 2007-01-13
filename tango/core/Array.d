@@ -1366,7 +1366,7 @@ version( DDoc )
      *         predicate may be any callable type.
      *
      * Returns:
-     *  The number of elements that satisfy pred.
+     *  The number of elements that do not satisfy pred.
      */
     size_t removeIf( Elem[] buf, Pred1E pred );
 }
@@ -1397,7 +1397,7 @@ else
                 else
                     exch( pos, pos - cnt );
             }
-            return cnt;
+            return buf.length - cnt;
         }
     }
 
@@ -1417,7 +1417,7 @@ else
       {
         void test( char[] buf, bool delegate( char ) dg, size_t num )
         {
-            assert( removeIf( buf, dg ) == num );
+            assert( buf.length - removeIf( buf, dg ) == num );
             foreach( pos, cur; buf )
             {
                 assert( pos < (buf.length - num) ? !dg( cur ) : dg( cur ) );
