@@ -38,6 +38,9 @@ public class LinkMap(K, T) : MapCollection!(K, T) // , IReadable, IWritable
         alias LLCell!(T)               LLCellT;
         alias LLPair!(K, T)            LLPairT;
 
+        alias MapCollection!(K, T).remove     remove;
+        alias MapCollection!(K, T) .removeAll  removeAll;
+
         // instance variables
 
         /**

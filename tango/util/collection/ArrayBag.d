@@ -53,8 +53,10 @@ private import  tango.util.collection.impl.CLCell,
 
 public class ArrayBag(T) : BagCollection!(T)
 {
-        alias CLCell!(T[])      CLCellT;
+        alias CLCell!(T[]) CLCellT;
 
+        alias BagCollection!(T).remove     remove;
+        alias BagCollection!(T).removeAll  removeAll;
 
         /**
          * The default chunk size to use for buffers

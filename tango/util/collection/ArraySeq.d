@@ -51,6 +51,9 @@ private import  tango.util.collection.impl.SeqCollection,
 
 public class ArraySeq(T) : SeqCollection!(T), Sortable!(T)
 {
+        alias SeqCollection!(T).remove     remove;
+        alias SeqCollection!(T).removeAll  removeAll;
+
         /**
          * The minimum capacity of any non-empty buffer
         **/

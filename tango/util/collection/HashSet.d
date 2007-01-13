@@ -40,6 +40,9 @@ public class HashSet(T) : SetCollection!(T), HashParams
 {
         private alias LLCell!(T) LLCellT;
 
+        alias SetCollection!(T).remove     remove;
+        alias SetCollection!(T).removeAll  removeAll;
+
 
         // instance variables
 

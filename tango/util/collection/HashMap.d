@@ -49,6 +49,9 @@ public class HashMap(K, V) : MapCollection!(K, V), HashParams
         alias LLCell!(V)                LLCellT;
         alias LLPair!(K, V)             LLPairT;
 
+        alias MapCollection!(K, V).remove     remove;
+        alias MapCollection!(K, V).removeAll  removeAll;
+
         // instance variables
 
         /***********************************************************************

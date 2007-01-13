@@ -35,6 +35,9 @@ public class TreeBag(T) : BagCollection!(T), SortedValues!(T)
         alias RBCell!(T)        RBCellT;
         alias Comparator!(T)    ComparatorT;
 
+        alias BagCollection!(T).remove     remove;
+        alias BagCollection!(T).removeAll  removeAll;
+
 
         // instance variables
 

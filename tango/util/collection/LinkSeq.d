@@ -39,6 +39,9 @@ public class LinkSeq(T) : SeqCollection!(T), Sortable!(T)
 {
         alias LLCell!(T) LLCellT;
 
+        alias SeqCollection!(T).remove     remove;
+        alias SeqCollection!(T).removeAll  removeAll;
+
         // instance variables
 
         /**

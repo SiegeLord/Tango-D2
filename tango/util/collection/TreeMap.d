@@ -47,6 +47,9 @@ public class TreeMap(K, T) : MapCollection!(K, T), SortedKeys!(K, T)
         alias Comparator!(K)            ComparatorT;
         alias GuardIterator!(T)         GuardIteratorT;
 
+        alias MapCollection!(K, T).remove     remove;
+        alias MapCollection!(K, T).removeAll  removeAll;
+
 
         // instance variables
 

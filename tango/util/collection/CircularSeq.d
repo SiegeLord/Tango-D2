@@ -30,6 +30,8 @@ public class CircularSeq(T) : SeqCollection!(T)
 {
         alias CLCell!(T) CLCellT;
 
+        alias SeqCollection!(T).remove     remove;
+        alias SeqCollection!(T).removeAll  removeAll;
 
         // instance variables
 
