@@ -781,12 +781,12 @@ else
     {
       unittest
       {
-        assert( findIf( "bcecg", ( int x ) { return x == 'a'; } ) == 5 );
-        assert( findIf( "bcecg", ( int x ) { return x == 'b'; } ) == 0 );
-        assert( findIf( "bcecg", ( int x ) { return x == 'c'; } ) == 1 );
-        assert( findIf( "bcecg", ( int x ) { return x == 'd'; } ) == 5 );
-        assert( findIf( "bcecg", ( int x ) { return x == 'g'; } ) == 4 );
-        assert( findIf( "bcecg", ( int x ) { return x == 'h'; } ) == 5 );
+        assert( findIf( "bcecg", ( char c ) { return c == 'a'; } ) == 5 );
+        assert( findIf( "bcecg", ( char c ) { return c == 'b'; } ) == 0 );
+        assert( findIf( "bcecg", ( char c ) { return c == 'c'; } ) == 1 );
+        assert( findIf( "bcecg", ( char c ) { return c == 'd'; } ) == 5 );
+        assert( findIf( "bcecg", ( char c ) { return c == 'g'; } ) == 4 );
+        assert( findIf( "bcecg", ( char c ) { return c == 'h'; } ) == 5 );
       }
     }
 }
@@ -851,12 +851,12 @@ else
     {
       unittest
       {
-        assert( rfindIf( "bcecg", ( int x ) { return x == 'a'; } ) == 5 );
-        assert( rfindIf( "bcecg", ( int x ) { return x == 'b'; } ) == 0 );
-        assert( rfindIf( "bcecg", ( int x ) { return x == 'c'; } ) == 3 );
-        assert( rfindIf( "bcecg", ( int x ) { return x == 'd'; } ) == 5 );
-        assert( rfindIf( "bcecg", ( int x ) { return x == 'g'; } ) == 4 );
-        assert( rfindIf( "bcecg", ( int x ) { return x == 'h'; } ) == 5 );
+        assert( rfindIf( "bcecg", ( char c ) { return c == 'a'; } ) == 5 );
+        assert( rfindIf( "bcecg", ( char c ) { return c == 'b'; } ) == 0 );
+        assert( rfindIf( "bcecg", ( char c ) { return c == 'c'; } ) == 3 );
+        assert( rfindIf( "bcecg", ( char c ) { return c == 'd'; } ) == 5 );
+        assert( rfindIf( "bcecg", ( char c ) { return c == 'g'; } ) == 4 );
+        assert( rfindIf( "bcecg", ( char c ) { return c == 'h'; } ) == 5 );
       }
     }
 }
@@ -1022,6 +1022,73 @@ else
 
 
 ////////////////////////////////////////////////////////////////////////////////
+// Count-If
+////////////////////////////////////////////////////////////////////////////////
+
+
+version( DDoc )
+{
+    /**
+     * Performs a linear scan of buf from $(LB)0 .. buf.length$(RP), returning
+     * a count of the number of elements where pred returns true.
+     *
+     * Params:
+     *  buf  = The array to scan.
+     *  pred = The evaluation predicate, which should return true if the
+     *         element is a valid match and false if not.  This predicate
+     *         may be any callable type.
+     *
+     * Returns:
+     *  The number of elements where pred returns true.
+     */
+    size_t countIf( Elem[] buf, Pred1E pred = Pred1E.init );
+
+}
+else
+{
+    template countIf_( Elem, Pred )
+    {
+        static assert( isCallableType!(Pred) );
+
+
+        size_t fn( Elem[] buf, Pred pred )
+        {
+            size_t cnt = 0;
+
+            foreach( size_t pos, Elem cur; buf )
+            {
+                if( pred( cur ) )
+                    ++cnt;
+            }
+            return cnt;
+        }
+    }
+
+
+    template countIf( Buf, Pred )
+    {
+        size_t countIf( Buf buf, Pred pred )
+        {
+            return countIf_!(ElemTypeOf!(Buf), Pred).fn( buf, pred );
+        }
+    }
+
+
+    debug( UnitTest )
+    {
+      unittest
+      {
+        assert( countIf( "gbbbi", ( char c ) { return c == 'a'; } ) == 0 );
+        assert( countIf( "gbbbi", ( char c ) { return c == 'g'; } ) == 1 );
+        assert( countIf( "gbbbi", ( char c ) { return c == 'b'; } ) == 3 );
+        assert( countIf( "gbbbi", ( char c ) { return c == 'i'; } ) == 1 );
+        assert( countIf( "gbbbi", ( char c ) { return c == 'd'; } ) == 0 );
+      }
+    }
+}
+
+
+////////////////////////////////////////////////////////////////////////////////
 // Replace
 ////////////////////////////////////////////////////////////////////////////////
 
@@ -1054,7 +1121,7 @@ else
         static assert( isCallableType!(Pred) );
 
 
-        size_t fn( Elem[] buf, Elem pat, Elem rep, Pred pred = Pred.init )
+        size_t fn( Elem[] buf, Elem pat, Elem val, Pred pred = Pred.init )
         {
             size_t cnt = 0;
 
@@ -1062,7 +1129,7 @@ else
             {
                 if( pred( cur, pat ) )
                 {
-                    cur = rep;
+                    cur = val;
                     ++cnt;
                 }
             }
@@ -1073,18 +1140,18 @@ else
 
     template replace( Buf, Elem )
     {
-        size_t replace( Buf buf, Elem pat, Elem rep )
+        size_t replace( Buf buf, Elem pat, Elem val )
         {
-            return replace_!(ElemTypeOf!(Buf)).fn( buf, pat, rep );
+            return replace_!(ElemTypeOf!(Buf)).fn( buf, pat, val );
         }
     }
 
 
     template replace( Buf, Elem, Pred )
     {
-        size_t replace( Buf buf, Elem pat, Elem rep, Pred pred )
+        size_t replace( Buf buf, Elem pat, Elem val, Pred pred )
         {
-            return replace_!(ElemTypeOf!(Buf), Pred).fn( buf, pat, rep, pred );
+            return replace_!(ElemTypeOf!(Buf), Pred).fn( buf, pat, val, pred );
         }
     }
 
@@ -1098,6 +1165,77 @@ else
         assert( replace( "gbbbi".dup, 'b', 'c' ) == 3 );
         assert( replace( "gbbbi".dup, 'i', 'j' ) == 1 );
         assert( replace( "gbbbi".dup, 'd', 'e' ) == 0 );
+      }
+    }
+}
+
+
+////////////////////////////////////////////////////////////////////////////////
+// Replace-If
+////////////////////////////////////////////////////////////////////////////////
+
+
+version( DDoc )
+{
+    /**
+     * Performs a linear scan of buf from $(LB)0 .. buf.length$(RP), replacing
+     * elements where pred returns true with val.
+     *
+     * Params:
+     *  buf  = The array to scan.
+     *  val  = The value to substitute.
+     *  pred = The evaluation predicate, which should return true if the
+     *         element is a valid match and false if not.  This predicate
+     *         may be any callable type.
+     *
+     * Returns:
+     *  The number of elements replaced.
+     */
+    size_t replaceIf( Elem[] buf, Elem val, Pred2E pred = Pred2E.init );
+
+}
+else
+{
+    template replaceIf_( Elem, Pred )
+    {
+        static assert( isCallableType!(Pred) );
+
+
+        size_t fn( Elem[] buf, Elem val, Pred pred )
+        {
+            size_t cnt = 0;
+
+            foreach( size_t pos, inout Elem cur; buf )
+            {
+                if( pred( cur ) )
+                {
+                    cur = val;
+                    ++cnt;
+                }
+            }
+            return cnt;
+        }
+    }
+
+
+    template replaceIf( Buf, Elem, Pred )
+    {
+        size_t replaceIf( Buf buf, Elem val, Pred pred )
+        {
+            return replaceIf_!(ElemTypeOf!(Buf), Pred).fn( buf, val, pred );
+        }
+    }
+
+
+    debug( UnitTest )
+    {
+      unittest
+      {
+        assert( replaceIf( "gbbbi".dup, 'b', ( char c ) { return c == 'a'; } ) == 0 );
+        assert( replaceIf( "gbbbi".dup, 'h', ( char c ) { return c == 'g'; } ) == 1 );
+        assert( replaceIf( "gbbbi".dup, 'c', ( char c ) { return c == 'b'; } ) == 3 );
+        assert( replaceIf( "gbbbi".dup, 'j', ( char c ) { return c == 'i'; } ) == 1 );
+        assert( replaceIf( "gbbbi".dup, 'e', ( char c ) { return c == 'd'; } ) == 0 );
       }
     }
 }
