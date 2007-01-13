@@ -100,10 +100,6 @@
 
                 // copy content
                 T[] copy (T[] dst);
-                T[] copy ();
-
-                // deep copy
-                String clone ();
 
                 // return content
                 T[] slice ();
@@ -198,7 +194,7 @@ private extern (C) void memmove (void* dst, void* src, uint bytes);
                  dst.append (element);
         ---
 
-        Speaking like Yoda can be accomplished as follows:
+        Speaking like Yoda might be accomplished as follows:
 
         ---
         auto dst = new String!(char)(64);
@@ -214,10 +210,12 @@ class String(T) : StringView!(T)
         public  alias slice             opIndex;
         private alias StringView!(T)    StringViewT;
 
+        private T[]                     content;
         private bool                    mutable;
         private Comparator              comparator_;
         private uint                    selectPoint,
-                                        selectLength;
+                                        selectLength,
+                                        contentLength;
 
         /***********************************************************************
         
@@ -650,8 +648,7 @@ class String(T) : StringView!(T)
 
         /***********************************************************************
                 
-                Replace a section of this String with the specified 
-                String
+                Replace a section of this String with another 
 
         ***********************************************************************/
 
@@ -696,9 +693,9 @@ class String(T) : StringView!(T)
 
         /***********************************************************************
         
-                Truncate this string. Default behaviour is to truncate at 
-                the current append point. Current selection is moved to the
-                truncation point, with length 0
+                Truncate this string at an optional index. Default behaviour
+                is to truncate at the current append point. Current selection
+                is moved to the truncation point, with length 0
 
         ***********************************************************************/
 
@@ -940,18 +937,7 @@ class String(T) : StringView!(T)
 
                 return dst [0 .. i] = content [0 .. i];
         }
-
-        /***********************************************************************
-        
-                Return dup'd content from this String 
-
-        ***********************************************************************/
-
-        final T[] copy ()
-        {
-                return content [0 .. contentLength].dup;
-        }
-
+/+
         /***********************************************************************
 
                 Clone this string, with a copy of the content also. Return
@@ -961,7 +947,21 @@ class String(T) : StringView!(T)
 
         final String clone ()
         {
-                return new String!(T)(slice);
+                return new String!(T)(slice, true);
+        }
++/
+        /***********************************************************************
+        
+                Return an alias to the content of this StringView. Note
+                that you are bound by honour to leave this content wholly
+                unmolested. D surely needs some way to enforce immutability
+                upon array references
+
+        ***********************************************************************/
+
+        final T[] slice ()
+        {
+                return content [0 .. contentLength];
         }
 
         /***********************************************************************
@@ -1202,9 +1202,6 @@ class String(T) : StringView!(T)
 
 class StringView(T) : UniString
 {
-        private T[]     content;
-        private uint    contentLength;
-
         public typedef int delegate (T[] a, T[] b) Comparator;
 
         /***********************************************************************
@@ -1299,20 +1296,12 @@ class StringView(T) : UniString
         abstract T[] copy (T[] dst);
 
         /***********************************************************************
-        
-                Return dup'd content from this String
-
-        ***********************************************************************/
-
-        abstract T[] copy ();
-
-        /***********************************************************************
 
                 Make a deep copy of this String, and return as a mutable
                 
         ***********************************************************************/
 
-        abstract String!(T) clone ();
+        // abstract String!(T) clone ();
 
         /***********************************************************************
         
@@ -1371,10 +1360,7 @@ class StringView(T) : UniString
 
         ***********************************************************************/
 
-        final T[] slice ()
-        {
-                return content [0 .. contentLength];
-        }
+        abstract T[] slice ();
 }       
 
 
