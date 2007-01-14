@@ -1009,7 +1009,7 @@ class FTPConnection : Telnet
     ///    path =            the directory to list
     ///
     /// Returns:             an array of the contents
-    public FtpFileInfo[] ls(char[] path)
+    public FtpFileInfo[] ls(char[] path = "") // default to current dir
         in
     {
         assert (path.length == 0 || path[path.length - 1] != '/');
@@ -1863,7 +1863,7 @@ debug (UnitTest )
 
 
             auto ftp = new FTPConnection("ftp.gnu.org","anonymous","anonymous");
-            auto dirList = ftp.ls(""); // get list for current dir
+            auto dirList = ftp.ls(); // get list for current dir
 
             foreach ( entry;dirList )
                 {
@@ -1875,7 +1875,7 @@ debug (UnitTest )
             ftp.cd("gnu/windows/emacs");
 
 
-            dirList = ftp.ls(""); // get list for current dir
+            dirList = ftp.ls(); 
  
             foreach ( entry;dirList )
                 {
