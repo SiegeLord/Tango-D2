@@ -37,6 +37,72 @@ private import Int = tango.text.convert.Integer;
 
 public alias Epoch.InvalidEpoch InvalidEpoch;
 
+/******************************************************************************
+
+        Convert a formatted string of digits to a floating-point
+        number. Throws an exception where the input text is not
+        parsable in its entirety.
+        
+******************************************************************************/
+
+ulong toTime(T) (T[] src)
+{
+        uint len;
+
+        auto x = parse (src, &len);
+        if (len < src.length)
+            throw new Exception ("invalid input:"~src);
+        return x;
+}
+
+/******************************************************************************
+
+        Template wrapper to make life simpler. Returns a text version
+        of the provided value.
+
+        See format() for details
+
+******************************************************************************/
+
+char[] toUtf8 (ulong time)
+{
+        char[32] tmp = void;
+        
+        return format (tmp, time).dup;
+}
+               
+/******************************************************************************
+
+        Template wrapper to make life simpler. Returns a text version
+        of the provided value.
+
+        See format() for details
+
+******************************************************************************/
+
+wchar[] toUtf16 (ulong time)
+{
+        wchar[32] tmp = void;
+        
+        return format (tmp, time).dup;
+}
+               
+/******************************************************************************
+
+        Template wrapper to make life simpler. Returns a text version
+        of the provided value.
+
+        See format() for details
+
+******************************************************************************/
+
+dchar[] toUtf32 (ulong time)
+{
+        dchar[32] tmp = void;
+        
+        return format (tmp, time).dup;
+}
+               
 
 /******************************************************************************
 
@@ -53,11 +119,11 @@ public alias Epoch.InvalidEpoch InvalidEpoch;
 
 T[] format(T) (T[] output, ulong time)
 {
-        // ditto
+        // these arrays also reside in Epoch, but need to be templated here
         static T[][] Months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun",
                                "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
 
-        // these arrays also reside in Epoch, but need to be templated here
+        // ditto
         static T[][] Days = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
 
         assert (output.length >= 29);

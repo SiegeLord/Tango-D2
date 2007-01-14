@@ -29,6 +29,72 @@ private extern (C) double log10(double x);
 
 /******************************************************************************
 
+        Convert a formatted string of digits to a floating-point
+        number. Throws an exception where the input text is not
+        parsable in its entirety.
+        
+******************************************************************************/
+
+double toDouble(T) (T[] src)
+{
+        uint len;
+
+        auto x = parse (src, &len);
+        if (len < src.length)
+            throw new Exception ("invalid input:"~src);
+        return x;
+}
+
+/******************************************************************************
+
+        Template wrapper to make life simpler. Returns a text version
+        of the provided value.
+
+        See format() for details
+
+******************************************************************************/
+
+char[] toUtf8 (double d, uint decimals=6, bool scientific=false)
+{
+        char[64] tmp = void;
+        
+        return format (tmp, d, decimals, scientific).dup;
+}
+               
+/******************************************************************************
+
+        Template wrapper to make life simpler. Returns a text version
+        of the provided value.
+
+        See format() for details
+
+******************************************************************************/
+
+wchar[] toUtf16 (double d, uint decimals=6, bool scientific=false)
+{
+        wchar[64] tmp = void;
+        
+        return format (tmp, d, decimals, scientific).dup;
+}
+               
+/******************************************************************************
+
+        Template wrapper to make life simpler. Returns a text version
+        of the provided value.
+
+        See format() for details
+
+******************************************************************************/
+
+dchar[] toUtf32 (double d, uint decimals=6, bool scientific=false)
+{
+        dchar[64] tmp = void;
+        
+        return format (tmp, d, decimals, scientific).dup;
+}
+               
+/******************************************************************************
+
         Convert a float to a string. This produces pretty good results
         for the most part, though one should use David Gay's dtoa package
         for best accuracy.
