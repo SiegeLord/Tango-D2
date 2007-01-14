@@ -54,7 +54,29 @@ enum Flags
         Space   = 8,                    /// prefix decimal with space
 }
 
-/*******************************************************************************
+
+char[] toUtf8 (long i, Format t, Flags f)
+{
+        char[66] tmp = void;
+        
+        return format (tmp, i, t, f).dup;
+}
+               
+char[] toUtf16 (long i, Format t, Flags f)
+{
+        wchar[66] tmp = void;
+        
+        return format (tmp, i, t, f).dup;
+}
+               
+char[] toUtf32 (long i, Format t, Flags f)
+{
+        dchar[66] tmp = void;
+        
+        return format (tmp, i, t, f).dup;
+}
+               
+*/******************************************************************************
 
         Format numeric values into the provided output buffer. The
         following types are supported:
