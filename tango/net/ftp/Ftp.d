@@ -17,7 +17,7 @@ private import tango.net.Socket;
 private import tango.net.ftp.Telnet;
 private import tango.io.FileConduit;
 private import tango.io.MemoryConduit;
-
+private import tango.io.Stdout;
 private import Text = tango.text.Util;
 private import Ascii = tango.text.Ascii;
 private import Regex = tango.text.Regex;
@@ -36,10 +36,10 @@ private const d_time_nan = Epoch.InvalidEpoch;
 ///
 /// Params:
 ///    pos =                 the current offset into the stream
-alias void delegate(in size_t pos) ftp_progress_dg;
+alias void delegate(in size_t pos) FtpProgress;
 
 /// The format of data transfer.
-enum ftp_format
+enum FtpFormat
 {
         /// Indicates ASCII NON PRINT format (line ending conversion to CRLF.)
         ascii,
@@ -48,7 +48,7 @@ enum ftp_format
 }
 
 /// A server response, consisting of a code and a potentially multi-line message.
-struct ftp_response
+struct FtpResponse
 {
         /// The response code.
         ///
@@ -78,7 +78,7 @@ struct ftp_response
 }
 
 /// Active or passive connection mode.
-enum ftp_connection_type
+enum FtpConnectionType
 {
         /// Active - server connects to client on open port.
         active,
@@ -89,10 +89,10 @@ enum ftp_connection_type
 /// Detail about the data connection.
 ///
 /// This is used to properly send PORT and PASV commands.
-struct ftp_connection_detail
+struct FtpConnectionDetail
 {
         /// The type to be used.
-        ftp_connection_type type = ftp_connection_type.passive;
+        FtpConnectionType type = FtpConnectionType.passive;
 
         /// The address to give the server.
         Address address = null;
@@ -102,7 +102,7 @@ struct ftp_connection_detail
 }
 
 /// A supported feature of an FTP server.
-struct ftp_feature
+struct FtpFeature
 {
         /// The command which is supported, e.g. SIZE.
         char[] command = null;
@@ -111,7 +111,7 @@ struct ftp_feature
 }
 
 /// The type of a file in an FTP listing.
-enum ftp_file_type
+enum FtpFileType
 {
         /// An unknown file or type (no type fact.)
         unknown,
@@ -128,12 +128,12 @@ enum ftp_file_type
 }
 
 /// Information about a file in an FTP listing.
-struct ftp_file_info
+struct FtpFileInfo
 {
         /// The filename.
         char[] name = null;
         /// Its type.
-        ftp_file_type type = ftp_file_type.unknown;
+        FtpFileType type = FtpFileType.unknown;
         /// Size in bytes (8 bit octets), or -1 if not available.
         long size = -1;
         /// Modification time, if available.
@@ -150,7 +150,7 @@ struct ftp_file_info
 ///
 /// Example:
 /// ----------
-/// auto ftp = new FTPConnection("hostname", 21, "user", "pass");
+/// auto ftp = new FTPConnection("hostname", "user", "pass",21);
 ///
 /// ftp.mkdir("test");
 /// ftp.close();
@@ -160,27 +160,30 @@ struct ftp_file_info
 ///
 /// Bugs:
 ///    Does not support several uncommon FTP commands and responses.
+
+
 class FTPConnection : Telnet
 {
         /// Supported features (if known.)
         ///
         /// This will be empty if not known, or else contain at least FEAT.
-        public ftp_feature[] supported_features = null;
+        public FtpFeature[] supported_features = null;
 
         /// Data connection information.
-        protected ftp_connection_detail data_info;
+        protected FtpConnectionDetail data_info;
 
         /// The last-set restart position.
         ///
         /// This is only used when a local file is used for a RETR or STOR.
         protected size_t restart_pos = 0;
 
-        public void exception (char[] msg)
+        protected void exception (char[] msg)
         {
-                throw new FTPException (msg);
+
+                throw new FTPException ("Exception: " ~ msg);
         }
 
-        public void exception (ftp_response r)
+        protected void exception (FtpResponse r)
         {
                 throw new FTPException (r);
         }
@@ -197,9 +200,9 @@ class FTPConnection : Telnet
         ///    port =            the port number to connect to
         ///    username =        username to be sent
         ///    password =        password to be sent, if requested
-        public this(char[] hostname, int port, char[] username, char[] password)
+        public this(char[] hostname, char[] username, char[] password, int port = 21)
         {
-                this.connect(hostname, port, username, password);
+                this.connect(hostname, username, password,port);
         }
 
         /// Connect to an FTP server with a username and password.
@@ -209,7 +212,7 @@ class FTPConnection : Telnet
         ///    port =            the port number to connect to
         ///    username =        username to be sent
         ///    password =        password to be sent, if requested
-        public void connect(char[] hostname, int port, char[] username, char[] password)
+        public void connect(char[] hostname, char[] username, char[] password, int port = 21)
         in
         {
                 // We definitely need a hostname and port.
@@ -219,36 +222,45 @@ class FTPConnection : Telnet
         body
         {
                 // Close any active connection.
+
                 if (this.socket !is null)
                         this.close();
+		
 
                 // Connect to whichever FTP server responds first.
-                this.find_available_server(hostname, port);
+                this.findAvailableServer(hostname, port);
+
                 this.socket.blocking = false;
 
                 scope (failure)
-                        this.close();
+		  {
+		    this.close();
+		  }
 
                 // The welcome message should always be a 220.  120 and 421 are considered errors.
-                this.read_response("220");
+                this.readResponse("220");
 
                 if (username.length == 0)
                         return;
 
                 // Send the username.  Anything but 230, 331, or 332 is basically an error.
-                this.send_command("USER", username);
-                auto response = this.read_response();
+                this.sendCommand("USER", username);
+                auto response = this.readResponse();
 
                 // 331 means username okay, please proceed with password.
                 if (response.code == "331")
                 {
-                        this.send_command("PASS", password);
-                        response = this.read_response();
+                        this.sendCommand("PASS", password);
+                        response = this.readResponse();
                 }
 
                 // We don't support ACCT (332) so we should get a 230 here.
                 if (response.code != "230" && response.code != "202")
-                        exception (response);
+		  {
+
+		    exception (response);
+		  }
+
         }
 
         /// Close the connection to the server.
@@ -261,8 +273,8 @@ class FTPConnection : Telnet
                 {
                         try
                         {
-                                this.send_command("QUIT");
-                                this.read_response("221");
+                                this.sendCommand("QUIT");
+                                this.readResponse("221");
                         }
                         // Ignore if the above could not be completed.
                         catch (FTPException)
@@ -282,9 +294,9 @@ class FTPConnection : Telnet
         /// Set the connection to use passive mode for data tranfers.
         ///
         /// This is the default.
-        public void set_passive()
+        public void setPassive()
         {
-                this.data_info.type = ftp_connection_type.passive;
+                this.data_info.type = FtpConnectionType.passive;
 
                 delete this.data_info.address;
                 delete this.data_info.listen;
@@ -299,7 +311,7 @@ class FTPConnection : Telnet
         ///    port =            the port to use
         ///    listen_ip =       the ip to listen on, or null for any
         ///    listen_port =     the port to listen on, or 0 for the same port
-        public void set_active(char[] ip, ushort port, char[] listen_ip = null, ushort listen_port = 0)
+        public void setActive(char[] ip, ushort port, char[] listen_ip = null, ushort listen_port = 0)
         in
         {
                 assert (ip.length > 0);
@@ -307,7 +319,7 @@ class FTPConnection : Telnet
         }
         body
         {
-                this.data_info.type = ftp_connection_type.active;
+                this.data_info.type = FtpConnectionType.active;
                 this.data_info.address = new IPv4Address(ip, port);
 
                 // A local-side port?
@@ -323,33 +335,33 @@ class FTPConnection : Telnet
 
 
         /// Change to the specified directory.
-        public void chdir(char[] dir)
+        public void cd(char[] dir)
         in
         {
                 assert (dir.length > 0);
         }
         body
         {
-                this.send_command("CWD", dir);
-                this.read_response("250");
+                this.sendCommand("CWD", dir);
+                this.readResponse("250");
         }
 
         /// Change to the parent of this directory.
         public void cdup()
         {
-                this.send_command("CDUP");
-                this.read_response("200");
+                this.sendCommand("CDUP");
+                this.readResponse("200");
         }
 
         /// Determine the current directory.
         ///
         /// Returns:             the current working directory
-        public char[] getcwd()
+        public char[] cwd()
         {
-                this.send_command("PWD");
-                auto response = this.read_response("257");
+                this.sendCommand("PWD");
+                auto response = this.readResponse("257");
 
-                return this.parse_257(response);
+                return this.parse257(response);
         }
 
         /// Change the permissions of a file.
@@ -371,42 +383,42 @@ class FTPConnection : Telnet
                 char[] tmp = "000";
                 // Convert our octal parameter to a string.
                 Integer.format(tmp, cast(long) mode, Integer.Format.Octal);
-                this.send_command("SITE CHMOD", tmp, path);
-                this.read_response("200");
+                this.sendCommand("SITE CHMOD", tmp, path);
+                this.readResponse("200");
         }
 
         /// Remove a file or directory.
         ///
         /// Params:
         ///    path =            the path to the file or directory to delete
-        public void unlink(char[] path)
+        public void del(char[] path)
         in
         {
                 assert (path.length > 0);
         }
         body
         {
-                this.send_command("DELE", path);
-                auto response = this.read_response();
+                this.sendCommand("DELE", path);
+                auto response = this.readResponse();
 
                 // Try it as a directory, then...?
                 if (response.code != "250")
-                        this.rmdir(path);
+                        this.rm(path);
         }
 
         /// Remove a directory.
         ///
         /// Params:
         ///    path =            the directory to delete
-        public void rmdir(char[] path)
+        public void rm(char[] path)
         in
         {
                 assert (path.length > 0);
         }
         body
         {
-                this.send_command("RMD", path);
-                this.read_response("250");
+                this.sendCommand("RMD", path);
+                this.readResponse("250");
         }
 
         /// Rename/move a file or directory.
@@ -423,11 +435,11 @@ class FTPConnection : Telnet
         body
         {
                 // Rename from... rename to.  Pretty simple.
-                this.send_command("RNFR", old_path);
-                this.read_response("350");
+                this.sendCommand("RNFR", old_path);
+                this.readResponse("350");
 
-                this.send_command("RNTO", new_path);
-                this.read_response("250");
+                this.sendCommand("RNTO", new_path);
+                this.readResponse("250");
         }
 
         /// Determine the size in bytes of a file.
@@ -437,7 +449,7 @@ class FTPConnection : Telnet
         /// Params:
         ///    path =            the file to retrieve the size of
         ///    format =          what format the size is desired in
-        public size_t size(char[] path, ftp_format format = ftp_format.image)
+        public size_t size(char[] path, FtpFormat format = FtpFormat.image)
         in
         {
                 assert (path.length > 0);
@@ -446,8 +458,8 @@ class FTPConnection : Telnet
         {
                 this.type(format);
 
-                this.send_command("SIZE", path);
-                auto response = this.read_response("213");
+                this.sendCommand("SIZE", path);
+                auto response = this.readResponse("213");
 
                 // Only try to parse the numeric bytes of the response.
                 size_t end_pos = 0;
@@ -470,10 +482,10 @@ class FTPConnection : Telnet
         ///    parameters =      any arguments to send
         ///
         /// Returns:             the data socket
-        public Socket process_data_command(char[] command, char[][] parameters ...)
+        public Socket processDataCommand(char[] command, char[][] parameters ...)
         {
                 // Create a connection.
-                Socket data = this.get_data_socket();
+                Socket data = this.getDataSocket();
                 scope (failure)
                 {
                         // Close the socket, whether we were listening or not.
@@ -482,15 +494,15 @@ class FTPConnection : Telnet
                 }
 
                 // Tell the server about it.
-                this.send_command(command, parameters);
+                this.sendCommand(command, parameters);
 
                 // We should always get a 150/125 response.
-                auto response = this.read_response();
+                auto response = this.readResponse();
                 if (response.code != "150" && response.code != "125")
                         exception (response);
 
                 // We might need to do this for active connections.
-                this.prepare_data_socket(data);
+                this.prepareDataSocket(data);
 
                 return data;
         }
@@ -501,14 +513,14 @@ class FTPConnection : Telnet
         ///
         /// Params:
         ///    data =            the data socket
-        public void finish_data_command(Socket data)
+        public void finishDataCommand(Socket data)
         {
                 // Close the socket.  This tells the server we're done (EOF.)
                 data.shutdown(SocketShutdown.BOTH);
                 data.close();
 
                 // We shouldn't get a 250 in STREAM mode.
-                this.read_response("226");
+                this.readResponse("226");
         }
 
         /// Get a data socket from the server.
@@ -516,7 +528,7 @@ class FTPConnection : Telnet
         /// This sends PASV/PORT as necessary.
         ///
         /// Returns:             the data socket or a listener
-        protected Socket get_data_socket()
+        protected Socket getDataSocket()
         {
                 // What type are we using?
                 switch (this.data_info.type)
@@ -525,11 +537,11 @@ class FTPConnection : Telnet
                        exception ("unknown connection type");
                        
                 // Passive is complicated.  Handle it in another member.
-                case ftp_connection_type.passive:
-                        return this.connect_passive();
+                case FtpConnectionType.passive:
+                        return this.connectPassive();
 
                 // Active is simpler, but not as fool-proof.
-                case ftp_connection_type.active:
+                case FtpConnectionType.active:
                         IPv4Address data_addr = cast(IPv4Address) this.data_info.address;
 
                         // Start listening.
@@ -542,9 +554,9 @@ class FTPConnection : Telnet
                         {
                                 char[64] tmp = void;
                                 
-                                this.send_command("EPRT", Text.layout(tmp, "|1|%0|%1|", data_addr.toAddrString, data_addr.toPortString));
-                                // this.send_command("EPRT", format("|1|%s|%s|", data_addr.toAddrString(), data_addr.toPortString()));
-                                this.read_response("200");
+                                this.sendCommand("EPRT", Text.layout(tmp, "|1|%0|%1|", data_addr.toAddrString, data_addr.toPortString));
+                                // this.sendCommand("EPRT", format("|1|%s|%s|", data_addr.toAddrString(), data_addr.toPortString()));
+                                this.readResponse("200");
                         }
                         else
                         {
@@ -564,10 +576,10 @@ class FTPConnection : Telnet
                                                         Integer.format(new char[3], h4), 
                                                         Integer.format(new char[3], p1), 
                                                         Integer.format(new char[3], p2));
-                                this.send_command("PORT", str);
+                                this.sendCommand("PORT", str);
                                 // This formatting is weird.
-                                // this.send_command("PORT", format("%d,%d,%d,%d,%d,%d", h1, h2, h3, h4, p1, p2));
-                                this.read_response("200");
+                                // this.sendCommand("PORT", format("%d,%d,%d,%d,%d,%d", h1, h2, h3, h4, p1, p2));
+                                this.readResponse("200");
                         }
 
                         return listener;
@@ -581,14 +593,14 @@ class FTPConnection : Telnet
         ///
         /// Params:
         ///    data =            the data listener socket
-        protected void prepare_data_socket(inout Socket data)
+        protected void prepareDataSocket(inout Socket data)
         {
                 switch (this.data_info.type)
                 {
                 default:
                         exception ("unknown connection type");
                         
-                case ftp_connection_type.active:
+                case FtpConnectionType.active:
                         Socket new_data = null;
 
                         SocketSet set = new SocketSet();
@@ -623,7 +635,7 @@ class FTPConnection : Telnet
                         data = new_data;
                         break;
 
-                case ftp_connection_type.passive:
+                case FtpConnectionType.passive:
                         break;
                 }
         }
@@ -631,15 +643,15 @@ class FTPConnection : Telnet
         /// Send a PASV and initiate a connection.
         ///
         /// Returns:             a connected socket
-        public Socket connect_passive()
+        public Socket connectPassive()
         {
                 Address connect_to = null;
 
                 // SPSV, which is just a port number.
                 if (this.is_supported("SPSV"))
                 {
-                        this.send_command("SPSV");
-                        auto response = this.read_response("227");
+                        this.sendCommand("SPSV");
+                        auto response = this.readResponse("227");
 
                         // Connecting to the same host.
                         IPv4Address remote = cast(IPv4Address) this.socket.remoteAddress();
@@ -653,8 +665,8 @@ class FTPConnection : Telnet
                 // Extended passive mode (IP v6, etc.)
                 else if (this.is_supported("EPSV"))
                 {
-                        this.send_command("EPSV");
-                        auto response = this.read_response("229");
+                        this.sendCommand("EPSV");
+                        auto response = this.readResponse("229");
 
                         // Try to pull out the (possibly not parenthesized) address.
                         auto r = Regex.search(response.message, `\([^0-9][^0-9][^0-9](\d+)[^0-9]\)`);
@@ -671,8 +683,8 @@ class FTPConnection : Telnet
                 }
                 else
                 {
-                        this.send_command("PASV");
-                        auto response = this.read_response("227");
+                        this.sendCommand("PASV");
+                        auto response = this.readResponse("227");
 
                         // Try to pull out the (possibly not parenthesized) address.
                         auto r = Regex.search(response.message, `(\d+),\s*(\d+),\s*(\d+),\s*(\d+),\s*(\d+)(,\s*(\d+))?`);
@@ -690,9 +702,6 @@ class FTPConnection : Telnet
                 scope (exit)
                         delete connect_to;
 
-                debug (ftp_connection)
-                        writefln("[FTP]     (Connecting to %s)", connect_to.toUtf8());
-
                 // This will throw an exception if it cannot connect.
                 auto sock = new Socket(AddressFamily.INET, SocketType.STREAM, ProtocolType.TCP);
                 sock.connect (connect_to);
@@ -705,15 +714,15 @@ class FTPConnection : Telnet
         /// Only NON PRINT is supported.
         ///
         /// Params:
-        ///    type =            ftp_format.ascii or ftp_format.image
-        public void type(ftp_format format)
+        ///    type =            FtpFormat.ascii or FtpFormat.image
+        public void type(FtpFormat format)
         {
-                if (format == ftp_format.ascii)
-                        this.send_command("TYPE", "A");
+                if (format == FtpFormat.ascii)
+                        this.sendCommand("TYPE", "A");
                 else
-                        this.send_command("TYPE", "I");
+                        this.sendCommand("TYPE", "I");
 
-                this.read_response("200");
+                this.readResponse("200");
         }
 
         /// Store a local file on the server.
@@ -725,7 +734,8 @@ class FTPConnection : Telnet
         ///    local_file =      the path to the local file
         ///    progress =        a delegate to call with progress information
         ///    format =          what format to send the data in
-        public void store_file(char[] path, char[] local_file, ftp_progress_dg progress = null, ftp_format format = ftp_format.image)
+
+        public void put(char[] path, char[] local_file, FtpProgress progress = null, FtpFormat format = FtpFormat.image)
         in
         {
                 assert (path.length > 0);
@@ -754,7 +764,7 @@ class FTPConnection : Telnet
                 }
 
                 // Now that it's open, we do what we always do.
-                this.store_file(path, file, progress, format);
+                this.put(path, file, progress, format);
         }
 
         /// Store data from a stream on the server.
@@ -766,7 +776,7 @@ class FTPConnection : Telnet
         ///    stream =          data to store, or null for a blank file
         ///    progress =        a delegate to call with progress information
         ///    format =          what format to send the data in
-        public void store_file(char[] path, Conduit stream = null, ftp_progress_dg progress = null, ftp_format format = ftp_format.image)
+        public void put(char[] path, Conduit stream = null, FtpProgress progress = null, FtpFormat format = FtpFormat.image)
         in
         {
                 assert (path.length > 0);
@@ -777,13 +787,13 @@ class FTPConnection : Telnet
                 this.type(format);
 
                 // Okay server, we want to store something...
-                Socket data = this.process_data_command("STOR", path);
+                Socket data = this.processDataCommand("STOR", path);
 
                 // Send the stream over the socket!
                 if (stream !is null)
-                        this.send_stream(data, stream, progress);
+                        this.sendStream(data, stream, progress);
 
-                this.finish_data_command(data);
+                this.finishDataCommand(data);
         }
 
         /// Append data to a file on the server.
@@ -795,7 +805,7 @@ class FTPConnection : Telnet
         ///    stream =          data to append to the file
         ///    progress =        a delegate to call with progress information
         ///    format =          what format to send the data in
-        public void append(char[] path, Conduit stream, ftp_progress_dg progress = null, ftp_format format = ftp_format.image)
+        public void append(char[] path, Conduit stream, FtpProgress progress = null, FtpFormat format = FtpFormat.image)
         in
         {
                 assert (path.length > 0);
@@ -807,23 +817,23 @@ class FTPConnection : Telnet
                 this.type(format);
 
                 // Okay server, we want to store something...
-                Socket data = this.process_data_command("APPE", path);
+                Socket data = this.processDataCommand("APPE", path);
 
                 // Send the stream over the socket!
-                this.send_stream(data, stream, progress);
+                this.sendStream(data, stream, progress);
 
-                this.finish_data_command(data);
+                this.finishDataCommand(data);
         }
 
         /// Seek to a byte offset for the next transfer.
         ///
         /// Params:
         ///    offset =          the number of bytes to seek forward
-        public void restart_seek(size_t offset)
+        public void restartSeek(size_t offset)
         {
                 char[16] tmp;
-                this.send_command("REST", Integer.format (tmp, cast(long) offset));
-                this.read_response("350");
+                this.sendCommand("REST", Integer.format (tmp, cast(long) offset));
+                this.readResponse("350");
 
                 // Set this for later use.
                 this.restart_pos = offset;
@@ -831,7 +841,7 @@ class FTPConnection : Telnet
 
         /// Allocate space for a file.
         ///
-        /// After calling this, append() or store_file() should be the next command.
+        /// After calling this, append() or put() should be the next command.
         ///
         /// Params:
         ///    bytes =           the number of bytes to allocate
@@ -843,8 +853,8 @@ class FTPConnection : Telnet
         body
         {
                 char[16] tmp;
-                this.send_command("ALLO", Integer.format(tmp, cast(long) bytes));
-                auto response = this.read_response();
+                this.sendCommand("ALLO", Integer.format(tmp, cast(long) bytes));
+                auto response = this.readResponse();
 
                 // For our purposes 200 and 202 are both fine.
                 if (response.code != "200" && response.code != "202")
@@ -860,7 +870,7 @@ class FTPConnection : Telnet
         ///    local_file =      the path to the local file
         ///    progress =        a delegate to call with progress information
         ///    format =          what format to read the data in
-        public void retrieve_file(char[] path, char[] local_file, ftp_progress_dg progress = null, ftp_format format = ftp_format.image)
+        public void get(char[] path, char[] local_file, FtpProgress progress = null, FtpFormat format = FtpFormat.image)
         in
         {
                 assert (path.length > 0);
@@ -889,7 +899,7 @@ class FTPConnection : Telnet
                 }
 
                 // Now that it's open, we do what we always do.
-                this.retrieve_file(path, file, progress, format);
+                this.get(path, file, progress, format);
         }
 
         /// Retrieve a remote file's contents into a local file.
@@ -901,7 +911,7 @@ class FTPConnection : Telnet
         ///    stream =          stream to write the data to
         ///    progress =        a delegate to call with progress information
         ///    format =          what format to read the data in
-        public void retrieve_file(char[] path, Conduit stream, ftp_progress_dg progress = null, ftp_format format = ftp_format.image)
+        public void get(char[] path, Conduit stream, FtpProgress progress = null, FtpFormat format = FtpFormat.image)
         in
         {
                 assert (path.length > 0);
@@ -913,24 +923,24 @@ class FTPConnection : Telnet
                 this.type(format);
 
                 // Okay server, we want to get this file...
-                Socket data = this.process_data_command("RETR", path);
+                Socket data = this.processDataCommand("RETR", path);
 
                 // Read the stream in from the socket!
-                this.read_stream(data, stream, progress);
+                this.readStream(data, stream, progress);
 
-                this.finish_data_command(data);
+                this.finishDataCommand(data);
         }
 
         /// Get information about a single file.
         ///
-        /// Return an ftp_file_info struct about the specified path.
+        /// Return an FtpFileInfo struct about the specified path.
         /// This may not work consistently on directories (but should.)
         ///
         /// Params:
         ///    path =            the file or directory to get information about
         ///
         /// Returns:             the file information
-        public ftp_file_info get_file_info(char[] path)
+        public FtpFileInfo getFileInfo(char[] path)
         in
         {
                 assert (path.length > 0);
@@ -939,13 +949,13 @@ class FTPConnection : Telnet
         {
                 // Start assuming the MLST didn't work.
                 bool mlst_success = false;
-                ftp_response response;
+                FtpResponse response;
 
                 // Check if MLST might be supported...
-                if (this.maybe_supported("MLST"))
+                if (this.isSupported("MLST"))
                 {
-                        this.send_command("MLST", path);
-                        response = this.read_response();
+                        this.sendCommand("MLST", path);
+                        response = this.readResponse();
 
                         // If we know it was supported for sure, this is an error.
                         if (this.is_supported("MLST"))
@@ -966,12 +976,12 @@ class FTPConnection : Telnet
                                 throw new FTPException("CLIENT: Bad MLST response from server", "501");
 
                         // Return the first line's information.
-                        return parse_mlst_line(lines[1]);
+                        return parseMlstLine(lines[1]);
                 }
                 else
                 {
                         // Send a list command.  This may list the contents of a directory, even.
-                        ftp_file_info[] temp = this.send_list_command(path);
+                        FtpFileInfo[] temp = this.sendListCommand(path);
 
                         // If there wasn't at least one line, the file didn't exist?
                         // We should have already handled that.
@@ -980,9 +990,9 @@ class FTPConnection : Telnet
 
                         // If there are multiple lines, try to return the correct one.
                         if (temp.length != 1)
-                                foreach (ftp_file_info info; temp)
+                                foreach (FtpFileInfo info; temp)
                                 {
-                                        if (info.type == ftp_file_type.cdir)
+                                        if (info.type == FtpFileType.cdir)
                                                 return info;
                                 }
 
@@ -999,32 +1009,32 @@ class FTPConnection : Telnet
         ///    path =            the directory to list
         ///
         /// Returns:             an array of the contents
-        public ftp_file_info[] get_dir_contents(char[] path)
+        public FtpFileInfo[] ls(char[] path)
         in
         {
                 assert (path.length == 0 || path[path.length - 1] != '/');
         }
         body
         {
-                ftp_file_info[] dir;
+                FtpFileInfo[] dir;
 
                 // We'll try MLSD (which is so much better) first... but it may fail.
                 bool mlsd_success = false;
                 Socket data = null;
 
                 // Try it if it could/might/maybe is supported.
-                if (this.maybe_supported("MLST"))
+                if (this.isSupported("MLST"))
                 {
                         mlsd_success = true;
 
-                        // Since this is a data command, process_data_command handles
+                        // Since this is a data command, processDataCommand handles
                         // checking the response... just catch its Exception.
                         try
                         {
                                 if (path.length > 0)
-                                        data = this.process_data_command("MLSD", path);
+                                        data = this.processDataCommand("MLSD", path);
                                 else
-                                        data = this.process_data_command("MLSD");
+                                        data = this.processDataCommand("MLSD");
                         }
                         catch (FTPException)
                                 mlsd_success = false;
@@ -1034,8 +1044,8 @@ class FTPConnection : Telnet
                 if (mlsd_success)
                 {
                         auto listing = new MemoryConduit;
-                        this.read_stream(data, listing);
-                        this.finish_data_command(data);
+                        this.readStream(data, listing);
+                        this.finishDataCommand(data);
 
                         // Each line is something in that directory.
                         char[][] lines = Text.delineate(cast(char[]) listing.slice());
@@ -1045,7 +1055,7 @@ class FTPConnection : Telnet
                         foreach (char[] line; lines)
                         {
                                 // Parse each line exactly like MLST does.
-                                ftp_file_info info = this.parse_mlst_line(line);
+                                FtpFileInfo info = this.parseMlstLine(line);
                                 if (info.name.length > 0)
                                         dir ~= info;
                         }
@@ -1054,7 +1064,7 @@ class FTPConnection : Telnet
                 }
                 // Fall back to LIST.
                 else
-                        return this.send_list_command(path);
+                        return this.sendListCommand(path);
         }
 
         /// Send a LIST command to determine a directory's content.
@@ -1066,20 +1076,20 @@ class FTPConnection : Telnet
         ///    path =            the file or directory to list
         ///
         /// Returns:             an array of the contents
-        protected ftp_file_info[] send_list_command(char[] path)
+        protected FtpFileInfo[] sendListCommand(char[] path)
         {
-                ftp_file_info[] dir;
+                FtpFileInfo[] dir;
                 Socket data = null;
 
                 if (path.length > 0)
-                        data = this.process_data_command("LIST", path);
+                        data = this.processDataCommand("LIST", path);
                 else
-                        data = this.process_data_command("LIST");
+                        data = this.processDataCommand("LIST");
 
                 // Read in the stupid non-standardized response.
                 auto listing = new MemoryConduit;
-                this.read_stream(data, listing);
-                this.finish_data_command(data);
+                this.readStream(data, listing);
+                this.finishDataCommand(data);
 
                 // Split out the lines.  Most of the time, it's one-to-one.
                 char[][] lines = Text.delineate (cast(char[]) listing.slice());
@@ -1094,7 +1104,7 @@ class FTPConnection : Telnet
                                 continue;
 
                         // Now parse the line, or try to.
-                        ftp_file_info info = this.parse_list_line(line);
+                        FtpFileInfo info = this.parseListLine(line);
                         if (info.name.length > 0)
                                 dir ~= info;
                 }
@@ -1111,9 +1121,9 @@ class FTPConnection : Telnet
         ///    line =            the line to parse
         ///
         /// Returns:             information about the file
-        protected ftp_file_info parse_list_line(char[] line)
+        protected FtpFileInfo parseListLine(char[] line)
         {
-                ftp_file_info info;
+                FtpFileInfo info;
                 size_t pos = 0;
 
                 // Convenience function to parse a word from the line.
@@ -1148,11 +1158,11 @@ class FTPConnection : Telnet
 
                         // The first character tells us what it is.
                         if (line[0] == 'd')
-                                info.type = ftp_file_type.dir;
+                                info.type = FtpFileType.dir;
                         else if (line[0] == '-')
-                                info.type = ftp_file_type.file;
+                                info.type = FtpFileType.file;
                         else
-                                info.type = ftp_file_type.unknown;
+                                info.type = FtpFileType.unknown;
 
                         // Parse out the mode... rwxrwxrwx = 777.
                         char[] unix_mode = "0000".dup;
@@ -1217,7 +1227,7 @@ class FTPConnection : Telnet
                         if (dir_or_size.length < 0)
                                 return info;
                         else if (dir_or_size[0] == '<')
-                                info.type = ftp_file_type.dir;
+                                info.type = FtpFileType.dir;
                         else
                                 info.size = toLong(dir_or_size);
 
@@ -1231,9 +1241,9 @@ class FTPConnection : Telnet
 
                 // Try to fix the type?
                 if (info.name == ".")
-                        info.type = ftp_file_type.cdir;
+                        info.type = FtpFileType.cdir;
                 else if (info.name == "..")
-                        info.type = ftp_file_type.pdir;
+                        info.type = FtpFileType.pdir;
 
                 return info;
         }
@@ -1246,9 +1256,9 @@ class FTPConnection : Telnet
         ///    line =            the line to parse
         ///
         /// Returns:             information about the file
-        protected ftp_file_info parse_mlst_line(char[] line)
+        protected FtpFileInfo parseMlstLine(char[] line)
         {
-                ftp_file_info info;
+                FtpFileInfo info;
 
                 // After this loop, filename_pos will be location of space + 1.
                 size_t filename_pos = 0;
@@ -1282,23 +1292,23 @@ class FTPConnection : Telnet
                                 switch (Ascii.toLower(info.facts["type"]))
                                 {
                                 case "file":
-                                        info.type = ftp_file_type.file;
+                                        info.type = FtpFileType.file;
                                         break;
 
                                 case "cdir":
-                                        info.type = ftp_file_type.cdir;
+                                        info.type = FtpFileType.cdir;
                                         break;
 
                                 case "pdir":
-                                        info.type = ftp_file_type.pdir;
+                                        info.type = FtpFileType.pdir;
                                         break;
 
                                 case "dir":
-                                        info.type = ftp_file_type.dir;
+                                        info.type = FtpFileType.dir;
                                         break;
 
                                 default:
-                                        info.type = ftp_file_type.other;
+                                        info.type = FtpFileType.other;
                                 }
                         }
 
@@ -1310,9 +1320,9 @@ class FTPConnection : Telnet
 
                         // And the two dates.
                         if ("modify" in info.facts)
-                                info.modify = this.parse_timeval(info.facts["modify"]);
+                                info.modify = this.parseTimeval(info.facts["modify"]);
                         if ("create" in info.facts)
-                                info.create = this.parse_timeval(info.facts["create"]);
+                                info.create = this.parseTimeval(info.facts["create"]);
                 }
 
                 return info;
@@ -1326,7 +1336,7 @@ class FTPConnection : Telnet
         ///    timeval =         the YYYYMMDDHHMMSS date
         ///
         /// Returns:             a d_time representing the same date
-        protected d_time parse_timeval(char[] timeval)
+        protected d_time parseTimeval(char[] timeval)
         {
                 Epoch.Fields fields;
 
@@ -1357,11 +1367,11 @@ class FTPConnection : Telnet
         }
         body
         {
-                this.send_command("MDTM", path);
-                auto response = this.read_response("213");
+                this.sendCommand("MDTM", path);
+                auto response = this.readResponse("213");
 
                 // The whole response should be a timeval.
-                return this.parse_timeval(response.message);
+                return this.parseTimeval(response.message);
         }
 
         /// Create a directory.
@@ -1380,20 +1390,20 @@ class FTPConnection : Telnet
         }
         body
         {
-                this.send_command("MKD", path);
-                auto response = this.read_response("257");
+                this.sendCommand("MKD", path);
+                auto response = this.readResponse("257");
 
-                return this.parse_257(response);
+                return this.parse257(response);
         }
 
         /// Get supported features from the server.
         ///
         /// This may not be supported, in which case the list will remain empty.
         /// Otherwise, it will contain at least FEAT.
-        public void get_features()
+        public void getFeatures()
         {
-                this.send_command("FEAT");
-                auto response = this.read_response();
+                this.sendCommand("FEAT");
+                auto response = this.readResponse();
 
                 // 221 means FEAT is supported, and a list follows.  Otherwise we don't know...
                 if (response.code != "211")
@@ -1403,7 +1413,7 @@ class FTPConnection : Telnet
                         char[][] lines = Text.delineate (response.message);
 
                         // There are two more lines than features, but we also have FEAT.
-                        this.supported_features = new ftp_feature[lines.length - 1];
+                        this.supported_features = new FtpFeature[lines.length - 1];
                         this.supported_features[0].command = "FEAT";
 
                         for (size_t i = 1; i < lines.length - 1; i++)
@@ -1423,13 +1433,13 @@ class FTPConnection : Telnet
         ///
         /// Example:
         /// ----------
-        /// if (ftp.maybe_supported("SIZE"))
+        /// if (ftp.isSupported("SIZE"))
         ///     size = ftp.size("example.txt");
         /// ----------
         ///
         /// Params:
         ///    command =         the command in question
-        public bool maybe_supported(char[] command)
+        public bool isSupported(char[] command)
         in
         {
                 assert (command.length > 0);
@@ -1440,7 +1450,7 @@ class FTPConnection : Telnet
                         return true;
 
                 // Search through the list for the feature.
-                foreach (ftp_feature feat; this.supported_features)
+                foreach (FtpFeature feat; this.supported_features)
                 {
                         if (Ascii.icompare(feat.command, command) == 0)
                                 return true;
@@ -1464,7 +1474,7 @@ class FTPConnection : Telnet
                 if (this.supported_features.length == 0)
                         return false;
 
-                return this.maybe_supported(command);
+                return this.isSupported(command);
         }
 
         /// Send a site-specific command.
@@ -1476,20 +1486,20 @@ class FTPConnection : Telnet
         ///    command =         the command to send (after SITE)
         ///    parameters =      any additional parameters to send
         ///                      (each will be prefixed by a space)
-        public ftp_response site_command(char[] command, char[][] parameters ...)
+        public FtpResponse siteCommand(char[] command, char[][] parameters ...)
         in
         {
                 assert (command.length > 0);
         }
         body
         {
-                // Because of the way send_command() works, we have to tweak this a bit.
+                // Because of the way sendCommand() works, we have to tweak this a bit.
                 char[][] temp_params = new char[][parameters.length + 1];
                 temp_params[0] = command;
                 temp_params[1 .. temp_params.length][] = parameters;
 
-                this.send_command("SITE", temp_params);
-                auto response = this.read_response();
+                this.sendCommand("SITE", temp_params);
+                auto response = this.readResponse();
 
                 // Check to make sure it didn't fail.
                 if (response.code[0] != '2')
@@ -1501,8 +1511,8 @@ class FTPConnection : Telnet
         /// Send a NOOP, typically used to keep the connection alive.
         public void noop()
         {
-                this.send_command("NOOP");
-                this.read_response("200");
+                this.sendCommand("NOOP");
+                this.readResponse("200");
         }
 
         /// Send the stream to the server.
@@ -1511,7 +1521,8 @@ class FTPConnection : Telnet
         ///    data =            the socket to write to
         ///    stream =          the stream to read from
         ///    progress =        a delegate to call with progress information
-        protected void send_stream(Socket data, Conduit stream, ftp_progress_dg progress = null)
+
+        protected void sendStream(Socket data, Conduit stream, FtpProgress progress = null)
         in
         {
                 assert (data !is null);
@@ -1578,7 +1589,7 @@ class FTPConnection : Telnet
         ///    data =            the socket to read from
         ///    stream =          the stream to write to
         ///    progress =        a delegate to call with progress information
-        protected void read_stream(Socket data, Conduit stream, ftp_progress_dg progress = null)
+        protected void readStream(Socket data, Conduit stream, FtpProgress progress = null)
         in
         {
                 assert (data !is null);
@@ -1641,7 +1652,8 @@ class FTPConnection : Telnet
         ///    response =        the response to parse
         ///
         /// Returns:             the path in the response
-        protected char[] parse_257(ftp_response response)
+
+        protected char[] parse257(FtpResponse response)
         {
                 char[] path = new char[response.message.length];
                 size_t pos = 1, len = 0;
@@ -1681,27 +1693,28 @@ class FTPConnection : Telnet
         /// Params:
         ///    command =         the command to send
         ///    ... =             additional parameters to send (a space will be prepended to each)
-        public void send_command(char[] command, char[][] parameters ...)
+        public void sendCommand(char[] command, char[][] parameters ...)
         {
                 assert (this.socket !is null);
 
-                // Write this out as a log?
-                debug (ftp_connection)
-                {
-                        writef("[FTP]     %s", command);
-                        foreach (char[] param; parameters)
-                                writef(" %s", param);
-                        writefln("");
-                }
+
+		char [] socketCommand = command ;
 
                 // Send the command, parameters, and then a CRLF.
-                this.socket_send(command);
+
                 foreach (char[] param; parameters)
                 {
-                        this.socket_send(" ");
-                        this.socket_send(param);
+		  socketCommand ~= " " ~ param;
+
                 }
-                this.socket_send("\r\n");
+
+		socketCommand ~= "\r\n";
+
+		debug(FtpDebug) 
+		  {
+		    Stdout.formatln("[sendCommand] Sending command '{0}'",socketCommand );
+		  }
+		this.sendData(socketCommand);
         }
 
         /// Read in response lines from the server, expecting a certain code.
@@ -1712,36 +1725,38 @@ class FTPConnection : Telnet
         /// Returns:             the response from the server
         ///
         /// Throws:              FTPException if code does not match
-        public ftp_response read_response(char[] expected_code)
+        public FtpResponse readResponse(char[] expected_code)
         {
-                auto response = this.read_response();
+	  debug (FtpDebug ) { Stdout.formatln("[readResponse] Expected Response {0}",expected_code )(); }
+	  auto response = this.readResponse();
+	  debug (FtpDebug ) { Stdout.formatln("[readResponse] Actual Response {0}",response.code)(); }
 
-                if (response.code != expected_code)
-                        exception (response);
+	  if (response.code != expected_code)
+	    exception (response);
 
-                return response;
+
+
+	  return response;
         }
 
         /// Read in the response line(s) from the server.
         ///
         /// Returns:             the response from the server
-        public ftp_response read_response()
+        public FtpResponse readResponse()
         {
                 assert (this.socket !is null);
 
                 // Pick a time at which we stop reading.  It can't take too long, but it could take a bit for the whole response.
                 d_time end_time = Epoch.utcMilli() + cast(d_time) (this.timeout * 10);
 
-                ftp_response response;
+                FtpResponse response;
                 char[] single_line = null;
 
                 // Danger, Will Robinson, don't fall into an endless loop from a malicious server.
                 while (Epoch.utcMilli() < end_time)
                 {
-                        single_line = this.socket_readline();
+                        single_line = this.readLine();
 
-                        debug (ftp_connection)
-                                writefln("[FTP] %s", single_line);
 
                         // This is the first line.
                         if (response.message.length == 0)
@@ -1821,7 +1836,7 @@ class FTPException: Exception
         ///
         /// Params:
         ///    r =               the server response
-        this (ftp_response r)
+        this (FtpResponse r)
         {
                 this.response_code[] = r.code;
                 super(r.message);

@@ -43,17 +43,18 @@ class Telnet
         ///
         /// Params:
         ///    buf =             the bytes to send
-        void socket_sendline(void[] buf)
+
+        void sendLine(void[] buf)
         {
-                this.socket_send(buf);
-                this.socket_send("\r\n");
+                this.sendData(buf);
+                this.sendData("\r\n");
         }
 
         /// Send data over the socket.
         ///
         /// Params:
         ///    buf =             the bytes to send
-        void socket_send(void[] buf)
+        void sendData(void[] buf)
         in
         {
                 assert (buf.length > 0);
@@ -97,7 +98,7 @@ class Telnet
         /// Read a CRLF terminated line from the socket.
         ///
         /// Returns:             the line read
-        char[] socket_readline()
+        char[] readLine()
         {
                 // Figure, first, how long we're allowed to take.
                 d_time end_time = Epoch.utcMilli() + cast(d_time) this.timeout;
@@ -159,7 +160,7 @@ class Telnet
         /// Params:
         ///    hostname =        the hostname to lookup and connect to
         ///    port =            the port to connect on
-        Socket find_available_server(char[] hostname, int port)
+        Socket findAvailableServer(char[] hostname, int port)
         {
                 // First we need to get a list of IP addresses.
                 auto host = new NetHost();
