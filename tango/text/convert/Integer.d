@@ -55,28 +55,28 @@ enum Flags
 }
 
 
-char[] toUtf8 (long i, Format t, Flags f)
+char[] toUtf8 (long i, Format t=Format.Signed, Flags f=Flags.None)
 {
         char[66] tmp = void;
         
         return format (tmp, i, t, f).dup;
 }
                
-char[] toUtf16 (long i, Format t, Flags f)
+wchar[] toUtf16 (long i, Format t=Format.Signed, Flags f=Flags.None)
 {
         wchar[66] tmp = void;
         
         return format (tmp, i, t, f).dup;
 }
                
-char[] toUtf32 (long i, Format t, Flags f)
+dchar[] toUtf32 (long i, Format t=Format.Signed, Flags f=Flags.None)
 {
         dchar[66] tmp = void;
         
         return format (tmp, i, t, f).dup;
 }
                
-*/******************************************************************************
+/*******************************************************************************
 
         Format numeric values into the provided output buffer. The
         following types are supported:
