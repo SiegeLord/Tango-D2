@@ -97,13 +97,17 @@ int icompare (char[] s1, char[] s2)
 ******************************************************************************/
 
 debug (UnitTest)
-{
+{       
+//        void main(){}
+        
         unittest
         {
-        assert (toLower("1bac") == "1bac");
-        assert (toLower("1BAC") == "1bac");
-        assert (toUpper("1bac") == "1BAC");
-        assert (toUpper("1BAC") == "1BAC");
+        char[20] tmp;
+        
+        assert (toLower("1bac", tmp) == "1bac");
+        assert (toLower("1BAC", tmp) == "1bac");
+        assert (toUpper("1bac", tmp) == "1BAC");
+        assert (toUpper("1BAC", tmp) == "1BAC");
         assert (icompare ("ABC", "abc") is 0);
         assert (icompare ("abc", "abc") is 0);
         assert (icompare ("abcd", "abc") > 0);
