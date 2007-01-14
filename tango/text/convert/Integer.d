@@ -55,6 +55,15 @@ enum Flags
 }
 
 
+/******************************************************************************
+
+        Template wrapper to make life simpler. Returns a text version
+        of the provided value.
+
+        See format() for details
+
+******************************************************************************/
+
 char[] toUtf8 (long i, Format t=Format.Signed, Flags f=Flags.None)
 {
         char[66] tmp = void;
@@ -62,6 +71,15 @@ char[] toUtf8 (long i, Format t=Format.Signed, Flags f=Flags.None)
         return format (tmp, i, t, f).dup;
 }
                
+/******************************************************************************
+
+        Template wrapper to make life simpler. Returns a text version
+        of the provided value.
+
+        See format() for details
+
+******************************************************************************/
+
 wchar[] toUtf16 (long i, Format t=Format.Signed, Flags f=Flags.None)
 {
         wchar[66] tmp = void;
@@ -69,6 +87,15 @@ wchar[] toUtf16 (long i, Format t=Format.Signed, Flags f=Flags.None)
         return format (tmp, i, t, f).dup;
 }
                
+/******************************************************************************
+
+        Template wrapper to make life simpler. Returns a text version
+        of the provided value.
+
+        See format() for details
+
+******************************************************************************/
+
 dchar[] toUtf32 (long i, Format t=Format.Signed, Flags f=Flags.None)
 {
         dchar[66] tmp = void;
@@ -220,6 +247,42 @@ long parse(T) (T[] digits, uint radix=10, uint* ate=null)
         return cast(long) (sign ? -value : value);
 }
 
+/******************************************************************************
+
+        Parse an integer value from the provided 'digits' string. 
+        The string is inspected for a sign and radix, where the
+        latter will override the default radix provided.
+
+        Throws an exception where the input text is not parsable
+        in its entirety.
+        
+******************************************************************************/
+
+int toInt(T) (T[] digits, uint radix=10)
+{
+        return cast(int) toLong (digits, radix);
+}
+
+/******************************************************************************
+
+        Parse an integer value from the provided 'digits' string. 
+        The string is inspected for a sign and radix, where the
+        latter will override the default radix provided.
+
+        Throws an exception where the input text is not parsable
+        in its entirety.
+        
+******************************************************************************/
+
+long toLong(T) (T[] digits, uint radix=10)
+{
+        uint len;
+
+        auto x = parse (digits, radix, &len);
+        if (len < digits.length)
+            throw new Exception ("invalid input:"~digits);
+        return x;
+}
 
 /******************************************************************************
 
