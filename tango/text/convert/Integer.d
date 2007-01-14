@@ -227,8 +227,13 @@ ulong convert(T) (T[] digits, uint radix=10, uint* ate=null)
                       else
                          break;
 
-                value = value * radix + (c - '0');
-                ++eaten;
+                if ((c -= '0') < radix)
+                   {
+                   value = value * radix + c;
+                   ++eaten;
+                   }
+                else
+                   break;
                 }
 
         if (ate)
