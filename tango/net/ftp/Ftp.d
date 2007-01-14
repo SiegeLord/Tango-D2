@@ -1854,3 +1854,47 @@ class FTPException: Exception
                 return buffer;
         }
 }
+
+
+unittest 
+{
+
+
+  auto ftp = new FTPConnection("ftp.gnu.org","anonymous","anonymous");
+  auto dirList = ftp.ls(""); // get list for current dir
+
+  foreach ( entry;dirList )
+    {
+
+      Stdout("File :")(entry.name)("\tSize :")(entry.size)().newline;
+
+    }
+
+  ftp.cd("gnu/windows/emacs");
+
+
+  dirList = ftp.ls(""); // get list for current dir
+ 
+  foreach ( entry;dirList )
+    {
+
+      Stdout("File :")(entry.name)("\tSize :")(entry.size)().newline;
+
+    }
+
+
+  size_t size = ftp.size("emacs-21.3-barebin-i386.tar.gz");
+
+  void progress( size_t pos )
+    {
+
+      Stdout.formatln("Byte {0} of {1}",pos,size )();
+
+    }
+
+
+  ftp.get("emacs-21.3-barebin-i386.tar.gz","emacs.tgz", &progress);
+
+
+
+}
