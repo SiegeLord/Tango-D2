@@ -68,6 +68,21 @@ version(DigitalMars)
     }
 }
 
+/* Versions describing the storage of a IEEE floating-point types
+ * These values will differ depending on whether 'real' is 64, 80, or 128 bits,
+ * and whether it is a big-endian or little-endian architecture.
+ * Only three 'real' ABIs are currently supported:
+ * 64 bit Big-endian    (eg PowerPC)
+ * 64 bit Little-endian
+ * 80 bit Little-endian, with implied bit (eg x87, Itanium).
+ */
+
+version(LittleEndian) {
+    static assert(real.mant_dig == 53 || real.mant_dig==64,
+        "Only 64-bit and 80-bit reals are supported");
+} else static assert(real.mant_dig == 53,
+     "Only 64-bit reals are supported for BigEndian CPUs");
+
 /** IEEE exception status flags
 
  These flags indicate that an exceptional floating-point condition has occured.
@@ -307,16 +322,7 @@ private {
 /* Constants describing the storage of a IEEE floating-point types
  * These values will differ depending on whether 'real' is 64, 80, or 128 bits,
  * and whether it is a big-endian or little-endian architecture.
- * Only three 'real' ABIs are currently supported:
- * 64 bit Big-endian    (eg PowerPC)
- * 64 bit Little-endian
- * 80 bit Little-endian, with implied bit (eg x87, Itanium).
  */
-
-static if (real.max==double.max) {
-    version = Real64;
-}
-
 
 template float_traits(T)
 {
@@ -494,7 +500,6 @@ real ldexp(real n, int exp) /* intrinsic */
  */
 int ilogb(real x)
 {
-    version (X86) {
         version(DigitalMars_D_InlineAsm_X86)
         {
             int y;
@@ -505,7 +510,7 @@ int ilogb(real x)
                 fistp y, ST(0); // and return the exponent
             }
             return y;
-        } else {
+        } else version (Real80) {
             short e = (cast(short *)&x)[4] & 0x7FFF;
             if (e == 0x7FFF) {
                 // BUG: should also set the invalid exception
@@ -528,8 +533,7 @@ int ilogb(real x)
 
             }
             return e - 0x3FFF;
-        }
-    } else {
+        } else {
         return tango.stdc.math.ilogbl(x);
     }
 }
@@ -719,7 +723,7 @@ unittest
 
 int isNaN(real x)
 {
-  version(Real64) {
+   static if(real.mant_dig == 53) {
         ulong*  p = cast(ulong *)&x;
         return (*p & 0x7FF0_0000 == 0x7FF0_0000) && *p & 0x000F_FFFF;
   } else {
@@ -773,7 +777,7 @@ int isNormal(double d)
 /** ditto */
 int isNormal(real x)
 {
-    version(Real64) {
+    static if (real.mant_dig == 53) {
         return isNormal(cast(double)x);
     } else {
         ushort* pe = cast(ushort *)&x;
@@ -807,8 +811,8 @@ bool isIdentical(real x, real y)
 {
     long*   pxs = cast(long *)&x;
     long*   pys = cast(long *)&y;
-  version(Real64) {
-    return pxs[0]==pys[0];
+  static if (real.mant_dig == 53){
+    return pxs[0] == pys[0];
   } else {
     ushort* pxe = cast(ushort *)&x;
     ushort* pye = cast(ushort *)&y;
@@ -877,10 +881,14 @@ unittest
 
 int isSubnormal(real e)
 {
-    ushort* pe = cast(ushort *)&e;
-    long*   ps = cast(long *)&e;
+    static if (real.mant_dig == 53) {
+        return isSubnormal(cast(double)e);
+    } else {
+        ushort* pe = cast(ushort *)&e;
+        long*   ps = cast(long *)&e;
 
-    return (pe[4] & 0x7FFF) == 0 && *ps > 0;
+        return (pe[4] & 0x7FFF) == 0 && *ps > 0;
+    }
 }
 
 debug(UnitTest) {

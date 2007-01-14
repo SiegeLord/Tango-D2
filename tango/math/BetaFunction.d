@@ -678,6 +678,9 @@ real betaDistPowerSeries(real a, real b, real x )
  *   $(GAMMA)( (nu+1)/2) / ( sqrt(nu &pi;) $(GAMMA)(nu/2) ) *
  * $(INTEGRATE -&infin;, t) $(POWER (1+$(POWER x, 2)/nu), -(nu+1)/2) dx
  *
+ * Can be used to test whether the means of two normally distributed populations
+ * are equal.
+ *
  * It is related to the incomplete beta integral:
  *        1 - studentsDistribution(nu,t) = 0.5 * betaDistribution( nu/2, 1/2, z )
  * where
@@ -760,8 +763,6 @@ real studentsDistribution(int nu, real t)
  * Given probability p and degrees of freedom nu,
  * finds the argument t such that the one-sided
  * studentsDistribution(nu,t) is equal to p.
- * Used to test whether two distributions have the same
- * standard deviation.
  *
  * Params:
  * nu = degrees of freedom. Must be >1
@@ -840,7 +841,7 @@ assert( feqrel(studentsDistribution(11, studentsDistributionInv(11, 0.9L)),0.9L)
 
 }
 
-/** The Fisher distribution, its complement, and inverse.
+/** The F distribution, its complement, and inverse.
  *
  * The F density function (also known as Snedcor's density or the
  * variance ratio density) is the density
@@ -855,7 +856,12 @@ assert( feqrel(studentsDistribution(11, studentsDistributionInv(11, 0.9L)),0.9L)
  * The inverse of the complemented Fisher distribution,
  * fDistributionComplInv, finds the argument x such that the integral
  * from x to infinity of the F density is equal to the given probability y.
-
+ *
+ * Can be used to test whether the means of multiple normally distributed
+ * populations, all with the same standard deviation, are equal;
+ * or to test that the standard deviations of two normally distributed
+ * populations are equal.
+ *
  * Params:
  *  df1 = Degrees of freedom of the first variable. Must be >= 1
  *  df2 = Degrees of freedom of the second variable. Must be >= 1
