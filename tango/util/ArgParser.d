@@ -265,7 +265,7 @@ unittest {
 
     parser.bind("-", "n", delegate void(char[] value){
         assert(value[0] == '=');
-        n = Integer.parse(value[1..5]);
+        n = cast(int) Integer.parse(value[1..5]);
         assert(n == 4349);
     });
 
