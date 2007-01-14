@@ -642,7 +642,7 @@ QuoteFreach!(T) quotes(T) (T[] src, T[] set)
 
 *******************************************************************************/
 
-T[] layout(T) (T[] output, T[][] layout ...)
+T[] layout(T) (T[] output, T[] layout, T[][] subs ...)
 {
         static void error (char[] msg) {throw new Exception (msg);}
 
@@ -653,8 +653,8 @@ T[] layout(T) (T[] output, T[][] layout ...)
                 args;
         bool    state;
 
-        args = layout.length - 1;
-        foreach (c; layout[0])
+        args = subs.length;
+        foreach (c; layout)
                 {
                 if (state)
                    {
@@ -664,7 +664,7 @@ T[] layout(T) (T[] output, T[][] layout ...)
                       uint index = c - '0';
                       if (index < args)
                          {
-                         T[] x = layout[index+1];
+                         T[] x = subs[index];
 
                          int limit = pos + x.length;
                          if (limit < output.length)
