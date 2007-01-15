@@ -65,7 +65,7 @@ class GrowBuffer : Buffer
 
         ***********************************************************************/
 
-        override void[] get (uint size, bool eat = true)
+        override void[] slice (uint size, bool eat = true)
         {   
                 if (size > readable)
                    {

@@ -312,7 +312,7 @@ abstract class IBuffer // could be an interface, but that causes poor codegen
 
         ***********************************************************************/
 
-        abstract void[] get (uint size, bool eat = true);
+        abstract void[] slice (uint size, bool eat = true);
 
         /***********************************************************************
 

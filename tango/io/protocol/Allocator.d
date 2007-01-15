@@ -216,6 +216,6 @@ class BufferSlice : IAllocator
 
         final void[] allocate (IProtocol.Reader reader, uint bytes, IProtocol.Type type)
         {
-                return protocol_.buffer.get (bytes);
+                return protocol_.buffer.slice (bytes);
         }
 }

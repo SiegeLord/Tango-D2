@@ -400,7 +400,7 @@ class Buffer : IBuffer
                 false, the read position is not adjusted.
 
                 Note that the slice cannot be larger than the size of 
-                the buffer ~ use method _get(void[]) instead where you
+                the buffer ~ use method fill(void[]) instead where you
                 simply want the content copied, or use conduit.read()
                 to extract directly from an attached conduit. Also note 
                 that if you need to retain the slice, then it should be 
@@ -412,12 +412,12 @@ class Buffer : IBuffer
                 auto buffer = new Buffer ("hello world");
 
                 // consume everything unread 
-                auto slice = buffer.get (buffer.readable);
+                auto slice = buffer.slice (buffer.readable);
                 ---
 
         ***********************************************************************/
 
-        void[] get (uint size, bool eat = true)
+        void[] slice (uint size, bool eat = true)
         {   
                 if (size > readable)
                    {
@@ -472,7 +472,7 @@ class Buffer : IBuffer
                 int i = readable ();
                 if (i > dst.length)
                     i = dst.length;
-                dst[0..i] = get(i);
+                dst[0..i] = slice (i);
 
                 // and get the rest directly from conduit
                 if (i < dst.length)
@@ -502,7 +502,7 @@ class Buffer : IBuffer
         void[] extract (void* dst, uint bytes)
         {
                 if (bytes < threshhold)
-                    dst [0 .. bytes] = get (bytes);
+                    dst [0 .. bytes] = slice (bytes);
                 else
                    if (fill (dst [0 .. bytes]) != bytes)
                        error (eofRead);
@@ -529,7 +529,7 @@ class Buffer : IBuffer
 
         IBuffer wait ()
         {       
-                get (1, false);
+                slice (1, false);
                 return this;
         }
 
@@ -703,7 +703,7 @@ class Buffer : IBuffer
                       }
                    return false;
                    }
-                return cast(bool) (get (size) !is null);
+                return cast(bool) (slice (size) !is null);
         }
 
         /***********************************************************************

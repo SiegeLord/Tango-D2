@@ -67,7 +67,7 @@ debug (UnitTest)
                 auto protocol = new PickleProtocol (new Buffer(32));
                 protocol.write (&test, test.sizeof, protocol.Type.Int);
 
-                auto ptr = protocol.buffer.get (test.sizeof, false).ptr;
+                auto ptr = protocol.buffer.slice (test.sizeof, false).ptr;
                 protocol.read  (&test, test.sizeof, protocol.Type.Int);
                 
                 assert (test == 0xcc55ff00);

@@ -115,7 +115,7 @@ struct Console
                         if (len is 0)
                             buffer_.fill;
 
-                        auto x = cast(char[]) buffer_.get (len);
+                        auto x = cast(char[]) buffer_.slice (len);
                         return (copy ? x.dup : x);
                 }
         }

@@ -120,7 +120,7 @@ short[] getDaylightChanges() {
     }
 
     auto r = new Reader(new EndianProtocol(new Buffer((new File(file)).read)));
-    r.buffer.get(20); // skipping first 20 bytes of file, they are not used
+    r.buffer.slice(20); // skipping first 20 bytes of file, they are not used
     
     
     int gmtcnt, stdcnt, leapcnt, timecnt, typecnt, charcnt;
