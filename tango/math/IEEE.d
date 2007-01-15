@@ -68,8 +68,8 @@ version(DigitalMars)
     }
 }
 
-/* Versions describing the storage of a IEEE floating-point types
- * These values will differ depending on whether 'real' is 64, 80, or 128 bits,
+/* Most of the functions depend on the format of the largest IEEE floating-point type.
+ * These code will differ depending on whether 'real' is 64, 80, or 128 bits,
  * and whether it is a big-endian or little-endian architecture.
  * Only three 'real' ABIs are currently supported:
  * 64 bit Big-endian    (eg PowerPC)
@@ -281,7 +281,6 @@ unittest {
 
     assert(getIeeeRounding==RoundingMode.ROUNDDOWN);
 
-
     int cdown = tango.math.Core.rndint(b);
     assert(cdown==5);
 
@@ -354,7 +353,6 @@ template float_traits(T)
 }
 
 }
-
 
 /**
  * Returns x rounded to a long value using the FE_TONEAREST rounding mode.
@@ -510,7 +508,7 @@ int ilogb(real x)
                 fistp y, ST(0); // and return the exponent
             }
             return y;
-        } else version (Real80) {
+        } else static if (real.mant_dig==64) { // 80-bit reals
             short e = (cast(short *)&x)[4] & 0x7FFF;
             if (e == 0x7FFF) {
                 // BUG: should also set the invalid exception
@@ -597,7 +595,7 @@ real logb(real x)
 debug(UnitTest) {
 unittest {
     assert(logb(real.infinity)== real.infinity);
-    assert(isNaN(logb(real.nan)));
+    assert(isIdentical(logb(NaN("jkl")), NaN("jkl")));
     assert(logb(1.0)== 0.0);
     assert(logb(-65536) == 16);
     assert(logb(0.0)== -real.infinity);
@@ -625,11 +623,19 @@ real scalbn(real x, int n)
             fild n;
             fld x;
             fscale;
+            fstp st(1), st;
         }
     } else {
         // BUG: Not implemented in DMD
         return tango.stdc.math.scalbnl(x, n);
     }
+}
+
+debug(UnitTest) {
+unittest {
+    assert(scalbn(-real.infinity, 5)== -real.infinity);
+    assert(isIdentical(scalbn(NaN("jkl"),7), NaN("jkl")));
+}
 }
 
 /**
@@ -906,9 +912,13 @@ unittest
  */
 int isZero(real x)
 {
-    ushort* pe = cast(ushort *)&x;
-    ulong*  ps = cast(ulong *)&x;
-    return (pe[4]&0x7FFF) == 0 && *ps == 0;
+    static if (real.mant_dig == 53) {
+        return ((*cast(ulong *)&x)&0x7FFF_FFFF_FFFF_FFFF) == 0;
+    } else {
+        ushort* pe = cast(ushort *)&x;
+        ulong*  ps = cast(ulong *)&x;
+        return (pe[4]&0x7FFF) == 0 && *ps == 0;
+    }
 }
 
 
@@ -918,11 +928,15 @@ int isZero(real x)
 
 int isInfinity(real e)
 {
-    ushort* pe = cast(ushort *)&e;
-    ulong*  ps = cast(ulong *)&e;
+    static if (real.mant_dig == 53) {
+        return ((*cast(ulong *)&x)&0x7FFF_FFFF_FFFF_FFFF) == 0x7FF8_0000_0000_0000;
+    } else {
+        ushort* pe = cast(ushort *)&e;
+        ulong*  ps = cast(ulong *)&e;
 
-    return (pe[4] & 0x7FFF) == 0x7FFF &&
-        *ps == 0x8000_0000_0000_0000;
+        return (pe[4] & 0x7FFF) == 0x7FFF &&
+            *ps == 0x8000_0000_0000_0000;
+   }
 }
 
 debug(UnitTest) {
@@ -1174,16 +1188,19 @@ unittest
  * Return 1 if sign bit of e is set, 0 if not.
  */
 
-int signbit(real e)
+int signbit(real x)
 {
-    ubyte* pe = cast(ubyte *)&e;
-    return (pe[9] & 0x80) != 0;
+    static if (real.mant_dig == 53) {
+        return ((*cast(ulong *)&x)&0x8000_0000_0000_0000) != 0;
+    } else {
+        ubyte* pe = cast(ubyte *)&x;
+        return (pe[9] & 0x80) != 0;
+    }
 }
 
 debug(UnitTest) {
 unittest
 {
-    debug (math) printf("math.signbit.unittest\n");
     assert(!signbit(float.nan));
     assert(signbit(-float.nan));
     assert(!signbit(168.1234));
@@ -1199,13 +1216,21 @@ unittest
 
 real copysign(real to, real from)
 {
-    ubyte* pto   = cast(ubyte *)&to;
-    ubyte* pfrom = cast(ubyte *)&from;
+    static if (real.mant_dig == 53) {
+        ulong* pto   = cast(ulong *)&to;
+        ulong* pfrom = cast(ulong *)&from;
+        *pto &= 0x7FFF_FFFF_FFFF_FFFF;
+        *pto |= (*pfrom) & 0x8000_0000_0000_0000;
+        return to;
+    } else {
+        ubyte* pto   = cast(ubyte *)&to;
+        ubyte* pfrom = cast(ubyte *)&from;
 
-    pto[9] &= 0x7F;
-    pto[9] |= pfrom[9] & 0x80;
+        pto[9] &= 0x7F;
+        pto[9] |= pfrom[9] & 0x80;
 
-    return to;
+        return to;
+    }
 }
 
 debug(UnitTest) {
