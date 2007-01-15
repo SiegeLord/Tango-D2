@@ -317,43 +317,6 @@ PrecisionControl reduceRealPrecision(PrecisionControl prec) {
     }
 }
 
-private {
-/* Constants describing the storage of a IEEE floating-point types
- * These values will differ depending on whether 'real' is 64, 80, or 128 bits,
- * and whether it is a big-endian or little-endian architecture.
- */
-
-template float_traits(T)
-{
-    static if (T.mant_dig == 53) {
-        // IEEE double (64 bits)
-        const uint mant_bytes = 7;
-        typedef ulong mant_type;
-        typedef uint exp_type;
-     version (LittleEndian) {
-        const uint mant_offset = 0;
-        const int exp_offset = 1;
-        const ulong mant_mask = 0x000F_FFFF_FFFF_FFFF;
-        const uint exp_mask = 0x7FF0_0000;
-    }
-        const bool has_implied_bit = false;
-    } else static if (T.mant_dig == 64) {
-        // IEEE double extended (80-bits)
-        const uint mant_bytes = 8;
-        typedef ulong mant_type;
-        typedef ushort exp_type;
-     version (LittleEndian) {
-        const uint mant_offset = 0;
-        const int exp_offset = 4;
-        const ulong mant_mask = 0xFFFF_FFFF_FFFF_FFFF;
-        const ulong exp_mask = 0x7FFF;
-     }
-        const bool has_implied_bit = true;
-    } else static assert(0, "Unsupported floating point size - must be 64 or 80 bits");
-}
-
-}
-
 /**
  * Returns x rounded to a long value using the FE_TONEAREST rounding mode.
  * If the integer value of x is
@@ -732,12 +695,12 @@ int isNaN(real x)
    static if(real.mant_dig == 53) {
         ulong*  p = cast(ulong *)&x;
         return (*p & 0x7FF0_0000 == 0x7FF0_0000) && *p & 0x000F_FFFF;
-  } else {
-    ushort* pe = cast(ushort *)&x;
-    ulong*  ps = cast(ulong *)&x;
+  } else { // 80-bit real
+        ushort* pe = cast(ushort *)&x;
+        ulong*  ps = cast(ulong *)&x;
 
-    return (pe[4] & 0x7FFF) == 0x7FFF &&
-        *ps & 0x7FFFFFFFFFFFFFFF;
+        return (pe[4] & 0x7FFF) == 0x7FFF &&
+            *ps & 0x7FFFFFFFFFFFFFFF;
   }
 }
 
@@ -766,7 +729,6 @@ int isNormal(float x)
     uint e;
 
     e = *p & 0x7F800000;
-    //printf("e = x%x, *p = x%x\n", e, *p);
     return e && e != 0x7F800000;
 }
 
@@ -850,7 +812,6 @@ int isSubnormal(float f)
 {
     uint *p = cast(uint *)&f;
 
-    //printf("*p = x%x\n", *p);
     return (*p & 0x7F800000) == 0 && *p & 0x007FFFFF;
 }
 
@@ -966,9 +927,16 @@ unittest
  *    $(SV  real.infinity, real.infinity )
  *    $(SV  $(NAN),        $(NAN)        )
  * )
+ *
+ * nextDoubleUp and nextFloatUp are the corresponding functions for
+ * the IEEE double and IEEE float number lines.
  */
 real nextUp(real x)
 {
+ static if (real.mant_dig == 53) {
+       return nextDoubleUp(x);
+ } else {
+    // For 80-bit reals, the "implied bit" is a nuisance...
     ushort *pe = cast(ushort *)&x;
     ulong *ps = cast(ulong *)&x;
 
@@ -1004,10 +972,60 @@ real nextUp(real x)
         }
     }
     return x;
+ }
 }
+
+/** ditto */
+double nextDoubleUp(double x)
+{
+    ulong *ps = cast(ulong *)&x;
+
+    if ((*ps & 0x7FF0_0000_0000_0000) == 0x7FF0_0000_0000_0000) {
+        // First, deal with NANs and infinity
+        if (x == -x.infinity) return -x.max;
+        return x; // +INF and NAN are unchanged.
+    }
+    if (*ps & 0x8000_0000_0000_0000)  { // Negative number
+        if (*ps == 0x8000_0000_0000_0000) { // it was negative zero
+            *ps = 0x0000_0000_0000_0001; // change to smallest subnormal
+            return x;
+        }
+        --*ps;
+    } else { // Positive number
+        ++*ps;
+    }
+    return x;
+}
+
+/** ditto */
+float nextFloatUp(float x)
+{
+    uint *ps = cast(uint *)&x;
+
+    if ((*ps & 0x7FF0_0000) == 0x7FF0_0000) {
+        // First, deal with NANs and infinity
+        if (x == -x.infinity) return -x.max;
+        return x; // +INF and NAN are unchanged.
+    }
+    if (*ps & 0x8000_0000)  { // Negative number
+        if (*ps == 0x8000_0000) { // it was negative zero
+            *ps = 0x0000_0001; // change to smallest subnormal
+            return x;
+        }
+        --*ps;
+    } else { // Positive number
+        ++*ps;
+    }
+    return x;
+}
+
 
 debug(UnitTest) {
 unittest {
+ static if (real.mant_dig == 64) {
+
+  // Tests for 80-bit reals
+
     assert(isIdentical(nextUp(NaN("abc")), NaN("abc")));
     // negative numbers
     assert( nextUp(-real.infinity) == -real.max );
@@ -1016,7 +1034,6 @@ unittest {
     // denormals and zero
     assert( nextUp(-real.min) == -real.min*(1-real.epsilon) );
     assert( nextUp(-real.min*(1-real.epsilon) == -real.min*(1-2*real.epsilon)) );
-    real z  = nextUp(-real.min*(1-real.epsilon) );
     assert( isIdentical(-0.0L, nextUp(-real.min*real.epsilon)) );
     assert( nextUp(-0.0) == real.min*real.epsilon );
     assert( nextUp(0.0) == real.min*real.epsilon );
@@ -1027,6 +1044,27 @@ unittest {
     assert( nextUp(2.0-real.epsilon) == 2.0 );
     assert( nextUp(real.max) == real.infinity );
     assert( nextUp(real.infinity)==real.infinity );
+ }
+
+    assert(isIdentical(nextDoubleUp(NaN("abc")), NaN("abc")));
+    // negative numbers
+    assert( nextDoubleUp(-double.infinity) == -double.max );
+    assert( nextDoubleUp(-1-double.epsilon) == -1.0 );
+    assert( nextDoubleUp(-2) == -2.0 + double.epsilon);
+    // denormals and zero
+
+    assert( nextDoubleUp(-double.min) == -double.min*(1-double.epsilon) );
+    assert( nextDoubleUp(-double.min*(1-double.epsilon) == -double.min*(1-2*double.epsilon)) );
+    assert( isIdentical(-0.0, nextDoubleUp(-double.min*double.epsilon)) );
+    assert( nextDoubleUp(0.0) == double.min*double.epsilon );
+    assert( nextDoubleUp(-0.0) == double.min*double.epsilon );
+    assert( nextDoubleUp(double.min*(1-double.epsilon)) == double.min );
+    assert( nextDoubleUp(double.min) == double.min*(1+double.epsilon) );
+    // positive numbers
+    assert( nextDoubleUp(1) == 1.0 + double.epsilon );
+    assert( nextDoubleUp(2.0-double.epsilon) == 2.0 );
+    assert( nextDoubleUp(double.max) == double.infinity );
+    assert( nextDoubleUp(double.infinity)==double.infinity );
 }
 }
 
@@ -1045,10 +1083,25 @@ unittest {
  * -real.max        -real.infinity
  * -real.infinity    -real.infinity
  * NAN              NAN
+ *
+ * nextDoubleDown and nextFloatDown are the corresponding functions for
+ * the IEEE double and IEEE float number lines.
  */
 real nextDown(real x)
 {
     return -nextUp(-x);
+}
+
+/** ditto */
+double nextDoubleDown(double x)
+{
+    return -nextDoubleUp(-x);
+}
+
+/** ditto */
+float nextFloatDown(float x)
+{
+    return -nextFloatUp(-x);
 }
 
 debug(UnitTest) {
@@ -1056,6 +1109,7 @@ unittest {
     assert( nextDown(1.0 + real.epsilon) == 1.0);
 }
 }
+
 
 /**
  * Calculates the next representable value after x in the direction of y.
@@ -1122,6 +1176,10 @@ int feqrel(real x, real y)
     // if the exponents were different. This means 'bitsdiff' is
     // always 1 lower than we want, except that if bitsdiff==0,
     // they could have 0 or 1 bits in common.
+
+ static if (real.mant_dig==64)
+ {
+
     int bitsdiff = ( ((pa[4]&0x7FFF) + (pb[4]&0x7FFF)-1)>>1) - pd[4];
 
     if (pd[4] == 0)
@@ -1138,6 +1196,32 @@ int feqrel(real x, real y)
 
     // Avoid out-by-1 errors when factor is almost 2.
     return (bitsdiff == 0) ? (pa[4] == pb[4]) : 0;
+ } else {
+     // 64-bit reals
+      version(LittleEndian)
+        const int EXPONENTPOS = 3;
+    else const int EXPONENTPOS = 0;
+
+    int bitsdiff = ( ((pa[EXPONENTPOS]&0x7FF0) + (pb[EXPONENTPOS]&0x7FF0)-0x10)>>5) - (pd[EXPONENTPOS]&0x7FF0>>4);
+
+    if (pd[EXPONENTPOS] == 0)
+    {   // Difference is denormal
+        // For denormals, we need to add the number of zeros that
+        // lie at the start of diff's mantissa.
+        // We do this by multiplying by 2^real.mant_dig
+        diff *= 0x1p+53;
+        return bitsdiff + real.mant_dig - pd[EXPONENTPOS];
+    }
+
+    if (bitsdiff > 0)
+        return bitsdiff + 1; // add the 1 we subtracted before
+
+    // Avoid out-by-1 errors when factor is almost 2.
+    if (bitsdiff == 0 && (pa[EXPONENTPOS] ^ pb[EXPONENTPOS])&0x7FF0) return 1;
+    else return 0;
+
+ }
+
 }
 
 debug(UnitTest) {
@@ -1441,7 +1525,11 @@ long getNaNPayloadLong(real x)
 debug(UnitTest) {
 unittest {
   real nan4 = NaN(0x789_ABCD_EF12_3456);
-  assert (getNaNPayloadLong(nan4) == 0x789_ABCD_EF12_3456);
+  static if (real.mant_dig == 64) {
+      assert (getNaNPayloadLong(nan4) == 0x789_ABCD_EF12_3456);
+  } else {
+      assert (getNaNPayloadLong(nan4) == -0xABCD_EF12_3456);
+  }
   double nan5 = nan4;
   assert (getNaNPayloadLong(nan5) == -0xABCD_EF12_3456);
   float nan6 = nan4;
@@ -1454,3 +1542,4 @@ unittest {
   assert(getNaNPayloadLong(nan5) == -0x1_0000_0000_3456);
 }
 }
+
