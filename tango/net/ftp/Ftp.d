@@ -18,8 +18,6 @@ private import tango.net.ftp.Telnet;
 private import tango.io.FileConduit;
 private import tango.io.MemoryConduit;
 
-debug (FtpDebug ) { private import tango.io.Stdout; }
-
 private import Text = tango.text.Util;
 private import Ascii = tango.text.Ascii;
 private import Regex = tango.text.Regex;
@@ -1860,6 +1858,8 @@ class FTPException: Exception
 
 debug (UnitTest )
 {
+   import tango.io.Stdout;
+
     unittest 
         {
 
@@ -1898,9 +1898,5 @@ debug (UnitTest )
 
 
             ftp.get("emacs-21.3-barebin-i386.tar.gz","emacs.tgz", &progress);
-
-
-
         }
-
 }
