@@ -23,22 +23,21 @@ abstract class IProtocol
         enum Type
         {
                 Void = 0,
+                Utf8, 
                 Bool,
                 Byte,
                 UByte,
+                Utf16,
                 Short,
                 UShort,
+                Utf32,
                 Int,
                 UInt,
+                Float,
                 Long,
                 ULong,
-                Float,
                 Double,
                 Real,
-                Utf8,
-                Utf16,
-                Utf32,
-                Pointer,
                 Obj,
         }
         
