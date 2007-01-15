@@ -1983,23 +1983,27 @@ version( D_InlineAsm_X86 )
     }
     else
     {
-        version( DigitalMars )
-        {
-            version( Win32 )
-                version = AsmX86_Win32;
-            else version( linux )
-                version = AsmX86_Linux;
-        }
+        version( Win32 )
+            version = AsmX86_Win32;
+        else version( Posix )
+            version = AsmX86_Posix;
     }
 }
 
 
 version( Posix )
 {
-    private import tango.stdc.posix.sys.mman;
+    version( darwin )
+    {
+        private import tango.stdc.stdlib;
+    }
+    else
+    {
+        private import tango.stdc.posix.sys.mman;
+    }
 
     version( AsmX86_Win32 ) {} else
-    version( AsmX86_Linux ) {} else
+    version( AsmX86_Posix ) {} else
     version( X86_64 ) {} else
     version( X86 )
     {
@@ -2040,6 +2044,94 @@ private
 
         obj.m_state = Fiber.State.TERM;
         obj.switchOut();
+    }
+
+
+    extern (C) void fiber_switchContext( void** oldp, void* newp )
+    {
+        // NOTE: The data pushed and popped in this routine must match the
+        //       default stack created by Fiber.initStack or the initial
+        //       switch into a new stack will fail.
+
+        version( AsmX86_Win32 )
+        {
+            asm
+            {
+                naked;
+
+                // save current stack state
+                push EBP;
+                mov  EBP, ESP;
+                push EAX;
+                push dword ptr FS:[0];
+                push dword ptr FS:[4];
+                push dword ptr FS:[8];
+                push EBX;
+                push ESI;
+                push EDI;
+
+                // store oldp again with more accurate address
+                mov EAX, dword ptr 8[EBP];
+                mov [EAX], ESP;
+                // load newp to begin context switch
+                mov ESP, dword ptr 12[EBP];
+
+                // load saved state from new stack
+                pop EDI;
+                pop ESI;
+                pop EBX;
+                pop dword ptr FS:[8];
+                pop dword ptr FS:[4];
+                pop dword ptr FS:[0];
+                pop EAX;
+                pop EBP;
+
+                // 'return' to complete switch
+                ret;
+            }
+        }
+        else version( AsmX86_Posix )
+        {
+            asm
+            {
+                naked;
+
+                // save current stack state
+                push EBP;
+                mov  EBP, ESP;
+                push EAX;
+                push EBX;
+                push ESI;
+                push EDI;
+
+                // store oldp again with more accurate address
+                mov EAX, dword ptr 8[EBP];
+                mov [EAX], ESP;
+                // load newp to begin context switch
+                mov ESP, dword ptr 12[EBP];
+
+                // load saved state from new stack
+                pop EDI;
+                pop ESI;
+                pop EBX;
+                pop EAX;
+                pop EBP;
+
+                // 'return' to complete switch
+                ret;
+            }
+        }
+        else version( JmpX86_Posix )
+        {
+            sigjmp_buf buf = void;
+            oldp    = &buf;
+            // Basically, oldp will be the address of the current sigjmp_buf
+            // and newp will be the address of the new sigjmp_buf. This means
+            // that tstack will effectively point to a sigjmp_buf if the
+            // context has been swapped out via this Fiber code.
+            if( !sigsetjmp( *(cast(sigjmp_buf*) oldp), 0 ) )
+                siglongjmp( *(cast(sigjmp_buf*) newp), 1 );
+        }
     }
 }
 
@@ -2438,7 +2530,7 @@ private:
     }
     body
     {
-        version( Win32 )
+        static if( is( typeof( VirtualAlloc ) ) )
         {
             const size_t PAGESIZE = 4096;
 
@@ -2492,17 +2584,33 @@ private:
             m_ctxt.tstack = pbase;
             m_size = sz;
         }
-        else version( Posix )
-        {
-            m_pmem = mmap( null,
-                           sz,
-                           PROT_READ | PROT_WRITE | PROT_EXEC,
-                           MAP_PRIVATE | MAP_ANON,
-                           0,
-                           0 );
-            if( m_pmem == MAP_FAILED )
+        else
+        {   static if( is( typeof( mmap ) ) )
+            {
+                m_pmem = mmap( null,
+                               sz,
+                               PROT_READ | PROT_WRITE | PROT_EXEC,
+                               MAP_PRIVATE | MAP_ANON,
+                               0,
+                               0 );
+                if( m_pmem == MAP_FAILED )
+                    m_pmem = null;
+            }
+            else static if( is( typeof( valloc ) ) )
+            {
+                m_pmem = valloc( sz );
+            }
+            else static if( is( typeof( malloc ) ) )
+            {
+                m_pmem = malloc( sz );
+            }
+            else
             {
                 m_pmem = null;
+            }
+
+            if( !m_pmem )
+            {
                 throw new FiberException( "Unable to allocate memory for stack" );
             }
 
@@ -2533,13 +2641,21 @@ private:
 
         Thread.remove( &m_ctxt );
 
-        version( Win32 )
+        static if( is( typeof( VirtualAlloc ) ) )
         {
             VirtualFree( m_pmem, 0, MEM_RELEASE );
         }
-        else version( Posix )
+        else static if( is( typeof( mmap ) ) )
         {
             munmap( m_pmem, m_size );
+        }
+        else static if( is( typeof( valloc ) ) )
+        {
+            free( m_pmem );
+        }
+        else static if( is( typeof( malloc ) ) )
+        {
+            free( m_pmem );
         }
     }
 
@@ -2574,8 +2690,8 @@ private:
 
         version( AsmX86_Win32 )
         {
-            push( 0x00000000 );                                     // oldp
-            push( 0x00000000 );                                     // newp
+            //push( 0x00000000 );                                     // oldp
+            //push( 0x00000000 );                                     // newp
             push( cast(size_t) &fiber_entryPoint );                 // EIP
             push( 0xFFFFFFFF );                                     // EBP
             push( 0x00000000 );                                     // EAX
@@ -2595,10 +2711,10 @@ private:
             push( 0x00000000 );                                     // ESI
             push( 0x00000000 );                                     // EDI
         }
-        else version( AsmX86_Linux )
+        else version( AsmX86_Posix )
         {
-            push( 0x00000000 );                                     // oldp
-            push( 0x00000000 );                                     // newp
+            //push( 0x00000000 );                                     // oldp
+            //push( 0x00000000 );                                     // newp
             push( cast(size_t) &fiber_entryPoint );                 // EIP
             push( 0x00000000 );                                     // EBP
             push( 0x00000000 );                                     // EAX
@@ -2699,7 +2815,7 @@ private:
         volatile tobj.m_lock = true;
         tobj.pushContext( &m_ctxt );
 
-        doSwitch( *oldp, newp );
+        fiber_switchContext( oldp, newp );
 
         // NOTE: As above, these operations must be performed in a strict order
         //       to prevent Bad Things from happening.
@@ -2732,104 +2848,11 @@ private:
         *oldp = getStackTop();
         volatile tobj.m_lock = true;
 
-        doSwitch( *oldp, newp );
+        fiber_switchContext( oldp, newp );
 
         // NOTE: As above, these operations must be performed in a strict order
         //       to prevent Bad Things from happening.
         volatile tobj.m_lock = false;
         tobj.m_curr.tstack = tobj.m_curr.bstack;
-    }
-
-
-    //
-    // Actually perform the context switch by storing the current stack pointer
-    // into oldp and loading the stack pointer from newp.  Any relevant stack
-    // data will also be saved.
-    //
-    final void doSwitch( inout void* oldp, void* newp )
-    {
-        // NOTE: The data pushed and popped in this routine must match the
-        //       default stack created by initStack or the initial switch
-        //       into a new stack will fail.
-
-        version( AsmX86_Win32 )
-        {
-            asm
-            {
-                naked;
-
-                // save current stack state
-                push EBP;
-                mov  EBP, ESP;
-                push EAX;
-                push dword ptr FS:[0];
-                push dword ptr FS:[4];
-                push dword ptr FS:[8];
-                push EBX;
-                push ESI;
-                push EDI;
-
-                // store oldp again with more accurate address
-                mov EAX, dword ptr 12[EBP];
-                mov [EAX], ESP;
-                // load newp to begin context switch
-                mov ESP, dword ptr 8[EBP];
-
-                // load saved state from new stack
-                pop EDI;
-                pop ESI;
-                pop EBX;
-                pop dword ptr FS:[8];
-                pop dword ptr FS:[4];
-                pop dword ptr FS:[0];
-                pop EAX;
-                pop EBP;
-
-                // 'return' to complete switch
-                ret 8;
-            }
-        }
-        else version( AsmX86_Linux )
-        {
-            asm
-            {
-                naked;
-
-                // save current stack state
-                push EBP;
-                mov  EBP, ESP;
-                push EAX;
-                push EBX;
-                push ESI;
-                push EDI;
-
-                // store oldp again with more accurate address
-                mov EAX, dword ptr 12[EBP];
-                mov [EAX], ESP;
-                // load newp to begin context switch
-                mov ESP, dword ptr 8[EBP];
-
-                // load saved state from new stack
-                pop EDI;
-                pop ESI;
-                pop EBX;
-                pop EAX;
-                pop EBP;
-
-                // 'return' to complete switch
-                ret 8;
-            }
-        }
-        else version( JmpX86_Posix )
-        {
-            sigjmp_buf buf = void;
-            oldp    = &buf;
-            // Basically, oldp will be the address of the current sigjmp_buf
-            // and newp will be the address of the new sigjmp_buf. This means
-            // that tstack will effectively point to a sigjmp_buf if the
-            // context has been swapped out via this Fiber code.
-            if( !sigsetjmp( *(cast(sigjmp_buf*) oldp), 0 ) )
-                siglongjmp( *(cast(sigjmp_buf*) newp), 1 );
-        }
     }
 }
