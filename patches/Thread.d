@@ -1262,8 +1262,10 @@ private:
 
             if( t.prev )
                 t.prev.next = t.next;
+
             if( t.next )
                 t.next.prev = t.prev;
+
             if( sm_tbeg == t )
                 sm_tbeg = t.next;
             --sm_tlen;
@@ -2004,6 +2006,14 @@ version( D_InlineAsm_X86 )
         }
     }
 }
+else version ( PPC )
+{
+    version( GNU )
+    {
+        version( darwin )
+            version = AsmPPC_Posix_GDC;
+    }
+}
 
 
 version( Posix )
@@ -2013,6 +2023,15 @@ version( Posix )
     version( AsmX86_Win32 ) {} else
     version( AsmX86_Linux ) {} else
     version( AsmX86_Posix_GDC ) {} else
+    version( AsmPPC_Posix_GDC )
+    {
+       // Mik: mmap does not work on OSX, so we use malloc instead
+       extern (C) size_t malloc_good_size(size_t);
+       extern (C) void* valloc(size_t size);
+
+       // Mik: No inline assember, so we need external code
+       extern (C) void doSwitchASM(void**, void*);
+    } else
     version( X86_64 ) {} else
     version( X86 )
     {
@@ -2135,7 +2154,10 @@ class FiberException : ThreadException
  */
 class Fiber
 {
-    const size_t DEFAULT_STACKSIZE = 4096;
+    version ( PPC )
+        const size_t DEFAULT_STACKSIZE = 8192;
+    else
+        const size_t DEFAULT_STACKSIZE = 4096;
 
 
     ////////////////////////////////////////////////////////////////////////////
@@ -2378,7 +2400,6 @@ class Fiber
         }
     }
 
-
 private:
     //
     // Initializes a fiber object which has no associated executable function.
@@ -2507,9 +2528,19 @@ private:
         }
         else version( Posix )
         {
+            // Mik: mmap does not work on OS X.
 	    version( darwin )
 	    {
-		m_pmem = malloc(sz);
+               //Adjust size
+               sz = malloc_good_size(sz);
+
+               //Perform allocation.
+               m_pmem = valloc(sz);
+
+               if(m_pmem == null)
+               {
+                   throw new FiberException( "Unable to allocate memory for stack" );
+               }
 	    }
 	    else
 	    {
@@ -2519,12 +2550,12 @@ private:
                                MAP_PRIVATE | MAP_ANON,
                                0,
                                0 );
-	    }
-
-            if( m_pmem == MAP_FAILED )
-            {
-                m_pmem = null;
-                throw new FiberException( "Unable to allocate memory for stack" );
+	
+               if( m_pmem == MAP_FAILED )
+               {
+                   m_pmem = null;
+                   throw new FiberException( "Unable to allocate memory for stack" );
+               }
             }
 
             version( StackGrowsDown )
@@ -2564,7 +2595,7 @@ private:
         }
 	else version( darwin )
 	{
-		free( m_pmem );
+            free( m_pmem );
 	}
         else version( Posix )
         {
@@ -2586,6 +2617,13 @@ private:
     {
         void* pstack = m_ctxt.tstack;
         scope( exit )  m_ctxt.tstack = pstack;
+
+        // Mik: On OS X the stack must be 16-byte aligned according to the
+        // IA-32 call spec.
+        version( darwin )
+        {
+             pstack = cast(void*)(cast(uint)(pstack) - (cast(uint)(pstack) & 0x0F));
+        }
 
         void push( size_t val )
         {
@@ -2635,11 +2673,43 @@ private:
             push( 0x00000000 );                                     // ESI
             push( 0x00000000 );                                     // EDI
         }
-	// Mik: Context does not have to store as much, since GDC uses the	// simpler C calling convention.
+        // Mik:  The same asm should work on all GDC-posix x86 targets.
         else version( AsmX86_Posix_GDC )
         {
             push( cast(size_t) &fiber_entryPoint );             // EIP
             push( 0x00000000 );                                 // EBP
+	    push( 0x00000000 );                                 // ESI
+            push( 0x00000000 );                                 // EDI
+            push( 0x00000000 );                                 // EBX
+            push( 0x00000000 );                                 // EAX
+        }
+        // Mik: Posix support for PowerPC architecture
+	else version( AsmPPC_Posix_GDC )
+        {
+            version( StackGrowsDown )
+            {
+                pstack -= int.sizeof * 5;
+            }
+            else
+            {
+                pstack += int.sizeof * 5;
+            }
+
+            push( cast(size_t) &fiber_entryPoint );             // Link register
+            push( 0x00000000 );                                 // Control register
+            push( 0x00000000 );                                 // Old stack pointer
+
+            //GPR values
+            version( StackGrowsDown )
+            {
+                pstack -= int.sizeof * 20;
+            }
+            else
+            {
+                pstack += int.sizeof * 20;
+            }
+
+            assert(cast(uint)pstack & 0x0f == 0);
         }
         else version( JmpX86_Posix )
         {
@@ -2734,7 +2804,7 @@ private:
         volatile tobj.m_lock = true;
         tobj.pushContext( &m_ctxt );
 
-        doSwitch( *oldp, newp );
+        doSwitch( oldp, newp );
 
         // NOTE: As above, these operations must be performed in a strict order
         //       to prevent Bad Things from happening.
@@ -2767,7 +2837,7 @@ private:
         *oldp = getStackTop();
         volatile tobj.m_lock = true;
 
-        doSwitch( *oldp, newp );
+        doSwitch( oldp, newp );
 
         // NOTE: As above, these operations must be performed in a strict order
         //       to prevent Bad Things from happening.
@@ -2781,7 +2851,7 @@ private:
     // into oldp and loading the stack pointer from newp.  Any relevant stack
     // data will also be saved.
     //
-    final void doSwitch( inout void* oldp, void* newp )
+    final void doSwitch( void** oldp, void* newp )
     {
         // NOTE: The data pushed and popped in this routine must match the
         //       default stack created by initStack or the initial switch
@@ -2867,6 +2937,10 @@ private:
                 //Enter function, allocate frame pointer
                 push EBP;
                 mov  EBP, ESP;
+		push ESI;
+		push EDI;
+		push EBX;
+		push EAX;
                 
                 // Swap stack pointers
                 mov EAX, dword ptr 12[EBP];
@@ -2874,22 +2948,32 @@ private:
                 mov ESP, dword ptr 16[EBP];
 
                 // Load old frame pointer
+		pop EAX;
+		pop EBX;
+		pop EDI;
+		pop ESI;
                 pop EBP;
 
                 // Return to peroform switch
                 ret;
             }
         }
+        else version( AsmPPC_Posix_GDC)
+        {
+            doSwitchASM(oldp, newp);
+        }
         else version( JmpX86_Posix )
         {
             sigjmp_buf buf = void;
-            oldp    = &buf;
+            *oldp    = &buf;
             // Basically, oldp will be the address of the current sigjmp_buf
             // and newp will be the address of the new sigjmp_buf. This means
             // that tstack will effectively point to a sigjmp_buf if the
             // context has been swapped out via this Fiber code.
-            if( !sigsetjmp( *(cast(sigjmp_buf*) oldp), 0 ) )
+            if( !sigsetjmp( *(cast(sigjmp_buf*) *oldp), 0 ) )
                 siglongjmp( *(cast(sigjmp_buf*) newp), 1 );
         }
     }
 }
+
+
