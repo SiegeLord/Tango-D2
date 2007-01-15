@@ -37,7 +37,7 @@ public interface GuardIterator(V) : Iterator!(V)
          * across collection class implementations.
          * more() is false whenever corrupted is true.
          *
-         * @return true if detectably corrupted.
+         * Returns: true if detectably corrupted.
         **/
 
         public bool corrupted();
@@ -59,7 +59,7 @@ public interface GuardIterator(V) : Iterator!(V)
          * <P>
          * For the converse case, 
          * See_Also: tango.util.collection.iterator.ArrayIterator.ArrayIterator
-         * @return the number of untraversed elements
+         * Returns: the number of untraversed elements
         **/
 
         public uint remaining();

@@ -42,21 +42,21 @@ public interface View(T)
          * Report whether the View contains element.
          * Behaviorally equivalent to <CODE>instances(element) &gt;= 0</CODE>.
          * @param element the element to look for
-         * @return true iff contains at least one member that is equal to element.
+         * Returns: true iff contains at least one member that is equal to element.
         **/
         public bool contains (T element);
 
         /**
          * Report the number of elements in the View.
          * No other spurious effects.
-         * @return number of elements
+         * Returns: number of elements
         **/
         public uint size ();
 
         /**
          * Report whether this View has no elements.
          * Behaviorally equivalent to <CODE>size() == 0</CODE>.
-         * @return true if size() == 0
+         * Returns: true if size() == 0
         **/
 
         public bool drained ();
@@ -83,7 +83,7 @@ public interface View(T)
          * on observable state.
          * For example, clear() will cause cause a version change only
          * if the collection was previously non-empty.
-         * @return the version number
+         * Returns: the version number
         **/
 
         public uint mutation ();
@@ -96,7 +96,7 @@ public interface View(T)
          * A constant function: if allows(v) is ever true it is always true.
          * (This property is not in any way enforced however.)
          * No other spurious effects.
-         * @return true if non-null and passes element screener check
+         * Returns: true if non-null and passes element screener check
         **/
         public bool allows (T element);
 
@@ -106,7 +106,7 @@ public interface View(T)
          * Always returns 0 if element == null.
          * Otherwise T.equals is used to test for equality.
          * @param element the element to look for
-         * @return the number of occurrences (always nonnegative)
+         * Returns: the number of occurrences (always nonnegative)
         **/
         public uint instances (T element);
 
@@ -149,7 +149,7 @@ public interface View(T)
          * particular, Seqs produce enumerations with gets in
          * index order, ElementSortedViews enumerations are in ascending 
          * sorted order, and KeySortedViews are in ascending order of keys.
-         * @return an enumeration e such that
+         * Returns: an enumeration e such that
          * <PRE>
          *   e.remaining() == size() &&
          *   foreach (v in e) has(e) 
@@ -185,7 +185,7 @@ public interface View(T)
          *       this.keys().
          *</UL>
          * @param other, a View
-         * @return true if considered to have the same size and elements.
+         * Returns: true if considered to have the same size and elements.
         **/
 
         public bool matches (View other);
@@ -203,7 +203,7 @@ public interface View(T)
          * count matches the number of elements in the list.
          * <P>
          * This method should either return normally or throw:
-         * @exception ImplementationError if check fails
+         * Throws: ImplementationError if check fails
         **/
 
         public void checkImplementation();

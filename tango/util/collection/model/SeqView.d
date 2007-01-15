@@ -38,8 +38,8 @@ public interface SeqView(T) : View!(T)
         /**
          * Return the element at the indicated index
          * @param index 
-         * @return the element at the index
-         * @exception NoSuchElementException if index is not in range 0..size()-1
+         * Returns: the element at the index
+         * Throws: NoSuchElementException if index is not in range 0..size()-1
         **/
 
         public T get(int index);
@@ -48,7 +48,7 @@ public interface SeqView(T) : View!(T)
         /**
          * Return the first element, if it exists.
          * Behaviorally equivalent to at(0)
-         * @exception NoSuchElementException if isEmpty
+         * Throws: NoSuchElementException if isEmpty
         **/
 
         public T head();
@@ -57,7 +57,7 @@ public interface SeqView(T) : View!(T)
         /**
          * Return the last element, if it exists.
          * Behaviorally equivalent to at(size()-1)
-         * @exception NoSuchElementException if isEmpty
+         * Throws: NoSuchElementException if isEmpty
         **/
 
         public T tail();
@@ -70,7 +70,7 @@ public interface SeqView(T) : View!(T)
          * @param startingIndex the index to start looking from. The startingIndex
          * need not be a valid index. If less than zero it is treated as 0.
          * If greater than or equal to size(), the result will always be -1.
-         * @return index such that
+         * Returns: index such that
          * <PRE> 
          * let int si = max(0, startingIndex) in
          *  index == -1 &&
@@ -91,7 +91,7 @@ public interface SeqView(T) : View!(T)
          * need not be a valid index. If less than zero the result
          * will always be -1.
          * If greater than or equal to size(), it is treated as size()-1.
-         * @return index such that
+         * Returns: index such that
          * <PRE> 
          * let int si = min(size()-1, startingIndex) in
          *  index == -1 &&
@@ -112,12 +112,12 @@ public interface SeqView(T) : View!(T)
          * return an empty SeqView.
          * @param index of the element that will be the 0th index in new SeqView
          * @param length the number of elements in the new SeqView
-         * @return new seq such that
+         * Returns: new seq such that
          * <PRE>
          * s.size() == max(0, length) &&
          * foreach (int i in 0 .. s.size()-1) s.at(i).equals(at(i+index)); 
          * </PRE>
-         * @exception NoSuchElementException if index is not in range 0..size()-1
+         * Throws: NoSuchElementException if index is not in range 0..size()-1
         **/
         public SeqView subset(int index, int length);
 
@@ -130,12 +130,12 @@ version (VERBOSE)
          * indicated index.
          * @param index the index at which the new element will be placed
          * @param element The element to insert in the new collection
-         * @return new seq s, such that
+         * Returns: new seq s, such that
          * <PRE>
          *  s.at(index) == element &&
          *  foreach (int i in 1 .. s.size()-1) s.at(i).equals(at(i-1));
          * </PRE>
-         * @exception NoSuchElementException if index is not in range 0..size()-1
+         * Throws: NoSuchElementException if index is not in range 0..size()-1
         **/
 
         public SeqView insertingAt(int index, T element);
@@ -146,13 +146,13 @@ version (VERBOSE)
          * that the indicated element is placed at the indicated index.
          * @param index the index at which to replace the element
          * @param element The new value of at(index)
-         * @return new seq, s, such that
+         * Returns: new seq, s, such that
          * <PRE>
          *  s.at(index) == element &&
          *  foreach (int i in 0 .. s.size()-1) 
          *     (i != index) --&gt; s.at(i).equals(at(i));
          * </PRE>
-         * @exception NoSuchElementException if index is not in range 0..size()-1
+         * Throws: NoSuchElementException if index is not in range 0..size()-1
         **/
 
         public SeqView replacingAt(int index, T element);
@@ -164,12 +164,12 @@ version (VERBOSE)
          * elements to its right are slided left by one.
          *
          * @param index the index at which to remove an element
-         * @return new seq such that
+         * Returns: new seq such that
          * <PRE>
          *  foreach (int i in 0.. index-1) s.at(i).equals(at(i)); &&
          *  foreach (int i in index .. s.size()-1) s.at(i).equals(at(i+1));
          * </PRE>
-         * @exception NoSuchElementException if index is not in range 0..size()-1
+         * Throws: NoSuchElementException if index is not in range 0..size()-1
         **/
         public SeqView removingAt(int index);
 } // version

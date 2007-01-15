@@ -287,7 +287,7 @@ public class TreeMap(K, T) : MapCollection!(K, T), SortedKeys!(K, T)
         /**
          * Return the element associated with Key key. 
          * @param key a key
-         * @return whether the key is contained or not
+         * Returns: whether the key is contained or not
         **/
 
         public final bool get(K key, inout T value)

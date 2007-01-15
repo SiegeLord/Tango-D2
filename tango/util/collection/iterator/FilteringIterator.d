@@ -23,7 +23,7 @@ private import tango.util.collection.model.Iterator;
  * FilteringIterators allow you to filter out elements from
  * other enumerations before they are seen by their `consumers'
  * (i.e., the callers of `get').
- * <P>
+ *
  * FilteringIterators work as wrappers around other Iterators.
  * To build one, you need an existing Iterator (perhaps one
  * from coll.elements(), for some Collection coll), and a Predicate
@@ -31,24 +31,20 @@ private import tango.util.collection.model.Iterator;
  * For example, if you want to screen out everything but Panel
  * objects from a collection coll that might hold things other than Panels,
  * write something of the form:
- * <PRE>
+ * ---
  * Iterator e = coll.elements();
  * Iterator panels = FilteringIterator(e, IsPanel);
- * while (panels.more()) 
- *  doSomethingWith((Panel)(panels.get()));
- * </PRE>
+ * while (panels.more())
+ *  doSomethingWith(cast(Panel)(panels.get()));
+ * ---
  * To use this, you will also need to write a little class of the form:
- * <PRE>
- * class IsPanel implements Predicate {
- *  boolean predicate(Object v) { return (v instanceof Panel); }
+ * ---
+ * class IsPanel : Predicate {
+ *  bool predicate(Object v) { return ( 0 !is cast(Panel)v; }
  * }
- * </PRE>
+ * ---
  * See_Also: tango.util.collection.Predicate.predicate
- * 
-        author: Doug Lea
- * @version 0.93
- *
- * <P> For an introduction to this package see <A HREF="index.html"> Overview </A>.
+ * author: Doug Lea
  *
 **/
 

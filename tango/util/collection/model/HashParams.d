@@ -56,7 +56,7 @@ public interface HashParams
          * Set the desired number of buckets in the hash table.
          * Any value greater than or equal to one is OK.
          * if different than current buckets, causes a version change
-         * @exception IllegalArgumentException if newCap less than 1
+         * Throws: IllegalArgumentException if newCap less than 1
         **/
 
         public void buckets(int newCap);
@@ -73,7 +73,7 @@ public interface HashParams
         /**
          * Set the current desired load factor. Any value greater than 0 is OK.
          * The current load is checked against it, possibly causing resize.
-         * @exception IllegalArgumentException if desired is 0 or less
+         * Throws: IllegalArgumentException if desired is 0 or less
         **/
 
         public void thresholdLoadFactor(float desired);

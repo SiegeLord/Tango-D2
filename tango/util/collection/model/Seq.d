@@ -40,7 +40,7 @@ public interface Seq(T) : SeqView!(T), Dispenser!(T)
          * 
          * @param index the index to start adding at
          * @param e the elements to add
-         * @return condition:
+         * Returns: condition:
          * <PRE>
          * foreach (int i in 0 .. index-1) at(i).equals(PREV(this)at(i)); &&
          * All existing elements at indices at or greater than index have their
@@ -51,10 +51,10 @@ public interface Seq(T) : SeqView!(T), Dispenser!(T)
          * !(e.more()) &&
          * (version() != PREV(this).version()) == PREV(e).more() 
          * </PRE>
-         * @exception IllegalElementException if !canInclude some element of e;
+         * Throws: IllegalElementException if !canInclude some element of e;
          * this may or may not nullify the effect of insertions of other elements.
-         * @exception NoSuchElementException if index is not in range 0..size()
-         * @exception CorruptedIteratorException is propagated if raised; this
+         * Throws: NoSuchElementException if index is not in range 0..size()
+         * Throws: CorruptedIteratorException is propagated if raised; this
          * may or may not nullify the effects of insertions of other elements.
         **/
         
@@ -67,7 +67,7 @@ public interface Seq(T) : SeqView!(T), Dispenser!(T)
          * equal to size(), the element is appended as the new last element.
          * @param index the index to add at
          * @param element the element to add
-         * @return condition:
+         * Returns: condition:
          * <PRE>
          * size() == PREV(this).size()+1 &&
          * at(index).equals(element) &&
@@ -75,8 +75,8 @@ public interface Seq(T) : SeqView!(T), Dispenser!(T)
          * foreach (int i in index+1..size()-1) get(i).equals(PREV(this).get(i-1))
          * Version change: always
          * </PRE>
-         * @exception NoSuchElementException if index is not in range 0..size()
-         * @exception IllegalElementException if !canInclude(element)
+         * Throws: NoSuchElementException if index is not in range 0..size()
+         * Throws: IllegalElementException if !canInclude(element)
         **/
 
         public void addAt (int index, T element);
@@ -85,7 +85,7 @@ public interface Seq(T) : SeqView!(T), Dispenser!(T)
          * replace element at indicated index with new value
          * @param index the index at which to replace value
          * @param element the new value
-         * @return condition:
+         * Returns: condition:
          * <PRE>
          * size() == PREV(this).size() &&
          * at(index).equals(element) &&
@@ -93,8 +93,8 @@ public interface Seq(T) : SeqView!(T), Dispenser!(T)
          * Version change <-- !element.equals(PREV(this).get(index)
          *                    (but MAY change even if equal).
          * </PRE>
-         * @exception NoSuchElementException if index is not in range 0..size()-1
-         * @exception IllegalElementException if !canInclude(element)
+         * Throws: NoSuchElementException if index is not in range 0..size()-1
+         * Throws: IllegalElementException if !canInclude(element)
         **/
 
         public void replaceAt (int index, T element);
@@ -104,14 +104,14 @@ public interface Seq(T) : SeqView!(T), Dispenser!(T)
          * Remove element at indicated index. All elements to the right
          * have their indices decremented by one.
          * @param index the index of the element to remove
-         * @return condition:
+         * Returns: condition:
          * <PRE>
          * size() = PREV(this).size()-1 &&
          * foreach (int i in 0..index-1)      get(i).equals(PREV(this).get(i)); &&
          * foreach (int i in index..size()-1) get(i).equals(PREV(this).get(i+1));
          * Version change: always
          * </PRE>
-         * @exception NoSuchElementException if index is not in range 0..size()-1
+         * Throws: NoSuchElementException if index is not in range 0..size()-1
         **/
         public void removeAt (int index);
 
@@ -120,7 +120,7 @@ public interface Seq(T) : SeqView!(T), Dispenser!(T)
          * Insert element at front of the sequence.
          * Behaviorally equivalent to insert(0, element)
          * @param element the element to add
-         * @exception IllegalElementException if !canInclude(element)
+         * Throws: IllegalElementException if !canInclude(element)
         **/
 
         public void prepend(T element);
@@ -144,7 +144,7 @@ public interface Seq(T) : SeqView!(T), Dispenser!(T)
          * insert element at end of the sequence
          * Behaviorally equivalent to insert(size(), element)
          * @param element the element to add
-         * @exception IllegalElementException if !canInclude(element)
+         * Throws: IllegalElementException if !canInclude(element)
         **/
 
         public void append(T element);
@@ -161,7 +161,7 @@ public interface Seq(T) : SeqView!(T), Dispenser!(T)
         /**
          * Remove the rightmost element. 
          * Behaviorally equivalent to remove(size()-1);
-         * @exception NoSuchElementException if isEmpty
+         * Throws: NoSuchElementException if isEmpty
         **/
         public void removeTail();
 
@@ -175,7 +175,7 @@ public interface Seq(T) : SeqView!(T), Dispenser!(T)
          * </PRE>
          * @param index the index of the first element to remove
          * @param index the index of the last element to remove
-         * @return condition:
+         * Returns: condition:
          * <PRE>
          * let n = max(0, toIndex - fromIndex + 1 in
          *  size() == PREV(this).size() - 1 &&
@@ -183,7 +183,7 @@ public interface Seq(T) : SeqView!(T), Dispenser!(T)
          *  for (int i in fromIndex .. size()- 1) get(i).equals(PREV(this).get(i+n) 
          *  Version change iff n > 0 
          * </PRE>
-         * @exception NoSuchElementException if fromIndex or toIndex is not in 
+         * Throws: NoSuchElementException if fromIndex or toIndex is not in 
          * range 0..size()-1
         **/
 

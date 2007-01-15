@@ -126,7 +126,7 @@ public class ArraySeq(T) : SeqCollection!(T), Sortable!(T)
 
         /**
          * return the current internal buffer capacity (zero if no buffer allocated).
-         * @return capacity (always greater than or equal to size())
+         * Returns: capacity (always greater than or equal to size())
         **/
 
         public final int capacity()
@@ -142,7 +142,7 @@ public class ArraySeq(T) : SeqCollection!(T), Sortable!(T)
          * by setting the capacity. 
          * 
          * @param newCap the desired capacity.
-         * @return condition: 
+         * Returns: condition: 
          * <PRE>
          * capacity() >= size() &&
          * version() != PREV(this).version() == (capacity() != PREV(this).capacity())
@@ -684,7 +684,7 @@ public class ArraySeq(T) : SeqCollection!(T), Sortable!(T)
          * <P>
          * For shrinkage, the only thing we do is unlink the buffer if it is empty.
          * @param inc, the amount of space to grow by. Negative values mean shrink.
-         * @return condition: adjust record of count, and if any of
+         * Returns: condition: adjust record of count, and if any of
          * the above conditions apply, allocate and copy into a new
          * buffer of the appropriate size.
         **/

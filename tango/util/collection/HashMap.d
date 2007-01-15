@@ -379,7 +379,7 @@ public class HashMap(K, V) : MapCollection!(K, V), HashParams
 
                 Return the element associated with Key key. 
                 @param key a key
-                @return whether the key is contained or not
+                Returns: whether the key is contained or not
         
         ************************************************************************/
 

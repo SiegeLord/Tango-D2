@@ -107,7 +107,7 @@ public class LLCell(T) : Cell!(T)
         /**
          * Linear search down the list looking for element (using T.equals)
          * @param element to look for
-         * @return the cell containing element, or null if no such
+         * Returns: the cell containing element, or null if no such
         **/
 
         public final LLCell find(T element)
@@ -222,7 +222,7 @@ public class LLCell(T) : Cell!(T)
          * @param fst head of the first list
          * @param snd head of the second list
          * @param cmp a Comparator used to compare elements
-         * @return the merged ordered list
+         * Returns: the merged ordered list
         **/
 
         public final static LLCell merge(LLCell fst, LLCell snd, ComparatorT cmp)
@@ -278,7 +278,7 @@ public class LLCell(T) : Cell!(T)
          * Standard list splitter, used by sort.
          * Splits the list in half. Returns the head of the second half
          * @param s the head of the list
-         * @return the head of the second half
+         * Returns: the head of the second half
         **/
 
         public final static LLCell split(LLCell s)
@@ -309,7 +309,7 @@ public class LLCell(T) : Cell!(T)
          * Standard merge sort algorithm
          * @param s the list to sort
          * @param cmp, the comparator to use for ordering
-         * @return the head of the sorted list
+         * Returns: the head of the sorted list
         **/
 
         public final static LLCell mergeSort(LLCell s, ComparatorT cmp)

@@ -32,7 +32,7 @@ public interface Dispenser(T) : View!(T)
 {
         /**
          * Cause the collection to become empty. 
-         * @return condition:
+         * Returns: condition:
          * <PRE>
          * isEmpty() &&
          * Version change iff !PREV(this).isEmpty();
@@ -48,7 +48,7 @@ public interface Dispenser(T) : View!(T)
          * when applied to Sets. For Sets, because elements occur at
          * most once, if newElement is already included, replacing oldElement with
          * with newElement has the same effect as just removing oldElement.
-         * @return condition:
+         * Returns: condition:
          * <PRE>
          * let int delta = oldElement.equals(newElement)? 0 : 
          *               max(1, PREV(this).instances(oldElement) in
@@ -59,7 +59,7 @@ public interface Dispenser(T) : View!(T)
          *  no other element changes &&
          *  Version change iff delta != 0
          * </PRE>
-         * @exception IllegalElementException if has(oldElement) and !allows(newElement)
+         * Throws: IllegalElementException if has(oldElement) and !allows(newElement)
         **/
 
         public void replace (T oldElement, T newElement);
@@ -71,7 +71,7 @@ public interface Dispenser(T) : View!(T)
          * when applied to Sets. For Sets, because elements occur at
          * most once, if newElement is already included, replacing oldElement with
          * with newElement has the same effect as just removing oldElement.
-         * @return condition:
+         * Returns: condition:
          * <PRE>
          * let int delta = oldElement.equals(newElement)? 0 : 
                            PREV(this).instances(oldElement) in
@@ -82,7 +82,7 @@ public interface Dispenser(T) : View!(T)
          *  no other element changes &&
          *  Version change iff delta != 0
          * </PRE>
-         * @exception IllegalElementException if has(oldElement) and !allows(newElement)
+         * Throws: IllegalElementException if has(oldElement) and !allows(newElement)
         **/
 
         public void replaceAll(T oldElement, T newElement);
@@ -97,9 +97,9 @@ public interface Dispenser(T) : View!(T)
          * <PRE>
          * while (!a.empty()) b.add(a.take());
          * </PRE>
-         * @return an element v such that PREV(this).has(v) 
+         * Returns: an element v such that PREV(this).has(v) 
          * and the postconditions of removeOneOf(v) hold.
-         * @exception NoSuchElementException iff isEmpty.
+         * Throws: NoSuchElementException iff isEmpty.
         **/
 
         public T take ();
@@ -111,7 +111,7 @@ public interface Dispenser(T) : View!(T)
          * <PRE>
          * while (e.more()) removeAll(e.value());
          * @param e the enumeration of elements to exclude.
-         * @exception CorruptedIteratorException is propagated if thrown
+         * Throws: CorruptedIteratorException is propagated if thrown
         **/
 
         public void removeAll (Iterator!(T) e);
@@ -122,7 +122,7 @@ public interface Dispenser(T) : View!(T)
          * <PRE>
          * while (e.more()) remove (e.value());
          * @param e the enumeration of elements to remove.
-         * @exception CorruptedIteratorException is propagated if thrown
+         * Throws: CorruptedIteratorException is propagated if thrown
         **/
 
         public void remove (Iterator!(T) e);
@@ -131,7 +131,7 @@ public interface Dispenser(T) : View!(T)
          * Exclude all occurrences of the indicated element from the collection. 
          * No effect if element not present.
          * @param element the element to exclude.
-         * @return condition: 
+         * Returns: condition: 
          * <PRE>
          * !has(element) &&
          * size() == PREV(this).size() - PREV(this).instances(element) &&
@@ -147,7 +147,7 @@ public interface Dispenser(T) : View!(T)
          * Remove an instance of the indicated element from the collection. 
          * No effect if !has(element)
          * @param element the element to remove
-         * @return condition: 
+         * Returns: condition: 
          * <PRE>
          * let occ = max(1, instances(element)) in
          *  size() == PREV(this).size() - occ &&

@@ -352,7 +352,7 @@ public class RBCell(T) : Cell!(T)
          * rebalance the tree it is in.
          * @param Cell the Cell to add
          * @param root, the root of the current tree
-         * @return the new root of the current tree. (Rebalancing
+         * Returns: the new root of the current tree. (Rebalancing
          * can change the root!)
         **/
 
@@ -369,7 +369,7 @@ public class RBCell(T) : Cell!(T)
          * rebalance the tree it is in.
          * @param Cell the Cell to add
          * @param root, the root of the current tree
-         * @return the new root of the current tree. (Rebalancing
+         * Returns: the new root of the current tree. (Rebalancing
          * can change the root!)
         **/
 
@@ -384,7 +384,7 @@ public class RBCell(T) : Cell!(T)
         /**
          * Delete the current node, and then rebalance the tree it is in
          * @param root the root of the current tree
-         * @return the new root of the current tree. (Rebalancing
+         * Returns: the new root of the current tree. (Rebalancing
          * can change the root!)
         **/
 

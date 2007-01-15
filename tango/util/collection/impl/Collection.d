@@ -487,7 +487,7 @@ public abstract class Collection(T) : Dispenser!(T), IReadable, IWritable
         /***********************************************************************
 
                 Cause the collection to become empty. 
-                @return condition:
+                Returns: condition:
                 <PRE>
                 drained() &&
                 Version change iff !PREV(this).drained();
@@ -503,7 +503,7 @@ public abstract class Collection(T) : Dispenser!(T), IReadable, IWritable
                 Exclude all occurrences of the indicated element from the collection. 
                 No effect if element not present.
                 @param element the element to exclude.
-                @return condition: 
+                Returns: condition: 
                 <PRE>
                 !has(element) &&
                 size() == PREV(this).size() - PREV(this).instances(element) &&
@@ -521,7 +521,7 @@ public abstract class Collection(T) : Dispenser!(T), IReadable, IWritable
                 Remove an instance of the indicated element from the collection. 
                 No effect if !has(element)
                 @param element the element to remove
-                @return condition: 
+                Returns: condition: 
                 <PRE>
                 let occ = max(1, instances(element)) in
                  size() == PREV(this).size() - occ &&
@@ -543,7 +543,7 @@ public abstract class Collection(T) : Dispenser!(T), IReadable, IWritable
                 when applied to Sets. For Sets, because elements occur at
                 most once, if newElement is already included, replacing oldElement with
                 with newElement has the same effect as just removing oldElement.
-                @return condition:
+                Returns: condition:
                 <PRE>
                 let int delta = oldElement.equals(newElement)? 0 : 
                               max(1, PREV(this).instances(oldElement) in
@@ -554,7 +554,7 @@ public abstract class Collection(T) : Dispenser!(T), IReadable, IWritable
                  no other element changes &&
                  Version change iff delta != 0
                 </PRE>
-                @exception IllegalElementException if has(oldElement) and !allows(newElement)
+                Throws: IllegalElementException if has(oldElement) and !allows(newElement)
 
         ************************************************************************/
 
@@ -569,7 +569,7 @@ public abstract class Collection(T) : Dispenser!(T), IReadable, IWritable
                 when applied to Sets. For Sets, because elements occur at
                 most once, if newElement is already included, replacing oldElement with
                 with newElement has the same effect as just removing oldElement.
-                @return condition:
+                Returns: condition:
                 <PRE>
                 let int delta = oldElement.equals(newElement)? 0 : 
                            PREV(this).instances(oldElement) in
@@ -580,7 +580,7 @@ public abstract class Collection(T) : Dispenser!(T), IReadable, IWritable
                  no other element changes &&
                  Version change iff delta != 0
                 </PRE>
-                @exception IllegalElementException if has(oldElement) and !allows(newElement)
+                Throws: IllegalElementException if has(oldElement) and !allows(newElement)
 
         ************************************************************************/
 
@@ -594,7 +594,7 @@ public abstract class Collection(T) : Dispenser!(T), IReadable, IWritable
                 <PRE>
                 while (e.more()) removeAll(e.get());
                 @param e the enumeration of elements to exclude.
-                @exception CorruptedIteratorException is propagated if thrown
+                Throws: CorruptedIteratorException is propagated if thrown
                 Implements tango.util.collection.impl.Collection.Collection.removeAll
                 See_Also: tango.util.collection.impl.Collection.Collection.removeAll
 
@@ -610,7 +610,7 @@ public abstract class Collection(T) : Dispenser!(T), IReadable, IWritable
                  <PRE>
                  while (e.more()) remove (e.get());
                  @param e the enumeration of elements to remove.
-                 @exception CorruptedIteratorException is propagated if thrown
+                 Throws: CorruptedIteratorException is propagated if thrown
 
         ************************************************************************/
 
@@ -628,9 +628,9 @@ public abstract class Collection(T) : Dispenser!(T), IReadable, IWritable
                 <PRE>
                 while (!a.empty()) b.add(a.take());
                 </PRE>
-                @return an element v such that PREV(this).has(v) 
+                Returns: an element v such that PREV(this).has(v) 
                 and the postconditions of removeOneOf(v) hold.
-                @exception NoSuchElementException iff drained.
+                Throws: NoSuchElementException iff drained.
 
         ************************************************************************/
 

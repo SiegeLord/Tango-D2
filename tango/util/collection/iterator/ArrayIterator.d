@@ -68,7 +68,7 @@ public class ArrayIterator(T) : GuardIterator!(T)
         /**
          * Implements tango.util.collection.impl.Collection.CollectionIterator.corrupted.
          * Always false. Inconsistency cannot be reliably detected for arrays
-         * @return false
+         * Returns: false
          * See_Also: tango.util.collection.impl.Collection.CollectionIterator.corrupted
         **/
 

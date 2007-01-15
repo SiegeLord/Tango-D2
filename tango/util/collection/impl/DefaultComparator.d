@@ -41,7 +41,7 @@ public class DefaultComparator(T) : Comparator!(T)
          *
          * @param fst first argument
          * @param snd second argument
-         * @return a negative number if fst is less than snd; a
+         * Returns: a negative number if fst is less than snd; a
          * positive number if fst is greater than snd; else 0
         **/
 

@@ -42,14 +42,14 @@ public interface MapView(K, V) : View!(V)
 
         /**
          * Report whether there exists any element with Key key.
-         * @return true if there is such an element
+         * Returns: true if there is such an element
         **/
 
         public bool containsKey(K key);
 
         /**
          * Report whether there exists a (key, value) pair
-         * @return true if there is such an element
+         * Returns: true if there is such an element
         **/
 
         public bool containsPair(K key, V value);
@@ -67,7 +67,7 @@ public interface MapView(K, V) : View!(V)
          * // ...
          * }
          * </PRE>
-         * @return the enumeration
+         * Returns: the enumeration
         **/
 
         public PairIterator!(K, V) keys();
@@ -82,8 +82,8 @@ public interface MapView(K, V) : View!(V)
         /**
          * Return the element associated with Key key. 
          * @param key a key
-         * @return element such that contains(key, element)
-         * @exception NoSuchElementException if !containsKey(key)
+         * Returns: element such that contains(key, element)
+         * Throws: NoSuchElementException if !containsKey(key)
         **/
 
         public V get(K key);
@@ -91,7 +91,7 @@ public interface MapView(K, V) : View!(V)
         /**
          * Return the element associated with Key key. 
          * @param key a key
-         * @return whether the key is contained or not
+         * Returns: whether the key is contained or not
         **/
 
         public bool get(K key, inout V element);
@@ -102,7 +102,7 @@ public interface MapView(K, V) : View!(V)
          * number of keys associated with any element, but this returns only
          * one of them (any arbitrary one), or null if no such key exists.
          * @param element, a value to try to find a key for.
-         * @return k, such that 
+         * Returns: k, such that 
          * <PRE>
          * (k == null && !contains(element)) ||  contains(k, element)
          * </PRE>

@@ -219,8 +219,9 @@ public class LinkMap(K, T) : MapCollection!(K, T) // , IReadable, IWritable
 
         /**
          * Return the element associated with Key key. 
-         * @param key a key
-         * @return whether the key is contained or not
+         * Params:
+         *   key = a key
+         * Returns: whether the key is contained or not
         **/
 
         public final bool get(K key, inout T element)

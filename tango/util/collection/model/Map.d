@@ -41,7 +41,7 @@ public interface Map(K, T) : MapView!(K, T), Dispenser!(T)
          *
          * @param key the key for element to include
          * @param element the element to include
-         * @return condition: 
+         * Returns: condition: 
          * <PRE>
          * has(key, element) &&
          * no spurious effects &&
@@ -56,7 +56,7 @@ public interface Map(K, T) : MapView!(K, T), Dispenser!(T)
         /**
          * Remove the pair with the given key
          * @param  key the key
-         * @return condition: 
+         * Returns: condition: 
          * <PRE>
          * !containsKey(key)
          * foreach (k in keys()) at(k).equals(PREV(this).at(k)) &&
@@ -76,7 +76,7 @@ public interface Map(K, T) : MapView!(K, T), Dispenser!(T)
          * @param key the key for the pair to remove
          * @param oldElement the existing element
          * @param newElement the value to replace it with
-         * @return condition: 
+         * Returns: condition: 
          * <PRE>
          * !contains(key, oldElement) || contains(key, newElement);
          * no spurious effects &&

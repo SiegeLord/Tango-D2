@@ -38,13 +38,13 @@ public interface Set(T) : SetView!(T), Dispenser!(T)
          * Include the indicated element in the collection.
          * No effect if the element is already present.
          * @param element the element to add
-         * @return condition: 
+         * Returns: condition: 
          * <PRE>
          * has(element) &&
          * no spurious effects &&
          * Version change iff !PREV(this).has(element)
          * </PRE>
-         * @exception IllegalElementException if !canInclude(element)
+         * Throws: IllegalElementException if !canInclude(element)
         **/
 
         public void add (T element);
@@ -57,8 +57,8 @@ public interface Set(T) : SetView!(T), Dispenser!(T)
          * while (e.more()) include(e.get());
          * </PRE>
          * @param e the elements to include
-         * @exception IllegalElementException if !canInclude(element)
-         * @exception CorruptedIteratorException propagated if thrown
+         * Throws: IllegalElementException if !canInclude(element)
+         * Throws: CorruptedIteratorException propagated if thrown
         **/
 
         public void add (Iterator!(T) e);

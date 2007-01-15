@@ -43,9 +43,9 @@ version (VERBOSE)
          * other only in that they contain additional elements.
          *
          * @param element the element to include in the new collection
-         * @return a new collection c, with the matches as this, except that
+         * Returns: a new collection c, with the matches as this, except that
          * c.has(element)
-         * @exception IllegalElementException if !canInclude(element)
+         * Throws: IllegalElementException if !canInclude(element)
         **/
 
         public Set including (T element);
