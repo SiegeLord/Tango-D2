@@ -32,12 +32,9 @@ private import  tango.util.collection.model.View,
         Collection serves as a convenient base class for most implementations
         of mutable containers. It maintains a version number and element count.
         It also provides default implementations of many collection operations. 
- 
-        author: Doug Lea
-                @version 0.93
-        <P> For an introduction to this package see <A HREF="index.html"
-        > Overview </A>.
-        
+
+        Authors: Doug Lea
+
 ********************************************************************************/
 
 public abstract class Collection(T) : Dispenser!(T), IReadable, IWritable
@@ -105,7 +102,6 @@ public abstract class Collection(T) : Dispenser!(T), IReadable, IWritable
 
         /***********************************************************************
 
-                Implements tango.util.collection.impl.Collection.Collection.drained
                 Time complexity: O(1).
                 See_Also: tango.util.collection.impl.Collection.Collection.drained
 
@@ -118,8 +114,8 @@ public abstract class Collection(T) : Dispenser!(T), IReadable, IWritable
 
         /***********************************************************************
 
-                Implements tango.util.collection.impl.Collection.Collection.size
                 Time complexity: O(1).
+                Returns: the count of elements currently in the collection
                 See_Also: tango.util.collection.impl.Collection.Collection.size
 
         ************************************************************************/
@@ -131,8 +127,12 @@ public abstract class Collection(T) : Dispenser!(T), IReadable, IWritable
 
         /***********************************************************************
 
-                Implements tango.util.collection.impl.Collection.Collection.allows
+                Checks if element is an allowed element for this collection.
+                This will not throw an exception, but any other attemp to add an
+                invalid element will do.
+
                 Time complexity: O(1) + time of screener, if present
+
                 See_Also: tango.util.collection.impl.Collection.Collection.allows
 
         ************************************************************************/
@@ -143,10 +143,9 @@ public abstract class Collection(T) : Dispenser!(T), IReadable, IWritable
                                  (screener is null || screener(element));
         }
 
-        
+
         /***********************************************************************
 
-                Implements tango.util.collection.matches
                 Time complexity: O(n).
                 Default implementation. Fairly sleazy approach.
                 (Defensible only when you remember that it is just a default impl.)
@@ -155,7 +154,7 @@ public abstract class Collection(T) : Dispenser!(T), IReadable, IWritable
                 This suffices for all currently supported collection types,
                 but must be overridden if you define new Collection subinterfaces
                 and/or implementations.
-                
+
                 See_Also: tango.util.collection.impl.Collection.Collection.matches
 
         ************************************************************************/
@@ -203,7 +202,6 @@ public abstract class Collection(T) : Dispenser!(T), IReadable, IWritable
 
         /***********************************************************************
 
-                Implements tango.util.collection.impl.Collection.Collection.version.
                 Time complexity: O(1).
                 See_Also: tango.util.collection.impl.Collection.Collection.version
 
@@ -222,7 +220,7 @@ public abstract class Collection(T) : Dispenser!(T), IReadable, IWritable
                 very pretty, but parenthesizing each element means that
                 for most kinds of elements, it's conceivable that the
                 strings could be parsed and used to build other tango.util.collection.
-                <P>
+
                 Not a very pretty implementation either. Casts are used
                 to get at elements/keys
 
@@ -474,7 +472,6 @@ public abstract class Collection(T) : Dispenser!(T), IReadable, IWritable
                         
         /***********************************************************************
 
-                Implements tango.util.collection.model.View.View.checkImplementation.
                 See_Also: tango.util.collection.model.View.View.checkImplementation
 
         ************************************************************************/
@@ -487,29 +484,24 @@ public abstract class Collection(T) : Dispenser!(T), IReadable, IWritable
         /***********************************************************************
 
                 Cause the collection to become empty. 
-                Returns: condition:
-                <PRE>
-                drained() &&
-                Version change iff !PREV(this).drained();
-                </PRE>
 
         ************************************************************************/
 
         abstract void clear();
 
-        
+
         /***********************************************************************
 
                 Exclude all occurrences of the indicated element from the collection. 
                 No effect if element not present.
-                @param element the element to exclude.
-                Returns: condition: 
-                <PRE>
+                Params:
+                    element = the element to exclude.
+                ---
                 !has(element) &&
                 size() == PREV(this).size() - PREV(this).instances(element) &&
                 no other element changes &&
                 Version change iff PREV(this).has(element)
-                </PRE>
+                ---
 
         ************************************************************************/
 
@@ -520,15 +512,15 @@ public abstract class Collection(T) : Dispenser!(T), IReadable, IWritable
 
                 Remove an instance of the indicated element from the collection. 
                 No effect if !has(element)
-                @param element the element to remove
-                Returns: condition: 
-                <PRE>
+                Params:
+                    element = the element to remove
+                ---
                 let occ = max(1, instances(element)) in
                  size() == PREV(this).size() - occ &&
                  instances(element) == PREV(this).instances(element) - occ &&
                  no other element changes &&
                  version change iff occ == 1
-                </PRE>
+                ---
 
         ************************************************************************/
 
@@ -543,8 +535,7 @@ public abstract class Collection(T) : Dispenser!(T), IReadable, IWritable
                 when applied to Sets. For Sets, because elements occur at
                 most once, if newElement is already included, replacing oldElement with
                 with newElement has the same effect as just removing oldElement.
-                Returns: condition:
-                <PRE>
+                ---
                 let int delta = oldElement.equals(newElement)? 0 : 
                               max(1, PREV(this).instances(oldElement) in
                  instances(oldElement) == PREV(this).instances(oldElement) - delta &&
@@ -553,7 +544,7 @@ public abstract class Collection(T) : Dispenser!(T), IReadable, IWritable
                                PREV(this).instances(oldElement) + delta) &&
                  no other element changes &&
                  Version change iff delta != 0
-                </PRE>
+                ---
                 Throws: IllegalElementException if has(oldElement) and !allows(newElement)
 
         ************************************************************************/
@@ -569,8 +560,7 @@ public abstract class Collection(T) : Dispenser!(T), IReadable, IWritable
                 when applied to Sets. For Sets, because elements occur at
                 most once, if newElement is already included, replacing oldElement with
                 with newElement has the same effect as just removing oldElement.
-                Returns: condition:
-                <PRE>
+                ---
                 let int delta = oldElement.equals(newElement)? 0 : 
                            PREV(this).instances(oldElement) in
                  instances(oldElement) == PREV(this).instances(oldElement) - delta &&
@@ -579,7 +569,7 @@ public abstract class Collection(T) : Dispenser!(T), IReadable, IWritable
                                PREV(this).instances(oldElement) + delta) &&
                  no other element changes &&
                  Version change iff delta != 0
-                </PRE>
+                ---
                 Throws: IllegalElementException if has(oldElement) and !allows(newElement)
 
         ************************************************************************/
@@ -591,11 +581,15 @@ public abstract class Collection(T) : Dispenser!(T), IReadable, IWritable
 
                 Exclude all occurrences of each element of the Iterator.
                 Behaviorally equivalent to
-                <PRE>
-                while (e.more()) removeAll(e.get());
-                @param e the enumeration of elements to exclude.
+                ---
+                while (e.more())
+                  removeAll(e.get());
+                ---
+                Param :
+                    e = the enumeration of elements to exclude.
+
                 Throws: CorruptedIteratorException is propagated if thrown
-                Implements tango.util.collection.impl.Collection.Collection.removeAll
+
                 See_Also: tango.util.collection.impl.Collection.Collection.removeAll
 
         ************************************************************************/
@@ -607,29 +601,40 @@ public abstract class Collection(T) : Dispenser!(T), IReadable, IWritable
 
                  Remove an occurrence of each element of the Iterator.
                  Behaviorally equivalent to
-                 <PRE>
-                 while (e.more()) remove (e.get());
-                 @param e the enumeration of elements to remove.
+
+                 ---
+                 while (e.more())
+                    remove (e.get());
+                 ---
+
+                 Param:
+                    e = the enumeration of elements to remove.
+
                  Throws: CorruptedIteratorException is propagated if thrown
 
         ************************************************************************/
 
         abstract void remove (Iterator!(T) e);
 
-   
+
         /***********************************************************************
 
                 Remove and return an element.  Implementations
                 may strengthen the guarantee about the nature of this element.
                 but in general it is the most convenient or efficient element to remove.
-                <P>
-                Example usage. One way to transfer all elements from 
+
+                Examples:
+                One way to transfer all elements from 
                 MutableCollection a to MutableBag b is:
-                <PRE>
-                while (!a.empty()) b.add(a.take());
-                </PRE>
-                Returns: an element v such that PREV(this).has(v) 
-                and the postconditions of removeOneOf(v) hold.
+                ---
+                while (!a.empty())
+                    b.add(a.take());
+                ---
+
+                Returns:
+                    an element v such that PREV(this).has(v) 
+                    and the postconditions of removeOneOf(v) hold.
+
                 Throws: NoSuchElementException iff drained.
 
         ************************************************************************/
