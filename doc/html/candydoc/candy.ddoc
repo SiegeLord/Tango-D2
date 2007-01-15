@@ -1,38 +1,29 @@
 DDOC =
-<html>
- <head>
-  <meta http-equiv="content-type" content="text/html; charset=utf-8">
-  <meta content="text/javascript" http-equiv="content-script-type">
-  <title>$(TITLE)</title>
+<html><head>
+<meta http-equiv="content-type" content="text/html; charset=utf-8">
+<meta content="text/javascript" http-equiv="content-script-type">
+<title>$(TITLE)</title>
 
-  <link rel="stylesheet" type="text/css" href="css/style.css">
-  <!--[if lt IE 7]><link rel="stylesheet" type="text/css" href="css/ie56hack.css"><![endif]-->
-  <script language="JavaScript" src="js/util.js" type="text/javascript"></script>
-  <script language="JavaScript" src="js/tree.js" type="text/javascript"></script>
-  <script language="JavaScript" src="js/explorer.js" type="text/javascript"></script>
-  <script>
+<link rel="stylesheet" type="text/css" href="css/style.css">
+<!--[if lt IE 7]><link rel="stylesheet" type="text/css" href="css/ie56hack.css"><![endif]-->
+<script language="JavaScript" src="js/util.js" type="text/javascript"></script>
+<script language="JavaScript" src="js/tree.js" type="text/javascript"></script>
+<script language="JavaScript" src="js/explorer.js" type="text/javascript"></script>
+<script>
 function anchorFromTitle(title, path, ext) {
   var url = path + title + "." + ext;
   document.write("<a href='" + url + "'>" + title + "</a>");
   }
-  </script>
- </head>
- <body>
-  <div id="left">
-   <div id="nav">
-    <a href="../../">Project Pages</a> |
-    <a href="index.html">API Docs Index</a>
-   </div>
-   <div id="tabarea"></div>
-   <div id="explorerclient"></div>
-  </div>
+</script>
+</head><body>
+<div id="tabarea"></div><div id="explorerclient"></div>
 <div id="content"><script>explorer.initialize("$(TITLE)");</script>
-	<table class="content">
-		<tr><td id="docbody"><h1><script>anchorFromTitle('$(TITLE)', 'source/', 'html');</script></h1>$(BODY)</td></tr>
-		<tr><td id="docfooter">
+        <table class="content">
+                <tr><td id="docbody"><h1><script>anchorFromTitle('$(TITLE)', 'source/', 'html');</script></h1>$(BODY)</td></tr>
+                <tr><td id="docfooter">
                         $(COPYRIGHT) :: page rendered by CandyDoc
-		</td></tr>
-	</table>
+                </td></tr>
+        </table>
 </div>
 $(ADD_MODULES)
 </body></html>
