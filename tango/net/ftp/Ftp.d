@@ -17,7 +17,9 @@ private import tango.net.Socket;
 private import tango.net.ftp.Telnet;
 private import tango.io.FileConduit;
 private import tango.io.MemoryConduit;
-private import tango.io.Stdout;
+
+debug (FtpDebug ) { private import tango.io.Stdout; }
+
 private import Text = tango.text.Util;
 private import Ascii = tango.text.Ascii;
 private import Regex = tango.text.Regex;
