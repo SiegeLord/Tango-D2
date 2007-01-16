@@ -35,9 +35,9 @@ INC_DEST=../../tango
 LIB_DEST=..
 DOC_DEST=../../doc/tango
 
-.SUFFIXES: .asm .c .cpp .d .html .o
+.SUFFIXES: .s .c .cpp .d .html .o
 
-.asm.o:
+.s.o:
 	$(CC) -c $<
 
 .c.o:
@@ -65,7 +65,8 @@ doc     : tango.doc
 OBJ_CORE= \
     core/Exception.o \
     core/Memory.o \
-    core/Thread.o
+    core/Thread.o \
+    core/ThreadASM.o
 
 OBJ_STDC= \
     stdc/wrap.o

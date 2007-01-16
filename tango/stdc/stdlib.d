@@ -99,3 +99,8 @@ else version( GNU )
     private import gcc.builtins;
 	alias gcc.builtins.__builtin_alloca alloca;
 }
+
+version( darwin )
+{
+    extern (C) void * valloc(size_t);
+}

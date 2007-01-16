@@ -221,39 +221,39 @@ enum
 {
     FILE_SHARE_READ                 = 0x00000001,
     FILE_SHARE_WRITE                = 0x00000002,
-    FILE_SHARE_DELETE               = 0x00000004,  
-    FILE_ATTRIBUTE_READONLY         = 0x00000001,  
-    FILE_ATTRIBUTE_HIDDEN           = 0x00000002,  
-    FILE_ATTRIBUTE_SYSTEM           = 0x00000004,  
-    FILE_ATTRIBUTE_DIRECTORY        = 0x00000010,  
-    FILE_ATTRIBUTE_ARCHIVE          = 0x00000020,  
-    FILE_ATTRIBUTE_NORMAL           = 0x00000080,  
-    FILE_ATTRIBUTE_TEMPORARY        = 0x00000100,  
-    FILE_ATTRIBUTE_COMPRESSED       = 0x00000800,  
-    FILE_ATTRIBUTE_OFFLINE          = 0x00001000,  
-    FILE_NOTIFY_CHANGE_FILE_NAME    = 0x00000001,   
-    FILE_NOTIFY_CHANGE_DIR_NAME     = 0x00000002,   
-    FILE_NOTIFY_CHANGE_ATTRIBUTES   = 0x00000004,   
-    FILE_NOTIFY_CHANGE_SIZE         = 0x00000008,   
-    FILE_NOTIFY_CHANGE_LAST_WRITE   = 0x00000010,   
-    FILE_NOTIFY_CHANGE_LAST_ACCESS  = 0x00000020,   
-    FILE_NOTIFY_CHANGE_CREATION     = 0x00000040,   
-    FILE_NOTIFY_CHANGE_SECURITY     = 0x00000100,   
-    FILE_ACTION_ADDED               = 0x00000001,   
-    FILE_ACTION_REMOVED             = 0x00000002,   
-    FILE_ACTION_MODIFIED            = 0x00000003,   
-    FILE_ACTION_RENAMED_OLD_NAME    = 0x00000004,   
-    FILE_ACTION_RENAMED_NEW_NAME    = 0x00000005,   
-    FILE_CASE_SENSITIVE_SEARCH      = 0x00000001,  
-    FILE_CASE_PRESERVED_NAMES       = 0x00000002,  
-    FILE_UNICODE_ON_DISK            = 0x00000004,  
-    FILE_PERSISTENT_ACLS            = 0x00000008,  
-    FILE_FILE_COMPRESSION           = 0x00000010,  
-    FILE_VOLUME_IS_COMPRESSED       = 0x00008000,  
+    FILE_SHARE_DELETE               = 0x00000004,
+    FILE_ATTRIBUTE_READONLY         = 0x00000001,
+    FILE_ATTRIBUTE_HIDDEN           = 0x00000002,
+    FILE_ATTRIBUTE_SYSTEM           = 0x00000004,
+    FILE_ATTRIBUTE_DIRECTORY        = 0x00000010,
+    FILE_ATTRIBUTE_ARCHIVE          = 0x00000020,
+    FILE_ATTRIBUTE_NORMAL           = 0x00000080,
+    FILE_ATTRIBUTE_TEMPORARY        = 0x00000100,
+    FILE_ATTRIBUTE_COMPRESSED       = 0x00000800,
+    FILE_ATTRIBUTE_OFFLINE          = 0x00001000,
+    FILE_NOTIFY_CHANGE_FILE_NAME    = 0x00000001,
+    FILE_NOTIFY_CHANGE_DIR_NAME     = 0x00000002,
+    FILE_NOTIFY_CHANGE_ATTRIBUTES   = 0x00000004,
+    FILE_NOTIFY_CHANGE_SIZE         = 0x00000008,
+    FILE_NOTIFY_CHANGE_LAST_WRITE   = 0x00000010,
+    FILE_NOTIFY_CHANGE_LAST_ACCESS  = 0x00000020,
+    FILE_NOTIFY_CHANGE_CREATION     = 0x00000040,
+    FILE_NOTIFY_CHANGE_SECURITY     = 0x00000100,
+    FILE_ACTION_ADDED               = 0x00000001,
+    FILE_ACTION_REMOVED             = 0x00000002,
+    FILE_ACTION_MODIFIED            = 0x00000003,
+    FILE_ACTION_RENAMED_OLD_NAME    = 0x00000004,
+    FILE_ACTION_RENAMED_NEW_NAME    = 0x00000005,
+    FILE_CASE_SENSITIVE_SEARCH      = 0x00000001,
+    FILE_CASE_PRESERVED_NAMES       = 0x00000002,
+    FILE_UNICODE_ON_DISK            = 0x00000004,
+    FILE_PERSISTENT_ACLS            = 0x00000008,
+    FILE_FILE_COMPRESSION           = 0x00000010,
+    FILE_VOLUME_IS_COMPRESSED       = 0x00008000,
 }
 
 const DWORD MAILSLOT_NO_MESSAGE = cast(DWORD)-1;
-const DWORD MAILSLOT_WAIT_FOREVER = cast(DWORD)-1; 
+const DWORD MAILSLOT_WAIT_FOREVER = cast(DWORD)-1;
 
 enum : uint
 {
@@ -1100,13 +1100,34 @@ enum
 	THREAD_PRIORITY_IDLE =            THREAD_BASE_PRIORITY_IDLE,
 }
 
+struct SYSTEM_INFO {
+	union {
+		DWORD dwOemId;
+		struct {
+			WORD wProcessorArchitecture;
+			WORD wReserved;
+		}
+	}
+	DWORD dwPageSize;
+	PVOID lpMinimumApplicationAddress;
+	PVOID lpMaximumApplicationAddress;
+	DWORD dwActiveProcessorMask;
+	DWORD dwNumberOfProcessors;
+	DWORD dwProcessorType;
+	DWORD dwAllocationGranularity;
+	WORD wProcessorLevel;
+	WORD wProcessorRevision;
+}
+alias SYSTEM_INFO* LPSYSTEM_INFO;
+
 export HANDLE GetCurrentThread();
 export BOOL GetProcessTimes(HANDLE hProcess, LPFILETIME lpCreationTime, LPFILETIME lpExitTime, LPFILETIME lpKernelTime, LPFILETIME lpUserTime);
 export HANDLE GetCurrentProcess();
 export BOOL DuplicateHandle (HANDLE sourceProcess, HANDLE sourceThread,
-        HANDLE targetProcessHandle, HANDLE *targetHandle, DWORD access, 
+        HANDLE targetProcessHandle, HANDLE *targetHandle, DWORD access,
         BOOL inheritHandle, DWORD options);
 export DWORD GetCurrentThreadId();
+export VOID GetSystemInfo(LPSYSTEM_INFO);
 export BOOL SetThreadPriority(HANDLE hThread, int nPriority);
 export BOOL SetThreadPriorityBoost(HANDLE hThread, BOOL bDisablePriorityBoost);
 export BOOL GetThreadPriorityBoost(HANDLE hThread, PBOOL pDisablePriorityBoost);

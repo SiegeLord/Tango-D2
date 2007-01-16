@@ -1989,6 +1989,11 @@ version( D_InlineAsm_X86 )
             version = AsmX86_Posix;
     }
 }
+else version( PPC )
+{
+    version( Posix )
+        version = AsmPPC_Posix;
+}
 
 
 version( Posix )
@@ -2047,6 +2052,11 @@ private
     }
 
 
+  // NOTE: If AsmPPC_Posix is defined then the context switch routine will
+  //       be defined externally until GDC supports inline PPC ASM.
+  version( AsmPPC_Posix )
+    extern (C) void fiber_switchContext( void** oldp, void* newp );
+  else
     extern (C) void fiber_switchContext( void** oldp, void* newp )
     {
         // NOTE: The data pushed and popped in this routine must match the
@@ -2214,7 +2224,10 @@ class FiberException : ThreadException
  */
 class Fiber
 {
-    const size_t DEFAULT_STACKSIZE = 4096;
+    version( PPC )
+        const size_t DEFAULT_STACKSIZE = 8192;
+    else
+        const size_t DEFAULT_STACKSIZE = 4096;
 
 
     ////////////////////////////////////////////////////////////////////////////
@@ -2688,10 +2701,15 @@ private:
             }
         }
 
+        // NOTE: On OS X the stack must be 16-byte aligned according to the
+        // IA-32 call spec.
+        version( darwin )
+        {
+             pstack = cast(void*)(cast(uint)(pstack) - (cast(uint)(pstack) & 0x0F));
+        }
+
         version( AsmX86_Win32 )
         {
-            //push( 0x00000000 );                                     // oldp
-            //push( 0x00000000 );                                     // newp
             push( cast(size_t) &fiber_entryPoint );                 // EIP
             push( 0xFFFFFFFF );                                     // EBP
             push( 0x00000000 );                                     // EAX
@@ -2713,14 +2731,39 @@ private:
         }
         else version( AsmX86_Posix )
         {
-            //push( 0x00000000 );                                     // oldp
-            //push( 0x00000000 );                                     // newp
             push( cast(size_t) &fiber_entryPoint );                 // EIP
             push( 0x00000000 );                                     // EBP
             push( 0x00000000 );                                     // EAX
             push( 0x00000000 );                                     // EBX
             push( 0x00000000 );                                     // ESI
             push( 0x00000000 );                                     // EDI
+        }
+        else version( AsmPPC_Posix )
+        {
+            version( StackGrowsDown )
+            {
+                pstack -= int.sizeof * 5;
+            }
+            else
+            {
+                pstack += int.sizeof * 5;
+            }
+
+            push( cast(size_t) &fiber_entryPoint );     // link register
+            push( 0x00000000 );                         // control register
+            push( 0x00000000 );                         // old stack pointer
+
+            // GPR values
+            version( StackGrowsDown )
+            {
+                pstack -= int.sizeof * 20;
+            }
+            else
+            {
+                pstack += int.sizeof * 20;
+            }
+
+            assert( cast(uint) pstack & 0x0f == 0 );
         }
         else version( JmpX86_Posix )
         {

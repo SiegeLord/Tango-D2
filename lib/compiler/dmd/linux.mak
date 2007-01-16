@@ -34,9 +34,9 @@ DC=dmd
 
 LIB_DEST=..
 
-.SUFFIXES: .asm .c .cpp .d .html .o
+.SUFFIXES: .s .c .cpp .d .html .o
 
-.asm.o:
+.s.o:
 	$(CC) -c $<
 
 .c.o:
