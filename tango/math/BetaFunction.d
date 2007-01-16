@@ -31,8 +31,8 @@ import tango.math.GammaFunction;
 private {
 const real MAXLOG = 0x1.62e42fefa39ef358p+13L;  // log(real.max)
 const real MINLOG = -0x1.6436716d5406e6d8p+13L; // log(real.min*real.epsilon) = log(smallest denormal)
-const real big = 9.223372036854775808e18L;
-const real biginv = 1.084202172485504434007e-19L;
+const real BETA_BIG = 9.223372036854775808e18L;
+const real BETA_BIGINV = 1.084202172485504434007e-19L;
 }
 
 /** Beta function
@@ -399,6 +399,7 @@ done:
     return x;
 }
 
+debug(UnitTest) {
 unittest { // also tested by the normal distribution
   // check NaN propagation
   assert(isIdentical(betaIncomplete(NaN("xyz"),2,3), NaN("xyz")));
@@ -462,6 +463,7 @@ unittest { // also tested by the normal distribution
     assert( isNaN(betaIncompleteInv(0.12167, 4.0640301659679627772e19L, 0.0813601)));
     // This next result is almost certainly erroneous.
     assert(betaIncomplete(1.16251e20, 2.18e39, 5.45e-20)==-real.infinity);
+}
 }
 
 private {
@@ -531,17 +533,17 @@ real betaDistExpansion1(real a, real b, real x )
         k7 += 2.0L;
         k8 += 2.0L;
 
-        if( (fabs(qk) + fabs(pk)) > big ) {
-            pkm2 *= biginv;
-            pkm1 *= biginv;
-            qkm2 *= biginv;
-            qkm1 *= biginv;
+        if( (fabs(qk) + fabs(pk)) > BETA_BIG ) {
+            pkm2 *= BETA_BIGINV;
+            pkm1 *= BETA_BIGINV;
+            qkm2 *= BETA_BIGINV;
+            qkm1 *= BETA_BIGINV;
             }
-        if( (fabs(qk) < biginv) || (fabs(pk) < biginv) ) {
-            pkm2 *= big;
-            pkm1 *= big;
-            qkm2 *= big;
-            qkm1 *= big;
+        if( (fabs(qk) < BETA_BIGINV) || (fabs(pk) < BETA_BIGINV) ) {
+            pkm2 *= BETA_BIG;
+            pkm1 *= BETA_BIG;
+            qkm2 *= BETA_BIG;
+            qkm1 *= BETA_BIG;
             }
         }
     while( ++n < 400 );
@@ -613,17 +615,17 @@ real betaDistExpansion2(real a, real b, real x )
         k7 += 2.0L;
         k8 += 2.0L;
 
-        if( (fabs(qk) + fabs(pk)) > big ) {
-            pkm2 *= biginv;
-            pkm1 *= biginv;
-            qkm2 *= biginv;
-            qkm1 *= biginv;
+        if( (fabs(qk) + fabs(pk)) > BETA_BIG ) {
+            pkm2 *= BETA_BIGINV;
+            pkm1 *= BETA_BIGINV;
+            qkm2 *= BETA_BIGINV;
+            qkm1 *= BETA_BIGINV;
         }
-        if( (fabs(qk) < biginv) || (fabs(pk) < biginv) ) {
-            pkm2 *= big;
-            pkm1 *= big;
-            qkm2 *= big;
-            qkm1 *= big;
+        if( (fabs(qk) < BETA_BIGINV) || (fabs(pk) < BETA_BIGINV) ) {
+            pkm2 *= BETA_BIG;
+            pkm1 *= BETA_BIG;
+            qkm2 *= BETA_BIG;
+            qkm1 *= BETA_BIG;
         }
     } while( ++n < 400 );
 // loss of precision has occurred
@@ -802,6 +804,7 @@ body
     return rflg * sqrt( rk/z - rk );
 }
 
+debug(UnitTest) {
 unittest {
 
 // There are simple forms for nu = 1 and nu = 2.
@@ -838,7 +841,7 @@ assert( feqrel(studentsDistribution(18, studentsDistributionInv(18, 0.4L)),0.4L)
  > real.mant_dig-2 );
 assert( feqrel(studentsDistribution(11, studentsDistributionInv(11, 0.9L)),0.9L)
   > real.mant_dig-2);
-
+}
 }
 
 /** The F distribution, its complement, and inverse.
@@ -935,6 +938,7 @@ body{
     }
 }
 
+debug(UnitTest) {
 unittest {
 // fDistCompl(df1, df2, x) = Excel's FDIST(x, df1, df2)
   assert(fabs(fDistributionCompl(6, 4, 16.5) - 0.00858719177897249L)< 0.0000000000005L);
@@ -943,4 +947,139 @@ unittest {
   assert(fabs(fDistributionComplInv(4, 16, 0.008) - 5.043_537_593_48596L)< 0.0000000005L);
   // Regression test: This one used to fail because of a bug in the definition of MINLOG.
   assert(feqrel(fDistributionCompl(4, 16, fDistributionComplInv(4,16, 0.008)), 0.008)>=real.mant_dig-3);
+}
+}
+
+
+/***********************************
+ *  Binomial distribution and complemented binomial distribution
+ *
+ * The binomial distribution is defined as the sum of the terms 0 through k
+ * of the Binomial probability density.
+ * The complement returns the sum of the terms k+1 through n.
+ *
+ binomialDistribution = $(BIGSUM j=0, k) $(CHOOSE n, j) $(POWER p, j) $(POWER (1-p), n-j)
+
+ binomialDistributionCompl = $(BIGSUM j=k+1, n) $(CHOOSE n, j) $(POWER p, j) $(POWER (1-p), n-j)
+ *
+ * The terms are not summed directly; instead the incomplete
+ * beta integral is employed, according to the formula
+ *
+ * y = binomialDistribution( k, n, p ) = betaDistribution( n-k, k+1, 1-p ).
+ *
+ * The arguments must be positive, with p ranging from 0 to 1, and k<=n.
+ */
+real binomialDistribution(int k, int n, real p )
+in {
+   assert(p>=0 && p<=1.0); // domain error
+   assert(k>=0 && k<=n);
+}
+body{
+    real dk, dn, q;
+    if( k == n )
+        return 1.0L;
+
+    q = 1.0L - p;
+    dn = n - k;
+    if ( k == 0 ) {
+        return pow( q, dn );
+    } else {
+        return betaIncomplete( dn, k + 1, q );
+    }
+}
+
+debug(UnitTest) {
+unittest {
+    // = Excel's BINOMDIST(k, n, p, TRUE)
+    assert( fabs(binomialDistribution(8, 12, 0.5)
+                - 0.927001953125L) < 0.0000000000005L);
+    assert( fabs(binomialDistribution(0, 3, 0.008L)
+                - 0.976191488L) < 0.00000000005L);
+    assert(binomialDistribution(7,7, 0.3)==1.0);
+}
+}
+
+ /** ditto */
+real binomialDistributionCompl(int k, int n, real p )
+in {
+   assert(p>=0 && p<=1.0); // domain error
+   assert(k>=0 && k<=n);
+}
+body{
+    if ( k == n ) {
+        return 0;
+    }
+    real dn = n - k;
+    if ( k == 0 ) {
+        if ( p < .01L )
+            return -expm1( dn * log1p(-p) );
+        else
+            return 1.0L - pow( 1.0L-p, dn );
+    } else {
+        return betaIncomplete( k+1, dn, p );
+    }
+}
+
+debug(UnitTest){
+unittest {
+    // = Excel's (1 - BINOMDIST(k, n, p, TRUE))
+    assert( fabs(1.0L-binomialDistributionCompl(0, 15, 0.003)
+                - 0.955932824838906L) < 0.0000000000000005L);
+    assert( fabs(1.0L-binomialDistributionCompl(0, 25, 0.2)
+                - 0.00377789318629572L) < 0.000000000000000005L);
+    assert( fabs(1.0L-binomialDistributionCompl(8, 12, 0.5)
+                - 0.927001953125L) < 0.00000000000005L);
+    assert(binomialDistributionCompl(7,7, 0.3)==0.0);
+}
+}
+
+/****************************
+ *  Inverse binomial distribution
+ *
+ * Finds the event probability p such that the sum of the
+ * terms 0 through k of the Binomial probability density
+ * is equal to the given cumulative probability y.
+ *
+ * This is accomplished using the inverse beta integral
+ * function and the relation
+ *
+ * 1 - p = betaDistributionInv( n-k, k+1, y ).
+ *
+ * The arguments must be positive, with 0 <= y <= 1, and k <= n.
+ */
+real binomialDistributionInv( int k, int n, real y )
+in {
+   assert(y>=0 && y<=1.0); // domain error
+   assert(k>=0 && k<=n);
+}
+body{
+    real dk, p;
+    real dn = n - k;
+    if ( k == 0 ) {
+        if( y > 0.8L )
+            p = -expm1( log1p(y-1.0L) / dn );
+        else
+            p = 1.0L - pow( y, 1.0L/dn );
+    } else {
+        dk = k + 1;
+        p = betaIncomplete( dn, dk, y );
+        if( p > 0.5 )
+            p = betaIncompleteInv( dk, dn, 1.0L-y );
+        else
+            p = 1.0 - betaIncompleteInv( dn, dk, y );
+    }
+    return p;
+}
+
+debug(UnitTest){
+unittest {
+    real w = binomialDistribution(9, 15, 0.318L);
+    assert(feqrel(binomialDistributionInv(9, 15, w), 0.318L)>=real.mant_dig-3);
+    w = binomialDistribution(5, 35, 0.718L);
+    assert(feqrel(binomialDistributionInv(5, 35, w), 0.718L)>=real.mant_dig-3);
+    w = binomialDistribution(0, 24, 0.637L);
+    assert(feqrel(binomialDistributionInv(0, 24, w), 0.637L)>=real.mant_dig-3);
+    w = binomialDistributionInv(0, 59, 0.962L);
+    assert(feqrel(binomialDistribution(0, 59, w), 0.962L)>=real.mant_dig-5);
+}
 }
