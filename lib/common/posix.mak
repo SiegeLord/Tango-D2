@@ -35,10 +35,13 @@ INC_DEST=../../tango
 LIB_DEST=..
 DOC_DEST=../../doc/tango
 
-.SUFFIXES: .s .c .cpp .d .html .o
+.SUFFIXES: .s .S .c .cpp .d .html .o
 
 .s.o:
-	$(CC) -c $<
+	$(CC) -c $(CFLAGS) $< -o$@
+
+.S.o:
+	$(CC) -c $(CFLAGS) $< -o$@
 
 .c.o:
 	$(CC) -c $(CFLAGS) $< -o$@
