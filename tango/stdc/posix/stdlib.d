@@ -91,6 +91,15 @@ version( linux )
 {
     int setenv(char*, char*, int);
     int unsetenv(char*);
+
+    void* valloc(size_t); // LEGACY non-standard
+}
+else version( darwin )
+{
+    int setenv(char*, char*, int);
+    int unsetenv(char*);
+
+    void* valloc(size_t); // LEGACY non-standard
 }
 
 //

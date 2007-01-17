@@ -105,7 +105,7 @@ version( linux )
     const MAP_SHARED    = 0x01;
     const MAP_PRIVATE   = 0x02;
     const MAP_FIXED     = 0x10;
-    const MAP_ANON      = 0x20; // NOTE: this is a nonstandard extension
+    const MAP_ANON      = 0x20; // non-standard
 
     const MAP_FAILED    = cast(void*) -1;
 
@@ -123,7 +123,7 @@ else version( darwin )
     const MAP_SHARED    = 0x0001;
     const MAP_PRIVATE   = 0x0002;
     const MAP_FIXED     = 0x0010;
-    const MAP_ANON      = 0x1000; // NOTE: this is a nonstandard extension
+    const MAP_ANON      = 0x1000; // non-standard
 
     const MAP_FAILED    = cast(void*)-1;
 
