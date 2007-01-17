@@ -173,13 +173,21 @@ unittest
     assert(conj(z) == -z);
 }
 
+private {
+    // Implicitly convert to the smallest type which can store both T and U.
+template SharedComparisonType(T, U) {
+    static if (is( typeof( (T x, U y){ return y<x? y: x;}) Q == return))
+        alias Q SharedComparisonType;
+}
+}
+
 
 /** Return the minimum of x and y.
  *
  * Note: If x and y are floating-point numbers, and either is a NaN,
  * x will be returned.
  */
-T min(T)(T x, T y) {
+SharedComparisonType!(T, U) min(T, U)(T x, U y) {
     return y<x? y : x;
 }
 
@@ -188,7 +196,7 @@ T min(T)(T x, T y) {
  * Note: If x and y are floating-point numbers, and either is a NaN,
  * x will be returned.
  */
-T max(T)(T x, T y) {
+SharedComparisonType!(T,U) max(T, U)(T x, U y) {
     return y>x? y : x;
 }
 
@@ -220,6 +228,8 @@ unittest
 {
     assert(max('e', 'f')=='f');
     assert(min(3.5, 3.8)==3.5);
+    // check implicit conversion to integer.
+    assert(min(3.5, 18)==3.5);
     assert(maxNum(NaN("abc"), 56.1L)== 56.1L);
     assert(maxNum(28.0, NaN("abc"))== 28.0);
     assert(minNum(1e12, NaN("abc"))== 1e12);
