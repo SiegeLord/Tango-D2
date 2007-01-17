@@ -1971,61 +1971,87 @@ private:
 
 
 ////////////////////////////////////////////////////////////////////////////////
-// Fiber Platform Detection
+// Fiber Platform Detection and Memory Allocation
 ////////////////////////////////////////////////////////////////////////////////
 
 
-version( D_InlineAsm_X86 )
+private
 {
-    version( X86_64 )
+    version( D_InlineAsm_X86 )
     {
+        version( X86_64 )
+        {
 
+        }
+        else
+        {
+            version( Win32 )
+                version = AsmX86_Win32;
+            else version( Posix )
+                version = AsmX86_Posix;
+        }
     }
-    else
+    else version( PPC )
     {
-        version( Win32 )
-            version = AsmX86_Win32;
-        else version( Posix )
-            version = AsmX86_Posix;
+        version( Posix )
+            version = AsmPPC_Posix;
     }
-}
-else version( PPC )
-{
+
+
     version( Posix )
-        version = AsmPPC_Posix;
+    {
+        import tango.stdc.posix.unistd; // for sysconf
+        import tango.stdc.posix.sys.mman;
+        import tango.stdc.stdlib;
+
+        version( AsmX86_Win32 ) {} else
+        version( AsmX86_Posix ) {} else
+        version( X86_64 ) {} else
+        version( X86 )
+        {
+            version = JmpX86_Posix;
+            // NOTE: The setjmp implementation is necessarily reliant on specific
+            //       knowledge of how the sigjmp_buf is defined.  Therefore, this
+            //       code must be explicitly modified for every configuration on
+            //       which it will be used.  The advantage is that it does not
+            //       require inline assembly support for the target architecture,
+            //       so it is theoretically more portable than the asm version.
+            import tango.stdc.posix.setjmp;
+        }
+    }
+
+    const size_t PAGESIZE;
 }
 
 
-version( Posix )
+static this()
 {
-    version( darwin )
+    static if( is( typeof( GetSystemInfo ) ) )
     {
-        private import tango.stdc.stdlib;
+        SYSTEM_INFO info;
+        GetSystemInfo( &info );
+
+        PAGESIZE = info.dwPageSize;
+        assert( PAGESIZE < int.max );
+    }
+    else static if( is( typeof( sysconf ) ) &&
+                    is( typeof( _SC_PAGESIZE ) ) )
+    {
+        PAGESIZE = sysconf( _SC_PAGESIZE );
+        assert( PAGESIZE < int.max );
     }
     else
     {
-        private import tango.stdc.posix.sys.mman;
-    }
-
-    version( AsmX86_Win32 ) {} else
-    version( AsmX86_Posix ) {} else
-    version( X86_64 ) {} else
-    version( X86 )
-    {
-        version = JmpX86_Posix;
-        // NOTE: The setjmp implementation is necessarily reliant on specific
-        //       knowledge of how the sigjmp_buf is defined.  Therefore, this
-        //       code must be explicitly modified for every configuration on
-        //       which it will be used.  The advantage is that it does not
-        //       require inline assembly support for the target architecture,
-        //       so it is theoretically more portable than the asm version.
-        private import tango.stdc.posix.setjmp;
+        version( PPC )
+            PAGESIZE = 8192;
+        else
+            PAGESIZE = 4096;
     }
 }
 
 
 ////////////////////////////////////////////////////////////////////////////////
-// Fiber Entry Point
+// Fiber Entry Point and Context Switch
 ////////////////////////////////////////////////////////////////////////////////
 
 
@@ -2224,12 +2250,6 @@ class FiberException : ThreadException
  */
 class Fiber
 {
-    version( PPC )
-        const size_t DEFAULT_STACKSIZE = 8192;
-    else
-        const size_t DEFAULT_STACKSIZE = 4096;
-
-
     ////////////////////////////////////////////////////////////////////////////
     // Initialization
     ////////////////////////////////////////////////////////////////////////////
@@ -2246,7 +2266,7 @@ class Fiber
      * In:
      *  fn must not be null.
      */
-    this( void function() fn, size_t sz = DEFAULT_STACKSIZE )
+    this( void function() fn, size_t sz = PAGESIZE )
     in
     {
         assert( fn );
@@ -2272,7 +2292,7 @@ class Fiber
      * In:
      *  dg must not be null.
      */
-    this( void delegate() dg, size_t sz = DEFAULT_STACKSIZE )
+    this( void delegate() dg, size_t sz = PAGESIZE )
     in
     {
         assert( dg );
@@ -2543,13 +2563,12 @@ private:
     }
     body
     {
+        // adjust alloc size to a multiple of PAGESIZE
+        sz += PAGESIZE - 1;
+        sz -= sz % PAGESIZE;
+
         static if( is( typeof( VirtualAlloc ) ) )
         {
-            const size_t PAGESIZE = 4096;
-
-            sz += PAGESIZE - 1;
-            sz -= sz % PAGESIZE;
-
             // reserve memory for stack
             m_pmem = VirtualAlloc( null,
                                    sz + PAGESIZE,
@@ -2602,9 +2621,9 @@ private:
             {
                 m_pmem = mmap( null,
                                sz,
-                               PROT_READ | PROT_WRITE | PROT_EXEC,
+                               PROT_READ | PROT_WRITE,
                                MAP_PRIVATE | MAP_ANON,
-                               0,
+                               -1,
                                0 );
                 if( m_pmem == MAP_FAILED )
                     m_pmem = null;
