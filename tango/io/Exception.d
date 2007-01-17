@@ -57,13 +57,13 @@ class TokenException : IOException
 
 /*******************************************************************************
 
-        PickleException is thrown when the PickleRegistry encounters a 
+        ProtocolException is thrown when the PayloadRegistry encounters a 
         problem during proxy registration, or when it sees an unregistered
         guid.
 
 *******************************************************************************/
 
-class PickleException : IOException
+class ProtocolException : IOException
 {
         /***********************************************************************
         

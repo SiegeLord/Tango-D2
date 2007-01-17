@@ -40,7 +40,7 @@ private import tango.util.log.model.ILevel;
         the module ctor
 
         ---
-        private Log log;
+        private Logger log;
         
         static this()
         {
@@ -85,9 +85,8 @@ public class Logger : ILevel
 {
         /***********************************************************************
 
-                Add a trace messages. This is called 'debug' in Log4J but
-                that is a  reserved word in the D language. This needs some
-                more thought.
+                Add a trace message. This is called 'debug' in Log4J but
+                that is a  reserved word in the D language
                 
         ***********************************************************************/
 
@@ -164,9 +163,9 @@ public class Logger : ILevel
                 Set the activity level of this logger. Levels control how
                 much information is emitted during runtime, and relate to
                 each other as follows:
-
+                ---
                     Trace < Info < Warn < Error < Fatal < None
-
+                ---
                 That is, if the level is set to Error, only calls to the
                 error() and fatal() methods will actually produce output:
                 all others will be inhibited.

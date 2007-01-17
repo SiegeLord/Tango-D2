@@ -4,19 +4,18 @@
 
         license:        BSD style: $(LICENSE)
 
-        version:        Initial release: April 2004     
-                        Outback version: December 2006
+        version:        Apr 2004: Initial release     
+                        Dec 2006: Outback version
          
         author:         Kris
 
 *******************************************************************************/
 
-module tango.io.protocol.PickleRegistry;
+module tango.io.protocol.PayloadRegistry;
 
 private import  tango.io.Exception;
         
-public  import  tango.io.protocol.model.IReader,
-                tango.io.protocol.model.IWriter;
+public  import  tango.io.protocol.model.IPayload;
 
 /*******************************************************************************
 
@@ -24,21 +23,19 @@ public  import  tango.io.protocol.model.IReader,
         Such objects are intended to be transported across a local network
         and re-instantiated at some destination node. 
 
-        Each IPickle exposes the means to write, or freeze, its content. An
+        Each IPayload exposes the means to write, or freeze, its content. An
         IPickleFactory provides the means to create a new instance of itself
         populated with thawed data. Frozen objects are uniquely identified 
         by a guid exposed via the interface. Responsibility of maintaining
         uniqueness across said identifiers lies in the hands of the developer.
 
-        See PickleReader for an example of how this is expected to operate
-
 *******************************************************************************/
 
-class PickleRegistry
+class PayloadRegistry
 {
-        private alias Object function (IReader reader)  Factory;
+        private alias IPayload delegate() Factory;
         
-        private static Factory[char[]]                  registry;
+        private static Factory[char[]] registry;
 
 
         /***********************************************************************
@@ -63,12 +60,12 @@ class PickleRegistry
 
         ***********************************************************************/
 
-        static synchronized void enroll (Factory factory, char[] guid)
+        static synchronized void enroll (IPayload p)
         {
-                if (guid in registry)
-                    throw new PickleException ("PickleRegistry.enroll :: attempt to re-register a guid");
+                if (p.guid in registry)
+                    throw new ProtocolException ("PayloadRegistry.enroll :: attempt to re-register a guid");
         
-                registry[guid] = factory;
+                registry[p.guid] = &p.create;
         }
 
         /***********************************************************************
@@ -86,23 +83,23 @@ class PickleRegistry
         /***********************************************************************
         
                 Serialize an Object. Objects are written in Network-order, 
-                and are prefixed by the guid exposed via the IPickle
+                and are prefixed by the guid exposed via the IPayload
                 interface. This guid is used to identify the appropriate
                 factory when reconstructing the instance. 
 
         ***********************************************************************/
 
-        static void freeze (IWriter output, IWritable obj, char[] guid)
+        static void freeze (IWriter output, IPayload object)
         {
-                output (guid);
-                obj.write (output);
+                output (object.guid);
+                object.write (output);
         }
         
         /***********************************************************************
         
                 Create a new instance of a registered class from the content
                 made available via the given reader. The factory is located
-                using the provided guid, which must match an enrolled Factory.
+                using the provided guid, which must match an enrolled factory.
 
                 Note that only the factory lookup is synchronized, and not 
                 the instance construction itself. This is intentional, and
@@ -110,17 +107,56 @@ class PickleRegistry
 
         ***********************************************************************/
 
-        static Object thaw (IReader input)
+        static IPayload thaw (IReader input)
         {
                 char[] guid;
 
-                // locate appropriate Proxy and invoke it 
+                // locate appropriate factory and invoke it 
                 input (guid);
                 auto factory = lookup (guid);
-                if (factory)
-                    return factory (input);
-
-                throw new PickleException ("PickleRegistry.create :: attempt to unpickle via unregistered guid '"~guid~"'");
+                
+                if (factory is null)
+                    throw new ProtocolException ("PayloadRegistry.thaw :: attempt to unpickle via unregistered guid '"~guid~"'");
+                
+                auto o = factory ();
+                o.read (input);
+                return o;
         }
 }
 
+
+
+
+debug (UnitTest)
+{
+        void main() {}
+        
+        class Foo : IPayload
+        {
+                char[] guid ()
+                {
+                        return this.classinfo.name;
+                }
+                
+                void write (IWriter output)
+                {
+                }
+
+                void read (IReader reader)
+                {
+                }
+
+                IPayload create ()
+                {
+                        return new Foo;
+                }
+        }
+        
+        unittest
+        {
+                auto foo = new Foo;
+                PayloadRegistry.enroll (foo);
+                PayloadRegistry.freeze (null, foo);
+                auto x = PayloadRegistry.thaw (null);
+        }
+}

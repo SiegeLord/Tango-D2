@@ -22,20 +22,19 @@ private import  tango.net.DatagramConduit,
         
         MulticastConduit sends and receives data on a multicast group, as
         described by a class-D address. To send data, the recipient group
-        should be handed to the write() method or be provided via some
-        alternate means. To receive, the socket is bound to an available
-        local adapter/port as a listener and must join() the group before
-        it becomes eligible for input. 
+        should be handed to the write() method. To receive, the socket is
+        bound to an available local adapter/port as a listener and must
+        join() the group before it becomes eligible for input from there. 
 
         While MulticastConduit is a flavour of datagram, it doesn't support
         being connected to a specific endpoint.
 
         Sending and receiving via a multicast group:
         ---
-        auto group = new InternetAddress ("225.0.0.1");
+        auto group = new InternetAddress ("225.0.0.10", 8080);
 
-        // listen for datagrams on the group address
-        auto multi = new MulticastConduit (group, 8080);
+        // listen for datagrams on the group address (via port 8080)
+        auto multi = new MulticastConduit (group);
 
         // join and broadcast to the group
         multi.join.write ("hello", group);
@@ -47,13 +46,13 @@ private import  tango.net.DatagramConduit,
 
         Note that this example is expecting to receive its own broadcast;
         thus it may be necessary to enable loopback operation (see below)
-        for successful operation
+        for successful receipt of the broadcast
         
 *******************************************************************************/
 
 class MulticastConduit : DatagramConduit
 {
-        private InternetAddress group;
+        private IPv4Address group;
 
         /***********************************************************************
         
@@ -72,27 +71,29 @@ class MulticastConduit : DatagramConduit
 
                 This flavour is necessary only for a multicast receiver
                 (e.g. use this ctor in conjunction with SocketListener).
-                The 'from' address optionally exposes the address where
-                incoming content originates.
 
-                Note that the socket will be bound to the specified port, 
-                and be listening on the provided class D address. Expect
-                this to fail without a network adapter present, as bind()
-                will not find anything to operate upon.
+                You should specify both a group address and a port to 
+                listen upon. The resultant socket will be bound to the
+                specified port (locally), and listening on the class-D
+                address. Expect this to fail without a network adapter
+                present, as bind() will not find anything to work with.
 
-                You must also use join() to become eligible for incoming
-                datagrams
+                The reuse parameter dictates how to behave when the port
+                is already in use. Default behaviour is to throw an IO
+                exception, and the alternate is to force usage.
+                
+
+                                To become eligible for incoming group datagrams, you must
+                also invoke the join() method
 
         ***********************************************************************/
 
-        this (InternetAddress group, ushort port, Address from = null)
+        this (InternetAddress group, bool reuse=false)
         {
-                this.group = group;
+                super ();
 
-                if (from is null)
-                    from = new IPv4Address;
-                super (from);
-                socket.setAddressReuse(true).bind(new InternetAddress (port));
+                this.group = group;
+                socket.setAddressReuse(reuse).bind(new InternetAddress(group.port));
         }
         
         /***********************************************************************
@@ -111,49 +112,48 @@ class MulticastConduit : DatagramConduit
 
         /***********************************************************************
 
-                Add this socket to the current group 
+                Add this socket to the listening group 
 
         ***********************************************************************/
 
         MulticastConduit join ()
         {
-                if (group)
-                    if (! socket.joinGroup (group, true))
-                          exception ("Unable to join multicast group.");
+                socket.joinGroup (group, true);
                 return this;
         }
 
         /***********************************************************************
         
-                Remove this socket from the current group
+                Remove this socket from the listening group
 
         ***********************************************************************/
 
         MulticastConduit leave ()
         {
-                if (group)
-                    if (! socket.joinGroup (group, false))
-                          exception ("Unable to leave multicast group.");
+                socket.joinGroup (group, false);
                 return this;
         }
 }
 
 
+/******************************************************************************
+
+*******************************************************************************/
 
 debug (Test)
 {
-void main()
-{
-        auto group = new InternetAddress ("225.0.0.10");
+        void main()
+        {
+                auto group = new InternetAddress ("225.0.0.10", 8080);
 
-        // listen for datagrams on the group address
-        auto multi = new MulticastConduit (group, 8080);
+                // listen for datagrams on the group address
+                auto multi = new MulticastConduit (group);
 
-        // join and broadcast to the group
-        multi.join.write ("hello", group);
+                // join and broadcast to the group
+                multi.join.write ("hello", group);
 
-        // we are listening also ...
-        char[8] tmp;
-        auto bytes = multi.read (tmp);
-}
+                // we are listening also ...
+                char[8] tmp;
+                auto bytes = multi.read (tmp);
+        }
 }

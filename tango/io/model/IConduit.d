@@ -131,6 +131,14 @@ abstract class IConduit : ISelectable
         abstract bool isAlive ();
 
         /***********************************************************************
+
+                Are we shutting down?
+
+        ***********************************************************************/
+
+        abstract bool isHalting ();
+
+        /***********************************************************************
                 
                 Release external resources
 

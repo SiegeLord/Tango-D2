@@ -21,89 +21,57 @@ package import  tango.net.Socket,
 /*******************************************************************************
         
         Datagrams provide a low-overhead, non-reliable data transmission
-        mechanism, and are described as being connected or unconnected. The
-        connected flavours are bound to a specific endpoint via connect().
-        Unconnected datagrams should instead have an address provided for
-        read() and write() invocations.
+        mechanism.
 
+        Datagrams are not 'connected' in the same manner as a TCP socket; you
+        don't need to listen() or accept() to receive a datagram, and data
+        may arrive from multiple sources. A datagram socket may, however,
+        still use the connect() method like a TCP socket. When connected,
+        the read() and write() methods will be restricted to a single address
+        rather than being open instead. That is, applying connect() will make
+        the address argument to both read() and write() irrelevant. Without
+        connect(), method write() must be supplied with an address and method
+        read() should be supplied with one to identify where data originated.
+        
         Note that when used as a listener, you must first bind the socket
         to a local adapter. This can be achieved by binding the socket to
         an InternetAddress constructed with a port only (ADDR_ANY), thus
-        requesting the OS to assign the address of a local adapter
+        requesting the OS to assign the address of a local network adapter
 
 *******************************************************************************/
 
 class DatagramConduit : SocketConduit
 {
-        private Address                 src,
-                                        dst;
+        private Address to,
+                        from;
 
-        alias SocketConduit.read        read;
-        alias SocketConduit.write       write;
-        
         /***********************************************************************
         
-                Create a writable datagram socket
+                Create a read/write datagram socket
 
         ***********************************************************************/
 
         this ()
         {
-                super (Access.Write, SocketType.DGRAM);
-        }
-
-        /***********************************************************************
-        
-                Create a read/write datagram socket. The 'from' address
-                exposes the endpoint where incoming content originates. If
-                null, we assume the socket will be connected instead.
-
-        ***********************************************************************/
-
-        this (Address from)
-        {
-                src = from;
                 super (Access.ReadWrite, SocketType.DGRAM);
         }
 
         /***********************************************************************
         
-                Address an outgoing datagram. Use this in conjunction with
-                the Conduit.write mechanics, which does not support a target
-                address as an argument. Ignore this if the datagram is of the
-                connected variety.
-                
-        ***********************************************************************/
-
-        DatagramConduit to (Address to)
-        {
-                dst = to;
-                return this;
-        }
-
-        /***********************************************************************
-        
-                Read the available bytes from datagram into the given array.
+                Read bytes from an available datagram into the given array.
                 When provided, the 'from' address will be populated with the
-                origin of the incoming data. Otherwise, we assume the socket
-                has been connected instead.
+                origin of the incoming data. Note that we employ the timeout
+                mechanics exposed via our SocketConduit superclass. 
 
                 Returns the number of bytes read from the input, or Eof if
                 the socket cannot read
 
         ***********************************************************************/
 
-        uint read (void[] dst, Address from)
+        uint read (void[] dst, Address from = null)
         {
-                int count;
-
-                if (dst.length)
-                   {
-                   count = (from) ? socket.receiveFrom (dst, from) : socket.receiveFrom (dst);
-                   if (count <= 0)
-                       count = Eof;
-                   }
-                return count;
+                this.from = from;
+                return super.read (dst);
         }
 
         /***********************************************************************
@@ -116,17 +84,10 @@ class DatagramConduit : SocketConduit
 
         ***********************************************************************/
 
-        uint write (void[] src, Address to)
+        uint write (void[] src, Address to = null)
         {
-                int count;
-                
-                if (src.length)
-                   {
-                   count = (to) ? socket.sendTo (src, to) : socket.sendTo (src);
-                   if (count <= 0)
-                       count = Eof;
-                   }
-                return count;
+                this.to = to;
+                return super.write (src);
         }
 
         /***********************************************************************
@@ -142,9 +103,17 @@ class DatagramConduit : SocketConduit
 
         ***********************************************************************/
 
-        protected override uint socketReader (void[] dst)
+        private override uint socketReader (void[] dst)
         {
-                return read (dst, src);
+                int count;
+
+                if (dst.length)
+                   {
+                   count = (from) ? socket.receiveFrom (dst, from) : socket.receiveFrom (dst);
+                   if (count <= 0)
+                       count = Eof;
+                   }
+                return count;
         }
 
         /***********************************************************************
@@ -161,9 +130,17 @@ class DatagramConduit : SocketConduit
 
         ***********************************************************************/
 
-        protected override uint writer (void[] src)
+        private override uint writer (void[] src)
         {
-                return write (src, dst);
+                int count;
+                
+                if (src.length)
+                   {
+                   count = (to) ? socket.sendTo (src, to) : socket.sendTo (src);
+                   if (count <= 0)
+                       count = Eof;
+                   }
+                return count;
         }
 }
 

@@ -41,18 +41,16 @@ class SimpleIterator(T) : StreamIterator!(T)
 
         /***********************************************************************
 
-                Construct an uninitialized iterator. Use as follows:
-
-                auto line = new LineIterator;
+                Construct an uninitialized iterator. For example:
+                ---
+                auto lines = new LineIterator;
 
                 void somefunc (IBuffer buffer)
                 {
-                        // there are several set() methods
-                        line.set (buffer);
-
-                        while (line.next)
-                               Println (line.get);
+                        foreach (line; lines.set(buffer))
+                                 Cout (line).newline;
                 }
+                ---
 
         ***********************************************************************/
 
@@ -64,16 +62,15 @@ class SimpleIterator(T) : StreamIterator!(T)
         /***********************************************************************
 
                 Construct a streaming iterator upon the provided buffer.
-                Use as follows:
-
+                for example:
+                ---
                 void somefunc (IBuffer buffer)
                 {
-                        auto line = new LineIterator (buffer);
-
-                        while (line.next)
-                               Println (line.get);
+                        foreach (line; new LineIterator (buffer))
+                                 Cout (line).newline;
                 }
-
+                ---
+                
         ***********************************************************************/
 
         this (IBuffer buffer, T[] delim)
@@ -84,39 +81,18 @@ class SimpleIterator(T) : StreamIterator!(T)
 
         /***********************************************************************
 
-                Construct a streaming iterator upon the provided conduit.
-                Use as follows:
+                Construct a streaming iterator upon the provided conduit:
 
-                auto line = new LineIterator (new FileConduit ("myfile"));
-
-                while (line.next)
-                       Println (line.get);
+                ---
+                foreach (line; new LineIterator (new FileConduit ("myfile")))
+                         Cout (line).newline;
+                ---
 
         ***********************************************************************/
 
         this (IConduit conduit, T[] delim)
         {
                 super (conduit);
-                this.delim = delim;
-        }
-
-        /***********************************************************************
-
-                Construct an iterator upon the provided string. Use as follows:
-
-                void somefunc (char[] string)
-                {
-                        auto line = new LineIterator (string);
-
-                        while (line.next)
-                               Println (line.get);
-                }
-
-        ***********************************************************************/
-
-        this (T[] string, T[] delim)
-        {
-                super (string);
                 this.delim = delim;
         }
 

@@ -969,8 +969,10 @@ class Socket
 
         ***********************************************************************/
 
-        bool joinGroup (IPv4Address address, bool onOff)
+        void joinGroup (IPv4Address address, bool onOff)
         {
+                assert (address, "Socket.joinGroup :: invalid null address");
+                
                 struct ip_mreq
                 {
                 uint  imr_multiaddr;  /* IP multicast address of group */
@@ -982,7 +984,9 @@ class Socket
                 auto option = (onOff) ? SocketOption.IP_ADD_MEMBERSHIP : SocketOption.IP_DROP_MEMBERSHIP;
                 mrq.imr_interface = 0;
                 mrq.imr_multiaddr = address.sin.sin_addr;
-                return .setsockopt(sock, SocketOptionLevel.IP, option, &mrq, mrq.sizeof) != SOCKET_ERROR;
+                
+                if (.setsockopt(sock, SocketOptionLevel.IP, option, &mrq, mrq.sizeof) == SOCKET_ERROR)
+                    exception ("Unable to perform multicast join: ");
         }
 
 

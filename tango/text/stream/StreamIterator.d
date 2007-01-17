@@ -87,41 +87,17 @@ class StreamIterator(T)
 
         /***********************************************************************
 
-                Instantiate with a string
-
-        ***********************************************************************/
-
-        this (T[] string)
-        {
-               set (string);
-        }
-
-        /***********************************************************************
-
-                Set the provided string as the scanning source
-
-        ***********************************************************************/
-
-        final void set (T[] string)
-        {
-                if (buffer is null)
-                    buffer = new Buffer (string, string.length);
-                else
-                   buffer.setValidContent(string).setConduit(null);
-        }
-
-        /***********************************************************************
-
                 Set the provided conduit as the scanning source
 
         ***********************************************************************/
 
-        final void set (IConduit conduit)
+        final StreamIterator set (IConduit conduit)
         {
                 if (buffer is null)
                     buffer = new Buffer (conduit);
                 else
                    buffer.clear.setConduit (conduit);
+                return this;
         }
 
         /***********************************************************************
@@ -130,9 +106,10 @@ class StreamIterator(T)
 
         ***********************************************************************/
 
-        final void set (IBuffer buffer)
+        final StreamIterator set (IBuffer buffer)
         {
                 this.buffer = buffer;
+                return this;
         }
 
         /***********************************************************************
@@ -144,20 +121,6 @@ class StreamIterator(T)
         final T[] get ()
         {
                 return slice;
-        }
-
-        /***********************************************************************
-
-                Trim spaces from the left and right of the current token.
-                Note that this is done in-place on the current slice. The
-                content itself is not affected
-
-        ***********************************************************************/
-
-        StreamIterator trim ()
-        {
-                slice = Text.trim (slice);
-                return this;
         }
 
         /***********************************************************************
@@ -193,44 +156,6 @@ class StreamIterator(T)
                           break;
                       }
                 return result;
-        }
-
-        /**********************************************************************
-
-                Iterate over the set of tokens. This should really
-                provide read-only access to the tokens, but D does
-                not support that at this time
-
-        **********************************************************************/
-
-        int opApply (int delegate(inout uint, inout T[]) dg)
-        {
-                int result = 0;
-                uint count = 0;
-
-                while (next)
-                      {
-                      count++;
-                      T[] t = get ();
-                      result = dg (count, t);
-                      if (result)
-                          break;
-                      }
-                return result;
-        }
-
-        /**********************************************************************
-
-                Visit each token by passing them to the provided delegate
-
-        **********************************************************************/
-
-        bool visit (bool delegate(T[]) dg)
-        {
-                while (next)
-                       if (! dg (get))
-                             return false;
-                return true;
         }
 
         /***********************************************************************
@@ -303,7 +228,7 @@ class StreamIterator(T)
 
         ***********************************************************************/
 
-        protected bool has (T[] set, T match)
+        protected final bool has (T[] set, T match)
         {
                 foreach (T c; set)
                          if (match is c)

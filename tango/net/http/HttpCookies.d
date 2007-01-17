@@ -12,12 +12,9 @@
 
 module tango.net.http.HttpCookies;
 
-private import  tango.stdc.ctype;
-
 private import  tango.io.Buffer;
 
-private import  tango.io.model.IBuffer,
-                tango.io.model.IConduit;
+private import  tango.stdc.ctype;
 
 private import  tango.net.http.HttpWriter;
 
@@ -440,7 +437,8 @@ class CookieParser : StreamIterator!(char)
         private enum State {Begin, LValue, Equals, RValue, Token, SQuote, DQuote};
 
         private CookieStack stack;
-
+        private Buffer      buffer;
+        
         /***********************************************************************
 
         ***********************************************************************/
@@ -449,6 +447,7 @@ class CookieParser : StreamIterator!(char)
         {
                 super ();
                 this.stack = stack;
+                buffer = new Buffer;
         }
 
         /***********************************************************************
@@ -617,7 +616,8 @@ class CookieParser : StreamIterator!(char)
 
         bool parse (char[] header)
         {
-                super.set (header);
+                buffer.setValidContent (header);
+                super.set (buffer);
                 return next ();
         }
 

@@ -289,7 +289,7 @@ class Conduit : IConduit, IConduitFilter
 
         ***********************************************************************/
 
-        static bool isHalting ()
+        bool isHalting ()
         {
                 return halting;
         }

@@ -49,13 +49,25 @@ class SocketListener : IListener
         **********************************************************************/
 
         this (IBuffer buffer)
-        in {
-           assert (buffer);
-           }
-        body
         {
+                assert (buffer);
+                this (buffer.conduit, buffer);
+        }
+
+        /**********************************************************************
+               
+                Construct a listener with the requisite arguments. The
+                specified buffer is populated via the provided instance
+                of ISocketReader before being passed to the notify()
+                method. All arguments are required.
+
+        **********************************************************************/
+
+        this (IConduit conduit, IBuffer buffer)
+        {
+                assert (conduit);
                 this.buffer = buffer;
-                this.conduit = buffer.conduit;
+                this.conduit = conduit;
                 thread = new Thread (&run);
         }
 
