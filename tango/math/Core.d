@@ -173,6 +173,59 @@ unittest
     assert(conj(z) == -z);
 }
 
+
+/** Return the minimum of x and y.
+ *
+ * Note: If x and y are floating-point numbers, and either is a NaN,
+ * x will be returned.
+ */
+T min(T)(T x, T y) {
+    return y<x? y : x;
+}
+
+/** Return the maximum of x and y.
+ *
+ * Note: If x and y are floating-point numbers, and either is a NaN,
+ * x will be returned.
+ */
+T max(T)(T x, T y) {
+    return y>x? y : x;
+}
+
+/** Returns the minimum number of x and y.
+ *
+ * If both x and y are numbers, the minimum is returned.
+ * If both parameters are NaN, either will be returned.
+ * If one parameter is a NaN and the other is a number, the number is
+ * returned (this behaviour is mandated by IEEE 754R, and is useful
+ * for determining the range of a function).
+ */
+real minNum(real x, real y) {
+    if (x<=y || isNaN(y)) return x; else return y;
+}
+
+/** Returns the maximum number of x and y.
+ *
+ * If both x and y are numbers, the maximum is returned.
+ * If both parameters are NaN, either will be returned.
+ * If one parameter is a NaN and the other is a number, the number is
+ * returned (this behaviour is mandated by IEEE 754R, and is useful
+ * for determining the range of a function).
+ */
+real maxNum(real x, real y) {
+    if (x>=y || isNaN(y)) return x; else return y;
+}
+
+unittest
+{
+    assert(max('e', 'f')=='f');
+    assert(min(3.5, 3.8)==3.5);
+    assert(maxNum(NaN("abc"), 56.1L)== 56.1L);
+    assert(maxNum(28.0, NaN("abc"))== 28.0);
+    assert(minNum(1e12, NaN("abc"))== 1e12);
+    assert(isIdentical(minNum(NaN("def"), NaN("abc")), NaN("def")));
+}
+
 /*
  * Trig Functions
  */
@@ -1519,6 +1572,17 @@ unittest
 
     assert(isIdentical(poly(NaN("abc"), pp), NaN("abc")));
 
+}
+
+/** Floating point "approximate equality".
+ *
+ * Return true if x is equal to y, allowing for up to roundoffbits of relative error
+ * due to round-off.
+ * If roundoffbits is not specified, a reasonable default is used.
+ */
+bool feq(int roundoffbits = 6)(real x, real y)
+{
+    return tango.math.IEEE.feqrel(x, y) >= real.mant_dig - roundoffbits;
 }
 
 /*

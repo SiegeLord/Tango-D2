@@ -72,7 +72,7 @@ template isRealType( T )
  */
 template isComplexType( T )
 {
-    const bool isImaginaryType = is( T == cfloat )  ||
+    const bool isComplexType = is( T == cfloat )  ||
                                  is( T == cdouble ) ||
                                  is( T == creal );
 }
