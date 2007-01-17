@@ -16,7 +16,7 @@ public import tango.stdc.posix.signal; // for sigevent
 extern (C):
 
 //
-// Defined in tango.stdc.time
+// Required (defined in tango.stdc.time)
 //
 /*
 char* asctime(tm*);
