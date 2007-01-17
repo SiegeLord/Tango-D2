@@ -2000,9 +2000,9 @@ private
 
     version( Posix )
     {
-        import tango.stdc.posix.unistd; // for sysconf
-        import tango.stdc.posix.sys.mman;
-        import tango.stdc.stdlib;
+        import tango.stdc.posix.unistd;   // for sysconf
+        import tango.stdc.posix.sys.mman; // for mmap
+        import tango.stdc.posix.stdlib;   // for malloc, valloc
 
         version( AsmX86_Win32 ) {} else
         version( AsmX86_Posix ) {} else
