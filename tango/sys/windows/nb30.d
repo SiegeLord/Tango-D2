@@ -8,9 +8,9 @@
 *                                                                       *
 *                       Placed into public domain                       *
 \***********************************************************************/
-module tango.sys.windows.nb30;
+module win32.nb30;
 
-private import tango.sys.windows.windef;
+private import win32.windef;
 
 const size_t
 	NCBNAMSZ =  16,

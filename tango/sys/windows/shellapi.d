@@ -8,10 +8,10 @@
 *                                                                       *
 *                       Placed into public domain                       *
 \***********************************************************************/
-module tango.sys.windows.shellapi;
+module win32.shellapi;
 pragma(lib, "shell32.lib");
 
-private import tango.sys.windows.w32api, tango.sys.windows.windef;
+private import win32.w32api, win32.windef;
 
 enum : UINT {
 	ABE_LEFT,
@@ -55,7 +55,6 @@ enum : DWORD {
 	ABM_WINDOWPOSCHANGED // = 9
 }
 
-// FIXME: is the value correct?
 static if (WINVER >= 0x501) {
 	const DWORD ABM_SETSTATE = 10;
 }
@@ -235,13 +234,13 @@ struct NOTIFYICONDATAW {
 		DWORD      dwStateMask;
 		WCHAR[256] szInfo;
 		union {
-			UINT uTimeout;
-			UINT uVersion;
+			UINT   uTimeout;
+			UINT   uVersion;
 		}
-		WCHAR[64] szInfoTitle;
-		DWORD     dwInfoFlags;
+		WCHAR[64]  szInfoTitle;
+		DWORD      dwInfoFlags;
 	} else {
-		WCHAR[64] szTip;
+		WCHAR[64]  szTip;
 	}
 	static if (_WIN32_IE >= 0x600) {
 		GUID guidItem;

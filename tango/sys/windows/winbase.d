@@ -7,6 +7,8 @@
 *                                                                       *
 *                       Placed into public domain                       *
 \***********************************************************************/
+module win32.winbase;
+pragma(lib, "kernel32.lib");
 
 /**
 Translation Notes:
@@ -47,15 +49,9 @@ SetSwapAreaSize(w), LimitEmsPages(n), Yield()
 int wWinMain(HINSTANCE, HINSTANCE, LPWSTR, int);
 
 */
-module tango.sys.windows.winbase;
 
-import tango.sys.windows.winver;
-import tango.sys.windows.windef;
-private import tango.sys.windows.w32api;
-private import tango.sys.windows.winnt;
-private import tango.sys.windows.basetyps;
-
-pragma(lib, "kernel32.lib");
+import win32.windef, win32.winver;
+private import win32.basetyps, win32.w32api, win32.winnt;
 
 // FIXME: clean up Windows version support
 // FIXME:
@@ -981,14 +977,14 @@ struct DCB {
 	bool fParity()         { return cast(bool) (_bf & 2); }
 	bool fOutxCtsFlow()    { return cast(bool) (_bf & 4); }
 	bool fOutxDsrFlow()    { return cast(bool) (_bf & 8); }
-	byte fDtrControl()     { return (_bf & (32+16))>>4; }
+	byte fDtrControl()     { return cast(byte) ((_bf & (32+16))>>4); }
 	bool fDsrSensitivity() { return cast(bool) (_bf & 64); }
 	bool fTXContinueOnXoff() { return cast(bool) (_bf & 128); }
 	bool fOutX()           { return cast(bool) (_bf & 256); }
 	bool fInX()            { return cast(bool) (_bf & 512); }
 	bool fErrorChar()      { return cast(bool) (_bf & 1024); }
 	bool fNull()           { return cast(bool) (_bf & 2048); }
-	byte fRtsControl()     { return (_bf & (4096+8192))>>12; }
+	byte fRtsControl()     { return cast(byte) ((_bf & (4096+8192))>>12); }
 	bool fAbortOnError()   { return cast(bool) (_bf & 16384); }
 
 	WORD wReserved;
@@ -1397,21 +1393,21 @@ struct LDT_ENTRY {
 		BYTE Flags2;
 		BYTE BaseHi;
 
-		void Type(byte f)  { Flags1 = (Flags1 & 0xE0) | f; }
-		void Dpl(byte f)   { Flags1 = (Flags1 & 0x9F) | (f<<5); }
-		void Pres(bool f)  { Flags1 = (Flags1 & 0x7F) | (f<<7); }
+		void Type(byte f)  { Flags1 = cast(BYTE)((Flags1 & 0xE0) | f); }
+		void Dpl(byte f)   { Flags1 = cast(BYTE)((Flags1 & 0x9F) | (f<<5)); }
+		void Pres(bool f)  { Flags1 = cast(BYTE)((Flags1 & 0x7F) | (f<<7)); }
 
-		void LimitHi(byte f) { Flags2 = (Flags2 & 0xF0) | (f&0x0F); }
-		void Sys(bool f)     { Flags2 = (Flags2 & 0xEF) | (f<<4); }
+		void LimitHi(byte f) { Flags2 = cast(BYTE)((Flags2 & 0xF0) | (f&0x0F)); }
+		void Sys(bool f)     { Flags2 = cast(BYTE)((Flags2 & 0xEF) | (f<<4)); }
 		// Next bit is reserved
-		void Default_Big(bool f) { Flags2 = (Flags2 & 0xBF) | (f<<6); }
-		void Granularity(bool f)  { Flags2 = (Flags2 & 0x7F) | (f<<7); }
+		void Default_Big(bool f) { Flags2 = cast(BYTE)((Flags2 & 0xBF) | (f<<6)); }
+		void Granularity(bool f)  { Flags2 = cast(BYTE)((Flags2 & 0x7F) | (f<<7)); }
 
-		byte Type()  { return (Flags1 & 0x1F); }
-		byte Dpl()   { return (Flags1 & 0x60)>>5; }
+		byte Type()  { return cast(byte)(Flags1 & 0x1F); }
+		byte Dpl()   { return cast(byte)((Flags1 & 0x60)>>5); }
 		bool Pres()  {  return cast(bool) (Flags1 & 0x80); }
 
-		byte LimitHi() { return (Flags2 & 0x0F); }
+		byte LimitHi() { return cast(byte)(Flags2 & 0x0F); }
 		bool Sys() { return cast(bool) (Flags2 & 0x10); }
 		bool Default_Big() { return cast(bool) (Flags2 & 0x40); }
 		bool Granularity() { return cast(bool) (Flags2 & 0x80); }

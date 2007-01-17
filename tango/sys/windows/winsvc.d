@@ -8,18 +8,17 @@
 *                                                                       *
 *                       Placed into public domain                       *
 \***********************************************************************/
-module tango.sys.windows.winsvc;
-
-private import tango.sys.windows.w32api;
+module win32.winsvc;
 pragma(lib, "advapi.lib");
 
+private import win32.w32api, win32.windef;
+
 static if (!_WIN32_WINNT_ONLY) {
-	pragma(msg, "tango.sys.windows.winsvc is available only if version WindowsNTonly,
+	pragma(msg, "win32.winsvc is available only if version WindowsNTonly,
 WindowsXP or Windows2003 is set");
 	static assert (false);
 }
 
-private import tango.sys.windows.windef;
 
 // FIXME: check Windows version support
 

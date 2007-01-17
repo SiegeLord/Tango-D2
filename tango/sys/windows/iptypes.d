@@ -8,9 +8,9 @@
 *                                                                       *
 *                       Placed into public domain                       *
 \***********************************************************************/
-module tango.sys.windows.iptypes;
+module win32.iptypes;
 
-import tango.sys.windows.windef;
+import win32.windef;
 private import tango.stdc.time;
 //#include <sys/types.h>
 

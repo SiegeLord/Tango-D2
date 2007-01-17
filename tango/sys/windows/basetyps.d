@@ -7,8 +7,9 @@
 *                                                                       *
 *                       Placed into public domain                       *
 \***********************************************************************/
-module tango.sys.windows.basetyps;
-private import tango.sys.windows.windef;
+module win32.basetyps;
+
+private import win32.windef;
 
 struct GUID {          // size is 16
 align(1):

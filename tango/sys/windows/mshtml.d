@@ -1,5 +1,5 @@
 /***********************************************************************\
-*                              mshtml.d                               *
+*                                mshtml.d                               *
 *                                                                       *
 *                       Windows API header module                       *
 *                                                                       *
@@ -7,12 +7,10 @@
 *                                                                       *
 *                       Placed into public domain                       *
 \***********************************************************************/
-module tango.sys.windows.mshtml;
+module win32.mshtml;
 
-private import tango.sys.windows.unknwn;
-private import tango.sys.windows.wtypes;
-private import tango.sys.windows.oaidl, tango.sys.windows.basetyps, tango.sys.windows.windef;
-
+private import win32.basetyps, win32.oaidl, win32.unknwn,
+  win32.windef, win32.wtypes;
 
 // These are used in this file, but not defined in MinGW.
 interface IHTMLStyleSheet {};

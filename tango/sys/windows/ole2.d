@@ -1,5 +1,5 @@
 /***********************************************************************\
-*                                ole2.d                                 *
+*                                 ole2.d                                *
 *                                                                       *
 *                       Windows API header module                       *
 *                                                                       *
@@ -7,21 +7,13 @@
 *                                                                       *
 *                       Placed into public domain                       *
 \***********************************************************************/
-module tango.sys.windows.ole2;
+module win32.ole2;
 pragma(lib, "ole32.lib");
-public import tango.sys.windows.winerror;
-public import tango.sys.windows.objbase;
-public import tango.sys.windows.olectlid;
-public import tango.sys.windows.oleauto;
-public import tango.sys.windows.oleidl;
-private import tango.sys.windows.winuser; // for LPMSG
-private import tango.sys.windows.windef;
-private import tango.sys.windows.objfwd;
-private import tango.sys.windows.objidl;
-private import tango.sys.windows.wtypes;
-public import tango.sys.windows.unknwn;
-public import tango.sys.windows.basetyps;
 
+public import win32.basetyps, win32.objbase, win32.oleauto, win32.olectlid,
+  win32.oleidl, win32.unknwn, win32.winerror;
+private import win32.objfwd, win32.objidl, win32.windef, win32.wtypes;
+private import win32.winuser; // for LPMSG
 
 const E_DRAW = VIEW_E_DRAW;
 
@@ -43,13 +35,13 @@ const EMBDHLP_CREATENOW      = 0x00000000L;
 const EMBDHLP_DELAYCREATE    = 0x00010000L;
 
 align(8):
-struct OLESTREAM{
+struct OLESTREAM {
 	LPOLESTREAMVTBL lpstbl;
 }
 alias OLESTREAM* LPOLESTREAM;
 
 extern (Windows) {
-	struct OLESTREAMVTBL{
+	struct OLESTREAMVTBL {
 		DWORD function (LPOLESTREAM, void*, DWORD) Get;
 		DWORD function (LPOLESTREAM, void*, DWORD) Put;
 	}

@@ -7,11 +7,10 @@
 *                                                                       *
 *                       Placed into public domain                       *
 \***********************************************************************/
-module tango.sys.windows.lmalert;
+module win32.lmalert;
 pragma(lib, "netapi32.lib");
-private import tango.sys.windows.lmcons;
-private import tango.sys.windows.windef;
 
+private import win32.lmcons, win32.windef;
 
 const TCHAR[]
 	ALERTER_MAILSLOT     = `\\.\MAILSLOT\Alerter`,

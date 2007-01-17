@@ -7,8 +7,9 @@
 *                                                                       *
 *                       Placed into public domain                       *
 \***********************************************************************/
-module tango.sys.windows.lmerr;
-import tango.sys.windows.winerror;
+module win32.lmerr;
+
+import win32.winerror;
 
 enum {
 	NERR_Success                      = 0,

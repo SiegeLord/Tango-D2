@@ -1,6 +1,15 @@
-module tango.sys.windows.httpext;
+/***********************************************************************\
+*                               httpext.d                               *
+*                                                                       *
+*                       Windows API header module                       *
+*                                                                       *
+*                 Translated from MinGW Windows headers                 *
+*                                                                       *
+*                       Placed into public domain                       *
+\***********************************************************************/
+module win32.httpext;
 
-/*
+/* Comment from MinGW
        httpext.h - Header for ISAPI extensions.
 
        This file is part of a free library for the Win32 API.
@@ -10,7 +19,7 @@ module tango.sys.windows.httpext;
        MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 */
 
-private import tango.sys.windows.windows;
+private import win32.windows;
 
 enum {
     HSE_VERSION_MAJOR               = 2,

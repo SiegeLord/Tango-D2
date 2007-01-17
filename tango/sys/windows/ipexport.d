@@ -8,9 +8,9 @@
 *                                                                       *
 *                       Placed into public domain                       *
 \***********************************************************************/
-module tango.sys.windows.ipexport;
+module win32.ipexport;
 
-private import tango.sys.windows.windef;
+private import win32.windef;
 
 const size_t MAX_ADAPTER_NAME = 128;
 

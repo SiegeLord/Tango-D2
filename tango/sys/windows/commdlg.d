@@ -7,13 +7,12 @@
 *                                                                       *
 *                       Placed into public domain                       *
 \***********************************************************************/
-module tango.sys.windows.commdlg;
+module win32.commdlg;
 pragma(lib, "comdlg32.lib");
 
-private import tango.sys.windows.w32api;
-import tango.sys.windows.windef;
-import tango.sys.windows.wingdi; // for LPLOGFONTA
-import tango.sys.windows.winuser;
+private import win32.w32api;
+import win32.windef, win32.winuser;
+import win32.wingdi; // for LPLOGFONTA
 
 const TCHAR []
 	LBSELCHSTRING = "commdlg_LBSelChangedNotify",
@@ -514,8 +513,8 @@ struct PRINTDLGW {
 alias PRINTDLGW* LPPRINTDLGW;
 
 static if (WINVER >= 0x0500) {
-import tango.sys.windows.unknwn; // for LPUNKNOWN
-import tango.sys.windows.prsht;  // for HPROPSHEETPAGE
+import win32.unknwn; // for LPUNKNOWN
+import win32.prsht;  // for HPROPSHEETPAGE
 
 struct PRINTPAGERANGE {
 	DWORD  nFromPage;

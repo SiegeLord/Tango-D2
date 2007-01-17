@@ -7,15 +7,15 @@
 *                                                                       *
 *                       Placed into public domain                       *
 \***********************************************************************/
+module win32.winerror;
 
 /* Comments from the Mingw header:
  * WAIT_TIMEOUT is also defined in winbase.h
  */
 
-module tango.sys.windows.winerror;
-private import tango.sys.windows.windef;
+private import win32.windef;
 
-alias int SCODE; // was in tango.sys.windows.wtypes.
+alias int SCODE; // was in win32.wtypes.
 
 enum : uint {
 	ERROR_SUCCESS                                         =     0,
@@ -1658,7 +1658,6 @@ enum : uint {
 	WSA_QOS_ESHAPERATEOBJ,
 	WSA_QOS_RESERVED_PETYPE,                           // = 11031
 
-
 	ERROR_IPSEC_QM_POLICY_EXISTS                          = 13000,
 	ERROR_IPSEC_QM_POLICY_NOT_FOUND,
 	ERROR_IPSEC_QM_POLICY_IN_USE,
@@ -1849,7 +1848,7 @@ enum : uint {
 	ERROR_SXS_INVALID_ASSEMBLY_IDENTITY_ATTRIBUTE_NAME // = 14080
 }
 
-enum : HRESULT  {
+enum : HRESULT {
 	S_OK                                   = 0x00000000,
 	S_FALSE                                = 0x00000001,
 
@@ -2220,7 +2219,6 @@ enum : HRESULT  {
 	NTE_BAD_KEYSET_PARAM                   = 0x8009001F,
 	NTE_FAIL                               = 0x80090020,
 	NTE_SYS_ERR                            = 0x80090021
-	// NTE_TOKEN_KEYSET_STORAGE  =  ???
 }
 
 
@@ -2234,7 +2232,7 @@ enum : uint {
 	FACILITY_RPC,
 	FACILITY_DISPATCH,
 	FACILITY_STORAGE,
-	FACILITY_ITF, //  =   4
+	FACILITY_ITF,  // =   4
 	FACILITY_WIN32    =   7,
 	FACILITY_WINDOWS  =   8,
 	FACILITY_CONTROL  =  10,
@@ -2243,82 +2241,66 @@ enum : uint {
 
 // C Macros
 
-bool SUCCEEDED(HRESULT Status)
-{
+bool SUCCEEDED(HRESULT Status) {
 	return Status >= 0;
 }
 
-bool FAILED(HRESULT Status)
-{
+bool FAILED(HRESULT Status) {
 	return Status < 0;
 }
 
-bool IS_ERROR(HRESULT Status)
-{
+bool IS_ERROR(HRESULT Status) {
 	return (Status >>> 31) == SEVERITY_ERROR;
 }
 
-ushort HRESULT_CODE(HRESULT r)
-{
-	return r & 0xFFFF;
+ushort HRESULT_CODE(HRESULT r) {
+	return cast(ushort) (r & 0xFFFF);
 }
 
-ushort SCODE_CODE(SCODE r)
-{
-	return r & 0xFFFF;
+ushort SCODE_CODE(SCODE r) {
+	return cast(ushort) (r & 0xFFFF);
 }
 
-ushort HRESULT_FACILITY(HRESULT r)
-{
-	return (r>>16) & 0x1fff;
+ushort HRESULT_FACILITY(HRESULT r) {
+	return cast(ushort) ((r>>16) & 0x1fff);
 }
 
-ushort SCODE_FACILITY(SCODE r)
-{
-	return (r>>16) & 0x1fff;
+ushort SCODE_FACILITY(SCODE r) {
+	return cast(ushort) ((r>>16) & 0x1fff);
 }
 
-ushort HRESULT_SEVERITY(HRESULT r)
-{
-	return (r>>31) & 0x1;
+ushort HRESULT_SEVERITY(HRESULT r) {
+	return cast(ushort) ((r>>31) & 0x1);
 }
 
-ushort SCODE_SEVERITY(SCODE r)
-{
-	return (r>>31) & 0x1;
+ushort SCODE_SEVERITY(SCODE r) {
+	return cast(ushort) ((r>>31) & 0x1);
 }
 
-HRESULT MAKE_HRESULT(bool s, uint f, uint c)
-{
+HRESULT MAKE_HRESULT(bool s, uint f, uint c) {
 	return (s << 31) | (f << 16) | c;
 }
 
-SCODE MAKE_SCODE(bool s, uint f, uint c)
-{
+SCODE MAKE_SCODE(bool s, uint f, uint c) {
 	return (s << 31) | (f << 16) | c;
 }
 
-SCODE GetScode(HRESULT hr)
-{
+SCODE GetScode(HRESULT hr) {
 	return hr;
 }
 
-HRESULT ResultFromScode(SCODE c)
-{
+HRESULT ResultFromScode(SCODE c) {
 	return c;
 }
 
-HRESULT HRESULT_FROM_NT(HRESULT x)
-{
+HRESULT HRESULT_FROM_NT(HRESULT x) {
 	return x | FACILITY_NT_BIT;
 }
 
-HRESULT HRESULT_FROM_WIN32(HRESULT x)
-{
-	return  x ? (x & 0x0000FFFF)|(FACILITY_WIN32<<16)|0x80000000 : 0;
+HRESULT HRESULT_FROM_WIN32(HRESULT x) {
+	return  x ? (x & 0x0000FFFF) | (FACILITY_WIN32 << 16) | 0x80000000 : 0;
 }
 
-HRESULT PropagateResult(HRESULT hrPrevious, SCODE scBase)
-{
+HRESULT PropagateResult(HRESULT hrPrevious, SCODE scBase) {
 	return scBase;
 }

@@ -7,11 +7,12 @@
 *                                                                       *
 *                       Placed into public domain                       *
 \***********************************************************************/
-module tango.sys.windows.lmcons;
-private import tango.sys.windows.windef;
-private import tango.sys.windows.lmerr; // for NERR_BASE
+module win32.lmcons;
 
-const TCHAR[] 
+private import win32.windef;
+private import win32.lmerr; // for NERR_BASE
+
+const TCHAR[]
 	MESSAGE_FILENAME = "NETMSG",
 	OS2MSG_FILENAME = "BASE",
 	HELP_MSG_FILENAME = "NETH";

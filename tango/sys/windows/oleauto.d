@@ -7,15 +7,12 @@
 *                                                                       *
 *                       Placed into public domain                       *
 \***********************************************************************/
-module tango.sys.windows.oleauto;
+module win32.oleauto;
 pragma(lib, "oleaut32.lib");
 
-import tango.sys.windows.oaidl;
-private import tango.sys.windows.windef;
-private import tango.sys.windows.unknwn;
-private import tango.sys.windows.basetyps;
-private import tango.sys.windows.wtypes;
-private import tango.sys.windows.winbase; // for SYSTEMTIME
+import win32.oaidl;
+private import win32.basetyps, win32.unknwn, win32.windef, win32.wtypes;
+private import win32.winbase; // for SYSTEMTIME
 
 align(8):
 const STDOLE_MAJORVERNUM = 1;
@@ -212,12 +209,9 @@ struct NUMPARSE {
 	int nPwr10;
 }
 
-align:
 
-
-
- // DAC: In MinGW, these were declared but not defined in oaidl.
- // The SDK docs suggest they belong in this file instead.
+// DAC: In MinGW, these were declared but not defined in oaidl.
+// The SDK docs suggest they belong in this file instead.
 
 deprecated {  // not actually deprecated, but they aren't converted yet.
 	interface ICreateTypeInfo {};

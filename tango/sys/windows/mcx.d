@@ -8,9 +8,9 @@
 *                                                                       *
 *                       Placed into public domain                       *
 \***********************************************************************/
-module tango.sys.windows.mcx;
+module win32.mcx;
 
-private import tango.sys.windows.windef;
+private import win32.windef;
 
 const DWORD
 	DIALOPTION_BILLING  =  64,

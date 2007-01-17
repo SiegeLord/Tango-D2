@@ -7,12 +7,16 @@
 *                                                                       *
 *                       Placed into public domain                       *
 \***********************************************************************/
-module tango.sys.windows.lmmsg;
+module win32.lmmsg;
 pragma(lib, "netapi32.lib");
-private import tango.sys.windows.lmcons;
-private import tango.sys.windows.windef;
 
-// NOTE: Requires Windows XP or later
+private import win32.lmcons, win32.windef, win32.w32api;
+
+static if (!_WIN32_WINNT_ONLY || _WIN32_WINNT < 0x501) {
+	pragma(msg,
+"win32.lmmsg is available only if version WindowsXP or Windows2003 is set");
+	static assert (false);
+}
 
 const MSGNAME_NOT_FORWARDED  = 0;
 const MSGNAME_FORWARDED_TO   = 4;

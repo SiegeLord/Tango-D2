@@ -8,9 +8,9 @@
 *                                                                       *
 *                       Placed into public domain                       *
 \***********************************************************************/
-module tango.sys.windows.intshcut;
+module win32.intshcut;
 
-private import tango.sys.windows.windef, tango.sys.windows.unknwn;
+private import win32.unknwn, win32.windef;
 
 enum : SCODE {
 	E_FLAGS                     = 0x80041000,

@@ -7,12 +7,10 @@
 *                                                                       *
 *                       Placed into public domain                       *
 \***********************************************************************/
-module tango.sys.windows.exdisp;
+module win32.exdisp;
 
-import tango.sys.windows.oaidl;
-import tango.sys.windows.ocidl;
-import tango.sys.windows.docobj;
-private import tango.sys.windows.wtypes, tango.sys.windows.basetyps, tango.sys.windows.windef;
+import win32.docobj, win32.oaidl, win32.ocidl;
+private import win32.basetyps, win32.windef, win32.wtypes;
 
 
 enum BrowserNavConstants {

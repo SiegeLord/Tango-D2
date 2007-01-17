@@ -1,5 +1,5 @@
 /***********************************************************************\
-*                              shldisp.d                                *
+*                               shldisp.d                               *
 *                                                                       *
 *                       Windows API header module                       *
 *                                                                       *
@@ -7,8 +7,9 @@
 *                                                                       *
 *                       Placed into public domain                       *
 \***********************************************************************/
-module tango.sys.windows.shldisp;
-private import tango.sys.windows.unknwn, tango.sys.windows.windef, tango.sys.windows.wtypes;
+module win32.shldisp;
+
+private import win32.unknwn, win32.windef, win32.wtypes;
 
 // options for IAutoComplete2
 const DWORD ACO_AUTOSUGGEST = 0x01;

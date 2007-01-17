@@ -1,5 +1,5 @@
 /***********************************************************************\
-*                               oledlg.d                                *
+*                                oledlg.d                               *
 *                                                                       *
 *                       Windows API header module                       *
 *                                                                       *
@@ -7,17 +7,11 @@
 *                                                                       *
 *                       Placed into public domain                       *
 \***********************************************************************/
-module tango.sys.windows.oledlg;
+module win32.oledlg;
 
-import tango.sys.windows.windows;
-import tango.sys.windows.shellapi;
-import tango.sys.windows.commdlg;
-import tango.sys.windows.ole2;
-
-import tango.sys.windows.dlgs;
-import tango.sys.windows.prsht;
-private import tango.sys.windows.winnt, tango.sys.windows.objidl, tango.sys.windows.objfwd;
-private import tango.sys.windows.winbase;
+import win32.commdlg, win32.dlgs, win32.ole2, win32.prsht, win32.shellapi,
+  win32.windows;
+private import win32.winbase, win32.objidl, win32.objfwd, win32.winnt;
 
 // FIXME: remove inherited methods from interface definitions
 

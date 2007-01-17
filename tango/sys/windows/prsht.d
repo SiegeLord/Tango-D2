@@ -8,11 +8,10 @@
 *                                                                       *
 *                       Placed into public domain                       *
 \***********************************************************************/
-module tango.sys.windows.prsht;
+module win32.prsht;
 pragma(lib, "comctl32.lib");
-private import tango.sys.windows.w32api;
-private import tango.sys.windows.windef;
-private import tango.sys.windows.winuser;
+
+private import win32.w32api, win32.windef, win32.winuser;
 
 const MAXPROPPAGES = 100;
 
@@ -188,9 +187,9 @@ enum {
 	PSM_SETFINISHTEXTW // = WM_USER + 121,
 }
 
-alias UINT function(HWND,UINT,LPPROPSHEETPAGEA)* LPFNPSPCALLBACKA;
-alias UINT function(HWND,UINT,LPPROPSHEETPAGEW)* LPFNPSPCALLBACKW;
-alias int function(HWND,UINT,LPARAM)* PFNPROPSHEETCALLBACK;
+alias UINT function(HWND, UINT, LPPROPSHEETPAGEA) LPFNPSPCALLBACKA;
+alias UINT function(HWND, UINT, LPPROPSHEETPAGEW) LPFNPSPCALLBACKW;
+alias int function(HWND, UINT, LPARAM) PFNPROPSHEETCALLBACK;
 
 align(4):
 
@@ -312,8 +311,9 @@ struct PROPSHEETHEADERW {
 }
 alias PROPSHEETHEADERW* LPPROPSHEETHEADERW, LPCPROPSHEETHEADERW;
 
-alias BOOL function(HPROPSHEETPAGE,LPARAM)* LPFNADDPROPSHEETPAGE;
-alias BOOL function(LPVOID,LPFNADDPROPSHEETPAGE,LPARAM)* LPFNADDPROPSHEETPAGES;
+alias BOOL function(HPROPSHEETPAGE, LPARAM) LPFNADDPROPSHEETPAGE;
+alias BOOL function(LPVOID, LPFNADDPROPSHEETPAGE, LPARAM)
+  LPFNADDPROPSHEETPAGES;
 
 struct PSHNOTIFY {
 	NMHDR  hdr;
@@ -355,78 +355,84 @@ version (Unicode) {
 	alias PropertySheetA           PropertySheet;
 }
 
-BOOL PropSheet_SetCurSel(HWND hPropSheetDlg,HPROPSHEETPAGE hpage,HPROPSHEETPAGE index) {
-	return cast(BOOL)SendMessage(hPropSheetDlg,PSM_SETCURSEL,cast(WPARAM)index,cast(LPARAM)hpage);
+BOOL PropSheet_SetCurSel(HWND hPropSheetDlg, HPROPSHEETPAGE hpage,
+	  HPROPSHEETPAGE index) {
+	return cast(BOOL) SendMessage(hPropSheetDlg, PSM_SETCURSEL,
+	  cast(WPARAM) index, cast(LPARAM) hpage);
 }
 
-VOID PropSheet_RemovePage(HWND hPropSheetDlg,int index,HPROPSHEETPAGE hpage) {
-	SendMessage(hPropSheetDlg,PSM_REMOVEPAGE,index,cast(LPARAM)hpage);
+VOID PropSheet_RemovePage(HWND hPropSheetDlg, int index, HPROPSHEETPAGE hpage) {
+	SendMessage(hPropSheetDlg, PSM_REMOVEPAGE, index, cast(LPARAM) hpage);
 }
 
 BOOL PropSheet_AddPage(HWND hPropSheetDlg, HPROPSHEETPAGE hpage) {
-		return cast(BOOL)SendMessage(hPropSheetDlg,PSM_ADDPAGE,0,cast(LPARAM)hpage);
+		return cast(BOOL) SendMessage(hPropSheetDlg, PSM_ADDPAGE,
+		  0, cast(LPARAM) hpage);
 }
 
 VOID PropSheet_Changed(HWND hPropSheetDlg, HWND hwndPage) {
-	SendMessage(hPropSheetDlg,PSM_CHANGED,cast(WPARAM)hwndPage,0);
+	SendMessage(hPropSheetDlg, PSM_CHANGED, cast(WPARAM) hwndPage, 0);
 }
 
 VOID PropSheet_RestartWindows(HWND hPropSheetDlg) {
-	SendMessage(hPropSheetDlg,PSM_RESTARTWINDOWS,0,0);
+	SendMessage(hPropSheetDlg, PSM_RESTARTWINDOWS, 0, 0);
 }
 
 VOID PropSheet_RebootSystem(HWND hPropSheetDlg) {
-	SendMessage(hPropSheetDlg,PSM_REBOOTSYSTEM,0,0);
+	SendMessage(hPropSheetDlg, PSM_REBOOTSYSTEM, 0, 0);
 }
 
 VOID PropSheet_CancelToClose(HWND hPropSheetDlg) {
-	SendMessage(hPropSheetDlg,PSM_CANCELTOCLOSE,0,0);
+	SendMessage(hPropSheetDlg, PSM_CANCELTOCLOSE, 0, 0);
 }
 
-int PropSheet_QuerySiblings(HWND hPropSheetDlg,WPARAM param1,LPARAM param2) {
-	return SendMessage(hPropSheetDlg,PSM_QUERYSIBLINGS,param1,param2);
+int PropSheet_QuerySiblings(HWND hPropSheetDlg, WPARAM param1, LPARAM param2) {
+	return SendMessage(hPropSheetDlg, PSM_QUERYSIBLINGS, param1, param2);
 }
 
 VOID PropSheet_UnChanged(HWND hPropSheetDlg, HWND hwndPage) {
-	SendMessage(hPropSheetDlg,PSM_UNCHANGED,cast(WPARAM)hwndPage,0);
+	SendMessage(hPropSheetDlg, PSM_UNCHANGED, cast(WPARAM) hwndPage, 0);
 }
 
 BOOL PropSheet_Apply(HWND hPropSheetDlg) {
-	return cast(BOOL)SendMessage(hPropSheetDlg,PSM_APPLY,0,0);
+	return cast(BOOL) SendMessage(hPropSheetDlg, PSM_APPLY, 0, 0);
 }
 
-VOID PropSheet_SetTitle(HWND hPropSheetDlg,DWORD wStyle,LPTSTR lpszText) {
-	SendMessage(hPropSheetDlg,PSM_SETTITLE,wStyle,cast(LPARAM)lpszText);
+VOID PropSheet_SetTitle(HWND hPropSheetDlg, DWORD wStyle, LPTSTR lpszText) {
+	SendMessage(hPropSheetDlg, PSM_SETTITLE, wStyle, cast(LPARAM) lpszText);
 }
 
-VOID PropSheet_SetWizButtons(HWND hPropSheetDlg,DWORD dwFlags) {
-	PostMessage(hPropSheetDlg,PSM_SETWIZBUTTONS,0,cast(LPARAM)dwFlags);
+VOID PropSheet_SetWizButtons(HWND hPropSheetDlg, DWORD dwFlags) {
+	PostMessage(hPropSheetDlg, PSM_SETWIZBUTTONS, 0, cast(LPARAM) dwFlags);
 }
 
 BOOL PropSheet_PressButton(HWND hPropSheetDlg, int iButton) {
-	return cast(BOOL)SendMessage(hPropSheetDlg,PSM_PRESSBUTTON,iButton,0);
+	return cast(BOOL) SendMessage(hPropSheetDlg, PSM_PRESSBUTTON, iButton, 0);
 }
 
-BOOL PropSheet_SetCurSelByID(HWND hPropSheetDlg,int id) {
-	return cast(BOOL)SendMessage(hPropSheetDlg,PSM_SETCURSELID,0,id);
+BOOL PropSheet_SetCurSelByID(HWND hPropSheetDlg, int id) {
+	return cast(BOOL) SendMessage(hPropSheetDlg, PSM_SETCURSELID, 0, id);
 }
 
-VOID PropSheet_SetFinishText(HWND hPropSheetDlg,LPTSTR lpszText) {
-	SendMessage(hPropSheetDlg,PSM_SETFINISHTEXT,0,cast(LPARAM)lpszText);
+VOID PropSheet_SetFinishText(HWND hPropSheetDlg, LPTSTR lpszText) {
+	SendMessage(hPropSheetDlg, PSM_SETFINISHTEXT, 0, cast(LPARAM) lpszText);
 }
 
 HWND PropSheet_GetTabControl(HWND hPropSheetDlg) {
-	return cast(HWND)SendMessage(hPropSheetDlg,PSM_GETTABCONTROL,0,0);
+	return cast(HWND) SendMessage(hPropSheetDlg, PSM_GETTABCONTROL, 0, 0);
 }
 
 BOOL PropSheet_IsDialogMessage(HWND hDlg, LPMSG pMsg) {
-	return cast(BOOL)SendMessage(hDlg,PSM_ISDIALOGMESSAGE,0,cast(LPARAM)pMsg);
+	return cast(BOOL) SendMessage(hDlg, PSM_ISDIALOGMESSAGE,
+	  0, cast(LPARAM) pMsg);
 }
 
 HWND PropSheet_GetCurrentPageHwnd(HWND hDlg) {
-	return cast(HWND)SendMessage(hDlg,PSM_GETCURRENTPAGEHWND,0,0);
+	return cast(HWND) SendMessage(hDlg, PSM_GETCURRENTPAGEHWND, 0, 0);
 }
 
-BOOL PropSheet_InsertPage(HWND hPropSheetDlg, WPARAM wInsertAfter, HPROPSHEETPAGE hpage) {
-	return cast(BOOL)SendMessage(hPropSheetDlg,PSM_INSERTPAGE,wInsertAfter,cast(LPARAM)hpage);
+BOOL PropSheet_InsertPage(HWND hPropSheetDlg, WPARAM wInsertAfter,
+	  HPROPSHEETPAGE hpage) {
+	return cast(BOOL) SendMessage(hPropSheetDlg, PSM_INSERTPAGE,
+	  wInsertAfter, cast(LPARAM) hpage);
 }

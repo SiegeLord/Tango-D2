@@ -8,9 +8,9 @@
 *                                                                       *
 *                       Placed into public domain                       *
 \***********************************************************************/
-module tango.sys.windows.winver;
+module win32.winver;
 
-private import tango.sys.windows.windef;
+private import win32.windef;
 
 // FIXME: type weirdness
 enum {

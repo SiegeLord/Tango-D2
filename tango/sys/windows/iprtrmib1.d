@@ -8,10 +8,10 @@
 *                                                                       *
 *                       Placed into public domain                       *
 \***********************************************************************/
-module tango.sys.windows.iprtrmib;
+module win32.iprtrmib;
 
-import tango.sys.windows.ipifcons;
-private import tango.sys.windows.windef;
+import win32.ipifcons;
+private import win32.windef;
 
 // FIXME: check types of constants
 

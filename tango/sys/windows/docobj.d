@@ -7,21 +7,20 @@
 *                                                                       *
 *                       Placed into public domain                       *
 \***********************************************************************/
-module tango.sys.windows.docobj;
-private import tango.sys.windows.unknwn;
-private import tango.sys.windows.wtypes;
-private import tango.sys.windows.oleidl;
-private import tango.sys.windows.objidl;
-private import tango.sys.windows.oaidl;
-private import tango.sys.windows.windef, tango.sys.windows.basetyps;
+module win32.docobj;
+
+private import win32.basetyps, win32.oaidl, win32.objidl, win32.oleidl,
+  win32.unknwn, win32.windef, win32.wtypes;
 
 // FIXME: remove inherited methods from interface definitions
 
-const OLECMDERR_E_UNKNOWNGROUP = -2147221244;
-const OLECMDERR_E_CANCELED     = -2147221245;
-const OLECMDERR_E_NOHELP       = -2147221246;
-const OLECMDERR_E_DISABLED     = -2147221247;
-const OLECMDERR_E_NOTSUPPORTED = -2147221248;
+enum {
+	OLECMDERR_E_UNKNOWNGROUP = -2147221244,
+	OLECMDERR_E_CANCELED     = -2147221245,
+	OLECMDERR_E_NOHELP       = -2147221246,
+	OLECMDERR_E_DISABLED     = -2147221247,
+	OLECMDERR_E_NOTSUPPORTED = -2147221248
+}
 
 enum OLECMDID {
 	OLECMDID_OPEN = 1,

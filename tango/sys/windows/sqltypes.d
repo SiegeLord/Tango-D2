@@ -1,5 +1,5 @@
 /***********************************************************************\
-*                              sqltypes.d                               *
+*                               sqltypes.d                              *
 *                                                                       *
 *                       Windows API header module                       *
 *                                                                       *
@@ -7,45 +7,31 @@
 *                                                                       *
 *                       Placed into public domain                       *
 \***********************************************************************/
+module win32.sqltypes;
+
 /* Conversion notes:
   It's assumed that ODBC >= 0x0300.
 */
 
-module tango.sys.windows.sqltypes;
-private import tango.sys.windows.basetyps;
-private import tango.sys.windows.windef;
+private import win32.windef;
+private import win32.basetyps; // for GUID
 
-alias byte SCHAR;
-alias int SDWORD;
-alias short SWORD;
+alias byte SCHAR, SQLSCHAR;
+alias int SDWORD, SLONG, SQLINTEGER;
+alias short SWORD, SSHORT, RETCODE, SQLSMALLINT;
 alias ULONG UDWORD;
-alias USHORT UWORD;
-alias int SLONG;
-alias short SSHORT;
-alias double SDOUBLE;
-alias double LDOUBLE;
+alias USHORT UWORD, SQLUSMALLINT;
+alias double SDOUBLE, LDOUBLE;
 alias float SFLOAT;
-alias PVOID PTR;
-alias PVOID HENV;
-alias PVOID HDBC;
-alias PVOID HSTMT;
-alias short RETCODE;
+alias PVOID PTR, HENV, HDBC, HSTMT, SQLPOINTER;
 alias UCHAR SQLCHAR;
-alias SCHAR SQLSCHAR;
-alias SDWORD SQLINTEGER;
-alias SWORD SQLSMALLINT;
-// #ifndef __WIN64
+// #ifndef _WIN64
 alias UDWORD SQLUINTEGER;
 // #endif
-alias UWORD SQLUSMALLINT;
-alias PVOID SQLPOINTER;
 
 //static if (ODBCVER >= 0x0300) {
-typedef void* SQLHANDLE;
-alias SQLHANDLE SQLHENV;
-alias SQLHANDLE SQLHDBC;
-alias SQLHANDLE SQLHSTMT;
-alias SQLHANDLE SQLHDESC;
+typedef HANDLE SQLHANDLE;
+alias SQLHANDLE SQLHENV, SQLHDBC, SQLHSTMT, SQLHDESC;
 /*
 } else {
 alias void* SQLHENV;
@@ -57,10 +43,8 @@ alias SQLSMALLINT SQLRETURN;
 alias HWND SQLHWND;
 alias ULONG BOOKMARK;
 
-alias SQLINTEGER SQLLEN;
-alias SQLINTEGER SQLROWOFFSET;
-alias SQLUINTEGER SQLROWCOUNT;
-alias SQLUINTEGER SQLULEN;
+alias SQLINTEGER SQLLEN, SQLROWOFFSET;
+alias SQLUINTEGER SQLROWCOUNT, SQLULEN;
 alias DWORD SQLTRANSID;
 alias SQLUSMALLINT SQLSETPOSIROW;
 alias wchar SQLWCHAR;
@@ -71,18 +55,13 @@ version(Unicode) {
 	alias SQLCHAR  SQLTCHAR;
 }
 //static if (ODBCVER >= 0x0300) {
-alias ubyte   SQLDATE;
-alias ubyte   SQLDECIMAL;
-alias double  SQLDOUBLE;
-alias double  SQLFLOAT;
-alias ubyte   SQLNUMERIC;
-alias float   SQLREAL;
-alias ubyte   SQLTIME;
-alias ubyte   SQLTIMESTAMP;
-alias ubyte   SQLVARCHAR;
-alias long   ODBCINT64;
-alias long SQLBIGINT;
-alias ulong SQLUBIGINT;
+alias ubyte  SQLDATE, SQLDECIMAL;
+alias double SQLDOUBLE, SQLFLOAT;
+alias ubyte  SQLNUMERIC;
+alias float  SQLREAL;
+alias ubyte  SQLTIME, SQLTIMESTAMP, SQLVARCHAR;
+alias long   ODBCINT64, SQLBIGINT;
+alias ulong  SQLUBIGINT;
 //}
 
 struct DATE_STRUCT {
@@ -111,6 +90,7 @@ struct TIMESTAMP_STRUCT {
 alias DATE_STRUCT SQL_DATE_STRUCT;
 alias TIME_STRUCT SQL_TIME_STRUCT;
 alias TIMESTAMP_STRUCT SQL_TIMESTAMP_STRUCT;
+
 enum SQLINTERVAL {
 	SQL_IS_YEAR = 1,
 	SQL_IS_MONTH,

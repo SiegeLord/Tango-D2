@@ -7,12 +7,10 @@
 *                                                                       *
 *                       Placed into public domain                       *
 \***********************************************************************/
-module tango.sys.windows.ras;
-private import tango.sys.windows.lmcons;
-private import tango.sys.windows.w32api;
-private import tango.sys.windows.windef, tango.sys.windows.basetyps;
-
+module win32.ras;
 pragma(lib, "rasapi32.lib");
+
+private import win32.basetyps, win32.lmcons, win32.w32api, win32.windef;
 
 align(4):
 

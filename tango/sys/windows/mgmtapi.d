@@ -8,10 +8,10 @@
 *                                                                       *
 *                       Placed into public domain                       *
 \***********************************************************************/
-module tango.sys.windows.mgmtapi;
+module win32.mgmtapi;
 
-import tango.sys.windows.snmp;
-private import tango.sys.windows.windef;
+import win32.snmp;
+private import win32.windef;
 
 enum {
 	SNMP_MGMTAPI_TIMEOUT = 40,

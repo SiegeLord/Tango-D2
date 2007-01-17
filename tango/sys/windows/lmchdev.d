@@ -7,11 +7,11 @@
 *                                                                       *
 *                       Placed into public domain                       *
 \***********************************************************************/
+module win32.lmchdev;
 
 // COMMENT: This file might be deprecated.
-module tango.sys.windows.lmchdev;
-private import tango.sys.windows.lmcons;
-private import tango.sys.windows.windef;
+
+private import win32.lmcons, win32.windef;
 
 const CHARDEVQ_NO_REQUESTS  = -1;
 const CHARDEV_CLOSE         = 0;
@@ -77,14 +77,14 @@ struct HANDLE_INFO_1{
 alias HANDLE_INFO_1* PHANDLE_INFO_1, LPHANDLE_INFO_1;
 
 extern (Windows) {
-NET_API_STATUS NetCharDevEnum(LPCWSTR,DWORD,PBYTE*,DWORD,PDWORD,PDWORD,PDWORD);
-NET_API_STATUS NetCharDevGetInfo(LPCWSTR,LPCWSTR,DWORD,PBYTE*);
-NET_API_STATUS NetCharDevControl(LPCWSTR,LPCWSTR,DWORD);
-NET_API_STATUS NetCharDevQEnum(LPCWSTR,LPCWSTR,DWORD,PBYTE*,DWORD,PDWORD,PDWORD,PDWORD);
-NET_API_STATUS NetCharDevQGetInfo(LPCWSTR,LPCWSTR,LPCWSTR,DWORD,PBYTE*);
-NET_API_STATUS NetCharDevQSetInfo(LPCWSTR,LPCWSTR,DWORD,PBYTE,PDWORD);
-NET_API_STATUS NetCharDevQPurge(LPCWSTR,LPCWSTR);
-NET_API_STATUS NetCharDevQPurgeSelf(LPCWSTR,LPCWSTR,LPCWSTR);
-NET_API_STATUS NetHandleGetInfo(HANDLE,DWORD,PBYTE*);
-NET_API_STATUS NetHandleSetInfo(HANDLE,DWORD,PBYTE,DWORD,PDWORD);
+	NET_API_STATUS NetCharDevEnum(LPCWSTR, DWORD, PBYTE*, DWORD, PDWORD, PDWORD, PDWORD);
+	NET_API_STATUS NetCharDevGetInfo(LPCWSTR, LPCWSTR, DWORD, PBYTE*);
+	NET_API_STATUS NetCharDevControl(LPCWSTR, LPCWSTR, DWORD);
+	NET_API_STATUS NetCharDevQEnum(LPCWSTR, LPCWSTR, DWORD, PBYTE*, DWORD, PDWORD, PDWORD, PDWORD);
+	NET_API_STATUS NetCharDevQGetInfo(LPCWSTR, LPCWSTR, LPCWSTR, DWORD, PBYTE*);
+	NET_API_STATUS NetCharDevQSetInfo(LPCWSTR, LPCWSTR, DWORD, PBYTE, PDWORD);
+	NET_API_STATUS NetCharDevQPurge(LPCWSTR, LPCWSTR);
+	NET_API_STATUS NetCharDevQPurgeSelf(LPCWSTR, LPCWSTR, LPCWSTR);
+	NET_API_STATUS NetHandleGetInfo(HANDLE, DWORD, PBYTE*);
+	NET_API_STATUS NetHandleSetInfo(HANDLE, DWORD, PBYTE, DWORD, PDWORD);
 }

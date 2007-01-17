@@ -1,8 +1,17 @@
-// Don't include this file directly, use tango.sys.windows.security instead.
-module tango.sys.windows.secext;
-private import tango.sys.windows.w32api;
-private import tango.sys.windows.windef;
+/***********************************************************************\
+*                                secext.d                               *
+*                                                                       *
+*                       Windows API header module                       *
+*                                                                       *
+*                 Translated from MinGW Windows headers                 *
+*                                                                       *
+*                       Placed into public domain                       *
+\***********************************************************************/
+// Don't include this file directly, use win32.security instead.
+module win32.secext;
 pragma(lib, "secur32.lib");
+
+private import win32.w32api, win32.windef;
 
 static assert (_WIN32_WINNT >= 0x0501,
   "SecExt is only available on WindowsXP and later");

@@ -7,9 +7,9 @@
 *                                                                       *
 *                       Placed into public domain                       *
 \***********************************************************************/
-module tango.sys.windows.lmbrowsr;
-private import tango.sys.windows.lmcons;
-private import tango.sys.windows.windef;
+module win32.lmbrowsr;
+
+private import win32.lmcons, win32.windef;
 
 const BROWSER_ROLE_PDC = 1;
 const BROWSER_ROLE_BDC = 2;

@@ -7,16 +7,13 @@
 *                                                                       *
 *                       Placed into public domain                       *
 \***********************************************************************/
+module win32.winnt;
 
 // FIXME: Two bitfields and a macro need to be fixed.
 // FIXME: clean up Windows version support
 
-module tango.sys.windows.winnt;
-
-private import tango.sys.windows.w32api;
-public import tango.sys.windows.windef;
-public import tango.sys.windows.winerror;
-public import tango.sys.windows.basetsd;
+public import win32.basetsd, win32.windef, win32.winerror;
+private import win32.w32api;
 
 /* Translation Notes:
 The following macros are unneeded for D:
@@ -638,15 +635,15 @@ enum : WORD {
 
 //MACRO #define LANGIDFROMLCID(l)	((WORD)(l))
 
-WORD MAKELANGID(USHORT p, USHORT s) { return (((cast(WORD)(s)) << 10) | cast(WORD)(p)); }
-WORD PRIMARYLANGID(WORD lgid) { return lgid & 0x3ff; }
-WORD SUBLANGID(WORD lgid) { return lgid >>> 10; }
+WORD MAKELANGID(USHORT p, USHORT s) { return cast(WORD)((((cast(WORD)(s)) << 10) | cast(WORD)(p))); }
+WORD PRIMARYLANGID(WORD lgid) { return cast(WORD)(lgid & 0x3ff); }
+WORD SUBLANGID(WORD lgid) { return cast(WORD)(lgid >>> 10); }
 
 DWORD MAKELCID(WORD lgid, WORD srtid) { return ((cast(DWORD)srtid) << 16) | (cast(DWORD)lgid); }
 //DWORD MAKESORTLCID(WORD lgid, WORD srtid, WORD ver) { return (MAKELCID(lgid, srtid)) | ((cast(DWORD)ver) << 20); }
-WORD LANGIDFROMLCID(LCID lcid) { return lcid; }
-WORD SORTIDFROMLCID(LCID lcid) { return (cast(DWORD)lcid >>> 16) & 0xf; }
-WORD SORTVERSIONFROMLCID(LCID lcid) { return (cast(DWORD)lcid >>> 20) & 0xf; }
+WORD LANGIDFROMLCID(LCID lcid) { return cast(WORD)lcid; }
+WORD SORTIDFROMLCID(LCID lcid) { return cast(WORD)((cast(DWORD)lcid >>> 16) & 0xf); }
+WORD SORTVERSIONFROMLCID(LCID lcid) { return cast(WORD)((cast(DWORD)lcid >>> 20) & 0xf); }
 
 const WORD LANG_SYSTEM_DEFAULT = (SUBLANG_SYS_DEFAULT << 10) | LANG_NEUTRAL;
 const WORD LANG_USER_DEFAULT   = (SUBLANG_DEFAULT << 10) | LANG_NEUTRAL;
@@ -1407,7 +1404,7 @@ enum {
 }
 
 // Macros
-BYTE BTYPE(BYTE x) { return x & N_BTMASK; }
+BYTE BTYPE(BYTE x) { return cast(BYTE)(x & N_BTMASK); }
 bool ISPTR(uint x) { return (x & N_TMASK) == (IMAGE_SYM_DTYPE_POINTER << N_BTSHFT); }
 bool ISFCN(uint x) { return (x & N_TMASK) == (IMAGE_SYM_DTYPE_FUNCTION << N_BTSHFT); }
 bool ISARY(uint x) { return (x & N_TMASK) == (IMAGE_SYM_DTYPE_ARRAY << N_BTSHFT); }
@@ -1436,8 +1433,8 @@ const IO_REPARSE_TAG_MOUNT_POINT=0xA0000003;
 alias DWORD ACCESS_MASK;
 alias ACCESS_MASK *PACCESS_MASK;
 
-import tango.sys.windows.basetyps;
-/* also in tango.sys.windows.basetyps
+import win32.basetyps;
+/* also in win32.basetyps
 struct GUID {
 	uint  Data1;
 	ushort Data2;

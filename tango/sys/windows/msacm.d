@@ -8,9 +8,9 @@
 *                                                                       *
 *                       Placed into public domain                       *
 \***********************************************************************/
-module tango.sys.windows.msacm;
+module win32.msacm;
 
-private import tango.sys.windows.windef, tango.sys.windows.basetsd, tango.sys.windows.mmsystem;
+private import win32.basetsd, win32.mmsystem, win32.windef;
 
 alias HANDLE HACMDRIVERID, HACMDRIVER;
 alias HANDLE* LPHACMDRIVER;

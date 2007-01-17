@@ -8,10 +8,10 @@
 *                                                                       *
 *                       Placed into public domain                       *
 \***********************************************************************/
-module tango.sys.windows.winreg;
-
-private import tango.sys.windows.windef, tango.sys.windows.winbase;
+module win32.winreg;
 pragma(lib, "advapi32.lib");
+
+private import win32.w32api, win32.winbase, win32.windef;
 
 const HKEY
 	HKEY_CLASSES_ROOT     = cast(HKEY) 0x80000000,
@@ -33,12 +33,12 @@ enum : DWORD {
 }
 
 enum : DWORD {
-	REG_NONE  = 0,
+	REG_NONE                       = 0,
 	REG_SZ,
 	REG_EXPAND_SZ,
 	REG_BINARY,
 	REG_DWORD_LITTLE_ENDIAN,
-	REG_DWORD = REG_DWORD_LITTLE_ENDIAN,
+	REG_DWORD                      = REG_DWORD_LITTLE_ENDIAN,
 	REG_DWORD_BIG_ENDIAN,
 	REG_LINK,
 	REG_MULTI_SZ,
@@ -46,7 +46,7 @@ enum : DWORD {
 	REG_FULL_RESOURCE_DESCRIPTOR,
 	REG_RESOURCE_REQUIREMENTS_LIST,
 	REG_QWORD_LITTLE_ENDIAN,
-	REG_QWORD = REG_QWORD_LITTLE_ENDIAN
+	REG_QWORD                      = REG_QWORD_LITTLE_ENDIAN
 }
 
 const DWORD
@@ -74,10 +74,6 @@ struct VALENTW {
 alias VALENTW* PVALENTW;
 
 extern (Windows) {
-	BOOL AbortSystemShutdownA(LPCSTR);
-	BOOL AbortSystemShutdownW(LPCWSTR);
-	BOOL InitiateSystemShutdownA(LPSTR, LPSTR, DWORD, BOOL, BOOL);
-	BOOL InitiateSystemShutdownW(LPWSTR, LPWSTR, DWORD, BOOL, BOOL);
 	LONG RegCloseKey(HKEY);
 	LONG RegConnectRegistryA(LPCSTR, HKEY, PHKEY);
 	LONG RegConnectRegistryW(LPCWSTR, HKEY, PHKEY);
@@ -98,11 +94,8 @@ extern (Windows) {
 	LONG RegEnumValueW(HKEY, DWORD, LPWSTR, PDWORD, PDWORD, PDWORD, LPBYTE,
 	  PDWORD);
 	LONG RegFlushKey(HKEY);
-	LONG RegGetKeySecurity(HKEY, SECURITY_INFORMATION, PSECURITY_DESCRIPTOR,
-	  PDWORD);
 	LONG RegLoadKeyA(HKEY, LPCSTR, LPCSTR);
 	LONG RegLoadKeyW(HKEY, LPCWSTR, LPCWSTR);
-	LONG RegNotifyChangeKeyValue(HKEY, BOOL, DWORD, HANDLE, BOOL);
 	LONG RegOpenKeyExA(HKEY, LPCSTR, DWORD, REGSAM, PHKEY);
 	LONG RegOpenKeyExW(HKEY, LPCWSTR, DWORD, REGSAM, PHKEY);
 	LONG RegQueryInfoKeyA(HKEY, LPSTR, PDWORD, PDWORD, PDWORD, PDWORD,
@@ -115,8 +108,6 @@ extern (Windows) {
 	LONG RegQueryValueExW(HKEY, LPCWSTR, LPDWORD, LPDWORD, LPBYTE, LPDWORD);
 	LONG RegReplaceKeyA(HKEY, LPCSTR, LPCSTR, LPCSTR);
 	LONG RegReplaceKeyW(HKEY, LPCWSTR, LPCWSTR, LPCWSTR);
-	LONG RegRestoreKeyA(HKEY, LPCSTR, DWORD);
-	LONG RegRestoreKeyW(HKEY, LPCWSTR, DWORD);
 	LONG RegSaveKeyA(HKEY, LPCSTR, LPSECURITY_ATTRIBUTES);
 	LONG RegSaveKeyW(HKEY, LPCWSTR, LPSECURITY_ATTRIBUTES);
 	LONG RegSetKeySecurity(HKEY, SECURITY_INFORMATION, PSECURITY_DESCRIPTOR);
@@ -124,6 +115,35 @@ extern (Windows) {
 	LONG RegSetValueExW(HKEY, LPCWSTR, DWORD, DWORD, BYTE*, DWORD);
 	LONG RegUnLoadKeyA(HKEY, LPCSTR);
 	LONG RegUnLoadKeyW(HKEY, LPCWSTR);
+
+	static if (_WIN32_WINDOWS >= 0x410) {
+		LONG RegNotifyChangeKeyValue(HKEY, BOOL, DWORD, HANDLE, BOOL);
+	}
+
+	static if (_WIN32_WINNT_ONLY) {
+		BOOL AbortSystemShutdownA(LPCSTR);
+		BOOL AbortSystemShutdownW(LPCWSTR);
+		BOOL InitiateSystemShutdownA(LPSTR, LPSTR, DWORD, BOOL, BOOL);
+		BOOL InitiateSystemShutdownW(LPWSTR, LPWSTR, DWORD, BOOL, BOOL);
+		LONG RegGetKeySecurity(HKEY, SECURITY_INFORMATION,
+		  PSECURITY_DESCRIPTOR, PDWORD);
+		LONG RegRestoreKeyA(HKEY, LPCSTR, DWORD);
+		LONG RegRestoreKeyW(HKEY, LPCWSTR, DWORD);
+		LONG RegSetKeySecurity(HKEY, SECURITY_INFORMATION,
+		  PSECURITY_DESCRIPTOR);
+
+		static if (_WIN32_WINNT >= 0x500) {
+			LONG RegDisablePredefinedCache();
+			LONG RegOpenCurrentUser(REGSAM, PHKEY);
+			LONG RegOpenUserClassesRoot(HANDLE, DWORD, REGSAM, PHKEY);
+		}
+
+		static if (_WIN32_WINNT >= 0x501) {
+			LONG RegSaveKeyExA(HKEY, LPCSTR, LPSECURITY_ATTRIBUTES, DWORD);
+			LONG RegSaveKeyExW(HKEY, LPCWSTR, LPSECURITY_ATTRIBUTES, DWORD);
+		}
+	}
+
 	deprecated {
 		LONG RegCreateKeyA(HKEY, LPCSTR, PHKEY);
 		LONG RegCreateKeyW(HKEY, LPCWSTR, PHKEY);
@@ -140,8 +160,6 @@ extern (Windows) {
 
 version (Unicode) {
 	alias VALENTW VALENT;
-	alias AbortSystemShutdownW AbortSystemShutdown;
-	alias InitiateSystemShutdownW InitiateSystemShutdown;
 	alias RegConnectRegistryW RegConnectRegistry;
 	alias RegCreateKeyExW RegCreateKeyEx;
 	alias RegDeleteKeyW RegDeleteKey;
@@ -154,10 +172,17 @@ version (Unicode) {
 	alias RegQueryMultipleValuesW RegQueryMultipleValues;
 	alias RegQueryValueExW RegQueryValueEx;
 	alias RegReplaceKeyW RegReplaceKey;
-	alias RegRestoreKeyW RegRestoreKey;
 	alias RegSaveKeyW RegSaveKey;
 	alias RegSetValueExW RegSetValueEx;
 	alias RegUnLoadKeyW RegUnLoadKey;
+	static if (_WIN32_WINNT_ONLY) {
+		alias AbortSystemShutdownW AbortSystemShutdown;
+		alias InitiateSystemShutdownW InitiateSystemShutdown;
+		alias RegRestoreKeyW RegRestoreKey;
+		static if (_WIN32_WINNT >= 0x501) {
+			alias RegSaveKeyExA RegSaveKeyEx;
+		}
+	}
 	deprecated {
 		alias RegCreateKeyW RegCreateKey;
 		alias RegEnumKeyW RegEnumKey;
@@ -167,8 +192,6 @@ version (Unicode) {
 	}
 } else {
 	alias VALENTA VALENT;
-	alias AbortSystemShutdownA AbortSystemShutdown;
-	alias InitiateSystemShutdownA InitiateSystemShutdown;
 	alias RegConnectRegistryA RegConnectRegistry;
 	alias RegCreateKeyExA RegCreateKeyEx;
 	alias RegDeleteKeyA RegDeleteKey;
@@ -181,10 +204,17 @@ version (Unicode) {
 	alias RegQueryMultipleValuesA RegQueryMultipleValues;
 	alias RegQueryValueExA RegQueryValueEx;
 	alias RegReplaceKeyA RegReplaceKey;
-	alias RegRestoreKeyA RegRestoreKey;
 	alias RegSaveKeyA RegSaveKey;
 	alias RegSetValueExA RegSetValueEx;
 	alias RegUnLoadKeyA RegUnLoadKey;
+	static if (_WIN32_WINNT_ONLY) {
+		alias AbortSystemShutdownA AbortSystemShutdown;
+		alias InitiateSystemShutdownA InitiateSystemShutdown;
+		alias RegRestoreKeyW RegRestoreKey;
+		static if (_WIN32_WINNT >= 0x501) {
+			alias RegSaveKeyExA RegSaveKeyEx;
+		}
+	}
 	deprecated {
 		alias RegCreateKeyA RegCreateKey;
 		alias RegEnumKeyA RegEnumKey;

@@ -1,5 +1,5 @@
 /***********************************************************************\
-*                              shlguid.d                                *
+*                               shlguid.d                               *
 *                                                                       *
 *                       Windows API header module                       *
 *                                                                       *
@@ -7,10 +7,9 @@
 *                                                                       *
 *                       Placed into public domain                       *
 \***********************************************************************/
-module tango.sys.windows.shlguid;
+module win32.shlguid;
 
-private import tango.sys.windows.basetyps;
-private import tango.sys.windows.w32api;
+private import win32.basetyps, win32.w32api;
 
 // FIXME: clean up Windows version support
 

@@ -6,9 +6,9 @@
 *                 Translated from MinGW Windows headers                 *
 *                             by Daniel Keep                            *
 \***********************************************************************/
-module tango.sys.windows.winsock2;
-
+module win32.winsock2;
 pragma(lib, "Ws2_32.lib");
+
 /*
   Definitions for winsock 2
 
@@ -20,29 +20,30 @@ pragma(lib, "Ws2_32.lib");
   Portions Copyright (c) 1993 by Digital Equipment Corporation.
  */
 
-// DRK: This module should not be included if -version=Win32_Winsock2 has
-// not been set.  If it has, assert.  I think it's better this way than
-// letting the user believe that it's worked.
-version(Win32_Winsock2) {}
-else {
-    pragma(msg, "Cannot use tango.sys.windows.winsock2 without "
-			~ "Win32_Winsock2 defined.");
-    static assert(false);
+/*	DRK: This module should not be included if -version=Win32_Winsock2 has
+ *	not been set.  If it has, assert.  I think it's better this way than
+ *	letting the user believe that it's worked.
+ *
+ *	SG: It has now been changed so that winsock2 is the default, and
+ *	-version=Win32_Winsock1 must be set to use winsock.
+ */
+version(Win32_Winsock1) {
+	pragma(msg, "Cannot use win32.winsock2 with Win32_Winsock1 defined.");
+	static assert(false);
 }
 
-import tango.sys.windows.winbase;
-import tango.sys.windows.windef;
-import tango.sys.windows.basetyps;
+import win32.winbase;
+import win32.windef;
+import win32.basetyps;
 
-// NOTE: This header is NOT to be inluded with winsock.
 alias char u_char;
 alias ushort u_short;
 alias uint u_int, u_long, SOCKET;
 
-const FD_SETSIZE = 64;
+const size_t FD_SETSIZE = 64;
 
 /* shutdown() how types */
-enum {
+enum : int {
 	SD_RECEIVE,
 	SD_SEND,
 	SD_BOTH
@@ -57,44 +58,45 @@ struct FD_SET {
 	/* this differs from the define in winsock.h and in cygwin sys/types.h */
 	static void opCall(SOCKET fd, FD_SET set) {
 		u_int i;
-		for( i = 0; i < set.fd_count; i++ )
-			if( set.fd_array[i] == fd )
+		for (i = 0; i < set.fd_count; i++)
+			if (set.fd_array[i] == fd)
 				break;
-		if( i == set.fd_count )
-			if( set.fd_count < FD_SETSIZE ) {
+		if (i == set.fd_count)
+			if (set.fd_count < FD_SETSIZE) {
 				set.fd_array[i] = fd;
 				set.fd_count++;
 			}
 	}
 }
+alias FD_SET* PFD_SET, LPFD_SET;
 
 // Keep this alias, since fd_set isn't a tag name in the original header.
 alias FD_SET fd_set;
 
-extern(Pascal)
-	int __WSAFDIsSet(SOCKET, FD_SET*);
+extern(Pascal) int __WSAFDIsSet(SOCKET, FD_SET*);
+alias __WSAFDIsSet FD_ISSET;
 
 void FD_CLR(SOCKET fd, FD_SET* set) {
-	for( u_int i = 0; i < set.fd_count; i++ )
-		if( set.fd_array[i] == fd ) {
-			while( i < set.fd_count-1 ) {
+	for (u_int i = 0; i < set.fd_count; i++) {
+		if (set.fd_array[i] == fd) {
+			while (i < set.fd_count - 1) {
 				set.fd_array[i] = set.fd_array[i+1];
 				i++;
 			}
 			set.fd_count--;
 			break;
 		}
+	}
 }
 
 void FD_ZERO(FD_SET* set) {
 	set.fd_count = 0;
 }
 
-alias __WSAFDIsSet FD_ISSET;
 
 struct TIMEVAL {
-	long tv_sec;
-	long tv_usec;
+	int tv_sec;
+	int tv_usec;
 
 	int opCmp(TIMEVAL tv) {
 		if (tv_sec < tv.tv_sec)   return -1;
@@ -104,9 +106,9 @@ struct TIMEVAL {
 		return 0;
 	}
 }
+alias TIMEVAL* PTIMEVAL, LPTIMEVAL;
 
-bool timerisset(TIMEVAL* tvp)
-{
+bool timerisset(TIMEVAL* tvp) {
 	return tvp.tv_sec || tvp.tv_usec;
 }
 
@@ -131,7 +133,7 @@ int timercmp(TIMEVAL* tvp, TIMEVAL* uvp, int function(long,long) cmp) {
 	    cmp(tvp.tv_usec, uvp.tv_usec);
 }+/
 
-void timerclear(TIMEVAL* tvp) {
+void timerclear(inout TIMEVAL tvp) {
 	tvp.tv_sec = tvp.tv_usec = 0;
 }
 
@@ -145,11 +147,13 @@ struct HOSTENT {
 	char* h_addr() { return h_addr_list[0]; }
 	char* h_addr(char* h) { return h_addr_list[0] = h; }
 }
+alias HOSTENT* PHOSTENT, LPHOSTENT;
 
 struct LINGER {
 	u_short l_onoff;
 	u_short l_linger;
 }
+alias LINGER* PLINGER, LPLINGER;
 
 enum : DWORD {
 	IOCPARAM_MASK = 0x7f,
@@ -198,14 +202,16 @@ struct SERVENT {
 	short  s_port;
 	char*  s_proto;
 }
+alias SERVENT* PSERVENT, LPSERVENT;
 
 struct PROTOENT {
 	char*  p_name;
 	char** p_aliases;
 	short  p_proto;
 }
+alias PROTOENT* PPROTOENT, LPPROTOENT;
 
-enum {
+enum : int {
 	IPPROTO_IP   =   0,
 	IPPROTO_ICMP =   1,
 	IPPROTO_IGMP =   2,
@@ -218,16 +224,16 @@ enum {
 	IPPROTO_RAW  = 255,
 	IPPROTO_MAX  = 256,
 
-	/* IPv6 options */
-	IPPROTO_HOPOPTS  =  0, /* IPv6 Hop-by-Hop options */
-	IPPROTO_IPV6     = 41, /* IPv6 header */
-	IPPROTO_ROUTING  = 43, /* IPv6 Routing header */
-	IPPROTO_FRAGMENT = 44, /* IPv6 fragmentation header */
-	IPPROTO_ESP      = 50, /* encapsulating security payload */
-	IPPROTO_AH       = 51, /* authentication header */
-	IPPROTO_ICMPV6   = 58, /* ICMPv6 */
-	IPPROTO_NONE     = 59, /* IPv6 no next header */
-	IPPROTO_DSTOPTS  = 60  /* IPv6 Destination options */
+	// IPv6 options
+	IPPROTO_HOPOPTS  =  0, // IPv6 Hop-by-Hop options
+	IPPROTO_IPV6     = 41, // IPv6 header
+	IPPROTO_ROUTING  = 43, // IPv6 Routing header
+	IPPROTO_FRAGMENT = 44, // IPv6 fragmentation header
+	IPPROTO_ESP      = 50, // encapsulating security payload
+	IPPROTO_AH       = 51, // authentication header
+	IPPROTO_ICMPV6   = 58, // ICMPv6
+	IPPROTO_NONE     = 59, // IPv6 no next header
+	IPPROTO_DSTOPTS  = 60  // IPv6 Destination options
 }
 
 enum {
@@ -274,7 +280,9 @@ struct IN_ADDR {
 		u_long s_addr;
 	}
 }
+alias IN_ADDR* PIN_ADDR, LPIN_ADDR;
 
+// IN_CLASSx are not used anywhere or documented on MSDN.
 bool IN_CLASSA(int i) { return (i & 0x80000000) == 0; }
 
 const IN_CLASSA_NET    = 0xff000000;
@@ -307,6 +315,7 @@ struct SOCKADDR_IN {
 	IN_ADDR sin_addr;
 	char[8] sin_zero;
 }
+alias SOCKADDR_IN* PSOCKADDR_IN, LPSOCKADDR_IN;
 
 const size_t
 	WSADESCRIPTION_LEN = 256,
@@ -321,9 +330,9 @@ struct WSADATA {
 	ushort iMaxUdpDg;
 	char*  lpVendorInfo;
 }
-
 alias WSADATA* LPWSADATA;
 
+// This is not documented on the MSDN site
 const IP_OPTIONS = 1;
 
 const int
@@ -352,9 +361,9 @@ enum : int {
 }
 
 const SOCKET INVALID_SOCKET = cast(SOCKET)(~0);
-const SOCKET_ERROR = -1;
+const int SOCKET_ERROR = -1;
 
-enum {
+enum : int {
 	SOCK_STREAM = 1,
 	SOCK_DGRAM,
 	SOCK_RAW,
@@ -362,7 +371,7 @@ enum {
 	SOCK_SEQPACKET
 }
 
-const TCP_NODELAY = 0x0001;
+const int TCP_NODELAY = 0x0001;
 
 enum : int {
 	AF_UNSPEC,
@@ -371,10 +380,10 @@ enum : int {
 	AF_IMPLINK,
 	AF_PUP,
 	AF_CHAOS,
-	AF_IPX, // = 6
-	AF_NS = 6,
+	AF_IPX,  // =  6
+	AF_NS       =  6,
 	AF_ISO,
-	AF_OSI = AF_ISO,
+	AF_OSI      = AF_ISO,
 	AF_ECMA,
 	AF_DATAKIT,
 	AF_CCITT,
@@ -391,27 +400,30 @@ enum : int {
 	AF_BAN,
 	AF_ATM,
 	AF_INET6,
+	// AF_CLUSTER, AF_12844 nad AF_NETDES are not documented on MSDN
 	AF_CLUSTER,
 	AF_12844,
-	AF_IRDA,
-	AF_NETDES = 28,
-	AF_MAX // = 29
+	AF_IRDA, // = 26
+	AF_NETDES   = 28,
+	AF_MAX   // = 29
 }
 
 struct SOCKADDR {
 	u_short  sa_family;
 	char[14] sa_data;
 }
+alias SOCKADDR* PSOCKADDR, LPSOCKADDR;
 
 /* Portable IPv6/IPv4 version of sockaddr.
    Uses padding to force 8 byte alignment
    and maximum size of 128 bytes */
 struct SOCKADDR_STORAGE {
-    short   ss_family;
-    char[6] __ss_pad1[6];   /* pad to 8 */
-    long    __ss_align;     /* force alignment */
-    char    __ss_pad2[112]; /* pad to 128 */
-};
+    short     ss_family;
+    char[6]   __ss_pad1;   // pad to 8
+    long      __ss_align;  // force alignment
+    char[112] __ss_pad2;   // pad to 128
+}
+alias SOCKADDR_STORAGE* PSOCKADDR_STORAGE;
 
 struct sockproto {
 	u_short sp_family;
@@ -419,35 +431,35 @@ struct sockproto {
 }
 
 enum : int {
-	PF_UNSPEC = AF_UNSPEC,
-	PF_UNIX = AF_UNIX,
-	PF_INET = AF_INET,
-	PF_IMPLINK = AF_IMPLINK,
-	PF_PUP = AF_PUP,
-	PF_CHAOS = AF_CHAOS,
-	PF_NS = AF_NS,
-	PF_IPX = AF_IPX,
-	PF_ISO = AF_ISO,
-	PF_OSI = AF_OSI,
-	PF_ECMA = AF_ECMA,
-	PF_DATAKIT = AF_DATAKIT,
-	PF_CCITT = AF_CCITT,
-	PF_SNA = AF_SNA,
-	PF_DECnet = AF_DECnet,
-	PF_DLI = AF_DLI,
-	PF_LAT = AF_LAT,
-	PF_HYLINK = AF_HYLINK,
+	PF_UNSPEC    = AF_UNSPEC,
+	PF_UNIX      = AF_UNIX,
+	PF_INET      = AF_INET,
+	PF_IMPLINK   = AF_IMPLINK,
+	PF_PUP       = AF_PUP,
+	PF_CHAOS     = AF_CHAOS,
+	PF_NS        = AF_NS,
+	PF_IPX       = AF_IPX,
+	PF_ISO       = AF_ISO,
+	PF_OSI       = AF_OSI,
+	PF_ECMA      = AF_ECMA,
+	PF_DATAKIT   = AF_DATAKIT,
+	PF_CCITT     = AF_CCITT,
+	PF_SNA       = AF_SNA,
+	PF_DECnet    = AF_DECnet,
+	PF_DLI       = AF_DLI,
+	PF_LAT       = AF_LAT,
+	PF_HYLINK    = AF_HYLINK,
 	PF_APPLETALK = AF_APPLETALK,
 	PF_VOICEVIEW = AF_VOICEVIEW,
-	PF_FIREFOX = AF_FIREFOX,
-	PF_UNKNOWN1 = AF_UNKNOWN1,
-	PF_BAN = AF_BAN,
-	PF_ATM = AF_ATM,
-	PF_INET6 = AF_INET6,
-	PF_MAX = AF_MAX
+	PF_FIREFOX   = AF_FIREFOX,
+	PF_UNKNOWN1  = AF_UNKNOWN1,
+	PF_BAN       = AF_BAN,
+	PF_ATM       = AF_ATM,
+	PF_INET6     = AF_INET6,
+	PF_MAX       = AF_MAX
 }
 
-const int SOL_SOCKET = 0xffff;
+const int SOL_SOCKET = 0xFFFF;
 
 const int SOMAXCONN = 5;
 
@@ -458,101 +470,105 @@ const int
 	MSG_MAXIOVLEN = 16,
 	MSG_PARTIAL   = 0x8000;
 
-const MAXGETHOSTSTRUCT = 1024;
+const size_t MAXGETHOSTSTRUCT = 1024;
 
-const FD_READ_BIT      = 0;
-const FD_WRITE_BIT     = 1;
-const FD_OOB_BIT       = 2;
-const FD_ACCEPT_BIT    = 3;
-const FD_CONNECT_BIT   = 4;
-const FD_CLOSE_BIT     = 5;
-const FD_QOS_BIT       = 6;
-const FD_GROUP_QOS_BIT = 7;
-const FD_ROUTING_INTERFACE_CHANGE_BIT = 8;
-const FD_ADDRESS_LIST_CHANGE_BIT = 9;
+// Not documented on MSDN
+enum {
+	FD_READ_BIT,
+	FD_WRITE_BIT,
+	FD_OOB_BIT,
+	FD_ACCEPT_BIT,
+	FD_CONNECT_BIT,
+	FD_CLOSE_BIT,
+	FD_QOS_BIT,
+	FD_GROUP_QOS_BIT,
+	FD_ROUTING_INTERFACE_CHANGE_BIT,
+	FD_ADDRESS_LIST_CHANGE_BIT,
+	FD_MAX_EVENTS // = 10
+}
 
-const FD_READ      = 1 << FD_READ_BIT;
-const FD_WRITE     = 1 << FD_WRITE_BIT;
-const FD_OOB       = 1 << FD_OOB_BIT;
-const FD_ACCEPT    = 1 << FD_ACCEPT_BIT;
-const FD_CONNECT   = 1 << FD_CONNECT_BIT;
-const FD_CLOSE     = 1 << FD_CLOSE_BIT;
-const FD_QOS       = 1 << FD_QOS_BIT;
-const FD_GROUP_QOS = 1 << FD_GROUP_QOS_BIT;
-const FD_ROUTING_INTERFACE_CHANGE = 1 << FD_ROUTING_INTERFACE_CHANGE_BIT;
-const FD_ADDRESS_LIST_CHANGE = 1 << FD_ADDRESS_LIST_CHANGE_BIT;
-
-const FD_MAX_EVENTS = 10;
-const FD_ALL_EVENTS = (1 << FD_MAX_EVENTS) - 1;
+const int
+	FD_READ                     = 1 << FD_READ_BIT,
+	FD_WRITE                    = 1 << FD_WRITE_BIT,
+	FD_OOB                      = 1 << FD_OOB_BIT,
+	FD_ACCEPT                   = 1 << FD_ACCEPT_BIT,
+	FD_CONNECT                  = 1 << FD_CONNECT_BIT,
+	FD_CLOSE                    = 1 << FD_CLOSE_BIT,
+	FD_QOS                      = 1 << FD_QOS_BIT,
+	FD_GROUP_QOS                = 1 << FD_GROUP_QOS_BIT,
+	FD_ROUTING_INTERFACE_CHANGE = 1 << FD_ROUTING_INTERFACE_CHANGE_BIT,
+	FD_ADDRESS_LIST_CHANGE      = 1 << FD_ADDRESS_LIST_CHANGE_BIT,
+	FD_ALL_EVENTS               = (1 << FD_MAX_EVENTS) - 1;
 
 enum : int {
 	WSABASEERR         = 10000,
-	WSAEINTR           = WSABASEERR+4,
-	WSAEBADF           = WSABASEERR+9,
-	WSAEACCES          = WSABASEERR+13,
-	WSAEFAULT          = WSABASEERR+14,
-	WSAEINVAL          = WSABASEERR+22,
-	WSAEMFILE          = WSABASEERR+24,
-	WSAEWOULDBLOCK     = WSABASEERR+35,
-	WSAEINPROGRESS     = WSABASEERR+36, /* deprecated on WinSock2 */
-	WSAEALREADY        = WSABASEERR+37,
-	WSAENOTSOCK        = WSABASEERR+38,
-	WSAEDESTADDRREQ    = WSABASEERR+39,
-	WSAEMSGSIZE        = WSABASEERR+40,
-	WSAEPROTOTYPE      = WSABASEERR+41,
-	WSAENOPROTOOPT     = WSABASEERR+42,
-	WSAEPROTONOSUPPORT = WSABASEERR+43,
-	WSAESOCKTNOSUPPORT = WSABASEERR+44,
-	WSAEOPNOTSUPP      = WSABASEERR+45,
-	WSAEPFNOSUPPORT    = WSABASEERR+46,
-	WSAEAFNOSUPPORT    = WSABASEERR+47,
-	WSAEADDRINUSE      = WSABASEERR+48,
-	WSAEADDRNOTAVAIL   = WSABASEERR+49,
-	WSAENETDOWN        = WSABASEERR+50,
-	WSAENETUNREACH     = WSABASEERR+51,
-	WSAENETRESET       = WSABASEERR+52,
-	WSAECONNABORTED    = WSABASEERR+53,
-	WSAECONNRESET      = WSABASEERR+54,
-	WSAENOBUFS         = WSABASEERR+55,
-	WSAEISCONN         = WSABASEERR+56,
-	WSAENOTCONN        = WSABASEERR+57,
-	WSAESHUTDOWN       = WSABASEERR+58,
-	WSAETOOMANYREFS    = WSABASEERR+59,
-	WSAETIMEDOUT       = WSABASEERR+60,
-	WSAECONNREFUSED    = WSABASEERR+61,
-	WSAELOOP           = WSABASEERR+62,
-	WSAENAMETOOLONG    = WSABASEERR+63,
-	WSAEHOSTDOWN       = WSABASEERR+64,
-	WSAEHOSTUNREACH    = WSABASEERR+65,
-	WSAENOTEMPTY       = WSABASEERR+66,
-	WSAEPROCLIM        = WSABASEERR+67,
-	WSAEUSERS          = WSABASEERR+68,
-	WSAEDQUOT          = WSABASEERR+69,
-	WSAESTALE          = WSABASEERR+70,
-	WSAEREMOTE         = WSABASEERR+71,
-	WSAEDISCON         = WSABASEERR+101,
-	WSASYSNOTREADY     = WSABASEERR+91,
-	WSAVERNOTSUPPORTED = WSABASEERR+92,
-	WSANOTINITIALISED  = WSABASEERR+93,
-	WSAHOST_NOT_FOUND  = WSABASEERR+1001,
-	WSATRY_AGAIN       = WSABASEERR+1002,
-	WSANO_RECOVERY     = WSABASEERR+1003,
-	WSANO_DATA         = WSABASEERR+1004,
+	WSAEINTR           = WSABASEERR + 4,
+	WSAEBADF           = WSABASEERR + 9,
+	WSAEACCES          = WSABASEERR + 13,
+	WSAEFAULT          = WSABASEERR + 14,
+	WSAEINVAL          = WSABASEERR + 22,
+	WSAEMFILE          = WSABASEERR + 24,
+	WSAEWOULDBLOCK     = WSABASEERR + 35,
+	WSAEINPROGRESS     = WSABASEERR + 36, // deprecated on WinSock2
+	WSAEALREADY        = WSABASEERR + 37,
+	WSAENOTSOCK        = WSABASEERR + 38,
+	WSAEDESTADDRREQ    = WSABASEERR + 39,
+	WSAEMSGSIZE        = WSABASEERR + 40,
+	WSAEPROTOTYPE      = WSABASEERR + 41,
+	WSAENOPROTOOPT     = WSABASEERR + 42,
+	WSAEPROTONOSUPPORT = WSABASEERR + 43,
+	WSAESOCKTNOSUPPORT = WSABASEERR + 44,
+	WSAEOPNOTSUPP      = WSABASEERR + 45,
+	WSAEPFNOSUPPORT    = WSABASEERR + 46,
+	WSAEAFNOSUPPORT    = WSABASEERR + 47,
+	WSAEADDRINUSE      = WSABASEERR + 48,
+	WSAEADDRNOTAVAIL   = WSABASEERR + 49,
+	WSAENETDOWN        = WSABASEERR + 50,
+	WSAENETUNREACH     = WSABASEERR + 51,
+	WSAENETRESET       = WSABASEERR + 52,
+	WSAECONNABORTED    = WSABASEERR + 53,
+	WSAECONNRESET      = WSABASEERR + 54,
+	WSAENOBUFS         = WSABASEERR + 55,
+	WSAEISCONN         = WSABASEERR + 56,
+	WSAENOTCONN        = WSABASEERR + 57,
+	WSAESHUTDOWN       = WSABASEERR + 58,
+	WSAETOOMANYREFS    = WSABASEERR + 59,
+	WSAETIMEDOUT       = WSABASEERR + 60,
+	WSAECONNREFUSED    = WSABASEERR + 61,
+	WSAELOOP           = WSABASEERR + 62,
+	WSAENAMETOOLONG    = WSABASEERR + 63,
+	WSAEHOSTDOWN       = WSABASEERR + 64,
+	WSAEHOSTUNREACH    = WSABASEERR + 65,
+	WSAENOTEMPTY       = WSABASEERR + 66,
+	WSAEPROCLIM        = WSABASEERR + 67,
+	WSAEUSERS          = WSABASEERR + 68,
+	WSAEDQUOT          = WSABASEERR + 69,
+	WSAESTALE          = WSABASEERR + 70,
+	WSAEREMOTE         = WSABASEERR + 71,
+	WSAEDISCON         = WSABASEERR + 101,
+	WSASYSNOTREADY     = WSABASEERR + 91,
+	WSAVERNOTSUPPORTED = WSABASEERR + 92,
+	WSANOTINITIALISED  = WSABASEERR + 93,
+	WSAHOST_NOT_FOUND  = WSABASEERR + 1001,
+	WSATRY_AGAIN       = WSABASEERR + 1002,
+	WSANO_RECOVERY     = WSABASEERR + 1003,
+	WSANO_DATA         = WSABASEERR + 1004,
+	WSANO_ADDRESS      = WSANO_DATA,
 
-	/* WinSock2 specific error codes */
-	WSAENOMORE             = WSABASEERR+102,
-	WSAECANCELLED          = WSABASEERR+103,
-	WSAEINVALIDPROCTABLE   = WSABASEERR+104,
-	WSAEINVALIDPROVIDER    = WSABASEERR+105,
-	WSAEPROVIDERFAILEDINIT = WSABASEERR+106,
-	WSASYSCALLFAILURE      = WSABASEERR+107,
-	WSASERVICE_NOT_FOUND   = WSABASEERR+108,
-	WSATYPE_NOT_FOUND      = WSABASEERR+109,
-	WSA_E_NO_MORE          = WSABASEERR+110,
-	WSA_E_CANCELLED        = WSABASEERR+111,
-	WSAEREFUSED            = WSABASEERR+112,
+	// WinSock2 specific error codes
+	WSAENOMORE             = WSABASEERR + 102,
+	WSAECANCELLED          = WSABASEERR + 103,
+	WSAEINVALIDPROCTABLE   = WSABASEERR + 104,
+	WSAEINVALIDPROVIDER    = WSABASEERR + 105,
+	WSAEPROVIDERFAILEDINIT = WSABASEERR + 106,
+	WSASYSCALLFAILURE      = WSABASEERR + 107,
+	WSASERVICE_NOT_FOUND   = WSABASEERR + 108,
+	WSATYPE_NOT_FOUND      = WSABASEERR + 109,
+	WSA_E_NO_MORE          = WSABASEERR + 110,
+	WSA_E_CANCELLED        = WSABASEERR + 111,
+	WSAEREFUSED            = WSABASEERR + 112,
 
-	/* WS QualityofService errors */
+	// WS QualityofService errors
 	WSA_QOS_RECEIVERS          = WSABASEERR + 1005,
 	WSA_QOS_SENDERS            = WSABASEERR + 1006,
 	WSA_QOS_NO_SENDERS         = WSABASEERR + 1007,
@@ -579,9 +595,7 @@ enum : int {
 	WSA_QOS_EPSFILTERSPEC      = WSABASEERR + 1028,
 	WSA_QOS_ESDMODEOBJ         = WSABASEERR + 1029,
 	WSA_QOS_ESHAPERATEOBJ      = WSABASEERR + 1030,
-	WSA_QOS_RESERVED_PETYPE    = WSABASEERR + 1031,
-
-	WSANO_ADDRESS = WSANO_DATA
+	WSA_QOS_RESERVED_PETYPE    = WSABASEERR + 1031
 }
 
 alias WSAGetLastError h_errno;
@@ -594,12 +608,12 @@ enum : int {
 	NO_ADDRESS     = WSANO_ADDRESS
 }
 
-extern(Pascal) {
+extern (Pascal) {
 	SOCKET accept(SOCKET, SOCKADDR*, int*);
 	int bind(SOCKET, SOCKADDR*, int);
 	int closesocket(SOCKET);
 	int connect(SOCKET, SOCKADDR*, int);
-	int ioctlsocket(SOCKET, long, u_long*);
+	int ioctlsocket(SOCKET, int, u_long*);
 	int getpeername(SOCKET, SOCKADDR*, int*);
 	int getsockname(SOCKET, SOCKADDR*, int*);
 	int getsockopt(SOCKET, int, int, char*, int*);
@@ -719,16 +733,6 @@ alias MAKELONG WSAMAKEASYNCREPLY, WSAMAKESELECTREPLY;
 alias LOWORD WSAGETASYNCBUFLEN, WSAGETSELECTEVENT;
 alias HIWORD WSAGETASYNCERROR, WSAGETSELECTERROR;
 
-alias SOCKADDR* PSOCKADDR, LPSOCKADDR;
-alias SOCKADDR_STORAGE* PSOCKADDR_STORAGE;
-alias SOCKADDR_IN* PSOCKADDR_IN, LPSOCKADDR_IN;
-alias LINGER* PLINGER, LPLINGER;
-alias IN_ADDR* PIN_ADDR, LPIN_ADDR;
-alias FD_SET* PFD_SET, LPFD_SET;
-alias HOSTENT* PHOSTENT, LPHOSTENT;
-alias SERVENT* PSERVENT, LPSERVENT;
-alias PROTOENT* PPROTOENT, LPPROTOENT;
-alias TIMEVAL* PTIMEVAL, LPTIMEVAL;
 
 alias INADDR_ANY ADDR_ANY;
 
@@ -766,8 +770,8 @@ alias LPHANDLE LPWSAEVENT;
 alias OVERLAPPED WSAOVERLAPPED;
 alias OVERLAPPED* LPWSAOVERLAPPED;
 
-private import tango.sys.windows.winerror;
-private import tango.sys.windows.winbase;
+private import win32.winerror;
+private import win32.winbase;
 
 enum {
 	WSA_IO_PENDING        = ERROR_IO_PENDING,
@@ -900,7 +904,7 @@ struct WSAVERSION
 alias WSAVERSION* PWSAVERSION, LPWSAVERSION;
 
 // Import for SOCKET_ADDRESS, CSADDR_INFO
-// import tango.sys.windows.nspapi;
+// import win32.nspapi;
 //#ifndef __CSADDR_T_DEFINED /* also in nspapi.h */
 //#define __CSADDR_T_DEFINED
 
@@ -1299,7 +1303,7 @@ const int SIO_NSP_NOTIFY_CHANGE              = _WSAIOW!(IOC_WS2,25);
 const int TH_NETDEV = 1;
 const int TH_TAPI   = 2;
 
-// TODO: The below was declared with "WINAPI" linkage; is this correct?
+
 extern(Windows) {
 	SOCKET WSAAccept(SOCKET, SOCKADDR*, LPINT, LPCONDITIONPROC, DWORD);
 	INT WSAAddressToStringA(LPSOCKADDR, DWORD, LPWSAPROTOCOL_INFOA, LPSTR, LPDWORD);

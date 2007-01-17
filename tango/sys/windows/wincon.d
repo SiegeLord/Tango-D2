@@ -7,11 +7,10 @@
 *                                                                       *
 *                       Placed into public domain                       *
 \***********************************************************************/
-module tango.sys.windows.wincon;
+module win32.wincon;
 pragma(lib, "kernel32.lib");
 
-private import tango.sys.windows.w32api;
-private import tango.sys.windows.windef;
+private import win32.w32api, win32.windef;
 
 // FIXME: clean up Windows version support
 
@@ -93,7 +92,7 @@ struct CHAR_INFO {
 	}
 	WORD Attributes;
 }
-alias CHAR_INFO * PCHAR_INFO;
+alias CHAR_INFO* PCHAR_INFO;
 
 struct SMALL_RECT {
 	SHORT Left;
@@ -101,25 +100,25 @@ struct SMALL_RECT {
 	SHORT Right;
 	SHORT Bottom;
 }
-alias SMALL_RECT * PSMALL_RECT;
+alias SMALL_RECT* PSMALL_RECT;
 
 struct CONSOLE_CURSOR_INFO {
 	DWORD dwSize;
 	BOOL  bVisible;
 }
-alias CONSOLE_CURSOR_INFO * PCONSOLE_CURSOR_INFO;
+alias CONSOLE_CURSOR_INFO* PCONSOLE_CURSOR_INFO;
 
 struct COORD {
 	SHORT X;
 	SHORT Y;
 }
-alias COORD *PCOORD;
+alias COORD* PCOORD;
 
 struct CONSOLE_FONT_INFO {
 	DWORD nFont;
 	COORD dwFontSize;
 }
-alias CONSOLE_FONT_INFO * PCONSOLE_FONT_INFO;
+alias CONSOLE_FONT_INFO* PCONSOLE_FONT_INFO;
 
 struct CONSOLE_SCREEN_BUFFER_INFO {
 	COORD      dwSize;
@@ -158,7 +157,7 @@ struct WINDOW_BUFFER_SIZE_RECORD {
 struct MENU_EVENT_RECORD {
 	UINT dwCommandId;
 }
-alias MENU_EVENT_RECORD * PMENU_EVENT_RECORD;
+alias MENU_EVENT_RECORD* PMENU_EVENT_RECORD;
 
 struct FOCUS_EVENT_RECORD {
 	BOOL bSetFocus;
@@ -174,7 +173,7 @@ struct INPUT_RECORD {
 		FOCUS_EVENT_RECORD FocusEvent;
 	}
 }
-alias INPUT_RECORD * PINPUT_RECORD;
+alias INPUT_RECORD* PINPUT_RECORD;
 
 extern (Windows):
 
@@ -244,35 +243,31 @@ BOOL WriteConsoleOutputCharacterA(HANDLE, LPCSTR, DWORD, COORD, PDWORD);
 BOOL WriteConsoleOutputCharacterW(HANDLE, LPCWSTR, DWORD, COORD, PDWORD);
 
 version (Unicode) {
-
-alias FillConsoleOutputCharacterW FillConsoleOutputCharacter;
-alias GetConsoleTitleW GetConsoleTitle;
-alias PeekConsoleInputW PeekConsoleInput;
-alias ReadConsoleW ReadConsole;
-alias ReadConsoleInputW ReadConsoleInput;
-alias ReadConsoleOutputW ReadConsoleOutput;
-alias ReadConsoleOutputCharacterW ReadConsoleOutputCharacter;
-alias ScrollConsoleScreenBufferW ScrollConsoleScreenBuffer;
-alias SetConsoleTitleW SetConsoleTitle;
-alias WriteConsoleW WriteConsole;
-alias WriteConsoleInputW WriteConsoleInput;
-alias WriteConsoleOutputW WriteConsoleOutput;
-alias WriteConsoleOutputCharacterW WriteConsoleOutputCharacter;
-
+	alias FillConsoleOutputCharacterW FillConsoleOutputCharacter;
+	alias GetConsoleTitleW GetConsoleTitle;
+	alias PeekConsoleInputW PeekConsoleInput;
+	alias ReadConsoleW ReadConsole;
+	alias ReadConsoleInputW ReadConsoleInput;
+	alias ReadConsoleOutputW ReadConsoleOutput;
+	alias ReadConsoleOutputCharacterW ReadConsoleOutputCharacter;
+	alias ScrollConsoleScreenBufferW ScrollConsoleScreenBuffer;
+	alias SetConsoleTitleW SetConsoleTitle;
+	alias WriteConsoleW WriteConsole;
+	alias WriteConsoleInputW WriteConsoleInput;
+	alias WriteConsoleOutputW WriteConsoleOutput;
+	alias WriteConsoleOutputCharacterW WriteConsoleOutputCharacter;
 } else {
-
-alias FillConsoleOutputCharacterA FillConsoleOutputCharacter;
-alias GetConsoleTitleA GetConsoleTitle;
-alias PeekConsoleInputA PeekConsoleInput;
-alias ReadConsoleA ReadConsole;
-alias ReadConsoleInputA ReadConsoleInput;
-alias ReadConsoleOutputA ReadConsoleOutput;
-alias ReadConsoleOutputCharacterA ReadConsoleOutputCharacter;
-alias ScrollConsoleScreenBufferA ScrollConsoleScreenBuffer;
-alias SetConsoleTitleA SetConsoleTitle;
-alias WriteConsoleA WriteConsole;
-alias WriteConsoleInputA WriteConsoleInput;
-alias WriteConsoleOutputA WriteConsoleOutput;
-alias WriteConsoleOutputCharacterA WriteConsoleOutputCharacter;
-
+	alias FillConsoleOutputCharacterA FillConsoleOutputCharacter;
+	alias GetConsoleTitleA GetConsoleTitle;
+	alias PeekConsoleInputA PeekConsoleInput;
+	alias ReadConsoleA ReadConsole;
+	alias ReadConsoleInputA ReadConsoleInput;
+	alias ReadConsoleOutputA ReadConsoleOutput;
+	alias ReadConsoleOutputCharacterA ReadConsoleOutputCharacter;
+	alias ScrollConsoleScreenBufferA ScrollConsoleScreenBuffer;
+	alias SetConsoleTitleA SetConsoleTitle;
+	alias WriteConsoleA WriteConsole;
+	alias WriteConsoleInputA WriteConsoleInput;
+	alias WriteConsoleOutputA WriteConsoleOutput;
+	alias WriteConsoleOutputCharacterA WriteConsoleOutputCharacter;
 }

@@ -8,26 +8,23 @@
 *                                                                       *
 *                       Placed into public domain                       *
 \***********************************************************************/
-module tango.sys.windows.ocidl;
+module win32.ocidl;
 
-private import tango.sys.windows.ole2;
-private import tango.sys.windows.wingdi; // for TEXTMETRICW
-private import tango.sys.windows.winuser; // for LPMSG
-private import tango.sys.windows.windef, tango.sys.windows.wtypes;
-private import tango.sys.windows.objidl; // for CLIPFORMAT
-private import tango.sys.windows.oleidl;
-private import tango.sys.windows.oaidl;
-private import tango.sys.windows.objfwd;
+private import win32.ole2, win32.oleidl, win32.oaidl, win32.objfwd,
+  win32.windef, win32.wtypes;
+private import win32.objidl;  // for CLIPFORMAT
+private import win32.wingdi;  // for TEXTMETRICW
+private import win32.winuser; // for LPMSG
 
 interface IBindHost : public IUnknown {}
 interface IServiceProvider {}
 
 /+
 // TODO:
-//private import tango.sys.windows.servprov; // for IServiceProvider
-// private import tango.sys.windows.urlmon; // for IBindHost. This is not included in MinGW.
+//private import win32.servprov; // for IServiceProvider
+// private import win32.urlmon; // for IBindHost. This is not included in MinGW.
 
-// tango.sys.windows.urlmon should contain:
+// win32.urlmon should contain:
 interface IBindHost : public IUnknown
 {
 	HRESULT CreateMoniker(LPOLESTR szName, IBindCtx* pBC, IMoniker** ppmk, DWORD);

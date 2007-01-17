@@ -1,5 +1,5 @@
 /***********************************************************************\
-*                              richole.d                                *
+*                               richole.d                               *
 *                                                                       *
 *                       Windows API header module                       *
 *                                                                       *
@@ -7,13 +7,11 @@
 *                                                                       *
 *                       Placed into public domain                       *
 \***********************************************************************/
-module tango.sys.windows.richole;
-private import tango.sys.windows.unknwn;
-private import tango.sys.windows.windef;
-private import tango.sys.windows.ole2;
-private import tango.sys.windows.richedit; // for CHARRANGE
-private import tango.sys.windows.objfwd;
-private import tango.sys.windows.objidl;
+module win32.richole;
+
+private import win32.objfwd, win32.objidl, win32.ole2, win32.unknwn,
+  win32.windef;
+private import win32.richedit; // for CHARRANGE
 
 align(4):
 

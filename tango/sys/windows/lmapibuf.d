@@ -7,10 +7,10 @@
 *                                                                       *
 *                       Placed into public domain                       *
 \***********************************************************************/
-module tango.sys.windows.lmapibuf;
+module win32.lmapibuf;
 pragma(lib, "netapi32.lib");
-private import tango.sys.windows.windef;
-private import tango.sys.windows.lmcons;
+
+private import win32.lmcons, win32.windef;
 
 extern (Windows) {
 	NET_API_STATUS NetApiBufferAllocate(DWORD, PVOID*);

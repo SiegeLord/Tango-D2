@@ -8,9 +8,9 @@
 *                       Placed into public domain                       *
 \***********************************************************************/
 // COMMENT: This file may be deprecated.
-module tango.sys.windows.lmaudit;
-private import tango.sys.windows.lmcons;
-private import tango.sys.windows.windef;
+module win32.lmaudit;
+
+private import win32.lmcons, win32.windef;
 
 const LOGFLAGS_FORWARD  = 0;
 const LOGFLAGS_BACKWARD = 1;

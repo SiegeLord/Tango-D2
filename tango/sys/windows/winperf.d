@@ -7,10 +7,10 @@
 *                                                                       *
 *                       Placed into public domain                       *
 \***********************************************************************/
+module win32.winperf;
 
-module tango.sys.windows.winperf;
-import tango.sys.windows.windef;
-import tango.sys.windows.winbase; // for SYSTEMTIME
+import win32.windef;
+import win32.winbase; // for SYSTEMTIME
 
 const PERF_DATA_VERSION=1;
 const PERF_DATA_REVISION=1;

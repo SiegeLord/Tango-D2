@@ -7,7 +7,9 @@
 *                                                                       *
 *                       Placed into public domain                       *
 \***********************************************************************/
-module tango.sys.windows.rpcndr;
+module win32.rpcndr;
+pragma(lib, "rpcrt4.lib");
+
 /* Translation notes:
  RPC_CLIENT_ALLOC*, RPC_CLIENT_FREE* were replaced with PRPC_CLIENT_ALLOC, PRPC_CLIENT_FREE
 */
@@ -16,14 +18,10 @@ module tango.sys.windows.rpcndr;
 //       Macros need to be converted.
 const __RPCNDR_H_VERSION__= 450;
 
-private import tango.sys.windows.rpc;
-import tango.sys.windows.rpcnsip;
-private import tango.sys.windows.objidl; // for IRpcChannelBuffer, IRpcStubBuffer
-private import tango.sys.windows.rpcdce;
-private import tango.sys.windows.unknwn;
-private import tango.sys.windows.windef;
-
-pragma(lib,"rpcrt4.lib");
+import win32.rpcnsip;
+private import win32.rpc, win32.rpcdce, win32.unknwn, win32.windef;
+private import win32.objidl; // for IRpcChannelBuffer, IRpcStubBuffer
+private import win32.basetyps;
 
 extern (Windows):
 

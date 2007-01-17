@@ -1,5 +1,5 @@
 /***********************************************************************\
-*                               lmrepl.d                                *
+*                                lmrepl.d                               *
 *                                                                       *
 *                       Windows API header module                       *
 *                                                                       *
@@ -7,11 +7,10 @@
 *                                                                       *
 *                       Placed into public domain                       *
 \***********************************************************************/
-module tango.sys.windows.lmrepl;
+module win32.lmrepl;
 pragma(lib, "netapi32.lib");
 
-private import tango.sys.windows.lmcons;
-private import tango.sys.windows.windef;
+private import win32.lmcons, win32.windef;
 
 const REPL_ROLE_EXPORT=1;
 const REPL_ROLE_IMPORT=2;

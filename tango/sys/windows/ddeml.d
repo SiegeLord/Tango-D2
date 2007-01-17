@@ -8,10 +8,10 @@
 *                                                                       *
 *                       Placed into public domain                       *
 \***********************************************************************/
-module tango.sys.windows.ddeml;
+module win32.ddeml;
 pragma(lib, "user32.lib");
 
-private import tango.sys.windows.winnt, tango.sys.windows.windef, tango.sys.windows.basetsd;
+private import win32.basetsd, win32.windef, win32.winnt;
 
 enum : int {
 	CP_WINANSI    = 1004,

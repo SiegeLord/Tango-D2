@@ -7,12 +7,9 @@
 *                                                                       *
 *                       Placed into public domain                       *
 \***********************************************************************/
-module tango.sys.windows.oaidl;
+module win32.oaidl;
 
-private import tango.sys.windows.basetyps;
-private import tango.sys.windows.windef;
-private import tango.sys.windows.unknwn;
-private import tango.sys.windows.wtypes;
+private import win32.basetyps, win32.unknwn, win32.windef, win32.wtypes;
 
 const DISPID_UNKNOWN = -1;
 const DISPID_VALUE = 0;

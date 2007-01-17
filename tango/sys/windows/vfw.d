@@ -1,11 +1,16 @@
-// Converted from w32api\vfw.h
-module tango.sys.windows.vfw;
-
+/***********************************************************************\
+*                                 vfw.d                                 *
+*                                                                       *
+*                       Windows API header module                       *
+*                                                                       *
+*                 Translated from MinGW Windows headers                 *
+*                                                                       *
+*                       Placed into public domain                       *
+\***********************************************************************/
+module win32.vfw;
 pragma(lib, "vfw32.lib");
 
-private import tango.sys.windows.windows;
-private import tango.sys.windows.mmsystem;
-private import ole2;
+private import win32.ole2, win32.mmsystem, win32.windows;
 
 //MACRO #define mmioFOURCC(c0,c1,c2,c3) ((DWORD)(BYTE)(c0)|((DWORD)(BYTE)(c1)<<8)|((DWORD)(BYTE)(c2)<<16)|((DWORD)(BYTE)(c3)<<24))
 //MACRO #define aviTWOCC(ch0,ch1) ((WORD)(BYTE)(ch0)|((WORD)(BYTE)(ch1)<<8))

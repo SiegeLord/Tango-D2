@@ -1,5 +1,5 @@
 /***********************************************************************\
-*                              raserror.d                               *
+*                               raserror.d                              *
 *                                                                       *
 *                       Windows API header module                       *
 *                                                                       *
@@ -7,10 +7,10 @@
 *                                                                       *
 *                       Placed into public domain                       *
 \***********************************************************************/
-module tango.sys.windows.raserror;
- 
+module win32.raserror;
+
 enum {
-	SUCCESS = 0, 
+	SUCCESS = 0,
 	RASBASE = 600,
 	PENDING = RASBASE,
 	ERROR_INVALID_PORT_HANDLE,

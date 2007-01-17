@@ -8,9 +8,9 @@
 *                                                                       *
 *                       Placed into public domain                       *
 \***********************************************************************/
-module tango.sys.windows.mapi;
+module win32.mapi;
 
-private import tango.sys.windows.windef;
+private import win32.windef;
 
 // FIXME: check types and grouping of constants
 

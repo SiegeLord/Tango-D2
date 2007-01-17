@@ -1,5 +1,5 @@
 /***********************************************************************\
-*                              tmschema.d                               *
+*                               tmschema.d                              *
 *                                                                       *
 *                       Windows API header module                       *
 *                                                                       *
@@ -7,7 +7,7 @@
 *                                                                       *
 *                       Placed into public domain                       *
 \***********************************************************************/
-module tango.sys.windows.tmschema;
+module win32.tmschema;
 
 /* BUTTON parts */
 enum {

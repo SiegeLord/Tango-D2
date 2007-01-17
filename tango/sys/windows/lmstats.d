@@ -1,5 +1,5 @@
 /***********************************************************************\
-*                              lmstats.d                                *
+*                               lmstats.d                               *
 *                                                                       *
 *                       Windows API header module                       *
 *                                                                       *
@@ -7,10 +7,10 @@
 *                                                                       *
 *                       Placed into public domain                       *
 \***********************************************************************/
-module tango.sys.windows.lmstats;
+module win32.lmstats;
 pragma(lib, "netapi32.lib");
-private import tango.sys.windows.lmcons;
-private import tango.sys.windows.windef;
+
+private import win32.lmcons, win32.windef;
 
 const ULONG
 	STATSOPT_CLR   = 1,

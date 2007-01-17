@@ -8,15 +8,12 @@
 *                                                                       *
 *                       Placed into public domain                       *
 \***********************************************************************/
-module tango.sys.windows.setupapi;
+module win32.setupapi;
 pragma(lib, "setupapi.lib");
-private import tango.sys.windows.w32api;
-private import tango.sys.windows.windef;
-private import tango.sys.windows.winbase; // for SYSTEMTIME
-private import tango.sys.windows.commctrl;
-private import tango.sys.windows.winreg;
-private import tango.sys.windows.prsht;
-private import tango.sys.windows.basetyps;
+
+private import win32.basetyps, win32.commctrl, win32.prsht, win32.w32api,
+  win32.winreg, win32.windef;
+private import win32.winbase; // for SYSTEMTIME
 
 /*static if(_WIN32_WINNT < _WIN32_WINDOWS) {
 	const UINT _SETUPAPI_VER = _WIN32_WINNT; // SetupAPI version follows Windows NT version
@@ -41,9 +38,12 @@ version (WindowsNTonly) {
 } else {
 	const UINT USE_SP_DRVINFO_DATA_V1 = 1;
 }*/
-
+/+
 const UINT _SETUPAPI_VER = 0x0400;     // Earliest SetupAPI version
 const UINT USE_SP_DRVINFO_DATA_V1 = 1;
++/
+const UINT _SETUPAPI_VER          = WINVER;
+const bool USE_SP_DRVINFO_DATA_V1 = !_WIN32_WINNT_ONLY || _WIN32_WINNT < 0x500;
 
 enum : uint {
 	LINE_LEN                  = 256,
@@ -715,7 +715,7 @@ enum : UINT {
 }
 
 static if(_SETUPAPI_VER >= 0x0501) {
-	enum UINT {
+	enum : UINT {
 		SPFILENOTIFY_QUEUESCAN_SIGNERINFO = 0x00000040
 	}
 }

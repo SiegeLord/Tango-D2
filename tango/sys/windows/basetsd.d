@@ -8,9 +8,9 @@
 *                                                                       *
 *                       Placed into public domain                       *
 \***********************************************************************/
-module tango.sys.windows.basetsd;
+module win32.basetsd;
 
-private import tango.sys.windows.winnt;
+private import win32.winnt;
 
 version (Win64) {
 	alias long __int3264;

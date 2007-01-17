@@ -1,5 +1,5 @@
 /***********************************************************************\
-*                                 sql.d                                 *
+*                               odbcinst.d                              *
 *                                                                       *
 *                       Windows API header module                       *
 *                                                                       *
@@ -7,11 +7,14 @@
 *                                                                       *
 *                       Placed into public domain                       *
 \***********************************************************************/
-module tango.sys.windows.odbcinst;
-import tango.sys.windows.sql;
-private import tango.sys.windows.windef;
+module win32.odbcinst;
 
-// FIXME: The Unicode/Ansi functions situation is a mess. How do the xxxA versions of these functions fit into the scheme?
+import win32.sql;
+private import win32.windef;
+
+/*	FIXME: The Unicode/Ansi functions situation is a mess. How do the xxxA
+ *	versions of these functions fit into the scheme?
+ */
 
 // SQLConfigDataSource()
 enum : WORD {

@@ -7,16 +7,13 @@
 *                                                                       *
 *                       Placed into public domain                       *
 \***********************************************************************/
-module tango.sys.windows.wtypes;
+module win32.wtypes;
 
-import tango.sys.windows.rpc;
-import tango.sys.windows.rpcndr;
+import win32.rpc, win32.rpcndr;
+private import win32.windef;
+private import win32.cguid; // for GUID_NULL
 
-private import tango.sys.windows.windef;
-private import tango.sys.windows.cguid; // for GUID_NULL
-
-alias GUID_NULL IID_NULL;
-alias GUID_NULL CLSID_NULL;
+alias GUID_NULL IID_NULL, CLSID_NULL;
 
 const ROTFLAGS_REGISTRATIONKEEPSALIVE = 0x01;
 const ROTFLAGS_ALLOWANYCLIENT         = 0x02;

@@ -7,20 +7,16 @@
 *                                                                       *
 *                       Placed into public domain                       *
 \***********************************************************************/
+module win32.oleidl;
+
 // DAC: This is defined in ocidl !!
 // what is it doing in here?
 //alias IEnumOleUndoUnits* LPENUMOLEUNDOUNITS;
 
-module tango.sys.windows.oleidl;
-
-private import tango.sys.windows.objfwd; // for LPMONIKER
-private import tango.sys.windows.windef;
-private import tango.sys.windows.basetyps;
-private import tango.sys.windows.unknwn;
-private import tango.sys.windows.wtypes;
-private import tango.sys.windows.objidl;
-private import tango.sys.windows.winuser;
-private import tango.sys.windows.wingdi; // for LPLOGPALETTE
+private import win32.basetyps, win32.objidl, win32.unknwn, win32.windef,
+  win32.winuser, win32.wtypes;
+private import win32.objfwd; // for LPMONIKER
+private import win32.wingdi; // for LPLOGPALETTE
 
 const MK_ALT = 32;
 

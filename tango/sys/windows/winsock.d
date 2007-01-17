@@ -6,7 +6,7 @@
 *                 Translated from MinGW Windows headers                 *
 *                           by Stewart Gordon                           *
 \***********************************************************************/
-module tango.sys.windows.winsock;
+module win32.winsock;
 
 /*
   Definitions for winsock 1.1
@@ -17,15 +17,21 @@ module tango.sys.windows.winsock;
   Portions Copyright (c) 1993 by Digital Equipment Corporation.
  */
 
-// DRK: This module should not be included if -version=Win32_Winsock2 has
-// been set.  If it has, assert.  I think it's better that way than letting
-// the user believe that it's worked.
-version(Win32_Winsock2) {
-	pragma(msg, "Cannot use tango.sys.windows.winsock with Win32_Winsock2 defined.");
-	static assert(false);
+/*	DRK: This module should not be included if -version=Win32_Winsock2 has
+ *	been set.  If it has, assert.  I think it's better that way than letting
+ *	the user believe that it's worked.
+ *
+ *	SG: It has now been changed so that winsock2 is the default, and
+ *	-version=Win32_Winsock1 must be set to use winsock.
+ */
+version(Win32_Winsock1) {}
+else {
+    pragma(msg, "Cannot use win32.winsock without "
+			~ "Win32_Winsock1 defined.");
+    static assert(false);
 }
 
-import tango.sys.windows.windef;
+import win32.windef;
 
 alias char u_char;
 alias ushort u_short;
@@ -33,7 +39,7 @@ alias uint u_int, u_long, SOCKET;
 
 const size_t FD_SETSIZE = 64;
 
-/* shutdown() how types */
+// shutdown() how types
 enum : int {
 	SD_RECEIVE,
 	SD_SEND,
@@ -48,8 +54,10 @@ struct FD_SET {
 		if (set.fd_count < FD_SETSIZE) set.fd_array[set.fd_count++] = fd;
 	}
 }
+alias FD_SET* PFD_SET, LPFD_SET;
 
-extern (Pascal) int __WSAFDIsSet(SOCKET, FD_SET*);
+extern(Pascal) int __WSAFDIsSet(SOCKET, FD_SET*);
+alias __WSAFDIsSet FD_ISSET;
 
 void FD_CLR(SOCKET fd, FD_SET* set) {
 	for (u_int i = 0; i < set.fd_count; i++) {
@@ -72,7 +80,6 @@ void FD_ZERO(FD_SET* set) {
 	set.fd_count = 0;
 }
 
-alias __WSAFDIsSet FD_ISSET;
 
 struct TIMEVAL {
 	int tv_sec;
@@ -86,6 +93,7 @@ struct TIMEVAL {
 		return 0;
 	}
 }
+alias TIMEVAL* PTIMEVAL, LPTIMEVAL;
 
 bool timerisset(TIMEVAL tvp) {
 	return tvp.tv_sec || tvp.tv_usec;
@@ -105,11 +113,13 @@ struct HOSTENT {
 	char* h_addr() { return h_addr_list[0]; }
 	char* h_addr(char* h) { return h_addr_list[0] = h; }
 }
+alias HOSTENT* PHOSTENT, LPHOSTENT;
 
 struct LINGER {
 	u_short l_onoff;
 	u_short l_linger;
 }
+alias LINGER* PLINGER, LPLINGER;
 
 // TOTHINKABOUT: do we need these, or are they just for internal use?
 /+
@@ -157,12 +167,14 @@ struct SERVENT {
 	short  s_port;
 	char*  s_proto;
 }
+alias SERVENT* PSERVENT, LPSERVENT;
 
 struct PROTOENT {
 	char*  p_name;
 	char** p_aliases;
 	short  p_proto;
 }
+alias PROTOENT* PPROTOENT, LPPROTOENT;
 
 enum : int {
 	IPPROTO_IP   =   0,
@@ -221,8 +233,9 @@ struct IN_ADDR {
 		u_long s_addr;
 	}
 }
+alias IN_ADDR* PIN_ADDR, LPIN_ADDR;
 
-// These are not documented on the MSDN site
+// IN_CLASSx are not used anywhere or documented on MSDN.
 bool IN_CLASSA(int i) {
 	return (i & 0x80000000) == 0;
 }
@@ -261,6 +274,7 @@ struct SOCKADDR_IN {
 	IN_ADDR sin_addr;
 	char[8] sin_zero;
 }
+alias SOCKADDR_IN* PSOCKADDR_IN, LPSOCKADDR_IN;
 
 const size_t
 	WSADESCRIPTION_LEN = 256,
@@ -327,8 +341,7 @@ struct ip_mreq {
 }
 
 const SOCKET INVALID_SOCKET = uint.max;
-
-const SOCKET_ERROR = -1;
+const int SOCKET_ERROR = -1;
 
 enum : int {
 	SOCK_STREAM = 1,
@@ -347,10 +360,10 @@ enum : int {
 	AF_IMPLINK,
 	AF_PUP,
 	AF_CHAOS,
-	AF_IPX, // = 6
-	AF_NS  = 6,
+	AF_IPX,  // =  6
+	AF_NS       =  6,
 	AF_ISO,
-	AF_OSI = AF_ISO,
+	AF_OSI      = AF_ISO,
 	AF_ECMA,
 	AF_DATAKIT,
 	AF_CCITT,
@@ -367,13 +380,14 @@ enum : int {
 	AF_BAN,
 	AF_ATM,
 	AF_INET6,
-	AF_MAX // = 24
+	AF_MAX  // = 24
 }
 
 struct SOCKADDR {
 	u_short  sa_family;
 	char[14] sa_data;
 }
+alias SOCKADDR* PSOCKADDR, LPSOCKADDR;
 
 struct sockproto {
 	u_short sp_family;
@@ -413,20 +427,22 @@ const int SOL_SOCKET = 0xFFFF;
 
 const int SOMAXCONN = 5;
 
-const MSG_OOB       =      1;
-const MSG_PEEK      =      2;
-const MSG_DONTROUTE =      4;
-const MSG_MAXIOVLEN =     16;
-const MSG_PARTIAL   = 0x8000;
+const int
+	MSG_OOB       = 1,
+	MSG_PEEK      = 2,
+	MSG_DONTROUTE = 4,
+	MSG_MAXIOVLEN = 16,
+	MSG_PARTIAL   = 0x8000;
 
-const MAXGETHOSTSTRUCT = 1024;
+const size_t MAXGETHOSTSTRUCT = 1024;
 
-const FD_READ    =  1;
-const FD_WRITE   =  2;
-const FD_OOB     =  4;
-const FD_ACCEPT  =  8;
-const FD_CONNECT = 16;
-const FD_CLOSE   = 32;
+const int
+	FD_READ    =  1,
+	FD_WRITE   =  2,
+	FD_OOB     =  4,
+	FD_ACCEPT  =  8,
+	FD_CONNECT = 16,
+	FD_CLOSE   = 32;
 
 enum : int {
 	WSABASEERR         = 10000,
@@ -550,15 +566,6 @@ alias MAKELONG WSAMAKEASYNCREPLY, WSAMAKESELECTREPLY;
 alias LOWORD WSAGETASYNCBUFLEN, WSAGETSELECTEVENT;
 alias HIWORD WSAGETASYNCERROR, WSAGETSELECTERROR;
 
-alias SOCKADDR* PSOCKADDR, LPSOCKADDR;
-alias SOCKADDR_IN* PSOCKADDR_IN, LPSOCKADDR_IN;
-alias LINGER* PLINGER, LPLINGER;
-alias IN_ADDR* PIN_ADDR, LPIN_ADDR;
-alias FD_SET* PFD_SET, LPFD_SET;
-alias HOSTENT* PHOSTENT, LPHOSTENT;
-alias SERVENT* PSERVENT, LPSERVENT;
-alias PROTOENT* PPROTOENT, LPPROTOENT;
-alias TIMEVAL* PTIMEVAL, LPTIMEVAL;
 
 /*
  * Recent MSDN docs indicate that the MS-specific extensions exported from
@@ -573,4 +580,4 @@ alias TIMEVAL* PTIMEVAL, LPTIMEVAL;
  * the mswsock extensions.
  */
 
-import tango.sys.windows.mswsock;
+import win32.mswsock;

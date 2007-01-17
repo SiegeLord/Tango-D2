@@ -8,9 +8,10 @@
 *                                                                       *
 *                       Placed into public domain                       *
 \***********************************************************************/
-module tango.sys.windows.dbt;
+module win32.dbt;
 
-private import tango.sys.windows.windef, tango.sys.windows.w32api;
+import win32.w32api, win32.windef;
+import win32.basetyps; // for GUID
 
 // FIXME: clean up Windows version support
 

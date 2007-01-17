@@ -8,13 +8,10 @@
 *                                                                       *
 *                       Placed into public domain                       *
 \***********************************************************************/
-module tango.sys.windows.d3d9;
+module win32.d3d9;
 
-private import tango.sys.windows.objbase;
-public import tango.sys.windows.d3d9types;
-public import tango.sys.windows.d3d9caps;
-private import tango.sys.windows.wingdi, tango.sys.windows.windef;
-private import tango.sys.windows.basetyps, tango.sys.windows.unknwn;
+import win32.d3d9caps, win32.d3d9types, win32.objbase;
+private import win32.basetyps, win32.unknwn, win32.windef, win32.wingdi;
 
 // FIXME: check types and gropuing of some constants
 // FIXME: check Windows version support

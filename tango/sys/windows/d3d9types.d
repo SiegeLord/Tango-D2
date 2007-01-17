@@ -8,9 +8,9 @@
 *                                                                       *
 *                       Placed into public domain                       *
 \***********************************************************************/
-module tango.sys.windows.d3d9types;
+module win32.d3d9types;
 
-private import tango.sys.windows.windef, tango.sys.windows.basetyps;
+private import win32.basetyps, win32.windef;
 
 // FIXME: check types and grouping of constants
 // FIXME: check types of translated macros

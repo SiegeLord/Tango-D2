@@ -1,5 +1,5 @@
 /***********************************************************************\
-*                               olectl.d                                *
+*                                olectl.d                               *
 *                                                                       *
 *                       Windows API header module                       *
 *                                                                       *
@@ -7,38 +7,38 @@
 *                                                                       *
 *                       Placed into public domain                       *
 \***********************************************************************/
+module win32.olectl;
+
 // In conversion from MinGW, the following was deleted:
-//#define FONTSIZE(n) {n##0000,0}
+//#define FONTSIZE(n) {n##0000, 0}
 
-module tango.sys.windows.olectl;
-
-import tango.sys.windows.ocidl;
-import tango.sys.windows.olectlid;
-private import tango.sys.windows.wingdi;
-private import tango.sys.windows.wtypes;
-private import tango.sys.windows.oleauto;
-private import tango.sys.windows.winuser;
-private import tango.sys.windows.winerror;
-private import tango.sys.windows.windef, tango.sys.windows.wtypes, tango.sys.windows.unknwn, tango.sys.windows.basetyps;
-private import tango.sys.windows.oaidl, tango.sys.windows.objfwd;
+import win32.ocidl, win32.olectlid;
+private import win32.basetyps, win32.oaidl, win32.oleauto, win32.unknwn,
+  win32.windef, win32.wingdi, win32.winuser, win32.wtypes;
+private import win32.ntdef;     // for NTSTATUS
+private import win32.objfwd;    // for LPSTREAM
+private import win32.winerror;  // for SCODE
 
 
 private {
-// These replace C macros.
-template ITF_ERROR_SCODE_FOR_D(int c)
-{
-  const SCODE ITF_ERROR_SCODE_FOR_D = (SEVERITY_ERROR << 31) | (FACILITY_ITF << 16) | c;
-}
+	// These replace C macros.
+	template ITF_ERROR_SCODE_FOR_D(int c)
+	{
+		const SCODE ITF_ERROR_SCODE_FOR_D
+		  = (SEVERITY_ERROR << 31) | (FACILITY_ITF << 16) | c;
+	}
 
-template ITF_SUCCESS_SCODE_FOR_D(int c)
-{
-  const SCODE ITF_SUCCESS_SCODE_FOR_D = (SEVERITY_SUCCESS << 31) | (FACILITY_ITF << 16) | c;
-}
+	template ITF_SUCCESS_SCODE_FOR_D(int c)
+	{
+		const SCODE ITF_SUCCESS_SCODE_FOR_D
+		  = (SEVERITY_SUCCESS << 31) | (FACILITY_ITF << 16) | c;
+	}
 
-template STD_CTL_SCODE(int c)
-{
-  const SCODE STD_CTL_SCODE = (SEVERITY_ERROR << 31) | (FACILITY_CONTROL << 16) | c;
-}
+	template STD_CTL_SCODE(int c)
+	{
+		const SCODE STD_CTL_SCODE
+		  = (SEVERITY_ERROR << 31) | (FACILITY_CONTROL << 16) | c;
+	}
 }
 
 enum : SCODE {
@@ -383,16 +383,16 @@ alias PICTDESC* LPPICTDESC;
 extern(Windows) {
 	HRESULT DllRegisterServer();
 	HRESULT DllUnregisterServer();
-	HRESULT OleCreateFontIndirect(LPFONTDESC,REFIID,PVOID*);
-	HRESULT OleCreatePictureIndirect(LPPICTDESC,REFIID,BOOL,PVOID*);
-	HRESULT OleCreatePropertyFrame(HWND,UINT,UINT,LPCOLESTR,ULONG,LPUNKNOWN*,ULONG,LPCLSID,LCID,DWORD,PVOID);
+	HRESULT OleCreateFontIndirect(LPFONTDESC, REFIID, PVOID*);
+	HRESULT OleCreatePictureIndirect(LPPICTDESC, REFIID, BOOL, PVOID*);
+	HRESULT OleCreatePropertyFrame(HWND, UINT, UINT, LPCOLESTR, ULONG, LPUNKNOWN*, ULONG, LPCLSID, LCID, DWORD, PVOID);
 	HRESULT OleCreatePropertyFrameIndirect(LPOCPFIPARAMS);
-	HCURSOR OleIconToCursor(HINSTANCE,HICON);
-	HRESULT OleLoadPicture(LPSTREAM,LONG,BOOL,REFIID,PVOID*);
-	HRESULT OleLoadPictureEx(LPSTREAM,LONG,BOOL,REFIID,DWORD,DWORD,DWORD,LPVOID*);
-	HRESULT OleLoadPicturePath(LPOLESTR,LPUNKNOWN,DWORD,OLE_COLOR,REFIID,LPVOID*);
-	HRESULT OleLoadPictureFile(VARIANT,LPDISPATCH*);
-	HRESULT OleLoadPictureFileEx(VARIANT,DWORD,DWORD,DWORD,LPDISPATCH*);
-	HRESULT OleSavePictureFile(LPDISPATCH,BSTR);
-	HRESULT OleTranslateColor(OLE_COLOR,HPALETTE,COLORREF*);
+	HCURSOR OleIconToCursor(HINSTANCE, HICON);
+	HRESULT OleLoadPicture(LPSTREAM, LONG, BOOL, REFIID, PVOID*);
+	HRESULT OleLoadPictureEx(LPSTREAM, LONG, BOOL, REFIID, DWORD, DWORD, DWORD, LPVOID*);
+	HRESULT OleLoadPicturePath(LPOLESTR, LPUNKNOWN, DWORD, OLE_COLOR, REFIID, LPVOID*);
+	HRESULT OleLoadPictureFile(VARIANT, LPDISPATCH*);
+	HRESULT OleLoadPictureFileEx(VARIANT, DWORD, DWORD, DWORD, LPDISPATCH*);
+	HRESULT OleSavePictureFile(LPDISPATCH, BSTR);
+	HRESULT OleTranslateColor(OLE_COLOR, HPALETTE, COLORREF*);
 }

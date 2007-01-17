@@ -7,11 +7,11 @@
 *                                                                       *
 *                       Placed into public domain                       *
 \***********************************************************************/
-module tango.sys.windows.lmuse;
+module win32.lmuse;
 pragma(lib, "netapi32.lib");
-import tango.sys.windows.lmuseflg;
-private import tango.sys.windows.lmcons;
-private import tango.sys.windows.windef;
+
+import win32.lmuseflg;
+private import win32.lmcons, win32.windef;
 
 enum {
 	USE_LOCAL_PARMNUM = 1,

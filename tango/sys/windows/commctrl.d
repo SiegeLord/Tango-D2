@@ -8,16 +8,14 @@
 *                                                                       *
 *                       Placed into public domain                       *
 \***********************************************************************/
-module tango.sys.windows.commctrl;
+module win32.commctrl;
 pragma(lib, "comctl32.lib");
 
-private import tango.sys.windows.w32api;
-private import tango.sys.windows.windef;
-private import tango.sys.windows.winuser;
-private import tango.sys.windows.winbase; // for SYSTEMTIME
-private import tango.sys.windows.objfwd;  // for LPSTREAM
+private import win32.w32api, win32.windef, win32.winuser;
+private import win32.winbase; // for SYSTEMTIME
+private import win32.objfwd;  // for LPSTREAM
 
-import tango.sys.windows.prsht;
+import win32.prsht;
 
 const COMCTL32_VERSION = 6;
 
@@ -4388,7 +4386,7 @@ ubyte FOURTH_IPADDRESS(LPARAM x) {
 
 HWND Animate_Create(HWND hwndP, UINT id, DWORD dwStyle,
 	  HINSTANCE hInstance) {
-	return CreateWindow(ANIMATE_CLASS, null, dwStyle, 0, 0, 0, 0, hwndP,
+	return CreateWindow(ANIMATE_CLASS.ptr, null, dwStyle, 0, 0, 0, 0, hwndP,
 	  cast(HMENU) id, hInstance, null);
 }
 

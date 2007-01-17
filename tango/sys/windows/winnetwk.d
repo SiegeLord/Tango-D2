@@ -8,12 +8,10 @@
 *                                                                       *
 *                       Placed into public domain                       *
 \***********************************************************************/
-module tango.sys.windows.winnetwk;
-
-private import tango.sys.windows.winbase, tango.sys.windows.winnt;
-private import tango.sys.windows.winerror;
+module win32.winnetwk;
 pragma(lib, "mpr.lib");
 
+private import win32.winbase, win32.winerror, win32.winnt;
 
 enum : DWORD {
 	WNNC_NET_MSNET       = 0x00010000,
@@ -212,10 +210,10 @@ struct NETRESOURCEA {
 alias NETRESOURCEA* LPNETRESOURCEA;
 
 struct NETRESOURCEW {
-	DWORD dwScope;
-	DWORD dwType;
-	DWORD dwDisplayType;
-	DWORD dwUsage;
+	DWORD  dwScope;
+	DWORD  dwType;
+	DWORD  dwDisplayType;
+	DWORD  dwUsage;
 	LPWSTR lpLocalName;
 	LPWSTR lpRemoteName;
 	LPWSTR lpComment ;
@@ -243,7 +241,7 @@ alias CONNECTDLGSTRUCTW* LPCONNECTDLGSTRUCTW;
 
 struct DISCDLGSTRUCTA {
 	DWORD cbStructure;
-	HWND hwndOwner;
+	HWND  hwndOwner;
 	LPSTR lpLocalName;
 	LPSTR lpRemoteName;
 	DWORD dwFlags;
@@ -259,10 +257,14 @@ struct DISCDLGSTRUCTW {
 }
 alias DISCDLGSTRUCTW* LPDISCDLGSTRUCTW;
 
-struct UNIVERSAL_NAME_INFOA { LPSTR lpUniversalName; }
+struct UNIVERSAL_NAME_INFOA {
+	LPSTR lpUniversalName;
+}
 alias UNIVERSAL_NAME_INFOA* LPUNIVERSAL_NAME_INFOA;
 
-struct UNIVERSAL_NAME_INFOW { LPWSTR lpUniversalName; }
+struct UNIVERSAL_NAME_INFOW {
+	LPWSTR lpUniversalName;
+}
 alias UNIVERSAL_NAME_INFOW* LPUNIVERSAL_NAME_INFOW;
 
 struct REMOTE_NAME_INFOA {

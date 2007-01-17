@@ -1,5 +1,5 @@
 /***********************************************************************\
-*                               lmsvc.d                                 *
+*                                lmsvc.d                                *
 *                                                                       *
 *                       Windows API header module                       *
 *                                                                       *
@@ -7,17 +7,16 @@
 *                                                                       *
 *                       Placed into public domain                       *
 \***********************************************************************/
+module win32.lmsvc;
+
 // FIXME: Is this file deprecated? All of the functions are only for Win16.
 /**
   Changes relative to MinGW:
-  lmsname is not imported publicly (instead, tango.sys.windows.lm imports it directly).
+  lmsname is not imported publicly (instead, win32.lm imports it directly).
 */
 // TODO: 5 macros
 
-module tango.sys.windows.lmsvc;
-private import tango.sys.windows.lmsname;
-private import tango.sys.windows.lmcons;
-private import tango.sys.windows.windef;
+private import win32.lmcons, win32.lmsname, win32.windef;
 
 const TCHAR[] SERVICE_DOS_ENCRYPTION = "ENCRYPT";
 

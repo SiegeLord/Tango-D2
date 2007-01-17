@@ -8,7 +8,7 @@
 *                                                                       *
 *                       Placed into public domain                       *
 \***********************************************************************/
-module tango.sys.windows.exdispid;
+module win32.exdispid;
 
 // FIXME: check type
 

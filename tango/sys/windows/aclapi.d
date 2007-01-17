@@ -8,10 +8,10 @@
 *                                                                       *
 *                       Placed into public domain                       *
 \***********************************************************************/
-module tango.sys.windows.aclapi;
+module win32.aclapi;
 pragma(lib, "advapi32.lib");
 
-import tango.sys.windows.windows, tango.sys.windows.accctrl;
+import win32.windows, win32.accctrl;
 
 extern (Windows) {
 	VOID BuildExplicitAccessWithNameA(PEXPLICIT_ACCESS_A, LPSTR, DWORD,

@@ -1,5 +1,5 @@
 /***********************************************************************\
-*                               objfwd.d                                *
+*                                objfwd.d                               *
 *                                                                       *
 *                       Windows API header module                       *
 *                                                                       *
@@ -7,8 +7,9 @@
 *                                                                       *
 *                       Placed into public domain                       *
 \***********************************************************************/
-module tango.sys.windows.objfwd;
-private import tango.sys.windows.objidl;
+module win32.objfwd;
+
+private import win32.objidl;
 
 /+
 // Forward declararions are not necessary in D.

@@ -1,5 +1,5 @@
 /***********************************************************************\
-*                              olectlid.d                               *
+*                               olectlid.d                              *
 *                                                                       *
 *                       Windows API header module                       *
 *                                                                       *
@@ -7,8 +7,9 @@
 *                                                                       *
 *                       Placed into public domain                       *
 \***********************************************************************/
-module tango.sys.windows.olectlid;
-private import tango.sys.windows.basetyps;
+module win32.olectlid;
+
+private import win32.basetyps;
 
 extern (Windows) extern const GUID
 	IID_IDispatch,

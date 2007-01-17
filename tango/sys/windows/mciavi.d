@@ -8,9 +8,9 @@
 *                                                                       *
 *                       Placed into public domain                       *
 \***********************************************************************/
-module tango.sys.windows.mciavi;
+module win32.mciavi;
 
-private import tango.sys.windows.mmsystem;
+private import win32.mmsystem;
 
 // FIXME: check types and grouping of constants
 

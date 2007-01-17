@@ -1,5 +1,5 @@
 /***********************************************************************\
-*                               unknwn.d                                *
+*                                unknwn.d                               *
 *                                                                       *
 *                       Windows API header module                       *
 *                                                                       *
@@ -7,13 +7,10 @@
 *                                                                       *
 *                       Placed into public domain                       *
 \***********************************************************************/
-module tango.sys.windows.unknwn;
+module win32.unknwn;
 
-import tango.sys.windows.windef;
-
-import tango.sys.windows.objfwd;
-import tango.sys.windows.wtypes;
-private import tango.sys.windows.basetyps;
+import win32.objfwd, win32.windef, win32.wtypes;
+private import win32.basetyps;
 
 extern (Windows) {
 	void* MIDL_user_allocate(size_t);

@@ -8,15 +8,12 @@
 *                                                                       *
 *                       Placed into public domain                       *
 \***********************************************************************/
-module tango.sys.windows.aclui;
+module win32.aclui;
 pragma(lib, "aclui.lib");
 
-import tango.sys.windows.objbase, tango.sys.windows.commctrl, tango.sys.windows.accctrl;
-private import tango.sys.windows.winuser;
-private import tango.sys.windows.windef;
-private import tango.sys.windows.basetyps;
-private import tango.sys.windows.unknwn;
-private import tango.sys.windows.prsht;
+import win32.accctrl, win32.commctrl, win32.objbase;
+private import win32.basetyps, win32.prsht, win32.unknwn, win32.windef,
+  win32.winuser;
 
 struct SI_OBJECT_INFO {
 	DWORD     dwFlags;
@@ -103,12 +100,12 @@ interface ISecurityInformation : IUnknown {
 }
 alias ISecurityInformation* LPSECURITYINFO;
 
-/*
+/* Comment from MinGW
  * TODO: ISecurityInformation2, IEffectivePermission, ISecurityObjectTypeInfo
  */
 
-// FIXME: does this need a linkage attribute?
-extern /+DECLSPEC_IMPORT+/ const IID IID_ISecurityInformation;
+// FIXME: linkage attribute?
+extern (C) /+DECLSPEC_IMPORT+/ extern const IID IID_ISecurityInformation;
 
 extern (Windows) {
 	HPROPSHEETPAGE CreateSecurityPage(LPSECURITYINFO psi);

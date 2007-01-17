@@ -7,13 +7,12 @@
 *                                                                       *
 *                       Placed into public domain                       *
 \***********************************************************************/
-module tango.sys.windows.imm;
+module win32.imm;
 pragma(lib, "imm32.lib");
 
-private import tango.sys.windows.w32api;
-import tango.sys.windows.windef;
-import tango.sys.windows.wingdi;
-import tango.sys.windows.winuser; // for the MFS_xxx enums.
+import win32.windef, win32.wingdi;
+import win32.winuser; // for the MFS_xxx enums.
+private import win32.w32api;
 
 const WM_CONVERTREQUESTEX     = 0x108;
 const WM_IME_STARTCOMPOSITION = 0x10D;

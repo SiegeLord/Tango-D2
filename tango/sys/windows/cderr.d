@@ -7,7 +7,7 @@
 *                                                                       *
 *                       Placed into public domain                       *
 \***********************************************************************/
-module tango.sys.windows.cderr;
+module win32.cderr;
 
 enum {
 	CDERR_DIALOGFAILURE    = 0xFFFF,

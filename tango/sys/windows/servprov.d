@@ -1,5 +1,5 @@
 /***********************************************************************\
-*                              servprov.d                               *
+*                               servprov.d                              *
 *                                                                       *
 *                       Windows API header module                       *
 *                                                                       *
@@ -7,9 +7,9 @@
 *                                                                       *
 *                       Placed into public domain                       *
 \***********************************************************************/
-module tango.sys.windows.servprov;
-private import tango.sys.windows.unknwn;
-private import tango.sys.windows.wtypes, tango.sys.windows.basetyps, tango.sys.windows.windef;
+module win32.servprov;
+
+private import win32.basetyps, win32.unknwn, win32.windef, win32.wtypes;
 
 extern (C) {
 	extern IID IID_IServiceProvider;

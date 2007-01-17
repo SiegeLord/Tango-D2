@@ -7,6 +7,9 @@
 *                                                                       *
 *                       Placed into public domain                       *
 \***********************************************************************/
+module win32.winuser;
+pragma(lib, "user32.lib");
+
 // Conversion Notes:
 // The following macros were for win16 only, and are not included in this file:
 //#define EnumTaskWindows(h, f, p) EnumThreadWindows((DWORD)h, f, p)
@@ -17,13 +20,8 @@
 //#define GetWindowTask(hWnd) ((HANDLE)GetWindowThreadProcessId(hWnd, NULL))
 //#define DefHookProc(c, p, lp, h) CallNextHookEx((HHOOK)*h, c, p, lp)
 
-module tango.sys.windows.winuser;
-pragma(lib, "user32.lib");
-
-private import tango.sys.windows.w32api;
-private import tango.sys.windows.winbase;
-private import tango.sys.windows.wingdi;
-private import tango.sys.windows.windef; // for HMONITOR
+private import win32.w32api, win32.winbase, win32.wingdi;
+private import win32.windef; // for HMONITOR
 
 // FIXME: clean up Windows version support
 
@@ -1584,7 +1582,7 @@ const WHEEL_DELTA=120;
 
 SHORT GET_WHEEL_DELTA_WPARAM(WPARAM wparam)
 {
-	return HIWORD (wparam);
+return cast(SHORT) HIWORD(wparam);
 }
 
 const WHEEL_PAGESCROLL = uint.max;
@@ -3327,8 +3325,8 @@ struct MENUBARINFO {
 //	BOOL  fFocused:1;
 	bool fBarFocused() { return (bf_ & 1) == 1; }
 	bool fFocused() { return (bf_ & 2) == 2; }
-	void fBarFocused(bool b) { bf_ = (bf_ & 0xFE) | b; }
-	void fFocused(bool b) { bf_ = b ? (bf_ | 2) : bf_ & 0xFD; }
+	void fBarFocused(bool b) { bf_ = cast(byte)((bf_ & 0xFE) | b); }
+	void fFocused(bool b) { bf_ = cast(byte)(b ? (bf_ | 2) : bf_ & 0xFD); }
 }
 alias MENUBARINFO* PMENUBARINFO;
 

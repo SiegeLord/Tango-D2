@@ -8,9 +8,9 @@
 *                                                                       *
 *                       Placed into public domain                       *
 \***********************************************************************/
-module tango.sys.windows.cpl;
+module win32.cpl;
 
-private import tango.sys.windows.winuser, tango.sys.windows.windef;
+private import win32.windef, win32.winuser;
 
 enum : uint {
 	WM_CPL_LAUNCH = WM_USER + 1000,

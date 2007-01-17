@@ -8,11 +8,11 @@
 *                                                                       *
 *                       Placed into public domain                       *
 \***********************************************************************/
-module tango.sys.windows.comcat;
+module win32.comcat;
 
-import tango.sys.windows.windows, tango.sys.windows.ole2;
-private import tango.sys.windows.unknwn, tango.sys.windows.windef, tango.sys.windows.basetyps;
-private import tango.sys.windows.cguid, tango.sys.windows.objbase, tango.sys.windows.wtypes;
+import win32.windows, win32.ole2;
+private import win32.basetyps, win32.cguid, win32.objbase, win32.unknwn,
+  win32.windef, win32.wtypes;
 
 alias IEnumGUID* LPENUMGUID;
 

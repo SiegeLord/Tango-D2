@@ -8,9 +8,9 @@
 *                                                                       *
 *                       Placed into public domain                       *
 \***********************************************************************/
-module tango.sys.windows.dlgs;
+module win32.dlgs;
 
-private import tango.sys.windows.windef;
+private import win32.windef;
 
 enum : ushort {
 	FILEOPENORD      = 1536,

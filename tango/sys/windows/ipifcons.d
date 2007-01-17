@@ -8,7 +8,7 @@
 *                                                                       *
 *                       Placed into public domain                       *
 \***********************************************************************/
-module tango.sys.windows.ipifcons;
+module win32.ipifcons;
 
 // FIXME: check types of constants
 

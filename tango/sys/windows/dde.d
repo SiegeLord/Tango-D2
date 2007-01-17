@@ -8,10 +8,10 @@
 *                                                                       *
 *                       Placed into public domain                       *
 \***********************************************************************/
-module tango.sys.windows.dde;
+module win32.dde;
 pragma(lib, "user32.lib");
 
-private import tango.sys.windows.windef;
+private import win32.windef;
 
 enum : uint {
 	WM_DDE_FIRST     = 0x03E0,
@@ -32,8 +32,8 @@ struct DDEACK {
 	ubyte _bf;
 
 	ubyte reserved() { return _bf & 0x3F; }
-	bool fBusy() { return cast(bool) (_bf & 0x40); }
-	bool fAck() { return cast(bool) (_bf & 0x80); }
+	bool  fBusy()    { return cast(bool) (_bf & 0x40); }
+	bool  fAck()     { return cast(bool) (_bf & 0x80); }
 
 	ubyte reserved(ubyte r) {
 		_bf = (_bf & ~0x3F) | (r & 0x3F);
@@ -41,111 +41,111 @@ struct DDEACK {
 	}
 
 	bool fBusy(bool f) { _bf = (_bf & ~0x40) | (f << 6); return f; }
-	bool fAck(bool f) { _bf = (_bf & ~0x80) | (f << 7); return f; }
+	bool fAck(bool f)  { _bf = (_bf & ~0x80) | (f << 7); return f; }
 }
 
 struct DDEADVISE {
 	ushort _bf;
-	short cfFormat;
+	short  cfFormat;
 
-	ubyte reserved() { return _bf & 0x3FFF; }
-	bool fDeferUpd() { return cast(bool) (_bf & 0x4000); }
-	bool fAckReq() { return cast(bool) (_bf & 0x8000); }
+	ubyte  reserved()  { return _bf & 0x3FFF; }
+	bool   fDeferUpd() { return cast(bool) (_bf & 0x4000); }
+	bool   fAckReq()   { return cast(bool) (_bf & 0x8000); }
 
 	ushort reserved(ushort r) {
 		_bf = (_bf & ~0x3FFF) | (r & 0x3FFF);
 		return r;
 	}
 
-	bool fDeferUpd(bool f) { _bf = (_bf & ~0x4000) | (f << 14); return f; }
-	bool fAckReq(bool f) { _bf = (_bf & ~0x8000) | (f << 15); return f; }
+	bool   fDeferUpd(bool f) { _bf = (_bf & ~0x4000) | (f << 14); return f; }
+	bool   fAckReq(bool f)   { _bf = (_bf & ~0x8000) | (f << 15); return f; }
 }
 
 struct DDEDATA {
 	ushort _bf;
-	short cfFormat;
-	byte _Value[1];
+	short  cfFormat;
+	byte   _Value;
 
-	ubyte unused() { return _bf & 0x0FFF; }
-	bool fResponse() { return cast(bool) (_bf & 0x1000); }
-	bool fRelease() { return cast(bool) (_bf & 0x2000); }
-	bool reserved() { return cast(bool) (_bf & 0x4000); }
-	bool fAckReq() { return cast(bool) (_bf & 0x8000); }
+	ubyte  unused() { return _bf & 0x0FFF; }
+	bool   fResponse() { return cast(bool) (_bf & 0x1000); }
+	bool   fRelease() { return cast(bool) (_bf & 0x2000); }
+	bool   reserved() { return cast(bool) (_bf & 0x4000); }
+	bool   fAckReq() { return cast(bool) (_bf & 0x8000); }
 
 	ushort unused(ushort r) {
 		_bf = (_bf & ~0x0FFF) | (r & 0x0FFF);
 		return r;
 	}
 
-	byte* Value() { return _Value.ptr; }
+	byte*  Value() { return &_Value; }
 
-	bool fResponse(bool f) { _bf = (_bf & ~0x1000) | (f << 12); return f; }
-	bool fRelease(bool f) { _bf = (_bf & ~0x2000) | (f << 13); return f; }
-	bool reserved(bool f) { _bf = (_bf & ~0x4000) | (f << 14); return f; }
-	bool fAckReq(bool f) { _bf = (_bf & ~0x8000) | (f << 15); return f; }
+	bool   fResponse(bool f) { _bf = (_bf & ~0x1000) | (f << 12); return f; }
+	bool   fRelease(bool f)  { _bf = (_bf & ~0x2000) | (f << 13); return f; }
+	bool   reserved(bool f)  { _bf = (_bf & ~0x4000) | (f << 14); return f; }
+	bool   fAckReq(bool f)   { _bf = (_bf & ~0x8000) | (f << 15); return f; }
 }
 
 struct DDEPOKE {
 	ushort _bf;
-	short cfFormat;
-	byte _Value[1];
+	short  cfFormat;
+	byte   _Value;
 
-	ushort unused() { return _bf & 0x1FFF; }
-	bool fRelease() { return cast(bool) (_bf & 0x2000); }
-	ubyte fReserved() { return (_bf & 0xC000) >>> 14; }
+	ushort unused()    { return _bf & 0x1FFF; }
+	bool   fRelease()  { return cast(bool) (_bf & 0x2000); }
+	ubyte  fReserved() { return (_bf & 0xC000) >>> 14; }
 
 	ushort unused(ushort u) {
 		_bf = (_bf & ~0x1FFF) | (u & 0x1FFF);
 		return u;
 	}
 
-	byte* Value() { return _Value.ptr; }
+	byte*  Value() { return &_Value; }
 
-	bool fRelease(bool f) { _bf = (_bf & ~0x2000) | (f << 13); return f; }
-	ubyte fReserved(ubyte r) { _bf = (_bf & ~0xC000) | (r << 14); return r; }
+	bool   fRelease(bool f)   { _bf = (_bf & ~0x2000) | (f << 13); return f; }
+	ubyte  fReserved(ubyte r) { _bf = (_bf & ~0xC000) | (r << 14); return r; }
 }
 
 deprecated struct DDELN {
 	ushort _bf;
-	short cfFormat;
+	short  cfFormat;
 
-	ubyte unused() { return _bf & 0x1FFF; }
-	bool fRelease() { return cast(bool) (_bf & 0x2000); }
-	bool fDeferUpd() { return cast(bool) (_bf & 0x4000); }
-	bool fAckReq() { return cast(bool) (_bf & 0x8000); }
+	ubyte  unused() { return _bf & 0x1FFF; }
+	bool   fRelease() { return cast(bool) (_bf & 0x2000); }
+	bool   fDeferUpd() { return cast(bool) (_bf & 0x4000); }
+	bool   fAckReq() { return cast(bool) (_bf & 0x8000); }
 
 	ushort unused(ushort u) {
 		_bf = (_bf & ~0x1FFF) | (u & 0x1FFF);
 		return u;
 	}
 
-	bool fRelease(bool f) { _bf = (_bf & ~0x2000) | (f << 13); return f; }
-	bool fDeferUpd(bool f) { _bf = (_bf & ~0x4000) | (f << 14); return f; }
-	bool fAckReq(bool f) { _bf = (_bf & ~0x8000) | (f << 15); return f; }
+	bool   fRelease(bool f) { _bf = (_bf & ~0x2000) | (f << 13); return f; }
+	bool   fDeferUpd(bool f) { _bf = (_bf & ~0x4000) | (f << 14); return f; }
+	bool   fAckReq(bool f) { _bf = (_bf & ~0x8000) | (f << 15); return f; }
 }
 
 deprecated struct DDEUP {
 	ushort _bf;
-	short cfFormat;
-	byte _rgb[1];
+	short  cfFormat;
+	byte   _rgb;
 
-	ubyte unused() { return _bf & 0x0FFF; }
-	bool fAck() { return cast(bool) (_bf & 0x1000); }
-	bool fRelease() { return cast(bool) (_bf & 0x2000); }
-	bool fReserved() { return cast(bool) (_bf & 0x4000); }
-	bool fAckReq() { return cast(bool) (_bf & 0x8000); }
+	ubyte  unused()    { return _bf & 0x0FFF; }
+	bool   fAck()      { return cast(bool) (_bf & 0x1000); }
+	bool   fRelease()  { return cast(bool) (_bf & 0x2000); }
+	bool   fReserved() { return cast(bool) (_bf & 0x4000); }
+	bool   fAckReq()   { return cast(bool) (_bf & 0x8000); }
 
 	ushort unused(ushort r) {
 		_bf = (_bf & ~0x0FFF) | (r & 0x0FFF);
 		return r;
 	}
 
-	byte* rgb() { return _rgb.ptr; }
+	byte*  rgb() { return &_rgb; }
 
-	bool fAck(bool f) { _bf = (_bf & ~0x1000) | (f << 12); return f; }
-	bool fRelease(bool f) { _bf = (_bf & ~0x2000) | (f << 13); return f; }
-	bool fReserved(bool f) { _bf = (_bf & ~0x4000) | (f << 14); return f; }
-	bool fAckReq(bool f) { _bf = (_bf & ~0x8000) | (f << 15); return f; }
+	bool   fAck(bool f)      { _bf = (_bf & ~0x1000) | (f << 12); return f; }
+	bool   fRelease(bool f)  { _bf = (_bf & ~0x2000) | (f << 13); return f; }
+	bool   fReserved(bool f) { _bf = (_bf & ~0x4000) | (f << 14); return f; }
+	bool   fAckReq(bool f)   { _bf = (_bf & ~0x8000) | (f << 15); return f; }
 }
 
 extern (Windows) {
@@ -158,59 +158,58 @@ extern (Windows) {
 	LPARAM ReuseDDElParam(LPARAM, UINT, UINT, UINT_PTR, UINT_PTR);
 }
 
-version(WindowsUnitTest) {
-    
-unittest {
-	DDEACK ddeack;
+debug (WindowsUnitTest) {
+	unittest {
+		DDEACK ddeack;
 
-	with (ddeack) {
-		reserved = 10;
-		assert (_bf == 0x0A);
-		fBusy = true;
-		assert (_bf == 0x4A);
-		fAck = true;
-		assert (_bf == 0xCA);
+		with (ddeack) {
+			reserved = 10;
+			assert (_bf == 0x0A);
+			fBusy = true;
+			assert (_bf == 0x4A);
+			fAck = true;
+			assert (_bf == 0xCA);
 
-		assert (reserved == 10);
-		assert (fBusy == true);
-		assert (fAck == true);
+			assert (reserved == 10);
+			assert (fBusy == true);
+			assert (fAck == true);
 
-		reserved = 43;
-		assert (_bf == 0xEB);
-		fBusy = false;
-		assert (_bf == 0xAB);
-		fAck = false;
-		assert (_bf == 0x2B);
+			reserved = 43;
+			assert (_bf == 0xEB);
+			fBusy = false;
+			assert (_bf == 0xAB);
+			fAck = false;
+			assert (_bf == 0x2B);
 
-		assert (reserved == 43);
-		assert (fBusy == false);
-		assert (fAck == false);
+			assert (reserved == 43);
+			assert (fBusy == false);
+			assert (fAck == false);
+		}
+
+		DDEPOKE ddepoke;
+
+		with (ddepoke) {
+			unused = 3456;
+			assert (_bf == 0x0D80);
+			fRelease = true;
+			assert (_bf == 0x2D80);
+			fReserved = 2;
+			assert (_bf == 0xAD80);
+
+			assert (unused == 3456);
+			assert (fRelease == true);
+			assert (fReserved == 2);
+
+			unused = 2109;
+			assert (_bf == 0xa83d);
+			fRelease = false;
+			assert (_bf == 0x883d);
+			fReserved = 1;
+			assert (_bf == 0x483d);
+
+			assert (unused == 2109);
+			assert (fRelease == false);
+			assert (fReserved == 1);
+		}
 	}
-
-	DDEPOKE ddepoke;
-
-	with (ddepoke) {
-		unused = 3456;
-		assert (_bf == 0x0D80);
-		fRelease = true;
-		assert (_bf == 0x2D80);
-		fReserved = 2;
-		assert (_bf == 0xAD80);
-
-		assert (unused == 3456);
-		assert (fRelease == true);
-		assert (fReserved == 2);
-
-		unused = 2109;
-		assert (_bf == 0xa83d);
-		fRelease = false;
-		assert (_bf == 0x883d);
-		fReserved = 1;
-		assert (_bf == 0x483d);
-
-		assert (unused == 2109);
-		assert (fRelease == false);
-		assert (fReserved == 1);
-	}
-}
 }

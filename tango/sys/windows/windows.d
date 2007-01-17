@@ -7,6 +7,8 @@
 *                                                                       *
 *                       Placed into public domain                       *
 \***********************************************************************/
+module win32.windows;
+
 /*
 	windows.h - main header file for the Win32 API
 
@@ -19,41 +21,41 @@
 	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 
 */
-module tango.sys.windows.windows;
 
-import tango.sys.windows.w32api;
-import tango.sys.windows.core;
+public import win32.w32api;
+public import win32.core;
 
 // We can't use static if for imports, build gets confused.
-// static if (_WIN32_WINNT_ONLY) import tango.sys.windows.winsvc;
 version (Windows2003) {
-	import tango.sys.windows.winsvc;
+	public import win32.winsvc;
 } else version (WindowsXP) {
-	import tango.sys.windows.winsvc;
+	public import win32.winsvc;
 } else version (WindowsNTonly) {
-	import tango.sys.windows.winsvc;
+	public import win32.winsvc;
 }
 
-import tango.sys.windows.cderr;
-import tango.sys.windows.dde;
-import tango.sys.windows.ddeml;
-import tango.sys.windows.dlgs;
-import tango.sys.windows.imm;
-import tango.sys.windows.lzexpand;
-import tango.sys.windows.mmsystem;
-import tango.sys.windows.nb30;
-//import tango.sys.windows.rpc;
-import tango.sys.windows.shellapi;
-import tango.sys.windows.winperf;
-import tango.sys.windows.commdlg;
-import tango.sys.windows.winspool;
+public import win32.cderr;
+public import win32.dde;
+public import win32.ddeml;
+public import win32.dlgs;
+public import win32.imm;
+public import win32.lzexpand;
+public import win32.mmsystem;
+public import win32.nb30;
+//public import win32.rpc;
+public import win32.shellapi;
+public import win32.winperf;
+public import win32.commdlg;
+public import win32.winspool;
+public import win32.ole2;
 
 // Select correct version of winsock.  Importing the incorrect
 // module will cause a static assert to prevent problems later on.
-version (Win32_Winsock2)
-	import tango.sys.windows.winsock2;
-else
-	import tango.sys.windows.winsock;
+version (Win32_Winsock1) {
+	public import win32.winsock;
+} else {
+	public import win32.winsock2;
+}
 
 /+
 #if (_WIN32_WINNT >= 0x0400)
@@ -67,5 +69,3 @@ else
 #include <winsock.h>
 #endif /*  (_WIN32_WINNT >= 0x0400) */
 +/
-
-import tango.sys.windows.ole2;

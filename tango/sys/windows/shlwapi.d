@@ -7,7 +7,7 @@
 *                                                                       *
 *                       Placed into public domain                       *
 \***********************************************************************/
-module tango.sys.windows.shlwapi;
+module win32.shlwapi;
 pragma(lib, "shlwapi.lib");
 
 /* Changes compared to MinGW:
@@ -24,12 +24,9 @@ wnsprintf functions are not included.
          ((ULONGLONG)(  qfe) <<  0))
 */
 
-import tango.sys.windows.objbase;
-import tango.sys.windows.shlobj;
-private import tango.sys.windows.windef;
-private import tango.sys.windows.winbase;
-private import tango.sys.windows.winreg;
-private import tango.sys.windows.unknwn, tango.sys.windows.objidl, tango.sys.windows.basetyps;
+import win32.objbase, win32.shlobj;
+private import win32.basetyps, win32.objidl, win32.unknwn, win32.windef,
+  win32.winbase, win32.winreg;
 
 const DLLVER_PLATFORM_WINDOWS = 0x00000001;
 const DLLVER_PLATFORM_NT      = 0x00000002;

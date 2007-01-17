@@ -7,8 +7,9 @@
 *                                                                       *
 *                       Placed into public domain                       *
 \***********************************************************************/
-module tango.sys.windows.cguid;
-private import tango.sys.windows.basetyps;
+module win32.cguid;
+
+private import win32.basetyps;
 
 extern (C) {
 	extern const IID

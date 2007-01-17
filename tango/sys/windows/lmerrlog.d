@@ -1,5 +1,5 @@
 /***********************************************************************\
-*                              lmerrlog.d                               *
+*                               lmerrlog.d                              *
 *                                                                       *
 *                       Windows API header module                       *
 *                                                                       *
@@ -7,11 +7,12 @@
 *                                                                       *
 *                       Placed into public domain                       *
 \***********************************************************************/
+module win32.lmerrlog;
+
 // COMMENT: This appears to be only for Win16. All functions are deprecated.
-module tango.sys.windows.lmerrlog;
-private import tango.sys.windows.lmcons;
-private import tango.sys.windows.windef;
-private import tango.sys.windows.lmaudit; // for LPHLOG
+
+private import win32.lmcons, win32.windef;
+private import win32.lmaudit; // for LPHLOG
 
 const ERRLOG_BASE=3100;
 const ERRLOG2_BASE=5700;

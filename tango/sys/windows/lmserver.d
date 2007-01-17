@@ -1,5 +1,5 @@
 /***********************************************************************\
-*                              lmserver.d                               *
+*                               lmserver.d                              *
 *                                                                       *
 *                       Windows API header module                       *
 *                                                                       *
@@ -7,10 +7,10 @@
 *                                                                       *
 *                       Placed into public domain                       *
 \***********************************************************************/
-module tango.sys.windows.lmserver;
-import tango.sys.windows.winsvc;
-private import tango.sys.windows.lmcons;
-private import tango.sys.windows.windef;
+module win32.lmserver;
+
+import win32.winsvc;
+private import win32.lmcons, win32.windef;
 
 struct SERVER_INFO_100 {
 	DWORD  sv100_platform_id;

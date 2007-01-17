@@ -8,7 +8,7 @@
 *                                                                       *
 *                       Placed into public domain                       *
 \***********************************************************************/
-module tango.sys.windows.cplext;
+module win32.cplext;
 
 // FIXME: check types
 

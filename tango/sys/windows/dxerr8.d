@@ -1,4 +1,13 @@
-module tango.sys.windows.dxerr8;
+/***********************************************************************\
+*                                dxerr8.d                               *
+*                                                                       *
+*                       Windows API header module                       *
+*                                                                       *
+*                 Translated from MinGW Windows headers                 *
+*                                                                       *
+*                       Placed into public domain                       *
+\***********************************************************************/
+module win32.dxerr8;
 
 /*
 	dxerr8.d - Header file for the DirectX 8 Error API
@@ -11,7 +20,7 @@ module tango.sys.windows.dxerr8;
 	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 */
 
-private import tango.sys.windows.windef;
+private import win32.windef;
 
 extern (Windows) {
 	char* DXGetErrorString8A (HRESULT);
@@ -33,55 +42,27 @@ version (Unicode) {
 }
 
 debug (dxerr) {
-	version (Unicode) {
-		HRESULT DXTRACE_MSG (WCHAR* str) {
-			return DXTrace(__FILE__, cast(DWORD)__LINE__, 0, str, FALSE);
-		}
+	HRESULT DXTRACE_MSG(TCHAR* str) {
+		return DXTrace(__FILE__, __LINE__, 0, str, FALSE);
+	}
 
-		HRESULT DXTRACE_ERR (WCHAR* str, HRESULT hr) {
-			return DXTrace(__FILE__, cast(DWORD)__LINE__, hr, str, TRUE);
-		}
+	HRESULT DXTRACE_ERR(TCHAR* str, HRESULT hr) {
+		return DXTrace(__FILE__, __LINE__, hr, str, TRUE);
+	}
 
-		HRESULT DXTRACE_ERR_NOMSGBOX (WCHAR* str, HRESULT hr) {
-			return DXTrace(__FILE__, cast(DWORD)__LINE__, hr, str, FALSE);
-		}
-	} else {
-		HRESULT DXTRACE_MSG (char* str) {
-			return DXTrace(__FILE__, cast(DWORD)__LINE__, 0, str, FALSE);
-		}
-
-		HRESULT DXTRACE_ERR (char* str, HRESULT hr) {
-			return DXTrace(__FILE__, cast(DWORD)__LINE__, hr, str, TRUE);
-		}
-
-		HRESULT DXTRACE_ERR_NOMSGBOX (char* str, HRESULT hr) {
-			return DXTrace(__FILE__, cast(DWORD)__LINE__, hr, str, FALSE);
-		}
+	HRESULT DXTRACE_ERR_NOMSGBOX (WCHAR* str, HRESULT hr) {
+		return DXTrace(__FILE__, __LINE__, hr, str, FALSE);
 	}
 } else {
-	version (Unicode) {
-		HRESULT DXTRACE_MSG (WCHAR* str) {
-			return 0;
-		}
+	HRESULT DXTRACE_MSG(TCHAR* str) {
+		return 0;
+	}
 
-		HRESULT DXTRACE_ERR (WCHAR* str, HRESULT hr) {
-			return hr;
-		}
+	HRESULT DXTRACE_ERR(TCHAR* str, HRESULT hr) {
+		return hr;
+	}
 
-		HRESULT DXTRACE_ERR_NOMSGBOX (WCHAR* str, HRESULT hr) {
-			return hr;
-		}
-	} else {
-		HRESULT DXTRACE_MSG (char* str) {
-			return 0;
-		}
-
-		HRESULT DXTRACE_ERR (char* str, HRESULT hr) {
-			return hr;
-		}
-
-		HRESULT DXTRACE_ERR_NOMSGBOX (char* str, HRESULT hr) {
-			return hr;
-		}
+	HRESULT DXTRACE_ERR_NOMSGBOX(TCHAR* str, HRESULT hr) {
+		return hr;
 	}
 }

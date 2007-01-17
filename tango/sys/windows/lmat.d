@@ -7,10 +7,10 @@
 *                                                                       *
 *                       Placed into public domain                       *
 \***********************************************************************/
-module tango.sys.windows.lmat;
+module win32.lmat;
 pragma(lib, "netapi32.lib");
-private import tango.sys.windows.lmcons;
-private import tango.sys.windows.windef;
+
+private import win32.lmcons, win32.windef;
 
 const JOB_RUN_PERIODICALLY = 1;
 const JOB_EXEC_ERROR       = 2;

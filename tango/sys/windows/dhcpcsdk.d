@@ -8,13 +8,13 @@
 *                                                                       *
 *                       Placed into public domain                       *
 \***********************************************************************/
-module tango.sys.windows.dhcpcsdk;
+module win32.dhcpcsdk;
 
-private import tango.sys.windows.w32api, tango.sys.windows.windef;
+private import win32.w32api, win32.windef;
 
 static if (!_WIN32_WINNT_ONLY || _WIN32_WINNT < 0x500) {
 	pragma(msg,
-"tango.sys.windows.dhcpcsdk is available only if version WindowsXP or Windows2003 is set,
+"win32.dhcpcsdk is available only if version WindowsXP or Windows2003 is set,
 or both Windows2000 and WindowsNTonly are set");
 	static assert (false);
 }

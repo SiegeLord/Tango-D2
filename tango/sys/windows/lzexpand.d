@@ -7,10 +7,10 @@
 *                                                                       *
 *                       Placed into public domain                       *
 \***********************************************************************/
-module tango.sys.windows.lzexpand;
+module win32.lzexpand;
 pragma(lib, "lz32.lib");
-private import tango.sys.windows.windef;
-private import tango.sys.windows.winbase;
+
+private import win32.winbase, win32.windef;
 
 enum : LONG {
 	LZERROR_BADINHANDLE  = -1,

@@ -8,7 +8,7 @@
 *                                                                       *
 *                       Placed into public domain                       *
 \***********************************************************************/
-module tango.sys.windows.w32api;
+module win32.w32api;
 
 const __W32API_VERSION = 3.6;
 const __W32API_MAJOR_VERSION = 3;
@@ -82,10 +82,10 @@ version (IE6) {
 	const uint _WIN32_IE = 0;
 }
 
-version(WindowsUnitTest) {
-unittest {
-	printf("Windows NT version: %03x\n", _WIN32_WINNT);
-	printf("Windows 9x version: %03x\n", _WIN32_WINDOWS);
-	printf("IE version:         %03x\n", _WIN32_IE);
-}
+debug (WindowsUnitTest) {
+	unittest {
+		printf("Windows NT version: %03x\n", _WIN32_WINNT);
+		printf("Windows 9x version: %03x\n", _WIN32_WINDOWS);
+		printf("IE version:         %03x\n", _WIN32_IE);
+	}
 }

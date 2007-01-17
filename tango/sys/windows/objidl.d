@@ -11,16 +11,16 @@
 // # why is "alias IPSFactoryBuffer* LPPSFACTORYBUFFER;" in this file,
 // rather than in objfwd ?
 // # do we need the proxies that are defined in this file?
-module tango.sys.windows.objidl;
+module win32.objidl;
 
-import tango.sys.windows.unknwn;
-import tango.sys.windows.objfwd;
-private import tango.sys.windows.windef;
-private import tango.sys.windows.basetyps;
-private import tango.sys.windows.oleidl;
-private import tango.sys.windows.wtypes;
-private import tango.sys.windows.winbase; // for FILETIME
-private import tango.sys.windows.rpcdce;
+import win32.unknwn;
+import win32.objfwd;
+private import win32.windef;
+private import win32.basetyps;
+private import win32.oleidl;
+private import win32.wtypes;
+private import win32.winbase; // for FILETIME
+private import win32.rpcdce;
 
 struct  STATSTG {
 	LPOLESTR pwcsName;

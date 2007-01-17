@@ -7,11 +7,11 @@
 *                                                                       *
 *                       Placed into public domain                       *
 \***********************************************************************/
-module tango.sys.windows.lmwksta;
+module win32.lmwksta;
 pragma(lib, "netapi32.lib");
-private import tango.sys.windows.lmcons;
-import tango.sys.windows.lmuseflg;
-private import tango.sys.windows.windef;
+
+import win32.lmuseflg;
+private import win32.lmcons, win32.windef;
 
 pragma(lib, "Netapi32.lib");
 

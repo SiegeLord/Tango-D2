@@ -8,9 +8,9 @@
 *                                                                       *
 *                       Placed into public domain                       *
 \***********************************************************************/
-module tango.sys.windows.isguids;
+module win32.isguids;
 
-private import tango.sys.windows.basetyps;
+private import win32.basetyps;
 
 extern (C) extern const GUID
 	CLSID_InternetShortcut,

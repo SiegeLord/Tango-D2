@@ -8,9 +8,9 @@
 *                                                                       *
 *                       Placed into public domain                       *
 \***********************************************************************/
-module tango.sys.windows.custcntl;
+module win32.custcntl;
 
-private import tango.sys.windows.windef;
+private import win32.windef;
 
 // FIXME: check type
 const CCF_NOTEXT = 1;

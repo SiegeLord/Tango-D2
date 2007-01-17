@@ -1,5 +1,5 @@
 /***********************************************************************\
-*                               regstr.d                                *
+*                                regstr.d                               *
 *                                                                       *
 *                       Windows API header module                       *
 *                                                                       *
@@ -7,9 +7,11 @@
 *                                                                       *
 *                       Placed into public domain                       *
 \***********************************************************************/
+module win32.regstr;
+
 // TODO: fix possible conflict with shloj. Sort out NEC_98 issue.
-module tango.sys.windows.regstr;
-private import tango.sys.windows.windef;
+
+private import win32.windef;
 
 const REGSTR_MAX_VALUE_LENGTH = 256;
 

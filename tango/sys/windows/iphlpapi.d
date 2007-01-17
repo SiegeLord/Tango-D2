@@ -8,10 +8,10 @@
 *                                                                       *
 *                       Placed into public domain                       *
 \***********************************************************************/
-module tango.sys.windows.iphlpapi;
+module win32.iphlpapi;
 
-import tango.sys.windows.iprtrmib, tango.sys.windows.ipexport, tango.sys.windows.iptypes;
-private import tango.sys.windows.windef, tango.sys.windows.winbase;
+import win32.ipexport, win32.iprtrmib, win32.iptypes;
+private import win32.winbase, win32.windef;
 
 extern (Windows) {
 	DWORD AddIPAddress(IPAddr, IPMask, DWORD, PULONG, PULONG);

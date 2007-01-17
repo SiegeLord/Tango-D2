@@ -7,13 +7,11 @@
 *                                                                       *
 *                       Placed into public domain                       *
 \***********************************************************************/
-module tango.sys.windows.winspool;
+module win32.winspool;
 pragma(lib, "winspool.lib");
 
-private import tango.sys.windows.w32api;
-private import tango.sys.windows.windef;
-private import tango.sys.windows.wingdi;
-private import tango.sys.windows.winbase; // for SYSTEMTIME
+private import win32.w32api, win32.windef, win32.wingdi;
+private import win32.winbase; // for SYSTEMTIME
 
 // FIXME: clean up Windows version support
 

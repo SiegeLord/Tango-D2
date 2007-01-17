@@ -8,14 +8,12 @@
 *                                                                       *
 *                       Placed into public domain                       *
 \***********************************************************************/
-module tango.sys.windows.winnls;
-
-private import tango.sys.windows.w32api, tango.sys.windows.basetsd, tango.sys.windows.windef, tango.sys.windows.winbase;
+module win32.winnls;
 pragma(lib, "kernel32.lib");
 
-alias DWORD LCTYPE, CALTYPE, CALID, LGRPID, GEOID, GEOTYPE, GEOCLASS;
+private import win32.basetsd, win32.w32api, win32.winbase, win32.windef;
 
-// FIXME: check types of constants
+alias DWORD LCTYPE, CALTYPE, CALID, LGRPID, GEOID, GEOTYPE, GEOCLASS;
 
 const size_t
 	MAX_DEFAULTCHAR =  2,
@@ -166,7 +164,7 @@ const DWORD
 
 enum : DWORD {
 	CP_INSTALLED = 1,
-	CP_SUPPORTED = 2
+	CP_SUPPORTED
 }
 
 enum : DWORD {
@@ -185,10 +183,10 @@ enum : UINT {
 	CP_ACP,
 	CP_OEMCP,
 	CP_MACCP,
-	CP_THREAD_ACP, // = 3
-	CP_SYMBOL     = 42,
-	CP_UTF7       = 65000,
-	CP_UTF8       = 65001
+	CP_THREAD_ACP, // =     3
+	CP_SYMBOL         =    42,
+	CP_UTF7           = 65000,
+	CP_UTF8           = 65001
 }
 
 enum : DWORD {
@@ -256,8 +254,7 @@ const DWORD
 	WC_DEFAULTCHAR    =  64,
 	WC_COMPOSITECHECK = 512;
 
-// The type of these could not be determined from the MSDN site
-enum {
+enum : LONG {
 	CTRY_DEFAULT            =   0,
 	CTRY_DOMINICAN_REPUBLIC =   1,
 	CTRY_PUERTO_RICO        =   1,
@@ -373,7 +370,7 @@ enum {
 }
 
 enum : CALTYPE {
-	CAL_ICALINTVALUE = 1,
+	CAL_ICALINTVALUE          = 1,
 	CAL_SCALNAME,
 	CAL_IYEAROFFSETRANGE,
 	CAL_SERASTRING,
@@ -423,7 +420,7 @@ enum : CALTYPE {
 
 
 enum : CALTYPE {
-	CAL_GREGORIAN = 1,
+	CAL_GREGORIAN                =  1,
 	CAL_GREGORIAN_US,
 	CAL_JAPAN,
 	CAL_TAIWAN,
@@ -606,12 +603,12 @@ struct NLSVERSIONINFO {
 alias NLSVERSIONINFO* LPNLSVERSIONINFO;
 
 struct NUMBERFMTA {
-	UINT NumDigits;
-	UINT LeadingZero;
-	UINT Grouping;
+	UINT  NumDigits;
+	UINT  LeadingZero;
+	UINT  Grouping;
 	LPSTR lpDecimalSep;
 	LPSTR lpThousandSep;
-	UINT NegativeOrder;
+	UINT  NegativeOrder;
 }
 alias NUMBERFMTA* LPNUMBERFMTA;
 

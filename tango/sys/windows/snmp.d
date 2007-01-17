@@ -8,10 +8,11 @@
 *                                                                       *
 *                       Placed into public domain                       *
 \***********************************************************************/
-module tango.sys.windows.snmp;
+module win32.snmp;
 
-import tango.sys.windows.windows;
+private import win32.windows;
 
+// These are not documented on MSDN
 enum {
 	DEFAULT_SNMP_PORT_UDP     =   161,
 	DEFAULT_SNMP_PORT_IPX     = 36879,
@@ -63,7 +64,8 @@ enum : BYTE {
 	SNMP_EXTENSION_SET_CLEANUP
 }
 
-enum {
+
+enum : AsnInteger {
 	SNMP_ERRORSTATUS_NOERROR,
 	SNMP_ERRORSTATUS_TOOBIG,
 	SNMP_ERRORSTATUS_NOSUCHNAME,
@@ -85,7 +87,7 @@ enum {
 	SNMP_ERRORSTATUS_INCONSISTENTNAME
 }
 
-enum {
+enum : AsnInteger {
 	SNMP_GENERICTRAP_COLDSTART,
 	SNMP_GENERICTRAP_WARMSTART,
 	SNMP_GENERICTRAP_LINKDOWN,
@@ -95,6 +97,7 @@ enum {
 	SNMP_GENERICTRAP_ENTERSPECIFIC
 }
 
+// These are not documented on MSDN
 enum {
 	SNMP_ACCESS_NONE,
 	SNMP_ACCESS_NOTIFY,
@@ -108,7 +111,7 @@ enum : BOOL {
 	SNMPAPI_NOERROR = true
 }
 
-enum {
+enum : INT {
 	SNMP_LOG_SILENT,
 	SNMP_LOG_FATAL,
 	SNMP_LOG_ERROR,
@@ -117,13 +120,15 @@ enum {
 	SNMP_LOG_VERBOSE
 }
 
-const SNMP_OUTPUT_TO_CONSOLE  =   1;
-const SNMP_OUTPUT_TO_LOGFILE  =   2;
-const SNMP_OUTPUT_TO_EVENTLOG =   4;
-const SNMP_OUTPUT_TO_DEBUGGER =   8;
-const SNMP_MAX_OID_LEN        = 128;
+const INT
+	SNMP_OUTPUT_TO_CONSOLE  = 1,
+	SNMP_OUTPUT_TO_LOGFILE  = 2,
+	SNMP_OUTPUT_TO_EVENTLOG = 4,
+	SNMP_OUTPUT_TO_DEBUGGER = 8;
 
-enum {
+const size_t SNMP_MAX_OID_LEN = 128;
+
+enum : DWORD {
 	SNMP_MEM_ALLOC_ERROR          =  1,
 	SNMP_BERAPI_INVALID_LENGTH    = 10,
 	SNMP_BERAPI_INVALID_TAG,
@@ -228,7 +233,6 @@ extern (Windows) {
 	VOID SnmpUtilVarBindListFree(SnmpVarBindList*);
 }
 
-// #ifndef SNMPSTRICT
 alias SnmpUtilMemAlloc SNMP_malloc;
 alias SnmpUtilMemFree SNMP_free;
 alias SnmpUtilMemReAlloc SNMP_realloc;
@@ -263,4 +267,3 @@ alias SnmpVarBind RFC1157VarBind;
 alias AsnInteger32 AsnInteger;
 alias AsnCounter32 AsnCounter;
 alias AsnGauge32 AsnGauge;
-// #endif /* SNMPSTRICT */

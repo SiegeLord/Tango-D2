@@ -1,5 +1,5 @@
 /***********************************************************************\
-*                              rpcnterr.d                               *
+*                               rpcnterr.d                              *
 *                                                                       *
 *                       Windows API header module                       *
 *                                                                       *
@@ -7,9 +7,9 @@
 *                                                                       *
 *                       Placed into public domain                       *
 \***********************************************************************/
-module tango.sys.windows.rpcnterr;
+module win32.rpcnterr;
 
-import tango.sys.windows.winerror;
+import win32.winerror;
 
 enum : uint {
 	RPC_S_OK                     = ERROR_SUCCESS,

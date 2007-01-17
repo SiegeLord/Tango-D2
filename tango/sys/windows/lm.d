@@ -7,7 +7,7 @@
 *                                                                       *
 *                       Placed into public domain                       *
 \***********************************************************************/
-module tango.sys.windows.lm;
+module win32.lm;
 
 version (Windows2003) {
 	version = WIN32_WINNT_ONLY;
@@ -17,28 +17,32 @@ version (Windows2003) {
 	version = WIN32_WINNT_ONLY;
 }
 
-import tango.sys.windows.lmcons;
-import tango.sys.windows.lmaccess;
-import tango.sys.windows.lmalert;
-import tango.sys.windows.lmat;
-import tango.sys.windows.lmerr;
-import tango.sys.windows.lmmsg;
-import tango.sys.windows.lmshare;
-import tango.sys.windows.lmapibuf;
-import tango.sys.windows.lmremutl;
-import tango.sys.windows.lmrepl;
-import tango.sys.windows.lmuse;
+public import win32.lmcons;
+public import win32.lmaccess;
+public import win32.lmalert;
+public import win32.lmat;
+public import win32.lmerr;
+public import win32.lmshare;
+public import win32.lmapibuf;
+public import win32.lmremutl;
+public import win32.lmrepl;
+public import win32.lmuse;
+public import win32.lmstats;
 
 version (WIN32_WINNT_ONLY) {
-	import tango.sys.windows.lmwksta;
-	import tango.sys.windows.lmserver;
+	public import win32.lmwksta;
+	public import win32.lmserver;
 }
-import tango.sys.windows.lmstats;
+version (Windows2003) {
+	public import win32.lmmsg;
+} else version (WindowsXP) {
+	public import win32.lmmsg;
+}
 
 // FIXME: Everything in these next files seems to be deprecated!
-import tango.sys.windows.lmaudit;
-import tango.sys.windows.lmchdev; // can't find many docs for functions from this file.
-import tango.sys.windows.lmconfig;
-import tango.sys.windows.lmerrlog;
-import tango.sys.windows.lmsvc;
-import tango.sys.windows.lmsname; // in MinGW, this was publicly included by lm.lmsvc
+import win32.lmaudit;
+import win32.lmchdev; // can't find many docs for functions from this file.
+import win32.lmconfig;
+import win32.lmerrlog;
+import win32.lmsvc;
+import win32.lmsname; // in MinGW, this was publicly included by lm.lmsvc

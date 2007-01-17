@@ -1,5 +1,5 @@
 /***********************************************************************\
-*                              subauth.d                                *
+*                               subauth.d                               *
 *                                                                       *
 *                       Windows API header module                       *
 *                                                                       *
@@ -7,19 +7,22 @@
 *                                                                       *
 *                       Placed into public domain                       *
 \***********************************************************************/
-module tango.sys.windows.subauth;
-private import tango.sys.windows.windef;
+module win32.subauth;
 
+private import win32.ntdef, win32.windef;
+
+/+
 alias LONG NTSTATUS;
 alias NTSTATUS* PNTSTATUS;
++/
 
-enum : ULONG  {
+enum : ULONG {
 	MSV1_0_PASSTHRU    = 1,
 	MSV1_0_GUEST_LOGON = 2
 }
 
 // USER_ALL_INFORMATION.WhichFields (Undocumented)
-const ULONG 
+const ULONG
 	MSV1_0_VALIDATION_LOGOFF_TIME  = 1,
 	MSV1_0_VALIDATION_KICKOFF_TIME = 2,
 	MSV1_0_VALIDATION_LOGON_SERVER = 4,
@@ -82,36 +85,37 @@ const ULONG
 	USER_NOT_DELEGATED                   = 16384,
 	USER_USE_DES_KEY_ONLY                = 32768,
 	USER_DONT_REQUIRE_PREAUTH            = 65536,
-	
+
 	USER_MACHINE_ACCOUNT_MASK            = 448,
 	USER_ACCOUNT_TYPE_MASK               = 472,
 	USER_ALL_PARAMETERS                  = 2097152;
 
-
-struct UNICODE_STRING{
+/+
+struct UNICODE_STRING {
 	USHORT Length;
 	USHORT MaximumLength;
 	PWSTR Buffer;
 }
 alias UNICODE_STRING* PUNICODE_STRING;
 
-struct STRING{
+struct STRING {
 	USHORT Length;
 	USHORT MaximumLength;
 	PCHAR Buffer;
 }
 alias STRING* PSTRING;
++/
 
-alias PVOID SAM_HANDLE;
-alias SAM_HANDLE* PSAM_HANDLE;
+alias HANDLE SAM_HANDLE;
+alias HANDLE* PSAM_HANDLE;
 
-struct OLD_LARGE_INTEGER{
+struct OLD_LARGE_INTEGER {
 	ULONG LowPart;
 	LONG HighPart;
 }
 alias OLD_LARGE_INTEGER* POLD_LARGE_INTEGER;
 
-enum NETLOGON_LOGON_INFO_CLASS{
+enum NETLOGON_LOGON_INFO_CLASS {
 	NetlogonInteractiveInformation = 1,
 	NetlogonNetworkInformation,
 	NetlogonServiceInformation,
@@ -126,22 +130,22 @@ const CYPHER_BLOCK_LENGTH = 8;
 const USER_SESSION_KEY_LENGTH = CYPHER_BLOCK_LENGTH * 2;
 const CLEAR_BLOCK_LENGTH = 8;
 
-struct CYPHER_BLOCK{
+struct CYPHER_BLOCK {
 	CHAR data[CYPHER_BLOCK_LENGTH];
 }
 alias CYPHER_BLOCK* PCYPHER_BLOCK;
 
-struct CLEAR_BLOCK{
+struct CLEAR_BLOCK {
 	CHAR data[CLEAR_BLOCK_LENGTH];
 }
 alias CLEAR_BLOCK* PCLEAR_BLOCK;
 
-struct LM_OWF_PASSWORD{
+struct LM_OWF_PASSWORD {
 	CYPHER_BLOCK data[2];
 }
 alias LM_OWF_PASSWORD* PLM_OWF_PASSWORD;
 
-struct USER_SESSION_KEY{
+struct USER_SESSION_KEY {
 	CYPHER_BLOCK data[2];
 }
 alias USER_SESSION_KEY* PUSER_SESSION_KEY;
@@ -154,20 +158,20 @@ alias NT_OWF_PASSWORD* PNT_OWF_PASSWORD;
 alias LM_CHALLENGE NT_CHALLENGE;
 alias NT_CHALLENGE* PNT_CHALLENGE;
 
-struct LOGON_HOURS{
+struct LOGON_HOURS {
 	USHORT UnitsPerWeek;
 	PUCHAR LogonHours;
 }
 alias LOGON_HOURS* PLOGON_HOURS;
 
-struct SR_SECURITY_DESCRIPTOR{
+struct SR_SECURITY_DESCRIPTOR {
 	ULONG Length;
 	PUCHAR SecurityDescriptor;
 }
 alias SR_SECURITY_DESCRIPTOR* PSR_SECURITY_DESCRIPTOR;
 
 align(4):
-struct USER_ALL_INFORMATION{
+struct USER_ALL_INFORMATION {
 	LARGE_INTEGER LastLogon;
 	LARGE_INTEGER LastLogoff;
 	LARGE_INTEGER PasswordLastSet;
@@ -205,7 +209,7 @@ struct USER_ALL_INFORMATION{
 alias USER_ALL_INFORMATION* PUSER_ALL_INFORMATION;
 align:
 
-struct MSV1_0_VALIDATION_INFO{
+struct MSV1_0_VALIDATION_INFO {
 	LARGE_INTEGER LogoffTime;
 	LARGE_INTEGER KickoffTime;
 	UNICODE_STRING LogonServer;
@@ -218,7 +222,7 @@ struct MSV1_0_VALIDATION_INFO{
 }
 alias MSV1_0_VALIDATION_INFO* PMSV1_0_VALIDATION_INFO;
 
-struct NETLOGON_LOGON_IDENTITY_INFO{
+struct NETLOGON_LOGON_IDENTITY_INFO {
 	UNICODE_STRING LogonDomainName;
 	ULONG ParameterControl;
 	OLD_LARGE_INTEGER LogonId;
@@ -227,14 +231,14 @@ struct NETLOGON_LOGON_IDENTITY_INFO{
 }
 alias NETLOGON_LOGON_IDENTITY_INFO* PNETLOGON_LOGON_IDENTITY_INFO;
 
-struct NETLOGON_INTERACTIVE_INFO{
+struct NETLOGON_INTERACTIVE_INFO {
 	NETLOGON_LOGON_IDENTITY_INFO Identity;
 	LM_OWF_PASSWORD LmOwfPassword;
 	NT_OWF_PASSWORD NtOwfPassword;
 }
 alias NETLOGON_INTERACTIVE_INFO* PNETLOGON_INTERACTIVE_INFO;
 
-struct NETLOGON_GENERIC_INFO{
+struct NETLOGON_GENERIC_INFO {
 	NETLOGON_LOGON_IDENTITY_INFO Identity;
 	UNICODE_STRING PackageName;
 	ULONG DataLength;

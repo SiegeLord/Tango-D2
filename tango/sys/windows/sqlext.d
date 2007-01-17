@@ -7,6 +7,7 @@
 *                                                                       *
 *                       Placed into public domain                       *
 \***********************************************************************/
+module win32.sqlext;
 
 /* Conversion notes:
    The MinGW file was a horrible mess. All of the #defines were sorted alphabetically,
@@ -14,13 +15,13 @@
    In MinGW, sqlext #includes sqlucode, but sqlucode #includes sqlext,
    creating a circular dependency!
 */
-module tango.sys.windows.sqlext;
-public import tango.sys.windows.sql;
-private import tango.sys.windows.windef;
+
+public import win32.sql;
+private import win32.windef;
 
 const SQL_SPEC_MAJOR = 3;
 const SQL_SPEC_MINOR = 51;
-const char [] SQL_SPEC_STRING = "03.51";
+const char[] SQL_SPEC_STRING = "03.51";
 const SQL_ACCESS_MODE = 101;
 const SQL_ACTIVE_CONNECTIONS = 0;
 const SQL_ACTIVE_STATEMENTS  = 1;
@@ -35,27 +36,27 @@ const SQL_UNSIGNED_OFFSET = -22;
 const SQL_ADD = 4;
 const SQL_ALL_EXCEPT_LIKE = 2;
 
-const SQL_API_ALL_FUNCTIONS     = 0;
-const SQL_API_SQLCOLATTRIBUTES  = 6;
-const SQL_API_SQLDRIVERCONNECT  = 41;
-const SQL_API_SQLBROWSECONNECT    = 55;
-const SQL_API_SQLCOLUMNPRIVILEGES = 56;
-const SQL_API_SQLDESCRIBEPARAM    = 58;
-const SQL_API_SQLEXTENDEDFETCH    = 59;
-const SQL_API_SQLFOREIGNKEYS      = 60;
-const SQL_API_SQLMORERESULTS      = 61;
-const SQL_API_SQLNATIVESQL        = 62;
-const SQL_API_SQLNUMPARAMS        = 63;
-const SQL_API_SQLPARAMOPTIONS     = 64;
-const SQL_API_SQLPRIMARYKEYS      = 65;
-const SQL_API_SQLPROCEDURECOLUMNS = 66;
-const SQL_API_SQLPROCEDURES       = 67;
-const SQL_API_SQLSETPOS           = 68;
-const SQL_API_SQLSETSCROLLOPTIONS = 69;
-const SQL_API_SQLTABLEPRIVILEGES  = 70;
-const SQL_API_SQLDRIVERS          = 71;
-const SQL_API_SQLBINDPARAMETER    = 72;
-const SQL_API_LOADBYORDINAL = 199;
+const SQL_API_ALL_FUNCTIONS       =   0;
+const SQL_API_SQLCOLATTRIBUTES    =   6;
+const SQL_API_SQLDRIVERCONNECT    =  41;
+const SQL_API_SQLBROWSECONNECT    =  55;
+const SQL_API_SQLCOLUMNPRIVILEGES =  56;
+const SQL_API_SQLDESCRIBEPARAM    =  58;
+const SQL_API_SQLEXTENDEDFETCH    =  59;
+const SQL_API_SQLFOREIGNKEYS      =  60;
+const SQL_API_SQLMORERESULTS      =  61;
+const SQL_API_SQLNATIVESQL        =  62;
+const SQL_API_SQLNUMPARAMS        =  63;
+const SQL_API_SQLPARAMOPTIONS     =  64;
+const SQL_API_SQLPRIMARYKEYS      =  65;
+const SQL_API_SQLPROCEDURECOLUMNS =  66;
+const SQL_API_SQLPROCEDURES       =  67;
+const SQL_API_SQLSETPOS           =  68;
+const SQL_API_SQLSETSCROLLOPTIONS =  69;
+const SQL_API_SQLTABLEPRIVILEGES  =  70;
+const SQL_API_SQLDRIVERS          =  71;
+const SQL_API_SQLBINDPARAMETER    =  72;
+const SQL_API_LOADBYORDINAL       = 199;
 
 const SQL_ASYNC_ENABLE = 4;
 const SQL_ASYNC_ENABLE_OFF = 0UL;

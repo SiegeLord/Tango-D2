@@ -8,13 +8,13 @@
 *                                                                       *
 *                       Placed into public domain                       *
 \***********************************************************************/
-module tango.sys.windows.errorrep;
+module win32.errorrep;
 
-private import tango.sys.windows.w32api, tango.sys.windows.windef;
+private import win32.w32api, win32.windef;
 
 static if (_WIN32_WINNT < 0x501) {
 	pragma(msg,
-"tango.sys.windows.errorrep is available only if version WindowsXP or Windows2003 is set");
+"win32.errorrep is available only if version WindowsXP or Windows2003 is set");
 	static assert (false);
 }
 

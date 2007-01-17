@@ -1,5 +1,5 @@
 /***********************************************************************\
-*                               shlobj.d                                *
+*                                shlobj.d                               *
 *                                                                       *
 *                       Windows API header module                       *
 *                                                                       *
@@ -7,25 +7,18 @@
 *                                                                       *
 *                       Placed into public domain                       *
 \***********************************************************************/
-// TODO: fix bitfields
-// TODO: CMIC_VALID_SEE_FLAGS
-module tango.sys.windows.shlobj;
-
-/* SHGetFolderPath in shfolder.dll on W9x, NT4, also in shell32.dll on W2K */
+module win32.shlobj;
 pragma(lib, "shell32.lib");
 
-private import tango.sys.windows.w32api;
-private import tango.sys.windows.unknwn;
-private import tango.sys.windows.winuser;
-private import tango.sys.windows.winbase;
-private import tango.sys.windows.winnetwk; // for NETRESOURCE
-private import tango.sys.windows.winnt, tango.sys.windows.wtypes, tango.sys.windows.objfwd, tango.sys.windows.objidl;
-private import tango.sys.windows.prsht;
+// TODO: fix bitfields
+// TODO: CMIC_VALID_SEE_FLAGS
+// SHGetFolderPath in shfolder.dll on W9x, NT4, also in shell32.dll on W2K
 
-import tango.sys.windows.ole2;
-import tango.sys.windows.shlguid;
-import tango.sys.windows.shellapi;
-import tango.sys.windows.commctrl;
+import win32.commctrl, win32.ole2, win32.shlguid, win32.shellapi;
+private import win32.prsht, win32.unknwn, win32.w32api, win32.winbase,
+  win32.winnt, win32.winuser, win32.wtypes, win32.objfwd, win32.objidl;
+private import win32.winnetwk; // for NETRESOURCE
+
 
 // FIXME: clean up Windows version support
 
