@@ -1,0 +1,38 @@
+/**
+ * D header file for POSIX.
+ *
+ * Copyright: Public Domain
+ * License:   Public Domain
+ * Authors:   Sean Kelly
+ * Standards: The Open Group Base Specifications Issue 6, IEEE Std 1003.1, 2004 Edition
+ */
+module tango.stdc.posix.utime;
+
+private import tango.stdc.config;
+public import tango.stdc.posix.sys.types; // for time_t
+
+extern (C):
+
+//
+// Required
+//
+/*
+struct utimebuf
+{
+    time_t  actime;
+    time_t  modtime;
+}
+
+int utime(char*, utimbuf*);
+*/
+
+version( linux )
+{
+    struct utimebuf
+    {
+        time_t  actime;
+        time_t  modtime;
+    }
+
+    int utime(char*, utimbuf*);
+}
