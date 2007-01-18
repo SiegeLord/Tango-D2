@@ -95,7 +95,7 @@ class MappedBuffer : Buffer
                             host.error ();
  
                         void[] mem = base [0 .. cast(int) size];
-                        setValidContent (mem);
+                        setContent (mem);
                 }
 
                 /***************************************************************
@@ -168,7 +168,7 @@ class MappedBuffer : Buffer
                             host.error();
                                 
                         void[] mem = base [0 .. cast(int) size];
-                        setValidContent (mem);
+                        setContent (mem);
                 }    
 
                 void close () 
@@ -210,17 +210,6 @@ class MappedBuffer : Buffer
         }
 
         /***********************************************************************
-                
-                Set the read/write position
-
-        ***********************************************************************/
-
-        void setPosition (uint position)
-        {
-                this.position = position;
-        }
-
-        /***********************************************************************
         
                 Seek to the specified position within the buffer, and return
                 the byte offset of the new location (relative to zero).
@@ -229,7 +218,7 @@ class MappedBuffer : Buffer
 
         uint seek (uint offset, IConduit.Seek.Anchor anchor)
         {
-                uint pos = capacity;
+                uint pos = capacity_;
 
                 if (anchor is IConduit.Seek.Anchor.Begin)
                     pos = offset;
@@ -237,9 +226,9 @@ class MappedBuffer : Buffer
                    if (anchor is IConduit.Seek.Anchor.End)
                        pos -= offset;
                    else
-                      pos = position + offset;
+                      pos = position_ + offset;
 
-                return position = pos;
+                return position_ = pos;
         }
 
         /***********************************************************************
@@ -251,7 +240,7 @@ class MappedBuffer : Buffer
 
         override uint writable ()
         {
-                return capacity - position;
+                return capacity_ - position_;
         }               
 
         /***********************************************************************
@@ -263,8 +252,8 @@ class MappedBuffer : Buffer
 
         override protected void copy (void *src, uint size)
         {
-                data[position..position+size] = src[0..size];
-                position += size;
+                data[position_..position_+size] = src[0..size];
+                position_ += size;
         }
 
         /***********************************************************************
@@ -282,12 +271,12 @@ class MappedBuffer : Buffer
 
         override uint write (uint delegate (void[]) dg)
         {
-                int count = dg (data [position..capacity]);
+                int count = dg (data [position_..capacity_]);
 
                 if (count != IConduit.Eof) 
                    {
-                   position += count;
-                   assert (position <= capacity);
+                   position_ += count;
+                   assert (position_ <= capacity_);
                    }
                 return count;
         }               

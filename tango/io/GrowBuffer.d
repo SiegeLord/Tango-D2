@@ -72,7 +72,7 @@ class GrowBuffer : Buffer
                    if (conduit is null)
                        error (underflow);
 
-                   if (size + position > capacity)
+                   if (size + position_ > capacity_)
                        makeRoom (size);
 
                    // populate tail of buffer with new content
@@ -82,9 +82,9 @@ class GrowBuffer : Buffer
                       } while (size > readable);
                    }
 
-                uint i = position;
+                uint i = position_;
                 if (eat)
-                    position += size;
+                    position_ += size;
                 return data [i .. i + size];               
         }
 
@@ -134,8 +134,8 @@ class GrowBuffer : Buffer
                 if (size < increment)
                     size = increment;
 
-                capacity += size;
-                data.length = capacity;               
+                capacity_ += size;
+                data.length = capacity_;               
                 return writable();
         }
 }

@@ -124,7 +124,7 @@ class HttpTokens : IWritable
 
         void parse (char[] content)
         {
-                input.setValidContent (content);
+                input.setContent (content);
                 parse (input);       
         }
 
@@ -449,7 +449,7 @@ class HttpTokens : IWritable
                            }
                         }    
 
-                dst.truncate (dst.getLimit - adjust);
+                dst.truncate (dst.limit - adjust);
                 return dst.toUtf8;
         }
 
@@ -465,7 +465,7 @@ class HttpTokens : IWritable
         protected void add (char[] name, void delegate (IBuffer) dg)
         {
                 // save the buffer write-position
-                int prior = output.getLimit;
+                int prior = output.limit;
 
                 // add the name
                 output.append (name);

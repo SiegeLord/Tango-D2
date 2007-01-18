@@ -615,9 +615,8 @@ class CookieParser : StreamIterator!(char)
 
         bool parse (char[] header)
         {
-                buffer.setValidContent (header);
-                super.set (buffer);
-                return next ();
+                super.set (buffer.setContent (header));
+                return next.ptr > null;
         }
 
         /**********************************************************************

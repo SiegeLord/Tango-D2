@@ -200,11 +200,11 @@ extern (C)
 class Buffer : IBuffer
 {
         protected void[]        data;           // the raw data
-        protected uint          limit;          // limit of valid content
-        protected uint          capacity;       // maximum of limit
-        protected uint          position;       // current read position
+        protected uint          limit_;         // limit of valid content
+        protected uint          capacity_;      // maximum of limit
+        protected uint          position_;      // current read position
         protected uint          threshhold;     // whether to buffer or not
-        protected IConduit      conduit_;        // optional conduit
+        protected IConduit      conduit_;       // optional conduit
 
         
         protected static char[] overflow  = "output buffer overflow";
@@ -220,8 +220,8 @@ class Buffer : IBuffer
 
         invariant 
         {
-               assert (position <= limit);
-               assert (limit <= capacity);
+               assert (position_ <= limit_);
+               assert (limit_ <= capacity_);
         }
 
         /***********************************************************************
@@ -337,12 +337,12 @@ class Buffer : IBuffer
                 Remarks:
                 Set the backing array with all content readable. Writing
                 to this will either flush it to an associated conduit, or
-                raise an Eof condition. Use clear() to reset the
-                content (make it all writable).
+                raise an Eof condition. Use clear() to reset the content
+                (make it all writable).
 
         ***********************************************************************/
 
-        IBuffer setValidContent (void[] data)
+        IBuffer setContent (void[] data)
         {
                 return setContent (data, data.length);
         }
@@ -362,20 +362,20 @@ class Buffer : IBuffer
                 Remarks:
                 Set the backing array with some content readable. Writing
                 to this will either flush it to an associated conduit, or
-                raise an Eof condition. Use clear() to reset the
-                content (make it all writable).
+                raise an Eof condition. Use clear() to reset the content
+                (make it all writable).
 
         ***********************************************************************/
 
-        IBuffer setContent (void[] data, uint readable=0)
+        IBuffer setContent (void[] data, uint readable)
         {
                 this.data = data;
-                this.limit = readable;
-                this.capacity = data.length;
+                this.limit_ = readable;
+                this.capacity_ = data.length;
                 threshhold = data.length / 2;
 
                 // reset to start of input
-                this.position = 0;
+                this.position_ = 0;
 
                 return this;            
         }
@@ -429,7 +429,7 @@ class Buffer : IBuffer
                    // be aliased directly from within. 
                    if (size > writable)
                       {
-                      if (size > capacity)
+                      if (size > capacity_)
                           error (underflow);
                       compress ();
                       }
@@ -441,15 +441,15 @@ class Buffer : IBuffer
                       } while (size > readable);
                    }
 
-                uint i = position;
+                uint i = position_;
                 if (eat)
-                    position += size;
+                    position_ += size;
                 return data [i .. i + size];               
         }
 
         /***********************************************************************
 
-                Access buffer content
+                Copy buffer content
 
                 Params: 
                 dst = destination of the content
@@ -483,7 +483,7 @@ class Buffer : IBuffer
 
         /***********************************************************************
 
-                Access buffer content
+                Copy buffer content
 
                 Params: 
                 dst = destination of the content
@@ -582,7 +582,7 @@ class Buffer : IBuffer
                        flush ();
 
                        // check for pathological case
-                       if (length > capacity)
+                       if (length > capacity_)
                           {
                           conduit_.flush (src [0 .. length]);
                           return this;
@@ -667,7 +667,7 @@ class Buffer : IBuffer
 
         void[] slice ()
         {       
-                return  data [position .. limit];
+                return  data [position_ .. limit_];
         }
 
         /***********************************************************************
@@ -696,9 +696,9 @@ class Buffer : IBuffer
                 if (size < 0)
                    {
                    size = -size;
-                   if (position >= size)
+                   if (position_ >= size)
                       {
-                      position -= size;
+                      position_ -= size;
                       return true;
                       }
                    return false;
@@ -743,7 +743,7 @@ class Buffer : IBuffer
                        else
                           {
                           // did we start at the beginning?
-                          if (getPosition)
+                          if (position)
                               // nope - move partial token to start of buffer
                               compress ();
                           else
@@ -773,7 +773,7 @@ class Buffer : IBuffer
 
         uint readable ()
         {
-                return limit - position;
+                return limit_ - position_;
         }               
 
         /***********************************************************************
@@ -788,7 +788,7 @@ class Buffer : IBuffer
 
         uint writable ()
         {
-                return capacity - limit;
+                return capacity_ - limit_;
         }               
 
         /***********************************************************************
@@ -813,12 +813,12 @@ class Buffer : IBuffer
 
         uint write (uint delegate (void[]) dg)
         {
-                int count = dg (data [limit..capacity]);
+                int count = dg (data [limit_..capacity_]);
 
                 if (count != IConduit.Eof) 
                    {
-                   limit += count;
-                   assert (limit <= capacity);
+                   limit_ += count;
+                   assert (limit_ <= capacity_);
                    }
                 return count;
         }               
@@ -847,12 +847,12 @@ class Buffer : IBuffer
         uint read (uint delegate (void[]) dg)
         {
                 
-                int count = dg (data [position..limit]);
+                int count = dg (data [position_..limit_]);
                 
                 if (count != IConduit.Eof)
                    {
-                   position += count;
-                   assert (position <= limit);
+                   position_ += count;
+                   assert (position_ <= limit_);
                    }
                 return count;
         }               
@@ -879,12 +879,12 @@ class Buffer : IBuffer
         {
                 uint r = readable ();
 
-                if (position > 0 && r > 0)
+                if (position_ > 0 && r > 0)
                     // content may overlap ...
-                    memcpy (&data[0], &data[position], r);
+                    memcpy (&data[0], &data[position_], r);
 
-                position = 0;
-                limit = r;
+                position_ = 0;
+                limit_ = r;
                 return this;
         }               
 
@@ -1011,7 +1011,7 @@ class Buffer : IBuffer
         IBuffer flush ()
         {
                 if (conduit_)
-                    if (conduit_.flush (data [position..limit]))
+                    if (conduit_.flush (data [position_..limit_]))
                         clear();
                     else
                        error (eofWrite);
@@ -1033,7 +1033,7 @@ class Buffer : IBuffer
 
         IBuffer clear ()
         {
-                position = limit = 0;
+                position_ = limit_ = 0;
                 return this;
         }               
 
@@ -1051,7 +1051,7 @@ class Buffer : IBuffer
         {
                 if (extent <= data.length)
                    {
-                   limit = extent;
+                   limit_ = extent;
                    return true;
                    }
                 return false;
@@ -1072,9 +1072,9 @@ class Buffer : IBuffer
 
         ***********************************************************************/
 
-        uint getLimit ()
+        uint limit ()
         {
-                return limit;
+                return limit_;
         }
 
         /***********************************************************************
@@ -1092,9 +1092,9 @@ class Buffer : IBuffer
 
         ***********************************************************************/
 
-        uint getCapacity ()
+        uint capacity ()
         {
-                return capacity;
+                return capacity_;
         }
 
         /***********************************************************************
@@ -1112,9 +1112,9 @@ class Buffer : IBuffer
 
         ***********************************************************************/
 
-        uint getPosition ()
+        uint position ()
         {
-                return position;
+                return position_;
         }
 
         /***********************************************************************
@@ -1192,7 +1192,7 @@ class Buffer : IBuffer
 
         protected void copy (void *src, uint size)
         {
-                data[limit..limit+size] = src[0..size];
-                limit += size;
+                data[limit_..limit_+size] = src[0..size];
+                limit_ += size;
         }
 }

@@ -217,7 +217,7 @@ abstract class IBuffer // could be an interface, but that causes poor codegen
 
         ***********************************************************************/
 
-        abstract IBuffer setValidContent (void[] data);
+        abstract IBuffer setContent (void[] data);
 
         /***********************************************************************
         
@@ -525,7 +525,7 @@ abstract class IBuffer // could be an interface, but that causes poor codegen
 
         ***********************************************************************/
 
-        abstract uint getLimit ();               
+        abstract uint limit ();               
 
         /***********************************************************************
         
@@ -533,7 +533,7 @@ abstract class IBuffer // could be an interface, but that causes poor codegen
 
         ***********************************************************************/
 
-        abstract uint getCapacity ();               
+        abstract uint capacity ();               
 
         /***********************************************************************
         
@@ -541,7 +541,7 @@ abstract class IBuffer // could be an interface, but that causes poor codegen
 
         ***********************************************************************/
 
-        abstract uint getPosition ();               
+        abstract uint position ();               
 
         /***********************************************************************
 
