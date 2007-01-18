@@ -2,29 +2,21 @@
 
         @file servlets.d
 
-        Here's some contrived servlets to give you an idea what Mango does.
+        Here's some contrived servlets to give you an idea what Tango plus
+        Mango does.
 
         Point your Browser at http://127.0.0.1 and try the following paths:
 
         1) /example/echo should return a bunch of diagnostic stuff back to
            the browser
 
-        2) /example/ping maintains a count of how many times a particular
-           ip-address has made a request, and check to see if Google News
-           page has been updated since the last visit (per address). This
-           is a hideously contrived example of VirtualCache and HttpClient.
-           That is, it illustrates how to maintain lightweight server-side
-           state (when necessary), and how to make client-side requests to
-           a remote server. One might handle state management using cookies
-           or url-rewrites instead.
-
-        3) /admin/logger allows you to modify current Loggers and Levels,
+        2) /admin/logger allows you to modify current Loggers and Levels,
            as well as the ability to create new Logger/Level combinations.
 
-        4) all other paths are mapped to a file-request handler. Requesting
-           /index.html should return the doxygen page for Mango; all other
+        3) all other paths are mapped to a file-request handler. Requesting
+           /index.html should return the doxygen page for Tango; all other
            links should operate correctly. Be sure to start the executable
-           from the mango/obj directory, otherwise you'll probably run into
+           from the example directory, otherwise you'll probably run into
            404-Not-Found errors.
 
 
@@ -36,13 +28,8 @@
         // for sleep()
 import  tango.core.Thread;
 
-        // for InternetAddress et. al.
-import  tango.net.Uri,
-        tango.net.Socket;
-
         //for logging
 import  tango.util.log.Log,
-        tango.util.log.Admin,
         tango.util.log.Configurator;
 
         // for html responses
@@ -57,37 +44,12 @@ import  mango.net.servlet.Servlet,
         mango.net.servlet.ServletContext,
         mango.net.servlet.ServletProvider;
 
+        // hook up the log Administrator
+import  mango.net.servlet.tools.AdminServlet;
+
 
         // setup a logger for module scope
 private Logger mainLogger;
-
-
-/*******************************************************************************
-
-        an HTML wrapper built upon a PrintProtocol
-
-*******************************************************************************/
-
-class HtmlWriter : Writer
-{
-        /***********************************************************************
-
-        ***********************************************************************/
-
-        this (IWriter writer)
-        {
-                super (new PrintProtocol(writer.buffer));
-        }
-
-        /***********************************************************************
-
-        ***********************************************************************/
-
-        override IWriter newline()
-        {
-                return super.put ("<br>\r\n"c);
-        }
-}
 
 
 /*******************************************************************************
@@ -163,8 +125,9 @@ class Echo : Servlet
                 // say we're writing html
                 response.setContentType ("text/html");
 
-                // wrap an HtmlWriter around the response output ...
-                HtmlWriter output = new HtmlWriter(response.getWriter);
+                // wrap a Writer around the response output ...
+                auto output = new Writer(new PrintProtocol (response.getWriter.buffer));
+                output.newline ("<br>\r\n");
 
                 // write HTML preamble ...
                 output ("<HTML><HEAD><TITLE>Echo</TITLE></HEAD><BODY>"c);
@@ -217,16 +180,16 @@ void testServer (ServletProvider provider)
         mainLogger.info ("starting server");
 
         // bind to port 80 on a local address
-        InternetAddress addr = new InternetAddress (8080);
+        auto addr = new InternetAddress (8080);
 
         // create a (1 thread) server using the ServiceProvider to service requests
-        HttpServer server = new HttpServer (provider, addr, 1, mainLogger);
+        auto server = new HttpServer (provider, addr, 1, mainLogger);
 
         // start listening for requests (but this thread does not listen)
-        server.start ();
+        server.start;
 
         // send this thread to sleep for ever ...
-        Thread.sleep ();
+        Thread.sleep;
 
         // should never get here
         mainLogger.info ("halting server");
@@ -246,13 +209,13 @@ void testServletEngine ()
         mainLogger.info ("registering servlets");
 
         // construct a servlet-provider
-        ServletProvider sp = new ServletProvider();
+        auto sp = new ServletProvider;
 
         // create a context for example servlets
-        ServletContext example = sp.addContext (new ServletContext ("/example"));
+        auto example = sp.addContext (new ServletContext ("/example"));
 
         // create a context for admin servlets
-        ServletContext admin = sp.addContext (new AdminContext (sp, "/admin"));
+        auto admin = sp.addContext (new AdminContext (sp, "/admin"));
 
         // map echo requests to our echo servlet
         sp.addMapping ("/echo", sp.addServlet (new Echo, "echo", example));
@@ -277,6 +240,7 @@ void main ()
         Configurator ();
         mainLogger = Log.getLogger ("tango.servlets");
         mainLogger.setLevel (mainLogger.Level.Info);
+            testServletEngine();
 
         try {
             testServletEngine();

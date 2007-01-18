@@ -28,12 +28,14 @@ private import  tango.net.Uri,
                 tango.net.InternetAddress;
 
 private import  tango.net.http.HttpParams,  
-                tango.net.http.HttpWriter,
                 tango.net.http.HttpHeaders,
                 tango.net.http.HttpTriplet,
                 tango.net.http.HttpCookies,                
                 tango.net.http.HttpResponses;
               
+private import  tango.io.protocol.Writer,
+                tango.io.protocol.PrintProtocol;
+
 private import  tango.text.stream.LineIterator;
 
 private import  Integer = tango.text.convert.Integer;
@@ -110,6 +112,9 @@ class HttpClient
         // use HTTP v1.0 ?
         private static const char[] DefaultHttpVersion = "HTTP/1.0";
 
+        // end of line sequence
+        static const char[] Eol = "\r\n";
+        
         // standard set of request methods ...
         static const RequestMethod      Get = {"GET"},
                                         Put = {"PUT"},
@@ -406,7 +411,7 @@ class HttpClient
                     output = outputBuffer (socket);
 
                     // bind a writer to the output
-                    auto emit = new HttpWriter (output);
+                    auto emit = new Writer (new PrintProtocol (output));
 
                     // setup a Host header
                     if (headersOut.get (HttpHeader.Host, null) is null)
@@ -446,9 +451,9 @@ class HttpClient
                     // complete the request line, and emit headers too
                     emit (' ')
                          (DefaultHttpVersion)
-                         (emit.eol)
+                         (Eol)
                          (headersOut)
-                         (emit.eol);
+                         (Eol);
 
                     // user has additional data to send?
                     if (pump)

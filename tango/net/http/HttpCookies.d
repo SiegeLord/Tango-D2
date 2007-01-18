@@ -16,11 +16,10 @@ private import  tango.io.Buffer;
 
 private import  tango.stdc.ctype;
 
-private import  tango.net.http.HttpWriter;
-
 private import  tango.net.http.HttpHeaders;
 
-private import  tango.io.protocol.model.IWriter;
+private import  tango.io.protocol.Writer,
+                tango.io.protocol.PrintProtocol;
 
 private import  tango.text.stream.StreamIterator;
 
@@ -388,7 +387,7 @@ class HttpCookiesView : IWritable
 
 class HttpCookies
 {
-        private HttpWriter      writer;
+        private Writer          writer;
         private HttpHeaders     headers;
 
         /**********************************************************************
@@ -402,7 +401,7 @@ class HttpCookies
         this (HttpHeaders headers)
         {
                 this.headers = headers;
-                writer = new HttpWriter (headers.getOutputBuffer);
+                writer = new Writer (new PrintProtocol(headers.getOutputBuffer));
         }
 
         /**********************************************************************
