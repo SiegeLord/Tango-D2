@@ -23,13 +23,14 @@
         with D slices:
         ---
         auto text = "happy:faces";
+        
         assert (text[0 .. locate (text, ':')] == "happy");
         
-        text = "happy";
-        assert (text[0 .. locate (text, '!')] == "happy");
+        assert (text[0 .. locate (text, '!')] == "happy:faces");
         ---
 
-        For trivial lookup cases, use the contains() function instead:
+        The contains() function is more convenient for trivial lookup
+        cases:
         ---
         if (contains ("fubar", '!'))
             ...
@@ -38,8 +39,8 @@
         Note that where some functions expect a uint as an argument, the
         D template-matching algorithm will fail where an int is provided
         instead. This is the typically the cause of "template not found"
-        errors. Also note that name overloading is not supported by IFTI
-        at this time, so is not applicable here.
+        errors. Also note that name overloading is not supported cleanly
+        by IFTI at this time, so is not applied here.
 
 
         Applying the D "import alias" mechanism to this module is highly
