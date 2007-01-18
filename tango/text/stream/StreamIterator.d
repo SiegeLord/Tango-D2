@@ -18,20 +18,25 @@ private import Text = tango.text.Util;
 
 /*******************************************************************************
 
-        The base class for a set of pattern tokenizers.
+        The base class for a set of stream iterators. These operate
+        upon a buffered input stream, and are designed to deal with
+        partial content. That is, stream iterators go to work the
+        moment any data becomes available in the buffer. Contrast
+        this behaviour with the tango.text.Util iterators, which
+        operate upon the extent of an array.
 
-        There are two types of tokenizers supported ~ exclusive and
+        There are two types of iterators supported; exclusive and
         inclusive. The former are the more common kind, where a token
         is delimited by elements that are considered foreign. Examples
         include space, comma, and end-of-line delineation. Inclusive
         tokens are just the opposite: they look for patterns in the
-        text that should be part of the token itself ~ everything else
+        text that should be part of the token itself - everything else
         is considered foreign. Currently the only inclusive token type
         is exposed by RegexToken; everything else is of the exclusive
         variety.
 
-        The content provided to Tokenizers is supposed to be entirely
-        read-only. All current tokenizers abide by this rule, but it's
+        The content provided to these iterators is intended to be fully
+        read-only. All current tokenizers abide by this rule, but it is
         possible a user could mutate the content through a token slice.
         To enforce the desired read-only aspect, the code would have to
         introduce redundant copying or the compiler would have to support
@@ -146,12 +151,12 @@ class StreamIterator(T)
 
         int opApply (int delegate(inout T[]) dg)
         {
-                int result = 0;
-
-                while (next)
+                T[]     token;
+                int     result;
+                
+                while ((token = next).ptr)
                       {
-                      T[] t = get ();
-                      result = dg (t);
+                      result = dg (token);
                       if (result)
                           break;
                       }
@@ -160,15 +165,38 @@ class StreamIterator(T)
 
         /***********************************************************************
 
-                Locate the next token.
+                Locate the next token. Returns the token if found, null
+                otherwise. Null indicates an end of stream condition. To
+                sweep a conduit for lines using method next():
+                
+                ---
+                auto lines = new LineIterator (new FileConduit("myfile"));
+                while (lines.next)
+                       Cout (lines.get).newline;
+                ---
 
-                Returns true if a token is found; false otherwise
+                Alternatively, we can extract one line from a conduit:
+                
+                ---
+                auto line = (new LineIterator(new FileConduit("myfile"))).next;
+                ---
+
+                The difference between next() and foreach() is that the
+                latter processes all tokens in one go, whereas the former
+                processes in a piecemeal fashion. To wit:
+
+                ---
+                foreach (line; new LineIterator (new FileConduit("myfile"))
+                         Cout(line).newline;
+                ---
 
         ***********************************************************************/
 
-        final bool next ()
+        final T[] next ()
         {
-                return buffer.next (&scan) || slice.length > 0;
+                if (buffer.next (&scan) || slice.length > 0)
+                    return get();
+                return null;
         }
 
         /***********************************************************************
