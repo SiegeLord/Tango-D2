@@ -1,6 +1,6 @@
 /*******************************************************************************
 
-        copyright:      Copyright (c) 2004 Kris Bell. All rights reserved
+        copyright:      Copyright (c) 2007 Kris Bell. All rights reserved
 
         license:        BSD style: $(LICENSE)
 
@@ -30,23 +30,23 @@ class PrintProtocol : IProtocol
         private static TypeInfo[] revert = 
         [
                 typeid(void), // byte.sizeof,
+                typeid(char), // char.sizeof,
                 typeid(bool), // bool.sizeof,
                 typeid(byte), // byte.sizeof,
                 typeid(ubyte), // ubyte.sizeof,
+                typeid(wchar), // wchar.sizeof,
                 typeid(short), // short.sizeof,
                 typeid(ushort), // ushort.sizeof,
+                typeid(dchar), // dchar.sizeof,
                 typeid(int), // int.sizeof,
                 typeid(uint), // uint.sizeof,
+                typeid(float), // float.sizeof,
                 typeid(long), // long.sizeof,
                 typeid(ulong), // ulong.sizeof,
-                typeid(float), // float.sizeof,
                 typeid(double), // double.sizeof,
                 typeid(real), // real.sizeof,
-                typeid(char), // char.sizeof,
-                typeid(wchar), // wchar.sizeof,
-                typeid(dchar), // dchar.sizeof,
-                typeid(void*), // (void*).sizeof,
                 typeid(Object), // (Object*).sizeof,
+                typeid(void*), // (void*).sizeof,
         ];
 
         /***********************************************************************
