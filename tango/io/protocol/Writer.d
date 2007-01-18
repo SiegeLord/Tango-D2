@@ -84,7 +84,9 @@ class Writer : IWriter
         
         private IProtocol.ArrayWriter   arrays;
         private IProtocol.Writer        elements;
-        
+
+        // end of line sequence
+        private char[]                  eol = FileConst.NewlineString;
 
         /***********************************************************************
         
@@ -144,7 +146,19 @@ class Writer : IWriter
 
         IWriter newline ()
         {  
-                return put (FileConst.NewlineString);
+                return put (eol);
+        }
+
+        /***********************************************************************
+        
+                set the newline sequence
+                
+        ***********************************************************************/
+
+        IWriter newline (char[] eol)
+        {  
+                this.eol = eol;
+                return this;
         }
 
         /***********************************************************************

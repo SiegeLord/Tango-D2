@@ -39,6 +39,7 @@ abstract class IProtocol
                 Double,
                 Real,
                 Obj,
+                Pointer,
         }
         
         /***********************************************************************

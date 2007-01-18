@@ -1,6 +1,6 @@
 /*******************************************************************************
 
-        copyright:      Copyright (c) 2004 Kris Bell. All rights reserved
+        copyright:      Copyright (c) 2007 Kris Bell. All rights reserved
 
         license:        BSD style: $(LICENSE)
 
