@@ -177,13 +177,35 @@ class FileConduit : DeviceConduit, DeviceConduit.Seek
                                 };
 
         /***********************************************************************
+
+            Predefined styles
         
         ***********************************************************************/
 
         const Style ReadExisting = {DeviceConduit.Access.Read, Open.Exists};
+
+        /***********************************************************************
+        
+        ***********************************************************************/
+
         const Style WriteTruncate = {DeviceConduit.Access.Write, Open.Truncate};
+
+        /***********************************************************************
+        
+        ***********************************************************************/
+
         const Style WriteAppending = {DeviceConduit.Access.Write, Open.Append};
+
+        /***********************************************************************
+        
+        ***********************************************************************/
+
         const Style ReadWriteCreate = {DeviceConduit.Access.ReadWrite, Open.Create}; 
+
+        /***********************************************************************
+        
+        ***********************************************************************/
+
         const Style ReadWriteExisting = {DeviceConduit.Access.ReadWrite, Open.Exists}; 
 
 
