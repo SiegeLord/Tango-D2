@@ -113,7 +113,10 @@ struct Console
                 {
                         auto len = buffer_.readable;
                         if (len is 0)
-                            buffer_.fill;
+                           {
+                           buffer_.fill;
+                           len = buffer_.readable;
+                           }
 
                         auto x = cast(char[]) buffer_.slice (len);
                         return (copy ? x.dup : x);
