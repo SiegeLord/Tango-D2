@@ -29,3 +29,4 @@ module tango.math.Special;
 public import tango.math.GammaFunction;
 public import tango.math.ErrorFunction;
 public import tango.math.Bessel;
+public import tango.math.ChiSquare;

@@ -61,8 +61,8 @@ unittest {
  * betaIncomplete(a, b, x) = &Gamma;(a+b)/(&Gamma;(a) &Gamma;(b)) *
  * $(INTEGRATE 0, x) $(POWER t, a-1)$(POWER (1-t),b-1) dt
  *
- * and is the same as the the cumulative distribution function:
-
+ * and is the same as the the cumulative distribution function.
+ *
  * The domain of definition is 0 <= x <= 1.  In this
  * implementation a and b are restricted to positive values.
  * The integral from x to 1 may be obtained by the symmetry
@@ -143,10 +143,10 @@ real betaIncomplete(real aa, real bb, real xx )
         y += t + logGamma(a+b) - logGamma(a) - logGamma(b);
         y += log(w/a);
 
-        // DAC: There was a bug in Cephes at this point.
-        // Problems occur for y > MAXLOG, not y < MINLOG.
         t = exp(y);
-/+      // Cephes bug
+/+
+        // There seems to be a bug in Cephes at this point.
+        // Problems occur for y > MAXLOG, not y < MINLOG.
         if( y < MINLOG ) {
             t = 0.0L;
         } else {
@@ -441,8 +441,6 @@ unittest { // also tested by the normal distribution
 //    real testpoint1 = betaIncomplete(1e-10, 5e20, 8e-21);
 //    assert(testpoint1 == 0x1.ffff_ffff_c906_404cp-1L);
 
-
-
     assert(betaIncomplete(0.01, 327726.7, 0.545113) == 1.0);
     assert(betaIncompleteInv(0.01, 8e-48, 5.45464e-20)==1-real.epsilon);
     assert(betaIncompleteInv(0.01, 8e-48, 9e-26)==1-real.epsilon);
@@ -696,11 +694,9 @@ real betaDistPowerSeries(real a, real b, real x )
  */
 real studentsDistribution(int nu, real t)
 {
-  // Author: Don Clugston. Public domain.
   /* Based on code from Cephes Math Library Release 2.3:  January, 1995
      Copyright 1984, 1995 by Stephen L. Moshier
  */
-
 
     if ( nu <= 0 ) return real.nan; // domain error -- or should it return 0?
     if ( t == 0.0 )  return 0.5;
@@ -771,7 +767,6 @@ real studentsDistribution(int nu, real t)
  * p  = probability. 0 < p < 1
  */
 real studentsDistributionInv(int nu, real p )
-// Author: Don Clugston. Public domain.
 in {
    assert(nu>0);
    assert(p>=0.0L && p<=1.0L);
@@ -1033,8 +1028,7 @@ unittest {
 }
 }
 
-/****************************
- *  Inverse binomial distribution
+/** Inverse binomial distribution
  *
  * Finds the event probability p such that the sum of the
  * terms 0 through k of the Binomial probability density
@@ -1081,5 +1075,57 @@ unittest {
     assert(feqrel(binomialDistributionInv(0, 24, w), 0.637L)>=real.mant_dig-3);
     w = binomialDistributionInv(0, 59, 0.962L);
     assert(feqrel(binomialDistribution(0, 59, w), 0.962L)>=real.mant_dig-5);
+}
+}
+
+/** Negative binomial distribution and its inverse
+ *
+ * Returns the sum of the terms 0 through k of the negative
+ * binomial distribution:
+ *
+ * $(BIGSUM j=0, k) $(CHOOSE n+j-1, j-1) $(POWER p, n) $(POWER (1-p), j)
+ *
+ * In a sequence of Bernoulli trials, this is the probability
+ * that k or fewer failures precede the n-th success.
+ *
+ * The arguments must be positive, with 0 < p < 1 and r>0.
+ *
+ * The inverse finds the argument y such
+ * that negativeBinomialDistribution(k,n,y) is equal to p.
+ *
+ * The Geometric Distribution is a special case of the negative binomial
+ * distribution.
+ * -----------------------
+ * geometricDistribution(k, p) = negativeBinomialDistribution(k, 1, p);
+ * -----------------------
+ * References:
+ * $(LINK http://mathworld.wolfram.com/NegativeBinomialDistribution.html)
+ */
+
+real negativeBinomialDistribution(int k, int n, real p )
+in {
+   assert(p>=0 && p<=1.0); // domain error
+   assert(k>=0);
+}
+body{
+    if ( k == 0 ) return pow( p, n );
+    return betaIncomplete( n, k + 1, p );
+}
+
+/** ditto */
+real negativeBinomialDistributionInv(int k, int n, real p )
+in {
+   assert(p>=0 && p<=1.0); // domain error
+   assert(k>=0);
+}
+body{
+    return betaIncompleteInv(n, k + 1, p);
+}
+
+debug(UnitTest) {
+unittest {
+  // Value obtained by sum of terms of MS Excel 2003's NEGBINOMDIST.
+  assert( fabs(negativeBinomialDistribution(10, 20, 0.2) - 3.830_52E-08)< 0.000_005e-08);
+  assert(feqrel(negativeBinomialDistributionInv(14, 208, negativeBinomialDistribution(14, 208, 1e-4L)), 1e-4L)>=real.mant_dig-3);
 }
 }
