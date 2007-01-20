@@ -159,7 +159,7 @@ class DeviceConduit : Conduit
                         if (handle)
                             if (! CloseHandle (handle))
                                   error ();
-                        handle = null;
+                        handle = cast(HANDLE) null;
                 }
 
                 /***************************************************************

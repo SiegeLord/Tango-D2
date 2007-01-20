@@ -399,11 +399,11 @@ class FileProxy
                         version (Win32SansUnicode)
                                  h = CreateFileA (path.cString.ptr, GENERIC_WRITE, 
                                                   0, null, CREATE_ALWAYS, 
-                                                  FILE_ATTRIBUTE_NORMAL, null);
+                                                  FILE_ATTRIBUTE_NORMAL, cast(HANDLE) 0);
                              else
                                 h = CreateFileW (name16.ptr, GENERIC_WRITE, 
                                                  0, null, CREATE_ALWAYS, 
-                                                 FILE_ATTRIBUTE_NORMAL, null);
+                                                 FILE_ATTRIBUTE_NORMAL, cast(HANDLE) 0);
 
                         if (h == INVALID_HANDLE_VALUE)
                             exception ();

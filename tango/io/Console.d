@@ -334,7 +334,7 @@ struct Console
                                       handle = CreateFileA (f[device.id].ptr, 
                                                GENERIC_READ | GENERIC_WRITE,  
                                                FILE_SHARE_READ | FILE_SHARE_WRITE, 
-                                               null, OPEN_EXISTING, 0, null);
+                                               null, OPEN_EXISTING, 0, cast(HANDLE) 0);
                                 if (! handle)
                                       error ();
 
