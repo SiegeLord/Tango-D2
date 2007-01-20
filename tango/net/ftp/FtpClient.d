@@ -10,7 +10,7 @@
 
 *******************************************************************************/
 
-module tango.net.ftp.Ftp;
+module tango.net.ftp.FtpClient;
 
 private import tango.core.Epoch;
 private import tango.net.Socket;
@@ -1870,7 +1870,7 @@ debug (UnitTest )
             foreach ( entry;dirList )
                 {
 
-                    Stdout("File :")(entry.name)("\tSize :")(entry.size)().newline;
+                    Stdout("File :")(entry.name)("\tSize :")(entry.size).newline;
 
                 }
 
@@ -1882,7 +1882,7 @@ debug (UnitTest )
             foreach ( entry;dirList )
                 {
 
-                    Stdout("File :")(entry.name)("\tSize :")(entry.size)().newline;
+                    Stdout("File :")(entry.name)("\tSize :")(entry.size).newline;
 
                 }
 
@@ -1892,7 +1892,7 @@ debug (UnitTest )
             void progress( size_t pos )
                 {
 
-                    Stdout.formatln("Byte {0} of {1}",pos,size )();
+                    Stdout.formatln("Byte {0} of {1}",pos,size);
 
                 }
 
