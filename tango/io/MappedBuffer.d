@@ -83,7 +83,7 @@ class MappedBuffer : Buffer
 
                         auto handle = cast(HANDLE) host.fileHandle();
                         mmFile = CreateFileMappingA (handle, null, flags, 0, 0, null);
-                        if (mmFile is null)
+                        if (mmFile is cast(HANDLE) null)
                             host.error ();
 
                         flags = FILE_MAP_READ;
@@ -112,7 +112,7 @@ class MappedBuffer : Buffer
                         if (mmFile)
                             CloseHandle (mmFile);       
 
-                        mmFile = null;
+                        mmFile = cast(HANDLE) null;
                         base = null;
                 }
 
