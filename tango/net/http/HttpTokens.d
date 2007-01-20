@@ -289,7 +289,7 @@ class HttpTokens : IWritable
                       {
                       auto j = (inclusive) ? i+1 : i;
                       element.name = s[0 .. j];
-                      element.value = s[i .. $];
+                      element.value = (++i < s.length) ? s[i .. $] : null;
                       return true;
                       }
                    else
