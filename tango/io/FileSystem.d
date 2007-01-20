@@ -17,7 +17,6 @@ private import  tango.sys.Common;
 private import  tango.io.FilePath,
                 tango.io.Exception;
 
-
 version (Win32)
         {
         private import Utf = tango.text.convert.Utf;
@@ -142,7 +141,7 @@ class FileSystem
                                 wchar[MAX_PATH+1] tmp1 = void;
                                 wchar[MAX_PATH+1] tmp2 = void;
 
-                                if (! SetCurrentDirectoryW (Utf.toUtf16(src.cString, tmp1).ptr, Utf.toUtf16(dst.cString, tmp2), false))
+                                if (! CopyFileW (Utf.toUtf16(src.cString, tmp1).ptr, Utf.toUtf16(dst.cString, tmp2).ptr, false))
                                       exception ("Failed to copy file " ~ src.toUtf8 ~ " to " ~ dst.toUtf8);
                                 }
                 }
