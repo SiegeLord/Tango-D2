@@ -1963,7 +1963,7 @@ else
                     end   = buf.length,
                     mid   = end / 2;
 
-            while( beg + 1 < end )
+            while( beg < end )
             {
                 if( pred( buf[mid], pat ) )
                     beg = mid + 1;
@@ -2047,7 +2047,7 @@ else
                     end   = buf.length,
                     mid   = end / 2;
 
-            while( beg + 1 < end )
+            while( beg < end )
             {
                 if( !pred( pat, buf[mid] ) )
                     beg = mid + 1;
