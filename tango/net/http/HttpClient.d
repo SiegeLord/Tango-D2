@@ -441,11 +441,12 @@ class HttpClient
                         else 
                            if (method is Post && pump is null)
                               {
+                              // we're POSTing query text - add default info
                               if (headersOut.get (HttpHeader.ContentType, null) is null)
                                   headersOut.add (HttpHeader.ContentType, "application/x-www-form-urlencoded");
 
-                              if (headersOut.get   (HttpHeader.ContentLength, null) is null)
-                                 headersOut.addInt (HttpHeader.ContentLength, query.length);
+                              if (headersOut.get (HttpHeader.ContentLength, null) is null)
+                                  headersOut.addInt (HttpHeader.ContentLength, query.length);
                               }
                     
                     // complete the request line, and emit headers too
