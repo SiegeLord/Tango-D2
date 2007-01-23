@@ -28,7 +28,7 @@ int utime(char*, utimbuf*);
 
 version( linux )
 {
-    struct utimebuf
+    struct utimbuf
     {
         time_t  actime;
         time_t  modtime;
