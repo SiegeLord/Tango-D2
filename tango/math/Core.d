@@ -174,30 +174,37 @@ unittest
 }
 
 private {
-    // Implicitly convert to the smallest type which can store both T and U.
-template SharedComparisonType(T, U) {
-    static if (is( typeof( (T x, U y){ return y<x? y: x;}) Q == return))
-        alias Q SharedComparisonType;
+    // Return the type which would be returned by a max or min operation
+template minmaxtype(T...){
+    static if(T.length == 1) alias typeof(T[0]) minmaxtype;
+    else static if(T.length > 2)
+        alias minmaxtype!(minmaxtype!(T[0..2]), T[2..$]) minmaxtype;
+    else static if(is( typeof( (T[0] x, T[1] y){ return y > x ? y : x;})
+    Q == return))
+        alias Q minmaxtype;
 }
 }
 
-
-/** Return the minimum of x and y.
+/** Return the minimum of the supplied arguments.
  *
- * Note: If x and y are floating-point numbers, and either is a NaN,
- * x will be returned.
+ * Note: If the arguments are floating-point numbers, and at least one is a NaN,
+ * the result is undefined.
  */
-SharedComparisonType!(T, U) min(T, U)(T x, U y) {
-    return y<x? y : x;
+minmaxtype!(T) min(T...)(T arg){
+    static if(arg.length == 1) return arg[0];
+    else static if(arg.length == 2) return arg[1] < arg[0] ? arg[1] : arg[0];
+    static if(arg.length > 2) return min(arg[1] < arg[0] ? arg[1] : arg[0], arg[2..$]);
 }
 
-/** Return the maximum of x and y.
+/** Return the maximum of the supplied arguments.
  *
- * Note: If x and y are floating-point numbers, and either is a NaN,
- * x will be returned.
+ * Note: If the arguments are floating-point numbers, and at least one is a NaN,
+ * the result is undefined.
  */
-SharedComparisonType!(T,U) max(T, U)(T x, U y) {
-    return y>x? y : x;
+minmaxtype!(T) max(T...)(T arg){
+    static if(arg.length == 1) return arg[0];
+    else static if(arg.length == 2) return arg[1] > arg[0] ? arg[1] : arg[0];
+    static if(arg.length > 2) return max(arg[1] > arg[0] ? arg[1] : arg[0], arg[2..$]);
 }
 
 /** Returns the minimum number of x and y.
