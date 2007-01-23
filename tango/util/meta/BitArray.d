@@ -34,32 +34,32 @@ template stringOfZeroBytes(uint len)
  *
  * If the length of the array is less than n, it will be expanded.
  */
-template bitArraySetBit(char [] bitarray, uint n)
+template bitarraySetBit(char [] bitarray, uint n)
 {
     static if (8*bitarray.length>= n) {
-        const char [] bitArraySetBit = bitarray[0..(n/8)] ~ cast(char)(cast(ubyte)bitarray[n/8] | (1<<(n%8))) ~ bitarray[(n/8)+1..$];
+        const char [] bitarraySetBit = bitarray[0..(n/8)] ~ cast(char)(cast(ubyte)bitarray[n/8] | (1<<(n%8))) ~ bitarray[(n/8)+1..$];
     } else {
-        const char [] bitArraySetBit = bitarray ~ stringOfZeroBytes!(n/8-bitarray.length) ~ cast(char)(1<<(n%8));
+        const char [] bitarraySetBit = bitarray ~ stringOfZeroBytes!(n/8-bitarray.length) ~ cast(char)(1<<(n%8));
     }
 }
 
 // Unit tests
 static assert(stringOfZeroBytes!(59).length == 59);
-static assert(bitArraySetBit!("\x01", 3) == "\x09");
-static assert(bitArraySetBit!("\x04", 7)== "\x84");
-static assert(bitArraySetBit!("\x34", 20)== "\x34\x00\x10");
-static assert(bitArraySetBit!("", 20)== "\x00\x00\x10");
+static assert(bitarraySetBit!("\x01", 3) == "\x09");
+static assert(bitarraySetBit!("\x04", 7)== "\x84");
+static assert(bitarraySetBit!("\x34", 20)== "\x34\x00\x10");
+static assert(bitarraySetBit!("", 20)== "\x00\x00\x10");
 
 /** Set all bits between 'from' and 'to' in the bitarray.
  *
  */
-template bitArraySetBitRange(char [] bitarray, uint from, uint to)
+template bitarraySetBitRange(char [] bitarray, uint from, uint to)
 {
     static if (from==to) {
-        const char [] bitArraySetRange = bitArraySetBit!(bitarray, from);
+        const char [] bitarraySetRange = bitarraySetBit!(bitarray, from);
     } else {
         // Set the highest bit first, so that the array
-        const char [] bitArraySetRange = bitArraySetBitRange!(bitArraySetBit!(bitarray, to), from, to-1);
+        const char [] bitarraySetRange = bitarraySetBitRange!(bitarraySetBit!(bitarray, to), from, to-1);
     }
 }
 
