@@ -13,7 +13,11 @@
 module tango.sys.Common;
 
 version (Win32)
-         public import tango.sys.windows.minwin;
+        {
+        //public import tango.sys.win32.Types;
+        //public import tango.sys.win32.Functions;
+        public import tango.sys.windows.minwin;
+        }
 
 version (linux)
         {
