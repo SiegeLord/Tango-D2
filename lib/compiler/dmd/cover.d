@@ -14,7 +14,7 @@
 private
 {
     version( Win32 )
-        import tango.sys.windows.minwin;
+        import tango.sys.win32.Common;
     else version( linux )
         import tango.sys.linux.linux;
     import tango.core.Intrinsic;

@@ -7028,6 +7028,23 @@ alias FLOATING_SAVE_AREA _FLOATING_SAVE_AREA;
 alias FLOATING_SAVE_AREA TFLOATINGSAVEAREA;
 alias FLOATING_SAVE_AREA* PFLOATINGSAVEAREA;
 
+enum
+{
+//
+// The following flags control the contents of the CONTEXT structure.
+//
+	CONTEXT_i386 = 0x00010000,    // this assumes that i386 and
+	CONTEXT_i486 = 0x00010000,    // i486 have identical context records
+
+	CONTEXT_CONTROL =         (CONTEXT_i386 | 0x00000001), // SS:SP, CS:IP, FLAGS, BP
+	CONTEXT_INTEGER =         (CONTEXT_i386 | 0x00000002), // AX, BX, CX, DX, SI, DI
+	CONTEXT_SEGMENTS =        (CONTEXT_i386 | 0x00000004), // DS, ES, FS, GS
+	CONTEXT_FLOATING_POINT =  (CONTEXT_i386 | 0x00000008), // 387 state
+	CONTEXT_DEBUG_REGISTERS = (CONTEXT_i386 | 0x00000010), // DB 0-3,6,7
+
+	CONTEXT_FULL = (CONTEXT_CONTROL | CONTEXT_INTEGER | CONTEXT_SEGMENTS),
+}
+
 struct CONTEXT
 {
 	DWORD ContextFlags;
@@ -7361,7 +7378,7 @@ int bp_DDELN_fDeferUpd = (14);
 int bm_DDELN_fAckReq = (0x8000);
 int bp_DDELN_fAckReq = (15);
 }
-        
+
 struct DDEML_MSG_HOOK_DATA
 {
 	UINT uiLo;
@@ -13253,10 +13270,10 @@ alias HANDLE HMONITOR;
 
 struct tagMONITORINFOEX
 {
-	DWORD  cbSize; 
-	RECT   rcMonitor; 
-	RECT   rcWork; 
-	DWORD  dwFlags; 
+	DWORD  cbSize;
+	RECT   rcMonitor;
+	RECT   rcWork;
+	DWORD  dwFlags;
 	TCHAR  szDevice[CCHDEVICENAME];
 }
 alias tagMONITORINFOEX MONITORINFOEX;

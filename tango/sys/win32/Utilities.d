@@ -8,6 +8,7 @@ module tango.sys.win32.Utilities;
 /+ Imports +/
 private
 {
+    import tango.stdc.string;
 	import tango.sys.win32.Types;
 	import tango.sys.win32.Common;
 }
@@ -31,27 +32,27 @@ alias wchar* PWIDECHAR;
 /+ Functions +/
 ushort MAKEWORD(ubyte A, ubyte B)
 {
-	return A | (B << 8);
+	return cast(ushort)(A | (B << 8));
 }
 uint MAKELONG(ushort A, ushort B)
 {
-	return A | (B << 16);
+	return cast(uint)(A | (B << 16));
 }
 ushort HIWORD(uint L)
 {
-	return L >> 16;
+	return cast(ushort)(L >> 16);
 }
 ushort LOWORD(uint L)
 {
-	return L & 0xFFFF;
+	return cast(ushort)(L & 0xFFFF);
 }
 ubyte HIBYTE(ushort W)
 {
-	return W >> 8;
+	return cast(ubyte)(W >> 8);
 }
 ubyte LOBYTE(ushort W)
 {
-	return W & 0xFF;
+	return cast(ubyte)(W & 0xFF);
 }
 HANDLE GlobalDiscard(HANDLE h)
 {
@@ -103,19 +104,19 @@ DWORD MAKEROP4(DWORD fore, DWORD back)
 }
 ubyte GetKValue(COLORREF cmyk)
 {
-	return cmyk & 0xFF;
+	return cast(ubyte)(cmyk & 0xFF);
 }
 ubyte GetYValue(COLORREF cmyk)
 {
-	return (cmyk >> 8) & 0xFF;
+	return cast(ubyte)((cmyk >> 8) & 0xFF);
 }
 ubyte GetMValue(COLORREF cmyk)
 {
-	return (cmyk >> 16) & 0xFF;
+	return cast(ubyte)((cmyk >> 16) & 0xFF);
 }
 ubyte GetCValue(COLORREF cmyk)
 {
-	return (cmyk >> 24) & 0xFF;
+	return cast(ubyte)((cmyk >> 24) & 0xFF);
 }
 COLORREF CMYK(ubyte c, ubyte m, ubyte y, ubyte k)
 {
@@ -127,7 +128,7 @@ COLORREF RGB(ubyte r, ubyte g, ubyte b)
 }
 COLORREF PALETTERGB(ubyte r, ubyte g, ubyte b)
 {
-	return 0x02000000 | RGB(r, g, b); 
+	return 0x02000000 | RGB(r, g, b);
 }
 COLORREF PALETTEINDEX(ushort i)
 {
@@ -135,15 +136,15 @@ COLORREF PALETTEINDEX(ushort i)
 }
 ubyte GetRValue(COLORREF rgb)
 {
-	return rgb & 0xFF;
+	return cast(ubyte)(rgb & 0xFF);
 }
 ubyte GetGValue(COLORREF rgb)
 {
-	return (rgb >> 8) & 0xFF;
+	return cast(ubyte)((rgb >> 8) & 0xFF);
 }
 ubyte GetBValue(COLORREF rgb)
 {
-	return (rgb >> 16) & 0xFF;
+	return cast(ubyte)((rgb >> 16) & 0xFF);
 }
 WPARAM MAKEWPARAM(ushort l, ushort h)
 {
@@ -173,11 +174,11 @@ HWND CreateWindowW(PWIDECHAR b, PWIDECHAR c, DWORD d, int e,
 }
 HWND CreateDialogA(HINST a, PANSICHAR b, HWND c, DLGPROC d)
 {
-	return CreateDialogParamA(a, b, c, d, 0);	
+	return CreateDialogParamA(a, b, c, d, 0);
 }
 HWND CreateDialogW(HINST a, PWIDECHAR b, HWND c, DLGPROC d)
 {
-	return CreateDialogParamW(a, b, c, d, 0);	
+	return CreateDialogParamW(a, b, c, d, 0);
 }
 HWND CreateDialogIndirectA(HINST a, DLGTEMPLATE* b, HWND c, DLGPROC d)
 {
@@ -202,12 +203,6 @@ int DialogBoxIndirectA(HINST a, DLGTEMPLATE* b, HWND c, DLGPROC d)
 int DialogBoxIndirectW(HINST a, DLGTEMPLATE* b, HWND c, DLGPROC d)
 {
 	return DialogBoxIndirectParamW(a, b, c, d, 0);
-}
-extern(C)
-{
-	void* memset(void*, int, uint);
-	void* memmove(void*, void*, uint);
-	void* memcpy(void*, void*, uint);
 }
 void ZeroMemory(void* dest, uint len)
 {

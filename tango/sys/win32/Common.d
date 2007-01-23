@@ -6,7 +6,7 @@ module tango.sys.win32.Common;
 */
 
 /+ Imports +/
-private
+public
 {
 	import tango.sys.win32.Types;
 }

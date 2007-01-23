@@ -59,24 +59,10 @@ version( Win32 )
 {
     private
     {
-        //import tango.sys.windows.minwin;
-        alias bool BOOL;
-        alias int DWORD;
-        alias void* PVOID;
-        alias void* HANDLE;
+        import tango.sys.win32.Common;
+        import tango.sys.win32.Utilities;
 
-        //
-        // decls not in minwin
-        //
-        extern (Windows)
-        {
-            DWORD TlsAlloc();
-            PVOID TlsGetValue(DWORD);
-            BOOL TlsSetValue(DWORD,PVOID);
-
-            const DWORD STILL_ACTIVE        = 0x103;
-            const DWORD TLS_OUT_OF_INDEXES  = 0xFFFFFFFF;
-       }
+        const DWORD TLS_OUT_OF_INDEXES  = 0xFFFFFFFF;
 
         //
         // avoid multiple imports via tango.sys.windows.process
