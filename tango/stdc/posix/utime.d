@@ -17,7 +17,7 @@ extern (C):
 // Required
 //
 /*
-struct utimebuf
+struct utimbuf
 {
     time_t  actime;
     time_t  modtime;
