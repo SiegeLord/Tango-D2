@@ -108,8 +108,8 @@ clean :
 
 install :
 	$(MD) $(INC_DEST)
-	find . -name "*.di" | cpio -p -u -d $(INC_DEST)
+	find . -name "*.di" -exec cp -f {} $(INC_DEST){} \;
 	$(MD) $(DOC_DEST)
-	find . -name "*.html" | cpio -p -u -d $(DOC_DEST)
+	find . -name "*.html" -exec cp -f {} $(DOC_DEST){} \;
 	$(MD) $(LIB_DEST)
-	find . -name "libtango*.a" | cpio -p -u -d $(LIB_DEST)
+	find . -name "libtango*.a" -exec cp -f {} $(LIB_DEST){} \;
