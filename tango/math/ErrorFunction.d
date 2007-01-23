@@ -155,6 +155,13 @@ real normalDistribution(real a)
     }
 }
 
+debug(UnitTest) {
+unittest {
+assert(fabs(normalDistribution(1L) - (0.841344746068543))< 0.0000000000000005);
+assert(isIdentical(normalDistribution(NaN("asdf")), NaN("asdf")));
+}
+}
+
 
 /**
  *  Complementary error function
@@ -284,6 +291,7 @@ real erf(real x)
     return x * poly(z, T) / poly(z, U);
 }
 
+debug(UnitTest) {
 unittest {
    // High resolution test points.
     const real erfc0_250 = 0.723663330078125 + 1.0279753638067014931732235184287934646022E-5;
@@ -319,6 +327,7 @@ unittest {
     assert(isIdentical(erfc(real.infinity),0.0));
     assert(erfc(-real.infinity) == 2.0);
     assert(erfc(0) == 1.0);
+}
 }
 
 /*
@@ -369,11 +378,6 @@ real expx2(real x, int sign)
 
     /* u is exact, u1 is small.  */
     return exp(u) * exp(u1);
-}
-
-
-private {
-
 }
 
 /******************************
@@ -530,6 +534,7 @@ const real Q3[] = [
 }
 
 
+debug(UnitTest) {
 unittest {
     // TODO: Use verified test points.
     // The values below are from Excel 2003.
@@ -546,9 +551,4 @@ assert(normalDistributionInv(0.5)==0);
 real unknown1 = normalDistributionInv(1e-250L);
 assert( fabs(unknown1 -(-33.79958617269L) ) < 0.00000005);
 }
-
-unittest {
-
-assert(fabs(normalDistribution(1L) - (0.841344746068543))< 0.0000000000000005);
-assert(isIdentical(normalDistribution(NaN("asdf")), NaN("asdf")));
 }
