@@ -66,6 +66,8 @@ class HttpPost : HttpClient
 
         /***********************************************************************
         
+                Provide an input buffer for HttpClient
+
         ***********************************************************************/
 
         protected IBuffer inputBuffer (IConduit conduit)
@@ -75,30 +77,59 @@ class HttpPost : HttpClient
 
         /***********************************************************************
         
+                Send query params only
+
         ***********************************************************************/
 
-        void[] write (void[] content, Interval timeout = DefaultReadTimeout)
+        void[] write (Interval timeout = DefaultReadTimeout)
         {
+                return write (cast(Pump) null, timeout);
+        }
+
+        /***********************************************************************
+        
+                Send content and no query params. The contentLength header
+                will be set to match the provided content, and contentType
+                set to the given type.
+
+        ***********************************************************************/
+
+        void[] write (void[] content, char[] type, Interval timeout = DefaultReadTimeout)
+        {
+                auto headers = getRequestHeaders();
+
+                headers.add    (HttpHeader.ContentType, type);
+                headers.addInt (HttpHeader.ContentLength, content.length);
+                
                 return write (delegate void (IBuffer b){b.append(content);}, timeout);
         }
 
         /***********************************************************************
         
+                Send raw data via the provided pump, and no query 
+                params. You have full control over headers and so 
+                on via this method.
+
         ***********************************************************************/
 
         void[] write (Pump pump, Interval timeout = DefaultReadTimeout)
         {
                 auto input = open (timeout, pump);
+                scope (exit)
+                       close;
 
                 // check return status for validity
-                if (isResponseOK)
+                auto status = getStatus();
+                if (status is HttpResponseCode.OK || 
+                    status is HttpResponseCode.Created || 
+                    status is HttpResponseCode.Accepted
+                   ) 
                    {
                    // extract content length
                    int length = getResponseHeaders.getInt (HttpHeader.ContentLength, int.max);
                    while (input.readable() < length && input.fill() != IConduit.Eof) {}
                    }
 
-                close ();
                 return input.slice;
         }
 }
