@@ -110,9 +110,9 @@ class HttpClient
         private bool                    doRedirect = true;
 
         // default to three second timeout on read operations ...
-        protected const DefaultReadTimeout = Interval.Second * cast(Interval)3;
+        protected const DefaultReadTimeout = Interval.Second * cast(Interval) 3;
 
-        // use HTTP v1.0 ?
+        // use HTTP v1.0?
         private static const char[] DefaultHttpVersion = "HTTP/1.0";
 
         // end of line sequence
@@ -154,8 +154,8 @@ class HttpClient
                 this.uri = uri;
                 this.method = method;
 
-                responseLine = new ResponseLine ();
-                headersIn    = new HttpHeadersView ();
+                responseLine = new ResponseLine;
+                headersIn    = new HttpHeadersView;
 
                 tmp          = new Buffer (1024 * 1);
                 paramsOut    = new HttpParams  (new Buffer (1024 * 1));
@@ -239,7 +239,7 @@ class HttpClient
 
         int getStatus()
         {
-                return responseLine.getStatus();
+                return responseLine.getStatus;
         }
 
         /***********************************************************************
@@ -250,7 +250,7 @@ class HttpClient
 
         bool isResponseOK()
         {
-                return cast(bool) (getStatus() is HttpResponseCode.OK);
+                return getStatus is HttpResponseCode.OK;
         }
 
         /***********************************************************************
@@ -275,8 +275,8 @@ class HttpClient
         {
                 if (socket)
                    {
-                   socket.shutdown ();
-                   socket.close ();
+                   socket.shutdown;
+                   socket.close;
                    socket = null;
                    }
         }
@@ -289,9 +289,9 @@ class HttpClient
 
         void reset ()
         {
-                headersIn.reset();
-                headersOut.reset();
-                paramsOut.reset();
+                headersIn.reset;
+                headersOut.reset;
+                paramsOut.reset;
         }
 
         /***********************************************************************
@@ -500,10 +500,7 @@ class HttpClient
                                case HttpResponseCode.MovedTemporarily:
                                case HttpResponseCode.TemporaryRedirect:
                                     // drop this connection
-                                    close();
-
-                                    // reset the uri because parse() won't do it
-                                    //uri.reset();
+                                    close;
 
                                     // remove any existing Host header
                                     headersOut.remove (HttpHeader.Host);
@@ -538,7 +535,7 @@ class HttpClient
                     } catch (Exception e)
                             {
                             // close *only* when we get an exception
-                            close();
+                            close;
                             throw e;
                             }
         }
@@ -552,8 +549,8 @@ class HttpClient
                 do {
                    length -= input.readable;
                    sink (input.slice);
-                   input.clear ();
-                   } while (length > 0 && input.fill() != socket.Eof);
+                   input.clear;
+                   } while (length > 0 && input.fill != socket.Eof);
         }
 
         /***********************************************************************
@@ -576,7 +573,7 @@ class HttpClient
                             // remove POST headers first!
                             headersOut.remove (HttpHeader.ContentLength);
                             headersOut.remove (HttpHeader.ContentType);
-                            paramsOut.reset ();
+                            paramsOut.reset;
                             return open (timeout, null, Get);
 
                             // try entire Post again, if user say OK
