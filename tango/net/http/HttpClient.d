@@ -40,6 +40,9 @@ private import  tango.text.stream.LineIterator;
 
 private import  Integer = tango.text.convert.Integer;
 
+extern (C) int printf (char*, ...);
+
+
 /*******************************************************************************
 
         Supports the basic needs of a client making requests of an HTTP
@@ -421,11 +424,11 @@ class HttpClient
                     headersOut.add (HttpHeader.Connection, "close");
 
                     // attach/extend query parameters if user has added some
-                    tmp.clear();
-                    char[] query = uri.extendQuery (paramsOut.formatTokens(tmp, "&"));
+                    tmp.clear;
+                    auto query = uri.extendQuery (paramsOut.formatTokens(tmp, "&"));
 
                     // patch request path?
-                    char[] path = uri.getPath;
+                    auto path = uri.getPath;
                     if (path.length is 0)
                         path = "/";
 
@@ -465,7 +468,7 @@ class HttpClient
                            emit (query);
 
                     // send entire request
-                    emit.flush ();
+                    emit.flush;
 
                     // Token for initial parsing of input header lines
                     auto line = new LineIterator!(char) (input);
@@ -485,9 +488,8 @@ class HttpClient
                     // read response line
                     responseLine.parse (line.get);
 
-                    // parse headers
-                    headersIn.reset ();
-                    headersIn.parse (input);
+                    // parse incoming headers
+                    headersIn.reset.parse (input);
 
                     // check for redirection
                     if (doRedirect)

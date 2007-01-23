@@ -134,7 +134,7 @@ class HttpTokens : IWritable
 
         **********************************************************************/
 
-        void reset ()
+        HttpTokens reset ()
         {
                 stack.reset;
                 parsed = false;
@@ -142,6 +142,8 @@ class HttpTokens : IWritable
                 // reset output buffer, if it was configured
                 if (output)
                     output.clear;
+
+                return this;
         }
 
         /**********************************************************************
@@ -450,7 +452,7 @@ class HttpTokens : IWritable
                         }    
 
                 dst.truncate (dst.limit - adjust);
-                return dst.toUtf8;
+                return cast(char[]) dst.slice;
         }
 
         /**********************************************************************
