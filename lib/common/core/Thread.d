@@ -59,7 +59,11 @@ version( Win32 )
 {
     private
     {
-        import tango.sys.windows.minwin;
+        //import tango.sys.windows.minwin;
+        alias bool BOOL;
+        alias int DWORD;
+        alias void* PVOID;
+        alias void* HANDLE;
 
         //
         // decls not in minwin
