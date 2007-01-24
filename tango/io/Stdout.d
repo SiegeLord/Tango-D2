@@ -29,7 +29,7 @@ private import  tango.text.convert.Format;
 
 *******************************************************************************/
 
-private class BufferedFormat(T)
+class BufferedFormat(T)
 {
         public alias print      opCall;
 
@@ -44,7 +44,7 @@ private class BufferedFormat(T)
 
         **********************************************************************/
 
-        private this (Format!(T) convert, IBuffer output, T[] eol = "\n")
+        this (Format!(T) convert, IBuffer output, T[] eol = "\n")
         {
                 this.convert = convert;
                 this.output = output;
