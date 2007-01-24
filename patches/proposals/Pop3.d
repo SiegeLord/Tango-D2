@@ -66,7 +66,7 @@ class POP3Connection : Telnet
 		exception(msg);
 	    }
 
-	getResponse(); // get welcome response
+	getShortResponse(); // get welcome response
 	shortCmd("USER " ~ username); 
 	shortCmd("PASS " ~ password );
 	
@@ -161,7 +161,7 @@ class POP3Connection : Telnet
     {
 	debug ( Pop3Debug ) { Stdout("[shortCmd] Command : " ~ cmd ) ().newline; }
 	sendLine(cast(void[])cmd);
-	return getResponse();
+	return getShortResponse();
     }
 
     /// Send command and read several lines, until . appears alone on line
@@ -169,31 +169,31 @@ class POP3Connection : Telnet
     {
 	debug ( Pop3Debug ) { Stdout("[pop3Cmd] Command : " ~ cmd ) ().newline; }
 	sendLine(cast(void[])cmd);
-	return getPOP3Response();
+	return getLongResponse();
     }
 
     /// Read one line
-    char[] getResponse()
+    char[] getShortResponse()
     {
 	char[] resp = readLine();
-	debug ( Pop3Debug ) { Stdout("[getResponse] Response : " ~ resp ) ().newline; }
+	debug ( Pop3Debug ) { Stdout("[getShortResponse] Response : " ~ resp ) ().newline; }
 	if (resp.length < 1 || resp[0] != '+') exception(resp);
 	return resp;
     }
 
 
     /// Read several lines
-    POP3Response getPOP3Response()
+    POP3Response getLongResponse()
     {
 	POP3Response resp;
 			
-	resp.resp = getResponse();
+	resp.resp = getShortResponse();
 
 	char[] line = readLine();
 			
 	while (line != ".")
 	    {
-		debug ( Pop3Debug ) { Stdout("[getPOP3Response] Line : " ~ line ) ().newline; }
+		debug ( Pop3Debug ) { Stdout("[getLongResponse] Line : " ~ line ) ().newline; }
 
 		if (line.length >= 2 && line[0 .. 2] == "..")
 		    line = line[1 .. $];
