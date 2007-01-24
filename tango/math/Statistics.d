@@ -24,10 +24,68 @@
  */
 
 module tango.math.Statistics;
-public import tango.math.ErrorFunction; // for normalDistribution
+static import tango.math.ErrorFunction; // for normalDistribution
 private import tango.math.GammaFunction;
 private import tango.math.Core;
 private import tango.math.IEEE;
+
+
+/***
+Cumulative distribution function for the Normal distribution, and its complement.
+
+The normal (or Gaussian, or bell-shaped) distribution is
+defined as:
+
+normalDist(x) = 1/$(SQRT) &pi; $(INTEGRAL -$(INFINITY), x) exp( - $(POWER t, 2)/2) dt
+    = 0.5 + 0.5 * erf(x/sqrt(2))
+    = 0.5 * erfc(- x/sqrt(2))
+
+Note that
+normalDistribution(x) = 1 - normalDistribution(-x).
+
+Accuracy:
+Within a few bits of machine resolution over the entire
+range.
+
+References:
+$(LINK http://www.netlib.org/cephes/ldoubdoc.html),
+G. Marsaglia, "Evaluating the Normal Distribution",
+Journal of Statistical Software <b>11</b>, (July 2004).
+*/
+real normalDistribution(real a)
+{
+    return tango.math.ErrorFunction.normalDistribution(a);
+}
+
+/** ditto */
+real normalDistributionCompl(real a)
+{
+    return -tango.math.ErrorFunction.normalDistribution(-a);
+}
+
+/******************************
+ * Inverse of Normal distribution function
+ *
+ * Returns the argument, x, for which the area under the
+ * Normal probability density function (integrated from
+ * minus infinity to x) is equal to p.
+ *
+ * For small arguments 0 < p < exp(-2), the program computes
+ * z = sqrt( -2 log(p) );  then the approximation is
+ * x = z - log(z)/z  - (1/z) P(1/z) / Q(1/z) .
+ * For larger arguments,  x/sqrt(2 pi) = w + w^3 R(w^2)/S(w^2)) ,
+ * where w = p - 0.5 .
+ */
+real normalDistributionInv(real p)
+{
+    return tango.math.ErrorFunction.normalDistributionInv(p);
+}
+
+/** ditto */
+real normalDistributionComplInv(real p)
+{
+    return -tango.math.ErrorFunction.normalDistributionInv(-p);
+}
 
 /** Student's t cumulative distribution function
  *
