@@ -40,7 +40,7 @@ public alias Epoch.InvalidEpoch InvalidEpoch;
 /******************************************************************************
 
         Parse provided input and return a UTC epoch time. An exception
-        is raied where the provided string is not fully parsed.
+        is raised where the provided string is not fully parsed.
 
 ******************************************************************************/
 
