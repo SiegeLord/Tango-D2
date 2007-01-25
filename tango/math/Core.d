@@ -312,6 +312,10 @@ unittest {
     assert(isIdentical(sin(NaN("abc")), NaN("abc")));
 }
 
+version (GNU) {
+    extern (C) real tanl(real);
+}
+
 /**
  * Returns tangent of x. x is in radians.
  *
@@ -324,6 +328,9 @@ unittest {
  */
 real tan(real x)
 {
+    version (GNU) {
+        return tanl(x);
+    } else {
     asm
     {
     fld x[EBP]          ; // load theta
@@ -356,6 +363,7 @@ trigerr:
 
 Lret:
     ;
+    }
 }
 
 unittest
