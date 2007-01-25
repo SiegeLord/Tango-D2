@@ -9,7 +9,7 @@
  * Authors:   Don Clugston
  * Copyright: Copyright (C) 2005-2006 Don Clugston
  */
-module tango.util.meta.Nameof;
+module tango.util.meta.NameOf;
 private import tango.util.meta.Demangle;
 
 /*
@@ -132,7 +132,7 @@ template symbolnameof(alias A)
 debug(UnitTest) {
 
 // remove the ".d" from the end
-const char [] THISFILE = "tango.util.meta.Nameof";
+const char [] THISFILE = "tango.util.meta.NameOf";
 
 
 private {
@@ -168,9 +168,9 @@ static assert( prettytypeof!(real) == "real");
 static assert( prettytypeof!(OuterClass.SomeClass) == "class " ~ THISFILE ~".OuterClass.SomeClass");
 
 // Test that it works with module names (for example, this module)
-static assert( qualifiednameof!(tango.util.meta.Nameof) == THISFILE);
-static assert( symbolnameof!(tango.util.meta.Nameof) == "Nameof");
-static assert( prettynameof!(tango.util.meta.Nameof) == THISFILE);
+static assert( qualifiednameof!(tango.util.meta.NameOf) == THISFILE);
+static assert( symbolnameof!(tango.util.meta.NameOf) == "NameOf");
+static assert( prettynameof!(tango.util.meta.NameOf) == THISFILE);
 
 static assert( prettynameof!(SomeInt) == "enum " ~ THISFILE ~ ".SomeEnum " ~ THISFILE ~ ".SomeInt");
 static assert( qualifiednameof!(OuterClass) == THISFILE ~".OuterClass");
