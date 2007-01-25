@@ -462,7 +462,9 @@ real cylBessel_j1(real x)
     modulus = poly( z, j1modulusn) / poly( z, j1modulusd);
 
     const real M_3PI_4= 3* PI_4;
-    static assert( 2.35619449019234492885L== M_3PI_4);
+    version (GNU) {} else {
+        static assert( 2.35619449019234492885L== M_3PI_4);
+    }
 
     y = modulus * cos( y -  M_3PI_4 + z*phase) / sqrt(y);
     if( x < 0 )
@@ -593,7 +595,9 @@ body {
     modulus = poly( z, j1modulusn) / poly( z, j1modulusd);
 
     const real M_3PI_4 = 3 * PI_4;
-    static assert( 2.35619449019234492885L == M_3PI_4);
+    version (GNU) {} else {
+        static assert( 2.35619449019234492885L == M_3PI_4);
+    }
 
     z = modulus * sin( x -  M_3PI_4 + z*phase) / sqrt(x);
     return z;

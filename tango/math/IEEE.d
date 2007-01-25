@@ -51,14 +51,7 @@
  */
 module tango.math.IEEE;
 
-version (D_InlineAsm_X86) {
-    debug(UnitTest) {
-        static import tango.stdc.math;
-    }
-} else {
-    // Needed for cos() and sin()
-   static import tango.stdc.math;
-}
+static import tango.stdc.math;
 
 version(DigitalMars)
 {
@@ -580,7 +573,7 @@ unittest {
  */
 real scalbn(real x, int n)
 {
-    version(D_InlineAsm_X86)
+    version(DigitalMars_D_InlineAsm_X86)
     {
         asm {
             fild n;
