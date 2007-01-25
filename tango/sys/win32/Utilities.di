@@ -6,11 +6,14 @@ module tango.sys.win32.Utilities;
 */
 
 /+ Imports +/
+public
+{
+    import tango.sys.win32.Types;
+}
 private
 {
-    import tango.stdc.string;
-	import tango.sys.win32.Types;
 	import tango.sys.win32.Common;
+	import tango.stdc.string;
 }
 
 /+ Types +/
