@@ -1,8 +1,0 @@
--I..
--noautoimport
--op
--debug
--gc
--clean
--version=Posix
-selector.d
