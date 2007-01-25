@@ -52,6 +52,18 @@ version (mlfp)
 
 /*******************************************************************************
 
+        Platform issues ...
+        
+*******************************************************************************/
+
+version (DigitalMars)
+         alias void* Args;
+   else 
+      alias char* Args;
+
+
+/*******************************************************************************
+
         Contains methods for replacing format items in a string with string
         equivalents of each argument.
         
@@ -181,7 +193,7 @@ public class Format(T)
         
         **********************************************************************/
 
-        public final T[] convert (TypeInfo[] arguments, void* args, T[] formatStr)
+        public final T[] convert (TypeInfo[] arguments, Args args, T[] formatStr)
         {
                 T[] output;
 
@@ -208,7 +220,7 @@ public class Format(T)
 
         **********************************************************************/
 
-        public final uint convert (Sink sink, TypeInfo[] arguments, void* args, T[] formatStr)
+        public final uint convert (Sink sink, TypeInfo[] arguments, Args args, T[] formatStr)
         {
                 assert (formatStr, "null format specifier");
                 auto it = ArgumentIterator (arguments, args);
@@ -219,7 +231,7 @@ public class Format(T)
 
         **********************************************************************/
 
-        public final T[] convert (inout Result result, TypeInfo ti, void* arg)
+        public final T[] convert (inout Result result, TypeInfo ti, Args arg)
         {
                 auto argument = Argument (ti, arg);
 
@@ -232,14 +244,14 @@ public class Format(T)
 
         public final T[] sprint (T[] result, T[] formatStr, ...)
         {
-                return sprint (result, formatStr, _arguments, cast(void*) _argptr);
+                return sprint (result, formatStr, _arguments, _argptr);
         }
         
         /**********************************************************************
         
         **********************************************************************/
 
-        public final T[] sprint (T[] result, T[] formatStr, TypeInfo[] arguments, void* args)
+        public final T[] sprint (T[] result, T[] formatStr, TypeInfo[] arguments, Args args)
         {
                 T* p = result.ptr;
 
