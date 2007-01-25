@@ -25,8 +25,8 @@ version (Win32)
         {
         private import tango.stdc.string;
         private import tango.stdc.posix.unistd;
-        private import tango.stdc.posix.utime;
-        private import tango.io.FileConduit;
+        // private import tango.stdc.posix.utime;
+        // private import tango.io.FileConduit;
         }
 
 
@@ -122,7 +122,7 @@ class FileSystem
                         exception ("Failed to get current directory");
                         return null;
                 }
-
+/+
                 /***************************************************************
 
                         Copy file from src to dst
@@ -145,6 +145,7 @@ class FileSystem
                                       exception ("Failed to copy file " ~ src.toUtf8 ~ " to " ~ dst.toUtf8);
                                 }
                 }
++/
         }
 
 
@@ -176,7 +177,7 @@ class FileSystem
 
                         exception ("Failed to get current directory");
                 }
-
+/+
                 /***************************************************************
 
                         Copy file from src to dst, preserving time attributes
@@ -199,6 +200,7 @@ class FileSystem
                         if (utime(dst.cString.ptr, &utim) == -1)
                             exception("Failed to update time of destination file " ~ dst.toUtf8);
                 }
++/
 
         }
 }
