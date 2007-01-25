@@ -199,18 +199,21 @@ private alias char rchar;       // so we can make a wchar version
 
 char[] sub(char[] string, char[] pattern, char[] format, char[] attributes = null)
 {
-    Regex r = new Regex(pattern, attributes);
-    char[] result = r.replace(string, format);
+    auto r = new RegExp(pattern, attributes);
+    auto result = r.replace(string, format);
     delete r;
     return result;
 }
 
-unittest
+debug( UnitTest )
 {
-    debug(Regex) printf("Regex.sub.unittest\n");
+    unittest
+    {
+        debug(Regex) printf("Regex.sub.unittest\n");
 
-    char[] r = sub("hello", "ll", "ss");
-    assert(r == "hesso");
+        char[] r = sub("hello", "ll", "ss");
+        assert(r == "hesso");
+    }
 }
 
 /*******************************************************
@@ -239,7 +242,7 @@ unittest
 
 char[] sub(char[] string, char[] pattern, char[] delegate(Regex) dg, char[] attributes = null)
 {
-    Regex r = new Regex(pattern, attributes);
+    auto r = new RegExp(pattern, attributes);
     rchar[] result;
     int lastindex;
     int offset;
@@ -288,14 +291,17 @@ char[] sub(char[] string, char[] pattern, char[] delegate(Regex) dg, char[] attr
     return result;
 }
 
-unittest
+debug( UnitTest )
 {
-    debug(Regex) printf("Regex.sub.unittest\n");
+    unittest
+    {
+        debug(Regex) printf("Regex.sub.unittest\n");
 
-    char[] foo(Regex r) { return "ss"; }
+        char[] foo(Regex r) { return "ss"; }
 
-    char[] r = sub("hello", "ll", delegate char[](Regex r) { return "ss"; });
-    assert(r == "hesso");
+        char[] r = sub("hello", "ll", delegate char[](Regex r) { return "ss"; });
+        assert(r == "hesso");
+    }
 }
 
 
@@ -319,7 +325,7 @@ int find(rchar[] string, char[] pattern, char[] attributes = null)
 {
     int i = -1;
 
-    Regex r = new Regex(pattern, attributes);
+    auto r = new RegExp(pattern, attributes);
     if (r.test(string))
     {
         i = r.pmatch[0].rm_so;
@@ -328,15 +334,18 @@ int find(rchar[] string, char[] pattern, char[] attributes = null)
     return i;
 }
 
-unittest
+debug( UnitTest )
 {
-    debug(Regex) printf("Regex.find.unittest\n");
+    unittest
+    {
+        debug(Regex) printf("Regex.find.unittest\n");
 
-    int i;
-    i = find("xabcy", "abc");
-    assert(i == 1);
-    i = find("cba", "abc");
-    assert(i == -1);
+        int i;
+        i = find("xabcy", "abc");
+        assert(i == 1);
+        i = find("cba", "abc");
+        assert(i == -1);
+    }
 }
 
 
@@ -362,7 +371,7 @@ int rfind(rchar[] string, char[] pattern, char[] attributes = null)
     int i = -1;
     int lastindex = 0;
 
-    Regex r = new Regex(pattern, attributes);
+    auto r = new RegExp(pattern, attributes);
     while (r.test(string, lastindex))
     {   int eo = r.pmatch[0].rm_eo;
         i = r.pmatch[0].rm_so;
@@ -375,21 +384,24 @@ int rfind(rchar[] string, char[] pattern, char[] attributes = null)
     return i;
 }
 
-unittest
+debug( UnitTest )
 {
-    int i;
+    unittest
+    {
+        int i;
 
-    debug(Regex) printf("Regex.rfind.unittest\n");
-    i = rfind("abcdefcdef", "c");
-    assert(i == 6);
-    i = rfind("abcdefcdef", "cd");
-    assert(i == 6);
-    i = rfind("abcdefcdef", "x");
-    assert(i == -1);
-    i = rfind("abcdefcdef", "xy");
-    assert(i == -1);
-    i = rfind("abcdefcdef", "");
-    assert(i == 10);
+        debug(Regex) printf("Regex.rfind.unittest\n");
+        i = rfind("abcdefcdef", "c");
+        assert(i == 6);
+        i = rfind("abcdefcdef", "cd");
+        assert(i == 6);
+        i = rfind("abcdefcdef", "x");
+        assert(i == -1);
+        i = rfind("abcdefcdef", "xy");
+        assert(i == -1);
+        i = rfind("abcdefcdef", "");
+        assert(i == 10);
+    }
 }
 
 
@@ -417,21 +429,24 @@ unittest
 
 char[][] split(char[] string, char[] pattern, char[] attributes = null)
 {
-    Regex r = new Regex(pattern, attributes);
-    char[][] result = r.split(string);
+    auto r = new RegExp(pattern, attributes);
+    auto result = r.split(string);
     delete r;
     return result;
 }
 
-unittest
+debug( UnitTest )
 {
-    debug(Regex) printf("Regex.split.unittest()\n");
-    char[][] result;
+    unittest
+    {
+        debug(Regex) printf("Regex.split.unittest()\n");
+        char[][] result;
 
-    result = split("ab", "a*");
-    assert(result.length == 2);
-    assert(result[0] == "");
-    assert(result[1] == "b");
+        result = split("ab", "a*");
+        assert(result.length == 2);
+        assert(result[0] == "");
+        assert(result[1] == "b");
+    }
 }
 
 /****************************************************
@@ -461,7 +476,7 @@ unittest
 
 Regex search(char[] string, char[] pattern, char[] attributes = null)
 {
-    Regex r = new Regex(pattern, attributes);
+    auto r = new RegExp(pattern, attributes);
 
     if (r.test(string))
     {
@@ -800,54 +815,57 @@ public rchar[][] split(rchar[] string)
     return result;
 }
 
-unittest
+debug( UnitTest )
 {
-    debug(Regex) printf("Regex.split.unittest()\n");
-
-    Regex r = new Regex("a*?", null);
-    rchar[][] result;
-    rchar[] j;
-    int i;
-
-    result = r.split("ab");
-
-    assert(result.length == 2);
-    i = cmp(result[0], "a");
-    assert(i == 0);
-    i = cmp(result[1], "b");
-    assert(i == 0);
-
-    r = new Regex("a*", null);
-    result = r.split("ab");
-    assert(result.length == 2);
-    i = cmp(result[0], "");
-    assert(i == 0);
-    i = cmp(result[1], "b");
-    assert(i == 0);
-
-    r = new Regex("<(\\/)?([^<>]+)>", null);
-    result = r.split("a<b>font</b>bar<TAG>hello</TAG>");
-
-    for (i = 0; i < result.length; i++)
+    unittest
     {
-        //debug(Regex) printf("result[%d] = '%.*s'\n", i, result[i]);
+        debug(Regex) printf("Regex.split.unittest()\n");
+
+        auto r = new RegExp("a*?", null);
+        rchar[][] result;
+        rchar[] j;
+        int i;
+
+        result = r.split("ab");
+
+        assert(result.length == 2);
+        i = cmp(result[0], "a");
+        assert(i == 0);
+        i = cmp(result[1], "b");
+        assert(i == 0);
+
+        r = new Regex("a*", null);
+        result = r.split("ab");
+        assert(result.length == 2);
+        i = cmp(result[0], "");
+        assert(i == 0);
+        i = cmp(result[1], "b");
+        assert(i == 0);
+
+        r = new Regex("<(\\/)?([^<>]+)>", null);
+        result = r.split("a<b>font</b>bar<TAG>hello</TAG>");
+
+        for (i = 0; i < result.length; i++)
+        {
+            //debug(Regex) printf("result[%d] = '%.*s'\n", i, result[i]);
+        }
+
+        j = join(result, ",");
+        //printf("j = '%.*s'\n", j);
+        i = cmp(j, "a,,b,font,/,b,bar,,TAG,hello,/,TAG,");
+        assert(i == 0);
+
+        r = new Regex("a[bc]", null);
+        result = r.match("123ab");
+        j = join(result, ",");
+        i = cmp(j, "ab");
+        assert(i == 0);
+
+        result = r.match("ac");
+        j = join(result, ",");
+        i = cmp(j, "ac");
+        assert(i == 0);
     }
-
-    j = join(result, ",");
-    //printf("j = '%.*s'\n", j);
-    i = cmp(j, "a,,b,font,/,b,bar,,TAG,hello,/,TAG,");
-    assert(i == 0);
-
-    r = new Regex("a[bc]", null);
-    result = r.match("123ab");
-    j = join(result, ",");
-    i = cmp(j, "ab");
-    assert(i == 0);
-
-    result = r.match("ac");
-    j = join(result, ",");
-    i = cmp(j, "ac");
-    assert(i == 0);
 }
 
 /*************************************************
@@ -870,16 +888,19 @@ public int find(rchar[] string)
 
 //deprecated alias find search;
 
-unittest
+debug( UnitTest )
 {
-    debug(Regex) printf("Regex.find.unittest()\n");
+    unittest
+    {
+        debug(Regex) printf("Regex.find.unittest()\n");
 
-    int i;
-    Regex r = new Regex("abc", null);
-    i = r.find("xabcy");
-    assert(i == 1);
-    i = r.find("cba");
-    assert(i == -1);
+        int i;
+        Regex r = new Regex("abc", null);
+        i = r.find("xabcy");
+        assert(i == 1);
+        i = r.find("cba");
+        assert(i == -1);
+    }
 }
 
 
@@ -915,28 +936,30 @@ public rchar[][] match(rchar[] string)
     return result;
 }
 
-unittest
+debug( UnitTest )
 {
-    debug(Regex) printf("Regex.match.unittest()\n");
+    unittest
+    {
+        debug(Regex) printf("Regex.match.unittest()\n");
 
-    int i;
-    rchar[][] result;
-    rchar[] j;
-    Regex r;
+        int i;
+        rchar[][] result;
+        rchar[] j;
+        Regex r;
 
-    r = new Regex("a[bc]", null);
-    result = r.match("1ab2ac3");
-    j = join(result, ",");
-    i = cmp(j, "ab");
-    assert(i == 0);
+        r = new Regex("a[bc]", null);
+        result = r.match("1ab2ac3");
+        j = join(result, ",");
+        i = cmp(j, "ab");
+        assert(i == 0);
 
-    r = new Regex("a[bc]", "g");
-    result = r.match("1ab2ac3");
-    j = join(result, ",");
-    i = cmp(j, "ab,ac");
-    assert(i == 0);
+        r = new Regex("a[bc]", "g");
+        result = r.match("1ab2ac3");
+        j = join(result, ",");
+        i = cmp(j, "ab,ac");
+        assert(i == 0);
+    }
 }
-
 
 /*************************************************
  * Find regular expression matches in string[]. Replace those matches
@@ -999,20 +1022,22 @@ public rchar[] replace(rchar[] string, rchar[] format)
     return result;
 }
 
-unittest
+debug( UnitTest )
 {
-    debug(Regex) printf("Regex.replace.unittest()\n");
+    unittest
+    {
+        debug(Regex) printf("Regex.replace.unittest()\n");
 
-    int i;
-    rchar[] result;
-    Regex r;
+        int i;
+        rchar[] result;
+        Regex r;
 
-    r = new Regex("a[bc]", "g");
-    result = r.replace("1ab2ac3", "x$&y");
-    i = cmp(result, "1xaby2xacy3");
-    assert(i == 0);
+        r = new Regex("a[bc]", "g");
+        result = r.replace("1ab2ac3", "x$&y");
+        i = cmp(result, "1xaby2xacy3");
+        assert(i == 0);
+    }
 }
-
 
 /*************************************************
  * Search string[] for match.
@@ -1041,9 +1066,7 @@ public rchar[][] exec()
     if (!test())
         return null;
 
-    rchar[][] result;
-
-    result = new rchar[][pmatch.length];
+    auto result = new rchar[][pmatch.length];
     for (int i = 0; i < pmatch.length; i++)
     {
         if (pmatch[i].rm_so == pmatch[i].rm_eo)
@@ -2315,7 +2338,7 @@ int parseRange()
     offset = buf.offset;
     buf.write(cast(uint)0);             // reserve space for length
     buf.reserve(128 / 8);
-    Range r = new Range(buf);
+    auto r = new Range(buf);
     if (op == REnotbit)
         r.setbit2(0);
     switch (pattern[p])
@@ -2664,8 +2687,8 @@ void optimize()
             case REparen:
             case REgoto:
             {
-                OutBuffer bitbuf = new OutBuffer;
-                Range r = new Range(bitbuf);
+                auto bitbuf = new OutBuffer;
+                auto r = new Range(bitbuf);
                 uint offset;
 
                 offset = i;
@@ -3039,6 +3062,34 @@ public rchar[] replaceOld(rchar[] format)
     }
     return result;
 }
+
+}
+
+debug( UnitTest )
+{
+    unittest
+    {   // Created and placed in public domain by Don Clugston
+
+        auto m = search("aBC r s", `bc\x20r[\40]s`, "i");
+        assert(m.pre=="a");
+        assert(m.match(0)=="BC r s");
+        auto m2 = search("7xxyxxx", `^\d([a-z]{2})\D\1`);
+        assert(m2.match(0)=="7xxyxx");
+        // Just check the parsing.
+        auto m3 = search("dcbxx", `ca|b[\d\]\D\s\S\w-\W]`);
+        auto m4 = search("xy", `[^\ca-\xFa\r\n\b\f\t\v\0123]{2,485}$`);
+        auto m5 = search("xxx", `^^\r\n\b{13,}\f{4}\t\v\u02aF3a\w\W`);
+        auto m6 = search("xxy", `.*y`);
+        assert(m6.match(0)=="xxy");
+        auto m7 = search("QWDEfGH", "(ca|b|defg)+", "i");
+        assert(m7.match(0)=="DEfG");
+        auto m8 = search("dcbxx", `a?\B\s\S`);
+        auto m9 = search("dcbxx", `[-w]`);
+        auto m10 = search("dcbsfd", `aB[c-fW]dB|\d|\D|\u012356|\w|\W|\s|\S`, "i");
+        auto m11 = search("dcbsfd", `[]a-]`);
+        m.replaceOld(`a&b\1c`);
+        m.replace(`a$&b$'$1c`);
+    }
 }
 
 //
@@ -3110,6 +3161,8 @@ private
         return result;
     }
 
+  debug( UnitTest )
+  {
     unittest
     {
         int result;
@@ -3130,6 +3183,7 @@ private
         result = cmp("bbc", "abc");
         assert(result > 0);
     }
+  }
 
     /*********************************
      * Convert array of chars s[] to a C-style 0 terminated string.
@@ -3174,6 +3228,8 @@ private
         return copy.ptr;
         }
 
+  debug( UnitTest )
+  {
     unittest
     {
         debug(string) printf("string.toUtf8z.unittest\n");
@@ -3188,6 +3244,7 @@ private
         p = toUtf8z(test);
         assert(*p == 0);
     }
+  }
 
     /*****************************
      * Return a _string that is string[] with slice[] replaced by replacement[].
@@ -3215,6 +3272,8 @@ private
         return result;
     }
 
+  debug( UnitTest )
+  {
     unittest
     {
         debug(string) printf("string.replaceSlice.unittest\n");
@@ -3227,6 +3286,7 @@ private
         i = cmp(r, "hebaro");
         assert(i == 0);
     }
+  }
 
     // NOTE: join is used for unittests only!
 
@@ -3271,6 +3331,8 @@ private
         return result;
     }
 
+  debug( UnitTest )
+  {
     unittest
     {
         debug(string) printf("string.join.unittest\n");
@@ -3289,6 +3351,7 @@ private
         i = cmp(r, "peter,paul,jerry");
         assert(i == 0);
     }
+  }
 
     /*********************************************
      * OutBuffer provides a way to build up an array of bytes out
@@ -3586,6 +3649,8 @@ private
         }
     }
 
+  debug( UnitTest )
+  {
     unittest
     {
         //printf("Starting OutBuffer test\n");
@@ -3602,4 +3667,5 @@ private
         //printf("buf = '%.*s'\n", buf.toUtf8());
         assert(cmp(buf.toUtf8(), "hello world 6") == 0);
     }
+  }
 }
