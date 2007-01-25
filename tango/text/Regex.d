@@ -199,7 +199,7 @@ private alias char rchar;       // so we can make a wchar version
 
 char[] sub(char[] string, char[] pattern, char[] format, char[] attributes = null)
 {
-    auto r = new RegExp(pattern, attributes);
+    auto r = new Regex(pattern, attributes);
     auto result = r.replace(string, format);
     delete r;
     return result;
@@ -242,7 +242,7 @@ debug( UnitTest )
 
 char[] sub(char[] string, char[] pattern, char[] delegate(Regex) dg, char[] attributes = null)
 {
-    auto r = new RegExp(pattern, attributes);
+    auto r = new Regex(pattern, attributes);
     rchar[] result;
     int lastindex;
     int offset;
@@ -325,7 +325,7 @@ int find(rchar[] string, char[] pattern, char[] attributes = null)
 {
     int i = -1;
 
-    auto r = new RegExp(pattern, attributes);
+    auto r = new Regex(pattern, attributes);
     if (r.test(string))
     {
         i = r.pmatch[0].rm_so;
@@ -371,7 +371,7 @@ int rfind(rchar[] string, char[] pattern, char[] attributes = null)
     int i = -1;
     int lastindex = 0;
 
-    auto r = new RegExp(pattern, attributes);
+    auto r = new Regex(pattern, attributes);
     while (r.test(string, lastindex))
     {   int eo = r.pmatch[0].rm_eo;
         i = r.pmatch[0].rm_so;
@@ -429,7 +429,7 @@ debug( UnitTest )
 
 char[][] split(char[] string, char[] pattern, char[] attributes = null)
 {
-    auto r = new RegExp(pattern, attributes);
+    auto r = new Regex(pattern, attributes);
     auto result = r.split(string);
     delete r;
     return result;
@@ -476,7 +476,7 @@ debug( UnitTest )
 
 Regex search(char[] string, char[] pattern, char[] attributes = null)
 {
-    auto r = new RegExp(pattern, attributes);
+    auto r = new Regex(pattern, attributes);
 
     if (r.test(string))
     {
@@ -821,7 +821,7 @@ debug( UnitTest )
     {
         debug(Regex) printf("Regex.split.unittest()\n");
 
-        auto r = new RegExp("a*?", null);
+        auto r = new Regex("a*?", null);
         rchar[][] result;
         rchar[] j;
         int i;
