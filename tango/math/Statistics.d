@@ -24,7 +24,7 @@
  */
 
 module tango.math.Statistics;
-static import tango.math.ErrorFunction; // for normalDistribution
+static import tango.math.ErrorFunction;
 private import tango.math.GammaFunction;
 private import tango.math.Core;
 private import tango.math.IEEE;
@@ -54,13 +54,13 @@ Journal of Statistical Software <b>11</b>, (July 2004).
 */
 real normalDistribution(real a)
 {
-    return tango.math.ErrorFunction.normalDistribution(a);
+    return tango.math.ErrorFunction.normalDistributionImpl(a);
 }
 
 /** ditto */
 real normalDistributionCompl(real a)
 {
-    return -tango.math.ErrorFunction.normalDistribution(-a);
+    return -tango.math.ErrorFunction.normalDistributionImpl(-a);
 }
 
 /******************************
@@ -78,13 +78,13 @@ real normalDistributionCompl(real a)
  */
 real normalDistributionInv(real p)
 {
-    return tango.math.ErrorFunction.normalDistributionInv(p);
+    return tango.math.ErrorFunction.normalDistributionInvImpl(p);
 }
 
 /** ditto */
 real normalDistributionComplInv(real p)
 {
-    return -tango.math.ErrorFunction.normalDistributionInv(-p);
+    return -tango.math.ErrorFunction.normalDistributionInvImpl(-p);
 }
 
 /** Student's t cumulative distribution function
@@ -109,7 +109,7 @@ real normalDistributionComplInv(real p)
  * right tail of the density is found by calling the function
  * with -t instead of t.
  */
-real studentsDistribution(int nu, real t)
+real studentsTDistribution(int nu, real t)
 in{
    assert(nu>0);
 }
@@ -118,7 +118,7 @@ body{
      Copyright 1984, 1995 by Stephen L. Moshier
  */
 
-    if ( nu <= 0 ) return NaN("student"); // domain error -- or should it return 0?
+    if ( nu <= 0 ) return NaN("tdist"); // domain error -- or should it return 0?
     if ( t == 0.0 )  return 0.5;
 
     real rk, z, p;
@@ -186,7 +186,7 @@ body{
  * nu = degrees of freedom. Must be >1
  * p  = probability. 0 < p < 1
  */
-real studentsDistributionInv(int nu, real p )
+real studentsTDistributionInv(int nu, real p )
 in {
    assert(nu>0);
    assert(p>=0.0L && p<=1.0L);
@@ -228,9 +228,9 @@ unittest {
 //              so tDistributionInv(p) = tan( PI * (p-0.5) );
 // nu==2: tDistribution(x) = 0.5 * (1 + x/ sqrt(2+x*x) )
 
-assert( studentsDistribution(1, -0.4)== 0.5 + atan(-0.4)/PI);
-assert(studentsDistribution(2, 0.9) == 0.5L * (1 + 0.9L/sqrt(2.0L + 0.9*0.9)) );
-assert(studentsDistribution(2, -5.4) == 0.5L * (1 - 5.4L/sqrt(2.0L + 5.4*5.4)) );
+assert(studentsTDistribution(1, -0.4)== 0.5 + atan(-0.4)/PI);
+assert(studentsTDistribution(2, 0.9) == 0.5L * (1 + 0.9L/sqrt(2.0L + 0.9*0.9)) );
+assert(studentsTDistribution(2, -5.4) == 0.5L * (1 - 5.4L/sqrt(2.0L + 5.4*5.4)) );
 
 // return true if a==b to given number of places.
 bool isfeqabs(real a, real b, real diff)
@@ -245,16 +245,16 @@ bool isfeqabs(real a, real b, real diff)
 // in the last decimal places. However, they are helpful as a sanity check.
 
 //  Microsoft Excel 2003 gives TINV(2*(1-0.995), 10) == 3.16927267160917
-assert(isfeqabs(studentsDistributionInv(10, 0.995), 3.169_272_67L, 0.000_000_005L));
+assert(isfeqabs(studentsTDistributionInv(10, 0.995), 3.169_272_67L, 0.000_000_005L));
 
 
-assert(isfeqabs(studentsDistributionInv(8, 0.6), 0.261_921_096_769_043L,0.000_000_000_05L));
+assert(isfeqabs(studentsTDistributionInv(8, 0.6), 0.261_921_096_769_043L,0.000_000_000_05L));
 // -TINV(2*0.4, 18) ==  -0.257123042655869
 
-assert(isfeqabs(studentsDistributionInv(18, 0.4), -0.257_123_042_655_869L, 0.000_000_000_05L));
-assert( feqrel(studentsDistribution(18, studentsDistributionInv(18, 0.4L)),0.4L)
+assert(isfeqabs(studentsTDistributionInv(18, 0.4), -0.257_123_042_655_869L, 0.000_000_000_05L));
+assert( feqrel(studentsTDistribution(18, studentsTDistributionInv(18, 0.4L)),0.4L)
  > real.mant_dig-2 );
-assert( feqrel(studentsDistribution(11, studentsDistributionInv(11, 0.9L)),0.9L)
+assert( feqrel(studentsTDistribution(11, studentsTDistributionInv(11, 0.9L)),0.9L)
   > real.mant_dig-2);
 }
 }
@@ -431,6 +431,72 @@ unittest {
   assert(feqrel(chiSqrDistributionCompl(3.5L, chiSqrDistributionComplInv(3.5L, 0.1L)), 0.1L)>=real.mant_dig-3);
   assert(chiSqrDistribution(19.02L, 0.4L) + chiSqrDistributionCompl(19.02L, 0.4L) ==1.0L);
 }
+}
+
+/**
+ * The &Gamma; distribution and its complement
+ *
+ * The &Gamma; distribution is defined as the integral from 0 to x of the
+ * gamma probability density function. The complementary function returns the
+ * integral from x to &infin;
+ *
+ * gammaDistribution = ($(INTEGRATE 0, x) $(POWER t, b-1)$(POWER e, -at) dt) $(POWER a, b)/&Gamma;(b)
+ *
+ * x must be greater than 0.
+ */
+real gammaDistribution(real a, real b, real x)
+in {
+   assert(x>=0);
+}
+body {
+   return gammaIncomplete(b, a*x);
+}
+
+/** ditto */
+real gammaDistributionCompl(real a, real b, real x )
+in {
+   assert(x>=0);
+}
+body {
+   return gammaIncompleteCompl( b, a * x );
+}
+
+/**********************
+ *  Beta distribution and its inverse
+ *
+ * Returns the incomplete beta integral of the arguments, evaluated
+ * from zero to x.  The function is defined as
+ *
+ * betaDistribution = &Gamma;(a+b)/(&Gamma;(a) &Gamma;(b)) *
+ * $(INTEGRATE 0, x) $(POWER t, a-1)$(POWER (1-t),b-1) dt
+ *
+ * The domain of definition is 0 <= x <= 1.  In this
+ * implementation a and b are restricted to positive values.
+ * The integral from x to 1 may be obtained by the symmetry
+ * relation
+ *
+ *    betaDistributionCompl(a, b, x )  =  betaDistribution( b, a, 1-x )
+ *
+ * The integral is evaluated by a continued fraction expansion
+ * or, when b*x is small, by a power series.
+ *
+ * The inverse finds the value of x for which betaDistribution(a,b,x) - y = 0
+ */
+real betaDistribution(real a, real b, real x )
+{
+   return betaIncomplete(a, b, x );
+}
+
+/** ditto */
+real betaDistributionCompl(real a, real b, real x)
+{
+    return betaIncomplete(b, a, 1-x);
+}
+
+/** ditto */
+real betaDistributionInv(real a, real b, real y)
+{
+    return betaIncompleteInv(a, b, y);
 }
 
 /**

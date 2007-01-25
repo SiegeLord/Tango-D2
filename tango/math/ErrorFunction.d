@@ -114,55 +114,6 @@ const real [] U = [
 
 }
 
-/***
-Computes the normal distribution function.
-
-The normal (or Gaussian, or bell-shaped) distribution is
-defined as:
-
-normalDist(x) = 1/$(SQRT) &pi; $(INTEGRAL -$(INFINITY), x) exp( - $(POWER t, 2)/2) dt
-    = 0.5 + 0.5 * erf(x/sqrt(2))
-    = 0.5 * erfc(- x/sqrt(2))
-
-To maintain accuracy at high values of x, use
-normalDistribution(x) = 1 - normalDistribution(-x).
-
-Accuracy:
-Within a few bits of machine resolution over the entire
-range.
-
-References:
-$(LINK http://www.netlib.org/cephes/ldoubdoc.html),
-G. Marsaglia, "Evaluating the Normal Distribution",
-Journal of Statistical Software <b>11</b>, (July 2004).
-*/
-real normalDistribution(real a)
-{
-    real x = a * SQRT1_2;
-    real z = abs(x);
-
-    if( z < 1.0 )
-        return 0.5L + 0.5L * erf(x);
-    else {
-        /* See below for erfce. */
-        real y = 0.5L * erfce(z);
-        /* Multiply by exp(-x^2 / 2)  */
-        z = expx2(a, -1);
-        y = y * sqrt(z);
-        if( x > 0.0L )
-            y = 1.0L - y;
-        return y;
-    }
-}
-
-debug(UnitTest) {
-unittest {
-assert(fabs(normalDistribution(1L) - (0.841344746068543))< 0.0000000000000005);
-assert(isIdentical(normalDistribution(NaN("asdf")), NaN("asdf")));
-}
-}
-
-
 /**
  *  Complementary error function
  *
@@ -380,7 +331,60 @@ real expx2(real x, int sign)
     return exp(u) * exp(u1);
 }
 
-/******************************
+
+package {
+/*
+Computes the normal distribution function.
+
+The normal (or Gaussian, or bell-shaped) distribution is
+defined as:
+
+normalDist(x) = 1/$(SQRT) &pi; $(INTEGRAL -$(INFINITY), x) exp( - $(POWER t, 2)/2) dt
+    = 0.5 + 0.5 * erf(x/sqrt(2))
+    = 0.5 * erfc(- x/sqrt(2))
+
+To maintain accuracy at high values of x, use
+normalDistribution(x) = 1 - normalDistribution(-x).
+
+Accuracy:
+Within a few bits of machine resolution over the entire
+range.
+
+References:
+$(LINK http://www.netlib.org/cephes/ldoubdoc.html),
+G. Marsaglia, "Evaluating the Normal Distribution",
+Journal of Statistical Software <b>11</b>, (July 2004).
+*/
+real normalDistributionImpl(real a)
+{
+    real x = a * SQRT1_2;
+    real z = abs(x);
+
+    if( z < 1.0 )
+        return 0.5L + 0.5L * erf(x);
+    else {
+        /* See below for erfce. */
+        real y = 0.5L * erfce(z);
+        /* Multiply by exp(-x^2 / 2)  */
+        z = expx2(a, -1);
+        y = y * sqrt(z);
+        if( x > 0.0L )
+            y = 1.0L - y;
+        return y;
+    }
+}
+
+}
+
+debug(UnitTest) {
+unittest {
+assert(fabs(normalDistributionImpl(1L) - (0.841344746068543))< 0.0000000000000005);
+assert(isIdentical(normalDistributionImpl(NaN("asdf")), NaN("asdf")));
+}
+}
+
+package {
+/*
  * Inverse of Normal distribution function
  *
  * Returns the argument, x, for which the area under the
@@ -393,7 +397,7 @@ real expx2(real x, int sign)
  * For larger arguments,  x/sqrt(2 pi) = w + w^3 R(w^2)/S(w^2)) ,
  * where w = p - 0.5 .
  */
-real normalDistributionInv(real p)
+real normalDistributionInvImpl(real p)
 in {
   assert(p>=0.0L && p<=1.0L, "Domain error");
 }
@@ -533,22 +537,24 @@ const real Q3[] = [
     return x;
 }
 
+}
+
 
 debug(UnitTest) {
 unittest {
     // TODO: Use verified test points.
     // The values below are from Excel 2003.
-assert(fabs(normalDistributionInv(0.001) - (-3.09023230616779))< 0.00000000000005);
-assert(fabs(normalDistributionInv(1e-50) - (-14.9333375347885))< 0.00000000000005);
-assert(feqrel(normalDistributionInv(0.999), -normalDistributionInv(0.001))>real.mant_dig-6);
+assert(fabs(normalDistributionInvImpl(0.001) - (-3.09023230616779))< 0.00000000000005);
+assert(fabs(normalDistributionInvImpl(1e-50) - (-14.9333375347885))< 0.00000000000005);
+assert(feqrel(normalDistributionInvImpl(0.999), -normalDistributionInvImpl(0.001))>real.mant_dig-6);
 
 // Excel 2003 gets all the following values wrong!
-assert(normalDistributionInv(0.0)==-real.infinity);
-assert(normalDistributionInv(1.0)==real.infinity);
-assert(normalDistributionInv(0.5)==0);
+assert(normalDistributionInvImpl(0.0)==-real.infinity);
+assert(normalDistributionInvImpl(1.0)==real.infinity);
+assert(normalDistributionInvImpl(0.5)==0);
 // (Excel 2003 returns norminv(p) = -30 for all p < 1e-200).
 // The value tested here is the one the function returned in Jan 2006.
-real unknown1 = normalDistributionInv(1e-250L);
+real unknown1 = normalDistributionInvImpl(1e-250L);
 assert( fabs(unknown1 -(-33.79958617269L) ) < 0.00000005);
 }
 }

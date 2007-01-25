@@ -664,7 +664,7 @@ real betaIncompleteInv(real aa, real bb, real yy0 )
 
     /* approximation to inverse function */
 
-    yp = -normalDistributionInv( yy0 );
+    yp = -normalDistributionInvImpl( yy0 );
 
     if( yy0 > 0.5L ) {
         rflg = 1;
@@ -1288,7 +1288,7 @@ body {
 
     /* approximation to inverse function */
     d = 1.0L/(9.0L*a);
-    y = 1.0L - d - normalDistributionInv(y0) * sqrt(d);
+    y = 1.0L - d - normalDistributionInvImpl(y0) * sqrt(d);
     x = a * y * y * y;
 
     lgm = logGamma(a);
