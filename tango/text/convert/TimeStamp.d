@@ -39,10 +39,9 @@ public alias Epoch.InvalidEpoch InvalidEpoch;
 
 /******************************************************************************
 
-        Convert a formatted string of digits to a floating-point
-        number. Throws an exception where the input text is not
-        parsable in its entirety.
-        
+        Parse provided input and return a UTC epoch time. An exception
+        is raied where the provided string is not fully parsed.
+
 ******************************************************************************/
 
 ulong toTime(T) (T[] src)
