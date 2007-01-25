@@ -1,0 +1,111 @@
+Thank you for using Tango!
+
+Documentation can be found at http://dsource.org/projects/tango.
+
+Contributors:
+
+Reference Manual 
+
+    * John Reimer
+    * Don Clugston
+    * Charles
+    * Frank Benoit
+    * Michael Parker
+    * Benjamin Shropshire
+    * Alexander Panek 
+
+API Documentation 
+
+    * Respective code contributors 
+
+Tutorials 
+
+    * Lars Ivar Igesund
+    * Charles
+    * Sean Kelly
+    * Benjamin Shropshire
+    * Michael Parker
+    * Alexander Panek 
+
+Graphic Design 
+
+    * Trevor Parscal: Design Concepts
+    * Eric Anderton: Design Concepts 
+
+Web Design and Presentation 
+
+    * Victor: CandyDoc for API documentation
+    * Tomasz Stachowiak: syntax highlighting for documentation
+    * Eric Anderton: TracForums plugin and macros 
+
+Systems Administration 
+
+    * Brad Anderson: hosting, plus comprehensive server and administration support 
+
+Reviewing and Testing 
+
+    * Tomasz Stachowiak
+    * Brad Roberts
+    * John Reimer
+    * Charles
+    * Frank Benoit
+    * Gregor Richards
+    * Alexander Panek
+    * Samuel Martin Valentin 
+
+Platform Gurus 
+
+    * Gregor Richards: GDC and general linux fixes
+    * Frank Benoit: loads of linux fixes
+    * Kashia Buch: OSX patches
+    * Anders F. Björklund: OSX patches
+    * Carlos Santander: OSX patches
+    * Mathis Beer: Testing of Tango using GDC under MinGW 
+
+Project Organization 
+
+    * Kris Bell
+    * Lars Ivar Igesund
+    * Sean Kelly 
+
+Library Code 
+
+    * Sean Kelly: contributed the core runtime support
+    * Kris Bell: contributed much of the base library
+    * Lars Ivar Igesund: Tidbits
+    * John Chapman: tango.text.locale package
+    * Juan Jose Comellas: IO-selector and Process packages
+    * Chris Miller: socket bindings
+    * UWB: Initial tango.net.ftp package
+    * Regan Heath: tango.math.cipher package
+    * Eric Anderton: principal developer on DDL
+    * Don Clugston: Win32, plus math and template magic
+    * Mikola: Threading functionality
+    * Dalibor Frivaldsky: Linux implementations
+    * Alexander Panek: Compile fixes 
+
+Installation scripting 
+
+    * Gregor Richards
+    * Alexander Panek
+    * Charles 
+
+Support Code 
+
+    * Derek Parnell: the ubiquitous Build application
+    * Gregor Richards: DSSS 
+
+Adopted Code 
+
+    * From Phobos, the D standard library. Various writers in addition to Walter Bright.
+    * From Doug Lea, who donates very high quality code to the public-domain
+    * From David Gay; author of the awesome & inscrutable dtoa C module
+    * From Stephen L. Moshier, author the extensive CEPHES library of mathematical functions
+    * And Bob Jenkins, who created simply the best hash function around 
+
+Motivators 
+
+    * John Reimer: coffee and first-aid
+    * Eric Anderton: eclectic guitar riffs
+    * Kris Bell: coercion and nagging 
+
