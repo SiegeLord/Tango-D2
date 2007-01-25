@@ -1,8 +1,10 @@
-module tango.net.pop3.Pop3;
+module tango.net.pop3.Pop3Client;
 
 private import tango.net.ftp.Telnet;
 private import tango.net.pop3.Exception;
 private import tango.text.convert.Integer;
+private import tango.text.Util;
+
 debug ( Pop3Debug ) { private import tango.io.Stdout; }
 
 // The sendData, sendLine, readData, readLine functions were all ripped from Telnet.d
@@ -79,7 +81,7 @@ class POP3Connection : Telnet
     /* Commands */
 
     /// Delete a message on the server
-    POP3Response del(int messageNumber )
+    POP3Response dele(int messageNumber )
     {
 	POP3Response r;
 	r.resp = shortCmd("DELE " ~ Integer.toUtf8(messageNumber));
@@ -126,11 +128,37 @@ class POP3Connection : Telnet
 	return pop3Cmd("TOP " ~ Integer.toUtf8(messageNumber) ~ " " ~ Integer.toUtf8(numberOfLines) ); // TODO
     }
   
-  // Lists all messages on server and total size
-    POP3Response stat(inout uint totalMessages, inout totalSize)
+  /// Lists all messages on server and total size
+    POP3Response stat(inout uint totalMessages, inout uint totalSize)
     {
       POP3Response r;
       r.resp = shortCmd("STAT");
+      char [] [] totalAndSize = delimit(r.resp," " );
+
+      assert(totalAndSize.length == 3 );
+
+      totalMessages = Integer.parse(totalAndSize[1] );
+      totalSize = Integer.parse(totalAndSize[2] );
+      
+      return r;
+    }
+
+  /// Unmark all messages for deletion 
+  POP3Response rset()
+    {
+      POP3Response r;
+      r.resp = shortCmd("RSET");
+      return r;
+
+    }
+
+
+  /// NOOP for keepalive
+  POP3Response noop()
+    {
+      POP3Response r;
+      r.resp = shortCmd("NOOP");
+      return r;
 
     }
 
