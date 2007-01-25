@@ -125,6 +125,14 @@ class POP3Connection : Telnet
     {
 	return pop3Cmd("TOP " ~ Integer.toUtf8(messageNumber) ~ " " ~ Integer.toUtf8(numberOfLines) ); // TODO
     }
+  
+  // Lists all messages on server and total size
+    POP3Response stat(inout uint totalMessages, inout totalSize)
+    {
+      POP3Response r;
+      r.resp = shortCmd("STAT");
+
+    }
 
 
     /* ~ Commands */
