@@ -21,8 +21,8 @@ int main(char[][] args) {
     scope scan = new FileScan;
     scope regex =  Regex(r"\.(d|obj)$");
 
-    scan(new FilePath(args[1]), (FileProxy fp, bool isDir) { 
-            return (isDir || cast(bool)regex.test(fp.toUtf8())); 
+    scan(new FilePath(args[1]), delegate bool (FileProxy fp, bool isDir) { 
+            return isDir || regex.test(fp.toUtf8); 
     });
     
     foreach (File f; scan.files)
