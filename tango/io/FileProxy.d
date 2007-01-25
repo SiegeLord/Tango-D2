@@ -159,7 +159,7 @@ class FileProxy
         bool isExisting ()               
         {
                 try {
-                    getSize();
+                    getFlags;
                     return true;
                     } catch (IOException){}
                 return false;
@@ -205,16 +205,20 @@ class FileProxy
 
                 ***************************************************************/
 
-                private void getInfo (inout FIND_DATA info)
+                private DWORD getInfo (inout WIN32_FILE_ATTRIBUTE_DATA info)
                 {
                         version (Win32SansUnicode)
-                                 HANDLE h = FindFirstFileA (path.cString.ptr, &info);
+                                {
+                                if (! GetFileAttributesExA (path.cString.ptr, GetFileInfoLevelStandard, &info))
+                                      exception;
+                                }
                              else
-                                HANDLE h = FindFirstFileW (name16.ptr, &info);
+                                {
+                                if (! GetFileAttributesExW (name16.ptr, GetFileInfoLevelStandard, &info))
+                                      exception;
+                                }
 
-                        if (h == INVALID_HANDLE_VALUE)
-                            exception ();
-                        FindClose (h);
+                        return info.dwFileAttributes;
                 }
 
                 /***************************************************************
@@ -225,10 +229,9 @@ class FileProxy
 
                 private DWORD getFlags ()
                 {
-                        version (Win32SansUnicode)
-                                 return GetFileAttributesA (path.cString.ptr);
-                             else
-                                return GetFileAttributesW (name16.ptr);
+                        WIN32_FILE_ATTRIBUTE_DATA info;
+                        
+                        return getInfo (info);
                 }
 
                 /***************************************************************
@@ -239,7 +242,7 @@ class FileProxy
 
                 ulong getSize ()
                 {
-                        FIND_DATA info;
+                        WIN32_FILE_ATTRIBUTE_DATA info;
                         
                         getInfo (info);
                         return (cast(ulong) info.nFileSizeHigh << 32) + 
@@ -254,7 +257,7 @@ class FileProxy
 
                 bool isWritable ()               
                 {
-                        return (getFlags() & FILE_ATTRIBUTE_READONLY) == 0;
+                        return (getFlags & FILE_ATTRIBUTE_READONLY) == 0;
                 }            
 
                 /***************************************************************
@@ -265,7 +268,7 @@ class FileProxy
 
                 bool isDirectory ()               
                 {
-                        return (getFlags() & FILE_ATTRIBUTE_DIRECTORY) != 0;
+                        return (getFlags & FILE_ATTRIBUTE_DIRECTORY) != 0;
                 }            
 
                 /***************************************************************
@@ -276,7 +279,7 @@ class FileProxy
 
                 bool isVisible ()               
                 {
-                        return (getFlags() & (FILE_ATTRIBUTE_SYSTEM | FILE_ATTRIBUTE_HIDDEN)) == 0;
+                        return (getFlags & (FILE_ATTRIBUTE_SYSTEM | FILE_ATTRIBUTE_HIDDEN)) == 0;
                 }            
 
                 /***************************************************************
@@ -287,8 +290,8 @@ class FileProxy
 
                 ulong getModifiedTime ()
                 {
-                        FIND_DATA info;
-                        
+                        WIN32_FILE_ATTRIBUTE_DATA info;
+
                         getInfo (info);
                         return (cast(ulong) info.ftLastWriteTime.dwHighDateTime << 32) + 
                                             info.ftLastWriteTime.dwLowDateTime;
@@ -302,7 +305,7 @@ class FileProxy
 
                 ulong getAccessedTime ()
                 {
-                        FIND_DATA info;
+                        WIN32_FILE_ATTRIBUTE_DATA info;
                         
                         getInfo (info);
                         return (cast(ulong) info.ftLastAccessTime.dwHighDateTime << 32) + 
@@ -317,7 +320,7 @@ class FileProxy
 
                 ulong getCreatedTime ()
                 {
-                        FIND_DATA info;
+                        WIN32_FILE_ATTRIBUTE_DATA info;
                         
                         getInfo (info);
                         return (cast(ulong) info.ftCreationTime.dwHighDateTime << 32) + 
@@ -332,7 +335,7 @@ class FileProxy
 
                 FileProxy remove ()
                 {
-                        if (isDirectory ())
+                        if (isDirectory)
                            {
                            version (Win32SansUnicode)
                                    {
