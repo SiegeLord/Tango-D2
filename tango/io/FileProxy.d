@@ -166,6 +166,48 @@ class FileProxy
         }            
 
         /***********************************************************************
+                                
+                List the set of filenames within this directory. All
+                filenames are null terminated, though the null itself
+                is hidden at the end of each name (not exposed by the
+                length property)
+
+                Each filename includes the parent prefix
+                        
+        ***********************************************************************/
+
+        char[][] toList ()
+        {
+                int      i;
+                char[][] list;
+
+                void add (char[] prefix, char[] name, bool dir)
+                {
+                        if (i >= list.length)
+                            list.length = list.length * 2;
+
+                        // duplicate the path, including the null. Note that
+                        // the saved length *excludes* the terminator
+                        list[i++] = (prefix ~ name)[0 .. $-1];
+                }
+
+                list = new char[][1024];
+                toList (&add);
+                return list [0 .. i];
+        }
+
+        /***********************************************************************
+
+                Throw an exception using the last known error
+
+        ***********************************************************************/
+
+        private void exception ()
+        {
+                throw new IOException (path.toUtf8 ~ ": " ~ SysError.lastMsg);
+        }
+
+        /***********************************************************************
 
         ***********************************************************************/
 
@@ -186,17 +228,6 @@ class FileProxy
                         if (widepath is null)
                             widepath = Utf.toUtf16 (path.cString, widepathsink);
                         return widepath;
-                }
-
-                /***************************************************************
-
-                        Throw an exception using the last known error
-
-                ***************************************************************/
-
-                private void exception ()
-                {
-                        throw new IOException (path.toUtf8 ~ ": " ~ SysError.lastMsg);
                 }
 
                 /***************************************************************
@@ -383,7 +414,7 @@ class FileProxy
                                 result = MoveFileExW (name16.ptr, Utf.toUtf16(dst.cString).ptr, Typical);
 
                         if (! result)
-                              exception();
+                              exception;
 
                         path = dst;
                         return this;
@@ -409,10 +440,10 @@ class FileProxy
                                                  FILE_ATTRIBUTE_NORMAL, cast(HANDLE) 0);
 
                         if (h == INVALID_HANDLE_VALUE)
-                            exception ();
+                            exception;
 
                         if (! CloseHandle (h))
-                              exception ();
+                              exception;
 
                         return this;
                 }
@@ -428,42 +459,40 @@ class FileProxy
                         version (Win32SansUnicode)
                                 {
                                 if (! CreateDirectoryA (path.cString.ptr, null))
-                                      exception();
+                                      exception;
                                 }
                              else
                                 {
                                 if (! CreateDirectoryW (name16.ptr, null))
-                                      exception();
+                                      exception;
                                 }
                         return this;
                 }
 
                 /***************************************************************
                         
-                        List the set of filenames within this directory. All
-                        filenames are null terminated, though the null itself
-                        is hidden at the end of each name (not exposed by the
-                        length property)
-
-                        Each filename includes the parent prefix
+                        List the set of filenames within this directory. 
+                        
+                        All filenames are null terminated and are passed 
+                        to the provided delegate as such, along with the 
+                        path prefix and whether the entry is a directory 
+                        or not.
                         
                 ***************************************************************/
 
-                char[][] toList ()
+                void toList (void delegate (char[], char[], bool) dg)
                 {
-                        int                     i;
                         HANDLE                  h;
-                        char[][]                list;
                         char[]                  prefix;
                         FIND_DATA               fileinfo;
                         char[MAX_PATH+1]        tmp = void;
 
                         int next()
                         {
-                        version (Win32SansUnicode)
-                                 return FindNextFileA (h, &fileinfo);
-                             else
-                                return FindNextFileW (h, &fileinfo);
+                                version (Win32SansUnicode)
+                                         return FindNextFileA (h, &fileinfo);
+                                   else
+                                      return FindNextFileW (h, &fileinfo);
                         }
 
                         static T[] padded (T[] s, T[] ext)
@@ -479,12 +508,11 @@ class FileProxy
                                 h = FindFirstFileW (padded(name16[0..$-1], "*\0").ptr, &fileinfo);
 
                         if (h is INVALID_HANDLE_VALUE)
-                            exception();
+                            exception;
 
                         scope (exit)
                                FindClose (h);
                         
-                        list = new char[][1024];
                         prefix = FilePath.asPadded(path.toUtf8);
                         do {
                            version (Win32SansUnicode)
@@ -500,16 +528,8 @@ class FileProxy
                                    auto str = Utf.toUtf8 (fileinfo.cFileName [0 .. len], tmp);
                                    }
 
-                           if (i >= list.length)
-                               list.length = list.length * 2;
-
-                           // duplicate the path, including the null. Note that
-                           // the saved length *excludes* the terminator
-                           list[i++] = (prefix ~ str) [0 .. $-1];
+                           dg (prefix, str, (fileinfo.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY) != 0);
                            } while (next);
-
-                        list.length = i;
-                        return list;
                 }
         }
 
@@ -522,17 +542,6 @@ class FileProxy
         {
                 /***************************************************************
 
-                        Throw an exception using the last known error
-
-                ***************************************************************/
-
-                private void exception ()
-                {
-                        throw new IOException (path.toUtf8 ~ ": " ~ SysError.lastMsg);
-                }
-
-                /***************************************************************
-
                         Get info about this path
 
                 ***************************************************************/
@@ -540,7 +549,7 @@ class FileProxy
                 private uint getInfo (inout struct_stat stats)
                 {
                         if (posix.stat (path.cString.ptr, &stats))
-                            exception();
+                            exception;
 
                         return stats.st_mode;
                 }               
@@ -646,14 +655,14 @@ class FileProxy
 
                 FileProxy remove ()
                 {
-                        if (isDirectory())
+                        if (isDirectory)
                            {
                            if (posix.rmdir (path.cString.ptr))
-                               exception ();
+                               exception;
                            }
                         else           
                            if (tango.stdc.stdio.remove (path.cString.ptr) == -1)
-                               exception ();
+                               exception;
 
                         return this;
                 }              
@@ -668,7 +677,7 @@ class FileProxy
                 FileProxy rename (FilePath dst)
                 {
                         if (tango.stdc.stdio.rename (path.cString.ptr, dst.cString.ptr) == -1)
-                            exception ();
+                            exception;
 
                         path = dst;
                         return this;
@@ -686,10 +695,10 @@ class FileProxy
 
                         fd = posix.open (path.cString.ptr, O_CREAT | O_WRONLY | O_TRUNC, 0660);
                         if (fd == -1)
-                            exception();
+                            exception;
 
                         if (posix.close(fd) == -1)
-                            exception();
+                            exception;
 
                         return this;
                 }              
@@ -703,35 +712,35 @@ class FileProxy
                 FileProxy createFolder ()
                 {
                         if (posix.mkdir (path.cString.ptr, 0777))
-                            exception();
+                            exception;
 
                         return this;
                 }
 
                 /***************************************************************
                 
-                        List the set of filenames within this directory. All
-                        filenames are null terminated, though the null itself
-                        is hidden at the end of each name (not exposed by the
-                        length property)
-
-                        Each filename includes the parent prefix
+                        List the set of filenames within this directory. 
+                        
+                        All filenames are null terminated and are passed 
+                        to the provided delegate as such, along with the 
+                        path prefix and whether the entry is a directory 
+                        or not.
                         
                 ***************************************************************/
 
-                char[][] toList ()
+                char[][] toList (void delegate (char[], char[], bool) dg)
                 {
-                        int             i;
                         DIR*            dir;
-                        char[][]        list;
                         dirent*         entry;
                         char[]          prefix;
 
                         dir = tango.stdc.posix.dirent.opendir (path.cString.ptr);
                         if (! dir) 
-                              exception();
+                              exception;
 
-                        list = new char[][1024];
+                        scope (exit)
+                               tango.stdc.posix.dirent.closedir (dir);
+
                         prefix = FilePath.asPadded (path.toUtf8);
                         
                         while ((entry = tango.stdc.posix.dirent.readdir(dir)) != null)
@@ -739,18 +748,9 @@ class FileProxy
                               // ensure we include the terminating null ...
                               auto len = tango.stdc.string.strlen (entry.d_name.ptr)+1;
                               auto str = entry.d_name.ptr [0 .. len];
-
-                              if (i >= list.length)
-                                  list.length = list.length * 2;
-
-                              // duplicate the path, including the null. Note that
-                              // the saved length *excludes* the terminator
-                              list[i++] = (prefix ~ str) [0 .. $-1];
+                
+                              dg (prefix, str, entry.d_type is DT_DIR);
                               }
-
-                        tango.stdc.posix.dirent.closedir (dir);
-                        list.length = i;
-                        return list;
                 }
         }
 }
