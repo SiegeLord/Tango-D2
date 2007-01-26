@@ -292,7 +292,9 @@ void* _aaGet(AA* aa, TypeInfo keyti, size_t valuesize, ...)
         //printf("create new one\n");
         size_t size = aaA.sizeof + keysize + valuesize;
         uint   bits = keysize   < (void*).sizeof &&
-                      valuesize < (void*).sizeof ? BlkAttr.NO_SCAN : 0;
+                      keysize   > (void).sizeof  &&
+                      valuesize < (void*).sizeof &&
+                      valuesize > (void).sizeof  ? BlkAttr.NO_SCAN : 0;
         e = cast(aaA *) gc_calloc(size, bits);
         memcpy(e + 1, pkey, keysize);
         e.hash = key_hash;
@@ -494,7 +496,9 @@ body
     if (aa.a)
     {
         a.length = _aaLen(aa);
-        a.ptr = cast(byte*) gc_malloc(a.length * valuesize, valuesize < (void*).sizeof ? BlkAttr.NO_SCAN : 0);
+        a.ptr = cast(byte*) gc_malloc(a.length * valuesize,
+                                      valuesize < (void*).sizeof &&
+                                      valuesize > (void).sizeof  ? BlkAttr.NO_SCAN : 0);
         resi = 0;
         foreach (e; aa.a.b)
         {
@@ -629,7 +633,9 @@ ArrayRet_t _aaKeys(AA aa, size_t keysize)
     auto len = _aaLen(aa);
     if (!len)
         return 0;
-    res = (cast(byte*) gc_malloc(len * keysize, keysize < (void*).sizeof ? BlkAttr.NO_SCAN : 0))[0 .. len * keysize];
+    res = (cast(byte*) gc_malloc(len * keysize,
+                                 keysize < (void*).sizeof &&
+                                 keysize > (void).sizeof  ? BlkAttr.NO_SCAN : 0))[0 .. len * keysize];
     resi = 0;
     foreach (e; aa.a.b)
     {

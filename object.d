@@ -9,8 +9,8 @@ class Object
 {
     char[] toUtf8();
     hash_t toHash();
-    int opCmp(Object o);
-    int opEquals(Object o);
+    int    opCmp(Object o);
+    int    opEquals(Object o);
 
     final void notifyRegister(void delegate(Object) dg);
     final void notifyUnRegister(void delegate(Object) dg);
@@ -20,36 +20,42 @@ struct Interface
 {
     ClassInfo   classinfo;
     void*[]     vtbl;
-    int         offset;		// offset to Interface 'this' from Object 'this'
+    int         offset;     // offset to Interface 'this' from Object 'this'
 }
 
 class ClassInfo : Object
 {
-    byte[]      init;		// class static initializer
-    char[]      name;		// class name
-    void*[]     vtbl;		// virtual function pointer table
+    byte[]      init;       // class static initializer
+    char[]      name;       // class name
+    void*[]     vtbl;       // virtual function pointer table
     Interface[] interfaces;
     ClassInfo   base;
     void*       destructor;
     void(*classInvariant)(Object);
     uint        flags;
-    // 1: // IUnknown
+    // 1:                   // IUnknown
+    // 2:                   // has no possible pointers into GC memory
     void*       deallocator;
 }
 
 class TypeInfo
 {
-    hash_t getHash(void *p);
-    int equals(void *p1, void *p2);
-    int compare(void *p1, void *p2);
-    size_t tsize();
-    void swap(void *p1, void *p2);
+    hash_t   getHash(void *p);
+    int      equals(void *p1, void *p2);
+    int      compare(void *p1, void *p2);
+    size_t   tsize();
+    void     swap(void *p1, void *p2);
+    TypeInfo next();
+    void[]   init();
+    uint     flags();
+    // 1: has possible pointers into GC memory
 }
 
 class TypeInfo_Typedef : TypeInfo
 {
     TypeInfo base;
-    char[] name;
+    char[]   name;
+    void[]   m_init;
 }
 
 class TypeInfo_Enum : TypeInfo_Typedef
@@ -58,23 +64,23 @@ class TypeInfo_Enum : TypeInfo_Typedef
 
 class TypeInfo_Pointer : TypeInfo
 {
-    TypeInfo next;
+    TypeInfo m_next;
 }
 
 class TypeInfo_Array : TypeInfo
 {
-    TypeInfo next;
+    TypeInfo value;
 }
 
 class TypeInfo_StaticArray : TypeInfo
 {
-    TypeInfo next;
+    TypeInfo value;
     size_t   len;
 }
 
 class TypeInfo_AssociativeArray : TypeInfo
 {
-    TypeInfo next;
+    TypeInfo value;
     TypeInfo key;
 }
 
@@ -101,12 +107,14 @@ class TypeInfo_Interface : TypeInfo
 class TypeInfo_Struct : TypeInfo
 {
     char[] name;
-    byte[] init;
+    void[] m_init;
 
     uint function(void*)      xtoHash;
     int function(void*,void*) xopEquals;
     int function(void*,void*) xopCmp;
     char[] function(void*)    xtoString;
+
+    uint m_flags;
 }
 
 class TypeInfo_Tuple : TypeInfo

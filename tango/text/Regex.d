@@ -3098,7 +3098,9 @@ debug( UnitTest )
 //
 private
 {
+    import tango.core.Memory; // for OutBuffer
     extern (C) int memicmp(char *, char *, uint);
+
 
     /**********************************
      * Compare two strings. cmp is case sensitive, icmp is case insensitive.
@@ -3408,6 +3410,7 @@ private
             if (data.length < offset + nbytes)
             {
                 data.length = (offset + nbytes) * 2;
+                gc.clrAttr(data.ptr, GC.BlkAttr.NO_SCAN);
             }
         }
 

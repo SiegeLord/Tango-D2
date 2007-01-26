@@ -101,12 +101,10 @@ OBJ_UTIL= \
     util/utf.o
 
 OBJ_TI= \
-    typeinfo/ti_Aa.o \
     typeinfo/ti_AC.o \
     typeinfo/ti_Acdouble.o \
     typeinfo/ti_Acfloat.o \
     typeinfo/ti_Acreal.o \
-    typeinfo/ti_Adchar.o \
     typeinfo/ti_Adouble.o \
     typeinfo/ti_Afloat.o \
     typeinfo/ti_Ag.o \
@@ -114,11 +112,6 @@ OBJ_TI= \
     typeinfo/ti_Along.o \
     typeinfo/ti_Areal.o \
     typeinfo/ti_Ashort.o \
-    typeinfo/ti_Aubyte.o \
-    typeinfo/ti_Auint.o \
-    typeinfo/ti_Aulong.o \
-    typeinfo/ti_Aushort.o \
-    typeinfo/ti_Awchar.o \
     typeinfo/ti_byte.o \
     typeinfo/ti_C.o \
     typeinfo/ti_cdouble.o \

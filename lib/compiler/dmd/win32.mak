@@ -91,12 +91,10 @@ OBJ_UTIL= \
     util\utf.obj
 
 OBJ_TI= \
-    typeinfo\ti_Aa.obj \
     typeinfo\ti_AC.obj \
     typeinfo\ti_Acdouble.obj \
     typeinfo\ti_Acfloat.obj \
     typeinfo\ti_Acreal.obj \
-    typeinfo\ti_Adchar.obj \
     typeinfo\ti_Adouble.obj \
     typeinfo\ti_Afloat.obj \
     typeinfo\ti_Ag.obj \
@@ -104,11 +102,6 @@ OBJ_TI= \
     typeinfo\ti_Along.obj \
     typeinfo\ti_Areal.obj \
     typeinfo\ti_Ashort.obj \
-    typeinfo\ti_Aubyte.obj \
-    typeinfo\ti_Auint.obj \
-    typeinfo\ti_Aulong.obj \
-    typeinfo\ti_Aushort.obj \
-    typeinfo\ti_Awchar.obj \
     typeinfo\ti_byte.obj \
     typeinfo\ti_C.obj \
     typeinfo\ti_cdouble.obj \

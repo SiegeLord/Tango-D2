@@ -1730,7 +1730,7 @@ struct Gcx
                     {
                         //if (log) debug(PRINTF) printf("\t\tmarking %x\n", p);
                         pool.mark.set(biti);
-                        if (!pool.noscan.nbits || !pool.noscan.test(biti))
+                        if (!pool.noscan.test(biti))
                         {
                             pool.scan.set(biti);
                             changes = 1;
@@ -2094,11 +2094,13 @@ struct Gcx
 
         uint bits;
 
-        if (pool.finals.nbits && pool.finals.test(biti))
+        if (pool.finals.nbits &&
+            pool.finals.test(biti))
             bits |= BlkAttr.FINALIZE;
-        if (pool.noscan.nbits && pool.noscan.test(biti))
+        if (pool.noscan.test(biti))
             bits |= BlkAttr.NO_SCAN;
-//        if (pool.nomove.nbits && pool.nomove.test(biti))
+//        if (pool.nomove.nbits &&
+//            pool.nomove.test(biti))
 //            bits |= BlkAttr.NO_MOVE;
         return bits;
     }
@@ -2119,8 +2121,6 @@ struct Gcx
         }
         if (mask & BlkAttr.NO_SCAN)
         {
-            if (!pool.noscan.nbits)
-                pool.noscan.alloc(pool.mark.nbits);
             pool.noscan.set(biti);
         }
 //        if (mask & BlkAttr.NO_MOVE)
@@ -2139,11 +2139,11 @@ struct Gcx
     {
         assert(pool && biti);
 
-        if (pool.finals.nbits && mask & BlkAttr.FINALIZE)
+        if (mask & BlkAttr.FINALIZE && pool.finals.nbits)
             pool.finals.clear(biti);
-        if (pool.noscan.nbits && mask & BlkAttr.NO_SCAN)
+        if (mask & BlkAttr.NO_SCAN)
             pool.noscan.clear(biti);
-//        if (pool.nomove.nbits && mask & BlkAttr.NO_MOVE)
+//        if (mask & BlkAttr.NO_MOVE && pool.nomove.nbits)
 //            pool.nomove.clear(biti);
     }
 
@@ -2326,6 +2326,7 @@ struct Pool
         mark.alloc(poolsize / 16);
         scan.alloc(poolsize / 16);
         freebits.alloc(poolsize / 16);
+        noscan.alloc(poolsize / 16);
 
         pagetable = cast(ubyte*)tango.stdc.stdlib.malloc(npages);
         memset(pagetable, B_UNCOMMITTED, npages);
