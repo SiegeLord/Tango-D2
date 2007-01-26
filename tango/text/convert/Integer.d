@@ -440,7 +440,7 @@ T[] itoa(T, U=uint) (T[] output, U value)
 
 debug (UnitTest)
 {
-        void main() {}
+//        void main() {}
         unittest
         {
         char[64] tmp;
