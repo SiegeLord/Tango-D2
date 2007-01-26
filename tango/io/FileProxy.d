@@ -709,7 +709,7 @@ class FileProxy
                         
                 ***************************************************************/
 
-                char[][] toList (void delegate (char[], char[], bool) dg)
+                void toList (void delegate (char[], char[], bool) dg)
                 {
                         DIR*            dir;
                         dirent*         entry;
