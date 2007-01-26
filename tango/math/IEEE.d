@@ -51,8 +51,6 @@
  */
 module tango.math.IEEE;
 
-static import tango.stdc.math;
-
 version(DigitalMars)
 {
     version(D_InlineAsm_X86)
@@ -60,6 +58,17 @@ version(DigitalMars)
         version = DigitalMars_D_InlineAsm_X86;
     }
 }
+
+version (DigitalMars_D_InlineAsm_X86) {
+    // Don't include this extra dependency unless we need to.
+    debug(UnitTest) {
+        static import tango.stdc.math;
+    }
+} else {
+    // Needed for cos(), sin(), tan() on GNU.
+   static import tango.stdc.math;
+}
+
 
 /* Most of the functions depend on the format of the largest IEEE floating-point type.
  * These code will differ depending on whether 'real' is 64, 80, or 128 bits,
