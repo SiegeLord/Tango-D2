@@ -170,7 +170,7 @@ bool containsPattern(T) (T[] source, T[] match)
 
 ******************************************************************************/
 
-uint locate(T) (T[] source, T match, uint start=0)
+uint locate(T, U=uint) (T[] source, T match, U start=0)
 {
         if (start > source.length)
             start = source.length;
@@ -187,7 +187,7 @@ uint locate(T) (T[] source, T match, uint start=0)
 
 ******************************************************************************/
 
-uint locatePrior(T) (T[] source, T match, uint start=uint.max)
+uint locatePrior(T, U=uint) (T[] source, T match, U start=uint.max)
 {
         if (start > source.length)
             start = source.length;
@@ -207,7 +207,7 @@ uint locatePrior(T) (T[] source, T match, uint start=uint.max)
 
 ******************************************************************************/
 
-uint locatePattern(T) (T[] source, T[] match, uint start=0)
+uint locatePattern(T, U=uint) (T[] source, T[] match, U start=0)
 {
         uint    idx;
         T*      p = source.ptr + start;
@@ -238,7 +238,7 @@ uint locatePattern(T) (T[] source, T[] match, uint start=0)
 
 ******************************************************************************/
 
-uint locatePatternPrior(T) (T[] source, T[] match, uint start=uint.max)
+uint locatePatternPrior(T, U=uint) (T[] source, T[] match, U start=uint.max)
 {
         auto len = source.length;
         
@@ -342,7 +342,7 @@ bool isSpace(T) (T c)
         
 ******************************************************************************/
 
-bool matching(T) (T* s1, T* s2, uint length)
+bool matching(T, U=uint) (T* s1, T* s2, U length)
 {
         return mismatch(s1, s2, length) is length;
 }
@@ -355,7 +355,7 @@ bool matching(T) (T* s1, T* s2, uint length)
 
 ******************************************************************************/
 
-uint indexOf(T) (T* str, T match, uint length)
+uint indexOf(T, U=uint) (T* str, T match, U length)
 {
         version (D_InlineAsm_X86)
         {       
@@ -451,7 +451,7 @@ uint indexOf(T) (T* str, T match, uint length)
 
 ******************************************************************************/
 
-uint mismatch(T) (T* s1, T* s2, uint length)
+uint mismatch(T, U=uint) (T* s1, T* s2, U length)
 {
         version (D_InlineAsm_X86)
         {
@@ -972,15 +972,13 @@ private struct QuoteFreach(T)
         }
 }
 
-
-
 /******************************************************************************
 
 ******************************************************************************/
 
 debug (UnitTest)
 {
-//        void main() {}
+        //void main() {}
         
         unittest
         {
@@ -988,18 +986,18 @@ debug (UnitTest)
 
         assert (isSpace (' ') && !isSpace ('d'));
 
-        assert (indexOf ("abc".ptr, 'a', 3u) is 0);
-        assert (indexOf ("abc".ptr, 'b', 3u) is 1);
-        assert (indexOf ("abc".ptr, 'c', 3u) is 2);
-        assert (indexOf ("abc".ptr, 'd', 3u) is 3);
+        assert (indexOf ("abc".ptr, 'a', 3) is 0);
+        assert (indexOf ("abc".ptr, 'b', 3) is 1);
+        assert (indexOf ("abc".ptr, 'c', 3) is 2);
+        assert (indexOf ("abc".ptr, 'd', 3) is 3);
 
-        assert (mismatch ("abc".ptr, "abc".ptr, 3u) is 3);
-        assert (mismatch ("abc".ptr, "abd".ptr, 3u) is 2);
-        assert (mismatch ("abc".ptr, "acc".ptr, 3u) is 1);
-        assert (mismatch ("abc".ptr, "ccc".ptr, 3u) is 0);
+        assert (mismatch ("abc".ptr, "abc".ptr, 3) is 3);
+        assert (mismatch ("abc".ptr, "abd".ptr, 3) is 2);
+        assert (mismatch ("abc".ptr, "acc".ptr, 3) is 1);
+        assert (mismatch ("abc".ptr, "ccc".ptr, 3) is 0);
 
-        assert (matching ("abc".ptr, "abc".ptr, 3u));
-        assert (matching ("abc".ptr, "abb".ptr, 3u) is false);
+        assert (matching ("abc".ptr, "abc".ptr, 3));
+        assert (matching ("abc".ptr, "abb".ptr, 3) is false);
         
         assert (contains ("abc", 'a'));
         assert (contains ("abc", 'b'));
@@ -1024,6 +1022,8 @@ debug (UnitTest)
 
         assert (replace ("abc".dup, 'b', ':') == "a:c");
 
+        assert (locate ("abc", 'c', 1) is 2);
+
         assert (locate ("abc", 'c') is 2);
         assert (locate ("abc", 'a') is 0);
         assert (locate ("abc", 'd') is 3);
@@ -1032,8 +1032,8 @@ debug (UnitTest)
         assert (locatePrior ("abce", 'c') is 2);
         assert (locatePrior ("abce", 'a') is 0);
         assert (locatePrior ("abce", 'd') is 4);
-        assert (locatePrior ("abce", 'c', 3u) is 2);
-        assert (locatePrior ("abce", 'c', 2u) is 4);
+        assert (locatePrior ("abce", 'c', 3) is 2);
+        assert (locatePrior ("abce", 'c', 2) is 4);
         assert (locatePrior ("", 'c') is 0);
 
         auto x = delimit ("::b", ":");
@@ -1053,13 +1053,13 @@ debug (UnitTest)
         assert (locatePattern ("abcdefg", "abcdefgx") is 7);
         assert (locatePattern ("abcdefg", "cce") is 7);
         assert (locatePattern ("abcdefg", "cde") is 2);
-        assert (locatePattern ("abcdefgcde", "cde", 3u) is 7);
+        assert (locatePattern ("abcdefgcde", "cde", 3) is 7);
 
         assert (locatePatternPrior ("abcdefg", "") is 7);
         assert (locatePatternPrior ("abcdefg", "cce") is 7);
         assert (locatePatternPrior ("abcdefg", "cde") is 2);
-        assert (locatePatternPrior ("abcdefgcde", "cde", 6u) is 2);
-        assert (locatePatternPrior ("abcdefgcde", "cde", 4u) is 2);
+        assert (locatePatternPrior ("abcdefgcde", "cde", 6) is 2);
+        assert (locatePatternPrior ("abcdefgcde", "cde", 4) is 2);
         assert (locatePatternPrior ("abcdefg", "abcdefgx") is 7);
 
         x = delineate ("a\nb\n");
@@ -1086,4 +1086,6 @@ debug (UnitTest)
         assert (x.length is 1 && x[0] == "one, two, three");
         }
 }
+
+
 
