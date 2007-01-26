@@ -21,6 +21,17 @@ private import  tango.text.convert.Format;
 
 /*******************************************************************************
 
+        Platform issues ...
+        
+*******************************************************************************/
+
+version (DigitalMars)
+         alias void* Args;
+   else 
+      alias char* Args;
+
+/*******************************************************************************
+
         A bridge between a Format instance and a Buffer. This is used for
         the Stdout & Stderr globals, but can be used for general purpose
         buffer-formatting as desired. The Template type 'T' dictates the
@@ -85,7 +96,7 @@ class BufferedFormat(T)
         final BufferedFormat print (...)
         {
                 if (_arguments.length > 0)
-                    print(&sink, _arguments, cast(void*) _argptr);
+                    print(&sink, _arguments, _argptr);
                 else
                     // zero args is just a flush
                     output.flush();
@@ -102,7 +113,7 @@ class BufferedFormat(T)
         final BufferedFormat println (...)
         {
                 if (_arguments.length > 0)
-                    print(&sink, _arguments, cast(void*) _argptr);
+                    print(&sink, _arguments, _argptr);
 
                 return newline();
         }
@@ -113,7 +124,7 @@ class BufferedFormat(T)
 
         **********************************************************************/
 
-        protected final BufferedFormat print (Formatter.Sink sink, TypeInfo[] arguments, void* argptr)
+        protected final BufferedFormat print (Formatter.Sink sink, TypeInfo[] arguments, Args argptr)
         in
         {
                 assert(arguments.length > 0 && arguments.length < 10);
