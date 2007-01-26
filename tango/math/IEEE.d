@@ -685,7 +685,7 @@ unittest
 
 int isNaN(real x)
 {
-   static if(real.mant_dig == 53) {
+  static if (real.mant_dig==double.mant_dig) {
         ulong*  p = cast(ulong *)&x;
         return (*p & 0x7FF0_0000 == 0x7FF0_0000) && *p & 0x000F_FFFF;
   } else { // 80-bit real
@@ -738,7 +738,7 @@ int isNormal(double d)
 /** ditto */
 int isNormal(real x)
 {
-    static if (real.mant_dig == 53) {
+    static if (real.mant_dig == double.mant_dig) {
         return isNormal(cast(double)x);
     } else {
         ushort* pe = cast(ushort *)&x;
@@ -772,7 +772,7 @@ bool isIdentical(real x, real y)
 {
     long*   pxs = cast(long *)&x;
     long*   pys = cast(long *)&y;
-  static if (real.mant_dig == 53){
+  static if (real.mant_dig == double.mant_dig){
     return pxs[0] == pys[0];
   } else {
     ushort* pxe = cast(ushort *)&x;
@@ -841,7 +841,7 @@ unittest
 
 int isSubnormal(real e)
 {
-    static if (real.mant_dig == 53) {
+    static if (real.mant_dig == double.mant_dig) {
         return isSubnormal(cast(double)e);
     } else {
         ushort* pe = cast(ushort *)&e;
@@ -866,7 +866,7 @@ unittest
  */
 int isZero(real x)
 {
-    static if (real.mant_dig == 53) {
+    static if (real.mant_dig == double.mant_dig) {
         return ((*cast(ulong *)&x)&0x7FFF_FFFF_FFFF_FFFF) == 0;
     } else {
         ushort* pe = cast(ushort *)&x;
@@ -882,7 +882,7 @@ int isZero(real x)
 
 int isInfinity(real e)
 {
-    static if (real.mant_dig == 53) {
+    static if (real.mant_dig == double.mant_dig) {
         return ((*cast(ulong *)&x)&0x7FFF_FFFF_FFFF_FFFF) == 0x7FF8_0000_0000_0000;
     } else {
         ushort* pe = cast(ushort *)&e;
@@ -926,7 +926,7 @@ unittest
  */
 real nextUp(real x)
 {
- static if (real.mant_dig == 53) {
+ static if (real.mant_dig == double.mant_dig) {
        return nextDoubleUp(x);
  } else {
     // For 80-bit reals, the "implied bit" is a nuisance...
@@ -1267,7 +1267,7 @@ unittest
 
 int signbit(real x)
 {
-    static if (real.mant_dig == 53) {
+    static if (real.mant_dig == double.mant_dig) {
         return ((*cast(ulong *)&x)&0x8000_0000_0000_0000) != 0;
     } else {
         ubyte* pe = cast(ubyte *)&x;
@@ -1293,7 +1293,7 @@ unittest
 
 real copysign(real to, real from)
 {
-    static if (real.mant_dig == 53) {
+    static if (real.mant_dig == double.mant_dig) {
         ulong* pto   = cast(ulong *)&to;
         ulong* pfrom = cast(ulong *)&from;
         *pto &= 0x7FFF_FFFF_FFFF_FFFF;
@@ -1348,8 +1348,13 @@ unittest
  */
 bool isNaNPayloadString(real x)
 {
-    ushort* px = cast(ushort *)(&x);
-    return (px[4] & 0x7FFF) == 0x7FFF && (px[3] & 0x2000)== 0x2000;
+    static if (real.mant_dig==double.mant_dig) {
+        ulong* px = cast(ulong *)(&x);
+        return (px[0] & 0x7FF4_0000_0000_0000) == 0x7FF4_0000_0000_0000;
+    } else { // 80-bit real
+        ushort* px = cast(ushort *)(&x);
+        return (px[4] & 0x7FFF) == 0x7FFF && (px[3] & 0x2000)== 0x2000;
+    }
 }
 
 /**
@@ -1361,7 +1366,12 @@ bool isNaNPayloadString(real x)
  */
 real NaN(char [] str)
 {
-    ulong v = 7; // implied bit = 1 , signalling bit = 1, string NaN = 1
+    ulong v;
+    static if (real.mant_dig==double.mant_dig) {
+        v = 3; // No implied bit, signalling bit = 1, string NaN = 1
+    } else {
+        v = 7; // implied bit = 1 , signalling bit = 1, string NaN = 1
+    }
     int n = str.length;
 
     if (n>8) n=8;
@@ -1376,11 +1386,17 @@ real NaN(char [] str)
         v <<=7;
         if (i==7) v<<=1;
     }
-    v <<=4;
+    static if (real.mant_dig==double.mant_dig) {
+        v>>>=7; // 8th character is lost.
+        v |=0x7FF0_0000_0000_0000;
+        real x;
 
-    real x = real.nan;
-    *cast(ulong *)(&x) = v;
-    return x;
+    } else {
+        v <<=4;
+        real x = real.nan;
+    }
+        *cast(ulong *)(&x) = v;
+        return x;
 }
 
 /**
@@ -1389,7 +1405,11 @@ real NaN(char [] str)
  */
 real NaN(ulong payload)
 {
-    ulong v = 6; // implied bit = 1, quiet bit = 1, string NaN = 0
+    static if (real.mant_dig == double.mant_dig) {
+      ulong v = 4; // no implied bit. quiet bit = 1, string NaN = 0
+    } else {
+      ulong v = 6; // implied bit = 1, quiet bit = 1, string NaN = 0
+    }
 
     ulong a = payload;
 
@@ -1413,16 +1433,22 @@ real NaN(ulong payload)
     v <<=1;
     if (a!=0) v |= 1; // DoubleMoreBits
 
-    // Extended real bits
-    v <<=11;
-    a &= 0x7FF;
-    v |= a;
+    static if (real.mant_dig == double.mant_dig) {
+        v |=0x7FF0_0000_0000_0000;
+        real x;
+        * cast(ulong *)(&x) = v;
+        return x;
+    } else {
+        // Extended real bits
+        v <<=11;
+        a &= 0x7FF;
+        v |= a;
 
-    real x = real.nan;
-    * cast(ulong *)(&x) = v;
-    return x;
+        real x = real.nan;
+        * cast(ulong *)(&x) = v;
+        return x;
+    }
 }
-
 
 /**
  * Extract a string payload from a $(NAN)
@@ -1436,9 +1462,15 @@ char [] getNaNPayloadString(real x, char[] buff)
 {
     assert(isNaNPayloadString(x));
     ulong m = *cast(ulong *)(&x);
-    // Skip implicit bit, quiet bit, and character bit
-    m &= 0x1FFF_FFFF_FFFF_FFFF;
-    m <<= 2; // Move the first byte to the top
+    static if (real.mant_dig==double.mant_dig) {
+        // Skip exponent, quiet bit, and character bit
+        m &= 0x0003_FFFF_FFFF_FFFF;
+        m <<= 13; // Move the first byte to the top
+    } else { // 80-bit reals
+        // Skip implicit bit, quiet bit, and character bit
+        m &= 0x1FFF_FFFF_FFFF_FFFF;
+        m <<= 2; // Move the first byte to the top
+    }
     ulong q;
     int i=0;
     while (m!=0 && i< buff.length) {
@@ -1464,6 +1496,7 @@ unittest {
     // Test narrow casting
     double nan2 = nan1;
     assert(getNaNPayloadString(nan2, buff8)== "qweRtyu");
+
     float nan3 = nan1;
     assert(getNaNPayloadString(nan3, buff8)== "qwe");
 }
@@ -1488,7 +1521,13 @@ long getNaNPayloadLong(real x)
 {
     assert(isNaN(x) && !isNaNPayloadString(x));
     ulong m = *cast(ulong *)(&x);
-    // Skip implicit bit, quiet bit, and character bit
+    static if (real.mant_dig == double.mant_dig) {
+        // Make it look like an 80-bit mantissa.
+        // Skip exponent, quiet bit, and character bit
+        m &= 0x0003_FFFF_FFFF_FFFF;
+        m <<=11;
+    }
+    // ignore implicit bit, quiet bit, and character bit
     bool bMore = false;
     if ( m & 0x1000_0000_0000_0000L) bMore = true;
     ulong f = m & 0x0FFF_FF00_0000_0000L;
