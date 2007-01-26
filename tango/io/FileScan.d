@@ -137,47 +137,54 @@ class FileScan
         /***********************************************************************
 
                 Internal routine to locate files and sub-directories. We
-                skip system files, plus folders composed only of '.' chars
+                skip folders composed only of '.' chars. 
+
+                Heap activity is avoided for everything the filter discards.
                         
         ***********************************************************************/
 
         private void scan (File folder, Filter filter) 
         {
-                auto paths = folder.toList();
-                auto count = files_.length;
-                total_ += paths.length;
-                
-                foreach (entry; paths) 
-                        {
+                File[] files;
+
+                void add (char[] prefix, char[] name, bool isDir)
+                { 
+                        ++total_;
+
+                        char[512] tmp;
+                        
+                        int len = prefix.length + name.length;
+                        assert (len < tmp.length);
+
+                        // construct full pathname
+                        tmp[0..prefix.length] = prefix;
+                        tmp[prefix.length..len] = name;
+
                         // temporaries, allocated on stack 
-                        scope auto x = new FilePath (entry.ptr, entry.length+1);
-                        scope auto p = new FileProxy (x);
+                        scope x = new FilePath (tmp.ptr, len);
+                        scope p = new FileProxy (x);
 
-                        // skip system files
-                        bool isDir = p.isDirectory;
-                        if (p.isVisible && filter (p, isDir))
+                        // test this entry for inclusion
+                        if (filter (p, isDir))
                            {
-                           // create persistent instance for returning. We
-                           // map onto the filepath allocated via toList()
-                           auto file = new File (new FilePath (x));
-
-                           if (isDir)
-                              {
-                              auto path = file.getPath();
-
-                              // skip dirs composed only of '.'
-                              auto suffix = path.getSuffix();
-                              if (path.getName.length is 0 && suffix.length <= 3 &&
-                                  suffix == "..."[0..suffix.length])
-                                  continue;
-
-                              // recurse directories
-                              scan (file, filter);
-                              }
+                           // skip dirs composed only of '.'
+                           char[] suffix = x.getSuffix;
+                           if (x.getName.length is 0 && suffix.length <= 3 &&
+                               suffix == "..."[0..suffix.length]) {}
                            else
-                              files_ ~= file;
+                              // create persistent instance for post processing
+                              files ~= new File (new FilePath (tmp[0..len].dup.ptr, len, isDir));
                            }
-                        }
+                }
+
+                folder.toList (&add);
+                auto count = files_.length;
+                
+                foreach (file; files)
+                         if (file.getPath.isDir)
+                             scan (file, filter);
+                         else
+                            files_ ~= file;
                 
                 // add packages only if there's something in them
                 if (files_.length > count)

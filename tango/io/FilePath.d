@@ -39,6 +39,8 @@ private import tango.io.FileConst;
 class FilePath
 {       
         private char[]  fp;                     // filepath with trailing 0
+
+        private bool    dir;                    // this represents a dir?
         
         private int     end,                    // before the trailing 0
                         ext,                    // after rightmost '.'
@@ -84,7 +86,7 @@ class FilePath
                 
         ***********************************************************************/
 
-        package this (char* filepath, int len)
+        package this (char* filepath, int len, bool dir=false)
         {
                 path = 0;
                 end  = len-1;
@@ -129,24 +131,8 @@ class FilePath
 
                 if (ext < 0)
                     ext = end;
-        }
-        
-        /***********************************************************************
 
-                Alias the content of another FilePath. This can be used to
-                avoid rescanning the path
-                
-        ***********************************************************************/
-
-        this (FilePath other)
-        {
-                assert (other);
-                fp = other.fp;
-                end = other.end;
-                ext = other.ext;
-                path = other.path;
-                name = other.name;
-                suffix = other.suffix;
+                this.dir = dir;
         }
         
         /***********************************************************************
@@ -306,6 +292,18 @@ class FilePath
                          return true;
                 return false;
         }               
+
+        /***********************************************************************
+        
+                Returns true if this FilePath has been marked as a 
+                directory, via the constructor
+
+        ***********************************************************************/
+
+        final bool isDir ()
+        {
+                return dir;
+        }
 
         /***********************************************************************
         

@@ -304,17 +304,6 @@ class FileProxy
 
                 /***************************************************************
 
-                        Is this file visible to users?
-
-                ***************************************************************/
-
-                bool isVisible ()               
-                {
-                        return (getFlags & (FILE_ATTRIBUTE_SYSTEM | FILE_ATTRIBUTE_HIDDEN)) == 0;
-                }            
-
-                /***************************************************************
-
                         Return the time when the file was last modified
 
                 ***************************************************************/
@@ -528,7 +517,10 @@ class FileProxy
                                    auto str = Utf.toUtf8 (fileinfo.cFileName [0 .. len], tmp);
                                    }
 
-                           dg (prefix, str, (fileinfo.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY) != 0);
+                           // skip hidden/system files
+                           if ((fileinfo.dwFileAttributes & (FILE_ATTRIBUTE_SYSTEM | FILE_ATTRIBUTE_HIDDEN)) is 0)
+                                dg (prefix, str, (fileinfo.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY) != 0);
+
                            } while (next);
                 }
         }
@@ -592,17 +584,6 @@ class FileProxy
                         struct_stat stats;
 
                         return (getInfo(stats) & S_IFDIR) != 0;
-                }            
-
-                /***************************************************************
-
-                        Is this file visible to users?
-
-                ***************************************************************/
-
-                bool isVisible ()               
-                {
-                        return true;
                 }            
 
                 /***************************************************************
