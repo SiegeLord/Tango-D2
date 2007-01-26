@@ -105,7 +105,7 @@ dchar[] toUtf32 (double d, uint decimals=6, bool scientific=false)
 
 ******************************************************************************/
 
-T[] format(T) (T[] dst, double x, uint decimals = 6, bool scientific = false)
+T[] format(T, U=uint) (T[] dst, double x, U decimals = 6, bool scientific = false)
 {
         assert (dst.length >= 32);
 
@@ -363,9 +363,9 @@ debug (UnitTest)
 {
         unittest
         {
-                char[64] tmp;
+                wchar[64] tmp;
                 assert (format (tmp, 3.14159) == "3.141590");
-                assert (format (tmp, 3.14159, 4u) == "3.1416");
+                assert (format (tmp, 3.14159, 4) == "3.1416");
                 assert (parse ("3.14159") == 3.14159);
         }
 }

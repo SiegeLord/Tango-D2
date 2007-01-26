@@ -66,7 +66,7 @@ enum Flags
         
 ******************************************************************************/
 
-int toInt(T) (T[] digits, uint radix=10)
+int toInt(T, U=uint) (T[] digits, U radix=10)
 {
         auto x = toLong (digits, radix);
         if (x > int.max)
@@ -85,7 +85,7 @@ int toInt(T) (T[] digits, uint radix=10)
         
 ******************************************************************************/
 
-long toLong(T) (T[] digits, uint radix=10)
+long toLong(T, U=uint) (T[] digits, U radix=10)
 {
         uint len;
 
@@ -168,7 +168,7 @@ dchar[] toUtf32 (long i, Format t=Format.Signed, Flags f=Flags.None)
 
 *******************************************************************************/
 
-T[] format(T) (T[] dst, long i, Format fmt=Format.Signed, Flags flags=Flags.None)
+T[] format(T, U=ulong) (T[] dst, U i, Format fmt=Format.Signed, Flags flags=Flags.None)
 {
         T[]     prefix;
         int     len = dst.length;
@@ -274,7 +274,7 @@ T[] format(T) (T[] dst, long i, Format fmt=Format.Signed, Flags flags=Flags.None
 
 ******************************************************************************/
 
-long parse(T) (T[] digits, uint radix=10, uint* ate=null)
+long parse(T, U=uint) (T[] digits, U radix=10, uint* ate=null)
 {
         bool sign;
 
@@ -297,7 +297,7 @@ long parse(T) (T[] digits, uint radix=10, uint* ate=null)
 
 ******************************************************************************/
 
-ulong convert(T) (T[] digits, uint radix=10, uint* ate=null)
+ulong convert(T, U=uint) (T[] digits, U radix=10, uint* ate=null)
 {
         uint  eaten;
         ulong value;
@@ -341,7 +341,7 @@ ulong convert(T) (T[] digits, uint radix=10, uint* ate=null)
 
 ******************************************************************************/
 
-uint trim(T) (T[] digits, inout bool sign, inout uint radix)
+uint trim(T, U=uint) (T[] digits, inout bool sign, inout U radix)
 {
         T       c;
         T*      p = digits.ptr;
@@ -423,7 +423,7 @@ uint atoi(T) (T[] s)
         
 ******************************************************************************/
 
-T[] itoa(T) (T[] output, uint value)
+T[] itoa(T, U=uint) (T[] output, U value)
 {
         T* p = output.ptr + output.length;
 
@@ -440,12 +440,13 @@ T[] itoa(T) (T[] output, uint value)
 
 debug (UnitTest)
 {
+        void main() {}
         unittest
         {
         char[64] tmp;
         
         assert (atoi ("12345") is 12345);
-        assert (itoa (tmp, 12345u) == "12345");
+        assert (itoa (tmp, 12345) == "12345");
 
         assert(parse( "0"w ) ==  0 );
         assert(parse( "1"w ) ==  1 );
@@ -462,30 +463,30 @@ debug (UnitTest)
         assert(parse( "18446744073709551615" ) == ulong.max );
 
         // hex
-        assert(parse( "a", 16u ) == 0x0A );
-        assert(parse( "b", 16u ) == 0x0B );
-        assert(parse( "c", 16u ) == 0x0C );
-        assert(parse( "d", 16u ) == 0x0D );
-        assert(parse( "e", 16u ) == 0x0E );
-        assert(parse( "f", 16u ) == 0x0F );
-        assert(parse( "A", 16u ) == 0x0A );
-        assert(parse( "B", 16u ) == 0x0B );
-        assert(parse( "C", 16u ) == 0x0C );
-        assert(parse( "D", 16u ) == 0x0D );
-        assert(parse( "E", 16u ) == 0x0E );
-        assert(parse( "F", 16u ) == 0x0F );
-        assert(parse( "FFFF", 16u ) == ushort.max );
-        assert(parse( "ffffFFFF", 16u ) == uint.max );
+        assert(parse( "a", 16) == 0x0A );
+        assert(parse( "b", 16) == 0x0B );
+        assert(parse( "c", 16) == 0x0C );
+        assert(parse( "d", 16) == 0x0D );
+        assert(parse( "e", 16) == 0x0E );
+        assert(parse( "f", 16) == 0x0F );
+        assert(parse( "A", 16) == 0x0A );
+        assert(parse( "B", 16) == 0x0B );
+        assert(parse( "C", 16) == 0x0C );
+        assert(parse( "D", 16) == 0x0D );
+        assert(parse( "E", 16) == 0x0E );
+        assert(parse( "F", 16) == 0x0F );
+        assert(parse( "FFFF", 16) == ushort.max );
+        assert(parse( "ffffFFFF", 16) == uint.max );
         assert(parse( "ffffFFFFffffFFFF", 16u ) == ulong.max );
         // oct
-        assert(parse( "55", 8u ) == 055 );
-        assert(parse( "100", 8u ) == 0100 );
+        assert(parse( "55", 8) == 055 );
+        assert(parse( "100", 8) == 0100 );
         // bin
-        assert(parse( "10000", 2u ) == 0x10 );
+        assert(parse( "10000", 2) == 0x10 );
         // trim
-        assert(parse( "    \t20" ) == 20 );
-        assert(parse( "    \t-20" ) == -20 );
-        assert(parse( "-    \t 20" ) == -20 );
+        assert(parse( "    \t20") == 20 );
+        assert(parse( "    \t-20") == -20 );
+        assert(parse( "-    \t 20") == -20 );
         // recognise radix prefix
         assert(parse( "0xFFFF" ) == ushort.max );
         assert(parse( "0XffffFFFF" ) == uint.max );
