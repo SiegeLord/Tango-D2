@@ -159,7 +159,7 @@ class FileProxy
         bool isExisting ()               
         {
                 try {
-                    getFlags;
+                    getSize();
                     return true;
                     } catch (IOException){}
                 return false;
