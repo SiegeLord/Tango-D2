@@ -715,7 +715,7 @@ template ComplexTemplate(real a, creal b)
     class ComplexTemplate {}
 }
 
-static assert( demangleType!((ComplexTemplate!(-0x1.23456789ABCDFFFEp-456, 0x1.12345p-16380L-3.2i)).mangleof) == "class " ~ THISFILE ~ ".ComplexTemplate!(double = -0x1.23456789ABCDFFFEp-456, creal = 0x1.12345p-16380 - 0x1.999999999999999Ap+1i).ComplexTemplate");
+// BUG: static assert( demangleType!((ComplexTemplate!(-0x1.23456789ABCDFFFEp-456, 0x1.12345p-16380L-3.2i)).mangleof) == "class " ~ THISFILE ~ ".ComplexTemplate!(double = -0x1.23456789ABCDFFFEp-456, creal = 0x1.12345p-16380 - 0x1.999999999999999Ap+1i).ComplexTemplate");
 static assert( demangleType!((ComplexTemplate!(float.nan, -real.infinity+ireal.infinity)).mangleof) == "class " ~ THISFILE ~ ".ComplexTemplate!(float = NaN, creal = -Inf + Infi).ComplexTemplate");
 
 }

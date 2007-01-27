@@ -1567,6 +1567,8 @@ debug (UnitText)
 extern (C) int printf(char*, ...);
 unittest
 {
+        try
+        {
         NetHost ih = new NetHost;
         ih.getHostByName(Socket.hostName());
         assert(ih.addrList.length > 0);
@@ -1584,6 +1586,11 @@ unittest
         foreach(int i, char[] s; ih.aliases)
         {
                 printf("aliases[%d] = %.*s\n", i, s);
+                }
+        }
+        catch( Object o )
+        {
+            assert( false );
         }
 }
 }

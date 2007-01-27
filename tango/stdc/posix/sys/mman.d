@@ -202,7 +202,8 @@ int shm_unlink(char*);
 
 version( linux )
 {
-
+    int shm_open(char*, int, mode_t);
+    int shm_unlink(char*);
 }
 else version( darwin )
 {

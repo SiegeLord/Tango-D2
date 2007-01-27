@@ -1,22 +1,12 @@
-/*
-	Written by Christopher E. Miller
-	Placed into public domain.
-*/
-
-
-module tango.sys.linux.socket;
+module tango.stdc.posix.sys.socket;
 
 private import tango.stdc.stdint;
 
+public import tango.stdc.posix.fcntl;
 
 extern(C):
 
 alias int socklen_t;
-
-const int F_GETFL =       3;
-const int F_SETFL =       4;
-const int O_NONBLOCK =    0x800;
-
 
 int socket(int af, int type, int protocol);
 int bind(int s, sockaddr* name, int namelen);

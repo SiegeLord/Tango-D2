@@ -186,7 +186,7 @@ class FileSystem
 
                 static void copy(FilePath src, FilePath dst)
                 {
-                        struct_stat stats;
+                        stat_t stats;
 
                         if (posix.stat (src.cString.ptr, &stats))
                             exception("Failed to copy file " ~ src.toUtf8 ~ " to " ~ dst.toUtf8);

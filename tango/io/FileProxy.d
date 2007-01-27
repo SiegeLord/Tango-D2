@@ -538,7 +538,7 @@ class FileProxy
 
                 ***************************************************************/
 
-                private uint getInfo (inout struct_stat stats)
+                private uint getInfo (inout stat_t stats)
                 {
                         if (posix.stat (path.cString.ptr, &stats))
                             exception;
@@ -554,7 +554,7 @@ class FileProxy
 
                 ulong getSize ()
                 {
-                        struct_stat stats;
+                        stat_t stats;
 
                         getInfo (stats);
                         return cast(ulong) stats.st_size;    // 32 bits only
@@ -568,7 +568,7 @@ class FileProxy
 
                 bool isWritable ()               
                 {
-                        struct_stat stats;
+                        stat_t stats;
 
                         return (getInfo(stats) & O_RDONLY) == 0;
                 }            
@@ -581,7 +581,7 @@ class FileProxy
 
                 bool isDirectory ()               
                 {
-                        struct_stat stats;
+                        stat_t stats;
 
                         return (getInfo(stats) & S_IFDIR) != 0;
                 }            
@@ -594,7 +594,7 @@ class FileProxy
 
                 ulong getModifiedTime ()
                 {
-                        struct_stat stats;
+                        stat_t stats;
 
                         getInfo (stats);
                         return cast(ulong) stats.st_mtime;
@@ -608,7 +608,7 @@ class FileProxy
 
                 ulong getAccessedTime ()
                 {
-                        struct_stat stats;
+                        stat_t stats;
 
                         getInfo (stats);
                         return cast(ulong) stats.st_atime;
@@ -622,7 +622,7 @@ class FileProxy
 
                 ulong getCreatedTime ()
                 {
-                        struct_stat stats;
+                        stat_t stats;
 
                         getInfo (stats);
                         return cast(ulong) stats.st_ctime;

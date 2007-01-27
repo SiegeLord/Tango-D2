@@ -8,6 +8,7 @@ module tango.sys.Process;
 
 private import tango.io.FileConst;
 private import tango.io.Stdout;
+private import tango.io.Buffer;
 private import tango.sys.Common;
 private import tango.sys.Pipe;
 private import tango.text.convert.Format;
@@ -1318,7 +1319,7 @@ class Process
                 path.length = 64 + filename.length;
                 path.length = 0;
 
-                foreach (path; new SimpleIterator!(char)(envPath, ":"))
+                foreach (path; new SimpleIterator!(char)( new Buffer(envPath), ":"))
                 {
                     if (path[path.length - 1] != FileConst.PathSeparatorChar)
                     {
