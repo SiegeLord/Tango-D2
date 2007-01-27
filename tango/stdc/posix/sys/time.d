@@ -34,8 +34,8 @@ ITIMER_REAL
 ITIMER_VIRTUAL
 ITIMER_PROF
 
-int getitimer(int, struct itimerval *);
-int gettimeofday(struct timeval *restrict, void *restrict);
+int getitimer(int, itimerval*);
+int gettimeofday(timeval*, void*);
 int select(int, fd_set*, fd_set*, fd_set*, timeval*);
 int setitimer(int, itimerval*, itimerval*);
 int utimes(char*, timeval[2]); // LEGACY
@@ -59,8 +59,8 @@ version( linux )
     const ITIMER_VIRTUAL    = 1;
     const ITIMER_PROF       = 2;
 
-    int getitimer(int, struct itimerval *);
-    int gettimeofday(struct timeval *restrict, void *restrict);
+    int getitimer(int, itimerval*);
+    int gettimeofday(timeval*, void*);
     int select(int, fd_set*, fd_set*, fd_set*, timeval*);
     int setitimer(int, itimerval*, itimerval*);
     int utimes(char*, timeval[2]); // LEGACY
