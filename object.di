@@ -34,11 +34,13 @@ class ClassInfo : Object
     void(*classInvariant)(Object);
     uint        flags;
     // 1:                   // IUnknown
+  version( DigitalMars )
+  {
     // 2:                   // has no possible pointers into GC memory
     // 4:                   // has offTi[] member
     void*       deallocator;
-  version( DigitalMars )
     OffsetTypeInfo[] offTi;
+  }
 }
 
 struct OffsetTypeInfo
@@ -54,18 +56,21 @@ class TypeInfo
     int      compare(void *p1, void *p2);
     size_t   tsize();
     void     swap(void *p1, void *p2);
+  version( DigitalMars )
+  {
     TypeInfo next();
     void[]   init();
     uint     flags();
     // 1:                   // has possible pointers into GC memory
-  version( DigitalMars )
     OffsetTypeInfo[] offTi();
+  }
 }
 
 class TypeInfo_Typedef : TypeInfo
 {
     TypeInfo base;
     char[]   name;
+  version( DigitalMars )
     void[]   m_init;
 }
 
@@ -75,23 +80,35 @@ class TypeInfo_Enum : TypeInfo_Typedef
 
 class TypeInfo_Pointer : TypeInfo
 {
+  version( DigitalMars )
     TypeInfo m_next;
+  else
+    TypeInfo next;
 }
 
 class TypeInfo_Array : TypeInfo
 {
+  version( DigitalMars )
     TypeInfo value;
+  else
+    TypeInfo next;
 }
 
 class TypeInfo_StaticArray : TypeInfo
 {
+  version( DigitalMars )
     TypeInfo value;
+  else
+    TypeInfo next;
     size_t   len;
 }
 
 class TypeInfo_AssociativeArray : TypeInfo
 {
+  version( DigitalMars )
     TypeInfo value;
+  else
+    TypeInfo next;
     TypeInfo key;
 }
 
@@ -118,13 +135,17 @@ class TypeInfo_Interface : TypeInfo
 class TypeInfo_Struct : TypeInfo
 {
     char[] name;
+  version( DigitalMars )
     void[] m_init;
+  else
+    byte[] init;
 
     uint function(void*)      xtoHash;
     int function(void*,void*) xopEquals;
     int function(void*,void*) xopCmp;
     char[] function(void*)    xtoString;
 
+  version( DigitalMars )
     uint m_flags;
 }
 
