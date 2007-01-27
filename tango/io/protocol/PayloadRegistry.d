@@ -127,7 +127,7 @@ class PayloadRegistry
 
 
 
-debug (UnitTest)
+debug (UnitTest1)
 {
         class Foo : IPayload
         {
