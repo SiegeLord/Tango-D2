@@ -9,6 +9,66 @@
         author:         Kris
 
 
+        String is a class for storing and manipulating Unicode characters.
+
+        String maintains a current "selection", controlled via the mark(), 
+        select() and selectPrior() methods. Each of append(), prepend(),
+        replace() and remove() operate with respect to the selection. The
+        select() methods operate with respect to the current selection
+        also, providing a means of iterating across matched patterns. To
+        set a selection across the entire content, use the mark() method 
+        with no arguments. 
+       
+        Indexes and lengths of content always count code units, not code 
+        points. This is similar to traditional ascii string handling, yet
+        indexing is rarely used in practice due to the selection idiom:
+        substring indexing is generally implied as opposed to manipulated
+        directly. This allows for a more streamlined model with regard to
+        surrogates.
+
+        Strings support a range of functionality, from insert and removal
+        to utf encoding and decoding. There is also an immutable subset
+        called StringView, intended to simplify life in a multi-threaded
+        environment. However, StringView must expose the raw content as
+        needed and thus immutability depends to an extent upon so-called
+        "honour" of a callee. D does not enable immutability enforcement
+        at this time, but this class will be modified to support such a
+        feature when it arrives - via the slice() method.
+
+        The class is templated for use with char[], wchar[], and dchar[],
+        and should migrate across encodings seamlessly. In particular, all
+        functions in tango.text.Util are compatible with String content in
+        any of the supported encodings. In future, this class will become 
+        the principal gateway to the extensive ICU unicode library.
+
+        Note that several common text operations can be constructed through
+        combining tango.text.String with tango.text.Util e.g. lines of text
+        can be processed thusly:
+        ---
+        auto source = new String!(char)("one\ntwo\nthree");
+
+        foreach (line; Util.lines(source.slice))
+                 // do something with line
+        ---
+
+        Substituting patterns within text can be implemented simply and 
+        rather efficiently:
+        ---
+        auto dst = new String!(char);
+
+        foreach (element; Util.patterns ("all cows eat grass", "eat", "chew"))
+                 dst.append (element);
+        ---
+
+        Speaking a bit like Yoda might be accomplished as follows:
+        ---
+        auto dst = new String!(char);
+
+        foreach (element; Util.delims ("all cows eat grass", " "))
+                 dst.prepend (element);
+        ---
+
+        Below is an overview of the API and class hierarchy:
         ---
         class String(T) : StringView!(T)
         {
@@ -141,67 +201,8 @@ private extern (C) void memmove (void* dst, void* src, uint bytes);
 
 /*******************************************************************************
 
-        String is a class for storing and manipulating Unicode characters.
-
-        String maintains a current "selection", controlled via the mark(), 
-        select() and selectPrior() methods. Each of append(), prepend(),
-        replace() and remove() operate with respect to the selection. The
-        select() methods operate with respect to the current selection
-        also, providing a means of iterating across matched patterns. To
-        set a selection across the entire content, use the mark() method 
-        with no arguments. 
-       
-        Indexes and lengths of content always count code units, not code 
-        points. This is similar to traditional ascii string handling, yet
-        indexing is rarely used in practice due to the selection idiom:
-        substring indexing is generally implied as opposed to manipulated
-        directly. This allows for a more streamlined model with regard to
-        surrogates.
-
-        Strings support a range of functionality, from insert and removal
-        to utf encoding and decoding. There is also an immutable subset
-        called StringView, intended to simplify life in a multi-threaded
-        environment. However, StringView must expose the raw content as
-        needed and thus immutability depends to an extent upon so-called
-        "honour" of a callee. D does not enable immutability enforcement
-        at this time, but this class will be modified to support such a
-        feature when it arrives - via the slice() method.
-
-        The class is templated for use with char[], wchar[], and dchar[],
-        and should migrate across encodings seamlessly. In particular, all
-        functions in tango.text.Util are compatible with String content in
-        any of the supported encodings. This class will likely become the
-        principal gateway to the extensive ICU unicode library.
-
-        Note that several common text operations can be constructed through
-        combining tango.text.String with tango.text.Util e.g. lines of text
-        can be processed thusly:
-
-        ---
-        auto source = new String!(char)("one\ntwo\nthree");
-
-        foreach (line; Util.lines(source.slice))
-                 // do something with line
-        ---
-
-        Substituting patterns within text can be implemented simply and 
-        efficiently:
-        
-        ---
-        auto dst = new String!(char)(64);
-
-        foreach (element; Util.patterns ("all cows eat grass", "eat", "chew"))
-                 dst.append (element);
-        ---
-
-        Speaking like Yoda might be accomplished as follows:
-
-        ---
-        auto dst = new String!(char)(64);
-
-        foreach (element; Util.delims ("all cows eat grass", " "))
-                 dst.prepend (element);
-        ---
+        The mutable String class actually implements the full API, whereas
+        the superclasses are purely abstract (could be interfaces instead).
 
 *******************************************************************************/
 
@@ -219,31 +220,19 @@ class String(T) : StringView!(T)
 
         /***********************************************************************
         
-                Default ctor
-
-        ***********************************************************************/
-
-        this ()
-        {
-                this.comparator_ = &simpleComparator;
-        }
-
-        /***********************************************************************
-        
                 Create an empty String with the specified available 
                 space
 
         ***********************************************************************/
 
-        this (uint space)
+        this (uint space = 0)
         {
-                this();
-                mutable = true;
                 content.length = space;
+                this.comparator_ = &simpleComparator;
         }
 
         /***********************************************************************
-        
+       
                 Create a String upon the provided content. If said 
                 content is immutable (read-only) then you might consider 
                 setting the 'copy' parameter to false. Doing so will 
@@ -255,26 +244,24 @@ class String(T) : StringView!(T)
 
         this (T[] content, bool copy = true)
         {
-                this();
                 set (content, copy);
+                this.comparator_ = &simpleComparator;
         }
 
         /***********************************************************************
         
-                Create a String via the content of another.
-                
-                If said content is immutable (read-only) then you might 
-                consider setting the 'copy' parameter to false. Doing 
-                so will avoid allocating heap-space for the content until 
-                it is modified via String methods. This can be useful when
-                wrapping an array "temporarily" with a stack-based String
+                Create a String via the content of another. If said 
+                content is immutable (read-only) then you might consider 
+                setting the 'copy' parameter to false. Doing so will avoid 
+                allocating heap-space for the content until it is modified 
+                via String methods. This can be useful when wrapping an array 
+                temporarily with a stack-based String
 
         ***********************************************************************/
         
         this (StringViewT other, bool copy = true)
         {
-                this();
-                set (other.slice, copy);
+                this (other.slice, copy);
         }
 
         /***********************************************************************
@@ -1404,6 +1391,7 @@ class TextException : Exception
 
 debug (UnitTest)
 {
+        void main() {}
         unittest
         {
         auto s = new String!(char)("hello");
