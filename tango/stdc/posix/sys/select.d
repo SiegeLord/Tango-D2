@@ -10,7 +10,7 @@ module tango.stdc.posix.sys.select;
 
 private import tango.stdc.config;
 public import tango.stdc.time;            // for timespec
-public import tango.stdc.posix.sys.time;      // for timeval
+public import tango.stdc.posix.sys.time;  // for timeval
 public import tango.stdc.posix.sys.types; // for time_t
 public import tango.stdc.posix.signal;    // for sigset_t
 
@@ -20,6 +20,11 @@ extern (C):
 // Required
 //
 /*
+NOTE: This module requires timeval from tango.stdc.posix.sys.time, but timeval
+      is supposedly an XOpen extension.  As a result, this header will not
+      compile on platforms that are not XSI-compliant.  This must be resolved
+      on a per-platform basis.
+
 fd_set
 
 void FD_CLR(int fd, fd_set* fdset);
