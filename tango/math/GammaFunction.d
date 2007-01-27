@@ -1,12 +1,11 @@
 /**
  * Implementation of the gamma and beta functions, and their integrals.
  *
- * Copyright: Copyright (C) 2005-2006 Don Clugston,
- * Derived from C code in the Cephes library,
- * Copyright 1994 by Stephen L. Moshier
- *
  * License:   BSD style: $(LICENSE)
- * Authors:   Don Clugston, Stephen L. Moshier
+ * Copyright: Based on the CEPHES math library, which is
+ *            Copyright (C) 1994 Stephen L. Moshier (moshier@world.std.com).
+ * License:   BSD style: $(LICENSE)
+ * Authors:   Stephen L. Moshier (original C code). Conversion to D by Don Clugston
  *
  *
 Macros:

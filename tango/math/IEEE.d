@@ -221,8 +221,6 @@ scope class UseRoundingMode
 
     scope xxx = new UseRoundingMode(RoundingMode.ROUNDDOWN);
 ---
-+/
-
  */
 RoundingMode setIeeeRounding(RoundingMode roundingmode) {
    version(D_InlineAsm_X86) {
@@ -350,21 +348,31 @@ real frexp(real value, out int exp)
     long* vl = cast(long*)&value;
     uint ex;
 
-    // If exponent is non-zero
-    ex = vu[4] & 0x7FFF;
-    if (ex) {
-        if (ex == 0x7FFF) {   // infinity or NaN
-            if (*vl &  0x7FFFFFFFFFFFFFFF) {  // if NaN
+    static if (real.mant_dig==64) const ushort EXPMASK = 0x7FFF;
+                             else const ushort EXPMASK = 0x7FF0;
+
+    version(LittleEndian)
+    static if (real.mant_dig==64) const int EXPONENTPOS = 4;
+                             else const int EXPONENTPOS = 3;
+    else const int EXPONENTPOS = 0;
+
+    ex = vu[EXPONENTPOS] & EXPMASK;
+static if (real.mant_dig == 64) {
+// 80-bit reals
+    if (ex) { // If exponent is non-zero
+        if (ex == EXPMASK) {   // infinity or NaN
+            // 80-bit reals
+            if (*vl &  0x7FFFFFFFFFFFFFFF) {  // NaN
                 *vl |= 0xC000000000000000;  // convert $(NAN)S to $(NAN)Q
                 exp = int.min;
-            } else if (vu[4] & 0x8000) {   // negative infinity
+            } else if (vu[EXPONENTPOS] & 0x8000) {   // negative infinity
                 exp = int.min;
             } else {   // positive infinity
                 exp = int.max;
             }
         } else {
             exp = ex - 0x3FFE;
-            vu[4] = cast(ushort)((0x8000 & vu[4]) | 0x3FFE);
+            vu[EXPONENTPOS] = cast(ushort)((0x8000 & vu[EXPONENTPOS]) | 0x3FFE);
         }
     } else if (!*vl) {
         // value is +-0.0
@@ -376,8 +384,41 @@ real frexp(real value, out int exp)
             *vl <<= 1;
         } while (*vl > 0);
         exp = i;
-        vu[4] = cast(ushort)((0x8000 & vu[4]) | 0x3FFE);
+        vu[EXPONENTPOS] = cast(ushort)((0x8000 & vu[EXPONENTPOS]) | 0x3FFE);
     }
+} else {
+// 64-bit reals
+    if (ex) { // If exponent is non-zero
+        if (ex == EXPMASK) {   // infinity or NaN
+            if (*vl==0x7FF0_0000_0000_0000) {  // positive infinity
+                exp = int.max;
+            } else if (*vl==0xFFF0_0000_0000_0000) { // negative infinity
+                exp = int.min;
+            } else { // NaN
+                *vl |= 0x0008_0000_0000_0000;  // convert $(NAN)S to $(NAN)Q
+                exp = int.min;
+            }
+        } else {
+            exp = (ex - 0x3FE0)>>>4;
+            ve[EXPONENTPOS] = (0x8000 & ve[EXPONENTPOS])| 0x3FE0;
+        }
+    } else if (!(*vl & 0x7FFF_FFFF_FFFF_FFFF)) {
+        // value is +-0.0
+        exp = 0;
+    } else {   // denormal
+        ushort sgn;
+        sgn = (0x8000 & ve[EXPONENTPOS])| 0x3FE0;
+        *vl &=0x7FFF_FFFF_FFFF_FFFF;
+
+        int i = -0x3FD+11;
+        do {
+            i--;
+            *vl <<= 1;
+        } while (*vl > 0);
+        exp = i;
+        ve[EXPONENTPOS]=sgn;
+    }
+}
     return value;
 }
 
@@ -387,25 +428,18 @@ unittest
 {
     static real vals[][3] = // x,frexp,exp
     [
-    [0.0,   0.0,    0],
-    [-0.0,  -0.0,   0],
-    [1.0,   .5, 1],
-    [-1.0,  -.5,    1],
-    [2.0,   .5, 2],
-    [0x1.a5f1c2eb3fe4efp+73, 0x1.A5F1C2EB3FE4EFp-1,   74],    // normal
-    [0x1.fa01712e8f0471ap-1064,  0x1.fa01712e8f0471ap-1,     -1063],
-    [real.min,  .5,     -16381],
-    [real.min/2.0L, .5,     -16382],    // denormal
-
-    [real.infinity,real.infinity,int.max],
-    [-real.infinity,-real.infinity,int.min],
-    [real.nan,real.nan,int.min],
-    [-real.nan,-real.nan,int.min],
-
-    // Don't really support signalling nan's in D
-    //[real.nans,real.nan,int.min],
-    //[-real.nans,-real.nan,int.min],
+        [0.0,   0.0,    0],
+        [-0.0,  -0.0,   0],
+        [1.0,   .5, 1],
+        [-1.0,  -.5,    1],
+        [2.0,   .5, 2],
+        [double.min/2.0, .5, -1022],
+        [real.infinity,real.infinity,int.max],
+        [-real.infinity,-real.infinity,int.min],
+        [real.nan,real.nan,int.min],
+        [-real.nan,-real.nan,int.min],
     ];
+
     int i;
 
     for (i = 0; i < vals.length; i++) {
@@ -414,10 +448,30 @@ unittest
         int exp = cast(int)vals[i][2];
         int eptr;
         real v = frexp(x, eptr);
-    //    printf("frexp(%La) = %La, should be %La, eptr = %d, should be %d\n", x, v, e, eptr, exp);
+//        printf("frexp(%La) = %La, should be %La, eptr = %d, should be %d\n", x, v, e, eptr, exp);
         assert(isIdentical(e, v));
         assert(exp == eptr);
+
     }
+   static if (real.mant_dig == 64) {
+     static real extendedvals[][3] = [ // x,frexp,exp
+        [0x1.a5f1c2eb3fe4efp+73, 0x1.A5F1C2EB3FE4EFp-1,   74],    // normal
+        [0x1.fa01712e8f0471ap-1064,  0x1.fa01712e8f0471ap-1,     -1063],
+        [real.min,  .5,     -16381],
+        [real.min/2.0L, .5,     -16382]    // denormal
+     ];
+
+    for (i = 0; i < extendedvals.length; i++) {
+        real x = extendedvals[i][0];
+        real e = extendedvals[i][1];
+        int exp = cast(int)extendedvals[i][2];
+        int eptr;
+        real v = frexp(x, eptr);
+        assert(isIdentical(e, v));
+        assert(exp == eptr);
+
+    }
+  }
 }
 }
 

@@ -1,9 +1,10 @@
 /**
  * Mathematical Statistical Functions
  *
- * Copyright: Copyright (C) 2005-2006 Don Clugston
+ * Copyright: Based on the CEPHES math library, which is
+ *            Copyright (C) 1994 Stephen L. Moshier (moshier@world.std.com).
  * License:   BSD style: $(LICENSE)
- * Authors:   Don Clugston
+ * Authors:   Stephen L. Moshier (original C code), Don Clugston
  */
 
 /**

@@ -4,7 +4,7 @@
  * Copyright: Based on the CEPHES math library, which is
  *            Copyright (C) 1994 Stephen L. Moshier (moshier@world.std.com).
  * License:   BSD style: $(LICENSE)
- * Authors:   Don Clugston, original C code by Stephen L. Moshier
+ * Authors:   Stephen L. Moshier (original C code). Conversion to D by Don Clugston
  */
 
 module tango.math.Bessel;
@@ -461,10 +461,7 @@ real cylBessel_j1(real x)
     z = 1.0/y;
     modulus = poly( z, j1modulusn) / poly( z, j1modulusd);
 
-    const real M_3PI_4= 3* PI_4;
-    version (GNU) {} else {
-        static assert( 2.35619449019234492885L== M_3PI_4);
-    }
+    const real M_3PI_4 = 3 * PI_4;
 
     y = modulus * cos( y -  M_3PI_4 + z*phase) / sqrt(y);
     if( x < 0 )
@@ -595,9 +592,6 @@ body {
     modulus = poly( z, j1modulusn) / poly( z, j1modulusd);
 
     const real M_3PI_4 = 3 * PI_4;
-    version (GNU) {} else {
-        static assert( 2.35619449019234492885L == M_3PI_4);
-    }
 
     z = modulus * sin( x -  M_3PI_4 + z*phase) / sqrt(x);
     return z;
