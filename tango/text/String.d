@@ -101,9 +101,6 @@
                 String append (long value, options);
                 String append (double value, options);
 
-                // append text with replacements
-                String append (T[] text, T[] pattern, T[] sub);
-                
                 // transcode behind current selection
                 String encode (char[]);
                 String encode (wchar[]);
@@ -548,8 +545,6 @@ class String(T) : StringView!(T)
                 Append encoded text at the current selection point. The text
                 is converted as necessary to the appropritate utf encoding.
 
-                Returns a chaining reference
-                
         ***********************************************************************/
 
         final String encode (char[] s)
@@ -957,17 +952,17 @@ class String(T) : StringView!(T)
                 dst will be resized as required to house the conversion. 
                 To minimize heap allocation during subsequent conversions,
                 apply the following pattern:
+                ---
+                String  string;
 
-                        String  string;
+                wchar[] buffer;
+                wchar[] result = string.utf16 (buffer);
 
-                        wchar[] buffer;
-                        wchar[] result = string.utf16 (buffer);
-
-                        if (result.length > buffer.length)
-                            buffer = result;
-
-               You can also provide a buffer from the stack, but the output 
-               will be moved to the heap if said buffer is not large enough
+                if (result.length > buffer.length)
+                    buffer = result;
+                ---
+                You can also provide a buffer from the stack, but the output 
+                will be moved to the heap if said buffer is not large enough
 
         ***********************************************************************/
 
@@ -1090,8 +1085,6 @@ class String(T) : StringView!(T)
 
         /***********************************************************************
         
-                Simple comparator
-
                 Compare two arrays. Returns 0 if the content matches, less 
                 than zero if A is "less" than B, or greater than zero where 
                 A is "bigger". Where the substrings match, the shorter is 
@@ -1114,7 +1107,7 @@ class String(T) : StringView!(T)
 
         /***********************************************************************
         
-                make room available to insert or append something
+                Make room available to insert or append something
 
         ***********************************************************************/
 
@@ -1271,12 +1264,11 @@ class StringView(T) : UniString
 
         /***********************************************************************
         
-                Return content from this String 
-                
-                A slice of dst is returned, representing a copy of the 
-                content. The slice is clipped to the minimum of either 
-                the length of the provided array, or the length of the 
-                content minus the stipulated start point
+                Return content from this String. A slice of dst is 
+                returned, representing a copy of the content. The 
+                slice is clipped to the minimum of either the length 
+                of the provided array, or the length of the content 
+                minus the stipulated start point
 
         ***********************************************************************/
 
