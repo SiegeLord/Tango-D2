@@ -1,4 +1,4 @@
-module tango.stdc.posix.sys.epoll;
+module tango.sys.linux.epoll;
 
 version (linux)
 {

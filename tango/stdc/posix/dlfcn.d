@@ -6,7 +6,7 @@
  * Authors:   Sean Kelly
  * Standards: The Open Group Base Specifications Issue 6, IEEE Std 1003.1, 2004 Edition
  */
-module tango.stdc.posix.utime;
+module tango.stdc.posix.dlfcn;
 
 private import tango.stdc.config;
 public import tango.stdc.posix.sys.types; // for time_t
