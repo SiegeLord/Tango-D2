@@ -9,7 +9,6 @@
 module tango.stdc.posix.dlfcn;
 
 private import tango.stdc.config;
-public import tango.stdc.posix.sys.types; // for time_t
 
 extern (C):
 
@@ -34,9 +33,9 @@ version( linux )
     const RTLD_NOW      = 0x00002;
     const RTLD_GLOBAL   = 0x00100;
     const RTLD_LOCAL    = 0x00000;
-}
 
-int   dlclose(void*);
-char* dlerror();
-void* dlopen(char*, int);
-void* dlsym(void*, char*);
+    int   dlclose(void*);
+    char* dlerror();
+    void* dlopen(char*, int);
+    void* dlsym(void*, char*);
+}
