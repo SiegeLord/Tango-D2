@@ -34,11 +34,10 @@ class ClassInfo : Object
     void(*classInvariant)(Object);
     uint        flags;
     // 1:                   // IUnknown
-  version( DigitalMars )
-  {
     // 2:                   // has no possible pointers into GC memory
     // 4:                   // has offTi[] member
     void*       deallocator;
+  version (DigitalMars) {
     OffsetTypeInfo[] offTi;
   }
 }

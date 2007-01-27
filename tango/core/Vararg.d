@@ -14,7 +14,13 @@ module tango.core.Vararg;
 /**
  * The base vararg list type.
  */
-alias void* va_list;
+version (GNU) {
+    // GDC has a varying va_list type
+    private import gcc.builtins;
+    alias __builtin_va_list va_list;
+} else {
+    alias void* va_list;
+}
 
 
 template va_start( T )

@@ -100,7 +100,7 @@ then
     mkdir -p $PREFIX/include/d/$GDC_VER || die "Failed to create include/d/$GDC_VER (maybe you need root privileges?)" 5
     cp -pRvf libgphobos.a libtango.a $GPHOBOS_DIR || die "Failed to copy libraries" 7
     mv $PREFIX/include/d/$GDC_VER/object.d $PREFIX/include/d/$GDC_VER/object.d.phobos || die "Failed to move Phobos' object.d" 8
-    cp -pRvf ../object.d $PREFIX/include/d/$GDC_VER || die "Failed to copy source" 8
+    cp -pRvf ../object.di $PREFIX/include/d/$GDC_VER || die "Failed to copy source" 8
 
     SPECLIBDIR="$GPHOBOS_DIR"
     SPECINCDIR="$PREFIX/include/d/$GDC_VER"

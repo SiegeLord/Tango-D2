@@ -18,6 +18,8 @@ private import  tango.text.convert.Format;
 
 private import  tango.io.protocol.model.IProtocol;
 
+private import  tango.core.Vararg;
+
 /*******************************************************************************
 
 *******************************************************************************/
@@ -113,7 +115,7 @@ class PrintProtocol : IProtocol
                             char[256] convert = void;
                             auto result = Formatter.Result (output, convert);
                             auto ti = revert [type];
-                            auto s = Formatter (result, ti, src);
+                            auto s = Formatter (result, ti, cast(va_list) src);
                             buffer_.append (s.ptr, s.length);
                             break;
                        }
@@ -145,7 +147,7 @@ class PrintProtocol : IProtocol
                             buffer_.append ("[");
                             while (bytes)
                                   {
-                                  auto s = Formatter (result, ti, src);
+                                  auto s = Formatter (result, ti, cast(va_list) src);
                                   buffer_.append (s.ptr, s.length);
                                   bytes -= width;
                                   src += width;
