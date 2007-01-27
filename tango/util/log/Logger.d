@@ -22,7 +22,6 @@ private import tango.util.log.model.ILevel;
         This is the primary API to the log package. Use the two static 
         methods to access and/or create Logger instances, and the other
         methods to modify specific Logger attributes. 
-        
         ---
         import tango.util.log.Log;
         
@@ -38,7 +37,6 @@ private import tango.util.log.model.ILevel;
         static construction. For example: if it were appropriate to have
         one logger instance per module, each might be assigned from within
         the module ctor
-
         ---
         private Logger log;
         
@@ -51,7 +49,6 @@ private import tango.util.log.model.ILevel;
         Messages passed to a Logger are assumed to be pre-formatted. You 
         may find that the Sprint class is handy for collating various 
         components of the message (or use Formatter.sprint() directly): 
-        
         ---
         static this()
         {
@@ -64,13 +61,11 @@ private import tango.util.log.model.ILevel;
 
         To avoid overhead when constructing formatted messages, check to
         see if the logger is active first
-
         ---
         if (isActive (log))
             log.warn (sprint("temperature is {0} degrees!", 101));
         ---
 
-       
         You may also need to use one of the various Layout & Appender 
         implementations to support your exact rendering needs.
         
