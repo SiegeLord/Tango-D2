@@ -10,6 +10,7 @@ module tango.stdc.posix.sys.select;
 
 private import tango.stdc.config;
 public import tango.stdc.time;            // for timespec
+public import tango.stdc.posix.time;      // for timeval
 public import tango.stdc.posix.sys.types; // for time_t
 public import tango.stdc.posix.signal;    // for sigset_t
 
@@ -19,12 +20,6 @@ extern (C):
 // Required
 //
 /*
-struct timeval
-{
-    time_t      tv_sec;
-    suseconds_t tv_usec;
-}
-
 fd_set
 
 void FD_CLR(int fd, fd_set* fdset);
@@ -40,12 +35,6 @@ int  select(int, fd_set*, fd_set*, fd_set*, timeval*);
 
 version( linux )
 {
-    struct timeval
-    {
-        time_t      tv_sec;
-        suseconds_t tv_usec;
-    }
-
     private
     {
         alias c_long __fd_mask;
