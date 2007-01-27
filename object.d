@@ -35,7 +35,15 @@ class ClassInfo : Object
     uint        flags;
     // 1:                   // IUnknown
     // 2:                   // has no possible pointers into GC memory
+    // 4:                   // has offTi[] member
     void*       deallocator;
+    OffsetTypeInfo[] offTi;
+}
+
+struct OffsetTypeInfo
+{
+    size_t   offset;
+    TypeInfo ti;
 }
 
 class TypeInfo
@@ -48,7 +56,8 @@ class TypeInfo
     TypeInfo next();
     void[]   init();
     uint     flags();
-    // 1: has possible pointers into GC memory
+    // 1:                   // has possible pointers into GC memory
+    OffsetTypeInfo[] offTi();
 }
 
 class TypeInfo_Typedef : TypeInfo
