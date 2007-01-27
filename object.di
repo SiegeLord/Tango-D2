@@ -37,6 +37,7 @@ class ClassInfo : Object
     // 2:                   // has no possible pointers into GC memory
     // 4:                   // has offTi[] member
     void*       deallocator;
+  version( DigitalMars )
     OffsetTypeInfo[] offTi;
 }
 
@@ -57,6 +58,7 @@ class TypeInfo
     void[]   init();
     uint     flags();
     // 1:                   // has possible pointers into GC memory
+  version( DigitalMars )
     OffsetTypeInfo[] offTi();
 }
 
