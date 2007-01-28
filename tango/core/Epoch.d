@@ -12,13 +12,9 @@
 
 module tango.core.Epoch;
 
-/*******************************************************************************
-
-        Haul in additional O/S specific imports
-
-*******************************************************************************/
-
 private import tango.sys.Common;
+
+private import tango.core.Exception;
 
 version (Posix)
 {
@@ -505,7 +501,7 @@ class Epoch
                         timeval tv;
 
                         if (gettimeofday (&tv, null))
-                            throw new Exception ("Epoch.utcMicro :: linux timer is not available");
+                            throw new PlatformException ("Epoch.utcMicro :: linux timer is not available");
 
                         return 1_000_000L * cast(ulong) tv.tv_sec + tv.tv_usec;
                 }
