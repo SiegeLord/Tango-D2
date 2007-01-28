@@ -8,6 +8,7 @@
  */
 module tango.stdc.time;
 
+private import tango.stdc.config;
 private import tango.stdc.stddef;
 
 extern (C):
