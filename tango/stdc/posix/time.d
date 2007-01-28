@@ -30,6 +30,15 @@ size_t strftime(char*, size_t, char*, tm*);
 time_t time(time_t*);
 */
 
+version( linux )
+{
+    time_t timegm(tm*); // non-standard
+}
+else version( darwin )
+{
+    time_t timegm(tm*); // non-standard
+}
+
 //
 // C Extension (CX)
 // (defined in tango.stdc.time)
