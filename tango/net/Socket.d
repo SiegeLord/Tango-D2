@@ -67,7 +67,7 @@ private import  tango.sys.Common;
 private import  tango.stdc.errno,
                 tango.stdc.stdint;
 
-private import  tango.net.Exception;
+private import  tango.core.Exception;
 
 
 /*******************************************************************************
@@ -902,7 +902,7 @@ class Socket
         {
                 auto newsock = cast(socket_t).accept(sock, null, null); // DMD 0.101 error: found '(' when expecting ';' following 'statement
                 if (socket_t.init == newsock)
-                   throw new SocketAcceptException("Unable to accept socket connection: ", lastError());
+                   throw new SocketAcceptException("Unable to accept socket connection: " ~ SysError.lookup(lastError));
 
                 target.initialize (newsock);
                 version(Win32)
@@ -1224,7 +1224,7 @@ class Socket
 
         protected static void exception (char[] msg)
         {
-                throw new SocketException (msg, lastError);
+                throw new SocketException (msg ~ SysError.lookup(lastError));
         }
 
 
@@ -1708,7 +1708,7 @@ class IPv4Address: Address
                 {
                         NetHost ih = new NetHost;
                         if(!ih.getHostByName(addr))
-                                exception ("Unable to resolve '"~addr~"'");
+                                exception ("Unable to resolve '"~addr~"': ");
                         uiaddr = ih.addrList[0];
                 }
                 sin.sin_addr = htonl(uiaddr);
