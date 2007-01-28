@@ -12,8 +12,9 @@ private import tango.stdc.stddef;
 
 extern (C):
 
-version( darwin )
-{
+//FIXME Verify, the tm struct shall look the same on darwin AND linux
+//version( darwin )
+//{
     struct tm
     {
         int   tm_sec;       // seconds after the minute [0-60]
@@ -28,22 +29,22 @@ version( darwin )
         int   tm_gmtoff;    // offset from CUT in seconds
         char* tm_zone;      // timezone abbreviation
     }
-}
-else
-{
-    struct tm
-    {
-        int     tm_sec,     // seconds after the minute - [0, 60]
-                tm_min,     // minutes after the hour - [0, 59]
-                tm_hour,    // hours since midnight - [0, 23]
-                tm_mday,    // day of the month - [1, 31]
-                tm_mon,     // months since January - [0, 11]
-                tm_year,    // years since 1900
-                tm_wday,    // days since Sunday - [0, 6]
-                tm_yday,    // days since January 1 - [0, 365]
-                tm_isdst;   // Daylight Saving Time flag
-    }
-}
+//}
+//else
+//{
+//    struct tm
+//    {
+//        int     tm_sec,     // seconds after the minute - [0, 60]
+//                tm_min,     // minutes after the hour - [0, 59]
+//                tm_hour,    // hours since midnight - [0, 23]
+//                tm_mday,    // day of the month - [1, 31]
+//                tm_mon,     // months since January - [0, 11]
+//                tm_year,    // years since 1900
+//                tm_wday,    // days since Sunday - [0, 6]
+//                tm_yday,    // days since January 1 - [0, 365]
+//                tm_isdst;   // Daylight Saving Time flag
+//    }
+//}
 
 alias int time_t;
 alias int clock_t;
