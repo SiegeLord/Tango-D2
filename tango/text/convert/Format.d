@@ -32,6 +32,8 @@
 
 module tango.text.convert.Format;
 
+private import tango.core.Exception;
+
 private import tango.text.convert.Utf;
 
 private import tango.text.convert.model.IFormatService;
@@ -405,7 +407,7 @@ public class Format(T)
 
         public static void error (char[] msg)
         {
-                throw new Exception (msg);
+                throw new IllegalArgumentException (msg);
         }
 
         /***********************************************************************
@@ -1986,7 +1988,7 @@ private struct ArgumentIterator
                         argptr += (type.tsize() + int.sizeof - 1) & ~ (int.sizeof - 1);
 
                         if (it.size_++ >= args_.length)
-                            throw new Exception ("too many arguments");
+                            throw new IllegalArgumentException ("too many arguments");
                         }
                 return it;
         }

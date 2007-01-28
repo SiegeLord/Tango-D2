@@ -23,6 +23,8 @@
 
 module tango.text.convert.Float;
 
+private import tango.core.Exception;
+
 private import Integer = tango.text.convert.Integer;
 
 private extern (C) double log10(double x);
@@ -41,7 +43,7 @@ double toDouble(T) (T[] src)
 
         auto x = parse (src, &len);
         if (len < src.length)
-            throw new Exception ("invalid input:"~src);
+            throw new IllegalArgumentException ("invalid input:"~src);
         return x;
 }
 

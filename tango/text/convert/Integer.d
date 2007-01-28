@@ -23,6 +23,8 @@
 
 module tango.text.convert.Integer;
 
+private import tango.core.Exception;
+
 /******************************************************************************
 
         Format identifiers 
@@ -70,7 +72,7 @@ int toInt(T, U=uint) (T[] digits, U radix=10)
 {
         auto x = toLong (digits, radix);
         if (x > int.max)
-            throw new Exception ("numeric overflow");
+            throw new IllegalArgumentException ("numeric overflow");
         return cast(int) x;
 }
 
@@ -91,7 +93,7 @@ long toLong(T, U=uint) (T[] digits, U radix=10)
 
         auto x = parse (digits, radix, &len);
         if (len < digits.length)
-            throw new Exception ("invalid input:"~digits);
+            throw new IllegalArgumentException ("invalid input:"~digits);
         return x;
 }
 
@@ -246,7 +248,7 @@ T[] format(T, U=ulong) (T[] dst, U i, Format fmt=Format.Signed, Flags flags=Flag
 
         // are we about to overflow?
         if (--len < 0 || 0 > (len -= prefix.length))
-            throw new Exception ("Integer.format : output buffer too small");
+            throw new IllegalArgumentException ("Integer.format : output buffer too small");
 
         // prefix number with zeros? 
         if (flags & Flags.Zero)

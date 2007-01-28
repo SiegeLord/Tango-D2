@@ -29,7 +29,8 @@
 
 module tango.text.convert.TimeStamp;
 
-private import tango.core.Epoch;
+private import tango.core.Epoch,
+               tango.core.Exception;
 
 private import Util = tango.text.Util;
 
@@ -50,7 +51,7 @@ ulong toTime(T) (T[] src)
 
         auto x = parse (src, &len);
         if (len < src.length)
-            throw new Exception ("invalid input:"~src);
+            throw new IllegalArgumentException ("invalid input:"~src);
         return x;
 }
 
@@ -128,7 +129,7 @@ T[] format(T) (T[] output, ulong time)
         assert (output.length >= 29);
 
         if (time is InvalidEpoch)
-            throw new Exception ("TimeStamp.format :: invalid epoch argument");
+            throw new IllegalArgumentException ("TimeStamp.format :: invalid epoch argument");
 
 
         Epoch.Fields fields;
@@ -560,7 +561,7 @@ private static int parseInt(T) (inout T* p)
 
 debug (UnitTest)
 {
-        //void main() {}
+        // void main() {}
         
         unittest
         {
