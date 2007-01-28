@@ -72,6 +72,13 @@ extern (C) void _d_switch_error( char[] file, uint line )
     onSwitchError( file, line );
 }
 
+bool isHalting = false;
+
+extern (C) bool cr_isHalting()
+{
+    return isHalting;
+}
+
 /***********************************
  * The D main() function supplied by the user's program
  */
@@ -147,6 +154,7 @@ extern (C) int main(int argc, char **argv)
         _moduleCtor();
         _moduleUnitTests();
         result = main(args);
+        isHalting = true;
         _moduleDtor();
         gc_term();
     }
