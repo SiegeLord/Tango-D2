@@ -1047,17 +1047,6 @@ class String(T) : StringView!(T)
         
         /***********************************************************************
         
-                Throw an exception
-
-        ***********************************************************************/
-
-        final void error (char[] msg)
-        {
-                throw new TextException (msg);
-        }
-
-        /***********************************************************************
-        
                 Pin the given index to a valid position.
 
         ***********************************************************************/
@@ -1358,21 +1347,6 @@ class UniString
         abstract dchar[] toUtf32 (dchar[] dst = null);
 
         abstract TypeInfo encoding();
-}
-
-
-/*******************************************************************************
-
-        Exception thrown by String et al
-
-*******************************************************************************/
-
-class TextException : Exception
-{
-        this (char[] msg)
-        {
-                super (msg);
-        }
 }
 
 
