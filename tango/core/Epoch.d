@@ -22,7 +22,6 @@ private import tango.sys.Common;
 
 version (Posix)
 {
-        extern (C) int mktime (tm *);
         extern (C) tm *gmtime (int *);
         extern (C) int timegm (tm *);
 }
