@@ -13,7 +13,6 @@ private
     import tango.io.selector.SelectSelector;
     import tango.io.selector.SelectorException;
     import tango.io.Conduit;
-    import tango.io.Exception;
     import tango.io.Stdout;
     import tango.net.Socket;
     import tango.net.SocketConduit;

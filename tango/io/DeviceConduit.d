@@ -16,7 +16,7 @@ private import  tango.sys.Common;
 
 public  import  tango.io.Conduit;
 
-private import  tango.io.Exception;
+private import  tango.core.Exception;
 
 /*******************************************************************************
 
@@ -104,6 +104,16 @@ class DeviceConduit : Conduit
                 return "<device>";
         }
 
+        /***********************************************************************
+
+                Throw an IOException noting the last error
+        
+        ***********************************************************************/
+
+        final void error ()
+        {
+                super.exception (getName() ~ ": " ~ SysError.lastMsg);
+        }
 
         /***********************************************************************
 
@@ -114,17 +124,6 @@ class DeviceConduit : Conduit
         version (Win32)
         {
                 protected HANDLE handle;
-
-                /***************************************************************
-
-                        Throw an IOException noting the last error
-
-                ***************************************************************/
-
-                final void error ()
-                {
-                        super.exception (getName() ~ ": " ~ SysError.lastMsg);
-                }
 
                 /***************************************************************
 
@@ -210,17 +209,6 @@ class DeviceConduit : Conduit
         version (Posix)
         {
                 protected int handle = -1;
-
-                /***************************************************************
-
-                        Throw an IOException noting the last error
-
-                ***************************************************************/
-
-                final void error ()
-                {
-                        super.exception (getName()~": "~SysError.lastMsg);
-                }
 
                 /***************************************************************
 

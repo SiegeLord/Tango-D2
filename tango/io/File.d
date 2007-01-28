@@ -12,9 +12,10 @@
 
 module tango.io.File;
 
-private import  tango.io.Exception,
-                tango.io.FileProxy,
+private import  tango.io.FileProxy,
                 tango.io.FileConduit;
+
+private import  tango.core.Exception;
 
 /*******************************************************************************
 

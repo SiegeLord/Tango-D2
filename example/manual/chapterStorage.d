@@ -1,7 +1,6 @@
 module example.reference.chapter11;
 
 import tango.util.collection.HashMap;
-import tango.util.collection.Exception;
 import tango.util.collection.ArrayBag;
 import tango.util.collection.LinkSeq;
 import tango.util.collection.CircularSeq;
@@ -9,7 +8,9 @@ import tango.util.collection.ArraySeq;
 import tango.util.collection.TreeBag;
 import tango.util.collection.iterator.FilteringIterator;
 import tango.util.collection.iterator.InterleavingIterator;
+
 import tango.io.Stdout;
+import tango.core.Exception;
 
 import tango.util.collection.model.Comparator;
 import tango.util.collection.impl.BagCollection;

@@ -12,7 +12,7 @@
 
 module tango.io.Conduit;
 
-private import  tango.io.Exception;
+private import  tango.core.Exception;
 
 private import  tango.io.model.IConduit;
 

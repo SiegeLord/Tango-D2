@@ -12,7 +12,7 @@
 
 module tango.net.http.HttpStack;
 
-private import  tango.io.Exception;
+private import  tango.core.Exception;
 
 /******************************************************************************
 

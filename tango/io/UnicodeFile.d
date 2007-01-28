@@ -15,8 +15,9 @@ module tango.io.UnicodeFile;
 public  import  tango.io.FilePath;
 
 private import  tango.io.FileProxy,
-                tango.io.Exception,
                 tango.io.FileConduit;
+
+private import  tango.core.Exception;
 
 public  import  tango.text.convert.UnicodeBom;
 

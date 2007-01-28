@@ -18,7 +18,7 @@
 
 module tango.util.collection.impl.Collection;
 
-private import  tango.util.collection.Exception;
+private import  tango.core.Exception;
 
 private import  tango.io.protocol.model.IReader,
                 tango.io.protocol.model.IWriter;

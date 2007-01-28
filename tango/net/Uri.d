@@ -14,7 +14,7 @@ module tango.net.Uri;
 
 public  import  tango.net.model.UriView;
 
-private import  tango.io.Exception;
+private import  tango.core.Exception;
 
 private import  Integer = tango.text.convert.Integer;
 

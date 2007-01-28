@@ -16,7 +16,7 @@
 
 module tango.util.collection.impl.MapCollection;
 
-private import  tango.util.collection.Exception;
+private import  tango.core.Exception;
 
 private import  tango.util.collection.impl.Collection;
 

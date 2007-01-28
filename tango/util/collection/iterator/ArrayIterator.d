@@ -15,7 +15,7 @@
 
 module tango.util.collection.iterator.ArrayIterator;
 
-private import tango.util.collection.Exception;
+private import tango.core.Exception;
 
 private import tango.util.collection.model.GuardIterator;
 
@@ -89,7 +89,7 @@ public class ArrayIterator(T) : GuardIterator!(T)
                    ++cur_;
                    return arr_[cur_];
                    }
-                throw new Exception ("Exhausted Iterator");
+                throw new NoSuchElementException ("Exhausted Iterator");
         }
 
 

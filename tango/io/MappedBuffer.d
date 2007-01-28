@@ -14,8 +14,9 @@ module tango.io.MappedBuffer;
 
 private import  tango.sys.Common;
 
-private import  tango.io.Buffer,
-                tango.io.Exception;
+private import  tango.io.Buffer;
+
+private import  tango.core.Exception;
 
 public  import  tango.io.FileConduit;
 

@@ -13,7 +13,7 @@
 
 module tango.io.protocol.PayloadRegistry;
 
-private import  tango.io.Exception;
+private import  tango.core.Exception;
 
 public  import  tango.io.protocol.model.IPayload;
 
@@ -63,7 +63,7 @@ class PayloadRegistry
         static synchronized void enroll (IPayload p)
         {
                 if (p.guid in registry)
-                    throw new ProtocolException ("PayloadRegistry.enroll :: attempt to re-register a guid");
+                    throw new PayloadException ("PayloadRegistry.enroll :: attempt to re-register a guid");
 
                 registry[p.guid] = &p.create;
         }
@@ -116,7 +116,7 @@ class PayloadRegistry
                 auto factory = lookup (guid);
 
                 if (factory is null)
-                    throw new ProtocolException ("PayloadRegistry.thaw :: attempt to unpickle via unregistered guid '"~guid~"'");
+                    throw new PayloadException ("PayloadRegistry.thaw :: attempt to unpickle via unregistered guid '"~guid~"'");
 
                 auto o = factory ();
                 o.read (input);

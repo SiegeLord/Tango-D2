@@ -20,7 +20,7 @@ private import  tango.sys.Common;
 
 public  import  tango.io.FilePath;
 
-private import  tango.io.Exception;
+private import  tango.core.Exception;
 
 /*******************************************************************************
 

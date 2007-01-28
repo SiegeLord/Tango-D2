@@ -15,7 +15,7 @@
 
 module tango.util.collection.TreeMap;
 
-private import  tango.util.collection.Exception;
+private import  tango.core.Exception;
 
 private import  tango.util.collection.model.Comparator,
                 tango.util.collection.model.SortedKeys,

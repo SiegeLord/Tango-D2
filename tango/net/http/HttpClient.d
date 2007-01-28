@@ -18,11 +18,10 @@
 
 module tango.net.http.HttpClient;
 
+private import  tango.io.Buffer;
+
 private import  tango.core.Interval;
-
-private import  tango.io.Buffer,
-                tango.io.Exception;
-
+                
 private import  tango.net.Uri,
                 tango.net.SocketConduit,
                 tango.net.InternetAddress;

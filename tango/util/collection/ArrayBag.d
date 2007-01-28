@@ -15,7 +15,7 @@
 
 module tango.util.collection.ArrayBag;
 
-private import  tango.util.collection.Exception;
+private import  tango.core.Exception;
 
 private import  tango.util.collection.model.GuardIterator;
 

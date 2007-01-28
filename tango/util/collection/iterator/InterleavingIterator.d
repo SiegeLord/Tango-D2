@@ -14,7 +14,7 @@
 
 module tango.util.collection.iterator.InterleavingIterator;
 
-private import  tango.util.collection.Exception;
+private import  tango.core.Exception;
 
 private import  tango.util.collection.model.Iterator;
 

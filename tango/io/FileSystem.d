@@ -14,8 +14,9 @@ module tango.io.FileSystem;
 
 private import  tango.sys.Common;
 
-private import  tango.io.FilePath,
-                tango.io.Exception;
+private import  tango.io.FilePath;
+
+private import  tango.core.Exception;
 
 version (Win32)
         {

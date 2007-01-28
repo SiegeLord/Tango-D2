@@ -13,7 +13,7 @@
 
 module tango.io.Buffer;
 
-private import  tango.io.Exception;
+private import  tango.core.Exception;
 
 public  import  tango.io.model.IBuffer;
 

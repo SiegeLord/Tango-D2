@@ -1,9 +1,9 @@
 module tango.io.FileBucket;
 
-public  import  tango.io.FilePath;
-
-private import  tango.io.Exception,
+private import  tango.io.FilePath,
                 tango.io.FileConduit;
+
+private import  tango.core.Exception;
 
 /******************************************************************************
 

@@ -11,7 +11,8 @@ private import tango.sys.Common;
 private import tango.io.Buffer;
 private import tango.io.Conduit;
 private import tango.io.DeviceConduit;
-private import tango.io.Exception;
+
+private import tango.core.Exception;
 
 version (Windows)
 {

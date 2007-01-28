@@ -13,10 +13,10 @@
 module tango.io.filter.EndianFilter;
 
 private import  tango.io.Buffer,
-                tango.io.Conduit,
-                tango.io.Exception;
+                tango.io.Conduit;
 
-private import  tango.core.ByteSwap;
+private import  tango.core.ByteSwap,
+                tango.core.Exception;
 
 
 class EndianFilter : ConduitFilter

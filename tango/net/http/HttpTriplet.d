@@ -12,7 +12,7 @@
 
 module tango.net.http.HttpTriplet;
 
-private import  tango.io.Exception;
+private import  tango.core.Exception;
 
 private import  tango.io.protocol.model.IWriter;
 
