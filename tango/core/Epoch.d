@@ -24,6 +24,7 @@ version (Posix)
 {
         extern (C) int mktime (tm *);
         extern (C) tm *gmtime (int *);
+        extern (C) int timegm (tm *);
 }
 
 /******************************************************************************
@@ -288,7 +289,7 @@ class Epoch
                                 t.tm_hour = hour;
                                 t.tm_min = min;
                                 t.tm_sec = sec;
-                                return 1000L * cast(ulong) mktime(&t) + ms;
+                                return 1000L * cast(ulong) timegm(&t) + ms;
                         }
 
                         /*******************************************************
