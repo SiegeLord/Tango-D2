@@ -20,57 +20,40 @@ private
 
 
 ////////////////////////////////////////////////////////////////////////////////
-// Exceptions
+/*
+- Exception
+  - OutOfMemoryException
+
+  - TracedException
+    - SwitchException
+    - AssertException
+    - ArrayBoundsException
+    - FinalizeException
+
+    - PlatformException
+      - ProcessException
+      - ThreadException
+        - FiberException
+      - IOException
+        - SocketException
+          - SocketAcceptException
+        - AddressException
+        - HostException
+                  
+    - NoSuchElementException
+      - CorruptedIteratorException
+
+    - IllegalArgumentException
+      - IllegalElementException
+
+    - TextException
+      - RegexException
+      - UnicodeException
+
+    - CipherException
+    - PayloadException
+*/
 ////////////////////////////////////////////////////////////////////////////////
-
-
-/**
- * Thrown on an array bounds error.
- */
-class ArrayBoundsException : Exception
-{
-    this( char[] file, size_t line )
-    {
-        super( "Array index out of bounds", file, line );
-    }
-}
-
-
-/**
- * Thrown on an assert error.
- */
-class AssertException : Exception
-{
-    this( char[] file, size_t line )
-    {
-        super( "Assertion failure", file, line );
-    }
-
-    this( char[] msg, char[] file, size_t line )
-    {
-        super( msg, file, line );
-    }
-}
-
-
-/**
- * Thrown on finalize error.
- */
-class FinalizeException : Exception
-{
-    ClassInfo   info;
-
-    this( ClassInfo c, Exception e = null )
-    {
-        super( "Finalization error", e );
-        info = c;
-    }
-
-    char[] toUtf8()
-    {
-        return "An exception was thrown while finalizing an instance of class " ~ info.name;
-    }
-}
 
 
 /**
@@ -91,9 +74,91 @@ class OutOfMemoryException : Exception
 
 
 /**
+ * trace the exception stack 
+ */
+class TracedException : Exception
+{
+    this(char[] msg)
+    {
+        super (msg);
+    }
+
+    this(char[] msg, Exception e)
+    {
+        super(msg, e);
+    }
+
+    this(char[] msg, char[] file, size_t line)
+    {
+        super(msg, file, line);
+    }
+}
+
+
+/**
+ * OS or lib oriented exceptions
+ */
+class PlatformException : TracedException
+{
+    this( char[] msg )
+    {
+        super( msg );
+    }
+}
+
+/**
+ * Thrown on an assert error.
+ */
+class AssertException : TracedException
+{
+    this( char[] file, size_t line )
+    {
+        super( "Assertion failure", file, line );
+    }
+
+    this( char[] msg, char[] file, size_t line )
+    {
+        super( msg, file, line );
+    }
+}
+
+
+/**
+ * Thrown on an array bounds error.
+ */
+class ArrayBoundsException : TracedException
+{
+    this( char[] file, size_t line )
+    {
+        super( "Array index out of bounds", file, line );
+    }
+}
+
+
+/**
+ * Thrown on finalize error.
+ */
+class FinalizeException : TracedException
+{
+    ClassInfo   info;
+
+    this( ClassInfo c, Exception e = null )
+    {
+        super( "Finalization error", e );
+        info = c;
+    }
+
+    char[] toUtf8()
+    {
+        return "An exception was thrown while finalizing an instance of class " ~ info.name;
+    }
+}
+
+
+/**
  * Thrown on a switch error.
  */
-class SwitchException : Exception
+class SwitchException : TracedException
 {
     this( char[] file, size_t line )
     {
@@ -103,9 +168,20 @@ class SwitchException : Exception
 
 
 /**
+ * Exception thrown by String et al
+ */
+class TextException : TracedException
+{
+        this (char[] msg)
+        {
+                super (msg);
+        }
+}
+
+/**
  * Thrown on a unicode conversion error.
  */
-class UnicodeException : Exception
+class UnicodeException : TextException
 {
     size_t idx;
 
@@ -114,6 +190,194 @@ class UnicodeException : Exception
         super( msg );
         this.idx = idx;
     }
+}
+
+
+/**
+ * All exceptions thrown from the Thread class derive from this class.
+ */
+class ThreadException : PlatformException
+{
+    this( char[] msg )
+    {
+        super( msg );
+    }
+}
+
+
+/**
+ * All exceptions thrown from the Fiber class derive from this class.
+ */
+class FiberException : ThreadException
+{
+    this( char[] msg )
+    {
+        super( msg );
+    }
+}
+
+
+
+/**
+ * The basic exception thrown by the tango.io package. One should
+ * try to ensure that all Tango exceptions related to IO are derived
+ * from this one.
+ */
+class IOException : PlatformException
+{
+        this (char[] msg)
+        {
+                super (msg);
+        }
+}
+
+
+/**
+ * Base exception thrown from a Socket.
+ */
+class SocketException : IOException
+{
+        this(char[] msg)
+        {
+                super(msg);
+        }
+}
+
+
+/**
+ * Base exception thrown from an InternetHost.
+ */
+class HostException : IOException
+{
+        this(char[] msg)
+        {
+                super(msg);
+        }
+}
+
+
+/**
+ * Base exception thrown from an Address.
+ */
+class AddressException : IOException
+{
+        this(char[] msg)
+        {
+                super(msg);
+        }
+}
+
+
+/**
+ * failed to accept a socket 
+ */
+class SocketAcceptException : SocketException
+{
+        this(char[] msg)
+        {
+                super(msg);
+        }
+}
+
+
+/**
+ * Process failed in some manner
+ */
+class ProcessException : PlatformException
+{
+        this(char[] msg)
+        {
+                super(msg);
+        }
+}
+
+
+/**
+ * Thrown by Regular Expression package
+ */
+class RegexException : TextException
+{
+        this(char[] msg)
+        {
+                super(msg);
+        }
+}
+
+
+/**
+ * PayloadException is thrown when the PayloadRegistry encounters a
+ * problem during proxy registration, or when it sees an unregistered
+ * guid.
+ */
+class PayloadException : TracedException
+{
+        this (char[] msg)
+        {
+                super (msg);
+        }       
+}
+
+
+/**
+ * Thrown by Cipher where required
+ */
+class CipherException : TracedException
+{
+        this(char[] msg) { super(msg); }
+}
+
+
+
+/**
+ * IllegalArgumentException
+ */
+public class IllegalArgumentException : TracedException
+{
+        public this (char[] msg)
+        {
+                super(msg);
+        }
+}
+
+
+/**
+ *
+ * IllegalElementException is thrown by Collection methods
+ * that add (or replace) elements (and/or keys) when their
+ * arguments are null or do not pass screeners.
+ *
+ */
+
+public class IllegalElementException : IllegalArgumentException
+{
+        public this (char[] msg)
+        {
+                super(msg);
+        }
+}
+
+
+/**
+ * 
+ */
+public class NoSuchElementException : TracedException
+{
+        public this (char[] msg)
+        {
+                super(msg);
+        }
+}
+
+
+/**
+ * CorruptedIterator
+ */
+public class CorruptedIteratorException : NoSuchElementException
+{
+        public this (char[] msg)
+        {
+                super(msg);
+        }
 }
 
 
