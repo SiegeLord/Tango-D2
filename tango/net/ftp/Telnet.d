@@ -14,8 +14,9 @@ module tango.net.ftp.Telnet;
 
 private import tango.core.Epoch;
 
-private import tango.net.Socket,
-               tango.net.Exception;
+private import tango.net.Socket;
+
+private import tango.core.Exception;
 
 private import Integer = tango.text.convert.Integer;
 
