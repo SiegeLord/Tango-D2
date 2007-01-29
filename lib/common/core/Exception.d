@@ -39,7 +39,7 @@ private
           - SocketAcceptException
         - AddressException
         - HostException
-                  
+
     - NoSuchElementException
       - CorruptedIteratorException
 
@@ -74,29 +74,29 @@ class OutOfMemoryException : Exception
 
 
 /**
- * trace the exception stack 
+ * Stores a stack trace when thrown.
  */
 class TracedException : Exception
 {
-    this(char[] msg)
+    this( char[] msg )
     {
-        super (msg);
+        super( msg );
     }
 
-    this(char[] msg, Exception e)
+    this( char[] msg, Exception e )
     {
-        super(msg, e);
+        super( msg, e );
     }
 
-    this(char[] msg, char[] file, size_t line)
+    this( char[] msg, char[] file, size_t line )
     {
-        super(msg, file, line);
+        super( msg, file, line );
     }
 }
 
 
 /**
- * OS or lib oriented exceptions
+ * Base class for operating system or library exceptions.
  */
 class PlatformException : TracedException
 {
@@ -168,14 +168,14 @@ class SwitchException : TracedException
 
 
 /**
- * Exception thrown by String et al
+ * Represents a text processing error.
  */
 class TextException : TracedException
 {
-        this (char[] msg)
-        {
-                super (msg);
-        }
+    this( char[] msg )
+    {
+        super( msg );
+    }
 }
 
 /**
@@ -194,7 +194,7 @@ class UnicodeException : TextException
 
 
 /**
- * All exceptions thrown from the Thread class derive from this class.
+ * Base class for thread exceptions.
  */
 class ThreadException : PlatformException
 {
@@ -206,7 +206,7 @@ class ThreadException : PlatformException
 
 
 /**
- * All exceptions thrown from the Fiber class derive from this class.
+ * Base class for fiber exceptions.
  */
 class FiberException : ThreadException
 {
@@ -219,88 +219,87 @@ class FiberException : ThreadException
 
 
 /**
- * The basic exception thrown by the tango.io package. One should
- * try to ensure that all Tango exceptions related to IO are derived
- * from this one.
+ * The basic exception thrown by the tango.io package. One should try to ensure
+ * that all Tango exceptions related to IO are derived from this one.
  */
 class IOException : PlatformException
 {
-        this (char[] msg)
-        {
-                super (msg);
-        }
+    this( char[] msg )
+    {
+        super( msg );
+    }
 }
 
 
 /**
- * Base exception thrown from a Socket.
+ * Base class for socket exceptions.
  */
 class SocketException : IOException
 {
-        this(char[] msg)
-        {
-                super(msg);
-        }
+    this( char[] msg )
+    {
+        super( msg );
+    }
 }
 
 
 /**
- * Base exception thrown from an InternetHost.
+ * Base class for exception thrown by an InternetHost.
  */
 class HostException : IOException
 {
-        this(char[] msg)
-        {
-                super(msg);
-        }
+    this( char[] msg )
+    {
+        super( msg );
+    }
 }
 
 
 /**
- * Base exception thrown from an Address.
+ * Base class for exceptiond thrown by an Address.
  */
 class AddressException : IOException
 {
-        this(char[] msg)
-        {
-                super(msg);
-        }
+    this( char[] msg )
+    {
+        super( msg );
+    }
 }
 
 
 /**
- * failed to accept a socket 
+ * Thrown when a socket failed to accept an incoming connection.
  */
 class SocketAcceptException : SocketException
 {
-        this(char[] msg)
-        {
-                super(msg);
-        }
+    this( char[] msg )
+    {
+        super( msg );
+    }
 }
 
 
 /**
- * Process failed in some manner
+ * Thrown on a process error.
  */
 class ProcessException : PlatformException
 {
-        this(char[] msg)
-        {
-                super(msg);
-        }
+    this( char[] msg )
+    {
+        super( msg );
+    }
 }
 
 
 /**
- * Thrown by Regular Expression package
+ * Base class for regluar expression exceptions.
  */
 class RegexException : TextException
 {
-        this(char[] msg)
-        {
-                super(msg);
-        }
+    this( char[] msg )
+    {
+        super( msg );
+    }
 }
 
 
@@ -311,32 +310,35 @@ class RegexException : TextException
  */
 class PayloadException : TracedException
 {
-        this (char[] msg)
-        {
-                super (msg);
-        }       
+    this( char[] msg )
+    {
+        super( msg );
+    }
 }
 
 
 /**
- * Thrown by Cipher where required
+ * Base class for cipher exceptions.
  */
 class CipherException : TracedException
 {
-        this(char[] msg) { super(msg); }
+    this( char[] msg )
+    {
+        super( msg );
+    }
 }
 
 
 
 /**
- * IllegalArgumentException
+ * Thrown when an illegal argument is encountered.
  */
-public class IllegalArgumentException : TracedException
+class IllegalArgumentException : TracedException
 {
-        public this (char[] msg)
-        {
-                super(msg);
-        }
+    this( char[] msg )
+    {
+        super( msg );
+    }
 }
 
 
@@ -347,37 +349,36 @@ public class IllegalArgumentException : TracedException
  * arguments are null or do not pass screeners.
  *
  */
-
-public class IllegalElementException : IllegalArgumentException
+class IllegalElementException : IllegalArgumentException
 {
-        public this (char[] msg)
-        {
-                super(msg);
-        }
+    this( char[] msg )
+    {
+        super( msg );
+    }
 }
 
 
 /**
- * 
+ * Thrown on past-the-end errors by iterators and containers.
  */
-public class NoSuchElementException : TracedException
+class NoSuchElementException : TracedException
 {
-        public this (char[] msg)
-        {
-                super(msg);
-        }
+    this( char[] msg )
+    {
+        super( msg );
+    }
 }
 
 
 /**
- * CorruptedIterator
+ * Thrown when a corrupt iterator is detected.
  */
-public class CorruptedIteratorException : NoSuchElementException
+class CorruptedIteratorException : NoSuchElementException
 {
-        public this (char[] msg)
-        {
-                super(msg);
-        }
+    this( char[] msg )
+    {
+        super( msg );
+    }
 }
 
 
