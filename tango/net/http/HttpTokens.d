@@ -261,6 +261,22 @@ class HttpTokens : IWritable
 
         /**********************************************************************
 
+                Output the token list to the provided writer
+
+        **********************************************************************/
+
+        void produce (void delegate (void[]) consume, char[] eol)
+        {
+                foreach (Token token; stack)
+                        {
+                        auto content = token.toUtf8();
+                        if (content.length)
+                            consume (content), consume (eol);
+                        }                           
+        }
+
+        /**********************************************************************
+
                 overridable method to handle the case where a token does
                 not have a separator. Apparently, this can happen in HTTP 
                 usage

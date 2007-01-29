@@ -33,8 +33,7 @@ import  tango.util.log.Log,
         tango.util.log.Configurator;
 
         // for html responses
-import  tango.io.protocol.Writer;
-import  tango.io.protocol.PrintProtocol;
+import  tango.io.protocol.DisplayWriter;
 
         // for testing the http server
 import  mango.net.http.server.HttpServer;
@@ -84,7 +83,8 @@ class FileServlet : MethodServlet
         {
                 logger.info ("request for file: " ~ request.getUri.getPath);
 
-                response.copyFile (request.getContext, request.getPathInfo);
+                if (! response.copyFile (request.getContext, request.getPathInfo))
+                      logger.warn ("cannot locate file: " ~ request.getUri.getPath);
         }
 }
 
@@ -126,7 +126,7 @@ class Echo : Servlet
                 response.setContentType ("text/html");
 
                 // wrap a Writer around the response output ...
-                auto output = new Writer(new PrintProtocol (response.getWriter.buffer));
+                auto output = new DisplayWriter (response.getOutput);
                 output.newline ("<br>\r\n");
 
                 // write HTML preamble ...

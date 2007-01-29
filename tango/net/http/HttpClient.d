@@ -32,9 +32,6 @@ private import  tango.net.http.HttpParams,
                 tango.net.http.HttpCookies,                
                 tango.net.http.HttpResponses;
               
-private import  tango.io.protocol.Writer,
-                tango.io.protocol.PrintProtocol;
-
 private import  tango.text.stream.LineIterator;
 
 private import  Integer = tango.text.convert.Integer;
@@ -114,9 +111,6 @@ class HttpClient
         // use HTTP v1.0?
         private static const char[] DefaultHttpVersion = "HTTP/1.0";
 
-        // end of line sequence
-        static const char[] Eol = "\r\n";
-        
         // standard set of request methods ...
         static const RequestMethod      Get = {"GET"},
                                         Put = {"PUT"},
@@ -413,7 +407,7 @@ class HttpClient
                     output = outputBuffer (socket);
 
                     // bind a writer to the output
-                    auto emit = new Writer (new PrintProtocol (output));
+                    auto emit = output;
 
                     // setup a Host header
                     if (headersOut.get (HttpHeader.Host, null) is null)
@@ -433,13 +427,13 @@ class HttpClient
 
                     // format request 
                     emit (method.name)
-                         (' ')
+                         (" ")
                          (path);
 
                     // should we emit query as part of request line?
                     if (query.length)
                         if (method is Get)
-                            emit ('?') (query);
+                            emit ("?") (query);
                         else 
                            if (method is Post && pump is null)
                               {
@@ -452,15 +446,16 @@ class HttpClient
                               }
                     
                     // complete the request line, and emit headers too
-                    emit (' ')
+                    emit (" ")
                          (DefaultHttpVersion)
-                         (Eol)
-                         (headersOut)
-                         (Eol);
+                         (HttpConst.Eol);
+
+                    headersOut.produce (&emit.consume, HttpConst.Eol);
+                    emit (HttpConst.Eol);
 
                     // user has additional data to send?
-                    if (pump)
-                        pump (emit.buffer);
+                    if (pump.ptr)
+                        pump (emit);
                     else
                        // send POST data?
                        if (method is Post && query.length)
@@ -507,8 +502,6 @@ class HttpClient
                                     // parse redirected uri
                                     auto redirect = headersIn.get (HttpHeader.Location, "[missing url]");
                                     uri.relParse (redirect);
-
-                                    //Stdout ("redirecting to "c) (uri) (CR) ();
 
                                     // decode the host name (may take a second or two)
                                     auto host = uri.getHost();

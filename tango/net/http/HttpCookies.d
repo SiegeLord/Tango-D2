@@ -18,8 +18,7 @@ private import  tango.stdc.ctype;
 
 private import  tango.net.http.HttpHeaders;
 
-private import  tango.io.protocol.Writer,
-                tango.io.protocol.PrintProtocol;
+private import  tango.io.protocol.model.IWriter;
 
 private import  tango.text.stream.StreamIterator;
 
@@ -164,37 +163,49 @@ class Cookie : IWritable
 
         /***********************************************************************
         
-                Output the cookie as a text stream, via the provided IWriter.
+                Output the cookie as a text stream, via the provided IWriter
 
         ***********************************************************************/
 
         void write (IWriter writer)
         {
-                writer.put (name);
+                produce (&writer.buffer.consume);
+        }
+
+        /***********************************************************************
+        
+                Output the cookie as a text stream, via the provided consumer
+
+        ***********************************************************************/
+
+        void produce (void delegate(void[]) consume)
+        {
+                consume (name);
 
                 if (value.length)
-                    writer.put ('=').put(value);
+                    consume ("="), consume (value);
 
                 if (path.length)
-                    writer.put (";Path="c).put(path);
+                    consume (";Path="), consume (path);
 
                 if (domain.length)
-                    writer.put (";Domain="c).put(domain);
+                    consume (";Domain="), consume (domain);
 
                 if (vrsn)
                    {
-                   char[32] tmp;
+                   char[16] tmp = void;
 
-                   writer.put (";Version="c).put(Integer.format(tmp, cast(long) vrsn));
+                   consume (";Version=");
+                   consume (Integer.itoa (tmp, vrsn));
 
                    if (comment.length)
-                       writer.put (";Comment=\""c).put(comment).put('"');
+                       consume (";Comment=\""), consume(comment), consume("\"");
 
                    if (secure)
-                       writer.put (";Secure"c);
+                       consume (";Secure");
 
                    if (maxAge >= 0)
-                       writer.put (";Max-Age="c).put(Integer.format(tmp, maxAge));
+                       consume (";Max-Age="c), consume (Integer.itoa (tmp, maxAge));
                    }
         }
 
@@ -206,8 +217,8 @@ class Cookie : IWritable
 
         void clear ()
         {
-                maxAge = 0;
                 vrsn = 1;
+                maxAge = 0;
                 secure = false;
                 name = path = domain = comment = null;
         }
@@ -340,7 +351,7 @@ class HttpCookiesView : IWritable
         void write (IWriter writer)
         {
                 foreach (Cookie cookie; parse)
-                         writer.put (cookie).newline();
+                         writer.put (cookie) (HttpConst.Eol);
         }
 
         /**********************************************************************
@@ -351,7 +362,7 @@ class HttpCookiesView : IWritable
 
         void reset ()
         {
-                stack.reset();
+                stack.reset;
                 parsed = false;
         }
 
@@ -387,8 +398,7 @@ class HttpCookiesView : IWritable
 
 class HttpCookies
 {
-        private Writer          writer;
-        private HttpHeaders     headers;
+        private HttpHeaders headers;
 
         /**********************************************************************
 
@@ -401,7 +411,6 @@ class HttpCookies
         this (HttpHeaders headers)
         {
                 this.headers = headers;
-                writer = new Writer (new PrintProtocol(headers.getOutputBuffer));
         }
 
         /**********************************************************************
@@ -415,7 +424,7 @@ class HttpCookies
                 // nested function to actually perform the output
                 void writeCookie (IBuffer buf)
                 {
-                        cookie.write (writer);
+                        cookie.produce (&buf.consume);
                 }
 
                 // add the cookie header via our callback

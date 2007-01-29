@@ -16,8 +16,6 @@ private import  tango.text.stream.LineIterator;
 
 private import  tango.io.model.IBuffer;
 
-private import  tango.io.protocol.model.IWriter;
-
 private import  tango.net.http.HttpTokens;
 
 public  import  tango.net.http.model.HttpConst;

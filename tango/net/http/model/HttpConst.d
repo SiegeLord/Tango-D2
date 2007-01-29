@@ -14,6 +14,17 @@ module tango.net.http.model.HttpConst;
 
 /*******************************************************************************
 
+        Constants
+
+*******************************************************************************/
+
+struct HttpConst
+{
+        const char[] Eol = "\r\n";
+}
+
+/*******************************************************************************
+
         Headers are distinct types in their own right. This is because they
         are somewhat optimized via a trailing ':' character.
 
