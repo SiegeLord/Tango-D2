@@ -123,10 +123,10 @@ class Echo : Servlet
                 logger.info ("request for echo");
 
                 // say we're writing html
-                response.contentType ("text/html");
+                response.setContentType ("text/html");
 
                 // wrap a Writer around the response output ...
-                auto output = new DisplayWriter (response.getOutput);
+                auto output = new DisplayWriter (response.buffer);
                 output.newline ("<br>\r\n");
 
                 // write HTML preamble ...
