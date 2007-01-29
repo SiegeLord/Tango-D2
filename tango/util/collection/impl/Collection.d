@@ -444,8 +444,7 @@ public abstract class Collection(T) : Dispenser!(T), IReadable, IWritable
         {
                 if (! allows(element))
                    {
-                   //throw new IllegalElementException(element, "Attempt to include invalid element _in Collection");
-                   throw new IllegalElementException(null, "Attempt to include invalid element _in Collection");
+                   throw new IllegalElementException("Attempt to include invalid element _in Collection");
                    }
         }
 
