@@ -80,13 +80,13 @@ class Writer : IWriter
         // the buffer associated with this writer. Note that this
         // should not change over the lifetime of the reader, since
         // it is assumed to be immutable elsewhere 
-        private IBuffer                 buffer_;
+        package IBuffer                 buffer_;
         
-        private IProtocol.ArrayWriter   arrays;
-        private IProtocol.Writer        elements;
+        package IProtocol.ArrayWriter   arrays;
+        package IProtocol.Writer        elements;
 
         // end of line sequence
-        private char[]                  eol = FileConst.NewlineString;
+        package char[]                  eol = FileConst.NewlineString;
 
         /***********************************************************************
         
