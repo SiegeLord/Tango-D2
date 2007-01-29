@@ -1,15 +1,34 @@
 import tango.sys.win32.Common;
 //import tango.sys.windows.winuser;
 import tango.stdc.stringz;
+import tango.stdc.stdio;
+import tango.stdc.stdlib;
 
 void main (char [] [] args)
 {
+  //  printf("%d",args.length );
+  char [] currentDir ;
+  if ( args.length == 3 )
+    {
+      currentDir = args[2];
+    }      
+  if ( args.length == 2  ) 
+    {
+      // assume dir is current dur
+      currentDir = "";
+      return;
+    }
+  else if ( args.length == 1 )
+    {
+      printf(toUtf8z("Usage: revert.exe 'phobos|tango' 'C:\\root\\dmd\\dir'\nExample: revert.exe phobos ( will revert to Digital Mars phobos.lib")) ;
+      exit(0);
+    }
+  
 
-  if ( args.length < 2 ) return;
 
-  char [] tangoLib = args[2] ~ "lib\\tango_phobos.lib";
-  char [] dmdLib = args[2] ~ "lib\\dmd_phobos.lib";
-  char [] phobosLib = args[2] ~ "lib\\phobos.lib";
+  char [] tangoLib = currentDir ~ "lib\\tango_phobos.lib";
+  char [] dmdLib = currentDir ~ "lib\\dmd_phobos.lib";
+  char [] phobosLib = currentDir ~ "lib\\phobos.lib";
 
   if ( args[1] == "phobos" ) // revert to phobos
     {

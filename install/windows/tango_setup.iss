@@ -15,6 +15,7 @@ AppPublisherURL={#MyAppURL}
 AppSupportURL={#MyAppURL}
 AppUpdatesURL={#MyAppURL}
 CreateAppDir=no
+AllowNoIcons=yes
 LicenseFile=C:\projects\tango_install\licenses.txt
 InfoBeforeFile=C:\projects\tango_install\pre_installation.txt
 InfoAfterFile=C:\projects\tango_install\post_installation.txt
@@ -46,10 +47,10 @@ Source: http://www.rentbayarea.com/tango.zip; DestDir: {tmp}; DestName: tango.zi
 Source: http://www.rentbayarea.com/build.zip; DestDir: {tmp}; DestName: build.zip; Check: ShouldInstallBuild
 
 [Run]
-Filename: {tmp}\unzip.exe; Parameters: -o tango.zip -d {code:DMDRootLocation}; WorkingDir: {tmp}; Flags: runminimized; Check: ShouldReplaceScIni
-Filename: {tmp}\unzip.exe; Parameters: "-o tango.zip -d {code:DMDRootLocation} -x ""bin/sc.ini"""; WorkingDir: {tmp}; Check: ShouldNotReplaceScIni; Flags: runminimized
+Filename: {tmp}\unzip.exe; Parameters: -o tango.zip -d {code:DMDRootLocation}; WorkingDir: {tmp}; Flags: runminimized
+;Filename: {tmp}\unzip.exe; Parameters: "-o tango.zip -d {code:DMDRootLocation} -x ""bin/sc.ini"""; WorkingDir: {tmp}; Check: ShouldNotReplaceScIni; Flags: runminimized
 Filename: {tmp}\unzip.exe; Parameters: -o build.zip -d {code:DMDRootLocation}; WorkingDir: {tmp}; Check: ShouldInstallBuild; Flags: runminimized
-Filename: {tmp}\unzip.exe; WorkingDir: {tmp}; Check: ShouldOverwritePhobos; Flags: runminimized
+Filename: {tmp}\unzip.exe; Parameters: -q; WorkingDir: {tmp}; Check: ShouldOverwritePhobos; Flags: runminimized
 
 
 
@@ -71,13 +72,17 @@ TangoOptions_OverwritePhobosCheck_ShowHint0=True
 TangoOptions_TangoDocCheck_Caption0=Install Tango documentation ( full local documentation )
 TangoOptions_TangoDocCheck_Hint0=Install Local Documentation
 TangoOptions_TangoDocCheck_ShowHint0=True
+
+TangoOptions_OverwriteBuildCfg_Caption0=Replace build.cfg with tango freindly version
+TangoOptions_OverwriteBuildCfg_Hint0=Updates your build.cfg to -I/path/to/tango
+
 TangoOptions_OverwriteScIni_Caption0=Replace sc.ini with tango freindly sc.ini
 TangoOptions_OverwriteScIni_Hint0=Updates your sc.ini to -I/path/to/tango
 TangoOptions_OverwriteScIni_ShowHint0=True
 TangoOptions_TangoMirrorCombo_Hint0=The Mirror you wish to download tango from
 TangoOptions_TangoMirrorCombo_ShowHint0=True
 TangoOptions_TangoMirrorCombo_Line0=dsource.org
-TangoOptions_InstallBuildCheck_Caption0=Install Bu[il]d
+TangoOptions_InstallBuildCheck_Caption0=Install Bu[il]d v2.9
 TangoOptions_InstallBuildCheck_Hint0=Bu[il]d is a compilation tool that greatly reduces build complex'ity, see http://www.dsource.org/projects/build for more details.
 TangoOptions_InstallBuildCheck_ShowHint0=True
 
@@ -99,6 +104,7 @@ var
   OverwritePhobosCheck: TCheckBox;
   TangoDocCheck: TCheckBox;
   OverwriteScIni: TCheckBox;
+  OverwriteBuildCfg: TCheckBox;
   TangoMirrorCombo: TComboBox;
   InstallBuildCheck: TCheckBox;
   PATHDirs : array [1 .. 100] of String;
@@ -115,6 +121,25 @@ end;
 
 function ShouldOverwritePhobos : Boolean;
 begin
+
+  if FileExists(DMDRootLocation('') + 'bin\build.cfg') = True
+  then begin
+    if MsgBox('You have a build configuration file at ' + DMDRootLocation('') + 'bin\build.cfg' + '.  Should I append an -I/path/to/tango to it ?'   , mbConfirmation ,   MB_YESNO ) = IDYES
+    then begin
+      if SaveStringToFile(DMDRootLocation('') + 'bin\build.cfg',#13#10 + 'CMDLINE= -I' + DMDRootLocation('') + 'include\' + #13#10 , True ) = False
+      then begin
+        MsgBox('Error writing file: ' + DMDRootLocation('') + 'bin\build.cfg.  Ignoring.' ,  mbConfirmation, MB_OK);
+      end
+    end
+  end else begin
+		if  SaveStringToFile(DMDRootLocation('') + 'bin\build.cfg',#13#10 + 'CMDLINE= -I' + DMDRootLocation('') + 'include\' + #13#10 , False ) = False
+		then begin
+		        MsgBox('Error writing file: ' + DMDRootLocation('') + 'bin\build.cfg.  Ignoring.' ,  mbConfirmation, MB_OK);
+		end
+	end;
+
+
+
 
 
 	if FileCopy(DMDRootLocation('') + 'lib\phobos.lib',DMDRootLocation('') + 'lib\dmd_phobos.lib',False) = False
@@ -183,7 +208,7 @@ end;
 
 function ShouldReplaceBuildCfg() : Boolean;
 begin
-	if OverwriteScIni.Checked = True
+	if OverwriteBuildCfg.Checked = True
 	then begin
 		Result := True;
 	end else begin
@@ -200,7 +225,7 @@ end;
 
 function ShouldNotReplaceBuildCfg() : Boolean;
 begin
-	if OverwriteScIni.Checked = True
+	if OverwriteBuildCfg.Checked = True
 	then begin
 		Result := False;
 	end else begin
@@ -446,22 +471,40 @@ begin
 //    TabOrder := 5;
 //  end;
 
-  { OverwriteScIni }
-  OverwriteScIni := TCheckBox.Create(Page);
-  with OverwriteScIni do
-  begin
-    Parent := Page.Surface;
-    Caption := ExpandConstant('{cm:TangoOptions_OverwriteScIni_Caption0}');
-    Left := ScaleX(8);
-    Top := ScaleY(152);
-    Width := ScaleX(361);
-    Height := ScaleY(17);
-    Hint := ExpandConstant('{cm:TangoOptions_OverwriteScIni_Hint0}');
-    Checked := True;
-    ShowHint := True; //ExpandConstant('{cm:TangoOptions_OverwriteScIni_ShowHint0}');
-    State := cbChecked;
-    TabOrder := 4;
-  end;
+//  { OverwriteScIni }
+//  OverwriteScIni := TCheckBox.Create(Page);
+//  with OverwriteScIni do
+//  begin
+//    Parent := Page.Surface;
+//    Caption := ExpandConstant('{cm:TangoOptions_OverwriteScIni_Caption0}');
+//    Left := ScaleX(8);
+//    Top := ScaleY(152);
+//    Width := ScaleX(361);
+//    Height := ScaleY(17);
+//    Hint := ExpandConstant('{cm:TangoOptions_OverwriteScIni_Hint0}');
+//    Checked := True;
+//    ShowHint := True; //ExpandConstant('{cm:TangoOptions_OverwriteScIni_ShowHint0}');
+//    State := cbChecked;
+//    TabOrder := 4;
+//  end;
+
+
+  { OverwriteBuildCfg }
+//  OverwriteBuildCfg := TCheckBox.Create(Page);
+//  with OverwriteBuildCfg do
+//  begin
+//    Parent := Page.Surface;
+//    Caption := ExpandConstant('{cm:TangoOptions_OverwriteBuildCfg_Caption0}');
+//    Left := ScaleX(8);
+//    Top := ScaleY(152);
+//    Width := ScaleX(361);
+//    Height := ScaleY(17);
+//    Hint := ExpandConstant('{cm:TangoOptions_OverwriteBuildCfg_Hint0}');
+//    Checked := True;
+//    ShowHint := True; //ExpandConstant('{cm:TangoOptions_OverwriteBuildCfg_ShowHint0}');
+//    State := cbChecked;
+//    TabOrder := 4;
+//  end;
 
   { TangoMirrorCombo }
   TangoMirrorCombo := TComboBox.Create(Page);
@@ -518,5 +561,4 @@ procedure InitializeWizard();
 begin
   TangoOptions_CreatePage(wpWelcome);
 end;
-
 
