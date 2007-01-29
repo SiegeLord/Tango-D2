@@ -81,10 +81,10 @@ class FileServlet : MethodServlet
 
         void doGet (IServletRequest request, IServletResponse response)
         {
-                logger.info ("request for file: " ~ request.getUri.getPath);
+                logger.info ("request for file: " ~ request.uri.getPath);
 
-                if (! response.copyFile (request.getContext, request.getPathInfo))
-                      logger.warn ("cannot locate file: " ~ request.getUri.getPath);
+                if (! response.copyFile (request.context, request.pathInfo))
+                      logger.warn ("cannot locate file: " ~ request.uri.getPath);
         }
 }
 
@@ -118,12 +118,12 @@ class Echo : Servlet
 
         void service (IServletRequest request, IServletResponse response)
         {
-                auto uri = request.getUri();
+                auto uri = request.uri();
 
                 logger.info ("request for echo");
 
                 // say we're writing html
-                response.setContentType ("text/html");
+                response.contentType ("text/html");
 
                 // wrap a Writer around the response output ...
                 auto output = new DisplayWriter (response.getOutput);
@@ -137,30 +137,30 @@ class Echo : Servlet
                        ("Uri: "c) (uri.toUtf8).newline()
                        ("------------------------"c).newline()
                        ("Headers:"c).newline()
-                       (request.getHeaders)
+                       (request.headers)
                        ("------------------------"c).newline()
                        ("Cookies:"c).newline()
-                       (request.getCookies)
+                       (request.cookies)
                        ("------------------------"c).newline()
                        ("Parameters:"c).newline()
-                       (request.getParameters)
+                       (request.parameters)
                        ("------------------------"c).newline();
 
                 // display the Servlet environment
-                output ("encoding: "c) (request.getCharacterEncoding).newline()
-                       ("content length: "c) (request.getContentLength).newline()
-                       ("content type: "c) (request.getContentType).newline()
-                       ("protocol: "c) (request.getProtocol).newline()
+                output ("encoding: "c) (request.characterEncoding).newline()
+                       ("content length: "c) (request.contentLength).newline()
+                       ("content type: "c) (request.contentType).newline()
+                       ("protocol: "c) (request.protocol).newline()
                        ("scheme: "c) (uri.getScheme).newline()
-                       ("method: "c) (request.getMethod).newline()
-                       ("host name: "c) (request.getServerName).newline()
-                       ("host port: "c) (request.getServerPort).newline()
-                       ("remote address: "c) (request.getRemoteAddress).newline()
-                       ("remote host: "c) (request.getRemoteHost).newline()
-                       ("path info: "c) (request.getPathInfo).newline()
+                       ("method: "c) (request.method).newline()
+                       ("host name: "c) (request.serverName).newline()
+                       ("host port: "c) (request.serverPort).newline()
+                       ("remote address: "c) (request.remoteAddress).newline()
+                       ("remote host: "c) (request.remoteHost).newline()
+                       ("path info: "c) (request.pathInfo).newline()
                        ("query: "c) (uri.getQuery).newline()
                        ("path: "c) (uri.getPath).newline()
-                       ("context path: "c) (request.getContextPath).newline().newline().newline();
+                       ("context path: "c) (request.contextPath).newline().newline().newline();
 
                 // write HTML closure
                 output("</BODY></HTML>"c);

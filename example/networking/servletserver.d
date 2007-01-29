@@ -23,7 +23,7 @@ void main()
         {
                 void doGet (IServletRequest request, IServletResponse response)
                 {
-                        response.copyFile (request.getContext(), request.getPathInfo());
+                        response.copyFile (request.context, request.pathInfo);
                 }
         }
 
@@ -31,7 +31,7 @@ void main()
         auto sp = new ServletProvider;
 
         // map all html requests to our file servlet
-        auto files = sp.addServlet (new FileServlet(), "files");
+        auto files = sp.addServlet (new FileServlet, "files");
         sp.addMapping ("*.html", files);
         sp.addMapping ("*.htm", files);
 

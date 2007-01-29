@@ -55,9 +55,7 @@ class Cookie : IWritable
 
         ***********************************************************************/
 
-        this ()
-        {
-        }
+        this () {}
 
         /***********************************************************************
         
@@ -421,14 +419,8 @@ class HttpCookies
 
         void add (Cookie cookie)
         {
-                // nested function to actually perform the output
-                void writeCookie (IBuffer buf)
-                {
-                        cookie.produce (&buf.consume);
-                }
-
                 // add the cookie header via our callback
-                headers.add (HttpHeader.SetCookie, &writeCookie);        
+                headers.add (HttpHeader.SetCookie, (IBuffer buf){cookie.produce (&buf.consume);});        
         }
 }
 
@@ -453,7 +445,7 @@ class CookieParser : StreamIterator!(char)
 
         this (CookieStack stack)
         {
-                super ();
+                super();
                 this.stack = stack;
                 buffer = new Buffer;
         }
