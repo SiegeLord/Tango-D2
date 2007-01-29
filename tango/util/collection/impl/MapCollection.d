@@ -103,7 +103,7 @@ public abstract class MapCollection(K, T) : Collection!(T), Map!(K, T)
         {
                 if (!allowsKey(key))
                    {
-                   throw new IllegalElementException(null, "Attempt to include invalid key _in Collection");
+                   throw new IllegalElementException("Attempt to include invalid key _in Collection");
                    }
         }
 
