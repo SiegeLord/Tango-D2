@@ -1,10 +1,10 @@
-copy /y Common.di    Common.d
+copy /y UserGdi.di   UserGdi.d
 copy /y Types.di     Types.d
-copy /y Utilities.di Utilities.d
+copy /y Macros.di    Macros.d
 
-dmd -c -inline -release -O Common.d Types.d Utilities.d
-lib -c -n tangow32.lib Common.obj Types.obj Utilities.obj
+dmd -c -inline -release -O UserGdi.d Types.d Macros.d
+lib -c -n usergdi32.lib UserGdi.obj Types.obj Macros.obj
 
-del Common.d    Common.obj
+del UserGdi.d   UserGdi.obj
 del Types.d     Types.obj
-del Utilities.d Utilities.obj
+del Macros.d    Macros.obj

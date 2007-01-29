@@ -1,4 +1,4 @@
-module tango.sys.win32.Common;
+module tango.sys.win32.UserGdi;
 
 /*
  	Module:		Windows Functions

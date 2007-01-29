@@ -1,4 +1,4 @@
-module tango.sys.win32.Utilities;
+module tango.sys.win32.Macros;
 
 /*
  	Module:		Windows Utilities
@@ -12,25 +12,10 @@ public
 }
 private
 {
-	import tango.sys.win32.Common;
 	import tango.stdc.string;
+	import tango.sys.win32.UserGdi;
 }
 
-/+ Types +/
-alias void VOID;
-alias ubyte BYTE;
-alias short INT16;
-alias ushort WORD;
-alias ushort UINT16;
-alias int INT_PTR;
-alias uint UINT_PTR;
-alias int LONG_PTR;
-alias uint ULONG_PTR;
-alias uint PROPID;
-const BOOL FALSE = 0;
-const BOOL TRUE = -1;
-alias char* PANSICHAR;
-alias wchar* PWIDECHAR;
 
 /+ Functions +/
 ushort MAKEWORD(ubyte A, ubyte B)
