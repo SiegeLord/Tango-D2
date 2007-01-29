@@ -1,8 +1,4 @@
 
-For a guide to install Tango see these online turorials:
+For a guide to install Tango see the online installation reference:
 
-http://www.dsource.org/projects/tango/wiki/WindowsInstall
-http://www.dsource.org/projects/tango/wiki/LinuxInstall
-http://www.dsource.org/projects/tango/wiki/DarwinInstall
-
-
+http://dsource.org/projects/tango/wiki/TopicInstallTango
