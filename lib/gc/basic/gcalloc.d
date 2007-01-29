@@ -27,7 +27,7 @@
 
 version (Win32)
 {
-    private import tango.sys.win32.Common;
+    private import tango.sys.win32.UserGdi;
 
     alias int pthread_t;
 
