@@ -50,12 +50,11 @@
 @jake networking\httpget.d -I.. -op
 @jake networking\sockethello.d -I.. -op
 @jake networking\socketserver.d -I.. -op
+@jake networking\selector.d -I.. -op
 
 @IF EXIST ..\mango. (@jake networking\httpserver.d -I.. -op)
 @IF EXIST ..\mango. (@jake networking\servlets.d -I.. -op)
 @IF EXIST ..\mango. (@jake networking\servletserver.d -I.. -op)
-
-rem  *** jake networking\selector.d *** (FIX ME)
 
 @rem ###########################################################################
 @rem # SYSTEM EXAMPLES
@@ -64,8 +63,7 @@ rem  *** jake networking\selector.d *** (FIX ME)
 @jake system\argparser.d -I.. -op
 @jake system\localtime.d -I.. -op
 @jake system\normpath.d -I.. -op
-
-rem @jake system\process.d 
+@jake system\process.d -I.. -op
 
 @rem ###########################################################################
 @rem # TEXT EXAMPLES
@@ -76,6 +74,17 @@ rem @jake system\process.d
 @jake text\formatspec.d -I.. -op
 @jake text\localetime.d -I.. -op
 @jake text\token.d -I.. -op
+
+@rem ###########################################################################
+@rem # LOCKS EXAMPLES
+@rem ###########################################################################
+
+@jake locks\barrier.d -I.. -op
+@rem @jake locks\condition.d -I.. -op
+@jake locks\mutex.d -I.. -op
+@rem #@jake locks\readwritemutex.d -I.. -op
+
+@rem FINI
 
 @del *.map
 @dir *.exe
