@@ -82,7 +82,7 @@ TangoOptions_OverwriteScIni_ShowHint0=True
 TangoOptions_TangoMirrorCombo_Hint0=The Mirror you wish to download tango from
 TangoOptions_TangoMirrorCombo_ShowHint0=True
 TangoOptions_TangoMirrorCombo_Line0=dsource.org
-TangoOptions_InstallBuildCheck_Caption0=Install Bu[il]d v2.9
+TangoOptions_InstallBuildCheck_Caption0=Install Bu[il]d v3.04
 TangoOptions_InstallBuildCheck_Hint0=Bu[il]d is a compilation tool that greatly reduces build complex'ity, see http://www.dsource.org/projects/build for more details.
 TangoOptions_InstallBuildCheck_ShowHint0=True
 
@@ -142,9 +142,12 @@ begin
 
 
 
-	if FileCopy(DMDRootLocation('') + 'lib\phobos.lib',DMDRootLocation('') + 'lib\dmd_phobos.lib',False) = False
+	if FileCopy(DMDRootLocation('') + 'lib\phobos.lib',DMDRootLocation('') + 'lib\dmd_phobos.lib',True) = False
 	then begin
-		MsgBox('Could not copy phobos.lib to dmd_phobos.lib, reverting will not work.', mbConfirmation, MB_OK);
+		if ( FileExists(DMDRootLocation('') + 'lib\dmd_phobos.lib') ) = False
+		then begin
+			MsgBox('Could not locate phobos.lib , or dmd_phobos.lib already exists.', mbConfirmation, MB_OK);
+		end
 	end;
 
 	//if OverwritePhobosCheck.Checked = True
@@ -153,7 +156,7 @@ begin
 
 		if FileCopy(DMDRootLocation('') + 'lib\tango_phobos.lib',DMDRootLocation('') + 'lib\phobos.lib',False) = False
 		then begin
-			MsgBox('Could not overwrite phobos.lib with Tango''s phobos.lib, please do so manually.', mbConfirmation, MB_OK);
+			MsgBox('Could not locate phobos.lib with Tango''s phobos.lib, please do so manually.', mbConfirmation, MB_OK);
 		end;
 		Result := True;
 	end else begin

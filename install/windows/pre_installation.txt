@@ -1,0 +1,11 @@
+WARNING:
+
+Tango will create a backup for DMD's phobos.lib ( named dmd_phobos.lib )  and replace it with a Tango compatible version.
+
+To get back to using DigitalMars' runtime library 'Phobos', simply run the Revert commands found in the Start Menu, or if you have disabled Start Menu creation, run the revert.exe command found in INSTALLDIR\ from the commandline.  
+
+If you elect to install build, it will automatically overwrite your existing build.exe file.
+
+So to get back to your old setup, simply run the revert command, either from the Start Menu, or from the command line.
+ 
+Enjoy!

@@ -1,5 +1,4 @@
 import tango.sys.win32.Common;
-//import tango.sys.windows.winuser;
 import tango.stdc.stringz;
 import tango.stdc.stdio;
 import tango.stdc.stdlib;
@@ -20,7 +19,7 @@ void main (char [] [] args)
     }
   else if ( args.length == 1 )
     {
-      printf(toUtf8z("Usage: revert.exe 'phobos|tango' 'C:\\root\\dmd\\dir'\nExample: revert.exe phobos ( will revert to Digital Mars phobos.lib")) ;
+      printf(toUtf8z("Usage: revert.exe 'phobos|tango' 'C:\\root\\dmd\\dir'\nExample: revert.exe phobos ( will revert to Digital Mars phobos.lib )")) ;
       exit(0);
     }
   

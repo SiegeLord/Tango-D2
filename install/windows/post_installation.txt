@@ -1,8 +1,10 @@
 Thank you for using Tango!
 
+You should be able to start using Tango immediately , with examples in INSTALLDIR/tango/examples.
+
 Documentation can be found at http://dsource.org/projects/tango.
 
-Contributors:
+Tango Contributors 
 
 Reference Manual 
 
@@ -29,8 +31,8 @@ Tutorials
 
 Graphic Design 
 
-    * Trevor Parscal: Design Concepts
-    * Eric Anderton: Design Concepts 
+    * Trevor Parscal: themes and icons
+    * Eric Anderton: design concepts & icons 
 
 Web Design and Presentation 
 
@@ -71,7 +73,7 @@ Project Organization
 Library Code 
 
     * Sean Kelly: contributed the core runtime support
-    * Kris Bell: contributed much of the base library
+    * Kris Bell: contributed the base library
     * Lars Ivar Igesund: Tidbits
     * John Chapman: tango.text.locale package
     * Juan Jose Comellas: IO-selector and Process packages
@@ -79,7 +81,7 @@ Library Code
     * UWB: Initial tango.net.ftp package
     * Regan Heath: tango.math.cipher package
     * Eric Anderton: principal developer on DDL
-    * Don Clugston: Win32, plus math and template magic
+    * Don Clugston: Math and template magic
     * Mikola: Threading functionality
     * Dalibor Frivaldsky: Linux implementations
     * Alexander Panek: Compile fixes 
@@ -92,20 +94,14 @@ Installation scripting
 
 Support Code 
 
-    * Derek Parnell: the ubiquitous Build application
-    * Gregor Richards: DSSS 
+    * Gregor Richards: DSSS
+    * Derek Parnell: Build 
 
 Adopted Code 
 
-    * From Phobos, the D standard library. Various writers in addition to Walter Bright.
-    * From Doug Lea, who donates very high quality code to the public-domain
+    * From Doug Lea, who donates very high quality code to the public-domain 
+
     * From David Gay; author of the awesome & inscrutable dtoa C module
-    * From Stephen L. Moshier, author the extensive CEPHES library of mathematical functions
-    * And Bob Jenkins, who created simply the best hash function around 
-
-Motivators 
-
-    * John Reimer: coffee and first-aid
-    * Eric Anderton: eclectic guitar riffs
-    * Kris Bell: coercion and nagging 
-
+    * From Stephen L. Moshier, author of the extensive CEPHES library of mathematical functions
+    * From Bob Jenkins, who created simply the best hash function around
+    * and Walter Bright 
