@@ -55,9 +55,9 @@ Filename: {tmp}\unzip.exe; Parameters: -q; WorkingDir: {tmp}; Check: ShouldOverw
 
 
 [CustomMessages]
-TangoOptions_Caption=TangoOptions Caption
-TangoOptions_Description=TangoOptions Description
-TangoOptions_Label1_Caption0=DMD Root
+TangoOptions_Caption=Tango Install Options
+TangoOptions_Description=Here you can choose what options you want for your tango installation.
+TangoOptions_Label1_Caption0=Install Directory ( DMD Root Directory )
 TangoOptions_Label1_Hint0=This is the root location of your DMD installation, such as C:\dmd
 TangoOptions_Label1_ShowHint0=True
 TangoOptions_Label2_Caption0=Error: DMD Was not found in your PATH - please manually enter it's location
@@ -371,7 +371,7 @@ begin
     Caption := ExpandConstant('{cm:TangoOptions_Label1_Caption0}');
     Left := ScaleX(8);
     Top := ScaleY(21);
-    Width := ScaleX(51);
+    Width := ScaleX(200);
     Height := ScaleY(13);
     Hint := ExpandConstant('{cm:TangoOptions_Label1_Hint0}');
     ShowHint := True; //ExpandConstant('{cm:TangoOptions_Label1_ShowHint0}');
