@@ -43,6 +43,22 @@ version( linux )
         char*   pw_shell;
     }
 }
+else version( darwin )
+{
+    struct passwd
+    {
+        char*   pw_name;
+        char*   pw_passwd;
+        uid_t   pw_uid;
+        gid_t   pw_gid;
+        time_t  pw_change;
+        char*   pw_class;
+        char*   pw_gecos;
+        char*   pw_dir;
+        char*   pw_shell;
+        time_t  pw_expire;
+    }
+}
 
 passwd* getpwnam(char*);
 passwd* getpwuid(uid_t);
@@ -60,7 +76,11 @@ version( linux )
     int getpwnam_r(char*, passwd*, char*, size_t, passwd**);
     int getpwuid_r(uid_t, passwd*, char*, size_t, passwd**);
 }
-
+else version( darwin )
+{
+    int getpwnam_r(char*, passwd*, char*, size_t, passwd**);
+    int getpwuid_r(uid_t, passwd*, char*, size_t, passwd**);
+}
 //
 // XOpen (XSI)
 //
@@ -69,3 +89,16 @@ void    endpwent();
 passwd* getpwent();
 void    setpwent();
 */
+
+version( linux )
+{
+    void    endpwent();
+    passwd* getpwent();
+    void    setpwent();
+}
+else version ( darwin )
+{
+    void    endpwent();
+    passwd* getpwent();
+    void    setpwent();
+}
