@@ -198,8 +198,8 @@ class Epoch
 
                         ulong toUtcTime ()
                         {
-                                SYSTEMTIME sTime;
-                                FILETIME   fTime;
+                                SYSTEMTIME sTime = void;
+                                FILETIME   fTime = void;
 
                                 sTime.wYear = cast(ushort) year;
                                 sTime.wMonth = cast(ushort) month;
@@ -224,8 +224,8 @@ class Epoch
 
                         void asUtcTime (ulong time)
                         {
-                                SYSTEMTIME sTime;
-                                FILETIME   fTime;
+                                SYSTEMTIME sTime = void;
+                                FILETIME   fTime = void;
 
                                 toFileTime (&fTime, time);
                                 FileTimeToSystemTime (&fTime, &sTime);
@@ -249,8 +249,8 @@ class Epoch
 
                         void asLocalTime (ulong time)
                         {
-                                FILETIME fTime,
-                                         local;
+                                FILETIME fTime = void;
+                                FILETIME local = void;
 
                                 toFileTime (&fTime, time);
                                 FileTimeToLocalFileTime (&fTime, &local);
@@ -361,8 +361,8 @@ class Epoch
 
                 static this ()
                 {
-                        SYSTEMTIME sTime;
-                        FILETIME   fTime;
+                        SYSTEMTIME sTime = void;
+                        FILETIME   fTime = void;
 
                         // first second of 1970 ...
                         sTime.wYear = 1970;
@@ -401,7 +401,7 @@ class Epoch
 
                 static ulong utcMicro ()
                 {
-                        FILETIME fTime;
+                        FILETIME fTime = void;
 
                         GetSystemTimeAsFileTime (&fTime);
                         ulong tmp = (cast(ulong) fTime.dwHighDateTime) << 32 | 
@@ -419,7 +419,7 @@ class Epoch
 
                 static int tzMinutes ()
                 {
-                        TIME_ZONE_INFORMATION tz;
+                        TIME_ZONE_INFORMATION tz = void;
 
                         int ret = GetTimeZoneInformation (&tz);
                         return -tz.Bias;
