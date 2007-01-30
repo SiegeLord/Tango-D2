@@ -6,10 +6,18 @@
 
 private
 {
+    version (Posix)
+    {
+        import tango.io.selector.PollSelector;
+    }
+    else version (linux)
+    {
+        import tango.io.selector.EpollSelector;
+        import tango.sys.linux.linux;
+    }
+
     import tango.io.selector.model.ISelector;
     import tango.io.selector.Selector;
-    import tango.io.selector.EpollSelector;
-    import tango.io.selector.PollSelector;
     import tango.io.selector.SelectSelector;
     import tango.io.selector.SelectorException;
     import tango.io.Conduit;
@@ -17,9 +25,9 @@ private
     import tango.net.Socket;
     import tango.net.SocketConduit;
     import tango.net.ServerSocket;
+    import tango.core.Exception;
     import tango.core.Thread;
     import tango.sys.Common;
-    import tango.sys.linux.linux;
     import tango.sys.TimeConverter;
     import tango.stdc.errno;
 }
@@ -44,10 +52,10 @@ int main(char[][] args)
         testSelector(selector);
     }
 
-    for (int i = 0; i < 5; i++)
+    // Testing the PollSelector
+    version (Posix)
     {
-        // Testing the PollSelector
-        version (Posix)
+        for (int i = 0; i < 5; i++)
         {
             Stdout.formatln("* Pass {0}: Testing the poll-based selector", i + 1);
             selector = new PollSelector();
@@ -55,10 +63,10 @@ int main(char[][] args)
         }
     }
 
-    for (int i = 0; i < 5; i++)
+    // Testing the EpollSelector
+    version (linux)
     {
-        // Testing the EpollSelector
-        version (linux)
+        for (int i = 0; i < 5; i++)
         {
             Stdout.formatln("* Pass {0}: Testing the epoll-based selector", i + 1);
             selector = new EpollSelector();
@@ -151,7 +159,7 @@ void testSelector(ISelector selector)
                             debug (selector)
                                 Stdout.formatln("[SRV][{0}] Receiving message from client", i);
 
-                            count = selectionKey.conduit.read(buffer);
+                            count = (cast(SocketConduit) selectionKey.conduit).read(buffer);
                             if (count != IConduit.Eof)
                             {
                                 debug (selector)
@@ -166,7 +174,7 @@ void testSelector(ISelector selector)
                                     Stdout.formatln("[SRV][{0}] Handle {1} was closed; removing it from Selector",
                                                     i, cast(int) selectionKey.conduit.fileHandle());
                                 selector.unregister(selectionKey.conduit);
-                                selectionKey.conduit.close();
+                                (cast(SocketConduit) selectionKey.conduit).close();
                                 failedReceiveCount++;
                                 continue;
                             }
@@ -178,7 +186,7 @@ void testSelector(ISelector selector)
                         debug (selector)
                             Stdout.formatln("[SRV][{0}] Sending PONG to client", i);
 
-                        count = selectionKey.conduit.write("PONG");
+                        count = (cast(SocketConduit) selectionKey.conduit).write("PONG");
                         if (count != IConduit.Eof)
                         {
                             debug (selector)
@@ -193,7 +201,7 @@ void testSelector(ISelector selector)
                                 Stdout.formatln("[SRV][{0}] Handle {1} was closed; removing it from Selector",
                                                 i, selectionKey.conduit.fileHandle());
                             selector.unregister(selectionKey.conduit);
-                            selectionKey.conduit.close();
+                            (cast(SocketConduit) selectionKey.conduit).close();
                             failedSendCount++;
                             continue;
                         }
@@ -226,7 +234,7 @@ void testSelector(ISelector selector)
                                             i, cast(int) selectionKey.conduit.fileHandle());
                         }
                         selector.unregister(selectionKey.conduit);
-                        selectionKey.conduit.close();
+                        (cast(Conduit) selectionKey.conduit).close();
 
                         if (selectionKey.conduit !is serverSocket)
                         {
@@ -257,8 +265,7 @@ void testSelector(ISelector selector)
             */
         }
 
-        serverSocket.shutdown();
-        serverSocket.close();
+        serverSocket.getSocket().close();
     }
     catch (SelectorException e)
     {

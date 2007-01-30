@@ -49,7 +49,7 @@ enum Event: uint
  */
 class SelectionKey
 {
-    private IConduit _conduit;
+    private ISelectable _conduit;
     private Event _events;
     private Object _attachment;
 
@@ -76,7 +76,7 @@ class SelectionKey
      * auto key = new SelectionKey(cond, Event.Read | Event.Write);
      * ---
      */
-    public this(IConduit conduit, Event events, Object attachment = null)
+    public this(ISelectable conduit, Event events, Object attachment = null)
     {
         _conduit = conduit;
         _events = events;
@@ -86,7 +86,7 @@ class SelectionKey
     /**
      * Return the conduit held by the instance.
      */
-    public IConduit conduit()
+    public ISelectable conduit()
     {
         return _conduit;
     }
@@ -94,7 +94,7 @@ class SelectionKey
     /**
      * Set the conduit held by the instance
      */
-    public void conduit(IConduit conduit)
+    public void conduit(ISelectable conduit)
     {
         _conduit = conduit;
     }
@@ -257,7 +257,7 @@ interface ISelectionSet
  *     {
  *         if (key.isReadable())
  *         {
- *             count = key.conduit.read(buffer);
+ *             count = (cast(SocketConduit) key.conduit).read(buffer);
  *             if (count != IConduit.Eof)
  *             {
  *                 Stdout.format("Received '{0}' from peer\n", buffer[0..count]);
@@ -272,7 +272,7 @@ interface ISelectionSet
  *
  *         if (key.isWritable())
  *         {
- *             count = key.conduit.write("MESSAGE");
+ *             count = (cast(SocketConduit) key.conduit).write("MESSAGE");
  *             if (count != IConduit.Eof)
  *             {
  *                 Stdout.print("Sent 'MESSAGE' to peer\n");
@@ -341,7 +341,7 @@ interface ISelector
      * selector.register(conduit, Event.Read | Event.Write, object);
      * ---
      */
-    public abstract void register(IConduit conduit, Event events,
+    public abstract void register(ISelectable conduit, Event events,
                                   Object attachment = null);
 
     /**
@@ -369,7 +369,7 @@ interface ISelector
      * selector.reregister(conduit, Event.Write, object);
      * ---
      */
-    public abstract void reregister(IConduit conduit, Event events,
+    public abstract void reregister(ISelectable conduit, Event events,
                                     Object attachment = null);
     /**
      * Remove a conduit from the selector.
@@ -382,7 +382,7 @@ interface ISelector
      * Unregistering a null conduit is allowed and no exception is thrown
      * if this happens.
      */
-    public abstract void unregister(IConduit conduit);
+    public abstract void unregister(ISelectable conduit);
 
     /**
      * Wait indefinitely for I/O events from the registered conduits.
@@ -444,5 +444,5 @@ interface ISelector
      * If the conduit is not registered to the selector the returned
      * value will be null. No exception will be thrown by this method.
      */
-    public abstract SelectionKey key(IConduit conduit);
+    public abstract SelectionKey key(ISelectable conduit);
 }

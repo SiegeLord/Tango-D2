@@ -71,7 +71,7 @@ version (Posix)
         public const uint DefaultSize = 64;
 
         /** Map to associate the conduit handles with their selection keys */
-        private PollSelectionKey[IConduit.Handle] _keys;
+        private PollSelectionKey[ISelectable.Handle] _keys;
         private SelectionKey[] _selectedKeys;
         private pollfd[] _pfds;
         private uint _count = 0;
@@ -133,7 +133,7 @@ version (Posix)
          * selector.register(conduit, Event.Read | Event.Write, object);
          * ---
          */
-        public void register(IConduit conduit, Event events, Object attachment = null)
+        public void register(ISelectable conduit, Event events, Object attachment = null)
         in
         {
             assert(conduit !is null && conduit.fileHandle() >= 0);
@@ -190,7 +190,7 @@ version (Posix)
          * selector.reregister(conduit, Event.Write, object);
          * ---
          */
-        public void reregister(IConduit conduit, Event events, Object attachment = null)
+        public void reregister(ISelectable conduit, Event events, Object attachment = null)
         in
         {
             assert(conduit !is null && conduit.fileHandle() >= 0);
@@ -235,7 +235,7 @@ version (Posix)
          * UnregisteredConduitException if the conduit had not been previously
          * registered to the selector.
          */
-        public void unregister(IConduit conduit)
+        public void unregister(ISelectable conduit)
         {
             if (conduit !is null)
             {
@@ -337,7 +337,7 @@ version (Posix)
                                                   cast(uint) pfd.revents, cast(int) pfd.fd, i);
 
                                 // Find the key whose handle received an event
-                                key = ((cast(IConduit.Handle) pfd.fd) in _keys);
+                                key = ((cast(ISelectable.Handle) pfd.fd) in _keys);
                                 if (key !is null)
                                 {
                                     // Enlarge the array of necessary
@@ -410,7 +410,7 @@ version (Posix)
          * If the conduit is not registered to the selector the returned
          * value will be null. No exception will be thrown by this method.
          */
-        public SelectionKey key(IConduit conduit)
+        public SelectionKey key(ISelectable conduit)
         {
             return (conduit !is null ? _keys[conduit.fileHandle()] : null);
         }
@@ -468,7 +468,7 @@ version (Posix)
         {
         }
 
-        public this(IConduit conduit, Event events, uint index, Object attachment)
+        public this(ISelectable conduit, Event events, uint index, Object attachment)
         {
             super(conduit, events, attachment);
 

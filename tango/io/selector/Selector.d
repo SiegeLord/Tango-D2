@@ -69,7 +69,7 @@ module tango.io.selector.Selector;
  * ---
  * try
  * {
- *     uint eventCount = selector.select(Sec(10));
+ *     uint eventCount = selector.select(10 * Interval.second);
  *     if (eventCount > 0)
  *     {
  *         // Process the I/O events in the selected set

@@ -22,6 +22,13 @@ version (Posix)
 
 version (Windows)
 {
+    public struct timeval
+    {
+        int tv_sec;     // seconds
+        int tv_usec;    // microseconds
+    }
+
+
     // Static constant to remove time skew between the Windows FILETIME
     // and POSIX time. POSIX and Win32 use different epochs
     // (Jan. 1, 1970 v.s. Jan. 1, 1601). The following constant defines
@@ -180,8 +187,8 @@ public Interval currentTime()
 
         GetSystemTimeAsFileTime(&ft);
 
-        return ((((cast(Interval) ftime.dwHighDateTime) << 32 |
-                 (cast(Interval) ftime.dwLowDateTime)) - FiletimeToUnixEpochSkew) / 10);
+        return cast(Interval) ((((cast(Interval) ft.dwHighDateTime) << 32 |
+                               (cast(Interval) ft.dwLowDateTime)) - FiletimeToUnixEpochSkew) / 10);
     }
     else
     {

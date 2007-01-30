@@ -75,7 +75,7 @@ private import tango.stdc.errno;
  *     {
  *         if (key.isReadable())
  *         {
- *             count = key.conduit.read(buffer);
+ *             count = (cast(SocketConduit) key.conduit).read(buffer);
  *             if (count != IConduit.Eof)
  *             {
  *                 Stdout.format("Received '{0}' from peer\n", buffer[0..count]);
@@ -90,7 +90,7 @@ private import tango.stdc.errno;
  *
  *         if (key.isWritable())
  *         {
- *             count = key.conduit.write("MESSAGE");
+ *             count = (cast(SocketConduit) key.conduit).write("MESSAGE");
  *             if (count != IConduit.Eof)
  *             {
  *                 Stdout("Sent 'MESSAGE' to peer\n");
@@ -181,7 +181,7 @@ abstract class AbstractSelector: ISelector
      * selector.register(conduit, Event.Read | Event.Write, object);
      * ---
      */
-    public abstract void register(IConduit conduit, Event events,
+    public abstract void register(ISelectable conduit, Event events,
                                   Object attachment);
 
     /**
@@ -208,7 +208,7 @@ abstract class AbstractSelector: ISelector
      * selector.reregister(conduit, Event.Write, object);
      * ---
      */
-    public abstract void reregister(IConduit conduit, Event events,
+    public abstract void reregister(ISelectable conduit, Event events,
                                     Object attachment);
 
     /**
@@ -222,7 +222,7 @@ abstract class AbstractSelector: ISelector
      * Unregistering a null conduit is allowed and no exception is thrown
      * if this happens.
      */
-    public abstract void unregister(IConduit conduit);
+    public abstract void unregister(ISelectable conduit);
 
     /**
      * Wait for I/O events from the registered conduits for a specified
@@ -291,7 +291,7 @@ abstract class AbstractSelector: ISelector
      * If the conduit is not registered to the selector the returned
      * value will be null. No exception will be thrown by this method.
      */
-    public abstract SelectionKey key(IConduit conduit);
+    public abstract SelectionKey key(ISelectable conduit);
 
     /**
      * Check the 'errno' global variable from the C standard library and
@@ -338,7 +338,7 @@ abstract class AbstractSelector: ISelector
                 throw new OutOfMemoryException(file, line);
                 break;
             case EPERM:
-                throw new SelectorException("The IConduit cannot be used with this Selector", file, line);
+                throw new SelectorException("The conduit cannot be used with this Selector", file, line);
                 break;
             default:
                 char[128] buf = void;

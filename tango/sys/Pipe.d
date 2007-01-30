@@ -16,7 +16,7 @@ private import tango.core.Exception;
 
 version (Windows)
 {
-    private import tango.sys.win32.UserGdi;
+    private import tango.sys.Common;
 }
 else
 {
@@ -77,6 +77,14 @@ class PipeConduit: DeviceConduit
     {
         return _bufferSize;
     }
+
+    /**
+     * Returns the name of the device.
+     */
+    public override char[] getName()
+    {
+        return "<pipe>";
+    }
 }
 
 /**
@@ -92,22 +100,9 @@ class Pipe
      */
     public this(uint bufferSize = PipeConduit.DefaultBufferSize)
     {
-        version (Win32)
+        version (Windows)
         {
-            HANDLE sourceHandle;
-            HANDLE sinkHandle;
-
-            if (CreatePipe(&sourceHandle, &sinkHandle, null, cast(DWORD) bufferSize))
-            {
-                _source = new PipeConduit(cast(IConduit.Handle) sourceHandle,
-                                          Conduit.Access.Read);
-                _sink = new PipeConduit(cast(IConduit.Handle) sinkHandle,
-                                        Conduit.Access.Write);
-            }
-            else
-            {
-                error();
-            }
+            this(bufferSize, null);
         }
         else version (Posix)
         {
@@ -128,6 +123,31 @@ class Pipe
         else
         {
             assert(false, "Unknown platform");
+        }
+    }
+
+    version (Windows)
+    {
+        /**
+         * Helper constructor for pipes on Windows with non-null security
+         * attributes.
+         */
+        package this(uint bufferSize, SECURITY_ATTRIBUTES *sa)
+        {
+            HANDLE sourceHandle;
+            HANDLE sinkHandle;
+
+            if (CreatePipe(&sourceHandle, &sinkHandle, sa, cast(DWORD) bufferSize))
+            {
+                _source = new PipeConduit(cast(IConduit.Handle) sourceHandle,
+                                        Conduit.Access.Read);
+                _sink = new PipeConduit(cast(IConduit.Handle) sinkHandle,
+                                        Conduit.Access.Write);
+            }
+            else
+            {
+                error();
+            }
         }
     }
 

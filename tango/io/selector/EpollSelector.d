@@ -62,7 +62,7 @@ version (linux)
      *     {
      *         if (key.isReadable())
      *         {
-     *             count = key.conduit.read(buffer);
+     *             count = (cast(SocketConduit) key.conduit).read(buffer);
      *             if (count != IConduit.Eof)
      *             {
      *                 Stdout.format("Received '{0}' from peer\n", buffer[0..count]);
@@ -77,7 +77,7 @@ version (linux)
      *
      *         if (key.isWritable())
      *         {
-     *             count = key.conduit.write("MESSAGE");
+     *             count = (cast(SocketConduit) key.conduit).write("MESSAGE");
      *             if (count != IConduit.Eof)
      *             {
      *                 Stdout("Sent 'MESSAGE' to peer");
@@ -116,7 +116,7 @@ version (linux)
 
 
         /** Map to associate the conduit handles with their selection keys */
-        private SelectionKey[IConduit.Handle] _keys;
+        private SelectionKey[ISelectable.Handle] _keys;
         /** File descriptor returned by the epoll_create() system call. */
         private int _epfd = -1;
         /**
@@ -209,7 +209,7 @@ version (linux)
          * selector.register(conduit, Event.Read | Event.Write, object);
          * ---
          */
-        public void register(IConduit conduit, Event events, Object attachment = null)
+        public void register(ISelectable conduit, Event events, Object attachment = null)
         in
         {
             assert(conduit !is null && conduit.fileHandle() > 0);
@@ -266,7 +266,7 @@ version (linux)
          * selector.reregister(conduit, Event.Write, object);
          * ---
          */
-        public void reregister(IConduit conduit, Event events, Object attachment = null)
+        public void reregister(ISelectable conduit, Event events, Object attachment = null)
         in
         {
             assert(conduit !is null && conduit.fileHandle() > 0);
@@ -312,7 +312,7 @@ version (linux)
          * registered to the selector; SelectorException if there are not
          * enough resources to remove the conduit registration.
          */
-        public void unregister(IConduit conduit)
+        public void unregister(ISelectable conduit)
         {
             if (conduit !is null)
             {
@@ -395,7 +395,7 @@ version (linux)
          * If the conduit is not registered to the selector the returned
          * value will be null. No exception will be thrown by this method.
          */
-        public SelectionKey key(IConduit conduit)
+        public SelectionKey key(ISelectable conduit)
         {
             return (conduit !is null ? _keys[conduit.fileHandle()] : null);
         }
@@ -435,7 +435,7 @@ version (linux)
 
             foreach (epoll_event event; _events)
             {
-                // Only invoke the delegate if there is an event for the IConduit.
+                // Only invoke the delegate if there is an event for the conduit.
                 if (event.events != 0)
                 {
                     key = cast(SelectionKey) event.data.ptr;

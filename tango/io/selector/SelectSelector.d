@@ -16,11 +16,30 @@ private import tango.sys.TimeConverter;
 private import tango.stdc.errno;
 
 debug (selector)
-    import tango.io.Stdout;
+    private import tango.io.Stdout;
 
 
-version (Win32)
+version (Windows)
 {
+    private
+    {
+        /*
+        struct timeval
+        {
+            int tv_sec;     // seconds
+            int tv_usec;    // microseconds
+        }
+        */
+
+        // Opaque struct
+        struct fd_set
+        {
+        }
+
+        extern (Windows) int select(int nfds, fd_set* readfds, fd_set* writefds,
+                                    fd_set* errorfds, timeval* timeout);
+    }
+
     /**
      * Helper class used by the select()-based Selector to store handles.
      * On Windows the handles are kept in an array of uints and the first
@@ -35,7 +54,6 @@ version (Win32)
         public const uint DefaultSize = 63;
 
         private uint[] _buffer;
-        private alias _buffer[0] _count;
 
         /**
          * Constructor. Sets the initial number of handles that will be held
@@ -44,7 +62,7 @@ version (Win32)
         public this(uint size = DefaultSize)
         {
             _buffer = new uint[1 + size];
-            _count  = 0;
+            _buffer[0] = 0;
         }
 
         /**
@@ -52,13 +70,13 @@ version (Win32)
          */
         private void reset()
         {
-            _count = 0;
+            _buffer[0] = 0;
         }
 
         /**
          * Add a file descriptor to the set.
          */
-        public void add(IConduit.Handle handle)
+        public void add(ISelectable.Handle handle)
         in
         {
             assert(handle >= 0);
@@ -66,19 +84,19 @@ version (Win32)
         body
         {
             // If we added too many sockets we increment the size of the buffer
-            if (++_count >= _buffer.length)
+            if (++_buffer[0] >= _buffer.length)
             {
-                _buffer.length = _count + 1;
+                _buffer.length = _buffer[0] + 1;
             }
-            _buffer[_count] = cast(uint) handle;
+            _buffer[_buffer[0]] = cast(uint) handle;
         }
 
         /**
          * Remove a file descriptor from the set.
          */
-        public void remove(IConduit.Handle handle)
+        public void remove(ISelectable.Handle handle)
         {
-            if (_count > 0)
+            if (_buffer[0] > 0)
             {
                 size_t i;
 
@@ -93,17 +111,17 @@ version (Win32)
                 // We don't need to keep the handles in the order in which
                 // they were inserted, so we optimize the removal by copying
                 // the last element to the position of the removed element.
-                if (i != buffer.length - 1)
+                if (i != _buffer.length - 1)
                 {
                     _buffer[i] = _buffer[_buffer.length - 1];
                 }
-                _count--;
+                _buffer[0]--;
 
                 /*
                 uint* start;
                 uint* stop;
 
-                for (start = _buffer + 1, stop = start + _count; start != stop; start++)
+                for (start = _buffer + 1, stop = start + _buffer[0]; start != stop; start++)
                 {
                     if (*start == handle)
                         goto found;
@@ -115,7 +133,7 @@ version (Win32)
                 {
                     *(start - 1) = *start;
                 }
-                _count--;
+                _buffer[0]--;
                 */
             }
         }
@@ -138,12 +156,12 @@ version (Win32)
         /**
          * Check whether the file descriptor has been set.
          */
-        public bool isSet(IConduit.Handle handle)
+        public bool isSet(ISelectable.Handle handle)
         {
             uint* start;
             uint* stop;
 
-            for (start = _buffer + 1, stop = start + _count; start != stop; start++)
+            for (start = _buffer.ptr + 1, stop = start + _buffer[0]; start != stop; start++)
             {
                 if (*start == cast(uint) handle)
                     return true;
@@ -208,7 +226,7 @@ else version (Posix)
         /**
          * Add a file descriptor to the set.
          */
-        public void add(IConduit.Handle handle)
+        public void add(ISelectable.Handle handle)
         {
             // If we added too many sockets we increment the size of the buffer
             if (cast(uint) handle >= BitsPerElement * _buffer.length)
@@ -221,7 +239,7 @@ else version (Posix)
         /**
          * Remove a file descriptor from the set.
          */
-        public void remove(IConduit.Handle handle)
+        public void remove(ISelectable.Handle handle)
         {
             btr(&_buffer[elementOffset(handle)], bitOffset(handle));
         }
@@ -244,7 +262,7 @@ else version (Posix)
         /**
          * Check whether the file descriptor has been set.
          */
-        public bool isSet(IConduit.Handle handle)
+        public bool isSet(ISelectable.Handle handle)
         {
             return (bt(&_buffer[elementOffset(handle)], bitOffset(handle)) != 0);
         }
@@ -261,7 +279,7 @@ else version (Posix)
         /**
          * Calculate the offset (in uints) of a file descriptor in the set.
          */
-        private static uint elementOffset(IConduit.Handle handle)
+        private static uint elementOffset(ISelectable.Handle handle)
         {
             return cast(uint) handle / BitsPerElement;
         }
@@ -269,7 +287,7 @@ else version (Posix)
         /**
          * Calculate the offset of the bit corresponding to a file descriptor in the set.
          */
-        private static uint bitOffset(IConduit.Handle handle)
+        private static uint bitOffset(ISelectable.Handle handle)
         {
             return cast(uint) handle % BitsPerElement;
         }
@@ -319,7 +337,7 @@ else version (Posix)
 public class SelectSelector: AbstractSelector
 {
     uint _size;
-    private SelectionKey[IConduit.Handle] _keys;
+    private SelectionKey[ISelectable.Handle] _keys;
     private HandleSet _readSet;
     private HandleSet _writeSet;
     private HandleSet _exceptionSet;
@@ -329,7 +347,7 @@ public class SelectSelector: AbstractSelector
     int _eventCount;
     version (Posix)
     {
-        private IConduit.Handle _maxfd = cast(IConduit.Handle) -1;
+        private ISelectable.Handle _maxfd = cast(ISelectable.Handle) -1;
     }
 
     /**
@@ -391,14 +409,14 @@ public class SelectSelector: AbstractSelector
      * selector.register(conduit, Event.Read | Event.Write, object);
      * ---
      */
-    public void register(IConduit conduit, Event events, Object attachment = null)
+    public void register(ISelectable conduit, Event events, Object attachment = null)
     in
     {
         assert(conduit !is null && conduit.fileHandle() >= 0);
     }
     body
     {
-        IConduit.Handle handle = conduit.fileHandle();
+        ISelectable.Handle handle = conduit.fileHandle();
 
         debug (selector)
             Stdout.format("--- SelectSelector.register(handle={0}, events=0x{1:x})\n",
@@ -481,14 +499,14 @@ public class SelectSelector: AbstractSelector
      * selector.reregister(conduit, Event.Write, object);
      * ---
      */
-    public void reregister(IConduit conduit, Event events, Object attachment = null)
+    public void reregister(ISelectable conduit, Event events, Object attachment = null)
     in
     {
         assert(conduit !is null && conduit.fileHandle() >= 0);
     }
     body
     {
-        IConduit.Handle handle = conduit.fileHandle();
+        ISelectable.Handle handle = conduit.fileHandle();
 
         debug (selector)
             Stdout.format("--- SelectSelector.reregister(handle={0}, events=0x{1:x})\n",
@@ -569,11 +587,11 @@ public class SelectSelector: AbstractSelector
      * UnregisteredConduitException if the conduit had not been previously
      * registered to the selector.
      */
-    public void unregister(IConduit conduit)
+    public void unregister(ISelectable conduit)
     {
         if (conduit !is null)
         {
-            IConduit.Handle handle = conduit.fileHandle();
+            ISelectable.Handle handle = conduit.fileHandle();
 
             debug (selector)
                 Stdout.format("--- SelectSelector.unregister(handle={0})\n",
@@ -703,7 +721,7 @@ public class SelectSelector: AbstractSelector
         else
         {
             // FIXME: Can a system call be interrupted on Windows?
-            _eventCount = .select(IConduit.Handle.max, writefds, exceptfds,
+            _eventCount = .select(ISelectable.Handle.max, readfds, writefds, exceptfds,
                                   (timeout != Interval.infinity ? toTimeval(&tv, timeout) : null));
             debug (selector)
                 Stdout.format("---   .select() returned {0}\n", _eventCount);
@@ -733,7 +751,7 @@ public class SelectSelector: AbstractSelector
      * If the conduit is not registered to the selector the returned
      * value will be null. No exception will be thrown by this method.
      */
-    public SelectionKey key(IConduit conduit)
+    public SelectionKey key(ISelectable conduit)
     {
         return (conduit !is null ? _keys[conduit.fileHandle()] : null);
     }
@@ -744,13 +762,13 @@ public class SelectSelector: AbstractSelector
  */
 private class SelectSelectionSet: ISelectionSet
 {
-    private SelectionKey[IConduit.Handle] _keys;
+    private SelectionKey[ISelectable.Handle] _keys;
     private uint _eventCount;
     private HandleSet _readSet;
     private HandleSet _writeSet;
     private HandleSet _exceptionSet;
 
-    protected this(SelectionKey[IConduit.Handle] keys, uint eventCount,
+    protected this(SelectionKey[ISelectable.Handle] keys, uint eventCount,
                    HandleSet readSet, HandleSet writeSet, HandleSet exceptionSet)
     {
         _keys = keys;
@@ -768,7 +786,7 @@ private class SelectSelectionSet: ISelectionSet
     public int opApply(int delegate(inout SelectionKey) dg)
     {
         int rc = 0;
-        IConduit.Handle handle;
+        ISelectable.Handle handle;
         Event events;
 
         debug (selector)
@@ -789,7 +807,7 @@ private class SelectSelectionSet: ISelectionSet
             if (_exceptionSet !is null && _exceptionSet.isSet(handle))
                 events |= Event.Error;
 
-            // Only invoke the delegate if there is an event for the IConduit.
+            // Only invoke the delegate if there is an event for the conduit.
             if (events != Event.None)
             {
                 current.events = events;

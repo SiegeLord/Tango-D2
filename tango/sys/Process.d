@@ -12,7 +12,6 @@ private import tango.io.Buffer;
 private import tango.sys.Common;
 private import tango.sys.Pipe;
 private import tango.text.convert.Format;
-private import tango.text.stream.SimpleIterator;
 private import tango.text.Util;
 
 private import tango.stdc.stdlib;
@@ -21,7 +20,7 @@ private import tango.stdc.stringz;
 
 version (Windows)
 {
-    private import tango.sys.win32.UserGdi;
+    private import tango.sys.Common;
 }
 else version (Posix)
 {
@@ -621,45 +620,61 @@ class Process
     {
         version (Windows)
         {
-            STARTUPINFOA startup;
-            char* envptr = null;
+            SECURITY_ATTRIBUTES sa;
+            STARTUPINFO         startup;
 
-            Pipe pin = new Pipe(DefaultStdinBufferSize);
-            Pipe pout = new Pipe(DefaultStdoutBufferSize);
-            Pipe perr = new Pipe(DefaultStderrBufferSize);
-            char[] command;
+            // Set up the security attributes struct.
+            sa.nLength = SECURITY_ATTRIBUTES.sizeof;
+            sa.lpSecurityDescriptor = null;
+            sa.bInheritHandle = true;
 
-            GetStartupInfoA(&startup);
+            // Set up members of the STARTUPINFO structure.
+            memset(&startup, '\0', STARTUPINFO.sizeof);
+            startup.cb = STARTUPINFO.sizeof;
+            startup.dwFlags |= STARTF_USESTDHANDLES;
 
+            // Create the pipes used to communicate with the child process.
+            Pipe pin = new Pipe(DefaultStdinBufferSize, &sa);
             // Replace stdin with the "read" pipe
             _stdin = pin.sink;
-            startup.hStdInput = cast(HANDLE) _stdin.fileHandle();
-            pin.source.close();
+            startup.hStdInput = cast(HANDLE) pin.source.fileHandle();
+            // Ensure the write handle to the pipe for STDIN is not inherited.
+            SetHandleInformation(cast(HANDLE) pin.sink.fileHandle(), HANDLE_FLAG_INHERIT, 0);
+            scope(exit)
+                pin.source.close();
 
+            Pipe pout = new Pipe(DefaultStdoutBufferSize, &sa);
             // Replace stdout with the "write" pipe
             _stdout = pout.source;
-            startup.hStdOutput = cast(HANDLE) _stdout.fileHandle();
-            pout.sink.close();
+            startup.hStdOutput = cast(HANDLE) pout.sink.fileHandle();
+            // Ensure the read handle to the pipe for STDOUT is not inherited.
+            SetHandleInformation(cast(HANDLE) pout.source.fileHandle(), HANDLE_FLAG_INHERIT, 0);
+            scope(exit)
+                pout.sink.close();
 
+            Pipe perr = new Pipe(DefaultStderrBufferSize, &sa);
             // Replace stderr with the "write" pipe
             _stderr = perr.source;
-            startup.hStdError = cast(HANDLE) _stderr.fileHandle();
-            perr.sink.close();
-
-            startup.dwFlags = STARTF_USESTDHANDLES;
+            startup.hStdError = cast(HANDLE) perr.sink.fileHandle();
+            // Ensure the read handle to the pipe for STDOUT is not inherited.
+            SetHandleInformation(cast(HANDLE) perr.source.fileHandle(), HANDLE_FLAG_INHERIT, 0);
+            scope(exit)
+                perr.sink.close();
 
             _info = new PROCESS_INFORMATION;
+            // Set up members of the PROCESS_INFORMATION structure.
+            memset(_info, '\0', PROCESS_INFORMATION.sizeof);
 
-            command = toUtf8();
+            char[] command = toUtf8();
             command ~= '\0';
             // Convert the the environment variables to the format expected
             // by CreateProcess().
-            envptr = toNullEndedBuffer(_env);
+            char* envptr = toNullEndedBuffer(_env).ptr;
 
             // Convert the working directory to a null-ended string if
             // necessary.
             if (CreateProcessA(null, command.ptr, null, null, true,
-                               DETACHED_PROCESS, envptr.ptr, toUtf8z(_workDir),
+                               DETACHED_PROCESS, envptr, toUtf8z(_workDir),
                                &startup, _info))
             {
                 CloseHandle(_info.hThread);
@@ -1000,7 +1015,7 @@ class Process
 
                     scope(exit)
                     {
-                        CloseHandle(info.hProcess);
+                        CloseHandle(_info.hProcess);
                         clean();
                     }
 
@@ -1236,7 +1251,7 @@ class Process
             {
                 dest[pos .. pos + str.length] = str;
                 pos += src.length;
-                envptr[pos++] = '\0';
+                dest[pos++] = '\0';
             }
 
             return dest;
@@ -1311,15 +1326,9 @@ class Process
             if (!contains(filename, FileConst.PathSeparatorChar) &&
                 (str = getenv("PATH")) !is null)
             {
-                char[]  envPath = str[0 .. strlen(str)];
-                char[]  path;
+                char[][] pathList = delimit(str[0 .. strlen(str)], ":");
 
-                // Preallocate the buffer we'll use to hold the file's
-                // absolute path.
-                path.length = 64 + filename.length;
-                path.length = 0;
-
-                foreach (path; new SimpleIterator!(char)( new Buffer(envPath), ":"))
+                foreach (path; pathList)
                 {
                     if (path[path.length - 1] != FileConst.PathSeparatorChar)
                     {
@@ -1352,7 +1361,7 @@ class Process
  */
 class ProcessException: Exception
 {
-    protected this(char[] msg, pid_t pid)
+    protected this(char[] msg, int pid)
     {
         super(Formatter.convert(msg, pid, SysError.lastMsg));
     }
@@ -1381,7 +1390,7 @@ class ProcessCreateException: ProcessException
  */
 class ProcessForkException: ProcessException
 {
-    public this(pid_t pid, char[] file, uint line)
+    public this(int pid, char[] file, uint line)
     {
         super("Could not fork process {0}: {1}", pid);
     }
@@ -1392,7 +1401,7 @@ class ProcessForkException: ProcessException
  */
 class ProcessKillException: ProcessException
 {
-    public this(pid_t pid, char[] file, uint line)
+    public this(int pid, char[] file, uint line)
     {
         super("Could not kill process {0}: {1}", pid);
     }
@@ -1404,7 +1413,7 @@ class ProcessKillException: ProcessException
  */
 class ProcessWaitException: ProcessException
 {
-    public this(pid_t pid, char[] file, uint line)
+    public this(int pid, char[] file, uint line)
     {
         super("Could not wait on process {0}: {1}", pid);
     }

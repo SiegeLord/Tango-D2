@@ -16,7 +16,7 @@ private import tango.text.stream.LineIterator;
 void main()
 {
     version (Windows)
-        char[] command = "dir";
+        char[] command = "cmd.exe /c dir";
     else version (Posix)
         char[] command = "ls -l";
     else
