@@ -3,14 +3,12 @@ Thank you for using Tango!
 You should be able to start using Tango immediately , with examples in INSTALLDIR/tango/examples.
 
 Documentation can be found at http://dsource.org/projects/tango.
-
 Tango Contributors 
-
 Reference Manual 
 
     * John Reimer
     * Don Clugston
-    * Charles
+    * Charles Sanders
     * Frank Benoit
     * Michael Parker
     * Benjamin Shropshire
@@ -23,7 +21,7 @@ API Documentation
 Tutorials 
 
     * Lars Ivar Igesund
-    * Charles
+    * Charles Sanders
     * Sean Kelly
     * Benjamin Shropshire
     * Michael Parker
@@ -38,7 +36,8 @@ Web Design and Presentation
 
     * Victor: CandyDoc for API documentation
     * Tomasz Stachowiak: syntax highlighting for documentation
-    * Eric Anderton: TracForums plugin and macros 
+    * Eric Anderton: TracForums plugin and macros
+    * Brad Anderson: CSS and other presentation concerns 
 
 Systems Administration 
 
@@ -49,7 +48,7 @@ Reviewing and Testing
     * Tomasz Stachowiak
     * Brad Roberts
     * John Reimer
-    * Charles
+    * Charles Sanders
     * Frank Benoit
     * Gregor Richards
     * Alexander Panek
@@ -75,14 +74,13 @@ Library Code
     * Sean Kelly: contributed the core runtime support
     * Kris Bell: contributed the base library
     * Lars Ivar Igesund: Tidbits
-    * John Chapman: tango.text.locale package
-    * Juan Jose Comellas: IO-selector and Process packages
-    * Chris Miller: socket bindings
-    * UWB: Initial tango.net.ftp package
-    * Regan Heath: tango.math.cipher package
-    * Eric Anderton: principal developer on DDL
+    * John Chapman: Locale-aware formatting package
+    * Juan Jose Comellas: Selector and Process packages
+    * Chris Miller: Socket bindings
+    * UWB: Initial ftp package
+    * Oskar Linde & Regan Heath: Crypto package
     * Don Clugston: Math and template magic
-    * Mikola: Threading functionality
+    * Mikola Lysenko: Stack threads
     * Dalibor Frivaldsky: Linux implementations
     * Alexander Panek: Compile fixes 
 
@@ -90,7 +88,7 @@ Installation scripting
 
     * Gregor Richards
     * Alexander Panek
-    * Charles 
+    * Charles Sanders 
 
 Support Code 
 
@@ -99,9 +97,9 @@ Support Code
 
 Adopted Code 
 
-    * From Doug Lea, who donates very high quality code to the public-domain 
-
+    * From Doug Lea, who donates very high quality code to the public-domain
     * From David Gay; author of the awesome & inscrutable dtoa C module
     * From Stephen L. Moshier, author of the extensive CEPHES library of mathematical functions
     * From Bob Jenkins, who created simply the best hash function around
     * and Walter Bright 
+
