@@ -60,9 +60,9 @@ version( Win32 )
     const ENOTEMPTY         = 41;       // Directory not empty
     const EILSEQ            = 42;       // Illegal byte sequence
     const EDEADLOCK         = EDEADLK;
- }
- else version( linux )
- {
+}
+else version( linux )
+{
     const EPERM             = 1;        // Operation not permitted
     const ENOENT            = 2;        // No such file or directory
     const ESRCH             = 3;        // No such process
@@ -194,4 +194,87 @@ version( Win32 )
     const EKEYREJECTED      = 129;      // Key was rejected by service
     const EOWNERDEAD        = 130;      // Owner died
     const ENOTRECOVERABLE   = 131;      // State not recoverable
+}
+else version( darwin )
+{
+    const EPERM             = 1;        // Operation not permitted
+    const ENOENT            = 2;        // No such file or directory
+    const ESRCH             = 3;        // No such process
+    const EINTR             = 4;        // Interrupted system call
+    const EIO               = 5;        // Input/output error
+    const ENXIO             = 6;        // Device not configured
+    const E2BIG             = 7;        // Argument list too long
+    const ENOEXEC           = 8;        // Exec format error
+    const EBADF             = 9;        // Bad file descriptor
+    const ECHILD            = 10;       // No child processes
+    const EDEADLK           = 11;       // Resource deadlock avoided
+    const ENOMEM            = 12;       // Cannot allocate memory
+    const EACCES            = 13;       // Permission denied
+    const EFAULT            = 14;       // Bad address
+    const EBUSY             = 16;       // Device busy
+    const EEXIST            = 17;       // File exists
+    const EXDEV             = 18;       // Cross-device link
+    const ENODEV            = 19;       // Operation not supported by device
+    const ENOTDIR           = 20;       // Not a directory
+    const EISDIR            = 21;       // Is a directory
+    const EINVAL            = 22;       // Invalid argument
+    const ENFILE            = 23;       // Too many open files in system
+    const EMFILE            = 24;       // Too many open files
+    const ENOTTY            = 25;       // Inappropriate ioctl for device
+    const ETXTBSY           = 26;       // Text file busy
+    const EFBIG             = 27;       // File too large
+    const ENOSPC            = 28;       // No space left on device
+    const ESPIPE            = 29;       // Illegal seek
+    const EROFS             = 30;       // Read-only file system
+    const EMLINK            = 31;       // Too many links
+    const EPIPE             = 32;       // Broken pipe
+    const EDOM              = 33;       // Numerical argument out of domain
+    const ERANGE            = 34;       // Result too large
+    const EAGAIN            = 35;       // Resource temporarily unavailable
+    const EWOULDBLOCK       = EAGAIN;   // Operation would block
+    const EINPROGRESS       = 36;       // Operation now in progress
+    const EALREADY          = 37;       // Operation already in progress
+    const ENOTSOCK          = 38;       // Socket operation on non-socket
+    const EDESTADDRREQ      = 39;       // Destination address required
+    const EMSGSIZE          = 40;       // Message too long
+    const EPROTOTYPE        = 41;       // Protocol wrong type for socket
+    const ENOPROTOOPT       = 42;       // Protocol not available
+    const EPROTONOSUPPORT   = 43;       // Protocol not supported
+    const ENOTSUP           = 45;       // Operation not supported
+    const EOPNOTSUPP        = ENOTSUP;  // Operation not supported on socket
+    const EAFNOSUPPORT      = 47;       // Address family not supported by protocol family
+    const EADDRINUSE        = 48;       // Address already in use
+    const EADDRNOTAVAIL     = 49;       // Can't assign requested address
+    const ENETDOWN          = 50;       // Network is down
+    const ENETUNREACH       = 51;       // Network is unreachable
+    const ENETRESET         = 52;       // Network dropped connection on reset
+    const ECONNABORTED      = 53;       // Software caused connection abort
+    const ECONNRESET        = 54;       // Connection reset by peer
+    const ENOBUFS           = 55;       // No buffer space available
+    const EISCONN           = 56;       // Socket is already connected
+    const ENOTCONN          = 57;       // Socket is not connected
+    const ETIMEDOUT         = 60;       // Operation timed out
+    const ECONNREFUSED      = 61;       // Connection refused
+    const ELOOP             = 62;       // Too many levels of symbolic links
+    const ENAMETOOLONG      = 63;       // File name too long
+    const EHOSTUNREACH      = 65;       // No route to host
+    const ENOTEMPTY         = 66;       // Directory not empty
+    const EDQUOT            = 69;       // Disc quota exceeded
+    const ESTALE            = 70;       // Stale NFS file handle
+    const ENOLCK            = 77;       // No locks available
+    const ENOSYS            = 78;       // Function not implemented
+    const EOVERFLOW         = 84;       // Value too large to be stored in data type
+    const ECANCELED         = 89;       // Operation canceled
+    const EIDRM             = 90;       // Identifier removed
+    const ENOMSG            = 91;       // No message of desired type
+    const EILSEQ            = 92;       // Illegal byte sequence
+    const EBADMSG           = 94;       // Bad message
+    const EMULTIHOP         = 95;       // Reserved
+    const ENODATA           = 96;       // No message available on STREAM
+    const ENOLINK           = 97;       // Reserved
+    const ENOSR             = 98;       // No STREAM resources
+    const ENOSTR            = 99;       // Not a STREAM
+    const EPROTO            = 100;      // Protocol error
+    const ETIME             = 101;      // STREAM ioctl timeout
+    const ELAST             = 101;      // Must be equal largest errno
 }

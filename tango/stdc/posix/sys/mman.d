@@ -130,6 +130,8 @@ else version( darwin )
     const MS_ASYNC      = 0x0001;
     const MS_INVALIDATE = 0x0002;
     const MS_SYNC       = 0x0010;
+
+    int	msync(void*, size_t, int);
 }
 
 //
