@@ -11,7 +11,7 @@ module tango.core.Exception;
 
 private
 {
-    alias void function( char[] file, uint line, char[] msg = null ) assertHandlerType;
+    alias void function( char[] file, size_t line, char[] msg = null ) assertHandlerType;
     alias bool function( Object obj ) collectHandlerType;
 
     assertHandlerType   assertHandler   = null;
@@ -425,7 +425,7 @@ void setCollectHandler( collectHandlerType h )
  *  file = The name of the file that signaled this error.
  *  line = The line number on which this error occurred.
  */
-extern (C) void onAssertError( char[] file, uint line )
+extern (C) void onAssertError( char[] file, size_t line )
 {
     if( assertHandler is null )
         throw new AssertException( file, line );
@@ -443,7 +443,7 @@ extern (C) void onAssertError( char[] file, uint line )
  *  line = The line number on which this error occurred.
  *  msg  = An error message supplied by the user.
  */
-extern (C) void onAssertErrorMsg( char[] file, uint line, char[] msg )
+extern (C) void onAssertErrorMsg( char[] file, size_t line, char[] msg )
 {
     if( assertHandler is null )
         throw new AssertException( msg, file, line );

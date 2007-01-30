@@ -42,10 +42,10 @@ extern (C) void _moduleUnitTests();
  * These functions must be defined for any D program linked
  * against this library.
  */
-extern (C) void onAssertError( char[] file, uint line );
-extern (C) void onAssertErrorMsg( char[] file, uint line, char[] msg );
-extern (C) void onArrayBoundsError( char[] file, uint line );
-extern (C) void onSwitchError( char[] file, uint line );
+extern (C) void onAssertError( char[] file, size_t line );
+extern (C) void onAssertErrorMsg( char[] file, size_t line, char[] msg );
+extern (C) void onArrayBoundsError( char[] file, size_t line );
+extern (C) void onSwitchError( char[] file, size_t line );
 
 // this function is called from the utf module
 //extern (C) void onUnicodeError( char[] msg, size_t idx );
