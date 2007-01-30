@@ -1357,7 +1357,7 @@ class UniString
 
 debug (UnitTest)
 {
-        void main() {}
+        // void main() {}
         unittest
         {
         auto s = new String!(char)("hello");

@@ -222,7 +222,7 @@ debug (UnitTest) {
     import tango.io.Stdout; 
     import Integer = tango.text.convert.Integer;
 
-    void main() {}
+    //void main() {}
 
 unittest {
 
