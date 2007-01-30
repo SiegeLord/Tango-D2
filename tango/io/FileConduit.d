@@ -24,6 +24,8 @@ public  import  tango.io.DeviceConduit;
 
 private import  Utf = tango.text.convert.Utf;
 
+private import tango.stdc.posix.fcntl;
+
 /*******************************************************************************
 
         Other O/S functions

@@ -196,6 +196,8 @@ version( linux )
 }
 else version( darwin )
 {
+    extern c_long timezone;
+
     tm*   getdate(char *);
     char* strptime(char*, char*, tm*);
 }

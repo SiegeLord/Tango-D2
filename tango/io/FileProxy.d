@@ -3,9 +3,9 @@
         copyright:      Copyright (c) 2004 Kris Bell. All rights reserved
 
         license:        BSD style: $(LICENSE)
-                        
-        version:        Initial release: March 2004      
-        
+
+        version:        Initial release: March 2004
+
         author:         $(UL Kris)
                         $(UL Brad Anderson)
                         $(UL teqdruid)
@@ -58,48 +58,17 @@ version (Posix)
         private import tango.stdc.stdio;
         private import tango.stdc.string;
         private import tango.stdc.posix.dirent;
-
-        version (darwin)
-                {
-                // missing from tango.stdc.darwin.darwin in GDC 0.9 :
-
-                alias long off_t;
-
-                extern (C)
-                       {
-                       struct  dirent
-                               {
-                               int      d_ino;
-                               off_t    d_off;
-                               ushort   d_reclen;
-                               ubyte    d_type;
-                               char[256] d_name;
-                               }
-
-                       struct DIR
-                             {
-                             // Managed by OS.
-                             }
-
-                       DIR* opendir(char* name);
-                       int closedir(DIR* dir);
-                       dirent* readdir(DIR* dir);
-                       void rewinddir(DIR* dir);
-                       off_t telldir(DIR* dir);
-                       void seekdir(DIR* dir, off_t offset);
-                       }
-                }
         }
 
 
 /*******************************************************************************
 
         Models a generic file. Use this to manipulate files and directories
-        in conjunction with FilePath, FileSystem and FileConduit. 
+        in conjunction with FilePath, FileSystem and FileConduit.
 
         Compile with -version=Win32SansUnicode to enable Win95 & Win32s file
         support.
-        
+
 *******************************************************************************/
 
 class FileProxy
@@ -107,18 +76,18 @@ class FileProxy
         private FilePath path;
 
         /***********************************************************************
-        
+
                 Construct a FileProxy from the provided FilePath
 
         ***********************************************************************/
-                                  
+
         this (FilePath path)
         {
                 this.path = path;
         }
 
         /***********************************************************************
-        
+
                 Construct a FileProxy from a text string
 
         ***********************************************************************/
@@ -129,7 +98,7 @@ class FileProxy
         }
 
         /***********************************************************************
-        
+
                 Return the FilePath associated with this FileProxy
 
         ***********************************************************************/
@@ -137,10 +106,10 @@ class FileProxy
         FilePath getPath ()
         {
                 return path;
-        }               
+        }
 
         /***********************************************************************
-        
+
                 Return the name of the associated path
 
         ***********************************************************************/
@@ -148,32 +117,32 @@ class FileProxy
         char[] toUtf8 ()
         {
                 return path.toUtf8;
-        }               
+        }
 
         /***********************************************************************
-        
+
                 Does this path currently exist?
 
         ***********************************************************************/
 
-        bool isExisting ()               
+        bool isExisting ()
         {
                 try {
                     getSize();
                     return true;
                     } catch (IOException){}
                 return false;
-        }            
+        }
 
         /***********************************************************************
-                                
+
                 List the set of filenames within this directory. All
                 filenames are null terminated, though the null itself
                 is hidden at the end of each name (not exposed by the
                 length property)
 
                 Each filename includes the parent prefix
-                        
+
         ***********************************************************************/
 
         char[][] toList ()
@@ -216,7 +185,7 @@ class FileProxy
                 // have to convert the filepath to utf16
                 private wchar[]         widepath;
                 private wchar[MAX_PATH] widepathsink = void;
-                
+
                 /***************************************************************
 
                         Cache a wchar[] instance of the filepath
@@ -261,12 +230,12 @@ class FileProxy
                 private DWORD getFlags ()
                 {
                         WIN32_FILE_ATTRIBUTE_DATA info;
-                        
+
                         return getInfo (info);
                 }
 
                 /***************************************************************
-                        
+
                         Return the file length (in bytes)
 
                 ***************************************************************/
@@ -274,9 +243,9 @@ class FileProxy
                 ulong getSize ()
                 {
                         WIN32_FILE_ATTRIBUTE_DATA info;
-                        
+
                         getInfo (info);
-                        return (cast(ulong) info.nFileSizeHigh << 32) + 
+                        return (cast(ulong) info.nFileSizeHigh << 32) +
                                             info.nFileSizeLow;
                 }
 
@@ -286,10 +255,10 @@ class FileProxy
 
                 ***************************************************************/
 
-                bool isWritable ()               
+                bool isWritable ()
                 {
                         return (getFlags & FILE_ATTRIBUTE_READONLY) == 0;
-                }            
+                }
 
                 /***************************************************************
 
@@ -297,10 +266,10 @@ class FileProxy
 
                 ***************************************************************/
 
-                bool isDirectory ()               
+                bool isDirectory ()
                 {
                         return (getFlags & FILE_ATTRIBUTE_DIRECTORY) != 0;
-                }            
+                }
 
                 /***************************************************************
 
@@ -313,9 +282,9 @@ class FileProxy
                         WIN32_FILE_ATTRIBUTE_DATA info;
 
                         getInfo (info);
-                        return (cast(ulong) info.ftLastWriteTime.dwHighDateTime << 32) + 
+                        return (cast(ulong) info.ftLastWriteTime.dwHighDateTime << 32) +
                                             info.ftLastWriteTime.dwLowDateTime;
-                }               
+                }
 
                 /***************************************************************
 
@@ -326,11 +295,11 @@ class FileProxy
                 ulong getAccessedTime ()
                 {
                         WIN32_FILE_ATTRIBUTE_DATA info;
-                        
+
                         getInfo (info);
-                        return (cast(ulong) info.ftLastAccessTime.dwHighDateTime << 32) + 
+                        return (cast(ulong) info.ftLastAccessTime.dwHighDateTime << 32) +
                                             info.ftLastAccessTime.dwLowDateTime;
-                }               
+                }
 
                 /***************************************************************
 
@@ -341,11 +310,11 @@ class FileProxy
                 ulong getCreatedTime ()
                 {
                         WIN32_FILE_ATTRIBUTE_DATA info;
-                        
+
                         getInfo (info);
-                        return (cast(ulong) info.ftCreationTime.dwHighDateTime << 32) + 
+                        return (cast(ulong) info.ftCreationTime.dwHighDateTime << 32) +
                                             info.ftCreationTime.dwLowDateTime;
-                }               
+                }
 
                 /***************************************************************
 
@@ -381,7 +350,7 @@ class FileProxy
                                    }
 
                         return this;
-                }           
+                }
 
                 /***************************************************************
 
@@ -392,7 +361,7 @@ class FileProxy
 
                 FileProxy rename (FilePath dst)
                 {
-                        const int Typical = REPLACE_EXISTING + COPY_ALLOWED + 
+                        const int Typical = REPLACE_EXISTING + COPY_ALLOWED +
                                                                WRITE_THROUGH;
 
                         int result;
@@ -411,7 +380,7 @@ class FileProxy
 
                 /***************************************************************
 
-                        Create a new file 
+                        Create a new file
 
                 ***************************************************************/
 
@@ -420,12 +389,12 @@ class FileProxy
                         HANDLE h;
 
                         version (Win32SansUnicode)
-                                 h = CreateFileA (path.cString.ptr, GENERIC_WRITE, 
-                                                  0, null, CREATE_ALWAYS, 
+                                 h = CreateFileA (path.cString.ptr, GENERIC_WRITE,
+                                                  0, null, CREATE_ALWAYS,
                                                   FILE_ATTRIBUTE_NORMAL, cast(HANDLE) 0);
                              else
-                                h = CreateFileW (name16.ptr, GENERIC_WRITE, 
-                                                 0, null, CREATE_ALWAYS, 
+                                h = CreateFileW (name16.ptr, GENERIC_WRITE,
+                                                 0, null, CREATE_ALWAYS,
                                                  FILE_ATTRIBUTE_NORMAL, cast(HANDLE) 0);
 
                         if (h == INVALID_HANDLE_VALUE)
@@ -459,14 +428,14 @@ class FileProxy
                 }
 
                 /***************************************************************
-                        
-                        List the set of filenames within this directory. 
-                        
-                        All filenames are null terminated and are passed 
-                        to the provided delegate as such, along with the 
-                        path prefix and whether the entry is a directory 
+
+                        List the set of filenames within this directory.
+
+                        All filenames are null terminated and are passed
+                        to the provided delegate as such, along with the
+                        path prefix and whether the entry is a directory
                         or not.
-                        
+
                 ***************************************************************/
 
                 void toList (void delegate (char[], char[], bool) dg)
@@ -490,7 +459,7 @@ class FileProxy
                                     return s ~ "\\" ~ ext;
                                 return s ~ ext;
                         }
-                                
+
                         version (Win32SansUnicode)
                                  h = FindFirstFileA (padded(path.toUtf8, "*\0").ptr, &fileinfo);
                              else
@@ -501,7 +470,7 @@ class FileProxy
 
                         scope (exit)
                                FindClose (h);
-                        
+
                         prefix = FilePath.asPadded(path.toUtf8);
                         do {
                            version (Win32SansUnicode)
@@ -525,7 +494,7 @@ class FileProxy
                 }
         }
 
-                
+
         /***********************************************************************
 
         ***********************************************************************/
@@ -544,7 +513,7 @@ class FileProxy
                             exception;
 
                         return stats.st_mode;
-                }               
+                }
 
                 /***************************************************************
 
@@ -566,12 +535,12 @@ class FileProxy
 
                 ***************************************************************/
 
-                bool isWritable ()               
+                bool isWritable ()
                 {
                         stat_t stats;
 
                         return (getInfo(stats) & O_RDONLY) == 0;
-                }            
+                }
 
                 /***************************************************************
 
@@ -579,12 +548,12 @@ class FileProxy
 
                 ***************************************************************/
 
-                bool isDirectory ()               
+                bool isDirectory ()
                 {
                         stat_t stats;
 
                         return (getInfo(stats) & S_IFDIR) != 0;
-                }            
+                }
 
                 /***************************************************************
 
@@ -598,7 +567,7 @@ class FileProxy
 
                         getInfo (stats);
                         return cast(ulong) stats.st_mtime;
-                }               
+                }
 
                 /***************************************************************
 
@@ -612,7 +581,7 @@ class FileProxy
 
                         getInfo (stats);
                         return cast(ulong) stats.st_atime;
-                }               
+                }
 
                 /***************************************************************
 
@@ -626,7 +595,7 @@ class FileProxy
 
                         getInfo (stats);
                         return cast(ulong) stats.st_ctime;
-                }               
+                }
 
                 /***************************************************************
 
@@ -641,12 +610,12 @@ class FileProxy
                            if (posix.rmdir (path.cString.ptr))
                                exception;
                            }
-                        else           
+                        else
                            if (tango.stdc.stdio.remove (path.cString.ptr) == -1)
                                exception;
 
                         return this;
-                }              
+                }
 
                 /***************************************************************
 
@@ -666,7 +635,7 @@ class FileProxy
 
                 /***************************************************************
 
-                        Create a new file 
+                        Create a new file
 
                 ***************************************************************/
 
@@ -682,7 +651,7 @@ class FileProxy
                             exception;
 
                         return this;
-                }              
+                }
 
                 /***************************************************************
 
@@ -699,14 +668,14 @@ class FileProxy
                 }
 
                 /***************************************************************
-                
-                        List the set of filenames within this directory. 
-                        
-                        All filenames are null terminated and are passed 
-                        to the provided delegate as such, along with the 
-                        path prefix and whether the entry is a directory 
+
+                        List the set of filenames within this directory.
+
+                        All filenames are null terminated and are passed
+                        to the provided delegate as such, along with the
+                        path prefix and whether the entry is a directory
                         or not.
-                        
+
                 ***************************************************************/
 
                 void toList (void delegate (char[], char[], bool) dg)
@@ -716,20 +685,20 @@ class FileProxy
                         char[]          prefix;
 
                         dir = tango.stdc.posix.dirent.opendir (path.cString.ptr);
-                        if (! dir) 
+                        if (! dir)
                               exception;
 
                         scope (exit)
                                tango.stdc.posix.dirent.closedir (dir);
 
                         prefix = FilePath.asPadded (path.toUtf8);
-                        
+
                         while ((entry = tango.stdc.posix.dirent.readdir(dir)) != null)
                               {
                               // ensure we include the terminating null ...
                               auto len = tango.stdc.string.strlen (entry.d_name.ptr)+1;
                               auto str = entry.d_name.ptr [0 .. len];
-                
+
                               dg (prefix, str, entry.d_type is DT_DIR);
                               }
                 }

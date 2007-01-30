@@ -87,37 +87,52 @@ version( linux )
      + GNU ASM Implementation
      +
     # define __FD_ZERO(fdsp) \
-      do {									      \
-        int __d0, __d1;							      \
-        __asm__ __volatile__ ("cld; rep; stosl"				      \
-    			  : "=c" (__d0), "=D" (__d1)			      \
-    			  : "a" (0), "0" (sizeof (fd_set)		      \
-    					  / sizeof (__fd_mask)),	      \
-    			    "1" (&__FDS_BITS (fdsp)[0])			      \
-    			  : "memory");					      \
+      do {                                        \
+        int __d0, __d1;                               \
+        __asm__ __volatile__ ("cld; rep; stosl"                   \
+                  : "=c" (__d0), "=D" (__d1)                  \
+                  : "a" (0), "0" (sizeof (fd_set)             \
+                          / sizeof (__fd_mask)),          \
+                    "1" (&__FDS_BITS (fdsp)[0])               \
+                  : "memory");                        \
       } while (0)
 
     # define __FD_SET(fd, fdsp) \
-      __asm__ __volatile__ ("btsl %1,%0"					      \
-    			: "=m" (__FDS_BITS (fdsp)[__FDELT (fd)])	      \
-    			: "r" (((int) (fd)) % __NFDBITS)		      \
-    			: "cc","memory")
+      __asm__ __volatile__ ("btsl %1,%0"                          \
+                : "=m" (__FDS_BITS (fdsp)[__FDELT (fd)])          \
+                : "r" (((int) (fd)) % __NFDBITS)              \
+                : "cc","memory")
     # define __FD_CLR(fd, fdsp) \
-      __asm__ __volatile__ ("btrl %1,%0"					      \
-    			: "=m" (__FDS_BITS (fdsp)[__FDELT (fd)])	      \
-    			: "r" (((int) (fd)) % __NFDBITS)		      \
-    			: "cc","memory")
+      __asm__ __volatile__ ("btrl %1,%0"                          \
+                : "=m" (__FDS_BITS (fdsp)[__FDELT (fd)])          \
+                : "r" (((int) (fd)) % __NFDBITS)              \
+                : "cc","memory")
     # define __FD_ISSET(fd, fdsp) \
-      (__extension__							      \
-       ({register char __result;						      \
-         __asm__ __volatile__ ("btl %1,%2 ; setcb %b0"			      \
-    			   : "=q" (__result)				      \
-    			   : "r" (((int) (fd)) % __NFDBITS),		      \
-    			     "m" (__FDS_BITS (fdsp)[__FDELT (fd)])	      \
-    			   : "cc");					      \
+      (__extension__                                  \
+       ({register char __result;                              \
+         __asm__ __volatile__ ("btl %1,%2 ; setcb %b0"                \
+                   : "=q" (__result)                      \
+                   : "r" (((int) (fd)) % __NFDBITS),              \
+                     "m" (__FDS_BITS (fdsp)[__FDELT (fd)])        \
+                   : "cc");                       \
          __result; }))
      +/
 
     int pselect(int, fd_set*, fd_set*, fd_set*, timespec*, sigset_t*);
     int select(int, fd_set*, fd_set*, fd_set*, timeval*);
+}
+else version( darwin )
+{
+    private
+    {
+        const uint __DARWIN_NBBY = 8;                               /* bits in a byte */
+        const uint __DARWIN_NFDBITS = (int.sizeof * __DARWIN_NBBY); /* bits per mask */
+    }
+
+    const FD_SETSIZE = 1024;
+
+    struct fd_set
+    {
+        int fds_bits[(((FD_SETSIZE) + ((__DARWIN_NFDBITS) - 1)) / (__DARWIN_NFDBITS))];
+    }
 }

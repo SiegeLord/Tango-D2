@@ -65,3 +65,29 @@ version( linux )
     int setitimer(int, itimerval*, itimerval*);
     int utimes(char*, timeval[2]); // LEGACY
 }
+else version( darwin )
+{
+    struct timeval
+    {
+        time_t      tv_sec;
+        suseconds_t tv_usec;
+    }
+
+    struct itimerval
+    {
+        timeval it_interval;
+        timeval it_value;
+    }
+
+    struct timezone_s
+    {
+        int tz_minuteswest;
+        int tz_dsttime;
+    }
+
+    int getitimer(int, itimerval*);
+    int gettimeofday(timeval*, timezone_s*);
+    int select(int, fd_set*, fd_set*, fd_set*, timeval*);
+    int setitimer(int, itimerval*, itimerval*);
+    int utimes(char*, timeval*);
+}

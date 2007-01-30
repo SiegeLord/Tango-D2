@@ -79,6 +79,25 @@ version( linux )
     dirent* readdir(DIR*);
   }
 }
+else version (darwin)
+{
+    align(4)
+    struct dirent
+    {
+    	ino_t       d_ino;
+    	ushort      d_reclen;
+    	ubyte       d_type;
+    	ubyte       d_namlen;
+    	char[256]   d_name;
+    }
+
+    struct DIR
+    {
+        // Managed by OS
+    }
+
+    dirent* readdir(DIR*);
+}
 else
 {
     dirent* readdir(DIR*);
