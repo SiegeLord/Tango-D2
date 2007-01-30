@@ -23,7 +23,8 @@ version( Win32 )
     extern (Windows) wchar_t*   GetCommandLineW();
     extern (Windows) wchar_t**  CommandLineToArgvW(wchar_t*, int*);
     extern (Windows) export int WideCharToMultiByte(uint, uint, wchar_t*, int, char*, int, char*, int);
-    pragma(lib, "shell32.lib"); // needed for CommandLineToArgvW
+    pragma(lib, "shell32.lib");   // needed for CommandLineToArgvW
+    pragma(lib, "usergdi32.lib"); // links Tango's Win32 library to reduce EXE size
 }
 
 extern (C) void _STI_monitor_staticctor();

@@ -68,16 +68,9 @@ OBJ_CORE= \
 OBJ_STDC= \
     stdc\wrap.obj
 
-OBJ_SYS_WIN32= \
-    sys\win32\Macros.obj \
-    sys\win32\Process.obj \
-    sys\win32\Types.obj \
-    sys\win32\UserGdi.obj
-
 ALL_OBJS= \
     $(OBJ_CORE) \
-    $(OBJ_STDC) \
-    $(OBJ_SYS_WIN32)
+    $(OBJ_STDC)
 
 ######################################################
 
@@ -99,25 +92,10 @@ tango.doc : $(ALL_DOCS)
 
 ######################################################
 
-### sys\win32
+### config
 
-# NOTE: sys\win32 is only present in this library because linking a lib file
-#       under DMD/Win32 results in a much smaller executable than linking
-#       each object separately with a tool like Bud.  This should be
-#       periodically re-evaluated to determine whether this workaround may
-#       be eliminated.
-
-sys\win32\Macros.obj : sys\win32\Macros.d
-	$(DC) -c $(DFLAGS) sys\win32\Macros.d -of$@
-
-sys\win32\Process.obj : sys\win32\Process.d
-	$(DC) -c $(DFLAGS) sys\win32\Process.d -of$@
-
-sys\win32\Types.obj : sys\win32\Types.d
-	$(DC) -c $(DFLAGS) sys\win32\Types.d -of$@
-
-sys\win32\UserGdi.obj : sys\win32\UserGdi.d
-	$(DC) -c $(DFLAGS) sys\win32\UserGdi.d -of$@
+# config.obj : config.d
+#	$(DC) -c $(DFLAGS) config.d -of$@
 
 ######################################################
 
