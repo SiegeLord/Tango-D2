@@ -146,7 +146,7 @@ begin
 	then begin
 		if ( FileExists(DMDRootLocation('') + 'lib\dmd_phobos.lib') ) = False
 		then begin
-			MsgBox('Could not locate phobos.lib , or dmd_phobos.lib already exists.', mbConfirmation, MB_OK);
+			MsgBox('Could not locate phobos.lib , reverting will be unavailable.', mbConfirmation, MB_OK);
 		end
 	end;
 
@@ -564,4 +564,3 @@ procedure InitializeWizard();
 begin
   TangoOptions_CreatePage(wpWelcome);
 end;
-
