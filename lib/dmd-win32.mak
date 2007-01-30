@@ -38,11 +38,11 @@ lib : $(ALL_OBJS)
 	cd gc\basic
 	make -fwin32.mak lib
 	cd ..\..
-	cd common
+	cd common\tango
 	make -fwin32.mak lib
-	cd ..
+	cd ..\..
 	$(RM) phobos*.lib
-	$(LC) -c -n phobos.lib common\tango.lib compiler\dmd\dmd.lib gc\basic\basic.lib
+	$(LC) -c -n phobos.lib common\tango\tango.lib compiler\dmd\dmd.lib gc\basic\basic.lib
 
 doc : $(ALL_DOCS)
 	cd compiler\dmd
@@ -51,9 +51,9 @@ doc : $(ALL_DOCS)
 	cd gc\basic
 	make -fwin32.mak doc
 	cd ..\..
-	cd common
+	cd common\tango
 	make -fwin32.mak doc
-	cd ..
+	cd ..\..
 
 ######################################################
 
@@ -67,9 +67,9 @@ clean :
 	cd gc\basic
 	make -fwin32.mak clean
 	cd ..\..
-	cd common
+	cd common\tango
 	make -fwin32.mak clean
-	cd ..
+	cd ..\..
 #	$(RM) phobos*.lib
 
 install :
@@ -79,7 +79,7 @@ install :
 	cd gc\basic
 	make -fwin32.mak install
 	cd ..\..
-	cd common
+	cd common\tango
 	make -fwin32.mak install
-	cd ..
+	cd ..\..
 #	$(CP) phobos*.lib $(LIB_DEST)\.

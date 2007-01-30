@@ -18,6 +18,9 @@ public
 }
 private
 {
+    import tango.core.Exception;
+
+
     //
     // exposed by compiler runtime
     //
@@ -331,23 +334,6 @@ else
     //       places where version-specific code may be required.  This can be
     //       easily accomlished by searching for 'Windows' or 'Posix'.
     static assert( false, "Unknown threading implementation." );
-}
-
-
-////////////////////////////////////////////////////////////////////////////////
-// Thread Exception
-////////////////////////////////////////////////////////////////////////////////
-
-
-/**
- * All exceptions thrown from the Thread class derive from this class.
- */
-class ThreadException : Exception
-{
-    this( char[] msg )
-    {
-        super( msg );
-    }
 }
 
 
@@ -2158,23 +2144,6 @@ private
             if( !sigsetjmp( *(cast(sigjmp_buf*) oldp), 0 ) )
                 siglongjmp( *(cast(sigjmp_buf*) newp), 1 );
         }
-    }
-}
-
-
-////////////////////////////////////////////////////////////////////////////////
-// Fiber Exception
-////////////////////////////////////////////////////////////////////////////////
-
-
-/**
- * All exceptions thrown from the Fiber class derive from this class.
- */
-class FiberException : ThreadException
-{
-    this( char[] msg )
-    {
-        super( msg );
     }
 }
 

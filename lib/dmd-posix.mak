@@ -34,16 +34,16 @@ ALL_DOCS=
 lib : $(ALL_OBJS)
 	make -C compiler/dmd -fposix.mak lib
 	make -C gc/basic -fposix.mak lib
-	make -C common -fposix.mak lib
+	make -C common/tango -fposix.mak lib
 	find . -name "libphobos*.a" | xargs $(RM)
 	$(LC) libphobos.a `find ./compiler/dmd -name "*.o" | xargs echo`
 	$(LC) libphobos.a `find ./gc/basic -name "*.o" | xargs echo`
-	$(LC) libphobos.a `find ./common -name "*.o" | xargs echo`
+	$(LC) libphobos.a `find ./common/tango -name "*.o" | xargs echo`
 
 doc : $(ALL_DOCS)
 	make -C compiler/dmd -fposix.mak doc
 	make -C gc/basic -fposix.mak doc
-	make -C common -fposix.mak doc
+	make -C common/tango -fposix.mak doc
 
 ######################################################
 
@@ -53,11 +53,11 @@ clean :
 	$(RM) $(ALL_DOCS)
 	make -C compiler/dmd -fposix.mak clean
 	make -C gc/basic -fposix.mak clean
-	make -C common -fposix.mak clean
+	make -C common/tango -fposix.mak clean
 #	$(RM) libphobos*.a
 
 install :
 	make -C compiler/dmd -fposix.mak install
 	make -C gc/basic -fposix.mak install
-	make -C common -fposix.mak install
+	make -C common/tango -fposix.mak install
 #	$(CP) libphobos*.a $(LIB_DEST)/.
