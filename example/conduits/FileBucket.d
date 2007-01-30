@@ -1,4 +1,4 @@
-module tango.io.FileBucket;
+module FileBucket;
 
 private import  tango.io.FilePath,
                 tango.io.FileConduit;

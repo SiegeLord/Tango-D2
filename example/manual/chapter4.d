@@ -23,8 +23,8 @@ void main () {
     char [64] floatBuffer;
     char [64] realBuffer;
 
-    char [] intString = Integer.format(intBuffer,32 );
-    char [] floatString = Float.format(floatBuffer,45 );
+    char [] intString = Integer.format(intBuffer,32.0 );
+    char [] floatString = Float.format(floatBuffer,45.0 );
 
     Stdout.format("Integer [ {0} ], Float [ {1} ]",intString,floatString ).newline;
 
@@ -40,7 +40,7 @@ void main () {
 
     // sprint
     auto sprint = new Sprint!(char);
-    auto stringWithNoPrecision = stackSprint("{0} {1} {2} - {3} ","All your base","are","belong to us",2100 );
+    auto stringWithNoPrecision = sprint.format("{0} {1} {2} - {3} ","All your base","are","belong to us",2100 );
     Stdout(stringWithNoPrecision).newline;
 
     /* converting to / from UTF8, UTF16, UTF32, both Big Endian and Little Endian */
@@ -60,9 +60,9 @@ void main () {
     // ( if we were reading in the encoding would be figured out by the BOM )
     // have to sepcify big or little endian
 
-    UnicodeBom!(char) bom = new UnicodeBom!(char)(Unicode.UTF_16BE);
+   // UnicodeBom!(char) bom = new UnicodeBom!(char)(Unicode.UTF_16BE);
 
-    void [] encoded = bom.encode(bubbleBoy );
+    //void [] encoded = bom.encode(bubbleBoy );
 
     Stdout(cast(char[])bubbleBoy );
 
