@@ -21,7 +21,7 @@ private import tango.stdc.stringz;
 
 version (Windows)
 {
-    private import tango.sys.windows.winbase;
+    private import tango.sys.win32.UserGdi;
 }
 else version (Posix)
 {

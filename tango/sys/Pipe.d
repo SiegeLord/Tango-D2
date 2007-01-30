@@ -16,7 +16,7 @@ private import tango.core.Exception;
 
 version (Windows)
 {
-    private import tango.sys.windows.winbase;
+    private import tango.sys.win32.UserGdi;
 }
 else
 {
