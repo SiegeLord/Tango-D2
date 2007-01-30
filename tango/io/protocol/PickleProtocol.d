@@ -15,7 +15,8 @@ module tango.io.protocol.PickleProtocol;
 private import  tango.io.model.IBuffer,
                 tango.io.model.IConduit;
 
-private import  tango.io.protocol.EndianProtocol;
+private import  tango.io.protocol.EndianProtocol,
+                tango.io.protocol.NativeProtocol;
 
 /*******************************************************************************
 
