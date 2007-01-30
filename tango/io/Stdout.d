@@ -40,7 +40,7 @@ version (DigitalMars)
 
 *******************************************************************************/
 
-class BufferedFormat(T)
+class DisplayFormat(T)
 {
         public alias print      opCall;
 
@@ -50,7 +50,7 @@ class BufferedFormat(T)
 
         /**********************************************************************
 
-                Construct a BufferedFormat instance, tying the provided
+                Construct a DisplayFormat instance, tying the provided
                 buffer to a formatter
 
         **********************************************************************/
@@ -68,7 +68,7 @@ class BufferedFormat(T)
 
         **********************************************************************/
 
-        final BufferedFormat format (T[] fmt, ...)
+        final DisplayFormat format (T[] fmt, ...)
         {
                 convert (&sink, _arguments, _argptr, fmt);
                 return this;
@@ -81,7 +81,7 @@ class BufferedFormat(T)
 
         **********************************************************************/
 
-        final BufferedFormat formatln (T[] fmt, ...)
+        final DisplayFormat formatln (T[] fmt, ...)
         {
                 convert (&sink, _arguments, _argptr, fmt);
                 return newline();
@@ -93,7 +93,7 @@ class BufferedFormat(T)
 
         **********************************************************************/
 
-        final BufferedFormat print (...)
+        final DisplayFormat print (...)
         {
                 if (_arguments.length > 0)
                     print(&sink, _arguments, _argptr);
@@ -110,7 +110,7 @@ class BufferedFormat(T)
 
         **********************************************************************/
 
-        final BufferedFormat println (...)
+        final DisplayFormat println (...)
         {
                 if (_arguments.length > 0)
                     print(&sink, _arguments, _argptr);
@@ -124,7 +124,7 @@ class BufferedFormat(T)
 
         **********************************************************************/
 
-        protected final BufferedFormat print (Formatter.Sink sink, TypeInfo[] arguments, Args argptr)
+        protected final DisplayFormat print (Formatter.Sink sink, TypeInfo[] arguments, Args argptr)
         in
         {
                 assert(arguments.length > 0 && arguments.length < 10);
@@ -155,7 +155,7 @@ class BufferedFormat(T)
 
         ***********************************************************************/
 
-        final BufferedFormat newline ()
+        final DisplayFormat newline ()
         {
                 output(eol).flush;
                 return this;
@@ -167,7 +167,7 @@ class BufferedFormat(T)
 
         **********************************************************************/
 
-        final BufferedFormat flush ()
+        final DisplayFormat flush ()
         {
                 output.flush;
                 return this;
@@ -224,12 +224,12 @@ class BufferedFormat(T)
 
 *******************************************************************************/
 
-public static BufferedFormat!(char)     Stdout,
-                                        Stderr;
+public static DisplayFormat!(char) Stdout,
+                                   Stderr;
 
 static this()
 {
-        Stdout = new BufferedFormat!(char) (Formatter, Cout.buffer);
-        Stderr = new BufferedFormat!(char) (Formatter, Cerr.buffer);
+        Stdout = new DisplayFormat!(char) (Formatter, Cout.buffer);
+        Stderr = new DisplayFormat!(char) (Formatter, Cerr.buffer);
 }
 
