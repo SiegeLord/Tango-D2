@@ -111,7 +111,7 @@ struct Console
 
                 char[] get (bool copy = true)
                 {
-                        auto len = buffer_.readable;
+                        auto len = buffer_.readable();
                         if (len is 0)
                            {
                            buffer_.fill;
