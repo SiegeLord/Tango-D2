@@ -4,10 +4,6 @@ module tango.sys.win32.Types;
  	Module:		Windows Types
  	Author: 	Trevor Parscal
 */
-private
-{
-    import tango.sys.win32.Config;
-}
 
 /+ Aliases, Types, and Constants +/
 const int NULL = 0;
