@@ -135,6 +135,7 @@ real abs(ireal y)
     return tango.math.IEEE.fabs(y.im);
 }
 
+debug(UnitTest) {
 unittest
 {
     assert(isIdentical(0.0L,abs(-0.0L)));
@@ -145,6 +146,7 @@ unittest
     assert(abs(-56) == 56);
     assert(abs(2321312L)  == 2321312L);
     assert(abs(-1+1i) == sqrt(2.0));
+}
 }
 
 /**
@@ -166,11 +168,13 @@ ireal conj(ireal y)
     return -y;
 }
 
+debug(UnitTest) {
 unittest
 {
     assert(conj(7 + 3i) == 7-3i);
     ireal z = -3.2Li;
     assert(conj(z) == -z);
+}
 }
 
 private {
@@ -231,6 +235,7 @@ real maxNum(real x, real y) {
     if (x>=y || isNaN(y)) return x; else return y;
 }
 
+debug(UnitTest) {
 unittest
 {
     assert(max('e', 'f')=='f');
@@ -241,6 +246,7 @@ unittest
     assert(maxNum(28.0, NaN("abc"))== 28.0);
     assert(minNum(1e12, NaN("abc"))== 1e12);
     assert(isIdentical(minNum(NaN("def"), NaN("abc")), NaN("def")));
+}
 }
 
 /*
@@ -274,9 +280,11 @@ real cos(real x) /* intrinsic */
     }
 }
 
+debug(UnitTest) {
 unittest {
     // NaN payloads
     assert(isIdentical(cos(NaN("abc")), NaN("abc")));
+}
 }
 
 /**
@@ -307,9 +315,11 @@ real sin(real x) /* intrinsic */
     }
 }
 
+debug(UnitTest) {
 unittest {
     // NaN payloads
     assert(isIdentical(sin(NaN("abc")), NaN("abc")));
+}
 }
 
 version (GNU) {
@@ -366,6 +376,7 @@ Lret:
     }
 }
 
+debug(UnitTest) {
 unittest
 {
 // Returns true if equal to precision, false if not
@@ -434,6 +445,38 @@ bool mfeq(real x, real y, real precision)
     assert(isIdentical(tan(NaN("abc")), NaN("abc")));
     assert(isIdentical(tan(real.infinity), NaN("tanINF")));
 }
+}
+
+/*****************************************
+ * Sine, cosine, and arctangent of multiple of &pi;
+ *
+ * Accuracy is preserved for large values of x.
+ */
+real cosPi(real x)
+{
+    return cos((x%2.0)*PI);
+}
+
+/** ditto */
+real sinPi(real x)
+{
+    return sin((x%2.0)*PI);
+}
+
+/** ditto */
+real atanPi(real x)
+{
+    return PI * atan(x); // BUG: Fix this.
+}
+
+debug(UnitTest) {
+unittest {
+    assert(isIdentical(sinPi(0.0), 0.0));
+    assert(isIdentical(sinPi(-0.0), -0.0));
+    assert(isIdentical(atanPi(0.0), 0.0));
+    assert(isIdentical(atanPi(-0.0), -0.0));
+}
+}
 
 /***********************************
  *  sine, complex and imaginary
@@ -455,9 +498,11 @@ ireal sin(ireal y)
   return cosh(y.im)*1i;
 }
 
+debug(UnitTest) {
 unittest {
   assert(sin(0.0+0.0i) == 0.0);
   assert(sin(2.0+0.0i) == sin(2.0L) );
+}
 }
 
 /***********************************
@@ -477,10 +522,12 @@ real cos(ireal y)
   return cosh(y.im);
 }
 
+debug(UnitTest) {
 unittest{
   assert(cos(0.0+0.0i)==1.0);
   assert(cos(1.3L+0.0i)==cos(1.3L));
   assert(cos(5.2Li)== cosh(5.2L));
+}
 }
 
 /**
@@ -499,11 +546,12 @@ real acos(real x)
     return tango.stdc.math.acosl(x);
 }
 
+debug(UnitTest) {
 unittest {
     // NaN payloads
     assert(isIdentical(acos(NaN("abc")), NaN("abc")));
 }
-
+}
 
 /**
  * Calculates the arc sine of x,
@@ -521,11 +569,12 @@ real asin(real x)
     return tango.stdc.math.asinl(x);
 }
 
+debug(UnitTest) {
 unittest {
     // NaN payloads
     assert(isIdentical(asin(NaN("abc")), NaN("abc")));
 }
-
+}
 
 /**
  * Calculates the arc tangent of x,
@@ -542,11 +591,12 @@ real atan(real x)
     return tango.stdc.math.atanl(x);
 }
 
+debug(UnitTest) {
 unittest {
     // NaN payloads
     assert(isIdentical(atan(NaN("abc")), NaN("abc")));
 }
-
+}
 
 /**
  * Calculates the arc tangent of y / x,
@@ -578,10 +628,12 @@ real atan2(real y, real x)
     return tango.stdc.math.atan2l(y,x);
 }
 
+debug(UnitTest) {
 unittest {
     // NaN payloads
     assert(isIdentical(atan2(5.3, NaN("abc")), NaN("abc")));
     assert(isIdentical(atan2(NaN("abc"), 2.18), NaN("abc")));
+}
 }
 
 /***********************************
@@ -595,9 +647,11 @@ creal asin(creal z)
     return -log(sqrt(1-z*z) + z*1i)*1i;
 }
 
+debug(UnitTest) {
 unittest {
 //   writefln(sin(0+0i), "   ", asin(sin(0+0i)));
    assert(asin(sin(0+0i)) == 0 + 0i);
+}
 }
 
 /***********************************
@@ -624,11 +678,12 @@ real cosh(real x)
     return tango.stdc.math.coshl(x);
 }
 
+debug(UnitTest) {
 unittest {
     // NaN payloads
     assert(isIdentical(cosh(NaN("abc")), NaN("abc")));
 }
-
+}
 
 /**
  * Calculates the hyperbolic sine of x.
@@ -644,11 +699,12 @@ real sinh(real x)
     return tango.stdc.math.sinhl(x);
 }
 
+debug(UnitTest) {
 unittest {
     // NaN payloads
     assert(isIdentical(sinh(NaN("abc")), NaN("abc")));
 }
-
+}
 
 /**
  * Calculates the hyperbolic tangent of x.
@@ -664,11 +720,12 @@ real tanh(real x)
     return tango.stdc.math.tanhl(x);
 }
 
+debug(UnitTest) {
 unittest {
     // NaN payloads
     assert(isIdentical(tanh(NaN("abc")), NaN("abc")));
 }
-
+}
 
 /***********************************
  *  hyperbolic sine, complex and imaginary
@@ -687,10 +744,11 @@ ireal sinh(ireal y)
   return sin(y.im)*1i;
 }
 
+debug(UnitTest) {
 unittest {
   assert(sinh(4.2L + 0i)==sinh(4.2L));
 }
-
+}
 
 /***********************************
  *  hyperbolic cosine, complex and imaginary
@@ -709,10 +767,11 @@ real cosh(ireal y)
   return cos(y.im);
 }
 
+debug(UnitTest) {
 unittest {
   assert(cosh(8.3L + 0i)==cosh(8.3L));
 }
-
+}
 
 
 /**
@@ -740,6 +799,7 @@ real acosh(real x)
     return log(x + sqrt(x*x - 1));
 }
 
+debug(UnitTest) {
 unittest
 {
     assert(isNaN(acosh(0.9)));
@@ -748,6 +808,7 @@ unittest
     assert(acosh(real.infinity) == real.infinity);
     // NaN payloads
     assert(isIdentical(acosh(NaN("abc")), NaN("abc")));
+}
 }
 
 /**
@@ -777,6 +838,7 @@ real asinh(real x)
     }
 }
 
+debug(UnitTest) {
 unittest
 {
     assert(isIdentical(0.0L,asinh(0.0)));
@@ -786,6 +848,7 @@ unittest
     assert(isNaN(asinh(real.nan)));
     // NaN payloads
     assert(isIdentical(asinh(NaN("abc")), NaN("abc")));
+}
 }
 
 /**
@@ -811,6 +874,7 @@ real atanh(real x)
     return  0.5 * log1p( 2 * x / (1 - x) );
 }
 
+debug(UnitTest) {
 unittest
 {
     assert(isIdentical(0.0L, atanh(0.0)));
@@ -821,13 +885,16 @@ unittest
     // NaN payloads
     assert(isIdentical(atanh(NaN("abc")), NaN("abc")));
 }
+}
 
+/** ditto */
 creal atanh(ireal y)
 {
     // Not optimised for accuracy or speed
     return 0.5*(log(1+y) - log(1-y));
 }
 
+/** ditto */
 creal atanh(creal z)
 {
     // Not optimised for accuracy or speed
@@ -936,11 +1003,12 @@ creal sqrt(creal z) /// ditto
     return c;
 }
 
+debug(UnitTest) {
 unittest {
     // NaN payloads
     assert(isIdentical(sqrt(NaN("abc")), NaN("abc")));
 }
-
+}
 
 /**
  * Calculates the cube root of x.
@@ -958,11 +1026,12 @@ real cbrt(real x)
 }
 
 
+debug(UnitTest) {
 unittest {
     // NaN payloads
     assert(isIdentical(cbrt(NaN("abc")), NaN("abc")));
 }
-
+}
 
 /**
  * Calculates e$(SUP x).
@@ -978,11 +1047,12 @@ real exp(real x)
     return tango.stdc.math.expl(x);
 }
 
+debug(UnitTest) {
 unittest {
     // NaN payloads
     assert(isIdentical(exp(NaN("abc")), NaN("abc")));
 }
-
+}
 
 /**
  * Calculates the value of the natural logarithm base (e)
@@ -1003,9 +1073,11 @@ real expm1(real x)
     return tango.stdc.math.expm1l(x);
 }
 
+debug(UnitTest) {
 unittest {
     // NaN payloads
     assert(isIdentical(expm1(NaN("abc")), NaN("abc")));
+}
 }
 
 
@@ -1023,11 +1095,12 @@ real exp2(real x)
     return tango.stdc.math.exp2l(x);
 }
 
+debug(UnitTest) {
 unittest {
     // NaN payloads
     assert(isIdentical(exp2(NaN("abc")), NaN("abc")));
 }
-
+}
 
 /*
  * Powers and Roots
@@ -1048,11 +1121,12 @@ real log(real x)
     return tango.stdc.math.logl(x);
 }
 
+debug(UnitTest) {
 unittest {
     // NaN payloads
     assert(isIdentical(log(NaN("abc")), NaN("abc")));
 }
-
+}
 
 /**
  *  Calculates the natural logarithm of 1 + x.
@@ -1073,11 +1147,12 @@ real log1p(real x)
     return tango.stdc.math.log1pl(x);
 }
 
+debug(UnitTest) {
 unittest {
     // NaN payloads
     assert(isIdentical(log1p(NaN("abc")), NaN("abc")));
 }
-
+}
 
 /**
  * Calculates the base-2 logarithm of x:
@@ -1095,11 +1170,12 @@ real log2(real x)
     return tango.stdc.math.log2l(x);
 }
 
+debug(UnitTest) {
 unittest {
     // NaN payloads
     assert(isIdentical(log2(NaN("abc")), NaN("abc")));
 }
-
+}
 
 /**
  * Calculate the base-10 logarithm of x.
@@ -1116,9 +1192,11 @@ real log10(real x)
     return tango.stdc.math.log10l(x);
 }
 
+debug(UnitTest) {
 unittest {
     // NaN payloads
     assert(isIdentical(log10(NaN("abc")), NaN("abc")));
+}
 }
 
 /***********************************
@@ -1143,6 +1221,7 @@ creal exp(creal z)
   return expi(z.im) * exp(z.re);
 }
 
+debug(UnitTest) {
 unittest {
     assert(exp(1.3e5Li)==cos(1.3e5L)+sin(1.3e5L)*1i);
     assert(exp(0.0Li)==1L+0.0Li);
@@ -1151,6 +1230,7 @@ unittest {
     assert(isNaN(c.re) && isNaN(c.im));
     c = exp(ireal.infinity);
     assert(isNaN(c.re) && isNaN(c.im));
+}
 }
 
 /***********************************
@@ -1176,6 +1256,7 @@ creal log(creal z)
   return log(abs(z)) + atan2(z.im, z.re)*1i;
 }
 
+debug(UnitTest) {
 unittest {
     /*
  * feqrel for complex numbers. Returns the worst relative
@@ -1190,6 +1271,7 @@ int cfeqrel(creal a, creal b)
   assert(log(3.0L +0i) == log(3.0L)+0i);
   assert(cfeqrel(log(0.0L-2i),( log(2.0L)-PI_2*1i)) >= real.mant_dig-10);
   assert(cfeqrel(log(0.0L+2i),( log(2.0L)+PI_2*1i)) >= real.mant_dig-10);
+}
 }
 
 /**
@@ -1373,6 +1455,7 @@ real pow(real x, real y)
     return tango.stdc.math.powl(x, y);
 }
 
+debug(UnitTest) {
 unittest
 {
     real x = 46;
@@ -1384,6 +1467,7 @@ unittest
     assert(pow(x,8) == (x * x) * (x * x) * (x * x) * (x * x));
     // NaN payloads
     assert(isIdentical(pow(NaN("abc"), 19), NaN("abc")));
+}
 }
 
 /**
@@ -1472,6 +1556,7 @@ real hypot(real x, real y)
     return b;
 }
 
+debug(UnitTest) {
 unittest
 {
     static real vals[][3] = // x,y,hypot
@@ -1499,6 +1584,7 @@ unittest
     // NaN payloads
     assert(isIdentical(hypot(NaN("abc"), 3.14), NaN("abc")));
     assert(isIdentical(hypot(7.6e39, NaN("abc")), NaN("abc")));
+}
 }
 
 /**
@@ -1587,6 +1673,7 @@ body
     }
 }
 
+debug(UnitTest) {
 unittest
 {
     debug (math) printf("math.poly.unittest\n");
@@ -1596,7 +1683,7 @@ unittest
     assert( poly(x, pp) == (56.1L + (32.7L + 6L * x) * x) );
 
     assert(isIdentical(poly(NaN("abc"), pp), NaN("abc")));
-
+}
 }
 
 /** Floating point "approximate equality".
@@ -1623,8 +1710,10 @@ real floor(real x)
     return tango.stdc.math.floorl(x);
 }
 
+debug(UnitTest) {
 unittest {
     assert(isIdentical(floor(NaN("abc")), NaN("abc")));
+}
 }
 
 /**
@@ -1650,10 +1739,11 @@ real round(real x)
     return tango.stdc.math.roundl(x);
 }
 
+debug(UnitTest) {
 unittest {
     assert(isIdentical(round(NaN("abc")), NaN("abc")));
 }
-
+}
 
 /**
  * Returns the integer portion of x, dropping the fractional portion.
@@ -1665,10 +1755,11 @@ real trunc(real x)
     return tango.stdc.math.truncl(x);
 }
 
+debug(UnitTest) {
 unittest {
     assert(isIdentical(trunc(NaN("abc")), NaN("abc")));
 }
-
+}
 
 /**
 * Rounds x to the nearest int or long.
@@ -1714,4 +1805,27 @@ long rndlong(real x)
     {
         return tango.stdc.math.llrintl(x);
     }
+}
+
+debug(UnitTest) {
+unittest {
+
+    int r = getIeeeRounding;
+    assert(r==RoundingMode.ROUNDTONEAREST);
+    real b = 5.5;
+    int cnear = tango.math.Core.rndint(b);
+    assert(cnear == 6);
+    auto oldrounding = setIeeeRounding(RoundingMode.ROUNDDOWN);
+    scope (exit) setIeeeRounding(oldrounding);
+
+    assert(getIeeeRounding==RoundingMode.ROUNDDOWN);
+
+    int cdown = tango.math.Core.rndint(b);
+    assert(cdown==5);
+}
+
+unittest {
+    // Check that the previous test correctly restored the rounding mode
+    assert(getIeeeRounding==RoundingMode.ROUNDTONEAREST);
+}
 }

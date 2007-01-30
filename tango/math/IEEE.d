@@ -259,7 +259,6 @@ RoundingMode getIeeeRounding() {
 }
 
 debug(UnitTest) {
-static import tango.math.Core;
 unittest {
     real a=3.5;
     resetIeeeFlags();
@@ -273,17 +272,6 @@ unittest {
 
     int r = getIeeeRounding;
     assert(r==RoundingMode.ROUNDTONEAREST);
-    real b = 5.5;
-    int cnear = tango.math.Core.rndint(b);
-    assert(cnear == 6);
-    auto oldrounding = setIeeeRounding(RoundingMode.ROUNDDOWN);
-    scope (exit) setIeeeRounding(oldrounding);
-
-    assert(getIeeeRounding==RoundingMode.ROUNDDOWN);
-
-    int cdown = tango.math.Core.rndint(b);
-    assert(cdown==5);
-
 }
 }
 
@@ -938,6 +926,15 @@ int isZero(real x)
     }
 }
 
+debug(UnitTest) {
+unittest
+{
+    assert(isZero(0.0));
+    assert(isZero(-0.0));
+    assert(!isZero(2.5));
+    assert(!isZero(real.min/1000));
+}
+}
 
 /*********************************
  * Return !=0 if e is &plusmn;&infin;.
@@ -1121,6 +1118,15 @@ unittest {
     assert( nextDoubleUp(2.0-double.epsilon) == 2.0 );
     assert( nextDoubleUp(double.max) == double.infinity );
     assert( nextDoubleUp(double.infinity)==double.infinity );
+
+    assert( nextFloatUp(-float.min) == -float.min*(1-float.epsilon) );
+    assert( nextFloatUp(1.0) == 1.0+float.epsilon );
+    assert( nextFloatUp(-0.0) == float.min*float.epsilon);
+
+    assert(nextDown(1.0+real.epsilon)==1.0);
+    assert(nextDoubleDown(1.0+double.epsilon)==1.0);
+    assert(nextFloatDown(1.0+float.epsilon)==1.0);
+
 }
 }
 
