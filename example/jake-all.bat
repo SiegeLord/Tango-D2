@@ -51,9 +51,9 @@
 @jake networking\sockethello.d -I.. -op
 @jake networking\socketserver.d -I.. -op
 
-IF EXIST ..\mango. (@jake networking\httpserver.d -I.. -op)
-IF EXIST ..\mango. (@jake networking\servlets.d -I.. -op)
-IF EXIST ..\mango. (@jake networking\servletserver.d -I.. -op)
+@IF EXIST ..\mango. (@jake networking\httpserver.d -I.. -op)
+@IF EXIST ..\mango. (@jake networking\servlets.d -I.. -op)
+@IF EXIST ..\mango. (@jake networking\servletserver.d -I.. -op)
 
 rem  *** jake networking\selector.d *** (FIX ME)
 
