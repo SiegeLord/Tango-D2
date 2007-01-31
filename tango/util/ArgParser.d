@@ -219,7 +219,6 @@ class ArgParser{
 }
 
 debug (UnitTest) {
-    import tango.io.Stdout; 
     import Integer = tango.text.convert.Integer;
 
     //void main() {}
@@ -335,7 +334,5 @@ unittest {
 
     parser.parse(test5, true);
     assert(dashOrdinalCount == 2);
-
-    Stdout("* tango.text.ArgParser: All unittests passed").newline;
 }
 }
