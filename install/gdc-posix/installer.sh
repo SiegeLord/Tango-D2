@@ -18,22 +18,45 @@ mkdir -p $TTMP || die 1 "Failed to create temporary directory"
 
 # This installer works by black magic: The following number must be the exact
 # number of lines in this file+4:
-LINES=64
+LINES=87
+
+# Install GDC if necessary
+GDCDIR=
+if [ "$INST_GDC" = "1" ]
+then
+    echo -n "What path do you want to install GDC to? "
+    read GDCDIR
+    mkdir -p $GDCDIR || die 1 "Failed to create the GDC install directory"
+    cd $GDCDIR || die 1 "Failed to cd to the GDC install directory"
+    tail +$LINES $FULLNAME | tar Oxf - gdc.tar.gz | gunzip -c | tar xf - ||
+        die 1 "Failed to extract GDC"
+fi
 
 # Make sure GDC is installed
-gdc --help > /dev/null 2> /dev/null
-if [ "$?" = "127" ]
+if [ ! "$GDCDIR" ]
 then
-    echo -n "What path is GDC installed to? "
-    read GDCDIR
-    export PATH="$GDCPATH/bin:$PATH"
-    if [ ! -e $GDCPATH/bin/gdc ]
+    gdc --help > /dev/null 2> /dev/null
+    if [ "$?" = "127" ]
     then
-        die 1 "GDC is not installed to that path!"
+        echo -n "What path is GDC installed to? "
+        read GDCDIR
+        export PATH="$GDCPATH/bin:$PATH"
+        if [ ! -e $GDCPATH/bin/gdc ]
+        then
+            die 1 "GDC is not installed to that path!"
+        fi
+    else
+        # Get our proper GDC prefix
+        GDCDIR="`/opt/gdc/bin/gdc -print-search-dirs | grep '^install:' | sed 's/install: //'`/../../../.."
     fi
-else
-    # Get our proper GDC prefix
-    GDCDIR="`/opt/gdc/bin/gdc -print-search-dirs | grep '^install:' | sed 's/install: //'`/../../../.."
+fi
+
+# Install DSSS if necessary
+if [ "$INST_DSSS" = "1" ]
+then
+    cd $GDCDIR || die 1 "Failed to cd to the GDC install directory"
+    tail +$LINES $FULLNAME | tar Oxf - dsss.tar.gz | gunzip -c | tar xf - ||
+        die 1 "Failed to extract DSSS"
 fi
 
 # Then, cd to our tmpdir and extract core.tar.gz
