@@ -7,20 +7,19 @@
 module tango.sys.Pipe;
 
 private import tango.sys.Common;
-
 private import tango.io.Buffer;
-private import tango.io.Conduit;
 private import tango.io.DeviceConduit;
 
 private import tango.core.Exception;
 
-version (Windows)
-{
-    private import tango.sys.Common;
-}
-else
+version (Posix)
 {
     private import tango.stdc.posix.unistd;
+}
+
+debug (PipeConduit)
+{
+    private import tango.io.Stdout;
 }
 
 
@@ -63,7 +62,7 @@ class PipeConduit: DeviceConduit
     }
 
     /**
-     *
+     * Destructor.
      */
     public ~this()
     {
@@ -84,6 +83,53 @@ class PipeConduit: DeviceConduit
     public override char[] getName()
     {
         return "<pipe>";
+    }
+
+    version (Windows)
+    {
+        /**
+         * Read a chunk of bytes from the file into the provided array 
+         * (typically that belonging to an IBuffer)
+         */
+        protected override uint reader(void[] dst)
+        {
+            uint result;
+            DWORD read;
+            void *p = dst.ptr;
+
+            if (!ReadFile (handle, p, dst.length, &read, null))
+            {
+                if (SysError.lastCode() == ERROR_BROKEN_PIPE)
+                {
+                    return Eof;
+                }
+                else
+                {
+                    error();
+                }
+            }
+
+            if (read == 0 && dst.length > 0)
+            {
+                return Eof;
+            }
+            return read;
+        }
+
+        /**
+         * Write a chunk of bytes to the file from the provided array 
+         * (typically that belonging to an IBuffer).
+         */
+        protected override uint writer(void[] src)
+        {
+            DWORD written;
+
+            if (!WriteFile (handle, src.ptr, src.length, &written, null))
+            {
+                error();
+            }
+            return written;
+        }
     }
 }
 

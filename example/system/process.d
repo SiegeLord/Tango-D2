@@ -6,6 +6,7 @@
 
 private import tango.io.Stdout;
 private import tango.sys.Process;
+private import tango.core.Exception;
 
 private import tango.text.stream.LineIterator;
 
@@ -47,5 +48,13 @@ void main()
     catch (ProcessException e)
     {
         Stdout.formatln("Process execution failed: {0}", e.toUtf8());
+    }
+    catch (IOException e)
+    {
+        Stdout.formatln("Input/output exception caught: {0}", e.toUtf8());
+    }
+    catch (Exception e)
+    {
+        Stdout.formatln("Unexpected exception caught: {0}", e.toUtf8());
     }
 }

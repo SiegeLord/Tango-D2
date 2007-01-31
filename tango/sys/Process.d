@@ -11,6 +11,7 @@ private import tango.io.Stdout;
 private import tango.io.Buffer;
 private import tango.sys.Common;
 private import tango.sys.Pipe;
+private import tango.core.Exception;
 private import tango.text.convert.Format;
 private import tango.text.Util;
 
@@ -18,11 +19,7 @@ private import tango.stdc.stdlib;
 private import tango.stdc.string;
 private import tango.stdc.stringz;
 
-version (Windows)
-{
-    private import tango.sys.Common;
-}
-else version (Posix)
+version (Posix)
 {
     private import tango.stdc.errno;
     private import tango.stdc.posix.fcntl;
@@ -1359,23 +1356,6 @@ class Process
     }
 }
 
-
-/**
- * Base class for all the exceptions thrown by the Process methods.
- */
-class ProcessException: Exception
-{
-    protected this(char[] msg, int pid)
-    {
-        super(Formatter.convert(msg, pid, SysError.lastMsg));
-    }
-
-    protected this(char[] msg, char[] command)
-    {
-        super(Formatter.convert(msg, command, SysError.lastMsg));
-    }
-}
-
 /**
  * Exception thrown when the process cannot be created.
  */
@@ -1383,7 +1363,7 @@ class ProcessCreateException: ProcessException
 {
     public this(char[] command, char[] file, uint line)
     {
-        super("Could not create process for {0}: {1}", command);
+        super(Formatter.convert("Could not create process for {0}: {1}", command, SysError.lastMsg));
     }
 }
 
@@ -1396,7 +1376,7 @@ class ProcessForkException: ProcessException
 {
     public this(int pid, char[] file, uint line)
     {
-        super("Could not fork process {0}: {1}", pid);
+        super(Formatter.convert("Could not fork process {0}: {1}", pid, SysError.lastMsg));
     }
 }
 
@@ -1407,7 +1387,7 @@ class ProcessKillException: ProcessException
 {
     public this(int pid, char[] file, uint line)
     {
-        super("Could not kill process {0}: {1}", pid);
+        super(Formatter.convert("Could not kill process {0}: {1}", pid, SysError.lastMsg));
     }
 }
 
@@ -1419,7 +1399,7 @@ class ProcessWaitException: ProcessException
 {
     public this(int pid, char[] file, uint line)
     {
-        super("Could not wait on process {0}: {1}", pid);
+        super(Formatter.convert("Could not wait on process {0}: {1}", pid, SysError.lastMsg));
     }
 }
 
