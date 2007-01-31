@@ -107,14 +107,14 @@ version (Posix)
             {
                 case EBUSY:
                     throw new AlreadyLockedException(file, line);
-                    break;
+                    // break;
                 case EINVAL:
                     throw new InvalidBarrierException(file, line);
-                    break;
+                    // break;
                 default:
                     throw new LockException(Formatter.convert("Unknown mutex error {0}: {1}",
                                                               errorCode, SysError.lookup(errorCode)), file, line);
-                    break;
+                    // break;
             }
         }
     }

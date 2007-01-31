@@ -1205,6 +1205,10 @@ class Process
                         state = State.Start;
                     }
                     break;
+
+                default:
+                    assert(false, Formatter.convert("Unknown state {0} in Process.splitArgs(command='{1}', delims='{2}')",
+                                                    state, command, delims));
             }
         }
 

@@ -187,6 +187,7 @@ version (Posix)
             else
             {
                 checkError(rc, __FILE__, __LINE__);
+                return false;
             }
         }
 
@@ -211,6 +212,7 @@ version (Posix)
             else
             {
                 checkError(rc, __FILE__, __LINE__);
+                return false;
             }
         }
 
@@ -249,23 +251,23 @@ version (Posix)
             {
                 case EBUSY:
                     throw new AlreadyLockedException(file, line);
-                    break;
+                    // break;
                 case EDEADLK:
                     throw new DeadlockException(file, line);
-                    break;
+                    // break;
                 case EAGAIN:
                     throw new OutOfLocksException(file, line);
-                    break;
+                    // break;
                 case EINVAL:
                     throw new InvalidMutexException(file, line);
-                    break;
+                    // break;
                 case EPERM:
                     throw new MutexOwnerException(file, line);
-                    break;
+                    // break;
                 default:
                     throw new LockException(Formatter.convert("Unknown mutex error {0}: {1}",
                                                               errorCode, SysError.lookup(errorCode)), file, line);
-                    break;
+                    // break;
             }
         }
     }
@@ -698,8 +700,11 @@ debug (UnitTest)
         {
             for (uint i = 0; i < LoopsPerReader; ++i)
             {
-                // All the reader threads acquire the mutex for reading and when they are
-                // all done
+                // All the reader threads acquire the mutex for reading and
+                // then increment a counter. Each time the thread acquires the 
+                // mutex for reading it increments the counter a specific number
+                // of times, and the writer threads should never interrupt this.
+                // We use this to verify that the ReadWriteMutex actually works.
                 rwlock.acquireRead();
 
                 for (uint j = 0; j < CounterIncrement; ++j)
@@ -720,7 +725,7 @@ debug (UnitTest)
                 rwlock.acquireWrite();
 
                 mutex.acquire();
-                if (readCount % 3 == 0)
+                if (readCount % CounterIncrement == 0)
                 {
                     ++passed;
                 }

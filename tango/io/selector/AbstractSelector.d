@@ -318,33 +318,33 @@ abstract class AbstractSelector: ISelector
         {
             case EBADF:
                 throw new SelectorException("Bad file descriptor", file, line);
-                break;
+                // break;
             case EEXIST:
                 throw new RegisteredConduitException(file, line);
-                break;
+                // break;
             case EINTR:
                 throw new InterruptedSystemCallException(file, line);
-                break;
+                // break;
             case EINVAL:
                 throw new SelectorException("An invalid parameter was sent to a system call", file, line);
-                break;
+                // break;
             case ENFILE:
                 throw new SelectorException("Maximum number of open files reached", file, line);
-                break;
+                // break;
             case ENOENT:
                 throw new UnregisteredConduitException(file, line);
-                break;
+                // break;
             case ENOMEM:
                 throw new OutOfMemoryException(file, line);
-                break;
+                // break;
             case EPERM:
                 throw new SelectorException("The conduit cannot be used with this Selector", file, line);
-                break;
+                // break;
             default:
                 char[128] buf = void;
                 throw new SelectorException(Formatter.sprint(buf, "Unknown Selector error {0}: {1}",
                                                              errorCode, SysError.lookup(errorCode)), file, line);
-                break;
+                // break;
         }
     }
 }

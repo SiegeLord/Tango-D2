@@ -12,7 +12,6 @@ private import tango.math.Random;
 private import tango.io.Stdout;
 private import tango.text.convert.Format;
 private import tango.text.convert.Sprint;
-private import tango.stdc.posix.pthread;
 private import tango.util.log.Log;
 private import tango.util.log.ConsoleAppender;
 private import tango.util.log.DateLayout;

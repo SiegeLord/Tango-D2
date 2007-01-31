@@ -172,23 +172,23 @@ version (Posix)
                 case EBUSY:
                 case EAGAIN:
                     throw new AlreadyLockedException(file, line);
-                    break;
+                    // break;
                 case EDEADLK:
                     throw new DeadlockException(file, line);
-                    break;
+                    // break;
                 case EINVAL:
                     throw new InvalidSemaphoreException(file, line);
-                    break;
+                    // break;
                 case EPERM:
                     throw new SemaphoreOwnerException(file, line);
-                    break;
+                    // break;
                 case EINTR:
                     throw new InterruptedSystemCallException(file, line);
-                    break;
+                    // break;
                 default:
                     throw new LockException(Formatter.convert("Unknown sempahore error {0}: {1}",
                                                               errorCode, SysError.lookup(errorCode)), file, line);
-                    break;
+                    // break;
             }
         }
     }
@@ -279,6 +279,7 @@ else version (Windows)
             else
             {
                 checkError(GetLastError(), __FILE__, __LINE__);
+                return false;
             }
         }
 
@@ -320,11 +321,11 @@ else version (Windows)
             {
                 case ERROR_ACCESS_DENIED:
                     throw new AccessDeniedException(file, line);
-                    break;
+                    // break;
                 default:
                     throw new LockException(Formatter.convert("Unknown semaphore error {0}: {1}",
                                                               errorCode, SysError.lookup(errorCode)), file, line);
-                    break;
+                    // break;
             }
         }
     }

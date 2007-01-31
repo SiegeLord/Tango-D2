@@ -304,7 +304,7 @@ version (Posix)
          */
         public int select(Interval timeout)
         {
-            int to = (timeout != Interval.infinity ? (timeout / Interval.milli) : -1);
+            int to = cast(int) (timeout != Interval.infinity ? cast(int) (timeout / Interval.milli) : -1);
 
             debug (selector)
                 Stdout.format("--- PollSelector.select({0} ms): waiting on {1} handles\n",

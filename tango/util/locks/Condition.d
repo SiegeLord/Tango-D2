@@ -242,17 +242,17 @@ version (Posix)
             {
                 case EBUSY:
                     throw new AlreadyLockedException(file, line);
-                    break;
+                    // break;
                 case EINTR:
                     throw new InterruptedSystemCallException(file, line);
-                    break;
+                    // break;
                 case EINVAL:
                     throw new InvalidConditionException(file, line);
-                    break;
+                    // break;
                 default:
                     throw new LockException(Formatter.convert("Unknown mutex error {0}: {1}",
                                                               errorCode, SysError.lookup(errorCode)), file, line);
-                    break;
+                    // break;
             }
         }
     }
@@ -586,6 +586,7 @@ else version (Windows)
             else
             {
                 checkError(GetLastError(), __FILE__, __LINE__);
+                return false;
             }
         }
 
@@ -615,11 +616,11 @@ else version (Windows)
             {
                 case ERROR_ACCESS_DENIED:
                     throw new AccessDeniedException(file, line);
-                    break;
+                    // break;
                 default:
                     throw new LockException(Formatter.convert("Unknown event error {0}: {1}",
                                                               errorCode, SysError.lookup(errorCode)), file, line);
-                    break;
+                    // break;
             }
         }
     }
