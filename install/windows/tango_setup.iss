@@ -44,12 +44,11 @@ Name: english; MessagesFile: compiler:Default.isl
 
 [_ISToolDownload]
 Source: http://www.rentbayarea.com/tango.zip; DestDir: {tmp}; DestName: tango.zip
-Source: http://www.rentbayarea.com/build.zip; DestDir: {tmp}; DestName: build.zip; Check: ShouldInstallBuild
+;Source: http://www.rentbayarea.com/build.zip; DestDir: {tmp}; DestName: build.zip; Check: ShouldInstallBuild
 
 [Run]
-Filename: {tmp}\unzip.exe; Parameters: -o tango.zip -d {code:DMDRootLocation}; WorkingDir: {tmp}; Flags: runminimized
-;Filename: {tmp}\unzip.exe; Parameters: "-o tango.zip -d {code:DMDRootLocation} -x ""bin/sc.ini"""; WorkingDir: {tmp}; Check: ShouldNotReplaceScIni; Flags: runminimized
-Filename: {tmp}\unzip.exe; Parameters: -o build.zip -d {code:DMDRootLocation}; WorkingDir: {tmp}; Check: ShouldInstallBuild; Flags: runminimized
+Filename: {tmp}\unzip.exe; Parameters: -o tango.zip -d {code:DMDRootLocation}; WorkingDir: {tmp}; Flags: runminimized; Check: ShouldInstallBuild
+Filename: {tmp}\unzip.exe; Parameters: "-o tango.zip -d {code:DMDRootLocation} -x ""bin/build.exe"""; WorkingDir: {tmp}; Flags: runminimized; Check: ShouldNotInstallBuild
 Filename: {tmp}\unzip.exe; Parameters: -q; WorkingDir: {tmp}; Check: ShouldOverwritePhobos; Flags: runminimized
 
 
@@ -126,13 +125,13 @@ begin
   then begin
     if MsgBox('You have a build configuration file at ' + DMDRootLocation('') + 'bin\build.cfg' + '.  Should I append an -I/path/to/tango to it ?'   , mbConfirmation ,   MB_YESNO ) = IDYES
     then begin
-      if SaveStringToFile(DMDRootLocation('') + 'bin\build.cfg',#13#10 + 'CMDLINE= -I' + DMDRootLocation('') + 'include\' + #13#10 , True ) = False
+      if SaveStringToFile(DMDRootLocation('') + 'bin\build.cfg',#13#10 + 'CMDLINE= -I"' + DMDRootLocation('') + 'tango\"' + #13#10 , True ) = False
       then begin
         MsgBox('Error writing file: ' + DMDRootLocation('') + 'bin\build.cfg.  Ignoring.' ,  mbConfirmation, MB_OK);
       end
     end
   end else begin
-		if  SaveStringToFile(DMDRootLocation('') + 'bin\build.cfg',#13#10 + 'CMDLINE= -I' + DMDRootLocation('') + 'include\' + #13#10 , False ) = False
+		if  SaveStringToFile(DMDRootLocation('') + 'bin\build.cfg',#13#10 + 'CMDLINE= -I"' + DMDRootLocation('') + 'tango\"' + #13#10 , False ) = False
 		then begin
 		        MsgBox('Error writing file: ' + DMDRootLocation('') + 'bin\build.cfg.  Ignoring.' ,  mbConfirmation, MB_OK);
 		end
@@ -186,6 +185,16 @@ begin
 	end;
 end;
 
+function ShouldNotInstallBuild() : Boolean;
+begin
+	if ShouldInstallBuild() = True
+	then begin
+		Result := False;
+	end else begin
+		Result := True;
+	end;
+end;
+
 function ShouldReplaceScIni() : Boolean;
 begin
 	if OverwriteScIni.Checked = True
@@ -200,11 +209,11 @@ end;
 
 function ShouldNotReplaceScIni() : Boolean;
 begin
-	if OverwriteScIni.Checked = True
+	if ShouldReplaceScIni() = True
 	then begin
-		Result := False;
-	end else begin
 		Result := True;
+	end else begin
+		Result := False;
 	end;
 
 end;
@@ -228,17 +237,14 @@ end;
 
 function ShouldNotReplaceBuildCfg() : Boolean;
 begin
-	if OverwriteBuildCfg.Checked = True
+	if ShouldReplaceBuildCfg() = True
 	then begin
 		Result := False;
 	end else begin
 		Result := True;
 	end;
 
-	if InstallBuildCheck.Checked <> True
-	then begin
-		Result := False;
-	end;
+
 end;
 
 { File System functions }
