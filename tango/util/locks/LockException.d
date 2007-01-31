@@ -197,6 +197,27 @@ public class MutexOwnerException: LockException
 }
 
 /**
+ * SemaphoreOwnerException is thrown when the calling thread does not own the
+ * mutex (only for ErrorChecking mutexes on POSIX platforms).
+ */
+public class SemaphoreOwnerException: LockException
+{
+    /**
+     * Construct an MutexOwnerException with the provided text string.
+     *
+     * Params:
+     * file     = name of the source file where the exception was thrown; you
+     *            would normally use __FILE__ for this parameter.
+     * line     = line number of the source file where the exception was
+     *            thrown; you would normally use __LINE__ for this parameter.
+     */
+    public this(char[] file, uint line)
+    {
+        super("The calling thread does not own the mutex", file, line);
+    }
+}
+
+/**
  * AccessDeniedException is thrown when the caller has limited access rights
  * on Windows.
  */

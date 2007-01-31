@@ -7,11 +7,14 @@
 module tango.util.locks.Semaphore;
 
 private import tango.util.locks.LockException;
+private import tango.core.Interval;
 private import tango.text.convert.Format;
 
 
 version (Posix)
 {
+    private import tango.sys.TimeConverter;
+    private import tango.stdc.posix.time;
     private import tango.stdc.posix.semaphore;
     private import tango.stdc.errno;
 
@@ -27,7 +30,7 @@ version (Posix)
         /**
          * Initialize the semaphore, with initial value of <count>.
          */
-        public this(count)
+        public this(int count)
         {
             int rc = sem_init(&_sem, 0, count);
             if (rc != 0)
