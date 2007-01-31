@@ -6,7 +6,7 @@ private import tango.text.locale.Core;
 
 version (Windows)
   private import tango.text.locale.Win32;
-else version (linux)
+else version (Posix)
   private import tango.text.locale.Linux;
 
   /**

@@ -97,7 +97,7 @@ private import  tango.text.locale.Constants,
 
 version (Windows)
   private import tango.text.locale.Win32;
-else version (linux)
+else version (Posix)
   private import tango.text.locale.Linux;
 
 // Used by cloneObject.
