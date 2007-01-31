@@ -14,36 +14,58 @@ version( Win32 )
 {
     struct fenv_t
     {
-        ushort status;
-        ushort control;
-        ushort round;
-        ushort reserved[2];
+        ushort    status;
+        ushort    control;
+        ushort    round;
+        ushort[2] reserved;
     }
+
+    alias int fexcept_t;
 }
 else version( linux )
 {
     struct fenv_t
     {
-    	ushort __control_word;
-    	ushort __unused1;
-    	ushort __status_word;
-    	ushort __unused2;
-    	ushort __tags;
-    	ushort __unused3;
-    	uint   __eip;
-    	ushort __cs_selector;
-    	ushort __opcode;
-    	uint   __data_offset;
-    	ushort __data_selector;
-    	ushort __unused5;
+        ushort __control_word;
+        ushort __unused1;
+        ushort __status_word;
+        ushort __unused2;
+        ushort __tags;
+        ushort __unused3;
+        uint   __eip;
+        ushort __cs_selector;
+        ushort __opcode;
+        uint   __data_offset;
+        ushort __data_selector;
+        ushort __unused5;
+    }
+
+    alias int fexcept_t;
+}
+else version ( darwin )
+{
+    version ( BigEndian )
+    {
+        alias uint fenv_t;
+        alias uint fexcept_t;
+    }
+    version ( LittleEndian )
+    {
+        struct fenv_t
+        {
+            ushort  __control;
+            ushort  __status;
+            uint    __mxcsr;
+            byte[8] __reserved;
+        }
+
+        alias ushort fexcept_t;
     }
 }
 else
 {
     static assert( false );
 }
-
-alias int fexcept_t;
 
 enum
 {
@@ -68,6 +90,11 @@ version( Win32 )
 else version( linux )
 {
     fenv_t* FE_DFL_ENV = cast(fenv_t*)(-1);
+}
+else version( darwin )
+{
+    private extern fenv_t _FE_DFL_ENV;
+    fenv_t* FE_DFL_ENV = &_FE_DFL_ENV;
 }
 else
 {

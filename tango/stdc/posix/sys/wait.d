@@ -61,6 +61,32 @@ version( linux )
     extern (D) int  WSTOPSIG( int status )     { return WEXITSTATUS( status );      }
     extern (D) int  WTERMSIG( int status )     { return status & 0x7F;              }
 }
+else version( darwin )
+{
+    const WNOHANG       = 1;
+    const WUNTRACED     = 2;
+
+    private
+    {
+        const _WSTOPPED = 0177;
+    }
+
+    extern (D) int _WSTATUS(int status)         { return (status & 0177);           }
+    extern (D) int  WEXITSTATUS( int status )   { return (status >> 8);             }
+    extern (D) int  WIFCONTINUED( int status )  { return status == 0x13;            }
+    extern (D) bool WIFEXITED( int status )     { return _WSTATUS(status) == 0;     }
+    extern (D) bool WIFSIGNALED( int status )
+    {
+        return _WSTATUS( status ) != _WSTOPPED && _WSTATUS( status ) != 0;
+    }
+    extern (D) bool WIFSTOPPED( int status )   { return _WSTATUS( status ) == _WSTOPPED; }
+    extern (D) int  WSTOPSIG( int status )     { return status >> 8;                     }
+    extern (D) int  WTERMSIG( int status )     { return _WSTATUS( status );              }
+}
+else
+{
+    static assert( false );
+}
 
 pid_t wait(int*);
 pid_t waitpid(pid_t, int*, int);

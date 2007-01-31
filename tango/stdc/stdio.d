@@ -41,6 +41,32 @@ else version( linux )
     const int TMP_MAX       = 238328;
     const int L_tmpnam      = 20;
 }
+else version( darwin )
+{
+    const int EOF           = -1;
+    const int FOPEN_MAX     = 20;
+    const int FILENAME_MAX  = 1024;
+    const int TMP_MAX       = 308915776;
+    const int L_tmpnam      = 1024;
+
+    private
+    {
+        struct __sbuf
+        {
+            ubyte*  _base;
+            int     _size;
+        }
+
+        struct __sFILEX
+        {
+
+        }
+    }
+}
+else
+{
+    static assert( false );
+}
 
 enum
 {
@@ -54,37 +80,64 @@ struct _iobuf
     align (1):
     version( Win32 )
     {
-    	char* _ptr;
-    	int	  _cnt;
-    	char* _base;
-    	int	  _flag;
-    	int	  _file;
-    	int	  _charbuf;
-    	int	  _bufsiz;
-    	int	  __tmpnum;
+        char* _ptr;
+        int   _cnt;
+        char* _base;
+        int   _flag;
+        int   _file;
+        int   _charbuf;
+        int   _bufsiz;
+        int   __tmpnum;
     }
     else version( linux )
     {
-    	char*	_read_ptr;
-    	char*	_read_end;
-    	char*	_read_base;
-    	char*	_write_base;
-    	char*	_write_ptr;
-    	char*	_write_end;
-    	char*	_buf_base;
-    	char*	_buf_end;
-    	char*	_save_base;
-    	char*	_backup_base;
-    	char*	_save_end;
-    	void*	_markers;
-    	_iobuf*	_chain;
-    	int     _fileno;
-    	int     _blksize;
-    	int     _old_offset;
-    	ushort  _cur_column;
-    	byte    _vtable_offset;
-    	char[1] _shortbuf;
-    	void*   _lock;
+        char*   _read_ptr;
+        char*   _read_end;
+        char*   _read_base;
+        char*   _write_base;
+        char*   _write_ptr;
+        char*   _write_end;
+        char*   _buf_base;
+        char*   _buf_end;
+        char*   _save_base;
+        char*   _backup_base;
+        char*   _save_end;
+        void*   _markers;
+        _iobuf* _chain;
+        int     _fileno;
+        int     _blksize;
+        int     _old_offset;
+        ushort  _cur_column;
+        byte    _vtable_offset;
+        char[1] _shortbuf;
+        void*   _lock;
+    }
+    else version( darwin )
+    {
+        ubyte*    _p;
+        int       _r;
+        int       _w;
+        short     _flags;
+        short     _file;
+        __sbuf    _bf;
+        int       _lbfsize;
+
+        int* function(void*)                    _close;
+        int* function(void*, char*, int)        _read;
+        fpos_t* function(void*, fpos_t, int)    _seek;
+        int* function(void*, char *, int)       _write;
+
+        __sbuf    _ub;
+        __sFILEX* _extra;
+        int       _ur;
+
+        ubyte[3]  _ubuf;
+        ubyte[1]  _nbuf;
+
+        __sbuf    _lb;
+
+        int       _blksize;
+        fpos_t    _offset;
     }
 }
 
@@ -109,21 +162,21 @@ version( Win32 )
 {
     enum
     {
-        _IOFBF	 = 0,
-	    _IOREAD	 = 1,
-	    _IOWRT	 = 2,
-	    _IONBF	 = 4,
-	    _IOMYBUF = 8,
-	    _IOEOF	 = 0x10,
-	    _IOERR	 = 0x20,
-	    _IOLBF	 = 0x40,
-	    _IOSTRG	 = 0x40,
-	    _IORW	 = 0x80,
-	    _IOTRAN	 = 0x100,
-	    _IOAPP	 = 0x200,
+        _IOFBF   = 0,
+        _IOREAD  = 1,
+        _IOWRT   = 2,
+        _IONBF   = 4,
+        _IOMYBUF = 8,
+        _IOEOF   = 0x10,
+        _IOERR   = 0x20,
+        _IOLBF   = 0x40,
+        _IOSTRG  = 0x40,
+        _IORW    = 0x80,
+        _IOTRAN  = 0x100,
+        _IOAPP   = 0x200,
     }
 
-    extern FILE _iob[_NFILE];
+    extern FILE[_NFILE] _iob;
     extern void function() _fcloseallp;
 
     const FILE* stdin  = &_iob[0];
@@ -144,6 +197,17 @@ else version( linux )
     extern FILE* stdin;
     extern FILE* stdout;
     extern FILE* stderr;
+}
+else version( darwin )
+{
+    extern FILE[3] __sF;
+    const FILE* stdin  = &__sF[0];
+    const FILE* stdout = &__sF[1];
+    const FILE* stderr = &__sF[2];
+}
+else
+{
+    static assert( false );
 }
 
 alias int fpos_t;
@@ -227,6 +291,21 @@ else version( linux )
 
     int  snprintf(char* s, size_t n, char* format, ...);
     int  vsnprintf(char* s, size_t n, char* format, va_list arg);
+}
+else version( darwin )
+{
+    void rewind(FILE*);
+    void clearerr(FILE*);
+    int  feof(FILE*);
+    int  ferror(FILE*);
+    int  fileno(FILE*);
+
+    int  snprintf(char*, size_t, char*, ...);
+    int  vsnprintf(char*, size_t, char*, va_list);
+}
+else
+{
+    static assert( false );
 }
 
 void perror(char* s);
