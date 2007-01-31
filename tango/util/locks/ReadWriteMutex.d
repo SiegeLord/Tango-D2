@@ -272,6 +272,10 @@ version (Posix)
 }
 else version (Windows)
 {
+    private import tango.util.locks.Mutex;
+    private import tango.util.locks.Condition;
+
+
     /**
      * Wrapper for readers/writer locks.
      * This class is particularly useful for applications that have many more
@@ -504,6 +508,8 @@ else version (Windows)
                 }
             }
             _refCount++;
+
+            return success;
         }
 
         /**
@@ -613,7 +619,7 @@ scope class ScopedReadLock
     {
         if (!_acquired)
         {
-            _mutex.acquire();
+            _mutex.acquireRead();
             _acquired = true;
         }
     }
@@ -653,7 +659,7 @@ scope class ScopedWriteLock
     {
         if (!_acquired)
         {
-            _mutex.acquire();
+            _mutex.acquireWrite();
             _acquired = true;
         }
     }
