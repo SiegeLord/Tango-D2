@@ -18,7 +18,7 @@ mkdir -p $TTMP || die 1 "Failed to create temporary directory"
 
 # This installer works by black magic: The following number must be the exact
 # number of lines in this file+4:
-LINES=92
+LINES=93
 
 # Install GDC if necessary
 GDCDIR=
@@ -31,6 +31,7 @@ then
     else
         GDCDIR="$1"
     fi
+    export PATH="$GDCDIR/bin:$PATH"
     mkdir -p $GDCDIR || die 1 "Failed to create the GDC install directory"
     cd $GDCDIR || die 1 "Failed to cd to the GDC install directory"
     tail +$LINES $FULLNAME | tar Oxf - gdc.tar.gz | gunzip -c | tar xf - ||
