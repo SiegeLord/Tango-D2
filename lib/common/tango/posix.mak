@@ -31,9 +31,9 @@ CC=gcc
 LC=$(AR) -qsv
 DC=dmd
 
-INC_DEST=../../tango
+INC_DEST=../../../tango
 LIB_DEST=..
-DOC_DEST=../../doc/tango
+DOC_DEST=../../../doc/tango
 
 .SUFFIXES: .s .S .c .cpp .d .html .o
 
