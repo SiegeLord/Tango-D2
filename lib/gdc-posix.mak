@@ -18,7 +18,7 @@ CC=gcc
 LC=$(AR) -qsv
 DC=gdmd
 
-ADDFLAGS=-q,-nostdinc -I`pwd`/.. -I`pwd`/common -I`pwd`/compiler/gdc
+ADDFLAGS=-q,-nostdinc -I`pwd`/common -I`pwd`/.. -I`pwd`/compiler/gdc
 
 targets : lib doc
 all     : lib doc
