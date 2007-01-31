@@ -13,7 +13,7 @@
 @jake -c conduits\filebucket.d -I.. -op
 @jake conduits\filecat.d -I.. -op
 @jake conduits\filecopy.d -I.. -op
-@jake conduits\filepathname.d -I -op
+@jake conduits\filepathname.d -I.. -op
 @jake conduits\filescan.d -I.. -op
 @jake conduits\filescanregex.d -I.. -op
 @jake conduits\lineio.d -I.. -op
@@ -82,7 +82,7 @@
 @jake locks\barrier.d -I.. -op
 @rem @jake locks\condition.d -I.. -op
 @jake locks\mutex.d -I.. -op
-@rem #@jake locks\readwritemutex.d -I.. -op
+@rem @jake locks\readwritemutex.d -I.. -op
 
 @rem FINI
 
