@@ -114,4 +114,4 @@ then
 fi
 
 # 6) Clean up
-rm -f core.tar.gz tango.tar.gz
+rm -f core.tar.gz tango.tar.gz dsss.tar.gz gdc.tar.gz
