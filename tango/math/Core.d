@@ -1808,6 +1808,8 @@ long rndlong(real x)
 }
 
 debug(UnitTest) {
+version(D_InlineAsm_X86) { // Won't work for anything else yet
+
 unittest {
 
     int r = getIeeeRounding;
@@ -1827,5 +1829,6 @@ unittest {
 unittest {
     // Check that the previous test correctly restored the rounding mode
     assert(getIeeeRounding==RoundingMode.ROUNDTONEAREST);
+}
 }
 }

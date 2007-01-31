@@ -259,6 +259,7 @@ RoundingMode getIeeeRounding() {
 }
 
 debug(UnitTest) {
+   version(D_InlineAsm_X86) { // Won't work for anything else yet
 unittest {
     real a=3.5;
     resetIeeeFlags();
@@ -272,6 +273,7 @@ unittest {
 
     int r = getIeeeRounding;
     assert(r==RoundingMode.ROUNDTONEAREST);
+}
 }
 }
 

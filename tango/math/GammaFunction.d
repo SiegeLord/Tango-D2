@@ -24,6 +24,12 @@ private import tango.math.Core;
 private import tango.math.IEEE;
 private import tango.math.ErrorFunction;
 
+version(Windows) { // Some tests only pass on DMD Windows
+    version(DigitalMars) {
+    version = FailsOnLinux;
+}
+}
+
 
 //------------------------------------------------------------------
 
@@ -313,7 +319,7 @@ unittest {
     for (int i=1; fact<real.max; ++i) {
         // Require exact equality for small factorials
         if (i<14) assert(gamma(i*1.0L) == fact);
-        // BUG: assert(feqrel(gamma(i*1.0L), fact) > real.mant_dig-15);
+        version(FailsOnLinux) assert(feqrel(gamma(i*1.0L), fact) > real.mant_dig-15);
         fact *= (i*1.0L);
     }
     assert(gamma(0.0) == real.infinity);
@@ -331,7 +337,7 @@ unittest {
     // Test some high-precision values (50 decimal digits)
     const real SQRT_PI = 1.77245385090551602729816748334114518279754945612238L;
 
-    // BUG: assert(feqrel(gamma(0.5L), SQRT_PI) == real.mant_dig);
+    version(FailsOnLinux) assert(feqrel(gamma(0.5L), SQRT_PI) == real.mant_dig);
 
     assert(feqrel(gamma(1.0/3.L),  2.67893853470774763365569294097467764412868937795730L) >= real.mant_dig-2);
     assert(feqrel(gamma(0.25L),
@@ -904,14 +910,14 @@ unittest { // also tested by the normal distribution
 
     assert(betaIncomplete(0.01, 498.437, 0.0121433) == 0x1.ffff_8f72_19197402p-1);
     assert(1- betaIncomplete(0.01, 328222, 4.0375e-5) == 0x1.5f62926b4p-30);
-    // BUG: assert(betaIncompleteInv(0x1.b3d151fbba0eb18p+1, 1.2265e-19, 2.44859e-18)==0x1.c0110c8531d0952cp-1);
-    // BUG: assert(betaIncompleteInv(0x1.ff1275ae5b939bcap-41, 4.6713e18, 0.0813601)==0x1.f97749d90c7adba8p-63);
+    version(FailsOnLinux)  assert(betaIncompleteInv(0x1.b3d151fbba0eb18p+1, 1.2265e-19, 2.44859e-18)==0x1.c0110c8531d0952cp-1);
+    version(FailsOnLinux)  assert(betaIncompleteInv(0x1.ff1275ae5b939bcap-41, 4.6713e18, 0.0813601)==0x1.f97749d90c7adba8p-63);
     real a1;
     a1 = 3.40483;
-    // BUG: assert(betaIncompleteInv(a1, 4.0640301659679627772e19L, 0.545113)== 0x1.ba8c08108aaf5d14p-109);
+    version(FailsOnLinux)  assert(betaIncompleteInv(a1, 4.0640301659679627772e19L, 0.545113)== 0x1.ba8c08108aaf5d14p-109);
     real b1;
     b1= 2.82847e-25;
-    // BUG: assert(betaIncompleteInv(0.01, b1, 9e-26) == 0x1.549696104490aa9p-830);
+    version(FailsOnLinux)  assert(betaIncompleteInv(0.01, b1, 9e-26) == 0x1.549696104490aa9p-830);
 
     // --- Problematic cases ---
     // This is a situation where the series expansion fails to converge

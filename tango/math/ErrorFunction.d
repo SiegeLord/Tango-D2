@@ -27,6 +27,12 @@ module tango.math.ErrorFunction;
 import tango.math.Core;
 import tango.math.IEEE;  // only required for unit tests
 
+version(Windows) { // Some tests only pass on DMD Windows
+    version(DigitalMars) {
+    version = FailsOnLinux;
+}
+}
+
 const real SQRT2PI = 0x1.40d931ff62705966p+1L;    // 2.5066282746310005024
 const real EXP_2  = 0.13533528323661269189L; /* exp(-2) */
 
@@ -263,7 +269,7 @@ unittest {
     assert(feqrel(erfc(0.625L), erfc0_625 )>=real.mant_dig-1);
     assert(feqrel(erfc(0.750L), erfc0_750 )>=real.mant_dig-1);
     assert(feqrel(erfc(0.875L), erfc0_875 )>=real.mant_dig-4);
-    // BUG: assert(feqrel(erfc(1.000L), erfc1_000 )>=real.mant_dig-0);
+    version(FailsOnLinux) assert(feqrel(erfc(1.000L), erfc1_000 )>=real.mant_dig-0);
     assert(feqrel(erfc(1.125L), erfc1_125 )>=real.mant_dig-2);
     assert(feqrel(erf(0.875L), erf0_875 )>=real.mant_dig-1);
     // The DMC implementation of erfc() fails this next test (just)
