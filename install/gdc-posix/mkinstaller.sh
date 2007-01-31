@@ -16,6 +16,16 @@ then
     die 1 'You must run mkinstaller.sh from the Tango base.'
 fi
 
+# Figure out the version of Tango
+TANGO_VERSION=0.0
+if [ -e .svn ]
+then
+    TANGO_VERSION="r`svn info | grep '^Revision: ' | sed 's/Revision: //'`"
+elif [ -e version.txt ]
+then
+    TANGO_VERSION="`cat version.txt`"
+fi
+
 # Figure out our platform
 PLATFORM="`gdc -dumpmachine`"
 
@@ -52,8 +62,8 @@ rm -rf tmp || exit 1
     echo -e '#!/bin/bash\nINST_GDC=0\nINST_DSSS=0' ;
     cat install/gdc-posix/installer.sh ;
     tar cf - core.tar.gz tango.tar.gz
-) > tango-gdc-$PLATFORM.sh || die 1 "Failed to create the installer"
-chmod 0755 tango-gdc-$PLATFORM.sh
+) > tango-$TANGO_VERSION-gdc-$PLATFORM.sh || die 1 "Failed to create the installer"
+chmod 0755 tango-$TANGO_VERSION-gdc-$PLATFORM.sh
 
 # 4) DSSS
 if [ -e dsss ]
@@ -67,8 +77,8 @@ then
         echo -e '#!/bin/bash\nINST_GDC=0\nINST_DSSS=1' ;
         cat install/gdc-posix/installer.sh ;
         tar cf - core.tar.gz tango.tar.gz dsss.tar.gz
-    ) > tango-gdc-$PLATFORM-withDSSS.sh || die 1 "Failed to create the installer with DSSS"
-    chmod 0755 tango-gdc-$PLATFORM-withDSSS.sh
+    ) > tango-$TANGO_VERSION-gdc-$PLATFORM-withDSSS.sh || die 1 "Failed to create the installer with DSSS"
+    chmod 0755 tango-$TANGO_VERSION-gdc-$PLATFORM-withDSSS.sh
 
     # 5) GDC
     if [ -e gdc ]
@@ -108,8 +118,8 @@ then
             echo -e '#!/bin/bash\nINST_GDC=1\nINST_DSSS=1' ;
             cat install/gdc-posix/installer.sh ;
             tar cf - core.tar.gz tango.tar.gz dsss.tar.gz gdc.tar.gz
-        ) > tango-gdc-$PLATFORM-withDSSS-withGDC.sh || die 1 "Failed to create the installer with DSSS and GDC"
-        chmod 0755 tango-gdc-$PLATFORM-withDSSS-withGDC.sh
+        ) > tango-$TANGO_VERSION-gdc-$PLATFORM-withDSSS-withGDC.sh || die 1 "Failed to create the installer with DSSS and GDC"
+        chmod 0755 tango-$TANGO_VERSION-gdc-$PLATFORM-withDSSS-withGDC.sh
     fi
 fi
 
