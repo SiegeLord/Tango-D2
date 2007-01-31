@@ -1,8 +1,8 @@
-module tango.stdc.posix.sys.socket;
+module tango.sys.linux.socket;
 
 private import tango.stdc.stdint;
-
 public import tango.stdc.posix.fcntl;
+public import tango.stdc.posix.unistd; // for gethostname
 
 extern(C):
 
@@ -30,7 +30,6 @@ protoent* getprotobyname(char* name);
 protoent* getprotobynumber(int number);
 servent* getservbyname(char* name, char* proto);
 servent* getservbyport(int port, char* proto);
-int gethostname(char* name, int namelen);
 int getaddrinfo(char* nodename, char* servname, addrinfo* hints, addrinfo** res);
 void freeaddrinfo(addrinfo* ai);
 int getnameinfo(sockaddr* sa, socklen_t salen, char* node, socklen_t nodelen, char* service, socklen_t servicelen, int flags);
