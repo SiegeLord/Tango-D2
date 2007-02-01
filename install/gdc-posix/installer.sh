@@ -18,7 +18,7 @@ mkdir -p $TTMP || die 1 "Failed to create temporary directory"
 
 # This installer works by black magic: The following number must be the exact
 # number of lines in this file+4:
-LINES=93
+LINES=103
 
 # Install GDC if necessary
 GDCDIR=
@@ -53,7 +53,17 @@ then
         fi
     else
         # Get our proper GDC prefix
-        GDCDIR="`/opt/gdc/bin/gdc -print-search-dirs | grep '^install:' | sed 's/install: //'`/../../../.."
+        OLDIPS="$IPS"
+        IPS=:
+        for i in $PATH
+        do
+            if [ -e "$i/bin/gdc" ]
+            then
+                GDCDIR="$i"
+                break
+            fi
+        done
+        IPS="$OLDIPS"
     fi
 fi
 
