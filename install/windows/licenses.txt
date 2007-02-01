@@ -1,4 +1,3 @@
-
 License Agreement 
 
 Tango is Open Source software, distributed by a group of developers which has been set up for the purpose of providing a vendor-neutral owner of Tango intellectual property. The goals of all Tango licensing decisions are to:
@@ -21,6 +20,6 @@ The preferred license is the Academic Free License v2.1. All Tango projects rele
 
 Users who wish to include Tango with software licensed under the (L)GPL will want to use Tango under the terms of the BSD License. [1] Tango projects may request a variance from the developers to release their projects under additional licenses in conjunction with the AFL.
 
-If you have further questions regarding Tango licensing, please do not hesitate to contact us : http://www.dsource.org/projects/tango/wiki/Contact.
+If you have further questions regarding Tango licensing, please do not hesitate to contact us : http://www.dsource.org/projects/tango/wiki/Contact .
 
-[1] The advertising clause has not been a part of the BSD License since July 22, 1999. link
+[1] The advertising clause has not been a part of the BSD License since July 22, 1999.
