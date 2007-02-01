@@ -16,7 +16,10 @@ private import tango.sys.TimeConverter;
 private import tango.stdc.errno;
 
 debug (selector)
+{
     private import tango.io.Stdout;
+    private import tango.text.convert.Integer;
+}
 
 
 version (Windows)
@@ -175,7 +178,45 @@ version (Windows)
          */
         public fd_set* opCast()
         {
-            return cast(fd_set*) &_buffer;
+            return cast(fd_set*) _buffer.ptr;
+        }
+
+
+        debug (selector)
+        {
+            /**
+             * Dump the contents of a HandleSet into stdout.
+             */
+            void dump(char[] name = null)
+            {
+                if (_buffer !is null && _buffer.length > 0 && _buffer[0] > 0)
+                {
+                    char[] handleStr = new char[16];
+                    char[] handleListStr;
+                    bool isFirst = true;
+
+                    if (name is null)
+                    {
+                        name = "HandleSet";
+                    }
+
+                    for (uint i = 1; i < _buffer[0]; ++i)
+                    {
+                        if (!isFirst)
+                        {
+                            handleListStr ~= ", ";
+                        }
+                        else
+                        {
+                            isFirst = false;
+                        }
+
+                        handleListStr ~= itoa(handleStr, _buffer[i]);
+                    }
+
+                    Stdout.formatln("--- {0}[{1}]: {2}", name, _buffer[0], handleListStr);
+                }
+            }
         }
     }
 }
@@ -290,6 +331,44 @@ else version (Posix)
         private static uint bitOffset(ISelectable.Handle handle)
         {
             return cast(uint) handle % BitsPerElement;
+        }
+
+        debug (selector)
+        {
+            /**
+             * Dump the contents of a HandleSet into stdout.
+             */
+            void dump(char[] name = null)
+            {
+                if (_buffer !is null && _buffer.length > 0)
+                {
+                    char[] handleStr = new char[16];
+                    char[] handleListStr;
+                    bool isFirst = true;
+
+                    if (name is null)
+                    {
+                        name = "HandleSet";
+                    }
+
+                    for (uint i = 0; i < _buffer.length * _buffer[0].sizeof; ++i)
+                    {
+                        if (isSet(cast(ISelectable.Handle) i))
+                        {
+                            if (!isFirst)
+                            {
+                                handleListStr ~= ", ";
+                            }
+                            else
+                            {
+                                isFirst = false;
+                            }
+                            handleListStr ~= itoa(handleStr, i);
+                        }
+                    }
+                    Stdout.formatln("--- {0}: {1}", name, handleListStr);
+                }
+            }
         }
     }
 }
@@ -678,17 +757,26 @@ public class SelectSelector: AbstractSelector
 
         if (_readSet !is null)
         {
+            debug (selector)
+                _readSet.dump("_readSet");
+
             _selectedReadSet.copy(_readSet);
             readfds = cast(fd_set*) _selectedReadSet;
         }
         if (_writeSet !is null)
         {
+            debug (selector)
+                _writeSet.dump("_writeSet");
+
             _selectedWriteSet.copy(_writeSet);
             writefds = cast(fd_set*) _selectedWriteSet;
         }
         if (_exceptionSet !is null)
         {
-            _selectedExceptionSet.copy(_writeSet);
+            debug (selector)
+                _exceptionSet.dump("_exceptionSet");
+
+            _selectedExceptionSet.copy(_exceptionSet);
             exceptfds = cast(fd_set*) _selectedExceptionSet;
         }
 
