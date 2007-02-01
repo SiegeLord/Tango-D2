@@ -43,7 +43,8 @@ Source: C:\projects\tango_install\revert_tango.ico; DestDir: {code:DMDRootLocati
 Name: english; MessagesFile: compiler:Default.isl
 
 [_ISToolDownload]
-Source: http://svn.dsource.org/projects/tango/downloads/tango-0.95-beta1-installer.zip; DestDir: {tmp}; DestName: tango.zip
+;Source: http://svn.dsource.org/projects/tango/downloads/tango-0.95-beta1-installer.zip; DestDir: {tmp}; DestName: tango.zip
+Source: http://63.99.9.206/tango/downloads/tango-0.95-beta1-installer.zip; DestDir: {tmp}; DestName: tango.zip
 ;Source: http://www.rentbayarea.com/build.zip; DestDir: {tmp}; DestName: build.zip; Check: ShouldInstallBuild
 
 [Run]
