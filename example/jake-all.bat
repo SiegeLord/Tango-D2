@@ -39,7 +39,6 @@
 @rem # REFERENCE MANUAL EXAMPLES
 @rem ###########################################################################
 
-@rem  example\manual\chapter4.d  (FIX ME)
 @jake manual\chapterStorage.d -I.. -op 
 
 @rem ###########################################################################
@@ -51,10 +50,6 @@
 @jake networking\sockethello.d -I.. -op
 @jake networking\socketserver.d -I.. -op
 @jake networking\selector.d -I.. -op
-
-@IF EXIST ..\mango. (@jake networking\httpserver.d -I.. -op)
-@IF EXIST ..\mango. (@jake networking\servlets.d -I.. -op)
-@IF EXIST ..\mango. (@jake networking\servletserver.d -I.. -op)
 
 @rem ###########################################################################
 @rem # SYSTEM EXAMPLES
@@ -74,15 +69,6 @@
 @jake text\formatspec.d -I.. -op
 @jake text\localetime.d -I.. -op
 @jake text\token.d -I.. -op
-
-@rem ###########################################################################
-@rem # LOCKS EXAMPLES
-@rem ###########################################################################
-
-@jake locks\barrier.d -I.. -op
-@rem @jake locks\condition.d -I.. -op
-@jake locks\mutex.d -I.. -op
-@rem @jake locks\readwritemutex.d -I.. -op
 
 @rem FINI
 
