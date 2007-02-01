@@ -834,6 +834,17 @@ bool isIdentical(real x, real y)
   }
 }
 
+/** ditto */
+bool isIdentical(ireal x, ireal y) {
+    return isIdentical(x.im, y.im);
+}
+
+/** ditto */
+bool isIdentical(creal x, creal y) {
+    return isIdentical(x.re, y.re) && isIdentical(x.im, y.im);
+}
+
+
 debug(UnitTest) {
 unittest {
     assert(isIdentical(0.0, 0.0));
@@ -842,6 +853,8 @@ unittest {
     assert(!isIdentical(NaN("abc"), NaN("xyz")));
     assert(isIdentical(1.234e56, 1.234e56));
     assert(isNaN(NaN("abcdefghijklmn")));
+    assert(isIdentical(3.1+NaN("xyz")*1i, 3.1+NaN("xyz")*1i));
+    assert(!isIdentical(3.1+0.0i, 3.1-0i));
 }
 }
 

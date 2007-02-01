@@ -963,42 +963,29 @@ real sqrt(real x) /* intrinsic */ /// ditto
     }
 }
 
-creal sqrt(creal z) /// ditto
+/** ditto */
+creal sqrt(creal z)
 {
-    creal c;
+
+    if (z == 0.0) return z;
     real x,y,w,r;
+    creal c;
 
-    if (z == 0.0)
-    {
-    c = 0.0 + 0.0i;
-    }
-    else
-    {   real z_re = z.re;
-    real z_im = z.im;
-
-    x = tango.math.IEEE.fabs(z_re);
-    y = tango.math.IEEE.fabs(z_im);
-    if (x >= y)
-    {
+    x = tango.math.IEEE.fabs(z.re);
+    y = tango.math.IEEE.fabs(z.im);
+    if (x >= y) {
         r = y / x;
         w = sqrt(x) * sqrt(0.5 * (1 + sqrt(1 + r * r)));
-    }
-    else
-    {
+    } else  {
         r = x / y;
         w = sqrt(y) * sqrt(0.5 * (r + sqrt(1 + r * r)));
     }
 
-    if (z_re >= 0)
-    {
-        c = w + (z_im / (w + w)) * 1.0i;
-    }
-    else
-    {
-        if (z_im < 0)
-        w = -w;
-        c = z_im / (w + w) + w * 1.0i;
-    }
+    if (z.re >= 0) {
+        c = w + (z.im / (w + w)) * 1.0i;
+    } else {
+        if (z.im < 0)  w = -w;
+        c = z.im / (w + w) + w * 1.0i;
     }
     return c;
 }
@@ -1007,6 +994,8 @@ debug(UnitTest) {
 unittest {
     // NaN payloads
     assert(isIdentical(sqrt(NaN("abc")), NaN("abc")));
+    assert(sqrt(-1+0i) == 1i);
+    assert(isIdentical(sqrt(0-0i), 0-0i));
 }
 }
 
@@ -1567,6 +1556,7 @@ unittest
         [   -300,   -400,   500],
         [   real.min, real.min,  0x1.6a09e667f3bcc908p-16382L],
         [   real.max/2, real.max/2, 0x1.6a09e667f3bcc908p+16383L /*8.41267e+4931L*/],
+        [   real.max, 1, real.max],
         [   real.infinity, real.nan, real.infinity],
         [   real.nan, real.nan, real.nan],
     ];
