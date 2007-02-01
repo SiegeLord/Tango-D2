@@ -30,7 +30,7 @@ fi
 PLATFORM="`gdc -dumpmachine`"
 
 # 1) The core
-if [ ! -e lib/libtango.a ]
+if [ ! -e lib/libgphobos.a ]
 then
     cd lib || die 1 "Failed to cd to lib"
     ./build-gdc.sh || die 1 "Failed to build the core"
@@ -38,7 +38,7 @@ then
     cd .. || die 1
 fi
 
-tar zcf core.tar.gz object.di lib/libgphobos.a lib/libtango.a \
+tar zcf core.tar.gz object.di lib/libgphobos.a \
     lib/install-gdc.sh || die 1 "Failed to create core.tar.gz"
 
 
