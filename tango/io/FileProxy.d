@@ -262,11 +262,11 @@ class FileProxy
 
                 /***************************************************************
 
-                        Is this file really a directory?
+                        Is this file actually a folder/directory?
 
                 ***************************************************************/
 
-                bool isDirectory ()
+                bool isFolder ()
                 {
                         return (getFlags & FILE_ATTRIBUTE_DIRECTORY) != 0;
                 }
@@ -324,7 +324,7 @@ class FileProxy
 
                 FileProxy remove ()
                 {
-                        if (isDirectory)
+                        if (isFolder)
                            {
                            version (Win32SansUnicode)
                                    {
@@ -544,11 +544,11 @@ class FileProxy
 
                 /***************************************************************
 
-                        Is this file really a directory?
+                        Is this file actually a folder/directory?
 
                 ***************************************************************/
 
-                bool isDirectory ()
+                bool isFolder ()
                 {
                         stat_t stats;
 
@@ -605,7 +605,7 @@ class FileProxy
 
                 FileProxy remove ()
                 {
-                        if (isDirectory)
+                        if (isFolder)
                            {
                            if (posix.rmdir (path.cString.ptr))
                                exception;
