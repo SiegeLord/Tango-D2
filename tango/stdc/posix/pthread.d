@@ -266,6 +266,21 @@ version( linux )
     int pthread_barrierattr_init(pthread_barrierattr_t*);
     int pthread_barrierattr_setpshared(pthread_barrierattr_t*, int);
 }
+else version( darwin )
+{
+    // This is not avaliable on darwin, but:
+    const _POSIX_BARRIERS = -1;
+    const PTHREAD_BARRIER_SERIAL_THREAD = _POSIX_BARRIERS;
+
+    int pthread_barrier_init(pthread_barrier_t*, pthread_barrierattr_t*, uint);
+    int pthread_barrier_destroy(pthread_barrier_t*);
+    int pthread_barrier_wait(pthread_barrier_t*);
+
+    int pthread_barrierattr_init(pthread_barrierattr_t*);
+    int pthread_barrierattr_getpshared(pthread_barrierattr_t*, int*);
+    int pthread_barrierattr_destroy(pthread_barrierattr_t*);
+    int pthread_barrierattr_setpshared(pthread_barrierattr_t*, int);
+}
 
 //
 // Clock (CS)
@@ -326,6 +341,20 @@ version( linux )
     int pthread_mutexattr_settype(pthread_mutexattr_t*, int);
     int pthread_setconcurrency(int);
 }
+else version( darwin )
+{
+    const PTHREAD_MUTEX_NORMAL      = 0;
+    const PTHREAD_MUTEX_ERRORCHECK  = 1;
+    const PTHREAD_MUTEX_RECURSIVE   = 2;
+    const PTHREAD_MUTEX_DEFAULT     = PTHREAD_MUTEX_NORMAL;
+
+    int pthread_attr_getguardsize(pthread_attr_t*, size_t*);
+    int pthread_attr_setguardsize(pthread_attr_t*, size_t);
+    int pthread_getconcurrency();
+    int pthread_mutexattr_gettype(pthread_mutexattr_t*, int*);
+    int pthread_mutexattr_settype(pthread_mutexattr_t*, int);
+    int pthread_setconcurrency(int);
+}
 
 //
 // CPU Time (TCT)
@@ -353,6 +382,147 @@ version( linux )
     int pthread_mutex_timedlock(pthread_mutex_t*, timespec*);
     int pthread_rwlock_timedrdlock(pthread_rwlock_t*, timespec*);
     int pthread_rwlock_timedwrlock(pthread_rwlock_t*, timespec*);
+}
+else version( darwin )
+{
+    private
+    {
+        import tango.stdc.errno;
+        import tango.stdc.posix.unistd;
+        import tango.stdc.posix.sys.time;
+
+        extern (D)
+        {
+            void timerclear( timeval* tvp )
+            {
+                tvp.tv_sec = tvp.tv_usec = 0;
+            }
+
+            bool timerisset( timeval* tvp )
+            {
+                return tvp.tv_sec || tvp.tv_usec;
+            }
+
+            bool timer_cmp_leq( timeval* tvp, timeval* uvp )
+            {
+                return tvp.tv_sec == uvp.tv_sec ?
+                        tvp.tv_usec <= uvp.tv_usec :
+                        tvp.tv_sec <= uvp.tv_sec;
+            }
+
+            void timeradd( timeval* tvp, timeval* uvp, timeval* vvp )
+            {
+                vvp.tv_sec = tvp.tv_sec + uvp.tv_sec;
+                vvp.tv_usec = tvp.tv_usec + uvp.tv_usec;
+                if( vvp.tv_usec >= 1000000 )
+                {
+                    vvp.tv_sec++;
+                    vvp.tv_usec -= 1000000;
+                }
+            }
+
+            void timersub( timeval* tvp, timeval* uvp, timeval* vvp )
+            {
+                vvp.tv_sec = tvp.tv_sec - uvp.tv_sec;
+                vvp.tv_usec = tvp.tv_usec - uvp.tv_usec;
+                if( vvp.tv_usec < 0 )
+                {
+                    vvp.tv_sec--;
+                    vvp.tv_usec += 1000000;
+                }
+            }
+
+            void TIMEVAL_TO_TIMESPEC( timeval* tv, timespec* ts )
+            {
+                ts.tv_sec = tv.tv_sec;
+                ts.tv_nsec = tv.tv_usec * 1000;
+            }
+
+            void TIMESPEC_TO_TIMEVAL( timeval* tv, timespec* ts )
+            {
+                tv.tv_sec = ts.tv_sec;
+                tv.tv_usec = ts.tv_nsec / 1000;
+            }
+        }
+    }
+
+    int pthread_mutex_timedlock( pthread_mutex_t* m, timespec* t )
+    {
+        timeval currtime;
+        timeval maxwait;
+        TIMESPEC_TO_TIMEVAL( &maxwait, t );
+        timeval waittime;
+        waittime.tv_usec = 100;
+
+        while( timer_cmp_leq( &currtime, &maxwait ) )
+        {
+            int ret = pthread_mutex_trylock( m );
+            switch( ret )
+            {
+            case 0:     // locked successfully
+                return ret;
+            case EBUSY: // waiting
+                timeradd( &currtime, &waittime, &currtime );
+                break;
+            default:
+                return ret;
+            }
+            usleep( waittime.tv_usec );
+        }
+        return ETIMEDOUT;
+    }
+
+    int pthread_rwlock_timedrdlock( pthread_rwlock_t *rwlock, timespec* t )
+    {
+        timeval currtime;
+        timeval maxwait;
+        TIMESPEC_TO_TIMEVAL( &maxwait, t );
+        timeval waittime;
+        waittime.tv_usec = 100;
+
+        while( timer_cmp_leq( &currtime, &maxwait ) )
+        {
+            int ret = pthread_rwlock_tryrdlock( rwlock );
+            switch( ret )
+            {
+            case 0:     // locked successfully
+                return ret;
+            case EBUSY: // waiting
+                timeradd( &currtime, &waittime, &currtime );
+                break;
+            default:
+                return ret;
+            }
+            usleep( waittime.tv_usec );
+        }
+        return ETIMEDOUT;
+    }
+
+    int pthread_rwlock_timedwrlock( pthread_rwlock_t* l, timespec* t )
+    {
+        timeval currtime;
+        timeval maxwait;
+        TIMESPEC_TO_TIMEVAL( &maxwait, t );
+        timeval waittime;
+        waittime.tv_usec = 100;
+
+        while( timer_cmp_leq( &currtime, &maxwait ) )
+        {
+            int ret = pthread_rwlock_trywrlock( l );
+            switch( ret )
+            {
+            case 0:     // locked successfully
+                return ret;
+            case EBUSY: // waiting
+                timeradd( &currtime, &waittime, &currtime );
+                break;
+            default:
+                return ret;
+            }
+            usleep( waittime.tv_usec );
+        }
+        return ETIMEDOUT;
+    }
 }
 
 //

@@ -342,6 +342,18 @@ version( linux )
         int __pshared;
     }
 }
+else version( darwin )
+{
+    struct pthread_barrier_t
+    {
+
+    }
+
+    struct pthread_barrierattr_t
+    {
+
+    }
+}
 
 //
 // Spin (SPN)
@@ -353,6 +365,10 @@ pthread_spinlock_t
 version( linux )
 {
     alias int pthread_spinlock_t; // volatile
+}
+else version( darwin )
+{
+    struct pthread_spinlock_t;
 }
 
 //
