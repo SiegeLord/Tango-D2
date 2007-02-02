@@ -148,7 +148,7 @@ class FileProxy
 
                 Throws: IllegalArgumentException if the path contains invalid
                         path segment names (such as '.' or '..') or a segment
-                        exists but as a file instead of a folder                        
+                        exists but as a file instead of a folder
 
         ***********************************************************************/
 
@@ -158,7 +158,7 @@ class FileProxy
                     if (isFolder)
                         return this;
                     else
-                       throw new IllegalArgumentException ("FileProxy.createFolders :: file/folder conflict for '" ~ path.toUtf8 ~ "'");
+                       throw new IllegalArgumentException ("FileProxy.createPath :: file/folder conflict for '" ~ path.toUtf8 ~ "'");
 
                 scope prior = new FilePath (path.asParent);
                 char[] name = prior.getName;
@@ -166,7 +166,7 @@ class FileProxy
                 if (name.length is 0                   ||
                     name == FileConst.CurrentDirString ||
                     name == FileConst.ParentDirString)
-                    throw new IllegalArgumentException ("FileProxy.createFolders :: invalid parent '" ~ path.toUtf8 ~ "'");
+                    throw new IllegalArgumentException ("FileProxy.createPath :: invalid parent '" ~ path.toUtf8 ~ "'");
 
                 scope parent = new FileProxy (prior);
                 parent.createPath;
