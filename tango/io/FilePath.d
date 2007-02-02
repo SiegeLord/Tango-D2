@@ -268,6 +268,44 @@ class FilePath
 
         /***********************************************************************
 
+                Returns true if this FilePath is *not* relative to the
+                current working directory and does not contain segments that
+                are equal to '.' or '..'.
+
+        ***********************************************************************/
+
+        final bool isAbsoluteCanonical ()
+        {
+                if( !isAbsolute() )
+                {
+                        return false;
+                }
+
+                int idx = path +1; // it is absolute, so the path starts with a separator
+
+                // repeat until end (for each segment)
+                // a segment is the text between path separators
+                while( idx < end ){
+                        int lastidx = idx;
+
+                        // search next separator
+                        while( idx < end && fp[idx] != FileConst.PathSeparatorChar )
+                        {
+                                idx++;
+                        }
+                        // test the segment
+                        if( fp[ lastidx .. idx ] == FileConst.CurrentDirString ||
+                            fp[ lastidx .. idx ] == FileConst.ParentDirString )
+                        {
+                                return false;
+                        }
+                        idx++; // go over the separator
+                }
+                return true;
+        }
+
+        /***********************************************************************
+
                 Returns true if this FilePath is empty
 
         ***********************************************************************/
@@ -696,33 +734,48 @@ debug (UnitTest)
                 fp = new FilePath(r"C:\foo\bar\test.bar");
                 assert (fp.asExt(null) == r"C:\foo\bar\test");
                 assert (fp.asExt("foo") == r"C:\foo\bar\test.foo");
+
+                assert ( (new FilePath(r"C:\foo\bar\test.bar")).isAbsoluteCanonical() );
+                assert ( (new FilePath(r"C:\foo\bar\test..bar")).isAbsoluteCanonical() );
+                assert ( (new FilePath(r"C:\foo\bar..\test.bar")).isAbsoluteCanonical() );
+                assert ( (new FilePath(r"C:\foo\bar.\test.bar")).isAbsoluteCanonical() );
+                assert ( (new FilePath(r"C:\foo\.bar\test.bar")).isAbsoluteCanonical() );
+                assert ( (new FilePath(r"C:\foo\..bar\test.bar")).isAbsoluteCanonical() );
+                assert ( (new FilePath(r"C:\.")).isAbsolute() );
+                assert ( !((new FilePath(r"C:\foo\..\test.bar")).isAbsoluteCanonical() ));
+                assert ( !((new FilePath(r"C:\foo\.\test.bar")).isAbsoluteCanonical() ));
+                assert ( !((new FilePath(r"C:\.\a")).isAbsoluteCanonical() ));
+                assert ( !((new FilePath(r"C:\.")).isAbsoluteCanonical() ));
+                assert ( !((new FilePath(r"C:\a\..")).isAbsoluteCanonical() ));
+                assert ( !((new FilePath(r"C:\foo\.")).isAbsoluteCanonical() ));
+                assert ( !((new FilePath(r"C:\foo\..")).isAbsoluteCanonical() ));
+                assert ( !((new FilePath(r"\.\foo\")).isAbsoluteCanonical() ));
+                assert ( !((new FilePath(r"C:\..\foo\")).isAbsoluteCanonical() ));
+
+
                 }
 
 
         version (Posix)
                 {
-                /+
-                 + TODO: Fix this test so it is not dependent on paths actually
-                 +       being present in the system.
-                 +
-                auto fp = new FilePath(r"C:/home/foo/bar/john/");
+                auto fp = new FilePath(r"/home/foo/bar/john/");
                 assert (fp.isAbsolute);
                 assert (fp.getName == "");
                 assert (fp.getPath == r"/home/foo/bar/john/");
-                assert (fp.toUtf8 == r"C:/home/foo/bar/john/");
-                assert (fp.getFullPath == r"C:/home/foo/bar/john/");
+                assert (fp.toUtf8 == r"/home/foo/bar/john/");
+                assert (fp.getFullPath == r"/home/foo/bar/john/");
                 assert (fp.getFullName == r"");
                 assert (fp.getSuffix == r"");
-                assert (fp.getRoot == r"C:");
+                assert (fp.getRoot == r"");
                 assert (fp.getExt == "", fp.getExt);
                 assert (fp.isChild);
 
-                fp = new FilePath(r"C:/home/foo/bar/john");
+                fp = new FilePath(r"/home/foo/bar/john");
                 assert (fp.isAbsolute);
                 assert (fp.getName == "john");
                 assert (fp.getPath == r"/home/foo/bar/");
-                assert (fp.toUtf8 == r"C:/home/foo/bar/john");
-                assert (fp.getFullPath == r"C:/home/foo/bar/");
+                assert (fp.toUtf8 == r"/home/foo/bar/john");
+                assert (fp.getFullPath == r"/home/foo/bar/");
                 assert (fp.getFullName == r"john");
                 assert (fp.getSuffix == r"");
                 assert (fp.getExt == "");
@@ -732,8 +785,8 @@ debug (UnitTest)
                 assert (fp.isAbsolute);
                 assert (fp.getName == "bar");
                 assert (fp.getPath == r"/home/foo/");
-                assert (fp.toUtf8 == r"C:/home/foo/bar");
-                assert (fp.getFullPath == r"C:/home/foo/");
+                assert (fp.toUtf8 == r"/home/foo/bar");
+                assert (fp.getFullPath == r"/home/foo/");
                 assert (fp.getFullName == r"bar");
                 assert (fp.getSuffix == r"");
                 assert (fp.getExt == "");
@@ -743,8 +796,8 @@ debug (UnitTest)
                 assert (fp.isAbsolute);
                 assert (fp.getName == "foo");
                 assert (fp.getPath == r"/home/");
-                assert (fp.toUtf8 == r"C:/home/foo");
-                assert (fp.getFullPath == r"C:/home/");
+                assert (fp.toUtf8 == r"/home/foo");
+                assert (fp.getFullPath == r"/home/");
                 assert (fp.getFullName == r"foo");
                 assert (fp.getSuffix == r"");
                 assert (fp.getExt == "");
@@ -754,8 +807,8 @@ debug (UnitTest)
                 assert (fp.isAbsolute);
                 assert (fp.getName == "home");
                 assert (fp.getPath == r"/");
-                assert (fp.toUtf8 == r"C:/home");
-                assert (fp.getFullPath == r"C:/");
+                assert (fp.toUtf8 == r"/home");
+                assert (fp.getFullPath == r"/");
                 assert (fp.getFullName == r"home");
                 assert (fp.getSuffix == r"");
                 assert (fp.getExt == "");
@@ -771,16 +824,17 @@ debug (UnitTest)
                 assert (fp.getExt == "doe");
                 assert (fp.isChild);
 
+/+
                 fp = new FilePath(r"c:doe");
                 assert (fp.isAbsolute);
                 assert (fp.getSuffix == r"");
-                assert (fp.toUtf8 == r"c:doe");
+                assert (fp.toUtf8 == r"doe");
                 assert (fp.getPath == r"");
                 assert (fp.getName == "doe");
                 assert (fp.getFullName == r"doe");
                 assert (fp.getExt == "");
                 assert (!fp.isChild);
-
++/
                 fp = new FilePath(r"/doe");
                 assert (fp.isAbsolute);
                 assert (fp.getSuffix == r"");
@@ -845,13 +899,13 @@ debug (UnitTest)
                 fp = new FilePath(fp.asPath ("foo"));
                 assert (fp.getName == r"test");
                 assert (fp.getPath == r"foo/");
-                assert (fp.getFullPath == r"C:foo/");
+                assert (fp.getFullPath == r"foo/");
                 assert (fp.getExt == "bar");
 
                 fp = new FilePath(fp.asPath (""));
                 assert (fp.getName == r"test");
                 assert (fp.getPath == r"");
-                assert (fp.getFullPath == r"C:");
+                assert (fp.getFullPath == r"");
                 assert (fp.getExt == "bar");
 
                 fp = new FilePath("");
@@ -866,24 +920,42 @@ debug (UnitTest)
                 assert (fp.getExt == "");
 
                 fp = new FilePath(r"foo/bar/");
-                assert(fp.join(r"c:/joe/bar").toUtf8 == r"c:/joe/bar/foo/bar/");
-                assert(fp.join(new FilePath(r"c:/joe/bar")).toUtf8 == r"c:/joe/bar/foo/bar/");
-                fp = new FilePath(r"c:/joe/bar");
-                assert(fp.join(r"foo/bar/").toUtf8 == r"c:/joe/bar");
-                assert(fp.join(new FilePath(r"foo/bar")).toUtf8 == r"c:/joe/bar");
+                assert(fp.join(r"/joe/bar").toUtf8 == r"/joe/bar/foo/bar/");
+                assert(fp.join(new FilePath(r"/joe/bar")).toUtf8 == r"/joe/bar/foo/bar/");
+                fp = new FilePath(r"/joe/bar");
+                assert(fp.join(r"foo/bar/").toUtf8 == r"/joe/bar");
+                assert(fp.join(new FilePath(r"foo/bar")).toUtf8 == r"/joe/bar");
 
-                fp = new FilePath(r"c:/bar");
-                assert(fp.join(r"foo").toUtf8 == r"c:/bar");
-                assert(fp.join(new FilePath(r"foo")).toUtf8 == r"c:/bar");
+                fp = new FilePath(r"/bar");
+                assert(fp.join(r"foo").toUtf8 == r"/bar");
+                assert(fp.join(new FilePath(r"foo")).toUtf8 == r"/bar");
 
                 fp = new FilePath(r"bar/");
-                assert(fp.join(r"c:/foo").toUtf8 == r"c:/foo/bar/");
-                assert(fp.join(new FilePath(r"c:/foo")).toUtf8 == r"c:/foo/bar/");
+                assert(fp.join(r"/foo").toUtf8 == r"/foo/bar/");
+                assert(fp.join(new FilePath(r"/foo")).toUtf8 == r"/foo/bar/");
 
-                fp = new FilePath(r"C:/foo/bar/test.bar");
-                assert (fp.asExt(null) == r"C:/foo/bar/test");
-                assert (fp.asExt("foo") == r"C:/foo/bar/test.foo");
-                 +/
+                fp = new FilePath(r"/foo/bar/test.bar");
+                assert (fp.asExt(null) == r"/foo/bar/test");
+                assert (fp.asExt("foo") == r"/foo/bar/test.foo");
+
+                assert ( (new FilePath(r"/foo/bar/test.bar")).isAbsoluteCanonical() );
+                assert ( (new FilePath(r"/foo/bar/test..bar")).isAbsoluteCanonical() );
+                assert ( (new FilePath(r"/foo/bar../test.bar")).isAbsoluteCanonical() );
+                assert ( (new FilePath(r"/foo/bar./test.bar")).isAbsoluteCanonical() );
+                assert ( (new FilePath(r"/foo/.bar/test.bar")).isAbsoluteCanonical() );
+                assert ( (new FilePath(r"/foo/..bar/test.bar")).isAbsoluteCanonical() );
+                assert ( (new FilePath(r"/.")).isAbsolute() );
+                assert ( !((new FilePath(r"/foo/../test.bar")).isAbsoluteCanonical() ));
+                assert ( !((new FilePath(r"/foo/./test.bar")).isAbsoluteCanonical() ));
+                assert ( !((new FilePath(r"/./a")).isAbsoluteCanonical() ));
+                assert ( !((new FilePath(r"/.")).isAbsoluteCanonical() ));
+                assert ( !((new FilePath(r"/a/..")).isAbsoluteCanonical() ));
+                assert ( !((new FilePath(r"/foo/.")).isAbsoluteCanonical() ));
+                assert ( !((new FilePath(r"/foo/..")).isAbsoluteCanonical() ));
+                assert ( !((new FilePath(r"/./foo/")).isAbsoluteCanonical() ));
+                assert ( !((new FilePath(r"/../foo/")).isAbsoluteCanonical() ));
+
+
                 }
         }
 }
