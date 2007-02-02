@@ -18,14 +18,15 @@ module tango.io.FileProxy;
 
 private import  tango.sys.Common;
 
-public  import  tango.io.FilePath;
-public  import  tango.io.FileSystem;
+public  import  tango.io.FilePath,
+                tango.io.FileConst;
 
 private import  tango.core.Exception;
 
 /*******************************************************************************
 
 *******************************************************************************/
+
 version (Win32)
         {
         private import Utf = tango.text.convert.Utf;
@@ -132,6 +133,44 @@ class FileProxy
                     return true;
                     } catch (IOException){}
                 return false;
+        }
+
+        /***********************************************************************
+
+                Create an entire path consisting of this folder along with 
+                all parent folders. The path must not contain '.' or '..'
+                segments. Related methods include PathUtil.normalize() and
+                FileSystem.absolutePath()
+
+                Returns: a chaining reference (this)
+
+                Throws: IOException upon systen errors
+
+                Throws: IllegalArgumentException if the path contains invalid
+                        path segment names (such as '.' or '..') or a segment
+                        exists but as a file instead of a folder                        
+
+        ***********************************************************************/
+
+        FileProxy createPath ()
+        { 
+                if (isExisting)
+                    if (isFolder)
+                        return this;
+                    else
+                       throw new IllegalArgumentException ("FileProxy.createFolders :: file/folder conflict for '" ~ path.toUtf8 ~ "'");
+
+                scope prior = new FilePath (path.asParent);
+                char[] name = prior.getName;
+
+                if (name.length is 0                   ||
+                    name == FileConst.CurrentDirString ||
+                    name == FileConst.ParentDirString)
+                    throw new IllegalArgumentException ("FileProxy.createFolders :: invalid parent '" ~ path.toUtf8 ~ "'");
+
+                scope parent = new FileProxy (prior);
+                parent.createPath;
+                return createFolder;
         }
 
         /***********************************************************************
@@ -701,42 +740,6 @@ class FileProxy
 
                               dg (prefix, str, entry.d_type is DT_DIR);
                               }
-                }
-        }
-
-        /***************************************************************
-
-                Create a new directory and recursively all needed
-                parent directories.
-
-                Returns: the new created Folder. This object.
-                Throws: IOExcpetion in case of error.
-                Throws: IllegalArgumentExcpetion if the path for this
-                FileProxy was not in absolute and canonical form.
-
-        ***************************************************************/
-
-        FileProxy createFolders ()
-        {
-                if( ! path.isAbsoluteCanonical() )
-                {
-                        throw new IllegalArgumentException (path.toUtf8 ~ ": the given path is not an absolute and canonical path" );
-                }
-
-                if( isExisting() && isFolder() )
-                {
-                        return this;
-                }
-                else
-                {
-                        char[] parentPath = path.asParent();
-                        if( parentPath.length == 0 )
-                        {
-                                throw new IOException (path.toUtf8 ~ ": createFolders cannot descent to parent" );
-                        }
-                        FileProxy parent = new FileProxy( parentPath );
-                        parent.createFolders();
-                        return createFolder();
                 }
         }
 }
