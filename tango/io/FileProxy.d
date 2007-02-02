@@ -19,13 +19,13 @@ module tango.io.FileProxy;
 private import  tango.sys.Common;
 
 public  import  tango.io.FilePath;
+public  import  tango.io.FileSystem;
 
 private import  tango.core.Exception;
 
 /*******************************************************************************
 
 *******************************************************************************/
-
 version (Win32)
         {
         private import Utf = tango.text.convert.Utf;
@@ -701,6 +701,42 @@ class FileProxy
 
                               dg (prefix, str, entry.d_type is DT_DIR);
                               }
+                }
+        }
+
+        /***************************************************************
+
+                Create a new directory and recursively all needed
+                parent directories.
+
+                Returns: the new created Folder. This object.
+                Throws: IOExcpetion in case of error.
+                Throws: IllegalArgumentExcpetion if the path for this
+                FileProxy was not in absolute and canonical form.
+
+        ***************************************************************/
+
+        FileProxy createFolders ()
+        {
+                if( ! path.isAbsoluteCanonical() )
+                {
+                        throw new IllegalArgumentException (path.toUtf8 ~ ": the given path is not an absolute and canonical path" );
+                }
+
+                if( isExisting() && isFolder() )
+                {
+                        return this;
+                }
+                else
+                {
+                        char[] parentPath = path.asParent();
+                        if( parentPath.length == 0 )
+                        {
+                                throw new IOException (path.toUtf8 ~ ": createFolders cannot descent to parent" );
+                        }
+                        FileProxy parent = new FileProxy( parentPath );
+                        parent.createFolders();
+                        return createFolder();
                 }
         }
 }
