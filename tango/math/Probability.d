@@ -1,5 +1,5 @@
 /**
- * Mathematical Statistical Functions
+ * Cumulative Probability Distribution Functions
  *
  * Copyright: Based on the CEPHES math library, which is
  *            Copyright (C) 1994 Stephen L. Moshier (moshier@world.std.com).
@@ -24,7 +24,7 @@
  *  SV  = $(TR $(TD $1) $(TD $2))
  */
 
-module tango.math.Statistics;
+module tango.math.Probability;
 static import tango.math.ErrorFunction;
 private import tango.math.GammaFunction;
 private import tango.math.Core;
