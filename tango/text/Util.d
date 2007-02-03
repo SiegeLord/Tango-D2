@@ -59,6 +59,7 @@
         delineate (source);                         // split on lines
         delimit (source, delimiters)                // split on delims
         demarcate (source, pattern)                 // split on pattern
+        join (source, postfix, output)              // join text segments
         replace (source, match, replacement)        // replace chars
         contains (source, match)                    // has char?
         containsPattern (source, match)             // has pattern?
@@ -320,6 +321,40 @@ T[][] delineate(T) (T[] src)
                  result [count++] = line;
 
         return result;
+}
+
+/******************************************************************************
+
+        Combine a series of text segments together, each appended with an 
+        optional postfix pattern. An optional output buffer can be provided
+        to avoid heap activity - it should be large enough to contain the 
+        entire output, otherwise the heap will be used instead.
+
+        Returns a valid slice of the output, containing the concatenated
+        text.
+
+******************************************************************************/
+
+T[] join(T) (T[][] src, T[] postfix=null, T[] dst=null)
+{
+        uint len = src.length * postfix.length;
+
+        foreach (segment; src)
+                 len += segment.length;
+               
+        if (dst.length < len)
+            dst.length = len;
+            
+        T* p = dst.ptr;
+        foreach (segment; src)
+                {
+                p[0 .. segment.length] = segment;
+                p += segment.length;
+                p[0 .. postfix.length] = postfix;
+                p += postfix.length;
+                }
+
+        return  dst [0 .. len];       
 }
 
 /******************************************************************************
@@ -1084,6 +1119,15 @@ debug (UnitTest)
         assert (x.length is 3 && x[0] == "one" && x[1] == "two" && x[2] == "three");
         x = demarcate ("one, two, three", ",,");
         assert (x.length is 1 && x[0] == "one, two, three");
+
+        char[][] foo = ["one", "two", "three"];
+        auto j = join (foo);
+        assert (j == "onetwothree");
+        j = join (foo, ", ");
+        assert (j == "one, two, three, ");
+        j = join (foo, " ", tmp);
+        assert (j == "one two three ");
+        assert (j.ptr is tmp.ptr);
         }
 }
 
