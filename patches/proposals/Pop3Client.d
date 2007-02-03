@@ -260,7 +260,15 @@ unittest
 	    Stdout("Message Count : " ~ toUtf8(count ) );
 	    for ( int i = 0 ; i < count; i++ )
 		{
-		    Stdout.formatln("Message Number {0}: {1}",toUtf8(i),pop3.retr(i+1).resp)().newline;
+		  POP3Response resp = pop3.retr(i+1);
+		  
+		  char [] to = extractField("To:",resp );
+		  char [] subject = extractField("Subject:",resp );
+		  char [] from = extractField("From:",resp );
+		  char [] returnPath = extractField("Return-Path:",resp );
+		  char [] msg = extractBody(resp);
+
+		  Stdout.formatln("To: {0}\nFrom:{1}\nSubject: {2}\nReturnPath: {3}\n[{4}]",to,from,subject,returnPath,msg)().newline;
 
       
 		}
