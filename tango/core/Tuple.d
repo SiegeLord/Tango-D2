@@ -50,7 +50,7 @@ template Tuple( TList... )
 template IndexOf( T, TList... )
 {
     static if( TList.length == 0 )
-        const size_t IndexOf = 1;
+        const size_t IndexOf = 0;
     else static if( is( T == TList[0] ) )
         const size_t IndexOf = 0;
     else
@@ -80,9 +80,9 @@ template RemoveAll( T, TList... )
     static if( TList.length == 0 )
         alias TList RemoveAll;
     else static if( is( T == TList[0] ) )
-        alias RemoveAll!( T, TList[1 .. $] ) RemoveAll;
+        alias .RemoveAll!( T, TList[1 .. $] ) RemoveAll;
     else
-        alias Tuple!( TList[0], RemoveAll!( T, TList[1 .. $] ) ) RemoveAll;
+        alias Tuple!( TList[0], .RemoveAll!( T, TList[1 .. $] ) ) RemoveAll;
 }
 
 
@@ -165,7 +165,30 @@ template DerivedToFront( TList... )
         alias TList DerivedToFront;
     else
         alias Tuple!( MostDerived!( TList[0], TList[1 .. $] ),
-	                  DerivedToFront!( ReplaceAll!( MostDerived!( TList[0], TList[1 .. $] ),
-						                            TList[0],
-						                            TList[1 .. $] ) ) ) DerivedToFront;
+                      DerivedToFront!( ReplaceAll!( MostDerived!( TList[0], TList[1 .. $] ),
+                                                    TList[0],
+                                                    TList[1 .. $] ) ) ) DerivedToFront;
 }
+
+
+/*
+ * A brief test of the above templates.
+ */
+static assert( 0 == IndexOf!(int, int, float, char));
+static assert( 1 == IndexOf!(float, int, float, char));
+static assert( 3 == IndexOf!(double, int, float, char));
+
+static assert( is( Remove!(int, int, float, int) == Remove!(void, float, int) ) );
+static assert( is( RemoveAll!(int, int, float, int) == Remove!(void, float) ) );
+static assert( is( Remove!(float, int, float, int) == Remove!(void, int, int) ) );
+static assert( is( Remove!(double, int, float, int) == Remove!(void, int, float, int) ) );
+
+static assert( is( Replace!(int, char, int, float, int) == Remove!(void, char, float, int) ) );
+static assert( is( ReplaceAll!(int, char, int, float, int) == Remove!(void, char, float, char) ) );
+static assert( is( Replace!(float, char, int, float, int) == Remove!(void, int, char, int) ) );
+static assert( is( Replace!(double, char, int, float, int) == Remove!(void, int, float, int) ) );
+
+static assert( is( Reverse!(float, float[], double, char, int) ==
+                   Unique!(int, char, double, float[], char, int, float, double) ) );
+
+static assert( is( MostDerived!(int, long, short) == short ) );
