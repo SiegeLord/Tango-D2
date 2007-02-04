@@ -9,9 +9,9 @@
         author:         Kris
 
 
-        String is a class for storing and manipulating Unicode characters.
+        _String is a class for storing and manipulating Unicode characters.
 
-        String maintains a current "selection", controlled via the mark(), 
+        _String maintains a current "selection", controlled via the mark(), 
         select() and selectPrior() methods. Each of append(), prepend(),
         replace() and remove() operate with respect to the selection. The
         select() methods operate with respect to the current selection
@@ -37,12 +37,12 @@
 
         The class is templated for use with char[], wchar[], and dchar[],
         and should migrate across encodings seamlessly. In particular, all
-        functions in tango.text.Util are compatible with String content in
+        functions in tango.text.Util are compatible with _String content in
         any of the supported encodings. In future, this class will become 
         the principal gateway to the extensive ICU unicode library.
 
         Note that several common text operations can be constructed through
-        combining tango.text.String with tango.text.Util e.g. lines of text
+        combining tango.text._String with tango.text.Util e.g. lines of text
         can be processed thusly:
         ---
         auto source = new String!(char)("one\ntwo\nthree");
@@ -919,19 +919,7 @@ class String(T) : StringView!(T)
 
                 return dst [0 .. i] = content [0 .. i];
         }
-/+
-        /***********************************************************************
 
-                Clone this string, with a copy of the content also. Return
-                as a mutable instance
-                
-        ***********************************************************************/
-
-        final String clone ()
-        {
-                return new String!(T)(slice, true);
-        }
-+/
         /***********************************************************************
         
                 Return an alias to the content of this StringView. Note
@@ -953,7 +941,7 @@ class String(T) : StringView!(T)
                 To minimize heap allocation during subsequent conversions,
                 apply the following pattern:
                 ---
-                String  string;
+                _String  string;
 
                 wchar[] buffer;
                 wchar[] result = string.utf16 (buffer);
@@ -1262,14 +1250,6 @@ class StringView(T) : UniString
         ***********************************************************************/
 
         abstract T[] copy (T[] dst);
-
-        /***********************************************************************
-
-                Make a deep copy of this String, and return as a mutable
-                
-        ***********************************************************************/
-
-        // abstract String!(T) clone ();
 
         /***********************************************************************
         
