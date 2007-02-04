@@ -127,10 +127,10 @@ download_tango() {
 	mkdir -p tango || die "Error while creating temporary directory."
 
 	echo "..changing directory to tango/..."
-	if [ ${SIMULATE} = 0 ]
-	then
+#	if [ ${SIMULATE} = 0 ]
+#	then
 		cd tango || die "Error while changing directory (tango/)."
-	fi
+#	fi
 
 	echo "..checking out tango/trunk (quietly). This may take some time..."
 	svn checkout -q ${TANGO_REPOSITORY} || die "Error while checking out."
@@ -232,8 +232,9 @@ install_tango() {
 			svn export --force . ${PREFIX}/include/tango || die "Error exporting Tango via svn export."
 		fi
 	else
-		"...no subversion files found, using normal copy method..."
+		echo "...no subversion files found, using normal copy method..."
 		echo "...creating directory ${PREFIX}/include..."
+
 		mkdir -p ${PREFIX}/include/tango || die "Error creating Tango directory."
 		cp -r ./* ${PREFIX}/include/tango || die "Error copying Tango to new directory."
 	fi
