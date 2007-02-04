@@ -190,7 +190,7 @@ version (BsdSockets)
 
         private const int F_GETFL       = 3;
         private const int F_SETFL       = 4;
-        private const int O_NONBLOCK    = 0x4000;
+        private const int O_NONBLOCK    = 04000;  // OCTAL! Thx to volcore
         private const int SOL_SOCKET_D  = 0xFFFF;
         private const int SO_TYPE       = 0x1008;
 
