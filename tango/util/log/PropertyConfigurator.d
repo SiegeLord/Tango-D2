@@ -4,8 +4,9 @@
 
         license:        BSD style: $(LICENSE)
       
-        version:        Split from Configurator.d, November 2005
-        
+        version:        Nov 2005: split from Configurator.d
+        verison:        Feb 2007: removed default console configuration
+         
         author:         Kris
 
 *******************************************************************************/
@@ -98,9 +99,6 @@ struct PropertyConfigurator
                         if (l && (value in map))
                             l.setLevel (map[value]);
                 }
-
-                // setup the basic stuff
-                Configurator.defaultAppender;
 
                 // read and parse properties from file
                 Properties!(char).load (path, &loader);
