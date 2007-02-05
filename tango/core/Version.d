@@ -4,7 +4,7 @@
 
         license:        BSD style: $(LICENSE)
 
-        version:        Initial release: March 2004Jan 2007      
+        version:        Jan 2007: Initial release
 
         author:         Kris
 
