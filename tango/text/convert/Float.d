@@ -108,6 +108,9 @@ dchar[] toUtf32 (double d, uint decimals=6, bool scientific=false)
 ******************************************************************************/
 
 T[] format(T, U=uint) (T[] dst, double x, U decimals = 6, bool scientific = false)
+{return format!(T)(dst, x, decimals, scientific);}
+
+T[] format(T) (T[] dst, double x, uint decimals = 6, bool scientific = false)
 {
         assert (dst.length >= 32);
 

@@ -194,7 +194,7 @@ class Cookie : IWritable
                    char[16] tmp = void;
 
                    consume (";Version=");
-                   consume (Integer.itoa (tmp, vrsn));
+                   consume (Integer.format (tmp, vrsn));
 
                    if (comment.length)
                        consume (";Comment=\""), consume(comment), consume("\"");
@@ -203,7 +203,7 @@ class Cookie : IWritable
                        consume (";Secure");
 
                    if (maxAge >= 0)
-                       consume (";Max-Age="c), consume (Integer.itoa (tmp, maxAge));
+                       consume (";Max-Age="c), consume (Integer.format (tmp, maxAge));
                    }
         }
 

@@ -968,7 +968,7 @@ class FTPConnection : Telnet
         // Okay, we got the MLST response... parse it.
         if (mlst_success)
             {
-                char[][] lines = Text.delineate(response.message);
+                char[][] lines = Text.splitLines (response.message);
 
                 // We need at least 3 lines - first and last and header/footer lines.
                 // Note that more than 3 could be returned; e.g. multiple lines about the one file.
@@ -1048,7 +1048,7 @@ class FTPConnection : Telnet
                 this.finishDataCommand(data);
 
                 // Each line is something in that directory.
-                char[][] lines = Text.delineate(cast(char[]) listing.slice());
+                char[][] lines = Text.splitLines (cast(char[]) listing.slice());
                 scope (exit)
                     delete lines;
 
@@ -1092,7 +1092,7 @@ class FTPConnection : Telnet
         this.finishDataCommand(data);
 
         // Split out the lines.  Most of the time, it's one-to-one.
-        char[][] lines = Text.delineate (cast(char[]) listing.slice());
+        char[][] lines = Text.splitLines (cast(char[]) listing.slice());
         scope (exit)
             delete lines;
 
@@ -1410,7 +1410,7 @@ class FTPConnection : Telnet
             delete this.supported_features;
         else
             {
-                char[][] lines = Text.delineate (response.message);
+                char[][] lines = Text.splitLines (response.message);
 
                 // There are two more lines than features, but we also have FEAT.
                 this.supported_features = new FtpFeature[lines.length - 1];

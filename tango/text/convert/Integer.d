@@ -56,7 +56,6 @@ enum Flags
         Space   = 8,                    /// prefix decimal with space
 }
 
-
 /******************************************************************************
 
         Parse an integer value from the provided 'digits' string. 
@@ -69,6 +68,9 @@ enum Flags
 ******************************************************************************/
 
 int toInt(T, U=uint) (T[] digits, U radix=10)
+{return toInt!(T)(digits, radix);}
+
+int toInt(T) (T[] digits, uint radix=10)
 {
         auto x = toLong (digits, radix);
         if (x > int.max)
@@ -87,13 +89,16 @@ int toInt(T, U=uint) (T[] digits, U radix=10)
         
 ******************************************************************************/
 
-long toLong(T, U=uint) (T[] digits, U radix=10)
+int toLong(T, U=uint) (T[] digits, U radix=10)
+{return toLong!(T)(digits, radix);}
+
+long toLong(T) (T[] digits, uint radix=10)
 {
         uint len;
 
         auto x = parse (digits, radix, &len);
         if (len < digits.length)
-            throw new IllegalArgumentException ("invalid input:"~digits);
+            throw new IllegalArgumentException ("invalid input: "~digits);
         return x;
 }
 
@@ -170,7 +175,10 @@ dchar[] toUtf32 (long i, Format t=Format.Signed, Flags f=Flags.None)
 
 *******************************************************************************/
 
-T[] format(T, U=ulong) (T[] dst, U i, Format fmt=Format.Signed, Flags flags=Flags.None)
+T[] format(T, U=long) (T[] dst, U i, Format fmt=Format.Signed, Flags flags=Flags.None)
+{return format!(T)(dst, i, fmt, flags);}
+
+T[] format(T) (T[] dst, long i, Format fmt=Format.Signed, Flags flags=Flags.None)
 {
         T[]     prefix;
         int     len = dst.length;
@@ -277,6 +285,9 @@ T[] format(T, U=ulong) (T[] dst, U i, Format fmt=Format.Signed, Flags flags=Flag
 ******************************************************************************/
 
 long parse(T, U=uint) (T[] digits, U radix=10, uint* ate=null)
+{return parse!(T)(digits, radix, ate);}
+
+long parse(T) (T[] digits, uint radix=10, uint* ate=null)
 {
         bool sign;
 
@@ -300,6 +311,9 @@ long parse(T, U=uint) (T[] digits, U radix=10, uint* ate=null)
 ******************************************************************************/
 
 ulong convert(T, U=uint) (T[] digits, U radix=10, uint* ate=null)
+{return convert!(T)(digits, radix, ate);}
+
+ulong convert(T) (T[] digits, uint radix=10, uint* ate=null)
 {
         uint  eaten;
         ulong value;
@@ -344,6 +358,9 @@ ulong convert(T, U=uint) (T[] digits, U radix=10, uint* ate=null)
 ******************************************************************************/
 
 uint trim(T, U=uint) (T[] digits, inout bool sign, inout U radix)
+{return trim!(T)(digits, sign, radix);}
+
+uint trim(T) (T[] digits, inout bool sign, inout uint radix)
 {
         T       c;
         T*      p = digits.ptr;
@@ -426,6 +443,9 @@ uint atoi(T) (T[] s)
 ******************************************************************************/
 
 T[] itoa(T, U=uint) (T[] output, U value)
+{return itoa!(T)(output, value);}
+
+T[] itoa(T) (T[] output, uint value)
 {
         T* p = output.ptr + output.length;
 
@@ -442,11 +462,15 @@ T[] itoa(T, U=uint) (T[] output, U value)
 
 debug (UnitTest)
 {
-//        void main() {}
+        //void main() {}
+
         unittest
         {
         char[64] tmp;
-        
+
+        assert (toInt("1e", 10) is 1);
+        assert (toLong("1", 10U) is 1);
+
         assert (atoi ("12345") is 12345);
         assert (itoa (tmp, 12345) == "12345");
 
@@ -504,7 +528,7 @@ debug (UnitTest)
         assert(parse( str[0..1] ) ==  0 );
 
         assert (format (tmp, 12345L) == "12345");
-        assert (format (tmp, 0L) == "0");
+        assert (format (tmp, 0) == "0");
         assert (format (tmp, 0x10101L, Format.Hex) == "10101");
         assert (format (tmp, 0xfafaL, Format.Hex) == "fafa");
         assert (format (tmp, 0xfafaL, Format.HexUpper, Flags.Prefix) == "0XFAFA");

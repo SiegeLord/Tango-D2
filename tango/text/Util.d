@@ -56,9 +56,9 @@
         ---
         trim (source)                               // trim whitespace
         strip (source, match)                       // trim elements
-        delineate (source);                         // split on lines
-        delimit (source, delimiters)                // split on delims
-        demarcate (source, pattern)                 // split on pattern
+        delimit (src, set)                          // split on delims
+        split (source, pattern)                     // split on pattern
+        splitLines (source);                        // split on lines
         join (source, postfix, output)              // join text segments
         replace (source, match, replacement)        // replace chars
         contains (source, match)                    // has char?
@@ -81,6 +81,14 @@
 *******************************************************************************/
 
 module tango.text.Util;
+
+///  use split() instead
+deprecated T[][] demarcate (T) (T[] src, T[] pattern)
+{return split!(T) (src, pattern);}
+
+deprecated T[][] delineate (T) (T[] src)
+{return splitLines!(T) (src);}
+
 
 /******************************************************************************
 
@@ -172,6 +180,9 @@ bool containsPattern(T) (T[] source, T[] match)
 ******************************************************************************/
 
 uint locate(T, U=uint) (T[] source, T match, U start=0)
+{return locate!(T) (source, match, start);}
+
+uint locate(T) (T[] source, T match, uint start=0)
 {
         if (start > source.length)
             start = source.length;
@@ -189,6 +200,9 @@ uint locate(T, U=uint) (T[] source, T match, U start=0)
 ******************************************************************************/
 
 uint locatePrior(T, U=uint) (T[] source, T match, U start=uint.max)
+{return locatePrior!(T)(source, match, start);}
+
+uint locatePrior(T) (T[] source, T match, uint start=uint.max)
 {
         if (start > source.length)
             start = source.length;
@@ -209,6 +223,9 @@ uint locatePrior(T, U=uint) (T[] source, T match, U start=uint.max)
 ******************************************************************************/
 
 uint locatePattern(T, U=uint) (T[] source, T[] match, U start=0)
+{return locatePattern!(T) (source, match, start);}
+
+uint locatePattern(T) (T[] source, T[] match, uint start=0)
 {
         uint    idx;
         T*      p = source.ptr + start;
@@ -240,6 +257,9 @@ uint locatePattern(T, U=uint) (T[] source, T[] match, U start=0)
 ******************************************************************************/
 
 uint locatePatternPrior(T, U=uint) (T[] source, T[] match, U start=uint.max)
+{return locatePatternPrior!(T)(source, match, start);}
+
+uint locatePatternPrior(T) (T[] source, T[] match, uint start=uint.max)
 {
         auto len = source.length;
         
@@ -277,7 +297,7 @@ T[][] delimit(T) (T[] src, T[] set)
 {
         T[][] result;
 
-        foreach (segment; delims (src, set))
+        foreach (segment; delimiters (src, set))
                  result ~= segment;
         return result;
 }
@@ -290,7 +310,7 @@ T[][] delimit(T) (T[] src, T[] set)
         
 ******************************************************************************/
 
-T[][] demarcate(T) (T[] src, T[] pattern)
+T[][] split(T) (T[] src, T[] pattern)
 {
         T[][] result;
 
@@ -307,7 +327,7 @@ T[][] demarcate(T) (T[] src, T[] pattern)
 
 ******************************************************************************/
 
-T[][] delineate(T) (T[] src)
+T[][] splitLines(T) (T[] src)
 {
         int count;
         
@@ -378,6 +398,9 @@ bool isSpace(T) (T c)
 ******************************************************************************/
 
 bool matching(T, U=uint) (T* s1, T* s2, U length)
+{return matching!(T) (s1, s2, length);}
+
+bool matching(T) (T* s1, T* s2, uint length)
 {
         return mismatch(s1, s2, length) is length;
 }
@@ -391,6 +414,9 @@ bool matching(T, U=uint) (T* s1, T* s2, U length)
 ******************************************************************************/
 
 uint indexOf(T, U=uint) (T* str, T match, U length)
+{return indexOf!(T) (str, match, length);}
+
+uint indexOf(T) (T* str, T match, uint length)
 {
         version (D_InlineAsm_X86)
         {       
@@ -487,6 +513,9 @@ uint indexOf(T, U=uint) (T* str, T match, U length)
 ******************************************************************************/
 
 uint mismatch(T, U=uint) (T* s1, T* s2, U length)
+{return mismatch!(T)(s1, s2, length);}
+
+uint mismatch(T) (T* s1, T* s2, uint length)
 {
         version (D_InlineAsm_X86)
         {
@@ -607,7 +636,7 @@ LineFreach!(T) lines(T) (T[] src)
         
 ******************************************************************************/
 
-DelimFreach!(T) delims(T) (T[] src, T[] set)
+DelimFreach!(T) delimiters(T) (T[] src, T[] set)
 {
         DelimFreach!(T) elements;
         elements.set = set;
@@ -619,9 +648,10 @@ DelimFreach!(T) delims(T) (T[] src, T[] set)
 
         Freachable iterator to isolate text elements.
 
-        Split the provided array wherever a pattern instance is
-        found, and return the resultant segments. The pattern is
-        excluded from each of the segments.
+        Split the provided array wherever a pattern instance is found, 
+        and return the resultant segments. Pattern are excluded from
+        each of the segments, and an optional sub argument enables 
+        replacement.
         
         ---
         foreach (segment; patterns ("one, two, three", ", "))
@@ -1006,6 +1036,7 @@ private struct QuoteFreach(T)
                 return ret;
         }
 }
+
 
 /******************************************************************************
 
