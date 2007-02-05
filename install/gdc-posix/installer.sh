@@ -46,8 +46,8 @@ then
     then
         echo -n "What path is GDC installed to? "
         read GDCDIR
-        export PATH="$GDCPATH/bin:$PATH"
-        if [ ! -e $GDCPATH/bin/gdc ]
+        export PATH="$GDCDIR/bin:$PATH"
+        if [ ! -e $GDCDIR/bin/gdc ]
         then
             die 1 "GDC is not installed to that path!"
         fi
