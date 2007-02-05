@@ -80,7 +80,7 @@ class SelectionKey
     {
         _conduit = conduit;
         _events = events;
-        _attachment = null;
+        _attachment = attachment;
     }
 
     /**
