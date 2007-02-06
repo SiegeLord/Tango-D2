@@ -103,7 +103,7 @@ class DatagramConduit : SocketConduit
 
         ***********************************************************************/
 
-        private override uint socketReader (void[] dst)
+        protected override uint socketReader (void[] dst)
         {
                 int count;
 
@@ -130,7 +130,7 @@ class DatagramConduit : SocketConduit
 
         ***********************************************************************/
 
-        private override uint writer (void[] src)
+        protected override uint writer (void[] src)
         {
                 int count;
                 
