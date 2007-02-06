@@ -82,8 +82,7 @@ class MulticastConduit : DatagramConduit
                 is already in use. Default behaviour is to throw an IO
                 exception, and the alternate is to force usage.
                 
-
-                                To become eligible for incoming group datagrams, you must
+                To become eligible for incoming group datagrams, you must
                 also invoke the join() method
 
         ***********************************************************************/
