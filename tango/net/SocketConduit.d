@@ -51,7 +51,7 @@ class SocketConduit : Conduit
 
         this ()
         {
-                this (Access.ReadWrite, SocketType.STREAM);
+                this (Access.ReadWrite, SocketType.STREAM, ProtocolType.TCP);
         }
 
         /***********************************************************************
@@ -61,10 +61,10 @@ class SocketConduit : Conduit
 
         ***********************************************************************/
 
-        protected this (Access access, SocketType type, bool create=true)
+        protected this (Access access, SocketType type, ProtocolType protocol, bool create=true)
         {
                 super (access);
-                socket = new Socket (AddressFamily.INET, type, ProtocolType.TCP, create);
+                socket = new Socket (AddressFamily.INET, type, protocol, create);
         }
 
         /***********************************************************************
@@ -309,7 +309,7 @@ class SocketConduit : Conduit
                    }
                 else
                    {
-                   s = new SocketConduit (Access.ReadWrite, SocketType.STREAM, false);
+                   s = new SocketConduit (Access.ReadWrite, SocketType.STREAM, ProtocolType.TCP, false);
                    s.fromList = true;
                    }
                 return s;

@@ -53,7 +53,7 @@ class DatagramConduit : SocketConduit
 
         this ()
         {
-                super (Access.ReadWrite, SocketType.DGRAM);
+                super (Access.ReadWrite, SocketType.DGRAM, ProtocolType.IP);
         }
 
         /***********************************************************************
