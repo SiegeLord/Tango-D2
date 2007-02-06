@@ -6,7 +6,7 @@
  */
 
 /*
- *  Copyright (C) 2000-2006 by Digital Mars, www.digitalmars.com
+ *  Copyright (C) 2000-2007 by Digital Mars, www.digitalmars.com
  *  Written by Walter Bright
  *
  *  This software is provided 'as-is', without any express or implied
@@ -56,7 +56,7 @@ private
 
 // Auto-rehash and pre-allocate - Dave Fladebo
 
-static uint[] prime_list = [
+static size_t[] prime_list = [
     97UL,         389UL,
     1543UL,       6151UL,
     24593UL,      98317UL,
@@ -297,7 +297,9 @@ body
     //printf("create new one\n");
     size_t size = aaA.sizeof + keysize + valuesize;
     uint   bits = keysize   < (void*).sizeof &&
-                  valuesize < (void*).sizeof ? BlkAttr.NO_SCAN : 0;
+                  keysize   > (void).sizeof  &&
+                  valuesize < (void*).sizeof &&
+                  valuesize > (void).sizeof  ? BlkAttr.NO_SCAN : 0;
     e = cast(aaA *) gc_calloc(size, bits);
     memcpy(e + 1, pkey, keysize);
     e.hash = key_hash;
@@ -496,7 +498,9 @@ body
     if (aa.a)
     {
         a.length = _aaLen(aa);
-        a.ptr = cast(byte*) gc_malloc(a.length * valuesize, valuesize < (void*).sizeof ? BlkAttr.NO_SCAN : 0);
+        a.ptr = cast(byte*) gc_malloc(a.length * valuesize,
+                                      valuesize < (void*).sizeof &&
+                                      valuesize > (void).sizeof  ? BlkAttr.NO_SCAN : 0);
         resi = 0;
         foreach (e; aa.a.b)
         {
@@ -632,7 +636,9 @@ Array _aaKeys(AA aa, size_t keysize)
     auto len = _aaLen(aa);
     if (!len)
         return a;
-    res = (cast(byte*) gc_malloc(len * keysize, keysize < (void*).sizeof ? BlkAttr.NO_SCAN : 0))[0 .. len * keysize];
+    res = (cast(byte*) gc_malloc(len * keysize,
+                                 keysize < (void*).sizeof &&
+                                 keysize > (void).sizeof  ? BlkAttr.NO_SCAN : 0))[0 .. len * keysize];
     resi = 0;
     foreach (e; aa.a.b)
     {

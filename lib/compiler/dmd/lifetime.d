@@ -848,7 +848,7 @@ extern (C) byte[] _d_arraycatnT(TypeInfo ti, uint n, ...)
  */
 extern (C) void* _d_arrayliteralT(TypeInfo ti, size_t length, ...)
 {
-    auto size = ti.next.tsize();                // array element size
+    auto size = ti.next.tsize(); // array element size
     void[] result;
 
     debug printf("_d_arrayliteralT(size = %d, length = %d)\n", size, length);
@@ -859,7 +859,7 @@ extern (C) void* _d_arrayliteralT(TypeInfo ti, size_t length, ...)
         result = new void[length * size];
         if (!(ti.next.flags() & 1))
             gc_setAttr(result.ptr, BlkAttr.NO_SCAN);
-        *cast(size_t *)&result = length;        // jam length
+        *cast(size_t *)&result = length; // jam length
 
         va_list q;
         va_start!(size_t)(q, length);
@@ -918,6 +918,7 @@ body
     }
     return *cast(long*)(&r);
 }
+
 
 unittest
 {

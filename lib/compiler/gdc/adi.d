@@ -485,6 +485,8 @@ unittest
  * Support for array.reverse property for bit[].
  */
 
+version (none)
+{
 extern (C) bit[] _adReverseBit(bit[] a)
     out (result)
     {
@@ -525,7 +527,7 @@ unittest
         assert(b[i] == data[4 - i]);
     }
 }
-
+}
 
 /**********************************************
  * Sort array of chars.
@@ -626,92 +628,16 @@ unittest
 }
 
 
-/**********************************
- * Support for array.dup property.
- */
-
-extern (C) Array _adDup(Array a, int szelem)
-    out (result)
-    {
-        assert(memcmp(result.ptr, a.ptr, a.length * szelem) == 0);
-    }
-    body
-    {
-        Array r;
-
-        auto size = a.length * szelem;
-        r.ptr = gc_malloc(size, szelem < (void*).sizeof ? BlkAttr.NO_SCAN : 0);
-        r.length = a.length;
-        memcpy(r.ptr, a.ptr, size);
-        return r;
-    }
-
-unittest
-{
-    int[] a;
-    int[] b;
-    int i;
-
-    debug(adi) printf("array.dup.unittest\n");
-
-    a = new int[3];
-    a[0] = 1; a[1] = 2; a[2] = 3;
-    b = a.dup;
-    assert(b.length == 3);
-    for (i = 0; i < 3; i++)
-        assert(b[i] == i + 1);
-}
-
-/**********************************
- * Support for array.dup property for bit[].
- */
-
-extern (C) Array _adDupBit(Array a)
-    out (result)
-    {
-        assert(memcmp(result.ptr, a.ptr, (a.length + 7) / 8) == 0);
-    }
-    body
-    {
-        Array r;
-
-        auto size = (a.length + 31) / 32;
-        r.ptr = cast(void *) new uint[size];
-        r.length = a.length;
-        memcpy(r.ptr, a.ptr, size * uint.sizeof);
-        return r;
-    }
-
-unittest
-{
-    bit[] a;
-    bit[] b;
-    int i;
-
-    debug(adi) printf("array.dupBit[].unittest\n");
-
-    a = new bit[3];
-    a[0] = 1; a[1] = 0; a[2] = 1;
-    b = a.dup;
-    assert(b.length == 3);
-    for (i = 0; i < 3; i++)
-    {   debug(adi) printf("b[%d] = %d\n", i, b[i]);
-        assert(b[i] == (((i ^ 1) & 1) ? true : false));
-    }
-}
-
-
 /***************************************
  * Support for array equality test.
  */
 
 extern (C) int _adEq(Array a1, Array a2, TypeInfo ti)
 {
-    //printf("a1.length = %d, a2.length = %d\n", a1.length, a2.length);
+    //printf("_adEq(a1.length = %d, a2.length = %d)\n", a1.length, a2.length);
     if (a1.length != a2.length)
         return 0;               // not equal
     auto sz = ti.tsize();
-    //printf("sz = %d\n", sz);
     auto p1 = a1.ptr;
     auto p2 = a2.ptr;
 
@@ -751,6 +677,8 @@ unittest
  * Support for array equality test for bit arrays.
  */
 
+version (none)
+{
 extern (C) int _adEqBit(Array a1, Array a2)
 {   size_t i;
 
@@ -787,6 +715,7 @@ unittest
     assert(a != c);
     assert(a != d);
     assert(a == e);
+}
 }
 
 /***************************************
@@ -845,6 +774,8 @@ unittest
  * Support for array compare test.
  */
 
+version (none)
+{
 extern (C) int _adCmpBit(Array a1, Array a2)
 {
     int len;
@@ -892,3 +823,5 @@ unittest
     assert(a <= e);
     assert(a >= e);
 }
+}
+

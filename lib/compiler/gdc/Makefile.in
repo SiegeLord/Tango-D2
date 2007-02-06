@@ -150,12 +150,10 @@ OBJ_UTIL= \
     util/utf.o
 
 OBJ_TI= \
-    typeinfo/ti_Aa.o \
     typeinfo/ti_AC.o \
     typeinfo/ti_Acdouble.o \
     typeinfo/ti_Acfloat.o \
     typeinfo/ti_Acreal.o \
-    typeinfo/ti_Adchar.o \
     typeinfo/ti_Adouble.o \
     typeinfo/ti_Afloat.o \
     typeinfo/ti_Ag.o \
@@ -186,12 +184,7 @@ OBJ_TI= \
     typeinfo/ti_ptr.o \
     typeinfo/ti_real.o \
     typeinfo/ti_short.o \
-    typeinfo/ti_ubyte.o \
-    typeinfo/ti_uint.o \
-    typeinfo/ti_ulong.o \
-    typeinfo/ti_ushort.o \
-    typeinfo/ti_void.o \
-    typeinfo/ti_wchar.o
+    typeinfo/ti_void.o
 
 ALL_OBJS= \
     $(OBJ_BASE) \
