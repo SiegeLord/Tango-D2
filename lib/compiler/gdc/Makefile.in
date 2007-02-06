@@ -161,11 +161,6 @@ OBJ_TI= \
     typeinfo/ti_Along.o \
     typeinfo/ti_Areal.o \
     typeinfo/ti_Ashort.o \
-    typeinfo/ti_Aubyte.o \
-    typeinfo/ti_Auint.o \
-    typeinfo/ti_Aulong.o \
-    typeinfo/ti_Aushort.o \
-    typeinfo/ti_Awchar.o \
     typeinfo/ti_byte.o \
     typeinfo/ti_C.o \
     typeinfo/ti_cdouble.o \
@@ -184,7 +179,12 @@ OBJ_TI= \
     typeinfo/ti_ptr.o \
     typeinfo/ti_real.o \
     typeinfo/ti_short.o \
-    typeinfo/ti_void.o
+    typeinfo/ti_ubyte.o \
+    typeinfo/ti_uint.o \
+    typeinfo/ti_ulong.o \
+    typeinfo/ti_ushort.o \
+    typeinfo/ti_void.o \
+    typeinfo/ti_wchar.o
 
 ALL_OBJS= \
     $(OBJ_BASE) \
