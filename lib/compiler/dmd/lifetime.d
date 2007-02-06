@@ -849,14 +849,14 @@ extern (C) byte[] _d_arraycatnT(TypeInfo ti, uint n, ...)
 extern (C) void* _d_arrayliteralT(TypeInfo ti, size_t length, ...)
 {
     auto size = ti.next.tsize();                // array element size
-    byte[] result;
+    void[] result;
 
     debug printf("_d_arrayliteralT(size = %d, length = %d)\n", size, length);
     if (length == 0 || size == 0)
         result = null;
     else
     {
-        result = new byte[length * size];
+        result = new void[length * size];
         if (!(ti.next.flags() & 1))
             gc_setAttr(result.ptr, BlkAttr.NO_SCAN);
         *cast(size_t *)&result = length;        // jam length

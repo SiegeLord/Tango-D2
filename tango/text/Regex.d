@@ -2486,9 +2486,6 @@ int parseRange()
         }
         break;
     }
-    //printf("maxc = %d, maxb = %d\n",r.maxc,r.maxb);
-    (cast(ushort *)&buf.data[offset])[0] = cast(ushort)r.maxc;
-    (cast(ushort *)&buf.data[offset])[1] = cast(ushort)r.maxb;
     if (attributes & REA.ignoreCase)
     {
         // BUG: what about dchar?
@@ -2501,6 +2498,9 @@ int parseRange()
                 r.bits[c] = 1;
         }
     }
+    //printf("maxc = %d, maxb = %d\n",r.maxc,r.maxb);
+    (cast(ushort *)&buf.data[offset])[0] = cast(ushort)r.maxc;
+    (cast(ushort *)&buf.data[offset])[1] = cast(ushort)r.maxb;
     return 1;
 
 Lerr:
