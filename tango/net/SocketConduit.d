@@ -113,7 +113,7 @@ class SocketConduit : Conduit
 
         ***********************************************************************/
 
-//        void setTimeout (Interval us)
+//      void setTimeout (Interval us)
         void setTimeout (ulong us)
         {
                 tv.tv_sec = cast(int) (us / Interval.second);
@@ -244,7 +244,7 @@ class SocketConduit : Conduit
                 timeout = false;
 
                 // did user disable timeout checks?
-                if (tv.tv_usec)
+                if (tv.tv_usec | tv.tv_sec)
                    {
                    // nope: ensure we have a SocketSet
                    if (ss is null)
