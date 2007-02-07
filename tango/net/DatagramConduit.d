@@ -144,3 +144,30 @@ class DatagramConduit : SocketConduit
         }
 }
 
+
+
+/******************************************************************************
+
+*******************************************************************************/
+
+debug (Test)
+{
+        import tango.io.Console;
+
+        void main()
+        {
+                auto group = new InternetAddress ("127.0.0.1", 8080);
+
+                // listen for datagrams on the group address
+                auto multi = new DatagramConduit (group);
+
+                // join and broadcast to the group
+                multi.write ("hello", group);
+
+                // we are listening also ...
+                char[8] tmp;
+                auto x = new InternetAddress;
+                auto bytes = multi.read (tmp, x);
+                Cout (x) (tmp[0..bytes]).newline;
+        }
+}
