@@ -41,7 +41,7 @@ DMD_INSTALL=0
 DSSS_INSTALL=0
 # 42.
 #
-CLEANALL=1
+CLEANALL=0
 #DEBUG=0
 #
 #SIMULATE=0
@@ -148,6 +148,10 @@ install_dmd() {
 	copy_dmd_include
 	copy_dmd_lib
 	copy_dmd_doc
+
+	# seems like everything worked fine so far.. lets clean all.
+	CLEANALL=1
+
 	cleanup_dmd
 }
 
@@ -241,17 +245,28 @@ install_tango() {
 
 	if [ ! -f "lib/libphobos.a" ]
 	then
+		echo "...changing directory: lib/"
 		cd lib/
+
+		echo "...building base runtime library"
 		./build-dmd.sh || die "Error building library."
+
+		echo "...changing directory: ../"
 		cd ../
 	fi
 	
 	if [ -f "${PREFIX}/lib/libphobos.a" ]
 	then
+		echo "...making a backup of the original phobos library"
 		mv ${PREFIX}/lib/libphobos.a ${PREFIX}/lib/original_libphobos.a || die "Error renaming original libphobos.a"
 	fi
 
-	cp lib/libphobos.a ${PREFIX}/lib/libphobos.a || die "Error copying Tango's libphobos.a replacement to ${PREFIX}/lib/libphobos.a"
+	if [ -f "lib/libphobos.a" ]
+	then
+		cp lib/libphobos.a ${PREFIX}/lib/libphobos.a || die "Error copying Tango's libphobos.a replacement to ${PREFIX}/lib/libphobos.a"
+	else
+		echo "Library has not been built, yet the build script itself did not throw an error. Please report this to a developer."
+	fi
 }
 
 dmd_conf_install() {
@@ -264,8 +279,8 @@ dmd_conf_install() {
 
 		# no dmd.conf installed yet, install a fresh one!
 		echo "[Environment]" > ${DMD_CONF} || die "Error writing to ${DMD_CONF}."
-		echo ";DFLAGS=-I\"${PREFIX}/include/phobos -L-L${PREFIX}/lib\"" >> ${DMD_CONF} || die "Error writing to ${DMD_CONF}."
-		echo "DFLAGS=-I\"${PREFIX}/include/tango -L-L${PREFIX}/lib/\" -version=Posix -version=Tango" >> ${DMD_CONF} || die "Error writing to ${DMD_CONF}."
+#		echo ";DFLAGS=-I\"${PREFIX}/include/phobos -L-L${PREFIX}/lib\"" >> ${DMD_CONF} || die "Error writing to ${DMD_CONF}."
+		echo "DFLAGS=-I${PREFIX}/include/tango -L-L${PREFIX}/lib/ -version=Posix -version=Tango" >> ${DMD_CONF} || die "Error writing to ${DMD_CONF}."
 	else
 		echo -n "..dmd.conf found: `whereis dmd | tr ' ' '\n' | grep dmd.conf -m 1` -- doing sed magic."
 
