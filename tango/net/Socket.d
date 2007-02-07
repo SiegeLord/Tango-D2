@@ -1170,7 +1170,7 @@ class Socket
         
         
         /// ditto
-        int receiveFrom(void[] buf, out Address from)
+        int receiveFrom(void[] buf, Address from)
         {
                 return receiveFrom(buf, SocketFlags.NONE, from);
         }
