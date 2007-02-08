@@ -1369,7 +1369,7 @@ debug (UnitTest)
         
         assert (s.clear.encode("one"d).toUtf8 == "one");
 
-        assert (Util.delineate(s.clear.append("a\nb").slice).length is 2);
+        assert (Util.splitLines(s.clear.append("a\nb").slice).length is 2);
         
         assert (s.mark.replace("almost ") == "almost ");
         foreach (element; Util.patterns ("all cows eat grass", "eat", "chew"))

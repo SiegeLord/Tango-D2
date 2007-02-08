@@ -1128,13 +1128,13 @@ debug (UnitTest)
         assert (locatePatternPrior ("abcdefgcde", "cde", 4) is 2);
         assert (locatePatternPrior ("abcdefg", "abcdefgx") is 7);
 
-        x = delineate ("a\nb\n");
+        x = splitLines ("a\nb\n");
         assert (x.length is 2 && x[0] == "a" && x[1] == "b");
-        x = delineate ("a\r\n");
+        x = splitLines ("a\r\n");
         assert (x.length is 1 && x[0] == "a");
-        x = delineate ("a");
+        x = splitLines ("a");
         assert (x.length is 1 && x[0] == "a");
-        x = delineate ("");
+        x = splitLines ("");
         assert (x.length is 0);
 
         char[][] q;
@@ -1144,11 +1144,11 @@ debug (UnitTest)
 
         assert (layout (tmp, "%1,%%%c %0", "abc", "efg") == "efg,%c abc");
 
-        x = demarcate ("one, two, three", ",");
+        x = split ("one, two, three", ",");
         assert (x.length is 3 && x[0] == "one" && x[1] == " two" && x[2] == " three");
-        x = demarcate ("one, two, three", ", ");
+        x = split ("one, two, three", ", ");
         assert (x.length is 3 && x[0] == "one" && x[1] == "two" && x[2] == "three");
-        x = demarcate ("one, two, three", ",,");
+        x = split ("one, two, three", ",,");
         assert (x.length is 1 && x[0] == "one, two, three");
 
         char[][] foo = ["one", "two", "three"];
