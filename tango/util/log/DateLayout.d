@@ -17,7 +17,8 @@ private import  tango.util.log.Event,
 
 private import  tango.text.Util;
 
-private import  tango.util.time.Date;
+private import  tango.util.time.Utc,
+                tango.util.time.Date;
 
 private import  tango.text.convert.Integer;
 
@@ -29,7 +30,21 @@ private import  tango.text.convert.Integer;
 
 public class DateLayout : Layout
 {
+        private bool localTime;
+
         private static char[6] spaces = ' ';
+
+        /***********************************************************************
+        
+                Ctor with indicator for local vs UTC time. Default is 
+                local time.
+                        
+        ***********************************************************************/
+
+        this (bool localTime = true)
+        {
+                this.localTime = localTime;
+        }
 
         /***********************************************************************
                 
@@ -43,8 +58,12 @@ public class DateLayout : Layout
                 char[] level = event.getLevelName;
                 
                 // convert time to field values
+                auto time = event.getEpochTime;
+                if (localTime)
+                    time = Utc.toLocal (time);
+
                 Date date;
-                date.set (event.getEpochTime);
+                date.set (time);
                                 
                 // format date according to ISO-8601 (lightweight formatter)
                 char[20] tmp = void;
