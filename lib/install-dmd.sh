@@ -298,7 +298,6 @@ cleanup_tango() {
 				mv ${PREFIX} ../../
 			fi
 		fi
-	else
 	fi
 
 	cd ../../ || die 1 "Error while cleaning up."
