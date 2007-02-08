@@ -14,6 +14,14 @@ private import tango.sys.Common;
 private import tango.text.convert.Format;
 private import tango.stdc.errno;
 
+version (Windows)
+{
+    public struct timeval
+    {
+        int tv_sec;     // seconds
+        int tv_usec;    // microseconds
+    }
+}
 
 /**
  * Base class for all selectors.
@@ -234,11 +242,11 @@ abstract class AbstractSelector: ISelector
      * wakeup() method has been called from another thread.
      *
      * Remarks:
-     * This method is the same as calling select(Interval.infinity).
+     * This method is the same as calling select(Interval.max).
      */
     public int select()
     {
-        return select(Interval.infinity);
+        return select(Interval.max);
     }
 
     /**
@@ -292,6 +300,21 @@ abstract class AbstractSelector: ISelector
      * value will be null. No exception will be thrown by this method.
      */
     public abstract SelectionKey key(ISelectable conduit);
+
+    /**
+     * Cast the time duration to a C timeval struct.
+    */
+    public timeval* toTimeval(timeval* tv, Interval interval)
+    in
+    {
+        assert(tv !is null);
+    }
+    body
+    {
+        tv.tv_sec = cast(typeof(tv.tv_sec)) (interval);
+        tv.tv_usec = cast(typeof(tv.tv_usec)) ((interval - tv.tv_sec) * 1_000_000);
+        return tv;
+    }
 
     /**
      * Check the 'errno' global variable from the C standard library and

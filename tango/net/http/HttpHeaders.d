@@ -12,13 +12,13 @@
 
 module tango.net.http.HttpHeaders;
 
-private import  tango.text.stream.LineIterator;
-
 private import  tango.io.model.IBuffer;
 
 private import  tango.net.http.HttpTokens;
 
 public  import  tango.net.http.model.HttpConst;
+
+private import  tango.text.stream.LineIterator;
 
 /******************************************************************************
 
@@ -127,12 +127,12 @@ class HttpHeadersView : HttpTokens
 
         /**********************************************************************
                 
-                Return the date value of the provided header, or -1 
+                Return the date value of the provided header, or Time.max 
                 if the header does not exist
 
         **********************************************************************/
 
-        ulong getDate (HttpHeaderName name, ulong def = -1)
+        Time getDate (HttpHeaderName name, Time def = Time.max)
         {
                 return super.getDate (name.value, def);
         }
@@ -308,7 +308,7 @@ class HttpHeaders : HttpHeadersView
 
         **********************************************************************/
 
-        void addDate (HttpHeaderName name, ulong value)
+        void addDate (HttpHeaderName name, Time value)
         {
                 super.addDate (name.value, value);
         }

@@ -12,8 +12,9 @@
 
 module tango.net.ftp.FtpClient;
 
-private import tango.core.Epoch;
 private import tango.net.Socket;
+private import tango.util.time.Utc;
+private import tango.util.time.Date;
 private import tango.net.ftp.Telnet;
 private import tango.io.FileConduit;
 private import tango.io.MemoryConduit;
@@ -23,9 +24,6 @@ private import Ascii = tango.text.Ascii;
 private import Regex = tango.text.Regex;
 private import Integer = tango.text.convert.Integer;
 private import Timestamp = tango.text.convert.TimeStamp;
-
-private alias ulong d_time;
-private const d_time_nan = Epoch.InvalidEpoch;
 
 
 /// An FTP progress delegate.
@@ -137,9 +135,9 @@ struct FtpFileInfo
     /// Size in bytes (8 bit octets), or -1 if not available.
     long size = -1;
     /// Modification time, if available.
-    d_time modify = d_time_nan;
+    Time modify = Time.max;
     /// Creation time, if available (not often.)
-    d_time create = d_time_nan;
+    Time create = Time.max;
     /// The file's mime type, if known.
     char[] mime = null;
     /// An associative array of all facts returned by the server, lowercased.
@@ -608,15 +606,15 @@ class FTPConnection : Telnet
                     delete set;
 
                 // At end_time, we bail.
-                d_time end_time = Epoch.utcMilli() + this.timeout;
+                Time end_time = cast(Time) (Utc.time + this.timeout);
 
-                while (Epoch.utcMilli() < end_time)
+                while (Utc.time < end_time)
                     {
                         set.reset();
                         set.add(data);
 
                         // Can we accept yet?
-                        int code = Socket.select(set, null, null, cast(int) (this.timeout * 1_000_000));
+                        int code = Socket.select(set, null, null, this.timeout/Time.TicksPerSecond);
                         if (code == -1 || code == 0)
                             break;
 
@@ -1216,7 +1214,7 @@ class FTPConnection : Telnet
                     return info;
 
                 if (Timestamp.dostime (r.match(0), info.modify) is 0)
-                    info.modify = d_time_nan;
+                    info.modify = Time.max;
 
                 pos = r.match(0).length;
                 delete r;
@@ -1336,20 +1334,20 @@ class FTPConnection : Telnet
     ///    timeval =         the YYYYMMDDHHMMSS date
     ///
     /// Returns:             a d_time representing the same date
-    protected d_time parseTimeval(char[] timeval)
+    protected Time parseTimeval(char[] timeval)
     {
-        Epoch.Fields fields;
+        Date date;
 
         if (timeval.length < 14)
             throw new FTPException("CLIENT: Unable to parse timeval", "501");
 
-        fields.year  = Integer.atoi (timeval[0..4]);
-        fields.month = Integer.atoi (timeval[4..6]);
-        fields.day   = Integer.atoi (timeval[6..8]);
-        fields.hour  = Integer.atoi (timeval[8..10]);
-        fields.min   = Integer.atoi (timeval[10..12]);
-        fields.sec   = Integer.atoi (timeval[12..14]);
-        return fields.toUtcTime;
+        date.year  = Integer.atoi (timeval[0..4]);
+        date.month = Integer.atoi (timeval[4..6]);
+        date.day   = Integer.atoi (timeval[6..8]);
+        date.hour  = Integer.atoi (timeval[8..10]);
+        date.min   = Integer.atoi (timeval[10..12]);
+        date.sec   = Integer.atoi (timeval[12..14]);
+        return date.get;
     }
 
     /// Get the modification time of a file.
@@ -1360,7 +1358,7 @@ class FTPConnection : Telnet
     ///    path =            the file or directory in question
     ///
     /// Returns:             a d_time representing the mtime
-    public d_time filemtime(char[] path)
+    public Time filemtime(char[] path)
         in
     {
         assert (path.length > 0);
@@ -1536,7 +1534,7 @@ class FTPConnection : Telnet
             delete set;
 
         // At end_time, we bail.
-        d_time end_time = Epoch.utcMilli() + cast(d_time) (this.timeout);
+        Time end_time = cast(Time) (Utc.time + this.timeout);
 
         // This is the buffer the stream data is stored in.
         ubyte[8 * 1024] buf;
@@ -1545,13 +1543,13 @@ class FTPConnection : Telnet
 
         size_t pos = 0;
         bool completed = false;
-        while (!completed && Epoch.utcMilli() < end_time)
+        while (!completed && Utc.time < end_time)
             {
                 set.reset();
                 set.add(data);
 
                 // Can we write yet, can we write yet?
-                int code = Socket.select(null, set, null, cast(int) (this.timeout * 1_000_000));
+                int code = Socket.select(null, set, null, this.timeout/Time.TicksPerSecond);
                 if (code == -1 || code == 0)
                     break;
 
@@ -1575,7 +1573,7 @@ class FTPConnection : Telnet
 
                 // Give it more time as long as data is going through.
                 if (delta != 0)
-                    end_time = Epoch.utcMilli() + cast(d_time) (this.timeout);
+                    end_time = cast(Time) (Utc.time + this.timeout);
             }
 
         // Did all the data get sent?
@@ -1603,7 +1601,7 @@ class FTPConnection : Telnet
             delete set;
 
         // At end_time, we bail.
-        d_time end_time = Epoch.utcMilli() + cast(d_time) (this.timeout);
+        Time end_time = cast(Time) (Utc.time + this.timeout);
 
         // This is the buffer the stream data is stored in.
         ubyte[8 * 1024] buf;
@@ -1611,13 +1609,13 @@ class FTPConnection : Telnet
 
         bool completed = false;
         size_t pos;
-        while (Epoch.utcMilli() < end_time)
+        while (Utc.time < end_time)
             {
                 set.reset();
                 set.add(data);
 
                 // Can we read yet, can we read yet?
-                int code = Socket.select(set, null, null, cast(int) (this.timeout * 1_000_000));
+                int code = Socket.select(set, null, null, this.timeout/Time.TicksPerSecond);
                 if (code == -1 || code == 0)
                     break;
 
@@ -1638,7 +1636,7 @@ class FTPConnection : Telnet
                     progress(pos);
 
                 // Give it more time as long as data is going through.
-                end_time = Epoch.utcMilli() + cast(d_time) (this.timeout);
+                end_time = cast(Time) (Utc.time + this.timeout);
             }
 
         // Did all the data get received?
@@ -1747,13 +1745,13 @@ class FTPConnection : Telnet
         assert (this.socket !is null);
 
         // Pick a time at which we stop reading.  It can't take too long, but it could take a bit for the whole response.
-        d_time end_time = Epoch.utcMilli() + cast(d_time) (this.timeout * 10);
+        Time end_time = cast(Time) (Utc.time + this.timeout * 10);
 
         FtpResponse response;
         char[] single_line = null;
 
         // Danger, Will Robinson, don't fall into an endless loop from a malicious server.
-        while (Epoch.utcMilli() < end_time)
+        while (Utc.time < end_time)
             {
                 single_line = this.readLine();
 

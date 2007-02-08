@@ -69,6 +69,8 @@ private import  tango.stdc.errno,
 
 private import  tango.core.Exception;
 
+private import  tango.core.Type : Interval;
+
 
 /*******************************************************************************
 
@@ -1322,11 +1324,11 @@ class Socket
 
         ***********************************************************************/
 
-        static int select (SocketSet checkRead, SocketSet checkWrite, SocketSet checkError, int microseconds)
+        static int select (SocketSet checkRead, SocketSet checkWrite, SocketSet checkError, Interval time)
         {
                 timeval tv;
-                tv.tv_sec = 0;
-                tv.tv_usec = microseconds;
+                tv.tv_sec = cast(uint) time;
+                tv.tv_usec = cast(uint) ((time - tv.tv_sec) * 1_000_000.0);
                 return select (checkRead, checkWrite, checkError, &tv);
         }
 

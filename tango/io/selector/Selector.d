@@ -56,7 +56,7 @@ module tango.io.selector.Selector;
  * method blocks until either one of the conduits is selected or the
  * specified timeout is reached. Even though it has two different versions:
  * a) select(); b) select(Interval); the first one is just the same as doing
- * select(Interval.infinity). In that case we don't have a timeout and
+ * select(Interval.max). In that case we don't have a timeout and
  * select() blocks until a conduit receives an event.
  *
  * When select() returns you will receive an integer; if this integer is
@@ -69,7 +69,7 @@ module tango.io.selector.Selector;
  * ---
  * try
  * {
- *     uint eventCount = selector.select(10 * Interval.second);
+ *     uint eventCount = selector.select(10.0);
  *     if (eventCount > 0)
  *     {
  *         // Process the I/O events in the selected set

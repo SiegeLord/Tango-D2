@@ -14,11 +14,11 @@ module tango.net.http.HttpParams;
 
 private import  tango.io.model.IBuffer;
 
-private import  tango.text.stream.SimpleIterator;
-
 private import  tango.net.http.HttpTokens;
 
 private import  tango.io.protocol.model.IWriter;
+
+private import  tango.text.stream.SimpleIterator;
 
 public  import  tango.net.http.model.HttpParamsView;
 
@@ -114,7 +114,7 @@ class HttpParams : HttpTokens, HttpParamsView
 
         **********************************************************************/
 
-        void addDate (char[] name, ulong value)
+        void addDate (char[] name, Time value)
         {
                 super.addDate (name, value);
         }
@@ -150,7 +150,7 @@ class HttpParams : HttpTokens, HttpParamsView
 
         **********************************************************************/
 
-        ulong getDate (char[] name, ulong ret = -1)
+        Time getDate (char[] name, Time ret = Time.max)
         {
                 return super.getDate (name, ret);
         }

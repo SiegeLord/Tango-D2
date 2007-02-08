@@ -14,7 +14,7 @@ version = StackGrowsDown;
 
 public
 {
-    import tango.core.Interval;
+    import tango.core.Type : Interval;
 }
 private
 {
@@ -648,23 +648,34 @@ class Thread
      * Example:
      * -------------------------------------------------------------------------
      *
-     * Thread.sleep( Interval.milli * 50 ); // sleep for 50 milliseconds
-     * Thread.sleep( Interval.second * 1 ); // sleep for 1 second
+     * Thread.sleep( 0.050 ); // sleep for 50 milliseconds
+     * Thread.sleep( 1 ); // sleep for 1 second
      *
      * -------------------------------------------------------------------------
      */
-    static void sleep( /*Interval*/ ulong interval )
+    static void sleep( Interval period )
     {
         const MAXMILLIS = uint.max - 1;
 
         version( Win32 )
         {
-            interval /= Interval.milli;
+            auto interval = cast(ulong) (period * 1000.0);
             Sleep( MAXMILLIS < interval ? MAXMILLIS : cast(uint) interval );
         }
         else version( Posix )
         {
             alias tango.stdc.posix.unistd.sleep psleep;
+/+        
+            auto sec = cast(uint) period;
+            auto us  = cast(uint) (( period - sec ) * 1_000_000.0);
+
+            while ( sec )
+                    sec = psleep( sec );
+
+            while ( us )
+                    us = usleep( us );
++/
+            auto interval = cast(ulong) (period * 1000.0);
             const MAXUSLEEP = 1_000_000 - 1;
 
             if( interval <= MAXUSLEEP )

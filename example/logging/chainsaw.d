@@ -25,6 +25,6 @@ void main()
         while (true)
               {
               logger.info ("Hello Chainsaw!");      
-              Thread.sleep (Interval.second);
+              Thread.sleep (1.0);
               }
 }

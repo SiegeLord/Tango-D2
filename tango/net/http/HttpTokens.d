@@ -20,10 +20,13 @@ private import  tango.net.http.HttpStack;
 
 private import  Text = tango.text.Util;
 
+private import  tango.core.Type : Time;
+
 private import  tango.io.protocol.model.IWriter;
 
-private import  Integer = tango.text.convert.Integer,
-                TimeStamp = tango.text.convert.TimeStamp;
+private import  Integer = tango.text.convert.Integer;
+
+private import  TimeStamp = tango.text.convert.TimeStamp;
 
 /******************************************************************************
 
@@ -33,8 +36,8 @@ private import  Integer = tango.text.convert.Integer,
 
 struct HttpToken
 {
-        char[]          name,
-                        value;
+        char[]  name,
+                value;
 }
 
 /******************************************************************************
@@ -212,7 +215,7 @@ class HttpTokens : IWritable
 
         **********************************************************************/
 
-        ulong getDate (char[] name, ulong date = TimeStamp.InvalidEpoch)
+        Time getDate (char[] name, Time date = Time.max)
         {
                 char[] value = get (name);
 
@@ -534,7 +537,7 @@ class HttpTokens : IWritable
                 
         **********************************************************************/
 
-        protected void addDate (char[] name, ulong value)
+        protected void addDate (char[] name, Time value)
         {
                 char[40] tmp = void;
 

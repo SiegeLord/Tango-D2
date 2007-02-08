@@ -14,14 +14,14 @@ module tango.net.http.HttpGet;
 
 public  import  tango.net.Uri;
 
-public  import  tango.core.Interval;
-
 private import  tango.io.GrowBuffer;
 
 private import  tango.io.model.IConduit;
 
 private import  tango.net.http.HttpClient,
                 tango.net.http.HttpHeaders;
+
+public  import  tango.core.Type : Interval;
 
 /*******************************************************************************
 

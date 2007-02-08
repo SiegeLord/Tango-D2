@@ -20,12 +20,12 @@ module tango.net.http.HttpClient;
 
 private import  tango.io.Buffer;
 
-private import  tango.core.Interval;
-                
 private import  tango.net.Uri,
                 tango.net.SocketConduit,
                 tango.net.InternetAddress;
 
+private import  tango.core.Type : Interval;
+                
 private import  tango.net.http.HttpParams,  
                 tango.net.http.HttpHeaders,
                 tango.net.http.HttpTriplet,
@@ -35,8 +35,6 @@ private import  tango.net.http.HttpParams,
 private import  tango.text.stream.LineIterator;
 
 private import  Integer = tango.text.convert.Integer;
-
-extern (C) int printf (char*, ...);
 
 
 /*******************************************************************************
@@ -106,7 +104,7 @@ class HttpClient
         private bool                    doRedirect = true;
 
         // default to three second timeout on read operations ...
-        protected const DefaultReadTimeout = Interval.Second * cast(Interval) 3;
+        protected Interval              DefaultReadTimeout = 3;
 
         // use HTTP v1.0?
         private static const char[] DefaultHttpVersion = "HTTP/1.0";

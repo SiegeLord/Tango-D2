@@ -351,7 +351,7 @@ version (linux)
          */
         public int select(Interval timeout)
         {
-            int to = cast(int) (timeout != Interval.infinity ? cast(int) (timeout / Interval.milli) : -1);
+            int to = cast(int) (timeout != Interval.max ? cast(int) (timeout * 1000) : -1);
 
             while (true)
             {

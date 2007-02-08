@@ -154,12 +154,14 @@ debug (Test)
 {
         import tango.io.Console;
 
+        import tango.net.InternetAddress;
+
         void main()
         {
                 auto group = new InternetAddress ("127.0.0.1", 8080);
 
                 // listen for datagrams on the group address
-                auto multi = new DatagramConduit (group);
+                auto multi = new DatagramConduit;
 
                 // join and broadcast to the group
                 multi.write ("hello", group);

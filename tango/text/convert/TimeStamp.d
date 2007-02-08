@@ -29,14 +29,13 @@
 
 module tango.text.convert.TimeStamp;
 
-private import tango.core.Epoch,
-               tango.core.Exception;
+private import tango.core.Exception;
+
+private import tango.util.time.Date;
 
 private import Util = tango.text.Util;
 
 private import Int = tango.text.convert.Integer;
-
-public alias Epoch.InvalidEpoch InvalidEpoch;
 
 /******************************************************************************
 
@@ -51,7 +50,7 @@ ulong toTime(T) (T[] src)
 
         auto x = parse (src, &len);
         if (len < src.length)
-            throw new IllegalArgumentException ("invalid input:"~src);
+            throw new IllegalArgumentException ("unknown time format: "~src);
         return x;
 }
 
@@ -64,7 +63,7 @@ ulong toTime(T) (T[] src)
 
 ******************************************************************************/
 
-char[] toUtf8 (ulong time)
+char[] toUtf8 (Time time)
 {
         char[32] tmp = void;
         
@@ -80,7 +79,7 @@ char[] toUtf8 (ulong time)
 
 ******************************************************************************/
 
-wchar[] toUtf16 (ulong time)
+wchar[] toUtf16 (Time time)
 {
         wchar[32] tmp = void;
         
@@ -96,14 +95,13 @@ wchar[] toUtf16 (ulong time)
 
 ******************************************************************************/
 
-dchar[] toUtf32 (ulong time)
+dchar[] toUtf32 (Time time)
 {
         dchar[32] tmp = void;
         
         return format (tmp, time).dup;
 }
                
-
 /******************************************************************************
 
         RFC1123 formatted time
@@ -117,7 +115,10 @@ dchar[] toUtf32 (ulong time)
 
 ******************************************************************************/
 
-T[] format(T) (T[] output, ulong time)
+T[] format(T, U=Time) (T[] output, U time)
+{return format!(T)(output, cast(Time) time);}
+
+T[] format(T) (T[] output, Time time)
 {
         // these arrays also reside in Epoch, but need to be templated here
         static T[][] Months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun",
@@ -128,25 +129,23 @@ T[] format(T) (T[] output, ulong time)
 
         assert (output.length >= 29);
 
-        if (time is InvalidEpoch)
+        if (time is time.max)
             throw new IllegalArgumentException ("TimeStamp.format :: invalid epoch argument");
 
-
-        Epoch.Fields fields;
-        T[14]        tmp = void;
-
         // convert time to field values
-        fields.asUtcTime (time);
+        Date date;
+        date.set (time);
 
         // use the featherweight formatter ...
+        T[14] tmp = void;
         return Util.layout (output, "%0, %1 %2 %3 %4:%5:%6 GMT", 
-                            Days[fields.dow],
-                            convert (tmp[0..2], fields.day),
-                            Months[fields.month-1],
-                            convert (tmp[2..6], fields.year),
-                            convert (tmp[6..8], fields.hour),
-                            convert (tmp[8..10], fields.min),
-                            convert (tmp[10..12], fields.sec)
+                            Days[date.dow],
+                            convert (tmp[0..2], date.day),
+                            Months[date.month-1],
+                            convert (tmp[2..6], date.year),
+                            convert (tmp[6..8], date.hour),
+                            convert (tmp[8..10], date.min),
+                            convert (tmp[10..12], date.sec)
                            );
 }
 
@@ -158,34 +157,34 @@ T[] format(T) (T[] output, ulong time)
 
 private T[] convert(T) (T[] tmp, int i)
 {
-        return Int.format (tmp, cast(long) i, Int.Format.Unsigned, Int.Flags.Zero);
+        return Int.format!(T) (tmp, i, Int.Format.Unsigned, Int.Flags.Zero);
 }
 
 /******************************************************************************
 
-      Parse provided input and return a UTC epoch time. A return 
-      value of InvalidEpoch indicated a parse-failure.
+      Parse provided input and return a UTC epoch time. A return value 
+      of Time.max indicated a parse-failure.
 
-      An option is provided to return the count of characters
-      parsed - an unchanged value here also indicates invalid
-      input.
+      An option is provided to return the count of characters parsed - 
+      an unchanged value here also indicates invalid input.
 
 ******************************************************************************/
 
-ulong parse(T) (T[] date, uint* ate = null)
+Time parse(T) (T[] src, uint* ate = null)
 {
         int     len;
-        ulong   value;
+        Time    value;
 
-        if ((len = rfc1123 (date, value)) > 0 || 
-            (len = rfc850  (date, value)) > 0 || 
-            (len = asctime (date, value)) > 0)
+        if ((len = rfc1123 (src, value)) > 0 || 
+            (len = rfc850  (src, value)) > 0 || 
+            (len = asctime (src, value)) > 0)
            {
            if (ate)
                *ate = len;
            return value;
            }
-        return InvalidEpoch;
+
+        return Time.max;
 }
 
 
@@ -198,30 +197,30 @@ ulong parse(T) (T[] date, uint* ate = null)
 
 ******************************************************************************/
 
-int rfc1123(T) (T[] src, inout ulong value)
+int rfc1123(T) (T[] src, inout Time value)
 {
-        Epoch.Fields    fields;
-        T*              p = src.ptr;
+        Date    date;
+        T*      p = src.ptr;
 
-        bool date (inout T* p)
+        bool dt (inout T* p)
         {
-                return ((fields.day = parseInt(p)) > 0     &&
-                         *p++ == ' '                       &&
-                        (fields.month = parseMonth(p)) > 0 &&
-                         *p++ == ' '                       &&
-                        (fields.year = parseInt(p)) > 0);
+                return ((date.day = parseInt(p)) > 0     &&
+                         *p++ == ' '                     &&
+                        (date.month = parseMonth(p)) > 0 &&
+                         *p++ == ' '                     &&
+                        (date.year = parseInt(p)) > 0);
         }
 
         if (parseShortDay(p) >= 0 &&
             *p++ == ','           &&
             *p++ == ' '           &&
-            date (p)              &&
+            dt (p)                &&
             *p++ == ' '           &&
-            time (fields, p)      &&
+            time (date, p)        &&
             *p++ == ' '           &&
             p[0..3] == "GMT")
             {
-            value = fields.toUtcTime;
+            value = date.get();
             return (p+3) - src.ptr;
             }
 
@@ -238,36 +237,36 @@ int rfc1123(T) (T[] src, inout ulong value)
 
 ******************************************************************************/
 
-int rfc850(T) (T[] src, inout ulong value)
+int rfc850(T) (T[] src, inout Time value)
 {
-        Epoch.Fields    fields;
-        T*              p = src.ptr;
+        Date    date;
+        T*      p = src.ptr;
 
-        bool date (inout T* p)
+        bool dt (inout T* p)
         {
-                return ((fields.day = parseInt(p)) > 0     &&
-                         *p++ == '-'                       &&
-                        (fields.month = parseMonth(p)) > 0 &&
-                         *p++ == '-'                       &&
-                        (fields.year = parseInt(p)) > 0);
+                return ((date.day = parseInt(p)) > 0     &&
+                         *p++ == '-'                     &&
+                        (date.month = parseMonth(p)) > 0 &&
+                         *p++ == '-'                     &&
+                        (date.year = parseInt(p)) > 0);
         }
 
         if (parseFullDay(p) >= 0 &&
             *p++ == ','          &&
             *p++ == ' '          &&
-            date (p)             &&
+            dt (p)               &&
             *p++ == ' '          &&
-            time (fields, p)     &&
+            time (date, p)       &&
             *p++ == ' '          &&
             p[0..3] == "GMT")
             {
-            if (fields.year < 70)
-                fields.year += 2000;
+            if (date.year < 70)
+                date.year += 2000;
             else
-               if (fields.year < 100)
-                   fields.year += 1900;
+               if (date.year < 100)
+                   date.year += 1900;
 
-            value = fields.toUtcTime;
+            value = date.get();
             return (p+3) - src.ptr;
             }
 
@@ -284,29 +283,29 @@ int rfc850(T) (T[] src, inout ulong value)
 
 ******************************************************************************/
 
-int asctime(T) (T[] src, inout ulong value)
+int asctime(T) (T[] src, inout Time value)
 {
-        Epoch.Fields    fields;
-        T*              p = src.ptr;
+        Date    date;
+        T*      p = src.ptr;
 
-        bool date (inout T* p)
+        bool dt (inout T* p)
         {
-                return ((fields.month = parseMonth(p)) > 0  &&
-                         *p++ == ' '                        &&
-                        ((fields.day = parseInt(p)) > 0     ||
-                        (*p++ == ' '                        &&
-                        (fields.day = parseInt(p)) > 0)));
+                return ((date.month = parseMonth(p)) > 0  &&
+                         *p++ == ' '                      &&
+                        ((date.day = parseInt(p)) > 0     ||
+                        (*p++ == ' '                      &&
+                        (date.day = parseInt(p)) > 0)));
         }
 
         if (parseShortDay(p) >= 0 &&
             *p++ == ' '           &&
-            date (p)              &&
+            dt (p)                &&
             *p++ == ' '           &&
-            time (fields, p)      &&
+            time (date, p)        &&
             *p++ == ' '           &&
-            (fields.year = parseInt (p)) > 0)
+            (date.year = parseInt (p)) > 0)
             {
-            value = fields.toUtcTime;
+            value = date.get();
             return p - src.ptr;
             }
 
@@ -322,37 +321,37 @@ int asctime(T) (T[] src, inout ulong value)
 
 ******************************************************************************/
 
-int dostime(T) (T[] src, inout ulong value)
+int dostime(T) (T[] src, inout Time value)
 {
-        Epoch.Fields    fields;
-        T*              p = src.ptr;
+        Date    date;
+        T*      p = src.ptr;
 
-        bool date (inout T* p)
+        bool dt (inout T* p)
         {
-                return ((fields.month = parseInt(p)) > 0    &&
-                         *p++ == '-'                        &&
-                        ((fields.day = parseInt(p)) > 0     &&
-                        (*p++ == '-'                        &&
-                        (fields.year = parseInt(p)) > 0)));
+                return ((date.month = parseInt(p)) > 0 &&
+                         *p++ == '-'                   &&
+                        ((date.day = parseInt(p)) > 0  &&
+                        (*p++ == '-'                   &&
+                        (date.year = parseInt(p)) > 0)));
         }
 
-        if (date(p) >= 0                    &&
-            *p++ == ' '                     &&
-            (fields.hour = parseInt(p)) > 0 &&
-            *p++ == ':'                     &&
-            (fields.min = parseInt(p)) > 0  &&
+        if (dt(p) >= 0                    &&
+            *p++ == ' '                   &&
+            (date.hour = parseInt(p)) > 0 &&
+            *p++ == ':'                   &&
+            (date.min = parseInt(p)) > 0  &&
             (*p == 'A' || *p == 'P'))
             {
             if (*p is 'P')
-                fields.hour += 12;
+                date.hour += 12;
             
-            if (fields.year < 70)
-                fields.year += 2000;
+            if (date.year < 70)
+                date.year += 2000;
             else
-               if (fields.year < 100)
-                   fields.year += 1900;
+               if (date.year < 100)
+                   date.year += 1900;
             
-            value = fields.toUtcTime;
+            value = date.get();
             return (p+2) - src.ptr;
             }
 
@@ -368,27 +367,27 @@ int dostime(T) (T[] src, inout ulong value)
 
 ******************************************************************************/
 
-int iso8601(T) (T[] src, inout ulong value)
+int iso8601(T) (T[] src, inout Time value)
 {
-        Epoch.Fields    fields;
-        T*              p = src.ptr;
+        Date    date;
+        T*      p = src.ptr;
 
-        bool date (inout T* p)
+        bool dt (inout T* p)
         {
-                return ((fields.year = parseInt(p)) > 0     &&
-                         *p++ == '-'                        &&
-                        ((fields.month = parseInt(p)) > 0   &&
-                        (*p++ == '-'                        &&
-                        (fields.day = parseInt(p)) > 0)));
+                return ((date.year = parseInt(p)) > 0   &&
+                         *p++ == '-'                    &&
+                        ((date.month = parseInt(p)) > 0 &&
+                        (*p++ == '-'                    &&
+                        (date.day = parseInt(p)) > 0)));
         }
 
-        if (date(p) >= 0                    &&
-            *p++ == ' '                     &&
-            time (fields, p)                &&
-            *p++ == ','                     &&
-            (fields.ms = parseInt(p)) > 0)
+        if (dt(p) >= 0     &&
+            *p++ == ' '    &&
+            time (date, p) &&
+            *p++ == ','    &&
+            (date.ms = parseInt(p)) > 0)
             {
-            value = fields.toUtcTime;
+            value = date.get();
             return p - src.ptr;
             }
 
@@ -401,13 +400,13 @@ int iso8601(T) (T[] src, inout ulong value)
 
 ******************************************************************************/
 
-private bool time(T) (inout Epoch.Fields fields, inout T* p)
+private bool time(T) (inout Date date, inout T* p)
 {
-        return ((fields.hour = parseInt(p)) > 0 &&
-                 *p++ == ':'                    &&
-                (fields.min = parseInt(p)) > 0  &&
-                 *p++ == ':'                    &&
-                (fields.sec = parseInt(p)) > 0);
+        return ((date.hour = parseInt(p)) > 0 &&
+                 *p++ == ':'                  &&
+                (date.min = parseInt(p)) > 0  &&
+                 *p++ == ':'                  &&
+                (date.sec = parseInt(p)) > 0);
 }
 
 
@@ -561,7 +560,7 @@ private static int parseInt(T) (inout T* p)
 
 debug (UnitTest)
 {
-        // void main() {}
+        void main() {}
         
         unittest
         {

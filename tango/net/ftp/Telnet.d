@@ -12,9 +12,9 @@
 
 module tango.net.ftp.Telnet;
 
-private import tango.core.Epoch;
-
 private import tango.net.Socket;
+
+private import tango.util.time.Utc;
 
 private import tango.core.Exception;
 
@@ -29,13 +29,11 @@ private import Integer = tango.text.convert.Integer;
 ///    timeout =             the timeout for socket communication
 class Telnet
 {
-        private alias ulong d_time;
-
         /// The control connection socket.
         protected Socket socket;
 
         /// The number of milliseconds to wait for socket communication or connection.
-        protected d_time timeout = 5000;
+        protected Time timeout = cast(Time) (5000 * Time.TicksPerMillisecond);
 
         /// provided by host
         abstract void exception (char[] msg);
@@ -63,7 +61,7 @@ class Telnet
         body
         {
                 // At end_time, we bail.
-                d_time end_time = Epoch.utcMilli() + cast(d_time) this.timeout;
+                Time end_time = cast(Time) (Utc.time + this.timeout);
 
                 // Set up a SocketSet so we can use select() - it's pretty efficient.
                 SocketSet set = new SocketSet();
@@ -71,13 +69,13 @@ class Telnet
                         delete set;
 
                 size_t pos = 0;
-                while (Epoch.utcMilli() < end_time)
+                while (Utc.time < end_time)
                 {
                         set.reset();
                         set.add(this.socket);
 
                         // Can we write yet, can we write yet?
-                        int code = Socket.select(null, set, null, cast(int) (this.timeout * 1_000_000));
+                        int code = Socket.select(null, set, null, this.timeout / Time.TicksPerSecond);
                         if (code == -1 || code == 0)
                                 break;
 
@@ -102,7 +100,7 @@ class Telnet
         char[] readLine()
         {
                 // Figure, first, how long we're allowed to take.
-                d_time end_time = Epoch.utcMilli() + cast(d_time) this.timeout;
+                Time end_time = cast(Time) (Utc.time + this.timeout);
 
                 // An overall buffer and a one-char buffer.
                 char[] buffer;
@@ -130,13 +128,13 @@ class Telnet
                 scope (exit)
                         delete set;
 
-                while (Epoch.utcMilli() < end_time)
+                while (Utc.time < end_time)
                 {
                         set.reset();
                         set.add(this.socket);
 
                         // Try to read from the socket.
-                        int code = Socket.select(set, null, null, cast(int) (this.timeout * 1_000_000));
+                        int code = Socket.select(set, null, null, this.timeout / Time.TicksPerSecond);
                         if (code == -1 || code == 0)
                                 break;
 
@@ -211,7 +209,7 @@ class Telnet
                                 set.add(s);
 
                         // Anyone available?
-                        int code = Socket.select(null, set, null, cast(int) (this.timeout * 1_000_000));
+                        int code = Socket.select(null, set, null, this.timeout / Time.TicksPerSecond);
                         if (code == -1 || code == 0)
                                 break;
 
@@ -238,7 +236,7 @@ class Telnet
                 if (this.socket is null)
                    {
                    char[10] tmp;
-                   exception ("CLIENT: Unable to connect within the specified time limit (" ~ Integer.itoa(tmp, cast(uint) this.timeout) ~ " ms.)");
+                   exception ("CLIENT: Unable to connect within the specified time limit (" ~ Integer.itoa(tmp, cast(uint) (this.timeout/Time.TicksPerMillisecond)) ~ " ms.)");
                    }
 
                 // Make it blocking again, because that's the norm.

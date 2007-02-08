@@ -47,12 +47,10 @@ public class RollingFileAppender : FileAppender
         ***********************************************************************/
 
         this (FilePath p, int count, ulong maxSize, Layout layout = null)
-        in {
-           assert (count > 1 && count < 10);
-           assert (p);
-           }
-        body
         {
+                assert (p);
+                assert (count > 1 && count < 10);
+
                 // Get a unique fingerprint for this instance
                 mask = register (p.toUtf8);
 
@@ -68,10 +66,14 @@ public class RollingFileAppender : FileAppender
 
                     // use the most recent file in the set
                     auto proxy = new FileProxy (clone);
-                    if (proxy.isExisting && proxy.getModifiedTime > mostRecent)
+                    if (proxy.isExisting)
                        {
-                       mostRecent = proxy.getModifiedTime;
-                       index = i;
+                       auto modified = proxy.modified;
+                       if (modified > mostRecent)
+                          {
+                          mostRecent = modified;
+                          index = i;
+                          }
                        }
                     }
 
@@ -154,7 +156,7 @@ public class RollingFileAppender : FileAppender
                 fileSize += msg.length;
                 buffer.append (msg);
 
-                buffer.append(FileConst.NewlineString).flush();
+                buffer.append(FileConst.NewlineString).flush;
         }
 
         /***********************************************************************
@@ -173,12 +175,12 @@ public class RollingFileAppender : FileAppender
                 fileSize = 0;
 
                 // close any existing conduit
-                close ();
+                close;
 
                 auto conduit = new FileConduit (paths[index], FileConduit.WriteAppending);
                 buffer = setConduit (conduit);
                 if (reset)
-                    conduit.truncate();
+                    conduit.truncate;
         }
 }
 

@@ -12,10 +12,10 @@
 
 module tango.util.log.Log4Layout;
 
+private import  tango.core.Thread;
+
 private import  tango.util.log.Event,
                 tango.util.log.Layout;
-
-private import  tango.core.Thread;
 
 /*******************************************************************************
 
@@ -44,7 +44,7 @@ public class Log4Layout : Layout
                 event.append ("<log4j:event logger=\"")
                      .append (event.getName)
                      .append ("\" timestamp=\"")
-                     .append (ultoa (tmp, event.getEpochTime))
+                     .append (toMilli (tmp, event.getEpochTime))
                      .append ("\" level=\"")
                      .append (event.getLevelName [0..length-1])
                      .append ("\" thread=\"").append(threadName).append("\">\r\n<log4j:message><![CDATA[");

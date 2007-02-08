@@ -21,6 +21,8 @@ private import  tango.sys.Common;
 public  import  tango.io.FilePath,
                 tango.io.FileConst;
 
+private import  tango.util.time.Utc;
+
 private import  tango.core.Exception;
 
 /*******************************************************************************
@@ -75,6 +77,19 @@ version (Posix)
 class FileProxy
 {
         private FilePath path;
+
+        /***********************************************************************
+
+                TimeStamp information. Accurate to whatever the OS supports
+
+        ***********************************************************************/
+
+        struct Stamps
+        {
+                Time    created,        /// time created
+                        accessed,       /// last time accessed
+                        modified;       /// last time modified
+        }
 
         /***********************************************************************
 
@@ -137,6 +152,42 @@ class FileProxy
 
         /***********************************************************************
 
+                Returns the time of the last modification. Accurate 
+                to whatever the OS supports
+                
+        ***********************************************************************/
+
+        Time modified ()
+        {
+                return timeStamps.modified;
+        }
+
+        /***********************************************************************
+
+                Returns the time of the last access. Accurate to 
+                whatever the OS supports
+
+        ***********************************************************************/
+
+        Time accessed ()
+        {
+                return timeStamps.accessed;
+        }
+
+        /***********************************************************************
+        
+                Returns the time of file creation. Accurate to 
+                whatever the OS supports
+        
+        ***********************************************************************/
+        
+        Time created ()
+        {
+                return timeStamps.created;
+        }
+
+        /***********************************************************************
+
                 Create an entire path consisting of this folder along with 
                 all parent folders. The path must not contain '.' or '..'
                 segments. Related methods include PathUtil.normalize() and
@@ -158,17 +209,17 @@ class FileProxy
                     if (isFolder)
                         return this;
                     else
-                       throw new IllegalArgumentException ("FileProxy.createPath :: file/folder conflict for '" ~ path.toUtf8 ~ "'");
+                       badArg ("FileProxy.createPath :: file/folder conflict: ");
 
-                scope prior = new FilePath (path.asParent);
+                auto prior = new FilePath (path.asParent);
                 char[] name = prior.getName;
 
                 if (name.length is 0                   ||
                     name == FileConst.CurrentDirString ||
                     name == FileConst.ParentDirString)
-                    throw new IllegalArgumentException ("FileProxy.createPath :: invalid parent '" ~ path.toUtf8 ~ "'");
+                    badArg ("FileProxy.createPath :: invalid path: ");
 
-                scope parent = new FileProxy (prior);
+                auto parent = new FileProxy (prior);
                 parent.createPath;
                 return createFolder;
         }
@@ -217,25 +268,31 @@ class FileProxy
 
         /***********************************************************************
 
+                Throw an exception using the last known error
+
+        ***********************************************************************/
+
+        private void badArg (char[] msg)
+        {
+                throw new IllegalArgumentException (msg ~ path.toUtf8);
+        }
+
+        /***********************************************************************
+
         ***********************************************************************/
 
         version (Win32)
         {
-                // have to convert the filepath to utf16
-                private wchar[]         widepath;
-                private wchar[MAX_PATH] widepathsink = void;
-
                 /***************************************************************
 
                         Cache a wchar[] instance of the filepath
 
                 ***************************************************************/
 
-                private wchar[] name16()
+                private wchar[] name16 (wchar[] tmp, bool withNull=true)
                 {
-                        if (widepath is null)
-                            widepath = Utf.toUtf16 (path.cString, widepathsink);
-                        return widepath;
+                        int offset = withNull ? 0 : 1;
+                        return Utf.toUtf16 (path.cString[0..$-offset], tmp);
                 }
 
                 /***************************************************************
@@ -253,7 +310,8 @@ class FileProxy
                                 }
                              else
                                 {
-                                if (! GetFileAttributesExW (name16.ptr, GetFileInfoLevelStandard, &info))
+                                wchar[MAX_PATH] tmp = void;
+                                if (! GetFileAttributesExW (name16(tmp).ptr, GetFileInfoLevelStandard, &info))
                                       exception;
                                 }
 
@@ -268,7 +326,7 @@ class FileProxy
 
                 private DWORD getFlags ()
                 {
-                        WIN32_FILE_ATTRIBUTE_DATA info;
+                        WIN32_FILE_ATTRIBUTE_DATA info = void;
 
                         return getInfo (info);
                 }
@@ -281,7 +339,7 @@ class FileProxy
 
                 ulong getSize ()
                 {
-                        WIN32_FILE_ATTRIBUTE_DATA info;
+                        WIN32_FILE_ATTRIBUTE_DATA info = void;
 
                         getInfo (info);
                         return (cast(ulong) info.nFileSizeHigh << 32) +
@@ -312,47 +370,20 @@ class FileProxy
 
                 /***************************************************************
 
-                        Return the time when the file was last modified
+                        Return timestamp information
 
                 ***************************************************************/
 
-                ulong getModifiedTime ()
+                Stamps timeStamps ()
                 {
-                        WIN32_FILE_ATTRIBUTE_DATA info;
+                        WIN32_FILE_ATTRIBUTE_DATA info = void;
+                        Stamps                    time = void;
 
-                        getInfo (info);
-                        return (cast(ulong) info.ftLastWriteTime.dwHighDateTime << 32) +
-                                            info.ftLastWriteTime.dwLowDateTime;
-                }
-
-                /***************************************************************
-
-                        Return the time when the file was last accessed
-
-                ***************************************************************/
-
-                ulong getAccessedTime ()
-                {
-                        WIN32_FILE_ATTRIBUTE_DATA info;
-
-                        getInfo (info);
-                        return (cast(ulong) info.ftLastAccessTime.dwHighDateTime << 32) +
-                                            info.ftLastAccessTime.dwLowDateTime;
-                }
-
-                /***************************************************************
-
-                        Return the time when the file was created
-
-                ***************************************************************/
-
-                ulong getCreatedTime ()
-                {
-                        WIN32_FILE_ATTRIBUTE_DATA info;
-
-                        getInfo (info);
-                        return (cast(ulong) info.ftCreationTime.dwHighDateTime << 32) +
-                                            info.ftCreationTime.dwLowDateTime;
+                        getInfo (info);                        
+                        time.modified = Utc.convert (info.ftLastWriteTime);
+                        time.accessed = Utc.convert (info.ftLastAccessTime);  
+                        time.created  = Utc.convert (info.ftCreationTime);
+                        return time;
                 }
 
                 /***************************************************************
@@ -372,7 +403,8 @@ class FileProxy
                                    }
                                 else
                                    {
-                                   if (! RemoveDirectoryW (name16.ptr))
+                                   wchar[MAX_PATH] tmp = void;
+                                   if (! RemoveDirectoryW (name16(tmp).ptr))
                                          exception();
                                    }
                            }
@@ -384,7 +416,8 @@ class FileProxy
                                    }
                                 else
                                    {
-                                   if (! DeleteFileW (name16.ptr))
+                                   wchar[MAX_PATH] tmp = void;
+                                   if (! DeleteFileW (name16(tmp).ptr))
                                          exception();
                                    }
 
@@ -400,15 +433,19 @@ class FileProxy
 
                 FileProxy rename (FilePath dst)
                 {
-                        const int Typical = REPLACE_EXISTING + COPY_ALLOWED +
-                                                               WRITE_THROUGH;
+                        const int Typical = REPLACE_EXISTING + 
+                                            COPY_ALLOWED     +
+                                            WRITE_THROUGH;
 
                         int result;
 
                         version (Win32SansUnicode)
                                  result = MoveFileExA (path.cString.ptr, dst.cString.ptr, Typical);
                              else
-                                result = MoveFileExW (name16.ptr, Utf.toUtf16(dst.cString).ptr, Typical);
+                                {
+                                wchar[MAX_PATH] tmp = void;
+                                result = MoveFileExW (name16(tmp).ptr, Utf.toUtf16(dst.cString).ptr, Typical);
+                                }
 
                         if (! result)
                               exception;
@@ -432,9 +469,12 @@ class FileProxy
                                                   0, null, CREATE_ALWAYS,
                                                   FILE_ATTRIBUTE_NORMAL, cast(HANDLE) 0);
                              else
-                                h = CreateFileW (name16.ptr, GENERIC_WRITE,
+                                {
+                                wchar[MAX_PATH] tmp = void;
+                                h = CreateFileW (name16(tmp).ptr, GENERIC_WRITE,
                                                  0, null, CREATE_ALWAYS,
                                                  FILE_ATTRIBUTE_NORMAL, cast(HANDLE) 0);
+                                }
 
                         if (h == INVALID_HANDLE_VALUE)
                             exception;
@@ -460,7 +500,8 @@ class FileProxy
                                 }
                              else
                                 {
-                                if (! CreateDirectoryW (name16.ptr, null))
+                                wchar[MAX_PATH] tmp = void;
+                                if (! CreateDirectoryW (name16(tmp).ptr, null))
                                       exception;
                                 }
                         return this;
@@ -481,8 +522,8 @@ class FileProxy
                 {
                         HANDLE                  h;
                         char[]                  prefix;
-                        FIND_DATA               fileinfo;
                         char[MAX_PATH+1]        tmp = void;
+                        FIND_DATA               fileinfo = void;
 
                         int next()
                         {
@@ -502,7 +543,10 @@ class FileProxy
                         version (Win32SansUnicode)
                                  h = FindFirstFileA (padded(path.toUtf8, "*\0").ptr, &fileinfo);
                              else
-                                h = FindFirstFileW (padded(name16[0..$-1], "*\0").ptr, &fileinfo);
+                                {
+                                wchar[MAX_PATH] host = void;
+                                h = FindFirstFileW (padded(name16(host, false), "*\0").ptr, &fileinfo);
+                                }
 
                         if (h is INVALID_HANDLE_VALUE)
                             exception;
@@ -562,7 +606,7 @@ class FileProxy
 
                 ulong getSize ()
                 {
-                        stat_t stats;
+                        stat_t stats = void;
 
                         getInfo (stats);
                         return cast(ulong) stats.st_size;    // 32 bits only
@@ -576,7 +620,7 @@ class FileProxy
 
                 bool isWritable ()
                 {
-                        stat_t stats;
+                        stat_t stats = void;
 
                         return (getInfo(stats) & O_RDONLY) == 0;
                 }
@@ -589,51 +633,28 @@ class FileProxy
 
                 bool isFolder ()
                 {
-                        stat_t stats;
+                        stat_t stats = void;
 
                         return (getInfo(stats) & S_IFDIR) != 0;
                 }
 
                 /***************************************************************
 
-                        Return the time when the file was last modified
+                        Return timestamp information
 
                 ***************************************************************/
 
-                ulong getModifiedTime ()
+                Stamps timeStamps ()
                 {
-                        stat_t stats;
+                        stat_t stats = void;
+                        Stamps time  = void;
 
                         getInfo (stats);
-                        return cast(ulong) stats.st_mtime;
-                }
 
-                /***************************************************************
-
-                        Return the time when the file was last accessed
-
-                ***************************************************************/
-
-                ulong getAccessedTime ()
-                {
-                        stat_t stats;
-
-                        getInfo (stats);
-                        return cast(ulong) stats.st_atime;
-                }
-
-                /***************************************************************
-
-                        Return the time when the file was created
-
-                ***************************************************************/
-
-                ulong getCreatedTime ()
-                {
-                        stat_t stats;
-
-                        getInfo (stats);
-                        return cast(ulong) stats.st_ctime;
+                        time.modified = Utc.convert (*cast(timeval*) &stats.st_mtime);                      
+                        time.accessed = Utc.convert (*cast(timeval*) &stats.st_atime);  
+                        time.created  = Utc.convert (*cast(timeval*) &stats.st_ctime);
+                        return time;
                 }
 
                 /***************************************************************

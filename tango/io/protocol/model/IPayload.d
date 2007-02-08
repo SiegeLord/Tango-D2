@@ -12,6 +12,8 @@
 
 module tango.io.protocol.model.IPayload;
 
+public import tango.core.Type : Time;
+
 public import tango.io.protocol.model.IReader,
               tango.io.protocol.model.IWriter;
 
@@ -52,7 +54,7 @@ interface IPayload : IWritable, IReadable
                 
         ***********************************************************************/
 
-        ulong time ();
+        Time time ();
 
         /***********************************************************************
 
@@ -60,7 +62,7 @@ interface IPayload : IWritable, IReadable
                 
         ***********************************************************************/
 
-        void time (ulong time);
+        void time (Time time);
 
         /**********************************************************************
 

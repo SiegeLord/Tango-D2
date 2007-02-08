@@ -12,7 +12,8 @@ private import tango.io.selector.model.ISelector;
 private import tango.io.selector.AbstractSelector;
 private import tango.io.selector.SelectorException;
 private import tango.sys.Common;
-private import tango.sys.TimeConverter;
+//private import tango.sys.TimeConverter;
+
 private import tango.stdc.errno;
 
 debug (selector)
@@ -26,14 +27,13 @@ version (Windows)
 {
     private
     {
-        /*
+/+
         struct timeval
         {
-            int tv_sec;     // seconds
-            int tv_usec;    // microseconds
+            uint tv_sec;     // seconds
+            uint tv_usec;    // microseconds
         }
-        */
-
++/
         // Opaque struct
         struct fd_set
         {
@@ -750,10 +750,11 @@ public class SelectSelector: AbstractSelector
         fd_set *writefds;
         fd_set *exceptfds;
         timeval tv;
+        
+        int to = cast(int) (timeout != Interval.max ? cast(int) (timeout * 1000) : -1);
 
         debug (selector)
-            Stdout.format("--- SelectSelector.select(timeout={0} usec)\n",
-                          (timeout != Interval.infinity ? timeout / Interval.milli : -1));
+            Stdout.format("--- SelectSelector.select(timeout={0} usec)\n", to);
 
         if (_readSet !is null)
         {
@@ -784,9 +785,11 @@ public class SelectSelector: AbstractSelector
         {
             while (true)
             {
+                toTimeval (&tv, timeout);
+
                 // FIXME: add support for the wakeup() call.
-                _eventCount = .select(_maxfd + 1, readfds, writefds, exceptfds,
-                                      (timeout != Interval.infinity ? toTimeval(&tv, timeout) : null));
+                _eventCount = .select(_maxfd + 1, readfds, writefds, exceptfds, to is -1 ? null : &tv);
+
                 debug (selector)
                     Stdout.format("---   .select() returned {0} (maxfd={1})\n",
                                   _eventCount, cast(int) _maxfd);
@@ -808,9 +811,11 @@ public class SelectSelector: AbstractSelector
         }
         else
         {
+            toTimeval (&tv, timeout);
+
             // FIXME: Can a system call be interrupted on Windows?
-            _eventCount = .select(ISelectable.Handle.max, readfds, writefds, exceptfds,
-                                  (timeout != Interval.infinity ? toTimeval(&tv, timeout) : null));
+            _eventCount = .select(ISelectable.Handle.max, readfds, writefds, exceptfds, to is -1 ? null : &tv);
+
             debug (selector)
                 Stdout.format("---   .select() returned {0}\n", _eventCount);
         }

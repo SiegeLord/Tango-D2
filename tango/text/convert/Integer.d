@@ -74,7 +74,7 @@ int toInt(T) (T[] digits, uint radix=10)
 {
         auto x = toLong (digits, radix);
         if (x > int.max)
-            throw new IllegalArgumentException ("numeric overflow");
+            throw new IllegalArgumentException ("Integer.toInt :: numeric overflow on "~digits);
         return cast(int) x;
 }
 
@@ -98,7 +98,7 @@ long toLong(T) (T[] digits, uint radix=10)
 
         auto x = parse (digits, radix, &len);
         if (len < digits.length)
-            throw new IllegalArgumentException ("invalid input: "~digits);
+            throw new IllegalArgumentException ("Integer.toLong :: invalid number "~digits);
         return x;
 }
 
@@ -468,7 +468,7 @@ debug (UnitTest)
         {
         char[64] tmp;
 
-        assert (toInt("1e", 10) is 1);
+        assert (toInt("1", 10) is 1);
         assert (toLong("1", 10U) is 1);
 
         assert (atoi ("12345") is 12345);

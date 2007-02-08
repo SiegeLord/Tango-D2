@@ -4,9 +4,10 @@
         
 *******************************************************************************/
 
-private import tango.io.Stdout;
+private import  tango.io.Stdout;
 
-private import tango.core.Epoch;
+private import  tango.util.time.Utc,
+                tango.util.time.Date;
 
 /******************************************************************************
 
@@ -17,28 +18,28 @@ private import tango.core.Epoch;
 
 void main ()
 {
-        Epoch.Fields fields;
+        Date date;
 
-        // get current time and convert to local
-        fields.asLocalTime (Epoch.utcMilli);
+        // set current local time
+        date.set (Utc.local);
 
-        // get GMT difference
-        int tz = Epoch.tzMinutes;
+        // get GMT difference in minutes
+        auto tz = cast(int) Utc.zone / 60;
         char sign = '+';
         if (tz < 0)
             tz = -tz, sign = '-';
 
-        // format fields
-        Stdout.format ("{0}, {1} {2:d2} {3:d2}:{4:d2}:{5:d2} GMT{6}{7:d2}:{8:d2} {9}",
-                        fields.toShortDay,
-                        fields.toShortMonth,
-                        fields.day,
-                        fields.hour, 
-                        fields.min,
-                        fields.sec,
-                        sign,
-                        tz / 60,
-                        tz % 60,
-                        fields.year
-                        ).newline;
+        // format date
+        Stdout.formatln ("{0}, {1} {2:d2} {3:d2}:{4:d2}:{5:d2} GMT{6}{7:d2}:{8:d2} {9}",
+                          date.asDay,
+                          date.asMonth,
+                          date.day,
+                          date.hour, 
+                          date.min,
+                          date.sec,
+                          sign,
+                          tz / 60,
+                          tz % 60,
+                          date.year
+                         );
 }

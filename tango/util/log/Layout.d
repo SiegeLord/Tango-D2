@@ -14,6 +14,8 @@ module tango.util.log.Layout;
 
 private import tango.util.log.Event;
 
+private import tango.core.Type : Time;
+
 /*******************************************************************************
 
         Base class for all Layout instances
@@ -61,17 +63,16 @@ public class Layout
 
         ***********************************************************************/
 
-        final char[] ultoa (char[] s, ulong l)
-        in {
-           assert (s.length > 0);
-           }
-        body 
+        final char[] toMilli (char[] s, Time time)
         {
+                assert (s.length > 0);
+                time /= time.TicksPerMillisecond;
+
                 int len = s.length;
                 do {
-                   s[--len] = l % 10 + '0';
-                   l /= 10;
-                   } while (l && len);
+                   s[--len] = time % 10 + '0';
+                   time /= 10;
+                   } while (time && len);
                 return s[len..s.length];                
         }
 }
@@ -141,7 +142,7 @@ public class SimpleTimerLayout : Layout
         {
                 char[20] tmp;
 
-                event.append (ultoa (tmp, event.getTime))
+                event.append (toMilli (tmp, event.getTime))
                      .append (" ")
                      .append (event.getLevelName)
                      .append (event.getName)

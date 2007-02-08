@@ -17,6 +17,8 @@ version = UseEventFreeList;
 
 private import  tango.sys.Common;
 
+private import  tango.util.time.Utc;
+
 private import  tango.util.log.model.ILevel,
                 tango.util.log.model.IHierarchy;
 
@@ -45,13 +47,12 @@ public class Event : ILevel
         // primary event attributes
         private char[]          msg,
                                 name;
-        private ulong           time;
+        private Time            time;
         private Level           level;
         private IHierarchy      hierarchy;
 
         // timestamps
-        private static ulong    epochTime;
-        private static ulong    beginTime;
+        private static Time     beginTime;
 
         // scratch buffer for constructing output strings
         struct  Scratch
@@ -70,8 +71,15 @@ public class Event : ILevel
 
         version (Win32)
         {
-                private static uint frequency;
+                private static double multiplier;
+                private static ulong  timerStart;
         }
+
+        /***********************************************************************
+                
+                Support for free-list
+
+        ***********************************************************************/
 
         version (UseEventFreeList)
         {
@@ -117,14 +125,13 @@ public class Event : ILevel
                         freelist = e;
 
                         version (EventReset)
-                                 e.reset();
+                                 e.reset;
                 }
         }
 
         /***********************************************************************
                 
-                Setup the timing information for later use. Note how much 
-                effort it takes to get epoch time in Win32 ...
+                Setup timing information for later use
 
         ***********************************************************************/
 
@@ -132,77 +139,53 @@ public class Event : ILevel
         {
                 version (Posix)       
                 {
-                        timeval tv;
-
-                        if (gettimeofday (&tv, null))
-                            throw new Exception ("high-resolution timer is not available");
-                        
-                        epochTime = 1000L * tv.tv_sec;
-                        beginTime = epochTime + tv.tv_usec / 1000;
+                        beginTime = Utc.time;
                 }
 
                 version (Win32)
                 {
-                        ulong           time;
-                        ulong           freq;
+                        ulong freq;
 
                         if (! QueryPerformanceFrequency (&freq))
                               throw new Exception ("high-resolution timer is not available");
-                               
-                        frequency = cast(uint) (freq / 1000);
-                        QueryPerformanceCounter (&time);
-                        beginTime = time / frequency;
-
-                        SYSTEMTIME      sTime;
-                        FILETIME        fTime;
-
-                        GetSystemTime (&sTime);
-                        SystemTimeToFileTime (&sTime, &fTime);
                         
-                        ulong time1 = (cast(ulong) fTime.dwHighDateTime) << 32 | 
-                                                   fTime.dwLowDateTime;
+                        QueryPerformanceCounter (&timerStart);
+                        multiplier = 10_000_000.0 / freq;       
+                        beginTime = Utc.time;
 
-                        // first second of 1970 ...
-                        sTime.wYear = 1970;
-                        sTime.wMonth = 1;
-                        sTime.wDayOfWeek = 0;
-                        sTime.wDay = 1;
-                        sTime.wHour = 0;
-                        sTime.wMinute = 0;
-                        sTime.wSecond = 0;
-                        sTime.wMilliseconds = 0;
-                        SystemTimeToFileTime (&sTime, &fTime);
-
-                        ulong time2 = (cast(ulong) fTime.dwHighDateTime) << 32 | 
-                                                   fTime.dwLowDateTime;
-                        
-                        epochTime = (time1 - time2) / 10_000;
                 }
         }
 
         /***********************************************************************
                 
-                Return the number of milliseconds since the executable
-                was started.
+                Return time when the executable started
 
         ***********************************************************************/
 
-        final static ulong getRuntime ()
+        final static Time startedAt ()
+        {
+                return beginTime;
+        }
+
+        /***********************************************************************
+                
+                Return the current time
+
+        ***********************************************************************/
+
+        final static Time timer ()
         {
                 version (Posix)       
                 {
-                        timeval tv;
-
-                        gettimeofday (&tv, null);
-                        return ((cast(ulong) tv.tv_sec) * 1000 + tv.tv_usec / 1000) - beginTime;
+                        return Utc.time;
                 }
 
                 version (Win32)
                 {
-                        ulong time;
+                        ulong now;
 
-                        QueryPerformanceCounter (&time);
-                        return (time / frequency) - beginTime;
+                        QueryPerformanceCounter (&now);
+                        return cast(Time) ((now - timerStart) * multiplier + beginTime);
                 }
         }
 
@@ -215,7 +198,7 @@ public class Event : ILevel
         final void set (IHierarchy hierarchy, Level level, char[] msg, char[] name)
         {
                 this.hierarchy = hierarchy;
-                this.time = getRuntime ();
+                this.time = timer();
                 this.level = level;
                 this.name = name;
                 this.msg = msg;
@@ -313,21 +296,20 @@ public class Event : ILevel
 
         ***********************************************************************/
 
-        final ulong getTime ()
+        final Time getTime ()
         {
-                return time;
+                return cast(Time) (time - beginTime);
         }
 
         /***********************************************************************
                
-                Return the time this event was produced, relative to 
-                Jan 1st 1970
+                Return the time this event was produced relative to Epoch
 
         ***********************************************************************/
 
-        final ulong getEpochTime ()
+        final Time getEpochTime ()
         {
-                return time + epochTime;
+                return time;
         }
 
         /***********************************************************************

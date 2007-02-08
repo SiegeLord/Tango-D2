@@ -263,9 +263,9 @@ private class LoggerInstance : Logger
 
         ***********************************************************************/
 
-        final ulong getRuntime ()
+        final Time getRuntime ()
         {
-                return Event.getRuntime;
+                return Event.startedAt;
         }
 
         /***********************************************************************

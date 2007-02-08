@@ -244,5 +244,5 @@ public class Logger : ILevel
 
         ***********************************************************************/
 
-        abstract ulong getRuntime ();
+        abstract Time getRuntime ();
 }

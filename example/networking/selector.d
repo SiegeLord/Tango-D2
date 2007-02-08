@@ -24,6 +24,7 @@ private
     import tango.net.Socket;
     import tango.net.SocketConduit;
     import tango.net.ServerSocket;
+    import tango.util.time.Utc;
     import tango.util.log.Log;
     import tango.util.log.ConsoleAppender;
     import tango.util.log.DateLayout;
@@ -31,7 +32,6 @@ private
     import tango.core.Exception;
     import tango.core.Thread;
     import tango.sys.Common;
-    import tango.sys.TimeConverter;
     import tango.stdc.errno;
 }
 
@@ -102,7 +102,7 @@ void testSelector(ISelector selector)
     uint        failedSendCount     = 0;
     uint        closeCount          = 0;
     uint        errorCount          = 0;
-    Interval    start               = currentTime();
+    Time        start               = Utc.time();
     Thread      clientThread;
 
     selector.open(HANDLE_COUNT, EVENT_COUNT);
@@ -112,7 +112,7 @@ void testSelector(ISelector selector)
 
     try
     {
-        Interval            timeout         = cast(Interval) (Interval.second * 1); // 1 sec
+        Interval            timeout         = 1.0; // 1 sec
         InternetAddress     addr            = new InternetAddress(SERVER_ADDR, SERVER_PORT);
         ServerSocket        serverSocket    = new ServerSocket(addr, 5);
         SocketConduit       clientSocket;
@@ -267,7 +267,7 @@ void testSelector(ISelector selector)
             }
             i++;
 
-            // Thread.sleep(1 * 1000_000);
+            // Thread.sleep(1.0);
             /*
             if (i % 100 == 0)
             {
@@ -293,7 +293,7 @@ void testSelector(ISelector selector)
     log.info(sprint("Failure: connect={0}, recv={1}; send={2}; error={3}", 
                     failedConnectCount, failedReceiveCount, failedSendCount, errorCount));
 
-    log.info(sprint("Total time: {0} ms", cast(uint) ((currentTime() - start) / Interval.milli)));
+    log.info(sprint("Total time: {0} ms", cast(uint) ((Utc.time - start) / start.TicksPerMillisecond)));
 
     clientThread.join();
 
@@ -310,7 +310,7 @@ void clientThreadFunc()
     Sprint!(char)   sprint  = new Sprint!(char)(256);
     SocketConduit   socket  = new SocketConduit();
 
-    Thread.sleep(Interval.milli * 10);      // 10 milliseconds
+    Thread.sleep(0.010);      // 10 milliseconds
 
     try
     {

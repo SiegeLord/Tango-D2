@@ -18,7 +18,7 @@ public  import  tango.io.Conduit;
 
 private import  tango.net.Socket;
 
-private import  tango.core.Interval;
+private import  tango.core.Type : Interval;
 
 /*******************************************************************************
 
@@ -105,19 +105,15 @@ class SocketConduit : Conduit
 
         /***********************************************************************
 
-                Set the read timeout to the specified microseconds. Set a
+                Set the read timeout to the specified interval. Set a
                 value of zero to disable timeout support.
-
-                Note that only a fairly short timeout period is supported: 
-                (2^32 / 1_000_000) seconds
 
         ***********************************************************************/
 
-//      void setTimeout (Interval us)
-        void setTimeout (ulong us)
+        void setTimeout (Interval interval)
         {
-                tv.tv_sec = cast(int) (us / Interval.second);
-                tv.tv_usec = cast(int) (us % Interval.second);
+                tv.tv_sec = cast(uint) interval;
+                tv.tv_usec = cast(uint) ((interval - tv.tv_sec) * 1_000_000.0);
         }
 
         /***********************************************************************
