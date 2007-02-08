@@ -625,7 +625,7 @@ class Thread
 
     /**
      * Suspends the calling thread for at least the supplied time, up to a
-     * maximum of (uint.max - 1) milliseconds.  If an interval of less than one
+     * maximum of (uint.max - 1) milliseconds.  If a period of less than one
      * second is interrupted by the system, this call may return early.
      * Interruptions of intervals greater than one second will be resumed, if
      * possible, until the full duration has been reached.
@@ -642,62 +642,43 @@ class Thread
      *
      *
      * Params:
-     *  interval = The minimum duration the calling thread should be
-     *             suspended.
+     *  period = The minimum duration the calling thread should be suspended,
+     *           in seconds.  Sub-second durations are specified as fractional
+     *           values.
+     *
+     * In:
+     *  period must be less than (uint.max - 1) milliseconds.
      *
      * Example:
      * -------------------------------------------------------------------------
      *
-     * Thread.sleep( 0.050 ); // sleep for 50 milliseconds
-     * Thread.sleep( 1 ); // sleep for 1 second
+     * Thread.sleep( 0.05 ); // sleep for 50 milliseconds
+     * Thread.sleep( 5 );    // sleep for 5 seconds
      *
      * -------------------------------------------------------------------------
      */
     static void sleep( Interval period )
+    in
     {
-        const MAXMILLIS = uint.max - 1;
-
+        assert( period * 1_000 < uint.max - 1 );
+    }
+    body
+    {
         version( Win32 )
         {
-            auto interval = cast(ulong) (period * 1000.0);
-            Sleep( MAXMILLIS < interval ? MAXMILLIS : cast(uint) interval );
+            Sleep( cast(uint)( period * 1_000 ) );
         }
         else version( Posix )
         {
             alias tango.stdc.posix.unistd.sleep psleep;
-/+        
-            auto sec = cast(uint) period;
-            auto us  = cast(uint) (( period - sec ) * 1_000_000.0);
 
-            while ( sec )
-                    sec = psleep( sec );
+            uint seconds = cast(uint) period;
+            uint micros  = cast(uint)( (period - seconds) * 1_000_000 );
 
-            while ( us )
-                    us = usleep( us );
-+/
-            auto interval = cast(ulong) (period * 1000.0);
-            const MAXUSLEEP = 1_000_000 - 1;
-
-            if( interval <= MAXUSLEEP )
-            {
-                usleep( cast(uint) interval );
-            }
-            else if( interval / Interval.milli <= MAXMILLIS )
-            {
-                interval /= Interval.second;
-                do
-                {
-                    interval = psleep( cast(uint) interval );
-                } while( interval > 0 );
-            }
-            else
-            {
-                interval = MAXMILLIS / 1000;
-                do
-                {
-                    interval = psleep( cast(uint) interval );
-                } while( interval > 0 );
-            }
+            while( seconds > 0 )
+                seconds = psleep( seconds );
+            if( micros > 0 )
+                usleep( micros );
         }
     }
 
