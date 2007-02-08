@@ -558,25 +558,29 @@ class FTPConnection : Telnet
                     }
                 else
                     {
-                        long h1, h2, h3, h4, p1, p2;
+                        int h1, h2, h3, h4, p1, p2;
                         h1 = (data_addr.addr() >> 24) % 256;
                         h2 = (data_addr.addr() >> 16) % 256;
                         h3 = (data_addr.addr() >> 8_) % 256;
                         h4 = (data_addr.addr() >> 0_) % 256;
                         p1 = (data_addr.port() >> 8_) % 256;
                         p2 = (data_addr.port() >> 0_) % 256;
-
+        
+                        // low overhead method to format a numerical string
                         char[64] tmp = void;
+                        char[20] foo = void;
                         auto str = Text.layout (tmp, "%0,%1,%2,%3,%4,%5",
-                                                Integer.format(new char[3], h1),
-                                                Integer.format(new char[3], h2),
-                                                Integer.format(new char[3], h3),
-                                                Integer.format(new char[3], h4),
-                                                Integer.format(new char[3], p1),
-                                                Integer.format(new char[3], p2));
-                        this.sendCommand("PORT", str);
+                                                Integer.format(foo[0..3], h1),
+                                                Integer.format(foo[3..6], h2),
+                                                Integer.format(foo[6..9], h3),
+                                                Integer.format(foo[9..12], h4),
+                                                Integer.format(foo[12..15], p1),
+                                                Integer.format(foo[15..18], p2));
+
                         // This formatting is weird.
                         // this.sendCommand("PORT", format("%d,%d,%d,%d,%d,%d", h1, h2, h3, h4, p1, p2));
+
+                        this.sendCommand("PORT", str);
                         this.readResponse("200");
                     }
 
