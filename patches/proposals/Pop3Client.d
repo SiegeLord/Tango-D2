@@ -163,6 +163,42 @@ class POP3Connection : Telnet
     }
 
 
+  int opApply( int delegate (inout POP3Response resp ) dg )
+  {
+    int result;
+      int count = list().lines.length;
+      for ( int i = 1; i <= count; i++ )
+	{
+
+	  result = dg(retr(i) );
+	  if ( result ) break;
+
+	}
+      
+      return result;
+
+
+  }
+
+  int opApplyReverse( int delegate (inout POP3Response resp ) dg )
+  {
+    int result;
+      int count = list().lines.length;
+      for ( int i = count; i >0; i-- )
+	{
+
+	  result = dg(retr(i) );
+	  if ( result ) break;
+
+	}
+      
+      return result;
+
+
+  }
+
+
+
     /* ~ Commands */
 
 
