@@ -236,9 +236,9 @@ struct Date
                         t.tm_min = min;
                         t.tm_sec = sec;
 
-                        return cast(Time) (Time.ticksTo1970 + 
-                                           Time.ticksPerSecond * timegm(&t) + 
-                                           TIcksPerMilliSecond * ms);
+                        return cast(Time) (Time.TicksTo1970 + 
+                                           Time.TicksPerSecond * timegm(&t) + 
+                                           Time.TicksPerMilliSecond * ms);
                 }
 
                 /***************************************************************
