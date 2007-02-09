@@ -20,7 +20,7 @@ public  import  tango.core.Type : Interval, Time;
 
 /******************************************************************************
 
-        Exposes UTC time relative to Jan 1st, 0 AD. These values are
+        Exposes UTC time relative to Jan 1st, 1 AD. These values are
         based upon a clock-tick of 100ns, giving them a span of greater
         than 10,000 years. Units of Time are the foundation of most time 
         and date functionality in Tango.
@@ -48,7 +48,7 @@ struct Utc
 
         /***********************************************************************
                 
-                Return the local time since the epoch
+                Convert UTC time to local time
 
         ***********************************************************************/
 
@@ -59,7 +59,7 @@ struct Utc
 
         /***********************************************************************
                 
-                Return the Utc time since the epoch
+                Convert local time to UTC time
 
         ***********************************************************************/
 
@@ -91,7 +91,7 @@ struct Utc
 
                 /***************************************************************
                 
-                        Convert timeval to a Time
+                        Convert FILETIME to a Time
 
                 ***************************************************************/
 
