@@ -307,33 +307,41 @@ class FilePath
 
         /***********************************************************************
 
-                Join this FilePath with the provided prefix.
-
-                Assumes prefix is a directory name. If this is an absolute
-                path it will be returned intact, ignoring prefix.
+                Join this FilePath with the provided suffix
 
         ***********************************************************************/
 
-        final FilePath join (char[] prefix)
+        final char[] append (char[] path)
         {
-                if (isAbsolute)
-                    return this;
-
-                return new FilePath (asPadded(prefix) ~ toUtf8);
+                return asPadded(toUtf8) ~ path;
         }
 
         /***********************************************************************
 
-                Join this FilePath with the provided prefix.
-
-                Assumes prefix is a directory name. If this is an absolute
-                path it will be returned intact, ignoring prefix.
+                Join this FilePath with the provided suffix
 
         ***********************************************************************/
 
-        final FilePath join (FilePath prefix)
+        final FilePath append (FilePath path)
         {
-                return join (prefix.toUtf8);
+                return new FilePath (append (path.toUtf8));
+        }
+
+        /***********************************************************************
+
+                Join a set of path specs together. A path separator is 
+                potentially inserted between each of the segments.
+
+        ***********************************************************************/
+
+        static char[] join (char[][] paths...)
+        {
+                char[] result;
+
+                foreach (path; paths)
+                         result ~= asPadded (path);         
+
+                return result.length ? result [0 .. $-1] : null;
         }
 
         /***********************************************************************
@@ -514,6 +522,8 @@ class FilePath
 
 debug (UnitTest)
 {
+        void main() {}
+
         unittest
         {
         version (Win32)
@@ -678,20 +688,11 @@ debug (UnitTest)
                 assert (fp.getFullName == r"");
                 assert (fp.getExt == "");
 
-                fp = new FilePath(r"foo\bar\");
-                assert(fp.join(r"c:\joe\bar").toUtf8 == r"c:\joe\bar\foo\bar\");
-                assert(fp.join(new FilePath(r"c:\joe\bar")).toUtf8 == r"c:\joe\bar\foo\bar\");
                 fp = new FilePath(r"c:\joe\bar");
-                assert(fp.join(r"foo\bar\").toUtf8 == r"c:\joe\bar");
-                assert(fp.join(new FilePath(r"foo\bar")).toUtf8 == r"c:\joe\bar");
+                assert(fp.append(r"foo\bar\") == r"c:\joe\bar\foo\bar\");
+                assert(fp.append(new FilePath(r"foo\bar")).toUtf8 == r"c:\joe\bar\foo\bar");
 
-                fp = new FilePath(r"c:\bar");
-                assert(fp.join(r"foo").toUtf8 == r"c:\bar");
-                assert(fp.join(new FilePath(r"foo")).toUtf8 == r"c:\bar");
-
-                fp = new FilePath(r"bar\");
-                assert(fp.join(r"c:\foo").toUtf8 == r"c:\foo\bar\");
-                assert(fp.join(new FilePath(r"c:\foo")).toUtf8 == r"c:\foo\bar\");
+                assert (FilePath.join (r"a\b\c\d", r"e\f\" r"g") == r"a\b\c\d\e\f\g");
 
                 fp = new FilePath(r"C:\foo\bar\test.bar");
                 assert (fp.asExt(null) == r"C:\foo\bar\test");
@@ -862,20 +863,11 @@ debug (UnitTest)
                 assert (fp.getFullName == r"");
                 assert (fp.getExt == "");
 
-                fp = new FilePath(r"foo/bar/");
-                assert(fp.join(r"/joe/bar").toUtf8 == r"/joe/bar/foo/bar/");
-                assert(fp.join(new FilePath(r"/joe/bar")).toUtf8 == r"/joe/bar/foo/bar/");
-                fp = new FilePath(r"/joe/bar");
-                assert(fp.join(r"foo/bar/").toUtf8 == r"/joe/bar");
-                assert(fp.join(new FilePath(r"foo/bar")).toUtf8 == r"/joe/bar");
+                fp = new FilePath("/joe/bar");
+                assert(fp.append("foo/bar/") == "/joe/bar/foo/bar/");
+                assert(fp.append(new FilePath("foo/bar")).toUtf8 == "/joe/bar/foo/bar");
 
-                fp = new FilePath(r"/bar");
-                assert(fp.join(r"foo").toUtf8 == r"/bar");
-                assert(fp.join(new FilePath(r"foo")).toUtf8 == r"/bar");
-
-                fp = new FilePath(r"bar/");
-                assert(fp.join(r"/foo").toUtf8 == r"/foo/bar/");
-                assert(fp.join(new FilePath(r"/foo")).toUtf8 == r"/foo/bar/");
+                assert (FilePath.join ("a/b/c/d", "e/f/" "g") == "a/b/c/d/e/f/g");
 
                 fp = new FilePath(r"/foo/bar/test.bar");
                 assert (fp.asExt(null) == r"/foo/bar/test");

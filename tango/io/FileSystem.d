@@ -53,7 +53,7 @@ class FileSystem
                 if (path.isAbsolute)
                     return path;
 
-                return path.join (getDirectory);
+                return getDirectory.append (path);
         }
 
         /***********************************************************************
