@@ -25,32 +25,40 @@ struct FileConst
 {
         version (Win32)
         {
-                static const char PathSeparatorChar = '\\';
-                static const char FileSeparatorChar = '.';
-                static const char RootSeparatorChar = ':';
-                static const char CurrentDirChar = '.';
+                enum : char 
+                {
+                        CurrentDirChar = '.',
+                        RootSeparatorChar = ':',
+                        FileSeparatorChar = '.',
+                        PathSeparatorChar = '\\',
+                        SystemPathSeparatorChar = ';',
+                }
 
-                static const char[] PathSeparatorString = "\\";
+                static const char[] ParentDirString = "..";
+                static const char[] CurrentDirString = ".";
                 static const char[] FileSeparatorString = ".";
                 static const char[] RootSeparatorString = ":";
-                static const char[] CurrentDirString = ".";
-                static const char[] ParentDirString = "..";
+                static const char[] PathSeparatorString = "\\";
+                static const char[] SystemPathSeparatorString = ";";
 
                 static const char[] NewlineString = "\r\n";
         }
 
         version (Posix)
         {
-                static const char PathSeparatorChar = '/';
-                static const char FileSeparatorChar = '.';
-                static const char RootSeparatorChar = ':';
-                static const char CurrentDirChar = '.';
+                enum : char 
+                {
+                        CurrentDirChar = '.',
+                        FileSeparatorChar = '.',
+                        PathSeparatorChar = '/',
+                        SystemPathSeparatorChar = ':',
+                }
 
-                static const char[] PathSeparatorString = "/";
-                static const char[] FileSeparatorString = ".";
-                static const char[] RootSeparatorString = ":";
-                static const char[] CurrentDirString = ".";
                 static const char[] ParentDirString = "..";
+                static const char[] CurrentDirString = ".";
+                static const char[] FileSeparatorString = ".";
+                static const char[] PathSeparatorString = "/";
+                static const char[] SystemPathSeparatorString = ":";
 
                 static const char[] NewlineString = "\n";
         }
