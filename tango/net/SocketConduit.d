@@ -112,8 +112,7 @@ class SocketConduit : Conduit
 
         void setTimeout (Interval interval)
         {
-                tv.tv_sec = cast(uint) interval;
-                tv.tv_usec = cast(uint) ((interval - tv.tv_sec) * 1_000_000.0);
+                tv = socket.toTimeval (interval);
         }
 
         /***********************************************************************

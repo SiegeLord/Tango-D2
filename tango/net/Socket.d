@@ -1321,27 +1321,40 @@ class Socket
 
         /***********************************************************************
 
+                select with specified timeout
 
         ***********************************************************************/
 
         static int select (SocketSet checkRead, SocketSet checkWrite, SocketSet checkError, Interval time)
         {
-                timeval tv;
-                tv.tv_sec = cast(uint) time;
-                tv.tv_usec = cast(uint) ((time - tv.tv_sec) * 1_000_000.0);
+                auto tv = toTimeval (time);
                 return select (checkRead, checkWrite, checkError, &tv);
         }
 
 
         /***********************************************************************
 
-                maximum timeout
+                select with maximum timeout
 
         ***********************************************************************/
 
         static int select (SocketSet checkRead, SocketSet checkWrite, SocketSet checkError)
         {
                 return select (checkRead, checkWrite, checkError, null);
+        }
+
+        /***********************************************************************
+
+                Handy utility for converting Time into timeval
+                
+        ***********************************************************************/
+
+        static timeval toTimeval (Interval time)
+        {
+                timeval tv;
+                tv.tv_sec = cast(uint) time;
+                tv.tv_usec = cast(uint) ((time - tv.tv_sec) * 1_000_000.0);
+                return tv;
         }
 }
 
