@@ -759,7 +759,7 @@ class FileProxy
                               auto len = tango.stdc.string.strlen (entry.d_name.ptr)+1;
                               auto str = entry.d_name.ptr [0 .. len];
 
-                              dg (prefix, str, entry.d_type & DT_DIR);
+                              dg (prefix, str, (entry.d_type & DT_DIR) != 0);
                               }
                 }
         }
