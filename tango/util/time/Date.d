@@ -238,7 +238,7 @@ struct Date
 
                         return cast(Time) (Time.TicksTo1970 + 
                                            Time.TicksPerSecond * timegm(&t) + 
-                                           Time.TicksPerMilliSecond * ms);
+                                           Time.TicksPerMillisecond * ms);
                 }
 
                 /***************************************************************
