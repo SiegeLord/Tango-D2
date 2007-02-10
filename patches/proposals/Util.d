@@ -113,22 +113,12 @@ lists at rebol.com with unsubscribe as the subject.
 */
 
 
-T[] join(T)(T[][] items,T[] glue = "" )
+
+// some fields are repeated more than once , so we loop through the whole message till we find an empty line,
+// which represents the break for the body
+char [] [] extractField(char [] headerName, POP3Response resp )
 {
-
-  T[] result;
-  foreach ( item;items )
-    {
-      result ~= item ~ glue;
-    }
-  return result;
-
-}
-
-
-char [] extractField(char [] headerName, POP3Response resp )
-{
-  char [] result;
+  char [] [] result;
   bool wrappedField = false;
   
 
@@ -144,7 +134,7 @@ char [] extractField(char [] headerName, POP3Response resp )
 		  result ~= line;
 		  continue;
 		}
-	      else break;
+	      else wrappedField = false;
 	    }
 	}
 
@@ -154,14 +144,8 @@ char [] extractField(char [] headerName, POP3Response resp )
 	  if (line[0 .. headerName.length ] == headerName ) // found the match
 	    {
 
-	      result = line[headerName.length+1 .. $];
-	      
-	      if ( containsPattern(line,"\r\n" )) // these are for wrapped header fields, the next line must be followed bya
-						  // linear white space char , \s\t etc
-		{
-		  wrappedField = true;
-		}
-	      else break;
+	      result ~= line[headerName.length+1 .. $];
+	      wrappedField = true; // we check for wrappedFields
 
 	    }
 

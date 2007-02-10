@@ -4,12 +4,67 @@ private import tango.net.ftp.Telnet;
 private import tango.net.pop3.Exception;
 private import tango.text.convert.Integer;
 private import tango.text.Util;
-
+private import tango.io.Stdout; 
 debug ( Pop3Debug ) { private import tango.io.Stdout; }
 
-// The sendData, sendLine, readData, readLine functions were all ripped from Telnet.d
-// these have a good potentila for reuse, perhaps move them into their own class ? TextNetworkClient or something
-// for now just inherits from Telnet
+/**
+Example:
+
+{
+POP3Connection pop3 = new POP3Connection("mail.server.com","username","password");
+
+int messageCount = pop3.messageCount();
+int totalMessageSize = pop3.totalSize(); // size of all messages
+int messageSize = pop3.size(1); // size of individual message
+
+POP3Response resp  = pop3.retrieve(1); // get a message
+
+char [] [] to = extractField("To:",resp ); // get all To fields
+char [] [] from = extractField("From:",resp ); // all From fields
+char [] [] subject = extractField("Subject:",resp ); // all Subject fields
+
+char [] messageBody = extractBody(resp);
+
+pop3.remove(1); // remove message
+
+foreach ( POP3Response message; pop3 )
+{
+
+  char [] [] to = extractField("To:",message );
+
+}
+
+foreach_reverse ( POP3Response message; pop3 )
+{
+
+  char [] [] to = extractField("To:",message );
+
+}
+
+*/
+
+
+
+
+
+/*
+This pop3 client supports all standard pop3 commands, with method names matching the pop3 commands.
+It also has common methods and aliases for easy manipulation.
+
+The POP3Response structure represents the response from the pop3 server, with single line responses in the 'resp' field ,
+and multiline responses in the 'lines' field.
+
+The common name functions should be enough for most usage:
+
+retrieve
+remove
+size
+totalSize
+messageCount
+
+*/
+
+
 
 /// Response from POP3 server
 struct POP3Response
@@ -51,22 +106,23 @@ class POP3Connection : Telnet
     }
     body
     {
+	scope (failure)
+	    {
+		char [] msg = this.close();
+		exception(msg);
+	    }
+
 	// Close any active connection.
 
 	if (this.socket !is null)
 	    this.close();
                 
 
-	// Connect to whichever FTP server responds first.
+	// Connect to whichever pop3 server responds first.
 	this.findAvailableServer(hostname, port);
 
 	this.socket.blocking = false;
 
-	scope (failure)
-	    {
-		char [] msg = this.close();
-		exception(msg);
-	    }
 
 	getShortResponse(); // get welcome response
 	shortCmd("USER " ~ username); 
@@ -76,6 +132,43 @@ class POP3Connection : Telnet
 
 
     }
+
+  /* Aliases */
+  alias dele remove; /// remove a message
+  alias retr retrieve; /// retrieve a message
+  alias rset reset;  /// reset all messages marked for deleton
+
+  /// size of particular message
+  int messageSize( int messageNumber )
+  {
+    POP3Response resp = list(messageNumber );
+    int spacePos = locatePrior(resp.resp,' '); // locate the last space
+    char [] size = resp.resp[spacePos+1 .. $]; // extract the size
+
+    return atoi(size);
+  }
+
+  /// total message count
+  int messageCount()
+  {
+
+    uint count, dummy;
+    POP3Response resp = stat(count,dummy  );
+
+    return count;
+
+  }
+
+  /// size of all messages on server
+  uint totalSize ( )
+  {
+    uint dummy, size;
+    POP3Response resp = stat(dummy,size );
+
+    return size;
+
+  }
+
 
 
     /* Commands */
@@ -133,7 +226,7 @@ class POP3Connection : Telnet
     {
       POP3Response r;
       r.resp = shortCmd("STAT");
-      char [] [] totalAndSize = delimit(r.resp," " );
+      char [] [] totalAndSize = split(r.resp," " );
 
       assert(totalAndSize.length == 3 );
 
@@ -162,7 +255,7 @@ class POP3Connection : Telnet
 
     }
 
-
+  /// Make it foreachable
   int opApply( int delegate (inout POP3Response resp ) dg )
   {
     int result;
@@ -180,6 +273,7 @@ class POP3Connection : Telnet
 
   }
 
+  /// Make it foreachable_reverse
   int opApplyReverse( int delegate (inout POP3Response resp ) dg )
   {
     int result;
