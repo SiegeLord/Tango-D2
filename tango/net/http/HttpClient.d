@@ -104,7 +104,7 @@ class HttpClient
         private bool                    doRedirect = true;
 
         // default to three second timeout on read operations ...
-        protected Interval              DefaultReadTimeout = 3;
+        protected const Interval        DefaultReadTimeout = 3;
 
         // use HTTP v1.0?
         private static const char[] DefaultHttpVersion = "HTTP/1.0";
