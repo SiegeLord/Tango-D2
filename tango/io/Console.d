@@ -487,3 +487,17 @@ static this ()
         Cout = new Console.Output (new FileDevice (1, DeviceConduit.Access.Write));
         Cerr = new Console.Output (new FileDevice (2, DeviceConduit.Access.Write));
 }
+
+/******************************************************************************
+
+        Flush outputs before we exit
+
+        (good idea from: Frits Van Bommel)
+
+******************************************************************************/
+
+static ~this()
+{
+        Cout.flush;
+        Cerr.flush;
+}
