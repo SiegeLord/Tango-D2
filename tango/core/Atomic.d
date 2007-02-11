@@ -1297,7 +1297,7 @@ else version( D_InlineAsm_X86 )
 
 
 /**
- * This class represents a value which will be subject to competing access.
+ * This struct represents a value which will be subject to competing access.
  * All accesses to this value will be synchronized with main memory, and
  * various memory barriers may be employed for instruction ordering.  Any
  * primitive type of size equal to or smaller than the memory bus size is
