@@ -1,5 +1,15 @@
 /*******************************************************************************
 
+        copyright:      Copyright (c) 2005 John Chapman. All rights reserved
+
+        license:        BSD style: $(LICENSE)
+        
+        version:        Initial release: 2005
+        
+        author:         John Chapman
+        author:         Kris (extracted & modified for Tango purposes)
+
+
         This module provides a general-purpose formatting system to convert
         values to strings suitable for display. There is support for alignment
         and justification, common _format specifiers for numbers and date/time
@@ -12,7 +22,7 @@
         // format with the user's current culture (for example, en-GB)
         Formatter ("General: {0} Hexadecimal: 0x{0:x4} Numeric: {0:N}", 1000);
         ---
-        
+
         >> General: 1000 Hexadecimal: 0x03e8 Numeric: 1,000.00
 
 
@@ -22,10 +32,10 @@
         ---
         // utf8 format, using a french culture
         auto format = new Format!(char) (Culture.getCulture("fr-FR"));
-        
+
         format ("{0:D}", DateTime.today);
         ---
-        
+
         >> vendredi 3 mars 2006
 
 ******************************************************************************/
@@ -42,7 +52,7 @@ private import tango.text.convert.model.IFormatService;
 /*******************************************************************************
 
         enable floating point support?
-        
+
 *******************************************************************************/
 
 version = mlfp;
@@ -55,12 +65,12 @@ version (mlfp)
 /*******************************************************************************
 
         Platform issues ...
-        
+
 *******************************************************************************/
 
 version (DigitalMars)
          alias void* Args;
-   else 
+   else
       alias char* Args;
 
 
@@ -68,7 +78,7 @@ version (DigitalMars)
 
         Contains methods for replacing format items in a string with string
         equivalents of each argument.
-        
+
 *******************************************************************************/
 
 public class Format(T)
@@ -78,7 +88,7 @@ public class Format(T)
         private NumericAttributes               numAttr;
         private NumericTextAttributes!(T)       textAttr;
         private IFormatService                  formatService;
-        
+
 
         /***********************************************************************
 
@@ -109,7 +119,7 @@ public class Format(T)
 
         /**********************************************************************
 
-            Sink delegate alias 
+            Sink delegate alias
 
         **********************************************************************/
 
@@ -125,10 +135,10 @@ public class Format(T)
 
         **********************************************************************/
 
-        alias convert                           opCall;
+        alias convert opCall;
 
         /**********************************************************************
-        
+
         **********************************************************************/
 
         this ()
@@ -136,9 +146,9 @@ public class Format(T)
                 numAttr = new NumberFormat;
                 textAttr = getText (numAttr);
         }
-        
+
         /**********************************************************************
-        
+
         **********************************************************************/
 
         this (IFormatService formatService)
@@ -154,9 +164,9 @@ public class Format(T)
                    }
                 error ("invalid formatservice argument");
         }
-        
+
         /**********************************************************************
-        
+
         **********************************************************************/
 
         private NumericTextAttributes!(T) getText (NumericAttributes attr)
@@ -168,19 +178,19 @@ public class Format(T)
                 static if (is (T == dchar))
                            return attr.utf32();
         }
-        
+
         /**********************************************************************
-        
+
                 Replaces the _format item in a string with the string
                 equivalent of each argument.
-                
+
                 Params:
                   formatStr  = A string containing _format items.
                   args       = A list of arguments.
-                  
+
                 Returns: A copy of formatStr in which the items have been
                 replaced by the string equivalent of the arguments.
-                
+
                 Remarks: The formatStr parameter is embedded with _format
                 items of the form: $(BR)$(BR)
                   {index[,alignment][:_format-string]}$(BR)$(BR)
@@ -193,7 +203,7 @@ public class Format(T)
                   $(LI _format-string $(BR)
                     An optional string of formatting codes.)
                 )$(BR)
-                
+
                 The leading and trailing braces are required. To include a
                 literal brace character, use two leading or trailing brace
                 characters.$(BR)$(BR)
@@ -209,7 +219,7 @@ public class Format(T)
         }
 
         /**********************************************************************
-        
+
         **********************************************************************/
 
         public final T[] convert (TypeInfo[] arguments, Args args, T[] formatStr)
@@ -258,16 +268,16 @@ public class Format(T)
         }
 
         /**********************************************************************
-        
+
         **********************************************************************/
 
         public final T[] sprint (T[] result, T[] formatStr, ...)
         {
                 return sprint (result, formatStr, _arguments, _argptr);
         }
-        
+
         /**********************************************************************
-        
+
         **********************************************************************/
 
         public final T[] sprint (T[] result, T[] formatStr, TypeInfo[] arguments, Args args)
@@ -320,7 +330,7 @@ public class Format(T)
                 T[384] output = void;
                 T[256] convert = void;
                 auto result = Result (output, convert);
-                
+
                 int length, nextIndex;
 
                 T* s = layout.ptr;
@@ -398,7 +408,10 @@ public class Format(T)
 
                       // insist on a closing brace
                       if (*s != '}')
-                          error ("missing or misplaced '}' in format specifier");
+                         {
+                         length += sink ("{missing or misplaced '}'}");
+                         continue;
+                         }
 
                       // check for default index & set next default counter
                       if (! indexed)
@@ -447,13 +460,13 @@ public class Format(T)
         private T[] convertArgument (inout Result result, T[] format, inout Argument arg)
         {
                 void* p = arg.getValue;
-                
+
                 switch (arg.getTypeCode)
                        {
                             // Currently we only format char[] arrays.
                        case TypeCode.ARRAY:
                             auto type = arg.getType();
-                               
+
                             if (type is typeid(char[]))
                                 return fromUtf8 (*cast(char[]*) p, result);
 
@@ -490,7 +503,7 @@ public class Format(T)
 
                        case TypeCode.LONG:
                             return formatInteger (result, *cast(long*) p, format);
-                            
+
                        case TypeCode.ULONG:
                             return formatInteger (result, *cast(long*) p, format);
 
@@ -598,15 +611,34 @@ public class Format(T)
 
         ***********************************************************************/
 
+        private T[] longToBinString (T[] buffer, ulong value, int digits)
+        {
+                if (digits < 1)
+                    digits = 1;
+
+                int n = buffer.length;
+                while (--digits >= 0 || value != 0)
+                      {
+                      buffer[--n] = (value & 1) + '0';
+                      value >>= 1;
+                      }
+
+                return buffer[n .. $];
+        }
+
+        /***********************************************************************
+
+        ***********************************************************************/
+
         private T parseFormatSpecifier (T[] format, out int length)
         {
                 int     i = -1;
                 T       specifier;
-                
+
                 if (format.length)
                    {
                    auto s = format[0];
-                   
+
                    if (s >= 'A' && s <= 'Z' || s >= 'a' && s <= 'z')
                       {
                       specifier = s;
@@ -655,6 +687,10 @@ public class Format(T)
                        case 'x':
                        case 'X':
                             return longToHexString (result.scratch, cast(ulong)value, length, specifier);
+
+                       case 'b':
+                       case 'B':
+                            return longToBinString (result.scratch, cast(ulong)value, length);
 
                        default:
                             break;
@@ -743,14 +779,14 @@ public class Format(T)
         {
                 static if (is (T == char))
                            return s;
-                
+
                 static if (is (T == wchar))
                            return Unicode.toUtf16 (s, result.convert);
-                
+
                 static if (is (T == dchar))
                            return Unicode.toUtf32 (s, result.convert);
         }
-        
+
         /***********************************************************************
 
         ***********************************************************************/
@@ -759,14 +795,14 @@ public class Format(T)
         {
                 static if (is (T == wchar))
                            return s;
-                
+
                 static if (is (T == char))
                            return Unicode.toUtf8 (s, result.convert);
-                
+
                 static if (is (T == dchar))
                            return Unicode.toUtf32 (s, result.convert);
         }
-        
+
         /***********************************************************************
 
         ***********************************************************************/
@@ -775,14 +811,14 @@ public class Format(T)
         {
                 static if (is (T == dchar))
                            return s;
-                
+
                 static if (is (T == char))
                            return Unicode.toUtf8 (s, result.convert);
-                
+
                 static if (is (T == wchar))
                            return Unicode.toUtf16 (s, result.convert);
         }
-        
+
         /***********************************************************************
 
         ***********************************************************************/
@@ -1034,7 +1070,7 @@ public class Format(T)
                              break;
 
                        default:
-                             error ("Invalid format specifier.");
+                             return "{invalid FP format specifier '" ~ format ~ "'}";
                        }
                 return result.get;
         }
@@ -1670,7 +1706,7 @@ public class Format(T)
                 }
         }
 
-}                               
+}
 
 
 /*******************************************************************************
@@ -1793,7 +1829,7 @@ class NumberFormat : NumericAttributes
                 wAttr = new TextAttributes!(wchar);
                 dAttr = new TextAttributes!(dchar);
         }
-        
+
         /**********************************************************************
 
         **********************************************************************/
@@ -2078,117 +2114,116 @@ private struct ArgumentIterator
 
 debug (UnitTest)
 {
-        //void main() {}
+        // void main() {}
 
-        import tango.io.Console;
+        unittest
+        {
+        assert( Formatter( "abc" ) == "abc" );
+        assert( Formatter( "{0}", 1 ) == "1" );
+        assert( Formatter( "{0}", -1 ) == "-1" );
 
-unittest
-{
-    assert( Formatter( "abc" ) == "abc" );
-    assert( Formatter( "{0}", 1 ) == "1" );
-    assert( Formatter( "{0}", -1 ) == "-1" );
+        assert( Formatter( "{}", 1 ) == "1" );
+        assert( Formatter( "{} {}", 1, 2) == "1 2" );
+        assert( Formatter( "{} {0} {}", 1, 3) == "1 1 3" );
+        assert( Formatter( "{} {0} {} {}", 1, 3) == "1 1 3 {invalid index}" );
+        assert( Formatter( "{} {0} {} {:x}", 1, 3) == "1 1 3 {invalid index}" );
 
-    assert( Formatter( "{}", 1 ) == "1" );
-    assert( Formatter( "{} {}", 1, 2) == "1 2" );
-    assert( Formatter( "{} {0} {}", 1, 3) == "1 1 3" );
-    assert( Formatter( "{} {0} {} {}", 1, 3) == "1 1 3 {invalid index}" );
-    assert( Formatter( "{} {0} {} {:x}", 1, 3) == "1 1 3 {invalid index}" );
+        assert( Formatter( "{0}", true ) == "true" , Formatter( "{0}", true ));
+        assert( Formatter( "{0}", false ) == "false" );
 
-    assert( Formatter( "{0}", true ) == "true" , Formatter( "{0}", true ));
-    assert( Formatter( "{0}", false ) == "false" );
+        assert( Formatter( "{0}", cast(byte)-128 ) == "-128" );
+        assert( Formatter( "{0}", cast(byte)127 ) == "127" );
+        assert( Formatter( "{0}", cast(ubyte)255 ) == "255" );
 
-    assert( Formatter( "{0}", cast(byte)-128 ) == "-128" );
-    assert( Formatter( "{0}", cast(byte)127 ) == "127" );
-    assert( Formatter( "{0}", cast(ubyte)255 ) == "255" );
+        assert( Formatter( "{0}", cast(short)-32768  ) == "-32768" );
+        assert( Formatter( "{0}", cast(short)32767 ) == "32767" );
+        assert( Formatter( "{0}", cast(ushort)65535 ) == "65535" );
+        // assert( Formatter( "{0:x4}", cast(ushort)0xafe ) == "0afe" );
+        // assert( Formatter( "{0:X4}", cast(ushort)0xafe ) == "0AFE" );
 
-    assert( Formatter( "{0}", cast(short)-32768  ) == "-32768" );
-    assert( Formatter( "{0}", cast(short)32767 ) == "32767" );
-    assert( Formatter( "{0}", cast(ushort)65535 ) == "65535" );
-    // assert( Formatter( "{0:x4}", cast(ushort)0xafe ) == "0afe" );
-    // assert( Formatter( "{0:X4}", cast(ushort)0xafe ) == "0AFE" );
+        assert( Formatter( "{0}", -2147483648 ) == "-2147483648" );
+        assert( Formatter( "{0}", 2147483647 ) == "2147483647" );
+        assert( Formatter( "{0}", 4294967295 ) == "4294967295" );
+        // compiler error
+        //assert( Formatter( "{0}", -9223372036854775808L) == "-9223372036854775808" );
+        assert( Formatter( "{0}", 0x8000_0000_0000_0000L) == "-9223372036854775808" );
+        assert( Formatter( "{0}", 9223372036854775807L ) == "9223372036854775807" );
+        // Error: prints -1
+        // assert( Formatter( "{0}", 18446744073709551615UL ) == "18446744073709551615" );
 
-    assert( Formatter( "{0}", -2147483648 ) == "-2147483648" );
-    assert( Formatter( "{0}", 2147483647 ) == "2147483647" );
-    assert( Formatter( "{0}", 4294967295 ) == "4294967295" );
-    // compiler error
-    //assert( Formatter( "{0}", -9223372036854775808L) == "-9223372036854775808" );
-    assert( Formatter( "{0}", 0x8000_0000_0000_0000L) == "-9223372036854775808" );
-    assert( Formatter( "{0}", 9223372036854775807L ) == "9223372036854775807" );
-    // Error: prints -1
-    // assert( Formatter( "{0}", 18446744073709551615UL ) == "18446744073709551615" );
+        assert( Formatter( "{0}", "s" ) == "s" );
+        // fragments before and after
+        assert( Formatter( "d{0}d", "s" ) == "dsd" );
+        assert( Formatter( "d{0}d", "1234567890" ) == "d1234567890d" );
 
-    assert( Formatter( "{0}", "s" ) == "s" );
-    // fragments before and after
-    assert( Formatter( "d{0}d", "s" ) == "dsd" );
-    assert( Formatter( "d{0}d", "1234567890" ) == "d1234567890d" );
+        // brace escaping
+        assert( Formatter( "d{0}d", "<string>" ) == "d<string>d");
+        assert( Formatter( "d{{0}d", "<string>" ) == "d{0}d");
+        assert( Formatter( "d{{{0}d", "<string>" ) == "d{<string>d");
+        assert( Formatter( "d{0}}d", "<string>" ) == "d<string>}d");
 
-    // brace escaping
-    assert( Formatter( "d{0}d", "<string>" ) == "d<string>d");
-    assert( Formatter( "d{{0}d", "<string>" ) == "d{0}d");
-    assert( Formatter( "d{{{0}d", "<string>" ) == "d{<string>d");
-    assert( Formatter( "d{0}}d", "<string>" ) == "d<string>}d");
+        assert( Formatter( "{0:x}", 0xafe0000 ) == "afe0000" );
+        // todo: is it correct to print 7 instead of 6 chars???
+        assert( Formatter( "{0:x6}", 0xafe0000 ) == "afe0000" );
+        assert( Formatter( "{0:x8}", 0xafe0000 ) == "0afe0000" );
+        assert( Formatter( "{0:X8}", 0xafe0000 ) == "0AFE0000" );
+        assert( Formatter( "{0:X9}", 0xafe0000 ) == "00AFE0000" );
+        assert( Formatter( "{0:X13}", 0xafe0000 ) == "000000AFE0000" );
+        assert( Formatter( "{0:x13}", 0xafe0000 ) == "000000afe0000" );
+        // decimal width
+        assert( Formatter( "{0:d6}", 123 ) == "000123" );
+        assert( Formatter( "{0,7:d6}", 123 ) == " 000123" );
+        assert( Formatter( "{0,-7:d6}", 123 ) == "000123 " );
 
-    assert( Formatter( "{0:x}", 0xafe0000 ) == "afe0000" );
-    // todo: is it correct to print 7 instead of 6 chars???
-    assert( Formatter( "{0:x6}", 0xafe0000 ) == "afe0000" );
-    assert( Formatter( "{0:x8}", 0xafe0000 ) == "0afe0000" );
-    assert( Formatter( "{0:X8}", 0xafe0000 ) == "0AFE0000" );
-    assert( Formatter( "{0:X9}", 0xafe0000 ) == "00AFE0000" );
-    assert( Formatter( "{0:X13}", 0xafe0000 ) == "000000AFE0000" );
-    assert( Formatter( "{0:x13}", 0xafe0000 ) == "000000afe0000" );
-    // decimal width
-    assert( Formatter( "{0:d6}", 123 ) == "000123" );
-    assert( Formatter( "{0,7:d6}", 123 ) == " 000123" );
-    assert( Formatter( "{0,-7:d6}", 123 ) == "000123 " );
+        assert( Formatter( "{0:d6}", -123 ) == "-000123" );
+        assert( Formatter( "{0,7:d6}", 123 ) == " 000123" );
+        assert( Formatter( "{0,7:d6}", -123 ) == "-000123" );
+        assert( Formatter( "{0,8:d6}", -123 ) == " -000123" );
+        assert( Formatter( "{0,5:d6}", -123 ) == "-000123" );
 
-    assert( Formatter( "{0:d6}", -123 ) == "-000123" );
-    assert( Formatter( "{0,7:d6}", 123 ) == " 000123" );
-    assert( Formatter( "{0,7:d6}", -123 ) == "-000123" );
-    assert( Formatter( "{0,8:d6}", -123 ) == " -000123" );
-    assert( Formatter( "{0,5:d6}", -123 ) == "-000123" );
+        // compiler error
+        //assert( Formatter( "{0}", -9223372036854775808L) == "-9223372036854775808" );
+        assert( Formatter( "{0}", 0x8000_0000_0000_0000L) == "-9223372036854775808" );
+        assert( Formatter( "{0}", 9223372036854775807L ) == "9223372036854775807" );
+        assert( Formatter( "{0:X}", 0xFFFF_FFFF_FFFF_FFFF) == "FFFFFFFFFFFFFFFF" );
+        assert( Formatter( "{0:x}", 0xFFFF_FFFF_FFFF_FFFF) == "ffffffffffffffff" );
+        assert( Formatter( "{0:x}", 0xFFFF_1234_FFFF_FFFF) == "ffff1234ffffffff" );
+        assert( Formatter( "{0:x19}", 0x1234_FFFF_FFFF) == "00000001234ffffffff" );
+        // Error: prints -1
+        // assert( Formatter( "{0}", 18446744073709551615UL ) == "18446744073709551615" );
+        assert( Formatter( "{0}", "s" ) == "s" );
+        // fragments before and after
+        assert( Formatter( "d{0}d", "s" ) == "dsd" );
 
-    // compiler error
-    //assert( Formatter( "{0}", -9223372036854775808L) == "-9223372036854775808" );
-    assert( Formatter( "{0}", 0x8000_0000_0000_0000L) == "-9223372036854775808" );
-    assert( Formatter( "{0}", 9223372036854775807L ) == "9223372036854775807" );
-    assert( Formatter( "{0:X}", 0xFFFF_FFFF_FFFF_FFFF) == "FFFFFFFFFFFFFFFF" );
-    assert( Formatter( "{0:x}", 0xFFFF_FFFF_FFFF_FFFF) == "ffffffffffffffff" );
-    assert( Formatter( "{0:x}", 0xFFFF_1234_FFFF_FFFF) == "ffff1234ffffffff" );
-    assert( Formatter( "{0:x19}", 0x1234_FFFF_FFFF) == "00000001234ffffffff" );
-    // Error: prints -1
-    // assert( Formatter( "{0}", 18446744073709551615UL ) == "18446744073709551615" );
-    assert( Formatter( "{0}", "s" ) == "s" );
-    // fragments before and after
-    assert( Formatter( "d{0}d", "s" ) == "dsd" );
+        // argument index
+        assert( Formatter( "a{0}b{1}c{2}", "x", "y", "z" ) == "axbycz" );
+        assert( Formatter( "a{2}b{1}c{0}", "x", "y", "z" ) == "azbycx" );
+        assert( Formatter( "a{1}b{1}c{1}", "x", "y", "z" ) == "aybycy" );
 
-    // argument index
-    assert( Formatter( "a{0}b{1}c{2}", "x", "y", "z" ) == "axbycz" );
-    assert( Formatter( "a{2}b{1}c{0}", "x", "y", "z" ) == "azbycx" );
-    assert( Formatter( "a{1}b{1}c{1}", "x", "y", "z" ) == "aybycy" );
+        // alignment
+        // align does not restrict the length
+        assert( Formatter( "{0,5}", "hellohello" ) == "hellohello" );
+        // align fills with spaces
+        assert( Formatter( "->{0,-10}<-", "hello" ) == "->hello     <-" );
+        assert( Formatter( "->{0,10}<-", "hello" ) == "->     hello<-" );
+        assert( Formatter( "->{0,-10}<-", 12345 ) == "->12345     <-" );
+        assert( Formatter( "->{0,10}<-", 12345 ) == "->     12345<-" );
 
-    // alignment
-    // align does not restrict the length
-    assert( Formatter( "{0,5}", "hellohello" ) == "hellohello" );
-    // align fills with spaces
-    assert( Formatter( "->{0,-10}<-", "hello" ) == "->hello     <-" );
-    assert( Formatter( "->{0,10}<-", "hello" ) == "->     hello<-" );
-    assert( Formatter( "->{0,-10}<-", 12345 ) == "->12345     <-" );
-    assert( Formatter( "->{0,10}<-", 12345 ) == "->     12345<-" );
+        assert( Formatter("General: {0} Hexadecimal: 0x{0:x4} Numeric: {0:N}", 1000)
+        == "General: 1000 Hexadecimal: 0x03e8 Numeric: 1,000.00" );
+        /+ Not yet implemented +/ //assert( Formatter(Culture.getCulture("de-DE"), "{0:#,#}", 12345678)
+        /+ Not yet implemented +/ //        == "12.345.678" );
+        /+ Not yet implemented +/ //assert( Formatter(Culture.getCulture("es-ES"), "{0:C}", 59.99)
+        /+ Not yet implemented +/ //        == "59,99 €" );
+        /+ Not yet implemented +/ //assert( Formatter(Culture.getCulture("fr-FR"), "{0:D}", DateTime.today)
+        /+ Not yet implemented +/ //        == "vendredi 3 mars 2006" );
 
-    assert( Formatter("General: {0} Hexadecimal: 0x{0:x4} Numeric: {0:N}", 1000)
-            == "General: 1000 Hexadecimal: 0x03e8 Numeric: 1,000.00" );
-    /+ Not yet implemented +/ //assert( Formatter(Culture.getCulture("de-DE"), "{0:#,#}", 12345678)
-    /+ Not yet implemented +/ //        == "12.345.678" );
-    /+ Not yet implemented +/ //assert( Formatter(Culture.getCulture("es-ES"), "{0:C}", 59.99)
-    /+ Not yet implemented +/ //        == "59,99 €" );
-    /+ Not yet implemented +/ //assert( Formatter(Culture.getCulture("fr-FR"), "{0:D}", DateTime.today)
-    /+ Not yet implemented +/ //        == "vendredi 3 mars 2006" );
-
-    version( mlfp ){
-        assert( Formatter( "{0:f}", 1.23f ) == "1.23" );
-        assert( Formatter( "{0:f}", 1.23 ) == "1.23" );
-    }
-}
+        version( mlfp )
+               {
+               assert( Formatter( "{0:f}", 1.23f ) == "1.23" );
+               assert( Formatter( "{0:f}", 1.23 ) == "1.23" );
+               }
+        }
 }
 
 
