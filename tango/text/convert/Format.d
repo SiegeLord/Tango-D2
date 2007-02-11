@@ -73,8 +73,6 @@ version (DigitalMars)
 
 public class Format(T)
 {
-        alias uint delegate (T[])               Sink;
-        alias convert                           opCall;
         alias tango.text.convert.Utf            Unicode;
 
         private NumericAttributes               numAttr;
@@ -109,6 +107,25 @@ public class Format(T)
                         "# $-", "$ #-", "$ -#", "#- $", "($ #)", "(# $)"
                         ];
 
+        /**********************************************************************
+
+            Sink delegate alias 
+
+        **********************************************************************/
+
+        alias uint delegate (T[])               Sink;
+
+        /**********************************************************************
+
+            convert() is aliased to opCall, such that you can do
+
+            ---
+            format ("{0:D}", DateTime.today);
+            ---
+
+        **********************************************************************/
+
+        alias convert                           opCall;
 
         /**********************************************************************
         
