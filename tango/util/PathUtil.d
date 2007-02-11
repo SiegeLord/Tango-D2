@@ -34,7 +34,7 @@ private import  tango.io.FileConst;
     considered valid if it can be joined with a path such that it can
     be fully normalized.
 
-    Throws: NormalizeException if the root separator is followed by ..
+    Throws: Exception if the root separator is followed by ..
 
     Examples:
     -----
@@ -76,7 +76,7 @@ body {
     */
     int findSlashDot(char[] path, int start) {
         assert(start < path.length);
-        foreach(i, c; path[start..$]) {
+        foreach(i, c; path[start..$-1]) {
             if (c == FileConst.PathSeparatorChar) {
                 if (path[start+i+1] == '.') {
                     return i + start + 1;
@@ -185,6 +185,7 @@ body {
 
 debug (UnitTest)
 {
+
     unittest
     {
     version (Posix)
@@ -201,6 +202,7 @@ debug (UnitTest)
             assert (normalize ("foo/bar/./doe/../../john") == "foo/john");
             assert (normalize ("../../foo/bar") == "../../foo/bar");
             assert (normalize ("../../../foo/bar") == "../../../foo/bar");
+            assert (normalize ("d/") == "d/");
             }
 
     version (Win32)
