@@ -229,6 +229,21 @@ class Uri : UriView
         }
 
         /***********************************************************************
+
+                Simple constructor form. This can be convenient, and 
+                avoids ctor setup at the callsite:
+                ---
+                Uri uri = "myuri";
+                ---
+
+        ***********************************************************************/
+
+        static Uri opAssign (char[] uri)
+        {
+                return new Uri (uri);
+        }
+
+        /***********************************************************************
         
                 Construct a Uri from the given components. The query is
                 optional.

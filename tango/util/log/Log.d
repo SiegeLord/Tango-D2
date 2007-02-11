@@ -87,6 +87,21 @@ class Log
         }
 
         /***********************************************************************
+
+                Simple constructor form. This can be more convenient
+                than the getLogger() call:
+                ---
+                Logger log = "my.logger";
+                ---
+
+        ***********************************************************************/
+
+        static Logger opAssign (char[] name)
+        {
+                return getLogger (name);
+        }
+
+        /***********************************************************************
         
                 Return the singleton hierarchy.
 

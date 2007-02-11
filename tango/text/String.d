@@ -262,6 +262,21 @@ class String(T) : StringView!(T)
         }
 
         /***********************************************************************
+
+                Simple constructor form. This can be convenient, and 
+                avoids ctor setup at the callsite:
+                ---
+                String!(char) str = "text";
+                ---
+
+        ***********************************************************************/
+
+        static String opAssign (T[] text)
+        {
+                return new String (text);
+        }
+
+        /***********************************************************************
    
                 Set the content to the provided array. Parameter 'copy'
                 specifies whether the given array is likely to change. If 
@@ -1340,6 +1355,8 @@ debug (UnitTest)
         // void main() {}
         unittest
         {
+        String!(char)  ss = "ad";
+
         auto s = new String!(char)("hello");
         
         s.select ("hello");

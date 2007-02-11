@@ -132,6 +132,23 @@ class UnicodeFile(T) : FileProxy
 
         /***********************************************************************
 
+                Simple constructor form. This can be convenient, and 
+                avoids ctor setup at the callsite:
+                ---
+                UnicodeFile!(char) file = "myfile";
+                ---
+
+                Limited to Encoding.Unknown only
+
+        ***********************************************************************/
+
+        static UnicodeFile opAssign (char[] path)
+        {
+                return new UnicodeFile (path, Encoding.Unknown);
+        }
+
+        /***********************************************************************
+
                 Return the current encoding. This is either the originally
                 specified encoding, or a derived one obtained by inspecting
                 the file content for a BOM. The latter is performed as part
