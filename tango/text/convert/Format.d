@@ -347,14 +347,14 @@ public class Format(T)
                          }
 
                       int index = 0;
+                      bool indexed = false;
 
-                      // check for default index "}" 
-                      if (*s is '}')
-                          index = nextIndex;
-                      else
-                         // extract index
-                         while (*s >= '0' && *s <= '9')
-                                index = index * 10 + *s++ -'0';
+                      // extract index
+                      while (*s >= '0' && *s <= '9')
+                            {
+                            index = index * 10 + *s++ -'0';
+                            indexed = true;
+                            }
 
                       // skip spaces
                       while (s < end && *s is ' ')
@@ -400,7 +400,9 @@ public class Format(T)
                       if (*s != '}')
                           error ("missing or misplaced '}' in format specifier");
 
-                      // set next default counter;                      
+                      // check for default index & set next default counter
+                      if (! indexed)
+                            index = nextIndex;
                       nextIndex = index + 1;
 
                       // next char is start of following fragment
@@ -682,7 +684,7 @@ public class Format(T)
                 {
                         int length;
                         T specifier = parseFormatSpecifier (format, length);
-                        int precision = 15;
+                        int precision = 6;
 
                         switch (specifier)
                                {
@@ -2076,7 +2078,7 @@ private struct ArgumentIterator
 
 debug (UnitTest)
 {
-        // void main() {}
+        //void main() {}
 
         import tango.io.Console;
 
@@ -2090,6 +2092,7 @@ unittest
     assert( Formatter( "{} {}", 1, 2) == "1 2" );
     assert( Formatter( "{} {0} {}", 1, 3) == "1 1 3" );
     assert( Formatter( "{} {0} {} {}", 1, 3) == "1 1 3 {invalid index}" );
+    assert( Formatter( "{} {0} {} {:x}", 1, 3) == "1 1 3 {invalid index}" );
 
     assert( Formatter( "{0}", true ) == "true" , Formatter( "{0}", true ));
     assert( Formatter( "{0}", false ) == "false" );
