@@ -172,7 +172,9 @@ class FileSystem
 
                 static FilePath getDirectory ()
                 {
-                        char *s = tango.stdc.posix.unistd.getcwd (null, 0);
+                        char[512] tmp = void;
+
+                        char *s = tango.stdc.posix.unistd.getcwd (tmp.ptr, tmp.length);
                         if (s)
                             return new FilePath (s[0..strlen(s)]);
 
