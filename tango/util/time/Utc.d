@@ -185,7 +185,14 @@ struct Utc
 
                 static Interval zone ()
                 {
-                        return cast(Interval) -timezone;
+                        version (darwin)
+                                {
+                                timezone_s tz;
+                                gettimeofday (null, &tz);
+                                return cast(Interval) -tz.tz_minuteswest * 60;
+                                }
+                             else
+                                return cast(Interval) -timezone;
                 }
         }
 }
