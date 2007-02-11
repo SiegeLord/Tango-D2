@@ -231,7 +231,7 @@ uint locatePattern(T) (T[] source, T[] match, uint start=0)
         T*      p = source.ptr + start;
         uint    extent = source.length - start - match.length + 1;
 
-        if (match.length && extent < source.length)
+        if (match.length && extent <= source.length)
             while (extent)
                    if ((idx = indexOf (p, match[0], extent)) is extent)
                         break;
@@ -1115,6 +1115,7 @@ debug (UnitTest)
                                  x[3]=="d" && x[4]=="e" && x[5]=="f");
 
         assert (locatePattern ("abcdefg", "") is 7);
+        assert (locatePattern ("abcdefg", "g") is 6);
         assert (locatePattern ("abcdefg", "abcdefg") is 0);
         assert (locatePattern ("abcdefg", "abcdefgx") is 7);
         assert (locatePattern ("abcdefg", "cce") is 7);
