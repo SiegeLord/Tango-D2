@@ -560,7 +560,7 @@ private static int parseInt(T) (inout T* p)
 
 debug (UnitTest)
 {
-        void main() {}
+        // void main() {}
         
         unittest
         {
