@@ -51,10 +51,7 @@ private import  tango.io.FileConst;
 *******************************************************************************/
 
 char[] normalize(char[] path, bool normSlash = true)
-in {
-    assert (path.length > 1);
-}
-body {
+{
     /*
        Internal helper to patch slashes
     */
