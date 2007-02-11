@@ -195,7 +195,7 @@ debug (UnitTest)
 {
         import tango.io.Stdout;
 
-        void main() {}
+        // void main() {}
 
         unittest
         {
