@@ -404,6 +404,9 @@ public class Format(T)
                       // finally, pad out on right
                       if (leftAlign && padding > 0)
                           length += spaces (sink, padding);
+
+                      // clear for next argument
+                      result.reset;
                       }
 
                 return length;
@@ -1626,7 +1629,7 @@ public class Format(T)
 
                 T[] get ()
                 {
-                        return target_[0..index];
+                        return target_[0 .. index];
                 }
 
                 /**************************************************************
@@ -1636,6 +1639,15 @@ public class Format(T)
                 T[] scratch ()
                 {
                         return target_;
+                }
+
+                /**************************************************************
+
+                **************************************************************/
+
+                void reset ()
+                {
+                        index = 0;
                 }
         }
 
@@ -2047,7 +2059,9 @@ private struct ArgumentIterator
 
 debug (UnitTest)
 {
-        void main() {}
+        // void main() {}
+
+        import tango.io.Console;
 
 unittest
 {
