@@ -300,11 +300,11 @@ public class Format(T)
 
         private final uint parse (T[] layout, inout ArgumentIterator it, Sink sink)
         {
-                T[256] output = void;
+                T[384] output = void;
                 T[256] convert = void;
                 auto result = Result (output, convert);
                 
-                int length;
+                int length, nextIndex;
 
                 T* s = layout.ptr;
                 T* fragment = s;
@@ -329,10 +329,15 @@ public class Format(T)
                          continue;
                          }
 
-                      // extract index
-                      int index;
-                      while (*s >= '0' && *s <= '9')
-                             index = index * 10 + *s++ -'0';
+                      int index = 0;
+
+                      // check for default index "}" 
+                      if (*s is '}')
+                          index = nextIndex;
+                      else
+                         // extract index
+                         while (*s >= '0' && *s <= '9')
+                                index = index * 10 + *s++ -'0';
 
                       // skip spaces
                       while (s < end && *s is ' ')
@@ -378,12 +383,15 @@ public class Format(T)
                       if (*s != '}')
                           error ("missing or misplaced '}' in format specifier");
 
+                      // set next default counter;                      
+                      nextIndex = index + 1;
+
                       // next char is start of following fragment
                       fragment = ++s;
 
                       // convert argument to a string
-                      Argument arg = it [index];
-                      T[] str = convertArgument (result, format, arg);
+                      auto arg = it [index];
+                      T[] str = (arg ? convertArgument (result, format, *arg) : "{invalid index}");
                       int padding = width - str.length;
 
                       // if not left aligned, pad out with spaces
@@ -1997,9 +2005,12 @@ private struct ArgumentIterator
 
         **********************************************************************/
 
-        public Argument opIndex (int index)
+        public Argument* opIndex (uint index)
         {
-                return args_[index];
+                if (index < size_)
+                    return &args_[index];
+
+                return null;
         }
 
         /**********************************************************************
@@ -2036,12 +2047,18 @@ private struct ArgumentIterator
 
 debug (UnitTest)
 {
-unittest{
+        void main() {}
 
+unittest
+{
     assert( Formatter( "abc" ) == "abc" );
-
     assert( Formatter( "{0}", 1 ) == "1" );
     assert( Formatter( "{0}", -1 ) == "-1" );
+
+    assert( Formatter( "{}", 1 ) == "1" );
+    assert( Formatter( "{} {}", 1, 2) == "1 2" );
+    assert( Formatter( "{} {0} {}", 1, 3) == "1 1 3" );
+    assert( Formatter( "{} {0} {} {}", 1, 3) == "1 1 3 {invalid index}" );
 
     assert( Formatter( "{0}", true ) == "true" , Formatter( "{0}", true ));
     assert( Formatter( "{0}", false ) == "false" );
@@ -2151,7 +2168,7 @@ static this()
 
 
 
-version (Test) {
+debug (Test) {
 import tango.io.Console;
 
 
