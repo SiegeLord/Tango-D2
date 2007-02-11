@@ -1151,8 +1151,8 @@ class Socket
         //returns number of bytes actually received, 0 on connection closure, or -1 on error
         int receive(void[] buf, SocketFlags flags=SocketFlags.NONE)
         {
-                if (!buf.length) //return 0 and don't think the connection closed
-                     return 0;
+                if (!buf.length) 
+                     badArg ("Socket.receive :: target buffer has 0 length");
                 
                 return .recv(sock, buf.ptr, buf.length, cast(int)flags);
         }
@@ -1162,8 +1162,8 @@ class Socket
          */
         int receiveFrom(void[] buf, SocketFlags flags, Address from)
         {
-                if (!buf.length) //return 0 and don't think the connection closed
-                     return 0;
+                if (!buf.length) 
+                     badArg ("Socket.receiveFrom :: target buffer has 0 length");
                 
                 assert(from.addressFamily() == family);
                 int nameLen = from.nameLen();
@@ -1182,8 +1182,8 @@ class Socket
         /// ditto
         int receiveFrom(void[] buf, SocketFlags flags = SocketFlags.NONE)
         {
-                if (!buf.length) //return 0 and don't think the connection closed
-                     return 0;
+                if (!buf.length)
+                     badArg ("Socket.receiveFrom :: target buffer has 0 length");
                 
                 return .recvfrom(sock, buf.ptr, buf.length, cast(int)flags, null, null);
         }
@@ -1227,6 +1227,18 @@ class Socket
         protected static void exception (char[] msg)
         {
                 throw new SocketException (msg ~ SysError.lookup(lastError));
+        }
+
+
+        /***********************************************************************
+
+                Tango: added this common function
+
+        ***********************************************************************/
+
+        protected static void badArg (char[] msg)
+        {
+                throw new IllegalArgumentException (msg);
         }
 
 
