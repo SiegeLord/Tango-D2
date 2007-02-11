@@ -163,8 +163,7 @@ class Writer : IWriter
 
         /***********************************************************************
         
-                Flush the output of this writer. Returns false if the 
-                operation failed, true otherwise.
+                Flush the output of this writer and return a chaining ref
 
         ***********************************************************************/
 
