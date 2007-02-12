@@ -259,24 +259,6 @@ class FileConduit : DeviceConduit, DeviceConduit.Seek
         }    
 
         /***********************************************************************
-
-                Simple constructor form. This can be convenient, and 
-                avoids ctor setup at the callsite:
-                ---
-                FileConduit file = "myfile";
-                ---
-
-                This exposed a read-only file. Use the main ctors to
-                specify additional options
-
-        ***********************************************************************/
-
-        static FileConduit opAssign (char[] path)
-        {
-                return new FileConduit (path);
-        }
-
-        /***********************************************************************
         
                 Return the FilePath used by this file.
 
