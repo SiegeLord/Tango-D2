@@ -14,6 +14,7 @@ module tango.util.log.RollingFileAppender;
 
 private import  tango.io.FilePath,
                 tango.io.FileConst,
+                tango.io.FileProxy,
                 tango.io.FileConduit;
 
 private import  tango.io.model.IBuffer;

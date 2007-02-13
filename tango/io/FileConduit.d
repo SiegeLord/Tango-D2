@@ -18,9 +18,9 @@ module tango.io.FileConduit;
 
 private import  tango.sys.Common;
 
-public  import  tango.io.FileProxy;
+public  import  tango.io.FilePath;
 
-public  import  tango.io.DeviceConduit;
+private import  tango.io.DeviceConduit;
 
 private import  Utf = tango.text.convert.Utf;
 
@@ -229,6 +229,8 @@ class FileConduit : DeviceConduit, DeviceConduit.Seek
                 this (new FilePath(name), style);
         }
 
+version (Proxy)
+{
         /***********************************************************************
         
                 Create a FileConduit from the provided proxy and style.
@@ -239,7 +241,7 @@ class FileConduit : DeviceConduit, DeviceConduit.Seek
         {
                 this (proxy.getPath(), style);
         }
-
+}
         /***********************************************************************
         
                 Create a FileConduit with the provided path and style.

@@ -174,7 +174,7 @@ class UnicodeFile(T) : FileProxy
 
         T[] read ()
         {
-                auto conduit = new FileConduit (this);  
+                auto conduit = new FileConduit (this.getPath);  
                 scope (exit)
                        conduit.close();
 
@@ -229,7 +229,7 @@ class UnicodeFile(T) : FileProxy
                 void[] converted = bom.encode (content);
 
                 // open file after conversion ~ in case of exceptions
-                auto conduit = new FileConduit (this, style);  
+                auto conduit = new FileConduit (this.getPath, style);  
                 scope (exit)
                        conduit.close();
 

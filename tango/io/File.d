@@ -80,7 +80,7 @@ class File : FileProxy
 
         void[] read ()
         {
-                auto conduit = new FileConduit (this);  
+                auto conduit = new FileConduit (this.getPath);  
                 scope (exit)
                        conduit.close();
 
@@ -123,7 +123,7 @@ class File : FileProxy
 
         private File write (void[] content, FileConduit.Style style)
         {      
-                auto conduit = new FileConduit (this, style);  
+                auto conduit = new FileConduit (this.getPath, style);  
                 scope (exit)
                        conduit.close();
 
