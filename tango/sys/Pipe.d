@@ -56,8 +56,10 @@ class PipeConduit: DeviceConduit
                  uint bufferSize = DefaultBufferSize)
     {
         super(access, false);
-
-        this.handle = cast(HANDLE) handle;
+        version (Win32)
+                this.handle = cast(HANDLE) handle;
+        else
+           this.handle = handle;
         _bufferSize = bufferSize;
     }
 
