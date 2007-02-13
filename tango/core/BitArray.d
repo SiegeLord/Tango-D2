@@ -21,6 +21,20 @@ struct BitArray
     size_t  len;
     uint*   ptr;
 
+
+    /**
+     *
+     */
+    static BitArray opCall( bool[] bits )
+    {
+        BitArray temp;
+
+        temp.length = bits.length;
+        foreach( pos, val; bits )
+            temp[pos] = val;
+        return temp;
+    }
+
     /**
      *
      */
@@ -81,8 +95,10 @@ struct BitArray
     }
 
 
-    unittest
+    debug( UnitTest )
     {
+      unittest
+      {
         BitArray a;
         BitArray b;
         int i;
@@ -96,12 +112,14 @@ struct BitArray
             //printf("b[%d] = %d\n", i, b[i]);
             assert(b[i] == (((i ^ 1) & 1) ? true : false));
         }
+      }
     }
+
 
     /**
      * Set BitArray to contents of ba[]
      */
-    void init(bool[] ba)
+    void opAssign(bool[] ba)
     {
         length = ba.length;
         foreach (i, b; ba)
@@ -129,11 +147,12 @@ struct BitArray
         len = numbits;
     }
 
-    unittest
-    {
-        static bool[] ba = [1,0,1,0,1];
 
-        BitArray a; a.init(ba);
+    debug( UnitTest )
+    {
+      unittest
+      {
+        BitArray a = [1,0,1,0,1];
         BitArray b;
         void[] v;
 
@@ -150,6 +169,7 @@ struct BitArray
         assert(b[0] == 0);
 
         assert(a == b);
+      }
     }
 
 
@@ -181,18 +201,21 @@ struct BitArray
     }
 
 
-    unittest
+    debug( UnitTest )
     {
+      unittest
+      {
         BitArray b;
         static bool[5] data = [1,0,1,1,0];
         int i;
 
-        b.init(data);
+        b = data;
         b.reverse;
         for (i = 0; i < data.length; i++)
         {
             assert(b[i] == data[4 - i]);
         }
+      }
     }
 
 
@@ -245,15 +268,19 @@ struct BitArray
     }
 
 
-    unittest
+    debug( UnitTest )
     {
+      unittest
+      {
         static uint x = 0b1100011000;
         static BitArray ba = { 10, &x };
+
         ba.sort;
         for (size_t i = 0; i < 6; i++)
             assert(ba[i] == false);
         for (size_t i = 6; i < 10; i++)
             assert(ba[i] == true);
+      }
     }
 
 
@@ -292,11 +319,11 @@ struct BitArray
     }
 
 
-    unittest
+    debug( UnitTest )
     {
-        static bool[] ba = [1,0,1];
-
-        BitArray a; a.init(ba);
+      unittest
+      {
+        BitArray a = [1,0,1];
 
         int i;
         foreach (b;a)
@@ -321,6 +348,7 @@ struct BitArray
             default: assert(0);
             }
         }
+      }
     }
 
 
@@ -350,24 +378,21 @@ struct BitArray
         return (mask == 0) || (p1[i] & mask) == (p2[i] & mask);
     }
 
-    unittest
+    debug( UnitTest )
     {
-        static bool[] ba = [1,0,1,0,1];
-        static bool[] bb = [1,0,1];
-        static bool[] bc = [1,0,1,0,1,0,1];
-        static bool[] bd = [1,0,1,1,1];
-        static bool[] be = [1,0,1,0,1];
-
-        BitArray a; a.init(ba);
-        BitArray b; b.init(bb);
-        BitArray c; c.init(bc);
-        BitArray d; d.init(bd);
-        BitArray e; e.init(be);
+      unittest
+      {
+        BitArray a = [1,0,1,0,1];
+        BitArray b = [1,0,1];
+        BitArray c = [1,0,1,0,1,0,1];
+        BitArray d = [1,0,1,1,1];
+        BitArray e = [1,0,1,0,1];
 
         assert(a != b);
         assert(a != c);
         assert(a != d);
         assert(a == e);
+      }
     }
 
 
@@ -401,19 +426,15 @@ struct BitArray
         return cast(int)this.len - cast(int)a2.length;
     }
 
-    unittest
+    debug( UnitTest )
     {
-        static bool[] ba = [1,0,1,0,1];
-        static bool[] bb = [1,0,1];
-        static bool[] bc = [1,0,1,0,1,0,1];
-        static bool[] bd = [1,0,1,1,1];
-        static bool[] be = [1,0,1,0,1];
-
-        BitArray a; a.init(ba);
-        BitArray b; b.init(bb);
-        BitArray c; c.init(bc);
-        BitArray d; d.init(bd);
-        BitArray e; e.init(be);
+      unittest
+      {
+        BitArray a = [1,0,1,0,1];
+        BitArray b = [1,0,1];
+        BitArray c = [1,0,1,0,1,0,1];
+        BitArray d = [1,0,1,1,1];
+        BitArray e = [1,0,1,0,1];
 
         assert(a >  b);
         assert(a >= b);
@@ -424,6 +445,7 @@ struct BitArray
         assert(a == e);
         assert(a <= e);
         assert(a >= e);
+      }
     }
 
 
@@ -435,14 +457,16 @@ struct BitArray
         return cast(void[])ptr[0 .. dim];
     }
 
-    unittest
-    {
-        static bool[] ba = [1,0,1,0,1];
 
-        BitArray a; a.init(ba);
+    debug( UnitTest )
+    {
+      unittest
+      {
+        BitArray a = [1,0,1,0,1];
         void[] v = cast(void[])a;
 
         assert(v.length == a.dim * uint.sizeof);
+      }
     }
 
 
@@ -478,11 +502,11 @@ struct BitArray
     }
 
 
-    unittest
+    debug( UnitTest )
     {
-        static bool[] ba = [1,0,1,0,1];
-
-        BitArray a; a.init(ba);
+      unittest
+      {
+        BitArray a = [1,0,1,0,1];
         BitArray b = ~a;
 
         assert(b[0] == 0);
@@ -490,6 +514,7 @@ struct BitArray
         assert(b[2] == 0);
         assert(b[3] == 1);
         assert(b[4] == 0);
+      }
     }
 
 
@@ -514,13 +539,12 @@ struct BitArray
     }
 
 
-    unittest
+    debug( UnitTest )
     {
-        static bool[] ba = [1,0,1,0,1];
-        static bool[] bb = [1,0,1,1,0];
-
-        BitArray a; a.init(ba);
-        BitArray b; b.init(bb);
+      unittest
+      {
+        BitArray a = [1,0,1,0,1];
+        BitArray b = [1,0,1,1,0];
 
         BitArray c = a & b;
 
@@ -529,6 +553,7 @@ struct BitArray
         assert(c[2] == 1);
         assert(c[3] == 0);
         assert(c[4] == 0);
+      }
     }
 
 
@@ -553,13 +578,12 @@ struct BitArray
     }
 
 
-    unittest
+    debug( UnitTest )
     {
-        static bool[] ba = [1,0,1,0,1];
-        static bool[] bb = [1,0,1,1,0];
-
-        BitArray a; a.init(ba);
-        BitArray b; b.init(bb);
+      unittest
+      {
+        BitArray a = [1,0,1,0,1];
+        BitArray b = [1,0,1,1,0];
 
         BitArray c = a | b;
 
@@ -568,6 +592,7 @@ struct BitArray
         assert(c[2] == 1);
         assert(c[3] == 1);
         assert(c[4] == 1);
+      }
     }
 
 
@@ -591,13 +616,13 @@ struct BitArray
         return result;
     }
 
-    unittest
-    {
-        static bool[] ba = [1,0,1,0,1];
-        static bool[] bb = [1,0,1,1,0];
 
-        BitArray a; a.init(ba);
-        BitArray b; b.init(bb);
+    debug( UnitTest )
+    {
+      unittest
+      {
+        BitArray a = [1,0,1,0,1];
+        BitArray b = [1,0,1,1,0];
 
         BitArray c = a ^ b;
 
@@ -606,6 +631,7 @@ struct BitArray
         assert(c[2] == 0);
         assert(c[3] == 1);
         assert(c[4] == 1);
+      }
     }
 
 
@@ -631,13 +657,13 @@ struct BitArray
         return result;
     }
 
-    unittest
-    {
-        static bool[] ba = [1,0,1,0,1];
-        static bool[] bb = [1,0,1,1,0];
 
-        BitArray a; a.init(ba);
-        BitArray b; b.init(bb);
+    debug( UnitTest )
+    {
+      unittest
+      {
+        BitArray a = [1,0,1,0,1];
+        BitArray b = [1,0,1,1,0];
 
         BitArray c = a - b;
 
@@ -646,6 +672,7 @@ struct BitArray
         assert(c[2] == 0);
         assert(c[3] == 0);
         assert(c[4] == 1);
+      }
     }
 
 
@@ -687,13 +714,12 @@ struct BitArray
     }
 
 
-    unittest
+    debug( UnitTest )
     {
-        static bool[] ba = [1,0];
-        static bool[] bb = [0,1,0];
-
-        BitArray a; a.init(ba);
-        BitArray b; b.init(bb);
+      unittest
+      {
+        BitArray a = [1,0];
+        BitArray b = [0,1,0];
         BitArray c;
 
         c = (a ~ b);
@@ -715,6 +741,7 @@ struct BitArray
         assert(c[0] == 0);
         assert(c[1] == 1);
         assert(c[2] == 0);
+      }
     }
 
 
@@ -753,13 +780,13 @@ struct BitArray
         return *this;
     }
 
-    unittest
-    {
-        static bool[] ba = [1,0,1,0,1];
-        static bool[] bb = [1,0,1,1,0];
 
-        BitArray a; a.init(ba);
-        BitArray b; b.init(bb);
+    debug( UnitTest )
+    {
+      unittest
+      {
+        BitArray a = [1,0,1,0,1];
+        BitArray b = [1,0,1,1,0];
 
         a &= b;
         assert(a[0] == 1);
@@ -767,6 +794,7 @@ struct BitArray
         assert(a[2] == 1);
         assert(a[3] == 0);
         assert(a[4] == 0);
+      }
     }
 
 
@@ -788,13 +816,12 @@ struct BitArray
     }
 
 
-    unittest
+    debug( UnitTest )
     {
-        static bool[] ba = [1,0,1,0,1];
-        static bool[] bb = [1,0,1,1,0];
-
-        BitArray a; a.init(ba);
-        BitArray b; b.init(bb);
+      unittest
+      {
+        BitArray a = [1,0,1,0,1];
+        BitArray b = [1,0,1,1,0];
 
         a |= b;
         assert(a[0] == 1);
@@ -802,6 +829,7 @@ struct BitArray
         assert(a[2] == 1);
         assert(a[3] == 1);
         assert(a[4] == 1);
+      }
     }
 
 
@@ -823,13 +851,12 @@ struct BitArray
     }
 
 
-    unittest
+    debug( UnitTest )
     {
-        static bool[] ba = [1,0,1,0,1];
-        static bool[] bb = [1,0,1,1,0];
-
-        BitArray a; a.init(ba);
-        BitArray b; b.init(bb);
+      unittest
+      {
+        BitArray a = [1,0,1,0,1];
+        BitArray b = [1,0,1,1,0];
 
         a ^= b;
         assert(a[0] == 0);
@@ -837,6 +864,7 @@ struct BitArray
         assert(a[2] == 0);
         assert(a[3] == 1);
         assert(a[4] == 1);
+      }
     }
 
 
@@ -860,13 +888,12 @@ struct BitArray
     }
 
 
-    unittest
+    debug( UnitTest )
     {
-        static bool[] ba = [1,0,1,0,1];
-        static bool[] bb = [1,0,1,1,0];
-
-        BitArray a; a.init(ba);
-        BitArray b; b.init(bb);
+      unittest
+      {
+        BitArray a = [1,0,1,0,1];
+        BitArray b = [1,0,1,1,0];
 
         a -= b;
         assert(a[0] == 0);
@@ -874,6 +901,7 @@ struct BitArray
         assert(a[2] == 0);
         assert(a[3] == 0);
         assert(a[4] == 1);
+      }
     }
 
 
@@ -887,11 +915,12 @@ struct BitArray
         return *this;
     }
 
-    unittest
-    {
-        static bool[] ba = [1,0,1,0,1];
 
-        BitArray a; a.init(ba);
+    debug( UnitTest )
+    {
+      unittest
+      {
+        BitArray a = [1,0,1,0,1];
         BitArray b;
 
         b = (a ~= true);
@@ -903,6 +932,7 @@ struct BitArray
         assert(a[5] == 1);
 
         assert(b == a);
+      }
     }
 
 
@@ -919,13 +949,12 @@ struct BitArray
     }
 
 
-    unittest
+    debug( UnitTest )
     {
-        static bool[] ba = [1,0];
-        static bool[] bb = [0,1,0];
-
-        BitArray a; a.init(ba);
-        BitArray b; b.init(bb);
+      unittest
+      {
+        BitArray a = [1,0];
+        BitArray b = [0,1,0];
         BitArray c;
 
         c = (a ~= b);
@@ -937,5 +966,6 @@ struct BitArray
         assert(a[4] == 0);
 
         assert(c == a);
+      }
     }
 }
