@@ -45,7 +45,7 @@ const uint      MAX_LENGTH      = 16;
 
 int main(char[][] args)
 {
-    scope Logger    log = Log.getLogger("selector");
+    scope Logger    log     = Log.getLogger("selector");
     Sprint!(char)   sprint  = new Sprint!(char)(256);
 
     log.addAppender(new ConsoleAppender(new DateLayout()));
@@ -92,7 +92,7 @@ int main(char[][] args)
 void testSelector(ISelector selector)
 {
     Logger          log     = Log.getLogger("selector.server");
-    Sprint!(char)   sprint  = new Sprint!(char)(256);
+    Sprint!(char)   sprint  = new Sprint!(char)(512);
 
     uint        connectCount        = 0;
     uint        receiveCount        = 0;
