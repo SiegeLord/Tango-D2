@@ -57,7 +57,7 @@ class PipeConduit: DeviceConduit
     {
         super(access, false);
 
-        this.handle = handle;
+        this.handle = cast(HANDLE) handle;
         _bufferSize = bufferSize;
     }
 
