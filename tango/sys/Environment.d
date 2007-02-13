@@ -172,7 +172,6 @@ else // POSIX
 
         char[][char[]] environment ()
         {
-                char[] key;
                 char[][char[]] arr;
 
                 for (char** p = environ; *p; ++p)
@@ -182,12 +181,13 @@ else // POSIX
 
                     while (*str++ != '=')
                            ++k;
-                    key = (*p)[0..k];
+                    char[] key = (*p)[0..k];
 
+                    k = 0;
+                    char* val = str;
                     while (*str++)
                            ++k;
-
-                    arr [key] = (*p)[key.length+1 .. k];
+                    arr[key] = val[0 .. k];
                     }
 
                 return arr;
