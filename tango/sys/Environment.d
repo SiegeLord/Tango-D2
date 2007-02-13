@@ -158,7 +158,7 @@ else // POSIX
                 int result;
 
                 if (value.length == 0)
-                    unsetenv((variable ~ '\0').ptr);
+                    unsetenv ((variable ~ '\0').ptr);
                 else
                    result = setenv ((variable ~ '\0').ptr, (value ~ '\0').ptr, 1);
 
@@ -172,36 +172,22 @@ else // POSIX
 
         char[][char[]] environment ()
         {
+                char[] key;
                 char[][char[]] arr;
-
-                char[] key = new char[20],
-                       value = new char[40];
 
                 for (char** p = environ; *p; ++p)
                     {
-                    size_t k = 0, v = 0;
-
+                    size_t k = 0;
                     char* str = *p;
 
                     while (*str != '=')
-                          {
-                          key[k++] = *str++;
+                           ++k;
+                    key = (*p)[0..k];
 
-                          if (k == key.length)
-                              key.length = 2 * key.length;
-                          }
+                    while (*++str)
+                           ++k;
 
-                    ++str;
-
-                    while (*str)
-                          {
-                          value [v++] = *str++;
-        
-                          if (v == value.length)
-                              value.length = 2 * value.length;
-                          }
-
-                    arr [key[0 .. k].dup] = value [0 .. v].dup;
+                    arr [key] = (*p)[key.length+1 .. k];
                     }
 
                 return arr;
