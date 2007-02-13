@@ -172,7 +172,7 @@ struct Utc
                         span -= span.TicksTo1970;
                         span /= 10L;
                         tv.tv_sec  = cast (typeof(tv.tv_sec))  (span / 1_000_000L);
-                        tv.tv_usec = cast (typeof(tv.tv_usec)) (span - tv.tv_sec);
+                        tv.tv_usec = cast (typeof(tv.tv_usec)) (span - tv.tv_sec * 1_000_000L);
                         return tv;
                 }
 
