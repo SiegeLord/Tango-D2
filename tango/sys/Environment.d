@@ -180,11 +180,11 @@ else // POSIX
                     size_t k = 0;
                     char* str = *p;
 
-                    while (*str != '=')
+                    while (*str++ != '=')
                            ++k;
                     key = (*p)[0..k];
 
-                    while (*++str)
+                    while (*str++)
                            ++k;
 
                     arr [key] = (*p)[key.length+1 .. k];
