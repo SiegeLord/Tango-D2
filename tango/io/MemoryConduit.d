@@ -118,3 +118,27 @@ class MemoryConduit : Conduit
         }
 }
 
+
+/******************************************************************************
+
+******************************************************************************/
+
+debug (UnitTest)
+{
+        import tango.io.protocol.Reader;
+        import tango.io.protocol.Writer;
+
+        //void main() {}
+
+        unittest
+        {
+                auto c = new MemoryConduit;
+                auto r = new Reader (c);
+                auto w = new Writer (c);
+
+                w ("one two three"c) ();
+                char[] x;
+                r (x);
+                assert (x == "one two three");
+        }        
+}
