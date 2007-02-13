@@ -35,8 +35,10 @@ version (Windows)
         }
 }
 else
-   import tango.stdc.posix.stdlib;
-
+{
+    import tango.stdc.posix.stdlib;
+    import tango.stdc.string;
+}
 
 version (Win32)
 {
@@ -199,7 +201,7 @@ else // POSIX
                               value.length = 2 * value.length;
                           }
 
-                    arr [key[0 .. k]] = value [0 .. v];
+                    arr [key[0 .. k].dup] = value [0 .. v].dup;
                     }
 
                 return arr;
