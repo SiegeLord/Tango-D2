@@ -74,6 +74,21 @@ class File : FileProxy
 
         /***********************************************************************
 
+                Simple constructor form. This can be convenient, and 
+                avoids ctor setup at the callsite:
+                ---
+                File file = path;
+                ---
+
+        ***********************************************************************/
+
+        static File opAssign (FilePath path)
+        {
+                return new File (path);
+        }
+
+        /***********************************************************************
+
                 Return the content of the file.
 
         ***********************************************************************/
