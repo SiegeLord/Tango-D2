@@ -13,7 +13,6 @@
 module tango.io.FileSystem;
 
 private import  tango.sys.Common;
-private import  tango.sys.Environment;
 
 private import  tango.io.FileConst;
 private import  tango.io.FilePath;
@@ -21,7 +20,10 @@ private import  tango.io.FileProxy;
 
 private import  tango.core.Exception;
 
-private import  tango.text.Util;
+private import  Text = tango.text.Util;
+
+private import  tango.sys.Environment : getEnv;
+
 
 version (Win32)
         {
@@ -217,19 +219,19 @@ class FileSystem
          * From args[0], figure out the binary's installed path.  Returns false on
          * failure
          */
-        bool exePath(char[] argvz, inout FilePath binpath)
+        bool exePath (char[] argvz, inout FilePath binpath)
         {
             binpath = argvz;
             
             // on Windows, this is a .exe
             version (Windows) {
-                if (binpath.getExt() == "")
+                if (binpath.getExt.length is 0)
                     binpath = binpath.append(".exe");
             }
             
             // is this a directory?
-            if (binpath.isChild()) {
-                if (!binpath.isAbsolute()) {
+            if (binpath.isChild) {
+                if (!binpath.isAbsolute) {
                     // make it absolute
                     binpath = FileSystem.absolutePath(binpath);
                 }
@@ -238,28 +240,25 @@ class FileSystem
             
             version (Windows) {
                 // is it in cwd?
-                FilePath cwdpath = FilePath.join(FileSystem.getDirectory(),
-                                                 binpath.toUtf8());
-                if ((new FileProxy(cwdpath)).isExisting()) {
-                    binpath = cwdpath;
+                FileProxy cwdpath = FileSystem.getDirectory.append (binpath);
+                if (cwdpath.isExisting) {
+                    binpath = cwdpath.getPath;
                     return true;
                 }
             }
     
             // rifle through the path
-            char[][] path = split(getEnv("PATH"), ""~FileConst.SystemPathSeparatorChar);
-            foreach (pe; path) {
-                char[] fullname = pe ~ FileConst.FileSeparatorChar ~ binpath.getFullName();
-                FileProxy fp = new FileProxy(fullname);
-                if (fp.isExisting()) {
+            foreach (pe; Text.patterns (getEnv("PATH"), FileConst.SystemPathSeparatorString)) {
+                FileProxy fp = binpath.asPath(pe);
+                if (fp.isExisting) {
                     version (Windows) {
-                        binpath = fullname;
+                        binpath = fp.getPath;
                         return true;
                     } else {
                         stat_t stats;
-                        stat((fullname~'\0').ptr, &stats);
+                        stat(fp.getPath.cString.ptr, &stats);
                         if (stats.st_mode & 0100) {
-                            binpath = fullname;
+                            binpath = fp.getPath;
                             return true;
                         }
                     }
