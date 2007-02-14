@@ -61,6 +61,7 @@
         splitLines (source);                        // split on lines
         join (source, postfix, output)              // join text segments
         replace (source, match, replacement)        // replace chars
+        replace (source, match, replacement)        // replace chars
         contains (source, match)                    // has char?
         containsPattern (source, match)             // has pattern?
         locate (source, match, start)               // find char
@@ -144,6 +145,21 @@ T[] replace(T) (T[] source, T match, T replacement)
                  if (c is match)
                      c = replacement;
         return source;
+}
+
+/******************************************************************************
+
+        Replace all instances of one char with another (in place)
+
+******************************************************************************/
+
+T[] substitute(T) (T[] source, T[] match, T[] replacement)
+{
+        T[] output;
+
+        foreach (s; patterns (source, match, replacement))
+                    output ~= s;
+        return output;
 }
 
 /******************************************************************************
@@ -1087,6 +1103,7 @@ debug (UnitTest)
         assert (strip ("#####", '#') == "");
 
         assert (replace ("abc".dup, 'b', ':') == "a:c");
+        assert (substitute ("abc".dup, "bc", "x") == "ax");
 
         assert (locate ("abc", 'c', 1) is 2);
 
