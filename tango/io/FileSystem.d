@@ -113,7 +113,7 @@ class FileSystem
                                    {
                                    auto dir = new char [length];
                                    GetCurrentDirectoryA (length, dir.ptr);
-                                   return new FilePath (dir);
+                                   return new FilePath (dir[0 .. $-1]);
                                    }
                                 }
                              else
@@ -125,7 +125,7 @@ class FileSystem
                                    auto dir = new wchar [length];
 
                                    GetCurrentDirectoryW (length, dir.ptr);
-                                   return new FilePath (Utf.toUtf8 (dir, tmp));
+                                   return new FilePath (Utf.toUtf8 (dir, tmp)[0 .. $-1]);
                                    }
                                 }
                         exception ("Failed to get current directory");
