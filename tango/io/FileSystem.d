@@ -217,7 +217,7 @@ class FileSystem
          * From args[0], figure out the binary's installed path.  Returns false on
          * failure
          */
-        bool whereAmI(char[] argvz, inout FilePath binpath)
+        bool exePath(char[] argvz, inout FilePath binpath)
         {
             binpath = argvz;
             
