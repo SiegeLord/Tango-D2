@@ -115,6 +115,36 @@ class FileProxy
 
         /***********************************************************************
 
+                Simple constructor form. This can be convenient, and 
+                avoids ctor setup at the callsite:
+                ---
+                FileProxy proxy = "myPath";
+                ---
+
+        ***********************************************************************/
+
+        static FileProxy opAssign (char[] path)
+        {
+                return new FileProxy (path);
+        }
+
+        /***********************************************************************
+
+                Simple constructor form. This can be convenient, and 
+                avoids ctor setup at the callsite:
+                ---
+                FileProxy proxy = path;
+                ---
+
+        ***********************************************************************/
+
+        static FileProxy opAssign (FilePath path)
+        {
+                return new FileProxy (path);
+        }
+
+        /***********************************************************************
+
                 Return the FilePath associated with this FileProxy
 
         ***********************************************************************/
