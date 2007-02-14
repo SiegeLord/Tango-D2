@@ -13,10 +13,15 @@
 module tango.io.FileSystem;
 
 private import  tango.sys.Common;
+private import  tango.sys.Environment;
 
+private import  tango.io.FileConst;
 private import  tango.io.FilePath;
+private import  tango.io.FileProxy;
 
 private import  tango.core.Exception;
+
+private import  tango.text.Util;
 
 version (Win32)
         {
@@ -26,6 +31,7 @@ version (Win32)
         {
         private import tango.stdc.string;
         private import tango.stdc.posix.unistd;
+        private import tango.stdc.posix.sys.stat;
         // private import tango.stdc.posix.utime;
         // private import tango.io.FileConduit;
         }
@@ -205,6 +211,63 @@ class FileSystem
                 }
 +/
 
+        }
+        
+        /**
+         * From args[0], figure out the binary's installed path.  Returns false on
+         * failure
+         */
+        bool whereAmI(char[] argvz, inout FilePath binpath)
+        {
+            binpath = argvz;
+            
+            // on Windows, this is a .exe
+            version (Windows) {
+                if (binpath.getExt() == "")
+                    binpath = binpath.append(".exe");
+            }
+            
+            // is this a directory?
+            if (binpath.isChild()) {
+                if (!binpath.isAbsolute()) {
+                    // make it absolute
+                    binpath = FileSystem.absolutePath(binpath);
+                }
+                return true;
+            }
+            
+            version (Windows) {
+                // is it in cwd?
+                FilePath cwdpath = FilePath.join(FileSystem.getDirectory(),
+                                                 binpath.toUtf8());
+                if ((new FileProxy(cwdpath)).isExisting()) {
+                    binpath = cwdpath;
+                    return true;
+                }
+            }
+    
+            // rifle through the path
+            char[][] path = split(getEnv("PATH"), ""~FileConst.SystemPathSeparatorChar);
+            foreach (pe; path) {
+                char[] fullname = pe ~ FileConst.FileSeparatorChar ~ binpath.getFullName();
+                FileProxy fp = new FileProxy(fullname);
+                if (fp.isExisting()) {
+                    version (Windows) {
+                        binpath = fullname;
+                        return true;
+                    } else {
+                        stat_t stats;
+                        stat((fullname~'\0').ptr, &stats);
+                        if (stats.st_mode & 0100) {
+                            binpath = fullname;
+                            return true;
+                        }
+                    }
+                }
+            }
+            
+            // bad
+            return false;
         }
 }
 
