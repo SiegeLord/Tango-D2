@@ -61,7 +61,7 @@
         splitLines (source);                        // split on lines
         join (source, postfix, output)              // join text segments
         replace (source, match, replacement)        // replace chars
-        replace (source, match, replacement)        // replace chars
+        substitute (source, match, replacement)     // replace patterns
         contains (source, match)                    // has char?
         containsPattern (source, match)             // has pattern?
         locate (source, match, start)               // find char
