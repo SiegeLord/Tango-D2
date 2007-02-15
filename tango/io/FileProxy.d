@@ -261,11 +261,13 @@ class FileProxy
                 is hidden at the end of each name (not exposed by the
                 length property)
 
-                Each filename includes the parent prefix
+                Each filename optionally includes the parent prefix,
+                dictated by whether argument prefixed is enabled or
+                not; default behaviour is to eschew the prefix                
 
         ***********************************************************************/
 
-        char[][] toList ()
+        char[][] toList (bool prefixed = false)
         {
                 int      i;
                 char[][] list;
@@ -277,7 +279,7 @@ class FileProxy
 
                         // duplicate the path, including the null. Note that
                         // the saved length *excludes* the terminator
-                        list[i++] = (prefix ~ name)[0 .. $-1];
+                        list[i++] = (prefixed ? (prefix~name) : name.dup)[0..$-1];
                 }
 
                 list = new char[][1024];
