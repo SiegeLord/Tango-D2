@@ -73,8 +73,8 @@ template isRealType( T )
 template isComplexType( T )
 {
     const bool isComplexType = is( T == cfloat )  ||
-                                 is( T == cdouble ) ||
-                                 is( T == creal );
+                               is( T == cdouble ) ||
+                               is( T == creal );
 }
 
 
@@ -158,4 +158,62 @@ template isCallableType( T )
                                 is( typeof(*T) == function )    ||
                                 is( T == delegate )             ||
                                 is( typeof(T.opCall) == function );
+}
+
+
+/**
+ *
+ */
+template ReturnTypeOf( Fn )
+{
+    static if( is( Fn Ret == return ) )
+        alias Ret ReturnTypeOf;
+    else
+        static assert( false, "Argument has no return type." );
+}
+
+
+/**
+ *
+ */
+template ReturnTypeOf( alias fn )
+{
+    alias ReturnTypeOf!(typeof(fn)) ReturnTypeOf;
+}
+
+
+/**
+ *
+ */
+template ParameterTupleOf( Fn )
+{
+    static if( is( Fn Params == function ) )
+        alias Params ParameterTupleOf;
+    else static if( is( Fn Params == delegate ) )
+        alias ParameterTupleOf!(Params) ParameterTupleOf;
+    else static if( is( Fn Params == Params* ) )
+        alias ParameterTupleOf!(Params) ParameterTupleOf;
+    else
+        static assert( false, "Argument has no parameters." );
+}
+
+
+/**
+ *
+ */
+template ParameterTupleOf( alias fn )
+{
+    alias ParameterTupleOf!(typeof(fn)) ParameterTupleOf;
+}
+
+
+/**
+ *
+ */
+template BaseTypeTupleOf( T )
+{
+    static if( is( T Base == super ) )
+        alias Base BaseTypeTupleOf;
+    else
+        static assert( false, "Argument is not a class or interface." );
 }
