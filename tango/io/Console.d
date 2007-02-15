@@ -41,6 +41,8 @@ version (Win32)
         }
 }
 
+extern (C) int printf (char*, ...);
+
 /*******************************************************************************
 
         low level console IO support. 
@@ -109,8 +111,10 @@ struct Console
                          
                 **************************************************************/
 
-                char[] get (bool copy = true)
+                char[] get ()
                 {
+                        version (OLD)
+                        {
                         auto len = buffer_.readable();
                         if (len is 0)
                            {
@@ -120,6 +124,44 @@ struct Console
 
                         auto x = cast(char[]) buffer_.slice (len);
                         return (copy ? x.dup : x);
+                        }
+                        else
+                        {
+                        char[] line;
+                        return nextLine(line) ? line.dup : null;
+                        }
+                }
+
+                /**************************************************************
+
+                        Retreive a line of text from the console and map
+                        it to the given argument. the input is sliced, 
+                        not copied, so use .dup appropriately. Each line
+                        ending is removed.
+                        
+                        Returns false when there is no more input.
+
+                **************************************************************/
+
+                bool nextLine (inout char[] content)
+                {
+                        uint scan (void[] input)
+                        {
+                                auto text = cast(char[]) input;
+                                foreach (i, c; text)
+                                         if (c is '\n')
+                                            {
+                                            auto j = i;
+                                            if (j && (text[j-1] is '\r'))
+                                                --j;
+                                            content = text [0..j];
+                                            return i+1;
+                                            }
+                                content = text;
+                                return IConduit.Eof;
+                        }
+
+                        return buffer_.next (&scan) || content.length;
                 }
         }
 
