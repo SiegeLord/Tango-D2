@@ -6,7 +6,7 @@
  * Authors:   Sean Kelly
  * Standards: The Open Group Base Specifications Issue 6, IEEE Std 1003.1, 2004 Edition
  */
-module tango.stdc.posix.stdlib;
+module tango.stdc.posix.stdio;
 
 private import tango.stdc.config;
 public import tango.stdc.stdio;
