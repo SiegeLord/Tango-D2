@@ -105,10 +105,11 @@ struct Console
 
                 /**************************************************************
 
-                        Return available input from the console. Note that 
-                        you may obtain a slice from the buffer instead by
-                        setting copy to false.
-                         
+                        Return the next line available from the console, 
+                        or null when there is nothing available. The value
+                        returned is a duplicate of the buffer content (it
+                        has .dup applied).
+
                 **************************************************************/
 
                 char[] get ()
@@ -135,7 +136,7 @@ struct Console
                 /**************************************************************
 
                         Retreive a line of text from the console and map
-                        it to the given argument. the input is sliced, 
+                        it to the given argument. The input is sliced, 
                         not copied, so use .dup appropriately. Each line
                         ending is removed.
                         
