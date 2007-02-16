@@ -124,6 +124,7 @@ class Object
         return this is o;
     }
 
+/+
     /* **
      * Call delegate dg, passing this to it, when this object gets destroyed.
      * Use extreme caution, as the list of delegates is stored in a place
@@ -188,6 +189,7 @@ class Object
             }
         }
     }
++/
 }
 
 extern (C) void _d_notify_release(Object o)
