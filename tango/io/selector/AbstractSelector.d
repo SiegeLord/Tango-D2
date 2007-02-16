@@ -11,7 +11,6 @@ public import tango.io.selector.SelectorException;
 
 private import tango.io.selector.model.ISelector;
 private import tango.sys.Common;
-private import tango.text.convert.Format;
 private import tango.stdc.errno;
 
 version (Windows)
@@ -364,9 +363,7 @@ abstract class AbstractSelector: ISelector
                 throw new SelectorException("The conduit cannot be used with this Selector", file, line);
                 // break;
             default:
-                char[128] buf = void;
-                throw new SelectorException(Formatter.sprint(buf, "Unknown Selector error {0}: {1}",
-                                                             errorCode, SysError.lookup(errorCode)), file, line);
+                throw new SelectorException("Unknown Selector error: " ~ SysError.lookup(errorCode), file, line);
                 // break;
         }
     }
