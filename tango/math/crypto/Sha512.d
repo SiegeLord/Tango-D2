@@ -340,8 +340,8 @@ unittest {
 
         foreach(int i, char[] s; strings) {
                 h.update(cast(ubyte[])s);
-                ubyte[] d = h.digest();
-                assert(d.toHex() == results[i],"DigestTransform:("~s~")("~d.toHex()~")!=("~results[i]~")");
+                char[] d = h.hexDigest();
+                assert(d == results[i],"DigestTransform:("~s~")("~d~")!=("~results[i]~")");
         }
 }
 }

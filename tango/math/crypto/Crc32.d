@@ -86,7 +86,7 @@ final class Crc32 : DigestTransform
         }
 
         /** */
-        override ubyte[] digest(ubyte[] buf = null) {
+        override ubyte[] binaryDigest(ubyte[] buf = null) {
                 if (buf.length < 4)
                         buf.length = 4;
                 uint v = ~result;
@@ -106,11 +106,16 @@ final class Crc32 : DigestTransform
         }
 }
 
+version (UnitTest)
+{
 unittest {
         scope c = new Crc32();
         static ubyte[] data = [1,2,3,4,5,6,7,8,9,10];
         c.update(data);
-        assert(c.finish() == x"7b572025");
+        assert(c.binaryDigest() == cast(ubyte[]) x"7b572025");
         c.update(data);
         assert(c.crc32Digest == 0x2520577b);
+        c.update(data);
+        assert(c.hexDigest() == "7B572025");
+}
 }

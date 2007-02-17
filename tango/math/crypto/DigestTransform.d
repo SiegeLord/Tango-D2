@@ -15,6 +15,8 @@
 
 module tango.math.crypto.DigestTransform;
 
+private import tango.stdc.stdlib : alloca;
+
 /+ Commented out until its proper home is figured out
 /******************************************************************************
 
@@ -71,11 +73,11 @@ class CryptoException : Exception
         hash.update(" jumps over the lazy dog");
 
         // conclude algorithm and produce digest
-        ubyte[] digest = hash.digest();
+        ubyte[] digest = hash.binaryDigest();
         ---
  */
 
-interface DigestTransform {
+abstract class DigestTransform {
         /********************************************************************
      
                Processes data
@@ -85,7 +87,7 @@ interface DigestTransform {
                  
         *********************************************************************/
     
-        void update(void[] data);
+        abstract void update(void[] data);
     
     
         /********************************************************************
@@ -100,12 +102,12 @@ interface DigestTransform {
                    If the buffer is not large enough to hold the
                    digest, a new buffer is allocated and returned.
                    The algorithm state is always reset after a call to
-                   digest. Use the digestSize method to find out how
+                   binaryDigest. Use the digestSize method to find out how
                    large the buffer has to be.
                    
         *********************************************************************/
     
-        ubyte[] digest(ubyte[] buffer = null);
+        abstract ubyte[] binaryDigest(ubyte[] buffer = null);
     
         /********************************************************************
      
@@ -119,24 +121,42 @@ interface DigestTransform {
                  
         *********************************************************************/
     
-        uint digestSize();
-}
-
-/* * */
-package char[] toHex(ubyte[] src) {
-    char[] result;
-    static char[] hexdigits = "0123456789ABCDEF";
-
-    if (src.length)
-    {
-        uint index = -1;
-        result = new char [src.length * 2];
-        foreach (b; src)
-        {
-            result [++index] = hexdigits [b >> 4];
-            result [++index] = hexdigits [b & 0x0f];
+        abstract uint digestSize();
+        
+        /*********************************************************************
+               
+               Computes the digest as a hex string and resets the state
+               
+               Params:
+                   buffer = a buffer can be supplied in which the digest
+                            will be written. It needs to be able to hold
+                            2 * digestSize chars
+            
+               Remarks:
+                    If the buffer is not large enough to hold the hex digest,
+                    a new buffer is allocated and returned. The algorithm
+                    state is always reset after a call to hexDigest.
+                    
+        *********************************************************************/
+        
+        char[] hexDigest(char[] buffer = null) {
+            uint ds = digestSize();
+            
+            if (buffer.length < ds * 2)
+                buffer.length = ds * 2;
+            
+            ubyte[] buf = (cast(ubyte *) alloca(ds))[0..ds];
+            ubyte[] ret = binaryDigest(buf);
+            assert(ret.ptr == buf.ptr);
+            
+            static char[] hexdigits = "0123456789ABCDEF";
+            int i = 0;
+            
+            foreach(b; buf) {
+                buffer[i++] = hexdigits[b >> 4];
+                buffer[i++] = hexdigits[b & 0xf];
+            }
+            
+            return buffer;
         }
-    }
-
-    return result;
-} 
+}

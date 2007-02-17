@@ -245,7 +245,7 @@ package class MerkleDamgard : DigestTransform
 
         ***********************************************************************/
 
-        ubyte[] digest(ubyte[] buf = null)
+        ubyte[] binaryDigest(ubyte[] buf = null)
         {
                 uint i;
 
@@ -387,7 +387,7 @@ package class MerkleDamgard : DigestTransform
                         }
                      else
                         return (x << n) | (x >> (32-n));
-			else +/
+            else +/
                    return (x << n) | (x >> (32-n));
         }
 }

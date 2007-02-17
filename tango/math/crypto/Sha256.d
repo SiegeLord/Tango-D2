@@ -334,8 +334,8 @@ unittest {
 
         foreach(int i, char[] s; strings) {
                 h.update(s);
-                ubyte[] d = h.digest();
-                assert(d.toHex() == results[i],"Cipher:("~s~")("~d.toHex()~")!=("~results[i]~")");
+                char[] d = h.hexDigest();
+                assert(d == results[i],"Cipher:("~s~")("~d~")!=("~results[i]~")");
         }
 }
 }

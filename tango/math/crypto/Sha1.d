@@ -117,8 +117,8 @@ unittest {
                 for(int r = 0; r < repeat[i]; r++)
                         h.update(s);
                 
-                ubyte[] d = h.digest();
-                assert(d.toHex() == results[i],":("~s~")("~d.toHex()~")!=("~results[i]~")");
+                char[] d = h.hexDigest();
+                assert(d == results[i],":("~s~")("~d~")!=("~results[i]~")");
         }
 }
 }

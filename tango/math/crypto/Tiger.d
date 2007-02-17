@@ -871,11 +871,11 @@ unittest {
         Tiger h = new Tiger();
 
         foreach(int i, char[] s; strings) {
-                        h.update(cast(ubyte[]) s);
-                        
-                        ubyte[] d = h.digest();
-                        
-                        assert(d.toHex() == results[i],":("~s~")("~d.toHex()~")!=("~results[i]~")");
+                h.update(cast(ubyte[]) s);
+
+                char[] d = h.hexDigest();
+
+                assert(d == results[i],":("~s~")("~d~")!=("~results[i]~")");
 
         }
 
@@ -885,9 +885,9 @@ unittest {
                 buffer[i] = cast(ubyte) i;
 
                 h.update(buffer);
-                ubyte[] e = h.digest();
+                char[] e = h.hexDigest();
 
-        assert(e.toHex() == "8EF43951B3F5F4FD1D41AFE51B420E710462F233C3AAA8E1",
-                ":(65k)("~e.toHex()~")!=(8EF43951B3F5F4FD1D41AFE51B420E710462F233C3AAA8E1)");
+        assert(e == "8EF43951B3F5F4FD1D41AFE51B420E710462F233C3AAA8E1",
+                ":(65k)("~e~")!=(8EF43951B3F5F4FD1D41AFE51B420E710462F233C3AAA8E1)");
 }
 }

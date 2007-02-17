@@ -18,13 +18,13 @@ import tango.core.ByteSwap;
 
 package abstract class Sha01Impl : MerkleDamgard
 {
-	protected uint[5]       context;
+    protected uint[5]       context;
 
         private static const ubyte     padChar = 0x80;
-	package static const uint      mask = 0x0000000F;
+    package static const uint      mask = 0x0000000F;
     
 
-	
+    
         /***********************************************************************
 
         ***********************************************************************/
@@ -50,13 +50,13 @@ package abstract class Sha01Impl : MerkleDamgard
                 0xC3D2E1F0
         ];
 
-       	/***********************************************************************
+        /***********************************************************************
 
                 The digest size of Sha-0 and Sha-1 is 20 bytes
 
         ***********************************************************************/
 
-	final uint digestSize() { return 20; }
+    final uint digestSize() { return 20; }
 
         /***********************************************************************
 
@@ -90,7 +90,7 @@ package abstract class Sha01Impl : MerkleDamgard
         {
                 version (LittleEndian)
                          ByteSwap.swap32 (context.ptr, context.length * uint.sizeof);
-		buf[] = cast(ubyte[]) context;
+        buf[] = cast(ubyte[]) context;
         }
 
         /***********************************************************************

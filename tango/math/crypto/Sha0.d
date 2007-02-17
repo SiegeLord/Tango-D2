@@ -96,8 +96,8 @@ unittest {
 
         foreach(int i, char[] s; strings) {
                 h.update(s);
-                ubyte[] d = h.digest();
-                assert(d.toHex() == results[i],":("~s~")("~d.toHex()~")!=("~results[i]~")");
+                char[] d = h.hexDigest();
+                assert(d == results[i],":("~s~")("~d~")!=("~results[i]~")");
         }
 }
 }

@@ -364,9 +364,9 @@ unittest {
         Md4 h = new Md4();
 
         foreach(int i, char[] s; strings) {
-                        h.update(cast(ubyte[])s);
-                        ubyte[] d = h.digest;
-                        assert(d.toHex() == results[i],":("~s~")("~d.toHex()~")!=("~results[i]~")");
+                h.update(s);
+                char[] d = h.hexDigest;
+                assert(d == results[i],":("~s~")("~d~")!=("~results[i]~")");
         }
 }
 }
