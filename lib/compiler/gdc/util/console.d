@@ -41,8 +41,8 @@ int console (char[] s)
                     return count;
                 return -1;
                 }
-
-        version (linux)
+        else
+        version (Posix)
                 {
                 return write (2, s.ptr, s.length);
                 }
@@ -66,8 +66,8 @@ struct Console
                     int count;
                     WriteFile (GetStdHandle(0xfffffff5), s.ptr, s.length, &count, null);
                     }
-
-            version (linux)
+            else
+            version (Posix)
                     {
                     write (2, s.ptr, s.length);
                     }
