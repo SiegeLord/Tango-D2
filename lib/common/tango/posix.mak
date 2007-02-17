@@ -74,9 +74,13 @@ OBJ_CORE= \
 OBJ_STDC= \
     stdc/wrap.o
 
+OBJ_STDC_POSIX= \
+    stdc/posix/pthread_darwin.o
+
 ALL_OBJS= \
     $(OBJ_CORE) \
-    $(OBJ_STDC)
+    $(OBJ_STDC) \
+    $(OBJ_STDC_POSIX)
 
 ######################################################
 

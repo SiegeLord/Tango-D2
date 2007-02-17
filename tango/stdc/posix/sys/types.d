@@ -344,14 +344,21 @@ version( linux )
 }
 else version( darwin )
 {
+    // NOTE: The following definitions are Tango-specific because darwin does
+    //       not support them directly.
+
     struct pthread_barrier_t
     {
-
+        pthread_mutex_t b_lock;
+        pthread_cond_t  b_cond;
+        int             b_count;
+        int             b_waiters;
+        int             b_generation;
     }
 
     struct pthread_barrierattr_t
     {
-
+        int             pshared;
     }
 }
 

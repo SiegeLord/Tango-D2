@@ -268,17 +268,17 @@ version( linux )
 }
 else version( darwin )
 {
-    // This is not avaliable on darwin, but:
-    const _POSIX_BARRIERS = -1;
-    const PTHREAD_BARRIER_SERIAL_THREAD = _POSIX_BARRIERS;
+    // NOTE: The following definitions are Tango-specific because darwin does
+    //       not support them directly.
 
-    int pthread_barrier_init(pthread_barrier_t*, pthread_barrierattr_t*, uint);
+    const PTHREAD_BARRIER_SERIAL_THREAD = -1;
+
     int pthread_barrier_destroy(pthread_barrier_t*);
+    int pthread_barrier_init(pthread_barrier_t*, pthread_barrierattr_t*, uint);
     int pthread_barrier_wait(pthread_barrier_t*);
-
-    int pthread_barrierattr_init(pthread_barrierattr_t*);
-    int pthread_barrierattr_getpshared(pthread_barrierattr_t*, int*);
     int pthread_barrierattr_destroy(pthread_barrierattr_t*);
+    int pthread_barrierattr_getpshared(pthread_barrierattr_t*, int*);
+    int pthread_barrierattr_init(pthread_barrierattr_t*);
     int pthread_barrierattr_setpshared(pthread_barrierattr_t*, int);
 }
 
