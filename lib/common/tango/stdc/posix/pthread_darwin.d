@@ -11,8 +11,37 @@ module tango.stdc.posix.pthread;
 public import tango.stdc.posix.sys.types;
 public import tango.stdc.posix.sched;
 public import tango.stdc.posix.time;
+private import tango.stdc.stdlib;
 
 extern (C):
+
+//
+// Required
+//
+
+version( darwin )
+{
+    int pthread_cond_broadcast(pthread_cond_t*);
+    int pthread_cond_destroy(pthread_cond_t*);
+    int pthread_cond_init(pthread_cond_t*, pthread_condattr_t*);
+    //int pthread_cond_signal(pthread_cond_t*);
+    //int pthread_cond_timedwait(pthread_cond_t*, pthread_mutex_t*, timespec*);
+    int pthread_cond_wait(pthread_cond_t*, pthread_mutex_t*);
+
+    int pthread_mutex_destroy(pthread_mutex_t*);
+    int pthread_mutex_init(pthread_mutex_t*, pthread_mutexattr_t*);
+    int pthread_mutex_lock(pthread_mutex_t*);
+    int pthread_mutex_trylock(pthread_mutex_t*);
+    int pthread_mutex_unlock(pthread_mutex_t*);
+
+    //int pthread_rwlock_destroy(pthread_rwlock_t*);
+    //int pthread_rwlock_init(pthread_rwlock_t*, pthread_rwlockattr_t*);
+    //int pthread_rwlock_rdlock(pthread_rwlock_t*);
+    int pthread_rwlock_tryrdlock(pthread_rwlock_t*);
+    int pthread_rwlock_trywrlock(pthread_rwlock_t*);
+    //int pthread_rwlock_unlock(pthread_rwlock_t*);
+    //int pthread_rwlock_wrlock(pthread_rwlock_t*);
+}
 
 //
 // Barrier (BAR)
