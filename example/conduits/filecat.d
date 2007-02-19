@@ -16,10 +16,10 @@ void main(char[][] args)
 
            // copy each file onto dst
            foreach (char[] arg; args[2..args.length])
-                    dst.copy (new FilePath(arg));
+                    dst.copy (arg);
 
            // flush output and close
-           dst.close ();
+           dst.close;
            }
         else
            Cout ("usage: filecat target source1 ... sourceN");

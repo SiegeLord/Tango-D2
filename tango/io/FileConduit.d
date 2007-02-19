@@ -35,6 +35,7 @@ version (Win32)
      else
         {
         private extern (C) int ftruncate (int, int);
+        private import tango.stdc.posix.sys.stat;
         private import tango.stdc.posix.fcntl;
         }
 
@@ -213,7 +214,7 @@ class FileConduit : DeviceConduit, DeviceConduit.Seek
 
 
         // the file we're working with 
-        private FilePath path;
+        private PathView path_;
 
         // expose deviceconduit.copy() methods also 
         alias DeviceConduit.copy copy;
@@ -229,32 +230,19 @@ class FileConduit : DeviceConduit, DeviceConduit.Seek
                 this (new FilePath(name), style);
         }
 
-version (Proxy)
-{
-        /***********************************************************************
-        
-                Create a FileConduit from the provided proxy and style.
-
-        ***********************************************************************/
-
-        this (FileProxy proxy, Style style = ReadExisting)
-        {
-                this (proxy.getPath(), style);
-        }
-}
         /***********************************************************************
         
                 Create a FileConduit with the provided path and style.
 
         ***********************************************************************/
 
-        this (FilePath path, Style style = ReadExisting)
+        this (PathView path, Style style = ReadExisting)
         {
                 // say we're seekable
                 super (style.access, true);
                 
                 // remember who we are
-                this.path = path;
+                path_ = path;
 
                 // open the file
                 open (style);
@@ -262,13 +250,13 @@ version (Proxy)
 
         /***********************************************************************
         
-                Return the FilePath used by this file.
+                Return the PathView used by this file.
 
         ***********************************************************************/
 
-        FilePath getPath ()
+        PathView path ()
         {
-                return path;
+                return path_;
         }               
 
         /***********************************************************************
@@ -279,7 +267,7 @@ version (Proxy)
 
         override char[] toUtf8 ()
         {
-                return path.toUtf8;
+                return path_.toUtf8;
         }               
 
         /***********************************************************************
@@ -311,24 +299,6 @@ version (Proxy)
         }               
 
         /***********************************************************************
-
-                Transfer the content of another file to this one. Returns a
-                reference to this class on success, or throws an IOException 
-                upon failure.
-        
-        ***********************************************************************/
-
-        FileConduit copy (FilePath source)
-        {
-                auto fc = new FileConduit (source);
-                scope (exit)
-                       fc.close;
-
-                super.copy (fc);
-                return this;
-        }               
-
-        /***********************************************************************
         
                 Return the name used by this file.
 
@@ -336,7 +306,7 @@ version (Proxy)
 
         protected override char[] getName ()
         {
-                return path.toUtf8;
+                return toUtf8;
         }               
 
 
@@ -443,6 +413,35 @@ version (Proxy)
                         return super.writer (src);
                 }
             
+                /***********************************************************************
+
+                        Transfer the content of another file to this one. Returns a
+                        reference to this class on success, or throws an IOException 
+                        upon failure.
+                
+                ***********************************************************************/
+
+                FileConduit copy (char[] source)
+                {
+                        FilePath src = source;
+
+                        version (Win32SansUnicode)
+                                {
+                                if (! CopyFileA (src.cString, path.cString, false))
+                                      error ();
+                                }
+                             else
+                                {
+                                wchar[MAX_PATH+1] tmp1 = void;
+                                wchar[MAX_PATH+1] tmp2 = void;
+
+                                if (! CopyFileW (Utf.toUtf16(src.cString, tmp1).ptr, Utf.toUtf16(path.cString, tmp2).ptr, false))
+                                      error ();
+                                }
+
+                        return this;
+                }               
+
                 /***************************************************************
 
                         Set the file size to be that of the current seek 
@@ -533,6 +532,35 @@ version (Proxy)
                         if (handle is -1)
                             error ();
                 }
+
+                /***********************************************************************
+
+                        Transfer the content of another file to this one. Returns a
+                        reference to this class on success, or throws an IOException 
+                        upon failure.
+                
+                ***********************************************************************/
+
+                FileConduit copy (char[] source)
+                {
+                        auto src = new FileConduit (source);
+                        scope (exit)
+                               src.close;
+
+                        stat_t stats;
+                        if (posix.stat (src.path.cString.ptr, &stats))
+                            error ();
+
+                        super.copy (src);
+
+                        utimbuf utim;
+                        utim.actime = stats.st_atime;
+                        utim.modtime = stats.st_mtime;
+                        if (utime (path.cString.ptr, &utim) == -1)
+                            error ();
+
+                        return this;
+                }               
 
                 /***************************************************************
 

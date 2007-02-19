@@ -4,7 +4,8 @@
 
         license:        BSD style: $(LICENSE)
 
-        version:        Initial release: March 2004
+        version:        Mar 2004: Initial release
+        version:        Feb 2007: Subclass of FilePath
 
         author:         $(UL Kris)
                         $(UL Brad Anderson)
@@ -36,10 +37,13 @@ version (Win32)
         extern (Windows) BOOL   MoveFileExA (LPCSTR,LPCSTR,DWORD);
         extern (Windows) BOOL   MoveFileExW (LPCWSTR,LPCWSTR,DWORD);
 
-        private const DWORD     REPLACE_EXISTING   = 1,
-                                COPY_ALLOWED       = 2,
-                                DELAY_UNTIL_REBOOT = 4,
-                                WRITE_THROUGH      = 8;
+        private enum : DWORD 
+        {
+                REPLACE_EXISTING   = 1,
+                COPY_ALLOWED       = 2,
+                DELAY_UNTIL_REBOOT = 4,
+                WRITE_THROUGH      = 8,
+        }
 
         version (Win32SansUnicode)
                 {
@@ -74,10 +78,8 @@ version (Posix)
 
 *******************************************************************************/
 
-class FileProxy
+class FileProxy : FilePath
 {
-        private FilePath path;
-
         /***********************************************************************
 
                 TimeStamp information. Accurate to whatever the OS supports
@@ -93,24 +95,13 @@ class FileProxy
 
         /***********************************************************************
 
-                Construct a FileProxy from the provided FilePath
-
-        ***********************************************************************/
-
-        this (FilePath path)
-        {
-                this.path = path;
-        }
-
-        /***********************************************************************
-
                 Construct a FileProxy from a text string
 
         ***********************************************************************/
 
-        this (char[] path)
+        this (char[] path, bool isDir=false)
         {
-                this (new FilePath (path));
+                super (path, isDir);
         }
 
         /***********************************************************************
@@ -130,48 +121,11 @@ class FileProxy
 
         /***********************************************************************
 
-                Simple constructor form. This can be convenient, and 
-                avoids ctor setup at the callsite:
-                ---
-                FileProxy proxy = path;
-                ---
-
-        ***********************************************************************/
-
-        static FileProxy opAssign (FilePath path)
-        {
-                return new FileProxy (path);
-        }
-
-        /***********************************************************************
-
-                Return the FilePath associated with this FileProxy
-
-        ***********************************************************************/
-
-        FilePath getPath ()
-        {
-                return path;
-        }
-
-        /***********************************************************************
-
-                Return the name of the associated path
-
-        ***********************************************************************/
-
-        char[] toUtf8 ()
-        {
-                return path.toUtf8;
-        }
-
-        /***********************************************************************
-
                 Does this path currently exist?
 
         ***********************************************************************/
 
-        bool isExisting ()
+        final bool exists ()
         {
                 try {
                     getSize();
@@ -182,12 +136,22 @@ class FileProxy
 
         /***********************************************************************
 
+        ***********************************************************************/
+
+        final FileProxy asPath (char[] other)
+        {
+                super.asPath (other);
+                return this;
+        }
+
+        /***********************************************************************
+
                 Returns the time of the last modification. Accurate 
                 to whatever the OS supports
                 
         ***********************************************************************/
 
-        Time modified ()
+        final Time modified ()
         {
                 return timeStamps.modified;
         }
@@ -199,7 +163,7 @@ class FileProxy
 
         ***********************************************************************/
 
-        Time accessed ()
+        final Time accessed ()
         {
                 return timeStamps.accessed;
         }
@@ -211,7 +175,7 @@ class FileProxy
         
         ***********************************************************************/
         
-        Time created ()
+        final Time created ()
         {
                 return timeStamps.created;
         }
@@ -233,23 +197,22 @@ class FileProxy
 
         ***********************************************************************/
 
-        FileProxy createPath ()
+        final FileProxy createPath ()
         { 
-                if (isExisting)
-                    if (isFolder)
+                if (this.exists)
+                    if (this.isFolder)
                         return this;
                     else
                        badArg ("FileProxy.createPath :: file/folder conflict: ");
 
-                auto prior = new FilePath (path.asParent);
-                char[] name = prior.getName;
+                FileProxy parent = this.parent;
 
+                char[] name = parent.name;
                 if (name.length is 0                   ||
                     name == FileConst.CurrentDirString ||
                     name == FileConst.ParentDirString)
                     badArg ("FileProxy.createPath :: invalid path: ");
 
-                auto parent = new FileProxy (prior);
                 parent.createPath;
                 return createFolder;
         }
@@ -267,7 +230,7 @@ class FileProxy
 
         ***********************************************************************/
 
-        char[][] toList (bool prefixed = false)
+        final char[][] toList (bool prefixed = false)
         {
                 int      i;
                 char[][] list;
@@ -282,7 +245,7 @@ class FileProxy
                         list[i++] = (prefixed ? (prefix~name) : name.dup)[0..$-1];
                 }
 
-                list = new char[][1024];
+                list = new char[][512];
                 toList (&add);
                 return list [0 .. i];
         }
@@ -295,7 +258,7 @@ class FileProxy
 
         private void exception ()
         {
-                throw new IOException (path.toUtf8 ~ ": " ~ SysError.lastMsg);
+                throw new IOException (toUtf8 ~ ": " ~ SysError.lastMsg);
         }
 
         /***********************************************************************
@@ -306,7 +269,7 @@ class FileProxy
 
         private void badArg (char[] msg)
         {
-                throw new IllegalArgumentException (msg ~ path.toUtf8);
+                throw new IllegalArgumentException (msg ~ toUtf8);
         }
 
         /***********************************************************************
@@ -317,14 +280,14 @@ class FileProxy
         {
                 /***************************************************************
 
-                        Cache a wchar[] instance of the filepath
+                        Cache a wchar[] instance of the path
 
                 ***************************************************************/
 
                 private wchar[] name16 (wchar[] tmp, bool withNull=true)
                 {
                         int offset = withNull ? 0 : 1;
-                        return Utf.toUtf16 (path.cString[0..$-offset], tmp);
+                        return Utf.toUtf16 (this.cString[0..$-offset], tmp);
                 }
 
                 /***************************************************************
@@ -337,7 +300,7 @@ class FileProxy
                 {
                         version (Win32SansUnicode)
                                 {
-                                if (! GetFileAttributesExA (path.cString.ptr, GetFileInfoLevelStandard, &info))
+                                if (! GetFileAttributesExA (this.cString.ptr, GetFileInfoLevelStandard, &info))
                                       exception;
                                 }
                              else
@@ -369,7 +332,7 @@ class FileProxy
 
                 ***************************************************************/
 
-                ulong getSize ()
+                final ulong getSize ()
                 {
                         WIN32_FILE_ATTRIBUTE_DATA info = void;
 
@@ -384,7 +347,7 @@ class FileProxy
 
                 ***************************************************************/
 
-                bool isWritable ()
+                final bool isWritable ()
                 {
                         return (getFlags & FILE_ATTRIBUTE_READONLY) == 0;
                 }
@@ -395,7 +358,7 @@ class FileProxy
 
                 ***************************************************************/
 
-                bool isFolder ()
+                final bool isFolder ()
                 {
                         return (getFlags & FILE_ATTRIBUTE_DIRECTORY) != 0;
                 }
@@ -406,7 +369,7 @@ class FileProxy
 
                 ***************************************************************/
 
-                Stamps timeStamps ()
+                final Stamps timeStamps ()
                 {
                         WIN32_FILE_ATTRIBUTE_DATA info = void;
                         Stamps                    time = void;
@@ -424,33 +387,33 @@ class FileProxy
 
                 ***************************************************************/
 
-                FileProxy remove ()
+                final FileProxy remove ()
                 {
                         if (isFolder)
                            {
                            version (Win32SansUnicode)
                                    {
-                                   if (! RemoveDirectoryA (path.cString.ptr))
-                                         exception();
+                                   if (! RemoveDirectoryA (this.cString.ptr))
+                                         exception;
                                    }
                                 else
                                    {
                                    wchar[MAX_PATH] tmp = void;
                                    if (! RemoveDirectoryW (name16(tmp).ptr))
-                                         exception();
+                                         exception;
                                    }
                            }
                         else
                            version (Win32SansUnicode)
                                    {
-                                   if (! DeleteFileA (path.cString.ptr))
-                                         exception();
+                                   if (! DeleteFileA (this.cString.ptr))
+                                         exception;
                                    }
                                 else
                                    {
                                    wchar[MAX_PATH] tmp = void;
                                    if (! DeleteFileW (name16(tmp).ptr))
-                                         exception();
+                                         exception;
                                    }
 
                         return this;
@@ -459,11 +422,11 @@ class FileProxy
                 /***************************************************************
 
                        change the name or location of a file/directory, and
-                       adopt the provided FilePath
+                       adopt the provided Path
 
                 ***************************************************************/
 
-                FileProxy rename (FilePath dst)
+                final FileProxy rename (FilePath dst)
                 {
                         const int Typical = REPLACE_EXISTING + 
                                             COPY_ALLOWED     +
@@ -472,7 +435,7 @@ class FileProxy
                         int result;
 
                         version (Win32SansUnicode)
-                                 result = MoveFileExA (path.cString.ptr, dst.cString.ptr, Typical);
+                                 result = MoveFileExA (this.cString.ptr, dst.cString.ptr, Typical);
                              else
                                 {
                                 wchar[MAX_PATH] tmp = void;
@@ -482,7 +445,7 @@ class FileProxy
                         if (! result)
                               exception;
 
-                        path = dst;
+                        this.set (dst);
                         return this;
                 }
 
@@ -492,12 +455,12 @@ class FileProxy
 
                 ***************************************************************/
 
-                FileProxy createFile ()
+                final FileProxy createFile ()
                 {
                         HANDLE h;
 
                         version (Win32SansUnicode)
-                                 h = CreateFileA (path.cString.ptr, GENERIC_WRITE,
+                                 h = CreateFileA (this.cString.ptr, GENERIC_WRITE,
                                                   0, null, CREATE_ALWAYS,
                                                   FILE_ATTRIBUTE_NORMAL, cast(HANDLE) 0);
                              else
@@ -523,11 +486,11 @@ class FileProxy
 
                 ***************************************************************/
 
-                FileProxy createFolder ()
+                final FileProxy createFolder ()
                 {
                         version (Win32SansUnicode)
                                 {
-                                if (! CreateDirectoryA (path.cString.ptr, null))
+                                if (! CreateDirectoryA (this.cString.ptr, null))
                                       exception;
                                 }
                              else
@@ -550,7 +513,7 @@ class FileProxy
 
                 ***************************************************************/
 
-                void toList (void delegate (char[], char[], bool) dg)
+                final void toList (void delegate (char[], char[], bool) dg)
                 {
                         HANDLE                  h;
                         char[]                  prefix;
@@ -573,7 +536,7 @@ class FileProxy
                         }
 
                         version (Win32SansUnicode)
-                                 h = FindFirstFileA (padded(path.toUtf8, "*\0").ptr, &fileinfo);
+                                 h = FindFirstFileA (padded(this.toUtf8, "*\0").ptr, &fileinfo);
                              else
                                 {
                                 wchar[MAX_PATH] host = void;
@@ -586,7 +549,7 @@ class FileProxy
                         scope (exit)
                                FindClose (h);
 
-                        prefix = FilePath.asPadded(path.toUtf8);
+                        prefix = FilePath.padded (this.toUtf8);
                         do {
                            version (Win32SansUnicode)
                                    {
@@ -624,7 +587,7 @@ class FileProxy
 
                 private uint getInfo (inout stat_t stats)
                 {
-                        if (posix.stat (path.cString.ptr, &stats))
+                        if (posix.stat (this.cString.ptr, &stats))
                             exception;
 
                         return stats.st_mode;
@@ -636,7 +599,7 @@ class FileProxy
 
                 ***************************************************************/
 
-                ulong getSize ()
+                final ulong getSize ()
                 {
                         stat_t stats = void;
 
@@ -650,7 +613,7 @@ class FileProxy
 
                 ***************************************************************/
 
-                bool isWritable ()
+                final bool isWritable ()
                 {
                         stat_t stats = void;
 
@@ -663,7 +626,7 @@ class FileProxy
 
                 ***************************************************************/
 
-                bool isFolder ()
+                final bool isFolder ()
                 {
                         stat_t stats = void;
 
@@ -676,7 +639,7 @@ class FileProxy
 
                 ***************************************************************/
 
-                Stamps timeStamps ()
+                final Stamps timeStamps ()
                 {
                         stat_t stats = void;
                         Stamps time  = void;
@@ -695,15 +658,15 @@ class FileProxy
 
                 ***************************************************************/
 
-                FileProxy remove ()
+                final FileProxy remove ()
                 {
                         if (isFolder)
                            {
-                           if (posix.rmdir (path.cString.ptr))
+                           if (posix.rmdir (this.cString.ptr))
                                exception;
                            }
                         else
-                           if (tango.stdc.stdio.remove (path.cString.ptr) == -1)
+                           if (tango.stdc.stdio.remove (this.cString.ptr) == -1)
                                exception;
 
                         return this;
@@ -716,12 +679,12 @@ class FileProxy
 
                 ***************************************************************/
 
-                FileProxy rename (FilePath dst)
+                final FileProxy rename (FilePath dst)
                 {
-                        if (tango.stdc.stdio.rename (path.cString.ptr, dst.cString.ptr) == -1)
+                        if (tango.stdc.stdio.rename (this.cString.ptr, dst.cString.ptr) == -1)
                             exception;
 
-                        path = dst;
+                        this.set (dst);
                         return this;
                 }
 
@@ -731,11 +694,11 @@ class FileProxy
 
                 ***************************************************************/
 
-                FileProxy createFile ()
+                final FileProxy createFile ()
                 {
                         int fd;
 
-                        fd = posix.open (path.cString.ptr, O_CREAT | O_WRONLY | O_TRUNC, 0660);
+                        fd = posix.open (this.cString.ptr, O_CREAT | O_WRONLY | O_TRUNC, 0660);
                         if (fd == -1)
                             exception;
 
@@ -751,9 +714,9 @@ class FileProxy
 
                 ***************************************************************/
 
-                FileProxy createFolder ()
+                final FileProxy createFolder ()
                 {
-                        if (posix.mkdir (path.cString.ptr, 0777))
+                        if (posix.mkdir (this.cString.ptr, 0777))
                             exception;
 
                         return this;
@@ -770,20 +733,20 @@ class FileProxy
 
                 ***************************************************************/
 
-                void toList (void delegate (char[], char[], bool) dg)
+                final void toList (void delegate (char[], char[], bool) dg)
                 {
                         DIR*            dir;
                         dirent*         entry;
                         char[]          prefix;
 
-                        dir = tango.stdc.posix.dirent.opendir (path.cString.ptr);
+                        dir = tango.stdc.posix.dirent.opendir (this.cString.ptr);
                         if (! dir)
                               exception;
 
                         scope (exit)
                                tango.stdc.posix.dirent.closedir (dir);
 
-                        prefix = FilePath.asPadded (path.toUtf8);
+                        prefix = FilePath.padded (this.toUtf8);
 
                         while ((entry = tango.stdc.posix.dirent.readdir(dir)) != null)
                               {

@@ -13,18 +13,18 @@ private import  tango.io.Stdout,
 
 void main(char[][] args)
 {       
-        auto root = new FilePath (args.length < 2 ? "." : FilePath.asNormal(args[1]));
-        Stdout.formatln ("Scanning '{0}'", root);
+        char[] root = args.length < 2 ? "." : args[1];
+        Stdout.formatln ("Scanning '{}'", root);
 
         auto scan = (new FileScan)(root, ".d");
 
-        Stdout.format ("\n{0} Folders\n", scan.folders.length);
-        foreach (file; scan.folders)
-                 Stdout.format ("{0}\n", file);
+        Stdout.format ("\n{} Folders\n", scan.folders.length);
+        foreach (folder; scan.folders)
+                 Stdout.format ("{}\n", folder);
 
         Stdout.format ("\n{0} Files\n", scan.files.length);
         foreach (file; scan.files)
-                 Stdout.format ("{0}\n", file);
+                 Stdout.format ("{}\n", file);
 
-        Stdout.format ("\n{0} entries inspected\n", scan.inspected).flush;
+        Stdout.format ("\n{} entries inspected\n", scan.inspected).flush;
 }

@@ -99,9 +99,10 @@ public  import  tango.text.convert.UnicodeBom;
 
 *******************************************************************************/
 
-class UnicodeFile(T) : FileProxy
+class UnicodeFile(T)
 {
-        private UnicodeBom!(T) bom;
+        private UnicodeBom!(T)  bom;
+        private FileProxy       proxy_;
 
         /***********************************************************************
         
@@ -111,10 +112,10 @@ class UnicodeFile(T) : FileProxy
 
         ***********************************************************************/
                                   
-        this (FilePath path, Encoding encoding)
+        this (FileProxy proxy, Encoding encoding)
         {
-                super (path);
                 bom = new UnicodeBom!(T)(encoding);
+                proxy_ = proxy;
         }
 
         /***********************************************************************
@@ -127,7 +128,7 @@ class UnicodeFile(T) : FileProxy
 
         this (char[] path, Encoding encoding)
         {
-                this (new FilePath(path), encoding);
+                this (new FileProxy(path), encoding);
         }
 
         /***********************************************************************
@@ -147,6 +148,17 @@ class UnicodeFile(T) : FileProxy
                 return new UnicodeFile (path, Encoding.Unknown);
         }
 
+        /***********************************************************************
+
+                Return the associated FileProxy instance
+
+        ***********************************************************************/
+
+        FileProxy proxy ()
+        {
+                return proxy_;
+        }
+        
         /***********************************************************************
 
                 Return the current encoding. This is either the originally
@@ -174,9 +186,9 @@ class UnicodeFile(T) : FileProxy
 
         T[] read ()
         {
-                auto conduit = new FileConduit (this.getPath);  
+                auto conduit = new FileConduit (proxy_);  
                 scope (exit)
-                       conduit.close();
+                       conduit.close;
 
                 // allocate enough space for the entire file
                 auto content = new ubyte [cast(uint) conduit.length];
@@ -229,9 +241,9 @@ class UnicodeFile(T) : FileProxy
                 void[] converted = bom.encode (content);
 
                 // open file after conversion ~ in case of exceptions
-                auto conduit = new FileConduit (this.getPath, style);  
+                auto conduit = new FileConduit (proxy_, style);  
                 scope (exit)
-                       conduit.close();
+                       conduit.close;
 
                 if (writeBom)
                     conduit.flush (bom.getSignature);

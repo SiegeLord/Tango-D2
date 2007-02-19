@@ -20,12 +20,12 @@ void main(char[][] args) {
     scope scan = new FileScan;
     scope regex =  Regex(r"\.(d|obj)$");
 
-    scan(new FilePath(args[1]), delegate bool (FileProxy fp, bool isDir) { 
+    scan(args[1], delegate bool (FileProxy fp, bool isDir) { 
          return isDir || regex.test(fp.toUtf8); 
     });
     
 
-    foreach (File file; scan.files)
+    foreach (file; scan.files)
              Stdout(file).newline;
 
     Stdout.formatln("Found {0} matches in {1} entries", scan.files.length, scan.inspected);

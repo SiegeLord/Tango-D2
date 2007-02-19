@@ -4,8 +4,9 @@
 
         license:        BSD style: $(LICENSE)
 
-        version:        Initial release: March 2005      
-
+        version:        Mar 2005: Initial release
+        version:        Feb 2007: No longer a proxy subclass
+                        
         author:         Kris
 
 *******************************************************************************/
@@ -28,13 +29,15 @@ private import  tango.core.Exception;
         append() adds content to the tail of the file.
 
         Methods to inspect the file system, check the status of a file or
-        directory, and other facilities are made available via the FileProxy
-        superclass.
+        directory, and other facilities are made available via the proxy()
+        method
 
 *******************************************************************************/
 
-class File : FileProxy
+class File
 {
+        private FileProxy proxy_;
+
         /***********************************************************************
         
                 Construct a File from a text string
@@ -43,18 +46,18 @@ class File : FileProxy
 
         this (char[] path)
         {
-                super (path);
+                this (new FileProxy (path));
         }
 
         /***********************************************************************
         
-                Construct a File from the provided FilePath
+                Construct a File from the provided FileProxy
 
         ***********************************************************************/
                                   
-        this (FilePath path)
+        this (FileProxy proxy)
         {
-                super (path);
+                proxy_ = proxy;
         }
 
         /***********************************************************************
@@ -77,14 +80,25 @@ class File : FileProxy
                 Simple constructor form. This can be convenient, and 
                 avoids ctor setup at the callsite:
                 ---
-                File file = path;
+                File file = proxy;
                 ---
 
         ***********************************************************************/
 
-        static File opAssign (FilePath path)
+        static File opAssign (FileProxy proxy)
         {
-                return new File (path);
+                return new File (proxy);
+        }
+
+        /***********************************************************************
+
+                Return the proxy for this file instance
+
+        ***********************************************************************/
+
+        final FileProxy proxy ()
+        {
+                return proxy_;
         }
 
         /***********************************************************************
@@ -93,11 +107,11 @@ class File : FileProxy
 
         ***********************************************************************/
 
-        void[] read ()
+        final void[] read ()
         {
-                auto conduit = new FileConduit (this.getPath);  
+                auto conduit = new FileConduit (proxy_);  
                 scope (exit)
-                       conduit.close();
+                       conduit.close;
 
                 auto content = new ubyte[cast(int) conduit.length];
 
@@ -114,7 +128,7 @@ class File : FileProxy
 
         ***********************************************************************/
 
-        File write (void[] content)
+        final File write (void[] content)
         {
                 return write (content, FileConduit.ReadWriteCreate);  
         }
@@ -125,7 +139,7 @@ class File : FileProxy
 
         ***********************************************************************/
 
-        File append (void[] content)
+        final File append (void[] content)
         {
                 return write (content, FileConduit.WriteAppending);  
         }
@@ -138,9 +152,9 @@ class File : FileProxy
 
         private File write (void[] content, FileConduit.Style style)
         {      
-                auto conduit = new FileConduit (this.getPath, style);  
+                auto conduit = new FileConduit (proxy_, style);  
                 scope (exit)
-                       conduit.close();
+                       conduit.close;
 
                 conduit.flush (content);
                 return this;

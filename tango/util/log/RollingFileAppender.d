@@ -47,13 +47,13 @@ public class RollingFileAppender : FileAppender
 
         ***********************************************************************/
 
-        this (FilePath p, int count, ulong maxSize, Layout layout = null)
+        this (char[] path, int count, ulong maxSize, Layout layout = null)
         {
-                assert (p);
+                assert (path);
                 assert (count > 1 && count < 10);
 
                 // Get a unique fingerprint for this instance
-                mask = register (p.toUtf8);
+                mask = register (path);
 
                 char[1] x;
                 ulong mostRecent;
@@ -62,12 +62,12 @@ public class RollingFileAppender : FileAppender
                     {
                     x[0] = '0' + i;
 
-                    auto clone = new FilePath (p.asName(p.getName ~ x));
-                    paths ~= clone;
+                    FileProxy proxy = path;
+                    proxy.asName (proxy.name ~ x);
+                    paths ~= proxy;
 
                     // use the most recent file in the set
-                    auto proxy = new FileProxy (clone);
-                    if (proxy.isExisting)
+                    if (proxy.exists)
                        {
                        auto modified = proxy.modified;
                        if (modified > mostRecent)
@@ -87,21 +87,6 @@ public class RollingFileAppender : FileAppender
 
                 // set provided layout (ignored when null)
                 setLayout (layout);
-        }
-
-        /***********************************************************************
-                
-                Create a RollingFileAppender upon a file-set with the 
-                specified path and optional layout.
-
-                Where a file set already exists, we resume appending to 
-                the one with the most recent activity timestamp.
-
-        ***********************************************************************/
-
-        this (char[] fp, int count, ulong maxSize, Layout layout = null)
-        {
-                this (new FilePath (fp), count, maxSize, layout);
         }
 
         /***********************************************************************

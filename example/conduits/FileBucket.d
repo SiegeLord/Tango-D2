@@ -99,19 +99,6 @@ class FileBucket
 
         /**********************************************************************
 
-                Construct a FileBucket with the provided path and record-
-                size. Selecting a record size that roughly matches the 
-                serialized content will limit 'thrashing'.
-
-        **********************************************************************/
-
-        this (FilePath path, BlockSize block)
-        {
-                this (path, block, 100);
-        }
-
-        /**********************************************************************
-
                 Construct a FileBucket with the provided path, record-size,
                 and inital record count. The latter causes records to be 
                 pre-allocated, saving a certain amount of growth activity.
@@ -120,7 +107,7 @@ class FileBucket
 
         **********************************************************************/
 
-        this (FilePath path, BlockSize block, uint initialRecords)
+        this (FilePath path, BlockSize block, uint initialRecords = 100)
         {
                 this.path = path;
                 this.block = block;

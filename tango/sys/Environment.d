@@ -6,32 +6,38 @@
 
         version:        Feb 2007: Initial release
 
-        author:         Deewiant & Maxter
+        author:         Deewiant, Maxter, Gregor, Kris
 
 *******************************************************************************/
 
 module tango.sys.Environment;
 
-import tango.sys.Common;
+private import  tango.sys.Common;
 
-import tango.core.Exception;
+private import  tango.io.FileConst,
+                tango.io.FileProxy,
+                tango.io.FileSystem;
+
+private import  tango.core.Exception;
+
+private import  Text = tango.text.Util;
 
 version (Windows)
 {
-        import tango.text.convert.Utf;
+        private import tango.text.convert.Utf;
 
         pragma (lib, "kernel32.lib");
 
         extern (Windows)
         {
-                void* GetEnvironmentStringsW();
-                bool FreeEnvironmentStringsW(wchar**);
+                private void* GetEnvironmentStringsW();
+                private bool FreeEnvironmentStringsW(wchar**);
         }
         extern (Windows)
         {
-                int SetEnvironmentVariableW(wchar*, wchar*);
-                uint GetEnvironmentVariableW(wchar*, wchar*, uint);
-                const int ERROR_ENVVAR_NOT_FOUND = 203;
+                private int SetEnvironmentVariableW(wchar*, wchar*);
+                private uint GetEnvironmentVariableW(wchar*, wchar*, uint);
+                private const int ERROR_ENVVAR_NOT_FOUND = 203;
         }
 }
 else
@@ -40,160 +46,218 @@ else
     import tango.stdc.string;
 }
 
-version (Win32)
+
+/*******************************************************************************
+
+
+*******************************************************************************/
+
+struct Environment
 {
-        /**********************************************************************
+        /***********************************************************************
 
-        **********************************************************************/
+                Returns the full path location of the provided executable
+                file, rifling through the PATH as necessary.
 
-        // Returns null if the variable does not exist
-        char[] getEnv (char[] variable)
+                Returns null if the provided filename was not found
+
+        ***********************************************************************/
+
+        static FilePath exePath (char[] file)
         {
-                wchar[] var = toUtf16(variable) ~ "\0";
+                FileProxy bin = file;
 
-                uint size = GetEnvironmentVariableW(var.ptr, cast(wchar*)null, 0);
-                if (size == 0)
+                // on Windows, this is a .exe
+                version (Windows)
+                     if (bin.ext.length is 0)
+                         bin.append (".exe");
+
+                // is this a directory?
+                if (bin.isChild)
                    {
-                   if (SysError.lastCode == ERROR_ENVVAR_NOT_FOUND)
-                       return null;
-                   else
-                      throw new PlatformException (SysError.lastMsg);
+                   // potentially make it absolute
+                   FileSystem.makeAbsolute (bin);
+                   return bin;
                    }
 
-                auto buffer = new wchar[size];
-                size = GetEnvironmentVariableW(var.ptr, buffer.ptr, size);
-                if (size == 0)
-                    throw new PlatformException (SysError.lastMsg);
+                // is it in cwd?
+                version (Windows)
+                        {
+                        FileSystem.getDirectory (bin);
+                        if (bin.exists)
+                            return bin;
+                        }
 
-                return toUtf8 (buffer[0 .. size]);
+                // rifle through the path
+                foreach (pe; Text.patterns (get("PATH"), FileConst.SystemPathSeparatorString))
+                         if (bin.asPath(pe).exists)
+                             version (Windows)
+                                      return bin;
+                                  else
+                                     {
+                                     stat_t stats;
+                                     stat(bin.cString.ptr, &stats);
+                                     if (stats.st_mode & 0100)
+                                         return bin;
+                                     }
+                return null;
         }
 
-        /**********************************************************************
 
-        **********************************************************************/
-
-        // Undefines the variable, if value is null or empty string
-        void setEnv (char[] variable, char[] value = null)
+        version (Win32)
         {
-                wchar * var, val;
+                /**************************************************************
 
-                var = (toUtf16 (variable) ~ "\0").ptr;
+                **************************************************************/
 
-                if (value.length > 0)
-                    val = (toUtf16 (value) ~ "\0").ptr;
+                // Returns null if the variable does not exist
+                char[] get (char[] variable)
+                {
+                        wchar[] var = toUtf16(variable) ~ "\0";
 
-                if (! SetEnvironmentVariableW(var, val))
-                      throw new PlatformException (SysError.lastMsg);
+                        uint size = GetEnvironmentVariableW(var.ptr, cast(wchar*)null, 0);
+                        if (size == 0)
+                           {
+                           if (SysError.lastCode == ERROR_ENVVAR_NOT_FOUND)
+                               return null;
+                           else
+                              throw new PlatformException (SysError.lastMsg);
+                           }
+
+                        auto buffer = new wchar[size];
+                        size = GetEnvironmentVariableW(var.ptr, buffer.ptr, size);
+                        if (size == 0)
+                            throw new PlatformException (SysError.lastMsg);
+
+                        return toUtf8 (buffer[0 .. size]);
+                }
+
+                /**************************************************************
+
+                **************************************************************/
+
+                // Undefines the variable, if value is null or empty string
+                void set (char[] variable, char[] value = null)
+                {
+                        wchar * var, val;
+
+                        var = (toUtf16 (variable) ~ "\0").ptr;
+
+                        if (value.length > 0)
+                            val = (toUtf16 (value) ~ "\0").ptr;
+
+                        if (! SetEnvironmentVariableW(var, val))
+                              throw new PlatformException (SysError.lastMsg);
+                }
+
+                /**************************************************************
+
+                **************************************************************/
+
+                char[][char[]] get ()
+                {
+                        char[][char[]] arr;
+
+                        wchar[] key = new wchar[20],
+                                value = new wchar[40];
+
+                        wchar** env = cast(wchar**) GetEnvironmentStringsW();
+                        scope (exit)
+                               FreeEnvironmentStringsW (env);
+
+                        for (wchar* str = cast(wchar*) env; *str; ++str)
+                            {
+                            size_t k = 0, v = 0;
+
+                            while (*str != '=')
+                                  {
+                                  key[k++] = *str++;
+
+                                  if (k == key.length)
+                                      key.length = 2 * key.length;
+                                  }
+
+                            ++str;
+
+                            while (*str)
+                                  {
+                                  value [v++] = *str++;
+
+                                  if (v == value.length)
+                                      value.length = 2 * value.length;
+                                  }
+
+                            arr [toUtf8(key[0 .. k])] = toUtf8(value[0 .. v]);
+                            }
+
+                        return arr;
+                }
         }
-
-        /**********************************************************************
-
-        **********************************************************************/
-
-        char[][char[]] environment ()
+        else // POSIX
         {
-                char[][char[]] arr;
+                extern (C) extern char** environ;
 
-                wchar[] key = new wchar[20],
-                        value = new wchar[40];
+                /**************************************************************
 
-                wchar** env = cast(wchar**) GetEnvironmentStringsW();
-                scope (exit) 
-                       FreeEnvironmentStringsW (env);
+                **************************************************************/
 
-                for (wchar* str = cast(wchar*) env; *str; ++str)
-                    {
-                    size_t k = 0, v = 0;
+                // Returns null if the variable does not exist
+                char[] get (char[] variable)
+                {
+                        char* ptr = getenv (variable.ptr);
 
-                    while (*str != '=')
-                          {
-                          key[k++] = *str++;
-        
-                          if (k == key.length)
-                              key.length = 2 * key.length;
-                          }       
+                        if (ptr is null)
+                            return null;
 
-                    ++str;
+                        return ptr[0 .. strlen(ptr)].dup;
+                }
 
-                    while (*str)
-                          {
-                          value [v++] = *str++;
-        
-                          if (v == value.length)
-                              value.length = 2 * value.length;
-                          }       
+                /**************************************************************
 
-                    arr [toUtf8(key[0 .. k])] = toUtf8(value[0 .. v]);
-                    }
+                **************************************************************/
 
-                return arr;
+                // Undefines the variable, if value is null or empty string
+                void set (char[] variable, char[] value = null)
+                {
+                        int result;
+
+                        if (value.length == 0)
+                            unsetenv ((variable ~ '\0').ptr);
+                        else
+                           result = setenv ((variable ~ '\0').ptr, (value ~ '\0').ptr, 1);
+
+                        if (result != 0)
+                            throw new PlatformException (SysError.lastMsg);
+                }
+
+                /**************************************************************
+
+                **************************************************************/
+
+                char[][char[]] get ()
+                {
+                        char[][char[]] arr;
+
+                        for (char** p = environ; *p; ++p)
+                            {
+                            size_t k = 0;
+                            char* str = *p;
+
+                            while (*str++ != '=')
+                                   ++k;
+                            char[] key = (*p)[0..k];
+
+                            k = 0;
+                            char* val = str;
+                            while (*str++)
+                                   ++k;
+                            arr[key] = val[0 .. k];
+                            }
+
+                        return arr;
+                }
         }
 }
-else // POSIX
-{
-        extern (C) extern char** environ;
-
-        /**********************************************************************
-
-        **********************************************************************/
-
-        // Returns null if the variable does not exist
-        char[] getEnv (char[] variable)
-        {
-                char* ptr = getenv (variable.ptr);
-
-                if (ptr is null)
-                    return null;
-
-                return ptr[0 .. strlen(ptr)].dup;
-        }
-
-        /**********************************************************************
-
-        **********************************************************************/
-
-        // Undefines the variable, if value is null or empty string
-        void setEnv (char[] variable, char[] value = null)
-        {
-                int result;
-
-                if (value.length == 0)
-                    unsetenv ((variable ~ '\0').ptr);
-                else
-                   result = setenv ((variable ~ '\0').ptr, (value ~ '\0').ptr, 1);
-
-                if (result != 0)
-                    throw new PlatformException (SysError.lastMsg);
-        }
-
-        /**********************************************************************
-
-        **********************************************************************/
-
-        char[][char[]] environment ()
-        {
-                char[][char[]] arr;
-
-                for (char** p = environ; *p; ++p)
-                    {
-                    size_t k = 0;
-                    char* str = *p;
-
-                    while (*str++ != '=')
-                           ++k;
-                    char[] key = (*p)[0..k];
-
-                    k = 0;
-                    char* val = str;
-                    while (*str++)
-                           ++k;
-                    arr[key] = val[0 .. k];
-                    }
-
-                return arr;
-        }
-}
-
 
 debug (Test)
 {
@@ -206,23 +270,23 @@ debug (Test)
         const char[] VAL1 = "VAL1";
         const char[] VAL2 = "VAL2";
 
-        assert(getEnv(VAR) is null);
+        assert(Environment.get(VAR) is null);
 
-        setEnv(VAR, VAL1);
-        assert(getEnv(VAR) == VAL1);
+        Environment.set(VAR, VAL1);
+        assert(Environment.get(VAR) == VAL1);
 
-        setEnv(VAR, VAL2);
-        assert(getEnv(VAR) == VAL2);
+        Environment.set(VAR, VAL2);
+        assert(Environment.get(VAR) == VAL2);
 
-        setEnv(VAR, null);
-        assert(getEnv(VAR) is null);
+        Environment.set(VAR, null);
+        assert(Environment.get(VAR) is null);
 
-        setEnv(VAR, VAL1);
-        setEnv(VAR, "");
+        Environment.set(VAR, VAL1);
+        Environment.set(VAR, "");
 
-        assert(getEnv(VAR) is null);
+        assert(Environment.get(VAR) is null);
 
-        foreach (key, value; environment)
+        foreach (key, value; Environment.get)
                  Cout (key) ("=") (value).newline;
         }
 }
