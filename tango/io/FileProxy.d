@@ -105,21 +105,6 @@ class FileProxy : FilePath
 
         /***********************************************************************
 
-                Simple constructor form. This can be convenient, and 
-                avoids ctor setup at the callsite:
-                ---
-                FileProxy proxy = "myPath";
-                ---
-
-        ***********************************************************************/
-
-        static FileProxy opAssign (char[] path)
-        {
-                return new FileProxy (path);
-        }
-
-        /***********************************************************************
-
                 Does this path currently exist?
 
         ***********************************************************************/

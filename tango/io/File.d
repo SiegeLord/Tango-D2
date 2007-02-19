@@ -62,36 +62,6 @@ class File
 
         /***********************************************************************
 
-                Simple constructor form. This can be convenient, and 
-                avoids ctor setup at the callsite:
-                ---
-                File file = "myfile";
-                ---
-
-        ***********************************************************************/
-
-        static File opAssign (char[] path)
-        {
-                return new File (path);
-        }
-
-        /***********************************************************************
-
-                Simple constructor form. This can be convenient, and 
-                avoids ctor setup at the callsite:
-                ---
-                File file = proxy;
-                ---
-
-        ***********************************************************************/
-
-        static File opAssign (FileProxy proxy)
-        {
-                return new File (proxy);
-        }
-
-        /***********************************************************************
-
                 Return the proxy for this file instance
 
         ***********************************************************************/

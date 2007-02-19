@@ -84,21 +84,6 @@ class FilePath : PathView
 
         /***********************************************************************
 
-                Simple constructor form. This can be convenient, and 
-                avoids ctor setup at the callsite:
-                ---
-                FilePath path = "mypath";
-                ---
-
-        ***********************************************************************/
-
-        static FilePath opAssign (char[] path)
-        {
-                return new FilePath (path);
-        }
-
-        /***********************************************************************
-
                 Return the complete text of this filepath
 
         ***********************************************************************/
