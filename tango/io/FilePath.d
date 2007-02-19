@@ -52,8 +52,6 @@ class FilePath : PathView
                         folder_,                // path before name
                         suffix_;                // inclusive of leftmost '.'
 
-        alias toUtf8    cString;                /// paths are null-terminated
-
         /***********************************************************************
 
                 Create a FilePath from a copy of the provided string.
@@ -108,6 +106,17 @@ class FilePath : PathView
         final override char[] toUtf8 ()
         {
                 return fp [0 .. end_];
+        }
+
+        /***********************************************************************
+
+                Return the complete text of this filepath
+
+        ***********************************************************************/
+
+        final char[] cString ()
+        {
+                return fp [0 .. end_+1];
         }
 
         /***********************************************************************
@@ -575,8 +584,6 @@ class FilePath : PathView
 
 abstract class PathView
 {
-        alias toUtf8   cString;                 /// paths are null-terminated
-
         /***********************************************************************
 
                 Return the complete text of this filepath
@@ -584,6 +591,14 @@ abstract class PathView
         ***********************************************************************/
 
         abstract char[] toUtf8 ();
+
+        /***********************************************************************
+
+                Return the complete text of this filepath
+
+        ***********************************************************************/
+
+        abstract char[] cString ();
 
         /***********************************************************************
 

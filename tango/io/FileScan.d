@@ -156,7 +156,7 @@ class FileScan
                         // construct full pathname
                         tmp[0..prefix.length] = prefix;
                         tmp[prefix.length..len] = name;
-
+                        
                         auto p = new FileProxy (tmp[0 .. len], isDir);
 
                         // test this entry for inclusion
@@ -165,13 +165,15 @@ class FileScan
                            // skip dirs composed only of '.'
                            char[] suffix = p.suffix;
                            if (p.name.length > 0 || suffix.length > 3 ||
-                               suffix != "..."[0 .. suffix.length])
-                               proxies ~= p;
+                              (suffix != "..."[0 .. suffix.length]))
+                               proxies ~= p;                                                   
                            }
+                        else
+                           delete p;
                 }
 
                 folder.toList (&add);
-                auto count = proxies.length;
+                auto count = files_.length;
                 
                 foreach (proxy; proxies)
                          if (proxy.isDir)

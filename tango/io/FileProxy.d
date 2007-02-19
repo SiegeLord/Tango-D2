@@ -59,7 +59,6 @@ version (Win32)
                 }
         }
 
-
 version (Posix)
         {
         private import tango.stdc.stdio;
@@ -242,7 +241,7 @@ class FileProxy : FilePath
 
                         // duplicate the path, including the null. Note that
                         // the saved length *excludes* the terminator
-                        list[i++] = (prefixed ? (prefix~name) : name.dup)[0..$-1];
+                        list[i++] = prefixed ? (prefix~name) : name.dup;
                 }
 
                 list = new char[][512];
@@ -554,13 +553,13 @@ class FileProxy : FilePath
                            version (Win32SansUnicode)
                                    {
                                    // ensure we include the null
-                                   auto len = strlen (fileinfo.cFileName.ptr) + 1;
+                                   auto len = strlen (fileinfo.cFileName.ptr);
                                    auto str = fileinfo.cFileName.ptr [0 .. len];
                                    }
                                 else
                                    {
                                    // ensure we include the null
-                                   auto len = wcslen (fileinfo.cFileName.ptr) + 1;
+                                   auto len = wcslen (fileinfo.cFileName.ptr);
                                    auto str = Utf.toUtf8 (fileinfo.cFileName [0 .. len], tmp);
                                    }
 
@@ -751,7 +750,7 @@ class FileProxy : FilePath
                         while ((entry = tango.stdc.posix.dirent.readdir(dir)) != null)
                               {
                               // ensure we include the terminating null ...
-                              auto len = tango.stdc.string.strlen (entry.d_name.ptr)+1;
+                              auto len = tango.stdc.string.strlen (entry.d_name.ptr);
                               auto str = entry.d_name.ptr [0 .. len];
 
                               dg (prefix, str, (entry.d_type & DT_DIR) != 0);
