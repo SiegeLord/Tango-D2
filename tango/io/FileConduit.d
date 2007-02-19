@@ -37,6 +37,7 @@ version (Win32)
         private extern (C) int ftruncate (int, int);
         private import tango.stdc.posix.sys.stat;
         private import tango.stdc.posix.fcntl;
+        private import tango.stdc.posix.utime;
         }
 
 
