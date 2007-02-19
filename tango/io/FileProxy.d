@@ -204,9 +204,9 @@ class FileProxy : FilePath
                     else
                        badArg ("FileProxy.createPath :: file/folder conflict: ");
 
-                FileProxy parent = this.parent;
-
+                FileProxy parent = this.opAssign (this.parent);
                 char[] name = parent.name;
+
                 if (name.length is 0                   ||
                     name == FileConst.CurrentDirString ||
                     name == FileConst.ParentDirString)
@@ -759,3 +759,25 @@ class FileProxy : FilePath
         }
 }
 
+
+
+/*******************************************************************************
+
+*******************************************************************************/
+
+debug (Test)
+{
+        import tango.io.Console;
+
+        void main() 
+        {
+                FileProxy p = new FileProxy(r"\d\tango\foo\bar\wumpus");
+
+                if (p.exists)
+                    Cout ("exists").newline;
+                else
+                   Cout ("does not exist").newline;
+
+                p.createPath;
+        }
+}
