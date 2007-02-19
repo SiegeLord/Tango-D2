@@ -4,8 +4,8 @@
 
         license:        BSD style: $(LICENSE)
       
-        version:        Initial release: May 2004
-                        Delegate support proposed by BCS: August 2006 
+        version:        May 2004: Initial release
+        version:        Feb 2007: Switched to lazy expr
         
         author:         Kris
 
@@ -85,7 +85,7 @@ public class Logger : ILevel
                 
         ***********************************************************************/
 
-        abstract Logger trace (char[] msg);
+        abstract Logger trace (lazy char[] exp);
 
         /***********************************************************************
                 
@@ -93,7 +93,7 @@ public class Logger : ILevel
 
         ***********************************************************************/
 
-        abstract Logger info (char[] msg);
+        abstract Logger info (lazy char[] exp);
 
         /***********************************************************************
 
@@ -101,7 +101,7 @@ public class Logger : ILevel
 
         ***********************************************************************/
 
-        abstract Logger warn (char[] msg);
+        abstract Logger warn (lazy char[] exp);
 
         /***********************************************************************
 
@@ -109,7 +109,7 @@ public class Logger : ILevel
 
         ***********************************************************************/
 
-        abstract Logger error (char[] msg);
+        abstract Logger error (lazy char[] exp);
 
         /***********************************************************************
 
@@ -117,7 +117,7 @@ public class Logger : ILevel
 
         ***********************************************************************/
 
-        abstract Logger fatal (char[] msg);
+        abstract Logger fatal (lazy char[] exp);
 
         /***********************************************************************
         
@@ -125,17 +125,7 @@ public class Logger : ILevel
 
         ***********************************************************************/
 
-        abstract Logger append (Level level, char[] s);
-
-        /***********************************************************************
-        
-                Append a message to this logger using a delegate to 
-                provide the content. Does not invoke the delegate if
-                the logger is not enabled for the specified level.
-
-        ***********************************************************************/
-
-        // abstract Logger append (Level level, char[] delegate() dg);
+        abstract Logger append (Level level, lazy char[] exp);
 
         /***********************************************************************
         

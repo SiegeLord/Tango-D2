@@ -4,8 +4,8 @@
 
         license:        BSD style: $(LICENSE)
       
-        version:        Initial release: October 2004
-                        Delegate support proposed by BCS: August 2006 
+        version:        Oct 2004: Initial release
+        version:        Feb 2007: Switched to lazy expr
         
         author:         Kris
 
@@ -104,7 +104,7 @@ private class LoggerInstance : Logger
 
         ***********************************************************************/
 
-        final Logger trace (char[] msg)
+        final Logger trace (lazy char[] msg)
         {
                 return append (Level.Trace, msg);
         }
@@ -115,7 +115,7 @@ private class LoggerInstance : Logger
 
         ***********************************************************************/
 
-        final Logger info (char[] msg)
+        final Logger info (lazy char[] msg)
         {
                 return append (Level.Info, msg);
         }
@@ -126,7 +126,7 @@ private class LoggerInstance : Logger
 
         ***********************************************************************/
 
-        final Logger warn (char[] msg)
+        final Logger warn (lazy char[] msg)
         {
                 return append (Level.Warn, msg);
         }
@@ -137,7 +137,7 @@ private class LoggerInstance : Logger
 
         ***********************************************************************/
 
-        final Logger error (char[] msg)
+        final Logger error (lazy char[] msg)
         {
                 return append (Level.Error, msg);
         }
@@ -148,7 +148,7 @@ private class LoggerInstance : Logger
 
         ***********************************************************************/
 
-        final Logger fatal (char[] msg)
+        final Logger fatal (lazy char[] msg)
         {
                 return append (Level.Fatal, msg);
         }
@@ -270,26 +270,11 @@ private class LoggerInstance : Logger
 
         /***********************************************************************
         
-                Append a message to this logger using a delegate to 
-                provide the content. Does not invoke the delegate if
-                the the logger is not enabled for the specified level.
-
-        ***********************************************************************/
-/+
-        final Logger append (Level level, char[] delegate() dg)
-        {
-                if (isEnabled (level))
-                    append (level, dg());
-                return this;
-        }
-+/
-        /***********************************************************************
-        
                 Append a message to this logger via its appender list.
 
         ***********************************************************************/
 
-        final Logger append (Level level, char[] s)
+        final Logger append (Level level, lazy char[] exp)
         {
                 if (isEnabled (level))
                    {
@@ -298,7 +283,7 @@ private class LoggerInstance : Logger
                           Event.deallocate (event);
 
                    // set the event attributes
-                   event.set (hierarchy, level, s, name.length ? name[0..$-1] : "root");
+                   event.set (hierarchy, level, exp, name.length ? name[0..$-1] : "root");
 
                    // combine appenders from all ancestors
                    auto links = this;
