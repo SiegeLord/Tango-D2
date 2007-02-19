@@ -1340,8 +1340,6 @@ debug (UnitTest)
         // void main() {}
         unittest
         {
-        String!(char)  ss = "ad";
-
         auto s = new String!(char)("hello");
         
         s.select ("hello");

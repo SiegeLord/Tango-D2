@@ -704,8 +704,6 @@ debug (UnitTest)
 
         unittest
         {
-        FilePath path = "mypath";
-
         version (Win32)
                 {
                 auto fp = new FilePath(r"C:\home\foo\bar\john\");

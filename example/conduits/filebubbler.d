@@ -21,7 +21,7 @@ void main(char[][] args)
         if (args.length is 2)
             foreach (proxy; (new FileScan).sweep(args[1], ".html").files)
                     {
-                    FilePath other = proxy.toUtf8;
+                    auto other = new FilePath (proxy.toUtf8);
                     proxy.rename (other.replace (FileConst.PathSeparatorChar, '.'));
                     }
         else

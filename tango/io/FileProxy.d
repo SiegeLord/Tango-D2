@@ -189,7 +189,7 @@ class FileProxy : FilePath
                     else
                        badArg ("FileProxy.createPath :: file/folder conflict: ");
 
-                FileProxy parent = this.opAssign (this.parent);
+                auto parent = new FileProxy (this.parent);
                 char[] name = parent.name;
 
                 if (name.length is 0                   ||

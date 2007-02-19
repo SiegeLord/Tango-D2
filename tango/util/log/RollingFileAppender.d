@@ -62,7 +62,7 @@ public class RollingFileAppender : FileAppender
                     {
                     x[0] = '0' + i;
 
-                    FileProxy proxy = path;
+                    auto proxy = new FileProxy (path);
                     proxy.asName (proxy.name ~ x);
                     paths ~= proxy;
 

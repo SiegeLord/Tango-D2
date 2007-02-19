@@ -65,7 +65,7 @@ struct Environment
 
         static FilePath exePath (char[] file)
         {
-                FileProxy bin = file;
+                auto bin = new FileProxy (file);
 
                 // on Windows, this is a .exe
                 version (Windows)

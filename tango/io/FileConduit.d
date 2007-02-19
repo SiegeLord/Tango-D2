@@ -424,7 +424,7 @@ class FileConduit : DeviceConduit, DeviceConduit.Seek
 
                 FileConduit copy (char[] source)
                 {
-                        FilePath src = source;
+                        auto src = new FilePath (source);
 
                         version (Win32SansUnicode)
                                 {
