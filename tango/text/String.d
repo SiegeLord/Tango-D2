@@ -475,7 +475,7 @@ class String(T) : StringView!(T)
 
         ***********************************************************************/
 
-        final String append (int v, Integer.Format fmt=Integer.Format.Signed)
+        final String append (int v, Integer.Style fmt=Integer.Style.Signed)
         {
                 return append (cast(long) v, fmt);
         }
@@ -486,7 +486,7 @@ class String(T) : StringView!(T)
 
         ***********************************************************************/
 
-        final String append (long v, Integer.Format fmt=Integer.Format.Signed)
+        final String append (long v, Integer.Style fmt=Integer.Style.Signed)
         {
                 T[64] tmp = void;
                 return append (Integer.format(tmp, v, fmt));
@@ -1365,7 +1365,7 @@ debug (UnitTest)
         
         assert (s.clear.append(1.2345, 4) == "1.2345");
         
-        assert (s.clear.append(0xf0, Integer.Format.Binary) == "11110000");
+        assert (s.clear.append(0xf0, Integer.Style.Binary) == "11110000");
         
         assert (s.clear.encode("one"d).toUtf8 == "one");
 
