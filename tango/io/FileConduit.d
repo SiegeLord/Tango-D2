@@ -62,14 +62,11 @@ version (Win32)
         And here we copy one file to another:
 
         ---
-        // open a file for reading
-        auto from = new FileConduit ("test.txt");
-
         // open another for writing
         auto to = new FileConduit ("copy.txt", FileConduit.WriteTruncate);
 
         // copy file
-        to.copy (from);
+        to.copy ("test.txt");
         ---
         
         To load a file directly into memory one might do this:
