@@ -12,8 +12,8 @@ private import tango.io.Buffer;
 private import tango.sys.Common;
 private import tango.sys.Pipe;
 private import tango.core.Exception;
-private import tango.text.convert.Format;
 private import tango.text.Util;
+private import Integer = tango.text.convert.Integer;
 
 private import tango.stdc.stdlib;
 private import tango.stdc.string;
@@ -114,28 +114,27 @@ class Process
             switch (reason)
             {
                 case Exit:
-                    str = Formatter.convert("Process exited normally with return code {0}", status);
+                    str = format ("Process exited normally with return code ", status);
                     break;
 
                 case Signal:
-                    str = Formatter.convert("Process was killed with signal {0}", status);
+                    str = format ("Process was killed with signal ", status);
                     break;
 
                 case Stop:
-                    str = Formatter.convert("Process was stopped with signal {0}", status);
+                    str = format ("Process was stopped with signal ", status);
                     break;
 
                 case Continue:
-                    str = Formatter.convert("Process was resumed with signal {0}", status);
+                    str = format ("Process was resumed with signal ", status);
                     break;
 
                 case Error:
-                    str = Formatter.convert("Process failed with error code {0}: {1}",
-                                            status, SysError.lookup(status));
+                    str = format ("Process failed with error code ", reason) ~ " : " ~ SysError.lookup(status);
                     break;
 
                 default:
-                    str = Formatter.convert("Unknown process result {0}, status {1}", reason, status);
+                    str = format ("Unknown process result ", reason);
                     break;
             }
             return str;
@@ -1204,8 +1203,7 @@ class Process
                     break;
 
                 default:
-                    assert(false, Formatter.convert("Unknown state {0} in Process.splitArgs(command='{1}', delims='{2}')",
-                                                    state, command, delims));
+                    assert(false, "Invalid state in Process.splitArgs");
             }
         }
 
@@ -1356,6 +1354,7 @@ class Process
     }
 }
 
+
 /**
  * Exception thrown when the process cannot be created.
  */
@@ -1363,7 +1362,7 @@ class ProcessCreateException: ProcessException
 {
     public this(char[] command, char[] file, uint line)
     {
-        super(Formatter.convert("Could not create process for {0}: {1}", command, SysError.lastMsg));
+        super("Could not create process for " ~ command ~ " : " ~ SysError.lastMsg);
     }
 }
 
@@ -1376,7 +1375,7 @@ class ProcessForkException: ProcessException
 {
     public this(int pid, char[] file, uint line)
     {
-        super(Formatter.convert("Could not fork process {0}: {1}", pid, SysError.lastMsg));
+        super(format("Could not fork process ", pid) ~ " : " ~ SysError.lastMsg);
     }
 }
 
@@ -1387,7 +1386,7 @@ class ProcessKillException: ProcessException
 {
     public this(int pid, char[] file, uint line)
     {
-        super(Formatter.convert("Could not kill process {0}: {1}", pid, SysError.lastMsg));
+        super(format("Could not kill process ", pid) ~ " : " ~ SysError.lastMsg);
     }
 }
 
@@ -1399,8 +1398,21 @@ class ProcessWaitException: ProcessException
 {
     public this(int pid, char[] file, uint line)
     {
-        super(Formatter.convert("Could not wait on process {0}: {1}", pid, SysError.lastMsg));
+        super(format("Could not wait on process ", pid) ~ " : " ~ SysError.lastMsg);
     }
+}
+
+
+
+
+/**
+ *  append an int argument to a message
+*/
+private char[] format (char[] msg, int value)
+{
+    char[10] tmp;
+                
+    return msg ~ Integer.format (tmp, value);
 }
 
 
