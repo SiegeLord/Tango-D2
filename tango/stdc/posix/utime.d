@@ -36,3 +36,13 @@ version( linux )
 
     int utime(char*, utimbuf*);
 }
+else version( darwin )
+{
+    struct utimbuf
+    {
+        time_t  actime;
+        time_t  modtime;
+    }
+
+    int utime(char*, utimbuf*);
+}
