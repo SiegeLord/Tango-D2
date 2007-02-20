@@ -380,7 +380,7 @@ class FTPConnection : Telnet
     {
         char[] tmp = "000";
         // Convert our octal parameter to a string.
-        Integer.format(tmp, cast(long) mode, Integer.Format.Octal);
+        Integer.format(tmp, cast(long) mode, Integer.Style.Octal);
         this.sendCommand("SITE CHMOD", tmp, path);
         this.readResponse("200");
     }

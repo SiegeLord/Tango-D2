@@ -20,7 +20,7 @@ private import  tango.text.Util;
 private import  tango.util.time.Utc,
                 tango.util.time.Date;
 
-private import  tango.text.convert.Integer;
+private import  Int = tango.text.convert.Integer;
 
 /*******************************************************************************
 
@@ -89,6 +89,6 @@ public class DateLayout : Layout
 
         private char[] convert (char[] tmp, int i)
         {
-                return format (tmp, cast(long) i, Format.Unsigned, Flags.Zero);
+                return Int.format (tmp, cast(long) i, Int.Style.Unsigned, Int.Flags.Zero);
         }
 }

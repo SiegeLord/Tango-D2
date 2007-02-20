@@ -157,7 +157,7 @@ T[] format(T) (T[] output, Time time)
 
 private T[] convert(T) (T[] tmp, int i)
 {
-        return Int.format!(T) (tmp, i, Int.Format.Unsigned, Int.Flags.Zero);
+        return Int.format!(T) (tmp, i, Int.Style.Unsigned, Int.Flags.Zero);
 }
 
 /******************************************************************************

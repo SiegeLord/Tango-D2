@@ -27,11 +27,11 @@ private import tango.core.Exception;
 
 /******************************************************************************
 
-        Format identifiers 
+        Style identifiers 
 
 ******************************************************************************/
 
-enum Format 
+enum Style 
 {
         Signed,                         /// signed decimal
         Binary,                         /// binary output
@@ -111,7 +111,7 @@ long toLong(T) (T[] digits, uint radix=10)
 
 ******************************************************************************/
 
-char[] toUtf8 (long i, Format t=Format.Signed, Flags f=Flags.None)
+char[] toUtf8 (long i, Style t=Style.Signed, Flags f=Flags.None)
 {
         char[66] tmp = void;
         
@@ -127,7 +127,7 @@ char[] toUtf8 (long i, Format t=Format.Signed, Flags f=Flags.None)
 
 ******************************************************************************/
 
-wchar[] toUtf16 (long i, Format t=Format.Signed, Flags f=Flags.None)
+wchar[] toUtf16 (long i, Style t=Style.Signed, Flags f=Flags.None)
 {
         wchar[66] tmp = void;
         
@@ -143,7 +143,7 @@ wchar[] toUtf16 (long i, Format t=Format.Signed, Flags f=Flags.None)
 
 ******************************************************************************/
 
-dchar[] toUtf32 (long i, Format t=Format.Signed, Flags f=Flags.None)
+dchar[] toUtf32 (long i, Style t=Style.Signed, Flags f=Flags.None)
 {
         dchar[66] tmp = void;
         
@@ -152,7 +152,7 @@ dchar[] toUtf32 (long i, Format t=Format.Signed, Flags f=Flags.None)
                
 /*******************************************************************************
 
-        Format numeric values into the provided output buffer. The
+        Style numeric values into the provided output buffer. The
         following types are supported:
 
         Unsigned        - unsigned decimal
@@ -175,10 +175,10 @@ dchar[] toUtf32 (long i, Format t=Format.Signed, Flags f=Flags.None)
 
 *******************************************************************************/
 
-T[] format(T, U=long) (T[] dst, U i, Format fmt=Format.Signed, Flags flags=Flags.None)
+T[] format(T, U=long) (T[] dst, U i, Style fmt=Style.Signed, Flags flags=Flags.None)
 {return format!(T)(dst, i, fmt, flags);}
 
-T[] format(T) (T[] dst, long i, Format fmt=Format.Signed, Flags flags=Flags.None)
+T[] format(T) (T[] dst, long i, Style fmt=Style.Signed, Flags flags=Flags.None)
 {
         T[]     prefix;
         int     len = dst.length;
@@ -193,7 +193,7 @@ T[] format(T) (T[] dst, long i, Format fmt=Format.Signed, Flags flags=Flags.None
            switch (fmt)
                   {
                   default:
-                  case Format.Signed:
+                  case Style.Signed:
                        if (i < 0)
                           {
                           prefix = "-";
@@ -206,29 +206,29 @@ T[] format(T) (T[] dst, long i, Format fmt=Format.Signed, Flags flags=Flags.None
                              if (flags & Flags.Plus)
                                  prefix = "+";
                        // fall through!
-                  case Format.Unsigned:
+                  case Style.Unsigned:
                        radix = 10;
                        break;
 
-                  case Format.Binary:
+                  case Style.Binary:
                        radix = 2;
                        if (flags & Flags.Prefix)
                            prefix = "0b";
                        break;
 
-                  case Format.Octal:
+                  case Style.Octal:
                        radix = 8;
                        if (flags & Flags.Prefix)
                            prefix = "0o";
                        break;
 
-                  case Format.Hex:
+                  case Style.Hex:
                        radix = 16;
                        if (flags & Flags.Prefix)
                            prefix = "0x";
                        break;
 
-                  case Format.HexUpper:
+                  case Style.HexUpper:
                        radix = 16;
                        numbers = "0123456789ABCDEF";
                        if (flags & Flags.Prefix)
@@ -529,14 +529,14 @@ debug (UnitTest)
 
         assert (format (tmp, 12345L) == "12345");
         assert (format (tmp, 0) == "0");
-        assert (format (tmp, 0x10101L, Format.Hex) == "10101");
-        assert (format (tmp, 0xfafaL, Format.Hex) == "fafa");
-        assert (format (tmp, 0xfafaL, Format.HexUpper, Flags.Prefix) == "0XFAFA");
-        assert (format (tmp, -1L, Format.HexUpper, Flags.Prefix) == "0XFFFFFFFFFFFFFFFF");
+        assert (format (tmp, 0x10101L, Style.Hex) == "10101");
+        assert (format (tmp, 0xfafaL, Style.Hex) == "fafa");
+        assert (format (tmp, 0xfafaL, Style.HexUpper, Flags.Prefix) == "0XFAFA");
+        assert (format (tmp, -1L, Style.HexUpper, Flags.Prefix) == "0XFFFFFFFFFFFFFFFF");
         assert (format (tmp, -101L) == "-101");
-        assert (format (tmp, 101L, Format.Signed, Flags.Plus) == "+101");
-        assert (format (tmp, 101L, Format.Signed, Flags.Space) == " 101");
-        assert (format (tmp[0..8], 0x5L, Format.Binary, Flags.Prefix | Flags.Zero) == "0b000101");
+        assert (format (tmp, 101L, Style.Signed, Flags.Plus) == "+101");
+        assert (format (tmp, 101L, Style.Signed, Flags.Space) == " 101");
+        assert (format (tmp[0..8], 0x5L, Style.Binary, Flags.Prefix | Flags.Zero) == "0b000101");
         }
 }
 
