@@ -44,6 +44,8 @@ private import  tango.io.protocol.model.IProtocol;
 
 class DisplayWriter : Writer
 {
+        private Format!(char) format;
+
         private static TypeInfo[] revert = 
         [
                 typeid(void), // byte.sizeof,
@@ -75,6 +77,7 @@ class DisplayWriter : Writer
         this (IBuffer buffer)
         {
                 super (buffer);
+                format = new Format!(char);
                 arrays = elements = &write;
         }
      
@@ -109,7 +112,7 @@ class DisplayWriter : Writer
                             char[128] output = void;
                             char[128] convert = void;
                             auto ti = revert [type];
-                            auto result = Formatter.Result (output, convert);
+                            auto result = format.Result (output, convert);
 
                             auto width = ti.tsize();
                             assert ((bytes % width) is 0, "invalid arg[] length");
@@ -121,7 +124,7 @@ class DisplayWriter : Writer
 
                             while (bytes)
                                   {
-                                  auto s = Formatter (result, ti, cast(va_list) src);
+                                  auto s = format (result, ti, cast(va_list) src);
                                   buffer_.append (s);
 
                                   bytes -= width;
