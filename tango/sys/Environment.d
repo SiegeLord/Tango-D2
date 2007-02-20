@@ -111,7 +111,7 @@ struct Environment
                 **************************************************************/
 
                 // Returns null if the variable does not exist
-                char[] get (char[] variable)
+                static char[] get (char[] variable)
                 {
                         wchar[] var = toUtf16(variable) ~ "\0";
 
@@ -137,7 +137,7 @@ struct Environment
                 **************************************************************/
 
                 // Undefines the variable, if value is null or empty string
-                void set (char[] variable, char[] value = null)
+                static void set (char[] variable, char[] value = null)
                 {
                         wchar * var, val;
 
@@ -154,7 +154,7 @@ struct Environment
 
                 **************************************************************/
 
-                char[][char[]] get ()
+                static char[][char[]] get ()
                 {
                         char[][char[]] arr;
 
@@ -202,7 +202,7 @@ struct Environment
                 **************************************************************/
 
                 // Returns null if the variable does not exist
-                char[] get (char[] variable)
+                static char[] get (char[] variable)
                 {
                         char* ptr = getenv (variable.ptr);
 
@@ -217,7 +217,7 @@ struct Environment
                 **************************************************************/
 
                 // Undefines the variable, if value is null or empty string
-                void set (char[] variable, char[] value = null)
+                static void set (char[] variable, char[] value = null)
                 {
                         int result;
 
@@ -234,7 +234,7 @@ struct Environment
 
                 **************************************************************/
 
-                char[][char[]] get ()
+                static char[][char[]] get ()
                 {
                         char[][char[]] arr;
 
