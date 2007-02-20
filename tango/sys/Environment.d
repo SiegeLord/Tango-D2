@@ -42,6 +42,8 @@ version (Windows)
 }
 else
 {
+    private extern (C) extern char** environ;
+
     import tango.stdc.posix.stdlib;
     import tango.stdc.string;
 }
@@ -195,8 +197,6 @@ struct Environment
         }
         else // POSIX
         {
-                extern (C) extern char** environ;
-
                 /**************************************************************
 
                 **************************************************************/
