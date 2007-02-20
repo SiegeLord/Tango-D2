@@ -1,6 +1,6 @@
 /*******************************************************************************
 
-        copyright:      Copyright (c) 2007 Deewiant & Maxter. All rights reserved
+        copyright:      Copyright (c) 2007 Tango. All rights reserved
 
         license:        BSD style: $(LICENSE)
 
