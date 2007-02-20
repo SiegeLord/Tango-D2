@@ -1070,7 +1070,7 @@ public class Format(T)
                              break;
 
                        default:
-                             return "{invalid FP format specifier '" ~ format ~ "'}";
+                             return cast(T[]) "{invalid FP format specifier '" ~ format ~ "'}";
                        }
                 return result.get;
         }
@@ -2116,6 +2116,8 @@ debug (UnitTest)
 {
         // void main() {}
 
+        auto Formatter = new Format!(char);
+
         unittest
         {
         assert( Formatter( "abc" ) == "abc" );
@@ -2227,24 +2229,13 @@ debug (UnitTest)
 }
 
 
-static Format!(char) Formatter;
 
-static this()
+debug (Test) 
 {
-        Formatter = new Format!(char);
-}
+        import tango.io.Console;
 
-
-
-
-debug (Test) {
-import tango.io.Console;
-
-
-void main ()
-{
-        Cout (Formatter ("0x{0:x4} {1} bottles", 10, "green")) ();
-}
-
-
-} // version(Test)
+        void main ()
+        {
+                Cout (Formatter ("0x{0:x4} {1} bottles", 10, "green")) ();
+        }
+} 

@@ -4,8 +4,9 @@
 
         license:        BSD style: $(LICENSE)
 
-        version:        Initial release: Nov 2005
-
+        version:        Nov 2005: Initial release
+        version:        Feb 2007: Moved sprint() here due to technical issues
+                
         author:         Kris
 
 *******************************************************************************/
@@ -36,21 +37,61 @@ version (DigitalMars)
         the Stdout & Stderr globals, but can be used for general purpose
         buffer-formatting as desired. The Template type 'T' dictates the
         text arrangement within the target buffer ~ one of char, wchar or
-        dchar (utf8, utf16, or utf32)
+        dchar (utf8, utf16, or utf32). 
+        
+        When wrapped by Stdout, TextFormat exposes this style of usage:
+        ---
+        Stdout ("hello");               => hello
+        Stdout (1);                     => 1
+        Stdout (3.14);                  => 3.14
+        Stdout ('b');                   => b
+        Stdout (1, 2, 3);               => 1, 2, 3         
+        Stdout ("abc", 1, 2, 3);        => abc, 1, 2, 3        
+        Stdout ("abc", 1, 2) ("foo");   => abc, 1, 2foo        
+        Stdout ("abc") ("def") (3.14);  => abcdef3.14
+
+        Stdout.format ("abc {}", 1);    => abc 1
+        Stdout.format ("abc ", 1);      => abc
+        ---
+
+        Note that the last example does not throw an exception. There
+        are several use-cases where dropping an argument is legitimate,
+        so we're currently not enforcing any particular trap mechanism.
+
+        Flushing the output is achieved through the flush() method, or
+        via an empty pair of parens: 
+        ---
+        Stdout ("hello world") ();
+        Stdout ("hello world").flush;
+
+        Stdout ("hello ") ("world") ();
+        Stdout ("hello ") ("world").flush;
+
+        Stdout.format ("hello {}", "world") ();
+        Stdout.format ("hello {}", "world").flush;
+        ---
+        
+        Newline is handled by either placing '\n' in the output, or via
+        the newline() method. The latter also flushes the output:
+        ---
+        Stdout ("hello ") ("world").newline;
+
+        Stdout.format ("hello {}", "world").newline;
+        ---
 
 *******************************************************************************/
 
-class DisplayFormat(T)
+class TextFormat(T)
 {
-        public alias print      opCall;
-
         private T[]             eol;
         private IBuffer         output;
         private Format!(T)      convert;
 
+        public alias print      opCall;
+
         /**********************************************************************
 
-                Construct a DisplayFormat instance, tying the provided
+                Construct a TextFormat instance, tying the provided
                 buffer to a formatter
 
         **********************************************************************/
@@ -68,7 +109,7 @@ class DisplayFormat(T)
 
         **********************************************************************/
 
-        final DisplayFormat format (T[] fmt, ...)
+        final TextFormat format (T[] fmt, ...)
         {
                 convert (&sink, _arguments, _argptr, fmt);
                 return this;
@@ -77,85 +118,66 @@ class DisplayFormat(T)
         /**********************************************************************
 
                 Format output using the provided formatting specification
-                and append a newline
 
         **********************************************************************/
 
-        final DisplayFormat formatln (T[] fmt, ...)
+        final TextFormat formatln (T[] fmt, ...)
         {
                 convert (&sink, _arguments, _argptr, fmt);
-                return newline();
+                return newline;
         }
 
         /**********************************************************************
 
-                Format output using a default layout (variadic version)
+                Format output using the provided formatting specification
 
         **********************************************************************/
 
-        final DisplayFormat print (...)
-        {
-                if (_arguments.length > 0)
-                    print(&sink, _arguments, _argptr);
-                else
-                    // zero args is just a flush
-                    output.flush();
-
-                return this;
-        }
-
-        /**********************************************************************
-
-                Format output using a default layout and append a newline
-
-        **********************************************************************/
-
-        final DisplayFormat println (...)
-        {
-                if (_arguments.length > 0)
-                    print(&sink, _arguments, _argptr);
-
-                return newline();
-        }
-
-        /**********************************************************************
-
-                Format output using a default layout
-
-        **********************************************************************/
-
-        protected final DisplayFormat print (Formatter.Sink sink, TypeInfo[] arguments, Args argptr)
-        in
-        {
-                assert(arguments.length > 0 && arguments.length < 10);
-        }
-        body
+        final TextFormat print (...)
         {
                 static  T[][] fmt =
                         [
-                        "{0}",
-                        "{0}, {1}",
-                        "{0}, {1}, {2}",
-                        "{0}, {1}, {2}, {3}",
-                        "{0}, {1}, {2}, {3}, {4}",
-                        "{0}, {1}, {2}, {3}, {4}, {5}",
-                        "{0}, {1}, {2}, {3}, {4}, {5}, {6}",
-                        "{0}, {1}, {2}, {3}, {4}, {5}, {6}, {7}",
-                        "{0}, {1}, {2}, {3}, {4}, {5}, {6}, {7}, {8}",
-                        "{0}, {1}, {2}, {3}, {4}, {5}, {6}, {7}, {8}, {9}",
+                        "{}",
+                        "{}, {}",
+                        "{}, {}, {}",
+                        "{}, {}, {}, {}",
+                        "{}, {}, {}, {}, {}",
+                        "{}, {}, {}, {}, {}, {}",
+                        "{}, {}, {}, {}, {}, {}, {}",
+                        "{}, {}, {}, {}, {}, {}, {}, {}",
+                        "{}, {}, {}, {}, {}, {}, {}, {}, {}",
+                        "{}, {}, {}, {}, {}, {}, {}, {}, {}, {}",
+                        "{}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}",
+                        "{}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}",
                         ];
-
-                convert(sink, arguments, argptr, fmt[arguments.length - 1]);
+               
+                if (_arguments.length is 0)
+                    output.flush;
+                else
+                   convert (&sink, _arguments, _argptr, fmt[_arguments.length - 1]);
+                         
                 return this;
+        }
+
+        /**********************************************************************
+
+                Format a set of arguments into the provided output buffer
+                and return a valid slice
+                
+        **********************************************************************/
+
+        final T[] sprint (T[] buffer, T[] fmt, ...)
+        {
+                return convert.sprint (buffer, fmt, _arguments, _argptr);
         }
 
         /***********************************************************************
 
-                output a newline
+                output a newline and flush
 
         ***********************************************************************/
 
-        final DisplayFormat newline ()
+        final TextFormat newline ()
         {
                 output(eol).flush;
                 return this;
@@ -167,7 +189,7 @@ class DisplayFormat(T)
 
         **********************************************************************/
 
-        final DisplayFormat flush ()
+        final TextFormat flush ()
         {
                 output.flush;
                 return this;
@@ -208,6 +230,7 @@ class DisplayFormat(T)
         }
 }
 
+
 /*******************************************************************************
 
         Standard, global formatters for console output. If you don't need
@@ -224,12 +247,34 @@ class DisplayFormat(T)
 
 *******************************************************************************/
 
-public static DisplayFormat!(char) Stdout,
-                                   Stderr;
+public static TextFormat!(char) Stdout,
+                                Stderr;
 
 static this()
 {
-        Stdout = new DisplayFormat!(char) (Formatter, Cout.buffer);
-        Stderr = new DisplayFormat!(char) (Formatter, Cerr.buffer);
+        auto Formatter = new Format!(char);
+        Stdout = new TextFormat!(char) (Formatter, Cout.buffer);
+        Stderr = new TextFormat!(char) (Formatter, Cerr.buffer);
 }
 
+
+/******************************************************************************
+
+******************************************************************************/
+
+debug (Test)
+{
+        void main() 
+        {
+        Stdout ("hello").newline;               
+        Stdout (1).newline;                     
+        Stdout (3.14).newline;                  
+        Stdout ('b').newline;                   
+        Stdout ("abc") ("def") (3.14).newline;  
+        Stdout ("abc", 1, 2, 3).newline;        
+        Stdout (1, 2, 3).newline;        
+
+        Stdout ("abc {}{}{}", 1, 2, 3).newline; 
+        Stdout.format ("abc {}{}{}", 1, 2, 3).newline; 
+        }
+}
