@@ -96,7 +96,7 @@ version( Win32 )
             assert( obj.m_curr == &obj.m_main );
             Thread.add( &obj.m_main );
 
-            TlsSetValue( Thread.sm_this, obj );
+            TlsSetValue( Thread.sm_this, cast(void*) obj );
 
             // NOTE: No GC allocations may occur until the stack pointers have
             //       been set and Thread.getThis returns a valid reference to
@@ -494,7 +494,7 @@ class Thread
         {
             version( Win32 )
             {
-                m_hndl = cast(HANDLE) _beginthreadex( null, 0, &thread_entryPoint, this, 0, &m_addr );
+                m_hndl = cast(HANDLE) _beginthreadex( null, 0, &thread_entryPoint, cast(void*) this, 0, &m_addr );
                 if( cast(size_t) m_hndl == 0 )
                     throw new ThreadException( "Error creating thread" );
             }
@@ -1274,7 +1274,7 @@ extern (C) void thread_init()
         mainContext.bstack = getStackBottom();
         mainContext.tstack = mainContext.bstack;
 
-        TlsSetValue( Thread.sm_this, mainThread );
+        TlsSetValue( Thread.sm_this, cast(void*) mainThread );
     }
     else version( Posix )
     {
@@ -2786,7 +2786,7 @@ private:
     {
         version( Win32 )
         {
-            TlsSetValue( sm_this, f );
+            TlsSetValue( sm_this, cast(void*) f );
         }
         else version( Posix )
         {

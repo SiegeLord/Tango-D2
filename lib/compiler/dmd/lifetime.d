@@ -75,7 +75,7 @@ extern (C) Object _d_newclass(ClassInfo ci)
     debug printf("_d_newclass(ci = %p, %s)\n", ci, cast(char *)ci.name);
     if (ci.flags & 1) // if COM object
     {
-        p = cast(Object)tango.stdc.stdlib.malloc(ci.init.length);
+        p = tango.stdc.stdlib.malloc(ci.init.length);
         if (!p)
             onOutOfMemoryError();
     }
@@ -137,7 +137,7 @@ extern (C) void _d_delclass(Object* p)
     {
         debug printf("_d_delclass(%p)\n", *p);
 
-        cr_finalize(*p);
+        cr_finalize(cast(void*) *p);
 
         ClassInfo **pc = cast(ClassInfo **)*p;
         if (*pc)
@@ -152,7 +152,7 @@ extern (C) void _d_delclass(Object* p)
                 return;
             }
         }
-        gc_free(*p);
+        gc_free(cast(void*) *p);
         *p = null;
     }
 }
