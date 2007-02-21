@@ -74,7 +74,10 @@ version (Posix)
         private import tango.stdc.string;
         }
 else
+   {
+   pragma (msg, "Unsupported environment; neither Win32 or Posix is declared");
    static assert(0);
+   }
 
    
 /*******************************************************************************
