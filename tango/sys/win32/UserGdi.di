@@ -1686,7 +1686,7 @@ extern(Windows)
 	WINBOOL SwapBuffers(HDC);
 	WINBOOL DragQueryPoint(HDROP, LPPOINT);
 	void DragFinish(HDROP);
-	void DragAcceptFiles(HWND);
+	void DragAcceptFiles(HWND, BOOL);
 	HICON DuplicateIcon(HINST, HICON);
 	BOOL DdeAbandonTransaction(DWORD, HCONV, DWORD);
 	PBYTE DdeAccessData(HDDEDATA, PDWORD);
