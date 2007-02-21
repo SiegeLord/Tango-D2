@@ -5,7 +5,9 @@
  * barrier if the hardware does not support the version requested.  This
  * model is based on a design by Alexander Terekhov as outlined in
  * <a href=http://groups.google.com/groups?threadm=3E4820EE.6F408B25%40web.de>
- * this thread</a>.
+ * this thread</a>.  Another useful reference for memory ordering on modern
+ * architectures is <a href=http://www.linuxjournal.com/article/8211>this
+ * article by Paul McKenney</a>.
  *
  * Copyright: Copyright (C) 2005-2006 Sean Kelly.  All rights reserved.
  * License:   BSD style: $(LICENSE)
@@ -274,6 +276,16 @@ version( DDoc )
 
 else version( D_InlineAsm_X86 )
 {
+    version( X86 )
+    {
+        version = Has32BitOps;
+        version = Has64BitCAS;
+    }
+    version( X86_64 )
+    {
+        version = Has64BitOps;
+    }
+
     private
     {
         ////////////////////////////////////////////////////////////////////////
@@ -318,9 +330,11 @@ else version( D_InlineAsm_X86 )
                     {
                         volatile asm
                         {
-                            mov EAX, val;
+                            mov BL, 42;
+                            mov AL, 42;
+                            mov ECX, val;
                             lock;
-                            mov AL, [EAX];
+                            cmpxchg [ECX], BL;
                         }
                     }
                     else
@@ -350,9 +364,11 @@ else version( D_InlineAsm_X86 )
                     {
                         volatile asm
                         {
-                            mov EAX, val;
+                            mov BX, 42;
+                            mov AX, 42;
+                            mov ECX, val;
                             lock;
-                            mov AX, [EAX];
+                            cmpxchg [ECX], BX;
                         }
                     }
                     else
@@ -382,9 +398,11 @@ else version( D_InlineAsm_X86 )
                     {
                         volatile asm
                         {
-                            mov EAX, val;
+                            mov EBX, 42;
+                            mov EAX, 42;
+                            mov ECX, val;
                             lock;
-                            mov EAX, [EAX];
+                            cmpxchg [ECX], EBX;
                         }
                     }
                     else
@@ -403,7 +421,7 @@ else version( D_InlineAsm_X86 )
                 ////////////////////////////////////////////////////////////////
 
 
-                version( X86_64 )
+                version( Has64BitOps )
                 {
                     ////////////////////////////////////////////////////////////
                     // 8 Byte Load on 64-Bit Processor
@@ -578,7 +596,7 @@ else version( D_InlineAsm_X86 )
                 ////////////////////////////////////////////////////////////////
 
 
-                version( X86_64 )
+                version( Has64BitOps )
                 {
                     ////////////////////////////////////////////////////////////
                     // 8 Byte Store on 64-Bit Processor
@@ -771,7 +789,7 @@ else version( D_InlineAsm_X86 )
                 ////////////////////////////////////////////////////////////////
 
 
-                version( X86_64 )
+                version( Has64BitOps )
                 {
                     ////////////////////////////////////////////////////////////
                     // 8 Byte StoreIf on 64-Bit Processor
@@ -811,7 +829,7 @@ else version( D_InlineAsm_X86 )
                         }
                     }
                 }
-                else
+                else version( Has64BitCAS )
                 {
                     ////////////////////////////////////////////////////////////
                     // 8 Byte StoreIf on 32-Bit Processor
@@ -821,7 +839,10 @@ else version( D_InlineAsm_X86 )
                     bool doAtomicStoreIf( inout T val, T newval, T equalTo )
                     in
                     {
-                        assert( atomicValueIsProperlyAligned!(T)( cast(size_t) &val ) );
+                        // NOTE: Since DWCAS uses two 4 byte registers instead
+                        //       of a single 8 byte register, val must only be
+                        //       aligned on a 4 byte boundry.
+                        assert( atomicValueIsProperlyAligned!(int)( cast(size_t) &val ) );
                     }
                     body
                     {
@@ -1000,7 +1021,7 @@ else version( D_InlineAsm_X86 )
                 ////////////////////////////////////////////////////////////////
 
 
-                version( X86_64 )
+                version( Has64BitOps )
                 {
                     ////////////////////////////////////////////////////////////
                     // 8 Byte Increment on 64-Bit Processor
@@ -1187,7 +1208,7 @@ else version( D_InlineAsm_X86 )
                 ////////////////////////////////////////////////////////////////
 
 
-                version( X86_64 )
+                version( Has64BitOps )
                 {
                     ////////////////////////////////////////////////////////////
                     // 8 Byte Decrement on 64-Bit Processor
@@ -1252,17 +1273,43 @@ else version( D_InlineAsm_X86 )
     // x86 Public Atomic Functions
     ////////////////////////////////////////////////////////////////////////////
 
+    /+
     //
-    // NOTE: x86 loads implicitly have acquire semantics so a membar is only necessary on release
+    // NOTE: x86 loads implicitly have acquire semantics so a membar is only
+    //       necessary on release.
     //
 
     template atomicLoad( msync ms : msync.raw, T ) { alias doAtomicLoad!(isSinkOp!(ms),T) atomicLoad; }
     template atomicLoad( msync ms : msync.hlb, T ) { alias doAtomicLoad!(isSinkOp!(ms),T) atomicLoad; }
     template atomicLoad( msync ms : msync.acq, T ) { alias doAtomicLoad!(isSinkOp!(ms),T) atomicLoad; }
     template atomicLoad( msync ms : msync.seq, T ) { alias doAtomicLoad!(true,T)          atomicLoad; }
+    +/
 
     //
-    // NOTE: x86 stores implicitly have release semantics so a membar is only necessary on acquires
+    // NOTE: The above statement is not strictly true.  While x86 loads have
+    //       acquire semantics for stores, it appears that independent loads
+    //       may be reordered by some processors (notably the AMD64).  This
+    //       implies that the hoist-load barrier op requires an ordering
+    //       instruction, which also extends this requirement to acquire ops
+    //       (though hoist-store should not need one if support is added for
+    //       this later).  However, since no modern architectures will reorder
+    //       dependent loads to occur before the load they depend on (except
+    //       the Alpha), raw loads are actually a possible means of ordering
+    //       specific sequences of loads in some instances.  The original
+    //       atomic<> implementation provides a 'ddhlb' ordering specifier for
+    //       data-dependent loads to handle this situation, but as there are no
+    //       plans to support the Alpha there is no reason to add that option
+    //       here.
+    //
+
+    template atomicLoad( msync ms : msync.raw, T ) { alias doAtomicLoad!(false,T) atomicLoad; }
+    template atomicLoad( msync ms : msync.hlb, T ) { alias doAtomicLoad!(true,T)  atomicLoad; }
+    template atomicLoad( msync ms : msync.acq, T ) { alias doAtomicLoad!(true,T)  atomicLoad; }
+    template atomicLoad( msync ms : msync.seq, T ) { alias doAtomicLoad!(true,T)  atomicLoad; }
+
+    //
+    // NOTE: x86 stores implicitly have release semantics so a membar is only
+    //       necessary on acquires.
     //
 
     template atomicStore( msync ms : msync.raw, T ) { alias doAtomicStore!(isHoistOp!(ms),T) atomicStore; }
@@ -1568,22 +1615,35 @@ private
         void testType( T val = T.init  +1 )
         {
             testLoad!(msync.raw, T)( val );
+            testLoad!(msync.hlb, T)( val );
             testLoad!(msync.acq, T)( val );
+            testLoad!(msync.seq, T)( val );
 
             testStore!(msync.raw, T)( val );
+            testStore!(msync.ssb, T)( val );
             testStore!(msync.acq, T)( val );
             testStore!(msync.rel, T)( val );
+            testStore!(msync.seq, T)( val );
 
             testStoreIf!(msync.raw, T)( val );
+            testStoreIf!(msync.ssb, T)( val );
             testStoreIf!(msync.acq, T)( val );
+            testStoreIf!(msync.rel, T)( val );
+            testStoreIf!(msync.seq, T)( val );
 
             static if( isValidNumericType!(T) )
             {
                 testIncrement!(msync.raw, T)( val );
+                testIncrement!(msync.ssb, T)( val );
                 testIncrement!(msync.acq, T)( val );
+                testIncrement!(msync.rel, T)( val );
+                testIncrement!(msync.seq, T)( val );
 
                 testDecrement!(msync.raw, T)( val );
+                testDecrement!(msync.ssb, T)( val );
                 testDecrement!(msync.acq, T)( val );
+                testDecrement!(msync.rel, T)( val );
+                testDecrement!(msync.seq, T)( val );
             }
         }
     }
@@ -1614,64 +1674,24 @@ debug( UnitTest )
     int x;
     testType!(void*)( &x );
 
-    //
-    // long
-    //
-
-    version( X86_64 )
+    version( Has64BitOps )
     {
-        testLoad!(msync.raw, long)();
-        testLoad!(msync.acq, long)();
-        testLoad!(msync.seq, long)();
-
-        testStore!(msync.raw, long)();
-        testStore!(msync.acq, long)();
-        testStore!(msync.rel, long)();
-        testStore!(msync.seq, long)();
-
-        testIncrement!(msync.raw, long)();
-        testDecrement!(msync.acq, long)();
-        testDecrement!(msync.seq, long)();
+        testType!(long)();
+        testType!(ulong)();
     }
-    version( X86 )
+    else version( Has64BitCAS )
     {
-        /+
-         + TODO: long is not properly aligned on x86
-         +
         testStoreIf!(msync.raw, long)();
+        testStoreIf!(msync.ssb, long)();
         testStoreIf!(msync.acq, long)();
+        testStoreIf!(msync.rel, long)();
         testStoreIf!(msync.seq, long)();
-         +/
-    }
 
-    //
-    // ulong
-    //
-
-    version( X86_64 )
-    {
-        testLoad!(msync.raw, ulong)();
-        testLoad!(msync.acq, ulong)();
-        testLoad!(msync.seq, ulong)();
-
-        testStore!(msync.raw, ulong)();
-        testStore!(msync.acq, ulong)();
-        testStore!(msync.rel, ulong)();
-        testStore!(msync.seq, ulong)();
-
-        testIncrement!(msync.raw, ulong)();
-        testDecrement!(msync.acq, ulong)();
-        testDecrement!(msync.seq, ulong)();
-    }
-    version( X86 )
-    {
-        /+
-         + TODO: ulong is not properly aligned on x86
-         +
         testStoreIf!(msync.raw, ulong)();
+        testStoreIf!(msync.ssb, ulong)();
         testStoreIf!(msync.acq, ulong)();
+        testStoreIf!(msync.rel, ulong)();
         testStoreIf!(msync.seq, ulong)();
-         +/
     }
   }
 }
