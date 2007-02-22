@@ -89,6 +89,11 @@ class TextFormat(T)
 
         public alias print      opCall;
 
+        version (Win32)
+                 private const char[] Eol = "\r\n";
+             else
+                private const char[] Eol = "\n";
+
         /**********************************************************************
 
                 Construct a TextFormat instance, tying the provided
@@ -96,7 +101,7 @@ class TextFormat(T)
 
         **********************************************************************/
 
-        this (Format!(T) convert, IBuffer output, T[] eol = "\n")
+        this (Format!(T) convert, IBuffer output, T[] eol = Eol)
         {
                 this.convert = convert;
                 this.output = output;
