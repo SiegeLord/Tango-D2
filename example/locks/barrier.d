@@ -35,7 +35,7 @@ void main(char[][] args)
         log.info("Barrier test");
     }
 
-    Barrier allDone = new Barrier(MaxThreadCount);
+    Barrier barrier = new Barrier(MaxThreadCount);
     Mutex   mutex = new Mutex();
     uint    count = 0;
     uint    correctCount = 0;
@@ -67,7 +67,7 @@ void main(char[][] args)
             // We wait for all the threads to finish counting.
             debug (barrier)
                 log.trace("Waiting on barrier");
-            allDone.wait();
+            barrier.wait();
             debug (barrier)
                 log.trace("Barrier was opened");
 
