@@ -182,7 +182,7 @@ else version( Posix )
             }
 
             mixin pthread_cleanup cleanup;
-            cleanup.push( &thread_cleanupHandler, obj );
+            cleanup.push( &thread_cleanupHandler, cast(void*) obj );
 
             // NOTE: For some reason this does not always work for threads.
             //obj.m_main.bstack = getStackBottom();
@@ -208,7 +208,7 @@ else version( Posix )
             assert( obj.m_curr == &obj.m_main );
             Thread.add( &obj.m_main );
 
-            pthread_setspecific( obj.sm_this, obj );
+            pthread_setspecific( obj.sm_this, cast(void*) obj );
 
             // NOTE: No GC allocations may occur until the stack pointers have
             //       been set and Thread.getThis returns a valid reference to
@@ -503,7 +503,7 @@ class Thread
                 m_isRunning = true;
                 scope( failure ) m_isRunning = false;
 
-                if( pthread_create( &m_addr, null, &thread_entryPoint, this ) != 0 )
+                if( pthread_create( &m_addr, null, &thread_entryPoint, cast(void*) this ) != 0 )
                     throw new ThreadException( "Error creating thread" );
             }
             multiThreadedFlag = true;
@@ -1332,7 +1332,7 @@ extern (C) void thread_init()
 
         mainThread.m_isRunning = true;
 
-        status = pthread_setspecific( Thread.sm_this, mainThread );
+        status = pthread_setspecific( Thread.sm_this, cast(void*) mainThread );
         assert( status == 0 );
     }
 
@@ -2790,7 +2790,7 @@ private:
         }
         else version( Posix )
         {
-            pthread_setspecific( sm_this, f );
+            pthread_setspecific( sm_this, cast(void*) f );
         }
     }
 
