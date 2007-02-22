@@ -1,4 +1,6 @@
 OLDHOME=$HOME
 export HOME=`pwd`
-make clean lib doc install clean -fdmd-posix.mak
+make clean -fdmd-posix.mak
+make lib doc install -fdmd-posix.mak
+make clean -fdmd-posix.mak
 export HOME=$OLDHOME
