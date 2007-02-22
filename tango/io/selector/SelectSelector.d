@@ -12,7 +12,6 @@ private import tango.io.selector.model.ISelector;
 private import tango.io.selector.AbstractSelector;
 private import tango.io.selector.SelectorException;
 private import tango.sys.Common;
-//private import tango.sys.TimeConverter;
 
 private import tango.stdc.errno;
 
@@ -27,13 +26,6 @@ version (Windows)
 {
     private
     {
-/+
-        struct timeval
-        {
-            uint tv_sec;     // seconds
-            uint tv_usec;    // microseconds
-        }
-+/
         // Opaque struct
         struct fd_set
         {
@@ -439,7 +431,7 @@ public class SelectSelector: AbstractSelector
         int to = cast(int) (timeout != Interval.max ? cast(int) (timeout * 1000) : -1);
 
         debug (selector)
-            Stdout.format("--- SelectSelector.select(timeout={0} usec)\n", to);
+            Stdout.format("--- SelectSelector.select(timeout={0} msec)\n", to);
 
         if (_readSet !is null)
         {
