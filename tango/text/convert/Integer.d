@@ -89,7 +89,7 @@ int toInt(T) (T[] digits, uint radix=10)
         
 ******************************************************************************/
 
-int toLong(T, U=uint) (T[] digits, U radix=10)
+long toLong(T, U=uint) (T[] digits, U radix=10)
 {return toLong!(T)(digits, radix);}
 
 long toLong(T) (T[] digits, uint radix=10)
