@@ -30,14 +30,14 @@ DefaultGroupName=Tango
 [Icons]
 ;Name: "{group}\My Program"; Filename: "{app}\MYPROG.EXE"; WorkingDir: "{app}"
 Name: {group}\Uninstall Tango; Filename: {uninstallexe}
-Name: {group}\Revert To Phobos; Filename: {code:DMDRootLocation}\revert.exe; Parameters: phobos {code:DMDRootLocation}; Flags: runminimized; IconFilename: {code:DMDRootLocation}/revert_dmd.ico
-Name: {group}\Revert To Tango; Filename: {code:DMDRootLocation}\revert.exe; Parameters: tango {code:DMDRootLocation}; Flags: runminimized; IconFilename: {code:DMDRootLocation}/revert_tango.ico
+Name: {group}\Switch To Phobos; Filename: {code:DMDRootLocation}\bin\switch.exe; Parameters: phobos {code:DMDRootLocation}; Flags: runminimized; IconFilename: {code:DMDRootLocation}\bin\switch_dmd.ico
+Name: {group}\Switch To Tango; Filename: {code:DMDRootLocation}\bin\switch.exe; Parameters: tango {code:DMDRootLocation}; Flags: runminimized; IconFilename: {code:DMDRootLocation}\bin\switch_tango.ico
 
 [Files]
 Source: C:\projects\tango_install\unzip.exe; DestDir: {tmp}; Flags: ignoreversion
-Source: C:\projects\tango_install\revert.exe; DestDir: {code:DMDRootLocation}; Flags: ignoreversion
-Source: C:\projects\tango_install\revert_dmd.ico; DestDir: {code:DMDRootLocation}; Flags: ignoreversion
-Source: C:\projects\tango_install\revert_tango.ico; DestDir: {code:DMDRootLocation}; Flags: ignoreversion
+Source: C:\projects\tango_install\switch.exe; DestDir: {code:DMDRootLocation}\bin; Flags: ignoreversion
+Source: C:\projects\tango_install\switch_dmd.ico; DestDir: {code:DMDRootLocation}\bin; Flags: ignoreversion
+Source: C:\projects\tango_install\switch_tango.ico; DestDir: {code:DMDRootLocation}\bin; Flags: ignoreversion
 
 [Languages]
 Name: english; MessagesFile: compiler:Default.isl
@@ -126,6 +126,7 @@ begin
   then begin
     if MsgBox('You have a build configuration file at ' + DMDRootLocation('') + 'bin\build.cfg' + '.  Should I append an -I/path/to/tango to it ?'   , mbConfirmation ,   MB_YESNO ) = IDYES
     then begin
+		FileCopy(DMDRootLocation('') + 'bin\build.cfg',DMDRootLocation('') + 'bin\build.cfg.phobos',True );
       if SaveStringToFile(DMDRootLocation('') + 'bin\build.cfg',#13#10 + 'CMDLINE= -I"' + DMDRootLocation('') + 'tango\"' + #13#10 , True ) = False
       then begin
         MsgBox('Error writing file: ' + DMDRootLocation('') + 'bin\build.cfg.  Ignoring.' ,  mbConfirmation, MB_OK);
