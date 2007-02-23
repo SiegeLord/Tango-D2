@@ -597,13 +597,46 @@ else
 
 
 /**
+ * Exception-safe locking mechanism that wraps a ReadWriteMutex and acquires
+ * it for reading.
  *
+ * This class is meant to be used within a method or function (or any other
+ * block that defines a scope). It performs automatic aquisition and release
+ * of a synchronization object.
+ *
+ * Examples:
+ * ---
+ * void method1(ReadWriteMutex mutex)
+ * {
+ *     ScopedReadLock lock(mutex);
+ *
+ *     if (!doSomethingProtectedByMutex())
+ *     {
+ *         // As the ScopedReadLock is an scope class, it will be destroyed when
+ *         // method1() goes out of scope and inside its destructor it will
+ *         // release the ReadWriteMutex.
+ *         throw Exception("The mutex will be released when method1() returns");
+ *     }
+ * }
  */
 scope class ScopedReadLock
 {
     private ReadWriteMutex _mutex;
     private bool _acquired;
 
+    /**
+     * Initialize the lock, optionally acquiring the mutex for reading.
+     *
+     * Params:
+     * mutex            = ReadWriteMutex that will be acquired on construction
+     *                    of an instance of this class and released upon its
+     *                    destruction.
+     * acquireInitially = indicates whether the ReadWriteMutex should be
+     *                    acquired inside this method or not.
+     *
+     * Remarks:
+     * The pattern implemented by this class is also sometimes called guard.
+     */
     public this(ReadWriteMutex mutex, bool acquireInitially = true)
     {
         _mutex = mutex;
@@ -614,11 +647,22 @@ scope class ScopedReadLock
         _acquired = acquireInitially;
     }
 
+    /**
+     * Release the underlying ReadWriteMutex (it if had been acquired and not
+     * previously released) and destroy the scoped lock.
+     */
     public ~this()
     {
         release();
     }
 
+    /**
+     * Acquire the underlying mutex for reading.
+     *
+     * Remarks:
+     * If the mutex had been previously acquired through this class this
+     * method doesn't do anything.
+     */
     public final void acquire()
     {
         if (!_acquired)
@@ -628,6 +672,13 @@ scope class ScopedReadLock
         }
     }
 
+    /**
+     * Release the underlying mutex.
+     *
+     * Remarks:
+     * If the mutex had not been previously acquired through this class this
+     * method doesn't do anything.
+     */
     public final void release()
     {
         if (_acquired)
@@ -640,13 +691,46 @@ scope class ScopedReadLock
 
 
 /**
+ * Exception-safe locking mechanism that wraps a ReadWriteMutex and acquires
+ * it for writing.
  *
+ * This class is meant to be used within a method or function (or any other
+ * block that defines a scope). It performs automatic aquisition and release
+ * of a synchronization object.
+ *
+ * Examples:
+ * ---
+ * void method1(ReadWriteMutex mutex)
+ * {
+ *     ScopedWriteLock lock(mutex);
+ *
+ *     if (!doSomethingProtectedByMutex())
+ *     {
+ *         // As the ScopedWriteLock is an scope class, it will be destroyed when
+ *         // method1() goes out of scope and inside its destructor it will
+ *         // release the ReadWriteMutex.
+ *         throw Exception("The mutex will be released when method1() returns");
+ *     }
+ * }
  */
 scope class ScopedWriteLock
 {
     private ReadWriteMutex _mutex;
     private bool _acquired;
 
+    /**
+     * Initialize the lock, optionally acquiring the mutex for writing.
+     *
+     * Params:
+     * mutex            = ReadWriteMutex that will be acquired on construction
+     *                    of an instance of this class and released upon its
+     *                    destruction.
+     * acquireInitially = indicates whether the ReadWriteMutex should be
+     *                    acquired inside this method or not.
+     *
+     * Remarks:
+     * The pattern implemented by this class is also sometimes called guard.
+     */
     public this(ReadWriteMutex mutex, bool acquireInitially = true)
     {
         _mutex = mutex;
@@ -654,11 +738,22 @@ scope class ScopedWriteLock
         _acquired = true;
     }
 
+    /**
+     * Release the underlying ReadWriteMutex (it if had been acquired and not
+     * previously released) and destroy the scoped lock.
+     */
     public ~this()
     {
         release();
     }
 
+    /**
+     * Acquire the underlying mutex for writing.
+     *
+     * Remarks:
+     * If the mutex had been previously acquired through this class this
+     * method doesn't do anything.
+     */
     public final void acquire()
     {
         if (!_acquired)
@@ -668,6 +763,13 @@ scope class ScopedWriteLock
         }
     }
 
+    /**
+     * Release the underlying mutex.
+     *
+     * Remarks:
+     * If the mutex had not been previously acquired through this class this
+     * method doesn't do anything.
+     */
     public final void release()
     {
         if (_acquired)

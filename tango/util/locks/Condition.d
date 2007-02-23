@@ -21,8 +21,8 @@ private import tango.text.convert.Integer;
  * A condition variable enables threads to atomically block and test the
  * condition under the protection of a mutual exclusion lock (mutex) until
  * the condition is satisfied. That is, the mutex must have been held by
- * the thread before calling wait or signal on the condition. If the
- * condition is false, a thread blocks on a condition variable and
+ * the thread before calling wait or notifyOne/notifyAll on the condition.
+ * If the condition is false, a thread blocks on a condition variable and
  * atomically releases the mutex that is waiting for the condition to
  * change. If another thread changes the condition, it may wake up waiting
  * threads by signaling the associated condition variable. The waiting
@@ -34,7 +34,7 @@ private import tango.text.convert.Integer;
  * pthread_cond_t from the pthread API.The Windows API (before Windows
  * Vista) does not provide a native condition variable, so it is emulated
  * with a mutex, a semaphore and an event. The Windows condition variable
- * emulation is based on the ACE_Condition&lt;&gt; template class from the
+ * emulation is based on the ACE_Condition template class from the
  * $LINK2(http://www.cs.wustl.edu/~schmidt/ACE.html ACE framework).
  *
  * Examples:
