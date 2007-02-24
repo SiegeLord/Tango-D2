@@ -211,11 +211,11 @@ extern (C) int _aApplyRcw1(char[] aa, dg_t dg)
                 w = cast(wchar) d;
             else
             {
-                w = (((d - 0x10000) >> 10) & 0x3FF) + 0xD800;
+		w = cast(wchar) ((((d - 0x10000) >> 10) & 0x3FF) + 0xD800);
                 result = dg(cast(void *)&w);
                 if (result)
                     break;
-                w = ((d - 0x10000) & 0x3FF) + 0xDC00;
+		w = cast(wchar) (((d - 0x10000) & 0x3FF) + 0xDC00);
             }
         }
         result = dg(cast(void *)&w);
@@ -446,11 +446,11 @@ extern (C) int _aApplyRdw1(dchar[] aa, dg_t dg)
             w = cast(wchar) d;
         else
         {
-            w = (((d - 0x10000) >> 10) & 0x3FF) + 0xD800;
+	    w = cast(wchar) ((((d - 0x10000) >> 10) & 0x3FF) + 0xD800);
             result = dg(cast(void *)&w);
             if (result)
                 break;
-            w = ((d - 0x10000) & 0x3FF) + 0xDC00;
+	    w = cast(wchar) (((d - 0x10000) & 0x3FF) + 0xDC00);
         }
         result = dg(cast(void *)&w);
         if (result)
@@ -680,11 +680,11 @@ extern (C) int _aApplyRcw2(char[] aa, dg2_t dg)
                 w = cast(wchar) d;
             else
             {
-                w = (((d - 0x10000) >> 10) & 0x3FF) + 0xD800;
+		w = cast(wchar) ((((d - 0x10000) >> 10) & 0x3FF) + 0xD800);
                 result = dg(&i, cast(void *)&w);
                 if (result)
                     break;
-                w = ((d - 0x10000) & 0x3FF) + 0xDC00;
+		w = cast(wchar) (((d - 0x10000) & 0x3FF) + 0xDC00);
             }
         }
         result = dg(&i, cast(void *)&w);
@@ -920,11 +920,11 @@ extern (C) int _aApplyRdw2(dchar[] aa, dg2_t dg)
             w = cast(wchar) d;
         else
         {
-            w = (((d - 0x10000) >> 10) & 0x3FF) + 0xD800;
+	    w = cast(wchar) ((((d - 0x10000) >> 10) & 0x3FF) + 0xD800);
             result = dg(&i, cast(void *)&w);
             if (result)
                 break;
-            w = ((d - 0x10000) & 0x3FF) + 0xDC00;
+	    w = cast(wchar) (((d - 0x10000) & 0x3FF) + 0xDC00);
         }
         result = dg(&i, cast(void *)&w);
         if (result)

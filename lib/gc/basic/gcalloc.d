@@ -85,7 +85,7 @@ static if (is(typeof(VirtualAlloc))) // version (GC_Use_Alloc_Win32)
     {   void *p;
 
         p = VirtualAlloc(base + offset, nbytes, MEM_COMMIT, PAGE_READWRITE);
-        return (p == null);
+    return cast(int)(p == null);
     }
 
 
@@ -97,7 +97,7 @@ static if (is(typeof(VirtualAlloc))) // version (GC_Use_Alloc_Win32)
      */
     int os_mem_decommit(void *base, uint offset, uint nbytes)
     {
-        return VirtualFree(base + offset, nbytes, MEM_DECOMMIT) == 0;
+    return cast(int)(VirtualFree(base + offset, nbytes, MEM_DECOMMIT) == 0);
     }
 
 
@@ -110,7 +110,7 @@ static if (is(typeof(VirtualAlloc))) // version (GC_Use_Alloc_Win32)
      */
     int os_mem_unmap(void *base, uint nbytes)
     {
-        return VirtualFree(base, 0, MEM_RELEASE) == 0;
+        return cast(int)(VirtualFree(base, 0, MEM_RELEASE) == 0);
     }
 }
 else static if (is(typeof(mmap)))  // else version (GC_Use_Alloc_MMap)

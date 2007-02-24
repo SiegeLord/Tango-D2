@@ -90,6 +90,7 @@ int main(char[][] args);
  * It's purpose is to wrap the call to the D main()
  * function and catch any unhandled exceptions.
  */
+
 extern (C) int main(int argc, char **argv)
 {
     char[][] args;
@@ -142,9 +143,9 @@ extern (C) int main(int argc, char **argv)
         char[]* am = cast(char[]*) malloc(argc * (char[]).sizeof);
         scope(exit) free(am);
 
-        for (int i = 0; i < argc; i++)
+        for (size_t i = 0; i < argc; i++)
         {
-            int len = strlen(argv[i]);
+            auto len = strlen(argv[i]);
             am[i] = argv[i][0 .. len];
         }
         args = am[0 .. argc];

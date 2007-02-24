@@ -2165,7 +2165,7 @@ int parseAtom()
                     case 'x':
                     case 'u':
                     case '0':
-                        c = escape();
+			c = cast(char)escape();
                         goto Lbyte;
 
                     case '1': case '2': case '3':
@@ -2198,7 +2198,7 @@ int parseAtom()
                     if (isalpha(c))
                     {
                         op = REichar;
-                        c = toupper(c);
+                        c = cast(char)toupper(c);
                     }
                 }
                 if (op == REchar && c <= 0xFF)
@@ -2975,7 +2975,7 @@ public static rchar[] replace3(rchar[] format, rchar[] input, regmatch_t[] pmatc
                     {
                         result ~= '$';
                         result ~= c;
-                        c = c2;
+			c = cast(char)c2;
                         goto L1;
                     }
                 }

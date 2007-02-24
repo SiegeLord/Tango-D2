@@ -128,9 +128,9 @@ extern (C) int _d_run_main(int argc, char **argv, main_type main_func)
         char[]* am = cast(char[]*) malloc(argc * (char[]).sizeof);
         scope(exit) free(am);
 
-        for (int i = 0; i < argc; i++)
+        for (size_t i = 0; i < argc; i++)
         {
-            int len = strlen(argv[i]);
+            auto len = strlen(argv[i]);
             am[i] = argv[i][0 .. len];
         }
         args = am[0 .. argc];

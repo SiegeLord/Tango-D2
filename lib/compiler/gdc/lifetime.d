@@ -75,7 +75,7 @@ extern (C) Object _d_newclass(ClassInfo ci)
     debug printf("_d_newclass(ci = %p, %s)\n", ci, cast(char *)ci.name);
     if (ci.flags & 1) // if COM object
     {
-        p = cast(Object)tango.stdc.stdlib.malloc(ci.init.length);
+        p = tango.stdc.stdlib.malloc(ci.init.length);
         if (!p)
             onOutOfMemoryError();
     }
