@@ -1,4 +1,4 @@
-// CyberShadow 2007.02.18: revert.exe should to be in dmd/bin, so it can be reachable from PATH
+// CyberShadow 2007.02.18: switch.exe should to be in dmd/bin, so it can be reachable from PATH
 
 import tango.sys.win32.UserGdi;
 import tango.stdc.stringz;
@@ -12,10 +12,10 @@ void main (char[][] args)
 {
     if ( args.length == 1 )
     {
-        printf(toUtf8z("Tango revert utility v1.1
-Usage:   revert.exe 'phobos|tango'
-Example: revert.exe phobos
-         ( will revert to Digital Mars phobos.lib )")) ;
+        printf(toUtf8z("Tango switch utility v1.1
+Usage:   switch.exe 'phobos|tango'
+Example: switch.exe phobos
+         ( will switch to Digital Mars phobos.lib )")) ;
         exit(0);
     }
 
@@ -25,14 +25,14 @@ Example: revert.exe phobos
     void showMessage(char[] msg)
     {
         if(useMessageBoxes)
-            MessageBoxA(null, toUtf8z(msg), "Tango Revert utility\0", 0);
+            MessageBoxA(null, toUtf8z(msg), "Tango Switch utility\0", 0);
         else
             printf("%s\n", toUtf8z(msg));
     }
     
     if ( args.length >= 3 )
     {
-        // the 2nd command-line parameter is a sign that revert.exe was called 
+        // the 2nd command-line parameter is a sign that switch.exe was called 
         // from the Start menu shortcuts, so use Windows MessageBoxes to message 
         // the user instead of printf's
         useMessageBoxes = true;
@@ -48,7 +48,7 @@ Example: revert.exe phobos
             currentDir = ".\\";
         else
         {
-            // look by the program's location (assume revert.exe is either is ...\dmd\revert.exe or ...\dmd\bin\revert.exe
+            // look by the program's location (assume switch.exe is either is ...\dmd\switch.exe or ...\dmd\bin\switch.exe
             char[] commandLine = args[0];
             int pos=locatePrior(commandLine,'\\');
             if(pos<commandLine.length)
@@ -81,7 +81,7 @@ Example: revert.exe phobos
 
     char[] target = args[1].toLower();
 
-    if ( target == "phobos" ) // revert to Phobos
+    if ( target == "phobos" ) // switch to Phobos
     {
         // CyberShadow 2007.02.18: FIXME: toUtf8z is used incorrectly here. 
         // ANSI Windows APIs take Multi-byte character strings as parameters 
@@ -102,7 +102,7 @@ Example: revert.exe phobos
             showMessage("Switched to Phobos");
     }
     else 
-    if ( target == "tango" ) // revert to Tango
+    if ( target == "tango" ) // switch to Tango
     {
         if((new FileProxy(targetLib)).getSize==(new FileProxy(tangoLib)).getSize)
         {
