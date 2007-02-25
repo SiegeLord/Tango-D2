@@ -6,28 +6,21 @@
 
 *****************************************************/
 
-import tango.io.File;
-import tango.io.FilePath;
-import tango.io.FileConduit;
 import tango.io.Stdout;
 
-void main( char[][] args ) {
+import tango.io.FileProxy;
 
-    auto src = new FileConduit( args[0] ~ ".d");
-    auto dst = new FileConduit( args[0] ~ ".d.copy", FileConduit.ReadWriteCreate );
-    Stdout.formatln( "copy file {0} to {1}",
-            src.getPath.toUtf8,
-            dst.getPath.toUtf8 );
+void main (char[][] args) 
+{
+    auto src = args[0] ~ ".d";
+    auto dst = new FileProxy (args[0] ~ ".d.copy");
 
-    dst.copy(src);
-    dst.close();
-    
-    auto copiedfile = new File(dst.getPath);
-    assert (copiedfile.isExisting);
+    Stdout.formatln ("copy file {} to {}", src, dst);
+    dst.copy (src);
+    assert (dst.exists);
 
-    Stdout.formatln( "removing file {0}",
-            dst.getPath.toUtf8 );
-    copiedfile.remove();
+    Stdout.formatln ("removing file {}",  dst);
+    dst.remove;
 
-    assert (!copiedfile.isExisting);
+    assert (dst.exists is false);
 }
