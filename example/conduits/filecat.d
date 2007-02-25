@@ -16,7 +16,7 @@ void main(char[][] args)
 
            // copy each file onto dst
            foreach (char[] arg; args[2..args.length])
-                    dst.copy (arg);
+                    dst.copy (new FileConduit(arg));
 
            // flush output and close
            dst.close;
