@@ -676,7 +676,9 @@ class FileProxy : FilePath
 
                 FileProxy copy (char[] source)
                 {
-                        auto src = posix.open ((new FilePath(source)).cString.ptr, O_RDONLY, 0640);
+                        auto from = new FilePath (source);
+
+                        auto src = posix.open (from.cString.ptr, O_RDONLY, 0640);
                         scope (exit)
                                if (src != -1)
                                    posix.close (src);
@@ -709,7 +711,7 @@ class FileProxy : FilePath
 
                         // copy timestamps
                         stat_t stats;
-                        if (posix.stat (src.cString.ptr, &stats))
+                        if (posix.stat (from.cString.ptr, &stats))
                             exception;
 
                         utimbuf utim;
