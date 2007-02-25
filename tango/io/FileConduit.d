@@ -33,12 +33,7 @@ private import  Utf = tango.text.convert.Utf;
 version (Win32)
          private extern (Windows) BOOL SetEndOfFile (HANDLE);
      else
-        {
         private extern (C) int ftruncate (int, int);
-        private import tango.stdc.posix.sys.stat;
-        private import tango.stdc.posix.fcntl;
-        private import tango.stdc.posix.utime;
-        }
 
 
 /*******************************************************************************
@@ -411,35 +406,6 @@ class FileConduit : DeviceConduit, DeviceConduit.Seek
                         return super.writer (src);
                 }
             
-                /***********************************************************************
-
-                        Transfer the content of another file to this one. Returns a
-                        reference to this class on success, or throws an IOException 
-                        upon failure.
-                
-                ***********************************************************************/
-
-                FileConduit copy (char[] source)
-                {
-                        auto src = new FilePath (source);
-
-                        version (Win32SansUnicode)
-                                {
-                                if (! CopyFileA (src.cString, path.cString, false))
-                                      error ();
-                                }
-                             else
-                                {
-                                wchar[MAX_PATH+1] tmp1 = void;
-                                wchar[MAX_PATH+1] tmp2 = void;
-
-                                if (! CopyFileW (Utf.toUtf16(src.cString, tmp1).ptr, Utf.toUtf16(path.cString, tmp2).ptr, false))
-                                      error ();
-                                }
-
-                        return this;
-                }               
-
                 /***************************************************************
 
                         Set the file size to be that of the current seek 
@@ -530,35 +496,6 @@ class FileConduit : DeviceConduit, DeviceConduit.Seek
                         if (handle is -1)
                             error ();
                 }
-
-                /***********************************************************************
-
-                        Transfer the content of another file to this one. Returns a
-                        reference to this class on success, or throws an IOException 
-                        upon failure.
-                
-                ***********************************************************************/
-
-                FileConduit copy (char[] source)
-                {
-                        auto src = new FileConduit (source);
-                        scope (exit)
-                               src.close;
-
-                        stat_t stats;
-                        if (posix.stat (src.path.cString.ptr, &stats))
-                            error ();
-
-                        super.copy (src);
-
-                        utimbuf utim;
-                        utim.actime = stats.st_atime;
-                        utim.modtime = stats.st_mtime;
-                        if (utime (path.cString.ptr, &utim) == -1)
-                            error ();
-
-                        return this;
-                }               
 
                 /***************************************************************
 

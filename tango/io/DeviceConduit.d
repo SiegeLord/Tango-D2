@@ -291,7 +291,7 @@ class DeviceConduit : Conduit
 
 package class FileDevice
 {
-        private uint             _id;
+        private uint            _id;
         private Conduit.Access  access;
 
         package this (uint id, Conduit.Access access)

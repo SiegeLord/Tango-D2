@@ -63,6 +63,7 @@ version (Posix)
         {
         private import tango.stdc.stdio;
         private import tango.stdc.string;
+        private import tango.stdc.posix.utime;
         private import tango.stdc.posix.dirent;
         }
 
@@ -365,6 +366,35 @@ class FileProxy : FilePath
                         return time;
                 }
 
+                /***********************************************************************
+
+                        Transfer the content of another file to this one. Returns a
+                        reference to this class on success, or throws an IOException 
+                        upon failure.
+                
+                ***********************************************************************/
+
+                FileProxy copy (char[] source)
+                {
+                        auto src = new FilePath (source);
+
+                        version (Win32SansUnicode)
+                                {
+                                if (! CopyFileA (src.cString, path.cString, false))
+                                      error ();
+                                }
+                             else
+                                {
+                                wchar[MAX_PATH+1] tmp1 = void;
+                                wchar[MAX_PATH+1] tmp2 = void;
+
+                                if (! CopyFileW (Utf.toUtf16(src.cString, tmp1).ptr, name16(tmp2).ptr, false))
+                                      exception;
+                                }
+
+                        return this;
+                }               
+
                 /***************************************************************
 
                         Remove the file/directory from the file-system
@@ -635,6 +665,61 @@ class FileProxy : FilePath
                         time.created  = Utc.convert (*cast(timeval*) &stats.st_ctime);
                         return time;
                 }
+
+                /***********************************************************************
+
+                        Transfer the content of another file to this one. Returns a
+                        reference to this class on success, or throws an IOException 
+                        upon failure.
+                
+                ***********************************************************************/
+
+                FileProxy copy (char[] source)
+                {
+                        auto src = posix.open ((new FilePath(source)).cString.ptr, O_RDONLY, 0640);
+                        scope (exit)
+                               if (src != -1)
+                                   posix.close (src);
+
+                        auto dst = posix.open (this.cString.ptr, O_CREAT | O_RDWR, 0660);
+                        scope (exit)
+                               if (dst != -1)
+                                   posix.close (dst);
+
+                        if (src is -1 || dst is -1)
+                            exception;
+
+                        // copy content
+                        ubyte[] buf = new ubyte [16 * 1024];
+                        int read = posix.read (src, buf.ptr, buf.length);
+                        while (read > 0)
+                              {
+                              auto p = buf.ptr;
+                              do {                              
+                                 int written = posix.write (dst, p, read);
+                                 p += written;
+                                 read -= written;
+                                 if (written is -1)
+                                     exception;
+                                 } while (read > 0);
+                              read = posix.read (src, buf.ptr, buf.length);
+                              }
+                        if (read is -1)
+                            exception;
+
+                        // copy timestamps
+                        stat_t stats;
+                        if (posix.stat (src.cString.ptr, &stats))
+                            exception;
+
+                        utimbuf utim;
+                        utim.actime = stats.st_atime;
+                        utim.modtime = stats.st_mtime;
+                        if (utime (this.cString.ptr, &utim) is -1)
+                            exception;
+
+                        return this;
+                }               
 
                 /***************************************************************
 
