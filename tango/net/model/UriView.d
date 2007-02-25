@@ -33,7 +33,7 @@ module tango.net.model.UriView;
 
 abstract class UriView
 {
-        public const InvalidPort = -1;
+        public enum {InvalidPort = -1}
 
         /***********************************************************************
         
