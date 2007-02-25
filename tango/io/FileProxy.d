@@ -374,7 +374,7 @@ class FileProxy : FilePath
                 
                 ***********************************************************************/
 
-                FileProxy copy (char[] source)
+                final FileProxy copy (char[] source)
                 {
                         auto src = new FilePath (source);
 
@@ -674,7 +674,7 @@ class FileProxy : FilePath
                 
                 ***********************************************************************/
 
-                FileProxy copy (char[] source)
+                final FileProxy copy (char[] source)
                 {
                         auto from = new FilePath (source);
 
