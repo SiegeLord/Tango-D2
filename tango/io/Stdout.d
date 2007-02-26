@@ -90,9 +90,9 @@ class TextFormat(T)
         public alias print      opCall;
 
         version (Win32)
-                 private const char[] Eol = "\r\n";
+                 private const T[] Eol = "\r\n";
              else
-                private const char[] Eol = "\n";
+                private const T[] Eol = "\n";
 
         /**********************************************************************
 
