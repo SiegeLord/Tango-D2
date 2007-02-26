@@ -329,7 +329,7 @@ class FilePath : PathView
 
         ***********************************************************************/
 
-        FilePath set (char[] path, bool dir = false)
+        final FilePath set (char[] path, bool dir = false)
         {
                 dir_ = dir;
                 end_ = path.length;
@@ -483,7 +483,7 @@ class FilePath : PathView
 
         ***********************************************************************/
 
-        private FilePath parse ()
+        private final FilePath parse ()
         {
                 folder_ = 0;
                 name_ = suffix_ = ext_ = -1;
@@ -555,7 +555,7 @@ class FilePath : PathView
                 else
                    memmove (fp.ptr+tail+len, fp.ptr+tail, end_+1 - tail);
 
-                fp [head .. tail+len] = sub;
+                memmove (fp.ptr + head, sub.ptr, tail + len - head);
                 end_ += len;
                 return len;
         }
