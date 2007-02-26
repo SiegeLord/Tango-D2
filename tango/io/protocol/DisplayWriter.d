@@ -22,13 +22,13 @@ private import  tango.io.model.IConduit;
 
 private import  tango.io.protocol.Writer;
 
-private import  tango.text.convert.Format;
+private import  tango.text.convert.Layout;
 
 private import  tango.io.protocol.model.IProtocol;
 
 /*******************************************************************************
 
-        Format output suitable for presentation. DisplayWriter provides 
+        Layout output suitable for presentation. DisplayWriter provides 
         a means to append formatted data to an IBuffer, and exposes 
         a convenient method of handling a variety of data types. 
         
@@ -44,28 +44,28 @@ private import  tango.io.protocol.model.IProtocol;
 
 class DisplayWriter : Writer
 {
-        private Format!(char) format;
+        private Layout!(char) layout;
 
         private static TypeInfo[] revert = 
         [
-                typeid(void), // byte.sizeof,
-                typeid(char), // char.sizeof,
-                typeid(bool), // bool.sizeof,
-                typeid(byte), // byte.sizeof,
-                typeid(ubyte), // ubyte.sizeof,
-                typeid(wchar), // wchar.sizeof,
-                typeid(short), // short.sizeof,
+                typeid(void),   // byte.sizeof,
+                typeid(char),   // char.sizeof,
+                typeid(bool),   // bool.sizeof,
+                typeid(byte),   // byte.sizeof,
+                typeid(ubyte),  // ubyte.sizeof,
+                typeid(wchar),  // wchar.sizeof,
+                typeid(short),  // short.sizeof,
                 typeid(ushort), // ushort.sizeof,
-                typeid(dchar), // dchar.sizeof,
-                typeid(int), // int.sizeof,
-                typeid(uint), // uint.sizeof,
-                typeid(float), // float.sizeof,
-                typeid(long), // long.sizeof,
-                typeid(ulong), // ulong.sizeof,
+                typeid(dchar),  // dchar.sizeof,
+                typeid(int),    // int.sizeof,
+                typeid(uint),   // uint.sizeof,
+                typeid(float),  // float.sizeof,
+                typeid(long),   // long.sizeof,
+                typeid(ulong),  // ulong.sizeof,
                 typeid(double), // double.sizeof,
-                typeid(real), // real.sizeof,
+                typeid(real),   // real.sizeof,
                 typeid(Object), // (Object*).sizeof,
-                typeid(void*), // (void*).sizeof,
+                typeid(void*),  // (void*).sizeof,
         ];
 
         /***********************************************************************
@@ -77,7 +77,7 @@ class DisplayWriter : Writer
         this (IBuffer buffer)
         {
                 super (buffer);
-                format = new Format!(char);
+                layout = new Layout!(char);
                 arrays = elements = &write;
         }
      
@@ -109,10 +109,8 @@ class DisplayWriter : Writer
                             break;
 
                        default:
-                            char[128] output = void;
-                            char[128] convert = void;
+                            char[384] output = void;
                             auto ti = revert [type];
-                            auto result = format.Result (output, convert);
 
                             auto width = ti.tsize();
                             assert ((bytes % width) is 0, "invalid arg[] length");
@@ -124,7 +122,7 @@ class DisplayWriter : Writer
 
                             while (bytes)
                                   {
-                                  auto s = format (result, ti, cast(va_list) src);
+                                  auto s = layout (output, ti, cast(va_list) src);
                                   buffer_.append (s);
 
                                   bytes -= width;
