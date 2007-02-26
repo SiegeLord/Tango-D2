@@ -18,7 +18,7 @@ private import  tango.io.Console;
 private import  tango.io.model.IBuffer,
                 tango.io.model.IConduit;
 
-private import  tango.text.convert.Format;
+private import  tango.text.convert.Layout;
 
 /*******************************************************************************
 
@@ -33,7 +33,7 @@ version (DigitalMars)
 
 /*******************************************************************************
 
-        A bridge between a Format instance and a Buffer. This is used for
+        A bridge between a Layout instance and a Buffer. This is used for
         the Stdout & Stderr globals, but can be used for general purpose
         buffer-formatting as desired. The Template type 'T' dictates the
         text arrangement within the target buffer ~ one of char, wchar or
@@ -85,7 +85,7 @@ class TextFormat(T)
 {
         private T[]             eol;
         private IBuffer         output;
-        private Format!(T)      convert;
+        private Layout!(T)      convert;
 
         public alias print      opCall;
 
@@ -101,7 +101,7 @@ class TextFormat(T)
 
         **********************************************************************/
 
-        this (Format!(T) convert, IBuffer output, T[] eol = Eol)
+        this (Layout!(T) convert, IBuffer output, T[] eol = Eol)
         {
                 this.convert = convert;
                 this.output = output;
@@ -110,7 +110,7 @@ class TextFormat(T)
 
         /**********************************************************************
 
-                Format output using the provided formatting specification
+                Layout output using the provided formatting specification
 
         **********************************************************************/
 
@@ -122,7 +122,7 @@ class TextFormat(T)
 
         /**********************************************************************
 
-                Format output using the provided formatting specification
+                Layout output using the provided formatting specification
 
         **********************************************************************/
 
@@ -134,7 +134,7 @@ class TextFormat(T)
 
         /**********************************************************************
 
-                Format output using the provided formatting specification
+                Layout output using the provided formatting specification
 
         **********************************************************************/
 
@@ -156,24 +156,14 @@ class TextFormat(T)
                         "{}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}",
                         ];
                
+                assert (_arguments.length <= fmt.length);
+
                 if (_arguments.length is 0)
                     output.flush;
                 else
                    convert (&sink, _arguments, _argptr, fmt[_arguments.length - 1]);
                          
                 return this;
-        }
-
-        /**********************************************************************
-
-                Format a set of arguments into the provided output buffer
-                and return a valid slice
-                
-        **********************************************************************/
-
-        final T[] sprint (T[] buffer, T[] fmt, ...)
-        {
-                return convert.sprint (buffer, fmt, _arguments, _argptr);
         }
 
         /***********************************************************************
@@ -224,6 +214,17 @@ class TextFormat(T)
 
         /**********************************************************************
 
+                Return the associated Layout
+
+        **********************************************************************/
+
+        final Layout!(T) layout ()
+        {
+                return convert;
+        }
+
+        /**********************************************************************
+
                 Sink for passing to the formatter
 
         **********************************************************************/
@@ -245,7 +246,6 @@ class TextFormat(T)
         Note that both the buffer and conduit in use are exposed by these
         global instances ~ this can be leveraged, for instance, to copy a
         file to the standard output:
-
         ---
         Stdout.conduit.copy (new FileConduit ("myfile"));
         ---
@@ -257,9 +257,10 @@ public static TextFormat!(char) Stdout,
 
 static this()
 {
-        auto Formatter = new Format!(char);
-        Stdout = new TextFormat!(char) (Formatter, Cout.buffer);
-        Stderr = new TextFormat!(char) (Formatter, Cerr.buffer);
+        auto layout = new Layout!(char);
+
+        Stdout = new TextFormat!(char) (layout, Cout.buffer);
+        Stderr = new TextFormat!(char) (layout, Cerr.buffer);
 }
 
 
