@@ -1,45 +1,36 @@
 /*******************************************************************************
 
-        copyright:      Copyright (c) 2004 Kris Bell. All rights reserved
+        copyright:      Copyright (c) 2005 Kris Bell. All rights reserved
 
         license:        BSD style: $(LICENSE)
 
         version:        Nov 2005: Initial release
-        version:        Feb 2007: Moved sprint() here due to technical issues
-                
+
         author:         Kris
 
 *******************************************************************************/
 
 module tango.io.Stdout;
 
-private import  tango.io.Console;
-
-private import  tango.io.model.IBuffer,
-                tango.io.model.IConduit;
+private import  tango.io.Console,
+                tango.io.TextFormat;
 
 private import  tango.text.convert.Layout;
 
 /*******************************************************************************
 
-        Platform issues ...
-        
-*******************************************************************************/
+        Standard, global formatters for console output. If you don't need
+        formatted output or unicode translation, consider using the module
+        tango.io.Console directly
 
-version (DigitalMars)
-         alias void* Args;
-   else 
-      alias char* Args;
+        Note that both the buffer and conduit in use are exposed by these
+        global instances ~ this can be leveraged, for instance, to copy a
+        file to the standard output:
+        ---
+        Stdout.conduit.copy (new FileConduit ("myfile"));
+        ---
 
-/*******************************************************************************
-
-        A bridge between a Layout instance and a Buffer. This is used for
-        the Stdout & Stderr globals, but can be used for general purpose
-        buffer-formatting as desired. The Template type 'T' dictates the
-        text arrangement within the target buffer ~ one of char, wchar or
-        dchar (utf8, utf16, or utf32). 
-        
-        When wrapped by Stdout, TextFormat exposes this style of usage:
+        Stdout exposes this style of usage:
         ---
         Stdout ("hello");               => hello
         Stdout (1);                     => 1
@@ -77,177 +68,6 @@ version (DigitalMars)
         Stdout ("hello ") ("world").newline;
 
         Stdout.format ("hello {}", "world").newline;
-        ---
-
-*******************************************************************************/
-
-class TextFormat(T)
-{
-        private T[]             eol;
-        private IBuffer         output;
-        private Layout!(T)      convert;
-
-        public alias print      opCall;
-
-        version (Win32)
-                 private const T[] Eol = "\r\n";
-             else
-                private const T[] Eol = "\n";
-
-        /**********************************************************************
-
-                Construct a TextFormat instance, tying the provided
-                buffer to a formatter
-
-        **********************************************************************/
-
-        this (Layout!(T) convert, IBuffer output, T[] eol = Eol)
-        {
-                this.convert = convert;
-                this.output = output;
-                this.eol = eol;
-        }
-
-        /**********************************************************************
-
-                Layout using the provided formatting specification
-
-        **********************************************************************/
-
-        final TextFormat format (T[] fmt, ...)
-        {
-                convert (&sink, _arguments, _argptr, fmt);
-                return this;
-        }
-
-        /**********************************************************************
-
-                Layout using the provided formatting specification
-
-        **********************************************************************/
-
-        final TextFormat formatln (T[] fmt, ...)
-        {
-                convert (&sink, _arguments, _argptr, fmt);
-                return newline;
-        }
-
-        /**********************************************************************
-
-                Unformatted layout, with commas inserted between args
-
-        **********************************************************************/
-
-        final TextFormat print (...)
-        {
-                static  T[][] fmt =
-                        [
-                        "{}",
-                        "{}, {}",
-                        "{}, {}, {}",
-                        "{}, {}, {}, {}",
-                        "{}, {}, {}, {}, {}",
-                        "{}, {}, {}, {}, {}, {}",
-                        "{}, {}, {}, {}, {}, {}, {}",
-                        "{}, {}, {}, {}, {}, {}, {}, {}",
-                        "{}, {}, {}, {}, {}, {}, {}, {}, {}",
-                        "{}, {}, {}, {}, {}, {}, {}, {}, {}, {}",
-                        "{}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}",
-                        "{}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}",
-                        ];
-               
-                assert (_arguments.length <= fmt.length);
-
-                if (_arguments.length is 0)
-                    output.flush;
-                else
-                   convert (&sink, _arguments, _argptr, fmt[_arguments.length - 1]);
-                         
-                return this;
-        }
-
-        /***********************************************************************
-
-                Output a newline and flush
-
-        ***********************************************************************/
-
-        final TextFormat newline ()
-        {
-                output(eol).flush;
-                return this;
-        }
-
-        /**********************************************************************
-
-               Flush the output buffer
-
-        **********************************************************************/
-
-        final TextFormat flush ()
-        {
-                output.flush;
-                return this;
-        }
-
-        /**********************************************************************
-
-                Return the associated buffer
-
-        **********************************************************************/
-
-        final IBuffer buffer ()
-        {
-                return output;
-        }
-
-        /**********************************************************************
-
-                Return the associated conduit
-
-        **********************************************************************/
-
-        final IConduit conduit ()
-        {
-                return output.conduit;
-        }
-
-        /**********************************************************************
-
-                Return the associated Layout
-
-        **********************************************************************/
-
-        final Layout!(T) layout ()
-        {
-                return convert;
-        }
-
-        /**********************************************************************
-
-                Sink for passing to the formatter
-
-        **********************************************************************/
-
-        private final uint sink (T[] s)
-        {
-                output (s);
-                return s.length;
-        }
-}
-
-
-/*******************************************************************************
-
-        Standard, global formatters for console output. If you don't need
-        formatted output or unicode translation, consider using the module
-        tango.io.Console directly
-
-        Note that both the buffer and conduit in use are exposed by these
-        global instances ~ this can be leveraged, for instance, to copy a
-        file to the standard output:
-        ---
-        Stdout.conduit.copy (new FileConduit ("myfile"));
         ---
 
 *******************************************************************************/
