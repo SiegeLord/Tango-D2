@@ -19,7 +19,7 @@
         Stdout.conduit.copy (new FileConduit ("myfile"));
         ---
 
-        Stdout exposes this style of usage:
+        Stdout & Stderr expose this style of usage:
         ---
         Stdout ("hello");               => hello
         Stdout (1);                     => 1
@@ -58,6 +58,11 @@
         Stdout.format ("hello {}", "world").newline;
         ---
 
+        The format() method of both Stderr and Stdout support the range
+        of formatting options provided by tango.text.convert.Layout and
+        extensions thereof (including the full I18N extensions where it
+        has been configured in that manner)
+
 *******************************************************************************/
 
 module tango.io.Stdout;
@@ -82,8 +87,8 @@ static this()
         Stderr = new TextFormat!(char) (layout, Cerr.buffer);
 }
 
-public static TextFormat!(char) Stdout, /// global standard output
-                                Stderr; /// global error output
+public static TextFormat!(char) Stdout,         /// global standard output
+                                Stderr;         /// global error output
 
 
 /******************************************************************************
