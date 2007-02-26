@@ -10,7 +10,7 @@
 
 ******************************************************************************/
 
-module tango.text.locale.Format;
+module tango.text.locale.Convert;
 
 private import tango.text.locale.Core,
                tango.text.locale.Constants;

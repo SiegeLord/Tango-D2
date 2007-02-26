@@ -13,7 +13,7 @@
 module tango.text.locale.Locale;
 
 private import tango.text.locale.Core,
-               tango.text.locale.Format;
+               tango.text.locale.Convert;
 
 private import tango.text.convert.Layout;
 

@@ -92,8 +92,8 @@ module tango.text.locale.Core;
 
 private import  tango.text.locale.Constants,
                 tango.text.locale.Data,
-                tango.text.locale.Format,
-                tango.text.locale.Parse;
+                tango.text.locale.Parse,
+                tango.text.locale.Convert;
 
  
 version (Windows)
