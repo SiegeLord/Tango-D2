@@ -122,7 +122,7 @@ class DisplayWriter : Writer
 
                             while (bytes)
                                   {
-                                  auto s = layout (output, ti, cast(Arg) src);
+                                  auto s = layout.convertOne (output, ti, cast(Arg) src);
                                   buffer_.append (s);
 
                                   bytes -= width;

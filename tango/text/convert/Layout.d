@@ -184,7 +184,7 @@ class Layout(T)
 
         **********************************************************************/
 
-        public final T[] convert (T[] result, TypeInfo ti, Arg arg)
+        public final T[] convertOne (T[] result, TypeInfo ti, Arg arg)
         {
                 return munge (result, null, ti, arg);
         }
