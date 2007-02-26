@@ -27,24 +27,24 @@ version (Posix)
 /*******************************************************************************
 
         Date exposes the underlying OS support for splitting date fields
-        to and from a set of discrete attributes. For example, to set all 
+        to and from a set of discrete attributes. For example, to set all
         fields to the current local time:
         ---
         Date date;
 
-        date.set (Utc.utc);
+        date.set (Utc.time);
         ---
 
-        Attributes exposed include year, month, day, hour, minute, second, 
+        Attributes exposed include year, month, day, hour, minute, second,
         millisecond, and day of week. Methods exposed include setting each
-        of discrete time & date values, and converting fields to instances 
+        of discrete time & date values, and converting fields to instances
         of Time. Note that the conversion is limited by the underlying OS,
         and will not operate correctly with Time values beyond the domain.
         On Win32 the earliest representable date is 1601. On linux it is
         1970. Both systems have limitations upon future dates also.
-        
-        Note that Utc does not provide general conversion to and from 
-        textual representations, since that requires support for both I18N 
+
+        Note that Utc does not provide general conversion to and from
+        textual representations, since that requires support for both I18N
         and wide characters. However, it does support basic short English
         names that are used in a variety of text representations.
 
@@ -236,8 +236,8 @@ struct Date
                         t.tm_min = min;
                         t.tm_sec = sec;
 
-                        return cast(Time) (Time.TicksTo1970 + 
-                                           Time.TicksPerSecond * timegm(&t) + 
+                        return cast(Time) (Time.TicksTo1970 +
+                                           Time.TicksPerSecond * timegm(&t) +
                                            Time.TicksPerMillisecond * ms);
                 }
 
