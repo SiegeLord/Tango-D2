@@ -222,7 +222,7 @@ version (linux)
             event.events = events;
             // We associate the selection key to the epoll_event to be able to
             // retrieve it efficiently when we get events for this handle.
-            event.data.ptr = key;
+            event.data.ptr = cast(void*) key;
 
             if (epoll_ctl(_epfd, EPOLL_CTL_ADD, conduit.fileHandle(), &event) == 0)
             {
@@ -283,7 +283,7 @@ version (linux)
                 (*key).attachment = attachment;
 
                 event.events = events;
-                event.data.ptr = *key;
+                event.data.ptr = cast(void*) *key;
 
                 if (epoll_ctl(_epfd, EPOLL_CTL_MOD, conduit.fileHandle(), &event) != 0)
                 {
