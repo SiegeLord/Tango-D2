@@ -465,7 +465,7 @@ class Process
     }
     body
     {
-        return _stdin;
+        return _stderr;
     }
 
     /**
@@ -1411,7 +1411,7 @@ class ProcessWaitException: ProcessException
 private char[] format (char[] msg, int value)
 {
     char[10] tmp;
-                
+
     return msg ~ Integer.format (tmp, value);
 }
 
