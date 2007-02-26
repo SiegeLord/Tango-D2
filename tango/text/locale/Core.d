@@ -4512,6 +4512,7 @@ public struct DateTime {
 public struct TimeSpan {
 
   private ulong ticks_;
+  private bool  backward_;
 
   /**
    * Represents the minimum value.
@@ -4600,6 +4601,19 @@ public struct TimeSpan {
   public TimeSpan opSubAssign(TimeSpan t) {
     ticks_ -= t.ticks_;
     return *this;
+  }
+
+  /**
+   */
+  public void invert() {
+     backward_ = !backward_;
+     ticks_ = -ticks_;
+  }
+
+  /**
+   */
+  public bool backward() {
+     return backward_;
   }
 
   /**
@@ -4799,16 +4813,19 @@ public class TimeZone {
    * Returns: The UTC offset from time.
    */
   public TimeSpan getUtcOffset(DateTime time) {
-    TimeSpan offset;
+    long offset = ticksOffset_;
     if (time.kind != DateTime.Kind.UTC) {
       DaylightSavingTime dst = getDaylightChanges(time.year);
       DateTime start = dst.start + dst.change;
       DateTime end = dst.end;
       bool isDst = (start > end) ? (time >= start || time < end) : (time >= start && time < end);
       if (isDst)
-        offset = dst.change;
+          offset += dst.change.ticks_;
     }
-    return TimeSpan(offset.ticks + ticksOffset_);
+    auto span = TimeSpan(offset);
+    if (offset < 0)
+        span.invert;
+    return span;
   }
 
   /**
@@ -4833,7 +4850,9 @@ public class TimeZone {
   private this() {
     changesData_ = nativeMethods.getDaylightChanges();
     if (changesData_ != null)
-      ticksOffset_ = changesData_[17] * TICKS_PER_MINUTE;
+       {
+       ticksOffset_ = changesData_[17] * TICKS_PER_MINUTE;
+       }
   }
 
 }

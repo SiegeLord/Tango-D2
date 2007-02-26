@@ -312,7 +312,7 @@ char[] formatDateTime (char[] output, DateTime dateTime, char[] format, DateTime
                                                      : TimeZone.current.getUtcOffset(dateTime);
                                   int hours = offset.hours;
                                   int minutes = offset.minutes;
-                                  result ~= (hours >= 0) ? '+' : '-';
+                                  result ~= (offset.backward) ? '-' : '+';
                                   if (len is 1)
                                       result ~= formatInt (tmp, hours, 1);
                                   else
