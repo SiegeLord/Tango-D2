@@ -8,18 +8,6 @@
 
         author:         Kris
 
-*******************************************************************************/
-
-module tango.io.Stdout;
-
-public  import  tango.io.TextFormat;
-
-private import  tango.io.Console;
-
-private import  tango.text.convert.Layout;
-
-/*******************************************************************************
-
         Standard, global formatters for console output. If you don't need
         formatted output or unicode translation, consider using the module
         tango.io.Console directly
@@ -67,14 +55,24 @@ private import  tango.text.convert.Layout;
         the newline() method. The latter also flushes the output:
         ---
         Stdout ("hello ") ("world").newline;
-
         Stdout.format ("hello {}", "world").newline;
         ---
 
 *******************************************************************************/
 
-public static TextFormat!(char) Stdout,
-                                Stderr;
+module tango.io.Stdout;
+
+private import  tango.io.Console;
+
+public  import  tango.io.TextFormat;
+
+private import  tango.text.convert.Layout;
+
+/*******************************************************************************
+
+        Construct Stdout & Stderr when this module is loaded
+
+*******************************************************************************/
 
 static this()
 {
@@ -83,6 +81,9 @@ static this()
         Stdout = new TextFormat!(char) (layout, Cout.buffer);
         Stderr = new TextFormat!(char) (layout, Cerr.buffer);
 }
+
+public static TextFormat!(char) Stdout, /// global standard output
+                                Stderr; /// global error output
 
 
 /******************************************************************************
