@@ -12,8 +12,9 @@
 
 module tango.io.Stdout;
 
-private import  tango.io.Console,
-                tango.io.TextFormat;
+public  import  tango.io.TextFormat;
+
+private import  tango.io.Console;
 
 private import  tango.text.convert.Layout;
 
