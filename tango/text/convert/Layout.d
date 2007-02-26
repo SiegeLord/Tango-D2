@@ -64,7 +64,7 @@ class Layout(T)
         {
                 T[] delegate (T[], real, T[]) floater;
                 T[] delegate (T[], long, T[]) integer;
-                T[] delegate (T[], T[], TypeInfo, void*) unknown;
+                T[] delegate (T[], T[], TypeInfo, Arg) unknown;
         }
 
         Config!(T) config;
