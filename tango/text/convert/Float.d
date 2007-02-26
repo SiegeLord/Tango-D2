@@ -27,7 +27,9 @@ private import tango.core.Exception;
 
 private import Integer = tango.text.convert.Integer;
 
-private extern (C) double log10(double x);
+private alias real NumType;
+
+private extern (C) NumType log10l(NumType x);
 
 /******************************************************************************
 
@@ -37,13 +39,13 @@ private extern (C) double log10(double x);
         
 ******************************************************************************/
 
-double toDouble(T) (T[] src)
+NumType toFloat(T) (T[] src)
 {
         uint len;
 
         auto x = parse (src, &len);
         if (len < src.length)
-            throw new IllegalArgumentException ("invalid input:"~src);
+            throw new IllegalArgumentException ("invalid input: "~src);
         return x;
 }
 
@@ -56,7 +58,7 @@ double toDouble(T) (T[] src)
 
 ******************************************************************************/
 
-char[] toUtf8 (double d, uint decimals=6, bool scientific=false)
+char[] toUtf8 (NumType d, uint decimals=6, bool scientific=false)
 {
         char[64] tmp = void;
         
@@ -72,7 +74,7 @@ char[] toUtf8 (double d, uint decimals=6, bool scientific=false)
 
 ******************************************************************************/
 
-wchar[] toUtf16 (double d, uint decimals=6, bool scientific=false)
+wchar[] toUtf16 (NumType d, uint decimals=6, bool scientific=false)
 {
         wchar[64] tmp = void;
         
@@ -88,7 +90,7 @@ wchar[] toUtf16 (double d, uint decimals=6, bool scientific=false)
 
 ******************************************************************************/
 
-dchar[] toUtf32 (double d, uint decimals=6, bool scientific=false)
+dchar[] toUtf32 (NumType d, uint decimals=6, bool scientific=false)
 {
         dchar[64] tmp = void;
         
@@ -107,20 +109,20 @@ dchar[] toUtf32 (double d, uint decimals=6, bool scientific=false)
 
 ******************************************************************************/
 
-T[] format(T, U=uint) (T[] dst, double x, U decimals = 6, bool scientific = false)
+T[] format(T, D=double, U=uint) (T[] dst, D x, U decimals = 2, bool scientific = false)
 {return format!(T)(dst, x, decimals, scientific);}
 
-T[] format(T) (T[] dst, double x, uint decimals = 6, bool scientific = false)
+T[] format(T) (T[] dst, NumType x, uint decimals = 2, bool scientific = false)
 {
         assert (dst.length >= 32);
 
         // function to strip digits from the
         // left of a normalized base-10 number
-        static int toDigit (inout double v, inout int count)
+        static int toDigit (inout NumType v, inout int count)
         {
                 int digit;
 
-                // double can reliably hold 17 digits only
+                // NumType can reliably hold 17 digits only
                 if (++count > 17)
                     digit = 0;
                 else
@@ -132,12 +134,11 @@ T[] format(T) (T[] dst, double x, uint decimals = 6, bool scientific = false)
                 return digit + '0';
         }
 
-        // test for nan/infinity
-        if (((cast(ushort*) &x)[3] & 0x7ff0) == 0x7ff0)
-              if (*(cast(ulong*) &x) & 0x000f_ffff_ffff_ffff)
-                    return "nan";
-              else
-                 return "inf";
+        if (x is x.nan)
+            return "nan";
+
+        if (x is x.infinity)
+            return "inf";
 
         int exp;
         bool sign;
@@ -156,7 +157,7 @@ T[] format(T) (T[] dst, double x, uint decimals = 6, bool scientific = false)
            x += 0.5 / pow10 (decimals);
 
            // extract base10 exponent
-           exp = cast(int) log10 (x);
+           exp = cast(int) log10l (x);
 
            // normalize base10 mantissa (0 < m < 10)
            int len = exp;
@@ -241,7 +242,7 @@ T[] format(T) (T[] dst, double x, uint decimals = 6, bool scientific = false)
 
 ******************************************************************************/
 
-double parse(T) (T[] src, uint* ate=null)
+NumType parse(T) (T[] src, uint* ate=null)
 {
         T               c;
         T*              p,
@@ -249,7 +250,7 @@ double parse(T) (T[] src, uint* ate=null)
         int             exp;
         bool            sign;
         uint            radix = 10;
-        double          value = 0.0;
+        NumType         value = 0.0;
 
         // remove leading space, and sign
         c = *(p = src.ptr + Integer.trim (src, sign, radix));
@@ -258,7 +259,7 @@ double parse(T) (T[] src, uint* ate=null)
         if (radix != 10)
            {
            long v = Integer.parse (src, radix, ate); 
-           return *cast(double*) &v;
+           return *cast(NumType*) &v;
            }
 
         // set end check
@@ -312,10 +313,10 @@ double parse(T) (T[] src, uint* ate=null)
            // was it was nan instead?
            if (p is src.ptr)
                if (p[0..3] == "inf")
-                   p += 3, value = double.infinity;
+                   p += 3, value = NumType.infinity;
                else
                   if (p[0..3] == "nan")
-                      p += 3, value = double.nan;
+                      p += 3, value = NumType.nan;
 
         // set parse length, and return value
         if (ate)
@@ -331,9 +332,9 @@ double parse(T) (T[] src, uint* ate=null)
 
 ******************************************************************************/
 
-private double pow10 (uint exp)
+private NumType pow10 (uint exp)
 {
-        static  double[] Powers = 
+        static  NumType[] Powers = 
                 [
                 1.0e1,
                 1.0e2,
@@ -348,8 +349,8 @@ private double pow10 (uint exp)
 
         assert (exp < 512);
         
-        double mult = 1.0;
-        foreach (double power; Powers)
+        NumType mult = 1.0;
+        foreach (NumType power; Powers)
                 {
                 if (exp & 1)
                     mult *= power;
@@ -366,12 +367,16 @@ private double pow10 (uint exp)
 
 debug (UnitTest)
 {
+        // void main() {}
+
         unittest
         {
-                wchar[64] tmp;
+                char[64] tmp;
+
                 assert (format (tmp, 3.14159) == "3.141590");
                 assert (format (tmp, 3.14159, 4) == "3.1416");
-                assert (parse ("3.14159") == 3.14159);
+                assert (parse ("3.5") == 3.5);
+                assert (format(tmp, parse ("3.14159"), 6) == "3.141590");
         }
 }
 

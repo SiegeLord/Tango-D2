@@ -31,14 +31,14 @@ private import tango.core.Exception;
 
 ******************************************************************************/
 
-enum Style 
+enum Style
 {
-        Signed,                         /// signed decimal
-        Binary,                         /// binary output
-        Octal,                          /// octal output
-        Hex,                            /// lowercase hexadecimal
-        HexUpper,                       /// uppercase hexadecimal
-        Unsigned,                       /// unsigned integer
+        Signed = 'd',                   /// signed decimal
+        Binary = 'b',                   /// binary output
+        Octal = 'o',                    /// octal output
+        Hex = 'x',                      /// lowercase hexadecimal
+        HexUpper = 'X',                 /// uppercase hexadecimal
+        Unsigned = 'u',                 /// unsigned integer
 }
 
 /******************************************************************************
@@ -47,7 +47,7 @@ enum Style
 
 ******************************************************************************/
 
-enum Flags 
+enum Flags
 {
         None    = 0,                    /// no flags
         Prefix  = 1,                    /// prefix value with type
@@ -190,10 +190,11 @@ T[] format(T) (T[] dst, long i, Style fmt=Style.Signed, Flags flags=Flags.None)
            T[]  numbers = "0123456789abcdef";
 
            // pre-conversion setup
-           switch (fmt)
+           switch (cast(byte) fmt)
                   {
                   default:
-                  case Style.Signed:
+                  case 'd':
+                  case 'D':
                        if (i < 0)
                           {
                           prefix = "-";
@@ -206,29 +207,32 @@ T[] format(T) (T[] dst, long i, Style fmt=Style.Signed, Flags flags=Flags.None)
                              if (flags & Flags.Plus)
                                  prefix = "+";
                        // fall through!
-                  case Style.Unsigned:
+                  case 'u':
+                  case 'U':
                        radix = 10;
                        break;
 
-                  case Style.Binary:
+                  case 'b':
+                  case 'B':
                        radix = 2;
                        if (flags & Flags.Prefix)
                            prefix = "0b";
                        break;
 
-                  case Style.Octal:
+                  case 'o':
+                  case 'O':
                        radix = 8;
                        if (flags & Flags.Prefix)
                            prefix = "0o";
                        break;
 
-                  case Style.Hex:
+                  case 'x':
                        radix = 16;
                        if (flags & Flags.Prefix)
                            prefix = "0x";
                        break;
 
-                  case Style.HexUpper:
+                  case 'X':
                        radix = 16;
                        numbers = "0123456789ABCDEF";
                        if (flags & Flags.Prefix)
@@ -462,7 +466,7 @@ T[] itoa(T) (T[] output, uint value)
 
 debug (UnitTest)
 {
-        //void main() {}
+        // void main() {}
 
         unittest
         {
