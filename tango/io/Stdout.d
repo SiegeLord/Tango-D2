@@ -110,7 +110,7 @@ class TextFormat(T)
 
         /**********************************************************************
 
-                Layout output using the provided formatting specification
+                Layout using the provided formatting specification
 
         **********************************************************************/
 
@@ -122,7 +122,7 @@ class TextFormat(T)
 
         /**********************************************************************
 
-                Layout output using the provided formatting specification
+                Layout using the provided formatting specification
 
         **********************************************************************/
 
@@ -134,7 +134,7 @@ class TextFormat(T)
 
         /**********************************************************************
 
-                Layout output using the provided formatting specification
+                Unformatted layout, with commas inserted between args
 
         **********************************************************************/
 
