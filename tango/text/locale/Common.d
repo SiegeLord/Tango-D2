@@ -9,5 +9,4 @@ module tango.text.locale.Common;
 import  tango.text.locale.Constants,
         tango.text.locale.Core,
         tango.text.locale.Collation,
-        tango.text.locale.Format,
         tango.text.locale.Parse;

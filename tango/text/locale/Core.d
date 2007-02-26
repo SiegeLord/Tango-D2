@@ -95,6 +95,7 @@ private import  tango.text.locale.Constants,
                 tango.text.locale.Format,
                 tango.text.locale.Parse;
 
+ 
 version (Windows)
   private import tango.text.locale.Win32;
 else version (Posix)
@@ -1406,6 +1407,8 @@ public class DateTimeFormat : IFormatService {
   private const char[] rfc1123Pattern_ = "ddd, dd MMM yyyy HH':'mm':'ss 'GMT'";
   private const char[] sortableDateTimePattern_ = "yyyy'-'MM'-'dd'T'HH':'mm':'ss";
   private const char[] universalSortableDateTimePattern_ = "yyyy'-'MM'-'dd' 'HH':'mm':'ss'Z'";
+  private const char[] allStandardFormats = [ 'd', 'D', 'f', 'F', 'g', 'G', 'm', 'M', 'r', 'R', 's', 't', 'T', 'u', 'U', 'y', 'Y' ];
+
 
   package bool isReadOnly_;
   private static DateTimeFormat invariantFormat_;
@@ -1513,7 +1516,7 @@ public class DateTimeFormat : IFormatService {
    */
   public final char[][] getAllDateTimePatterns() {
     char[][] result;
-    foreach (char format; allStandardFormats)
+    foreach (char format; DateTimeFormat.allStandardFormats)
       result ~= getAllDateTimePatterns(format);
     return result;
   }
@@ -4147,8 +4150,8 @@ public struct DateTime {
    *
    * See $(LINK2 datetimeformat.html, DateTime Formatting) for more information about date and time formatting.
    */
-  public char[] toUtf8(IFormatService formatService = null) {
-    return formatDateTime(*this, null, DateTimeFormat.getInstance(formatService));
+  public char[] toUtf8(char[] output, IFormatService formatService = null) {
+    return toUtf8 (output, null, formatService);
   }
 
   /**
@@ -4233,8 +4236,8 @@ public struct DateTime {
    * // Year:                    mai 2006
    * ---
    */
-  public char[] toUtf8(char[] format, IFormatService formatService = null) {
-    return formatDateTime(*this, format, DateTimeFormat.getInstance(formatService));
+  public char[] toUtf8(char[] output, char[] format, IFormatService formatService = null) {
+    return formatDateTime(output, *this, format, DateTimeFormat.getInstance(formatService));
   }
 
   /**
