@@ -174,7 +174,7 @@ short[] getDaylightChanges() {
         }
     }
     
-    ret ~= [offDST, offSTD];
+    ret ~= [offDST/60, offSTD/60];
     
     return ret;
 }
