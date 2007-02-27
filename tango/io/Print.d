@@ -20,24 +20,26 @@ private import  tango.text.convert.Layout;
 /*******************************************************************************
 
         A bridge between a Layout instance and a Buffer. This is used for
-        the Print & Stderr globals, but can be used for general purpose
+        the Stdout & Stderr globals, but can be used for general purpose
         buffer-formatting as desired. The Template type 'T' dictates the
         text arrangement within the target buffer ~ one of char, wchar or
         dchar (utf8, utf16, or utf32). 
         
         Print exposes this style of usage:
         ---
-        Print ("hello");               => hello
-        Print (1);                     => 1
-        Print (3.14);                  => 3.14
-        Print ('b');                   => b
-        Print (1, 2, 3);               => 1, 2, 3         
-        Print ("abc", 1, 2, 3);        => abc, 1, 2, 3        
-        Print ("abc", 1, 2) ("foo");   => abc, 1, 2foo        
-        Print ("abc") ("def") (3.14);  => abcdef3.14
+        Print ("hello");                        => hello
+        Print (1);                              => 1
+        Print (3.14);                           => 3.14
+        Print ('b');                            => b
+        Print (1, 2, 3);                        => 1, 2, 3         
+        Print ("abc", 1, 2, 3);                 => abc, 1, 2, 3        
+        Print ("abc", 1, 2) ("foo");            => abc, 1, 2foo        
+        Print ("abc") ("def") (3.14);           => abcdef3.14
 
-        Print.format ("abc {}", 1);    => abc 1
-        Print.format ("abc ", 1);      => abc
+        Print.format ("abc {}", 0);             => abc 0
+        Print.format ("abc {}:{}", 0, 1);       => abc 0:1
+        Print.format ("abc {1}:{0}", 0, 1);     => abc 1:0
+        Print.format ("abc ", 1);               => abc
         ---
 
         Note that the last example does not throw an exception. There
