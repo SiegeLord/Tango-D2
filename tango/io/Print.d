@@ -36,9 +36,9 @@ private import  tango.text.convert.Layout;
         Print ("abc", 1, 2) ("foo");            => abc, 1, 2foo        
         Print ("abc") ("def") (3.14);           => abcdef3.14
 
-        Print.format ("abc {}", 0);             => abc 0
-        Print.format ("abc {}:{}", 0, 1);       => abc 0:1
-        Print.format ("abc {1}:{0}", 0, 1);     => abc 1:0
+        Print.format ("abc {}", 1);             => abc 1
+        Print.format ("abc {}:{}", 1, 2);       => abc 1:2
+        Print.format ("abc {1}:{0}", 1, 2);     => abc 2:1
         Print.format ("abc ", 1);               => abc
         ---
 
