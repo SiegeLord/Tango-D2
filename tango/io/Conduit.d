@@ -42,10 +42,16 @@ class Conduit : IConduit, IConduitFilter
         private IConduitFilter          filter;
         private bool                    seekable;
 
+        /***********************************************************************
+
+                Conduit access flags
+
+        ***********************************************************************/
+
         enum Access : ubyte             {
-                                        Read      = 0x01,       // is readable
-                                        Write     = 0x02,       // is writable
-                                        ReadWrite = 0x03,       // both
+                                        Read      = 0x01,       /// is readable
+                                        Write     = 0x02,       /// is writable
+                                        ReadWrite = 0x03,       /// both
                                         };
 
 
