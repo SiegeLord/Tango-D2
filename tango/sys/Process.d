@@ -114,27 +114,28 @@ class Process
             switch (reason)
             {
                 case Exit:
-                    str = format ("Process exited normally with return code ", status);
+                    str = format("Process exited normally with return code ", status);
                     break;
 
                 case Signal:
-                    str = format ("Process was killed with signal ", status);
+                    str = format("Process was killed with signal ", status);
                     break;
 
                 case Stop:
-                    str = format ("Process was stopped with signal ", status);
+                    str = format("Process was stopped with signal ", status);
                     break;
 
                 case Continue:
-                    str = format ("Process was resumed with signal ", status);
+                    str = format("Process was resumed with signal ", status);
                     break;
 
                 case Error:
-                    str = format ("Process failed with error code ", reason) ~ " : " ~ SysError.lookup(status);
+                    str = format("Process failed with error code ", reason) ~
+                                 " : " ~ SysError.lookup(status);
                     break;
 
                 default:
-                    str = format ("Unknown process result ", reason);
+                    str = format("Unknown process result ", reason);
                     break;
             }
             return str;
@@ -663,15 +664,13 @@ class Process
 
             char[] command = toUtf8();
             command ~= '\0';
-            // Convert the the environment variables to the format expected
-            // by CreateProcess().
-            char* envptr = toNullEndedBuffer(_env).ptr;
 
             // Convert the working directory to a null-ended string if
             // necessary.
             if (CreateProcessA(null, command.ptr, null, null, true,
-                               DETACHED_PROCESS, envptr, toUtf8z(_workDir),
-                               &startup, _info))
+                               DETACHED_PROCESS,
+                               (_env.length > 0 ? toNullEndedBuffer(_env).ptr : null),
+                               toUtf8z(_workDir), &startup, _info))
             {
                 CloseHandle(_info.hThread);
                 _running = true;

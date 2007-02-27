@@ -17,9 +17,9 @@ private import tango.text.stream.LineIterator;
 void main()
 {
     version (Windows)
-        char[] command = "cmd.exe /c dir";
+        char[] command = "ping -n 4 localhost";
     else version (Posix)
-        char[] command = "ls -l";
+        char[] command = "ping -c 4 localhost";
     else
         assert(false, "Unsupported platform");
 
