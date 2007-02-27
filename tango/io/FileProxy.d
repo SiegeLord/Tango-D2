@@ -819,22 +819,20 @@ class FileProxy : FilePath
 
                 final void toList (void delegate (char[], char[], bool) dg)
                 {
-                        dirent* list[];
-                        char[]  prefix = FilePath.padded (this.toUtf8);
+                        dirent** list;
+                        char[]   prefix = FilePath.padded (this.toUtf8);
+                         
+                        int i = scandir (this.cString.ptr, &list, null, null);
+                        for (int j=0; j < i; ++j)
+                            {
+                            dirent* entry = list[j];
+                            auto len = tango.stdc.string.strlen (entry.d_name.ptr);
+                            auto str = entry.d_name.ptr [0 .. len];
+                            dg (prefix, str, (entry.d_type & DT_DIR) != 0);
 
-                        extern (C)
-                                int select (dirent* entry)
-                                {
-                                        auto len = tango.stdc.string.strlen (entry.d_name.ptr);
-                                        auto str = entry.d_name.ptr [0 .. len];
-                                        dg (prefix, str, (entry.d_type & DT_DIR) != 0);
-
-                                        // don't save any entries!
-                                        return 0;
-                                }
-                          
-                        // scan each dir entry, but don't build an internal list
-                        scandir (this.cString.ptr, &list, &select, null);
+                            //free (entry.d_name.ptr);
+                            //free (entry);
+                            }
                 }
         }
         else
