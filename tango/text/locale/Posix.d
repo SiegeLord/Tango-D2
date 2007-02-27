@@ -1,8 +1,8 @@
-module tango.text.locale.Linux;
+module tango.text.locale.Posix;
 
 version (Posix)
 {
-alias tango.text.locale.Linux nativeMethods;
+alias tango.text.locale.Posix nativeMethods;
 
 private import tango.text.locale.Data;
 private import tango.stdc.ctype;

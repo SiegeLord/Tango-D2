@@ -7,7 +7,7 @@ private import tango.text.locale.Core;
 version (Windows)
   private import tango.text.locale.Win32;
 else version (Posix)
-  private import tango.text.locale.Linux;
+  private import tango.text.locale.Posix;
 
   /**
   Compares strings using the specified case and cultural comparision rules.
