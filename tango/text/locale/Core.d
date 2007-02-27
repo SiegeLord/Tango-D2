@@ -4813,7 +4813,7 @@ public class TimeZone {
    * Returns: The UTC offset from time.
    */
   public TimeSpan getUtcOffset(DateTime time) {
-    long offset = ticksOffset_;
+    long offset = cast(long) ticksOffset_;
     if (time.kind != DateTime.Kind.UTC) {
       DaylightSavingTime dst = getDaylightChanges(time.year);
       DateTime start = dst.start + dst.change;
@@ -4822,7 +4822,7 @@ public class TimeZone {
       if (isDst)
           offset += dst.change.ticks_;
     }
-    auto span = TimeSpan(offset);
+    auto span = TimeSpan(cast(ulong) offset);
     if (offset < 0)
         span.invert;
     return span;
