@@ -76,6 +76,17 @@ version (DigitalMars)
         Stdout.format ("hello {}", "world").newline;
         ---
 
+        The format() method supports the range of formatting options 
+        exposed by tango.text.convert.Layout and extensions thereof; 
+        including the full I18N extensions where configured in that 
+        manner. To create a French TextFormat:
+        ---
+        import tango.text.locale.Locale;
+
+        auto locale = new Locale (Culture.getCulture ("fr-FR"));
+        auto format = new TextFormat (locale, ...);
+        ---
+        
 *******************************************************************************/
 
 class TextFormat(T)
@@ -218,6 +229,18 @@ class TextFormat(T)
         final Layout!(T) layout ()
         {
                 return convert;
+        }
+
+        /**********************************************************************
+
+                Set the associated Layout
+
+        **********************************************************************/
+
+        final TextFormat layout (Layout!(T) layout)
+        {
+                convert = layout;
+                return this;
         }
 
         /**********************************************************************

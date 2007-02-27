@@ -60,8 +60,19 @@
 
         The format() method of both Stderr and Stdout support the range
         of formatting options provided by tango.text.convert.Layout and
-        extensions thereof (including the full I18N extensions where it
-        has been configured in that manner)
+        extensions thereof; including the full I18N extensions where it
+        has been configured in that manner. To enable a French Stdout, 
+        do the following:
+        ---
+        import tango.text.locale.Locale;
+
+        Stdout.layout = new Locale (Culture.getCulture ("fr-FR"));
+        ---
+        
+        Note that Stdout is a shared entity, so every usage of it will
+        be affected by the above example. For applications supporting 
+        multiple regions create multiple Locale instances instead, and 
+        cache them in an appropriate manner
 
 *******************************************************************************/
 
@@ -95,7 +106,7 @@ public static TextFormat!(char) Stdout,         /// global standard output
 
 ******************************************************************************/
 
-debug (Test)
+debug (Stdout)
 {
         void main() 
         {

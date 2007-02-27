@@ -8,6 +8,31 @@
 
         author:         Kris
 
+        This is the Tango I18N gateway, which extends the basic Layout
+        module with support for cuture- and region-specific formatting
+        of numerics, date, time, and currency.
+
+        Use as a standalone formatter in the same manner as Layout, or
+        combine with other entities such as Stdout. To enable a French
+        Stdout, do the following:
+        ---
+        Stdout.layout = new Locale (Culture.getCulture ("fr-FR"));
+        ---
+        
+        Note that Stdout is a shared entity, so every usage of it will
+        be affected by the above example. For applications supporting 
+        multiple regions create multiple Locale instances instead, and 
+        cache them in an appropriate manner.
+
+        In addition to region-specific currency, date and time, Locale
+        adds more sophisticated formatting option than Layout provides: 
+        numeric digit placement using '#' formatting, for example, is 
+        supported by Locale - along with placement of '$', '-', and '.'
+        regional-specifics.
+
+        Locale is currently utf8 only. Support for both Utf16 and utf32 
+        may be enabled at a later time
+
 ******************************************************************************/
 
 module tango.text.locale.Locale;
@@ -17,16 +42,7 @@ private import tango.text.locale.Core,
 
 private import tango.text.convert.Layout;
 
-/*******************************************************************************
-
-        Platform issues ...
-
-*******************************************************************************/
-
-version (DigitalMars)
-         private alias void* Arg;
-     else
-        private alias char* Arg;
+public  import tango.text.locale.Core : Culture;
 
 /*******************************************************************************
 
@@ -34,12 +50,10 @@ version (DigitalMars)
 
 *******************************************************************************/
 
-public class Locale
+public class Locale : Layout!(char)
 {
-        private Layout!(char)   layout_;
         private DateTimeFormat  dateFormat;
         private NumberFormat    numberFormat;
-        private IFormatService  formatService;
 
         /**********************************************************************
 
@@ -47,41 +61,15 @@ public class Locale
 
         this (IFormatService formatService = null)
         {
-                this (new Layout!(char));
-        }
-
-        /**********************************************************************
-
-        **********************************************************************/
-
-        this (Layout!(char) layout, IFormatService formatService = null)
-        {
-                layout_ = layout;
-
-                layout.config.floater = &floater;
-                layout.config.integer = &integer;
-                layout.config.unknown = &unknown;
-
                 numberFormat = NumberFormat.getInstance (formatService);
                 dateFormat = DateTimeFormat.getInstance (formatService);
-        }
-
-        /**********************************************************************
-
-                Return the associated layout instance
-
-        **********************************************************************/
-
-        final Layout!(char) layout ()
-        {
-                return layout_;
         }
 
         /***********************************************************************
 
         ***********************************************************************/
 
-        private char[] unknown (char[] output, char[] format, TypeInfo type, Arg p)
+        protected override char[] unknown (char[] output, char[] format, TypeInfo type, Arg p)
         {
                 switch (type.classinfo.name[9])
                        {
@@ -100,7 +88,7 @@ public class Locale
 
         **********************************************************************/
 
-        private char[] integer (char[] output, long v, char[] format)
+        protected override char[] integer (char[] output, long v, char[] format)
         {
                 return formatInteger (output, v, format, numberFormat);
         }
@@ -109,7 +97,7 @@ public class Locale
 
         **********************************************************************/
 
-        private char[] floater (char[] output, real v, char[] format)
+        protected override char[] floater (char[] output, real v, char[] format)
         {
                 return formatDouble (output, v, format, numberFormat);
         }
@@ -120,13 +108,14 @@ public class Locale
 
 *******************************************************************************/
 
-debug (Test1)
+debug (Locale)
 {
         import tango.io.Console;
 
         void main ()
         {
-                auto layout = (new Locale).layout;
-                Cout (layout ("{:G} {} bottles", DateTime.now, "green")) ();
+                auto layout = new Locale (Culture.getCulture ("fr-FR"));
+
+                Cout (layout ("{:D}", DateTime.now)) ();
         }
 }

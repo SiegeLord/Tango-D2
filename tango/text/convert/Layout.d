@@ -60,30 +60,6 @@ class Layout(T)
 
         **********************************************************************/
 
-        struct Config(T)
-        {
-                T[] delegate (T[], real, T[]) floater;
-                T[] delegate (T[], long, T[]) integer;
-                T[] delegate (T[], T[], TypeInfo, Arg) unknown;
-        }
-
-        Config!(T) config;
-
-        /**********************************************************************
-
-        **********************************************************************/
-
-        this ()
-        {
-                config.floater = &floater;
-                config.integer = &integer;
-                config.unknown = &unknown;
-        }
-
-        /**********************************************************************
-
-        **********************************************************************/
-
         public final T[] sprint (T[] result, T[] formatStr, ...)
         {
                 return sprint (result, formatStr, _arguments, _argptr);
@@ -383,38 +359,38 @@ class Layout(T)
                             return (*cast(bool*) p) ? t : f;
 
                        case TypeCode.BYTE:
-                            return config.integer (result, *cast(byte*) p, format);
+                            return integer (result, *cast(byte*) p, format);
 
                             case TypeCode.UBYTE:
-                            return config.integer (result, *cast(ubyte*) p, format);
+                            return integer (result, *cast(ubyte*) p, format);
 
                        case TypeCode.SHORT:
-                            return config.integer (result, *cast(short*) p, format);
+                            return integer (result, *cast(short*) p, format);
 
                             case TypeCode.USHORT:
-                            return config.integer (result, *cast(ushort*) p, format);
+                            return integer (result, *cast(ushort*) p, format);
 
                        case TypeCode.INT:
-                            return config.integer (result, *cast(int*) p, format);
+                            return integer (result, *cast(int*) p, format);
 
                        case TypeCode.UINT:
                        case TypeCode.POINTER:
-                            return config.integer (result, *cast(uint*) p, format);
+                            return integer (result, *cast(uint*) p, format);
 
                        case TypeCode.LONG:
-                            return config.integer (result, *cast(long*) p, format);
+                            return integer (result, *cast(long*) p, format);
 
                        case TypeCode.ULONG:
-                            return config.integer (result, *cast(long*) p, format);
+                            return integer (result, *cast(long*) p, format);
 
                        case TypeCode.FLOAT:
-                            return config.floater (result, *cast(float*) p, format);
+                            return floater (result, *cast(float*) p, format);
 
                        case TypeCode.DOUBLE:
-                            return config.floater (result, *cast(double*) p, format);
+                            return floater (result, *cast(double*) p, format);
 
                        case TypeCode.REAL:
-                            return config.floater (result, *cast(real*) p, format);
+                            return floater (result, *cast(real*) p, format);
 
                        case TypeCode.CHAR:
                             return fromUtf8 ((cast(char*) p)[0..1], result);
@@ -432,7 +408,7 @@ class Layout(T)
                             return munge (result, format, (cast(TypeInfo_Typedef) type).base, p);
 
                        default: 
-                            return config.unknown (result, format, type, p); 
+                            return unknown (result, format, type, p); 
                        }
 
                 return null;
@@ -442,7 +418,7 @@ class Layout(T)
 
         **********************************************************************/
 
-        private T[] unknown (T[] result, T[] format, TypeInfo type, Arg p)
+        protected T[] unknown (T[] result, T[] format, TypeInfo type, Arg p)
         {
                 return "{unhandled argument type: " ~ fromUtf8 (type.toUtf8, result) ~ '}';
         }
@@ -451,20 +427,7 @@ class Layout(T)
 
         **********************************************************************/
 
-        private T parse2 (T[] format, inout uint width, T def=T.init)
-        {
-                uint number;
-                foreach (c; format)
-                         if (c >= '0' && c <= '9')
-                             number = number * 10 + c - '0';
-                return format.length > 0 ? format[0] : def;
-        }
-
-        /**********************************************************************
-
-        **********************************************************************/
-
-        private T[] integer (T[] output, long v, T[] format)
+        protected T[] integer (T[] output, long v, T[] format)
         {
                 uint width;
                 auto style = cast(Integer.Style) parse2 (format, width, 'd');
@@ -483,7 +446,7 @@ class Layout(T)
 
         **********************************************************************/
 
-        private T[] floater (T[] output, real v, T[] format)
+        protected T[] floater (T[] output, real v, T[] format)
         {
                 uint places;
                 bool scientific;
@@ -495,6 +458,19 @@ class Layout(T)
                     places = 2;
 
                 return Float.format (output, v, places, scientific);
+        }
+
+        /**********************************************************************
+
+        **********************************************************************/
+
+        private T parse2 (T[] format, inout uint width, T def=T.init)
+        {
+                uint number;
+                foreach (c; format)
+                         if (c >= '0' && c <= '9')
+                             number = number * 10 + c - '0';
+                return format.length > 0 ? format[0] : def;
         }
 
         /***********************************************************************
@@ -696,7 +672,7 @@ debug (UnitTest)
 
 
 
-debug (Test1) 
+debug (Layout) 
 {
         import tango.io.Console;
 
