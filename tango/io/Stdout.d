@@ -78,9 +78,8 @@
 
 module tango.io.Stdout;
 
-private import  tango.io.Console;
-
-public  import  tango.io.TextFormat;
+private import  tango.io.Print,
+                tango.io.Console;
 
 private import  tango.text.convert.Layout;
 
@@ -94,12 +93,12 @@ static this()
 {
         auto layout = new Layout!(char);
 
-        Stdout = new TextFormat!(char) (layout, Cout.buffer);
-        Stderr = new TextFormat!(char) (layout, Cerr.buffer);
+        Stdout = new Print!(char) (layout, Cout.buffer);
+        Stderr = new Print!(char) (layout, Cerr.buffer);
 }
 
-public static TextFormat!(char) Stdout,         /// global standard output
-                                Stderr;         /// global error output
+public static Print!(char) Stdout,      /// global standard output
+                           Stderr;      /// global error output
 
 
 /******************************************************************************

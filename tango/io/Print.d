@@ -4,13 +4,13 @@
 
         license:        BSD style: $(LICENSE)
 
-        version:        Feb 2007: layout() provides a gateway to sprint() 
+        version:        Feb 2007: Seperated from Stdout 
                 
         author:         Kris
 
 *******************************************************************************/
 
-module tango.io.TextFormat;
+module tango.io.Print;
 
 private import  tango.io.model.IBuffer,
                 tango.io.model.IConduit;
@@ -19,36 +19,25 @@ private import  tango.text.convert.Layout;
 
 /*******************************************************************************
 
-        Platform issues ...
-        
-*******************************************************************************/
-
-version (DigitalMars)
-         alias void* Args;
-   else 
-      alias char* Args;
-
-/*******************************************************************************
-
         A bridge between a Layout instance and a Buffer. This is used for
-        the Stdout & Stderr globals, but can be used for general purpose
+        the Print & Stderr globals, but can be used for general purpose
         buffer-formatting as desired. The Template type 'T' dictates the
         text arrangement within the target buffer ~ one of char, wchar or
         dchar (utf8, utf16, or utf32). 
         
-        When wrapped by Stdout, TextFormat exposes this style of usage:
+        Print exposes this style of usage:
         ---
-        Stdout ("hello");               => hello
-        Stdout (1);                     => 1
-        Stdout (3.14);                  => 3.14
-        Stdout ('b');                   => b
-        Stdout (1, 2, 3);               => 1, 2, 3         
-        Stdout ("abc", 1, 2, 3);        => abc, 1, 2, 3        
-        Stdout ("abc", 1, 2) ("foo");   => abc, 1, 2foo        
-        Stdout ("abc") ("def") (3.14);  => abcdef3.14
+        Print ("hello");               => hello
+        Print (1);                     => 1
+        Print (3.14);                  => 3.14
+        Print ('b');                   => b
+        Print (1, 2, 3);               => 1, 2, 3         
+        Print ("abc", 1, 2, 3);        => abc, 1, 2, 3        
+        Print ("abc", 1, 2) ("foo");   => abc, 1, 2foo        
+        Print ("abc") ("def") (3.14);  => abcdef3.14
 
-        Stdout.format ("abc {}", 1);    => abc 1
-        Stdout.format ("abc ", 1);      => abc
+        Print.format ("abc {}", 1);    => abc 1
+        Print.format ("abc ", 1);      => abc
         ---
 
         Note that the last example does not throw an exception. There
@@ -58,38 +47,38 @@ version (DigitalMars)
         Flushing the output is achieved through the flush() method, or
         via an empty pair of parens: 
         ---
-        Stdout ("hello world") ();
-        Stdout ("hello world").flush;
+        Print ("hello world") ();
+        Print ("hello world").flush;
 
-        Stdout ("hello ") ("world") ();
-        Stdout ("hello ") ("world").flush;
+        Print ("hello ") ("world") ();
+        Print ("hello ") ("world").flush;
 
-        Stdout.format ("hello {}", "world") ();
-        Stdout.format ("hello {}", "world").flush;
+        Print.format ("hello {}", "world") ();
+        Print.format ("hello {}", "world").flush;
         ---
         
         Newline is handled by either placing '\n' in the output, or via
         the newline() method. The latter also flushes the output:
         ---
-        Stdout ("hello ") ("world").newline;
+        Print ("hello ") ("world").newline;
 
-        Stdout.format ("hello {}", "world").newline;
+        Print.format ("hello {}", "world").newline;
         ---
 
         The format() method supports the range of formatting options 
         exposed by tango.text.convert.Layout and extensions thereof; 
         including the full I18N extensions where configured in that 
-        manner. To create a French TextFormat:
+        manner. To create a French instance of Print:
         ---
         import tango.text.locale.Locale;
 
         auto locale = new Locale (Culture.getCulture ("fr-FR"));
-        auto format = new TextFormat (locale, ...);
+        auto print = new Print (locale, ...);
         ---
         
 *******************************************************************************/
 
-class TextFormat(T)
+class Print(T)
 {
         private T[]             eol;
         private IBuffer         output;
@@ -104,7 +93,7 @@ class TextFormat(T)
 
         /**********************************************************************
 
-                Construct a TextFormat instance, tying the provided
+                Construct a Print instance, tying the provided
                 buffer to a formatter
 
         **********************************************************************/
@@ -122,7 +111,7 @@ class TextFormat(T)
 
         **********************************************************************/
 
-        final TextFormat format (T[] fmt, ...)
+        final Print format (T[] fmt, ...)
         {
                 convert (&sink, _arguments, _argptr, fmt);
                 return this;
@@ -134,7 +123,7 @@ class TextFormat(T)
 
         **********************************************************************/
 
-        final TextFormat formatln (T[] fmt, ...)
+        final Print formatln (T[] fmt, ...)
         {
                 convert (&sink, _arguments, _argptr, fmt);
                 return newline;
@@ -146,7 +135,7 @@ class TextFormat(T)
 
         **********************************************************************/
 
-        final TextFormat print (...)
+        final Print print (...)
         {
                 static  T[][] fmt =
                         [
@@ -180,7 +169,7 @@ class TextFormat(T)
 
         ***********************************************************************/
 
-        final TextFormat newline ()
+        final Print newline ()
         {
                 output(eol).flush;
                 return this;
@@ -192,7 +181,7 @@ class TextFormat(T)
 
         **********************************************************************/
 
-        final TextFormat flush ()
+        final Print flush ()
         {
                 output.flush;
                 return this;
@@ -237,7 +226,7 @@ class TextFormat(T)
 
         **********************************************************************/
 
-        final TextFormat layout (Layout!(T) layout)
+        final Print layout (Layout!(T) layout)
         {
                 convert = layout;
                 return this;
