@@ -65,8 +65,15 @@ version (Posix)
         private import tango.stdc.string;
         private import tango.stdc.posix.utime;
         private import tango.stdc.posix.dirent;
-        }
 
+        version (ScanDir)
+                 extern (C) 
+                 {
+                 typedef int function (dirent*) SELECT;
+                 typedef int function (dirent**, dirent**) COMPARE;
+                 int scandir (char *dir, dirent ***namelist, SELECT, COMPARE);
+                 }
+        }
 
 /*******************************************************************************
 
@@ -793,6 +800,45 @@ class FileProxy : FilePath
                         return this;
                 }
 
+        version (ScanDir)
+        {
+                /***************************************************************
+
+                        List the set of filenames within this directory.
+
+                        All filenames are null terminated and are passed
+                        to the provided delegate as such, along with the
+                        path prefix and whether the entry is a directory
+                        or not.
+
+                 typedef int function (dirent*) SELECT;
+                 typedef int function (dirent**, dirent**) COMPARE;
+
+                 int scandir (char *dir, dirent ***namelist, SELECT, COMPARE);
+                ***************************************************************/
+
+                final void toList (void delegate (char[], char[], bool) dg)
+                {
+                        dirent* list[];
+                        char[]  prefix = FilePath.padded (this.toUtf8);
+
+                        extern (C)
+                                int select (dirent* entry)
+                                {
+                                        auto len = tango.stdc.string.strlen (entry.d_name.ptr);
+                                        auto str = entry.d_name.ptr [0 .. len];
+                                        dg (prefix, str, (entry.d_type & DT_DIR) != 0);
+
+                                        // don't save any entries!
+                                        return 0;
+                                }
+                          
+                        // scan each dir entry, but don't build an internal list
+                        scandir (this.cString.ptr, &list, &select, null);
+                }
+        }
+        else
+        {
                 /***************************************************************
 
                         List the set of filenames within this directory.
@@ -828,6 +874,7 @@ class FileProxy : FilePath
                               dg (prefix, str, (entry.d_type & DT_DIR) != 0);
                               }
                 }
+        }
         }
 }
 
