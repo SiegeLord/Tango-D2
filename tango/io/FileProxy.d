@@ -810,7 +810,8 @@ class FileProxy : FilePath
                         or not.
 
                 ***************************************************************/
-
+        version (Other)
+        {
                 final void toList (void delegate (char[], char[], bool) dg)
                 {
                         DIR*            dir;
@@ -838,20 +839,63 @@ class FileProxy : FilePath
                               auto str = entry.d_name.ptr [0 .. len];
                               
                               // resize the buffer as necessary ...
-                              if (sfnbuf.length < this.cString.length + str.length + 2) {
+                              if (sfnbuf.length < this.cString.length + str.length + 2) 
                                   sfnbuf.length = this.cString.length + str.length + 2;
-                              }
                               sfnbuf[this.cString.length + 1 ..
-                                     this.cString.length + str.length + 1] =
-                                  str;
+                                     this.cString.length + str.length + 1] = str;
                               sfnbuf[this.cString.length + str.length + 1] = '\0';
-                              if (stat(sfnbuf.ptr, &sbuf) == 0) {
+
+                              if (stat (sfnbuf.ptr, &sbuf) == 0) 
                                   dg (prefix, str, (sbuf.st_mode & S_IFDIR) != 0);
-                              } else {
-                                  dg (prefix, str, false); // perhaps should throw, probably not
-                              }
+                              else 
+                                 // perhaps should throw, probably not
+                                 dg (prefix, str, false); 
                               }
                 }
+        }
+        else
+        {
+                final void toList (void delegate (char[], char[], bool) dg)
+                {
+                        DIR*            dir;
+                        dirent*         entry;
+                        stat_t          sbuf;
+                        char[]          prefix;
+                        char[]          sfnbuf;
+
+                        dir = tango.stdc.posix.dirent.opendir (this.cString.ptr);
+                        if (! dir)
+                              exception;
+
+                        scope (exit)
+                               tango.stdc.posix.dirent.closedir (dir);
+
+                        prefix = FilePath.padded (this.toUtf8);
+                        
+                        // prepare our filename buffer
+                        sfnbuf = prefix.dup;
+
+                        while ((entry = tango.stdc.posix.dirent.readdir(dir)) != null)
+                              {
+                              auto len = tango.stdc.string.strlen (entry.d_name.ptr);
+                              auto str = entry.d_name.ptr [0 .. len];
+                              ++len;  // include the null
+                              
+                              // resize the buffer as necessary ...
+                              if (sfnbuf.length < prefix.length + len) 
+                                  sfnbuf.length = prefix.length + len;
+
+                              sfnbuf [prefix.length .. prefix.length + len] 
+                                      = entry.d_name.ptr [0 .. len];
+
+                              if (stat (sfnbuf.ptr, &sbuf) is 0) 
+                                  dg (prefix, str, (sbuf.st_mode & S_IFDIR) != 0);
+                              else 
+                                 // perhaps should throw, probably not
+                                 dg (prefix, str, false); 
+                              }
+                }
+        }
         }
 }
 
