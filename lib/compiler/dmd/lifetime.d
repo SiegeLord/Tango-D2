@@ -32,7 +32,6 @@ private
     import tango.stdc.stdlib;
     import tango.stdc.string;
     import tango.stdc.stdarg;
-    import tango.stdc.stdbool; // TODO: remove this when the old bit code goes away
     debug import tango.stdc.stdio;
 }
 

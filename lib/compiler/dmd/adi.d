@@ -40,7 +40,6 @@ private
 {
     import tango.stdc.string;
     import tango.stdc.stdlib;
-    import tango.stdc.stdbool; // TODO: remove this when the old bit code goes away
     import util.utf;
 
     enum BlkAttr : uint
@@ -423,6 +422,8 @@ extern (C) long _adSortWchar(wchar[] a)
  * Support for array.sort property for bit[].
  */
 
+version (none)
+{
 extern (C) bit[] _adSortBit(bit[] a)
 out (result)
 {
@@ -471,6 +472,7 @@ body
 unittest
 {
     debug(adi) printf("array.sort_Bit[].unittest\n");
+}
 }
 
 
