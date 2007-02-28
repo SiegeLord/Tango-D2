@@ -79,14 +79,15 @@ else version( darwin )
         timeval it_value;
     }
 
-    struct timezone_s
+    // non-standard
+    struct timezone_t
     {
         int tz_minuteswest;
         int tz_dsttime;
     }
 
     int getitimer(int, itimerval*);
-    int gettimeofday(timeval*, timezone_s*);
+    int gettimeofday(timeval*, timezone_t*); // timesone_t* is normally void*
     int select(int, fd_set*, fd_set*, fd_set*, timeval*);
     int setitimer(int, itimerval*, itimerval*);
     int utimes(char*, timeval*);

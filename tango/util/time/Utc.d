@@ -3,9 +3,9 @@
         copyright:      Copyright (c) 2007 Kris Bell. All rights reserved
 
         license:        BSD style: $(LICENSE)
-        
+
         version:        Feb 2007: Initial release
-        
+
         author:         Kris
 
 *******************************************************************************/
@@ -22,7 +22,7 @@ public  import  tango.core.Type : Interval, Time;
 
         Exposes UTC time relative to Jan 1st, 1 AD. These values are
         based upon a clock-tick of 100ns, giving them a span of greater
-        than 10,000 years. Units of Time are the foundation of most time 
+        than 10,000 years. Units of Time are the foundation of most time
         and date functionality in Tango.
 
         Interval is another type of time period, used for measuring a
@@ -36,7 +36,7 @@ public  import  tango.core.Type : Interval, Time;
 struct Utc
 {
         /***********************************************************************
-                
+
                 Return the local time since the epoch
 
         ***********************************************************************/
@@ -47,7 +47,7 @@ struct Utc
         }
 
         /***********************************************************************
-                
+
                 Convert UTC time to local time
 
         ***********************************************************************/
@@ -58,7 +58,7 @@ struct Utc
         }
 
         /***********************************************************************
-                
+
                 Convert local time to UTC time
 
         ***********************************************************************/
@@ -69,7 +69,7 @@ struct Utc
         }
 
         /***********************************************************************
-                        
+
                 Basic functions for epoch time
 
         ***********************************************************************/
@@ -77,7 +77,7 @@ struct Utc
         version (Win32)
         {
                 /***************************************************************
-                
+
                         Return the current time as UTC since the epoch
 
                 ***************************************************************/
@@ -90,7 +90,7 @@ struct Utc
                 }
 
                 /***************************************************************
-                
+
                         Convert FILETIME to a Time
 
                 ***************************************************************/
@@ -101,7 +101,7 @@ struct Utc
                 }
 
                 /***************************************************************
-                
+
                         Convert Time to a FILETIME
 
                 ***************************************************************/
@@ -116,7 +116,7 @@ struct Utc
                 }
 
                 /***************************************************************
-                
+
                         Return the timezone seconds relative to GMT. The
                         value is negative when west of GMT
 
@@ -134,7 +134,7 @@ struct Utc
         version (Posix)
         {
                 /***************************************************************
-                
+
                         Return the current time as UTC since the epoch
 
                 ***************************************************************/
@@ -149,7 +149,7 @@ struct Utc
                 }
 
                 /***************************************************************
-                
+
                         Convert timeval to a Time
 
                 ***************************************************************/
@@ -160,7 +160,7 @@ struct Utc
                 }
 
                 /***************************************************************
-                
+
                         Convert Time to a timeval
 
                 ***************************************************************/
@@ -177,7 +177,7 @@ struct Utc
                 }
 
                 /***************************************************************
-                
+
                         Return the timezone seconds relative to GMT. The
                         value is negative when west of GMT
 
@@ -187,7 +187,7 @@ struct Utc
                 {
                         version (darwin)
                                 {
-                                timezone_s tz;
+                                timezone_t tz;
                                 gettimeofday (null, &tz);
                                 return cast(Interval) -tz.tz_minuteswest * 60;
                                 }
