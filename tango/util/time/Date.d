@@ -26,7 +26,7 @@ public  import tango.core.Type : Time;
         ---
         Date date;
 
-        date.set (Utc.time);
+        date.set (Utc.local);
         ---
 
         Attributes exposed include year, month, day, hour, minute, second,
