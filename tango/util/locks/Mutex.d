@@ -183,7 +183,8 @@ version (Posix)
         }
     }
 
-    version (linux)
+    // Not all POSIX-compatible platforms implement the pthread_mutex_timedlock() API.
+    static if (is(pthread_mutex_timedlock))
     {
         /**
          * Mutex class that can wait to acquire a lock for a specified timeout.
@@ -585,136 +586,138 @@ scope class ScopedLock
     }
 }
 
-
-/**
- * Exception-safe locking mechanism that wraps a TimedMutex.
- *
- * This class is meant to be used within a method or function (or any other
- * block that defines a scope). It performs automatic aquisition and release
- * of a synchronization object.
- *
- * Examples:
- * ---
- * void method1(TimedMutex mutex)
- * {
- *     ScopedTimedLock lock(mutex);
- *
- *     if (!doSomethingProtectedByMutex())
- *     {
- *         // As the ScopedTimedLock is an scope class, it will be destroyed
- *         // when method1() goes out of scope and inside its destructor it
- *         // will release the Mutex.
- *         throw Exception("The mutex will be released when method1() returns");
- *     }
- * }
- * ---
- */
-scope class ScopedTimedLock
+// Not all platforms have support for timed mutexes.
+static if (is(TimedMutex))
 {
-    private TimedMutex _mutex;
-    private bool _acquired;
-
     /**
-     * Initialize the lock, optionally acquiring the mutex.
-     *
-     * Params:
-     * mutex            = TimedMutex that will be acquired on construction
-     *                    of an instance of this class and released upon its
-     *                    destruction.
-     * acquireInitially = indicates whether the TimedMutex should be acquired
-     *                    inside this method or not.
-     *
-     * Remarks:
-     * The pattern implemented by this class is also called guard.
-     */
-    public this(TimedMutex mutex, bool acquireInitially = true)
+    * Exception-safe locking mechanism that wraps a TimedMutex.
+    *
+    * This class is meant to be used within a method or function (or any other
+    * block that defines a scope). It performs automatic aquisition and release
+    * of a synchronization object.
+    *
+    * Examples:
+    * ---
+    * void method1(TimedMutex mutex)
+    * {
+    *     ScopedTimedLock lock(mutex);
+    *
+    *     if (!doSomethingProtectedByMutex())
+    *     {
+    *         // As the ScopedTimedLock is an scope class, it will be destroyed
+    *         // when method1() goes out of scope and inside its destructor it
+    *         // will release the Mutex.
+    *         throw Exception("The mutex will be released when method1() returns");
+    *     }
+    * }
+    * ---
+    */
+    scope class ScopedTimedLock
     {
-        _mutex = mutex;
+        private TimedMutex _mutex;
+        private bool _acquired;
 
-        if (acquireInitially)
+        /**
+        * Initialize the lock, optionally acquiring the mutex.
+        *
+        * Params:
+        * mutex            = TimedMutex that will be acquired on construction
+        *                    of an instance of this class and released upon its
+        *                    destruction.
+        * acquireInitially = indicates whether the TimedMutex should be acquired
+        *                    inside this method or not.
+        *
+        * Remarks:
+        * The pattern implemented by this class is also called guard.
+        */
+        public this(TimedMutex mutex, bool acquireInitially = true)
         {
-            _mutex.acquire();
+            _mutex = mutex;
+
+            if (acquireInitially)
+            {
+                _mutex.acquire();
+            }
+            _acquired = acquireInitially;
         }
-        _acquired = acquireInitially;
-    }
 
-    /**
-     * Initialize the lock and try to acquire the TimedMutex for the
-     * specified amount of time.
-     */
-    public this(TimedMutex mutex, Interval timeout)
-    {
-        _mutex = mutex;
-
-        if (!_mutex.tryAcquire(timeout))
+        /**
+        * Initialize the lock and try to acquire the TimedMutex for the
+        * specified amount of time.
+        */
+        public this(TimedMutex mutex, Interval timeout)
         {
-            throw new MutexTimeoutException(__FILE__, __LINE__);
-        }
-        _acquired = true;
-    }
+            _mutex = mutex;
 
-    /**
-     * Release the underlying Mutex (it if had been acquired and not
-     * previously released) and destroy the scoped lock.
-     */
-    public ~this()
-    {
-        release();
-    }
-
-    /**
-     * Acquire the underlying mutex.
-     *
-     * Remarks:
-     * If the mutex had been previously acquired this method doesn't do
-     * anything.
-     */
-    public final void acquire()
-    {
-        if (!_acquired)
-        {
-            _mutex.acquire();
+            if (!_mutex.tryAcquire(timeout))
+            {
+                throw new MutexTimeoutException(__FILE__, __LINE__);
+            }
             _acquired = true;
         }
-    }
 
-    /**
-     * Conditionally acquire the mutex waiting a maximum amount of time
-     * to do it.
-     *
-     * Remarks:
-     * Trying to acquire a TimedMutex more than once will always result in
-     * failure, even if the TimedMutex was recursive.
-     */
-    public final bool tryAcquire(Interval timeout)
-    {
-        bool success = false;
-
-        if (!_acquired)
+        /**
+        * Release the underlying Mutex (it if had been acquired and not
+        * previously released) and destroy the scoped lock.
+        */
+        public ~this()
         {
-            success = _mutex.tryAcquire(timeout);
-            _acquired = success;
+            release();
         }
-        return success;
-    }
 
-    /**
-     * Release the underlying mutex.
-     *
-     * Remarks:
-     * If the mutex had not been previously acquired this method doesn't do
-     * anything.
-     */
-    public final void release()
-    {
-        if (_acquired)
+        /**
+        * Acquire the underlying mutex.
+        *
+        * Remarks:
+        * If the mutex had been previously acquired this method doesn't do
+        * anything.
+        */
+        public final void acquire()
         {
-            _mutex.release();
-            _acquired = false;
+            if (!_acquired)
+            {
+                _mutex.acquire();
+                _acquired = true;
+            }
+        }
+
+        /**
+        * Conditionally acquire the mutex waiting a maximum amount of time
+        * to do it.
+        *
+        * Remarks:
+        * Trying to acquire a TimedMutex more than once will always result in
+        * failure, even if the TimedMutex was recursive.
+        */
+        public final bool tryAcquire(Interval timeout)
+        {
+            bool success = false;
+
+            if (!_acquired)
+            {
+                success = _mutex.tryAcquire(timeout);
+                _acquired = success;
+            }
+            return success;
+        }
+
+        /**
+        * Release the underlying mutex.
+        *
+        * Remarks:
+        * If the mutex had not been previously acquired this method doesn't do
+        * anything.
+        */
+        public final void release()
+        {
+            if (_acquired)
+            {
+                _mutex.release();
+                _acquired = false;
+            }
         }
     }
 }
-
 
 debug (UnitTest)
 {

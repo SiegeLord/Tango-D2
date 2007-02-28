@@ -92,7 +92,8 @@ version (Posix)
             }
         }
 
-        version (linux)
+        // Not all POSIX platforms have this API.
+        static if (is(sem_timedwait))
         {
             /**
              * Conditionally decrement the semaphore if count is greater
