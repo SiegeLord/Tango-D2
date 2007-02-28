@@ -470,6 +470,8 @@ class Layout(T)
                 foreach (c; format)
                          if (c >= '0' && c <= '9')
                              number = number * 10 + c - '0';
+
+                width = number;
                 return format.length > 0 ? format[0] : def;
         }
 
