@@ -1,25 +1,26 @@
 /*******************************************************************************
-        copyright:      Copyright (c) 2004 Regan Heath. All rights reserved
+        copyright:      Copyright (c) 2006 Tango. All rights reserved
 
         license:        BSD style: see doc/license.txt for details
 
         version:        Initial release: Feb 2006
 
-        author:         Regan Heath, Kris
+        author:         Regan Heath, Oskar Linde
 
         This module implements a generic Merkle-Damgard hash function
 
-
 *******************************************************************************/
+
 module tango.math.crypto.MerkleDamgard;
 
-public import tango.math.crypto.DigestTransform;
-import tango.core.ByteSwap;
+private import tango.core.ByteSwap;
 
+public  import tango.math.crypto.Digest;
 
 /*******************************************************************************
-        To extend MerkleDamgard to create a custom hash function you will
-        be required to implement a number of abstract methods, these include:
+
+        Extending MerkleDamgard to create a custom hash function requires 
+        the implementation of a number of abstract methods. These include:
         ---
         public uint digestSize();
         protected void reset();
@@ -28,20 +29,21 @@ import tango.core.ByteSwap;
         protected uint addSize();
         protected void padMessage(ubyte[] data);
         protected void transform(ubyte[] data);
-        
         ---
 
-        In addition there exist two further abstract methods, these methods
-        have empty default implementations because in some cases they are not required:
+        In addition there exist two further abstract methods; these methods
+        have empty default implementations since in some cases they are not 
+        required:
         ---
         protected abstract void padLength(ubyte[] data, ulong length);
         protected abstract void extend();
         ---
-        The method padLength() is required to implement the SHA series of
-        Hash functions and also the Tiger algorithm,
-        extend() is required only to implement the MD2 digest.
 
-        The basic sequence of events as it happens internally is as follows:
+        The method padLength() is required to implement the SHA series of
+        Hash functions and also the Tiger algorithm. Method extend() is 
+        required only to implement the MD2 digest.
+
+        The basic sequence of internal events is as follows:
         $(UL
         $(LI transform(), 0 or more times)
         $(LI padMessage())
@@ -52,23 +54,24 @@ import tango.core.ByteSwap;
         $(LI reset())
         )
  
- *******************************************************************************/
-package class MerkleDamgard : DigestTransform
+*******************************************************************************/
+
+package class MerkleDamgard : Digest
 {
         private uint    bytes;
         private ubyte[] buffer;
 
-        /**********************************************************************
+        /***********************************************************************
 
-          Constructs the digest
+                Constructs the digest
 
-          Params:
-          buf = a buffer with enough space to hold the digest
+                Params:
+                buf = a buffer with enough space to hold the digest
 
-          Remarks:
-          Constructs the digest.
+                Remarks:
+                Constructs the digest.
 
-          ********************************************************************/
+        ***********************************************************************/
 
         protected abstract void createDigest(ubyte[] buf);
 
@@ -136,7 +139,7 @@ package class MerkleDamgard : DigestTransform
 
         ***********************************************************************/
 
-        protected abstract void padLength(ubyte[] data, ulong length) {}
+        protected void padLength(ubyte[] data, ulong length) {}
 
         /***********************************************************************
 
@@ -167,7 +170,7 @@ package class MerkleDamgard : DigestTransform
 
         ***********************************************************************/
 
-        protected abstract void extend() {}
+        protected void extend() {} 
 
         /***********************************************************************
 

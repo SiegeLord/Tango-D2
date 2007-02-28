@@ -1,21 +1,22 @@
 /*******************************************************************************
 
-        copyright:      Copyright (c) 2004 Regan Heath. All rights reserved
+        copyright:      Copyright (c) 2006 Tango. All rights reserved
 
         license:        BSD style: see doc/license.txt for details
 
         version:        Initial release: Feb 2006
 
-        author:         Regan Heath, Kris
+        author:         Regan Heath, Oskar Linde
 
-        This module implements the MD5 Message Digest Algorithm as described by
-        RFC 1321 The MD5 Message-Digest Algorithm. R. Rivest. April 1992.
+        This module implements the MD5 Message Digest Algorithm as described 
+        by RFC 1321 The MD5 Message-Digest Algorithm. R. Rivest. April 1992.
 
 *******************************************************************************/
 
 module tango.math.crypto.Md5;
 
-public import tango.math.crypto.Md4;
+public  import tango.math.crypto.Md4;
+
 private import tango.math.crypto.MerkleDamgard;
 
 /*******************************************************************************
@@ -28,7 +29,8 @@ final class Md5 : Md4
 
         ***********************************************************************/
 
-        private enum {
+        private enum 
+        {
                 S11 =  7,
                 S12 = 12,
                 S13 = 17,
@@ -226,14 +228,17 @@ final class Md5 : Md4
         }
 }
 
+
 /*******************************************************************************
 
 *******************************************************************************/
 
 version (UnitTest)
 {
-unittest {
-        static char[][] strings = [
+        unittest 
+        {
+        static char[][] strings = 
+        [
                 "",
                 "a",
                 "abc",
@@ -242,7 +247,9 @@ unittest {
                 "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789",
                 "12345678901234567890123456789012345678901234567890123456789012345678901234567890"
         ];
-        static char[][] results = [
+
+        static char[][] results = 
+        [
                 "D41D8CD98F00B204E9800998ECF8427E",
                 "0CC175B9C0F1B6A831C399E269772661",
                 "900150983CD24FB0D6963F7D28E17F72",
@@ -254,11 +261,12 @@ unittest {
 
         Md5 h = new Md5();
 
-        foreach(int i, char[] s; strings) {
+        foreach (int i, char[] s; strings) 
+                {
                 h.update(cast(ubyte[]) s);
                 char[] d = h.hexDigest;
 
                 assert(d == results[i],":("~s~")("~d~")!=("~results[i]~")");
+                }
         }
-}
 }

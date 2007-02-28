@@ -1,12 +1,12 @@
 /*******************************************************************************
 
-        copyright:      Copyright (c) 2004 Regan Heath. All rights reserved
+        copyright:      Copyright (c) 2006 Tango. All rights reserved
 
         license:        BSD style: see doc/license.txt for details
 
         version:        Initial release: Feb 2006
 
-        author:         Regan Heath, Kris
+        author:         Regan Heath, Oskar Linde
 
         This module implements the SHA-1 Algorithm described by Secure Hash
         Standard, FIPS PUB 180-1, and RFC 3174 US Secure Hash Algorithm 1
@@ -16,15 +16,15 @@
 
 module tango.math.crypto.Sha1;
 
-import tango.math.crypto.Sha01Impl;
-public import tango.math.crypto.DigestTransform;
+private import tango.math.crypto.Sha01;
 
+public  import tango.math.crypto.Digest;
 
 /*******************************************************************************
 
 *******************************************************************************/
 
-final class Sha1 : Sha01Impl
+final class Sha1 : Sha01
 {
         /***********************************************************************
 
@@ -48,6 +48,7 @@ final class Sha1 : Sha01Impl
                 data padded to blockSize().
 
         ***********************************************************************/
+
         final protected override void transform(ubyte[] input)
         {
                 uint A,B,C,D,E,TEMP;
@@ -76,6 +77,9 @@ final class Sha1 : Sha01Impl
                 context[4] += E;
         }
 
+        /***********************************************************************
+
+        ***********************************************************************/
         
         final static void expand (uint[] W, uint s)
         {
@@ -91,20 +95,26 @@ final class Sha1 : Sha01Impl
 
 version (UnitTest)
 {
-unittest {
-        static char[][] strings = [
+        unittest 
+        {
+        static char[][] strings = 
+        [
                 "abc",
                 "abcdbcdecdefdefgefghfghighijhijkijkljklmklmnlmnomnopnopq",
                 "a",
                 "0123456701234567012345670123456701234567012345670123456701234567"
         ];
-        static char[][] results = [
+
+        static char[][] results = 
+        [
                 "A9993E364706816ABA3E25717850C26C9CD0D89D",
                 "84983E441C3BD26EBAAE4AA1F95129E5E54670F1",
                 "34AA973CD4C4DAA4F61EEB2BDBAD27316534016F",
                 "DEA356A2CDDD90C7A7ECEDC5EBB563934F460452"
         ];
-        static int[] repeat = [
+
+        static int[] repeat = 
+        [
                 1,
                 1,
                 1000000,
@@ -113,12 +123,13 @@ unittest {
 
         Sha1 h = new Sha1();
         
-        foreach(int i, char[] s; strings) {
+        foreach (int i, char[] s; strings) 
+                {
                 for(int r = 0; r < repeat[i]; r++)
                         h.update(s);
                 
                 char[] d = h.hexDigest();
                 assert(d == results[i],":("~s~")("~d~")!=("~results[i]~")");
+                }
         }
-}
 }

@@ -1,28 +1,29 @@
 /*******************************************************************************
 
-        copyright:      Copyright (c) 2004 Regan Heath. All rights reserved
+        copyright:      Copyright (c) 2006 Tango. All rights reserved
 
         license:        BSD style: see doc/license.txt for details
 
         version:        Initial release: Feb 2006
 
-        author:         Regan Heath, Kris
+        author:         Regan Heath, Oskar Linde
 
-        This module implements the SHA-0 Algorithm described by Secure Hash
-        Standard, FIPS PUB 180
+        This module implements the SHA-0 Algorithm described by Secure 
+        Hash Standard, FIPS PUB 180
 
 *******************************************************************************/
 
 module tango.math.crypto.Sha0;
 
-public import tango.math.crypto.DigestTransform;
-private import tango.math.crypto.Sha01Impl;
+private import tango.math.crypto.Sha01;
 
+public  import tango.math.crypto.Digest;
 
 /*******************************************************************************
 
 *******************************************************************************/
-final class Sha0 : Sha01Impl
+
+final class Sha0 : Sha01
 {
         /***********************************************************************
 
@@ -31,6 +32,10 @@ final class Sha0 : Sha01Impl
         ***********************************************************************/
 
         this() { }
+
+        /***********************************************************************
+
+        ***********************************************************************/
 
         final protected override void transform(ubyte[] input)
         {
@@ -60,7 +65,10 @@ final class Sha0 : Sha01Impl
                 context[4] += E;
         }
 
-        
+        /***********************************************************************
+
+        ***********************************************************************/
+
         final static protected void expand(uint W[], uint s)
         {
                 W[s] = W[(s+13)&mask] ^ W[(s+8)&mask] ^ W[(s+2)&mask] ^ W[s];
@@ -68,14 +76,18 @@ final class Sha0 : Sha01Impl
 
 
 }
+
+
 /*******************************************************************************
 
 *******************************************************************************/
 
 version (UnitTest)
 {
-unittest {
-        static char[][] strings = [
+        unittest 
+        {
+        static char[][] strings = 
+        [
                 "",
                 "abc",
                 "message digest",
@@ -83,7 +95,9 @@ unittest {
                 "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789",
                 "12345678901234567890123456789012345678901234567890123456789012345678901234567890"
         ];
-        static char[][] results = [
+
+        static char[][] results = 
+        [
                 "F96CEA198AD1DD5617AC084A3D92C6107708C0EF",
                 "0164B8A914CD2A5E74C4F7FF082C4D97F1EDF880",
                 "C1B0F222D150EBB9AA36A40CAFDC8BCBED830B14",
@@ -94,10 +108,11 @@ unittest {
 
         Sha0 h = new Sha0();
 
-        foreach(int i, char[] s; strings) {
+        foreach (int i, char[] s; strings) 
+                {
                 h.update(s);
                 char[] d = h.hexDigest();
                 assert(d == results[i],":("~s~")("~d~")!=("~results[i]~")");
+                }
         }
-}
 }

@@ -1,23 +1,23 @@
 /*******************************************************************************
 
-        copyright:      Copyright (c) 2004 Regan Heath. All rights reserved
+        copyright:      Copyright (c) 2006 Tango. All rights reserved
 
         license:        BSD style: see doc/license.txt for details
 
         version:        Initial release: Feb 2006
 
-        author:         Regan Heath, Kris
+        author:         Regan Heath, Oskar Linde
 
-        This module implements the MD2 Message Digest Algorithm as described by
-        RFC 1319 The MD2 Message-Digest Algorithm. B. Kaliski. April 1992.
+        This module implements the MD2 Message Digest Algorithm as described 
+        by RFC 1319 The MD2 Message-Digest Algorithm. B. Kaliski. April 1992.
 
 *******************************************************************************/
 
 module tango.math.crypto.Md2;
 
-public import tango.math.crypto.DigestTransform;
-private import tango.math.crypto.MerkleDamgard;
+public  import tango.math.crypto.Digest;
 
+private import tango.math.crypto.MerkleDamgard;
 
 /*******************************************************************************
 
@@ -60,24 +60,24 @@ class Md2 : MerkleDamgard
                 the digest
 
                 Remarks:
-                Returns a digest of the current cipher state, this may be the
-                final digest, or a digest of the state between calls to update()
+                Returns a digest of the current cipher state, this may 
+                be the final digest, or a digest of the state between 
+                calls to update()
 
         ***********************************************************************/
 
         protected override void createDigest(ubyte[] buf)
         {
-                        buf[] = state;                  
+                buf[] = state;                  
         }
 
-            /***********************************************************************
+        /***********************************************************************
 
                 The MD 2 digest size is 16 bytes
  
         ***********************************************************************/
 
-            uint digestSize() { return 16; }
-
+        uint digestSize() { return 16; }
 
         /***********************************************************************
 
@@ -107,7 +107,8 @@ class Md2 : MerkleDamgard
                 Remarks:
                 Specifies the size (in bytes) of the padding which uses the
                 length of the data which has been ciphered, this padding is
-                carried out by the padLength method. For MD2 the addSize is 0.
+                carried out by the padLength method. For MD2 the addSize is 
+                0
 
         ***********************************************************************/
 
@@ -124,18 +125,18 @@ class Md2 : MerkleDamgard
                 data = a slice of the cipher buffer to fill with padding
 
                 Remarks:
-                Fills the passed buffer slice with the appropriate padding for
-                the final call to transform(). This padding will fill the cipher
-                buffer up to blockSize()-addSize().
+                Fills the passed buffer slice with the appropriate padding 
+                for the final call to transform(). This padding will fill 
+                the cipher buffer up to blockSize()-addSize().
 
         ***********************************************************************/
 
         protected override void padMessage (ubyte[] data)
         {
-                /* Padding is performed as follows: "i" bytes of value "i" are appended
-                 * to the message so that the length in bytes of the padded message
-                 * becomes congruent to 0, modulo 16. At least one byte and at most 16
-                 * 16 bytes are appended.
+                /* Padding is performed as follows: "i" bytes of value "i" 
+                 * are appended to the message so that the length in bytes 
+                 * of the padded message becomes congruent to 0, modulo 16. 
+                 * At least one byte and at most 16 bytes are appended.
                  */
                 data[0..$] = cast(ubyte) data.length;
         }
@@ -150,8 +151,8 @@ class Md2 : MerkleDamgard
                 Remarks:
                 The actual cipher algorithm is carried out by this method on
                 the passed block of data. This method is called for every
-                blockSize() bytes of input data and once more with the remaining
-                data padded to blockSize().
+                blockSize() bytes of input data and once more with the 
+                remaining data padded to blockSize().
 
         ***********************************************************************/
 
@@ -162,21 +163,24 @@ class Md2 : MerkleDamgard
 
                 X[0..16] = state[];
                 X[16..32] = input[];
+
                 for (i = 0; i < 16; i++)
-                        X[i+32] = cast(ubyte) (state[i] ^ input[i]);
+                     X[i+32] = cast(ubyte) (state[i] ^ input[i]);
 
                 t = 0;
-                for (i = 0; i < 18; i++) {
-                        for (j = 0; j < 48; j++)
-                                t = X[j] ^= PI[t];
-                        t = (t + i) & 0xff;
-                }
+                for (i = 0; i < 18; i++) 
+                    {
+                    for (j = 0; j < 48; j++)
+                         t = X[j] ^= PI[t];
+                    t = (t + i) & 0xff;
+                    }
 
                 state[] = X[0..16];
 
                 t = C[15];
+
                 for (i = 0; i < 16; i++)
-                        t = C[i] ^= PI[input[i] ^ t];
+                     t = C[i] ^= PI[input[i] ^ t];
         }
 
         /***********************************************************************
@@ -231,8 +235,10 @@ private const ubyte[256] PI =
 
 version (UnitTest)
 {
-unittest {
-        static char[][] strings = [
+        unittest 
+        {
+        static char[][] strings = 
+        [
                 "",
                 "a",
                 "abc",
@@ -241,7 +247,9 @@ unittest {
                 "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789",
                 "12345678901234567890123456789012345678901234567890123456789012345678901234567890"
         ];
-        static char[][] results = [
+
+        static char[][] results = 
+        [
                 "8350E5A3E24C153DF2275C9F80692773",
                 "32EC01EC4A6DAC72C0AB96FB34C0B5D1",
                 "DA853B0D3F88D99B30283A69E6DED6BB",
@@ -253,11 +261,12 @@ unittest {
 
         Md2 h = new Md2();
 
-        foreach(int i, char[] s; strings) {
+        foreach (int i, char[] s; strings) 
+                {
                 h.update(s);
                 char[] d = h.hexDigest();
                 assert(d == results[i],":("~s~")("~d~")!=("~results[i]~")");
+                }
         }
-}
 }
 

@@ -1,49 +1,24 @@
 /******************************************************************************
 
-        copyright:      Copyright (c) 2004 Regan Heath. All rights reserved
+        copyright:      Copyright (c) 2006 Tango. All rights reserved
 
         license:        BSD style: see doc/license.txt for details
 
         version:        Initial release: Feb 2006
 
-        author:         Regan Heath, Kris, Oskar Linde
+        author:         Regan Heath, Oskar Linde
 
-        This module defines the DigestTransform interface.  In
-        addition CryptoException is defined for exception handling.
+        This module defines the Digest interface. In addition 
+        CryptoException is defined for exception handling
 
 ******************************************************************************/
 
-module tango.math.crypto.DigestTransform;
+module tango.math.crypto.Digest;
 
 private import tango.stdc.stdlib : alloca;
 
-/+ Commented out until its proper home is figured out
-/******************************************************************************
-
-       This is an exception class to be thrown by algorithms under
-       tango.math.crypto where required.
-
-******************************************************************************/
-
-class CryptoException : Exception
-{
-        /***********************************************************************
-
-                Construct a CryptoException.
-
-                Params:
-                msg = the exception text
-
-                Remarks:
-                Constructs a CryptoException.
-
-        ***********************************************************************/
-
-        this(char[] msg) { super(msg); }
-}
-+/
-
 /*******************************************************************************
+
         The DigestTransform interface defines the interface of message
         digest algorithms, such as MD5 and SHA. Message digests are
         secure hash functions that take a message of arbitrary length
@@ -75,10 +50,12 @@ class CryptoException : Exception
         // conclude algorithm and produce digest
         ubyte[] digest = hash.binaryDigest();
         ---
- */
 
-abstract class DigestTransform {
-        /********************************************************************
+******************************************************************************/
+
+abstract class Digest 
+{
+        /*********************************************************************
      
                Processes data
                
@@ -88,7 +65,6 @@ abstract class DigestTransform {
         *********************************************************************/
     
         abstract void update(void[] data);
-    
     
         /********************************************************************
 
@@ -139,24 +115,55 @@ abstract class DigestTransform {
                     
         *********************************************************************/
         
-        char[] hexDigest(char[] buffer = null) {
-            uint ds = digestSize();
+        char[] hexDigest (char[] buffer = null) 
+        {
+                uint ds = digestSize();
             
-            if (buffer.length < ds * 2)
-                buffer.length = ds * 2;
+                if (buffer.length < ds * 2)
+                    buffer.length = ds * 2;
             
-            ubyte[] buf = (cast(ubyte *) alloca(ds))[0..ds];
-            ubyte[] ret = binaryDigest(buf);
-            assert(ret.ptr == buf.ptr);
+                ubyte[] buf = (cast(ubyte *) alloca(ds))[0..ds];
+                ubyte[] ret = binaryDigest(buf);
+                assert(ret.ptr == buf.ptr);
             
-            static char[] hexdigits = "0123456789ABCDEF";
-            int i = 0;
+                static char[] hexdigits = "0123456789ABCDEF";
+                int i = 0;
             
-            foreach(b; buf) {
-                buffer[i++] = hexdigits[b >> 4];
-                buffer[i++] = hexdigits[b & 0xf];
-            }
+                foreach (b; buf) 
+                        {
+                        buffer[i++] = hexdigits[b >> 4];
+                        buffer[i++] = hexdigits[b & 0xf];
+                        }
             
-            return buffer;
+                return buffer;
         }
 }
+
+
+/+ Commented out until its proper home is figured out
+
+/******************************************************************************
+
+       This is an exception class to be thrown by algorithms under
+       tango.math.crypto where required.
+
+******************************************************************************/
+
+class CryptoException : Exception
+{
+        /***********************************************************************
+
+                Construct a CryptoException.
+
+                Params:
+                msg = the exception text
+
+                Remarks:
+                Constructs a CryptoException.
+
+        ***********************************************************************/
+
+        this(char[] msg) { super(msg); }
+}
++/
+

@@ -1,62 +1,40 @@
 /*******************************************************************************
 
-        copyright:      Copyright (c) 2004 Regan Heath. All rights reserved
+        copyright:      Copyright (c) 2006 Tango. All rights reserved
 
         license:        BSD style: see doc/license.txt for details
 
         version:        Initial release: Feb 2006
 
-        author:         Regan Heath, Kris
+        author:         Regan Heath, Oskar Linde
 
         This module implements common parts of the SHA-0 and SHA-1 algoritms
 
+*******************************************************************************/
+
+module tango.math.crypto.Sha01;
+
+private import tango.core.ByteSwap;
+
+private import tango.math.crypto.MerkleDamgard;
+
+/*******************************************************************************
 
 *******************************************************************************/
-module tango.math.crypto.Sha01Impl;
-import tango.math.crypto.MerkleDamgard;
-import tango.core.ByteSwap;
 
-package abstract class Sha01Impl : MerkleDamgard
+package abstract class Sha01 : MerkleDamgard
 {
-    protected uint[5]       context;
-
-        private static const ubyte     padChar = 0x80;
-    package static const uint      mask = 0x0000000F;
+        protected uint[5]               context;
+        private static const ubyte      padChar = 0x80;
+        package static const uint       mask = 0x0000000F;
     
-
-    
-        /***********************************************************************
-
-        ***********************************************************************/
-
-        private static const uint[] K =
-        [
-                0x5A827999,
-                0x6ED9EBA1,
-                0x8F1BBCDC,
-                0xCA62C1D6
-        ];
-
-        /***********************************************************************
-
-        ***********************************************************************/
-
-        private static const uint[5] initial =
-        [
-                0x67452301,
-                0xEFCDAB89,
-                0x98BADCFE,
-                0x10325476,
-                0xC3D2E1F0
-        ];
-
         /***********************************************************************
 
                 The digest size of Sha-0 and Sha-1 is 20 bytes
 
         ***********************************************************************/
 
-    final uint digestSize() { return 20; }
+        final uint digestSize() { return 20; }
 
         /***********************************************************************
 
@@ -90,7 +68,8 @@ package abstract class Sha01Impl : MerkleDamgard
         {
                 version (LittleEndian)
                          ByteSwap.swap32 (context.ptr, context.length * uint.sizeof);
-        buf[] = cast(ubyte[]) context;
+
+                buf[] = cast(ubyte[]) context;
         }
 
         /***********************************************************************
@@ -122,7 +101,7 @@ package abstract class Sha01Impl : MerkleDamgard
 
         ***********************************************************************/
 
-        final protected override uint addSize()   { return 8;  }
+        final protected override uint addSize() {return 8;}
 
         /***********************************************************************
 
@@ -178,4 +157,29 @@ package abstract class Sha01Impl : MerkleDamgard
                 else if (t < 60) return (B & C) | (B & D) | (C & D);
                 else return B ^ C ^ D;
         }
+
+        /***********************************************************************
+
+        ***********************************************************************/
+
+        private static const uint[] K =
+        [
+                0x5A827999,
+                0x6ED9EBA1,
+                0x8F1BBCDC,
+                0xCA62C1D6
+        ];
+
+        /***********************************************************************
+
+        ***********************************************************************/
+
+        private static const uint[5] initial =
+        [
+                0x67452301,
+                0xEFCDAB89,
+                0x98BADCFE,
+                0x10325476,
+                0xC3D2E1F0
+        ];
 }

@@ -1,12 +1,12 @@
 /*******************************************************************************
 
-        copyright:      Copyright (c) 2004 Regan Heath. All rights reserved
+        copyright:      Copyright (c) 2006 Tango. All rights reserved
 
         license:        BSD style: see doc/license.txt for details
 
         version:        Initial release: Feb 2006
 
-        author:         Regan Heath, Kris
+        author:         Regan Heath, Oskar Linde
 
         This module implements the Tiger algorithm by Ross Anderson and Eli
         Biham.
@@ -15,10 +15,11 @@
 
 module tango.math.crypto.Tiger;
 
-public import tango.math.crypto.DigestTransform;
+private import tango.core.ByteSwap;
 
 private import tango.math.crypto.MerkleDamgard;
-private import tango.core.ByteSwap;
+
+public  import tango.math.crypto.Digest;
 
 /*******************************************************************************
 
@@ -55,7 +56,7 @@ final class Tiger : MerkleDamgard
                 
         ***********************************************************************/
 
-            override uint digestSize() { return 24; }
+        override uint digestSize() {return 24;}
         
 
         /***********************************************************************
@@ -322,7 +323,8 @@ final class Tiger : MerkleDamgard
 
 *******************************************************************************/
 
-private static ulong[1024] table = [
+private static ulong[1024] table = 
+[
     0x02aab17cf7e90c5e   /*    0 */,    0xac424b03e243a8ec   /*    1 */,
     0x72cd5be30dd5fcd3   /*    2 */,    0x6d019b93f6f97f3a   /*    3 */,
     0xcd9978ffd21f9193   /*    4 */,    0x7573a1c9708029e2   /*    5 */,
@@ -844,7 +846,8 @@ private static ulong[1024] table = [
 
 version (UnitTest)
 {
-unittest {
+        unittest 
+        {
         static char[][] strings = [
                 "",
                 "abc",
@@ -889,5 +892,5 @@ unittest {
 
         assert(e == "8EF43951B3F5F4FD1D41AFE51B420E710462F233C3AAA8E1",
                 ":(65k)("~e~")!=(8EF43951B3F5F4FD1D41AFE51B420E710462F233C3AAA8E1)");
-}
+        }
 }

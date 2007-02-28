@@ -1,24 +1,23 @@
 /*******************************************************************************
 
-        copyright:      Copyright (c) 2004 Regan Heath. All rights reserved
+        copyright:      Copyright (c) 2006 Tango. All rights reserved
 
         license:        BSD style: see doc/license.txt for details
 
         version:        Initial release: Feb 2006
 
-        author:         Regan Heath, Kris
+        author:         Regan Heath, Oskar Linde
 
-        This module implements the MD4 Message Digest Algorithm as described by
-        RFC 1320 The MD4 Message-Digest Algorithm. R. Rivest. April 1992.
+        This module implements the MD4 Message Digest Algorithm as described 
+        by RFC 1320 The MD4 Message-Digest Algorithm. R. Rivest. April 1992.
 
 *******************************************************************************/
 
 module tango.math.crypto.Md4;
 
+public  import tango.math.crypto.Digest;
+
 private import tango.math.crypto.MerkleDamgard;
-
-public  import tango.math.crypto.DigestTransform;
-
 
 /*******************************************************************************
 
@@ -28,7 +27,6 @@ class Md4 : MerkleDamgard
 {
         protected uint[4]       context;
         private const ubyte     padChar = 0x80;
-
 
         /***********************************************************************
 
@@ -40,46 +38,12 @@ class Md4 : MerkleDamgard
 
         /***********************************************************************
 
-        ***********************************************************************/
-
-        private static const uint[4] initial =
-        [
-                0x67452301,
-                0xefcdab89,
-                0x98badcfe,
-                0x10325476
-        ];
-
-        /***********************************************************************
-
-        ***********************************************************************/
-
-        private static enum
-        {
-                S11 =  3,
-                S12 =  7,
-                S13 = 11,
-                S14 = 19,
-                S21 =  3,
-                S22 =  5,
-                S23 =  9,
-                S24 = 13,
-                S31 =  3,
-                S32 =  9,
-                S33 = 11,
-                S34 = 15,
-        };
-
-        
-            /***********************************************************************
-
                 The MD 4 digest size is 16 bytes
  
         ***********************************************************************/
 
-            uint digestSize() { return 16; }
+        uint digestSize() { return 16; }
             
-
         /***********************************************************************
 
                 Initialize the cipher
@@ -110,9 +74,10 @@ class Md4 : MerkleDamgard
 
         override void createDigest(ubyte[] buf)
         {
-                        version (BigEndian)
-                                ByteSwap.swap64 (context.ptr, context.length * uint.sizeof);
-                        buf[] = cast(ubyte[]) context;
+                version (BigEndian)
+                         ByteSwap.swap64 (context.ptr, context.length * uint.sizeof);
+
+                buf[] = cast(ubyte[]) context;
         }
 
         /***********************************************************************
@@ -332,6 +297,38 @@ class Md4 : MerkleDamgard
                 a += h(b, c, d) + x + ac;
                 a = rotateLeft(a, s);
         }
+
+        /***********************************************************************
+
+        ***********************************************************************/
+
+        private static const uint[4] initial =
+        [
+                0x67452301,
+                0xefcdab89,
+                0x98badcfe,
+                0x10325476
+        ];
+
+        /***********************************************************************
+
+        ***********************************************************************/
+
+        private static enum
+        {
+                S11 =  3,
+                S12 =  7,
+                S13 = 11,
+                S14 = 19,
+                S21 =  3,
+                S22 =  5,
+                S23 =  9,
+                S24 = 13,
+                S31 =  3,
+                S32 =  9,
+                S33 = 11,
+                S34 = 15,
+        }
 }
 
 
@@ -341,8 +338,10 @@ class Md4 : MerkleDamgard
 
 version (UnitTest)
 {
-unittest {
-        static char[][] strings = [
+        unittest 
+        {
+        static char[][] strings = 
+        [
                 "",
                 "a",
                 "abc",
@@ -351,7 +350,9 @@ unittest {
                 "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789",
                 "12345678901234567890123456789012345678901234567890123456789012345678901234567890"
         ];
-        static char[][] results = [
+
+        static char[][] results = 
+        [
                 "31D6CFE0D16AE931B73C59D7E0C089C0",
                 "BDE52CB31DE33E46245E05FBDBD6FB24",
                 "A448017AAF21D8525FC10AE87AA6729D",
@@ -363,11 +364,12 @@ unittest {
 
         Md4 h = new Md4();
 
-        foreach(int i, char[] s; strings) {
+        foreach (int i, char[] s; strings) 
+                {
                 h.update(s);
                 char[] d = h.hexDigest;
                 assert(d == results[i],":("~s~")("~d~")!=("~results[i]~")");
+                }
         }
-}
 }
 
