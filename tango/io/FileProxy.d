@@ -870,6 +870,7 @@ class FileProxy : FilePath
                         scope (exit)
                                tango.stdc.posix.dirent.closedir (dir);
 
+                        // ensure a trailing '/' is present 
                         prefix = FilePath.padded (this.toUtf8);
                         
                         // prepare our filename buffer
@@ -888,11 +889,10 @@ class FileProxy : FilePath
                               sfnbuf [prefix.length .. prefix.length + len] 
                                       = entry.d_name.ptr [0 .. len];
 
-                              if (stat (sfnbuf.ptr, &sbuf) is 0) 
-                                  dg (prefix, str, (sbuf.st_mode & S_IFDIR) != 0);
-                              else 
-                                 // perhaps should throw, probably not
-                                 dg (prefix, str, false); 
+                              bool isDir = stat (sfnbuf.ptr, &sbuf) 
+                                                 ? false 
+                                                 : (sbuf.st_mode & S_IFDIR) != 0;
+                              dg (prefix, str, isDir);
                               }
                 }
         }
