@@ -7,6 +7,7 @@ import tango.math.crypto.Sha1;
 import tango.math.crypto.Sha256;
 import tango.math.crypto.Sha512;
 import tango.math.crypto.Tiger;
+import tango.math.crypto.Crc32;
 
 void main()
 {

@@ -17,7 +17,7 @@ public import tango.math.crypto.Digest;
 
 /** This class implements the CRC-32 checksum algorithm.
     The digest returned is a little-endian 4 byte string. */
-final class Crc32 : DigestTransform
+final class Crc32 : Digest
 {
         private uint[256] table;
         private uint result = 0xffffffff;
