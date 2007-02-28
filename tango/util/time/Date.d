@@ -253,19 +253,17 @@ struct Date
                         auto timeval = Utc.convert (time);
                         ms = timeval.tv_usec / 1000;
 
-                        //synchronized (Utc.classinfo)
-                                     {
-                                     tm* t = gmtime (&timeval.tv_sec);
-                                     assert (t, "gmtime failed");
-
-                                     year = t.tm_year + 1900;
-                                     month = t.tm_mon + 1;
-                                     day = t.tm_mday;
-                                     hour = t.tm_hour;
-                                     min = t.tm_min;
-                                     sec = t.tm_sec;
-                                     dow = t.tm_wday;
-                                     }
+                        tm result;
+                        tm* t = gmtime_r (&timeval.tv_sec, &result);
+                        assert (t, "gmtime failed");
+        
+                        year = t.tm_year + 1900;
+                        month = t.tm_mon + 1;
+                        day = t.tm_mday;
+                        hour = t.tm_hour;
+                        min = t.tm_min;
+                        sec = t.tm_sec;
+                        dow = t.tm_wday;
                 }
         }
 }
