@@ -18,12 +18,6 @@ private import tango.util.time.Utc;
 
 public  import tango.core.Type : Time;
 
-version (Posix)
-{
-        extern (C) tm *gmtime (int *);
-        extern (C) int timegm (tm *);
-}
-
 /*******************************************************************************
 
         Date exposes the underlying OS support for splitting date fields
