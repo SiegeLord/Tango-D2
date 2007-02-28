@@ -49,7 +49,7 @@ version (Win32)
         measurable intervals, except the limits of fp representation)
 
         Timer is accurate only to the extent of what the underlying OS
-        supports. On linux systems, this accuracy is currently 1 ms at 
+        supports. On linux systems, this accuracy is currently 1 us at 
         best. Win32 is generally more accurate.
 
 *******************************************************************************/
