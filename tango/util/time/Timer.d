@@ -12,7 +12,7 @@
 
 module tango.util.time.Timer;
 
-private import tango.core.Type : Interval;
+public import tango.core.Type : Interval;
 
 /*******************************************************************************
 
