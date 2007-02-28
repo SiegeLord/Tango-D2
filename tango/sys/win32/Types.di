@@ -2077,6 +2077,7 @@ enum {
     CP_ACP = (0),
     CP_MACCP = (2),
     CP_OEMCP = (1),
+    CP_UTF8 = 65001,
     DATE_USE_ALT_CALENDAR = (4),
     DCX_WINDOW = (0x1),
     DCX_CACHE = (0x2),
