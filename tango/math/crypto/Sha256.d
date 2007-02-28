@@ -15,9 +15,9 @@
 
 module tango.math.crypto.Sha256;
 
-public import tango.math.crypto.Digest;
-
 private import tango.core.ByteSwap;
+
+public  import tango.math.crypto.Digest;
 
 private import tango.math.crypto.MerkleDamgard;
 

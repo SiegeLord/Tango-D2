@@ -214,26 +214,26 @@ package class MerkleDamgard : Digest
 
         ***********************************************************************/
 
-        void update(void[] input)
+        void update (void[] input)
         {
-                uint i;
-                ubyte[] data = cast(ubyte[])input;
+                auto block = blockSize();
+                uint i = bytes & (block-1);
+                ubyte[] data = cast(ubyte[]) input;
 
-                i = bytes & (blockSize-1);
                 bytes += data.length;
 
-                if (data.length+i < blockSize) {
-                        buffer[i..i+data.length] = data[];
-                        return ;
-                }
+                if (data.length+i < block) 
+                    buffer[i..i+data.length] = data[];
+                else
+                   {
+                   buffer[i..block] = data[0..block-i];
+                   transform (buffer);
 
-                buffer[i..blockSize] = data[0..blockSize-i];
-                transform(buffer);
+                   for (i=block-i; i+block-1 < data.length; i += block)
+                        transform(data[i..i+block]);
 
-                for(i = blockSize-i; i+blockSize-1 < data.length; i += blockSize)
-                        transform(data[i..i+blockSize]);
-
-                buffer[0..data.length-i] = data[i..data.length];
+                   buffer[0..data.length-i] = data[i..data.length];
+                   }
         }
 
         /***********************************************************************
@@ -248,30 +248,31 @@ package class MerkleDamgard : Digest
 
         ***********************************************************************/
 
-        ubyte[] binaryDigest(ubyte[] buf = null)
+        ubyte[] binaryDigest (ubyte[] buf = null)
         {
-                uint i;
+                auto block = blockSize();
+                uint i = bytes & (block-1);
 
-                i = bytes & (blockSize-1);
-                if (i < blockSize-addSize)
-                    padMessage(buffer[i..blockSize-addSize]);
-                else {
-                   padMessage(buffer[i..blockSize]);
-                   transform(buffer);
+                if (i < block-addSize)
+                    padMessage (buffer[i..block-addSize]);
+                else 
+                   {
+                   padMessage (buffer[i..block]);
+                   transform (buffer);
                    buffer[] = 0;
-                }
+                   }
 
-                padLength(buffer[blockSize-addSize..blockSize],bytes);
-                transform(buffer);
+                padLength (buffer[block-addSize..block], bytes);
+                transform (buffer);
 
-                extend();
+                extend ();
 
                 if (buf.length < digestSize())
-                        buf.length = digestSize();
+                    buf.length = digestSize();
 
-                createDigest(buf);
+                createDigest (buf);
                 
-                reset();
+                reset ();
                 return buf;
         }
 
