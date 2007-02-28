@@ -188,7 +188,9 @@ struct Date
 
                 /***************************************************************
 
-                        Set fields to represent the provided time
+                        Set fields to represent the provided time. The
+                        value must fall within the domain supported by
+                        the OS
 
                 ***************************************************************/
 
@@ -243,10 +245,11 @@ struct Date
 
                 /***************************************************************
 
-                        Set fields to represent the provided time
+                        Set fields to represent the provided time. The
+                        value must fall within the domain supported by
+                        the OS
 
-
-                ***************************************************************/
+                **************************************************************/
 
                 void set (Time time)
                 {
