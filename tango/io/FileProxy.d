@@ -800,43 +800,6 @@ class FileProxy : FilePath
                         return this;
                 }
 
-        version (ScanDir)
-        {
-                /***************************************************************
-
-                        List the set of filenames within this directory.
-
-                        All filenames are null terminated and are passed
-                        to the provided delegate as such, along with the
-                        path prefix and whether the entry is a directory
-                        or not.
-
-                 typedef int function (dirent*) SELECT;
-                 typedef int function (dirent**, dirent**) COMPARE;
-
-                 int scandir (char *dir, dirent ***namelist, SELECT, COMPARE);
-                ***************************************************************/
-
-                final void toList (void delegate (char[], char[], bool) dg)
-                {
-                        dirent** list;
-                        char[]   prefix = FilePath.padded (this.toUtf8);
-                         
-                        int i = scandir (this.cString.ptr, &list, null, null);
-                        for (int j=0; j < i; ++j)
-                            {
-                            dirent* entry = list[j];
-                            auto len = tango.stdc.string.strlen (entry.d_name.ptr);
-                            auto str = entry.d_name.ptr [0 .. len];
-                            dg (prefix, str, (entry.d_type & DT_DIR) != 0);
-
-                            //free (entry.d_name.ptr);
-                            //free (entry);
-                            }
-                }
-        }
-        else
-        {
                 /***************************************************************
 
                         List the set of filenames within this directory.
@@ -852,6 +815,7 @@ class FileProxy : FilePath
                 {
                         DIR*            dir;
                         dirent*         entry;
+                        stat_t          sbuf;
                         char[]          prefix;
 
                         dir = tango.stdc.posix.dirent.opendir (this.cString.ptr);
@@ -869,10 +833,16 @@ class FileProxy : FilePath
                               auto len = tango.stdc.string.strlen (entry.d_name.ptr);
                               auto str = entry.d_name.ptr [0 .. len];
 
-                              dg (prefix, str, (entry.d_type & DT_DIR) != 0);
+                              if (stat(
+                                  (this.cString ~ FileConst.PathSeparatorChar ~
+                                   str ~ '\0').ptr,
+                                  &sbuf) == 0) {
+                                  dg (prefix, str, (sbuf.st_mode & S_IFDIR) != 0);
+                              } else {
+                                  dg (prefix, str, false); // perhaps should throw, probably not
+                              }
                               }
                 }
-        }
         }
 }
 
