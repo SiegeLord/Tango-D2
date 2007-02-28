@@ -20,11 +20,16 @@ public import tango.core.Type : Interval;
 
 version (Win32)
 {
-        private extern(Windows) 
+        private extern (Windows) 
         {
         int QueryPerformanceCounter   (ulong *count);
         int QueryPerformanceFrequency (ulong *frequency);
         }
+}
+
+version (Posix)
+{
+        private import tango.stdc.posix.time;
 }
 
 /*******************************************************************************
