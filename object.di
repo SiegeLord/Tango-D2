@@ -12,6 +12,11 @@ class Object
     int    opCmp(Object o);
     int    opEquals(Object o);
 
+    version( PhobosCompatibility )
+    {
+        alias toUtf8 toString;
+    }
+
     //final void notifyRegister(void delegate(Object) dg);
     //final void notifyUnRegister(void delegate(Object) dg);
 }
@@ -141,4 +146,15 @@ class Exception : Object
     this(char[] msg, Exception next = null);
     this(char[] msg, char[] file, size_t line, Exception next = null);
     char[] toUtf8();
+}
+
+
+version( PhobosCompatibility )
+{
+    alias Exception Error;
+    alias bool      bit;
+
+    pragma( msg, "Phobos compatibility is currently enabled.  This is a time-"
+                 "limted feature intended for short-term convenience.  Please"
+                 " do not rely on its indefinite existence." );
 }
