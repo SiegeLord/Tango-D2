@@ -58,19 +58,17 @@ version (Posix)
         best. Win32 is generally more accurate.
 
         There is some minor overhead in using Timer, so take that into 
-        account when using it
+        account
 
 *******************************************************************************/
 
 public struct Timer
 {
-        private Interval started;
+        private Interval        started;
+        private static Interval multiplier = 1.0 / 1_000_000.0;
 
         version (Win32)
-        {
-                private static Interval multiplier;
-                private static ulong    timerStart;
-        }
+                 private static ulong timerStart;
 
         /***********************************************************************
                 
@@ -128,7 +126,7 @@ public struct Timer
                         if (gettimeofday (&tv, null))
                             throw new Exception ("Timer :: linux timer is not available");
 
-                        return (cast(Interval) tv.tv_sec) + tv.tv_usec / 1_000_000.0;
+                        return (cast(Interval) tv.tv_sec) + tv.tv_usec * multiplier;
                 }
 
                 version (Win32)
