@@ -510,7 +510,7 @@ class FileConduit : DeviceConduit, DeviceConduit.Seek
                 void truncate ()
                 {
                         // set filesize to be current seek-position
-                        if (ftruncate (handle, getPosition()) is -1)
+                        if (ftruncate (handle, cast(int) getPosition) is -1)
                             error ();
                 }               
 
@@ -525,7 +525,7 @@ class FileConduit : DeviceConduit, DeviceConduit.Seek
 
                 ulong seek (ulong offset, Seek.Anchor anchor = Seek.Anchor.Begin)
                 {
-                        uint result = posix.lseek (handle, offset, anchor);
+                        uint result = posix.lseek (handle, cast(int) offset, anchor);
                         if (result is -1)
                             error ();
                         return result;
