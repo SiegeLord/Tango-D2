@@ -264,3 +264,16 @@ struct Date
                 }
         }
 }
+
+
+
+debug (Date)
+{
+        void main() 
+        {
+        Date date;
+
+        date.set (Time.TicksTo1970);
+        assert   (Time.TicksTo1970 is date.get);
+        }
+}
