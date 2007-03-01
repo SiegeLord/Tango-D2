@@ -463,7 +463,7 @@ char[] longToHexString (char[] buffer, ulong value, int digits, char format)
         int n = buffer.length;
         while (--digits >= 0 || value != 0)
               {
-              ulong v = value & 0xF;
+              auto v = cast(uint) value & 0xF;
               buffer[--n] = (v < 10) ? v + '0' : v + format - ('X' - 'A' + 10);
               value >>= 4;
               }
