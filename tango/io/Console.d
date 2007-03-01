@@ -19,30 +19,6 @@ private import  tango.sys.Common;
 private import  tango.io.Buffer,
                 tango.io.DeviceConduit;
 
-
-/*******************************************************************************
-
-        Bring in native Windows functions
-
-*******************************************************************************/
-
-version (Win32)
-{
-        private extern (Windows) 
-        {
-                HANDLE GetStdHandle   (DWORD);
-                DWORD  GetConsoleMode (HANDLE, LPDWORD);
-                BOOL   ReadConsoleW   (HANDLE, VOID*, DWORD, LPDWORD, LPVOID);
-                BOOL   WriteConsoleW  (HANDLE, VOID*, DWORD, LPDWORD, LPVOID);
-
-                const uint CP_UTF8 = 65001;
-                int    WideCharToMultiByte(UINT, DWORD, wchar*, int, void*, int, LPCSTR, LPBOOL);
-                int    MultiByteToWideChar(UINT, DWORD, void*, int,  wchar*, int);
-        }
-}
-
-extern (C) int printf (char*, ...);
-
 /*******************************************************************************
 
         low level console IO support. 
@@ -401,7 +377,7 @@ struct Console
                                        output.length = i;
 
                                    // convert into output buffer
-                                   i = MultiByteToWideChar (CP_UTF8, 0, src.ptr, i, 
+                                   i = MultiByteToWideChar (CP_UTF8, 0, cast(char*) src.ptr, i, 
                                                             output.ptr, output.length);
                                             
                                    // flush produced output
@@ -461,7 +437,7 @@ struct Console
 
                                    // translate to utf8, directly into dst
                                    i = WideCharToMultiByte (CP_UTF8, 0, input.ptr, i, 
-                                                            dst.ptr, dst.length, null, null);
+                                                            cast(char*) dst.ptr, dst.length, null, null);
                                    if (i is 0)
                                        error ();
 
