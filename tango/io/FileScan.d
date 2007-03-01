@@ -13,9 +13,7 @@
 
 module tango.io.FileScan;
 
-public import   tango.io.File,
-                tango.io.FilePath,
-                tango.io.FileProxy;
+public import tango.io.FileProxy;
 
 /*******************************************************************************
 
