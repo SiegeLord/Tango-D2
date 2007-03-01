@@ -33,8 +33,6 @@ public  import  tango.core.Type : Interval, Time;
 
 ******************************************************************************/
 
-extern (C) int printf (char*, ...);
-
 struct Utc
 {
         /***********************************************************************
@@ -56,7 +54,6 @@ struct Utc
 
         static Time toLocal (Time time)
         {
-                printf ("local time, with tz: %d\n", cast(int)zone()/60);
                 return cast(Time) (time + zone * Time.TicksPerSecond);
         }
 
@@ -200,6 +197,17 @@ struct Utc
         }
 }
 
+version (Posix)
+{
+    version (darwin) {}
+    else
+    {
+        static this()
+        {
+            tzset();
+        }
+    }
+}
 
 debug (UnitTest)
 {
