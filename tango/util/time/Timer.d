@@ -35,7 +35,7 @@ version (Posix)
 /*******************************************************************************
 
         Timer for measuring small intervals, such as the duration of a 
-        subroutine or other element of code.
+        subroutine or other reasonably granular of code.
         ---
         Timer timer;
 
@@ -56,6 +56,9 @@ version (Posix)
         Timer is accurate only to the extent of what the underlying OS
         supports. On linux systems, this accuracy is currently 1 us at 
         best. Win32 is generally more accurate.
+
+        There is some minor overhead in using Timer, so take that into 
+        account when using it
 
 *******************************************************************************/
 
