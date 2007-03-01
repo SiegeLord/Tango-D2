@@ -19,16 +19,11 @@ private import  tango.io.FilePath;
 
 private import  tango.core.Exception;
 
-version (Win32)
-        {
-        private import Utf = tango.text.convert.Utf;
-        }
-     else
+version (Posix)
         {
         private import tango.stdc.string;
         private import tango.stdc.posix.unistd;
         }
-
 
 /*******************************************************************************
 
@@ -43,23 +38,25 @@ class FileSystem
         /***********************************************************************
 
                 Convert the provided path to an absolute path, using the
-                current working directory. If the given path is already
-                an absolute path, return it intact.
+                current working directory where prefix is not provided. 
+                If the given path is already an absolute path, return it 
+                intact.
 
-                Returns true if the path was adjusted, false otherwise
+                Returns the provided path, adjusted as necessary
 
         ***********************************************************************/
 
-        static bool makeAbsolute (FilePath path)
+        static FilePath toAbsolute (FilePath target, char[] prefix=null)
         {
-                assert (path);
-
-                if (! path.isAbsolute)
+                if (! target.isAbsolute)
                    {
-                   getDirectory (path.asName (path.toUtf8));
-                   return true;
+                   if (prefix is null)
+                       prefix = getDirectory;
+
+                   target.name = target.toUtf8;
+                   target.path = prefix;
                    }
-                return false;
+                return target;
         }
 
         /***********************************************************************
@@ -83,24 +80,30 @@ class FileSystem
 
                 ***************************************************************/
 
-                static FilePath setDirectory (FilePath path)
+                static void setDirectory (char[] path)
                 {
-                        assert (path);
-
                         version (Win32SansUnicode)
                                 {
-                                if (! SetCurrentDirectoryA (path.cString.ptr))
+                                char[MAX_PATH+1] tmp = void;
+                                tmp[0..path.length] = path;
+                                tmp[path.length] = 0;
+
+                                if (! SetCurrentDirectoryA (tmp.ptr))
                                       exception ("Failed to set current directory");
                                 }
                              else
                                 {
+                                // convert into output buffer
                                 wchar[MAX_PATH+1] tmp = void;
+                                assert (path.length < tmp.length);
+                                auto i = MultiByteToWideChar (CP_UTF8, 0, 
+                                                              path.ptr, path.length, 
+                                                              tmp.ptr, tmp.length);
+                                tmp[i] = 0;
 
-                                if (! SetCurrentDirectoryW (Utf.toUtf16(path.cString, tmp).ptr))
+                                if (! SetCurrentDirectoryW (tmp.ptr))
                                       exception ("Failed to set current directory");
                                 }
-
-                        return path;
                 }
 
                 /***************************************************************
@@ -110,33 +113,33 @@ class FileSystem
 
                 ***************************************************************/
 
-                static FilePath getDirectory (FilePath path)
+                static char[] getDirectory ()
                 {
-                        assert (path);
+                        char[] path;
 
                         version (Win32SansUnicode)
                                 {
                                 int length = GetCurrentDirectoryA (0, null);
+                                auto dir = new char [length];
+                                GetCurrentDirectoryA (length, dir.ptr);
                                 if (length)
-                                   {
-                                   auto dir = new char [length];
-                                   GetCurrentDirectoryA (length, dir.ptr);
-                                   path.asPath (dir[0 .. $-1]);
-                                   }
+                                    path = dir[0 .. $-1];
                                 else
                                    exception ("Failed to get current directory");
                                 }
                              else
                                 {
-                                int length = GetCurrentDirectoryW (0, null);
-                                if (length)
-                                   {
-                                   char[MAX_PATH] tmp = void;
-                                   auto dir = new wchar [length];
+                                wchar[MAX_PATH] tmp = void;
 
-                                   GetCurrentDirectoryW (length, dir.ptr);
-                                   path.asPath (Utf.toUtf8 (dir, tmp)[0 .. $-1]);
-                                   }
+                                auto length = GetCurrentDirectoryW (0, null);
+                                assert (length < tmp.length);
+                                auto dir = new char [length * 3];
+        
+                                GetCurrentDirectoryW (length, tmp.ptr);
+                                auto i = WideCharToMultiByte (CP_UTF8, 0, tmp.ptr, length, 
+                                                              dir.ptr, dir.length, null, null);
+                                if (length && i)
+                                    path = dir [0 .. i-1];
                                 else
                                    exception ("Failed to get current directory");
                                 }
@@ -157,14 +160,14 @@ class FileSystem
 
                 ***************************************************************/
 
-                static FilePath setDirectory (FilePath path)
+                static void setDirectory (char[] path)
                 {
-                        assert (path);
+                        char[512] tmp = void;
+                        tmp [path.length] = 0;
+                        tmp[0..path.length] = path;
 
-                        if (tango.stdc.posix.unistd.chdir (path.cString.ptr))
+                        if (tango.stdc.posix.unistd.chdir (tmp.ptr))
                             exception ("Failed to set current directory");
-
-                        return path;
                 }
 
                 /***************************************************************
@@ -174,17 +177,15 @@ class FileSystem
 
                 ***************************************************************/
 
-                static FilePath getDirectory (FilePath path)
+                static char[] getDirectory ()
                 {
-                        assert (path);
-
                         char[512] tmp = void;
 
                         char *s = tango.stdc.posix.unistd.getcwd (tmp.ptr, tmp.length);
                         if (s is null)
                             exception ("Failed to get current directory");
 
-                        return path.asPath (s[0 .. strlen (s)]);
+                        return s[0 .. strlen (s)];
                 }
         }
 }
