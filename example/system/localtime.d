@@ -30,7 +30,7 @@ void main ()
             tz = -tz, sign = '-';
 
         // format date
-        Stdout.formatln ("{0}, {1} {2:d2} {3:d2}:{4:d2}:{5:d2} GMT{6}{7:d2}:{8:d2} {9}",
+        Stdout.formatln ("{}, {} {:d2} {:d2}:{:d2}:{:d2} GMT{}{:d2}:{:d2} {}",
                           date.asDay,
                           date.asMonth,
                           date.day,
