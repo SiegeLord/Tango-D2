@@ -63,7 +63,7 @@ public class RollingFileAppender : FileAppender
                     x[0] = '0' + i;
 
                     auto proxy = new FileProxy (path);
-                    proxy.asName (proxy.name ~ x);
+                    proxy.name = proxy.name ~ x;
                     paths ~= proxy;
 
                     // use the most recent file in the set

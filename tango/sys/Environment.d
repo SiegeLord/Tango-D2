@@ -51,6 +51,8 @@ else
 
 /*******************************************************************************
 
+        Exposes the system Environment settings, along with some handy
+        utilities
 
 *******************************************************************************/
 
@@ -71,28 +73,21 @@ struct Environment
 
                 // on Windows, this is a .exe
                 version (Windows)
-                     if (bin.ext.length is 0)
-                         bin.append (".exe");
+                         if (bin.ext.length is 0)
+                             bin.append (".exe");
 
-                // is this a directory?
+                // is this a directory? Potentially make it absolute
                 if (bin.isChild)
-                   {
-                   // potentially make it absolute
-                   FileSystem.makeAbsolute (bin);
-                   return bin;
-                   }
+                    return FileSystem.toAbsolute (bin);
 
                 // is it in cwd?
                 version (Windows)
-                        {
-                        FileSystem.getDirectory (bin);
-                        if (bin.exists)
-                            return bin;
-                        }
+                         if (bin.path(FileSystem.getDirectory).exists)
+                             return bin;
 
                 // rifle through the path
-                foreach (pe; Text.patterns (get("PATH"), FileConst.SystemPathSeparatorString))
-                         if (bin.asPath(pe).exists)
+                foreach (pe; Text.patterns (get("PATH"), FileConst.SystemPathString))
+                         if (bin.path(pe).exists)
                              version (Windows)
                                       return bin;
                                   else
@@ -110,17 +105,18 @@ struct Environment
         {
                 /**************************************************************
 
+                        Returns null if the variable does not exist
+
                 **************************************************************/
 
-                // Returns null if the variable does not exist
                 static char[] get (char[] variable)
                 {
                         wchar[] var = toUtf16(variable) ~ "\0";
 
                         uint size = GetEnvironmentVariableW(var.ptr, cast(wchar*)null, 0);
-                        if (size == 0)
+                        if (size is 0)
                            {
-                           if (SysError.lastCode == ERROR_ENVVAR_NOT_FOUND)
+                           if (SysError.lastCode is ERROR_ENVVAR_NOT_FOUND)
                                return null;
                            else
                               throw new PlatformException (SysError.lastMsg);
@@ -128,7 +124,7 @@ struct Environment
 
                         auto buffer = new wchar[size];
                         size = GetEnvironmentVariableW(var.ptr, buffer.ptr, size);
-                        if (size == 0)
+                        if (size is 0)
                             throw new PlatformException (SysError.lastMsg);
 
                         return toUtf8 (buffer[0 .. size]);
@@ -136,9 +132,10 @@ struct Environment
 
                 /**************************************************************
 
+                        clears the variable if value is null or empty
+
                 **************************************************************/
 
-                // Undefines the variable, if value is null or empty string
                 static void set (char[] variable, char[] value = null)
                 {
                         wchar * var, val;
@@ -175,7 +172,7 @@ struct Environment
                                   {
                                   key[k++] = *str++;
 
-                                  if (k == key.length)
+                                  if (k is key.length)
                                       key.length = 2 * key.length;
                                   }
 
@@ -185,7 +182,7 @@ struct Environment
                                   {
                                   value [v++] = *str++;
 
-                                  if (v == value.length)
+                                  if (v is value.length)
                                       value.length = 2 * value.length;
                                   }
 
@@ -199,9 +196,10 @@ struct Environment
         {
                 /**************************************************************
 
+                        Returns null if the variable does not exist     
+
                 **************************************************************/
 
-                // Returns null if the variable does not exist
                 static char[] get (char[] variable)
                 {
                         char* ptr = getenv (variable.ptr);
@@ -214,14 +212,15 @@ struct Environment
 
                 /**************************************************************
 
+                        clears the variable, if value is null or empty
+        
                 **************************************************************/
 
-                // Undefines the variable, if value is null or empty string
                 static void set (char[] variable, char[] value = null)
                 {
                         int result;
 
-                        if (value.length == 0)
+                        if (value.length is 0)
                             unsetenv ((variable ~ '\0').ptr);
                         else
                            result = setenv ((variable ~ '\0').ptr, (value ~ '\0').ptr, 1);

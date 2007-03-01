@@ -31,7 +31,7 @@ struct FileConst
                         RootSeparatorChar = ':',
                         FileSeparatorChar = '.',
                         PathSeparatorChar = '\\',
-                        SystemPathSeparatorChar = ';',
+                        SystemPathChar = ';',
                 }
 
                 static const char[] ParentDirString = "..";
@@ -39,7 +39,7 @@ struct FileConst
                 static const char[] FileSeparatorString = ".";
                 static const char[] RootSeparatorString = ":";
                 static const char[] PathSeparatorString = "\\";
-                static const char[] SystemPathSeparatorString = ";";
+                static const char[] SystemPathString = ";";
 
                 static const char[] NewlineString = "\r\n";
         }
@@ -51,14 +51,14 @@ struct FileConst
                         CurrentDirChar = '.',
                         FileSeparatorChar = '.',
                         PathSeparatorChar = '/',
-                        SystemPathSeparatorChar = ':',
+                        SystemPathChar = ':',
                 }
 
                 static const char[] ParentDirString = "..";
                 static const char[] CurrentDirString = ".";
                 static const char[] FileSeparatorString = ".";
                 static const char[] PathSeparatorString = "/";
-                static const char[] SystemPathSeparatorString = ":";
+                static const char[] SystemPathString = ":";
 
                 static const char[] NewlineString = "\n";
         }

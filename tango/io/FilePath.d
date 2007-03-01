@@ -88,7 +88,7 @@ class FilePath : PathView
 
         ***********************************************************************/
 
-        final override char[] toUtf8 ()
+        final char[] toUtf8 ()
         {
                 return fp [0 .. end_];
         }
@@ -344,7 +344,7 @@ class FilePath : PathView
 
         ***********************************************************************/
 
-        final FilePath asRoot (char[] other)
+        final FilePath root (char[] other)
         {
                 auto x = adjust (0, folder_, folder_, padded (other, ':'));
                 suffix_ += x;
@@ -358,7 +358,7 @@ class FilePath : PathView
 
         ***********************************************************************/
 
-        final FilePath asFolder (char[] other)
+        final FilePath folder (char[] other)
         {
                 auto x = adjust (folder_, name_, name_ - folder_, padded (other));
                 suffix_ += x;
@@ -371,7 +371,7 @@ class FilePath : PathView
 
         ***********************************************************************/
 
-        final FilePath asName (char[] other)
+        final FilePath name (char[] other)
         {
                 auto x = adjust (name_, suffix_, suffix_ - name_, other);
                 suffix_ += x;
@@ -383,7 +383,7 @@ class FilePath : PathView
 
         ***********************************************************************/
 
-        final FilePath asSuffix (char[] other)
+        final FilePath suffix (char[] other)
         {
                 adjust (suffix_, end_, end_ - suffix_, prefixed (other, '.'));
                 return parse;
@@ -393,7 +393,7 @@ class FilePath : PathView
 
         ***********************************************************************/
 
-        final FilePath asExt (char[] other)
+        final FilePath ext (char[] other)
         {       
                 auto len = ext.length;
                 adjust (end_ - len, end_, len, prefixed (other, '.'));
@@ -404,7 +404,7 @@ class FilePath : PathView
 
         ***********************************************************************/
 
-        final FilePath asPath (char[] other)
+        final FilePath path (char[] other)
         {
                 adjust (0, name_, name_, other);
                 return parse;
@@ -414,7 +414,7 @@ class FilePath : PathView
 
         ***********************************************************************/
 
-        final FilePath asFile (char[] other)
+        final FilePath file (char[] other)
         {
                 adjust (name_, end_, end_ - name_, other);
                 return parse;
@@ -844,7 +844,7 @@ debug (UnitTest)
 
                 fp = new FilePath(r"c:\a\b\c\d\e\foo.bar");
                 assert (fp.isAbsolute);
-                fp.asFolder (r"\a\b\c\");
+                fp.folder (r"\a\b\c\");
                 assert (fp.suffix == r".bar");
                 assert (fp.toUtf8 == r"c:\a\b\c\foo.bar");
                 assert (fp.name == "foo");
@@ -855,7 +855,7 @@ debug (UnitTest)
 
                 fp = new FilePath(r"c:\a\b\c\d\e\foo.bar");
                 assert (fp.isAbsolute);
-                fp.asFolder (r"\a\b\c\d\e\f\g\");
+                fp.folder (r"\a\b\c\d\e\f\g\");
                 assert (fp.suffix == r".bar");
                 assert (fp.toUtf8 == r"c:\a\b\c\d\e\f\g\foo.bar");
                 assert (fp.name == "foo");

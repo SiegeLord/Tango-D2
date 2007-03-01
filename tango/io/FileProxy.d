@@ -128,11 +128,13 @@ class FileProxy : FilePath
 
         /***********************************************************************
 
+                Common wrapper method to return a FileProxy instead
+
         ***********************************************************************/
 
-        final FileProxy asPath (char[] other)
+        final FileProxy path (char[] other)
         {
-                super.asPath (other);
+                super.path (other);
                 return this;
         }
 
@@ -387,8 +389,8 @@ class FileProxy : FilePath
 
                         version (Win32SansUnicode)
                                 {
-                                if (! CopyFileA (src.cString, path.cString, false))
-                                      error ();
+                                if (! CopyFileA (src.cString.ptr, this.cString.ptr, false))
+                                      exception;
                                 }
                              else
                                 {
