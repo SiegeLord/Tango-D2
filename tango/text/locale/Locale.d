@@ -40,6 +40,8 @@ module tango.text.locale.Locale;
 private import tango.text.locale.Core,
                tango.text.locale.Convert;
 
+private import tango.util.time.DateTime;
+
 private import tango.text.convert.Layout;
 
 public  import tango.text.locale.Core : Culture;

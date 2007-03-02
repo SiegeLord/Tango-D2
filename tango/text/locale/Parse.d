@@ -1,6 +1,22 @@
+/*******************************************************************************
+
+        copyright:      Copyright (c) 2005 John Chapman. All rights reserved
+
+        license:        BSD style: $(LICENSE)
+
+        version:        Initial release: 2005
+
+        author:         John Chapman
+
+******************************************************************************/
+
 module tango.text.locale.Parse;
 
-private import tango.text.locale.Core;
+private import  tango.text.locale.Core;
+
+private import  tango.util.time.DateTime,
+                tango.util.time.Calendar;
+
 
 private struct DateTimeParseResult {
 

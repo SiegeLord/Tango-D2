@@ -12,6 +12,9 @@
 
 module tango.text.locale.Convert;
 
+private import tango.util.time.DateTime,       
+               tango.util.time.TimeZone;
+
 private import tango.text.locale.Core,
                tango.text.locale.Constants;
 
@@ -81,7 +84,93 @@ private struct Result
 
 /******************************************************************************
 
+   * Converts the value of this instance to its equivalent string representation using the specified _format and culture-specific formatting information.
+   * Params: 
+   *   format = A _format string.
+   *   formatService = An IFormatService that provides culture-specific formatting information.
+   * Returns: A string representation of the value of this instance as specified by format and formatService.
+   * Remarks: See $(LINK2 datetimeformat.html, DateTime Formatting) for more information about date and time formatting.
+   * Examples:
+   * ---
+   * import tango.io.Print, tango.text.locale.Core;
+   *
+   * void main() {
+   *   Culture culture = Culture.current;
+   *   DateTime now = DateTime.now;
+   *
+   *   Println("Current date and time: %s", now.toUtf8());
+   *   Println();
+   *
+   *   // Format the current date and time in a number of ways.
+   *   Println("Culture: %s", culture.englishName);
+   *   Println();
+   *
+   *   Println("Short date:              %s", now.toUtf8("d"));
+   *   Println("Long date:               %s", now.toUtf8("D"));
+   *   Println("Short time:              %s", now.toUtf8("t"));
+   *   Println("Long time:               %s", now.toUtf8("T"));
+   *   Println("General date short time: %s", now.toUtf8("g"));
+   *   Println("General date long time:  %s", now.toUtf8("G"));
+   *   Println("Month:                   %s", now.toUtf8("M"));
+   *   Println("RFC1123:                 %s", now.toUtf8("R"));
+   *   Println("Sortable:                %s", now.toUtf8("s"));
+   *   Println("Year:                    %s", now.toUtf8("Y"));
+   *   Println();
+   *
+   *   // Display the same values using a different culture.
+   *   culture = Culture.getCulture("fr-FR");
+   *   Println("Culture: %s", culture.englishName);
+   *   Println();
+   *
+   *   Println("Short date:              %s", now.toUtf8("d", culture));
+   *   Println("Long date:               %s", now.toUtf8("D", culture));
+   *   Println("Short time:              %s", now.toUtf8("t", culture));
+   *   Println("Long time:               %s", now.toUtf8("T", culture));
+   *   Println("General date short time: %s", now.toUtf8("g", culture));
+   *   Println("General date long time:  %s", now.toUtf8("G", culture));
+   *   Println("Month:                   %s", now.toUtf8("M", culture));
+   *   Println("RFC1123:                 %s", now.toUtf8("R", culture));
+   *   Println("Sortable:                %s", now.toUtf8("s", culture));
+   *   Println("Year:                    %s", now.toUtf8("Y", culture));
+   *   Println();
+   * }
+   *
+   * // Produces the following output:
+   * // Current date and time: 26/05/2006 10:04:57 AM
+   * //
+   * // Culture: English (United Kingdom)
+   * //
+   * // Short date:              26/05/2006
+   * // Long date:               26 May 2006
+   * // Short time:              10:04
+   * // Long time:               10:04:57 AM
+   * // General date short time: 26/05/2006 10:04
+   * // General date long time:  26/05/2006 10:04:57 AM
+   * // Month:                   26 May
+   * // RFC1123:                 Fri, 26 May 2006 10:04:57 GMT
+   * // Sortable:                2006-05-26T10:04:57
+   * // Year:                    May 2006
+   * //
+   * // Culture: French (France)
+   * //
+   * // Short date:              26/05/2006
+   * // Long date:               vendredi 26 mai 2006
+   * // Short time:              10:04
+   * // Long time:               10:04:57
+   * // General date short time: 26/05/2006 10:04
+   * // General date long time:  26/05/2006 10:04:57
+   * // Month:                   26 mai
+   * // RFC1123:                 ven., 26 mai 2006 10:04:57 GMT
+   * // Sortable:                2006-05-26T10:04:57
+   * // Year:                    mai 2006
+   * ---
+
 ******************************************************************************/
+
+public char[] formatDateTime (char[] output, DateTime dateTime, char[] format, IFormatService formatService = null) 
+{
+    return formatDateTime (output, dateTime, format, DateTimeFormat.getInstance(formatService));
+}
 
 char[] formatDateTime (char[] output, DateTime dateTime, char[] format, DateTimeFormat dtf)
 {
@@ -136,11 +225,16 @@ char[] formatDateTime (char[] output, DateTime dateTime, char[] format, DateTime
                             f = dtf.universalSortableDateTimePattern;
                             break;
                        case 'U':
+version (Full)
+{
                             dtf = cast(DateTimeFormat) dtf.clone();
                             dateTime = dateTime.toUniversalTime();
                             if (typeid(typeof(dtf.calendar)) !is typeid(GregorianCalendar))
                                 dtf.calendar = GregorianCalendar.getDefaultInstance();
                             f = dtf.fullDateTimePattern;
+}
+else
+                            assert(false);
                             break;
                        case 'y':
                        case 'Y':

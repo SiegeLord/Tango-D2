@@ -1,5 +1,15 @@
-/**
- */
+/*******************************************************************************
+
+        copyright:      Copyright (c) 2005 John Chapman. All rights reserved
+
+        license:        BSD style: $(LICENSE)
+
+        version:        Initial release: 2005
+
+        author:         John Chapman
+
+******************************************************************************/
+
 module tango.text.locale.Collation;
 
 private import tango.text.locale.Core;

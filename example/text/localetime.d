@@ -9,11 +9,13 @@
 
 private import tango.io.Console;
 
-private import tango.text.locale.Core;
+private import tango.util.time.DateTime;
+
+private import tango.text.locale.Locale;
 
 void main ()
 {
-        char[64] tmp = void;
+        auto layout = new Locale;
 
-        Cout (DateTime.now.toUtf8 (tmp, "ddd, dd MMMM yyyy HH:mm:ss z")).newline;
+        Cout (layout ("{:ddd, dd MMMM yyyy HH:mm:ss z}", DateTime.now)).newline;
 }
