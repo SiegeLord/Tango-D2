@@ -12,11 +12,10 @@
 
 module tango.text.locale.Convert;
 
+private import tango.text.locale.Core;
+
 private import tango.util.time.DateTime,       
                tango.util.time.TimeZone;
-
-private import tango.text.locale.Core,
-               tango.text.locale.Constants;
 
 private import Integer = tango.text.convert.Integer;
 

@@ -8,13 +8,14 @@
 
         author:         John Chapman
 
+        Contains classes that provide information about locales, such as 
+        the language and calendars, as well as cultural conventions used 
+        for formatting dates, currency and numbers. Use these classes when 
+        writing applications for an international audience.
+
 ******************************************************************************/
 
 /**
- * Contains classes that provide information about locales, such as the language and calendars, 
- * as well as cultural conventions used for formatting dates, currency and numbers. Use these classes when writing
- * applications for an international audience.
- *
  * $(MEMBERTABLE
  * $(TR
  * $(TH Interface)
@@ -108,9 +109,6 @@ private import  tango.text.locale.Data;
 private import  tango.util.time.DateTime,
                 tango.util.time.Calendar;
 
-private import  tango.text.locale.Constants;
-
- 
 version (Windows)
          private import tango.text.locale.Win32;
 
@@ -124,6 +122,17 @@ private template arrayOf(T) {
     return params.dup;
   }
 }
+
+
+/**
+ * Defines the types of cultures that can be retrieved from Culture.getCultures.
+ */
+public enum CultureTypes {
+  Neutral = 1,             /// Refers to cultures that are associated with a language but not specific to a country or region.
+  Specific = 2,            /// Refers to cultures that are specific to a country or region.
+  All = Neutral | Specific /// Refers to all cultures.
+}
+
 
 /**
  * $(ANCHOR _IFormatService)

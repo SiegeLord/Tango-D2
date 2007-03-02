@@ -10,17 +10,47 @@
 
 ******************************************************************************/
 
-/**
- * Contains classes that provide information about locales, such as the language and calendars, 
- * as well as cultural conventions used for formatting dates, currency and numbers. Use these classes when writing
- * applications for an international audience.
- */
-
 module tango.util.time.DateTime;
 
 private import  tango.util.time.Utc;
 
-private import  tango.text.locale.Constants;
+/**
+*/
+public enum DayOfWeek {
+  Sunday,    /// Indicates _Sunday.
+  Monday,    /// Indicates _Monday.
+  Tuesday,   /// Indicates _Tuesday.
+  Wednesday, /// Indicates _Wednesday.
+  Thursday,  /// Indicates _Thursday.
+  Friday,    /// Indicates _Friday.
+  Saturday   /// Indicates _Saturday.
+}
+
+/**
+*/
+public enum CalendarWeekRule {
+  FirstDay,         /// Indicates that the first week of the year is the first week containing the first day of the year.
+  FirstFullWeek,    /// Indicates that the first week of the year is the first full week following the first day of the year.
+  FirstFourDayWeek  /// Indicates that the first week of the year is the first week containing at least four days.
+}
+
+/**
+*/
+public enum GregorianCalendarTypes {
+  Localized = 1,               /// Refers to the localized version of the Gregorian calendar.
+  USEnglish = 2,               /// Refers to the US English version of the Gregorian calendar.
+  MiddleEastFrench = 9,        /// Refers to the Middle East French version of the Gregorian calendar.
+  Arabic = 10,                 /// Refers to the _Arabic version of the Gregorian calendar.
+  TransliteratedEnglish = 11,  /// Refers to the transliterated English version of the Gregorian calendar.
+  TransliteratedFrench = 12    /// Refers to the transliterated French version of the Gregorian calendar.
+}
+
+package enum DatePart {
+  YEAR,
+  MONTH,
+  DAY,
+  DAY_OF_YEAR
+}
 
 
 package const int[] DAYS_TO_MONTH_COMMON = [ 0, 31, 59, 90, 120, 151, 181, 212, 243, 273, 304, 334, 365 ];

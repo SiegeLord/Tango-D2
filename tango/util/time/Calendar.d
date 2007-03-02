@@ -14,8 +14,6 @@ module tango.util.time.Calendar;
 
 private import tango.util.time.DateTime;
 
-private import tango.text.locale.Constants;
-
 
 // Initializes an array.
 private template arrayOf(T) {
