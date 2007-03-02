@@ -640,7 +640,6 @@ class Thread
      * in longer than expected sleep times.  Therefore, sub-second intervals
      * will not be resumed even if prematurely interrupted.
      *
-     *
      * Params:
      *  period = The minimum duration the calling thread should be suspended,
      *           in seconds.  Sub-second durations are specified as fractional
