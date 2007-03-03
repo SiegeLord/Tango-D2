@@ -4,7 +4,7 @@ import tango.sys.win32.UserGdi;
 import tango.stdc.stringz;
 import tango.stdc.stdio;
 import tango.stdc.stdlib;
-import tango.io.FileProxy;
+import tango.io.FilePath;
 import tango.text.Util;
 import tango.text.Ascii;
 
@@ -41,10 +41,10 @@ Example: switch.exe phobos
     else
     {
         // attempt to auto-detect library path
-        if((new FileProxy("..\\lib\\phobos.lib")).exists)
+        if((new FilePath("..\\lib\\phobos.lib")).exists)
             currentDir = "..\\";
         else
-        if((new FileProxy("lib\\phobos.lib")).exists)
+        if((new FilePath("lib\\phobos.lib")).exists)
             currentDir = ".\\";
         else
         {
@@ -54,10 +54,10 @@ Example: switch.exe phobos
             if(pos<commandLine.length)
             {
                 char[] programFolder = commandLine[0..pos+1];
-                if((new FileProxy(programFolder ~ "..\\lib\\phobos.lib")).exists)
+                if((new FilePath(programFolder ~ "..\\lib\\phobos.lib")).exists)
                     currentDir = programFolder ~ "..\\";
                 else
-                if((new FileProxy(programFolder ~ "lib\\phobos.lib")).exists)
+                if((new FilePath(programFolder ~ "lib\\phobos.lib")).exists)
                     currentDir = programFolder;
             }
         }
@@ -87,7 +87,7 @@ Example: switch.exe phobos
         // ANSI Windows APIs take Multi-byte character strings as parameters 
         // (see WideCharToMultiByte).
 
-        if((new FileProxy(targetLib)).getSize==(new FileProxy(phobosLib)).getSize)
+        if((new FilePath(targetLib)).getSize==(new FilePath(phobosLib)).getSize)
         {
         	showMessage("You are already using Phobos.");
         	return;
@@ -104,7 +104,7 @@ Example: switch.exe phobos
     else 
     if ( target == "tango" ) // switch to Tango
     {
-        if((new FileProxy(targetLib)).getSize==(new FileProxy(tangoLib)).getSize)
+        if((new FilePath(targetLib)).getSize==(new FilePath(tangoLib)).getSize)
         {
         	showMessage("You are already using Tango.");
         	return;

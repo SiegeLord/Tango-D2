@@ -14,8 +14,7 @@ module tango.io.UnicodeFile;
 
 public  import  tango.io.FilePath;
 
-private import  tango.io.FileProxy,
-                tango.io.FileConduit;
+private import  tango.io.FileConduit;
 
 private import  tango.core.Exception;
 
@@ -87,7 +86,7 @@ public  import  tango.text.convert.UnicodeBom;
         correctly matched.
 
         Methods to inspect the file system, check the status of a file or
-        directory, and other facilities are made available via the FileProxy
+        directory, and other facilities are made available via the FilePath
         superclass.
 
         See these links for more info:
@@ -102,7 +101,7 @@ public  import  tango.text.convert.UnicodeBom;
 class UnicodeFile(T)
 {
         private UnicodeBom!(T)  bom;
-        private FileProxy       proxy_;
+        private PathView        path_;
 
         /***********************************************************************
         
@@ -112,10 +111,10 @@ class UnicodeFile(T)
 
         ***********************************************************************/
                                   
-        this (FileProxy proxy, Encoding encoding)
+        this (PathView path, Encoding encoding)
         {
                 bom = new UnicodeBom!(T)(encoding);
-                proxy_ = proxy;
+                path_ = path;
         }
 
         /***********************************************************************
@@ -128,18 +127,18 @@ class UnicodeFile(T)
 
         this (char[] path, Encoding encoding)
         {
-                this (new FileProxy(path), encoding);
+                this (new FilePath(path), encoding);
         }
 
         /***********************************************************************
 
-                Return the associated FileProxy instance
+                Return the associated FilePath instance
 
         ***********************************************************************/
 
-        FileProxy proxy ()
+        PathView path ()
         {
-                return proxy_;
+                return path_;
         }
         
         /***********************************************************************
@@ -169,7 +168,7 @@ class UnicodeFile(T)
 
         T[] read ()
         {
-                auto conduit = new FileConduit (proxy_);  
+                auto conduit = new FileConduit (path_);  
                 scope (exit)
                        conduit.close;
 
@@ -224,7 +223,7 @@ class UnicodeFile(T)
                 void[] converted = bom.encode (content);
 
                 // open file after conversion ~ in case of exceptions
-                auto conduit = new FileConduit (proxy_, style);  
+                auto conduit = new FileConduit (path_, style);  
                 scope (exit)
                        conduit.close;
 

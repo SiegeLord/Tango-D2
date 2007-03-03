@@ -13,7 +13,7 @@
 
 module tango.io.FileScan;
 
-public import tango.io.FileProxy;
+public import tango.io.FilePath;
 
 /*******************************************************************************
 
@@ -47,19 +47,19 @@ class FileScan
         alias sweep opCall;
 
         uint            total_;
-        FileProxy[]     files_,
+        FilePath[]      files_,
                         folders_;
         
         /***********************************************************************
 
-            Alias for Filter delegate. Accepts a FileProxy & a bool as 
+            Alias for Filter delegate. Accepts a FilePath & a bool as 
             arguments and returns a bool.
 
-            The FileProxy argument represents a file found by the scan, 
-            and the bool whether the FileProxy represents a folder.
+            The FilePath argument represents a file found by the scan, 
+            and the bool whether the FilePath represents a folder.
 
             The filter should return true, if matched by the filter. Note
-            that returning false where the proxy is a folder will result 
+            that returning false where the path is a folder will result 
             in all files contained being ignored. To always recurse folders, 
             do something like this:
             ---
@@ -68,7 +68,7 @@ class FileScan
 
         ***********************************************************************/
 
-        alias bool delegate (FileProxy, bool) Filter;
+        alias bool delegate (FilePath, bool) Filter;
 
         /***********************************************************************
 
@@ -87,7 +87,7 @@ class FileScan
 
         ***********************************************************************/
 
-        public FileProxy[] files ()
+        public FilePath[] files ()
         {
                 return files_;
         }
@@ -98,7 +98,7 @@ class FileScan
 
         ***********************************************************************/
 
-        public FileProxy[] folders ()
+        public FilePath[] folders ()
         {
                 return folders_;
         }
@@ -112,7 +112,7 @@ class FileScan
         
         FileScan sweep (char[] path, char[] match)
         {
-                return sweep (path, (FileProxy fp, bool isDir)
+                return sweep (path, (FilePath fp, bool isDir)
                              {return isDir || fp.suffix == match;});
         }
 
@@ -127,7 +127,7 @@ class FileScan
         {
                 total_ = 0;
                 files_ = folders_ = null;
-                return scan (new FileProxy(path), filter);
+                return scan (new FilePath(path), filter);
         }
 
         /***********************************************************************
@@ -139,9 +139,9 @@ class FileScan
                         
         ***********************************************************************/
 
-        private FileScan scan (FileProxy folder, Filter filter) 
+        private FileScan scan (FilePath folder, Filter filter) 
         {
-                FileProxy[] proxies;
+                FilePath[] paths;
 
                 void add (char[] prefix, char[] name, bool isDir)
                 { 
@@ -155,7 +155,7 @@ class FileScan
                         tmp[0..prefix.length] = prefix;
                         tmp[prefix.length..len] = name;
                         
-                        auto p = new FileProxy (tmp[0 .. len], isDir);
+                        auto p = new FilePath (tmp[0 .. len], isDir);
 
                         // test this entry for inclusion
                         if (filter (p, isDir))
@@ -164,7 +164,7 @@ class FileScan
                            char[] suffix = p.suffix;
                            if (p.name.length > 0 || suffix.length > 3 ||
                               (suffix != "..."[0 .. suffix.length]))
-                               proxies ~= p;                                                   
+                               paths ~= p;                                                   
                            }
                         else
                            delete p;
@@ -173,11 +173,11 @@ class FileScan
                 folder.toList (&add);
                 auto count = files_.length;
                 
-                foreach (proxy; proxies)
-                         if (proxy.isDir)
-                             scan (proxy, filter);
+                foreach (path; paths)
+                         if (path.isDir)
+                             scan (path, filter);
                          else
-                            files_ ~= proxy;
+                            files_ ~= path;
                 
                 // add packages only if there's something in them
                 if (files_.length > count)

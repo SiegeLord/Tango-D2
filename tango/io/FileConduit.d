@@ -115,7 +115,7 @@ version (Win32)
         ---
 
 
-        See File, FilePath, FileProxy, FileConst, FileScan, and FileSystem for 
+        See File, FilePath, FileConst, FileScan, and FileSystem for 
         additional functionality related to file manipulation. 
 
         Compile with -version=Win32SansUnicode to enable Win95 & Win32s file 

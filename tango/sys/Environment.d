@@ -14,13 +14,17 @@ module tango.sys.Environment;
 
 private import  tango.sys.Common;
 
-private import  tango.io.FileConst,
-                tango.io.FileProxy,
+private import  tango.io.FilePath,
+                tango.io.FileConst,
                 tango.io.FileSystem;
 
 private import  tango.core.Exception;
 
 private import  Text = tango.text.Util;
+
+/*******************************************************************************
+
+*******************************************************************************/
 
 version (Windows)
 {
@@ -69,7 +73,7 @@ struct Environment
 
         static FilePath exePath (char[] file)
         {
-                auto bin = new FileProxy (file);
+                auto bin = new FilePath (file);
 
                 // on Windows, this is a .exe
                 version (Windows)

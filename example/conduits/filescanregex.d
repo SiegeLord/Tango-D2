@@ -20,7 +20,7 @@ void main(char[][] args) {
     scope scan = new FileScan;
     scope regex =  Regex(r"\.(d|obj)$");
 
-    scan(args[1], delegate bool (FileProxy fp, bool isDir) { 
+    scan(args[1], delegate bool (FilePath fp, bool isDir) { 
          return isDir || regex.test(fp.toUtf8); 
     });
     

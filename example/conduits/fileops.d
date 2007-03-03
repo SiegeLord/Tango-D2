@@ -8,12 +8,12 @@
 
 import tango.io.Stdout;
 
-import tango.io.FileProxy;
+import tango.io.FilePath;
 
 void main (char[][] args) 
 {
     auto src = args[0] ~ ".d";
-    auto dst = new FileProxy (args[0] ~ ".d.copy");
+    auto dst = new FilePath (args[0] ~ ".d.copy");
 
     Stdout.formatln ("copy file {} to {}", src, dst);
     dst.copy (src);

@@ -13,7 +13,7 @@
 
 module tango.io.File;
 
-private import  tango.io.FileProxy,
+private import  tango.io.FilePath,
                 tango.io.FileConduit;
 
 private import  tango.core.Exception;
@@ -36,7 +36,7 @@ private import  tango.core.Exception;
 
 class File
 {
-        private FileProxy proxy_;
+        private PathView path_;
 
         /***********************************************************************
         
@@ -46,29 +46,29 @@ class File
 
         this (char[] path)
         {
-                this (new FileProxy (path));
+                this (new FilePath (path));
         }
 
         /***********************************************************************
         
-                Construct a File from the provided FileProxy
+                Construct a File from the provided FilePath
 
         ***********************************************************************/
                                   
-        this (FileProxy proxy)
+        this (PathView path)
         {
-                proxy_ = proxy;
+                path_ = path;
         }
 
         /***********************************************************************
 
-                Return the proxy for this file instance
+                Return the path for this file instance
 
         ***********************************************************************/
 
-        final FileProxy proxy ()
+        final PathView path ()
         {
-                return proxy_;
+                return path_;
         }
 
         /***********************************************************************
@@ -79,7 +79,7 @@ class File
 
         final void[] read ()
         {
-                auto conduit = new FileConduit (proxy_);  
+                auto conduit = new FileConduit (path_);  
                 scope (exit)
                        conduit.close;
 
@@ -122,7 +122,7 @@ class File
 
         private File write (void[] content, FileConduit.Style style)
         {      
-                auto conduit = new FileConduit (proxy_, style);  
+                auto conduit = new FileConduit (path_, style);  
                 scope (exit)
                        conduit.close;
 

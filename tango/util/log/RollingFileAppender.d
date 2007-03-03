@@ -14,7 +14,6 @@ module tango.util.log.RollingFileAppender;
 
 private import  tango.io.FilePath,
                 tango.io.FileConst,
-                tango.io.FileProxy,
                 tango.io.FileConduit;
 
 private import  tango.io.model.IBuffer;
@@ -62,14 +61,14 @@ public class RollingFileAppender : FileAppender
                     {
                     x[0] = '0' + i;
 
-                    auto proxy = new FileProxy (path);
-                    proxy.name = proxy.name ~ x;
-                    paths ~= proxy;
+                    auto p = new FilePath (path);
+                    p.name = p.name ~ x;
+                    paths ~= p;
 
                     // use the most recent file in the set
-                    if (proxy.exists)
+                    if (p.exists)
                        {
-                       auto modified = proxy.modified;
+                       auto modified = p.modified;
                        if (modified > mostRecent)
                           {
                           mostRecent = modified;
