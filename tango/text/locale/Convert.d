@@ -231,10 +231,10 @@ version (Full)
                             if (typeid(typeof(dtf.calendar)) !is typeid(GregorianCalendar))
                                 dtf.calendar = GregorianCalendar.getDefaultInstance();
                             f = dtf.fullDateTimePattern;
+                            break;
 }
 else
                             assert(false);
-                            break;
                        case 'y':
                        case 'Y':
                             f = dtf.yearMonthPattern;
