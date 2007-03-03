@@ -29,8 +29,6 @@ private import  tango.core.Exception;
 
 version (Win32)
         {
-        private import Utf = tango.text.convert.Utf;
-
         version (Win32SansUnicode)
                 {
                 alias char T;
@@ -757,10 +755,37 @@ class FilePath : PathView
 
                 ***************************************************************/
 
+                private wchar[] toUtf16 (wchar[] tmp, char[] path)
+                {
+                        auto i = MultiByteToWideChar (CP_UTF8, 0, 
+                                                      path.ptr, path.length, 
+                                                      tmp.ptr, tmp.length);
+                        return tmp [0..i];
+                }
+
+                /***************************************************************
+
+                        return a char[] instance of the path
+
+                ***************************************************************/
+
+                private char[] toUtf8 (char[] tmp, wchar[] path)
+                {
+                        auto i = WideCharToMultiByte (CP_UTF8, 0, path.ptr, path.length, 
+                                                      tmp.ptr, tmp.length, null, null);
+                        return tmp [0..i];
+                }
+
+                /***************************************************************
+
+                        return a wchar[] instance of the path
+
+                ***************************************************************/
+
                 private wchar[] name16 (wchar[] tmp, bool withNull=true)
                 {
                         int offset = withNull ? 0 : 1;
-                        return Utf.toUtf16 (this.cString[0..$-offset], tmp);
+                        return toUtf16 (tmp, this.cString[0 .. $-offset]);
                 }
 
                 /***************************************************************
@@ -876,7 +901,7 @@ class FilePath : PathView
                                 wchar[MAX_PATH+1] tmp1 = void;
                                 wchar[MAX_PATH+1] tmp2 = void;
 
-                                if (! CopyFileW (Utf.toUtf16(src.cString, tmp1).ptr, name16(tmp2).ptr, false))
+                                if (! CopyFileW (toUtf16(tmp1, src.cString).ptr, name16(tmp2).ptr, false))
                                       exception;
                                 }
 
@@ -940,8 +965,9 @@ class FilePath : PathView
                                  result = MoveFileExA (this.cString.ptr, dst.cString.ptr, Typical);
                              else
                                 {
-                                wchar[MAX_PATH] tmp = void;
-                                result = MoveFileExW (name16(tmp).ptr, Utf.toUtf16(dst.cString).ptr, Typical);
+                                wchar[MAX_PATH] tmp1 = void;
+                                wchar[MAX_PATH] tmp2 = void;
+                                result = MoveFileExW (name16(tmp1).ptr, toUtf16(tmp2, dst.cString).ptr, Typical);
                                 }
 
                         if (! result)
@@ -1055,15 +1081,13 @@ class FilePath : PathView
                         do {
                            version (Win32SansUnicode)
                                    {
-                                   // ensure we include the null
                                    auto len = strlen (fileinfo.cFileName.ptr);
                                    auto str = fileinfo.cFileName.ptr [0 .. len];
                                    }
                                 else
                                    {
-                                   // ensure we include the null
                                    auto len = wcslen (fileinfo.cFileName.ptr);
-                                   auto str = Utf.toUtf8 (fileinfo.cFileName [0 .. len], tmp);
+                                   auto str = toUtf8 (tmp, fileinfo.cFileName [0 .. len]);
                                    }
 
                            // skip hidden/system files
@@ -1362,7 +1386,7 @@ interface PathView
 
         ***********************************************************************/
 
-        final char[] toUtf8 ();
+        abstract char[] toUtf8 ();
 
         /***********************************************************************
 
@@ -1370,7 +1394,7 @@ interface PathView
 
         ***********************************************************************/
 
-        final char[] cString ();
+        abstract char[] cString ();
 
         /***********************************************************************
 
@@ -1379,7 +1403,7 @@ interface PathView
 
         ***********************************************************************/
 
-        final char[] root ();
+        abstract char[] root ();
 
         /***********************************************************************
 
@@ -1391,7 +1415,7 @@ interface PathView
 
         ***********************************************************************/
 
-        final char[] folder ();
+        abstract char[] folder ();
 
         /***********************************************************************
 
@@ -1399,7 +1423,7 @@ interface PathView
 
         ***********************************************************************/
 
-        final char[] name ();
+        abstract char[] name ();
 
         /***********************************************************************
 
@@ -1409,7 +1433,7 @@ interface PathView
 
         ***********************************************************************/
 
-        final char[] suffix ();
+        abstract char[] suffix ();
 
         /***********************************************************************
 
@@ -1418,7 +1442,7 @@ interface PathView
 
         ***********************************************************************/
 
-        final char[] ext ();
+        abstract char[] ext ();
 
         /***********************************************************************
 
@@ -1426,7 +1450,7 @@ interface PathView
 
         ***********************************************************************/
 
-        final char[] path ();
+        abstract char[] path ();
 
         /***********************************************************************
 
@@ -1434,7 +1458,7 @@ interface PathView
 
         ***********************************************************************/
 
-        final char[] file ();
+        abstract char[] file ();
 
         /***********************************************************************
 
@@ -1442,7 +1466,7 @@ interface PathView
 
         ***********************************************************************/
 
-        final int opEquals (Object o);
+        abstract int opEquals (Object o);
 
         /***********************************************************************
 
@@ -1451,7 +1475,7 @@ interface PathView
 
         ***********************************************************************/
 
-        final bool isAbsolute ();
+        abstract bool isAbsolute ();
 
         /***********************************************************************
 
@@ -1459,7 +1483,7 @@ interface PathView
 
         ***********************************************************************/
 
-        final bool isEmpty ();
+        abstract bool isEmpty ();
 
         /***********************************************************************
 
@@ -1467,7 +1491,7 @@ interface PathView
 
         ***********************************************************************/
 
-        final bool isChild ();
+        abstract bool isChild ();
 
         /***********************************************************************
 
@@ -1476,7 +1500,7 @@ interface PathView
 
         ***********************************************************************/
 
-        final bool isDir ();
+        abstract bool isDir ();
 
         /***********************************************************************
 
@@ -1484,7 +1508,7 @@ interface PathView
 
         ***********************************************************************/
 
-        final bool exists ();
+        abstract bool exists ();
 
         /***********************************************************************
 
@@ -1493,7 +1517,7 @@ interface PathView
 
         ***********************************************************************/
 
-        final Time modified ();
+        abstract Time modified ();
 
         /***********************************************************************
 
@@ -1502,7 +1526,7 @@ interface PathView
 
         ***********************************************************************/
 
-        final Time accessed ();
+        abstract Time accessed ();
 
         /***********************************************************************
 
@@ -1511,7 +1535,7 @@ interface PathView
 
         ***********************************************************************/
 
-        final Time created ();
+        abstract Time created ();
 
         /***********************************************************************
 
@@ -1530,7 +1554,7 @@ interface PathView
 
         ***********************************************************************/
 
-        final FilePath create ();
+        abstract FilePath create ();
 
         /***********************************************************************
 
@@ -1538,7 +1562,7 @@ interface PathView
 
         ***********************************************************************/
 
-        final FilePath createFile ();
+        abstract FilePath createFile ();
 
         /***********************************************************************
 
@@ -1546,7 +1570,7 @@ interface PathView
 
         ***********************************************************************/
 
-        final FilePath createFolder ();
+        abstract FilePath createFolder ();
 
         /***********************************************************************
 
@@ -1554,7 +1578,7 @@ interface PathView
 
         ***********************************************************************/
 
-        final ulong fileSize ();
+        abstract ulong fileSize ();
 
         /***********************************************************************
 
@@ -1562,7 +1586,7 @@ interface PathView
 
         ***********************************************************************/
 
-        final bool isWritable ();
+        abstract bool isWritable ();
 
         /***********************************************************************
 
@@ -1570,7 +1594,7 @@ interface PathView
 
         ***********************************************************************/
 
-        final bool isFolder ();
+        abstract bool isFolder ();
 
         /***********************************************************************
 
@@ -1578,7 +1602,7 @@ interface PathView
 
         ***********************************************************************/
 
-        final Stamps timeStamps ();
+        abstract Stamps timeStamps ();
 }
 
 
