@@ -80,7 +80,10 @@ public class Locale : Layout!(char)
                             if (type is typeid(DateTime))
                                 return formatDateTime (output, *cast(DateTime*) p, format, dateFormat);
 
-                            return type.toUtf8;
+                       return type.toUtf8;
+
+                       default:
+                            break;
                        }
 
                 return "{unhandled argument type: " ~ type.toUtf8 ~ '}';
