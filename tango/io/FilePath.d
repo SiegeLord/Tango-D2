@@ -593,7 +593,7 @@ class FilePath : PathView
                     if (this.isFolder)
                         return this;
                     else
-                       badArg ("FilePath.createPath :: file/folder conflict: ");
+                       badArg ("FilePath.create :: file/folder conflict: ");
 
                 auto parent = new FilePath (this.parent);
                 char[] name = parent.name;
@@ -601,7 +601,7 @@ class FilePath : PathView
                 if (name.length is 0                   ||
                     name == FileConst.CurrentDirString ||
                     name == FileConst.ParentDirString)
-                    badArg ("FilePath.createPath :: invalid path: ");
+                    badArg ("FilePath.create :: invalid path: ");
 
                 parent.create;
                 return createFolder;
@@ -1459,14 +1459,6 @@ interface PathView
         ***********************************************************************/
 
         abstract char[] file ();
-
-        /***********************************************************************
-
-                Returns true if all fields are equal.
-
-        ***********************************************************************/
-
-        abstract int opEquals (Object o);
 
         /***********************************************************************
 
