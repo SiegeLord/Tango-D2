@@ -135,8 +135,6 @@ class FileScan
                 Internal routine to locate files and sub-directories. We
                 skip folders composed only of '.' chars. 
 
-                Heap activity is avoided for everything the filter discards.
-                        
         ***********************************************************************/
 
         private FileScan scan (FilePath folder, Filter filter) 
