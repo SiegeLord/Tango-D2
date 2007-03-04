@@ -158,6 +158,13 @@ alias ushort USHORT;
 alias uint WPARAM;
 alias int ACL_INFORMATION_CLASS;
 
+struct GUID { // size is 16
+align(1):
+	DWORD   Data1;
+	WORD    Data2;
+	WORD    Data3;
+	BYTE[8] Data4;
+}
 
 enum { AclRevisionInformation = 1, AclSizeInformation,  };
 alias ACL_INFORMATION_CLASS _ACL_INFORMATION_CLASS;
