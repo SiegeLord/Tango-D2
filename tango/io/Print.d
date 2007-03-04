@@ -27,7 +27,7 @@ private import  tango.text.convert.Layout;
         
         Print exposes this style of usage:
         ---
-        auto print = new Print (...);
+        auto print = new Print!(char) (...);
 
         print ("hello");                        => hello
         print (1);                              => 1
@@ -77,7 +77,7 @@ private import  tango.text.convert.Layout;
         import tango.text.locale.Locale;
 
         auto locale = new Locale (Culture.getCulture ("fr-FR"));
-        auto print = new Print (locale, ...);
+        auto print = new Print!(char) (locale, ...);
         ---
         
 *******************************************************************************/
