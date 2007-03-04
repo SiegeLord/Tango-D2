@@ -575,7 +575,7 @@ class FilePath : PathView
                 Create an entire path consisting of this folder along with
                 all parent folders. The path must not contain '.' or '..'
                 segments. Related methods include PathUtil.normalize() and
-                FileSystem.absolutePath()
+                FileSystem.toAbsolute()
 
                 Returns: a chaining reference (this)
 
