@@ -142,7 +142,8 @@ alias uint* PUINT;
 alias uint* PULONG;
 alias ushort* PUSHORT;
 alias POINTER PVOID;
-alias int RETCODE;
+// NOTE: This is defined in sqltypes.  Probably shouldn't be here.  Commenting for now.
+//alias int RETCODE;
 alias HANDLE SC_HANDLE;
 alias LPVOID SC_LOCK;
 alias SC_HANDLE* LPSC_HANDLE;
