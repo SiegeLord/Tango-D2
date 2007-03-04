@@ -27,19 +27,21 @@ private import  tango.text.convert.Layout;
         
         Print exposes this style of usage:
         ---
-        Print ("hello");                        => hello
-        Print (1);                              => 1
-        Print (3.14);                           => 3.14
-        Print ('b');                            => b
-        Print (1, 2, 3);                        => 1, 2, 3         
-        Print ("abc", 1, 2, 3);                 => abc, 1, 2, 3        
-        Print ("abc", 1, 2) ("foo");            => abc, 1, 2foo        
-        Print ("abc") ("def") (3.14);           => abcdef3.14
+        auto print = new Print (...);
 
-        Print.format ("abc {}", 1);             => abc 1
-        Print.format ("abc {}:{}", 1, 2);       => abc 1:2
-        Print.format ("abc {1}:{0}", 1, 2);     => abc 2:1
-        Print.format ("abc ", 1);               => abc
+        print ("hello");                        => hello
+        print (1);                              => 1
+        print (3.14);                           => 3.14
+        print ('b');                            => b
+        print (1, 2, 3);                        => 1, 2, 3         
+        print ("abc", 1, 2, 3);                 => abc, 1, 2, 3        
+        print ("abc", 1, 2) ("foo");            => abc, 1, 2foo        
+        print ("abc") ("def") (3.14);           => abcdef3.14
+
+        print.format ("abc {}", 1);             => abc 1
+        print.format ("abc {}:{}", 1, 2);       => abc 1:2
+        print.format ("abc {1}:{0}", 1, 2);     => abc 2:1
+        print.format ("abc ", 1);               => abc
         ---
 
         Note that the last example does not throw an exception. There
@@ -49,22 +51,22 @@ private import  tango.text.convert.Layout;
         Flushing the output is achieved through the flush() method, or
         via an empty pair of parens: 
         ---
-        Print ("hello world") ();
-        Print ("hello world").flush;
+        print ("hello world") ();
+        print ("hello world").flush;
 
-        Print ("hello ") ("world") ();
-        Print ("hello ") ("world").flush;
+        print ("hello ") ("world") ();
+        print ("hello ") ("world").flush;
 
-        Print.format ("hello {}", "world") ();
-        Print.format ("hello {}", "world").flush;
+        print.format ("hello {}", "world") ();
+        print.format ("hello {}", "world").flush;
         ---
         
         Newline is handled by either placing '\n' in the output, or via
         the newline() method. The latter also flushes the output:
         ---
-        Print ("hello ") ("world").newline;
+        print ("hello ") ("world").newline;
 
-        Print.format ("hello {}", "world").newline;
+        print.format ("hello {}", "world").newline;
         ---
 
         The format() method supports the range of formatting options 
