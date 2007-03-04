@@ -11,81 +11,101 @@
 module tango.core.Vararg;
 
 
-/**
- * The base vararg list type.
- */
-version (GNU) {
-    // GDC has a varying va_list type
+version( GNU )
+{
     private import gcc.builtins;
     alias __builtin_va_list va_list;
-} else {
-    alias void* va_list;
-}
+    alias __builtin_va_end  va_end;
+    alias __builtin_va_copy va_copy;
 
-
-template va_start( T )
-{
-    /**
-     * This function initializes the supplied argument pointer for subsequent
-     * use by va_arg and va_end.
-     *
-     * Params:
-     *  ap      = The argument pointer to initialize.
-     *  paramn  = The identifier of the rightmost parameter in the function
-     *            parameter list.
-     */
-    void va_start( out va_list ap, inout T parmn )
+    template va_start( T )
     {
-            ap = cast(va_list) ( cast(void*) &parmn + ( ( T.sizeof + int.sizeof - 1 ) & ~( int.sizeof - 1 ) ) );
+        void va_start( out va_list ap, inout T parmn )
+        {
+
+        }
+    }
+
+    template va_arg( T )
+    {
+        T va_arg( inout va_list ap )
+        {
+    	    return T.init;
+        }
     }
 }
-
-
-template va_arg( T )
+else
 {
     /**
-     * This function returns the next argument in the sequence referenced by
-     * the supplied argument pointer.  The argument pointer will be adjusted
-     * to point to the next arggument in the sequence.
-     *
-     * Params:
-     *  ap  = The argument pointer.
-     *
-     * Returns:
-     *  The next argument in the sequence.  The result is undefined if ap
-     *  does not point to a valid argument.
+     * The base vararg list type.
      */
-    T va_arg( inout va_list ap )
+    alias void* va_list;
+
+
+    template va_start( T )
     {
+        /**
+         * This function initializes the supplied argument pointer for subsequent
+         * use by va_arg and va_end.
+         *
+         * Params:
+         *  ap      = The argument pointer to initialize.
+         *  paramn  = The identifier of the rightmost parameter in the function
+         *            parameter list.
+         */
+        void va_start( out va_list ap, inout T parmn )
+        {
+            ap = cast(va_list) ( cast(void*) &parmn + ( ( T.sizeof + int.sizeof - 1 ) & ~( int.sizeof - 1 ) ) );
+        }
+    }
+
+
+    template va_arg( T )
+    {
+        /**
+         * This function returns the next argument in the sequence referenced by
+         * the supplied argument pointer.  The argument pointer will be adjusted
+         * to point to the next arggument in the sequence.
+         *
+         * Params:
+         *  ap  = The argument pointer.
+         *
+         * Returns:
+         *  The next argument in the sequence.  The result is undefined if ap
+         *  does not point to a valid argument.
+         */
+        T va_arg( inout va_list ap )
+        {
             T arg = *cast(T*) ap;
             ap = cast(va_list) ( cast(void*) ap + ( ( T.sizeof + int.sizeof - 1 ) & ~( int.sizeof - 1 ) ) );
             return arg;
+        }
     }
-}
 
 
-/**
- * This function cleans up any resources allocated by va_start.  It is
- * currently a no-op and exists mostly for syntax compatibility with
- * the variadric argument functions for C.
- *
- * Params:
- *  ap  = The argument pointer.
- */
-void va_end( va_list ap )
-{
+    /**
+     * This function cleans up any resources allocated by va_start.  It is
+     * currently a no-op and exists mostly for syntax compatibility with
+     * the variadric argument functions for C.
+     *
+     * Params:
+     *  ap  = The argument pointer.
+     */
+    void va_end( va_list ap )
+    {
 
-}
+    }
 
 
-/**
- * This function copied the argument pointer src to dst.
- *
- * Params:
- *  src = The source pointer.
- *  dst = The destination pointer.
- */
-void va_copy( out va_list dst, va_list src )
-{
-    dst = src;
+    /**
+     * This function copied the argument pointer src to dst.
+     *
+     * Params:
+     *  src = The source pointer.
+     *  dst = The destination pointer.
+     */
+    void va_copy( out va_list dst, va_list src )
+    {
+        dst = src;
+    }
 }
