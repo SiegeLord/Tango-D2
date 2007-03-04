@@ -34,7 +34,7 @@ then
     export PATH="$GDCDIR/bin:$PATH"
     mkdir -p $GDCDIR || die 1 "Failed to create the GDC install directory"
     cd $GDCDIR || die 1 "Failed to cd to the GDC install directory"
-    tail +$LINES $FULLNAME | tar Oxf - gdc.tar.gz | gunzip -c | tar xf - ||
+    tail -n$LINES $FULLNAME | tar Oxf - gdc.tar.gz | gunzip -c | tar xf - ||
         die 1 "Failed to extract GDC"
 fi
 
@@ -71,14 +71,14 @@ fi
 if [ "$INST_DSSS" = "1" ]
 then
     cd $GDCDIR || die 1 "Failed to cd to the GDC install directory"
-    tail +$LINES $FULLNAME | tar Oxf - dsss.tar.gz | gunzip -c | tar xf - ||
+    tail -n$LINES $FULLNAME | tar Oxf - dsss.tar.gz | gunzip -c | tar xf - ||
         die 1 "Failed to extract DSSS"
 fi
 
 # Then, cd to our tmpdir and extract core.tar.gz
 cd $TTMP || die 1 "Failed to cd to temporary directory"
 
-tail +$LINES $FULLNAME | tar Oxf - core.tar.gz | gunzip -c | tar xf - ||
+tail -n$LINES $FULLNAME | tar Oxf - core.tar.gz | gunzip -c | tar xf - ||
     die 1 "Failed to extract the Tango core"
 
 # And install it
@@ -89,7 +89,7 @@ cd lib || die 1 "Tango core improperly archived"
 
 # Then install the rest of Tango
 cd $GDCDIR || die 1 "Failed to cd to GDC's installed prefix"
-tail +$LINES $FULLNAME | tar Oxf - tango.tar.gz | gunzip -c | tar xf - ||
+tail -n$LINES $FULLNAME | tar Oxf - tango.tar.gz | gunzip -c | tar xf - ||
     die 1 "Failed to extract Tango"
 
 echo 'Done!'
