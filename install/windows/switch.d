@@ -87,7 +87,7 @@ Example: switch.exe phobos
         // ANSI Windows APIs take Multi-byte character strings as parameters 
         // (see WideCharToMultiByte).
 
-        if((new FilePath(targetLib)).getSize==(new FilePath(phobosLib)).getSize)
+        if((new FilePath(targetLib)).fileSize==(new FilePath(phobosLib)).fileSize)
         {
         	showMessage("You are already using Phobos.");
         	return;
@@ -104,7 +104,7 @@ Example: switch.exe phobos
     else 
     if ( target == "tango" ) // switch to Tango
     {
-        if((new FilePath(targetLib)).getSize==(new FilePath(tangoLib)).getSize)
+        if((new FilePath(targetLib)).fileSize==(new FilePath(tangoLib)).fileSize)
         {
         	showMessage("You are already using Tango.");
         	return;
