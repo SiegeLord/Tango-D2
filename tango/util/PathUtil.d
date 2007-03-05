@@ -122,9 +122,17 @@ char[] normalize(char[] path, bool normSlash = true)
         }
         else if (path[start..start+2] == "..") {
             // found /.. sequence
-            if (start-2 < 0) { // && path[start-1] == FileConst.PathSeparatorChar) {
+version (Win32) {
+            if (start == 3 && path[1] == FileConst.PathSeparatorChar) { // absolute, X:\..
+                throw new Exception("PathUtil :: Invalid absolute path, root can not be followed by ..");
+            }
+
+}
+else {
+            if (start == 1) { // absolute
                 throw new Exception("PathUtil :: Invalid absolute path, root separator can not be followed by ..");
             }
+}
             int idx = findSlash(path, start - 2);
             if (start + 2 == path.length) {
                 // path ends with /..
