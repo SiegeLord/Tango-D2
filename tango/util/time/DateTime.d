@@ -12,7 +12,10 @@
 
 module tango.util.time.DateTime;
 
-private import  tango.util.time.Utc;
+private import tango.util.time.Utc;
+
+private import tango.core.Type : Time;
+
 
 /**
 */
@@ -121,6 +124,16 @@ public struct DateTime {
   static this() {
     min = DateTime(MIN_TICKS);
     max = DateTime(MAX_TICKS);
+  }
+
+  /**
+   * $(I Constructor.) Initializes a new instance of the DateTime struct to the specified Time.
+   * Params: time = A Tango time expressed in units of 100 nanoseconds.
+   */
+  public static DateTime opCall(Time time) {
+    DateTime d;
+    d.data_ = cast(ulong) time;
+    return d;
   }
 
   /**
@@ -696,6 +709,14 @@ version (Full)
    */
   public ulong ticks() {
     return data_ & TICKS_MASK;
+  }
+
+  /**
+   * $(I Property.) Retrieves a Time value representing the date and time of this instance.
+   * Returns: A Time represented by the date and time of this instance.
+   */
+  public Time time() {
+    return cast(Time) ticks;
   }
 
   /**
