@@ -119,27 +119,32 @@ class FileSystem
 
                         version (Win32SansUnicode)
                                 {
-                                int length = GetCurrentDirectoryA (0, null);
-                                auto dir = new char [length];
-                                GetCurrentDirectoryA (length, dir.ptr);
-                                if (length)
-                                    path = dir[0 .. $-1];
+                                int len = GetCurrentDirectoryA (0, null);
+                                auto dir = new char [len];
+                                GetCurrentDirectoryA (len, dir.ptr);
+                                if (len)
+                                   {
+                                   dir[len-1] = '\\';                                   
+                                   path = dir;
+                                   }
                                 else
                                    exception ("Failed to get current directory");
                                 }
                              else
                                 {
-                                wchar[MAX_PATH] tmp = void;
+                                wchar[MAX_PATH+2] tmp = void;
 
-                                auto length = GetCurrentDirectoryW (0, null);
-                                assert (length < tmp.length);
-                                auto dir = new char [length * 3];
-        
-                                GetCurrentDirectoryW (length, tmp.ptr);
-                                auto i = WideCharToMultiByte (CP_UTF8, 0, tmp.ptr, length, 
+                                auto len = GetCurrentDirectoryW (0, null);
+                                assert (len < tmp.length);
+                                auto dir = new char [len * 3];
+                                GetCurrentDirectoryW (len, tmp.ptr); 
+                                auto i = WideCharToMultiByte (CP_UTF8, 0, tmp.ptr, len, 
                                                               dir.ptr, dir.length, null, null);
-                                if (length && i)
-                                    path = dir [0 .. i-1];
+                                if (len && i)
+                                   {
+                                   path = dir[0..i];
+                                   path[$-1] = '\\';
+                                   }
                                 else
                                    exception ("Failed to get current directory");
                                 }
@@ -185,8 +190,32 @@ class FileSystem
                         if (s is null)
                             exception ("Failed to get current directory");
 
-                        return s[0 .. strlen (s)];
+                        auto path = s[0 .. strlen(s)+1].dup;
+                        path[$-1] = '/';
+                        return path;
                 }
         }
 }
 
+
+/******************************************************************************
+
+******************************************************************************/
+
+debug (FileSystem)
+{
+        import tango.io.Stdout;
+
+        void main() 
+        {
+        auto dir = FileSystem.toAbsolute(new FilePath(r"test"));
+        Stdout(dir).newline;
+        dir = FileSystem.toAbsolute(new FilePath(r".\test"));
+        Stdout(dir).newline;
+        dir.name = "foo";
+        Stdout(dir).newline;
+        dir.ext = ".d";
+        dir.name = dir.ext;
+        Stdout(dir).newline;
+        }
+}
