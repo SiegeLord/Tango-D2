@@ -440,7 +440,7 @@ class FilePath : PathView
 
         final FilePath path (char[] other)
         {
-                adjust (0, name_, name_, other);
+                adjust (0, name_, name_, padded (other));
                 return parse;
         }
 
@@ -708,15 +708,24 @@ class FilePath : PathView
         {
                 len = sub.length - len;
 
-                if (len > 0)
+                // don't destroy self-references!
+                if (len && sub.ptr >= fp.ptr+head+len && sub.ptr < fp.ptr+fp.length)
                    {
-                   expand (len + end_);
-                   memmove (fp.ptr+head+len, fp.ptr+head, end_+1 - head);
+                   char[512] tmp = void;
+                   assert (sub.length < tmp.length);
+                   sub = tmp[0..sub.length] = sub;
                    }
-                else
-                   memmove (fp.ptr+tail+len, fp.ptr+tail, end_+1 - tail);
 
-                memmove (fp.ptr + head, sub.ptr, tail + len - head);
+                // make some room if necessary
+                expand  (len + end_);
+
+                // slide tail around to insert or remove space
+                memmove (fp.ptr+tail+len, fp.ptr+tail, end_ +1 - tail);
+
+                // copy replacement
+                memmove (fp.ptr + head, sub.ptr, sub.length);
+
+                // adjust length
                 end_ += len;
                 return len;
         }
