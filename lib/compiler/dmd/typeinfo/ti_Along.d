@@ -50,7 +50,11 @@ class TypeInfo_Al : TypeInfo
             else if (s1[u] > s2[u])
                 return 1;
         }
-        return cast(int)s1.length - cast(int)s2.length;
+        if (s1.length < s2.length)
+            return -1;
+        else if (s1.length > s2.length)
+            return 1;
+        return 0;
     }
 
     size_t tsize()
@@ -91,7 +95,11 @@ class TypeInfo_Am : TypeInfo_Al
             else if (s1[u] > s2[u])
                 return 1;
         }
-        return cast(int)s1.length - cast(int)s2.length;
+        if (s1.length < s2.length)
+            return -1;
+        else if (s1.length > s2.length)
+            return 1;
+        return 0;
     }
 
     TypeInfo next()

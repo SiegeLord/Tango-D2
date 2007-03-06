@@ -2,11 +2,17 @@
 // TODO: configurate ?  This is a real mess...
 version (linux) {
     version(X86)
-	version = Use_FP_Math;
+        version = Use_FP_Math;
+    else version(X86_64)
+        version = Use_FP_Math;
     else version(PPC)
-	version = Use_FP_Math;
-    else version(Solaris)
-	version = Use_FP_Math;
+        version = Use_FP_Math;
+    else version(PPC64)
+        version = Use_FP_Math;
+    else version(SPARC)
+        version = Use_FP_Math;
+    else version(SPARC64)
+        version = Use_FP_Math;
     // any system using IEEE FP is fine, just not listed
 
 } else version (darwin) {
@@ -32,7 +38,7 @@ version (linux) {
       int __signbitf(float);
       int __signbitl(real);
   }
-  
+
   int isnan(real x) { return __isnand(x); }
   int isfinite(real x) { return __isfinited(x); }
   int isnormal(real x) { return __isnormald(x); }
@@ -43,9 +49,9 @@ version (linux) {
   int issubnormal(float x) { return __fpclassifyf(x) == FP_SUBNORMAL; }
   int isinf(real x) { return __isinfd(x); }
   int signbit(real x) { return __signbitd(x); }
-  int fpclassify(real x) { return __fpclassifyd(x); }    
-  int fpclassify(double x) { return __fpclassifyd(x); }    
-  int fpclassify(float x) { return __fpclassifyf(x); }    
+  int fpclassify(real x) { return __fpclassifyd(x); }
+  int fpclassify(double x) { return __fpclassifyd(x); }
+  int fpclassify(float x) { return __fpclassifyf(x); }
 } else version (solaris) {
     // for now this is a copy of the darwin stuff (and doesn't work)
   extern (C) {
@@ -69,7 +75,7 @@ version (linux) {
       int __signbitf(float);
       int __signbitl(real);
   }
-  
+
   int isnan(real x) { return __isnand(x); }
   int isfinite(real x) { return __isfinited(x); }
   int isnormal(real x) { return __isnormald(x); }
@@ -80,9 +86,9 @@ version (linux) {
   int issubnormal(float x) { return __fpclassifyf(x) == FP_SUBNORMAL; }
   int isinf(real x) { return __isinfd(x); }
   int signbit(real x) { return __signbitd(x); }
-  int fpclassify(real x) { return __fpclassifyd(x); }    
-  int fpclassify(double x) { return __fpclassifyd(x); }    
-  int fpclassify(float x) { return __fpclassifyf(x); }    
+  int fpclassify(real x) { return __fpclassifyd(x); }
+  int fpclassify(double x) { return __fpclassifyd(x); }
+  int fpclassify(float x) { return __fpclassifyf(x); }
 } else {
     version = Use_FP_Math;
 }
@@ -93,8 +99,8 @@ version (Use_FP_Math)
 
     int isnan(real x) { return fpclassify(x)==FP_NAN; }
     int isfinite(real x) {
-	int r = fpclassify(x);
-	return r != FP_NAN && r != FP_INFINITE;
+        int r = fpclassify(x);
+        return r != FP_NAN && r != FP_INFINITE;
     }
     int isnormal(real x) { return fpclassify(x)==FP_NORMAL; }
     int isnormal(double x) { return fpclassify(x)==FP_NORMAL; }

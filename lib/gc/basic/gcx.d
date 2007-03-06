@@ -106,11 +106,11 @@ debug (LOGGING)
 {
     struct Log
     {
-        void *p;
-        uint size;
-        uint line;
-        char *file;
-        void *parent;
+        void*  p;
+        size_t size;
+        uint   line;
+        char*  file;
+        void*  parent;
 
         void print()
         {
@@ -126,8 +126,8 @@ debug (LOGGING)
 
     struct LogArray
     {
-        uint dim;
-        uint allocdim;
+        size_t dim;
+        size_t allocdim;
         Log *data;
 
         void Dtor()
@@ -137,7 +137,7 @@ debug (LOGGING)
             data = null;
         }
 
-        void reserve(uint nentries)
+        void reserve(size_t nentries)
         {
             assert(dim <= allocdim);
             if (allocdim - dim < nentries)
@@ -168,17 +168,16 @@ debug (LOGGING)
             data[dim++] = log;
         }
 
-
-        void remove(uint i)
+        void remove(size_t i)
         {
             memmove(data + i, data + i + 1, (dim - i) * Log.sizeof);
             dim--;
         }
 
 
-        uint find(void *p)
+        size_t find(void *p)
         {
-            for (uint i = 0; i < dim; i++)
+            for (size_t i = 0; i < dim; i++)
             {
                 if (data[i].p == p)
                     return i;
@@ -210,8 +209,8 @@ const uint GCVERSION = 1;       // increment every time we change interface
 class GC
 {
     // For passing to debug code
-    static uint line;
-    static char *file;
+    static size_t line;
+    static char*  file;
 
     uint gcversion = GCVERSION;
 
@@ -589,7 +588,7 @@ class GC
         }
         else
         {   void *p2;
-            uint psize;
+            size_t psize;
 
             //debug(PRINTF) printf("GC::realloc(p = %x, size = %u)\n", p, size);
             version (SENTINEL)
@@ -776,7 +775,7 @@ class GC
             // This depends on:
             // 1) size is a power of 2 for less than PAGESIZE values
             // 2) base of memory pool is aligned on PAGESIZE boundary
-            if (cast(uint)p & (size - 1) & (PAGESIZE - 1))
+            if (cast(size_t)p & (size - 1) & (PAGESIZE - 1))
                 size = 0;
             return size ? size - SENTINAL_EXTRA : 0;
         }
@@ -791,7 +790,7 @@ class GC
             // This depends on:
             // 1) size is a power of 2 for less than PAGESIZE values
             // 2) base of memory pool is aligned on PAGESIZE boundary
-            if (cast(uint)p & (size - 1) & (PAGESIZE - 1))
+            if (cast(size_t)p & (size - 1) & (PAGESIZE - 1))
                 size = 0;
             else
             {
@@ -831,10 +830,10 @@ class GC
         sentinel_Invariant(p);
         debug (PTRCHECK)
         {
-            Pool *pool;
-            uint pagenum;
-            Bins bin;
-            uint size;
+            Pool*  pool;
+            uint   pagenum;
+            Bins   bin;
+            size_t size;
 
             p = sentinel_sub(p);
             pool = gcx.findPool(p);
@@ -843,7 +842,7 @@ class GC
             bin = cast(Bins)pool.pagetable[pagenum];
             assert(bin <= B_PAGE);
             size = binsize[bin];
-            assert((cast(uint)p & (size - 1)) == 0);
+            assert((cast(size_t)p & (size - 1)) == 0);
 
             debug (PTRCHECK2)
             {
@@ -1045,12 +1044,12 @@ class GC
     //
     private void getStatsNoSync(out GCStats stats)
     {
-        uint psize = 0;
-        uint usize = 0;
-        uint flsize = 0;
+        size_t psize = 0;
+        size_t usize = 0;
+        size_t flsize = 0;
 
-        uint n;
-        uint bsize = 0;
+        size_t n;
+        size_t bsize = 0;
 
         //debug(PRINTF) printf("getStats()\n");
         memset(&stats, 0, GCStats.sizeof);
@@ -1158,14 +1157,14 @@ struct Gcx
     }
 
     void *p_cache;
-    uint size_cache;
+    size_t size_cache;
 
-    uint nroots;
-    uint rootdim;
+    size_t nroots;
+    size_t rootdim;
     void **roots;
 
-    uint nranges;
-    uint rangedim;
+    size_t nranges;
+    size_t rangedim;
     Range *ranges;
 
     uint noStack;       // !=0 means don't scan stack
@@ -1285,8 +1284,8 @@ struct Gcx
     {
         if (nroots == rootdim)
         {
-            uint newdim = rootdim * 2 + 16;
-            void **newroots;
+            size_t newdim = rootdim * 2 + 16;
+            void** newroots;
 
             newroots = cast(void **)tango.stdc.stdlib.malloc(newdim * newroots[0].sizeof);
             assert(newroots);
@@ -1307,8 +1306,7 @@ struct Gcx
      */
     void removeRoot(void *p)
     {
-        uint i;
-        for (i = nroots; i--;)
+        for (size_t i = nroots; i--;)
         {
             if (roots[i] == p)
             {
@@ -1330,7 +1328,7 @@ struct Gcx
         debug(PRINTF) printf("%x.Gcx::addRange(%x, %x), nranges = %d\n", this, pbot, ptop, nranges);
         if (nranges == rangedim)
         {
-            uint newdim = rangedim * 2 + 16;
+            size_t newdim = rangedim * 2 + 16;
             Range *newranges;
 
             newranges = cast(Range *)tango.stdc.stdlib.malloc(newdim * newranges[0].sizeof);
@@ -1355,7 +1353,7 @@ struct Gcx
     {
         debug(PRINTF) printf("Thread %x ", pthread_self());
         debug(PRINTF) printf("%x.Gcx.removeRange(%x), nranges = %d\n", this, pbot, nranges);
-        for (uint i = nranges; i--;)
+        for (size_t i = nranges; i--;)
         {
             if (ranges[i].pbot == pbot)
             {
@@ -1406,10 +1404,10 @@ struct Gcx
      * Find size of pointer p.
      * Returns 0 if not a gc'd pointer
      */
-    uint findSize(void *p)
+    size_t findSize(void *p)
     {
         Pool *pool;
-        uint size = 0;
+        size_t size = 0;
 
         pool = findPool(p);
         if (pool)
@@ -1441,7 +1439,7 @@ struct Gcx
     /**
      * Compute bin for size.
      */
-    static Bins findBin(uint size)
+    static Bins findBin(size_t size)
     {   Bins bin;
 
         if (size <= 256)
@@ -1488,7 +1486,7 @@ struct Gcx
      * Allocate a chunk of memory that is larger than a page.
      * Return null if out of memory.
      */
-    void *bigAlloc(uint size)
+    void *bigAlloc(size_t size)
     {
         Pool *pool;
         uint npages;
@@ -1663,7 +1661,7 @@ struct Gcx
         pool.pagetable[pn] = cast(ubyte)bin;
 
         // Convert page to free list
-        uint size = binsize[bin];
+        size_t size = binsize[bin];
         List **b = &bucket[bin];
 
         p = pool.baseAddr + pn * PAGESIZE;
@@ -1699,7 +1697,7 @@ struct Gcx
                 pool = findPool(p);
                 if (pool)
                 {
-                    uint offset = cast(uint)(p - pool.baseAddr);
+                    size_t offset = cast(uint)(p - pool.baseAddr);
                     uint biti;
                     uint pn = offset / PAGESIZE;
                     Bins bin = cast(Bins)pool.pagetable[pn];
@@ -1747,12 +1745,12 @@ struct Gcx
     /**
      * Return number of full pages free'd.
      */
-    uint fullcollectshell()
+    size_t fullcollectshell()
     {
         // The purpose of the 'shell' is to ensure all the registers
         // get put on the stack so they'll be scanned
         void *sp;
-        uint result;
+        size_t result;
         version (GNU)
         {
             __builtin_unwind_init();
@@ -1785,7 +1783,7 @@ struct Gcx
     /**
      *
      */
-    uint fullcollect(void *stackTop)
+    size_t fullcollect(void *stackTop)
     {
         uint n;
         Pool *pool;
@@ -1921,8 +1919,8 @@ struct Gcx
 
         // Free up everything not marked
         debug(COLLECT_PRINTF) printf("\tfree'ing\n");
-        uint freedpages = 0;
-        uint freed = 0;
+        size_t freedpages = 0;
+        size_t freed = 0;
         for (n = 0; n < npools; n++)
         {   uint pn;
             uint ncommitted;
@@ -2029,7 +2027,7 @@ struct Gcx
 
         // Free complete pages, rebuild free list
         debug(COLLECT_PRINTF) printf("\tfree complete pages\n");
-        uint recoveredpages = 0;
+        size_t recoveredpages = 0;
         for (n = 0; n < npools; n++)
         {   uint pn;
             uint ncommitted;
@@ -2166,7 +2164,7 @@ struct Gcx
         }
 
 
-        void log_malloc(void *p, uint size)
+        void log_malloc(void *p, size_t size)
         {
             //debug(PRINTF) printf("+log_malloc(p = %x, size = %d)\n", p, size);
             Log log;
@@ -2188,7 +2186,7 @@ struct Gcx
         void log_free(void *p)
         {
             //debug(PRINTF) printf("+log_free(%x)\n", p);
-            uint i;
+            size_t i;
 
             i = current.find(p);
             if (i == ~0u)
@@ -2207,10 +2205,10 @@ struct Gcx
             // Print everything in current that is not in prev
 
             debug(PRINTF) printf("New pointers this cycle: --------------------------------\n");
-            int used = 0;
-            for (uint i = 0; i < current.dim; i++)
+            size_t used = 0;
+            for (size_t i = 0; i < current.dim; i++)
             {
-                uint j;
+                size_t j;
 
                 j = prev.find(current.data[i].p);
                 if (j == ~0u)
@@ -2220,10 +2218,10 @@ struct Gcx
             }
 
             debug(PRINTF) printf("All roots this cycle: --------------------------------\n");
-            for (uint i = 0; i < current.dim; i++)
+            for (size_t i = 0; i < current.dim; i++)
             {
                 void *p;
-                uint j;
+                size_t j;
 
                 p = current.data[i].p;
                 if (!findPool(current.data[i].parent))
@@ -2247,7 +2245,7 @@ struct Gcx
         void log_parent(void *p, void *parent)
         {
             //debug(PRINTF) printf("+log_parent()\n");
-            uint i;
+            size_t i;
 
             i = current.find(p);
             if (i == ~0u)
@@ -2256,7 +2254,7 @@ struct Gcx
                 Pool *pool;
                 pool = findPool(p);
                 assert(pool);
-                uint offset = cast(uint)(p - pool.baseAddr);
+                size_t offset = cast(uint)(p - pool.baseAddr);
                 uint biti;
                 uint pn = offset / PAGESIZE;
                 Bins bin = cast(Bins)pool.pagetable[pn];
@@ -2274,7 +2272,7 @@ struct Gcx
     else
     {
         void log_init() { }
-        void log_malloc(void *p, uint size) { }
+        void log_malloc(void *p, size_t size) { }
         void log_free(void *p) { }
         void log_collect() { }
         void log_parent(void *p, void *parent) { }
@@ -2302,7 +2300,7 @@ struct Pool
 
     void initialize(uint npages)
     {
-        uint poolsize;
+        size_t poolsize;
 
         //debug(PRINTF) printf("Pool::Pool(%u)\n", npages);
         poolsize = npages * PAGESIZE;
@@ -2464,7 +2462,7 @@ struct Pool
         if (baseAddr < p2.baseAddr)
             return -1;
         else
-	    return cast(int)(baseAddr > p2.baseAddr);
+        return cast(int)(baseAddr > p2.baseAddr);
     }
 }
 
@@ -2474,17 +2472,17 @@ struct Pool
 
 version (SENTINEL)
 {
-    const uint SENTINEL_PRE = 0xF4F4F4F4;       // 32 bits
+    const size_t SENTINEL_PRE = cast(size_t) 0xF4F4F4F4F4F4F4F4UL; // 32 or 64 bits
     const ubyte SENTINEL_POST = 0xF5;           // 8 bits
-    const uint SENTINEL_EXTRA = 2 * uint.sizeof + 1;
+    const uint SENTINEL_EXTRA = 2 * size_t.sizeof + 1;
 
 
-    uint* sentinel_size(void *p)  { return &(cast(uint *)p)[-2]; }
-    uint* sentinel_pre(void *p)   { return &(cast(uint *)p)[-1]; }
+    size_t* sentinel_size(void *p)  { return &(cast(size_t *)p)[-2]; }
+    size_t* sentinel_pre(void *p)   { return &(cast(size_t *)p)[-1]; }
     ubyte* sentinel_post(void *p) { return &(cast(ubyte *)p)[sentinel_size(p)]; }
 
 
-    void sentinel_init(void *p, uint size)
+    void sentinel_init(void *p, size_t size)
     {
         *sentinel_size(p) = size;
         *sentinel_pre(p) = SENTINEL_PRE;
@@ -2501,13 +2499,13 @@ version (SENTINEL)
 
     void *sentinel_add(void *p)
     {
-        return p + 2 * uint.sizeof;
+        return p + 2 * size_t.sizeof;
     }
 
 
     void *sentinel_sub(void *p)
     {
-        return p - 2 * uint.sizeof;
+        return p - 2 * size_t.sizeof;
     }
 }
 else
@@ -2515,7 +2513,7 @@ else
     const uint SENTINEL_EXTRA = 0;
 
 
-    void sentinel_init(void *p, uint size)
+    void sentinel_init(void *p, size_t size)
     {
     }
 

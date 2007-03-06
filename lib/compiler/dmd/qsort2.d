@@ -20,7 +20,7 @@ private import tango.stdc.stdlib;
 struct Array
 {
     size_t length;
-    void *ptr;
+    void*  ptr;
 }
 
 private TypeInfo tiglobal;

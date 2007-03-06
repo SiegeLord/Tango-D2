@@ -69,7 +69,7 @@ static if (is(typeof(VirtualAlloc))) // version (GC_Use_Alloc_Win32)
     /**
      * Map memory.
      */
-    void *os_mem_map(uint nbytes)
+    void *os_mem_map(size_t nbytes)
     {
         return VirtualAlloc(null, nbytes, MEM_RESERVE, PAGE_READWRITE);
     }
@@ -81,7 +81,7 @@ static if (is(typeof(VirtualAlloc))) // version (GC_Use_Alloc_Win32)
      *      0       success
      *      !=0     failure
      */
-    int os_mem_commit(void *base, uint offset, uint nbytes)
+    int os_mem_commit(void *base, size_t offset, size_t nbytes)
     {   void *p;
 
         p = VirtualAlloc(base + offset, nbytes, MEM_COMMIT, PAGE_READWRITE);
@@ -95,7 +95,7 @@ static if (is(typeof(VirtualAlloc))) // version (GC_Use_Alloc_Win32)
      *      0       success
      *      !=0     failure
      */
-    int os_mem_decommit(void *base, uint offset, uint nbytes)
+    int os_mem_decommit(void *base, size_t offset, size_t nbytes)
     {
     return cast(int)(VirtualFree(base + offset, nbytes, MEM_DECOMMIT) == 0);
     }
@@ -108,14 +108,14 @@ static if (is(typeof(VirtualAlloc))) // version (GC_Use_Alloc_Win32)
      *      0       success
      *      !=0     failure
      */
-    int os_mem_unmap(void *base, uint nbytes)
+    int os_mem_unmap(void *base, size_t nbytes)
     {
         return cast(int)(VirtualFree(base, 0, MEM_RELEASE) == 0);
     }
 }
 else static if (is(typeof(mmap)))  // else version (GC_Use_Alloc_MMap)
 {
-    void *os_mem_map(uint nbytes)
+    void *os_mem_map(size_t nbytes)
     {   void *p;
 
         p = mmap(null, nbytes, PROT_READ | PROT_WRITE, MAP_PRIVATE | MAP_ANON, -1, 0);
@@ -123,44 +123,44 @@ else static if (is(typeof(mmap)))  // else version (GC_Use_Alloc_MMap)
     }
 
 
-    int os_mem_commit(void *base, uint offset, uint nbytes)
+    int os_mem_commit(void *base, size_t offset, size_t nbytes)
     {
         return 0;
     }
 
 
-    int os_mem_decommit(void *base, uint offset, uint nbytes)
+    int os_mem_decommit(void *base, size_t offset, size_t nbytes)
     {
         return 0;
     }
 
 
-    int os_mem_unmap(void *base, uint nbytes)
+    int os_mem_unmap(void *base, size_t nbytes)
     {
         return munmap(base, nbytes);
     }
 }
 else static if (is(typeof(valloc))) // else version (GC_Use_Alloc_Valloc)
 {
-    void *os_mem_map(uint nbytes)
+    void *os_mem_map(size_t nbytes)
     {
         return valloc(nbytes);
     }
 
 
-    int os_mem_commit(void *base, uint offset, uint nbytes)
+    int os_mem_commit(void *base, size_t offset, size_t nbytes)
     {
         return 0;
     }
 
 
-    int os_mem_decommit(void *base, uint offset, uint nbytes)
+    int os_mem_decommit(void *base, size_t offset, size_t nbytes)
     {
         return 0;
     }
 
 
-    int os_mem_unmap(void *base, uint nbytes)
+    int os_mem_unmap(void *base, size_t nbytes)
     {
         free(base);
         return 0;
@@ -177,10 +177,10 @@ else static if (is(typeof(malloc))) // else version (GC_Use_Alloc_Malloc)
     private import gcx; // for PAGESIZE
 
 
-    const uint PAGE_MASK = PAGESIZE - 1;
+    const size_t PAGE_MASK = PAGESIZE - 1;
 
 
-    void *os_mem_map(uint nbytes)
+    void *os_mem_map(size_t nbytes)
     {   byte *p, q;
         p = cast(byte *) malloc(nbytes + PAGESIZE);
         q = p + ((PAGESIZE - ((cast(size_t) p & PAGE_MASK))) & PAGE_MASK);
@@ -189,19 +189,19 @@ else static if (is(typeof(malloc))) // else version (GC_Use_Alloc_Malloc)
     }
 
 
-    int os_mem_commit(void *base, uint offset, uint nbytes)
+    int os_mem_commit(void *base, size_t offset, size_t nbytes)
     {
         return 0;
     }
 
 
-    int os_mem_decommit(void *base, uint offset, uint nbytes)
+    int os_mem_decommit(void *base, size_t offset, size_t nbytes)
     {
         return 0;
     }
 
 
-    int os_mem_unmap(void *base, uint nbytes)
+    int os_mem_unmap(void *base, size_t nbytes)
     {
         free( *cast(void**)( cast(byte*) base + nbytes ) );
         return 0;

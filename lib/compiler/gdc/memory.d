@@ -313,17 +313,17 @@ extern (C) void cr_scanStaticData( scanFn scan )
 
 void initStaticDataPtrs()
 {
+    const int S = (void*).sizeof;
+
     // Can't assume the input addresses are word-aligned
     static void* adjust_up( void* p )
     {
-        const int S = (void*).sizeof;
-        return p + ((S - (cast(uint)p & (S-1))) & (S-1)); // cast ok even if 64-bit
+        return p + ((S - (cast(size_t)p & (S-1))) & (S-1)); // cast ok even if 64-bit
     }
 
     static void * adjust_down( void* p )
     {
-        const int S = (void*).sizeof;
-        return p - (cast(uint) p & (S-1));
+        return p - (cast(size_t) p & (S-1));
     }
 
     version( Win32 )
@@ -384,7 +384,7 @@ void initStaticDataPtrs()
                     if (p < e)
                     {
                         // parse the entry in [s, p)
-                        version( GNU_BitsPerPointer32 )
+                        static if( S == 4 )
                         {
                             enum Ofs
                             {
@@ -394,7 +394,7 @@ void initStaticDataPtrs()
                                 Addr_Len   = 8,
                             }
                         }
-                        else version( GNU_BitsPerPointer64 )
+                        else static if( S == 8 )
                         {
                             enum Ofs
                             {

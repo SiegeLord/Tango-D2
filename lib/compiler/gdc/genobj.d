@@ -50,9 +50,9 @@ private
 // NOTE: For some reason, this declaration method doesn't work
 //       in this particular file (and this file only).  It must
 //       be a DMD thing.
-//alias typeof(int.sizeof)                    size_t;
-//alias typeof(cast(void*)0 - cast(void*)0)   ptrdiff_t;
-
+alias typeof(int.sizeof)                    size_t;
+alias typeof(cast(void*)0 - cast(void*)0)   ptrdiff_t;
+/+
 version( X86_64 )
 {
     alias ulong size_t;
@@ -63,7 +63,7 @@ else
     alias uint  size_t;
     alias int   ptrdiff_t;
 }
-
++/
 alias size_t hash_t;
 
 /**
@@ -121,7 +121,7 @@ class Object
      */
     int opEquals(Object o)
     {
-	return cast(int)(this is o);
+    return cast(int)(this is o);
     }
 
 /+
@@ -226,7 +226,7 @@ struct Interface
 {
     ClassInfo classinfo;        /// .classinfo for this interface (not for containing class)
     void *[] vtbl;
-    int offset;                 /// offset to Interface 'this' from Object 'this'
+    ptrdiff_t offset;       /// offset to Interface 'this' from Object 'this'
 }
 
 /**
@@ -303,7 +303,7 @@ class TypeInfo
     }
 
     /// Returns a hash of the instance of a type.
-    hash_t getHash(void *p) { return cast(uint)p; }
+    hash_t getHash(void *p) { return cast(hash_t)p; }
 
     /// Compares two instances for equality.
     int equals(void *p1, void *p2) { return cast(int)(p1 == p2); }
@@ -388,7 +388,7 @@ class TypeInfo_Pointer : TypeInfo
 
     hash_t getHash(void *p)
     {
-        return cast(uint)*cast(void* *)p;
+        return cast(hash_t)*cast(void**)p;
     }
 
     int equals(void *p1, void *p2)
@@ -426,10 +426,10 @@ class TypeInfo_Array : TypeInfo
     int opEquals(Object o)
     {   TypeInfo_Array c;
 
-	return cast(int)
-	       (this is o ||
+    return cast(int)
+           (this is o ||
                 ((c = cast(TypeInfo_Array)o) !is null &&
-		 this.value == c.value));
+         this.value == c.value));
     }
 
     hash_t getHash(void *p)
@@ -507,11 +507,11 @@ class TypeInfo_StaticArray : TypeInfo
     int opEquals(Object o)
     {   TypeInfo_StaticArray c;
 
-	return cast(int)
-	       (this is o ||
+    return cast(int)
+           (this is o ||
                 ((c = cast(TypeInfo_StaticArray)o) !is null &&
                  this.len == c.len &&
-		 this.value == c.value));
+         this.value == c.value));
     }
 
     hash_t getHash(void *p)

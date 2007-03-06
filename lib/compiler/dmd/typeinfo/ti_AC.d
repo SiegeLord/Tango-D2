@@ -42,9 +42,9 @@ class TypeInfo_AC : TypeInfo
     {
         Object[] s1 = *cast(Object[]*)p1;
         Object[] s2 = *cast(Object[]*)p2;
-        int c;
+        ptrdiff_t c;
 
-        c = cast(int)s1.length - cast(int)s2.length;
+        c = cast(ptrdiff_t)s1.length - cast(ptrdiff_t)s2.length;
         if (c == 0)
         {
             for (size_t u = 0; u < s1.length; u++)
@@ -71,6 +71,10 @@ class TypeInfo_AC : TypeInfo
                 }
             }
         }
+        if (c < 0)
+            c = -1;
+        else if (c > 0)
+            c = 1;
         return c;
     }
 

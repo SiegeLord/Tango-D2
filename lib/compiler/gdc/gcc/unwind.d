@@ -35,28 +35,18 @@ extern (C):
 // %% These were typedefs, then made alias -- there are some
 // extra casts now
 
-alias __builtin_abi_uint _Unwind_Word;
-alias __builtin_abi_int  _Unwind_Sword;
-
-//typedef void * _Unwind_Internal_Ptr; // this should be an unsigned of pointer size...
-
-// D Note: rearranged because we don't have __attribute__((mode()))
-
-version (GNU_BitsPerPointer32) {
-    alias uint _Unwind_Internal_Ptr;
-}
-version (GNU_BitsPerPointer64) {
-    alias ulong _Unwind_Internal_Ptr;
-}
+alias __builtin_machine_uint _Unwind_Word;
+alias __builtin_machine_int  _Unwind_Sword;
+alias __builtin_pointer_uint _Unwind_Internal_Ptr;
 
 version (IA64) {
     version (HPUX) {
-	alias _Unwind_Word _Unwind_Ptr;
+        alias __builtin_machine_uint _Unwind_Ptr;
     } else {
-	alias _Unwind_Internal_Ptr _Unwind_Ptr;
+        alias __builtin_pointer_uint _Unwind_Ptr;
     }
 } else {
-    alias _Unwind_Internal_Ptr _Unwind_Ptr;
+    alias __builtin_pointer_uint _Unwind_Ptr;
 }
 
 
@@ -90,7 +80,7 @@ alias uint _Unwind_Reason_Code;
    understood by the unwind interface.  */
 
 extern(C) typedef void (*_Unwind_Exception_Cleanup_Fn) (_Unwind_Reason_Code,
-					      _Unwind_Exception *);
+                                              _Unwind_Exception *);
 
 align struct _Unwind_Exception // D Note: this may not be "maxium alignment required by any type"?
 {
@@ -111,11 +101,11 @@ typedef int _Unwind_Action;
 
 enum
 {
-    _UA_SEARCH_PHASE  =	1,
-    _UA_CLEANUP_PHASE =	2,
-    _UA_HANDLER_FRAME =	4,
-    _UA_FORCE_UNWIND  =	8,
-    _UA_END_OF_STACK  =	16
+    _UA_SEARCH_PHASE  = 1,
+    _UA_CLEANUP_PHASE = 2,
+    _UA_HANDLER_FRAME = 4,
+    _UA_FORCE_UNWIND  = 8,
+    _UA_END_OF_STACK  = 16
 }
 
 /* This is an opaque type used to refer to a system-specific data
@@ -134,8 +124,8 @@ extern(C) typedef _Unwind_Reason_Code (*_Unwind_Stop_Fn)
       _Unwind_Exception *, _Unwind_Context *, void *);
 
 _Unwind_Reason_Code _Unwind_ForcedUnwind (_Unwind_Exception *,
-						 _Unwind_Stop_Fn,
-						 void *);
+                                                 _Unwind_Stop_Fn,
+                                                 void *);
 
 /* Helper to invoke the exception_cleanup routine.  */
 void _Unwind_DeleteException (_Unwind_Exception *);
@@ -280,19 +270,19 @@ version (NO_SIZE_OF_ENCODED_VALUE) {
     size_of_encoded_value (ubyte encoding)
     {
       if (encoding == DW_EH_PE_omit)
-	return 0;
+        return 0;
 
       switch (encoding & 0x07)
-	{
-	case DW_EH_PE_absptr:
-	  return (void *).sizeof;
-	case DW_EH_PE_udata2:
-	  return 2;
-	case DW_EH_PE_udata4:
-	  return 4;
-	case DW_EH_PE_udata8:
-	  return 8;
-	}
+        {
+        case DW_EH_PE_absptr:
+          return (void *).sizeof;
+        case DW_EH_PE_udata2:
+          return 2;
+        case DW_EH_PE_udata4:
+          return 4;
+        case DW_EH_PE_udata8:
+          return 8;
+        }
       abort ();
     }
 }
@@ -308,22 +298,22 @@ version (NO_BASE_OF_ENCODED_VALUE) {
     base_of_encoded_value (ubyte encoding, _Unwind_Context *context)
     {
       if (encoding == DW_EH_PE_omit)
-	return cast(_Unwind_Ptr) 0;
+        return cast(_Unwind_Ptr) 0;
 
       switch (encoding & 0x70)
-	{
-	case DW_EH_PE_absptr:
-	case DW_EH_PE_pcrel:
-	case DW_EH_PE_aligned:
-	  return cast(_Unwind_Ptr) 0;
+        {
+        case DW_EH_PE_absptr:
+        case DW_EH_PE_pcrel:
+        case DW_EH_PE_aligned:
+          return cast(_Unwind_Ptr) 0;
 
-	case DW_EH_PE_textrel:
-	  return _Unwind_GetTextRelBase (context);
-	case DW_EH_PE_datarel:
-	  return _Unwind_GetDataRelBase (context);
-	case DW_EH_PE_funcrel:
-	  return _Unwind_GetRegionStart (context);
-	}
+        case DW_EH_PE_textrel:
+          return _Unwind_GetTextRelBase (context);
+        case DW_EH_PE_datarel:
+          return _Unwind_GetDataRelBase (context);
+        case DW_EH_PE_funcrel:
+          return _Unwind_GetRegionStart (context);
+        }
       abort ();
     }
 }
@@ -386,7 +376,7 @@ read_sleb128 (ubyte *p, _Unwind_Sword *val)
 
 ubyte *
 read_encoded_value_with_base (ubyte encoding, _Unwind_Ptr base,
-			      ubyte *p, _Unwind_Ptr *val)
+                              ubyte *p, _Unwind_Ptr *val)
 {
     // D Notes: Todo -- packed!
   union unaligned
@@ -413,65 +403,65 @@ read_encoded_value_with_base (ubyte encoding, _Unwind_Ptr base,
   else
     {
       switch (encoding & 0x0f)
-	{
-	case DW_EH_PE_absptr:
-	  result = cast(_Unwind_Internal_Ptr) u.ptr;
-	  p += (void *).sizeof;
-	  break;
+        {
+        case DW_EH_PE_absptr:
+          result = cast(_Unwind_Internal_Ptr) u.ptr;
+          p += (void *).sizeof;
+          break;
 
-	case DW_EH_PE_uleb128:
-	  {
-	    _Unwind_Word tmp;
-	    p = read_uleb128 (p, &tmp);
-	    result = cast(_Unwind_Internal_Ptr) tmp;
-	  }
-	  break;
+        case DW_EH_PE_uleb128:
+          {
+            _Unwind_Word tmp;
+            p = read_uleb128 (p, &tmp);
+            result = cast(_Unwind_Internal_Ptr) tmp;
+          }
+          break;
 
-	case DW_EH_PE_sleb128:
-	  {
-	    _Unwind_Sword tmp;
-	    p = read_sleb128 (p, &tmp);
-	    result = cast(_Unwind_Internal_Ptr) tmp;
-	  }
-	  break;
+        case DW_EH_PE_sleb128:
+          {
+            _Unwind_Sword tmp;
+            p = read_sleb128 (p, &tmp);
+            result = cast(_Unwind_Internal_Ptr) tmp;
+          }
+          break;
 
-	case DW_EH_PE_udata2:
-	  result = cast(_Unwind_Internal_Ptr) u.u2;
-	  p += 2;
-	  break;
-	case DW_EH_PE_udata4:
-	  result = cast(_Unwind_Internal_Ptr) u.u4;
-	  p += 4;
-	  break;
-	case DW_EH_PE_udata8:
-	  result = cast(_Unwind_Internal_Ptr) u.u8;
-	  p += 8;
-	  break;
+        case DW_EH_PE_udata2:
+          result = cast(_Unwind_Internal_Ptr) u.u2;
+          p += 2;
+          break;
+        case DW_EH_PE_udata4:
+          result = cast(_Unwind_Internal_Ptr) u.u4;
+          p += 4;
+          break;
+        case DW_EH_PE_udata8:
+          result = cast(_Unwind_Internal_Ptr) u.u8;
+          p += 8;
+          break;
 
-	case DW_EH_PE_sdata2:
-	  result = cast(_Unwind_Internal_Ptr) u.s2;
-	  p += 2;
-	  break;
-	case DW_EH_PE_sdata4:
-	  result = cast(_Unwind_Internal_Ptr) u.s4;
-	  p += 4;
-	  break;
-	case DW_EH_PE_sdata8:
-	  result = cast(_Unwind_Internal_Ptr) u.s8;
-	  p += 8;
-	  break;
+        case DW_EH_PE_sdata2:
+          result = cast(_Unwind_Internal_Ptr) u.s2;
+          p += 2;
+          break;
+        case DW_EH_PE_sdata4:
+          result = cast(_Unwind_Internal_Ptr) u.s4;
+          p += 4;
+          break;
+        case DW_EH_PE_sdata8:
+          result = cast(_Unwind_Internal_Ptr) u.s8;
+          p += 8;
+          break;
 
-	default:
-	  abort ();
-	}
+        default:
+          abort ();
+        }
 
       if (result != 0)
-	{
-	  result += ((encoding & 0x70) == DW_EH_PE_pcrel
-		     ? cast(_Unwind_Internal_Ptr) u : base);
-	  if (encoding & DW_EH_PE_indirect)
-	    result = *cast(_Unwind_Internal_Ptr *) result;
-	}
+        {
+          result += ((encoding & 0x70) == DW_EH_PE_pcrel
+                     ? cast(_Unwind_Internal_Ptr) u : base);
+          if (encoding & DW_EH_PE_indirect)
+            result = *cast(_Unwind_Internal_Ptr *) result;
+        }
     }
 
   *val = result;
@@ -485,11 +475,11 @@ version (NO_BASE_OF_ENCODED_VALUE) {
 
     ubyte *
     read_encoded_value (_Unwind_Context *context, ubyte encoding,
-			ubyte *p, _Unwind_Ptr *val)
+                        ubyte *p, _Unwind_Ptr *val)
     {
       return read_encoded_value_with_base (encoding,
-		    base_of_encoded_value (encoding, context),
-		    p, val);
+                    base_of_encoded_value (encoding, context),
+                    p, val);
     }
 }
 

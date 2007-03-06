@@ -808,7 +808,7 @@ extern (C) byte[] _d_arraycatnT(TypeInfo ti, uint n, ...)
     byte[]* p;
     uint i;
     byte[] b;
-    auto size = ti.next.tsize();                // array element size
+    auto size = ti.next.tsize(); // array element size
 
     p = cast(byte[]*)(&n + 1);
 
@@ -836,7 +836,7 @@ extern (C) byte[] _d_arraycatnT(TypeInfo ti, uint n, ...)
         }
     }
 
-    *cast(int *)&a = length;    // jam length
+    *cast(size_t *)&a = length; // jam length
     //a.length = length;
     return a;
 }

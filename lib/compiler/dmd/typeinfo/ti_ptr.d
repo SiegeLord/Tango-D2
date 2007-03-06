@@ -17,7 +17,12 @@ class TypeInfo_P : TypeInfo
 
     int compare(void *p1, void *p2)
     {
-        return *cast(void* *)p1 - *cast(void* *)p2;
+        auto c = *cast(void* *)p1 - *cast(void* *)p2;
+        if (c < 0)
+            return -1;
+        else if (c > 0)
+            return 1;
+        return 0;
     }
 
     size_t tsize()

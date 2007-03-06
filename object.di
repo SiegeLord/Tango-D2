@@ -25,7 +25,7 @@ struct Interface
 {
     ClassInfo   classinfo;
     void*[]     vtbl;
-    int         offset;     // offset to Interface 'this' from Object 'this'
+    ptrdiff_t offset;           // offset to Interface 'this' from Object 'this'
 }
 
 class ClassInfo : Object

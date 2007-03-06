@@ -37,7 +37,7 @@ private
 
 extern (C):
 
-byte[] _d_arraycopy(uint size, byte[] from, byte[] to)
+byte[] _d_arraycopy(size_t size, byte[] from, byte[] to)
 {
     debug printf("f = %p,%d, t = %p,%d, size = %d\n",
                  cast(void*)from, from.length, cast(void*)to, to.length, size);

@@ -63,6 +63,7 @@ void c_types() {
     INT_TYPE(pid_t);
     INT_TYPE(uid_t);
     INT_TYPE(gid_t);
+    INT_TYPE(ssize_t);
     printf("\n");
 }
 
@@ -142,36 +143,36 @@ void c_time() {
     INT_TYPE(time_t);
 
     {
-	FieldInfo fi[2];
-	struct timespec rec;
-	INT_FIELD(fi[0], tv_sec);
-	INT_FIELD(fi[1], tv_nsec);
-	finish_struct(fi, 2, sizeof(rec), "timespec");
+        FieldInfo fi[2];
+        struct timespec rec;
+        INT_FIELD(fi[0], tv_sec);
+        INT_FIELD(fi[1], tv_nsec);
+        finish_struct(fi, 2, sizeof(rec), "timespec");
     }
     {
-	FieldInfo fi[2];
-	struct timeval rec;
-	INT_FIELD(fi[0], tv_sec);
-	INT_FIELD(fi[1], tv_usec);
-	finish_struct(fi, 2, sizeof(rec), "timeval");
+        FieldInfo fi[2];
+        struct timeval rec;
+        INT_FIELD(fi[0], tv_sec);
+        INT_FIELD(fi[1], tv_usec);
+        finish_struct(fi, 2, sizeof(rec), "timeval");
     }
     {
-	FieldInfo fi[2];
-	struct timezone rec;
-	INT_FIELD(fi[0], tz_minuteswest);
-	INT_FIELD(fi[1], tz_dsttime);
-	finish_struct(fi, 2, sizeof(rec), "timezone");
+        FieldInfo fi[2];
+        struct timezone rec;
+        INT_FIELD(fi[0], tz_minuteswest);
+        INT_FIELD(fi[1], tz_dsttime);
+        finish_struct(fi, 2, sizeof(rec), "timezone");
     }
 }
 
 void c_utime()
     {
     {
-	FieldInfo fi[2];
-	struct utimbuf rec;
-	INT_FIELD(fi[0], actime);
-	INT_FIELD(fi[1], modtime);
-	finish_struct(fi, 2, sizeof(rec), "utimbuf");
+        FieldInfo fi[2];
+        struct utimbuf rec;
+        INT_FIELD(fi[0], actime);
+        INT_FIELD(fi[1], modtime);
+        finish_struct(fi, 2, sizeof(rec), "utimbuf");
     }
 }
 
@@ -344,35 +345,35 @@ void c_signal()
     printf("\n");
 #ifdef HAVE_SIGINFO_T
     {
-	siginfo_t rec;
-	FieldInfo fi[3];
-	INT_FIELD(fi[0],si_signo);
-	INT_FIELD(fi[1],si_errno);
-	INT_FIELD(fi[2],si_code);
-	printf("/* siginfo_t is not finished... see gen_unix.c */\n");
-	finish_struct(fi, 3, sizeof(rec), "siginfo_t");
+        siginfo_t rec;
+        FieldInfo fi[3];
+        INT_FIELD(fi[0],si_signo);
+        INT_FIELD(fi[1],si_errno);
+        INT_FIELD(fi[2],si_code);
+        printf("/* siginfo_t is not finished... see gen_unix.c */\n");
+        finish_struct(fi, 3, sizeof(rec), "siginfo_t");
     }
 #else
     printf("struct siginfo_t;\n");
 #endif
 
     {
-	struct sigaction rec;
-	FieldInfo fi[4];
-	int n = 0;
-	ADD_FIELD(fi[n], "void function(int)",  sa_handler);
-	n++;
+        struct sigaction rec;
+        FieldInfo fi[4];
+        int n = 0;
+        ADD_FIELD(fi[n], "void function(int)",  sa_handler);
+        n++;
 #ifdef HAVE_SIGINFO_T
-	ADD_FIELD(fi[n], "void function(int, siginfo_t *, void *)", sa_sigaction);
-	n++;
+        ADD_FIELD(fi[n], "void function(int, siginfo_t *, void *)", sa_sigaction);
+        n++;
 #endif
-	ADD_FIELD(fi[n], "sigset_t", sa_mask);
-	n++;
-	INT_FIELD(fi[n], sa_flags);
-	n++;
-	//FN_FIELD(fi[4], "void (*sa_restorer)(void)", sa_restorer);
-	//ADD_FIELD(fi[4], "void function(void)", sa_restorer);
-	finish_struct(fi, n, sizeof(rec), "sigaction_t");
+        ADD_FIELD(fi[n], "sigset_t", sa_mask);
+        n++;
+        INT_FIELD(fi[n], sa_flags);
+        n++;
+        //FN_FIELD(fi[4], "void (*sa_restorer)(void)", sa_restorer);
+        //ADD_FIELD(fi[4], "void function(void)", sa_restorer);
+        finish_struct(fi, n, sizeof(rec), "sigaction_t");
     }
     // not sure about this
 
@@ -386,21 +387,21 @@ void c_mman()
 #endif
 #ifdef PROT_NONE
     printf("enum { PROT_NONE = %d, PROT_READ = %d, PROT_WRITE = %d, PROT_EXEC = %d }\n",
-	PROT_NONE, PROT_READ, PROT_WRITE, PROT_EXEC);
+        PROT_NONE, PROT_READ, PROT_WRITE, PROT_EXEC);
     // there are more flags, but this is all that is needed for GC and other modules
 #endif
 #ifdef MAP_SHARED
     printf(
-	   "enum { MAP_SHARED = 0x%x, MAP_PRIVATE = 0x%x, MAP_ANON = 0x%x,"
-	   "       MAP_ANONYMOUS = 0x%x,",
-	   MAP_SHARED, MAP_PRIVATE,
-	   // not sure if these are alway macros, if not, just add an autoconf test
+           "enum { MAP_SHARED = 0x%x, MAP_PRIVATE = 0x%x, MAP_ANON = 0x%x,"
+           "       MAP_ANONYMOUS = 0x%x,",
+           MAP_SHARED, MAP_PRIVATE,
+           // not sure if these are alway macros, if not, just add an autoconf test
 #ifdef MAP_ANON
-	   MAP_ANON, MAP_ANON
+           MAP_ANON, MAP_ANON
 #else
-	   MAP_ANONYMOUS, MAP_ANONYMOUS
+           MAP_ANONYMOUS, MAP_ANONYMOUS
 #endif
-	   );
+           );
 #ifdef MAP_TYPE
     CES( MAP_TYPE );
 #endif
@@ -547,10 +548,10 @@ void c_pthread() {
     OPAQUE_TYPE(pthread_mutex_t);
     OPAQUE_TYPE(pthread_mutexattr_t);
     {
-	struct sched_param rec;
-	FieldInfo fi[1];
-	INT_FIELD(fi[0],sched_priority);
-	finish_struct(fi, 1, sizeof(rec), "sched_param");
+        struct sched_param rec;
+        FieldInfo fi[1];
+        INT_FIELD(fi[0],sched_priority);
+        finish_struct(fi, 1, sizeof(rec), "sched_param");
     }
 #if HAVE_PTHREAD_BARRIER_T
     OPAQUE_TYPE(pthread_barrier_t);
@@ -639,11 +640,11 @@ void c_socket() {
     printf("}\n");
     printf("\n");
     {
-	struct linger rec;
-	FieldInfo fi[2];
-	INT_FIELD(fi[0],l_onoff);
-	INT_FIELD(fi[1],l_linger);
-	finish_struct(fi, 2, sizeof(rec), "linger");
+        struct linger rec;
+        FieldInfo fi[2];
+        INT_FIELD(fi[0],l_onoff);
+        INT_FIELD(fi[1],l_linger);
+        finish_struct(fi, 2, sizeof(rec), "linger");
     }
     printf("\n");
     printf("enum : int {\n");
@@ -794,49 +795,49 @@ void c_ipproto() {
 void c_netdb() {
     printf("// from <netdb.h>\n");
     {
-	FieldInfo fi[3];
-	struct protoent rec;
-	ADD_FIELD(fi[0], "char *", p_name);
-	ADD_FIELD(fi[1], "char **", p_aliases);
-	INT_FIELD(fi[2], p_proto);
-	finish_struct(fi, 3, sizeof(rec), "protoent");
+        FieldInfo fi[3];
+        struct protoent rec;
+        ADD_FIELD(fi[0], "char *", p_name);
+        ADD_FIELD(fi[1], "char **", p_aliases);
+        INT_FIELD(fi[2], p_proto);
+        finish_struct(fi, 3, sizeof(rec), "protoent");
     }
     {
-	FieldInfo fi[4];
-	struct servent rec;
-	ADD_FIELD(fi[0], "char *", s_name);
-	ADD_FIELD(fi[1], "char **", s_aliases);
-	INT_FIELD(fi[2], s_port);
-	ADD_FIELD(fi[3], "char *", s_proto);
-	finish_struct(fi, 4, sizeof(rec), "servent");
+        FieldInfo fi[4];
+        struct servent rec;
+        ADD_FIELD(fi[0], "char *", s_name);
+        ADD_FIELD(fi[1], "char **", s_aliases);
+        INT_FIELD(fi[2], s_port);
+        ADD_FIELD(fi[3], "char *", s_proto);
+        finish_struct(fi, 4, sizeof(rec), "servent");
     }
     {
-	FieldInfo fi[5];
-	struct hostent rec;
-	ADD_FIELD(fi[0], "char *", h_name);
-	ADD_FIELD(fi[1], "char **", h_aliases);
-	INT_FIELD(fi[2], h_addrtype);
-	INT_FIELD(fi[3], h_length);
-	ADD_FIELD(fi[4], "char **", h_addr_list);
-	finish_struct_ex(fi, 5, sizeof(rec), "hostent",
-	"char* h_addr()\n"
-	"{\n"
-	"	return h_addr_list[0];\n"
-	"}");
+        FieldInfo fi[5];
+        struct hostent rec;
+        ADD_FIELD(fi[0], "char *", h_name);
+        ADD_FIELD(fi[1], "char **", h_aliases);
+        INT_FIELD(fi[2], h_addrtype);
+        INT_FIELD(fi[3], h_length);
+        ADD_FIELD(fi[4], "char **", h_addr_list);
+        finish_struct_ex(fi, 5, sizeof(rec), "hostent",
+        "char* h_addr()\n"
+        "{\n"
+        "       return h_addr_list[0];\n"
+        "}");
     }
     /*//not required for std/socket.d yet
     {
-	FieldInfo fi[8];
-	struct addrinfo rec;
-	INT_FIELD(fi[0], ai_flags);
-	INT_FIELD(fi[1], ai_family);
-	INT_FIELD(fi[2], ai_socktype);
-	INT_FIELD(fi[3], ai_protocol);
-	INT_FIELD(fi[4], ai_addrlen);
-	ADD_FIELD(fi[5], "sockaddr *", ai_addr);
-	ADD_FIELD(fi[6], "char *", ai_canonname);
-	ADD_FIELD(fi[7], "addrinfo *", ai_next);
-	finish_struct(fi, 8, "addrinfo");
+        FieldInfo fi[8];
+        struct addrinfo rec;
+        INT_FIELD(fi[0], ai_flags);
+        INT_FIELD(fi[1], ai_family);
+        INT_FIELD(fi[2], ai_socktype);
+        INT_FIELD(fi[3], ai_protocol);
+        INT_FIELD(fi[4], ai_addrlen);
+        ADD_FIELD(fi[5], "sockaddr *", ai_addr);
+        ADD_FIELD(fi[6], "char *", ai_canonname);
+        ADD_FIELD(fi[7], "addrinfo *", ai_next);
+        finish_struct(fi, 8, "addrinfo");
     }
     */
     printf("struct addrinfo { }\n");
@@ -845,16 +846,16 @@ void c_netdb() {
 void c_pwd()
 {
     {
-	FieldInfo fi[7];
-	struct passwd rec;
-	ADD_FIELD(fi[0], "char *", pw_name);
-	ADD_FIELD(fi[1], "char *", pw_passwd);
-	INT_FIELD(fi[2], pw_uid);
-	INT_FIELD(fi[3], pw_gid);
-	ADD_FIELD(fi[4], "char *", pw_gecos);
-	ADD_FIELD(fi[5], "char *", pw_dir);
-	ADD_FIELD(fi[6], "char *", pw_shell);
-	finish_struct(fi, 7, sizeof(rec), "passwd");
+        FieldInfo fi[7];
+        struct passwd rec;
+        ADD_FIELD(fi[0], "char *", pw_name);
+        ADD_FIELD(fi[1], "char *", pw_passwd);
+        INT_FIELD(fi[2], pw_uid);
+        INT_FIELD(fi[3], pw_gid);
+        ADD_FIELD(fi[4], "char *", pw_gecos);
+        ADD_FIELD(fi[5], "char *", pw_dir);
+        ADD_FIELD(fi[6], "char *", pw_shell);
+        finish_struct(fi, 7, sizeof(rec), "passwd");
     }
 }
 

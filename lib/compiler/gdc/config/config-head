@@ -4,5 +4,5 @@ module gcc.config;
 private import gcc.builtins;
 private import gcc.configext;
 
-alias __builtin_abi_int Clong_t;
-alias __builtin_abi_uint Culong_t;
+alias __builtin_Clong Clong_t;
+alias __builtin_Culong Culong_t;

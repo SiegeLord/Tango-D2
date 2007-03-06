@@ -68,7 +68,7 @@ on_dyld_remove_image(const struct mach_header* hdr, intptr_t slide) {
         start = (void*)( sec->addr + slide );
         end = (void*)( start + sec->size );
 
-        _d_gcc_gc_remove_range((void*) start);
+        _d_gcc_gc_remove_range(start);
     }
 }
 

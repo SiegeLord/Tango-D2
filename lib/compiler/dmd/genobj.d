@@ -226,7 +226,7 @@ struct Interface
 {
     ClassInfo classinfo;        /// .classinfo for this interface (not for containing class)
     void *[] vtbl;
-    int offset;                 /// offset to Interface 'this' from Object 'this'
+    ptrdiff_t offset;       /// offset to Interface 'this' from Object 'this'
 }
 
 /**
@@ -303,7 +303,7 @@ class TypeInfo
     }
 
     /// Returns a hash of the instance of a type.
-    hash_t getHash(void *p) { return cast(uint)p; }
+    hash_t getHash(void *p) { return cast(hash_t)p; }
 
     /// Compares two instances for equality.
     int equals(void *p1, void *p2) { return cast(int)(p1 == p2); }
@@ -388,7 +388,7 @@ class TypeInfo_Pointer : TypeInfo
 
     hash_t getHash(void *p)
     {
-        return cast(uint)*cast(void* *)p;
+        return cast(hash_t)*cast(void**)p;
     }
 
     int equals(void *p1, void *p2)

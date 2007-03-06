@@ -25,12 +25,12 @@
 extern (C)
 {
     // Functions from the C library.
-    void *memcpy(void *, void *, uint);
+    void *memcpy(void *, void *, size_t);
 }
 
 extern (C):
 
-short *_memset16(short *p, short value, int count)
+short *_memset16(short *p, short value, size_t count)
 {
     short *pstart = p;
     short *ptop;
@@ -40,7 +40,7 @@ short *_memset16(short *p, short value, int count)
     return pstart;
 }
 
-int *_memset32(int *p, int value, int count)
+int *_memset32(int *p, int value, size_t count)
 {
 version (X86)
 {
@@ -66,7 +66,7 @@ else
 }
 }
 
-long *_memset64(long *p, long value, int count)
+long *_memset64(long *p, long value, size_t count)
 {
     long *pstart = p;
     long *ptop;
@@ -76,7 +76,7 @@ long *_memset64(long *p, long value, int count)
     return pstart;
 }
 
-cdouble *_memset128(cdouble *p, cdouble value, int count)
+cdouble *_memset128(cdouble *p, cdouble value, size_t count)
 {
     cdouble *pstart = p;
     cdouble *ptop;
@@ -86,7 +86,7 @@ cdouble *_memset128(cdouble *p, cdouble value, int count)
     return pstart;
 }
 
-real *_memset80(real *p, real value, int count)
+real *_memset80(real *p, real value, size_t count)
 {
     real *pstart = p;
     real *ptop;
@@ -96,7 +96,7 @@ real *_memset80(real *p, real value, int count)
     return pstart;
 }
 
-creal *_memset160(creal *p, creal value, int count)
+creal *_memset160(creal *p, creal value, size_t count)
 {
     creal *pstart = p;
     creal *ptop;
@@ -106,7 +106,7 @@ creal *_memset160(creal *p, creal value, int count)
     return pstart;
 }
 
-void *_memsetn(void *p, void *value, int count, int sizelem)
+void *_memsetn(void *p, void *value, int count, size_t sizelem)
 {   void *pstart = p;
     int i;
 

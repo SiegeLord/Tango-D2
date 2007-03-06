@@ -7,6 +7,7 @@ alias uint mode_t;
 alias int pid_t;
 alias ushort uid_t;
 alias ushort gid_t;
+alias int ssize_t;
 
 enum {
   O_RDONLY = 0,
@@ -404,7 +405,7 @@ struct hostent {
     char ** h_addr_list;
 char* h_addr()
 {
-	return h_addr_list[0];
+        return h_addr_list[0];
 }
 }
 

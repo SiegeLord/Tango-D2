@@ -7,6 +7,7 @@ alias ushort mode_t;
 alias int pid_t;
 alias uint uid_t;
 alias uint gid_t;
+alias Clong_t ssize_t;
 
 enum {
   DT_UNKNOWN = 0,
@@ -46,26 +47,16 @@ enum {
   X_OK = 1,
 }
 
-alias int time_t;
+alias Clong_t time_t;
 struct timespec {
-    int tv_sec;
-    int tv_nsec;
+    Clong_t tv_sec;
+    Clong_t tv_nsec;
 }
-
-static assert(timespec.tv_sec.offsetof == 0);
-static assert(timespec.tv_nsec.offsetof == 4);
-static assert(timespec.sizeof == 8);
-
 
 struct timeval {
-    int tv_sec;
+    Clong_t tv_sec;
     int tv_usec;
 }
-
-static assert(timeval.tv_sec.offsetof == 0);
-static assert(timeval.tv_usec.offsetof == 4);
-static assert(timeval.sizeof == 8);
-
 
 struct timezone {
     int tz_minuteswest;
@@ -78,14 +69,9 @@ static assert(timezone.sizeof == 8);
 
 
 struct utimbuf {
-    int actime;
-    int modtime;
+    Clong_t actime;
+    Clong_t modtime;
 }
-
-static assert(utimbuf.actime.offsetof == 0);
-static assert(utimbuf.modtime.offsetof == 4);
-static assert(utimbuf.sizeof == 8);
-
 
 enum {
   S_IFIFO = 4096,
@@ -117,33 +103,17 @@ struct struct_stat {
     uint st_uid;
     uint st_gid;
     int st_rdev;
-    int st_atime;
-   ubyte[4] ___pad1;
-    int st_mtime;
-   ubyte[4] ___pad2;
-    int st_ctime;
-   ubyte[4] ___pad3;
-    long st_size;
+    time_t st_atime;
+    time_t ___pad1;
+    time_t st_mtime;
+    time_t ___pad2;
+    time_t st_ctime;
+    time_t ___pad3;
+    off_t  st_size;
     long st_blocks;
     int st_blksize;
    ubyte[28] ___pad4;
 }
-
-static assert(struct_stat.st_dev.offsetof == 0);
-static assert(struct_stat.st_ino.offsetof == 4);
-static assert(struct_stat.st_mode.offsetof == 8);
-static assert(struct_stat.st_nlink.offsetof == 10);
-static assert(struct_stat.st_uid.offsetof == 12);
-static assert(struct_stat.st_gid.offsetof == 16);
-static assert(struct_stat.st_rdev.offsetof == 20);
-static assert(struct_stat.st_atime.offsetof == 24);
-static assert(struct_stat.st_mtime.offsetof == 32);
-static assert(struct_stat.st_ctime.offsetof == 40);
-static assert(struct_stat.st_size.offsetof == 48);
-static assert(struct_stat.st_blocks.offsetof == 56);
-static assert(struct_stat.st_blksize.offsetof == 64);
-static assert(struct_stat.sizeof == 96);
-
 
 // from <sys/signal.h>
 enum {
@@ -202,14 +172,11 @@ struct siginfo_t {
     int si_signo;
     int si_errno;
     int si_code;
+    static if (size_t.sizeof == 4)
    ubyte[52] ___pad1;
+    else
+       ubyte[92] ___pad1;
 }
-
-static assert(siginfo_t.si_signo.offsetof == 0);
-static assert(siginfo_t.si_errno.offsetof == 4);
-static assert(siginfo_t.si_code.offsetof == 8);
-static assert(siginfo_t.sizeof == 64);
-
 
 struct sigaction_t {
     union {
@@ -219,9 +186,6 @@ struct sigaction_t {
     sigset_t sa_mask;
     int sa_flags;
 }
-
-static assert(sigaction_t.sa_flags.offsetof == 8);
-static assert(sigaction_t.sizeof == 12);
 
 
 // from <sys/mman.h>
@@ -267,13 +231,24 @@ enum {
   EAGAIN = 35,
 }
 
-struct sem_t { ubyte[4] opaque; }
-alias uint pthread_t;
+alias int sem_t;
+alias Culong_t pthread_t;
+static if (size_t.sizeof == 4)
+{
 struct pthread_attr_t { ubyte[40] opaque; }
 struct pthread_cond_t { ubyte[28] opaque; }
 struct pthread_condattr_t { ubyte[8] opaque; }
 struct pthread_mutex_t { ubyte[44] opaque; }
 struct pthread_mutexattr_t { ubyte[12] opaque; }
+}
+else
+{
+    struct pthread_attr_t { ubyte[64] opaque; }
+    struct pthread_cond_t { ubyte[48] opaque; }
+    struct pthread_condattr_t { ubyte[16] opaque; }
+    struct pthread_mutex_t { ubyte[64] opaque; }
+    struct pthread_mutexattr_t { ubyte[16] opaque; }
+}
 struct sched_param {
     int sched_priority;
    ubyte[4] ___pad1;
@@ -408,19 +383,12 @@ struct protoent {
     int p_proto;
 }
 
-static assert(protoent.p_proto.offsetof == 8);
-static assert(protoent.sizeof == 12);
-
-
 struct servent {
     char * s_name;
     char ** s_aliases;
     int s_port;
     char * s_proto;
 }
-
-static assert(servent.s_port.offsetof == 8);
-static assert(servent.sizeof == 16);
 
 
 struct hostent {
@@ -431,14 +399,9 @@ struct hostent {
     char ** h_addr_list;
 char* h_addr()
 {
-	return h_addr_list[0];
+        return h_addr_list[0];
 }
 }
-
-static assert(hostent.h_addrtype.offsetof == 8);
-static assert(hostent.h_length.offsetof == 12);
-static assert(hostent.sizeof == 20);
-
 
 struct addrinfo { }
 struct passwd {
@@ -446,17 +409,13 @@ struct passwd {
     char * pw_passwd;
     uint pw_uid;
     uint pw_gid;
-   ubyte[8] ___pad1;
+    time_t pw_change;
+    char * pw_class;
     char * pw_gecos;
     char * pw_dir;
     char * pw_shell;
-   ubyte[4] ___pad2;
+    time_t pw_expire;
 }
-
-static assert(passwd.pw_uid.offsetof == 8);
-static assert(passwd.pw_gid.offsetof == 12);
-static assert(passwd.sizeof == 40);
-
 
 }
 

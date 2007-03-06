@@ -267,8 +267,11 @@ char[] sub(char[] string, char[] pattern, char[] delegate(Regex) dg, char[] attr
             pattern == slice)                           // simple pattern (exact match, no special characters)
         {
             debug(Regex)
-                printf("pattern: %.*s, slice: %.*s, replacement: %.*s\n",pattern,result[offset + so .. offset + eo],replacement);
-            result = std.string.replace(result,slice,replacement);
+            printf("pattern: %.*s, slice: %.*s, replacement: %.*s\n",
+                cast(int) pattern.length, pattern.ptr,
+                cast(int) (eo-so), result.ptr + offset,
+                cast(int) replacement.length, replacement.ptr);
+                result = std.string.replace(result,slice,replacement);
             break;
         }
 +/
@@ -999,8 +1002,12 @@ public rchar[] replace(rchar[] string, rchar[] format)
            format == replacement)               // simple format, not $ formats
         {
             debug(Regex)
-                printf("pattern: %.*s, slice: %.*s, format: %.*s, replacement: %.*s\n",pattern,result[offset + so .. offset + eo],format,replacement);
-            result = std.string.replace(result,slice,replacement);
+            printf("pattern: %.*s, slice: %.*s, format: %.*s, replacement: %.*s\n",
+                cast(int) pattern.length, pattern.ptr,
+                cast(int) (eo-so), result.ptr + offset,
+                cast(int) format.length, format.ptr,
+                cast(int) replacement.length, replacement.ptr);
+                result = std.string.replace(result,slice,replacement);
             break;
         }
 +/
@@ -1047,7 +1054,8 @@ debug( UnitTest )
 
 public rchar[][] exec(rchar[] string)
 {
-    debug(Regex) printf("Regex.exec(string = '%.*s')\n", string);
+    debug(Regex) printf("Regex.exec(string = '%.*s')\n",
+                        cast(int) string.length, string.ptr);
     input = string;
     pmatch[0].rm_so = 0;
     pmatch[0].rm_eo = 0;
@@ -1193,6 +1201,7 @@ void printProgram(ubyte[] prog)
     uint m;
     ushort *pu;
     uint *puint;
+    ubyte[] s;
 
     printf("printProgram()\n");
     for (pc = 0; pc < prog.length; )
@@ -1229,15 +1238,17 @@ void printProgram(ubyte[] prog)
 
             case REstring:
                 len = *cast(uint *)&prog[pc + 1];
+                s = (&prog[pc + 1 + uint.sizeof])[0 .. len];
                 printf("\tREstring x%x, '%.*s'\n", len,
-                        (&prog[pc + 1 + uint.sizeof])[0 .. len]);
+            cast(int) s.length, s.ptr);
                 pc += 1 + uint.sizeof + len * rchar.sizeof;
                 break;
 
             case REistring:
                 len = *cast(uint *)&prog[pc + 1];
+                s = (&prog[pc + 1 + uint.sizeof])[0 .. len];
                 printf("\tREistring x%x, '%.*s'\n", len,
-                        (&prog[pc + 1 + uint.sizeof])[0 .. len]);
+                    cast(int) s.length, s.ptr);
                 pc += 1 + uint.sizeof + len * rchar.sizeof;
                 break;
 
@@ -1313,8 +1324,8 @@ void printProgram(ubyte[] prog)
                 len = puint[0];
                 n = puint[1];
                 m = puint[2];
-                printf("\tREnm%.*s len=%d, n=%u, m=%u, pc=>%d\n",
-                    (prog[pc] == REnmq) ? "q" : " ",
+                printf("\tREnm%s len=%d, n=%u, m=%u, pc=>%d\n",
+                    (prog[pc] == REnmq) ? cast(char*)"q" : cast(char*)" ",
                     len, n, m, pc + 1 + uint.sizeof * 3 + len);
                 pc += 1 + uint.sizeof * 3;
                 break;
@@ -1407,8 +1418,11 @@ int trymatch(int pc, int pcend)
     uint* puint;
 
     debug(Regex)
+    {
+        char[] s = input[src .. input.length];
         printf("Regex.trymatch(pc = %d, src = '%.*s', pcend = %d)\n",
-            pc, input[src .. input.length], pcend);
+               pc, cast(int) s.length, s.ptr, pcend);
+    }
     srcsave = src;
     psave = null;
     for (;;)
@@ -1491,8 +1505,12 @@ int trymatch(int pc, int pcend)
 
             case REstring:
                 len = *cast(uint *)&program[pc + 1];
-                debug(Regex) printf("\tREstring x%x, '%.*s'\n", len,
-                        (&program[pc + 1 + uint.sizeof])[0 .. len]);
+                debug(Regex)
+                {
+                    char[] s = (&program[pc + 1 + uint.sizeof])[0 .. len];
+                    printf("\tREstring x%x, '%.*s'\n", len,
+                        cast(int) s.length, s.ptr);
+                }
                 if (src + len > input.length)
                     goto Lnomatch;
                 if (memcmp(&program[pc + 1 + uint.sizeof], &input[src], len * rchar.sizeof))
@@ -1503,8 +1521,12 @@ int trymatch(int pc, int pcend)
 
             case REistring:
                 len = *cast(uint *)&program[pc + 1];
-                debug(Regex) printf("\tREistring x%x, '%.*s'\n", len,
-                        (&program[pc + 1 + uint.sizeof])[0 .. len]);
+                debug(Regex)
+                {
+                    char[] s = (&program[pc + 1 + uint.sizeof])[0 .. len];
+                    printf("\tREistring x%x, '%.*s'\n", len,
+                        cast(int) s.length, s.ptr);
+                }
                 if (src + len > input.length)
                     goto Lnomatch;
                 version (Win32)
@@ -2165,7 +2187,7 @@ int parseAtom()
                     case 'x':
                     case 'u':
                     case '0':
-			c = cast(char)escape();
+                        c = cast(char)escape();
                         goto Lbyte;
 
                     case '1': case '2': case '3':
@@ -2511,7 +2533,7 @@ Lerr:
 void error(char[] msg)
 {
     errors++;
-    debug(Regex) printf("error: %.*s\n", msg);
+    debug(Regex) printf("error: %.*s\n", cast(int) msg.length, msg.ptr);
 //assert(0);
 //*(char*)0=0;
     throw new RegexException(msg);
@@ -2975,7 +2997,7 @@ public static rchar[] replace3(rchar[] format, rchar[] input, regmatch_t[] pmatc
                     {
                         result ~= '$';
                         result ~= c;
-			c = cast(char)c2;
+            c = cast(char)c2;
                         goto L1;
                     }
                 }

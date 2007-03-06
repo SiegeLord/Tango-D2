@@ -29,8 +29,8 @@
 
 struct Array
 {
-    int length;
-    void *ptr;
+    size_t length;
+    void*  ptr;
 }
 
 
