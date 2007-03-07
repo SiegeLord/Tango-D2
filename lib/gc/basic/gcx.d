@@ -2087,9 +2087,12 @@ struct Gcx
      *
      */
     uint getBits(Pool* pool, uint biti)
+    in
     {
-        assert(pool && biti);
-
+        assert( pool );
+    }
+    body
+    {
         uint bits;
 
         if (pool.finals.nbits &&
@@ -2108,9 +2111,12 @@ struct Gcx
      *
      */
     void setBits(Pool* pool, uint biti, uint mask)
+    in
     {
-        assert(pool && biti);
-
+        assert( pool );
+    }
+    body
+    {
         if (mask & BlkAttr.FINALIZE)
         {
             if (!pool.finals.nbits)
@@ -2134,9 +2140,12 @@ struct Gcx
      *
      */
     void clrBits(Pool* pool, uint biti, uint mask)
+    in
     {
-        assert(pool && biti);
-
+        assert( pool );
+    }
+    body
+    {
         if (mask & BlkAttr.FINALIZE && pool.finals.nbits)
             pool.finals.clear(biti);
         if (mask & BlkAttr.NO_SCAN)

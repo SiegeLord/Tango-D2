@@ -191,7 +191,7 @@ extern (C) ulong _d_newarrayiT(TypeInfo ti, size_t length)
     ulong result;
     auto size = ti.next.tsize();                // array element size
 
-    debug printf("_d_newarrayii(length = %d, size = %d, isize = %d)\n", length, size, isize);
+    debug printf("_d_newarrayii(length = %d, size = %d)\n", length, size);
 
     if (length == 0 || size == 0)
         result = 0;
@@ -288,7 +288,7 @@ extern (C) ulong _d_newarraymiT(TypeInfo ti, int ndims, ...)
 {
     ulong result;
 
-    debug printf("_d_newarraymi(size = %d, ndims = %d)\n", size, ndims);
+    debug printf("_d_newarraymi(ndims = %d)\n", ndims);
     if (ndims == 0)
         result = 0;
     else
@@ -704,7 +704,7 @@ size_t newCapacity(size_t newlength, size_t size)
                 mult = 102;
             newext = cast(size_t)((newcap * mult) / 100);
             newext -= newext % size;
-            debug printf("mult: %2.2f, mult2: %2.2f, alloc: %2.2f\n",mult/100.0,mult2,newext / cast(double)size);
+            debug printf("mult: %2.2f, alloc: %2.2f\n",mult/100.0,newext / cast(double)size);
         }
         newcap = newext > newcap ? newext : newcap;
         debug printf("newcap = %d, newlength = %d, size = %d\n", newcap, newlength, size);
