@@ -1,5 +1,5 @@
 dnl Unix-specific configuration
-AC_DEFUN(DPHOBOS_CONFIGURE_UNIX,[
+AC_DEFUN([DPHOBOS_CONFIGURE_UNIX],[
 
 AC_CHECK_HEADERS(pthread.h,:,
   [AC_MSG_ERROR([can't find pthread.h. Pthreads is the only supported thread library.])])
@@ -164,7 +164,7 @@ DCFG_UNIX="Unix"
 ])
 
 dnl Garbage collection configuration
-AC_DEFUN(DPHOBOS_CONFIGURE_GC, [
+AC_DEFUN([DPHOBOS_CONFIGURE_GC], [
 
 # Not for Tango
 #D_GC_MODULES=internal/gc/gcgcc.o
