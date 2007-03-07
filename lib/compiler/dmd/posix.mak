@@ -119,7 +119,7 @@ OBJ_TI= \
     typeinfo/ti_char.o \
     typeinfo/ti_creal.o \
     typeinfo/ti_dchar.o \
-    typeinfo/ti_Delegate.o \
+    typeinfo/ti_delegate.o \
     typeinfo/ti_double.o \
     typeinfo/ti_float.o \
     typeinfo/ti_idouble.o \
