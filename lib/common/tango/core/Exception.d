@@ -11,11 +11,19 @@ module tango.core.Exception;
 
 private
 {
-    alias void function( char[] file, size_t line, char[] msg = null ) assertHandlerType;
-    alias bool function( Object obj ) collectHandlerType;
+    alias void  function( char[] file, size_t line, char[] msg = null ) assertHandlerType;
+    alias bool  function( Object obj ) collectHandlerType;
+    alias TracedExceptionInfo function( void* ptr = null ) traceHandlerType;
 
     assertHandlerType   assertHandler   = null;
     collectHandlerType  collectHandler  = null;
+    traceHandlerType    traceHandler    = null;
+}
+
+
+interface TracedExceptionInfo
+{
+    int opApply( int delegate( inout char[] ) );
 }
 
 
@@ -81,17 +89,41 @@ class TracedException : Exception
     this( char[] msg )
     {
         super( msg );
+        m_info = traceContext();
     }
 
     this( char[] msg, Exception e )
     {
         super( msg, e );
+        m_info = traceContext();
     }
 
     this( char[] msg, char[] file, size_t line )
     {
         super( msg, file, line );
+        m_info = traceContext();
     }
+
+    char[] toUtf8()
+    {
+        if( m_info is null )
+            return super.toUtf8();
+        char[] buf = super.toUtf8();
+        buf ~= "\n----------------";
+        foreach( line; m_info )
+            buf ~= "\n" ~ line;
+        return buf;
+    }
+
+    int opApply( int delegate( inout char[] buf ) dg )
+    {
+        if( m_info is null )
+            return 0;
+        return m_info.opApply( dg );
+    }
+
+private:
+    TracedExceptionInfo m_info;
 }
 
 
@@ -411,6 +443,18 @@ void setCollectHandler( collectHandlerType h )
 }
 
 
+/**
+ * Overrides the default trace hander with a user-supplied version.
+ *
+ * Params:
+ *  h = The new trace handler.  Set to null to use the default handler.
+ */
+void setTraceHandler( traceHandlerType h )
+{
+    traceHandler = h;
+}
+
+
 ////////////////////////////////////////////////////////////////////////////////
 // Overridable Callbacks
 ////////////////////////////////////////////////////////////////////////////////
@@ -470,6 +514,27 @@ extern (C) bool onCollectResource( Object obj )
     return collectHandler( obj );
 }
 
+
+/**
+ * This function will be called when a TracedException is constructed.  The
+ * user-supplied trace handler will be called if one has been supplied,
+ * otherwise no trace will be generated.
+ *
+ * Params:
+ *  ptr = A pointer to the location from which to generate the trace, or null
+ *        if the trace should be generated from within the trace handler
+ *        itself.
+ *
+ * Returns:
+ *  An object describing the current calling context or null if no handler is
+ *  supplied.
+ */
+TracedExceptionInfo traceContext( void* ptr = null )
+{
+    if( traceHandler is null )
+        return null;
+    return traceHandler( ptr );
+}
 
 ////////////////////////////////////////////////////////////////////////////////
 // Internal Error Callbacks
