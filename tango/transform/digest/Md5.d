@@ -13,11 +13,11 @@
 
 *******************************************************************************/
 
-module tango.math.crypto.Md5;
+module tango.transform.digest.Md5;
 
-public  import tango.math.crypto.Md4;
+public  import tango.transform.digest.Md4;
 
-private import tango.math.crypto.MerkleDamgard;
+private import tango.transform.digest.MerkleDamgard;
 
 /*******************************************************************************
 

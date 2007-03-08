@@ -8,55 +8,35 @@
 
         author:         Regan Heath, Oskar Linde
 
-        This module implements the SHA-512 Algorithm described by Secure 
+        This module implements the SHA-256 Algorithm described by Secure 
         Hash Standard, FIPS PUB 180-2
 
 *******************************************************************************/
 
-module tango.math.crypto.Sha512;
+module tango.transform.digest.Sha256;
 
 private import tango.core.ByteSwap;
 
-private import tango.math.crypto.MerkleDamgard;
+public  import tango.transform.digest.Digest;
 
-public  import tango.math.crypto.Digest;
+private import tango.transform.digest.MerkleDamgard;
 
 /*******************************************************************************
 
 *******************************************************************************/
 
-final class Sha512 : MerkleDamgard
+final class Sha256 : MerkleDamgard
 {
-        private ulong[8]        context;
+        private uint[8]         context;
         private const uint      padChar = 0x80;
 
         /***********************************************************************
 
-                Construct a Sha512 hash algorithm context
+                Construct an Sha256
 
         ***********************************************************************/
 
         this() { }
-        
-        /***********************************************************************
-
-        ***********************************************************************/
-
-        protected override void createDigest(ubyte[] buf) 
-        {
-                version (LittleEndian)
-                         ByteSwap.swap64(context.ptr, context.length * ulong.sizeof);
-
-                buf[] = cast(ubyte[]) context[];
-        }
-
-        /***********************************************************************
-
-                The digest size of Sha-512 is 64 bytes
-
-        ***********************************************************************/        
-
-        override uint digestSize() {return 64;}
 
         /***********************************************************************
 
@@ -75,6 +55,32 @@ final class Sha512 : MerkleDamgard
 
         /***********************************************************************
 
+                Obtain the digest
+
+                Remarks:
+                Returns a digest of the current cipher state, this may be the
+                final digest, or a digest of the state between calls to update()
+
+        ***********************************************************************/
+
+        protected override void createDigest (ubyte[] buf)
+        {
+                version (LittleEndian)
+                         ByteSwap.swap32 (context.ptr, context.length * uint.sizeof);
+
+                buf[] = cast(ubyte[]) context;
+        }
+
+        /***********************************************************************
+
+                The digest size of Sha-256 is 32 bytes
+
+        ***********************************************************************/
+
+        uint digestSize() { return 32; }
+
+        /***********************************************************************
+
                 Cipher block size
 
                 Returns:
@@ -82,11 +88,11 @@ final class Sha512 : MerkleDamgard
 
                 Remarks:
                 Specifies the size (in bytes) of the block of data to pass to
-                each call to transform(). For SHA512 the blockSize is 128.
+                each call to transform(). For SHA256 the blockSize is 64.
 
         ***********************************************************************/
 
-        protected override uint blockSize() { return 128; }
+        protected override uint blockSize() { return 64; }
 
         /***********************************************************************
 
@@ -98,11 +104,11 @@ final class Sha512 : MerkleDamgard
                 Remarks:
                 Specifies the size (in bytes) of the padding which uses the
                 length of the data which has been ciphered, this padding is
-                carried out by the padLength method. For SHA512 the addSize is 16.
+                carried out by the padLength method. For SHA256 the addSize is 8.
 
         ***********************************************************************/
 
-        protected override uint addSize()   { return 16;  }
+        protected override uint addSize()   { return 8;  }
 
         /***********************************************************************
 
@@ -142,10 +148,8 @@ final class Sha512 : MerkleDamgard
         protected override void padLength(ubyte[] data, ulong length)
         {
                 length <<= 3;
-                for(int j = data.length-1; j >= 0; j--) {
-                        data[data.length-j-1] = cast(ubyte) (length >> j*8);
-                }
-                data[0..8] = 0;
+                for(int j = data.length-1; j >= 0; j--)
+                        data[$-j-1] = cast(ubyte) (length >> j*8);
         }
 
         /***********************************************************************
@@ -165,10 +169,9 @@ final class Sha512 : MerkleDamgard
 
         protected override void transform(ubyte[] input)
         {
-                ulong[80] W;
-                ulong a,b,c,d,e,f,g,h;
-                ulong t1,t2;
-                uint j;
+                uint[64] W;
+                uint a,b,c,d,e,f,g,h;
+                uint j,t1,t2;
 
                 a = context[0];
                 b = context[1];
@@ -179,12 +182,12 @@ final class Sha512 : MerkleDamgard
                 g = context[6];
                 h = context[7];
 
-                bigEndian64(input,W[0..16]);
-                for(j = 16; j < 80; j++) {
+                bigEndian32(input,W[0..16]);
+                for(j = 16; j < 64; j++) {
                         W[j] = mix1(W[j-2]) + W[j-7] + mix0(W[j-15]) + W[j-16];
                 }
 
-                for(j = 0; j < 80; j++) {
+                for(j = 0; j < 64; j++) {
                         t1 = h + sum1(e) + Ch(e,f,g) + K[j] + W[j];
                         t2 = sum0(a) + Maj(a,b,c);
                         h = g;
@@ -211,7 +214,7 @@ final class Sha512 : MerkleDamgard
 
         ***********************************************************************/
 
-        private static ulong Ch(ulong x, ulong y, ulong z)
+        private static uint Ch(uint x, uint y, uint z)
         {
                 return (x&y)^(~x&z);
         }
@@ -220,7 +223,7 @@ final class Sha512 : MerkleDamgard
 
         ***********************************************************************/
 
-        private static ulong Maj(ulong x, ulong y, ulong z)
+        private static uint Maj(uint x, uint y, uint z)
         {
                 return (x&y)^(x&z)^(y&z);
         }
@@ -229,102 +232,89 @@ final class Sha512 : MerkleDamgard
 
         ***********************************************************************/
 
-        private static ulong sum0(ulong x)
+        private static uint sum0(uint x)
         {
-                return rotateRight(x,28)^rotateRight(x,34)^rotateRight(x,39);
+                return rotateRight(x,2)^rotateRight(x,13)^rotateRight(x,22);
         }
 
         /***********************************************************************
 
         ***********************************************************************/
 
-        private static ulong sum1(ulong x)
+        private static uint sum1(uint x)
         {
-                return rotateRight(x,14)^rotateRight(x,18)^rotateRight(x,41);
+                return rotateRight(x,6)^rotateRight(x,11)^rotateRight(x,25);
         }
 
         /***********************************************************************
 
         ***********************************************************************/
 
-        private static ulong mix0(ulong x)
+        private static uint mix0(uint x)
         {
-                return rotateRight(x,1)^rotateRight(x,8)^shiftRight(x,7);
+                return rotateRight(x,7)^rotateRight(x,18)^shiftRight(x,3);
         }
 
         /***********************************************************************
 
         ***********************************************************************/
 
-        private static ulong mix1(ulong x)
+        private static uint mix1(uint x)
         {
-                return rotateRight(x,19)^rotateRight(x,61)^shiftRight(x,6);
+                return rotateRight(x,17)^rotateRight(x,19)^shiftRight(x,10);
         }
 
         /***********************************************************************
 
         ***********************************************************************/
 
-        private static ulong rotateRight(ulong x, uint n)
+        private static uint rotateRight(uint x, uint n)
         {
-                return (x >> n) | (x << (64-n));
+                return (x >> n) | (x << (32-n));
         }
 
         /***********************************************************************
 
         ***********************************************************************/
 
-        private static ulong shiftRight(ulong x, uint n)
+        private static uint shiftRight(uint x, uint n)
         {
                 return x >> n;
         }
-
 }
 
+
 /*******************************************************************************
 
 *******************************************************************************/
 
-private static const ulong[] K = 
+private static uint[] K = 
 [
-        0x428a2f98d728ae22, 0x7137449123ef65cd, 0xb5c0fbcfec4d3b2f, 0xe9b5dba58189dbbc,
-        0x3956c25bf348b538, 0x59f111f1b605d019, 0x923f82a4af194f9b, 0xab1c5ed5da6d8118,
-        0xd807aa98a3030242, 0x12835b0145706fbe, 0x243185be4ee4b28c, 0x550c7dc3d5ffb4e2,
-        0x72be5d74f27b896f, 0x80deb1fe3b1696b1, 0x9bdc06a725c71235, 0xc19bf174cf692694,
-        0xe49b69c19ef14ad2, 0xefbe4786384f25e3, 0x0fc19dc68b8cd5b5, 0x240ca1cc77ac9c65,
-        0x2de92c6f592b0275, 0x4a7484aa6ea6e483, 0x5cb0a9dcbd41fbd4, 0x76f988da831153b5,
-        0x983e5152ee66dfab, 0xa831c66d2db43210, 0xb00327c898fb213f, 0xbf597fc7beef0ee4,
-        0xc6e00bf33da88fc2, 0xd5a79147930aa725, 0x06ca6351e003826f, 0x142929670a0e6e70,
-        0x27b70a8546d22ffc, 0x2e1b21385c26c926, 0x4d2c6dfc5ac42aed, 0x53380d139d95b3df,
-        0x650a73548baf63de, 0x766a0abb3c77b2a8, 0x81c2c92e47edaee6, 0x92722c851482353b,
-        0xa2bfe8a14cf10364, 0xa81a664bbc423001, 0xc24b8b70d0f89791, 0xc76c51a30654be30,
-        0xd192e819d6ef5218, 0xd69906245565a910, 0xf40e35855771202a, 0x106aa07032bbd1b8,
-        0x19a4c116b8d2d0c8, 0x1e376c085141ab53, 0x2748774cdf8eeb99, 0x34b0bcb5e19b48a8,
-        0x391c0cb3c5c95a63, 0x4ed8aa4ae3418acb, 0x5b9cca4f7763e373, 0x682e6ff3d6b2b8a3,
-        0x748f82ee5defb2fc, 0x78a5636f43172f60, 0x84c87814a1f0ab72, 0x8cc702081a6439ec,
-        0x90befffa23631e28, 0xa4506cebde82bde9, 0xbef9a3f7b2c67915, 0xc67178f2e372532b,
-        0xca273eceea26619c, 0xd186b8c721c0c207, 0xeada7dd6cde0eb1e, 0xf57d4f7fee6ed178,
-        0x06f067aa72176fba, 0x0a637dc5a2c898a6, 0x113f9804bef90dae, 0x1b710b35131c471b,
-        0x28db77f523047d84, 0x32caab7b40c72493, 0x3c9ebe0a15c9bebc, 0x431d67c49c100d4c,
-        0x4cc5d4becb3e42b6, 0x597f299cfc657e2a, 0x5fcb6fab3ad6faec, 0x6c44198c4a475817
+        0x428a2f98, 0x71374491, 0xb5c0fbcf, 0xe9b5dba5, 0x3956c25b, 0x59f111f1, 0x923f82a4, 0xab1c5ed5,
+        0xd807aa98, 0x12835b01, 0x243185be, 0x550c7dc3, 0x72be5d74, 0x80deb1fe, 0x9bdc06a7, 0xc19bf174,
+        0xe49b69c1, 0xefbe4786, 0x0fc19dc6, 0x240ca1cc, 0x2de92c6f, 0x4a7484aa, 0x5cb0a9dc, 0x76f988da,
+        0x983e5152, 0xa831c66d, 0xb00327c8, 0xbf597fc7, 0xc6e00bf3, 0xd5a79147, 0x06ca6351, 0x14292967,
+        0x27b70a85, 0x2e1b2138, 0x4d2c6dfc, 0x53380d13, 0x650a7354, 0x766a0abb, 0x81c2c92e, 0x92722c85,
+        0xa2bfe8a1, 0xa81a664b, 0xc24b8b70, 0xc76c51a3, 0xd192e819, 0xd6990624, 0xf40e3585, 0x106aa070,
+        0x19a4c116, 0x1e376c08, 0x2748774c, 0x34b0bcb5, 0x391c0cb3, 0x4ed8aa4a, 0x5b9cca4f, 0x682e6ff3,
+        0x748f82ee, 0x78a5636f, 0x84c87814, 0x8cc70208, 0x90befffa, 0xa4506ceb, 0xbef9a3f7, 0xc67178f2
 ];
 
 /*******************************************************************************
 
 *******************************************************************************/
 
-private static const ulong[8] initial = 
+private static const uint[8] initial = 
 [
-        0x6a09e667f3bcc908,
-        0xbb67ae8584caa73b,
-        0x3c6ef372fe94f82b,
-        0xa54ff53a5f1d36f1,
-        0x510e527fade682d1,
-        0x9b05688c2b3e6c1f,
-        0x1f83d9abfb41bd6b,
-        0x5be0cd19137e2179
+        0x6a09e667,
+        0xbb67ae85,
+        0x3c6ef372,
+        0xa54ff53a,
+        0x510e527f,
+        0x9b05688c,
+        0x1f83d9ab,
+        0x5be0cd19
 ];
-        
 
 /*******************************************************************************
 
@@ -336,25 +326,24 @@ version (UnitTest)
         {
         static char[][] strings = 
         [
-                "",
                 "abc",
-                "abcdefghbcdefghicdefghijdefghijkefghijklfghijklmghijklmnhijklmnoijklmnopjklmnopqklmnopqrlmnopqrsmnopqrstnopqrstu"
+                "abcdbcdecdefdefgefghfghighijhijkijkljklmklmnlmnomnopnopq"
         ];
 
         static char[][] results = 
         [
-                "CF83E1357EEFB8BDF1542850D66D8007D620E4050B5715DC83F4A921D36CE9CE47D0D13C5D85F2B0FF8318D2877EEC2F63B931BD47417A81A538327AF927DA3E",
-                "DDAF35A193617ABACC417349AE20413112E6FA4E89A97EA20A9EEEE64B55D39A2192992A274FC1A836BA3C23A3FEEBBD454D4423643CE80E2A9AC94FA54CA49F",
-                "8E959B75DAE313DA8CF4F72814FC143F8F7779C6EB9F7FA17299AEADB6889018501D289E4900F7E4331B99DEC4B5433AC7D329EEB6DD26545E96E55B874BE909"
+                "BA7816BF8F01CFEA414140DE5DAE2223B00361A396177A9CB410FF61F20015AD",
+                "248D6A61D20638B8E5C026930C3E6039A33CE45964FF2167F6ECEDD419DB06C1"
         ];
 
-        Sha512 h = new Sha512;
+        Sha256 h = new Sha256();
 
         foreach (int i, char[] s; strings) 
                 {
-                h.update(cast(ubyte[])s);
+                h.update(s);
                 char[] d = h.hexDigest();
-                assert(d == results[i],"DigestTransform:("~s~")("~d~")!=("~results[i]~")");
+                assert(d == results[i],"Cipher:("~s~")("~d~")!=("~results[i]~")");
                 }
         }
 }
+

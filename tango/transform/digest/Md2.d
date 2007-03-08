@@ -13,11 +13,11 @@
 
 *******************************************************************************/
 
-module tango.math.crypto.Md2;
+module tango.transform.digest.Md2;
 
-public  import tango.math.crypto.Digest;
+public  import tango.transform.digest.Digest;
 
-private import tango.math.crypto.MerkleDamgard;
+private import tango.transform.digest.MerkleDamgard;
 
 /*******************************************************************************
 

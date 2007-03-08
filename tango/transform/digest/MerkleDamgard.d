@@ -11,11 +11,11 @@
 
 *******************************************************************************/
 
-module tango.math.crypto.MerkleDamgard;
+module tango.transform.digest.MerkleDamgard;
 
 private import tango.core.ByteSwap;
 
-public  import tango.math.crypto.Digest;
+public  import tango.transform.digest.Digest;
 
 /*******************************************************************************
 

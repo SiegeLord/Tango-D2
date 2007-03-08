@@ -13,7 +13,7 @@
 
 ******************************************************************************/
 
-module tango.math.crypto.Digest;
+module tango.transform.digest.Digest;
 
 private import tango.stdc.stdlib : alloca;
 
@@ -145,7 +145,7 @@ abstract class Digest
 /******************************************************************************
 
        This is an exception class to be thrown by algorithms under
-       tango.math.crypto where required.
+       tango.transform.digest where required.
 
 ******************************************************************************/
 
