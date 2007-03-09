@@ -107,8 +107,8 @@ ZLIB_OBJS=
 
 GC_OBJS= 
 
-GCC_OBJS = gcc/config.o gcc/unwind.o gcc/deh.o gcc/threadsem.o \
-	gcc/cbridge_time.o
+# Removed threadsem for Tango
+GCC_OBJS = gcc/config.o gcc/unwind.o gcc/deh.o gcc/cbridge_time.o
 
 # std.c.linux.linux, std.loader, gcc.cbridge*
 WINDOWS_OBJS=
