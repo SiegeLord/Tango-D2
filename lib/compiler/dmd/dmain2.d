@@ -80,12 +80,7 @@ extern (C) bool cr_isHalting()
     return isHalting;
 }
 
-bool trapException = true;
-
-extern (C) void cr_trapException( bool newval )
-{
-    trapException = newval;
-}
+extern (C) bool cr_trapExceptions = true;
 
 /***********************************
  * The D main() function supplied by the user's program
@@ -169,7 +164,7 @@ extern (C) int main(int argc, char **argv)
     }
     catch (Exception e)
     {
-        if (!trapException)
+        if (!cr_trapExceptions)
             throw e;
 
         while (e)
@@ -190,7 +185,7 @@ extern (C) int main(int argc, char **argv)
     }
     catch (Object o)
     {
-        if (!trapException)
+        if (!cr_trapExceptions)
             throw o;
 
         // fprintf(stderr, "%.*s\n", o.toUtf8());
