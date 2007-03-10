@@ -53,7 +53,7 @@ class FileSystem
                    if (prefix is null)
                        prefix = getDirectory;
 
-                   target.name = target.toUtf8;
+                   target.file = target.toUtf8;
                    target.path = prefix;
                    }
                 return target;
@@ -208,14 +208,25 @@ debug (FileSystem)
 
         void main() 
         {
-        auto dir = FileSystem.toAbsolute(new FilePath(r"test"));
-        Stdout(dir).newline;
-        dir = FileSystem.toAbsolute(new FilePath(r".\test"));
-        Stdout(dir).newline;
-        dir.name = "foo";
-        Stdout(dir).newline;
-        dir.ext = ".d";
-        dir.name = dir.ext;
-        Stdout(dir).newline;
+        auto path = new FilePath (".");
+        Stdout(path).newline;
+
+        path.name = "foo";
+        Stdout(path).newline;
+
+        path.set (".");
+        FileSystem.toAbsolute(path);
+        Stdout(path).newline;
+
+        path.set (r".\test");
+        FileSystem.toAbsolute(path);
+        Stdout(path).newline;
+
+        path.name = "foo";
+        Stdout(path).newline;
+
+        path.ext = ".d";
+        path.name = path.ext;
+        Stdout(path).newline;
         }
 }
