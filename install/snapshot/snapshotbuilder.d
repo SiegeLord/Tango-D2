@@ -3,7 +3,6 @@ import tango.sys.Process;
 import tango.io.FileSystem;
 import tango.io.FilePath;
 import tango.io.FileConst;
-import tango.text.stream.LineIterator;
 
 import tango.io.Stdout;
 
@@ -126,10 +125,7 @@ int main(char[][] args)
     // run build-*.*
     auto bld = new Process(buildcmd, null);
     bld.execute();
-    foreach(line; new LineIterator!(char)(bld.stderr))
-    {
-        Stderr(line).newline;
-    }
+    Stderr.conduit.copy(bld.stderr);
     result = bld.wait();
     if (result.reason != Process.Result.Exit) {
         Stderr("Was not able to build ").newline;
@@ -143,41 +139,32 @@ int main(char[][] args)
     Stdout("!! Changing access rights").newline;
     auto chmod = new Process("chmod 644 " ~ chmodfiles, null);
     chmod.execute();
-    foreach(line; new LineIterator!(char)(chmod.stderr))
-    {
-        Stderr(line).newline;
-    }
+    Stderr.conduit.copy(chmod.stderr);
     result = chmod.wait();
     if (result.reason != Process.Result.Exit) {
         Stderr("Was not able to change access rights").newline;
         return 1;
     }
  
-    // remove patches/ , install/win32/, docs and maybe more
+    // remove patches/ , install/win32/, doc/ and more
     Stdout("!! Removing " ~ rmpaths).newline;
     auto rm = new Process("rm -rf " ~ rmpaths, null);
     rm.execute();
-    foreach(line; new LineIterator!(char)(rm.stderr))
-    {
-        Stderr(line).newline;
-    }
+    Stderr.conduit.copy(rm.stderr);
     result = rm.wait();
     if (result.reason != Process.Result.Exit) {
         Stderr("Was not able to remove paths").newline;
         return 1;
     }
  
-    // enter ..
+    // enter workdir
     FileSystem.setDirectory(workdir);
 
     // create zip, etc
     Stdout("!! Creating .tar.gz").newline;
     auto targz = new Process("tar czf " ~ packdir ~ ".tar.gz " ~ packdir, null);
     targz.execute();
-    foreach(line; new LineIterator!(char)(targz.stderr))
-    {
-        Stderr(line).newline;
-    }
+    Stderr.conduit.copy(targz.stderr);
     result = targz.wait();
     if (result.reason != Process.Result.Exit) {
         Stderr("Was not able to remove paths").newline;
