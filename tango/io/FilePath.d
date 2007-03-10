@@ -73,6 +73,11 @@ private extern (C) void memmove (void* dst, void* src, uint bytes);
         called PathView, which can be used to provide a view into the
         content as desired.
 
+        Note that patterns of adjacent '.' separators are treated specially
+        in that they will be assigned to the name instead of the suffix. In
+        addition, a '.' at the start of a name signifies it does not belong
+        to the suffix i.e. ".file" is a name rather than a suffix. 
+
         Compile with -version=Win32SansUnicode to enable Win95 & Win32s file
         support.
 
@@ -85,10 +90,9 @@ class FilePath : PathView
         private bool    dir_;                   // this represents a dir?
 
         private int     end_,                   // before the trailing 0
-                        ext_,                   // after rightmost '.'
                         name_,                  // file/dir name
                         folder_,                // path before name
-                        suffix_;                // inclusive of leftmost '.'
+                        suffix_;                // after rightmost '.'
 
         /***********************************************************************
 
@@ -192,30 +196,31 @@ class FilePath : PathView
 
         /***********************************************************************
 
-                Suffix is like an extension, except it may include multiple
-                '.' sequences and the dot-prefix is included in the suffix.
-                For example, "wumpus.foo.bar" has suffix ".foo.bar"
+                Ext is the tail of the filename, rightward of the rightmost
+                '.' separator e.g. path "foo.bar" has ext "bar". Note that
+                patterns of adjacent separators are treated specially; for
+                example, ".." will wind up with no ext at all
+
+        ***********************************************************************/
+
+        final char[] ext ()
+        {
+                auto x = suffix;
+                if (x.length)
+                    x = x [1..$];
+                return x;
+        }
+
+        /***********************************************************************
+
+                Suffix is like ext, but includes the separator e.g. path 
+                "foo.bar" has suffix ".bar"
 
         ***********************************************************************/
 
         final char[] suffix ()
         {
                 return fp [suffix_ .. end_];
-        }
-
-        /***********************************************************************
-
-                Ext is the tail of the filename, rightward of the rightmost
-                '.' separator e.g. path "wumpus.foo.bar" has ext ".bar"
-
-        ***********************************************************************/
-
-        final char[] ext ()
-        {
-                auto x = ext_;
-                if (x < end_)
-                    --x;
-                return fp [x .. end_];
         }
 
         /***********************************************************************
@@ -352,6 +357,21 @@ class FilePath : PathView
 
         /***********************************************************************
 
+                Prepend text to this path; no separators are added
+
+        ***********************************************************************/
+
+        final FilePath prepend (char[] other)
+        {
+                adjust (0, folder_, folder_, padded (other));
+                return parse;
+        }
+
+        /***********************************************************************
+
+                Reset the content of this path to that of another and
+                reparse
+
         ***********************************************************************/
 
         FilePath set (FilePath path)
@@ -360,6 +380,8 @@ class FilePath : PathView
         }
 
         /***********************************************************************
+
+                Reset the content of this path, and reparse
 
         ***********************************************************************/
 
@@ -376,19 +398,23 @@ class FilePath : PathView
 
         /***********************************************************************
 
+                Replace the root portion of this path
+
         ***********************************************************************/
 
         final FilePath root (char[] other)
         {
                 auto x = adjust (0, folder_, folder_, padded (other, ':'));
-                suffix_ += x;
                 folder_ += x;
+                suffix_ += x;
                 name_ += x;
-                ext_ += x;
                 return this;
         }
 
         /***********************************************************************
+
+                Replace the folder portion of this path. The folder will be 
+                padded with a path-separator as required
 
         ***********************************************************************/
 
@@ -397,11 +423,12 @@ class FilePath : PathView
                 auto x = adjust (folder_, name_, name_ - folder_, padded (other));
                 suffix_ += x;
                 name_ += x;
-                ext_ += x;
                 return this;
         }
 
         /***********************************************************************
+
+                Replace the name portion of this path
 
         ***********************************************************************/
 
@@ -409,33 +436,28 @@ class FilePath : PathView
         {
                 auto x = adjust (name_, suffix_, suffix_ - name_, other);
                 suffix_ += x;
-                ext_ += x;
                 return this;
         }
 
         /***********************************************************************
+
+                Replace the suffix portion of this path. The suffix will be 
+                prefixed with a file-separator as required
 
         ***********************************************************************/
 
         final FilePath suffix (char[] other)
         {
                 adjust (suffix_, end_, end_ - suffix_, prefixed (other, '.'));
-                return parse;
+                return this;
         }
 
         /***********************************************************************
 
-        ***********************************************************************/
-
-        final FilePath ext (char[] other)
-        {
-                auto len = ext.length;
-                adjust (end_ - len, end_, len, prefixed (other, '.'));
-                return parse;
-        }
-
-        /***********************************************************************
-
+                Replace the root and folder portions of this path and 
+                reparse. The replacement will be padded with a path
+                separator as required
+        
         ***********************************************************************/
 
         final FilePath path (char[] other)
@@ -446,6 +468,10 @@ class FilePath : PathView
 
         /***********************************************************************
 
+                Replace the file and suffix portions of this path and 
+                reparse. The replacement will be prefixed with a suffix
+                separator as required
+        
         ***********************************************************************/
 
         final FilePath file (char[] other)
@@ -642,23 +668,22 @@ class FilePath : PathView
 
         /***********************************************************************
 
+                Parse the path spec
+
         ***********************************************************************/
 
         private final FilePath parse ()
         {
                 folder_ = 0;
-                name_ = suffix_ = ext_ = -1;
+                name_ = suffix_ = -1;
 
                 for (int i=end_; --i >= 0;)
                      switch (fp[i])
                             {
                             case FileConst.FileSeparatorChar:
                                  if (name_ < 0)
-                                    {
-                                    suffix_ = i;
-                                    if (ext_ < 0)
-                                        ext_ = i + 1;
-                                    }
+                                     if (suffix_ < 0 && i && fp[i-1] != '.')
+                                         suffix_ = i;
                                  break;
 
                             case FileConst.PathSeparatorChar:
@@ -680,16 +705,15 @@ class FilePath : PathView
                 if (name_ < 0)
                     name_ = folder_;
 
-                if (suffix_ < 0)
+                if (suffix_ < 0 || suffix_ is name_)
                     suffix_ = end_;
-
-                if (ext_ < 0)
-                    ext_ = end_;
 
                 return this;
         }
 
         /***********************************************************************
+
+                Potentially make room for more content
 
         ***********************************************************************/
 
@@ -701,6 +725,8 @@ class FilePath : PathView
         }
 
         /***********************************************************************
+
+                Insert/delete internal content 
 
         ***********************************************************************/
 
@@ -1436,22 +1462,23 @@ interface PathView
 
         /***********************************************************************
 
-                Suffix is like an extension, except it may include multiple
-                '.' sequences and the dot-prefix is included in the suffix.
-                For example, "wumpus.foo.bar" has suffix ".foo.bar"
-
-        ***********************************************************************/
-
-        abstract char[] suffix ();
-
-        /***********************************************************************
-
                 Ext is the tail of the filename, rightward of the rightmost
-                '.' separator. For example, "wumpus.foo.bar" has ext "bar"
+                '.' separator e.g. path "foo.bar" has ext "bar". Note that
+                patterns of adjacent separators are treated specially; for
+                example, ".." will wind up with no ext at all
 
         ***********************************************************************/
 
         abstract char[] ext ();
+
+        /***********************************************************************
+
+                Suffix is like ext, but includes the separator e.g. path 
+                "foo.bar" has suffix ".bar"
+
+        ***********************************************************************/
+
+        abstract char[] suffix ();
 
         /***********************************************************************
 
@@ -1683,7 +1710,7 @@ debug (UnitTest)
                 assert (fp.suffix == r".doe");
                 assert (fp.file == r"john.doe");
                 assert (fp.toUtf8 == r"foo\bar\john.doe");
-                assert (fp.ext == ".doe");
+                assert (fp.ext == "doe");
                 assert (fp.isChild);
 
                 fp = new FilePath(r"c:doe");
@@ -1708,22 +1735,22 @@ debug (UnitTest)
 
                 fp = new FilePath(r"john.doe.foo");
                 assert (!fp.isAbsolute);
-                assert (fp.name == "john");
+                assert (fp.name == "john.doe");
                 assert (fp.folder == r"");
-                assert (fp.suffix == r".doe.foo");
+                assert (fp.suffix == r".foo");
                 assert (fp.toUtf8 == r"john.doe.foo");
                 assert (fp.file == r"john.doe.foo");
-                assert (fp.ext == ".foo");
+                assert (fp.ext == "foo");
                 assert (!fp.isChild);
 
                 fp = new FilePath(r".doe");
                 assert (!fp.isAbsolute);
-                assert (fp.suffix == r".doe");
+                assert (fp.suffix == r"");
                 assert (fp.toUtf8 == r".doe");
-                assert (fp.name == "");
+                assert (fp.name == ".doe");
                 assert (fp.folder == r"");
                 assert (fp.file == r".doe");
-                assert (fp.ext == ".doe");
+                assert (fp.ext == "");
                 assert (!fp.isChild);
 
                 fp = new FilePath(r"doe");
@@ -1738,9 +1765,9 @@ debug (UnitTest)
 
                 fp = new FilePath(r".");
                 assert (!fp.isAbsolute);
-                assert (fp.suffix == r".");
+                assert (fp.suffix == r"");
                 assert (fp.toUtf8 == r".");
-                assert (fp.name == "");
+                assert (fp.name == ".");
                 assert (fp.folder == r"");
                 assert (fp.file == r".");
                 assert (fp.ext == "");
@@ -1748,9 +1775,9 @@ debug (UnitTest)
 
                 fp = new FilePath(r"..");
                 assert (!fp.isAbsolute);
-                assert (fp.suffix == r"..");
+                assert (fp.suffix == r"");
                 assert (fp.toUtf8 == r"..");
-                assert (fp.name == "");
+                assert (fp.name == "..");
                 assert (fp.folder == r"");
                 assert (fp.file == r"..");
                 assert (fp.ext == "");
@@ -1764,7 +1791,7 @@ debug (UnitTest)
                 assert (fp.name == "foo");
                 assert (fp.folder == r"\a\b\c\");
                 assert (fp.file == r"foo.bar");
-                assert (fp.ext == ".bar");
+                assert (fp.ext == "bar");
                 assert (fp.isChild);
 
                 fp = new FilePath(r"c:\a\b\c\d\e\foo.bar");
@@ -1775,7 +1802,7 @@ debug (UnitTest)
                 assert (fp.name == "foo");
                 assert (fp.folder == r"\a\b\c\d\e\f\g\");
                 assert (fp.file == r"foo.bar");
-                assert (fp.ext == ".bar");
+                assert (fp.ext == "bar");
                 assert (fp.isChild);
 
 /+

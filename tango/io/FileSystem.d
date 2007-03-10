@@ -53,8 +53,7 @@ class FileSystem
                    if (prefix is null)
                        prefix = getDirectory;
 
-                   target.file = target.toUtf8;
-                   target.path = prefix;
+                   target.prepend (target.padded(prefix));
                    }
                 return target;
         }
@@ -206,27 +205,49 @@ debug (FileSystem)
 {
         import tango.io.Stdout;
 
+        static void foo (FilePath path)
+        {
+        Stdout("all: ") (path).newline;
+        Stdout("path: ") (path.path).newline;
+        Stdout("file: ") (path.file).newline;
+        Stdout("folder: ") (path.folder).newline;
+        Stdout("name: ") (path.name).newline;
+        Stdout("ext: ") (path.ext).newline;
+        Stdout("suffix: ") (path.suffix).newline.newline;
+        }
+
         void main() 
         {
         auto path = new FilePath (".");
-        Stdout(path).newline;
+        foo (path);
+
+        path.set ("..");
+        foo (path); 
+
+        path.set ("...");
+        foo (path); 
+
+        path.set (r"\x\y\.file");
+        foo (path); 
+
+        path.suffix = ".foo";
+        foo (path);
+
+        path.set ("file.bar");
+        FileSystem.toAbsolute(path);
+        foo(path);
+
+        path.set (r"arf\test");
+        foo(path);
+        FileSystem.toAbsolute(path);
+        foo(path);
 
         path.name = "foo";
-        Stdout(path).newline;
+        foo(path);
 
-        path.set (".");
-        FileSystem.toAbsolute(path);
-        Stdout(path).newline;
+        path.suffix = ".d";
+        path.name = path.suffix;
+        foo(path);
 
-        path.set (r".\test");
-        FileSystem.toAbsolute(path);
-        Stdout(path).newline;
-
-        path.name = "foo";
-        Stdout(path).newline;
-
-        path.ext = ".d";
-        path.name = path.ext;
-        Stdout(path).newline;
         }
 }
