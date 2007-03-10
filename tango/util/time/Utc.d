@@ -208,15 +208,3 @@ version (Posix)
         }
     }
 }
-
-debug (UnitTest)
-{
-        import tango.io.Stdout;
-
-        // void main() {}
-
-        unittest
-        {
-        Stdout.format ("timezone: {0}", Utc.zone/60).newline;
-        }
-}
