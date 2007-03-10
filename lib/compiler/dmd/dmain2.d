@@ -153,7 +153,7 @@ extern (C) int main(int argc, char **argv)
         args = am[0 .. argc];
     }
 
-    try
+    void run()
     {
         _moduleCtor();
         _moduleUnitTests();
@@ -162,35 +162,41 @@ extern (C) int main(int argc, char **argv)
         _moduleDtor();
         gc_term();
     }
-    catch (Exception e)
-    {
-        if (!cr_trapExceptions)
-            throw e;
 
-        while (e)
+    if( cr_trapExceptions )
+    {
+        try
         {
-            if (e.file)
-            {
-               // fprintf(stderr, "%.*s(%u): %.*s\n", e.file, e.line, e.msg);
-               console (e.file)("(")(e.line)("): ")(e.msg)("\n");
-            }
-            else
-            {
-               // fprintf(stderr, "%.*s\n", e.toUtf8());
-               console (e.toUtf8)("\n");
-            }
-            e = e.next;
+            run();
         }
-        exit(EXIT_FAILURE);
+        catch (Exception e)
+        {
+            while (e)
+            {
+                if (e.file)
+                {
+                   // fprintf(stderr, "%.*s(%u): %.*s\n", e.file, e.line, e.msg);
+                   console (e.file)("(")(e.line)("): ")(e.msg)("\n");
+                }
+                else
+                {
+                   // fprintf(stderr, "%.*s\n", e.toUtf8());
+                   console (e.toUtf8)("\n");
+                }
+                e = e.next;
+            }
+            exit(EXIT_FAILURE);
+        }
+        catch (Object o)
+        {
+            // fprintf(stderr, "%.*s\n", o.toUtf8());
+            console (o.toUtf8)("\n");
+            exit(EXIT_FAILURE);
+        }
     }
-    catch (Object o)
+    else
     {
-        if (!cr_trapExceptions)
-            throw o;
-
-        // fprintf(stderr, "%.*s\n", o.toUtf8());
-        console (o.toUtf8)("\n");
-        exit(EXIT_FAILURE);
+        run();
     }
 
     version (linux)
