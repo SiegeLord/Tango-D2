@@ -159,9 +159,7 @@ class FileScan
                         if (filter (p, isDir))
                            {
                            // skip dirs composed only of '.'
-                           char[] suffix = p.suffix;
-                           if (p.name.length > 0 || suffix.length > 3 ||
-                              (suffix != "..."[0 .. suffix.length]))
+                           if (name.length > 3 || name != "..."[0 .. name.length])
                                paths ~= p;                                                   
                            }
                         else
