@@ -47,7 +47,7 @@ private
 {
   version( DDoc ) {} else
   {
-    import tango.util.meta.Traits;
+    import tango.core.Traits;
 
 
     template isValidAtomicType( T )

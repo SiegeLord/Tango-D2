@@ -10,7 +10,7 @@
 module tango.core.Array;
 
 
-private import tango.util.meta.Traits;
+private import tango.core.Traits;
 private import tango.stdc.stdlib : alloca;
 
 
