@@ -151,12 +151,9 @@
               <a href="/projects/tango/wiki/TracGuide">Help / Guide</a>
              </td>
 
-             <td><img src="/projects/tango/chrome/theme/images/Foot-Menu-Item-Left.png" /></td>
              <td class="theme-foot-menu-item-normal" valign="bottom">
               <a href="/projects/tango/about">About Trac</a>
              </td>
-
-             <td><img src="/projects/tango/chrome/theme/images/Foot-Menu-Item-Right.png" /></td>
 
             </tr>
            </table>
