@@ -152,7 +152,7 @@
              </td>
 
              <td><img src="/projects/tango/chrome/theme/images/Foot-Menu-Item-Left.png" /></td>
-             <td class="theme-foot-menu-item-current" valign="bottom">
+             <td class="theme-foot-menu-item-normal" valign="bottom">
               <a href="/projects/tango/about">About Trac</a>
              </td>
 
@@ -162,8 +162,7 @@
            </table>
           </td>
           <td align="right" valign="bottom" class="theme-foot-menu-item-normal">
-           <a href="/forums/login.php?redirect=../projects/tango/about">Login</a>&nbsp;&nbsp;|&nbsp;&nbsp; 
-           
+           &nbsp; 
           </td>
          </tr>
 
@@ -180,7 +179,7 @@
           <td align="right">
            <table cellpadding="0" cellspacing="0" border="0">
             <tr>
-             <td><img src="/projects/tango/chrome/theme/images/RSS.png" border="0" /></td>
+             <td>&nbsp;</td>
             </tr>
            </table>
           </td>
