@@ -167,7 +167,17 @@ int main(char[][] args)
     Stderr.conduit.copy(targz.stderr);
     result = targz.wait();
     if (result.reason != Process.Result.Exit) {
-        Stderr("Was not able to remove paths").newline;
+        Stderr("Was not able to create .tar.gz").newline;
+        return 1;
+    }
+
+    Stdout("!! Creating .zip").newline;
+    auto zip = new Process("zip -r " ~ packdir ~ " " ~ packdir, null);
+    zip.execute();
+    Stderr.conduit.copy(zip.stderr);
+    result = zip.wait();
+    if (result.reason != Process.Result.Exit) {
+        Stderr("Was not able to create .zip").newline;
         return 1;
     }
  
