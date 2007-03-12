@@ -247,6 +247,7 @@ debug (UnitTest)
     private import tango.util.locks.Mutex;
     private import tango.core.Thread;
     private import tango.io.Stdout;
+    private import tango.util.locks.LockException;
 
     unittest
     {
@@ -306,7 +307,7 @@ debug (UnitTest)
 
         if (count != MaxThreadCount * LoopsPerThread)
         {
-            log.error("The Barrier is not working properly: the counter has an incorrect value");
+            Stderr.formatln("The Barrier is not working properly: the counter has an incorrect value");
             assert(false);
         }
     }

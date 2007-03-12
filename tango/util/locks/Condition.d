@@ -684,7 +684,7 @@ debug (UnitTest)
                         wasEmpty = (count == 0);
 
                         // Insert a random amount of elements in the queue
-                        added = rand.get(queue.length - count) + 1;
+                        added = rand.next (queue.length - count) + 1;
                         assert(added <= queue.length - count);
                         queue[count .. count + added] = 'X';
                         count += added;
@@ -717,12 +717,12 @@ debug (UnitTest)
             }
             catch (LockException e)
             {
-                Stdout.convert("Lock exception caught inside producer thread:\n{0}\n",
+                Stdout.format("Lock exception caught inside producer thread:\n{0}\n",
                                e.toUtf8());
             }
             catch (Exception e)
             {
-                Stdout.convert("Unexpected exception caught in producer thread:\n{0}\n",
+                Stdout.format("Unexpected exception caught in producer thread:\n{0}\n",
                                e.toUtf8());
             }
         }
@@ -754,7 +754,7 @@ debug (UnitTest)
                         wasFull = (count == queue.length);
 
                         // Insert a random amount of elements in the queue
-                        removed = rand.get(count) + 1;
+                        removed = rand.next (count) + 1;
                         assert(removed <= count);
                         queue[count - removed .. count] = '.';
                         count -= removed;
@@ -788,12 +788,12 @@ debug (UnitTest)
             }
             catch (LockException e)
             {
-                Stdout.convert("Lock exception caught inside consumer thread:\n{0}\n",
+                Stdout.format ("Lock exception caught inside consumer thread:\n{0}\n",
                                e.toUtf8());
             }
             catch (Exception e)
             {
-                Stdout.convert("Unexpected exception caught in consumer thread:\n{0}\n",
+                Stdout.format ("Unexpected exception caught in consumer thread:\n{0}\n",
                                e.toUtf8());
             }
         }
