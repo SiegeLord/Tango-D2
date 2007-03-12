@@ -20,9 +20,10 @@ module tango.util.collection.HashMap;
 
 private import  tango.core.Exception;
 
+/+
 private import  tango.io.protocol.model.IReader,
                 tango.io.protocol.model.IWriter;
-
++/
 private import  tango.util.collection.model.HashParams,
                 tango.util.collection.model.GuardIterator;
 
@@ -413,23 +414,25 @@ public class HashMap(K, V) : MapCollection!(K, V), HashParams
         
         ************************************************************************/
         
-        public final K keyOf(V element)
+        public final bool keyOf(inout K key, V value)
         {
-                if (!isValidArg(element) || count is 0)
-                    return K.init;
+                if (!isValidArg(value) || count is 0)
+                    return false;
 
-                // for (int i = 0; i < table._length; ++i) {
                 for (int i = 0; i < table.length; ++i)
                     { 
                     LLPairT hd = table[i];
                     if (hd !is null)
                        {
-                       LLPairT p = (cast(LLPairT)(hd.find(element)));
+                       auto p = (cast(LLPairT)(hd.find(value)));
                        if (p !is null)
-                           return p.key();
+                          {
+                          key = p.key();
+                          return true;
+                          }
                        }
                     }
-                return K.init;
+                return false;
         }
 
 
@@ -795,7 +798,7 @@ public class HashMap(K, V) : MapCollection!(K, V), HashParams
                     }
         }
 
-
+/+
         // IReader & IWriter methods
 
         /***********************************************************************
@@ -833,7 +836,7 @@ public class HashMap(K, V) : MapCollection!(K, V), HashParams
                              output (key) (value);
         }
         
-
++/
         // ImplementationCheckable methods
 
         /***********************************************************************

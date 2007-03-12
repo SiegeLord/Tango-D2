@@ -246,16 +246,17 @@ public class LinkMap(K, T) : MapCollection!(K, T) // , IReadable, IWritable
          * Time complexity: O(n).
          * See_Also: tango.util.collection.Map.keyOf
         **/
-        public final K keyOf(T element)
+        public final bool keyOf(inout K key, T value)
         {
-                if (!isValidArg(element) || count is 0)
-                     return null;
+                if (!isValidArg(value) || count is 0)
+                     return false;
 
-                auto p = (cast(LLPairT)(list.find(element)));
-                if (p !is null)
-                    return p.key();
-                else
-                   return null;
+                auto p = (cast(LLPairT)(list.find(value)));
+                if (p is null)
+                    return false;
+
+                key = p.key();
+                return true;
         }
 
 

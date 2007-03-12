@@ -100,14 +100,12 @@ public interface MapView(K, V) : View!(V)
         /**
          * Return a key associated with element. There may be any
          * number of keys associated with any element, but this returns only
-         * one of them (any arbitrary one), or null if no such key exists.
+         * one of them (any arbitrary one), or false if no such key exists.
+         * @param key, a place to return a located key
          * @param element, a value to try to find a key for.
-         * Returns: k, such that 
-         * <PRE>
-         * (k == null && !contains(element)) ||  contains(k, element)
-         * </PRE>
+         * Returns: true where value is found; false otherwise
         **/
 
-        public K keyOf(V element);
+        public bool keyOf(K key, V value);
 }
 
