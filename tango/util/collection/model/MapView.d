@@ -94,7 +94,7 @@ public interface MapView(K, V) : View!(V)
          * Returns: whether the key is contained or not
         **/
 
-        public bool get(K key, inout V element);
+        public bool get(K key, inout V element); 
 
 
         /**
@@ -106,6 +106,6 @@ public interface MapView(K, V) : View!(V)
          * Returns: true where value is found; false otherwise
         **/
 
-        public bool keyOf(K key, V value);
+        public bool keyOf(inout K key, V value);
 }
 
