@@ -390,7 +390,10 @@ T[] join(T) (T[][] src, T[] postfix=null, T[] dst=null)
                 p += postfix.length;
                 }
 
-        return  dst [0 .. len];       
+        // remove trailing seperator
+        if (len)
+            len -= postfix.length;
+        return dst [0 .. len];       
 }
 
 /******************************************************************************
