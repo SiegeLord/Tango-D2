@@ -428,7 +428,7 @@ real logGamma(real x)
         if ( x == 2.0L )
             return log(z);
         x = (nx - 2.0L) + f;
-        real p = x * poly( x, logGammaNumerator ) / poly( x, logGammaDenominator);
+        real p = x * rationalPoly( x, logGammaNumerator, logGammaDenominator);
         return log(z) + p;
     }
 

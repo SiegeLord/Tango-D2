@@ -131,16 +131,16 @@ const real j0d[] = [
     if ( xx < 81.0L ) {
         const real [] JZ = [5.783185962946784521176L, 30.47126234366208639908L, 7.488700679069518344489e1L];
         y = (xx - JZ[0]) * (xx - JZ[1]) * (xx - JZ[2]);
-        y *= poly( xx, j0n) / poly( xx, j0d);
+        y *= rationalPoly( xx, j0n, j0d);
         return y;
     }
 
     y = fabs(x);
     xx = 1.0/xx;
-    phase = poly( xx, j0phasen) / poly( xx, j0phased);
+    phase = rationalPoly( xx, j0phasen, j0phased);
 
     z = 1.0/y;
-    modulus = poly( z, j0modulusn) / poly( z, j0modulusd);
+    modulus = rationalPoly( z, j0modulusn, j0modulusd);
 
     y = modulus * cos( y -  PI_4 + z*phase) / sqrt(y);
     return y;
@@ -245,22 +245,22 @@ const real y059d[] = [
     if ( xx < 81.0L ) {
         if ( xx < 20.25L ) {
             y = M_2_PI * log(x) * cylBessel_j0(x);
-            y += poly( xx, y0n) / poly( xx, y0d);
+            y += rationalPoly( xx, y0n, y0d);
         } else {
             const real [] Y0Z = [3.957678419314857868376e0L, 7.086051060301772697624e0L,
                 1.022234504349641701900e1L, 1.336109747387276347827e1L];
             y = (x - Y0Z[0])*(x - Y0Z[1])*(x - Y0Z[2])*(x - Y0Z[3]);
-            y *= poly( x, y059n) / poly( x, y059d);
+            y *= rationalPoly( x, y059n, y059d);
         }
         return y;
     }
 
     y = fabs(x);
     xx = 1.0/xx;
-    phase = poly( xx, j0phasen) / poly( xx, j0phased);
+    phase = rationalPoly( xx, j0phasen, j0phased);
 
     z = 1.0/y;
-    modulus = poly( z, j0modulusn) / poly( z, j0modulusd);
+    modulus = rationalPoly( z, j0modulusn, j0modulusd);
 
     y = modulus * sin( y -  PI_4 + z*phase) / sqrt(y);
     return y;
@@ -457,9 +457,9 @@ real cylBessel_j1(real x)
     }
     y = fabs(x);
     xx = 1.0/xx;
-    phase = poly( xx, j1phasen) / poly( xx, j1phased);
+    phase = rationalPoly( xx, j1phasen, j1phased);
     z = 1.0/y;
-    modulus = poly( z, j1modulusn) / poly( z, j1modulusd);
+    modulus = rationalPoly( z, j1modulusn, j1modulusd);
 
     const real M_3PI_4 = 3 * PI_4;
 
@@ -583,13 +583,13 @@ body {
             [   2.19714132603101703515e0L, 5.42968104079413513277e0L,
                 8.59600586833116892643e0L, 1.17491548308398812434e1L];
             y = (x - Y1Z[0])*(x - Y1Z[1])*(x - Y1Z[2])*(x - Y1Z[3]);
-            y *= poly( x, y159n) / poly( x, y159d);
+            y *= rationalPoly( x, y159n, y159d);
         }
         return y;
     }
     xx = 1.0/xx;
-    phase = poly( xx, j1phasen) / poly( xx, j1phased);
-    modulus = poly( z, j1modulusn) / poly( z, j1modulusd);
+    phase = rationalPoly( xx, j1phasen, j1phased);
+    modulus = rationalPoly( z, j1modulusn, j1modulusd);
 
     const real M_3PI_4 = 3 * PI_4;
 

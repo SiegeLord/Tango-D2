@@ -1676,6 +1676,13 @@ unittest
 }
 }
 
+package {
+real rationalPoly(real x, real [] numerator, real [] denominator)
+{
+    return poly(x, numerator)/poly(x, denominator);
+}
+}
+
 private enum : int { MANTDIG_2 = real.mant_dig/2 } // Compiler workaround
 
 /** Floating point "approximate equality".

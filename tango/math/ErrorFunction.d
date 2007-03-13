@@ -166,15 +166,8 @@ real erfc(real a)
 
     real p, q;
 
-    if( x < 8.0 ) {
-        p = poly( y, P);
-        q = poly( y, Q);
-    } else {
-        q = y * y;
-        p = y * poly( q, R);
-        q = poly( q, S);
-    }
-    y = (z * p)/q;
+    if( x < 8.0 ) y = z * rationalPoly(y, P, Q);
+    else          y = z * y * rationalPoly(y * y, R, S);
 
     if (a < 0.0L)
         y = 2.0L - y;
@@ -202,14 +195,10 @@ real erfce(real x)
     real y = 1.0/x;
 
     if (x < 8.0) {
-        p = poly( y, P);
-        q = poly( y, Q);
+        return rationalPoly( y, P, Q);
     } else {
-        q = y * y;
-        p = y * poly( q, R);
-        q = poly( q, S);
+        return y * rationalPoly(y*y, R, S);
     }
-    return p/q;
 }
 
 }
@@ -245,7 +234,7 @@ real erf(real x)
         return 1.0L - erfc(x);
 
     real z = x * x;
-    return x * poly(z, T) / poly(z, U);
+    return x * rationalPoly(z, T, U);
 }
 
 debug(UnitTest) {
@@ -522,7 +511,7 @@ const real Q3[] = [
     if ( y > EXP_2 ) {
         y = y - 0.5L;
         y2 = y * y;
-        x = y + y * (y2 * poly( y2, P0)/poly( y2, Q0));
+        x = y + y * (y2 * rationalPoly( y2, P0, Q0));
         return x * SQRT2PI;
     }
 
@@ -530,11 +519,11 @@ const real Q3[] = [
     x0 = x - log(x)/x;
     z = 1.0L/x;
     if ( x < 8.0L ) {
-        x1 = z * poly( z, P1)/poly( z, Q1);
+        x1 = z * rationalPoly( z, P1, Q1);
     } else if( x < 32.0L ) {
-        x1 = z * poly( z, P2)/poly( z, Q2);
+        x1 = z * rationalPoly( z, P2, Q2);
     } else {
-        x1 = z * poly( z, P3)/poly( z, Q3);
+        x1 = z * rationalPoly( z, P3, Q3);
     }
     x = x0 - x1;
     if ( code != 0 ) {
