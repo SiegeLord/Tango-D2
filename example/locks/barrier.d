@@ -4,6 +4,8 @@
   author:      Juan Jose Comellas <juanjo@comellas.com.ar>
 *******************************************************************************/
 
+module barrier;
+
 private import tango.util.locks.Barrier;
 private import tango.util.locks.Mutex;
 private import tango.util.locks.LockException;

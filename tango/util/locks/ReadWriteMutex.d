@@ -16,7 +16,7 @@ version (Posix)
 {
     private import tango.util.locks.Mutex;
     private import tango.sys.Common;
-    
+
     private import tango.stdc.posix.pthread;
     private import tango.stdc.errno;
 
@@ -25,7 +25,7 @@ version (Posix)
      * This class is particularly useful for applications that have many more
      * concurrent readers than writers.
      */
-    class ReadWriteMutex
+    public class ReadWriteMutex
     {
         extern (C)
         {
@@ -288,7 +288,7 @@ else version (Windows)
      * Remarks:
      * Based on the ACE_RW_Mutex class from the ACE framework.
      */
-    class ReadWriteMutex
+    public class ReadWriteMutex
     {
         /** Serialize access to internal state. */
         private Mutex _lock;
@@ -319,15 +319,15 @@ else version (Windows)
             scope(failure)
                 delete _lock;
 
-            _waitingReaders = new Condition();
+            _waitingReaders = new Condition(_lock);
             scope(failure)
                 delete _waitingReaders;
 
-            _waitingWriters = new Condition();
+            _waitingWriters = new Condition(_lock);
             scope(failure)
                 delete _waitingWriters;
 
-            _waitingImportantWriter = new Condition();
+            _waitingImportantWriter = new Condition(_lock);
         }
 
         /**
@@ -338,6 +338,7 @@ else version (Windows)
             delete _waitingImportantWriter;
             delete _waitingWriters;
             delete _waitingReaders;
+            delete _lock;
         }
 
         /**
@@ -355,7 +356,7 @@ else version (Windows)
                 _waitingReadersCount++;
                 try
                 {
-                    _waitingReaders.wait(_lock);
+                    _waitingReaders.wait();
                 }
                 finally
                 {
@@ -380,7 +381,7 @@ else version (Windows)
                 _waitingWritersCount++;
                 try
                 {
-                    _waitingWriters.wait(_lock);
+                    _waitingWriters.wait();
                 }
                 finally
                 {
@@ -467,7 +468,7 @@ else version (Windows)
 
                     try
                     {
-                        _waitingImportantWriter.wait(_lock);
+                        _waitingImportantWriter.wait();
                     }
                     finally
                     {
@@ -504,7 +505,7 @@ else version (Windows)
                 _waitingReadersCount++;
                 try
                 {
-                    success = _waitingReaders.wait(_lock, timeout);
+                    success = _waitingReaders.wait(timeout);
                 }
                 finally
                 {
@@ -537,7 +538,7 @@ else version (Windows)
                 ++_waitingWritersCount;
                 try
                 {
-                    success = _waitingWriters.wait(_lock, timeout);
+                    success = _waitingWriters.wait(timeout);
                 }
                 finally
                 {
@@ -575,12 +576,12 @@ else version (Windows)
                 if (_isImportantWriter && _refCount == 1)
                 {
                     // Only the reader requesting to upgrade its lock is left over.
-                    _waitingImportantWriter.notifyOne();
+                    _waitingImportantWriter.notify();
                 }
                 else if (_waitingWritersCount > 0 && _refCount == 0)
                 {
                     // Give preference to writers over readers...
-                    _waitingWriters.notifyOne();
+                    _waitingWriters.notify();
                 }
                 else if (_waitingReadersCount > 0 && _waitingWritersCount == 0)
                 {
@@ -619,7 +620,7 @@ else
  *     }
  * }
  */
-scope class ScopedReadLock
+public scope class ScopedReadLock
 {
     private ReadWriteMutex _mutex;
     private bool _acquired;
@@ -713,7 +714,7 @@ scope class ScopedReadLock
  *     }
  * }
  */
-scope class ScopedWriteLock
+public scope class ScopedWriteLock
 {
     private ReadWriteMutex _mutex;
     private bool _acquired;
@@ -785,6 +786,13 @@ debug (UnitTest)
 {
     private import tango.util.locks.Mutex;
     private import tango.core.Thread;
+    private import tango.text.convert.Integer;
+    debug (readwritemutex)
+    {
+        private import tango.util.log.Log;
+        private import tango.util.log.ConsoleAppender;
+        private import tango.util.log.DateLayout;
+    }
 
     unittest
     {
@@ -794,6 +802,15 @@ debug (UnitTest)
         const uint LoopsPerWriter   = 1000;
         const uint CounterIncrement = 3;
 
+        debug (readwritemutex)
+        {
+            scope Logger log = Log.getLogger("readwritemutex");
+
+            log.addAppender(new ConsoleAppender(new DateLayout()));
+
+            log.info("ReadWriteMutex test");
+        }
+
         ReadWriteMutex  rwlock = new ReadWriteMutex();
         Mutex           mutex = new Mutex();
         uint            readCount = 0;
@@ -802,13 +819,17 @@ debug (UnitTest)
 
         void mutexReaderThread()
         {
+            debug (readwritemutex)
+            {
+                Logger log = Log.getLogger("readwritemutex." ~ Thread.getThis().name());
+
+                log.trace("Starting reader thread");
+            }
+
             for (uint i = 0; i < LoopsPerReader; ++i)
             {
-                // All the reader threads acquire the mutex for reading and
-                // then increment a counter. Each time the thread acquires the 
-                // mutex for reading it increments the counter a specific number
-                // of times, and the writer threads should never interrupt this.
-                // We use this to verify that the ReadWriteMutex actually works.
+                // All the reader threads acquire the mutex for reading and when they are
+                // all done
                 rwlock.acquireRead();
 
                 for (uint j = 0; j < CounterIncrement; ++j)
@@ -824,12 +845,19 @@ debug (UnitTest)
 
         void mutexWriterThread()
         {
+            debug (readwritemutex)
+            {
+                Logger log = Log.getLogger("readwritemutex." ~ Thread.getThis().name());
+
+                log.trace("Starting writer thread");
+            }
+
             for (uint i = 0; i < LoopsPerWriter; ++i)
             {
                 rwlock.acquireWrite();
 
                 mutex.acquire();
-                if (readCount % CounterIncrement == 0)
+                if (readCount % 3 == 0)
                 {
                     ++passed;
                 }
@@ -839,21 +867,54 @@ debug (UnitTest)
             }
         }
 
-        auto group = new ThreadGroup();
+        ThreadGroup group = new ThreadGroup();
+        Thread      thread;
+        char[10]    tmp;
 
         for (uint i = 0; i < ReaderThreads; ++i)
         {
-            group.create(&mutexReaderThread);
+            thread = new Thread(&mutexReaderThread);
+            thread.name = "reader-" ~ format(tmp, i);
+
+            debug (readwritemutex)
+                log.trace("Created reader thread " ~ thread.name);
+            thread.start();
+
+            group.add(thread);
         }
 
         for (uint i = 0; i < WriterThreads; ++i)
         {
-            group.create(&mutexWriterThread);
+            thread = new Thread(&mutexWriterThread);
+            thread.name = "writer-" ~ format(tmp, i);
+
+            debug (readwritemutex)
+                log.trace("Created writer thread " ~ thread.name);
+            thread.start();
+
+            group.add(thread);
         }
 
+        debug (readwritemutex)
+            log.trace("Waiting for threads to finish");
         group.joinAll();
 
-        assert(passed == WriterThreads * LoopsPerWriter,
-               "The ReadWriteMutex is not working properly: the counter has an incorrect value");
+        if (passed == WriterThreads * LoopsPerWriter)
+        {
+            debug (readwritemutex)
+                log.info("The ReadWriteMutex test was successful");
+        }
+        else
+        {
+            debug (readwritemutex)
+            {
+                log.error("The ReadWriteMutex is not working properly: the counter has an incorrect value");
+                assert(false);
+            }
+            else
+            {
+                assert(false, "The ReadWriteMutex is not working properly: the counter has an incorrect value");
+            }
+        }
     }
 }

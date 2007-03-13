@@ -21,7 +21,7 @@ private import tango.text.convert.Integer;
  * A condition variable enables threads to atomically block and test the
  * condition under the protection of a mutual exclusion lock (mutex) until
  * the condition is satisfied. That is, the mutex must have been held by
- * the thread before calling wait or notifyOne/notifyAll on the condition.
+ * the thread before calling wait or notify/notifyAll on the condition.
  * If the condition is false, a thread blocks on a condition variable and
  * atomically releases the mutex that is waiting for the condition to
  * change. If another thread changes the condition, it may wake up waiting
@@ -50,7 +50,7 @@ private import tango.text.convert.Integer;
  *
  *     while (!conditionBeingWaitedFor)
  *     {
- *         success = cond.wait(lock, timeout);
+ *         success = cond.wait(timeout);
  *     }
  *     return success;
  * }
@@ -64,7 +64,7 @@ private import tango.text.convert.Integer;
  *         lock.release();
  *
  *     conditionBeingWaitedFor = true;
- *     cond.notifyOne();
+ *     cond.notify();
  * }
  * ---
  */
@@ -76,15 +76,35 @@ version (Posix)
 
     class Condition
     {
-        pthread_cond_t _cond;
+        private pthread_cond_t  _cond;
+        private Mutex           _externalMutex;
 
         /**
          * Initialize the condition variable.
          */
-        public this()
+        public this(Mutex mutex)
+        in
         {
+            assert(mutex !is null);
+        }
+        body
+        {
+            _externalMutex = mutex;
             // pthread_cond_init() will never return an error on Linux.
             pthread_cond_init(&_cond, null);
+        }
+
+        /**
+         * Initialize the condition variable with a generic object.
+         */
+        public this(Object object)
+        in
+        {
+            assert(object !is null);
+        }
+        body
+        {
+            this(cast(Mutex) new MutexProxy(object));
         }
 
         /**
@@ -101,12 +121,20 @@ version (Posix)
         }
 
         /**
+         * Returns a reference to the underlying mutex;
+         */
+        public Mutex mutex()
+        {
+            return _externalMutex;
+        }
+
+        /**
          * Notify only $B(one) waiting thread that the condition is true.
          *
          * Remarks:
          * The external mutex must be locked before calling this method.
          */
-        void notifyOne()
+        public void notify()
         {
             // pthread_cond_signal() will never return an error on Linux, but
             // it may on other platforms.
@@ -124,7 +152,7 @@ version (Posix)
          * Remarks:
          * The external mutex must be locked before calling this method.
          */
-        void notifyAll()
+        public void notifyAll()
         {
             // pthread_cond_broadcast() will never return an error on Linux,
             // but it may on other platforms.
@@ -142,16 +170,11 @@ version (Posix)
          * Remarks:
          * The external mutex must be locked before calling this method.
          */
-        void wait(Mutex externalMutex)
-        in
-        {
-            assert(externalMutex !is null);
-        }
-        body
+        public void wait()
         {
             // pthread_cond_wait() will never return an error on Linux,
             // but it may on other platforms.
-            int rc = pthread_cond_wait(&_cond, &externalMutex._mutex);
+            int rc = pthread_cond_wait(&_cond, _externalMutex.mutex());
 
             if (rc != 0)
             {
@@ -170,16 +193,11 @@ version (Posix)
          * Remarks:
          * The external mutex must be locked before calling this method.
          */
-        bool wait(Mutex externalMutex, Interval timeout)
-        in
-        {
-            assert(externalMutex !is null);
-        }
-        body
+        public bool wait(Interval timeout)
         {
             if (timeout == Interval.max)
             {
-                wait(externalMutex);
+                wait();
                 return true;
             }
             else
@@ -187,7 +205,7 @@ version (Posix)
                 int rc;
                 timespec ts;
 
-                rc = pthread_cond_timedwait(&_cond, &externalMutex._mutex,
+                rc = pthread_cond_timedwait(&_cond, _externalMutex.mutex(),
                                             toTimespec(&ts, toAbsoluteTime(timeout)));
 
                 switch (rc)
@@ -270,11 +288,17 @@ else version (Windows)
         private Semaphore   _waitersQueue;
         private Event       _waitersDone;
         private bool        _wasBroadcast = false;
+        private Mutex       _externalMutex;
 
         /**
          * Initialize the condition variable.
          */
-        public this()
+        public this(Mutex mutex)
+        in
+        {
+            assert(mutex !is null);
+        }
+        body
         {
             _wasBroadcast = 0;
 
@@ -287,6 +311,22 @@ else version (Windows)
                 delete _waitersLock;
 
             _waitersDone = new Event();
+
+            _externalMutex = mutex;
+        }
+
+        /**
+         * Initialize the condition variable with a generic Object to be used 
+         * as a mutex.
+         */
+        public this(Object object)
+        in
+        {
+            assert(object !is null);
+        }
+        body
+        {
+            this(cast(Mutex) new MutexProxy(object));
         }
 
         /**
@@ -294,6 +334,7 @@ else version (Windows)
          */
         public ~this()
         {
+            _externalMutex = null;
             delete _waitersDone;
             delete _waitersLock;
             delete _waitersQueue;
@@ -305,7 +346,7 @@ else version (Windows)
          * Remarks:
          * The external mutex must be locked before calling this method.
          */
-        void notifyOne()
+        public void notify()
         {
             // If there aren't any waiters, then this is a no-op.  Note that
             // this function *must* be called with the <externalMutex> held
@@ -329,7 +370,7 @@ else version (Windows)
          * Remarks:
          * The external mutex must be locked before calling this method.
          */
-        void notifyAll()
+        public void notifyAll()
         {
             bool hasWaiters = false;
 
@@ -374,7 +415,7 @@ else version (Windows)
          * Remarks:
          * The external mutex must be locked before calling this method.
          */
-        void wait(Mutex externalMutex)
+        public void wait()
         {
             _waitersLock.acquire();
             _waitersCount++;
@@ -383,14 +424,14 @@ else version (Windows)
             // We keep the lock held just long enough to increment the count of
             // waiters by one. Note that we can't keep it held across the call
             // to Semaphore.acquire() since that will deadlock other calls to
-            // Condition.notifyOne().
-            externalMutex.release();
+            // Condition.notify().
+            _externalMutex.release();
             // We must always regain the <externalMutex>, even when errors
             // occur because that's the guarantee that we give to our callers.
             scope(exit)
-                externalMutex.acquire();
+                _externalMutex.acquire();
 
-            // Wait to be awakened by a call to Condition.notifyOne() or
+            // Wait to be awakened by a call to Condition.notify() or
             // Condition.notifyAll().
             _waitersQueue.acquire();
             // Make sure that we leave everything in its previous state
@@ -431,14 +472,14 @@ else version (Windows)
          * Remarks:
          * The external mutex must be locked before calling this method.
          */
-        bool wait(Mutex externalMutex, Interval timeout)
+        public bool wait(Interval timeout)
         {
             bool success = true;
 
             // Handle the easy case first.
             if (timeout == Interval.max)
             {
-                wait(externalMutex);
+                wait();
             }
             else
             {
@@ -450,14 +491,14 @@ else version (Windows)
                 // We keep the lock held just long enough to increment the
                 // count of waiters by one. Note that we can't keep it held
                 // across the call to Semaphore.tryAcquire() since that will
-                // deadlock other calls to Condition.notifyOne().
-                externalMutex.release();
+                // deadlock other calls to Condition.notify().
+                _externalMutex.release();
                 // We must always regain the <externalMutex>, even when errors
                 // occur because that's the guarantee that we give to our callers.
                 scope(exit)
-                    externalMutex.acquire();
+                    _externalMutex.acquire();
 
-                // Wait to be awakened by a Condition.notifyOne() or
+                // Wait to be awakened by a Condition.notify() or
                 // Condition.notifyAll().
                 success = _waitersQueue.tryAcquire(timeout);
 
@@ -634,186 +675,299 @@ else
 
 debug (UnitTest)
 {
+    private import tango.util.locks.LockException;
     private import tango.core.Thread;
-    private import tango.math.Random;
+    private import tango.text.convert.Integer;
     private import tango.io.Stdout;
+    debug (condition)
+    {
+        private import tango.util.log.Log;
+        private import tango.util.log.ConsoleAppender;
+        private import tango.util.log.DateLayout;
+    }
 
     unittest
     {
-        const uint MaxThreadCount   = 10;
-        const uint LoopsPerThread   = 1000;
-
-        Mutex       mutex           = new Mutex(Mutex.Type.NonRecursive);
-        Condition   notEmpty        = new Condition();
-        Condition   notFull         = new Condition();
-        char[40]    queue           = '.';
-        uint        count           = 0;
-        Random      rand            = new Random();
-        uint        producerCount   = MaxThreadCount;
-        uint        consumerCount   = MaxThreadCount;
-
-        debug (locks)
-            Stdout.print("* Test condition variables using producer/consumer threads\n");
-
-        // Producer thread
-        void producer()
+        debug (condition)
         {
+            scope Logger log = Log.getLogger("condition");
+
+            log.addAppender(new ConsoleAppender(new DateLayout()));
+
+            log.info("Condition test");
+        }
+
+        testNotifyOne();
+        testNotifyAll();
+    }
+
+    /**
+     * Test for Condition.notify().
+     */
+    void testNotifyOne()
+    {
+        debug (condition)
+        {
+            Logger log = Log.getLogger("condition.notify-one");
+        }
+
+        scope Mutex     mutex   = new Mutex();
+        scope Condition cond    = new Condition(mutex);
+        int             waiting = 0;
+        Thread          thread;
+
+        void notifyOneTestThread()
+        {
+            debug (condition)
+            {
+                Logger log = Log.getLogger("condition.notify-one." ~ Thread.getThis().name());
+
+                log.trace("Starting thread");
+            }
+
             try
             {
-                uint added;
-                bool wasEmpty;
-
-                for (uint i; i < LoopsPerThread; i++)
+                // There's no difference between using 'mutex.acquire()/release()'
+                // and a 'synchronized (mutex)' block.
+                synchronized (mutex)
                 {
-                    mutex.acquire();
-                    scope(exit)
-                        mutex.release();
+                    debug (condition)
+                        log.trace("Acquired mutex");
 
-                    assert(count <= queue.length);
+                    waiting++;
 
-                    // Wait until we have space to add elements to the queue
-                    while (count == queue.length && consumerCount > 0)
+                    while (waiting != 2)
                     {
-                        notFull.wait(mutex);
+                        debug (condition)
+                            log.trace("Waiting on condition variable");
+                        cond.wait();
                     }
 
-                    if (consumerCount > 0)
-                    {
-                        // We need to know whether the queue was empty to signal
-                        // the consumer threads
-                        wasEmpty = (count == 0);
+                    debug (condition)
+                        log.trace("Condition variable was signaled");
 
-                        // Insert a random amount of elements in the queue
-                        added = rand.next (queue.length - count) + 1;
-                        assert(added <= queue.length - count);
-                        queue[count .. count + added] = 'X';
-                        count += added;
-
-                        // Signal the consumer threads if the queue was previously
-                        // empty
-                        if (wasEmpty)
-                        {
-                            // If the queue is half full we only wake up one thread;
-                            // otherwise we wake up all the consumer threads.
-                            if (count <= queue.length / 2)
-                            {
-                                notEmpty.notifyOne();
-                            }
-                            else
-                            {
-                                notEmpty.notifyAll();
-                            }
-                        }
-                    }
-                    else
-                    {
-                        // We let the consumer threads know that the number
-                        // of producers has changed
-                        producerCount--;
-                        notEmpty.notifyAll();
-                        break;
-                    }
+                    debug (condition)
+                        log.trace("Releasing mutex");
                 }
             }
             catch (LockException e)
             {
-                Stdout.format("Lock exception caught inside producer thread:\n{0}\n",
-                               e.toUtf8());
+                Stderr.formatln("Lock exception caught in Condition test thread {0}:\n{1}",
+                                Thread.getThis().name(), e.toUtf8());
             }
             catch (Exception e)
             {
-                Stdout.format("Unexpected exception caught in producer thread:\n{0}\n",
-                               e.toUtf8());
+                Stderr.formatln("Unexpected exception caught in Condition test thread {0}:\n{1}",
+                                Thread.getThis().name(), e.toUtf8());
             }
+            debug (condition)
+                log.trace("Exiting thread");
         }
 
-        // Consumer thread
-        void consumer()
+        thread = new Thread(&notifyOneTestThread);
+        thread.name = "thread-1";
+
+        debug (condition)
+            log.trace("Created thread " ~ thread.name);
+        thread.start();
+
+        try
         {
-            uint removed;
-            bool wasFull;
+            // Poor man's barrier: wait until the other thread is waiting.
+            while (true)
+            {
+                mutex.acquire();
+                scope(exit)
+                    mutex.release();
+
+                if (waiting != 1)
+                {
+                    Thread.yield();
+                }
+                else
+                {
+                    break;
+                }
+            }
+
+            mutex.acquire();
+            debug (condition)
+                log.trace("Acquired mutex");
+
+            waiting++;
+
+            debug (condition)
+                log.trace("Notifying test thread");
+            cond.notify();
+
+            debug (condition)
+                log.trace("Releasing mutex");
+            mutex.release();
+
+            thread.join();
+
+            if (waiting == 2)
+            {
+                debug (condition)
+                    log.info("The Condition notification test to one thread was successful");
+            }
+            else
+            {
+                debug (condition)
+                {
+                    log.error("The condition variable notification to one thread is not working");
+                    assert(false);
+                }
+                else
+                {
+                    assert(false, "The condition variable notification to one thread is not working");
+                }
+            }
+        }
+        catch (LockException e)
+        {
+            Stderr.formatln("Lock exception caught in main thread:\n{0}", e.toUtf8());
+        }
+    }
+
+
+    /**
+     * Test for Condition.notifyAll().
+     */
+    void testNotifyAll()
+    {
+        const uint MaxThreadCount = 10;
+
+        debug (condition)
+        {
+            Logger log = Log.getLogger("condition.notify-all");
+        }
+
+        scope Mutex     mutex   = new Mutex();
+        scope Condition cond    = new Condition(mutex);
+        int             waiting = 0;
+
+        /**
+         * This thread waits for a notification from the main thread.
+         */
+        void notifyAllTestThread()
+        {
+            debug (condition)
+            {
+                Logger log = Log.getLogger("condition.notify-all." ~ Thread.getThis().name());
+
+                log.trace("Starting thread");
+            }
 
             try
             {
-                for (uint i; i < LoopsPerThread; i++)
+                mutex.acquire();
+                debug (condition)
+                    log.trace("Acquired mutex");
+
+                waiting++;
+
+                while (waiting != MaxThreadCount + 1)
                 {
-                    mutex.acquire();
-                    scope(exit)
-                        mutex.release();
-
-                    // Wait until we have space to add elements to the queue
-                    while (count == 0 && producerCount > 0)
-                    {
-                        notEmpty.wait(mutex);
-                    }
-
-                    if (producerCount > 0)
-                    {
-                        // We need to know whether the queue was full to signal
-                        // the producer threads
-                        wasFull = (count == queue.length);
-
-                        // Insert a random amount of elements in the queue
-                        removed = rand.next (count) + 1;
-                        assert(removed <= count);
-                        queue[count - removed .. count] = '.';
-                        count -= removed;
-
-                        // Signal the producer threads if the queue was previously
-                        // full
-                        if (wasFull)
-                        {
-                            // If the queue is more than half full we only wake up
-                            // one thread; otherwise we wake up all the producer
-                            // threads.
-                            if (count >= queue.length / 2)
-                            {
-                                notFull.notifyOne();
-                            }
-                            else
-                            {
-                                notFull.notifyAll();
-                            }
-                        }
-                    }
-                    else
-                    {
-                        // We let the producer threads know that the number
-                        // of consumers has changed
-                        consumerCount--;
-                        notFull.notifyAll();
-                        break;
-                    }
+                    debug (condition)
+                        log.trace("Waiting on condition variable");
+                    cond.wait();
                 }
+
+                debug (condition)
+                    log.trace("Condition variable was signaled");
+
+                debug (condition)
+                    log.trace("Releasing mutex");
+                mutex.release();
             }
             catch (LockException e)
             {
-                Stdout.format ("Lock exception caught inside consumer thread:\n{0}\n",
-                               e.toUtf8());
+                Stderr.formatln("Lock exception caught in Condition test thread {0}:\n{1}",
+                                Thread.getThis().name(), e.toUtf8());
             }
             catch (Exception e)
             {
-                Stdout.format ("Unexpected exception caught in consumer thread:\n{0}\n",
-                               e.toUtf8());
+                Stderr.formatln("Unexpected exception caught in Condition test thread {0}:\n{1}",
+                                Thread.getThis().name(), e.toUtf8());
+            }
+            debug (condition)
+                log.trace("Exiting thread");
+        }
+
+        ThreadGroup group = new ThreadGroup();
+        Thread      thread;
+        char[10]    tmp;
+
+        for (uint i = 0; i < MaxThreadCount; ++i)
+        {
+            thread = new Thread(&notifyAllTestThread);
+            thread.name = "thread-" ~ format(tmp, i);
+
+            group.add(thread);
+            debug (condition)
+                log.trace("Created thread " ~ thread.name);
+            thread.start();
+        }
+
+        try
+        {
+            // Poor man's barrier: wait until all the threads are waiting.
+            while (true)
+            {
+                mutex.acquire();
+                scope(exit)
+                    mutex.release();
+
+                if (waiting != MaxThreadCount)
+                {
+                    Thread.yield();
+                }
+                else
+                {
+                    break;
+                }
+            }
+
+            mutex.acquire();
+            debug (condition)
+                log.trace("Acquired mutex");
+
+            waiting++;
+
+            debug (condition)
+                log.trace("Notifying all threads");
+            cond.notifyAll();
+
+            debug (condition)
+                log.trace("Releasing mutex");
+            mutex.release();
+
+            debug (condition)
+                log.trace("Waiting for threads to finish");
+            group.joinAll();
+
+            if (waiting == MaxThreadCount + 1)
+            {
+                debug (condition)
+                    log.info("The Condition notification test to many threads was successful");
+            }
+            else
+            {
+                debug (condition)
+                {
+                    log.error("The condition variable notification to many threads is not working");
+                    assert(false);
+                }
+                else
+                {
+                    assert(false, "The condition variable notification to many threads is not working");
+                }
             }
         }
-
-
-        scope ThreadGroup group = new ThreadGroup();
-
-        for (uint i = 0; i < MaxThreadCount; i++)
+        catch (LockException e)
         {
-            group.create(&producer);
-            group.create(&consumer);
+            Stderr.formatln("Lock exception caught in main thread:\n{0}", e.toUtf8());
         }
-
-        group.joinAll();
-
-        assert(producerCount == 0);
-        assert(consumerCount == 0);
-
-        delete notFull;
-        delete notEmpty;
-        delete mutex;
-   }
+    }
 }

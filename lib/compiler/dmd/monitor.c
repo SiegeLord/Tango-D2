@@ -100,6 +100,29 @@ void _d_monitorexit(Object *h)
     LeaveCriticalSection(MONPTR(h));
 }
 
+void *_d_monitorget(Object *h)
+{
+    if (!h->monitor)
+    {
+        Monitor *cs;
+
+        cs = (Monitor *)calloc(sizeof(Monitor), 1);
+        assert(cs);
+        EnterCriticalSection(&_monitor_critsec);
+        if (!h->monitor)    // if, in the meantime, another thread didn't set it
+        {
+            h->monitor = (void *)cs;
+            InitializeCriticalSection(&cs->mon);
+            cs = NULL;
+        }
+        LeaveCriticalSection(&_monitor_critsec);
+        if (cs)         // if we didn't use it
+            free(cs);
+    }
+
+    return ((void *) MONPTR(h));
+}
+
 /***************************************
  * Called by garbage collector when Object is free'd.
  */
@@ -180,6 +203,28 @@ void _d_monitorexit(Object *h)
     assert(h->monitor);
     pthread_mutex_unlock(MONPTR(h));
     //printf("-_d_monitorexit(%p)\n", h);
+}
+
+void *_d_monitorget(Object *h)
+{
+    if (!h->monitor)
+    {
+        Monitor *cs;
+
+        cs = (Monitor *)calloc(sizeof(Monitor), 1);
+        assert(cs);
+        pthread_mutex_lock(&_monitor_critsec);
+        if (!h->monitor)    // if, in the meantime, another thread didn't set it
+        {
+            h->monitor = (void *)cs;
+            pthread_mutex_init(&cs->mon, & _monitors_attr);
+            cs = NULL;
+        }
+        pthread_mutex_unlock(&_monitor_critsec);
+        if (cs)         // if we didn't use it
+            free(cs);
+    }
+    return ((void *) MONPTR(h));
 }
 
 /***************************************

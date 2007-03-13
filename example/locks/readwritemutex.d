@@ -4,6 +4,8 @@
   author:      Juan Jose Comellas <juanjo@comellas.com.ar>
 *******************************************************************************/
 
+module readwritemutex;
+
 private import tango.util.locks.ReadWriteMutex;
 private import tango.util.locks.Mutex;
 private import tango.core.Thread;
@@ -29,7 +31,7 @@ void main(char[][] args)
 
     debug (readwritemutex)
     {
-        scope Logger log = Log.getLogger("rwmutex");
+        scope Logger log = Log.getLogger("readwritemutex");
 
         log.addAppender(new ConsoleAppender(new DateLayout()));
 
@@ -46,7 +48,7 @@ void main(char[][] args)
     {
         debug (readwritemutex)
         {
-            Logger log = Log.getLogger("rwmutex." ~ Thread.getThis().name());
+            Logger log = Log.getLogger("readwritemutex." ~ Thread.getThis().name());
 
             log.trace("Starting reader thread");
         }
@@ -72,7 +74,7 @@ void main(char[][] args)
     {
         debug (readwritemutex)
         {
-            Logger log = Log.getLogger("rwmutex." ~ Thread.getThis().name());
+            Logger log = Log.getLogger("readwritemutex." ~ Thread.getThis().name());
 
             log.trace("Starting writer thread");
         }
