@@ -27,7 +27,7 @@
 module tango.math.Probability;
 static import tango.math.ErrorFunction;
 private import tango.math.GammaFunction;
-private import tango.math.Core;
+private import tango.math.Math;
 private import tango.math.IEEE;
 
 

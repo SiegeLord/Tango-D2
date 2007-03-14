@@ -20,7 +20,7 @@ Macros:
  *  NAN = $(RED NAN)
  */
 module tango.math.GammaFunction;
-private import tango.math.Core;
+private import tango.math.Math;
 private import tango.math.IEEE;
 private import tango.math.ErrorFunction;
 

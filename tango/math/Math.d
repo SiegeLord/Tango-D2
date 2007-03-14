@@ -59,7 +59,7 @@
  *  RANGE  = $(TR $(TD Range) $(TD $0))
  */
 
-module tango.math.Core;
+module tango.math.Math;
 
 static import tango.stdc.math;
 private import tango.math.IEEE;
@@ -1820,14 +1820,14 @@ unittest {
     int r = getIeeeRounding;
     assert(r==RoundingMode.ROUNDTONEAREST);
     real b = 5.5;
-    int cnear = tango.math.Core.rndint(b);
+    int cnear = tango.math.Math.rndint(b);
     assert(cnear == 6);
     auto oldrounding = setIeeeRounding(RoundingMode.ROUNDDOWN);
     scope (exit) setIeeeRounding(oldrounding);
 
     assert(getIeeeRounding==RoundingMode.ROUNDDOWN);
 
-    int cdown = tango.math.Core.rndint(b);
+    int cdown = tango.math.Math.rndint(b);
     assert(cdown==5);
 }
 

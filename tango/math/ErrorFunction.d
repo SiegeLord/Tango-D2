@@ -24,7 +24,7 @@
  */
 module tango.math.ErrorFunction;
 
-import tango.math.Core;
+import tango.math.Math;
 import tango.math.IEEE;  // only required for unit tests
 
 version(Windows) { // Some tests only pass on DMD Windows
