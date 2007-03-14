@@ -12,6 +12,13 @@ private import tango.util.locks.LockException;
 private import tango.sys.Common;
 private import tango.text.convert.Integer;
 
+extern (C)
+{
+    void _d_monitorenter(Object h);
+    void _d_monitorexit(Object h);
+    void* _d_monitorget(Object h);
+}
+
 
 version (Posix)
 {
@@ -26,64 +33,14 @@ version (Posix)
      */
     public class Mutex
     {
-        enum Type: int
-        {
-            NonRecursive    = PTHREAD_MUTEX_NORMAL,
-            ErrorChecking   = PTHREAD_MUTEX_ERRORCHECK,
-            Recursive       = PTHREAD_MUTEX_RECURSIVE
-        }
-
-        package pthread_mutex_t _mutex;
-
-
         /**
-         * Initialize the mutex.
-         *
-         * Params:
-         * mutexType    = type of mutex; it can be one of NonRecursive,
-         *                ErrorChecking, Recursive. The default is Recursive.
-         *
-         * Remarks:
-         * The mutex type is valid only for POSIX compatible platforms. On
-         * Windows mutexes are always recursive. Error-checking mutexes are
-         * not recursive, but they provide deadlock detection (i.e. an
-         * exception is thrown when the mutex is acquired more than once on
-         * the same thread).
+         * Accessor for the underlying mutex implementation.
          */
-        public this(Type mutexType = Type.Recursive)
+        package pthread_mutex_t* mutex()
         {
-            int rc;
-            pthread_mutexattr_t attr;
-
-            rc = pthread_mutexattr_init(&attr);
-            if (rc == 0)
-            {
-                pthread_mutexattr_settype(&attr, cast(int) mutexType);
-
-                rc = pthread_mutex_init(&_mutex, &attr);
-                if (rc != 0)
-                {
-                    checkError(rc, __FILE__, __LINE__);
-                }
-                pthread_mutexattr_destroy(&attr);
-            }
-            else
-            {
-                checkError(rc, __FILE__, __LINE__);
-            }
-        }
-
-        /**
-         * Implicitly destroy the mutex.
-         */
-        public ~this()
-        {
-            int rc = pthread_mutex_destroy(&_mutex);
-
-            if (rc != 0)
-            {
-                checkError(rc, __FILE__, __LINE__);
-            }
+            // DMD's intrinsic function gives us access to the Object's mutex 
+            // implementation.
+            return cast(pthread_mutex_t*) _d_monitorget(this);
         }
 
         /**
@@ -91,12 +48,7 @@ version (Posix)
          */
         public void acquire()
         {
-            int rc = pthread_mutex_lock(&_mutex);
-
-            if (rc != 0)
-            {
-                checkError(rc, __FILE__, __LINE__);
-            }
+            _d_monitorenter(this);
         }
 
         /**
@@ -104,7 +56,7 @@ version (Posix)
          */
         public bool tryAcquire()
         {
-            int rc = pthread_mutex_trylock(&_mutex);
+            int rc = pthread_mutex_trylock(mutex());
 
             if (rc == 0)
             {
@@ -126,8 +78,7 @@ version (Posix)
          */
         public void release()
         {
-            // Releasing a mutex will never throw an exception.
-            pthread_mutex_unlock(&_mutex);
+            _d_monitorexit(this);
         }
 
         /**
@@ -183,6 +134,7 @@ version (Posix)
         }
     }
 
+
     // Not all POSIX-compatible platforms implement the pthread_mutex_timedlock() API.
     static if (is(pthread_mutex_timedlock))
     {
@@ -191,22 +143,6 @@ version (Posix)
          */
         public class TimedMutex: Mutex
         {
-            /**
-             * Initialize the mutex.
-             *
-             * Params:
-             * mutexType    = type of mutex; it can be one of NonRecursive,
-             *                ErrorChecking, Recursive. The default is Recursive.
-             *
-             * Remarks:
-             * The mutex type is valid only for POSIX compatible platforms. On
-             * Windows mutexes are always recursive.
-             */
-            public this(Type mutexType = Type.Recursive)
-            {
-                super(mutexType);
-            }
-
             /**
              * Conditionally acquire lock, waiting for the specified amount
              * of time.
@@ -221,7 +157,7 @@ version (Posix)
                 int rc;
                 timespec ts;
 
-                rc = pthread_mutex_timedlock(&_mutex, toTimespec(&ts, toAbsoluteTime(timeout)));
+                rc = pthread_mutex_timedlock(mutex(), toTimespec(&ts, toAbsoluteTime(timeout)));
                 if (rc == 0)
                 {
                     return true;
@@ -238,6 +174,7 @@ version (Posix)
             }
         }
     }
+
 
     /**
      * Convert a time interval into a C timespec struct.
@@ -295,42 +232,16 @@ else version (Windows)
      * <pthread_mutex_t> on UNIX. Mutexes on Windows are always recursive,
      * even if the <NonRecursive> mutex type is used.
      */
-    private class Mutex
+    public class Mutex
     {
-        enum Type: int
-        {
-            Recursive,
-            NonRecursive,
-            ErrorChecking
-        }
-
-        package CRITICAL_SECTION _mutex;
-
         /**
-         * Initialize the mutex.
-         *
-         * Params:
-         * mutexType    = type of mutex; it can be one of NonRecursive,
-         *                ErrorChecking, Recursive. The default is Recursive.
-         *
-         * Remarks:
-         * The mutex type is valid only for POSIX compatible platforms. On
-         * Windows mutexes are always recursive. Error-checking mutexes are
-         * not recursive, but they provide deadlock detection (i.e. an
-         * exception is thrown when the mutex is acquired more than once on
-         * the same thread).
+         * Accessor to the underlying mutex implementation.
          */
-        public this(Type mutexType = Type.Recursive)
+        package override CRITICAL_SECTION* mutex()
         {
-            InitializeCriticalSection(&_mutex);
-        }
-
-        /**
-         * Implicitly destroy the mutex.
-         */
-        public ~this()
-        {
-            DeleteCriticalSection(&_mutex);
+            // DMD's intrinsic function gives us access to the Object's mutex 
+            // implementation.
+            return cast(CRITICAL_SECTION*) _d_monitorget(this);
         }
 
         /**
@@ -338,7 +249,7 @@ else version (Windows)
          */
         public void acquire()
         {
-            EnterCriticalSection(&_mutex);
+            _d_monitorenter(this);
         }
 
         /**
@@ -346,7 +257,7 @@ else version (Windows)
          */
         public bool tryAcquire()
         {
-            return (TryEnterCriticalSection(&_mutex) != FALSE);
+            return (TryEnterCriticalSection(mutex()) != FALSE);
         }
 
         /**
@@ -354,23 +265,22 @@ else version (Windows)
          */
         public void release()
         {
-            LeaveCriticalSection(&_mutex);
+            _d_monitorexit(this);
         }
     }
+
 
     /**
      * Recursive mutex class that uses the Windows API.
      */
-    private class TimedMutex
+    public class TimedMutex
     {
-        public alias Mutex.Type Type;
-
         package HANDLE _mutex;
 
         /**
          *
          */
-        public this(Type mutexType = Type.Recursive)
+        public this()
         {
             _mutex = CreateMutexA(null, FALSE, null);
             if (_mutex == cast(HANDLE) NULL)
@@ -382,7 +292,7 @@ else version (Windows)
         /**
          * Implicitly destroy the mutex.
          */
-        ~this()
+        public ~this()
         {
             CloseHandle(_mutex);
         }
@@ -390,7 +300,7 @@ else version (Windows)
         /**
          * Acquire lock ownership (wait on queue if necessary).
          */
-        void acquire()
+        public void acquire()
         {
             DWORD result = WaitForSingleObject(_mutex, INFINITE);
 
@@ -403,7 +313,7 @@ else version (Windows)
         /**
          * Conditionally acquire lock (i.e., don't wait on queue).
          */
-        bool tryAcquire()
+        public bool tryAcquire()
         {
             return tryAcquire(cast(Interval) 0);
         }
@@ -417,7 +327,7 @@ else version (Windows)
          *
          * Returns: true if the mutex was acquired, false if not.
          */
-        bool tryAcquire(Interval timeout)
+        public bool tryAcquire(Interval timeout)
         {
             DWORD result = WaitForSingleObject(_mutex, cast(DWORD) (timeout != Interval.max ?
                                                                     (cast(DWORD) timeout * 1000.0) :
@@ -441,7 +351,7 @@ else version (Windows)
         /**
          * Release lock and unblock a thread at head of queue.
          */
-        void release()
+        public void release()
         {
             if (ReleaseMutex(_mutex) != 0)
             {
@@ -515,7 +425,7 @@ else
  * }
  * ---
  */
-scope class ScopedLock
+public scope class ScopedLock
 {
     private Mutex _mutex;
     private bool _acquired;
@@ -612,7 +522,7 @@ static if (is(TimedMutex))
     * }
     * ---
     */
-    scope class ScopedTimedLock
+    public scope class ScopedTimedLock
     {
         private TimedMutex _mutex;
         private bool _acquired;
@@ -719,55 +629,107 @@ static if (is(TimedMutex))
     }
 }
 
-debug (UnitTest)
+
+/**
+ * Wrapper class that provides a mutex interface to any
+ * Object's monitor.
+ */
+public class MutexProxy: Mutex
 {
-    private import tango.core.Thread;
-    private import tango.io.Stdout;
+    private Object _object;
 
     /**
-    * Test that non-recursive mutexes actually do what they're supposed to do.
-    *
-    * Remarks:
-    * Windows only supports recursive mutexes.
-    */
-    void testNonRecursive()
+     * Accessor for the underlying mutex implementation.
+     */
+    version (Windows)
     {
-        version (Posix)
+        package override CRITICAL_SECTION* mutex()
         {
-            Mutex   mutex = new Mutex(Mutex.Type.NonRecursive);
-            bool    couldLock;
-
-            try
-            {
-                mutex.acquire();
-                couldLock = mutex.tryAcquire();
-                if (couldLock)
-                {
-                    mutex.release();
-                }
-                mutex.release();
-            }
-            catch (LockException e)
-            {
-                Stderr.formatln("Lock exception caught when testing non-recursive mutexes:\n{0}\n", e.toUtf8());
-            }
-            catch (Exception e)
-            {
-                Stderr.formatln("Unexpected exception caught when testing non-recursive mutexes:\n{0}\n", e.toUtf8());
-            }
-
-            assert(!couldLock, "Non-recursive mutexes are not working: "
-                               "Mutex.tryAcquire() did not fail on an already acquired mutex");
+            // DMD's intrinsic function gives us access to the Object's mutex 
+            // implementation.
+            return cast(CRITICAL_SECTION*) _d_monitorget(_object);
+        }
+    }
+    else version (Posix)
+    {
+        package override pthread_mutex_t* mutex()
+        {
+            // DMD's intrinsic function gives us access to the Object's mutex 
+            // implementation.
+            return cast(pthread_mutex_t*) _d_monitorget(_object);
         }
     }
 
     /**
-    * Create several threads that acquire and release a mutex several times.
+     * Constructor
+     */
+    public this(Object object)
+    {
+        _object = object;
+    }
+
+    /**
+     * Acquire lock ownership (wait on queue if necessary).
+     */
+    public void acquire()
+    {
+        _d_monitorenter(_object);
+    }
+
+    /**
+     * Release lock and unblock a thread at head of queue.
+     */
+    public void release()
+    {
+        _d_monitorexit(_object);
+    }
+}
+
+
+debug (UnitTest)
+{
+    private import tango.util.locks.LockException;
+    private import tango.core.Thread;
+    private import tango.io.Stdout;
+    private import tango.text.convert.Integer;
+    debug (mutex)
+    {
+        private import tango.util.log.Log;
+        private import tango.util.log.ConsoleAppender;
+        private import tango.util.log.DateLayout;
+    }
+
+    /**
+    * Example program for the tango.util.locks.Mutex module.
     */
+    unittest
+    {
+        debug (mutex)
+        {
+            scope Logger log = Log.getLogger("mutex");
+
+            log.addAppender(new ConsoleAppender(new DateLayout()));
+
+            log.info("Mutex test");
+        }
+
+        testLocking();
+        testObjectLocking();
+        testRecursive();
+    }
+
+    /**
+     * Create several threads that acquire and release a mutex several times.
+     */
     void testLocking()
     {
         const uint MaxThreadCount   = 10;
         const uint LoopsPerThread   = 1000;
+
+        debug (mutex)
+        {
+            Logger log = Log.getLogger("mutex.locking");
+        }
 
         Mutex   mutex = new Mutex();
         uint    lockCount = 0;
@@ -785,38 +747,160 @@ debug (UnitTest)
             }
             catch (LockException e)
             {
-                Stderr.formatln("Lock exception caught inside mutex testing thread:\n{0}\n",
-                                e.toUtf8());
+                Stderr.formatln("Lock exception caught inside mutex testing thread:\n{0}\n", e.toUtf8());
             }
             catch (Exception e)
             {
-                Stderr.formatln("Unexpected exception caught inside mutex testing thread:\n{0}\n",
-                                e.toUtf8());
+                Stderr.formatln("Unexpected exception caught inside mutex testing thread:\n{0}\n", e.toUtf8());
             }
         }
 
-        auto group = new ThreadGroup();
+        ThreadGroup group = new ThreadGroup();
+        Thread      thread;
+        char[10]    tmp;
 
         for (uint i = 0; i < MaxThreadCount; i++)
         {
-            group.create(&mutexLockingThread);
+            thread = new Thread(&mutexLockingThread);
+            thread.name = "thread-" ~ format(tmp, i);
+
+            debug (mutex)
+                log.trace("Created thread " ~ thread.name);
+            thread.start();
+
+            group.add(thread);
         }
 
+        debug (mutex)
+            log.trace("Waiting for threads to finish");
         group.joinAll();
 
-        assert(lockCount == MaxThreadCount * LoopsPerThread,
-               "Mutex locking is not working properly: the number of times "
-               "the mutex was acquired is incorrect");
+        if (lockCount == MaxThreadCount * LoopsPerThread)
+        {
+            debug (mutex)
+                log.info("The Mutex locking test was successful");
+        }
+        else
+        {
+            debug (mutex)
+            {
+                log.error("Mutex locking is not working properly: "
+                        "the number of times the mutex was acquired is incorrect");
+                assert(false);
+            }
+            else
+            {
+                assert(false,"Mutex locking is not working properly: "
+                            "the number of times the mutex was acquired is incorrect");
+            }
+        }
     }
 
     /**
-    * Test that recursive mutexes actually do what they're supposed to do.
-    */
+     * Create several threads that acquire and release an Object's implicit mutex 
+     * several times.
+     */
+    void testObjectLocking()
+    {
+        const uint MaxThreadCount   = 10;
+        const uint LoopsPerThread   = 1000;
+
+        debug (mutex)
+        {
+            Logger log = Log.getLogger("mutex.proxy.locking");
+        }
+
+        class DummyObject {}
+
+        DummyObject dummy   = new DummyObject();
+        MutexProxy  mutex   = new MutexProxy(dummy);
+        uint        lockCount = 0;
+
+        void mutexProxyLockingThread()
+        {
+            try
+            {
+                for (uint i; i < LoopsPerThread; i++)
+                {
+                    if (i % 2 == 0)
+                    {
+                        mutex.acquire();
+                        lockCount++;
+                        mutex.release();
+                    }
+                    else
+                    {
+                        synchronized (dummy)
+                        {
+                            lockCount++;
+                        }
+                    }
+                }
+            }
+            catch (LockException e)
+            {
+                Stderr.formatln("Lock exception caught inside ObjectMutex testing thread:\n{0}\n", e.toUtf8());
+            }
+            catch (Exception e)
+            {
+                Stderr.formatln("Unexpected exception caught inside ObjectMutex testing thread:\n{0}\n", e.toUtf8());
+            }
+        }
+
+        ThreadGroup group = new ThreadGroup();
+        Thread      thread;
+        char[10]    tmp;
+
+        for (uint i = 0; i < MaxThreadCount; i++)
+        {
+            thread = new Thread(&mutexProxyLockingThread);
+            thread.name = "thread-" ~ format(tmp, i);
+
+            debug (mutex)
+                log.trace("Created thread " ~ thread.name);
+            thread.start();
+
+            group.add(thread);
+        }
+
+        debug (mutex)
+            log.trace("Waiting for threads to finish");
+        group.joinAll();
+
+        if (lockCount == MaxThreadCount * LoopsPerThread)
+        {
+            debug (mutex)
+                log.info("The MutexProxy locking test was successful");
+        }
+        else
+        {
+            debug (mutex)
+            {
+                log.error("MutexProxy locking is not working properly: "
+                        "the number of times the mutex was acquired is incorrect");
+                assert(false);
+            }
+            else
+            {
+                assert(false,"MutexProxy locking is not working properly: "
+                            "the number of times the mutex was acquired is incorrect");
+            }
+        }
+    }
+
+    /**
+     * Test that recursive mutexes actually do what they're supposed to do.
+     */
     void testRecursive()
     {
         const uint LoopsPerThread   = 1000;
 
-        Mutex   mutex = new Mutex(Mutex.Type.Recursive);
+        debug (mutex)
+        {
+            Logger log = Log.getLogger("mutex.recursive");
+        }
+
+        Mutex   mutex = new Mutex();
         uint    lockCount = 0;
 
         try
@@ -841,15 +925,24 @@ debug (UnitTest)
             mutex.release();
         }
 
-        assert(lockCount == LoopsPerThread,
-               "Recursive mutexes are not working: the number of times the "
-               "mutex was acquired is incorrect");
-    }
-
-    unittest
-    {
-        testNonRecursive();
-        testLocking();
-        testRecursive();
+        if (lockCount == LoopsPerThread)
+        {
+            debug (mutex)
+                log.info("The recursive Mutex test was successful");
+        }
+        else
+        {
+            debug (mutex)
+            {
+                log.error("Recursive mutexes are not working: "
+                        "the number of times the mutex was acquired is incorrect");
+                assert(false);
+            }
+            else
+            {
+                assert(false, "Recursive mutexes are not working: "
+                            "the number of times the mutex was acquired is incorrect");
+            }
+        }
     }
 }
