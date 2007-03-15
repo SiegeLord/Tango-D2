@@ -16,6 +16,7 @@ char[] projname;
 char[] buildcmd;
 char[] chmodfiles;
 char[] rmpaths;
+char[] dlpath;
 
 int main(char[][] args)
 {
@@ -49,7 +50,10 @@ int main(char[][] args)
         case "rmpaths":
              rmpaths = value;
              break;
-          default:
+        case "dlpath":
+             dlpath = value;
+             break;
+           default:
             break;
         }
 
@@ -96,12 +100,13 @@ int main(char[][] args)
     date.set(Utc.local);
     char[] datestr; 
     datestr = Stdout.layout.sprint(new char[10], "{}{:2}{:2}", date.year, date.month, date.day);
-    char[] packdir = projname ~ "-src-SNAPSHOT-" ~ datestr;
+    char[] packdirdate = projname ~ "-src-SNAPSHOT-" ~ datestr;
+    char[] packdircurrent = projname ~ "-src-SNAPSHOT-CURRENT"; 
 
-    auto pd = new FilePath(packdir, true);
+    auto pd = new FilePath(packdirdate, true);
     if (pd.exists) {
         Stdout("!! Packaging dir already exists, removing before recreating").newline;
-        auto rmdir = new Process("rm -rf " ~ packdir, null);
+        auto rmdir = new Process("rm -rf " ~ packdirdate, null);
         rmdir.execute();
         auto result = rmdir.wait();
         if (result.reason != Process.Result.Exit) {
@@ -110,7 +115,7 @@ int main(char[][] args)
         }
     }
 
-    auto svnexp = new Process("svn export " ~ wcdir ~ " " ~ packdir, null);
+    auto svnexp = new Process("svn export " ~ wcdir ~ " " ~ packdirdate, null);
     svnexp.execute();
     auto result = svnexp.wait();
     if (result.reason != Process.Result.Exit) {
@@ -120,7 +125,7 @@ int main(char[][] args)
  
     // enter packagedir/lib
     Stdout("!! Generate files").newline;
-    FileSystem.setDirectory(packdir ~ FileConst.PathSeparatorString ~ "lib");
+    FileSystem.setDirectory(packdirdate ~ FileConst.PathSeparatorString ~ "lib");
 
     // run build-*.*
     auto bld = new Process(buildcmd, null);
@@ -133,7 +138,7 @@ int main(char[][] args)
     }
  
     // enter package root dir
-    FileSystem.setDirectory(workdir ~ FileConst.PathSeparatorString ~ packdir);
+    FileSystem.setDirectory(workdir ~ FileConst.PathSeparatorString ~ packdirdate);
 
     // change access to generated files
     Stdout("!! Changing access rights").newline;
@@ -162,7 +167,7 @@ int main(char[][] args)
 
     // create zip, etc
     Stdout("!! Creating .tar.gz").newline;
-    auto targz = new Process("tar czf " ~ packdir ~ ".tar.gz " ~ packdir, null);
+    auto targz = new Process("tar czf " ~ packdirdate ~ ".tar.gz " ~ packdirdate, null);
     targz.execute();
     Stderr.conduit.copy(targz.stderr);
     result = targz.wait();
@@ -172,7 +177,7 @@ int main(char[][] args)
     }
 
     Stdout("!! Creating .zip").newline;
-    auto zip = new Process("zip -r " ~ packdir ~ " " ~ packdir, null);
+    auto zip = new Process("zip -r " ~ packdirdate ~ " " ~ packdirdate, null);
     zip.execute();
     Stderr.conduit.copy(zip.stderr);
     result = zip.wait();
@@ -180,6 +185,24 @@ int main(char[][] args)
         Stderr("Was not able to create .zip").newline;
         return 1;
     }
+
+    auto dldir = new FilePath(dlpath, true);
+    if (!dldir.exists)
+        dldir.createFolder();
+
+    auto datetgz = new FilePath(packdirdate ~ ".tar.gz");
+    auto dltgz = new FilePath(dlpath ~ FileConst.PathSeparatorString ~ datetgz.toUtf8);
+    datetgz.rename(dltgz);
+    
+    auto datezip = new FilePath(packdirdate ~ ".zip");
+    auto dlzip = new FilePath(dlpath ~ FileConst.PathSeparatorString ~ datezip.toUtf8);
+    datezip.rename(dlzip);
  
+    auto currenttgz = new FilePath(dlpath ~ FileConst.PathSeparatorString ~ packdircurrent ~ ".tar.gz");
+    currenttgz.copy(datetgz.toUtf8);
+ 
+    auto currentzip = new FilePath(dlpath ~ FileConst.PathSeparatorString ~ packdircurrent ~ ".zip");
+    currentzip.copy(datezip.toUtf8);
+
     return 0;
 }
