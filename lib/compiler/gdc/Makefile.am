@@ -98,6 +98,9 @@ OBJ_UTIL= \
     util/string.o \
     util/utf.o
 
+OBJ_EXT = \
+    ../../../std/intrinsic.o
+
 MAIN_OBJS=$(subst ti_,typeinfo/ti_,$(TI))
 
 # This should not be linked into a shared library.
@@ -105,7 +108,7 @@ CMAIN_OBJS=
 
 ZLIB_OBJS=
 
-GC_OBJS= 
+GC_OBJS=
 
 # Removed threadsem for Tango
 GCC_OBJS = gcc/config.o gcc/unwind.o gcc/deh.o gcc/cbridge_time.o
@@ -170,7 +173,7 @@ gcc/cbridge_math.o: gcc/cbridge_math.c
 	$(CC) -o $@ $(OUR_CFLAGS) $(CFLAGS) -fno-strict-aliasing -c $<
 
 # GCC_OBJS (gcc/config.o) first so I don't have to write more deps
-ALL_PHOBOS_OBJS = $(OBJ_BASE) $(OBJ_UTIL) $(D_EXTRA_OBJS) $(GCC_OBJS) $(MAIN_OBJS) $(ZLIB_OBJS) $(GC_OBJS) $(WEAK_OBJS)
+ALL_PHOBOS_OBJS = $(OBJ_BASE) $(OBJ_UTIL) $(OBJ_EXT) $(D_EXTRA_OBJS) $(GCC_OBJS) $(MAIN_OBJS) $(ZLIB_OBJS) $(GC_OBJS) $(WEAK_OBJS)
 
 libgphobos.a : $(ALL_PHOBOS_OBJS) $(CMAIN_OBJS)
 	$(AR) -r $@ $(ALL_PHOBOS_OBJS) $(CMAIN_OBJS)
