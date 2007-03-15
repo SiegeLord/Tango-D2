@@ -99,7 +99,7 @@ OBJ_UTIL= \
     util/utf.o
 
 OBJ_EXT = \
-    ../../../std/intrinsic.o
+    std/intrinsic.o
 
 MAIN_OBJS=$(subst ti_,typeinfo/ti_,$(TI))
 
