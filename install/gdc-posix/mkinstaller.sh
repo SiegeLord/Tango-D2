@@ -43,15 +43,33 @@ tar zcf core.tar.gz object.di lib/libgphobos.a \
 
 
 # 2) The rest
-if [ ! -e libSDG-tango-core.a ]
+if [ ! -e libgtango.a ]
 then
     dsss build || die 1 "Failed to build Tango"
+    rm -rf libgtango_objs
+    mkdir -p libgtango_objs
+    cd libgtango_objs || die 1 "Failed to cd to libgtango_objs"
+    for i in ../libSDG-*.a
+    do
+        ar x $i
+    done
+    ar rc ../libgtango.a *.o || die 1 "Failed to create libgtango.a"
+    ranlib ../libgtango.a || die 1 "Failed to ranlib libgtango.a"
+    cd .. || die 1 "Failed to cd out of libgtango_objs"
 fi
-dsss install --prefix="`pwd`/tmp" || die 1 "Failed to install Tango"
-
+mkdir -p tmp
 cd tmp || die 1 "Failed to cd to temporary Tango install"
+
 mkdir -p bin
 cp ../install/gdc-posix/uninstall.sh bin/uninstall-tango-core || die 1 "Failed to install the uninstaller"
+
+mkdir -p include
+cp -pR ../tango include || die 1 "Failed to copy in the tango .d files"
+
+mkdir -p lib
+cp ../libgtango.a lib || die 1 "Failed to copy in the tango .a file"
+
+find include/tango -name .svn | xargs rm -rf
 tar zcf ../tango.tar.gz * || die 1 "Failed to create tango.tar.gz"
 cd .. || exit 1
 rm -rf tmp || exit 1
@@ -59,69 +77,53 @@ rm -rf tmp || exit 1
 
 # 3) Make the installer proper
 (
-    echo -e '#!/bin/bash\nINST_GDC=0\nINST_DSSS=0' ;
+    echo -e '#!/bin/bash\nINST_GDC=0' ;
     cat install/gdc-posix/installer.sh ;
     tar cf - core.tar.gz tango.tar.gz
 ) > tango-$TANGO_VERSION-gdc-$PLATFORM.sh || die 1 "Failed to create the installer"
 chmod 0755 tango-$TANGO_VERSION-gdc-$PLATFORM.sh
 
-# 4) DSSS
-if [ -e dsss ]
+# 4) GDC
+if [ -e gdc ]
 then
-    cd dsss || die 1 "Failed to cd to dsss"
+    cd gdc || die 1 "Failed to cd to gdc"
+
+    # Clean it up
+    rm -rf \
+      bin/*++* \
+      bin/cpp* \
+      bin/gcc* \
+      bin/gcov* \
+      bin/*-linux-gnu-* \
+      bin/*-mingw32-* \
+      include/c++ \
+      info \
+      lib/libiberty* \
+      lib/libmudflap* \
+      lib/libstdc++* \
+      lib/libsupc++* \
+      lib/gcc/*/*/include \
+      libexec/gcc/*/*/cc1 \
+      libexec/gcc/*/*/cc1.* \
+      libexec/gcc/*/*/cc1plus* \
+      man/man1/cpp* \
+      man/man1/g++* \
+      man/man1/gcc* \
+      man/man1/gcov* \
+      man/man7 \
+      share
     find . -type f | xargs strip --strip-unneeded
-    tar zcf ../dsss.tar.gz * || die 1 "Failed to create dsss.tar.gz"
+    
+    tar zcf ../gdc.tar.gz * || die 1 "Failed to create gdc.tar.gz"
     cd .. || exit 1
 
     (
-        echo -e '#!/bin/bash\nINST_GDC=0\nINST_DSSS=1' ;
+        echo -e '#!/bin/bash\nINST_GDC=1' ;
         cat install/gdc-posix/installer.sh ;
-        tar cf - core.tar.gz tango.tar.gz dsss.tar.gz
-    ) > tango-$TANGO_VERSION-gdc-$PLATFORM-withDSSS.sh || die 1 "Failed to create the installer with DSSS"
-    chmod 0755 tango-$TANGO_VERSION-gdc-$PLATFORM-withDSSS.sh
-
-    # 5) GDC
-    if [ -e gdc ]
-    then
-        cd gdc || die 1 "Failed to cd to gdc"
-
-        # Clean it up
-        rm -rf \
-          bin/*++* \
-          bin/cpp* \
-          bin/gcc* \
-          bin/gcov* \
-          bin/*-linux-gnu-* \
-          bin/*-mingw32-* \
-          include/c++ \
-          info \
-          lib/libiberty* \
-          lib/libmudflap* \
-          lib/libstdc++* \
-          lib/libsupc++* \
-          lib/gcc/*/*/include \
-          libexec/gcc/*/*/cc1 \
-          libexec/gcc/*/*/cc1.* \
-          libexec/gcc/*/*/cc1plus* \
-          man/man1/cpp* \
-          man/man1/g++* \
-          man/man1/gcc* \
-          man/man1/gcov* \
-          man/man7 \
-          share
-        find . -type f | xargs strip --strip-unneeded
-        
-        tar zcf ../gdc.tar.gz * || die 1 "Failed to create gdc.tar.gz"
-        cd .. || exit 1
-
-        (
-            echo -e '#!/bin/bash\nINST_GDC=1\nINST_DSSS=1' ;
-            cat install/gdc-posix/installer.sh ;
-            tar cf - core.tar.gz tango.tar.gz dsss.tar.gz gdc.tar.gz
-        ) > tango-$TANGO_VERSION-gdc-$PLATFORM-withDSSS-withGDC.sh || die 1 "Failed to create the installer with DSSS and GDC"
-        chmod 0755 tango-$TANGO_VERSION-gdc-$PLATFORM-withDSSS-withGDC.sh
-    fi
+        tar cf - core.tar.gz tango.tar.gz gdc.tar.gz
+    ) > tango-$TANGO_VERSION-gdc-$PLATFORM-withGDC.sh || die 1 "Failed to create the installer with GDC"
+    chmod 0755 tango-$TANGO_VERSION-gdc-$PLATFORM-withGDC.sh
 fi
 
-# 6) Clean up
-rm -f core.tar.gz tango.tar.gz dsss.tar.gz gdc.tar.gz
+# 5) Clean up
+rm -f core.tar.gz tango.tar.gz gdc.tar.gz

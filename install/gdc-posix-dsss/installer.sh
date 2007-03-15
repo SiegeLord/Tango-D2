@@ -67,6 +67,14 @@ then
     fi
 fi
 
+# Install DSSS if necessary
+if [ "$INST_DSSS" = "1" ]
+then
+    cd $GDCDIR || die 1 "Failed to cd to the GDC install directory"
+    tail -n$LINES $FULLNAME | tar Oxf - dsss.tar.gz | gunzip -c | tar xf - ||
+        die 1 "Failed to extract DSSS"
+fi
+
 # Then, cd to our tmpdir and extract core.tar.gz
 cd $TTMP || die 1 "Failed to cd to temporary directory"
 
@@ -85,4 +93,7 @@ tail -n$LINES $FULLNAME | tar Oxf - tango.tar.gz | gunzip -c | tar xf - ||
     die 1 "Failed to extract Tango"
 
 echo 'Done!'
+echo 'If at any time you wish to uninstall Tango:'
+echo ' $ dsss uninstall tango'
+echo ' $ uninstall-tango-core'
 exit 0
