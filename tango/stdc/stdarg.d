@@ -15,7 +15,8 @@ version( GNU )
     alias __builtin_va_list va_list;
     alias __builtin_va_end  va_end;
     alias __builtin_va_copy va_copy;
-
+    public import std.c.stdarg;
+    /+
     template va_start( T )
     {
         void va_start( out va_list ap, inout T parmn )
@@ -31,6 +32,7 @@ version( GNU )
     	    return T.init;
         }
     }
+    +/
 }
 else
 {
