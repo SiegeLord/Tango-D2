@@ -353,15 +353,15 @@ install_dsss() {
 
 if [ -n "$1" ]
 then
-	PREFIX=$1
+	PREFIX="$1"
 else
 	usage
 	die 1
 fi
 
-if [ "echo ${PREFIX} | grep '^/'" ]
+if [ -z `"echo ${PREFIX} | grep '^/'"` ]
 then
-	PREFIX=`pwd`${PREFIX}
+	PREFIX="`pwd`${PREFIX}"
 fi
 
 # Check for flags
