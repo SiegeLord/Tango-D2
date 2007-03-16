@@ -9,25 +9,31 @@ module std.stdarg;
 
 version( GNU )
 {
+    // va_list might be a pointer, but assuming so is not portable.
     private import gcc.builtins;
-
     alias __builtin_va_list va_list;
-    alias __builtin_va_end  va_end;
-    alias __builtin_va_copy va_copy;
 
-    template va_start( T )
+    // va_arg is handled magically by the compiler
+}
+else
+{
+    alias void* va_list;
+}
+
+template va_arg(T)
+{
+    T va_arg( inout va_list _argptr )
     {
-        void va_start( out va_list ap, inout T parmn )
-        {
-
-        }
-    }
-
-    template va_arg( T )
-    {
-        T va_arg( inout va_list ap )
-        {
-    	    return T.init;
-        }
+        /*
+        T arg = *cast(T*)_argptr;
+        _argptr = _argptr + ((T.sizeof + int.sizeof - 1) & ~(int.sizeof - 1));
+        return arg;
+        */
+        T t; return t;
     }
 }
+
+private import std.c.stdarg;
+/* The existence of std.stdarg.va_copy isn't standard.  Prevent
+   conflicts by using '__'. */
+alias std.c.stdarg.va_copy __va_copy;
