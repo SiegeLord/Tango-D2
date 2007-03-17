@@ -34,6 +34,24 @@ char[] fromUtf8z (char* s)
         return s ? s[0..strlen(s)] : null;
 }
 
+/*********************************
+ * Convert array of wchars s[] to a C-style 0 terminated string.
+ */
+
+wchar* toUtf16z (wchar[] s)
+{
+        return s.ptr ? (s ~ "\0"w).ptr : null;
+}
+
+/*********************************
+ * Convert a C-style 0 terminated string to an array of wchar
+ */
+
+wchar[] fromUtf16z (wchar* s)
+{
+        return s ? s[0..wcslen(s)] : null;
+}
+
 unittest
 {
     debug(string) printf("stdc.stringz.unittest\n");
