@@ -27,7 +27,17 @@ version( linux )
 {
     version( X86_64 )
     {
-        static assert( false, "Architecture not supported." );
+        //const JB_RBX    = 0;
+        //const JB_RBP    = 1
+        //const JB_R12    = 2
+        //const JB_R13    = 3
+        //const JB_R14    = 4
+        //const JB_R15    = 5
+        //const JB_RSP    = 6
+        //const JB_PC     = 7
+        //const JB_SIZE   = 8*8;
+
+        alias long[8] __jmp_buf;
     }
     else version( X86 )
     {
