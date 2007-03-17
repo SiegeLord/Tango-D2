@@ -18,7 +18,8 @@ CC=gcc
 LC=$(AR) -qsv
 DC=gdmd
 
-ADDFLAGS=-q,-nostdinc -I`pwd`/common -I`pwd`/.. -I`pwd`/compiler/gdc
+ADD_CFLAGS=
+ADD_DFLAGS=-q,-nostdinc -I`pwd`/common -I`pwd`/.. -I`pwd`/compiler/gdc
 
 targets : lib doc
 all     : lib doc
@@ -36,8 +37,8 @@ ALL_DOCS=
 lib : $(ALL_OBJS)
 	make -C compiler/gdc
 	$(RM) compiler/gdc/config/*.o compiler/gdc/gcc/configunix.o compiler/gdc/minimal.o
-	make -C gc/basic -fposix.mak lib DC=$(DC) ADDFLAGS="$(ADDFLAGS)"
-	make -C common/tango -fposix.mak lib DC=$(DC) ADDFLAGS="$(ADDFLAGS)"
+	make -C gc/basic -fposix.mak lib DC=$(DC) ADD_DFLAGS="$(ADD_DFLAGS)" ADD_CFLAGS="$(ADD_CFLAGS)"
+	make -C common/tango -fposix.mak lib DC=$(DC) ADD_DFLAGS="$(ADD_DFLAGS)" ADD_CFLAGS="$(ADD_CFLAGS)"
 	find . -name "libgphobos*.a" | xargs $(RM)
 	$(LC) libgphobos.a `find ./compiler/gdc -name "*.o" | xargs echo`
 	$(LC) libgphobos.a `find ./gc/basic -name "*.o" | xargs echo`

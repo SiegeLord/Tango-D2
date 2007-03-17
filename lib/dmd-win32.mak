@@ -18,6 +18,9 @@ CC=dmc
 LC=lib
 DC=dmd
 
+ADD_CFLAGS=
+ADD_DFLAGS=
+
 targets : lib doc
 all     : lib doc
 
@@ -36,10 +39,10 @@ lib : $(ALL_OBJS)
 	make -fwin32.mak lib
 	cd ..\..
 	cd gc\basic
-	make -fwin32.mak lib
+	make -fwin32.mak lib DC=$(DC) ADD_DFLAGS="$(ADD_DFLAGS)" ADD_CFLAGS="$(ADD_CFLAGS)"
 	cd ..\..
 	cd common\tango
-	make -fwin32.mak lib
+	make -fwin32.mak lib DC=$(DC) ADD_DFLAGS="$(ADD_DFLAGS)" ADD_CFLAGS="$(ADD_CFLAGS)"
 	cd ..\..
 	$(RM) phobos*.lib
 	$(LC) -c -n phobos.lib common\tango\tango.lib compiler\dmd\dmd.lib gc\basic\basic.lib

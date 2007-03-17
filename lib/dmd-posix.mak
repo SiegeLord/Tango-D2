@@ -18,6 +18,9 @@ CC=gcc
 LC=$(AR) -qsv
 DC=dmd
 
+ADD_CFLAGS=-m32
+ADD_DFLAGS=
+
 targets : lib doc
 all     : lib doc
 
@@ -33,8 +36,8 @@ ALL_DOCS=
 
 lib : $(ALL_OBJS)
 	make -C compiler/dmd -fposix.mak lib
-	make -C gc/basic -fposix.mak lib
-	make -C common/tango -fposix.mak lib
+	make -C gc/basic -fposix.mak lib DC=$(DC) ADD_DFLAGS="$(ADD_DFLAGS)" ADD_CFLAGS="$(ADD_CFLAGS)"
+	make -C common/tango -fposix.mak lib DC=$(DC) ADD_DFLAGS="$(ADD_DFLAGS)" ADD_CFLAGS="$(ADD_CFLAGS)"
 	find . -name "libphobos*.a" | xargs $(RM)
 	$(LC) libphobos.a `find ./compiler/dmd -name "*.o" | xargs echo`
 	$(LC) libphobos.a `find ./gc/basic -name "*.o" | xargs echo`

@@ -14,16 +14,19 @@ CP=xcopy /y
 RM=del /f
 MD=mkdir
 
-CFLAGS=-mn -6 -r
-#CFLAGS=-g -mn -6 -r
+ADD_CFLAGS=
+ADD_DFLAGS=
+
+CFLAGS=-mn -6 -r $(ADD_CFLAGS)
+#CFLAGS=-g -mn -6 -r $(ADD_CFLAGS)
 
 ### warnings disabled because gcx has issues ###
 
-DFLAGS=-release -O -inline
-#DFLAGS=-g -release
+DFLAGS=-release -O -inline $(ADD_DFLAGS)
+#DFLAGS=-g -release $(ADD_DFLAGS)
 
-TFLAGS=-O -inline
-#TFLAGS=-g
+TFLAGS=-O -inline $(ADD_DFLAGS)
+#TFLAGS=-g $(ADD_DFLAGS)
 
 DOCFLAGS=-version=DDoc
 

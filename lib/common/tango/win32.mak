@@ -14,14 +14,17 @@ CP=xcopy /y
 RM=del /f
 MD=mkdir
 
-CFLAGS=-mn -6 -r
-#CFLAGS=-g -mn -6 -r
+ADD_CFLAGS=
+ADD_DFLAGS=
 
-DFLAGS=-release -O -inline -w
-#DFLAGS=-g -release -w
+CFLAGS=-mn -6 -r $(ADD_CFLAGS)
+#CFLAGS=-g -mn -6 -r $(ADD_CFLAGS)
 
-TFLAGS=-O -inline -w
-#TFLAGS=-g -w
+DFLAGS=-release -O -inline -w $(ADD_DFLAGS)
+#DFLAGS=-g -release -w $(ADD_DFLAGS)
+
+TFLAGS=-O -inline -w $(ADD_DFLAGS)
+#TFLAGS=-g -w $(ADD_DFLAGS)
 
 DOCFLAGS=-version=DDoc ..\..\doc\html\candydoc\modules.ddoc ..\..\doc\html\candydoc\candy.ddoc
 
