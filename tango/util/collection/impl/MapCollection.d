@@ -85,7 +85,7 @@ public abstract class MapCollection(K, T) : Collection!(T), Map!(K, T)
 
         protected final bool isValidKey(K key)
         {
-                static if (is (T : Object))
+                static if (is (K : Object))
                           {
                           if (key is null)
                               return false;
