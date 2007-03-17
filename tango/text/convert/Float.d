@@ -134,7 +134,7 @@ T[] format(T) (T[] dst, NumType x, uint decimals = 2, bool scientific = false)
                 return digit + '0';
         }
 
-        if (x is x.nan)
+        if (x != x)
             return "nan";
 
         if (x is x.infinity)
