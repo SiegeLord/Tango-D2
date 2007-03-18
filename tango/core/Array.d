@@ -1266,7 +1266,7 @@ version( DDoc )
      *         callable type.
      *
      * Returns:
-     *  The number of elements matching pat.
+     *  The number of elements that do not match pat.
      */
     size_t remove( Elem[] buf, Elem pat, Pred2E pred = Pred2E.init );
 }
@@ -1297,7 +1297,7 @@ else
                 else
                     exch( pos, pos - cnt );
             }
-            return cnt;
+            return buf.length - cnt;
         }
     }
 
@@ -1329,15 +1329,15 @@ else
             assert( remove( buf, pat ) == num );
             foreach( pos, cur; buf )
             {
-                assert( pos < (buf.length - num) ? cur != pat : cur == pat );
+                assert( pos < num ? cur != pat : cur == pat );
             }
         }
 
-        test( "abcdefghij".dup, 'x', 0 );
-        test( "xabcdefghi".dup, 'x', 1 );
-        test( "abcdefghix".dup, 'x', 1 );
-        test( "abxxcdefgh".dup, 'x', 2 );
-        test( "xaxbcdxxex".dup, 'x', 5 );
+        test( "abcdefghij".dup, 'x', 10 );
+        test( "xabcdefghi".dup, 'x',  9 );
+        test( "abcdefghix".dup, 'x',  9 );
+        test( "abxxcdefgh".dup, 'x',  8 );
+        test( "xaxbcdxxex".dup, 'x',  5 );
       }
     }
 }
@@ -1568,7 +1568,7 @@ version( DDoc )
      * Returns:
      *  The number of elements that satisfy pred.
      */
-    void partition( Elem[] buf, Pred1E pred );
+    size_t partition( Elem[] buf, Pred1E pred );
 }
 else
 {
@@ -1674,8 +1674,12 @@ version( DDoc )
      *  pred = The evaluation predicate, which should return true if e1 is
      *         less than e2 and false if not.  This predicate may be any
      *         callable type.
+     *
+     * Returns:
+     *  The index of the pivot point, which will be the lesser of num - 1 and
+     *  buf.length.
      */
-    void select( Elem[] buf, Num num, Pred2E pred = Pred2E.init );
+    size_t select( Elem[] buf, Num num, Pred2E pred = Pred2E.init );
 }
 else
 {
@@ -1684,7 +1688,7 @@ else
         static assert( isCallableType!(Pred ) );
 
 
-        void fn( Elem[] buf, size_t num, Pred pred = Pred.init )
+        size_t fn( Elem[] buf, size_t num, Pred pred = Pred.init )
         {
             // NOTE: Indexes are passed instead of references because DMD does
             //       not inline the reference-based version.
@@ -1696,7 +1700,7 @@ else
             }
 
             if( buf.length < 2 )
-                return;
+                return buf.length;
 
             size_t  l = 0,
                     r = buf.length - 1,
@@ -1724,13 +1728,14 @@ else
                 if( i <= k )
                     l = i + 1;
             }
+            return num - 1;
         }
     }
 
 
     template select( Buf, Num )
     {
-        void select( Buf buf, Num num )
+        size_t select( Buf buf, Num num )
         {
             return select_!(ElemTypeOf!(Buf)).fn( buf, num );
         }
@@ -1739,7 +1744,7 @@ else
 
     template select( Buf, Num, Pred )
     {
-        void select( Buf buf, Num num, Pred pred )
+        size_t select( Buf buf, Num num, Pred pred )
         {
             return select_!(ElemTypeOf!(Buf), Pred).fn( buf, num, pred );
         }
@@ -1752,8 +1757,9 @@ else
       {
         char[] buf = "efedcaabca".dup;
         size_t num = buf.length / 2;
+        size_t pos = select( buf, num );
 
-        select( buf, num );
+        assert( pos == num - 1 );
         foreach( cur; buf[0 .. num - 1] )
             assert( cur <= buf[num - 1] );
         foreach( cur; buf[num - 1 .. $] )
