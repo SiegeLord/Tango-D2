@@ -44,7 +44,7 @@ Name: english; MessagesFile: compiler:Default.isl
 
 [_ISToolDownload]
 ;Source: http://svn.dsource.org/projects/tango/downloads/tango-0.95-beta1-installer.zip; DestDir: {tmp}; DestName: tango.zip
-Source: http://svn.dsource.org/projects/tango/downloads//tango-0.95-beta1-installer.zip; DestDir: {tmp}; DestName: tango.zip
+Source: http://svn.dsource.org/projects/tango/downloads/tango-0.96-beta2-installer.zip; DestDir: {tmp}; DestName: tango.zip
 ;Source: http://www.rentbayarea.com/build.zip; DestDir: {tmp}; DestName: build.zip; Check: ShouldInstallBuild
 
 [Run]

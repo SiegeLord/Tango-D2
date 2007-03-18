@@ -14,11 +14,16 @@ recreateDir: func [ dir [ file! ]  ]
 ;check out tango 
 ;http://svn.dsource.org/projects/tango/trunk/
 
-svn-tango: join [ svn --force export http://svn.dsource.org/projects/tango/trunk/ ] rejoin [ to-local-file location "/tango" ]
- 
-probe svn-tango
+;delete old installation file
 
 change-dir location
+
+if exists? %tango-svn-installer.zip [ delete %tango-svn-installer.zip ]
+
+svn-tango: join [ svn --force export http://svn.dsource.org/projects/tango/trunk] rejoin [ to-local-file location "/tango" ]
+;svn-tango: join [ svn --force export http://svn.dsource.org/projects/tango/branches/D1_0/0_96_beta2/ ] rejoin [ to-local-file location "/tango" ]
+ 
+probe svn-tango
 
 delete-dir %tango
 call/console reduce [svn-tango]
@@ -44,7 +49,7 @@ write %tango_temp/object.di read %tango/object.di
 recreateDir %lib/ 
 
 write/binary %lib/tango_phobos.lib read/binary %tango/lib/phobos.lib 
-
+rcopy/verbose %../nightly_svn_lib/ %lib/
 
 
 recreateDir %tango/ 
