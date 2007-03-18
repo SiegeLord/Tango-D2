@@ -2113,7 +2113,7 @@ version( DDoc )
      * Returns:
      *  True if an element equivalent to pat is found, false if not.
      */
-    size_t bsearch( Elem[] buf, Elem pat, Pred2E pred = Pred2E.init );
+    bool bsearch( Elem[] buf, Elem pat, Pred2E pred = Pred2E.init );
 }
 else
 {
@@ -2122,7 +2122,7 @@ else
         static assert( isCallableType!(Pred) );
 
 
-        size_t fn( Elem[] buf, Elem pat, Pred pred = Pred.init )
+        bool fn( Elem[] buf, Elem pat, Pred pred = Pred.init )
         {
             size_t pos = lbound( buf, pat, pred );
             return pos < buf.length && !( pat < buf[pos] );
@@ -2132,7 +2132,7 @@ else
 
     template bsearch( Buf, Pat )
     {
-        size_t bsearch( Buf buf, Pat pat )
+        bool bsearch( Buf buf, Pat pat )
         {
             return bsearch_!(ElemTypeOf!(Buf)).fn( buf, pat );
         }
@@ -2141,7 +2141,7 @@ else
 
     template bsearch( Buf, Pat, Pred )
     {
-        size_t bsearch( Buf buf, Pat pat, Pred pred )
+        bool bsearch( Buf buf, Pat pat, Pred pred )
         {
             return bsearch_!(ElemTypeOf!(Buf), Pred).fn( buf, pat, pred );
         }
