@@ -169,7 +169,7 @@ dnl   AC_MSG_ERROR([can't find the D compiler!])
 dnl fi
 
 #GDC=$CC
-GDC=`echo $CC | sed s/gcc/gdc/`
+GDC=`echo $CC | sed 's/gcc$/gdc/'`
 
 AC_MSG_CHECKING([If $GDC can compile D sources])
 echo "int function(int) test;" > actest.d
