@@ -12,10 +12,6 @@
 
 module tango.stdc.stringz;
 
-private import tango.stdc.string;
-
-debug private import tango.stdc.stdio;
-
 /*********************************
  * Convert array of chars s[] to a C-style 0 terminated string.
  */
@@ -31,7 +27,7 @@ char* toUtf8z (char[] s)
 
 char[] fromUtf8z (char* s)
 {
-        return s ? s[0..strlen(s)] : null;
+        return s ? s[0 .. strlenz(s)] : null;
 }
 
 /*********************************
@@ -49,21 +45,42 @@ wchar* toUtf16z (wchar[] s)
 
 wchar[] fromUtf16z (wchar* s)
 {
-        return s ? s[0..wcslen(s)] : null;
+        return s ? s[0 .. strlenz(s)] : null;
 }
 
-unittest
+/*********************************
+ * portable strlen
+ */
+
+size_t strlenz(T) (T* s)
 {
-    debug(string) printf("stdc.stringz.unittest\n");
+        size_t i;
 
-    char* p = toUtf8z("foo");
-    assert(strlen(p) == 3);
-    char foo[] = "abbzxyzzy";
-    p = toUtf8z(foo[3..5]);
-    assert(strlen(p) == 2);
+        if (s)
+            while (*s++)
+                   ++i;
+        return i;
+}
 
-    char[] test = "";
-    p = toUtf8z(test);
-    assert(*p == 0);
+
+
+debug (UnitTest)
+{
+        import tango.stdc.stdio;
+
+        unittest
+        {
+        debug(string) printf("stdc.stringz.unittest\n");
+
+        char* p = toUtf8z("foo");
+        assert(strlenz(p) == 3);
+        char foo[] = "abbzxyzzy";
+        p = toUtf8z(foo[3..5]);
+        assert(strlenz(p) == 2);
+
+        char[] test = "";
+        p = toUtf8z(test);
+        assert(*p == 0);
+        }
 }
 
