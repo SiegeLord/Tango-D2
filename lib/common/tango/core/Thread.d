@@ -1973,10 +1973,20 @@ private
 
         version( AsmX86_Win32 ) {} else
         version( AsmX86_Posix ) {} else
-        version( X86_64 ) {} else
-        version( X86 )
+        version( AsmPPC_Posix ) {} else
+        version( X86_64 )
         {
-            version = JmpX86_Posix;
+            version( linux )
+                version = JmpX86_Posix;
+        }
+        else version( X86 )
+        {
+            version( linux )
+                version = JmpX86_Posix;
+        }
+
+        version( JmpX86_Posix )
+        {
             // NOTE: The setjmp implementation is necessarily reliant on specific
             //       knowledge of how the sigjmp_buf is defined.  Therefore, this
             //       code must be explicitly modified for every configuration on
@@ -2054,7 +2064,7 @@ private
     {
         // NOTE: The data pushed and popped in this routine must match the
         //       default stack created by Fiber.initStack or the initial
-        //       switch into a new stack will fail.
+        //       switch into a new context will fail.
 
         version( AsmX86_Win32 )
         {
@@ -2173,7 +2183,7 @@ private
  *     }
  * }
  *
- * void threadFunc()
+ * void fiberFunc()
  * {
  *     printf( "Composed fiber running.\n" );
  *     Fiber.yield();
@@ -2182,7 +2192,7 @@ private
  *
  * // create instances of each type
  * Fiber derived = new DerivedFiber();
- * Fiber composed = new Fiber( &threadFunc );
+ * Fiber composed = new Fiber( &fiberFunc );
  *
  * // call both fibers once
  * derived.call();
@@ -2743,10 +2753,26 @@ private:
             {
                 pstack -= sigjmp_buf.sizeof;
             }
-            (cast(byte*) pstack)[0 .. sigjmp_buf.sizeof] = 0;
-            (cast(int*) pstack)[3] = cast(int) m_ctxt.bstack;       // EBP
-            (cast(int*) pstack)[4] = cast(int) m_ctxt.bstack;       // ESP
-            (cast(int*) pstack)[5] = cast(int) &fiber_entryPoint;   // EIP
+            version( X86_64 )
+            {
+              version( linux )
+              {
+                (cast(byte*) pstack)[0 .. sigjmp_buf.sizeof] = 0;
+                (cast(long*) pstack)[1] = cast(int) m_ctxt.bstack;      // EBP
+                (cast(long*) pstack)[6] = cast(int) m_ctxt.bstack;      // ESP
+                (cast(long*) pstack)[7] = cast(int) &fiber_entryPoint;  // EIP
+              }
+            }
+            else
+            {
+              version( linux )
+              {
+                (cast(byte*) pstack)[0 .. sigjmp_buf.sizeof] = 0;
+                (cast(int*) pstack)[3] = cast(int) m_ctxt.bstack;       // EBP
+                (cast(int*) pstack)[4] = cast(int) m_ctxt.bstack;       // ESP
+                (cast(int*) pstack)[5] = cast(int) &fiber_entryPoint;   // EIP
+              }
+            }
         }
     }
 
