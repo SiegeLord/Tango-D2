@@ -18,7 +18,9 @@ module tango.stdc.stringz;
 
 char* toUtf8z (char[] s)
 {
-        return s.ptr ? (s ~ '\0').ptr : null;
+        if (s.ptr)
+            s ~= '\0';
+        return s.ptr;
 }
 
 /*********************************
@@ -36,7 +38,9 @@ char[] fromUtf8z (char* s)
 
 wchar* toUtf16z (wchar[] s)
 {
-        return s.ptr ? (s ~ "\0"w).ptr : null;
+        if (s.ptr)
+            s ~= "\0"w;
+        return s.ptr;
 }
 
 /*********************************
