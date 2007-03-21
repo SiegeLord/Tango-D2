@@ -782,7 +782,7 @@ class Process
                         rc = execvpe(_args[0], argptr, envptr);
                         if (rc == -1)
                         {
-                            Stdout.formatln("Failed to exec {0}: {1}",
+                            Stderr.formatln("Failed to exec {0}: {1}",
                                             _args[0], SysError.lastMsg);
 
                             try
@@ -801,7 +801,7 @@ class Process
                     }
                     else
                     {
-                        Stdout.formatln("Failed to set notification pipe to close-on-exec for {0}: {1}",
+                        Stderr.formatln("Failed to set notification pipe to close-on-exec for {0}: {1}",
                                         _args[0], SysError.lastMsg);
                         exit(errno);
                     }
@@ -875,11 +875,20 @@ class Process
 
                     result.reason = Result.Exit;
                     result.status = cast(typeof(result.status)) exitCode;
+
+                    debug (Process)
+                        Stdout.formatln("Child process '{0}' ({1}) returned with code {2}\n",
+                                        _args[0], _pid, result.status);
                 }
                 else if (rc == WAIT_FAILED)
                 {
                     result.reason = Result.Error;
                     result.status = cast(short) GetLastError();
+
+                    debug (Process)
+                        Stdout.formatln("Child process '{0}' ({1}) failed "
+                                        "with unknown exit status {2}\n",
+                                        _args[0], _pid, result.status);
                 }
                 clean();
             }
@@ -887,6 +896,9 @@ class Process
             {
                 result.reason = Result.Error;
                 result.status = -1;
+
+                debug (Process)
+                    Stdout.formatln("Child process '{0}' is not running", _args[0]);
             }
             return result;
         }
