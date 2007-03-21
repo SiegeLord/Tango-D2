@@ -2137,12 +2137,12 @@ private
         else version( JmpX86_Posix )
         {
             sigjmp_buf buf = void;
-            oldp    = &buf;
+            *oldp   = &buf;
             // Basically, oldp will be the address of the current sigjmp_buf
             // and newp will be the address of the new sigjmp_buf. This means
             // that tstack will effectively point to a sigjmp_buf if the
             // context has been swapped out via this Fiber code.
-            if( !sigsetjmp( *(cast(sigjmp_buf*) oldp), 0 ) )
+            if( !sigsetjmp( **(cast(sigjmp_buf**) oldp), 0 ) )
                 siglongjmp( *(cast(sigjmp_buf*) newp), 1 );
         }
     }
