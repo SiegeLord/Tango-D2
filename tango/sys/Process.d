@@ -7,7 +7,7 @@
 module tango.sys.Process;
 
 private import tango.io.FileConst;
-private import tango.io.Stdout;
+private import tango.io.Console;
 private import tango.io.Buffer;
 private import tango.sys.Common;
 private import tango.sys.Pipe;
@@ -25,6 +25,11 @@ version (Posix)
     private import tango.stdc.posix.fcntl;
     private import tango.stdc.posix.unistd;
     private import tango.stdc.posix.sys.wait;
+}
+
+debug (Process)
+{
+    private import tango.io.Stdout;
 }
 
 
@@ -768,7 +773,7 @@ class Process
                         // Convert the arguments and the environment variables to
                         // the format expected by the execv() family of functions.
                         argptr = toNullEndedArray(_args);
-                        envptr = toNullEndedArray(_env);
+                        envptr = (_env.length > 0 ? toNullEndedArray(_env) : null);
 
                         // Switch to the working directory if it has been set.
                         if (_workDir.length > 0)
@@ -782,8 +787,7 @@ class Process
                         rc = execvpe(_args[0], argptr, envptr);
                         if (rc == -1)
                         {
-                            Stderr.formatln("Failed to exec {0}: {1}",
-                                            _args[0], SysError.lastMsg);
+                            Cerr("Failed to exec ")(_args[0])(": ")(SysError.lastMsg).newline;
 
                             try
                             {
@@ -801,8 +805,8 @@ class Process
                     }
                     else
                     {
-                        Stderr.formatln("Failed to set notification pipe to close-on-exec for {0}: {1}",
-                                        _args[0], SysError.lastMsg);
+                        Cerr("Failed to set notification pipe to close-on-exec for ")
+                            (_args[0])(": ")(SysError.lastMsg).newline;
                         exit(errno);
                     }
                 }
@@ -1344,9 +1348,15 @@ class Process
                     {
                         path ~= FileConst.PathSeparatorChar;
                     }
-                    path ~= filename;
 
-                    rc = execve(path.ptr, argv.ptr, envp.ptr);
+                    debug (Process)
+                        Stdout.formatln("Trying execution of '{0}' in directory '{1}'",
+                                        filename, path);
+
+                    path ~= filename;
+                    path ~= '\0';
+
+                    rc = execve(path.ptr, argv.ptr, (envp.length > 0 ? envp.ptr : null));
                     // If the process execution failed because of an error
                     // other than ENOENT (No such file or directory) we
                     // abort the loop.
@@ -1358,7 +1368,12 @@ class Process
             }
             else
             {
-                rc = execve(argv[0], argv.ptr, envp.ptr);
+                debug (Process)
+                    Stdout.formatln("Calling execve('{0}', argv[{1}], {2})",
+                                    (argv[0])[0 .. strlen(argv[0])],
+                                    argv.length, (envp.length > 0 ? "envp" : "null"));
+
+                rc = execve(argv[0], argv.ptr, (envp.length > 0 ? envp.ptr : null));
             }
             return rc;
         }
@@ -1470,7 +1485,7 @@ debug (UnitTest)
         }
         catch (ProcessException e)
         {
-            Stdout.formatln("Program execution failed: {0}", e.toUtf8());
+            Cerr("Program execution failed: ")(e.toUtf8()).newline();
         }
     }
 }
