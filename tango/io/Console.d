@@ -19,6 +19,42 @@ private import  tango.sys.Common;
 private import  tango.io.Buffer,
                 tango.io.DeviceConduit;
 
+
+version (Opt)
+{
+private uint indexOf (void* str, char match, uint length)
+{
+        version (D_InlineAsm_X86)
+        {       
+                        asm {
+                            mov   EDI, str;
+                            mov   ECX, length;
+                            movzx EAX, match;
+                            mov   ESI, ECX;
+                            and   ESI, ESI;            
+                            jz    end;        
+
+                            cld;
+                            repnz;
+                            scasb;
+                            jnz   end;
+                            sub   ESI, ECX;
+                            dec   ESI;
+                        end:;
+                            mov   EAX, ESI;
+                            }
+        }
+        else
+        {
+                auto len = length;
+                for (auto p=str-1; len--;)
+                     if (*++p is match)
+                         return p - str;
+                return length;
+        }
+}
+}
+
 /*******************************************************************************
 
         low level console IO support. 
@@ -114,6 +150,23 @@ struct Console
 
                 bool nextLine (inout char[] content, bool raw=false)
                 {
+version (Opt)
+{
+                        uint scan (void[] input)
+                        {
+                                auto i = indexOf (input.ptr, '\n', input.length);
+                                if (i < input.length)
+                                   {
+                                   ++i;
+                                   content = cast(char[])cast(void*) input [0..i];
+                                   return i;
+                                   }
+                                content = cast(char[])cast(void*) input;
+                                return IConduit.Eof;
+                        }
+}
+else
+{
                         uint scan (void[] input)
                         {
                                 auto text = cast(char[]) input;
@@ -132,6 +185,7 @@ struct Console
                                 content = text;
                                 return IConduit.Eof;
                         }
+}
 
                         return buffer_.next (&scan) || content.length;
                 }
@@ -317,12 +371,12 @@ struct Console
                                 for Win32!
 
                         *******************************************************/
-
+/+
                         uint bufferSize ()
                         {
                                 return 1024 * 8;
                         }
-
++/
                         /*******************************************************
 
                                 Gain access to the standard IO handles 
