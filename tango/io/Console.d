@@ -97,7 +97,7 @@ struct Console
                 {
                         char[] line;
 
-                        return readLine(line, raw) ? line.dup : null;
+                        return nextLine(line, raw) ? line.dup : null;
                 }
 
                 /**************************************************************
