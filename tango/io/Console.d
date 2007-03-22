@@ -47,7 +47,6 @@ struct Console
                 private Buffer  buffer_;
 
                 alias copyLine  get;
-                alias readLine  nextLine;
 
                 /**************************************************************
 
@@ -113,7 +112,7 @@ struct Console
 
                 **************************************************************/
 
-                bool readLine (inout char[] content, bool raw=false)
+                bool nextLine (inout char[] content, bool raw=false)
                 {
                         uint scan (void[] input)
                         {
