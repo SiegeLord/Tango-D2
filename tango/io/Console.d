@@ -44,8 +44,11 @@ struct Console
 
         class Input
         {
-                private Buffer buffer_;
-                
+                private Buffer  buffer_;
+
+                alias copyLine  get;
+                alias readLine  nextLine;
+
                 /**************************************************************
 
                         Attach console input to the provided device
@@ -84,14 +87,18 @@ struct Console
                         Return the next line available from the console, 
                         or null when there is nothing available. The value
                         returned is a duplicate of the buffer content (it
-                        has .dup applied).
+                        has .dup applied). 
+
+                        Each line ending is removed unless parameter raw is
+                        set to true
 
                 **************************************************************/
 
-                char[] get ()
+                char[] copyLine (bool raw = false)
                 {
                         char[] line;
-                        return nextLine(line) ? line.dup : null;
+
+                        return readLine(line, raw) ? line.dup : null;
                 }
 
                 /**************************************************************
@@ -99,13 +106,14 @@ struct Console
                         Retreive a line of text from the console and map
                         it to the given argument. The input is sliced, 
                         not copied, so use .dup appropriately. Each line
-                        ending is removed.
+                        ending is removed unless parameter raw is set to 
+                        true.
                         
                         Returns false when there is no more input.
 
                 **************************************************************/
 
-                bool nextLine (inout char[] content)
+                bool readLine (inout char[] content, bool raw=false)
                 {
                         uint scan (void[] input)
                         {
@@ -114,9 +122,12 @@ struct Console
                                          if (c is '\n')
                                             {
                                             auto j = i;
-                                            if (j && (text[j-1] is '\r'))
-                                                --j;
-                                            content = text [0..j];
+                                            if (raw)
+                                                ++j;
+                                            else
+                                               if (j && (text[j-1] is '\r'))
+                                                   --j;
+                                            content = text [0 .. j];
                                             return i+1;
                                             }
                                 content = text;
