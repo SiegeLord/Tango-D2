@@ -158,10 +158,10 @@ version (Opt)
                                 if (i < input.length)
                                    {
                                    ++i;
-                                   content = cast(char[])cast(void*) input [0..i];
+                                   content = cast(char[]) input [0..i];
                                    return i;
                                    }
-                                content = cast(char[])cast(void*) input;
+                                content = cast(char[]) input;
                                 return IConduit.Eof;
                         }
 }
