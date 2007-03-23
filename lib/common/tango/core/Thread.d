@@ -95,8 +95,7 @@ version( Win32 )
             obj.m_main.tstack = obj.m_main.bstack;
             assert( obj.m_curr == &obj.m_main );
             Thread.add( &obj.m_main );
-
-            TlsSetValue( Thread.sm_this, cast(void*) obj );
+            Thread.setThis( obj );
 
             // NOTE: No GC allocations may occur until the stack pointers have
             //       been set and Thread.getThis returns a valid reference to
@@ -207,8 +206,7 @@ else version( Posix )
             obj.m_main.tstack = obj.m_main.bstack;
             assert( obj.m_curr == &obj.m_main );
             Thread.add( &obj.m_main );
-
-            pthread_setspecific( obj.sm_this, cast(void*) obj );
+            Thread.setThis( obj );
 
             // NOTE: No GC allocations may occur until the stack pointers have
             //       been set and Thread.getThis returns a valid reference to
@@ -986,6 +984,28 @@ private:
 
 private:
     ////////////////////////////////////////////////////////////////////////////
+    // Storage of Active Thread
+    ////////////////////////////////////////////////////////////////////////////
+
+
+    //
+    // Sets a thread-local reference to the current thread object.
+    //
+    static void setThis( Thread t )
+    {
+        version( Win32 )
+        {
+            TlsSetValue( sm_this, cast(void*) t );
+        }
+        else version( Posix )
+        {
+            pthread_setspecific( sm_this, cast(void*) t );
+        }
+    }
+
+
+private:
+    ////////////////////////////////////////////////////////////////////////////
     // Thread Context and GC Scanning Support
     ////////////////////////////////////////////////////////////////////////////
 
@@ -1273,7 +1293,7 @@ extern (C) void thread_init()
         mainContext.bstack = getStackBottom();
         mainContext.tstack = mainContext.bstack;
 
-        TlsSetValue( Thread.sm_this, cast(void*) mainThread );
+        Thread.setThis( mainThread );
     }
     else version( Posix )
     {
@@ -1331,8 +1351,7 @@ extern (C) void thread_init()
 
         mainThread.m_isRunning = true;
 
-        status = pthread_setspecific( Thread.sm_this, cast(void*) mainThread );
-        assert( status == 0 );
+        Thread.setThis( mainThread );
     }
 
     Thread.add( mainThread );
@@ -2430,6 +2449,32 @@ class Fiber
 
 
     ////////////////////////////////////////////////////////////////////////////
+    // Fiber Accessors
+    ////////////////////////////////////////////////////////////////////////////
+
+
+    /**
+     * Provides a reference to the calling fiber or null if no fiber is
+     * currently active.
+     *
+     * Returns:
+     *  The fiber object representing the calling fiber or null if no fiber
+     *  is currently active.  The result of deleting this object is undefined.
+     */
+    static Fiber getThis()
+    {
+        version( Win32 )
+        {
+            return cast(Fiber) TlsGetValue( sm_this );
+        }
+        else version( Posix )
+        {
+            return cast(Fiber) pthread_getspecific( sm_this );
+        }
+    }
+
+
+    ////////////////////////////////////////////////////////////////////////////
     // Static Initialization
     ////////////////////////////////////////////////////////////////////////////
 
@@ -2789,23 +2834,7 @@ private:
 
 
     //
-    // Gets a reference to the active fiber in the calling thread.
-    //
-    static Fiber getThis()
-    {
-        version( Win32 )
-        {
-            return cast(Fiber) TlsGetValue( sm_this );
-        }
-        else version( Posix )
-        {
-            return cast(Fiber) pthread_getspecific( sm_this );
-        }
-    }
-
-
-    //
-    // Sets a reference to the active fiber in the calling thread.
+    // Sets a thread-local reference to the current fiber object.
     //
     static void setThis( Fiber f )
     {
