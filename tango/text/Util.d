@@ -149,7 +149,7 @@ T[] replace(T) (T[] source, T match, T replacement)
 
 /******************************************************************************
 
-        Replace all instances of one char with another (in place)
+        Replace all instances of one substring with another
 
 ******************************************************************************/
 
