@@ -13,7 +13,7 @@
 #
 # 1. The origin of this software must not be misrepresented; you must not claim
 #    that you wrote the original software. If you use this software in a
-#    product, an acknowledgment in the product documentation would be 
+#    product, an acknowledgment in the product documentation would be
 #    appreciated but is not required.
 #
 # 2. Altered source versions must be plainly marked as such, and must not
@@ -250,7 +250,7 @@ install_tango() {
 		echo "...changing directory: ../"
 		cd ../
 	fi
-	
+
 	if [ -f "${PREFIX}/lib/libphobos.a" ]
 	then
 		echo "...making a backup of the original phobos library"
@@ -303,7 +303,7 @@ cleanup_tango() {
 	cd ../../ || die 1 "Error while cleaning up."
 	rm -rf tango || die 1 "Error while cleaning up."
 }
-	
+
 cleanup_dmd() {
 	echo "Cleaning up tango/trunk/dmd/..."
 
@@ -337,7 +337,7 @@ install_dsss() {
 
 ## TO BE DONE ##
 #uninstall_tango() {
-	
+
 #}
 
 ## TO BE DONE ##
@@ -359,13 +359,13 @@ else
 	die 1
 fi
 
-if [ -z `"echo ${PREFIX} | grep '^/'"` ]
+if [ -z "`echo ${PREFIX} | grep '^/'`" ]
 then
 	PREFIX="`pwd`${PREFIX}"
 fi
 
 # Check for flags
-for i in $*; 
+for i in $*;
 do
 	case "$i" in
 		--with-dmd)
@@ -399,11 +399,11 @@ do
 		;;
 		--version=*)
 			# This version is /not/ 1.0 ready (only supporting 0.123 thingies)
-			VERSION=`echo -n "${i}" | sed -n 's/^--version=[0-9]\?\.\?\([0-9]\{3\}\)/\1/p'` 
+			VERSION=`echo -n "${i}" | sed -n 's/^--version=[0-9]\?\.\?\([0-9]\{3\}\)/\1/p'`
 
 			# Don't use this one yet - it isn't tested...
 			#VERSION=`echo -n "${i}" | sed -n 's/^--version=\(\([1-9]\{1\}\)\.\{1\}\([0-9]\{1,3\}\)|\([0-9]\?\.\?\([0-9]\{3\}\)\)\)/\1/p'`
-			
+
 			if [  -n "${VERSION}" ]
 			then
 				DMD_FILENAME="dmd.${VERSION}.zip"
