@@ -77,7 +77,6 @@ OBJ_BASE= \
     genobj.obj \
     qsort.obj \
     switch.obj \
-    moduleinit.obj \
     trace.obj
 # NOTE: trace.obj and cover.obj are not necessary for a successful build
 #       as both are used for debugging features (profiling and coverage)

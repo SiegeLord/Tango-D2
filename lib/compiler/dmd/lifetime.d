@@ -32,7 +32,7 @@ private
     import tango.stdc.stdlib;
     import tango.stdc.string;
     import tango.stdc.stdarg;
-    debug import tango.stdc.stdio;
+    debug(PRINTF) import tango.stdc.stdio;
 }
 
 
@@ -50,9 +50,10 @@ private
     extern (C) uint gc_setAttr( void* p, uint a );
     extern (C) uint gc_clrAttr( void* p, uint a );
 
-    extern (C) void* gc_malloc( size_t sz, uint ba = 0 );
-    extern (C) void* gc_calloc( size_t sz, uint ba = 0 );
-    extern (C) void  gc_free( void* p );
+    extern (C) void*  gc_malloc( size_t sz, uint ba = 0 );
+    extern (C) void*  gc_calloc( size_t sz, uint ba = 0 );
+    extern (C) size_t gc_extend( void* p, size_t minsz, size_t maxsz );
+    extern (C) void   gc_free( void* p );
 
     extern (C) size_t gc_sizeOf( void* p );
 
@@ -71,7 +72,7 @@ extern (C) Object _d_newclass(ClassInfo ci)
 {
     void* p;
 
-    debug printf("_d_newclass(ci = %p, %s)\n", ci, cast(char *)ci.name);
+    debug(PRINTF) printf("_d_newclass(ci = %p, %s)\n", ci, cast(char *)ci.name);
     if (ci.flags & 1) // if COM object
     {
         p = tango.stdc.stdlib.malloc(ci.init.length);
@@ -82,10 +83,10 @@ extern (C) Object _d_newclass(ClassInfo ci)
     {
         p = gc_malloc(ci.init.length,
                       BlkAttr.FINALIZE | (ci.flags & 2 ? BlkAttr.NO_SCAN : 0));
-        debug printf(" p = %p\n", p);
+        debug(PRINTF) printf(" p = %p\n", p);
     }
 
-    debug
+    debug(PRINTF)
     {
         printf("p = %p\n", p);
         printf("ci = %p, ci.init = %p, len = %d\n", ci, ci.init, ci.init.length);
@@ -102,7 +103,7 @@ extern (C) Object _d_newclass(ClassInfo ci)
     // initialize it
     (cast(byte*) p)[0 .. ci.init.length] = ci.init[];
 
-    debug printf("initialization done\n");
+    debug(PRINTF) printf("initialization done\n");
     return cast(Object) p;
 }
 
@@ -134,7 +135,7 @@ extern (C) void _d_delclass(Object* p)
 {
     if (*p)
     {
-        debug printf("_d_delclass(%p)\n", *p);
+        debug(PRINTF) printf("_d_delclass(%p)\n", *p);
 
         cr_finalize(cast(void*) *p);
 
@@ -168,14 +169,14 @@ extern (C) ulong _d_newarrayT(TypeInfo ti, size_t length)
     ulong result;
     auto size = ti.next.tsize();                // array element size
 
-    debug printf("_d_newT(length = %d, size = %d)\n", length, size);
+    debug(PRINTF) printf("_d_newT(length = %d, size = %d)\n", length, size);
     if (length == 0 || size == 0)
         result = 0;
     else
     {
         size *= length;
         p = gc_malloc(size + 1, !(ti.next.flags() & 1) ? BlkAttr.NO_SCAN : 0);
-        debug printf(" p = %p\n", p);
+        debug(PRINTF) printf(" p = %p\n", p);
         memset(p, 0, size);
         result = cast(ulong)length + (cast(ulong)cast(uint)p << 32);
     }
@@ -191,7 +192,7 @@ extern (C) ulong _d_newarrayiT(TypeInfo ti, size_t length)
     ulong result;
     auto size = ti.next.tsize();                // array element size
 
-    debug printf("_d_newarrayii(length = %d, size = %d)\n", length, size);
+    debug(PRINTF) printf("_d_newarrayii(length = %d, size = %d)\n", length, size);
 
     if (length == 0 || size == 0)
         result = 0;
@@ -202,7 +203,7 @@ extern (C) ulong _d_newarrayiT(TypeInfo ti, size_t length)
         auto q = initializer.ptr;
         size *= length;
         auto p = gc_malloc(size + 1, !(ti.next.flags() & 1) ? BlkAttr.NO_SCAN : 0);
-        debug printf(" p = %p\n", p);
+        debug(PRINTF) printf(" p = %p\n", p);
         if (isize == 1)
             memset(p, *cast(ubyte*)q, size);
         else if (isize == int.sizeof)
@@ -235,7 +236,7 @@ extern (C) ulong _d_newarraymT(TypeInfo ti, int ndims, ...)
 {
     ulong result;
 
-    debug printf("_d_newarraymT(ndims = %d)\n", ndims);
+    debug(PRINTF) printf("_d_newarraymT(ndims = %d)\n", ndims);
     if (ndims == 0)
         result = 0;
     else
@@ -247,7 +248,7 @@ extern (C) ulong _d_newarraymT(TypeInfo ti, int ndims, ...)
             size_t dim = *pdim;
             void[] p;
 
-            debug printf("foo(ti = %p, ti.next = %p, dim = %d, ndims = %d\n", ti, ti.next, dim, ndims);
+            debug(PRINTF) printf("foo(ti = %p, ti.next = %p, dim = %d, ndims = %d\n", ti, ti.next, dim, ndims);
             if (ndims == 1)
             {
                 auto r = _d_newarrayT(ti, dim);
@@ -266,7 +267,7 @@ extern (C) ulong _d_newarraymT(TypeInfo ti, int ndims, ...)
 
         size_t* pdim = cast(size_t *)q;
         result = cast(ulong)foo(ti, pdim, ndims);
-        debug printf("result = %llx\n", result);
+        debug(PRINTF) printf("result = %llx\n", result);
 
         version (none)
         {
@@ -288,7 +289,7 @@ extern (C) ulong _d_newarraymiT(TypeInfo ti, int ndims, ...)
 {
     ulong result;
 
-    debug printf("_d_newarraymi(ndims = %d)\n", ndims);
+    debug(PRINTF) printf("_d_newarraymi(ndims = %d)\n", ndims);
     if (ndims == 0)
         result = 0;
     else
@@ -319,7 +320,7 @@ extern (C) ulong _d_newarraymiT(TypeInfo ti, int ndims, ...)
 
         size_t* pdim = cast(size_t *)q;
         result = cast(ulong)foo(ti, pdim, ndims);
-        debug printf("result = %llx\n", result);
+        debug(PRINTF) printf("result = %llx\n", result);
 
         version (none)
         {
@@ -389,7 +390,7 @@ extern (C) void _d_callfinalizer(void* p)
  */
 extern (C) void cr_finalize(void* p, bool det = true)
 {
-    debug printf("cr_finalize(p = %p)\n", p);
+    debug(PRINTF) printf("cr_finalize(p = %p)\n", p);
 
     if (p) // not necessary if called from gc
     {
@@ -443,7 +444,7 @@ body
     byte* newdata;
     size_t sizeelem = ti.next.tsize();
 
-    debug
+    debug(PRINTF)
     {
         printf("_d_arraysetlengthT(p = %p, sizeelem = %d, newlength = %d)\n", p, sizeelem, newlength);
         if (p)
@@ -472,7 +473,7 @@ body
                 goto Loverflow;
         }
 
-        debug printf("newsize = %x, newlength = %x\n", newsize, newlength);
+        debug(PRINTF) printf("newsize = %x, newlength = %x\n", newsize, newlength);
 
         if (p.data)
         {
@@ -484,9 +485,18 @@ body
 
                 if (cap <= newsize)
                 {
+                    if (cap >= 4096)
+                    {   // Try to extend in-place
+                        auto u = gc_extend(p.data, (newsize + 1) - cap, (newsize + 1) - cap);
+                        if (u)
+                        {
+                            goto L1;
+                        }
+                    }
                     newdata = cast(byte *)gc_malloc(newsize + 1, !(ti.next.flags() & 1) ? BlkAttr.NO_SCAN : 0);
                     newdata[0 .. size] = p.data[0 .. size];
                 }
+             L1:
                 newdata[size .. newsize] = 0;
             }
         }
@@ -534,7 +544,7 @@ body
     assert(initsize <= sizeelem);
     assert((sizeelem / initsize) * initsize == sizeelem);
 
-    debug
+    debug(PRINTF)
     {
         printf("_d_arraysetlengthiT(p = %p, sizeelem = %d, newlength = %d, initsize = %d)\n", p, sizeelem, newlength, initsize);
         if (p)
@@ -562,7 +572,7 @@ body
             if (newsize / newlength != sizeelem)
                 goto Loverflow;
         }
-        debug printf("newsize = %x, newlength = %x\n", newsize, newlength);
+        debug(PRINTF) printf("newsize = %x, newlength = %x\n", newsize, newlength);
 
         size_t size = p.length * sizeelem;
 
@@ -575,8 +585,17 @@ body
 
                 if (cap <= newsize)
                 {
+                    if (cap >= 4096)
+                    {   // Try to extend in-place
+                        auto u = gc_extend(p.data, (newsize + 1) - cap, (newsize + 1) - cap);
+                        if (u)
+                        {
+                            goto L1;
+                        }
+                    }
                     newdata = cast(byte *)gc_malloc(newsize + 1);
                     newdata[0 .. size] = p.data[0 .. size];
+                L1: ;
                 }
             }
         }
@@ -591,7 +610,7 @@ body
         {
             if (initsize == 1)
             {
-                debug printf("newdata = %p, size = %d, newsize = %d, *q = %d\n", newdata, size, newsize, *cast(byte*)q);
+                debug(PRINTF) printf("newdata = %p, size = %d, newsize = %d, *q = %d\n", newdata, size, newsize, *cast(byte*)q);
                 newdata[size .. newsize] = *(cast(byte*)q);
             }
             else
@@ -623,20 +642,30 @@ Loverflow:
  */
 extern (C) long _d_arrayappendT(TypeInfo ti, Array *px, byte[] y)
 {
-    auto size = ti.next.tsize();                // array element size
-    size_t cap = gc_sizeOf(px.data);
-    size_t length    = px.length;
-    size_t newlength = length + y.length;
+    auto sizeelem = ti.next.tsize();            // array element size
+    auto cap = gc_sizeOf(px.data);
+    auto length = px.length;
+    auto newlength = length + y.length;
+    auto newsize = newlength * sizeelem;
 
-    if (newlength * size > cap)
+    if (newsize > cap)
     {   byte* newdata;
 
-        newdata = cast(byte *)gc_malloc(newCapacity(newlength, size) + 1, !(ti.next.flags() & 1) ? BlkAttr.NO_SCAN : 0);
-        memcpy(newdata, px.data, length * size);
+        if (cap >= 4096)
+        {   // Try to extend in-place
+            auto u = gc_extend(px.data, (newsize + 1) - cap, (newsize + 1) - cap);
+            if (u)
+            {
+                goto L1;
+            }
+        }
+        newdata = cast(byte *)gc_malloc(newCapacity(newlength, sizeelem) + 1, !(ti.next.flags() & 1) ? BlkAttr.NO_SCAN : 0);
+        memcpy(newdata, px.data, length * sizeelem);
         px.data = newdata;
     }
+  L1:
     px.length = newlength;
-    memcpy(px.data + length * size, y.ptr, y.length * size);
+    memcpy(px.data + length * sizeelem, y.ptr, y.length * sizeelem);
     return *cast(long*)px;
 }
 
@@ -658,7 +687,7 @@ size_t newCapacity(size_t newlength, size_t size)
          * space for larger arrays.
          * - Arrays smaller than 4096 bytes are left as-is, so for the most
          * common cases, memory allocation is 1 to 1. The small overhead added
-         * doesn't effect small array perf. (it's virutally the same as
+         * doesn't affect small array perf. (it's virtually the same as
          * current).
          * - Larger arrays have some space pre-allocated.
          * - As the arrays grow, the relative pre-allocated space shrinks.
@@ -704,10 +733,10 @@ size_t newCapacity(size_t newlength, size_t size)
                 mult = 102;
             newext = cast(size_t)((newcap * mult) / 100);
             newext -= newext % size;
-            debug printf("mult: %2.2f, alloc: %2.2f\n",mult/100.0,newext / cast(double)size);
+            debug(PRINTF) printf("mult: %2.2f, alloc: %2.2f\n",mult/100.0,newext / cast(double)size);
         }
         newcap = newext > newcap ? newext : newcap;
-        debug printf("newcap = %d, newlength = %d, size = %d\n", newcap, newlength, size);
+        debug(PRINTF) printf("newcap = %d, newlength = %d, size = %d\n", newcap, newlength, size);
     }
     return newcap;
 }
@@ -718,31 +747,41 @@ size_t newCapacity(size_t newlength, size_t size)
  */
 extern (C) byte[] _d_arrayappendcT(TypeInfo ti, inout byte[] x, ...)
 {
-    auto size = ti.next.tsize();                // array element size
-    size_t cap = gc_sizeOf(x.ptr);
-    size_t length    = x.length;
-    size_t newlength = length + 1;
+    auto sizeelem = ti.next.tsize();            // array element size
+    auto cap = gc_sizeOf(x.ptr);
+    auto length = x.length;
+    auto newlength = length + 1;
+    auto newsize = newlength * sizeelem;
 
-    assert(cap == 0 || length * size <= cap);
+    assert(cap == 0 || length * sizeelem <= cap);
 
-    debug printf("_d_arrayappendc(size = %d, ptr = %p, length = %d, cap = %d)\n", size, x.ptr, x.length, cap);
+    debug(PRINTF) printf("_d_arrayappendc(sizeelem = %d, ptr = %p, length = %d, cap = %d)\n", sizeelem, x.ptr, x.length, cap);
 
-    if (newlength * size >= cap)
+    if (newsize >= cap)
     {   byte* newdata;
 
-        debug printf("_d_arrayappendc(size = %d, newlength = %d, cap = %d)\n", size, newlength, cap);
-        cap = newCapacity(newlength, size);
-        assert(cap >= newlength * size);
+        if (cap >= 4096)
+        {   // Try to extend in-place
+            auto u = gc_extend(x.ptr, (newsize + 1) - cap, (newsize + 1) - cap);
+            if (u)
+            {
+                goto L1;
+            }
+        }
+        debug(PRINTF) printf("_d_arrayappendc(size = %d, newlength = %d, cap = %d)\n", size, newlength, cap);
+        cap = newCapacity(newlength, sizeelem);
+        assert(cap >= newlength * sizeelem);
         newdata = cast(byte *)gc_malloc(cap + 1, !(ti.next.flags() & 1) ? BlkAttr.NO_SCAN : 0);
-        memcpy(newdata, x.ptr, length * size);
+        memcpy(newdata, x.ptr, length * sizeelem);
         (cast(void**)(&x))[1] = newdata;
     }
+  L1:
     byte *argp = cast(byte *)(&ti + 2);
 
     *cast(size_t *)&x = newlength;
-    (cast(byte *)x)[length * size .. newlength * size] = argp[0 .. size];
+    (cast(byte *)x)[length * sizeelem .. newsize] = argp[0 .. sizeelem];
     assert((cast(size_t)x.ptr & 15) == 0);
-    assert(gc_sizeOf(x.ptr) > x.length * size);
+    assert(gc_sizeOf(x.ptr) > x.length * sizeelem);
     return x;
 }
 
@@ -753,16 +792,16 @@ extern (C) byte[] _d_arrayappendcT(TypeInfo ti, inout byte[] x, ...)
 extern (C) byte[] _d_arraycatT(TypeInfo ti, byte[] x, byte[] y)
 out (result)
 {
-    auto size = ti.next.tsize();                // array element size
-    debug printf("_d_arraycatT(%d,%p ~ %d,%p size = %d => %d,%p)\n", x.length, x.ptr, y.length, y.ptr, size, result.length, result.ptr);
+    auto sizeelem = ti.next.tsize();            // array element size
+    debug(PRINTF) printf("_d_arraycatT(%d,%p ~ %d,%p sizeelem = %d => %d,%p)\n", x.length, x.ptr, y.length, y.ptr, sizeelem, result.length, result.ptr);
     assert(result.length == x.length + y.length);
-    for (size_t i = 0; i < x.length * size; i++)
+    for (size_t i = 0; i < x.length * sizeelem; i++)
         assert((cast(byte*)result)[i] == (cast(byte*)x)[i]);
-    for (size_t i = 0; i < y.length * size; i++)
-        assert((cast(byte*)result)[x.length * size + i] == (cast(byte*)y)[i]);
+    for (size_t i = 0; i < y.length * sizeelem; i++)
+        assert((cast(byte*)result)[x.length * sizeelem + i] == (cast(byte*)y)[i]);
 
     size_t cap = gc_sizeOf(result.ptr);
-    assert(!cap || cap > result.length * size);
+    assert(!cap || cap > result.length * sizeelem);
 }
 body
 {
@@ -781,11 +820,11 @@ body
             return y;
     }
 
-    debug printf("_d_arraycatT(%d,%p ~ %d,%p)\n", x.length, x.ptr, y.length, y.ptr);
-    auto size = ti.next.tsize();                // array element size
-    debug printf("_d_arraycatT(%d,%p ~ %d,%p size = %d)\n", x.length, x.ptr, y.length, y.ptr, size);
-    size_t xlen = x.length * size;
-    size_t ylen = y.length * size;
+    debug(PRINTF) printf("_d_arraycatT(%d,%p ~ %d,%p)\n", x.length, x.ptr, y.length, y.ptr);
+    auto sizeelem = ti.next.tsize();            // array element size
+    debug(PRINTF) printf("_d_arraycatT(%d,%p ~ %d,%p sizeelem = %d)\n", x.length, x.ptr, y.length, y.ptr, sizeelem);
+    size_t xlen = x.length * sizeelem;
+    size_t ylen = y.length * sizeelem;
     size_t len  = xlen + ylen;
 
     if (!len)
@@ -803,12 +842,12 @@ body
  *
  */
 extern (C) byte[] _d_arraycatnT(TypeInfo ti, uint n, ...)
-{   byte[] a;
+{   void* a;
     size_t length;
     byte[]* p;
     uint i;
     byte[] b;
-    auto size = ti.next.tsize(); // array element size
+    auto sizeelem = ti.next.tsize();            // array element size
 
     p = cast(byte[]*)(&n + 1);
 
@@ -820,9 +859,7 @@ extern (C) byte[] _d_arraycatnT(TypeInfo ti, uint n, ...)
     if (!length)
         return null;
 
-    a = new byte[length * size];
-    if (!(ti.next.flags() & 1))
-        gc_setAttr(a.ptr, BlkAttr.NO_SCAN);
+    a = gc_malloc(length * sizeelem, !(ti.next.flags() & 1) ? BlkAttr.NO_SCAN : 0);
     p = cast(byte[]*)(&n + 1);
 
     uint j = 0;
@@ -831,14 +868,15 @@ extern (C) byte[] _d_arraycatnT(TypeInfo ti, uint n, ...)
         b = *p++;
         if (b.length)
         {
-            memcpy(&a[j], b.ptr, b.length * size);
-            j += b.length * size;
+            memcpy(a + j, b.ptr, b.length * sizeelem);
+            j += b.length * sizeelem;
         }
     }
 
-    *cast(size_t *)&a = length; // jam length
-    //a.length = length;
-    return a;
+    byte[] result;
+    *cast(int *)&result = length;       // jam length
+    (cast(void **)&result)[1] = a;      // jam ptr
+    return result;
 }
 
 
@@ -847,40 +885,37 @@ extern (C) byte[] _d_arraycatnT(TypeInfo ti, uint n, ...)
  */
 extern (C) void* _d_arrayliteralT(TypeInfo ti, size_t length, ...)
 {
-    auto size = ti.next.tsize(); // array element size
-    void[] result;
+    auto sizeelem = ti.next.tsize();            // array element size
+    void* result;
 
-    debug printf("_d_arrayliteralT(size = %d, length = %d)\n", size, length);
-    if (length == 0 || size == 0)
+    debug(PRINTF) printf("_d_arrayliteralT(sizeelem = %d, length = %d)\n", sizeelem, length);
+    if (length == 0 || sizeelem == 0)
         result = null;
     else
     {
-        result = new void[length * size];
-        if (!(ti.next.flags() & 1))
-            gc_setAttr(result.ptr, BlkAttr.NO_SCAN);
-        *cast(size_t *)&result = length; // jam length
+        result = gc_malloc(length * sizeelem, !(ti.next.flags() & 1) ? BlkAttr.NO_SCAN : 0);
 
         va_list q;
         va_start!(size_t)(q, length);
 
-        size_t stacksize = (size + int.sizeof - 1) & ~(int.sizeof - 1);
+        size_t stacksize = (sizeelem + int.sizeof - 1) & ~(int.sizeof - 1);
 
-        if (stacksize == size)
+        if (stacksize == sizeelem)
         {
-            memcpy(result.ptr, q, length * size);
+            memcpy(result, q, length * sizeelem);
         }
         else
         {
             for (size_t i = 0; i < length; i++)
             {
-                memcpy(result.ptr + i * size, q, size);
+                memcpy(result + i * sizeelem, q, sizeelem);
                 q += stacksize;
+            }
         }
-    }
 
         va_end(q);
     }
-    return result.ptr;
+    return result;
 }
 
 
@@ -900,8 +935,8 @@ struct Array2
 extern (C) long _adDupT(TypeInfo ti, Array2 a)
 out (result)
 {
-    auto szelem = ti.next.tsize();          // array element size
-    assert(memcmp((*cast(Array2*)&result).ptr, a.ptr, a.length * szelem) == 0);
+    auto sizeelem = ti.next.tsize();            // array element size
+    assert(memcmp((*cast(Array2*)&result).ptr, a.ptr, a.length * sizeelem) == 0);
 }
 body
 {
@@ -909,8 +944,8 @@ body
 
     if (a.length)
     {
-        auto szelem = ti.next.tsize();              // array element size
-        auto size = a.length * szelem;
+        auto sizeelem = ti.next.tsize();                // array element size
+        auto size = a.length * sizeelem;
         r.ptr = gc_malloc(size, !(ti.next.flags() & 1) ? BlkAttr.NO_SCAN : 0);
         r.length = a.length;
         memcpy(r.ptr, a.ptr, size);

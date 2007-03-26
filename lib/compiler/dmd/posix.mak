@@ -86,7 +86,6 @@ OBJ_BASE= \
     obj.o \
     qsort.o \
     switch.o \
-    moduleinit.o \
     trace.o
 # NOTE: trace.obj and cover.obj are not necessary for a successful build
 #       as both are used for debugging features (profiling and coverage)

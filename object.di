@@ -19,6 +19,11 @@ class Object
 
     //final void notifyRegister(void delegate(Object) dg);
     //final void notifyUnRegister(void delegate(Object) dg);
+
+  version( DigitalMars )
+  {
+    static Object factory(char[] classname);
+  }
 }
 
 struct Interface
@@ -38,11 +43,19 @@ class ClassInfo : Object
     void*       destructor;
     void(*classInvariant)(Object);
     uint        flags;
-    // 1:                   // IUnknown
-    // 2:                   // has no possible pointers into GC memory
-    // 4:                   // has offTi[] member
+    // 1:                       // IUnknown
+    // 2:                       // has no possible pointers into GC memory
+    // 4:                       // has offTi[] member
+    // 8:                       // has constructors
     void*       deallocator;
     OffsetTypeInfo[] offTi;
+  version( DigitalMars )
+  {
+    void* defaultConstructor;   // default Constructor
+
+    static ClassInfo find(char[] classname);
+    Object create();
+  }
 }
 
 struct OffsetTypeInfo

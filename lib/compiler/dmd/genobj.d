@@ -9,7 +9,7 @@
  */
 
 /*
- *  Copyright (C) 2004-2006 by Digital Mars, www.digitalmars.com
+ *  Copyright (C) 2004-2007 by Digital Mars, www.digitalmars.com
  *  Written by Walter Bright
  *
  *  This software is provided 'as-is', without any express or implied
@@ -42,9 +42,10 @@ private
     import tango.stdc.string; // : memcmp, memcpy;
     import tango.stdc.stdlib; // : calloc, realloc, free;
     import util.string;
-    debug import tango.stdc.stdio; // : printf;
+    debug(PRINTF) import tango.stdc.stdio; // : printf;
 
     extern (C) void onOutOfMemoryError();
+    extern (C) Object _d_newclass(ClassInfo ci);
 }
 
 // NOTE: For some reason, this declaration method doesn't work
@@ -121,7 +122,7 @@ class Object
      */
     int opEquals(Object o)
     {
-	return cast(int)(this is o);
+        return cast(int)(this is o);
     }
 
 /+
@@ -136,7 +137,7 @@ class Object
      */
     final void notifyRegister(void delegate(Object) dg)
     {
-        debug printf("notifyRegister(dg = %llx, o = %p)\n", dg, this);
+        debug(PRINTF) printf("notifyRegister(dg = %llx, o = %p)\n", dg, this);
         synchronized (this)
         {
             Monitor* m = cast(Monitor*)(cast(void**)this)[1];
@@ -190,11 +191,28 @@ class Object
         }
     }
 +/
+
+    /**
+     * Create instance of class specified by classname.
+     * The class must either have no constructors or have
+     * a default constructor.
+     * Returns:
+     *  null if failed
+     */
+    static Object factory(char[] classname)
+    {
+        auto ci = ClassInfo.find(classname);
+        if (ci)
+        {
+            return ci.create();
+        }
+        return null;
+    }
 }
 
 extern (C) void _d_notify_release(Object o)
 {
-    debug printf("_d_notify_release(o = %p)\n", o);
+    debug(PRINTF) printf("_d_notify_release(o = %p)\n", o);
     Monitor* m = cast(Monitor*)(cast(void**)o)[1];
     if (m.delegates.length)
     {
@@ -208,7 +226,7 @@ extern (C) void _d_notify_release(Object o)
         foreach (dg; dgs)
         {
             if (dg)
-            {   debug printf("calling dg = %llx (%p)\n", dg, o);
+            {   debug(PRINTF) printf("calling dg = %llx (%p)\n", dg, o);
                 dg(o);
             }
         }
@@ -249,8 +267,44 @@ class ClassInfo : Object
     //  1:                      // IUnknown
     //  2:                      // has no possible pointers into GC memory
     //  4:                      // has offTi[] member
+    //  8:                      // has constructors
     void *deallocator;
     OffsetTypeInfo[] offTi;
+    void function(Object) defaultConstructor;   // default Constructor
+
+    /**
+     * Search all modules for ClassInfo corresponding to classname.
+     * Returns: null if not found
+     */
+    static ClassInfo find(char[] classname)
+    {
+        foreach (m; ModuleInfo.modules())
+        {
+            //writefln("module %s, %d", m.name, m.localClasses.length);
+            foreach (c; m.localClasses)
+            {
+                //writefln("\tclass %s", c.name);
+                if (c.name == classname)
+                    return c;
+            }
+        }
+        return null;
+    }
+
+    /**
+     * Create instance of Object represented by 'this'.
+     */
+    Object create()
+    {
+        if (flags & 8 && !defaultConstructor)
+            return null;
+        Object o = _d_newclass(this);
+        if (flags & 8 && defaultConstructor)
+        {
+            defaultConstructor(o);
+        }
+        return o;
+    }
 }
 
 
@@ -426,10 +480,10 @@ class TypeInfo_Array : TypeInfo
     int opEquals(Object o)
     {   TypeInfo_Array c;
 
-	return cast(int)
-	       (this is o ||
+        return cast(int)
+               (this is o ||
                 ((c = cast(TypeInfo_Array)o) !is null &&
-		 this.value == c.value));
+                 this.value == c.value));
     }
 
     hash_t getHash(void *p)
@@ -507,11 +561,11 @@ class TypeInfo_StaticArray : TypeInfo
     int opEquals(Object o)
     {   TypeInfo_StaticArray c;
 
-	return cast(int)
-	       (this is o ||
+        return cast(int)
+               (this is o ||
                 ((c = cast(TypeInfo_StaticArray)o) !is null &&
                  this.len == c.len &&
-		 this.value == c.value));
+                 this.value == c.value));
     }
 
     hash_t getHash(void *p)
@@ -807,12 +861,12 @@ class TypeInfo_Struct : TypeInfo
 
         assert(p);
         if (xtoHash)
-        {   debug printf("getHash() using xtoHash\n");
+        {   debug(PRINTF) printf("getHash() using xtoHash\n");
             h = (*xtoHash)(p);
         }
         else
         {
-            debug printf("getHash() using default hash\n");
+            debug(PRINTF) printf("getHash() using default hash\n");
             // A sorry hash algorithm.
             // Should use the one for strings.
             // BUG: relies on the GC not moving objects
@@ -966,5 +1020,185 @@ class Exception : Object
     char[] toUtf8()
     {
         return msg;
+    }
+}
+
+
+////////////////////////////////////////////////////////////////////////////////
+// ModuleInfo
+////////////////////////////////////////////////////////////////////////////////
+
+
+enum
+{
+    MIctorstart = 1,    // we've started constructing it
+    MIctordone = 2,     // finished construction
+    MIstandalone = 4,   // module ctor does not depend on other module
+                        // ctors being done first
+}
+
+
+class ModuleInfo
+{
+    char name[];
+    ModuleInfo importedModules[];
+    ClassInfo localClasses[];
+
+    uint flags;         // initialization state
+
+    void (*ctor)();
+    void (*dtor)();
+    void (*unitTest)();
+
+    static ModuleInfo[] modules()
+    {
+        return _moduleinfo_array;
+    }
+}
+
+
+// Win32: this gets initialized by minit.asm
+// linux: this gets initialized in _moduleCtor()
+extern (C) ModuleInfo[] _moduleinfo_array;
+
+
+version (linux)
+{
+    // This linked list is created by a compiler generated function inserted
+    // into the .ctor list by the compiler.
+    struct ModuleReference
+    {
+        ModuleReference* next;
+        ModuleInfo mod;
+    }
+
+    extern (C) ModuleReference *_Dmodule_ref;   // start of linked list
+}
+
+ModuleInfo[] _moduleinfo_dtors;
+uint _moduleinfo_dtors_i;
+
+// Register termination function pointers
+extern (C) int _fatexit(void *);
+
+/*************************************
+ * Initialize the modules.
+ */
+
+extern (C) void _moduleCtor()
+{
+    debug(PRINTF) printf("_moduleCtor()\n");
+    version (linux)
+    {
+        int len = 0;
+        ModuleReference *mr;
+
+        for (mr = _Dmodule_ref; mr; mr = mr.next)
+            len++;
+        _moduleinfo_array = new ModuleInfo[len];
+        len = 0;
+        for (mr = _Dmodule_ref; mr; mr = mr.next)
+        {   _moduleinfo_array[len] = mr.mod;
+            len++;
+        }
+    }
+
+    version (Win32)
+    {
+        // Ensure module destructors also get called on program termination
+        //_fatexit(&_STD_moduleDtor);
+    }
+
+    _moduleinfo_dtors = new ModuleInfo[_moduleinfo_array.length];
+    debug(PRINTF) printf("_moduleinfo_dtors = x%x\n", cast(void *)_moduleinfo_dtors);
+    _moduleCtor2(_moduleinfo_array, 0);
+}
+
+void _moduleCtor2(ModuleInfo[] mi, int skip)
+{
+    debug(PRINTF) printf("_moduleCtor2(): %d modules\n", mi.length);
+    for (uint i = 0; i < mi.length; i++)
+    {
+        ModuleInfo m = mi[i];
+
+        debug(PRINTF) printf("\tmodule[%d] = '%p'\n", i, m);
+        if (!m)
+            continue;
+        debug(PRINTF) printf("\tmodule[%d] = '%.*s'\n", i, m.name);
+        if (m.flags & MIctordone)
+            continue;
+        debug(PRINTF) printf("\tmodule[%d] = '%.*s', m = x%x\n", i, m.name, m);
+
+        if (m.ctor || m.dtor)
+        {
+            if (m.flags & MIctorstart)
+            {   if (skip || m.flags & MIstandalone)
+                    continue;
+                    throw new Exception( "Cyclic dependency in module " ~ m.name );
+            }
+
+            m.flags |= MIctorstart;
+            _moduleCtor2(m.importedModules, 0);
+            if (m.ctor)
+                (*m.ctor)();
+            m.flags &= ~MIctorstart;
+            m.flags |= MIctordone;
+
+            // Now that construction is done, register the destructor
+            //printf("\tadding module dtor x%x\n", m);
+            assert(_moduleinfo_dtors_i < _moduleinfo_dtors.length);
+            _moduleinfo_dtors[_moduleinfo_dtors_i++] = m;
+        }
+        else
+        {
+            m.flags |= MIctordone;
+            _moduleCtor2(m.importedModules, 1);
+        }
+    }
+}
+
+
+/**********************************
+ * Destruct the modules.
+ */
+
+// Starting the name with "_STD" means under linux a pointer to the
+// function gets put in the .dtors segment.
+
+extern (C) void _moduleDtor()
+{
+    debug(PRINTF) printf("_moduleDtor(): %d modules\n", _moduleinfo_dtors_i);
+    for (uint i = _moduleinfo_dtors_i; i-- != 0;)
+    {
+        ModuleInfo m = _moduleinfo_dtors[i];
+
+        debug(PRINTF) printf("\tmodule[%d] = '%.*s', x%x\n", i, m.name, m);
+        if (m.dtor)
+        {
+            (*m.dtor)();
+        }
+    }
+    debug(PRINTF) printf("_moduleDtor() done\n");
+}
+
+/**********************************
+ * Run unit tests.
+ */
+
+extern (C) void _moduleUnitTests()
+{
+    debug(PRINTF) printf("_moduleUnitTests()\n");
+    for (uint i = 0; i < _moduleinfo_array.length; i++)
+    {
+        ModuleInfo m = _moduleinfo_array[i];
+
+        if (!m)
+            continue;
+
+        debug(PRINTF) printf("\tmodule[%d] = '%.*s'\n", i, m.name);
+        if (m.unitTest)
+        {
+            (*m.unitTest)();
+        }
     }
 }

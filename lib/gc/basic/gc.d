@@ -108,6 +108,11 @@ extern (C) void* gc_realloc( void* p, size_t sz, uint ba = 0 )
     return _gc.realloc( p, sz, ba );
 }
 
+extern (C) size_t gc_extend( void* p, size_t minsz, size_t maxsz )
+{
+    return _gc.extend( p, minsz, maxsz );
+}
+
 extern (C) void gc_free( void* p )
 {
     _gc.free( p );
