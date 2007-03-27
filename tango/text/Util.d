@@ -93,7 +93,7 @@ deprecated T[][] delineate (T) (T[] src)
 
 /******************************************************************************
 
-        Trim the provided string by stripping whitespace from both
+        Trim the provided array by stripping whitespace from both
         ends. Returns a slice of the original content
 
 ******************************************************************************/
@@ -114,7 +114,7 @@ T[] trim(T) (T[] source)
 
 /******************************************************************************
 
-        Trim the given string by stripping the provided match from
+        Trim the given array by stripping the provided match from
         both ends. Returns a slice of the original content
 
 ******************************************************************************/
@@ -135,7 +135,7 @@ T[] strip(T) (T[] source, T match)
 
 /******************************************************************************
 
-        Replace all instances of one char with another (in place)
+        Replace all instances of one element with another (in place)
 
 ******************************************************************************/
 
@@ -149,7 +149,7 @@ T[] replace(T) (T[] source, T match, T replacement)
 
 /******************************************************************************
 
-        Replace all instances of one substring with another
+        Replace all instances of one array with another (in place)
 
 ******************************************************************************/
 
