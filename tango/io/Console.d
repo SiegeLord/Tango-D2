@@ -126,7 +126,7 @@ struct Console
 
                 bool nextLine (inout char[] content, bool raw=false)
                 {
-                        uint scan (void[] input)
+                        uint line (void[] input)
                         {
                                 auto text = cast(char[]) input;
                                 foreach (i, c; text)
@@ -145,7 +145,7 @@ struct Console
                                 return IConduit.Eof;
                         }
 
-                        return buffer_.next (&scan) || content.length;
+                        return buffer_.next (&line) || content.length;
                 }
         }
 
@@ -323,20 +323,6 @@ struct Console
                                 output = new wchar [1024 * 1];
                         }    
 
-/+
-                        /*******************************************************
-        
-                                Return a preferred size for buffering 
-                                console I/O. This must be less than 32KB 
-                                for Win32!
-
-                        *******************************************************/
-
-                        uint bufferSize ()
-                        {
-                                return 1024 * 8;
-                        }
-+/
                         /*******************************************************
 
                                 Gain access to the standard IO handles 
