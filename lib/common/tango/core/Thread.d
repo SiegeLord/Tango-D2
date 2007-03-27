@@ -2328,6 +2328,17 @@ class Fiber
         this.switchIn();
         setThis( cur );
 
+        // NOTE: If the fiber has terminated then the stack pointers must be
+        //       reset.  This ensures that the stack for this fiber is not
+        //       scanned if the fiber has terminated.  This is necessary to
+        //       prevent any references lingering on the stack from delaying
+        //       the collection of otherwise dead objects.  The most notable
+        //       being the current object, which is referenced at the top of
+        //       fiber_entryPoint.
+        if( m_state == State.TERM )
+        {
+            m_ctxt.tstack = m_ctxt.bstack;
+        }
         if( m_unhandled )
         {
             Object obj  = m_unhandled;
@@ -2354,10 +2365,6 @@ class Fiber
     in
     {
         assert( m_state == State.TERM );
-        // NOTE: Currently, this should be true for any context which is not
-        //       frozen by the GC.  However, if things change so that tstack
-        //       is no longer reset when resume is called then this routine
-        //       will need to reset tstack.  This assert is here as a reminer.
         assert( m_ctxt.tstack == m_ctxt.bstack );
     }
     body
