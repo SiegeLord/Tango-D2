@@ -19,41 +19,8 @@ private import  tango.sys.Common;
 private import  tango.io.Buffer,
                 tango.io.DeviceConduit;
 
-
-version (Opt)
-{
-private uint indexOf (void* str, char match, uint length)
-{
-        version (D_InlineAsm_X86)
-        {       
-                        asm {
-                            mov   EDI, str;
-                            mov   ECX, length;
-                            movzx EAX, match;
-                            mov   ESI, ECX;
-                            and   ESI, ESI;            
-                            jz    end;        
-
-                            cld;
-                            repnz;
-                            scasb;
-                            jnz   end;
-                            sub   ESI, ECX;
-                            dec   ESI;
-                        end:;
-                            mov   EAX, ESI;
-                            }
-        }
-        else
-        {
-                auto len = length;
-                for (auto p=str-1; len--;)
-                     if (*++p is match)
-                         return p - str;
-                return length;
-        }
-}
-}
+version (Posix)
+         private import tango.stdc.posix.unistd;
 
 /*******************************************************************************
 
@@ -71,6 +38,12 @@ private uint indexOf (void* str, char match, uint length)
 
 struct Console 
 {
+        version (Win32)
+                 private const char[] Eol = "\r\n";
+              else
+                 private const char[] Eol = "\n";
+
+
         /**********************************************************************
 
                 Model console input as a buffer. Note that we read utf8
@@ -82,7 +55,7 @@ struct Console
         {
                 private Buffer  buffer_;
 
-                alias copyLine  get;
+                public alias copyLine get;
 
                 /**************************************************************
 
@@ -150,23 +123,6 @@ struct Console
 
                 bool nextLine (inout char[] content, bool raw=false)
                 {
-version (Opt)
-{
-                        uint scan (void[] input)
-                        {
-                                auto i = indexOf (input.ptr, '\n', input.length);
-                                if (i < input.length)
-                                   {
-                                   ++i;
-                                   content = cast(char[]) input [0..i];
-                                   return i;
-                                   }
-                                content = cast(char[]) input;
-                                return IConduit.Eof;
-                        }
-}
-else
-{
                         uint scan (void[] input)
                         {
                                 auto text = cast(char[]) input;
@@ -185,7 +141,6 @@ else
                                 content = text;
                                 return IConduit.Eof;
                         }
-}
 
                         return buffer_.next (&scan) || content.length;
                 }
@@ -203,10 +158,9 @@ else
 
         class Output
         {
-                private Buffer  buffer_;
+                private Buffer buffer_;
                 
-                alias flush     opCall;
-                alias append    opCall;
+                public  alias append opCall;
 
                 /**************************************************************
 
@@ -249,9 +203,13 @@ else
 
                 **************************************************************/
 
-                Output append (char[] x)
+                Output append (char[][] x...)
                 {
-                        buffer_.append (x);
+                        if (x.length is 0)
+                            flush;
+                        else
+                           foreach (y; x)
+                                    buffer_.append (y.ptr, y.length);
                         return this;
                 } 
                           
@@ -279,7 +237,7 @@ else
 
                 /**************************************************************
 
-                        Append a newline
+                        Append a newline and flush the console buffer
 
                         Returns:
                         Returns a chaining reference if content was written. 
@@ -292,7 +250,8 @@ else
 
                 Output newline ()
                 {
-                        return append ("\n").flush;
+                        buffer_.append (Eol);
+                        return flush;
                 }           
 
                 /**************************************************************
@@ -334,6 +293,8 @@ else
 
         class ConsoleConduit : DeviceConduit
         {
+                private bool redirect = false;
+
                 /***************************************************************
 
                         Windows-specific code
@@ -344,8 +305,6 @@ else
                         {
                         private wchar[] input;
                         private wchar[] output;
-
-                        private bool redirect = false;
 
                         /*******************************************************
 
@@ -364,6 +323,7 @@ else
                                 output = new wchar [1024 * 1];
                         }    
 
+/+
                         /*******************************************************
         
                                 Return a preferred size for buffering 
@@ -371,7 +331,7 @@ else
                                 for Win32!
 
                         *******************************************************/
-/+
+
                         uint bufferSize ()
                         {
                                 return 1024 * 8;
@@ -526,6 +486,8 @@ else
                         private this (FileDevice device)
                         {
                                 super (device);
+
+                                redirect = (isatty(device.id) != 0);
                         }
                         }
         }
