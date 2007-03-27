@@ -132,6 +132,11 @@ extern (C) void* gc_realloc( void* p, size_t sz, uint ba = 0 )
     return i + 1;
 }
 
+extern (C) size_t gc_extend( void* p, size_t mx, size_t sz )
+{
+    return 0;
+}
+
 extern (C) void gc_free( void* p )
 {
     if( p !is null )

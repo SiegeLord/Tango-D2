@@ -52,7 +52,7 @@ private
 
     extern (C) void*  gc_malloc( size_t sz, uint ba = 0 );
     extern (C) void*  gc_calloc( size_t sz, uint ba = 0 );
-    extern (C) size_t gc_extend( void* p, size_t minsz, size_t maxsz );
+    extern (C) size_t gc_extend( void* p, size_t mx, size_t sz );
     extern (C) void   gc_free( void* p );
 
     extern (C) size_t gc_sizeOf( void* p );
@@ -62,6 +62,11 @@ private
     extern (C) void onOutOfMemoryError();
 
     extern (C) void _d_monitorrelease(Object h);
+
+    enum
+    {
+        PAGESIZE = 4096
+    }
 }
 
 
@@ -485,7 +490,7 @@ body
 
                 if (cap <= newsize)
                 {
-                    if (cap >= 4096)
+                    if (cap >= PAGESIZE)
                     {   // Try to extend in-place
                         auto u = gc_extend(p.data, (newsize + 1) - cap, (newsize + 1) - cap);
                         if (u)
@@ -585,7 +590,7 @@ body
 
                 if (cap <= newsize)
                 {
-                    if (cap >= 4096)
+                    if (cap >= PAGESIZE)
                     {   // Try to extend in-place
                         auto u = gc_extend(p.data, (newsize + 1) - cap, (newsize + 1) - cap);
                         if (u)
@@ -651,7 +656,7 @@ extern (C) long _d_arrayappendT(TypeInfo ti, Array *px, byte[] y)
     if (newsize > cap)
     {   byte* newdata;
 
-        if (cap >= 4096)
+        if (cap >= PAGESIZE)
         {   // Try to extend in-place
             auto u = gc_extend(px.data, (newsize + 1) - cap, (newsize + 1) - cap);
             if (u)
@@ -685,7 +690,7 @@ size_t newCapacity(size_t newlength, size_t size)
          * Better version by Dave Fladebo:
          * This uses an inverse logorithmic algorithm to pre-allocate a bit more
          * space for larger arrays.
-         * - Arrays smaller than 4096 bytes are left as-is, so for the most
+         * - Arrays smaller than PAGESIZE bytes are left as-is, so for the most
          * common cases, memory allocation is 1 to 1. The small overhead added
          * doesn't affect small array perf. (it's virtually the same as
          * current).
@@ -702,7 +707,7 @@ size_t newCapacity(size_t newlength, size_t size)
         size_t newcap = newlength * size;
         size_t newext = 0;
 
-        if (newcap > 4096)
+        if (newcap > PAGESIZE)
         {
             //double mult2 = 1.0 + (size / log10(pow(newcap * 2.0,2.0)));
 
@@ -760,7 +765,7 @@ extern (C) byte[] _d_arrayappendcT(TypeInfo ti, inout byte[] x, ...)
     if (newsize >= cap)
     {   byte* newdata;
 
-        if (cap >= 4096)
+        if (cap >= PAGESIZE)
         {   // Try to extend in-place
             auto u = gc_extend(x.ptr, (newsize + 1) - cap, (newsize + 1) - cap);
             if (u)

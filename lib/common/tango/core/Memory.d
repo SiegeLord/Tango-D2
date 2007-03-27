@@ -22,10 +22,11 @@ private
     extern (C) uint gc_setAttr( void* p, uint a );
     extern (C) uint gc_clrAttr( void* p, uint a );
 
-    extern (C) void* gc_malloc( size_t sz, uint ba = 0 );
-    extern (C) void* gc_calloc( size_t sz, uint ba = 0 );
-    extern (C) void* gc_realloc( void* p, size_t sz, uint ba = 0 );
-    extern (C) void gc_free( void* p );
+    extern (C) void*  gc_malloc( size_t sz, uint ba = 0 );
+    extern (C) void*  gc_calloc( size_t sz, uint ba = 0 );
+    extern (C) void*  gc_realloc( void* p, size_t sz, uint ba = 0 );
+    extern (C) size_t gc_extend( void* p, size_t mx, size_t sz );
+    extern (C) void   gc_free( void* p );
 
     extern (C) size_t gc_sizeOf( void* p );
 
@@ -233,6 +234,27 @@ struct GC
     void* realloc( void* p, size_t sz, uint ba = 0 )
     {
         return gc_realloc( p, sz, ba );
+    }
+
+
+    /**
+     * Requests that the managed memory block referenced by p be extended in
+     * place by at least mx bytes, with a desired extension of sz bytes.  If an
+     * extension of the required size is not possible, if p references memory
+     * not originally allocated by this garbage collector, or if p points to
+     * the interior of a memory block, no action will be taken.
+     *
+     * Params:
+     *  mx = The minimum extension size in bytes.
+     *  sz = The  desired extension size in bytes.
+     *
+     * Returns:
+     *  The size in bytes of the extended memory block referenced by p or zero
+     *  if no extension occurred.
+     */
+    size_t extend( void* p, size_t mx, size_t sz )
+    {
+        return gc_extend( p, mx, sz );
     }
 
 

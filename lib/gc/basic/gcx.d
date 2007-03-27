@@ -710,23 +710,23 @@ class GC
 
 
     /**
-     * Attempt to in-place enlarge the memory block pointed to by p
-     * by at least minbytes beyond its current capacity,
-     * up to a maximum of maxbytes.
-     * This does not attempt to move the memory block (like realloc() does).
+     * Attempt to in-place enlarge the memory block pointed to by p by at least
+     * minbytes beyond its current capacity, up to a maximum of maxbytes.  This
+     * does not attempt to move the memory block (like realloc() does).
+     *
      * Returns:
      *  0 if could not extend p,
      *  total size of entire memory block if successful.
      */
-    size_t extend(void* p, size_t minsize, size_t maxsize)
+    size_t extend(void* p, size_t mx, size_t sz)
     {
         if (!thread_needLock())
         {
-            return extendNoSync(p, minsize, maxsize);
+            return extendNoSync(p, mx, sz);
         }
         else synchronized (gcLock)
         {
-            return extendNoSync(p, minsize, maxsize);
+            return extendNoSync(p, mx, sz);
         }
     }
 
@@ -741,7 +741,7 @@ class GC
     }
     body
     {
-        //debug(PRINTF) printf("GC::extend(p = %x, minsize = %u, maxsize = %u)\n", p, minsize, maxsize);
+        //debug(PRINTF) printf("GC::extend(p = %x, mx = %u, sz = %u)\n", p, mx, sz);
         version (SENTINEL)
         {
             return 0;
@@ -760,23 +760,23 @@ class GC
         size_t sz;
         for (sz = 0; sz < maxsz; sz++)
         {
-        auto i = pagenum + psz + sz;
-        if (i == pool.ncommitted)
-            break;
-        if (pool.pagetable[i] != B_FREE)
-            break;
+            auto i = pagenum + psz + sz;
+            if (i == pool.ncommitted)
+                break;
+            if (pool.pagetable[i] != B_FREE)
+                break;
         }
         if (sz >= minsz)
         {
         }
         else if (pagenum + psz + sz == pool.ncommitted)
         {
-        auto u = pool.extendPages(minsz - sz);
-        if (u == ~0u)
-            return 0;
+            auto u = pool.extendPages(minsz - sz);
+            if (u == ~0u)
+                return 0;
         }
         else
-        return 0;
+            return 0;
         debug (MEMSTOMP) memset(p + psize, 0xF0, (psz + sz) * PAGESIZE - psize);
         memset(pool.pagetable + pagenum + psz, B_PAGEPLUS, sz);
         return (psz + sz) * PAGESIZE;
