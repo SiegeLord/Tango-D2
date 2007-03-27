@@ -19,8 +19,10 @@ private import  tango.sys.Common;
 private import  tango.io.Buffer,
                 tango.io.DeviceConduit;
 
+/*
 version (Posix)
-         private import tango.stdc.posix.unistd;
+         private import tango.stdc.posix.unistd;  // needed for isatty()
+*/
 
 /*******************************************************************************
 
@@ -32,16 +34,17 @@ version (Posix)
         for details.
 
         Redirecting the standard IO handles (via a shell) operates as one 
-        would expect.
+        would expect, though the redirected content should likely restrict 
+        itself to utf8 
 
 *******************************************************************************/
 
 struct Console 
 {
         version (Win32)
-                 private const char[] Eol = "\r\n";
+                 const char[] Eol = "\r\n";
               else
-                 private const char[] Eol = "\n";
+                 const char[] Eol = "\n";
 
 
         /**********************************************************************
@@ -161,6 +164,7 @@ struct Console
                 private Buffer buffer_;
                 
                 public  alias append opCall;
+                public  alias flush  opCall;
 
                 /**************************************************************
 
@@ -203,13 +207,9 @@ struct Console
 
                 **************************************************************/
 
-                Output append (char[][] x...)
+                Output append (char[] x)
                 {
-                        if (x.length is 0)
-                            flush;
-                        else
-                           foreach (y; x)
-                                    buffer_.append (y.ptr, y.length);
+                        buffer_.append (x.ptr, x.length);
                         return this;
                 } 
                           
@@ -487,7 +487,7 @@ struct Console
                         {
                                 super (device);
 
-                                redirect = (isatty(device.id) != 0);
+                                // redirect = (isatty(device.id) != 0);
                         }
                         }
         }
@@ -522,7 +522,7 @@ static this ()
 
         Flush outputs before we exit
 
-        (good idea from: Frits Van Bommel)
+        (good idea from Frits Van Bommel)
 
 ******************************************************************************/
 
