@@ -19,27 +19,6 @@ class Object
 
     //final void notifyRegister(void delegate(Object) dg);
     //final void notifyUnRegister(void delegate(Object) dg);
-/+
-    attachCleanupHook
-    detachCleanupHook
-
-    attachCleanupMonitor
-    detachCleanupMonitor
-
-    callOnCleanup
-    notifyOnCleanup
-
-    hookObjectLifetime
-    unhookObjectLifetime
-
-    hookObjectCleanup
-    unhookObjectCleanup
-
-  version( DigitalMars )
-  {
-    static Object factory(char[] classname);
-  }
-+/
 }
 
 struct Interface

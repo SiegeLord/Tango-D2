@@ -191,25 +191,6 @@ class Object
         }
     }
 +/
-
-/+
-    /**
-     * Create instance of class specified by classname.
-     * The class must either have no constructors or have
-     * a default constructor.
-     * Returns:
-     *  null if failed
-     */
-    static Object factory(char[] classname)
-    {
-        auto ci = ClassInfo.find(classname);
-        if (ci)
-        {
-            return ci.create();
-        }
-        return null;
-    }
-+/
 }
 
 extern (C) void _d_notify_release(Object o)
