@@ -19,39 +19,55 @@ class Object
 
     //final void notifyRegister(void delegate(Object) dg);
     //final void notifyUnRegister(void delegate(Object) dg);
+/+
+    attachCleanupHook
+    detachCleanupHook
+
+    attachCleanupMonitor
+    detachCleanupMonitor
+
+    callOnCleanup
+    notifyOnCleanup
+
+    hookObjectLifetime
+    unhookObjectLifetime
+
+    hookObjectCleanup
+    unhookObjectCleanup
 
   version( DigitalMars )
   {
     static Object factory(char[] classname);
   }
++/
 }
 
 struct Interface
 {
     ClassInfo   classinfo;
     void*[]     vtbl;
-    ptrdiff_t offset;           // offset to Interface 'this' from Object 'this'
+    ptrdiff_t offset;   // offset to Interface 'this' from Object 'this'
 }
 
 class ClassInfo : Object
 {
-    byte[]      init;       // class static initializer
-    char[]      name;       // class name
-    void*[]     vtbl;       // virtual function pointer table
+    byte[]      init;   // class static initializer
+    char[]      name;   // class name
+    void*[]     vtbl;   // virtual function pointer table
     Interface[] interfaces;
     ClassInfo   base;
     void*       destructor;
     void(*classInvariant)(Object);
     uint        flags;
-    // 1:                       // IUnknown
-    // 2:                       // has no possible pointers into GC memory
-    // 4:                       // has offTi[] member
-    // 8:                       // has constructors
+    // 1:       // IUnknown
+    // 2:       // has no possible pointers into GC memory
+    // 4:       // has offTi[] member
+    // 8:       // has constructors
     void*       deallocator;
     OffsetTypeInfo[] offTi;
   version( DigitalMars )
   {
-    void* defaultConstructor;   // default Constructor
+    void*       defaultConstructor;
 
     static ClassInfo find(char[] classname);
     Object create();
@@ -74,7 +90,7 @@ class TypeInfo
     TypeInfo next();
     void[]   init();
     uint     flags();
-    // 1:                   // has possible pointers into GC memory
+    // 1:    // has possible pointers into GC memory
     OffsetTypeInfo[] offTi();
 }
 

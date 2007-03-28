@@ -192,6 +192,7 @@ class Object
     }
 +/
 
+/+
     /**
      * Create instance of class specified by classname.
      * The class must either have no constructors or have
@@ -208,6 +209,7 @@ class Object
         }
         return null;
     }
++/
 }
 
 extern (C) void _d_notify_release(Object o)
@@ -235,14 +237,13 @@ extern (C) void _d_notify_release(Object o)
     }
 }
 
-
 /**
  * Information about an interface.
  * A pointer to this appears as the first entry in the interface's vtbl[].
  */
 struct Interface
 {
-    ClassInfo classinfo;        /// .classinfo for this interface (not for containing class)
+    ClassInfo classinfo;    /// .classinfo for this interface (not for containing class)
     void *[] vtbl;
     ptrdiff_t offset;       /// offset to Interface 'this' from Object 'this'
 }
@@ -307,7 +308,6 @@ class ClassInfo : Object
     }
 }
 
-
 /**
  * Array of pairs giving the offset and type information for each
  * member in an aggregate.
@@ -317,7 +317,6 @@ struct OffsetTypeInfo
     size_t offset;      /// Offset of member from start of object
     TypeInfo ti;        /// TypeInfo for this member
 }
-
 
 /**
  * Runtime type information about a type.

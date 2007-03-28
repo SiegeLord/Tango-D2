@@ -1988,7 +1988,7 @@ private
     {
         import tango.stdc.posix.unistd;   // for sysconf
         import tango.stdc.posix.sys.mman; // for mmap
-        import tango.stdc.posix.stdlib;   // for malloc, valloc
+        import tango.stdc.posix.stdlib;   // for malloc, valloc, free
 
         version( AsmX86_Win32 ) {} else
         version( AsmX86_Posix ) {} else
@@ -2291,6 +2291,18 @@ class Fiber
      */
     ~this()
     {
+        // NOTE: A live reference to this object will exist on its associated
+        //       stack from the first time its call() method has been called
+        //       until its execution completes with State.TERM.  Thus, the only
+        //       times this dtor should be called are either if the fiber has
+        //       terminated (and therefore has no active stack) or if the user
+        //       explicitly deletes this object.  The latter case is an error
+        //       but is not easily tested for, since State.HOLD may imply that
+        //       the fiber was just created but has never been run.  There is
+        //       not a compelling case to create a State.INIT just to offer a
+        //       means of ensuring the user isn't violating this object's
+        //       contract, so for now this requirement will be enforced by
+        //       documentation only.
         freeStack();
     }
 
@@ -2571,13 +2583,23 @@ private:
     final void allocStack( size_t sz )
     in
     {
-        assert( !m_pmem );
+        assert( !m_pmem && !m_ctxt );
     }
     body
     {
         // adjust alloc size to a multiple of PAGESIZE
         sz += PAGESIZE - 1;
         sz -= sz % PAGESIZE;
+
+        // NOTE: This instance of Thread.Context is dynamic so Fiber objects
+        //       can be collected by the GC so long as no user level references
+        //       to the object exist.  If m_ctxt were not dynamic then its
+        //       presence in the global context list would be enough to keep
+        //       this object alive indefinitely.  An alternative to allocating
+        //       room for this struct explicitly would be to mash it into the
+        //       base of the stack being allocated below.  However, doing so
+        //       requires too much special logic to be worthwhile.
+        m_ctxt = new Thread.Context;
 
         static if( is( typeof( VirtualAlloc ) ) )
         {
@@ -2671,7 +2693,7 @@ private:
             m_size = sz;
         }
 
-        Thread.add( &m_ctxt );
+        Thread.add( m_ctxt );
     }
 
 
@@ -2679,11 +2701,18 @@ private:
     // Free this fiber's stack.
     //
     final void freeStack()
+    in
+    {
+        assert( m_pmem && m_ctxt );
+    }
+    body
     {
         // NOTE: Since this routine is only ever expected to be called from
         //       the dtor, pointers to freed data are not set to null.
 
-        Thread.remove( &m_ctxt );
+        // NOTE: m_ctxt is guaranteed to be alive because it is held in the
+        //       global context list.
+        Thread.remove( m_ctxt );
 
         static if( is( typeof( VirtualAlloc ) ) )
         {
@@ -2701,6 +2730,7 @@ private:
         {
             free( m_pmem );
         }
+        delete m_ctxt;
     }
 
 
@@ -2829,7 +2859,7 @@ private:
     }
 
 
-    Thread.Context  m_ctxt;
+    Thread.Context* m_ctxt;
     size_t          m_size;
     void*           m_pmem;
 
@@ -2887,7 +2917,7 @@ private:
         //       successive pop operations will succeed.
         *oldp = getStackTop();
         volatile tobj.m_lock = true;
-        tobj.pushContext( &m_ctxt );
+        tobj.pushContext( m_ctxt );
 
         fiber_switchContext( oldp, newp );
 
