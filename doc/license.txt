@@ -1,11 +1,24 @@
-This software is provided 'as-is', without any express or implied warranty. In no event will the authors be held liable for damages of any kind arising from the use of this software.
+Tango is Open Source software, distributed by a group of developers which has been set up for the purpose of providing a vendor-neutral owner of Tango intellectual property. The goals of all Tango licensing decisions are to:
 
-Permission is hereby granted to anyone to use this software for any purpose, including commercial applications, and to alter it and/or redistribute it freely, subject to the following restrictions:
+  * Encourage adoption
+  * Discourage political contention
+  * Encourage collaboration and integration with other projects
+  * Be transparent
 
-1. The origin of this software must not be misrepresented; you must not claim that you wrote the original software. If you use this software in a product, an acknowledgment within documentation of said product would be appreciated but is not required.
+Tango is dual-licensed:
+  * Academic Free License v2.1 (http://opensource.org/licenses/afl-2.1.php)
+  * BSD License (http://opensource.org/licenses/bsd-license.php) [1]
 
-2. Altered source versions must be plainly marked as such, and must not be misrepresented as being the original software.
+The preferred license is the Academic Free License v2.1. All Tango projects release their code under the terms of this license. Both licenses:
 
-3. This notice may not be removed or altered from any distribution of the source, and applies to all variations including, but not limited to, original source, derived source, and altered source.
+  * Allow commercial use without encumbrance
+  * Provide broad rights to make new products and derivative works
+  * Place no requirement on users to contribute back (although we appreciate it if you do)
 
-4. Neither the name Tango nor the names of its contributors may be used to endorse or promote products derived from this software without specific prior written permission.
+Users who wish to include Tango with software licensed under the (L)GPL will want to use Tango under the terms of the BSD License. [1] Tango projects may request a variance from the developers to release their projects under additional licenses in conjunction with the AFL.
+
+If you have further questions regarding Tango licensing, please do not hesitate to contact us (http://dsource.org/projects/tango/wiki/Contact).
+
+
+[1] The advertising clause has not been a part of the BSD License since July 22, 1999. (ftp://ftp.cs.berkeley.edu/pub/4bsd/README.Impt.License.Change)
+
