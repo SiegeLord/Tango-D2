@@ -59,6 +59,14 @@ version(DigitalMars)
     }
 }
 
+version (X86){
+    version = X86_Any;
+}
+
+version (X86_64){
+    version = X86_Any;
+}
+
 version (DigitalMars_D_InlineAsm_X86) {
     // Don't include this extra dependency unless we need to.
     debug(UnitTest) {
@@ -122,7 +130,7 @@ private:
     // The x87 FPU status register is 16 bits.
     // The Pentium SSE2 status register is 32 bits.
     int m_flags;
-    version (X86) {
+    version (X86_Any) {
         // Applies to both x87 status word (16 bits) and SSE2 status word(32 bits).
         const int INEXACT_MASK   = 0x20;
         const int UNDERFLOW_MASK = 0x10;
