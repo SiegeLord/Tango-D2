@@ -20,7 +20,7 @@ void main()
         if (client.isResponseOK)
            {
            // extract content length
-           int length = client.getResponseHeaders.getInt (HttpHeader.ContentLength, int.max);
+           auto length = client.getResponseHeaders.getInt (HttpHeader.ContentLength, uint.max);
 
            // display response
            client.read (&Cout.buffer.consume, length);
