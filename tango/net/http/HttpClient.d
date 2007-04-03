@@ -388,6 +388,9 @@ class HttpClient
                    input = new Buffer (socket);
                 output = new Buffer (socket);
 
+                // save for read() method
+                this.input = input;
+
                 // setup a Host header
                 if (headersOut.get (HttpHeader.Host, null) is null)
                     headersOut.add (HttpHeader.Host, uri.getHost);
