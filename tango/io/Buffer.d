@@ -987,8 +987,27 @@ class Buffer : IBuffer
 
         uint drain ()
         {
-                uint ret = read (&conduit_.write);
-                if (ret is conduit_.Eof)
+                return drain (conduit_);
+        }
+
+        /***********************************************************************
+
+                Drain buffer content
+
+                Returns:
+                Returns the number of bytes written, or Conduit.Eof
+
+                Remarks:
+                Write as much of the buffer that the associated conduit
+                can consume. The conduit is not obliged to consume all 
+                content, so some may remain within the buffer.
+        
+        ***********************************************************************/
+
+        final uint drain (IConduit conduit)
+        {
+                uint ret = read (&conduit.write);
+                if (ret is conduit.Eof)
                     error (eofWrite);
 
                 compress ();
@@ -1011,11 +1030,57 @@ class Buffer : IBuffer
         IBuffer flush ()
         {
                 if (conduit_)
-                    if (conduit_.flush (data [position_..limit_]))
-                        clear();
-                    else
-                       error (eofWrite);
+                    flush (conduit_);
                 return this;
+        } 
+
+        /***********************************************************************
+        
+                Flush all buffer content
+
+                Remarks:
+                Flush the contents of this buffer. This will block until 
+                all content is actually flushed via the associated conduit, 
+                whereas drain() will not.
+
+                Throws an IOException on premature eof.
+
+        ***********************************************************************/
+
+        final IBuffer flush (IConduit conduit)
+        {
+                assert (conduit);
+
+                if (conduit.flush (data [position_ .. limit_]))
+                    clear;
+                else
+                   error (eofWrite);
+                return this;
+        } 
+
+        /***********************************************************************
+        
+                Transfer content via this buffer to the provided dst
+                conduit.
+
+                Remarks:
+                The conduit associated with this buffer is transferred 
+                to another, via a series of fill & drain operations, 
+                until there is no more content to transfer
+
+                Throws an IOException on premature eof
+
+        ***********************************************************************/
+
+        IBuffer transfer (IConduit dst)
+        {
+                assert (conduit_ && dst);
+
+                do {
+                   drain (dst);
+                   } while (fill(conduit_) != IConduit.Eof);
+
+                return flush (dst);
         } 
 
         /***********************************************************************
@@ -1192,7 +1257,7 @@ class Buffer : IBuffer
 
         protected void copy (void *src, uint size)
         {
-                data[limit_..limit_+size] = src[0..size];
+                data[limit_ .. limit_+size] = src[0 .. size];
                 limit_ += size;
         }
 }

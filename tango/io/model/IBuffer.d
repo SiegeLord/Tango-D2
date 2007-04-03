@@ -486,6 +486,22 @@ abstract class IBuffer // could be an interface, but that causes poor codegen
 
         /***********************************************************************
         
+                Transfer content via this buffer to the provided dst
+                conduit.
+
+                Remarks:
+                The conduit associated with this buffer is transferred 
+                to another, via a series of fill & drain operations, 
+                until there is no more content to transfer
+
+                Throws an IOException on premature eof
+
+        ***********************************************************************/
+
+        abstract IBuffer transfer (IConduit dst);
+
+        /***********************************************************************
+        
                 Reset position and limit to zero.
 
         ***********************************************************************/
