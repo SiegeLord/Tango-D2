@@ -66,18 +66,6 @@ class Uri : UriView
 
         private static IOException error;
 
-        private enum    {
-                        ExcScheme       = 0x01, 
-                        ExcAuthority    = 0x02, 
-                        ExcPath         = 0x04, 
-                        ExcQuery        = 0x08, 
-                        IncUser         = 0x10, 
-                        IncPath         = 0x20,
-                        IncQuery        = 0x40,
-                        IncScheme       = 0x80,
-                        IncGeneric      = IncScheme | IncUser | IncPath | IncQuery
-                        };
-
         private struct SchemePort
         {
                         char[]  name;
@@ -121,6 +109,19 @@ class Uri : UriView
 
         private alias void delegate (void[]) Consumer;  // simplistic string appender
 
+
+        public enum    
+        {
+                        ExcScheme       = 0x01, 
+                        ExcAuthority    = 0x02, 
+                        ExcPath         = 0x04, 
+                        ExcQuery        = 0x08, 
+                        IncUser         = 0x10, 
+                        IncPath         = 0x20,
+                        IncQuery        = 0x40,
+                        IncScheme       = 0x80,
+                        IncGeneric      = IncScheme | IncUser | IncPath | IncQuery
+        }
 
         /***********************************************************************
         

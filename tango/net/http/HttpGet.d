@@ -16,32 +16,26 @@ public  import  tango.net.Uri;
 
 private import  tango.io.GrowBuffer;
 
-private import  tango.io.model.IConduit;
-
 private import  tango.net.http.HttpClient,
                 tango.net.http.HttpHeaders;
 
-public  import  tango.core.Type : Interval;
-
 /*******************************************************************************
 
-        Supports the basic needs of a client making file requests of an 
-        HTTP server. The following is a usage example:
-
+        Supports the basic needs of a client making requests of an HTTP
+        server. The following is a usage example:
         ---
         // open a web-page for reading (see HttpPost for writing)
         auto page = new HttpGet ("http://www.digitalmars.com/d/intro.html");
 
         // retrieve and flush display content
         Cout (cast(char[]) page.read) ();
-
         ---
 
 *******************************************************************************/
 
 class HttpGet : HttpClient
 {      
-        private uint pageChunk;
+        private GrowBuffer buffer;
 
         /***********************************************************************
         
@@ -53,7 +47,7 @@ class HttpGet : HttpClient
 
         this (char[] url, uint pageChunk = 16 * 1024)
         {
-                this (new Uri (url), pageChunk);
+                this (new Uri(url), pageChunk);
         }
 
         /***********************************************************************
@@ -67,36 +61,21 @@ class HttpGet : HttpClient
         this (Uri uri, uint pageChunk = 16 * 1024)
         {
                 super (HttpClient.Get, uri);
-                this.pageChunk = pageChunk;
+                buffer = new GrowBuffer (pageChunk, pageChunk);
         }
 
         /***********************************************************************
         
         ***********************************************************************/
 
-        protected IBuffer inputBuffer (IConduit conduit)
+        void[] read ()
         {
-                return new GrowBuffer (conduit, pageChunk);
-        }
-
-        /***********************************************************************
-        
-        ***********************************************************************/
-
-        void[] read (Interval timeout = DefaultReadTimeout)
-        {
-                auto input = open (timeout);
-
-                // check return status for validity
-                if (isResponseOK)
-                   {
-                   // extract content length
-                   int length = getResponseHeaders.getInt (HttpHeader.ContentLength, int.max);
-                   while (input.readable() < length && input.fill() != IConduit.Eof) {}
-                   }
-
-                close ();
-                return input.slice;
+                try {
+                    open (buffer);
+                    if (isResponseOK)
+                        return buffer.fill(getResponseHeaders.getInt(HttpHeader.ContentLength, uint.max)).slice;
+                    } finally {close;}
+                return null;
         }
 }
 

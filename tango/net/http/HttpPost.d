@@ -16,26 +16,27 @@ public import   tango.net.Uri;
 
 private import  tango.io.GrowBuffer;
 
-private import  tango.io.model.IConduit;
-
 private import  tango.net.http.HttpClient,
                 tango.net.http.HttpHeaders;
 
-public  import  tango.core.Type : Interval;
-
 /*******************************************************************************
 
-        Supports the basic needs of a client making file requests of an 
+        Supports the basic needs of a client sending POST requests to a
         HTTP server. The following is a usage example:
 
         ---
+        // open a web-page for posting (see HttpGet for simple reading)
+        auto post = new HttpPost ("http://yourhost/yourpath");
+
+        // send, retrieve and display response
+        Cout (cast(char[]) post.write("posted data", "text/plain"));
         ---
 
 *******************************************************************************/
 
 class HttpPost : HttpClient
 {      
-        private uint pageChunk;
+        private GrowBuffer buffer;
 
         /***********************************************************************
         
@@ -61,18 +62,7 @@ class HttpPost : HttpClient
         this (Uri uri, uint pageChunk = 16 * 1024)
         {
                 super (HttpClient.Post, uri);
-                this.pageChunk = pageChunk;
-        }
-
-        /***********************************************************************
-        
-                Provide an input buffer for HttpClient
-
-        ***********************************************************************/
-
-        protected IBuffer inputBuffer (IConduit conduit)
-        {
-                return new GrowBuffer (conduit, pageChunk);
+                buffer = new GrowBuffer (pageChunk, pageChunk);
         }
 
         /***********************************************************************
@@ -81,9 +71,9 @@ class HttpPost : HttpClient
 
         ***********************************************************************/
 
-        void[] write (Interval timeout = DefaultReadTimeout)
+        void[] write ()
         {
-                return write (cast(Pump) null, timeout);
+                return write (null);
         }
 
         /***********************************************************************
@@ -94,14 +84,14 @@ class HttpPost : HttpClient
 
         ***********************************************************************/
 
-        void[] write (void[] content, char[] type, Interval timeout = DefaultReadTimeout)
+        void[] write (void[] content, char[] type)
         {
                 auto headers = getRequestHeaders();
 
                 headers.add    (HttpHeader.ContentType, type);
                 headers.addInt (HttpHeader.ContentLength, content.length);
                 
-                return write (delegate void (IBuffer b){b.append(content);}, timeout);
+                return write (delegate void (IBuffer b){b.append(content);});
         }
 
         /***********************************************************************
@@ -112,25 +102,20 @@ class HttpPost : HttpClient
 
         ***********************************************************************/
 
-        void[] write (Pump pump, Interval timeout = DefaultReadTimeout)
+        void[] write (Pump pump)
         {
-                auto input = open (timeout, pump);
-                scope (exit)
-                       close;
+                try {
+                    open (pump, buffer);
 
-                // check return status for validity
-                auto status = getStatus();
-                if (status is HttpResponseCode.OK || 
-                    status is HttpResponseCode.Created || 
-                    status is HttpResponseCode.Accepted
-                   ) 
-                   {
-                   // extract content length
-                   int length = getResponseHeaders.getInt (HttpHeader.ContentLength, int.max);
-                   while (input.readable() < length && input.fill() != IConduit.Eof) {}
-                   }
+                    // check return status for validity
+                    auto status = getStatus();
+                    if (status is HttpResponseCode.OK || 
+                        status is HttpResponseCode.Created || 
+                        status is HttpResponseCode.Accepted)
+                        return buffer.fill(getResponseHeaders.getInt(HttpHeader.ContentLength, uint.max)).slice;
+                    } finally {close;}
 
-                return input.slice;
+                return null;
         }
 }
 

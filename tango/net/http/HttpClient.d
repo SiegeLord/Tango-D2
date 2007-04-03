@@ -59,7 +59,7 @@ private import  Integer = tango.text.convert.Integer;
         if (client.isResponseOK)
            {
            // extract content length
-           int length = client.getResponseHeaders.getInt (HttpHeader.ContentLength, int.max);
+           auto length = client.getResponseHeaders.getInt (HttpHeader.ContentLength, uint.max);
         
            // display all returned headers
            Stdout.put (client.getResponseHeaders);
@@ -72,6 +72,8 @@ private import  Integer = tango.text.convert.Integer;
 
         client.close ();
         ---
+
+        See modules HttpGet and HttpPost for simple wrappers instead.
 
 *******************************************************************************/
 
@@ -100,11 +102,11 @@ class HttpClient
         private HttpCookies             cookiesOut;
         private ResponseLine            responseLine;
 
+        // default to three second timeout on read operations ...
+        private Interval                timeout = 3;
+
         // should we perform internal redirection?
         private bool                    doRedirect = true;
-
-        // default to three second timeout on read operations ...
-        protected const Interval        DefaultReadTimeout = 3;
 
         // use HTTP v1.0?
         private static const char[] DefaultHttpVersion = "HTTP/1.0";
@@ -298,6 +300,17 @@ class HttpClient
 
         /***********************************************************************
 
+                set timeout period for read operation
+        
+        ***********************************************************************/
+
+        void setTimeout (Interval interval)
+        {
+                timeout = interval;
+        }
+
+        /***********************************************************************
+
                 Overridable method to create a Socket. You may find a need 
                 to override this for some purpose; perhaps to add input or 
                 output filters.
@@ -311,20 +324,16 @@ class HttpClient
 
         /***********************************************************************
         
+                Make a request for the resource specified via the constructor,
+                using the specified timeout period (in milli-seconds).The 
+                return value represents the input buffer, from which all
+                returned headers and content may be accessed.
+                
         ***********************************************************************/
 
-        protected IBuffer inputBuffer (IConduit conduit)
+        IBuffer open (IBuffer buffer = null)
         {
-                return new Buffer (conduit);
-        }
-
-        /***********************************************************************
-        
-        ***********************************************************************/
-
-        protected IBuffer outputBuffer (IConduit conduit)
-        {
-                return new Buffer (conduit);
+                return open (method, null, buffer);
         }
 
         /***********************************************************************
@@ -337,40 +346,9 @@ class HttpClient
                 
         ***********************************************************************/
 
-        IBuffer open (Pump pump)
+        IBuffer open (Pump pump, IBuffer buffer = null)
         {
-                return open (DefaultReadTimeout, pump);
-        }
-
-        /***********************************************************************
-        
-                Make a request for the resource specified via the constructor,
-                using the specified timeout period (in milli-seconds).The 
-                return value represents the input buffer, from which all
-                returned headers and content may be accessed.
-                
-        ***********************************************************************/
-
-        IBuffer open (Interval timeout = DefaultReadTimeout)
-        {
-                return open (timeout, null);
-        }
-
-        /***********************************************************************
-        
-                Make a request for the resource specified via the constructor
-                using the specified timeout period (in micro-seconds), and a
-                user-defined callback for pumping additional data to the host.
-                The callback would be used when uploading data during a 'put'
-                operation (or equivalent). The return value represents the 
-                input buffer, from which all returned headers and content may 
-                be accessed.
-                
-        ***********************************************************************/
-
-        IBuffer open (Interval timeout, Pump pump)
-        {
-                return open (timeout, pump, method);
+                return open (method, pump, buffer);
         }
 
         /***********************************************************************
@@ -389,145 +367,138 @@ class HttpClient
                 type of request. The latter two are *not* produced for Post
                 requests with 'pump' specified ~ when using 'pump' to output
                 additional content, you must explicitly set your own headers.
+
+                Note also that IOException instances may be thrown. These 
+                should be caught by the client to ensure a close() operation
+                is always performed
                 
         ***********************************************************************/
 
-        private IBuffer open (Interval timeout, Pump pump, RequestMethod method)
+        private IBuffer open (RequestMethod method, Pump pump, IBuffer input)
         {
                 // create socket, and connect it 
                 socket = createSocket;
-                try {
-                    socket.setTimeout (timeout);
-                    socket.connect (address);
+                socket.setTimeout (timeout);
+                socket.connect (address);
 
-                    // create buffers for input and output
-                    input  = inputBuffer  (socket);
-                    output = outputBuffer (socket);
+                // create buffers for input and output
+                if (input)
+                    input.clear.setConduit (socket);
+                else
+                   input = new Buffer (socket);
+                output = new Buffer (socket);
 
-                    // bind a writer to the output
-                    auto emit = output;
+                // setup a Host header
+                if (headersOut.get (HttpHeader.Host, null) is null)
+                    headersOut.add (HttpHeader.Host, uri.getHost);
 
-                    // setup a Host header
-                    if (headersOut.get (HttpHeader.Host, null) is null)
-                        headersOut.add (HttpHeader.Host, uri.getHost);
+                // http/1.0 needs connection:close
+                headersOut.add (HttpHeader.Connection, "close");
 
-                    // http/1.0 needs connection:close
-                    headersOut.add (HttpHeader.Connection, "close");
+                // attach/extend query parameters if user has added some
+                tmp.clear;
+                auto query = uri.extendQuery (paramsOut.formatTokens(tmp, "&"));
 
-                    // attach/extend query parameters if user has added some
-                    tmp.clear;
-                    auto query = uri.extendQuery (paramsOut.formatTokens(tmp, "&"));
+                // patch request path?
+                auto path = uri.getPath;
+                if (path.length is 0)
+                    path = "/";
+ 
+                // format encoded request 
+                output (method.name) (" "), uri.encode (&output.consume, path, uri.IncPath);
 
-                    // patch request path?
-                    auto path = uri.getPath;
-                    if (path.length is 0)
-                        path = "/";
+                // should we emit query as part of request line?
+                if (query.length)
+                    if (method is Get)
+                        output ("?"), uri.encode (&output.consume, query, uri.IncQuery);
+                    else 
+                       if (method is Post && pump.funcptr is null)
+                          {
+                          // we're POSTing query text - add default info
+                          if (headersOut.get (HttpHeader.ContentType, null) is null)
+                              headersOut.add (HttpHeader.ContentType, "application/x-www-form-urlencoded");
 
-                    // format request 
-                    emit (method.name)
-                         (" ")
-                         (path);
+                          if (headersOut.get (HttpHeader.ContentLength, null) is null)
+                              headersOut.addInt (HttpHeader.ContentLength, query.length);
+                          }
 
-                    // should we emit query as part of request line?
-                    if (query.length)
-                        if (method is Get)
-                            emit ("?") (query);
-                        else 
-                           if (method is Post && pump is null)
-                              {
-                              // we're POSTing query text - add default info
-                              if (headersOut.get (HttpHeader.ContentType, null) is null)
-                                  headersOut.add (HttpHeader.ContentType, "application/x-www-form-urlencoded");
+                // complete the request line, and emit headers too
+                output (" ") (DefaultHttpVersion) (HttpConst.Eol);
+   
+                headersOut.produce (&output.consume, HttpConst.Eol);
+                output (HttpConst.Eol);
 
-                              if (headersOut.get (HttpHeader.ContentLength, null) is null)
-                                  headersOut.addInt (HttpHeader.ContentLength, query.length);
-                              }
-                    
-                    // complete the request line, and emit headers too
-                    emit (" ")
-                         (DefaultHttpVersion)
-                         (HttpConst.Eol);
+                // user has additional data to send?
+                if (pump.funcptr)
+                    pump (output);
+                else
+                   // send encoded POST query instead?
+                   if (method is Post && query.length)
+                       uri.encode (&output.consume, query, uri.IncQuery);
 
-                    headersOut.produce (&emit.consume, HttpConst.Eol);
-                    emit (HttpConst.Eol);
+                // send entire request
+                output.flush;
 
-                    // user has additional data to send?
-                    if (pump.funcptr)
-                        pump (emit);
-                    else
-                       // send POST data?
-                       if (method is Post && query.length)
-                           emit (query);
+                // Token for initial parsing of input header lines
+                auto line = new LineIterator!(char) (input);
 
-                    // send entire request
-                    emit.flush;
+                // skip any blank lines
+                while (line.next && line.get.length is 0) 
+                      {}
 
-                    // Token for initial parsing of input header lines
-                    auto line = new LineIterator!(char) (input);
+                // throw if we experienced a timeout
+                if (socket.hadTimeout)
+                    responseLine.error ("response timeout");
 
-                    // skip any blank lines
-                    while (line.next && line.get.length is 0) 
-                          {}
+                // is this a bogus request?
+                if (line.get.length is 0)
+                    responseLine.error ("truncated response");
 
-                    // throw if we experienced a timeout
-                    if (socket.hadTimeout)
-                        responseLine.error ("response timeout");
+                // read response line
+                responseLine.parse (line.get);
 
-                    // is this a bogus request?
-                    if (line.get.length is 0)
-                        responseLine.error ("truncated response");
+                // parse incoming headers
+                headersIn.reset.parse (input);
 
-                    // read response line
-                    responseLine.parse (line.get);
+                // check for redirection
+                if (doRedirect)
+                    switch (responseLine.getStatus)
+                           {
+                           case HttpResponseCode.SeeOther:
+                           case HttpResponseCode.MovedPermanently:
+                           case HttpResponseCode.MovedTemporarily:
+                           case HttpResponseCode.TemporaryRedirect:
+                                // drop this connection
+                                close;
+   
+                                // remove any existing Host header
+                                headersOut.remove (HttpHeader.Host);
 
-                    // parse incoming headers
-                    headersIn.reset.parse (input);
+                                // parse redirected uri
+                                auto redirect = headersIn.get (HttpHeader.Location, "[missing url]");
+                                uri.relParse (redirect);
 
-                    // check for redirection
-                    if (doRedirect)
-                        switch (responseLine.getStatus)
-                               {
-                               case HttpResponseCode.SeeOther:
-                               case HttpResponseCode.MovedPermanently:
-                               case HttpResponseCode.MovedTemporarily:
-                               case HttpResponseCode.TemporaryRedirect:
-                                    // drop this connection
-                                    close;
+                                // decode the host name (may take a second or two)
+                                auto host = uri.getHost();
+                                if (host)
+                                    address = new InternetAddress (uri.getHost, uri.getValidPort);
+                                else
+                                   responseLine.error ("redirect has invalid url: "~redirect);
 
-                                    // remove any existing Host header
-                                    headersOut.remove (HttpHeader.Host);
+                                // figure out what to do
+                                if (method is Get || method is Head)
+                                    return open (method, pump, input);
+                                else
+                                   if (method is Post)
+                                       return redirectPost (pump, input, responseLine.getStatus);
+                                   else
+                                      responseLine.error ("unexpected redirect for method "~method.name);
+                           default:
+                                break;
+                           }
 
-                                    // parse redirected uri
-                                    auto redirect = headersIn.get (HttpHeader.Location, "[missing url]");
-                                    uri.relParse (redirect);
-
-                                    // decode the host name (may take a second or two)
-                                    auto host = uri.getHost();
-                                    if (host)
-                                        address = new InternetAddress (uri.getHost(), uri.getValidPort());
-                                    else
-                                       responseLine.error ("redirect has invalid url: "~redirect);
-
-                                    // figure out what to do
-                                    if (method is Get || method is Head)
-                                        return open (timeout, pump, method);
-                                    else
-                                       if (method is Post)
-                                           return redirectPost (timeout, pump, responseLine.getStatus);
-                                       else
-                                          responseLine.error ("unexpected redirect for method "~method.name);
-                               default:
-                                    break;
-                               }
-
-                    // return the input buffer
-                    return input;
-                    } catch (Exception e)
-                            {
-                            // close *only* when we get an exception
-                            close;
-                            throw e;
-                            }
+                // return the input buffer
+                return input;
         }
 
         /***********************************************************************
@@ -552,7 +523,7 @@ class HttpClient
 
         ***********************************************************************/
 
-        IBuffer redirectPost (Interval timeout, Pump pump, int status)
+        IBuffer redirectPost (Pump pump, IBuffer input, int status)
         {
                 switch (status)
                        {
@@ -564,13 +535,13 @@ class HttpClient
                             headersOut.remove (HttpHeader.ContentLength);
                             headersOut.remove (HttpHeader.ContentType);
                             paramsOut.reset;
-                            return open (timeout, null, Get);
+                            return open (Get, null, input);
 
                             // try entire Post again, if user say OK
                        case HttpResponseCode.MovedPermanently:
                        case HttpResponseCode.TemporaryRedirect:
                             if (canRepost (status))
-                                return open (timeout, pump, this.method);
+                                return open (this.method, pump, input);
                             // fall through!
 
                        default:

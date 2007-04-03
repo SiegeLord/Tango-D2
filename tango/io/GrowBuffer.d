@@ -27,6 +27,8 @@ class GrowBuffer : Buffer
 {
         private uint increment;
 
+        alias Buffer.slice slice;
+
         /***********************************************************************
         
                 Create a GrowBuffer with the specified initial size.
@@ -86,6 +88,23 @@ class GrowBuffer : Buffer
                 if (eat)
                     position_ += size;
                 return data [i .. i + size];               
+        }
+
+        /***********************************************************************
+        
+                Expand and consume the conduit content, up to the maximum 
+                size indicated by the argument.
+
+                Returns a chaining reference
+
+        ***********************************************************************/
+
+        GrowBuffer fill (uint size = uint.max)
+        {   
+                while (readable < size)
+                       if (fill(conduit) is IConduit.Eof)
+                           break;
+                return this;
         }
 
         /***********************************************************************
