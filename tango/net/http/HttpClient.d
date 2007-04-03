@@ -452,7 +452,7 @@ class HttpClient
                     emit (HttpConst.Eol);
 
                     // user has additional data to send?
-                    if (pump.ptr)
+                    if (pump.funcptr)
                         pump (emit);
                     else
                        // send POST data?
