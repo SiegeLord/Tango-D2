@@ -6,6 +6,8 @@
 # This software is provided with no warranty, express or implied, within the
 # bounds of applicable law.
 
+CROSS=""
+
 die() {
     echo "$1"
     exit $2
@@ -22,17 +24,11 @@ Options:
 }
 
 cd "`dirname $0`"
-gdc --help >& /dev/null || die "gdc not found on your \$PATH!" 1
 
 # 0) Parse arguments
 INPLACE=0
 SETPREFIX=0
 UNINSTALL=0
-GPHOBOS_DIR="`gdc -print-file-name=libgphobos.a`"
-GPHOBOS_DIR="`dirname $GPHOBOS_DIR`"
-PREFIX="$GPHOBOS_DIR/.."
-GDC_VER="`gdc -dumpversion`"
-GDC_MCH="`gdc -dumpmachine`"
 
 while [ "$#" != "0" ]
 do
@@ -48,11 +44,31 @@ do
     elif [ "$1" = "--uninstall" ]
     then
         UNINSTALL=1
+    elif [ "$1" = "--cross" ]
+    then
+        shift
+        CROSS="$1-"
     else
         usage
     fi
     shift
 done
+
+${CROSS}gdc --help >& /dev/null || die "gdc not found on your \$PATH!" 1
+
+GPHOBOS_DIR="`${CROSS}gdc -print-file-name=libgphobos.a`"
+GPHOBOS_DIR="`dirname $GPHOBOS_DIR`"
+# If we have which, use it to get the prefix
+which --version >& /dev/null
+if [ "$?" = "0" ]
+then
+    PREFIX="`which ${CROSS}gdc`"
+    PREFIX="`dirname $PREFIX`/.."
+else
+    PREFIX="$GPHOBOS_DIR/.."
+fi
+GDC_VER="`${CROSS}gdc -dumpversion`"
+GDC_MCH="`${CROSS}gdc -dumpmachine`"
 
 if [ "$INPLACE" = "1" -a \
      "$SETPREFIX" = "1" ]

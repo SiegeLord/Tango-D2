@@ -91,6 +91,7 @@ CXXFLAGS="$save_CXXFLAGS"
 m4_rename([glibcxx_PRECIOUS],[_AC_ARG_VAR_PRECIOUS])
 AC_SUBST(CFLAGS)
 AC_SUBST(CXXFLAGS)
+AC_SUBST(LDFLAGS)
 dnl -- End of copy from libstdc++-v3/acinclude.m4
 
 dnl These should be inherited in the recursive make, but ensure they are
