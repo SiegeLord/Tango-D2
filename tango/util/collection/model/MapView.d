@@ -87,6 +87,7 @@ public interface MapView(K, V) : View!(V)
         **/
 
         public V get(K key);
+        public alias get opIndex;
 
         /**
          * Return the element associated with Key key. 

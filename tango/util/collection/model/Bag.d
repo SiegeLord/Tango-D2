@@ -25,6 +25,8 @@ private import  tango.util.collection.model.BagView,
 
 public interface Bag(V) : BagView!(V), Dispenser!(V)
 {
+        public alias add opCatAssign;
+
         void add (V);
 
         void addIf (V);

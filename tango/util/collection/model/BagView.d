@@ -32,6 +32,8 @@ public interface BagView(V) : View!(V)
 {
 version (VERBOSE)
 {
+        public alias adding opCat;
+
         /**
          * Construct a new Bag that is a clone of self except
          * that it includes indicated element. This can be used
@@ -45,7 +47,6 @@ version (VERBOSE)
         **/
 
         public Bag adding(V element);
-
 
         /**
          * Construct a new Collection that is a clone of self except

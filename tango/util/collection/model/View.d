@@ -45,6 +45,7 @@ public interface View(T)
          * Returns: true iff contains at least one member that is equal to element.
         **/
         public bool contains (T element);
+        public alias contains opIn;
 
         /**
          * Report the number of elements in the View.
@@ -189,6 +190,7 @@ public interface View(T)
         **/
 
         public bool matches (View other);
+        public alias matches opEquals;
 
 
         /**

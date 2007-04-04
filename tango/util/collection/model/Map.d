@@ -51,6 +51,23 @@ public interface Map(K, T) : MapView!(K, T), Dispenser!(T)
 
         public void add (K key, T element);
 
+        /**
+         * Include the indicated pair in the Map
+         * If a different pair
+         * with the same key was previously held, it is replaced by the
+         * new pair.
+         *
+         * @param element the element to include
+         * @param key the key for element to include
+         * Returns: condition: 
+         * <PRE>
+         * has(key, element) &&
+         * no spurious effects &&
+         * Version change iff !PREV(this).contains(key, element))
+         * </PRE>
+        **/
+
+        public void opIndexAssign (T element, K key);
 
 
         /**

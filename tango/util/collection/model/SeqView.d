@@ -43,6 +43,7 @@ public interface SeqView(T) : View!(T)
         **/
 
         public T get(int index);
+        public alias get opIndex;
 
 
         /**
@@ -120,6 +121,22 @@ public interface SeqView(T) : View!(T)
          * Throws: NoSuchElementException if index is not in range 0..size()-1
         **/
         public SeqView subset(int index, int length);
+
+        /**
+         * Construct a new SeqView that is a clone of self except
+         * that it does not contain the elements before begin or
+         * after end-1. If length is less than or equal to zero,
+         * return an empty SeqView.
+         * @param index of the element that will be the 0th index in new SeqView
+         * @param index of the last element in the SeqView plus 1
+         * Returns: new seq such that
+         * <PRE>
+         * s.size() == max(0, length) &&
+         * foreach (int i in 0 .. s.size()-1) s.at(i).equals(at(i+index)); 
+         * </PRE>
+         * Throws: NoSuchElementException if index is not in range 0..size()-1
+        **/
+        public SeqView opSlice(int begin, int end);
 
 
 version (VERBOSE)

@@ -451,10 +451,11 @@ public abstract class Collection(T) : Dispenser!(T)
 
         ************************************************************************/
 
-        public override void checkImplementation()
+        public void checkImplementation()
         {
                 assert(count >= 0);
         }
+        //public override void checkImplementation() //Doesn't compile with the override attribute
 
         /***********************************************************************
 

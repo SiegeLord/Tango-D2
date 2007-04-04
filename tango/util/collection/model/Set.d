@@ -62,5 +62,6 @@ public interface Set(T) : SetView!(T), Dispenser!(T)
         **/
 
         public void add (Iterator!(T) e);
+        public alias add opCatAssign;
 }
 

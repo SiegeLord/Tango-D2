@@ -102,6 +102,7 @@ version (VERBOSE)
         }
 } // version
 
+
         /***********************************************************************
 
                 Implements tango.util.collection.impl.Collection.Collection.removeAll
@@ -133,5 +134,32 @@ version (VERBOSE)
                 while (e.more)
                        remove (e.get);
         }
+
+        /***********************************************************************
+
+                Implements tango.util.collection.model.Seq.opIndexAssign
+                See_Also: tango.util.collection.model.Seq.replaceAt
+
+                Calls replaceAt(index, element);
+
+        ************************************************************************/
+        public final void opIndexAssign (T element, int index)
+        {
+                replaceAt(index, element);
+        }
+
+        /***********************************************************************
+
+                Implements tango.util.collection.model.SeqView.opSlice
+                See_Also: tango.util.collection.model.SeqView.subset
+
+                Calls subset(begin, (end - begin));
+
+        ************************************************************************/
+        public SeqCollection opSlice(int begin, int end)
+        {
+                return subset(begin, (end - begin));
+        }
+
 }
 

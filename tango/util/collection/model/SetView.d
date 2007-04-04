@@ -49,6 +49,7 @@ version (VERBOSE)
         **/
 
         public Set including (T element);
+        public alias including opCat;
 } // version
 }
 

@@ -109,6 +109,20 @@ public abstract class MapCollection(K, T) : Collection!(T), Map!(K, T)
 
         /***********************************************************************
 
+                Implements tango.util.collection.impl.MapCollection.MapCollection.opIndexAssign
+                Just calls add(key, element).
+
+                See_Also: tango.util.collection.impl.MapCollection.MapCollection.add
+
+        ************************************************************************/
+
+        public final void opIndexAssign (T element, K key)
+        {
+                add (key, element);
+        }
+
+        /***********************************************************************
+
                 Implements tango.util.collection.impl.Collection.Collection.matches
                 Time complexity: O(n).
                 Default implementation. Fairly sleazy approach.

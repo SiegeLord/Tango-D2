@@ -99,6 +99,23 @@ public interface Seq(T) : SeqView!(T), Dispenser!(T)
 
         public void replaceAt (int index, T element);
 
+        /**
+         * replace element at indicated index with new value
+         * @param element the new value
+         * @param index the index at which to replace value
+         * Returns: condition:
+         * <PRE>
+         * size() == PREV(this).size() &&
+         * at(index).equals(element) &&
+         * no spurious effects
+         * Version change <-- !element.equals(PREV(this).get(index)
+         *                    (but MAY change even if equal).
+         * </PRE>
+         * Throws: NoSuchElementException if index is not in range 0..size()-1
+         * Throws: IllegalElementException if !canInclude(element)
+        **/
+        public void opIndexAssign (T element, int index);
+
 
         /**
          * Remove element at indicated index. All elements to the right
@@ -148,6 +165,7 @@ public interface Seq(T) : SeqView!(T), Dispenser!(T)
         **/
 
         public void append(T element);
+        public alias append opCatAssign;
 
         /**
          * replace element at end of the sequence with new value
