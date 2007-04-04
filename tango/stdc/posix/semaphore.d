@@ -18,6 +18,7 @@ extern (C):
 //
 /*
 sem_t
+SEM_FAILED
 
 int sem_close(sem_t*);
 int sem_destroy(sem_t*);
@@ -46,10 +47,14 @@ version( linux )
       int               __sem_value;
       void*             __sem_waiting;
     }
+
+    const SEM_FAILED    = cast(sem_t*) null;
 }
 else version( darwin )
 {
     alias int sem_t;
+
+    const SEM_FAILED    = cast(sem_t*) null;
 }
 
 int sem_close(sem_t*);
