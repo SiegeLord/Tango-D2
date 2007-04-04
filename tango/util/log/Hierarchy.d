@@ -70,7 +70,7 @@ private class LoggerInstance : Logger
 
         ***********************************************************************/
 
-        final bool isEnabled (Level level)
+        final bool isEnabled (Level level = Level.Fatal)
         {
                 return level >= this.level;
         }

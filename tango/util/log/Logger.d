@@ -180,7 +180,7 @@ public class Logger : ILevel
 
         ***********************************************************************/
 
-        abstract bool isEnabled (Level level);
+        abstract bool isEnabled (Level level = Level.Fatal);
 
         /***********************************************************************
 
