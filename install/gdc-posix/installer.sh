@@ -17,8 +17,8 @@ TTMP=/tmp/tango.installer.$$
 mkdir -p $TTMP || die 1 "Failed to create temporary directory"
 
 # This installer works by black magic: The following number must be the exact
-# number of lines in this file+4:
-LINES=103
+# number of lines in this file+3:
+LINES=88
 
 # Install GDC if necessary
 GDCDIR=
@@ -34,7 +34,7 @@ then
     export PATH="$GDCDIR/bin:$PATH"
     mkdir -p $GDCDIR || die 1 "Failed to create the GDC install directory"
     cd $GDCDIR || die 1 "Failed to cd to the GDC install directory"
-    tail -n$LINES $FULLNAME | tar Oxf - gdc.tar.gz | gunzip -c | tar xf - ||
+    tail -n+$LINES $FULLNAME | tar Oxf - gdc.tar.gz | gunzip -c | tar xf - ||
         die 1 "Failed to extract GDC"
 fi
 
@@ -53,24 +53,21 @@ then
         fi
     else
         # Get our proper GDC prefix
-        OLDIPS="$IPS"
-        IPS=:
-        for i in $PATH
+        for i in `echo $PATH | sed 's/:/ /g'`
         do
-            if [ -e "$i/bin/gdc" ]
+            if [ -e "$i/gdc" ]
             then
-                GDCDIR="$i"
+                GDCDIR="$i/.."
                 break
             fi
         done
-        IPS="$OLDIPS"
     fi
 fi
 
 # Then, cd to our tmpdir and extract core.tar.gz
 cd $TTMP || die 1 "Failed to cd to temporary directory"
 
-tail -n$LINES $FULLNAME | tar Oxf - core.tar.gz | gunzip -c | tar xf - ||
+tail -n+$LINES $FULLNAME | tar Oxf - core.tar.gz | gunzip -c | tar xf - ||
     die 1 "Failed to extract the Tango core"
 
 # And install it
@@ -81,7 +78,7 @@ cd lib || die 1 "Tango core improperly archived"
 
 # Then install the rest of Tango
 cd $GDCDIR || die 1 "Failed to cd to GDC's installed prefix"
-tail -n$LINES $FULLNAME | tar Oxf - tango.tar.gz | gunzip -c | tar xf - ||
+tail -n+$LINES $FULLNAME | tar Oxf - tango.tar.gz | gunzip -c | tar xf - ||
     die 1 "Failed to extract Tango"
 
 echo 'Done!'

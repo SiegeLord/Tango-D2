@@ -38,12 +38,11 @@ do
     shift
 done
 
-if [ ! -e "$GPHOBOS_DIR/libgphobos.spec.phobos" ]
+if [ ! -e "$GPHOBOS_DIR/libgphobos.a.phobos" ]
 then
     die "tango does not appear to be installed!" 3
 fi
 rm -rf $GPHOBOS_DIR/libgphobos.a $GPHOBOS_DIR/libtango.a $PREFIX/include/d/$GDC_VER/object.d
 mv $PREFIX/include/d/$GDC_VER/object.d.phobos $PREFIX/include/d/$GDC_VER/object.d
 mv $GPHOBOS_DIR/libgphobos.a.phobos $GPHOBOS_DIR/libgphobos.a
-mv -f $GPHOBOS_DIR/libgphobos.spec.phobos $GPHOBOS_DIR/libgphobos.spec
 echo "Done!"
