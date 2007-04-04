@@ -20,9 +20,6 @@ module tango.util.collection.impl.Collection;
 
 private import  tango.core.Exception;
 
-private import  tango.io.protocol.model.IReader,
-                tango.io.protocol.model.IWriter;
-
 private import  tango.util.collection.model.View,
                 tango.util.collection.model.Iterator,
                 tango.util.collection.model.Dispenser;
@@ -37,7 +34,7 @@ private import  tango.util.collection.model.View,
 
 ********************************************************************************/
 
-public abstract class Collection(T) : Dispenser!(T), IReadable, IWritable
+public abstract class Collection(T) : Dispenser!(T)
 {
         alias View!(T)          ViewT;
 
@@ -448,27 +445,6 @@ public abstract class Collection(T) : Dispenser!(T), IReadable, IWritable
                    }
         }
 
-
-        /***********************************************************************
-
-                Default implementation of IReadable interface
-                
-        ************************************************************************/
-
-        public void read (IReader input)
-        {
-        }
-                        
-        /***********************************************************************
-
-                Default implementation of IWritable interface
-
-        ************************************************************************/
-
-        public void write (IWriter output)
-        {
-        }
-                        
         /***********************************************************************
 
                 See_Also: tango.util.collection.model.View.View.checkImplementation
@@ -488,7 +464,6 @@ public abstract class Collection(T) : Dispenser!(T), IReadable, IWritable
 
         abstract void clear();
 
-
         /***********************************************************************
 
                 Exclude all occurrences of the indicated element from the collection. 
@@ -505,7 +480,6 @@ public abstract class Collection(T) : Dispenser!(T), IReadable, IWritable
         ************************************************************************/
 
         abstract void removeAll(T element);
-
 
         /***********************************************************************
 
@@ -524,7 +498,6 @@ public abstract class Collection(T) : Dispenser!(T), IReadable, IWritable
         ************************************************************************/
 
         abstract void remove (T element);
-
         
         /***********************************************************************
 
@@ -550,7 +523,6 @@ public abstract class Collection(T) : Dispenser!(T), IReadable, IWritable
 
         abstract void replace (T oldElement, T newElement);
 
-
         /***********************************************************************
 
                 Replace all occurrences of oldElement with newElement.
@@ -575,7 +547,6 @@ public abstract class Collection(T) : Dispenser!(T), IReadable, IWritable
 
         abstract void replaceAll(T oldElement, T newElement);
 
-
         /***********************************************************************
 
                 Exclude all occurrences of each element of the Iterator.
@@ -595,7 +566,6 @@ public abstract class Collection(T) : Dispenser!(T), IReadable, IWritable
 
         abstract void removeAll (Iterator!(T) e);
 
-
         /***********************************************************************
 
                  Remove an occurrence of each element of the Iterator.
@@ -614,7 +584,6 @@ public abstract class Collection(T) : Dispenser!(T), IReadable, IWritable
         ************************************************************************/
 
         abstract void remove (Iterator!(T) e);
-
 
         /***********************************************************************
 
