@@ -43,7 +43,7 @@ struct CodePage
 
         /**********************************************************************
 
-                Convert utf8 text to a a codepage representation
+                Convert utf8 text to a codepage representation
 
                 page  0     - the ansi code page
                       1     - the oem code page
@@ -57,7 +57,10 @@ struct CodePage
                 returns: a slice of the provided output buffer 
                          representing converted text
 
-                Note that the input must be utf8 encoded
+                Note that the input must be utf8 encoded. Note also
+                that the dst output should be sufficiently large to
+                accomodate the output; a size of 2*src.length would
+                be enough to host almost any conversion
 
         **********************************************************************/
 
@@ -82,6 +85,11 @@ struct CodePage
 
                 returns: a slice of the provided output buffer 
                          representing converted text
+
+                Note that the input will be utf8 encoded. Note also
+                that the dst output should be sufficiently large to
+                accomodate the output; a size of 2*src.length would
+                be enough to host almost any conversion
 
         **********************************************************************/
 
