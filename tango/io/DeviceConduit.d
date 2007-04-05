@@ -289,7 +289,7 @@ class DeviceConduit : Conduit
 
 *******************************************************************************/
 
-package class FileDevice
+class FileDevice
 {
         private uint            _id;
         private Conduit.Access  access;
