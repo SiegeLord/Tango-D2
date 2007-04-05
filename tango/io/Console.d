@@ -19,10 +19,10 @@ private import  tango.sys.Common;
 private import  tango.io.Buffer,
                 tango.io.DeviceConduit;
 
-/*
+
 version (Posix)
          private import tango.stdc.posix.unistd;  // needed for isatty()
-*/
+
 
 /*******************************************************************************
 
@@ -57,8 +57,9 @@ struct Console
         class Input
         {
                 private Buffer  buffer_;
+                private bool    redirect;
 
-                public alias copyLine get;
+                public alias    copyLine get;
 
                 /**************************************************************
 
@@ -68,7 +69,9 @@ struct Console
 
                 private this (FileDevice device)
                 {
-                        buffer_ = new Buffer (new ConsoleConduit (device));
+                        auto conduit = new ConsoleConduit (device);
+                        redirect = conduit.redirected;
+                        buffer_ = new Buffer (conduit);
                 }
 
                 /**************************************************************
@@ -147,6 +150,24 @@ struct Console
 
                         return buffer_.next (&line) || content.length;
                 }
+
+                /**************************************************************
+
+                        Is this device redirected?
+
+                        Returns:
+                        True if redirected, false otherwise.
+
+                        Remarks:
+                        Reflects the console redirection status from when 
+                        this module was instantiated
+
+                **************************************************************/
+
+                bool redirected ()
+                {
+                        return redirect;
+                }           
         }
 
 
@@ -161,10 +182,11 @@ struct Console
 
         class Output
         {
-                private Buffer buffer_;
-                
-                public  alias append opCall;
-                public  alias flush  opCall;
+                private Buffer  buffer_;
+                private bool    redirect;
+
+                public  alias   append opCall;
+                public  alias   flush  opCall;
 
                 /**************************************************************
 
@@ -174,7 +196,9 @@ struct Console
 
                 private this (FileDevice device)
                 {
-                        buffer_ = new Buffer (new ConsoleConduit (device));
+                        auto conduit = new ConsoleConduit (device);
+                        redirect = conduit.redirected;
+                        buffer_ = new Buffer (conduit);
                 }
 
                 /**************************************************************
@@ -272,6 +296,24 @@ struct Console
                         buffer_.flush;
                         return this;
                 }           
+
+                /**************************************************************
+
+                        Is this device redirected?
+
+                        Returns:
+                        True if redirected, false otherwise.
+
+                        Remarks:
+                        Reflects the console redirection status from when 
+                        this module was instantiated
+
+                **************************************************************/
+
+                bool redirected ()
+                {
+                        return redirect;
+                }           
         }
 
 
@@ -293,7 +335,7 @@ struct Console
 
         class ConsoleConduit : DeviceConduit
         {
-                private bool redirect = false;
+                private bool redirected = false;
 
                 /***************************************************************
 
@@ -355,7 +397,7 @@ struct Console
                                 // are we redirecting?
                                 DWORD mode;
                                 if (! GetConsoleMode (handle, &mode))
-                                      redirect = true;
+                                      redirected = true;
                         }
 
                         /*******************************************************
@@ -372,7 +414,7 @@ struct Console
                                 {
                                 protected override uint writer (void[] src)
                                 {
-                                if (redirect)
+                                if (redirected)
                                     return super.writer (src);
                                 else
                                    {
@@ -426,7 +468,7 @@ struct Console
                                 {
                                 protected override uint reader (void[] dst)
                                 {
-                                if (redirect)
+                                if (redirected)
                                     return super.reader (dst);
                                 else
                                    {
@@ -473,7 +515,7 @@ struct Console
                         {
                                 super (device);
 
-                                // redirect = (isatty(device.id) != 0);
+                                redirected = (isatty(device.id) is 0);
                         }
                         }
         }
