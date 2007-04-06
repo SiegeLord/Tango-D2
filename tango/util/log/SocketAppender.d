@@ -28,9 +28,11 @@ private import  tango.net.SocketConduit,
 
 public class SocketAppender : Appender
 {
-        private Mask    mask;
-        private IBuffer buffer;
-        private bool    connected;
+        private Mask            mask;
+        private IBuffer         buffer;
+        private SocketConduit   conduit;
+        private InternetAddress address;
+        private bool            connected;
 
         /***********************************************************************
                 
@@ -40,31 +42,14 @@ public class SocketAppender : Appender
 
         this (InternetAddress address, Layout layout = null)
         {
-                setAddress (address);
-                setLayout  (layout);
-        }
+                setLayout (layout);
 
-        /***********************************************************************
-               
-               Set the destination address and port for this socket
-
-        ***********************************************************************/
-
-        private void setAddress (InternetAddress address)
-        {
-                close;
-                
-                try {
-                    auto conduit = new SocketConduit;
-
-                    buffer = new Buffer (conduit);
-                    conduit.connect (address);
-                    connected = true;
-                    } catch (Object x)
-                             Cerr ("SocketAppender.setAddress :: failed to connect to "~address.toUtf8).newline;
+                this.address = address;
+                this.conduit = new SocketConduit;
+                this.buffer  = new Buffer (conduit);
 
                 // Get a unique fingerprint for this class
-                mask = register (address.toUtf8);
+                this.mask = register (address.toUtf8);
         }
 
         /***********************************************************************
@@ -102,16 +87,27 @@ public class SocketAppender : Appender
         void append (Event event)
         {
                 auto layout = getLayout;
-                if (connected)
-                    try {
-                        buffer (layout.header  (event));
-                        buffer (layout.content (event));
-                        buffer (layout.footer  (event)) ();
-                        return;
-                        } catch 
-                              {
-                              connected = false;
-                              }
+
+                if (buffer)
+                   {
+                   try {
+                       if (! connected)
+                          {
+                          conduit.connect (address);
+                          connected = true;
+                          }
+
+                       buffer (layout.header  (event));
+                       buffer (layout.content (event));
+                       buffer (layout.footer  (event)) ();
+                       return;
+                       } catch (Exception e)
+                               {
+                               connected = false;
+                               Cerr ("SocketAppender.append :: "~e.toUtf8).newline;
+                               }
+                   }
+
                 Cerr (layout.content(event)).newline;
         }
 
@@ -124,7 +120,7 @@ public class SocketAppender : Appender
         void close ()
         {
                 if (buffer)
-                    buffer.conduit.close();
+                    buffer.conduit.close;
                 buffer = null;
         }
 }
