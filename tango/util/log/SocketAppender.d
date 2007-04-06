@@ -30,6 +30,7 @@ public class SocketAppender : Appender
 {
         private Mask    mask;
         private IBuffer buffer;
+        private bool    connected;
 
         /***********************************************************************
                 
@@ -58,9 +59,9 @@ public class SocketAppender : Appender
 
                     buffer = new Buffer (conduit);
                     conduit.connect (address);
-
+                    connected = true;
                     } catch (Object x)
-                             Cerr ("SocketAppender: failed to connect\n"c);
+                             Cerr ("SocketAppender.setAddress :: failed to connect to "~address.toUtf8).newline;
 
                 // Get a unique fingerprint for this class
                 mask = register (address.toUtf8);
@@ -90,19 +91,28 @@ public class SocketAppender : Appender
                 
         /***********************************************************************
                 
-                Append an event to the output.
+                Append an event to the output. If the operations fails
+                we have to revert to an alternative logging strategy, 
+                which will probably require a backup Appender specified
+                during construction. For now we simply echo to Cerr if
+                the socket has become unavailable.               
                  
         ***********************************************************************/
 
         void append (Event event)
         {
-                if (buffer)
-                   {
-                   Layout layout = getLayout;
-                   buffer.append (layout.header  (event));
-                   buffer.append (layout.content (event));
-                   buffer.append (layout.footer  (event)).flush();
-                   }    
+                auto layout = getLayout;
+                if (connected)
+                    try {
+                        buffer (layout.header  (event));
+                        buffer (layout.content (event));
+                        buffer (layout.footer  (event)) ();
+                        return;
+                        } catch 
+                              {
+                              connected = false;
+                              }
+                Cerr (layout.content(event)).newline;
         }
 
         /***********************************************************************
