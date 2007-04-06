@@ -56,19 +56,7 @@ class Sprint(T)
         Layout!(T)              layout;
 
         alias format            opCall;
-
-        /**********************************************************************
-
-                Create a global formatter, used as a default for new
-                Sprint instances
-                
-        **********************************************************************/
-
-        static this ()
-        {
-                global = new Layout!(T);
-        }
-        
+       
         /**********************************************************************
 
                 Create new Sprint instances with a buffer of the specified
@@ -78,6 +66,9 @@ class Sprint(T)
 
         this (int size = 256)
         {
+                // Workaround for bug with static ctors in GDC
+                if (global is null)
+                    global = new Layout!(T);
                 this (size, global);
         }
         
