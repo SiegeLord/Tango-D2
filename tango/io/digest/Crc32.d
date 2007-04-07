@@ -10,9 +10,9 @@
 
 *******************************************************************************/
 
-module tango.transform.digest.Crc32;
+module tango.io.digest.Crc32;
 
-public import tango.transform.digest.Digest;
+public import tango.io.digest.Digest;
 
 
 /** This class implements the CRC-32 checksum algorithm.

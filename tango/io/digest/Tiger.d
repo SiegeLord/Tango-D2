@@ -13,13 +13,13 @@
 
 *******************************************************************************/
 
-module tango.transform.digest.Tiger;
+module tango.io.digest.Tiger;
 
 private import tango.core.ByteSwap;
 
-private import tango.transform.digest.MerkleDamgard;
+private import tango.io.digest.MerkleDamgard;
 
-public  import tango.transform.digest.Digest;
+public  import tango.io.digest.Digest;
 
 /*******************************************************************************
 
