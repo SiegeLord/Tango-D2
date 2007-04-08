@@ -29,9 +29,9 @@ private import  tango.core.Exception;
         append() adds content to the tail of the file.
 
         Methods to inspect the file system, check the status of a file or
-        directory, and other facilities are made available via the proxy()
-        method
-
+        directory and other facilities are made available via the associated
+        path (exposed via the path() method)
+        
 *******************************************************************************/
 
 class File
