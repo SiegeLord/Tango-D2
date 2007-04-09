@@ -358,7 +358,7 @@ else
  *         super( &run );
  *     }
  *
- * private:
+ * private :
  *     void run()
  *     {
  *         printf( "Derived thread running.\n" );
@@ -2195,7 +2195,7 @@ private
  *         super( &run );
  *     }
  *
- * private:
+ * private :
  *     void run()
  *     {
  *         printf( "Derived fiber running.\n" );
