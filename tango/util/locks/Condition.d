@@ -21,21 +21,21 @@ private import tango.text.convert.Integer;
  * A condition variable enables threads to atomically block and test the
  * condition under the protection of a mutual exclusion lock (mutex) until
  * the condition is satisfied. That is, the mutex must have been held by
- * the thread before calling wait or notifyOne/notifyAll on the condition.
- * If the condition is false, a thread blocks on a condition variable and
- * atomically releases the mutex that is waiting for the condition to
- * change. If another thread changes the condition, it may wake up waiting
- * threads by signaling the associated condition variable. The waiting
- * threads, upon awakening, reacquire the mutex and re-evaluate the
- * condition.
+ * the thread before calling $(D_CODE wait()) or $(D_CODE notify()) /
+ * $(D_CODE notifyAll()) on the condition. If the condition is false, a
+ * thread blocks on a condition variable and atomically releases the mutex
+ * that is waiting for the condition to change. If another thread changes
+ * the condition, it may wake up waiting threads by signaling the associated
+ * condition variable. The waiting threads, upon awakening, reacquire the
+ * mutex and re-evaluate the condition.
  *
  * Remarks:
- * On POSIX-compatible platforms the Condition is implemented using a
- * pthread_cond_t from the pthread API.The Windows API (before Windows
- * Vista) does not provide a native condition variable, so it is emulated
- * with a mutex, a semaphore and an event. The Windows condition variable
- * emulation is based on the ACE_Condition template class from the
- * $LINK2(http://www.cs.wustl.edu/~schmidt/ACE.html ACE framework).
+ * On POSIX-compatible platforms the $(D_CODE Condition) is implemented using a
+ * $(D_CODE pthread_cond_t) from the pthread API. The Windows API (before
+ * Windows Vista) does not provide a native condition variable, so it is
+ * emulated with a mutex, a semaphore and an event. The Windows condition
+ * variable emulation is based on the ACE_Condition template class from the
+ * $(LINK2 http://www.cs.wustl.edu/~schmidt/ACE.html ACE framework).
  *
  * Examples:
  * ---
@@ -50,7 +50,7 @@ private import tango.text.convert.Integer;
  *
  *     while (!conditionBeingWaitedFor)
  *     {
- *         success = cond.wait(lock, timeout);
+ *         success = cond.wait(timeout);
  *     }
  *     return success;
  * }
@@ -64,7 +64,7 @@ private import tango.text.convert.Integer;
  *         lock.release();
  *
  *     conditionBeingWaitedFor = true;
- *     cond.notifyOne();
+ *     cond.notify();
  * }
  * ---
  */
@@ -76,16 +76,41 @@ version (Posix)
 
     class Condition
     {
-        pthread_cond_t _cond;
+        private pthread_cond_t  _cond;
+        private Mutex           _externalMutex;
 
         /**
          * Initialize the condition variable.
          */
-        public this()
+        public this(Mutex mutex)
+        in
         {
+            assert(mutex !is null);
+        }
+        body
+        {
+            _externalMutex = mutex;
             // pthread_cond_init() will never return an error on Linux.
             pthread_cond_init(&_cond, null);
         }
+
+        /+ IMPORTANT:
+           This method must remain commented out until the Mutex module that
+           uses each object's implicit monitor is integrated into Tango.
+
+        /**
+         * Initialize the condition variable with a generic object.
+         */
+        public this(Object object)
+        in
+        {
+            assert(object !is null);
+        }
+        body
+        {
+            this(cast(Mutex) new MutexProxy(object));
+        }
+        +/
 
         /**
          * Implicitly destroy the condition variable.
@@ -101,12 +126,20 @@ version (Posix)
         }
 
         /**
-         * Notify only $B(one) waiting thread that the condition is true.
+         * Returns a reference to the underlying mutex;
+         */
+        public Mutex mutex()
+        {
+            return _externalMutex;
+        }
+
+        /**
+         * Notify only $(B one) waiting thread that the condition is true.
          *
          * Remarks:
          * The external mutex must be locked before calling this method.
          */
-        void notifyOne()
+        public void notify()
         {
             // pthread_cond_signal() will never return an error on Linux, but
             // it may on other platforms.
@@ -119,12 +152,12 @@ version (Posix)
         }
 
         /**
-         * Notify $B(all) waiting threads that the condition is true.
+         * Notify $(B all) waiting threads that the condition is true.
          *
          * Remarks:
          * The external mutex must be locked before calling this method.
          */
-        void notifyAll()
+        public void notifyAll()
         {
             // pthread_cond_broadcast() will never return an error on Linux,
             // but it may on other platforms.
@@ -137,21 +170,16 @@ version (Posix)
         }
 
         /**
-         * Block on the condition.
+         * Block until the condition is notified from another thread.
          *
          * Remarks:
          * The external mutex must be locked before calling this method.
          */
-        void wait(Mutex externalMutex)
-        in
-        {
-            assert(externalMutex !is null);
-        }
-        body
+        public void wait()
         {
             // pthread_cond_wait() will never return an error on Linux,
             // but it may on other platforms.
-            int rc = pthread_cond_wait(&_cond, &externalMutex._mutex);
+            int rc = pthread_cond_wait(&_cond, _externalMutex.mutex());
 
             if (rc != 0)
             {
@@ -161,7 +189,7 @@ version (Posix)
 
         /**
          * Block on the condition, or until the specified (relative) amount
-         * of time has passed. If $D_PARAM(timeout) == $D_CODE(Interval.max)
+         * of time has passed. If ($D_PARAM timeout) == $(D_CODE Interval.max)
          * there is no timeout.
          *
          * Returns: true if the condition was signaled; false if the timeout
@@ -170,16 +198,11 @@ version (Posix)
          * Remarks:
          * The external mutex must be locked before calling this method.
          */
-        bool wait(Mutex externalMutex, Interval timeout)
-        in
-        {
-            assert(externalMutex !is null);
-        }
-        body
+        public bool wait(Interval timeout)
         {
             if (timeout == Interval.max)
             {
-                wait(externalMutex);
+                wait();
                 return true;
             }
             else
@@ -187,7 +210,7 @@ version (Posix)
                 int rc;
                 timespec ts;
 
-                rc = pthread_cond_timedwait(&_cond, &externalMutex._mutex,
+                rc = pthread_cond_timedwait(&_cond, _externalMutex.mutex(),
                                             toTimespec(&ts, toAbsoluteTime(timeout)));
 
                 switch (rc)
@@ -208,11 +231,12 @@ version (Posix)
         }
 
         /**
-         * Check the 'errorCode' argument against possible errno values and
-         * throw an exception with the description of the error.
+         * Check the $(D_PARAM errorCode) argument against possible values
+         * of $(D_CODE SysError.lastCode()) and throw an exception with the
+         * description of the error.
          *
          * Params:
-         * errorCode    = errno value; must not be 0.
+         * errorCode    = SysError.lastCode() value; must not be 0.
          * file         = name of the source file where the check is being
          *                made; you would normally use __FILE__ for this
          *                parameter.
@@ -222,14 +246,14 @@ version (Posix)
          *
          * Throws:
          * AlreadyLockedException when the mutex has already been locked by
-         * another thread (EBUSY); DeadlockException when the mutex has already
-         * been locked by the calling thread (EDEADLK); InvalidMutexException
-         * when the mutex has not been properly initialized (EINVAL);
-         * MutexOwnerException when the calling thread does not own the mutex
-         * (EPERM); LockException for any of the other cases in which errno is
-         * not 0.
+         * another thread; DeadlockException when the mutex has already
+         * been locked by the calling thread; InvalidMutexException
+         * when the mutex has not been properly initialized;
+         * MutexOwnerException when the calling thread does not own the mutex;
+         * LockException for any of the other cases in which
+         * $(D_PARAM errorCode) is not 0.
          */
-        protected void checkError(int errorCode, char[] file, uint line)
+        protected void checkError(uint errorCode, char[] file, uint line)
         in
         {
             assert(errorCode != 0, "checkError() was called with errorCode == 0");
@@ -270,11 +294,17 @@ else version (Windows)
         private Semaphore   _waitersQueue;
         private Event       _waitersDone;
         private bool        _wasBroadcast = false;
+        private Mutex       _externalMutex;
 
         /**
          * Initialize the condition variable.
          */
-        public this()
+        public this(Mutex mutex)
+        in
+        {
+            assert(mutex !is null);
+        }
+        body
         {
             _wasBroadcast = 0;
 
@@ -287,30 +317,52 @@ else version (Windows)
                 delete _waitersLock;
 
             _waitersDone = new Event();
+
+            _externalMutex = mutex;
         }
+
+        /+ IMPORTANT:
+           This method must remain commented out until the Mutex module that
+           uses each object's implicit monitor is integrated into Tango.
+
+        /**
+         * Initialize the condition variable with a generic Object to be used 
+         * as a mutex.
+         */
+        public this(Object object)
+        in
+        {
+            assert(object !is null);
+        }
+        body
+        {
+            this(cast(Mutex) new MutexProxy(object));
+        }
+        +/
 
         /**
          * Implicitly destroy the condition variable.
          */
         public ~this()
         {
+            _externalMutex = null;
             delete _waitersDone;
             delete _waitersLock;
             delete _waitersQueue;
         }
 
         /**
-         * Notify only $B(one) waiting thread that the condition is true.
+         * Notify only $(B one) waiting thread that the condition is true.
          *
          * Remarks:
          * The external mutex must be locked before calling this method.
          */
-        void notifyOne()
+        public void notify()
         {
             // If there aren't any waiters, then this is a no-op.  Note that
-            // this function *must* be called with the <externalMutex> held
+            // this function *must* be called with the 'externalMutex' held
             // since otherwise there is a race condition that can lead to the
-            // lost wakeup bug... This is needed to ensure that the <_waitersCount>
+            // lost wakeup bug... This is needed to ensure that the '_waitersCount'
             // value is not in an inconsistent internal state while being
             // updated by another thread.
             _waitersLock.acquire();
@@ -324,18 +376,18 @@ else version (Windows)
         }
 
         /**
-         * Notify $B(all) waiting threads that the condition is true.
+         * Notify $(B all) waiting threads that the condition is true.
          *
          * Remarks:
          * The external mutex must be locked before calling this method.
          */
-        void notifyAll()
+        public void notifyAll()
         {
             bool hasWaiters = false;
 
             // The <externalMutex> must be locked before this call is made.
 
-            // This is needed to ensure that <_waitersCount> and <_wasBroadcast> are
+            // This is needed to ensure that '_waitersCount' and '_wasBroadcast' are
             // consistent relative to each other.
             _waitersLock.acquire();
 
@@ -344,7 +396,7 @@ else version (Windows)
                 // We are broadcasting, even if there is just one waiter...
                 // Record the fact that we are broadcasting.  This helps the
                 // Condition.wait() method know how to optimize itself.  Be
-                // sure to set this with the <_waitersLock> held.
+                // sure to set this with the '_waitersLock' held.
                 _wasBroadcast   = true;
                 hasWaiters      = true;
             }
@@ -362,19 +414,19 @@ else version (Windows)
                 // the counting semaphore.
                 _waitersDone.wait();
 
-                // This is okay, even without the <_waitersLock> held, because
+                // This is okay, even without the '_waitersLock' held, because
                 // no other waiter threads can wake up to access it.
                 _wasBroadcast = false;
             }
         }
 
         /**
-         * Block on the condition.
+         * Block until the condition is notified from another thread.
          *
          * Remarks:
          * The external mutex must be locked before calling this method.
          */
-        void wait(Mutex externalMutex)
+        public void wait()
         {
             _waitersLock.acquire();
             _waitersCount++;
@@ -383,14 +435,14 @@ else version (Windows)
             // We keep the lock held just long enough to increment the count of
             // waiters by one. Note that we can't keep it held across the call
             // to Semaphore.acquire() since that will deadlock other calls to
-            // Condition.notifyOne().
-            externalMutex.release();
+            // Condition.notify().
+            _externalMutex.release();
             // We must always regain the <externalMutex>, even when errors
             // occur because that's the guarantee that we give to our callers.
             scope(exit)
-                externalMutex.acquire();
+                _externalMutex.acquire();
 
-            // Wait to be awakened by a call to Condition.notifyOne() or
+            // Wait to be awakened by a call to Condition.notify() or
             // Condition.notifyAll().
             _waitersQueue.acquire();
             // Make sure that we leave everything in its previous state
@@ -422,7 +474,7 @@ else version (Windows)
 
         /**
          * Block on the condition, or until the specified (relative) amount
-         * of time has passed. If $D_PARAM(timeout) == $D_CODE(Interval.max)
+         * of time has passed. If $(D_PARAM timeout) == $(D_CODE Interval.max)
          * there is no timeout.
          *
          * Returns: true if the condition was signaled; false if the timeout
@@ -431,14 +483,14 @@ else version (Windows)
          * Remarks:
          * The external mutex must be locked before calling this method.
          */
-        bool wait(Mutex externalMutex, Interval timeout)
+        public bool wait(Interval timeout)
         {
             bool success = true;
 
             // Handle the easy case first.
             if (timeout == Interval.max)
             {
-                wait(externalMutex);
+                wait();
             }
             else
             {
@@ -450,14 +502,14 @@ else version (Windows)
                 // We keep the lock held just long enough to increment the
                 // count of waiters by one. Note that we can't keep it held
                 // across the call to Semaphore.tryAcquire() since that will
-                // deadlock other calls to Condition.notifyOne().
-                externalMutex.release();
+                // deadlock other calls to Condition.notify().
+                _externalMutex.release();
                 // We must always regain the <externalMutex>, even when errors
                 // occur because that's the guarantee that we give to our callers.
                 scope(exit)
-                    externalMutex.acquire();
+                    _externalMutex.acquire();
 
-                // Wait to be awakened by a Condition.notifyOne() or
+                // Wait to be awakened by a Condition.notify() or
                 // Condition.notifyAll().
                 success = _waitersQueue.tryAcquire(timeout);
 
@@ -493,7 +545,7 @@ else version (Windows)
             _event = CreateEventA(null, cast(BOOL) manualReset, cast(BOOL) initialState, null);
             if (_event == cast(HANDLE) NULL)
             {
-                checkError(GetLastError(), __FILE__, __LINE__);
+                checkError(SysError.lastCode(), __FILE__, __LINE__);
             }
         }
 
@@ -506,15 +558,15 @@ else version (Windows)
         }
 
         /**
-         * If the Event was created with $B(manual reset) enabled then wakeup
-         * all waiting threads and reset the event; if not ($B(auto reset))
+         * If the Event was created with $(B manual reset) enabled then wakeup
+         * all waiting threads and reset the event; if not ($(B auto reset))
          * wake up one waiting thread (if present) and reset event.
          */
         public void pulse()
         {
             if (!PulseEvent(_event))
             {
-                checkError(GetLastError(), __FILE__, __LINE__);
+                checkError(SysError.lastCode(), __FILE__, __LINE__);
             }
         }
 
@@ -525,13 +577,13 @@ else version (Windows)
         {
             if (!ResetEvent(_event))
             {
-                checkError(GetLastError(), __FILE__, __LINE__);
+                checkError(SysError.lastCode(), __FILE__, __LINE__);
             }
         }
 
         /**
-         * If $B(manual reset) was enabled, then wake up all waiting threads
-         * and set the event to the signaled state. When in $B(auto reset))
+         * If $(B manual reset) was enabled, then wake up all waiting threads
+         * and set the event to the signaled state. When in $(B auto reset))
          * mode, if no thread is waiting, set to signaled state. If one or
          * more threads are waiting, wake up one waiting thread and reset
          * the event
@@ -540,15 +592,16 @@ else version (Windows)
         {
             if (!SetEvent(_event))
             {
-                checkError(GetLastError(), __FILE__, __LINE__);
+                checkError(SysError.lastCode(), __FILE__, __LINE__);
             }
         }
 
         /**
-         * If $B(manual reset) is enabled, sleep till the event becomes
-         * signaled. The event remains signaled after wait() completes.
-         * If in $B(auto reset) mode, sleep till the event becomes signaled.
-         * In this case the event will be reset after wait() completes.
+         * If $(B manual reset) is enabled, sleep till the event becomes
+         * signaled. The event remains signaled after $(D_CODE wait())
+         * completes. If in $(B auto reset) mode, sleep till the event becomes
+         * signaled. In this case the event will be reset after
+         * $(D_CODE wait()) completes.
          */
         public void wait()
         {
@@ -556,14 +609,14 @@ else version (Windows)
 
             if (result != WAIT_OBJECT_0)
             {
-                checkError(GetLastError(), __FILE__, __LINE__);
+                checkError(SysError.lastCode(), __FILE__, __LINE__);
             }
         }
 
         /**
-         * Same as wait() above, but this method can be timed. $D_PARAM(timeout)
-         * is a relative timeout. If the timeout is equal to
-         * $D_CODE(Interval.max) then this method behaves like the one
+         * Same as $(D_CODE wait()) above, but this method can be timed.
+         * $(D_PARAM timeout) is a relative timeout. If the timeout is equal to
+         * $(D_CODE Interval.max) then this method behaves like the one
          * above.
          *
          * Returns: true if the event was signaled; false if the timeout
@@ -585,30 +638,37 @@ else version (Windows)
             }
             else
             {
-                checkError(GetLastError(), __FILE__, __LINE__);
+                checkError(SysError.lastCode(), __FILE__, __LINE__);
                 return false;
             }
         }
 
         /**
-         * Check the result from the GetLastError() Windows function and
-         * throw an exception with the description of the error.
+         * Check the $(D_PARAM errorCode) argument against possible values
+         * of $(D_CODE SysError.lastCode()) and throw an exception with the
+         * description of the error.
          *
          * Params:
-         * file     = name of the source file where the check is being made; you
-         *            would normally use __FILE__ for this parameter.
-         * line     = line number of the source file where this method was called;
-         *            you would normally use __LINE__ for this parameter.
+         * errorCode    = SysError.lastCode() value; must not be 0.
+         * file         = name of the source file where the check is being
+         *                made; you would normally use __FILE__ for this
+         *                parameter.
+         * line         = line number of the source file where this method
+         *                was called; you would normally use __LINE__ for
+         *                this parameter.
          *
          * Throws:
          * AccessDeniedException when the caller does not have permissions to
          * use the mutex; LockException for any of the other cases in which
-         * GetLastError() is not 0.
+         * $(D_PARAM errorCode) is not 0.
          */
-        protected void checkError(DWORD errorCode, char[] file, uint line)
+        protected void checkError(uint errorCode, char[] file, uint line)
         in
         {
-            assert(errorCode != 0);
+            char[10] tmp;
+
+            assert(errorCode != 0, "checkError() was called with SysError.lastCode() == 0 on file " ~
+                                   file ~ ":" ~ format(tmp, line));
         }
         body
         {
@@ -634,186 +694,299 @@ else
 
 debug (UnitTest)
 {
+    private import tango.util.locks.LockException;
     private import tango.core.Thread;
-    private import tango.math.Random;
+    private import tango.text.convert.Integer;
     private import tango.io.Stdout;
+    debug (condition)
+    {
+        private import tango.util.log.Log;
+        private import tango.util.log.ConsoleAppender;
+        private import tango.util.log.DateLayout;
+    }
 
     unittest
     {
-        const uint MaxThreadCount   = 10;
-        const uint LoopsPerThread   = 1000;
-
-        Mutex       mutex           = new Mutex(Mutex.Type.NonRecursive);
-        Condition   notEmpty        = new Condition();
-        Condition   notFull         = new Condition();
-        char[40]    queue           = '.';
-        uint        count           = 0;
-        Random      rand            = new Random();
-        uint        producerCount   = MaxThreadCount;
-        uint        consumerCount   = MaxThreadCount;
-
-        debug (locks)
-            Stdout.print("* Test condition variables using producer/consumer threads\n");
-
-        // Producer thread
-        void producer()
+        debug (condition)
         {
-            try
-            {
-                uint added;
-                bool wasEmpty;
+            scope Logger log = Log.getLogger("condition");
 
-                for (uint i; i < LoopsPerThread; i++)
-                {
-                    mutex.acquire();
-                    scope(exit)
-                        mutex.release();
+            log.addAppender(new ConsoleAppender(new DateLayout()));
 
-                    assert(count <= queue.length);
-
-                    // Wait until we have space to add elements to the queue
-                    while (count == queue.length && consumerCount > 0)
-                    {
-                        notFull.wait(mutex);
-                    }
-
-                    if (consumerCount > 0)
-                    {
-                        // We need to know whether the queue was empty to signal
-                        // the consumer threads
-                        wasEmpty = (count == 0);
-
-                        // Insert a random amount of elements in the queue
-                        added = rand.next (queue.length - count) + 1;
-                        assert(added <= queue.length - count);
-                        queue[count .. count + added] = 'X';
-                        count += added;
-
-                        // Signal the consumer threads if the queue was previously
-                        // empty
-                        if (wasEmpty)
-                        {
-                            // If the queue is half full we only wake up one thread;
-                            // otherwise we wake up all the consumer threads.
-                            if (count <= queue.length / 2)
-                            {
-                                notEmpty.notifyOne();
-                            }
-                            else
-                            {
-                                notEmpty.notifyAll();
-                            }
-                        }
-                    }
-                    else
-                    {
-                        // We let the consumer threads know that the number
-                        // of producers has changed
-                        producerCount--;
-                        notEmpty.notifyAll();
-                        break;
-                    }
-                }
-            }
-            catch (LockException e)
-            {
-                Stdout.format("Lock exception caught inside producer thread:\n{0}\n",
-                               e.toUtf8());
-            }
-            catch (Exception e)
-            {
-                Stdout.format("Unexpected exception caught in producer thread:\n{0}\n",
-                               e.toUtf8());
-            }
+            log.info("Condition test");
         }
 
-        // Consumer thread
-        void consumer()
+        testNotifyOne();
+        testNotifyAll();
+    }
+
+    /**
+     * Test for Condition.notify().
+     */
+    void testNotifyOne()
+    {
+        debug (condition)
         {
-            uint removed;
-            bool wasFull;
+            Logger log = Log.getLogger("condition.notify-one");
+        }
+
+        scope Mutex     mutex   = new Mutex();
+        scope Condition cond    = new Condition(mutex);
+        int             waiting = 0;
+        Thread          thread;
+
+        void notifyOneTestThread()
+        {
+            debug (condition)
+            {
+                Logger log = Log.getLogger("condition.notify-one." ~ Thread.getThis().name());
+
+                log.trace("Starting thread");
+            }
 
             try
             {
-                for (uint i; i < LoopsPerThread; i++)
+                mutex.acquire();
+                debug (condition)
+                    log.trace("Acquired mutex");
+
+                scope(exit)
                 {
-                    mutex.acquire();
-                    scope(exit)
-                        mutex.release();
-
-                    // Wait until we have space to add elements to the queue
-                    while (count == 0 && producerCount > 0)
-                    {
-                        notEmpty.wait(mutex);
-                    }
-
-                    if (producerCount > 0)
-                    {
-                        // We need to know whether the queue was full to signal
-                        // the producer threads
-                        wasFull = (count == queue.length);
-
-                        // Insert a random amount of elements in the queue
-                        removed = rand.next (count) + 1;
-                        assert(removed <= count);
-                        queue[count - removed .. count] = '.';
-                        count -= removed;
-
-                        // Signal the producer threads if the queue was previously
-                        // full
-                        if (wasFull)
-                        {
-                            // If the queue is more than half full we only wake up
-                            // one thread; otherwise we wake up all the producer
-                            // threads.
-                            if (count >= queue.length / 2)
-                            {
-                                notFull.notifyOne();
-                            }
-                            else
-                            {
-                                notFull.notifyAll();
-                            }
-                        }
-                    }
-                    else
-                    {
-                        // We let the producer threads know that the number
-                        // of consumers has changed
-                        consumerCount--;
-                        notFull.notifyAll();
-                        break;
-                    }
+                    debug (condition)
+                        log.trace("Releasing mutex");
+                    mutex.release();
                 }
+
+                waiting++;
+
+                while (waiting != 2)
+                {
+                    debug (condition)
+                        log.trace("Waiting on condition variable");
+                    cond.wait();
+                }
+
+                debug (condition)
+                    log.trace("Condition variable was signaled");
             }
             catch (LockException e)
             {
-                Stdout.format ("Lock exception caught inside consumer thread:\n{0}\n",
-                               e.toUtf8());
+                Stderr.formatln("Lock exception caught in Condition test thread {0}:\n{1}",
+                                Thread.getThis().name(), e.toUtf8());
             }
             catch (Exception e)
             {
-                Stdout.format ("Unexpected exception caught in consumer thread:\n{0}\n",
-                               e.toUtf8());
+                Stderr.formatln("Unexpected exception caught in Condition test thread {0}:\n{1}",
+                                Thread.getThis().name(), e.toUtf8());
+            }
+            debug (condition)
+                log.trace("Exiting thread");
+        }
+
+        thread = new Thread(&notifyOneTestThread);
+        thread.name = "thread-1";
+
+        debug (condition)
+            log.trace("Created thread " ~ thread.name);
+        thread.start();
+
+        try
+        {
+            // Poor man's barrier: wait until the other thread is waiting.
+            while (true)
+            {
+                mutex.acquire();
+                scope(exit)
+                    mutex.release();
+
+                if (waiting != 1)
+                {
+                    Thread.yield();
+                }
+                else
+                {
+                    break;
+                }
+            }
+
+            mutex.acquire();
+            debug (condition)
+                log.trace("Acquired mutex");
+
+            waiting++;
+
+            debug (condition)
+                log.trace("Notifying test thread");
+            cond.notify();
+
+            debug (condition)
+                log.trace("Releasing mutex");
+            mutex.release();
+
+            thread.join();
+
+            if (waiting == 2)
+            {
+                debug (condition)
+                    log.info("The Condition notification test to one thread was successful");
+            }
+            else
+            {
+                debug (condition)
+                {
+                    log.error("The condition variable notification to one thread is not working");
+                    assert(false);
+                }
+                else
+                {
+                    assert(false, "The condition variable notification to one thread is not working");
+                }
             }
         }
-
-
-        scope ThreadGroup group = new ThreadGroup();
-
-        for (uint i = 0; i < MaxThreadCount; i++)
+        catch (LockException e)
         {
-            group.create(&producer);
-            group.create(&consumer);
+            Stderr.formatln("Lock exception caught in main thread:\n{0}", e.toUtf8());
+        }
+    }
+
+
+    /**
+     * Test for Condition.notifyAll().
+     */
+    void testNotifyAll()
+    {
+        const uint MaxThreadCount = 10;
+
+        debug (condition)
+        {
+            Logger log = Log.getLogger("condition.notify-all");
         }
 
-        group.joinAll();
+        scope Mutex     mutex   = new Mutex();
+        scope Condition cond    = new Condition(mutex);
+        int             waiting = 0;
 
-        assert(producerCount == 0);
-        assert(consumerCount == 0);
+        /**
+         * This thread waits for a notification from the main thread.
+         */
+        void notifyAllTestThread()
+        {
+            debug (condition)
+            {
+                Logger log = Log.getLogger("condition.notify-all." ~ Thread.getThis().name());
 
-        delete notFull;
-        delete notEmpty;
-        delete mutex;
-   }
+                log.trace("Starting thread");
+            }
+
+            try
+            {
+                mutex.acquire();
+                debug (condition)
+                    log.trace("Acquired mutex");
+
+                waiting++;
+
+                while (waiting != MaxThreadCount + 1)
+                {
+                    debug (condition)
+                        log.trace("Waiting on condition variable");
+                    cond.wait();
+                }
+
+                debug (condition)
+                    log.trace("Condition variable was signaled");
+
+                debug (condition)
+                    log.trace("Releasing mutex");
+                mutex.release();
+            }
+            catch (LockException e)
+            {
+                Stderr.formatln("Lock exception caught in Condition test thread {0}:\n{1}",
+                                Thread.getThis().name(), e.toUtf8());
+            }
+            catch (Exception e)
+            {
+                Stderr.formatln("Unexpected exception caught in Condition test thread {0}:\n{1}",
+                                Thread.getThis().name(), e.toUtf8());
+            }
+            debug (condition)
+                log.trace("Exiting thread");
+        }
+
+        ThreadGroup group = new ThreadGroup();
+        Thread      thread;
+        char[10]    tmp;
+
+        for (uint i = 0; i < MaxThreadCount; ++i)
+        {
+            thread = new Thread(&notifyAllTestThread);
+            thread.name = "thread-" ~ format(tmp, i);
+
+            group.add(thread);
+            debug (condition)
+                log.trace("Created thread " ~ thread.name);
+            thread.start();
+        }
+
+        try
+        {
+            // Poor man's barrier: wait until all the threads are waiting.
+            while (true)
+            {
+                mutex.acquire();
+                scope(exit)
+                    mutex.release();
+
+                if (waiting != MaxThreadCount)
+                {
+                    Thread.yield();
+                }
+                else
+                {
+                    break;
+                }
+            }
+
+            mutex.acquire();
+            debug (condition)
+                log.trace("Acquired mutex");
+
+            waiting++;
+
+            debug (condition)
+                log.trace("Notifying all threads");
+            cond.notifyAll();
+
+            debug (condition)
+                log.trace("Releasing mutex");
+            mutex.release();
+
+            debug (condition)
+                log.trace("Waiting for threads to finish");
+            group.joinAll();
+
+            if (waiting == MaxThreadCount + 1)
+            {
+                debug (condition)
+                    log.info("The Condition notification test to many threads was successful");
+            }
+            else
+            {
+                debug (condition)
+                {
+                    log.error("The condition variable notification to many threads is not working");
+                    assert(false);
+                }
+                else
+                {
+                    assert(false, "The condition variable notification to many threads is not working");
+                }
+            }
+        }
+        catch (LockException e)
+        {
+            Stderr.formatln("Lock exception caught in main thread:\n{0}", e.toUtf8());
+        }
+    }
 }

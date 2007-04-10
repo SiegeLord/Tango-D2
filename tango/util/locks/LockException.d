@@ -17,6 +17,8 @@ public class LockException: Exception
      * Construct a lock exception with the provided text string
      *
      * Params:
+     * msg      = text with a description of the error that caused the
+     *            exception to be thrown.
      * file     = name of the source file where the exception was thrown; you
      *            would normally use __FILE__ for this parameter.
      * line     = line number of the source file where the exception was
@@ -51,7 +53,7 @@ public class AlreadyLockedException: LockException
 
 /**
  * DeadlockException is thrown when the mutex is already locked by the calling
- * thread (only for ErrorChecking mutexes on POSIX platforms).
+ * thread (only for error checking mutexes on POSIX platforms).
  */
 public class DeadlockException: LockException
 {
@@ -177,7 +179,7 @@ public class InvalidSemaphoreException: LockException
 
 /**
  * MutexOwnerException is thrown when the calling thread does not own the
- * mutex (only for ErrorChecking mutexes on POSIX platforms).
+ * mutex (only for error checking mutexes on POSIX platforms).
  */
 public class MutexOwnerException: LockException
 {
@@ -198,12 +200,12 @@ public class MutexOwnerException: LockException
 
 /**
  * SemaphoreOwnerException is thrown when the calling thread does not own the
- * mutex (only for ErrorChecking mutexes on POSIX platforms).
+ * semaphore.
  */
 public class SemaphoreOwnerException: LockException
 {
     /**
-     * Construct an MutexOwnerException with the provided text string.
+     * Construct an SemaphoreOwnerException with the provided text string.
      *
      * Params:
      * file     = name of the source file where the exception was thrown; you
@@ -224,7 +226,7 @@ public class SemaphoreOwnerException: LockException
 public class AccessDeniedException: LockException
 {
     /**
-     * Construct an AlreadyLockedException with the provided text string.
+     * Construct an AccessDeniedException with the provided text string.
      *
      * Params:
      * file     = name of the source file where the exception was thrown; you
@@ -234,7 +236,7 @@ public class AccessDeniedException: LockException
      */
     public this(char[] file, uint line)
     {
-        super("The caller does not have access rights to this mutex", file, line);
+        super("The caller does not have access rights to this synchronization object", file, line);
     }
 }
 
@@ -261,12 +263,13 @@ public class MutexTimeoutException: LockException
 
 /**
  * InterruptedSystemCallException is thrown when a system call is interrupted
- * by a signal and the selector was not set to restart it automatically.
+ * by a signal.
  */
 public class InterruptedSystemCallException: LockException
 {
     /**
-     * Construct a selector exception with the provided text string
+     * Construct an InterruptedSystemCallException with the provided text
+     * string.
      *
      * Params:
      * file     = name of the source file where the exception was thrown; you

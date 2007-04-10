@@ -27,16 +27,18 @@ version (Posix)
 
 
     /**
-     * Mutex wrapper that maps to a <CRITICAL_SECTION> on Windows and to a
-     * <pthread_mutex_t> on UNIX. This implementation is optimized for locking
-     * threads that are in the same process.
+     * Mutex wrapper that's only valid for threads in the same process.
+     * This implementation is optimized for locking threads that are in the
+     * same process. It maps to a $(D_CODE CRITICAL_SECTION) on Windows and to
+     * a $(D_CODE pthread_mutex_t) on UNIX. Mutexes on Windows are always
+     * recursive, even if the $(D_CODE NonRecursive) mutex type is used.
      */
     public class Mutex
     {
         /**
          * Accessor for the underlying mutex implementation.
          */
-        package pthread_mutex_t* mutex()
+        package override pthread_mutex_t* mutex()
         {
             // DMD's intrinsic function gives us access to the Object's mutex 
             // implementation.
@@ -82,11 +84,12 @@ version (Posix)
         }
 
         /**
-         * Check the 'errorCode' argument against possible errno values and
-         * throw an exception with the description of the error.
+         * Check the $(D_PARAM errorCode) argument against possible values
+         * of $(D_CODE SysError.lastCode()) and throw an exception with the
+         * description of the error.
          *
          * Params:
-         * errorCode    = errno value; must not be 0.
+         * errorCode    = SysError.lastCode() value; must not be 0.
          * file         = name of the source file where the check is being
          *                made; you would normally use __FILE__ for this
          *                parameter.
@@ -96,14 +99,13 @@ version (Posix)
          *
          * Throws:
          * AlreadyLockedException when the mutex has already been locked by
-         * another thread (EBUSY); DeadlockException when the mutex has already
-         * been locked by the calling thread (EDEADLK); InvalidMutexException
-         * when the mutex has not been properly initialized (EINVAL);
-         * MutexOwnerException when the calling thread does not own the mutex
-         * (EPERM); LockException for any of the other cases in which errno is
-         * not 0.
+         * another thread; DeadlockException when the mutex has already
+         * been locked by the calling thread; InvalidMutexException when the
+         * mutex has not been properly initialized; MutexOwnerException when
+         * the calling thread does not own the mutex; LockException for any
+         * of the other cases in which $(D_PARAM errorCode) is not 0.
          */
-        protected final void checkError(int errorCode, char[] file, uint line)
+        protected final void checkError(uint errorCode, char[] file, uint line)
         in
         {
             assert(errorCode != 0, "checkError() was called with errorCode == 0");
@@ -228,9 +230,9 @@ else version (Windows)
     /**
      * Mutex wrapper that's only valid for threads in the same process.
      * This implementation is optimized for locking threads that are in the
-     * same process. It maps to a <CRITICAL_SECTION> on Windows and to a
-     * <pthread_mutex_t> on UNIX. Mutexes on Windows are always recursive,
-     * even if the <NonRecursive> mutex type is used.
+     * same process. It maps to a $(D_CODE CRITICAL_SECTION) on Windows and to
+     * a $(D_CODE pthread_mutex_t) on UNIX. Mutexes on Windows are always
+     * recursive, even if the $(D_CODE NonRecursive) mutex type is used.
      */
     public class Mutex
     {
@@ -278,14 +280,14 @@ else version (Windows)
         package HANDLE _mutex;
 
         /**
-         *
+         * Initialize the mutex.
          */
         public this()
         {
             _mutex = CreateMutexA(null, FALSE, null);
             if (_mutex == cast(HANDLE) NULL)
             {
-                checkError(GetLastError(), __FILE__, __LINE__);
+                checkError(SysError.lastCode(), __FILE__, __LINE__);
             }
         }
 
@@ -306,7 +308,7 @@ else version (Windows)
 
             if (result != WAIT_OBJECT_0)
             {
-                checkError(GetLastError(), __FILE__, __LINE__);
+                checkError(SysError.lastCode(), __FILE__, __LINE__);
             }
         }
 
@@ -343,7 +345,7 @@ else version (Windows)
             }
             else
             {
-                checkError(GetLastError(), __FILE__, __LINE__);
+                checkError(SysError.lastCode(), __FILE__, __LINE__);
                 return false;
             }
         }
@@ -355,29 +357,36 @@ else version (Windows)
         {
             if (ReleaseMutex(_mutex) != 0)
             {
-                checkError(GetLastError(), __FILE__, __LINE__);
+                checkError(SysError.lastCode(), __FILE__, __LINE__);
             }
         }
 
         /**
-         * Check the result from the GetLastError() Windows function and
-         * throw an exception with the description of the error.
+         * Check the $(D_PARAM errorCode) argument against possible values
+         * of $(D_CODE SysError.lastCode()) and throw an exception with the
+         * description of the error.
          *
          * Params:
-         * file     = name of the source file where the check is being made; you
-         *            would normally use __FILE__ for this parameter.
-         * line     = line number of the source file where this method was called;
-         *            you would normally use __LINE__ for this parameter.
+         * errorCode    = SysError.lastCode() value; must not be 0.
+         * file         = name of the source file where the check is being
+         *                made; you would normally use __FILE__ for this
+         *                parameter.
+         * line         = line number of the source file where this method
+         *                was called; you would normally use __LINE__ for
+         *                this parameter.
          *
          * Throws:
          * AccessDeniedException when the caller does not have permissions to
          * use the mutex; LockException for any of the other cases in which
-         * GetLastError() is not 0.
+         * $(D_PARAM errorCode) is not 0.
          */
-        protected void checkError(DWORD errorCode, char[] file, uint line)
+        protected void checkError(uint errorCode, char[] file, uint line)
         in
         {
-            assert(errorCode != 0);
+            char[10] tmp;
+
+            assert(errorCode != 0, "checkError() was called with SysError.lastCode() == 0 on file " ~
+                                   file ~ ":" ~ format(tmp, line));
         }
         body
         {

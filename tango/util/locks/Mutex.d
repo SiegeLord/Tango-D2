@@ -20,9 +20,11 @@ version (Posix)
 
 
     /**
-     * Mutex wrapper that maps to a <CRITICAL_SECTION> on Windows and to a
-     * <pthread_mutex_t> on UNIX. This implementation is optimized for locking
-     * threads that are in the same process.
+     * Mutex wrapper that's only valid for threads in the same process.
+     * This implementation is optimized for locking threads that are in the
+     * same process. It maps to a $(D_CODE CRITICAL_SECTION) on Windows and to
+     * a $(D_CODE pthread_mutex_t) on UNIX. Mutexes on Windows are always
+     * recursive, even if the $(D_CODE NonRecursive) mutex type is used.
      */
     public class Mutex
     {
@@ -33,8 +35,15 @@ version (Posix)
             Recursive       = PTHREAD_MUTEX_RECURSIVE
         }
 
-        package pthread_mutex_t _mutex;
+        private pthread_mutex_t _mutex;
 
+        /**
+         * Accessor for the underlying mutex implementation.
+         */
+        package pthread_mutex_t* mutex()
+        {
+            return &_mutex;
+        }
 
         /**
          * Initialize the mutex.
@@ -131,11 +140,12 @@ version (Posix)
         }
 
         /**
-         * Check the 'errorCode' argument against possible errno values and
-         * throw an exception with the description of the error.
+         * Check the $(D_PARAM errorCode) argument against possible values
+         * of $(D_CODE SysError.lastCode()) and throw an exception with the
+         * description of the error.
          *
          * Params:
-         * errorCode    = errno value; must not be 0.
+         * errorCode    = SysError.lastCode() value; must not be 0.
          * file         = name of the source file where the check is being
          *                made; you would normally use __FILE__ for this
          *                parameter.
@@ -145,17 +155,19 @@ version (Posix)
          *
          * Throws:
          * AlreadyLockedException when the mutex has already been locked by
-         * another thread (EBUSY); DeadlockException when the mutex has already
-         * been locked by the calling thread (EDEADLK); InvalidMutexException
-         * when the mutex has not been properly initialized (EINVAL);
-         * MutexOwnerException when the calling thread does not own the mutex
-         * (EPERM); LockException for any of the other cases in which errno is
-         * not 0.
+         * another thread; DeadlockException when the mutex has already
+         * been locked by the calling thread; InvalidMutexException when the
+         * mutex has not been properly initialized; MutexOwnerException when
+         * the calling thread does not own the mutex; LockException for any
+         * of the other cases in which $(D_PARAM errorCode) is not 0.
          */
-        protected final void checkError(int errorCode, char[] file, uint line)
+        protected final void checkError(uint errorCode, char[] file, uint line)
         in
         {
-            assert(errorCode != 0, "checkError() was called with errorCode == 0");
+            char[10] tmp;
+
+            assert(errorCode != 0, "checkError() was called with SysError.lastCode() == 0 on file " ~
+                                   file ~ ":" ~ format(tmp, line));
         }
         body
         {
@@ -291,9 +303,9 @@ else version (Windows)
     /**
      * Mutex wrapper that's only valid for threads in the same process.
      * This implementation is optimized for locking threads that are in the
-     * same process. It maps to a <CRITICAL_SECTION> on Windows and to a
-     * <pthread_mutex_t> on UNIX. Mutexes on Windows are always recursive,
-     * even if the <NonRecursive> mutex type is used.
+     * same process. It maps to a $(D_CODE CRITICAL_SECTION) on Windows and to
+     * a $(D_CODE pthread_mutex_t) on UNIX. Mutexes on Windows are always
+     * recursive, even if the $(D_CODE NonRecursive) mutex type is used.
      */
     private class Mutex
     {
@@ -304,7 +316,15 @@ else version (Windows)
             ErrorChecking
         }
 
-        package CRITICAL_SECTION _mutex;
+        private CRITICAL_SECTION _mutex;
+
+        /**
+         * Accessor to the underlying mutex implementation.
+         */
+        package CRITICAL_SECTION* mutex()
+        {
+            return &_mutex;
+        }
 
         /**
          * Initialize the mutex.
@@ -368,14 +388,25 @@ else version (Windows)
         package HANDLE _mutex;
 
         /**
+         * Initialize the mutex.
          *
+         * Params:
+         * mutexType    = type of mutex; it can be one of NonRecursive,
+         *                ErrorChecking, Recursive. The default is Recursive.
+         *
+         * Remarks:
+         * The mutex type is valid only for POSIX compatible platforms. On
+         * Windows mutexes are always recursive. Error-checking mutexes are
+         * not recursive, but they provide deadlock detection (i.e. an
+         * exception is thrown when the mutex is acquired more than once on
+         * the same thread).
          */
         public this(Type mutexType = Type.Recursive)
         {
             _mutex = CreateMutexA(null, FALSE, null);
             if (_mutex == cast(HANDLE) NULL)
             {
-                checkError(GetLastError(), __FILE__, __LINE__);
+                checkError(SysError.lastCode(), __FILE__, __LINE__);
             }
         }
 
@@ -396,7 +427,7 @@ else version (Windows)
 
             if (result != WAIT_OBJECT_0)
             {
-                checkError(GetLastError(), __FILE__, __LINE__);
+                checkError(SysError.lastCode(), __FILE__, __LINE__);
             }
         }
 
@@ -433,7 +464,7 @@ else version (Windows)
             }
             else
             {
-                checkError(GetLastError(), __FILE__, __LINE__);
+                checkError(SysError.lastCode(), __FILE__, __LINE__);
                 return false;
             }
         }
@@ -445,29 +476,36 @@ else version (Windows)
         {
             if (ReleaseMutex(_mutex) != 0)
             {
-                checkError(GetLastError(), __FILE__, __LINE__);
+                checkError(SysError.lastCode(), __FILE__, __LINE__);
             }
         }
 
         /**
-         * Check the result from the GetLastError() Windows function and
-         * throw an exception with the description of the error.
+         * Check the $(D_PARAM errorCode) argument against possible values
+         * of $(D_CODE SysError.lastCode()) and throw an exception with the
+         * description of the error.
          *
          * Params:
-         * file     = name of the source file where the check is being made; you
-         *            would normally use __FILE__ for this parameter.
-         * line     = line number of the source file where this method was called;
-         *            you would normally use __LINE__ for this parameter.
+         * errorCode    = SysError.lastCode() value; must not be 0.
+         * file         = name of the source file where the check is being
+         *                made; you would normally use __FILE__ for this
+         *                parameter.
+         * line         = line number of the source file where this method
+         *                was called; you would normally use __LINE__ for
+         *                this parameter.
          *
          * Throws:
          * AccessDeniedException when the caller does not have permissions to
          * use the mutex; LockException for any of the other cases in which
-         * GetLastError() is not 0.
+         * $(D_PARAM errorCode) is not 0.
          */
-        protected void checkError(DWORD errorCode, char[] file, uint line)
+        protected void checkError(uint errorCode, char[] file, uint line)
         in
         {
-            assert(errorCode != 0);
+            char[10] tmp;
+
+            assert(errorCode != 0, "checkError() was called with SysError.lastCode() == 0 on file " ~
+                                   file ~ ":" ~ format(tmp, line));
         }
         body
         {
@@ -515,7 +553,7 @@ else
  * }
  * ---
  */
-scope class ScopedLock
+public scope class ScopedLock
 {
     private Mutex _mutex;
     private bool _acquired;
@@ -590,46 +628,46 @@ scope class ScopedLock
 static if (is(TimedMutex))
 {
     /**
-    * Exception-safe locking mechanism that wraps a TimedMutex.
-    *
-    * This class is meant to be used within a method or function (or any other
-    * block that defines a scope). It performs automatic aquisition and release
-    * of a synchronization object.
-    *
-    * Examples:
-    * ---
-    * void method1(TimedMutex mutex)
-    * {
-    *     ScopedTimedLock lock(mutex);
-    *
-    *     if (!doSomethingProtectedByMutex())
-    *     {
-    *         // As the ScopedTimedLock is an scope class, it will be destroyed
-    *         // when method1() goes out of scope and inside its destructor it
-    *         // will release the Mutex.
-    *         throw Exception("The mutex will be released when method1() returns");
-    *     }
-    * }
-    * ---
-    */
-    scope class ScopedTimedLock
+     * Exception-safe locking mechanism that wraps a TimedMutex.
+     *
+     * This class is meant to be used within a method or function (or any other
+     * block that defines a scope). It performs automatic aquisition and release
+     * of a synchronization object.
+     *
+     * Examples:
+     * ---
+     * void method1(TimedMutex mutex)
+     * {
+     *     ScopedTimedLock lock(mutex);
+     *
+     *     if (!doSomethingProtectedByMutex())
+     *     {
+     *         // As the ScopedTimedLock is an scope class, it will be destroyed
+     *         // when method1() goes out of scope and inside its destructor it
+     *         // will release the Mutex.
+     *         throw Exception("The mutex will be released when method1() returns");
+     *     }
+     * }
+     * ---
+     */
+    public scope class ScopedTimedLock
     {
         private TimedMutex _mutex;
         private bool _acquired;
 
         /**
-        * Initialize the lock, optionally acquiring the mutex.
-        *
-        * Params:
-        * mutex            = TimedMutex that will be acquired on construction
-        *                    of an instance of this class and released upon its
-        *                    destruction.
-        * acquireInitially = indicates whether the TimedMutex should be acquired
-        *                    inside this method or not.
-        *
-        * Remarks:
-        * The pattern implemented by this class is also called guard.
-        */
+         * Initialize the lock, optionally acquiring the mutex.
+         *
+         * Params:
+         * mutex            = TimedMutex that will be acquired on construction
+         *                    of an instance of this class and released upon its
+         *                    destruction.
+         * acquireInitially = indicates whether the TimedMutex should be acquired
+         *                    inside this method or not.
+         *
+         * Remarks:
+         * The pattern implemented by this class is also called guard.
+         */
         public this(TimedMutex mutex, bool acquireInitially = true)
         {
             _mutex = mutex;
@@ -642,9 +680,9 @@ static if (is(TimedMutex))
         }
 
         /**
-        * Initialize the lock and try to acquire the TimedMutex for the
-        * specified amount of time.
-        */
+         * Initialize the lock and try to acquire the TimedMutex for the
+         * specified amount of time.
+         */
         public this(TimedMutex mutex, Interval timeout)
         {
             _mutex = mutex;
@@ -657,21 +695,21 @@ static if (is(TimedMutex))
         }
 
         /**
-        * Release the underlying Mutex (it if had been acquired and not
-        * previously released) and destroy the scoped lock.
-        */
+         * Release the underlying Mutex (it if had been acquired and not
+         * previously released) and destroy the scoped lock.
+         */
         public ~this()
         {
             release();
         }
 
         /**
-        * Acquire the underlying mutex.
-        *
-        * Remarks:
-        * If the mutex had been previously acquired this method doesn't do
-        * anything.
-        */
+         * Acquire the underlying mutex.
+         *
+         * Remarks:
+         * If the mutex had been previously acquired this method doesn't do
+         * anything.
+         */
         public final void acquire()
         {
             if (!_acquired)
@@ -682,13 +720,13 @@ static if (is(TimedMutex))
         }
 
         /**
-        * Conditionally acquire the mutex waiting a maximum amount of time
-        * to do it.
-        *
-        * Remarks:
-        * Trying to acquire a TimedMutex more than once will always result in
-        * failure, even if the TimedMutex was recursive.
-        */
+         * Conditionally acquire the mutex waiting a maximum amount of time
+         * to do it.
+         *
+         * Remarks:
+         * Trying to acquire a TimedMutex more than once will always result in
+         * failure, even if the TimedMutex was recursive.
+         */
         public final bool tryAcquire(Interval timeout)
         {
             bool success = false;
@@ -702,12 +740,12 @@ static if (is(TimedMutex))
         }
 
         /**
-        * Release the underlying mutex.
-        *
-        * Remarks:
-        * If the mutex had not been previously acquired this method doesn't do
-        * anything.
-        */
+         * Release the underlying mutex.
+         *
+         * Remarks:
+         * If the mutex had not been previously acquired this method doesn't do
+         * anything.
+         */
         public final void release()
         {
             if (_acquired)
@@ -725,11 +763,11 @@ debug (UnitTest)
     private import tango.io.Stdout;
 
     /**
-    * Test that non-recursive mutexes actually do what they're supposed to do.
-    *
-    * Remarks:
-    * Windows only supports recursive mutexes.
-    */
+     * Test that non-recursive mutexes actually do what they're supposed to do.
+     *
+     * Remarks:
+     * Windows only supports recursive mutexes.
+     */
     void testNonRecursive()
     {
         version (Posix)
@@ -762,8 +800,8 @@ debug (UnitTest)
     }
 
     /**
-    * Create several threads that acquire and release a mutex several times.
-    */
+     * Create several threads that acquire and release a mutex several times.
+     */
     void testLocking()
     {
         const uint MaxThreadCount   = 10;
@@ -810,8 +848,8 @@ debug (UnitTest)
     }
 
     /**
-    * Test that recursive mutexes actually do what they're supposed to do.
-    */
+     * Test that recursive mutexes actually do what they're supposed to do.
+     */
     void testRecursive()
     {
         const uint LoopsPerThread   = 1000;

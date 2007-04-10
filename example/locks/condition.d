@@ -5,7 +5,6 @@
 *******************************************************************************/
 
 private import tango.util.locks.Condition;
-private import tango.util.locks.Barrier;
 private import tango.util.locks.LockException;
 private import tango.core.Thread;
 private import tango.text.convert.Integer;
@@ -35,7 +34,7 @@ void main(char[][] args)
 
 
 /**
- * Test for Condition.notifyOne().
+ * Test for Condition.notify().
  */
 void testNotifyOne()
 {
@@ -45,7 +44,7 @@ void testNotifyOne()
     }
 
     scope Mutex     mutex   = new Mutex();
-    scope Condition cond    = new Condition();
+    scope Condition cond    = new Condition(mutex);
     int             waiting = 0;
     Thread          thread;
 
@@ -64,21 +63,24 @@ void testNotifyOne()
             debug (condition)
                 log.trace("Acquired mutex");
 
+            scope(exit)
+            {
+                debug (condition)
+                    log.trace("Releasing mutex");
+                mutex.release();
+            }
+
             waiting++;
 
             while (waiting != 2)
             {
                 debug (condition)
                     log.trace("Waiting on condition variable");
-                cond.wait(mutex);
+                cond.wait();
             }
 
             debug (condition)
                 log.trace("Condition variable was signaled");
-
-            debug (condition)
-                log.trace("Releasing mutex");
-            mutex.release();
         }
         catch (LockException e)
         {
@@ -128,7 +130,7 @@ void testNotifyOne()
 
         debug (condition)
             log.trace("Notifying test thread");
-        cond.notifyOne();
+        cond.notify();
 
         debug (condition)
             log.trace("Releasing mutex");
@@ -174,7 +176,7 @@ void testNotifyAll()
     }
 
     scope Mutex     mutex   = new Mutex();
-    scope Condition cond    = new Condition();
+    scope Condition cond    = new Condition(mutex);
     int             waiting = 0;
 
     /**
@@ -201,7 +203,7 @@ void testNotifyAll()
             {
                 debug (condition)
                     log.trace("Waiting on condition variable");
-                cond.wait(mutex);
+                cond.wait();
             }
 
             debug (condition)

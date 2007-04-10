@@ -4,6 +4,8 @@
   author:      Juan Jose Comellas <juanjo@comellas.com.ar>
 *******************************************************************************/
 
+module semaphore;
+
 private import tango.util.locks.Semaphore;
 private import tango.util.locks.Mutex;
 private import tango.util.locks.LockException;
