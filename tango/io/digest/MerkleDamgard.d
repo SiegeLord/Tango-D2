@@ -13,7 +13,7 @@
 
 module tango.io.digest.MerkleDamgard;
 
-private import tango.core.ByteSwap;
+public  import tango.core.ByteSwap;
 
 public  import tango.io.digest.Digest;
 
