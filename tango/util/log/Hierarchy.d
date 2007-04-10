@@ -66,6 +66,17 @@ private class LoggerInstance : Logger
 
         /***********************************************************************
         
+                No, you should not delete or 'scope' these entites
+
+        ***********************************************************************/
+
+        private ~this()
+        {
+                throw new Exception ("attempt to delete a LoggerInstance!");
+        }
+
+        /***********************************************************************
+        
                 Is this logger enabed for the specified Level?
 
         ***********************************************************************/
