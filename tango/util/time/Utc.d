@@ -208,3 +208,21 @@ version (Posix)
         }
     }
 }
+
+
+
+debug (Utc)
+{
+        import tango.io.Stdout;
+        import tango.core.Thread;
+
+        void main() 
+        {
+                while (true)
+                      {
+                      Stdout.format ("ticks {}", Utc.time/Time.TicksPerSecond).newline;
+                      Stdout.format ("timezone {} seconds", Utc.zone).newline;
+                      Thread.sleep (1);
+                      }
+        }
+}
