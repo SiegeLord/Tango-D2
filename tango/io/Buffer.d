@@ -1060,31 +1060,6 @@ class Buffer : IBuffer
 
         /***********************************************************************
         
-                Transfer content via this buffer to the provided dst
-                conduit.
-
-                Remarks:
-                The conduit associated with this buffer is transferred 
-                to another, via a series of fill & drain operations, 
-                until there is no more content to transfer
-
-                Throws an IOException on premature eof
-
-        ***********************************************************************/
-
-        IBuffer transfer (IConduit dst)
-        {
-                assert (conduit_ && dst);
-
-                do {
-                   drain (dst);
-                   } while (fill(conduit_) != IConduit.Eof);
-
-                return flush (dst);
-        } 
-
-        /***********************************************************************
-        
                 Clear buffer content
 
                 Returns:
@@ -1260,4 +1235,29 @@ class Buffer : IBuffer
                 data[limit_ .. limit_+size] = src[0 .. size];
                 limit_ += size;
         }
+
+        /***********************************************************************
+        
+                Transfer content via this buffer from the provided src
+                conduit.
+
+                Remarks:
+                The src conduit has its content transferred through 
+                this buffer via a series of fill & drain operations, 
+                until there is no more content to transfer
+
+                Throws an IOException on premature eof
+
+        ***********************************************************************/
+
+        IBuffer copy (IConduit src)
+        {
+                assert (conduit_ && src);
+
+                do {
+                   drain (conduit_);
+                   } while (fill(src) != IConduit.Eof);
+
+                return flush (conduit_);
+        } 
 }

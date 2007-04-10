@@ -486,19 +486,19 @@ abstract class IBuffer // could be an interface, but that causes poor codegen
 
         /***********************************************************************
         
-                Transfer content via this buffer to the provided dst
+                Transfer content via this buffer from the provided src
                 conduit.
 
                 Remarks:
-                The conduit associated with this buffer is transferred 
-                to another, via a series of fill & drain operations, 
+                The src conduit has its content transferred through 
+                this buffer via a series of fill & drain operations, 
                 until there is no more content to transfer
 
                 Throws an IOException on premature eof
 
         ***********************************************************************/
 
-        abstract IBuffer transfer (IConduit dst);
+        abstract IBuffer copy (IConduit src);
 
         /***********************************************************************
         
