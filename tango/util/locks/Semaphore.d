@@ -128,8 +128,8 @@ version (Posix)
 
         /**
          * Check the $(D_PARAM errorCode) argument against possible values
-         * of $(D_CODE SysError.lastCode()) and throw an exception with the
-         * description of the error.
+         * of SysError.lastCode() and throw an exception with the description
+         * of the error.
          *
          * Params:
          * errorCode    = SysError.lastCode() value; must not be 0.
@@ -162,6 +162,14 @@ version (Posix)
             // FIXME: Add error messages for ProcessSemaphores
             switch (errorCode)
             {
+                case EACCES:
+                    throw new AccessDeniedException(file, line);
+                    // break;
+
+                case EEXIST:
+                    throw new AlreadyExistsException(file, line);
+                    // break;
+
                 case EBUSY:
                 case EAGAIN:
                     throw new AlreadyLockedException(file, line);
@@ -263,8 +271,7 @@ version (Posix)
             _owner = true;
 
             // By default, both the user and group have access to the semaphore
-            _sem = sem_open(_name.ptr, O_CREAT | O_EXCL, 
-                            S_IRUSR | S_IWUSR | S_IRGRP | S_IWGRP, count);
+            _sem = sem_open(_name.ptr, O_CREAT, S_IRUSR | S_IWUSR | S_IRGRP | S_IROTH, count);
             if (_sem == SEM_FAILED)
             {
                 checkError(SysError.lastCode(), __FILE__, __LINE__);
@@ -402,8 +409,8 @@ else version (Windows)
 
         /**
          * Check the $(D_PARAM errorCode) argument against possible values
-         * of $(D_CODE SysError.lastCode()) and throw an exception with the
-         * description of the error.
+         * of SysError.lastCode() and throw an exception with the description
+         * of the error.
          *
          * Params:
          * errorCode    = SysError.lastCode() value; must not be 0.

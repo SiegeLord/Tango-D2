@@ -45,7 +45,7 @@ const uint      MAX_LENGTH      = 16;
 
 int main(char[][] args)
 {
-    scope Logger    log     = Log.getLogger("selector");
+    Logger          log     = Log.getLogger("selector");
     Sprint!(char)   sprint  = new Sprint!(char)(256);
 
     log.addAppender(new ConsoleAppender(new DateLayout()));

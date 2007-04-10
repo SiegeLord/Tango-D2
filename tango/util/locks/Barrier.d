@@ -21,8 +21,8 @@ version (Posix)
      *
      * This class allows $(D_PARAM count) number of threads to synchronize
      * their completion of (one round of) a task, which is known as "barrier
-     * synchronization". After all the threads call $(D_CODE wait()) on the 
-     * barrier they are all atomically released and can begin a new round.
+     * synchronization". After all the threads call wait() on the barrier they
+     * are all atomically released and can begin a new round.
      */
     public class Barrier
     {
@@ -61,8 +61,8 @@ version (Posix)
 
         /**
          * Block the caller until all $(D_PARAM count) threads have called
-         * $(D_CODE Barrier.wait()) and then allow all the caller threads to 
-         * continue in parallel.
+         * wait() and then allow all the caller threads to continue in
+         * parallel.
          */
         public void wait()
         {
@@ -76,8 +76,8 @@ version (Posix)
 
         /**
          * Check the $(D_PARAM errorCode) argument against possible values
-         * of $(D_CODE SysError.lastCode()) and throw an exception with the
-         * description of the error.
+         * of SysError.lastCode() and throw an exception with the description
+         * of the error.
          *
          * Params:
          * errorCode    = SysError.lastCode() value; must not be 0.
@@ -128,8 +128,8 @@ else version (Windows)
      * Implements "barrier synchronization".
      * This class allows $(D_PARAM count) number of threads to synchronize
      * their completion of (one round of) a task, which is known as "barrier
-     * synchronization". After all the threads call $(D_CODE wait()) on the
-     * barrier they are all atomically released and can begin a new round.
+     * synchronization". After all the threads call wait() on the barrier they
+     * are all atomically released and can begin a new round.
      *
      * Remarks:
      * This implementation uses a "sub-barrier generation numbering" scheme
@@ -168,8 +168,8 @@ else version (Windows)
          * waiters, and one for the next "generation" of waiters.  This
          * efficiently solves the problem of what to do if all the first
          * generation waiters don't leave the barrier before one of the
-         * threads calls $(D_CODE wait()) again (i.e., starts up the next 
-         * generation barrier).
+         * threads calls wait() again (i.e., starts up the next  generation
+         * barrier).
          */
         SubBarrier[2] _subBarrier;
 
@@ -202,8 +202,8 @@ else version (Windows)
 
         /**
          * Block the caller until all $(D_PARAM count) threads have called
-         * $(D_CODE Barrier.wait()) and then allow all the caller threads to 
-         * continue in parallel.
+         * wait() and then allow all the caller threads to  continue in
+         * parallel.
          */
         public void wait()
         {

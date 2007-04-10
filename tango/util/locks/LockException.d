@@ -236,7 +236,28 @@ public class AccessDeniedException: LockException
      */
     public this(char[] file, uint line)
     {
-        super("The caller does not have access rights to this synchronization object", file, line);
+        super("The caller does not have access rights to the synchronization object", file, line);
+    }
+}
+
+/**
+ * AlreadyExistsException is thrown when the semaphore could not be created
+ * because it already exists.
+ */
+public class AlreadyExistsException: LockException
+{
+    /**
+     * Construct an AlreadyExistsException with the provided text string.
+     *
+     * Params:
+     * file     = name of the source file where the exception was thrown; you
+     *            would normally use __FILE__ for this parameter.
+     * line     = line number of the source file where the exception was
+     *            thrown; you would normally use __LINE__ for this parameter.
+     */
+    public this(char[] file, uint line)
+    {
+        super("The semaphore could not be created because it already exists", file, line);
     }
 }
 

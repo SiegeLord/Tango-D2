@@ -24,7 +24,7 @@ void main(char[][] args)
 {
     debug (mutex)
     {
-        scope Logger log = Log.getLogger("mutex");
+        Logger log = Log.getLogger("mutex");
 
         log.addAppender(new ConsoleAppender(new DateLayout()));
 

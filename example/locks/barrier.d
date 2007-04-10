@@ -28,7 +28,7 @@ void main(char[][] args)
 
     debug (barrier)
     {
-        scope Logger log = Log.getLogger("barrier");
+        Logger log = Log.getLogger("barrier");
 
         log.addAppender(new ConsoleAppender(new DateLayout()));
 

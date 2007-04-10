@@ -21,7 +21,7 @@ void main(char[][] args)
 {
     debug (condition)
     {
-        scope Logger log = Log.getLogger("condition");
+        Logger log = Log.getLogger("condition");
 
         log.addAppender(new ConsoleAppender(new DateLayout()));
 

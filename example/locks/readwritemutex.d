@@ -29,7 +29,7 @@ void main(char[][] args)
 
     debug (readwritemutex)
     {
-        scope Logger log = Log.getLogger("readwritemutex");
+        Logger log = Log.getLogger("readwritemutex");
 
         log.addAppender(new ConsoleAppender(new DateLayout()));
 

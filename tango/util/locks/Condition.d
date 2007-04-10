@@ -21,21 +21,20 @@ private import tango.text.convert.Integer;
  * A condition variable enables threads to atomically block and test the
  * condition under the protection of a mutual exclusion lock (mutex) until
  * the condition is satisfied. That is, the mutex must have been held by
- * the thread before calling $(D_CODE wait()) or $(D_CODE notify()) /
- * $(D_CODE notifyAll()) on the condition. If the condition is false, a
- * thread blocks on a condition variable and atomically releases the mutex
- * that is waiting for the condition to change. If another thread changes
- * the condition, it may wake up waiting threads by signaling the associated
- * condition variable. The waiting threads, upon awakening, reacquire the
- * mutex and re-evaluate the condition.
+ * the thread before calling wait() or notify()/notifyAll() on the condition.
+ * If the condition is false, a thread blocks on a condition variable and
+ * atomically releases the mutex that is waiting for the condition to change.
+ * If another thread changes the condition, it may wake up waiting threads by
+ * signaling the associated condition variable. The waiting threads, upon
+ * awakening, reacquire the mutex and re-evaluate the condition.
  *
  * Remarks:
- * On POSIX-compatible platforms the $(D_CODE Condition) is implemented using a
- * $(D_CODE pthread_cond_t) from the pthread API. The Windows API (before
- * Windows Vista) does not provide a native condition variable, so it is
- * emulated with a mutex, a semaphore and an event. The Windows condition
- * variable emulation is based on the ACE_Condition template class from the
- * $(LINK2 http://www.cs.wustl.edu/~schmidt/ACE.html ACE framework).
+ * On POSIX-compatible platforms the Condition is implemented using a
+ * pthread_cond_t from the pthread API. The Windows API (before Windows Vista)
+ * does not provide a native condition variable, so it is emulated with a
+ * mutex, a semaphore and an event. The Windows condition variable emulation
+ * is based on the ACE_Condition template class from the
+ * $(LINK2 http://www.cs.wustl.edu/~schmidt/ACE.html, ACE framework).
  *
  * Examples:
  * ---
@@ -189,7 +188,7 @@ version (Posix)
 
         /**
          * Block on the condition, or until the specified (relative) amount
-         * of time has passed. If ($D_PARAM timeout) == $(D_CODE Interval.max)
+         * of time has passed. If ($D_PARAM timeout) is equal to Interval.max
          * there is no timeout.
          *
          * Returns: true if the condition was signaled; false if the timeout
@@ -232,8 +231,8 @@ version (Posix)
 
         /**
          * Check the $(D_PARAM errorCode) argument against possible values
-         * of $(D_CODE SysError.lastCode()) and throw an exception with the
-         * description of the error.
+         * of SysError.lastCode() and throw an exception with the description
+         * of the error.
          *
          * Params:
          * errorCode    = SysError.lastCode() value; must not be 0.
@@ -474,7 +473,7 @@ else version (Windows)
 
         /**
          * Block on the condition, or until the specified (relative) amount
-         * of time has passed. If $(D_PARAM timeout) == $(D_CODE Interval.max)
+         * of time has passed. If $(D_PARAM timeout) is equal to Interval.max
          * there is no timeout.
          *
          * Returns: true if the condition was signaled; false if the timeout
@@ -598,10 +597,9 @@ else version (Windows)
 
         /**
          * If $(B manual reset) is enabled, sleep till the event becomes
-         * signaled. The event remains signaled after $(D_CODE wait())
-         * completes. If in $(B auto reset) mode, sleep till the event becomes
-         * signaled. In this case the event will be reset after
-         * $(D_CODE wait()) completes.
+         * signaled. The event remains signaled after wait() completes. If in
+         * $(B auto reset) mode, sleep till the event becomes signaled. In
+         * this case the event will be reset after wait() completes.
          */
         public void wait()
         {
@@ -614,10 +612,9 @@ else version (Windows)
         }
 
         /**
-         * Same as $(D_CODE wait()) above, but this method can be timed.
+         * Same as wait() above, but this method can be timed.
          * $(D_PARAM timeout) is a relative timeout. If the timeout is equal to
-         * $(D_CODE Interval.max) then this method behaves like the one
-         * above.
+         * Interval.max then this method behaves like the one above.
          *
          * Returns: true if the event was signaled; false if the timeout
          *          was reached.
@@ -645,8 +642,8 @@ else version (Windows)
 
         /**
          * Check the $(D_PARAM errorCode) argument against possible values
-         * of $(D_CODE SysError.lastCode()) and throw an exception with the
-         * description of the error.
+         * of SysError.lastCode() and throw an exception with the description
+         * of the error.
          *
          * Params:
          * errorCode    = SysError.lastCode() value; must not be 0.

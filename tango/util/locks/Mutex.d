@@ -22,9 +22,9 @@ version (Posix)
     /**
      * Mutex wrapper that's only valid for threads in the same process.
      * This implementation is optimized for locking threads that are in the
-     * same process. It maps to a $(D_CODE CRITICAL_SECTION) on Windows and to
-     * a $(D_CODE pthread_mutex_t) on UNIX. Mutexes on Windows are always
-     * recursive, even if the $(D_CODE NonRecursive) mutex type is used.
+     * same process. It maps to a CRITICAL_SECTION on Windows and to a
+     * pthread_mutex_t on UNIX. Mutexes on Windows are always recursive, even
+     * if the NonRecursive mutex type is used.
      */
     public class Mutex
     {
@@ -141,8 +141,8 @@ version (Posix)
 
         /**
          * Check the $(D_PARAM errorCode) argument against possible values
-         * of $(D_CODE SysError.lastCode()) and throw an exception with the
-         * description of the error.
+         * of SysError.lastCode() and throw an exception with the description
+         * of the error.
          *
          * Params:
          * errorCode    = SysError.lastCode() value; must not be 0.
@@ -303,9 +303,9 @@ else version (Windows)
     /**
      * Mutex wrapper that's only valid for threads in the same process.
      * This implementation is optimized for locking threads that are in the
-     * same process. It maps to a $(D_CODE CRITICAL_SECTION) on Windows and to
-     * a $(D_CODE pthread_mutex_t) on UNIX. Mutexes on Windows are always
-     * recursive, even if the $(D_CODE NonRecursive) mutex type is used.
+     * same process. It maps to a CRITICAL_SECTION on Windows and to a
+     * pthread_mutex_t on UNIX. Mutexes on Windows are always
+     * recursive, even if the NonRecursive mutex type is used.
      */
     private class Mutex
     {
@@ -482,8 +482,8 @@ else version (Windows)
 
         /**
          * Check the $(D_PARAM errorCode) argument against possible values
-         * of $(D_CODE SysError.lastCode()) and throw an exception with the
-         * description of the error.
+         * of SysError.lastCode() and throw an exception with the description
+         * of the error.
          *
          * Params:
          * errorCode    = SysError.lastCode() value; must not be 0.

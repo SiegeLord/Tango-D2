@@ -222,8 +222,8 @@ version (Posix)
 
         /**
          * Check the $(D_PARAM errorCode) argument against possible values
-         * of $(D_CODE SysError.lastCode()) and throw an exception with the
-         * description of the error.
+         * of SysError.lastCode() and throw an exception with the description
+         * of the error.
          *
          * Params:
          * errorCode    = SysError.lastCode() value; must not be 0.
@@ -289,7 +289,7 @@ else version (Windows)
      *
      * Remarks:
      * Based on the ACE_RW_Mutex class from the
-     * $(LINK2 http://www.cs.wustl.edu/~schmidt/ACE.html ACE framework).
+     * $(LINK2 http://www.cs.wustl.edu/~schmidt/ACE.html, ACE framework).
      */
     public class ReadWriteMutex
     {
