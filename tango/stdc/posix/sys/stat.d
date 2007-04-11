@@ -197,6 +197,41 @@ else version( darwin )
         int         st_lspare;
         long        st_qspare[2];
     }
+
+    const S_IRUSR   = 0400;
+    const S_IWUSR   = 0200;
+    const S_IXUSR   = 0100;
+    const S_IRWXU   = S_IRUSR | S_IWUSR | S_IXUSR;
+
+    const S_IRGRP   = S_IRUSR >> 3;
+    const S_IWGRP   = S_IWUSR >> 3;
+    const S_IXGRP   = S_IXUSR >> 3;
+    const S_IRWXG   = S_IRWXU >> 3;
+
+    const S_IROTH   = S_IRGRP >> 3;
+    const S_IWOTH   = S_IWGRP >> 3;
+    const S_IXOTH   = S_IXGRP >> 3;
+    const S_IRWXO   = S_IRWXG >> 3;
+
+    const S_ISUID   = 04000;
+    const S_ISGID   = 02000;
+    const S_ISVTX   = 01000;
+
+    private
+    {
+        extern (D) bool S_ISTYPE( mode_t mode, uint mask )
+        {
+            return ( mode & S_IFMT ) == mask;
+        }
+    }
+
+    extern (D) bool S_ISBLK( mode_t mode )  { return S_ISTYPE( mode, S_IFBLK );  }
+    extern (D) bool S_ISCHR( mode_t mode )  { return S_ISTYPE( mode, S_IFCHR );  }
+    extern (D) bool S_ISDIR( mode_t mode )  { return S_ISTYPE( mode, S_IFDIR );  }
+    extern (D) bool S_ISFIFO( mode_t mode ) { return S_ISTYPE( mode, S_IFIFO );  }
+    extern (D) bool S_ISREG( mode_t mode )  { return S_ISTYPE( mode, S_IFREG );  }
+    extern (D) bool S_ISLNK( mode_t mode )  { return S_ISTYPE( mode, S_IFLNK );  }
+    extern (D) bool S_ISSOCK( mode_t mode ) { return S_ISTYPE( mode, S_IFSOCK ); }
 }
 
 int    chmod(char*, mode_t);
