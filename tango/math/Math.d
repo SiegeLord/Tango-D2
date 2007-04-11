@@ -154,7 +154,7 @@ unittest
  *
  *  conj(x + iy) = x - iy
  *
- * Note that z * conj(z) = $(POWER z.re, 2) - $(POWER z.im, 2)
+ * Note that z * conj(z) = $(POWER z.re, 2) + $(POWER z.im, 2)
  * is always a real number
  */
 creal conj(creal z)
