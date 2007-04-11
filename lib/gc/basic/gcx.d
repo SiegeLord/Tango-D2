@@ -93,6 +93,8 @@ private
 
         extern (C) void thread_scanAll( scanFn fn, void* curStackTop = null );
     }
+
+    extern (C) void onOutOfMemoryError();
 }
 
 
@@ -147,17 +149,19 @@ debug (LOGGING)
                 if (!data)
                 {
                     data = cast(Log *)tango.stdc.stdlib.malloc(allocdim * Log.sizeof);
+                    if (!data && allocdim)
+                        onOutOfMemoryError();
                 }
                 else
                 {   Log *newdata;
 
                     newdata = cast(Log *)tango.stdc.stdlib.malloc(allocdim * Log.sizeof);
-                    assert(newdata);
+                    if (!newdata && allocdim)
+                        onOutOfMemoryError();
                     memcpy(newdata, data, dim * Log.sizeof);
                     tango.stdc.stdlib.free(data);
                     data = newdata;
                 }
-                assert(!allocdim || data);
             }
         }
 
@@ -222,6 +226,8 @@ class GC
     {
         gcLock = GCLock.classinfo;
         gcx = cast(Gcx *)tango.stdc.stdlib.calloc(1, Gcx.sizeof);
+        if (!gcx)
+            onOutOfMemoryError();
         gcx.initialize();
         setStackBottom(cr_stackBottom());
     }
@@ -1409,7 +1415,8 @@ struct Gcx
             void** newroots;
 
             newroots = cast(void **)tango.stdc.stdlib.malloc(newdim * newroots[0].sizeof);
-            assert(newroots);
+            if (!newroots)
+                onOutOfMemoryError();
             if (roots)
             {   memcpy(newroots, roots, nroots * newroots[0].sizeof);
                 tango.stdc.stdlib.free(roots);
@@ -1453,7 +1460,8 @@ struct Gcx
             Range *newranges;
 
             newranges = cast(Range *)tango.stdc.stdlib.malloc(newdim * newranges[0].sizeof);
-            assert(newranges);
+            if (!newranges)
+                onOutOfMemoryError();
             if (ranges)
             {   memcpy(newranges, ranges, nranges * newranges[0].sizeof);
                 tango.stdc.stdlib.free(ranges);
@@ -1706,6 +1714,12 @@ struct Gcx
         // Minimum of POOLSIZE
         if (npages < POOLSIZE/PAGESIZE)
             npages = POOLSIZE/PAGESIZE;
+        else if (npages > POOLSIZE/PAGESIZE)
+        {   // Give us 150% of requested size, so there's room to extend
+            auto n = npages + (npages >> 1);
+            if (n < size_t.max/PAGESIZE)
+                npages = n;
+        }
 
         // Allocate successively larger pools up to 8 megs
         if (npools)
@@ -2457,6 +2471,8 @@ struct Pool
         noscan.alloc(poolsize / 16);
 
         pagetable = cast(ubyte*)tango.stdc.stdlib.malloc(npages);
+        if (!pagetable)
+            onOutOfMemoryError();
         memset(pagetable, B_UNCOMMITTED, npages);
 
         this.npages = npages;
