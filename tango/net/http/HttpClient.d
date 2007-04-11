@@ -26,12 +26,12 @@ private import  tango.net.Uri,
 
 private import  tango.core.Type : Interval;
                 
-private import  tango.net.http.HttpParams,  
+private import  tango.net.http.HttpConst,
+                tango.net.http.HttpParams,  
                 tango.net.http.HttpHeaders,
                 tango.net.http.HttpTriplet,
-                tango.net.http.HttpCookies,                
-                tango.net.http.HttpResponses;
-              
+                tango.net.http.HttpCookies;
+
 private import  tango.text.stream.LineIterator;
 
 private import  Integer = tango.text.convert.Integer;

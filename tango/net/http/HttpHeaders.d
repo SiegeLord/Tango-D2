@@ -14,9 +14,9 @@ module tango.net.http.HttpHeaders;
 
 private import  tango.io.model.IBuffer;
 
-private import  tango.net.http.HttpTokens;
+public  import  tango.net.http.HttpConst;
 
-public  import  tango.net.http.model.HttpConst;
+private import  tango.net.http.HttpTokens;
 
 private import  tango.text.stream.LineIterator;
 
