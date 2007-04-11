@@ -85,7 +85,7 @@ class HttpClient
         // this is struct rather than typedef to avoid compiler bugs
         private struct RequestMethod
         {
-                final char[]            name;
+                const char[]            name;
         }    
                         
         // class members; there's a surprising amount of stuff here!
