@@ -1238,13 +1238,13 @@ class Buffer : IBuffer
 
         /***********************************************************************
         
-                Transfer content via this buffer from the provided src
+                Copy content via this buffer from the provided src
                 conduit.
 
                 Remarks:
                 The src conduit has its content transferred through 
                 this buffer via a series of fill & drain operations, 
-                until there is no more content to transfer
+                until there is no more content available
 
                 Throws an IOException on premature eof
 
