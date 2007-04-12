@@ -148,7 +148,7 @@ extern (C) int _d_run_main(int argc, char **argv, main_type main_func)
         gc_term();
     }
 
-    if( !cr_trapExceptions )
+    if( cr_trapExceptions )
     {
         try
         {
@@ -161,12 +161,13 @@ extern (C) int _d_run_main(int argc, char **argv, main_type main_func)
                 if (e.file)
                 {
                    // fprintf(stderr, "%.*s(%u): %.*s\n", e.file, e.line, e.msg);
-                   console (e.file)("(")(e.line)("): ")(e.msg)("\n");
+                   console (e.classinfo.name)(": ")(e.file)("(")(e.line)
+                       ("): ")(e.msg)("\n");
                 }
                 else
                 {
                    // fprintf(stderr, "%.*s\n", e.toUtf8());
-                   console (e.toUtf8)("\n");
+                   console (e.classinfo.name)(": ")(e.toUtf8)("\n");
                 }
                 e = e.next;
             }

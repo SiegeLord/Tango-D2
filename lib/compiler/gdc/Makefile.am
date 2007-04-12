@@ -18,7 +18,7 @@
 # AUTOMAKE_OPTIONS = 1.9.6 foreign no-dependencies
 
 OUR_CFLAGS=@DEFS@ -I.
-D_EXTRA_DFLAGS=-nostdinc -pipe -I../../..
+D_EXTRA_DFLAGS=-nostdinc -pipe -I../../.. -fversion=Posix
 ALL_DFLAGS = $(DFLAGS) $(D_MEM_FLAGS) $(D_EXTRA_DFLAGS) $(MULTIFLAGS)
 
 host_alias=.
