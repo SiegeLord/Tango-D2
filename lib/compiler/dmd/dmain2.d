@@ -176,12 +176,13 @@ extern (C) int main(int argc, char **argv)
                 if (e.file)
                 {
                    // fprintf(stderr, "%.*s(%u): %.*s\n", e.file, e.line, e.msg);
-                   console (e.file)("(")(e.line)("): ")(e.msg)("\n");
+                   console (e.classinfo.name)(": ")(e.file)("(")(e.line)
+                       ("): ")(e.msg)("\n");
                 }
                 else
                 {
                    // fprintf(stderr, "%.*s\n", e.toUtf8());
-                   console (e.toUtf8)("\n");
+                   console (e.classinfo.name)(": ")(e.toUtf8)("\n");
                 }
                 e = e.next;
             }
