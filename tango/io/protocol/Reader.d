@@ -613,7 +613,7 @@ class Reader : IReader
 
         private void[] readElement (void* dst, uint bytes, IProtocol.Type type)
         {
-                return buffer_.extract (dst, bytes);
+                return buffer_.readExact (dst, bytes);
         }
         
         /***********************************************************************

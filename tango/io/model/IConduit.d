@@ -32,7 +32,7 @@ abstract class IConduit : ISelectable
 {
         /***********************************************************************
         
-                Declare the End Of File identifer
+                Declare the End-of-Flow identifer
 
         ***********************************************************************/
 
@@ -40,7 +40,11 @@ abstract class IConduit : ISelectable
 
         /***********************************************************************
                 
-                read from conduit into a target array
+                Read from conduit into a target array. The provided dst 
+                will be populated with content from the conduit. 
+
+                Returns the number of bytes read, which may be less than
+                requested in dst
 
         ***********************************************************************/
 
@@ -48,7 +52,11 @@ abstract class IConduit : ISelectable
 
         /***********************************************************************
         
-                write to conduit from a source array
+                Write to conduit from a source array. The provided src
+                content will be written to the conduit.
+
+                Returns the number of bytes written from src, which may
+                be less than the quantity provided
 
         ***********************************************************************/
 
@@ -56,16 +64,18 @@ abstract class IConduit : ISelectable
 
         /***********************************************************************
         
-                flush provided content to the conduit
+                Flush provided content to the conduit. Will throws an 
+                IOException where the operation can not be completed
 
         ***********************************************************************/
 
-        abstract bool flush (void[] src);
+        abstract IConduit flush (void[] src);
 
         /***********************************************************************
         
                 Transfer the content of this conduit to another one. 
-                Returns true if all content was successfully copied.
+                Throws an IOException where the transfer can not be
+                completed
         
         ***********************************************************************/
 

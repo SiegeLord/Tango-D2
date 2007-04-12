@@ -203,7 +203,7 @@ class Buffer : IBuffer
         protected uint          limit_;         // limit of valid content
         protected uint          capacity_;      // maximum of limit
         protected uint          position_;      // current read position
-        protected uint          threshhold;     // whether to buffer or not
+        protected uint          threshold;     // whether to buffer or not
         protected IConduit      conduit_;       // optional conduit
 
         
@@ -372,7 +372,7 @@ class Buffer : IBuffer
                 this.data = data;
                 this.limit_ = readable;
                 this.capacity_ = data.length;
-                threshhold = data.length / 2;
+                threshold = data.length / 2;
 
                 // reset to start of input
                 this.position_ = 0;
@@ -441,7 +441,7 @@ class Buffer : IBuffer
                       } while (size > readable);
                    }
 
-                uint i = position_;
+                auto i = position_;
                 if (eat)
                     position_ += size;
                 return data [i .. i + size];               
@@ -449,7 +449,7 @@ class Buffer : IBuffer
 
         /***********************************************************************
 
-                Copy buffer content
+                Copy buffer content into the provided dst
 
                 Params: 
                 dst = destination of the content
@@ -466,24 +466,36 @@ class Buffer : IBuffer
 
         ***********************************************************************/
 
-        uint fill (void[] dst)
+        uint read (void[] dst)
         {   
-                // copy the buffer remains
-                int i = readable ();
-                if (i > dst.length)
-                    i = dst.length;
-                dst[0..i] = slice (i);
+                uint content;
 
-                // and get the rest directly from conduit
-                if (i < dst.length)
-                    if (conduit_)
-                        i += conduit_.fill (dst [i..$]);
-                return i;
+                // ensure buffer doesn't remain drained by employing a simple
+                // threshold value to determine when a request will employ a
+                // buffer fill & copy, versus direct conduit access
+                do {
+                   content = readable();
+                   if (content >= dst.length)
+                      {
+                      content = dst.length;
+                      break;
+                      }
+                   } while (dst.length < threshold && fill() != IConduit.Eof)
+
+                // transfer buffer content
+                dst [0 .. content] = data [position_ .. position_ + content];
+                position_ += content;
+
+                // and get further content directly from conduit
+                if (content < dst.length && conduit_)
+                    content += conduit_.fill (dst [content .. $]);
+
+                return content;
         }
 
         /***********************************************************************
 
-                Copy buffer content
+                Copy buffer content into the provided dst
 
                 Params: 
                 dst = destination of the content
@@ -499,40 +511,15 @@ class Buffer : IBuffer
 
         ***********************************************************************/
 
-        void[] extract (void* dst, uint bytes)
+        void[] readExact (void* dst, uint bytes)
         {
-                if (bytes < threshhold)
-                    dst [0 .. bytes] = slice (bytes);
-                else
-                   if (fill (dst [0 .. bytes]) != bytes)
-                       error (eofRead);
+                auto tmp = dst [0 .. bytes];
+                if (read (tmp) != bytes)
+                    error (eofRead);
 
-                return dst [0 .. bytes];
+                return tmp;
         }
         
-        /***********************************************************************
-        
-                Wait for input
-
-                Returns:
-                the buffer instance
-
-                Remarks:
-                Wait for something to arrive in the buffer. This may stall
-                the current thread forever, although usage of SocketConduit 
-                will take advantage of the timeout facilities provided there.
-
-                Note that this is not intended to provide 'barrier' style 
-                semantics for multi-threaded producer/consumer environments.
-
-        ***********************************************************************/
-
-        IBuffer wait ()
-        {       
-                slice (1, false);
-                return this;
-        }
-
         /***********************************************************************
         
                 Append content
@@ -890,7 +877,7 @@ class Buffer : IBuffer
 
         /***********************************************************************
 
-                Fill buffer from conduit
+                Fill buffer from associated conduit
 
                 Returns:
                 Returns the number of bytes read, or Eof if there's no
@@ -915,7 +902,7 @@ class Buffer : IBuffer
 
         /***********************************************************************
 
-                Fill buffer from conduit
+                Fill buffer from the specific conduit
                
                 Returns:
                 Returns the number of bytes read, or Conduit.Eof
@@ -932,6 +919,8 @@ class Buffer : IBuffer
 
         uint fill (IConduit conduit)
         {
+                assert (conduit);
+
                 if (readable is 0)
                     clear();
                 else
@@ -940,6 +929,31 @@ class Buffer : IBuffer
                            error ("input buffer is too small");
 
                 return write (&conduit.read);
+        } 
+
+        /***********************************************************************
+        
+                Copy content via this buffer from the provided src
+                conduit.
+
+                Remarks:
+                The src conduit has its content transferred through 
+                this buffer via a series of fill & drain operations, 
+                until there is no more content available
+
+                Throws an IOException on premature eof
+
+        ***********************************************************************/
+
+        IBuffer copy (IConduit src)
+        {
+                assert (conduit_ && src);
+
+                do {
+                   drain (conduit_);
+                   } while (fill(src) != IConduit.Eof);
+
+                return flush (conduit_);
         } 
 
         /***********************************************************************
@@ -973,7 +987,7 @@ class Buffer : IBuffer
 
         /***********************************************************************
 
-                Drain buffer content
+                Drain buffer content to the associated conduit
 
                 Returns:
                 Returns the number of bytes written, or Conduit.Eof
@@ -992,7 +1006,7 @@ class Buffer : IBuffer
 
         /***********************************************************************
 
-                Drain buffer content
+                Drain buffer content to the specific conduit
 
                 Returns:
                 Returns the number of bytes written, or Conduit.Eof
@@ -1006,6 +1020,8 @@ class Buffer : IBuffer
 
         final uint drain (IConduit conduit)
         {
+                assert (conduit);
+
                 uint ret = read (&conduit.write);
                 if (ret is conduit.Eof)
                     error (eofWrite);
@@ -1016,7 +1032,7 @@ class Buffer : IBuffer
 
         /***********************************************************************
         
-                Flush all buffer content
+                Flush all buffer content to the associated conduit
 
                 Remarks:
                 Flush the contents of this buffer. This will block until 
@@ -1036,7 +1052,7 @@ class Buffer : IBuffer
 
         /***********************************************************************
         
-                Flush all buffer content
+                Flush all buffer content to the specific conduit
 
                 Remarks:
                 Flush the contents of this buffer. This will block until 
@@ -1051,11 +1067,8 @@ class Buffer : IBuffer
         {
                 assert (conduit);
 
-                if (conduit.flush (data [position_ .. limit_]))
-                    clear;
-                else
-                   error (eofWrite);
-                return this;
+                conduit.flush (data [position_ .. limit_]);
+                return clear;
         } 
 
         /***********************************************************************
@@ -1235,29 +1248,4 @@ class Buffer : IBuffer
                 data[limit_ .. limit_+size] = src[0 .. size];
                 limit_ += size;
         }
-
-        /***********************************************************************
-        
-                Copy content via this buffer from the provided src
-                conduit.
-
-                Remarks:
-                The src conduit has its content transferred through 
-                this buffer via a series of fill & drain operations, 
-                until there is no more content available
-
-                Throws an IOException on premature eof
-
-        ***********************************************************************/
-
-        IBuffer copy (IConduit src)
-        {
-                assert (conduit_ && src);
-
-                do {
-                   drain (conduit_);
-                   } while (fill(src) != IConduit.Eof);
-
-                return flush (conduit_);
-        } 
 }

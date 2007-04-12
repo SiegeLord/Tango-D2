@@ -59,7 +59,7 @@ class NativeProtocol : IProtocol
 
         void[] read (void* dst, uint bytes, Type type)
         {
-                return buffer_.extract (dst, bytes);
+                return buffer_.readExact (dst, bytes);
         }
         
         /***********************************************************************

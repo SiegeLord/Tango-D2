@@ -333,7 +333,7 @@ abstract class IBuffer // could be an interface, but that causes poor codegen
 
         ***********************************************************************/
 
-        abstract uint fill (void[] dst);
+        abstract uint read (void[] dst);
 
         /***********************************************************************
 
@@ -353,7 +353,7 @@ abstract class IBuffer // could be an interface, but that causes poor codegen
 
         ***********************************************************************/
 
-        void[] extract (void* dst, uint bytes);
+        abstract void[] readExact (void* dst, uint bytes);
         
         /***********************************************************************
 

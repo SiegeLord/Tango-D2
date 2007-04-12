@@ -121,20 +121,21 @@ class Conduit : IConduit, IConduitFilter
 
         /***********************************************************************
 
-                flush provided content to the conduit
+                flush provided content to the conduit. Throws an IOException 
+                upon failure to write to the output
 
         ***********************************************************************/
 
-        bool flush (void[] src)
+        IConduit flush (void[] src)
         {
-                int len = src.length;
+                uint len = src.length;
 
-                for (int i, written; written < len;)
-                     if ((i = write (src[written..len])) != Eof)
+                for (uint i, written; written < len;)
+                     if ((i = write (src [written .. len])) != Eof)
                           written += i;
                      else
-                        return false;
-                return true;
+                        exception ("IConduit.flush :: Eof while writing "~toUtf8());
+                return this;
         }
 
         /***********************************************************************
@@ -170,7 +171,11 @@ class Conduit : IConduit, IConduitFilter
 
         /***********************************************************************
 
-                read from conduit into a target buffer
+                Read from conduit into a target array. The provided dst 
+                will be populated with content from the conduit. 
+
+                Returns the number of bytes read, which may be less than
+                requested in dst
 
         ***********************************************************************/
 
@@ -181,7 +186,11 @@ class Conduit : IConduit, IConduitFilter
 
         /***********************************************************************
 
-                write to conduit from a source buffer
+                Write to conduit from a source array. The provided src
+                content will be written to the conduit.
+
+                Returns the number of bytes written from src, which may
+                be less than the quantity provided
 
         ***********************************************************************/
 
@@ -248,8 +257,7 @@ class Conduit : IConduit, IConduitFilter
 
                 uint i;
                 while ((i = source.read (buffer)) != Eof)
-                        if (! flush (buffer [0..i]))
-                              exception ("target Eof while copying conduit");
+                        flush (buffer [0 .. i]);
                 
                 delete buffer;
                 return this;
