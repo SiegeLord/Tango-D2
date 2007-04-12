@@ -32,7 +32,7 @@ struct HttpConst
 
 struct HttpHeaderName
 {
-        char[]     value;  
+        final char[] value;  
 }
 
 /*******************************************************************************
