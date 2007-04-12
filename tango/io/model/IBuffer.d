@@ -148,7 +148,7 @@ private import tango.io.model.IConduit;
         ---
         Stdout ("now is the time for ") (3) (" good men ") (foo);
 
-        Stdout.format ("now is the time for {0} good men {1}", 3, foo);
+        Stdout.format ("now is the time for {} good men {}", 3, foo);
         ---
 
         Stdout is attached to a specific buffer, which in turn is attached 
