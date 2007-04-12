@@ -373,7 +373,7 @@ debug (UnitTest)
         {
                 char[64] tmp;
 
-                assert (format (tmp, 3.14159) == "3.141590");
+                assert (format (tmp, 3.14159, 6) == "3.141590");
                 assert (format (tmp, 3.14159, 4) == "3.1416");
                 assert (parse ("3.5") == 3.5);
                 assert (format(tmp, parse ("3.14159"), 6) == "3.141590");

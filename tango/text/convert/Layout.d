@@ -361,13 +361,13 @@ class Layout(T)
                        case TypeCode.BYTE:
                             return integer (result, *cast(byte*) p, format);
 
-                            case TypeCode.UBYTE:
+                       case TypeCode.UBYTE:
                             return integer (result, *cast(ubyte*) p, format);
 
                        case TypeCode.SHORT:
                             return integer (result, *cast(short*) p, format);
 
-                            case TypeCode.USHORT:
+                       case TypeCode.USHORT:
                             return integer (result, *cast(ushort*) p, format);
 
                        case TypeCode.INT:
@@ -567,7 +567,7 @@ debug (UnitTest)
 
         unittest
         {
-        Layout!(char) Formatter;
+        auto Formatter = new Layout!(char);
 
         assert( Formatter( "abc" ) == "abc" );
         assert( Formatter( "{0}", 1 ) == "1" );
@@ -668,7 +668,7 @@ debug (UnitTest)
         /+ Not yet implemented +/ //        == "vendredi 3 mars 2006" );
 
         assert( Formatter( "{0:f}", 1.23f ) == "1.23" ,  Formatter( "{0:f}", 1.23f ));
-        assert( Formatter( "{0:f}", 1.23 ) == "1.23" );
+        assert( Formatter( "{0:f4}", 1.23456789L ) == "1.2346" );
         }
 }
 
@@ -682,6 +682,6 @@ debug (Layout)
         {
                 auto Formatter = new Layout!(char);
 
-               // Cout (Formatter ("{} {} bottles '{}'", 10, "green", foo)) ();
+                //Cout (Formatter ("{} {} bottles '{}'", 10, "green", foo)) ();
         }
 } 
