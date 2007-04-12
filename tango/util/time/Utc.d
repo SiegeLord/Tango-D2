@@ -220,7 +220,7 @@ debug (Utc)
         {
                 while (true)
                       {
-                      Stdout.format ("ticks {}, timezone {} seconds", Utc.time/Time.TicksPerSecond, Utc.zone).newline;
+                      Stdout.format ("ticks {}, timezone {} seconds", Utc.time/Time.TicksPerSecond, cast(int) Utc.zone).newline;
                       Thread.sleep (1);
                       }
         }
