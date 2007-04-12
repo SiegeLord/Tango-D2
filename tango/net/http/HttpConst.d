@@ -164,8 +164,8 @@ enum HttpResponseCode
 
 struct HttpStatus
 {
-        int     code; 
-        char[]  name;  
+        final int     code; 
+        final char[]  name;  
 }
 
 /*******************************************************************************
