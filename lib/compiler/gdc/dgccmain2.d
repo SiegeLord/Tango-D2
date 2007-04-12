@@ -161,7 +161,7 @@ extern (C) int _d_run_main(int argc, char **argv, main_type main_func)
                 if (e.file)
                 {
                    // fprintf(stderr, "%.*s(%u): %.*s\n", e.file, e.line, e.msg);
-                   console (e.classinfo.name)(": ")(e.file)("(")(e.line)
+                   console (e.classinfo.name)("@")(e.file)("(")(e.line)
                        ("): ")(e.msg)("\n");
                 }
                 else
