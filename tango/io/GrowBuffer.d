@@ -148,7 +148,7 @@ class GrowBuffer : Buffer
                         
         ***********************************************************************/
 
-        override uint makeRoom (uint size)
+        private uint makeRoom (uint size)
         {
                 if (size < increment)
                     size = increment;

@@ -207,8 +207,8 @@ class Buffer : IBuffer
         protected IConduit      conduit_;       // optional conduit
 
         
-        protected static char[] overflow  = "output buffer overflow";
-        protected static char[] underflow = "input buffer underflow";
+        protected static char[] overflow  = "output buffer is full";
+        protected static char[] underflow = "input buffer is empty";
         protected static char[] eofRead   = "end-of-file whilst reading";
         protected static char[] eofWrite  = "end-of-file whilst writing";
 
@@ -958,45 +958,16 @@ class Buffer : IBuffer
 
         /***********************************************************************
 
-                Try to make space available
-
-                Params:
-                space = number of bytes required
-
-                Returns: 
-                The number of bytes actually made available
-
-                Remarks:
-                Make some room in the buffer. The requested space is simply
-                an indicator of how much is desired. A subclass may or may
-                not fulfill the request directly. 
-                
-                For example, the base-class simply performs a drain() on the 
-                buffer.
-                        
-        ***********************************************************************/
-
-        uint makeRoom (uint space)
-        {
-                if (conduit_)
-                    drain ();
-                else
-                   error (overflow);
-                return writable();
-        }
-
-        /***********************************************************************
-
                 Drain buffer content to the associated conduit
 
                 Returns:
-                Returns the number of bytes written, or Conduit.Eof
+                Returns the number of bytes written
 
                 Remarks:
                 Write as much of the buffer that the associated conduit
                 can consume. The conduit is not obliged to consume all 
-                content, so some may remain within the buffer.
-        
+                content, so some may remain within the buffer.      
+
         ***********************************************************************/
 
         uint drain ()
@@ -1009,12 +980,14 @@ class Buffer : IBuffer
                 Drain buffer content to the specific conduit
 
                 Returns:
-                Returns the number of bytes written, or Conduit.Eof
+                Returns the number of bytes written
 
                 Remarks:
                 Write as much of the buffer that the associated conduit
                 can consume. The conduit is not obliged to consume all 
                 content, so some may remain within the buffer.
+
+                Throws an IOException on premature Eof.
         
         ***********************************************************************/
 
@@ -1039,7 +1012,7 @@ class Buffer : IBuffer
                 all content is actually flushed via the associated conduit, 
                 whereas drain() will not.
 
-                Throws an IOException on premature eof.
+                Throws an IOException on premature Eof.
 
         ***********************************************************************/
 
@@ -1059,7 +1032,7 @@ class Buffer : IBuffer
                 all content is actually flushed via the associated conduit, 
                 whereas drain() will not.
 
-                Throws an IOException on premature eof.
+                Throws an IOException on premature Eof.
 
         ***********************************************************************/
 

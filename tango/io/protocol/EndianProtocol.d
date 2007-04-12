@@ -106,11 +106,9 @@ class EndianProtocol : NativeProtocol
                         }
 
                         while (bytes)
-                              {
-                              //flush if we used all buffer space
-                              if (bytes -= buffer_.write (&writer))
-                                  buffer_.makeRoom (bytes);
-                              }                          
+                               if (bytes -= buffer_.write (&writer))
+                                   // flush if we used all buffer space
+                                   buffer_.drain;
                 }
 
 

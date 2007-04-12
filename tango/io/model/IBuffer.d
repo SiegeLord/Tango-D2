@@ -560,14 +560,6 @@ abstract class IBuffer // could be an interface, but that causes poor codegen
         abstract uint position ();               
 
         /***********************************************************************
-
-                make some room in the buffer
-                        
-        ***********************************************************************/
-
-        abstract uint makeRoom (uint space);
-
-        /***********************************************************************
         
                 Returns the conduit associated with this buffer. Returns 
                 null if the buffer is purely memory based; that is, it's
