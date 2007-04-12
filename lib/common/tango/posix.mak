@@ -39,10 +39,10 @@ DOC_DEST=../../../doc/tango
 .SUFFIXES: .s .S .c .cpp .d .html .o
 
 .s.o:
-	$(CC) -c $(CFLAGS) $< -o$@
+	$(CC) -c $(CFLAGS) -mregnames $< -o$@
 
 .S.o:
-	$(CC) -c $(CFLAGS) $< -o$@
+	$(CC) -c $(CFLAGS) -mregnames $< -o$@
 
 .c.o:
 	$(CC) -c $(CFLAGS) $< -o$@
