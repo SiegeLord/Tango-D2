@@ -1,7 +1,7 @@
 #!/bin/bash
 cd "`dirname $0`"
 
-GDC_VER="`gdc --version | grep '^gdc' | sed 's/^.*gdc \([0-9]*\.[0-9]*\).*$/\1/'`"
+GDC_VER="`gdc --version | grep 'gdc' | sed 's/^.*gdc \([0-9]*\.[0-9]*\).*$/\1/'`"
 GDC_MAJOR="`echo $GDC_VER | sed 's/\..*//'`"
 GDC_MINOR="`echo $GDC_VER | sed 's/.*\.//'`"
 

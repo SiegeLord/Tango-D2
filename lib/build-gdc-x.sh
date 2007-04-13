@@ -14,7 +14,7 @@ then
     CONFIGURE_FLAGS="--enable-phobos-config-dir=$2"
 fi
 
-GDC_VER="`$HOST-gdc --version | grep '^gdc' | sed 's/^.*gdc \([0-9]*\.[0-9]*\).*$/\1/'`"
+GDC_VER="`$HOST-gdc --version | grep 'gdc' | sed 's/^.*gdc \([0-9]*\.[0-9]*\).*$/\1/'`"
 GDC_MAJOR="`echo $GDC_VER | sed 's/\..*//'`"
 GDC_MINOR="`echo $GDC_VER | sed 's/.*\.//'`"
 
@@ -31,7 +31,7 @@ popd
 
 OLDHOME=$HOME
 export HOME=`pwd`
-make clean -fgdc-posix.mak DC=$HOST-gdmd || exit 1
-make lib doc install -fgdc-posix.mak DC=$HOST-gdmd || exit 1
-make clean -fgdc-posix.mak DC=$HOST-gdmd || exit 1
+make clean -fgdc-posix.mak CC=$HOST-gcc DC=$HOST-gdmd || exit 1
+make lib doc install -fgdc-posix.mak CC=$HOST-gcc DC=$HOST-gdmd || exit 1
+make clean -fgdc-posix.mak CC=$HOST-gcc DC=$HOST-gdmd || exit 1
 export HOME=$OLDHOME
