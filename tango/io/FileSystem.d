@@ -107,8 +107,7 @@ class FileSystem
 
                 /***************************************************************
 
-                        Inject the current working directory into the 
-                        provided path segment
+                        Return the current working directory
 
                 ***************************************************************/
 
@@ -176,8 +175,7 @@ class FileSystem
 
                 /***************************************************************
 
-                        Inject the current working directory into the 
-                        provided path segment
+                        Return the current working directory
 
                 ***************************************************************/
 
