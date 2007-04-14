@@ -35,9 +35,10 @@ public  import tango.core.Type : Time;
         of Time. Note that the conversion is limited by the underlying OS,
         and will not operate correctly with Time values beyond the domain.
         On Win32 the earliest representable date is 1601. On linux it is
-        1970. Both systems have limitations upon future dates also.
+        1970. Both systems have limitations upon future dates also. Date 
+        is limited to millisecond accuracy at best.
 
-        Note that Utc does not provide general conversion to and from
+        Note that Date does not provide general conversion to and from
         textual representations, since that requires support for both I18N
         and wide characters. However, it does support basic short English
         names that are used in a variety of text representations.
@@ -274,8 +275,7 @@ debug (UnitTest)
                 Date date;
                 Time time;
                 
-                time = cast(Time) (Utc.time / Time.TicksPerSecond);
-                time = cast(Time) (Time.TicksPerSecond * time);
+                time = cast(Time) ((Utc.time / Time.TicksPerSecond) * Time.TicksPerSecond);
 
                 date.set (time);
                 assert   (time is date.get);
