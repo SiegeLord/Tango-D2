@@ -272,7 +272,8 @@ debug (Date)
         void main() 
         {
         Date date;
-        Time time = Utc.time;
+        Time time = cast(Time) (Utc.time / Time.TicksPerSecond);
+        time = cast(Time) (Time.TicksPerSecond * time);
         date.set (time);
         assert   (time is date.get);
         }
