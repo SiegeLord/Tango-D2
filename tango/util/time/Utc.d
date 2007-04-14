@@ -54,7 +54,7 @@ struct Utc
 
         static Time toLocal (Time time)
         {
-                return cast(Time) (time +  Time.TicksPerSecond * zone);
+                return cast(Time) (time + Time.TicksPerSecond * zone);
         }
 
         /***********************************************************************
@@ -211,20 +211,11 @@ version (Posix)
 
 
 
-debug (Utc)
+debug (UnitTest)
 {
-        import tango.io.Stdout;
-        import tango.core.Thread;
-
-        void main() 
+        unittest 
         {
                 auto time = Utc.time();
                 assert (Utc.convert(Utc.convert(time)) is time);
-                
-                while (true)
-                      {
-                      Stdout.format ("ticks {}, timezone {} seconds", Utc.time/Time.TicksPerSecond, Utc.zone).newline;
-                      Thread.sleep (1);
-                      }
         }
 }

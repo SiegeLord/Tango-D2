@@ -267,14 +267,17 @@ struct Date
 
 
 
-debug (Date)
+debug (UnitTest)
 {
-        void main() 
+        unittest 
         {
-        Date date;
-        Time time = cast(Time) (Utc.time / Time.TicksPerSecond);
-        time = cast(Time) (Time.TicksPerSecond * time);
-        date.set (time);
-        assert   (time is date.get);
+                Date date;
+                Time time;
+                
+                time = cast(Time) (Utc.time / Time.TicksPerSecond);
+                time = cast(Time) (Time.TicksPerSecond * time);
+
+                date.set (time);
+                assert   (time is date.get);
         }
 }
