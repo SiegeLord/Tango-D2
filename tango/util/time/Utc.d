@@ -218,6 +218,9 @@ debug (Utc)
 
         void main() 
         {
+                auto time = Utc.time();
+                assert (Utc.convert(Utc.convert(time)) is time);
+                
                 while (true)
                       {
                       Stdout.format ("ticks {}, timezone {} seconds", Utc.time/Time.TicksPerSecond, cast(int) Utc.zone).newline;
