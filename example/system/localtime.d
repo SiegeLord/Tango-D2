@@ -24,7 +24,7 @@ void main ()
         date.set (Utc.local);
 
         // get GMT difference in minutes
-        auto tz = cast(int) Utc.zone / 60;
+        auto tz = Utc.zone / 60;
         char sign = '+';
         if (tz < 0)
             tz = -tz, sign = '-';
