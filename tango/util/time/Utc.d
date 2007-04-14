@@ -54,7 +54,7 @@ struct Utc
 
         static Time toLocal (Time time)
         {
-                return cast(Time) (time + zone * Time.TicksPerSecond);
+                return cast(Time) (time +  Time.TicksPerSecond * zone);
         }
 
         /***********************************************************************
@@ -65,7 +65,7 @@ struct Utc
 
         static Time fromLocal (Time time)
         {
-                return cast(Time) (time - zone * Time.TicksPerSecond);
+                return cast(Time) (time - Time.TicksPerSecond * zone);
         }
 
         /***********************************************************************
@@ -122,12 +122,12 @@ struct Utc
 
                 ***************************************************************/
 
-                static Interval zone ()
+                static int zone ()
                 {
                         TIME_ZONE_INFORMATION tz = void;
 
                         auto tmp = GetTimeZoneInformation (&tz);
-                        return cast(Interval) (-tz.Bias * 60);
+                        return -tz.Bias * 60;
                 }
         }
 
@@ -143,7 +143,7 @@ struct Utc
                 {
                         timeval tv;
                         if (gettimeofday (&tv, null))
-                            throw new PlatformException ("Time.utc :: linux timer is not available");
+                            throw new PlatformException ("Time.utc :: Posix timer is not available");
 
                         return convert (tv);
                 }
@@ -183,16 +183,16 @@ struct Utc
 
                 ***************************************************************/
 
-                static Interval zone ()
+                static int zone ()
                 {
                         version (darwin)
                                 {
                                 timezone_t tz;
                                 gettimeofday (null, &tz);
-                                return cast(Interval) -tz.tz_minuteswest * 60;
+                                return -tz.tz_minuteswest * 60;
                                 }
                              else
-                                return cast(Interval) -timezone;
+                                return -timezone;
                 }
         }
 }
@@ -223,7 +223,7 @@ debug (Utc)
                 
                 while (true)
                       {
-                      Stdout.format ("ticks {}, timezone {} seconds", Utc.time/Time.TicksPerSecond, cast(int) Utc.zone).newline;
+                      Stdout.format ("ticks {}, timezone {} seconds", Utc.time/Time.TicksPerSecond, Utc.zone).newline;
                       Thread.sleep (1);
                       }
         }
