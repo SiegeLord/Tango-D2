@@ -1,4 +1,8 @@
 #!/bin/bash -x 
+# Copyright (C) 2007  Gregor Richards
+# Permission is granted to do anything you please with this software.
+# This software is provided with no warranty, express or implied, within the
+# bounds of applicable law.
 
 die() {
     ERROR="$1"
@@ -22,6 +26,9 @@ then
 	TANGO_VERSION="`cat version.txt`"
 fi
 
+
+
+
 # 1) The core
 if [ ! -e lib/libphobos.a ]
 then
@@ -42,7 +49,7 @@ then
     rm -rf libtango_objs
     mkdir -p libtango_objs
     cd libtango_objs || die 1 "Failed to cd to libtango_objs"
-    for i in ../libSDG-*.a
+    for i in ../libSDD-*.a
     do
         ar x $i
     done
@@ -50,7 +57,6 @@ then
     ranlib ../libtango.a || die 1 "Failed to ranlib libtango.a"
     cd .. || die 1 "Failed to cd out of libtango_objs"
 fi
-
 mkdir -p tmp
 cd tmp || die 1 "Failed to cd to temporary Tango install"
 
@@ -58,7 +64,7 @@ mkdir -p bin
 cp ../install/dmd-posix/uninstall.sh bin/uninstall-tango-core || die 1 "Failed to install the uninstaller"
 
 mkdir -p import
-cp -pR ../tango include || die 1 "Failed to copy in the tango .d files"
+cp -pR ../tango import || die 1 "Failed to copy in the tango .d files"
 
 mkdir -p lib
 cp ../libtango.a lib || die 1 "Failed to copy in the tango .a file"
