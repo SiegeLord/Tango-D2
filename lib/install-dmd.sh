@@ -29,6 +29,7 @@ cd "`dirname $0`"
 INPLACE=0
 SETPREFIX=0
 UNINSTALL=0
+REPLACE_PHOBOS=0
 
 while [ "$#" != "0" ]
 do
@@ -60,8 +61,7 @@ PHOBOS_DIR="`whereis libphobos.a | sed -e 's/libphobos:[ ]*\([^ ]*\)[ ]*.*/\1/' 
 if [ "$PHOBOS_DIR" ]
 then
     PHOBOS_DIR="`dirname $PHOBOS_DIR`"
-else
-    PHOBOS_DIR="."
+	REPLACE_PHOBOS=1
 fi
 
 which --version >& /dev/null
@@ -70,7 +70,12 @@ then
 	PREFIX="`which dmd`"
 	PREFIX="`dirname $PREFIX`/.."
 else
-	PREFIX="$PHOBOS_DIR/.."
+	if [ "$REPLACE_PHOBOS" = "1" ]
+	then
+		PREFIX="$PHOBOS_DIR/.."
+	else
+		PREFIX="/usr/local"	
+	fi
 fi
 DMD_VER="`dmd | head -n 1 | awk '{print $5}'`"
 DMD_MCH="x86"
@@ -84,7 +89,7 @@ fi
 # If uninstalling, do that now
 if [ "$UNINSTALL" = "1" ]
 then
-    if [ ! -e "$PHOBOS_DIR/libphobos.a.phobos" ]
+    if [ ! -e "$PHOBOS_DIR/libtango.a" ]
     then
         die "tango does not appear to be installed!" 3
     fi
@@ -105,21 +110,25 @@ then
 fi
 
 # Back up the original files
-if [ -e "$PHOBOS_DIR/libphobos.a.phobos" ]
+if [ "$REPLACE_PHOBOS" = "1" ]
 then
-    die "You must uninstall your old copy of Tango before installing a new one." 4
+	if [ -e "$PHOBOS_DIR/libphobos.a.phobos" ]
+	then
+		die "You must uninstall your old copy of Tango before installing a new one." 4
+	fi
+	mv -f $PHOBOS_DIR/libphobos.a $PHOBOS_DIR/libphobos.a.phobos
+	mv $PREFIX/import/$DMD_VER/object.d $PREFIX/import/$DMD_VER/object.d.phobos ||
+		die "Failed to move Phobos' object.d" 8
 fi
-mv -f $PHOBOS_DIR/libphobos.a $PHOBOS_DIR/libphobos.a.phobos
-mv $PREFIX/import/$DMD_VER/object.d $PREFIX/import/$DMD_VER/object.d.phobos ||
-    die "Failed to move Phobos' object.d" 8
 
 # Install ...
 if [ "$INPLACE" = "0" ]
 then
     echo 'Copying files...'
     mkdir -p $PREFIX/import/$DMD_VER || die "Failed to create import/$DMD_VER (maybe you need root privileges?)" 5
-    cp -pRvf libphobos.a $PHOBOS_DIR || die "Failed to copy libraries" 7
-    cp -pRvf ../object.di $PREFIX/import/$DMD_VER/object.d || die "Failed to copy source" 8
+	mkdir -p $PREFIX/lib/ || die "Failed to create $PREFIX/lib (maybe you need root privileges?)" 6
+    cp -pRvf libphobos.a $PREFIX/lib/ || die "Failed to copy libraries" 7
+    cp -pRvf ../object.di $PREFIX/import/$DMD_VER/object.di || die "Failed to copy source" 8
 fi
 
 die "Done!" 0
