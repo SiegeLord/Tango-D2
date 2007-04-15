@@ -57,7 +57,12 @@ done
 dmd --help >& /dev/null || die "dmd not found on your \$PATH!" 1
 
 PHOBOS_DIR="`whereis libphobos.a | sed -e 's/libphobos:[ ]*\([^ ]*\)[ ]*.*/\1/' -`"
-PHOBOS_DIR="`dirname $PHOBOS_DIR`"
+if [ "$PHOBOS_DIR" ]
+then
+    PHOBOS_DIR="`dirname $PHOBOS_DIR`"
+else
+    PHOBOS_DIR="."
+fi
 
 which --version >& /dev/null
 if [ "$?" = "0" ]
