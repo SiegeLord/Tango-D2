@@ -17,8 +17,8 @@ TTMP=/tmp/tango.installer.$$
 mkdir -p $TTMP || die 1 "Failed to create temporary directory"
 
 # This installer works by black magic: The following number must be the exact
-# number of lines in this file+4:
-LINES=91
+# number of lines in this file+3:
+LINES=93
 
 # Install DMD if necessary
 DMDDIR=
@@ -26,14 +26,14 @@ if [ "$INST_DMD" = "1" ]
 then
 	if [ ! "$1" ]
 	then
-		echo -n "What path do you want to install DMD to?"
+		echo -n "What prefix do you want to install DMD to?"
 		read DMDDIR
 	else
 		DMDDIR="$1"
 	fi
 
 	export PATH="$DMDDIR/bin:$PATH"
-	mkdir -p $DMDDIR || die 1 "Failed to create the DMD install directory"
+	mkdir -p $DMDDIR/bin || die 1 "Failed to create the DMD install directory"
 	cd $DMDDIR || die 1 "Failed to cd to the DMD install directory"
     tail -n+$LINES $FULLNAME | tar Oxf - dmd.tar.gz | gunzip -c | tar xf - || die 1 "Failed to extract DMD"
 
@@ -81,7 +81,7 @@ cd lib || die 1 "Tango core improperly archived"
 ./install-dmd.sh > /dev/null 2> /dev/null || die 1 "Failed to install Tango core"
 
 # Then install the rest of Tango
-cd $DMDDIR || die 1 "Failed to cd to DMD's installed prefix"
+cd $DMDDIR/bin || die 1 "Failed to cd to DMD's installed prefix"
 sed -i.bak -e 's/^DFLAGS=.*$/& libtango.a/' dmd.conf
 tail -n+$LINES $FULLNAME | tar Oxf - tango.tar.gz | gunzip -c | tar xf - ||
     die 1 "Failed to extract Tango"
