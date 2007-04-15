@@ -13,7 +13,7 @@ if [ "$2" ]
 then
     CONFIGURE_FLAGS="--enable-phobos-config-dir=$2"
 fi
-HOST_ARCH="echo $HOST | sed 's/-.*//'"
+HOST_ARCH="`echo $HOST | sed 's/-.*//'`"
 ADD_CFLAGS=
 if [ "$HOST_ARCH" = "powerpc" ]
 then

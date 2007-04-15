@@ -4,7 +4,7 @@ cd "`dirname $0`"
 GDC_VER="`gdc --version | grep 'gdc' | sed 's/^.*gdc \([0-9]*\.[0-9]*\).*$/\1/'`"
 GDC_MAJOR="`echo $GDC_VER | sed 's/\..*//'`"
 GDC_MINOR="`echo $GDC_VER | sed 's/.*\.//'`"
-HOST_ARCH="`./compiler/gdc/config.guess` | sed 's/-.*//'"
+HOST_ARCH="`./compiler/gdc/config.guess | sed 's/-.*//'`"
 ADD_CFLAGS=
 if [ "$HOST_ARCH" = "powerpc" ]
 then
