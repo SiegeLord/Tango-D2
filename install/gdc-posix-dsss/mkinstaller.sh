@@ -11,7 +11,7 @@ die() {
     exit $ERROR
 }
 
-if [ ! -e install/gdc-posix/installer.sh ]
+if [ ! -e install/gdc-posix-dsss/installer.sh ]
 then
     die 1 'You must run mkinstaller.sh from the Tango base.'
 fi
@@ -51,7 +51,7 @@ dsss install --prefix="`pwd`/tmp" || die 1 "Failed to install Tango"
 
 cd tmp || die 1 "Failed to cd to temporary Tango install"
 mkdir -p bin
-cp ../install/gdc-posix/uninstall.sh bin/uninstall-tango-core || die 1 "Failed to install the uninstaller"
+cp ../install/gdc-posix-dsss/uninstall.sh bin/uninstall-tango-core || die 1 "Failed to install the uninstaller"
 tar zcf ../tango.tar.gz * || die 1 "Failed to create tango.tar.gz"
 cd .. || exit 1
 rm -rf tmp || exit 1
@@ -60,7 +60,7 @@ rm -rf tmp || exit 1
 # 3) Make the installer proper
 (
     echo -e '#!/bin/bash\nINST_GDC=0\nINST_DSSS=0' ;
-    cat install/gdc-posix/installer.sh ;
+    cat install/gdc-posix-dsss/installer.sh ;
     tar cf - core.tar.gz tango.tar.gz
 ) > tango-$TANGO_VERSION-gdc-$PLATFORM.sh || die 1 "Failed to create the installer"
 chmod 0755 tango-$TANGO_VERSION-gdc-$PLATFORM.sh
@@ -75,7 +75,7 @@ then
 
     (
         echo -e '#!/bin/bash\nINST_GDC=0\nINST_DSSS=1' ;
-        cat install/gdc-posix/installer.sh ;
+        cat install/gdc-posix-dsss/installer.sh ;
         tar cf - core.tar.gz tango.tar.gz dsss.tar.gz
     ) > tango-$TANGO_VERSION-gdc-$PLATFORM-withDSSS.sh || die 1 "Failed to create the installer with DSSS"
     chmod 0755 tango-$TANGO_VERSION-gdc-$PLATFORM-withDSSS.sh
@@ -116,7 +116,7 @@ then
 
         (
             echo -e '#!/bin/bash\nINST_GDC=1\nINST_DSSS=1' ;
-            cat install/gdc-posix/installer.sh ;
+            cat install/gdc-posix-dsss/installer.sh ;
             tar cf - core.tar.gz tango.tar.gz dsss.tar.gz gdc.tar.gz
         ) > tango-$TANGO_VERSION-gdc-$PLATFORM-withDSSS-withGDC.sh || die 1 "Failed to create the installer with DSSS and GDC"
         chmod 0755 tango-$TANGO_VERSION-gdc-$PLATFORM-withDSSS-withGDC.sh
