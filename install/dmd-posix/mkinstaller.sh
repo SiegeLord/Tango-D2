@@ -77,7 +77,7 @@ rm -rf tmp || exit 1
 
 # 3) Make the installer proper
 (
-    echo -e '#!/bin/bash\nINST_DMD=0' ;
+    echo -e '#!/bin/bash -x\nINST_DMD=0' ;
     cat install/dmd-posix/installer.sh ;
     tar cf - core.tar.gz tango.tar.gz
 ) > tango-$TANGO_VERSION-dmd-posix.sh || die 1 "Failed to create the installer"
@@ -95,7 +95,7 @@ then
 	cd .. || exit 1
 
     (
-        echo -e '#!/bin/bash\nINST_DMD=1' ;
+        echo -e '#!/bin/bash -x\nINST_DMD=1' ;
         cat install/dmd-posix/installer.sh ;
         tar cf - core.tar.gz tango.tar.gz dmd.tar.gz
     ) > tango-$TANGO_VERSION-dmd-posix-withDMD.sh || die 1 "Failed to create the installer with DMD"

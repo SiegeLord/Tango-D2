@@ -136,7 +136,8 @@ then
     cp -pRvf ../object.di $PREFIX/import/$DMD_VER/object.di || die "Failed to copy source" 8
 	cat > $PREFIX/bin/dmd.conf <<EOF
 [Environment]
-DFLAGS=-I$PREFIX/import/ -version=Tango -version=Posix
+LIB="%@P%/../lib
+DFLAGS=-I$PREFIX/import/$DMD_VER -version=Tango -version=Posix
 EOF
 fi
 

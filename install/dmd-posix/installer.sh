@@ -18,7 +18,7 @@ mkdir -p $TTMP || die 1 "Failed to create temporary directory"
 
 # This installer works by black magic: The following number must be the exact
 # number of lines in this file+4:
-LINES=92
+LINES=91
 
 # Install DMD if necessary
 DMDDIR=
@@ -36,6 +36,7 @@ then
 	mkdir -p $DMDDIR || die 1 "Failed to create the DMD install directory"
 	cd $DMDDIR || die 1 "Failed to cd to the DMD install directory"
     tail -n+$LINES $FULLNAME | tar Oxf - dmd.tar.gz | gunzip -c | tar xf - || die 1 "Failed to extract DMD"
+
 fi
 
 # Make sure DMD is installed
@@ -55,7 +56,7 @@ then
 		# Get our proper DMD prefix
 		OLDIPS="$IPS"
 		IPS=:
-		for i in $PATH
+		for i in `echo $PATH | sed 's/:/ /g'`
 		do
 			if [ -e "$i/bin/dmd" ]
 			then
@@ -81,6 +82,7 @@ cd lib || die 1 "Tango core improperly archived"
 
 # Then install the rest of Tango
 cd $DMDDIR || die 1 "Failed to cd to DMD's installed prefix"
+sed -i.bak -e 's/^DFLAGS=.*$/& libtango.a/' dmd.conf
 tail -n+$LINES $FULLNAME | tar Oxf - tango.tar.gz | gunzip -c | tar xf - ||
     die 1 "Failed to extract Tango"
 
