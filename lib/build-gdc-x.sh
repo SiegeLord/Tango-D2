@@ -15,7 +15,7 @@ then
 fi
 HOST_ARCH="`echo $HOST | sed 's/-.*//'`"
 ADD_CFLAGS=
-if [ "$HOST_ARCH" = "powerpc" ]
+if [ "$HOST_ARCH" = "powerpc" -a ! "`echo $HOST | grep darwin`" ]
 then
     ADD_CFLAGS="-mregnames"
 fi
