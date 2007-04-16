@@ -16,6 +16,8 @@ private import tango.text.stream.LineIterator;
 private import tango.text.convert.Integer;
 private import tango.sys.Process;
 
+debug = semaphore;
+
 debug (semaphore)
 {
     private import tango.util.log.Log;
