@@ -492,7 +492,8 @@ abstract class IBuffer // could be an interface, but that causes poor codegen
                 Remarks:
                 The src conduit has its content transferred through 
                 this buffer via a series of fill & drain operations, 
-                until there is no more content available
+                until there is no more content available. The buffer
+                content should be explicitly flushed by the caller.
 
                 Throws an IOException on premature eof
 
