@@ -14,6 +14,6 @@
 
 module tango.core.Version;
 
-public const Tango = 0.97f;
+public const Tango = 0.98f;
 
 
