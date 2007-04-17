@@ -2840,9 +2840,9 @@ private:
               version( linux )
               {
                 (cast(byte*) pstack)[0 .. sigjmp_buf.sizeof] = 0;
-                (cast(long*) pstack)[1] = cast(int) m_ctxt.bstack;      // EBP
-                (cast(long*) pstack)[6] = cast(int) m_ctxt.bstack;      // ESP
-                (cast(long*) pstack)[7] = cast(int) &fiber_entryPoint;  // EIP
+                (cast(long*) pstack)[1] = cast(long) m_ctxt.bstack;     // EBP
+                (cast(long*) pstack)[6] = cast(long) m_ctxt.bstack;     // ESP
+                (cast(long*) pstack)[7] = cast(long) &fiber_entryPoint; // EIP
               }
             }
             else
