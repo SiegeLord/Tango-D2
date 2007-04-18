@@ -151,13 +151,13 @@ class Process
     static const uint DefaultStdoutBufferSize   = 8192;
     static const uint DefaultStderrBufferSize   = 512;
 
-    private char[][]    _args;
-    private char[][]    _env;
-    private char[]      _workDir;
-    private PipeConduit _stdin;
-    private PipeConduit _stdout;
-    private PipeConduit _stderr;
-    private bool        _running = false;
+    private char[][]        _args;
+    private char[][char[]]  _env;
+    private char[]          _workDir;
+    private PipeConduit     _stdin;
+    private PipeConduit     _stdout;
+    private PipeConduit     _stderr;
+    private bool            _running = false;
 
     version (Windows)
     {
@@ -192,23 +192,22 @@ class Process
      * Params:
      * command  = string with the process' command line; arguments that have
      *            embedded whitespace must be enclosed in inside double-quotes (").
-     * env      = array of strings with the process' environment variables;
-     *            each element must follow the following format:
-     *            <NAME>=<VALUE>
+     * env      = associative array of strings with the process' environment
+     *            variables; the variable name must be the key of each entry.
      *
      * Examples:
      * ---
-     * char[]   command = "myprogram \"first argument\" second third";
-     * char[][] env;
+     * char[] command = "myprogram \"first argument\" second third";
+     * char[][char[]] env;
      *
      * // Environment variables
-     * env ~= "MYVAR1=first";
-     * env ~= "MYVAR2=second";
+     * env["MYVAR1"] = "first";
+     * env["MYVAR2"] = "second";
      *
      * auto p = new Process(command, env)
      * ---
      */
-    public this(char[] command, char[][] env)
+    public this(char[] command, char[][char[]] env)
     in
     {
         assert(command.length > 0);
@@ -226,14 +225,13 @@ class Process
      * args     = array of strings with the process' arguments; the first
      *            argument must be the process' name; the arguments can be
      *            empty.
-     * env      = array of strings with the process' environment variables;
-     *            each element must follow the following format:
-     *            <NAME>=<VALUE>
+     * env      = associative array of strings with the process' environment
+     *            variables; the variable name must be the key of each entry.
      *
      * Examples:
      * ---
      * char[][] args;
-     * char[][] env;
+     * char[][char[]] env;
      *
      * // Process name
      * args ~= "myprogram";
@@ -243,13 +241,13 @@ class Process
      * args ~= "third";
      *
      * // Environment variables
-     * env ~= "MYVAR1=first";
-     * env ~= "MYVAR2=second";
+     * env["MYVAR1"] = "first";
+     * env["MYVAR2"] = "second";
      *
      * auto p = new Process(args, env)
      * ---
      */
-    public this(char[][] args, char[][] env)
+    public this(char[][] args, char[][char[]] env)
     in
     {
         assert(args.length > 0);
@@ -341,28 +339,33 @@ class Process
     }
 
     /**
-     * Return an array with the process' environment variables.
+     * Return an associative array with the process' environment variables.
      */
-    public char[][] env()
+    public char[][char[]] env()
     {
         return _env;
     }
 
     /**
-     * Set the process' environment variables from the arguments received by
-     * the method.
+     * Set the process' environment variables from the associative array
+     * received by the method.
      *
      * Params:
-     * env  = array of string containing the environment variables for the
-     *        process. Each string must include the name and the value of each
-     *        variable in the following format: <name>=<value>.
+     * env  = associative array of strings containing the environment
+     *        variables for the process. The variable name should be the key
+     *        used for each entry.
      *
      * Examples:
      * ---
-     * p.env("VAR1=VALUE1", "VAR2=VALUE2");
+     * char[][char[]] env;
+     *
+     * env["MYVAR1"] = "first";
+     * env["MYVAR2"] = "second";
+     *
+     * p.env = env;
      * ---
      */
-    public void env(char[][] env ...)
+    public void env(char[][char[]] env)
     {
         _env = env;
     }
@@ -516,9 +519,8 @@ class Process
      * Params:
      * command  = string with the process' command line; arguments that have
      *            embedded whitespace must be enclosed in inside double-quotes (").
-     * env      = array of strings with the process' environment variables;
-     *            each element must follow the following format:
-     *            <NAME>=<VALUE>
+     * env      = associative array of strings with the process' environment
+     *            variables; the variable name must be the key of each entry.
      *
      * Throws:
      * ProcessCreateException if the process could not be created
@@ -530,7 +532,7 @@ class Process
      * not be empty. If there was any argument already present in the args
      * member, they will be replaced by the arguments supplied to the method.
      */
-    public void execute(char[] command, char[][] env)
+    public void execute(char[] command, char[][char[]] env)
     in
     {
         assert(!_running);
@@ -556,9 +558,8 @@ class Process
      * args     = array of strings with the process' arguments; the first
      *            argument must be the process' name; the arguments can be
      *            empty.
-     * env      = array of strings with the process' environment variables;
-     *            each element must follow the following format:
-     *            <NAME>=<VALUE>
+     * env      = associative array of strings with the process' environment
+     *            variables; the variable name must be the key of each entry.
      *
      * Throws:
      * ProcessCreateException if the process could not be created
@@ -581,7 +582,7 @@ class Process
      * p.execute(args, null);
      * ---
      */
-    public void execute(char[][] args, char[][] env)
+    public void execute(char[][] args, char[][char[]] env)
     in
     {
         assert(!_running);
@@ -1242,30 +1243,24 @@ class Process
     version (Windows)
     {
         /**
-         * Convert an array of strings to a buffer containing each string
-         * separated by a null character and an additional null character at
-         * the end of it. This is the format expected by the CreateProcess()
-         * Windows API.
+         * Convert an associative array of strings to a buffer containing a
+         * concatenation of "<name>=<value>" strings separated by a null
+         * character and with an additional null character at the end of it.
+         * This is the format expected by the CreateProcess() Windows API for
+         * the environment variables.
          */
-        protected static char[] toNullEndedBuffer(char[][] src)
+        protected static char[] toNullEndedBuffer(char[][char[]] src)
         {
-            char[]  dest = null;
-            // Add space for a \0 after each string and a terminating \0
-            size_t  length = src.length + 1;
-            uint    pos = 0;
+            char[] dest;
 
-            foreach(char[] str; src)
+            foreach (key, value; src)
             {
-                length += str.length;   // total length of strings
+                (((dest ~= key) ~= '=') ~= value) ~ '\0';
             }
 
-            dest = new char[length];
-
-            foreach(char[] str; src)
+            if (dest.length > 0)
             {
-                dest[pos .. pos + str.length] = str;
-                pos += src.length;
-                dest[pos++] = '\0';
+                dest ~= '\0';
             }
 
             return dest;
@@ -1280,25 +1275,6 @@ class Process
          * the execv*() family of POSIX functions.
          */
         protected static char*[] toNullEndedArray(char[][] src)
-        out (result)
-        {
-            if (result !is null)
-            {
-                int i = result.length - 1;
-
-                // Verify that the returned array has the format expected
-                // by execv() and execve().
-                assert(result.length == src.length + 1);
-                assert(result[i] == null);
-
-                while (--i >= 0)
-                {
-                    assert(result[i] !is null);
-                    assert(*(result[i] + src[i].length) == '\0');
-                }
-            }
-        }
-        body
         {
             if (src !is null)
             {
@@ -1319,6 +1295,28 @@ class Process
             {
                 return null;
             }
+        }
+
+        /**
+         * Convert an associative array of strings to an array of pointers to
+         * char with a terminating null character (C strings). The resulting
+         * array has a null pointer at the end. This is the format expected by
+         * the execv*() family of POSIX functions for environment variables.
+         */
+        protected static char*[] toNullEndedArray(char[][char[]] src)
+        {
+            char*[] dest;
+
+            foreach (key, value; src)
+            {
+                dest ~= (key ~ '=' ~ value ~ '\0').ptr;
+            }
+
+            if (dest.length > 0)
+            {
+                dest ~= null;
+            }
+            return dest;
         }
 
         /**
