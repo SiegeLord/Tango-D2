@@ -75,7 +75,7 @@
         layout (destination, format ...)            // featherweight printf
         lines (str)                                 // foreach lines
         quotes (str, set)                           // foreach quotes
-        delims (str, set)                           // foreach delimiters
+        delimiters (str, set)                       // foreach delimiters
         patterns (str, pattern)                     // foreach patterns
         ---
 
@@ -649,7 +649,7 @@ LineFreach!(T) lines(T) (T[] src)
         splitting upon a set of alternatives.
 
         ---
-        foreach (segment; delims ("one,two;three", ",;"))
+        foreach (segment; delimiters ("one,two;three", ",;"))
                  ...
         ---
         
@@ -923,7 +923,7 @@ private struct LineFreach(T)
 
 /******************************************************************************
 
-        Helper struct for iterator delims()
+        Helper struct for iterator delimiters()
         
 ******************************************************************************/
 
