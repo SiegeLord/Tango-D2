@@ -188,7 +188,7 @@ version (Posix)
 
         /**
          * Block on the condition, or until the specified (relative) amount
-         * of time has passed. If ($D_PARAM timeout) is equal to Interval.max
+         * of time has passed. If $(D_PARAM timeout) is equal to Interval.max
          * there is no timeout.
          *
          * Returns: true if the condition was signaled; false if the timeout
