@@ -16,8 +16,6 @@ private import tango.text.stream.LineIterator;
 private import tango.text.convert.Integer;
 private import tango.sys.Process;
 
-debug = semaphore;
-
 debug (semaphore)
 {
     private import tango.util.log.Log;
@@ -221,7 +219,8 @@ void testProcessSemaphore(char[] programName)
         scope ProcessSemaphore sem = new ProcessSemaphore(SemaphoreName, 1);
         Process proc = new Process(programName, "2");
 
-        log.trace("Created ProcessSemaphore('" ~ SemaphoreName ~ "')'");
+        debug (semaphore)
+            log.trace("Created ProcessSemaphore('" ~ SemaphoreName ~ "')'");
 
         sem.acquire();
         debug (semaphore)
