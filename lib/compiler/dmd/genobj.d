@@ -68,16 +68,6 @@ else
 alias size_t hash_t;
 
 /**
- * Internal struct pointed to by the hidden .monitor member.
- */
-struct Monitor
-{
-    void delegate(Object)[] delegates;
-
-    /* More stuff goes here defined by internal/monitor.c */
-}
-
-/**
  * All D class objects inherit from Object.
  */
 class Object
@@ -125,96 +115,10 @@ class Object
         return cast(int)(this is o);
     }
 
-/+
-    /* **
-     * Call delegate dg, passing this to it, when this object gets destroyed.
-     * Use extreme caution, as the list of delegates is stored in a place
-     * not known to the gc. Thus, if any objects pointed to by one of these
-     * delegates gets freed by the gc, calling the delegate will cause a
-     * crash.
-     * This is only for use by library developers, as it will need to be
-     * redone if weak pointers are added or a moving gc is developed.
-     */
-    final void notifyRegister(void delegate(Object) dg)
+    interface Monitor
     {
-        debug(PRINTF) printf("notifyRegister(dg = %llx, o = %p)\n", dg, this);
-        synchronized (this)
-        {
-            Monitor* m = cast(Monitor*)(cast(void**)this)[1];
-            foreach (inout x; m.delegates)
-            {
-                if (!x || x == dg)
-                {   x = dg;
-                    return;
-                }
-            }
-
-            // Increase size of delegates[]
-            auto len = m.delegates.length;
-            auto startlen = len;
-            if (len == 0)
-            {
-                len = 4;
-                auto p = calloc((void delegate(Object)).sizeof, len);
-                if (!p)
-                    onOutOfMemoryError();
-                m.delegates = (cast(void delegate(Object)*)p)[0 .. len];
-            }
-            else
-            {
-                len += len + 4;
-                auto p = realloc(m.delegates.ptr, (void delegate(Object)).sizeof * len);
-                if (!p)
-                    onOutOfMemoryError();
-                m.delegates = (cast(void delegate(Object)*)p)[0 .. len];
-                m.delegates[startlen .. len] = null;
-            }
-            m.delegates[startlen] = dg;
-        }
-    }
-
-    /* **
-     * Remove delegate dg from the notify list.
-     * This is only for use by library developers, as it will need to be
-     * redone if weak pointers are added or a moving gc is developed.
-     */
-    final void notifyUnRegister(void delegate(Object) dg)
-    {
-        synchronized (this)
-        {
-            Monitor* m = cast(Monitor*)(cast(void**)this)[1];
-            foreach (inout x; m.delegates)
-            {
-                if (x == dg)
-                    x = null;
-            }
-        }
-    }
-+/
-}
-
-extern (C) void _d_notify_release(Object o)
-{
-    debug(PRINTF) printf("_d_notify_release(o = %p)\n", o);
-    Monitor* m = cast(Monitor*)(cast(void**)o)[1];
-    if (m.delegates.length)
-    {
-        auto dgs = m.delegates;
-        synchronized (o)
-        {
-            dgs = m.delegates;
-            m.delegates = null;
-        }
-
-        foreach (dg; dgs)
-        {
-            if (dg)
-            {   debug(PRINTF) printf("calling dg = %llx (%p)\n", dg, o);
-                dg(o);
-            }
-        }
-
-        free(dgs.ptr);
+        void lock();
+        void unlock();
     }
 }
 
@@ -1016,8 +920,8 @@ class Exception : Object
 
 enum
 {
-    MIctorstart = 1,    // we've started constructing it
-    MIctordone = 2,     // finished construction
+    MIctorstart  = 1,   // we've started constructing it
+    MIctordone   = 2,   // finished construction
     MIstandalone = 4,   // module ctor does not depend on other module
                         // ctors being done first
 }
@@ -1066,7 +970,7 @@ uint _moduleinfo_dtors_i;
 // Register termination function pointers
 extern (C) int _fatexit(void *);
 
-/*************************************
+/**
  * Initialize the modules.
  */
 
@@ -1142,8 +1046,7 @@ void _moduleCtor2(ModuleInfo[] mi, int skip)
     }
 }
 
-
-/**********************************
+/**
  * Destruct the modules.
  */
 
@@ -1166,7 +1069,7 @@ extern (C) void _moduleDtor()
     debug(PRINTF) printf("_moduleDtor() done\n");
 }
 
-/**********************************
+/**
  * Run unit tests.
  */
 
@@ -1186,4 +1089,84 @@ extern (C) void _moduleUnitTests()
             (*m.unitTest)();
         }
     }
+}
+
+
+////////////////////////////////////////////////////////////////////////////////
+// Monitor
+////////////////////////////////////////////////////////////////////////////////
+
+alias Object.Monitor IMonitor;
+
+struct Monitor
+{
+    IMonitor impl;
+    /* stuff */
+}
+
+Monitor* getMonitor(Object h)
+{
+    return cast(Monitor*) (cast(void**) h)[1];
+}
+
+void setMonitor(Object h, Monitor* m)
+{
+    (cast(void**) h)[1] = m;
+}
+
+extern (C) void _d_monitor_create(Object);
+extern (C) void _d_monitor_destroy(Object);
+extern (C) void _d_monitor_lock(Object);
+extern (C) int  _d_monitor_unlock(Object);
+
+extern (C) void _d_monitordelete(Object h, bool det)
+{
+    Monitor* m = getMonitor(h);
+
+    if (m !is null)
+    {
+        IMonitor i = m.impl;
+        if (i is null)
+        {
+            _d_monitor_destroy(h);
+            setMonitor(h, null);
+            return;
+        }
+        if (det && (cast(void*) i) !is (cast(void*) h))
+            delete i;
+        setMonitor(h, null);
+    }
+}
+
+extern (C) void _d_monitorenter(Object h)
+{
+    Monitor* m = getMonitor(h);
+
+    if (m is null)
+    {
+        _d_monitor_create(h);
+        m = getMonitor(h);
+    }
+
+    IMonitor i = m.impl;
+
+    if (i is null)
+    {
+        _d_monitor_lock(h);
+        return;
+    }
+    i.lock();
+}
+
+extern (C) void _d_monitorexit(Object h)
+{
+    Monitor* m = getMonitor(h);
+    IMonitor i = m.impl;
+
+    if (i is null)
+    {
+        _d_monitor_unlock(h);
+        return;
+    }
+    i.unlock();
 }

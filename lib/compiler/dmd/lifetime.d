@@ -61,7 +61,7 @@ private
     extern (C) void onFinalizeError( ClassInfo c, Exception e );
     extern (C) void onOutOfMemoryError();
 
-    extern (C) void _d_monitorrelease(Object h);
+    extern (C) void _d_monitordelete(Object h, bool det = true);
 
     enum
     {
@@ -420,7 +420,7 @@ extern (C) void cr_finalize(void* p, bool det = true)
                     } while (c);
                 }
                 if ((cast(void**)p)[1]) // if monitor is not null
-                    _d_monitorrelease(cast(Object)p);
+                    _d_monitordelete(cast(Object)p, det);
             }
             catch (Exception e)
             {

@@ -17,8 +17,11 @@ class Object
         alias toUtf8 toString;
     }
 
-    //final void notifyRegister(void delegate(Object) dg);
-    //final void notifyUnRegister(void delegate(Object) dg);
+    interface Monitor
+    {
+        void lock();
+        void unlock();
+    }
 }
 
 struct Interface

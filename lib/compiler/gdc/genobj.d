@@ -9,7 +9,7 @@
  */
 
 /*
- *  Copyright (C) 2004-2006 by Digital Mars, www.digitalmars.com
+ *  Copyright (C) 2004-2007 by Digital Mars, www.digitalmars.com
  *  Written by Walter Bright
  *
  *  This software is provided 'as-is', without any express or implied
@@ -42,9 +42,10 @@ private
     import tango.stdc.string; // : memcmp, memcpy;
     import tango.stdc.stdlib; // : calloc, realloc, free;
     import util.string;
-    debug import tango.stdc.stdio; // : printf;
+    debug(PRINTF) import tango.stdc.stdio; // : printf;
 
     extern (C) void onOutOfMemoryError();
+    extern (C) Object _d_newclass(ClassInfo ci);
 }
 
 // NOTE: For some reason, this declaration method doesn't work
@@ -124,99 +125,12 @@ class Object
     return cast(int)(this is o);
     }
 
-/+
-    /* **
-     * Call delegate dg, passing this to it, when this object gets destroyed.
-     * Use extreme caution, as the list of delegates is stored in a place
-     * not known to the gc. Thus, if any objects pointed to by one of these
-     * delegates gets freed by the gc, calling the delegate will cause a
-     * crash.
-     * This is only for use by library developers, as it will need to be
-     * redone if weak pointers are added or a moving gc is developed.
-     */
-    final void notifyRegister(void delegate(Object) dg)
-    {
-        debug printf("notifyRegister(dg = %llx, o = %p)\n", dg, this);
-        synchronized (this)
-        {
-            Monitor* m = cast(Monitor*)(cast(void**)this)[1];
-            foreach (inout x; m.delegates)
+    interface Monitor
             {
-                if (!x || x == dg)
-                {   x = dg;
-                    return;
-                }
-            }
-
-            // Increase size of delegates[]
-            auto len = m.delegates.length;
-            auto startlen = len;
-            if (len == 0)
-            {
-                len = 4;
-                auto p = calloc((void delegate(Object)).sizeof, len);
-                if (!p)
-                    onOutOfMemoryError();
-                m.delegates = (cast(void delegate(Object)*)p)[0 .. len];
-            }
-            else
-            {
-                len += len + 4;
-                auto p = realloc(m.delegates.ptr, (void delegate(Object)).sizeof * len);
-                if (!p)
-                    onOutOfMemoryError();
-                m.delegates = (cast(void delegate(Object)*)p)[0 .. len];
-                m.delegates[startlen .. len] = null;
-            }
-            m.delegates[startlen] = dg;
+        void lock();
+        void unlock();
         }
     }
-
-    /* **
-     * Remove delegate dg from the notify list.
-     * This is only for use by library developers, as it will need to be
-     * redone if weak pointers are added or a moving gc is developed.
-     */
-    final void notifyUnRegister(void delegate(Object) dg)
-    {
-        synchronized (this)
-        {
-            Monitor* m = cast(Monitor*)(cast(void**)this)[1];
-            foreach (inout x; m.delegates)
-            {
-                if (x == dg)
-                    x = null;
-            }
-        }
-    }
-+/
-}
-
-extern (C) void _d_notify_release(Object o)
-{
-    debug printf("_d_notify_release(o = %p)\n", o);
-    Monitor* m = cast(Monitor*)(cast(void**)o)[1];
-    if (m.delegates.length)
-    {
-        auto dgs = m.delegates;
-        synchronized (o)
-        {
-            dgs = m.delegates;
-            m.delegates = null;
-        }
-
-        foreach (dg; dgs)
-        {
-            if (dg)
-            {   debug printf("calling dg = %llx (%p)\n", dg, o);
-                dg(o);
-            }
-        }
-
-        free(dgs.ptr);
-    }
-}
-
 
 /**
  * Information about an interface.
@@ -812,12 +726,12 @@ class TypeInfo_Struct : TypeInfo
 
         assert(p);
         if (xtoHash)
-        {   debug printf("getHash() using xtoHash\n");
+        {   debug(PRINTF) printf("getHash() using xtoHash\n");
             h = (*xtoHash)(p);
         }
         else
         {
-            debug printf("getHash() using default hash\n");
+            debug(PRINTF) printf("getHash() using default hash\n");
             // A sorry hash algorithm.
             // Should use the one for strings.
             // BUG: relies on the GC not moving objects
@@ -987,6 +901,10 @@ class Exception : Object
 }
 
 
+////////////////////////////////////////////////////////////////////////////////
+// ModuleInfo
+////////////////////////////////////////////////////////////////////////////////
+
 
 enum
 {
@@ -1046,13 +964,13 @@ uint _moduleinfo_dtors_i;
 // Register termination function pointers
 extern (C) int _fatexit(void *);
 
-/*************************************
+/**
  * Initialize the modules.
  */
 
 extern (C) void _moduleCtor()
 {
-    debug printf("_moduleCtor()\n");
+    debug(PRINTF) printf("_moduleCtor()\n");
     version (ModRefStyle)
     {
         int len = 0;
@@ -1075,24 +993,24 @@ extern (C) void _moduleCtor()
     }
 
     _moduleinfo_dtors = new ModuleInfo[_moduleinfo_array.length];
-    debug printf("_moduleinfo_dtors = x%x\n", cast(void *)_moduleinfo_dtors);
+    debug(PRINTF) printf("_moduleinfo_dtors = x%x\n", cast(void *)_moduleinfo_dtors);
     _moduleCtor2(_moduleinfo_array, 0);
 }
 
 void _moduleCtor2(ModuleInfo[] mi, int skip)
 {
-    debug printf("_moduleCtor2(): %d modules\n", mi.length);
+    debug(PRINTF) printf("_moduleCtor2(): %d modules\n", mi.length);
     for (uint i = 0; i < mi.length; i++)
     {
         ModuleInfo m = mi[i];
 
-        debug printf("\tmodule[%d] = '%p'\n", i, m);
+        debug(PRINTF) printf("\tmodule[%d] = '%p'\n", i, m);
         if (!m)
             continue;
-        debug printf("\tmodule[%d] = '%.*s'\n", i, m.name);
+        debug(PRINTF) printf("\tmodule[%d] = '%.*s'\n", i, m.name);
         if (m.flags & MIctordone)
             continue;
-        debug printf("\tmodule[%d] = '%.*s', m = x%x\n", i, m.name, m);
+        debug(PRINTF) printf("\tmodule[%d] = '%.*s', m = x%x\n", i, m.name, m);
 
         if (m.ctor || m.dtor)
         {
@@ -1122,8 +1040,7 @@ void _moduleCtor2(ModuleInfo[] mi, int skip)
     }
 }
 
-
-/**********************************
+/**
  * Destruct the modules.
  */
 
@@ -1132,27 +1049,27 @@ void _moduleCtor2(ModuleInfo[] mi, int skip)
 
 extern (C) void _moduleDtor()
 {
-    debug printf("_moduleDtor(): %d modules\n", _moduleinfo_dtors_i);
+    debug(PRINTF) printf("_moduleDtor(): %d modules\n", _moduleinfo_dtors_i);
     for (uint i = _moduleinfo_dtors_i; i-- != 0;)
     {
         ModuleInfo m = _moduleinfo_dtors[i];
 
-        debug printf("\tmodule[%d] = '%.*s', x%x\n", i, m.name, m);
+        debug(PRINTF) printf("\tmodule[%d] = '%.*s', x%x\n", i, m.name, m);
         if (m.dtor)
         {
             (*m.dtor)();
         }
     }
-    debug printf("_moduleDtor() done\n");
+    debug(PRINTF) printf("_moduleDtor() done\n");
 }
 
-/**********************************
+/**
  * Run unit tests.
  */
 
 extern (C) void _moduleUnitTests()
 {
-    debug printf("_moduleUnitTests()\n");
+    debug(PRINTF) printf("_moduleUnitTests()\n");
     for (uint i = 0; i < _moduleinfo_array.length; i++)
     {
         ModuleInfo m = _moduleinfo_array[i];
@@ -1160,10 +1077,89 @@ extern (C) void _moduleUnitTests()
         if (!m)
             continue;
 
-        debug printf("\tmodule[%d] = '%.*s'\n", i, m.name);
+        debug(PRINTF) printf("\tmodule[%d] = '%.*s'\n", i, m.name);
         if (m.unitTest)
         {
             (*m.unitTest)();
         }
     }
+}
+
+////////////////////////////////////////////////////////////////////////////////
+// Monitor
+////////////////////////////////////////////////////////////////////////////////
+
+alias Object.Monitor IMonitor;
+
+struct Monitor
+{
+    IMonitor impl;
+    /* stuff */
+}
+
+Monitor* getMonitor(Object h)
+{
+    return cast(Monitor*) (cast(void**) h)[1];
+}
+
+void setMonitor(Object h, Monitor* m)
+{
+    (cast(void**) h)[1] = m;
+}
+
+extern (C) void _d_monitor_create(Object);
+extern (C) void _d_monitor_destroy(Object);
+extern (C) void _d_monitor_lock(Object);
+extern (C) int  _d_monitor_unlock(Object);
+
+extern (C) void _d_monitordelete(Object h, bool det)
+{
+    Monitor* m = getMonitor(h);
+
+    if (m !is null)
+    {
+        IMonitor i = m.impl;
+        if (i is null)
+        {
+            _d_monitor_destroy(h);
+            setMonitor(h, null);
+            return;
+        }
+        if (det && (cast(void*) i) !is (cast(void*) h))
+            delete i;
+        setMonitor(h, null);
+    }
+}
+
+extern (C) void _d_monitorenter(Object h)
+{
+    Monitor* m = getMonitor(h);
+
+    if (m is null)
+    {
+        _d_monitor_create(h);
+        m = getMonitor(h);
+    }
+
+    IMonitor i = m.impl;
+
+    if (i is null)
+    {
+        _d_monitor_lock(h);
+        return;
+    }
+    i.lock();
+}
+
+extern (C) void _d_monitorexit(Object h)
+{
+    Monitor* m = getMonitor(h);
+    IMonitor i = m.impl;
+
+    if (i is null)
+    {
+        _d_monitor_unlock(h);
+        return;
+    }
+    i.unlock();
 }

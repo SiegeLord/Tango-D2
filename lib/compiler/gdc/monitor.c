@@ -39,7 +39,7 @@
 // This is what the monitor reference in Object points to
 typedef struct Monitor
 {
-    Array delegates;	// for the notification system
+    void* impl; // for user-level monitors
 
 #if _WIN32
     CRITICAL_SECTION mon;
@@ -53,8 +53,6 @@ typedef struct Monitor
 #define MONPTR(h)	(&((Monitor *)(h)->monitor)->mon)
 
 static volatile int inited;
-
-void _d_notify_release(Object *);
 
 /* =============================== Win32 ============================ */
 
@@ -78,54 +76,57 @@ void _STD_monitor_staticdtor()
     }
 }
 
-void _d_monitorenter(Object *h)
+void _d_monitor_create(Object *h)
 {
-    //printf("_d_monitorenter(%p), %p\n", h, h->monitor);
+    /*
+     * NOTE: Assume this is only called when h->monitor is null prior to the
+     * call.  However, please note that another thread may call this function
+     * at the same time, so we can not assert this here.  Instead, try and
+     * create a lock, and if one already exists then forget about it.
+     */
+
+    //printf("+_d_monitor_create(%p)\n", h);
+    assert(h);
+    Monitor *cs = NULL;
+    EnterCriticalSection(&_monitor_critsec);
     if (!h->monitor)
-    {	Monitor *cs;
-
-	cs = (Monitor *)calloc(sizeof(Monitor), 1);
-	assert(cs);
-	EnterCriticalSection(&_monitor_critsec);
-	if (!h->monitor)	// if, in the meantime, another thread didn't set it
-	{
-	    h->monitor = (void *)cs;
-	    InitializeCriticalSection(&cs->mon);
-	    cs = NULL;
-	}
-	LeaveCriticalSection(&_monitor_critsec);
-	if (cs)			// if we didn't use it
-	    free(cs);
-    }
-    //printf("-_d_monitorenter(%p)\n", h);
-    EnterCriticalSection(MONPTR(h));
-    //printf("-_d_monitorenter(%p)\n", h);
-}
-
-void _d_monitorexit(Object *h)
-{
-    //printf("_d_monitorexit(%p)\n", h);
-    assert(h->monitor);
-    LeaveCriticalSection(MONPTR(h));
-}
-
-/***************************************
- * Called by garbage collector when Object is free'd.
- */
-
-void _d_monitorrelease(Object *h)
-{
-    if (h->monitor)
     {
-	_d_notify_release(h);
-
-	DeleteCriticalSection(MONPTR(h));
-
-	// We can improve this by making a free list of monitors
-	free((void *)h->monitor);
-
-	h->monitor = NULL;
+        cs = (Monitor *)calloc(sizeof(Monitor), 1);
+        assert(cs);
+        InitializeCriticalSection(&cs->mon);
+        h->monitor = (void *)cs;
+        cs = NULL;
     }
+    LeaveCriticalSection(&_monitor_critsec);
+    if (cs)
+        free(cs);
+    //printf("-_d_monitor_create(%p)\n", h);
+}
+
+void _d_monitor_destroy(Object *h)
+{
+    //printf("+_d_monitor_destroy(%p)\n", h);
+    assert(h && h->monitor && !(((Monitor*)h->monitor)->impl));
+    DeleteCriticalSection(MONPTR(h));
+    free((void *)h->monitor);
+    h->monitor = NULL;
+    //printf("-_d_monitor_destroy(%p)\n", h);
+}
+
+int _d_monitor_lock(Object *h)
+{
+    //printf("+_d_monitor_acquire(%p)\n", h);
+    assert(h && h->monitor && !(((Monitor*)h->monitor)->impl));
+    EnterCriticalSection(MONPTR(h));
+    //printf("-_d_monitor_acquire(%p)\n", h);
+}
+
+void _d_monitor_unlock(Object *h)
+{
+    //printf("+_d_monitor_release(%p)\n", h);
+    assert(h && h->monitor && !(((Monitor*)h->monitor)->impl));
+    LeaveCriticalSection(MONPTR(h));
+    //printf("-_d_monitor_release(%p)\n", h);
 }
 
 #endif
@@ -165,59 +166,61 @@ void _STD_monitor_staticdtor()
     }
 }
 
-void _d_monitorenter(Object *h)
+void _d_monitor_create(Object *h)
 {
-    //printf("_d_monitorenter(%p), %p\n", h, h->monitor);
-    if (!h->monitor)
-    {	Monitor *cs;
+    /*
+     * NOTE: Assume this is only called when h->monitor is null prior to the
+     * call.  However, please note that another thread may call this function
+     * at the same time, so we can not assert this here.  Instead, try and
+     * create a lock, and if one already exists then forget about it.
+     */
 
-	cs = (Monitor *)calloc(sizeof(Monitor), 1);
-	assert(cs);
-	pthread_mutex_lock(&_monitor_critsec);
-	if (!h->monitor)	// if, in the meantime, another thread didn't set it
-	{
-	    h->monitor = (void *)cs;
+    //printf("+_d_monitor_create(%p)\n", h);
+    assert(h);
+    Monitor *cs = NULL;
+    pthread_mutex_lock(&_monitor_critsec);
+    if (!h->monitor)
+    {
+        cs = (Monitor *)calloc(sizeof(Monitor), 1);
+        assert(cs);
 #ifndef PTHREAD_MUTEX_ALREADY_RECURSIVE
 	    pthread_mutex_init(&cs->mon, & _monitors_attr);
 #else
 	    pthread_mutex_init(&cs->mon, NULL);
 #endif
-	    cs = NULL;
-	}
-	pthread_mutex_unlock(&_monitor_critsec);
-	if (cs)			// if we didn't use it
-	    free(cs);
+        h->monitor = (void *)cs;
+        cs = NULL;
     }
-    //printf("-_d_monitorenter(%p)\n", h);
+    pthread_mutex_unlock(&_monitor_critsec);
+    if (cs)
+        free(cs);
+    //printf("-_d_monitor_create(%p)\n", h);
+}
+
+void _d_monitor_destroy(Object *h)
+{
+    //printf("+_d_monitor_destroy(%p)\n", h);
+    assert(h && h->monitor && !(((Monitor*)h->monitor)->impl));
+    pthread_mutex_destroy(MONPTR(h));
+    free((void *)h->monitor);
+    h->monitor = NULL;
+    //printf("-_d_monitor_destroy(%p)\n", h);
+}
+
+int _d_monitor_lock(Object *h)
+{
+    //printf("+_d_monitor_acquire(%p)\n", h);
+    assert(h && h->monitor && !(((Monitor*)h->monitor)->impl));
     pthread_mutex_lock(MONPTR(h));
-    //printf("-_d_monitorenter(%p)\n", h);
+    //printf("-_d_monitor_acquire(%p)\n", h);
 }
 
-void _d_monitorexit(Object *h)
+void _d_monitor_unlock(Object *h)
 {
-    //printf("+_d_monitorexit(%p)\n", h);
-    assert(h->monitor);
+    //printf("+_d_monitor_release(%p)\n", h);
+    assert(h && h->monitor && !(((Monitor*)h->monitor)->impl));
     pthread_mutex_unlock(MONPTR(h));
-    //printf("-_d_monitorexit(%p)\n", h);
-}
-
-/***************************************
- * Called by garbage collector when Object is free'd.
- */
-
-void _d_monitorrelease(Object *h)
-{
-    if (h->monitor)
-    {
-	_d_notify_release(h);
-
-	pthread_mutex_destroy(MONPTR(h));
-
-	// We can improve this by making a free list of monitors
-	free((void *)h->monitor);
-
-	h->monitor = NULL;
-    }
+    //printf("-_d_monitor_release(%p)\n", h);
 }
 
 #endif

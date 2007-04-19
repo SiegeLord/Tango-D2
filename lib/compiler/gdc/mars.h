@@ -90,7 +90,6 @@ typedef struct Delegate
 
 void _d_monitorenter(Object *h);
 void _d_monitorexit(Object *h);
-void _d_monitorrelease(Object *h);
 
 int _d_isbaseof(ClassInfo *b, ClassInfo *c);
 Object *_d_dynamic_cast(Object *o, ClassInfo *ci);
