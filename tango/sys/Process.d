@@ -1255,7 +1255,7 @@ class Process
 
             foreach (key, value; src)
             {
-                (((dest ~= key) ~= '=') ~= value) ~ '\0';
+                dest ~= key ~ '=' ~ value ~ '\0';
             }
 
             if (dest.length > 0)
