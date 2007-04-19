@@ -167,10 +167,10 @@ public class ArraySeq(T) : SeqCollection!(T), Sortable!(T)
                    else
                       if (newCap !is array.length)
                          {
-                         T newArray[] = new T[newCap];
-                         //  System.copy (array[0].sizeof, array, 0, newArray, 0, count);
-                         newArray[0..count] = array[0..count];
-                         array = newArray;
+                         //T newArray[] = new T[newCap];
+                         //newArray[0..count] = array[0..count];
+                         //array = newArray;
+                         array ~= new T[newCap - array.length];
                          incVersion();
                          }
         }
@@ -710,11 +710,10 @@ public class ArraySeq(T) : SeqCollection!(T), Sortable!(T)
                          }
                       else
                          {
-                         T newArray[] = new T[newCap];
-                         //System.copy (array[0].sizeof, array, 0, newArray, 0, count);
-
-                         newArray[0..count] = array[0..count];
-                         array = newArray;
+                         //T newArray[] = new T[newCap];
+                         //newArray[0..count] = array[0..count];
+                         //array = newArray;
+                         array ~= new T[newCap - array.length];
                          }
                       }
                    }
