@@ -1631,6 +1631,34 @@ interface PathView
         ***********************************************************************/
 
         abstract Stamps timeStamps ();
+
+        /***********************************************************************
+
+                List the set of filenames within this directory. All
+                filenames are null terminated, though the null itself
+                is hidden at the end of each name (not exposed by the
+                length property)
+
+                Each filename optionally includes the parent prefix,
+                dictated by whether argument prefixed is enabled or
+                not; default behaviour is to eschew the prefix
+
+        ***********************************************************************/
+
+        abstract char[][] toList (bool prefixed = false);
+
+        /***********************************************************************
+
+                List the set of filenames within this directory.
+
+                All filenames are null terminated and are passed
+                to the provided delegate as such, along with the
+                path prefix and whether the entry is a directory
+                or not.
+
+        ***********************************************************************/
+        
+        abstract void toList (void delegate (char[], char[], bool) dg);
 }
 
 
