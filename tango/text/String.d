@@ -362,7 +362,7 @@ class String(T) : StringView!(T)
 
         final bool select (StringViewT other)
         {
-                return select (other);
+                return select (other.slice);
         }
 
         /***********************************************************************
