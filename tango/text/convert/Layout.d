@@ -3,23 +3,23 @@
         copyright:      Copyright (c) 2005 Kris. All rights reserved
 
         license:        BSD style: $(LICENSE)
-        
+
         version:        Initial release: 2005
-        
+
         author:         Kris
 
-        This module provides a general-purpose formatting system to 
-        convert values to text suitable for display. There is support 
-        for alignment, justification, and common format specifiers for 
-        numbers. 
-        
-        Layout can be customized via configuring various handlers and 
+        This module provides a general-purpose formatting system to
+        convert values to text suitable for display. There is support
+        for alignment, justification, and common format specifiers for
+        numbers.
+
+        Layout can be customized via configuring various handlers and
         associated meta-date. This is utilized to plug in text.locale
-        for handling custom formats, date/time and culture-specific 
+        for handling custom formats, date/time and culture-specific
         conversions.
 
-        The format notation is influenced by that used by the .NET 
-        and ICU frameworks, rather than C-style printf or D-style 
+        The format notation is influenced by that used by the .NET
+        and ICU frameworks, rather than C-style printf or D-style
         writef notation.
 
 ******************************************************************************/
@@ -286,8 +286,8 @@ class Layout(T)
                       fragment = ++s;
 
                       // convert argument to a string
-                      T[] str = (index < ti.length 
-                                 ? munge (result, format, ti[index], args[index]) 
+                      T[] str = (index < ti.length
+                                 ? munge (result, format, ti[index], args[index])
                                  : "{invalid index}");
                       int padding = width - str.length;
 
@@ -351,7 +351,7 @@ class Layout(T)
                                 return fromUtf32 (*cast(dchar[]*) p, result);
 
                             // Currently we only format d/w/char[] arrays.
-                            return fromUtf8 (type.toUtf8, result);                        
+                            return fromUtf8 (type.toUtf8, result);
 
                        case TypeCode.BOOL:
                             static T[] t = "true";
@@ -407,8 +407,8 @@ class Layout(T)
                        case TypeCode.TYPEDEF:
                             return munge (result, format, (cast(TypeInfo_Typedef) type).base, p);
 
-                       default: 
-                            return unknown (result, format, type, p); 
+                       default:
+                            return unknown (result, format, type, p);
                        }
 
                 return null;
@@ -420,7 +420,7 @@ class Layout(T)
 
         protected T[] unknown (T[] result, T[] format, TypeInfo type, Arg p)
         {
-                return "{unhandled argument type: " ~ fromUtf8 (type.toUtf8, result) ~ '}';
+                return "{unhandled argument type: " ~ fromUtf8 (type.toUtf8, result) ~ "}";
         }
 
         /**********************************************************************
@@ -452,7 +452,7 @@ class Layout(T)
                 bool scientific;
 
                 if (parse2(format, places) is 'e')
-                    scientific = true;                    
+                    scientific = true;
 
                 if (places is 0)
                     places = 2;
@@ -674,7 +674,7 @@ debug (UnitTest)
 
 
 
-debug (Layout) 
+debug (Layout)
 {
         import tango.io.Console;
 
@@ -684,4 +684,4 @@ debug (Layout)
 
                 //Cout (Formatter ("{} {} bottles '{}'", 10, "green", foo)) ();
         }
-} 
+}
