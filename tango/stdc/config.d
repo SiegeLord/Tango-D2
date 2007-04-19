@@ -10,8 +10,21 @@ module tango.stdc.config;
 
 extern (C):
 
-alias int   c_long;
-alias uint  c_ulong;
-
-//alias long  c_long;
-//alias ulong c_ulong;
+version( Windows )
+{
+    alias int   c_long;
+    alias uint  c_ulong;
+}
+else
+{
+  static if( (void*).sizeof > int.sizeof )
+  {
+    alias long  c_long;
+    alias ulong c_ulong;
+  }
+  else
+  {
+    alias int   c_long;
+    alias uint  c_ulong;
+  }
+}
