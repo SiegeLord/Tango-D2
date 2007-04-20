@@ -59,7 +59,7 @@ struct Console
                 private Buffer  buffer_;
                 private bool    redirect;
 
-                public alias    copyLine get;
+                public alias    copyln get;
 
                 /**************************************************************
 
@@ -108,11 +108,11 @@ struct Console
 
                 **************************************************************/
 
-                char[] copyLine (bool raw = false)
+                char[] copyln (bool raw = false)
                 {
                         char[] line;
 
-                        return nextLine(line, raw) ? line.dup : null;
+                        return readln (line, raw) ? line.dup : null;
                 }
 
                 /**************************************************************
@@ -127,7 +127,7 @@ struct Console
 
                 **************************************************************/
 
-                bool nextLine (inout char[] content, bool raw=false)
+                bool readln (inout char[] content, bool raw=false)
                 {
                         uint line (void[] input)
                         {
