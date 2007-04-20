@@ -1,5 +1,5 @@
 /*
- *  Copyright (C) 2004 by Digital Mars, www.digitalmars.com
+ *  Copyright (C) 2004-2007 by Digital Mars, www.digitalmars.com
  *  Written by Walter Bright
  *
  *  This software is provided 'as-is', without any express or implied
@@ -101,7 +101,7 @@ out (result)
 }
 body
 {
-    //printf("body _d_switch_string()\n");
+    //printf("body _d_switch_string(%.*s)\n", ca);
     int low;
     int high;
     int mid;
@@ -111,15 +111,16 @@ body
     low = 0;
     high = table.length;
 
-/*
-    // Print table
-    printf("ca[] = '%s'\n", (char *)ca);
-    for (mid = 0; mid < high; mid++)
+    version (none)
     {
-        pca = table[mid];
-        printf("table[%d] = %d, '%s'\n", mid, pca.length, (char *)pca);
+        // Print table
+        printf("ca[] = '%s'\n", cast(char *)ca);
+        for (mid = 0; mid < high; mid++)
+        {
+            pca = table[mid];
+            printf("table[%d] = %d, '%.*s'\n", mid, pca.length, pca);
+        }
     }
-*/
     if (high &&
         ca.length >= table[0].length &&
         ca.length <= table[high - 1].length)
@@ -138,7 +139,7 @@ body
             c = ca.length - pca.length;
             if (c == 0)
             {
-                c = cast(byte)c1 - cast(byte)pca[0];
+                c = cast(ubyte)c1 - cast(ubyte)pca[0];
                 if (c == 0)
                 {
                     c = memcmp(ca.ptr, pca.ptr, ca.length);
