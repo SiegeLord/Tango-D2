@@ -668,6 +668,18 @@ class FilePath : PathView
 
         /***********************************************************************
 
+                change the name or location of a file/directory, and
+                adopt the provided Path
+
+        ***********************************************************************/
+
+        final FilePath rename (FilePath dst)
+        {
+                return rename (dst.toUtf8);
+        }
+
+        /***********************************************************************
+
                 Parse the path spec
 
         ***********************************************************************/
@@ -988,21 +1000,22 @@ class FilePath : PathView
 
                 ***************************************************************/
 
-                final FilePath rename (FilePath dst)
+                final FilePath rename (char[] dst)
                 {
                         const int Typical = MOVEFILE_REPLACE_EXISTING +
                                             MOVEFILE_COPY_ALLOWED     +
                                             MOVEFILE_WRITE_THROUGH;
 
-                        int result;
-
+                        int     result;
+                        char[]  cstr = dst ~ '\0';
+                        
                         version (Win32SansUnicode)
-                                 result = MoveFileExA (this.cString.ptr, dst.cString.ptr, Typical);
+                                 result = MoveFileExA (this.cString.ptr, cstr.ptr, Typical);
                              else
                                 {
                                 wchar[MAX_PATH] tmp1 = void;
                                 wchar[MAX_PATH] tmp2 = void;
-                                result = MoveFileExW (name16(tmp1).ptr, toUtf16(tmp2, dst.cString).ptr, Typical);
+                                result = MoveFileExW (name16(tmp1).ptr, toUtf16(tmp2, cstr).ptr, Typical);
                                 }
 
                         if (! result)
@@ -1297,9 +1310,10 @@ class FilePath : PathView
 
                 ***************************************************************/
 
-                final FilePath rename (FilePath dst)
+                final FilePath rename (char[] dst)
                 {
-                        if (tango.stdc.stdio.rename (this.cString.ptr, dst.cString.ptr) == -1)
+                        char[] cstr = dst ~ '\0';
+                        if (tango.stdc.stdio.rename (this.cString.ptr, cstr.ptr) == -1)
                             exception;
 
                         this.set (dst);
