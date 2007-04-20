@@ -41,8 +41,8 @@ private class LoggerInstance : Logger
         private LoggerInstance  next,
                                 parent;
 
-        private char[]          name;
-        private Level           level;
+        private char[]          name_;
+        private Level           level_;
         private Appender        appender;
         private Hierarchy       hierarchy;
         private bool            additive,
@@ -59,9 +59,9 @@ private class LoggerInstance : Logger
         protected this (Hierarchy hierarchy, char[] name)
         {
                 this.hierarchy = hierarchy;
-                this.level = Level.Trace;
+                this.level_ = Level.Trace;
                 this.additive = true;
-                this.name = name;
+                this.name_ = name;
         }
 
         /***********************************************************************
@@ -83,7 +83,7 @@ private class LoggerInstance : Logger
 
         final bool isEnabled (Level level = Level.Fatal)
         {
-                return level >= this.level;
+                return level >= level_;
         }
 
         /***********************************************************************
@@ -170,12 +170,12 @@ private class LoggerInstance : Logger
        
         ***********************************************************************/
 
-        final char[] getName ()
+        final char[] name ()
         {
-                int i = name.length;
+                int i = name_.length;
                 if (i > 0)
                     --i;
-                return name[0 .. i];     
+                return name_[0 .. i];     
         }
 
         /***********************************************************************
@@ -184,9 +184,9 @@ private class LoggerInstance : Logger
 
         ***********************************************************************/
 
-        final Level getLevel ()
+        final Level level ()
         {
-                return level;     
+                return level_;     
         }
 
         /***********************************************************************
@@ -209,7 +209,7 @@ private class LoggerInstance : Logger
 
         final Logger setLevel (Level level, bool force)
         {
-                this.level = level;     
+                this.level_ = level;     
                 hierarchy.updateLoggers (this, force);
                 return this;
         }
@@ -274,7 +274,7 @@ private class LoggerInstance : Logger
 
         ***********************************************************************/
 
-        final Time getRuntime ()
+        final Time runtime ()
         {
                 return Event.startedAt;
         }
@@ -294,7 +294,7 @@ private class LoggerInstance : Logger
                           Event.deallocate (event);
 
                    // set the event attributes
-                   event.set (hierarchy, level, exp, name.length ? name[0..$-1] : "root");
+                   event.set (hierarchy, level, exp, name.length ? name_[0..$-1] : "root");
 
                    // combine appenders from all ancestors
                    auto links = this;
@@ -334,15 +334,15 @@ private class LoggerInstance : Logger
 
         private final bool isCloserAncestor (LoggerInstance other)
         {
-                auto length = other.name.length;
+                auto length = other.name_.length;
 
                 // possible parent if length is shorter
-                if (length < name.length)
+                if (length < name_.length)
                     // does the prefix match? Note we append a "." to each 
                     if (length is 0 || 
-                        memcmp (&other.name[0], &name[0], length) is 0)
+                        memcmp (&other.name_[0], &name_[0], length) is 0)
                         // is this a better (longer) match than prior parent?
-                        if ((parent is null) || (length >= parent.name.length))
+                        if ((parent is null) || (length >= parent.name_.length))
                              return true;
                 return false;
         }
@@ -577,8 +577,8 @@ class Hierarchy : IHierarchy
                    logger.parent = changed;
 
                    // if we don't have an explicit level set, inherit it
-                   if (logger.level is Logger.Level.None || force)
-                       logger.level = changed.level;
+                   if ((logger.level is Logger.Level.None) || force)
+                        logger.setLevel (changed.level);
 
                    // always force breakpoints to follow parent settings
                    logger.breakpoint = changed.breakpoint;

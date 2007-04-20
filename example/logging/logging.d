@@ -62,7 +62,7 @@ private class Sieve
                 feld = (new byte[max / 16 + 1]).ptr;
 
                 // get milliseconds since application began
-                ulong begin = logger.getRuntime();
+                ulong begin = logger.runtime();
 
                 while ((teste += 2) < max)
                         if (! test (feld, teste)) 
@@ -76,7 +76,7 @@ private class Sieve
                            }
 
                 // get number of milliseconds we took to compute
-                ulong period = logger.getRuntime() - begin;
+                ulong period = logger.runtime() - begin;
 
                 if (hits)
                     // more information
