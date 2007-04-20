@@ -315,7 +315,7 @@ class String(T) : StringView!(T)
 
         ***********************************************************************/
 
-        final String mark (int start=0, int length=int.max)
+        final String select (int start=0, int length=int.max)
         {
                 pinIndices (start, length);
                 selectPoint = start;
