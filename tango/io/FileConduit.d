@@ -269,7 +269,7 @@ class FileConduit : DeviceConduit, DeviceConduit.Seek
                 
         ***********************************************************************/
 
-        ulong getPosition ()
+        ulong position ()
         {
                 return seek (0, Seek.Anchor.Current);
         }               
