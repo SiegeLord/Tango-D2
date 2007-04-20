@@ -285,7 +285,7 @@ class FileConduit : DeviceConduit, DeviceConduit.Seek
                 ulong   pos,    
                         ret;
                         
-                pos = getPosition ();
+                pos = position ();
                 ret = seek (0, Seek.Anchor.End);
                 seek (pos);
                 return ret;
@@ -510,7 +510,7 @@ class FileConduit : DeviceConduit, DeviceConduit.Seek
                 void truncate ()
                 {
                         // set filesize to be current seek-position
-                        if (ftruncate (handle, cast(int) getPosition) is -1)
+                        if (ftruncate (handle, cast(int) position) is -1)
                             error ();
                 }               
 
