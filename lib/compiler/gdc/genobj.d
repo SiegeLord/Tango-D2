@@ -68,16 +68,6 @@ else
 alias size_t hash_t;
 
 /**
- * Internal struct pointed to by the hidden .monitor member.
- */
-struct Monitor
-{
-    void delegate(Object)[] delegates;
-
-    /* More stuff goes here defined by internal/monitor.c */
-}
-
-/**
  * All D class objects inherit from Object.
  */
 class Object
