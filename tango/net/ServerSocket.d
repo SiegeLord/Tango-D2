@@ -35,7 +35,7 @@ public  import  tango.net.InternetAddress;
 
 class ServerSocket : ISelectable
 {
-        private Socket  socket;
+        private Socket  socket_;
         private int     linger = -1;
 
         /***********************************************************************
@@ -51,8 +51,8 @@ class ServerSocket : ISelectable
 
         this (InternetAddress addr, int backlog=32, bool reuse=false)
         {
-                socket = new Socket (AddressFamily.INET, SocketType.STREAM, ProtocolType.IP);
-                socket.setAddressReuse(reuse).bind(addr).listen(backlog);
+                socket_ = new Socket (AddressFamily.INET, SocketType.STREAM, ProtocolType.IP);
+                socket_.setAddressReuse(reuse).bind(addr).listen(backlog);
         }
 
         /***********************************************************************
@@ -66,7 +66,7 @@ class ServerSocket : ISelectable
 
         Handle fileHandle ()
         {
-                return cast(Handle) socket.fileHandle;
+                return cast(Handle) socket_.fileHandle;
         }
 
         /***********************************************************************
@@ -87,9 +87,20 @@ class ServerSocket : ISelectable
 
         ***********************************************************************/
 
-        Socket getSocket ()
+        Socket socket ()
         {
-                return socket;
+                return socket_;
+        }
+
+        /***********************************************************************
+
+                Is this server still alive?
+
+        ***********************************************************************/
+
+        bool isAlive ()
+        {
+                return socket_.isAlive;
         }
 
         /***********************************************************************
@@ -102,7 +113,7 @@ class ServerSocket : ISelectable
         SocketConduit accept ()
         {
                 auto wrapper = SocketConduit.allocate();
-                auto accepted = socket.accept (wrapper.getSocket);
+                auto accepted = socket_.accept (wrapper.socket);
 
                 // force abortive closure to avoid prolonged OS scavenging?
                 if (linger >= 0)

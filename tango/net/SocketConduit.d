@@ -35,7 +35,7 @@ class SocketConduit : Conduit
 {
         private timeval                 tv;
         private SocketSet               ss;
-        package Socket                  socket;
+        package Socket                  socket_;
         private bool                    timeout;
 
         // freelist support
@@ -64,7 +64,7 @@ class SocketConduit : Conduit
         protected this (Access access, SocketType type, ProtocolType protocol, bool create=true)
         {
                 super (access);
-                socket = new Socket (AddressFamily.INET, type, protocol, create);
+                socket_ = new Socket (AddressFamily.INET, type, protocol, create);
         }
 
         /***********************************************************************
@@ -84,9 +84,9 @@ class SocketConduit : Conduit
                 
         ***********************************************************************/
 
-        Socket getSocket ()
+        Socket socket ()
         {
-                return socket;
+                return socket_;
         }
 
         /***********************************************************************
@@ -100,7 +100,7 @@ class SocketConduit : Conduit
 
         Handle fileHandle ()
         {
-                return cast(Handle) socket.fileHandle;
+                return cast(Handle) socket_.fileHandle;
         }
 
         /***********************************************************************
@@ -110,9 +110,10 @@ class SocketConduit : Conduit
 
         ***********************************************************************/
 
-        void setTimeout (Interval interval)
+        SocketConduit setTimeout (Interval interval)
         {
-                tv = socket.toTimeval (interval);
+                tv = socket_.toTimeval (interval);
+                return this;
         }
 
         /***********************************************************************
@@ -134,7 +135,7 @@ class SocketConduit : Conduit
 
         override bool isAlive ()
         {
-                return socket.isAlive;
+                return socket_.isAlive;
         }
 
         /***********************************************************************
@@ -145,7 +146,7 @@ class SocketConduit : Conduit
 
         SocketConduit connect (Address addr)
         {
-                socket.connect (addr);
+                socket_.connect (addr);
                 return this;
         }
 
@@ -161,7 +162,7 @@ class SocketConduit : Conduit
 
         SocketConduit bind (Address address)
         {
-                socket.bind (address);
+                socket_.bind (address);
                 return this;
         }
 
@@ -175,7 +176,7 @@ class SocketConduit : Conduit
 
         SocketConduit shutdown ()
         {
-                socket.shutdown (SocketShutdown.BOTH);
+                socket_.shutdown (SocketShutdown.BOTH);
                 return this;
         }
 
@@ -192,7 +193,7 @@ class SocketConduit : Conduit
         override void close ()
         {
                 super.close;
-                socket.close;
+                socket_.close;
 
                 // deallocate if this came from the free-list,
                 // otherwise just wait for the GC to handle it
@@ -210,7 +211,7 @@ class SocketConduit : Conduit
 
         protected uint socketReader (void[] dst)
         {
-                return socket.receive (dst);
+                return socket_.receive (dst);
         }
         
        /***********************************************************************
@@ -246,10 +247,10 @@ class SocketConduit : Conduit
                        ss = new SocketSet (1);
 
                    ss.reset ();
-                   ss.add (socket);
+                   ss.add (socket_);
 
                    // wait until data is available, or a timeout occurs
-                   int i = socket.select (ss, null, null, &tv);
+                   int i = socket_.select (ss, null, null, &tv);
                        
                    if (i <= 0)
                       {
@@ -278,7 +279,7 @@ class SocketConduit : Conduit
 
         protected override uint writer (void[] src)
         {
-                int count = socket.send (src);
+                int count = socket_.send (src);
                 if (count <= 0)
                     count = Eof;
                 return count;
