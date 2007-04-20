@@ -80,7 +80,7 @@
                 T[] selection ();
                 
                 // get the index and length of the current selection
-                uint selection (inout int length);
+                Span selectionSpan ();
 
                 // mark a selection
                 String mark (int start=0, int length=int.max);
@@ -217,6 +217,18 @@ class String(T) : StringView!(T)
 
         /***********************************************************************
         
+                Selection span
+
+        ***********************************************************************/
+
+        public struct Span
+        {
+                uint    begin,                  /// index of selection point
+                        length;                 /// length of selection
+        }
+
+        /***********************************************************************
+        
                 Create an empty String with the specified available 
                 space
 
@@ -328,10 +340,10 @@ class String(T) : StringView!(T)
 
         ***********************************************************************/
 
-        final uint selection (inout int length)
+        final Span selectionSpan ()
         {
-                length = selectLength;
-                return selectPoint;
+                Span span = {selectPoint, selectLength};
+                return Span;
         }
 
         /***********************************************************************
