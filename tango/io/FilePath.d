@@ -1089,7 +1089,7 @@ class FilePath : PathView
 
                 ***************************************************************/
 
-                final void toList (void delegate (char[], char[], bool) dg)
+                final FilePath toList (void delegate (char[], char[], bool) dg)
                 {
                         HANDLE                  h;
                         char[]                  prefix;
@@ -1143,6 +1143,8 @@ class FilePath : PathView
                                 dg (prefix, str, (fileinfo.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY) != 0);
 
                            } while (next);
+
+                        return this;
                 }
         }
 
@@ -1365,7 +1367,7 @@ class FilePath : PathView
 
                 ***************************************************************/
 
-                final void toList (void delegate (char[], char[], bool) dg)
+                final FilePath toList (void delegate (char[], char[], bool) dg)
                 {
                         DIR*            dir;
                         dirent*         entry;
@@ -1404,6 +1406,8 @@ class FilePath : PathView
                                                  : (sbuf.st_mode & S_IFDIR) != 0;
                               dg (prefix, str, isDir);
                               }
+
+                        return this;
                 }
         }
 }
@@ -1672,7 +1676,7 @@ interface PathView
 
         ***********************************************************************/
         
-        abstract void toList (void delegate (char[], char[], bool) dg);
+        abstract FilePath toList (void delegate (char[], char[], bool) dg);
 }
 
 
