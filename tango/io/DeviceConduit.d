@@ -42,19 +42,19 @@ class DeviceConduit : Conduit
 
         /***********************************************************************
 
-                Create a FileConduit on the provided FileDevice. This is
+                Create a FileConduit on the provided handle. This is
                 strictly for adapting existing devices such as Stdout and
                 friends.
 
         ***********************************************************************/
 
-        this (FileDevice device)
+        this (Access access, Handle handle)
         {
                 // say we're not seekable
-                super (device.access, false);
+                super (access, false);
 
                 // open the file
-                reopen (device);
+                reopen (handle);
         }
 
         /***********************************************************************
@@ -142,9 +142,9 @@ class DeviceConduit : Conduit
 
                 ***************************************************************/
 
-                protected void reopen (FileDevice device)
+                protected void reopen (Handle handle)
                 {
-                        handle = cast(HANDLE) device.id;
+                        this.handle = cast(HANDLE) handle;
                 }
 
                 /***************************************************************
@@ -227,9 +227,9 @@ class DeviceConduit : Conduit
 
                 ***************************************************************/
 
-                protected void reopen (FileDevice device)
+                protected void reopen (Handle handle)
                 {
-                        handle = device.id;
+                        this.handle = handle;
                 }
 
                 /***************************************************************
@@ -278,31 +278,6 @@ class DeviceConduit : Conduit
                             error ();
                         return written;
                 }
-        }
-}
-
-
-/*******************************************************************************
-
-        Class used to wrap an existing file-oriented handle, such as Stdout
-        and its cohorts.
-
-*******************************************************************************/
-
-class FileDevice
-{
-        private uint            _id;
-        private Conduit.Access  access;
-
-        package this (uint id, Conduit.Access access)
-        {
-                this.access = access;
-                this._id = id;
-        }
-
-        int id()
-        {
-              return _id;
         }
 }
 

@@ -57,7 +57,7 @@ struct Console
         class Input
         {
                 private Buffer  buffer_;
-                private bool    redirect;
+                private bool    redirected_;
 
                 public alias    copyln get;
 
@@ -67,10 +67,9 @@ struct Console
 
                 **************************************************************/
 
-                private this (FileDevice device)
+                private this (Conduit conduit, bool redirected)
                 {
-                        auto conduit = new ConsoleConduit (device);
-                        redirect = conduit.redirected;
+                        redirected_ = redirected;
                         buffer_ = new Buffer (conduit);
                 }
 
@@ -166,7 +165,7 @@ struct Console
 
                 bool redirected ()
                 {
-                        return redirect;
+                        return redirected_;
                 }           
         }
 
@@ -183,7 +182,7 @@ struct Console
         class Output
         {
                 private Buffer  buffer_;
-                private bool    redirect;
+                private bool    redirected_;
 
                 public  alias   append opCall;
                 public  alias   flush  opCall;
@@ -194,10 +193,9 @@ struct Console
 
                 **************************************************************/
 
-                private this (FileDevice device)
+                private this (Conduit conduit, bool redirected)
                 {
-                        auto conduit = new ConsoleConduit (device);
-                        redirect = conduit.redirected;
+                        redirected_ = redirected;
                         buffer_ = new Buffer (conduit);
                 }
 
@@ -312,7 +310,7 @@ struct Console
 
                 bool redirected ()
                 {
-                        return redirect;
+                        return redirected_;
                 }           
         }
 
@@ -333,7 +331,7 @@ struct Console
 
         ***********************************************************************/
 
-        class ConsoleConduit : DeviceConduit
+        class Conduit : DeviceConduit
         {
                 private bool redirected = false;
 
@@ -358,9 +356,9 @@ struct Console
 
                         *******************************************************/
 
-                        private this (FileDevice device)
+                        private this (Access access, uint id)
                         {
-                                super (device);
+                                super (access, cast(Handle) id);
                                 input = new wchar [1024 * 1];
                                 output = new wchar [1024 * 1];
                         }    
@@ -371,7 +369,7 @@ struct Console
 
                         *******************************************************/
 
-                        protected override void reopen (FileDevice device)
+                        protected override void reopen (Handle handle_)
                         {
                                 static const DWORD[] id = [
                                                           cast(DWORD) -10, 
@@ -384,15 +382,15 @@ struct Console
                                                           "CONOUT$\0"
                                                           ];
 
-                                assert (device.id < 3);
-                                handle = GetStdHandle (id[device.id]);
-                                if (! handle)
-                                      handle = CreateFileA (f[device.id].ptr, 
-                                               GENERIC_READ | GENERIC_WRITE,  
-                                               FILE_SHARE_READ | FILE_SHARE_WRITE, 
-                                               null, OPEN_EXISTING, 0, cast(HANDLE) 0);
-                                if (! handle)
-                                      error ();
+                                assert (handle_ < 3);
+                                handle = GetStdHandle (id[handle_]);
+                                if (handle is null)
+                                    handle = CreateFileA (f[handle_].ptr, 
+                                             GENERIC_READ | GENERIC_WRITE,  
+                                             FILE_SHARE_READ | FILE_SHARE_WRITE, 
+                                             null, OPEN_EXISTING, 0, cast(HANDLE) 0);
+                                if (handle is null)
+                                    error ();
 
                                 // are we redirecting?
                                 DWORD mode;
@@ -511,11 +509,11 @@ struct Console
 
                         *******************************************************/
 
-                        private this (FileDevice device)
+                        private this (Access access, Handle handle)
                         {
-                                super (device);
+                                super (access, handle);
 
-                                redirected = (isatty(device.id) is 0);
+                                redirected = (isatty(handle) is 0);
                         }
                         }
         }
@@ -524,27 +522,33 @@ struct Console
 
 /******************************************************************************
 
-******************************************************************************/
-
-static Console.Input    Cin;
-
-/******************************************************************************
+        Globals representing Console IO
 
 ******************************************************************************/
 
-static Console.Output   Cout, 
-                        Cerr;
+static Console.Input    Cin;                    /// the standard input stream
+static Console.Output   Cout,                   /// the standard output stream
+                        Cerr;                   /// the standard error stream
+
 
 /******************************************************************************
+
+        Instantiate Console access
 
 ******************************************************************************/
 
 static this ()
 {
-        Cin  = new Console.Input  (new FileDevice (0, DeviceConduit.Access.Read));
-        Cout = new Console.Output (new FileDevice (1, DeviceConduit.Access.Write));
-        Cerr = new Console.Output (new FileDevice (2, DeviceConduit.Access.Write));
+        auto conduit = new Console.Conduit (DeviceConduit.Access.Read, 0);
+        Cin  = new Console.Input (conduit, conduit.redirected);
+
+        conduit = new Console.Conduit (DeviceConduit.Access.Write, 1);
+        Cout = new Console.Output (conduit, conduit.redirected);
+
+        conduit = new Console.Conduit (DeviceConduit.Access.Write, 2);
+        Cerr = new Console.Output (conduit, conduit.redirected);
 }
+
 
 /******************************************************************************
 
