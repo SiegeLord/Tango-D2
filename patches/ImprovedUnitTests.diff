@@ -21,7 +21,7 @@ Index: lib/compiler/dmd/genobj.d
      debug(PRINTF) printf("_moduleUnitTests()\n");
      for (uint i = 0; i < _moduleinfo_array.length; i++)
      {
-@@ -1086,9 +1089,23 @@
+@@ -1086,9 +1089,26 @@
          debug(PRINTF) printf("\tmodule[%d] = '%.*s'\n", i, m.name);
          if (m.unitTest)
          {
@@ -41,7 +41,10 @@ Index: lib/compiler/dmd/genobj.d
 +    {
 +        printf("TESTS: %d  PASSED: %d  FAILED: %d\n",
 +               testCount, testCount - testFail, testFail);
-+        exit(1);
++        if (testFail == 0)
++            exit(0);
++        else
++            exit(1);
 +    }
  }
  
@@ -156,7 +159,7 @@ Index: lib/compiler/gdc/genobj.d
      debug(PRINTF) printf("_moduleUnitTests()\n");
      for (uint i = 0; i < _moduleinfo_array.length; i++)
      {
-@@ -1070,9 +1073,23 @@
+@@ -1070,9 +1073,26 @@
          debug(PRINTF) printf("\tmodule[%d] = '%.*s'\n", i, m.name);
          if (m.unitTest)
          {
@@ -176,8 +179,57 @@ Index: lib/compiler/gdc/genobj.d
 +    {
 +        printf("TESTS: %d  PASSED: %d  FAILED: %d\n",
 +               testCount, testCount - testFail, testFail);
-+        exit(1);
++        if (testFail == 0)
++            exit(0);
++        else
++            exit(1);
 +    }
  }
  
  ////////////////////////////////////////////////////////////////////////////////
+Index: patches/ImprovedUnitTests.diff
+===================================================================
+--- patches/ImprovedUnitTests.diff	(revision 2101)
++++ patches/ImprovedUnitTests.diff	(working copy)
+@@ -21,7 +21,7 @@
+      debug(PRINTF) printf("_moduleUnitTests()\n");
+      for (uint i = 0; i < _moduleinfo_array.length; i++)
+      {
+-@@ -1086,9 +1089,23 @@
++@@ -1086,9 +1089,26 @@
+          debug(PRINTF) printf("\tmodule[%d] = '%.*s'\n", i, m.name);
+          if (m.unitTest)
+          {
+@@ -41,7 +41,10 @@
+ +    {
+ +        printf("TESTS: %d  PASSED: %d  FAILED: %d\n",
+ +               testCount, testCount - testFail, testFail);
+-+        exit(1);
+++        if (testFail == 0)
+++            exit(0);
+++        else
+++            exit(1);
+ +    }
+  }
+  
+@@ -156,7 +159,7 @@
+      debug(PRINTF) printf("_moduleUnitTests()\n");
+      for (uint i = 0; i < _moduleinfo_array.length; i++)
+      {
+-@@ -1070,9 +1073,23 @@
++@@ -1070,9 +1073,26 @@
+          debug(PRINTF) printf("\tmodule[%d] = '%.*s'\n", i, m.name);
+          if (m.unitTest)
+          {
+@@ -176,7 +179,10 @@
+ +    {
+ +        printf("TESTS: %d  PASSED: %d  FAILED: %d\n",
+ +               testCount, testCount - testFail, testFail);
+-+        exit(1);
+++        if (testFail == 0)
+++            exit(0);
+++        else
+++            exit(1);
+ +    }
+  }
+  
