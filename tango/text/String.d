@@ -83,7 +83,7 @@
                 Span selectionSpan ();
 
                 // mark a selection
-                String mark (int start=0, int length=int.max);
+                String select (int start=0, int length=int.max);
 
                 // move the selection around
                 bool select (T c);
@@ -290,7 +290,7 @@ class String(T) : StringView!(T)
                 else
                    content = chars;
 
-                return mark (0, contentLength = chars.length);
+                return select (0, contentLength = chars.length);
         }
 
         /***********************************************************************
@@ -342,7 +342,9 @@ class String(T) : StringView!(T)
 
         final Span selectionSpan ()
         {
-                Span span = {selectPoint, selectLength};
+                Span span;
+                span.begin = selectPoint;
+                span.length = selectLength;
                 return Span;
         }
 
@@ -359,7 +361,7 @@ class String(T) : StringView!(T)
                 auto x = Util.locate (s, c, selectPoint);
                 if (x < s.length)
                    {
-                   mark (x, 1);
+                   select (x, 1);
                    return true;
                    }
                 return false;
@@ -390,7 +392,7 @@ class String(T) : StringView!(T)
                 auto x = Util.locatePattern (s, chars, selectPoint);
                 if (x < s.length)
                    {
-                   mark (x, chars.length);
+                   select (x, chars.length);
                    return true;
                    }
                 return false;
@@ -409,7 +411,7 @@ class String(T) : StringView!(T)
                 auto x = Util.locatePrior (s, c, selectPoint);               
                 if (x < s.length)
                    {
-                   mark (x, 1);
+                   select (x, 1);
                    return true;
                    }
                 return false;
@@ -440,7 +442,7 @@ class String(T) : StringView!(T)
                 auto x = Util.locatePatternPrior (s, chars, selectPoint);
                 if (x < s.length)
                    {
-                   mark (x, chars.length);
+                   select (x, chars.length);
                    return true;
                    }
                 return false;
@@ -637,7 +639,7 @@ class String(T) : StringView!(T)
                    remove (selectPoint, -chunk);
 
                 content [selectPoint .. selectPoint+chars.length] = chars;
-                return mark (selectPoint, chars.length);
+                return select (selectPoint, chars.length);
         }
 
         /***********************************************************************
@@ -661,7 +663,7 @@ class String(T) : StringView!(T)
         final String remove ()
         {
                 remove (selectPoint, selectLength);
-                return mark (selectPoint, 0);
+                return select (selectPoint, 0);
         }
 
         /***********************************************************************
@@ -699,7 +701,7 @@ class String(T) : StringView!(T)
                     index = selectPoint + selectLength;
 
                 pinIndex (index);
-                return mark (contentLength = index, 0);
+                return select (contentLength = index, 0);
         }
 
         /***********************************************************************
@@ -710,7 +712,7 @@ class String(T) : StringView!(T)
 
         final String clear ()
         {
-                return mark (contentLength = 0, 0);
+                return select (contentLength = 0, 0);
         }
 
         /***********************************************************************
@@ -723,7 +725,7 @@ class String(T) : StringView!(T)
         final String trim ()
         {
                 content = Util.trim (slice);
-                mark (0, contentLength = content.length);
+                select (0, contentLength = content.length);
                 return this;
         }
 
@@ -737,7 +739,7 @@ class String(T) : StringView!(T)
         final String strip (T matches)
         {
                 content = Util.strip (slice, matches);
-                mark (0, contentLength = content.length);
+                select (0, contentLength = content.length);
                 return this;
         }
 
@@ -1383,7 +1385,7 @@ debug (UnitTest)
 
         assert (Util.splitLines(s.clear.append("a\nb").slice).length is 2);
         
-        assert (s.mark.replace("almost ") == "almost ");
+        assert (s.select.replace("almost ") == "almost ");
         foreach (element; Util.patterns ("all cows eat grass", "eat", "chew"))
                  s.append (element);
         assert (s.selection == "almost all cows chew grass");
