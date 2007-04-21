@@ -1,0 +1,183 @@
+Index: lib/compiler/dmd/genobj.d
+===================================================================
+--- lib/compiler/dmd/genobj.d	(revision 2100)
++++ lib/compiler/dmd/genobj.d	(working copy)
+@@ -42,7 +42,8 @@
+     import tango.stdc.string; // : memcmp, memcpy;
+     import tango.stdc.stdlib; // : calloc, realloc, free;
+     import util.string;
+-    debug(PRINTF) import tango.stdc.stdio; // : printf;
++    //debug(PRINTF) import tango.stdc.stdio; // : printf;
++    extern (C) int printf(char*, ...);
+ 
+     extern (C) void onOutOfMemoryError();
+     extern (C) Object _d_newclass(ClassInfo ci);
+@@ -1075,6 +1076,8 @@
+ 
+ extern (C) void _moduleUnitTests()
+ {
++    int testCount, testFail;
++    testCount = testFail = 0;
+     debug(PRINTF) printf("_moduleUnitTests()\n");
+     for (uint i = 0; i < _moduleinfo_array.length; i++)
+     {
+@@ -1086,9 +1089,23 @@
+         debug(PRINTF) printf("\tmodule[%d] = '%.*s'\n", i, m.name);
+         if (m.unitTest)
+         {
+-            (*m.unitTest)();
++            testCount++;
++            try {
++                (*m.unitTest)();
++            } catch (Exception e) {
++                printf("Failure in test for module '%.*s':\n", m.name);
++                printf("  %.*s on %.*s(%d): %.*s\n",
++                       e.classinfo.name, e.file, e.line, e.msg);
++                testFail++;
++            }
+         }
+     }
++    if (testOnly != 0 || testFail > 0)
++    {
++        printf("TESTS: %d  PASSED: %d  FAILED: %d\n",
++               testCount, testCount - testFail, testFail);
++        exit(1);
++    }
+ }
+ 
+ 
+Index: lib/compiler/dmd/dmain2.d
+===================================================================
+--- lib/compiler/dmd/dmain2.d	(revision 2100)
++++ lib/compiler/dmd/dmain2.d	(working copy)
+@@ -36,7 +36,7 @@
+ extern (C) void _minit();
+ extern (C) void _moduleCtor();
+ extern (C) void _moduleDtor();
+-extern (C) void _moduleUnitTests();
++extern (C) void _moduleUnitTests(int);
+ 
+ /***********************************
+  * These functions must be defined for any D program linked
+@@ -97,6 +97,7 @@
+ {
+     char[][] args;
+     int result;
++    int testOnly = 0;
+ 
+     version (Win32)
+     {
+@@ -152,11 +153,17 @@
+         }
+         args = am[0 .. argc];
+     }
++    
++    // check for --d-unittests-only
++    foreach (arg; args) {
++        if (arg == "--d-unittests-only")
++            testOnly = 1;
++    }
+ 
+     void run()
+     {
+         _moduleCtor();
+-        _moduleUnitTests();
++        _moduleUnitTests(testOnly);
+         result = main(args);
+         isHalting = true;
+         _moduleDtor();
+Index: lib/compiler/gdc/dgccmain2.d
+===================================================================
+--- lib/compiler/gdc/dgccmain2.d	(revision 2100)
++++ lib/compiler/gdc/dgccmain2.d	(working copy)
+@@ -35,7 +35,7 @@
+ extern (C) void _minit();
+ extern (C) void _moduleCtor();
+ extern (C) void _moduleDtor();
+-extern (C) void _moduleUnitTests();
++extern (C) void _moduleUnitTests(int);
+ 
+ /***********************************
+  * These functions must be defined for any D program linked
+@@ -108,6 +108,7 @@
+ {
+     char[][] args;
+     int result;
++    int testOnly = 0;
+ 
+     version (GC_Use_Stack_Guess)
+     {
+@@ -137,11 +138,17 @@
+         }
+         args = am[0 .. argc];
+     }
++    
++    // check for --d-unittests-only
++    foreach (arg; args) {
++        if (arg == "--d-unittests-only")
++            testOnly = 1;
++    }
+ 
+     void run()
+     {
+         _moduleCtor();
+-        _moduleUnitTests();
++        _moduleUnitTests(testOnly);
+         result = main_func(args);
+         isHalting = true;
+         _moduleDtor();
+Index: lib/compiler/gdc/genobj.d
+===================================================================
+--- lib/compiler/gdc/genobj.d	(revision 2100)
++++ lib/compiler/gdc/genobj.d	(working copy)
+@@ -42,7 +42,8 @@
+     import tango.stdc.string; // : memcmp, memcpy;
+     import tango.stdc.stdlib; // : calloc, realloc, free;
+     import util.string;
+-    debug(PRINTF) import tango.stdc.stdio; // : printf;
++    //debug(PRINTF) import tango.stdc.stdio; // : printf;
++    extern (C) int printf(char*, ...);
+ 
+     extern (C) void onOutOfMemoryError();
+     extern (C) Object _d_newclass(ClassInfo ci);
+@@ -1054,11 +1055,13 @@
+ }
+ 
+ /**
+- * Run unit tests.
++ * Run unit tests. If testOnly is true, output results and quit.
+  */
+ 
+-extern (C) void _moduleUnitTests()
++extern (C) void _moduleUnitTests(int testOnly)
+ {
++    int testCount, testFail;
++    testCount = testFail = 0;
+     debug(PRINTF) printf("_moduleUnitTests()\n");
+     for (uint i = 0; i < _moduleinfo_array.length; i++)
+     {
+@@ -1070,9 +1073,23 @@
+         debug(PRINTF) printf("\tmodule[%d] = '%.*s'\n", i, m.name);
+         if (m.unitTest)
+         {
+-            (*m.unitTest)();
++            testCount++;
++            try {
++                (*m.unitTest)();
++            } catch (Exception e) {
++                printf("Failure in test for module '%.*s':\n", m.name);
++                printf("  %.*s on %.*s(%d): %.*s\n",
++                       e.classinfo.name, e.file, e.line, e.msg);
++                testFail++;
++            }
+         }
+     }
++    if (testOnly != 0 || testFail > 0)
++    {
++        printf("TESTS: %d  PASSED: %d  FAILED: %d\n",
++               testCount, testCount - testFail, testFail);
++        exit(1);
++    }
+ }
+ 
+ ////////////////////////////////////////////////////////////////////////////////
