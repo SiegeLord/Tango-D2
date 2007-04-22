@@ -51,7 +51,7 @@ DOC_DEST=../../../doc/tango
 	g++ -c $(CFLAGS) $< -o$@
 
 .d.o:
-	$(DC) -c $(DFLAGS) -Hf$*.di $< -of$@
+	$(DC) -c $(DFLAGS) -v1 -Hf$*.di $< -of$@
 #	$(DC) -c $(DFLAGS) $< -of$@
 
 .d.html:
