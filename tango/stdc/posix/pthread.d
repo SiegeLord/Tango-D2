@@ -145,16 +145,16 @@ version( linux )
     void _pthread_cleanup_push(_pthread_cleanup_buffer*, _pthread_cleanup_routine, void*);
     void _pthread_cleanup_pop(_pthread_cleanup_buffer*, int);
 
-    template pthread_cleanup()
+    struct pthread_cleanup
     {
         _pthread_cleanup_buffer buffer = void;
 
-        void push( _pthread_cleanup_routine routine, void* arg )
+        void push()( _pthread_cleanup_routine routine, void* arg )
         {
             _pthread_cleanup_push( &buffer, routine, arg );
         }
 
-        void pop( int execute )
+        void pop()( int execute )
         {
             _pthread_cleanup_pop( &buffer, execute );
         }
@@ -171,21 +171,22 @@ else version( darwin )
         _pthread_cleanup_buffer*    __next;
     }
 
-    template pthread_cleanup()
+    struct pthread_cleanup
     {
         _pthread_cleanup_buffer buffer = void;
-        pthread_t               self   = pthread_self();
 
-        void push( _pthread_cleanup_routine routine, void* arg )
+        void push()( _pthread_cleanup_routine routine, void* arg )
         {
+            pthread_t self       = pthread_self();
             buffer.__routine     = routine;
             buffer.__arg         = arg;
             buffer.__next        = cast(_pthread_cleanup_buffer*) self.__cleanup_stack;
             self.__cleanup_stack = cast(pthread_handler_rec*) &buffer;
         }
 
-        void pop( int execute )
+        void pop()( int execute )
         {
+            pthread_t self       = pthread_self();
             self.__cleanup_stack = cast(pthread_handler_rec*) buffer.__next;
             if( execute )
             {

@@ -180,7 +180,7 @@ else version( Posix )
                 obj.m_isRunning = false;
             }
 
-            mixin pthread_cleanup cleanup;
+            pthread_cleanup cleanup;
             cleanup.push( &thread_cleanupHandler, cast(void*) obj );
 
             // NOTE: For some reason this does not always work for threads.
