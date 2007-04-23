@@ -180,7 +180,14 @@ else version( Posix )
                 obj.m_isRunning = false;
             }
 
-            pthread_cleanup cleanup;
+            // NOTE: Using void to skip the initialization here relies on
+            //       knowledge of how pthread_cleanup is implemented.  It may
+            //       not be appropriate for all platforms.  However, it does
+            //       avoid the need to link the pthread module.  If any
+            //       implementation actually requires default initialization
+            //       then pthread_cleanup should be restructured to maintain
+            //       the current lack of a link dependency.
+            pthread_cleanup cleanup = void;
             cleanup.push( &thread_cleanupHandler, cast(void*) obj );
 
             // NOTE: For some reason this does not always work for threads.
