@@ -85,13 +85,16 @@ version (DigitalMars_D_InlineAsm_X86) {
  * 64 bit Big-endian    (eg PowerPC)
  * 64 bit Little-endian
  * 80 bit Little-endian, with implied bit (eg x87, Itanium).
+ * There is also an unsupported ABI which does not follow IEEE; several of its functions
+ *  will generate run-time errors if used.
+ * 128 bit Big-endian (double-double, as used by GDC <= 0.23)
  */
 
 version(LittleEndian) {
     static assert(real.mant_dig == 53 || real.mant_dig==64,
-        "Only 64-bit and 80-bit reals are supported");
-} else static assert(real.mant_dig == 53,
-     "Only 64-bit reals are supported for BigEndian CPUs");
+        "Only 64-bit and 80-bit reals are supported for LittleEndian CPUs");
+} else static assert(real.mant_dig == 53 || real.mant_dig==106,
+     "Only 64-bit reals are supported for BigEndian CPUs. 106-bit reals have partial support");
 
 /** IEEE exception status flags
 
@@ -352,7 +355,9 @@ real frexp(real value, out int exp)
     version(LittleEndian)
     static if (real.mant_dig==64) const int EXPONENTPOS = 4;
                              else const int EXPONENTPOS = 3;
-    else const int EXPONENTPOS = 0;
+    else { // BigEndian
+        const int EXPONENTPOS = 0;
+    }
 
     ex = vu[EXPONENTPOS] & EXPMASK;
 static if (real.mant_dig == 64) {
@@ -384,6 +389,9 @@ static if (real.mant_dig == 64) {
         exp = i;
         vu[EXPONENTPOS] = cast(ushort)((0x8000 & vu[EXPONENTPOS]) | 0x3FFE);
     }
+} else static if(real.mant_dig==106) {
+    // 128-bit reals
+    assert(0, "Unsupported");
 } else {
 // 64-bit reals
     if (ex) { // If exponent is non-zero
@@ -703,7 +711,7 @@ unittest {
  * Returns (x * y) + z, rounding only once according to the
  * current rounding mode.
  */
-real fma(real x, real y, real z)
+real fma(float x, float y, float z)
 {
     return (x * y) + z;
 }
@@ -1149,6 +1157,58 @@ unittest {
     assert(nextDown(1.0+real.epsilon)==1.0);
     assert(nextDoubleDown(1.0+double.epsilon)==1.0);
     assert(nextFloatDown(1.0+float.epsilon)==1.0);
+}
+}
+
+package {
+/** Reduces the magnitude of x, so the bits in the lower half of its significand
+ * are all zero. Returns the amount which needs to be added to x to restore its
+ * initial value; this amount will also have zeros in all bits in the lower half
+ * of its significand.
+ */
+double splitSignificand(inout double x)
+{
+    if (fabs(x)!<double.infinity) return 0; // don't change NaN or infinity
+    ulong *ps = cast(ulong *)&x;
+    double y = x;
+    (*ps)&=0xFFFF_FFFF_FC00_0000;
+    return y - x;
+}
+
+/** ditto */
+float splitSignificand(inout float x)
+{
+    if (fabs(x)!<float.infinity) return 0; // don't change NaN or infinity
+    uint *ps = cast(uint *)&x;
+    float y = x;
+    (*ps)&=0xFFFF_FC00;
+    return y - x;
+}
+
+/** ditto */
+real splitSignificand(inout real x)
+{
+ static if (real.mant_dig==64) {
+    // An x87 real80 has 63 bits, because the 'implied' bit is stored explicitly.
+    // This is annoying, because it means the significand cannot be
+    // precisely halved. Instead, we split it into 31+32 bits.
+    if (fabs(x)!<real.infinity) return 0; // don't change NaN or infinity
+    ulong *ps = cast(ulong *)&x;
+    real y = x;
+    (*ps)&=0xFFFF_FFFF_0000_0000;
+    return y - x;
+ } else return splitSignificand(cast(double)(x));
+}
+
+
+//import tango.stdc.stdio;
+unittest {
+    double x = -0x1.234_567A_AAAA_AAp+250;
+    double y = splitSignificand(x);
+    assert(x==-0x1.234_5678p+250);
+    assert(y==-0x0.000_000A_AAAA_A8p+248);
+    assert(x+y==-0x1.234_567A_AAAA_AAp+250);
+//    printf("%a %a %a %a %a\n", y, v, x1, x+y, u+v);
 
 }
 }
@@ -1158,7 +1218,7 @@ unittest {
  *
  * Return the greatest number less than x that is representable as a real;
  * thus, it gives the previous point on the IEEE number line.
- * This function is included in the forthcoming IEEE 754R standard.
+ * Note: This function is included in the forthcoming IEEE 754R standard.
  *
  * Special values:
  * real.infinity   real.max
@@ -1207,7 +1267,7 @@ unittest {
  * This function is not generally very useful; it's almost always better to use
  * the faster functions nextup() or nextdown() instead.
  *
- * Not implemented:
+ * IEEE 754 requirements not implemented:
  * The FE_INEXACT and FE_OVERFLOW exceptions will be raised if x is finite and
  * the function result is infinite. The FE_INEXACT and FE_UNDERFLOW
  * exceptions will be raised if the function value is subnormal, and x is
