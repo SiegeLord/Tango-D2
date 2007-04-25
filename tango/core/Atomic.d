@@ -278,11 +278,21 @@ else version( D_InlineAsm_X86 )
 {
     version( X86 )
     {
+        version( BuildInfo )
+        {
+            pragma( msg, "tango.core.Atomic: using IA-32 inline asm" );
+        }
+
         version = Has32BitOps;
         version = Has64BitCAS;
     }
     version( X86_64 )
     {
+        version( BuildInfo )
+        {
+            pragma( msg, "tango.core.Atomic: using AMD64 inline asm" );
+        }
+
         version = Has64BitOps;
     }
 
@@ -306,11 +316,55 @@ else version( D_InlineAsm_X86 )
 
 
         ////////////////////////////////////////////////////////////////////////
-        // Atomic Load
+        // x86 Synchronization Requirements
         ////////////////////////////////////////////////////////////////////////
 
 
-        template doAtomicLoad( bool membar, T )
+        // NOTE: While x86 loads have acquire semantics for stores, it appears
+        //       that independent loads may be reordered by some processors
+        //       (notably the AMD64).  This implies that the hoist-load barrier
+        //       op requires an ordering instruction, which also extends this
+        //       requirement to acquire ops (though hoist-store should not need
+        //       one if support is added for this later).  However, since no
+        //       modern architectures will reorder dependent loads to occur
+        //       before the load they depend on (except the Alpha), raw loads
+        //       are actually a possible means of ordering specific sequences
+        //       of loads in some instances.  The original atomic<>
+        //       implementation provides a 'ddhlb' ordering specifier for
+        //       data-dependent loads to handle this situation, but as there
+        //       are no plans to support the Alpha there is no reason to add
+        //       that option here.
+        //
+        //       For reference, the old behavior (acquire semantics for loads)
+        //       required a memory barrier if: ms == msync.seq || isSinkOp!(ms)
+        template needsLoadBarrier( msync ms )
+        {
+            const bool needsLoadBarrier = ms != msync.raw;
+        }
+
+
+        // NOTE: x86 stores implicitly have release semantics so a membar is only
+        //       necessary on acquires.
+        template needsStoreBarrier( msync ms )
+        {
+            const bool needsStoreBarrier = ms == msync.seq || isHoistOp!(ms);
+        }
+    }
+
+
+    ////////////////////////////////////////////////////////////////////////////
+    // Atomic Load
+    ////////////////////////////////////////////////////////////////////////////
+
+
+    template atomicLoad( msync ms = msync.seq, T )
+    {
+        T atomicLoad( inout T val )
+        in
+        {
+            assert( atomicValueIsProperlyAligned!(T)( cast(size_t) &val ) );
+        }
+        body
         {
             static if( T.sizeof == byte.sizeof )
             {
@@ -319,30 +373,22 @@ else version( D_InlineAsm_X86 )
                 ////////////////////////////////////////////////////////////////
 
 
-                T doAtomicLoad( inout T val )
-                in
+                static if( needsLoadBarrier!(ms) )
                 {
-                    assert( atomicValueIsProperlyAligned!(T)( cast(size_t) &val ) );
-                }
-                body
-                {
-                    static if( membar )
+                    volatile asm
                     {
-                        volatile asm
-                        {
-                            mov BL, 42;
-                            mov AL, 42;
-                            mov ECX, val;
-                            lock;
-                            cmpxchg [ECX], BL;
-                        }
+                        mov BL, 42;
+                        mov AL, 42;
+                        mov ECX, val;
+                        lock;
+                        cmpxchg [ECX], BL;
                     }
-                    else
+                }
+                else
+                {
+                    volatile
                     {
-                        volatile
-                        {
-                            return val;
-                        }
+                        return val;
                     }
                 }
             }
@@ -352,31 +398,22 @@ else version( D_InlineAsm_X86 )
                 // 2 Byte Load
                 ////////////////////////////////////////////////////////////////
 
-
-                T doAtomicLoad( inout T val )
-                in
+                static if( needsLoadBarrier!(ms) )
                 {
-                    assert( atomicValueIsProperlyAligned!(T)( cast(size_t) &val ) );
-                }
-                body
-                {
-                    static if( membar )
+                    volatile asm
                     {
-                        volatile asm
-                        {
-                            mov BX, 42;
-                            mov AX, 42;
-                            mov ECX, val;
-                            lock;
-                            cmpxchg [ECX], BX;
-                        }
+                        mov BX, 42;
+                        mov AX, 42;
+                        mov ECX, val;
+                        lock;
+                        cmpxchg [ECX], BX;
                     }
-                    else
+                }
+                else
+                {
+                    volatile
                     {
-                        volatile
-                        {
-                            return val;
-                        }
+                        return val;
                     }
                 }
             }
@@ -387,30 +424,22 @@ else version( D_InlineAsm_X86 )
                 ////////////////////////////////////////////////////////////////
 
 
-                T doAtomicLoad( inout T val )
-                in
+                static if( needsLoadBarrier!(ms) )
                 {
-                    assert( atomicValueIsProperlyAligned!(T)( cast(size_t) &val ) );
-                }
-                body
-                {
-                    static if( membar )
+                    volatile asm
                     {
-                        volatile asm
-                        {
-                            mov EBX, 42;
-                            mov EAX, 42;
-                            mov ECX, val;
-                            lock;
-                            cmpxchg [ECX], EBX;
-                        }
+                        mov EBX, 42;
+                        mov EAX, 42;
+                        mov ECX, val;
+                        lock;
+                        cmpxchg [ECX], EBX;
                     }
-                    else
+                }
+                else
+                {
+                    volatile
                     {
-                        volatile
-                        {
-                            return val;
-                        }
+                        return val;
                     }
                 }
             }
@@ -428,28 +457,20 @@ else version( D_InlineAsm_X86 )
                     ////////////////////////////////////////////////////////////
 
 
-                    T doAtomicLoad( inout T val )
-                    in
+                    static if( needsLoadBarrier!(ms) )
                     {
-                        assert( atomicValueIsProperlyAligned!(T)( cast(size_t) &val ) );
-                    }
-                    body
-                    {
-                        static if( membar )
+                        volatile asm
                         {
-                            volatile asm
-                            {
-                                mov RAX, val;
-                                lock;
-                                mov RAX, [RAX];
-                            }
+                            mov RAX, val;
+                            lock;
+                            mov RAX, [RAX];
                         }
-                        else
+                    }
+                    else
+                    {
+                        volatile
                         {
-                            volatile
-                            {
-                                return val;
-                            }
+                            return val;
                         }
                     }
                 }
@@ -475,14 +496,22 @@ else version( D_InlineAsm_X86 )
                 static assert( false );
             }
         }
+    }
 
 
-        ////////////////////////////////////////////////////////////////////////
-        // Atomic Store
-        ////////////////////////////////////////////////////////////////////////
+    ////////////////////////////////////////////////////////////////////////////
+    // Atomic Store
+    ////////////////////////////////////////////////////////////////////////////
 
 
-        template doAtomicStore( bool membar, T )
+    template atomicStore( msync ms = msync.seq, T )
+    {
+        void atomicStore( inout T val, T newval )
+        in
+        {
+            assert( atomicValueIsProperlyAligned!(T)( cast(size_t) &val ) );
+        }
+        body
         {
             static if( T.sizeof == byte.sizeof )
             {
@@ -491,31 +520,23 @@ else version( D_InlineAsm_X86 )
                 ////////////////////////////////////////////////////////////////
 
 
-                void doAtomicStore( inout T val, T newval )
-                in
+                static if( needsStoreBarrier!(ms) )
                 {
-                    assert( atomicValueIsProperlyAligned!(T)( cast(size_t) &val ) );
-                }
-                body
-                {
-                    static if( membar )
+                    volatile asm
                     {
-                        volatile asm
-                        {
-                            mov EAX, val;
-                            mov BL, newval;
-                            lock;
-                            xchg [EAX], BL;
-                        }
+                        mov EAX, val;
+                        mov BL, newval;
+                        lock;
+                        xchg [EAX], BL;
                     }
-                    else
+                }
+                else
+                {
+                    volatile asm
                     {
-                        volatile asm
-                        {
-                            mov EAX, val;
-                            mov BL, newval;
-                            mov [EAX], BL;
-                        }
+                        mov EAX, val;
+                        mov BL, newval;
+                        mov [EAX], BL;
                     }
                 }
             }
@@ -526,31 +547,23 @@ else version( D_InlineAsm_X86 )
                 ////////////////////////////////////////////////////////////////
 
 
-                void doAtomicStore( inout T val, T newval )
-                in
+                static if( needsStoreBarrier!(ms) )
                 {
-                    assert( atomicValueIsProperlyAligned!(T)( cast(size_t) &val ) );
-                }
-                body
-                {
-                    static if( membar )
+                    volatile asm
                     {
-                        volatile asm
-                        {
-                            mov EAX, val;
-                            mov BX, newval;
-                            lock;
-                            xchg [EAX], BX;
-                        }
+                        mov EAX, val;
+                        mov BX, newval;
+                        lock;
+                        xchg [EAX], BX;
                     }
-                    else
+                }
+                else
+                {
+                    volatile asm
                     {
-                        volatile asm
-                        {
-                            mov EAX, val;
-                            mov BX, newval;
-                            mov [EAX], BX;
-                        }
+                        mov EAX, val;
+                        mov BX, newval;
+                        mov [EAX], BX;
                     }
                 }
             }
@@ -561,31 +574,23 @@ else version( D_InlineAsm_X86 )
                 ////////////////////////////////////////////////////////////////
 
 
-                void doAtomicStore( inout T val, T newval )
-                in
+                static if( needsStoreBarrier!(ms) )
                 {
-                    assert( atomicValueIsProperlyAligned!(T)( cast(size_t) &val ) );
-                }
-                body
-                {
-                    static if( membar )
+                    volatile asm
                     {
-                        volatile asm
-                        {
-                            mov EAX, val;
-                            mov EBX, newval;
-                            lock;
-                            xchg [EAX], EBX;
-                        }
+                        mov EAX, val;
+                        mov EBX, newval;
+                        lock;
+                        xchg [EAX], EBX;
                     }
-                    else
+                }
+                else
+                {
+                    volatile asm
                     {
-                        volatile asm
-                        {
-                            mov EAX, val;
-                            mov EBX, newval;
-                            mov [EAX], EBX;
-                        }
+                        mov EAX, val;
+                        mov EBX, newval;
+                        mov [EAX], EBX;
                     }
                 }
             }
@@ -603,31 +608,23 @@ else version( D_InlineAsm_X86 )
                     ////////////////////////////////////////////////////////////
 
 
-                    void doAtomicStore( inout T val, T newval )
-                    in
+                    static if( needsStoreBarrier!(ms) )
                     {
-                        assert( atomicValueIsProperlyAligned!(T)( cast(size_t) &val ) );
-                    }
-                    body
-                    {
-                        static if( membar )
+                        volatile asm
                         {
-                            volatile asm
-                            {
-                                mov RAX, val;
-                                mov RBX, newval;
-                                lock;
-                                xchg [RAX], RBX;
-                            }
+                            mov RAX, val;
+                            mov RBX, newval;
+                            lock;
+                            xchg [RAX], RBX;
                         }
-                        else
+                    }
+                    else
+                    {
+                        volatile asm
                         {
-                            volatile asm
-                            {
-                                mov RAX, val;
-                                mov RBX, newval;
-                                mov [RAX], RBX;
-                            }
+                            mov RAX, val;
+                            mov RBX, newval;
+                            mov [RAX], RBX;
                         }
                     }
                 }
@@ -653,14 +650,24 @@ else version( D_InlineAsm_X86 )
                 static assert( false );
             }
         }
+    }
 
 
-        ////////////////////////////////////////////////////////////////////////
-        // Atomic Store If
-        ////////////////////////////////////////////////////////////////////////
+    ////////////////////////////////////////////////////////////////////////////
+    // Atomic Store If
+    ////////////////////////////////////////////////////////////////////////////
 
 
-        template doAtomicStoreIf( bool membar, T )
+    template atomicStoreIf( msync ms = msync.seq, T )
+    {
+        bool atomicStoreIf( inout T val, T newval, T equalTo )
+        in
+        {
+            // NOTE: 32 bit x86 systems support 8 byte CAS, which only requires
+            //       4 byte alignment, so use size_t as the align type here.
+            assert( atomicValueIsProperlyAligned!(size_t)( cast(size_t) &val ) );
+        }
+        body
         {
             static if( T.sizeof == byte.sizeof )
             {
@@ -669,37 +676,14 @@ else version( D_InlineAsm_X86 )
                 ////////////////////////////////////////////////////////////////
 
 
-                bool doAtomicStoreIf( inout T val, T newval, T equalTo )
-                in
+                volatile asm
                 {
-                    assert( atomicValueIsProperlyAligned!(T)( cast(size_t) &val ) );
-                }
-                body
-                {
-                    static if( membar )
-                    {
-                        volatile asm
-                        {
-                            mov BL, newval;
-                            mov AL, equalTo;
-                            mov ECX, val;
-                            lock;
-                            cmpxchg [ECX], BL;
-                            setz AL;
-                        }
-                    }
-                    else
-                    {
-                        volatile asm
-                        {
-                            mov BL, newval;
-                            mov AL, equalTo;
-                            mov ECX, val;
-                            lock; // lock needed to make this op atomic
-                            cmpxchg [ECX], BL;
-                            setz AL;
-                        }
-                    }
+                    mov BL, newval;
+                    mov AL, equalTo;
+                    mov ECX, val;
+                    lock; // lock always needed to make this op atomic
+                    cmpxchg [ECX], BL;
+                    setz AL;
                 }
             }
             else static if( T.sizeof == short.sizeof )
@@ -709,37 +693,14 @@ else version( D_InlineAsm_X86 )
                 ////////////////////////////////////////////////////////////////
 
 
-                bool doAtomicStoreIf( inout T val, T newval, T equalTo )
-                in
+                volatile asm
                 {
-                    assert( atomicValueIsProperlyAligned!(T)( cast(size_t) &val ) );
-                }
-                body
-                {
-                    static if( membar )
-                    {
-                        volatile asm
-                        {
-                            mov BX, newval;
-                            mov AX, equalTo;
-                            mov ECX, val;
-                            lock;
-                            cmpxchg [ECX], BX;
-                            setz AL;
-                        }
-                    }
-                    else
-                    {
-                        volatile asm
-                        {
-                            mov BX, newval;
-                            mov AX, equalTo;
-                            mov ECX, val;
-                            lock; // lock needed to make this op atomic
-                            cmpxchg [ECX], BX;
-                            setz AL;
-                        }
-                    }
+                    mov BX, newval;
+                    mov AX, equalTo;
+                    mov ECX, val;
+                    lock; // lock always needed to make this op atomic
+                    cmpxchg [ECX], BX;
+                    setz AL;
                 }
             }
             else static if( T.sizeof == int.sizeof )
@@ -749,37 +710,14 @@ else version( D_InlineAsm_X86 )
                 ////////////////////////////////////////////////////////////////
 
 
-                bool doAtomicStoreIf( inout T val, T newval, T equalTo )
-                in
+                volatile asm
                 {
-                    assert( atomicValueIsProperlyAligned!(T)( cast(size_t) &val ) );
-                }
-                body
-                {
-                    static if( membar )
-                    {
-                        volatile asm
-                        {
-                            mov EBX, newval;
-                            mov EAX, equalTo;
-                            mov ECX, val;
-                            lock;
-                            cmpxchg [ECX], EBX;
-                            setz AL;
-                        }
-                    }
-                    else
-                    {
-                        volatile asm
-                        {
-                            mov EBX, newval;
-                            mov EAX, equalTo;
-                            mov ECX, val;
-                            lock; // lock needed to make this op atomic
-                            cmpxchg [ECX], EBX;
-                            setz AL;
-                        }
-                    }
+                    mov EBX, newval;
+                    mov EAX, equalTo;
+                    mov ECX, val;
+                    lock; // lock always needed to make this op atomic
+                    cmpxchg [ECX], EBX;
+                    setz AL;
                 }
             }
             else static if( T.sizeof == long.sizeof )
@@ -796,37 +734,14 @@ else version( D_InlineAsm_X86 )
                     ////////////////////////////////////////////////////////////
 
 
-                    bool doAtomicStoreIf( inout T val, T newval, T equalTo )
-                    in
+                    volatile asm
                     {
-                        assert( atomicValueIsProperlyAligned!(T)( cast(size_t) &val ) );
-                    }
-                    body
-                    {
-                        static if( membar )
-                        {
-                            volatile asm
-                            {
-                                mov RBX, newval;
-                                mov RAX, equalTo;
-                                mov RCX, val;
-                                lock;
-                                cmpxchg [RCX], RBX;
-                                setz AL;
-                            }
-                        }
-                        else
-                        {
-                            volatile asm
-                            {
-                                mov RBX, newval;
-                                mov RAX, equalTo;
-                                mov RCX, val;
-                                lock; // lock needed to make this op atomic
-                                cmpxchg [RCX], RBX;
-                                setz AL;
-                            }
-                        }
+                        mov RBX, newval;
+                        mov RAX, equalTo;
+                        mov RCX, val;
+                        lock; // lock always needed to make this op atomic
+                        cmpxchg [RCX], RBX;
+                        setz AL;
                     }
                 }
                 else version( Has64BitCAS )
@@ -836,48 +751,18 @@ else version( D_InlineAsm_X86 )
                     ////////////////////////////////////////////////////////////
 
 
-                    bool doAtomicStoreIf( inout T val, T newval, T equalTo )
-                    in
+                    volatile asm
                     {
-                        // NOTE: Since DWCAS uses two 4 byte registers instead
-                        //       of a single 8 byte register, val must only be
-                        //       aligned on a 4 byte boundry.
-                        assert( atomicValueIsProperlyAligned!(int)( cast(size_t) &val ) );
-                    }
-                    body
-                    {
-                        static if( membar )
-                        {
-                            volatile asm
-                            {
-                                lea EDI, newval;
-                                mov EBX, [EDI];
-                                mov ECX, 4[EDI];
-                                lea EDI, equalTo;
-                                mov EAX, [EDI];
-                                mov EDX, 4[EDI];
-                                mov EDI, val;
-                                lock;
-                                cmpxch8b [EDI];
-                                setz AL;
-                            }
-                        }
-                        else
-                        {
-                            volatile asm
-                            {
-                                lea EDI, newval;
-                                mov EBX, [EDI];
-                                mov ECX, 4[EDI];
-                                lea EDI, equalTo;
-                                mov EAX, [EDI];
-                                mov EDX, 4[EDI];
-                                mov EDI, val;
-                                lock; // lock needed to make this op atomic
-                                cmpxch8b [EDI];
-                                setz AL;
-                            }
-                        }
+                        lea EDI, newval;
+                        mov EBX, [EDI];
+                        mov ECX, 4[EDI];
+                        lea EDI, equalTo;
+                        mov EAX, [EDI];
+                        mov EDX, 4[EDI];
+                        mov EDI, val;
+                        lock; // lock always needed to make this op atomic
+                        cmpxch8b [EDI];
+                        setz AL;
                     }
                 }
             }
@@ -892,20 +777,29 @@ else version( D_InlineAsm_X86 )
                 static assert( false );
             }
         }
+    }
 
 
-        ////////////////////////////////////////////////////////////////////////
-        // Atomic Increment
-        ////////////////////////////////////////////////////////////////////////
+    ////////////////////////////////////////////////////////////////////////////
+    // Atomic Increment
+    ////////////////////////////////////////////////////////////////////////////
 
 
-        template doAtomicIncrement( bool membar, T )
+    template atomicIncrement( msync ms = msync.seq, T )
+    {
+        //
+        // NOTE: This operation is only valid for integer or pointer types
+        //
+        static assert( isValidNumericType!(T) );
+
+
+        T atomicIncrement( inout T val )
+        in
         {
-            //
-            // NOTE: This operation is only valid for integer or pointer types
-            //
-            static assert( isValidNumericType!(T) );
-
+            assert( atomicValueIsProperlyAligned!(T)( cast(size_t) &val ) );
+        }
+        body
+        {
             static if( T.sizeof == byte.sizeof )
             {
                 ////////////////////////////////////////////////////////////////
@@ -913,33 +807,12 @@ else version( D_InlineAsm_X86 )
                 ////////////////////////////////////////////////////////////////
 
 
-                T doAtomicIncrement( inout T val )
-                in
+                volatile asm
                 {
-                    assert( atomicValueIsProperlyAligned!(T)( cast(size_t) &val ) );
-                }
-                body
-                {
-                    static if( membar )
-                    {
-                        volatile asm
-                        {
-                            mov EAX, val;
-                            lock;
-                            inc [EAX];
-                            mov AL, [EAX];
-                        }
-                    }
-                    else
-                    {
-                        volatile asm
-                        {
-                            mov EAX, val;
-                            lock; // lock needed to make this op atomic
-                            inc [EAX];
-                            mov AL, [EAX];
-                        }
-                    }
+                    mov EAX, val;
+                    lock; // lock always needed to make this op atomic
+                    inc [EAX];
+                    mov AL, [EAX];
                 }
             }
             else static if( T.sizeof == short.sizeof )
@@ -949,33 +822,12 @@ else version( D_InlineAsm_X86 )
                 ////////////////////////////////////////////////////////////////
 
 
-                T doAtomicIncrement( inout T val )
-                in
+                volatile asm
                 {
-                    assert( atomicValueIsProperlyAligned!(T)( cast(size_t) &val ) );
-                }
-                body
-                {
-                    static if( membar )
-                    {
-                        volatile asm
-                        {
-                            mov EAX, val;
-                            lock;
-                            inc [EAX];
-                            mov AX, [EAX];
-                        }
-                    }
-                    else
-                    {
-                        volatile asm
-                        {
-                            mov EAX, val;
-                            lock; // lock needed to make this op atomic
-                            inc [EAX];
-                            mov AX, [EAX];
-                        }
-                    }
+                    mov EAX, val;
+                    lock; // lock always needed to make this op atomic
+                    inc [EAX];
+                    mov AX, [EAX];
                 }
             }
             else static if( T.sizeof == int.sizeof )
@@ -985,33 +837,12 @@ else version( D_InlineAsm_X86 )
                 ////////////////////////////////////////////////////////////////
 
 
-                T doAtomicIncrement( inout T val )
-                in
+                volatile asm
                 {
-                    assert( atomicValueIsProperlyAligned!(T)( cast(size_t) &val ) );
-                }
-                body
-                {
-                    static if( membar )
-                    {
-                        volatile asm
-                        {
-                            mov EAX, val;
-                            lock;
-                            inc [EAX];
-                            mov EAX, [EAX];
-                        }
-                    }
-                    else
-                    {
-                        volatile asm
-                        {
-                            mov EAX, val;
-                            lock; // lock needed to make this op atomic
-                            inc [EAX];
-                            mov EAX, [EAX];
-                        }
-                    }
+                    mov EAX, val;
+                    lock; // lock always needed to make this op atomic
+                    inc [EAX];
+                    mov EAX, [EAX];
                 }
             }
             else static if( T.sizeof == long.sizeof )
@@ -1028,33 +859,12 @@ else version( D_InlineAsm_X86 )
                     ////////////////////////////////////////////////////////////
 
 
-                    T doAtomicIncrement( inout T val )
-                    in
+                    volatile asm
                     {
-                        assert( atomicValueIsProperlyAligned!(T)( cast(size_t) &val ) );
-                    }
-                    body
-                    {
-                        static if( membar )
-                        {
-                            volatile asm
-                            {
-                                mov RAX, val;
-                                lock;
-                                inc [RAX];
-                                mov RAX, [RAX];
-                            }
-                        }
-                        else
-                        {
-                            volatile asm
-                            {
-                                mov RAX, val;
-                                lock; // lock needed to make this op atomic
-                                inc [RAX];
-                                mov RAX, [RAX];
-                            }
-                        }
+                        mov RAX, val;
+                        lock; // lock always needed to make this op atomic
+                        inc [RAX];
+                        mov RAX, [RAX];
                     }
                 }
                 else
@@ -1079,20 +889,29 @@ else version( D_InlineAsm_X86 )
                 static assert( false );
             }
         }
+    }
 
 
-        ////////////////////////////////////////////////////////////////////////
-        // Atomic Decrement
-        ////////////////////////////////////////////////////////////////////////
+    ////////////////////////////////////////////////////////////////////////////
+    // Atomic Decrement
+    ////////////////////////////////////////////////////////////////////////////
 
 
-        template doAtomicDecrement( bool membar, T )
+    template atomicDecrement( msync ms = msync.seq, T )
+    {
+        //
+        // NOTE: This operation is only valid for integer or pointer types
+        //
+        static assert( isValidNumericType!(T) );
+
+
+        T atomicDecrement( inout T val )
+        in
         {
-            //
-            // NOTE: This operation is only valid for integer or pointer types
-            //
-            static assert( isValidNumericType!(T) );
-
+            assert( atomicValueIsProperlyAligned!(T)( cast(size_t) &val ) );
+        }
+        body
+        {
             static if( T.sizeof == byte.sizeof )
             {
                 ////////////////////////////////////////////////////////////////
@@ -1100,33 +919,12 @@ else version( D_InlineAsm_X86 )
                 ////////////////////////////////////////////////////////////////
 
 
-                T doAtomicDecrement( inout T val )
-                in
+                volatile asm
                 {
-                    assert( atomicValueIsProperlyAligned!(T)( cast(size_t) &val ) );
-                }
-                body
-                {
-                    static if( membar )
-                    {
-                        volatile asm
-                        {
-                            mov EAX, val;
-                            lock;
-                            dec [EAX];
-                            mov AL, [EAX];
-                        }
-                    }
-                    else
-                    {
-                        volatile asm
-                        {
-                            mov EAX, val;
-                            lock; // lock needed to make this op atomic
-                            dec [EAX];
-                            mov AL, [EAX];
-                        }
-                    }
+                    mov EAX, val;
+                    lock; // lock always needed to make this op atomic
+                    dec [EAX];
+                    mov AL, [EAX];
                 }
             }
             else static if( T.sizeof == short.sizeof )
@@ -1136,33 +934,12 @@ else version( D_InlineAsm_X86 )
                 ////////////////////////////////////////////////////////////////
 
 
-                T doAtomicDecrement( inout T val )
-                in
+                volatile asm
                 {
-                    assert( atomicValueIsProperlyAligned!(T)( cast(size_t) &val ) );
-                }
-                body
-                {
-                    static if( membar )
-                    {
-                        volatile asm
-                        {
-                            mov EAX, val;
-                            lock;
-                            dec [EAX];
-                            mov AX, [EAX];
-                        }
-                    }
-                    else
-                    {
-                        volatile asm
-                        {
-                            mov EAX, val;
-                            lock; // lock needed to make this op atomic
-                            dec [EAX];
-                            mov AX, [EAX];
-                        }
-                    }
+                    mov EAX, val;
+                    lock; // lock always needed to make this op atomic
+                    dec [EAX];
+                    mov AX, [EAX];
                 }
             }
             else static if( T.sizeof == int.sizeof )
@@ -1172,33 +949,12 @@ else version( D_InlineAsm_X86 )
                 ////////////////////////////////////////////////////////////////
 
 
-                T doAtomicDecrement( inout T val )
-                in
+                volatile asm
                 {
-                    assert( atomicValueIsProperlyAligned!(T)( cast(size_t) &val ) );
-                }
-                body
-                {
-                    static if( membar )
-                    {
-                        volatile asm
-                        {
-                            mov EAX, val;
-                            lock;
-                            dec [EAX];
-                            mov EAX, [EAX];
-                        }
-                    }
-                    else
-                    {
-                        volatile asm
-                        {
-                            mov EAX, val;
-                            lock; // lock needed to make this op atomic
-                            dec [EAX];
-                            mov EAX, [EAX];
-                        }
-                    }
+                    mov EAX, val;
+                    lock; // lock always needed to make this op atomic
+                    dec [EAX];
+                    mov EAX, [EAX];
                 }
             }
             else static if( T.sizeof == long.sizeof )
@@ -1215,40 +971,19 @@ else version( D_InlineAsm_X86 )
                     ////////////////////////////////////////////////////////////
 
 
-                    T doAtomicDecrement( inout T val )
-                    in
+                    volatile asm
                     {
-                        assert( atomicValueIsProperlyAligned!(T)( cast(size_t) &val ) );
-                    }
-                    body
-                    {
-                        static if( membar )
-                        {
-                            volatile asm
-                            {
-                                mov RAX, val;
-                                lock;
-                                dec [RAX];
-                                mov RAX, [RAX];
-                            }
-                        }
-                        else
-                        {
-                            volatile asm
-                            {
-                                mov RAX, val;
-                                lock; // lock needed to make this op atomic
-                                dec [RAX];
-                                mov RAX, [RAX];
-                            }
-                        }
+                        mov RAX, val;
+                        lock; // lock always needed to make this op atomic
+                        dec [RAX];
+                        mov RAX, [RAX];
                     }
                 }
                 else
                 {
-                    ////////////////////////////////////////////////////////////////
+                    ////////////////////////////////////////////////////////////
                     // 8 Byte Decrement on 32-Bit Processor
-                    ////////////////////////////////////////////////////////////////
+                    ////////////////////////////////////////////////////////////
 
 
                     pragma( msg, "This operation is only available on 64-bit platforms." );
@@ -1267,74 +1002,283 @@ else version( D_InlineAsm_X86 )
             }
         }
     }
+}
+else
+{
+    version( BuildInfo )
+    {
+        pragma( msg, "tango.core.Atomic: using synchronized ops" );
+    }
+
+    private
+    {
+        ////////////////////////////////////////////////////////////////////////
+        // Default Value Requirements
+        ////////////////////////////////////////////////////////////////////////
+
+
+        template atomicValueIsProperlyAligned( T )
+        {
+            bool atomicValueIsProperlyAligned( size_t addr )
+            {
+                return addr % T.sizeof == 0;
+            }
+        }
+
+
+        ////////////////////////////////////////////////////////////////////////
+        // Default Synchronization Requirements
+        ////////////////////////////////////////////////////////////////////////
+
+
+        template needsLoadBarrier( msync ms )
+        {
+            const bool needsLoadBarrier = ms != msync.raw;
+        }
+
+
+        template needsStoreBarrier( msync ms )
+        {
+            const bool needsStoreBarrier = ms != msync.raw;
+        }
+    }
 
 
     ////////////////////////////////////////////////////////////////////////////
-    // x86 Public Atomic Functions
+    // Atomic Load
     ////////////////////////////////////////////////////////////////////////////
 
-    /+
-    //
-    // NOTE: x86 loads implicitly have acquire semantics so a membar is only
-    //       necessary on release.
-    //
 
-    template atomicLoad( msync ms : msync.raw, T ) { alias doAtomicLoad!(isSinkOp!(ms),T) atomicLoad; }
-    template atomicLoad( msync ms : msync.hlb, T ) { alias doAtomicLoad!(isSinkOp!(ms),T) atomicLoad; }
-    template atomicLoad( msync ms : msync.acq, T ) { alias doAtomicLoad!(isSinkOp!(ms),T) atomicLoad; }
-    template atomicLoad( msync ms : msync.seq, T ) { alias doAtomicLoad!(true,T)          atomicLoad; }
-    +/
+    template atomicLoad( msync ms = msync.seq, T )
+    {
+        T atomicLoad( inout T val )
+        in
+        {
+            assert( atomicValueIsProperlyAligned!(T)( cast(size_t) &val ) );
+        }
+        body
+        {
+            static if( T.sizeof <= (void*).sizeof )
+            {
+                ////////////////////////////////////////////////////////////////
+                // <= (void*).sizeof Byte Load
+                ////////////////////////////////////////////////////////////////
 
-    //
-    // NOTE: The above statement is not strictly true.  While x86 loads have
-    //       acquire semantics for stores, it appears that independent loads
-    //       may be reordered by some processors (notably the AMD64).  This
-    //       implies that the hoist-load barrier op requires an ordering
-    //       instruction, which also extends this requirement to acquire ops
-    //       (though hoist-store should not need one if support is added for
-    //       this later).  However, since no modern architectures will reorder
-    //       dependent loads to occur before the load they depend on (except
-    //       the Alpha), raw loads are actually a possible means of ordering
-    //       specific sequences of loads in some instances.  The original
-    //       atomic<> implementation provides a 'ddhlb' ordering specifier for
-    //       data-dependent loads to handle this situation, but as there are no
-    //       plans to support the Alpha there is no reason to add that option
-    //       here.
-    //
 
-    template atomicLoad( msync ms : msync.raw, T ) { alias doAtomicLoad!(false,T) atomicLoad; }
-    template atomicLoad( msync ms : msync.hlb, T ) { alias doAtomicLoad!(true,T)  atomicLoad; }
-    template atomicLoad( msync ms : msync.acq, T ) { alias doAtomicLoad!(true,T)  atomicLoad; }
-    template atomicLoad( msync ms : msync.seq, T ) { alias doAtomicLoad!(true,T)  atomicLoad; }
+                static if( needsLoadBarrier!(ms) )
+                {
+                    synchronized
+                    {
+                        return val;
+                    }
+                }
+                else
+                {
+                    volatile
+                    {
+                        return val;
+                    }
+                }
+            }
+            else
+            {
+                ////////////////////////////////////////////////////////////////
+                // > (void*).sizeof Byte Type
+                ////////////////////////////////////////////////////////////////
 
-    //
-    // NOTE: x86 stores implicitly have release semantics so a membar is only
-    //       necessary on acquires.
-    //
 
-    template atomicStore( msync ms : msync.raw, T ) { alias doAtomicStore!(isHoistOp!(ms),T) atomicStore; }
-    template atomicStore( msync ms : msync.ssb, T ) { alias doAtomicStore!(isHoistOp!(ms),T) atomicStore; }
-    template atomicStore( msync ms : msync.acq, T ) { alias doAtomicStore!(isHoistOp!(ms),T) atomicStore; }
-    template atomicStore( msync ms : msync.rel, T ) { alias doAtomicStore!(isHoistOp!(ms),T) atomicStore; }
-    template atomicStore( msync ms : msync.seq, T ) { alias doAtomicStore!(true,T)           atomicStore; }
+                pragma( msg, "Invalid template type specified." );
+                static assert( false );
+            }
+        }
+    }
 
-    template atomicStoreIf( msync ms : msync.raw, T ) { alias doAtomicStoreIf!(ms!=msync.raw,T) atomicStoreIf; }
-    template atomicStoreIf( msync ms : msync.ssb, T ) { alias doAtomicStoreIf!(ms!=msync.raw,T) atomicStoreIf; }
-    template atomicStoreIf( msync ms : msync.acq, T ) { alias doAtomicStoreIf!(ms!=msync.raw,T) atomicStoreIf; }
-    template atomicStoreIf( msync ms : msync.rel, T ) { alias doAtomicStoreIf!(ms!=msync.raw,T) atomicStoreIf; }
-    template atomicStoreIf( msync ms : msync.seq, T ) { alias doAtomicStoreIf!(true,T)          atomicStoreIf; }
 
-    template atomicIncrement( msync ms : msync.raw, T ) { alias doAtomicIncrement!(ms!=msync.raw,T) atomicIncrement; }
-    template atomicIncrement( msync ms : msync.ssb, T ) { alias doAtomicIncrement!(ms!=msync.raw,T) atomicIncrement; }
-    template atomicIncrement( msync ms : msync.acq, T ) { alias doAtomicIncrement!(ms!=msync.raw,T) atomicIncrement; }
-    template atomicIncrement( msync ms : msync.rel, T ) { alias doAtomicIncrement!(ms!=msync.raw,T) atomicIncrement; }
-    template atomicIncrement( msync ms : msync.seq, T ) { alias doAtomicIncrement!(true,T)          atomicIncrement; }
+    ////////////////////////////////////////////////////////////////////////////
+    // Atomic Store
+    ////////////////////////////////////////////////////////////////////////////
 
-    template atomicDecrement( msync ms : msync.raw, T ) { alias doAtomicDecrement!(ms!=msync.raw,T) atomicDecrement; }
-    template atomicDecrement( msync ms : msync.ssb, T ) { alias doAtomicDecrement!(ms!=msync.raw,T) atomicDecrement; }
-    template atomicDecrement( msync ms : msync.acq, T ) { alias doAtomicDecrement!(ms!=msync.raw,T) atomicDecrement; }
-    template atomicDecrement( msync ms : msync.rel, T ) { alias doAtomicDecrement!(ms!=msync.raw,T) atomicDecrement; }
-    template atomicDecrement( msync ms : msync.seq, T ) { alias doAtomicDecrement!(true,T)          atomicDecrement; }
+
+    template atomicStore( msync ms = msync.seq, T )
+    {
+        void atomicStore( inout T val, T newval )
+        in
+        {
+            assert( atomicValueIsProperlyAligned!(T)( cast(size_t) &val ) );
+        }
+        body
+        {
+            static if( T.sizeof <= (void*).sizeof )
+            {
+                ////////////////////////////////////////////////////////////////
+                // <= (void*).sizeof Byte Store
+                ////////////////////////////////////////////////////////////////
+
+
+                static if( needsStoreBarrier!(ms) )
+                {
+                    synchronized
+                    {
+                        val = newval;
+                    }
+                }
+                else
+                {
+                    volatile
+                    {
+                        val = newval;
+                    }
+                }
+            }
+            else
+            {
+                ////////////////////////////////////////////////////////////////
+                // > (void*).sizeof Byte Type
+                ////////////////////////////////////////////////////////////////
+
+
+                pragma( msg, "Invalid template type specified." );
+                static assert( false );
+            }
+        }
+    }
+
+
+    ////////////////////////////////////////////////////////////////////////////
+    // Atomic Store If
+    ////////////////////////////////////////////////////////////////////////////
+
+
+    template atomicStoreIf( msync ms = msync.seq, T )
+    {
+        bool atomicStoreIf( inout T val, T newval, T equalTo )
+        in
+        {
+            assert( atomicValueIsProperlyAligned!(T)( cast(size_t) &val ) );
+        }
+        body
+        {
+            static if( T.sizeof <= (void*).sizeof )
+            {
+                ////////////////////////////////////////////////////////////////
+                // <= (void*).sizeof Byte StoreIf
+                ////////////////////////////////////////////////////////////////
+
+
+                synchronized
+                {
+                    if( val == equalTo )
+                    {
+                        val = newval;
+                        return true;
+                    }
+                    return false;
+                }
+            }
+            else
+            {
+                ////////////////////////////////////////////////////////////////
+                // > (void*).sizeof Byte Type
+                ////////////////////////////////////////////////////////////////
+
+
+                pragma( msg, "Invalid template type specified." );
+                static assert( false );
+            }
+        }
+    }
+
+
+    /////////////////////////////////////////////////////////////////////////////
+    // Atomic Increment
+    ////////////////////////////////////////////////////////////////////////////
+
+
+    template atomicIncrement( msync ms = msync.seq, T )
+    {
+        //
+        // NOTE: This operation is only valid for integer or pointer types
+        //
+        static assert( isValidNumericType!(T) );
+
+
+        T atomicIncrement( inout T val )
+        in
+        {
+            assert( atomicValueIsProperlyAligned!(T)( cast(size_t) &val ) );
+        }
+        body
+        {
+            static if( T.sizeof <= (void*).sizeof )
+            {
+                ////////////////////////////////////////////////////////////////
+                // <= (void*).sizeof Byte Increment
+                ////////////////////////////////////////////////////////////////
+
+
+                synchronized
+                {
+                    return ++val;
+                }
+            }
+            else
+            {
+                ////////////////////////////////////////////////////////////////
+                // > (void*).sizeof Byte Type
+                ////////////////////////////////////////////////////////////////
+
+
+                pragma( msg, "Invalid template type specified." );
+                static assert( false );
+            }
+        }
+    }
+
+
+    ////////////////////////////////////////////////////////////////////////////
+    // Atomic Decrement
+    ////////////////////////////////////////////////////////////////////////////
+
+
+    template atomicDecrement( msync ms = msync.seq, T )
+    {
+        //
+        // NOTE: This operation is only valid for integer or pointer types
+        //
+        static assert( isValidNumericType!(T) );
+
+
+        T atomicDecrement( inout T val )
+        in
+        {
+            assert( atomicValueIsProperlyAligned!(T)( cast(size_t) &val ) );
+        }
+        body
+        {
+            static if( T.sizeof <= (void*).sizeof )
+            {
+                ////////////////////////////////////////////////////////////////
+                // <= (void*).sizeof Byte Decrement
+                ////////////////////////////////////////////////////////////////
+
+
+                synchronized
+                {
+                    return --val;
+                }
+            }
+            else
+            {
+                ////////////////////////////////////////////////////////////////
+                // > (void*).sizeof Byte Type
+                ////////////////////////////////////////////////////////////////
+
+
+                pragma( msg, "Invalid template type specified." );
+                static assert( false );
+            }
+        }
+    }
 }
 
 
@@ -1361,7 +1305,7 @@ struct Atomic( T )
     ////////////////////////////////////////////////////////////////////////////
 
 
-    template load( msync ms )
+    template load( msync ms = msync.seq )
     {
         static assert( ms == msync.raw || ms == msync.hlb ||
                        ms == msync.acq || ms == msync.seq,
@@ -1386,7 +1330,7 @@ struct Atomic( T )
     ////////////////////////////////////////////////////////////////////////////
 
 
-    template store( msync ms )
+    template store( msync ms = msync.seq )
     {
         static assert( ms == msync.raw || ms == msync.ssb ||
                        ms == msync.acq || ms == msync.rel ||
@@ -1412,7 +1356,7 @@ struct Atomic( T )
     ////////////////////////////////////////////////////////////////////////////
 
 
-    template storeIf( msync ms )
+    template storeIf( msync ms = msync.seq )
     {
         static assert( ms == msync.raw || ms == msync.ssb ||
                        ms == msync.acq || ms == msync.rel ||
@@ -1452,7 +1396,7 @@ struct Atomic( T )
         ////////////////////////////////////////////////////////////////////////
 
 
-        template increment( msync ms )
+        template increment( msync ms = msync.seq )
         {
             static assert( ms == msync.raw || ms == msync.ssb ||
                            ms == msync.acq || ms == msync.rel ||
@@ -1486,7 +1430,7 @@ struct Atomic( T )
         ////////////////////////////////////////////////////////////////////////
 
 
-        template decrement( msync ms )
+        template decrement( msync ms = msync.seq )
         {
             static assert( ms == msync.raw || ms == msync.ssb ||
                            ms == msync.acq || ms == msync.rel ||
