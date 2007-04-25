@@ -164,7 +164,10 @@ class DeviceConduit : Conduit
                 /***************************************************************
 
                         Read a chunk of bytes from the file into the provided
-                        array (typically that belonging to an IBuffer)
+                        array (typically that belonging to an IBuffer). 
+
+                        Returns the number of bytes read, or Eof when there is
+                        no further data
 
                 ***************************************************************/
 
@@ -174,9 +177,13 @@ class DeviceConduit : Conduit
                         void *p = dst.ptr;
 
                         if (! ReadFile (handle, p, dst.length, &read, null))
-                              error ();
+                              // make Win32 behave like linux
+                              if (SysError.lastCode is ERROR_BROKEN_PIPE)
+                                  return Eof;
+                              else
+                                 error ();
 
-                        if (read == 0 && dst.length > 0)
+                        if (read is 0 && dst.length > 0)
                             return Eof;
                         return read;
                 }
