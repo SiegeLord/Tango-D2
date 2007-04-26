@@ -82,7 +82,6 @@ cd lib || die 1 "Tango core improperly archived"
 
 # Then install the rest of Tango
 cd $DMDDIR/bin || die 1 "Failed to cd to DMD's installed prefix"
-sed -i.bak -e 's/^DFLAGS=.*$/& libtango.a/' dmd.conf
 tail -n+$LINES $FULLNAME | tar Oxf - tango.tar.gz | gunzip -c | tar xf - ||
     die 1 "Failed to extract Tango"
 
