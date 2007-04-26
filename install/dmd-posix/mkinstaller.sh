@@ -1,4 +1,4 @@
-#!/bin/bash -x 
+#!/bin/bash 
 # Copyright (C) 2007  Gregor Richards
 # Permission is granted to do anything you please with this software.
 # This software is provided with no warranty, express or implied, within the
@@ -23,7 +23,8 @@ then
     TANGO_VERSION="r`svn info | grep '^Revision: ' | sed 's/Revision: //'`"
 elif [ -e version.txt ]
 then
-	TANGO_VERSION="`cat version.txt`"
+    TANGO_VERSION="`cat version.txt`"
+    DMD_VERSION="`cat dmdversion.txt`"
 fi
 
 
@@ -63,8 +64,12 @@ cd tmp || die 1 "Failed to cd to temporary Tango install"
 mkdir -p bin
 cp ../install/dmd-posix/uninstall.sh bin/uninstall-tango-core || die 1 "Failed to install the uninstaller"
 
+# Clear old import files
+rm -rf import/tango import/std
+
 mkdir -p import
 cp -pR ../tango import || die 1 "Failed to copy in the tango .d files"
+cp -pR ../std import || die 1 "Failed to copy in the std .d files"
 
 mkdir -p lib
 cp ../libtango.a lib || die 1 "Failed to copy in the tango .a file"
@@ -77,11 +82,11 @@ rm -rf tmp || exit 1
 
 # 3) Make the installer proper
 (
-    echo -e '#!/bin/bash\nINST_DMD=0' ;
+    echo -e '#!/bin/bash -x\nINST_DMD=0' ;
     cat install/dmd-posix/installer.sh ;
     tar cf - core.tar.gz tango.tar.gz
-) > tango-$TANGO_VERSION-dmd-posix.sh || die 1 "Failed to create the installer"
-chmod 0755 tango-$TANGO_VERSION-dmd-posix.sh
+) > tango-$TANGO_VERSION-dmd.$DMD_VERSION-posix.sh || die 1 "Failed to create the installer"
+chmod 0755 tango-$TANGO_VERSION-dmd.$DMD_VERSION-posix.sh
 
 # 4) DMD 
 if [ -e dmd ]
@@ -98,8 +103,8 @@ then
         echo -e '#!/bin/bash\nINST_DMD=1' ;
         cat install/dmd-posix/installer.sh ;
         tar cf - core.tar.gz tango.tar.gz dmd.tar.gz
-    ) > tango-$TANGO_VERSION-dmd-posix-withDMD.sh || die 1 "Failed to create the installer with DMD"
-    chmod 0755 tango-$TANGO_VERSION-dmd-posix-withDMD.sh
+    ) > tango-$TANGO_VERSION-dmd.$DMD_VERSION-posix-withDMD.sh || die 1 "Failed to create the installer with DMD"
+    chmod 0755 tango-$TANGO_VERSION-dmd.$DMD_VERSION-posix-withDMD.sh
 fi
 
 # 5) Clean up
