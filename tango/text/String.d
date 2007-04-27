@@ -345,7 +345,7 @@ class String(T) : StringView!(T)
                 Span span;
                 span.begin = selectPoint;
                 span.length = selectLength;
-                return Span;
+                return span;
         }
 
         /***********************************************************************
