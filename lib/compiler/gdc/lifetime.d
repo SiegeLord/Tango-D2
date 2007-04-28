@@ -173,7 +173,7 @@ extern (C) Array _d_newarrayT(TypeInfo ti, size_t length)
     Array result;
     auto size = ti.next.tsize();                // array element size
 
-    debug(PRINTF) printf("_d_newT(length = %d, size = %d)\n", length, size);
+    debug(PRINTF) printf("_d_newarrayT(length = x%x, size = %d)\n", length, size);
     if (length && size)
     {
         result.length = length;
@@ -223,8 +223,7 @@ extern (C) Array _d_newarrayiT(TypeInfo ti, size_t length)
             }
         }
         result.length = length;
-        result.data = cast(byte*) p
-;
+        result.data = cast(byte*) p;
     }
     return result;
 }

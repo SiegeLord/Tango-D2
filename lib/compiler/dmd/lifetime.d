@@ -174,11 +174,22 @@ extern (C) ulong _d_newarrayT(TypeInfo ti, size_t length)
     ulong result;
     auto size = ti.next.tsize();                // array element size
 
-    debug(PRINTF) printf("_d_newT(length = %d, size = %d)\n", length, size);
+    debug(PRINTF) printf("_d_newarrayT(length = x%x, size = %d)\n", length, size);
     if (length == 0 || size == 0)
         result = 0;
     else
     {
+        version (D_InlineAsm_X86)
+        {
+            asm
+            {
+                mov     EAX,size        ;
+                mul     EAX,length      ;
+                mov     size,EAX        ;
+                jc      Loverflow       ;
+            }
+        }
+        else
         size *= length;
         p = gc_malloc(size + 1, !(ti.next.flags() & 1) ? BlkAttr.NO_SCAN : 0);
         debug(PRINTF) printf(" p = %p\n", p);
@@ -186,8 +197,10 @@ extern (C) ulong _d_newarrayT(TypeInfo ti, size_t length)
         result = cast(ulong)length + (cast(ulong)cast(uint)p << 32);
     }
     return result;
-}
 
+Loverflow:
+    onOutOfMemoryError();
+}
 
 /**
  * For when the array has a non-zero initializer.
@@ -206,6 +219,17 @@ extern (C) ulong _d_newarrayiT(TypeInfo ti, size_t length)
         auto initializer = ti.next.init();
         auto isize = initializer.length;
         auto q = initializer.ptr;
+        version (D_InlineAsm_X86)
+        {
+            asm
+            {
+                mov     EAX,size        ;
+                mul     EAX,length      ;
+                mov     size,EAX        ;
+                jc      Loverflow       ;
+            }
+        }
+        else
         size *= length;
         auto p = gc_malloc(size + 1, !(ti.next.flags() & 1) ? BlkAttr.NO_SCAN : 0);
         debug(PRINTF) printf(" p = %p\n", p);
@@ -231,8 +255,10 @@ extern (C) ulong _d_newarrayiT(TypeInfo ti, size_t length)
         result = cast(ulong)length + (cast(ulong)cast(uint)p << 32);
     }
     return result;
-}
 
+Loverflow:
+    onOutOfMemoryError();
+}
 
 /**
  *
