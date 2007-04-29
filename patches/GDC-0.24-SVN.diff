@@ -1,0 +1,88 @@
+Index: object.di
+===================================================================
+--- object.di	(revision 2118)
++++ object.di	(working copy)
+@@ -47,13 +47,10 @@
+     // 8:       // has constructors
+     void*       deallocator;
+     OffsetTypeInfo[] offTi;
+-  version( DigitalMars )
+-  {
+     void*       defaultConstructor;
+ 
+     static ClassInfo find(char[] classname);
+     Object create();
+-  }
+ }
+ 
+ struct OffsetTypeInfo
+Index: lib/common/tango/core/Thread.d
+===================================================================
+--- lib/common/tango/core/Thread.d	(revision 2118)
++++ lib/common/tango/core/Thread.d	(working copy)
+@@ -831,7 +831,8 @@
+             {
+                 if( !set )
+                 {
+-                    foreach( Thread t; sm_tbeg )
++                    // foreach( Thread t; sm_tbeg ) Bug in GDC 0.24 SVN
++                    for( Thread t = sm_tbeg; t; t = t.next )
+                     {
+                         t.m_local[key] = null;
+                     }
+@@ -858,7 +859,8 @@
+         synchronized( slock )
+         {
+             sm_local[key] = false;
+-            foreach( Thread t; sm_tbeg )
++            // foreach( Thread t; sm_tbeg ) Bug in GDC 0.24 SVN
++            for( Thread t = sm_tbeg; t; t = t.next )
+             {
+                 t.m_local[key] = null;
+             }
+Index: lib/compiler/gdc/genobj.d
+===================================================================
+--- lib/compiler/gdc/genobj.d	(revision 2118)
++++ lib/compiler/gdc/genobj.d	(working copy)
+@@ -155,6 +155,41 @@
+     //  4:                      // has offTi[] member
+     void *deallocator;
+     OffsetTypeInfo[] offTi;
++    void function(Object) defaultConstructor;   // default Constructor
++
++    /**
++     * Search all modules for ClassInfo corresponding to classname.
++     * Returns: null if not found
++     */
++    static ClassInfo find(char[] classname)
++    {
++        foreach (m; ModuleInfo.modules())
++        {
++            //writefln("module %s, %d", m.name, m.localClasses.length);
++            foreach (c; m.localClasses)
++            {
++                //writefln("\tclass %s", c.name);
++                if (c.name == classname)
++                    return c;
++            }
++        }
++        return null;
++    }
++
++    /**
++     * Create instance of Object represented by 'this'.
++     */
++    Object create()
++    {
++        if (flags & 8 && !defaultConstructor)
++            return null;
++        Object o = _d_newclass(this);
++        if (flags & 8 && defaultConstructor)
++        {
++            defaultConstructor(o);
++        }
++        return o;
++    }
+ }
+ 
+ 
