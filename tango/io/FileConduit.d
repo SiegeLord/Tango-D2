@@ -61,7 +61,7 @@ version (Win32)
         auto to = new FileConduit ("copy.txt", FileConduit.WriteTruncate);
 
         // copy file
-        to.copy ("test.txt");
+        to.copy (new FileConduit("test.txt"));
         ---
         
         To load a file directly into memory one might do this:
@@ -208,9 +208,6 @@ class FileConduit : DeviceConduit, DeviceConduit.Seek
 
         // the file we're working with 
         private PathView path_;
-
-        // expose deviceconduit.copy() methods also 
-        alias DeviceConduit.copy copy;
 
         /***********************************************************************
         
