@@ -444,25 +444,11 @@ abstract class IBuffer // could be an interface, but that causes poor codegen
                 read less than 32 bytes. This permits conduit-filters 
                 to operate within a known environment.
 
-                Returns the number of bytes read, or throws an underflow
-                error if there nowhere to read from
-        
-        ***********************************************************************/
-
-        abstract uint fill ();
-
-        /***********************************************************************
-
-                Try to fill the available buffer with content from the 
-                specified conduit. In particular, we will never ask to 
-                read less than 32 bytes. This permits conduit-filters 
-                to operate within a known environment.
-
                 Returns the number of bytes read, or Conduit.Eof
         
         ***********************************************************************/
 
-        abstract uint fill (IConduit conduit);
+        abstract uint fill (IConduit conduit = null);
 
         /***********************************************************************
 
@@ -473,7 +459,7 @@ abstract class IBuffer // could be an interface, but that causes poor codegen
         
         ***********************************************************************/
 
-        abstract uint drain ();
+        abstract uint drain (IConduit conduit = null);
 
         /***********************************************************************
         
@@ -482,7 +468,7 @@ abstract class IBuffer // could be an interface, but that causes poor codegen
 
         ***********************************************************************/
 
-        abstract IBuffer flush ();
+        abstract IBuffer flush (IConduit conduit = null);
 
         /***********************************************************************
         
