@@ -60,7 +60,7 @@ version( linux )
         time_t      shm_atime;
         c_ulong     __unused1;
         time_t      shm_dtime;
-        c_ulong     __unused2
+        c_ulong     __unused2;
         time_t      shm_ctime;
         c_ulong     __unused3;
         pid_t       shm_cpid;
