@@ -58,22 +58,29 @@ version( linux )
         alias _libc_fpstate*    fpregset_t;
     }
 
-    struct mcontext_t
+    version( X86_64 )
     {
-        gregset_t   gregs;
-        fpregset_t  fpregs;
-        c_ulong     oldmask;
-        c_ulong     cr2;
-    }
 
-    struct ucontext_t
+    }
+    else version( X86 )
     {
-        c_ulong         uc_flags;
-        ucontext_t*     uc_link;
-        stack_t         uc_stack; // note that this requires XSI extensions
-        mcontext_t      uc_mcontext;
-        sigset_t        uc_sigmask;
-        _libc_fpstate   __fpregs_mem;
+        struct mcontext_t
+        {
+            gregset_t   gregs;
+            fpregset_t  fpregs;
+            c_ulong     oldmask;
+            c_ulong     cr2;
+        }
+
+        struct ucontext_t
+        {
+            c_ulong         uc_flags;
+            ucontext_t*     uc_link;
+            stack_t         uc_stack;
+            mcontext_t      uc_mcontext;
+            sigset_t        uc_sigmask;
+            _libc_fpstate   __fpregs_mem;
+        }
     }
 }
 
@@ -86,3 +93,11 @@ void makecontext(ucontext_t*, void function(), int, ...);
 int  setcontext(ucontext_t*);
 int  swapcontext(ucontext_t*, ucontext_t*);
 */
+
+static if( is( typeof( ucontext_t ) ) )
+{
+    int  getcontext(ucontext_t*);
+    void makecontext(ucontext_t*, void function(), int, ...);
+    int  setcontext(ucontext_t*);
+    int  swapcontext(ucontext_t*, ucontext_t*);
+}

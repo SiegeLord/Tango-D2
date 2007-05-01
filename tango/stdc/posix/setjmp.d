@@ -51,10 +51,6 @@ version( linux )
 
         alias int[6] __jmp_buf;
     }
-    else
-    {
-        static assert( false, "Architecture not supported." );
-    }
 
     struct __jmp_buf_tag
     {
