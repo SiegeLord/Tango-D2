@@ -94,7 +94,7 @@ then
 	else
 		if [ "$INPLACE" = "0" ]
 		then
-			rm -rf $PHOBOS_DIR/libphobos.a $PREFIX/import/object.di
+			rm -f  $PHOBOS_DIR/libphobos.a $PREFIX/import/object.di
 			mv     $PHOBOS_DIR/libphobos.a.phobos $PHOBOS_DIR/libphobos.a
 			mv     $PREFIX/import/object.d.phobos $PREFIX/import/object.d
 		fi
