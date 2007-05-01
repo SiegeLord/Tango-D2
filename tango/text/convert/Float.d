@@ -298,7 +298,7 @@ NumType parse(T) (T[] src, uint* ate=null)
            if ((c is 'e' || c is 'E') && p < end )
               {
               uint eaten;
-              exp += Integer.parse (src[(p-src.ptr)+1 .. $], 10u, &eaten);
+              exp += Integer.parse (src[(++p-src.ptr) .. $], 10u, &eaten);
               p += eaten;
               }
 
