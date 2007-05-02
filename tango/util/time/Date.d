@@ -264,7 +264,7 @@ struct Date
                         t.tm_min = min;
                         t.tm_sec = sec;
 
-                        time_t seconds = local ? timelocal (&t) 
+                        time_t seconds = local ? mktime (&t) 
                                                : timegm (&t);
                         return cast(Time) (Time.TicksTo1970 +
                                            Time.TicksPerSecond * seconds +
