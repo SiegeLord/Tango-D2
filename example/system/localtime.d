@@ -42,19 +42,4 @@ void main ()
                           tz % 60,
                           date.year
                          );
-
-        date.set (Utc.time);
-        // format date
-        Stdout.formatln ("{}, {} {:d2} {:d2}:{:d2}:{:d2} GMT{}{:d2}:{:d2} {}",
-                          date.asDay,
-                          date.asMonth,
-                          date.day,
-                          date.hour, 
-                          date.min,
-                          date.sec,
-                          sign,
-                          tz / 60,
-                          tz % 60,
-                          date.year
-                         );
 }
