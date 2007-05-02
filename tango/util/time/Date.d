@@ -163,7 +163,7 @@ struct Date
 
                 ***************************************************************/
 
-                Time get ()
+                Time get (bool local=false)
                 {
                         SYSTEMTIME sTime = void;
                         FILETIME   fTime = void;
@@ -178,7 +178,8 @@ struct Date
                         sTime.wMilliseconds = cast(ushort) ms;
 
                         SystemTimeToFileTime (&sTime, &fTime);
-                        return Utc.convert (fTime);
+                        auto time = Utc.convert (fTime);
+                        return (local) ? cast(Time) (time+localBias) : time;
                 }
 
                 /***************************************************************
@@ -189,9 +190,12 @@ struct Date
 
                 ***************************************************************/
 
-                void set (Time time)
+                void set (Time time, bool local=false)
                 {
                         SYSTEMTIME sTime = void;
+
+                        if (local)
+                            time -= localBias;
 
                         auto fTime = Utc.convert (time);
                         FileTimeToSystemTime (&fTime, &sTime);
@@ -204,6 +208,33 @@ struct Date
                         sec = sTime.wSecond;
                         ms = sTime.wMilliseconds;
                         dow = sTime.wDayOfWeek;
+                }
+
+                /***************************************************************
+
+                        adjust for local time
+
+                ***************************************************************/
+
+                private ulong localBias ()
+                {
+                        ulong bias;
+                        TIME_ZONE_INFORMATION tz = void;
+
+                        switch (GetTimeZoneInformation (&tz))
+                               {
+                               default:
+                                    bias = tz.Bias;
+                                    break;
+                               case 1:
+                                    bias = tz.Bias + tz.StandardBias;
+                                    break;
+                               case 2:
+                                    bias = tz.Bias + tz.DaylightBias;
+                                    break;
+                               }
+
+                        return bias * Time.TicksPerMinute;
                 }
         }
 
@@ -222,7 +253,7 @@ struct Date
 
                 ***************************************************************/
 
-                Time get ()
+                Time get (bool local=false)
                 {
                         tm t;
 
@@ -233,8 +264,10 @@ struct Date
                         t.tm_min = min;
                         t.tm_sec = sec;
 
+                        time_t seconds = local ? timelocal (&t) 
+                                               : timegm (&t);
                         return cast(Time) (Time.TicksTo1970 +
-                                           Time.TicksPerSecond * timegm(&t) +
+                                           Time.TicksPerSecond * seconds +
                                            Time.TicksPerMillisecond * ms);
                 }
 
@@ -246,22 +279,23 @@ struct Date
 
                 **************************************************************/
 
-                void set (Time time)
+                void set (Time time, bool local=false)
                 {
                         auto timeval = Utc.convert (time);
                         ms = timeval.tv_usec / 1000;
 
                         tm result;
-                        tm* t = gmtime_r (&timeval.tv_sec, &result);
-                        assert (t, "gmtime failed");
+                        tm* t = local ? localtime_r (&timeval.tv_sec, &result) 
+                                      : gmtime_r (&timeval.tv_sec, &result);
+                        assert (t);
         
-                        year = t.tm_year + 1900;
-                        month = t.tm_mon + 1;
-                        day = t.tm_mday;
-                        hour = t.tm_hour;
-                        min = t.tm_min;
-                        sec = t.tm_sec;
-                        dow = t.tm_wday;
+                        year = result.tm_year + 1900;
+                        month = result.tm_mon + 1;
+                        day = result.tm_mday;
+                        hour = result.tm_hour;
+                        min = result.tm_min;
+                        sec = result.tm_sec;
+                        dow = result.tm_wday;
                 }
         }
 }

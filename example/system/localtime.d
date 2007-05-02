@@ -21,7 +21,7 @@ void main ()
         Date date;
 
         // set current local time
-        date.set (Utc.local);
+        date.set (Utc.time, true);
 
         // get GMT difference in minutes
         auto tz = Utc.zone / 60;
@@ -29,6 +29,21 @@ void main ()
         if (tz < 0)
             tz = -tz, sign = '-';
 
+        // format date
+        Stdout.formatln ("{}, {} {:d2} {:d2}:{:d2}:{:d2} GMT{}{:d2}:{:d2} {}",
+                          date.asDay,
+                          date.asMonth,
+                          date.day,
+                          date.hour, 
+                          date.min,
+                          date.sec,
+                          sign,
+                          tz / 60,
+                          tz % 60,
+                          date.year
+                         );
+
+        date.set (Utc.time);
         // format date
         Stdout.formatln ("{}, {} {:d2} {:d2}:{:d2}:{:d2} GMT{}{:d2}:{:d2} {}",
                           date.asDay,
