@@ -2004,9 +2004,9 @@ private
             // NOTE: The ucontext implementation requires architecture specific
             //       data definitions to operate so testing for it must be done
             //       by checking for the existence of ucontext_t rather than by
-            //       a version identifier.  This is considered an obsolescent
-            //       feature, according to the POSIX spec, so a custom solution
-            //       is still preferred.
+            //       a version identifier.  Please note that this is considered
+            //       an obsolescent feature according to the POSIX spec, so a
+            //       custom solution is still preferred.
             import tango.stdc.posix.ucontext;
         }
     }
@@ -2150,6 +2150,10 @@ private
         }
         else static if( is( typeof( ucontext_t ) ) )
         {
+            Fiber   cfib = Fiber.getThis();
+            void*   utxt = cfib ? &cfib.m_utxt : &Fiber.sm_utxt;
+
+            *oldp = &utxt;
             swapcontext( **(cast(ucontext_t***) oldp),
                           *(cast(ucontext_t**)  newp) );
         }
@@ -2500,6 +2504,12 @@ class Fiber
 
             status = pthread_key_create( &sm_this, null );
             assert( status == 0 );
+
+          static if( is( typeof( ucontext_t ) ) )
+          {
+            status = getcontext( &sm_utxt );
+            assert( status == 0 );
+          }
         }
     }
 
@@ -2817,10 +2827,12 @@ private:
         }
         else static if( is( typeof( ucontext_t ) ) )
         {
-            (cast(byte*) &m_utxt)[0 .. ucontext_t.sizeof] = 0;
+            getcontext( &m_utxt );
             m_utxt.uc_stack.ss_sp   = m_ctxt.bstack;
             m_utxt.uc_stack.ss_size = m_size;
             makecontext( &m_utxt, &fiber_entryPoint, 0 );
+            // NOTE: If ucontext is being used then the top of the stack will
+            //       be a pointer to the ucontext_t struct for that fiber.
             push( cast(size_t) &m_utxt );
         }
     }
@@ -2831,7 +2843,12 @@ private:
     void*           m_pmem;
 
     static if( is( typeof( ucontext_t ) ) )
-      ucontext_t    m_utxt = void;
+    {
+        // NOTE: The static ucontext instance is used to represent the context
+        //       of the main application thread.
+        static ucontext_t   sm_utxt = void;
+        ucontext_t          m_utxt  = void;
+    }
 
 
 private:
@@ -2873,8 +2890,6 @@ private:
         Thread  tobj = Thread.getThis();
         void**  oldp = &tobj.m_curr.tstack;
         void*   newp = m_ctxt.tstack;
-        static if( is( typeof( ucontext_t ) ) )
-          void* utxt = &m_utxt;
 
         // NOTE: The order of operations here is very important.  The current
         //       stack top must be stored before m_lock is set, and pushContext
@@ -2887,10 +2902,7 @@ private:
         //       oldp will be set again before the context switch to guarantee
         //       that it points to exactly the correct stack location so the
         //       successive pop operations will succeed.
-        static if( is( typeof( ucontext_t ) ) )
-          *oldp = &utxt;
-        else
-          *oldp = getStackTop();
+        *oldp = getStackTop();
         volatile tobj.m_lock = true;
         tobj.pushContext( m_ctxt );
 
@@ -2912,8 +2924,6 @@ private:
         Thread  tobj = Thread.getThis();
         void**  oldp = &m_ctxt.tstack;
         void*   newp = tobj.m_curr.within.tstack;
-        static if( is( typeof( ucontext_t ) ) )
-          void* utxt = &m_utxt;
 
         // NOTE: The order of operations here is very important.  The current
         //       stack top must be stored before m_lock is set, and pushContext
@@ -2926,10 +2936,7 @@ private:
         //       oldp will be set again before the context switch to guarantee
         //       that it points to exactly the correct stack location so the
         //       successive pop operations will succeed.
-        static if( is( typeof( ucontext_t ) ) )
-          *oldp = &utxt;
-        else
-          *oldp = getStackTop();
+        *oldp = getStackTop();
         volatile tobj.m_lock = true;
 
         fiber_switchContext( oldp, newp );
