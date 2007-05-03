@@ -205,8 +205,8 @@ struct Utc
                 static Time bias ()
                 {
                         tm t = void;
-                        
-                        gmtime_r (86400, &t);
+                        time_t time = 86400;
+                        gmtime_r (&time, &t);
                         int i = mktime (&t);
                         return cast(Time) (Time.TicksPerSecond * (i - 86400));
                 }
