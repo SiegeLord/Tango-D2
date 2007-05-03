@@ -75,7 +75,7 @@ class Md4 : MerkleDamgard
         override void createDigest(ubyte[] buf)
         {
                 version (BigEndian)
-                         ByteSwap.swap64 (context.ptr, context.length * uint.sizeof);
+                         ByteSwap.swap32 (context.ptr, context.length * uint.sizeof);
 
                 buf[] = cast(ubyte[]) context;
         }
@@ -149,8 +149,8 @@ class Md4 : MerkleDamgard
         protected override void padLength(ubyte[] data, ulong length)
         {
                 length <<= 3;
-                data[] = (cast(ubyte*)&length)[0..data.length];
-        }
+                littleEndian64((cast(ubyte*)&length)[0..8],cast(ulong[]) data); 
+        }   
 
         /***********************************************************************
 

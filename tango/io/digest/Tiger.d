@@ -204,7 +204,7 @@ final class Tiger : MerkleDamgard
         protected override void padLength(ubyte[] at, ulong length)
         {
                 length <<= 3;
-                at[] = (cast(ubyte*)&length)[0..at.length];
+                littleEndian64((cast(ubyte*)&length)[0..8],cast(ulong[]) at); 
         }
 
         /***********************************************************************
