@@ -58,12 +58,12 @@ public class DateLayout : Layout
                 char[] level = event.getLevelName;
                 
                 // convert time to field values
+                Date date;
                 auto time = event.getEpochTime;
                 if (localTime)
-                    time = Utc.toLocal (time);
-
-                Date date;
-                date.set (time);
+                    date.setLocal (time);
+                else
+                   date.set (time);
                                 
                 // format date according to ISO-8601 (lightweight formatter)
                 char[20] tmp = void;

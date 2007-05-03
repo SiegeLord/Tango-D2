@@ -57,6 +57,17 @@ struct Utc
 
                 /***************************************************************
 
+                        Return the current local time
+
+                ***************************************************************/
+
+                static Time local ()
+                {
+                        return cast(Time) (time + bias);
+                }
+
+                /***************************************************************
+
                         Return the timezone relative to GMT. The value is 
                         negative when west of GMT
 
@@ -96,6 +107,34 @@ struct Utc
                         *cast(long*) &time.dwLowDateTime = span;
                         return time;
                 }
+
+                /***************************************************************
+
+                        Return the local bias, adjusted for DST, in seconds. 
+                        The value is negative when west of GMT
+
+                ***************************************************************/
+
+                package static long bias ()
+                {
+                        int bias;
+                        TIME_ZONE_INFORMATION tz = void;
+
+                        switch (GetTimeZoneInformation (&tz))
+                               {
+                               default:
+                                    bias = tz.Bias;
+                                    break;
+                               case 1:
+                                    bias = tz.Bias + tz.StandardBias;
+                                    break;
+                               case 2:
+                                    bias = tz.Bias + tz.DaylightBias;
+                                    break;
+                               }
+
+                        return -Time.TicksPerMinute * bias;
+                }
         }
 
         version (Posix)
@@ -108,10 +147,26 @@ struct Utc
 
                 static Time time ()
                 {
-                        timeval tv;
+                        timeval tv = void;
                         if (gettimeofday (&tv, null))
                             throw new PlatformException ("Time.utc :: Posix timer is not available");
 
+                        return convert (tv);
+                }
+
+                /***************************************************************
+
+                        Return the current local time
+
+                ***************************************************************/
+
+                static Time local ()
+                {
+                        tm t = void;
+                        timeval tv = void;
+                        gettimeofday (&tv, null);
+                        localtime_r (&tv.tv_sec, &t);
+                        tv.tv_sec = timegm (&t);
                         return convert (tv);
                 }
 
@@ -126,7 +181,7 @@ struct Utc
                 {
                         version (darwin)
                                 {
-                                timezone_t tz;
+                                timezone_t tz = void;
                                 gettimeofday (null, &tz);
                                 return cast(Time) (-Time.TicksPerMinute * tz.tz_minuteswest);
                                 }
@@ -153,7 +208,7 @@ struct Utc
 
                 static timeval convert (Time time)
                 {
-                        timeval tv;
+                        timeval tv = void;
 
                         time -= time.TicksTo1970;
                         assert (time >= 0);

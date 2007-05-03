@@ -218,14 +218,14 @@ char[] formatDateTime (char[] output, DateTime dateTime, char[] format, DateTime
                        case 'T':
                             f = dtf.longTimePattern;
                             break;
+version (Full)
+{
                        case 'u':
                             dateTime = dateTime.toUniversalTime();
                             dtf = DateTimeFormat.invariantFormat;
                             f = dtf.universalSortableDateTimePattern;
                             break;
                        case 'U':
-version (Full)
-{
                             dtf = cast(DateTimeFormat) dtf.clone();
                             dateTime = dateTime.toUniversalTime();
                             if (typeid(typeof(dtf.calendar)) !is typeid(GregorianCalendar))
@@ -233,8 +233,6 @@ version (Full)
                             f = dtf.fullDateTimePattern;
                             break;
 }
-else
-                            assert(false);
                        case 'y':
                        case 'Y':
                             f = dtf.yearMonthPattern;

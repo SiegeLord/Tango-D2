@@ -14,9 +14,6 @@ module tango.util.time.DateTime;
 
 private import tango.util.time.Utc;
 
-private import tango.core.Type : Time;
-
-
 /**
 */
 public enum DayOfWeek {
@@ -385,7 +382,7 @@ version (Full)
   public DateTime toLocalTime() {
     //return TimeZone.current.getLocalTime(*this);
   }
-}
+
   /**
    * Converts the value of this instance to UTC time.
    * Returns: A DateTime whose value is the UTC equivalent to the value of the current instance.
@@ -396,6 +393,7 @@ version (Full)
         return *this;
     return DateTime(Utc.toLocal(cast(Time)ticks) | DateTime.Kind.UTC);
   }
+}
   
   /**
    * Converts the value of this instance to its equivalent string representation using the specified culture-specific formatting information.
@@ -752,7 +750,7 @@ version (Full)
     //DateTime d = utcNow.toLocalTime();
     //return d;
     auto ticks = Utc.local();
-    return DateTime (cast(ulong) ticks | Kind.UTC);
+    return DateTime (cast(ulong) ticks | Kind.LOCAL);
   }
 
   /**
