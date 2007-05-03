@@ -560,6 +560,6 @@ static this ()
 
 static ~this()
 {
-        Cout.flush;
-        Cerr.flush;
+        //Cout.flush;
+       // Cerr.flush;
 }

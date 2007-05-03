@@ -239,7 +239,7 @@ class Buffer : IBuffer
 
         this (IConduit conduit)
         {
-                assert (conduit, "conduit is null");
+                assert (conduit);
 
                 this (conduit.bufferSize);
                 setConduit (conduit);
@@ -926,7 +926,7 @@ class Buffer : IBuffer
         final uint drain (IConduit conduit = null)
         {
                 if (conduit is null)
-                    assert ((conduit = conduit_) != null);
+                    conduit = conduit_, assert (conduit);
 
                 uint ret = read (&conduit.write);
                 if (ret is conduit.Eof)
@@ -952,7 +952,7 @@ class Buffer : IBuffer
         final IBuffer flush (IConduit conduit = null)
         {
                 if (conduit is null)
-                    assert ((conduit = conduit_) != null);
+                    conduit = conduit_, assert (conduit);
 
                 conduit.flush (data [position_ .. limit_]);
                 return clear;
