@@ -29,9 +29,8 @@ public  import  tango.core.Type : Interval, Time;
         much shorter duration; typically used for timeout periods and
         for high-resolution timers. These intervals are measured in
         units of 1 second, and support fractional units (0.001 = 1ms).
-        We use interval here to represent a local timezone offset.
 
-******************************************************************************/
+*******************************************************************************/
 
 struct Utc
 {
@@ -54,7 +53,7 @@ struct Utc
 
         static Time toLocal (Time time)
         {
-                return cast(Time) (time + Time.TicksPerSecond * zone);
+                return cast(Time) (time + bias);
         }
 
         /***********************************************************************
@@ -65,7 +64,7 @@ struct Utc
 
         static Time fromLocal (Time time)
         {
-                return cast(Time) (time - Time.TicksPerSecond * zone);
+                return cast(Time) (time - bias);
         }
 
         /***********************************************************************
@@ -91,6 +90,49 @@ struct Utc
 
                 /***************************************************************
 
+                        Return the timezone relative to GMT. The value is 
+                        negative when west of GMT
+
+                ***************************************************************/
+
+                static Time zone ()
+                {
+                        TIME_ZONE_INFORMATION tz = void;
+
+                        auto tmp = GetTimeZoneInformation (&tz);
+                        return cast(Time) (-Time.TicksPerMinute * tz.Bias);
+                }
+
+                /***************************************************************
+
+                        Return the local bias, adjusted for DST. The value 
+                        is negative when west of GMT
+
+                ***************************************************************/
+
+                static Time bias ()
+                {
+                        int bias;
+                        TIME_ZONE_INFORMATION tz = void;
+
+                        switch (GetTimeZoneInformation (&tz))
+                               {
+                               default:
+                                    bias = tz.Bias;
+                                    break;
+                               case 1:
+                                    bias = tz.Bias + tz.StandardBias;
+                                    break;
+                               case 2:
+                                    bias = tz.Bias + tz.DaylightBias;
+                                    break;
+                               }
+
+                        return cast(Time) (-Time.TicksPerMinute * bias);
+                }
+
+                /***************************************************************
+
                         Convert FILETIME to a Time
 
                 ***************************************************************/
@@ -111,23 +153,9 @@ struct Utc
                         FILETIME time = void;
 
                         span -= span.TicksTo1601;
-                        *cast(ulong*) &time.dwLowDateTime = span;
+                        assert (span >= 0);
+                        *cast(long*) &time.dwLowDateTime = span;
                         return time;
-                }
-
-                /***************************************************************
-
-                        Return the timezone seconds relative to GMT. The
-                        value is negative when west of GMT
-
-                ***************************************************************/
-
-                static int zone ()
-                {
-                        TIME_ZONE_INFORMATION tz = void;
-
-                        auto tmp = GetTimeZoneInformation (&tz);
-                        return -tz.Bias * 60;
                 }
         }
 
@@ -146,6 +174,41 @@ struct Utc
                             throw new PlatformException ("Time.utc :: Posix timer is not available");
 
                         return convert (tv);
+                }
+
+                /***************************************************************
+
+                        Return the timezone relative to GMT. The value is 
+                        negative when west of GMT
+
+                ***************************************************************/
+
+                static Time zone ()
+                {
+                        version (darwin)
+                                {
+                                timezone_t tz;
+                                gettimeofday (null, &tz);
+                                return cast(Time) (-Time.TicksPerMinute * tz.tz_minuteswest);
+                                }
+                             else
+                                return cast(Time) (-Time.TicksPerSecond * timezone);
+                }
+
+                /***************************************************************
+
+                        Return the local bias, adjusted for DST. The value 
+                        is negative when west of GMT
+
+                ***************************************************************/
+
+                static Time bias ()
+                {
+                        tm t = void;
+                        
+                        gmtime_r (86400, &t);
+                        int i = mktime (&t);
+                        return cast(Time) (Time.TicksPerSecond * (i - 86400));
                 }
 
                 /***************************************************************
@@ -170,29 +233,11 @@ struct Utc
                         timeval tv;
 
                         time -= time.TicksTo1970;
+                        assert (time >= 0);
                         time /= 10L;
                         tv.tv_sec  = cast (typeof(tv.tv_sec))  (time / 1_000_000L);
                         tv.tv_usec = cast (typeof(tv.tv_usec)) (time - 1_000_000L * tv.tv_sec);
                         return tv;
-                }
-
-                /***************************************************************
-
-                        Return the timezone seconds relative to GMT. The
-                        value is negative when west of GMT
-
-                ***************************************************************/
-
-                static int zone ()
-                {
-                        version (darwin)
-                                {
-                                timezone_t tz;
-                                gettimeofday (null, &tz);
-                                return -tz.tz_minuteswest * 60;
-                                }
-                             else
-                                return -timezone;
                 }
         }
 }

@@ -163,7 +163,7 @@ struct Date
 
                 ***************************************************************/
 
-                Time get (bool local=false)
+                Time get ()
                 {
                         SYSTEMTIME sTime = void;
                         FILETIME   fTime = void;
@@ -178,8 +178,7 @@ struct Date
                         sTime.wMilliseconds = cast(ushort) ms;
 
                         SystemTimeToFileTime (&sTime, &fTime);
-                        auto time = Utc.convert (fTime);
-                        return (local) ? cast(Time) (time+localBias) : time;
+                        return Utc.convert (fTime);
                 }
 
                 /***************************************************************
@@ -190,12 +189,9 @@ struct Date
 
                 ***************************************************************/
 
-                void set (Time time, bool local=false)
+                void set (Time time)
                 {
                         SYSTEMTIME sTime = void;
-
-                        if (local)
-                            time -= localBias;
 
                         auto fTime = Utc.convert (time);
                         FileTimeToSystemTime (&fTime, &sTime);
@@ -208,33 +204,6 @@ struct Date
                         sec = sTime.wSecond;
                         ms = sTime.wMilliseconds;
                         dow = sTime.wDayOfWeek;
-                }
-
-                /***************************************************************
-
-                        adjust for local time
-
-                ***************************************************************/
-
-                private ulong localBias ()
-                {
-                        ulong bias;
-                        TIME_ZONE_INFORMATION tz = void;
-
-                        switch (GetTimeZoneInformation (&tz))
-                               {
-                               default:
-                                    bias = tz.Bias;
-                                    break;
-                               case 1:
-                                    bias = tz.Bias + tz.StandardBias;
-                                    break;
-                               case 2:
-                                    bias = tz.Bias + tz.DaylightBias;
-                                    break;
-                               }
-
-                        return bias * Time.TicksPerMinute;
                 }
         }
 
@@ -253,7 +222,7 @@ struct Date
 
                 ***************************************************************/
 
-                Time get (bool local=false)
+                Time get ()
                 {
                         tm t;
 
@@ -264,8 +233,7 @@ struct Date
                         t.tm_min = min;
                         t.tm_sec = sec;
 
-                        time_t seconds = local ? mktime (&t) 
-                                               : timegm (&t);
+                        auto seconds = timegm (&t);
                         return cast(Time) (Time.TicksTo1970 +
                                            Time.TicksPerSecond * seconds +
                                            Time.TicksPerMillisecond * ms);
@@ -285,8 +253,7 @@ struct Date
                         ms = timeval.tv_usec / 1000;
 
                         tm result;
-                        tm* t = local ? localtime_r (&timeval.tv_sec, &result) 
-                                      : gmtime_r (&timeval.tv_sec, &result);
+                        tm* t = gmtime_r (&timeval.tv_sec, &result);
                         assert (t);
         
                         year = result.tm_year + 1900;
