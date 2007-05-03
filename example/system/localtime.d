@@ -21,10 +21,10 @@ void main ()
         Date date;
 
         // set current local time
-        date.set (Utc.time, true);
+        date.set (Utc.local);
 
         // get GMT difference in minutes
-        auto tz = Utc.zone / 60;
+        auto tz = cast(int) (Utc.zone / Time.TicksPerMinute);
         char sign = '+';
         if (tz < 0)
             tz = -tz, sign = '-';

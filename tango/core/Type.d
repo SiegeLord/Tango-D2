@@ -23,7 +23,7 @@ module tango.core.Type;
 
 ******************************************************************************/
 
-public enum Time : ulong 
+public enum Time : long 
 {
         TicksPerMillisecond = 10000,
         TicksPerSecond = TicksPerMillisecond * 1000,
@@ -45,7 +45,7 @@ public enum Time : ulong
         DaysTo10000 = DaysPer400Years * 25 - 366,
         
         TicksTo1601 = DaysTo1601 * TicksPerDay,
-        TicksTo1970 = 116444736000000000L + TicksTo1601,       
+        TicksTo1970 = 116444736000000000L + TicksTo1601,
 }
 
 /******************************************************************************

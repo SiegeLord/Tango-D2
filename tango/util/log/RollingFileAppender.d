@@ -55,7 +55,7 @@ public class RollingFileAppender : FileAppender
                 mask = register (path);
 
                 char[1] x;
-                ulong mostRecent;
+                Time mostRecent;
 
                 for (int i=0; i < count; ++i)
                     {
