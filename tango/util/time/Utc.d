@@ -36,39 +36,6 @@ struct Utc
 {
         /***********************************************************************
 
-                Return the local time since the epoch
-
-        ***********************************************************************/
-
-        static Time local ()
-        {
-                return toLocal (time);
-        }
-
-        /***********************************************************************
-
-                Convert UTC time to local time
-
-        ***********************************************************************/
-
-        static Time toLocal (Time time)
-        {
-                return cast(Time) (time + bias);
-        }
-
-        /***********************************************************************
-
-                Convert local time to UTC time
-
-        ***********************************************************************/
-
-        static Time fromLocal (Time time)
-        {
-                return cast(Time) (time - bias);
-        }
-
-        /***********************************************************************
-
                 Basic functions for epoch time
 
         ***********************************************************************/
@@ -101,34 +68,6 @@ struct Utc
 
                         auto tmp = GetTimeZoneInformation (&tz);
                         return cast(Time) (-Time.TicksPerMinute * tz.Bias);
-                }
-
-                /***************************************************************
-
-                        Return the local bias, adjusted for DST. The value 
-                        is negative when west of GMT
-
-                ***************************************************************/
-
-                static Time bias ()
-                {
-                        int bias;
-                        TIME_ZONE_INFORMATION tz = void;
-
-                        switch (GetTimeZoneInformation (&tz))
-                               {
-                               default:
-                                    bias = tz.Bias;
-                                    break;
-                               case 1:
-                                    bias = tz.Bias + tz.StandardBias;
-                                    break;
-                               case 2:
-                                    bias = tz.Bias + tz.DaylightBias;
-                                    break;
-                               }
-
-                        return cast(Time) (-Time.TicksPerMinute * bias);
                 }
 
                 /***************************************************************
@@ -193,22 +132,6 @@ struct Utc
                                 }
                              else
                                 return cast(Time) (-Time.TicksPerSecond * timezone);
-                }
-
-                /***************************************************************
-
-                        Return the local bias, adjusted for DST. The value 
-                        is negative when west of GMT
-
-                ***************************************************************/
-
-                static Time bias ()
-                {
-                        tm t = void;
-                        time_t time = 86400;
-                        gmtime_r (&time, &t);
-                        int i = mktime (&t);
-                        return cast(Time) (Time.TicksPerSecond * (i - 86400));
                 }
 
                 /***************************************************************

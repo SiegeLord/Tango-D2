@@ -21,7 +21,7 @@ void main ()
         Date date;
 
         // set current local time
-        date.set (Utc.local);
+        date.setLocal (Utc.time);
 
         // get GMT difference in minutes
         auto tz = cast(int) (Utc.zone / Time.TicksPerMinute);
