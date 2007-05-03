@@ -71,6 +71,11 @@ if [ "$?" = "0" ]
 then
 	PREFIX="`which dmd`"
 	PREFIX="`dirname $PREFIX`/.."
+	if [ ! "$PHOBOS_DIR" ]
+	then
+		PHOBOS_DIR="$PREFIX/lib"
+		REPLACE_PHOBOS=1
+	fi
 else
 	if [ "$REPLACE_PHOBOS" = "1" ]
 	then
