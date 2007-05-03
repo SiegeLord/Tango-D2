@@ -175,7 +175,8 @@ extern (C)
         console IO is buffered in one common area. 
         ---
         Cout ("what is your name?") ();
-        Cout ("hello ")(Cin.get).newline;
+        auto name = Cin.get;
+        Cout ("hello ")(name).newline;
         ---
 
         An Iterator is constructed in a similar manner to a Reader; you
