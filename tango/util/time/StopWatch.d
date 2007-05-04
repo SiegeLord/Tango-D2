@@ -10,7 +10,7 @@
 
 *******************************************************************************/
 
-module tango.util.time.Timer;
+module tango.util.time.StopWatch;
 
 public import tango.core.Type : Interval;
 
@@ -37,14 +37,14 @@ version (Posix)
         Timer for measuring small intervals, such as the duration of a 
         subroutine or other reasonably granular of code.
         ---
-        Timer timer;
+        StopWatch elapsed;
 
-        timer.start;
+        elapsed.start;
 
         // do something
         // ...
 
-        Interval i = timer.stop;
+        Interval i = elapsed.stop;
         ---
 
         The measured interval is in units of seconds, using floating-
@@ -53,16 +53,16 @@ version (Posix)
         capable timer hardware (there no implicit granularity to the
         measurable intervals, except the limits of fp representation)
 
-        Timer is accurate only to the extent of what the underlying OS
-        supports. On linux systems, this accuracy is currently 1 us at 
+        StopWatch is accurate only to the extent of what the underlying 
+        OS supports. On linux systems, this accuracy is typically 1 us at 
         best. Win32 is generally more accurate.
 
-        There is some minor overhead in using Timer, so take that into 
+        There is some minor overhead in using StopWatch, so take that into 
         account
 
 *******************************************************************************/
 
-public struct Timer
+public struct StopWatch
 {
         private Interval        started;
         private static Interval multiplier = 1.0 / 1_000_000.0;
@@ -144,13 +144,13 @@ public struct Timer
 
 *******************************************************************************/
 
-debug (Timer)
+debug (StopWatch)
 {
         import tango.io.Stdout;
 
         void main() 
         {
-                Timer t;
+                StopWatch t;
                 t.start;
 
                 for (int i=0; i < 10_000_000; ++i)

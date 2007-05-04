@@ -238,7 +238,7 @@ debug (UnitTest)
 {
         unittest 
         {
-                auto time = Utc.time();
+                auto time = Utc.now;
                 assert (Utc.convert(Utc.convert(time)) is time);
         }
 }
