@@ -6,7 +6,7 @@
 
 private import  tango.io.Stdout;
 
-private import  tango.util.time.Utc,
+private import  tango.util.time.Wall,
                 tango.util.time.Date;
 
 /******************************************************************************
@@ -21,10 +21,10 @@ void main ()
         Date date;
 
         // set current local time
-        date.setLocal (Utc.now);
+        date.set (Wall.now);
 
         // get GMT difference in minutes
-        auto tz = cast(int) (Utc.zone / Time.TicksPerMinute);
+        auto tz = cast(int) (Wall.zone / Time.TicksPerMinute);
         char sign = '+';
         if (tz < 0)
             tz = -tz, sign = '-';
