@@ -112,15 +112,15 @@ class Object
      */
     int opEquals(Object o)
     {
-    return cast(int)(this is o);
+        return cast(int)(this is o);
     }
 
     interface Monitor
-            {
+    {
         void lock();
         void unlock();
-        }
     }
+}
 
 /**
  * Information about an interface.
@@ -128,9 +128,9 @@ class Object
  */
 struct Interface
 {
-    ClassInfo classinfo;        /// .classinfo for this interface (not for containing class)
-    void *[] vtbl;
-    ptrdiff_t offset;       /// offset to Interface 'this' from Object 'this'
+    ClassInfo   classinfo;  /// .classinfo for this interface (not for containing class)
+    void*[]     vtbl;
+    ptrdiff_t   offset;     /// offset to Interface 'this' from Object 'this'
 }
 
 /**
@@ -140,23 +140,60 @@ struct Interface
  */
 class ClassInfo : Object
 {
-    byte[] init;                /** class static initializer
+    byte[]      init;           /** class static initializer
                                  * (init.length gives size in bytes of class)
                                  */
-    char[] name;                /// class name
-    void *[] vtbl;              /// virtual function pointer table
+    char[]      name;           /// class name
+    void*[]     vtbl;           /// virtual function pointer table
     Interface[] interfaces;     /// interfaces this class implements
-    ClassInfo base;             /// base class
-    void *destructor;
-    void (*classInvariant)(Object);
-    uint flags;
+    ClassInfo   base;           /// base class
+    void*       destructor;
+    void function(Object) classInvariant;
+    uint        flags;
     //  1:                      // IUnknown
     //  2:                      // has no possible pointers into GC memory
     //  4:                      // has offTi[] member
-    void *deallocator;
+    //  8:                      // has constructors
+    void*       deallocator;
     OffsetTypeInfo[] offTi;
-}
+/+
+    void function(Object) defaultConstructor;   // default Constructor
 
+    /**
+     * Search all modules for ClassInfo corresponding to classname.
+     * Returns: null if not found
+     */
+    static ClassInfo find(char[] classname)
+    {
+        foreach (m; ModuleInfo)
+        {
+            //writefln("module %s, %d", m.name, m.localClasses.length);
+            foreach (c; m.localClasses)
+            {
+                //writefln("\tclass %s", c.name);
+                if (c.name == classname)
+                    return c;
+            }
+        }
+        return null;
+    }
+
+    /**
+     * Create instance of Object represented by 'this'.
+     */
+    Object create()
+    {
+        if (flags & 8 && !defaultConstructor)
+            return null;
+        Object o = _d_newclass(this);
+        if (flags & 8 && defaultConstructor)
+        {
+            defaultConstructor(o);
+        }
+        return o;
+    }
++/
+}
 
 /**
  * Array of pairs giving the offset and type information for each
@@ -164,10 +201,9 @@ class ClassInfo : Object
  */
 struct OffsetTypeInfo
 {
-    size_t offset;      /// Offset of member from start of object
+    size_t   offset;    /// Offset of member from start of object
     TypeInfo ti;        /// TypeInfo for this member
 }
-
 
 /**
  * Runtime type information about a type.
@@ -335,10 +371,10 @@ class TypeInfo_Array : TypeInfo
     int opEquals(Object o)
     {   TypeInfo_Array c;
 
-    return cast(int)
-           (this is o ||
+        return cast(int)
+               (this is o ||
                 ((c = cast(TypeInfo_Array)o) !is null &&
-         this.value == c.value));
+                 this.value == c.value));
     }
 
     hash_t getHash(void *p)
@@ -416,11 +452,11 @@ class TypeInfo_StaticArray : TypeInfo
     int opEquals(Object o)
     {   TypeInfo_StaticArray c;
 
-    return cast(int)
-           (this is o ||
+        return cast(int)
+               (this is o ||
                 ((c = cast(TypeInfo_StaticArray)o) !is null &&
                  this.len == c.len &&
-         this.value == c.value));
+                 this.value == c.value));
     }
 
     hash_t getHash(void *p)
@@ -898,27 +934,35 @@ class Exception : Object
 
 enum
 {
-    MIctorstart = 1,    // we've started constructing it
-    MIctordone = 2,     // finished construction
+    MIctorstart  = 1,   // we've started constructing it
+    MIctordone   = 2,   // finished construction
     MIstandalone = 4,   // module ctor does not depend on other module
                         // ctors being done first
 }
 
+
 class ModuleInfo
 {
-    char name[];
-    ModuleInfo importedModules[];
-    ClassInfo localClasses[];
+    char[]          name;
+    ModuleInfo[]    importedModules;
+    ClassInfo[]     localClasses;
+    uint            flags;
 
-    uint flags;         // initialization state
+    void function() ctor;
+    void function() dtor;
+    void function() unitTest;
 
-    void (*ctor)();
-    void (*dtor)();
-    void (*unitTest)();
-
-    static ModuleInfo[] modules()
+    static int opApply( int delegate( inout ModuleInfo ) dg )
     {
-        return _moduleinfo_array;
+        int ret = 0;
+
+        foreach( m; _moduleinfo_array )
+        {
+            ret = dg( m );
+            if( ret )
+                break;
+        }
+        return ret;
     }
 }
 
@@ -942,14 +986,14 @@ version (ModRefStyle)
     struct ModuleReference
     {
         ModuleReference* next;
-        ModuleInfo mod;
+        ModuleInfo       mod;
     }
 
-    extern (C) ModuleReference *_Dmodule_ref;   // start of linked list
+    extern (C) ModuleReference* _Dmodule_ref;   // start of linked list
 }
 
 ModuleInfo[] _moduleinfo_dtors;
-uint _moduleinfo_dtors_i;
+uint         _moduleinfo_dtors_i;
 
 // Register termination function pointers
 extern (C) int _fatexit(void *);
@@ -1074,6 +1118,7 @@ extern (C) void _moduleUnitTests()
         }
     }
 }
+
 
 ////////////////////////////////////////////////////////////////////////////////
 // Monitor

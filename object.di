@@ -147,6 +147,20 @@ class TypeInfo_Tuple : TypeInfo
     TypeInfo[]  elements;
 }
 
+class ModuleInfo
+{
+    char[]          name;
+    ModuleInfo[]    importedModules;
+    ClassInfo[]     localClasses;
+    uint            flags;
+
+    void function() ctor;
+    void function() dtor;
+    void function() unitTest;
+
+    static int opApply( int delegate( inout ModuleInfo ) );
+}
+
 class Exception : Object
 {
     char[]      msg;

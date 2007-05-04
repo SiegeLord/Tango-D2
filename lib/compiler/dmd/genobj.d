@@ -128,9 +128,9 @@ class Object
  */
 struct Interface
 {
-    ClassInfo classinfo;    /// .classinfo for this interface (not for containing class)
-    void *[] vtbl;
-    ptrdiff_t offset;       /// offset to Interface 'this' from Object 'this'
+    ClassInfo   classinfo;  /// .classinfo for this interface (not for containing class)
+    void*[]     vtbl;
+    ptrdiff_t   offset;     /// offset to Interface 'this' from Object 'this'
 }
 
 /**
@@ -140,21 +140,21 @@ struct Interface
  */
 class ClassInfo : Object
 {
-    byte[] init;                /** class static initializer
+    byte[]      init;           /** class static initializer
                                  * (init.length gives size in bytes of class)
                                  */
-    char[] name;                /// class name
-    void *[] vtbl;              /// virtual function pointer table
+    char[]      name;           /// class name
+    void*[]     vtbl;           /// virtual function pointer table
     Interface[] interfaces;     /// interfaces this class implements
-    ClassInfo base;             /// base class
-    void *destructor;
-    void (*classInvariant)(Object);
-    uint flags;
+    ClassInfo   base;           /// base class
+    void*       destructor;
+    void function(Object) classInvariant;
+    uint        flags;
     //  1:                      // IUnknown
     //  2:                      // has no possible pointers into GC memory
     //  4:                      // has offTi[] member
     //  8:                      // has constructors
-    void *deallocator;
+    void*       deallocator;
     OffsetTypeInfo[] offTi;
     void function(Object) defaultConstructor;   // default Constructor
 
@@ -164,7 +164,7 @@ class ClassInfo : Object
      */
     static ClassInfo find(char[] classname)
     {
-        foreach (m; ModuleInfo.modules())
+        foreach (m; ModuleInfo)
         {
             //writefln("module %s, %d", m.name, m.localClasses.length);
             foreach (c; m.localClasses)
@@ -199,7 +199,7 @@ class ClassInfo : Object
  */
 struct OffsetTypeInfo
 {
-    size_t offset;      /// Offset of member from start of object
+    size_t   offset;    /// Offset of member from start of object
     TypeInfo ti;        /// TypeInfo for this member
 }
 
@@ -929,19 +929,26 @@ enum
 
 class ModuleInfo
 {
-    char name[];
-    ModuleInfo importedModules[];
-    ClassInfo localClasses[];
+    char[]          name;
+    ModuleInfo[]    importedModules;
+    ClassInfo[]     localClasses;
+    uint            flags;
 
-    uint flags;         // initialization state
+    void function() ctor;
+    void function() dtor;
+    void function() unitTest;
 
-    void (*ctor)();
-    void (*dtor)();
-    void (*unitTest)();
-
-    static ModuleInfo[] modules()
+    static int opApply( int delegate( inout ModuleInfo ) dg )
     {
-        return _moduleinfo_array;
+        int ret = 0;
+
+        foreach( m; _moduleinfo_array )
+        {
+            ret = dg( m );
+            if( ret )
+                break;
+        }
+        return ret;
     }
 }
 
@@ -958,14 +965,14 @@ version (linux)
     struct ModuleReference
     {
         ModuleReference* next;
-        ModuleInfo mod;
+        ModuleInfo       mod;
     }
 
-    extern (C) ModuleReference *_Dmodule_ref;   // start of linked list
+    extern (C) ModuleReference* _Dmodule_ref;   // start of linked list
 }
 
 ModuleInfo[] _moduleinfo_dtors;
-uint _moduleinfo_dtors_i;
+uint         _moduleinfo_dtors_i;
 
 // Register termination function pointers
 extern (C) int _fatexit(void *);
