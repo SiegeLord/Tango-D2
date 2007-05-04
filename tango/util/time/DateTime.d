@@ -14,6 +14,7 @@
 module tango.util.time.DateTime;
 
 private import tango.util.time.Utc;
+private import tango.util.time.Wall;
 
 /******************************************************************************
 
@@ -157,7 +158,7 @@ struct DateTime
 
         static DateTime now () 
         {
-                return DateTime (Utc.local);
+                return DateTime (Wall.now);
         }
 
         /**********************************************************************

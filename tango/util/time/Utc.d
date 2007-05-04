@@ -34,12 +34,6 @@ public  import  tango.core.Type : Interval, Time;
 
 struct Utc
 {
-        /***********************************************************************
-
-                Basic functions for epoch time
-
-        ***********************************************************************/
-
         version (Win32)
         {
                 /***************************************************************
@@ -53,32 +47,6 @@ struct Utc
                         FILETIME fTime = void;
                         GetSystemTimeAsFileTime (&fTime);
                         return convert (fTime);
-                }
-
-                /***************************************************************
-
-                        Return the current local time
-
-                ***************************************************************/
-
-                static Time local ()
-                {
-                        return cast(Time) (now + bias);
-                }
-
-                /***************************************************************
-
-                        Return the timezone relative to GMT. The value is 
-                        negative when west of GMT
-
-                ***************************************************************/
-
-                static Time zone ()
-                {
-                        TIME_ZONE_INFORMATION tz = void;
-
-                        auto tmp = GetTimeZoneInformation (&tz);
-                        return cast(Time) (-Time.TicksPerMinute * tz.Bias);
                 }
 
                 /***************************************************************
@@ -107,34 +75,6 @@ struct Utc
                         *cast(long*) &time.dwLowDateTime = span;
                         return time;
                 }
-
-                /***************************************************************
-
-                        Return the local bias, adjusted for DST, in seconds. 
-                        The value is negative when west of GMT
-
-                ***************************************************************/
-
-                package static long bias ()
-                {
-                        int bias;
-                        TIME_ZONE_INFORMATION tz = void;
-
-                        switch (GetTimeZoneInformation (&tz))
-                               {
-                               default:
-                                    bias = tz.Bias;
-                                    break;
-                               case 1:
-                                    bias = tz.Bias + tz.StandardBias;
-                                    break;
-                               case 2:
-                                    bias = tz.Bias + tz.DaylightBias;
-                                    break;
-                               }
-
-                        return -Time.TicksPerMinute * bias;
-                }
         }
 
         version (Posix)
@@ -152,41 +92,6 @@ struct Utc
                             throw new PlatformException ("Time.utc :: Posix timer is not available");
 
                         return convert (tv);
-                }
-
-                /***************************************************************
-
-                        Return the current local time
-
-                ***************************************************************/
-
-                static Time local ()
-                {
-                        tm t = void;
-                        timeval tv = void;
-                        gettimeofday (&tv, null);
-                        localtime_r (&tv.tv_sec, &t);
-                        tv.tv_sec = timegm (&t);
-                        return convert (tv);
-                }
-
-                /***************************************************************
-
-                        Return the timezone relative to GMT. The value is 
-                        negative when west of GMT
-
-                ***************************************************************/
-
-                static Time zone ()
-                {
-                        version (darwin)
-                                {
-                                timezone_t tz = void;
-                                gettimeofday (null, &tz);
-                                return cast(Time) (-Time.TicksPerMinute * tz.tz_minuteswest);
-                                }
-                             else
-                                return cast(Time) (-Time.TicksPerSecond * timezone);
                 }
 
                 /***************************************************************
@@ -219,19 +124,6 @@ struct Utc
                 }
         }
 }
-
-version (Posix)
-{
-    version (darwin) {}
-    else
-    {
-        static this()
-        {
-            tzset();
-        }
-    }
-}
-
 
 
 debug (UnitTest)

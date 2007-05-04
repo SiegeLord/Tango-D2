@@ -14,7 +14,7 @@ module tango.text.locale.Convert;
 
 private import tango.text.locale.Core;
 
-private import  tango.util.time.Utc,
+private import  tango.util.time.Wall,
                 tango.util.time.DateTime;
 
 private import  tango.util.time.chrono.Calendar;
@@ -411,7 +411,7 @@ version (Full)
 }
 else
 {
-                                  auto minutes = cast(int) (Utc.zone / Time.TicksPerMinute);
+                                  auto minutes = cast(int) (Wall.zone / Time.TicksPerMinute);
                                   if (minutes < 0)
                                       minutes = -minutes, result ~= '-';
                                   else
