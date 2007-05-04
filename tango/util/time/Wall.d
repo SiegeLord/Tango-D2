@@ -37,33 +37,6 @@ struct Wall
 
                 static Time now ()
                 {
-                        return cast(Time) (Utc.now + bias);
-                }
-
-                /***************************************************************
-
-                        Return the timezone relative to GMT. The value is 
-                        negative when west of GMT
-
-                ***************************************************************/
-
-                static Time zone ()
-                {
-                        TIME_ZONE_INFORMATION tz = void;
-
-                        auto tmp = GetTimeZoneInformation (&tz);
-                        return cast(Time) (-Time.TicksPerMinute * tz.Bias);
-                }
-
-                /***************************************************************
-
-                        Return the local bias, adjusted for DST, in seconds. 
-                        The value is negative when west of GMT
-
-                ***************************************************************/
-
-                private static long bias ()
-                {
                         int bias;
                         TIME_ZONE_INFORMATION tz = void;
 
@@ -80,7 +53,22 @@ struct Wall
                                     break;
                                }
 
-                        return -Time.TicksPerMinute * bias;
+                        return cast(Time) (Utc.now - (Time.TicksPerMinute * bias));
+                }
+
+                /***************************************************************
+
+                        Return the timezone relative to GMT. The value is 
+                        negative when west of GMT
+
+                ***************************************************************/
+
+                static Time zone ()
+                {
+                        TIME_ZONE_INFORMATION tz = void;
+
+                        auto tmp = GetTimeZoneInformation (&tz);
+                        return cast(Time) (-Time.TicksPerMinute * tz.Bias);
                 }
         }
 
@@ -122,6 +110,7 @@ struct Wall
                 }
         }
 }
+
 
 version (Posix)
 {
