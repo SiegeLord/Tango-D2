@@ -61,7 +61,7 @@ class Telnet
         body
         {
                 // At end_time, we bail.
-                Time end_time = cast(Time) (Utc.time + this.timeout);
+                Time end_time = cast(Time) (Utc.now + this.timeout);
 
                 // Set up a SocketSet so we can use select() - it's pretty efficient.
                 SocketSet set = new SocketSet();
@@ -69,7 +69,7 @@ class Telnet
                         delete set;
 
                 size_t pos = 0;
-                while (Utc.time < end_time)
+                while (Utc.now < end_time)
                 {
                         set.reset();
                         set.add(this.socket);
@@ -100,7 +100,7 @@ class Telnet
         char[] readLine()
         {
                 // Figure, first, how long we're allowed to take.
-                Time end_time = cast(Time) (Utc.time + this.timeout);
+                Time end_time = cast(Time) (Utc.now + this.timeout);
 
                 // An overall buffer and a one-char buffer.
                 char[] buffer;
@@ -128,7 +128,7 @@ class Telnet
                 scope (exit)
                         delete set;
 
-                while (Utc.time < end_time)
+                while (Utc.now < end_time)
                 {
                         set.reset();
                         set.add(this.socket);

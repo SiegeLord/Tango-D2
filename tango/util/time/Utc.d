@@ -48,7 +48,7 @@ struct Utc
 
                 ***************************************************************/
 
-                static Time time ()
+                static Time now ()
                 {
                         FILETIME fTime = void;
                         GetSystemTimeAsFileTime (&fTime);
@@ -63,7 +63,7 @@ struct Utc
 
                 static Time local ()
                 {
-                        return cast(Time) (time + bias);
+                        return cast(Time) (now + bias);
                 }
 
                 /***************************************************************
@@ -145,7 +145,7 @@ struct Utc
 
                 ***************************************************************/
 
-                static Time time ()
+                static Time now ()
                 {
                         timeval tv = void;
                         if (gettimeofday (&tv, null))

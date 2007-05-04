@@ -610,9 +610,9 @@ class FTPConnection : Telnet
                     delete set;
 
                 // At end_time, we bail.
-                Time end_time = cast(Time) (Utc.time + this.timeout);
+                Time end_time = cast(Time) (Utc.now + this.timeout);
 
-                while (Utc.time < end_time)
+                while (Utc.now < end_time)
                     {
                         set.reset();
                         set.add(data);
@@ -1538,7 +1538,7 @@ class FTPConnection : Telnet
             delete set;
 
         // At end_time, we bail.
-        Time end_time = cast(Time) (Utc.time + this.timeout);
+        Time end_time = cast(Time) (Utc.now + this.timeout);
 
         // This is the buffer the stream data is stored in.
         ubyte[8 * 1024] buf;
@@ -1547,7 +1547,7 @@ class FTPConnection : Telnet
 
         size_t pos = 0;
         bool completed = false;
-        while (!completed && Utc.time < end_time)
+        while (!completed && Utc.now < end_time)
             {
                 set.reset();
                 set.add(data);
@@ -1577,7 +1577,7 @@ class FTPConnection : Telnet
 
                 // Give it more time as long as data is going through.
                 if (delta != 0)
-                    end_time = cast(Time) (Utc.time + this.timeout);
+                    end_time = cast(Time) (Utc.now + this.timeout);
             }
 
         // Did all the data get sent?
@@ -1605,7 +1605,7 @@ class FTPConnection : Telnet
             delete set;
 
         // At end_time, we bail.
-        Time end_time = cast(Time) (Utc.time + this.timeout);
+        Time end_time = cast(Time) (Utc.now + this.timeout);
 
         // This is the buffer the stream data is stored in.
         ubyte[8 * 1024] buf;
@@ -1613,7 +1613,7 @@ class FTPConnection : Telnet
 
         bool completed = false;
         size_t pos;
-        while (Utc.time < end_time)
+        while (Utc.now < end_time)
             {
                 set.reset();
                 set.add(data);
@@ -1640,7 +1640,7 @@ class FTPConnection : Telnet
                     progress(pos);
 
                 // Give it more time as long as data is going through.
-                end_time = cast(Time) (Utc.time + this.timeout);
+                end_time = cast(Time) (Utc.now + this.timeout);
             }
 
         // Did all the data get received?
@@ -1749,13 +1749,13 @@ class FTPConnection : Telnet
         assert (this.socket !is null);
 
         // Pick a time at which we stop reading.  It can't take too long, but it could take a bit for the whole response.
-        Time end_time = cast(Time) (Utc.time + this.timeout * 10);
+        Time end_time = cast(Time) (Utc.now + this.timeout * 10);
 
         FtpResponse response;
         char[] single_line = null;
 
         // Danger, Will Robinson, don't fall into an endless loop from a malicious server.
-        while (Utc.time < end_time)
+        while (Utc.now < end_time)
             {
                 single_line = this.readLine();
 

@@ -758,7 +758,7 @@ version (Full)
    * Returns: A DateTime whose value is the current UTC date and time.
    */
   public static DateTime utcNow() {
-    auto ticks = Utc.time();
+    auto ticks = Utc.now();
     return DateTime (cast(ulong) ticks | Kind.UTC);
   }
 

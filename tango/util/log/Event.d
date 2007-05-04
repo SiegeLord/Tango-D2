@@ -139,7 +139,7 @@ public class Event : ILevel
         {
                 version (Posix)       
                 {
-                        beginTime = Utc.time;
+                        beginTime = Utc.now;
                 }
 
                 version (Win32)
@@ -151,7 +151,7 @@ public class Event : ILevel
                         
                         QueryPerformanceCounter (&timerStart);
                         multiplier = 10_000_000.0 / freq;       
-                        beginTime = Utc.time;
+                        beginTime = Utc.now;
 
                 }
         }
@@ -177,7 +177,7 @@ public class Event : ILevel
         {
                 version (Posix)       
                 {
-                        return Utc.time;
+                        return Utc.now;
                 }
 
                 version (Win32)

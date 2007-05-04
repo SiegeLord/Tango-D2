@@ -191,17 +191,6 @@ struct Date
 
                 /***************************************************************
 
-                        Convert fields to local time
-
-                ***************************************************************/
-
-                Time getLocal ()
-                {
-                        return cast(Time) (get() + localBias);
-                }
-
-                /***************************************************************
-
                         Set fields to represent the provided time. The
                         value must fall within the domain supported by
                         the OS
@@ -223,6 +212,17 @@ struct Date
                         sec = sTime.wSecond;
                         ms = sTime.wMilliseconds;
                         dow = sTime.wDayOfWeek;
+                }
+
+                /***************************************************************
+
+                        Convert fields to local time
+
+                ***************************************************************/
+
+                Time getLocal ()
+                {
+                        return cast(Time) (get() + localBias);
                 }
 
                 /***************************************************************
@@ -302,29 +302,6 @@ struct Date
 
                 /***************************************************************
 
-                        Convert fields to local time
-
-                ***************************************************************/
-
-                Time getLocal ()
-                {
-                        tm t = void;
-
-                        t.tm_year = year - 1900;
-                        t.tm_mon = month - 1;
-                        t.tm_mday = day;
-                        t.tm_hour = hour;
-                        t.tm_min = min;
-                        t.tm_sec = sec;
-
-                        auto seconds = mktime (&t);
-                        return cast(Time) (Time.TicksTo1970 +
-                                           Time.TicksPerSecond * seconds +
-                                           Time.TicksPerMillisecond * ms);
-                }
-
-                /***************************************************************
-
                         Set fields to represent the provided UTC time. All
                         time values must fall within the domain supported by
                         the OS
@@ -346,6 +323,29 @@ struct Date
                         min   = t.tm_min;
                         sec   = t.tm_sec;
                         dow   = t.tm_wday;
+                }
+
+                /***************************************************************
+
+                        Convert fields to local time
+
+                ***************************************************************/
+
+                Time getLocal ()
+                {
+                        tm t = void;
+
+                        t.tm_year = year - 1900;
+                        t.tm_mon = month - 1;
+                        t.tm_mday = day;
+                        t.tm_hour = hour;
+                        t.tm_min = min;
+                        t.tm_sec = sec;
+
+                        auto seconds = mktime (&t);
+                        return cast(Time) (Time.TicksTo1970 +
+                                           Time.TicksPerSecond * seconds +
+                                           Time.TicksPerMillisecond * ms);
                 }
 
                 /***************************************************************
