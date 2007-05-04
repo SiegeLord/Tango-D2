@@ -695,7 +695,7 @@ version (Clone)
       case Calendar.GREGORIAN_ARABIC:
       case Calendar.GREGORIAN_XLIT_ENGLISH:
       case Calendar.GREGORIAN_XLIT_FRENCH:
-        return new GregorianCalendar(cast(GregorianCalendarTypes)calendarType);
+        return new GregorianCalendar(cast(GregorianCalendar.Type) calendarType);
       default:
         break;
     }

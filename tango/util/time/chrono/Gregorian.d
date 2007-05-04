@@ -17,26 +17,24 @@ private import tango.util.time.chrono.Calendar;
 
 
 /**
-*/
-enum GregorianCalendarTypes 
-{
-        Localized = 1,               /// Refers to the localized version of the Gregorian calendar.
-        USEnglish = 2,               /// Refers to the US English version of the Gregorian calendar.
-        MiddleEastFrench = 9,        /// Refers to the Middle East French version of the Gregorian calendar.
-        Arabic = 10,                 /// Refers to the _Arabic version of the Gregorian calendar.
-        TransliteratedEnglish = 11,  /// Refers to the transliterated English version of the Gregorian calendar.
-        TransliteratedFrench = 12    /// Refers to the transliterated French version of the Gregorian calendar.
-}
-
-
-/**
  * $(ANCHOR _GregorianCalendar)
  * Represents the Gregorian calendar.
 */
 class GregorianCalendar : Calendar 
 {
         private static Calendar defaultInstance_;
-        private GregorianCalendarTypes type_;
+
+        enum Type 
+        {
+                Localized = 1,               /// Refers to the localized version of the Gregorian calendar.
+                USEnglish = 2,               /// Refers to the US English version of the Gregorian calendar.
+                MiddleEastFrench = 9,        /// Refers to the Middle East French version of the Gregorian calendar.
+                Arabic = 10,                 /// Refers to the _Arabic version of the Gregorian calendar.
+                TransliteratedEnglish = 11,  /// Refers to the transliterated English version of the Gregorian calendar.
+                TransliteratedFrench = 12    /// Refers to the transliterated French version of the Gregorian calendar.
+        }
+
+        private Type type_;
 
         /**
         * Represents the current era.
@@ -49,9 +47,9 @@ class GregorianCalendar : Calendar
 
         /**
         * Initializes an instance of the GregorianCalendar class using the specified GregorianCalendarTypes value. If no value is 
-        * specified, the default is GregorianCalendarTypes.Localized.
+        * specified, the default is GregorianCalendar.Types.Localized.
         */
-        this (GregorianCalendarTypes type = GregorianCalendarTypes.Localized) 
+        this (Type type = Type.Localized) 
         {
                 type_ = type;
         }
@@ -185,9 +183,9 @@ class GregorianCalendar : Calendar
 
         /**
         * $(I Property.) Retrieves the GregorianCalendarTypes value indicating the language version of the GregorianCalendar.
-        * Returns: The GregorianCalendarTypes value indicating the language version of the GregorianCalendar.
+        * Returns: The GregorianCalendar.Type value indicating the language version of the GregorianCalendar.
         */
-        GregorianCalendarTypes calendarType() 
+        Type calendarType() 
         {
                 return type_;
         }
