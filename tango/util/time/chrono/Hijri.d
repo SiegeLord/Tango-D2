@@ -178,8 +178,8 @@ public class HijriCalendar : Calendar {
     return cast(long)(daysToYear(year) + DAYS_TO_MONTH[month - 1] + day);
   }
 
-  private int extractPart(ulong ticks, DatePart part) {
-    long days = cast(long)(ticks / Time.TicksPerDay + 1);
+  private int extractPart(long ticks, DatePart part) {
+    long days = (ticks / Time.TicksPerDay + 1);
     int year = cast(int)(((days - 227013) * 30) / 10631) + 1;
     long daysUpToYear = daysToYear(year);
     long daysInYear = getDaysInYear(year, CURRENT_ERA);

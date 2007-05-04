@@ -219,16 +219,16 @@ class GregorianCalendar : Calendar
         package static void splitDate (long ticks, out int year, out int month, out int day, out int dayOfYear) 
         {
                 int numDays = cast(int)(ticks / Time.TicksPerDay);
-                int whole400Years = numDays / Time.DaysPer400Years;
-                numDays -= whole400Years * Time.DaysPer400Years;
-                int whole100Years = numDays / Time.DaysPer100Years;
+                int whole400Years = numDays / cast(int) Time.DaysPer400Years;
+                numDays -= whole400Years * cast(int) Time.DaysPer400Years;
+                int whole100Years = numDays / cast(int) Time.DaysPer100Years;
                 if (whole100Years == 4)
                     whole100Years = 3;
 
-                numDays -= whole100Years * Time.DaysPer100Years;
-                int whole4Years = numDays / Time.DaysPer4Years;
-                numDays -= whole4Years * Time.DaysPer4Years;
-                int wholeYears = numDays / Time.DaysPerYear;
+                numDays -= whole100Years * cast(int) Time.DaysPer100Years;
+                int whole4Years = numDays / cast(int) Time.DaysPer4Years;
+                numDays -= whole4Years * cast(int) Time.DaysPer4Years;
+                int wholeYears = numDays / cast(int) Time.DaysPerYear;
                 if (wholeYears == 4)
                     wholeYears = 3;
 

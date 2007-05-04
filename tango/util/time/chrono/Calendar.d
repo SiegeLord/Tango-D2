@@ -242,8 +242,9 @@ public abstract class Calendar
                             return getWeekOfYear(getDateTime(year, month, day, 0, 0, 0, 0), rule, firstDayOfWeek);
 
                        default:
-                            throw new Exception("Value was out of range.");
+                            break;
                        }
+                throw new Exception("Value was out of range.");
         }
 
         /**
