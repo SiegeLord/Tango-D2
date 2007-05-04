@@ -404,6 +404,9 @@ class Layout(T)
                        case TypeCode.CLASS:
                             return fromUtf8 ((*cast(Object*) p).toUtf8, result);
 
+                       case TypeCode.ENUM:
+                            return munge (result, format, (cast(TypeInfo_Enum) type).base, p);
+
                        case TypeCode.TYPEDEF:
                             return munge (result, format, (cast(TypeInfo_Typedef) type).base, p);
 
