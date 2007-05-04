@@ -23,6 +23,14 @@ private import  tango.util.time.Utc;
         than 10,000 years. Units of Time are the foundation of most time
         and date functionality in Tango.
 
+        Please note that conversion between UTC and local time is performed
+        in accordance with the OS facilities. In particular, Win32 systems
+        behave differently to Posix when calculating daylight-savings time
+        (Win32 calculates with respect to the time of the call, whereas a
+        Posix system calculates based on a provided point in time). Posix
+        systems should typically have the TZ environment variable set to 
+        a valid descriptor.
+
 *******************************************************************************/
 
 struct Wall
