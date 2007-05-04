@@ -2064,6 +2064,9 @@ private
             obj.m_unhandled = o;
         }
 
+        static if( is( typeof( ucontext_t ) ) )
+          obj.m_ucur = &obj.m_utxt;
+
         obj.m_state = Fiber.State.TERM;
         obj.switchOut();
     }
@@ -2151,9 +2154,9 @@ private
         else static if( is( typeof( ucontext_t ) ) )
         {
             Fiber   cfib = Fiber.getThis();
-            void*   utxt = cfib ? &cfib.m_utxt : &Fiber.sm_utxt;
+            void*   ucur = cfib.m_ucur;
 
-            *oldp = &utxt;
+            *oldp = &ucur;
             swapcontext( **(cast(ucontext_t***) oldp),
                           *(cast(ucontext_t**)  newp) );
         }
@@ -2329,9 +2332,15 @@ class Fiber
     {
         Fiber   cur = getThis();
 
+        static if( is( typeof( ucontext_t ) ) )
+          m_ucur = cur ? &cur.m_utxt : &Fiber.sm_utxt;
+
         setThis( this );
         this.switchIn();
         setThis( cur );
+
+        static if( is( typeof( ucontext_t ) ) )
+          m_ucur = null;
 
         // NOTE: If the fiber has terminated then the stack pointers must be
         //       reset.  This ensures that the stack for this fiber is not
@@ -2426,6 +2435,9 @@ class Fiber
         assert( cur, "Fiber.yield() called with no active fiber" );
         assert( cur.m_state == State.EXEC );
 
+        static if( is( typeof( ucontext_t ) ) )
+          cur.m_ucur = &cur.m_utxt;
+
         cur.m_state = State.HOLD;
         cur.switchOut();
         cur.m_state = State.EXEC;
@@ -2452,6 +2464,9 @@ class Fiber
         Fiber   cur = getThis();
         assert( cur, "Fiber.yield() called with no active fiber" );
         assert( cur.m_state == State.EXEC );
+
+        static if( is( typeof( ucontext_t ) ) )
+          cur.m_ucur = &cur.m_utxt;
 
         cur.m_unhandled = obj;
         cur.m_state = State.HOLD;
@@ -2756,8 +2771,8 @@ private:
             }
             else
             {
-                *(cast(size_t*) pstack) = val;
                 pstack += size_t.sizeof;
+                *(cast(size_t*) pstack) = val;
             }
         }
 
@@ -2848,6 +2863,7 @@ private:
         //       of the main application thread.
         static ucontext_t   sm_utxt = void;
         ucontext_t          m_utxt  = void;
+        ucontext_t*         m_ucur  = null;
     }
 
 
