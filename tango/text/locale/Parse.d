@@ -14,9 +14,9 @@ module tango.text.locale.Parse;
 
 private import  tango.text.locale.Core;
 
-private import  tango.util.time.DateTime,
-                tango.util.time.Calendar;
+private import  tango.util.time.DateTime;
 
+private import  tango.util.time.chrono.Calendar;
 
 private struct DateTimeParseResult {
 
@@ -29,7 +29,7 @@ private struct DateTimeParseResult {
   double fraction;
   int timeMark;
   Calendar calendar;
-  TimeSpan timeZoneOffset;
+  long timeZoneOffset;
   DateTime parsedDate;
 
 }
@@ -111,7 +111,7 @@ private bool tryParseExact(char[] s, char[] pattern, DateTimeFormat dtf, inout D
       return result;
     }
 
-    TimeSpan parseTimeZoneOffset(char[] s, inout int pos) {
+    long parseTimeZoneOffset(char[] s, inout int pos) {
       bool sign;
       if (pos < s.length) {
         if (s[pos] == '-') {
@@ -127,9 +127,9 @@ private bool tryParseExact(char[] s, char[] pattern, DateTimeFormat dtf, inout D
         pos++;
         minute = parseDigits(s, pos, 2);
       }
-      TimeSpan result = TimeSpan(hour, minute, 0);
+      long result = DateTime(hour, minute, 0).ticks;
       if (sign)
-        result = result.negate();
+        result = -result;
       return result;
     }
       

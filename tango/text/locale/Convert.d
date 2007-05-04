@@ -14,8 +14,10 @@ module tango.text.locale.Convert;
 
 private import tango.text.locale.Core;
 
-private import tango.util.time.DateTime,       
-               tango.util.time.TimeZone;
+private import  tango.util.time.Utc,
+                tango.util.time.DateTime;
+
+private import  tango.util.time.chrono.Calendar;
 
 private import Integer = tango.text.convert.Integer;
 
@@ -259,7 +261,7 @@ version (Full)
                         return n - pos;
                 }
 
-                char[] formatDayOfWeek(DayOfWeek dayOfWeek, int rpt)
+                char[] formatDayOfWeek(DateTime.DayOfWeek dayOfWeek, int rpt)
                 {
                         if (rpt is 3)
                                 return dtf.getAbbreviatedDayName(dayOfWeek);
@@ -398,12 +400,25 @@ version (Full)
                                   break;
                              case 'z':  // timezone offset
                                   len = parseRepeat(format, index, c);
+version (Full)
+{
                                   TimeSpan offset = (justTime && dateTime.ticks < TICKS_PER_DAY)
                                                      ? TimeZone.current.getUtcOffset(DateTime.now)
                                                      : TimeZone.current.getUtcOffset(dateTime);
                                   int hours = offset.hours;
                                   int minutes = offset.minutes;
                                   result ~= (offset.backward) ? '-' : '+';
+}
+else
+{
+                                  auto minutes = cast(int) (Utc.zone / Time.TicksPerMinute);
+                                  if (minutes < 0)
+                                      minutes = -minutes, result ~= '-';
+                                  else
+                                     result ~= '+';
+                                  int hours = minutes / 60;
+                                  minutes %= 60;
+}
                                   if (len is 1)
                                       result ~= formatInt (tmp, hours, 1);
                                   else

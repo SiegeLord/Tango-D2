@@ -106,9 +106,17 @@ module tango.text.locale.Core;
 
 private import  tango.text.locale.Data;
 
-private import  tango.util.time.DateTime,
-                tango.util.time.Calendar;
+private import  tango.util.time.DateTime;
 
+private import  tango.util.time.chrono.Hijri,
+                tango.util.time.chrono.Korean,
+                tango.util.time.chrono.Taiwan,
+                tango.util.time.chrono.Hebrew,
+                tango.util.time.chrono.Calendar,
+                tango.util.time.chrono.Japanese,
+                tango.util.time.chrono.Gregorian,
+                tango.util.time.chrono.ThaiBuddhist;
+        
 version (Windows)
          private import tango.text.locale.Win32;
 
@@ -167,16 +175,16 @@ public interface IFormatService {
  * $(BR)$(BR)Instances of $(LINK2 #DateTimeFormat, DateTimeFormat) and $(LINK2 #NumberFormat, NumberFormat) cannot be created for neutral cultures.
  * Examples:
  * ---
- * import tango.io.Stdout, tango.text.locale.Common;
+ * import tango.io.Stdout, tango.text.locale.Core;
  *
  * void main() {
  *   Culture culture = new Culture("it-IT");
  *
- *   Stdout.format("englishName: {0}\n", culture.englishName);
- *   Stdout.format("nativeName: {0}\n", culture.nativeName);
- *   Stdout.format("name: {0}\n", culture.name);
- *   Stdout.format("parent: {0}\n", culture.parent.name);
- *   Stdout.format("isNeutral: {0}\n", culture.isNeutral);
+ *   Stdout.formatln("englishName: {}", culture.englishName);
+ *   Stdout.formatln("nativeName: {}", culture.nativeName);
+ *   Stdout.formatln("name: {}", culture.name);
+ *   Stdout.formatln("parent: {}", culture.parent.name);
+ *   Stdout.formatln("isNeutral: {}", culture.isNeutral);
  * }
  *
  * // Produces the following output:
@@ -255,6 +263,8 @@ public class Culture : IFormatService {
     return null;
   }
 
+version (Clone)
+{
   /**
    * Copies the current Culture instance.
    * Returns: A copy of the current Culture instance.
@@ -272,6 +282,7 @@ public class Culture : IFormatService {
       culture.calendar_ = cast(Calendar)calendar_.clone();
     return culture;
   }
+}
 
   /**
    * Returns a read-only instance of a culture using the specified culture identifier.
@@ -668,15 +679,15 @@ public class Culture : IFormatService {
   private static Calendar getCalendarInstance(int calendarType, bool readOnly=false) {
     switch (calendarType) {
       case Calendar.JAPAN:
-        return new JapaneseCalendar(readOnly);
+        return new JapaneseCalendar();
       case Calendar.TAIWAN:
-        return new TaiwanCalendar(readOnly);
+        return new TaiwanCalendar();
       case Calendar.KOREA:
-        return new KoreanCalendar(readOnly);
+        return new KoreanCalendar();
       case Calendar.HIJRI:
-        return new HijriCalendar(readOnly);
+        return new HijriCalendar();
       case Calendar.THAI:
-        return new ThaiBuddhistCalendar(readOnly);
+        return new ThaiBuddhistCalendar();
       case Calendar.HEBREW:
         return new HebrewCalendar;
       case Calendar.GREGORIAN_US:
@@ -684,11 +695,11 @@ public class Culture : IFormatService {
       case Calendar.GREGORIAN_ARABIC:
       case Calendar.GREGORIAN_XLIT_ENGLISH:
       case Calendar.GREGORIAN_XLIT_FRENCH:
-        return new GregorianCalendar(readOnly, cast(GregorianCalendarTypes)calendarType);
+        return new GregorianCalendar(cast(GregorianCalendarTypes)calendarType);
       default:
         break;
     }
-    return new GregorianCalendar(readOnly);
+    return new GregorianCalendar();
   }
 
 }
@@ -986,6 +997,8 @@ public class NumberFormat : IFormatService {
     return (type is typeid(NumberFormat)) ? this : null;
   }
 
+version (Clone)
+{
   /**
    * Creates a copy of the instance.
    */
@@ -994,6 +1007,7 @@ public class NumberFormat : IFormatService {
     copy.isReadOnly_ = false;
     return copy;
   }
+}
 
   /**
    * Retrieves the NumberFormat for the specified $(LINK2 #IFormatService, IFormatService).
@@ -1477,6 +1491,8 @@ public class DateTimeFormat : IFormatService {
     return (type is typeid(DateTimeFormat)) ? this : null;
   }
 
+version(Clone)
+{
   /**
    */
   public Object clone() {
@@ -1485,6 +1501,7 @@ public class DateTimeFormat : IFormatService {
     other.isReadOnly_ = false;
     return other;
   }
+}
 
   package char[][] shortTimePatterns() {
     if (shortTimePatterns_ == null)
@@ -1603,7 +1620,7 @@ public class DateTimeFormat : IFormatService {
    * Params: dayOfWeek = A DayOfWeek value.
    * Returns: The abbreviated name of the day of the week represented by dayOfWeek.
    */
-  public final char[] getAbbreviatedDayName(DayOfWeek dayOfWeek) {
+  public final char[] getAbbreviatedDayName(DateTime.DayOfWeek dayOfWeek) {
     return abbreviatedDayNames[cast(int)dayOfWeek];
   }
 
@@ -1613,7 +1630,7 @@ public class DateTimeFormat : IFormatService {
    * Params: dayOfWeek = A DayOfWeek value.
    * Returns: The full name of the day of the week represented by dayOfWeek.
    */
-  public final char[] getDayName(DayOfWeek dayOfWeek) {
+  public final char[] getDayName(DateTime.DayOfWeek dayOfWeek) {
     return dayNames[cast(int)dayOfWeek];
   }
 
@@ -1678,7 +1695,7 @@ public class DateTimeFormat : IFormatService {
   public static DateTimeFormat invariantFormat() {
     if (invariantFormat_ is null) {
       invariantFormat_ = new DateTimeFormat;
-      invariantFormat_.calendar = new GregorianCalendar(true);
+      invariantFormat_.calendar = new GregorianCalendar();
       invariantFormat_.isReadOnly_ = true;
     }
     return invariantFormat_;
@@ -1744,14 +1761,14 @@ public class DateTimeFormat : IFormatService {
    * $(I Property.) Retrieves the first day of the week.
    * Returns: A DayOfWeek value indicating the first day of the week.
    */
-  public final DayOfWeek firstDayOfWeek() {
-    return cast(DayOfWeek)firstDayOfWeek_;
+  public final DateTime.DayOfWeek firstDayOfWeek() {
+    return cast(DateTime.DayOfWeek)firstDayOfWeek_;
   }
   /**
    * $(I Property.) Assigns the first day of the week.
    * Params: valie = A DayOfWeek value indicating the first day of the week.
    */
-  public final void firstDayOfWeek(DayOfWeek value) {
+  public final void firstDayOfWeek(DateTime.DayOfWeek value) {
     checkReadOnly();
     firstDayOfWeek_ = value;
   }
@@ -1761,14 +1778,14 @@ public class DateTimeFormat : IFormatService {
    * $(I Property.) Retrieves the _value indicating the rule used to determine the first week of the year.
    * Returns: A CalendarWeekRule _value determining the first week of the year.
    */
-  public final CalendarWeekRule calendarWeekRule() {
-    return cast(CalendarWeekRule)calendarWeekRule_;
+  public final Calendar.WeekRule calendarWeekRule() {
+    return cast(Calendar.WeekRule) calendarWeekRule_;
   }
   /**
    * $(I Property.) Assigns the _value indicating the rule used to determine the first week of the year.
    * Params: value = A CalendarWeekRule _value determining the first week of the year.
    */
-  public final void calendarWeekRule(CalendarWeekRule value) {
+  public final void calendarWeekRule(Calendar.WeekRule value) {
     checkReadOnly();
     calendarWeekRule_ = value;
   }

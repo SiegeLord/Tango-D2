@@ -23,10 +23,6 @@ private import tango.stdc.string;
 private import tango.stdc.time;
 private import tango.stdc.locale;
 private import tango.stdc.posix.time;
-private import tango.io.File;
-private import tango.io.protocol.EndianProtocol;
-private import tango.io.protocol.Reader;
-private import tango.io.Buffer;
 
 /*private extern(C) char* setlocale(int type, char* locale);
 private extern(C) void putenv(char*);
@@ -105,90 +101,6 @@ ulong getUtcTime() {
    time(&t);
    gmtime(&t);
    return cast(ulong)((cast(long)t * 10000000L) + 116444736000000000L);
-}
-
-short[] getDaylightChanges() {
-
-    struct ttinfo
-    {
-        int     gmtoff;
-        ubyte   isdst;
-        ubyte   abbrind;
-        
-        void read(Reader r)
-        {
-            r.get(gmtoff).get(isdst).get(abbrind);
-        }
-    }
-
-    char[] file;
-    version(Linux)
-    {
-        file = cast(char[])(new File("/etc/timezone")).read();
-    }
-    else
-    {
-        file = "/etc/localtime";
-    }
-
-    auto r = new Reader(new EndianProtocol(new Buffer((new File(file)).read)));
-    r.buffer.slice(20); // skipping first 20 bytes of file, they are not used
-    
-    
-    int gmtcnt, stdcnt, leapcnt, timecnt, typecnt, charcnt;
-    int[] times;
-    ubyte[] indices;
-    ttinfo[] infos;
-    int tim, curTime = time(null);
-    ubyte index;
-    ttinfo info;
-    short[] ret;
-    short offSTD, offDST;
-    tm timeStruct, curTimeStruct = *(localtime(&curTime));
-    
-    // read first 6 int values from file, needed for correct parsing. Some are not used here though
-    r.get(gmtcnt).get(stdcnt).get(leapcnt).get(timecnt).get(typecnt).get(charcnt);
-    
-    // read transition times
-    for(int i = 0; i < timecnt; i++)
-    {
-        r.get(tim);
-        times ~= tim;
-    }
-    // read indices to an array of ttinfo structs
-    for(int i = 0; i < timecnt; i++)
-    {
-        r.get(index);
-        indices ~= index;
-    }
-    // read ttinfo structs
-    for(int i = 0; i < typecnt; i++)
-    {
-        info.read(r);
-        infos ~= info;
-    }
-    // look for transition times for current year, add them to the return array
-    foreach(int i, int t; times)  // i - index, t - time
-    {
-        timeStruct = *(localtime(cast(int*)&t));
-        if(timeStruct.tm_year == curTimeStruct.tm_year)
-        {
-            ret ~= cast(short) timeStruct.tm_year + 1900;
-            ret ~= cast(short) timeStruct.tm_mon;
-            ret ~= cast(short) timeStruct.tm_wday;
-            ret ~= cast(short) timeStruct.tm_mday;
-            ret ~= cast(short) timeStruct.tm_hour;
-            ret ~= cast(short) timeStruct.tm_min;
-            ret ~= cast(short) timeStruct.tm_sec;
-            ret ~= cast(short) 0;                   // tm doesnt have data for miliseconds
-            if(infos[indices[i]].isdst) offDST = cast(short) infos[indices[i]].gmtoff;
-            else                        offSTD = cast(short) infos[indices[i]].gmtoff;
-        }
-    }
-    
-    ret ~= [offDST/60, offSTD/60];
-    
-    return ret;
 }
 
 int compareString(int lcid, char[] stringA, uint offsetA, uint lengthA, char[] stringB, uint offsetB, uint lengthB, bool ignoreCase) {
