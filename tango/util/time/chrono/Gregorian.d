@@ -13,8 +13,6 @@
 
 module tango.util.time.chrono.Gregorian;
 
-private import tango.util.time.DateTime;
-
 private import tango.util.time.chrono.Calendar;
 
 
