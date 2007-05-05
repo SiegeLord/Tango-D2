@@ -68,7 +68,7 @@ struct Date
                         dow;            /// 0 through 6; sunday == 0
 
         /// list of english day names
-        public static char[][] Days =
+        private static char[][] Days =
         [
                         "Sun",
                         "Mon",
@@ -80,7 +80,7 @@ struct Date
         ];
 
         /// list of english month names
-        public static char[][] Months =
+        private static char[][] Months =
         [
                         "Jan",
                         "Feb",
