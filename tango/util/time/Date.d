@@ -157,19 +157,3 @@ struct Date
                 this.ms = ms;
         }
 }
-
-
-
-debug (UnitTest)
-{
-        unittest 
-        {
-                Date date;
-                Time time;
-                
-                time = cast(Time) ((Utc.now / Time.TicksPerSecond) * Time.TicksPerSecond);
-
-                date.set (time);
-                assert   (time is date.get);
-        }
-}

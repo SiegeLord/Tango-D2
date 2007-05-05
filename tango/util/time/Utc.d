@@ -257,5 +257,10 @@ debug (UnitTest)
         {
                 auto time = Utc.now;
                 assert (Utc.convert(Utc.convert(time)) is time);
+
+                time = cast(Time) ((time / Time.TicksPerSecond) * Time.TicksPerSecond);
+                auto date = Utc.toDate(time);
+
+                assert (time is Utc.fromDate(date));
         }
 }
