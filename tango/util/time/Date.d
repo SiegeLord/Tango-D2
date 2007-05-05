@@ -12,17 +12,13 @@
 
 module tango.util.time.Date;
 
-private import tango.sys.Common;
-
-private import tango.util.time.Utc;
-
 /*******************************************************************************
 
         Date exposes the underlying OS support for splitting date fields
         to and from a set of discrete attributes. For example, to set all
         fields to the current UTC time:
         ---
-        auto date = Utc.toDate;
+        auto date = Clock.toDate;
         ---
 
         Note that Date does not provide general conversion to and from

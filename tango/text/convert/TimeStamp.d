@@ -31,8 +31,8 @@ module tango.text.convert.TimeStamp;
 
 private import tango.core.Exception;
 
-private import tango.util.time.Utc,
-               tango.util.time.Date;
+private import tango.util.time.Date,
+               tango.util.time.Clock;
 
 private import Util = tango.text.Util;
 
@@ -140,7 +140,7 @@ T[] format(T) (T[] output, Time time)
             throw new IllegalArgumentException ("TimeStamp.format :: invalid Time argument");
 
         // convert time to field values
-        auto date = Utc.toDate (time);
+        auto date = Clock.toDate (time);
 
         // use the featherweight formatter ...
         T[14] tmp = void;
@@ -216,7 +216,7 @@ int rfc1123(T) (T[] src, inout Time value)
             *p++ == ' '           &&
             p[0..3] == "GMT")
             {
-            value = Utc.fromDate (date);
+            value = Clock.fromDate (date);
             return (p+3) - src.ptr;
             }
 
@@ -262,7 +262,7 @@ int rfc850(T) (T[] src, inout Time value)
                if (date.year < 100)
                    date.year += 1900;
 
-            value = Utc.fromDate (date);
+            value = Clock.fromDate (date);
             return (p+3) - src.ptr;
             }
 
@@ -301,7 +301,7 @@ int asctime(T) (T[] src, inout Time value)
             *p++ == ' '           &&
             (date.year = parseInt (p)) > 0)
             {
-            value = Utc.fromDate (date);
+            value = Clock.fromDate (date);
             return p - src.ptr;
             }
 
@@ -347,7 +347,7 @@ int dostime(T) (T[] src, inout Time value)
                if (date.year < 100)
                    date.year += 1900;
             
-            value = Utc.fromDate (date);
+            value = Clock.fromDate (date);
             return (p+2) - src.ptr;
             }
 
@@ -383,7 +383,7 @@ int iso8601(T) (T[] src, inout Time value)
             *p++ == ','    &&
             (date.ms = parseInt(p)) > 0)
             {
-            value = Utc.fromDate (date);
+            value = Clock.fromDate (date);
             return p - src.ptr;
             }
 

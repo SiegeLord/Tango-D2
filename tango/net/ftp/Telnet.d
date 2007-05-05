@@ -14,9 +14,9 @@ module tango.net.ftp.Telnet;
 
 private import tango.net.Socket;
 
-private import tango.util.time.Utc;
-
 private import tango.core.Exception;
+
+private import tango.util.time.Clock;
 
 private import Integer = tango.text.convert.Integer;
 
@@ -61,7 +61,7 @@ class Telnet
         body
         {
                 // At end_time, we bail.
-                Time end_time = cast(Time) (Utc.now + this.timeout);
+                Time end_time = cast(Time) (Clock.now + this.timeout);
 
                 // Set up a SocketSet so we can use select() - it's pretty efficient.
                 SocketSet set = new SocketSet();
@@ -69,7 +69,7 @@ class Telnet
                         delete set;
 
                 size_t pos = 0;
-                while (Utc.now < end_time)
+                while (Clock.now < end_time)
                 {
                         set.reset();
                         set.add(this.socket);
@@ -100,7 +100,7 @@ class Telnet
         char[] readLine()
         {
                 // Figure, first, how long we're allowed to take.
-                Time end_time = cast(Time) (Utc.now + this.timeout);
+                Time end_time = cast(Time) (Clock.now + this.timeout);
 
                 // An overall buffer and a one-char buffer.
                 char[] buffer;
@@ -128,7 +128,7 @@ class Telnet
                 scope (exit)
                         delete set;
 
-                while (Utc.now < end_time)
+                while (Clock.now < end_time)
                 {
                         set.reset();
                         set.add(this.socket);

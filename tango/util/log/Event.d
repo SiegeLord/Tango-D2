@@ -17,7 +17,7 @@ version = UseEventFreeList;
 
 private import  tango.sys.Common;
 
-private import  tango.util.time.Utc;
+private import  tango.util.time.Clock;
 
 private import  tango.util.log.model.ILevel,
                 tango.util.log.model.IHierarchy;
@@ -139,7 +139,7 @@ public class Event : ILevel
         {
                 version (Posix)       
                 {
-                        beginTime = Utc.now;
+                        beginTime = Clock.now;
                 }
 
                 version (Win32)
@@ -151,7 +151,7 @@ public class Event : ILevel
                         
                         QueryPerformanceCounter (&timerStart);
                         multiplier = 10_000_000.0 / freq;       
-                        beginTime = Utc.now;
+                        beginTime = Clock.now;
 
                 }
         }
@@ -177,7 +177,7 @@ public class Event : ILevel
         {
                 version (Posix)       
                 {
-                        return Utc.now;
+                        return Clock.now;
                 }
 
                 version (Win32)

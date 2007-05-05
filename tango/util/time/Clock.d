@@ -10,7 +10,7 @@
 
 *******************************************************************************/
 
-module tango.util.time.Utc;
+module tango.util.time.Clock;
 
 private import  tango.sys.Common;
 
@@ -34,7 +34,7 @@ public  import  tango.core.Type : Time;
 
 *******************************************************************************/
 
-struct Utc
+struct Clock
 {
         version (Win32)
         {
@@ -277,12 +277,12 @@ debug (UnitTest)
 {
         unittest 
         {
-                auto time = Utc.now;
-                assert (Utc.convert(Utc.convert(time)) is time);
+                auto time = Clock.now;
+                assert (Clock.convert(Clock.convert(time)) is time);
 
                 time = cast(Time) ((time / Time.TicksPerSecond) * Time.TicksPerSecond);
-                auto date = Utc.toDate(time);
+                auto date = Clock.toDate(time);
 
-                assert (time is Utc.fromDate(date));
+                assert (time is Clock.fromDate(date));
         }
 }

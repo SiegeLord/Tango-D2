@@ -19,9 +19,10 @@ private import  tango.sys.Common;
 
 private import  tango.io.FileConst;
 
-private import  tango.util.time.Utc;
-
 private import  tango.core.Exception;
+
+private import  tango.util.time.Clock;
+
 
 /*******************************************************************************
 
@@ -920,9 +921,9 @@ class FilePath : PathView
                         Stamps                    time = void;
 
                         getInfo (info);
-                        time.modified = Utc.convert (info.ftLastWriteTime);
-                        time.accessed = Utc.convert (info.ftLastAccessTime);
-                        time.created  = Utc.convert (info.ftCreationTime);
+                        time.modified = Clock.convert (info.ftLastWriteTime);
+                        time.accessed = Clock.convert (info.ftLastAccessTime);
+                        time.created  = Clock.convert (info.ftCreationTime);
                         return time;
                 }
 
@@ -1222,9 +1223,9 @@ class FilePath : PathView
 
                         getInfo (stats);
 
-                        time.modified = Utc.convert (*cast(timeval*) &stats.st_mtime);
-                        time.accessed = Utc.convert (*cast(timeval*) &stats.st_atime);
-                        time.created  = Utc.convert (*cast(timeval*) &stats.st_ctime);
+                        time.modified = Clock.convert (*cast(timeval*) &stats.st_mtime);
+                        time.accessed = Clock.convert (*cast(timeval*) &stats.st_atime);
+                        time.created  = Clock.convert (*cast(timeval*) &stats.st_ctime);
                         return time;
                 }
 

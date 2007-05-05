@@ -24,7 +24,7 @@ private
     import tango.net.Socket;
     import tango.net.SocketConduit;
     import tango.net.ServerSocket;
-    import tango.util.time.Utc;
+    import tango.util.time.Clock;
     import tango.util.log.Log;
     import tango.util.log.ConsoleAppender;
     import tango.util.log.DateLayout;
@@ -102,7 +102,7 @@ void testSelector(ISelector selector)
     uint        failedSendCount     = 0;
     uint        closeCount          = 0;
     uint        errorCount          = 0;
-    Time        start               = Utc.now;
+    Time        start               = Clock.now;
     Thread      clientThread;
 
     selector.open(HANDLE_COUNT, EVENT_COUNT);
@@ -293,7 +293,7 @@ void testSelector(ISelector selector)
     log.info(sprint("Failure: connect={0}, recv={1}; send={2}; error={3}", 
                     failedConnectCount, failedReceiveCount, failedSendCount, errorCount));
 
-    log.info(sprint("Total time: {0} ms", cast(uint) ((Utc.now - start) / start.TicksPerMillisecond)));
+    log.info(sprint("Total time: {0} ms", cast(uint) ((Clock.now - start) / start.TicksPerMillisecond)));
 
     clientThread.join();
 

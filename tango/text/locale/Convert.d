@@ -12,14 +12,14 @@
 
 module tango.text.locale.Convert;
 
-private import tango.text.locale.Core;
+private import  tango.text.locale.Core;
 
-private import  tango.util.time.Wall,
-                tango.util.time.DateTime;
+private import  tango.util.time.DateTime,
+                tango.util.time.WallClock;
 
 private import  tango.util.time.chrono.Calendar;
 
-private import Integer = tango.text.convert.Integer;
+private import  Integer = tango.text.convert.Integer;
 
 /******************************************************************************
 
@@ -411,7 +411,7 @@ version (Full)
 }
 else
 {
-                                  auto minutes = cast(int) (Wall.zone / Time.TicksPerMinute);
+                                  auto minutes = cast(int) (WallClock.zone / Time.TicksPerMinute);
                                   if (minutes < 0)
                                       minutes = -minutes, result ~= '-';
                                   else

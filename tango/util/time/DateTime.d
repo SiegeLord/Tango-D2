@@ -5,7 +5,7 @@
         license:        BSD style: $(LICENSE)
 
         version:        mid 2005: Initial release
-                        Apr 2007: reshaped
+                        Apr 2007: heavily reshaped
 
         author:         John Chapman, Kris
 
@@ -13,8 +13,8 @@
 
 module tango.util.time.DateTime;
 
-private import tango.util.time.Utc;
-private import tango.util.time.Wall;
+private import  tango.util.time.Clock,
+                tango.util.time.WallClock;
 
 /******************************************************************************
 
@@ -158,7 +158,7 @@ struct DateTime
 
         static DateTime now () 
         {
-                return DateTime (Wall.now);
+                return DateTime (WallClock.now);
         }
 
         /**********************************************************************
@@ -173,7 +173,7 @@ struct DateTime
 
         static DateTime utc () 
         {
-                return DateTime (Utc.now);
+                return DateTime (Clock.now);
         }
 
         /**********************************************************************

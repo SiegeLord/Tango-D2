@@ -17,8 +17,8 @@ private import  tango.util.log.Event,
 
 private import  tango.text.Util;
 
-private import  tango.util.time.Utc,
-                tango.util.time.Wall;
+private import  tango.util.time.Clock,
+                tango.util.time.WallClock;
 
 private import  Int = tango.text.convert.Integer;
 
@@ -59,7 +59,7 @@ public class DateLayout : Layout
                 
                 // convert time to field values
                 auto time = event.getEpochTime;
-                auto date = (localTime) ? Wall.toDate(time) : Utc.toDate(time);
+                auto date = (localTime) ? WallClock.toDate(time) : Clock.toDate(time);
                                 
                 // format date according to ISO-8601 (lightweight formatter)
                 char[20] tmp = void;

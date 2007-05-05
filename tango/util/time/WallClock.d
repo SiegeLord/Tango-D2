@@ -10,18 +10,18 @@
 
 *******************************************************************************/
 
-module tango.util.time.Wall;
+module tango.util.time.WallClock;
 
 private import  tango.sys.Common;
 
-private import  tango.util.time.Utc,
-                tango.util.time.Date;
+private import  tango.util.time.Date,
+                tango.util.time.Clock;
 
 public  import  tango.core.Type : Time;
 
 /******************************************************************************
 
-        Exposes Wall time relative to Jan 1st, 1 AD. These values are
+        Exposes wall-time relative to Jan 1st, 1 AD. These values are
         based upon a clock-tick of 100ns, giving them a span of greater
         than 10,000 years. Units of Time are the foundation of most time
         and date functionality in Tango.
@@ -36,7 +36,7 @@ public  import  tango.core.Type : Time;
 
 *******************************************************************************/
 
-struct Wall
+struct WallClock
 {
         version (Win32)
         {
@@ -48,7 +48,7 @@ struct Wall
 
                 static Time now ()
                 {
-                        return cast(Time) (Utc.now - localBias);
+                        return cast(Time) (Clock.now - localBias);
                 }
 
                 /***************************************************************
@@ -76,7 +76,7 @@ struct Wall
 
                 static Date toDate ()
                 {
-                        return toDate (Utc.now);
+                        return toDate (Clock.now);
                 }
 
                 /***************************************************************
@@ -89,7 +89,7 @@ struct Wall
 
                 static Date toDate (Time time)
                 {
-                        return Utc.toDate (cast(Time) (time - localBias));
+                        return Clock.toDate (cast(Time) (time - localBias));
                 }
 
                 /***************************************************************
@@ -100,7 +100,7 @@ struct Wall
 
                 static Time fromDate (inout Date date)
                 {
-                        return cast(Time) (Utc.fromDate(date) + localBias);
+                        return cast(Time) (Clock.fromDate(date) + localBias);
                 }
 
                 /***************************************************************
@@ -149,7 +149,7 @@ struct Wall
                         gettimeofday (&tv, null);
                         localtime_r (&tv.tv_sec, &t);
                         tv.tv_sec = timegm (&t);
-                        return Utc.convert (tv);
+                        return Clock.convert (tv);
                 }
 
                 /***************************************************************
@@ -181,7 +181,7 @@ struct Wall
 
                 static Date toDate ()
                 {
-                        return toDate (Utc.now);
+                        return toDate (Clock.now);
                 }
 
                 /***************************************************************
@@ -195,7 +195,7 @@ struct Wall
                 static Date toDate (Time time)
                 {
                         Date date = void;
-                        auto timeval = Utc.convert (time);
+                        auto timeval = Clock.convert (time);
                         date.ms = timeval.tv_usec / 1000;
 
                         tm t = void;
