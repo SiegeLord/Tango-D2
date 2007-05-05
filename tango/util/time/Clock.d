@@ -130,7 +130,7 @@ struct Clock
 
                 ***************************************************************/
 
-                static Time convert (FILETIME time)
+                package static Time convert (FILETIME time)
                 {
                         return cast(Time) (Time.TicksTo1601 + *cast(ulong*) &time);
                 }
@@ -141,7 +141,7 @@ struct Clock
 
                 ***************************************************************/
 
-                static FILETIME convert (Time span)
+                package static FILETIME convert (Time span)
                 {
                         FILETIME time = void;
 
@@ -246,7 +246,7 @@ struct Clock
 
                 ***************************************************************/
 
-                static Time convert (inout timeval tv)
+                package static Time convert (inout timeval tv)
                 {
                         return cast(Time) (Time.TicksTo1970 + (1_000_000L * tv.tv_sec + tv.tv_usec) * 10);
                 }
@@ -257,7 +257,7 @@ struct Clock
 
                 ***************************************************************/
 
-                static timeval convert (Time time)
+                package static timeval convert (Time time)
                 {
                         timeval tv = void;
 
