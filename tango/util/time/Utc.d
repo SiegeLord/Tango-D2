@@ -16,7 +16,9 @@ private import  tango.sys.Common;
 
 private import  tango.core.Exception;
 
-public  import  tango.core.Type : Interval, Time;
+private import  tango.util.time.Date;
+
+public  import  tango.core.Type : Time;
 
 /******************************************************************************
 
@@ -46,6 +48,68 @@ struct Utc
                 {
                         FILETIME fTime = void;
                         GetSystemTimeAsFileTime (&fTime);
+                        return convert (fTime);
+                }
+
+                /***************************************************************
+
+                        Set fields to represent the current time. 
+
+                ***************************************************************/
+
+                static Date toDate ()
+                {
+                        return toDate (now);
+                }
+
+                /***************************************************************
+
+                        Set fields to represent the provided time. The
+                        value must fall within the domain supported by
+                        the OS
+
+                ***************************************************************/
+
+                static Date toDate (Time time)
+                {
+                        Date date = void;
+                        SYSTEMTIME sTime = void;
+
+                        auto fTime = convert (time);
+                        FileTimeToSystemTime (&fTime, &sTime);
+
+                        date.year  = sTime.wYear;
+                        date.month = sTime.wMonth;
+                        date.day   = sTime.wDay;
+                        date.hour  = sTime.wHour;
+                        date.min   = sTime.wMinute;
+                        date.sec   = sTime.wSecond;
+                        date.ms    = sTime.wMilliseconds;
+                        date.dow   = sTime.wDayOfWeek;
+                        return date;
+                }
+
+                /***************************************************************
+
+                        Convert fields to UTC
+
+                ***************************************************************/
+
+                static Time fromDate (inout Date date)
+                {
+                        SYSTEMTIME sTime = void;
+                        FILETIME   fTime = void;
+
+                        sTime.wYear         = cast(ushort) date.year;
+                        sTime.wMonth        = cast(ushort) date.month;
+                        sTime.wDayOfWeek    = 0;
+                        sTime.wDay          = cast(ushort) date.day;
+                        sTime.wHour         = cast(ushort) date.hour;
+                        sTime.wMinute       = cast(ushort) date.min;
+                        sTime.wSecond       = cast(ushort) date.sec;
+                        sTime.wMilliseconds = cast(ushort) date.ms;
+
+                        SystemTimeToFileTime (&sTime, &fTime);
                         return convert (fTime);
                 }
 
@@ -96,6 +160,66 @@ struct Utc
 
                 /***************************************************************
 
+                        Set fields to represent the current time. 
+
+                ***************************************************************/
+
+                static Date toDate ()
+                {
+                        return toDate (now);
+                }
+
+                /***************************************************************
+
+                        Set fields to represent the provided UTC time. All
+                        time values must fall within the domain supported by
+                        the OS
+
+                **************************************************************/
+
+                static Date toDate (Time time)
+                {
+                        auto timeval = convert (time);
+                        date.ms = timeval.tv_usec / 1000;
+
+                        tm t = void;
+                        gmtime_r (&timeval.tv_sec, &t);
+        
+                        date.year  = t.tm_year + 1900;
+                        date.month = t.tm_mon + 1;
+                        date.day   = t.tm_mday;
+                        date.hour  = t.tm_hour;
+                        date.min   = t.tm_min;
+                        date.sec   = t.tm_sec;
+                        date.dow   = t.tm_wday;
+                        return Date;
+                }
+
+                /***************************************************************
+
+                        Convert fields to UTC time
+
+                ***************************************************************/
+
+                static Time fromDate (inout Date date)
+                {
+                        tm t = void;
+
+                        t.tm_year = date.year - 1900;
+                        t.tm_mon  = date.month - 1;
+                        t.tm_mday = date.day;
+                        t.tm_hour = date.hour;
+                        t.tm_min  = date.min;
+                        t.tm_sec  = date.sec;
+
+                        auto seconds = timegm (&t);
+                        return cast(Time) (Time.TicksTo1970 +
+                                           Time.TicksPerSecond * seconds +
+                                           Time.TicksPerMillisecond * date.ms);
+                }
+
+                /***************************************************************
+
                         Convert timeval to a Time
 
                 ***************************************************************/
@@ -124,6 +248,7 @@ struct Utc
                 }
         }
 }
+
 
 
 debug (UnitTest)

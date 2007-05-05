@@ -31,7 +31,8 @@ module tango.text.convert.TimeStamp;
 
 private import tango.core.Exception;
 
-private import tango.util.time.Date;
+private import tango.util.time.Utc,
+               tango.util.time.Date;
 
 private import Util = tango.text.Util;
 
@@ -120,21 +121,26 @@ T[] format(T, U=Time) (T[] output, U time)
 
 T[] format(T) (T[] output, Time time)
 {
-        // these arrays also reside in Epoch, but need to be templated here
+        // these arrays also reside in Date, but need to be templated here
         static T[][] Months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun",
                                "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
 
         // ditto
         static T[][] Days = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
 
+        T[] convert (T[] tmp, int i)
+        {
+                return Int.format!(T) (tmp, i, Int.Style.Unsigned, Int.Flags.Zero);
+        }
+
+
         assert (output.length >= 29);
 
         if (time is time.max)
-            throw new IllegalArgumentException ("TimeStamp.format :: invalid epoch argument");
+            throw new IllegalArgumentException ("TimeStamp.format :: invalid Time argument");
 
         // convert time to field values
-        Date date;
-        date.set (time);
+        auto date = Utc.toDate (time);
 
         // use the featherweight formatter ...
         T[14] tmp = void;
@@ -149,16 +155,6 @@ T[] format(T) (T[] output, Time time)
                            );
 }
 
-/******************************************************************************
-
-        Convert an integer to a zero prefixed text representation
-        
-******************************************************************************/
-
-private T[] convert(T) (T[] tmp, int i)
-{
-        return Int.format!(T) (tmp, i, Int.Style.Unsigned, Int.Flags.Zero);
-}
 
 /******************************************************************************
 
@@ -220,7 +216,7 @@ int rfc1123(T) (T[] src, inout Time value)
             *p++ == ' '           &&
             p[0..3] == "GMT")
             {
-            value = date.get();
+            value = Utc.fromDate (date);
             return (p+3) - src.ptr;
             }
 
@@ -266,7 +262,7 @@ int rfc850(T) (T[] src, inout Time value)
                if (date.year < 100)
                    date.year += 1900;
 
-            value = date.get();
+            value = Utc.fromDate (date);
             return (p+3) - src.ptr;
             }
 
@@ -305,7 +301,7 @@ int asctime(T) (T[] src, inout Time value)
             *p++ == ' '           &&
             (date.year = parseInt (p)) > 0)
             {
-            value = date.get();
+            value = Utc.fromDate (date);
             return p - src.ptr;
             }
 
@@ -351,7 +347,7 @@ int dostime(T) (T[] src, inout Time value)
                if (date.year < 100)
                    date.year += 1900;
             
-            value = date.get();
+            value = Utc.fromDate (date);
             return (p+2) - src.ptr;
             }
 
@@ -387,7 +383,7 @@ int iso8601(T) (T[] src, inout Time value)
             *p++ == ','    &&
             (date.ms = parseInt(p)) > 0)
             {
-            value = date.get();
+            value = Utc.fromDate (date);
             return p - src.ptr;
             }
 

@@ -14,7 +14,8 @@ module tango.util.time.Wall;
 
 private import  tango.sys.Common;
 
-private import  tango.util.time.Utc;
+private import  tango.util.time.Utc,
+                tango.util.time.Date;
 
 /******************************************************************************
 
@@ -45,23 +46,7 @@ struct Wall
 
                 static Time now ()
                 {
-                        int bias;
-                        TIME_ZONE_INFORMATION tz = void;
-
-                        switch (GetTimeZoneInformation (&tz))
-                               {
-                               default:
-                                    bias = tz.Bias;
-                                    break;
-                               case 1:
-                                    bias = tz.Bias + tz.StandardBias;
-                                    break;
-                               case 2:
-                                    bias = tz.Bias + tz.DaylightBias;
-                                    break;
-                               }
-
-                        return cast(Time) (Utc.now - (Time.TicksPerMinute * bias));
+                        return cast(Time) (Utc.now - localBias);
                 }
 
                 /***************************************************************
@@ -78,6 +63,73 @@ struct Wall
                         auto tmp = GetTimeZoneInformation (&tz);
                         return cast(Time) (-Time.TicksPerMinute * tz.Bias);
                 }
+
+                /***************************************************************
+
+                        Set fields to represent a local version of the 
+                        current UTC time. All values must fall within 
+                        the domain supported by the OS
+
+                ***************************************************************/
+
+                static Date toDate ()
+                {
+                        return toDate (Utc.now);
+                }
+
+                /***************************************************************
+
+                        Set fields to represent a local version of the 
+                        provided UTC time. All values must fall within 
+                        the domain supported by the OS
+
+                ***************************************************************/
+
+                static Date toDate (Time time)
+                {
+                        return Utc.toDate (cast(Time) (time - localBias));
+                }
+
+                /***************************************************************
+
+                        Convert fields to local time
+
+                ***************************************************************/
+
+                static Time fromDate (inout Date date)
+                {
+                        return cast(Time) (Utc.fromDate(date) + localBias);
+                }
+
+                /***************************************************************
+
+                        Retrieve the local bias, including DST adjustment.
+                        Note that Win32 calculates DST at the time of call
+                        rather than based upon a point in time represented
+                        by an argument.
+                         
+                ***************************************************************/
+
+                private static long localBias () 
+                { 
+                       int bias; 
+                       TIME_ZONE_INFORMATION tz = void; 
+
+                       switch (GetTimeZoneInformation (&tz)) 
+                              { 
+                              default: 
+                                   bias = tz.Bias; 
+                                   break; 
+                              case 1: 
+                                   bias = tz.Bias + tz.StandardBias; 
+                                   break; 
+                              case 2: 
+                                   bias = tz.Bias + tz.DaylightBias; 
+                                   break; 
+                              } 
+
+                       return Time.TicksPerMinute * bias; 
+               }
         }
 
         version (Posix)
@@ -115,6 +167,69 @@ struct Wall
                                 }
                              else
                                 return cast(Time) (-Time.TicksPerSecond * timezone);
+                }
+
+                /***************************************************************
+
+                        Set fields to represent a local version of the 
+                        current UTC time. All values must fall within 
+                        the domain supported by the OS
+
+                ***************************************************************/
+
+                static Date toDate ()
+                {
+                        return toDate (Utc.now);
+                }
+
+                /***************************************************************
+
+                        Set fields to represent a local version of the 
+                        provided UTC time. All values must fall within 
+                        the domain supported by the OS
+
+                ***************************************************************/
+
+                static Date toDate (Time time)
+                {
+                        Date date = void;
+                        auto timeval = Utc.convert (time);
+                        date.ms = timeval.tv_usec / 1000;
+
+                        tm t = void;
+                        localtime_r (&timeval.tv_sec, &t);
+        
+                        date.year  = t.tm_year + 1900;
+                        date.month = t.tm_mon + 1;
+                        date.day   = t.tm_mday;
+                        date.hour  = t.tm_hour;
+                        date.min   = t.tm_min;
+                        date.sec   = t.tm_sec;
+                        date.dow   = t.tm_wday;
+                        return date;
+                }
+
+                /***************************************************************
+
+                        Convert Date fields to local time
+
+                ***************************************************************/
+
+                static Time fromDate (inout Date date)
+                {
+                        tm t = void;
+
+                        t.tm_year = date.year - 1900;
+                        t.tm_mon  = date.month - 1;
+                        t.tm_mday = date.day;
+                        t.tm_hour = date.hour;
+                        t.tm_min  = date.min;
+                        t.tm_sec  = date.sec;
+
+                        auto seconds = mktime (&t);
+                        return cast(Time) (Time.TicksTo1970 +
+                                           Time.TicksPerSecond * seconds +
+                                           Time.TicksPerMillisecond * date.ms);
                 }
         }
 }

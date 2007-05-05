@@ -18,10 +18,8 @@ private import  tango.util.time.Wall,
 
 void main ()
 {
-        Date date;
-
-        // set current local time
-        date.set (Wall.now);
+        // retreive local time
+        auto date = Wall.toDate;
 
         // get GMT difference in minutes
         auto tz = cast(int) (Wall.zone / Time.TicksPerMinute);

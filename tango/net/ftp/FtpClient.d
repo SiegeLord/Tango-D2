@@ -1351,7 +1351,7 @@ class FTPConnection : Telnet
         date.hour  = Integer.atoi (timeval[8..10]);
         date.min   = Integer.atoi (timeval[10..12]);
         date.sec   = Integer.atoi (timeval[12..14]);
-        return date.get;
+        return Utc.fromDate (date);
     }
 
     /// Get the modification time of a file.
