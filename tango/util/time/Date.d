@@ -16,40 +16,23 @@ private import tango.sys.Common;
 
 private import tango.util.time.Utc;
 
-public  import tango.core.Type : Time;
-
 /*******************************************************************************
 
         Date exposes the underlying OS support for splitting date fields
         to and from a set of discrete attributes. For example, to set all
-        fields to the current local time:
+        fields to the current UTC time:
         ---
-        Date date;
-
-        date.setLocal (Utc.time);
+        auto date = Utc.toDate;
         ---
-
-        Attributes exposed include year, month, day, hour, minute, second,
-        millisecond, and day of week. Methods exposed include setting each
-        of discrete time & date values, and converting fields to instances
-        of Time. Note that the conversion is limited by the underlying OS,
-        and will not operate correctly with Time values beyond the domain.
-        On Win32 the earliest representable date is 1601. On linux it is
-        1970. Both systems have limitations upon future dates also. Date 
-        is limited to millisecond accuracy at best.
 
         Note that Date does not provide general conversion to and from
-        textual representations, since that requires support for both I18N
+        textual representations, since that requires support for locales
         and wide characters. However, it does support basic short English
         names that are used in a variety of text representations.
 
-        Note also that conversion between UTC and local time is performed
-        in accordance with the OS facilities. In particular, Win32 systems
-        behave differently to Posix when calculating daylight-savings time
-        (Win32 calculates with respect to the time of the call, whereas a
-        Posix system calculates based on a provided point in time). Posix
-        systems should typically have the TZ environment variable set to 
-        a valid descriptor.
+        Attributes exposed include year, month, day, hour, minute, second,
+        millisecond, and day of week. Methods include setting time & date 
+        values.
 
         See TimeStamp.d for an example of a simple derivation, and see
         http://en.wikipedia.org/wiki/Unix_time for details on UTC time.

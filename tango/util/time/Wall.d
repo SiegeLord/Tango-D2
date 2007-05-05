@@ -17,6 +17,8 @@ private import  tango.sys.Common;
 private import  tango.util.time.Utc,
                 tango.util.time.Date;
 
+public  import  tango.core.Type : Time;
+
 /******************************************************************************
 
         Exposes Wall time relative to Jan 1st, 1 AD. These values are
@@ -24,7 +26,7 @@ private import  tango.util.time.Utc,
         than 10,000 years. Units of Time are the foundation of most time
         and date functionality in Tango.
 
-        Please note that conversion between UTC and local time is performed
+        Please note that conversion between UTC and Wall time is performed
         in accordance with the OS facilities. In particular, Win32 systems
         behave differently to Posix when calculating daylight-savings time
         (Win32 calculates with respect to the time of the call, whereas a
@@ -92,7 +94,7 @@ struct Wall
 
                 /***************************************************************
 
-                        Convert fields to local time
+                        Convert Date fields to local time
 
                 ***************************************************************/
 

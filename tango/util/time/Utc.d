@@ -14,9 +14,9 @@ module tango.util.time.Utc;
 
 private import  tango.sys.Common;
 
-private import  tango.core.Exception;
-
 private import  tango.util.time.Date;
+
+private import  tango.core.Exception;
 
 public  import  tango.core.Type : Time;
 
@@ -53,7 +53,7 @@ struct Utc
 
                 /***************************************************************
 
-                        Set fields to represent the current time. 
+                        Set Date fields to represent the current time. 
 
                 ***************************************************************/
 
@@ -64,9 +64,13 @@ struct Utc
 
                 /***************************************************************
 
-                        Set fields to represent the provided time. The
-                        value must fall within the domain supported by
-                        the OS
+                        Set fields to represent the provided UTC time. Note 
+                        that the conversion is limited by the underlying OS,
+                        and will fail to operate correctly with Time values 
+                        beyond the domain. On Win32 the earliest representable 
+                        date is 1601. On linux it is 1970. Both systems have 
+                        limitations upon future dates also. Date is limited 
+                        to millisecond accuracy at best.
 
                 ***************************************************************/
 
@@ -91,7 +95,14 @@ struct Utc
 
                 /***************************************************************
 
-                        Convert fields to UTC
+                        Convert Date fields to UTC
+
+                        Note that the conversion is limited by the underlying 
+                        OS, and will not operate correctly with Time values 
+                        beyond the domain. On Win32 the earliest representable 
+                        date is 1601. On linux it is 1970. Both systems have 
+                        limitations upon future dates also. Date is limited 
+                        to millisecond accuracy at best.
 
                 ***************************************************************/
 
@@ -160,7 +171,7 @@ struct Utc
 
                 /***************************************************************
 
-                        Set fields to represent the current time. 
+                        Set Date fields to represent the current time. 
 
                 ***************************************************************/
 
@@ -171,9 +182,13 @@ struct Utc
 
                 /***************************************************************
 
-                        Set fields to represent the provided UTC time. All
-                        time values must fall within the domain supported by
-                        the OS
+                        Set fields to represent the provided UTC time. Note 
+                        that the conversion is limited by the underlying OS,
+                        and will fail to operate correctly with Time values 
+                        beyond the domain. On Win32 the earliest representable 
+                        date is 1601. On linux it is 1970. Both systems have 
+                        limitations upon future dates also. Date is limited 
+                        to millisecond accuracy at best.
 
                 **************************************************************/
 
@@ -197,7 +212,14 @@ struct Utc
 
                 /***************************************************************
 
-                        Convert fields to UTC time
+                        Convert Date fields to UTC
+
+                        Note that the conversion is limited by the underlying 
+                        OS, and will not operate correctly with Time values 
+                        beyond the domain. On Win32 the earliest representable 
+                        date is 1601. On linux it is 1970. Both systems have 
+                        limitations upon future dates also. Date is limited 
+                        to millisecond accuracy at best.
 
                 ***************************************************************/
 

@@ -1,13 +1,12 @@
 /*******************************************************************************
 
-        @file localtime.d
+        localtime.d
         
 *******************************************************************************/
 
 private import  tango.io.Stdout;
 
-private import  tango.util.time.Wall,
-                tango.util.time.Date;
+private import  tango.util.time.Wall;
 
 /******************************************************************************
 
