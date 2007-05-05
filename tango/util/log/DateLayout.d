@@ -18,8 +18,7 @@ private import  tango.util.log.Event,
 private import  tango.text.Util;
 
 private import  tango.util.time.Utc,
-                tango.util.time.Wall,
-                tango.util.time.Date;
+                tango.util.time.Wall;
 
 private import  Int = tango.text.convert.Integer;
 
