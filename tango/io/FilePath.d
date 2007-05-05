@@ -21,8 +21,7 @@ private import  tango.io.FileConst;
 
 private import  tango.core.Exception;
 
-private import  tango.util.time.Clock;
-
+private import  tango.core.Type : Time;
 
 /*******************************************************************************
 
@@ -917,13 +916,18 @@ class FilePath : PathView
 
                 final Stamps timeStamps ()
                 {
+                        static Time convert (FILETIME time)
+                        {
+                                return cast(Time) (Time.TicksTo1601 + *cast(ulong*) &time);
+                        }
+
                         WIN32_FILE_ATTRIBUTE_DATA info = void;
                         Stamps                    time = void;
 
                         getInfo (info);
-                        time.modified = Clock.convert (info.ftLastWriteTime);
-                        time.accessed = Clock.convert (info.ftLastAccessTime);
-                        time.created  = Clock.convert (info.ftCreationTime);
+                        time.modified = convert (info.ftLastWriteTime);
+                        time.accessed = convert (info.ftLastAccessTime);
+                        time.created  = convert (info.ftCreationTime);
                         return time;
                 }
 
@@ -1218,14 +1222,20 @@ class FilePath : PathView
 
                 final Stamps timeStamps ()
                 {
+                        static Time convert (timeval* tv)
+                        {
+                                return cast(Time) (Time.TicksTo1970 + (1_000_000L * 
+                                                   tv.tv_sec + tv.tv_usec) * 10);
+                        }
+
                         stat_t stats = void;
                         Stamps time  = void;
 
                         getInfo (stats);
 
-                        time.modified = Clock.convert (*cast(timeval*) &stats.st_mtime);
-                        time.accessed = Clock.convert (*cast(timeval*) &stats.st_atime);
-                        time.created  = Clock.convert (*cast(timeval*) &stats.st_ctime);
+                        time.modified = convert (*cast(timeval*) &stats.st_mtime);
+                        time.accessed = convert (*cast(timeval*) &stats.st_atime);
+                        time.created  = convert (*cast(timeval*) &stats.st_ctime);
                         return time;
                 }
 
