@@ -1,6 +1,6 @@
 Index: object.di
 ===================================================================
---- object.di	(revision 2118)
+--- object.di	(revision 2167)
 +++ object.di	(working copy)
 @@ -47,13 +47,10 @@
      // 8:       // has constructors
@@ -18,7 +18,7 @@ Index: object.di
  struct OffsetTypeInfo
 Index: lib/common/tango/core/Thread.d
 ===================================================================
---- lib/common/tango/core/Thread.d	(revision 2118)
+--- lib/common/tango/core/Thread.d	(revision 2167)
 +++ lib/common/tango/core/Thread.d	(working copy)
 @@ -831,7 +831,8 @@
              {
@@ -42,47 +42,104 @@ Index: lib/common/tango/core/Thread.d
              }
 Index: lib/compiler/gdc/genobj.d
 ===================================================================
---- lib/compiler/gdc/genobj.d	(revision 2118)
+--- lib/compiler/gdc/genobj.d	(revision 2167)
 +++ lib/compiler/gdc/genobj.d	(working copy)
-@@ -155,6 +155,41 @@
-     //  4:                      // has offTi[] member
-     void *deallocator;
+@@ -156,7 +156,6 @@
+     //  8:                      // has constructors
+     void*       deallocator;
      OffsetTypeInfo[] offTi;
-+    void function(Object) defaultConstructor;   // default Constructor
-+
-+    /**
-+     * Search all modules for ClassInfo corresponding to classname.
-+     * Returns: null if not found
-+     */
-+    static ClassInfo find(char[] classname)
-+    {
-+        foreach (m; ModuleInfo.modules())
-+        {
-+            //writefln("module %s, %d", m.name, m.localClasses.length);
-+            foreach (c; m.localClasses)
-+            {
-+                //writefln("\tclass %s", c.name);
-+                if (c.name == classname)
-+                    return c;
-+            }
-+        }
-+        return null;
-+    }
-+
-+    /**
-+     * Create instance of Object represented by 'this'.
-+     */
-+    Object create()
-+    {
-+        if (flags & 8 && !defaultConstructor)
-+            return null;
-+        Object o = _d_newclass(this);
-+        if (flags & 8 && defaultConstructor)
-+        {
-+            defaultConstructor(o);
-+        }
-+        return o;
-+    }
+-/+
+     void function(Object) defaultConstructor;   // default Constructor
+ 
+     /**
+@@ -192,7 +191,6 @@
+         }
+         return o;
+     }
+-+/
  }
  
- 
+ /**
+Index: patches/GDC-0.24-SVN.diff
+===================================================================
+--- patches/GDC-0.24-SVN.diff	(revision 2167)
++++ patches/GDC-0.24-SVN.diff	(working copy)
+@@ -1,6 +1,6 @@
+ Index: object.di
+ ===================================================================
+---- object.di	(revision 2118)
++--- object.di	(revision 2167)
+ +++ object.di	(working copy)
+ @@ -47,13 +47,10 @@
+      // 8:       // has constructors
+@@ -18,7 +18,7 @@
+  struct OffsetTypeInfo
+ Index: lib/common/tango/core/Thread.d
+ ===================================================================
+---- lib/common/tango/core/Thread.d	(revision 2118)
++--- lib/common/tango/core/Thread.d	(revision 2167)
+ +++ lib/common/tango/core/Thread.d	(working copy)
+ @@ -831,7 +831,8 @@
+              {
+@@ -42,47 +42,21 @@
+              }
+ Index: lib/compiler/gdc/genobj.d
+ ===================================================================
+---- lib/compiler/gdc/genobj.d	(revision 2118)
++--- lib/compiler/gdc/genobj.d	(revision 2167)
+ +++ lib/compiler/gdc/genobj.d	(working copy)
+-@@ -155,6 +155,41 @@
+-     //  4:                      // has offTi[] member
+-     void *deallocator;
++@@ -156,7 +156,6 @@
++     //  8:                      // has constructors
++     void*       deallocator;
+      OffsetTypeInfo[] offTi;
+-+    void function(Object) defaultConstructor;   // default Constructor
+-+
+-+    /**
+-+     * Search all modules for ClassInfo corresponding to classname.
+-+     * Returns: null if not found
+-+     */
+-+    static ClassInfo find(char[] classname)
+-+    {
+-+        foreach (m; ModuleInfo.modules())
+-+        {
+-+            //writefln("module %s, %d", m.name, m.localClasses.length);
+-+            foreach (c; m.localClasses)
+-+            {
+-+                //writefln("\tclass %s", c.name);
+-+                if (c.name == classname)
+-+                    return c;
+-+            }
+-+        }
+-+        return null;
+-+    }
+-+
+-+    /**
+-+     * Create instance of Object represented by 'this'.
+-+     */
+-+    Object create()
+-+    {
+-+        if (flags & 8 && !defaultConstructor)
+-+            return null;
+-+        Object o = _d_newclass(this);
+-+        if (flags & 8 && defaultConstructor)
+-+        {
+-+            defaultConstructor(o);
+-+        }
+-+        return o;
+-+    }
++-/+
++     void function(Object) defaultConstructor;   // default Constructor
++ 
++     /**
++@@ -192,7 +191,6 @@
++         }
++         return o;
++     }
++-+/
+  }
+  
+- 
++ /**
