@@ -1233,9 +1233,9 @@ class FilePath : PathView
 
                         getInfo (stats);
 
-                        time.modified = convert (*cast(timeval*) &stats.st_mtime);
-                        time.accessed = convert (*cast(timeval*) &stats.st_atime);
-                        time.created  = convert (*cast(timeval*) &stats.st_ctime);
+                        time.modified = convert (cast(timeval*) &stats.st_mtime);
+                        time.accessed = convert (cast(timeval*) &stats.st_atime);
+                        time.created  = convert (cast(timeval*) &stats.st_ctime);
                         return time;
                 }
 
