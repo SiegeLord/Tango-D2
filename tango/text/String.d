@@ -205,7 +205,8 @@ private extern (C) void memmove (void* dst, void* src, uint bytes);
 
 class String(T) : StringView!(T)
 {
-        public  alias slice             opIndex;
+        public  alias set               opAssign;
+        public  alias append            opCatAssign;
         private alias StringView!(T)    StringViewT;
 
         private T[]                     content;
@@ -1173,6 +1174,8 @@ class String(T) : StringView!(T)
 
 class StringView(T) : UniString
 {
+        public  alias slice opSlice;
+
         public typedef int delegate (T[] a, T[] b) Comparator;
 
         /***********************************************************************
@@ -1351,10 +1354,11 @@ class UniString
 
 debug (UnitTest)
 {
-        // void main() {}
+        //void main() {}
         unittest
         {
-        auto s = new String!(char)("hello");
+        auto s = new String!(char);
+        s = "hello";
         
         s.select ("hello");
         assert (s.selection == "hello");
@@ -1367,7 +1371,8 @@ debug (UnitTest)
         assert (s.append(12345) == "12345");
         assert (s.selection == "12345");
 
-        s.append ("fubar");
+        //s.append ("fubar");
+        s ~= "fubar";
         assert (s.selection == "12345fubar");
         assert (s.select('5'));
         assert (s.selection == "5");
