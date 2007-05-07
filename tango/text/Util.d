@@ -1176,9 +1176,9 @@ debug (UnitTest)
         auto j = join (foo);
         assert (j == "onetwothree");
         j = join (foo, ", ");
-        assert (j == "one, two, three, ");
+        assert (j == "one, two, three");
         j = join (foo, " ", tmp);
-        assert (j == "one two three ");
+        assert (j == "one two three");
         assert (j.ptr is tmp.ptr);
         }
 }
