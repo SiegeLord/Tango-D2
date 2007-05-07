@@ -194,6 +194,7 @@ struct Clock
 
                 static Date toDate (Time time)
                 {
+                        Date date = void;
                         auto timeval = convert (time);
                         date.ms = timeval.tv_usec / 1000;
 
@@ -207,7 +208,7 @@ struct Clock
                         date.min   = t.tm_min;
                         date.sec   = t.tm_sec;
                         date.dow   = t.tm_wday;
-                        return Date;
+                        return date;
                 }
 
                 /***************************************************************
