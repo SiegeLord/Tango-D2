@@ -64,11 +64,8 @@ version (Posix)
 
 public struct StopWatch
 {
-        private Interval        started;
+        private ulong  started;
         private static Interval multiplier = 1.0 / 1_000_000.0;
-
-        version (Win32)
-                 private static ulong timerStart;
 
         /***********************************************************************
                 
@@ -89,7 +86,7 @@ public struct StopWatch
         
         Interval stop ()
         {
-                return timer - started;
+                return multiplier * (timer - started);
         }
 
         /***********************************************************************
@@ -104,10 +101,7 @@ public struct StopWatch
                 {
                         ulong freq;
 
-                        if (! QueryPerformanceFrequency (&freq))
-                              throw new Exception ("high-resolution timer is not available");
-                        
-                        QueryPerformanceCounter (&timerStart);
+                        QueryPerformanceFrequency (&freq);
                         multiplier = 1.0 / freq;       
                 }
         }
@@ -118,7 +112,7 @@ public struct StopWatch
 
         ***********************************************************************/
 
-        private static Interval timer ()
+        private static ulong timer ()
         {
                 version (Posix)       
                 {
@@ -126,15 +120,17 @@ public struct StopWatch
                         if (gettimeofday (&tv, null))
                             throw new Exception ("Timer :: linux timer is not available");
 
-                        return (cast(Interval) tv.tv_sec) + tv.tv_usec * multiplier;
+                        return (cast(ulong) tv.tv_sec * 1_000_000) + tv.tv_usec;
                 }
 
                 version (Win32)
                 {
                         ulong now;
 
-                        QueryPerformanceCounter (&now);
-                        return (now - timerStart) * multiplier;
+                        if (! QueryPerformanceCounter (&now))
+                              throw new Exception ("high-resolution timer is not available");
+
+                        return now;
                 }
         }
 }
@@ -153,7 +149,7 @@ debug (StopWatch)
                 StopWatch t;
                 t.start;
 
-                for (int i=0; i < 10_000_000; ++i)
+                for (int i=0; i < 100_000_000; ++i)
                     {}
                 Stdout.format ("{:f9}", t.stop).newline;
         }
