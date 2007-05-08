@@ -1698,7 +1698,7 @@ interface PathView
 
 debug (UnitTest)
 {
-        void main() {}
+        //void main() {}
 
         unittest
         {
