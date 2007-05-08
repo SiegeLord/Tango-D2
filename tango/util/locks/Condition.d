@@ -325,7 +325,7 @@ else version (Windows)
            uses each object's implicit monitor is integrated into Tango.
 
         /**
-         * Initialize the condition variable with a generic Object to be used 
+         * Initialize the condition variable with a generic Object to be used
          * as a mutex.
          */
         public this(Object object)
@@ -348,6 +348,14 @@ else version (Windows)
             delete _waitersDone;
             delete _waitersLock;
             delete _waitersQueue;
+        }
+
+        /**
+         * Returns a reference to the underlying mutex;
+         */
+        public Mutex mutex()
+        {
+            return _externalMutex;
         }
 
         /**
