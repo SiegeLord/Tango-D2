@@ -472,7 +472,7 @@ class FileConduit : DeviceConduit, DeviceConduit.Seek
                         static const Flags Create =  
                                         [
                                         0,              // open existing
-                                        O_CREAT,        // create always
+                                        O_CREAT | O_TRUNC, // create always
                                         O_TRUNC,        // must exist
                                         O_APPEND | O_CREAT, 
                                         ];
