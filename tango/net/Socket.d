@@ -117,7 +117,6 @@ version (Win32)
         private const int IOCPARM_MASK =  0x7f;
         private const int IOC_IN =        cast(int)0x80000000;
         private const int FIONBIO =       cast(int) (IOC_IN | ((int.sizeof & IOCPARM_MASK) << 16) | (102 << 8) | 126);
-        private const int SOL_SOCKET =    0xFFFF;
 
         private const int WSADESCRIPTION_LEN = 256;
         private const int WSASYS_STATUS_LEN = 128;
@@ -191,7 +190,6 @@ version (BsdSockets)
         private const int F_GETFL       = 3;
         private const int F_SETFL       = 4;
         private const int O_NONBLOCK    = 04000;  // OCTAL! Thx to volcore
-        private const int SOL_SOCKET    = 1;
 
         extern  (C)
                 {
@@ -743,7 +741,9 @@ class Socket
         bool isAlive()
         {
                 int type, typesize = type.sizeof;
-                return getsockopt (sock, SOL_SOCKET, SocketOption.SO_TYPE, cast(char*) &type, &typesize) != SOCKET_ERROR;
+                return getsockopt (sock, SocketOptionLevel.SOCKET, 
+                                   SocketOption.SO_TYPE, cast(char*) &type, 
+                                   &typesize) != SOCKET_ERROR;
         }
 
 
