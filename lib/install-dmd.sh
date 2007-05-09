@@ -6,7 +6,7 @@
 # This software is provided with no warranty, express or implied, within the
 # bounds of applicable law.
 #
-# Modifications by Alexander Panek
+# Modifications by Alexander Panek, Lars Ivar Igesund
 
 die() {
     echo "$1"
@@ -96,12 +96,29 @@ then
     then
 		rm -f $PREFIX/lib/libphobos.a
 		rm -f $PREFIX/lib/libtango.a
+        if [ -e "$PREFIX/import/v1.012" ]
+        then
+            rm -rf $PREFIX/import/v1.012
+        fi
+        if [ -e "$PREFIX/import/object.di" ]
+        then
+            rm -f $PREFIX/import/object.di
+            rm -rf $PREFIX/import/std
+            rm -rf $PREFIX/import/tango
+        fi
+        if [ -e "$PREFIX/import/tango" ]
+        then
+            rm -rf $PREFIX/import/tango
+        fi
 	else
 		if [ "$INPLACE" = "0" ]
 		then
 			rm -f  $PHOBOS_DIR/libphobos.a $PREFIX/import/object.di
 			mv     $PHOBOS_DIR/libphobos.a.phobos $PHOBOS_DIR/libphobos.a
-			mv     $PREFIX/import/object.d.phobos $PREFIX/import/object.d
+            if [ -e "$PREFIX/import/object.d.phobos" ]
+            then
+			    mv     $PREFIX/import/object.d.phobos $PREFIX/import/object.d
+            fi
 		fi
     fi
 
@@ -123,21 +140,24 @@ then
 		die "You must uninstall your old copy of Tango before installing a new one." 4
 	fi
 	mv -f $PHOBOS_DIR/libphobos.a $PHOBOS_DIR/libphobos.a.phobos
-	mv -f $PREFIX/import/object.d $PREFIX/import/object.d.phobos
+    if [ -e "$PREFIX/import/object.d" ]
+    then
+	    mv -f $PREFIX/import/object.d $PREFIX/import/object.d.phobos
+    fi
 fi
 
 # Install ...
 if [ "$INPLACE" = "0" ]
 then
     echo 'Copying files...'
-    mkdir -p $PREFIX/import || die "Failed to create import (maybe you need root privileges?)" 5
+    mkdir -p $PREFIX/import/tango || die "Failed to create import (maybe you need root privileges?)" 5
 	mkdir -p $PREFIX/lib/ || die "Failed to create $PREFIX/lib (maybe you need root privileges?)" 5
 	mkdir -p $PREFIX/bin/ || die "Failed to create $PREFIX/bin" 5
     cp -pRvf libphobos.a $PREFIX/lib/ || die "Failed to copy libraries" 7
-    cp -pRvf ../object.di $PREFIX/import/object.di || die "Failed to copy source" 8
+    cp -pRvf ../object.di $PREFIX/import/tango/object.di || die "Failed to copy source" 8
 	cat > $PREFIX/bin/dmd.conf <<EOF
 [Environment]
-DFLAGS=-I$PREFIX/import -version=Tango -version=Posix -L-L"%@P%/../lib"
+DFLAGS=-I$PREFIX/import/tango -version=Tango -version=Posix -L-L"%@P%/../lib"
 EOF
 fi
 
