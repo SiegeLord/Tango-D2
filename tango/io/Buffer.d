@@ -26,7 +26,6 @@ public  import  tango.io.model.IConduit;
 extern (C)
 {
         private void * memcpy (void *dst, void *src, uint);
-        private int printf (char*, ...);
 }       
 
 /*******************************************************************************
@@ -1018,11 +1017,10 @@ class Buffer : IBuffer
         {
                 assert (conduit_ && src);
 
-                int read = fill(src);
+                fill (src);
                 do {
-                   printf (">> copying %d bytes <<\n", read);
                    drain (conduit_);
-                   } while ((read = fill(src)) != IConduit.Eof);
+                   } while (fill(src) != IConduit.Eof);
 
                 return this;
         } 
