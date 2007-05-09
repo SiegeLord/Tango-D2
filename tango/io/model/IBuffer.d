@@ -439,10 +439,11 @@ abstract class IBuffer // could be an interface, but that causes poor codegen
 
         /***********************************************************************
 
-                Try to fill the available buffer with content from the 
-                specified conduit. In particular, we will never ask to 
-                read less than 32 bytes. This permits conduit-filters 
-                to operate within a known environment.
+                Try to _fill the available buffer with content from the 
+                specified conduit. We try to read as much as possible 
+                by clearing the buffer when all current content has been 
+                eaten. If there is no space available, nothing will be 
+                read.
 
                 Returns the number of bytes read, or Conduit.Eof
         

@@ -884,11 +884,10 @@ class Buffer : IBuffer
         
                 Remarks:
                 Try to _fill the available buffer with content from the 
-                specified conduit. In particular, we will never ask to 
-                read less than 32 bytes ~ this permits conduit-filters 
-                to operate within a known environment. We also try to
-                read as much as possible by clearing the buffer when 
-                all current content has been eaten.
+                specified conduit. We try to read as much as possible 
+                by clearing the buffer when all current content has been 
+                eaten. If there is no space available, nothing will be 
+                read.
 
         ***********************************************************************/
 
@@ -900,10 +899,18 @@ class Buffer : IBuffer
 
                 if (readable is 0)
                     clear();
-                else
+                else 
+                version (OLD)
+                {
                    if (writable < 32)
                        if (compress().writable < 32)
                            error ("input buffer is too small");
+                }
+                else
+                {
+                   if (writable is 0)
+                       return 0;
+                }
 
                 return write (&conduit.read);
         } 
@@ -1017,10 +1024,10 @@ class Buffer : IBuffer
         {
                 assert (conduit_ && src);
 
-                fill (src);
-                do {
-                   drain (conduit_);
-                   } while (fill(src) != IConduit.Eof);
+                while (fill(src) != IConduit.Eof)
+                       // don't drain until we actually need to (fill up first)
+                       if (writable is 0)
+                           drain (conduit_);
 
                 return this;
         } 
