@@ -118,7 +118,6 @@ version (Win32)
         private const int IOC_IN =        cast(int)0x80000000;
         private const int FIONBIO =       cast(int) (IOC_IN | ((int.sizeof & IOCPARM_MASK) << 16) | (102 << 8) | 126);
         private const int SOL_SOCKET =    0xFFFF;
-        private const int SO_TYPE =       0x1008;
 
         private const int WSADESCRIPTION_LEN = 256;
         private const int WSASYS_STATUS_LEN = 128;
@@ -144,7 +143,6 @@ version (Win32)
                 int WSACleanup();
                 socket_t socket(int af, int type, int protocol);
                 int ioctlsocket(socket_t s, int cmd, uint* argp);
-                int getsockopt(socket_t s, int level, int optname, char* optval, int* optlen);
                 uint inet_addr(char* cp);
                 int bind(socket_t s, sockaddr* name, int namelen);
                 int connect(socket_t s, sockaddr* name, int namelen);
@@ -193,22 +191,12 @@ version (BsdSockets)
         private const int F_GETFL       = 3;
         private const int F_SETFL       = 4;
         private const int O_NONBLOCK    = 04000;  // OCTAL! Thx to volcore
-        private const int SOL_SOCKET_D  = 0xFFFF;
-        private const int SO_TYPE       = 0x1008;
-
-        version (Phobos)
-           {
-           private const int EINTR = 4;
-           private const int EINPROGRESS = 115;
-           }
-
-        private alias SOL_SOCKET_D SOL_SOCKET; // symbol conflict, when linking
+        private const int SOL_SOCKET    = 1;
 
         extern  (C)
                 {
                 socket_t socket(int af, int type, int protocol);
                 int fcntl(socket_t s, int f, ...);
-                int getsockopt(socket_t s, int level, int optname, char* optval, int* optlen);
                 uint inet_addr(char* cp);
                 int bind(socket_t s, sockaddr* name, int namelen);
                 int connect(socket_t s, sockaddr* name, int namelen);
@@ -755,7 +743,7 @@ class Socket
         bool isAlive()
         {
                 int type, typesize = type.sizeof;
-                return getsockopt (sock, SOL_SOCKET, SO_TYPE, cast(char*) &type, &typesize) != SOCKET_ERROR;
+                return getsockopt (sock, SOL_SOCKET, SocketOption.SO_TYPE, cast(char*) &type, &typesize) != SOCKET_ERROR;
         }
 
 
