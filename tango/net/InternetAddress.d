@@ -41,8 +41,8 @@ class InternetAddress : IPv4Address
                 foreach (int i, char c; addr)
                          if (c is ':')
                             {
-                            addr = addr [0 .. i];
                             port = parse (addr [i+1 .. $]);
+                            addr = addr [0 .. i];
                             break;
                             }
 
