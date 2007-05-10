@@ -93,17 +93,12 @@ then
     then
         rm -rf $PREFIX/import/v1.012
     fi
-    # Some svn versions installed here
-    if [ -e "$PREFIX/import/object.di" ]
-    then
-        rm -f $PREFIX/import/object.di
-        rm -rf $PREFIX/import/std
-        rm -rf $PREFIX/import/tango
-    fi
     # Since Tango 0.98
-    if [ -e "$PREFIX/import/tango" ]
+    if [ -e "$PREFIX/import/tango/object.di" ]
     then
-        rm -rf $PREFIX/import/tango
+        rm -rf $PREFIX/import/tango/tango
+        rm -rf $PREFIX/import/tango/std
+        rm -f  $PREFIX/import/tango/object.di
     fi
     if [ -e "$PREFIX/lib/libtango.a" ]
     then
