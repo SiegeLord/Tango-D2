@@ -734,7 +734,8 @@ class Socket
 
         /***********************************************************************
 
-                Is this socket still alive?
+                Is this socket still alive? A closed socket is considered to
+                be dead, but a shutdown socket is still alive.
 
         ***********************************************************************/
 
