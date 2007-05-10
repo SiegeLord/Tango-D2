@@ -172,6 +172,16 @@ class SocketConduit : Conduit
                 available. In general, this should be invoked before close()
                 is invoked
         
+                The shutdown function shuts down the connection of the socket: 
+
+                    -   stops receiving data for this socket. If further data 
+                        arrives, it is rejected.
+
+                    -   stops trying to transmit data from this socket. Also
+                        discards any data waiting to be sent. Stop looking for 
+                        acknowledgement of data already sent; don't retransmit 
+                        if any data is lost.
+
         ***********************************************************************/
 
         SocketConduit shutdown ()

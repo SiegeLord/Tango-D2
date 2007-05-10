@@ -908,6 +908,16 @@ class Socket
         
         /***********************************************************************
 
+                The shutdown function shuts down the connection of the socket.
+                Depending on the argument value, it will:
+
+                    -   stop receiving data for this socket. If further data 
+                        arrives, it is rejected.
+
+                    -   stop trying to transmit data from this socket. Also
+                        discards any data waiting to be sent. Stop looking for 
+                        acknowledgement of data already sent; don't retransmit 
+                        if any data is lost.
 
         ***********************************************************************/
 
