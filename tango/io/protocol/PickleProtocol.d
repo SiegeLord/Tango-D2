@@ -12,9 +12,6 @@
 
 module tango.io.protocol.PickleProtocol;
 
-private import  tango.io.model.IBuffer,
-                tango.io.model.IConduit;
-
 private import  tango.io.protocol.EndianProtocol,
                 tango.io.protocol.NativeProtocol;
 
@@ -23,35 +20,9 @@ private import  tango.io.protocol.EndianProtocol,
 *******************************************************************************/
 
 version (BigEndian)
-         private alias NativeProtocol SuperClass;
+         private alias NativeProtocol PickleProtocol;
       else
-         private alias EndianProtocol SuperClass;
-
-/*******************************************************************************
-
-*******************************************************************************/
-
-class PickleProtocol : SuperClass
-{
-        /***********************************************************************
-
-        ***********************************************************************/
-
-        this (IBuffer buffer, bool prefix=true)
-        {
-                super (buffer, prefix);
-        }
-
-        /***********************************************************************
-
-        ***********************************************************************/
-
-        this (IConduit conduit, bool prefix=true)
-        {
-                super (conduit, prefix);
-        }
-}
-
+         private alias EndianProtocol PickleProtocol;
 
 /*******************************************************************************
 
@@ -60,6 +31,8 @@ class PickleProtocol : SuperClass
 debug (UnitTest)
 {
         import tango.io.Buffer;
+
+        void main() {}
 
         unittest
         {
