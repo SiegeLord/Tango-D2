@@ -1591,10 +1591,12 @@ in
 }
 body
 {
-    version (D_InlineAsm_X86)
-    {
-    version (Windows)
-    {
+  // BUG (Inherited from Phobos): This code assumes a frame pointer in EBP.
+  // This is not in the spec, and appears to be untrue for GDC.
+  version (DigitalMars_D_InlineAsm_X86)
+  {
+   version (Windows)
+   {
     asm // assembler by W. Bright
     {
         // EDX = (A.length - 1) * real.sizeof
@@ -1608,7 +1610,7 @@ body
         fld     x[EBP]              ; // ST0 = x
         fxch    ST(1)               ; // ST1 = x, ST0 = r
         align   4                   ;
-    L2:     fmul    ST,ST(1)        ; // r *= x
+    L2:  fmul    ST,ST(1)           ; // r *= x
         fld     real ptr -10[EDX]   ;
         sub     EDX,10              ; // deg--
         faddp   ST(1),ST            ;
@@ -1620,23 +1622,21 @@ body
     return_ST:                      ;
         ;
     }
-    }
-    else
+  } else {
+    asm // assembler by W. Bright
     {
-        asm // assembler by W. Bright
-        {
         // EDX = (A.length - 1) * real.sizeof
         mov     ECX,A[EBP]          ; // ECX = A.length
         dec     ECX                 ;
         lea     EDX,[ECX*8]         ;
-        lea EDX,[EDX][ECX*4]        ;
+        lea     EDX,[EDX][ECX*4]    ;
         add     EDX,A+4[EBP]        ;
         fld     real ptr [EDX]      ; // ST0 = coeff[ECX]
         jecxz   return_ST           ;
         fld     x[EBP]              ; // ST0 = x
         fxch    ST(1)               ; // ST1 = x, ST0 = r
         align   4                   ;
-    L2:     fmul    ST,ST(1)        ; // r *= x
+    L2: fmul    ST,ST(1)            ; // r *= x
         fld     real ptr -12[EDX]   ;
         sub     EDX,12              ; // deg--
         faddp   ST(1),ST            ;
@@ -1649,9 +1649,7 @@ body
         ;
         }
     }
-    }
-    else
-    {
+  } else {
         int i = A.length - 1;
         real r = A[i];
         while (--i >= 0)
@@ -1660,7 +1658,7 @@ body
             r += A[i];
         }
         return r;
-    }
+  }
 }
 
 debug(UnitTest) {
