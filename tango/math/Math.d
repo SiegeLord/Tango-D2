@@ -333,7 +333,7 @@ version (GNU) {
  *  <tr> <th> x               <th> tan(x)      <th> invalid?
  *  <tr> <td> $(NAN)          <td> $(NAN)      <td> yes
  *  <tr> <td> &plusmn;0.0     <td> &plusmn;0.0 <td> no
- *  <tr> <td> &plusmn;&infin; <td> $(TEXTNAN tanINF) <td> yes
+ *  <tr> <td> &plusmn;&infin; <td> $(NAN) <td> yes
  *  )
  */
 real tan(real x)
@@ -369,7 +369,7 @@ trigerr:
     jnp Lret            ; // if x is NaN, return x.
     fstp    ST(0)       ; // dump x, which will be infinity
     }
-    return NaN("tanINF");
+    return real.nan;
 
 Lret:
     ;
@@ -443,7 +443,7 @@ bool mfeq(real x, real y, real precision)
     else assert(mfeq(r, t, .0000001));
     }
     assert(isIdentical(tan(NaN("abc")), NaN("abc")));
-    assert(isIdentical(tan(real.infinity), NaN("tanINF")));
+    assert(isNaN(tan(real.infinity)));
 }
 }
 
@@ -1370,7 +1370,7 @@ real pow(real x, real y)
         }
         else if (tango.math.IEEE.fabs(x) == 1)
         {
-            return NaN("pow1INF");
+            return real.nan;
         }
         else // < 1
         {
