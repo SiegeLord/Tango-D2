@@ -12,17 +12,21 @@
 
 module tango.io.protocol.PickleProtocol;
 
-private import  tango.io.protocol.EndianProtocol,
-                tango.io.protocol.NativeProtocol;
-
 /*******************************************************************************
 
 *******************************************************************************/
 
 version (BigEndian)
-         public alias NativeProtocol PickleProtocol;
-      else
-         public alias EndianProtocol PickleProtocol;
+        {
+        private import tango.io.protocol.NativeProtocol;
+        public alias NativeProtocol PickleProtocol;
+        }
+     else
+        {
+        private import tango.io.protocol.EndianProtocol;
+        public alias EndianProtocol PickleProtocol;
+        }
+
 
 /*******************************************************************************
 
