@@ -26,7 +26,7 @@ alias short SHORT;
 alias int INT;
 alias int WINT;
 alias int LONG;
-alias short WORD;
+alias ushort WORD;
 alias uint DWORD;
 alias int INT_PTR;
 alias uint UINT_PTR;
