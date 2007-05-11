@@ -20,9 +20,9 @@ private import  tango.io.protocol.EndianProtocol,
 *******************************************************************************/
 
 version (BigEndian)
-         private alias NativeProtocol PickleProtocol;
+         public alias NativeProtocol PickleProtocol;
       else
-         private alias EndianProtocol PickleProtocol;
+         public alias EndianProtocol PickleProtocol;
 
 /*******************************************************************************
 
