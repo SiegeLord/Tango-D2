@@ -158,7 +158,7 @@ else
         mv $PREFIX/bin/dmd.conf $PREFIX/bin/dmd.conf.phobos 
         create_dmd_conf
     else
-        echo 'Tango enabled dmd.conf, assume it is working and leave it as is'
+        echo 'Found Tango enabled dmd.conf, assume it is working and leave it as is'
     fi
 fi
 
