@@ -299,17 +299,6 @@ class Conduit : IConduit, IConduitFilter
 
         /***********************************************************************
 
-                Is the application terminating?
-
-        ***********************************************************************/
-
-        bool isHalting ()
-        {
-                return halting;
-        }
-
-        /***********************************************************************
-
         ***********************************************************************/
 
         protected static void exception (char[] msg)
@@ -450,20 +439,5 @@ class ConduitFilter : IConduitFilter
         {
                 next.unbind ();
         }
-}
-
-
-/*******************************************************************************
-
-        Set a flag when the application is halting. This is used to avoid
-        closure mechanics while the object pool may be in a state of flux.
-
-*******************************************************************************/
-
-private static bool halting;
-
-private static ~this()
-{
-        halting = true;
 }
 
