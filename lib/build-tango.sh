@@ -1,7 +1,7 @@
 #!/bin/bash +x
 
 # A simple script to build libtango.a/libgtango
-# Copyright (C) 2006  Lars Ivar Igesund
+# Copyright (C) 2007  Lars Ivar Igesund
 # Permission is granted to do anything you please with this software.
 # This software is provided with no warranty, express or implied, within the
 # bounds of applicable law.
