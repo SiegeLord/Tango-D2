@@ -19,6 +19,8 @@ compile() {
     DC=$1
     EXE=$2
 
+    rebuild --help >& /dev/null || die "rebuild required, aborting" 1
+
     if ! $DC --help >& /dev/null
     then
         echo "$DC not found on your \$PATH!"
