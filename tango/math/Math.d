@@ -1592,11 +1592,10 @@ in
 body
 {
   // BUG (Inherited from Phobos): This code assumes a frame pointer in EBP.
-  // This is not in the spec, and appears to be untrue for GDC.
+  // This is not in the spec.
   version (DigitalMars_D_InlineAsm_X86)
   {
-   version (Windows)
-   {
+    static if (real.sizeof == 10) {
     asm // assembler by W. Bright
     {
         // EDX = (A.length - 1) * real.sizeof
@@ -1622,7 +1621,7 @@ body
     return_ST:                      ;
         ;
     }
-  } else {
+  } else static if (real.sizeof==12){
     asm // assembler by W. Bright
     {
         // EDX = (A.length - 1) * real.sizeof
@@ -1633,7 +1632,7 @@ body
         add     EDX,A+4[EBP]        ;
         fld     real ptr [EDX]      ; // ST0 = coeff[ECX]
         jecxz   return_ST           ;
-        fld     x[EBP]              ; // ST0 = x
+        fld     x                   ; // ST0 = x
         fxch    ST(1)               ; // ST1 = x, ST0 = r
         align   4                   ;
     L2: fmul    ST,ST(1)            ; // r *= x
@@ -1648,9 +1647,9 @@ body
     return_ST:                      ;
         ;
         }
-    }
+    } else static assert(0, "Unsupported real.sizeof");
   } else {
-        int i = A.length - 1;
+        ptrdiff_t i = A.length - 1;
         real r = A[i];
         while (--i >= 0)
         {
