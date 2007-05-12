@@ -36,8 +36,6 @@ debug (UnitTest)
 {
         import tango.io.Buffer;
 
-        void main() {}
-
         unittest
         {
                 int test = 0xcc55ff00;
