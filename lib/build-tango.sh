@@ -63,6 +63,11 @@ build() {
     DC=$1
     LIB=$2
 
+    if [ ! -e "$3" ]
+    then
+        die "Dependency not present, run build-yourcompiler.sh first" 1
+    fi
+
     if ! $DC --help >& /dev/null
     then
         echo "$DC not found on your \$PATH!"
@@ -81,5 +86,5 @@ build() {
     fi
 }
 
-build dmd libtango.a
-build gdmd libgtango.a
+build dmd libtango.a libphobos.a
+build gdmd libgtango.a libgphobos.a
