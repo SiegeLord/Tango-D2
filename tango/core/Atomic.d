@@ -665,7 +665,10 @@ else version( D_InlineAsm_X86 )
         {
             // NOTE: 32 bit x86 systems support 8 byte CAS, which only requires
             //       4 byte alignment, so use size_t as the align type here.
-            assert( atomicValueIsProperlyAligned!(size_t)( cast(size_t) &val ) );
+            static if( T.sizeof > size_t.sizeof )
+                assert( atomicValueIsProperlyAligned!(size_t)( cast(size_t) &val ) );
+            else
+                assert( atomicValueIsProperlyAligned!(T)( cast(size_t) &val ) );
         }
         body
         {
