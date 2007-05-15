@@ -37,16 +37,15 @@ else
 fi
 
 cd "`dirname $0`"
-dmd --help >& /dev/null || die "dmd not found on your \$PATH!" 1
 
 # revert to phobos if earlier evidence of existense is found
 if [ -e "$PREFIX/lib/libphobos.a.phobos" ]
 then
     mv     $PREFIX/lib/libphobos.a.phobos $PREFIX/lib/libphobos.a
 fi
-if [ -e "$PREFIX/import/object.d.phobos" ]
+if [ -e "$PREFIX/include/d/object.d.phobos" ]
 then
-    mv     $PREFIX/import/object.d.phobos $PREFIX/import/object.d
+    mv     $PREFIX/include/d/object.d.phobos $PREFIX/include/d/object.d
 fi
 if [ -e "$PREFIX/bin/dmd.conf.phobos" ]
 then
@@ -59,11 +58,11 @@ then
     rm -rf $PREFIX/import/v1.012
 fi
 # Since Tango 0.98
-if [ -e "$PREFIX/import/tango/object.di" ]
+if [ -e "$PREFIX/include/d/tango/object.di" ]
 then
-    rm -rf $PREFIX/import/tango/tango
-    rm -rf $PREFIX/import/tango/std
-    rm -f  $PREFIX/import/tango/object.di
+    rm -rf $PREFIX/include/d/tango/tango
+    rm -rf $PREFIX/include/d/tango/std
+    rm -f  $PREFIX/include/d/tango/object.di
 fi
 if [ -e "$PREFIX/lib/libtango.a" ]
 then

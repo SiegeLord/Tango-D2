@@ -69,9 +69,9 @@ then
     then
         mv     $PHOBOS_DIR/libphobos.a.phobos $PHOBOS_DIR/libphobos.a
     fi
-    if [ -e "$PREFIX/import/object.d.phobos" ]
+    if [ -e "$PREFIX/include/d/object.d.phobos" ]
     then
-        mv     $PREFIX/import/object.d.phobos $PREFIX/import/object.d
+        mv     $PREFIX/include/d/object.d.phobos $PREFIX/include/d/object.d
     fi
     if [ -e "$PREFIX/bin/dmd.conf.phobos" ]
     then
@@ -84,11 +84,11 @@ then
         rm -rf $PREFIX/import/v1.012
     fi
     # Since Tango 0.98
-    if [ -e "$PREFIX/import/tango/object.di" ]
+    if [ -e "$PREFIX/include/d/tango/object.di" ]
     then
-        rm -rf $PREFIX/import/tango/tango
-        rm -rf $PREFIX/import/tango/std
-        rm -f  $PREFIX/import/tango/object.di
+        rm -rf $PREFIX/include/d/tango/tango
+        rm -rf $PREFIX/include/d/tango/std
+        rm -f  $PREFIX/include/d/tango/object.di
     fi
     if [ -e "$PREFIX/lib/libtango.a" ]
     then
@@ -112,26 +112,26 @@ then
 		die "You must uninstall your old copy of Tango before installing a new one." 4
 	fi
 	mv -f $PHOBOS_DIR/libphobos.a $PHOBOS_DIR/libphobos.a.phobos
-    if [ -e "$PREFIX/import/object.d" ]
+    if [ -e "$PREFIX/include/d/object.d" ]
     then
-	    mv -f $PREFIX/import/object.d $PREFIX/import/object.d.phobos
+	    mv -f $PREFIX/include/d/object.d $PREFIX/include/d/object.d.phobos
     fi
 fi
 
 create_dmd_conf() {
     cat > $PREFIX/bin/dmd.conf <<EOF
 [Environment]
-DFLAGS=-I$PREFIX/import/tango -version=Tango -version=Posix -L-L"%@P%/../lib"
+DFLAGS=-I$PREFIX/include/d/tango -version=Tango -version=Posix -L-L"%@P%/../lib"
 EOF
 }
 
 # Install ...
 echo 'Copying files...'
-mkdir -p $PREFIX/import/tango || die "Failed to create import (maybe you need root privileges?)" 5
+mkdir -p $PREFIX/include/d/tango || die "Failed to create include/d (maybe you need root privileges?)" 5
 mkdir -p $PREFIX/lib/ || die "Failed to create $PREFIX/lib (maybe you need root privileges?)" 5
 mkdir -p $PREFIX/bin/ || die "Failed to create $PREFIX/bin" 5
 cp -pRvf libphobos.a $PREFIX/lib/ || die "Failed to copy libraries" 7
-cp -pRvf ../object.di $PREFIX/import/tango/object.di || die "Failed to copy source" 8
+cp -pRvf ../object.di $PREFIX/include/d/tango/object.di || die "Failed to copy source" 8
 if [ ! -e "$PREFIX/bin/dmd.conf" ]
 then
     create_dmd_conf

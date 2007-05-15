@@ -26,7 +26,7 @@ mkdir -p $TTMP || die 1 "Failed to create temporary directory"
 
 # This installer works by black magic: The following number must be the exact
 # number of lines in this file+3:
-LINES=112
+LINES=113
 
 # Install DMD if necessary
 DMDDIR=
@@ -104,6 +104,7 @@ tail -n+$LINES $FULLNAME | tar Oxf - tango.tar.gz | gunzip -c | tar xf - ||
     die 1 "Failed to extract Tango"
 
 echo 'Done!'
+echo "Remember to update your PATH as necessary. You installed to the prefix $DMDDIR"
 echo "Run 'tango-dmd-tool --uninstall $DMDDIR' to uninstall Tango"
 
 exit 0

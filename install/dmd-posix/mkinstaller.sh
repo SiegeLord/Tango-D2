@@ -68,18 +68,18 @@ cd tmp || die 1 "Failed to cd to temporary Tango install"
 mkdir -p bin
 cp ../install/dmd-posix/tango-dmd-tool bin/tango-dmd-tool || die 1 "Failed to install the uninstaller"
 
-# Clear old import files
-rm -rf import/tango/tango import/tango/std
+# Clear old include/d files
+rm -rf include/d/tango/tango include/d/tango/std
 
-mkdir -p import/tango
-cp -pR ../tango import/tango || die 1 "Failed to copy in the tango .d files"
-cp -pR ../std import/tango || die 1 "Failed to copy in the std .d files"
+mkdir -p include/d/tango
+cp -pR ../tango include/d/tango || die 1 "Failed to copy in the tango .d files"
+cp -pR ../std include/d/tango || die 1 "Failed to copy in the std .d files"
 
 mkdir -p lib
 cp ../lib/libtango.a lib || die 1 "Failed to copy in the tango .a file"
 
-find import/tango -name .svn | xargs rm -rf
-tar zcf ../tango.tar.gz import lib bin || die 1 "Failed to create tango.tar.gz"
+find include/d/tango -name .svn | xargs rm -rf
+tar zcf ../tango.tar.gz include lib bin || die 1 "Failed to create tango.tar.gz"
 cd .. || exit 1
 rm -rf tmp || exit 1
 
