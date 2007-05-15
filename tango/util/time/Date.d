@@ -31,7 +31,7 @@ module tango.util.time.Date;
         values.
 
         See TimeStamp.d for an example of a simple derivation, and see
-        http://en.wikipedia.org/wiki/Unix_time for details on UTC time.
+        "http://en.wikipedia.org/wiki/Unix_time" for details on UTC time
 
 *******************************************************************************/
 
@@ -44,7 +44,7 @@ struct Date
                         min,            /// 0 through 59
                         sec,            /// 0 through 59
                         ms,             /// 0 through 999
-                        dow;            /// 0 through 6; sunday == 0
+                        dow;            /// 0 through 6 where sunday is 0
 
         /// list of english day names
         private static char[][] Days =
