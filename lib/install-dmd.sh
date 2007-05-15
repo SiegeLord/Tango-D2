@@ -28,8 +28,6 @@ SETPREFIX=0
 UNINSTALL=0
 REPLACE_PHOBOS=0
 
-PREFIX="/usr/local"
-
 while [ "$#" != "0" ]
 do
     if [ "$1" = "--prefix" ]
@@ -47,34 +45,20 @@ do
     shift
 done
 
+if [ ! "$PREFIX" ]
+then
+    PREFIX="/usr/local"
+fi
 
+echo "$PREFIX"
 
 
 
 dmd --help >& /dev/null || die "dmd not found on your \$PATH!" 1
 
-PHOBOS_DIR="`whereis libphobos.a | sed -e 's/libphobos:[ ]*\([^ ]*\)[ ]*.*/\1/' -`"
-if [ "$PHOBOS_DIR" ]
+if [ -e "$PREFIX/lib/libphobos.a" ]
 then
-    PHOBOS_DIR="`dirname $PHOBOS_DIR`"
-	REPLACE_PHOBOS=1
-fi
-
-which --version >& /dev/null
-if [ "$?" = "0" ]
-then
-	PREFIX="`which dmd`"
-	PREFIX="`dirname $PREFIX`/.."
-	if [ ! "$PHOBOS_DIR" ]
-	then
-		PHOBOS_DIR="$PREFIX/lib"
-		REPLACE_PHOBOS=1
-	fi
-else
-	if [ "$REPLACE_PHOBOS" = "1" ]
-	then
-		PREFIX="$PHOBOS_DIR/.."
-	fi
+    REPLACE_PHOBOS=1
 fi
 
 # If uninstalling, do that now
