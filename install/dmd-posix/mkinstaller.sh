@@ -37,7 +37,7 @@ if [ ! -e lib/libphobos.a ]
 then
     cd lib || die 1 "Failed to cd to lib"
     ./build-dmd.sh || die 1 "Failed to build the core"
-    ./install-dmd.sh || die 1 "Failed to install the core"
+    #./install-dmd.sh || die 1 "Failed to install the core"
     cd .. || die 1
 fi
 
@@ -48,17 +48,19 @@ tar zcf core.tar.gz object.di lib/libphobos.a \
 # 2) The rest
 if [ ! -e libtango.a ]
 then
-    dsss build || die 1 "Failed to build Tango"
-    rm -rf libtango_objs
-    mkdir -p libtango_objs
-    cd libtango_objs || die 1 "Failed to cd to libtango_objs"
-    for i in ../libSDD-*.a
-    do
-        ar x $i
-    done
-    ar rc ../libtango.a *.o || die 1 "Failed to create libtango.a"
-    ranlib ../libtango.a || die 1 "Failed to ranlib libtango.a"
-    cd .. || die 1 "Failed to cd out of libtango_objs"
+    cd lib || die 1 "Failed to cd to lib"
+    ./build-tango.sh || die 1 "Failed to build Tango"
+    # dsss build || die 1 "Failed to build Tango"
+    # rm -rf libtango_objs
+    # mkdir -p libtango_objs
+    # cd libtango_objs || die 1 "Failed to cd to libtango_objs"
+    # for i in ../libSDD-*.a
+    # do
+    #    ar x $i
+    # done
+    # ar rc ../libtango.a *.o || die 1 "Failed to create libtango.a"
+    # ranlib ../libtango.a || die 1 "Failed to ranlib libtango.a"
+    cd .. || die 1 "Failed to cd out of lib"
 fi
 mkdir -p tmp
 cd tmp || die 1 "Failed to cd to temporary Tango install"
