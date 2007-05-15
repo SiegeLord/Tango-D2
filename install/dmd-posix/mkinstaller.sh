@@ -49,7 +49,7 @@ tar zcf core.tar.gz object.di lib/libphobos.a \
 if [ ! -e libtango.a ]
 then
     cd lib || die 1 "Failed to cd to lib"
-    ./build-tango.sh || die 1 "Failed to build Tango"
+    ./build-tango.sh dmd || die 1 "Failed to build Tango"
     # dsss build || die 1 "Failed to build Tango"
     # rm -rf libtango_objs
     # mkdir -p libtango_objs
@@ -66,7 +66,7 @@ mkdir -p tmp
 cd tmp || die 1 "Failed to cd to temporary Tango install"
 
 mkdir -p bin
-cp ../install/dmd-posix/uninstall.sh bin/uninstall-tango-core || die 1 "Failed to install the uninstaller"
+cp ../install/dmd-posix/tango-dmd-tool bin/tango-dmd-tool || die 1 "Failed to install the uninstaller"
 
 # Clear old import files
 rm -rf import/tango/tango import/tango/std
@@ -76,13 +76,12 @@ cp -pR ../tango import/tango || die 1 "Failed to copy in the tango .d files"
 cp -pR ../std import/tango || die 1 "Failed to copy in the std .d files"
 
 mkdir -p lib
-cp ../libtango.a lib || die 1 "Failed to copy in the tango .a file"
+cp ../lib/libtango.a lib || die 1 "Failed to copy in the tango .a file"
 
 find import/tango -name .svn | xargs rm -rf
-tar zcf ../tango.tar.gz * || die 1 "Failed to create tango.tar.gz"
+tar zcf ../tango.tar.gz import lib || die 1 "Failed to create tango.tar.gz"
 cd .. || exit 1
 rm -rf tmp || exit 1
-
 
 # 3) Make the installer proper
 (
