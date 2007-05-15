@@ -79,7 +79,7 @@ struct Signal( Args... )
                 if( m_fns[i] !is null )
                     m_fns[i]( args );
             }
-            m_dgs.length = m_dgs.remove( cast(SlotDg) null );
+            m_dgs.length = m_dgs.remove( cast(SlotFn) null );
 
             m_blk = false;
 
