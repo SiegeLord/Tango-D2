@@ -1,3 +1,11 @@
+#!/bin/bash 
+# Copyright (C) 2007  Gregor Richards
+# Permission is granted to do anything you please with this software.
+# This software is provided with no warranty, express or implied, within the
+# bounds of applicable law.
+#
+# Modifications by Alexander Panek, Lars Ivar Igesund
+
 die() {
     rm -rf /tmp/tango.installer.$$
     ERROR="$1"
@@ -36,6 +44,16 @@ then
 	mkdir -p $DMDDIR/bin || die 1 "Failed to create the DMD install directory"
 	cd $DMDDIR || die 1 "Failed to cd to the DMD install directory"
     tail -n+$LINES $FULLNAME | tar Oxf - dmd.tar.gz | gunzip -c | tar xf - || die 1 "Failed to extract DMD"
+
+    if [ ! -e "bin/dmd.conf" ]
+    then
+        die 1 "Error in install, no dmd.conf found"
+    else
+        if [ ! "`grep -L-ltango bin/dmd.conf`" ]
+        then
+            sed -i.bak -e 's/^DFLAGS=.*$/& -L-ltango/' bin/dmd.conf
+        fi
+    fi
 
 fi
 
