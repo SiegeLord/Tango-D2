@@ -92,6 +92,13 @@ then
     die "You must run this script from the lib directory." 1
 fi
 
-
-build dmd libtango.a libphobos.a
-build gdmd libgtango.a libgphobos.a
+if [ "$1" = "dmd" ]
+then
+    build dmd libtango.a libphobos.a
+elif [ "$1" = "gdc" ]
+then
+    build gdmd libgtango.a libgphobos.a
+else
+    build dmd libtango.a libphobos.a
+    build gdmd libgtango.a libgphobos.a
+fi
