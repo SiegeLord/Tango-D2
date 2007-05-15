@@ -3,6 +3,8 @@
 # Permission is granted to do anything you please with this software.
 # This software is provided with no warranty, express or implied, within the
 # bounds of applicable law.
+#
+# Modifications by Alexander Panek, Lars Ivar Igesund
 
 die() {
     ERROR="$1"
@@ -44,7 +46,7 @@ tar zcf core.tar.gz object.di lib/libphobos.a \
 
 
 # 2) The rest
-if [ ! -e libgtango.a ]
+if [ ! -e libtango.a ]
 then
     dsss build || die 1 "Failed to build Tango"
     rm -rf libtango_objs
@@ -65,11 +67,11 @@ mkdir -p bin
 cp ../install/dmd-posix/uninstall.sh bin/uninstall-tango-core || die 1 "Failed to install the uninstaller"
 
 # Clear old import files
-rm -rf import/tango import/std
+rm -rf import/tango/tango import/tango/std
 
-mkdir -p import
-cp -pR ../tango import || die 1 "Failed to copy in the tango .d files"
-cp -pR ../std import || die 1 "Failed to copy in the std .d files"
+mkdir -p import/tango
+cp -pR ../tango import/tango || die 1 "Failed to copy in the tango .d files"
+cp -pR ../std import/tango || die 1 "Failed to copy in the std .d files"
 
 mkdir -p lib
 cp ../libtango.a lib || die 1 "Failed to copy in the tango .a file"
