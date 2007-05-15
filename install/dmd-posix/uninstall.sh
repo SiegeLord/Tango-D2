@@ -1,10 +1,12 @@
 #!/bin/bash
 
-# A simple script to uninstall Tango for GDC
+# A simple script to uninstall Tango for DMD
 # Copyright (C) 2007  Gregor Richards
 # Permission is granted to do anything you please with this software.
 # This software is provided with no warranty, express or implied, within the
 # bounds of applicable law.
+#
+# Modifications by Alexander Panek, Lars Ivar Igesund
 
 die() {
     echo "$1"
@@ -12,35 +14,60 @@ die() {
 }
 
 usage() {
-    echo 'Usage: uninstall.sh [--prefix <install prefix>]'
+    echo 'Usage: tango-dmd-tools.sh <command>'
+    echo '    --uninstall <install prefix> - uninstalls previous Tango install'
     exit 0
 }
 
-cd "`dirname $0`"
-dmd --help >& /dev/null || die "gdc not found on your \$PATH!" 1
-
-# 0) Parse arguments
-PHOBOS_DIR="`whereis libphobos.a | sed -e 's/libphobos:[ ]*\([^ ]*\)[ ]*.*/\1/' -`"
-PHOBOS_DIR="`dirname $PHOBOS_DIR`"
-PREFIX="$PHOBOS_DIR/.."
-DMD_VER="`gdc --version | head -n 1 | cut -d ' ' -f 3`"
-
-while [ "$#" != "0" ]
-do
-    if [ "$1" = "--prefix" ]
+if [ "$#" = "0" ]
+then
+    usage
+else
+    if [ "$1" = "--uninstall" ]
     then
-        PREFIX="$1"
+        if [ "$2" ]
+        then
+            PREFIX="$2"
+        else
+            usage
+        fi
     else
         usage
     fi
-    shift
-done
-
-if [ ! -e "$PHOBOS_DIR/libphobos.a.phobos" ]
-then
-    die "tango does not appear to be installed!" 3
 fi
-rm -rf $PHOBOS_DIR/libgphobos.a $PHOBOS_DIR/libtango.a $PREFIX/import/$DMD_VER/object.d
-mv $PREFIX/import/$DMD_VER/object.d.phobos $PREFIX/import/$DMD_VER/object.d
-mv $PHOBOS_DIR/libphobos.a.phobos $PHOBOS_DIR/libphobos.a
-echo "Done!"
+
+cd "`dirname $0`"
+dmd --help >& /dev/null || die "dmd not found on your \$PATH!" 1
+
+# revert to phobos if earlier evidence of existense is found
+if [ -e "$PREFIX/lib/libphobos.a.phobos" ]
+then
+    mv     $PREFIX/lib/libphobos.a.phobos $PREFIX/lib/libphobos.a
+fi
+if [ -e "$PREFIX/import/object.d.phobos" ]
+then
+    mv     $PREFIX/import/object.d.phobos $PREFIX/import/object.d
+fi
+if [ -e "$PREFIX/bin/dmd.conf.phobos" ]
+then
+    mv   $PREFIX/bin/dmd.conf $PFEFIX/bin/dmd.conf.tango
+    mv   $PREFIX/bin/dmd.conf.phobos $PREFIX/bin/dmd.conf
+fi
+# Tango 0.97 installed to this dir
+if [ -e "$PREFIX/import/v1.012" ]
+then
+    rm -rf $PREFIX/import/v1.012
+fi
+# Since Tango 0.98
+if [ -e "$PREFIX/import/tango/object.di" ]
+then
+    rm -rf $PREFIX/import/tango/tango
+    rm -rf $PREFIX/import/tango/std
+    rm -f  $PREFIX/import/tango/object.di
+fi
+if [ -e "$PREFIX/lib/libtango.a" ]
+then
+    rm -f $PREFIX/lib/libtango.a
+fi
+die "Done!" 0
+
