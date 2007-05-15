@@ -79,7 +79,7 @@ mkdir -p lib
 cp ../lib/libtango.a lib || die 1 "Failed to copy in the tango .a file"
 
 find import/tango -name .svn | xargs rm -rf
-tar zcf ../tango.tar.gz import lib || die 1 "Failed to create tango.tar.gz"
+tar zcf ../tango.tar.gz import lib bin || die 1 "Failed to create tango.tar.gz"
 cd .. || exit 1
 rm -rf tmp || exit 1
 
