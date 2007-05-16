@@ -457,7 +457,7 @@ else version (darwin)
                 SO_ACCEPTCONN   = 0x0002,		/* socket has had listen() */
                 SO_KEEPALIVE    = 0x0008,		/* keep connections alive */
                 SO_DONTROUTE    = 0x0010,		/* just use interface addresses */
-              //SO_TYPE
+                SO_TYPE         = 0x1008,               /* get socket type */
 
                 /*
                  * Additional options, not kept in so_options.
