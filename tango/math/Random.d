@@ -45,6 +45,8 @@ version (Posix)
 
 class Random
 {
+        public static Random shared;
+
         private uint kiss_x = 1;
         private uint kiss_y = 2;
         private uint kiss_z = 4;
@@ -52,12 +54,30 @@ class Random
         private uint kiss_carry = 0;
         private uint kiss_k;
         private uint kiss_m;
+        
+        /**********************************************************************
+
+        **********************************************************************/
+
+        static this ()
+        {
+                shared = new Random;
+        }
 
         /**********************************************************************
 
         **********************************************************************/
 
         this ()
+        {
+                this.seed;
+        }
+
+        /**********************************************************************
+
+        **********************************************************************/
+
+        final Random seed ()
         {
                 ulong s;
 
@@ -71,20 +91,21 @@ class Random
                 version (Win32)
                          QueryPerformanceCounter (&s);
 
-                seed (cast(uint) s);
+                return seed (cast(uint) s);
         }
 
         /**********************************************************************
 
         **********************************************************************/
 
-        final void seed (uint seed)
+        final Random seed (uint seed)
         {
                 kiss_x = seed | 1;
                 kiss_y = seed | 2;
                 kiss_z = seed | 4;
                 kiss_w = seed | 8;
                 kiss_carry = 0;
+                return this;
         }
 
         /**********************************************************************
