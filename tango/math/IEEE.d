@@ -1192,12 +1192,20 @@ real splitSignificand(inout real x)
     // An x87 real80 has 63 bits, because the 'implied' bit is stored explicitly.
     // This is annoying, because it means the significand cannot be
     // precisely halved. Instead, we split it into 31+32 bits.
-    if (fabs(x)!<real.infinity) return 0; // don't change NaN or infinity
+    if (fabs(x) !< real.infinity) return 0; // don't change NaN or infinity
     ulong *ps = cast(ulong *)&x;
     real y = x;
     (*ps)&=0xFFFF_FFFF_0000_0000;
     return y - x;
- } else return splitSignificand(cast(double)(x));
+
+ } else { // 64-bit double
+
+    if (fabs(x) !< real.infinity) return 0; // don't change NaN or infinity
+    ulong *ps = cast(ulong *)&x;
+    real y = x;
+    (*ps)&=0xFFFF_FFFF_FC00_0000;
+    return y - x;
+ }
 }
 
 
