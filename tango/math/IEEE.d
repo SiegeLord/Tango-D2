@@ -1166,46 +1166,25 @@ package {
  * initial value; this amount will also have zeros in all bits in the lower half
  * of its significand.
  */
-double splitSignificand(inout double x)
+X splitSignificand(X)(inout X x)
 {
-    if (fabs(x)!<double.infinity) return 0; // don't change NaN or infinity
-    ulong *ps = cast(ulong *)&x;
-    double y = x;
-    (*ps)&=0xFFFF_FFFF_FC00_0000;
-    return y - x;
-}
+    if (fabs(x)!<X.infinity) return 0; // don't change NaN or infinity
+    X y = x; // copy the original value
+    static if (X.mant_dig==float.mant_dig) {
+        uint *ps = cast(uint *)&x;
+        (*ps)&=0xFFFF_FC00;
+    } else static if (X.mant_dig==double.mant_dig) {
+        ulong *ps = cast(ulong *)&x;
+        (*ps)&=0xFFFF_FFFF_FC00_0000;
+    } else static if (X.mant_dig==64){ // 80-bit real
+        // An x87 real80 has 63 bits, because the 'implied' bit is stored explicitly.
+        // This is annoying, because it means the significand cannot be
+        // precisely halved. Instead, we split it into 31+32 bits.
+        ulong *ps = cast(ulong *)&x;
+        (*ps)&=0xFFFF_FFFF_0000_0000;
+    } //else static assert(0, "Unsupported size");
 
-/** ditto */
-float splitSignificand(inout float x)
-{
-    if (fabs(x)!<float.infinity) return 0; // don't change NaN or infinity
-    uint *ps = cast(uint *)&x;
-    float y = x;
-    (*ps)&=0xFFFF_FC00;
     return y - x;
-}
-
-/** ditto */
-real splitSignificand(inout real x)
-{
- static if (real.mant_dig==64) {
-    // An x87 real80 has 63 bits, because the 'implied' bit is stored explicitly.
-    // This is annoying, because it means the significand cannot be
-    // precisely halved. Instead, we split it into 31+32 bits.
-    if (fabs(x) !< real.infinity) return 0; // don't change NaN or infinity
-    ulong *ps = cast(ulong *)&x;
-    real y = x;
-    (*ps)&=0xFFFF_FFFF_0000_0000;
-    return y - x;
-
- } else { // 64-bit double
-
-    if (fabs(x) !< real.infinity) return 0; // don't change NaN or infinity
-    ulong *ps = cast(ulong *)&x;
-    real y = x;
-    (*ps)&=0xFFFF_FFFF_FC00_0000;
-    return y - x;
- }
 }
 
 
