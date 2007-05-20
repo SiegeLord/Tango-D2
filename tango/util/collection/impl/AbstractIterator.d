@@ -82,9 +82,9 @@ public abstract class AbstractIterator(T) : GuardIterator!(T)
         }
 
         /**
-         * Implements java.util.Iterator.more.
+         * Implements tango.util.collection.model.Iterator.more.
          * Return true if remaining > 0 and not corrupted
-         * See_Also: java.util.Iterator.more
+         * See_Also: tango.util.collection.model.Iterator.more
         **/
         public final bool more()
         {
