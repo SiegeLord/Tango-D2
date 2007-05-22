@@ -91,9 +91,9 @@ version( Win32 )
             assert( obj );
             scope( exit ) Thread.remove( obj );
 
+            assert( obj.m_curr is &obj.m_main );
             obj.m_main.bstack = getStackBottom();
             obj.m_main.tstack = obj.m_main.bstack;
-            assert( obj.m_curr == &obj.m_main );
             Thread.add( &obj.m_main );
             Thread.setThis( obj );
 
@@ -2053,6 +2053,9 @@ private
         Fiber   obj = Fiber.getThis();
         assert( obj );
 
+        assert( Thread.getThis().m_curr is obj.m_ctxt );
+        volatile Thread.getThis().m_lock = false;
+        obj.m_ctxt.tstack = obj.m_ctxt.bstack;
         obj.m_state = Fiber.State.EXEC;
 
         try
