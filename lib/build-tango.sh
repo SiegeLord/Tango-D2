@@ -14,6 +14,8 @@ die() {
 DC=
 LIB=
 
+UNAME=`uname`
+
 # This filter can probably be improved quite a bit, but should work
 # on the supported platforms as of May 2007
 filter() {
@@ -26,7 +28,7 @@ filter() {
 
     if [ "`echo $FILE | grep darwin`" ]
     then
-        if [ `uname` == Linux ]
+        if [ ! "$UNAME" == "Darwin" ]
         then
             return 1
         else
@@ -36,7 +38,7 @@ filter() {
 
     if [ "`echo $FILE | grep linux`" ]
     then
-        if [ ! `uname` == Linux ]
+        if [ ! "$UNAME" == "Linux" ]
         then
             return 1
         fi
@@ -52,7 +54,7 @@ compile() {
 
     if filter $OBJNAME
     then
-        $DC -c -inline -release -O -version=Posix -version=Tango -of$OBJNAME $FILENAME
+        $DC -c -v1 -inline -release -O -version=Posix -version=Tango -of$OBJNAME $FILENAME
         ar -r lib/$LIB $OBJNAME
         rm $OBJNAME
     fi
@@ -63,27 +65,27 @@ build() {
     DC=$1
     LIB=$2
 
+    if ! $DC --help >& /dev/null
+    then
+        echo "$DC not found on your \$PATH!"
+        return
+    fi
+
     if [ ! -e "$3" ]
     then
         die "Dependency not present, run build-yourcompiler.sh first" 1
     fi
 
-    if ! $DC --help >& /dev/null
-    then
-        echo "$DC not found on your \$PATH!"
-    else
+    cd ..
 
-        cd ..
+    for file in `find tango -name '*.d'`
+    do
+        compile $file
+    done
 
-        for file in `find tango -name '*.d'`
-        do
-            compile $file
-        done
+    ranlib lib/$LIB
 
-        ranlib lib/$LIB
-
-        cd lib
-    fi
+    cd lib
 }
 
 ORIGDIR=`pwd`
@@ -98,6 +100,12 @@ then
 elif [ "$1" = "gdc" ]
 then
     build gdmd libgtango.a libgphobos.a
+elif [ "$1" = "mac" ]
+then
+    # build Universal Binary version of the Tango library
+    build powerpc-apple-darwin8-gdmd libgtango.a.ppc libgphobos.a.ppc 
+    build i686-apple-darwin8-gdmd libgtango.a.i386 libgphobos.a.i386 
+    lipo -create -output libgtango.a libgtango.a.ppc libgtango.a.i386 
 else
     build dmd libtango.a libphobos.a
     build gdmd libgtango.a libgphobos.a
