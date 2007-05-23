@@ -28,7 +28,7 @@ struct Runtime
      * Returns:
      *  true if the runtime is halting.
      */
-    bool isHalting()
+    static bool isHalting()
     {
         return cr_isHalting();
     }
