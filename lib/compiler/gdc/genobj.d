@@ -906,7 +906,6 @@ class Exception : Object
     char[]      file;
     size_t      line;
     Exception   next;
-    static bool halting;
 
     this(char[] msg, Exception next = null)
     {
@@ -1085,7 +1084,7 @@ void _moduleCtor2(ModuleInfo[] mi, int skip)
 extern (C) void _moduleDtor()
 {
     debug(PRINTF) printf("_moduleDtor(): %d modules\n", _moduleinfo_dtors_i);
-    Exception.halting = true;
+
     for (uint i = _moduleinfo_dtors_i; i-- != 0;)
     {
         ModuleInfo m = _moduleinfo_dtors[i];

@@ -73,6 +73,13 @@ extern (C) void _d_switch_error( char[] file, uint line )
     onSwitchError( file, line );
 }
 
+bool _d_isHalting = false;
+
+extern (C) bool cr_isHalting()
+{
+    return _d_isHalting;
+}
+
 extern (C) bool cr_trapExceptions = true;
 
 /***********************************
@@ -151,6 +158,7 @@ extern (C) int main(int argc, char **argv)
         _moduleCtor();
         _moduleUnitTests();
         result = main(args);
+        _d_isHalting = true;
         _moduleDtor();
         gc_term();
     }

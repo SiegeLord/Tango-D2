@@ -167,7 +167,6 @@ class Exception : Object
     char[]      file;
     size_t      line;
     Exception   next;
-    static bool halting;
 
     this(char[] msg, Exception next = null);
     this(char[] msg, char[] file, size_t line, Exception next = null);
