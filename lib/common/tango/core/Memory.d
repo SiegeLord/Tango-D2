@@ -354,8 +354,8 @@ struct GC
 
 
 /**
- * All GC routines are accessed through this variable.  This is done to
- * follow the established D coding style guidelines and to reduce the
- * impact of future design changes.
+ * All GC routines are accessed through this variable.  This is done to follow
+ * the established D coding style guidelines and to reduce the impact of future
+ * design changes.  For all intents and purpsoes, this is a singleton.
  */
 GC gc;
