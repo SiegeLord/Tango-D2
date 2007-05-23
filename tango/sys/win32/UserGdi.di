@@ -894,6 +894,7 @@ extern(Windows)
 	WINBOOL DebugActiveProcess(DWORD);
 	void InitializeCriticalSection(LPCRITICAL_SECTION);
 	void EnterCriticalSection(LPCRITICAL_SECTION);
+	WINBOOL TryEnterCriticalSection(LPCRITICAL_SECTION);
 	void LeaveCriticalSection(LPCRITICAL_SECTION);
 	void DeleteCriticalSection(LPCRITICAL_SECTION);
 	WINBOOL SetEvent(HANDLE);
