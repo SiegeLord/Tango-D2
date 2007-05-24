@@ -3432,7 +3432,7 @@ private
             if (data.length < offset + nbytes)
             {
                 data.length = (offset + nbytes) * 2;
-                gc.clrAttr(data.ptr, GC.BlkAttr.NO_SCAN);
+                GC.clrAttr(data.ptr, GC.BlkAttr.NO_SCAN);
             }
         }
 
