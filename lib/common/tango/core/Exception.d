@@ -11,13 +11,15 @@ module tango.core.Exception;
 
 private
 {
-    alias void  function( char[] file, size_t line, char[] msg = null ) assertHandlerType;
+    alias bool function() moduleUnitTesterType;
     alias bool  function( Object obj ) collectHandlerType;
+    alias void  function( char[] file, size_t line, char[] msg = null ) assertHandlerType;
     alias TracedExceptionInfo function( void* ptr = null ) traceHandlerType;
 
-    assertHandlerType   assertHandler   = null;
-    collectHandlerType  collectHandler  = null;
-    traceHandlerType    traceHandler    = null;
+    moduleUnitTesterType    moduleUnitTester    = null;
+    collectHandlerType      collectHandler      = null;
+    assertHandlerType       assertHandler       = null;
+    traceHandlerType        traceHandler        = null;
 }
 
 
@@ -420,14 +422,14 @@ class CorruptedIteratorException : NoSuchElementException
 
 
 /**
- * Overrides the default assert hander with a user-supplied version.
+ * Overrides the default module unit tester with a user-supplied version.
  *
  * Params:
- *  h = The new assert handler.  Set to null to use the default handler.
+ *  h = The new unit tester.  Set to null to use the default unit tester.
  */
-void setAssertHandler( assertHandlerType h )
+void setModuleUnitTester( moduleUnitTesterType h )
 {
-    assertHandler = h;
+    moduleUnitTester = h;
 }
 
 
@@ -440,6 +442,18 @@ void setAssertHandler( assertHandlerType h )
 void setCollectHandler( collectHandlerType h )
 {
     collectHandler = h;
+}
+
+
+/**
+ * Overrides the default assert hander with a user-supplied version.
+ *
+ * Params:
+ *  h = The new assert handler.  Set to null to use the default handler.
+ */
+void setAssertHandler( assertHandlerType h )
+{
+    assertHandler = h;
 }
 
 
@@ -458,6 +472,30 @@ void setTraceHandler( traceHandlerType h )
 ////////////////////////////////////////////////////////////////////////////////
 // Overridable Callbacks
 ////////////////////////////////////////////////////////////////////////////////
+
+
+/**
+ * This routine is called by the runtime to run module unit tests on startup.
+ * The user-supplied unit tester will be called if one has been supplied,
+ * otherwise all unit tests will be run in sequence.
+ *
+ * Returns:
+ *  true if execution should continue after testing is complete and false if
+ *  not.  Default behavior is to return true.
+ */
+extern (C) bool runModuleUnitTests()
+{
+    if( moduleUnitTester is null )
+    {
+        foreach( m; ModuleInfo )
+        {
+            if( m.unitTest )
+                m.unitTest();
+        }
+        return true;
+    }
+    return moduleUnitTester();
+}
 
 
 /**

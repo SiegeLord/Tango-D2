@@ -40,9 +40,7 @@ private
 
 /**
  * This struct encapsulates all garbage collection functionality for the D
- * programming language.  Currently, the garbage collector is decided at
- * link time, but this design could adapt to dynamic garbage collector
- * loading with few semantic changes.
+ * programming language.
  */
 struct GC
 {
@@ -52,7 +50,7 @@ struct GC
      * must be called once for every call to disable before the garbage
      * collector is enabled.
      */
-    void enable()
+    static void enable()
     {
         gc_enable();
     }
@@ -62,7 +60,7 @@ struct GC
      * Disables the garbage collector.  This function is reentrant, but
      * enable must be called once for each call to disable.
      */
-    void disable()
+    static void disable()
     {
         gc_disable();
     }
@@ -75,7 +73,7 @@ struct GC
      * and then to reclaim free space.  This action may need to suspend all
      * running threads for at least part of the collection process.
      */
-    void collect()
+    static void collect()
     {
         gc_collect();
     }
@@ -106,7 +104,7 @@ struct GC
      *  A bit field containing any bits set for the memory block referenced by
      *  p or zero on error.
      */
-    uint getAttr( void* p )
+    static uint getAttr( void* p )
     {
         return gc_getAttr( p );
     }
@@ -124,7 +122,7 @@ struct GC
      *  The result of a call to getAttr after the specified bits have been
      *  set.
      */
-    uint setAttr( void* p, uint a )
+    static uint setAttr( void* p, uint a )
     {
         return gc_setAttr( p, a );
     }
@@ -144,7 +142,7 @@ struct GC
      *  The result of a call to getAttr after the specified bits have been
      *  cleared.
      */
-    uint clrAttr( void* p, uint a )
+    static uint clrAttr( void* p, uint a )
     {
         return gc_clrAttr( p, a );
     }
@@ -168,7 +166,7 @@ struct GC
      * Throws:
      *  OutOfMemoryException on allocation failure.
      */
-    void* malloc( size_t sz, uint ba = 0 )
+    static void* malloc( size_t sz, uint ba = 0 )
     {
         return gc_malloc( sz, ba );
     }
@@ -193,7 +191,7 @@ struct GC
      * Throws:
      *  OutOfMemoryException on allocation failure.
      */
-    void* calloc( size_t sz, uint ba = 0 )
+    static void* calloc( size_t sz, uint ba = 0 )
     {
         return gc_calloc( sz, ba );
     }
@@ -231,7 +229,7 @@ struct GC
      * Throws:
      *  OutOfMemoryException on allocation failure.
      */
-    void* realloc( void* p, size_t sz, uint ba = 0 )
+    static void* realloc( void* p, size_t sz, uint ba = 0 )
     {
         return gc_realloc( p, sz, ba );
     }
@@ -252,7 +250,7 @@ struct GC
      *  The size in bytes of the extended memory block referenced by p or zero
      *  if no extension occurred.
      */
-    size_t extend( void* p, size_t mx, size_t sz )
+    static size_t extend( void* p, size_t mx, size_t sz )
     {
         return gc_extend( p, mx, sz );
     }
@@ -269,7 +267,7 @@ struct GC
      * Params:
      *  p = A pointer to the root of a valid memory block or to null.
      */
-    void free( void* p )
+    static void free( void* p )
     {
         gc_free( p );
     }
@@ -288,7 +286,7 @@ struct GC
      * Returns:
      *  The size in bytes of the memory block referenced by p or zero on error.
      */
-    size_t sizeOf( void* p )
+    static size_t sizeOf( void* p )
     {
         return gc_sizeOf( p );
     }
@@ -302,7 +300,7 @@ struct GC
      * Params:
      *  p = A pointer to a valid memory address or to null.
      */
-    void addRoot( void* p )
+    static void addRoot( void* p )
     {
         gc_addRoot( p );
     }
@@ -318,7 +316,7 @@ struct GC
      *  sz = The size in bytes of the block to add.  If sz is zero then the
      *       no operation will occur.  If p is null then sz must be zero.
      */
-    void addRange( void* p, size_t sz )
+    static void addRange( void* p, size_t sz )
     {
         gc_addRange( p, sz );
     }
@@ -331,7 +329,7 @@ struct GC
      *
      *  p  = A pointer to a valid memory address or to null.
      */
-    void removeRoot( void* p )
+    static void removeRoot( void* p )
     {
         gc_removeRoot( p );
     }
@@ -346,16 +344,8 @@ struct GC
      * Params:
      *  p  = A pointer to a valid memory address or to null.
      */
-    void removeRange( void* p )
+    static void removeRange( void* p )
     {
         gc_removeRange( p );
     }
 }
-
-
-/**
- * All GC routines are accessed through this variable.  This is done to follow
- * the established D coding style guidelines and to reduce the impact of future
- * design changes.  For all intents and purpsoes, this is a singleton.
- */
-GC gc;

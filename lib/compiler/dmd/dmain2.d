@@ -36,7 +36,6 @@ extern (C) void gc_term();
 extern (C) void _minit();
 extern (C) void _moduleCtor();
 extern (C) void _moduleDtor();
-extern (C) void _moduleUnitTests();
 
 /***********************************
  * These functions must be defined for any D program linked
@@ -46,6 +45,7 @@ extern (C) void onAssertError( char[] file, size_t line );
 extern (C) void onAssertErrorMsg( char[] file, size_t line, char[] msg );
 extern (C) void onArrayBoundsError( char[] file, size_t line );
 extern (C) void onSwitchError( char[] file, size_t line );
+extern (C) bool runModuleUnitTests();
 
 // this function is called from the utf module
 //extern (C) void onUnicodeError( char[] msg, size_t idx );
@@ -156,8 +156,8 @@ extern (C) int main(int argc, char **argv)
     void run()
     {
         _moduleCtor();
-        _moduleUnitTests();
-        result = main(args);
+        if( runModuleUnitTests() )
+            result = main(args);
         _d_isHalting = true;
         _moduleDtor();
         gc_term();

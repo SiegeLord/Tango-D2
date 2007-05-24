@@ -1098,29 +1098,6 @@ extern (C) void _moduleDtor()
     debug(PRINTF) printf("_moduleDtor() done\n");
 }
 
-/**
- * Run unit tests.
- */
-
-extern (C) void _moduleUnitTests()
-{
-    debug(PRINTF) printf("_moduleUnitTests()\n");
-    for (uint i = 0; i < _moduleinfo_array.length; i++)
-    {
-        ModuleInfo m = _moduleinfo_array[i];
-
-        if (!m)
-            continue;
-
-        debug(PRINTF) printf("\tmodule[%d] = '%.*s'\n", i, m.name);
-        if (m.unitTest)
-        {
-            (*m.unitTest)();
-        }
-    }
-}
-
-
 ////////////////////////////////////////////////////////////////////////////////
 // Monitor
 ////////////////////////////////////////////////////////////////////////////////
