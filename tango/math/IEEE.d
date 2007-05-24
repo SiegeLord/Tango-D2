@@ -1471,6 +1471,96 @@ unittest
 }
 }
 
+/** Return the value that lies halfway between x and y on the IEEE number line.
+ *
+ * Formally, the result is the arithmetic mean of the binary significands of x
+ * and y, multiplied by the geometric mean of the binary exponents of x and y.
+ * x and y must have the same sign, and must not be NaN.
+ * Note: this function is useful for ensuring O(log n) behaviour in algorithms
+ * involving a 'binary chop'.
+ *
+ * Special cases:
+ * If x and y are within a factor of 2, (ie, feqrel(x, y) > 0), the return value
+ * is the arithmetic mean (x+y)/2.
+ * If x and y are even powers of 2, the return value is the geometric mean,
+ *   ieeeMean(x, y) = sqrt(x*y).
+ *
+ */
+T ieeeMean(T)(T x, T y)
+in {
+    // both x and y must have the same sign, and must not be NaN.
+    assert((x>=0 && y>=0) || (x<=0 && y<=0));
+}
+body {
+    // Runtime behaviour for contract violation:
+    // If signs are opposite, or one is a NaN, return 0.
+    if (!((x>=0 && y>=0) || (x<=0 && y<=0))) return 0.0;
+
+    // The implementation is simple: cast x and y to integers,
+    // average them (avoiding overflow), and cast the result back to a floating-point number.
+
+    T u;
+    static if (T.mant_dig==64) { // x87, 80-bit reals
+        // There's slight additional complexity because they are actually
+        // 79-bit reals...
+        ushort *ue = cast(ushort *)&u;
+        ulong *ul = cast(ulong *)&u;
+        ushort *xe = cast(ushort *)&x;
+        ulong *xl = cast(ulong *)&x;
+        ushort *ye = cast(ushort *)&y;
+        ulong *yl = cast(ulong *)&y;
+        // Ignore the useless implicit bit.
+        ulong m = ((*xl)&0x7FFF_FFFF_FFFF_FFFF) + ((*yl)&0x7FFF_FFFF_FFFF_FFFF);
+
+        uint e = (xe[4]&0x7FFF)+(ye[4]&0x7FFF);
+        if (m & 0x8000_0000_0000_0000) {
+            ++e;
+            m&=0x7FFF_FFFF_FFFF_FFFF;
+        }
+        // Now do a multi-byte right shift
+        uint c = e&1; // carry
+        e>>=1;
+        m>>>=1;
+        if (c) m|=0x4000_0000_0000_0000; // shift carry into significand
+        if (e) *ul = m | 0x8000_0000_0000_0000; // set implicit bit...
+        else *ul = m; // ... unless exponent is 0 (denormal or zero).
+        ue[4]= e | (xe[4]&0x8000); // restore sign bit
+    } else static if (T.mant_dig==double.mant_dig) {
+        ulong *ul = cast(ulong *)&u;
+        ulong *xl = cast(ulong *)&x;
+        ulong *yl = cast(ulong *)&y;
+        ulong m = (((*xl)&0x7FFF_FFFF_FFFF_FFFF) + ((*yl)&0x7FFF_FFFF_FFFF_FFFF))>>>1;
+        m |= ((*xl) & 0x8000_0000_0000_0000);
+        *ul = m;
+    }else static if (T.mant_dig==float.mant_dig) {
+        uint *ul = cast(uint *)&u;
+        uint *xl = cast(uint *)&x;
+        uint *yl = cast(uint *)&y;
+        uint m = (((*xl)&0x7FFF_FFFF) + ((*yl)&0x7FFF_FFFF))>>>1;
+        m |= ((*xl) & 0x8000_0000);
+        *ul = m;
+    }
+    return u;
+}
+
+debug(UnitTest) {
+unittest {
+    assert(ieeeMean(1.0L,4.0L)==2L);
+    assert(ieeeMean(2.0*1.013,8.0*1.013)==4*1.013);
+    assert(ieeeMean(-1.0L,-4.0L)==-2L);
+    assert(ieeeMean(-1.0,-4.0)==-2);
+    assert(ieeeMean(-1.0f,-4.0f)==-2f);
+    assert(ieeeMean(-1.0,-2.0)==-1.5);
+    assert(ieeeMean(-1*(1+8*real.epsilon),-2*(1+8*real.epsilon))==-1.5*(1+5*real.epsilon));
+    assert(ieeeMean(0x1p60,0x1p-10)==0x1p25);
+    static if (real.mant_dig==64) { // x87, 80-bit reals
+      assert(ieeeMean(1.0L,real.infinity)==0x1p8192L);
+      assert(ieeeMean(0.0L,real.infinity)==1.5);
+    }
+    assert(ieeeMean(0.5*real.min*(1-4*real.epsilon),0.5*real.min)==0.5*real.min*(1-2*real.epsilon));
+}
+}
+
 // Functions for NaN payloads
 /*
  * A 'payload' can be stored in the mantissa of a $(NAN). One bit is required
