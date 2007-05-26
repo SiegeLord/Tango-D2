@@ -694,7 +694,7 @@ class Thread
     {
         version( Win32 )
         {
-            Sleep( INFINITE );
+            SleepEx( INFINITE, TRUE );
         }
         else version( Posix )
         {
