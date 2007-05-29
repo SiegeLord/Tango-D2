@@ -412,9 +412,9 @@ version (Win32)
                 SO_TYPE =          0x1008, // ?
 
                 // OptionLevel.IP settings
-                IP_MULTICAST_LOOP = 0x4,
-                IP_ADD_MEMBERSHIP = 0x5,
-                IP_DROP_MEMBERSHIP = 0x6,
+                IP_MULTICAST_LOOP = 11,
+                IP_ADD_MEMBERSHIP = 12,
+                IP_DROP_MEMBERSHIP = 13,
         }
 
         /***************************************************************
