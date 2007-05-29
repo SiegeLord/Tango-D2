@@ -33,7 +33,7 @@ void main()
                       auto request = server.accept();
 
                       // write a response 
-                      request.write ("server replies 'hello'");
+                      request.output.write ("server replies 'hello'");
                       }
         }
 
@@ -46,7 +46,7 @@ void main()
 
         // wait for response (there is an optional timeout supported)
         char[64] response;
-        request.read (response);
+        request.input.read (response);
 
         // close socket
         request.close();

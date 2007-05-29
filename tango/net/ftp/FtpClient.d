@@ -1562,7 +1562,7 @@ class FTPConnection : Telnet
 
                 if (buf_size - buf_pos <= 0)
                     {
-                        if ((buf_size = stream.read(buf)) is Conduit.Eof)
+                        if ((buf_size = stream.input.read(buf)) is Conduit.Eof)
                             buf_size = 0, completed = true;
                         buf_pos = 0;
                     }
@@ -1636,7 +1636,7 @@ class FTPConnection : Telnet
                         break;
                     }
 
-                stream.write(buf[0 .. buf_size]);
+                stream.output.write(buf[0 .. buf_size]);
 
                 pos += buf_size;
                 if (progress !is null)

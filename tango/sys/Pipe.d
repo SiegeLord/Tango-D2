@@ -31,12 +31,15 @@ debug (PipeConduit)
  */
 class PipeConduit: DeviceConduit
 {
-    alias DeviceConduit.fileHandle  fileHandle;
-    alias DeviceConduit.copy        copy;
-    alias DeviceConduit.read        read;
-    alias DeviceConduit.write       write;
-    alias DeviceConduit.close       close;
-    alias DeviceConduit.error       error;
+    version (OLD)
+    {
+        alias DeviceConduit.fileHandle  fileHandle;
+        alias DeviceConduit.copy        copy;
+        alias DeviceConduit.read        read;
+        alias DeviceConduit.write       write;
+        alias DeviceConduit.close       close;
+        alias DeviceConduit.error       error;
+    }
 
     static const uint DefaultBufferSize = 8 * 1024;
 
@@ -52,10 +55,9 @@ class PipeConduit: DeviceConduit
      * style        = access flags for the pipe (readable, writable, etc.).
      * bufferSize   = buffer size.
      */
-    private this(IConduit.Handle handle, Access access,
+    private this(IConduit.Handle handle,
                  uint bufferSize = DefaultBufferSize)
     {
-        super(access, false);
         version (Win32)
                 this.handle = cast(HANDLE) handle;
         else
@@ -82,18 +84,18 @@ class PipeConduit: DeviceConduit
     /**
      * Returns the name of the device.
      */
-    public override char[] getName()
+    public override char[] toUtf8()
     {
         return "<pipe>";
     }
 
-    version (Windows)
+    version (OLD)
     {
         /**
          * Read a chunk of bytes from the file into the provided array 
          * (typically that belonging to an IBuffer)
          */
-        protected override uint reader(void[] dst)
+        protected override uint read (void[] dst)
         {
             uint result;
             DWORD read;
@@ -122,7 +124,7 @@ class PipeConduit: DeviceConduit
          * Write a chunk of bytes to the file from the provided array 
          * (typically that belonging to an IBuffer).
          */
-        protected override uint writer(void[] src)
+        protected override uint write (void[] src)
         {
             DWORD written;
 
@@ -158,10 +160,8 @@ class Pipe
 
             if (pipe(fd) == 0)
             {
-                _source = new PipeConduit(cast(IConduit.Handle) fd[0],
-                                          Conduit.Access.Read, bufferSize);
-                _sink = new PipeConduit(cast(IConduit.Handle) fd[1],
-                                        Conduit.Access.Write, bufferSize);
+                _source = new PipeConduit(cast(IConduit.Handle) fd[0], bufferSize);
+                _sink = new PipeConduit(cast(IConduit.Handle) fd[1], bufferSize);
             }
             else
             {
@@ -187,10 +187,8 @@ class Pipe
 
             if (CreatePipe(&sourceHandle, &sinkHandle, sa, cast(DWORD) bufferSize))
             {
-                _source = new PipeConduit(cast(IConduit.Handle) sourceHandle,
-                                        Conduit.Access.Read);
-                _sink = new PipeConduit(cast(IConduit.Handle) sinkHandle,
-                                        Conduit.Access.Write);
+                _source = new PipeConduit(cast(IConduit.Handle) sourceHandle);
+                _sink = new PipeConduit(cast(IConduit.Handle) sinkHandle);
             }
             else
             {

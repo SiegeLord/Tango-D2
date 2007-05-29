@@ -30,35 +30,6 @@ class DeviceConduit : Conduit
 {
         /***********************************************************************
 
-                Construct a conduit with the given style and seek abilities.
-                Conduits are either seekable or non-seekable.
-
-        ***********************************************************************/
-
-        this (Access access, bool seekable)
-        {
-                super (access, seekable);
-        }
-
-        /***********************************************************************
-
-                Create a FileConduit on the provided handle. This is
-                strictly for adapting existing devices such as Stdout and
-                friends.
-
-        ***********************************************************************/
-
-        this (Access access, Handle handle)
-        {
-                // say we're not seekable
-                super (access, false);
-
-                // open the file
-                reopen (handle);
-        }
-
-        /***********************************************************************
-
                 Callback to close the file. This is invoked from the Resource
                 base-class when the resource is being closed.
 
@@ -87,7 +58,7 @@ class DeviceConduit : Conduit
 
         ***********************************************************************/
 
-        protected char[] getName()
+        protected char[] toUtf8()
         {
                 return "<device>";
         }
@@ -100,7 +71,7 @@ class DeviceConduit : Conduit
 
         final void error ()
         {
-                super.exception (getName() ~ ": " ~ SysError.lastMsg);
+                super.exception (toUtf8() ~ " :: " ~ SysError.lastMsg);
         }
 
         /***********************************************************************
@@ -159,7 +130,7 @@ class DeviceConduit : Conduit
 
                 ***************************************************************/
 
-                protected override uint reader (void[] dst)
+                protected override uint read (void[] dst)
                 {
                         DWORD read;
                         void *p = dst.ptr;
@@ -183,7 +154,7 @@ class DeviceConduit : Conduit
 
                 ***************************************************************/
 
-                protected override uint writer (void[] src)
+                protected override uint write (void[] src)
                 {
                         DWORD written;
 
@@ -248,7 +219,7 @@ class DeviceConduit : Conduit
 
                 ***************************************************************/
 
-                protected override uint reader (void[] dst)
+                protected override uint read (void[] dst)
                 {
                         int read = posix.read (handle, dst.ptr, dst.length);
                         if (read == -1)
@@ -266,7 +237,7 @@ class DeviceConduit : Conduit
 
                 ***************************************************************/
 
-                protected override uint writer (void[] src)
+                protected override uint write (void[] src)
                 {
                         int written = posix.write (handle, src.ptr, src.length);
                         if (written == -1)

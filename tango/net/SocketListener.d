@@ -150,7 +150,7 @@ class SocketListener : IListener
                            buffer.compress ();
 
                            // wait for incoming content
-                           auto result = buffer.write (&conduit.read);
+                           auto result = buffer.write (&conduit.input.read);
 
                            // time to quit? Note that a v0.95 compiler bug 
                            // prohibits 'break' from exiting the try{} block

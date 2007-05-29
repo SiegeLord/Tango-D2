@@ -139,7 +139,7 @@ class GrowBuffer : Buffer
                 if (writable < 32)
                     makeRoom (increment);
 
-                return write (&conduit.read);
+                return write (&conduit.input.read);
         } 
 
         /***********************************************************************

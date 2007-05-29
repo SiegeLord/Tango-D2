@@ -15,11 +15,11 @@ void main()
         // make a connection request to the server
         auto request = new SocketConduit;
         request.connect (new InternetAddress ("localhost", 8080));
-        request.write ("hello\n");
+        request.output.write ("hello\n");
 
         // wait for response (there is an optional timeout supported)
         char[64] response;
-        request.read (response);
+        request.input.read (response);
 
         // close socket
         request.close;

@@ -264,7 +264,7 @@ class FileBucket
                         void[] data = new ubyte [length];
 
                         bucket.file.seek (offset);
-                        if (bucket.file.read (data) != length)
+                        if (bucket.file.input.read (data) != length)
                             eof (bucket);
 
                         return data;
@@ -289,7 +289,7 @@ class FileBucket
                         bucket.file.seek (offset);
         
                         // write content
-                        if (bucket.file.write (data) != length)
+                        if (bucket.file.output.write (data) != length)
                             eof (bucket);
                 }
 

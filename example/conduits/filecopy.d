@@ -16,7 +16,7 @@ void main (char[][] args)
            auto fc = new FileConduit (args[1]);
 
            // stream directly to console
-           Cout.conduit.copy (fc);
+           Cout.stream.copy (fc);
            }
         else
            Cout ("usage is: filecopy filename").newline;

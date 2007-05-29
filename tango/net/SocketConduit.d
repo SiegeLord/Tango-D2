@@ -51,7 +51,7 @@ class SocketConduit : Conduit
 
         this ()
         {
-                this (Access.ReadWrite, SocketType.STREAM, ProtocolType.TCP);
+                this (SocketType.STREAM, ProtocolType.TCP);
         }
 
         /***********************************************************************
@@ -61,9 +61,8 @@ class SocketConduit : Conduit
 
         ***********************************************************************/
 
-        protected this (Access access, SocketType type, ProtocolType protocol, bool create=true)
+        protected this (SocketType type, ProtocolType protocol, bool create=true)
         {
-                super (access);
                 socket_ = new Socket (AddressFamily.INET, type, protocol, create);
         }
 
@@ -241,7 +240,7 @@ class SocketConduit : Conduit
 
         ***********************************************************************/
 
-        protected override uint reader (void[] dst)
+        protected override uint read (void[] dst)
         {
                 // ensure just one read at a time
                 synchronized (this)
@@ -287,7 +286,7 @@ class SocketConduit : Conduit
 
         ***********************************************************************/
 
-        protected override uint writer (void[] src)
+        protected override uint write (void[] src)
         {
                 int count = socket_.send (src);
                 if (count <= 0)
@@ -315,7 +314,7 @@ class SocketConduit : Conduit
                    }
                 else
                    {
-                   s = new SocketConduit (Access.ReadWrite, SocketType.STREAM, ProtocolType.TCP, false);
+                   s = new SocketConduit (SocketType.STREAM, ProtocolType.TCP, false);
                    s.fromList = true;
                    }
                 return s;

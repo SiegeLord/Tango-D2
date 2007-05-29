@@ -102,7 +102,7 @@ class MulticastConduit : DatagramConduit
 
         ***********************************************************************/
 
-        MulticastConduit loopback (bool yes)
+        MulticastConduit loopback (bool yes=true)
         {
                 uint[1] onoff = yes;
                 socket.setOption (SocketOptionLevel.IP, SocketOption.IP_MULTICAST_LOOP, onoff);
@@ -139,7 +139,7 @@ class MulticastConduit : DatagramConduit
 
 *******************************************************************************/
 
-debug (Test)
+debug (Multicast)
 {
         void main()
         {

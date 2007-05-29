@@ -51,7 +51,7 @@ version (Win32)
         auto from = new FileConduit ("test.txt");
 
         // stream directly to console
-        Stdout.conduit.copy (from);
+        Stdout.stream.copy (from);
         ---
 
         And here we copy one file to another:
@@ -61,7 +61,7 @@ version (Win32)
         auto to = new FileConduit ("copy.txt", FileConduit.WriteTruncate);
 
         // copy file
-        to.copy (new FileConduit("test.txt"));
+        to.output.copy (new FileConduit("test.txt"));
         ---
         
         To load a file directly into memory one might do this:
@@ -74,7 +74,7 @@ version (Win32)
         auto content = new char[fc.length];
 
         // read the file content. Return value is the number of bytes read
-        auto bytesRead = fc.read (content);
+        auto bytesRead = fc.input.read (content);
         ---
 
         Conversely, one may write directly to a FileConduit, like so:
@@ -84,7 +84,7 @@ version (Win32)
         auto to = new FileConduit ("text.txt", FileConduit.WriteTruncate);
 
         // write an array of content to it
-        auto bytesWritten = to.write (content);
+        auto bytesWritten = to.output.write (content);
         ---
 
 
@@ -175,39 +175,52 @@ class FileConduit : DeviceConduit, DeviceConduit.Seek
 
         /***********************************************************************
 
+        ***********************************************************************/
+
+        enum Access : ubyte     {
+                                Read      = 0x01,       /// is readable
+                                Write     = 0x02,       /// is writable
+                                ReadWrite = 0x03,       /// both
+                                }
+
+        /***********************************************************************
+
             Predefined styles
         
         ***********************************************************************/
 
-        const Style ReadExisting = {DeviceConduit.Access.Read, Open.Exists};
+        const Style ReadExisting = {Access.Read, Open.Exists};
 
         /***********************************************************************
         
         ***********************************************************************/
 
-        const Style WriteTruncate = {DeviceConduit.Access.Write, Open.Truncate};
+        const Style WriteTruncate = {Access.Write, Open.Truncate};
 
         /***********************************************************************
         
         ***********************************************************************/
 
-        const Style WriteAppending = {DeviceConduit.Access.Write, Open.Append};
+        const Style WriteAppending = {Access.Write, Open.Append};
 
         /***********************************************************************
         
         ***********************************************************************/
 
-        const Style ReadWriteCreate = {DeviceConduit.Access.ReadWrite, Open.Create}; 
+        const Style ReadWriteCreate = {Access.ReadWrite, Open.Create}; 
 
         /***********************************************************************
         
         ***********************************************************************/
 
-        const Style ReadWriteExisting = {DeviceConduit.Access.ReadWrite, Open.Exists}; 
+        const Style ReadWriteExisting = {Access.ReadWrite, Open.Exists}; 
 
 
         // the file we're working with 
         private PathView path_;
+
+        // the style we're opened with
+        private Style    style_;
 
         /***********************************************************************
         
@@ -228,14 +241,11 @@ class FileConduit : DeviceConduit, DeviceConduit.Seek
 
         this (PathView path, Style style = ReadExisting)
         {
-                // say we're seekable
-                super (style.access, true);
-                
                 // remember who we are
                 path_ = path;
 
                 // open the file
-                open (style);
+                open (this.style_ = style);
         }    
 
         /***********************************************************************
@@ -247,6 +257,17 @@ class FileConduit : DeviceConduit, DeviceConduit.Seek
         PathView path ()
         {
                 return path_;
+        }               
+
+        /***********************************************************************
+        
+                Return the Style used for this file.
+
+        ***********************************************************************/
+
+        Style style ()
+        {
+                return style_;
         }               
 
         /***********************************************************************
@@ -286,17 +307,6 @@ class FileConduit : DeviceConduit, DeviceConduit.Seek
                 ret = seek (0, Seek.Anchor.End);
                 seek (pos);
                 return ret;
-        }               
-
-        /***********************************************************************
-        
-                Return the name used by this file.
-
-        ***********************************************************************/
-
-        protected override char[] getName ()
-        {
-                return toUtf8;
         }               
 
 
@@ -392,7 +402,7 @@ class FileConduit : DeviceConduit, DeviceConduit.Seek
 
                 ***************************************************************/
 
-                protected override uint writer (void[] src)
+                protected override uint write (void[] src)
                 {
                         DWORD written;
 
@@ -400,7 +410,7 @@ class FileConduit : DeviceConduit, DeviceConduit.Seek
                         if (appending)
                             SetFilePointer (handle, 0, null, Seek.Anchor.End);
                         
-                        return super.writer (src);
+                        return super.write (src);
                 }
             
                 /***************************************************************

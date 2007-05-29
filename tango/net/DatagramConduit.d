@@ -53,7 +53,7 @@ class DatagramConduit : SocketConduit
 
         this ()
         {
-                super (Access.ReadWrite, SocketType.DGRAM, ProtocolType.IP);
+                super (SocketType.DGRAM, ProtocolType.IP);
         }
 
         /***********************************************************************
@@ -68,10 +68,10 @@ class DatagramConduit : SocketConduit
 
         ***********************************************************************/
 
-        uint read (void[] dst, Address from = null)
+        uint read (void[] dst, Address from=null)
         {
                 this.from = from;
-                return super.read (dst);
+                return input.read (dst);
         }
 
         /***********************************************************************
@@ -84,10 +84,10 @@ class DatagramConduit : SocketConduit
 
         ***********************************************************************/
 
-        uint write (void[] src, Address to = null)
+        uint write (void[] src, Address to=null)
         {
                 this.to = to;
-                return super.write (src);
+                return output.write (src);
         }
 
         /***********************************************************************
@@ -108,11 +108,8 @@ class DatagramConduit : SocketConduit
                 int count;
 
                 if (dst.length)
-                   {
-                   count = (from) ? socket.receiveFrom (dst, from) : socket.receiveFrom (dst);
-                   if (count <= 0)
-                       count = Eof;
-                   }
+                    count = (from) ? socket.receiveFrom (dst, from) : socket.receiveFrom (dst);
+
                 return count;
         }
 
@@ -130,7 +127,7 @@ class DatagramConduit : SocketConduit
 
         ***********************************************************************/
 
-        protected override uint writer (void[] src)
+        protected override uint write (void[] src)
         {
                 int count;
                 
@@ -150,7 +147,7 @@ class DatagramConduit : SocketConduit
 
 *******************************************************************************/
 
-debug (Test)
+debug (Datagram)
 {
         import tango.io.Console;
 
@@ -158,18 +155,19 @@ debug (Test)
 
         void main()
         {
-                auto group = new InternetAddress ("127.0.0.1", 8080);
+                auto addr = new InternetAddress ("127.0.0.1", 8080);
 
-                // listen for datagrams on the group address
-                auto multi = new DatagramConduit;
+                // listen for datagrams on the local address
+                auto gram = new DatagramConduit;
+                gram.bind (addr);
 
-                // join and broadcast to the group
-                multi.write ("hello", group);
+                // write to the local address
+                gram.write ("hello", addr);
 
                 // we are listening also ...
                 char[8] tmp;
                 auto x = new InternetAddress;
-                auto bytes = multi.read (tmp, x);
+                auto bytes = gram.read (tmp, x);
                 Cout (x) (tmp[0..bytes]).newline;
         }
 }

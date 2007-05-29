@@ -27,18 +27,6 @@ class MemoryConduit : Conduit
         
         /***********************************************************************
 
-                Construct a conduit with the given style and seek abilities.
-                Conduits are either seekable or non-seekable.
-
-        ***********************************************************************/
-
-        this ()
-        {
-                super (Access.ReadWrite, false);
-        }
-
-        /***********************************************************************
-
                 Return a preferred size for buffering conduit I/O
 
         ***********************************************************************/
@@ -54,7 +42,7 @@ class MemoryConduit : Conduit
 
         ***********************************************************************/
 
-        protected char[] getName()
+        protected char[] toUtf8()
         {
                 return "<memory>";
         }
@@ -88,7 +76,7 @@ class MemoryConduit : Conduit
 
         ***********************************************************************/
 
-        protected override uint reader (void[] dst)
+        protected override uint read (void[] dst)
         {
                 if (content.length)
                    {
@@ -111,7 +99,7 @@ class MemoryConduit : Conduit
 
         ***********************************************************************/
 
-        protected override uint writer (void[] src)
+        protected override uint write (void[] src)
         {
                 content ~= src;
                 return src.length;

@@ -126,7 +126,7 @@ class File
                 scope (exit)
                        conduit.close;
 
-                conduit.flush (content);
+                conduit.drain (content);
                 return this;
         }
 }

@@ -90,9 +90,9 @@ struct Console
 
                 **************************************************************/
 
-                IConduit conduit ()
+                InputStream stream ()
                 {
-                        return buffer_.conduit;
+                        return buffer_.conduit.input;
                 }
 
                 /**************************************************************
@@ -216,9 +216,9 @@ struct Console
 
                 **************************************************************/
 
-                IConduit conduit ()
+                OutputStream stream ()
                 {
-                        return buffer_.conduit;
+                        return buffer_.conduit.output;
                 }
 
                 /**************************************************************
@@ -356,11 +356,11 @@ struct Console
 
                         *******************************************************/
 
-                        private this (Access access, uint id)
+                        private this (uint handle)
                         {
-                                super (access, cast(Handle) id);
                                 input = new wchar [1024 * 1];
                                 output = new wchar [1024 * 1];
+                                reopen (cast(Handle) handle);
                         }    
 
                         /*******************************************************
@@ -410,10 +410,10 @@ struct Console
                                 {} 
                              else
                                 {
-                                protected override uint writer (void[] src)
+                                override uint write (void[] src)
                                 {
                                 if (redirected)
-                                    return super.writer (src);
+                                    return super.write (src);
                                 else
                                    {
                                    DWORD i = src.length;
@@ -464,10 +464,10 @@ struct Console
                                 {} 
                              else
                                 {
-                                protected override uint reader (void[] dst)
+                                protected override uint read (void[] dst)
                                 {
                                 if (redirected)
-                                    return super.reader (dst);
+                                    return super.read (dst);
                                 else
                                    {
                                    DWORD i = dst.length / 4;
@@ -509,10 +509,9 @@ struct Console
 
                         *******************************************************/
 
-                        private this (Access access, Handle handle)
+                        private this (Handle handle)
                         {
-                                super (access, handle);
-
+                                reopen (handle);
                                 redirected = (isatty(handle) is 0);
                         }
                         }
@@ -539,13 +538,13 @@ static Console.Output   Cout,                   /// the standard output stream
 
 static this ()
 {
-        auto conduit = new Console.Conduit (DeviceConduit.Access.Read, 0);
+        auto conduit = new Console.Conduit (0);
         Cin  = new Console.Input (conduit, conduit.redirected);
 
-        conduit = new Console.Conduit (DeviceConduit.Access.Write, 1);
+        conduit = new Console.Conduit (1);
         Cout = new Console.Output (conduit, conduit.redirected);
 
-        conduit = new Console.Conduit (DeviceConduit.Access.Write, 2);
+        conduit = new Console.Conduit (2);
         Cerr = new Console.Output (conduit, conduit.redirected);
 }
 

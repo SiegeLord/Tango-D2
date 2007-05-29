@@ -57,7 +57,7 @@ private import tango.io.model.IConduit;
 
         Conduits provide virtualized access to external content,
         and represent things like files or Internet connections.
-        They are just a different kind of stream. Conduits are
+        They host both an input and output stream. Conduits are
         modelled by tango.io.model.IConduit, and implemented via
         classes FileConduit, SocketConduit, ConsoleConduit, and 
         so on. Additional conduit varieties are easy to construct: 
@@ -180,7 +180,8 @@ private import tango.io.model.IConduit;
         are times when it may be more appropriate to sidestep them. For 
         such cases, conduit derivatives (such as FileConduit) support 
         direct array-based IO via a pair of read() and write() methods. 
-        These alternate methods will also invoke any attached filters.
+        These alternate methods are accessed via the conduit input and 
+        output streams, and will also invoke any attached filters.
 
 *******************************************************************************/
 

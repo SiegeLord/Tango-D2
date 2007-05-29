@@ -19,41 +19,27 @@ private import  tango.io.model.IConduit;
 /*******************************************************************************
 
         Conduit abstract base-class, implementing interface IConduit.
-        Only the conduit-specific reader(), writer(), and bufferSize()
-        need to be implemented for a concrete conduit implementation.
-        See FileConduit for an example.
+        Only the conduit-specific read(), write(), fileHandle() and 
+        bufferSize() need to be implemented for a concrete conduit 
+        implementation. See FileConduit for an example.
 
         Conduits provide virtualized access to external content, and
         represent things like files or Internet connections. Conduits
-        are modelled by tango.io.model.IConduit, and implemented via
-        classes FileConduit, SocketConduit, etc
+        expose a pair of streams, are modelled by tango.io.model.IConduit, 
+        and are implemented via classes such as FileConduit & SocketConduit. 
 
         Additional kinds of conduit are easy to construct: one either
         subclasses tango.io.Conduit, or implements tango.io.model.IConduit.
         A conduit typically reads and writes from/to an IBuffer in large
         chunks, typically the entire buffer. Alternatively, one can invoke
-        read(dst[]) and/or write(src[]) directly.
+        input.read(dst[]) and/or output.write(src[]) directly.
 
 *******************************************************************************/
 
-class Conduit : IConduit, IConduitFilter
+class Conduit : IConduit, InputStream, OutputStream
 {
-        private Access                  access;
-        private IConduitFilter          filter;
-        private bool                    seekable;
-
-        /***********************************************************************
-
-                Conduit access flags
-
-        ***********************************************************************/
-
-        enum Access : ubyte             {
-                                        Read      = 0x01,       /// is readable
-                                        Write     = 0x02,       /// is writable
-                                        ReadWrite = 0x03,       /// both
-                                        };
-
+        private InputStream  input_;
+        private OutputStream output_;
 
         /***********************************************************************
 
@@ -76,101 +62,6 @@ class Conduit : IConduit, IConduitFilter
 
         /***********************************************************************
 
-                conduit-specific reader
-
-        ***********************************************************************/
-
-        protected abstract uint reader (void[] dst);
-
-        /***********************************************************************
-
-                conduit-specific writer
-
-        ***********************************************************************/
-
-        protected abstract uint writer (void[] src);
-
-        /***********************************************************************
-
-                Construct a conduit with the given style and seek abilities.
-                Conduits are either seekable or non-seekable.
-
-        ***********************************************************************/
-
-        this (Access access, bool seekable = false)
-        {
-                filter = this;
-                this.access = access;
-                this.seekable = seekable;
-        }
-
-        /***********************************************************************
-
-                Method to close the filters. This is invoked from the
-                Resource base-class when the resource is being closed.
-                You should ensure that a subclass invokes this as part
-                of its closure mechanics.
-
-        ***********************************************************************/
-
-        void close ()
-        {
-                filter.unbind ();
-                filter = this;
-        }
-
-        /***********************************************************************
-
-                flush provided content to the conduit. Throws an IOException 
-                upon failure to write to the output
-
-        ***********************************************************************/
-
-        IConduit flush (void[] src)
-        {
-                uint len = src.length;
-
-                for (uint i, written; written < len;)
-                     if ((i = write (src [written .. len])) != Eof)
-                          written += i;
-                     else
-                        exception ("IConduit.flush :: Eof while writing "~toUtf8());
-                return this;
-        }
-
-        /***********************************************************************
-
-                Please refer to IConduit.attach for details
-
-        ***********************************************************************/
-
-        void attach (IConduitFilter filter)
-        {
-                // hook new filter to current one
-                filter.bind (this, this.filter);
-
-                // make this the head filter
-                this.filter = filter;
-        }
-
-        /***********************************************************************
-
-        ***********************************************************************/
-
-        protected void bind (IConduit conduit, IConduitFilter next)
-        {
-        }
-
-        /***********************************************************************
-
-        ***********************************************************************/
-
-        protected void unbind ()
-        {
-        }
-
-        /***********************************************************************
-
                 Read from conduit into a target array. The provided dst 
                 will be populated with content from the conduit. 
 
@@ -179,10 +70,7 @@ class Conduit : IConduit, IConduitFilter
 
         ***********************************************************************/
 
-        uint read (void[] dst)
-        {
-                return filter.reader (dst);
-        }
+        abstract protected uint read (void[] dst);
 
         /***********************************************************************
 
@@ -194,43 +82,120 @@ class Conduit : IConduit, IConduitFilter
 
         ***********************************************************************/
 
-        uint write (void [] src)
+        abstract protected uint write (void [] src);
+
+        /***********************************************************************
+
+
+        ***********************************************************************/
+
+        this ()
         {
-                return filter.writer (src);
+                input_ = this;
+                output_ = this;
         }
 
         /***********************************************************************
 
-                Returns true if this conduit is seekable (whether it
-                implements ISeekable)
+                Return the input stream
 
         ***********************************************************************/
-
-        bool isSeekable ()
+        
+        final InputStream input ()
         {
-                return seekable;
+                return input_;
         }
 
         /***********************************************************************
 
-                Returns true is this conduit can be read from
+                Return the output stream
 
         ***********************************************************************/
-
-        bool isReadable ()
+        
+        final OutputStream output ()
         {
-                return (access & Access.Read) != 0;
+                return output_;
+        }
+
+        /**********************************************************************
+
+                Fill the provided buffer. Returns the number of bytes
+                actually read, which will be less that dst.length when
+                Eof has been reached and zero thereafter
+
+        **********************************************************************/
+
+        final uint fill (void[] dst)
+        {
+                uint len;
+
+                do {
+                   int i = input_.read (dst [len .. $]);
+                   if (i is Eof)
+                       return len;
+
+                   len += i;
+                   } while (len < dst.length);
+
+                return len;
         }
 
         /***********************************************************************
 
-                Returns true if this conduit can be written to
+                flush provided content to the conduit. Throws an IOException 
+                upon failure to write to the output
 
         ***********************************************************************/
 
-        bool isWritable ()
+        final void drain (void[] src)
         {
-                return (access & Access.Write) != 0;
+                uint len = src.length;
+
+                for (uint i, written; written < len;)
+                     if ((i = output_.write (src [written .. len])) != Eof)
+                          written += i;
+                     else
+                        exception ("IConduit.flush :: Eof while writing "~toUtf8());
+        }
+
+        /***********************************************************************
+
+                Transfer the content of another conduit to this one. Returns
+                a reference to this class, and throws IOException on failure.
+
+        ***********************************************************************/
+
+        final void copy (InputStream source)
+        {
+                auto buffer = new byte[bufferSize];
+
+                uint i;
+                while ((i = source.read (buffer)) != Eof)
+                        drain (buffer [0 .. i]);
+                
+                delete buffer;
+        }
+
+        /***********************************************************************
+
+        ***********************************************************************/
+
+        final InputStream attach (InputStream filter)
+        {
+                auto tmp = input_;
+                input_ = filter;
+                return tmp;
+        }
+
+        /***********************************************************************
+
+        ***********************************************************************/
+
+        final OutputStream attach (OutputStream filter)
+        {
+                auto tmp = output_;
+                output_ = filter;
+                return tmp;
         }
 
         /***********************************************************************
@@ -246,55 +211,22 @@ class Conduit : IConduit, IConduitFilter
 
         /***********************************************************************
 
-                Transfer the content of another conduit to this one. Returns
-                a reference to this class, and throws IOException on failure.
+                dump any buffered content
 
         ***********************************************************************/
 
-        IConduit copy (IConduit source)
+        void flush ()
         {
-                auto buffer = new byte[bufferSize];
-
-                uint i;
-                while ((i = source.read (buffer)) != Eof)
-                        flush (buffer [0 .. i]);
-                
-                delete buffer;
-                return this;
-        }
-
-        /**********************************************************************
-
-                Fill the provided buffer. Returns the number of bytes
-                actually read, which will be less that dst.length when
-                Eof has been reached and zero thereafter
-
-        **********************************************************************/
-
-        uint fill (void[] dst)
-        {
-                uint len;
-
-                do {
-                   int i = read (dst [len .. $]);
-                   if (i is Eof)
-                       return len;
-
-                   len += i;
-                   } while (len < dst.length);
-
-                return len;
         }
 
         /***********************************************************************
 
-                Return the access-style used when creating this conduit
+                Close this conduit
 
         ***********************************************************************/
 
-        Access getAccess ()
+        void close ()
         {
-                return access;
         }
 
         /***********************************************************************
@@ -306,138 +238,3 @@ class Conduit : IConduit, IConduitFilter
                 throw new IOException (msg);
         }
 }
-
-
-/*******************************************************************************
-
-        Define a conduit filter base-class. The filter is invoked
-        via its reader() method whenever a block of content is
-        being read, and by its writer() method whenever content is
-        being written.
-
-        The filter should return the number of bytes it has actually
-        produced: less than or equal to the length of the provided
-        array.
-
-        Filters are chained together such that the last filter added
-        is the first one invoked. It is the responsibility of each
-        filter to invoke the next link in the chain; for example:
-
-        ---
-        class MungingFilter : ConduitFilter
-        {
-                int reader (void[] dst)
-                {
-                        // read the next X bytes
-                        int count = next.reader (dst);
-
-                        // set everything to '*' !
-                        dst[0..count] = '*';
-
-                        // say how many we read
-                        return count;
-                }
-
-                int writer (void[] src)
-                {
-                        byte[] tmp = new byte[src.length];
-
-                        // set everything to '*'
-                        tmp = '*';
-
-                        // write the munged output
-                        return next.writer (tmp);
-                }
-        }
-        ---
-
-        Notice how this filter invokes the 'next' instance before
-        munging the content ... the far end of the chain is where
-        the original IConduit reader is attached, so it will get
-        invoked eventually assuming each filter invokes 'next'.
-        If the next reader fails it will return IConduit.Eof, as
-        should your filter (or throw an IOException). From a client
-        perspective, filters are attached like this:
-
-        ---
-        FileConduit fc = new FileConduit (...);
-
-        fc.attach (new ZipFilter);
-        fc.attach (new MungingFilter);
-        ---
-
-        Again, the last filter attached is the first one invoked
-        when a block of content is actually read. Each filter has
-        two additional methods that it may use to control behavior:
-
-        ---
-        class ConduitFilter : IConduitFilter
-        {
-                protected IConduitFilter next;
-
-                void bind (IConduit conduit, IConduitFilter next)
-                {
-                        this.next = next;
-                }
-
-                void unbind ()
-                {
-                }
-        }
-        ---
-
-        The first method is invoked when the filter is attached to a
-        conduit, while the second is invoked just before the conduit
-        is closed. Both of these may be overridden by the filter for
-        whatever purpose desired.
-
-        Note that a conduit filter can choose to sidestep reading from
-        the conduit (per the usual case), and produce its input from
-        somewhere else entirely. This mechanism supports the notion
-        of 'piping' between multiple conduits, or between a conduit
-        and something else entirely; it's a bridging mechanism.
-
-
-*******************************************************************************/
-
-class ConduitFilter : IConduitFilter
-{
-        protected IConduitFilter next;
-
-        /***********************************************************************
-
-        ***********************************************************************/
-
-        uint reader (void[] dst)
-        {
-                return next.reader (dst);
-        }
-
-        /***********************************************************************
-
-        ***********************************************************************/
-
-        uint writer (void[] src)
-        {
-                return next.writer (src);
-        }
-
-        /***********************************************************************
-
-        ***********************************************************************/
-
-        protected void bind (IConduit conduit, IConduitFilter next)
-        {
-                this.next = next;
-        }
-
-        /***********************************************************************
-
-        ***********************************************************************/
-
-        protected void unbind ()
-        {
-                next.unbind ();
-        }
-}
-

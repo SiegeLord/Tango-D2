@@ -76,7 +76,7 @@ class MappedBuffer : Buffer
                         // can only do 32bit mapping on 32bit platform
                         ulong size = host.length;
 
-                        auto access = host.getAccess();
+                        auto access = host.style.access;
 
                         DWORD flags = PAGE_READONLY;
                         if (access & host.Access.Write)
@@ -156,7 +156,7 @@ class MappedBuffer : Buffer
                         // Make sure the mapping attributes are consistant with
                         // the FileConduit attributes.
                         
-                        auto access = host.getAccess();
+                        auto access = host.style.access;
                         
                         int flags = MAP_SHARED;
                         int protection = PROT_READ;

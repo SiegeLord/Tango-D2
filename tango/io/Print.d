@@ -208,9 +208,9 @@ class Print(T)
 
         **********************************************************************/
 
-        final IConduit conduit ()
+        final OutputStream stream ()
         {
-                return output.conduit;
+                return output.conduit.output;
         }
 
         /**********************************************************************
