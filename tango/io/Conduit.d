@@ -117,6 +117,17 @@ class Conduit : IConduit, InputStream, OutputStream
                 return output_;
         }
 
+        /***********************************************************************
+        
+                Return the host conduit
+
+        ***********************************************************************/
+
+        final IConduit conduit()
+        {
+                return this;
+        }
+                            
         /**********************************************************************
 
                 Fill the provided buffer. Returns the number of bytes

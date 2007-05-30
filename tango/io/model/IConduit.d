@@ -43,6 +43,22 @@ abstract class IConduit : ISelectable
 
         /***********************************************************************
 
+                Attach an input filter
+
+        ***********************************************************************/
+        
+        abstract InputStream attach (InputStream input);
+
+        /***********************************************************************
+
+                Attach an output filter
+
+        ***********************************************************************/
+        
+        abstract OutputStream attach (OutputStream output);
+
+        /***********************************************************************
+
                 Return the input stream
 
         ***********************************************************************/
@@ -65,6 +81,25 @@ abstract class IConduit : ISelectable
 
         abstract uint bufferSize (); 
                      
+        /***********************************************************************
+        
+                Fill the provided buffer. Returns the number of bytes 
+                actually read, which will be less that dst.length when 
+                Eof has been reached and zero thereafter
+
+        ***********************************************************************/
+
+        uint fill (void[] dst);               
+         
+        /***********************************************************************
+        
+                Flush provided content to the conduit. Will throw an 
+                IOException where the operation can not be completed
+
+        ***********************************************************************/
+
+        void drain (void[] dst);               
+                             
         /***********************************************************************
 
                 Is the conduit alive?
@@ -153,6 +188,14 @@ interface InputStream
 {
         /***********************************************************************
         
+                Return the host conduit
+
+        ***********************************************************************/
+
+        IConduit conduit();
+                            
+        /***********************************************************************
+        
                 Read from conduit into a target array. The provided dst 
                 will be populated with content from the conduit. 
 
@@ -162,16 +205,6 @@ interface InputStream
         ***********************************************************************/
 
         uint read (void[] dst);               
-                             
-        /***********************************************************************
-        
-                Fill the provided buffer. Returns the number of bytes 
-                actually read, which will be less that dst.length when 
-                Eof has been reached and zero thereafter
-
-        ***********************************************************************/
-
-        uint fill (void[] dst);               
                              
         /***********************************************************************
         
@@ -192,6 +225,14 @@ interface OutputStream
 {
         /***********************************************************************
         
+                Return the host conduit
+
+        ***********************************************************************/
+
+        IConduit conduit();
+                            
+        /***********************************************************************
+        
                 Write to conduit from a source array. The provided src
                 content will be written to the conduit.
 
@@ -201,15 +242,6 @@ interface OutputStream
         ***********************************************************************/
 
         uint write (void[] dst);               
-                             
-        /***********************************************************************
-        
-                Flush provided content to the conduit. Will throw an 
-                IOException where the operation can not be completed
-
-        ***********************************************************************/
-
-        void drain (void[] dst);               
                              
         /***********************************************************************
         

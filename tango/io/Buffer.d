@@ -490,7 +490,7 @@ class Buffer : IBuffer
 
                 // and get further content directly from conduit
                 if (content < dst.length && conduit_)
-                    content += conduit_.input.fill (dst [content .. $]);
+                    content += conduit_.fill (dst [content .. $]);
 
                 return content;
         }
@@ -573,7 +573,7 @@ class Buffer : IBuffer
                        // check for pathological case
                        if (length > capacity_)
                           {
-                          conduit_.output.drain (src [0 .. length]);
+                          conduit_.drain (src [0 .. length]);
                           return this;
                           }
                        }
@@ -963,7 +963,7 @@ class Buffer : IBuffer
                 if (conduit is null)
                     conduit = conduit_, assert (conduit);
 
-                conduit.output.drain (data [position_ .. limit_]);
+                conduit.drain (data [position_ .. limit_]);
                 return clear;
         } 
 
