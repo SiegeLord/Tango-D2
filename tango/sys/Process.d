@@ -717,7 +717,7 @@ class Process
 
                     try
                     {
-                        pexec.source.read((cast(byte*) &status)[0 .. status.sizeof]);
+                        pexec.source.input.read((cast(byte*) &status)[0 .. status.sizeof]);
                     }
                     catch (Exception e)
                     {
@@ -796,7 +796,7 @@ class Process
 
                                 // Propagate the child process' errno value to
                                 // the parent process.
-                                pexec.sink.write((cast(byte*) &status)[0 .. status.sizeof]);
+                                pexec.sink.output.write((cast(byte*) &status)[0 .. status.sizeof]);
                             }
                             catch (Exception e)
                             {
