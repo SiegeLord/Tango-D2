@@ -74,7 +74,7 @@ int toInt(T) (T[] digits, uint radix=10)
 {
         auto x = toLong (digits, radix);
         if (x > int.max)
-            throw new IllegalArgumentException ("Integer.toInt :: numeric overflow on "~digits);
+            throw new IllegalArgumentException ("Integer.toInt :: numeric overflow");
         return cast(int) x;
 }
 
@@ -98,7 +98,7 @@ long toLong(T) (T[] digits, uint radix=10)
 
         auto x = parse (digits, radix, &len);
         if (len < digits.length)
-            throw new IllegalArgumentException ("Integer.toLong :: invalid number "~digits);
+            throw new IllegalArgumentException ("Integer.toLong :: invalid number");
         return x;
 }
 

@@ -45,7 +45,7 @@ NumType toFloat(T) (T[] src)
 
         auto x = parse (src, &len);
         if (len < src.length)
-            throw new IllegalArgumentException ("invalid input: "~src);
+            throw new IllegalArgumentException ("Float.toFloat :: invalid number");
         return x;
 }
 
