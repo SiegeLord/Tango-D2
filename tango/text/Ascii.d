@@ -17,10 +17,10 @@
 module tango.text.Ascii;
 
 version (Win32)
-         {
-         private extern (C) int memicmp (char *, char *, uint);
-         private extern (C) int memcmp (char *, char *, uint);
-         }
+        {
+        private extern (C) int memicmp (char *, char *, uint);
+        private extern (C) int memcmp (char *, char *, uint);
+        }
 
 version (Posix)
         {
