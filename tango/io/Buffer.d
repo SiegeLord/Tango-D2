@@ -509,7 +509,7 @@ class Buffer : IBuffer
                        else
                           // keep buffer partially populated
                           if ((content = fill(input_)) != IConduit.Eof && content > 0)
-                               read (dst);
+                               content = read (dst);
                    else
                       content = IConduit.Eof;
                 return content;
