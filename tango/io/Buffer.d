@@ -1000,7 +1000,7 @@ class Buffer : IBuffer
 
         void flush ()
         {
-                while (writable() > 0)
+                while (readable() > 0)
                        drain ();
                 clear();
         } 
