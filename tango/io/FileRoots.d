@@ -91,7 +91,7 @@ struct FileRoots
                                    fc.close;
                             
                             auto content = new char[cast(int) fc.length];
-                            fc.fill (content);
+                            fc.output.write (content);
                             
                             for(int i = 0; i < content.length; i++)
                             {
