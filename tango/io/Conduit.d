@@ -291,7 +291,7 @@ abstract class AbstractOutputFilter : OutputStream
                      if ((i = write (src [written .. len])) != IConduit.Eof)
                           written += i;
                      else
-                        conduit.exception ("OutputStream.drain :: Eof while writing "~toUtf8);
+                        conduit.exception ("OutputStream.drain :: Eof while writing "~conduit.toUtf8);
         }     
 }
 
