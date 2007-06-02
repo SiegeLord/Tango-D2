@@ -13,19 +13,18 @@ private import  tango.net.http.HttpClient,
 void main()
 {
         auto client = new HttpClient (HttpClient.Get, "http://www.digitalmars.com/d/intro.html");
-        client.open;
+
+        // open the client and get the input stream
+        auto input = client.open;
         scope (exit)
                client.close;
         
+        // display returned content on console
         if (client.isResponseOK)
-           {
-           // extract content length
-           auto length = client.getResponseHeaders.getInt (HttpHeader.ContentLength, uint.max);
-
-           // display response
-           client.read (&Cout.buffer.consume, length);
-           Cout.newline;
-           }
+            Cout.stream.copy (input);
         else
-           Cout ("failed to return the D home page").newline;  
+           Cout ("failed to return the D home page");  
+
+        // flush the console
+        Cout.newline;
 }
