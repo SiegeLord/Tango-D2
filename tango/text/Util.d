@@ -475,7 +475,6 @@ uint indexOf(T) (T* str, T match, uint length)
                             jnz   end;
                             sub   ESI, ECX;
                             dec   ESI;
-                            sar   ESI, 1;
                         end:;
                             mov   EAX, ESI;
                             }
@@ -496,7 +495,6 @@ uint indexOf(T) (T* str, T match, uint length)
                             jnz   end;
                             sub   ESI, ECX;
                             dec   ESI;
-                            sar   ESI, 2;
                         end:;
                             mov   EAX, ESI;
                             }
@@ -1067,7 +1065,7 @@ private struct QuoteFreach(T)
 
 debug (UnitTest)
 {
-        //void main() {}
+        void main() {}
         
         unittest
         {
@@ -1080,10 +1078,19 @@ debug (UnitTest)
         assert (indexOf ("abc".ptr, 'c', 3) is 2);
         assert (indexOf ("abc".ptr, 'd', 3) is 3);
 
+        assert (indexOf ("abc"d.ptr, cast(dchar)'c', 3) is 2);
+        assert (indexOf ("abc"d.ptr, cast(dchar)'d', 3) is 3);
+
+        assert (indexOf ("abc"w.ptr, cast(wchar)'c', 3) is 2);
+        assert (indexOf ("abc"w.ptr, cast(wchar)'d', 3) is 3);
+
         assert (mismatch ("abc".ptr, "abc".ptr, 3) is 3);
         assert (mismatch ("abc".ptr, "abd".ptr, 3) is 2);
         assert (mismatch ("abc".ptr, "acc".ptr, 3) is 1);
         assert (mismatch ("abc".ptr, "ccc".ptr, 3) is 0);
+
+        assert (mismatch ("abc"w.ptr, "abc"w.ptr, 3) is 3);
+        assert (mismatch ("abc"w.ptr, "acc"w.ptr, 3) is 1);
 
         assert (mismatch ("abc"d.ptr, "abc"d.ptr, 3) is 3);
         assert (mismatch ("abc"d.ptr, "acc"d.ptr, 3) is 1);
