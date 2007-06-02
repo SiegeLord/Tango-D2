@@ -56,6 +56,7 @@
         ---
         Stdout ("hello ") ("world").newline;
         Stdout.format ("hello {}", "world").newline;
+        Stdout.formatln ("hello {}", "world");
         ---
 
         The format() method of both Stderr and Stdout support the range
