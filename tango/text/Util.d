@@ -60,6 +60,7 @@
         split (source, pattern)                     // split on pattern
         splitLines (source);                        // split on lines
         join (source, postfix, output)              // join text segments
+        repeat (source, count, output)              // repeat source 
         replace (source, match, replacement)        // replace chars
         substitute (source, match, replacement)     // replace patterns
         contains (source, match)                    // has char?
@@ -394,6 +395,36 @@ T[] join(T) (T[][] src, T[] postfix=null, T[] dst=null)
         if (len)
             len -= postfix.length;
         return dst [0 .. len];       
+}
+
+/******************************************************************************
+
+        Combine a series of text segments together, each appended with an 
+        optional postfix pattern. An optional output buffer can be provided
+        to avoid heap activity - it should be large enough to contain the 
+        entire output, otherwise the heap will be used instead.
+
+        Returns a valid slice of the output, containing the concatenated
+        text.
+
+******************************************************************************/
+
+T[] repeat(T, U=uint) (T[] src, U count, T[] dst=null)
+{return repeat!(T)(src, count, dst);}
+
+T[] repeat(T) (T[] src, uint count, T[] dst=null)
+{
+        uint len = src.length * count;
+        if (len is 0)
+            return null;
+
+        if (dst.length < len)
+            dst.length = len;
+            
+        for (auto p = dst.ptr; count--; p += src.length)
+             p[0 .. src.length] = src;
+
+        return dst [0 .. len];
 }
 
 /******************************************************************************
@@ -1065,7 +1096,7 @@ private struct QuoteFreach(T)
 
 debug (UnitTest)
 {
-        // void main() {}
+        //void main() {}
         
         unittest
         {
@@ -1194,6 +1225,17 @@ debug (UnitTest)
         j = join (foo, " ", tmp);
         assert (j == "one two three");
         assert (j.ptr is tmp.ptr);
+
+        assert (repeat ("abc", 0) == "");
+        assert (repeat ("abc", 1) == "abc");
+        assert (repeat ("abc", 2) == "abcabc");
+        assert (repeat ("abc", 4) == "abcabcabcabc");
+        assert (repeat ("", 4) == "");
+        char[10] rep;
+        assert (repeat ("abc", 0, rep) == "");
+        assert (repeat ("abc", 1, rep) == "abc");
+        assert (repeat ("abc", 2, rep) == "abcabc");
+        assert (repeat ("", 4, rep) == "");
         }
 }
 
