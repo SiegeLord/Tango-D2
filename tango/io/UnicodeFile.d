@@ -177,7 +177,7 @@ class UnicodeFile(T)
 
                 //read the content
                 if (conduit.input.read (content) != content.length)
-                    throw new IOException ("unexpected eof");
+                    conduit.exception ("unexpected eof");
 
                 return bom.decode (content);
         }
@@ -228,10 +228,10 @@ class UnicodeFile(T)
                        conduit.close;
 
                 if (writeBom)
-                    conduit.drain (bom.getSignature);
+                    conduit.output.write (bom.getSignature);
 
                 // and write
-                conduit.drain (converted);
+                conduit.output.write (converted);
                 return this;
         }
 }

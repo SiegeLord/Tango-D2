@@ -47,9 +47,8 @@ extern (C)
         readers to the same buffer; they will access buffer 
         content serially as one would expect. This also applies to
         multiple writers on the same buffer. Readers and writers
-        support three styles of IO: put/get, the C++ style << &
-        >> operators, and the () whisper style. All operations 
-        can be chained.
+        support two styles of IO: put/get and the () whisper style. 
+        All operations can be chained.
         
         Any class can be made compatable with the reader/writer
         framework by implementing the IReadable and/or IWritable 
@@ -124,7 +123,7 @@ extern (C)
         IO package:
         ---
         auto write = new Writer (new Buffer(256));
-        write ("now is the time for all good men "c) (foo);
+        write ("now is the time for ") (3) (" good men "c) (foo);
         ---
 
         One might use a GrowBuffer instead, where one wishes to append
@@ -153,15 +152,13 @@ extern (C)
         representing the console. However, all conduit operations are
         legitimate on Stdout and Stderr. For example:
         ---
-        Stdout.conduit.copy (new FileConduit ("readme.txt"));
+        Stdout.stream.conduit.copy (new FileConduit ("readme.txt"));
         ---
 
-        Stdout also has support for both text conversions and formatted 
+        Stdout also has support for text conversions and formatted 
         output:
         ---
-        Stdout ("now is the time for ") (3) (" good men ") (foo);
-
-        Stdout.format ("now is the time for {0} good men {1}", 3, foo);
+        Stdout.format ("now is the time for {} good men {}", 3, foo);
         ---
 
         Stdout is attached to a specific buffer, which in turn is attached 
@@ -170,9 +167,9 @@ extern (C)
         bypassing the Stdout formatting layer if so desired (it is lightweight)
         
         Cout has relatives named Cerr and Cin, which are attached to 
-        the corresponding console conduits. Writer Stderr, and reader 
-        Stdin are mapped onto Cerr and Cin respectively, ensuring 
-        console IO is buffered in one common area. 
+        the corresponding console conduits. Stderr, and Stdin are mapped 
+        onto Cerr and Cin respectively, ensuring console IO is buffered 
+        in one common area. 
         ---
         Cout ("what is your name?") ();
         auto name = Cin.get;
@@ -186,7 +183,7 @@ extern (C)
         iterator to sweep a text file:
         ---
         auto file = new FileConduit ("file.name");
-        foreach (line; new LineIterator (file))
+        foreach (line; new LineIterator!(char) (file))
                  Cout(line).newline;
         ---                 
 
@@ -205,8 +202,9 @@ class Buffer : IBuffer
         protected uint          limit_;         // limit of valid content
         protected uint          capacity_;      // maximum of limit
         protected uint          position_;      // current read position
-        protected uint          threshold;     // whether to buffer or not
         protected IConduit      conduit_;       // optional conduit
+        protected OutputStream  output_;        // optional output stream
+        protected InputStream   input_;         // optional input stream
 
         
         protected static char[] overflow  = "output buffer is full";
@@ -374,7 +372,6 @@ class Buffer : IBuffer
                 this.data = data;
                 this.limit_ = readable;
                 this.capacity_ = data.length;
-                threshold = data.length / 2;
 
                 // reset to start of input
                 this.position_ = 0;
@@ -423,7 +420,7 @@ class Buffer : IBuffer
         {   
                 if (size > readable)
                    {
-                   if (conduit_ is null)
+                   if (input_ is null)
                        error (underflow);
 
                    // make some space? This will try to leave as much content
@@ -438,7 +435,7 @@ class Buffer : IBuffer
 
                    // populate tail of buffer with new content
                    do {
-                      if (fill(conduit_) is IConduit.Eof)
+                      if (fill(input_) is IConduit.Eof)
                           error (eofRead);
                       } while (size > readable);
                    }
@@ -449,50 +446,97 @@ class Buffer : IBuffer
                 return data [i .. i + size];               
         }
 
+        /**********************************************************************
+
+                Fill the provided buffer. Returns the number of bytes
+                actually read, which will be less that dst.length when
+                Eof has been reached and IConduit.Eof thereafter
+
+        **********************************************************************/
+
+        uint fill (void[] dst)
+        {
+                uint len;
+
+                do {
+                   uint i = read (dst [len .. $]);
+                   if (i is IConduit.Eof)
+                       return (len > 0) ? len : IConduit.Eof;
+
+                   len += i;
+                   } while (len < dst.length);
+
+                return len;
+        }
+
         /***********************************************************************
 
-                Copy buffer content into the provided dst
+                Transfer content into the provided dst
 
                 Params: 
                 dst = destination of the content
 
                 Returns:
-                return the number of bytes read, which will be less than
-                dst.length when the content has been consumed (Eof, Eob)
-                and zero thereafter.
+                return the number of bytes read, which may be less than
+                dst.length. Eof is returned when no further content is
+                available.
 
                 Remarks:
-                Fill the provided array with content. We try to satisfy 
-                the request from the buffer content, and read directly
-                from an attached conduit where more is required.
+                Populates the provided array with content. We try to 
+                satisfy the request from the buffer content, and read 
+                directly from an attached conduit when the buffer is 
+                empty.
 
         ***********************************************************************/
 
         uint read (void[] dst)
         {   
-                uint content;
-
-                // ensure buffer doesn't remain drained by employing a simple
-                // threshold value to determine when a request will employ a
-                // buffer fill & copy, versus direct conduit access
-                do {
-                   content = readable();
+                uint content = readable();
+                if (content)
+                   {
                    if (content >= dst.length)
-                      {
-                      content = dst.length;
-                      break;
-                      }
-                   } while (dst.length < threshold && fill() != IConduit.Eof)
+                       content = dst.length;
 
-                // transfer buffer content
-                dst [0 .. content] = data [position_ .. position_ + content];
-                position_ += content;
-
-                // and get further content directly from conduit
-                if (content < dst.length && conduit_)
-                    content += conduit_.fill (dst [content .. $]);
-
+                   // transfer buffer content
+                   dst [0 .. content] = data [position_ .. position_ + content];
+                   position_ += content;
+                   }
+                else
+                   if (input_) 
+                       // pathological cases read directly from conduit
+                       if (dst.length > capacity_) 
+                           content = input_.read (dst);
+                       else
+                          // keep buffer partially populated
+                          if ((content = fill(input_)) != IConduit.Eof && content > 0)
+                               read (dst);
+                   else
+                      content = IConduit.Eof;
                 return content;
+        }
+
+        /***********************************************************************
+
+                Emulate OutputStream.write()
+
+                Params: 
+                src = the content to write
+
+                Returns:
+                return the number of bytes written, which may be less than
+                provided (conceptually).
+
+                Remarks:
+                Appends src content to the buffer, flushing to an attached
+                conduit as necessary. An IOException is thrown upon write 
+                failure.
+
+        ***********************************************************************/
+
+        uint write (void[] src)
+        {   
+                append (src.ptr, src.length);
+                return src.length;
         }
 
         /***********************************************************************
@@ -516,7 +560,7 @@ class Buffer : IBuffer
         void[] readExact (void* dst, uint bytes)
         {
                 auto tmp = dst [0 .. bytes];
-                if (read (tmp) != bytes)
+                if (fill (tmp) != bytes)
                     error (eofRead);
 
                 return tmp;
@@ -566,15 +610,21 @@ class Buffer : IBuffer
         {               
                 if (length > writable)
                     // can we write externally?
-                    if (conduit_)
+                    if (output_)
                        {
                        flush ();
 
                        // check for pathological case
                        if (length > capacity_)
                           {
-                          conduit_.drain (src [0 .. length]);
-                          return this;
+//                          output_.drain (src [0 .. length]);
+//                          return this;
+                          do {
+                             auto written = output_.write (src [0 .. length]);
+                             if (written is IConduit.Eof)
+                                 error (eofWrite);
+                             src += written, length -= written;
+                             } while (length > capacity_);
                           }
                        }
                     else
@@ -692,7 +742,7 @@ class Buffer : IBuffer
                       }
                    return false;
                    }
-                return cast(bool) (slice (size) !is null);
+                return slice(size) !is null;
         }
 
         /***********************************************************************
@@ -717,14 +767,14 @@ class Buffer : IBuffer
                 in empty matches (length is zero).
 
                 Note that additional iterator and/or reader instances
-                will stay in lockstep when bound to a common buffer.
+                will operate in lockstep when bound to a common buffer.
 
         ***********************************************************************/
 
         bool next (uint delegate (void[]) scan)
         {
                 while (read(scan) is IConduit.Eof)
-                       if (conduit_ is null)
+                       if (input_ is null)
                           {
                           skip (readable);
                           return false;
@@ -741,7 +791,7 @@ class Buffer : IBuffer
                                  error ("Token is too large to fit within buffer");
 
                           // read another chunk of data
-                          if (fill(conduit_) is IConduit.Eof)
+                          if (fill(input_) is IConduit.Eof)
                              {
                              skip (readable);
                              return false;
@@ -892,28 +942,18 @@ class Buffer : IBuffer
 
         ***********************************************************************/
 
-        uint fill (IConduit conduit = null)
+        uint fill (InputStream src)
         {
-                if (conduit is null)
-                    if ((conduit = conduit_) is null)
-                         return IConduit.Eof;
+                if (src is null)
+                    return IConduit.Eof;
 
                 if (readable is 0)
                     clear();
                 else 
-                version (OLD)
-                {
-                   if (writable < 32)
-                       if (compress().writable < 32)
-                           error ("input buffer is too small");
-                }
-                else
-                {
                    if (writable is 0)
                        return 0;
-                }
 
-                return write (&conduit.input.read);
+                return write (&src.read);
         } 
 
         /***********************************************************************
@@ -932,13 +972,13 @@ class Buffer : IBuffer
         
         ***********************************************************************/
 
-        final uint drain (IConduit conduit = null)
+        final uint drain ()
         {
-                if (conduit is null)
-                    conduit = conduit_, assert (conduit);
+                auto dst = output_;
+                assert (dst);
 
-                uint ret = read (&conduit.output.write);
-                if (ret is conduit.Eof)
+                uint ret = read (&dst.write);
+                if (ret is IConduit.Eof)
                     error (eofWrite);
 
                 compress ();
@@ -958,13 +998,11 @@ class Buffer : IBuffer
 
         ***********************************************************************/
 
-        final IBuffer flush (IConduit conduit = null)
+        void flush ()
         {
-                if (conduit is null)
-                    conduit = conduit_, assert (conduit);
-
-                conduit.drain (data [position_ .. limit_]);
-                return clear;
+                while (writable() > 0)
+                       drain ();
+                clear();
         } 
 
         /***********************************************************************
@@ -1021,15 +1059,14 @@ class Buffer : IBuffer
 
         ***********************************************************************/
 
-        IBuffer copy (IConduit src)
+        OutputStream copy (InputStream src)
         {
-                assert (conduit_ && src);
+                assert (output_ && src);
 
                 while (fill(src) != IConduit.Eof)
                        // don't drain until we actually need to (fill up first)
                        if (writable is 0)
-                           drain (conduit_);
-
+                           drain ();
                 return this;
         } 
 
@@ -1132,6 +1169,8 @@ class Buffer : IBuffer
 
         IBuffer setConduit (IConduit conduit)
         {
+                output_  = conduit.output;
+                input_   = conduit.input;
                 conduit_ = conduit;
                 return this;
         }

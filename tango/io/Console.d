@@ -92,7 +92,7 @@ struct Console
 
                 InputStream stream ()
                 {
-                        return buffer_.conduit.input;
+                        return buffer_;
                 }
 
                 /**************************************************************
@@ -218,7 +218,7 @@ struct Console
 
                 OutputStream stream ()
                 {
-                        return buffer_.conduit.output;
+                        return buffer_;
                 }
 
                 /**************************************************************

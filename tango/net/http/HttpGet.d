@@ -71,11 +71,11 @@ class HttpGet : HttpClient
         void[] read ()
         {
                 try {
-                    open (buffer);
+                    open (buffer.clear);
                     if (isResponseOK)
-                        return buffer.fill(getResponseHeaders.getInt(HttpHeader.ContentLength, uint.max)).slice;
+                        buffer.fill (getResponseHeaders.getInt(HttpHeader.ContentLength, uint.max));
                     } finally {close;}
-                return null;
+                return buffer.slice;
         }
 }
 

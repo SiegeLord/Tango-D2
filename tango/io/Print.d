@@ -210,7 +210,7 @@ class Print(T)
 
         final OutputStream stream ()
         {
-                return output.conduit.output;
+                return output;
         }
 
         /**********************************************************************

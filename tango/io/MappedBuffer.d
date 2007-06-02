@@ -126,13 +126,11 @@ class MappedBuffer : Buffer
 
                 ***************************************************************/
 
-                IBuffer flush ()
+                void flush ()
                 {
                         // flush all dirty pages
                         if (! FlushViewOfFile (base, 0))
                               host.error ();
-
-                        return this;
                 }
         }
 
@@ -185,7 +183,7 @@ class MappedBuffer : Buffer
                         base = null;    
                 }
 
-                IBuffer flush () 
+                void flush () 
                 {
                         // MS_ASYNC: delayed flush; equivalent to "add-to-queue"
                         // MS_SYNC: function flushes file immediately; no return until flush complete
@@ -193,8 +191,6 @@ class MappedBuffer : Buffer
 
                         if (msync (base, size, MS_SYNC | MS_INVALIDATE))
                             host.error();
-
-                        return this;
                 }
         }
 

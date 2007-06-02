@@ -28,7 +28,7 @@ module tango.io.model.IConduit;
 
 *******************************************************************************/
 
-abstract class IConduit : ISelectable
+interface IConduit : ISelectable
 {
         /***********************************************************************
         
@@ -82,25 +82,6 @@ abstract class IConduit : ISelectable
         abstract uint bufferSize (); 
                      
         /***********************************************************************
-        
-                Fill the provided buffer. Returns the number of bytes 
-                actually read, which will be less that dst.length when 
-                Eof has been reached and zero thereafter
-
-        ***********************************************************************/
-
-        uint fill (void[] dst);               
-         
-        /***********************************************************************
-        
-                Flush provided content to the conduit. Will throw an 
-                IOException where the operation can not be completed
-
-        ***********************************************************************/
-
-        void drain (void[] dst);               
-                             
-        /***********************************************************************
 
                 Is the conduit alive?
 
@@ -115,6 +96,12 @@ abstract class IConduit : ISelectable
         ***********************************************************************/
 
         abstract void close ();
+
+        /***********************************************************************
+
+        ***********************************************************************/
+
+        abstract void exception (char[] msg);
 
         /***********************************************************************
 
@@ -244,14 +231,14 @@ interface OutputStream
         uint write (void[] dst);               
                              
         /***********************************************************************
-        
-                Transfer the content of an InputStream to this OutputStream.
-                Throws an IOException where the transfer can not be completed
-        
+
+                Transfer the content of another conduit to this one. Returns
+                a reference to this class, and throws IOException on failure.
+
         ***********************************************************************/
 
-        void copy (InputStream input);               
-                             
+        OutputStream copy (InputStream src);
+
         /***********************************************************************
         
                 write all buffered output to the attached conduit

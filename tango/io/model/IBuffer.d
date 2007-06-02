@@ -185,7 +185,7 @@ private import tango.io.model.IConduit;
 
 *******************************************************************************/
 
-abstract class IBuffer // could be an interface, but that causes poor codegen
+abstract class IBuffer : InputStream, OutputStream
 {
         typedef uint delegate (void* dst, uint count, uint type) Converter;
 
@@ -317,20 +317,21 @@ abstract class IBuffer // could be an interface, but that causes poor codegen
 
         /***********************************************************************
 
-                Access buffer content
+                Transfer content into the provided dst
 
                 Params: 
                 dst = destination of the content
 
                 Returns:
-                return the number of bytes read, which will be less than
-                dst.length when the content has been consumed (Eof, Eob)
-                and zero thereafter.
+                return the number of bytes read, which may be less than
+                dst.length. Eof is returned when no further content is
+                available.
 
                 Remarks:
-                Fill the provided array with content. We try to satisfy 
-                the request from the buffer content, and read directly
-                from an attached conduit where more is required.
+                Populates the provided array with content. We try to 
+                satisfy the request from the buffer content, and read 
+                directly from an attached conduit when the buffer is 
+                empty.
 
         ***********************************************************************/
 
@@ -356,6 +357,35 @@ abstract class IBuffer // could be an interface, but that causes poor codegen
 
         abstract void[] readExact (void* dst, uint bytes);
         
+        /***********************************************************************
+
+                Emulate OutputStream.write()
+
+                Params: 
+                src = the content to write
+
+                Returns:
+                return the number of bytes written, which will be Eof when
+                the content cannot be written.
+
+                Remarks:
+                Appends all of dst to the buffer, flushing to an attached
+                conduit as necessary.
+
+        ***********************************************************************/
+
+        abstract uint write (void[] src);
+
+        /**********************************************************************
+
+                Fill the provided buffer. Returns the number of bytes
+                actually read, which will be less that dst.length when
+                Eof has been reached and IConduit.Eof thereafter
+
+        **********************************************************************/
+
+        abstract uint fill (void[] dst);
+
         /***********************************************************************
 
                 Exposes the raw data buffer at the current write position, 
@@ -450,7 +480,7 @@ abstract class IBuffer // could be an interface, but that causes poor codegen
         
         ***********************************************************************/
 
-        abstract uint fill (IConduit conduit = null);
+        abstract uint fill (InputStream src = null);
 
         /***********************************************************************
 
@@ -461,7 +491,7 @@ abstract class IBuffer // could be an interface, but that causes poor codegen
         
         ***********************************************************************/
 
-        abstract uint drain (IConduit conduit = null);
+        abstract uint drain ();
 
         /***********************************************************************
         
@@ -470,7 +500,7 @@ abstract class IBuffer // could be an interface, but that causes poor codegen
 
         ***********************************************************************/
 
-        abstract IBuffer flush (IConduit conduit = null);
+        abstract void flush ();
 
         /***********************************************************************
         
@@ -487,7 +517,7 @@ abstract class IBuffer // could be an interface, but that causes poor codegen
 
         ***********************************************************************/
 
-        abstract IBuffer copy (IConduit src);
+        abstract OutputStream copy (InputStream src);
 
         /***********************************************************************
         

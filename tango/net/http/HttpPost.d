@@ -105,17 +105,17 @@ class HttpPost : HttpClient
         void[] write (Pump pump)
         {
                 try {
-                    open (pump, buffer);
+                    open (pump, buffer.clear);
 
                     // check return status for validity
                     auto status = getStatus();
                     if (status is HttpResponseCode.OK || 
                         status is HttpResponseCode.Created || 
                         status is HttpResponseCode.Accepted)
-                        return buffer.fill(getResponseHeaders.getInt(HttpHeader.ContentLength, uint.max)).slice;
+                        buffer.fill (getResponseHeaders.getInt (HttpHeader.ContentLength, uint.max));
                     } finally {close;}
 
-                return null;
+                return buffer.slice;
         }
 }
 

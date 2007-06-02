@@ -83,11 +83,12 @@ class File
                 scope (exit)
                        conduit.close;
 
-                auto content = new ubyte[cast(int) conduit.length];
+                // allocate enough space for the entire file
+                auto content = new ubyte [cast(uint) conduit.length];
 
-                // read the entire file into memory and return it
-                if (conduit.fill (content) != content.length)
-                    throw new IOException ("eof whilst reading");
+                //read the content
+                if (conduit.input.read (content) != content.length)
+                    conduit.exception ("unexpected eof");
 
                 return content;
         }
@@ -126,7 +127,7 @@ class File
                 scope (exit)
                        conduit.close;
 
-                conduit.drain (content);
+                conduit.output.write (content);
                 return this;
         }
 }

@@ -36,7 +36,7 @@ private import  tango.io.model.IConduit;
 
 *******************************************************************************/
 
-class Conduit : IConduit, InputStream, OutputStream
+class Conduit : private AbstractOutputFilter, public IConduit, public InputStream
 {
         private InputStream  input_;
         private OutputStream output_;
@@ -128,6 +128,28 @@ class Conduit : IConduit, InputStream, OutputStream
                 return this;
         }
                             
+        /***********************************************************************
+
+        ***********************************************************************/
+
+        final InputStream attach (InputStream filter)
+        {
+                auto tmp = input_;
+                input_ = filter;
+                return tmp;
+        }
+
+        /***********************************************************************
+
+        ***********************************************************************/
+
+        final OutputStream attach (OutputStream filter)
+        {
+                auto tmp = output_;
+                output_ = filter;
+                return tmp;
+        }
+/+
         /**********************************************************************
 
                 Fill the provided buffer. Returns the number of bytes
@@ -141,9 +163,9 @@ class Conduit : IConduit, InputStream, OutputStream
                 uint len;
 
                 do {
-                   int i = input_.read (dst [len .. $]);
+                   auto i = input_.read (dst [len .. $]);
                    if (i is Eof)
-                       return len;
+                       break;
 
                    len += i;
                    } while (len < dst.length);
@@ -166,7 +188,7 @@ class Conduit : IConduit, InputStream, OutputStream
                      if ((i = output_.write (src [written .. len])) != Eof)
                           written += i;
                      else
-                        exception ("IConduit.flush :: Eof while writing "~toUtf8());
+                        exception ("OutputStream.drain :: Eof while writing "~toUtf8);
         }
 
         /***********************************************************************
@@ -176,39 +198,17 @@ class Conduit : IConduit, InputStream, OutputStream
 
         ***********************************************************************/
 
-        final void copy (InputStream source)
+        final void copy (InputStream src)
         {
                 auto buffer = new byte[bufferSize];
 
                 uint i;
-                while ((i = source.read (buffer)) != Eof)
+                while ((i = input_.read (buffer)) != Eof)
                         drain (buffer [0 .. i]);
                 
                 delete buffer;
         }
-
-        /***********************************************************************
-
-        ***********************************************************************/
-
-        final InputStream attach (InputStream filter)
-        {
-                auto tmp = input_;
-                input_ = filter;
-                return tmp;
-        }
-
-        /***********************************************************************
-
-        ***********************************************************************/
-
-        final OutputStream attach (OutputStream filter)
-        {
-                auto tmp = output_;
-                output_ = filter;
-                return tmp;
-        }
-
++/
         /***********************************************************************
 
                 Is the conduit alive?
@@ -244,8 +244,54 @@ class Conduit : IConduit, InputStream, OutputStream
 
         ***********************************************************************/
 
-        protected static void exception (char[] msg)
+        void exception (char[] msg)
         {
                 throw new IOException (msg);
         }
 }
+
+
+/*******************************************************************************
+
+*******************************************************************************/
+
+abstract class AbstractOutputFilter : OutputStream
+{
+        /***********************************************************************
+
+                Transfer the content of another conduit to this one. Returns
+                a reference to this class, and throws IOException on failure.
+
+        ***********************************************************************/
+
+        final OutputStream copy (InputStream src)
+        {
+                auto buffer = new byte[conduit.bufferSize];
+
+                uint i;
+                while ((i = src.read (buffer)) != IConduit.Eof)
+                        drain (buffer [0 .. i]); 
+                
+                delete buffer;
+                return this;
+        }
+
+        /***********************************************************************
+
+                flush provided content to the conduit. Throws an IOException 
+                upon failure to write to the output
+
+        ***********************************************************************/
+
+        final void drain (void[] src)
+        {
+                uint len = src.length;
+
+                for (uint i, written; written < len;)
+                     if ((i = write (src [written .. len])) != IConduit.Eof)
+                          written += i;
+                     else
+                        conduit.exception ("OutputStream.drain :: Eof while writing "~toUtf8);
+        }     
+}
+

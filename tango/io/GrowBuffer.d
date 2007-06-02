@@ -27,7 +27,8 @@ class GrowBuffer : Buffer
 {
         private uint increment;
 
-        alias Buffer.slice slice;
+        alias Buffer.slice  slice;
+        alias Buffer.append append; 
 
         /***********************************************************************
         
@@ -71,7 +72,7 @@ class GrowBuffer : Buffer
         {   
                 if (size > readable)
                    {
-                   if (conduit is null)
+                   if (input_ is null)
                        error (underflow);
 
                    if (size + position_ > capacity_)
@@ -79,7 +80,7 @@ class GrowBuffer : Buffer
 
                    // populate tail of buffer with new content
                    do {
-                      if (fill(conduit) == IConduit.Eof)
+                      if (fill(input_) == IConduit.Eof)
                           error (eofRead);
                       } while (size > readable);
                    }
@@ -88,23 +89,6 @@ class GrowBuffer : Buffer
                 if (eat)
                     position_ += size;
                 return data [i .. i + size];               
-        }
-
-        /***********************************************************************
-        
-                Expand and consume the conduit content, up to the maximum 
-                size indicated by the argument.
-
-                Returns a chaining reference
-
-        ***********************************************************************/
-
-        GrowBuffer fill (uint size = uint.max)
-        {   
-                while (readable < size)
-                       if (fill(conduit) is IConduit.Eof)
-                           break;
-                return this;
         }
 
         /***********************************************************************
@@ -126,21 +110,36 @@ class GrowBuffer : Buffer
         /***********************************************************************
 
                 Try to fill the available buffer with content from the 
-                specified conduit. In particular, we will never ask to 
-                read less than 32 bytes ~ this permits conduit-filters 
-                to operate within a known environment. 
+                specified conduit. 
 
                 Returns the number of bytes read, or IConduit.Eof
         
         ***********************************************************************/
 
-        override uint fill (IConduit conduit)
+        override uint fill (InputStream src)
         {
-                if (writable < 32)
+                if (writable <= increment/8)
                     makeRoom (increment);
 
-                return write (&conduit.input.read);
+                return write (&src.read);
         } 
+
+        /***********************************************************************
+        
+                Expand and consume the conduit content, up to the maximum 
+                size indicated by the argument.
+
+                Returns a chaining reference
+
+        ***********************************************************************/
+
+        uint fill (uint size = uint.max)
+        {   
+                while (readable < size)
+                       if (fill(input_) is IConduit.Eof)
+                           break;
+                return readable;
+        }
 
         /***********************************************************************
 
