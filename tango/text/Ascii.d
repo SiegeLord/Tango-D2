@@ -18,9 +18,11 @@ module tango.text.Ascii;
 
 version (Win32)
          private extern (C) int memicmp (char *, char *, uint);
+         private extern (C) int memcmp (char *, char *, uint);
 
 version (Posix)
         {
+        private extern (C) int memcmp (char *, char *, uint);
         private extern (C) int strncasecmp (char *, char*, uint);
         private alias strncasecmp memicmp;
         }
@@ -84,6 +86,26 @@ int icompare (char[] s1, char[] s2)
             len = s2.length;
 
         auto result = memicmp (s1.ptr, s2.ptr, len);
+
+        if (result is 0)
+            result = s1.length - s2.length;
+        return result;
+}
+
+
+/******************************************************************************
+
+        Compare two char[] with case. Returns 0 if equal
+        
+******************************************************************************/
+
+int compare (char[] s1, char[] s2)
+{
+        auto len = s1.length;
+        if (s2.length < len)
+            len = s2.length;
+
+        auto result = memcmp (s1.ptr, s2.ptr, len);
 
         if (result is 0)
             result = s1.length - s2.length;
