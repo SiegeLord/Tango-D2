@@ -1067,7 +1067,7 @@ private struct QuoteFreach(T)
 
 debug (UnitTest)
 {
-        void main() {}
+        //void main() {}
         
         unittest
         {
