@@ -85,7 +85,7 @@ private import  tango.text.convert.Layout;
 class Print(T)
 {
         private T[]             eol;
-        private IBuffer         output;
+        private OutputStream    output;
         private Layout!(T)      convert;
 
         public alias print      opCall;
@@ -102,7 +102,7 @@ class Print(T)
 
         **********************************************************************/
 
-        this (Layout!(T) convert, IBuffer output, T[] eol = Eol)
+        this (Layout!(T) convert, OutputStream output, T[] eol = Eol)
         {
                 this.convert = convert;
                 this.output = output;
@@ -175,8 +175,8 @@ class Print(T)
 
         final Print newline ()
         {
-                output(eol).flush;
-                return this;
+                output.write(eol);
+                return flush;
         }
 
         /**********************************************************************
@@ -189,17 +189,6 @@ class Print(T)
         {
                 output.flush;
                 return this;
-        }
-
-        /**********************************************************************
-
-                Return the associated buffer
-
-        **********************************************************************/
-
-        final IBuffer buffer ()
-        {
-                return output;
         }
 
         /**********************************************************************
@@ -244,7 +233,6 @@ class Print(T)
 
         private final uint sink (T[] s)
         {
-                output (s);
-                return s.length;
+                return output.write (s);
         }
 }

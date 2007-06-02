@@ -93,8 +93,8 @@ static this()
 {
         auto layout = new Layout!(char);
 
-        Stdout = new Print!(char) (layout, Cout.buffer);
-        Stderr = new Print!(char) (layout, Cerr.buffer);
+        Stdout = new Print!(char) (layout, Cout.stream);
+        Stderr = new Print!(char) (layout, Cerr.stream);
 }
 
 public static Print!(char) Stdout,      /// global standard output

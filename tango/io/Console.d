@@ -75,17 +75,6 @@ struct Console
 
                 /**************************************************************
 
-                        Return the associated buffer (with attached conduit)
-
-                **************************************************************/
-
-                Buffer buffer ()
-                {
-                        return buffer_;
-                }
-
-                /**************************************************************
-
                         Return the associated conduit
 
                 **************************************************************/
@@ -197,17 +186,6 @@ struct Console
                 {
                         redirected_ = redirected;
                         buffer_ = new Buffer (conduit);
-                }
-
-                /**************************************************************
-
-                        Return the associated buffer (with attached conduit)
-
-                **************************************************************/
-
-                Buffer buffer ()
-                {
-                        return buffer_;
                 }
 
                 /**************************************************************
