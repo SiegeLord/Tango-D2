@@ -253,7 +253,7 @@ class FilePath : PathView
 
         final override int opEquals (Object o)
         {
-                return (this is o) || (o != null && toUtf8 == o.toUtf8);
+                return (this is o) || (o !is null && toUtf8 == o.toUtf8);
         }
 
         /***********************************************************************
