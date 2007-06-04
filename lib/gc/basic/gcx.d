@@ -493,7 +493,8 @@ class GC
                 memset(p + size, 0, binsize[bin] - size);
             else
             // 'inline' memset - Dave Fladebo.
-            //foreach(inout byte b; cast(byte[])(p + size)[0..binsize[bin] - size]) { b = 0; }
+            if( !(bits & BlkAttr.NO_SCAN) )
+                foreach(inout byte b; cast(byte[])(p + size)[0..binsize[bin] - size]) { b = 0; }
             //debug(PRINTF) printf("\tmalloc => %x\n", p);
             debug (MEMSTOMP) memset(p, 0xF0, size);
         }
