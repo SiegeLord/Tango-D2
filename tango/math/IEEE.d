@@ -1512,7 +1512,7 @@ body {
         // Ignore the useless implicit bit.
         ulong m = ((*xl)&0x7FFF_FFFF_FFFF_FFFF) + ((*yl)&0x7FFF_FFFF_FFFF_FFFF);
 
-        uint e = (xe[4]&0x7FFF)+(ye[4]&0x7FFF);
+        ushort e = cast(ushort)((xe[4]&0x7FFF)+(ye[4]&0x7FFF));
         if (m & 0x8000_0000_0000_0000) {
             ++e;
             m&=0x7FFF_FFFF_FFFF_FFFF;
@@ -1524,7 +1524,8 @@ body {
         if (c) m|=0x4000_0000_0000_0000; // shift carry into significand
         if (e) *ul = m | 0x8000_0000_0000_0000; // set implicit bit...
         else *ul = m; // ... unless exponent is 0 (denormal or zero).
-        ue[4]= e | (xe[4]&0x8000); // restore sign bit
+        // Prevent a ridiculous warning (why does (ushort | ushort) get promoted to int???)
+        ue[4]= cast(ushort)( e | (xe[4]& 0x8000)); // restore sign bit
     } else static if (T.mant_dig==double.mant_dig) {
         ulong *ul = cast(ulong *)&u;
         ulong *xl = cast(ulong *)&x;

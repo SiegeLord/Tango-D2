@@ -92,6 +92,9 @@ const real M_2_SQRTPI = 1.12837916709551257390L;  /** 2 / &radic;&pi; */
 const real SQRT2      = 1.41421356237309504880L;  /** &radic;2 */
 const real SQRT1_2    = 0.70710678118654752440L;  /** &radic;&frac12 */
 
+//const real SQRTPI  = 1.77245385090551602729816748334114518279754945612238L; /** &radic;&pi; */
+//const real SQRT2PI = 2.50662827463100050242E0L; /** &radic;(2 &pi;) */
+
 const real MAXLOG = 0x1.62e42fefa39ef358p+13;  /** log(real.max) */
 const real MINLOG = -0x1.6436716d5406e6d8p+13; /** log(real.min*real.epsilon) */
 
@@ -211,7 +214,7 @@ minmaxtype!(T) max(T...)(T arg){
     static if(arg.length > 2) return max(arg[1] > arg[0] ? arg[1] : arg[0], arg[2..$]);
 }
 
-/** Returns the minimum number of x and y.
+/** Returns the minimum number of x and y, favouring numbers over NaNs.
  *
  * If both x and y are numbers, the minimum is returned.
  * If both parameters are NaN, either will be returned.
@@ -223,7 +226,7 @@ real minNum(real x, real y) {
     if (x<=y || isNaN(y)) return x; else return y;
 }
 
-/** Returns the maximum number of x and y.
+/** Returns the maximum number of x and y, favouring numbers over NaNs.
  *
  * If both x and y are numbers, the maximum is returned.
  * If both parameters are NaN, either will be returned.
@@ -235,6 +238,26 @@ real maxNum(real x, real y) {
     if (x>=y || isNaN(y)) return x; else return y;
 }
 
+/** Returns the minimum of x and y, favouring NaNs over numbers
+ *
+ * If both x and y are numbers, the minimum is returned.
+ * If both parameters are NaN, either will be returned.
+ * If one parameter is a NaN and the other is a number, the NaN is returned.
+ */
+real minNaN(real x, real y) {
+    if (x<=y || isNaN(x)) return x; else return y;
+}
+
+/** Returns the maximum of x and y, favouring NaNs over numbers
+ *
+ * If both x and y are numbers, the maximum is returned.
+ * If both parameters are NaN, either will be returned.
+ * If one parameter is a NaN and the other is a number, the NaN is returned.
+ */
+real maxNaN(real x, real y) {
+    if (x>=y || isNaN(x)) return x; else return y;
+}
+
 debug(UnitTest) {
 unittest
 {
@@ -243,8 +266,10 @@ unittest
     // check implicit conversion to integer.
     assert(min(3.5, 18)==3.5);
     assert(maxNum(NaN("abc"), 56.1L)== 56.1L);
+    assert(isIdentical(maxNaN(NaN("abc"), 56.1L), NaN("abc")));
     assert(maxNum(28.0, NaN("abc"))== 28.0);
     assert(minNum(1e12, NaN("abc"))== 1e12);
+    assert(isIdentical(minNaN(1e12, NaN("abc")), NaN("abc")));
     assert(isIdentical(minNum(NaN("def"), NaN("abc")), NaN("def")));
 }
 }
