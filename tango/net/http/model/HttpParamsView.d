@@ -59,4 +59,12 @@ interface HttpParamsView : IWritable
         **********************************************************************/
 
         Time getDate (char[] name, Time ret = Time.max);
+
+        /**********************************************************************
+
+                Output the param list to the provided consumer
+
+        **********************************************************************/
+
+        void produce (void delegate (void[]) consume, char[] eol);
 }

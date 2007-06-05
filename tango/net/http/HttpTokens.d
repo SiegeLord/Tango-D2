@@ -16,7 +16,8 @@ private import  tango.io.Buffer;
 
 private import  tango.io.model.IBuffer;
 
-private import  tango.net.http.HttpStack;
+private import  tango.net.http.HttpStack,
+                tango.net.http.HttpConst;
 
 private import  Text = tango.text.Util;
 
@@ -254,17 +255,12 @@ class HttpTokens : IWritable
 
         void write (IWriter writer)
         {
-                foreach (Token token; stack)
-                        {
-                        auto content = token.toUtf8();
-                        if (content.length)
-                            writer.put(content).newline;
-                        }                           
+                produce (&writer.buffer.consume, HttpConst.Eol);
         }
 
         /**********************************************************************
 
-                Output the token list to the provided writer
+                Output the token list to the provided consumer
 
         **********************************************************************/
 

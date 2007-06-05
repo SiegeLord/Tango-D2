@@ -348,8 +348,19 @@ class HttpCookiesView : IWritable
 
         void write (IWriter writer)
         {
-                foreach (Cookie cookie; parse)
-                         writer.put (cookie) (HttpConst.Eol);
+                produce (&writer.buffer.consume, HttpConst.Eol);
+        }
+
+        /**********************************************************************
+
+                Output the token list to the provided consumer
+
+        **********************************************************************/
+
+        void produce (void delegate (void[]) consume, char[] eol = HttpConst.Eol)
+        {
+                foreach (cookie; parse)
+                         cookie.produce (consume), consume (eol);
         }
 
         /**********************************************************************

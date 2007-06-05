@@ -165,4 +165,15 @@ class HttpParams : HttpTokens, HttpParamsView
         {
                 super.write (writer);
         }
+
+        /**********************************************************************
+
+                Output the param list to the provided consumer
+
+        **********************************************************************/
+
+        void produce (void delegate (void[]) consume, char[] eol)
+        {       
+                super.produce (consume, eol);
+        }
 }
