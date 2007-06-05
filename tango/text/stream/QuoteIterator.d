@@ -52,17 +52,7 @@ class QuoteIterator(T) : StreamIterator!(T)
                 }
                 ---
 
-        ***********************************************************************/
-
-        this (T[] delim) 
-        {
-                this.delim = delim;
-        }
-
-        /***********************************************************************
-
-                Construct a streaming iterator upon the provided buffer.
-                for example:
+                Construct a streaming iterator upon a buffer:
                 ---
                 void somefunc (IBuffer buffer)
                 {
@@ -71,17 +61,7 @@ class QuoteIterator(T) : StreamIterator!(T)
                 }
                 ---
                 
-        ***********************************************************************/
-
-        this (IBuffer buffer, T[] delim)
-        {
-                super (buffer);
-                this.delim = delim;
-        }
-
-        /***********************************************************************
-        
-                Construct a streaming iterator upon the provided conduit:
+                Construct a streaming iterator upon a conduit:
 
                 ---
                 foreach (line; new LineIterator (new FileConduit ("myfile")))
@@ -90,9 +70,9 @@ class QuoteIterator(T) : StreamIterator!(T)
 
         ***********************************************************************/
 
-        this (IConduit conduit, T[] delim)
+        this (T[] delim, InputStream stream = null)
         {
-                super (conduit);
+                super (stream);
                 this.delim = delim;
         }
 

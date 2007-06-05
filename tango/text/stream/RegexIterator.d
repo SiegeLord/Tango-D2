@@ -39,9 +39,8 @@ private import  tango.text.stream.StreamIterator;
 
 class RegexIterator : StreamIterator!(char)
 {
-        private alias char T;
-        
         private Regex regex;
+        private alias char T;
         
         /***********************************************************************
         
@@ -56,17 +55,7 @@ class RegexIterator : StreamIterator!(char)
                 }
                 ---
 
-        ***********************************************************************/
-
-        this (T[] pattern) 
-        {
-                init (pattern);
-        }
-
-        /***********************************************************************
-
-                Construct a streaming iterator upon the provided buffer.
-                for example:
+                Construct a streaming iterator upon a buffer:
                 ---
                 void somefunc (IBuffer buffer)
                 {
@@ -75,17 +64,7 @@ class RegexIterator : StreamIterator!(char)
                 }
                 ---
                 
-        ***********************************************************************/
-
-        this (IBuffer buffer, T[] pattern)
-        {
-                super (buffer);
-                init (pattern);
-        }
-
-        /***********************************************************************
-        
-                Construct a streaming iterator upon the provided conduit:
+                Construct a streaming iterator upon a conduit:
 
                 ---
                 foreach (line; new LineIterator (new FileConduit ("myfile")))
@@ -94,10 +73,10 @@ class RegexIterator : StreamIterator!(char)
 
         ***********************************************************************/
 
-        this (IConduit conduit, T[] pattern)
+        this (T[] pattern, InputStream stream = null)
         {
-                super (conduit);
-                init (pattern);
+                regex = new Regex (pattern, "");
+                super (stream);
         }
 
         /***********************************************************************
@@ -117,14 +96,5 @@ class RegexIterator : StreamIterator!(char)
                    }
 
                 return notFound (content);
-        }
-
-        /***********************************************************************
-                
-        ***********************************************************************/
-
-        private void init (T[] pattern)
-        {
-                regex = new Regex (pattern, "");
         }
 }

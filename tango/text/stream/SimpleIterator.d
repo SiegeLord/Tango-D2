@@ -32,7 +32,6 @@ private import  tango.text.stream.StreamIterator;
 
         See LineIterator, SimpleIterator, RegexIterator, QuotedIterator.
 
-
 *******************************************************************************/
 
 class SimpleIterator(T) : StreamIterator!(T)
@@ -40,7 +39,7 @@ class SimpleIterator(T) : StreamIterator!(T)
         private T[] delim;
 
         /***********************************************************************
-
+        
                 Construct an uninitialized iterator. For example:
                 ---
                 auto lines = new LineIterator;
@@ -52,17 +51,7 @@ class SimpleIterator(T) : StreamIterator!(T)
                 }
                 ---
 
-        ***********************************************************************/
-
-        this (T[] delim)
-        {
-                this.delim = delim;
-        }
-
-        /***********************************************************************
-
-                Construct a streaming iterator upon the provided buffer.
-                for example:
+                Construct a streaming iterator upon a buffer:
                 ---
                 void somefunc (IBuffer buffer)
                 {
@@ -71,17 +60,7 @@ class SimpleIterator(T) : StreamIterator!(T)
                 }
                 ---
                 
-        ***********************************************************************/
-
-        this (IBuffer buffer, T[] delim)
-        {
-                super (buffer);
-                this.delim = delim;
-        }
-
-        /***********************************************************************
-
-                Construct a streaming iterator upon the provided conduit:
+                Construct a streaming iterator upon a conduit:
 
                 ---
                 foreach (line; new LineIterator (new FileConduit ("myfile")))
@@ -90,10 +69,10 @@ class SimpleIterator(T) : StreamIterator!(T)
 
         ***********************************************************************/
 
-        this (IConduit conduit, T[] delim)
+        this (T[] delim, InputStream stream = null)
         {
-                super (conduit);
                 this.delim = delim;
+                super (stream);
         }
 
         /***********************************************************************

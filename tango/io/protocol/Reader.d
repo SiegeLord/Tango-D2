@@ -115,28 +115,20 @@ class Reader : IReader
         private IProtocol.Reader        elements;
 
         /***********************************************************************
-                
-                Construct a Reader upon the buffer associated with the
-                given conduit.
-
-        ***********************************************************************/
-
-        this (IConduit conduit)
-        {
-                this (new Buffer (conduit));
-        }
-
-        /***********************************************************************
         
-                Construct a Reader upon the provided buffer. We do our own
+                Construct a Reader upon the provided stream. We do our own
                 protocol handling, equivalent to the NativeProtocol. Array
-                allocation is handled by the heap
+                allocation is supported via the heap
 
         ***********************************************************************/
 
-        this (IBuffer buffer)
+        this (InputStream stream)
         {
-                buffer_   = buffer;
+                auto b = cast(IBuffer) stream;
+                if (b is null)
+                    b = new Buffer (stream.conduit);
+
+                buffer_   = b;
                 allocator_ = &allocate;
                 elements  = &readElement;
                 arrays    = &readArray;
@@ -144,7 +136,7 @@ class Reader : IReader
 
         /***********************************************************************
 
-                Construct buffer on the provided protocol. This configures
+                Construct Reader on the provided protocol. This configures
                 the IO conversion to be that of the protocol, but allocation
                 of arrays is still handled by the heap
                 

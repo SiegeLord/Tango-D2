@@ -67,7 +67,6 @@ private import  tango.io.protocol.model.IProtocol;
         // same thing again, but using put() syntax instead
         write.put(c).put(i).put(j).put(d);
         read.get(c).get(i).get(j).get(d);
-
         ---
 
         Writers may also be used with any class implementing the IWritable
@@ -90,33 +89,7 @@ class Writer : IWriter
 
         /***********************************************************************
         
-                Construct a Writer upon the provided IBuffer. All formatted
-                output will be directed to this buffer.
-
-        ***********************************************************************/
-
-        this (IBuffer buffer)
-        {
-                buffer_ = buffer;
-                arrays = &writeArray;
-                elements = &writeElement;
-        }
-     
-        /***********************************************************************
-        
-                Construct a Writer on the buffer associated with the given
-                conduit.
-
-        ***********************************************************************/
-
-        this (IConduit conduit)
-        {
-                this (new Buffer (conduit));
-        }
-
-        /***********************************************************************
-        
-                Return the associated buffer
+                Construct a Writer on the provided Protocol
 
         ***********************************************************************/
 
@@ -125,6 +98,24 @@ class Writer : IWriter
                 buffer_ = protocol.buffer;
                 elements = &protocol.write;
                 arrays = &protocol.writeArray;
+        }
+
+        /***********************************************************************
+        
+                Construct a Writer on the given OutputStream. We do our own
+                protocol handling, equivalent to the NativeProtocol.
+
+        ***********************************************************************/
+
+        this (OutputStream stream)
+        {
+                auto b = cast(IBuffer) stream;
+                if (b is null)
+                    b = new Buffer (stream.conduit);
+        
+                buffer_ = b;
+                arrays = &writeArray;
+                elements = &writeElement;
         }
 
         /***********************************************************************

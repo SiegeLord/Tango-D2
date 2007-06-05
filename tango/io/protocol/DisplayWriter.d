@@ -74,24 +74,13 @@ class DisplayWriter : Writer
 
         ***********************************************************************/
 
-        this (IBuffer buffer)
+        this (OutputStream stream)
         {
-                super (buffer);
+                super (stream);
                 layout = new Layout!(char);
                 arrays = elements = &write;
         }
      
-        /***********************************************************************
-        
-                Construct a DisplayWriter upon the specified IConduit
-
-        ***********************************************************************/
-
-        this (IConduit conduit)
-        {
-                this (new Buffer(conduit));
-        }
-
         /***********************************************************************
         
                 Intercept discrete output and convert it to printable form

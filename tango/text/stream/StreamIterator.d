@@ -62,32 +62,14 @@ class StreamIterator(T)
 
         /***********************************************************************
 
-                Uninitialized instance ~ use set() to configure input
-
-        ***********************************************************************/
-
-        this () {}
-
-        /***********************************************************************
-
                 Instantiate with a buffer
 
         ***********************************************************************/
 
-        this (IBuffer buffer)
+        this (InputStream stream = null)
         {
-                set (buffer);
-        }
-
-        /***********************************************************************
-
-                Instantiate with a conduit
-
-        ***********************************************************************/
-
-        this (IConduit conduit)
-        {
-                set (conduit);
+                if (stream)
+                    set (stream);
         }
 
         /***********************************************************************
@@ -96,24 +78,17 @@ class StreamIterator(T)
 
         ***********************************************************************/
 
-        final StreamIterator set (IConduit conduit)
+        final StreamIterator set (InputStream stream)
         {
-                if (buffer is null)
-                    buffer = new Buffer (conduit);
+                auto b = cast(IBuffer) stream;
+                if (b)
+                    buffer = b;
                 else
-                   buffer.clear.setConduit (conduit);
-                return this;
-        }
+                   if (buffer)
+                       buffer.clear.setConduit (stream.conduit);
+                   else
+                      buffer = new Buffer (stream.conduit);
 
-        /***********************************************************************
-
-                Set the current buffer to scan
-
-        ***********************************************************************/
-
-        final StreamIterator set (IBuffer buffer)
-        {
-                this.buffer = buffer;
                 return this;
         }
 
@@ -126,19 +101,6 @@ class StreamIterator(T)
         final T[] get ()
         {
                 return slice;
-        }
-
-        /***********************************************************************
-
-                Return the associated buffer. This can be provided to
-                a Reader or another Iterator ~ each will stay in synch
-                with one another
-
-        ***********************************************************************/
-
-        final IBuffer getBuffer ()
-        {
-                return buffer;
         }
 
         /**********************************************************************

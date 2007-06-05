@@ -617,8 +617,6 @@ class Buffer : IBuffer
                        // check for pathological case
                        if (length > capacity_)
                           {
-//                          output_.drain (src [0 .. length]);
-//                          return this;
                           do {
                              auto written = output_.write (src [0 .. length]);
                              if (written is IConduit.Eof)
@@ -1064,7 +1062,7 @@ class Buffer : IBuffer
                 assert (output_ && src);
 
                 while (fill(src) != IConduit.Eof)
-                       // don't drain until we actually need to (fill up first)
+                       // don't drain until we actually need to
                        if (writable is 0)
                            drain ();
                 return this;

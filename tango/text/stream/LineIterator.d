@@ -50,14 +50,7 @@ class LineIterator(T) : StreamIterator!(T)
                 }
                 ---
 
-        ***********************************************************************/
-
-        this () {}
-
-        /***********************************************************************
-
-                Construct a streaming iterator upon the provided buffer.
-                for example:
+                Construct a streaming iterator upon a buffer:
                 ---
                 void somefunc (IBuffer buffer)
                 {
@@ -66,16 +59,7 @@ class LineIterator(T) : StreamIterator!(T)
                 }
                 ---
                 
-        ***********************************************************************/
-
-        this (IBuffer buffer)
-        {
-                super (buffer);
-        }
-
-        /***********************************************************************
-        
-                Construct a streaming iterator upon the provided conduit:
+                Construct a streaming iterator upon a conduit:
 
                 ---
                 foreach (line; new LineIterator (new FileConduit ("myfile")))
@@ -84,9 +68,9 @@ class LineIterator(T) : StreamIterator!(T)
 
         ***********************************************************************/
 
-        this (IConduit conduit)
+        this (InputStream stream = null)
         {
-                super (conduit);
+                super (stream);
         }
 
         /***********************************************************************
