@@ -347,8 +347,9 @@ private NumType pow10 (uint exp)
                 1.0e256,
                 ];
 
-        assert (exp < 512);
-        
+        if (exp >= 512)
+            throw new IllegalArgumentException ("Float.pow10 :: exponent too large");
+
         NumType mult = 1.0;
         foreach (NumType power; Powers)
                 {
