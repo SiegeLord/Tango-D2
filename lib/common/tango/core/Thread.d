@@ -688,19 +688,22 @@ class Thread
 
 
     /**
-     * Suspends the calling thread until interrupted.
+     * Suspends the calling thread forever.
      */
     static void sleep()
     {
         version( Win32 )
         {
-            SleepEx( INFINITE, TRUE );
+            SleepEx( INFINITE, FALSE );
         }
         else version( Posix )
         {
             // NOTE: Posix does not have an unbounded sleep routine, but
             //       uint.max seconds is long enough to be sufficient.
-            tango.stdc.posix.unistd.sleep( uint.max );
+            while( true )
+            {
+                tango.stdc.posix.unistd.sleep( uint.max );
+            }
         }
     }
 
