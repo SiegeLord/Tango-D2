@@ -139,53 +139,73 @@ extern (C) int _d_run_main(int argc, char **argv, main_type main_func)
         args = am[0 .. argc];
     }
 
-    void run()
+    bool trapExceptions = cr_trapExceptions;
+
+    void tryExec(void delegate() dg)
+    {
+
+        if (trapExceptions)
+        {
+            try
+            {
+                dg();
+            }
+            catch (Exception e)
+            {
+                while (e)
+                {
+                    if (e.file)
+                    {
+                       // fprintf(stderr, "%.*s(%u): %.*s\n", e.file, e.line, e.msg);
+                       console (e.classinfo.name)("@")(e.file)("(")(e.line)("): ")(e.msg)("\n");
+                    }
+                    else
+                    {
+                       // fprintf(stderr, "%.*s\n", e.toUtf8());
+                       console (e.classinfo.name)(": ")(e.toUtf8)("\n");
+                    }
+                    e = e.next;
+                }
+                result = EXIT_FAILURE;
+            }
+            catch (Object o)
+            {
+                // fprintf(stderr, "%.*s\n", o.toUtf8());
+                console (o.toUtf8)("\n");
+                result = EXIT_FAILURE;
+            }
+        }
+        else
+        {
+            dg();
+        }
+    }
+
+    // NOTE: The lifetime of a process is much like the lifetime of an object:
+    //       it is initialized, then used, then destroyed.  If initialization
+    //       fails, the successive two steps are never reached.  However, if
+    //       initialization succeeds, then cleanup will occur even if the use
+    //       step fails in some way.  Here, the use phase consists of running
+    //       the user's main function.  If main terminates with an exception,
+    //       the exception is handled and then cleanup begins.  An exception
+    //       thrown during cleanup, however, will abort the cleanup process.
+
+    void runMain()
+    {
+        result = main_func(args);
+    }
+
+    void runAll()
     {
         _moduleCtor();
-        if( runModuleUnitTests() )
-            result = main_func(args);
+        if (runModuleUnitTests())
+            tryExec(&runMain);
         _d_isHalting = true;
         _moduleDtor();
         gc_term();
     }
 
-    if( cr_trapExceptions )
-    {
-        try
-        {
-            run();
-        }
-        catch (Exception e)
-        {
-            while (e)
-            {
-                if (e.file)
-                {
-                   // fprintf(stderr, "%.*s(%u): %.*s\n", e.file, e.line, e.msg);
-                   console (e.classinfo.name)("@")(e.file)("(")(e.line)
-                       ("): ")(e.msg)("\n");
-                }
-                else
-                {
-                   // fprintf(stderr, "%.*s\n", e.toUtf8());
-                   console (e.classinfo.name)(": ")(e.toUtf8)("\n");
-                }
-                e = e.next;
-            }
-            exit(EXIT_FAILURE);
-        }
-        catch (Object o)
-        {
-
-            // fprintf(stderr, "%.*s\n", o.toUtf8());
-            console (o.toUtf8)("\n");
-            exit(EXIT_FAILURE);
-        }
-    }
-    else
-    {
-        run();
-    }
+    tryExec(&runAll);
 
     version (all)
     {
