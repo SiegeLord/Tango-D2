@@ -624,7 +624,7 @@ body
                             goto L1;
                         }
                     }
-                    newdata = cast(byte *)gc_malloc(newsize + 1);
+                    newdata = cast(byte *)gc_malloc(newsize + 1, !(ti.next.flags() & 1) ? BlkAttr.NO_SCAN : 0);
                     newdata[0 .. size] = p.data[0 .. size];
                 L1: ;
                 }
