@@ -209,8 +209,8 @@ class Buffer : IBuffer
         
         protected static char[] overflow  = "output buffer is full";
         protected static char[] underflow = "input buffer is empty";
-        protected static char[] eofRead   = "end-of-file whilst reading";
-        protected static char[] eofWrite  = "end-of-file whilst writing";
+        protected static char[] eofRead   = "end-of-flow whilst reading";
+        protected static char[] eofWrite  = "end-of-flow whilst writing";
 
         /***********************************************************************
         
