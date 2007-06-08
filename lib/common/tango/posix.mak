@@ -105,6 +105,13 @@ tango.doc : $(ALL_DOCS)
 
 ######################################################
 
+### stdc/posix
+
+stdc/posix/pthread_darwin.o : stdc/posix/pthread_darwin.d
+	$(DC) -c $(DFLAGS) stdc/posix/pthread_darwin.d -of$@
+
+######################################################
+
 clean :
 	find . -name "*.di" | xargs $(RM)
 	$(RM) $(ALL_OBJS)
