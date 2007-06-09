@@ -189,7 +189,10 @@ version (BsdSockets)
 
         private const int F_GETFL       = 3;
         private const int F_SETFL       = 4;
-        private const int O_NONBLOCK    = 04000;  // OCTAL! Thx to volcore
+        version (darwin)
+                 private const int O_NONBLOCK = 0x0004;  
+           else
+                 private const int O_NONBLOCK = 04000;  // OCTAL! Thx to volcore
 
         extern  (C)
                 {
