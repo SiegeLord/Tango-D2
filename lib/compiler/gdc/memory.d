@@ -54,7 +54,7 @@ public
 /**
  *
  */
-extern (C) void* cr_stackBottom()
+extern (C) void* rt_stackBottom()
 {
     version( Win32 )
     {
@@ -103,7 +103,7 @@ extern (C) void* cr_stackBottom()
 /**
  *
  */
-extern (C) void* cr_stackTop()
+extern (C) void* rt_stackTop()
 {
     version( D_InlineAsm_X86 )
     {
@@ -296,7 +296,7 @@ private
 /**
  *
  */
-extern (C) void cr_scanStaticData( scanFn scan )
+extern (C) void rt_scanStaticData( scanFn scan )
 {
     scan( dataStart,  dataEnd );
     scan( dataStart2, dataEnd2 );

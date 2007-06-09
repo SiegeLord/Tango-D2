@@ -76,14 +76,14 @@ private
         ALL_BITS = 0b1111_1111
     }
 
-    extern (C) void* cr_stackBottom();
-    extern (C) void* cr_stackTop();
+    extern (C) void* rt_stackBottom();
+    extern (C) void* rt_stackTop();
 
-    extern (C) void cr_finalize( void* p, bool det = true );
+    extern (C) void rt_finalize( void* p, bool det = true );
 
     alias void delegate( void*, void* ) scanFn;
 
-    extern (C) void cr_scanStaticData( scanFn scan );
+    extern (C) void rt_scanStaticData( scanFn scan );
 
     version (MULTI_THREADED)
     {
@@ -229,7 +229,7 @@ class GC
         if (!gcx)
             onOutOfMemoryError();
         gcx.initialize();
-        setStackBottom(cr_stackBottom());
+        setStackBottom(rt_stackBottom());
     }
 
 
@@ -767,7 +767,10 @@ class GC
             if (i == pool.ncommitted)
                 break;
             if (pool.pagetable[i] != B_FREE)
+            {   if (sz < minsz)
+                    return 0;
                 break;
+            }
         }
         if (sz >= minsz)
         {
@@ -777,11 +780,14 @@ class GC
             auto u = pool.extendPages(minsz - sz);
             if (u == ~0u)
                 return 0;
+            sz = minsz;
         }
         else
             return 0;
         debug (MEMSTOMP) memset(p + psize, 0xF0, (psz + sz) * PAGESIZE - psize);
         memset(pool.pagetable + pagenum + psz, B_PAGEPLUS, sz);
+        gcx.p_cache = null;
+        gcx.size_cache = 0;
         return (psz + sz) * PAGESIZE;
     }
 
@@ -1953,7 +1959,7 @@ struct Gcx
             pool.mark.copy(&pool.freebits);
         }
 
-        cr_scanStaticData( &mark );
+        rt_scanStaticData( &mark );
 
         version (MULTI_THREADED)
         {
@@ -2086,7 +2092,7 @@ struct Gcx
                         for (; p < ptop; p += size, biti += bitstride)
                         {
                             if (pool.finals.nbits && pool.finals.testClear(biti))
-                                cr_finalize(cast(List *)sentinel_add(p), false/*noStack > 0*/);
+                                rt_finalize(cast(List *)sentinel_add(p), false/*noStack > 0*/);
                             gcx.clrBits(pool, biti, BlkAttr.ALL_BITS);
 
                             List *list = cast(List *)p;
@@ -2109,7 +2115,7 @@ struct Gcx
 
                             pool.freebits.set(biti);
                             if (pool.finals.nbits && pool.finals.testClear(biti))
-                                cr_finalize(cast(List *)sentinel_add(p), false/*noStack > 0*/);
+                                rt_finalize(cast(List *)sentinel_add(p), false/*noStack > 0*/);
                             clrBits(pool, biti, BlkAttr.ALL_BITS);
 
                             List *list = cast(List *)p;
@@ -2130,7 +2136,7 @@ struct Gcx
 
                         sentinel_Invariant(sentinel_add(p));
                         if (pool.finals.nbits && pool.finals.testClear(biti))
-                            cr_finalize(sentinel_add(p), false/*noStack > 0*/);
+                            rt_finalize(sentinel_add(p), false/*noStack > 0*/);
                         clrBits(pool, biti, BlkAttr.ALL_BITS);
 
                         debug(COLLECT_PRINTF) printf("\tcollecting big %x\n", p);

@@ -10,7 +10,7 @@ module tango.core.Runtime;
 
 private
 {
-    extern (C) bool cr_isHalting();
+    extern (C) bool rt_isHalting();
 }
 
 
@@ -30,6 +30,6 @@ struct Runtime
      */
     static bool isHalting()
     {
-        return cr_isHalting();
+        return rt_isHalting();
     }
 }

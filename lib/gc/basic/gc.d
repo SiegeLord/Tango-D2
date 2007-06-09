@@ -60,7 +60,8 @@ extern (C) void gc_init()
 
 extern (C) void gc_term()
 {
-    _gc.fullCollectNoStack();
+    //_gc.fullCollectNoStack();
+    _gc.Dtor();
 }
 
 extern (C) void gc_enable()

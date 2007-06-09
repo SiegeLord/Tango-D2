@@ -75,12 +75,78 @@ extern (C) void _d_switch_error( char[] file, uint line )
 
 bool _d_isHalting = false;
 
-extern (C) bool cr_isHalting()
+extern (C) bool rt_isHalting()
 {
     return _d_isHalting;
 }
 
-extern (C) bool cr_trapExceptions = true;
+extern (C) bool rt_trapExceptions = true;
+
+void _d_criticalInit()
+{
+    version (linux)
+    {
+        _STI_monitor_staticctor();
+        _STI_critical_init();
+    }
+}
+
+extern (C) bool rt_init( void delegate( Exception ) dg = null )
+{
+    _d_criticalInit();
+
+    try
+    {
+        gc_init();
+        version (Win32)
+            _minit();
+        _moduleCtor();
+        return true;
+    }
+    catch( Exception e )
+    {
+        dg( e );
+    }
+    catch
+    {
+
+    }
+    _d_criticalTerm();
+    return false;
+}
+
+void _d_criticalTerm()
+{
+    version (linux)
+    {
+        _STD_critical_term();
+        _STD_monitor_staticdtor();
+    }
+}
+
+extern (C) bool rt_term( void delegate( Exception ) dg = null )
+{
+    try
+    {
+        _d_isHalting = true;
+        _moduleDtor();
+        gc_term();
+        return true;
+    }
+    catch( Exception e )
+    {
+        dg( e );
+    }
+    catch
+    {
+
+    }
+    finally
+    {
+        _d_criticalTerm();
+    }
+    return false;
+}
 
 /***********************************
  * The D main() function supplied by the user's program
@@ -98,20 +164,10 @@ extern (C) int main(int argc, char **argv)
     char[][] args;
     int result;
 
-    version (Win32)
-    {
-        gc_init();
-        _minit();
-    }
-    else version (linux)
+    version (linux)
     {
         _STI_monitor_staticctor();
         _STI_critical_init();
-        gc_init();
-    }
-    else
-    {
-        static assert( false );
     }
 
     version (Win32)
@@ -153,7 +209,7 @@ extern (C) int main(int argc, char **argv)
         args = am[0 .. argc];
     }
 
-    bool trapExceptions = cr_trapExceptions;
+    bool trapExceptions = rt_trapExceptions;
 
     void tryExec(void delegate() dg)
     {
@@ -211,6 +267,9 @@ extern (C) int main(int argc, char **argv)
 
     void runAll()
     {
+        gc_init();
+        version (Win32)
+            _minit();
         _moduleCtor();
         if (runModuleUnitTests())
             tryExec(&runMain);

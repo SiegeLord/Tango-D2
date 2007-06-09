@@ -7,7 +7,7 @@
  *
  * Please note that block attribute data must be tracked, or at a minimum, the
  * FINALIZE bit must be tracked for any allocated memory block because calling
- * cr_finalize on a non-object block can result in an access violation.  In the
+ * rt_finalize on a non-object block can result in an access violation.  In the
  * allocator below, this tracking is done via a leading uint bitmask.  A real
  * allocator may do better to store this data separately, similar to the basic
  * GC normally used by Tango.
@@ -23,7 +23,7 @@ private import tango.stdc.string; // for memset
 private
 {
     extern (C) void thread_init();
-    extern (C) void cr_finalize( void* p, bool det = true );
+    extern (C) void rt_finalize( void* p, bool det = true );
 
     enum BlkAttr : uint
     {
@@ -39,15 +39,15 @@ private
     // NOTE: A mark/sweep GC might find the following functions useful
     //
     /+
-    extern (C) void* cr_stackBottom();
-    extern (C) void* cr_stackTop();
+    extern (C) void* rt_stackBottom();
+    extern (C) void* rt_stackTop();
 
     extern (C) bool thread_needLock();
     extern (C) void thread_suspendAll();
     extern (C) void thread_resumeAll();
 
     alias void delegate( void*, void* ) scanFn;
-    extern (C) void cr_scanStaticData( scanFn scan );
+    extern (C) void rt_scanStaticData( scanFn scan );
     extern (C) void thread_scanAll( scanFn fn, void* curStackTop = null );
     +/
 }
@@ -144,7 +144,7 @@ extern (C) void gc_free( void* p )
         blk_t* i = (cast(blk_t*) p) - 1;
 
         if( *i & BlkAttr.FINALIZE )
-            cr_finalize( p );
+            rt_finalize( p );
         free( i );
     }
 }

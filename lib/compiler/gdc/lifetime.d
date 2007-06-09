@@ -142,7 +142,7 @@ extern (C) void _d_delclass(Object* p)
     {
         debug(PRINTF) printf("_d_delclass(%p)\n", *p);
 
-        cr_finalize(cast(void*) *p);
+        rt_finalize(cast(void*) *p);
 
         ClassInfo **pc = cast(ClassInfo **)*p;
         if (*pc)
@@ -374,16 +374,16 @@ extern (C) void _d_delmemory(void* *p)
  */
 extern (C) void _d_callfinalizer(void* p)
 {
-    cr_finalize( p );
+    rt_finalize( p );
 }
 
 
 /**
  *
  */
-extern (C) void cr_finalize(void* p, bool det = true)
+extern (C) void rt_finalize(void* p, bool det = true)
 {
-    debug(PRINTF) printf("cr_finalize(p = %p)\n", p);
+    debug(PRINTF) printf("rt_finalize(p = %p)\n", p);
 
     if (p) // not necessary if called from gc
     {

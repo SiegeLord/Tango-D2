@@ -3425,6 +3425,7 @@ private
         out
         {
             assert(offset + nbytes <= data.length);
+            assert(data.length <= GC.sizeOf(data.ptr));
         }
         body
         {

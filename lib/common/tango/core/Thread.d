@@ -24,13 +24,13 @@ private
     //
     // exposed by compiler runtime
     //
-    extern (C) void* cr_stackBottom();
-    extern (C) void* cr_stackTop();
+    extern (C) void* rt_stackBottom();
+    extern (C) void* rt_stackTop();
 
 
     void* getStackBottom()
     {
-        return cr_stackBottom();
+        return rt_stackBottom();
     }
 
 
@@ -47,7 +47,7 @@ private
         }
         else
         {
-            return cr_stackTop();
+            return rt_stackTop();
         }
     }
 }

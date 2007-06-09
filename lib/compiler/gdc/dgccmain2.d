@@ -74,12 +74,86 @@ extern (C) void _d_switch_error( char[] file, uint line )
 
 bool _d_isHalting = false;
 
-extern (C) bool cr_isHalting()
+extern (C) bool rt_isHalting()
 {
     return _d_isHalting;
 }
 
-extern (C) bool cr_trapExceptions = true;
+extern (C) bool rt_trapExceptions = true;
+
+void _d_criticalInit()
+{
+    version (GC_Use_Stack_Guess)
+    {
+        int dummy;
+        stackOriginGuess = &dummy;
+    }
+    version (GNU_CBridge_Stdio)
+    {
+        _d_gnu_cbridge_init_stdio();
+    }
+    version (all)
+    {
+        _STI_monitor_staticctor();
+        _STI_critical_init();
+        initStaticDataPtrs();
+    }
+}
+
+extern (C) bool rt_init( void delegate( Exception ) dg = null )
+{
+    _d_criticalInit();
+
+    try
+    {
+        gc_init();
+        _moduleCtor();
+        return true;
+    }
+    catch( Exception e )
+    {
+        dg( e );
+    }
+    catch
+    {
+
+    }
+    _d_criticalTerm();
+    return false;
+}
+
+void _d_criticalTerm()
+{
+    version (all)
+    {
+        _STD_critical_term();
+        _STD_monitor_staticdtor();
+    }
+}
+
+extern (C) bool rt_term( void delegate( Exception ) dg = null )
+{
+    try
+    {
+        _d_isHalting = true;
+        _moduleDtor();
+        gc_term();
+        return true;
+    }
+    catch( Exception e )
+    {
+        dg( e );
+    }
+    catch
+    {
+
+    }
+    finally
+    {
+        _d_criticalTerm();
+    }
+    return false;
+}
 
 /***********************************
  * The D main() function supplied by the user's program
@@ -123,7 +197,6 @@ extern (C) int _d_run_main(int argc, char **argv, main_type main_func)
         _STI_monitor_staticctor();
         _STI_critical_init();
         initStaticDataPtrs();
-        gc_init();
     }
 
     version (all)
@@ -139,7 +212,7 @@ extern (C) int _d_run_main(int argc, char **argv, main_type main_func)
         args = am[0 .. argc];
     }
 
-    bool trapExceptions = cr_trapExceptions;
+    bool trapExceptions = rt_trapExceptions;
 
     void tryExec(void delegate() dg)
     {
@@ -197,6 +270,7 @@ extern (C) int _d_run_main(int argc, char **argv, main_type main_func)
 
     void runAll()
     {
+        gc_init();
         _moduleCtor();
         if (runModuleUnitTests())
             tryExec(&runMain);
