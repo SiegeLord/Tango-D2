@@ -112,7 +112,8 @@ extern (C) bool rt_init( void delegate( Exception ) dg = null )
     }
     catch( Exception e )
     {
-        dg( e );
+        if( dg )
+            dg( e );
     }
     catch
     {
@@ -142,7 +143,8 @@ extern (C) bool rt_term( void delegate( Exception ) dg = null )
     }
     catch( Exception e )
     {
-        dg( e );
+        if( dg )
+            dg( e );
     }
     catch
     {
