@@ -521,7 +521,7 @@ class FilePath : PathView
         static char[] padded (char[] path, char c = FileConst.PathSeparatorChar)
         {
                 if (path.length && path[$-1] != c)
-                    path ~= c;
+                    path = path ~ c;
                 return path;
         }
 
