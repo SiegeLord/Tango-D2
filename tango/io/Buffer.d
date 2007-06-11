@@ -503,13 +503,15 @@ class Buffer : IBuffer
                    }
                 else
                    if (input_) 
-                       // pathological cases read directly from conduit
-                       if (dst.length > capacity_) 
-                           content = input_.read (dst);
-                       else
-                          // keep buffer partially populated
-                          if ((content = fill(input_)) != IConduit.Eof && content > 0)
-                               content = read (dst);
+                      {
+                      // pathological cases read directly from conduit
+                      if (dst.length > capacity_) 
+                          content = input_.read (dst);
+                      else
+                         // keep buffer partially populated
+                         if ((content = fill(input_)) != IConduit.Eof && content > 0)
+                              content = read (dst);
+                      }
                    else
                       content = IConduit.Eof;
                 return content;
@@ -1205,7 +1207,9 @@ class Buffer : IBuffer
 
         protected void copy (void *src, uint size)
         {
-                data[limit_ .. limit_+size] = src[0 .. size];
+                // content may overlap ...
+                memcpy (&data[limit_], src, size);
+//                data[limit_ .. limit_+size] = src[0 .. size];
                 limit_ += size;
         }
 }
