@@ -385,10 +385,6 @@ else
  * derived.start();
  * composed.start();
  *
- * // wait for the threads to complete
- * derived.join();
- * composed.join();
- *
  * -----------------------------------------------------------------------------
  */
 class Thread
@@ -583,13 +579,43 @@ class Thread
      * Sets the user-readable label for this thread.
      *
      * Params:
-     *  n = The new name for this thread.
+     *  val = The new name of this thread.
      */
-    final void name( char[] n )
+    final void name( char[] val )
     {
         synchronized( this )
         {
-            m_name = n.dup;
+            m_name = val.dup;
+        }
+    }
+
+
+    /**
+     * Gets the daemon status for this thread.
+     *
+     * Returns:
+     *  true if this is a daemon thread.
+     */
+    final bool isDaemon()
+    {
+        synchronized( this )
+        {
+            return m_isDaemon;
+        }
+    }
+
+
+    /**
+     * Sets the daemon status for this thread.
+     *
+     * Params:
+     *  val = The new daemon status for this thread.
+     */
+    final void isDaemon( bool val )
+    {
+        synchronized( this )
+        {
+            m_isDaemon = val;
         }
     }
 
@@ -683,27 +709,6 @@ class Thread
                 seconds = psleep( seconds );
             if( micros > 0 )
                 usleep( micros );
-        }
-    }
-
-
-    /**
-     * Suspends the calling thread forever.
-     */
-    static void sleep()
-    {
-        version( Win32 )
-        {
-            SleepEx( INFINITE, FALSE );
-        }
-        else version( Posix )
-        {
-            // NOTE: Posix does not have an unbounded sleep routine, but
-            //       uint.max seconds is long enough to be sufficient.
-            while( true )
-            {
-                tango.stdc.posix.unistd.sleep( uint.max );
-            }
         }
     }
 
@@ -989,6 +994,7 @@ private:
     {
         bool            m_isRunning;
     }
+    bool                m_isDaemon;
     Object              m_unhandled;
 
 
@@ -1298,10 +1304,12 @@ extern (C) void thread_init()
         Thread.Context* mainContext = &mainThread.m_main;
         assert( mainContext == mainThread.m_curr );
 
-        mainThread.m_addr    = GetCurrentThreadId();
-        mainThread.m_hndl    = GetCurrentThreadHandle();
+        mainThread.m_addr  = GetCurrentThreadId();
+        mainThread.m_hndl  = GetCurrentThreadHandle();
         mainContext.bstack = getStackBottom();
         mainContext.tstack = mainContext.bstack;
+
+        mainThread.m_isDaemon = true;
 
         Thread.setThis( mainThread );
     }
@@ -1355,17 +1363,45 @@ extern (C) void thread_init()
         Thread.Context* mainContext = mainThread.m_curr;
         assert( mainContext == &mainThread.m_main );
 
-        mainThread.m_addr    = pthread_self();
+        mainThread.m_addr  = pthread_self();
         mainContext.bstack = getStackBottom();
         mainContext.tstack = mainContext.bstack;
 
         mainThread.m_isRunning = true;
+        mainThread.m_isDaemon  = true;
 
         Thread.setThis( mainThread );
     }
 
     Thread.add( mainThread );
     Thread.add( mainContext );
+}
+
+
+/**
+ * Joins all non-daemon threads that are currently running.  This is done by
+ * performing successive scans through the thread list until a scan consists
+ * of only daemon threads.
+ */
+extern (C) void thread_joinAll()
+{
+
+    while( true )
+    {
+        Thread nonDaemon = null;
+
+        foreach( t; Thread )
+        {
+            if( !t.isDaemon )
+            {
+                nonDaemon = t;
+                break;
+            }
+        }
+        if( nonDaemon is null )
+            return;
+        nonDaemon.join();
+    }
 }
 
 

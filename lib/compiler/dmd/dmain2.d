@@ -36,6 +36,7 @@ extern (C) void gc_term();
 extern (C) void _minit();
 extern (C) void _moduleCtor();
 extern (C) void _moduleDtor();
+extern (C) void thread_joinAll();
 
 /***********************************
  * These functions must be defined for any D program linked
@@ -129,6 +130,7 @@ extern (C) bool rt_term( void delegate( Exception ) dg = null )
 {
     try
     {
+        thread_joinAll();
         _d_isHalting = true;
         _moduleDtor();
         gc_term();
@@ -275,6 +277,7 @@ extern (C) int main(int argc, char **argv)
         _moduleCtor();
         if (runModuleUnitTests())
             tryExec(&runMain);
+        thread_joinAll();
         _d_isHalting = true;
         _moduleDtor();
         gc_term();
