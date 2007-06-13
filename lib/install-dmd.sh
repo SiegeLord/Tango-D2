@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # A simple script to install Tango for DMD
-# Copyright (C) 2006  Gregor Richards
+# Copyright (C) 2006-2007  Gregor Richards
 # Permission is granted to do anything you please with this software.
 # This software is provided with no warranty, express or implied, within the
 # bounds of applicable law.
@@ -16,7 +16,7 @@ die() {
 usage() {
     echo 'Usage: install-dmd.sh [--inplace] [--prefix <install prefix>]
 Options:
-  --prefix: Install to the specified prefix.
+  --prefix: Install to the specified prefix (absolute path).
   --uninstall: Uninstall tango, switch back to standard phobos.'
     exit 0
 }
@@ -52,7 +52,10 @@ fi
 
 echo "$PREFIX"
 
-
+if [ "${PREFIX:0:1}" != "/" ]
+then
+    die "The PREFIX needs to be an absolute path" 1
+fi
 
 dmd --help >& /dev/null || die "dmd not found on your \$PATH!" 1
 
