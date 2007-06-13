@@ -650,6 +650,74 @@ class Thread
 
 
     ////////////////////////////////////////////////////////////////////////////
+    // Thread Priority Actions
+    ////////////////////////////////////////////////////////////////////////////
+
+
+    /**
+     * The minimum scheduling priority that may be set for a thread.  On
+     * systems where multiple scheduling policies are defined, this value
+     * represents the minimum valid priority for the scheduling policy of
+     * the process.
+     */
+    static const int PRIORITY_MIN;
+
+
+    /**
+     * The maximum scheduling priority that may be set for a thread.  On
+     * systems where multiple scheduling policies are defined, this value
+     * represents the minimum valid priority for the scheduling policy of
+     * the process.
+     */
+    static const int PRIORITY_MAX;
+
+
+    /**
+     * Gets the scheduling priority for the associated thread.
+     *
+     * Returns:
+     *  The scheduling priority of this thread.
+     */
+    final int priority()
+    {
+        version( Win32 )
+        {
+            return GetThreadPriority( m_hndl );
+        }
+        else version( Posix )
+        {
+            int         policy;
+            sched_param param;
+
+            if( pthread_getschedparam( m_addr, &policy, &param ) )
+                throw new ThreadException( "Unable to get thread priority" );
+            return param.sched_priority;
+        }
+    }
+
+
+    /**
+     * Sets the scheduling priority for the associated thread.
+     *
+     * Params:
+     *  val = The new scheduling priority of this thread.
+     */
+    final void priority( int val )
+    {
+        version( Win32 )
+        {
+            if( !SetThreadPriority( m_hndl, val ) )
+                throw new ThreadException( "Unable to set thread priority" );
+        }
+        else version( Posix )
+        {
+            if( pthread_setschedprio( m_addr, val ) )
+                throw new ThreadException( "Unable to set thread priority" );
+        }
+    }
+
+
+    ////////////////////////////////////////////////////////////////////////////
     // Actions on Calling Thread
     ////////////////////////////////////////////////////////////////////////////
 
@@ -821,7 +889,7 @@ class Thread
      * Indicates the number of local storage pointers available at program
      * startup.  It is recommended that this number be at least 64.
      */
-    const uint LOCAL_MAX = 64;
+    static const uint LOCAL_MAX = 64;
 
 
     /**
@@ -904,6 +972,36 @@ class Thread
     static void* setLocal( uint key, void* val )
     {
         return getThis().m_local[key] = val;
+    }
+
+
+    ////////////////////////////////////////////////////////////////////////////
+    // Static Initalizer
+    ////////////////////////////////////////////////////////////////////////////
+
+
+    /**
+     * This initializer is used to set thread constants.  All functional
+     * initialization occurs within thread_init().
+     */
+    static this()
+    {
+        version( Win32 )
+        {
+            PRIORITY_MIN = -15;
+            PRIORITY_MAX =  15;
+        }
+        else version( Posix )
+        {
+            int policy = sched_getscheduler( getpid() );
+            assert( policy != -1 );
+
+            PRIORITY_MIN = sched_get_priority_min( policy );
+            assert( PRIORITY_MIN != -1 );
+
+            PRIORITY_MAX = sched_get_priority_max( policy );
+            assert( PRIORITY_MAX != -1 );
+        }
     }
 
 
@@ -1963,7 +2061,7 @@ class ThreadGroup
             //       Thread object for both the key and the mapped value.
             foreach( Thread t; m_all.keys )
             {
-                ret = dg( t ); // ret = dg( t );
+                ret = dg( t );
                 if( ret )
                     break;
             }

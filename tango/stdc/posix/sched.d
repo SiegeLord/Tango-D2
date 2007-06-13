@@ -41,7 +41,7 @@ version( linux )
 {
     struct sched_param
     {
-        int __sched_priority;
+        int sched_priority;
     }
 
     const SCHED_OTHER   = 0;
