@@ -33,7 +33,7 @@ public class ConsoleAppender : Appender
 
         ***********************************************************************/
 
-        this (Layout layout = null)
+        this (EventLayout layout = null)
         {
                 // Get a unique fingerprint for this class
                 mask = register (getName);
@@ -71,10 +71,10 @@ public class ConsoleAppender : Appender
 
         synchronized void append (Event event)
         {
-                Layout layout = getLayout;
-                Cerr.append (layout.header  (event));
-                Cerr.append (layout.content (event));
-                Cerr.append (layout.footer  (event));                        
+                auto layout = getLayout;
+                Cerr (layout.header  (event));
+                Cerr (layout.content (event));
+                Cerr (layout.footer  (event));                        
                 Cerr.newline;
         }
 }

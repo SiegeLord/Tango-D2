@@ -17,11 +17,7 @@ private import  tango.text.Properties;
 
 private import  tango.io.FilePath;
 
-private import  tango.util.log.Log,
-                tango.util.log.Layout,
-                tango.util.log.DateLayout,
-                tango.util.log.Configurator,
-                tango.util.log.ConsoleAppender;
+private import  tango.util.log.Log;
 
 private import  tango.util.log.model.ILevel;
 

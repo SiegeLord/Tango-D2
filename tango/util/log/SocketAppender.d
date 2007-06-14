@@ -40,7 +40,7 @@ public class SocketAppender : Appender
 
         ***********************************************************************/
 
-        this (InternetAddress address, Layout layout = null)
+        this (InternetAddress address, EventLayout layout = null)
         {
                 setLayout (layout);
 
@@ -86,7 +86,7 @@ public class SocketAppender : Appender
 
         void append (Event event)
         {
-                auto layout = getLayout;
+                auto layout = getLayout();
 
                 if (buffer)
                    {

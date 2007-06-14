@@ -13,14 +13,14 @@
 module tango.util.log.Appender;
 
 public import   tango.util.log.Event,
-                tango.util.log.Layout;
+                tango.util.log.EventLayout;
 
 /*******************************************************************************
 
         Base class for all Appenders. These objects are responsible for
         emitting messages sent to a particular logger. There may be more
         than one appender attached to any logger. The actual message is
-        constructed by another class known as a Layout.
+        constructed by another class known as an EventLayout.
         
 *******************************************************************************/
 
@@ -29,7 +29,7 @@ public class Appender
         typedef int Mask;
 
         private Appender        next;
-        private Layout          layout;
+        private EventLayout     layout;
 
         /***********************************************************************
                 
@@ -104,7 +104,7 @@ public class Appender
 
         ***********************************************************************/
 
-        void setLayout (Layout layout)
+        void setLayout (EventLayout layout)
         {
                 if (layout)
                     this.layout = layout;
@@ -116,7 +116,7 @@ public class Appender
 
         ***********************************************************************/
 
-        Layout getLayout ()
+        EventLayout getLayout ()
         {
                 return layout;
         }

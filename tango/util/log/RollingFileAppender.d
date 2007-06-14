@@ -46,7 +46,7 @@ public class RollingFileAppender : FileAppender
 
         ***********************************************************************/
 
-        this (char[] path, int count, ulong maxSize, Layout layout = null)
+        this (char[] path, int count, ulong maxSize, EventLayout layout = null)
         {
                 assert (path);
                 assert (count > 1 && count < 10);
@@ -128,7 +128,7 @@ public class RollingFileAppender : FileAppender
                 fileSize += FileConst.NewlineString.length;
 
                 // write log message and flush it
-                Layout layout = getLayout;
+                auto layout = getLayout ();
                 msg = layout.header (event);
                 fileSize += msg.length;
                 buffer.append (msg);

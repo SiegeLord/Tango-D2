@@ -35,11 +35,11 @@ public class MailAppender : Appender
 
         /***********************************************************************
                 
-                Create with the given Layout and server address
+                Create with the given layout and server address
 
         ***********************************************************************/
 
-        this (InternetAddress server, char[] from, char[] to, char[] subj, Layout layout = null)
+        this (InternetAddress server, char[] from, char[] to, char[] subj, EventLayout layout = null)
         {
                 setLayout (layout);
 

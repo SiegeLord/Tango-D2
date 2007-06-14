@@ -15,7 +15,7 @@ module tango.util.log.Log4Layout;
 private import  tango.core.Thread;
 
 private import  tango.util.log.Event,
-                tango.util.log.Layout;
+                tango.util.log.EventLayout;
 
 /*******************************************************************************
 
@@ -23,7 +23,7 @@ private import  tango.util.log.Event,
        
 *******************************************************************************/
 
-public class Log4Layout : Layout
+public class Log4Layout : EventLayout
 {
         /***********************************************************************
                 

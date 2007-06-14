@@ -38,7 +38,7 @@ version (Win32)
 
         Note that Event instances are maintained in a freelist rather than
         being allocated each time, and they include a scratchpad area for
-        Layout formatters to use.
+        EventLayout formatters to use.
 
 *******************************************************************************/
 

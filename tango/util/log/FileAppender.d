@@ -49,7 +49,7 @@ public class FileAppender : Appender
 
         ***********************************************************************/
 
-        this (FilePath fp, Layout layout = null)
+        this (FilePath fp, EventLayout layout = null)
         {
                 // Get a unique fingerprint for this instance
                 mask = register (fp.toUtf8);
@@ -61,11 +61,11 @@ public class FileAppender : Appender
         /***********************************************************************
                 
                 Create a basic FileAppender to a file with the specified 
-                path, and with the given Layout
+                path, and with the given EventLayout
 
         ***********************************************************************/
 
-        this (char[] fp, Layout layout = null)
+        this (char[] fp, EventLayout layout = null)
         {
                 this (new FilePath (fp), layout);
         }
@@ -124,7 +124,7 @@ public class FileAppender : Appender
 
         synchronized void append (Event event)
         {
-                Layout layout = getLayout;
+                auto layout = getLayout;
                 buffer.append (layout.header  (event));
                 buffer.append (layout.content (event));
                 buffer.append (layout.footer  (event))

@@ -13,7 +13,7 @@
 module tango.util.log.DateLayout;
 
 private import  tango.util.log.Event,
-                tango.util.log.Layout;
+                tango.util.log.EventLayout;
 
 private import  tango.text.Util;
 
@@ -28,7 +28,7 @@ private import  Int = tango.text.convert.Integer;
        
 *******************************************************************************/
 
-public class DateLayout : Layout
+public class DateLayout : EventLayout
 {
         private bool localTime;
 

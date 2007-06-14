@@ -13,7 +13,7 @@
 module tango.util.log.Configurator;
 
 private import  tango.util.log.Log,
-                tango.util.log.Layout,
+                tango.util.log.EventLayout,
                 tango.util.log.ConsoleAppender;
 
 /*******************************************************************************

@@ -66,7 +66,7 @@ private import tango.util.log.model.ILevel;
             log.warn (sprint("temperature is {0} degrees!", 101));
         ---
 
-        You may also need to use one of the various Layout & Appender 
+        You may also need to use one of the various layout & appender 
         implementations to support your exact rendering needs.
         
         tango.log closely follows both the API and the behaviour as documented 

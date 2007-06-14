@@ -43,7 +43,7 @@ public class NullAppender : Appender
 
         ***********************************************************************/
 
-        this (Layout layout)
+        this (EventLayout layout)
         {
                 setLayout (layout);
         }
@@ -78,7 +78,7 @@ public class NullAppender : Appender
 
         void append (Event event)
         {
-                Layout layout = getLayout;
+                auto layout = getLayout;
                 layout.header  (event);
                 layout.content (event);
                 layout.footer  (event);

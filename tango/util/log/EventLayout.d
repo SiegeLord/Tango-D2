@@ -10,7 +10,7 @@
 
 *******************************************************************************/
 
-module tango.util.log.Layout;
+module tango.util.log.EventLayout;
 
 private import tango.util.log.Event;
 
@@ -18,11 +18,11 @@ private import tango.core.Type : Time;
 
 /*******************************************************************************
 
-        Base class for all Layout instances
+        Base class for all logging layout instances
 
 *******************************************************************************/
 
-public class Layout
+public class EventLayout
 {
         /***********************************************************************
                 
@@ -84,7 +84,7 @@ public class Layout
 
 *******************************************************************************/
 
-public class SpartanLayout : Layout
+public class SpartanLayout : EventLayout
 {
         /***********************************************************************
                 
@@ -106,7 +106,7 @@ public class SpartanLayout : Layout
 
 *******************************************************************************/
 
-public class SimpleLayout : Layout
+public class SimpleLayout : EventLayout
 {
         /***********************************************************************
                 
@@ -130,7 +130,7 @@ public class SimpleLayout : Layout
 
 *******************************************************************************/
 
-public class SimpleTimerLayout : Layout
+public class SimpleTimerLayout : EventLayout
 {
         /***********************************************************************
                 
