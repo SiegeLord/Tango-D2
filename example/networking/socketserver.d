@@ -22,11 +22,14 @@ private import  tango.net.ServerSocket,
 
 void main()
 {
+        const int port = 8080;
+        const char[] host = "localhost";
+
         // thread body for socket listener
         void run()
         {       
                 // instantiate a server socket
-                auto server = new ServerSocket (new InternetAddress("127.0.0.1", 8080));
+                auto server = new ServerSocket (new InternetAddress(host, port));
                 while (true)
                       { 
                       // wait for requests
@@ -38,19 +41,21 @@ void main()
         }
 
         // start server in a seperate thread
+        // and wait for server thread to start
         (new Thread (&run)).start;
+        Thread.sleep (1.0);
 
         // make a connection request to the server
         auto request = new SocketConduit;
-        request.connect (new InternetAddress("127.0.0.1", 8080));
+        request.connect (new InternetAddress(host, port));
 
         // wait for response (there is an optional timeout supported)
         char[64] response;
-        request.input.read (response);
+        auto len = request.input.read (response);
 
         // close socket
-        request.close();
+        request.close;
 
         // display server response
-        Cout (response).newline;
+        Cout (response[0..len]).newline;
 }
