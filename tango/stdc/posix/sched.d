@@ -95,7 +95,13 @@ int sched_get_priority_min(int);
 int sched_rr_get_interval(pid_t, timespec*);
 */
 
-version( darwin )
+version( linux )
+{
+    int sched_get_priority_max(int);
+    int sched_get_priority_min(int);
+    int sched_rr_get_interval(pid_t, timespec*);
+}
+else version( darwin )
 {
     int sched_get_priority_min(int);
     int sched_get_priority_max(int);

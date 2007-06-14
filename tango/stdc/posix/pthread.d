@@ -560,6 +560,43 @@ int pthread_setschedparam(pthread_t, int, sched_param*);
 int pthread_setschedprio(pthread_t, int);
 */
 
+version( linux )
+{
+    enum
+    {
+        PTHREAD_SCOPE_SYSTEM,
+        PTHREAD_SCOPE_PROCESS
+    }
+
+    int pthread_attr_getinheritsched(pthread_attr_t*, int*);
+    int pthread_attr_getschedpolicy(pthread_attr_t*, int*);
+    int pthread_attr_getscope(pthread_attr_t*, int*);
+    int pthread_attr_setinheritsched(pthread_attr_t*, int);
+    int pthread_attr_setschedpolicy(pthread_attr_t*, int);
+    int pthread_attr_setscope(pthread_attr_t*, int);
+    int pthread_getschedparam(pthread_t, int*, sched_param*);
+    int pthread_setschedparam(pthread_t, int, sched_param*);
+    int pthread_setschedprio(pthread_t, int);
+}
+else version( darwin )
+{
+    enum
+    {
+        PTHREAD_SCOPE_SYSTEM,
+        PTHREAD_SCOPE_PROCESS
+    }
+
+    int pthread_attr_getinheritsched(pthread_attr_t*, int*);
+    int pthread_attr_getschedpolicy(pthread_attr_t*, int*);
+    int pthread_attr_getscope(pthread_attr_t*, int*);
+    int pthread_attr_setinheritsched(pthread_attr_t*, int);
+    int pthread_attr_setschedpolicy(pthread_attr_t*, int);
+    int pthread_attr_setscope(pthread_attr_t*, int);
+    int pthread_getschedparam(pthread_t, int*, sched_param*);
+    int pthread_setschedparam(pthread_t, int, sched_param*);
+    int pthread_setschedprio(pthread_t, int);
+}
+
 //
 // Stack (TSA|TSS)
 //
