@@ -26,7 +26,7 @@ void main()
         void run()
         {       
                 // instantiate a server socket
-                auto server = new ServerSocket (new InternetAddress("localhost", 8080));
+                auto server = new ServerSocket (new InternetAddress("127.0.0.1", 8080));
                 while (true)
                       { 
                       // wait for requests
@@ -42,7 +42,7 @@ void main()
 
         // make a connection request to the server
         auto request = new SocketConduit;
-        request.connect (new InternetAddress("localhost", 8080));
+        request.connect (new InternetAddress("127.0.0.1", 8080));
 
         // wait for response (there is an optional timeout supported)
         char[64] response;
