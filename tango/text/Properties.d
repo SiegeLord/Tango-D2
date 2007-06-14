@@ -78,7 +78,7 @@ class Properties(T)
                            auto i = Text.locate (text, '=');
 
                            // ignore if not found ...
-                           if (i)
+                           if (i < text.length)
                                dg (Text.trim (text[0 .. i]), Text.trim (text[i+1 .. $]));
                            }
                         }
