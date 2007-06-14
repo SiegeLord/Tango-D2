@@ -447,8 +447,8 @@ else version( darwin )
 {
     enum
     {
-        PTHREAD_SCOPE_SYSTEM,
-        PTHREAD_SCOPE_PROCESS
+        PTHREAD_SCOPE_SYSTEM    = 1,
+        PTHREAD_SCOPE_PROCESS   = 2
     }
 
     int pthread_attr_getinheritsched(pthread_attr_t*, int*);
