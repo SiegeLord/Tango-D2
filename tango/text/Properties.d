@@ -48,18 +48,6 @@ class Properties(T)
 
         /***********************************************************************
         
-                Load properties from the given conduit, and pass them to
-                the provided delegate.
-
-        ***********************************************************************/
-
-        static void load (IConduit conduit, void delegate (T[] name, T[] value) dg)
-        {
-                load (new Buffer(conduit), dg);
-        }
-
-        /***********************************************************************
-        
                 Load properties from the provided buffer, and pass them to
                 the specified delegate.
 
@@ -77,9 +65,9 @@ class Properties(T)
                 
         ***********************************************************************/
 
-        static void load (IBuffer buffer, void delegate (T[] name, T[] value) dg)
+        static void load (InputStream stream, void delegate (T[] name, T[] value) dg)
         {
-                foreach (line; new LineIterator!(T) (buffer))
+                foreach (line; new LineIterator!(T) (stream))
                         {
                         auto text = Text.trim (line);
                         
