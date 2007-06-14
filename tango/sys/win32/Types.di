@@ -296,7 +296,7 @@ alias CCSTYLEFLAGA* LPCCSTYLEFLAGA;
 const HANDLE INVALID_HANDLE_VALUE = cast(HANDLE) -1;
 
 
-enum{
+enum : DWORD {
     SM_CXVIRTUALSCREEN = (76),
     SM_CYVIRTUALSCREEN = (77),
     MONITORINFOF_PRIMARY = (1),
@@ -1291,11 +1291,7 @@ enum{
     FILE_ATTRIBUTE_READONLY = (1),
     FILE_ATTRIBUTE_SYSTEM = (4),
     FILE_ATTRIBUTE_TEMPORARY = (256),
-}
-enum : long {
     FILE_FLAG_WRITE_THROUGH = (2147483648),
-}
-enum {
     FILE_FLAG_OVERLAPPED = (1073741824),
     FILE_FLAG_NO_BUFFERING = (536870912),
     FILE_FLAG_RANDOM_ACCESS = (268435456),
@@ -2270,7 +2266,7 @@ char* IDI_ASTERISK = cast(char*) ((32516));
 char* IDI_WINLOGO = cast(char*) ((32517));
 char* IDC_SIZE = cast(char*) ((32640));
 char* IDC_ICON = cast(char*) ((32641));
-enum {
+enum : DWORD {
     MM_ANISOTROPIC = (8),
     MM_HIENGLISH = (5),
     MM_HIMETRIC = (3),
@@ -3469,7 +3465,7 @@ enum {
     WIZ_CYDLG = (140),
 }
 char* VS_FILE_INFO = cast(char*) ((16));
-enum {
+enum : DWORD {
     VS_VERSION_INFO = (1),
     VS_FF_DEBUG = (0x1),
     VS_FF_INFOINFERRED = (0x10),
@@ -3846,7 +3842,7 @@ enum {
 }
 char* CF_RTF = ("Rich Text Format");
 char* CF_RETEXTOBJ = ("RichEdit Text and Objects");
-enum {
+enum : DWORD {
     ODT_BUTTON = (4),
     ODT_COMBOBOX = (3),
     ODT_LISTBOX = (2),
@@ -3878,7 +3874,7 @@ char* WC_HEADERW = ("SysHeader32");
 char* WC_LISTVIEWW = ("SysListView32");
 char* WC_TABCONTROLW = ("SysTabControl32");
 char* WC_TREEVIEWW = ("SysTreeView32");
-enum {
+enum : DWORD {
     CCS_ADJUSTABLE = (0x20),
     CCS_BOTTOM = (0x3),
     CCS_NODIVIDER = (0x40),
@@ -3913,7 +3909,7 @@ char* WC_LISTVIEW = (WC_LISTVIEWA);
 char* WC_TABCONTROL = (WC_TABCONTROLA);
 char* WC_TREEVIEW = (WC_TREEVIEWA);
 }
-enum {
+enum : DWORD {
     HDS_BUTTONS = (2),
     HDS_HIDDEN = (8),
     HDS_HORZ = (0),
@@ -4070,7 +4066,7 @@ wchar* LPSTR_TEXTCALLBACKW = cast(LPWSTR)(-(1));
 char* LPSTR_TEXTCALLBACKA = cast(LPSTR)(-(1));
 char* LPSTR_TEXTCALLBACK = (LPSTR_TEXTCALLBACKA);
 }
-enum {
+enum : DWORD {
     LVIF_TEXT = (1),
     LVIF_IMAGE = (2),
     LVIF_PARAM = (4),
@@ -4149,7 +4145,7 @@ struct TREEITEM
 alias TREEITEM* HTREEITEM;
 alias TREEITEM TTREEITEM;
 alias TREEITEM* PTREEITEM;
-enum {
+enum : DWORD {
     TVI_ROOT = (0xFFFF0000),
     TVI_FIRST = (0xFFFF0001),
     TVI_LAST = (0xFFFF0002),
@@ -4544,7 +4540,7 @@ char* LBSELCHSTRING = (LBSELCHSTRINGA);
 char* SETRGBSTRING = (SETRGBSTRINGA);
 char* SHAREVISTRING = (SHAREVISTRINGA);
 }
-enum {
+enum : DWORD {
     CD_LBSELCHANGE = (0),
     CD_LBSELADD = (2),
     CD_LBSELSUB = (1),
@@ -6860,7 +6856,7 @@ alias DCB* LPDCB;
 alias DCB _DCB;
 alias DCB TDCB;
 alias DCB* PDCB;
-enum {
+enum : DWORD {
     bm_DCB_fBinary = (0x1),
     bp_DCB_fBinary = (0),
     bm_DCB_fParity = (0x2),
@@ -6997,7 +6993,7 @@ alias COMSTAT* LPCOMSTAT;
 alias COMSTAT _COMSTAT;
 alias COMSTAT TCOMSTAT;
 alias COMSTAT* PCOMSTAT;
-enum {
+enum : DWORD {
     bm_COMSTAT_fCtsHold = (0x1),
     bp_COMSTAT_fCtsHold = (0),
     bm_COMSTAT_fDsrHold = (0x2),
@@ -7080,7 +7076,7 @@ alias FLOATING_SAVE_AREA _FLOATING_SAVE_AREA;
 alias FLOATING_SAVE_AREA TFLOATINGSAVEAREA;
 alias FLOATING_SAVE_AREA* PFLOATINGSAVEAREA;
 
-enum
+enum : DWORD
 {
 //
 // The following flags control the contents of the CONTEXT structure.
@@ -7363,7 +7359,7 @@ struct DDEACK
 
 alias DDEACK TDDEACK;
 alias DDEACK* PDDEACK;
-enum {
+enum : DWORD {
     bm_DDEACK_bAppReturnCode = (0xFF),
     bp_DDEACK_bAppReturnCode = (0),
     bm_DDEACK_reserved = (0x3F00),
@@ -7382,7 +7378,7 @@ struct DDEADVISE
 
 alias DDEADVISE TDDEADVISE;
 alias DDEADVISE* PDDEADVISE;
-enum {
+enum : DWORD {
     bm_DDEADVISE_reserved = (0x3FFF),
     bp_DDEADVISE_reserved = (0),
     bm_DDEADVISE_fDeferUpd = (0x4000),
@@ -7399,7 +7395,7 @@ struct DDEDATA
 }
 
 alias DDEDATA* PDDEDATA;
-enum {
+enum : DWORD {
     bm_DDEDATA_unused = (0xFFF),
     bp_DDEDATA_unused = (0),
     bm_DDEDATA_fResponse = (0x1000),
@@ -7420,7 +7416,7 @@ struct DDELN
 
 alias DDELN TDDELN;
 alias DDELN* PDDELN;
-enum {
+enum : DWORD {
     bm_DDELN_unused = (0x1FFF),
     bp_DDELN_unused = (0),
     bm_DDELN_fRelease = (0x2000),
@@ -7452,7 +7448,7 @@ struct DDEPOKE
 
 alias DDEPOKE TDDEPOKE;
 alias DDEPOKE* PDDEPOKE;
-enum {
+enum : DWORD {
     bm_DDEPOKE_unused = (0x1FFF),
     bp_DDEPOKE_unused = (0),
     bm_DDEPOKE_fRelease = (0x2000),
@@ -7470,7 +7466,7 @@ struct DDEUP
 alias DDEUP TDDEUP;
 alias DDEUP* PDDEUP;
 
-enum {
+enum : DWORD {
     bm_DDEUP_unused = (0xFFF),
     bp_DDEUP_unused = (0),
     bm_DDEUP_fAck = (0x1000),
@@ -9918,7 +9914,7 @@ alias LDT_ENTRY* PLDT_ENTRY;
 alias LDT_ENTRY _LDT_ENTRY;
 alias LDT_ENTRY TLDTENTRY;
 alias LDT_ENTRY* PLDTENTRY;
-enum {
+enum : DWORD {
     bm_LDT_ENTRY_BaseMid = (0xFF),
     bp_LDT_ENTRY_BaseMid = (0),
     bm_LDT_ENTRY_Type = (0x1F00),
