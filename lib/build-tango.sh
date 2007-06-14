@@ -73,7 +73,7 @@ build() {
 
     if [ ! -e "$3" ]
     then
-        die "Dependency not present, run build-yourcompiler.sh first" 1
+        die "Dependency $3 not present, run build-yourcompiler.sh first" 1
     fi
 
     cd ..
