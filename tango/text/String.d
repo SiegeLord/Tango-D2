@@ -1174,8 +1174,6 @@ class String(T) : StringView!(T)
 
 class StringView(T) : UniString
 {
-        public  alias slice opSlice;
-
         public typedef int delegate (T[] a, T[] b) Comparator;
 
         /***********************************************************************
