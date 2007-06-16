@@ -415,6 +415,7 @@ version (Win32)
                 SO_TYPE =          0x1008, // ?
 
                 // OptionLevel.IP settings
+                IP_MULTICAST_TTL = 10,
                 IP_MULTICAST_LOOP = 11,
                 IP_ADD_MEMBERSHIP = 12,
                 IP_DROP_MEMBERSHIP = 13,
@@ -470,6 +471,7 @@ else version (darwin)
                 SO_ERROR        = 0x1007,		/* get error status and clear */
 
                 // OptionLevel.IP settings
+                IP_MULTICAST_TTL = 10,
                 IP_MULTICAST_LOOP = 11,
                 IP_ADD_MEMBERSHIP = 12,
                 IP_DROP_MEMBERSHIP = 13,
@@ -531,6 +533,7 @@ else version (linux)
                 SO_TYPE         = 3,
 
                 // OptionLevel.IP settings
+                IP_MULTICAST_TTL = 33,
                 IP_MULTICAST_LOOP = 34,
                 IP_ADD_MEMBERSHIP = 35,
                 IP_DROP_MEMBERSHIP = 36,

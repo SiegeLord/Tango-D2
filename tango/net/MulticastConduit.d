@@ -46,13 +46,19 @@ private import  tango.net.DatagramConduit,
 
         Note that this example is expecting to receive its own broadcast;
         thus it may be necessary to enable loopback operation (see below)
-        for successful receipt of the broadcast
-        
+        for successful receipt of the broadcast.
+
+        Note that class D addresses range from 225.0.0.0 to 239.255.255.255
+
+        see: http://www.kohala.com/start/mcast.api.txt
+                
 *******************************************************************************/
 
 class MulticastConduit : DatagramConduit
 {
         private IPv4Address group;
+
+        enum {Host=0, Subnet=1, Site=32, Region=64, Continent=128, Unrestricted=255}
 
         /***********************************************************************
         
@@ -87,7 +93,7 @@ class MulticastConduit : DatagramConduit
 
         ***********************************************************************/
 
-        this (InternetAddress group, bool reuse=false)
+        this (InternetAddress group, bool reuse = false)
         {
                 super ();
 
@@ -102,10 +108,32 @@ class MulticastConduit : DatagramConduit
 
         ***********************************************************************/
 
-        MulticastConduit loopback (bool yes=true)
+        MulticastConduit loopback (bool yes = true)
         {
                 uint[1] onoff = yes;
                 socket.setOption (SocketOptionLevel.IP, SocketOption.IP_MULTICAST_LOOP, onoff);
+                return this;
+        }
+
+        /***********************************************************************
+                
+                Set the number of hops (time to live) of this socket. 
+                Convenient values are
+                ---
+                Host:           packets are restricted to the same host
+                Subnet:         packets are restricted to the same subnet
+                Site:           packets are restricted to the same site
+                Region:         packets are restricted to the same region
+                Continent:      packets are restricted to the same continent
+                Unrestricted:   packets are unrestricted in scope
+                ---
+
+        ***********************************************************************/
+
+        MulticastConduit ttl (uint value=Subnet)
+        {
+                uint[1] options = value;
+                socket.setOption (SocketOptionLevel.IP, SocketOption.IP_MULTICAST_TTL, options);
                 return this;
         }
 
