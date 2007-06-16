@@ -14,6 +14,19 @@ die() {
 DC=
 LIB=
 
+usage() {
+    echo 'Usage: build-tango.sh [--help] identifier 
+Options:
+  --help: Will print this help text
+  <identifier> is one of {dmd, gdc, mac} and will build libtango.a,
+                libgtango.a or universal Mac binaries respectively
+                
+  The script must be called from within lib/ and the resulting
+  binaries will be found there. The build requires that libphobos.a/
+  libgphobos.a already was built.'
+    exit 0
+}
+
 UNAME=`uname`
 
 # This filter can probably be improved quite a bit, but should work
@@ -94,7 +107,10 @@ then
     die "You must run this script from the lib directory." 1
 fi
 
-if [ "$1" = "dmd" ]
+if [ "$1" = "--help" ]
+then
+    usage
+elif [ "$1" = "dmd" ]
 then
     build dmd libtango.a libphobos.a
 elif [ "$1" = "gdc" ]
@@ -107,6 +123,5 @@ then
     build i686-apple-darwin8-gdmd libgtango.a.i386 libgphobos.a.i386 
     lipo -create -output libgtango.a libgtango.a.ppc libgtango.a.i386 
 else
-    build dmd libtango.a libphobos.a
-    build gdmd libgtango.a libgphobos.a
+    usage
 fi
