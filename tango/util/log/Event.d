@@ -66,7 +66,7 @@ public class Event : ILevel
         // logging-level names
         package static char[][] LevelNames = 
         [
-                "TRACE ", "INFO ", "WARN ", "ERROR ", "FATAL ", "NONE "
+                "Trace ", "Info  ", "Warn  ", "Error ", "Fatal ", "None  "
         ];
 
         version (Win32)

@@ -46,16 +46,22 @@ struct PropertyConfigurator
         static this()
         {
                 map["TRACE"]    = ILevel.Level.Trace;
+                map["Trace"]    = ILevel.Level.Trace;
                 map["trace"]    = ILevel.Level.Trace;
                 map["INFO"]     = ILevel.Level.Info;
+                map["Info"]     = ILevel.Level.Info;
                 map["info"]     = ILevel.Level.Info;
                 map["WARN"]     = ILevel.Level.Warn;
+                map["Warn"]     = ILevel.Level.Warn;
                 map["warn"]     = ILevel.Level.Warn;
                 map["ERROR"]    = ILevel.Level.Error;
+                map["Error"]    = ILevel.Level.Error;
                 map["error"]    = ILevel.Level.Error;
+                map["Fatal"]    = ILevel.Level.Fatal;
                 map["FATAL"]    = ILevel.Level.Fatal;
                 map["fatal"]    = ILevel.Level.Fatal;
                 map["NONE"]     = ILevel.Level.None;
+                map["None"]     = ILevel.Level.None;
                 map["none"]     = ILevel.Level.None;
         }
 
