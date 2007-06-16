@@ -19,8 +19,6 @@ private import  tango.io.FilePath;
 
 private import  tango.util.log.Log;
 
-private import  tango.util.log.model.ILevel;
-
 /*******************************************************************************
 
         A utility class for initializing the basic behaviour of the
@@ -35,36 +33,6 @@ private import  tango.util.log.model.ILevel;
 
 struct PropertyConfigurator
 {
-        private static ILevel.Level[char[]] map;
-
-        /***********************************************************************
-        
-                Populate a map of acceptable level names
-
-        ***********************************************************************/
-
-        static this()
-        {
-                map["TRACE"]    = ILevel.Level.Trace;
-                map["Trace"]    = ILevel.Level.Trace;
-                map["trace"]    = ILevel.Level.Trace;
-                map["INFO"]     = ILevel.Level.Info;
-                map["Info"]     = ILevel.Level.Info;
-                map["info"]     = ILevel.Level.Info;
-                map["WARN"]     = ILevel.Level.Warn;
-                map["Warn"]     = ILevel.Level.Warn;
-                map["warn"]     = ILevel.Level.Warn;
-                map["ERROR"]    = ILevel.Level.Error;
-                map["Error"]    = ILevel.Level.Error;
-                map["error"]    = ILevel.Level.Error;
-                map["Fatal"]    = ILevel.Level.Fatal;
-                map["FATAL"]    = ILevel.Level.Fatal;
-                map["fatal"]    = ILevel.Level.Fatal;
-                map["NONE"]     = ILevel.Level.None;
-                map["None"]     = ILevel.Level.None;
-                map["none"]     = ILevel.Level.None;
-        }
-
         /***********************************************************************
         
                 Add a default StdioAppender, with a SimpleTimerLayout, to 
@@ -98,8 +66,8 @@ struct PropertyConfigurator
                         auto l = (name == "root") ? Log.getRootLogger
                                                   : Log.getLogger (name);
 
-                        if (l && (value in map))
-                            l.setLevel (map[value]);
+                        if (l)
+                            l.setLevel (Log.level(value));
                 }
 
                 // read and parse properties from file

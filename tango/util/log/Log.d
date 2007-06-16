@@ -18,6 +18,8 @@ public  import  tango.util.log.Logger;
 private import  tango.util.log.Event,
                 tango.util.log.Hierarchy;
 
+private import  tango.util.log.model.ILevel;
+
 /*******************************************************************************
 
         Manager for routing Logger calls to the default hierarchy. Note 
@@ -29,7 +31,33 @@ private import  tango.util.log.Event,
 
 class Log 
 {
-        static private Hierarchy base;
+        static private  Hierarchy base;
+
+        private static  ILevel.Level[char[]] map;
+        
+        private struct  Pair {char[] name; ILevel.Level value;}
+
+        private static  Pair[] Pairs = 
+                        [
+                        {"TRACE",  ILevel.Level.Trace},
+                        {"Trace",  ILevel.Level.Trace},
+                        {"trace",  ILevel.Level.Trace},
+                        {"INFO",   ILevel.Level.Info},
+                        {"Info",   ILevel.Level.Info},
+                        {"info",   ILevel.Level.Info},
+                        {"WARN",   ILevel.Level.Warn},
+                        {"Warn",   ILevel.Level.Warn},
+                        {"warn",   ILevel.Level.Warn},
+                        {"ERROR",  ILevel.Level.Error},
+                        {"Error",  ILevel.Level.Error},
+                        {"error",  ILevel.Level.Error},
+                        {"Fatal",  ILevel.Level.Fatal},
+                        {"FATAL",  ILevel.Level.Fatal},
+                        {"fatal",  ILevel.Level.Fatal},
+                        {"NONE",   ILevel.Level.None},
+                        {"None",   ILevel.Level.None},
+                        {"none",   ILevel.Level.None},
+                        ];
 
         /***********************************************************************
         
@@ -51,6 +79,10 @@ class Log
         {
                 base = new Hierarchy ("tango");
                 Event.initialize ();
+
+                // populate a map of acceptable level names
+                foreach (p; Pairs)
+                         map[p.name] = p.value;
         }
 
         /***********************************************************************
@@ -95,5 +127,19 @@ class Log
         static Hierarchy getHierarchy ()
         {
                 return base;
+        }
+
+        /***********************************************************************
+        
+                Return the level of a given name
+
+        ***********************************************************************/
+
+        static ILevel.Level level (char[] name, ILevel.Level def=ILevel.Level.Trace)
+        {
+                auto p = name in map;
+                if (p)
+                    return *p;
+                return def;
         }
 }
