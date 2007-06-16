@@ -338,20 +338,6 @@ class RegexException : TextException
 
 
 /**
- * PayloadException is thrown when the PayloadRegistry encounters a
- * problem during proxy registration, or when it sees an unregistered
- * guid.
- */
-class PayloadException : TracedException
-{
-    this( char[] msg )
-    {
-        super( msg );
-    }
-}
-
-
-/**
  * Base class for cipher exceptions.
  */
 class CipherException : TracedException
