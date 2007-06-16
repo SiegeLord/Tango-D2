@@ -14,11 +14,35 @@ die() {
     exit $ERROR
 }
 
+usage() {
+    echo 'Usage: <installer-name>.sh [--prefix <install prefix>]
+Options:
+  --prefix:  Install prefix is optional on the command line, if not set it
+             will be requested during install. The set prefix needs to be
+             an absolute path.'
+    exit 0
+}
+
+
 # Figure out our complete name
 ORIGDIR=`pwd`
 cd `dirname $0`
 FULLNAME="`pwd`/`basename $0`"
 cd $ORIGDIR
+
+# parse arguments
+while [ "$#" != "0" ]
+do
+    if [ "$1" = "--prefix" ]
+    then
+        shift
+
+        PREFIX="$1"
+    else
+        usage
+    fi
+    shift
+done
 
 # Create our temporary directory
 TTMP=/tmp/tango.installer.$$
@@ -32,13 +56,18 @@ LINES=113
 DMDDIR=
 if [ "$INST_DMD" = "1" ]
 then
-	if [ ! "$1" ]
+	if [ ! "$PREFIX" ]
 	then
-		echo -n "What prefix do you want to install DMD to? "
+		echo -n "What prefix do you want to install DMD to (absolute path)? "
 		read DMDDIR
 	else
-		DMDDIR="$1"
+		DMDDIR="$PREFIX"
 	fi
+
+    if [ "${DMDDIR:0:1}" != "/" ]
+    then
+        die 1 "The PREFIX needs to be an absolute path"
+    fi
 
 	export PATH="$DMDDIR/bin:$PATH"
 	mkdir -p $DMDDIR/bin || die 1 "Failed to create the DMD install directory"
@@ -74,6 +103,12 @@ then
 		IPS="$OLDIPS"
 	fi
 fi
+
+if [ "${DMDDIR:0:1}" != "/" ]
+then
+    die 1 "The PREFIX needs to be an absolute path"
+fi
+
 
 # Then, cd to our tmpdir and extract core.tar.gz
 cd $TTMP || die 1 "Failed to cd to temporary directory"
