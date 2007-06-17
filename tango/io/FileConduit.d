@@ -142,13 +142,23 @@ class FileConduit : DeviceConduit, DeviceConduit.Seek
         }
 
         /***********************************************************************
+
+        ***********************************************************************/
+
+        enum Access : ubyte     {
+                                Read      = 0x01,       /// is readable
+                                Write     = 0x02,       /// is writable
+                                ReadWrite = 0x03,       /// both
+                                }
+
+        /***********************************************************************
         
         ***********************************************************************/
 
         enum Open : ubyte       {
                                 Exists=0,               /// must exist
-                                Create,                 /// create always
-                                Truncate,               /// must exist
+                                Create,                 /// create or truncate
+                                Sedate,                 /// create if necessary
                                 Append,                 /// create if necessary
                                 };
 
@@ -175,17 +185,7 @@ class FileConduit : DeviceConduit, DeviceConduit.Seek
 
         /***********************************************************************
 
-        ***********************************************************************/
-
-        enum Access : ubyte     {
-                                Read      = 0x01,       /// is readable
-                                Write     = 0x02,       /// is writable
-                                ReadWrite = 0x03,       /// both
-                                }
-
-        /***********************************************************************
-
-            Predefined styles
+            Read an existing file
         
         ***********************************************************************/
 
@@ -193,27 +193,45 @@ class FileConduit : DeviceConduit, DeviceConduit.Seek
 
         /***********************************************************************
         
+                Write on a clean file. Create if necessary
+
         ***********************************************************************/
 
-        const Style WriteTruncate = {Access.Write, Open.Truncate};
+        const Style WriteCreate = {Access.Write, Open.Create};
 
         /***********************************************************************
         
+                Write at the end of the file
+
         ***********************************************************************/
 
-        const Style WriteAppending = {Access.Write, Open.Append};
+        deprecated const Style WriteAppending = {Access.Write, Open.Append};
 
         /***********************************************************************
         
+                Read and write an existing file
+
+        ***********************************************************************/
+
+        const Style ReadWriteExisting = {Access.ReadWrite, Open.Exists}; 
+
+        /***********************************************************************
+        
+                Read & write on a clean file. Create if necessary
+
         ***********************************************************************/
 
         const Style ReadWriteCreate = {Access.ReadWrite, Open.Create}; 
 
         /***********************************************************************
         
+                Read and Write. Use existing file if present
+
         ***********************************************************************/
 
-        const Style ReadWriteExisting = {Access.ReadWrite, Open.Exists}; 
+        const Style ReadWriteOpen = {Access.ReadWrite, Open.Sedate}; 
+
+
 
 
         // the file we're working with 
@@ -346,8 +364,8 @@ class FileConduit : DeviceConduit, DeviceConduit.Seek
                         static const Flags Create =  
                                         [
                                         OPEN_EXISTING,          // must exist
-                                        CREATE_ALWAYS,          // create always
-                                        TRUNCATE_EXISTING,      // must exist
+                                        CREATE_ALWAYS,          // truncate always
+                                        OPEN_ALWAYS,            // create if needed
                                         OPEN_ALWAYS,            // (for appending)
                                         ];
                                                 
@@ -482,8 +500,8 @@ class FileConduit : DeviceConduit, DeviceConduit.Seek
                         static const Flags Create =  
                                         [
                                         0,              // open existing
-                                        O_CREAT | O_TRUNC, // create always
-                                        O_TRUNC,        // must exist
+                                        O_CREAT | O_TRUNC, // truncate always
+                                        O_CREAT,        // create if needed
                                         O_APPEND | O_CREAT, 
                                         ];
 
