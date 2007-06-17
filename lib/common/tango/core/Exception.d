@@ -338,6 +338,20 @@ class RegexException : TextException
 
 
 /**
+ * RegistryException is thrown when the SerialRegistry encounters a
+ * problem during proxy registration, or when it sees an unregistered
+ * guid.
+ */
+class RegistryException : TracedException
+{
+    this( char[] msg )
+    {
+        super( msg );
+    }
+}
+
+
+/**
  * Base class for cipher exceptions.
  */
 class CipherException : TracedException
