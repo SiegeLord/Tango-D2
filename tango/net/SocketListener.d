@@ -69,6 +69,7 @@ class SocketListener : IListener
                 this.buffer = buffer;
                 this.conduit = conduit;
                 thread = new Thread (&run);
+                thread.isDaemon = true;
         }
 
         /***********************************************************************
