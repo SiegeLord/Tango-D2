@@ -92,7 +92,7 @@ class Properties(T)
 
         static void save (FilePath path, T[][T[]] properties)
         {
-                auto fc = new FileConduit (path, FileConduit.WriteTruncate);
+                auto fc = new FileConduit (path, FileConduit.WriteCreate);
                 scope (exit)
                        fc.close;
                 save (fc, properties);

@@ -105,7 +105,8 @@ class HttpPost : HttpClient
         void[] write (Pump pump)
         {
                 try {
-                    open (pump, buffer.clear);
+                    buffer.clear;
+                    open (pump, buffer);
 
                     // check return status for validity
                     auto status = getStatus();
