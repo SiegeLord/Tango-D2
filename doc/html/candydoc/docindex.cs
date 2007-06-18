@@ -93,6 +93,10 @@
        <div class="theme-content-inner" align="left">
         <div class="theme-content-block">
 
+         <div id="ctxtnav" class="nav"></div>
+         <div id="content" class="wiki">
+          <div class="wikipage">
+           <div id="searchable"> 
 
   <h2>Tango API Index</h2>
   <p>Use the Browser incremental search facility to quickly locate a particular
@@ -106,8 +110,9 @@
 <?cs /each ?>
   </ul>
 
-
-
+           </div>
+          </div>
+         </div>
         </div> <!-- End of Content Area -->
        </div>
       </div>
