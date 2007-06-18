@@ -41,8 +41,11 @@ void main()
         }
 
         // start server in a seperate thread
+        auto server = new Thread (&run);
+        server.isDaemon = true;
+        server.start;
+
         // and wait for server thread to start
-        (new Thread (&run)).start;
         Thread.sleep (1.0);
 
         // make a connection request to the server
