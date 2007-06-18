@@ -1018,7 +1018,7 @@ class Buffer : IBuffer
 
         ***********************************************************************/
 
-        IBuffer clear ()
+        void clear ()
         {
                 position_ = limit_ = 0;
                 return this;

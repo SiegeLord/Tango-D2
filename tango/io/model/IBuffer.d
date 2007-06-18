@@ -504,6 +504,14 @@ abstract class IBuffer : InputStream, OutputStream
 
         /***********************************************************************
         
+                Reset position and limit to zero.
+
+        ***********************************************************************/
+
+        abstract void clear ();               
+
+        /***********************************************************************
+        
                 Copy content via this buffer from the provided src
                 conduit.
 
@@ -518,14 +526,6 @@ abstract class IBuffer : InputStream, OutputStream
         ***********************************************************************/
 
         abstract OutputStream copy (InputStream src);
-
-        /***********************************************************************
-        
-                Reset position and limit to zero.
-
-        ***********************************************************************/
-
-        abstract IBuffer clear ();               
 
         /***********************************************************************
         

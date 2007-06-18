@@ -163,11 +163,21 @@ class Conduit : private AbstractOutputStream, IConduit, InputStream
 
         /***********************************************************************
 
-                dump any buffered content
+                dump any output buffering
 
         ***********************************************************************/
 
         void flush ()
+        {
+        }
+
+        /***********************************************************************
+
+                clear any input buffering
+
+        ***********************************************************************/
+
+        void clear ()
         {
         }
 
