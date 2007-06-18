@@ -85,7 +85,7 @@ class StreamIterator(T)
                     buffer = b;
                 else
                    if (buffer)
-                       buffer.clear.setConduit (stream.conduit);
+                       buffer.clear, buffer.setConduit (stream.conduit);
                    else
                       buffer = new Buffer (stream.conduit);
 

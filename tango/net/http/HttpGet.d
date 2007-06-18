@@ -71,7 +71,8 @@ class HttpGet : HttpClient
         void[] read ()
         {
                 try {
-                    open (buffer.clear);
+                    buffer.clear;
+                    open (buffer);
                     if (isResponseOK)
                         buffer.fill (getResponseHeaders.getInt(HttpHeader.ContentLength, uint.max));
                     } finally {close;}

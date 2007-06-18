@@ -383,7 +383,7 @@ class HttpClient
 
                 // create buffers for input and output
                 if (input)
-                    input.clear.setConduit (socket);
+                    input.clear, input.setConduit (socket);
                 else
                    input = new Buffer (socket);
                 output = new Buffer (socket);
