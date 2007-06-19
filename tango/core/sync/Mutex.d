@@ -165,7 +165,7 @@ class Mutex :
 
         static ~this()
         {
-            int rc = pthread_mutexattr_destroy( &attr );
+            int rc = pthread_mutexattr_destroy( &sm_attr );
             assert( !rc );
         }
     }
@@ -178,7 +178,7 @@ private:
     }
     else version( Posix )
     {
-        pthread_mutexattr_t sm_attr;
+        static pthread_mutexattr_t  sm_attr;
 
         pthread_mutex_t     m_hndl;
     }
