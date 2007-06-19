@@ -156,15 +156,11 @@ class Condition
 
             getTimespec( t );
             adjTimespec( t, period );
-            switch( pthread_cond_timedwait( &m_hndl, m_mutexAddr, &t ) )
-            {
-            case ETIMEDOUT:
-                return false;
-            case 0:
+            if( !pthread_cond_timedwait( &m_hndl, m_mutexAddr, &t ) )
                 return true;
-            default:
-                throw new SyncException( "Unable to wait for condition" );
-            }
+            if( errno == ETIMEDOUT )
+                return false;
+            throw new SyncException( "Unable to wait for condition" );
         }
     }
 
@@ -521,8 +517,8 @@ debug( UnitTest )
             synchronized( mutex )
             {
                 waiting    = true;
-                alertedOne = condReady.wait( 0.1 );
-                alertedTwo = condReady.wait( 0.1 );
+                alertedOne = condReady.wait( 1.0 );
+                alertedTwo = condReady.wait( 1.0 );
             }
         }
 

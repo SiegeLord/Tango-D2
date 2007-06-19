@@ -111,10 +111,9 @@ class Semaphore
         {
             while( true )
             {
-                int rc = sem_wait( &m_hndl );
-                if( rc == 0 )
+                if( !sem_wait( &m_hndl ) )
                     return;
-                if( rc != EINTR )
+                if( errno != EINTR )
                     throw new SyncException( "Unable to wait for semaphore" );
             }
         }
@@ -157,14 +156,15 @@ class Semaphore
 
             getTimespec( t );
             adjTimespec( t, period );
-            switch( sem_timedwait( &m_hndl, &t ) )
+
+            while( true )
             {
-            case ETIMEDOUT:
-                return false;
-            case 0:
-                return true;
-            default:
-                throw new SyncException( "Unable to wait for condition" );
+                if( !sem_wait( &m_hndl ) )
+                    return true;
+                if( errno == ETIMEDOUT )
+                    return false;
+                if( errno != EINTR )
+                    throw new SyncException( "Unable to wait for semaphore" );
             }
         }
     }
@@ -221,17 +221,12 @@ class Semaphore
         {
             while( true )
             {
-                switch( sem_trywait( &m_hndl ) )
-                {
-                case 0:
+                if( !sem_trywait( &m_hndl ) )
                     return true;
-                case EAGAIN:
+                if( errno == ETIMEDOUT )
                     return false;
-                case EINTR:
-                    continue;
-                default:
+                if( errno != EINTR )
                     throw new SyncException( "Unable to wait for semaphore" );
-                }
             }
         }
     }
