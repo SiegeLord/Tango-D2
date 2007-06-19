@@ -159,7 +159,7 @@ class Semaphore
 
             while( true )
             {
-                if( !sem_wait( &m_hndl ) )
+                if( !sem_timedwait( &m_hndl, &t ) )
                     return true;
                 if( errno == ETIMEDOUT )
                     return false;
