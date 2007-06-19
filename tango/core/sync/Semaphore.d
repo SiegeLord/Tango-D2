@@ -19,6 +19,7 @@ else version( Posix )
 {
     private import tango.stdc.errno;
     private import tango.stdc.posix.pthread;
+    private import tango.stdc.posix.semaphore;
 }
 
 
