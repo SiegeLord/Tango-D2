@@ -17,7 +17,7 @@ version( Posix )
     private import tango.stdc.posix.time;
 
 
-    void setTimespec( inout timeval t, Interval i )
+    void setTimespec( inout timespec t, Interval i )
     {
         if( i > t.tv_sec.max )
         {
@@ -32,7 +32,7 @@ version( Posix )
     }
 
 
-    Interval toInterval( inout timeval t )
+    Interval toInterval( inout timespec t )
     {
         return (cast(Interval) t.tv_sec) + (cast(Interval) t.tv_usec) / 1_000_000;
     }
@@ -40,9 +40,9 @@ version( Posix )
 
     Interval absTimeout( Interval period )
     {
-        timeval t;
+        timespec t;
 
-        gettimeofday( &t, null );
+        clockc_gettime( CLOCK_REALTIME, &t );
         return toInterval( t ) + period;
     }
 }
