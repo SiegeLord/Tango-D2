@@ -38,15 +38,26 @@ version( Posix )
 
     void adjTimespec( inout timespec t, Interval i )
     {
-        if( (cast(Interval) t.tv_sec.max) - i < cast(Interval) t.tv_sec )
+        enum
+        {
+            SECS_TO_NANOS = 1_000_000_000
+        }
+
+        if( t.tv_sec.max - t.tv_sec < i )
         {
             t.tv_sec  = t.tv_sec.max;
-            t.tv_nsec = t.tv_nsec.max;
+            t.tv_nsec = 0;
         }
         else
         {
-            t.tv_sec  += cast(typeof(t.tv_sec)) i;
-            t.tv_nsec += cast(typeof(t.tv_sec))( (i % 1.0) * 1_000_000_000 );
+            t.tv_sec  += i;
+            i = (i % 1.0) * SECS_TO_NANOS;
+            if( SECS_TO_NANOS - t.tv_nsec < i )
+            {
+                t.tv_sec += 1;
+                i -= SECS_TO_NANOS;
+            }
+            t.tv_nsec += cast(typeof(t.tv_sec)) i;
         }
     }
 }
