@@ -42,7 +42,7 @@ version( Posix )
     {
         timespec t;
 
-        clockc_gettime( CLOCK_REALTIME, &t );
+        clock_gettime( CLOCK_REALTIME, &t );
         return toInterval( t ) + period;
     }
 }
