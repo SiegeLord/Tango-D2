@@ -134,8 +134,8 @@ version( linux )
     alias int timer_t;
 
     int clock_getres(clockid_t, timespec*);
-    int clock_gettime(clockid_t, timespec*);
-    int clock_settime(clockid_t, timespec*);
+    //int clock_gettime(clockid_t, timespec*);
+    //int clock_settime(clockid_t, timespec*);
     int nanosleep(timespec*, timespec*);
     int timer_create(clockid_t, sigevent*, timer_t*);
     int timer_delete(timer_t);
