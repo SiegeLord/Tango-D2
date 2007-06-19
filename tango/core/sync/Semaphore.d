@@ -223,7 +223,7 @@ class Semaphore
             {
                 if( !sem_trywait( &m_hndl ) )
                     return true;
-                if( errno == ETIMEDOUT )
+                if( errno == EAGAIN )
                     return false;
                 if( errno != EINTR )
                     throw new SyncException( "Unable to wait for semaphore" );
