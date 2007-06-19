@@ -154,7 +154,8 @@ class Condition
         {
             timespec t;
 
-            setTimespec( t, absTimeout( period ) );
+            getTimespec( t );
+            adjTimespec( t, period );
             switch( pthread_cond_timedwait( &m_hndl, m_mutexAddr, &t ) )
             {
             case ETIMEDOUT:

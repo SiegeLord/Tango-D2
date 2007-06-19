@@ -155,7 +155,8 @@ class Semaphore
         {
             timespec t;
 
-            setTimespec( t, absTimeout( period ) );
+            getTimespec( t );
+            adjTimespec( t, period );
             switch( sem_timedwait( &m_hndl, &t ) )
             {
             case ETIMEDOUT:

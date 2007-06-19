@@ -15,9 +15,10 @@ public import tango.core.Exception : SyncException;
 version( Posix )
 {
     private import tango.stdc.posix.time;
+    private import tango.stdc.posix.sys.time;
 
 
-    void getTimespec( inout timespec t )
+    void getTimespec( inout timespec t, Interval adjust )
     {
         static if( is( typeof( clock_gettime ) ) )
         {
@@ -28,39 +29,37 @@ version( Posix )
             timeval tv;
 
             gettimeofday( &tv, null );
-            t         = t.init;
-            t.tv_sec  = tv.tv_sec;
-            t.tv_nsec = (cast(typeof(tv.tv_usec)) tv.tv_usec) * 1_000;
+            (cast(byte*) &t)[0 .. t.sizeof] = 0;
+            t.tv_sec  = cast(typeof(t.tv_sec))  tv.tv_sec;
+            // NOTE: When clock_gettime is not defined, the wait routines seem
+            //       to actually use a timeval rather than a timespec, even if
+            //       they are declared to take a timespec.  So treat nanos as
+            //       usecs if this is true.
+            t.tv_nsec = cast(typeof(t.tv_nsec)) tv.tv_usec;
         }
     }
 
 
-    void setTimespec( inout timespec t, Interval i )
+    void adjTimespec( inout timespec t, Interval i )
     {
-        if( i > t.tv_sec.max )
+        // NOTE: When clock_gettime is not defined, the wait routines seem to
+        //       actually use a timeval rather than a timespec, even if they
+        //       are declared to take a timespec.  So treat nanos as usecs if
+        //       this is true.
+        static if( is( typeof( clock_gettime ) ) )
+            const TS_NANOS_TO_SECS = 1_000_000_000;
+        else
+            const TS_NANOS_TO_SECS = 1_000_000;
+
+        if( (cast(Interval) t.tv_sec.max) - i < cast(Interval) t.tv_sec )
         {
             t.tv_sec  = t.tv_sec.max;
             t.tv_nsec = t.tv_nsec.max;
         }
         else
         {
-            t.tv_sec  = cast(typeof(t.tv_sec)) i;
-            t.tv_nsec = cast(typeof(t.tv_sec))( ( i - t.tv_sec ) * 1_000_000_000 );
+            t.tv_sec  += cast(typeof(t.tv_sec)) i;
+            t.tv_nsec += cast(typeof(t.tv_sec))( (i % 1.0) * TS_NANOS_TO_SECS );
         }
-    }
-
-
-    Interval toInterval( inout timespec t )
-    {
-        return (cast(Interval) t.tv_sec) + (cast(Interval) t.tv_nsec) / 1_000_000_000;
-    }
-
-
-    Interval absTimeout( Interval period )
-    {
-        timespec t;
-
-        getTimespec( t );
-        return toInterval( t ) + period;
     }
 }
