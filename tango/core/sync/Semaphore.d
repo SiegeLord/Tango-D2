@@ -161,8 +161,8 @@ class Semaphore
             }
             else
             {
-                t.tv_sec  = period;
-                t.tv_nsec = ( period - t.tv_sec ) * 1_000_000;
+                t.tv_sec  = cast(typeof(t.tv_sec)) period;
+                t.tv_nsec = cast(typeof(t.tv_sec))( ( period - t.tv_sec ) * 1_000_000 );
             }
 
             int rc = sem_timedwait( &m_hndl, &t );
