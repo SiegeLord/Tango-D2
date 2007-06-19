@@ -20,6 +20,7 @@ version( Win32 )
 }
 else version( Posix )
 {
+    private import tango.core.sync.Config;
     private import tango.stdc.errno;
     private import tango.stdc.posix.pthread;
     private import tango.stdc.posix.time;
@@ -153,19 +154,8 @@ class Condition
         {
             timespec t;
 
-            if( period > t.tv_sec.max )
-            {
-                t.tv_sec  = t.tv_sec.max;
-                t.tv_nsec = t.tv_nsec.max;
-            }
-            else
-            {
-                t.tv_sec  = cast(typeof(t.tv_sec)) period;
-                t.tv_nsec = cast(typeof(t.tv_sec))( ( period - t.tv_sec ) * 1_000_000 );
-            }
-
-            int rc = pthread_cond_timedwait( &m_hndl, m_mutexAddr, &t );
-            switch( rc )
+            setTimespec( t, absTimeout( period ) );
+            switch( pthread_cond_timedwait( &m_hndl, m_mutexAddr, &t ) )
             {
             case ETIMEDOUT:
                 return false;
