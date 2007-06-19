@@ -711,7 +711,18 @@ class Thread
         }
         else version( Posix )
         {
-            if( pthread_setschedprio( m_addr, val ) )
+            // NOTE: pthread_setschedprio is not implemented on linux, so use
+            //       the more complicated get/set sequence below.
+            //if( pthread_setschedprio( m_addr, val ) )
+            //    throw new ThreadException( "Unable to set thread priority" );
+
+            int         policy;
+            sched_param param;
+
+            if( pthread_getschedparam( m_addr, &policy, &param ) )
+                throw new ThreadException( "Unable to set thread priority" );
+            param.sched_priority = val;
+            if( pthread_setschedparam( m_addr, policy, &param ) )
                 throw new ThreadException( "Unable to set thread priority" );
         }
     }

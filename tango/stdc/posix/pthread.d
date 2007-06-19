@@ -441,7 +441,7 @@ version( linux )
     int pthread_attr_setscope(pthread_attr_t*, int);
     int pthread_getschedparam(pthread_t, int*, sched_param*);
     int pthread_setschedparam(pthread_t, int, sched_param*);
-    int pthread_setschedprio(pthread_t, int);
+    //int pthread_setschedprio(pthread_t, int);
 }
 else version( darwin )
 {
@@ -459,7 +459,7 @@ else version( darwin )
     int pthread_attr_setscope(pthread_attr_t*, int);
     int pthread_getschedparam(pthread_t, int*, sched_param*);
     int pthread_setschedparam(pthread_t, int, sched_param*);
-    int pthread_setschedprio(pthread_t, int);
+    //int pthread_setschedprio(pthread_t, int);
 }
 
 //
