@@ -156,9 +156,10 @@ class Condition
 
             getTimespec( t );
             adjTimespec( t, period );
-            if( !pthread_cond_timedwait( &m_hndl, m_mutexAddr, &t ) )
+            int rc = pthread_cond_timedwait( &m_hndl, m_mutexAddr, &t );
+            if( !rc )
                 return true;
-            if( errno == ETIMEDOUT )
+            if( rc == ETIMEDOUT )
                 return false;
             throw new SyncException( "Unable to wait for condition" );
         }
