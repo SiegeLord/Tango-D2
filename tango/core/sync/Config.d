@@ -27,14 +27,14 @@ version( Posix )
         else
         {
             t.tv_sec  = cast(typeof(t.tv_sec)) i;
-            t.tv_nsec = cast(typeof(t.tv_sec))( ( i - t.tv_sec ) * 1_000_000 );
+            t.tv_nsec = cast(typeof(t.tv_sec))( ( i - t.tv_sec ) * 1_000_000_000 );
         }
     }
 
 
     Interval toInterval( inout timespec t )
     {
-        return (cast(Interval) t.tv_sec) + (cast(Interval) t.tv_usec) / 1_000_000;
+        return (cast(Interval) t.tv_sec) + (cast(Interval) t.tv_nsec) / 1_000_000_000;
     }
 
 
