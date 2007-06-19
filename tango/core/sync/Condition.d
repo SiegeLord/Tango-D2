@@ -20,6 +20,7 @@ version( Win32 )
 }
 else version( Posix )
 {
+    private import tango.stdc.errno;
     private import tango.stdc.posix.pthread;
     private import tango.stdc.posix.time;
 }
@@ -159,8 +160,8 @@ class Condition
             }
             else
             {
-                t.tv_sec  = period;
-                t.tv_nsec = ( period - t.tv_sec ) * 1_000_000;
+                t.tv_sec  = cast(typeof(ts.tv_sec)) period;
+                t.tv_nsec = cast(typeof(ts.tv_sec))( ( period - t.tv_sec ) * 1_000_000 );
             }
 
             int rc = pthread_cond_timedwait( &m_hndl, m_mutexAddr, &t );
