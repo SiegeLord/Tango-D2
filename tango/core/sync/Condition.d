@@ -400,6 +400,8 @@ private:
 debug( UnitTest )
 {
     private import tango.core.Thread;
+    private import tango.core.sync.Mutex;
+    private import tango.core.sync.Semaphore;
 
 
     void testNotify()
