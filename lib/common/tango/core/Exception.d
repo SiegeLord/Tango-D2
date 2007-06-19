@@ -44,6 +44,7 @@ interface TracedExceptionInfo
       - ProcessException
       - ThreadException
         - FiberException
+      - SyncException
       - IOException
         - SocketException
           - SocketAcceptException
@@ -243,6 +244,19 @@ class ThreadException : PlatformException
  * Base class for fiber exceptions.
  */
 class FiberException : ThreadException
+{
+    this( char[] msg )
+    {
+        super( msg );
+    }
+}
+
+
+/**
+ * Base class for synchronization exceptions.
+ */
+class SyncException :
+    PlatformException
 {
     this( char[] msg )
     {
