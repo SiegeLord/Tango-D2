@@ -58,7 +58,7 @@ version (Win32)
 
         ---
         // open another for writing
-        auto to = new FileConduit ("copy.txt", FileConduit.WriteTruncate);
+        auto to = new FileConduit ("copy.txt", FileConduit.WriteCreate);
 
         // copy file
         to.output.copy (new FileConduit("test.txt"));
@@ -81,7 +81,7 @@ version (Win32)
 
         ---
         // open file for writing
-        auto to = new FileConduit ("text.txt", FileConduit.WriteTruncate);
+        auto to = new FileConduit ("text.txt", FileConduit.WriteCreate);
 
         // write an array of content to it
         auto bytesWritten = to.output.write (content);
