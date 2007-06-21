@@ -352,7 +352,7 @@ class RegexException : TextException
 
 
 /**
- * RegistryException is thrown when the SerialRegistry encounters a
+ * RegistryException is thrown when the NetworkRegistry encounters a
  * problem during proxy registration, or when it sees an unregistered
  * guid.
  */
