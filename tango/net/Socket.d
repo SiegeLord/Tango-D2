@@ -1252,7 +1252,7 @@ class Socket
                 SocketSet's are updated to include only those sockets which an
                 event occured.
 
-                Returns the number of events, 0 on timeout, or -1 on interruption
+                Returns the number of events, 0 on timeout, or -1 on error
 
                 for a connect()ing socket, writeability means connected
                 for a listen()ing socket, readability means listening
