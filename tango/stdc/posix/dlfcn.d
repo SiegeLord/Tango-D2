@@ -39,3 +39,15 @@ version( linux )
     void* dlopen(char*, int);
     void* dlsym(void*, char*);
 }
+else version( darwin )
+{
+    const RTLD_LAZY     = 0x00001;
+    const RTLD_NOW      = 0x00002;
+    const RTLD_GLOBAL   = 0x00100;
+    const RTLD_LOCAL    = 0x00000;
+
+    int   dlclose(void*);
+    char* dlerror();
+    void* dlopen(char*, int);
+    void* dlsym(void*, char*);
+}
