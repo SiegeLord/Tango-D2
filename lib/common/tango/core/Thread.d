@@ -1004,8 +1004,12 @@ class Thread
         }
         else version( Posix )
         {
-            int policy = sched_getscheduler( getpid() );
-            assert( policy != -1 );
+            int         thread = pthread_self();
+            int         policy;
+            sched_param param;
+
+            int status = pthread_getschedparam( thread, &policy, &param );
+            assert( status == 0 );
 
             PRIORITY_MIN = sched_get_priority_min( policy );
             assert( PRIORITY_MIN != -1 );
