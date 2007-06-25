@@ -419,15 +419,9 @@ version (Win32)
                 IP_MULTICAST_LOOP = 11,
                 IP_ADD_MEMBERSHIP = 12,
                 IP_DROP_MEMBERSHIP = 13,
-        }
 
-        /***************************************************************
-
-        ***************************************************************/
-
-        enum TcpOption: int
-        {
-                NODELAY = 0x0001,
+                // OptionLevel.TCP settings
+                TCP_NODELAY = 0x0001,
         }
 
         /***************************************************************
@@ -484,15 +478,9 @@ else version (darwin)
                 IP_MULTICAST_LOOP = 11,
                 IP_ADD_MEMBERSHIP = 12,
                 IP_DROP_MEMBERSHIP = 13,
-        }
 
-        /***************************************************************
-
-        ***************************************************************/
-
-        enum TcpOption: int
-        {
-                NODELAY = 0x0001,
+                // OptionLevel.TCP settings
+                TCP_NODELAY = 0x0001,
         }
 
         /***************************************************************
@@ -555,15 +543,9 @@ else version (linux)
                 IP_MULTICAST_LOOP = 34,
                 IP_ADD_MEMBERSHIP = 35,
                 IP_DROP_MEMBERSHIP = 36,
-        }
 
-        /***************************************************************
-
-        ***************************************************************/
-
-        enum TcpOption: int
-        {
-                NODELAY = 0x0001,
+                // OptionLevel.TCP settings
+                TCP_NODELAY = 0x0001,
         }
 
         /***************************************************************
@@ -1001,11 +983,8 @@ class Socket
 
         Socket setNagle (bool enabled)
         {
-                int[1] x = !enabled;
-                if(SOCKET_ERROR == .setsockopt (sock, SocketOptionLevel.TCP, TcpOption.NODELAY, x.ptr, x.length))
-                   exception ("Unable to set socket option: ");
-//                setOption (SocketOptionLevel.TCP, TcpOption.NODELAY, x);
-                return this;
+                bool[1] x = !enabled;
+                return setOption (SocketOptionLevel.TCP, SocketOption.TCP_NODELAY, x);
         }
 
 
