@@ -981,9 +981,9 @@ class Socket
 
         ***********************************************************************/
 
-        Socket setNagle (bool enabled)
+        Socket setNoDelay (bool enabled)
         {
-                bool[1] x = !enabled;
+                int[1] x = enabled;
                 return setOption (SocketOptionLevel.TCP, SocketOption.TCP_NODELAY, x);
         }
 
