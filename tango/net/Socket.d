@@ -423,6 +423,15 @@ version (Win32)
 
         /***************************************************************
 
+        ***************************************************************/
+
+        enum TcpOption: int
+        {
+                NODELAY = 0x0001,
+        }
+
+        /***************************************************************
+
 
         ***************************************************************/
 
@@ -475,6 +484,15 @@ else version (darwin)
                 IP_MULTICAST_LOOP = 11,
                 IP_ADD_MEMBERSHIP = 12,
                 IP_DROP_MEMBERSHIP = 13,
+        }
+
+        /***************************************************************
+
+        ***************************************************************/
+
+        enum TcpOption: int
+        {
+                NODELAY = 0x0001,
         }
 
         /***************************************************************
@@ -537,6 +555,15 @@ else version (linux)
                 IP_MULTICAST_LOOP = 34,
                 IP_ADD_MEMBERSHIP = 35,
                 IP_DROP_MEMBERSHIP = 36,
+        }
+
+        /***************************************************************
+
+        ***************************************************************/
+
+        enum TcpOption: int
+        {
+                NODELAY = 0x0001,
         }
 
         /***************************************************************
@@ -947,8 +974,7 @@ class Socket
                 l.l_onoff = 1;                          //option on/off
                 l.l_linger = cast(ushort) period;       //linger time
 
-                setOption (SocketOptionLevel.SOCKET, SocketOption.SO_LINGER, l.array);
-                return this;
+                return setOption (SocketOptionLevel.SOCKET, SocketOption.SO_LINGER, l.array);
         }
 
 
@@ -962,7 +988,23 @@ class Socket
         Socket setAddressReuse (bool enabled)
         {
                 int[1] x = enabled;
-                setOption (SocketOptionLevel.SOCKET, SocketOption.SO_REUSEADDR, x);
+                return setOption (SocketOptionLevel.SOCKET, SocketOption.SO_REUSEADDR, x);
+        }
+
+
+        /***********************************************************************
+
+
+                Tango: added
+
+        ***********************************************************************/
+
+        Socket setNagle (bool enabled)
+        {
+                int[1] x = !enabled;
+                if(SOCKET_ERROR == .setsockopt (sock, SocketOptionLevel.TCP, TcpOption.NODELAY, x.ptr, x.length))
+                   exception ("Unable to set socket option: ");
+//                setOption (SocketOptionLevel.TCP, TcpOption.NODELAY, x);
                 return this;
         }
 
