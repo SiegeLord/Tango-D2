@@ -167,7 +167,8 @@ class FileConduit : DeviceConduit, DeviceConduit.Seek
         ***********************************************************************/
 
         enum Share : ubyte      {
-                                Read=0,                 /// shared reading
+                                None=0,                 /// no sharing
+                                Read,                   /// shared reading
                                 Write,                  /// shared writing
                                 ReadWrite,              /// both
                                 };
@@ -371,6 +372,7 @@ class FileConduit : DeviceConduit, DeviceConduit.Seek
                                                 
                         static const Flags Share =   
                                         [
+                                        0,
                                         FILE_SHARE_READ,
                                         FILE_SHARE_WRITE,
                                         FILE_SHARE_READ | FILE_SHARE_WRITE,
@@ -385,8 +387,8 @@ class FileConduit : DeviceConduit, DeviceConduit.Seek
                                         FILE_FLAG_WRITE_THROUGH,
                                         ];
 
-                        attr = Attr[style.cache];
-                        share = Share[style.share];
+                        attr   = Attr[style.cache];
+                        share  = Share[style.share];
                         create = Create[style.open];
                         access = Access[style.access];
 
@@ -509,9 +511,10 @@ class FileConduit : DeviceConduit, DeviceConduit.Seek
                         // but it's perhaps a reasonable approximation
                         static const Flags Share =   
                                         [
-                                        0640,           // read access
-                                        0620,           // write access
-                                        0660,           // read & write
+                                        0000,           // no sharing
+                                        0444,           // read access
+                                        0222,           // write access
+                                        0666,           // read & write
                                         ];
                                                 
                         share = Share[style.share];
