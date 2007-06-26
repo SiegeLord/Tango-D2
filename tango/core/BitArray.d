@@ -10,7 +10,7 @@
 module tango.core.BitArray;
 
 
-private import tango.core.Intrinsic;
+private import tango.core.BitManip;
 
 
 /**

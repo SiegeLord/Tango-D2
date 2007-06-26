@@ -111,7 +111,7 @@ version (Posix)
 version (Win32)
         {
         pragma(lib, "ws2_32.lib");
-        
+
         private typedef int socket_t = ~0;
 
         private const int IOCPARM_MASK =  0x7f;
@@ -190,7 +190,7 @@ version (BsdSockets)
         private const int F_GETFL       = 3;
         private const int F_SETFL       = 4;
         version (darwin)
-                 private const int O_NONBLOCK = 0x0004;  
+                 private const int O_NONBLOCK = 0x0004;
            else
                  private const int O_NONBLOCK = 04000;  // OCTAL! Thx to volcore
 
@@ -303,7 +303,7 @@ version(BigEndian)
 }
 else version(LittleEndian)
 {
-        import tango.core.Intrinsic;
+        import tango.core.BitManip;
 
 
         uint16_t htons(uint16_t x)
@@ -620,7 +620,7 @@ enum SocketType: int
 /***********************************************************************
 
         Protocol
-        
+
 ***********************************************************************/
 
 enum ProtocolType: int
@@ -701,8 +701,8 @@ class Socket
         package this()
         {
         }
-        
-        
+
+
         /**
          * Describe a socket flavor. If a single protocol type exists to support
          * this socket type within the address family, the ProtocolType may be
@@ -716,8 +716,8 @@ class Socket
                 if (create)
                     initialize ();
         }
-        
-        
+
+
         /**
          * Create or assign a socket
          */
@@ -732,10 +732,10 @@ class Socket
                    if (sock is sock.init)
                        exception ("Unable to create socket: ");
                    }
-                
+
                 this.sock = sock;
         }
-        
+
         /***********************************************************************
 
                 Return the underlying OS handle of this Conduit
@@ -757,8 +757,8 @@ class Socket
         bool isAlive()
         {
                 int type, typesize = type.sizeof;
-                return getsockopt (sock, SocketOptionLevel.SOCKET, 
-                                   SocketOption.SO_TYPE, cast(char*) &type, 
+                return getsockopt (sock, SocketOptionLevel.SOCKET,
+                                   SocketOption.SO_TYPE, cast(char*) &type,
                                    &typesize) != SOCKET_ERROR;
         }
 
@@ -903,7 +903,7 @@ class Socket
         {
                 return accept (new Socket);
         }
-        
+
         Socket accept (Socket target)
         {
                 auto newsock = cast(socket_t).accept(sock, null, null); // DMD 0.101 error: found '(' when expecting ';' following 'statement
@@ -913,25 +913,25 @@ class Socket
                 target.initialize (newsock);
                 version(Win32)
                         target._blocking = _blocking;  //inherits blocking mode
-                
+
                 target.protocol = protocol;            //same protocol
                 target.family = family;                //same family
                 target.type = type;                    //same type
 
                 return target;                         //return configured target
         }
-        
+
         /***********************************************************************
 
                 The shutdown function shuts down the connection of the socket.
                 Depending on the argument value, it will:
 
-                    -   stop receiving data for this socket. If further data 
+                    -   stop receiving data for this socket. If further data
                         arrives, it is rejected.
 
                     -   stop trying to transmit data from this socket. Also
-                        discards any data waiting to be sent. Stop looking for 
-                        acknowledgement of data already sent; don't retransmit 
+                        discards any data waiting to be sent. Stop looking for
+                        acknowledgement of data already sent; don't retransmit
                         if any data is lost.
 
         ***********************************************************************/
@@ -1000,7 +1000,7 @@ class Socket
         void joinGroup (IPv4Address address, bool onOff)
         {
                 assert (address, "Socket.joinGroup :: invalid null address");
-                
+
                 struct ip_mreq
                 {
                 uint  imr_multiaddr;  /* IP multicast address of group */
@@ -1012,7 +1012,7 @@ class Socket
                 auto option = (onOff) ? SocketOption.IP_ADD_MEMBERSHIP : SocketOption.IP_DROP_MEMBERSHIP;
                 mrq.imr_interface = 0;
                 mrq.imr_multiaddr = address.sin.sin_addr;
-                
+
                 if (.setsockopt(sock, SocketOptionLevel.IP, option, &mrq, mrq.sizeof) == SOCKET_ERROR)
                     exception ("Unable to perform multicast join: ");
         }
@@ -1132,7 +1132,7 @@ class Socket
 
         /// Send or receive error code.
         const int ERROR = SOCKET_ERROR;
-        
+
 
         /**
          * Send data on the connection. Returns the number of bytes actually
@@ -1144,7 +1144,7 @@ class Socket
         {
                 return .send(sock, buf.ptr, buf.length, cast(int)flags);
         }
-        
+
         /**
          * Send data to a specific destination Address. If the destination address is not specified, a connection must have been made and that address is used. If the socket is blocking and there is no buffer space left, sendTo waits.
          */
@@ -1152,22 +1152,22 @@ class Socket
         {
                 return .sendto(sock, buf.ptr, buf.length, cast(int)flags, to.name(), to.nameLen());
         }
-        
+
         /// ditto
         int sendTo(void[] buf, Address to)
         {
                 return sendTo(buf, SocketFlags.NONE, to);
         }
-        
-        
+
+
         //assumes you connect()ed
         /// ditto
         int sendTo(void[] buf, SocketFlags flags=SocketFlags.NONE)
         {
                 return .sendto(sock, buf.ptr, buf.length, cast(int)flags, null, 0);
         }
-        
-        
+
+
         /**
          * Receive data on the connection. Returns the number of bytes actually
          * received, 0 if the remote side has closed the connection, or ERROR on
@@ -1177,44 +1177,44 @@ class Socket
         //returns number of bytes actually received, 0 on connection closure, or -1 on error
         int receive(void[] buf, SocketFlags flags=SocketFlags.NONE)
         {
-                if (!buf.length) 
+                if (!buf.length)
                      badArg ("Socket.receive :: target buffer has 0 length");
-                
+
                 return .recv(sock, buf.ptr, buf.length, cast(int)flags);
         }
-        
+
         /**
          * Receive data and get the remote endpoint Address. Returns the number of bytes actually received, 0 if the remote side has closed the connection, or ERROR on failure. If the socket is blocking, receiveFrom waits until there is data to be received.
          */
         int receiveFrom(void[] buf, SocketFlags flags, Address from)
         {
-                if (!buf.length) 
+                if (!buf.length)
                      badArg ("Socket.receiveFrom :: target buffer has 0 length");
-                
+
                 assert(from.addressFamily() == family);
                 int nameLen = from.nameLen();
                 return .recvfrom(sock, buf.ptr, buf.length, cast(int)flags, from.name(), &nameLen);
         }
-        
-        
+
+
         /// ditto
         int receiveFrom(void[] buf, Address from)
         {
                 return receiveFrom(buf, SocketFlags.NONE, from);
         }
-        
-        
+
+
         //assumes you connect()ed
         /// ditto
         int receiveFrom(void[] buf, SocketFlags flags = SocketFlags.NONE)
         {
                 if (!buf.length)
                      badArg ("Socket.receiveFrom :: target buffer has 0 length");
-                
+
                 return .recvfrom(sock, buf.ptr, buf.length, cast(int)flags, null, null);
         }
-        
-        
+
+
         /***********************************************************************
 
                 returns the length, in bytes, of the actual result - very
@@ -1384,7 +1384,7 @@ class Socket
         /***********************************************************************
 
                 Handy utility for converting Time into timeval
-                
+
         ***********************************************************************/
 
         static timeval toTimeval (Interval time)
@@ -1883,7 +1883,7 @@ class SocketSet
         }
         else version (Posix)
         {
-                import tango.core.Intrinsic;
+                import tango.core.BitManip;
 
 
                 uint nfdbits;

@@ -157,7 +157,7 @@ version( BigEndian )
 }
 else version( LittleEndian )
 {
-	private import tango.core.Intrinsic;
+	private import tango.core.BitManip;
 
 
 	uint16_t htons(uint16_t x)

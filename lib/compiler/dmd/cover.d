@@ -17,7 +17,7 @@ private
         import tango.sys.win32.UserGdi;
     else version( linux )
         import tango.sys.linux.linux;
-    import tango.core.Intrinsic;
+    import tango.core.BitManip;
     import tango.stdc.stdio;
     import util.utf;
 

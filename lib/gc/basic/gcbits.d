@@ -25,7 +25,7 @@
  */
 
 
-private import tango.core.Intrinsic;
+private import tango.core.BitManip;
 private import tango.stdc.string;
 private import tango.stdc.stdlib;
 private extern (C) void onOutOfMemoryError();
@@ -38,7 +38,7 @@ version (DigitalMars)
 else version (GNU)
 {
     // use the unoptimized version
-} 
+}
 else version (D_InlineAsm_X86)
 {
     version = Asm86;

@@ -45,44 +45,44 @@ enum msync
 
 private
 {
-  version( DDoc ) {} else
-  {
-    import tango.core.Traits;
-
-
-    template isValidAtomicType( T )
+    version( DDoc ) {} else
     {
-        const bool isValidAtomicType = T.sizeof == byte.sizeof  ||
-                                       T.sizeof == short.sizeof ||
-                                       T.sizeof == int.sizeof   ||
-                                       T.sizeof == long.sizeof;
+        import tango.core.Traits;
+
+
+        template isValidAtomicType( T )
+        {
+            const bool isValidAtomicType = T.sizeof == byte.sizeof  ||
+                                           T.sizeof == short.sizeof ||
+                                           T.sizeof == int.sizeof   ||
+                                           T.sizeof == long.sizeof;
+        }
+
+
+        template isValidNumericType( T )
+        {
+            const bool isValidNumericType = isIntegerType!( T ) ||
+                                            isPointerType!( T );
+        }
+
+
+        template isHoistOp( msync ms )
+        {
+            const bool isHoistOp = ms == msync.hlb ||
+                                   ms == msync.hsb ||
+                                   ms == msync.acq ||
+                                   ms == msync.seq;
+        }
+
+
+        template isSinkOp( msync ms )
+        {
+            const bool isSinkOp = ms == msync.slb ||
+                                  ms == msync.ssb ||
+                                  ms == msync.rel ||
+                                  ms == msync.seq;
+        }
     }
-
-
-    template isValidNumericType( T )
-    {
-        const bool isValidNumericType = isIntegerType!( T ) ||
-                                        isPointerType!( T );
-    }
-
-
-    template isHoistOp( msync ms )
-    {
-        const bool isHoistOp = ms == msync.hlb ||
-                               ms == msync.hsb ||
-                               ms == msync.acq ||
-                               ms == msync.seq;
-    }
-
-
-    template isSinkOp( msync ms )
-    {
-        const bool isSinkOp = ms == msync.slb ||
-                              ms == msync.ssb ||
-                              ms == msync.rel ||
-                              ms == msync.seq;
-    }
-  }
 }
 
 
@@ -1474,127 +1474,127 @@ private:
 
 private
 {
-  version( DDoc ) {} else
-  {
-    template testLoad( msync ms, T )
+    version( DDoc ) {} else
     {
-        void testLoad( T val = T.init + 1 )
+        template testLoad( msync ms, T )
         {
-            T          base;
-            Atomic!(T) atom;
-
-            assert( atom.load!(ms)() == base );
-            base        = val;
-            atom.m_val  = val;
-            assert( atom.load!(ms)() == base );
-        }
-    }
-
-
-    template testStore( msync ms, T )
-    {
-        void testStore( T val = T.init + 1 )
-        {
-            T          base;
-            Atomic!(T) atom;
-
-            assert( atom.m_val == base );
-            base = val;
-            atom.store!(ms)( base );
-            assert( atom.m_val == base );
-        }
-    }
-
-
-    template testStoreIf( msync ms, T )
-    {
-        void testStoreIf( T val = T.init + 1 )
-        {
-            T          base;
-            Atomic!(T) atom;
-
-            assert( atom.m_val == base );
-            base = val;
-            atom.storeIf!(ms)( base, val );
-            assert( atom.m_val != base );
-            atom.storeIf!(ms)( base, T.init );
-            assert( atom.m_val == base );
-        }
-    }
-
-
-    template testIncrement( msync ms, T )
-    {
-        void testIncrement( T val = T.init + 1 )
-        {
-            T          base = val;
-            T          incr = val;
-            Atomic!(T) atom;
-
-            atom.m_val = val;
-            assert( atom.m_val == base && incr == base );
-            base = cast(T)( base + 1 );
-            incr = atom.increment!(ms)();
-            assert( atom.m_val == base && incr == base );
-        }
-    }
-
-
-    template testDecrement( msync ms, T )
-    {
-        void testDecrement( T val = T.init + 1 )
-        {
-            T          base = val;
-            T          decr = val;
-            Atomic!(T) atom;
-
-            atom.m_val = val;
-            assert( atom.m_val == base && decr == base );
-            base = cast(T)( base - 1 );
-            decr = atom.decrement!(ms)();
-            assert( atom.m_val == base && decr == base );
-        }
-    }
-
-
-    template testType( T )
-    {
-        void testType( T val = T.init  +1 )
-        {
-            testLoad!(msync.raw, T)( val );
-            testLoad!(msync.hlb, T)( val );
-            testLoad!(msync.acq, T)( val );
-            testLoad!(msync.seq, T)( val );
-
-            testStore!(msync.raw, T)( val );
-            testStore!(msync.ssb, T)( val );
-            testStore!(msync.acq, T)( val );
-            testStore!(msync.rel, T)( val );
-            testStore!(msync.seq, T)( val );
-
-            testStoreIf!(msync.raw, T)( val );
-            testStoreIf!(msync.ssb, T)( val );
-            testStoreIf!(msync.acq, T)( val );
-            testStoreIf!(msync.rel, T)( val );
-            testStoreIf!(msync.seq, T)( val );
-
-            static if( isValidNumericType!(T) )
+            void testLoad( T val = T.init + 1 )
             {
-                testIncrement!(msync.raw, T)( val );
-                testIncrement!(msync.ssb, T)( val );
-                testIncrement!(msync.acq, T)( val );
-                testIncrement!(msync.rel, T)( val );
-                testIncrement!(msync.seq, T)( val );
+                T          base;
+                Atomic!(T) atom;
 
-                testDecrement!(msync.raw, T)( val );
-                testDecrement!(msync.ssb, T)( val );
-                testDecrement!(msync.acq, T)( val );
-                testDecrement!(msync.rel, T)( val );
-                testDecrement!(msync.seq, T)( val );
+                assert( atom.load!(ms)() == base );
+                base        = val;
+                atom.m_val  = val;
+                assert( atom.load!(ms)() == base );
+            }
+        }
+
+
+        template testStore( msync ms, T )
+        {
+            void testStore( T val = T.init + 1 )
+            {
+                T          base;
+                Atomic!(T) atom;
+
+                assert( atom.m_val == base );
+                base = val;
+                atom.store!(ms)( base );
+                assert( atom.m_val == base );
+            }
+        }
+
+
+        template testStoreIf( msync ms, T )
+        {
+            void testStoreIf( T val = T.init + 1 )
+            {
+                T          base;
+                Atomic!(T) atom;
+
+                assert( atom.m_val == base );
+                base = val;
+                atom.storeIf!(ms)( base, val );
+                assert( atom.m_val != base );
+                atom.storeIf!(ms)( base, T.init );
+                assert( atom.m_val == base );
+            }
+        }
+
+
+        template testIncrement( msync ms, T )
+        {
+            void testIncrement( T val = T.init + 1 )
+            {
+                T          base = val;
+                T          incr = val;
+                Atomic!(T) atom;
+
+                atom.m_val = val;
+                assert( atom.m_val == base && incr == base );
+                base = cast(T)( base + 1 );
+                incr = atom.increment!(ms)();
+                assert( atom.m_val == base && incr == base );
+            }
+        }
+
+
+        template testDecrement( msync ms, T )
+        {
+            void testDecrement( T val = T.init + 1 )
+            {
+                T          base = val;
+                T          decr = val;
+                Atomic!(T) atom;
+
+                atom.m_val = val;
+                assert( atom.m_val == base && decr == base );
+                base = cast(T)( base - 1 );
+                decr = atom.decrement!(ms)();
+                assert( atom.m_val == base && decr == base );
+            }
+        }
+
+
+        template testType( T )
+        {
+            void testType( T val = T.init  +1 )
+            {
+                testLoad!(msync.raw, T)( val );
+                testLoad!(msync.hlb, T)( val );
+                testLoad!(msync.acq, T)( val );
+                testLoad!(msync.seq, T)( val );
+
+                testStore!(msync.raw, T)( val );
+                testStore!(msync.ssb, T)( val );
+                testStore!(msync.acq, T)( val );
+                testStore!(msync.rel, T)( val );
+                testStore!(msync.seq, T)( val );
+
+                testStoreIf!(msync.raw, T)( val );
+                testStoreIf!(msync.ssb, T)( val );
+                testStoreIf!(msync.acq, T)( val );
+                testStoreIf!(msync.rel, T)( val );
+                testStoreIf!(msync.seq, T)( val );
+
+                static if( isValidNumericType!(T) )
+                {
+                    testIncrement!(msync.raw, T)( val );
+                    testIncrement!(msync.ssb, T)( val );
+                    testIncrement!(msync.acq, T)( val );
+                    testIncrement!(msync.rel, T)( val );
+                    testIncrement!(msync.seq, T)( val );
+
+                    testDecrement!(msync.raw, T)( val );
+                    testDecrement!(msync.ssb, T)( val );
+                    testDecrement!(msync.acq, T)( val );
+                    testDecrement!(msync.rel, T)( val );
+                    testDecrement!(msync.seq, T)( val );
+                }
             }
         }
     }
-  }
 }
 
 
@@ -1605,40 +1605,40 @@ private
 
 debug( UnitTest )
 {
-  unittest
-  {
-    testType!(bool)();
-
-    testType!(byte)();
-    testType!(ubyte)();
-
-    testType!(short)();
-    testType!(ushort)();
-
-    testType!(int)();
-    testType!(uint)();
-
-    int x;
-    testType!(void*)( &x );
-
-    version( Has64BitOps )
+    unittest
     {
-        testType!(long)();
-        testType!(ulong)();
-    }
-    else version( Has64BitCAS )
-    {
-        testStoreIf!(msync.raw, long)();
-        testStoreIf!(msync.ssb, long)();
-        testStoreIf!(msync.acq, long)();
-        testStoreIf!(msync.rel, long)();
-        testStoreIf!(msync.seq, long)();
+        testType!(bool)();
 
-        testStoreIf!(msync.raw, ulong)();
-        testStoreIf!(msync.ssb, ulong)();
-        testStoreIf!(msync.acq, ulong)();
-        testStoreIf!(msync.rel, ulong)();
-        testStoreIf!(msync.seq, ulong)();
+        testType!(byte)();
+        testType!(ubyte)();
+
+        testType!(short)();
+        testType!(ushort)();
+
+        testType!(int)();
+        testType!(uint)();
+
+        int x;
+        testType!(void*)( &x );
+
+        version( Has64BitOps )
+        {
+            testType!(long)();
+            testType!(ulong)();
+        }
+        else version( Has64BitCAS )
+        {
+            testStoreIf!(msync.raw, long)();
+            testStoreIf!(msync.ssb, long)();
+            testStoreIf!(msync.acq, long)();
+            testStoreIf!(msync.rel, long)();
+            testStoreIf!(msync.seq, long)();
+
+            testStoreIf!(msync.raw, ulong)();
+            testStoreIf!(msync.ssb, ulong)();
+            testStoreIf!(msync.acq, ulong)();
+            testStoreIf!(msync.rel, ulong)();
+            testStoreIf!(msync.seq, ulong)();
+        }
     }
-  }
 }

@@ -14,7 +14,7 @@
 
 module tango.core.ByteSwap;
 
-import tango.core.Intrinsic;
+import tango.core.BitManip;
 
 /*******************************************************************************
 
