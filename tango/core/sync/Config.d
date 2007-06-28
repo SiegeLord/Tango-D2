@@ -1,5 +1,6 @@
 /**
- * The semaphore module provides a general use semaphore for synchronization.
+ * The config module contains utility routines and configuration information
+ * specific to this package.
  *
  * Copyright: Copyright (C) 2005-2006 Sean Kelly.  All rights reserved.
  * License:   BSD style: $(LICENSE)

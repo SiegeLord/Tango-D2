@@ -233,9 +233,9 @@ debug( UnitTest )
         auto group = new ThreadGroup;
 
         for( int i = 0; i < numThreads; ++i )
-        {
             group.create( &testFn );
-        }
+
         group.joinAll();
+        assert( lockCount == numThreads * numTries );
     }
 }

@@ -65,12 +65,12 @@ class Condition
         {
             m_blockLock = CreateSemaphoreA( null, 1, 1, null );
             if( m_blockLock == m_blockLock.init )
-                throw new SyncException( "Unable to initialize condition A" );
+                throw new SyncException( "Unable to initialize condition" );
             scope(failure) CloseHandle( m_blockLock );
 
             m_blockQueue = CreateSemaphoreA( null, 0, int.max, null );
             if( m_blockQueue == m_blockQueue.init )
-                throw new SyncException( "Unable to initialize condition B" );
+                throw new SyncException( "Unable to initialize condition" );
             scope(failure) CloseHandle( m_blockQueue );
 
             InitializeCriticalSection( &m_unblockLock );
