@@ -507,11 +507,10 @@ class FileConduit : DeviceConduit, DeviceConduit.Seek
                                         O_APPEND | O_CREAT, 
                                         ];
 
-                        static const Flags Share =   
+                        static const Flags Locks =   
                                         [
                                         F_WRLCK,        // no sharing
                                         F_RDLCK,        // shared read
-                                        0,              // shared read/write
                                         ];
                                                 
                         auto mode = Access[style.access] | Create[style.open];
@@ -519,14 +518,12 @@ class FileConduit : DeviceConduit, DeviceConduit.Seek
                         if (handle is -1)
                             error ();
 
-                        auto share = Share[style.share];
-                        if (share)
+                        if (style.share is Share.None || style.share is Share.Read)
                            {
                            flock f = void;
-                           f.l_type = share;
-                           f.l_whence = SEEK_SET;
-                           f.l_len = f.l_start = 0;
-                           if (posix.fcntl (handle, F_SETLK, &f) is -1)
+                           f.l_type = Locks[style.share];
+                           f.l_whence = f.l_len = f.l_start = 0;
+                           if (posix.fcntl(handle, F_SETLK, &f) is -1)
                                error ();
                            }
                 }
@@ -544,7 +541,7 @@ class FileConduit : DeviceConduit, DeviceConduit.Seek
                 void truncate ()
                 {
                         // set filesize to be current seek-position
-                        if (ftruncate (handle, cast(int) position) is -1)
+                        if (ftruncate (handle, position) is -1)
                             error ();
                 }               
 
@@ -559,7 +556,7 @@ class FileConduit : DeviceConduit, DeviceConduit.Seek
 
                 ulong seek (ulong offset, Seek.Anchor anchor = Seek.Anchor.Begin)
                 {
-                        uint result = posix.lseek (handle, cast(int) offset, anchor);
+                        auto result = posix.lseek (handle, offset, anchor);
                         if (result is -1)
                             error ();
                         return result;
