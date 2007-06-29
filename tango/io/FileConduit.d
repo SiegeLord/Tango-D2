@@ -507,7 +507,7 @@ class FileConduit : DeviceConduit, DeviceConduit.Seek
                                         O_APPEND | O_CREAT, 
                                         ];
 
-                        static const Flags Locks =   
+                        static const short[] Locks =   
                                         [
                                         F_WRLCK,        // no sharing
                                         F_RDLCK,        // shared read
@@ -522,7 +522,7 @@ class FileConduit : DeviceConduit, DeviceConduit.Seek
                            {
                            flock f = void;
                            f.l_type = Locks[style.share];
-                           f.l_whence = f.l_len = f.l_start = 0;
+                           f.l_len = f.l_start = f.l_whence = 0;
                            if (posix.fcntl(handle, F_SETLK, &f) is -1)
                                error ();
                            }
@@ -556,7 +556,7 @@ class FileConduit : DeviceConduit, DeviceConduit.Seek
 
                 ulong seek (ulong offset, Seek.Anchor anchor = Seek.Anchor.Begin)
                 {
-                        auto result = posix.lseek (handle, offset, anchor);
+                        ulong result = posix.lseek (handle, cast(long)offset, anchor);
                         if (result is -1)
                             error ();
                         return result;
