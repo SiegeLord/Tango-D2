@@ -169,8 +169,7 @@ class FileConduit : DeviceConduit, DeviceConduit.Seek
         enum Share : ubyte      {
                                 None=0,                 /// no sharing
                                 Read,                   /// shared reading
-                                Write,                  /// shared writing
-                                ReadWrite,              /// both
+                                ReadWrite,              /// open for anything
                                 };
 
         /***********************************************************************
@@ -374,7 +373,6 @@ class FileConduit : DeviceConduit, DeviceConduit.Seek
                                         [
                                         0,
                                         FILE_SHARE_READ,
-                                        FILE_SHARE_WRITE,
                                         FILE_SHARE_READ | FILE_SHARE_WRITE,
                                         ];
                                                 
@@ -486,9 +484,6 @@ class FileConduit : DeviceConduit, DeviceConduit.Seek
 
                 protected void open (Style style)
                 {
-                        int     share, 
-                                access;
-
                         alias int[] Flags;
 
                         static const Flags Access =  
@@ -507,22 +502,28 @@ class FileConduit : DeviceConduit, DeviceConduit.Seek
                                         O_APPEND | O_CREAT, 
                                         ];
 
-                        // this is not the same as Windows sharing,
-                        // but it's perhaps a reasonable approximation
                         static const Flags Share =   
                                         [
-                                        0000,           // no sharing
-                                        0444,           // read access
-                                        0222,           // write access
-                                        0666,           // read & write
+                                        F_WRLCK,        // no sharing
+                                        F_RDLCK,        // shared read
+                                        0,              // shared read/write
                                         ];
                                                 
-                        share = Share[style.share];
-                        access = Access[style.access] | Create[style.open];
-
-                        handle = posix.open (path.cString.ptr, access, share);
+                        auto mode = Access[style.access] | Create[style.open];
+                        handle = posix.open (path.cString.ptr, mode, 0666);
                         if (handle is -1)
                             error ();
+
+                        auto share = Share[style.share];
+                        if (share)
+                           {
+                           flock f = void;
+                           f.l_type = share;
+                           f.l_whence = SEEK_SET;
+                           f.l_len = f.l_start = 0;
+                           if (posix.fcntl (handle, F_SETLK, &f) is -1)
+                               error ();
+                           }
                 }
 
                 /***************************************************************
