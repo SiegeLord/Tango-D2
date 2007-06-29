@@ -64,7 +64,7 @@ version( linux )
   static if( __USE_FILE_OFFSET64 )
   {
     dirent* readdir64(DIR*);
-    alias readdir64 readdir;
+    alias   readdir64 readdir;
   }
   else
   {

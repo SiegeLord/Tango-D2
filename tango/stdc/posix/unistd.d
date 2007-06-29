@@ -58,7 +58,15 @@ pid_t   getppid();
 uid_t   getuid();
 int     isatty(int);
 int     link(char*, char*);
-off_t   lseek(int, off_t, int);
+static if( __USE_FILE_OFFSET64 )
+{
+    off_t lseek64(int, off_t, int);
+    alias lseek64 lseek;
+}
+else
+{
+    off_t lseek(int, off_t, int);
+}
 c_long  pathconf(char*, int);
 int     pause();
 int     pipe(int[2]);
