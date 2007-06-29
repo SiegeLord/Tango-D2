@@ -480,6 +480,11 @@ class FileConduit : DeviceConduit, DeviceConduit.Seek
 
                         Open a file with the provided style.
 
+                        Note that files default to no-sharing. That is, 
+                        they are locked exclusively to the host process 
+                        unless otherwise stipulated. We do this in order
+                        to expose the same default behaviour as Win32
+
                 ***************************************************************/
 
                 protected void open (Style style)
