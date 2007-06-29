@@ -78,7 +78,18 @@ version( linux )
     {
         dev_t       st_dev;
         ushort      __pad1;
+      static if( __USE_FILE_OFFSET64 )
+      {
+        // HACK: This is actually __ino_t in both cases in the original headers
+        //       but since I don't want to expose both the 32 and 64-bit defs,
+        //       I'm cheating and using c_ulong here (which is the type of
+        //       ino_t when __USE_FILE_OFFSET64 is not true).
+        c_ulong     __st_ino;
+      }
+      else
+      {
         ino_t       st_ino;
+      }
         mode_t      st_mode;
         nlink_t     st_nlink;
         uid_t       st_uid;
