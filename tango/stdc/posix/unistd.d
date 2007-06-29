@@ -42,7 +42,15 @@ void    _exit(int);
 int     fchown(int, uid_t, gid_t);
 pid_t   fork();
 c_long  fpathconf(int, int);
-int     ftruncate(int, off_t);
+static if( __USE_FILE_OFFSET64 )
+{
+    int   ftruncate64(int, off_t);
+    alias ftruncate64 ftruncate;
+}
+else
+{
+    int   ftruncate(int, off_t);
+}
 char*   getcwd(char*, size_t);
 gid_t   getegid();
 uid_t   geteuid();
@@ -458,16 +466,43 @@ version( linux )
     pid_t      getsid(pid_t);
     char*      getwd(char*); // LEGACY
     int        lchown(char*, uid_t, gid_t);
+  static if( __USE_FILE_OFFSET64 )
+  {
+    int        lockf64(int, int, off_t);
+    alias      lockf64 lockf;
+  }
+  else
+  {
     int        lockf(int, int, off_t);
+  }
     int        nice(int);
+  static if( __USE_FILE_OFFSET64 )
+  {
+    ssize_t    pread64(int, void*, size_t, off_t);
+    alias      pread64 pread;
+
+    ssize_t    pwrite64(int, void*, size_t, off_t);
+    alias      pwrite64 pwrite;
+  }
+  else
+  {
     ssize_t    pread(int, void*, size_t, off_t);
     ssize_t    pwrite(int, void*, size_t, off_t);
+  }
     pid_t      setpgrp();
     int        setregid(gid_t, gid_t);
     int        setreuid(uid_t, uid_t);
     void       swab(void*, void*, ssize_t);
     void       sync();
+  static if( __USE_FILE_OFFSET64 )
+  {
+    int        truncate64(char*, off_t);
+    alias      truncate64 truncate;
+  }
+  else
+  {
     int        truncate(char*, off_t);
+  }
     useconds_t ualarm(useconds_t, useconds_t);
     int        usleep(useconds_t);
     pid_t      vfork();
