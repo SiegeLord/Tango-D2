@@ -18,14 +18,10 @@
  */
 
 private import tango.stdc.stdlib;
-private import tango.stdc.string; // for memset
 
 private
 {
-    extern (C) void thread_init();
-    extern (C) void rt_finalize( void* p, bool det = true );
-
-    enum BlkAttr : uint
+   enum BlkAttr : uint
     {
         FINALIZE = 0b0000_0001,
         NO_SCAN  = 0b0000_0010,
@@ -33,30 +29,15 @@ private
         ALL_BITS = 0b1111_1111
     }
 
-    alias typeof(BlkAttr.ALL_BITS) blk_t;
 
-    //
-    // NOTE: A mark/sweep GC might find the following functions useful
-    //
-    /+
-    extern (C) void* rt_stackBottom();
-    extern (C) void* rt_stackTop();
-
-    extern (C) bool thread_needLock();
-    extern (C) void thread_suspendAll();
-    extern (C) void thread_resumeAll();
-
-    alias void delegate( void*, void* ) scanFn;
-    extern (C) void rt_scanStaticData( scanFn scan );
-    extern (C) void thread_scanAll( scanFn fn, void* curStackTop = null );
-    +/
+    extern (C) void thread_init();
+    extern (C) void onOutOfMemoryError();
 }
 
 extern (C) void gc_init()
 {
-    // NOTE: The GC must initialize the thread library
-    //       before its first collection, and always
-    //       before returning from gc_init().
+    // NOTE: The GC must initialize the thread library before its first
+    //       collection, and always before returning from gc_init().
     thread_init();
 }
 
@@ -82,54 +63,44 @@ extern (C) void gc_collect()
 
 extern (C) uint gc_getAttr( void* p )
 {
-    if( p is null )
-        return 0;
-    return *((cast(blk_t*) p) - 1) & BlkAttr.ALL_BITS;
+    return 0;
 }
 
 extern (C) uint gc_setAttr( void* p, uint a )
 {
-    if( p is null )
-        return 0;
-    return *((cast(blk_t*) p) - 1) |= a & BlkAttr.ALL_BITS;
+    return 0;
 }
 
 extern (C) uint gc_clrAttr( void* p, uint a )
 {
-    if( p is null )
-        return 0;
-    return *((cast(blk_t*) p) - 1) &= ~a & BlkAttr.ALL_BITS;
+    return 0;
 }
 
 extern (C) void* gc_malloc( size_t sz, uint ba = 0 )
 {
-    blk_t* p = cast(blk_t*) malloc( sz + blk_t.sizeof );
+    void* p = malloc( sz + blk_t.sizeof );
 
-    if( p is null )
-        return p;
-    gc_setAttr( p + 1, ba );
-    return p + 1;
+    if( p !is null )
+        onOutOfMemoryError();
+    return p;
 }
 
 extern (C) void* gc_calloc( size_t sz, uint ba = 0 )
 {
-    blk_t* p = cast(blk_t*) calloc( 1, sz + blk_t.sizeof );
+    void* p = calloc( 1, sz );
 
-    if( p is null )
-        return p;
-    gc_setAttr( p + 1, ba );
-    return p + 1;
+    if( p !is null )
+        onOutOfMemoryError();
+    return p;
 }
 
 extern (C) void* gc_realloc( void* p, size_t sz, uint ba = 0 )
 {
-    blk_t* i = (cast(blk_t*) p) - (p ? 1 : 0);
+    p = realloc( i, sz );
 
-    i = cast(blk_t*) realloc( i, sz + blk_t.sizeof );
-    if( i is null )
-        return i;
-    gc_setAttr( i, ba );
-    return i + 1;
+    if( p !is null )
+        onOutOfMemoryError();
+    return p;
 }
 
 extern (C) size_t gc_extend( void* p, size_t mx, size_t sz )
@@ -139,14 +110,7 @@ extern (C) size_t gc_extend( void* p, size_t mx, size_t sz )
 
 extern (C) void gc_free( void* p )
 {
-    if( p !is null )
-    {
-        blk_t* i = (cast(blk_t*) p) - 1;
-
-        if( *i & BlkAttr.FINALIZE )
-            rt_finalize( p );
-        free( i );
-    }
+    free( p );
 }
 
 extern (C) size_t gc_sizeOf( void* p )
