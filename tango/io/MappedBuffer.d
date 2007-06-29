@@ -74,7 +74,7 @@ class MappedBuffer : Buffer
                         this.host = host;
 
                         // can only do 32bit mapping on 32bit platform
-                        ulong size = host.length;
+                        auto size = host.length;
 
                         auto access = host.style.access;
 

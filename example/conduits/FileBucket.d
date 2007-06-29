@@ -67,10 +67,10 @@ class FileBucket
         private Record[char[]]          map;
 
         // current file size
-        private ulong                   fileSize;
+        private long                    fileSize;
 
         // current file usage
-        private ulong                   waterLine;
+        private long                    waterLine;
 
         // supported block sizes
         public static const BlockSize   EighthK  = {128-1},
@@ -149,7 +149,7 @@ class FileBucket
 
         **********************************************************************/
 
-        synchronized ulong length ()
+        synchronized long length ()
         {
                 return waterLine;
         }
@@ -239,7 +239,7 @@ class FileBucket
 
         private static class Record
         {
-                private ulong           offset;
+                private long            offset;
                 private int             length,
                                         capacity = -1;
 

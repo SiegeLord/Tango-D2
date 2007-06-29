@@ -850,7 +850,7 @@ class FTPConnection : Telnet
     ///
     /// Params:
     ///    bytes =           the number of bytes to allocate
-    public void allocate(ulong bytes)
+    public void allocate(long bytes)
         in
     {
         assert (bytes > 0);
@@ -858,7 +858,7 @@ class FTPConnection : Telnet
     body
     {
         char[16] tmp;
-        this.sendCommand("ALLO", Integer.format(tmp, cast(long) bytes));
+        this.sendCommand("ALLO", Integer.format(tmp, bytes));
         auto response = this.readResponse();
 
         // For our purposes 200 and 202 are both fine.

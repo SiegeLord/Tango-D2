@@ -131,7 +131,7 @@ interface IConduit : ISelectable
                 
                 ***************************************************************/
 
-                ulong position ();
+                long position ();
 
                 /***************************************************************
                 
@@ -140,7 +140,7 @@ interface IConduit : ISelectable
 
                 ***************************************************************/
 
-                ulong seek (ulong offset, Anchor anchor = Anchor.Begin);
+                long seek (long offset, Anchor anchor = Anchor.Begin);
         }
 }
 

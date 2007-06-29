@@ -305,7 +305,7 @@ class FileConduit : DeviceConduit, DeviceConduit.Seek
                 
         ***********************************************************************/
 
-        ulong position ()
+        long position ()
         {
                 return seek (0, Seek.Anchor.Current);
         }               
@@ -316,9 +316,9 @@ class FileConduit : DeviceConduit, DeviceConduit.Seek
 
         ***********************************************************************/
 
-        ulong length ()
+        long length ()
         {
-                ulong   pos,    
+                long    pos,    
                         ret;
                         
                 pos = position ();
@@ -453,17 +453,17 @@ class FileConduit : DeviceConduit, DeviceConduit.Seek
 
                 ***************************************************************/
 
-                ulong seek (ulong offset, Seek.Anchor anchor = Seek.Anchor.Begin)
+                long seek (long offset, Seek.Anchor anchor = Seek.Anchor.Begin)
                 {
                         LONG high = cast(LONG) (offset >> 32);
-                        ulong result = SetFilePointer (handle, cast(LONG) offset, 
-                                                       &high, anchor);
+                        long result = SetFilePointer (handle, cast(LONG) offset, 
+                                                      &high, anchor);
 
                         if (result is -1 && 
                             GetLastError() != ERROR_SUCCESS)
                             error ();
 
-                        return result + (cast(ulong) high << 32);
+                        return result + (cast(long) high << 32);
                 }               
         }
 
@@ -530,8 +530,6 @@ class FileConduit : DeviceConduit, DeviceConduit.Seek
 
                 /***************************************************************
 
-                        32bit only ...
-
                         Set the file size to be that of the current seek 
                         position. The file must be writable for this to
                         succeed.
@@ -547,16 +545,14 @@ class FileConduit : DeviceConduit, DeviceConduit.Seek
 
                 /***************************************************************
 
-                        32bit only ...
-
                         Set the file seek position to the specified offset
                         from the given anchor. 
 
                 ***************************************************************/
 
-                ulong seek (ulong offset, Seek.Anchor anchor = Seek.Anchor.Begin)
+                long seek (long offset, Seek.Anchor anchor = Seek.Anchor.Begin)
                 {
-                        ulong result = posix.lseek (handle, cast(long)offset, anchor);
+                        long result = posix.lseek (handle, offset, anchor);
                         if (result is -1)
                             error ();
                         return result;
