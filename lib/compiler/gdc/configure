@@ -3989,7 +3989,7 @@ else
 fi
 
 
-if test ${multilib} = yes; then
+if test "${multilib}" = yes; then
   multilib_arg="--enable-multilib"
 else
   multilib_arg=
