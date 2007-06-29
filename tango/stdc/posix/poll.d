@@ -8,7 +8,7 @@
  */
 module tango.stdc.posix.poll;
 
-private import tango.stdc.config;
+private import tango.stdc.posix.config;
 
 extern (C):
 

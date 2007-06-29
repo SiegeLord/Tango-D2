@@ -8,7 +8,7 @@
  */
 module tango.stdc.posix.ucontext;
 
-private import tango.stdc.config;
+private import tango.stdc.posix.config;
 public import tango.stdc.posix.signal; // for sigset_t, stack_t
 
 extern (C):

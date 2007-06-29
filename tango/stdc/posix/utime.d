@@ -8,7 +8,7 @@
  */
 module tango.stdc.posix.utime;
 
-private import tango.stdc.config;
+private import tango.stdc.posix.config;
 public import tango.stdc.posix.sys.types; // for time_t
 
 extern (C):

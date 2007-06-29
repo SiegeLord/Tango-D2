@@ -8,7 +8,7 @@
  */
 module tango.stdc.posix.setjmp;
 
-private import tango.stdc.config;
+private import tango.stdc.posix.config;
 private import tango.stdc.posix.signal; // for sigset_t
 
 extern (C):

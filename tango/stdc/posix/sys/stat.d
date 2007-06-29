@@ -8,7 +8,7 @@
  */
 module tango.stdc.posix.sys.stat;
 
-private import tango.stdc.config;
+private import tango.stdc.posix.config;
 private import tango.stdc.stdint;
 private import tango.stdc.posix.time;     // for timespec
 public import tango.stdc.stddef;          // for size_t
@@ -78,14 +78,7 @@ version( linux )
     {
         dev_t       st_dev;
         ushort      __pad1;
-      static if( false /*__USE_FILE_OFFSET64*/ )
-      {
-        ino_t       __st_ino;
-      }
-      else
-      {
         ino_t       st_ino;
-      }
         mode_t      st_mode;
         nlink_t     st_nlink;
         uid_t       st_uid;
@@ -119,7 +112,7 @@ version( linux )
         time_t      st_ctime;
         c_ulong     st_ctimensec;
       }
-      static if( false /*__USE_FILE_OFFSET64*/ )
+      static if( __USE_FILE_OFFSET64 )
       {
         ino_t       st_ino;
       }

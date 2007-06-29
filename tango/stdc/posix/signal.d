@@ -8,7 +8,7 @@
  */
 module tango.stdc.posix.signal;
 
-private import tango.stdc.config;
+private import tango.stdc.posix.config;
 public import tango.stdc.signal;
 public import tango.stdc.stddef;          // for size_t
 public import tango.stdc.posix.sys.types; // for pid_t

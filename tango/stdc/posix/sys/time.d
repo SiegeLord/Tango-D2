@@ -8,7 +8,7 @@
  */
 module tango.stdc.posix.sys.time;
 
-private import tango.stdc.config;
+private import tango.stdc.posix.config;
 public import tango.stdc.posix.sys.types;  // for time_t, suseconds_t
 public import tango.stdc.posix.sys.select; // for fd_set, FD_CLR() FD_ISSET() FD_SET() FD_ZERO() FD_SETSIZE
 

@@ -8,7 +8,7 @@
  */
 module tango.stdc.posix.semaphore;
 
-private import tango.stdc.config;
+private import tango.stdc.posix.config;
 private import tango.stdc.posix.time;
 
 extern (C):

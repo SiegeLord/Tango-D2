@@ -8,7 +8,7 @@
  */
 module tango.stdc.posix.fcntl;
 
-private import tango.stdc.config;
+private import tango.stdc.posix.config;
 private import tango.stdc.stdint;
 public import tango.stdc.stddef;          // for size_t
 public import tango.stdc.posix.sys.types; // for off_t, mode_t
@@ -73,7 +73,7 @@ version( linux )
     const F_SETFD       = 2;
     const F_GETFL       = 3;
     const F_SETFL       = 4;
-  static if( false /*__USE_FILE_OFFSET64*/ )
+  static if( __USE_FILE_OFFSET64 )
   {
     const F_GETLK       = 5;
     const F_SETLK       = 6;

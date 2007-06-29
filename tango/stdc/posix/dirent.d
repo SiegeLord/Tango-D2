@@ -8,7 +8,7 @@
  */
 module tango.stdc.posix.dirent;
 
-private import tango.stdc.config;
+private import tango.stdc.posix.config;
 public import tango.stdc.posix.sys.types; // for ino_t
 
 extern (C):
@@ -49,16 +49,8 @@ version( linux )
 
     struct dirent
     {
-      static if( false /*__USE_FILE_OFFSET64*/ )
-      {
-        ino64_t     d_ino;
-        off64_t     d_off;
-      }
-      else
-      {
         ino_t       d_ino;
         off_t       d_off;
-      }
         ushort      d_reclen;
         ubyte       d_type;
         char[256]   d_name;
@@ -69,7 +61,7 @@ version( linux )
         // Managed by OS
     }
 
-  static if( false /*__USE_FILE_OFFSET64*/ )
+  static if( __USE_FILE_OFFSET64 )
   {
     dirent* readdir64(DIR*);
     alias readdir64 readdir;
@@ -130,7 +122,7 @@ int readdir_r(DIR*, dirent*, dirent**);
 
 version( linux )
 {
-  static if( false /*__USE_FILE_OFFSET64*/ )
+  static if( __USE_FILE_OFFSET64 )
   {
     int readdir64_r(DIR*, dirent*, dirent**);
     alias readdir64_r readdir_r;

@@ -8,7 +8,7 @@
  */
 module tango.stdc.posix.stdlib;
 
-private import tango.stdc.config;
+private import tango.stdc.posix.config;
 public import tango.stdc.stdlib;
 public import tango.stdc.posix.sys.wait;
 

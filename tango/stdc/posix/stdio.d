@@ -8,7 +8,7 @@
  */
 module tango.stdc.posix.stdio;
 
-private import tango.stdc.config;
+private import tango.stdc.posix.config;
 public import tango.stdc.stdio;
 public import tango.stdc.posix.sys.types; // for off_t
 

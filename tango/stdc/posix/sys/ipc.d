@@ -8,7 +8,7 @@
  */
 module tango.stdc.posix.sys.ipc;
 
-private import tango.stdc.config;
+private import tango.stdc.posix.config;
 public import tango.stdc.posix.sys.types; // for uid_t, gid_t, mode_t, key_t
 
 extern (C):
