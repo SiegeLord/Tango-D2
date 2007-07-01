@@ -77,6 +77,23 @@ version (DigitalMars_D_InlineAsm_X86) {
    static import tango.stdc.math;
 }
 
+// FIXME: standardize the values.
+// xx0 = domain, xx1 = range error, ...
+/// Standard Tango NaN payloads
+enum {
+    TANGO_NAN_TAN_DOMAIN = 0x1000,
+    TANGO_NAN_POW_DOMAIN = 0x1020,
+    TANGO_NAN_NORMALDISTRIBUTION_INV_DOMAIN = 0x3000,
+    TANGO_NAN_STUDENTSDDISTRIBUTION_DOMAIN = 0x3010,
+    TANGO_NAN_GAMMA_DOMAIN = 0x3100,
+    TANGO_NAN_GAMMA_POLE = 0x3102,
+    TANGO_NAN_GAMMA_ZERO = 0x3103, // FIXME: what does this mean?
+    TANGO_NAN_SGNGAMMA = 0x3104,
+    TANGO_NAN_BETA_DOMAIN = 0x3110
+}
+
+
+
 
 /* Most of the functions depend on the format of the largest IEEE floating-point type.
  * These code will differ depending on whether 'real' is 64, 80, or 128 bits,
@@ -620,7 +637,7 @@ real logb(real x)
 debug(UnitTest) {
 unittest {
     assert(logb(real.infinity)== real.infinity);
-    assert(isIdentical(logb(NaN("jkl")), NaN("jkl")));
+    assert(isIdentical(logb(NaN(0xFCD)), NaN(0xFCD)));
     assert(logb(1.0)== 0.0);
     assert(logb(-65536) == 16);
     assert(logb(0.0)== -real.infinity);
@@ -659,7 +676,7 @@ real scalbn(real x, int n)
 debug(UnitTest) {
 unittest {
     assert(scalbn(-real.infinity, 5)== -real.infinity);
-    assert(isIdentical(scalbn(NaN("jkl"),7), NaN("jkl")));
+    assert(isIdentical(scalbn(NaN(0xABC),7), NaN(0xABC)));
 }
 }
 
@@ -704,7 +721,7 @@ real fabs(real x) /* intrinsic */
 }
 
 unittest {
-    assert(isIdentical(fabs(NaN("abc")), NaN("abc")));
+    assert(isIdentical(fabs(NaN(0xABC)), NaN(0xABC)));
 }
 
 /**
@@ -865,11 +882,11 @@ debug(UnitTest) {
 unittest {
     assert(isIdentical(0.0, 0.0));
     assert(!isIdentical(0.0, -0.0));
-    assert(isIdentical(NaN("abc"), NaN("abc")));
-    assert(!isIdentical(NaN("abc"), NaN("xyz")));
+    assert(isIdentical(NaN(0xABC), NaN(0xABC)));
+    assert(!isIdentical(NaN(0xABC), NaN(218)));
     assert(isIdentical(1.234e56, 1.234e56));
-    assert(isNaN(NaN("abcdefghijklmn")));
-    assert(isIdentical(3.1+NaN("xyz")*1i, 3.1+NaN("xyz")*1i));
+    assert(isNaN(NaN(0x12345)));
+    assert(isIdentical(3.1+NaN(0xDEF)*1i, 3.1+NaN(0xDEF)*1i));
     assert(!isIdentical(3.1+0.0i, 3.1-0i));
 }
 }
@@ -1110,7 +1127,7 @@ unittest {
 
   // Tests for 80-bit reals
 
-    assert(isIdentical(nextUp(NaN("abc")), NaN("abc")));
+    assert(isIdentical(nextUp(NaN(0xABC)), NaN(0xABC)));
     // negative numbers
     assert( nextUp(-real.infinity) == -real.max );
     assert( nextUp(-1-real.epsilon) == -1.0 );
@@ -1130,7 +1147,7 @@ unittest {
     assert( nextUp(real.infinity)==real.infinity );
  }
 
-    assert(isIdentical(nextDoubleUp(NaN("abc")), NaN("abc")));
+    assert(isIdentical(nextDoubleUp(NaN(0xABC)), NaN(0xABC)));
     // negative numbers
     assert( nextDoubleUp(-double.infinity) == -double.max );
     assert( nextDoubleUp(-1-double.epsilon) == -1.0 );
@@ -1586,7 +1603,7 @@ bool isNaNPayloadString(real x)
         return (px[4] & 0x7FFF) == 0x7FFF && (px[3] & 0x2000)== 0x2000;
     }
 }
-
+/+
 /**
  *  Make a $(NAN) with a string payload.
  *
@@ -1628,7 +1645,7 @@ real NaN(char [] str)
         *cast(ulong *)(&x) = v;
         return x;
 }
-
++/
 /**
  * Create a $(NAN) with an integral payload.
  *
@@ -1680,6 +1697,7 @@ real NaN(ulong payload)
     }
 }
 
+/+
 /**
  * Extract a string payload from a $(NAN)
  *
@@ -1731,6 +1749,7 @@ unittest {
     assert(getNaNPayloadString(nan3, buff8)== "qwe");
 }
 }
++/
 
 /**
  * Extract an integral payload from a $(NAN).

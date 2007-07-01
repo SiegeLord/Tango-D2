@@ -119,7 +119,7 @@ body{
      Copyright 1984, 1995 by Stephen L. Moshier
  */
 
-    if ( nu <= 0 ) return NaN("tdist"); // domain error -- or should it return 0?
+    if ( nu <= 0 ) return NaN(TANGO_NAN_STUDENTSDDISTRIBUTION_DOMAIN); // domain error -- or should it return 0?
     if ( t == 0.0 )  return 0.5;
 
     real rk, z, p;

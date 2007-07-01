@@ -36,7 +36,6 @@ version(Windows) { // Some tests only pass on DMD Windows
 const real SQRT2PI = 0x1.40d931ff62705966p+1L;    // 2.5066282746310005024
 const real EXP_2  = 0.13533528323661269189L; /* exp(-2) */
 
-
 private {
 /* erfc(x) = exp(-x^2) P(1/x)/Q(1/x)
    1/8 <= 1/x <= 1
@@ -268,8 +267,8 @@ unittest {
     assert(isIdentical(erf(-0.0),-0.0));
     assert(erf(real.infinity) == 1.0);
     assert(erf(-real.infinity) == -1.0);
-    assert(isIdentical(erf(NaN("xyz")),NaN("xyz")));
-    assert(isIdentical(erfc(NaN("xyz")),NaN("xyz")));
+    assert(isIdentical(erf(NaN(0xDEF)),NaN(0xDEF)));
+    assert(isIdentical(erfc(NaN(0xDEF)),NaN(0xDEF)));
     assert(isIdentical(erfc(real.infinity),0.0));
     assert(erfc(-real.infinity) == 2.0);
     assert(erfc(0) == 1.0);
@@ -374,7 +373,7 @@ real normalDistributionImpl(real a)
 debug(UnitTest) {
 unittest {
 assert(fabs(normalDistributionImpl(1L) - (0.841344746068543))< 0.0000000000000005);
-assert(isIdentical(normalDistributionImpl(NaN("asdf")), NaN("asdf")));
+assert(isIdentical(normalDistributionImpl(NaN(0x325)), NaN(0x325)));
 }
 }
 
@@ -497,7 +496,7 @@ const real Q3[] = [
         if( p == 1.0L ) {
             return real.infinity;
         }
-        return NaN("normInv");
+        return NaN(TANGO_NAN_NORMALDISTRIBUTION_INV_DOMAIN);
     }
     int code = 1;
     real y = p;

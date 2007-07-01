@@ -30,7 +30,6 @@ version(Windows) { // Some tests only pass on DMD Windows
 }
 }
 
-
 //------------------------------------------------------------------
 
 /// The maximum value of x for which gamma(x) < real.infinity.
@@ -186,12 +185,12 @@ real sgnGamma(real x)
     if (x > 0) return 1.0;
     if (x < -1/real.epsilon) {
         // Large negatives lose all precision
-        return NaN("sgnGamma");
+        return NaN(TANGO_NAN_SGNGAMMA);
     }
 //  if (remquo(x, -1.0, n) == 0) {
     int n = cast(int)(x);
     if (x == n) {
-        return x == 0 ?  copysign(1, x) : NaN("sgnGamma");
+        return x == 0 ?  copysign(1, x) : NaN(TANGO_NAN_SGNGAMMA);
     }
     return n & 1 ? 1.0 : -1.0;
 }
@@ -203,7 +202,7 @@ unittest {
     assert(sgnGamma(-0.1) == -1.0);
     assert(sgnGamma(-55.1) == 1.0);
     assert(isNaN(sgnGamma(-real.infinity)));
-    assert(isIdentical(sgnGamma(NaN("abc")), NaN("abc")));
+    assert(isIdentical(sgnGamma(NaN(0xABC)), NaN(0xABC)));
 }
 }
 
@@ -241,7 +240,7 @@ real gamma(real x)
 
     real q, z;
     if (isNaN(x)) return x;
-    if (x == -x.infinity) return NaN("gamINF");
+    if (x == -x.infinity) return NaN(TANGO_NAN_GAMMA_DOMAIN);
     if ( fabs(x) > MAXGAMMA ) return real.infinity;
     if (x==0) return 1.0/x; // +- infinity depending on sign of x, create an exception.
 
@@ -256,7 +255,7 @@ real gamma(real x)
             int sgngam = 1; // sign of gamma.
             real p  = floor(q);
             if (p == q)
-                  return NaN("gamPOLE"); // poles for all integers <0.
+                  return NaN(TANGO_NAN_GAMMA_DOMAIN); // poles for all integers <0.
             int intpart = cast(int)(p);
             if ( (intpart & 1) == 0 )
                 sgngam = -1;
@@ -291,7 +290,7 @@ real gamma(real x)
 
     if ( x <= 0.03125L ) {
         if ( x == 0.0L )
-            return NaN("gamma");
+            return NaN(TANGO_NAN_GAMMA_ZERO);
         else {
             if ( x < 0.0L ) {
                 x = -x;
@@ -326,7 +325,7 @@ unittest {
     assert(gamma(-0.0) == -real.infinity);
     assert(isNaN(gamma(-1.0)));
     assert(isNaN(gamma(-15.0)));
-    assert(isIdentical(gamma(NaN("abc")), NaN("abc")));
+    assert(isIdentical(gamma(NaN(0xABC)), NaN(0xABC)));
     assert(gamma(real.infinity) == real.infinity);
     assert(gamma(real.max) == real.infinity);
     assert(isNaN(gamma(-real.infinity)));
@@ -446,7 +445,7 @@ real logGamma(real x)
 
 debug(UnitTest) {
 unittest {
-    assert(isIdentical(logGamma(NaN("zyx")), NaN("zyx")));
+    assert(isIdentical(logGamma(NaN(0xDEF)), NaN(0xDEF)));
     assert(logGamma(real.infinity) == real.infinity);
     assert(logGamma(-1.0) == real.infinity);
     assert(logGamma(0.0) == real.infinity);
@@ -511,8 +510,8 @@ real beta(real x, real y)
 
 debug(UnitTest) {
 unittest {
-    assert(isIdentical(beta(NaN("abc"), 4), NaN("abc")));
-    assert(isIdentical(beta(2, NaN("abc")), NaN("abc")));
+    assert(isIdentical(beta(NaN(0xABC), 4), NaN(0xABC)));
+    assert(isIdentical(beta(2, NaN(0xABC)), NaN(0xABC)));
 }
 }
 
@@ -541,13 +540,13 @@ real betaIncomplete(real aa, real bb, real xx )
     if (!(aa>0 && bb>0)) {
          if (isNaN(aa)) return aa;
          if (isNaN(bb)) return bb;
-         return NaN("beta"); // domain error
+         return NaN(TANGO_NAN_BETA_DOMAIN); // domain error
     }
     if (!(xx>0 && xx<1.0)) {
         if (isNaN(xx)) return xx;
         if ( xx == 0.0L ) return 0.0;
         if ( xx == 1.0L )  return 1.0;
-        return NaN("beta"); // domain error
+        return NaN(TANGO_NAN_BETA_DOMAIN); // domain error
     }
     if ( (bb * xx) <= 1.0L && xx <= 0.95L)   {
         return betaDistPowerSeries(aa, bb, xx);
@@ -865,12 +864,12 @@ done:
 debug(UnitTest) {
 unittest { // also tested by the normal distribution
   // check NaN propagation
-  assert(isIdentical(betaIncomplete(NaN("xyz"),2,3), NaN("xyz")));
-  assert(isIdentical(betaIncomplete(7,NaN("xyz"),3), NaN("xyz")));
-  assert(isIdentical(betaIncomplete(7,15,NaN("xyz")), NaN("xyz")));
-  assert(isIdentical(betaIncompleteInv(NaN("xyz"),1,17), NaN("xyz")));
-  assert(isIdentical(betaIncompleteInv(2,NaN("xyz"),8), NaN("xyz")));
-  assert(isIdentical(betaIncompleteInv(2,3, NaN("xyz")), NaN("xyz")));
+  assert(isIdentical(betaIncomplete(NaN(0xABC),2,3), NaN(0xABC)));
+  assert(isIdentical(betaIncomplete(7,NaN(0xABC),3), NaN(0xABC)));
+  assert(isIdentical(betaIncomplete(7,15,NaN(0xABC)), NaN(0xABC)));
+  assert(isIdentical(betaIncompleteInv(NaN(0xABC),1,17), NaN(0xABC)));
+  assert(isIdentical(betaIncompleteInv(2,NaN(0xABC),8), NaN(0xABC)));
+  assert(isIdentical(betaIncompleteInv(2,3, NaN(0xABC)), NaN(0xABC)));
 
   assert(isNaN(betaIncomplete(-1, 2, 3)));
 

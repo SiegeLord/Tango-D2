@@ -186,9 +186,7 @@ template minmaxtype(T...){
     static if(T.length == 1) alias typeof(T[0]) minmaxtype;
     else static if(T.length > 2)
         alias minmaxtype!(minmaxtype!(T[0..2]), T[2..$]) minmaxtype;
-    else static if(is( typeof( (T[0] x, T[1] y){ return y > x ? y : x;})
-    Q == return))
-        alias Q minmaxtype;
+    else alias typeof (T[1] > T[0] ? T[1] : T[0]) minmaxtype;
 }
 }
 
@@ -212,6 +210,16 @@ minmaxtype!(T) max(T...)(T arg){
     static if(arg.length == 1) return arg[0];
     else static if(arg.length == 2) return arg[1] > arg[0] ? arg[1] : arg[0];
     static if(arg.length > 2) return max(arg[1] > arg[0] ? arg[1] : arg[0], arg[2..$]);
+}
+debug(UnitTest) {
+unittest
+{
+    assert(max('e', 'f')=='f');
+    assert(min(3.5, 3.8)==3.5);
+    // check implicit conversion to integer.
+    assert(min(3.5, 18)==3.5);
+
+}
 }
 
 /** Returns the minimum number of x and y, favouring numbers over NaNs.
@@ -245,7 +253,7 @@ real maxNum(real x, real y) {
  * If one parameter is a NaN and the other is a number, the NaN is returned.
  */
 real minNaN(real x, real y) {
-    if (x<=y || isNaN(x)) return x; else return y;
+    return (x<=y || isNaN(x))? x : y;
 }
 
 /** Returns the maximum of x and y, favouring NaNs over numbers
@@ -255,22 +263,18 @@ real minNaN(real x, real y) {
  * If one parameter is a NaN and the other is a number, the NaN is returned.
  */
 real maxNaN(real x, real y) {
-    if (x>=y || isNaN(x)) return x; else return y;
+    return (x>=y || isNaN(x))? x : y;
 }
 
 debug(UnitTest) {
 unittest
 {
-    assert(max('e', 'f')=='f');
-    assert(min(3.5, 3.8)==3.5);
-    // check implicit conversion to integer.
-    assert(min(3.5, 18)==3.5);
-    assert(maxNum(NaN("abc"), 56.1L)== 56.1L);
-    assert(isIdentical(maxNaN(NaN("abc"), 56.1L), NaN("abc")));
-    assert(maxNum(28.0, NaN("abc"))== 28.0);
-    assert(minNum(1e12, NaN("abc"))== 1e12);
-    assert(isIdentical(minNaN(1e12, NaN("abc")), NaN("abc")));
-    assert(isIdentical(minNum(NaN("def"), NaN("abc")), NaN("def")));
+    assert(maxNum(NaN(0xABC), 56.1L)== 56.1L);
+    assert(isIdentical(maxNaN(NaN(1389), 56.1L), NaN(1389)));
+    assert(maxNum(28.0, NaN(0xABC))== 28.0);
+    assert(minNum(1e12, NaN(0xABC))== 1e12);
+    assert(isIdentical(minNaN(1e12, NaN(23454)), NaN(23454)));
+    assert(isIdentical(minNum(NaN(489), NaN(23)), NaN(489)));
 }
 }
 
@@ -308,7 +312,7 @@ real cos(real x) /* intrinsic */
 debug(UnitTest) {
 unittest {
     // NaN payloads
-    assert(isIdentical(cos(NaN("abc")), NaN("abc")));
+    assert(isIdentical(cos(NaN(314)), NaN(314)));
 }
 }
 
@@ -343,7 +347,7 @@ real sin(real x) /* intrinsic */
 debug(UnitTest) {
 unittest {
     // NaN payloads
-    assert(isIdentical(sin(NaN("abc")), NaN("abc")));
+    assert(isIdentical(sin(NaN(314)), NaN(314)));
 }
 }
 
@@ -368,34 +372,33 @@ real tan(real x)
     } else {
     asm
     {
-    fld x[EBP]          ; // load theta
-    fxam                ; // test for oddball values
-    fstsw   AX          ;
-    sahf                ;
-    jc  trigerr         ; // x is NAN, infinity, or empty
-                          // 387's can handle denormals
+        fld x[EBP]      ; // load theta
+        fxam            ; // test for oddball values
+        fstsw   AX      ;
+        sahf            ;
+        jc  trigerr     ; // x is NAN, infinity, or empty
+                              // 387's can handle denormals
 SC18:   fptan           ;
-    fstp    ST(0)       ; // dump X, which is always 1
-    fstsw   AX          ;
-    sahf                ;
-    jnp Lret            ; // C2 = 1 (x is out of range)
+        fstp    ST(0)   ; // dump X, which is always 1
+        fstsw   AX      ;
+        sahf            ;
+        jnp Lret        ; // C2 = 1 (x is out of range)
 
-    // Do argument reduction to bring x into range
-    fldpi               ;
-    fxch                ;
+        // Do argument reduction to bring x into range
+        fldpi           ;
+        fxch            ;
 SC17:   fprem1          ;
-    fstsw   AX          ;
-    sahf                ;
-    jp  SC17            ;
-    fstp    ST(1)       ; // remove pi from stack
-    jmp SC18            ;
+        fstsw   AX      ;
+        sahf            ;
+        jp  SC17        ;
+        fstp    ST(1)   ; // remove pi from stack
+        jmp SC18        ;
 
 trigerr:
-    jnp Lret            ; // if x is NaN, return x.
-    fstp    ST(0)       ; // dump x, which will be infinity
+        jnp Lret        ; // if x is NaN, return x.
+        fstp    ST(0)   ; // dump x, which will be infinity
     }
-    return real.nan;
-
+    return NaN(TANGO_NAN_TAN_DOMAIN);
 Lret:
     ;
     }
@@ -452,22 +455,22 @@ bool mfeq(real x, real y, real precision)
 
     for (i = 0; i < vals.length; i++)
     {
-    real x = vals[i][0];
-    real r = vals[i][1];
-    real t = tan(x);
+        real x = vals[i][0];
+        real r = vals[i][1];
+        real t = tan(x);
 
-//    printf("tan(%Lg) = %Lg, should be %Lg\n", x, t, r);
-    if (isNaN(r)) assert(isNaN(t));
-    else assert(mfeq(r, t, .0000001));
+        //printf("tan(%Lg) = %Lg, should be %Lg\n", x, t, r);
+        if (isNaN(r)) assert(isNaN(t));
+        else assert(mfeq(r, t, .0000001));
 
-    x = -x;
-    r = -r;
-    t = tan(x);
-    //printf("tan(%Lg) = %Lg, should be %Lg\n", x, t, r);
-    if (isNaN(r)) assert(isNaN(t));
-    else assert(mfeq(r, t, .0000001));
+        x = -x;
+        r = -r;
+        t = tan(x);
+        //printf("tan(%Lg) = %Lg, should be %Lg\n", x, t, r);
+        if (isNaN(r)) assert(isNaN(t));
+        else assert(mfeq(r, t, .0000001));
     }
-    assert(isIdentical(tan(NaN("abc")), NaN("abc")));
+    assert(isIdentical(tan(NaN(735)), NaN(735)));
     assert(isNaN(tan(real.infinity)));
 }
 }
@@ -574,7 +577,7 @@ real acos(real x)
 debug(UnitTest) {
 unittest {
     // NaN payloads
-    assert(isIdentical(acos(NaN("abc")), NaN("abc")));
+    assert(isIdentical(acos(NaN(254)), NaN(254)));
 }
 }
 
@@ -597,7 +600,7 @@ real asin(real x)
 debug(UnitTest) {
 unittest {
     // NaN payloads
-    assert(isIdentical(asin(NaN("abc")), NaN("abc")));
+    assert(isIdentical(asin(NaN(7249)), NaN(7249)));
 }
 }
 
@@ -619,7 +622,7 @@ real atan(real x)
 debug(UnitTest) {
 unittest {
     // NaN payloads
-    assert(isIdentical(atan(NaN("abc")), NaN("abc")));
+    assert(isIdentical(atan(NaN(9876)), NaN(9876)));
 }
 }
 
@@ -656,8 +659,8 @@ real atan2(real y, real x)
 debug(UnitTest) {
 unittest {
     // NaN payloads
-    assert(isIdentical(atan2(5.3, NaN("abc")), NaN("abc")));
-    assert(isIdentical(atan2(NaN("abc"), 2.18), NaN("abc")));
+    assert(isIdentical(atan2(5.3, NaN(9876)), NaN(9876)));
+    assert(isIdentical(atan2(NaN(9876), 2.18), NaN(9876)));
 }
 }
 
@@ -706,7 +709,7 @@ real cosh(real x)
 debug(UnitTest) {
 unittest {
     // NaN payloads
-    assert(isIdentical(cosh(NaN("abc")), NaN("abc")));
+    assert(isIdentical(cosh(NaN(432)), NaN(432)));
 }
 }
 
@@ -727,7 +730,7 @@ real sinh(real x)
 debug(UnitTest) {
 unittest {
     // NaN payloads
-    assert(isIdentical(sinh(NaN("abc")), NaN("abc")));
+    assert(isIdentical(sinh(NaN(0xABC)), NaN(0xABC)));
 }
 }
 
@@ -748,7 +751,7 @@ real tanh(real x)
 debug(UnitTest) {
 unittest {
     // NaN payloads
-    assert(isIdentical(tanh(NaN("abc")), NaN("abc")));
+    assert(isIdentical(tanh(NaN(0xABC)), NaN(0xABC)));
 }
 }
 
@@ -832,7 +835,7 @@ unittest
     assert(acosh(1)==0.0);
     assert(acosh(real.infinity) == real.infinity);
     // NaN payloads
-    assert(isIdentical(acosh(NaN("abc")), NaN("abc")));
+    assert(isIdentical(acosh(NaN(0xABC)), NaN(0xABC)));
 }
 }
 
@@ -872,7 +875,7 @@ unittest
     assert(asinh(-real.infinity) == -real.infinity);
     assert(isNaN(asinh(real.nan)));
     // NaN payloads
-    assert(isIdentical(asinh(NaN("abc")), NaN("abc")));
+    assert(isIdentical(asinh(NaN(0xABC)), NaN(0xABC)));
 }
 }
 
@@ -908,7 +911,7 @@ unittest
     assert(isIdentical(atanh(1),real.infinity));
     assert(isNaN(atanh(-real.infinity)));
     // NaN payloads
-    assert(isIdentical(atanh(NaN("abc")), NaN("abc")));
+    assert(isIdentical(atanh(NaN(0xABC)), NaN(0xABC)));
 }
 }
 
@@ -1018,7 +1021,7 @@ creal sqrt(creal z)
 debug(UnitTest) {
 unittest {
     // NaN payloads
-    assert(isIdentical(sqrt(NaN("abc")), NaN("abc")));
+    assert(isIdentical(sqrt(NaN(0xABC)), NaN(0xABC)));
     assert(sqrt(-1+0i) == 1i);
     assert(isIdentical(sqrt(0-0i), 0-0i));
 }
@@ -1043,7 +1046,7 @@ real cbrt(real x)
 debug(UnitTest) {
 unittest {
     // NaN payloads
-    assert(isIdentical(cbrt(NaN("abc")), NaN("abc")));
+    assert(isIdentical(cbrt(NaN(0xABC)), NaN(0xABC)));
 }
 }
 
@@ -1064,7 +1067,7 @@ real exp(real x)
 debug(UnitTest) {
 unittest {
     // NaN payloads
-    assert(isIdentical(exp(NaN("abc")), NaN("abc")));
+    assert(isIdentical(exp(NaN(0xABC)), NaN(0xABC)));
 }
 }
 
@@ -1090,7 +1093,7 @@ real expm1(real x)
 debug(UnitTest) {
 unittest {
     // NaN payloads
-    assert(isIdentical(expm1(NaN("abc")), NaN("abc")));
+    assert(isIdentical(expm1(NaN(0xABC)), NaN(0xABC)));
 }
 }
 
@@ -1112,7 +1115,7 @@ real exp2(real x)
 debug(UnitTest) {
 unittest {
     // NaN payloads
-    assert(isIdentical(exp2(NaN("abc")), NaN("abc")));
+    assert(isIdentical(exp2(NaN(0xABC)), NaN(0xABC)));
 }
 }
 
@@ -1138,7 +1141,7 @@ real log(real x)
 debug(UnitTest) {
 unittest {
     // NaN payloads
-    assert(isIdentical(log(NaN("abc")), NaN("abc")));
+    assert(isIdentical(log(NaN(0xABC)), NaN(0xABC)));
 }
 }
 
@@ -1164,7 +1167,7 @@ real log1p(real x)
 debug(UnitTest) {
 unittest {
     // NaN payloads
-    assert(isIdentical(log1p(NaN("abc")), NaN("abc")));
+    assert(isIdentical(log1p(NaN(0xABC)), NaN(0xABC)));
 }
 }
 
@@ -1187,7 +1190,7 @@ real log2(real x)
 debug(UnitTest) {
 unittest {
     // NaN payloads
-    assert(isIdentical(log2(NaN("abc")), NaN("abc")));
+    assert(isIdentical(log2(NaN(0xABC)), NaN(0xABC)));
 }
 }
 
@@ -1209,7 +1212,7 @@ real log10(real x)
 debug(UnitTest) {
 unittest {
     // NaN payloads
-    assert(isIdentical(log10(NaN("abc")), NaN("abc")));
+    assert(isIdentical(log10(NaN(0xABC)), NaN(0xABC)));
 }
 }
 
@@ -1395,7 +1398,7 @@ real pow(real x, real y)
         }
         else if (tango.math.IEEE.fabs(x) == 1)
         {
-            return real.nan;
+            return NaN(TANGO_NAN_POW_DOMAIN);
         }
         else // < 1
         {
@@ -1480,7 +1483,7 @@ unittest
     assert(pow(x,3) == x * x * x);
     assert(pow(x,8) == (x * x) * (x * x) * (x * x) * (x * x));
     // NaN payloads
-    assert(isIdentical(pow(NaN("abc"), 19), NaN("abc")));
+    assert(isIdentical(pow(NaN(0xABC), 19), NaN(0xABC)));
 }
 }
 
@@ -1597,8 +1600,8 @@ unittest
         assert(isIdentical(z, h));
     }
     // NaN payloads
-    assert(isIdentical(hypot(NaN("abc"), 3.14), NaN("abc")));
-    assert(isIdentical(hypot(7.6e39, NaN("abc")), NaN("abc")));
+    assert(isIdentical(hypot(NaN(0xABC), 3.14), NaN(0xABC)));
+    assert(isIdentical(hypot(7.6e39, NaN(0xABC)), NaN(0xABC)));
 }
 }
 
@@ -1694,7 +1697,7 @@ unittest
 
     assert( poly(x, pp) == (56.1L + (32.7L + 6L * x) * x) );
 
-    assert(isIdentical(poly(NaN("abc"), pp), NaN("abc")));
+    assert(isIdentical(poly(NaN(0xABC), pp), NaN(0xABC)));
 }
 }
 
@@ -1739,7 +1742,7 @@ real floor(real x)
 
 debug(UnitTest) {
 unittest {
-    assert(isIdentical(floor(NaN("abc")), NaN("abc")));
+    assert(isIdentical(floor(NaN(0xABC)), NaN(0xABC)));
 }
 }
 
@@ -1753,7 +1756,7 @@ real ceil(real x)
 }
 
 unittest {
-    assert(isIdentical(ceil(NaN("abc")), NaN("abc")));
+    assert(isIdentical(ceil(NaN(0xABC)), NaN(0xABC)));
 }
 
 /**
@@ -1768,7 +1771,7 @@ real round(real x)
 
 debug(UnitTest) {
 unittest {
-    assert(isIdentical(round(NaN("abc")), NaN("abc")));
+    assert(isIdentical(round(NaN(0xABC)), NaN(0xABC)));
 }
 }
 
@@ -1784,7 +1787,7 @@ real trunc(real x)
 
 debug(UnitTest) {
 unittest {
-    assert(isIdentical(trunc(NaN("abc")), NaN("abc")));
+    assert(isIdentical(trunc(NaN(0xABC)), NaN(0xABC)));
 }
 }
 
