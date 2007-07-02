@@ -261,7 +261,6 @@ T[] format(T) (T[] dst, long i, Style fmt=Style.Signed, Flags flags=Flags.None)
            }
         
         // are we about to overflow?
-//      if (--len < 0 || 0 > (len -= prefix.length))
         if (len > prefix.length)
            {
            len -= prefix.length + 1;
@@ -278,7 +277,7 @@ T[] format(T) (T[] dst, long i, Style fmt=Style.Signed, Flags flags=Flags.None)
            }
         else
            if (flags & Flags.Throw)
-               throw new IllegalArgumentException ("Integer.format : output truncated");
+               throw new IllegalArgumentException ("Integer.format :: output truncated");
 
         // return slice of provided output buffer
         return dst [len .. $];                               
