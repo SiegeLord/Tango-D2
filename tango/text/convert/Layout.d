@@ -362,26 +362,26 @@ class Layout(T)
                             return integer (result, *cast(byte*) p, format);
 
                        case TypeCode.UBYTE:
-                            return integer (result, *cast(ubyte*) p, format);
+                            return integer (result, *cast(ubyte*) p, format, 'u');
 
                        case TypeCode.SHORT:
                             return integer (result, *cast(short*) p, format);
 
                        case TypeCode.USHORT:
-                            return integer (result, *cast(ushort*) p, format);
+                            return integer (result, *cast(ushort*) p, format, 'u');
 
                        case TypeCode.INT:
                             return integer (result, *cast(int*) p, format);
 
                        case TypeCode.UINT:
                        case TypeCode.POINTER:
-                            return integer (result, *cast(uint*) p, format);
+                            return integer (result, *cast(uint*) p, format, 'u');
 
                        case TypeCode.LONG:
                             return integer (result, *cast(long*) p, format);
 
                        case TypeCode.ULONG:
-                            return integer (result, *cast(long*) p, format);
+                            return integer (result, *cast(long*) p, format, 'u');
 
                        case TypeCode.FLOAT:
                             return floater (result, *cast(float*) p, format);
@@ -401,6 +401,11 @@ class Layout(T)
                        case TypeCode.DCHAR:
                             return fromUtf32 ((cast(dchar*) p)[0..1], result);
 
+                       case TypeCode.INTERFACE:
+                            Interface* pi = **cast(Interface ***)*cast(void**) p;
+                            Object o = cast(Object)(*cast(void**)p - pi.offset);
+                            return fromUtf8 (o.toUtf8, result);
+                            
                        case TypeCode.CLASS:
                             return fromUtf8 ((*cast(Object*) p).toUtf8, result);
 
@@ -430,10 +435,10 @@ class Layout(T)
 
         **********************************************************************/
 
-        protected T[] integer (T[] output, long v, T[] format)
+        protected T[] integer (T[] output, long v, T[] alt, T format = 'd')
         {
                 uint width;
-                auto style = cast(Integer.Style) parse2 (format, width, 'd');
+                auto style = cast(Integer.Style) parse2 (alt, width, format);
 
                 Integer.Flags flags;
                 if (width)
@@ -556,6 +561,7 @@ private enum TypeCode
         ENUM = 'E',
         POINTER = 'P',
         TYPEDEF = 'T',
+        INTERFACE = 'I',
 }
 
 
@@ -680,11 +686,18 @@ debug (UnitTest)
 debug (Layout)
 {
         import tango.io.Console;
+        
+        interface foo {}
+
+        class X : foo {char[] toUtf8() {return "hello";}}
 
         void main ()
         {
+                int i = int.max;
                 auto Formatter = new Layout!(char);
-
-                //Cout (Formatter ("{} {} bottles '{}'", 10, "green", foo)) ();
+        
+                auto x = new X;
+                foo f = x;
+                Cout (Formatter ("{:x8} {} {} bottles", -1, f, x));
         }
 }

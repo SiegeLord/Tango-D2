@@ -93,9 +93,9 @@ public class Locale : Layout!(char)
 
         **********************************************************************/
 
-        protected override char[] integer (char[] output, long v, char[] format)
+        protected override char[] integer (char[] output, long v, char[] alt, char format='d')
         {
-                return formatInteger (output, v, format, numberFormat);
+                return formatInteger (output, v, alt, numberFormat);
         }
 
         /**********************************************************************
