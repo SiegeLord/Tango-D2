@@ -49,11 +49,12 @@ enum Style
 
 enum Flags
 {
-        None    = 0,                    /// no flags
-        Prefix  = 1,                    /// prefix value with type
-        Zero    = 2,                    /// prefix value with zeroes
-        Plus    = 4,                    /// prefix decimal with '+'
-        Space   = 8,                    /// prefix decimal with space
+        None    = 0x00,                    /// no flags
+        Prefix  = 0x01,                    /// prefix value with type
+        Zero    = 0x02,                    /// prefix value with zeroes
+        Plus    = 0x04,                    /// prefix decimal with '+'
+        Space   = 0x08,                    /// prefix decimal with space
+        Throw   = 0x10,                    /// throw on output truncation
 }
 
 /******************************************************************************
@@ -168,6 +169,7 @@ dchar[] toUtf32 (long i, Style t=Style.Signed, Flags f=Flags.None)
         Plus            - prefix positive decimals with a '+'
         Space           - prefix positive decimals with one space
         Zero            - left-pad the number with zeros
+        Throw           - throw an exception when output would be truncated
 
         The provided 'dst' buffer should be sufficiently large
         enough to house the output. A 64-element array is often
@@ -181,7 +183,7 @@ T[] format(T, U=long) (T[] dst, U i, Style fmt=Style.Signed, Flags flags=Flags.N
 T[] format(T) (T[] dst, long i, Style fmt=Style.Signed, Flags flags=Flags.None)
 {
         T[]     prefix;
-        int     len = dst.length;
+        auto    len = dst.length;
 
         // must have some buffer space to operate within! 
         if (len)
@@ -257,20 +259,26 @@ T[] format(T) (T[] dst, long i, Style fmt=Style.Signed, Flags flags=Flags.None)
                  } while ((v /= radix) && --len);
               }
            }
-
+        
         // are we about to overflow?
-        if (--len < 0 || 0 > (len -= prefix.length))
-            throw new IllegalArgumentException ("Integer.format : output buffer too small");
-
-        // prefix number with zeros? 
-        if (flags & Flags.Zero)
+//      if (--len < 0 || 0 > (len -= prefix.length))
+        if (len > prefix.length)
            {
-           dst [prefix.length .. len + prefix.length] = '0';
-           len = 0;
-           }
+           len -= prefix.length + 1;
 
-        // write optional prefix string ...
-        dst [len .. len + prefix.length] = prefix[];
+           // prefix number with zeros? 
+           if (flags & Flags.Zero)
+              {
+              dst [prefix.length .. len + prefix.length] = '0';
+              len = 0;
+              }
+
+           // write optional prefix string ...
+           dst [len .. len + prefix.length] = prefix[];
+           }
+        else
+           if (flags & Flags.Throw)
+               throw new IllegalArgumentException ("Integer.format : output truncated");
 
         // return slice of provided output buffer
         return dst [len .. $];                               
@@ -466,8 +474,6 @@ T[] itoa(T) (T[] output, uint value)
 
 debug (UnitTest)
 {
-        // void main() {}
-
         unittest
         {
         char[64] tmp;
@@ -541,9 +547,20 @@ debug (UnitTest)
         assert (format (tmp, 101L, Style.Signed, Flags.Plus) == "+101");
         assert (format (tmp, 101L, Style.Signed, Flags.Space) == " 101");
         assert (format (tmp[0..8], 0x5L, Style.Binary, Flags.Prefix | Flags.Zero) == "0b000101");
+
+        assert (format (tmp[0..8], -1, Style.Binary, Flags.Prefix | Flags.Zero) == "11111111");
+        assert (format (tmp[0..2], 0x3, Style.Binary, Flags.Throw) == "11");
+        assert (format (tmp[0..4], 0x3, Style.Binary, Flags.Prefix | Flags.Zero | Flags.Throw) == "0b11");
+        assert (format (tmp[0..5], 0x3, Style.Binary, Flags.Prefix | Flags.Zero | Flags.Throw) == "0b011");
+        assert (format (tmp[0..5], 0x3, Style.Binary, Flags.Zero | Flags.Throw) == "00011");
         }
 }
 
 
-
+debug (Integer)
+{
+        void main() 
+        {
+        }
+}
 
