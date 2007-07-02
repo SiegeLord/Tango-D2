@@ -8,7 +8,7 @@
  */
 module tango.stdc.posix.config;
 
-public import tango.stdc.posix.config;
+public import tango.stdc.config;
 
 extern (C):
 
