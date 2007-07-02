@@ -73,7 +73,7 @@ version( linux )
     const F_SETFD       = 2;
     const F_GETFL       = 3;
     const F_SETFL       = 4;
-  static if( __USE_FILE_OFFSET64 )
+  static if( false /*__USE_FILE_OFFSET64*/ )
   {
     const F_GETLK       = 5;
     const F_SETLK       = 6;
@@ -164,21 +164,9 @@ else version( darwin )
     }
 }
 
-static if( __USE_FILE_OFFSET64 )
-{
-    int   creat64(char*, mode_t);
-    alias creat64 creat;
-
-    int   open64(char*, int, ...);
-    alias open64 open;
-}
-else
-{
-    int creat(char*, mode_t);
-    int open(char*, int, ...);
-}
-
+int creat(char*, mode_t);
 int fcntl(int, int, ...);
+int open(char*, int, ...);
 
 //
 // Advisory Information (ADV)

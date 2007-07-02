@@ -78,13 +78,9 @@ version( linux )
     {
         dev_t       st_dev;
         ushort      __pad1;
-      static if( __USE_FILE_OFFSET64 )
+      static if( false /*__USE_FILE_OFFSET64*/ )
       {
-        // HACK: This is actually __ino_t in both cases in the original headers
-        //       but since I don't want to expose both the 32 and 64-bit defs,
-        //       I'm cheating and using c_ulong here (which is the type of
-        //       ino_t when __USE_FILE_OFFSET64 is not true).
-        c_ulong     __st_ino;
+        ino_t       __st_ino;
       }
       else
       {
@@ -123,7 +119,7 @@ version( linux )
         time_t      st_ctime;
         c_ulong     st_ctimensec;
       }
-      static if( __USE_FILE_OFFSET64 )
+      static if( false /*__USE_FILE_OFFSET64*/ )
       {
         ino_t       st_ino;
       }
@@ -238,28 +234,13 @@ else version( darwin )
     extern (D) bool S_ISSOCK( mode_t mode ) { return S_ISTYPE( mode, S_IFSOCK ); }
 }
 
-static if( __USE_FILE_OFFSET64 )
-{
-    int   fstat64(int, stat_t*);
-    alias fstat64 fstat;
-
-    int   lstat64(char*, stat_t*);
-    alias lstat64 lstat;
-
-    int   stat64(char*, stat_t*);
-    alias stat64 stat;
-}
-else
-{
-    int   fstat(int, stat_t*);
-    int   lstat(char*, stat_t*);
-    int   stat(char*, stat_t*);
-}
-
 int    chmod(char*, mode_t);
 int    fchmod(int, mode_t);
+int    fstat(int, stat_t*);
+int    lstat(char*, stat_t*);
 int    mkdir(char*, mode_t);
 int    mkfifo(char*, mode_t);
+int    stat(char*, stat_t*);
 mode_t umask(mode_t);
 
 //
