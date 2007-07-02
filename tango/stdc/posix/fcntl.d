@@ -164,9 +164,21 @@ else version( darwin )
     }
 }
 
-int creat(char*, mode_t);
+static if( __USE_FILE_OFFSET64 )
+{
+    int   creat64(char*, mode_t);
+    alias creat64 creat;
+
+    int   open64(char*, int, ...);
+    alias open64 open;
+}
+else
+{
+    int creat(char*, mode_t);
+    int open(char*, int, ...);
+}
+
 int fcntl(int, int, ...);
-int open(char*, int, ...);
 
 //
 // Advisory Information (ADV)

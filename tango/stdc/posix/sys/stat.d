@@ -238,13 +238,28 @@ else version( darwin )
     extern (D) bool S_ISSOCK( mode_t mode ) { return S_ISTYPE( mode, S_IFSOCK ); }
 }
 
+static if( __USE_FILE_OFFSET64 )
+{
+    int   fstat64(int, stat_t*);
+    alias fstat64 fstat;
+
+    int   lstat64(char*, stat_t*);
+    alias lstat64 lstat;
+
+    int   stat64(char*, stat_t*);
+    alias stat64 stat;
+}
+else
+{
+    int   fstat(int, stat_t*);
+    int   lstat(char*, stat_t*);
+    int   stat(char*, stat_t*);
+}
+
 int    chmod(char*, mode_t);
 int    fchmod(int, mode_t);
-int    fstat(int, stat_t*);
-int    lstat(char*, stat_t*);
 int    mkdir(char*, mode_t);
 int    mkfifo(char*, mode_t);
-int    stat(char*, stat_t*);
 mode_t umask(mode_t);
 
 //
