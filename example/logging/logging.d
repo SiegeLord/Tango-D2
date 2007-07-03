@@ -115,9 +115,6 @@ void main()
         // easily share a name with some other module(s)
         auto logger = Log.getLogger ("example.logging");
         
-        // set up a basic logging configuration
-        Configurator ();
-
         try {
             Sieve sieve = new Sieve;
 

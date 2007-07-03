@@ -18,43 +18,36 @@ private import  tango.util.log.Log,
 
 /*******************************************************************************
 
-        A utility class for initializing the basic behaviour of the
+        Basic utility for initializing the basic behaviour of the
         default logging hierarchy.
+
+        Adds a default StdioAppender, with a SimpleTimerLayout, to 
+        the root node, and set the activity level to be everything 
+        enabled.
+                
+*******************************************************************************/
+
+static this()
+{
+        Log.getRootLogger.addAppender(new ConsoleAppender(new SimpleTimerLayout));
+}
+
+
+
+/*******************************************************************************
 
 *******************************************************************************/
 
 public class Configurator
 {
-        public alias configure opCall;
-
         /***********************************************************************
 
-                Create a default StdioAppender with a SimpleTimerLayout.
+                No longer required. Just import this module instead
 
         ***********************************************************************/
 
-        static protected Logger defaultAppender ()
+        deprecated static void opCall ()
         {
-                // get the hierarchy root
-                auto root = Log.getRootLogger();
-
-                // setup a default appender
-                root.addAppender (new ConsoleAppender (new SimpleTimerLayout));
-
-                return root;
-        }
-
-        /***********************************************************************
-
-                Add a default StdioAppender, with a SimpleTimerLayout, to 
-                the root node, and set the default activity level to be
-                everything enabled.
-                
-        ***********************************************************************/
-
-        static void configure ()
-        {
-                // enable all messages for all loggers
-                defaultAppender().setLevel ();
         }
 }
+

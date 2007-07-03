@@ -13,11 +13,11 @@
 
 module tango.util.log.PropertyConfigurator;
 
-private import  tango.text.Properties;
-
 private import  tango.io.FilePath;
 
 private import  tango.util.log.Log;
+
+private import  tango.text.Properties;
 
 /*******************************************************************************
 
@@ -59,7 +59,7 @@ struct PropertyConfigurator
 
         ***********************************************************************/
 
-        static void configure (FilePath path)
+        static void opCall (FilePath path)
         {
                 void loader (char[] name, char[] value)
                 {
