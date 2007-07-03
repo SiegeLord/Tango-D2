@@ -64,9 +64,6 @@ module tango.net.Socket;
 
 private import  tango.sys.Common;
 
-private import  tango.stdc.errno,
-                tango.stdc.stdint;
-
 private import  tango.core.Exception;
 
 private import  tango.core.Type : Interval;
@@ -290,13 +287,13 @@ struct hostent
 
 version(BigEndian)
 {
-        uint16_t htons(uint16_t x)
+        ushort htons(ushort x)
         {
                 return x;
         }
 
 
-        uint32_t htonl(uint32_t x)
+        uint htonl(uint x)
         {
                 return x;
         }
@@ -306,13 +303,13 @@ else version(LittleEndian)
         import tango.core.BitManip;
 
 
-        uint16_t htons(uint16_t x)
+        ushort htons(ushort x)
         {
-                return cast(uint16_t) ((x >> 8) | (x << 8));
+                return cast(ushort) ((x >> 8) | (x << 8));
         }
 
 
-        uint32_t htonl(uint32_t x)
+        uint htonl(uint x)
         {
                 return bswap(x);
         }
@@ -323,13 +320,13 @@ else
 }
 
 
-uint16_t ntohs(uint16_t x)
+ushort ntohs(ushort x)
 {
         return htons(x);
 }
 
 
-uint32_t ntohl(uint32_t x)
+uint ntohl(uint x)
 {
         return htonl(x);
 }
