@@ -62,7 +62,6 @@ version( Win32 )
 {
     private
     {
-        import tango.sys.win32.Macros;
         import tango.sys.win32.UserGdi;
 
         const DWORD TLS_OUT_OF_INDEXES  = 0xFFFFFFFF;
