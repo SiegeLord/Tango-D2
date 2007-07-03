@@ -148,7 +148,7 @@ unittest
     assert(abs(71.6Li) == 71.6L);
     assert(abs(-56) == 56);
     assert(abs(2321312L)  == 2321312L);
-    assert(abs(-1+1i) == sqrt(2.0));
+    assert(abs(-1.0L+1.0Li) == sqrt(2.0L));
 }
 }
 
