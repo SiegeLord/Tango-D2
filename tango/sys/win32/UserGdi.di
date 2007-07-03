@@ -1738,4 +1738,11 @@ extern(Windows)
 	int wglSetLayerPaletteEntries(HDC, int, int, int, void*);
 	DWORD WNetGetResourceParentA(PNETRESOURCEA, POINTER, DWORD*);
 	BOOL WriteFile(THANDLE, void*, DWORD, DWORD*, POVERLAPPED);
+
+        BOOL CancelWaitableTimer(HANDLE hTimer);
+        HANDLE OpenWaitableTimerA(DWORD dwDesiredAccess, BOOL bInheritHandle, LPCSTR lpTimerName);
+        HANDLE OpenWaitableTimerW(DWORD dwDesiredAccess, BOOL bInheritHandle, LPCWSTR lpTimerName);
+        HANDLE CreateWaitableTimerA(LPSECURITY_ATTRIBUTES lpTimerAttributes, BOOL bManualReset, LPCSTR lpTimerName);
+        HANDLE CreateWaitableTimerW(LPSECURITY_ATTRIBUTES lpTimerAttributes, BOOL bManualReset, LPCWSTR lpTimerName);
+        BOOL SetWaitableTimer(HANDLE hTimer, LARGE_INTEGER* pDueTime, LONG lPeriod, PTIMERAPCROUTINE pfnCompletionRoutine, LPVOID lpArgToCompletionRoutine, BOOL fResume);
 }
