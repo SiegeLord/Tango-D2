@@ -218,13 +218,15 @@ abstract class AbstractOutputStream : OutputStream
         final OutputStream copy (InputStream src)
         {
                 auto buffer = new byte[conduit.bufferSize];
-                auto p = buffer.ptr;
 
                 uint i;
                 while ((i = src.read (buffer)) != IConduit.Eof)
-                        for (uint j; i > 0; i -= j, p += j)
-                             if ((j = write (p[0..i])) is IConduit.Eof)
-                                  conduit.exception ("OutputStream.copy :: Eof while copying");
+                      {
+                      auto p = buffer.ptr;
+                      for (uint j; i > 0; i -= j, p += j)
+                           if ((j = write (p[0..i])) is IConduit.Eof)
+                                conduit.exception ("OutputStream.copy :: Eof while copying");
+                      }
                 
                 delete buffer;
                 return this;
