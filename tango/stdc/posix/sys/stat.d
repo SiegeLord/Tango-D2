@@ -78,7 +78,7 @@ version( linux )
     {
         dev_t       st_dev;
         ushort      __pad1;
-      static if( false /*__USE_FILE_OFFSET64*/ )
+      static if( __USE_FILE_OFFSET64 )
       {
         ino_t       __st_ino;
       }
@@ -119,7 +119,7 @@ version( linux )
         time_t      st_ctime;
         c_ulong     st_ctimensec;
       }
-      static if( false /*__USE_FILE_OFFSET64*/ )
+      static if( __USE_FILE_OFFSET64 )
       {
         ino_t       st_ino;
       }

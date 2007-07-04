@@ -36,7 +36,7 @@ uid_t
 
 version( linux )
 {
-  static if( false /*__USE_FILE_OFFSET64*/ )
+  static if( __USE_FILE_OFFSET64 )
   {
     alias long      blkcnt_t;
     alias ulong     ino_t;
@@ -91,7 +91,7 @@ useconds_t
 
 version( linux )
 {
-  static if( false /*__USE_FILE_OFFSET64*/ )
+  static if( __USE_FILE_OFFSET64 )
   {
     alias ulong     fsblkcnt_t;
     alias ulong     fsfilcnt_t;

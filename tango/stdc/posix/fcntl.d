@@ -73,7 +73,7 @@ version( linux )
     const F_SETFD       = 2;
     const F_GETFL       = 3;
     const F_SETFL       = 4;
-  static if( false /*__USE_FILE_OFFSET64*/ )
+  static if( __USE_FILE_OFFSET64 )
   {
     const F_GETLK       = 5;
     const F_SETLK       = 6;
