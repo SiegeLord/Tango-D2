@@ -75,6 +75,7 @@ class Mutex :
             int rc = pthread_mutex_destroy( &m_hndl );
             assert( !rc, "Unable to destroy mutex" );
         }
+        (cast(void**) this)[1] = null;
     }
 
 
