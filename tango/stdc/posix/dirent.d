@@ -61,15 +61,7 @@ version( linux )
         // Managed by OS
     }
 
-  static if( false /*__USE_FILE_OFFSET64*/ )
-  {
-    dirent* readdir64(DIR*);
-    alias readdir64 readdir;
-  }
-  else
-  {
     dirent* readdir(DIR*);
-  }
 }
 else version( darwin )
 {
@@ -122,15 +114,7 @@ int readdir_r(DIR*, dirent*, dirent**);
 
 version( linux )
 {
-  static if( false /*__USE_FILE_OFFSET64*/ )
-  {
-    int readdir64_r(DIR*, dirent*, dirent**);
-    alias readdir64_r readdir_r;
-  }
-  else
-  {
     int readdir_r(DIR*, dirent*, dirent**);
-  }
 }
 
 //

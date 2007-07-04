@@ -75,15 +75,15 @@ version( linux )
     const F_SETFL       = 4;
   static if( __USE_FILE_OFFSET64 )
   {
-    const F_GETLK       = 5;
-    const F_SETLK       = 6;
-    const F_SETLKW      = 7;
-  }
-  else
-  {
     const F_GETLK       = 12;
     const F_SETLK       = 13;
     const F_SETLKW      = 14;
+  }
+  else
+  {
+    const F_GETLK       = 5;
+    const F_SETLK       = 6;
+    const F_SETLKW      = 7;
   }
     const F_GETOWN      = 9;
     const F_SETOWN      = 8;
