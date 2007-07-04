@@ -12,4 +12,7 @@ public import tango.stdc.config;
 
 extern (C):
 
-const bool  __USE_FILE_OFFSET64 = false;
+version( linux )
+{
+    const bool  __USE_FILE_OFFSET64 = false;
+}
