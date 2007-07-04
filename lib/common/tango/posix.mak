@@ -69,6 +69,7 @@ doc     : tango.doc
 OBJ_CORE= \
     core/Exception.o \
     core/Memory.o \
+    core/Runtime.o \
     core/Thread.o \
     core/ThreadASM.o
 

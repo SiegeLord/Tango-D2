@@ -66,6 +66,7 @@ doc     : tango.doc
 OBJ_CORE= \
     core\Exception.obj \
     core\Memory.obj \
+    core\Runtime.obj \
     core\Thread.obj
 
 OBJ_STDC= \

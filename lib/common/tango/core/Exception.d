@@ -11,15 +11,11 @@ module tango.core.Exception;
 
 private
 {
-    alias bool function() moduleUnitTesterType;
-    alias bool  function( Object obj ) collectHandlerType;
     alias void  function( char[] file, size_t line, char[] msg = null ) assertHandlerType;
     alias TracedExceptionInfo function( void* ptr = null ) traceHandlerType;
 
-    moduleUnitTesterType    moduleUnitTester    = null;
-    collectHandlerType      collectHandler      = null;
-    assertHandlerType       assertHandler       = null;
-    traceHandlerType        traceHandler        = null;
+    assertHandlerType   assertHandler   = null;
+    traceHandlerType    traceHandler    = null;
 }
 
 
@@ -436,30 +432,6 @@ class CorruptedIteratorException : NoSuchElementException
 
 
 /**
- * Overrides the default module unit tester with a user-supplied version.
- *
- * Params:
- *  h = The new unit tester.  Set to null to use the default unit tester.
- */
-void setModuleUnitTester( moduleUnitTesterType h )
-{
-    moduleUnitTester = h;
-}
-
-
-/**
- * Overrides the default collect hander with a user-supplied version.
- *
- * Params:
- *  h = The new collect handler.  Set to null to use the default handler.
- */
-void setCollectHandler( collectHandlerType h )
-{
-    collectHandler = h;
-}
-
-
-/**
  * Overrides the default assert hander with a user-supplied version.
  *
  * Params:
@@ -486,30 +458,6 @@ void setTraceHandler( traceHandlerType h )
 ////////////////////////////////////////////////////////////////////////////////
 // Overridable Callbacks
 ////////////////////////////////////////////////////////////////////////////////
-
-
-/**
- * This routine is called by the runtime to run module unit tests on startup.
- * The user-supplied unit tester will be called if one has been supplied,
- * otherwise all unit tests will be run in sequence.
- *
- * Returns:
- *  true if execution should continue after testing is complete and false if
- *  not.  Default behavior is to return true.
- */
-extern (C) bool runModuleUnitTests()
-{
-    if( moduleUnitTester is null )
-    {
-        foreach( m; ModuleInfo )
-        {
-            if( m.unitTest )
-                m.unitTest();
-        }
-        return true;
-    }
-    return moduleUnitTester();
-}
 
 
 /**
@@ -544,26 +492,6 @@ extern (C) void onAssertErrorMsg( char[] file, size_t line, char[] msg )
     if( assertHandler is null )
         throw new AssertException( msg, file, line );
     assertHandler( file, line, msg );
-}
-
-
-/**
- * This function will be called when resource objects (ie. objects with a dtor)
- * are finalized by the garbage collector.  The user-supplied collect handler
- * will be called if one has been supplied, otherwise no action will be taken.
- *
- * Params:
- *  obj = The object being collected.
- *
- * Returns:
- *  true if the runtime should call this object's dtor and false if not.
- *  Default behavior is to return true.
- */
-extern (C) bool onCollectResource( Object obj )
-{
-    if( collectHandler is null )
-        return true;
-    return collectHandler( obj );
 }
 
 
