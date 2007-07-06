@@ -81,7 +81,7 @@ all : $(SIMPLE_EXAMPLES)
 clean :
 	@echo "Removing all examples"
 	rm -f $(SIMPLE_EXAMPLES) $(REFERENCE_EXAMPLES)
-	rm -f random.bin
+	rm -f conduits/random.bin
 
 
 
