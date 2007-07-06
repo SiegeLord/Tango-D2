@@ -485,6 +485,8 @@ class FileConduit : DeviceConduit, DeviceConduit.Seek
                         unless otherwise stipulated. We do this in order
                         to expose the same default behaviour as Win32
 
+                        NO FILE LOCKING FOR BORKED POSIX
+
                 ***************************************************************/
 
                 protected void open (Style style)
@@ -517,7 +519,8 @@ class FileConduit : DeviceConduit, DeviceConduit.Seek
                         handle = posix.open (path.cString.ptr, mode, 0666);
                         if (handle is -1)
                             error ();
-
+/+
+                        // POSIX locks are so outrageously fucked up ...
                         if (style.share is Share.None || style.share is Share.Read)
                            {
                            flock f = void;
@@ -526,6 +529,7 @@ class FileConduit : DeviceConduit, DeviceConduit.Seek
                            if (posix.fcntl(handle, F_SETLK, &f) is -1)
                                error ();
                            }
++/
                 }
 
                 /***************************************************************
