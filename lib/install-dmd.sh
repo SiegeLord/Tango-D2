@@ -24,7 +24,6 @@ Options:
 cd "`dirname $0`"
 
 # 0) Parse arguments
-SETPREFIX=0
 UNINSTALL=0
 REPLACE_PHOBOS=0
 
@@ -32,7 +31,6 @@ while [ "$#" != "0" ]
 do
     if [ "$1" = "--prefix" ]
     then
-        SETPREFIX=1
         shift
 
         PREFIX="$1"
