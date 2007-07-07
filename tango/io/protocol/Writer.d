@@ -565,7 +565,7 @@ class Writer : IWriter
         /***********************************************************************
         
                 Dump array content into the buffer. Note that the default
-                behaviour is to prefix with the element count 
+                behaviour is to prefix with the array byte count 
 
         ***********************************************************************/
 
