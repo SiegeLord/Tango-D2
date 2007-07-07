@@ -496,7 +496,7 @@ const real Q3[] = [
         if( p == 1.0L ) {
             return real.infinity;
         }
-        return NaN(TANGO_NAN_NORMALDISTRIBUTION_INV_DOMAIN);
+        return NaN(TANGO_NAN.NORMALDISTRIBUTION_INV_DOMAIN);
     }
     int code = 1;
     real y = p;

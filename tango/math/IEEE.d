@@ -77,23 +77,31 @@ version (DigitalMars_D_InlineAsm_X86) {
    static import tango.stdc.math;
 }
 
-// FIXME: standardize the values.
-// xx0 = domain, xx1 = range error, ...
-/// Standard Tango NaN payloads
-enum {
-    TANGO_NAN_TAN_DOMAIN = 0x1000,
-    TANGO_NAN_POW_DOMAIN = 0x1020,
-    TANGO_NAN_NORMALDISTRIBUTION_INV_DOMAIN = 0x3000,
-    TANGO_NAN_STUDENTSDDISTRIBUTION_DOMAIN = 0x3010,
-    TANGO_NAN_GAMMA_DOMAIN = 0x3100,
-    TANGO_NAN_GAMMA_POLE = 0x3102,
-    TANGO_NAN_GAMMA_ZERO = 0x3103, // FIXME: what does this mean?
-    TANGO_NAN_SGNGAMMA = 0x3104,
-    TANGO_NAN_BETA_DOMAIN = 0x3110
+// Standard Tango NaN payloads.
+// NOTE: These values may change in future Tango releases
+// The lowest three bits indicate the cause of the NaN:
+// 0 = error other than those listed below:
+// 1 = domain error
+// 2 = singularity
+// 3 = range
+// 4-7 = reserved.
+enum TANGO_NAN {
+    // General errors
+    DOMAIN_ERROR = 0x0101,
+    SINGULARITY = 0x0102,
+    RANGE_ERROR = 0x0103,
+    // NaNs created by functions in the basic library
+    TAN_DOMAIN = 0x1001,
+    POW_DOMAIN = 0x1021,
+    GAMMA_DOMAIN = 0x1101,
+    GAMMA_POLE = 0x1102,
+    GAMMA_ZERO = 0x1100, // FIXME: what causes this?
+    SGNGAMMA = 0x1112,
+    BETA_DOMAIN = 0x1131,
+    // NaNs from statistical functions
+    NORMALDISTRIBUTION_INV_DOMAIN = 0x2001,
+    STUDENTSDDISTRIBUTION_DOMAIN = 0x2011
 }
-
-
-
 
 /* Most of the functions depend on the format of the largest IEEE floating-point type.
  * These code will differ depending on whether 'real' is 64, 80, or 128 bits,
@@ -152,20 +160,24 @@ private:
     int m_flags;
     version (X86_Any) {
         // Applies to both x87 status word (16 bits) and SSE2 status word(32 bits).
-        const int INEXACT_MASK   = 0x20;
-        const int UNDERFLOW_MASK = 0x10;
-        const int OVERFLOW_MASK  = 0x08;
-        const int DIVBYZERO_MASK = 0x04;
-        const int INVALID_MASK   = 0x01;
+        enum : int {
+            INEXACT_MASK   = 0x20,
+            UNDERFLOW_MASK = 0x10,
+            OVERFLOW_MASK  = 0x08,
+            DIVBYZERO_MASK = 0x04,
+            INVALID_MASK   = 0x01
+        }
         // Don't bother about denormals, they are not supported on all CPUs.
         //const int DENORMAL_MASK = 0x02;
     } else version (PPC) {
         // PowerPC FPSCR is a 32-bit register.
-        const int INEXACT_MASK   = 0x600;
-        const int UNDERFLOW_MASK = 0x010;
-        const int OVERFLOW_MASK  = 0x008;
-        const int DIVBYZERO_MASK = 0x020;
-        const int INVALID_MASK   = 0xF80;
+        enum : int {
+            INEXACT_MASK   = 0x600,
+            UNDERFLOW_MASK = 0x010,
+            OVERFLOW_MASK  = 0x008,
+            DIVBYZERO_MASK = 0x020,
+            INVALID_MASK   = 0xF80
+        }
     }
 private:
     static IeeeFlags getIeeeFlags()
@@ -727,6 +739,8 @@ unittest {
 /**
  * Returns (x * y) + z, rounding only once according to the
  * current rounding mode.
+ *
+ * BUGS: Not currently implemented - rounds twice.
  */
 real fma(float x, float y, float z)
 {
@@ -893,7 +907,7 @@ unittest {
 
 /*********************************
  * Is number subnormal? (Also called "denormal".)
- * Subnormals have a 0 exponent and a 0 most significant mantissa bit.
+ * Subnormals have a 0 exponent and a 0 most significant significand bit.
  */
 
 /* Need one for each format because subnormal floats might
@@ -1046,7 +1060,7 @@ real nextUp(real x)
         if (x == -real.infinity) return -real.max;
         return x; // +INF and NAN are unchanged.
     }
-    if (pe[4] & 0x8000)  { // Negative number -- need to decrease the mantissa
+    if (pe[4] & 0x8000)  { // Negative number -- need to decrease the significand
         --*ps;
         // Need to mask with 0x7FFF... so denormals are treated correctly.
         if ((*ps & 0x7FFFFFFFFFFFFFFF) == 0x7FFFFFFFFFFFFFFF) {
@@ -1063,7 +1077,7 @@ real nextUp(real x)
         }
         return x;
     } else {
-        // Positive number -- need to increase the mantissa.
+        // Positive number -- need to increase the significand.
         // Works automatically for positive zero.
         ++*ps;
         if ((*ps & 0x7FFFFFFFFFFFFFFF) == 0) {
@@ -1286,7 +1300,7 @@ real nextafter(real x, real y)
 /**************************************
  * To what precision is x equal to y?
  *
- * Returns: the number of mantissa bits which are equal in x and y.
+ * Returns: the number of significand bits which are equal in x and y.
  * eg, 0x1.F8p+60 and 0x1.F1p+60 are equal to 5 bits of precision.
  *
  *  $(TABLE_SV
@@ -1317,7 +1331,7 @@ int feqrel(real x, real y)
     ushort *pd = cast(ushort *)(&diff);
 
     // The difference in abs(exponent) between x or y and abs(x-y)
-    // is equal to the number of mantissa bits of x which are
+    // is equal to the number of significand bits of x which are
     // equal to y. If negative, x and y have different exponents.
     // If positive, x and y are equal to 'bitsdiff' bits.
     // AND with 0x7FFF to form the absolute value.
@@ -1334,7 +1348,7 @@ int feqrel(real x, real y)
     if (pd[4] == 0)
     {   // Difference is denormal
         // For denormals, we need to add the number of zeros that
-        // lie at the start of diff's mantissa.
+        // lie at the start of diff's significand.
         // We do this by multiplying by 2^real.mant_dig
         diff *= 0x1p+63;
         return bitsdiff + real.mant_dig - pd[4];
@@ -1356,7 +1370,7 @@ int feqrel(real x, real y)
     if (pd[EXPONENTPOS] == 0)
     {   // Difference is denormal
         // For denormals, we need to add the number of zeros that
-        // lie at the start of diff's mantissa.
+        // lie at the start of diff's significand.
         // We do this by multiplying by 2^real.mant_dig
         diff *= 0x1p+53;
         return bitsdiff + real.mant_dig - pd[EXPONENTPOS];
@@ -1581,104 +1595,42 @@ unittest {
 
 // Functions for NaN payloads
 /*
- * A 'payload' can be stored in the mantissa of a $(NAN). One bit is required
+ * A 'payload' can be stored in the significand of a $(NAN). One bit is required
  * to distinguish between a quiet and a signalling $(NAN). This leaves 22 bits
  * of payload for a float; 51 bits for a double; 62 bits for an 80-bit real;
  * and 111 bits for a 128-bit quad.
 */
-
 /**
- * Is this a $(NAN) with a string payload?
+ * Create a $(NAN), storing an integer inside the payload.
  *
- * Returns true if x has a char [] payload.
- * Returns false if x is not a NaN, or has an integral payload.
- */
-bool isNaNPayloadString(real x)
-{
-    static if (real.mant_dig==double.mant_dig) {
-        ulong* px = cast(ulong *)(&x);
-        return (px[0] & 0x7FF4_0000_0000_0000) == 0x7FF4_0000_0000_0000;
-    } else { // 80-bit real
-        ushort* px = cast(ushort *)(&x);
-        return (px[4] & 0x7FFF) == 0x7FFF && (px[3] & 0x2000)== 0x2000;
-    }
-}
-/+
-/**
- *  Make a $(NAN) with a string payload.
- *
- * Storage space in the payload is strictly limited. Only the low 7 bits of
- * each character are stored in the payload, and at most 8 characters can be
- * stored.
- */
-real NaN(char [] str)
-{
-    ulong v;
-    static if (real.mant_dig==double.mant_dig) {
-        v = 3; // No implied bit, signalling bit = 1, string NaN = 1
-    } else {
-        v = 7; // implied bit = 1 , signalling bit = 1, string NaN = 1
-    }
-    int n = str.length;
-
-    if (n>8) n=8;
-    for (int i=0; i < n; ++i) {
-        v <<= 7;
-        v |= (str[i] & 0x7F);
-        if (i==6) {
-            v <<=1;
-        }
-    }
-    for (int i=n; i < 8; ++i) {
-        v <<=7;
-        if (i==7) v<<=1;
-    }
-    static if (real.mant_dig==double.mant_dig) {
-        v>>>=7; // 8th character is lost.
-        v |=0x7FF0_0000_0000_0000;
-        real x;
-
-    } else {
-        v <<=4;
-        real x = real.nan;
-    }
-        *cast(ulong *)(&x) = v;
-        return x;
-}
-+/
-/**
- * Create a $(NAN) with an integral payload.
- *
+ * For 80-bit or 128-bit reals, the largest possible payload is 0x3FFF_FFFF_FFFF_FFFF.
+ * For doubles, it is 0x3_FFFF_FFFF_FFFF.
+ * For floats, it is 0x3F_FFFF.
  */
 real NaN(ulong payload)
 {
     static if (real.mant_dig == double.mant_dig) {
-      ulong v = 4; // no implied bit. quiet bit = 1, string NaN = 0
+      ulong v = 2; // no implied bit. quiet bit = 1
     } else {
-      ulong v = 6; // implied bit = 1, quiet bit = 1, string NaN = 0
+      ulong v = 3; // implied bit = 1, quiet bit = 1
     }
 
     ulong a = payload;
 
-    // Float bits
-    ulong w = a & 0xF_FFFF;
+    // 22 Float bits
+    ulong w = a & 0x3F_FFFF;
     a -= w;
-    v<<=1;
-    if (a!=0) v |= 1; // FloatMoreBits
 
-    v <<=20;
+    v <<=22;
     v |= w;
-    a >>=20;
+    a >>=22;
 
-    // Double bits
-    v <<=28;
+    // 29 Double bits
+    v <<=29;
     w = a & 0xFFF_FFFF;
     v |= w;
     a -= w;
-    a >>=28;
-
-    v <<=1;
-    if (a!=0) v |= 1; // DoubleMoreBits
+    a >>=29;
 
     static if (real.mant_dig == double.mant_dig) {
         v |=0x7FF0_0000_0000_0000;
@@ -1697,109 +1649,31 @@ real NaN(ulong payload)
     }
 }
 
-/+
-/**
- * Extract a string payload from a $(NAN)
- *
- * Extracts the character payload and stores the first buff.length
- * characters into it. The string is not null-terminated.
- * Returns the slice that was written to.
- *
- */
-char [] getNaNPayloadString(real x, char[] buff)
-{
-    assert(isNaNPayloadString(x));
-    ulong m = *cast(ulong *)(&x);
-    static if (real.mant_dig==double.mant_dig) {
-        // Skip exponent, quiet bit, and character bit
-        m &= 0x0003_FFFF_FFFF_FFFF;
-        m <<= 13; // Move the first byte to the top
-    } else { // 80-bit reals
-        // Skip implicit bit, quiet bit, and character bit
-        m &= 0x1FFF_FFFF_FFFF_FFFF;
-        m <<= 2; // Move the first byte to the top
-    }
-    ulong q;
-    int i=0;
-    while (m!=0 && i< buff.length) {
-        q =( m & 0x7F00_0000_0000_0000);
-        m -= q;
-        m <<= 7;
-        if (i==6) m <<=1;
-        q >>>= 7*8;
-        buff[i] = cast(ubyte)q;
-        ++i;
-    }
-    return buff[0..i];
-}
-
-debug(UnitTest) {
-unittest {
-    // String NaNs
-    real nan1 = 3.4 * NaN("qweRtyuip");
-    assert(isNaN(nan1));
-    assert(isNaNPayloadString(nan1));
-    char [8] buff8;
-    assert(getNaNPayloadString(nan1, buff8)== "qweRtyui");
-    // Test narrow casting
-    double nan2 = nan1;
-    assert(getNaNPayloadString(nan2, buff8)== "qweRtyu");
-
-    float nan3 = nan1;
-    assert(getNaNPayloadString(nan3, buff8)== "qwe");
-}
-}
-+/
-
 /**
  * Extract an integral payload from a $(NAN).
  *
  * Returns:
- * the integer payload as a long. If the return value is negative,
- * it means that data has been lost in narrowing conversions.
+ * the integer payload as a ulong.
  *
- * For 80-bit or 128-bit reals, the largest payload is 0x7FF_FFFF_FFFF_FFFF.
- * For doubles, it is 0xFFFF_FFFF_FFFF.
- * For floats, it is 0xF_FFFF.
- *
- * Return values between -1 and -2^20 were originally > 2^20, but
- * the low 20 bits are still valid. Values between -2^20 and -2^50 were
- * originally > 2^50, but the low 50 bits are still valid.
+ * For 80-bit or 128-bit reals, the largest possible payload is 0x3FFF_FFFF_FFFF_FFFF.
+ * For doubles, it is 0x3_FFFF_FFFF_FFFF.
+ * For floats, it is 0x3F_FFFF.
  */
-long getNaNPayloadLong(real x)
+ulong getNaNPayload(real x)
 {
-    assert(isNaN(x) && !isNaNPayloadString(x));
+    assert(isNaN(x));
     ulong m = *cast(ulong *)(&x);
     static if (real.mant_dig == double.mant_dig) {
-        // Make it look like an 80-bit mantissa.
-        // Skip exponent, quiet bit, and character bit
-        m &= 0x0003_FFFF_FFFF_FFFF;
-        m <<=11;
+        // Make it look like an 80-bit significand.
+        // Skip exponent, and quiet bit
+        m &= 0x0007_FFFF_FFFF_FFFF;
+        m <<=10;
     }
-    // ignore implicit bit, quiet bit, and character bit
-    bool bMore = false;
-    if ( m & 0x1000_0000_0000_0000L) bMore = true;
-    ulong f = m & 0x0FFF_FF00_0000_0000L;
-    long w = cast(long)f>>>40;
-    if (!bMore) return w;
-    if ((m & 0x00FF_FFFF_F7FFL) == 0) {
-        // There are two cases:
-        if ((m & 0x0800)==0) {
-            // the double bits were lost
-            return -w;
-        }
-        // the real80 bits were lost and the double bits were all zero.
-        // Set an extra high bit to distinguish it from the case above.
-        return -(w | 0x1_0000_0000_0000);
-    }
-    w |= (m& 0x00FF_FFFF_F000L)<<(20-12);
-    bMore = false;
-    if (m& 0x0800) bMore = true;
-    m&= 0x7FF;
-    if (!bMore) return w;
-    if (m==0) return -w; // the real80 bits were lost
-    w |= (m << 48);
-
+    // ignore implicit bit and quiet bit
+    ulong f = m & 0x3FFF_FF00_0000_0000L;
+    ulong w = f>>>40;
+    w |= (m & 0x00FF_FFFF_F800L)<<(22-11);
+    w |= (m&0x7FF) << 51;
     return w;
 }
 
@@ -1807,20 +1681,20 @@ debug(UnitTest) {
 unittest {
   real nan4 = NaN(0x789_ABCD_EF12_3456);
   static if (real.mant_dig == 64) {
-      assert (getNaNPayloadLong(nan4) == 0x789_ABCD_EF12_3456);
+      assert (getNaNPayload(nan4) == 0x789_ABCD_EF12_3456);
   } else {
-      assert (getNaNPayloadLong(nan4) == -0xABCD_EF12_3456);
+      assert (getNaNPayload(nan4) == 0x1_ABCD_EF12_3456);
   }
   double nan5 = nan4;
-  assert (getNaNPayloadLong(nan5) == -0xABCD_EF12_3456);
+  assert (getNaNPayload(nan5) == 0x1_ABCD_EF12_3456);
   float nan6 = nan4;
-  assert (getNaNPayloadLong(nan6) == -0x2_3456);
+  assert (getNaNPayload(nan6) == 0x12_3456);
   nan4 = NaN(0xFABCD);
-  assert (getNaNPayloadLong(nan4) == 0xFABCD);
+  assert (getNaNPayload(nan4) == 0xFABCD);
   nan6 = nan4;
-  assert (getNaNPayloadLong(nan6) == 0xFABCD);
+  assert (getNaNPayload(nan6) == 0xFABCD);
   nan5 = NaN(0x100_0000_0000_3456);
-  assert(getNaNPayloadLong(nan5) == -0x1_0000_0000_3456);
+  assert(getNaNPayload(nan5) == 0x0000_0000_3456);
 }
 }
 

@@ -185,12 +185,12 @@ real sgnGamma(real x)
     if (x > 0) return 1.0;
     if (x < -1/real.epsilon) {
         // Large negatives lose all precision
-        return NaN(TANGO_NAN_SGNGAMMA);
+        return NaN(TANGO_NAN.SGNGAMMA);
     }
 //  if (remquo(x, -1.0, n) == 0) {
     int n = cast(int)(x);
     if (x == n) {
-        return x == 0 ?  copysign(1, x) : NaN(TANGO_NAN_SGNGAMMA);
+        return x == 0 ?  copysign(1, x) : NaN(TANGO_NAN.SGNGAMMA);
     }
     return n & 1 ? 1.0 : -1.0;
 }
@@ -240,7 +240,7 @@ real gamma(real x)
 
     real q, z;
     if (isNaN(x)) return x;
-    if (x == -x.infinity) return NaN(TANGO_NAN_GAMMA_DOMAIN);
+    if (x == -x.infinity) return NaN(TANGO_NAN.GAMMA_DOMAIN);
     if ( fabs(x) > MAXGAMMA ) return real.infinity;
     if (x==0) return 1.0/x; // +- infinity depending on sign of x, create an exception.
 
@@ -255,7 +255,7 @@ real gamma(real x)
             int sgngam = 1; // sign of gamma.
             real p  = floor(q);
             if (p == q)
-                  return NaN(TANGO_NAN_GAMMA_DOMAIN); // poles for all integers <0.
+                  return NaN(TANGO_NAN.GAMMA_DOMAIN); // poles for all integers <0.
             int intpart = cast(int)(p);
             if ( (intpart & 1) == 0 )
                 sgngam = -1;
@@ -290,7 +290,7 @@ real gamma(real x)
 
     if ( x <= 0.03125L ) {
         if ( x == 0.0L )
-            return NaN(TANGO_NAN_GAMMA_ZERO);
+            return NaN(TANGO_NAN.GAMMA_ZERO);
         else {
             if ( x < 0.0L ) {
                 x = -x;
@@ -540,13 +540,13 @@ real betaIncomplete(real aa, real bb, real xx )
     if (!(aa>0 && bb>0)) {
          if (isNaN(aa)) return aa;
          if (isNaN(bb)) return bb;
-         return NaN(TANGO_NAN_BETA_DOMAIN); // domain error
+         return NaN(TANGO_NAN.BETA_DOMAIN); // domain error
     }
     if (!(xx>0 && xx<1.0)) {
         if (isNaN(xx)) return xx;
         if ( xx == 0.0L ) return 0.0;
         if ( xx == 1.0L )  return 1.0;
-        return NaN(TANGO_NAN_BETA_DOMAIN); // domain error
+        return NaN(TANGO_NAN.BETA_DOMAIN); // domain error
     }
     if ( (bb * xx) <= 1.0L && xx <= 0.95L)   {
         return betaDistPowerSeries(aa, bb, xx);

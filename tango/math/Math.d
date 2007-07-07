@@ -398,7 +398,7 @@ trigerr:
         jnp Lret        ; // if x is NaN, return x.
         fstp    ST(0)   ; // dump x, which will be infinity
     }
-    return NaN(TANGO_NAN_TAN_DOMAIN);
+    return NaN(TANGO_NAN.TAN_DOMAIN);
 Lret:
     ;
     }
