@@ -251,6 +251,12 @@ struct Console
                 Output newline ()
                 {
                         buffer_.append (Eol);
+
+                        // experimental: don't flush if we're redirected
+                        version (RedirectNoFlush)
+                                 if (redirected_)
+                                     return this;
+
                         return flush;
                 }           
 
