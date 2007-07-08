@@ -537,6 +537,9 @@ static this ()
 
 static ~this()
 {
-        Cout.flush;
-        Cerr.flush;
+        synchronized (Cout)
+                      Cout.flush;
+
+        synchronized (Cerr)
+                      Cerr.flush;
 }

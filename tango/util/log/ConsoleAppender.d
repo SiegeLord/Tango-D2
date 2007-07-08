@@ -69,12 +69,15 @@ public class ConsoleAppender : Appender
                  
         ***********************************************************************/
 
-        synchronized void append (Event event)
+        void append (Event event)
         {
-                auto layout = getLayout;
-                Cerr (layout.header  (event));
-                Cerr (layout.content (event));
-                Cerr (layout.footer  (event));                        
-                Cerr.newline;
+                synchronized (Cerr)
+                             {
+                             auto layout = getLayout;
+                             Cerr (layout.header  (event));
+                             Cerr (layout.content (event));
+                             Cerr (layout.footer  (event));                        
+                             Cerr.newline;
+                             }
         }
 }
