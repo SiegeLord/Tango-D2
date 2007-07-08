@@ -1398,7 +1398,7 @@ real pow(real x, real y)
         }
         else if (tango.math.IEEE.fabs(x) == 1)
         {
-            return NaN(TANGO_NAN_POW_DOMAIN);
+            return NaN(TANGO_NAN.POW_DOMAIN);
         }
         else // < 1
         {
