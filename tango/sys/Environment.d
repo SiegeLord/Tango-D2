@@ -109,11 +109,12 @@ struct Environment
         {
                 /**************************************************************
 
-                        Returns null if the variable does not exist
+                        Returns the provided 'def' value if the variable 
+                        does not exist
 
                 **************************************************************/
 
-                static char[] get (char[] variable)
+                static char[] get (char[] variable, char[] def = null)
                 {
                         wchar[] var = toUtf16(variable) ~ "\0";
 
@@ -121,7 +122,7 @@ struct Environment
                         if (size is 0)
                            {
                            if (SysError.lastCode is ERROR_ENVVAR_NOT_FOUND)
-                               return null;
+                               return def;
                            else
                               throw new PlatformException (SysError.lastMsg);
                            }
@@ -200,16 +201,17 @@ struct Environment
         {
                 /**************************************************************
 
-                        Returns null if the variable does not exist     
+                        Returns the provided 'def' value if the variable 
+                        does not exist
 
                 **************************************************************/
 
-                static char[] get (char[] variable)
+                static char[] get (char[] variable, char[] def = null)
                 {
                         char* ptr = getenv (variable.ptr);
 
                         if (ptr is null)
-                            return null;
+                            return def;
 
                         return ptr[0 .. strlen(ptr)].dup;
                 }
