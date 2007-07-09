@@ -378,10 +378,8 @@ class Layout(T)
                             return integer (result, *cast(uint*) p, format, 'u');
 
                        case TypeCode.LONG:
-                            return integer (result, *cast(long*) p, format);
-
                        case TypeCode.ULONG:
-                            return integer (result, *cast(long*) p, format, 'u');
+                            return integer (result, *cast(long*) p, format);
 
                        case TypeCode.FLOAT:
                             return floater (result, *cast(float*) p, format);
