@@ -33,7 +33,7 @@ module ${EXE};
 void main() {}
 EOF
 
-        rebuild -debug=UnitTest -debug -full -clean -unittest -version=UnitTest $EXE.d tango/core/*.d tango/io/digest/*.d tango/io/model/*.d tango/io/protocol/*.d tango/io/selector/*.d tango/io/*.d tango/math/*.d tango/net/ftp/*.d tango/net/http/*.d tango/net/model/*.d tango/stdc/stringz.d tango/sys/*.d tango/text/convert/*.d tango/text/locale/Collation.d tango/text/locale/Convert.d tango/text/locale/Core.d tango/text/locale/Data.d tango/text/locale/Locale.d tango/text/locale/Parse.d tango/text/locale/Posix.d tango/text/stream/*.d tango/text/*.d tango/util/*.d tango/util/collection/model/*.d tango/util/collection/*.d tango/util/collection/iterator/*.d tango/util/collection/impl/*.d tango/util/locks/*.d tango/util/log/model/*.d tango/util/log/*.d tango/util/time/chrono/*.d tango/util/time/*.d -dc=$DC-posix-tango
+        rebuild -debug=UnitTest -debug -full -clean -unittest -version=UnitTest $EXE.d tango/core/*.d tango/io/digest/*.d tango/io/model/*.d tango/io/protocol/*.d tango/io/selector/*.d tango/io/*.d tango/io/vfs/* tango/math/*.d tango/net/ftp/*.d tango/net/http/*.d tango/net/model/*.d tango/stdc/stringz.d tango/sys/*.d tango/text/convert/*.d tango/text/locale/Collation.d tango/text/locale/Convert.d tango/text/locale/Core.d tango/text/locale/Data.d tango/text/locale/Locale.d tango/text/locale/Parse.d tango/text/locale/Posix.d tango/text/stream/*.d tango/text/*.d tango/util/*.d tango/util/collection/model/*.d tango/util/collection/*.d tango/util/collection/iterator/*.d tango/util/collection/impl/*.d tango/util/log/model/*.d tango/util/log/*.d tango/util/time/chrono/*.d tango/util/time/*.d -dc=$DC-posix-tango
 
         mv $EXE lib/$EXE
         rm $EXE.d
