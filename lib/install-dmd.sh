@@ -91,6 +91,14 @@ then
         rm -rf $PREFIX/include/d/tango/std
         rm -f  $PREFIX/include/d/tango/object.di
     fi
+    # Since tango 0.99
+    if [ -e "$PREFIX/include/d/object.di" ]
+    then
+        rm -rf $PREFIX/include/d/tango
+        rm -rf $PREFIX/include/d/std
+        rm -f  $PREFIX/include/d/object.di
+    fi
+
     if [ -e "$PREFIX/lib/libtango.a" ]
     then
 		rm -f $PREFIX/lib/libtango.a
@@ -122,17 +130,17 @@ fi
 create_dmd_conf() {
     cat > $PREFIX/bin/dmd.conf <<EOF
 [Environment]
-DFLAGS=-I$PREFIX/include/d/tango -version=Tango -version=Posix -L-L"%@P%/../lib"
+DFLAGS=-I$PREFIX/include/d -version=Tango -version=Posix -L-L"%@P%/../lib"
 EOF
 }
 
 # Install ...
 echo 'Copying files...'
-mkdir -p $PREFIX/include/d/tango || die "Failed to create include/d (maybe you need root privileges?)" 5
+mkdir -p $PREFIX/include/d || die "Failed to create include/d (maybe you need root privileges?)" 5
 mkdir -p $PREFIX/lib/ || die "Failed to create $PREFIX/lib (maybe you need root privileges?)" 5
 mkdir -p $PREFIX/bin/ || die "Failed to create $PREFIX/bin" 5
 cp -pRvf libphobos.a $PREFIX/lib/ || die "Failed to copy libraries" 7
-cp -pRvf ../object.di $PREFIX/include/d/tango/object.di || die "Failed to copy source" 8
+cp -pRvf ../object.di $PREFIX/include/d/object.di || die "Failed to copy source" 8
 if [ ! -e "$PREFIX/bin/dmd.conf" ]
 then
     create_dmd_conf
