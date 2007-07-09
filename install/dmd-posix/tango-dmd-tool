@@ -64,6 +64,14 @@ then
     rm -rf $PREFIX/include/d/tango/std
     rm -f  $PREFIX/include/d/tango/object.di
 fi
+# Since Tango 0.99
+if [ -e "$PREFIX/include/d/object.di" ]
+then
+    rm -rf $PREFIX/include/d/tango
+    rm -rf $PREFIX/include/d/std
+    rm -f  $PREFIX/include/d/object.di
+fi
+
 if [ -e "$PREFIX/lib/libtango.a" ]
 then
     rm -f $PREFIX/lib/libtango.a
