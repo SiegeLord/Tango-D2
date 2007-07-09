@@ -64,6 +64,7 @@ doc     : tango.doc
 ######################################################
 
 OBJ_CORE= \
+    core\BitManip.obj \
     core\Exception.obj \
     core\Memory.obj \
     core\Runtime.obj \
@@ -79,8 +80,10 @@ ALL_OBJS= \
 ######################################################
 
 DOC_CORE= \
+    core\BitManip.html \
     core\Exception.html \
     core\Memory.html \
+    core\Runtime.html \
     core\Thread.html
 
 ALL_DOCS=
