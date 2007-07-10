@@ -184,6 +184,10 @@ struct Console
 
                 private this (Conduit conduit, bool redirected)
                 {
+                        // get conduit to notify us of attachments so
+                        // that we can adjust our buffer accordingly
+                        conduit.notify (&notify);
+
                         redirected_ = redirected;
                         buffer_ = new Buffer (conduit);
                 }
@@ -296,6 +300,28 @@ struct Console
                 {
                         return redirected_;
                 }           
+
+                /**************************************************************
+
+                        Invoked when an attachment is made to the console
+                        Conduit. We use this to point our buffer at the 
+                        filter being attached. Without this, said filter
+                        would be ignored since Buffer operates in a mode
+                        termed 'snapshot' i.e. it doesn't look for changes
+                        in the conduit after being connected to it (which
+                        is both correct and required behaviour).
+
+                        An alternative would be to simply insert a buffered
+                        filter. However, Cin requires readln() support and
+                        therefore needs to directly address a buffer rather
+                        than an InputStream.
+
+                **************************************************************/
+
+                private void notify (bool)
+                {
+                        buffer_.setConduit (buffer_.conduit);
+                }
         }
 
 
@@ -318,6 +344,16 @@ struct Console
         class Conduit : DeviceConduit
         {
                 private bool redirected = false;
+
+                /***************************************************************
+
+                        Intercept the default file-flushing implementation
+
+                ***************************************************************/
+
+                override void flush ()
+                {
+                }
 
                 /***************************************************************
 

@@ -36,10 +36,11 @@ private import  tango.io.model.IConduit;
 
 *******************************************************************************/
 
-class Conduit : private AbstractOutputStream, IConduit, InputStream
+class Conduit : IConduit, InputStream, OutputStream
 {
-        private InputStream  input_;
-        private OutputStream output_;
+        private InputStream             input_;
+        private OutputStream            output_;
+        private void delegate(bool)     notify_;
 
         /***********************************************************************
 
@@ -86,6 +87,8 @@ class Conduit : private AbstractOutputStream, IConduit, InputStream
 
         /***********************************************************************
 
+                default ctor assigns input and output streams to their
+                initial value (this conduit)
 
         ***********************************************************************/
 
@@ -93,55 +96,14 @@ class Conduit : private AbstractOutputStream, IConduit, InputStream
         {
                 input_ = this;
                 output_ = this;
-        }
 
-        /***********************************************************************
-
-                Return the input stream
-
-        ***********************************************************************/
-        
-        final InputStream input ()
-        {
-                return input_;
-        }
-
-        /***********************************************************************
-
-                Return the output stream
-
-        ***********************************************************************/
-        
-        final OutputStream output ()
-        {
-                return output_;
-        }
-
-        /***********************************************************************
-
-        ***********************************************************************/
-
-        final InputStream attach (InputStream filter)
-        {
-                auto tmp = input_;
-                input_ = filter;
-                return tmp;
-        }
-
-        /***********************************************************************
-
-        ***********************************************************************/
-
-        final OutputStream attach (OutputStream filter)
-        {
-                auto tmp = output_;
-                output_ = filter;
-                return tmp;
+                // assign a default notification handler that does nothing
+                notify_ = (bool){return;};
         }
 
         /***********************************************************************
         
-                Return the host conduit
+                Return the host conduit. This is part of the Stream interface
 
         ***********************************************************************/
 
@@ -152,7 +114,7 @@ class Conduit : private AbstractOutputStream, IConduit, InputStream
                             
         /***********************************************************************
 
-                Is the conduit alive?
+                Is the conduit alive? Default behaviour returns true
 
         ***********************************************************************/
 
@@ -193,21 +155,92 @@ class Conduit : private AbstractOutputStream, IConduit, InputStream
 
         /***********************************************************************
 
+                Return the current input stream. The initial input stream
+                is hosted by the conduit itself. Subsequent attachment of
+                stream 'filters' will alter this value.
+
+        ***********************************************************************/
+        
+        final InputStream input ()
+        {
+                return input_;
+        }
+
+        /***********************************************************************
+
+                Return the current output stream. The initial output stream
+                is hosted by the conduit itself. Subsequent attachment of
+                stream 'filters' will alter this value.
+
+        ***********************************************************************/
+        
+        final OutputStream output ()
+        {
+                return output_;
+        }
+
+        /***********************************************************************
+
+                Replace the input stream and return the prior one. The
+                return value should be used as the 'ancestor' attribute
+                of attached filter, to be invoked appropriately during
+                subsequent filter activity. However, it is entirely up
+                to the intercepting stream to decide whether to follow
+                that recommendation or not.
+
         ***********************************************************************/
 
-        void exception (char[] msg)
+        final InputStream attach (InputStream filter)
+        {
+                auto tmp = input_;
+                input_ = filter;
+                notify_ (true);
+                return tmp;
+        }
+
+        /***********************************************************************
+
+                Replace the output stream and return the prior one. The
+                return value should be used as the 'ancestor' attribute
+                of attached filter, to be invoked appropriately during
+                subsequent filter activity. However, it is entirely up
+                to the intercepting stream to decide whether to follow
+                that recommendation or not.
+
+        ***********************************************************************/
+
+        final OutputStream attach (OutputStream filter)
+        {
+                auto tmp = output_;
+                output_ = filter;
+                notify_ (false);
+                return tmp;
+        }
+
+        /***********************************************************************
+        
+                Attach a notification handler, to be invoked when a filter
+                is added to the conduit. This is used in some very specific 
+                cases, and should never need to support multiple clients.
+                
+        ***********************************************************************/
+
+        final void notify (void delegate(bool) dg)
+        {
+                notify_ = dg;
+        }
+                            
+        /***********************************************************************
+
+                Throw an IOException, with the provided message
+
+        ***********************************************************************/
+
+        final void exception (char[] msg)
         {
                 throw new IOException (msg);
         }
-}
 
-
-/*******************************************************************************
-
-*******************************************************************************/
-
-abstract class AbstractOutputStream : OutputStream
-{
         /***********************************************************************
 
                 Transfer the content of another conduit to this one. Returns
@@ -217,19 +250,130 @@ abstract class AbstractOutputStream : OutputStream
 
         final OutputStream copy (InputStream src)
         {
-                auto buffer = new byte[conduit.bufferSize];
+                return copy (src, this);
+        }
 
+        /***********************************************************************
+
+                Transfer the content of another conduit to this one. Returns
+                the dst OutputStream, or throws IOException on failure.
+
+        ***********************************************************************/
+
+        final OutputStream copy (InputStream src, OutputStream dst)
+        {
                 uint i;
-                while ((i = src.read (buffer)) != IConduit.Eof)
+                auto tmp = new byte [dst.conduit.bufferSize];
+
+                while ((i = src.read(tmp)) != IConduit.Eof)
                       {
-                      auto p = buffer.ptr;
+                      auto p = tmp.ptr;
                       for (uint j; i > 0; i -= j, p += j)
-                           if ((j = write (p[0..i])) is IConduit.Eof)
-                                conduit.exception ("OutputStream.copy :: Eof while copying");
+                           if ((j = dst.write (p[0..i])) is IConduit.Eof)
+                                exception ("OutputStream.copy :: Eof while copying");
                       }
                 
-                delete buffer;
-                return this;
+                delete tmp;
+                return dst;
+        }
+}
+
+
+
+/*******************************************************************************
+
+*******************************************************************************/
+
+class InputFilter : InputStream
+{
+        protected InputStream next;
+
+        /***********************************************************************
+
+        ***********************************************************************/
+
+        abstract uint read (void[] dst);
+
+        /***********************************************************************
+
+        ***********************************************************************/
+
+        this (InputStream stream)
+        {
+                next = stream.conduit.attach (this);
+        }
+
+        /***********************************************************************
+
+        ***********************************************************************/
+
+        IConduit conduit ()
+        {
+                return next.conduit;
+        }
+
+        /***********************************************************************
+
+        ***********************************************************************/
+
+        void clear ()
+        {
+                next.clear;
+        }
+}
+
+
+/*******************************************************************************
+
+*******************************************************************************/
+
+class OutputFilter : OutputStream
+{
+        protected OutputStream next;
+
+        /***********************************************************************
+
+        ***********************************************************************/
+
+        abstract uint write (void[] src);
+
+        /***********************************************************************
+
+        ***********************************************************************/
+
+        this (OutputStream stream)
+        {
+                next = stream.conduit.attach (this);
+        }
+
+        /***********************************************************************
+
+        ***********************************************************************/
+
+        IConduit conduit ()
+        {
+                return next.conduit;
+        }
+
+        /***********************************************************************
+
+        ***********************************************************************/
+
+        void flush ()
+        {
+                next.flush;
+        }
+
+        /***********************************************************************
+
+                Transfer the content of another conduit to this one. Returns
+                a reference to this class, or throws IOException on failure.
+
+        ***********************************************************************/
+
+        OutputStream copy (InputStream src)
+        {
+                return conduit.copy (src, this);
         }
 }
 

@@ -107,6 +107,15 @@ interface IConduit : ISelectable
 
         /***********************************************************************
 
+                Transfer the content of another conduit to this one. Returns
+                the dst OutputStream, or throws IOException on failure.
+
+        ***********************************************************************/
+
+        abstract OutputStream copy (InputStream src, OutputStream dst);
+
+        /***********************************************************************
+
                 Models the ability to seek within a conduit
 
         ***********************************************************************/
@@ -173,8 +182,16 @@ interface ISelectable
 
 *******************************************************************************/
 
-interface InputStream : Stream
+interface InputStream
 {
+        /***********************************************************************
+        
+                Return the host conduit
+
+        ***********************************************************************/
+
+        IConduit conduit ();
+
         /***********************************************************************
         
                 Read from conduit into a target array. The provided dst 
@@ -203,8 +220,16 @@ interface InputStream : Stream
 
 *******************************************************************************/
 
-interface OutputStream : Stream
+interface OutputStream
 {
+        /***********************************************************************
+        
+                Return the host conduit
+
+        ***********************************************************************/
+
+        IConduit conduit ();
+
         /***********************************************************************
         
                 Write to conduit from a source array. The provided src
@@ -235,21 +260,3 @@ interface OutputStream : Stream
 
         void flush ();               
 }
-
-
-/*******************************************************************************
-        
-
-*******************************************************************************/
-
-interface Stream
-{
-        /***********************************************************************
-        
-                Return the host conduit
-
-        ***********************************************************************/
-
-        IConduit conduit ();
-}
-
