@@ -46,7 +46,7 @@ class RegexIterator : StreamIterator!(char)
         
                 Construct an uninitialized iterator. For example:
                 ---
-                auto lines = new LineIterator;
+                auto lines = new LineIterator!(char);
 
                 void somefunc (IBuffer buffer)
                 {
@@ -59,15 +59,14 @@ class RegexIterator : StreamIterator!(char)
                 ---
                 void somefunc (IBuffer buffer)
                 {
-                        foreach (line; new LineIterator (buffer))
+                        foreach (line; new LineIterator!(char) (buffer))
                                  Cout (line).newline;
                 }
                 ---
                 
                 Construct a streaming iterator upon a conduit:
-
                 ---
-                foreach (line; new LineIterator (new FileConduit ("myfile")))
+                foreach (line; new LineIterator!(char) (new FileConduit ("myfile")))
                          Cout (line).newline;
                 ---
 

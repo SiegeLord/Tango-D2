@@ -128,26 +128,23 @@ class StreamIterator(T)
 
                 Locate the next token. Returns the token if found, null
                 otherwise. Null indicates an end of stream condition. To
-                sweep a conduit for lines using method next():
-                
+                sweep a conduit for lines using method next():                
                 ---
-                auto lines = new LineIterator (new FileConduit("myfile"));
+                auto lines = new LineIterator!(char) (new FileConduit("myfile"));
                 while (lines.next)
                        Cout (lines.get).newline;
                 ---
 
-                Alternatively, we can extract one line from a conduit:
-                
+                Alternatively, we can extract one line from a conduit:      
                 ---
-                auto line = (new LineIterator(new FileConduit("myfile"))).next;
+                auto line = (new LineIterator!(char) (new FileConduit("myfile"))).next;
                 ---
 
                 The difference between next() and foreach() is that the
                 latter processes all tokens in one go, whereas the former
                 processes in a piecemeal fashion. To wit:
-
                 ---
-                foreach (line; new LineIterator (new FileConduit("myfile"))
+                foreach (line; new LineIterator!(char) (new FileConduit("myfile"))
                          Cout(line).newline;
                 ---
 
