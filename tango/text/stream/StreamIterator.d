@@ -31,7 +31,7 @@ private import Text = tango.text.Util;
         include space, comma, and end-of-line delineation. Inclusive
         tokens are just the opposite: they look for patterns in the
         text that should be part of the token itself - everything else
-        is considered foreign. Currently tango.text.stream supports the
+        is considered foreign. Currently tango.text.stream includes the
         exclusive variety only.
 
         The content provided to these iterators is intended to be fully
