@@ -19,12 +19,13 @@ private import tango.io.vfs.Folder,
 private import tango.io.model.IConduit;
 private import tango.net.Uri;
 private import tango.net.model.UriView;
+private import tango.stdc.string : memmove;
 
 /*******************************************************************************
 
 *******************************************************************************/
 
-class VFS : Folder 
+class VFS : Folder
 {
     /*************************************************************************
 
@@ -39,7 +40,7 @@ class VFS : Folder
     /*************************************************************************
 
     *************************************************************************/
- 
+
     this (char[] tempPath = null)
     {
         if (tempPath !is null)
@@ -49,8 +50,8 @@ class VFS : Folder
     /*************************************************************************
 
     *************************************************************************/
- 
-    Folder mount(UriView remotePath, char[] mountpoint) 
+
+    Folder mount(UriView remotePath, char[] mountpoint)
     {
         Folder folder = null;
         if (auto handler = *(remotePath.getScheme() in handlers)) {
@@ -66,8 +67,8 @@ class VFS : Folder
     /*************************************************************************
 
     *************************************************************************/
- 
-    Folder mount(Folder virtualFolder, char[] mountpoint) 
+
+    Folder mount(Folder virtualFolder, char[] mountpoint)
     {
         if (mountpoint in mountPoints)
             throw new Exception("Mountpoint already exists in VFS");
@@ -79,28 +80,28 @@ class VFS : Folder
     /*************************************************************************
 
     *************************************************************************/
- 
+
     Folder unmount(char[] mountpoint)
     {
         if (mountpoint in mountPoints)
             mountPoints.remove(mountpoint);
-            
+
         return this;
     }
 
     /*************************************************************************
 
     *************************************************************************/
- 
-    void registerProtocol(char[] protocol, ProtocolHandler handler) 
+
+    void registerProtocol(char[] protocol, ProtocolHandler handler)
     {
-        handlers[protocol] = handler;    
+        handlers[protocol] = handler;
     }
 
     /*************************************************************************
 
     *************************************************************************/
-  
+
     char[][] toList(bool prefixed = false)
     {
         // TODO revisit
@@ -115,7 +116,7 @@ class VFS : Folder
     /*************************************************************************
 
     *************************************************************************/
- 
+
     Folder toList(void delegate(char[], char[], bool) dg)
     {
         foreach (folder; mountPoints) {
@@ -154,7 +155,7 @@ class VFS : Folder
     /*************************************************************************
 
     *************************************************************************/
- 
+
     InputStream read(char[] path)
     {
         scope VfsPath vfspath = new VfsPath(path);
@@ -162,7 +163,7 @@ class VFS : Folder
         if (vfspath.segmentCount == 0)
             throw new Exception("VFS :: read :: Empty path provided");
 
-        if (vfspath.segmentCount == 1 && 
+        if (vfspath.segmentCount == 1 &&
             _tempFolder.exists(vfspath.segment(0)))
             return _tempFolder.read(vfspath.segment(0));
 
@@ -175,7 +176,7 @@ class VFS : Folder
     /*************************************************************************
 
     *************************************************************************/
- 
+
     ulong fileCount(bool recurse = true)
     {
         ulong count;
@@ -188,13 +189,13 @@ class VFS : Folder
             }
         }
 
-        return count; 
+        return count;
     }
 
     /*************************************************************************
 
     *************************************************************************/
- 
+
     /+
     ulong folderCount(bool recurse = true)
     {
@@ -213,7 +214,7 @@ class VFS : Folder
     /*************************************************************************
 
     *************************************************************************/
- 
+
     ulong contentSize(bool recurse = true)
     {
         ulong size;
@@ -231,7 +232,7 @@ class VFS : Folder
 
     /**********************************************************************
 
-        Returns true if the VFS was constructed with a writable temporary 
+        Returns true if the VFS was constructed with a writable temporary
         folder, otherwise false.
 
         Note that this property makes no statement on the writability of
@@ -240,15 +241,15 @@ class VFS : Folder
 
     **********************************************************************/
 
-    bool isWritable() 
-    { 
-        return _tempFolder !is null; 
+    bool isWritable()
+    {
+        return _tempFolder !is null;
     }
 
     /*************************************************************************
 
     *************************************************************************/
- 
+
     UriView uri()
     {
         // TODO : Hmm, not really sure what this should return yet
@@ -277,7 +278,7 @@ class VFS : Folder
             fails, or if the folder already exists.
 
     *************************************************************************/
- 
+
     Folder createFolder(char[] path)
     {
         scope VfsPath vfspath = new VfsPath(path);
@@ -307,7 +308,7 @@ class VFS : Folder
             A reference to the opened folder, or null if it don't exist.
 
     *************************************************************************/
- 
+
     Folder openFolder(char[] path)
     {
         scope VfsPath vfspath = new VfsPath(path);
@@ -328,7 +329,7 @@ class VFS : Folder
     /*************************************************************************
 
     *************************************************************************/
- 
+
     Folder write(char[] path, InputStream stream)
     {
         scope VfsPath vfspath = new VfsPath(path);
@@ -351,7 +352,7 @@ class VFS : Folder
 
     /*************************************************************************
 
- 
+
     Folder remove(char[] path)
     {
         scope VfsPath vfspath = new VfsPath(path);
@@ -523,7 +524,7 @@ class VfsPath
 
         /***********************************************************************
 
-                Suffix is like ext, but includes the separator e.g. path 
+                Suffix is like ext, but includes the separator e.g. path
                 "foo.bar" has suffix ".bar"
 
         ***********************************************************************/
@@ -694,7 +695,7 @@ class VfsPath
 
         /***********************************************************************
 
-                Replace the folder portion of this path. The folder will be 
+                Replace the folder portion of this path. The folder will be
                 padded with a path-separator as required
 
         ***********************************************************************/
@@ -722,7 +723,7 @@ class VfsPath
 
         /***********************************************************************
 
-                Replace the suffix portion of this path. The suffix will be 
+                Replace the suffix portion of this path. The suffix will be
                 prefixed with a file-separator as required
 
         ***********************************************************************/
@@ -735,10 +736,10 @@ class VfsPath
 
         /***********************************************************************
 
-                Replace the root and folder portions of this path and 
+                Replace the root and folder portions of this path and
                 reparse. The replacement will be padded with a path
                 separator as required
-        
+
         ***********************************************************************/
 
         final VfsPath path (char[] other)
@@ -749,10 +750,10 @@ class VfsPath
 
         /***********************************************************************
 
-                Replace the file and suffix portions of this path and 
+                Replace the file and suffix portions of this path and
                 reparse. The replacement will be prefixed with a suffix
                 separator as required
-        
+
         ***********************************************************************/
 
         final VfsPath file (char[] other)
@@ -835,7 +836,7 @@ class VfsPath
 
         /***********************************************************************
 
-                Insert/delete internal content 
+                Insert/delete internal content
 
         ***********************************************************************/
 
