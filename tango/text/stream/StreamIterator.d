@@ -31,9 +31,8 @@ private import Text = tango.text.Util;
         include space, comma, and end-of-line delineation. Inclusive
         tokens are just the opposite: they look for patterns in the
         text that should be part of the token itself - everything else
-        is considered foreign. Currently the only inclusive token type
-        is exposed by RegexToken; everything else is of the exclusive
-        variety.
+        is considered foreign. Currently tango.text.stream supports the
+        exclusive variety only.
 
         The content provided to these iterators is intended to be fully
         read-only. All current tokenizers abide by this rule, but it is
