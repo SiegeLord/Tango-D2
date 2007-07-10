@@ -180,7 +180,7 @@ else
 /**
  *  Calculates the number of set bits in a 32-bit integer.
  */
-int bitcount( uint x )
+int popcnt( uint x )
 {
     // Avoid branches, and the potential for cache misses which
     // could be incurred with a table lookup.
@@ -216,13 +216,13 @@ debug( UnitTest )
 {
     unittest
     {
-      assert( bitcount( 0 ) == 0 );
-      assert( bitcount( 7 ) == 3 );
-      assert( bitcount( 0xAA )== 4 );
-      assert( bitcount( 0x8421_1248 ) == 8 );
-      assert( bitcount( 0xFFFF_FFFF ) == 32 );
-      assert( bitcount( 0xCCCC_CCCC ) == 16 );
-      assert( bitcount( 0x7777_7777 ) == 24 );
+      assert( popcnt( 0 ) == 0 );
+      assert( popcnt( 7 ) == 3 );
+      assert( popcnt( 0xAA )== 4 );
+      assert( popcnt( 0x8421_1248 ) == 8 );
+      assert( popcnt( 0xFFFF_FFFF ) == 32 );
+      assert( popcnt( 0xCCCC_CCCC ) == 16 );
+      assert( popcnt( 0x7777_7777 ) == 24 );
     }
 }
 
