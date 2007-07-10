@@ -1002,7 +1002,10 @@ class Buffer : IBuffer
         {
                 while (readable() > 0)
                        drain ();
-                clear();
+
+                // flush the filter chain also
+                if (output_)
+                    output_.flush;
         } 
 
         /***********************************************************************
@@ -1013,14 +1016,19 @@ class Buffer : IBuffer
                 the buffer instance
 
                 Remarks:
-                Reset 'position' and 'limit' to zero. This effectively clears
-                all content from the buffer.
+                Reset 'position' and 'limit' to zero. This effectively 
+                clears all content from the buffer.
 
         ***********************************************************************/
 
         void clear ()
         {
                 position_ = limit_ = 0;
+
+                // clear the filter chain also
+                if (input_)
+                    input_.clear;
+
                 return this;
         }               
 
@@ -1209,7 +1217,6 @@ class Buffer : IBuffer
         {
                 // content may overlap ...
                 memcpy (&data[limit_], src, size);
-//                data[limit_ .. limit_+size] = src[0 .. size];
                 limit_ += size;
         }
 }
