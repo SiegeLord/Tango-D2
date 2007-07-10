@@ -287,7 +287,7 @@ class VFS : Folder
 
         if (vfspath.segmentCount == 1 &&
             _tempFolder !is null &&
-            _tempFolder.exists(vfspath.segment(0))) {
+            !_tempFolder.exists(vfspath.segment(0))) {
             auto folder = _tempFolder.createFolder(vfspath.segment(0));
             mount(folder, vfspath.segment(0));
             return folder;
@@ -575,8 +575,7 @@ class VfsPath
 
         final bool isAbsolute ()
         {
-                return (folder_ > 0) ||
-                       (folder_ < end_ && fp[folder_] is PathSeparatorChar);
+                return (fp[0] is PathSeparatorChar);
         }
 
         /***********************************************************************
@@ -932,15 +931,15 @@ class VfsPath
             if (idx == segments_ -1)
                 return file;
 
-            uint start = isAbsolute ? 1 : 0;
+            uint start = folder_;
             uint count;
-            foreach (i, c; fp[0..end_]) {
-                if (i > 0 && c == PathSeparatorChar) {
+            foreach (i, c; fp[folder_..end_]) {
+                if (c == PathSeparatorChar) {
                     count++;
                     if (count -1 == idx)
-                        return fp[start..i];
+                        return fp[start..i+1];
                     else
-                        start = i + 1;
+                        start = i + 2;
                 }
             }
             return null;
@@ -993,7 +992,10 @@ class VfsPath
                     suffix_ = end_;
 
                 if (isDir) segments_--;
-                if (isAbsolute) segments_--;
+                if (isAbsolute) {
+                    folder_ = 1;
+                    segments_--;
+                }
 
                 return this;
         }

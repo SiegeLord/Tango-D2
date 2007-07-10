@@ -20,6 +20,7 @@ void main(char[][] args) {
     Stdout("Exists; ")(vfs.exists("/tango/io/FilePath.d")).newline;
 
     vfs.createFolder("/test");
+    vfs.createFolder("/test/subdir");
 
     auto somedir = vfs.openFolder("/test/subdir");
 
@@ -27,6 +28,6 @@ void main(char[][] args) {
         Stdout(path).newline;
     }
 
-    vfs.write("/test/subdir/mynew.file", vfs.read("/test/anold.file"));
+    vfs.write("/test/subdir/mynew.file", vfs.read("/tango/io/Stdout.d"));
 
 }

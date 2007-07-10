@@ -65,7 +65,7 @@ class LocalFolder : Folder
     Folder createFolder(char[] path)
     {
         FilePath dir = new FilePath(_localPath.toUtf8);
-        dir = cast(FilePath)dir.append(path);
+        dir = cast(FilePath)dir.append(FilePath.padded(path));
         dir.createFolder;
 
         return new LocalFolder(dir);
