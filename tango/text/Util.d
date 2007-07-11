@@ -1024,9 +1024,11 @@ private struct PatternFreach(T)
                     while ((pos = locate (src, pattern[0], mark)) < src.length)
                           {
                           token = src [mark .. pos];
-                          dg (token);
+                          if ((ret = dg(token)) != 0)
+                               return ret;
                           if (sub.ptr)
-                              dg (sub);
+                              if ((ret = dg(sub)) != 0)
+                                   return ret;
                           mark = pos + 1;
                           }
                 else
@@ -1034,9 +1036,11 @@ private struct PatternFreach(T)
                        while ((pos = locatePattern (src, pattern, mark)) < src.length)
                              {
                              token = src [mark .. pos];
-                             dg (token);
+                             if ((ret = dg(token)) != 0)
+                                  return ret;
                              if (sub.ptr)
-                                 dg (sub);
+                                 if ((ret = dg(sub)) != 0)
+                                      return ret;
                              mark = pos + pattern.length;
                              }
 
