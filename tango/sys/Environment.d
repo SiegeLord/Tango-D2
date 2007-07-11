@@ -264,12 +264,12 @@ struct Environment
         }
 }
 
-debug (Test)
+debug (Environment)
 {
         import tango.io.Console;
 
 
-        void main()
+        void main(char[][] args)
         {
         const char[] VAR = "TESTENVVAR";
         const char[] VAL1 = "VAL1";
@@ -293,6 +293,18 @@ debug (Test)
 
         foreach (key, value; Environment.get)
                  Cout (key) ("=") (value).newline;
+
+        if (args.length > 0)
+           {
+           auto p = Environment.exePath (args[0]);
+           Cout (p).newline;
+           }
+
+        if (args.length > 1)
+           {
+           if (auto p = Environment.exePath (args[1]))
+               Cout (p).newline;
+           }
         }
 }
 
