@@ -519,17 +519,6 @@ class FileConduit : DeviceConduit, DeviceConduit.Seek
                         handle = posix.open (path.cString.ptr, mode, 0666);
                         if (handle is -1)
                             error ();
-/+
-                        // POSIX locks are so outrageously fucked up ...
-                        if (style.share is Share.None || style.share is Share.Read)
-                           {
-                           flock f = void;
-                           f.l_type = Locks[style.share];
-                           f.l_len = f.l_start = f.l_whence = 0;
-                           if (posix.fcntl(handle, F_SETLK, &f) is -1)
-                               error ();
-                           }
-+/
                 }
 
                 /***************************************************************
