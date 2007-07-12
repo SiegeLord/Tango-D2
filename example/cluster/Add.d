@@ -11,9 +11,9 @@ public import tango.net.cluster.NetworkCall;
 
 *******************************************************************************/
 
-real multiply (real x, real y)
+real add (real x, real y)
 {
-        return x * y;
+        return x + y;
 }
 
 
@@ -35,7 +35,7 @@ int divide (int x, int y)
 
 *******************************************************************************/
 
-class Add : NetworkCall
+class Subtract : NetworkCall
 {
         double  a,
                 b,
@@ -51,7 +51,7 @@ class Add : NetworkCall
 
         override void execute ()
         {
-                result = a + b;
+                result = a - b;
         }
 
         override void read  (IReader input)  {input (a)(b)(result);}

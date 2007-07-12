@@ -23,11 +23,11 @@ void main (char[][] args)
         auto cluster = (new Cluster).join;
         auto channel = cluster.createChannel ("rpc.channel");
 
-        // an explicit task instance
-        auto add = new Add;
-
         // an implicit task instance
-        auto mul = new NetCall!(multiply);
+        auto add = new NetCall!(add);
+
+        // an explicit task instance
+        auto sub = new Subtract;
 
         StopWatch w;
         while (true)
@@ -37,7 +37,7 @@ void main (char[][] args)
                   {
                   // both tasks are used in the same manner
                   add (1, 2, channel);
-                  mul (1, 2, channel);
+                  sub (3, 4, channel);
                   }
               Stdout.formatln ("{} calls/s", 20000/w.stop);
               }

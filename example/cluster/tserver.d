@@ -27,8 +27,8 @@ void main (char[][] args)
         else
            {
            auto server = new TaskServer (new InternetAddress(arg.port), arg.log);
-           server.enroll (new Add);
-           server.enroll (new NetCall!(multiply));
+           server.enroll (new NetCall!(add));
+           server.enroll (new Subtract);
            server.start;
            }
 }
