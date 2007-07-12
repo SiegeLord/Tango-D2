@@ -172,7 +172,7 @@ class PersistQueue  : ClusterQueue
 
         **********************************************************************/
 
-        final synchronized void copy (QueueFile[] dst, QueueFile[] src)
+        private final synchronized void copy (QueueFile[] dst, QueueFile[] src)
         {
                 dst[] = src;
         }   
