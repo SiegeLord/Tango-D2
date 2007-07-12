@@ -13,16 +13,34 @@
 module tango.net.cluster.NetworkCall;
 
 private import tango.core.Traits;
+private import tango.core.Thread;
+
+private import tango.net.cluster.tina.Cluster;
+
+private import tango.net.cluster.NetworkMessage;
 
 protected import tango.io.protocol.model.IReader,
                  tango.io.protocol.model.IWriter;
 
 protected import tango.net.cluster.model.IChannel;
 
-private   import tango.net.cluster.NetworkMessage;
 
 /*******************************************************************************
 
+        Interim bootstrap for cluster connectivity 
+
+*******************************************************************************/
+
+static this ()
+{
+        auto cluster = (new Cluster).join;
+        Thread.setLocal (0, cast(void*) cluster.createChannel("task"));
+}
+
+
+/*******************************************************************************
+
+        task harness, for initiating the send
 
 *******************************************************************************/
 
@@ -37,7 +55,13 @@ class NetworkCall : NetworkMessage
                 if (channel)
                     channel.execute (this);
                 else
-                   execute;
+                   {
+                   auto x = cast(IChannel) Thread.getLocal(0);
+                   if (x)
+                       x.execute (this);
+                   else
+                      execute;
+                   }
         }
 }
 
