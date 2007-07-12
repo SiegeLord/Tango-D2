@@ -3,15 +3,13 @@
 
 *******************************************************************************/
 
+import Add;
+
 import tango.io.Stdout;
 
 import tango.util.time.StopWatch;
 
 import tango.util.log.Configurator;
-
-import tango.net.cluster.tina.Cluster;
-
-import Add;
 
 /*******************************************************************************
 
@@ -20,9 +18,6 @@ import Add;
 
 void main (char[][] args)
 {
-        auto cluster = (new Cluster).join;
-        auto channel = cluster.createChannel ("rpc.channel");
-
         // an implicit task instance
         auto add = new NetCall!(add);
 
@@ -35,9 +30,9 @@ void main (char[][] args)
               w.start;
               for (int i=10000; i--;)
                   {
-                  // both tasks are used in the same manner
-                  add (1, 2, channel);
-                  sub (3, 4, channel);
+                  // both task types are used in the same manner
+                  add (1, 2);
+                  sub (3, 4);
                   }
               Stdout.formatln ("{} calls/s", 20000/w.stop);
               }
