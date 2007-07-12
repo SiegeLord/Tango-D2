@@ -4,9 +4,7 @@
 
 *******************************************************************************/
 
-import Add;
-
-import tango.io.Stdout;
+import Add, tango.io.Stdout, tango.net.cluster.tina.ClusterTask;
 
 void main (char[][] args)
 {

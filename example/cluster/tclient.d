@@ -11,6 +11,8 @@ import tango.util.time.StopWatch;
 
 import tango.util.log.Configurator;
 
+import tango.net.cluster.tina.ClusterTask;
+
 /*******************************************************************************
 
 
