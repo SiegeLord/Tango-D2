@@ -2,9 +2,36 @@
 
 *******************************************************************************/
 
-private import tango.net.cluster.NetworkCall;
+public import tango.net.cluster.NetworkCall;
+
 
 /*******************************************************************************
+        
+        a Task function
+
+*******************************************************************************/
+
+real multiply (real x, real y)
+{
+        return x * y;
+}
+
+
+/*******************************************************************************
+
+        a Task function
+
+*******************************************************************************/
+
+int divide (int x, int y)
+{
+        return x / y;
+}
+
+
+/*******************************************************************************
+
+        a verbose Task message
 
 *******************************************************************************/
 
@@ -27,7 +54,7 @@ class Add : NetworkCall
                 result = a + b;
         }
 
-        override void read  (IReader input)  {input  (a) (b) (result);}
+        override void read  (IReader input)  {input (a)(b)(result);}
 
-        override void write (IWriter output) {output (a) (b) (result);}
+        override void write (IWriter output) {output (a)(b)(result);}
 }
