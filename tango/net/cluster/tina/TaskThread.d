@@ -61,8 +61,7 @@ class TaskThread : ClusterThread
                    {
                    // convert to a task. Note that we use a private set of 
                    // msg templates, so we don't collide with other threads
-                   auto msg  = reader.thaw (registry);
-                   auto task = cast(IMessage) msg;
+                   auto task = reader.thaw (registry);
 
                    if (task is null)
                        throw new IllegalArgumentException ("Remote-call instance is not executable");
@@ -70,7 +69,7 @@ class TaskThread : ClusterThread
                    switch (cmd)
                           {
                           case ProtocolWriter.Command.Call:
-                               logger.trace (sprint ("{} executing remote call '{}'", client, msg.toUtf8)); 
+                               logger.trace (sprint ("{} executing remote call '{}'", client, task.toUtf8)); 
                                task.execute;
 
                                writer.put (ProtocolWriter.Command.OK, channel, element, task); 

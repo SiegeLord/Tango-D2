@@ -1303,8 +1303,8 @@ private class Node
                          // really really busy, or near death. We must
                          // assume it is offline until it tells us 
                          // otherwise (via a heartbeat)
-                         message = reader.getHeader (cmd, channel, element);
                          attempts = 0;
+                         message = reader.getHeader (cmd, channel, element);
 
                          // return borrowed connection
                          connect.done (time);
