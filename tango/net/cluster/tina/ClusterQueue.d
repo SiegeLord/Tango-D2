@@ -168,6 +168,17 @@ class PersistQueue  : ClusterQueue
 
         /**********************************************************************
 
+                Workaround for a compiler bug in 0.018
+
+        **********************************************************************/
+
+        final synchronized void copy (QueueFile[] dst, QueueFile[] src)
+        {
+                dst[] = src;
+        }   
+
+        /**********************************************************************
+
         **********************************************************************/
 
         final void watchdog ()
@@ -176,8 +187,10 @@ class PersistQueue  : ClusterQueue
                 auto list = (cast(QueueFile*) alloca(len * QueueFile.sizeof))[0..len];
 
                 // clone the list of queues to avoid stalling everything
-                synchronized (this)
-                              list[] = queueList;
+                copy (list, queueList);
+
+                // synchronized (this)
+                //               list[] = queueList;
 
                 foreach (q; list)
                         {
