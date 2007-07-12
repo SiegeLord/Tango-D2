@@ -32,7 +32,7 @@ void main (char[][] args)
               for (int i=20000; i--;)
                    add (1, 2, channel);
         
-              Stdout.formatln ("{}, {} calls/s", add.result, 20000/w.stop);
+              Stdout.formatln ("{} calls/s", 20000/w.stop);
               }
 }
 
