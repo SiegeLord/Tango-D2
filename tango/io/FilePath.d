@@ -640,7 +640,7 @@ class FilePath : PathView
                 is hidden at the end of each name (not exposed by the
                 length property)
 
-                Each filename optionally includes the parent prefix,
+                Each filename optionally includes the path prefix,
                 dictated by whether argument prefixed is enabled or
                 not; default behaviour is to eschew the prefix
 
@@ -651,14 +651,12 @@ class FilePath : PathView
                 int      i;
                 char[][] list;
 
-                void add (char[] prefix, char[] name, bool dir)
+                void add (char[] path, char[] name, bool dir)
                 {
                         if (i >= list.length)
                             list.length = list.length * 2;
 
-                        // duplicate the path, including the null. Note that
-                        // the saved length *excludes* the terminator
-                        list[i++] = prefixed ? (prefix~name) : name.dup;
+                        list[i++] = prefixed ? (path~name) : name.dup;
                 }
 
                 list = new char[][512];
@@ -1094,7 +1092,7 @@ class FilePath : PathView
 
                 ***************************************************************/
 
-                final FilePath toList (void delegate (char[], char[], bool) dg)
+                final FilePath toList (void delegate (char[] path, char[] file, bool dir) dg)
                 {
                         HANDLE                  h;
                         char[]                  prefix;
@@ -1378,7 +1376,7 @@ class FilePath : PathView
 
                 ***************************************************************/
 
-                final FilePath toList (void delegate (char[], char[], bool) dg)
+                final FilePath toList (void delegate (char[] path, char[] file, bool dir) dg)
                 {
                         DIR*            dir;
                         dirent*         entry;
