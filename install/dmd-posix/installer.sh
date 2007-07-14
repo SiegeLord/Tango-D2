@@ -50,7 +50,7 @@ mkdir -p $TTMP || die 1 "Failed to create temporary directory"
 
 # This installer works by black magic: The following number must be the exact
 # number of lines in this file+3:
-LINES=115
+LINES=150
 
 # Install DMD if necessary
 DMDDIR=
@@ -74,7 +74,7 @@ then
 	cd $DMDDIR || die 1 "Failed to cd to the DMD install directory"
     tail -n+$LINES $FULLNAME | tar Oxf - dmd.tar.gz | gunzip -c | tar xf - || die 1 "Failed to extract DMD"
 else
-    DMDIR="$PREFIX"
+    DMDDIR="$PREFIX"
 fi
 
 # Make sure DMD is installed
