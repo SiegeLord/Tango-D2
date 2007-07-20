@@ -9,12 +9,12 @@ Index: object.di
 -  version( DigitalMars )
 -  {
      void*       defaultConstructor;
- 
+
      static ClassInfo find(char[] classname);
      Object create();
 -  }
  }
- 
+
  struct OffsetTypeInfo
 Index: lib/common/tango/core/Thread.d
 ===================================================================
@@ -50,7 +50,7 @@ Index: lib/compiler/gdc/genobj.d
      OffsetTypeInfo[] offTi;
 -/+
      void function(Object) defaultConstructor;   // default Constructor
- 
+
      /**
 @@ -192,7 +191,6 @@
          }
@@ -58,5 +58,5 @@ Index: lib/compiler/gdc/genobj.d
      }
 -+/
  }
- 
+
  /**

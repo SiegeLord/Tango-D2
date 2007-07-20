@@ -114,7 +114,7 @@ class StreamIterator(T)
         {
                 T[]     token;
                 int     result;
-                
+
                 while ((token = next).ptr)
                       {
                       result = dg (token);
@@ -128,14 +128,14 @@ class StreamIterator(T)
 
                 Locate the next token. Returns the token if found, null
                 otherwise. Null indicates an end of stream condition. To
-                sweep a conduit for lines using method next():                
+                sweep a conduit for lines using method next():
                 ---
                 auto lines = new LineIterator!(char) (new FileConduit("myfile"));
                 while (lines.next)
                        Cout (lines.get).newline;
                 ---
 
-                Alternatively, we can extract one line from a conduit:      
+                Alternatively, we can extract one line from a conduit:
                 ---
                 auto line = (new LineIterator!(char) (new FileConduit("myfile"))).next;
                 ---

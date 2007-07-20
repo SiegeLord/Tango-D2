@@ -8,7 +8,7 @@
 
         author:         Regan Heath, Oskar Linde
 
-        This module implements the MD5 Message Digest Algorithm as described 
+        This module implements the MD5 Message Digest Algorithm as described
         by RFC 1321 The MD5 Message-Digest Algorithm. R. Rivest. April 1992.
 
 *******************************************************************************/
@@ -29,7 +29,7 @@ final class Md5 : Md4
 
         ***********************************************************************/
 
-        private enum 
+        private enum
         {
                 S11 =  7,
                 S12 = 12,
@@ -235,9 +235,9 @@ final class Md5 : Md4
 
 version (UnitTest)
 {
-        unittest 
+        unittest
         {
-        static char[][] strings = 
+        static char[][] strings =
         [
                 "",
                 "a",
@@ -248,7 +248,7 @@ version (UnitTest)
                 "12345678901234567890123456789012345678901234567890123456789012345678901234567890"
         ];
 
-        static char[][] results = 
+        static char[][] results =
         [
                 "D41D8CD98F00B204E9800998ECF8427E",
                 "0CC175B9C0F1B6A831C399E269772661",
@@ -261,7 +261,7 @@ version (UnitTest)
 
         Md5 h = new Md5();
 
-        foreach (int i, char[] s; strings) 
+        foreach (int i, char[] s; strings)
                 {
                 h.update(cast(ubyte[]) s);
                 char[] d = h.hexDigest;

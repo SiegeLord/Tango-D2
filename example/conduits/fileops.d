@@ -10,7 +10,7 @@ import tango.io.Stdout;
 
 import tango.io.FilePath;
 
-void main (char[][] args) 
+void main (char[][] args)
 {
     auto src = args[0] ~ ".d";
     auto dst = new FilePath (args[0] ~ ".d.copy");

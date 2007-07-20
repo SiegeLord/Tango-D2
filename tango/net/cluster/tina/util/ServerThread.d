@@ -3,9 +3,9 @@
         copyright:      Copyright (c) 2004 Kris Bell. All rights reserved
 
         license:        BSD style: $(LICENSE)
-        
-        version:        Initial release: April 2004      
-        
+
+        version:        Initial release: April 2004
+
         author:         Kris
 
 *******************************************************************************/
@@ -23,7 +23,7 @@ private import  tango.net.cluster.tina.util.AbstractServer;
 /******************************************************************************
 
         Subclasses Thread to provide the basic server-thread loop. This
-        functionality could also be implemented as a delegate, however, 
+        functionality could also be implemented as a delegate, however,
         we also wish to subclass in order to add thread-local data (see
         HttpThread).
 
@@ -36,9 +36,9 @@ class ServerThread
 
         /**********************************************************************
 
-                Construct a ServerThread for the given Server, upon the 
+                Construct a ServerThread for the given Server, upon the
                 specified socket
-                 
+
         **********************************************************************/
 
         this (AbstractServer server, ServerSocket socket)

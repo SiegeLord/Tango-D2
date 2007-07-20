@@ -3,9 +3,9 @@
         copyright:      Copyright (c) 2004 Kris Bell. All rights reserved
 
         license:        BSD style: $(LICENSE)
-        
+
         version:        April 2004: Initial release
-        
+
         author:         Kris
 
 *******************************************************************************/
@@ -18,17 +18,17 @@ private import tango.net.cluster.model.ICache;
 
 /******************************************************************************
 
-        QueuedCache extends the basic cache type by adding a limit to 
-        the number of items contained at any given time. In addition, 
-        QueuedCache sorts the cache entries such that those entries 
+        QueuedCache extends the basic cache type by adding a limit to
+        the number of items contained at any given time. In addition,
+        QueuedCache sorts the cache entries such that those entries
         frequently accessed are at the head of the queue, and those
-        least frequently accessed are at the tail. When the queue 
-        becomes full, old entries are dropped from the tail and are 
+        least frequently accessed are at the tail. When the queue
+        becomes full, old entries are dropped from the tail and are
         reused to house new cache entries.
 
         This is great for keeping commonly accessed items around, while
-        limiting the amount of memory used. Typically, the queue size 
-        would be set in the hundreds (perhaps thousands). 
+        limiting the amount of memory used. Typically, the queue size
+        would be set in the hundreds (perhaps thousands).
 
         Note that key.init cannot be used as a valid key
 
@@ -44,10 +44,10 @@ class QueuedCache (K, V) : ICache!(K, V)
 
         /**********************************************************************
 
-                Construct a cache with the specified maximum number of 
+                Construct a cache with the specified maximum number of
                 entries. Additions to the cache beyond this number will
                 reuse the slot of the least-recently-referenced cache
-                entry. The concurrency level indicates approximately how 
+                entry. The concurrency level indicates approximately how
                 many threads will content for write access at one time.
 
         **********************************************************************/
@@ -56,7 +56,7 @@ class QueuedCache (K, V) : ICache!(K, V)
         {
                 auto set = new QueuedEntry [capacity];
 
-                foreach (inout entry; set) 
+                foreach (inout entry; set)
                         {
                         if (tail)
                             tail.next = &entry;
@@ -103,7 +103,7 @@ class QueuedCache (K, V) : ICache!(K, V)
 
                 Place an entry into the cache and associate it with the
                 provided key. Note that there can be only one entry for
-                any particular key. If two entries are added with the 
+                any particular key. If two entries are added with the
                 same key, the second effectively overwrites the first.
 
                 An optional time value allows for testing whether an
@@ -125,7 +125,7 @@ class QueuedCache (K, V) : ICache!(K, V)
                 else
                    if (time < e.time)
                        return false;
-                
+
                 reReference(e).set (key, value, time);
                 return true;
         }
@@ -149,14 +149,14 @@ class QueuedCache (K, V) : ICache!(K, V)
                        return false;
                    else
                       peek = e.key;
-                
+
                 reReference(e).set (peek, value(), time);
                 return true;
         }
 
         /**********************************************************************
 
-                Remove (and return) the cache entry associated with the 
+                Remove (and return) the cache entry associated with the
                 provided key. Returns null if there is no such entry.
 
         **********************************************************************/
@@ -200,7 +200,7 @@ class QueuedCache (K, V) : ICache!(K, V)
 
         /**********************************************************************
 
-                
+
         **********************************************************************/
 
         private final QueuedEntry* lookup (K key)
@@ -257,7 +257,7 @@ class QueuedCache (K, V) : ICache!(K, V)
 
                 Add an entry into the queue. If the queue is full, the
                 least-recently-referenced entry is reused for the new
-                addition. 
+                addition.
 
         **********************************************************************/
 
@@ -277,8 +277,8 @@ class QueuedCache (K, V) : ICache!(K, V)
 
         /**********************************************************************
 
-                A doubly-linked list entry, used as a wrapper for queued 
-                cache entries. 
+                A doubly-linked list entry, used as a wrapper for queued
+                cache entries.
 
         **********************************************************************/
 
@@ -292,7 +292,7 @@ class QueuedCache (K, V) : ICache!(K, V)
 
                 /**************************************************************
 
-                        Set this entry with the given arguments. 
+                        Set this entry with the given arguments.
 
                 **************************************************************/
 
@@ -306,7 +306,7 @@ class QueuedCache (K, V) : ICache!(K, V)
 
                 /**************************************************************
 
-                        Insert this entry into the linked-list just in front 
+                        Insert this entry into the linked-list just in front
                         of the given entry.
 
                 **************************************************************/
@@ -327,7 +327,7 @@ class QueuedCache (K, V) : ICache!(K, V)
                 }
 
                 /**************************************************************
-                        
+
                         Add this entry into the linked-list just after the
                         given entry.
 
@@ -364,7 +364,7 @@ class QueuedCache (K, V) : ICache!(K, V)
                         if (next)
                             next.prev = prev;
 
-                        // Murphy's law 
+                        // Murphy's law
                         next = prev = null;
                         return this;
                 }

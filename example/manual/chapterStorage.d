@@ -149,8 +149,8 @@ void testFilteringIterator(){
     }
 
     // define the FilteringIterator with a function literal
-    auto it = new FilteringIterator!(int)( ib.elements(), (int i){ 
-        return i >= 3 && i < 7; 
+    auto it = new FilteringIterator!(int)( ib.elements(), (int i){
+        return i >= 3 && i < 7;
     });
 
     // use the Iterator with the more()/get() pattern

@@ -8,7 +8,7 @@
 
         author:         Regan Heath, Oskar Linde
 
-        This module implements the SHA-512 Algorithm described by Secure 
+        This module implements the SHA-512 Algorithm described by Secure
         Hash Standard, FIPS PUB 180-2
 
 *******************************************************************************/
@@ -37,12 +37,12 @@ final class Sha512 : MerkleDamgard
         ***********************************************************************/
 
         this() { }
-        
+
         /***********************************************************************
 
         ***********************************************************************/
 
-        protected override void createDigest(ubyte[] buf) 
+        protected override void createDigest(ubyte[] buf)
         {
                 version (LittleEndian)
                          ByteSwap.swap64(context.ptr, context.length * ulong.sizeof);
@@ -54,7 +54,7 @@ final class Sha512 : MerkleDamgard
 
                 The digest size of Sha-512 is 64 bytes
 
-        ***********************************************************************/        
+        ***********************************************************************/
 
         override uint digestSize() {return 64;}
 
@@ -285,7 +285,7 @@ final class Sha512 : MerkleDamgard
 
 *******************************************************************************/
 
-private static const ulong[] K = 
+private static const ulong[] K =
 [
         0x428a2f98d728ae22, 0x7137449123ef65cd, 0xb5c0fbcfec4d3b2f, 0xe9b5dba58189dbbc,
         0x3956c25bf348b538, 0x59f111f1b605d019, 0x923f82a4af194f9b, 0xab1c5ed5da6d8118,
@@ -313,7 +313,7 @@ private static const ulong[] K =
 
 *******************************************************************************/
 
-private static const ulong[8] initial = 
+private static const ulong[8] initial =
 [
         0x6a09e667f3bcc908,
         0xbb67ae8584caa73b,
@@ -324,7 +324,7 @@ private static const ulong[8] initial =
         0x1f83d9abfb41bd6b,
         0x5be0cd19137e2179
 ];
-        
+
 
 /*******************************************************************************
 
@@ -332,16 +332,16 @@ private static const ulong[8] initial =
 
 version (UnitTest)
 {
-        unittest 
+        unittest
         {
-        static char[][] strings = 
+        static char[][] strings =
         [
                 "",
                 "abc",
                 "abcdefghbcdefghicdefghijdefghijkefghijklfghijklmghijklmnhijklmnoijklmnopjklmnopqklmnopqrlmnopqrsmnopqrstnopqrstu"
         ];
 
-        static char[][] results = 
+        static char[][] results =
         [
                 "CF83E1357EEFB8BDF1542850D66D8007D620E4050B5715DC83F4A921D36CE9CE47D0D13C5D85F2B0FF8318D2877EEC2F63B931BD47417A81A538327AF927DA3E",
                 "DDAF35A193617ABACC417349AE20413112E6FA4E89A97EA20A9EEEE64B55D39A2192992A274FC1A836BA3C23A3FEEBBD454D4423643CE80E2A9AC94FA54CA49F",
@@ -350,7 +350,7 @@ version (UnitTest)
 
         Sha512 h = new Sha512;
 
-        foreach (int i, char[] s; strings) 
+        foreach (int i, char[] s; strings)
                 {
                 h.update(cast(ubyte[])s);
                 char[] d = h.hexDigest();

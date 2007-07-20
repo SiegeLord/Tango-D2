@@ -3,8 +3,8 @@
         copyright:      Copyright (c) 2004 Kris Bell. All rights reserved
 
         license:        BSD style: $(LICENSE)
-        
-        version:        April 2004: Initial release      
+
+        version:        April 2004: Initial release
 
 *******************************************************************************/
 
@@ -41,11 +41,11 @@ interface ICache (K, V)
 
         /**********************************************************************
 
-                Remove (and return) the cache entry associated with the 
+                Remove (and return) the cache entry associated with the
                 provided key. The entry will not be removed if it's time
-                attribute is newer than the (optional) specified 'timelimit'. 
+                attribute is newer than the (optional) specified 'timelimit'.
 
-                Returns null if there is no such entry. 
+                Returns null if there is no such entry.
 
         **********************************************************************/
 

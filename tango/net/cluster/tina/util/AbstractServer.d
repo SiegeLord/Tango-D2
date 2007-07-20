@@ -3,9 +3,9 @@
         copyright:      Copyright (c) 2004 Kris Bell. All rights reserved
 
         license:        BSD style: $(LICENSE)
-        
-        version:        Initial release: April 2004    
-        
+
+        version:        Initial release: April 2004
+
         author:         Kris
 
 *******************************************************************************/
@@ -13,7 +13,7 @@
 module tango.net.cluster.tina.util.AbstractServer;
 
 private   import  tango.net.Socket;
-                
+
 protected import  tango.util.log.Log;
 
 protected import  tango.net.ServerSocket,
@@ -27,9 +27,9 @@ protected import  tango.net.cluster.tina.util.model.IServer;
 
 /******************************************************************************
 
-        Exposes the foundation of a multi-threaded Socket server. This is 
+        Exposes the foundation of a multi-threaded Socket server. This is
         subclassed by  mango.net.http.server.HttpServer, which itself would
-        likely be subclassed by a SecureHttpServer. 
+        likely be subclassed by a SecureHttpServer.
 
 ******************************************************************************/
 
@@ -45,12 +45,12 @@ class AbstractServer : IServer
         /**********************************************************************
 
                 Setup this server with the requisite attributes. The number
-                of threads specified dictate exactly that. You might have 
+                of threads specified dictate exactly that. You might have
                 anything between 1 thread and several hundred, dependent
                 upon the underlying O/S and hardware.
 
-                Parameter 'backlog' specifies the max number of"simultaneous" 
-                connection requests to be handled by an underlying socket 
+                Parameter 'backlog' specifies the max number of"simultaneous"
+                connection requests to be handled by an underlying socket
                 implementation.
 
         **********************************************************************/
@@ -73,7 +73,7 @@ class AbstractServer : IServer
 
         /**********************************************************************
 
-                Concrete server must expose a name 
+                Concrete server must expose a name
 
         **********************************************************************/
 
@@ -115,8 +115,8 @@ class AbstractServer : IServer
                 if (tmp)
                     return cast(IPv4Address) tmp.socket.remoteAddress;
                 return null;
-        } 
-                
+        }
+
         /**********************************************************************
 
                 Provide support for figuring out the remote address
@@ -126,8 +126,8 @@ class AbstractServer : IServer
         IPv4Address localAddress ()
         {
                 return cast(IPv4Address) server.socket.localAddress;
-        } 
-                
+        }
+
         /**********************************************************************
 
                 Provide support for figuring out the remote address
@@ -147,7 +147,7 @@ class AbstractServer : IServer
 
                 Provide support for figuring out the remote host. Not
                 currently implemented.
-                
+
         **********************************************************************/
 
         char[] getRemoteHost (IConduit conduit)
@@ -196,15 +196,15 @@ class AbstractServer : IServer
 
         void start (bool reuse = false)
         {
-                // have the subclass create a ServerSocket for us 
+                // have the subclass create a ServerSocket for us
                 server = createSocket (bind, backlog, reuse);
-                
+
                 // instantiate and start all threads
                 for (auto i=threads; i-- > 0;)
                      createThread (server);
 
-                // indicate what's going on 
-                logger.info (sprint ("Server {} started on {} with {} accept threads and {} backlogs", 
+                // indicate what's going on
+                logger.info (sprint ("Server {} started on {} with {} accept threads and {} backlogs",
                                       this, localAddress, threads, backlog));
         }
 }

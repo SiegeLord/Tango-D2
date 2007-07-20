@@ -4,8 +4,8 @@
 
         license:        BSD style: $(LICENSE)
 
-        version:        Initial release: May 2004      
-        
+        version:        Initial release: May 2004
+
         author:         Kris
 
 *******************************************************************************/
@@ -22,7 +22,7 @@ private import  Text = tango.text.Util;
 private import  tango.text.stream.LineIterator;
 
 /*******************************************************************************
-        
+
         Provides load facilities for a properties file. That is, a file
         or other medium containing lines of text with a name=value layout.
 
@@ -31,7 +31,7 @@ private import  tango.text.stream.LineIterator;
 class Properties(T)
 {
         /***********************************************************************
-        
+
                 Load properties from the named file, and pass each of them
                 to the provided delegate.
 
@@ -42,12 +42,12 @@ class Properties(T)
                 auto fc = new FileConduit (path);
                 scope (exit)
                        fc.close;
-                
+
                 load (fc, dg);
         }
 
         /***********************************************************************
-        
+
                 Load properties from the provided buffer, and pass them to
                 the specified delegate.
 
@@ -59,10 +59,10 @@ class Properties(T)
                 x = y
                 abc = 123
                 x.y.z = this is a single property
-                
+
                 # this is a comment line
                 ---
-                
+
         ***********************************************************************/
 
         static void load (InputStream stream, void delegate (T[] name, T[] value) dg)
@@ -70,8 +70,8 @@ class Properties(T)
                 foreach (line; new LineIterator!(T) (stream))
                         {
                         auto text = Text.trim (line);
-                        
-                        // comments require '#' as the first non-whitespace char 
+
+                        // comments require '#' as the first non-whitespace char
                         if (text.length && (text[0] != '#'))
                            {
                            // find the '=' char
@@ -85,7 +85,7 @@ class Properties(T)
         }
 
         /***********************************************************************
-        
+
                 Write properties to the provided filepath
 
         ***********************************************************************/
@@ -99,7 +99,7 @@ class Properties(T)
         }
 
         /***********************************************************************
-        
+
                 Write properties to the provided conduit
 
         ***********************************************************************/
@@ -110,7 +110,7 @@ class Properties(T)
         }
 
         /***********************************************************************
-        
+
                 Write properties to the provided buffer
 
         ***********************************************************************/
@@ -122,7 +122,7 @@ class Properties(T)
                          const T[] NL = "\r\n";
                 version (Posix)
                          const T[] NL = "\n";
-                
+
                 foreach (key, value; properties)
                          emit (key) (equals) (NL);
                 return emit;

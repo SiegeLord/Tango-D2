@@ -8,7 +8,7 @@
 
         author:         Regan Heath, Oskar Linde
 
-        This module implements the SHA-256 Algorithm described by Secure 
+        This module implements the SHA-256 Algorithm described by Secure
         Hash Standard, FIPS PUB 180-2
 
 *******************************************************************************/
@@ -288,7 +288,7 @@ final class Sha256 : MerkleDamgard
 
 *******************************************************************************/
 
-private static uint[] K = 
+private static uint[] K =
 [
         0x428a2f98, 0x71374491, 0xb5c0fbcf, 0xe9b5dba5, 0x3956c25b, 0x59f111f1, 0x923f82a4, 0xab1c5ed5,
         0xd807aa98, 0x12835b01, 0x243185be, 0x550c7dc3, 0x72be5d74, 0x80deb1fe, 0x9bdc06a7, 0xc19bf174,
@@ -304,7 +304,7 @@ private static uint[] K =
 
 *******************************************************************************/
 
-private static const uint[8] initial = 
+private static const uint[8] initial =
 [
         0x6a09e667,
         0xbb67ae85,
@@ -322,15 +322,15 @@ private static const uint[8] initial =
 
 version (UnitTest)
 {
-        unittest 
+        unittest
         {
-        static char[][] strings = 
+        static char[][] strings =
         [
                 "abc",
                 "abcdbcdecdefdefgefghfghighijhijkijkljklmklmnlmnomnopnopq"
         ];
 
-        static char[][] results = 
+        static char[][] results =
         [
                 "BA7816BF8F01CFEA414140DE5DAE2223B00361A396177A9CB410FF61F20015AD",
                 "248D6A61D20638B8E5C026930C3E6039A33CE45964FF2167F6ECEDD419DB06C1"
@@ -338,7 +338,7 @@ version (UnitTest)
 
         Sha256 h = new Sha256();
 
-        foreach (int i, char[] s; strings) 
+        foreach (int i, char[] s; strings)
                 {
                 h.update(s);
                 char[] d = h.hexDigest();
