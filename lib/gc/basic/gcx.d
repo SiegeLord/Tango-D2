@@ -1963,8 +1963,11 @@ struct Gcx
 
         version (MULTI_THREADED)
         {
-            // Scan stacks and registers for each paused thread
-            thread_scanAll( &mark, stackTop );
+            if (!noStack)
+            {
+                // Scan stacks and registers for each paused thread
+                thread_scanAll( &mark, stackTop );
+            }
         }
         else
         {
