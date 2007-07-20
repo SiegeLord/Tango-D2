@@ -60,8 +60,15 @@ extern (C) void gc_init()
 
 extern (C) void gc_term()
 {
-    //_gc.fullCollectNoStack();
-    _gc.Dtor();
+    // NOTE: There may be daemons threads still running when this routine is
+    //       called.  If so, cleaning memory out from under then is a good
+    //       way to make them crash horribly.  This probably doesn't matter
+    //       much since the app is supposed to be shutting down anyway, but
+    //       I'm disabling cleanup for now until I can think about it some
+    //       more.
+    //_gc.fullCollectNoStack(); // not really a 'collect all' -- still scans
+                                // static data area, roots, and ranges.
+    //_gc.Dtor();
 }
 
 extern (C) void gc_enable()
