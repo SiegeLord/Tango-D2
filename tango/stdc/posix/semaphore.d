@@ -78,3 +78,7 @@ version( linux )
 {
     int sem_timedwait(sem_t*, timespec*);
 }
+else version( darwin )
+{
+    int sem_timedwait(sem_t*, timespec*);
+}
