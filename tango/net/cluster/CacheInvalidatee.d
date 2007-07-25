@@ -12,8 +12,6 @@
 
 module tango.net.cluster.CacheInvalidatee;
 
-private import  tango.util.log.Logger;
-
 private import  tango.net.cluster.model.ICache;
 
 private import  tango.net.cluster.NetworkClient,
@@ -35,8 +33,7 @@ class CacheInvalidatee : NetworkClient
 {
         alias ICache!(char[], IMessage) Cache;
 
-        private Cache                   cache;
-        private Logger                  logger;
+        private Cache                   cache_;
         private IConsumer               consumer;
 
         /***********************************************************************
@@ -48,15 +45,11 @@ class CacheInvalidatee : NetworkClient
         ***********************************************************************/
         
         this (ICluster cluster, char[] name, Cache cache)
-        in {
-           assert (cache);
-           }
-        body
         {
                 super (cluster, name);
 
-                this.cache = cache;
-                this.logger = cluster.log;
+                assert (cache);
+                cache_ = cache;
         
                 // start listening for invalidation requests
                 consumer = channel.createBulletinConsumer (&notify);
@@ -80,9 +73,9 @@ class CacheInvalidatee : NetworkClient
 
         ***********************************************************************/
         
-        Cache getCache ()
+        Cache cache ()
         {
-                return cache;
+                return cache_;
         }
 
         /***********************************************************************
@@ -95,12 +88,12 @@ class CacheInvalidatee : NetworkClient
         private void notify (IEvent event)
         {
                 scope p = new InvalidatorPayload;
-                event.thaw (p);
+                event.get (p);
 
                 // remove entry from our cache
-                if (cache.remove (p.key, p.time))
-                    logger.trace ("removed cache entry '"~p.key~
-                                  "' on channel '"~event.channel.name~"'");
+                if (cache_.remove (p.key, p.time))
+                    event.log.trace ("removed cache entry '"~p.key~
+                                     "' on channel '"~event.channel.name~"'");
         }  
 }
 

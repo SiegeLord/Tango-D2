@@ -98,6 +98,17 @@ class NetworkClient
         }
 
         /***********************************************************************
+
+                Return the Log instance
+
+        ***********************************************************************/
+        
+        Logger log ()
+        {
+                return cluster_.log;
+        }
+
+        /***********************************************************************
         
                 Create a channel with the specified name. A channel 
                 represents something akin to a publush/subscribe topic, 

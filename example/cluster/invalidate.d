@@ -27,10 +27,10 @@ void main()
         auto src = new CacheInvalidator (cluster, "my.cache.channel");
 
         // stuff something in the local cache
-        dst.getCache.put ("key", dst.EmptyMessage);
+        dst.cache.put ("key", dst.EmptyMessage);
 
         // get it removed via a network broadcast
-        cluster.log.info ("invalidating 'key' across the cluster");
+        src.log.info ("invalidating 'key' across the cluster");
         src.invalidate ("key");
 
         // wait for it to arrive ...

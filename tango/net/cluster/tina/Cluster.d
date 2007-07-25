@@ -195,7 +195,7 @@ class Cluster : Broadcaster, ICluster
         private void notify (IEvent event)
         {
                 scope rollcall = new RollCall;
-                event.thaw (rollcall);
+                event.get (rollcall);
 
                 switch (rollcall.type)
                        {
@@ -755,12 +755,23 @@ private class BulletinConsumer : SocketListener, IConsumer, IEvent
 
         ***********************************************************************/
 
-        IMessage thaw (IMessage host = null)
+        IMessage get (IMessage host = null)
         {
                 if (hasMore)
                     return reader.thaw (host);
 
                 throw new ClusterException ("attempting to thaw a non-existant message");
+        }
+
+        /***********************************************************************
+        
+                Return the assigned logger
+
+        ***********************************************************************/
+
+        final Logger log ()
+        {
+                return cluster.log;
         }
 
         /***********************************************************************
@@ -909,39 +920,26 @@ private class MessageConsumer : BulletinConsumer
 
         /***********************************************************************
 
-                override the default processing to sweep the cluster for 
+                Overrides the default processing to sweep the cluster for 
                 queued entries. Each server node is queried until one is
                 found that contains a message. Note that it is possible 
                 to set things up where we are told exactly which node to
-                go to; howerver given that we won't be listening whilst
+                go to; however given that we won't be listening whilst
                 scanning, and that there's likely to be a group of new
                 entries in the cluster, it's just as effective to scan.
                 This will be far from ideal for all environments, so we 
                 should make the strategy pluggable instead.                 
 
-        ***********************************************************************/
-       
-        override protected void invoke (IEvent event)
-        {                
-                // temporarily pause listening while we sweep cluster ...
-                pauseGroup;             
-                scope (exit)
-                       resumeGroup;
-
-                while (channel.scanQueue)
-                       listener (event);
-        }
-
-        /***********************************************************************
-
-                Deserialize a received message. Note that the content is
-                lying in the channel input and not our own 
+                Note also that the content is retrieved via a duplicate
+                channel to avoid potential race-conditions on the original
 
         ***********************************************************************/
 
-        override IMessage thaw (IMessage host = null)
+        override IMessage get (IMessage host = null)
         {
-                return channel.thaw (host);
+                if (channel.scanQueue)
+                    return channel.thaw (host);
+                return null;
         }
 
         /***********************************************************************
@@ -956,6 +954,23 @@ private class MessageConsumer : BulletinConsumer
                 assert (message);
 
                 channel.putQueue (message);
+        }
+
+        /***********************************************************************
+
+                Override the default notification handler in order to
+                disable multicast reciepts while the application does
+                what it needs to
+                
+        ***********************************************************************/
+       
+        override protected void invoke (IEvent event)
+        {                
+                // temporarily pause listening while processing
+                pauseGroup;
+                try {
+                    listener (event);
+                    } finally resumeGroup;
         }
 }
 
@@ -1352,7 +1367,7 @@ private class Node
 
 /*******************************************************************************
         
-        Models a generic set of cluster nodes. This is indented to be
+        Models a generic set of cluster nodes. This is intended to be
         thread-safe, with no locking on a lookup operation
 
 *******************************************************************************/
@@ -1386,8 +1401,7 @@ private class NodeSet
 
         /***********************************************************************
 
-                Add a node to the list of servers, and sort them such that
-                all clients will have the same ordered set
+                Add a node to the list of servers
 
         ***********************************************************************/
         
@@ -1605,16 +1619,15 @@ private class FlexNodeSet : NodeSet
 
         ***********************************************************************/
         
-        final bool scan (bool delegate (Node) dg)
+        final bool scan (bool delegate(Node) dg)
         {
-                //auto  list = set.nodes;
-                auto    hosts = set.random;
-                int     index = hosts.length;
-
-                while (index--)
+                auto hosts = set.random;
+                auto index = hosts.length;
+                
+                while (index)
                       {
                       // lookup the randomized set of server nodes
-                      auto node = hosts [index];
+                      auto node = hosts [--index];
 
                       // callback on each enabled node
                       if (node.isEnabled)

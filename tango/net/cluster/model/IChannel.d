@@ -30,6 +30,14 @@ private import  tango.net.cluster.model.IMessage,
 interface IChannel
 {
         /***********************************************************************
+
+                Return the Logger associated with this cluster
+
+        ***********************************************************************/
+        
+        Logger log ();
+
+        /***********************************************************************
         
                 Return the name of this channel. This is the name provided
                 when the channel was constructed.
@@ -37,15 +45,6 @@ interface IChannel
         ***********************************************************************/
 
         char[] name ();
-
-
-        /***********************************************************************
-
-                Return the Logger associated with this cluster
-
-        ***********************************************************************/
-        
-        Logger log ();
 
         /***********************************************************************
 
@@ -159,11 +158,12 @@ interface IEvent
 
         /***********************************************************************
 
-                Return the reader used to access incoming requests
+                Return one or more messages associated with this event, or
+                null if there is nothing available
 
         ***********************************************************************/
         
-        IMessage thaw (IMessage host = null);
+        IMessage get (IMessage host = null);
 
         /***********************************************************************
 
@@ -182,6 +182,14 @@ interface IEvent
         ***********************************************************************/
         
         IChannel replyChannel (IMessage message);
+
+        /***********************************************************************
+
+                Return the Logger associated with this cluster
+
+        ***********************************************************************/
+        
+        Logger log ();
 }
 
 /*******************************************************************************

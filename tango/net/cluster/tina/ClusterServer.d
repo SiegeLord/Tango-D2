@@ -179,7 +179,7 @@ abstract class ClusterServer : AbstractServer
         private void notify (IEvent event)
         {
                 scope input = new RollCall;
-                event.thaw (input);
+                event.get (input);
 
                 // if this is a request, reply with our identity
                 if (input.type is input.Request)

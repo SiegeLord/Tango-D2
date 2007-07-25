@@ -22,11 +22,11 @@ void main()
 
         // listen for the broadcast (on this channel)
         alert.createConsumer (delegate void (IEvent event)
-                             {alert.cluster.log.info ("Recieved alert on channel " ~ event.channel.name);}
+                             {event.log.info ("Recieved alert on channel " ~ event.channel.name);}
                              );
 
         // say what's going on
-        alert.cluster.log.info ("broadcasting alert");
+        alert.log.info ("broadcasting alert");
 
         // and send everyone an empty alert (on this channel)
         alert.broadcast;
