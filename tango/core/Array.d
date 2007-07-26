@@ -948,6 +948,97 @@ else
 
 
 ////////////////////////////////////////////////////////////////////////////////
+// Mismatch
+////////////////////////////////////////////////////////////////////////////////
+
+
+version( DDoc )
+{
+    /**
+     * Performs a parallel linear scan of bufA from $(LB)0 .. bufA.length$(RP)
+     * and bufB from $(LB)0 .. bufB.length$(RP), returning the index of the
+     * first element in bufA which does not match the corresponding element in
+     * bufB.  Comparisons will be performed using the supplied predicate or
+     * '==' if none is supplied.
+     *
+     * Params:
+     *  bufA = The array to evaluate.
+     *  bufB = The array to match against.
+     *  pred = The evaluation predicate, which should return true if e1 is
+     *         equal to e2 and false if not.  This predicate may be any
+     *         callable type.
+     *
+     * Returns:
+     *  The index of the first mismatch or bufA.length if the first bufA.length
+     *  elements of bufA and bufB match.
+     */
+    size_t mismatch( Elem[] bufA, Elem[] bufB, Pred2E pred = Pred2E.init );
+
+}
+else
+{
+    template mismatch_( Elem, Pred = IsEqual!(Elem) )
+    {
+        static assert( isCallableType!(Pred) );
+
+
+        size_t fn( Elem[] bufA, Elem[] bufB, Pred pred = Pred.init )
+        {
+            size_t  posA = 0,
+                    posB = 0;
+
+            while( posA < bufA.length && posB < bufB.length )
+            {
+                if( !pred( bufB[posB], bufA[posA] ) )
+                    break;
+                ++posA, ++posB;
+            }
+            return posA;
+        }
+    }
+
+
+    template mismatch( BufA, BufB )
+    {
+        size_t mismatch( BufA bufA, BufB bufB )
+        {
+            return mismatch_!(ElemTypeOf!(BufA)).fn( bufA, bufB );
+        }
+    }
+
+
+    template mismatch( BufA, BufB, Pred )
+    {
+        size_t mismatch( BufA bufA, BufB bufB, Pred pred )
+        {
+            return mismatch_!(ElemTypeOf!(BufA), Pred).fn( bufA, bufB, pred );
+        }
+    }
+
+    debug( UnitTest )
+    {
+      unittest
+      {
+        assert( mismatch( "a", "abcdefg" ) == 1 );
+        assert( mismatch( "abcdefg", "a" ) == 1 );
+
+        assert( mismatch( "x", "abcdefg" ) == 0 );
+        assert( mismatch( "abcdefg", "x" ) == 0 );
+
+        assert( mismatch( "xbcdefg", "abcdefg" ) == 0 );
+        assert( mismatch( "abcdefg", "xbcdefg" ) == 0 );
+
+        assert( mismatch( "abcxefg", "abcdefg" ) == 3 );
+        assert( mismatch( "abcdefg", "abcxefg" ) == 3 );
+
+        assert( mismatch( "abcdefx", "abcdefg" ) == 6 );
+        assert( mismatch( "abcdefg", "abcdefx" ) == 6 );
+      }
+    }
+}
+
+
+////////////////////////////////////////////////////////////////////////////////
 // Count
 ////////////////////////////////////////////////////////////////////////////////
 
