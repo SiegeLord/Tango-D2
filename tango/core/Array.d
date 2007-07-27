@@ -955,11 +955,11 @@ else
 version( DDoc )
 {
     /**
-     * Performs a parallel linear scan of bufA from $(LB)0 .. bufA.length$(RP)
-     * and bufB from $(LB)0 .. bufB.length$(RP), returning the index of the
-     * first element in bufA which does not match the corresponding element in
-     * bufB.  Comparisons will be performed using the supplied predicate or
-     * '==' if none is supplied.
+     * Performs a parallel linear scan of bufA and bufB from $(LB)0 .. N$(RP)
+     * where N = min$(LP)bufA.length, bufB.length$(RP), returning the index of
+     * the first element in bufA which does not match the corresponding element
+     * in bufB or N if no mismatch occurs.  Comparisons will be performed using
+     * the supplied predicate or '==' if none is supplied.
      *
      * Params:
      *  bufA = The array to evaluate.
@@ -969,8 +969,8 @@ version( DDoc )
      *         callable type.
      *
      * Returns:
-     *  The index of the first mismatch or bufA.length if the first bufA.length
-     *  elements of bufA and bufB match.
+     *  The index of the first mismatch or N if the first N elements of bufA
+     * and bufB match, where N = min$(LP)bufA.length, bufB.length$(RP).
      */
     size_t mismatch( Elem[] bufA, Elem[] bufB, Pred2E pred = Pred2E.init );
 
@@ -2033,11 +2033,12 @@ else
 version( DDoc )
 {
     /**
-     * Performs a binary search of buf, returning the index of the first
-     * element equivalent to pat.  If pat is less than all elements in
-     * buf then 0 will be returned.  If pat is greater than the largest
-     * element in buf then buf.length will be returned.  Comparisons will
-     * be performed using the supplied predicate or '<' if none is supplied.
+     * Performs a binary search of buf, returning the index of the first index
+     * where pat may be inserted without disrupting sort order.  If the sort
+     * order of pat precedes all elements in buf then 0 will be returned.  If
+     * the sort order of pat succeeds the largest element in buf then
+     * buf.length will be returned.  Comparisons will be performed using the
+     * supplied predicate or '<' if none is supplied.
      *
      * Params:
      *  buf = The sorted array to search.
@@ -2116,12 +2117,12 @@ else
 version( DDoc )
 {
     /**
-     * Performs a binary search of buf, returning the index of the first
-     * element equivalent to pat.  If pat is less than all elements in
-     * buf then 0 will be returned.  If pat is greater than or equivalent
-     * to the largest element in buf then buf.length will be returned.
-     * Comparisons will be performed using the supplied predicate or '<'
-     * if none is supplied.
+     * Performs a binary search of buf, returning the index of the first index
+     * beyond where pat may be inserted without disrupting sort order.  If the
+     * sort order of pat precedes all elements in buf then 0 will be returned.
+     * If the sort order of pat succeeds the largest element in buf then
+     * buf.length will be returned.  Comparisons will be performed using the
+     * supplied predicate or '<' if none is supplied.
      *
      * Params:
      *  buf = The sorted array to search.
@@ -2274,11 +2275,12 @@ else
 version( DDoc )
 {
     /**
-     * Performs a linear scan of setA from $(LB)0 .. setA.length$(RP), returning
-     * true if setA contains all elements in setB and false if not.  Both setA and
-     * setB are required to be sorted, and duplicates in setB require an equal
-     * number of duplicates in setA.  Comparisons will be performed using the
-     * supplied predicate or '<' if none is supplied.
+     * Performs a parallel linear scan of setA and setB from $(LB)0 .. N$(RP)
+     * where N = min$(LP)setA.length, setB.length$(RP), returning true if setA
+     * contains all elements in setB and false if not.  Both setA and setB are
+     * required to be sorted, and duplicates in setB require an equal number of
+     * duplicates in setA.  Comparisons will be performed using the supplied
+     * predicate or '<' if none is supplied.
      *
      * Params:
      *  setA = The sorted array to evaluate.
