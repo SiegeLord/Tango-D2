@@ -48,7 +48,8 @@ private import Text = tango.text.Util;
 
 class StreamIterator(T)
 {
-        protected T[]           slice;
+        protected T[]           slice,
+                                pushed;
         protected IBuffer       buffer;
 
         /***********************************************************************
@@ -102,6 +103,21 @@ class StreamIterator(T)
                 return slice;
         }
 
+        /***********************************************************************
+
+                Push one token back into the stream, to be returned by a
+                subsequent call to next()
+
+                Push null to cancel a prior assignment
+
+        ***********************************************************************/
+
+        final StreamIterator push (T[] token)
+        {
+                pushed = token;
+                return this;
+        }
+
         /**********************************************************************
 
                 Iterate over the set of tokens. This should really
@@ -148,13 +164,22 @@ class StreamIterator(T)
                          Cout(line).newline;
                 ---
 
+                Note that tokens returned via push() are returned immediately
+                when available, taking priority over the input stream itself
+                
         ***********************************************************************/
 
         final T[] next ()
         {
-                if (buffer.next (&scan) || slice.length > 0)
-                    return get();
-                return null;
+                auto tmp = pushed;
+                
+                if (tmp.ptr)
+                    pushed = null;
+                else
+                   if (buffer.next (&scan) || slice.length > 0)
+                       tmp = get ();
+                
+                return tmp;
         }
 
         /***********************************************************************
