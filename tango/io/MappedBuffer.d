@@ -249,8 +249,13 @@ class MappedBuffer : Buffer
 
         override protected void copy (void *src, uint size)
         {
-                data[position_..position_+size] = src[0..size];
-                position_ += size;
+                // avoid "out of bounds" test on zero size
+                if (size)
+                   {
+                   // content may overlap ...
+                   memcpy (&data[position_], src, size);
+                   position_ += size;
+                   }
         }
 
         /***********************************************************************

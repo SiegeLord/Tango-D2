@@ -25,7 +25,7 @@ public  import  tango.io.model.IConduit;
 
 extern (C)
 {
-        private void * memcpy (void *dst, void *src, uint);
+        protected void * memcpy (void *dst, void *src, uint);
 }       
 
 /*******************************************************************************
@@ -220,8 +220,8 @@ class Buffer : IBuffer
 
         invariant 
         {
-               assert (position_ <= limit_);
-               assert (limit_ <= capacity_);
+                assert (position_ <= limit_);
+                assert (limit_ <= capacity_);
         }
 
         /***********************************************************************
@@ -1220,8 +1220,12 @@ class Buffer : IBuffer
 
         protected void copy (void *src, uint size)
         {
-                // content may overlap ...
-                memcpy (&data[limit_], src, size);
-                limit_ += size;
+                // avoid "out of bounds" test on zero size
+                if (size)
+                   {
+                   // content may overlap ...
+                   memcpy (&data[limit_], src, size);
+                   limit_ += size;
+                   }
         }
 }
