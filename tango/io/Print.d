@@ -87,6 +87,7 @@ class Print(T)
         private T[]             eol;
         private OutputStream    output;
         private Layout!(T)      convert;
+        private bool            flushLines;
 
         public alias print      opCall;
 
@@ -175,8 +176,10 @@ class Print(T)
 
         final Print newline ()
         {
-                output.write(eol);
-                return flush;
+                output.write (eol);
+                if (flushLines)
+                    output.flush;
+                return this;
         }
 
         /**********************************************************************
@@ -227,6 +230,19 @@ class Print(T)
 
         /**********************************************************************
 
+                Control implicit flushing of newline(), where true enables
+                flushing. An explicit flush() will always flush the output.
+
+        **********************************************************************/
+
+        final Print flush (bool yes)
+        {
+                flushLines = yes;
+                return this;
+        }
+
+        /**********************************************************************
+
                 Sink for passing to the formatter
 
         **********************************************************************/
@@ -234,5 +250,27 @@ class Print(T)
         private final uint sink (T[] s)
         {
                 return output.write (s);
+        }
+}
+
+
+debug (Print)
+{
+        import tango.io.Buffer;
+        import tango.io.FileConduit;
+        import tango.text.convert.Layout;
+
+        void main()
+        {
+                auto layout = new Layout!(char);
+                auto conduit = new FileConduit("test.txt", FileConduit.ReadWriteCreate);
+                auto buffer = new Buffer (conduit);
+                auto output = new Print!(char) (layout, buffer);
+
+                for(int i=0;i<1000;i++)
+                    output(i).newline;
+                
+                buffer.flush;
+                conduit.close;
         }
 }

@@ -56,8 +56,8 @@ struct Console
 
         class Input
         {
-                private Buffer  buffer_;
-                private bool    redirected_;
+                private Buffer  buffer;
+                private bool    redirect;
 
                 public alias    copyln get;
 
@@ -67,10 +67,10 @@ struct Console
 
                 **************************************************************/
 
-                private this (Conduit conduit, bool redirected)
+                private this (Conduit conduit, bool redirect)
                 {
-                        redirected_ = redirected;
-                        buffer_ = new Buffer (conduit);
+                        this.redirect = redirected;
+                        this.buffer   = new Buffer (conduit);
                 }
 
                 /**************************************************************
@@ -79,9 +79,9 @@ struct Console
 
                 **************************************************************/
 
-                InputStream stream ()
+                final InputStream stream ()
                 {
-                        return buffer_;
+                        return buffer;
                 }
 
                 /**************************************************************
@@ -96,7 +96,7 @@ struct Console
 
                 **************************************************************/
 
-                char[] copyln (bool raw = false)
+                final char[] copyln (bool raw = false)
                 {
                         char[] line;
 
@@ -115,7 +115,7 @@ struct Console
 
                 **************************************************************/
 
-                bool readln (inout char[] content, bool raw=false)
+                final bool readln (inout char[] content, bool raw=false)
                 {
                         uint line (void[] input)
                         {
@@ -136,7 +136,7 @@ struct Console
                                 return IConduit.Eof;
                         }
 
-                        return buffer_.next (&line) || content.length;
+                        return buffer.next (&line) || content.length;
                 }
 
                 /**************************************************************
@@ -152,9 +152,9 @@ struct Console
 
                 **************************************************************/
 
-                bool redirected ()
+                final bool redirected ()
                 {
-                        return redirected_;
+                        return redirect;
                 }           
         }
 
@@ -170,8 +170,8 @@ struct Console
 
         class Output
         {
-                private Buffer  buffer_;
-                private bool    redirected_;
+                private Buffer  buffer;
+                private bool    redirect;
 
                 public  alias   append opCall;
                 public  alias   flush  opCall;
@@ -182,14 +182,14 @@ struct Console
 
                 **************************************************************/
 
-                private this (Conduit conduit, bool redirected)
+                private this (Conduit conduit, bool redirect)
                 {
                         // get conduit to notify us of attachments so
                         // that we can adjust our buffer accordingly
                         conduit.notify (&notify);
 
-                        redirected_ = redirected;
-                        buffer_ = new Buffer (conduit);
+                        this.redirect = redirected;
+                        this.buffer   = new Buffer (conduit);
                 }
 
                 /**************************************************************
@@ -198,9 +198,9 @@ struct Console
 
                 **************************************************************/
 
-                OutputStream stream ()
+                final OutputStream stream ()
                 {
-                        return buffer_;
+                        return buffer;
                 }
 
                 /**************************************************************
@@ -211,9 +211,9 @@ struct Console
 
                 **************************************************************/
 
-                Output append (char[] x)
+                final Output append (char[] x)
                 {
-                        buffer_.append (x.ptr, x.length);
+                        buffer.append (x.ptr, x.length);
                         return this;
                 } 
                           
@@ -234,39 +234,41 @@ struct Console
 
                 **************************************************************/
 
-                Output append (Object o)        
+                final Output append (Object o)        
                 {           
                         return append (o.toUtf8);
                 }
 
                 /**************************************************************
 
-                        Append a newline and flush the console buffer
+                        Append a newline and flush the console buffer. If
+                        the output is redirected, flushing does not occur
+                        automatically.
 
                         Returns:
                         Returns a chaining reference if content was written. 
                         Throws an IOException indicating eof or eob if not.
 
                         Remarks:
-                        Emit a newline into the buffer
+                        Emit a newline into the buffer, and autoflush the
+                        current buffer content for an interactive console.
+                        Redirected consoles do not flush automatically on
+                        a newline.
 
                 **************************************************************/
 
-                Output newline ()
+                final Output newline ()
                 {
-                        buffer_.append (Eol);
+                        buffer.append (Eol);
+                        if (redirect is false)
+                            buffer.flush;
 
-                        // experimental: don't flush if we're redirected
-                        version (RedirectNoFlush)
-                                 if (redirected_)
-                                     return this;
-
-                        return flush;
+                        return this;
                 }           
 
                 /**************************************************************
 
-                        Flush console output
+                        Explicitly flush console output
 
                         Returns:
                         Returns a chaining reference if content was written. 
@@ -277,9 +279,9 @@ struct Console
 
                 **************************************************************/
 
-                Output flush ()
+                final Output flush ()
                 {
-                        buffer_.flush;
+                        buffer.flush;
                         return this;
                 }           
 
@@ -296,9 +298,9 @@ struct Console
 
                 **************************************************************/
 
-                bool redirected ()
+                final bool redirected ()
                 {
-                        return redirected_;
+                        return redirect;
                 }           
 
                 /**************************************************************
@@ -320,7 +322,7 @@ struct Console
 
                 private void notify (bool)
                 {
-                        buffer_.setConduit (buffer_.conduit);
+                        buffer.setConduit (buffer.conduit);
                 }
         }
 
@@ -347,13 +349,14 @@ struct Console
 
                 /***************************************************************
 
-                        Intercept the default file-flushing implementation
+                        Intercept the default file-flushing implementation.
+                        We don't actually flush the console device per se, as
+                        the OS does not really like that. Flush any enclosing
+                        buffer instead.
 
                 ***************************************************************/
 
-                override void flush ()
-                {
-                }
+                override void flush () {}
 
                 /***************************************************************
 

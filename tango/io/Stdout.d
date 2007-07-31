@@ -72,7 +72,7 @@
         
         Note that Stdout is a shared entity, so every usage of it will
         be affected by the above example. For applications supporting 
-        multiple regions create multiple Locale instances instead, and 
+        multiple regions, create multiple Locale instances instead and 
         cache them in an appropriate manner
 
 *******************************************************************************/
@@ -96,6 +96,9 @@ static this()
 
         Stdout = new Print!(char) (layout, Cout.stream);
         Stderr = new Print!(char) (layout, Cerr.stream);
+        
+        Stdout.flush = !Cout.redirected;
+        Stderr.flush = !Cerr.redirected;
 }
 
 public static Print!(char) Stdout,      /// global standard output
@@ -119,6 +122,6 @@ debug (Stdout)
         Stdout (1, 2, 3).newline;        
 
         Stdout ("abc {}{}{}", 1, 2, 3).newline; 
-        Stdout.format ("abc {}{}{}", 1, 2, 3).newline; 
+        Stdout.format ("abc {}{}{}", 1, 2, 3).newline;
         }
 }
