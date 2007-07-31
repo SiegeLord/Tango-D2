@@ -994,18 +994,23 @@ class Buffer : IBuffer
                 all content is actually flushed via the associated conduit, 
                 whereas drain() will not.
 
+                Do nothing where a conduit is not attached, enabling memory
+                buffers to treat flush as a noop.
+
                 Throws an IOException on premature Eof.
 
         ***********************************************************************/
 
         void flush ()
         {
-                while (readable() > 0)
-                       drain ();
-
-                // flush the filter chain also
                 if (output_)
-                    output_.flush;
+                   {
+                   while (readable() > 0)
+                          drain ();
+
+                   // flush the filter chain also
+                   output_.flush;
+                   }
         } 
 
         /***********************************************************************
