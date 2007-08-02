@@ -80,7 +80,7 @@ class GrowBuffer : Buffer
 
                    // populate tail of buffer with new content
                    do {
-                      if (fill(input_) == IConduit.Eof)
+                      if (fill(input_) is IConduit.Eof)
                           error (eofRead);
                       } while (size > readable);
                    }
@@ -127,9 +127,9 @@ class GrowBuffer : Buffer
         /***********************************************************************
         
                 Expand and consume the conduit content, up to the maximum 
-                size indicated by the argument.
+                size indicated by the argument or until conduit.Eof
 
-                Returns a chaining reference
+                Returns the number of bytes in the buffer
 
         ***********************************************************************/
 
