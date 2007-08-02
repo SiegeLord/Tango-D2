@@ -122,8 +122,9 @@ T[] format(T) (T[] dst, NumType x, uint decimals = 2, bool scientific = false)
         {
                 int digit;
 
-                // NumType can reliably hold 17 digits only
-                if (++count > 17)
+                // Don't exceed max digits storable in a real
+                // (-1 because the last digit is not always storable)
+                if (++count > NumType.dig-1)
                     digit = 0;
                 else
                    {
@@ -336,15 +337,15 @@ private NumType pow10 (uint exp)
 {
         static  NumType[] Powers = 
                 [
-                1.0e1,
-                1.0e2,
-                1.0e4,
-                1.0e8,
-                1.0e16,
-                1.0e32,
-                1.0e64,
-                1.0e128,
-                1.0e256,
+                1.0e1L,
+                1.0e2L,
+                1.0e4L,
+                1.0e8L,
+                1.0e16L,
+                1.0e32L,
+                1.0e64L,
+                1.0e128L,
+                1.0e256L,
                 ];
 
         if (exp >= 512)
