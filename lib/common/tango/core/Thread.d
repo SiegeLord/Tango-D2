@@ -62,6 +62,7 @@ version( Win32 )
 {
     private
     {
+        import tango.stdc.stdint : uintptr_t; // for _beginthreadex decl below
         import tango.sys.win32.UserGdi;
 
         const DWORD TLS_OUT_OF_INDEXES  = 0xFFFFFFFF;
@@ -70,15 +71,7 @@ version( Win32 )
         // avoid multiple imports via tango.sys.windows.process
         //
         extern (Windows) alias uint function(void*) btex_fptr;
-
-        version( X86 )
-        {
-            extern (C) ulong _beginthreadex(void*, uint, btex_fptr, void*, uint, uint*);
-        }
-        else
-        {
-            extern (C) uint _beginthreadex(void*, uint, btex_fptr, void*, uint, uint*);
-        }
+        extern (C) uintptr_t _beginthreadex(void*, uint, btex_fptr, void*, uint, uint*);
 
 
         //
@@ -399,11 +392,12 @@ class Thread
      *
      * Params:
      *  fn = The thread function.
+     *  sz = The stack size for this thread.
      *
      * In:
      *  fn must not be null.
      */
-    this( void function() fn )
+    this( void function() fn, size_t sz = 0 )
     in
     {
         assert( fn );
@@ -411,6 +405,7 @@ class Thread
     body
     {
         m_fn   = fn;
+        m_sz   = sz;
         m_call = Call.FN;
         m_curr = &m_main;
     }
@@ -422,11 +417,12 @@ class Thread
      *
      * Params:
      *  dg = The thread function.
+     *  sz = The stack size for this thread.
      *
      * In:
      *  dg must not be null.
      */
-    this( void delegate() dg )
+    this( void delegate() dg, size_t sz = 0 )
     in
     {
         assert( dg );
@@ -434,6 +430,7 @@ class Thread
     body
     {
         m_dg   = dg;
+        m_sz   = sz;
         m_call = Call.DG;
         m_curr = &m_main;
     }
@@ -485,6 +482,17 @@ class Thread
     }
     body
     {
+        version( Win32 ) {} else
+        version( Posix )
+        {
+            pthread_attr_t  attr;
+
+            if( pthread_attr_init( &attr ) )
+                throw new ThreadException( "Error initializing thread attributes" );
+            if( m_sz && pthread_attr_setstacksize( &attr, m_sz ) )
+                throw new ThreadException( "Error initializing thread stack size" );
+        }
+
         // NOTE: This operation needs to be synchronized to avoid a race
         //       condition with the GC.  Without this lock, the thread
         //       could start and allocate memory before being added to
@@ -494,7 +502,7 @@ class Thread
         {
             version( Win32 )
             {
-                m_hndl = cast(HANDLE) _beginthreadex( null, 0, &thread_entryPoint, cast(void*) this, 0, &m_addr );
+                m_hndl = cast(HANDLE) _beginthreadex( null, m_sz, &thread_entryPoint, cast(void*) this, 0, &m_addr );
                 if( cast(size_t) m_hndl == 0 )
                     throw new ThreadException( "Error creating thread" );
             }
@@ -503,7 +511,7 @@ class Thread
                 m_isRunning = true;
                 scope( failure ) m_isRunning = false;
 
-                if( pthread_create( &m_addr, null, &thread_entryPoint, cast(void*) this ) != 0 )
+                if( pthread_create( &m_addr, &attr, &thread_entryPoint, cast(void*) this ) != 0 )
                     throw new ThreadException( "Error creating thread" );
             }
             multiThreadedFlag = true;
@@ -1102,6 +1110,7 @@ private:
         void function() m_fn;
         void delegate() m_dg;
     }
+    size_t              m_sz;
     version( Posix )
     {
         bool            m_isRunning;
