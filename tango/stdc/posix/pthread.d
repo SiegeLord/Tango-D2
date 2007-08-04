@@ -474,6 +474,25 @@ int pthread_attr_setstackaddr(pthread_attr_t*, void*); (TSA)
 int pthread_attr_setstacksize(pthread_attr_t*, size_t); (TSS)
 */
 
+version( linux )
+{
+    int pthread_attr_getstack(pthread_attr_t*, void**, size_t*);
+    int pthread_attr_getstackaddr(pthread_attr_t*, void**);
+    int pthread_attr_getstacksize(pthread_attr_t*, size_t*);
+    int pthread_attr_setstack(pthread_attr_t*, void*, size_t);
+    int pthread_attr_setstackaddr(pthread_attr_t*, void*);
+    int pthread_attr_setstacksize(pthread_attr_t*, size_t);
+}
+else version( darwin )
+{
+    int pthread_attr_getstack(pthread_attr_t*, void**, size_t*);
+    int pthread_attr_getstackaddr(pthread_attr_t*, void**);
+    int pthread_attr_getstacksize(pthread_attr_t*, size_t*);
+    int pthread_attr_setstack(pthread_attr_t*, void*, size_t);
+    int pthread_attr_setstackaddr(pthread_attr_t*, void*);
+    int pthread_attr_setstacksize(pthread_attr_t*, size_t);
+}
+
 //
 // Shared Synchronization (TSH)
 //
