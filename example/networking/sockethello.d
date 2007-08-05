@@ -19,11 +19,11 @@ void main()
 
         // wait for response (there is an optional timeout supported)
         char[64] response;
-        request.input.read (response);
+        auto size = request.input.read (response);
 
         // close socket
         request.close;
 
         // display server response
-        Cout (response).newline;
+        Cout (response[0..size]).newline;
 }
