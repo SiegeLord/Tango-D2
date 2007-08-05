@@ -23,42 +23,31 @@ private import  tango.net.ServerSocket,
 void main()
 {
         const int port = 8080;
-        const char[] host = "localhost";
-
-        // thread body for socket listener
+ 
+        // thread body for socket-listener
         void run()
         {       
-                // instantiate a server socket
-                auto server = new ServerSocket (new InternetAddress(host, port));
-                while (true)
-                      { 
-                      // wait for requests
-                      auto request = server.accept();
+                auto server = new ServerSocket (new InternetAddress(port));
+                
+                // wait for requests
+                auto request = server.accept;
 
-                      // write a response 
-                      request.output.write ("server replies 'hello'");
-                      }
+                // write a response 
+                request.output.write ("server replies 'hello'");
         }
 
-        // start server in a seperate thread
-        auto server = new Thread (&run);
-        server.isDaemon = true;
-        server.start;
-
-        // and wait for server thread to start
-        Thread.sleep (1.0);
+        // start server in a separate thread, and wait for it to start
+        (new Thread (&run)).start;
+        Thread.sleep (0.250);
 
         // make a connection request to the server
         auto request = new SocketConduit;
-        request.connect (new InternetAddress(host, port));
+        request.connect (new InternetAddress("localhost", port));
 
-        // wait for response (there is an optional timeout supported)
+        // wait for and display response (there is an optional timeout)
         char[64] response;
         auto len = request.input.read (response);
-
-        // close socket
-        request.close;
-
-        // display server response
         Cout (response[0..len]).newline;
+
+        request.close;
 }
