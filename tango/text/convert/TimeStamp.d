@@ -380,9 +380,9 @@ int iso8601(T) (T[] src, inout Time value)
         if (dt(p) >= 0     &&
             *p++ == ' '    &&
             time (date, p) &&
-            *p++ == ','    &&
-            (date.ms = parseInt(p)) > 0)
+            *p++ == ',')
             {
+            date.ms = parseInt (p);
             value = Clock.fromDate (date);
             return p - src.ptr;
             }
