@@ -66,9 +66,9 @@ fi
 if [ "$UNINSTALL" = "1" ]
 then
     # revert to phobos if earlier evidence of existense is found
-    if [ -e "$PHOBOS_DIR/libphobos.a.phobos" ]
+    if [ -e "$PREFIX/lib/libphobos.a.phobos" ]
     then
-        mv     $PHOBOS_DIR/libphobos.a.phobos $PHOBOS_DIR/libphobos.a
+        mv     $PREFIX/lib/libphobos.a.phobos $PREFIX/lib/libphobos.a
     fi
     if [ -e "$PREFIX/include/d/object.d.phobos" ]
     then
@@ -116,11 +116,11 @@ fi
 # Back up the original files
 if [ "$REPLACE_PHOBOS" = "1" ]
 then
-	if [ -e "$PHOBOS_DIR/libphobos.a.phobos" ]
+	if [ -e "$PREFIX/lib/libphobos.a.phobos" ]
 	then
 		die "You must uninstall your old copy of Tango before installing a new one." 4
 	fi
-	mv -f $PHOBOS_DIR/libphobos.a $PHOBOS_DIR/libphobos.a.phobos
+	mv -f $PREFIX/lib/libphobos.a $PREFIX/lib/libphobos.a.phobos
     if [ -e "$PREFIX/include/d/object.d" ]
     then
 	    mv -f $PREFIX/include/d/object.d $PREFIX/include/d/object.d.phobos
@@ -146,7 +146,7 @@ then
     create_dmd_conf
 else
     # Is it a phobos conf ?
-    if [ ! "`grep -version=Tango $PREFIX/bin/dmd.conf`" ]
+    if [ ! "`grep '\-version=Tango' $PREFIX/bin/dmd.conf`" ]
     then
         mv $PREFIX/bin/dmd.conf $PREFIX/bin/dmd.conf.phobos 
         create_dmd_conf
