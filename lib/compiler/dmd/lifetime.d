@@ -190,7 +190,7 @@ extern (C) ulong _d_newarrayT(TypeInfo ti, size_t length)
             }
         }
         else
-        size *= length;
+            size *= length;
         p = gc_malloc(size + 1, !(ti.next.flags() & 1) ? BlkAttr.NO_SCAN : 0);
         debug(PRINTF) printf(" p = %p\n", p);
         memset(p, 0, size);
@@ -230,7 +230,7 @@ extern (C) ulong _d_newarrayiT(TypeInfo ti, size_t length)
             }
         }
         else
-        size *= length;
+            size *= length;
         auto p = gc_malloc(size + 1, !(ti.next.flags() & 1) ? BlkAttr.NO_SCAN : 0);
         debug(PRINTF) printf(" p = %p\n", p);
         if (isize == 1)
@@ -334,7 +334,7 @@ extern (C) ulong _d_newarraymiT(TypeInfo ti, int ndims, ...)
             void[] p;
 
             if (ndims == 1)
-                {
+            {
                 auto r = _d_newarrayiT(ti, dim);
                 p = *cast(void[]*)(&r);
             }
@@ -590,10 +590,10 @@ body
 
             asm
             {
-                mov EAX, newlength;
-                mul EAX, sizeelem;
-                mov newsize, EAX;
-                jc  Loverflow;
+                mov     EAX,newlength   ;
+                mul     EAX,sizeelem    ;
+                mov     newsize,EAX     ;
+                jc      Loverflow       ;
             }
         }
         else
@@ -635,7 +635,7 @@ body
             newdata = cast(byte *)gc_malloc(newsize + 1, !(ti.next.flags() & 1) ? BlkAttr.NO_SCAN : 0);
         }
 
-        auto q = initializer.ptr;       // pointer to initializer
+        auto q = initializer.ptr; // pointer to initializer
 
         if (newsize > size)
         {
@@ -878,19 +878,19 @@ extern (C) byte[] _d_arraycatnT(TypeInfo ti, uint n, ...)
     byte[]* p;
     uint i;
     byte[] b;
-    auto sizeelem = ti.next.tsize();            // array element size
+    auto size = ti.next.tsize(); // array element size
 
     p = cast(byte[]*)(&n + 1);
 
     for (i = 0; i < n; i++)
-{
+    {
         b = *p++;
         length += b.length;
     }
     if (!length)
         return null;
 
-    a = gc_malloc(length * sizeelem, !(ti.next.flags() & 1) ? BlkAttr.NO_SCAN : 0);
+    a = gc_malloc(length * size, !(ti.next.flags() & 1) ? BlkAttr.NO_SCAN : 0);
     p = cast(byte[]*)(&n + 1);
 
     uint j = 0;
@@ -899,8 +899,8 @@ extern (C) byte[] _d_arraycatnT(TypeInfo ti, uint n, ...)
         b = *p++;
         if (b.length)
         {
-            memcpy(a + j, b.ptr, b.length * sizeelem);
-            j += b.length * sizeelem;
+            memcpy(a + j, b.ptr, b.length * size);
+            j += b.length * size;
         }
     }
 
@@ -956,7 +956,7 @@ extern (C) void* _d_arrayliteralT(TypeInfo ti, size_t length, ...)
 struct Array2
 {
     size_t length;
-    void* ptr;
+    void*  ptr;
 }
 
 

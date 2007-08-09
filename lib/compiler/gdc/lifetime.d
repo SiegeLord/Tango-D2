@@ -50,10 +50,10 @@ private
     extern (C) uint gc_setAttr( void* p, uint a );
     extern (C) uint gc_clrAttr( void* p, uint a );
 
-    extern (C) void* gc_malloc( size_t sz, uint ba = 0 );
-    extern (C) void* gc_calloc( size_t sz, uint ba = 0 );
+    extern (C) void*  gc_malloc( size_t sz, uint ba = 0 );
+    extern (C) void*  gc_calloc( size_t sz, uint ba = 0 );
     extern (C) size_t gc_extend( void* p, size_t mx, size_t sz );
-    extern (C) void  gc_free( void* p );
+    extern (C) void   gc_free( void* p );
 
     extern (C) size_t gc_sizeOf( void* p );
 
@@ -174,14 +174,30 @@ extern (C) Array _d_newarrayT(TypeInfo ti, size_t length)
     auto size = ti.next.tsize();                // array element size
 
     debug(PRINTF) printf("_d_newarrayT(length = x%x, size = %d)\n", length, size);
-    if (length && size)
+    if (length == 0 || size == 0)
+        {}
+    else
     {
         result.length = length;
-        size *= length;
+        /*version (D_InlineAsm_X86)
+        {
+            asm
+            {
+                mov     EAX,size        ;
+                mul     EAX,length      ;
+                mov     size,EAX        ;
+                jc      Loverflow       ;
+            }
+        }
+        else*/
+            size *= length;
         result.data = cast(byte*) gc_malloc(size + 1, !(ti.next.flags() & 1) ? BlkAttr.NO_SCAN : 0);
         memset(result.data, 0, size);
     }
     return result;
+
+Loverflow:
+    onOutOfMemoryError();
 }
 
 
@@ -195,13 +211,24 @@ extern (C) Array _d_newarrayiT(TypeInfo ti, size_t length)
 
     debug(PRINTF) printf("_d_newarrayiT(length = %d, size = %d, isize = %d)\n", length, size, isize);
     if (length == 0 || size == 0)
-        { }
+        {}
     else
     {
         auto initializer = ti.next.init();
         auto isize = initializer.length;
         auto q = initializer.ptr;
-        size *= length;
+        /*version (D_InlineAsm_X86)
+        {
+            asm
+            {
+                mov     EAX,size        ;
+                mul     EAX,length      ;
+                mov     size,EAX        ;
+                jc      Loverflow       ;
+            }
+        }
+        else*/
+            size *= length;
         auto p = gc_malloc(size + 1, !(ti.next.flags() & 1) ? BlkAttr.NO_SCAN : 0);
         debug(PRINTF) printf(" p = %p\n", p);
         if (isize == 1)
@@ -226,6 +253,9 @@ extern (C) Array _d_newarrayiT(TypeInfo ti, size_t length)
         result.data = cast(byte*) p;
     }
     return result;
+
+Loverflow:
+    onOutOfMemoryError();
 }
 
 
@@ -453,6 +483,7 @@ body
             if (x)
                 goto Loverflow;
         }
+
         version (D_InlineAsm_X86)
         {
             size_t newsize = void;
@@ -600,7 +631,7 @@ body
                             goto L1;
                         }
                     }
-                    newdata = cast(byte *)gc_malloc(newsize + 1);
+                    newdata = cast(byte *)gc_malloc(newsize + 1, !(ti.next.flags() & 1) ? BlkAttr.NO_SCAN : 0);
                     newdata[0 .. size] = p.data[0 .. size];
                 L1: ;
                 }
@@ -847,7 +878,7 @@ body
  *
  */
 extern (C) byte[] _d_arraycatnT(TypeInfo ti, uint n, ...)
-{   byte[] a;
+{   void* a;
     size_t length;
     byte[]* p;
     uint i;
@@ -865,25 +896,21 @@ extern (C) byte[] _d_arraycatnT(TypeInfo ti, uint n, ...)
     if (!length)
         return null;
 
-    a = new byte[length * size];
-    if (!(ti.next.flags() & 1))
-        gc_setAttr(a.ptr, BlkAttr.NO_SCAN);
+    a = gc_malloc(length * size, !(ti.next.flags() & 1) ? BlkAttr.NO_SCAN : 0);
     va_start!(typeof(n))(va, n);
 
     uint j = 0;
     for (i = 0; i < n; i++)
-{
+    {
         b = va_arg!(typeof(b))(va);
         if (b.length)
-    {
-            memcpy(&a[j], b.ptr, b.length * size);
+        {
+            memcpy(a + j, b.ptr, b.length * size);
             j += b.length * size;
         }
     }
 
-    *cast(size_t *)&a = length; // jam length
-    //a.length = length;
-    return a;
+    return (cast(byte*)a)[0..length];
 }
 
 
@@ -900,7 +927,7 @@ extern (C) void* _d_arrayliteralT(TypeInfo ti, size_t length, ...)
     if (length == 0 || sizeelem == 0)
         result = null;
     else
-        {
+    {
         result = gc_malloc(length * sizeelem, !(ti.next.flags() & 1) ? BlkAttr.NO_SCAN : 0);
 
         va_list q;
@@ -918,8 +945,8 @@ extern (C) void* _d_arrayliteralT(TypeInfo ti, size_t length, ...)
             {
                 memcpy(result + i * sizeelem, q, sizeelem);
                 q += stacksize;
+            }
         }
-    }
 
         va_end(q);
     }
