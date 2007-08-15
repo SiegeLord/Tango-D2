@@ -126,7 +126,7 @@ abstract class Digest
                 ubyte[] ret = binaryDigest(buf);
                 assert(ret.ptr == buf.ptr);
             
-                static char[] hexdigits = "0123456789ABCDEF";
+                static char[] hexdigits = "0123456789abcdef";
                 int i = 0;
             
                 foreach (b; buf) 

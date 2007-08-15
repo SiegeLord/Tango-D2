@@ -353,13 +353,13 @@ version (UnitTest)
 
         static char[][] results = 
         [
-                "31D6CFE0D16AE931B73C59D7E0C089C0",
-                "BDE52CB31DE33E46245E05FBDBD6FB24",
-                "A448017AAF21D8525FC10AE87AA6729D",
-                "D9130A8164549FE818874806E1C7014B",
-                "D79E1C308AA5BBCDEEA8ED63DF412DA9",
-                "043F8582F241DB351CE627E153E7F0E4",
-                "E33B4DDC9C38F2199C3E7B164FCC0536"
+                "31d6cfe0d16ae931b73c59d7e0c089c0",
+                "bde52cb31de33e46245e05fbdbd6fb24",
+                "a448017aaf21d8525fc10ae87aa6729d",
+                "d9130a8164549fe818874806e1c7014b",
+                "d79e1c308aa5bbcdeea8ed63df412da9",
+                "043f8582f241db351ce627e153e7f0e4",
+                "e33b4ddc9c38f2199c3e7b164fcc0536"
         ];
 
         Md4 h = new Md4();

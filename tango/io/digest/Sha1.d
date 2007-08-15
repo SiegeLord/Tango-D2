@@ -107,10 +107,10 @@ version (UnitTest)
 
         static char[][] results = 
         [
-                "A9993E364706816ABA3E25717850C26C9CD0D89D",
-                "84983E441C3BD26EBAAE4AA1F95129E5E54670F1",
-                "34AA973CD4C4DAA4F61EEB2BDBAD27316534016F",
-                "DEA356A2CDDD90C7A7ECEDC5EBB563934F460452"
+                "a9993e364706816aba3e25717850c26c9cd0d89d",
+                "84983e441c3bd26ebaae4aa1f95129e5e54670f1",
+                "34aa973cd4c4daa4f61eeb2bdbad27316534016f",
+                "dea356a2cddd90c7a7ecedc5ebb563934f460452"
         ];
 
         static int[] repeat = 

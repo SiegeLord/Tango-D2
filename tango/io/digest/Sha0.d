@@ -98,12 +98,12 @@ version (UnitTest)
 
         static char[][] results = 
         [
-                "F96CEA198AD1DD5617AC084A3D92C6107708C0EF",
-                "0164B8A914CD2A5E74C4F7FF082C4D97F1EDF880",
-                "C1B0F222D150EBB9AA36A40CAFDC8BCBED830B14",
-                "B40CE07A430CFD3C033039B9FE9AFEC95DC1BDCD",
-                "79E966F7A3A990DF33E40E3D7F8F18D2CAEBADFA",
-                "4AA29D14D171522ECE47BEE8957E35A41F3E9CFF",
+                "f96cea198ad1dd5617ac084a3d92c6107708c0ef",
+                "0164b8a914cd2a5e74c4f7ff082c4d97f1edf880",
+                "c1b0f222d150ebb9aa36a40cafdc8bcbed830b14",
+                "b40ce07a430cfd3c033039b9fe9afec95dc1bdcd",
+                "79e966f7a3a990df33e40e3d7f8f18d2caebadfa",
+                "4aa29d14d171522ece47bee8957e35a41f3e9cff",
         ];
 
         Sha0 h = new Sha0();

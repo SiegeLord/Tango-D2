@@ -860,15 +860,15 @@ version (UnitTest)
                 "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+-ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+-"
         ];
         static char[][] results = [
-                "24F0130C63AC933216166E76B1BB925FF373DE2D49584E7A",
-                "F258C1E88414AB2A527AB541FFC5B8BF935F7B951C132951",
-                "9F00F599072300DD276ABB38C8EB6DEC37790C116F9D2BDF",
-                "87FB2A9083851CF7470D2CF810E6DF9EB586445034A5A386",
-                "467DB80863EBCE488DF1CD1261655DE957896565975F9197",
-                "0C410A042968868A1671DA5A3FD29A725EC1E457D3CDB303",
-                "EBF591D5AFA655CE7F22894FF87F54AC89C811B6B0DA3193",
-                "3D9AEB03D1BD1A6357B2774DFD6D5B24DD68151D503974FC",
-                "00B83EB4E53440C576AC6AAEE0A7485825FD15E70A59FFE4"
+                "24f0130c63ac933216166e76b1bb925ff373de2d49584e7a",
+                "f258c1e88414ab2a527ab541ffc5b8bf935f7b951c132951",
+                "9f00f599072300dd276abb38c8eb6dec37790c116f9d2bdf",
+                "87fb2a9083851cf7470d2cf810e6df9eb586445034a5a386",
+                "467db80863ebce488df1cd1261655de957896565975f9197",
+                "0c410a042968868a1671da5a3fd29a725ec1e457d3cdb303",
+                "ebf591d5afa655ce7f22894ff87f54ac89c811b6b0da3193",
+                "3d9aeb03d1bd1a6357b2774dfd6d5b24dd68151d503974fc",
+                "00b83eb4e53440c576ac6aaee0a7485825fd15e70a59ffe4"
         ];
 
         Tiger h = new Tiger();
@@ -890,7 +890,7 @@ version (UnitTest)
                 h.update(buffer);
                 char[] e = h.hexDigest();
 
-        assert(e == "8EF43951B3F5F4FD1D41AFE51B420E710462F233C3AAA8E1",
-                ":(65k)("~e~")!=(8EF43951B3F5F4FD1D41AFE51B420E710462F233C3AAA8E1)");
+        assert(e == "8ef43951b3f5f4fd1d41afe51b420e710462f233c3aaa8e1",
+                ":(65k)("~e~")!=(8ef43951b3f5f4fd1d41afe51b420e710462f233c3aaa8e1)");
         }
 }

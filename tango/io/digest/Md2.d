@@ -250,13 +250,13 @@ version (UnitTest)
 
         static char[][] results = 
         [
-                "8350E5A3E24C153DF2275C9F80692773",
-                "32EC01EC4A6DAC72C0AB96FB34C0B5D1",
-                "DA853B0D3F88D99B30283A69E6DED6BB",
-                "AB4F496BFB2A530B219FF33031FE06B0",
-                "4E8DDFF3650292AB5A4108C3AA47940B",
-                "DA33DEF2A42DF13975352846C30338CD",
-                "D5976F79D83D3A0DC9806C3C66F3EFD8"
+                "8350e5a3e24c153df2275c9f80692773",
+                "32ec01ec4a6dac72c0ab96fb34c0b5d1",
+                "da853b0d3f88d99b30283a69e6ded6bb",
+                "ab4f496bfb2a530b219ff33031fe06b0",
+                "4e8ddff3650292ab5a4108c3aa47940b",
+                "da33def2a42df13975352846c30338cd",
+                "d5976f79d83d3a0dc9806c3c66f3efd8"
         ];
 
         Md2 h = new Md2();

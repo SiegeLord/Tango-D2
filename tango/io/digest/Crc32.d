@@ -117,6 +117,6 @@ version (UnitTest)
         c.update(data);
         assert(c.crc32Digest == 0x2520577b);
         c.update(data);
-        assert(c.hexDigest() == "7B572025");
+        assert(c.hexDigest() == "7b572025");
         }
 }
