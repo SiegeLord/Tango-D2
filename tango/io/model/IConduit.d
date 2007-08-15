@@ -184,6 +184,8 @@ interface ISelectable
 
 interface InputStream
 {
+        public alias read opCall;
+
         /***********************************************************************
         
                 Return the host conduit
@@ -222,6 +224,8 @@ interface InputStream
 
 interface OutputStream
 {
+        public alias write opCall;
+
         /***********************************************************************
         
                 Return the host conduit

@@ -215,7 +215,7 @@ class MappedBuffer : Buffer
 
         uint seek (uint offset, IConduit.Seek.Anchor anchor)
         {
-                uint pos = capacity_;
+                uint pos = dimension;
 
                 if (anchor is IConduit.Seek.Anchor.Begin)
                     pos = offset;
@@ -223,9 +223,9 @@ class MappedBuffer : Buffer
                    if (anchor is IConduit.Seek.Anchor.End)
                        pos -= offset;
                    else
-                      pos = position_ + offset;
+                      pos = index + offset;
 
-                return position_ = pos;
+                return index = pos;
         }
 
         /***********************************************************************
@@ -237,7 +237,7 @@ class MappedBuffer : Buffer
 
         override uint writable ()
         {
-                return capacity_ - position_;
+                return dimension - index;
         }               
 
         /***********************************************************************
@@ -253,8 +253,8 @@ class MappedBuffer : Buffer
                 if (size)
                    {
                    // content may overlap ...
-                   memcpy (&data[position_], src, size);
-                   position_ += size;
+                   memcpy (&data[index], src, size);
+                   index += size;
                    }
         }
 
@@ -273,12 +273,12 @@ class MappedBuffer : Buffer
 
         override uint write (uint delegate (void[]) dg)
         {
-                int count = dg (data [position_..capacity_]);
+                int count = dg (data [index .. dimension]);
 
                 if (count != IConduit.Eof) 
                    {
-                   position_ += count;
-                   assert (position_ <= capacity_);
+                   index += count;
+                   assert (index <= dimension);
                    }
                 return count;
         }               

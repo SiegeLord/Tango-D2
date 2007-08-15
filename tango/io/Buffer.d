@@ -152,7 +152,7 @@ extern (C)
         representing the console. However, all conduit operations are
         legitimate on Stdout and Stderr. For example:
         ---
-        Stdout.stream.conduit.copy (new FileConduit ("readme.txt"));
+        Stdout.stream.copy (new FileConduit ("readme.txt"));
         ---
 
         Stdout also has support for text conversions and formatted 
@@ -198,13 +198,13 @@ extern (C)
 
 class Buffer : IBuffer
 {
-        protected void[]        data;           // the raw data
-        protected uint          limit_;         // limit of valid content
-        protected uint          capacity_;      // maximum of limit
-        protected uint          position_;      // current read position
-        protected IConduit      conduit_;       // optional conduit
-        protected OutputStream  output_;        // optional output stream
-        protected InputStream   input_;         // optional input stream
+        protected IConduit      root;           // optional conduit
+        protected OutputStream  sink;           // optional data sink
+        protected InputStream   source;         // optional data source
+        protected void[]        data;           // the raw data buffer
+        protected uint          index;          // current read position
+        protected uint          extent;         // limit of valid content
+        protected uint          dimension;      // maximum extent of content
 
         
         protected static char[] overflow  = "output buffer is full";
@@ -220,8 +220,8 @@ class Buffer : IBuffer
 
         invariant 
         {
-                assert (position_ <= limit_);
-                assert (limit_ <= capacity_);
+                assert (index <= extent);
+                assert (extent <= dimension);
         }
 
         /***********************************************************************
@@ -370,11 +370,11 @@ class Buffer : IBuffer
         IBuffer setContent (void[] data, uint readable)
         {
                 this.data = data;
-                this.limit_ = readable;
-                this.capacity_ = data.length;
+                this.extent = readable;
+                this.dimension = data.length;
 
                 // reset to start of input
-                this.position_ = 0;
+                this.index = 0;
 
                 return this;            
         }
@@ -420,7 +420,7 @@ class Buffer : IBuffer
         {   
                 if (size > readable)
                    {
-                   if (input_ is null)
+                   if (source is null)
                        error (underflow);
 
                    // make some space? This will try to leave as much content
@@ -428,21 +428,21 @@ class Buffer : IBuffer
                    // be aliased directly from within. 
                    if (size > writable)
                       {
-                      if (size > capacity_)
+                      if (size > dimension)
                           error (underflow);
                       compress ();
                       }
 
                    // populate tail of buffer with new content
                    do {
-                      if (fill(input_) is IConduit.Eof)
+                      if (fill(source) is IConduit.Eof)
                           error (eofRead);
                       } while (size > readable);
                    }
 
-                auto i = position_;
+                auto i = index;
                 if (eat)
-                    position_ += size;
+                    index += size;
                 return data [i .. i + size];               
         }
 
@@ -498,18 +498,18 @@ class Buffer : IBuffer
                        content = dst.length;
 
                    // transfer buffer content
-                   dst [0 .. content] = data [position_ .. position_ + content];
-                   position_ += content;
+                   dst [0 .. content] = data [index .. index + content];
+                   index += content;
                    }
                 else
-                   if (input_) 
+                   if (source) 
                       {
                       // pathological cases read directly from conduit
-                      if (dst.length > capacity_) 
-                          content = input_.read (dst);
+                      if (dst.length > dimension) 
+                          content = source.read (dst);
                       else
                          // keep buffer partially populated
-                         if ((content = fill(input_)) != IConduit.Eof && content > 0)
+                         if ((content = fill(source)) != IConduit.Eof && content > 0)
                               content = read (dst);
                       }
                    else
@@ -612,19 +612,19 @@ class Buffer : IBuffer
         {               
                 if (length > writable)
                     // can we write externally?
-                    if (output_)
+                    if (sink)
                        {
                        flush ();
 
                        // check for pathological case
-                       if (length > capacity_)
+                       if (length > dimension)
                           {
                           do {
-                             auto written = output_.write (src [0 .. length]);
+                             auto written = sink.write (src [0 .. length]);
                              if (written is IConduit.Eof)
                                  error (eofWrite);
                              src += written, length -= written;
-                             } while (length > capacity_);
+                             } while (length > dimension);
                           }
                        }
                     else
@@ -706,7 +706,7 @@ class Buffer : IBuffer
 
         void[] slice ()
         {       
-                return  data [position_ .. limit_];
+                return  data [index .. extent];
         }
 
         /***********************************************************************
@@ -735,9 +735,9 @@ class Buffer : IBuffer
                 if (size < 0)
                    {
                    size = -size;
-                   if (position_ >= size)
+                   if (index >= size)
                       {
-                      position_ -= size;
+                      index -= size;
                       return true;
                       }
                    return false;
@@ -774,7 +774,7 @@ class Buffer : IBuffer
         bool next (uint delegate (void[]) scan)
         {
                 while (read(scan) is IConduit.Eof)
-                       if (input_ is null)
+                       if (source is null)
                           {
                           skip (readable);
                           return false;
@@ -791,7 +791,7 @@ class Buffer : IBuffer
                                  error ("Token is too large to fit within buffer");
 
                           // read another chunk of data
-                          if (fill(input_) is IConduit.Eof)
+                          if (fill(source) is IConduit.Eof)
                              {
                              skip (readable);
                              return false;
@@ -812,7 +812,7 @@ class Buffer : IBuffer
 
         uint readable ()
         {
-                return limit_ - position_;
+                return extent - index;
         }               
 
         /***********************************************************************
@@ -827,7 +827,7 @@ class Buffer : IBuffer
 
         uint writable ()
         {
-                return capacity_ - limit_;
+                return dimension - extent;
         }               
 
         /***********************************************************************
@@ -852,12 +852,12 @@ class Buffer : IBuffer
 
         uint write (uint delegate (void[]) dg)
         {
-                int count = dg (data [limit_..capacity_]);
+                int count = dg (data [extent..dimension]);
 
                 if (count != IConduit.Eof) 
                    {
-                   limit_ += count;
-                   assert (limit_ <= capacity_);
+                   extent += count;
+                   assert (extent <= dimension);
                    }
                 return count;
         }               
@@ -885,12 +885,12 @@ class Buffer : IBuffer
 
         uint read (uint delegate (void[]) dg)
         {
-                int count = dg (data [position_..limit_]);
+                int count = dg (data [index..extent]);
                 
                 if (count != IConduit.Eof)
                    {
-                   position_ += count;
-                   assert (position_ <= limit_);
+                   index += count;
+                   assert (index <= extent);
                    }
                 return count;
         }               
@@ -917,12 +917,12 @@ class Buffer : IBuffer
         {
                 uint r = readable ();
 
-                if (position_ > 0 && r > 0)
+                if (index > 0 && r > 0)
                     // content may overlap ...
-                    memcpy (&data[0], &data[position_], r);
+                    memcpy (&data[0], &data[index], r);
 
-                position_ = 0;
-                limit_ = r;
+                index = 0;
+                extent = r;
                 return this;
         }               
 
@@ -974,7 +974,7 @@ class Buffer : IBuffer
 
         final uint drain ()
         {
-                auto dst = output_;
+                auto dst = sink;
                 assert (dst);
 
                 uint ret = read (&dst.write);
@@ -1003,13 +1003,13 @@ class Buffer : IBuffer
 
         void flush ()
         {
-                if (output_)
+                if (sink)
                    {
                    while (readable() > 0)
                           drain ();
 
                    // flush the filter chain also
-                   output_.flush;
+                   sink.flush;
                    }
         } 
 
@@ -1028,11 +1028,11 @@ class Buffer : IBuffer
 
         void clear ()
         {
-                position_ = limit_ = 0;
+                index = extent = 0;
 
                 // clear the filter chain also
-                if (input_)
-                    input_.clear;
+                if (source)
+                    source.clear;
 
                 return this;
         }               
@@ -1051,7 +1051,7 @@ class Buffer : IBuffer
         {
                 if (extent <= data.length)
                    {
-                   limit_ = extent;
+                   extent = extent;
                    return true;
                    }
                 return false;
@@ -1074,7 +1074,7 @@ class Buffer : IBuffer
 
         OutputStream copy (InputStream src)
         {
-                assert (output_ && src);
+                assert (sink && src);
 
                 while (fill(src) != IConduit.Eof)
                        // don't drain until we actually need to
@@ -1100,7 +1100,7 @@ class Buffer : IBuffer
 
         uint limit ()
         {
-                return limit_;
+                return extent;
         }
 
         /***********************************************************************
@@ -1120,7 +1120,7 @@ class Buffer : IBuffer
 
         uint capacity ()
         {
-                return capacity_;
+                return dimension;
         }
 
         /***********************************************************************
@@ -1140,7 +1140,7 @@ class Buffer : IBuffer
 
         uint position ()
         {
-                return position_;
+                return index;
         }
 
         /***********************************************************************
@@ -1161,7 +1161,7 @@ class Buffer : IBuffer
 
         IConduit conduit ()
         {
-                return conduit_;
+                return root;
         }
 
         /***********************************************************************
@@ -1182,9 +1182,9 @@ class Buffer : IBuffer
 
         IBuffer setConduit (IConduit conduit)
         {
-                output_  = conduit.output;
-                input_   = conduit.input;
-                conduit_ = conduit;
+                root = conduit;
+                sink = conduit.output;
+                source = conduit.input;
                 return this;
         }
 
@@ -1224,8 +1224,8 @@ class Buffer : IBuffer
                 if (size)
                    {
                    // content may overlap ...
-                   memcpy (&data[limit_], src, size);
-                   limit_ += size;
+                   memcpy (&data[extent], src, size);
+                   extent += size;
                    }
         }
 }

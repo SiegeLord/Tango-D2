@@ -72,22 +72,22 @@ class GrowBuffer : Buffer
         {   
                 if (size > readable)
                    {
-                   if (input_ is null)
+                   if (source is null)
                        error (underflow);
 
-                   if (size + position_ > capacity_)
+                   if (size + index > dimension)
                        makeRoom (size);
 
                    // populate tail of buffer with new content
                    do {
-                      if (fill(input_) is IConduit.Eof)
+                      if (fill(source) is IConduit.Eof)
                           error (eofRead);
                       } while (size > readable);
                    }
 
-                uint i = position_;
+                uint i = index;
                 if (eat)
-                    position_ += size;
+                    index += size;
                 return data [i .. i + size];               
         }
 
@@ -136,7 +136,7 @@ class GrowBuffer : Buffer
         uint fill (uint size = uint.max)
         {   
                 while (readable < size)
-                       if (fill(input_) is IConduit.Eof)
+                       if (fill(source) is IConduit.Eof)
                            break;
                 return readable;
         }
@@ -152,8 +152,8 @@ class GrowBuffer : Buffer
                 if (size < increment)
                     size = increment;
 
-                capacity_ += size;
-                data.length = capacity_;               
+                dimension += size;
+                data.length = dimension;               
                 return writable();
         }
 }
