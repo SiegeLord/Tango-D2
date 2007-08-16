@@ -124,7 +124,7 @@ class Properties(T)
                          const T[] NL = "\n";
 
                 foreach (key, value; properties)
-                         emit (key) (equals) (NL);
+                         emit (key) (equals) (value) (NL);
                 return emit;
         }
 }
