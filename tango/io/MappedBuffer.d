@@ -288,9 +288,8 @@ class MappedBuffer : Buffer
 
         ***********************************************************************/
 
-        override InputStream clear ()
+        override void clear ()
         {
-                return this;
         }               
 
         /***********************************************************************
