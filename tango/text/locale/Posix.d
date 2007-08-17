@@ -34,7 +34,7 @@ int getUserCulture() {
   if (!env || *env == '\0') {
     env = getenv("LANG");
     if (!env || *env == '\0')
-      return 0;
+      throw new Exception("Neither LANG nor LC_ALL were found to be set. Please set for locale formatting to function.");
   }
 
   // getenv returns a string of the form <language>_<region>.
