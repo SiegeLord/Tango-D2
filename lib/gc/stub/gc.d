@@ -78,9 +78,9 @@ extern (C) uint gc_clrAttr( void* p, uint a )
 
 extern (C) void* gc_malloc( size_t sz, uint ba = 0 )
 {
-    void* p = malloc( sz + blk_t.sizeof );
+    void* p = malloc( sz );
 
-    if( p !is null )
+    if( sz && p is null )
         onOutOfMemoryError();
     return p;
 }
@@ -89,16 +89,16 @@ extern (C) void* gc_calloc( size_t sz, uint ba = 0 )
 {
     void* p = calloc( 1, sz );
 
-    if( p !is null )
+    if( sz && p is null )
         onOutOfMemoryError();
     return p;
 }
 
 extern (C) void* gc_realloc( void* p, size_t sz, uint ba = 0 )
 {
-    p = realloc( i, sz );
+    p = realloc( p, sz );
 
-    if( p !is null )
+    if( sz && p is null )
         onOutOfMemoryError();
     return p;
 }
