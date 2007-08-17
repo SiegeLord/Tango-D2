@@ -168,15 +168,15 @@ class UnicodeFile(T)
 
         T[] read ()
         {
-                auto conduit = new FileConduit (path_);  
+                scope conduit = new FileConduit (path_);  
                 scope (exit)
-                       conduit.close;
+                       conduit.dispose;
 
                 // allocate enough space for the entire file
                 auto content = new ubyte [cast(uint) conduit.length];
 
                 //read the content
-                if (conduit.input.read (content) != content.length)
+                if (conduit.read (content) != content.length)
                     conduit.exception ("unexpected eof");
 
                 return bom.decode (content);
@@ -223,15 +223,15 @@ class UnicodeFile(T)
                 void[] converted = bom.encode (content);
 
                 // open file after conversion ~ in case of exceptions
-                auto conduit = new FileConduit (path_, style);  
+                scope conduit = new FileConduit (path_, style);  
                 scope (exit)
-                       conduit.close;
+                       conduit.dispose;
 
                 if (writeBom)
-                    conduit.output.write (bom.getSignature);
+                    conduit.write (bom.getSignature);
 
                 // and write
-                conduit.output.write (converted);
+                conduit.write (converted);
                 return this;
         }
 }

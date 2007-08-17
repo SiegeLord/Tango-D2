@@ -79,9 +79,9 @@ class File
 
         final void[] read ()
         {
-                auto conduit = new FileConduit (path_);  
+                scope conduit = new FileConduit (path_);  
                 scope (exit)
-                       conduit.close;
+                       conduit.dispose;
 
                 // allocate enough space for the entire file
                 auto content = new ubyte [cast(uint) conduit.length];
@@ -123,9 +123,9 @@ class File
 
         private File write (void[] content, FileConduit.Style style)
         {      
-                auto conduit = new FileConduit (path_, style);  
+                scope conduit = new FileConduit (path_, style);  
                 scope (exit)
-                       conduit.close;
+                       conduit.dispose;
 
                 conduit.output.write (content);
                 return this;
