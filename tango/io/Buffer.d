@@ -15,9 +15,8 @@ module tango.io.Buffer;
 
 private import  tango.core.Exception;
 
-public  import  tango.io.model.IBuffer;
-
-public  import  tango.io.model.IConduit;
+public  import  tango.io.model.IBuffer,
+                tango.io.model.IConduit;
 
 /******************************************************************************
 
@@ -198,7 +197,7 @@ extern (C)
 
 class Buffer : IBuffer
 {
-        protected IConduit      root;           // optional conduit
+        protected IConduit      host;           // optional conduit
         protected OutputStream  sink;           // optional data sink
         protected InputStream   source;         // optional data source
         protected void[]        data;           // the raw data buffer
@@ -1001,7 +1000,7 @@ class Buffer : IBuffer
 
         ***********************************************************************/
 
-        void flush ()
+        override void flush ()
         {
                 if (sink)
                    {
@@ -1017,45 +1016,36 @@ class Buffer : IBuffer
         
                 Clear buffer content
 
-                Returns:
-                the buffer instance
-
                 Remarks:
                 Reset 'position' and 'limit' to zero. This effectively 
                 clears all content from the buffer.
 
         ***********************************************************************/
 
-        void clear ()
+        override void clear ()
         {
                 index = extent = 0;
 
                 // clear the filter chain also
                 if (source)
                     source.clear;
-
-                return this;
         }               
 
         /***********************************************************************
         
-                Truncate buffer content
+                Commit the output
 
                 Remarks:
-                Truncate the buffer within its extent. Returns true if
-                the new 'extent' is valid, false otherwise.
+                Propogate request to an attached OutputStream (this is a
+                requirment for the OutputStream interface)
 
         ***********************************************************************/
 
-        bool truncate (uint extent)
+        final override void commit () 
         {
-                if (extent <= data.length)
-                   {
-                   extent = extent;
-                   return true;
-                   }
-                return false;
-        }               
+                if (sink)
+                    sink.commit;
+        }
 
         /***********************************************************************
         
@@ -1072,7 +1062,7 @@ class Buffer : IBuffer
 
         ***********************************************************************/
 
-        OutputStream copy (InputStream src)
+        override OutputStream copy (InputStream src)
         {
                 assert (sink && src);
 
@@ -1082,6 +1072,26 @@ class Buffer : IBuffer
                            drain ();
                 return this;
         } 
+
+        /***********************************************************************
+        
+                Truncate buffer content
+
+                Remarks:
+                Truncate the buffer within its extent. Returns true if
+                the new length is valid, false otherwise.
+
+        ***********************************************************************/
+
+        bool truncate (uint length)
+        {
+                if (length <= data.length)
+                   {
+                   extent = length;
+                   return true;
+                   }
+                return false;
+        }               
 
         /***********************************************************************
         
@@ -1159,9 +1169,9 @@ class Buffer : IBuffer
 
         ***********************************************************************/
 
-        IConduit conduit ()
+        override IConduit conduit ()
         {
-                return root;
+                return host;
         }
 
         /***********************************************************************
@@ -1182,10 +1192,32 @@ class Buffer : IBuffer
 
         IBuffer setConduit (IConduit conduit)
         {
-                root = conduit;
+//                setHost (host = conduit);
+                host = conduit;
                 sink = conduit.output;
                 source = conduit.input;
                 return this;
+        }
+
+        /***********************************************************************
+
+                Dispose of this buffer
+                
+                Remarks:
+                Dispose flushes & commits itself, closes any associated 
+                conduit, and deletes both that and the buffer instance. 
+
+        ***********************************************************************/
+
+        final void dispose ()
+        {
+                if (sink)
+                   {
+                   flush;
+                   commit;
+                   sink.conduit.dispose (false); 
+                   }
+                delete this;
         }
 
         /***********************************************************************

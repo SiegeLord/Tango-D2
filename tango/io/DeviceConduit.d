@@ -30,26 +30,13 @@ class DeviceConduit : Conduit
 {
         /***********************************************************************
 
-                Callback to close the file. This is invoked from the Resource
-                base-class when the resource is being closed.
-
+                Throw an IOException noting the last error
+        
         ***********************************************************************/
 
-        override void close ()
+        final void error ()
         {
-                super.close ();
-                _close ();
-        }
-
-        /***********************************************************************
-
-                Return a preferred size for buffering conduit I/O
-
-        ***********************************************************************/
-
-        uint bufferSize ()
-        {
-                return 1024 * 16;
+                super.exception (toUtf8() ~ " :: " ~ SysError.lastMsg);
         }
 
         /***********************************************************************
@@ -58,20 +45,20 @@ class DeviceConduit : Conduit
 
         ***********************************************************************/
 
-        protected char[] toUtf8()
+        override char[] toUtf8()
         {
                 return "<device>";
         }
 
         /***********************************************************************
 
-                Throw an IOException noting the last error
-        
+                Return a preferred size for buffering conduit I/O
+
         ***********************************************************************/
 
-        final void error ()
+        override uint bufferSize ()
         {
-                super.exception (toUtf8() ~ " :: " ~ SysError.lastMsg);
+                return 1024 * 16;
         }
 
         /***********************************************************************
@@ -86,17 +73,6 @@ class DeviceConduit : Conduit
 
                 /***************************************************************
 
-                        Return the underlying OS handle of this Conduit
-
-                ***************************************************************/
-
-                final Handle fileHandle ()
-                {
-                        return cast(Handle) handle;
-                }
-
-                /***************************************************************
-
                         Gain access to the standard IO handles (console etc).
 
                 ***************************************************************/
@@ -108,11 +84,22 @@ class DeviceConduit : Conduit
 
                 /***************************************************************
 
+                        Return the underlying OS handle of this Conduit
+
+                ***************************************************************/
+
+                final override Handle fileHandle ()
+                {
+                        return cast(Handle) handle;
+                }
+
+                /***************************************************************
+
                         Close the underlying file
 
                 ***************************************************************/
 
-                protected void _close ()
+                override void close ()
                 {
                         if (handle)
                             if (! CloseHandle (handle))
@@ -124,10 +111,11 @@ class DeviceConduit : Conduit
 
                 ***************************************************************/
 
-                protected override void flush ()
+                override void flush ()
                 {
                         if (! FlushFileBuffers (handle))
                               error ();
+                        return this;
                 }
 
                 /***************************************************************
@@ -140,7 +128,7 @@ class DeviceConduit : Conduit
 
                 ***************************************************************/
 
-                protected override uint read (void[] dst)
+                override uint read (void[] dst)
                 {
                         DWORD read;
                         void *p = dst.ptr;
@@ -164,7 +152,7 @@ class DeviceConduit : Conduit
 
                 ***************************************************************/
 
-                protected override uint write (void[] src)
+                override uint write (void[] src)
                 {
                         DWORD written;
 
@@ -188,17 +176,6 @@ class DeviceConduit : Conduit
 
                 /***************************************************************
 
-                        Return the underlying OS handle of this Conduit
-
-                ***************************************************************/
-
-                final Handle fileHandle ()
-                {
-                        return cast(Handle) handle;
-                }
-
-                /***************************************************************
-
                         Gain access to the standard IO handles (console etc).
 
                 ***************************************************************/
@@ -210,11 +187,22 @@ class DeviceConduit : Conduit
 
                 /***************************************************************
 
+                        Return the underlying OS handle of this Conduit
+
+                ***************************************************************/
+
+                final override Handle fileHandle ()
+                {
+                        return cast(Handle) handle;
+                }
+
+                /***************************************************************
+
                         Close the underlying file
 
                 ***************************************************************/
 
-                protected void _close ()
+                override void close ()
                 {
                         if (handle)
                             if (posix.close (handle) == -1)
@@ -229,7 +217,7 @@ class DeviceConduit : Conduit
 
                 ***************************************************************/
 
-                protected override uint read (void[] dst)
+                override uint read (void[] dst)
                 {
                         int read = posix.read (handle, dst.ptr, dst.length);
                         if (read == -1)
@@ -247,7 +235,7 @@ class DeviceConduit : Conduit
 
                 ***************************************************************/
 
-                protected override uint write (void[] src)
+                override uint write (void[] src)
                 {
                         int written = posix.write (handle, src.ptr, src.length);
                         if (written == -1)

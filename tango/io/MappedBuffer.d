@@ -194,18 +194,6 @@ class MappedBuffer : Buffer
                 }
         }
 
-
-        /***********************************************************************
-                
-                Ensure this is closed when GC'd
-
-        ***********************************************************************/
-        
-        ~this ()
-        {
-                close ();        
-        }
-
         /***********************************************************************
         
                 Seek to the specified position within the buffer, and return
@@ -300,8 +288,9 @@ class MappedBuffer : Buffer
 
         ***********************************************************************/
 
-        override void clear ()
+        override InputStream clear ()
         {
+                return this;
         }               
 
         /***********************************************************************
@@ -312,6 +301,7 @@ class MappedBuffer : Buffer
 
         override IBuffer setConduit (IConduit conduit)
         {
-                throw new IOException ("cannot setConduit on memory-mapped buffer");
+                error ("cannot setConduit on memory-mapped buffer");
+                return null;
         }
 }

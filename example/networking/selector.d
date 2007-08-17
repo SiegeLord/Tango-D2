@@ -171,7 +171,7 @@ void testSelector(ISelector selector)
                             debug (selector)
                                 log.trace(sprint("[{0}] Receiving message from client", i));
 
-                            count = (cast(SocketConduit) selectionKey.conduit).input.read(buffer);
+                            count = (cast(SocketConduit) selectionKey.conduit).read(buffer);
                             if (count != IConduit.Eof)
                             {
                                 debug (selector)
@@ -198,7 +198,7 @@ void testSelector(ISelector selector)
                         debug (selector)
                             log.trace(sprint("[{0}] Sending PONG to client", i));
 
-                        count = (cast(SocketConduit) selectionKey.conduit).output.write("PONG");
+                        count = (cast(SocketConduit) selectionKey.conduit).write("PONG");
                         if (count != IConduit.Eof)
                         {
                             debug (selector)
@@ -333,7 +333,7 @@ void clientThreadFunc()
             {
                 try
                 {
-                    count = socket.output.write("PING");
+                    count = socket.write("PING");
                     break;
                 }
                 catch (SocketException e)
@@ -354,7 +354,7 @@ void clientThreadFunc()
                 {
                     try
                     {
-                        count = socket.input.read(buffer);
+                        count = socket.read(buffer);
                         break;
                     }
                     catch (SocketException e)

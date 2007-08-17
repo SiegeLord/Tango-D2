@@ -420,7 +420,7 @@ class FileConduit : DeviceConduit, DeviceConduit.Seek
 
                 ***************************************************************/
 
-                protected override uint write (void[] src)
+                override uint write (void[] src)
                 {
                         DWORD written;
 

@@ -68,17 +68,6 @@ class SocketConduit : Conduit
 
         /***********************************************************************
 
-                Return a preferred size for buffering conduit I/O
-
-        ***********************************************************************/
-
-        uint bufferSize ()
-        {
-                return 1024 * 8;
-        }
-
-        /***********************************************************************
-
                 Return the socket wrapper
                 
         ***********************************************************************/
@@ -90,6 +79,17 @@ class SocketConduit : Conduit
 
         /***********************************************************************
 
+                Return a preferred size for buffering conduit I/O
+
+        ***********************************************************************/
+
+        override uint bufferSize ()
+        {
+                return 1024 * 8;
+        }
+
+        /***********************************************************************
+
                 Models a handle-oriented device.
 
                 TODO: figure out how to avoid exposing this in the general
@@ -97,7 +97,7 @@ class SocketConduit : Conduit
 
         ***********************************************************************/
 
-        Handle fileHandle ()
+        override Handle fileHandle ()
         {
                 return cast(Handle) socket_.fileHandle;
         }
@@ -191,27 +191,6 @@ class SocketConduit : Conduit
 
         /***********************************************************************
 
-                Deallocate this SocketConduit when it is been closed.
-
-                Note that one should always close a SocketConduit under
-                normal conditions, and generally invoke shutdown on all
-                connected sockets beforehand
-
-        ***********************************************************************/
-
-        override void close ()
-        {
-                super.close;
-                socket_.close;
-
-                // deallocate if this came from the free-list,
-                // otherwise just wait for the GC to handle it
-                if (fromList)
-                    deallocate (this);
-        }
-
-        /***********************************************************************
-
                 Read content from socket. This is implemented as a callback
                 from the reader() method so we can expose the timout support
                 to subclasses
@@ -223,6 +202,26 @@ class SocketConduit : Conduit
                 return socket_.receive (dst);
         }
         
+        /***********************************************************************
+
+                Deallocate this SocketConduit when it is been closed.
+
+                Note that one should always close a SocketConduit under
+                normal conditions, and generally invoke shutdown on all
+                connected sockets beforehand
+
+        ***********************************************************************/
+
+        override void close ()
+        {
+                socket_.close;
+
+                // deallocate if this came from the free-list,
+                // otherwise just wait for the GC to handle it
+                if (fromList)
+                    deallocate (this);
+        }
+
        /***********************************************************************
 
                 Callback routine to read content from the socket. Note
@@ -240,7 +239,7 @@ class SocketConduit : Conduit
 
         ***********************************************************************/
 
-        protected override uint read (void[] dst)
+        override uint read (void[] dst)
         {
                 // ensure just one read at a time
                 synchronized (this)
@@ -286,7 +285,7 @@ class SocketConduit : Conduit
 
         ***********************************************************************/
 
-        protected override uint write (void[] src)
+        override uint write (void[] src)
         {
                 int count = socket_.send (src);
                 if (count <= 0)

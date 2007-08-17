@@ -36,11 +36,10 @@ private import  tango.io.model.IConduit;
 
 *******************************************************************************/
 
-class Conduit : IConduit, InputStream, OutputStream
+class Conduit : IConduit
 {
-        private InputStream             input_;
-        private OutputStream            output_;
-        private void delegate(bool)     notify_;
+        private OutputStream    sink;
+        private InputStream     source;
 
         /***********************************************************************
 
@@ -71,7 +70,7 @@ class Conduit : IConduit, InputStream, OutputStream
 
         ***********************************************************************/
 
-        abstract protected uint read (void[] dst);
+        abstract uint read (void[] dst);
 
         /***********************************************************************
 
@@ -83,35 +82,28 @@ class Conduit : IConduit, InputStream, OutputStream
 
         ***********************************************************************/
 
-        abstract protected uint write (void [] src);
+        abstract uint write (void [] src);
 
         /***********************************************************************
 
-                default ctor assigns input and output streams to their
-                initial value (this conduit)
+                Close this conduit
+
+        ***********************************************************************/
+
+        abstract void close ();
+
+        /***********************************************************************
+        
+                Constructor to initialize the default sink & source
 
         ***********************************************************************/
 
         this ()
         {
-                input_ = this;
-                output_ = this;
-
-                // assign a default notification handler that does nothing
-                notify_ = (bool){return;};
+                sink = this;
+                source = this;
         }
 
-        /***********************************************************************
-        
-                Return the host conduit. This is part of the Stream interface
-
-        ***********************************************************************/
-
-        final IConduit conduit()
-        {
-                return this;
-        }
-                            
         /***********************************************************************
 
                 Is the conduit alive? Default behaviour returns true
@@ -124,112 +116,112 @@ class Conduit : IConduit, InputStream, OutputStream
         }
 
         /***********************************************************************
-
-                dump any output buffering
+        
+                Return the host. This is part of the Stream interface
 
         ***********************************************************************/
 
-        void flush ()
+        final IConduit conduit()
         {
+                return this;
         }
+                            
+        /***********************************************************************
+
+                clear any buffered input
+
+        ***********************************************************************/
+
+        void clear () {}
 
         /***********************************************************************
 
-                clear any input buffering
+                Write buffered output
 
         ***********************************************************************/
 
-        void clear ()
-        {
-        }
+        void flush () {}
 
         /***********************************************************************
 
-                Close this conduit
+                commit the output
 
         ***********************************************************************/
 
-        void close ()
+        final void commit () {}
+
+        /***********************************************************************
+
+                Dispose of this conduit
+                
+                Remarks:
+                Dispose flushes & commits any filters, closes the conduit, 
+                and deletes it. This should be used in preference to close()
+
+        ***********************************************************************/
+
+        final void dispose (bool clean=true)
         {
+                if (clean)
+                   {
+                   sink.flush;
+                   sink.commit;
+                   }
+
+                this.close;
+                delete this;
         }
 
         /***********************************************************************
 
                 Return the current input stream. The initial input stream
                 is hosted by the conduit itself. Subsequent attachment of
-                stream 'filters' will alter this value.
+                stream filters will alter this value.
 
         ***********************************************************************/
         
         final InputStream input ()
         {
-                return input_;
+                return source;
         }
 
         /***********************************************************************
 
                 Return the current output stream. The initial output stream
                 is hosted by the conduit itself. Subsequent attachment of
-                stream 'filters' will alter this value.
+                stream filters will alter this value.
 
         ***********************************************************************/
         
         final OutputStream output ()
         {
-                return output_;
+                return sink;
         }
 
         /***********************************************************************
 
-                Replace the input stream and return the prior one. The
-                return value should be used as the 'ancestor' attribute
-                of attached filter, to be invoked appropriately during
-                subsequent filter activity. However, it is entirely up
-                to the intercepting stream to decide whether to follow
-                that recommendation or not.
+                Attach an input filter
 
         ***********************************************************************/
-
-        final InputStream attach (InputStream filter)
-        {
-                auto tmp = input_;
-                input_ = filter;
-                notify_ (true);
-                return tmp;
-        }
-
-        /***********************************************************************
-
-                Replace the output stream and return the prior one. The
-                return value should be used as the 'ancestor' attribute
-                of attached filter, to be invoked appropriately during
-                subsequent filter activity. However, it is entirely up
-                to the intercepting stream to decide whether to follow
-                that recommendation or not.
-
-        ***********************************************************************/
-
-        final OutputStream attach (OutputStream filter)
-        {
-                auto tmp = output_;
-                output_ = filter;
-                notify_ (false);
-                return tmp;
-        }
-
-        /***********************************************************************
         
-                Attach a notification handler, to be invoked when a filter
-                is added to the conduit. This is used in some very specific 
-                cases, and should never need to support multiple clients.
-                
-        ***********************************************************************/
-
-        final void notify (void delegate(bool) dg)
+        final IConduit attach (InputStream source)
         {
-                notify_ = dg;
+                this.source = source;
+                return this;
         }
-                            
+
+        /***********************************************************************
+
+                Attach an output filter
+
+        ***********************************************************************/
+        
+        final IConduit attach (OutputStream sink)
+        {
+                this.sink = sink;
+                return this;
+        }
+
         /***********************************************************************
 
                 Throw an IOException, with the provided message
@@ -286,7 +278,7 @@ class Conduit : IConduit, InputStream, OutputStream
 
 class InputFilter : InputStream
 {
-        protected InputStream next;
+        protected InputStream host;
 
         /***********************************************************************
 
@@ -298,9 +290,10 @@ class InputFilter : InputStream
 
         ***********************************************************************/
 
-        this (InputStream stream)
+        this (InputStream host)
         {
-                next = stream.conduit.attach (this);
+                this.host = host;
+                host.conduit.attach (this);
         }
 
         /***********************************************************************
@@ -309,7 +302,7 @@ class InputFilter : InputStream
 
         IConduit conduit ()
         {
-                return next.conduit;
+                return host.conduit;
         }
 
         /***********************************************************************
@@ -318,7 +311,7 @@ class InputFilter : InputStream
 
         void clear ()
         {
-                next.clear;
+                host.clear;
         }
 }
 
@@ -329,7 +322,7 @@ class InputFilter : InputStream
 
 class OutputFilter : OutputStream
 {
-        protected OutputStream next;
+        protected OutputStream host;
 
         /***********************************************************************
 
@@ -341,9 +334,10 @@ class OutputFilter : OutputStream
 
         ***********************************************************************/
 
-        this (OutputStream stream)
+        this (OutputStream host)
         {
-                next = stream.conduit.attach (this);
+                this.host = host;
+                host.conduit.attach (this);
         }
 
         /***********************************************************************
@@ -352,7 +346,7 @@ class OutputFilter : OutputStream
 
         IConduit conduit ()
         {
-                return next.conduit;
+                return host.conduit;
         }
 
         /***********************************************************************
@@ -361,7 +355,16 @@ class OutputFilter : OutputStream
 
         void flush ()
         {
-                next.flush;
+                host.flush;
+        }
+
+        /***********************************************************************
+
+        ***********************************************************************/
+
+        void commit ()
+        {
+                host.commit;
         }
 
         /***********************************************************************

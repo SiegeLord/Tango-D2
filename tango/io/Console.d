@@ -67,15 +67,15 @@ struct Console
 
                 **************************************************************/
 
-                private this (Conduit conduit, bool redirect)
+                private this (Conduit conduit, bool redirected)
                 {
-                        this.redirect = redirected;
-                        this.buffer   = new Buffer (conduit);
+                        redirect = redirected;
+                        buffer = new Buffer (conduit);
                 }
 
                 /**************************************************************
 
-                        Return the associated conduit
+                        Return the associated stream
 
                 **************************************************************/
 
@@ -156,15 +156,28 @@ struct Console
                 {
                         return redirect;
                 }           
+
+                /**************************************************************
+
+                        Divert input to an alternate device
+
+                        Remarks:
+                        Diverts input to the specified conduit, and sets
+                        the redirection status. 
+                        
+                **************************************************************/
+
+                final void divert (IConduit conduit, bool redirected)
+                {
+                        buffer.setConduit (conduit);
+                        redirect = redirected;
+                }           
         }
 
 
         /**********************************************************************
 
-                Model console output as a buffer. Note that we accept 
-                utf8 only: the superclass append() methods are hidden
-                from view. Buffer.consume is left open, for those who
-                require lower-level access ~ along with Buffer.write
+                Console output accepts utf8 only, by default
 
         **********************************************************************/
 
@@ -182,19 +195,15 @@ struct Console
 
                 **************************************************************/
 
-                private this (Conduit conduit, bool redirect)
+                private this (Conduit conduit, bool redirected)
                 {
-                        // get conduit to notify us of attachments so
-                        // that we can adjust our buffer accordingly
-                        conduit.notify (&notify);
-
-                        this.redirect = redirected;
-                        this.buffer   = new Buffer (conduit);
+                        redirect = redirected;
+                        buffer = new Buffer (conduit);
                 }
 
                 /**************************************************************
 
-                        Return the associated conduit
+                        Return the associated stream
 
                 **************************************************************/
 
@@ -234,9 +243,9 @@ struct Console
 
                 **************************************************************/
 
-                final Output append (Object o)        
+                final Output append (Object other)        
                 {           
-                        return append (o.toUtf8);
+                        return append (other.toUtf8);
                 }
 
                 /**************************************************************
@@ -293,8 +302,7 @@ struct Console
                         True if redirected, false otherwise.
 
                         Remarks:
-                        Reflects the console redirection status from when 
-                        this module was instantiated
+                        Reflects the console redirection status
 
                 **************************************************************/
 
@@ -305,25 +313,20 @@ struct Console
 
                 /**************************************************************
 
-                        Invoked when an attachment is made to the console
-                        Conduit. We use this to point our buffer at the 
-                        filter being attached. Without this, said filter
-                        would be ignored since Buffer operates in a mode
-                        termed 'snapshot' i.e. it doesn't look for changes
-                        in the conduit after being connected to it (which
-                        is both correct and required behaviour).
+                        Divert output to an alternate device
 
-                        An alternative would be to simply insert a buffered
-                        filter. However, Cin requires readln() support and
-                        therefore needs to directly address a buffer rather
-                        than an InputStream.
-
+                        Remarks:
+                        Diverts output to the specified conduit, and sets
+                        the redirection status. The latter dictates whether
+                        newline() performs automatic flushing or not
+                        
                 **************************************************************/
 
-                private void notify (bool)
+                final void divert (IConduit conduit, bool redirected)
                 {
-                        buffer.setConduit (buffer.conduit);
-                }
+                        buffer.setConduit (conduit);
+                        redirect = redirected;
+                }           
         }
 
 

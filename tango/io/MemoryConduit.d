@@ -27,39 +27,6 @@ class MemoryConduit : Conduit
         
         /***********************************************************************
 
-                Return a preferred size for buffering conduit I/O
-
-        ***********************************************************************/
-
-        uint bufferSize ()
-        {
-                return 1024 * 4;
-        }
-
-        /***********************************************************************
-
-                Return the name of this device
-
-        ***********************************************************************/
-
-        protected char[] toUtf8()
-        {
-                return "<memory>";
-        }
-        
-        /***********************************************************************
-
-                Return the underlying OS handle of this Conduit
-
-        ***********************************************************************/
-
-        final Handle fileHandle ()
-        {
-                return 0;
-        }
-
-        /***********************************************************************
-
                 Return the content held
 
         ***********************************************************************/
@@ -71,12 +38,45 @@ class MemoryConduit : Conduit
 
         /***********************************************************************
 
+                Return a preferred size for buffering conduit I/O
+
+        ***********************************************************************/
+
+        override uint bufferSize ()
+        {
+                return 1024 * 4;
+        }
+
+        /***********************************************************************
+
+                Return the underlying OS handle of this Conduit
+
+        ***********************************************************************/
+
+        override Handle fileHandle ()
+        {
+                return 0;
+        }
+
+        /***********************************************************************
+
+                Return the name of this device
+
+        ***********************************************************************/
+
+        override char[] toUtf8()
+        {
+                return "<memory>";
+        }
+        
+        /***********************************************************************
+
                 Read a chunk of bytes from the file into the provided
                 array (typically that belonging to an IBuffer)
 
         ***********************************************************************/
 
-        protected override uint read (void[] dst)
+        override uint read (void[] dst)
         {
                 if (content.length)
                    {
@@ -99,11 +99,19 @@ class MemoryConduit : Conduit
 
         ***********************************************************************/
 
-        protected override uint write (void[] src)
+        override uint write (void[] src)
         {
                 content ~= src;
                 return src.length;
         }
+
+        /***********************************************************************
+
+                Close this conduit
+
+        ***********************************************************************/
+
+        override void close () {}
 }
 
 

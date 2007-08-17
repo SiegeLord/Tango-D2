@@ -50,7 +50,7 @@ class GreedyOutput : OutputFilter
                 uint len;
 
                 do {
-                   auto i = next.write (src [len .. $]);
+                   auto i = host.write (src [len .. $]);
                    if (i is IConduit.Eof)
                        return (len ? len : i);
                    len += i;
@@ -94,7 +94,7 @@ class GreedyInput : InputFilter
                 uint len;
 
                 do {
-                   auto i = next.read (dst [len .. $]);
+                   auto i = host.read (dst [len .. $]);
                    if (i is IConduit.Eof)
                        return (len ? len : i);
                    len += i;

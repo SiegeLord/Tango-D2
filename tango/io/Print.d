@@ -170,7 +170,7 @@ class Print(T)
 
         /***********************************************************************
 
-                Output a newline and flush
+                Output a newline and optionally flush
 
         ***********************************************************************/
 
@@ -184,7 +184,7 @@ class Print(T)
 
         /**********************************************************************
 
-               Flush the output buffer
+               Flush the output stream
 
         **********************************************************************/
 
@@ -196,7 +196,20 @@ class Print(T)
 
         /**********************************************************************
 
-                Return the associated conduit
+                Control implicit flushing of newline(), where true enables
+                flushing. An explicit flush() will always flush the output.
+
+        **********************************************************************/
+
+        final Print flush (bool yes)
+        {
+                flushLines = yes;
+                return this;
+        }
+
+        /**********************************************************************
+
+                Return the associated stream
 
         **********************************************************************/
 
@@ -230,19 +243,6 @@ class Print(T)
 
         /**********************************************************************
 
-                Control implicit flushing of newline(), where true enables
-                flushing. An explicit flush() will always flush the output.
-
-        **********************************************************************/
-
-        final Print flush (bool yes)
-        {
-                flushLines = yes;
-                return this;
-        }
-
-        /**********************************************************************
-
                 Sink for passing to the formatter
 
         **********************************************************************/
@@ -262,15 +262,13 @@ debug (Print)
 
         void main()
         {
-                auto layout = new Layout!(char);
-                auto conduit = new FileConduit("test.txt", FileConduit.ReadWriteCreate);
-                auto buffer = new Buffer (conduit);
-                auto output = new Print!(char) (layout, buffer);
+                auto conduit = new FileConduit ("test.txt", FileConduit.ReadWriteCreate);
+                auto print = new Print!(char) (new Layout!(char), new Buffer(conduit));
 
-                for(int i=0;i<1000;i++)
-                    output(i).newline;
+                for(int i=0;i < 1000; i++)
+                    print(i).newline;
                 
-                buffer.flush;
+                print.flush;
                 conduit.close;
         }
 }

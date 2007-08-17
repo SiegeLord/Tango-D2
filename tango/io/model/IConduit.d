@@ -30,7 +30,7 @@ public import tango.io.model.IBuffer;
 
 *******************************************************************************/
 
-interface IConduit : ISelectable
+interface IConduit : InputStream, OutputStream, ISelectable
 {
         /***********************************************************************
         
@@ -100,6 +100,20 @@ interface IConduit : ISelectable
         abstract void close ();
 
         /***********************************************************************
+
+                Dispose of this conduit
+                
+                Remarks:
+                Dispose flushes & commits any filters, closes the conduit, 
+                and deletes it. This should be used in preference to close()
+
+        ***********************************************************************/
+
+        abstract void dispose (bool clean=true);
+
+        /***********************************************************************
+
+                Throw a generic IO exception with the provided msg
 
         ***********************************************************************/
 
@@ -182,7 +196,7 @@ interface ISelectable
 
 *******************************************************************************/
 
-interface InputStream
+interface InputStream 
 {
         /***********************************************************************
         
@@ -203,8 +217,7 @@ interface InputStream
         ***********************************************************************/
 
         uint read (void[] dst);               
-
-                             
+                        
         /***********************************************************************
         
                 Clear any buffered content
@@ -220,7 +233,7 @@ interface InputStream
 
 *******************************************************************************/
 
-interface OutputStream
+interface OutputStream 
 {
         /***********************************************************************
         
@@ -258,4 +271,12 @@ interface OutputStream
         ***********************************************************************/
 
         void flush ();               
+                          
+        /***********************************************************************
+        
+                Commit output
+
+        ***********************************************************************/
+
+        void commit ();               
 }
