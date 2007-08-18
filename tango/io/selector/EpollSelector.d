@@ -48,8 +48,8 @@ version (linux)
      * // will receive 3 events per invocation to the select() method.
      * selector.open(10, 3);
      *
-     * selector.register(conduit, Event.Read, object1);
-     * selector.register(conduit, Event.Write, object2);
+     * selector.register(conduit1, Event.Read, object1);
+     * selector.register(conduit2, Event.Write, object2);
      *
      * eventCount = selector.select();
      *
