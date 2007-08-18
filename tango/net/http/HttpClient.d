@@ -150,8 +150,8 @@ class HttpClient
                 responseLine = new ResponseLine;
                 headersIn    = new HttpHeadersView;
 
-                tmp          = new Buffer (1024 * 1);
-                paramsOut    = new HttpParams  (new Buffer (1024 * 1));
+                tmp          = new Buffer (1024 * 4);
+                paramsOut    = new HttpParams  (new Buffer (1024 * 4));
                 headersOut   = new HttpHeaders (new Buffer (1024 * 4));
                 cookiesOut   = new HttpCookies (headersOut);
 
