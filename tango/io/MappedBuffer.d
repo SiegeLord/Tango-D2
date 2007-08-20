@@ -105,7 +105,7 @@ class MappedBuffer : Buffer
 
                 ***************************************************************/
 
-                void close ()
+                override void close ()
                 {
                         if (base)
                             UnmapViewOfFile (base);
@@ -126,7 +126,7 @@ class MappedBuffer : Buffer
 
                 ***************************************************************/
 
-                void flush ()
+                override void flush ()
                 {
                         // flush all dirty pages
                         if (! FlushViewOfFile (base, 0))
@@ -170,7 +170,7 @@ class MappedBuffer : Buffer
                         setContent (mem);
                 }    
 
-                void close () 
+                override void close () 
                 {
                         // NOTE: When a process ends, all mmaps belonging to that process
                         //       are automatically unmapped by system (Linux).
@@ -183,7 +183,7 @@ class MappedBuffer : Buffer
                         base = null;    
                 }
 
-                void flush () 
+                override void flush () 
                 {
                         // MS_ASYNC: delayed flush; equivalent to "add-to-queue"
                         // MS_SYNC: function flushes file immediately; no return until flush complete

@@ -1208,7 +1208,7 @@ class Buffer : IBuffer
 
         ***********************************************************************/
 
-        final void close ()
+        void close ()
         {
                 if (sink)
                    {
