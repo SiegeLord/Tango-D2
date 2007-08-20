@@ -612,6 +612,18 @@ abstract class IBuffer : InputStream, OutputStream
         ***********************************************************************/
 
         abstract void error (char[] msg);
+
+        /***********************************************************************
+
+                Close this buffer
+                
+                Remarks:
+                Close flushes & commits itself, and disconnects any 
+                associated conduit. 
+
+        ***********************************************************************/
+
+        abstract void close ();
 }
 
 

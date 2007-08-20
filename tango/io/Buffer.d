@@ -1192,7 +1192,6 @@ class Buffer : IBuffer
 
         IBuffer setConduit (IConduit conduit)
         {
-//                setHost (host = conduit);
                 host = conduit;
                 sink = conduit.output;
                 source = conduit.input;
@@ -1201,15 +1200,15 @@ class Buffer : IBuffer
 
         /***********************************************************************
 
-                Dispose of this buffer
+                Close this buffer
                 
                 Remarks:
-                Dispose flushes & commits itself, closes any associated 
-                conduit, and deletes both that and the buffer instance. 
+                Close flushes & commits itself, and disconnects any 
+                associated conduit. 
 
         ***********************************************************************/
 
-        final void dispose1 ()
+        final void close ()
         {
                 if (sink)
                    {
@@ -1217,7 +1216,6 @@ class Buffer : IBuffer
                    commit;
                    sink.conduit.disconnect; 
                    }
-                delete this;
         }
 
         /***********************************************************************
