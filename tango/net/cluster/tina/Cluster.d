@@ -1089,7 +1089,7 @@ private class ConnectionPool
         
                 final void close ()
                 {
-                        conduit_.close;
+                        conduit_.disconnect;
                 }
 
                 /***************************************************************

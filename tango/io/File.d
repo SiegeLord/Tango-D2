@@ -81,7 +81,7 @@ class File
         {
                 scope conduit = new FileConduit (path_);  
                 scope (exit)
-                       conduit.dispose;
+                       conduit.close;
 
                 // allocate enough space for the entire file
                 auto content = new ubyte [cast(uint) conduit.length];
@@ -125,7 +125,7 @@ class File
         {      
                 scope conduit = new FileConduit (path_, style);  
                 scope (exit)
-                       conduit.dispose;
+                       conduit.close;
 
                 conduit.output.write (content);
                 return this;

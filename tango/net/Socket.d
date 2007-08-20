@@ -721,7 +721,7 @@ class Socket
         private void initialize (socket_t sock = sock.init)
         {
                 if (this.sock)
-                    close();
+                    this.disconnect;
 
                 if (sock is sock.init)
                    {
@@ -1022,7 +1022,7 @@ class Socket
 
         ***********************************************************************/
 
-        void close ()
+        void disconnect ()
         {
                 if (sock != sock.init)
                    {

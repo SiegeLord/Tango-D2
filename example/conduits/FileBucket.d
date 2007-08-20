@@ -221,7 +221,7 @@ class FileBucket
         {
                 if (file)
                    {
-                   file.close ();
+                   file.disconnect;
                    file = null;
                    map = null;
                    }

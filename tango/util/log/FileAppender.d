@@ -142,7 +142,7 @@ public class FileAppender : Appender
         {
                 if (conduit_)
                    {
-                   conduit_.close();
+                   conduit_.disconnect;
                    conduit_ = null;
                    }
         }

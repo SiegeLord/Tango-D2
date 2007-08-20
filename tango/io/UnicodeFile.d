@@ -170,7 +170,7 @@ class UnicodeFile(T)
         {
                 scope conduit = new FileConduit (path_);  
                 scope (exit)
-                       conduit.dispose;
+                       conduit.close;
 
                 // allocate enough space for the entire file
                 auto content = new ubyte [cast(uint) conduit.length];
@@ -225,7 +225,7 @@ class UnicodeFile(T)
                 // open file after conversion ~ in case of exceptions
                 scope conduit = new FileConduit (path_, style);  
                 scope (exit)
-                       conduit.dispose;
+                       conduit.close;
 
                 if (writeBom)
                     conduit.write (bom.getSignature);

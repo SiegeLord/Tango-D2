@@ -19,7 +19,7 @@ void main(char[][] args)
                     dst.copy (new FileConduit(arg));
 
            // flush output and close
-           dst.dispose;
+           dst.close;
            }
         else
            Cout ("usage: filecat target source1 ... sourceN");

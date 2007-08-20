@@ -107,11 +107,11 @@ class MemoryConduit : Conduit
 
         /***********************************************************************
 
-                Close this conduit
+                Release resources
 
         ***********************************************************************/
 
-        override void close () {}
+        override void disconnect () {}
 }
 
 

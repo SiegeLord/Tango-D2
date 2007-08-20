@@ -86,11 +86,11 @@ class Conduit : IConduit
 
         /***********************************************************************
 
-                Close this conduit
+                Disconnect this conduit
 
         ***********************************************************************/
 
-        abstract void close ();
+        abstract void disconnect ();
 
         /***********************************************************************
         
@@ -152,24 +152,19 @@ class Conduit : IConduit
 
         /***********************************************************************
 
-                Dispose of this conduit
+                Close this conduit
                 
                 Remarks:
-                Dispose flushes & commits any filters, closes the conduit, 
-                and deletes it. This should be used in preference to close()
+                Close flushes & commits any filters, and disconnects the 
+                conduit.
 
         ***********************************************************************/
 
-        final void dispose (bool clean=true)
+        final void close ()
         {
-                if (clean)
-                   {
-                   sink.flush;
-                   sink.commit;
-                   }
-
-                this.close;
-                delete this;
+                sink.flush;
+                sink.commit;
+                this.disconnect;
         }
 
         /***********************************************************************

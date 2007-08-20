@@ -97,19 +97,19 @@ interface IConduit : InputStream, OutputStream, ISelectable
 
         ***********************************************************************/
 
-        abstract void close ();
+        abstract void disconnect ();
 
         /***********************************************************************
 
-                Dispose of this conduit
+                Close this conduit
                 
                 Remarks:
-                Dispose flushes & commits any filters, closes the conduit, 
-                and deletes it. This should be used in preference to close()
+                Close flushes & commits any filters, and disconnects the 
+                conduit.
 
         ***********************************************************************/
 
-        abstract void dispose (bool clean=true);
+        abstract void close ();
 
         /***********************************************************************
 

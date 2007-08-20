@@ -120,7 +120,7 @@ public class SocketAppender : Appender
         void close ()
         {
                 if (buffer)
-                    buffer.conduit.close;
+                    buffer.conduit.disconnect;
                 buffer = null;
         }
 }

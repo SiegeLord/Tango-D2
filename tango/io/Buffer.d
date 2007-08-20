@@ -1209,13 +1209,13 @@ class Buffer : IBuffer
 
         ***********************************************************************/
 
-        final void dispose ()
+        final void dispose1 ()
         {
                 if (sink)
                    {
                    flush;
                    commit;
-                   sink.conduit.dispose (false); 
+                   sink.conduit.disconnect; 
                    }
                 delete this;
         }

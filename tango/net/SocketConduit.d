@@ -204,17 +204,17 @@ class SocketConduit : Conduit
         
         /***********************************************************************
 
-                Deallocate this SocketConduit when it is been closed.
+                Release this SocketConduit
 
-                Note that one should always close a SocketConduit under
-                normal conditions, and generally invoke shutdown on all
-                connected sockets beforehand
+                Note that one should always disconnect a SocketConduit 
+                under normal conditions, and generally invoke shutdown 
+                on all connected sockets beforehand
 
         ***********************************************************************/
 
-        override void close ()
+        override void disconnect ()
         {
-                socket_.close;
+                socket_.disconnect;
 
                 // deallocate if this came from the free-list,
                 // otherwise just wait for the GC to handle it

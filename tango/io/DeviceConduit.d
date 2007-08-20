@@ -95,11 +95,11 @@ class DeviceConduit : Conduit
 
                 /***************************************************************
 
-                        Close the underlying file
+                        Release the underlying file
 
                 ***************************************************************/
 
-                override void close ()
+                override void disconnect ()
                 {
                         if (handle)
                             if (! CloseHandle (handle))
@@ -198,11 +198,11 @@ class DeviceConduit : Conduit
 
                 /***************************************************************
 
-                        Close the underlying file
+                        Release the underlying file
 
                 ***************************************************************/
 
-                override void close ()
+                override void disconnect ()
                 {
                         if (handle)
                             if (posix.close (handle) == -1)

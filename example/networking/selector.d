@@ -277,7 +277,7 @@ void testSelector(ISelector selector)
             */
         }
 
-        serverSocket.socket().close();
+        serverSocket.socket().disconnect;
     }
     catch (SelectorException e)
     {
@@ -297,7 +297,7 @@ void testSelector(ISelector selector)
 
     clientThread.join();
 
-    selector.close();
+    selector.close;
 }
 
 

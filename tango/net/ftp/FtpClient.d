@@ -284,7 +284,7 @@ class FTPConnection : Telnet
 
                 // Shutdown the socket...
                 this.socket.shutdown(SocketShutdown.BOTH);
-                this.socket.close();
+                this.socket.disconnect();
 
                 // Clear out everything.
                 delete this.supported_features;
@@ -491,7 +491,7 @@ class FTPConnection : Telnet
             {
                 // Close the socket, whether we were listening or not.
                 data.shutdown(SocketShutdown.BOTH);
-                data.close();
+                data.disconnect();
             }
 
         // Tell the server about it.
@@ -518,7 +518,7 @@ class FTPConnection : Telnet
     {
         // Close the socket.  This tells the server we're done (EOF.)
         data.shutdown(SocketShutdown.BOTH);
-        data.close();
+        data.disconnect();
 
         // We shouldn't get a 250 in STREAM mode.
         this.readResponse("226");
@@ -634,7 +634,7 @@ class FTPConnection : Telnet
 
                 // We don't need the listener anymore.
                 data.shutdown(SocketShutdown.BOTH);
-                data.close();
+                data.disconnect();
 
                 // This is the actual socket.
                 data = new_data;
@@ -752,7 +752,7 @@ class FTPConnection : Telnet
         auto file = new FileConduit(local_file);
         scope (exit)
             {
-                file.close();
+                file.disconnect();
                 delete file;
             }
 
@@ -899,7 +899,7 @@ class FTPConnection : Telnet
 
         scope (exit)
             {
-                file.close();
+                file.disconnect();
                 delete file;
             }
 
