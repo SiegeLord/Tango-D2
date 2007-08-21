@@ -107,7 +107,7 @@ public class LLPair(K, T) : LLCell!(T)
 
         public final LLPair findKey(K key)
         {
-                for (auto p=this; p; p = cast(LLPair)cast(void*)next_)
+                for (auto p=this; p; p = cast(LLPair)cast(void*) p.next_)
                      if (p.key() == key)
                          return p;
                 return null;
@@ -119,7 +119,7 @@ public class LLPair(K, T) : LLCell!(T)
 
         public final LLPair find(K key, T element)
         {
-                for (auto p=this; p; p = cast(LLPair)cast(void*)next_)
+                for (auto p=this; p; p = cast(LLPair)cast(void*) p.next_)
                      if (p.key() == key && p.element() == element)
                          return p;
                 return null;
@@ -133,7 +133,7 @@ public class LLPair(K, T) : LLCell!(T)
         public final int indexKey(K key)
         {
                 int i = 0;
-                for (auto p=this; p; p = cast(LLPair)cast(void*)next_)
+                for (auto p=this; p; p = cast(LLPair)cast(void*) p.next_)
                     {
                     if (p.key() == key)
                         return i;
@@ -150,7 +150,7 @@ public class LLPair(K, T) : LLCell!(T)
         public final int index(K key, T element)
         {
                 int i = 0;
-                for (auto p=this; p; p = cast(LLPair)cast(void*)next_)
+                for (auto p=this; p; p = cast(LLPair)cast(void*) p.next_)
                     {
                     if (p.key() == key && p.element() == element)
                         return i;
@@ -166,7 +166,7 @@ public class LLPair(K, T) : LLCell!(T)
         public final int countKey(K key)
         {
                 int c = 0;
-                for (auto p=this; p; p = cast(LLPair)cast(void*)next_)
+                for (auto p=this; p; p = cast(LLPair)cast(void*) p.next_)
                      if (p.key() == key)
                          ++c;
                 return c;
@@ -178,7 +178,7 @@ public class LLPair(K, T) : LLCell!(T)
         public final int count(K key, T element)
         {
                 int c = 0;
-                for (auto p=this; p; p = cast(LLPair)cast(void*)next_)
+                for (auto p=this; p; p = cast(LLPair)cast(void*) p.next_)
                      if (p.key() == key && p.element() == element)
                          ++c;
                 return c;
