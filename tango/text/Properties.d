@@ -128,3 +128,29 @@ class Properties(T)
                 return emit;
         }
 }
+
+
+debug (Properties)
+{
+        import tango.io.Buffer;
+        import tango.io.Console;
+
+        void main() 
+        {
+                char[][char[]] aa;
+                aa ["foo"] = "something";
+                aa ["bar"] = "something else";
+                aa ["wumpus"] = "";
+
+                auto props = new Properties!(char);
+                auto buffer = new Buffer (256);
+                props.save (buffer, aa);
+
+                aa = null;
+                props.load (buffer, (char[] name, char[] value){aa[name] = value;});
+
+                foreach (name, value; aa)
+                         Cout (name) (" = ") (value).newline;
+        }
+}
+
