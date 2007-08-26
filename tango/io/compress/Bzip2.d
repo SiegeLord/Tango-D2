@@ -60,7 +60,7 @@ class Bzip2CompressionFilter : OutputFilter
     {
         bool bzs_valid = false;
         bz_stream bzs;
-        ubyte[BUFFER_SIZE] out_chunk;
+        ubyte[] out_chunk;
     }
 
     /***************************************************************************
@@ -94,6 +94,7 @@ class Bzip2CompressionFilter : OutputFilter
                     " 1 and 9");
 
         super(stream);
+        out_chunk = new ubyte[BUFFER_SIZE];
         
         auto ret = BZ2_bzCompressInit(&bzs, blockSize, 0, DEFAULT_WORKFACTOR);
         if( ret != BZ_OK )
@@ -143,29 +144,6 @@ class Bzip2CompressionFilter : OutputFilter
         assert( bzs.avail_in == 0, "failed to compress all provided data" );
 
         return src.length;
-    }
-
-    /***************************************************************************
-    
-        Transfer the content of another conduit to this one. Returns a reference
-        to this class, and throws IOException on failure. 
-
-    ***************************************************************************/
-
-    OutputStream copy(InputStream src)
-    {
-        check_valid();
-
-        ubyte[BUFFER_SIZE] buffer;
-
-        while( true )
-        {
-            auto len = src.read(buffer);
-            if( len == IConduit.Eof )
-                return this;
-
-            assert( this.write(buffer) == buffer.length );
-        }
     }
 
     /***************************************************************************
@@ -261,7 +239,7 @@ class Bzip2DecompressionFilter : InputFilter
     {
         bool bzs_valid = false;
         bz_stream bzs;
-        ubyte[BUFFER_SIZE] in_chunk;
+        ubyte[] in_chunk;
     }
 
     /***************************************************************************
@@ -284,6 +262,7 @@ class Bzip2DecompressionFilter : InputFilter
     this(InputStream stream, bool small=false)
     {
         super(stream);
+        in_chunk = new ubyte[BUFFER_SIZE];
 
         auto ret = BZ2_bzDecompressInit(&bzs, 0, small?1:0);
         if( ret != BZ_OK )
@@ -353,6 +332,7 @@ class Bzip2DecompressionFilter : InputFilter
         // so there's really nothing to clear...  For now, just invalidate the
         // stream...
         kill_bzs();
+        super.clear();
     }
 
     // This function kills the stream: it deallocates the internal state, and

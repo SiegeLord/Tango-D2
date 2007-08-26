@@ -22,6 +22,7 @@ import tango.io.Conduit : InputFilter, OutputFilter;
 
 import tango.io.model.IConduit : InputStream, OutputStream, IConduit;
 
+
 /* This constant controls the size of the input/output buffers we use
  * internally.  This should be a fairly sane value (it's suggested by the zlib
  * documentation), that should only need changing for memory-constrained
@@ -49,7 +50,7 @@ class ZlibDecompressionFilter : InputFilter
         bool zs_valid = false;
 
         z_stream zs;
-        ubyte[CHUNKSIZE] in_chunk;
+        ubyte[] in_chunk;
     }
 
     /***************************************************************************
@@ -67,7 +68,8 @@ class ZlibDecompressionFilter : InputFilter
 
     this(InputStream stream)
     {
-        super(stream);
+        super (stream);
+        in_chunk = new ubyte[CHUNKSIZE];
 
         // Allocate inflate state
         with( zs )
@@ -128,7 +130,6 @@ class ZlibDecompressionFilter : InputFilter
             case Z_MEM_ERROR:
                 kill_zs();
                 throw new ZlibException(ret);
-                break;
 
             case Z_STREAM_END:
                 // zlib stream is finished; kill the stream so we don't try to
@@ -220,7 +221,7 @@ class ZlibCompressionFilter : OutputFilter
     {
         bool zs_valid = false;
         z_stream zs;
-        ubyte[CHUNKSIZE] out_chunk;
+        ubyte[] out_chunk;
     }
 
     /***************************************************************************
@@ -239,6 +240,7 @@ class ZlibCompressionFilter : OutputFilter
     this(OutputStream stream, Level level = Level.Normal)
     {
         super(stream);
+        out_chunk = new ubyte[CHUNKSIZE];
 
         // Allocate deflate state
         with( zs )
@@ -297,29 +299,6 @@ class ZlibCompressionFilter : OutputFilter
         assert( zs.avail_in == 0, "failed to compress all provided data" );
 
         return src.length;
-    }
-
-    /***************************************************************************
-    
-        Transfer the content of another conduit to this one. Returns a reference
-        to this class, and throws IOException on failure. 
-
-    ***************************************************************************/
-
-    OutputStream copy(InputStream src)
-    {
-        check_valid();
-
-        ubyte[CHUNKSIZE] buffer;
-
-        while( true )
-        {
-            auto len = src.read(buffer);
-            if( len == IConduit.Eof )
-                return this;
-
-            assert( this.write(buffer) == buffer.length );
-        }
     }
 
     /***************************************************************************
