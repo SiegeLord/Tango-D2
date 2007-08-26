@@ -106,6 +106,18 @@ class FileScan
         /***********************************************************************
 
                 Sweep a set of files and directories from the given parent
+                path, with no filtering applied
+        
+        ***********************************************************************/
+        
+        FileScan sweep (char[] path)
+        {
+                return sweep (path, (FilePath, bool){return true;});
+        }
+
+        /***********************************************************************
+
+                Sweep a set of files and directories from the given parent
                 path, where the files are filtered by the given suffix
         
         ***********************************************************************/
