@@ -104,8 +104,7 @@ interface IConduit : InputStream, OutputStream, ISelectable
                 Close this conduit
                 
                 Remarks:
-                Close flushes & commits any filters, and disconnects the 
-                conduit.
+                Close commits any filters, and disconnects the conduit.
 
         ***********************************************************************/
 

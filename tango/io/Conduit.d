@@ -144,7 +144,7 @@ class Conduit : IConduit
 
         /***********************************************************************
 
-                commit the output
+                commit the output.
 
         ***********************************************************************/
 
@@ -155,14 +155,12 @@ class Conduit : IConduit
                 Close this conduit
                 
                 Remarks:
-                Close flushes & commits any filters, and disconnects the 
-                conduit.
+                Close commits any filters, and disconnects the conduit.
 
         ***********************************************************************/
 
         final void close ()
         {
-                sink.flush;
                 sink.commit;
                 this.disconnect;
         }
