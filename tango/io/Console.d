@@ -352,17 +352,6 @@ struct Console
 
                 /***************************************************************
 
-                        Intercept the default file-flushing implementation.
-                        We don't actually flush the console device per se, as
-                        the OS does not really like that. Flush any enclosing
-                        buffer instead.
-
-                ***************************************************************/
-
-                override void flush () {}
-
-                /***************************************************************
-
                         Windows-specific code
 
                 ***************************************************************/

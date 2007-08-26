@@ -148,15 +148,15 @@ class Conduit : IConduit
 
         ***********************************************************************/
 
-        final void commit () {}
+        void commit () {}
 
         /***********************************************************************
 
                 Close this conduit
                 
                 Remarks:
-                Close flushes & commits any filters, and disconnects the 
-                conduit.
+                Close flushes & commits any filters before disconnecting 
+                the conduit
 
         ***********************************************************************/
 

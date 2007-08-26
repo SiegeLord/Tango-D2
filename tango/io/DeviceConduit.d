@@ -109,17 +109,6 @@ class DeviceConduit : Conduit
 
                 /***************************************************************
 
-                ***************************************************************/
-
-                override void flush ()
-                {
-                        if (! FlushFileBuffers (handle))
-                              error ();
-                        return this;
-                }
-
-                /***************************************************************
-
                         Read a chunk of bytes from the file into the provided
                         array (typically that belonging to an IBuffer). 
 
