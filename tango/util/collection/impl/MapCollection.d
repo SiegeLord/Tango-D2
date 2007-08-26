@@ -101,7 +101,7 @@ public abstract class MapCollection(K, T) : Collection!(T), Map!(K, T)
 
         protected final void checkKey(K key)
         {
-                if (!allowsKey(key))
+                if (!isValidKey(key))
                    {
                    throw new IllegalElementException("Attempt to include invalid key _in Collection");
                    }
