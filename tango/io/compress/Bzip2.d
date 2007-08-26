@@ -147,20 +147,6 @@ class Bzip2CompressionFilter : OutputFilter
     }
 
     /***************************************************************************
-    
-        No-op.
-
-    ***************************************************************************/
-
-    void flush()
-    {
-        check_valid();
-        super.flush();
-
-        // Nothing to do here.  Really.
-    }
-
-    /***************************************************************************
 
         Purge any buffered content.  Calling this will implicitly end the
         bzip2 stream, so it should not be called until you are finished
@@ -476,4 +462,3 @@ unittest
     assert( cast(ubyte[])message == buffer );
 }
 
-void main() {}

@@ -302,20 +302,6 @@ class ZlibCompressionFilter : OutputFilter
     }
 
     /***************************************************************************
-    
-        No-op.
-
-    ***************************************************************************/
-
-    void flush()
-    {
-        check_valid();
-        super.flush();
-
-        // Nothing to do here.  Really.
-    }
-
-    /***************************************************************************
 
         Purge any buffered content.  Calling this will implicitly end the zlib
         stream, so it should not be called until you are finished compressing
@@ -450,8 +436,6 @@ class ZlibException : TracedException
 ***************************************************************************** */
 
 debug(UnitTest) {
-
-void main() {}
 
 import tango.io.MemoryConduit : MemoryConduit;
 
