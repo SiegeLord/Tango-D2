@@ -377,44 +377,47 @@ uint trim(T) (T[] digits, inout bool sign, inout uint radix)
         T*      p = digits.ptr;
         int     len = digits.length;
 
-        // strip off whitespace and sign characters
-        for (c = *p; len; c = *++p, --len)
-             if (c is ' ' || c is '\t')
-                {}
-             else
-                if (c is '-')
-                    sign = true;
+        if (len)
+           {
+           // strip off whitespace and sign characters
+           for (c = *p; len; c = *++p, --len)
+                if (c is ' ' || c is '\t')
+                   {}
                 else
-                   if (c is '+')
-                       sign = false;
-                else
-                   break;
+                   if (c is '-')
+                       sign = true;
+                   else
+                      if (c is '+')
+                          sign = false;
+                   else
+                      break;
 
-        // strip off a radix specifier also?
-        if (c is '0' && len > 1)
-            switch (*++p)
-                   {
-                   case 'x':
-                   case 'X':
-                        ++p;
-                        radix = 16;
-                        break;
+           // strip off a radix specifier also?
+           if (c is '0' && len > 1)
+               switch (*++p)
+                      {
+                      case 'x':
+                      case 'X':
+                           ++p;
+                           radix = 16;
+                           break;
 
-                   case 'b':
-                   case 'B':
-                        ++p;
-                        radix = 2;
-                        break;
+                      case 'b':
+                      case 'B':
+                           ++p;
+                           radix = 2;
+                           break;
 
-                   case 'o':
-                   case 'O':
-                        ++p;
-                        radix = 8;
-                        break;
+                      case 'o':
+                      case 'O':
+                           ++p;
+                           radix = 8;
+                           break;
 
-                   default:
-                        break;
-                   } 
+                      default:
+                           break;
+                      } 
+           }
 
         // return number of characters eaten
         return (p - digits.ptr);
