@@ -80,6 +80,7 @@ OBJ_BASE= \
     cmain.o \
     critical.o \
     dgccmain2.o \
+    gcc/builtins.o \
     genobj.o \
     invariant.o \
     lifetime.o \

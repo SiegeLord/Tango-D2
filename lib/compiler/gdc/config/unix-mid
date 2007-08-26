@@ -292,7 +292,6 @@ extern (C)
     size_t confstr(int, char*, size_t);
     int creat(char*, mode_t);
     char* ctermid(char*);
-    int dirfd(DIR*);
     char* dirname(char*);
     int fattach(int, char*);
     int fchmod(int, mode_t);
@@ -300,8 +299,6 @@ extern (C)
     int ffs(int);
     int fmtmsg(int, char*, int, char*, char*, char*);
     int fpathconf(int, int);
-    int fseeko(FILE*, off_t, int);
-    off_t ftello(FILE*);
 
     extern char** environ;
 

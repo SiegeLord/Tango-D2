@@ -925,7 +925,8 @@ class Thread
             {
                 if( !set )
                 {
-                    foreach( Thread t; sm_tbeg )
+                    //foreach( Thread t; sm_tbeg ) Bug in GDC 0.24 SVN (r139)
+                    for( Thread t = sm_tbeg; t; t = t.next )
                     {
                         t.m_local[key] = null;
                     }
@@ -952,7 +953,8 @@ class Thread
         synchronized( slock )
         {
             sm_local[key] = false;
-            foreach( Thread t; sm_tbeg )
+            // foreach( Thread t; sm_tbeg ) Bug in GDC 0.24 SVN (r139)
+            for( Thread t = sm_tbeg; t; t = t.next )
             {
                 t.m_local[key] = null;
             }

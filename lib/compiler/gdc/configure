@@ -713,6 +713,11 @@ DCFG_EXP2_LOG2
 DCFG_EXECVPE
 DCFG_SPAWNVP
 DCFG_FWIDE
+DCFG_HAVE_GETDELIM
+DCFG_HAVE_FGETLN
+DCFG_HAVE_FGETLINE
+DCFG_HAVE_UNLOCKED_STDIO
+DCFG_HAVE_UNLOCKED_WIDE_STDIO
 DCFG_STRTOLD
 DCFG_CBRIDGE_STDIO
 DCFG_PTHREAD_SUSPEND
@@ -4030,9 +4035,6 @@ echo $ECHO_N "checking D GCC version... $ECHO_C" >&6; }
 d_gcc_ver=`$GDC -dumpversion`
 { echo "$as_me:$LINENO: result: $d_gcc_ver" >&5
 echo "${ECHO_T}$d_gcc_ver" >&6; }
-if echo "$d_gcc_ver" | grep '^3.3' > /dev/null; then
-  d_gcc_33=33
-fi
 
 
 # include dir .. need to support --enable-version-specific.. but
@@ -5226,7 +5228,7 @@ fi
 esac
 
 case "$target_os" in
-  darwin6*) DCFG_LONG_DOUBLE_FUNCS=config/noldfuncs$d_gcc_33 ;;
+  darwin6*) DCFG_LONG_DOUBLE_FUNCS=config/noldfuncs ;;
   darwin*)  DCFG_LONG_DOUBLE_FUNCS=config/ldfuncs-darwin ;;
   linux*)
     case "$target_cpu" in
@@ -5507,7 +5509,7 @@ fi
     else
 	DCFG_LONG_DOUBLE_FUNCS=config/noldfuncs
     fi
-    DCFG_LONG_DOUBLE_FUNCS="$DCFG_LONG_DOUBLE_FUNCS$d_gcc_33"
+    DCFG_LONG_DOUBLE_FUNCS="$DCFG_LONG_DOUBLE_FUNCS"
 fi
 
 D_EXTRA_OBJS=
@@ -6513,10 +6515,479 @@ fi
 { echo "$as_me:$LINENO: result: $ac_cv_func_fwide" >&5
 echo "${ECHO_T}$ac_cv_func_fwide" >&6; }
 if test $ac_cv_func_fwide = yes; then
-  DCFG_FWIDE="GNU_Have_fwide"
+  DCFG_FWIDE=1
 else
-  DCFG_FWIDE=""
+  DCFG_FWIDE=0
 fi
+
+
+
+{ echo "$as_me:$LINENO: checking for getdelim" >&5
+echo $ECHO_N "checking for getdelim... $ECHO_C" >&6; }
+if test "${ac_cv_func_getdelim+set}" = set; then
+  echo $ECHO_N "(cached) $ECHO_C" >&6
+else
+  cat >conftest.$ac_ext <<_ACEOF
+/* confdefs.h.  */
+_ACEOF
+cat confdefs.h >>conftest.$ac_ext
+cat >>conftest.$ac_ext <<_ACEOF
+/* end confdefs.h.  */
+/* Define getdelim to an innocuous variant, in case <limits.h> declares getdelim.
+   For example, HP-UX 11i <limits.h> declares gettimeofday.  */
+#define getdelim innocuous_getdelim
+
+/* System header to define __stub macros and hopefully few prototypes,
+    which can conflict with char getdelim (); below.
+    Prefer <limits.h> to <assert.h> if __STDC__ is defined, since
+    <limits.h> exists even on freestanding compilers.  */
+
+#ifdef __STDC__
+# include <limits.h>
+#else
+# include <assert.h>
+#endif
+
+#undef getdelim
+
+/* Override any GCC internal prototype to avoid an error.
+   Use char because int might match the return type of a GCC
+   builtin and then its argument prototype would still apply.  */
+#ifdef __cplusplus
+extern "C"
+#endif
+char getdelim ();
+/* The GNU C library defines this for functions which it implements
+    to always fail with ENOSYS.  Some functions are actually named
+    something starting with __ and the normal name is an alias.  */
+#if defined __stub_getdelim || defined __stub___getdelim
+choke me
+#endif
+
+int
+main ()
+{
+return getdelim ();
+  ;
+  return 0;
+}
+_ACEOF
+rm -f conftest.$ac_objext conftest$ac_exeext
+if { (ac_try="$ac_link"
+case "(($ac_try" in
+  *\"* | *\`* | *\\*) ac_try_echo=\$ac_try;;
+  *) ac_try_echo=$ac_try;;
+esac
+eval "echo \"\$as_me:$LINENO: $ac_try_echo\"") >&5
+  (eval "$ac_link") 2>conftest.er1
+  ac_status=$?
+  grep -v '^ *+' conftest.er1 >conftest.err
+  rm -f conftest.er1
+  cat conftest.err >&5
+  echo "$as_me:$LINENO: \$? = $ac_status" >&5
+  (exit $ac_status); } && {
+	 test -z "$ac_c_werror_flag" ||
+	 test ! -s conftest.err
+       } && test -s conftest$ac_exeext &&
+       $as_test_x conftest$ac_exeext; then
+  ac_cv_func_getdelim=yes
+else
+  echo "$as_me: failed program was:" >&5
+sed 's/^/| /' conftest.$ac_ext >&5
+
+	ac_cv_func_getdelim=no
+fi
+
+rm -f core conftest.err conftest.$ac_objext conftest_ipa8_conftest.oo \
+      conftest$ac_exeext conftest.$ac_ext
+fi
+{ echo "$as_me:$LINENO: result: $ac_cv_func_getdelim" >&5
+echo "${ECHO_T}$ac_cv_func_getdelim" >&6; }
+if test $ac_cv_func_getdelim = yes; then
+  DCFG_HAVE_GETDELIM=1
+else
+  DCFG_HAVE_GETDELIM=0
+fi
+
+
+
+{ echo "$as_me:$LINENO: checking for fgetln" >&5
+echo $ECHO_N "checking for fgetln... $ECHO_C" >&6; }
+if test "${ac_cv_func_fgetln+set}" = set; then
+  echo $ECHO_N "(cached) $ECHO_C" >&6
+else
+  cat >conftest.$ac_ext <<_ACEOF
+/* confdefs.h.  */
+_ACEOF
+cat confdefs.h >>conftest.$ac_ext
+cat >>conftest.$ac_ext <<_ACEOF
+/* end confdefs.h.  */
+/* Define fgetln to an innocuous variant, in case <limits.h> declares fgetln.
+   For example, HP-UX 11i <limits.h> declares gettimeofday.  */
+#define fgetln innocuous_fgetln
+
+/* System header to define __stub macros and hopefully few prototypes,
+    which can conflict with char fgetln (); below.
+    Prefer <limits.h> to <assert.h> if __STDC__ is defined, since
+    <limits.h> exists even on freestanding compilers.  */
+
+#ifdef __STDC__
+# include <limits.h>
+#else
+# include <assert.h>
+#endif
+
+#undef fgetln
+
+/* Override any GCC internal prototype to avoid an error.
+   Use char because int might match the return type of a GCC
+   builtin and then its argument prototype would still apply.  */
+#ifdef __cplusplus
+extern "C"
+#endif
+char fgetln ();
+/* The GNU C library defines this for functions which it implements
+    to always fail with ENOSYS.  Some functions are actually named
+    something starting with __ and the normal name is an alias.  */
+#if defined __stub_fgetln || defined __stub___fgetln
+choke me
+#endif
+
+int
+main ()
+{
+return fgetln ();
+  ;
+  return 0;
+}
+_ACEOF
+rm -f conftest.$ac_objext conftest$ac_exeext
+if { (ac_try="$ac_link"
+case "(($ac_try" in
+  *\"* | *\`* | *\\*) ac_try_echo=\$ac_try;;
+  *) ac_try_echo=$ac_try;;
+esac
+eval "echo \"\$as_me:$LINENO: $ac_try_echo\"") >&5
+  (eval "$ac_link") 2>conftest.er1
+  ac_status=$?
+  grep -v '^ *+' conftest.er1 >conftest.err
+  rm -f conftest.er1
+  cat conftest.err >&5
+  echo "$as_me:$LINENO: \$? = $ac_status" >&5
+  (exit $ac_status); } && {
+	 test -z "$ac_c_werror_flag" ||
+	 test ! -s conftest.err
+       } && test -s conftest$ac_exeext &&
+       $as_test_x conftest$ac_exeext; then
+  ac_cv_func_fgetln=yes
+else
+  echo "$as_me: failed program was:" >&5
+sed 's/^/| /' conftest.$ac_ext >&5
+
+	ac_cv_func_fgetln=no
+fi
+
+rm -f core conftest.err conftest.$ac_objext conftest_ipa8_conftest.oo \
+      conftest$ac_exeext conftest.$ac_ext
+fi
+{ echo "$as_me:$LINENO: result: $ac_cv_func_fgetln" >&5
+echo "${ECHO_T}$ac_cv_func_fgetln" >&6; }
+if test $ac_cv_func_fgetln = yes; then
+  DCFG_HAVE_FGETLN=1
+else
+  DCFG_HAVE_FGETLN=0
+fi
+
+
+
+{ echo "$as_me:$LINENO: checking for fgetline" >&5
+echo $ECHO_N "checking for fgetline... $ECHO_C" >&6; }
+if test "${ac_cv_func_fgetline+set}" = set; then
+  echo $ECHO_N "(cached) $ECHO_C" >&6
+else
+  cat >conftest.$ac_ext <<_ACEOF
+/* confdefs.h.  */
+_ACEOF
+cat confdefs.h >>conftest.$ac_ext
+cat >>conftest.$ac_ext <<_ACEOF
+/* end confdefs.h.  */
+/* Define fgetline to an innocuous variant, in case <limits.h> declares fgetline.
+   For example, HP-UX 11i <limits.h> declares gettimeofday.  */
+#define fgetline innocuous_fgetline
+
+/* System header to define __stub macros and hopefully few prototypes,
+    which can conflict with char fgetline (); below.
+    Prefer <limits.h> to <assert.h> if __STDC__ is defined, since
+    <limits.h> exists even on freestanding compilers.  */
+
+#ifdef __STDC__
+# include <limits.h>
+#else
+# include <assert.h>
+#endif
+
+#undef fgetline
+
+/* Override any GCC internal prototype to avoid an error.
+   Use char because int might match the return type of a GCC
+   builtin and then its argument prototype would still apply.  */
+#ifdef __cplusplus
+extern "C"
+#endif
+char fgetline ();
+/* The GNU C library defines this for functions which it implements
+    to always fail with ENOSYS.  Some functions are actually named
+    something starting with __ and the normal name is an alias.  */
+#if defined __stub_fgetline || defined __stub___fgetline
+choke me
+#endif
+
+int
+main ()
+{
+return fgetline ();
+  ;
+  return 0;
+}
+_ACEOF
+rm -f conftest.$ac_objext conftest$ac_exeext
+if { (ac_try="$ac_link"
+case "(($ac_try" in
+  *\"* | *\`* | *\\*) ac_try_echo=\$ac_try;;
+  *) ac_try_echo=$ac_try;;
+esac
+eval "echo \"\$as_me:$LINENO: $ac_try_echo\"") >&5
+  (eval "$ac_link") 2>conftest.er1
+  ac_status=$?
+  grep -v '^ *+' conftest.er1 >conftest.err
+  rm -f conftest.er1
+  cat conftest.err >&5
+  echo "$as_me:$LINENO: \$? = $ac_status" >&5
+  (exit $ac_status); } && {
+	 test -z "$ac_c_werror_flag" ||
+	 test ! -s conftest.err
+       } && test -s conftest$ac_exeext &&
+       $as_test_x conftest$ac_exeext; then
+  ac_cv_func_fgetline=yes
+else
+  echo "$as_me: failed program was:" >&5
+sed 's/^/| /' conftest.$ac_ext >&5
+
+	ac_cv_func_fgetline=no
+fi
+
+rm -f core conftest.err conftest.$ac_objext conftest_ipa8_conftest.oo \
+      conftest$ac_exeext conftest.$ac_ext
+fi
+{ echo "$as_me:$LINENO: result: $ac_cv_func_fgetline" >&5
+echo "${ECHO_T}$ac_cv_func_fgetline" >&6; }
+if test $ac_cv_func_fgetline = yes; then
+  DCFG_HAVE_FGETLINE=1
+else
+  DCFG_HAVE_FGETLINE=0
+fi
+
+
+
+DCFG_HAVE_UNLOCKED_STDIO=1
+
+
+
+
+for ac_func in flockfile funlockfile putc_unlocked getc_unlocked
+do
+as_ac_var=`echo "ac_cv_func_$ac_func" | $as_tr_sh`
+{ echo "$as_me:$LINENO: checking for $ac_func" >&5
+echo $ECHO_N "checking for $ac_func... $ECHO_C" >&6; }
+if { as_var=$as_ac_var; eval "test \"\${$as_var+set}\" = set"; }; then
+  echo $ECHO_N "(cached) $ECHO_C" >&6
+else
+  cat >conftest.$ac_ext <<_ACEOF
+/* confdefs.h.  */
+_ACEOF
+cat confdefs.h >>conftest.$ac_ext
+cat >>conftest.$ac_ext <<_ACEOF
+/* end confdefs.h.  */
+/* Define $ac_func to an innocuous variant, in case <limits.h> declares $ac_func.
+   For example, HP-UX 11i <limits.h> declares gettimeofday.  */
+#define $ac_func innocuous_$ac_func
+
+/* System header to define __stub macros and hopefully few prototypes,
+    which can conflict with char $ac_func (); below.
+    Prefer <limits.h> to <assert.h> if __STDC__ is defined, since
+    <limits.h> exists even on freestanding compilers.  */
+
+#ifdef __STDC__
+# include <limits.h>
+#else
+# include <assert.h>
+#endif
+
+#undef $ac_func
+
+/* Override any GCC internal prototype to avoid an error.
+   Use char because int might match the return type of a GCC
+   builtin and then its argument prototype would still apply.  */
+#ifdef __cplusplus
+extern "C"
+#endif
+char $ac_func ();
+/* The GNU C library defines this for functions which it implements
+    to always fail with ENOSYS.  Some functions are actually named
+    something starting with __ and the normal name is an alias.  */
+#if defined __stub_$ac_func || defined __stub___$ac_func
+choke me
+#endif
+
+int
+main ()
+{
+return $ac_func ();
+  ;
+  return 0;
+}
+_ACEOF
+rm -f conftest.$ac_objext conftest$ac_exeext
+if { (ac_try="$ac_link"
+case "(($ac_try" in
+  *\"* | *\`* | *\\*) ac_try_echo=\$ac_try;;
+  *) ac_try_echo=$ac_try;;
+esac
+eval "echo \"\$as_me:$LINENO: $ac_try_echo\"") >&5
+  (eval "$ac_link") 2>conftest.er1
+  ac_status=$?
+  grep -v '^ *+' conftest.er1 >conftest.err
+  rm -f conftest.er1
+  cat conftest.err >&5
+  echo "$as_me:$LINENO: \$? = $ac_status" >&5
+  (exit $ac_status); } && {
+	 test -z "$ac_c_werror_flag" ||
+	 test ! -s conftest.err
+       } && test -s conftest$ac_exeext &&
+       $as_test_x conftest$ac_exeext; then
+  eval "$as_ac_var=yes"
+else
+  echo "$as_me: failed program was:" >&5
+sed 's/^/| /' conftest.$ac_ext >&5
+
+	eval "$as_ac_var=no"
+fi
+
+rm -f core conftest.err conftest.$ac_objext conftest_ipa8_conftest.oo \
+      conftest$ac_exeext conftest.$ac_ext
+fi
+ac_res=`eval echo '${'$as_ac_var'}'`
+	       { echo "$as_me:$LINENO: result: $ac_res" >&5
+echo "${ECHO_T}$ac_res" >&6; }
+if test `eval echo '${'$as_ac_var'}'` = yes; then
+  cat >>confdefs.h <<_ACEOF
+#define `echo "HAVE_$ac_func" | $as_tr_cpp` 1
+_ACEOF
+
+else
+  DCFG_HAVE_UNLOCKED_STDIO=0
+fi
+done
+
+
+
+DCFG_HAVE_UNLOCKED_WIDE_STDIO=$DCFG_HAVE_UNLOCKED_STDIO
+
+
+for ac_func in putwc_unlocked getwc_unlocked
+do
+as_ac_var=`echo "ac_cv_func_$ac_func" | $as_tr_sh`
+{ echo "$as_me:$LINENO: checking for $ac_func" >&5
+echo $ECHO_N "checking for $ac_func... $ECHO_C" >&6; }
+if { as_var=$as_ac_var; eval "test \"\${$as_var+set}\" = set"; }; then
+  echo $ECHO_N "(cached) $ECHO_C" >&6
+else
+  cat >conftest.$ac_ext <<_ACEOF
+/* confdefs.h.  */
+_ACEOF
+cat confdefs.h >>conftest.$ac_ext
+cat >>conftest.$ac_ext <<_ACEOF
+/* end confdefs.h.  */
+/* Define $ac_func to an innocuous variant, in case <limits.h> declares $ac_func.
+   For example, HP-UX 11i <limits.h> declares gettimeofday.  */
+#define $ac_func innocuous_$ac_func
+
+/* System header to define __stub macros and hopefully few prototypes,
+    which can conflict with char $ac_func (); below.
+    Prefer <limits.h> to <assert.h> if __STDC__ is defined, since
+    <limits.h> exists even on freestanding compilers.  */
+
+#ifdef __STDC__
+# include <limits.h>
+#else
+# include <assert.h>
+#endif
+
+#undef $ac_func
+
+/* Override any GCC internal prototype to avoid an error.
+   Use char because int might match the return type of a GCC
+   builtin and then its argument prototype would still apply.  */
+#ifdef __cplusplus
+extern "C"
+#endif
+char $ac_func ();
+/* The GNU C library defines this for functions which it implements
+    to always fail with ENOSYS.  Some functions are actually named
+    something starting with __ and the normal name is an alias.  */
+#if defined __stub_$ac_func || defined __stub___$ac_func
+choke me
+#endif
+
+int
+main ()
+{
+return $ac_func ();
+  ;
+  return 0;
+}
+_ACEOF
+rm -f conftest.$ac_objext conftest$ac_exeext
+if { (ac_try="$ac_link"
+case "(($ac_try" in
+  *\"* | *\`* | *\\*) ac_try_echo=\$ac_try;;
+  *) ac_try_echo=$ac_try;;
+esac
+eval "echo \"\$as_me:$LINENO: $ac_try_echo\"") >&5
+  (eval "$ac_link") 2>conftest.er1
+  ac_status=$?
+  grep -v '^ *+' conftest.er1 >conftest.err
+  rm -f conftest.er1
+  cat conftest.err >&5
+  echo "$as_me:$LINENO: \$? = $ac_status" >&5
+  (exit $ac_status); } && {
+	 test -z "$ac_c_werror_flag" ||
+	 test ! -s conftest.err
+       } && test -s conftest$ac_exeext &&
+       $as_test_x conftest$ac_exeext; then
+  eval "$as_ac_var=yes"
+else
+  echo "$as_me: failed program was:" >&5
+sed 's/^/| /' conftest.$ac_ext >&5
+
+	eval "$as_ac_var=no"
+fi
+
+rm -f core conftest.err conftest.$ac_objext conftest_ipa8_conftest.oo \
+      conftest$ac_exeext conftest.$ac_ext
+fi
+ac_res=`eval echo '${'$as_ac_var'}'`
+	       { echo "$as_me:$LINENO: result: $ac_res" >&5
+echo "${ECHO_T}$ac_res" >&6; }
+if test `eval echo '${'$as_ac_var'}'` = yes; then
+  cat >>confdefs.h <<_ACEOF
+#define `echo "HAVE_$ac_func" | $as_tr_cpp` 1
+_ACEOF
+
+else
+  DCFG_HAVE_UNLOCKED_WIDE_STDIO=0
+fi
+done
 
 
 
@@ -10029,6 +10500,11 @@ DCFG_EXP2_LOG2!$DCFG_EXP2_LOG2$ac_delim
 DCFG_EXECVPE!$DCFG_EXECVPE$ac_delim
 DCFG_SPAWNVP!$DCFG_SPAWNVP$ac_delim
 DCFG_FWIDE!$DCFG_FWIDE$ac_delim
+DCFG_HAVE_GETDELIM!$DCFG_HAVE_GETDELIM$ac_delim
+DCFG_HAVE_FGETLN!$DCFG_HAVE_FGETLN$ac_delim
+DCFG_HAVE_FGETLINE!$DCFG_HAVE_FGETLINE$ac_delim
+DCFG_HAVE_UNLOCKED_STDIO!$DCFG_HAVE_UNLOCKED_STDIO$ac_delim
+DCFG_HAVE_UNLOCKED_WIDE_STDIO!$DCFG_HAVE_UNLOCKED_WIDE_STDIO$ac_delim
 DCFG_STRTOLD!$DCFG_STRTOLD$ac_delim
 DCFG_CBRIDGE_STDIO!$DCFG_CBRIDGE_STDIO$ac_delim
 DCFG_PTHREAD_SUSPEND!$DCFG_PTHREAD_SUSPEND$ac_delim
@@ -10048,7 +10524,7 @@ LIBOBJS!$LIBOBJS$ac_delim
 LTLIBOBJS!$LTLIBOBJS$ac_delim
 _ACEOF
 
-  if test `sed -n "s/.*$ac_delim\$/X/p" conf$$subs.sed | grep -c X` = 26; then
+  if test `sed -n "s/.*$ac_delim\$/X/p" conf$$subs.sed | grep -c X` = 31; then
     break
   elif $ac_last_try; then
     { { echo "$as_me:$LINENO: error: could not make $CONFIG_STATUS" >&5

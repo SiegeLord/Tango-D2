@@ -189,9 +189,6 @@ AC_SUBST(GDC)
 AC_MSG_CHECKING([D GCC version])
 d_gcc_ver=`$GDC -dumpversion`
 AC_MSG_RESULT($d_gcc_ver)
-if echo "$d_gcc_ver" | grep '^3.3' > /dev/null; then
-  d_gcc_33=33
-fi
 
 dnl Eventually need to include everything from libstdc++-v3/acinclude.m4
 dnl (# Default case for install directory for include files.) and on
@@ -259,7 +256,7 @@ case "$d_target_os" in
 esac
 
 case "$target_os" in
-  darwin6*) DCFG_LONG_DOUBLE_FUNCS=config/noldfuncs$d_gcc_33 ;;
+  darwin6*) DCFG_LONG_DOUBLE_FUNCS=config/noldfuncs ;;
   darwin*)  DCFG_LONG_DOUBLE_FUNCS=config/ldfuncs-darwin ;;
   linux*)
     case "$target_cpu" in
@@ -282,7 +279,7 @@ if test -z "$DCFG_LONG_DOUBLE_FUNCS"; then
     else
 	DCFG_LONG_DOUBLE_FUNCS=config/noldfuncs
     fi
-    DCFG_LONG_DOUBLE_FUNCS="$DCFG_LONG_DOUBLE_FUNCS$d_gcc_33"
+    DCFG_LONG_DOUBLE_FUNCS="$DCFG_LONG_DOUBLE_FUNCS"
 fi
 
 D_EXTRA_OBJS=
@@ -376,8 +373,26 @@ AC_SUBST(DCFG_EXECVPE)
 AC_CHECK_FUNC(spawnvp,DCFG_SPAWNVP="",DCFG_SPAWNVP="GNU_Need_spawnvp")
 AC_SUBST(DCFG_SPAWNVP)
 
-AC_CHECK_FUNC(fwide,DCFG_FWIDE="GNU_Have_fwide",DCFG_FWIDE="")
+AC_CHECK_FUNC(fwide,[DCFG_FWIDE=1],[DCFG_FWIDE=0])
 AC_SUBST(DCFG_FWIDE)
+
+AC_CHECK_FUNC(getdelim,[DCFG_HAVE_GETDELIM=1],[DCFG_HAVE_GETDELIM=0])
+AC_SUBST(DCFG_HAVE_GETDELIM)
+
+AC_CHECK_FUNC(fgetln,[DCFG_HAVE_FGETLN=1],[DCFG_HAVE_FGETLN=0])
+AC_SUBST(DCFG_HAVE_FGETLN)
+
+AC_CHECK_FUNC(fgetline,[DCFG_HAVE_FGETLINE=1],[DCFG_HAVE_FGETLINE=0])
+AC_SUBST(DCFG_HAVE_FGETLINE)
+
+DCFG_HAVE_UNLOCKED_STDIO=1
+AC_CHECK_FUNCS([flockfile funlockfile putc_unlocked getc_unlocked],
+	[],[DCFG_HAVE_UNLOCKED_STDIO=0])
+AC_SUBST(DCFG_HAVE_UNLOCKED_STDIO)
+
+DCFG_HAVE_UNLOCKED_WIDE_STDIO=$DCFG_HAVE_UNLOCKED_STDIO
+AC_CHECK_FUNCS([putwc_unlocked getwc_unlocked], [],[DCFG_HAVE_UNLOCKED_WIDE_STDIO=0])
+AC_SUBST(DCFG_HAVE_UNLOCKED_WIDE_STDIO)
 
 AC_CHECK_FUNC(strtold,DCFG_STRTOLD="GNU_Have_strtold",DCFG_STRTOLD="")
 AC_SUBST(DCFG_STRTOLD)

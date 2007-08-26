@@ -6,8 +6,20 @@
 /* Define to 1 if you have the `exp2' function. */
 #undef HAVE_EXP2
 
+/* Define to 1 if you have the `flockfile' function. */
+#undef HAVE_FLOCKFILE
+
 /* Define to 1 fpclassify and signbit are available */
 #undef HAVE_FP_CLASSIFY_SIGNBIT
+
+/* Define to 1 if you have the `funlockfile' function. */
+#undef HAVE_FUNLOCKFILE
+
+/* Define to 1 if you have the `getc_unlocked' function. */
+#undef HAVE_GETC_UNLOCKED
+
+/* Define to 1 if you have the `getwc_unlocked' function. */
+#undef HAVE_GETWC_UNLOCKED
 
 /* Define to 1 if you have the <inttypes.h> header file. */
 #undef HAVE_INTTYPES_H
@@ -44,6 +56,12 @@
 
 /* Define to 1 if the system has the type `pthread_spinlock_t'. */
 #undef HAVE_PTHREAD_SPINLOCK_T
+
+/* Define to 1 if you have the `putc_unlocked' function. */
+#undef HAVE_PUTC_UNLOCKED
+
+/* Define to 1 if you have the `putwc_unlocked' function. */
+#undef HAVE_PUTWC_UNLOCKED
 
 /* Define to 1 if you have the <semaphore.h> header file. */
 #undef HAVE_SEMAPHORE_H

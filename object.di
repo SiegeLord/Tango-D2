@@ -47,13 +47,10 @@ class ClassInfo : Object
     // 8:       // has constructors
     void*       deallocator;
     OffsetTypeInfo[] offTi;
-  version( DigitalMars )
-  {
     void*       defaultConstructor;
 
     static ClassInfo find(char[] classname);
     Object create();
-  }
 }
 
 struct OffsetTypeInfo

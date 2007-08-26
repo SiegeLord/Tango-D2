@@ -125,10 +125,10 @@ extern (C) Array _adReverseChar(char[] a)
             memcpy(tmplo.ptr, lo, stridelo);
 	    memmove(lo + stridehi, lo + stridelo , (hi - lo) - stridelo);
             memcpy(lo, tmp.ptr, stridehi);
-            memcpy(hi + stridehi - stridelo, tmplo.ptr, stridelo);
+            memcpy(hi + cast(int) stridehi - cast(int) stridelo, tmplo.ptr, stridelo);
 
             lo += stridehi;
-            hi = hi - 1 + (stridehi - stridelo);
+	    hi = hi - 1 + (cast(int) stridehi - cast(int) stridelo);
         }
     }
     return *cast(Array*)(&a);
@@ -217,12 +217,12 @@ extern (C) Array _adReverseWchar(wchar[] a)
             /* Shift the whole array. This is woefully inefficient
              */
             memcpy(tmp.ptr, hi, stridehi * wchar.sizeof);
-            memcpy(hi + stridehi - stridelo, lo, stridelo * wchar.sizeof);
+	    memcpy(hi + cast(int) stridehi - cast(int) stridelo, lo, stridelo * wchar.sizeof);
             memmove(lo + stridehi, lo + stridelo , (hi - (lo + stridelo)) * wchar.sizeof);
             memcpy(lo, tmp.ptr, stridehi * wchar.sizeof);
 
             lo += stridehi;
-            hi = hi - 1 + (stridehi - stridelo);
+	    hi = hi - 1 + (cast(int) stridehi - cast(int) stridelo);
         }
     }
     return *cast(Array*)(&a);
