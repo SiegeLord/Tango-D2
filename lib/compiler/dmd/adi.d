@@ -58,8 +58,8 @@ private
 
 struct Array
 {
-    size_t length;
-    void *ptr;
+    size_t  length;
+    void*   ptr;
 }
 
 /**********************************************
@@ -253,7 +253,7 @@ extern (C) long _adReverse(Array a, size_t szelem)
     {
         if (a.length >= 2)
         {
-            byte *tmp;
+            byte*    tmp;
             byte[16] buffer;
 
             void* lo = a.ptr;
@@ -327,54 +327,6 @@ unittest
 }
 
 /**********************************************
- * Support for array.reverse property for bit[].
- */
-
-version (none)
-{
-extern (C) bit[] _adReverseBit(bit[] a)
-out (result)
-{
-    assert(result is a);
-}
-body
-{
-    if (a.length >= 2)
-    {
-        bit t;
-        int lo, hi;
-
-        lo = 0;
-        hi = a.length - 1;
-        for (; lo < hi; lo++, hi--)
-        {
-            t = a[lo];
-            a[lo] = a[hi];
-            a[hi] = t;
-        }
-    }
-    return a;
-}
-
-unittest
-{
-    debug(adi) printf("array.reverse_Bit[].unittest\n");
-
-    bit[] b;
-    b = new bit[5];
-    static bit[5] data = [1,0,1,1,0];
-    int i;
-
-    b[] = data[];
-    b.reverse;
-    for (i = 0; i < 5; i++)
-    {
-        assert(b[i] == data[4 - i]);
-    }
-}
-}
-
-/**********************************************
  * Sort array of chars.
  */
 
@@ -418,75 +370,16 @@ extern (C) long _adSortWchar(wchar[] a)
     return *cast(long*)(&a);
 }
 
-/**********************************************
- * Support for array.sort property for bit[].
- */
-
-version (none)
-{
-extern (C) bit[] _adSortBit(bit[] a)
-out (result)
-{
-    assert(result is a);
-}
-body
-{
-    if (a.length >= 2)
-    {
-        size_t lo, hi;
-
-        lo = 0;
-        hi = a.length - 1;
-        while (1)
-        {
-            while (1)
-            {
-                if (lo >= hi)
-                    goto Ldone;
-                if (a[lo] == true)
-                    break;
-                lo++;
-            }
-
-            while (1)
-            {
-                if (lo >= hi)
-                    goto Ldone;
-                if (a[hi] == false)
-                    break;
-                hi--;
-            }
-
-            a[lo] = false;
-            a[hi] = true;
-
-            lo++;
-            hi--;
-        }
-    Ldone:
-        ;
-    }
-    return a;
-}
-
-unittest
-{
-    debug(adi) printf("array.sort_Bit[].unittest\n");
-}
-}
-
-
 /***************************************
  * Support for array equality test.
  */
 
 extern (C) int _adEq(Array a1, Array a2, TypeInfo ti)
 {
-    //printf("a1.length = %d, a2.length = %d\n", a1.length, a2.length);
+    debug(adi) printf("_adEq(a1.length = %d, a2.length = %d)\n", a1.length, a2.length);
     if (a1.length != a2.length)
         return 0;               // not equal
     auto sz = ti.tsize();
-    //printf("sz = %d\n", sz);
     auto p1 = a1.ptr;
     auto p2 = a2.ptr;
 
@@ -520,51 +413,6 @@ unittest
     assert(a != "betty");
     assert(a == "hello");
     assert(a != "hxxxx");
-}
-
-/***************************************
- * Support for array equality test for bit arrays.
- */
-
-version (none)
-{
-extern (C) int _adEqBit(Array a1, Array a2)
-{   size_t i;
-
-    if (a1.length != a2.length)
-        return 0;               // not equal
-    auto p1 = cast(byte*)a1.ptr;
-    auto p2 = cast(byte*)a2.ptr;
-    auto n = a1.length / 8;
-    for (i = 0; i < n; i++)
-    {
-        if (p1[i] != p2[i])
-            return 0;           // not equal
-    }
-
-    ubyte mask;
-
-    n = a1.length & 7;
-    mask = cast(ubyte)((1 << n) - 1);
-    //printf("i = %d, n = %d, mask = %x, %x, %x\n", i, n, mask, p1[i], p2[i]);
-    return (mask == 0) || (p1[i] & mask) == (p2[i] & mask);
-}
-
-unittest
-{
-    debug(adi) printf("array.EqBit unittest\n");
-
-    static bit[] a = [1,0,1,0,1];
-    static bit[] b = [1,0,1];
-    static bit[] c = [1,0,1,0,1,0,1];
-    static bit[] d = [1,0,1,1,1];
-    static bit[] e = [1,0,1,0,1];
-
-    assert(a != b);
-    assert(a != c);
-    assert(a != d);
-    assert(a == e);
-}
 }
 
 /***************************************
@@ -763,59 +611,3 @@ unittest
     assert(a <= "hello");
     assert(a >= "hello");
 }
-
-/***************************************
- * Support for array compare test.
- */
-
-version (none)
-{
-extern (C) int _adCmpBit(Array a1, Array a2)
-{
-    int len;
-    uint i;
-
-    len = a1.length;
-    if (a2.length < len)
-        len = a2.length;
-    ubyte *p1 = cast(ubyte*)a1.ptr;
-    ubyte *p2 = cast(ubyte*)a2.ptr;
-    uint n = len / 8;
-    for (i = 0; i < n; i++)
-    {
-        if (p1[i] != p2[i])
-            break;              // not equal
-    }
-    for (uint j = i * 8; j < len; j++)
-    {   ubyte mask = cast(ubyte)(1 << j);
-        int c;
-
-        c = cast(int)(p1[i] & mask) - cast(int)(p2[i] & mask);
-        if (c)
-            return c;
-    }
-    return cast(int)a1.length - cast(int)a2.length;
-}
-
-unittest
-{
-    debug(adi) printf("array.CmpBit unittest\n");
-
-    static bit[] a = [1,0,1,0,1];
-    static bit[] b = [1,0,1];
-    static bit[] c = [1,0,1,0,1,0,1];
-    static bit[] d = [1,0,1,1,1];
-    static bit[] e = [1,0,1,0,1];
-
-    assert(a >  b);
-    assert(a >= b);
-    assert(a <  c);
-    assert(a <= c);
-    assert(a <  d);
-    assert(a <= d);
-    assert(a == e);
-    assert(a <= e);
-    assert(a >= e);
-}
-}
-

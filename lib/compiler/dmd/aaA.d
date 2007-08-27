@@ -234,74 +234,74 @@ body
  */
 
 void* _aaGet(AA* aa, TypeInfo keyti, size_t valuesize, ...)
-    in
+in
+{
+    assert(aa);
+}
+out (result)
+{
+    assert(result);
+    assert(aa.a);
+    assert(aa.a.b.length);
+    //assert(_aaInAh(*aa.a, key));
+}
+body
+{
+    auto pkey = cast(void *)(&valuesize + 1);
+    size_t i;
+    aaA *e;
+    auto keysize = aligntsize(keyti.tsize());
+
+    if (!aa.a)
+        aa.a = new BB();
+
+    if (!aa.a.b.length)
     {
-        assert(aa);
+        alias aaA *pa;
+        auto len = prime_list[0];
+
+        aa.a.b = new pa[len];
     }
-    out (result)
+
+    auto key_hash = keyti.getHash(pkey);
+    //printf("hash = %d\n", key_hash);
+    i = key_hash % aa.a.b.length;
+    auto pe = &aa.a.b[i];
+    while ((e = *pe) != null)
     {
-        assert(result);
-        assert(aa.a);
-        assert(aa.a.b.length);
-        //assert(_aaInAh(*aa.a, key));
+        if (key_hash == e.hash)
+        {
+            auto c = keyti.compare(pkey, e + 1);
+            if (c == 0)
+                goto Lret;
+            pe = (c < 0) ? &e.left : &e.right;
+        }
+        else
+            pe = (key_hash < e.hash) ? &e.left : &e.right;
     }
-    body
+
+    // Not found, create new elem
+    //printf("create new one\n");
+    size_t size = aaA.sizeof + keysize + valuesize;
+    uint   bits = keysize   < (void*).sizeof &&
+                  keysize   > (void).sizeof  &&
+                  valuesize < (void*).sizeof &&
+                  valuesize > (void).sizeof  ? BlkAttr.NO_SCAN : 0;
+    e = cast(aaA *) gc_calloc(size, bits);
+    memcpy(e + 1, pkey, keysize);
+    e.hash = key_hash;
+    *pe = e;
+
+    auto nodes = ++aa.a.nodes;
+    //printf("length = %d, nodes = %d\n", (*aa.a).length, nodes);
+    if (nodes > aa.a.b.length * 4)
     {
-        auto pkey = cast(void *)(&valuesize + 1);
-        size_t i;
-        aaA *e;
-        auto keysize = aligntsize(keyti.tsize());
-
-        if (!aa.a)
-            aa.a = new BB();
-
-        if (!aa.a.b.length)
-        {
-            alias aaA *pa;
-            auto len = prime_list[0];
-
-            aa.a.b = new pa[len];
-        }
-
-        auto key_hash = keyti.getHash(pkey);
-        //printf("hash = %d\n", key_hash);
-        i = key_hash % aa.a.b.length;
-        auto pe = &aa.a.b[i];
-        while ((e = *pe) != null)
-        {
-            if (key_hash == e.hash)
-            {
-                auto c = keyti.compare(pkey, e + 1);
-                if (c == 0)
-                    goto Lret;
-                pe = (c < 0) ? &e.left : &e.right;
-            }
-            else
-                pe = (key_hash < e.hash) ? &e.left : &e.right;
-        }
-
-        // Not found, create new elem
-        //printf("create new one\n");
-        size_t size = aaA.sizeof + keysize + valuesize;
-        uint   bits = keysize   < (void*).sizeof &&
-                      keysize   > (void).sizeof  &&
-                      valuesize < (void*).sizeof &&
-                      valuesize > (void).sizeof  ? BlkAttr.NO_SCAN : 0;
-        e = cast(aaA *) gc_calloc(size, bits);
-        memcpy(e + 1, pkey, keysize);
-        e.hash = key_hash;
-        *pe = e;
-
-        auto nodes = ++aa.a.nodes;
-        //printf("length = %d, nodes = %d\n", (*aa.a).length, nodes);
-        if (nodes > aa.a.b.length * 4)
-        {
-            _aaRehash(aa,keyti);
-        }
-
-    Lret:
-        return cast(void *)(e + 1) + keysize;
+        _aaRehash(aa,keyti);
     }
+
+Lret:
+    return cast(void *)(e + 1) + keysize;
+}
 
 
 /*************************************************
@@ -499,7 +499,7 @@ body
         }
         assert(resi == a.length);
     }
-        return *cast(ArrayRet_t*)(&a);
+    return *cast(ArrayRet_t*)(&a);
 }
 
 
@@ -592,7 +592,7 @@ body
 
         *paa.a = newb;
     }
-        return (*paa).a;
+    return (*paa).a;
 }
 
 
@@ -638,8 +638,8 @@ ArrayRet_t _aaKeys(AA aa, size_t keysize)
 
     Array a;
     a.length = len;
-        a.ptr = res.ptr;
-        return *cast(ArrayRet_t*)(&a);
+    a.ptr = res.ptr;
+    return *cast(ArrayRet_t*)(&a);
 }
 
 
@@ -687,15 +687,15 @@ body
 
     if (aa.a)
     {
-    foreach (e; aa.a.b)
-    {
-        if (e)
+        foreach (e; aa.a.b)
         {
-            result = treewalker(e);
-            if (result)
-                break;
+            if (e)
+            {
+                result = treewalker(e);
+                if (result)
+                    break;
+            }
         }
-    }
     }
     return result;
 }
@@ -740,13 +740,13 @@ body
 
     if (aa.a)
     {
-    foreach (e; aa.a.b)
-    {
-        if (e)
+        foreach (e; aa.a.b)
         {
-            result = treewalker(e);
-            if (result)
-                break;
+            if (e)
+            {
+                result = treewalker(e);
+                if (result)
+                    break;
             }
         }
     }

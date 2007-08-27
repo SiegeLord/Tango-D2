@@ -13,6 +13,35 @@ module tango.core.Tuple;
  * a set of values from a function or for passing a set of parameters to a
  * function.
  *
+ * NOTE: Since the transition from user-defined to built-in tuples, the ability
+ *       to return tuples from a function has been lost.  Until this issue is
+ *       addressed within the language, tuples must be enclosed in a struct
+ *       if they are to be returned from a function.
+ *
+ * Example:
+ * ----------------------------------------------------------------------
+ *
+ * alias Tuple!(int, real) T1;
+ * alias Tuple!(int, long) T2;
+ * struct Wrap( Vals... )
+ * {
+ *     Vals val;
+ * }
+ *
+ * Wrap!(T2) func( T1 val )
+ * {
+ *     Wrap!(T2) ret;
+ *     ret.val[0] = val[0];
+ *     ret.val[1] = val[0] * cast(long) val[1];
+ *     return ret;
+ * }
+ *
+ * ----------------------------------------------------------------------
+ *
+ * This is the original tuple example, and demonstates what should be possible
+ * with tuples.  Hopefully, language support will be added for this feature
+ * soon.
+ *
  * Example:
  * ----------------------------------------------------------------------
  *

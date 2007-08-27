@@ -115,23 +115,6 @@ class Object
         return cast(int)(this is o);
     }
 
-    /******
-     * Create instance of class specified by classname.
-     * The class must either have no constructors or have
-     * a default constructor.
-     * Returns:
-     *	null if failed
-     */
-    static Object factory(char[] classname)
-    {
-	auto ci = ClassInfo.find(classname);
-	if (ci)
-	{
-	    return ci.create();
-	}
-	return null;
-    }
-
     interface Monitor
     {
         void lock();
@@ -914,33 +897,6 @@ class TypeInfo_Tuple : TypeInfo
         assert(0);
     }
 }
-
-/+ This is in r139, not sure if it should be here
-+ class TypeInfo_Const : TypeInfo
-+ {
-+     char[] toString() { return "const " ~ base.toString(); }
-+ 
-+     int opEquals(Object o) { return base.opEquals(o); }
-+     hash_t getHash(void *p) { return base.getHash(p); }
-+     int equals(void *p1, void *p2) { return base.equals(p1, p2); }
-+     int compare(void *p1, void *p2) { return base.compare(p1, p2); }
-+     size_t tsize() { return base.tsize(); }
-+     void swap(void *p1, void *p2) { return base.swap(p1, p2); }
-+ 
-+     TypeInfo next() { return base.next(); }
-+     uint flags() { return base.flags(); }
-+     void[] init() { return base.init(); }
-+ 
-+     TypeInfo base;
-+ }
-+ 
-+ class TypeInfo_Invariant : TypeInfo_Const
-+ {
-+     char[] toString() { return "invariant " ~ base.toString(); }
-+ }
-+ 
-+ 
-+/
 
 class Exception : Object
 {
