@@ -450,7 +450,6 @@ unittest
     scope cond = new MemoryConduit;
     scope comp = new Bzip2CompressionFilter(cond);
     comp.write(message);
-    comp.flush;
     comp.commit;
 
     assert( message_z == cast(ubyte[])(cond.slice) );
