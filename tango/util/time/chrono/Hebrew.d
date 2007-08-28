@@ -7,7 +7,7 @@
         version:        Mid 2005: Initial release
                         Apr 2007: reshaped                        
 
-        author:         John Chapman, Kris
+        author:         John Chapman, Kris, snoyberg
 
 ******************************************************************************/
 
@@ -25,10 +25,10 @@ public class HebrewCalendar : Calendar {
 
   private const int[14][7] MonthDays = [
     // month                                                    // year type
-    [ 0, 0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0 ], 
-    [ 0, 30, 29, 29, 29, 30, 29, 30, 29, 30, 29, 30, 29, 0 ],   // 1
-    [ 0, 30, 29, 30, 29, 30, 29, 30, 29, 30, 29, 30, 29, 0 ],   // 2
-    [ 0, 30, 30, 30, 29, 30, 29, 30, 29, 30, 29, 30, 29, 0 ],   // 3
+    [ 0, 0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0  ], 
+    [ 0, 30, 29, 29, 29, 30, 29, 0,  30, 29, 30, 29, 30, 29 ],  // 1
+    [ 0, 30, 29, 30, 29, 30, 29, 0,  30, 29, 30, 29, 30, 29 ],  // 2
+    [ 0, 30, 30, 30, 29, 30, 29, 0,  30, 29, 30, 29, 30, 29 ],  // 3
     [ 0, 30, 29, 29, 29, 30, 30, 29, 30, 29, 30, 29, 30, 29 ],  // 4
     [ 0, 30, 29, 30, 29, 30, 30, 29, 30, 29, 30, 29, 30, 29 ],  // 5
     [ 0, 30, 30, 30, 29, 30, 30, 29, 30, 29, 30, 29, 30, 29 ]   // 6
@@ -233,19 +233,19 @@ public class HebrewCalendar : Calendar {
     switch (yearLength) {
       case 353:
         // "deficient"
-        return 0;
+        return 1;
       case 383:
         // "deficient" leap
         return 4;
       case 354:
         // "normal"
-        return 1;
+        return 2;
       case 384:
         // "normal" leap
         return 5;
       case 355:
         // "complete"
-        return 2;
+        return 3;
       case 385:
         // "complete" leap
         return 6;
