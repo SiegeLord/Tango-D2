@@ -25,6 +25,8 @@ module tango.core.Type;
 
 public enum Time : long 
 {
+        Zero = 0L,                                 /* workaround for GDC bug */
+
         TicksPerMillisecond = 10000,
         TicksPerSecond = TicksPerMillisecond * 1000,
         TicksPerMinute = TicksPerSecond * 60,
