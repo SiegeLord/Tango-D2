@@ -448,7 +448,7 @@ struct Console
                                    // flush produced output
                                    for (wchar* p=output.ptr, end=output.ptr+i; p < end; p+=i)
                                        {
-                                       const int MAX = 32767;
+                                       const int MAX = 16 * 1024;
 
                                        // avoid console limitation of 64KB 
                                        DWORD len = end - p; 
