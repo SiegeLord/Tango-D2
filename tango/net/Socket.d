@@ -77,8 +77,7 @@ private import  tango.core.Type : Interval;
 version=Tango;
 version (Tango)
 {
-        private {
-        char[] toString (char[] tmp, int i)
+        private char[] toString (char[] tmp, int i)
         {
                 int j = tmp.length;
                 do {
@@ -86,7 +85,6 @@ version (Tango)
                    } while (i /= 10);
 
                 return tmp [j .. $];
-        }
         }
 }
 
@@ -1807,7 +1805,7 @@ class IPv4Address: Address
 
         char[] toPortString()
         {
-                return toString (_port, port());
+                return .toString (_port, port());
         }
 
 
