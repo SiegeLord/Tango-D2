@@ -1,12 +1,12 @@
 /*******************************************************************************
 
-        copyright:      Copyright (c) 2004 Kris Bell. All rights reserved
+        copyright:      Copyright (c) 2004. All rights reserved
 
         license:        BSD style: $(LICENSE)
 
         version:        Initial release: April 2004
 
-        author:         various
+        author:         Various
 
 *******************************************************************************/
 
@@ -47,15 +47,20 @@ class Random
 {
         public static Random shared;
 
+        private uint kiss_k;
+        private uint kiss_m;
         private uint kiss_x = 1;
         private uint kiss_y = 2;
         private uint kiss_z = 4;
         private uint kiss_w = 8;
         private uint kiss_carry = 0;
-        private uint kiss_k;
-        private uint kiss_m;
         
         /**********************************************************************
+
+                Create a static and shared instance:
+                ---
+                auto random = Random.shared.next;
+                ---
 
         **********************************************************************/
 
@@ -66,6 +71,8 @@ class Random
 
         /**********************************************************************
 
+                Creates and seeds a new generator with the current time
+
         **********************************************************************/
 
         this ()
@@ -74,6 +81,8 @@ class Random
         }
 
         /**********************************************************************
+
+                Seed the generator with current time
 
         **********************************************************************/
 
@@ -96,6 +105,8 @@ class Random
 
         /**********************************************************************
 
+                Seed the generator with a provided value
+
         **********************************************************************/
 
         final Random seed (uint seed)
@@ -110,14 +121,7 @@ class Random
 
         /**********************************************************************
 
-        **********************************************************************/
-
-        final uint next (uint limit)
-        {
-                return next() % limit;
-        }
-
-        /**********************************************************************
+                Returns X such that 0 <= X <= uint.max
 
         **********************************************************************/
 
@@ -133,6 +137,34 @@ class Random
                 kiss_w = kiss_m;
                 kiss_carry = kiss_k >> 30;
                 return kiss_x + kiss_y + kiss_w;
+        }
+
+        /**********************************************************************
+
+                Returns X such that 0 <= X < max
+
+                Note that max is exclusive, making it compatible with
+                array indexing
+
+        **********************************************************************/
+
+        final uint next (uint max)
+        {
+                return next() % max;
+        }
+
+        /**********************************************************************
+
+                Returns X such that min <= X < max
+
+                Note that max is exclusive, making it compatible with
+                array indexing
+
+        **********************************************************************/
+
+        final uint next (uint min, uint max)
+        {
+                return next(max-min) + min;
         }
 }
 
