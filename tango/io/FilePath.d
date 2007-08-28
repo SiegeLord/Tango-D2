@@ -94,6 +94,7 @@ class FilePath : PathView
                         folder_,                // path before name
                         suffix_;                // after rightmost '.'
 
+
         /***********************************************************************
 
                 Create a FilePath from a copy of the provided string.
@@ -293,18 +294,6 @@ class FilePath : PathView
                      if (s[i] is FileConst.PathSeparatorChar)
                          return true;
                 return false;
-        }
-
-        /***********************************************************************
-
-                Returns true if this FilePath has been marked as a directory,
-                via the constructor or method set()
-
-        ***********************************************************************/
-
-        final bool isDir ()
-        {
-                return dir_;
         }
 
         /***********************************************************************
@@ -644,9 +633,11 @@ class FilePath : PathView
                 dictated by whether argument prefixed is enabled or
                 not; default behaviour is to eschew the prefix
 
+                Deprecated: use toList(Filter) instead
+
         ***********************************************************************/
 
-        final char[][] toList (bool prefixed = false)
+        deprecated final char[][] toList (bool prefixed = false)
         {
                 int      i;
                 char[][] list;
@@ -662,6 +653,54 @@ class FilePath : PathView
                 list = new char[][512];
                 toList (&add);
                 return list [0 .. i];
+        }
+
+        /***********************************************************************
+
+                List the set of filenames within this directory, using
+                the provided filter to control the list:
+                ---
+                bool delegate (FilePath path, bool isFolder) Filter
+                ---
+
+                Returning true from the filter includes the given path, 
+                whilst returning false excludes it. Parameter 'isFolder'
+                indicates whether the path is a file or folder.
+
+                Note that paths composed of '.' characters are ignored.
+
+        ***********************************************************************/
+
+        final FilePath[] toList (Filter filter = null)
+        {
+                FilePath[] paths;
+
+                void add (char[] prefix, char[] name, bool isDir)
+                { 
+                        // skip dirs composed only of '.'
+                        if (name.length > 3 || name != "..."[0 .. name.length])
+                           {
+                           char[512] tmp = void;
+
+                           int len = prefix.length + name.length;
+                           assert (len < tmp.length);
+
+                           // construct full pathname
+                           tmp[0..prefix.length] = prefix;
+                           tmp[prefix.length..len] = name;
+                        
+                           auto p = new FilePath (tmp[0 .. len], isDir);
+
+                           // test this entry for inclusion
+                           if (filter is null || filter (p, isDir))
+                               paths ~= p;                                                   
+                           else
+                              delete p;
+                           }
+                }
+                
+                toList (&add);
+                return paths;
         }
 
         /***********************************************************************
@@ -897,12 +936,15 @@ class FilePath : PathView
 
                 /***************************************************************
 
-                        Is this file actually a folder/directory?
+                        Is this file actually a folder/directory? 
 
                 ***************************************************************/
 
                 final bool isFolder ()
                 {
+                        if (dir_)
+                            return true;
+
                         return (getFlags & FILE_ATTRIBUTE_DIRECTORY) != 0;
                 }
 
@@ -1429,6 +1471,8 @@ class FilePath : PathView
 
 interface PathView
 {
+        public  alias bool delegate (FilePath, bool) Filter;
+
         /***********************************************************************
 
                 TimeStamp information. Accurate to whatever the OS supports
@@ -1550,15 +1594,6 @@ interface PathView
 
         /***********************************************************************
 
-                Returns true if this FilePath has been marked as a
-                directory, via the constructor
-
-        ***********************************************************************/
-
-        abstract bool isDir ();
-
-        /***********************************************************************
-
                 Does this path currently exist?
 
         ***********************************************************************/
@@ -1661,18 +1696,21 @@ interface PathView
 
         /***********************************************************************
 
-                List the set of filenames within this directory. All
-                filenames are null terminated, though the null itself
-                is hidden at the end of each name (not exposed by the
-                length property)
+                List the set of filenames within this directory, using
+                the provided filter to control the list:
+                ---
+                bool delegate (FilePath path, bool isFolder) Filter
+                ---
 
-                Each filename optionally includes the parent prefix,
-                dictated by whether argument prefixed is enabled or
-                not; default behaviour is to eschew the prefix
+                Returning true from the filter includes the given path, 
+                whilst returning false excludes it. Parameter 'isFolder'
+                indicates whether the path is a file or folder
+
+                Note that paths composed of '.' characters are ignored.
 
         ***********************************************************************/
 
-        abstract char[][] toList (bool prefixed = false);
+        abstract FilePath[] toList (Filter filter = null);
 
         /***********************************************************************
 
