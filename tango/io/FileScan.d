@@ -13,7 +13,9 @@
 
 module tango.io.FileScan;
 
-public import tango.io.FilePath;
+public  import tango.io.FilePath;
+
+private import tango.core.Exception;
 
 /*******************************************************************************
 
@@ -22,19 +24,18 @@ public import tango.io.FilePath;
         of subdirectories and the files contained therein. The following
         example lists all files with suffix ".d" located via the current
         directory, along with the folders containing them:
-
         ---
         auto scan = new FileScan;
 
         scan (".", ".d");
 
-        Stdout.formatln ("{0} Folders", scan.folders.length);
+        Stdout.formatln ("{} Folders", scan.folders.length);
         foreach (folder; scan.folders)
-                 Stdout.formatln ("{0}", folder);
+                 Stdout.formatln ("{}", folder);
 
-        Stdout.formatln ("\n{0} Files", scan.files.length);
+        Stdout.formatln ("\n{} Files", scan.files.length);
         foreach (file; scan.files)
-                 Stdout.formatln ("{0}", file);
+                 Stdout.formatln ("{}", file);
         ---
 
         This is unlikely the most efficient method to scan a vast number of
@@ -44,11 +45,11 @@ public import tango.io.FilePath;
 
 class FileScan
 {       
-        alias sweep opCall;
+        alias sweep     opCall;
 
-        uint            total_;
-        FilePath[]      files_,
-                        folders_;
+        FilePath[]      fileSet;
+        char[][]        errorSet;
+        FilePath[]      folderSet;
         
         /***********************************************************************
 
@@ -68,17 +69,17 @@ class FileScan
 
         ***********************************************************************/
 
-        alias bool delegate (FilePath, bool) Filter;
+        alias FilePath.Filter Filter;
 
-        /***********************************************************************
+       /***********************************************************************
 
-                Return the number of files found in the last scan
+                Return all the errors found in the last scan
 
         ***********************************************************************/
 
-        public uint inspected ()
+        public char[][] errors ()
         {
-                return total_;
+                return errorSet;
         }
 
         /***********************************************************************
@@ -89,7 +90,7 @@ class FileScan
 
         public FilePath[] files ()
         {
-                return files_;
+                return fileSet;
         }
 
         /***********************************************************************
@@ -100,7 +101,7 @@ class FileScan
 
         public FilePath[] folders ()
         {
-                return folders_;
+                return folderSet;
         }
 
         /***********************************************************************
@@ -110,9 +111,9 @@ class FileScan
         
         ***********************************************************************/
         
-        FileScan sweep (char[] path)
+        FileScan sweep (char[] path, bool recurse=true)
         {
-                return sweep (path, (FilePath, bool){return true;});
+                return sweep (path, cast(Filter) null, recurse);
         }
 
         /***********************************************************************
@@ -122,10 +123,10 @@ class FileScan
         
         ***********************************************************************/
         
-        FileScan sweep (char[] path, char[] match)
+        FileScan sweep (char[] path, char[] match, bool recurse=true)
         {
                 return sweep (path, (FilePath fp, bool isDir)
-                             {return isDir || fp.suffix == match;});
+                             {return isDir || fp.suffix == match;}, recurse);
         }
 
         /***********************************************************************
@@ -135,62 +136,67 @@ class FileScan
 
         ***********************************************************************/
         
-        FileScan sweep (char[] path, Filter filter)
+        FileScan sweep (char[] path, Filter filter, bool recurse=true)
         {
-                total_ = 0;
-                files_ = folders_ = null;
-                return scan (new FilePath(path), filter);
+                errorSet = null, fileSet = folderSet = null;
+                return scan (new FilePath(path), filter, recurse);
         }
 
         /***********************************************************************
 
                 Internal routine to locate files and sub-directories. We
-                skip folders composed only of '.' chars. 
+                skip entries with names composed only of '.' characters. 
 
         ***********************************************************************/
 
-        private FileScan scan (FilePath folder, Filter filter) 
+        private FileScan scan (FilePath folder, Filter filter, bool recurse) 
         {
-                FilePath[] paths;
-
-                void add (char[] prefix, char[] name, bool isDir)
-                { 
-                        char[512] tmp;
-
-                        int len = prefix.length + name.length;
-                        assert (len < tmp.length);
-                        ++total_;
-
-                        // construct full pathname
-                        tmp[0..prefix.length] = prefix;
-                        tmp[prefix.length..len] = name;
-                        
-                        auto p = new FilePath (tmp[0 .. len], isDir);
-
-                        // test this entry for inclusion
-                        if (filter (p, isDir))
-                           {
-                           // skip dirs composed only of '.'
-                           if (name.length > 3 || name != "..."[0 .. name.length])
-                               paths ~= p;                                                   
-                           }
-                        else
-                           delete p;
-                }
-
-                folder.toList (&add);
-                auto count = files_.length;
+                try {
+                    auto paths = folder.toList (filter);
                 
-                foreach (path; paths)
-                         if (path.isDir)
-                             scan (path, filter);
-                         else
-                            files_ ~= path;
+                    auto count = fileSet.length;
+                    foreach (path; paths)
+                             if (! path.isFolder)
+                                   fileSet ~= path;
+                             else
+                                if (recurse)
+                                    scan (path, filter, recurse);
                 
-                // add packages only if there's something in them
-                if (files_.length > count)
-                    folders_ ~= folder;
+                    // add packages only if there's something in them
+                    if (fileSet.length > count)
+                        folderSet ~= folder;
 
+                    } catch (IOException e)
+                             errorSet ~= e.toUtf8;
                 return this;
+        }
+}
+
+
+/*******************************************************************************
+
+*******************************************************************************/
+
+debug (FileScan)
+{
+        import tango.io.Stdout;
+
+        void main()
+        {
+                auto scan = new FileScan;
+
+                scan (".");
+
+                Stdout.formatln ("{} Folders", scan.folders.length);
+                foreach (folder; scan.folders)
+                         Stdout (folder).newline;
+
+                Stdout.formatln ("\n{} Files", scan.files.length);
+                foreach (file; scan.files)
+                         Stdout (file).newline;
+
+                Stdout.formatln ("\n{} Errors", scan.errors.length);
+                foreach (error; scan.errors)
+                         Stdout (error).newline;
         }
 }
