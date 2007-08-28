@@ -26,5 +26,7 @@ void main(char[][] args)
         foreach (file; scan.files)
                  Stdout.format ("{}\n", file);
 
-        Stdout.format ("\n{} entries inspected\n", scan.inspected).flush;
+        Stdout.formatln ("\n{} Errors", scan.errors.length);
+        foreach (error; scan.errors)
+                 Stdout (error).newline;
 }

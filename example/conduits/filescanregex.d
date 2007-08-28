@@ -12,6 +12,8 @@ import tango.io.File,
        tango.text.Regex;
 
 void main(char[][] args) {
+    uint total;
+
     if (args.length < 2) {
         Stdout("Please pass a directory to search").newline;
         return;
@@ -21,6 +23,7 @@ void main(char[][] args) {
     scope regex =  Regex(r"\.(d|obj)$");
 
     scan(args[1], delegate bool (FilePath fp, bool isDir) {
+         ++total;
          return isDir || regex.test(fp.toUtf8);
     });
 
@@ -28,5 +31,10 @@ void main(char[][] args) {
     foreach (file; scan.files)
              Stdout(file).newline;
 
-    Stdout.formatln("Found {0} matches in {1} entries", scan.files.length, scan.inspected);
+    Stdout.formatln("Found {} matches in {} entries", scan.files.length, total);
+
+    Stdout.formatln ("\n{} Errors", scan.errors.length);
+    foreach (error; scan.errors)
+             Stdout (error).newline;
 }
+
