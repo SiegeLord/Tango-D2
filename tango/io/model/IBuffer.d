@@ -618,8 +618,8 @@ abstract class IBuffer : InputStream, OutputStream
                 Close this buffer
                 
                 Remarks:
-                Close flushes & commits itself, and disconnects any 
-                associated conduit. 
+                Close flushes & commits itself, and detaches any associated
+                conduit. 
 
         ***********************************************************************/
 

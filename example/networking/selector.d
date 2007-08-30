@@ -277,7 +277,7 @@ void testSelector(ISelector selector)
             */
         }
 
-        serverSocket.socket().disconnect;
+        serverSocket.socket().detach;
     }
     catch (SelectorException e)
     {

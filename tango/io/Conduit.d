@@ -90,7 +90,7 @@ class Conduit : IConduit
 
         ***********************************************************************/
 
-        abstract void disconnect ();
+        abstract void detach ();
 
         /***********************************************************************
         
@@ -155,8 +155,8 @@ class Conduit : IConduit
                 Close this conduit
                 
                 Remarks:
-                Close flushes & commits any filters before disconnecting 
-                the conduit
+                Close flushes & commits any filters before detaching the 
+                conduit
 
         ***********************************************************************/
 
@@ -164,7 +164,7 @@ class Conduit : IConduit
         {
                 sink.flush;
                 sink.commit;
-                this.disconnect;
+                this.detach;
         }
 
         /***********************************************************************

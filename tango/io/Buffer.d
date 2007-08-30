@@ -1203,8 +1203,8 @@ class Buffer : IBuffer
                 Close this buffer
                 
                 Remarks:
-                Close flushes & commits itself, and disconnects any 
-                associated conduit. 
+                Close flushes & commits itself, and detaches any associated
+                conduit. 
 
         ***********************************************************************/
 
@@ -1214,7 +1214,7 @@ class Buffer : IBuffer
                    {
                    flush;
                    commit;
-                   sink.conduit.disconnect; 
+                   sink.conduit.detach; 
                    }
         }
 

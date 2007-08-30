@@ -99,7 +99,7 @@ class DeviceConduit : Conduit
 
                 ***************************************************************/
 
-                override void disconnect ()
+                override void detach ()
                 {
                         if (handle)
                             if (! CloseHandle (handle))
@@ -191,7 +191,7 @@ class DeviceConduit : Conduit
 
                 ***************************************************************/
 
-                override void disconnect ()
+                override void detach ()
                 {
                         if (handle)
                             if (posix.close (handle) == -1)

@@ -145,7 +145,7 @@ class QueueFile
         final void close ()
         {
                 if (conduit)
-                    conduit.disconnect;
+                    conduit.detach;
                 conduit = null;
         }
 

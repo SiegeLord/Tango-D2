@@ -415,6 +415,7 @@ uint trim(T) (T[] digits, inout bool sign, inout uint radix)
                            break;
 
                       default:
+                           --p;
                            break;
                       } 
            }

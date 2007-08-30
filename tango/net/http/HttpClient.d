@@ -269,7 +269,7 @@ class HttpClient
                 if (socket)
                    {
                    socket.shutdown;
-                   socket.disconnect;
+                   socket.detach;
                    socket = null;
                    }
         }

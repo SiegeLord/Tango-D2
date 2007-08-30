@@ -212,9 +212,9 @@ class SocketConduit : Conduit
 
         ***********************************************************************/
 
-        override void disconnect ()
+        override void detach ()
         {
-                socket_.disconnect;
+                socket_.detach;
 
                 // deallocate if this came from the free-list,
                 // otherwise just wait for the GC to handle it

@@ -97,15 +97,15 @@ interface IConduit : InputStream, OutputStream, ISelectable
 
         ***********************************************************************/
 
-        abstract void disconnect ();
+        abstract void detach ();
 
         /***********************************************************************
 
                 Close this conduit
                 
                 Remarks:
-                Close flushes & commits any filters before disconnecting 
-                the conduit
+                Close flushes & commits any filters before detaching the 
+                conduit
 
         ***********************************************************************/
 

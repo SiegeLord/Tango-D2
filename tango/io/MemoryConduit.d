@@ -111,7 +111,7 @@ class MemoryConduit : Conduit
 
         ***********************************************************************/
 
-        override void disconnect () {}
+        override void detach () {}
 }
 
 

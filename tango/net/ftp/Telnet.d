@@ -227,7 +227,7 @@ class Telnet
                         if (s !is this.socket)
                         {
                                 s.shutdown(SocketShutdown.BOTH);
-                                s.disconnect();
+                                s.detach();
 
                                 delete s;
                         }

@@ -141,7 +141,7 @@ class ClusterThread
                 logger.info (sprint ("{} halting service handler", client));
 
                 // make sure we close the conduit
-                buffer.conduit.disconnect;
+                buffer.conduit.detach;
         }
 }
 
