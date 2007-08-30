@@ -28,7 +28,7 @@ interface Folder : FolderView
 
 interface FolderView
 {
-    char[][] toList (bool prefixed = false);
+//    char[][] toList (bool prefixed = false);
     Folder toList (void delegate(char[], char[], bool) dg);
 
     bool exists(char[] path);

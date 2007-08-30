@@ -21,6 +21,7 @@ private import tango.io.model.IConduit;
 private import tango.net.Uri;
 private import tango.io.vfs.Folder;
 
+
 /*******************************************************************************
 
 *******************************************************************************/
@@ -51,10 +52,12 @@ class LocalFolder : Folder
         
     }
 
+    /** Pending fixes ...
     char[][] toList (bool prefixed = false)
     {
         return _localPath.toList(prefixed);
     }
+    */
 
     Folder toList(void delegate(char[], char[], bool) dg)
     {
