@@ -60,46 +60,52 @@ enum Flags
 /******************************************************************************
 
         Parse an integer value from the provided 'digits' string. 
-        The string is inspected for a sign and radix, where the
-        latter will override the default radix provided.
+
+        The string is inspected for a sign and an optional radix 
+        prefix. A radix may be provided as an argument instead, 
+        whereupon it must match the prefix (where present). When
+        radix is set to zero, conversion will default to decimal.
 
         Throws an exception where the input text is not parsable
         in its entirety.
         
 ******************************************************************************/
 
-int toInt(T, U=uint) (T[] digits, U radix=10)
+int toInt(T, U=uint) (T[] digits, U radix=0)
 {return toInt!(T)(digits, radix);}
 
-int toInt(T) (T[] digits, uint radix=10)
+int toInt(T) (T[] digits, uint radix=0)
 {
         auto x = toLong (digits, radix);
         if (x > int.max)
-            throw new IllegalArgumentException ("Integer.toInt :: numeric overflow");
+            throw new IllegalArgumentException ("Integer.toInt :: integer overflow on: "~digits);
         return cast(int) x;
 }
 
 /******************************************************************************
 
-        Parse an integer value from the provided 'digits' string. 
-        The string is inspected for a sign and radix, where the
-        latter will override the default radix provided.
+        Parse an integer value from the provided 'digits' string.       
+        
+        The string is inspected for a sign and an optional radix 
+        prefix. A radix may be provided as an argument instead, 
+        whereupon it must match the prefix (where present). When
+        radix is set to zero, conversion will default to decimal.
 
         Throws an exception where the input text is not parsable
         in its entirety.
         
 ******************************************************************************/
 
-long toLong(T, U=uint) (T[] digits, U radix=10)
+long toLong(T, U=uint) (T[] digits, U radix=0)
 {return toLong!(T)(digits, radix);}
 
-long toLong(T) (T[] digits, uint radix=10)
+long toLong(T) (T[] digits, uint radix=0)
 {
         uint len;
 
         auto x = parse (digits, radix, &len);
         if (len < digits.length)
-            throw new IllegalArgumentException ("Integer.toLong :: invalid number");
+            throw new IllegalArgumentException ("Integer.toLong :: invalid literal: "~digits);
         return x;
 }
 
@@ -287,18 +293,21 @@ T[] format(T) (T[] dst, long i, Style fmt=Style.Signed, Flags flags=Flags.None)
 /******************************************************************************
 
         Parse an integer value from the provided 'digits' string. 
-        The string is inspected for a sign and radix, where the
-        latter will override the default radix provided.
+
+        The string is inspected for a sign and an optional radix 
+        prefix. A radix may be provided as an argument instead, 
+        whereupon it must match the prefix (where present). When
+        radix is set to zero, conversion will default to decimal.
 
         A non-null 'ate' will return the number of characters used
         to construct the returned value.
 
 ******************************************************************************/
 
-long parse(T, U=uint) (T[] digits, U radix=10, uint* ate=null)
+long parse(T, U=uint) (T[] digits, U radix=0, uint* ate=null)
 {return parse!(T)(digits, radix, ate);}
 
-long parse(T) (T[] digits, uint radix=10, uint* ate=null)
+long parse(T) (T[] digits, uint radix=0, uint* ate=null)
 {
         bool sign;
 
@@ -314,10 +323,11 @@ long parse(T) (T[] digits, uint radix=10, uint* ate=null)
 /******************************************************************************
 
         Convert the provided 'digits' into an integer value,
-        without looking for a sign or radix.
+        without checking for a sign or radix. The radix defaults
+        to decimal (10).
 
-        Returns the value and updates 'ate' with the number
-        of characters parsed.
+        Returns the value and updates 'ate' with the number of
+        characters consumed.
 
 ******************************************************************************/
 
@@ -361,10 +371,13 @@ ulong convert(T) (T[] digits, uint radix=10, uint* ate=null)
 /******************************************************************************
 
         Strip leading whitespace, extract an optional +/- sign,
-        and an optional radix prefix. This can be used as a
-        precursor to the conversion of digits into a number.
+        and an optional radix prefix. If the radix value matches
+        an optional prefix, or the radix is zero, the prefix will
+        be consumed and assigned. Where the radix is non zero and
+        does not match an explicit prefix, the latter will remain 
+        unconsumed. Otherwise, radix will default to 10.
 
-        Returns the number of matching characters.
+        Returns the number of characters consumed.
 
 ******************************************************************************/
 
@@ -393,31 +406,39 @@ uint trim(T) (T[] digits, inout bool sign, inout uint radix)
                       break;
 
            // strip off a radix specifier also?
+           auto r = radix;
            if (c is '0' && len > 1)
                switch (*++p)
                       {
                       case 'x':
                       case 'X':
-                           ++p;
-                           radix = 16;
+                           r = 16, ++p;
                            break;
-
+ 
                       case 'b':
                       case 'B':
-                           ++p;
-                           radix = 2;
+                           r = 2, ++p;
                            break;
-
+ 
                       case 'o':
                       case 'O':
-                           ++p;
-                           radix = 8;
+                           r = 8, ++p;
                            break;
-
-                      default:
-                           --p;
+ 
+                      default: 
                            break;
                       } 
+
+           // default the radix to 10
+           if (r is 0)
+               radix = 10;
+           else
+              // explicit radix must match (optional) prefix
+              if (radix != r)
+                  if (radix)
+                      --p;
+                  else
+                     radix = r;
            }
 
         // return number of characters eaten
@@ -480,9 +501,11 @@ debug (UnitTest)
         unittest
         {
         char[64] tmp;
-
+        
+        assert (toInt("1") is 1);
+        assert (toLong("1") is 1);
         assert (toInt("1", 10) is 1);
-        assert (toLong("1", 10U) is 1);
+        assert (toLong("1", 10) is 1);
 
         assert (atoi ("12345") is 12345);
         assert (itoa (tmp, 12345) == "12345");
@@ -534,12 +557,18 @@ debug (UnitTest)
         assert(parse( "0b10000") == 0x10 );
         assert(parse( "0B10000") == 0x10 );
 
-        // regression tests
-
-        // ticket #90
+        // prefix tests
         char[] str = "0x";
         assert(parse( str[0..1] ) ==  0 );
+        assert(parse("0x10", 10) == 0);
+        assert(parse("0b10", 10) == 0);
+        assert(parse("0o10", 10) == 0);
+        assert(parse("0b10") == 0b10);
+        assert(parse("0o10") == 010);
+        assert(parse("0b10", 2) == 0b10);
+        assert(parse("0o10", 8) == 010);
 
+        // format tests
         assert (format (tmp, 12345L) == "12345");
         assert (format (tmp, 0) == "0");
         assert (format (tmp, 0x10101L, Style.Hex) == "10101");
@@ -556,14 +585,6 @@ debug (UnitTest)
         assert (format (tmp[0..4], 0x3, Style.Binary, Flags.Prefix | Flags.Zero | Flags.Throw) == "0b11");
         assert (format (tmp[0..5], 0x3, Style.Binary, Flags.Prefix | Flags.Zero | Flags.Throw) == "0b011");
         assert (format (tmp[0..5], 0x3, Style.Binary, Flags.Zero | Flags.Throw) == "00011");
-        }
-}
-
-
-debug (Integer)
-{
-        void main() 
-        {
         }
 }
 

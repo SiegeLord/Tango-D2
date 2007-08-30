@@ -250,7 +250,7 @@ NumType parse(T) (T[] src, uint* ate=null)
                         end;
         int             exp;
         bool            sign;
-        uint            radix = 10;
+        uint            radix;
         NumType         value = 0.0;
 
         // remove leading space, and sign
@@ -299,7 +299,7 @@ NumType parse(T) (T[] src, uint* ate=null)
            if ((c is 'e' || c is 'E') && p < end )
               {
               uint eaten;
-              exp += Integer.parse (src[(++p-src.ptr) .. $], 10u, &eaten);
+              exp += Integer.parse (src[(++p-src.ptr) .. $], 0, &eaten);
               p += eaten;
               }
 
