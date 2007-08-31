@@ -138,6 +138,8 @@ else version( Posix )
         import tango.stdc.posix.time;
         import tango.stdc.errno;
 
+        extern (C) int getErrno();
+
         version( GNU )
         {
             import gcc.builtins;
@@ -791,7 +793,7 @@ class Thread
             {
                 if( !nanosleep( &tin, &tout ) )
                     return;
-                if( errno != EINTR )
+                if( getErrno() != EINTR )
                     throw new ThreadException( "Unable to sleep for specified duration" );
                 tin = tout;
             }
