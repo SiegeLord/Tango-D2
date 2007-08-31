@@ -142,7 +142,9 @@ class StreamIterator(T)
 
         /**********************************************************************
 
-                Iterate over a set of tokens, exposing a token count also
+                Iterate over a set of tokens, exposing a token count 
+                starting at zero
+
 
         **********************************************************************/
 
@@ -154,10 +156,10 @@ class StreamIterator(T)
 
                 while ((token = next).ptr)
                       {
-                      ++tokens;
                       result = dg (tokens, token);
                       if (result)
                           break;
+                      ++tokens;
                       }
                 return result;
         }
