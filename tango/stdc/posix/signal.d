@@ -632,6 +632,14 @@ version( linux )
         c_long  tv_nsec;
     }
 }
+else version( darwin )
+{
+    struct timespec
+    {
+        time_t  tv_sec;
+        c_long  tv_nsec;
+    }
+}
 
 //
 // Realtime Signals (RTS)
