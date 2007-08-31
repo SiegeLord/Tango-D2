@@ -55,6 +55,11 @@ public class HashMap(K, V) : MapCollection!(K, V), HashParams
 
         // instance variables
 
+        static if (is (K == char[]))
+        {
+        import tango.text.Util : jhash;
+        }
+
         /***********************************************************************
 
                 The table. Each entry is a list. Null if no table allocated
@@ -693,7 +698,10 @@ public class HashMap(K, V) : MapCollection!(K, V), HashParams
 
         protected final int hashOf(K key)
         {
-                return (typeid(K).getHash(&key) & 0x7FFFFFFF) % table.length;
+                static if (is (K == char[]))
+                           return (jhash(key) & 0x7FFFFFFF) % table.length;
+                     else
+                        return (typeid(K).getHash(&key) & 0x7FFFFFFF) % table.length;
         }
 
 
@@ -713,7 +721,12 @@ public class HashMap(K, V) : MapCollection!(K, V), HashParams
                        while (p !is null)
                              {
                              LLPairT n = cast(LLPairT)(p.next());
-                             int h = (p.keyHash() & 0x7FFFFFFF) % newCap;
+                             static if (is (K == char[]))
+                                        int h = (jhash(p.key) & 0x7FFFFFFF) % newCap;
+                                  else
+                                     int h = (typeid(K).getHash(p.key) & 0x7FFFFFFF) % newCap;
+//                             int h = (p.keyHash() & 0x7FFFFFFF) % newCap;
+
                              p.next(newtab[h]);
                              newtab[h] = p;
                              p = n;
