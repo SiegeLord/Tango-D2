@@ -135,7 +135,6 @@ else version( Posix )
         import tango.stdc.posix.semaphore;
         import tango.stdc.posix.pthread;
         import tango.stdc.posix.signal;
-        import tango.stdc.posix.unistd;
         import tango.stdc.posix.time;
 
         version( GNU )
@@ -742,20 +741,7 @@ class Thread
 
     /**
      * Suspends the calling thread for at least the supplied time, up to a
-     * maximum of (uint.max - 1) milliseconds.  If a period of less than one
-     * second is interrupted by the system, this call may return early.
-     * Interruptions of intervals greater than one second will be resumed, if
-     * possible, until the full duration has been reached.
-     *
-     * Please note that garbage collection on some systems (notably POSIX
-     * systems) typically involves the use of signals to coordinate "stop the
-     * world" collection cycles in multithreaded programs.  In such cases, a
-     * signal received by the garbage collector will interrupt the sleep
-     * operation within this routine.  As described above, sleep intervals of
-     * at least one second will be automatically resumed, but sub-second
-     * intervals are sufficiently small that an attempt to resume may result
-     * in longer than expected sleep times.  Therefore, sub-second intervals
-     * will not be resumed even if prematurely interrupted.
+     * maximum of (uint.max - 1) milliseconds.
      *
      * Params:
      *  period = The minimum duration the calling thread should be suspended,
@@ -786,15 +772,28 @@ class Thread
         }
         else version( Posix )
         {
-            alias tango.stdc.posix.unistd.sleep psleep;
+            timespec tin  = void;
+            timespec tout = void;
 
-            uint seconds = cast(uint) period;
-            uint micros  = cast(uint)( (period - seconds) * 1_000_000 );
+            if( tin.tv_sec.max < i )
+            {
+                tin.tv_sec  = tin.tv_sec.max;
+                tin.tv_nsec = 0;
+            }
+            else
+            {
+                tin.tv_sec  = i;
+                tin.tv_nsec = (i % 1.0) * 1_000_000_000;
+            }
 
-            while( seconds > 0 )
-                seconds = psleep( seconds );
-            if( micros > 0 )
-                usleep( micros );
+            while( true )
+            {
+                if( !nanosleep( &tin, &tout ) )
+                    return;
+                if( errno != EINTR )
+                    throw new ThreadException( "Unable to sleep for specified duration" );
+                tin = tout;
+            }
         }
     }
 
