@@ -23,7 +23,7 @@ BUILDOPTS = -noautoimport -op -clean -full -g -debug -I$(TANGO_DIR)
 
 .PHONY: all clean
 
-# Standart target
+# Standard target
 all : 
 
 # 	networking/httpserver	\
@@ -53,6 +53,7 @@ SIMPLE_EXAMPLES =\
 	networking/httpget	\
 	networking/sockethello	\
 	networking/socketserver	\
+	networking/vfs 		\
 	system/argparser	\
 	system/localtime	\
 	system/normpath		\
@@ -62,6 +63,7 @@ SIMPLE_EXAMPLES =\
 	text/formatindex	\
 	text/formatspec		\
 	text/localetime		\
+	text/properties		\
 	text/token
 
 REFERENCE_EXAMPLES =		\
