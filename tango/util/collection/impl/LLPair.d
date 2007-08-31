@@ -95,7 +95,7 @@ public class LLPair(K, T) : LLCell!(T)
          * set the key
         **/
 
-        private final int keyHash()
+        public final int keyHash()
         {
                 return typeid(K).getHash(&key_);
         }
