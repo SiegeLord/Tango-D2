@@ -140,6 +140,28 @@ class StreamIterator(T)
                 return result;
         }
 
+        /**********************************************************************
+
+                Iterate over a set of tokens, exposing a token count also
+
+        **********************************************************************/
+
+        int opApply (int delegate(inout int, inout T[]) dg)
+        {
+                T[]     token;
+                int     result,
+                        tokens;
+
+                while ((token = next).ptr)
+                      {
+                      ++tokens;
+                      result = dg (tokens, token);
+                      if (result)
+                          break;
+                      }
+                return result;
+        }
+
         /***********************************************************************
 
                 Locate the next token. Returns the token if found, null
