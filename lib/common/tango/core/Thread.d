@@ -783,8 +783,8 @@ class Thread
             }
             else
             {
-                tin.tv_sec  = period;
-                tin.tv_nsec = (period % 1.0) * 1_000_000_000;
+                tin.tv_sec  = cast(typeof(tin.tv_sec))  period;
+                tin.tv_nsec = cast(typeof(tin.tv_nsec)) ((period % 1.0) * 1_000_000_000);
             }
 
             while( true )
