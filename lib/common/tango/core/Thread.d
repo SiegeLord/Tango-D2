@@ -136,6 +136,7 @@ else version( Posix )
         import tango.stdc.posix.pthread;
         import tango.stdc.posix.signal;
         import tango.stdc.posix.time;
+        import tango.stdc.errno;
 
         version( GNU )
         {
@@ -775,15 +776,15 @@ class Thread
             timespec tin  = void;
             timespec tout = void;
 
-            if( tin.tv_sec.max < i )
+            if( tin.tv_sec.max < period )
             {
                 tin.tv_sec  = tin.tv_sec.max;
                 tin.tv_nsec = 0;
             }
             else
             {
-                tin.tv_sec  = i;
-                tin.tv_nsec = (i % 1.0) * 1_000_000_000;
+                tin.tv_sec  = period;
+                tin.tv_nsec = (period % 1.0) * 1_000_000_000;
             }
 
             while( true )
