@@ -182,7 +182,24 @@ class MappedBuffer : Buffer
                         setContent (mem);
                 }    
 
-                override void close () 
+                /***************************************************************
+
+                        Please use detach instead ...
+
+                ***************************************************************/
+
+                deprecated void close ()
+                {
+                        detach;
+                }
+
+                /***************************************************************
+
+                        Release this mapped buffer without flushing
+
+                ***************************************************************/
+
+                void detach ()
                 {
                         // NOTE: When a process ends, all mmaps belonging to that process
                         //       are automatically unmapped by system (Linux).
@@ -194,6 +211,12 @@ class MappedBuffer : Buffer
                                 host.error();
                         base = null;    
                 }
+
+                /***************************************************************
+
+                        Flush dirty content out to the drive. 
+
+                ***************************************************************/
 
                 override void flush () 
                 {
