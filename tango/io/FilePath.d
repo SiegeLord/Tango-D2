@@ -94,6 +94,14 @@ class FilePath : PathView
                         folder_,                // path before name
                         suffix_;                // after rightmost '.'
 
+        /***********************************************************************
+
+                Filter used for screening paths via toList()
+
+        ***********************************************************************/
+
+        public alias bool delegate (FilePath, bool) Filter;
+
 
         /***********************************************************************
 
@@ -624,7 +632,7 @@ class FilePath : PathView
 
         /***********************************************************************
 
-                List the set of filenames within this directory. All
+                List the set of filenames within this folder. All
                 filenames are null terminated, though the null itself
                 is hidden at the end of each name (not exposed by the
                 length property)
@@ -657,7 +665,7 @@ class FilePath : PathView
 
         /***********************************************************************
 
-                List the set of filenames within this directory, using
+                List the set of filenames within this folder, using
                 the provided filter to control the list:
                 ---
                 bool delegate (FilePath path, bool isFolder) Filter
@@ -1125,18 +1133,20 @@ class FilePath : PathView
 
                 /***************************************************************
 
-                        List the set of filenames within this directory.
+                        List the set of filenames within this folder.
 
-                        All filenames are null terminated and are passed
-                        to the provided delegate as such, along with the
-                        path prefix and whether the entry is a directory
-                        or not.
+                        Each path and filename is passed to the provided 
+                        delegate, along with the path prefix and whether 
+                        the entry is a folder or not.
+
+                        Returns the number of files scanned.
 
                 ***************************************************************/
 
-                final FilePath toList (void delegate (char[] path, char[] file, bool dir) dg)
+                final uint toList (void delegate (char[] path, char[] file, bool dir) dg)
                 {
                         HANDLE                  h;
+                        uint                    count;
                         char[]                  prefix;
                         char[MAX_PATH+1]        tmp = void;
                         FIND_DATA               fileinfo = void;
@@ -1185,11 +1195,14 @@ class FilePath : PathView
 
                            // skip hidden/system files
                            if ((fileinfo.dwFileAttributes & (FILE_ATTRIBUTE_SYSTEM | FILE_ATTRIBUTE_HIDDEN)) is 0)
-                                dg (prefix, str, (fileinfo.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY) != 0);
+                              {
+                              dg (prefix, str, (fileinfo.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY) != 0);
+                              ++count;
+                              }
 
                            } while (next);
 
-                        return this;
+                        return count;
                 }
         }
 
@@ -1409,22 +1422,24 @@ class FilePath : PathView
 
                 /***************************************************************
 
-                        List the set of filenames within this directory.
+                        List the set of filenames within this folder.
 
-                        All filenames are null terminated and are passed
-                        to the provided delegate as such, along with the
-                        path prefix and whether the entry is a directory
-                        or not.
+                        Each path and filename is passed to the provided 
+                        delegate, along with the path prefix and whether 
+                        the entry is a folder or not.
+
+                        Returns the number of files scanned.
 
                 ***************************************************************/
 
-                final FilePath toList (void delegate (char[] path, char[] file, bool dir) dg)
+                final uint toList (void delegate (char[] path, char[] file, bool dir) dg)
                 {
                         DIR*            dir;
                         dirent*         entry;
                         stat_t          sbuf;
                         char[]          prefix;
                         char[]          sfnbuf;
+                        uint            count;
 
                         dir = tango.stdc.posix.dirent.opendir (this.cString.ptr);
                         if (! dir)
@@ -1456,9 +1471,10 @@ class FilePath : PathView
                                                  ? false
                                                  : (sbuf.st_mode & S_IFDIR) != 0;
                               dg (prefix, str, isDir);
+                              ++count;
                               }
 
-                        return this;
+                        return count;
                 }
         }
 }
@@ -1471,8 +1487,6 @@ class FilePath : PathView
 
 interface PathView
 {
-        public  alias bool delegate (FilePath, bool) Filter;
-
         /***********************************************************************
 
                 TimeStamp information. Accurate to whatever the OS supports
@@ -1629,41 +1643,6 @@ interface PathView
 
         /***********************************************************************
 
-                Create an entire path consisting of this folder along with
-                all parent folders. The path must not contain '.' or '..'
-                segments. Related methods include PathUtil.normalize() and
-                FileSystem.absolutePath()
-
-                Returns: a chaining reference (this)
-
-                Throws: IOException upon systen errors
-
-                Throws: IllegalArgumentException if the path contains invalid
-                        path segment names (such as '.' or '..') or a segment
-                        exists but as a file instead of a folder
-
-        ***********************************************************************/
-
-        abstract FilePath create ();
-
-        /***********************************************************************
-
-                Create a new file
-
-        ***********************************************************************/
-
-        abstract FilePath createFile ();
-
-        /***********************************************************************
-
-                Create a new directory
-
-        ***********************************************************************/
-
-        abstract FilePath createFolder ();
-
-        /***********************************************************************
-
                 Return the file length (in bytes)
 
         ***********************************************************************/
@@ -1693,37 +1672,6 @@ interface PathView
         ***********************************************************************/
 
         abstract Stamps timeStamps ();
-
-        /***********************************************************************
-
-                List the set of filenames within this directory, using
-                the provided filter to control the list:
-                ---
-                bool delegate (FilePath path, bool isFolder) Filter
-                ---
-
-                Returning true from the filter includes the given path, 
-                whilst returning false excludes it. Parameter 'isFolder'
-                indicates whether the path is a file or folder
-
-                Note that paths composed of '.' characters are ignored.
-
-        ***********************************************************************/
-
-        abstract FilePath[] toList (Filter filter = null);
-
-        /***********************************************************************
-
-                List the set of filenames within this directory.
-
-                All filenames are null terminated and are passed
-                to the provided delegate as such, along with the
-                path prefix and whether the entry is a directory
-                or not.
-
-        ***********************************************************************/
-        
-        abstract FilePath toList (void delegate (char[], char[], bool) dg);
 }
 
 
