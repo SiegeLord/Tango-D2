@@ -413,7 +413,7 @@ class HttpClient
                 // should we emit query as part of request line?
                 if (query.length)
                     if (method is Get)
-                        output ("?"), uri.encode (&output.consume, query, uri.IncQuery);
+                        output ("?"), uri.encode (&output.consume, query, uri.IncQueryAll);
                     else 
                        if (method is Post && pump.funcptr is null)
                           {
@@ -437,7 +437,7 @@ class HttpClient
                 else
                    // send encoded POST query instead?
                    if (method is Post && query.length)
-                       uri.encode (&output.consume, query, uri.IncQuery);
+                       uri.encode (&output.consume, query, uri.IncQueryAll);
 
                 // send entire request
                 output.flush;
