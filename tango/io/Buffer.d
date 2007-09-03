@@ -1199,26 +1199,6 @@ class Buffer : IBuffer
         }
 
         /***********************************************************************
-
-                Close this buffer
-                
-                Remarks:
-                Close flushes & commits itself, and detaches any associated
-                conduit. 
-
-        ***********************************************************************/
-
-        void close ()
-        {
-                if (sink)
-                   {
-                   flush;
-                   commit;
-                   sink.conduit.detach; 
-                   }
-        }
-
-        /***********************************************************************
                 
                 Access buffer content
 

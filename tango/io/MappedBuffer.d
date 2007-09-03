@@ -75,6 +75,7 @@ class MappedBuffer : Buffer
 
                         // can only do 32bit mapping on 32bit platform
                         auto size = host.length;
+                        assert (size <= uint.max);
 
                         auto access = host.style.access;
 
@@ -82,9 +83,9 @@ class MappedBuffer : Buffer
                         if (access & host.Access.Write)
                             flags = PAGE_READWRITE;
 
-                        auto handle = cast(HANDLE) host.fileHandle();
+                        auto handle = cast(HANDLE) host.fileHandle;
                         mmFile = CreateFileMappingA (handle, null, flags, 0, 0, null);
-                        if (mmFile is cast(HANDLE) null)
+                        if (mmFile is null)
                             host.error ();
 
                         flags = FILE_MAP_READ;
@@ -93,7 +94,7 @@ class MappedBuffer : Buffer
 
                         base = MapViewOfFile (mmFile, flags, 0, 0, 0);
                         if (base is null)
-                            host.error ();
+                            host.error;
  
                         void[] mem = base [0 .. cast(int) size];
                         setContent (mem);
@@ -101,11 +102,22 @@ class MappedBuffer : Buffer
 
                 /***************************************************************
 
-                        Close this mapped buffer
+                        Please use detach instead ...
 
                 ***************************************************************/
 
-                override void close ()
+                deprecated void close ()
+                {
+                        detach;
+                }
+
+                /***************************************************************
+
+                        Release this mapped buffer without flushing
+
+                ***************************************************************/
+
+                void detach ()
                 {
                         if (base)
                             UnmapViewOfFile (base);
@@ -113,7 +125,7 @@ class MappedBuffer : Buffer
                         if (mmFile)
                             CloseHandle (mmFile);       
 
-                        mmFile = cast(HANDLE) null;
+                        mmFile = null;
                         base = null;
                 }
 
