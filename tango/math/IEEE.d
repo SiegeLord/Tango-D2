@@ -88,19 +88,19 @@ version (DigitalMars_D_InlineAsm_X86) {
 enum TANGO_NAN {
     // General errors
     DOMAIN_ERROR = 0x0101,
-    SINGULARITY = 0x0102,
-    RANGE_ERROR = 0x0103,
+    SINGULARITY  = 0x0102,
+    RANGE_ERROR  = 0x0103,
     // NaNs created by functions in the basic library
-    TAN_DOMAIN = 0x1001,
-    POW_DOMAIN = 0x1021,
+    TAN_DOMAIN   = 0x1001,
+    POW_DOMAIN   = 0x1021,
     GAMMA_DOMAIN = 0x1101,
-    GAMMA_POLE = 0x1102,
-    GAMMA_ZERO = 0x1100, // FIXME: what causes this?
-    SGNGAMMA = 0x1112,
-    BETA_DOMAIN = 0x1131,
+    GAMMA_POLE   = 0x1102,
+    GAMMA_ZERO   = 0x1100, // FIXME: what causes this?
+    SGNGAMMA     = 0x1112,
+    BETA_DOMAIN  = 0x1131,
     // NaNs from statistical functions
     NORMALDISTRIBUTION_INV_DOMAIN = 0x2001,
-    STUDENTSDDISTRIBUTION_DOMAIN = 0x2011
+    STUDENTSDDISTRIBUTION_DOMAIN  = 0x2011
 }
 
 /* Most of the functions depend on the format of the largest IEEE floating-point type.
@@ -118,8 +118,10 @@ enum TANGO_NAN {
 version(LittleEndian) {
     static assert(real.mant_dig == 53 || real.mant_dig==64,
         "Only 64-bit and 80-bit reals are supported for LittleEndian CPUs");
-} else static assert(real.mant_dig == 53 || real.mant_dig==106,
+} else {
+    static assert(real.mant_dig == 53 || real.mant_dig==106,
      "Only 64-bit reals are supported for BigEndian CPUs. 106-bit reals have partial support");
+}
 
 /** IEEE exception status flags
 
@@ -248,19 +250,6 @@ enum RoundingMode : short {
     auto oldrounding = setIeeeRounding(RoundingMode.ROUNDDOWN);
     scope (exit) setIeeeRounding(oldrounding);
 ---
-  This pattern could also be encapsulated into a class:
----
-scope class UseRoundingMode
-{
-    RoundingMode oldrounding;
-    this(RoundingMode mode) { oldrounding = setIeeeRounding(mode); }
-    ~this() { setIeeeRounding(oldrounding); }
-}
-
-// Usage:
-
-    scope xxx = new UseRoundingMode(RoundingMode.ROUNDDOWN);
----
  */
 RoundingMode setIeeeRounding(RoundingMode roundingmode) {
    version(D_InlineAsm_X86) {
@@ -301,18 +290,18 @@ RoundingMode getIeeeRounding() {
 debug(UnitTest) {
    version(D_InlineAsm_X86) { // Won't work for anything else yet
 unittest {
-    real a=3.5;
+    real a = 3.5;
     resetIeeeFlags();
     assert(!ieeeFlags.divByZero);
-    a/=0.0L;
+    a /= 0.0L;
     assert(ieeeFlags.divByZero);
-    assert(a==real.infinity);
-    a*=0.0L;
+    assert(a == real.infinity);
+    a *= 0.0L;
     assert(ieeeFlags.invalid);
     assert(isNaN(a));
 
     int r = getIeeeRounding;
-    assert(r==RoundingMode.ROUNDTONEAREST);
+    assert(r == RoundingMode.ROUNDTONEAREST);
 }
 }
 }
@@ -337,8 +326,8 @@ PrecisionControl reduceRealPrecision(PrecisionControl prec) {
             mov CX, cont;
             mov AX, cont;
             and EAX, 0x0300; // Form the return value
-            and CX, 0xFCFF;
-            or CX, prec;
+            and CX,  0xFCFF;
+            or  CX,  prec;
             mov cont, CX;
             fldcw cont;
         }
@@ -381,16 +370,16 @@ real frexp(real value, out int exp)
     static if (real.mant_dig==64) const ushort EXPMASK = 0x7FFF;
                              else const ushort EXPMASK = 0x7FF0;
 
-    version(LittleEndian)
+    version(LittleEndian) {
     static if (real.mant_dig==64) const int EXPONENTPOS = 4;
                              else const int EXPONENTPOS = 3;
-    else { // BigEndian
+    } else { // BigEndian
         const int EXPONENTPOS = 0;
     }
 
     ex = vu[EXPONENTPOS] & EXPMASK;
-static if (real.mant_dig == 64) {
-// 80-bit reals
+  static if (real.mant_dig == 64) {
+    // 80-bit reals
     if (ex) { // If exponent is non-zero
         if (ex == EXPMASK) {   // infinity or NaN
             // 80-bit reals
@@ -409,7 +398,8 @@ static if (real.mant_dig == 64) {
     } else if (!*vl) {
         // value is +-0.0
         exp = 0;
-    } else {   // denormal
+    } else {
+        // denormal
         int i = -0x3FFD;
         do {
             i--;
@@ -418,11 +408,11 @@ static if (real.mant_dig == 64) {
         exp = i;
         vu[EXPONENTPOS] = cast(ushort)((0x8000 & vu[EXPONENTPOS]) | 0x3FFE);
     }
-} else static if(real.mant_dig==106) {
+  } else static if(real.mant_dig==106) {
     // 128-bit reals
-    assert(0, "Unsupported");
-} else {
-// 64-bit reals
+        assert(0, "Unsupported");
+  } else {
+    // 64-bit reals
     if (ex) { // If exponent is non-zero
         if (ex == EXPMASK) {   // infinity or NaN
             if (*vl==0x7FF0_0000_0000_0000) {  // positive infinity
@@ -434,16 +424,17 @@ static if (real.mant_dig == 64) {
                 exp = int.min;
             }
         } else {
-            exp = (ex - 0x3FE0)>>>4;
-            ve[EXPONENTPOS] = (0x8000 & ve[EXPONENTPOS])| 0x3FE0;
+            exp = (ex - 0x3FE0) >>> 4;
+            ve[EXPONENTPOS] = (0x8000 & ve[EXPONENTPOS]) | 0x3FE0;
         }
     } else if (!(*vl & 0x7FFF_FFFF_FFFF_FFFF)) {
         // value is +-0.0
         exp = 0;
-    } else {   // denormal
+    } else {
+        // denormal
         ushort sgn;
         sgn = (0x8000 & ve[EXPONENTPOS])| 0x3FE0;
-        *vl &=0x7FFF_FFFF_FFFF_FFFF;
+        *vl &= 0x7FFF_FFFF_FFFF_FFFF;
 
         int i = -0x3FD+11;
         do {
@@ -451,9 +442,9 @@ static if (real.mant_dig == 64) {
             *vl <<= 1;
         } while (*vl > 0);
         exp = i;
-        ve[EXPONENTPOS]=sgn;
+        ve[EXPONENTPOS] = sgn;
     }
-}
+  }
     return value;
 }
 
@@ -592,8 +583,8 @@ int ilogb(real x)
 
 version (X86)
 {
-    const int FP_ILOGB0   = -int.max-1;
-    const int FP_ILOGBNAN = -int.max-1;
+    const int FP_ILOGB0        = -int.max-1;
+    const int FP_ILOGBNAN      = -int.max-1;
     const int FP_ILOGBINFINITY = -int.max-1;
 } else {
     alias tango.stdc.math.FP_ILOGB0   FP_ILOGB0;
@@ -606,12 +597,12 @@ unittest {
     assert(ilogb(1.0) == 0);
     assert(ilogb(65536) == 16);
     assert(ilogb(-65536) == 16);
-    assert(ilogb(1.0/65536) == -16);
+    assert(ilogb(1.0 / 65536) == -16);
     assert(ilogb(real.nan) == FP_ILOGBNAN);
     assert(ilogb(0.0) == FP_ILOGB0);
     assert(ilogb(-0.0) == FP_ILOGB0);
     // denormal
-    assert(ilogb(0.125*real.min) == real.min_exp-4);
+    assert(ilogb(0.125 * real.min) == real.min_exp - 4);
     assert(ilogb(real.infinity) == FP_ILOGBINFINITY);
 }
 }
@@ -687,7 +678,7 @@ real scalbn(real x, int n)
 
 debug(UnitTest) {
 unittest {
-    assert(scalbn(-real.infinity, 5)== -real.infinity);
+    assert(scalbn(-real.infinity, 5) == -real.infinity);
     assert(isIdentical(scalbn(NaN(0xABC),7), NaN(0xABC)));
 }
 }
@@ -774,8 +765,8 @@ creal expi(real y)
 debug(UnitTest) {
 unittest
 {
-    assert(expi(1.3e5L)==tango.stdc.math.cosl(1.3e5L) + tango.stdc.math.sinl(1.3e5L)*1i);
-    assert(expi(0.0L)==1L+0.0Li);
+    assert(expi(1.3e5L) == tango.stdc.math.cosl(1.3e5L) + tango.stdc.math.sinl(1.3e5L) * 1i);
+    assert(expi(0.0L) == 1L + 0.0Li);
 }
 }
 
@@ -786,9 +777,11 @@ unittest
 int isNaN(real x)
 {
   static if (real.mant_dig==double.mant_dig) {
+        // 64-bit real
         ulong*  p = cast(ulong *)&x;
         return (*p & 0x7FF0_0000 == 0x7FF0_0000) && *p & 0x000F_FFFF;
-  } else { // 80-bit real
+  } else {
+        // 80-bit real
         ushort* pe = cast(ushort *)&x;
         ulong*  ps = cast(ulong *)&x;
 
@@ -877,7 +870,7 @@ bool isIdentical(real x, real y)
   } else {
     ushort* pxe = cast(ushort *)&x;
     ushort* pye = cast(ushort *)&y;
-    return pxe[4]==pye[4] && pxs[0]==pys[0];
+    return pxe[4] == pye[4] && pxs[0] == pys[0];
   }
 }
 
@@ -900,7 +893,7 @@ unittest {
     assert(!isIdentical(NaN(0xABC), NaN(218)));
     assert(isIdentical(1.234e56, 1.234e56));
     assert(isNaN(NaN(0x12345)));
-    assert(isIdentical(3.1+NaN(0xDEF)*1i, 3.1+NaN(0xDEF)*1i));
+    assert(isIdentical(3.1 + NaN(0xDEF) * 1i, 3.1 + NaN(0xDEF)*1i));
     assert(!isIdentical(3.1+0.0i, 3.1-0i));
 }
 }
@@ -980,11 +973,11 @@ unittest
 int isZero(real x)
 {
     static if (real.mant_dig == double.mant_dig) {
-        return ((*cast(ulong *)&x)&0x7FFF_FFFF_FFFF_FFFF) == 0;
+        return ((*cast(ulong *)&x) & 0x7FFF_FFFF_FFFF_FFFF) == 0;
     } else {
         ushort* pe = cast(ushort *)&x;
-        ulong*  ps = cast(ulong *)&x;
-        return (pe[4]&0x7FFF) == 0 && *ps == 0;
+        ulong*  ps = cast(ulong  *)&x;
+        return (pe[4] & 0x7FFF) == 0 && *ps == 0;
     }
 }
 
@@ -994,7 +987,7 @@ unittest
     assert(isZero(0.0));
     assert(isZero(-0.0));
     assert(!isZero(2.5));
-    assert(!isZero(real.min/1000));
+    assert(!isZero(real.min / 1000));
 }
 }
 
@@ -1053,7 +1046,7 @@ real nextUp(real x)
  } else {
     // For 80-bit reals, the "implied bit" is a nuisance...
     ushort *pe = cast(ushort *)&x;
-    ulong *ps = cast(ulong *)&x;
+    ulong  *ps = cast(ulong  *)&x;
 
     if ((pe[4] & 0x7FFF) == 0x7FFF) {
         // First, deal with NANs and infinity
@@ -1199,20 +1192,20 @@ package {
  */
 X splitSignificand(X)(inout X x)
 {
-    if (fabs(x)!<X.infinity) return 0; // don't change NaN or infinity
+    if (fabs(x) !< X.infinity) return 0; // don't change NaN or infinity
     X y = x; // copy the original value
-    static if (X.mant_dig==float.mant_dig) {
+    static if (X.mant_dig == float.mant_dig) {
         uint *ps = cast(uint *)&x;
-        (*ps)&=0xFFFF_FC00;
-    } else static if (X.mant_dig==double.mant_dig) {
+        (*ps) &= 0xFFFF_FC00;
+    } else static if (X.mant_dig == double.mant_dig) {
         ulong *ps = cast(ulong *)&x;
-        (*ps)&=0xFFFF_FFFF_FC00_0000;
-    } else static if (X.mant_dig==64){ // 80-bit real
+        (*ps) &= 0xFFFF_FFFF_FC00_0000;
+    } else static if (X.mant_dig == 64){ // 80-bit real
         // An x87 real80 has 63 bits, because the 'implied' bit is stored explicitly.
         // This is annoying, because it means the significand cannot be
         // precisely halved. Instead, we split it into 31+32 bits.
         ulong *ps = cast(ulong *)&x;
-        (*ps)&=0xFFFF_FFFF_0000_0000;
+        (*ps) &= 0xFFFF_FFFF_0000_0000;
     } //else static assert(0, "Unsupported size");
 
     return y - x;
@@ -1223,11 +1216,9 @@ X splitSignificand(X)(inout X x)
 unittest {
     double x = -0x1.234_567A_AAAA_AAp+250;
     double y = splitSignificand(x);
-    assert(x==-0x1.234_5678p+250);
-    assert(y==-0x0.000_000A_AAAA_A8p+248);
-    assert(x+y==-0x1.234_567A_AAAA_AAp+250);
-//    printf("%a %a %a %a %a\n", y, v, x1, x+y, u+v);
-
+    assert(x == -0x1.234_5678p+250);
+    assert(y == -0x0.000_000A_AAAA_A8p+248);
+    assert(x + y == -0x1.234_567A_AAAA_AAp+250);
 }
 }
 
@@ -1438,7 +1429,7 @@ unittest
 int signbit(real x)
 {
     static if (real.mant_dig == double.mant_dig) {
-        return ((*cast(ulong *)&x)&0x8000_0000_0000_0000) != 0;
+        return ((*cast(ulong *)&x) & 0x8000_0000_0000_0000) != 0;
     } else {
         ubyte* pe = cast(ubyte *)&x;
         return (pe[9] & 0x80) != 0;
@@ -1456,6 +1447,7 @@ unittest
     assert(signbit(-0.0));
 }
 }
+
 
 /*********************************
  * Return a value composed of to with from's sign bit.
@@ -1512,15 +1504,15 @@ unittest
  *
  * Special cases:
  * If x and y are within a factor of 2, (ie, feqrel(x, y) > 0), the return value
- * is the arithmetic mean (x+y)/2.
+ * is the arithmetic mean (x + y) / 2.
  * If x and y are even powers of 2, the return value is the geometric mean,
- *   ieeeMean(x, y) = sqrt(x*y).
+ *   ieeeMean(x, y) = sqrt(x * y).
  *
  */
 T ieeeMean(T)(T x, T y)
 in {
     // both x and y must have the same sign, and must not be NaN.
-    assert((x>=0 && y>=0) || (x<=0 && y<=0));
+    assert(signbit(x) == signbit(y) && x<>=0 && y<>=0);
 }
 body {
     // Runtime behaviour for contract violation:
@@ -1541,34 +1533,34 @@ body {
         ushort *ye = cast(ushort *)&y;
         ulong *yl = cast(ulong *)&y;
         // Ignore the useless implicit bit.
-        ulong m = ((*xl)&0x7FFF_FFFF_FFFF_FFFF) + ((*yl)&0x7FFF_FFFF_FFFF_FFFF);
+        ulong m = ((*xl) & 0x7FFF_FFFF_FFFF_FFFF) + ((*yl) & 0x7FFF_FFFF_FFFF_FFFF);
 
-        ushort e = cast(ushort)((xe[4]&0x7FFF)+(ye[4]&0x7FFF));
+        ushort e = cast(ushort)((xe[4] & 0x7FFF) + (ye[4] & 0x7FFF));
         if (m & 0x8000_0000_0000_0000) {
             ++e;
-            m&=0x7FFF_FFFF_FFFF_FFFF;
+            m &= 0x7FFF_FFFF_FFFF_FFFF;
         }
         // Now do a multi-byte right shift
-        uint c = e&1; // carry
-        e>>=1;
-        m>>>=1;
-        if (c) m|=0x4000_0000_0000_0000; // shift carry into significand
+        uint c = e & 1; // carry
+        e >>= 1;
+        m >>>= 1;
+        if (c) m |= 0x4000_0000_0000_0000; // shift carry into significand
         if (e) *ul = m | 0x8000_0000_0000_0000; // set implicit bit...
         else *ul = m; // ... unless exponent is 0 (denormal or zero).
         // Prevent a ridiculous warning (why does (ushort | ushort) get promoted to int???)
         ue[4]= cast(ushort)( e | (xe[4]& 0x8000)); // restore sign bit
-    } else static if (T.mant_dig==double.mant_dig) {
+    } else static if (T.mant_dig == double.mant_dig) {
         ulong *ul = cast(ulong *)&u;
         ulong *xl = cast(ulong *)&x;
         ulong *yl = cast(ulong *)&y;
-        ulong m = (((*xl)&0x7FFF_FFFF_FFFF_FFFF) + ((*yl)&0x7FFF_FFFF_FFFF_FFFF))>>>1;
+        ulong m = (((*xl) & 0x7FFF_FFFF_FFFF_FFFF) + ((*yl) & 0x7FFF_FFFF_FFFF_FFFF)) >>> 1;
         m |= ((*xl) & 0x8000_0000_0000_0000);
         *ul = m;
-    }else static if (T.mant_dig==float.mant_dig) {
+    }else static if (T.mant_dig == float.mant_dig) {
         uint *ul = cast(uint *)&u;
         uint *xl = cast(uint *)&x;
         uint *yl = cast(uint *)&y;
-        uint m = (((*xl)&0x7FFF_FFFF) + ((*yl)&0x7FFF_FFFF))>>>1;
+        uint m = (((*xl) & 0x7FFF_FFFF) + ((*yl) & 0x7FFF_FFFF)) >>> 1;
         m |= ((*xl) & 0x8000_0000);
         *ul = m;
     }
@@ -1577,6 +1569,9 @@ body {
 
 debug(UnitTest) {
 unittest {
+    assert(ieeeMean(-0.0,-1e-20)<0);
+    assert(ieeeMean(0.0,1e-20)>0);
+
     assert(ieeeMean(1.0L,4.0L)==2L);
     assert(ieeeMean(2.0*1.013,8.0*1.013)==4*1.013);
     assert(ieeeMean(-1.0L,-4.0L)==-2L);
@@ -1667,13 +1662,13 @@ ulong getNaNPayload(real x)
         // Make it look like an 80-bit significand.
         // Skip exponent, and quiet bit
         m &= 0x0007_FFFF_FFFF_FFFF;
-        m <<=10;
+        m <<= 10;
     }
     // ignore implicit bit and quiet bit
     ulong f = m & 0x3FFF_FF00_0000_0000L;
-    ulong w = f>>>40;
-    w |= (m & 0x00FF_FFFF_F800L)<<(22-11);
-    w |= (m&0x7FF) << 51;
+    ulong w = f >>> 40;
+    w |= (m & 0x00FF_FFFF_F800L) << (22 - 11);
+    w |= (m & 0x7FF) << 51;
     return w;
 }
 
