@@ -6,6 +6,7 @@
 # This software is provided with no warranty, express or implied, within the
 # bounds of applicable law.
 
+
 die() {
     echo "$1"
     exit $2
