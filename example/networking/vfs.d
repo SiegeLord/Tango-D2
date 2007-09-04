@@ -11,9 +11,12 @@ void main(char[][] args) {
     auto tangofolder = new LocalFolder("tango");
     vfs.mount(tangofolder, "tango");
 
+    /*
     foreach(path; vfs.toList) {
         Stdout(path).newline;
     }
+    */
+
     Stdout.format("\nFile count: {:u}", vfs.fileCount).newline;
     Stdout.format("Content size: {:u}", vfs.contentSize).newline;
 
@@ -24,9 +27,11 @@ void main(char[][] args) {
 
     auto somedir = vfs.openFolder("/test/subdir");
 
+    /*
     foreach (path; somedir.toList) {
         Stdout(path).newline;
     }
+    */
 
     vfs.write("/test/subdir/mynew.file", vfs.read("/tango/io/Stdout.d"));
 
