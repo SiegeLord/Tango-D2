@@ -1,5 +1,15 @@
 module vfsexample;
 
+/**
+
+  Example showing some simple VFS usage.
+
+  Put into public domain by Lars Ivar Igesund
+
+*/
+
+
+
 import tango.io.vfs.VFS;
 import tango.io.vfs.LocalFolder;
 import tango.io.Stdout;
