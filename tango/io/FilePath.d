@@ -1539,7 +1539,8 @@ interface PathView
 
         /***********************************************************************
 
-                Return the name of this file, or directory.
+                Return the name of this file, or directory, excluding a
+                suffix.
 
         ***********************************************************************/
 
