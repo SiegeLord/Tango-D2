@@ -337,12 +337,11 @@ PrecisionControl reduceRealPrecision(PrecisionControl prec) {
 }
 
 /**
- * Returns x rounded to a long value using the FE_TONEAREST rounding mode.
- * If the integer value of x is
- * greater than long.max, the result is
+ * Returns x rounded to an integer value using the FE_TONEAREST rounding 
+ * mode. If the integer value of x is greater than int.max, the result is
  * indeterminate.
  */
-extern (C) real rndtonl(real x);
+extern (C) int rndtonl(real x);
 
 /**
  * Separate floating point value into significand and exponent.
