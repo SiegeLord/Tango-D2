@@ -65,6 +65,12 @@ version (Posix)
     public class PollSelector: AbstractSelector
     {
         /**
+         * Alias for the select() method as we're not reimplementing it in
+         * this class.
+         */
+        alias AbstractSelector.select select;
+
+        /**
          * Default number of SelectionKey's that will be handled by the
          * PollSelector.
          */

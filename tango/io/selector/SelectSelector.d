@@ -78,6 +78,12 @@ version (Windows)
  */
 public class SelectSelector: AbstractSelector
 {
+    /**
+     * Alias for the select() method as we're not reimplementing it in
+     * this class.
+     */
+    alias AbstractSelector.select select;
+
     uint _size;
     private SelectionKey[ISelectable.Handle] _keys;
     private HandleSet _readSet;
