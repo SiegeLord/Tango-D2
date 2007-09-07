@@ -75,7 +75,7 @@ private
 
     version( Posix )
     {
-        import tango.stdc.posix.types : z_off_t = off_t;
+        import tango.stdc.posix.sys.types : z_off_t = off_t;
     }
     else
     {
