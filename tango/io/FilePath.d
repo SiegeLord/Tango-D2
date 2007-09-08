@@ -310,11 +310,22 @@ class FilePath : PathView
 
         ***********************************************************************/
 
-        final FilePath replace (char from, char to)
+        static void replace (char[] path, char from, char to)
         {
-                foreach (inout char c; fp [0 .. end_])
+                foreach (inout char c; path)
                          if (c is from)
                              c = to;
+        }
+
+        /***********************************************************************
+
+                Replace all 'from' instances with 'to'
+
+        ***********************************************************************/
+
+        final FilePath replace (char from, char to)
+        {
+                replace (fp [0..end_], from, to);
                 return this;
         }
 
@@ -328,9 +339,10 @@ class FilePath : PathView
         final FilePath normalize ()
         {
                 version (Win32)
-                         return replace ('/', '\\');
+                         replace (fp [0 .. end_], '/', '\\');
                      else
-                        return replace ('\\', '/');
+                        replace (fp [0 .. end_], '\\', '/');
+                return this;
         }
 
         /***********************************************************************
@@ -629,7 +641,7 @@ class FilePath : PathView
                 parent.create;
                 return createFolder;
         }
-
+/+
         /***********************************************************************
 
                 List the set of filenames within this folder. All
@@ -662,7 +674,7 @@ class FilePath : PathView
                 toList (&add);
                 return list [0 .. i];
         }
-
++/
         /***********************************************************************
 
                 List the set of filenames within this folder, using
