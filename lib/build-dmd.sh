@@ -1,7 +1,18 @@
 OLDHOME=$HOME
 export HOME=`pwd`
-make clean -fdmd-posix.mak
-make lib doc install -fdmd-posix.mak
-make clean -fdmd-posix.mak
+
+goerror(){
+    export HOME=$OLDHOME
+    echo "="
+    echo "= *** Error ***"
+    echo "="
+    exit 1
+}
+
+make clean -fdmd-posix.mak           || goerror
+make lib doc install -fdmd-posix.mak || goerror
+make clean -fdmd-posix.mak           || goerror
+chmod 644 ../tango/core/*.di         || goerror
+
 export HOME=$OLDHOME
-chmod 644 ../tango/core/*.di
+
