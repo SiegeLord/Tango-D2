@@ -122,11 +122,14 @@ class FilePath : PathView
                 C-oriented OS calls, implying the postfix of a null terminator.
                 Thus, FilePath combines both as a single operation.
 
+                When enabled, option 'native' will normalize path separators 
+                to those of the native OS
+
         ***********************************************************************/
 
-        this (char[] filepath, bool isDir=false)
+        this (char[] filepath, bool native=false)
         {
-                set (filepath, isDir);
+                set (filepath, native);
         }
 
         /***********************************************************************
@@ -361,17 +364,36 @@ class FilePath : PathView
 
         /***********************************************************************
 
-                Reset the content of this path, and reparse
+                Sidestep the normal lookup for paths that are known to 
+                be folders. Where folder is true, file-system lookups 
+                will be skipped.
 
         ***********************************************************************/
 
-        final FilePath set (char[] path, bool dir = false)
+        final FilePath isFolder (bool folder)
         {
-                dir_ = dir;
+                dir_ = folder;
+                return this;
+        }
+
+        /***********************************************************************
+
+                Reset the content of this path, and reparse. When enabled, 
+                option 'native' will normalize path separators to those of
+                the native OS
+
+        ***********************************************************************/
+
+        final FilePath set (char[] path, bool native = false)
+        {
                 end_ = path.length;
 
                 expand (end_);
                 fp[0 .. end_] = path;
+
+                if (native)
+                    normalize (fp [0 .. end_]);
+
                 fp[end_] = '\0';
                 return parse;
         }
@@ -694,7 +716,7 @@ class FilePath : PathView
         {
                 FilePath[] paths;
 
-                void add (char[] prefix, char[] name, bool isDir)
+                void add (char[] prefix, char[] name, bool folder)
                 { 
                         // skip dirs composed only of '.'
                         if (name.length > 3 || name != "..."[0 .. name.length])
@@ -708,10 +730,11 @@ class FilePath : PathView
                            tmp[0..prefix.length] = prefix;
                            tmp[prefix.length..len] = name;
                         
-                           auto p = new FilePath (tmp[0 .. len], isDir);
+                           auto p = new FilePath (tmp[0 .. len]);
+                           p.isFolder = folder;
 
                            // test this entry for inclusion
-                           if (filter is null || filter (p, isDir))
+                           if (filter is null || filter (p, folder))
                                paths ~= p;                                                   
                            else
                               delete p;
@@ -1858,6 +1881,21 @@ debug (UnitTest)
                 assert (fp.ext == "bar");
                 assert (fp.isChild);
 
+                fp = new FilePath(r"C:/foo/bar/test.bar");
+                assert (fp.path == "");
+                fp = new FilePath(r"C:/foo/bar/test.bar", true);
+                assert (fp.path == "/foo/bar");
+
+                fp = new FilePath("");
+                assert (fp.isEmpty);
+                assert (!fp.isChild);
+                assert (!fp.isAbsolute);
+                assert (fp.suffix == r"");
+                assert (fp.toUtf8 == r"");
+                assert (fp.name == "");
+                assert (fp.folder == r"");
+                assert (fp.file == r"");
+                assert (fp.ext == "");
 /+
                 fp = new FilePath(r"C:\foo\bar\test.bar");
                 fp = new FilePath(fp.asPath ("foo"));
@@ -1871,18 +1909,7 @@ debug (UnitTest)
                 assert (fp.folder == r"");
                 assert (fp.path == r"C:");
                 assert (fp.ext == ".bar");
-+/
-                fp = new FilePath("");
-                assert (fp.isEmpty);
-                assert (!fp.isChild);
-                assert (!fp.isAbsolute);
-                assert (fp.suffix == r"");
-                assert (fp.toUtf8 == r"");
-                assert (fp.name == "");
-                assert (fp.folder == r"");
-                assert (fp.file == r"");
-                assert (fp.ext == "");
-/+
+
                 fp = new FilePath(r"c:\joe\bar");
                 assert(fp.append(r"foo\bar\") == r"c:\joe\bar\foo\bar\");
                 assert(fp.append(new FilePath(r"foo\bar")).toUtf8 == r"c:\joe\bar\foo\bar");
