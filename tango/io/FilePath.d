@@ -306,19 +306,6 @@ class FilePath : PathView
 
         /***********************************************************************
 
-                Replace all 'from' instances in the provided path with 'to'
-
-        ***********************************************************************/
-
-        static void replace (char[] path, char from, char to)
-        {
-                foreach (inout char c; path)
-                         if (c is from)
-                             c = to;
-        }
-
-        /***********************************************************************
-
                 Replace all 'from' instances with 'to'
 
         ***********************************************************************/
@@ -326,22 +313,6 @@ class FilePath : PathView
         final FilePath replace (char from, char to)
         {
                 replace (fp [0..end_], from, to);
-                return this;
-        }
-
-        /***********************************************************************
-
-                Convert path separators to the correct format according to
-                the current platform
-
-        ***********************************************************************/
-
-        final FilePath normalize ()
-        {
-                version (Win32)
-                         replace (fp [0 .. end_], '/', '\\');
-                     else
-                        replace (fp [0 .. end_], '\\', '/');
                 return this;
         }
 
@@ -546,6 +517,34 @@ class FilePath : PathView
                 if (s.length && s[0] != c)
                     s = c ~ s;
                 return s;
+        }
+
+        /***********************************************************************
+
+                Replace all 'from' instances in the provided path with 'to'
+
+        ***********************************************************************/
+
+        static void replace (char[] path, char from, char to)
+        {
+                foreach (inout char c; path)
+                         if (c is from)
+                             c = to;
+        }
+
+        /***********************************************************************
+
+                Convert path separators to the correct format according to
+                the current platform
+
+        ***********************************************************************/
+
+        static void normalize (char[] path)
+        {
+                version (Win32)
+                         replace (path, '/', '\\');
+                     else
+                        replace (path, '\\', '/');
         }
 
 
