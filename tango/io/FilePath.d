@@ -94,6 +94,8 @@ class FilePath : PathView
                         folder_,                // path before name
                         suffix_;                // after rightmost '.'
 
+        public alias    set opAssign;           // support filepath = x;
+
         /***********************************************************************
 
                 Filter used for screening paths via toList()
@@ -1723,7 +1725,9 @@ debug (UnitTest)
         {
         version (Win32)
                 {
-                auto fp = new FilePath(r"C:\home\foo\bar\john\");
+                auto fp = new FilePath(null);
+                fp = r"C:\home\foo\bar\john\";
+
                 assert (fp.isAbsolute);
                 assert (fp.name == "");
                 assert (fp.folder == r"\home\foo\bar\john\");
@@ -1882,9 +1886,9 @@ debug (UnitTest)
                 assert (fp.isChild);
 
                 fp = new FilePath(r"C:/foo/bar/test.bar");
-                assert (fp.path == "");
+                assert (fp.path == "C:");
                 fp = new FilePath(r"C:/foo/bar/test.bar", true);
-                assert (fp.path == "/foo/bar");
+                assert (fp.path == r"C:\foo\bar\");
 
                 fp = new FilePath("");
                 assert (fp.isEmpty);
