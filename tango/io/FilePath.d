@@ -486,6 +486,20 @@ class FilePath : PathView
 
         /***********************************************************************
 
+                Pop to the parent of the current filepath 
+
+        ***********************************************************************/
+
+        FilePath pop ()
+        {
+                auto path = parent();
+                end_ = path.length;
+                fp[end_] = '\0';
+                return parse;
+        }
+
+        /***********************************************************************
+
                 Join a set of path specs together. A path separator is
                 potentially inserted between each of the segments.
 
@@ -1725,7 +1739,15 @@ debug (UnitTest)
         {
         version (Win32)
                 {
-                auto fp = new FilePath(null);
+                auto fp = new FilePath(r"C:\home\foo\bar\john\foo.d");
+                assert (fp.pop.toUtf8 == r"C:\home\foo\bar\john");
+                assert (fp.pop.toUtf8 == r"C:\home\foo\bar");
+                assert (fp.pop.toUtf8 == r"C:\home\foo");
+                assert (fp.pop.toUtf8 == r"C:\home");
+                assert (fp.pop.toUtf8 == r"C:");
+                assert (fp.pop.toUtf8 == r"C:");
+
+                fp = new FilePath(null);
                 fp = r"C:\home\foo\bar\john\";
 
                 assert (fp.isAbsolute);
