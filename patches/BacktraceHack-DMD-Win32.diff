@@ -1,0 +1,2759 @@
+Index: lib/compiler/dmd/dbginfo.d
+===================================================================
+--- lib/compiler/dmd/dbginfo.d	(revision 0)
++++ lib/compiler/dmd/dbginfo.d	(revision 0)
+@@ -0,0 +1,1008 @@
++/+private import std.string;
++private import std.stream;+/
++import tango.text.Util;
++import tango.stdc.stdio;
++import tango.stdc.stringz;
++import tango.sys.win32.CodePage;
++import demangle : demangle;
++
++extern(C) void exception_object_print_(Object o) {
++    fprintf(stdout, "Error: %.*s (%.*s)\n",
++            o.toUtf8(), o.classinfo.name);
++	fflush(stdout);
++}
++
++extern(C) char program_name[4096];
++
++struct Line {
++    uint addr;
++    ushort line;
++    char* file;
++}
++Line[] lines;
++uint[char[]] file2maxaddr;
++
++extern(C) void addDebugLineInfo__(uint addr, ushort line, char* file) {
++	Line l;
++	l.addr = addr;
++	l.line = line;
++	l.file = file;
++	lines ~= l;
++
++	ushort ma = addr;
++	char[] filename = fromUtf8z(file);
++	if (filename in file2maxaddr) {
++		uint a = file2maxaddr[filename];
++		if (a > ma) ma = a;
++	}
++	file2maxaddr[filename] = ma;
++}
++
++extern(C) void strcpy(char* dst, char* src);
++
++extern(C) void dbginfo_demangle(char* dst, char* src) {
++    char[] org = "_"~fromUtf8z(src);
++    char[] dem = demangle(org);
++    if (org != dem) strcpy(dst, &dem[0]);
++    else strcpy(dst, src);
++}
++
++extern(C) void dbginfo_init() {
++//		printf("loaddebug\n");
++	char[] progName = fromUtf8z(program_name.ptr);
++	char[] name = new char[progName.length];
++	name = CodePage.from(progName, name, 3);
++	//printf(`Program name: '%.*s'`\n, name);
++	//getchar();
++    auto DebugInfo di = new DebugInfo(name);
++//    sym2addr = di.getSymToAddr();
++//		foreach(char[] sym,void* addr;sym2addr){
++//			printf("%d:%.*s\n",addr,sym);
++//		}
++//    addr2line = di.getAddrToLine();
++//		foreach(uint addr,ushort line;addr2line){
++//			printf("%08x:(%d)\n",addr,line);
++//		}
++}
++
++extern(C) Line dbginfo_getline(uint a) {
++    Line min_line;
++    int min_diff = 0x7fffffff;
++    foreach (Line l; lines) {
++        int diff = a - l.addr;
++
++        if (diff < 0) continue;
++        if (diff < min_diff) {
++            min_diff = diff;
++            min_line = l;
++        }
++    }
++    if (min_diff > 0x100) {
++        min_line.addr = 0;
++    }
++    else {
++        uint ma = file2maxaddr[fromUtf8z(min_line.file)];
++        if (a > ma) min_line.addr = 0;
++    }
++    return min_line;
++}
++
++// DebugInfo 
++private:
++	
++enum{ 
++	// Directory Entries
++
++	IMAGE_DIRECTORY_ENTRY_EXPORT        =  0,   // Export Directory
++	IMAGE_DIRECTORY_ENTRY_IMPORT        =  1,   // Import Directory
++	IMAGE_DIRECTORY_ENTRY_RESOURCE      =  2,   // Resource Directory
++	IMAGE_DIRECTORY_ENTRY_EXCEPTION     =  3,   // Exception Directory
++	IMAGE_DIRECTORY_ENTRY_SECURITY      =  4,   // Security Directory
++	IMAGE_DIRECTORY_ENTRY_BASERELOC     =  5,   // Base Relocation Table
++	IMAGE_DIRECTORY_ENTRY_DEBUG         =  6,   // Debug Directory
++	IMAGE_DIRECTORY_ENTRY_COPYRIGHT     =  7,   // Description String
++	IMAGE_DIRECTORY_ENTRY_GLOBALPTR     =  8,   // Machine Value (MIPS GP)
++	IMAGE_DIRECTORY_ENTRY_TLS           =  9,   // TLS Directory
++	IMAGE_DIRECTORY_ENTRY_LOAD_CONFIG   = 10,   // Load Configuration Directory
++	IMAGE_DIRECTORY_ENTRY_BOUND_IMPORT  = 11,   // Bound Import Directory in headers
++	IMAGE_DIRECTORY_ENTRY_IAT           = 12,   // Import Address Table
++
++	IMAGE_FILE_DEBUG_DIRECTORY				= 6,
++	IMAGE_DIRECTORY_ENTRY_DELAY_IMPORT		= 13,
++	IMAGE_DIRECTORY_ENTRY_COM_DESCRIPTOR	= 14,
++
++	MAX_PATH                    = 260,
++}
++ 
++//include 
++	
++enum{ 
++	sstModule			= 0x120,
++	sstAlignSym 		= 0x125,
++	sstSrcModule		= 0x127,
++	sstLibraries		= 0x128,
++	sstGlobalSym		= 0x129,
++	sstGlobalPub		= 0x12a,
++	sstGlobalTypes		= 0x12b,
++	sstSegMap			= 0x12d,
++	sstFileIndex		= 0x133,
++	sstStaticSym		= 0x134,
++// Old, crusty value
++//	S_PUB32 			= 0x0203,
++	S_PUB32 			= 0x1009,
++}
++ 
++/*
++ * CodeView headers 
++ */
++	
++struct OMFSignature 
++{
++	char		Signature[4];
++	int			filepos;
++}
++ 
++struct OMFDirHeader 
++{
++	ushort	cbDirHeader;
++	ushort	cbDirEntry;
++	uint	cDir;
++	int		lfoNextDir;
++	uint	flags;
++}
++ 
++struct OMFDirEntry 
++{
++	ushort	SubSection;
++	ushort	iMod;
++	int		lfo;
++	uint	cb;
++}
++  
++/*
++ * sstModule subsection 
++ */
++	
++struct OMFSegDesc 
++{
++	ushort	Seg;
++	ushort	pad;
++	uint	Off;
++	uint	cbSeg;
++}
++ 
++struct OMFModule 
++{
++	ushort	ovlNumber;
++	ushort	iLib;
++	ushort	cSeg;
++	char			Style[2];
++}
++ 
++struct OMFModuleFull 
++{
++	ushort	ovlNumber;
++	ushort	iLib;
++	ushort	cSeg;
++	char			Style[2];
++	OMFSegDesc		*SegInfo;
++	char			*Name;
++}
++  
++/*
++ * sstGlobalPub section 
++ */
++	
++struct OMFSymHash 
++{
++	ushort	symhash;
++	ushort	addrhash;
++	uint	cbSymbol;
++	uint	cbHSym;
++	uint	cbHAddr;
++}
++ 
++struct DATASYM16 
++{
++		ushort reclen;	// Record length
++		ushort rectyp;	// S_LDATA or S_GDATA
++		int off;		// offset of symbol
++		ushort seg;		// segment of symbol
++		ushort typind;	// Type index
++		byte name[1];	// Length-prefixed name
++}
++typedef DATASYM16 PUBSYM16;
++ 
++// winnt.h 
++	
++struct IMAGE_DOS_HEADER 
++{      // DOS .EXE header
++    ushort   e_magic;                     // Magic number
++    ushort   e_cblp;                      // Bytes on last page of file
++    ushort   e_cp;                        // Pages in file
++    ushort   e_crlc;                      // Relocations
++    ushort   e_cparhdr;                   // Size of header in paragraphs
++    ushort   e_minalloc;                  // Minimum extra paragraphs needed
++    ushort   e_maxalloc;                  // Maximum extra paragraphs needed
++    ushort   e_ss;                        // Initial (relative) SS value
++    ushort   e_sp;                        // Initial SP value
++    ushort   e_csum;                      // Checksum
++    ushort   e_ip;                        // Initial IP value
++    ushort   e_cs;                        // Initial (relative) CS value
++    ushort   e_lfarlc;                    // File address of relocation table
++    ushort   e_ovno;                      // Overlay number
++    ushort   e_res[4];                    // Reserved words
++    ushort   e_oemid;                     // OEM identifier (for e_oeminfo)
++    ushort   e_oeminfo;                   // OEM information; e_oemid specific
++    ushort   e_res2[10];                  // Reserved words
++    int      e_lfanew;                    // File address of new exe header
++}
++ 
++struct IMAGE_FILE_HEADER 
++{
++    ushort    Machine;
++    ushort    NumberOfSections;
++    uint      TimeDateStamp;
++    uint      PointerToSymbolTable;
++    uint      NumberOfSymbols;
++    ushort    SizeOfOptionalHeader;
++    ushort    Characteristics;
++}
++ 
++struct IMAGE_SEPARATE_DEBUG_HEADER 
++{
++    ushort        Signature;
++    ushort        Flags;
++    ushort        Machine;
++    ushort        Characteristics;
++    uint       TimeDateStamp;
++    uint       CheckSum;
++    uint       ImageBase;
++    uint       SizeOfImage;
++    uint       NumberOfSections;
++    uint       ExportedNamesSize;
++    uint       DebugDirectorySize;
++    uint       SectionAlignment;
++    uint       Reserved[2];
++}
++ 
++struct IMAGE_DATA_DIRECTORY 
++{
++    uint   VirtualAddress;
++    uint   Size;
++}
++ 
++enum{
++	IMAGE_NUMBEROF_DIRECTORY_ENTRIES    = 16,
++}
++struct IMAGE_OPTIONAL_HEADER 
++{
++    //
++    // Standard fields.
++    //
++
++    ushort    Magic;
++    byte    MajorLinkerVersion;
++    byte    MinorLinkerVersion;
++    uint   SizeOfCode;
++    uint   SizeOfInitializedData;
++    uint   SizeOfUninitializedData;
++    uint   AddressOfEntryPoint;
++    uint   BaseOfCode;
++    uint   BaseOfData;
++
++    //
++    // NT additional fields.
++    //
++
++    uint   ImageBase;
++    uint   SectionAlignment;
++    uint   FileAlignment;
++    ushort    MajorOperatingSystemVersion;
++    ushort    MinorOperatingSystemVersion;
++    ushort    MajorImageVersion;
++    ushort    MinorImageVersion;
++    ushort    MajorSubsystemVersion;
++    ushort    MinorSubsystemVersion;
++    uint   Win32VersionValue;
++    uint   SizeOfImage;
++    uint   SizeOfHeaders;
++    uint   CheckSum;
++    ushort    Subsystem;
++    ushort    DllCharacteristics;
++    uint   SizeOfStackReserve;
++    uint   SizeOfStackCommit;
++    uint   SizeOfHeapReserve;
++    uint   SizeOfHeapCommit;
++    uint   LoaderFlags;
++    uint   NumberOfRvaAndSizes;
++    IMAGE_DATA_DIRECTORY DataDirectory[IMAGE_NUMBEROF_DIRECTORY_ENTRIES];
++}
++ 
++struct IMAGE_NT_HEADERS 
++{
++    uint Signature;
++    IMAGE_FILE_HEADER FileHeader;
++    IMAGE_OPTIONAL_HEADER OptionalHeader;
++}
++ 
++enum{
++	IMAGE_SIZEOF_SHORT_NAME              = 8,
++}
++
++struct IMAGE_SECTION_HEADER 
++{
++    byte    Name[IMAGE_SIZEOF_SHORT_NAME];//8
++    union misc{
++            uint   PhysicalAddress;
++            uint   VirtualSize;//12
++    }
++	misc Misc;
++    uint   VirtualAddress;//16
++    uint   SizeOfRawData;//20
++    uint   PointerToRawData;//24
++    uint   PointerToRelocations;//28
++    uint   PointerToLinenumbers;//32
++    ushort NumberOfRelocations;//34
++    ushort NumberOfLinenumbers;//36
++    uint   Characteristics;//40
++}
++ 
++struct IMAGE_DEBUG_DIRECTORY 
++{
++    uint   Characteristics;
++    uint   TimeDateStamp;
++    ushort MajorVersion;
++    ushort MinorVersion;
++    uint   Type;
++    uint   SizeOfData;
++    uint   AddressOfRawData;
++    uint   PointerToRawData;
++}
++ 
++enum{ 
++	IMAGE_DEBUG_TYPE_UNKNOWN          = 0,
++	IMAGE_DEBUG_TYPE_COFF             = 1,
++	IMAGE_DEBUG_TYPE_CODEVIEW         = 2,
++	IMAGE_DEBUG_TYPE_FPO              = 3,
++	IMAGE_DEBUG_TYPE_MISC             = 4,
++	IMAGE_DEBUG_TYPE_EXCEPTION        = 5,
++	IMAGE_DEBUG_TYPE_FIXUP            = 6,
++	IMAGE_DEBUG_TYPE_OMAP_TO_SRC      = 7,
++	IMAGE_DEBUG_TYPE_OMAP_FROM_SRC    = 8,
++
++}
++   
++/*
++ * sstSrcModule section 
++ */
++	
++struct OMFSourceLine 
++{
++	ushort	Seg;
++	ushort	cLnOff;
++	uint	offset[1];
++	ushort	lineNbr[1];
++}
++ 
++struct OMFSourceFile 
++{
++	ushort	cSeg;
++	ushort	reserved;
++	uint	baseSrcLn[1];
++	ushort	cFName;
++	char	Name;
++}
++ 
++struct OMFSourceModule 
++{
++	ushort	cFile;
++	ushort	cSeg;
++	uint	baseSrcFile[1];
++}
++   
++public class DebugInfo 
++{
++	
++private: 
++
++typedef int CVHeaderType ;
++enum :CVHeaderType{ CV_NONE, CV_DOS, CV_NT, CV_DBG }
++
++int g_dwStartOfCodeView = 0;
++
++bool g_exe_mode = true;
++IMAGE_DOS_HEADER g_doshdr;
++IMAGE_SEPARATE_DEBUG_HEADER g_dbghdr;
++IMAGE_NT_HEADERS g_nthdr;
++
++IMAGE_SECTION_HEADER g_secthdrs[];
++
++IMAGE_DEBUG_DIRECTORY g_debugdirs[];
++OMFSignature g_cvSig;
++OMFDirHeader g_cvHeader;
++OMFDirEntry g_cvEntries[];
++OMFModuleFull g_cvModules[];
++char[] g_filename;
++
++void*[char[]] sym2addr;
++ushort[uint] addr2line;
++ushort[][char[]] file2lines;
++ 
++public void*[char[]] getSymToAddr(){ 
++	return sym2addr;
++}
++public ushort[uint] getAddrToLine(){
++	return addr2line;
++}
++public ushort[][char[]] getFileToLines(){
++	return file2lines;
++}
++ 
++public this(char[] filename) 
++{
++	DumpCVFile(filename);
++}
++ 
++private:
++
++int DumpCVFile (char[] filename) 
++{
++	FILE* debugfile;
++
++	if (filename == "") return (-1);
++
++	try{
++		debugfile = fopen((filename ~ \0).ptr, "rb");//new FILE*(filename, FILE*.ReadExisting);
++	}catch(Exception e){
++		return -1;
++	}
++
++	//printf(`a`\n);
++	if (!DumpFileHeaders (debugfile)) return -1;
++	//printf(`b`\n);
++
++	g_secthdrs.length = g_nthdr.FileHeader.NumberOfSections;
++
++	if (!DumpSectionHeaders (debugfile)) return -1;
++
++	g_debugdirs.length = g_nthdr.OptionalHeader.DataDirectory[IMAGE_FILE_DEBUG_DIRECTORY].Size /
++		IMAGE_DEBUG_DIRECTORY.sizeof;
++
++	if (!DumpDebugDir (debugfile)) return -1;
++	if (g_dwStartOfCodeView == 0) return -1;
++	if (!DumpCodeViewHeaders (debugfile)) return -1;
++	if (!DumpAllModules (debugfile)) return -1;
++
++	g_dwStartOfCodeView = 0;
++	g_exe_mode = true;
++	g_secthdrs = null;
++	g_debugdirs = null;
++	g_cvEntries = null;
++	g_cvModules = null;
++	g_filename = null;
++
++	fclose(debugfile);
++	return 0;
++}
++	
++bool DumpFileHeaders (FILE* debugfile) 
++{
++	CVHeaderType hdrtype;
++
++	hdrtype = GetHeaderType (debugfile);
++
++	if (hdrtype == CV_DOS) {
++		if (!ReadDOSFileHeader (debugfile, &g_doshdr))return false;
++		hdrtype = GetHeaderType (debugfile);
++	}
++	if (hdrtype == CV_NT) {
++		if (!ReadPEFileHeader (debugfile, &g_nthdr)) return false;
++	}
++
++	return true;
++}
++	
++CVHeaderType GetHeaderType (FILE* debugfile)
++{
++	ushort hdrtype;
++	CVHeaderType ret = CV_NONE;
++
++	int oldpos = ftell(debugfile);
++
++	if (!ReadChunk (debugfile, &hdrtype, ushort.sizeof, -1)){
++		fseek(debugfile, oldpos, SEEK_SET);
++		return CV_NONE;
++	}
++
++	if (hdrtype == 0x5A4D) 	     // "MZ"
++		ret = CV_DOS;
++	else if (hdrtype == 0x4550)  // "PE"
++		ret = CV_NT;
++	else if (hdrtype == 0x4944)  // "DI"
++		ret = CV_DBG;
++
++	fseek(debugfile, oldpos, SEEK_SET);
++
++	return ret;
++}
++ 
++/*
++ * Extract the DOS file headers from an executable
++ */
++bool ReadDOSFileHeader (FILE* debugfile, IMAGE_DOS_HEADER *doshdr) 
++{
++	uint bytes_read;
++
++	bytes_read = fread(doshdr, 1, IMAGE_DOS_HEADER.sizeof, debugfile);
++	if (bytes_read < IMAGE_DOS_HEADER.sizeof){
++		return false;
++	}
++
++	// Skip over stub data, if present
++	if (doshdr.e_lfanew) {
++		fseek(debugfile, doshdr.e_lfanew, SEEK_SET);
++	}
++
++	return true;
++}
++ 
++/*
++ * Extract the DOS and NT file headers from an executable
++ */
++bool ReadPEFileHeader (FILE* debugfile, IMAGE_NT_HEADERS *nthdr) 
++{
++	uint bytes_read;
++
++	bytes_read = fread(nthdr, 1, IMAGE_NT_HEADERS.sizeof, debugfile);
++	if (bytes_read < IMAGE_NT_HEADERS.sizeof) {
++		return false;
++	}
++
++	return true;
++}
++  
++bool DumpSectionHeaders (FILE* debugfile) 
++{
++	if (!ReadSectionHeaders (debugfile, g_secthdrs)) return false;
++	return true;
++}
++	
++bool ReadSectionHeaders (FILE* debugfile, inout IMAGE_SECTION_HEADER[] secthdrs) 
++{
++	for(int i=0;i<secthdrs.length;i++){
++		uint bytes_read;
++		bytes_read = fread((&secthdrs[i]), 1, IMAGE_SECTION_HEADER.sizeof, debugfile);
++		if (bytes_read < 1){
++			return false;
++		}
++	}
++	return true;
++}
++  
++bool DumpDebugDir (FILE* debugfile) 
++{
++	int i;
++	int filepos;
++
++	if (g_debugdirs.length == 0) return false;
++
++	filepos = GetOffsetFromRVA (g_nthdr.OptionalHeader.DataDirectory[IMAGE_FILE_DEBUG_DIRECTORY].VirtualAddress);
++
++	fseek(debugfile, filepos, SEEK_SET);
++
++	if (!ReadDebugDir (debugfile, g_debugdirs)) return false;
++
++	for (i = 0; i < g_debugdirs.length; i++) {
++		if (g_debugdirs[i].Type == IMAGE_DEBUG_TYPE_CODEVIEW) {
++			g_dwStartOfCodeView = g_debugdirs[i].PointerToRawData;
++		}
++	}
++
++	g_debugdirs = null;
++
++	return true;
++}
++	
++// Calculate the file offset, based on the RVA.
++uint GetOffsetFromRVA (uint rva) 
++{
++	int i;
++	uint sectbegin;
++
++	for (i = g_secthdrs.length - 1; i >= 0; i--) {
++		sectbegin = g_secthdrs[i].VirtualAddress;
++		if (rva >= sectbegin) break;
++	}
++	uint offset = g_secthdrs[i].VirtualAddress - g_secthdrs[i].PointerToRawData;
++	uint filepos = rva - offset;
++	return filepos;
++}
++ 
++// Load in the debug directory table.  This directory describes the various
++// blocks of debug data that reside at the end of the file (after the COFF
++// sections), including FPO data, COFF-style debug info, and the CodeView
++// we are *really* after.
++bool ReadDebugDir (FILE* debugfile, inout IMAGE_DEBUG_DIRECTORY debugdirs[]) 
++{
++	uint bytes_read;
++	for(int i=0;i<debugdirs.length;i++) {
++		bytes_read = fread((&debugdirs[i]), 1, IMAGE_DEBUG_DIRECTORY.sizeof, debugfile);
++		if (bytes_read < IMAGE_DEBUG_DIRECTORY.sizeof) {
++			return false;
++		}
++	}
++	return true;
++}
++  
++bool DumpCodeViewHeaders (FILE* debugfile) 
++{
++	fseek(debugfile, g_dwStartOfCodeView, SEEK_SET);
++	if (!ReadCodeViewHeader (debugfile, g_cvSig, g_cvHeader)) return false;
++	g_cvEntries.length = g_cvHeader.cDir;
++	if (!ReadCodeViewDirectory (debugfile, g_cvEntries)) return false;
++	return true;
++}
++
++	
++bool ReadCodeViewHeader (FILE* debugfile, out OMFSignature sig, out OMFDirHeader dirhdr) 
++{
++	uint bytes_read;
++
++	bytes_read = fread((&sig), 1, OMFSignature.sizeof, debugfile);
++	if (bytes_read < OMFSignature.sizeof){
++		return false;
++	}
++
++	fseek(debugfile, sig.filepos + g_dwStartOfCodeView, SEEK_SET);
++	bytes_read = fread((&dirhdr), 1, OMFDirHeader.sizeof, debugfile);
++	if (bytes_read < OMFDirHeader.sizeof){
++		return false;
++	}
++	return true;
++}
++ 
++bool ReadCodeViewDirectory (FILE* debugfile, inout OMFDirEntry[] entries) 
++{
++	uint bytes_read;
++
++	for(int i=0;i<entries.length;i++){
++		bytes_read = fread((&entries[i]), 1, OMFDirEntry.sizeof, debugfile);
++		if (bytes_read < OMFDirEntry.sizeof){
++			return false;
++		}
++	}
++	return true;
++}
++  
++bool DumpAllModules (FILE* debugfile) 
++{
++	if (g_cvHeader.cDir == 0){
++		return true;
++	}
++
++	if (g_cvEntries.length == 0){
++		return false;
++	}
++
++	fseek(debugfile, g_dwStartOfCodeView + g_cvEntries[0].lfo, SEEK_SET);
++
++	if (!ReadModuleData (debugfile, g_cvEntries, g_cvModules)){
++		return false;
++	}
++
++
++	for (int i = 0; i < g_cvModules.length; i++){
++		DumpRelatedSections (i, debugfile);
++	}
++
++	for (int i = 0; i < g_cvHeader.cDir; i++){
++		DumpMiscSections (i, debugfile);
++	}
++
++	return true;
++}
++
++	
++bool ReadModuleData (FILE* debugfile, OMFDirEntry[] entries, out OMFModuleFull[] modules) 
++{
++	uint bytes_read;
++	int pad;
++
++	int module_bytes = (ushort.sizeof * 3) + (char.sizeof * 2);
++
++	if (entries == null) return false;
++
++	modules.length = 0;
++
++	for (int i = 0; i < entries.length; i++){
++		if (entries[i].SubSection == sstModule)
++			modules.length = modules.length + 1;
++	}
++
++	for (int i = 0; i < modules.length; i++){
++
++		bytes_read = fread((&modules[i]), 1, module_bytes, debugfile);
++		if (bytes_read < module_bytes){
++			return false;
++		}
++
++		int segnum = modules[i].cSeg;
++		OMFSegDesc[] segarray;
++		segarray.length=segnum;
++		for(int j=0;j<segnum;j++){
++			bytes_read =  fread((&segarray[j]), 1, OMFSegDesc.sizeof, debugfile);
++			if (bytes_read < OMFSegDesc.sizeof){
++				return false;
++			}
++		}
++		modules[i].SegInfo = segarray.ptr;
++
++		char namelen;
++		bytes_read = fread((&namelen), 1, char.sizeof, debugfile);
++		if (bytes_read < 1){
++			return false;
++		}
++
++		pad = ((namelen + 1) % 4);
++		if (pad) namelen += (4 - pad);
++
++		modules[i].Name = (new char[namelen+1]).ptr;
++		modules[i].Name[namelen]=0;
++		bytes_read = fread((modules[i].Name), 1, namelen, debugfile);
++		if (bytes_read < namelen){
++			return false;
++		}
++	}
++	return true;
++}
++ 
++bool DumpRelatedSections (int index, FILE* debugfile) 
++{
++	int i;
++
++	if (g_cvEntries == null)
++		return false;
++
++	for (i = 0; i < g_cvHeader.cDir; i++){
++		if (g_cvEntries[i].iMod != (index + 1) ||
++			g_cvEntries[i].SubSection == sstModule)
++			continue;
++
++		switch (g_cvEntries[i].SubSection){
++		case sstSrcModule:
++			DumpSrcModuleInfo (i, debugfile);
++			break;
++		default:
++			break;
++		}
++	}
++
++	return true;
++}
++	
++bool DumpSrcModuleInfo (int index, FILE* debugfile) 
++{
++	int i;
++
++	byte *rawdata;
++	byte *curpos;
++	short filecount;
++	short segcount;
++
++	int moduledatalen;
++	int filedatalen;
++	int linedatalen;
++
++	if (g_cvEntries == null || debugfile == null ||
++		g_cvEntries[index].SubSection != sstSrcModule)
++		return false;
++
++	int fileoffset = g_dwStartOfCodeView + g_cvEntries[index].lfo;
++
++	rawdata = (new byte[g_cvEntries[index].cb]).ptr;
++	if (!rawdata) return false;
++
++	if (!ReadChunk (debugfile, rawdata, g_cvEntries[index].cb, fileoffset)) return false;
++	uint[] baseSrcFile;
++	PrintSrcModuleInfo (rawdata, &filecount, &segcount,baseSrcFile);
++
++	for(i=0;i<baseSrcFile.length;i++){
++		uint baseSrcLn[];
++		PrintSrcModuleFileInfo (rawdata+baseSrcFile[i],baseSrcLn);
++		for(int j=0;j<baseSrcLn.length;j++){
++			PrintSrcModuleLineInfo (rawdata+baseSrcLn[j], j);
++		}
++	}
++
++	return true;
++}
++	
++void PrintSrcModuleInfo (byte* rawdata, short *filecount, short *segcount,out uint[] fileinfopos) 
++{
++	int i;
++	int datalen;
++
++	ushort cFile;
++	ushort cSeg;
++	uint *baseSrcFile;
++	uint *segarray;
++	ushort *segindexarray;
++
++	cFile = *cast(short*)rawdata;
++	cSeg = *cast(short*)(rawdata + 2);
++	baseSrcFile = cast(uint*)(rawdata + 4);
++	segarray = &baseSrcFile[cFile];
++	segindexarray = cast(ushort*)(&segarray[cSeg * 2]);
++
++	*filecount = cFile;
++	*segcount = cSeg;
++
++	fileinfopos.length=cFile;
++	for (i = 0; i < cFile; i++){
++		fileinfopos[i]=baseSrcFile[i];
++	}
++
++}
++ 
++void PrintSrcModuleFileInfo (byte* rawdata,out uint[] offset) 
++{
++	int i;
++	int datalen;
++
++	ushort cSeg;
++	uint *baseSrcLn;
++	uint *segarray;
++	byte cFName;
++
++	cSeg = *cast(short*)(rawdata);
++	// Skip the 'pad' field
++	baseSrcLn = cast(uint*)(rawdata + 4);
++	segarray = &baseSrcLn[cSeg];
++	cFName = *(cast(byte*)&segarray[cSeg*2]);
++
++	g_filename=(cast(char*)&segarray[cSeg*2] + 1)[0..cFName].dup;
++
++	offset.length=cSeg;
++	for (i = 0; i < cSeg; i++){
++		offset[i]=baseSrcLn[i];
++	}
++}
++ 
++void PrintSrcModuleLineInfo (byte* rawdata, int tablecount) 
++{
++	int i;
++
++	ushort Seg;
++	ushort cPair;
++	uint *offset;
++	ushort *linenumber;
++
++	Seg = *cast(ushort*)rawdata;
++	cPair = *cast(ushort*)(rawdata + 2);
++	offset = cast(uint*)(rawdata + 4);
++	linenumber = cast(ushort*)&offset[cPair];
++
++	uint base=0;
++	if(Seg!=0){
++		base = g_nthdr.OptionalHeader.ImageBase+g_secthdrs[Seg-1].VirtualAddress;
++	}
++	for (i = 0; i < cPair; i++){
++		uint address = offset[i]+base;
++		//printf ("%.*s:%08lx line(%d)\n", g_filename, address, linenumber[i]);
++		//g_addressData[address].filename=g_filename;
++		//g_addressData[address].line=linenumber[i];
++		file2lines[g_filename] ~= linenumber[i];
++		addr2line[address]=linenumber[i];
++        Line l;
++        l.addr = address;
++        l.file = toUtf8z(g_filename);
++        l.line = linenumber[i];
++        lines ~= l;
++        uint ma = l.addr;
++        if (g_filename in file2maxaddr) {
++            uint a = file2maxaddr[g_filename];
++            if (a > ma) ma = a;
++        }
++        file2maxaddr[g_filename] = ma;
++	}
++
++}
++   
++bool DumpMiscSections (int index, FILE* debugfile) 
++{
++
++	if (g_cvEntries == null || g_cvEntries[index].iMod != 65535)
++		return false;
++
++	switch (g_cvEntries[index].SubSection){
++	case sstGlobalPub:
++		DumpGlobalPubInfo (index, debugfile);
++		break;
++	default:
++		break;
++	}
++
++	return true;
++}
++	
++bool DumpGlobalPubInfo (int index, FILE* debugfile) 
++{
++	int fileoffset;
++	uint sectionsize;
++	OMFSymHash header;
++	byte *symbols;
++	byte *curpos;
++	PUBSYM16 *sym;
++	char symlen;
++	char *symname;
++	int recordlen;
++
++	if (g_cvEntries == null || debugfile == null ||
++		g_cvEntries[index].SubSection != sstGlobalPub)
++		return false;
++
++	sectionsize = g_cvEntries[index].cb;
++
++	fileoffset = g_dwStartOfCodeView + g_cvEntries[index].lfo;
++
++	//printf ("  (type)      (symbol name)                (address)      (len) (seg) (ind)\n");
++
++	if (!ReadChunk (debugfile, &header, OMFSymHash.sizeof, fileoffset))
++		return false;
++
++	symbols = (new byte[header.cbSymbol]).ptr;
++	if (!ReadChunk (debugfile, symbols, header.cbSymbol, -1))
++		return false;
++
++	curpos = symbols;
++//	auto Demangle demangler = new Demangle();
++	while (curpos < symbols + header.cbSymbol){
++		char[] nametmp;	// Zero out
++		sym = cast(PUBSYM16*)curpos;
++		symlen = *(curpos + PUBSYM16.sizeof-1);
++		symname = cast(char*)((curpos + PUBSYM16.sizeof-1)+1);
++		nametmp = symname[0..(symlen&0xff)].dup;
++
++		int base=0;
++		if(sym.seg!=0){
++			base = g_nthdr.OptionalHeader.ImageBase+g_secthdrs[sym.seg-1].VirtualAddress;
++		}
++		if(nametmp.length!=0 && nametmp[0]!=0){
++			// "  (type) (symbol name)        (address)   (len) (seg) (typind)"
++			// printf ("  0x%04x  %-30.30s  [0x%8lx]  [0x%4x]  %d     %ld %d\n",
++			//		sym.rectyp, toUtf8z(nametmp), base+sym.off, sym.reclen, sym.seg, sym.typind, nametmp.length);
++			//g_addressData[base+sym.off].name=nametmp;
++//			char[] name = demangler.demangleName(nametmp).join(".");
++//			if(name=="")
++				sym2addr[nametmp]=cast(void*)(base+sym.off);
++//			else
++//				sym2addr[name]=cast(void*)(base+sym.off);
++		}
++		recordlen = sym.reclen;
++		if (recordlen % 4) recordlen += 4 - (recordlen % 4);
++
++		curpos += recordlen;
++	}
++
++	return true;
++}
++   
++bool ReadChunk (FILE* debugfile, void *dest, int length, int fileoffset) 
++{
++	uint bytes_read;
++
++	if (fileoffset >= 0) {
++		fseek(debugfile, fileoffset, SEEK_SET);
++	}
++
++	bytes_read = fread(dest, 1, length, debugfile);
++	if (bytes_read < length) {
++		return false;
++	}
++
++	return true;
++}
++
++  
++}
+Index: lib/compiler/dmd/deh.c
+===================================================================
+--- lib/compiler/dmd/deh.c	(revision 2567)
++++ lib/compiler/dmd/deh.c	(working copy)
+@@ -5,89 +5,244 @@
+ 
+ // Exception handling support
+ 
+-#include        <stdio.h>
+-#include        <string.h>
+-#include        <assert.h>
+-#include        <stdlib.h>
++#include	<stdio.h>
++#include	<string.h>
++#include	<assert.h>
++#include	<stdlib.h>
+ 
+ /* ======================== Win32 =============================== */
+ 
+ #if _WIN32
+ 
+-#include        <excpt.h>
+-#include        <windows.h>
++#include	<excpt.h>
++#include	<windows.h>
+ 
+-//#include      "\sc\src\include\ehsup.h"
++// Macro to make our own exception code
++#define MAKE_EXCEPTION_CODE(severity, facility, exception)	\
++	(((severity) << 30) | (1 << 29) | (0 << 28) | ((facility) << 16) | (exception))
++#define STATUS_DIGITAL_MARS_D_EXCEPTION		MAKE_EXCEPTION_CODE(3,'D',1)
+ 
++#include <imagehlp.h>
++#include <tlhelp32.h>
++
++#include	"mars.h"
++
++Object *_d_translate_se_to_d_exception(EXCEPTION_RECORD *exception_record);
++
++typedef void (*regsym_cb) (const char*, void*);
++int reflection_init(regsym_cb fp);
++
++typedef struct {
++    unsigned int addr;
++    unsigned short line;
++    char* file;
++} Line;
++
++void dbginfo_init();
++Line dbginfo_getline(int addr);
++void dbginfo_demangle(char* dst, const char* src);
++
++typedef struct {
++    const char* name;
++    int addr;
++} sym;
++static int sym_size = 0;
++static sym* syms = NULL;
++static int now_trace = 0;
++static int backtrace[4096];
++static int inited = 0;
++
++static char* mstrcpy(const char* s) {
++    char* ret = (char*)malloc(sizeof(char)*(strlen(s)+1));
++    strcpy(ret, s);
++    return ret;
++}
++
++void regist_cb(const char* name, void* fp) {
++//    printf("%08x %s\n", fp, name);
++    if (!name) return;
++    if (!*name) return;
++    if (!fp) return;
++
++    sym_size++;
++    syms = (sym*)realloc(syms, sizeof(sym)*sym_size);
++    syms[sym_size-1].name = mstrcpy(name);
++    syms[sym_size-1].addr = (int)fp;
++}
++
++void exception_object_print_(Object* o);
++
++LONG CALLBACK backtrace_handler(EXCEPTION_POINTERS* e) {
++    if (now_trace) {
++        fprintf(stdout, "exception when creating the trace!\r\n");
++		fflush(stdout);
++    }
++    else {
++        now_trace = 1;
++
++        typedef struct {
++            void* ebp;
++            DWORD ret;
++        } layout;
++        layout* p = 0;
++        int* btp;
++
++        if (!inited) {
++            reflection_init(regist_cb);
++            dbginfo_init();
++            inited = 1;
++        }
++
++        if (e->ExceptionRecord->ExceptionCode !=
++            STATUS_DIGITAL_MARS_D_EXCEPTION)
++        {
++            int i = 1;
++            fprintf(stdout, "Unhandled win32 exception!\r\n");
++			fflush(stdout);
++            backtrace[0] = (int)e->ContextRecord->Eip;
++            p = (layout*)e->ContextRecord->Ebp;
++            while (p && !IsBadReadPtr(p, sizeof(layout)) && i < sizeof(backtrace) / sizeof(*backtrace)) {
++                backtrace[i++] = p->ret;
++                p = p->ebp;
++            }
++            backtrace[i] = 0;
++        }
++        else {
++            fprintf(stdout, "Unhandled D exception!\r\n");
++			fflush(stdout);
++        }
++
++        Object* eo = _d_translate_se_to_d_exception(e->ExceptionRecord);
++        exception_object_print_(eo);
++
++        fprintf(stdout, "backtrace:\r\n");
++		fflush(stdout);
++
++		int traceLine = 0;
++        for (btp = backtrace; *btp; btp++, ++traceLine) {
++			if (0 == traceLine % 23 && 0 != traceLine) {
++				printf("\tHit [m] for more or any other key to stop\n");
++				if (getch() != 'm') break;
++			}
++
++            int i;
++            int r = *btp;
++            int min_index = -1;
++            int min_diff = 0x7fffffff;
++
++            for (i = 0; i < sym_size; i++) {
++                int diff = r - syms[i].addr;
++
++                if (diff < 0) continue;
++                if (diff < min_diff) {
++                    min_diff = diff;
++                    min_index = i;
++                }
++            }
++
++            fprintf(stdout, " %08x ", r);
++			fflush(stdout);
++            if (min_index == -1 || min_diff > 0x1000000) {
++                fprintf(stdout, "???\r\n");
++				fflush(stdout);
++            }
++            else {
++                Line line = dbginfo_getline(r);
++                char buf[4096];
++                dbginfo_demangle(buf, syms[min_index].name);
++                fprintf(stdout, "%s (+%x)", buf, min_diff);
++				fflush(stdout);
++                if (line.addr != 0) {
++                    fprintf(stdout, " %s:%d", line.file, line.line);
++					fflush(stdout);
++                }
++                fprintf(stdout, "\r\n");
++				fflush(stdout);
++            }
++        }
++
++/*
++    while (p) {
++        PIMAGEHLP_SYMBOL pSym;
++        DWORD Disp;
++        int ret;
++        ret = SymGetSymFromAddr(GetCurrentProcess(), p->ret, &Disp, pSym);
++        if(ret) printf("0x%08x %s() + 0x%x\n", p->ret, pSym->Name, Disp);
++        else printf("%08x, ---\n", p->ret);
++        printf("%x %x\n", p->ebp, p->ret);
++        p = p->ebp;
++    }
++*/
++        now_trace = 0;
++    }
++
++    return(EXCEPTION_EXECUTE_HANDLER);
++}
++
++//#include	"\sc\src\include\ehsup.h"
++
+ /*** From Digital Mars C runtime library ***/
+ EXCEPTION_DISPOSITION __cdecl _local_except_handler (EXCEPTION_RECORD *ExceptionRecord,
+     void* EstablisherFrame,
+-        void *ContextRecord,
+-        void *DispatcherContext
+-        );
++	void *ContextRecord,
++	void *DispatcherContext
++	);
+ void __cdecl _global_unwind(void *frame,EXCEPTION_RECORD *eRecord);
+ #define EXCEPTION_UNWIND  6  // Flag to indicate if the system is unwinding
+ 
+ extern DWORD _except_list;
+ /*** ***/
+ 
+-#include        "mars.h"
++//extern ClassInfo _Class_9Exception;
+ 
+ extern ClassInfo D9Exception7__ClassZ;
+-
+ #define _Class_9Exception D9Exception7__ClassZ
+ 
++
+ typedef int (__pascal *fp_t)();   // function pointer in ambient memory model
+ 
+ // The layout of DEstablisherFrame is the same for C++
+ 
+ struct DEstablisherFrame
+ {
+-    void *prev;                 // pointer to previous exception list
+-    void *handler;              // pointer to routine for exception handler
+-    DWORD table_index;          // current index into handler_info[]
+-    DWORD ebp;                  // this is EBP of routine
++    void *prev;			// pointer to previous exception list
++    void *handler;		// pointer to routine for exception handler
++    DWORD table_index;		// current index into handler_info[]
++    DWORD ebp;			// this is EBP of routine
+ };
+ 
+ struct DHandlerInfo
+ {
+-    int prev_index;             // previous table index
+-    unsigned cioffset;          // offset to DCatchInfo data from start of table (!=0 if try-catch)
+-    void *finally_code;         // pointer to finally code to execute
+-                                // (!=0 if try-finally)
++    int prev_index;		// previous table index
++    unsigned cioffset;		// offset to DCatchInfo data from start of table (!=0 if try-catch)
++    void *finally_code;		// pointer to finally code to execute
++				// (!=0 if try-finally)
+ };
+ 
+ // Address of DHandlerTable is passed in EAX to _d_framehandler()
+ 
+ struct DHandlerTable
+ {
+-    void *fptr;                 // pointer to start of function
+-    unsigned espoffset;         // offset of ESP from EBP
+-    unsigned retoffset;         // offset from start of function to return code
++    void *fptr;			// pointer to start of function
++    unsigned espoffset;		// offset of ESP from EBP
++    unsigned retoffset;		// offset from start of function to return code
+     struct DHandlerInfo handler_info[1];
+ };
+ 
+ struct DCatchBlock
+ {
+-    ClassInfo *type;            // catch type
+-    unsigned bpoffset;          // EBP offset of catch var
+-    void *code;                 // catch handler code
++    ClassInfo *type;		// catch type
++    unsigned bpoffset;		// EBP offset of catch var
++    void *code;			// catch handler code
+ };
+ 
+ // Create one of these for each try-catch
+ struct DCatchInfo
+ {
+-    unsigned ncatches;                  // number of catch blocks
+-    struct DCatchBlock catch_block[1];  // data for each catch block
++    unsigned ncatches;			// number of catch blocks
++    struct DCatchBlock catch_block[1];	// data for each catch block
+ };
+ 
+-// Macro to make our own exception code
+-#define MAKE_EXCEPTION_CODE(severity, facility, exception)      \
+-        (((severity) << 30) | (1 << 29) | (0 << 28) | ((facility) << 16) | (exception))
+-
+-#define STATUS_DIGITAL_MARS_D_EXCEPTION         MAKE_EXCEPTION_CODE(3,'D',1)
+-
+-Object *_d_translate_se_to_d_exception(EXCEPTION_RECORD *exception_record);
+ void __cdecl _d_local_unwind(struct DHandlerTable *handler_table, struct DEstablisherFrame *frame, int stop_index);
+ 
+ 
+@@ -95,14 +250,14 @@
+  * The frame handler, this is called for each frame that has been registered
+  * in the OS except_list.
+  * Input:
+- *      EAX     the handler table for the frame
++ * 	EAX	the handler table for the frame
+  */
+ 
+ EXCEPTION_DISPOSITION _d_framehandler(
+-            EXCEPTION_RECORD *exception_record,
+-            struct DEstablisherFrame *frame,
+-            CONTEXT context,
+-            void *dispatcher_context)
++	    EXCEPTION_RECORD *exception_record, 
++	    struct DEstablisherFrame *frame, 
++	    CONTEXT context,
++	    void *dispatcher_context)
+ {
+     struct DHandlerTable *handler_table;
+ 
+@@ -115,84 +270,84 @@
+     }
+     else
+     {
+-        // Jump to catch block if matching one is found
++	// Jump to catch block if matching one is found
+ 
+-        int ndx,prev_ndx,i;
+-        struct DHandlerInfo *phi;
+-        struct DCatchInfo *pci;
+-        struct DCatchBlock *pcb;
+-        unsigned ncatches;              // number of catches in the current handler
+-        Object *pti;
+-        ClassInfo *ci;
++	int ndx,prev_ndx,i;
++	struct DHandlerInfo *phi;
++	struct DCatchInfo *pci;
++	struct DCatchBlock *pcb;
++	unsigned ncatches;		// number of catches in the current handler
++	Object *pti;
++	ClassInfo *ci;
+ 
+-        ci = NULL;                      // only compute it if we need it
++	ci = NULL;			// only compute it if we need it
+ 
+-        // walk through handler table, checking each handler
+-        // with an index smaller than the current table_index
+-        for (ndx = frame->table_index; ndx != -1; ndx = prev_ndx)
+-        {
+-            phi = &handler_table->handler_info[ndx];
+-            prev_ndx = phi->prev_index;
+-            if (phi->cioffset)
+-            {
+-                // this is a catch handler (no finally)
+-                pci = (struct DCatchInfo *)((char *)handler_table + phi->cioffset);
+-                ncatches = pci->ncatches;
+-                for (i = 0; i < ncatches; i++)
+-                {
+-                    pcb = &pci->catch_block[i];
++	// walk through handler table, checking each handler
++	// with an index smaller than the current table_index
++	for (ndx = frame->table_index; ndx != -1; ndx = prev_ndx)
++	{
++	    phi = &handler_table->handler_info[ndx];
++	    prev_ndx = phi->prev_index;
++	    if (phi->cioffset)
++	    {
++		// this is a catch handler (no finally)
++		pci = (struct DCatchInfo *)((char *)handler_table + phi->cioffset);
++		ncatches = pci->ncatches;
++		for (i = 0; i < ncatches; i++)
++		{
++		    pcb = &pci->catch_block[i];
+ 
+-                    if (!ci)
+-                    {
+-                        // This code must match the translation code
+-                        if (exception_record->ExceptionCode == STATUS_DIGITAL_MARS_D_EXCEPTION)
+-                        {
+-                            //printf("ei[0] = %p\n", exception_record->ExceptionInformation[0]);
+-                            ci = **(ClassInfo ***)(exception_record->ExceptionInformation[0]);
+-                        }
+-                        else
+-                            ci = &_Class_9Exception;
+-                    }
++		    if (!ci)
++		    {
++			// This code must match the translation code
++			if (exception_record->ExceptionCode == STATUS_DIGITAL_MARS_D_EXCEPTION)
++			{
++			    //printf("ei[0] = %p\n", exception_record->ExceptionInformation[0]);
++			    ci = **(ClassInfo ***)(exception_record->ExceptionInformation[0]);
++			}
++			else
++			    ci = &_Class_9Exception;
++		    }
+ 
+-                    if (_d_isbaseof(ci, pcb->type))
+-                    {   // Matched the catch type, so we've found the handler.
+-                        int regebp;
++		    if (_d_isbaseof(ci, pcb->type))
++		    {   // Matched the catch type, so we've found the handler.
++			int regebp;
+ 
+-                        pti = _d_translate_se_to_d_exception(exception_record);
++			pti = _d_translate_se_to_d_exception(exception_record);
+ 
+-                        // Initialize catch variable
+-                        regebp = (int)&frame->ebp;              // EBP for this frame
+-                        *(void **)(regebp + (pcb->bpoffset)) = pti;
++			// Initialize catch variable
++			regebp = (int)&frame->ebp;		// EBP for this frame
++			*(void **)(regebp + (pcb->bpoffset)) = pti;
+ 
+-                        // Have system call all finally blocks in intervening frames
+-                        _global_unwind(frame, exception_record);
++			// Have system call all finally blocks in intervening frames
++			_global_unwind(frame, exception_record);
+ 
+-                        // Call all the finally blocks skipped in this frame
+-                        _d_local_unwind(handler_table, frame, ndx);
++			// Call all the finally blocks skipped in this frame
++			_d_local_unwind(handler_table, frame, ndx);
+ 
+-                        frame->table_index = prev_ndx;  // we are out of this handler
++			frame->table_index = prev_ndx;  // we are out of this handler
+ 
+-                        // Jump to catch block. Does not return.
+-                        {
+-                            unsigned catch_esp;
+-                            fp_t catch_addr;
++			// Jump to catch block. Does not return.
++			{
++			    unsigned catch_esp;
++			    fp_t catch_addr;
+ 
+-                            catch_addr = (fp_t)(pcb->code);
+-                            catch_esp = regebp - handler_table->espoffset - sizeof(fp_t);
+-                            _asm
+-                            {
+-                                mov     EAX,catch_esp
+-                                mov     ECX,catch_addr
+-                                mov     [EAX],ECX
+-                                mov     EBP,regebp
+-                                mov     ESP,EAX         // reset stack
+-                                ret                     // jump to catch block
+-                            }
+-                        }
+-                    }
+-                }
+-            }
+-        }
++			    catch_addr = (fp_t)(pcb->code);
++			    catch_esp = regebp - handler_table->espoffset - sizeof(fp_t);
++			    _asm
++			    {
++				mov	EAX,catch_esp
++				mov	ECX,catch_addr
++				mov	[EAX],ECX
++				mov	EBP,regebp
++				mov	ESP,EAX		// reset stack
++				ret			// jump to catch block
++			    }
++			}
++		    }
++		}
++	    }
++	}
+     }
+     return ExceptionContinueSearch;
+ }
+@@ -203,8 +358,8 @@
+  */
+ 
+ int _d_exception_filter(struct _EXCEPTION_POINTERS *eptrs,
+-                        int retval,
+-                        Object **exception_object)
++			int retval,
++			Object **exception_object) 
+ {
+     *exception_object = _d_translate_se_to_d_exception(eptrs->ExceptionRecord);
+     return retval;
+@@ -216,11 +371,31 @@
+ 
+ void __stdcall _d_throw(Object *h)
+ {
++    typedef struct {
++        void* ebp;
++        DWORD ret;
++    } layout;
++    layout* p = 0;
++    int i = 0;
++
++    if (!inited) {
++        reflection_init(regist_cb);
++        dbginfo_init();
++        inited = 1;
++    }
++
++    __asm { mov p, EBP };
++    while (p && !IsBadReadPtr(p, sizeof(layout)) && i < sizeof(backtrace) / sizeof(*backtrace)) {
++        backtrace[i++] = p->ret+1;
++        p = p->ebp;
++    }
++    backtrace[i] = 0;
++
+     //printf("_d_throw(h = %p, &h = %p)\n", h, &h);
+     //printf("\tvptr = %p\n", *(void **)h);
+     RaiseException(STATUS_DIGITAL_MARS_D_EXCEPTION,
+-                   EXCEPTION_NONCONTINUABLE,
+-                   1, (DWORD *)&h);
++		   EXCEPTION_NONCONTINUABLE,
++		   1, (DWORD *)&h);
+ }
+ 
+ /***********************************
+@@ -236,8 +411,8 @@
+ 
+     if (msg)
+     {
+-        exc->msglen = strlen(msg);
+-        exc->msg = msg;
++	exc->msglen = strlen(msg);
++	exc->msg = msg;
+     }
+     return (Object *)exc;
+ }
+@@ -287,7 +462,7 @@
+  */
+ 
+ void __cdecl _d_local_unwind(struct DHandlerTable *handler_table,
+-        struct DEstablisherFrame *frame, int stop_index)
++	struct DEstablisherFrame *frame, int stop_index)
+ {
+     struct DHandlerInfo *phi;
+     struct DCatchInfo *pci;
+@@ -296,42 +471,42 @@
+     // Set up a special exception handler to catch double-fault exceptions.
+     __asm
+     {
+-        push    dword ptr -1
+-        push    dword ptr 0
+-        push    offset _local_except_handler    // defined in src\win32\ehsup.c
+-        push    dword ptr fs:_except_list
+-        mov     FS:_except_list,ESP
++	push	dword ptr -1
++	push	dword ptr 0
++	push	offset _local_except_handler	// defined in src\win32\ehsup.c
++	push	dword ptr fs:_except_list
++	mov	FS:_except_list,ESP
+     }
+-
++  
+     for (i = frame->table_index; i != -1 && i != stop_index; i = phi->prev_index)
+     {
+-        phi = &handler_table->handler_info[i];
+-        if (phi->finally_code)
+-        {
+-            // Note that it is unnecessary to adjust the ESP, as the finally block
+-            // accesses all items on the stack as relative to EBP.
++	phi = &handler_table->handler_info[i];
++	if (phi->finally_code)
++	{
++	    // Note that it is unnecessary to adjust the ESP, as the finally block
++	    // accesses all items on the stack as relative to EBP.
+ 
+-            DWORD *catch_ebp = &frame->ebp;
+-            void *blockaddr = phi->finally_code;
++	    DWORD *catch_ebp = &frame->ebp;
++	    void *blockaddr = phi->finally_code;
+ 
+-            _asm
+-            {
+-                push    EBX
+-                mov     EBX,blockaddr
+-                push    EBP
+-                mov     EBP,catch_ebp
+-                call    EBX
+-                pop     EBP
+-                pop     EBX
+-            }
+-        }
++	    _asm
++	    {
++		push	EBX
++		mov	EBX,blockaddr
++		push	EBP
++		mov	EBP,catch_ebp
++		call	EBX
++		pop	EBP
++		pop	EBX
++	    }
++	}
+     }
+ 
+     _asm
+     {
+-        pop     FS:_except_list
+-        add     ESP,12
+-    }
++	pop	FS:_except_list
++	add	ESP,12
++    }     
+ }
+ 
+ /***********************************
+@@ -342,7 +517,7 @@
+ {
+     __asm
+     {
+-        jmp     _d_local_unwind
++	jmp	_d_local_unwind
+     }
+ }
+ 
+@@ -350,18 +525,18 @@
+  * The frame handler, this is called for each frame that has been registered
+  * in the OS except_list.
+  * Input:
+- *      EAX     the handler table for the frame
++ * 	EAX	the handler table for the frame
+  */
+ 
+ EXCEPTION_DISPOSITION _d_monitor_handler(
+-            EXCEPTION_RECORD *exception_record,
+-            struct DEstablisherFrame *frame,
+-            CONTEXT context,
+-            void *dispatcher_context)
++	    EXCEPTION_RECORD *exception_record, 
++	    struct DEstablisherFrame *frame, 
++	    CONTEXT context,
++	    void *dispatcher_context)
+ {
+     if (exception_record->ExceptionFlags & EXCEPTION_UNWIND)
+     {
+-        _d_monitorexit((Object *)frame->table_index);
++	_d_monitorexit((Object *)frame->table_index);
+     }
+     else
+     {
+@@ -376,13 +551,13 @@
+ {
+     __asm
+     {
+-        push    EAX
++	push	EAX
+     }
+     //printf("_d_monitor_prolog(x=%p, y=%p, h=%p)\n", x, y, h);
+     _d_monitorenter(h);
+     __asm
+     {
+-        pop     EAX
++	pop	EAX
+     }
+ }
+ 
+@@ -394,14 +569,14 @@
+     //printf("_d_monitor_epilog(x=%p, y=%p, h=%p)\n", x, y, h);
+     __asm
+     {
+-        push    EAX
+-        push    EDX
++	push	EAX
++	push	EDX
+     }
+     _d_monitorexit(h);
+     __asm
+     {
+-        pop     EDX
+-        pop     EAX
++	pop	EDX
++	pop	EAX
+     }
+ }
+ 
+@@ -409,57 +584,55 @@
+ 
+ /* ======================== linux =============================== */
+ 
+-#if linux
++#if 0
+ 
+-#include        "mars.h"
++#include	"mars.h"
+ 
+-extern ClassInfo D9Exception7__ClassZ;
++extern ClassInfo _Class_9Exception;
+ 
+-#define _Class_9Exception D9Exception7__ClassZ
+-
+ typedef int (*fp_t)();   // function pointer in ambient memory model
+ 
+ struct DHandlerInfo
+ {
+-    unsigned offset;            // offset from function address to start of guarded section
+-    int prev_index;             // previous table index
+-    unsigned cioffset;          // offset to DCatchInfo data from start of table (!=0 if try-catch)
+-    void *finally_code;         // pointer to finally code to execute
+-                                // (!=0 if try-finally)
++    unsigned offset;		// offset from function address to start of guarded section
++    int prev_index;		// previous table index
++    unsigned cioffset;		// offset to DCatchInfo data from start of table (!=0 if try-catch)
++    void *finally_code;		// pointer to finally code to execute
++				// (!=0 if try-finally)
+ };
+ 
+ // Address of DHandlerTable, searched for by eh_finddata()
+ 
+ struct DHandlerTable
+ {
+-    void *fptr;                 // pointer to start of function
+-    unsigned espoffset;         // offset of ESP from EBP
+-    unsigned retoffset;         // offset from start of function to return code
+-    unsigned nhandlers;         // dimension of handler_info[]
++    void *fptr;			// pointer to start of function
++    unsigned espoffset;		// offset of ESP from EBP
++    unsigned retoffset;		// offset from start of function to return code
++    unsigned nhandlers;		// dimension of handler_info[]
+     struct DHandlerInfo handler_info[1];
+ };
+ 
+ struct DCatchBlock
+ {
+-    ClassInfo *type;            // catch type
+-    unsigned bpoffset;          // EBP offset of catch var
+-    void *code;                 // catch handler code
++    ClassInfo *type;		// catch type
++    unsigned bpoffset;		// EBP offset of catch var
++    void *code;			// catch handler code
+ };
+ 
+ // Create one of these for each try-catch
+ struct DCatchInfo
+ {
+-    unsigned ncatches;                  // number of catch blocks
+-    struct DCatchBlock catch_block[1];  // data for each catch block
++    unsigned ncatches;			// number of catch blocks
++    struct DCatchBlock catch_block[1];	// data for each catch block
+ };
+ 
+ // One of these is generated for each function with try-catch or try-finally
+ 
+ struct FuncTable
+ {
+-    void *fptr;                 // pointer to start of function
++    void *fptr;			// pointer to start of function
+     struct DHandlerTable *handlertable; // eh data for this function
+-    unsigned size;              // size of function in bytes
++    unsigned size;		// size of function in bytes
+ };
+ 
+ extern struct FuncTable *table_start;
+@@ -469,7 +642,7 @@
+ {
+ //    _asm
+ //    {
+-//      hlt
++//	hlt
+ //    }
+ }
+ 
+@@ -484,14 +657,14 @@
+     struct FuncTable *ft;
+ 
+     for (ft = (struct FuncTable *)table_start;
+-         ft < (struct FuncTable *)table_end;
+-         ft++)
++	 ft < (struct FuncTable *)table_end;
++	 ft++)
+     {
+-        if (ft->fptr <= address &&
+-            address < (void *)((char *)ft->fptr + ft->size))
+-        {
+-            return ft->handlertable;
+-        }
++	if (ft->fptr <= address &&
++	    address < (void *)((char *)ft->fptr + ft->size))
++	{
++	    return ft->handlertable;
++	}
+     }
+     return NULL;
+ }
+@@ -514,11 +687,11 @@
+ 
+     if (bp)         // if not end of call chain
+     {
+-        // Perform sanity checks on new EBP.
+-        // If it is screwed up, terminate() hopefully before we do more damage.
+-        if (bp <= regbp)
+-            // stack should grow to smaller values
+-            terminate();
++	// Perform sanity checks on new EBP.
++	// If it is screwed up, terminate() hopefully before we do more damage.
++	if (bp <= regbp) 
++	    // stack should grow to smaller values
++	    terminate();
+ 
+         *pretaddr = *(unsigned *)(regbp + sizeof(int));
+     }
+@@ -538,28 +711,28 @@
+ 
+     regebp = _EBP;
+ 
+-    while (1)           // for each function on the stack
++    while (1)		// for each function on the stack
+     {
+         struct DHandlerTable *handler_table;
+-        struct FuncTable *pfunc;
+-        struct DHandlerInfo *phi;
+-        unsigned retaddr;
++	struct FuncTable *pfunc;
++	struct DHandlerInfo *phi;
++	unsigned retaddr;
+         unsigned funcoffset;
+-        unsigned spoff;
+-        unsigned retoffset;
++	unsigned spoff;
++	unsigned retoffset;
+         int index;
+         int dim;
+-        int ndx;
+-        int prev_ndx;
++	int ndx;
++	int prev_ndx;
+ 
+         regebp = __eh_find_caller(regebp,&retaddr);
+-        if (!regebp)
++        if (!regebp) 
+             // if end of call chain
+             break;
+-
++        
+         handler_table = __eh_finddata((void *)retaddr);   // find static data associated with function
+         if (!handler_table)         // if no static data
+-        {
++        {   
+             continue;
+         }
+         funcoffset = (unsigned)handler_table->fptr;
+@@ -576,80 +749,80 @@
+         dim = handler_table->nhandlers;
+         index = -1;
+         for (int i = 0; i < dim; i++)
+-        {
+-            phi = &handler_table->handler_info[i];
++        {   
++	    phi = &handler_table->handler_info[i];
+ 
+             if ((unsigned)retaddr >= funcoffset + phi->offset)
+                 index = i;
+         }
+ 
+-        // walk through handler table, checking each handler
+-        // with an index smaller than the current table_index
+-        for (ndx = index; ndx != -1; ndx = prev_ndx)
+-        {
+-            phi = &handler_table->handler_info[ndx];
+-            prev_ndx = phi->prev_index;
+-            if (phi->cioffset)
+-            {
+-                // this is a catch handler (no finally)
+-                struct DCatchInfo *pci;
+-                int ncatches;
+-                int i;
++	// walk through handler table, checking each handler
++	// with an index smaller than the current table_index
++	for (ndx = index; ndx != -1; ndx = prev_ndx)
++	{
++	    phi = &handler_table->handler_info[ndx];
++	    prev_ndx = phi->prev_index;
++	    if (phi->cioffset)
++	    {
++		// this is a catch handler (no finally)
++		struct DCatchInfo *pci;
++		int ncatches;
++		int i;
+ 
+-                pci = (struct DCatchInfo *)((char *)handler_table + phi->cioffset);
+-                ncatches = pci->ncatches;
+-                for (i = 0; i < ncatches; i++)
+-                {
+-                    struct DCatchBlock *pcb;
+-                    ClassInfo *ci = **(ClassInfo ***)h;
++		pci = (struct DCatchInfo *)((char *)handler_table + phi->cioffset);
++		ncatches = pci->ncatches;
++		for (i = 0; i < ncatches; i++)
++		{
++		    struct DCatchBlock *pcb;
++		    ClassInfo *ci = **(ClassInfo ***)h;
+ 
+-                    pcb = &pci->catch_block[i];
++		    pcb = &pci->catch_block[i];
+ 
+-                    if (_d_isbaseof(ci, pcb->type))
+-                    {   // Matched the catch type, so we've found the handler.
++		    if (_d_isbaseof(ci, pcb->type))
++		    {   // Matched the catch type, so we've found the handler.
+ 
+-                        // Initialize catch variable
+-                        *(void **)(regebp + (pcb->bpoffset)) = h;
++			// Initialize catch variable
++			*(void **)(regebp + (pcb->bpoffset)) = h;
+ 
+-                        // Jump to catch block. Does not return.
+-                        {
+-                            unsigned catch_esp;
+-                            fp_t catch_addr;
++			// Jump to catch block. Does not return.
++			{
++			    unsigned catch_esp;
++			    fp_t catch_addr;
+ 
+-                            catch_addr = (fp_t)(pcb->code);
+-                            catch_esp = regebp - handler_table->espoffset - sizeof(fp_t);
+-                            _asm
+-                            {
+-                                mov     EAX,catch_esp
+-                                mov     ECX,catch_addr
+-                                mov     [EAX],ECX
+-                                mov     EBP,regebp
+-                                mov     ESP,EAX         // reset stack
+-                                ret                     // jump to catch block
+-                            }
+-                        }
+-                    }
+-                }
+-            }
+-            else if (phi->finally_code)
+-            {   // Call finally block
+-                // Note that it is unnecessary to adjust the ESP, as the finally block
+-                // accesses all items on the stack as relative to EBP.
++			    catch_addr = (fp_t)(pcb->code);
++			    catch_esp = regebp - handler_table->espoffset - sizeof(fp_t);
++			    _asm
++			    {
++				mov	EAX,catch_esp
++				mov	ECX,catch_addr
++				mov	[EAX],ECX
++				mov	EBP,regebp
++				mov	ESP,EAX		// reset stack
++				ret			// jump to catch block
++			    }
++			}
++		    }
++		}
++	    }
++	    else if (phi->finally_code)
++	    {	// Call finally block
++		// Note that it is unnecessary to adjust the ESP, as the finally block
++		// accesses all items on the stack as relative to EBP.
+ 
+-                void *blockaddr = phi->finally_code;
++		void *blockaddr = phi->finally_code;
+ 
+-                _asm
+-                {
+-                    push        EBX
+-                    mov         EBX,blockaddr
+-                    push        EBP
+-                    mov         EBP,regebp
+-                    call        EBX
+-                    pop         EBP
+-                    pop         EBX
+-                }
+-            }
+-        }
++		_asm
++		{
++		    push	EBX
++		    mov		EBX,blockaddr
++		    push	EBP
++		    mov		EBP,regebp
++		    call	EBX
++		    pop		EBP
++		    pop		EBX
++		}
++	    }
++	}
+     }
+ }
+ 
+Index: lib/compiler/dmd/imagehlp.lib
+===================================================================
+Cannot display: file marked as a binary type.
+svn:mime-type = application/octet-stream
+
+Property changes on: lib\compiler\dmd\imagehlp.lib
+___________________________________________________________________
+Name: svn:mime-type
+   + application/octet-stream
+
+Index: lib/compiler/dmd/dmain2.d
+===================================================================
+--- lib/compiler/dmd/dmain2.d	(revision 2567)
++++ lib/compiler/dmd/dmain2.d	(working copy)
+@@ -27,6 +27,11 @@
+     pragma(lib, "usergdi32.lib"); // links Tango's Win32 library to reduce EXE size
+ }
+ 
++// backtrace hack
++extern (Windows) int backtrace_handler(void* e);
++extern (Windows) void SetUnhandledExceptionFilter(void* p);
++// ----
++
+ extern (C) void _STI_monitor_staticctor();
+ extern (C) void _STD_monitor_staticdtor();
+ extern (C) void _STI_critical_init();
+@@ -213,48 +218,6 @@
+         args = am[0 .. argc];
+     }
+ 
+-    bool trapExceptions = rt_trapExceptions;
+-
+-    void tryExec(void delegate() dg)
+-    {
+-
+-        if (trapExceptions)
+-        {
+-            try
+-            {
+-                dg();
+-            }
+-            catch (Exception e)
+-            {
+-                while (e)
+-                {
+-                    if (e.file)
+-                    {
+-                       // fprintf(stderr, "%.*s(%u): %.*s\n", e.file, e.line, e.msg);
+-                       console (e.classinfo.name)("@")(e.file)("(")(e.line)("): ")(e.msg)("\n");
+-                    }
+-                    else
+-                    {
+-                       // fprintf(stderr, "%.*s\n", e.toUtf8());
+-                       console (e.classinfo.name)(": ")(e.toUtf8)("\n");
+-                    }
+-                    e = e.next;
+-                }
+-                result = EXIT_FAILURE;
+-            }
+-            catch (Object o)
+-            {
+-                // fprintf(stderr, "%.*s\n", o.toUtf8());
+-                console (o.toUtf8)("\n");
+-                result = EXIT_FAILURE;
+-            }
+-        }
+-        else
+-        {
+-            dg();
+-        }
+-    }
+-
+     // NOTE: The lifetime of a process is much like the lifetime of an object:
+     //       it is initialized, then used, then destroyed.  If initialization
+     //       fails, the successive two steps are never reached.  However, if
+@@ -269,22 +232,22 @@
+         result = main(args);
+     }
+ 
+-    void runAll()
+     {
+         gc_init();
+         version (Win32)
+             _minit();
++
++		SetUnhandledExceptionFilter(cast(void*)&backtrace_handler);
++
+         _moduleCtor();
+         if (runModuleUnitTests())
+-            tryExec(&runMain);
++            runMain();
+         thread_joinAll();
+         _d_isHalting = true;
+         _moduleDtor();
+         gc_term();
+     }
+ 
+-    tryExec(&runAll);
+-
+     version (linux)
+     {
+         _STD_critical_term();
+Index: lib/compiler/dmd/demangle.d
+===================================================================
+--- lib/compiler/dmd/demangle.d	(revision 0)
++++ lib/compiler/dmd/demangle.d	(revision 0)
+@@ -0,0 +1,491 @@
++// Written in the D programming language.
++
++/*
++ * Placed into the Public Domain.
++ */
++
++/****
++ * Demangle D mangled names.
++ * Macros:
++ *	WIKI = Phobos/StdDemangle
++ */
++
++/* Authors:
++ *	Walter Bright, Digital Mars, www.digitalmars.com
++ *	Thomas Kuehne
++ *	Frits van Bommel
++ */
++
++module demangle;
++
++//debug=demangle;		// uncomment to turn on debugging printf's
++
++private {
++	import tango.stdc.ctype;
++	import tango.text.convert.Float : toUtf8;
++	
++	alias char[] string;
++}
++
++
++private class MangleException : Exception
++{
++    this()
++    {
++	super("MangleException");
++    }
++}
++
++/*****************************
++ * Demangle D mangled names.
++ *
++ * If it is not a D mangled name, it returns its argument name.
++ * Example:
++ *	This program reads standard in and writes it to standard out,
++ *	pretty-printing any found D mangled names.
++-------------------
++import std.stdio;
++import std.ctype;
++import std.demangle;
++
++int main()
++{   char[] buffer;
++    bool inword;
++    int c;
++
++    while ((c = fgetc(stdin)) != EOF)
++    {
++	if (inword)
++	{
++	    if (c == '_' || isalnum(c))
++		buffer ~= cast(char) c;
++	    else
++	    {
++		inword = false;
++		writef(demangle(buffer), cast(char) c);
++	    }
++	}
++	else
++	{   if (c == '_' || isalpha(c))
++	    {	inword = true;
++		buffer.length = 0;
++		buffer ~= cast(char) c;
++	    }
++	    else
++		writef(cast(char) c);
++	}
++    }
++    if (inword)
++	writef(demangle(buffer));
++    return 0;
++}
++-------------------
++ */
++
++string demangle(string name)
++{
++    size_t ni = 2;
++    string delegate() fparseTemplateInstanceName;
++
++    static void error()
++    {
++	//writefln("error()");
++	throw new MangleException();
++    }
++
++    static ubyte ascii2hex(char c)
++    {
++	if (!isxdigit(c))
++	    error();
++	return cast(ubyte)
++	      ( (c >= 'a') ? c - 'a' + 10 :
++		(c >= 'A') ? c - 'A' + 10 :
++			     c - '0'
++	      );
++    }
++
++    size_t parseNumber()
++    {
++	//writefln("parseNumber() %d", ni);
++	size_t result;
++
++	while (ni < name.length && isdigit(name[ni]))
++	{   int i = name[ni] - '0';
++	    if (result > (size_t.max - i) / 10)
++		error();
++	    result = result * 10 + i;
++	    ni++;
++	}
++	return result;
++    }
++
++    string parseSymbolName()
++    {
++	//writefln("parseSymbolName() %d", ni);
++	size_t i = parseNumber();
++	if (ni + i > name.length)
++	    error();
++	string result;
++	if (i >= 5 &&
++	    name[ni] == '_' &&
++	    name[ni + 1] == '_' &&
++	    name[ni + 2] == 'T')
++	{
++	    size_t nisave = ni;
++	    bool err;
++	    ni += 3;
++	    try
++	    {
++		result = fparseTemplateInstanceName();
++		if (ni != nisave + i)
++		    err = true;
++	    }
++	    catch (MangleException me)
++	    {
++		err = true;
++	    }
++	    ni = nisave;
++	    if (err)
++		goto L1;
++	    goto L2;
++	}
++      L1:
++	result = name[ni .. ni + i];
++      L2:
++	ni += i;
++	return result;
++    }
++
++    string parseQualifiedName()
++    {
++	//writefln("parseQualifiedName() %d", ni);
++	string result;
++
++	while (ni < name.length && isdigit(name[ni]))
++	{
++	    if (result.length)
++		result ~= ".";
++	    result ~= parseSymbolName();
++	}
++	return result;
++    }
++
++    string parseType(string identifier = null)
++    {
++	//writefln("parseType() %d", ni);
++	int isdelegate = 0;
++	bool hasthisptr = false; /// For function/delegate types: expects a 'this' pointer as last argument
++      Lagain:
++	if (ni >= name.length)
++	    error();
++	string p;
++	switch (name[ni++])
++	{
++	    case 'v':	p = "void";	goto L1;
++	    case 'b':	p = "bool";	goto L1;
++	    case 'g':	p = "byte";	goto L1;
++	    case 'h':	p = "ubyte";	goto L1;
++	    case 's':	p = "short";	goto L1;
++	    case 't':	p = "ushort";	goto L1;
++	    case 'i':	p = "int";	goto L1;
++	    case 'k':	p = "uint";	goto L1;
++	    case 'l':	p = "long";	goto L1;
++	    case 'm':	p = "ulong";	goto L1;
++	    case 'f':	p = "float";	goto L1;
++	    case 'd':	p = "double";	goto L1;
++	    case 'e':	p = "real";	goto L1;
++	    case 'o':	p = "ifloat";	goto L1;
++	    case 'p':	p = "idouble";	goto L1;
++	    case 'j':	p = "ireal";	goto L1;
++	    case 'q':	p = "cfloat";	goto L1;
++	    case 'r':	p = "cdouble";	goto L1;
++	    case 'c':	p = "creal";	goto L1;
++	    case 'a':	p = "char";	goto L1;
++	    case 'u':	p = "wchar";	goto L1;
++	    case 'w':	p = "dchar";	goto L1;
++
++	    case 'A':				// dynamic array
++		p = parseType() ~ "[]";
++		goto L1;
++
++	    case 'P':				// pointer
++		p = parseType() ~ "*";
++		goto L1;
++
++	    case 'G':				// static array
++	    {	size_t ns = ni;
++		parseNumber();
++		size_t ne = ni;
++		p = parseType() ~ "[" ~ name[ns .. ne] ~ "]";
++		goto L1;
++	    }
++
++	    case 'H':				// associative array
++		p = parseType();
++		p = parseType() ~ "[" ~ p ~ "]";
++		goto L1;
++
++	    case 'D':				// delegate
++		isdelegate = 1;
++		goto Lagain;
++
++	    case 'M':
++		hasthisptr = true;
++		goto Lagain;
++
++	    case 'F':				// D function
++	    case 'U':				// C function
++	    case 'W':				// Windows function
++	    case 'V':				// Pascal function
++	    case 'R':				// C++ function
++	    {	char mc = name[ni - 1];
++		string args;
++
++		while (1)
++		{
++		    if (ni >= name.length)
++			error();
++		    char c = name[ni];
++		    if (c == 'Z')
++			break;
++		    if (c == 'X')
++		    {
++			if (!args.length) error();
++			args ~= " ...";
++			break;
++		    }
++		    if (args.length)
++			args ~= ", ";
++		    switch (c)
++		    {
++			case 'J':
++			    args ~= "out ";
++			    ni++;
++			    goto default;
++
++			case 'K':
++			    args ~= "inout ";
++			    ni++;
++			    goto default;
++
++			case 'L':
++			    args ~= "lazy ";
++			    ni++;
++			    goto default;
++
++			default:
++			    args ~= parseType();
++			    continue;
++
++			case 'Y':
++			    args ~= "...";
++			    break;
++		    }
++		    break;
++		}
++		if (hasthisptr || isdelegate) {
++		    // add implicit 'this'/context pointer
++		    if (args.length)
++			args ~= ", ";
++		    args ~= "void*";
++		}
++		ni++;
++		if (!isdelegate && identifier.length)
++		{
++		    switch (mc)
++		    {
++			case 'F': p = null;                break; // D function
++			case 'U': p = "extern (C) ";       break; // C function
++			case 'W': p = "extern (Windows) "; break; // Windows function
++			case 'V': p = "extern (Pascal) ";  break; // Pascal function
++			default:  assert(0);
++		    }
++		    p ~= parseType() ~ " " ~ identifier ~ "(" ~ args ~ ")";
++		    return p;
++		}
++		p = parseType() ~
++		    (isdelegate ? " delegate(" : " function(") ~
++		    args ~
++		    ")";
++		isdelegate = 0;
++		goto L1;
++	    }
++
++	    case 'C':	p = "class ";	goto L2;
++	    case 'S':	p = "struct ";	goto L2;
++	    case 'E':	p = "enum ";	goto L2;
++	    case 'T':	p = "typedef ";	goto L2;
++
++	    L2:	p ~= parseQualifiedName();
++		goto L1;
++
++	    L1:
++		if (isdelegate)
++		    error();		// 'D' must be followed by function
++		if (identifier.length)
++		    p ~= " " ~ identifier;
++		return p;
++
++	    default:
++		size_t i = ni - 1;
++		ni = name.length;
++		p = name[i .. length];
++		goto L1;
++	}
++	assert(0);
++    }
++
++    string parseTemplateInstanceName()
++    {
++	auto result = parseSymbolName() ~ "!(";
++	int nargs;
++
++	while (1)
++	{   size_t i;
++
++	    if (ni >= name.length)
++		error();
++	    if (nargs && name[ni] != 'Z')
++		result ~= ", ";
++	    nargs++;
++	    switch (name[ni++])
++	    {
++		case 'T':
++		    result ~= parseType();
++		    continue;
++
++		case 'V':
++
++		    void getReal()
++		    {   real r;
++			ubyte *p = cast(ubyte *)&r;
++
++			if (ni + 10 * 2 > name.length)
++			    error();
++			for (i = 0; i < 10; i++)
++			{   ubyte b;
++
++			    b = cast(ubyte)
++				(
++				 (ascii2hex(name[ni + i * 2]) << 4) +
++				  ascii2hex(name[ni + i * 2 + 1])
++				);
++			    p[i] = b;
++			}
++			result ~= toUtf8(r);
++			ni += 10 * 2;
++		    }
++
++		    result ~= parseType() ~ " ";
++		    if (ni >= name.length)
++			error();
++		    switch (name[ni++])
++		    {
++			case '0': case '1': case '2': case '3': case '4':
++			case '5': case '6': case '7': case '8': case '9':
++			    i = ni - 1;
++			    while (ni < name.length && isdigit(name[ni]))
++				ni++;
++			    result ~= name[i .. ni];
++			    break;
++
++			case 'N':
++			    i = ni;
++			    while (ni < name.length && isdigit(name[ni]))
++				ni++;
++			    if (i == ni)
++				error();
++			    result ~= "-" ~ name[i .. ni];
++			    break;
++
++			case 'n':
++			    result ~= "null";
++			    break;
++
++			case 'e':
++			    getReal();
++			    break;
++
++			case 'c':
++			    getReal();
++			    result ~= '+';
++			    getReal();
++			    result ~= 'i';
++			    break;
++
++			case 'a':
++			case 'w':
++			case 'd':
++			{   char m = name[ni - 1];
++			    if (m == 'a')
++				m = 'c';
++			    size_t n = parseNumber();
++			    if (ni >= name.length || name[ni++] != '_' ||
++				ni + n * 2 > name.length)
++				error();
++			    result ~= '"';
++			    for (i = 0; i < n; i++)
++			    {	char c;
++
++				c = (ascii2hex(name[ni + i * 2]) << 4) +
++				     ascii2hex(name[ni + i * 2 + 1]);
++				result ~= c;
++			    }
++			    ni += n * 2;
++			    result ~= '"';
++			    result ~= m;
++			    break;
++			}
++
++			default:
++			    error();
++			    break;
++		    }
++		    continue;
++
++		case 'S':
++		    result ~= parseSymbolName();
++		    continue;
++
++		case 'Z':
++		    break;
++
++		default:
++		    error();
++	    }
++	    break;
++	}
++	result ~= ")";
++	return result;
++    }
++
++    if (name.length < 3 ||
++	name[0] != '_' ||
++	name[1] != 'D' ||
++	!isdigit(name[2]))
++    {
++	goto Lnot;
++    }
++
++    fparseTemplateInstanceName = &parseTemplateInstanceName;
++
++    try
++    {
++	auto result = parseQualifiedName();
++	result = parseType(result);
++	while(ni < name.length){
++		result ~= " . " ~ parseType(parseQualifiedName());
++	}
++
++	if (ni != name.length)
++	    goto Lnot;
++	return result;
++    }
++    catch (MangleException e)
++    {
++    }
++
++Lnot:
++    // Not a recognized D mangled name; so return original
++    return name;
++}
+Index: lib/compiler/dmd/win32.mak
+===================================================================
+--- lib/compiler/dmd/win32.mak	(revision 2567)
++++ lib/compiler/dmd/win32.mak	(working copy)
+@@ -17,7 +17,7 @@
+ CFLAGS=-mn -6 -r
+ #CFLAGS=-g -mn -6 -r
+ 
+-DFLAGS=-release -O -inline -w
++DFLAGS=-release -O -inline
+ #DFLAGS=-g -release -w
+ 
+ TFLAGS=-O -inline -w
+@@ -77,7 +77,10 @@
+     genobj.obj \
+     qsort.obj \
+     switch.obj \
+-    trace.obj
++    trace.obj \
++	reflection.obj \
++	dbginfo.obj \
++	demangle.obj
+ # NOTE: trace.obj and cover.obj are not necessary for a successful build
+ #       as both are used for debugging features (profiling and coverage)
+ # NOTE: a pre-compiled minit.obj has been provided in dmd for Win32 and
+@@ -139,7 +142,7 @@
+ 
+ dmd.lib : $(ALL_OBJS)
+ 	$(RM) $@
+-	$(LC) -c -n $@ $(ALL_OBJS) minit.obj
++	$(LC) -c -n $@ $(ALL_OBJS) minit.obj imagehlp.lib
+ 
+ dmd.doc : $(ALL_DOCS)
+ 	@echo No documentation available.
+Index: lib/compiler/dmd/reflection.c
+===================================================================
+--- lib/compiler/dmd/reflection.c	(revision 0)
++++ lib/compiler/dmd/reflection.c	(revision 0)
+@@ -0,0 +1,143 @@
++#define _GNU_SOURCE
++
++#include <stdio.h>
++#include <stdlib.h>
++#include <string.h>
++#include <ctype.h>
++
++# include <windows.h>
++# include <imagehlp.h>
++# include <tlhelp32.h>
++
++static void winerror(const char* msg) {
++    LPVOID lpMsgBuf;
++
++    //ここにチェックしたい処理を書く
++
++    FormatMessage(              //エラー表示文字列作成
++        FORMAT_MESSAGE_ALLOCATE_BUFFER |
++        FORMAT_MESSAGE_FROM_SYSTEM |
++        FORMAT_MESSAGE_IGNORE_INSERTS,
++        NULL, GetLastError(),
++        MAKELANGID(LANG_NEUTRAL, SUBLANG_DEFAULT),
++        (LPTSTR) &lpMsgBuf, 0, NULL);
++
++    printf("%s: %s", msg, (const char*)lpMsgBuf);
++//    MessageBox(NULL, (const char*)lpMsgBuf, NULL, MB_OK);   //メッセージ表示
++
++    LocalFree(lpMsgBuf);
++}
++
++typedef void (*regsym_cb) (const char*, void*);
++
++/*
++static int load_arch(regsym_cb fp, MODULEENTRY32* me) {
++    char buf[1024];
++    FILE* f;
++    if (!GetModuleFileName(me->hModule, buf, 1024)) {
++        winerror("GetModuleFileName");
++        return 1;
++    }
++    f = fopen(buf, "rb");
++    if (f) {
++        fclose(f);
++        return read_symbols(fp, buf, (int)me->modBaseAddr);
++    }
++    printf("%s: not found. Is it WINE?\n", buf);
++    return 0;
++}
++*/
++
++char program_name[4096];
++
++static int __stdcall regist_loaded(LPSTR name, ULONG addr,
++                                   ULONG size, PVOID ctx)
++{
++    regsym_cb fp = (regsym_cb)ctx;
++//    printf("[C] %x %s\n", addr, name);
++    fp(name, (void*)addr);
++    return TRUE;
++}
++
++static int init_arch(regsym_cb fp) {
++    HANDLE h;
++    DWORD base;
++    HANDLE ss;
++    MODULEENTRY32 me;
++    char buf[4096];
++
++    h = GetCurrentProcess();
++    if (!SymInitialize(h, NULL, FALSE)) {
++        winerror("SymInitialize");
++        return 1;
++    }
++    ss = CreateToolhelp32Snapshot(TH32CS_SNAPMODULE, 0);
++    if (!ss) {
++        perror("CreateToolhelp32Snapshot");
++        return 1;
++    }
++    me.dwSize = 1024;
++    if (!Module32First(ss, &me)) {
++        perror("Module32First");
++        return 1;
++    }
++    GetModuleFileName(me.hModule, buf, 4096);
++    strcpy(program_name, buf);
++    base = SymLoadModule(h, NULL, buf, NULL, 0, 0);
++    if (base == 0) {
++        winerror("SymLoadModule");
++        return 1;
++    }
++    if (!SymEnumerateSymbols(h, base, regist_loaded, fp)) {
++        winerror("SymEnemerateSymbols");
++        return 1;
++    }
++/*
++    if (!SymUnloadModule(h, base)) {
++        winerror("SymUnloadModule");
++        return 1;
++    }
++*/
++
++//    SymEnemerateSymbols(h, 
++/*
++    while (1) {
++        if (!SymGetSymNext(h, &sym)) {
++            winerror("SymGetSymNext");
++            return 1;
++        }
++        fp(sym.Name, sym.Address);
++    }
++*/
++
++/*
++//    printf("entering win32 initialize\n");
++    ss = CreateToolhelp32Snapshot(TH32CS_SNAPMODULE, 0);
++    if (!ss) {
++        perror("CreateToolhelp32Snapshot");
++        return 1;
++    }
++    me.dwSize = 1024;
++    if (!Module32First(ss, &me)) {
++        perror("Module32First");
++        return 1;
++    }
++    if (load_arch(fp, &me)) return 1;
++    for (;;) {
++        me.dwSize = 1024;
++        if (!Module32Next(ss, &me)) {
++            return 0;
++        }
++        if (load_arch(fp, &me)) return 1;
++    }
++*/
++    return 0;
++}
++
++int reflection_init(regsym_cb fp) {
++    int ret;
++
++    ret = init_arch(fp);
++
++    return ret;
++}
