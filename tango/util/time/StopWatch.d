@@ -123,8 +123,6 @@ public struct StopWatch
                         microsecond = 1_000_000.0 / freq;       
                         multiplier = 1.0 / freq;       
                 }
-
-                started = timer;
         }
 
         /***********************************************************************
