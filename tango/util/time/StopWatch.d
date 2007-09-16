@@ -67,6 +67,9 @@ public struct StopWatch
         private ulong  started;
         private static Interval multiplier = 1.0 / 1_000_000.0;
 
+        version (Win32)
+                 private static Interval microsecond;
+
         /***********************************************************************
                 
                 Start the timer
@@ -91,6 +94,21 @@ public struct StopWatch
 
         /***********************************************************************
                 
+                Return elapsed time since the last start() as microseconds
+
+        ***********************************************************************/
+        
+        ulong microsec ()
+        {
+                version (Posix)
+                         return (timer - started);
+
+                version (Win32)
+                         return cast(ulong) ((timer - started) * microsecond);
+        }
+
+        /***********************************************************************
+                
                 Setup timing information for later use
 
         ***********************************************************************/
@@ -102,8 +120,11 @@ public struct StopWatch
                         ulong freq;
 
                         QueryPerformanceFrequency (&freq);
+                        microsecond = 1_000_000.0 / freq;       
                         multiplier = 1.0 / freq;       
                 }
+
+                started = timer;
         }
 
         /***********************************************************************
