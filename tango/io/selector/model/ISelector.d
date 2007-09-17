@@ -390,8 +390,7 @@ interface ISelector
      *
      * Returns:
      * The amount of conduits that have received events; 0 if no conduits
-     * have received events within the specified timeout; and -1 if the
-     * wakeup() method has been called from another thread.
+     * have received events within the specified timeout.
      */
     public abstract int select();
 
@@ -408,24 +407,9 @@ interface ISelector
      *
      * Returns:
      * The amount of conduits that have received events; 0 if no conduits
-     * have received events within the specified timeout; and -1 if the
-     * wakeup() method has been called from another thread.
+     * have received events within the specified timeout.
      */
     public abstract int select(Interval timeout);
-
-    /**
-     * Causes the first call to select() that has not yet returned to return
-     * immediately.
-     *
-     * If another thread is currently blocked in a call to any of the
-     * select() methods then that call will return immediately. If no
-     * selection operation is currently in progress then the next invocation
-     * of one of these methods will return immediately. In any case the value
-     * returned by that invocation may be non-zero. Subsequent invocations of
-     * the select() methods will block as usual unless this method is invoked
-     * again in the meantime.
-     */
-    // public abstract void wakeup();
 
     /**
      * Return the selection set resulting from the call to any of the select()
