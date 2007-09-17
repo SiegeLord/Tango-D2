@@ -218,7 +218,7 @@ version (linux)
         public void register(ISelectable conduit, Event events, Object attachment = null)
         in
         {
-            assert(conduit !is null && conduit.fileHandle() > 0);
+            assert(conduit !is null && conduit.fileHandle() >= 0);
         }
         body
         {
@@ -275,7 +275,7 @@ version (linux)
         public void reregister(ISelectable conduit, Event events, Object attachment = null)
         in
         {
-            assert(conduit !is null && conduit.fileHandle() > 0);
+            assert(conduit !is null && conduit.fileHandle() >= 0);
         }
         body
         {
