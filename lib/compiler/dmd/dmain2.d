@@ -179,7 +179,7 @@ extern (C) int main(int argc, char **argv)
         wchar_t*  wcbuf = GetCommandLineW();
         size_t    wclen = wcslen(wcbuf);
         int       wargc = 0;
-        wchar_t** wargs = CommandLineToArgvW(GetCommandLineW(), &wargc);
+        wchar_t** wargs = CommandLineToArgvW(wcbuf, &wargc);
         assert(wargc == argc);
 
         char*     cargp = null;
