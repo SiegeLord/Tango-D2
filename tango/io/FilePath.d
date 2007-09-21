@@ -107,6 +107,18 @@ class FilePath : PathView
 
         /***********************************************************************
 
+                As below, but with no initial content. Use set() or its
+                opAssign() alias to populate the path.
+
+        ***********************************************************************/
+
+        this ()
+        {
+                set (null, false);
+        }
+
+        /***********************************************************************
+
                 Create a FilePath from a copy of the provided string.
 
                 FilePath assumes both path & name are present, and therefore
@@ -366,20 +378,6 @@ class FilePath : PathView
 
         /***********************************************************************
 
-                Sidestep the normal lookup for paths that are known to 
-                be folders. Where folder is true, file-system lookups 
-                will be skipped.
-
-        ***********************************************************************/
-
-        final FilePath isFolder (bool folder)
-        {
-                dir_ = folder;
-                return this;
-        }
-
-        /***********************************************************************
-
                 Reset the content of this path, and reparse. When enabled, 
                 option 'native' will normalize path separators to those of
                 the native OS
@@ -391,13 +389,29 @@ class FilePath : PathView
                 end_ = path.length;
 
                 expand (end_);
-                fp[0 .. end_] = path;
-
-                if (native)
-                    normalize (fp [0 .. end_]);
+                if (end_)
+                   {
+                   fp[0 .. end_] = path;
+                   if (native)
+                       normalize (fp [0 .. end_]);
+                   }
 
                 fp[end_] = '\0';
                 return parse;
+        }
+
+        /***********************************************************************
+
+                Sidestep the normal lookup for paths that are known to 
+                be folders. Where folder is true, file-system lookups 
+                will be skipped.
+
+        ***********************************************************************/
+
+        final FilePath isFolder (bool folder)
+        {
+                dir_ = folder;
+                return this;
         }
 
         /***********************************************************************
@@ -1747,7 +1761,7 @@ debug (UnitTest)
                 assert (fp.pop.toUtf8 == r"C:");
                 assert (fp.pop.toUtf8 == r"C:");
 
-                fp = new FilePath(null);
+                fp = new FilePath;
                 fp = r"C:\home\foo\bar\john\";
 
                 assert (fp.isAbsolute);
