@@ -142,12 +142,12 @@ extern (C) void _d_delclass(Object* p)
     {
         debug(PRINTF) printf("_d_delclass(%p)\n", *p);
 
-        rt_finalize(cast(void*) *p);
-
         ClassInfo **pc = cast(ClassInfo **)*p;
         if (*pc)
         {
             ClassInfo c = **pc;
+
+            rt_finalize(cast(void*) *p);
 
             if (c.deallocator)
             {
@@ -156,6 +156,10 @@ extern (C) void _d_delclass(Object* p)
                 *p = null;
                 return;
             }
+        }
+        else
+        {
+            rt_finalize(cast(void*) *p);
         }
         gc_free(cast(void*) *p);
         *p = null;
