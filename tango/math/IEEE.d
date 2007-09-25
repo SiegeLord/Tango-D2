@@ -299,6 +299,13 @@ unittest {
     a *= 0.0L;
     assert(ieeeFlags.invalid);
     assert(isNaN(a));
+    a = real.max;
+    a *= 2;
+    assert(ieeeFlags.overflow);
+    a = real.min * real.epsilon;
+    a /= 99;
+    assert(ieeeFlags.underflow);
+    assert(ieeeFlags.inexact);
 
     int r = getIeeeRounding;
     assert(r == RoundingMode.ROUNDTONEAREST);
@@ -678,6 +685,7 @@ unittest {
 /**
  * Returns the positive difference between x and y.
  *
+ * If either of x or y is $(NAN), it will be returned.
  * Returns:
  * $(TABLE_SV
  *  $(SVH Arguments, fdim(x, y))
@@ -687,7 +695,13 @@ unittest {
  */
 real fdim(real x, real y)
 {
-    return (x > y) ? x - y : +0.0;
+    return (x !<= y) ? x - y : +0.0;
+}
+
+debug(UnitTest) {
+unittest {
+    assert(isIdentical(fdim(NaN(0xABC), 58.2), NaN(0xABC)));
+}
 }
 
 /**
@@ -887,6 +901,7 @@ unittest {
     assert(isNaN(NaN(0x12345)));
     assert(isIdentical(3.1 + NaN(0xDEF) * 1i, 3.1 + NaN(0xDEF)*1i));
     assert(!isIdentical(3.1+0.0i, 3.1-0i));
+    assert(!isIdentical(0.0i, 2.5e58i));
 }
 }
 
@@ -1102,7 +1117,7 @@ float nextFloatUp(float x)
 {
     uint *ps = cast(uint *)&x;
 
-    if ((*ps & 0x7FF0_0000) == 0x7FF0_0000) {
+    if ((*ps & 0x7F80_0000) == 0x7F80_0000) {
         // First, deal with NANs and infinity
         if (x == -x.infinity) return -x.max;
         return x; // +INF and NAN are unchanged.
@@ -1118,7 +1133,6 @@ float nextFloatUp(float x)
     }
     return x;
 }
-
 
 debug(UnitTest) {
 unittest {
@@ -1164,15 +1178,17 @@ unittest {
     assert( nextDoubleUp(1) == 1.0 + double.epsilon );
     assert( nextDoubleUp(2.0-double.epsilon) == 2.0 );
     assert( nextDoubleUp(double.max) == double.infinity );
-    assert( nextDoubleUp(double.infinity)==double.infinity );
 
+    assert(isIdentical(nextFloatUp(NaN(0xABC)), NaN(0xABC)));
     assert( nextFloatUp(-float.min) == -float.min*(1-float.epsilon) );
     assert( nextFloatUp(1.0) == 1.0+float.epsilon );
     assert( nextFloatUp(-0.0) == float.min*float.epsilon);
+    assert( nextFloatUp(float.infinity)==float.infinity );
 
     assert(nextDown(1.0+real.epsilon)==1.0);
     assert(nextDoubleDown(1.0+double.epsilon)==1.0);
     assert(nextFloatDown(1.0+float.epsilon)==1.0);
+    assert(nextafter(1.0+real.epsilon, -real.infinity)==1.0);
 }
 }
 
@@ -1390,7 +1406,9 @@ unittest
    assert(feqrel(1.5+real.epsilon,1.5)==real.mant_dig-1);
    assert(feqrel(1.5-real.epsilon,1.5)==real.mant_dig-1);
    assert(feqrel(1.5-real.epsilon,1.5+real.epsilon)==real.mant_dig-2);
-
+   
+   assert(feqrel(real.min/8,real.min/17)==3);;
+   
    // Numbers that are close
    assert(feqrel(0x1.Bp+84, 0x1.B8p+84)==5);
    assert(feqrel(0x1.8p+10, 0x1.Cp+10)==2);

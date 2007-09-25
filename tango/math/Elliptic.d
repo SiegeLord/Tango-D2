@@ -75,7 +75,7 @@ real ellipticF(real phi, real m )
     int d, mod, sign, npio2;
 
     if( m == 0.0L )
-        return( phi );
+        return phi;
     a = 1.0L - m;
     if( a == 0.0L ) {
         if ( fabs(phi) >= PI_2 )  return real.infinity;
@@ -338,6 +338,7 @@ const real [] Q = [
 }
 
 unittest {
+    assert( ellipticF(1, 0)==1);
     assert(ellipticEComplete(0)==1);
     assert(ellipticEComplete(1)==PI_2);
     assert(feqrel(ellipticKComplete(1),PI_2)>= real.mant_dig-1);

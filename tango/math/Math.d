@@ -1018,12 +1018,14 @@ creal sqrt(creal z)
     return c;
 }
 
+import tango.stdc.stdio;
 debug(UnitTest) {
 unittest {
     // NaN payloads
     assert(isIdentical(sqrt(NaN(0xABC)), NaN(0xABC)));
     assert(sqrt(-1+0i) == 1i);
     assert(isIdentical(sqrt(0-0i), 0-0i));
+    assert(cfeqrel(sqrt(4+16i)*sqrt(4+16i), 4+16i)>=real.mant_dig-2);
 }
 }
 
@@ -1274,8 +1276,8 @@ creal log(creal z)
 }
 
 debug(UnitTest) {
-unittest {
-    /*
+private {    
+/*
  * feqrel for complex numbers. Returns the worst relative
  * equality of the two components.
  */
@@ -1284,6 +1286,8 @@ int cfeqrel(creal a, creal b)
     int intmin(int a, int b) { return a<b? a: b; }
     return intmin(feqrel(a.re, b.re), feqrel(a.im, b.im));
 }
+}
+unittest {
 
   assert(log(3.0L +0i) == log(3.0L)+0i);
   assert(cfeqrel(log(0.0L-2i),( log(2.0L)-PI_2*1i)) >= real.mant_dig-10);
