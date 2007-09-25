@@ -948,6 +948,105 @@ else
 
 
 ////////////////////////////////////////////////////////////////////////////////
+// Contains
+////////////////////////////////////////////////////////////////////////////////
+
+
+version( DDoc )
+{
+    /**
+     * Performs a linear scan of buf from $(LB)0 .. buf.length$(RP), returning
+     * true if an element matching pat is found.  Comparisons will be performed
+     * using the supplied predicate or '<' if none is supplied.
+     *
+     * Params:
+     *  buf  = The array to search.
+     *  pat  = The pattern to search for.
+     *  pred = The evaluation predicate, which should return true if e1 is
+     *         equal to e2 and false if not.  This predicate may be any
+     *         callable type.
+     *
+     * Returns:
+     *  True if an element equivalent to pat is found, false if not.
+     */
+    size_t contains( Elem[] buf, Elem pat, Pred2E pred = Pred2E.init );
+
+
+    /**
+     * Performs a linear scan of buf from $(LB)0 .. buf.length$(RP), returning
+     * true if a sequence matching pat is found.  Comparisons will be performed
+     * using the supplied predicate or '<' if none is supplied.
+     *
+     * Params:
+     *  buf  = The array to search.
+     *  pat  = The pattern to search for.
+     *  pred = The evaluation predicate, which should return true if e1 is
+     *         equal to e2 and false if not.  This predicate may be any
+     *         callable type.
+     *
+     * Returns:
+     *  True if an element equivalent to pat is found, false if not.
+     */
+    size_t contains( Elem[] buf, Elem[] pat, Pred2E pred = Pred2E.init );
+}
+else
+{
+    template contains( Buf, Pat )
+    {
+        size_t contains( Buf buf, Pat pat )
+        {
+            return find( buf, pat ) != buf.length;
+        }
+    }
+
+
+    template contains( Buf, Pat, Pred )
+    {
+        size_t contains( Buf buf, Pat pat, Pred pred )
+        {
+            return find( buf, pat, pred ) != buf.length;
+        }
+    }
+
+
+    debug( UnitTest )
+    {
+      unittest
+      {
+        // find element
+        assert( !contains( "", 'a' ) );
+        assert(  contains( "abc", 'a' ) );
+        assert(  contains( "abc", 'b' ) );
+        assert(  contains( "abc", 'c' ) );
+        assert( !contains( "abc", 'd' ) );
+
+        // null parameters
+        assert( !contains( "", "" ) );
+        assert( !contains( "a", "" ) );
+        assert( !contains( "", "a" ) );
+
+        // exact match
+        assert(  contains( "abc", "abc" ) );
+
+        // simple substring match
+        assert(  contains( "abc", "a" ) );
+        assert(  contains( "abca", "a" ) );
+        assert(  contains( "abc", "b" ) );
+        assert(  contains( "abc", "c" ) );
+        assert( !contains( "abc", "d" ) );
+
+        // multi-char substring match
+        assert(  contains( "abc", "ab" ) );
+        assert(  contains( "abcab", "ab" ) );
+        assert(  contains( "abc", "bc" ) );
+        assert( !contains( "abc", "ac" ) );
+        assert(  contains( "abrabracadabra", "abracadabra" ) );
+      }
+    }
+}
+
+
+////////////////////////////////////////////////////////////////////////////////
 // Mismatch
 ////////////////////////////////////////////////////////////////////////////////
 
@@ -2268,7 +2367,7 @@ else
 
 
 ////////////////////////////////////////////////////////////////////////////////
-// Contains
+// Includes
 ////////////////////////////////////////////////////////////////////////////////
 
 
@@ -2277,7 +2376,7 @@ version( DDoc )
     /**
      * Performs a parallel linear scan of setA and setB from $(LB)0 .. N$(RP)
      * where N = min$(LP)setA.length, setB.length$(RP), returning true if setA
-     * contains all elements in setB and false if not.  Both setA and setB are
+     * includes all elements in setB and false if not.  Both setA and setB are
      * required to be sorted, and duplicates in setB require an equal number of
      * duplicates in setA.  Comparisons will be performed using the supplied
      * predicate or '<' if none is supplied.
@@ -2290,13 +2389,13 @@ version( DDoc )
      *         callable type.
      *
      * Returns:
-     *  true if setA contains all elements in setB, false if not.
+     *  true if setA includes all elements in setB, false if not.
      */
-    bool contains( Elem[] setA, Elem[] setB, Pred2E pred = Pred2E.init );
+    bool includes( Elem[] setA, Elem[] setB, Pred2E pred = Pred2E.init );
 }
 else
 {
-    template contains_( Elem, Pred = IsLess!(Elem) )
+    template includes_( Elem, Pred = IsLess!(Elem) )
     {
         static assert( isCallableType!(Pred ) );
 
@@ -2320,20 +2419,20 @@ else
     }
 
 
-    template contains( BufA, BufB )
+    template includes( BufA, BufB )
     {
-        bool contains( BufA setA, BufB setB )
+        bool includes( BufA setA, BufB setB )
         {
-            return contains_!(ElemTypeOf!(BufA)).fn( setA, setB );
+            return includes_!(ElemTypeOf!(BufA)).fn( setA, setB );
         }
     }
 
 
-    template contains( BufA, BufB, Pred )
+    template includes( BufA, BufB, Pred )
     {
-        bool contains( BufA setA, BufB setB, Pred pred )
+        bool includes( BufA setA, BufB setB, Pred pred )
         {
-            return contains_!(ElemTypeOf!(BufA), Pred).fn( setA, setB, pred );
+            return includes_!(ElemTypeOf!(BufA), Pred).fn( setA, setB, pred );
         }
     }
 
@@ -2342,15 +2441,15 @@ else
     {
       unittest
       {
-        assert( contains( "abcdefg", "a" ) );
-        assert( contains( "abcdefg", "g" ) );
-        assert( contains( "abcdefg", "d" ) );
-        assert( contains( "abcdefg", "abcdefg" ) );
-        assert( contains( "aaaabbbcdddefgg", "abbbcdefg" ) );
+        assert( includes( "abcdefg", "a" ) );
+        assert( includes( "abcdefg", "g" ) );
+        assert( includes( "abcdefg", "d" ) );
+        assert( includes( "abcdefg", "abcdefg" ) );
+        assert( includes( "aaaabbbcdddefgg", "abbbcdefg" ) );
 
-        assert( !contains( "abcdefg", "aaabcdefg" ) );
-        assert( !contains( "abcdefg", "abcdefggg" ) );
-        assert( !contains( "abbbcdefg", "abbbbcdefg" ) );
+        assert( !includes( "abcdefg", "aaabcdefg" ) );
+        assert( !includes( "abcdefg", "abcdefggg" ) );
+        assert( !includes( "abbbcdefg", "abbbbcdefg" ) );
       }
     }
 }
