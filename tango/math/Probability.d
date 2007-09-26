@@ -88,6 +88,13 @@ real normalDistributionComplInv(real p)
     return -tango.math.ErrorFunction.normalDistributionInvImpl(-p);
 }
 
+debug(UnitTest) {
+unittest {
+    assert(feqrel(normalDistributionInv(normalDistribution(0.1)),0.1)>=real.mant_dig-4);
+    assert(feqrel(normalDistributionComplInv(normalDistributionCompl(0.1)),0.1)>=real.mant_dig-4);
+}
+}
+
 /** Student's t cumulative distribution function
  *
  * Computes the integral from minus infinity to t of the Student
@@ -462,6 +469,12 @@ body {
    return gammaIncompleteCompl( b, a * x );
 }
 
+debug(UnitTest) {
+unittest {
+    assert(gammaDistribution(7,3,0.18)+gammaDistributionCompl(7,3,0.18)==1);
+}
+}
+
 /**********************
  *  Beta distribution and its inverse
  *
@@ -498,6 +511,19 @@ real betaDistributionCompl(real a, real b, real x)
 real betaDistributionInv(real a, real b, real y)
 {
     return betaIncompleteInv(a, b, y);
+}
+
+/** ditto */
+real betaDistributionComplInv(real a, real b, real y)
+{
+    return 1-betaIncompleteInv(b, a, y);
+}
+
+debug(UnitTest) {
+unittest {
+    assert(feqrel(betaDistributionInv(2, 6, betaDistribution(2,6, 0.7L)),0.7L)>=real.mant_dig-3);
+    assert(feqrel(betaDistributionComplInv(1.3, 8, betaDistributionCompl(1.3,8, 0.01L)),0.01L)>=real.mant_dig-4);
+}
 }
 
 /**
