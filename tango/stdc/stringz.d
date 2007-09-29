@@ -19,7 +19,8 @@ module tango.stdc.stringz;
 char* toUtf8z (char[] s)
 {
         if (s.ptr)
-            s ~= '\0';
+            if (! (s.length && s[$-1] is 0))
+                   s ~= '\0';
         return s.ptr;
 }
 
@@ -39,7 +40,8 @@ char[] fromUtf8z (char* s)
 wchar* toUtf16z (wchar[] s)
 {
         if (s.ptr)
-            s ~= "\0"w;
+            if (! (s.length && s[$-1] is 0))
+                   s ~= "\0"w;
         return s.ptr;
 }
 
@@ -82,9 +84,10 @@ debug (UnitTest)
         p = toUtf8z(foo[3..5]);
         assert(strlenz(p) == 2);
 
-        char[] test = "";
+        char[] test = "\0";
         p = toUtf8z(test);
         assert(*p == 0);
+        assert(p == test.ptr);
         }
 }
 
