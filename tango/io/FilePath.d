@@ -94,7 +94,8 @@ class FilePath : PathView
                         folder_,                // path before name
                         suffix_;                // after rightmost '.'
 
-        public alias    set opAssign;           // support filepath = x;
+        public alias    set     opAssign;       // path = x;
+        public alias    append  opCatAssign;    // path ~= x;
 
         /***********************************************************************
 
@@ -202,6 +203,8 @@ class FilePath : PathView
                 Note that this returns a path suitable for splitting into
                 path and name components (there's no trailing separator).
 
+                See pop() also
+
         ***********************************************************************/
 
         final char[] parent ()
@@ -279,7 +282,18 @@ class FilePath : PathView
 
         final override int opEquals (Object o)
         {
-                return (this is o) || (o !is null && toUtf8 == o.toUtf8);
+                return (this is o) || (o && toUtf8 == o.toUtf8);
+        }
+
+        /***********************************************************************
+
+                Does this FilePath equate to the given text?
+
+        ***********************************************************************/
+
+        final override int opEquals (char[] s)
+        {
+                return toUtf8() == s;
         }
 
         /***********************************************************************
@@ -308,17 +322,23 @@ class FilePath : PathView
 
         /***********************************************************************
 
-                Returns true if this FilePath has a parent
+                Returns true if this FilePath has a parent. Note that a 
+                parent is defined by the presence of a path-separator in
+                the path. This means 'foo' within "\foo" is considered a 
+                child of the root
 
         ***********************************************************************/
 
         final bool isChild ()
         {
+                return folder.length > 0;
+/+
                 auto s = folder ();
                 for (int i=s.length; --i > 0;)
                      if (s[i] is FileConst.PathSeparatorChar)
                          return true;
                 return false;
++/
         }
 
         /***********************************************************************
@@ -335,11 +355,12 @@ class FilePath : PathView
 
         /***********************************************************************
 
-                Append text to this path; no separators are added
+                Concatenate text to this path; no separators are added.
+                See join() also
 
         ***********************************************************************/
 
-        final FilePath append (char[][] others...)
+        final FilePath cat (char[][] others...)
         {
                 foreach (other; others)
                         {
@@ -354,13 +375,28 @@ class FilePath : PathView
 
         /***********************************************************************
 
-                Prepend text to this path; no separators are added
+                Append a folder to this path. A leading separator is added
+                as required
 
         ***********************************************************************/
 
-        final FilePath prepend (char[] other)
+        final FilePath append (char[] path)
         {
-                adjust (0, folder_, folder_, padded (other));
+                if (file.length)
+                    path = prefixed (path);
+                return cat (path);
+        }
+
+        /***********************************************************************
+
+                Prepend a folder to this path. A trailing separator is added 
+                if needed
+
+        ***********************************************************************/
+
+        final FilePath prepend (char[] path)
+        {
+                adjust (0, folder_, folder_, padded (path));
                 return parse;
         }
 
@@ -500,11 +536,11 @@ class FilePath : PathView
 
         /***********************************************************************
 
-                Pop to the parent of the current filepath 
+                Pop to the parent of the current filepath (in situ) 
 
         ***********************************************************************/
 
-        FilePath pop ()
+        final FilePath pop ()
         {
                 auto path = parent();
                 end_ = path.length;
@@ -564,7 +600,7 @@ class FilePath : PathView
 
         ***********************************************************************/
 
-        static char[] prefixed (char[] s, char c)
+        static char[] prefixed (char[] s, char c = FileConst.PathSeparatorChar)
         {
                 if (s.length && s[0] != c)
                     s = c ~ s;
@@ -1747,27 +1783,39 @@ interface PathView
 
 debug (UnitTest)
 {
-        //void main() {}
+        void main() {}
 
         unittest
         {
         version (Win32)
                 {
-                auto fp = new FilePath(r"C:\home\foo\bar\john\foo.d");
-                assert (fp.pop.toUtf8 == r"C:\home\foo\bar\john");
-                assert (fp.pop.toUtf8 == r"C:\home\foo\bar");
-                assert (fp.pop.toUtf8 == r"C:\home\foo");
-                assert (fp.pop.toUtf8 == r"C:\home");
-                assert (fp.pop.toUtf8 == r"C:");
-                assert (fp.pop.toUtf8 == r"C:");
+                auto fp = new FilePath(r"C:\home\foo\bar");
+                fp ~= "john";
+                assert (fp == r"C:\home\foo\bar\john");
+                fp = r"C:\";
+                fp ~= "john";
+                assert (fp == r"C:\john");
+                fp = "foo.bar";
+                fp ~= "john";
+                assert (fp == r"foo.bar\john");
+                fp = "";
+                fp ~= "john";
+                assert (fp == r"john");
+
+                fp = r"C:\home\foo\bar\john\foo.d";
+                assert (fp.pop == r"C:\home\foo\bar\john");
+                assert (fp.pop == r"C:\home\foo\bar");
+                assert (fp.pop == r"C:\home\foo");
+                assert (fp.pop == r"C:\home");
+                assert (fp.pop == r"C:");
+                assert (fp.pop == r"C:");
 
                 fp = new FilePath;
                 fp = r"C:\home\foo\bar\john\";
-
                 assert (fp.isAbsolute);
                 assert (fp.name == "");
                 assert (fp.folder == r"\home\foo\bar\john\");
-                assert (fp.toUtf8 == r"C:\home\foo\bar\john\");
+                assert (fp == r"C:\home\foo\bar\john\");
                 assert (fp.path == r"C:\home\foo\bar\john\");
                 assert (fp.file == r"");
                 assert (fp.suffix == r"");
@@ -1779,45 +1827,45 @@ debug (UnitTest)
                 assert (fp.isAbsolute);
                 assert (fp.name == "john");
                 assert (fp.folder == r"\home\foo\bar\");
-                assert (fp.toUtf8 == r"C:\home\foo\bar\john");
+                assert (fp == r"C:\home\foo\bar\john");
                 assert (fp.path == r"C:\home\foo\bar\");
                 assert (fp.file == r"john");
                 assert (fp.suffix == r"");
                 assert (fp.ext == "");
                 assert (fp.isChild);
 
-                fp = new FilePath(fp.parent);
+                fp.pop;
                 assert (fp.isAbsolute);
                 assert (fp.name == "bar");
                 assert (fp.folder == r"\home\foo\");
-                assert (fp.toUtf8 == r"C:\home\foo\bar");
+                assert (fp == r"C:\home\foo\bar");
                 assert (fp.path == r"C:\home\foo\");
                 assert (fp.file == r"bar");
                 assert (fp.suffix == r"");
                 assert (fp.ext == "");
                 assert (fp.isChild);
 
-                fp = new FilePath(fp.parent);
+                fp.pop;
                 assert (fp.isAbsolute);
                 assert (fp.name == "foo");
                 assert (fp.folder == r"\home\");
-                assert (fp.toUtf8 == r"C:\home\foo");
+                assert (fp == r"C:\home\foo");
                 assert (fp.path == r"C:\home\");
                 assert (fp.file == r"foo");
                 assert (fp.suffix == r"");
                 assert (fp.ext == "");
                 assert (fp.isChild);
 
-                fp = new FilePath(fp.parent);
+                fp.pop;
                 assert (fp.isAbsolute);
                 assert (fp.name == "home");
                 assert (fp.folder == r"\");
-                assert (fp.toUtf8 == r"C:\home");
+                assert (fp == r"C:\home");
                 assert (fp.path == r"C:\");
                 assert (fp.file == r"home");
                 assert (fp.suffix == r"");
                 assert (fp.ext == "");
-                assert (!fp.isChild);
+                assert (fp.isChild);
 
                 fp = new FilePath(r"foo\bar\john.doe");
                 assert (!fp.isAbsolute);
@@ -1825,14 +1873,14 @@ debug (UnitTest)
                 assert (fp.folder == r"foo\bar\");
                 assert (fp.suffix == r".doe");
                 assert (fp.file == r"john.doe");
-                assert (fp.toUtf8 == r"foo\bar\john.doe");
+                assert (fp == r"foo\bar\john.doe");
                 assert (fp.ext == "doe");
                 assert (fp.isChild);
 
                 fp = new FilePath(r"c:doe");
                 assert (fp.isAbsolute);
                 assert (fp.suffix == r"");
-                assert (fp.toUtf8 == r"c:doe");
+                assert (fp == r"c:doe");
                 assert (fp.folder == r"");
                 assert (fp.name == "doe");
                 assert (fp.file == r"doe");
@@ -1842,19 +1890,19 @@ debug (UnitTest)
                 fp = new FilePath(r"\doe");
                 assert (fp.isAbsolute);
                 assert (fp.suffix == r"");
-                assert (fp.toUtf8 == r"\doe");
+                assert (fp == r"\doe");
                 assert (fp.name == "doe");
                 assert (fp.folder == r"\");
                 assert (fp.file == r"doe");
                 assert (fp.ext == "");
-                assert (!fp.isChild);
+                assert (fp.isChild);
 
                 fp = new FilePath(r"john.doe.foo");
                 assert (!fp.isAbsolute);
                 assert (fp.name == "john.doe");
                 assert (fp.folder == r"");
                 assert (fp.suffix == r".foo");
-                assert (fp.toUtf8 == r"john.doe.foo");
+                assert (fp == r"john.doe.foo");
                 assert (fp.file == r"john.doe.foo");
                 assert (fp.ext == "foo");
                 assert (!fp.isChild);
@@ -1862,7 +1910,7 @@ debug (UnitTest)
                 fp = new FilePath(r".doe");
                 assert (!fp.isAbsolute);
                 assert (fp.suffix == r"");
-                assert (fp.toUtf8 == r".doe");
+                assert (fp == r".doe");
                 assert (fp.name == ".doe");
                 assert (fp.folder == r"");
                 assert (fp.file == r".doe");
@@ -1872,7 +1920,7 @@ debug (UnitTest)
                 fp = new FilePath(r"doe");
                 assert (!fp.isAbsolute);
                 assert (fp.suffix == r"");
-                assert (fp.toUtf8 == r"doe");
+                assert (fp == r"doe");
                 assert (fp.name == "doe");
                 assert (fp.folder == r"");
                 assert (fp.file == r"doe");
@@ -1882,7 +1930,7 @@ debug (UnitTest)
                 fp = new FilePath(r".");
                 assert (!fp.isAbsolute);
                 assert (fp.suffix == r"");
-                assert (fp.toUtf8 == r".");
+                assert (fp == r".");
                 assert (fp.name == ".");
                 assert (fp.folder == r"");
                 assert (fp.file == r".");
@@ -1892,7 +1940,7 @@ debug (UnitTest)
                 fp = new FilePath(r"..");
                 assert (!fp.isAbsolute);
                 assert (fp.suffix == r"");
-                assert (fp.toUtf8 == r"..");
+                assert (fp == r"..");
                 assert (fp.name == "..");
                 assert (fp.folder == r"");
                 assert (fp.file == r"..");
@@ -1903,7 +1951,7 @@ debug (UnitTest)
                 assert (fp.isAbsolute);
                 fp.folder (r"\a\b\c\");
                 assert (fp.suffix == r".bar");
-                assert (fp.toUtf8 == r"c:\a\b\c\foo.bar");
+                assert (fp == r"c:\a\b\c\foo.bar");
                 assert (fp.name == "foo");
                 assert (fp.folder == r"\a\b\c\");
                 assert (fp.file == r"foo.bar");
@@ -1914,7 +1962,7 @@ debug (UnitTest)
                 assert (fp.isAbsolute);
                 fp.folder (r"\a\b\c\d\e\f\g\");
                 assert (fp.suffix == r".bar");
-                assert (fp.toUtf8 == r"c:\a\b\c\d\e\f\g\foo.bar");
+                assert (fp == r"c:\a\b\c\d\e\f\g\foo.bar");
                 assert (fp.name == "foo");
                 assert (fp.folder == r"\a\b\c\d\e\f\g\");
                 assert (fp.file == r"foo.bar");
@@ -1931,7 +1979,7 @@ debug (UnitTest)
                 assert (!fp.isChild);
                 assert (!fp.isAbsolute);
                 assert (fp.suffix == r"");
-                assert (fp.toUtf8 == r"");
+                assert (fp == r"");
                 assert (fp.name == "");
                 assert (fp.folder == r"");
                 assert (fp.file == r"");
@@ -1951,8 +1999,8 @@ debug (UnitTest)
                 assert (fp.ext == ".bar");
 
                 fp = new FilePath(r"c:\joe\bar");
-                assert(fp.append(r"foo\bar\") == r"c:\joe\bar\foo\bar\");
-                assert(fp.append(new FilePath(r"foo\bar")).toUtf8 == r"c:\joe\bar\foo\bar");
+                assert(fp.cat(r"foo\bar\") == r"c:\joe\bar\foo\bar\");
+                assert(fp.cat(new FilePath(r"foo\bar")).toUtf8 == r"c:\joe\bar\foo\bar");
 
                 assert (FilePath.join (r"a\b\c\d", r"e\f\" r"g") == r"a\b\c\d\e\f\g");
 
