@@ -78,6 +78,10 @@ private extern (C) void memmove (void* dst, void* src, uint bytes);
         addition, a '.' at the start of a name signifies it does not belong
         to the suffix i.e. ".file" is a name rather than a suffix. 
 
+        Note also that normalization of path-separators is supported by the
+        set() method and via a constructor. Enabling normalization initiates 
+        replacement of '/' for '\' (or vice versa) for the relevant platform.
+
         Compile with -version=Win32SansUnicode to enable Win95 & Win32s file
         support.
 
