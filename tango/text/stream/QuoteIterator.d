@@ -85,7 +85,7 @@ class QuoteIterator(T) : StreamIterator!(T)
                          if (c is quote)
                              return found (set (content.ptr, 0, i) + 1);
 
-                return notFound (content);
+                return notFound;
         }
 
         /***********************************************************************
@@ -106,6 +106,6 @@ class QuoteIterator(T) : StreamIterator!(T)
                                 else
                                    return pair (content[1 .. content.length], c);
 
-                return notFound (content);
+                return notFound;
         }
 }

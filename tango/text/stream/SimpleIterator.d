@@ -93,7 +93,7 @@ class SimpleIterator(T) : StreamIterator!(T)
                             if (has (delim, c))
                                 return found (set (content.ptr, 0, i));
 
-                return notFound (content);
+                return notFound;
         }
 }
 

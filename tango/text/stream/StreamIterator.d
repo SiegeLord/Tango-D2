@@ -128,15 +128,13 @@ class StreamIterator(T)
 
         int opApply (int delegate(inout T[]) dg)
         {
-                T[]     token;
-                int     result;
+                bool more;
+                int  result;
 
-                while ((token = next).ptr)
-                      {
-                      result = dg (token);
-                      if (result)
-                          break;
-                      }
+                do {
+                   more = consume;
+                   result = dg (slice);
+                   } while (more && !result);
                 return result;
         }
 
@@ -150,17 +148,15 @@ class StreamIterator(T)
 
         int opApply (int delegate(inout int, inout T[]) dg)
         {
-                T[]     token;
-                int     result,
-                        tokens;
+                bool more;
+                int  result,
+                     tokens;
 
-                while ((token = next).ptr)
-                      {
-                      result = dg (tokens, token);
-                      if (result)
-                          break;
-                      ++tokens;
-                      }
+                do {
+                   more = consume;
+                   result = dg (tokens, slice);
+                   ++tokens;
+                   } while (more && !result);
                 return result;
         }
 
@@ -188,22 +184,19 @@ class StreamIterator(T)
                          Cout(line).newline;
                 ---
 
-                Note that tokens returned via push() are returned immediately
+                Note that tokens exposed via push() are returned immediately
                 when available, taking priority over the input stream itself
                 
         ***********************************************************************/
 
         final T[] next ()
         {
-                auto tmp = pushed;
-                
-                if (tmp.ptr)
-                    pushed = null;
+                if (pushed.ptr)
+                    return pushed;
                 else
-                   if (buffer.next (&scan) || slice.length > 0)
-                       tmp = get ();
-                
-                return tmp;
+                   if (consume() || slice.length)
+                       return slice;
+                return null;
         }
 
         /***********************************************************************
@@ -237,9 +230,8 @@ class StreamIterator(T)
 
         ***********************************************************************/
 
-        protected final uint notFound (T[] content)
+        protected final uint notFound ()
         {
-                slice = content;
                 return IConduit.Eof;
         }
 
@@ -268,6 +260,25 @@ class StreamIterator(T)
                 foreach (T c; set)
                          if (match is c)
                              return true;
+                return false;
+        }
+
+        /***********************************************************************
+
+                Consume the next token and place it in 'slice'. Returns 
+                true when there are potentially more tokens
+
+        ***********************************************************************/
+
+        private bool consume ()
+        {
+                if (buffer.next (&scan))
+                    return true;
+
+                if (auto i = buffer.readable)
+                    slice = cast(T[]) buffer.slice (i);
+                else
+                   slice = null;
                 return false;
         }
 }

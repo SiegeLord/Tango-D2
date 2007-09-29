@@ -773,12 +773,8 @@ class Buffer : IBuffer
         bool next (uint delegate (void[]) scan)
         {
                 while (read(scan) is IConduit.Eof)
-                       if (source is null)
-                          {
-                          skip (readable);
-                          return false;
-                          }
-                       else
+                       // not found - are we streaming?
+                       if (source)
                           {
                           // did we start at the beginning?
                           if (position)
@@ -791,11 +787,11 @@ class Buffer : IBuffer
 
                           // read another chunk of data
                           if (fill(source) is IConduit.Eof)
-                             {
-                             skip (readable);
-                             return false;
-                             }
+                              return false;
                           }
+                       else
+                          return false;
+
                 return true;
         }
 

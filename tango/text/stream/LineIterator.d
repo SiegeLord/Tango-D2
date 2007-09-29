@@ -93,7 +93,7 @@ class LineIterator(T) : StreamIterator!(T)
                             return found (i);
                             }
 
-                return notFound (content);
+                return notFound;
         }
 }
 

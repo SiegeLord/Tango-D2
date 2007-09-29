@@ -94,6 +94,6 @@ class RegexIterator : StreamIterator!(char)
                    return found (finish-1);        
                    }
 
-                return notFound (content);
+                return notFound;
         }
 }
