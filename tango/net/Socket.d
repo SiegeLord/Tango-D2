@@ -1559,13 +1559,13 @@ class NetHost
 
         ***********************************************************************/
 
-        bool getHostByName(char[] name)
+        synchronized bool getHostByName(char[] name)
         {
                 char[1024] tmp;
 
                 hostent* he = gethostbyname(convert2C (name, tmp));
                 if(!he)
-                        return false;
+                    return false;
                 validHostent(he);
                 populate(he);
                 return true;
@@ -1577,12 +1577,12 @@ class NetHost
 
         ***********************************************************************/
 
-        bool getHostByAddr(uint addr)
+        synchronized bool getHostByAddr(uint addr)
         {
                 uint x = htonl(addr);
                 hostent* he = gethostbyaddr(&x, 4, cast(int)AddressFamily.INET);
                 if(!he)
-                        return false;
+                    return false;
                 validHostent(he);
                 populate(he);
                 return true;
@@ -1595,14 +1595,14 @@ class NetHost
         ***********************************************************************/
 
         //shortcut
-        bool getHostByAddr(char[] addr)
+        synchronized bool getHostByAddr(char[] addr)
         {
                 char[64] tmp;
 
                 uint x = inet_addr(convert2C (addr, tmp));
                 hostent* he = gethostbyaddr(&x, 4, cast(int)AddressFamily.INET);
                 if(!he)
-                        return false;
+                    return false;
                 validHostent(he);
                 populate(he);
                 return true;
@@ -1792,7 +1792,7 @@ class IPv4Address: Address
 
         ***********************************************************************/
 
-        char[] toAddrString()
+        synchronized char[] toAddrString()
         {
                 return .toUtf8(inet_ntoa(sin.sin_addr)).dup;
         }
