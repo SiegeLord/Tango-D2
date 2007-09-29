@@ -4,7 +4,7 @@ copy /y Process.di  Process.d
 copy /y Types.di    Types.d
 copy /y UserGdi.di  UserGdi.d
 
-dmd -c -inline -release -O Macros.d Process.d Types.d UserGdi.d
+dmd -I..\..\.. -c -inline -release -O Macros.d Process.d Types.d UserGdi.d
 lib -c -n usergdi32.lib Macros.obj Process.obj Types.obj UserGdi.obj
 
 move /y usergdi32.lib ..\..\..\lib\.
