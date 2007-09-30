@@ -91,7 +91,7 @@ package struct EraRange {
   private static bool initialized_;
 
   package int era;
-  package ulong ticks;
+  package long ticks;
   package int yearOffset;
   package int minEraYear;
   package int maxEraYear;
@@ -125,7 +125,7 @@ package struct EraRange {
     return currentEras[calID];
   }
 
-  private static EraRange opCall(int era, ulong ticks, int yearOffset, int minEraYear, int prevEraYear) {
+  private static EraRange opCall(int era, long ticks, int yearOffset, int minEraYear, int prevEraYear) {
     EraRange eraRange;
     eraRange.era = era;
     eraRange.ticks = ticks;
