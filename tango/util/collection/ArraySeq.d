@@ -904,6 +904,10 @@ debug (Test)
                 foreach (value; array)
                          Cout (value).newline;
 
-                array.checkImplementation();
+                auto a = array.toArray;
+                foreach (value; a)
+                         Cout (value).newline;
+
+                 array.checkImplementation();
         }
 }

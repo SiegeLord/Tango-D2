@@ -167,6 +167,12 @@ public interface View(T)
         public int opApply (int delegate (inout T value) dg);
 
         /**
+         expose collection content as an array
+        **/
+
+        public T[] toArray ();
+
+        /**
          * Report whether other has the same element structure as this.
          * That is, whether other is of the same size, and has the same 
          * elements() properties.

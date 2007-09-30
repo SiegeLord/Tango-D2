@@ -99,6 +99,23 @@ public abstract class Collection(T) : Dispenser!(T)
 
         /***********************************************************************
 
+                expose collection content as an array
+
+        ************************************************************************/
+
+        public T[] toArray ()
+        {
+                auto result = new T[this.size];
+        
+                int i = 0;
+                foreach (e; this)
+                         result[i++] = e;
+
+                return result;
+        }
+
+        /***********************************************************************
+
                 Time complexity: O(1).
                 See_Also: tango.util.collection.impl.Collection.Collection.drained
 
