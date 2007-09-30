@@ -68,7 +68,7 @@ compile() {
     if filter $OBJNAME
     then
         $DC -c -v1 -inline -release -O -version=Posix -version=Tango -of$OBJNAME $FILENAME
-        ar -r lib/$LIB $OBJNAME
+        ar -r lib/$LIB $OBJNAME 2>&1 | grep -v "ranlib: .* has no symbols"
         rm $OBJNAME
     fi
 }
@@ -96,7 +96,7 @@ build() {
         compile $file
     done
 
-    ranlib lib/$LIB
+    ranlib lib/$LIB 2>&1 | grep -v "ranlib: .* has no symbols"
 
     cd lib
 }
