@@ -668,6 +668,17 @@ public class ArraySeq(T) : SeqCollection!(T), Sortable!(T)
                 quickSort(s, left + 1, hi, cmp);
         }
 
+        /***********************************************************************
+
+                expose collection content as an array
+
+        ************************************************************************/
+
+        override public T[] toArray ()
+        {
+                return array[0..count].dup;
+        }
+        
         // helper methods
 
         /**
