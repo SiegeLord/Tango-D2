@@ -807,7 +807,7 @@ extern(Windows)
 	WINBOOL FreeResource(HGLOBAL);
 	LPVOID LockResource(HGLOBAL);
 	WINBOOL FreeLibrary(HINST);
-	void FreeLibraryAndExitThread(HMODULE);
+	void FreeLibraryAndExitThread(HMODULE, DWORD);
 	WINBOOL DisableThreadLibraryCalls(HMODULE);
 	FARPROC GetProcAddress(HINST, LPCSTR);
 	DWORD GetVersion();
