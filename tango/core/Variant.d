@@ -312,11 +312,11 @@ struct Variant
             }
             else static if( isPointer!(T) )
             {
-                this.value.ptr = cast(void*)T;
+                this.value.ptr = cast(void*)value;
             }
             else static if( isObject!(T) )
             {
-                this.value.obj = T;
+                this.value.obj = value;
             }
             else
             {
@@ -435,7 +435,6 @@ struct Variant
                 return result;
             }
         }
-        assert(false);
     }
 
 
