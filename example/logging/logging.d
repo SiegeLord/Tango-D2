@@ -7,35 +7,13 @@
 private import tango.util.log.Log,
                tango.util.log.Configurator;
 
-private import tango.text.convert.Sprint;
-
 /*******************************************************************************
+
+        Search for a set of prime numbers
 
 *******************************************************************************/
 
-private class Sieve
-{
-        private Logger logger;
-        
-        /***********************************************************************
-
-                Initialize the Sieve class 
-
-        ***********************************************************************/
-
-        this()
-        {
-                // get a logger for this object. Could make this static instead
-                logger = Log.getLogger ("example.logging.Sieve");
-        }
-
-        /***********************************************************************
-
-                Search for a set of prime numbers
-
-        ***********************************************************************/
-
-        void compute (uint max)
+void compute (Logger log, uint max)
         {
                 byte*   feld;
                 int     teste=1,
@@ -44,7 +22,7 @@ private class Sieve
                         s=0,
                         e = 1;
                 int     count;
-                auto    sprint = new Sprint!(char);
+                char    tmp[128] = void;
 
                 void set (byte* f, uint x)
                 {
@@ -57,37 +35,37 @@ private class Sieve
                 }
 
                 // information level
-                logger.info (sprint ("Searching prime numbers to : {0}", max));
+                log.info (log.format (tmp, "Searching prime numbers up to {}", max));
 
                 feld = (new byte[max / 16 + 1]).ptr;
 
                 // get milliseconds since application began
-                auto begin = logger.runtime();
+                auto begin = log.runtime;
 
                 while ((teste += 2) < max)
                         if (! test (feld, teste)) 
                            {
                            if  ((++hits & 0x0f) == 0) 
                                 // more information level
-                                logger.info (sprint ("found {0}", hits)); 
+                                log.info (log.format (tmp, "found {}", hits)); 
 
                            for (mom=3*teste; mom < max; mom += teste<<1) 
                                 set (feld, mom);
                            }
 
                 // get number of milliseconds we took to compute
-                auto period = logger.runtime() - begin;
+                auto period = log.runtime - begin;
 
                 if (hits)
                     // more information
-                    logger.info (sprint ("{0} prime numbers found in {1} millsecs", hits, period));
+                    log.info (log.format (tmp, "{} prime numbers found in {} millsecs", hits, period));
                 else
                    // a warning level
-                   logger.warn ("no prime numbers found");
+                   log.warn ("no prime numbers found");
         
                 // check to see if we're enabled for 
                 // tracing before we expend a lot of effort
-                if (logger.isEnabled (logger.Level.Trace))
+                if (log.isEnabled (log.Level.Trace))
                    {        
                    e = max;
                    count = 0 - 2; 
@@ -97,15 +75,14 @@ private class Sieve
                    while ((count+=2) < e) 
                            // log trace information
                            if (! test (feld, count)) 
-                               logger.trace (sprint ("prime found: {0}", count));
+                                 log.trace (log.format (tmp, "prime found: {}", count));
                    }
-        }
 }
 
 
 /*******************************************************************************
 
-        Create a Sieve and have it compute a bunch of prime numbers.
+        Compute a bunch of prime numbers
 
 *******************************************************************************/
 
@@ -113,16 +90,13 @@ void main()
 {
         // get a logger to represent this module. We could just as
         // easily share a name with some other module(s)
-        auto logger = Log.getLogger ("example.logging");
-        
+        auto log = Log.getLogger ("example.logging");
         try {
-            Sieve sieve = new Sieve;
-
-            sieve.compute (1000);
+            compute (log, 1000);
 
             } catch (Exception x)
                     {
                     // log the exception as an error
-                    logger.error ("Exception: " ~ x.toUtf8);
+                    log.error ("Exception: " ~ x.toUtf8);
                     }
 }
