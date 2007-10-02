@@ -90,8 +90,8 @@ private import  tango.io.filter.MutexFilter;
 
 static this()
 {
-        Trace = new Print!(char) (new Layout!(char), new MutexOutput(Cout.stream));
-        Trace.flush = !Cout.redirected;
+        Trace = new Print!(char) (new Layout!(char), new MutexOutput(Cerr.stream));
+        Trace.flush = !Cerr.redirected;
 }
 
 /// global trace instance
