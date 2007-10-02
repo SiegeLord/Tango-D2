@@ -19,13 +19,14 @@ private import tango.util.log.model.ILevel;
 
 /*******************************************************************************
 
-        This is the primary API to the log package. Use the two static 
-        methods to access and/or create Logger instances, and the other
-        methods to modify specific Logger attributes. 
+        Loggers are named entities, sometimes shared, sometimes specific to 
+        a particular portion of code. The names are generally hierarchical in 
+        nature, using dot notation (with '.') to separate each named section. 
+        For example, a typical name might be something like "mail.send.writer"
         ---
         import tango.util.log.Log;
         
-        auto log = Log.getLogger ("my.logger");
+        auto log = Log.getLogger ("mail.send.writer");
 
         log.info  ("an informational message");
         log.error ("an exception message: " ~ exception.toUtf8);
@@ -33,41 +34,45 @@ private import tango.util.log.model.ILevel;
         etc ...
         ---
         
-        It is considered good form to assign the logger instances during
-        static construction. For example: if it were appropriate to have
-        one logger instance per module, each might be assigned from within
-        the module ctor
+        It is considered good form to pass a logger instance as a function or 
+        class-ctor argument, or to assign a new logger instance during static 
+        class construction. For example: if it were considered appropriate to 
+        have one logger instance per class, each might be constructed like so:
         ---
         private Logger log;
         
         static this()
         {
-            log = Log.getLogger (nameOfThisModule);
+            log = Log.getLogger (nameOfThisClassOrStructOrModule);
         }
         ---
 
         Messages passed to a Logger are assumed to be pre-formatted. You 
-        may find that the Sprint class is handy for collating various 
-        components of the message (or use Formatter.sprint() directly): 
+        may find that the format() methos is handy for collating various 
+        components of the message: 
         ---
-        static this()
-        {
-            sprint = new Sprint (256);
-            log = Log.getLogger (nameOfThisModule);
-        }
-
-        log.warn (sprint("temperature is {0} degrees!", 101));
+        char tmp[128] = void;
+        ...
+        log.warn (log.format (tmp, "temperature is {} degrees!", 101));
         ---
 
-        To avoid overhead when constructing formatted messages, check to
-        see if the logger is active first
+        Note that a provided workspace is used to format the message, which 
+        should generally be located on the stack so as to support multiple
+        threads of execution. In the example above we indicate assignment as 
+        "tmp = void", although this is an optional attribute (see the language 
+        manual for more information).
+
+        To avoid overhead when constructing formatted messages, the logging
+        system employs lazy expressions such that the message is not constructed
+        unless the logger is actually active. You can also explicitly check to
+        see whether a logger is active or not:
         ---
-        if (isActive (log))
-            log.warn (sprint("temperature is {0} degrees!", 101));
+        if (log.isEnabled (log.Level.Warn))
+            log.warn (log.format (tmp, "temperature is {} degrees!", 101));
         ---
 
-        You may also need to use one of the various layout & appender 
-        implementations to support your exact rendering needs.
+        You might optionally configure various layout & appender implementations
+        to support specific exact rendering needs.
         
         tango.log closely follows both the API and the behaviour as documented 
         at the official Log4J site, where you'll find a good tutorial. Those 
@@ -126,6 +131,15 @@ public class Logger : ILevel
         ***********************************************************************/
 
         abstract Logger append (Level level, lazy char[] exp);
+
+        /***********************************************************************
+
+                Format text using the formatter configured in the associated
+                hierarchy (see Hierarchy.setFormat)
+
+        ***********************************************************************/
+
+        abstract char[] format (char[] buffer, char[] formatStr, ...);
 
         /***********************************************************************
         

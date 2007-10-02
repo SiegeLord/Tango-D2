@@ -16,6 +16,8 @@ module tango.util.log.Hierarchy;
 private import  tango.util.log.Logger,
                 tango.util.log.Appender;
 
+private import  tango.text.convert.Layout;
+
 private import  tango.util.log.model.IHierarchy;
 
 /*******************************************************************************
@@ -31,8 +33,65 @@ extern (C)
 
 /*******************************************************************************
 
-        This is the real Logger implementation, hidden behind the public
-        abstract frontage. 
+        Loggers are named entities, sometimes shared, sometimes specific to 
+        a particular portion of code. The names are generally hierarchical in 
+        nature, using dot notation (with '.') to separate each named section. 
+        For example, a typical name might be something like "mail.send.writer"
+        ---
+        import tango.util.log.Log;
+        
+        auto log = Log.getLogger ("mail.send.writer");
+
+        log.info  ("an informational message");
+        log.error ("an exception message: " ~ exception.toUtf8);
+
+        etc ...
+        ---
+        
+        It is considered good form to pass a logger instance as a function or 
+        class-ctor argument, or to assign a new logger instance during static 
+        class construction. For example: if it were considered appropriate to 
+        have one logger instance per class, each might be constructed like so:
+        ---
+        private Logger log;
+        
+        static this()
+        {
+            log = Log.getLogger (nameOfThisClassOrStructOrModule);
+        }
+        ---
+
+        Messages passed to a Logger are assumed to be pre-formatted. You 
+        may find that the format() methos is handy for collating various 
+        components of the message: 
+        ---
+        char tmp[128] = void;
+        ...
+        log.warn (log.format (tmp, "temperature is {} degrees!", 101));
+        ---
+
+        Note that a provided workspace is used to format the message, which 
+        should generally be located on the stack so as to support multiple
+        threads of execution. In the example above we indicate assignment as 
+        "tmp = void", although this is an optional attribute (see the language 
+        manual for more information).
+
+        To avoid overhead when constructing formatted messages, the logging
+        system employs lazy expressions such that the message is not constructed
+        unless the logger is actually active. You can also explicitly check to
+        see whether a logger is active or not:
+        ---
+        if (log.isEnabled (log.Level.Warn))
+            log.warn (log.format (tmp, "temperature is {} degrees!", 101));
+        ---
+
+        You might optionally configure various layout & appender implementations
+        to support specific rendering needs.
+        
+        tango.log closely follows both the API and the behaviour as documented 
+        at the official Log4J site, where you'll find a good tutorial. Those 
+        pages are hosted over 
+        <A HREF="http://logging.apache.org/log4j/docs/documentation.html">here</A>.
 
 *******************************************************************************/
 
@@ -72,7 +131,6 @@ private class LoggerInstance : Logger
 
         private ~this()
         {
-                throw new Exception ("attempt to delete a LoggerInstance!");
         }
 
         /***********************************************************************
@@ -207,10 +265,10 @@ private class LoggerInstance : Logger
 
         ***********************************************************************/
 
-        final Logger setLevel (Level level, bool force)
+        final Logger setLevel (Level level, bool propagate)
         {
                 this.level_ = level;     
-                hierarchy.updateLoggers (this, force);
+                hierarchy.updateLoggers (this, propagate);
                 return this;
         }
 
@@ -325,6 +383,18 @@ private class LoggerInstance : Logger
         }
 
         /***********************************************************************
+
+                Format text using the formatter configured in the associated
+                hierarchy (see Hierarchy.setFormat)
+
+        ***********************************************************************/
+
+        final char[] format (char[] buffer, char[] formatStr, ...)
+        {
+                return hierarchy.format.sprint (buffer, formatStr, _arguments, _argptr);     
+        }
+
+        /***********************************************************************
         
                 See if the provided Logger is a good match as a parent of
                 this one. Note that each Logger name has a '.' appended to
@@ -356,8 +426,8 @@ private class LoggerInstance : Logger
         each logger linked to the others in an ordered chain. Ordering
         places shortest names at the head and longest ones at the tail, 
         making the job of identifying ancestors easier in an orderly
-        fashion. For example, when propogating levels across descendents
-        it would be a mistake to propogate to a child before all of its
+        fashion. For example, when propagating levels across descendents
+        it would be a mistake to propagate to a child before all of its
         ancestors were taken care of.
 
 *******************************************************************************/
@@ -366,7 +436,7 @@ class Hierarchy : IHierarchy
 {
         private char[]                  name,
                                         address;      
-
+        private Layout!(char)           format;
         private LoggerInstance          root;
         private LoggerInstance[char[]]  loggers;
 
@@ -380,6 +450,7 @@ class Hierarchy : IHierarchy
         {
                 this.name = name;
                 this.address = "network";
+                this.format = new Layout!(char);
 
                 // insert a root node; the root has an empty name
                 root = new LoggerInstance (this, "");
@@ -391,7 +462,7 @@ class Hierarchy : IHierarchy
 
         **********************************************************************/
 
-        char[] getName ()
+        final char[] getName ()
         {
                 return name;
         }
@@ -403,7 +474,7 @@ class Hierarchy : IHierarchy
 
         **********************************************************************/
 
-        char[] getAddress ()
+        final char[] getAddress ()
         {
                 return address;
         }
@@ -414,7 +485,7 @@ class Hierarchy : IHierarchy
 
         **********************************************************************/
 
-        void setName (char[] name)
+        final void setName (char[] name)
         {
                 this.name = name;
         }
@@ -426,7 +497,7 @@ class Hierarchy : IHierarchy
 
         **********************************************************************/
 
-        void setAddress (char[] address)
+        final void setAddress (char[] address)
         {
                 this.address = address;
         }
@@ -437,7 +508,7 @@ class Hierarchy : IHierarchy
 
         ***********************************************************************/
 
-        LoggerInstance getRootLogger ()
+        final LoggerInstance getRootLogger ()
         {
                 return root;
         }
@@ -449,16 +520,16 @@ class Hierarchy : IHierarchy
 
         ***********************************************************************/
 
-        synchronized LoggerInstance getLogger (char[] name)
+        final synchronized LoggerInstance getLogger (char[] name)
         {
                 name ~= ".";
 
-                LoggerInstance *l = name in loggers;
+                auto l = name in loggers;
 
                 if (l is null)
                    {
                    // create a new logger
-                   LoggerInstance li = new LoggerInstance (this, name);
+                   auto li = new LoggerInstance (this, name);
                    l = &li;
 
                    // insert into linked list
@@ -480,7 +551,7 @@ class Hierarchy : IHierarchy
 
         **********************************************************************/
 
-        int opApply (int delegate(inout Logger) dg)
+        final int opApply (int delegate(inout Logger) dg)
         {
                 int result = 0;
                 LoggerInstance curr = root;
@@ -526,7 +597,7 @@ class Hierarchy : IHierarchy
                              }
                       else
                          // find best match for parent of new entry
-                         propogate (l, curr, true);
+                         propagate (l, curr, true);
 
                       // remember where insertion point should be
                       prev = curr;  
@@ -539,7 +610,7 @@ class Hierarchy : IHierarchy
 
         /***********************************************************************
         
-                Propogate hierarchical changes across known loggers. 
+                Propagate hierarchical changes across known loggers. 
                 This includes changes in the hierarchy itself, and to
                 the various settings of child loggers with respect to 
                 their parent(s).              
@@ -553,7 +624,7 @@ class Hierarchy : IHierarchy
                 // scan all loggers 
                 while (logger)
                       {
-                      propogate (logger, changed, force);
+                      propagate (logger, changed, force);
 
                       // try next entry
                       logger = logger.next;
@@ -562,13 +633,13 @@ class Hierarchy : IHierarchy
 
         /***********************************************************************
         
-                Propogate changes in the hierarchy downward to child Loggers.
+                Propagate changes in the hierarchy downward to child Loggers.
                 Note that while 'parent' and 'breakpoint' are always forced
                 to update, the update of 'level' is selectable.
 
         ***********************************************************************/
 
-        private void propogate (LoggerInstance logger, LoggerInstance changed, bool force)
+        private void propagate (LoggerInstance logger, LoggerInstance changed, bool force)
         {
                 // is the changed instance a better match for our parent?
                 if (logger.isCloserAncestor (changed))
