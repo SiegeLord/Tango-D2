@@ -677,7 +677,6 @@ creal asin(creal z)
 
 debug(UnitTest) {
 unittest {
-//   writefln(sin(0+0i), "   ", asin(sin(0+0i)));
    assert(asin(sin(0+0i)) == 0 + 0i);
 }
 }
@@ -1616,18 +1615,20 @@ unittest
  * Params:
  *  A = array of coefficients a<sub>0</sub>, a<sub>1</sub>, etc.
  */
-real poly(real x, real[] A)
+T poly(T)(T x, T[] A)
 in
 {
     assert(A.length > 0);
 }
 body
 {
+  version (DigitalMars_D_InlineAsm_X86) {
+      const bool Use_D_InlineAsm_X86 = true;
+  } else const bool Use_D_InlineAsm_X86 = false;
+  
   // BUG (Inherited from Phobos): This code assumes a frame pointer in EBP.
   // This is not in the spec.
-  version (DigitalMars_D_InlineAsm_X86)
-  {
-    static if (real.sizeof == 10) {
+  static if (Use_D_InlineAsm_X86 && is(T==real) && T.sizeof == 10) {
     asm // assembler by W. Bright
     {
         // EDX = (A.length - 1) * real.sizeof
@@ -1653,7 +1654,7 @@ body
     return_ST:                      ;
         ;
     }
-  } else static if (real.sizeof==12){
+  } else static if ( Use_D_InlineAsm_X86 && is(T==real) && T.sizeof==12){
     asm // assembler by W. Bright
     {
         // EDX = (A.length - 1) * real.sizeof
@@ -1679,7 +1680,6 @@ body
     return_ST:                      ;
         ;
         }
-    } else static assert(0, "Unsupported real.sizeof");
   } else {
         ptrdiff_t i = A.length - 1;
         real r = A[i];

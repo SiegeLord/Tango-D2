@@ -581,10 +581,6 @@ unittest {
                 - 0.398771730072867L) < 0.000000000000005L);
     assert( feqrel(poissonDistributionInv(8, poissonDistribution(8, 2.7e3L)), 2.7e3L)>=real.mant_dig-2);
     assert( poissonDistribution(2, 8.4e-5) + poissonDistributionCompl(2, 8.4e-5) == 1.0L);
-//  writefln("%.30g", poissonDistributionCompl(2, 0.1L));
-
-//  writefln("%.30g", poissonDistribution(2, 2.7e-5L));
-
 }
 }
 

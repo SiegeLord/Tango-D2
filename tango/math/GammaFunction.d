@@ -187,7 +187,7 @@ real sgnGamma(real x)
         return NaN(TANGO_NAN.SGNGAMMA);
     }
 //  if (remquo(x, -1.0, n) == 0) {
-    int n = cast(int)(x);
+    long n = rndlong(x);
     if (x == n) {
         return x == 0 ?  copysign(1, x) : NaN(TANGO_NAN.SGNGAMMA);
     }
@@ -1401,15 +1401,5 @@ assert(fabs(gammaIncomplete(0.5, 2) - 0.954499729507309L) < 0.00000005);
 // Fixed Cephes bug:
 assert(gammaIncompleteCompl(384, real.infinity)==0);
 assert(gammaIncompleteComplInv(3, 0)==real.infinity);
-
-//writefln("%.20g",gammaIncompleteCompl(100, 0));
-//assert(gammaIncompleteComplInv(8, 0));
-
-// BUG: infinite loop if p == 0!
-//writefln(gammaIncompleteComplInv(8, 0));
-
-//writefln(gammaIncompleteComplInv(8, 1e-50));
-//writefln(gammaIncompleteComplInv(12, 0.99));
-
 }
 }
