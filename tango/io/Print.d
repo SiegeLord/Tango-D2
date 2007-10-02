@@ -54,19 +54,19 @@ private import  tango.text.convert.Layout;
         print ("hello world") ();
         print ("hello world").flush;
 
-        print ("hello ") ("world") ();
-        print ("hello ") ("world").flush;
-
         print.format ("hello {}", "world") ();
         print.format ("hello {}", "world").flush;
         ---
         
-        Newline is handled by either placing '\n' in the output, or via
-        the newline() method. The latter also flushes the output:
+        Special character sequences, such as "\n", are written directly to
+        the output without any translation (though an output-filter could
+        be inserted to perform translation as required). Platform-specific 
+        newlines are generated instead via the newline() method, which also 
+        flushes the output when configured to do so:
         ---
         print ("hello ") ("world").newline;
-
         print.format ("hello {}", "world").newline;
+        print.formatln ("hello {}", "world");
         ---
 
         The format() method supports the range of formatting options 

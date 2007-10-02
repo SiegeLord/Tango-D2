@@ -12,26 +12,21 @@
         formatted output or unicode translation, consider using the module
         tango.io.Console directly
 
-        Note that both the buffer and conduit in use are exposed by these
-        global instances ~ this can be leveraged, for instance, to copy a
-        file to the standard output:
-        ---
-        Stdout.stream.copy (new FileConduit ("myfile"));
-        ---
-
         Stdout & Stderr expose this style of usage:
         ---
-        Stdout ("hello");               => hello
-        Stdout (1);                     => 1
-        Stdout (3.14);                  => 3.14
-        Stdout ('b');                   => b
-        Stdout (1, 2, 3);               => 1, 2, 3         
-        Stdout ("abc", 1, 2, 3);        => abc, 1, 2, 3        
-        Stdout ("abc", 1, 2) ("foo");   => abc, 1, 2foo        
-        Stdout ("abc") ("def") (3.14);  => abcdef3.14
+        Stdout ("hello");                       => hello
+        Stdout (1);                             => 1
+        Stdout (3.14);                          => 3.14
+        Stdout ('b');                           => b
+        Stdout (1, 2, 3);                       => 1, 2, 3         
+        Stdout ("abc", 1, 2, 3);                => abc, 1, 2, 3        
+        Stdout ("abc", 1, 2) ("foo");           => abc, 1, 2foo        
+        Stdout ("abc") ("def") (3.14);          => abcdef3.14
 
-        Stdout.format ("abc {}", 1);    => abc 1
-        Stdout.format ("abc ", 1);      => abc
+        Stdout.format ("abc {}", 1);            => abc 1
+        Stdout.format ("abc {}:{}", 1, 2);      => abc 1:2
+        Stdout.format ("abc {1}:{0}", 1, 2);    => abc 2:1
+        Stdout.format ("abc ", 1);              => abc
         ---
 
         Note that the last example does not throw an exception. There
@@ -44,15 +39,15 @@
         Stdout ("hello world") ();
         Stdout ("hello world").flush;
 
-        Stdout ("hello ") ("world") ();
-        Stdout ("hello ") ("world").flush;
-
         Stdout.format ("hello {}", "world") ();
         Stdout.format ("hello {}", "world").flush;
         ---
         
-        Newline is handled by either placing '\n' in the output, or via
-        the newline() method. The latter also flushes the output:
+        Special character sequences, such as "\n", are written directly to
+        the output without any translation (though an output-filter could
+        be inserted to perform translation as required). Platform-specific 
+        newlines are generated instead via the newline() method, which also 
+        flushes the output when configured to do so:
         ---
         Stdout ("hello ") ("world").newline;
         Stdout.format ("hello {}", "world").newline;
@@ -74,6 +69,13 @@
         be affected by the above example. For applications supporting 
         multiple regions, create multiple Locale instances instead and 
         cache them in an appropriate manner
+
+        Note also that the output-stream in use is exposed by these
+        global instances ~ this can be leveraged, for instance, to copy a
+        file to the standard output:
+        ---
+        Stdout.stream.copy (new FileConduit ("myfile"));
+        ---
 
 *******************************************************************************/
 

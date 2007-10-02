@@ -269,6 +269,8 @@ class Conduit : IConduit
 
 /*******************************************************************************
 
+        Base class for input stream filtering
+
 *******************************************************************************/
 
 class InputFilter : InputStream
@@ -277,11 +279,19 @@ class InputFilter : InputStream
 
         /***********************************************************************
 
+                Read from conduit into a target array. The provided dst 
+                will be populated with content from the conduit. 
+
+                Returns the number of bytes read, which may be less than
+                requested in dst
+
         ***********************************************************************/
 
         abstract uint read (void[] dst);
 
         /***********************************************************************
+
+                Attach to the provided stream
 
         ***********************************************************************/
 
@@ -293,6 +303,8 @@ class InputFilter : InputStream
 
         /***********************************************************************
 
+                Return the hosting conduit
+
         ***********************************************************************/
 
         IConduit conduit ()
@@ -301,6 +313,8 @@ class InputFilter : InputStream
         }
 
         /***********************************************************************
+
+                Clear any buffered content
 
         ***********************************************************************/
 
@@ -313,6 +327,8 @@ class InputFilter : InputStream
 
 /*******************************************************************************
 
+         Base class for output stream filtering  
+
 *******************************************************************************/
 
 class OutputFilter : OutputStream
@@ -321,11 +337,19 @@ class OutputFilter : OutputStream
 
         /***********************************************************************
 
+                Write to conduit from a source array. The provided src
+                content will be written to the conduit.
+
+                Returns the number of bytes written from src, which may
+                be less than the quantity provided
+
         ***********************************************************************/
 
         abstract uint write (void[] src);
 
         /***********************************************************************
+
+                Attach to the provided stream
 
         ***********************************************************************/
 
@@ -337,6 +361,8 @@ class OutputFilter : OutputStream
 
         /***********************************************************************
 
+                Return the hosting conduit
+
         ***********************************************************************/
 
         IConduit conduit ()
@@ -346,6 +372,8 @@ class OutputFilter : OutputStream
 
         /***********************************************************************
 
+                Emit/purge buffered content
+
         ***********************************************************************/
 
         void flush ()
@@ -354,6 +382,8 @@ class OutputFilter : OutputStream
         }
 
         /***********************************************************************
+
+                Commit output
 
         ***********************************************************************/
 
