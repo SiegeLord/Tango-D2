@@ -90,7 +90,7 @@ private import  tango.io.filter.MutexFilter;
 
 static this()
 {
-        Trace = new Print!(char) (new Layout!(char), new MutexOutput(Cerr.stream));
+        Trace = new Print!(char) (new Layout!(char), new MutexOutput(Cerr.stream, Cerr));
         Trace.flush = !Cerr.redirected;
 }
 

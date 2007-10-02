@@ -24,15 +24,20 @@ private import tango.io.model.IConduit;
 
 class MutexInput : InputFilter
 {
+        private Object mutex;
+
         /***********************************************************************
 
                 Propogate ctor to superclass
 
         ***********************************************************************/
 
-        this (InputStream stream)
+        this (InputStream stream, Object mutex=null)
         {
                 super (stream);
+                if (mutex is null)
+                    mutex = this;
+                this.mutex = mutex;
         }
 
         /***********************************************************************
@@ -45,9 +50,10 @@ class MutexInput : InputFilter
 
         ***********************************************************************/
 
-        override synchronized uint read (void[] dst)
+        override uint read (void[] dst)
         {
-                return host.read (dst);
+                synchronized (mutex)
+                              return host.read (dst);
         }             
                         
         /***********************************************************************
@@ -56,9 +62,10 @@ class MutexInput : InputFilter
 
         ***********************************************************************/
 
-        override synchronized void clear ()
+        override void clear ()
         {
-                host.clear;
+                synchronized (mutex)
+                              host.clear;
         }
 }
 
@@ -71,15 +78,20 @@ class MutexInput : InputFilter
 
 class MutexOutput : OutputFilter
 {
+        private Object mutex;
+
         /***********************************************************************
 
                 Propogate ctor to superclass
 
         ***********************************************************************/
 
-        this (OutputStream stream)
+        this (OutputStream stream, Object mutex=null)
         {
                 super (stream);
+                if (mutex is null)
+                    mutex = this;
+                this.mutex = mutex;
         }
 
         /***********************************************************************
@@ -92,9 +104,10 @@ class MutexOutput : OutputFilter
 
         ***********************************************************************/
 
-        override synchronized uint write (void[] src)
+        override uint write (void[] src)
         {
-                return host.write (src);
+                synchronized (mutex)
+                              return host.write (src);
         }
 
         /***********************************************************************
@@ -104,9 +117,10 @@ class MutexOutput : OutputFilter
 
         ***********************************************************************/
 
-        override synchronized OutputStream copy (InputStream src)
+        override OutputStream copy (InputStream src)
         {
-                return host.copy (src);
+                synchronized (mutex)
+                              return host.copy (src);
         }
                           
         /***********************************************************************
@@ -115,9 +129,10 @@ class MutexOutput : OutputFilter
 
         ***********************************************************************/
 
-        override synchronized void flush ()
+        override void flush ()
         {
-                host.flush;
+                synchronized (mutex)
+                              host.flush;
         }
 
         /***********************************************************************
@@ -126,9 +141,10 @@ class MutexOutput : OutputFilter
 
         ***********************************************************************/
 
-        override synchronized void commit ()
+        override void commit ()
         {
-                host.commit;
+                synchronized (mutex)
+                              host.commit;
         }               
 }
 
