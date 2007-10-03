@@ -133,8 +133,8 @@ version( DigitalMarsWin32 )
     int fpclassify(real x)
     {
         return (real.sizeof == double.sizeof)
-    	    ? __fpclassify_d(x)
-    	    : __fpclassify_ld(x);
+            ? __fpclassify_d(x)
+            : __fpclassify_ld(x);
     }
 
     //int isfinite(real-floating x);
@@ -164,11 +164,11 @@ version( DigitalMarsWin32 )
     {
         return (real.sizeof == double.sizeof)
             ? (cast(short*)&(x))[3] & 0x8000
-    		: (cast(short*)&(x))[4] & 0x8000;
+            : (cast(short*)&(x))[4] & 0x8000;
     }
   }
 }
-else version( Posix )
+else version( linux )
 {
     enum
     {
@@ -214,8 +214,8 @@ else version( Posix )
     int fpclassify(real x)
     {
         return (real.sizeof == double.sizeof)
-    	    ? __fpclassify(x)
-    	    : __fpclassifyl(x);
+            ? __fpclassify(x)
+            : __fpclassifyl(x);
     }
 
     //int isfinite(real-floating x);
@@ -224,8 +224,8 @@ else version( Posix )
     int isfinite(real x)
     {
         return (real.sizeof == double.sizeof)
-    	    ? __finite(x)
-    	    : __finitel(x);
+            ? __finite(x)
+            : __finitel(x);
     }
 
     //int isinf(real-floating x);
@@ -234,8 +234,8 @@ else version( Posix )
     int isinf(real x)
     {
         return (real.sizeof == double.sizeof)
-    	    ? __isinf(x)
-    	    : __isinfl(x);
+            ? __isinf(x)
+            : __isinfl(x);
     }
 
     //int isnan(real-floating x);
@@ -244,8 +244,8 @@ else version( Posix )
     int isnan(real x)
     {
         return (real.sizeof == double.sizeof)
-    	    ? __isnan(x)
-    	    : __isnanl(x);
+            ? __isnan(x)
+            : __isnanl(x);
     }
 
     //int isnormal(real-floating x);
@@ -259,8 +259,105 @@ else version( Posix )
     int signbit(real x)
     {
         return (real.sizeof == double.sizeof)
-    	    ? __signbit(x)
-    	    : __signbitl(x);
+            ? __signbit(x)
+            : __signbitl(x);
+    }
+  }
+}
+else version( darwin )
+{
+    enum
+    {
+        FP_NAN         = 1,
+        FP_INFINITE    = 2,
+        FP_ZERO        = 3,
+        FP_NORMAL      = 4,
+        FP_SUBNORMAL   = 5,
+        FP_SUPERNORMAL = 6
+    }
+
+    enum
+    {
+        FP_FAST_FMA  = 0,
+        FP_FAST_FMAF = 0,
+        FP_FAST_FMAL = 0,
+    }
+
+    int __fpclassifyf(float x);
+    int __fpclassifyd(double x);
+    int __fpclassify(real x);
+
+    int __isfinitef(float x);
+    int __isfinited(double x);
+    int __isfinite(real x);
+
+    int __isinff(float x);
+    int __isinfd(double x);
+    int __isinf(real x);
+
+    int __isnanf(float x);
+    int __isnand(double x);
+    int __isnan(real x);
+
+    int __signbitf(float x);
+    int __signbitd(double x);
+    int __signbitl(real x);
+
+  extern (D)
+  {
+    //int fpclassify(real-floating x);
+    int fpclassify(float x)     { return __fpclassifyf(x); }
+    int fpclassify(double x)    { return __fpclassifyd(x); }
+    int fpclassify(real x)
+    {
+        return (real.sizeof == double.sizeof)
+            ? __fpclassifyd(x)
+            : __fpclassify(x);
+    }
+
+    //int isfinite(real-floating x);
+    int isfinite(float x)       { return __isfinitef(x); }
+    int isfinite(double x)      { return __isfinited(x); }
+    int isfinite(real x)
+    {
+        return (real.sizeof == double.sizeof)
+            ? __isfinited(x)
+            : __isfinite(x);
+    }
+
+    //int isinf(real-floating x);
+    int isinf(float x)          { return __isinff(x); }
+    int isinf(double x)         { return __isinfd(x); }
+    int isinf(real x)
+    {
+        return (real.sizeof == double.sizeof)
+            ? __isinfd(x)
+            : __isinf(x);
+    }
+
+    //int isnan(real-floating x);
+    int isnan(float x)          { return __isnanf(x); }
+    int isnan(double x)         { return __isnand(x); }
+    int isnan(real x)
+    {
+        return (real.sizeof == double.sizeof)
+            ? __isnand(x)
+            : __isnan(x);
+    }
+
+    //int isnormal(real-floating x);
+    int isnormal(float x)       { return fpclassify(x) == FP_NORMAL; }
+    int isnormal(double x)      { return fpclassify(x) == FP_NORMAL; }
+    int isnormal(real x)        { return fpclassify(x) == FP_NORMAL; }
+
+    //int signbit(real-floating x);
+    int signbit(float x)     { return __signbitf(x); }
+    int signbit(double x)    { return __signbitd(x); }
+    int signbit(real x)
+    {
+        return (real.sizeof == double.sizeof)
+            ? __signbitd(x)
+            : __signbitl(x);
     }
   }
 }
