@@ -58,7 +58,7 @@ NumType toFloat(T) (T[] src)
 
 ******************************************************************************/
 
-char[] toUtf8 (NumType d, uint decimals=6, bool scientific=false)
+char[] toUtf8 (NumType d, uint decimals=2, bool scientific=false)
 {
         char[64] tmp = void;
         
@@ -74,7 +74,7 @@ char[] toUtf8 (NumType d, uint decimals=6, bool scientific=false)
 
 ******************************************************************************/
 
-wchar[] toUtf16 (NumType d, uint decimals=6, bool scientific=false)
+wchar[] toUtf16 (NumType d, uint decimals=2, bool scientific=false)
 {
         wchar[64] tmp = void;
         
@@ -90,7 +90,7 @@ wchar[] toUtf16 (NumType d, uint decimals=6, bool scientific=false)
 
 ******************************************************************************/
 
-dchar[] toUtf32 (NumType d, uint decimals=6, bool scientific=false)
+dchar[] toUtf32 (NumType d, uint decimals=2, bool scientific=false)
 {
         dchar[64] tmp = void;
         
@@ -114,10 +114,24 @@ T[] format(T, D=double, U=uint) (T[] dst, D x, U decimals = 2, bool scientific =
 
 T[] format(T) (T[] dst, NumType x, uint decimals = 2, bool scientific = false)
 {
-        assert (dst.length >= 32);
+        static T[] inf = "-inf";
+        static T[] nan = "-nan";
 
-        // function to strip digits from the
-        // left of a normalized base-10 number
+        // extract the sign bit
+        static bool signed (NumType x)
+        {
+                static if (NumType.sizeof is 4) 
+                           return ((*cast(uint *)&x) & 0x8000_0000) != 0;
+                static if (NumType.sizeof is 8) 
+                           return ((*cast(ulong *)&x) & 0x8000_0000_0000_0000) != 0;
+                static if (NumType.sizeof is 10) 
+                          {
+                          auto pe = cast(ubyte *)&x;
+                          return (pe[9] & 0x80) != 0;
+                          }
+        }
+
+        // strip digits from the left of a normalized base-10 number
         static int toDigit (inout NumType v, inout int count)
         {
                 int digit;
@@ -135,21 +149,22 @@ T[] format(T) (T[] dst, NumType x, uint decimals = 2, bool scientific = false)
                 return digit + '0';
         }
 
-        if (x !<>= x)
-            return "nan";
-
-        if (x is x.infinity)
-            return "inf";
-
-        int exp;
-        bool sign;
+        // sanity check
+        assert (dst.length >= 32);
 
         // extract the sign
-        if (x < 0.0)
-           {
-           x = -x;
-           sign = true;
-           }
+        bool sign = signed (x);
+        if (sign)
+            x = -x;
+
+        if (x !<>= x)
+            return sign ? nan : nan[1..$];
+
+        if (x is x.infinity)
+            return sign ? inf : inf[1..$];
+
+        // assume no exponent
+        int exp = 0;
 
         // don't scale if zero
         if (x > 0.0)
@@ -246,8 +261,7 @@ T[] format(T) (T[] dst, NumType x, uint decimals = 2, bool scientific = false)
 NumType parse(T) (T[] src, uint* ate=null)
 {
         T               c;
-        T*              p,
-                        end;
+        T*              p;
         int             exp;
         bool            sign;
         uint            radix;
@@ -263,8 +277,9 @@ NumType parse(T) (T[] src, uint* ate=null)
            return *cast(NumType*) &v;
            }
 
-        // set end check
-        end = src.ptr + src.length;
+        // set begin and end checks
+        auto begin = p;
+        auto end = src.ptr + src.length;
 
         // read leading digits; note that leading
         // zeros are simply multiplied away
@@ -312,17 +327,20 @@ NumType parse(T) (T[] src, uint* ate=null)
            }
         else
            // was it was nan instead?
-           if (p is src.ptr)
+           if (p is begin)
                if (p[0..3] == "inf")
-                   p += 3, value = NumType.infinity;
+                   p += 3, value = value.infinity;
                else
                   if (p[0..3] == "nan")
-                      p += 3, value = NumType.nan;
+                      p += 3, value = value.nan;
 
         // set parse length, and return value
         if (ate)
             *ate = p - src.ptr;
-        return sign ? -value : value; 
+
+        if (sign)
+            value = -value;
+        return value;
 }
 
 
@@ -374,6 +392,15 @@ debug (UnitTest)
         unittest
         {
                 char[64] tmp;
+
+                auto f = parse ("nan");
+                assert (format(tmp, f) == "nan");
+                f = parse ("inf");
+                assert (format(tmp, f) == "inf");
+                f = parse ("-nan");
+                assert (format(tmp, f) == "-nan");
+                f = parse (" -inf");
+                assert (format(tmp, f) == "-inf");
 
                 assert (format (tmp, 3.14159, 6) == "3.141590");
                 assert (format (tmp, 3.14159, 4) == "3.1416");
