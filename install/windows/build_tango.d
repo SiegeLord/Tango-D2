@@ -27,7 +27,7 @@ void main( char[][] args )
         exec( "dmd -c -inline -release -O " ~
               "-of" ~ objname( file ) ~ " " ~
               file.toUtf8 );
-        outf.write(temp), outf.write('\n');
+        outf.write(temp), outf.write("\n");
         list ~= " " ~ temp;
         delete temp;
     }
