@@ -159,18 +159,18 @@ struct Console
 
                 /**************************************************************
 
-                        Divert input to an alternate device
+                        Divert input to an alternate stream
 
                         Remarks:
-                        Diverts input to the specified conduit, and sets
+                        Diverts input to the specified stream, and sets
                         the redirection status. 
                         
                 **************************************************************/
 
-                final void divert (IConduit conduit, bool redirected)
+                final void divert (InputStream input, bool redirected)
                 {
-                        buffer.setConduit (conduit);
                         redirect = redirected;
+                        buffer.input = input;
                 }           
         }
 
@@ -313,18 +313,18 @@ struct Console
 
                 /**************************************************************
 
-                        Divert output to an alternate device
+                        Divert output to an alternate stream
 
                         Remarks:
-                        Diverts output to the specified conduit, and sets
+                        Diverts output to the specified stream, and sets
                         the redirection status. The latter dictates whether
                         newline() performs automatic flushing or not
                         
                 **************************************************************/
 
-                final void divert (IConduit conduit, bool redirected)
+                final void divert (OutputStream output, bool redirected)
                 {
-                        buffer.setConduit (conduit);
+                        buffer.output = output;
                         redirect = redirected;
                 }           
         }
