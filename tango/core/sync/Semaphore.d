@@ -167,6 +167,9 @@ class Semaphore
                     throw new SyncException( "Unable to wait for semaphore" );
             }
         }
+
+        // -w trip
+        return false;
     }
 
 
@@ -229,6 +232,9 @@ class Semaphore
                     throw new SyncException( "Unable to wait for semaphore" );
             }
         }
+
+        // -w trip
+        return false;
     }
 
 

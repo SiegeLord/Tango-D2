@@ -231,13 +231,18 @@ class ReadWriteMutex
         {
             if( m_numActiveWriters > 0 )
                 return true;
+
             switch( m_policy )
             {
-            case Policy.PREFER_READERS:
-                return false;
             case Policy.PREFER_WRITERS:
-                return m_numQueuedWriters > 0;
+                 return m_numQueuedWriters > 0;
+
+            case Policy.PREFER_READERS:
+            default:
+                 break;
             }
+
+        return false;
         }
 
         struct MonitorProxy
@@ -299,6 +304,7 @@ class ReadWriteMutex
                 {
                     switch( m_policy )
                     {
+                    default:
                     case Policy.PREFER_READERS:
                         if( m_numQueuedReaders > 0 )
                             m_readerQueue.notifyAll();
@@ -344,11 +350,15 @@ class ReadWriteMutex
                 return true;
             switch( m_policy )
             {
-            case Policy.PREFER_WRITERS:
-                return false;
             case Policy.PREFER_READERS:
                 return m_numQueuedReaders > 0;
+
+            case Policy.PREFER_WRITERS:
+            default:
+                 break;
             }
+
+        return false;
         }
 
         struct MonitorProxy
