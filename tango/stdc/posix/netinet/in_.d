@@ -69,8 +69,8 @@ version( linux )
         in_addr     sin_addr;
 
         /* Pad to size of `struct sockaddr'. */
-        ubyte[__SOCK_SIZE__ - sizeof(sa_family_t) -
-              sizeof(in_port_t) - sizeof(in_addr)] __pad;
+        ubyte[__SOCK_SIZE__ - sa_family_t.sizeof -
+              in_port_t.sizeof - in_addr.sizeof] __pad;
     }
 
     enum
