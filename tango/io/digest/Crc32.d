@@ -69,7 +69,7 @@ final class Crc32 : Digest
                 uint r = result; // DMD optimization
                 foreach (ubyte value; cast(ubyte[]) input)
                 {
-                        ubyte i = r;// & 0xff;
+                        auto i = cast(ubyte) r;// & 0xff;
                         i ^= value;
                         r &= 0xFFFFFF00;
                         r /= 0x100;
@@ -90,10 +90,10 @@ final class Crc32 : Digest
                 if (buf.length < 4)
                         buf.length = 4;
                 uint v = ~result;
-                buf[3] = v >> 24;
-                buf[2] = v >> 16;
-                buf[1] = v >> 8;
-                buf[0] = v;
+                buf[3] = cast(ubyte) (v >> 24);
+                buf[2] = cast(ubyte) (v >> 16);
+                buf[1] = cast(ubyte) (v >> 8);
+                buf[0] = cast(ubyte) (v);
                 result = 0xffffffff;
                 return buf;
         }
