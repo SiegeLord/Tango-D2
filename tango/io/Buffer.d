@@ -996,7 +996,7 @@ class Buffer : IBuffer
 
         ***********************************************************************/
 
-        override void flush ()
+        void flush ()
         {
                 if (sink)
                    {
@@ -1018,7 +1018,7 @@ class Buffer : IBuffer
 
         ***********************************************************************/
 
-        override void clear ()
+        void clear ()
         {
                 index = extent = 0;
 
@@ -1037,7 +1037,7 @@ class Buffer : IBuffer
 
         ***********************************************************************/
 
-        final override void commit () 
+        final void commit () 
         {
                 if (sink)
                     sink.commit;
@@ -1058,7 +1058,7 @@ class Buffer : IBuffer
 
         ***********************************************************************/
 
-        override OutputStream copy (InputStream src)
+        OutputStream copy (InputStream src)
         {
                 assert (sink && src);
 
@@ -1165,7 +1165,7 @@ class Buffer : IBuffer
 
         ***********************************************************************/
 
-        override IConduit conduit ()
+        IConduit conduit ()
         {
                 return host;
         }
@@ -1192,6 +1192,92 @@ class Buffer : IBuffer
                 sink = conduit.output;
                 source = conduit.input;
                 return this;
+        }
+
+        /***********************************************************************
+        
+                Set output stream
+
+                Params:
+                sink = the stream to attach to
+
+                Remarks:
+                Sets the external output stream associated with this buffer.
+
+                Buffers do not require an external stream to operate, but 
+                it can be convenient to associate one. For example, methods
+                fill & drain use them to import/export content as necessary.
+
+        ***********************************************************************/
+
+        final IBuffer output (OutputStream sink)
+        {
+                this.sink = sink;
+                return this;
+        }
+
+        /***********************************************************************
+        
+                Set input stream
+
+                Params:
+                source = the stream to attach to
+
+                Remarks:
+                Sets the external input stream associated with this buffer.
+
+                Buffers do not require an external stream to operate, but 
+                it can be convenient to associate one. For example, methods
+                fill & drain use them to import/export content as necessary.
+
+        ***********************************************************************/
+
+        final IBuffer input (InputStream source)
+        {
+                this.source = source;
+                return this;
+        }
+
+        /***********************************************************************
+        
+                Exposes configured output stream
+
+                Returns:
+                Returns the OutputStream associated with this buffer. Returns 
+                null if the buffer is not attached to an output; that is, it's
+                not backed by some external medium.
+
+                Remarks:
+                Buffers do not require an external stream to operate, but 
+                it can be convenient to associate them. For example, methods
+                fill & drain use them to import/export content as necessary.
+
+        ***********************************************************************/
+
+        final OutputStream output ()
+        {
+                return sink;
+        }
+
+        /***********************************************************************
+        
+                Exposes configured input stream
+
+                Returns:
+                Returns the InputStream associated with this buffer. Returns 
+                null if the buffer is not attached to an input; that is, it's
+                not backed by some external medium.
+
+                Remarks:
+                Buffers do not require an external stream to operate, but 
+                it can be convenient to associate them. For example, methods
+                fill & drain use them to import/export content as necessary.
+
+        ***********************************************************************/
+
+        final InputStream input ()
+        {
+                return source;
         }
 
         /***********************************************************************

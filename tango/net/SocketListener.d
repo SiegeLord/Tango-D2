@@ -51,7 +51,7 @@ class SocketListener : IListener
         this (IBuffer buffer)
         {
                 assert (buffer);
-                this (buffer.conduit, buffer);
+                this (buffer.input, buffer);
         }
 
         /**********************************************************************
@@ -63,11 +63,11 @@ class SocketListener : IListener
 
         **********************************************************************/
 
-        this (IConduit conduit, IBuffer buffer)
+        this (InputStream stream, IBuffer buffer)
         {
-                assert (conduit);
+                assert (stream);
                 this.buffer = buffer;
-                this.conduit = conduit;
+                this.conduit = stream.conduit;
                 thread = new Thread (&run);
                 thread.isDaemon = true;
         }
@@ -148,7 +148,7 @@ class SocketListener : IListener
                 while (lives > 0)
                        try {
                            // start with a clean slate
-                           buffer.compress ();
+                           buffer.compress;
 
                            // wait for incoming content
                            auto result = buffer.write (&conduit.input.read);

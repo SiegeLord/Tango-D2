@@ -187,8 +187,6 @@ private import tango.io.model.IConduit;
 
 abstract class IBuffer : InputStream, OutputStream
 {
-        typedef uint delegate (void* dst, uint count, uint type) Converter;
-
         alias append opCall;
         alias flush  opCall;
       
@@ -604,6 +602,78 @@ abstract class IBuffer : InputStream, OutputStream
         ***********************************************************************/
 
         abstract IBuffer setConduit (IConduit conduit);
+
+        /***********************************************************************
+        
+                Set output stream
+
+                Params:
+                sink = the stream to attach to
+
+                Remarks:
+                Sets the external output stream associated with this buffer.
+
+                Buffers do not require an external stream to operate, but 
+                it can be convenient to associate one. For example, methods
+                fill & drain use them to import/export content as necessary.
+
+        ***********************************************************************/
+
+        abstract IBuffer output (OutputStream sink);
+
+        /***********************************************************************
+        
+                Set input stream
+
+                Params:
+                source = the stream to attach to
+
+                Remarks:
+                Sets the external input stream associated with this buffer.
+
+                Buffers do not require an external stream to operate, but 
+                it can be convenient to associate one. For example, methods
+                fill & drain use them to import/export content as necessary.
+
+        ***********************************************************************/
+
+        abstract IBuffer input (InputStream source);
+
+        /***********************************************************************
+        
+                Exposes configured output stream
+
+                Returns:
+                Returns the OutputStream associated with this buffer. Returns 
+                null if the buffer is not attached to an output; that is, it's
+                not backed by some external medium.
+
+                Remarks:
+                Buffers do not require an external stream to operate, but 
+                it can be convenient to associate them. For example, methods
+                fill & drain use them to import/export content as necessary.
+
+        ***********************************************************************/
+
+        abstract OutputStream output ();
+
+        /***********************************************************************
+        
+                Exposes configured input stream
+
+                Returns:
+                Returns the InputStream associated with this buffer. Returns 
+                null if the buffer is not attached to an input; that is, it's
+                not backed by some external medium.
+
+                Remarks:
+                Buffers do not require an external stream to operate, but 
+                it can be convenient to associate them. For example, methods
+                fill & drain use them to import/export content as necessary.
+
+        ***********************************************************************/
+
+        abstract InputStream input ();
 
         /***********************************************************************
         

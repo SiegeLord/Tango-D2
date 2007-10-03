@@ -48,6 +48,7 @@ class ClusterThread
         protected Thread          thread;
         protected Sprint!(char)   sprint;
         protected Cluster         cluster;
+        protected IConduit        conduit;
 
         /**********************************************************************
 
@@ -85,6 +86,7 @@ class ClusterThread
                 
                 // save state
                 logger = server.getLogger;
+                this.conduit = conduit;
                 this.cluster = cluster;
         }
 
@@ -141,7 +143,7 @@ class ClusterThread
                 logger.info (sprint ("{} halting service handler", client));
 
                 // make sure we close the conduit
-                buffer.conduit.detach;
+                conduit.detach;
         }
 }
 

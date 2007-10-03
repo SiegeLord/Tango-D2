@@ -119,8 +119,8 @@ public class SocketAppender : Appender
 
         void close ()
         {
-                if (buffer)
-                    buffer.conduit.detach;
-                buffer = null;
+                if (conduit)
+                    conduit.detach;
+                conduit = null;
         }
 }
