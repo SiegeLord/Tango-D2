@@ -111,10 +111,12 @@ struct CodePage
         {       
                 uint len = 0;
 
+                // sanity check
+                assert (dst.length);
+
+                // got some input?
                 if (src.length > 0)
                    {    
-                   assert (dst.length);
-
                    wchar[2000] tmp = void;
                    wchar[] wide = (src.length <= tmp.length) ? tmp : new wchar[src.length];
 
@@ -122,14 +124,10 @@ struct CodePage
                                               wide.ptr, wide.length);
                    if (len)
                        len = WideCharToMultiByte (into, 0, wide.ptr, len, 
-                                                  dst.ptr, dst.length, null, null);
+                                                  dst.ptr, dst.length-1, null, null);
                    if (len is 0)
                        throw new IllegalArgumentException ("CodePage.convert :: "~SysError.lastMsg);
                    }
-
-                // must have space for a null ...
-                if (dst.length <= len)
-                    throw new IllegalArgumentException ("CodePage.convert :: output buffer is too small");
 
                 // append a null terminator
                 dst[len] = 0;
