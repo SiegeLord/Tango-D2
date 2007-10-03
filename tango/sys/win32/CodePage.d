@@ -69,7 +69,7 @@ struct CodePage
                 return convert (src, dst, CP_UTF8, page);
         }
 
-             
+
         /**********************************************************************
 
                 Convert codepage text to a utf8 representation
@@ -102,13 +102,14 @@ struct CodePage
         /**********************************************************************
 
                 Internal conversion routine; we avoid heap activity for
-                strings of short and medium length
+                strings of short and medium length. A zero is appended 
+                to the dst array in order to simplify C API conversions
 
         **********************************************************************/
 
         private static char[] convert (char[] src, char[] dst, uint from, uint into)
         {       
-                uint len;
+                uint len = 0;
 
                 if (src.length > 0)
                    {    
@@ -125,6 +126,13 @@ struct CodePage
                    if (len is 0)
                        throw new IllegalArgumentException ("CodePage.convert :: "~SysError.lastMsg);
                    }
+
+                // must have space for a null ...
+                if (dst.length <= len)
+                    throw new IllegalArgumentException ("CodePage.convert :: output buffer is too small");
+
+                // append a null terminator
+                dst[len] = 0;
                 return dst [0 .. len];
         }
 }
