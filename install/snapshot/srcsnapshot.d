@@ -128,7 +128,7 @@ int main(char[][] args)
     // run build-*.*
     auto bld = new Process(buildcmd, null);
     bld.execute();
-    Stderr.conduit.copy(bld.stderr);
+    Stderr.stream.copy(bld.stderr);
     result = bld.wait();
     if (result.reason != Process.Result.Exit) {
         Stderr("Was not able to build ").newline;
@@ -142,7 +142,7 @@ int main(char[][] args)
     Stdout("!! Changing access rights").newline;
     auto chmod = new Process("chmod 644 " ~ chmodfiles, null);
     chmod.execute();
-    Stderr.conduit.copy(chmod.stderr);
+    Stderr.stream.copy(chmod.stderr);
     result = chmod.wait();
     if (result.reason != Process.Result.Exit) {
         Stderr("Was not able to change access rights").newline;
@@ -153,7 +153,7 @@ int main(char[][] args)
     Stdout("!! Removing " ~ rmpaths).newline;
     auto rm = new Process("rm -rf " ~ rmpaths, null);
     rm.execute();
-    Stderr.conduit.copy(rm.stderr);
+    Stderr.stream.copy(rm.stderr);
     result = rm.wait();
     if (result.reason != Process.Result.Exit) {
         Stderr("Was not able to remove paths").newline;
@@ -167,7 +167,7 @@ int main(char[][] args)
     Stdout("!! Creating .tar.gz").newline;
     auto targz = new Process("tar czf " ~ packdirdate ~ ".tar.gz " ~ packdirdate, null);
     targz.execute();
-    Stderr.conduit.copy(targz.stderr);
+    Stderr.stream.copy(targz.stderr);
     result = targz.wait();
     if (result.reason != Process.Result.Exit) {
         Stderr("Was not able to create .tar.gz").newline;
@@ -177,7 +177,7 @@ int main(char[][] args)
     Stdout("!! Creating .zip").newline;
     auto zip = new Process("zip -r " ~ packdirdate ~ " " ~ packdirdate, null);
     zip.execute();
-    Stderr.conduit.copy(zip.stderr);
+    Stderr.stream.copy(zip.stderr);
     result = zip.wait();
     if (result.reason != Process.Result.Exit) {
         Stderr("Was not able to create .zip").newline;

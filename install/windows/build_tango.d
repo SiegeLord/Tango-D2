@@ -92,8 +92,8 @@ void exec( char[][] cmd, char[][char[]] env, char[] workDir = null )
         Stdout( str )( ' ' );
     Stdout( '\n' );
     proc.execute();
-    Stdout.conduit.copy( proc.stdout );
-    Stdout.conduit.copy( proc.stderr );
+    Stdout.stream.copy( proc.stdout );
+    Stdout.stream.copy( proc.stderr );
     auto result = proc.wait();
     if( result.reason != Process.Result.Exit )
         throw new Exception( result.toUtf8() );
