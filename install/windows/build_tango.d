@@ -1,7 +1,6 @@
 import tango.io.FileConduit;
 import tango.io.FileScan;
 import tango.io.Stdout;
-import tango.io.protocol.DisplayWriter;
 import tango.sys.Process;
 import tango.text.Util;
 import Integer = tango.text.convert.Integer;
@@ -12,7 +11,6 @@ void main( char[][] args )
     scope(exit) Stdout.flush;
 
     auto    outf = new FileConduit( "tango.lsp", FileConduit.ReadWriteCreate );
-    auto    link = new DisplayWriter( outf );
     auto    scan = new FileScan;
     char[]  path = "..\\tango";
     char[]  list = null;
@@ -20,7 +18,7 @@ void main( char[][] args )
     if( args.length > 1 )
         path = args[1] ~ "\\tango";
 
-    link( "-c -n -p256\ntango.lib\n"c );
+    outf.write ("-c -n -p256\ntango.lib\n");
     foreach(file; scan( path, ".d" ).files )
     {
         if( filter( file ) )
@@ -29,11 +27,10 @@ void main( char[][] args )
         exec( "dmd -c -inline -release -O " ~
               "-of" ~ objname( file ) ~ " " ~
               file.toUtf8 );
-        link( temp )( '\n' );
+        outf.write(temp), outf.write('\n');
         list ~= " " ~ temp;
         delete temp;
     }
-    link.flush;
     outf.close;
     exec( "lib @tango.lsp" );
     exec( "cmd /q /c del tango.lsp" ~ list );
