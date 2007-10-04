@@ -16,7 +16,7 @@ extern (C):
 // Required
 //
 /*
-struct if_nameindex
+struct if_nameindex // renamed to if_nameindex_t
 {
     uint    if_index;
     char*   if_name;
@@ -24,15 +24,15 @@ struct if_nameindex
 
 IF_NAMESIZE
 
-uint          if_nametoindex(char*);
-char*         if_indextoname(uint, char*);
-if_nameindex* if_nameindex();
-void          if_freenameindex(if_nameindex*);
+uint            if_nametoindex(char*);
+char*           if_indextoname(uint, char*);
+if_nameindex_t* if_nameindex();
+void            if_freenameindex(if_nameindex_t*);
 */
 
 version( linux )
 {
-    struct if_nameindex
+    struct if_nameindex_t
     {
         uint    if_index;
         char*   if_name;
@@ -40,10 +40,10 @@ version( linux )
 
     const IF_NAMESIZE = 16;
 
-    uint          if_nametoindex(char*);
-    char*         if_indextoname(uint, char*);
-    if_nameindex* if_nameindex();
-    void          if_freenameindex(if_nameindex*);
+    uint            if_nametoindex(char*);
+    char*           if_indextoname(uint, char*);
+    if_nameindex_t* if_nameindex();
+    void            if_freenameindex(if_nameindex_t*);
 }
 else version( darwin )
 {
