@@ -122,9 +122,10 @@ T[] format(T) (T[] dst, NumType x, uint decimals = 2, bool scientific = false)
         {
                 static if (NumType.sizeof is 4) 
                            return ((*cast(uint *)&x) & 0x8000_0000) != 0;
+
                 static if (NumType.sizeof is 8) 
                            return ((*cast(ulong *)&x) & 0x8000_0000_0000_0000) != 0;
-                static if (NumType.sizeof is 10) 
+                       else
                           {
                           auto pe = cast(ubyte *)&x;
                           return (pe[9] & 0x80) != 0;
