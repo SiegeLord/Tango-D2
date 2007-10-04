@@ -33,6 +33,19 @@ extern (C)
 
 /*******************************************************************************
 
+        Hack to sidestep linux linker errors (big thanks to Keinfarbton)
+
+*******************************************************************************/
+
+private Layout!(char) format;
+
+static this()
+{
+        .format = new Layout!(char);
+}
+
+/*******************************************************************************
+
         Loggers are named entities, sometimes shared, sometimes specific to 
         a particular portion of code. The names are generally hierarchical in 
         nature, using dot notation (with '.') to separate each named section. 
@@ -391,7 +404,7 @@ private class LoggerInstance : Logger
 
         final char[] format (char[] buffer, char[] formatStr, ...)
         {
-                return hierarchy.format.sprint (buffer, formatStr, _arguments, _argptr);     
+                return .format.sprint (buffer, formatStr, _arguments, _argptr);     
         }
 
         /***********************************************************************
@@ -436,7 +449,6 @@ class Hierarchy : IHierarchy
 {
         private char[]                  name,
                                         address;      
-        private Layout!(char)           format;
         private LoggerInstance          root;
         private LoggerInstance[char[]]  loggers;
 
@@ -450,7 +462,6 @@ class Hierarchy : IHierarchy
         {
                 this.name = name;
                 this.address = "network";
-                this.format = new Layout!(char);
 
                 // insert a root node; the root has an empty name
                 root = new LoggerInstance (this, "");
@@ -656,4 +667,5 @@ class Hierarchy : IHierarchy
                    }
         }
 }
+
 
