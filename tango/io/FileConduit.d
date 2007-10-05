@@ -506,9 +506,11 @@ class FileConduit : DeviceConduit, DeviceConduit.Seek
                 {
                         alias int[] Flags;
 
+                        const O_LARGEFILE = 0x8000;
+
                         static const Flags Access =  
                                         [
-                                        0,              // invalid
+                                        0,                      // invalid
                                         O_RDONLY,
                                         O_WRONLY,
                                         O_RDWR,
@@ -516,20 +518,22 @@ class FileConduit : DeviceConduit, DeviceConduit.Seek
                                                 
                         static const Flags Create =  
                                         [
-                                        0,              // open existing
-                                        O_CREAT | O_TRUNC, // truncate always
-                                        O_CREAT,        // create if needed
-                                        O_APPEND | O_CREAT, 
+                                        0,                      // open existing
+                                        O_CREAT | O_TRUNC,      // truncate always
+                                        O_CREAT,                // create if needed
+                                        O_APPEND | O_CREAT,     // append
                                         ];
 
                         static const short[] Locks =   
                                         [
-                                        F_WRLCK,        // no sharing
-                                        F_RDLCK,        // shared read
+                                        F_WRLCK,                // no sharing
+                                        F_RDLCK,                // shared read
                                         ];
                                                 
                         auto mode = Access[style.access] | Create[style.open];
-                        handle = posix.open (path.cString.ptr, mode, 0666);
+
+                        // always open as a large file
+                        handle = posix.open (path.cString.ptr, mode | O_LARGEFILE, 0666);
                         if (handle is -1)
                             error ();
                 }
