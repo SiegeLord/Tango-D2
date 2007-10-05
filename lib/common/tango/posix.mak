@@ -123,6 +123,7 @@ clean :
 	find . -name "libtango*.a" | xargs $(RM)
 
 install :
+### HACK: This echo line is to work around a compiler bug.
 	echo "static this();" >> core/Thread.di
 	$(MD) $(INC_DEST)
 	find . -name "*.di" -exec cp -f {} $(INC_DEST)/{} \;
