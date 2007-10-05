@@ -143,7 +143,6 @@ class StreamIterator(T)
                 Iterate over a set of tokens, exposing a token count 
                 starting at zero
 
-
         **********************************************************************/
 
         int opApply (int delegate(inout int, inout T[]) dg)
@@ -275,10 +274,7 @@ class StreamIterator(T)
                 if (buffer.next (&scan))
                     return true;
 
-                if (auto i = buffer.readable)
-                    slice = cast(T[]) buffer.slice (i);
-                else
-                   slice = null;
+                slice = convert (buffer.slice (buffer.readable));
                 return false;
         }
 }
