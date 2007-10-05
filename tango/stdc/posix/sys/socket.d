@@ -153,7 +153,7 @@ version( linux )
     {
         void*         msg_name;
         socklen_t     msg_namelen;
-        struct iovec* msg_iov;
+        iovec*        msg_iov;
         size_t        msg_iovlen;
         void*         msg_control;
         size_t        msg_controllen;
@@ -188,7 +188,7 @@ version( linux )
     private cmsghdr* __cmsg_nxthdr(msghdr*, cmsghdr*);
     alias            __cmsg_nxthdr CMSG_NXTHDR;
 
-    extern (D) CMSG_FIRSTHDR( msghdr* mhdr )
+    extern (D) size_t CMSG_FIRSTHDR( msghdr* mhdr )
     {
         return cast(size_t)( mhdr.msg_controllen >= cmsghdr.sizeof
                              ? cast(cmsghdr*) mhdr.msg_control
