@@ -132,11 +132,11 @@ struct Console
                                             content = text [0 .. j];
                                             return i+1;
                                             }
-                                content = text;
                                 return IConduit.Eof;
                         }
 
-                        return buffer.next (&line) || content.length;
+                        return buffer.next(&line) || 
+                              (content = cast(char[]) buffer.slice(buffer.readable), false);
                 }
 
                 /**************************************************************
