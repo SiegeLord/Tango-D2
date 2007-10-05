@@ -10,6 +10,7 @@ module tango.stdc.posix.arpa.inet;
 
 private import tango.stdc.posix.config;
 public import tango.stdc.inttypes : uint32_t, uint16_t;
+public import tango.stdc.posix.sys.socket : socklen_t;
 
 extern (C):
 
