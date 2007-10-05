@@ -1424,19 +1424,6 @@ extern (C) void thread_init()
     {
         Thread.sm_this = TlsAlloc();
         assert( Thread.sm_this != TLS_OUT_OF_INDEXES );
-
-        Thread          mainThread  = new Thread();
-        Thread.Context* mainContext = &mainThread.m_main;
-        assert( mainContext == mainThread.m_curr );
-
-        mainThread.m_addr  = GetCurrentThreadId();
-        mainThread.m_hndl  = GetCurrentThreadHandle();
-        mainContext.bstack = getStackBottom();
-        mainContext.tstack = mainContext.bstack;
-
-        mainThread.m_isDaemon = true;
-
-        Thread.setThis( mainThread );
     }
     else version( Posix )
     {
@@ -1483,23 +1470,61 @@ extern (C) void thread_init()
 
         status = pthread_key_create( &Thread.sm_this, null );
         assert( status == 0 );
-
-        Thread          mainThread  = new Thread();
-        Thread.Context* mainContext = mainThread.m_curr;
-        assert( mainContext == &mainThread.m_main );
-
-        mainThread.m_addr  = pthread_self();
-        mainContext.bstack = getStackBottom();
-        mainContext.tstack = mainContext.bstack;
-
-        mainThread.m_isRunning = true;
-        mainThread.m_isDaemon  = true;
-
-        Thread.setThis( mainThread );
     }
 
-    Thread.add( mainThread );
-    Thread.add( mainContext );
+    thread_attachThis();
+}
+
+
+/**
+ * Registers the calling thread for use with Tango.  If this routine is called
+ * for a thread which is already registered, the result is undefined.
+ */
+extern (C) void thread_attachThis()
+{
+    version( Win32 )
+    {
+        Thread          thisThread  = new Thread();
+        Thread.Context* thisContext = &thisThread.m_main;
+        assert( thisContext == thisThread.m_curr );
+
+        thisThread.m_addr  = GetCurrentThreadId();
+        thisThread.m_hndl  = GetCurrentThreadHandle();
+        thisContext.bstack = getStackBottom();
+        thisContext.tstack = thisContext.bstack;
+
+        thisThread.m_isDaemon = true;
+
+        Thread.setThis( thisThread );
+    }
+    else version( Posix )
+    {
+        Thread          thisThread  = new Thread();
+        Thread.Context* thisContext = thisThread.m_curr;
+        assert( thisContext == &thisThread.m_main );
+
+        thisThread.m_addr  = pthread_self();
+        thisContext.bstack = getStackBottom();
+        thisContext.tstack = thisContext.bstack;
+
+        thisThread.m_isRunning = true;
+        thisThread.m_isDaemon  = true;
+
+        Thread.setThis( thisThread );
+    }
+
+    Thread.add( thisThread );
+    Thread.add( thisContext );
+}
+
+
+/**
+ * Deregisters the calling thread from use with Tango.  If this routine is
+ * called for a thread which is already registered, the result is undefined.
+ */
+extern (C) void thread_detachThis()
+{
+    Thread.remove( Thread.getThis() );
 }
 
 
