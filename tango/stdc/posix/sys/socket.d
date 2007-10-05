@@ -192,7 +192,7 @@ version( linux )
     {
         return cast(size_t)( mhdr.msg_controllen >= cmsghdr.sizeof
                              ? cast(cmsghdr*) mhdr.msg_control
-                             : cast(cmsghdr*) null;
+                             : cast(cmsghdr*) null );
     }
 
     struct linger
