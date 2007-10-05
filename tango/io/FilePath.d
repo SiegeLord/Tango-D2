@@ -153,6 +153,19 @@ class FilePath : PathView
 
         /***********************************************************************
 
+                Call-site shortcut to create a FilePath instance. This 
+                enables the same syntax as struct usage, so may expose
+                a migration path
+
+        ***********************************************************************/
+
+        static FilePath opCall (char[] filepath, bool native=false)
+        {
+                return new FilePath (filepath, native);
+        }
+
+        /***********************************************************************
+
                 Return the complete text of this filepath
 
         ***********************************************************************/
