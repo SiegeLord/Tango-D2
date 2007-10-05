@@ -28,6 +28,31 @@ Options:
 }
 
 UNAME=`uname`
+INLINE="-inline"
+DMDVERSION=
+
+# Various functions to workaround bugs in the compilers
+dmdversion() {
+    DMDVERSION=`$DC | head -1 | cut -c 26-`
+    echo ">> Using $DMDVERSION"
+}
+
+dmdbugs() {
+    dmdversion
+    if [ "$DMDVERSION" = "1.020" -o "$DMDVERSION" = "1.021" ]
+    then
+        INLINE=""    
+        echo ">> Removing -inline due to bugzilla 668"
+    fi
+}
+
+compilerbugs() {
+    echo ">> Checking compiler version $DC" 
+    if [ "$DC" = "dmd" ]
+    then
+        dmdbugs
+    fi
+}
 
 # This filter can probably be improved quite a bit, but should work
 # on the supported platforms as of May 2007
@@ -67,7 +92,7 @@ compile() {
 
     if filter $OBJNAME
     then
-        $DC -c -v1 -inline -release -O -version=Posix -version=Tango -of$OBJNAME $FILENAME
+        $DC -c -v1 $INLINE -release -O -version=Posix -version=Tango -of$OBJNAME $FILENAME
         ar -r lib/$LIB $OBJNAME 2>&1 | grep -v "ranlib: .* has no symbols"
         rm $OBJNAME
     fi
@@ -83,6 +108,9 @@ build() {
         echo "$DC not found on your \$PATH!"
         return
     fi
+
+    # Check if the compiler used has known bugs
+    compilerbugs
 
     if [ ! -e "$3" ]
     then
