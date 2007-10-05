@@ -4,7 +4,7 @@
 
         license:        BSD style: $(LICENSE)
 
-        version:        Feb 2007: Seperated from Stdout 
+        version:        Feb 2007: Separated from Stdout 
                 
         author:         Kris
 
