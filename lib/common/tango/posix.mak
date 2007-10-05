@@ -123,6 +123,7 @@ clean :
 	find . -name "libtango*.a" | xargs $(RM)
 
 install :
+	echo "static this();" >> Thread.di
 	$(MD) $(INC_DEST)
 	find . -name "*.di" -exec cp -f {} $(INC_DEST)/{} \;
 	$(MD) $(DOC_DEST)
