@@ -1152,7 +1152,7 @@ class Buffer : IBuffer
         /***********************************************************************
         
                 Deprecated: use input() or output() instead, and access
-                            the conduit via from there
+                            the conduit from there
 
                 Access configured conduit
 
