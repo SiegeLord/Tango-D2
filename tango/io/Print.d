@@ -98,8 +98,8 @@ class Print(T)
 
         /**********************************************************************
 
-                Construct a Print instance, tying the provided
-                buffer to a formatter
+                Construct a Print instance, tying the provided stream
+                to a layout formatter
 
         **********************************************************************/
 
@@ -209,13 +209,25 @@ class Print(T)
 
         /**********************************************************************
 
-                Return the associated stream
+                Return the associated output stream
 
         **********************************************************************/
 
         final OutputStream stream ()
         {
                 return output;
+        }
+
+        /**********************************************************************
+
+                Set the associated output stream
+
+        **********************************************************************/
+
+        final Print stream (OutputStream output)
+        {
+                this.output = output;
+                return this;
         }
 
         /**********************************************************************
