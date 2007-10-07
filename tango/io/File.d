@@ -75,19 +75,6 @@ class File
 
         /***********************************************************************
 
-                Call-site shortcut to create a File instance. This 
-                enables the same syntax as struct usage, so may expose
-                a migration path
-
-        ***********************************************************************/
-
-        static File opCall (PathView path)
-        {
-                return new File (path);
-        }
-
-        /***********************************************************************
-
                 Return the path for this file instance
 
         ***********************************************************************/

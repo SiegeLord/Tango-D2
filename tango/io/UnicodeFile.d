@@ -132,6 +132,19 @@ class UnicodeFile(T)
 
         /***********************************************************************
 
+                Call-site shortcut to create a UnicodeFile instance. This 
+                enables the same syntax as struct usage, so may expose
+                a migration path
+
+        ***********************************************************************/
+
+        static UnicodeFile opCall (char[] name, Encoding encoding)
+        {
+                return new UnicodeFile (name, encoding);
+        }
+
+        /***********************************************************************
+
                 Return the associated FilePath instance
 
         ***********************************************************************/

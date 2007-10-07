@@ -267,6 +267,19 @@ class FileConduit : DeviceConduit, DeviceConduit.Seek
         }    
 
         /***********************************************************************
+
+                Call-site shortcut to create a FileConduit instance. This 
+                enables the same syntax as struct usage, so may expose
+                a migration path
+
+        ***********************************************************************/
+
+        static FileConduit opCall (char[] name, Style style = ReadExisting)
+        {
+                return new FileConduit (path, style);
+        }
+
+        /***********************************************************************
         
                 Return the PathView used by this file.
 
