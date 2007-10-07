@@ -62,6 +62,19 @@ class File
 
         /***********************************************************************
 
+                Call-site shortcut to create a File instance. This 
+                enables the same syntax as struct usage, so may expose
+                a migration path
+
+        ***********************************************************************/
+
+        static File opCall (char[] path)
+        {
+                return new File (path);
+        }
+
+        /***********************************************************************
+
                 Return the path for this file instance
 
         ***********************************************************************/
@@ -129,5 +142,13 @@ class File
 
                 conduit.output.write (content);
                 return this;
+        }
+}
+
+debug (File)
+{
+        void main()
+        {
+                auto content = File("file.d").read;
         }
 }
