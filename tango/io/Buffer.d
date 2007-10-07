@@ -1151,6 +1151,9 @@ class Buffer : IBuffer
 
         /***********************************************************************
         
+                Deprecated: use input() or output() instead, and access
+                            the conduit via from there
+
                 Access configured conduit
 
                 Returns:
@@ -1165,7 +1168,7 @@ class Buffer : IBuffer
 
         ***********************************************************************/
 
-        IConduit conduit ()
+        deprecated IConduit conduit ()
         {
                 return host;
         }

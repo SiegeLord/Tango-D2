@@ -578,6 +578,9 @@ abstract class IBuffer : InputStream, OutputStream
 
         /***********************************************************************
         
+                Deprecated: use input() or output() instead, and access
+                            the conduit via from there
+
                 Returns the conduit associated with this buffer. Returns 
                 null if the buffer is purely memory based; that is, it's
                 not backed by some external conduit.
@@ -589,7 +592,7 @@ abstract class IBuffer : InputStream, OutputStream
 
         ***********************************************************************/
 
-        abstract IConduit conduit ();               
+        deprecated abstract IConduit conduit ();               
 
         /***********************************************************************
         
