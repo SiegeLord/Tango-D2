@@ -276,7 +276,7 @@ class FileConduit : DeviceConduit, DeviceConduit.Seek
 
         static FileConduit opCall (char[] name, Style style = ReadExisting)
         {
-                return new FileConduit (path, style);
+                return new FileConduit (name, style);
         }
 
         /***********************************************************************
