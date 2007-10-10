@@ -49,7 +49,7 @@ then
     rm -rf libgtango_objs
     mkdir -p libgtango_objs
     cd libgtango_objs || die 1 "Failed to cd to libgtango_objs"
-    for i in ../libSDG-*.a
+    for i in ../libDG-*.a
     do
         ar x $i
     done

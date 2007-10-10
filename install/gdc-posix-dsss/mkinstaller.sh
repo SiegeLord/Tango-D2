@@ -43,7 +43,7 @@ tar zcf core.tar.gz object.di lib/libgphobos.a \
 
 
 # 2) The rest
-if [ ! -e libSDG-tango-core.a ]
+if [ ! -e libDG-tango-core.a ]
 then
     dsss build || die 1 "Failed to build Tango"
 fi
