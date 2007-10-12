@@ -28,6 +28,7 @@ private
     extern (C) size_t gc_extend( void* p, size_t mx, size_t sz );
     extern (C) void   gc_free( void* p );
 
+    extern (C) void*  gc_addrOf( void* p );
     extern (C) size_t gc_sizeOf( void* p );
 
     extern (C) void gc_addRoot( void* p );
@@ -272,6 +273,27 @@ struct GC
     static void free( void* p )
     {
         gc_free( p );
+    }
+
+
+    /**
+     * Returns the base address of the memory block containing p.  This value
+     * is useful to determine whether p is an interior pointer, and the result
+     * may be passed to routines such as sizeOf which may otherwise fail.  If p
+     * references memory not originally allocated by this garbage collector, if
+     * p is null, or if the garbage collector does not support this operation,
+     * null will be returned.
+     *
+     * Params:
+     *  p = A pointer to the root or the interior of a valid memory block or to
+     *      null.
+     *
+     * Returns:
+     *  The base address of the memory block referenced by p or null on error.
+     */
+    static void* addrOf( void* p )
+    {
+        return gc_addrOf( p );
     }
 
 

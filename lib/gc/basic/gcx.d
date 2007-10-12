@@ -865,6 +865,42 @@ class GC
 
 
     /**
+     * Determine the base address of the block containing p.  If p is not a gc
+     * allocated pointer, return null.
+     */
+    void* addrOf(void *p)
+    {
+        if (!p)
+        {
+            return null;
+        }
+
+        if (!thread_needLock())
+        {
+            return addrOfNoSync(p);
+        }
+        else synchronized (gcLock)
+        {
+            return addrOfNoSync(p);
+        }
+    }
+
+
+    //
+    //
+    //
+    void* addrOfNoSync(void *p)
+    {
+        if (!p)
+        {
+            return null;
+        }
+
+        return gcx.findBase(p);
+    }
+
+
+    /**
      * Determine the allocated size of pointer p.  If p is an interior pointer
      * or not a gc allocated pointer, return 0.
      */
@@ -1533,6 +1569,44 @@ struct Gcx
 
 
     /**
+     * Find base address of block containing pointer p.
+     * Returns null if not a gc'd pointer
+     */
+    void* findBase(void *p)
+    {
+        Pool *pool;
+
+        pool = findPool(p);
+        if (pool)
+        {
+            size_t offset = cast(size_t)(p - pool.baseAddr);
+            uint pn = offset / PAGESIZE;
+            Bins bin = cast(Bins)pool.pagetable[pn];
+
+            // Adjust bit to be at start of allocated memory block
+            if (bin <= B_PAGE)
+            {
+                return pool.baseAddr + (offset & notbinsize[bin]);
+            }
+            else if (bin == B_PAGEPLUS)
+            {
+                do
+                {   --pn, offset -= PAGESIZE;
+                } while (cast(Bins)pool.pagetable[pn] == B_PAGEPLUS);
+
+                return pool.baseAddr + (offset & (offset.max ^ (PAGESIZE-1)));
+            }
+            else
+            {
+                // we are in a B_FREE or B_UNCOMMITTED page
+                return null;
+            }
+        }
+        return null;
+    }
+
+
+    /**
      * Find size of pointer p.
      * Returns 0 if not a gc'd pointer
      */
@@ -1835,7 +1909,7 @@ struct Gcx
                 pool = findPool(p);
                 if (pool)
                 {
-                    size_t offset = cast(uint)(p - pool.baseAddr);
+                    size_t offset = cast(size_t)(p - pool.baseAddr);
                     uint biti;
                     uint pn = offset / PAGESIZE;
                     Bins bin = cast(Bins)pool.pagetable[pn];
@@ -2404,7 +2478,7 @@ struct Gcx
                 Pool *pool;
                 pool = findPool(p);
                 assert(pool);
-                size_t offset = cast(uint)(p - pool.baseAddr);
+                size_t offset = cast(size_t)(p - pool.baseAddr);
                 uint biti;
                 uint pn = offset / PAGESIZE;
                 Bins bin = cast(Bins)pool.pagetable[pn];

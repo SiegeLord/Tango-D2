@@ -113,6 +113,11 @@ extern (C) void gc_free( void* p )
     free( p );
 }
 
+extern (C) void* gc_addrOf( void* p )
+{
+    return null;
+}
+
 extern (C) size_t gc_sizeOf( void* p )
 {
     return 0;
