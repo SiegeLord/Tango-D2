@@ -40,9 +40,22 @@ private import  Float   = tango.text.convert.Float,
 *******************************************************************************/
 
 version (DigitalMars)
-         alias void* Arg;
-   else
-      alias char* Arg;
+        {
+        alias void* Arg;
+        alias void* ArgList;
+        }
+     else
+        version (x86_64)
+                {
+                private import std.stdarg;
+                alias void* Arg;
+                alias va_list ArgList;
+                }
+             else
+                {
+                alias char* Arg;
+                alias char* ArgList;
+                }
 
 /*******************************************************************************
 
@@ -69,7 +82,7 @@ class Layout(T)
 
         **********************************************************************/
 
-        public final T[] sprint (T[] result, T[] formatStr, TypeInfo[] arguments, Arg args)
+        public final T[] sprint (T[] result, T[] formatStr, TypeInfo[] arguments, ArgList args)
         {
                 T* p = result.ptr;
 
@@ -142,7 +155,7 @@ class Layout(T)
 
         **********************************************************************/
 
-        public final T[] convert (TypeInfo[] arguments, Arg args, T[] formatStr)
+        public final T[] convert (TypeInfo[] arguments, ArgList args, T[] formatStr)
         {
                 T[] output;
 
@@ -169,18 +182,59 @@ class Layout(T)
 
         **********************************************************************/
 
-        public final uint convert (Sink sink, TypeInfo[] arguments, Arg args, T[] formatStr)
+        public final uint convert (Sink sink, TypeInfo[] arguments, ArgList args, T[] formatStr)
         {
                 assert (formatStr, "null format specifier");
                 assert (arguments.length < 64, "too many args in Layout.convert");
 
+        version (x86_64)
+                {
+                Arg[64] arglist = void;
+                int[64] intargs = void;
+                byte[64] byteargs = void;
+                long[64] longargs = void;
+                short[64] shortargs = void;
+                void[][64] voidargs = void;
+
+                foreach (i, arg; arguments)
+                        {
+                        arglist[i] = args.ptr;
+                        switch (arg.tsize) 
+                               {
+                               case 1:
+                                    byteargs[i] = va_arg!(byte)(args);
+                                    arglist[i] = &byteargs[i];
+                                    break;
+                               case 2:
+                                    shortargs[i] = va_arg!(short)(args);
+                                    arglist[i] = &shortargs[i];
+                                    break;
+                               case 4:
+                                    intargs[i] = va_arg!(int)(args);
+                                    arglist[i] = &intargs[i];
+                                    break;
+                               case 8:
+                                    longargs[i] = va_arg!(long)(args);
+                                    arglist[i] = &longargs[i];
+                                    break;
+                               case 16:
+                                    voidargs[i] = va_arg!(void[])(args);
+                                    arglist[i] = &voidargs[i];
+                                    break;
+                               default:
+                                    assert (false, "Unknown size: " ~ Integer.toUtf8 (arg.tsize));
+                               }
+                        }
+                }
+             else
+                {
                 Arg[64] arglist = void;
                 foreach (i, arg; arguments)
                         {
                         arglist[i] = args;
                         args += (arg.tsize + int.sizeof - 1) & ~ (int.sizeof - 1);
                         }
-
+                }
                 return parse (formatStr, arguments, arglist, sink);
         }
 
