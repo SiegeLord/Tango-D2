@@ -29,6 +29,12 @@ private
         ALL_BITS = 0b1111_1111
     }
 
+    struct BlkInfo
+    {
+        void*  base;
+        size_t size;
+        uint   attr;
+    }
 
     extern (C) void thread_init();
     extern (C) void onOutOfMemoryError();
@@ -121,6 +127,11 @@ extern (C) void* gc_addrOf( void* p )
 extern (C) size_t gc_sizeOf( void* p )
 {
     return 0;
+}
+
+extern (C) BlkInfo gc_query( void* p )
+{
+    return BlkInfo.init
 }
 
 extern (C) void gc_addRoot( void* p )

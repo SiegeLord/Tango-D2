@@ -76,6 +76,13 @@ private
         ALL_BITS = 0b1111_1111
     }
 
+    struct BlkInfo
+    {
+        void*  base;
+        size_t size;
+        uint   attr;
+    }
+
     extern (C) void* rt_stackBottom();
     extern (C) void* rt_stackTop();
 
@@ -970,6 +977,44 @@ class GC
 
 
     /**
+     * Determine the base address of the block containing p.  If p is not a gc
+     * allocated pointer, return null.
+     */
+    BlkInfo query(void *p)
+    {
+        if (!p)
+        {
+            BlkInfo i;
+            return  i;
+        }
+
+        if (!thread_needLock())
+        {
+            return queryNoSync(p);
+        }
+        else synchronized (gcLock)
+        {
+            return queryNoSync(p);
+        }
+    }
+
+
+    //
+    //
+    //
+    BlkInfo queryNoSync(void *p)
+    {
+        if (!p)
+        {
+            BlkInfo i;
+            return  i;
+        }
+
+        return gcx.getInfo(p);
+    }
+
+
+    /**
      * Verify that pointer p:
      *  1) belongs to this memory pool
      *  2) points to the start of an allocated piece of memory
@@ -1639,6 +1684,70 @@ struct Gcx
             }
         }
         return size;
+    }
+
+
+    /**
+     *
+     */
+    BlkInfo getInfo(void* p)
+    {
+        Pool *pool;
+        BlkInfo info;
+
+        pool = findPool(p);
+        if (pool)
+        {
+            size_t offset = cast(size_t)(p - pool.baseAddr);
+            uint pn = offset / PAGESIZE;
+            Bins bin = cast(Bins)pool.pagetable[pn];
+
+            ////////////////////////////////////////////////////////////////////
+            // findAddr
+            ////////////////////////////////////////////////////////////////////
+
+            if (bin <= B_PAGE)
+            {
+                info.base = pool.baseAddr + (offset & notbinsize[bin]);
+            }
+            else if (bin == B_PAGEPLUS)
+            {
+                do
+                {   --pn, offset -= PAGESIZE;
+                } while (cast(Bins)pool.pagetable[pn] == B_PAGEPLUS);
+
+                info.base = pool.baseAddr + (offset & (offset.max ^ (PAGESIZE-1)));
+
+                // fix bin for use by size calc below
+                bin = cast(Bins)pool.pagetable[pn];
+            }
+
+            ////////////////////////////////////////////////////////////////////
+            // findSize
+            ////////////////////////////////////////////////////////////////////
+
+            info.size = binsize[bin];
+            if (bin == B_PAGE)
+            {   uint npages = pool.ncommitted;
+                ubyte* pt;
+                uint i;
+
+                pt = &pool.pagetable[0];
+                for (i = pn + 1; i < npages; i++)
+                {
+                    if (pt[i] != B_PAGEPLUS)
+                        break;
+                }
+                info.size = (i - pn) * PAGESIZE;
+            }
+
+            ////////////////////////////////////////////////////////////////////
+            // getBits
+            ////////////////////////////////////////////////////////////////////
+
+            info.attr = getBits(pool, offset / 16);
+        }
+        return info;
     }
 
 

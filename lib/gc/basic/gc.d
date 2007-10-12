@@ -136,6 +136,11 @@ extern (C) size_t gc_sizeOf( void* p )
     return _gc.sizeOf( p );
 }
 
+extern (C) BlkInfo gc_query( void* p )
+{
+    return _gc.query( p );
+}
+
 extern (C) void gc_addRoot( void* p )
 {
     _gc.addRoot( p );

@@ -28,8 +28,17 @@ private
     extern (C) size_t gc_extend( void* p, size_t mx, size_t sz );
     extern (C) void   gc_free( void* p );
 
-    extern (C) void*  gc_addrOf( void* p );
-    extern (C) size_t gc_sizeOf( void* p );
+    extern (C) void*   gc_addrOf( void* p );
+    extern (C) size_t  gc_sizeOf( void* p );
+
+    struct BlkInfo_
+    {
+        void*  base;
+        size_t size;
+        uint   attr;
+    }
+
+    extern (C) BlkInfo_ gc_query( void* p );
 
     extern (C) void gc_addRoot( void* p );
     extern (C) void gc_addRange( void* p, size_t sz );
@@ -92,6 +101,18 @@ struct GC
         NO_SCAN  = 0b0000_0010, /// Do not scan through this block on collect.
         NO_MOVE  = 0b0000_0100  /// Do not move this memory block on collect.
     }
+
+
+    /**
+     * Contains aggregate information about a block of managed memory.  The
+     * purpose of this struct is to support a more efficient query style in
+     * instances where detailed information is needed.
+     *
+     * base = A pointer to the base of the block in question.
+     * size = The size of the block, calculated from base.
+     * attr = Attribute bits set on the memory block.
+     */
+    alias BlkInfo_ BlkInfo;
 
 
     /**
@@ -313,6 +334,27 @@ struct GC
     static size_t sizeOf( void* p )
     {
         return gc_sizeOf( p );
+    }
+
+
+    /**
+     * Returns aggregate information about the memory block containing p.  If p
+     * references memory not originally allocated by this garbage collector, if
+     * p is null, or if the garbage collector does not support this operation,
+     * BlkInfo.init will be returned.  Typically, support for this operation
+     * is dependent on support for addrOf.
+     *
+     * Params:
+     *  p = A pointer to the root or the interior of a valid memory block or to
+     *      null.
+     *
+     * Returns:
+     *  Information regarding the memory block referenced by p or BlkInfo.init
+     *  on error.
+     */
+    static BlkInfo query( void* p )
+    {
+        return gc_query( p );
     }
 
 
