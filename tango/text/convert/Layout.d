@@ -45,7 +45,7 @@ version (DigitalMars)
         alias void* ArgList;
         }
      else
-        version (x86_64)
+        version (X86_64)
                 {
                 private import std.stdarg;
                 alias void* Arg;
