@@ -187,7 +187,7 @@ class Layout(T)
                 assert (formatStr, "null format specifier");
                 assert (arguments.length < 64, "too many args in Layout.convert");
 
-        version (x86_64)
+        version (X86_64)
                 {
                 Arg[64] arglist = void;
                 int[64] intargs = void;
