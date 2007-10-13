@@ -46,6 +46,13 @@ private
         ALL_BITS = 0b1111_1111
     }
 
+    struct BlkInfo
+    {
+        void*  base;
+        size_t size;
+        uint   attr;
+    }
+
     extern (C) uint gc_getAttr( void* p );
     extern (C) uint gc_setAttr( void* p, uint a );
     extern (C) uint gc_clrAttr( void* p, uint a );
@@ -55,7 +62,9 @@ private
     extern (C) size_t gc_extend( void* p, size_t mx, size_t sz );
     extern (C) void   gc_free( void* p );
 
-    extern (C) size_t gc_sizeOf( void* p );
+    extern (C) void*   gc_addrOf( void* p );
+    extern (C) size_t  gc_sizeOf( void* p );
+    extern (C) BlkInfo gc_query( void* p );
 
     extern (C) bool onCollectResource( Object o );
     extern (C) void onFinalizeError( ClassInfo c, Exception e );
@@ -516,19 +525,19 @@ body
             if (newlength > p.length)
             {
                 size_t size = p.length * sizeelem;
-                size_t cap  = gc_sizeOf(p.data);
+                auto   info = gc_query(p.data);
 
-                if (cap <= newsize)
+                if (info.size <= newsize)
                 {
-                    if (cap >= PAGESIZE)
+                    if (info.size >= PAGESIZE && info.base == p.data)
                     {   // Try to extend in-place
-                        auto u = gc_extend(p.data, (newsize + 1) - cap, (newsize + 1) - cap);
+                        auto u = gc_extend(p.data, (newsize + 1) - info.size, (newsize + 1) - info.size);
                         if (u)
                         {
                             goto L1;
                         }
                     }
-                    newdata = cast(byte *)gc_malloc(newsize + 1, !(ti.next.flags() & 1) ? BlkAttr.NO_SCAN : 0);
+                    newdata = cast(byte *)gc_malloc(newsize + 1, info.attr);
                     newdata[0 .. size] = p.data[0 .. size];
                 }
              L1:
@@ -616,19 +625,19 @@ body
             newdata = p.data;
             if (newlength > p.length)
             {
-                size_t cap = gc_sizeOf(p.data);
+                auto info = gc_query(p.data);
 
-                if (cap <= newsize)
+                if (info.size <= newsize)
                 {
-                    if (cap >= PAGESIZE)
+                    if (info.size >= PAGESIZE && info.base == p.data)
                     {   // Try to extend in-place
-                        auto u = gc_extend(p.data, (newsize + 1) - cap, (newsize + 1) - cap);
+                        auto u = gc_extend(p.data, (newsize + 1) - info.size, (newsize + 1) - info.size);
                         if (u)
                         {
                             goto L1;
                         }
                     }
-                    newdata = cast(byte *)gc_malloc(newsize + 1, !(ti.next.flags() & 1) ? BlkAttr.NO_SCAN : 0);
+                    newdata = cast(byte *)gc_malloc(newsize + 1, info.attr);
                     newdata[0 .. size] = p.data[0 .. size];
                 L1: ;
                 }
@@ -678,23 +687,23 @@ Loverflow:
 extern (C) long _d_arrayappendT(TypeInfo ti, Array *px, byte[] y)
 {
     auto sizeelem = ti.next.tsize();            // array element size
-    auto cap = gc_sizeOf(px.data);
+    auto info = gc_query(px.data);
     auto length = px.length;
     auto newlength = length + y.length;
     auto newsize = newlength * sizeelem;
 
-    if (newsize > cap)
+    if (info.size < newsize)
     {   byte* newdata;
 
-        if (cap >= PAGESIZE)
+        if (info.size >= PAGESIZE && info.base == px.data)
         {   // Try to extend in-place
-            auto u = gc_extend(px.data, (newsize + 1) - cap, (newsize + 1) - cap);
+            auto u = gc_extend(px.data, (newsize + 1) - info.size, (newsize + 1) - info.size);
             if (u)
             {
                 goto L1;
             }
         }
-        newdata = cast(byte *)gc_malloc(newCapacity(newlength, sizeelem) + 1, !(ti.next.flags() & 1) ? BlkAttr.NO_SCAN : 0);
+        newdata = cast(byte *)gc_malloc(newCapacity(newlength, sizeelem) + 1, info.attr);
         memcpy(newdata, px.data, length * sizeelem);
         px.data = newdata;
     }
@@ -783,30 +792,30 @@ size_t newCapacity(size_t newlength, size_t size)
 extern (C) byte[] _d_arrayappendcT(TypeInfo ti, inout byte[] x, ...)
 {
     auto sizeelem = ti.next.tsize();            // array element size
-    auto cap = gc_sizeOf(x.ptr);
+    auto info = gc_query(x.ptr);
     auto length = x.length;
     auto newlength = length + 1;
     auto newsize = newlength * sizeelem;
 
-    assert(cap == 0 || length * sizeelem <= cap);
+    assert(info.size == 0 || length * sizeelem <= info.size);
 
-    debug(PRINTF) printf("_d_arrayappendc(sizeelem = %d, ptr = %p, length = %d, cap = %d)\n", sizeelem, x.ptr, x.length, cap);
+    debug(PRINTF) printf("_d_arrayappendc(sizeelem = %d, ptr = %p, length = %d, cap = %d)\n", sizeelem, x.ptr, x.length, info.size);
 
-    if (newsize >= cap)
+    if (info.size <= newsize)
     {   byte* newdata;
 
-        if (cap >= PAGESIZE)
+        if (info.size >= PAGESIZE && info.base == x.ptr)
         {   // Try to extend in-place
-            auto u = gc_extend(x.ptr, (newsize + 1) - cap, (newsize + 1) - cap);
+            auto u = gc_extend(x.ptr, (newsize + 1) - info.size, (newsize + 1) - info.size);
             if (u)
             {
                 goto L1;
             }
         }
-        debug(PRINTF) printf("_d_arrayappendc(size = %d, newlength = %d, cap = %d)\n", size, newlength, cap);
-        cap = newCapacity(newlength, sizeelem);
-        assert(cap >= newlength * sizeelem);
-        newdata = cast(byte *)gc_malloc(cap + 1, !(ti.next.flags() & 1) ? BlkAttr.NO_SCAN : 0);
+        debug(PRINTF) printf("_d_arrayappendc(size = %d, newlength = %d, cap = %d)\n", size, newlength, info.size);
+        auto newcap = newCapacity(newlength, sizeelem);
+        assert(newcap >= newlength * sizeelem);
+        newdata = cast(byte *)gc_malloc(newcap + 1, info.attr);
         memcpy(newdata, x.ptr, length * sizeelem);
         (cast(void**)(&x))[1] = newdata;
     }
