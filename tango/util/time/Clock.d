@@ -213,7 +213,7 @@ struct Clock
 
                 /***************************************************************
 
-                        Convert Date fields to UTC
+                        Convert Date fields to Time
 
                         Note that the conversion is limited by the underlying 
                         OS, and will not operate correctly with Time values 
