@@ -195,35 +195,68 @@ class Layout(T)
                 long[64] longargs = void;
                 short[64] shortargs = void;
                 void[][64] voidargs = void;
+                real[64] realargs = void;
+                float[64] floatargs = void;
+                double[64] doubleargs = void;
 
                 foreach (i, arg; arguments)
                         {
                         arglist[i] = args.ptr;
-                        switch (arg.tsize) 
+                        /* Since floating point types don't live on
+                         * the stack, they must be accessed by the
+                         * correct type. */
+                        bool converted = false;
+                        switch (arg.classinfo.name[9])
                                {
-                               case 1:
-                                    byteargs[i] = va_arg!(byte)(args);
-                                    arglist[i] = &byteargs[i];
+                               case TypeCode.FLOAT:
+                                    floatargs[i] = va_arg!(float)(args);
+                                    arglist[i] = &floatargs[i];
+                                    converted = true;
                                     break;
-                               case 2:
-                                    shortargs[i] = va_arg!(short)(args);
-                                    arglist[i] = &shortargs[i];
+
+                               case TypeCode.DOUBLE:
+                                    doubleargs[i] = va_arg!(double)(args);
+                                    arglist[i] = &doubleargs[i];
+                                    converted = true;
                                     break;
-                               case 4:
-                                    intargs[i] = va_arg!(int)(args);
-                                    arglist[i] = &intargs[i];
+
+                               case TypeCode.REAL:
+                                    realargs[i] = va_arg!(real)(args);
+                                    arglist[i] = &realargs[i];
+                                    converted = true;
                                     break;
-                               case 8:
-                                    longargs[i] = va_arg!(long)(args);
-                                    arglist[i] = &longargs[i];
-                                    break;
-                               case 16:
-                                    voidargs[i] = va_arg!(void[])(args);
-                                    arglist[i] = &voidargs[i];
-                                    break;
+
                                default:
-                                    assert (false, "Unknown size: " ~ Integer.toUtf8 (arg.tsize));
-                               }
+                                    break;
+                                }
+                        if (! converted)
+                           {
+                           switch (arg.tsize) 
+                                  {
+                                  case 1:
+                                       byteargs[i] = va_arg!(byte)(args);
+                                       arglist[i] = &byteargs[i];
+                                       break;
+                                  case 2:
+                                       shortargs[i] = va_arg!(short)(args);
+                                       arglist[i] = &shortargs[i];
+                                       break;
+                                  case 4:
+                                       intargs[i] = va_arg!(int)(args);
+                                       arglist[i] = &intargs[i];
+                                       break;
+                                  case 8:
+                                       longargs[i] = va_arg!(long)(args);
+                                       arglist[i] = &longargs[i];
+                                       break;
+                                  case 16:
+                                       voidargs[i] = va_arg!(void[])(args);
+                                       arglist[i] = &voidargs[i];
+                                       break;
+                                  default:
+                                       assert (false, "Unknown size: " ~ Integer.toUtf8 (arg.tsize));
+                                  }
+                           }
                         }
                 }
              else
