@@ -716,6 +716,9 @@ class FilePath : PathView
                 segments. Related methods include PathUtil.normalize() and
                 FileSystem.toAbsolute()
 
+                Note that each segment is created as a folder, including the 
+                trailing segment.
+
                 Returns: a chaining reference (this)
 
                 Throws: IOException upon systen errors
