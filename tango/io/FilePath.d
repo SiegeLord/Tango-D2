@@ -732,9 +732,6 @@ class FilePath : PathView
         final FilePath create ()
         {
                 auto segment = name;
-                char* p = segment.ptr;
-                char* p1 = this.cString.ptr;
-
                 if (segment.length > 0)
                    {
                    if (segment == FileConst.CurrentDirString ||
