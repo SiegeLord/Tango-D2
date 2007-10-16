@@ -731,22 +731,26 @@ class FilePath : PathView
 
         final FilePath create ()
         {
-                if (this.exists)
-                    if (this.isFolder)
-                        return this;
-                    else
-                       badArg ("FilePath.create :: file/folder conflict: ");
+                auto segment = name;
+                char* p = segment.ptr;
+                char* p1 = this.cString.ptr;
 
-                auto parent = new FilePath (this.parent);
-                char[] name = parent.name;
+                if (segment.length > 0)
+                   {
+                   if (segment == FileConst.CurrentDirString ||
+                       segment == FileConst.ParentDirString)
+                       badArg ("FilePath.create :: invalid path: ");
 
-                if (name.length is 0                   ||
-                    name == FileConst.CurrentDirString ||
-                    name == FileConst.ParentDirString)
-                    badArg ("FilePath.create :: invalid path: ");
+                   if (this.exists)
+                       if (this.isFolder)
+                           return this;
+                       else
+                          badArg ("FilePath.create :: file/folder conflict: ");
 
-                parent.create;
-                return createFolder;
+                   FilePath(this.parent).create;
+                   return createFolder;
+                   }
+                return this;
         }
 /+
         /***********************************************************************
