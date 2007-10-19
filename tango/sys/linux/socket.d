@@ -61,7 +61,13 @@ version( X86 )
 		SOL_SOCKET =  1,
 	}
 }
-else
+else version( X86_64 )
+{
+	enum: int
+	{
+		SOL_SOCKET =  1,
+	}
+}else
 {
 	// Different values on other platforms.
 	static assert(0);
