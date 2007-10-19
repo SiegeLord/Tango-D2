@@ -11,7 +11,7 @@ alias int SCODE;
 alias void VOID;
 alias void* POINTER;
 alias ushort ATOM;
-alias uint WINBOOL;
+alias int WINBOOL;
 alias WINBOOL BOOL;
 alias uint CALTYPE;
 alias uint CALID;

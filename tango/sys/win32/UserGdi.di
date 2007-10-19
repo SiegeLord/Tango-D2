@@ -21,7 +21,7 @@ extern(Windows)
 	DWORD GetShortPathNameA(LPCSTR, LPSTR, DWORD);
 	LPSTR GetEnvironmentStringsA();
 	WINBOOL FreeEnvironmentStringsA(LPSTR);
-	DWORD FormatMessageA(DWORD, LPCVOID, DWORD, DWORD, LPSTR, DWORD, VA_LIST);
+	DWORD FormatMessageA(DWORD, LPCVOID, DWORD, DWORD, LPSTR, DWORD, VA_LIST*);
 	HANDLE CreateMailslotA(LPCSTR, DWORD, DWORD, LPSECURITY_ATTRIBUTES);
 	int lstrcmpA(LPCSTR, LPCSTR);
 	int lstrcmpiA(LPCSTR, LPCSTR);
@@ -131,7 +131,7 @@ extern(Windows)
 	WINBOOL GetComputerNameA(LPSTR, LPDWORD);
 	WINBOOL SetComputerNameA(LPCSTR);
 	WINBOOL GetUserNameA(LPSTR, LPDWORD);
-	int wvsprintfA(LPSTR, LPCSTR, VA_LIST);
+	int wvsprintfA(LPSTR, LPCSTR, VA_LIST*);
 	HKL LoadKeyboardLayoutA(LPCSTR, UINT);
 	WINBOOL GetKeyboardLayoutNameA(LPSTR);
 	HDESK CreateDesktopA(LPSTR, LPSTR, LPDEVMODE, DWORD, DWORD, LPSECURITY_ATTRIBUTES);
@@ -411,7 +411,7 @@ extern(Windows)
 	DWORD GetShortPathNameW(LPCWSTR, LPWSTR, DWORD);
 	LPWSTR GetEnvironmentStringsW();
 	WINBOOL FreeEnvironmentStringsW(LPWSTR);
-	DWORD FormatMessageW(DWORD, LPCVOID, DWORD, DWORD, LPWSTR, DWORD, VA_LIST);
+	DWORD FormatMessageW(DWORD, LPCVOID, DWORD, DWORD, LPWSTR, DWORD, VA_LIST*);
 	HANDLE CreateMailslotW(LPCWSTR, DWORD, DWORD, LPSECURITY_ATTRIBUTES);
 	int lstrcmpW(LPCWSTR, LPCWSTR);
 	int lstrcmpiW(LPCWSTR, LPCWSTR);
@@ -521,7 +521,7 @@ extern(Windows)
 	WINBOOL GetComputerNameW(LPWSTR, LPDWORD);
 	WINBOOL SetComputerNameW(LPCWSTR);
 	WINBOOL GetUserNameW(LPWSTR, LPDWORD);
-	int wvsprintfW(LPWSTR, LPCWSTR, VA_LIST);
+	int wvsprintfW(LPWSTR, LPCWSTR, VA_LIST*);
 	HKL LoadKeyboardLayoutW(LPCWSTR, UINT);
 	WINBOOL GetKeyboardLayoutNameW(LPWSTR);
 	HDESK CreateDesktopW(LPWSTR, LPWSTR, LPDEVMODE, DWORD, DWORD, LPSECURITY_ATTRIBUTES);
