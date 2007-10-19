@@ -101,7 +101,8 @@ const real j0d[] = [ 0x1.0096dec5f6560158p+73, 0x1.11705db14995fb9cp+66,
  * Returns Bessel function of the second kind, of order
  * zero, of the argument.
  */
-
+real cylBessel_y0(real x)
+{
 /* The domain is divided into the intervals [0, 5>, [5,9> and
  * [9, infinity). In the first interval a rational approximation
  * R(x) is employed to compute y0(x)  = R(x) + 2/pi * log(x) * j0(x).
@@ -113,8 +114,7 @@ const real j0d[] = [ 0x1.0096dec5f6560158p+73, 0x1.11705db14995fb9cp+66,
  * The third interval uses the same approximations to modulus
  * and phase as j0(x), whence y0(x) = modulus * sin(phase).
  */
-real cylBessel_y0(real x)
-{
+
 // y0(x) = 2/pi * log(x) * j0(x) + P(z**2)/Q(z**2), 0 <= x <= 5
 // Peak error =  8.55e-22. Relative error spread =  2.7e-1
 const real y0n[] = [ -0x1.068026b402e2bf7ap+54, 0x1.3a2f7be8c4c8a03ep+55,
@@ -170,77 +170,6 @@ const real y059d[] = [ 0x1.17af71a3d4167676p+30, 0x1.a36abbb668c79d6cp+31,
     return y;
 }
 
-debug(UnitTest) {
-
-unittest {
-  // argument, result1, result2, derivative. Correct result is result1+result2.
-const real [4][] j0_test_points = [
-    [8.0L, 1.71646118164062500000E-1L, 4.68897349140609086941E-6L, -2.34636346853914624381E-1L],
-    [4.54541015625L, -3.09783935546875000000E-1L, 7.07472668157686463367E-6L, 2.42993657373627558460E-1L],
-    [2.85711669921875L, -2.07901000976562500000E-1L, 1.15237285263902751582E-5L, -3.90402225324501311651E-1L],
-    [2.0L, 2.23876953125000000000E-1L, 1.38260162356680518275E-5L, -5.76724807756873387202E-1L],
-    [1.16415321826934814453125e-10L, 9.99984741210937500000E-1L, 1.52587890624999966119E-5L,
-        9.99999999999999999997E-1L],
-    [-2.0L, 2.23876953125000000000E-1L,
-        1.38260162356680518275E-5L, 5.76724807756873387202E-1L]
-];
-
-const real [4][] y0_test_points = [
-    [ 8.0L, 2.23510742187500000000E-1L, 1.07472000662205273234E-5L, 1.58060461731247494256E-1L],
-    [4.54541015625L, -2.08114624023437500000E-1L, 1.45018823856668874574E-5L, -2.88887645307401250876E-1L],
-    [2.85711669921875L, 4.20303344726562500000E-1L, 1.32781607563122276008E-5L, -2.82488638474982469213E-1],
-    [2.0L, 5.10360717773437500000E-1L, 1.49548763076195966066E-5L, 1.07032431540937546888E-1L],
-    [1.16415321826934814453125e-10L, -1.46357574462890625000E1L, 3.54110537011061127637E-6L,
-        5.46852220461145271913E9L]
-];
-
-const real [4][] j1_test_points = [
-  [ 8.0L, 2.34634399414062500000E-1L, 1.94743985212438127665E-6L,1.42321263780814578043E-1],
-  [4.54541015625L, -2.42996215820312500000E-1L, 2.55844668494153980076E-6L, -2.56317734136211337012E-1],
-  [2.85711669921875L, 3.90396118164062500000E-1L, 6.10716043881165077013E-6L, -3.44531507106757980441E-1L],
-  [2.0L, 5.76721191406250000000E-1L, 3.61635062338720244824E-6L,  -6.44716247372010255494E-2L],
-  [1.16415321826934814453125e-10L, 5.820677273504770710133016109466552734375e-11L,
-   8.881784197001251337312921818461805735896e-16L, 4.99999999999999999997E-1L],
-  [-2.0L, -5.76721191406250000000E-1L, -3.61635062338720244824E-6L, -6.44716247372010255494E-2L]
-];
-
-const real [4][] y1_test_points = [
-    [8.0L, -1.58065795898437500000E-1L,
-        5.33416719000574444473E-6L, 2.43279047103972157309E-1L],
-    [4.54541015625L, 2.88879394531250000000E-1L,
-        8.25077615125087585195E-6L, -2.71656024771791736625E-1L],
-    [2.85711669921875L, 2.82485961914062500000E-1,
-        2.67656091996921314433E-6L, 3.21444694221532719737E-1],
-    [2.0L, -1.07040405273437500000E-1L,
-        7.97373249995311162923E-6L, 5.63891888420213893041E-1],
-    [1.16415321826934814453125e-10L, -5.46852220500000000000E9L,
-        3.88547280871200700671E-1L, 4.69742480525120196168E19L]
-];
-
-    foreach(real [4] t; j0_test_points) {
-        assert(feqrel(cylBessel_j0(t[0]), t[1]+t[2]) >=real.mant_dig-3);
-    }
-
-    foreach(real [4] t; y0_test_points) {
-        assert(feqrel(cylBessel_y0(t[0]), t[1]+t[2]) >=real.mant_dig-4);
-    }
-    foreach(real [4] t; j1_test_points) {
-        assert(feqrel(cylBessel_j1(t[0]), t[1]+t[2]) >=real.mant_dig-3);
-    }
-
-    foreach(real [4] t; y1_test_points) {
-        assert(feqrel(cylBessel_y1(t[0]), t[1]+t[2]) >=real.mant_dig-4);
-    }
-
-    // Values from MS Excel, of doubtful accuracy.
-    assert(fabs(-0.060_409_940_421_649 - cylBessel_j0(173.5)) < 0.000_000_000_1);
-    assert(fabs(-0.044_733_447_576_5866 - cylBessel_y0(313.25)) < 0.000_000_000_1);
-    assert(fabs(0.00391280088318945 - cylBessel_j1(123.25)) < 0.000_000_000_1);
-    assert(fabs(-0.0648628570878951 - cylBessel_j1(-91)) < 0.000_000_000_1);
-    assert(fabs(-0.0759578537652805 - cylBessel_y1(107.75)) < 0.000_000_000_1);
-}
-}
-
 private {
 
 // j1(x) = (x^2-r0^2)(x^2-r1^2)(x^2-r2^2) x P(x**2)/Q(x**2), 0 <= x <= 9
@@ -289,6 +218,8 @@ const real [] j1phased = [ 0x1.31bf961e57c71ae4p-18, 0x1.9464d8f2abf750a6p-11,
  *
  * Returns Bessel function of order one of the argument.
  */
+real cylBessel_j1(real x)
+{
 /* The domain is divided into the intervals [0, 9] and
  * (9, infinity). In the first interval the rational approximation
  * is (x^2 - r^2) (x^2 - s^2) (x^2 - t^2) x P8(x^2) / Q8(x^2),
@@ -298,8 +229,7 @@ const real [] j1phased = [ 0x1.31bf961e57c71ae4p-18, 0x1.9464d8f2abf750a6p-11,
  * = atan(Y1(x)/J1(x)).  M1 is approximated by sqrt(1/x)P7(1/x)/Q8(1/x).
  * The approximation to j1 is M1 * cos(x -  3 pi/4 + 1/x P5(1/x^2)/Q6(1/x^2)).
  */
-real cylBessel_j1(real x)
-{
+
     real xx, y, z, modulus, phase;
 
     xx = x * x;
@@ -550,6 +480,204 @@ body {
     return sign * an;
 }
 
+private {
+// Evaluate Chebyshev series
+double evalCheby(double x, double [] poly)
+{
+    double b0, b1, b2;
+    
+    b0 = poly[$-1];
+    b1 = 0.0;
+    for (int i=poly.length-1; i>=0; --i) {
+        b2 = b1;
+        b1 = b0;
+        b0 = x * b1 - b2 + poly[i];
+    }
+    return 0.5*(b0-b2);
+}
+}
+
+/**
+ *  Modified Bessel function of order zero
+ *
+ * Returns modified Bessel function of order zero of the
+ * argument.
+ *
+ * The function is defined as i0(x) = j0( ix ).
+ *
+ * The range is partitioned into the two intervals [0,8] and
+ * (8, infinity).  Chebyshev polynomial expansions are employed
+ * in each interval.
+ */
+double cylBessel_i0(double x)
+{
+    // Chebyshev coefficients for exp(-x) I0(x) in the interval [0,8].
+    // lim(x->0){ exp(-x) I0(x) } = 1.
+    const double [] A = [    0x1.5a84e9035a22ap-1,  -0x1.37febc057cd8dp-2,
+     0x1.5f7ac77ac88c0p-3,  -0x1.84b70342d06eap-4,   0x1.93e8acea8a32dp-5,
+    -0x1.84e9ef121b6f0p-6,   0x1.59961f3dde3ddp-7,  -0x1.1b65e201aa849p-8,
+     0x1.adc758a12100ep-10, -0x1.2e2fd1f15eb52p-11,  0x1.8b51b74107cabp-13,
+    -0x1.e2b2659c41d5ap-15,  0x1.13f58be9a2859p-16, -0x1.2866fcba56427p-18,
+     0x1.2bf24978cf4acp-20, -0x1.1ec638f227f8dp-22,  0x1.03b769d4d6435p-24,
+    -0x1.beaf68c0b30abp-27,  0x1.6d903a454cb34p-29, -0x1.1d4fe13ae9556p-31,
+     0x1.a98becc743c10p-34, -0x1.2fc957a946abcp-36,  0x1.9fe2fe19bd324p-39,
+    -0x1.1164c62ee1af0p-41,  0x1.59b464b262627p-44, -0x1.a5022c297fbebp-47,
+     0x1.ee6d893f65ebap-50, -0x1.184eb721ebbb4p-52,  0x1.33362977da589p-55,
+    -0x1.45cb72134d0efp-58 ];    
+    
+    // Chebyshev coefficients for exp(-x) sqrt(x) I0(x)
+    // in the inverted interval [8,infinity].    
+    // lim(x->inf){ exp(-x) sqrt(x) I0(x) } = 1/sqrt(2pi).
+    const double [] B = [      0x1.9be62aca809cbp-1,   0x1.b998ca2e59049p-9,
+       0x1.20fa378999e52p-14,  0x1.8412bc101c586p-19,  0x1.b8007d9cd616ep-23,
+       0x1.8569280d6d56dp-26,  0x1.d2c64a9225b87p-29,  0x1.0f9ccc0f46f75p-31,
+       0x1.a24feabe8004fp-37, -0x1.1511d08397425p-35, -0x1.d0fd7357e7bf2p-37,
+      -0x1.f904303178d66p-40,  0x1.94347fa268cecp-41,  0x1.b1c8c6b83c073p-42,
+       0x1.156ff0d5fc545p-46, -0x1.75d99cf68bb32p-45, -0x1.583fe7e65629ap-47,
+       0x1.12a919094e6d7p-48,  0x1.fee7da3eafb1fp-50, -0x1.8aee7d908de38p-52,
+      -0x1.4600babd21fe4p-52,  0x1.3f3dd076041cdp-55,  0x1.9be1812d98421p-55,
+      -0x1.646da66119130p-58, -0x1.0adb754ca8b19p-57 ];
+      
+    double y;
+    
+    if (x < 0)
+        x = -x;
+    if (x <= 8.0) {
+        y = (x/2.0) - 2.0;
+        return exp(x) * evalCheby( y, A);
+    }    
+    return exp(x) * evalCheby( 32.0/x - 2.0, B) / sqrt(x);
+}
+
+/**
+ *  Modified Bessel function of order one
+ *
+ * Returns modified Bessel function of order one of the
+ * argument.
+ *
+ * The function is defined as i1(x) = -i j1( ix ).
+ *
+ * The range is partitioned into the two intervals [0,8] and
+ * (8, infinity).  Chebyshev polynomial expansions are employed
+ * in each interval.
+*/
+double cylBessel_i1(double x)
+{     
+    const double [] A = [       0x1.02a63724a7ffap-2,  -0x1.694d10469192ep-3,
+        0x1.a46dad536f53cp-4,  -0x1.b1bbc537c9ebcp-5,   0x1.951e3e7bb2349p-6,
+       -0x1.5a29f7913a26ap-7,   0x1.1065349d3a1b4p-8,  -0x1.8cc620b3cd4a4p-10,
+        0x1.0c95db6c6df7dp-11, -0x1.533cad3d694fep-13,  0x1.911b542c70d0bp-15,
+       -0x1.bd5f9b8debbcfp-17,  0x1.d1c4ed511afc5p-19, -0x1.cc0798363992ap-21,
+        0x1.ae344b347d108p-23, -0x1.7dd3e24b8c3e8p-25,  0x1.4258e02395010p-27,
+       -0x1.0361b28ea67e6p-29,  0x1.8ea34b43fdf6cp-32, -0x1.2510397eb07dep-34,
+        0x1.9cee2b21d3154p-37, -0x1.173835fb70366p-39,  0x1.6af784779d955p-42,
+       -0x1.c628e1c8f0b3bp-45,  0x1.11d7f0615290cp-47, -0x1.3eaaa7e0d1573p-50,
+        0x1.663e3e593bfacp-53, -0x1.857d0c38a0576p-56,  0x1.99f2a0c3c4014p-59
+    ];
+        
+    // Chebyshev coefficients for exp(-x) sqrt(x) I1(x)
+    // in the inverted interval [8,infinity].
+    // lim(x->inf){ exp(-x) sqrt(x) I1(x) } = 1/sqrt(2pi).
+    const double [] B = [       0x1.8ea18b55b1514p-1,  -0x1.3fda053fcdb4cp-7,
+       -0x1.cfd7f804aa9a6p-14, -0x1.048df49ca0373p-18, -0x1.0dbfd2e9e5443p-22,
+       -0x1.c415394bb46c1p-26, -0x1.0790b9ad53528p-28, -0x1.334ca5423dd80p-31,
+       -0x1.4dcf9d4504c0cp-36,  0x1.1e1a1f1587865p-35,  0x1.f101f653c457bp-37,
+        0x1.1e7d3f6439fa3p-39, -0x1.953e1076ab493p-41, -0x1.cbc458e73e255p-42,
+       -0x1.7a9482e6d22a0p-46,  0x1.80d3c26b3281ep-45,  0x1.776e1762d31e8p-47,
+       -0x1.12db5138afbc7p-48, -0x1.0efcd8bc4d22ap-49,  0x1.7d68e5f04a2d1p-52,
+        0x1.55915fceb588ap-52, -0x1.2806c9c773320p-55, -0x1.acea3b2532277p-55,
+        0x1.45b8aea87b950p-58,  0x1.1556db352e8e6p-57  ];
+
+    double y, z;
+    
+    z = fabs(x);
+    if( z <= 8.0 ) {
+        y = (z/2.0) - 2.0;
+        z = evalCheby( y, A ) * z * exp(z);
+    } else {
+        z = exp(z) * evalCheby( 32.0/z - 2.0, B ) / sqrt(z);
+    }
+    if (x < 0.0 )
+        z = -z;
+    return z;
+}
+
+debug(UnitTest) {
+
+unittest {
+  // argument, result1, result2, derivative. Correct result is result1+result2.
+const real [4][] j0_test_points = [
+    [8.0L, 1.71646118164062500000E-1L, 4.68897349140609086941E-6L, -2.34636346853914624381E-1L],
+    [4.54541015625L, -3.09783935546875000000E-1L, 7.07472668157686463367E-6L, 2.42993657373627558460E-1L],
+    [2.85711669921875L, -2.07901000976562500000E-1L, 1.15237285263902751582E-5L, -3.90402225324501311651E-1L],
+    [2.0L, 2.23876953125000000000E-1L, 1.38260162356680518275E-5L, -5.76724807756873387202E-1L],
+    [1.16415321826934814453125e-10L, 9.99984741210937500000E-1L, 1.52587890624999966119E-5L,
+        9.99999999999999999997E-1L],
+    [-2.0L, 2.23876953125000000000E-1L,
+        1.38260162356680518275E-5L, 5.76724807756873387202E-1L]
+];
+
+const real [4][] y0_test_points = [
+    [ 8.0L, 2.23510742187500000000E-1L, 1.07472000662205273234E-5L, 1.58060461731247494256E-1L],
+    [4.54541015625L, -2.08114624023437500000E-1L, 1.45018823856668874574E-5L, -2.88887645307401250876E-1L],
+    [2.85711669921875L, 4.20303344726562500000E-1L, 1.32781607563122276008E-5L, -2.82488638474982469213E-1],
+    [2.0L, 5.10360717773437500000E-1L, 1.49548763076195966066E-5L, 1.07032431540937546888E-1L],
+    [1.16415321826934814453125e-10L, -1.46357574462890625000E1L, 3.54110537011061127637E-6L,
+        5.46852220461145271913E9L]
+];
+
+const real [4][] j1_test_points = [
+  [ 8.0L, 2.34634399414062500000E-1L, 1.94743985212438127665E-6L,1.42321263780814578043E-1],
+  [4.54541015625L, -2.42996215820312500000E-1L, 2.55844668494153980076E-6L, -2.56317734136211337012E-1],
+  [2.85711669921875L, 3.90396118164062500000E-1L, 6.10716043881165077013E-6L, -3.44531507106757980441E-1L],
+  [2.0L, 5.76721191406250000000E-1L, 3.61635062338720244824E-6L,  -6.44716247372010255494E-2L],
+  [1.16415321826934814453125e-10L, 5.820677273504770710133016109466552734375e-11L,
+   8.881784197001251337312921818461805735896e-16L, 4.99999999999999999997E-1L],
+  [-2.0L, -5.76721191406250000000E-1L, -3.61635062338720244824E-6L, -6.44716247372010255494E-2L]
+];
+
+const real [4][] y1_test_points = [
+    [8.0L, -1.58065795898437500000E-1L,
+        5.33416719000574444473E-6L, 2.43279047103972157309E-1L],
+    [4.54541015625L, 2.88879394531250000000E-1L,
+        8.25077615125087585195E-6L, -2.71656024771791736625E-1L],
+    [2.85711669921875L, 2.82485961914062500000E-1,
+        2.67656091996921314433E-6L, 3.21444694221532719737E-1],
+    [2.0L, -1.07040405273437500000E-1L,
+        7.97373249995311162923E-6L, 5.63891888420213893041E-1],
+    [1.16415321826934814453125e-10L, -5.46852220500000000000E9L,
+        3.88547280871200700671E-1L, 4.69742480525120196168E19L]
+];
+
+    foreach(real [4] t; j0_test_points) {
+        assert(feqrel(cylBessel_j0(t[0]), t[1]+t[2]) >=real.mant_dig-3);
+    }
+
+    foreach(real [4] t; y0_test_points) {
+        assert(feqrel(cylBessel_y0(t[0]), t[1]+t[2]) >=real.mant_dig-4);
+    }
+    foreach(real [4] t; j1_test_points) {
+        assert(feqrel(cylBessel_j1(t[0]), t[1]+t[2]) >=real.mant_dig-3);
+    }
+
+    foreach(real [4] t; y1_test_points) {
+        assert(feqrel(cylBessel_y1(t[0]), t[1]+t[2]) >=real.mant_dig-4);
+    }
+
+    // Values from MS Excel, of doubtful accuracy.
+    assert(fabs(-0.060_409_940_421_649 - cylBessel_j0(173.5)) < 0.000_000_000_1);
+    assert(fabs(-0.044_733_447_576_5866 - cylBessel_y0(313.25)) < 0.000_000_000_1);
+    assert(fabs(0.00391280088318945 - cylBessel_j1(123.25)) < 0.000_000_000_1);
+    assert(fabs(-0.0648628570878951 - cylBessel_j1(-91)) < 0.000_000_000_1);
+    assert(fabs(-0.0759578537652805 - cylBessel_y1(107.75)) < 0.000_000_000_1);
+  
+    assert(fabs(13.442_456_516_6771-cylBessel_i0(4.2)) < 0.000_001);    
+    assert(fabs(1.6500020842093e+28-cylBessel_i0(-68)) < 0.000_001e+28);
+    assert(fabs(4.02746515903173e+10-cylBessel_i1(27)) < 0.000_001e+10);
+    assert(fabs(-2.83613942886386e-02-cylBessel_i1(-0.0567)) < 0.000_000_001e-2);
+}
+}
+
 debug(UnitTest) {
 
 unittest {
@@ -592,226 +720,11 @@ unittest {
     delta += .00123456;
   }
   assert(cylBessel_jn(20, 1e-80)==0);
-}
-
-}
-
-private {
-// Evaluate Chebyshev series
-double evalCheby(double x, double [] poly)
-{
-    double b0, b1, b2;
-    
-    b0 = poly[0];
-    b1 = 0.0;
-    for (int i=1; i<poly.length; ++i) {
-        b2 = b1;
-        b1 = b0;
-        b0 = x * b1 - b2 + poly[i];
-    }
-    return 0.5*(b0-b2);
-}
-}
-
-
-/**
- *  Modified Bessel function of order zero
- *
- * Returns modified Bessel function of order zero of the
- * argument.
- *
- * The function is defined as i0(x) = j0( ix ).
- *
- * The range is partitioned into the two intervals [0,8] and
- * (8, infinity).  Chebyshev polynomial expansions are employed
- * in each interval.
- */
-double cylBessel_i0(double x)
-{
-    /* Chebyshev coefficients for exp(-x) I0(x)
-     * in the interval [0,8].
-     *
-     * lim(x->0){ exp(-x) I0(x) } = 1.
-     */
-    const double [] A = [
-        0x1.5a84e9035a22ap-1,   // 0.67679527440947606642
-       -0x1.37febc057cd8dp-2,   // -0.30468267234319840186
-        0x1.5f7ac77ac88c0p-3,   // 0.17162090152220876859
-       -0x1.84b70342d06eap-4,   // -0.094901097048047639015
-        0x1.93e8acea8a32dp-5,   // 0.049305284239670711665
-       -0x1.84e9ef121b6f0p-6,    // -0.023737414805899470504
-        0x1.59961f3dde3ddp-7,   // 0.010546460394594997858
-       -0x1.1b65e201aa849p-8,   // -0.004324309995050575929
-        0x1.adc758a12100ep-10,  // 0.0016394756169413357387
-       -0x1.2e2fd1f15eb52p-11,  // -0.00057637557453858235569
-        0x1.8b51b74107cabp-13,  // 0.00018850288509584164887
-       -0x1.e2b2659c41d5ap-15,  // -5.7541950100821039689e-05
-        0x1.13f58be9a2859p-16,  // 1.6448448070728895593e-05
-       -0x1.2866fcba56427p-18,  // -4.4167383584587505181e-06
-        0x1.2bf24978cf4acp-20,  // 1.1173875391201036553e-06
-       -0x1.1ec638f227f8dp-22,  // -2.6707938539406119325e-07
-        0x1.03b769d4d6435p-24,  // 6.0469950225419186284e-08
-       -0x1.beaf68c0b30abp-27,  // -1.3000250099862480486e-08
-        0x1.6d903a454cb34p-29,  // 2.6598237246823866032e-09
-       -0x1.1d4fe13ae9556p-31,  // -5.1897956016352627109e-10
-        0x1.a98becc743c10p-34,  // 9.6758090353732369732e-11
-       -0x1.2fc957a946abcp-36,  // -1.7268262914415558686e-11
-        0x1.9fe2fe19bd324p-39,  // 2.9550526631296398828e-12
-       -0x1.1164c62ee1af0p-41,  // -4.8564467831119289636e-13
-        0x1.59b464b262627p-44,  // 7.6761854986049360741e-14
-       -0x1.a5022c297fbebp-47,  // -1.1685332877993451405e-14
-        0x1.ee6d893f65ebap-50,  // 1.7153912855551330734e-15
-       -0x1.184eb721ebbb4p-52,  // -2.4312798465479548983e-16
-        0x1.33362977da589p-55,  // 3.3307945188222383926e-17
-       -0x1.45cb72134d0efp-58   // -4.4153416464793395091e-18
-    ];
-    
-    
-    /* Chebyshev coefficients for exp(-x) sqrt(x) I0(x)
-     * in the inverted interval [8,infinity].
-     *
-     * lim(x->inf){ exp(-x) sqrt(x) I0(x) } = 1/sqrt(2pi).
-     */
-    const double [] B = [
-       0x1.9be62aca809cbp-1,    // 0.80449041101410878606
-       0x1.b998ca2e59049p-9,    // 0.0033691164782556942865
-       0x1.20fa378999e52p-14,   // 6.8897583469168245358e-05
-       0x1.8412bc101c586p-19,   // 2.8913705208347566502e-06
-       0x1.b8007d9cd616ep-23,   // 2.0489185894690638404e-07
-       0x1.8569280d6d56dp-26,   // 2.2666689904981780433e-08
-       0x1.d2c64a9225b87p-29,   // 3.396232025708386507e-09
-       0x1.0f9ccc0f46f75p-31,   // 4.9406023882249700566e-10
-       0x1.a24feabe8004fp-37,   // 1.1889147107846439022e-11
-      -0x1.1511d08397425p-35,   // -3.1499165279632416471e-11
-      -0x1.d0fd7357e7bf2p-37,   // -1.3215811840447713302e-11
-      -0x1.f904303178d66p-40,   // -1.7941785315068061526e-12
-       0x1.94347fa268cecp-41,   // 7.1801244513836660144e-13
-       0x1.b1c8c6b83c073p-42,   // 3.8527783827421425866e-13
-       0x1.156ff0d5fc545p-46,   // 1.5400862175214099564e-14
-      -0x1.75d99cf68bb32p-45,   // -4.1505693472872222378e-14
-      -0x1.583fe7e65629ap-47,   // -9.5548466988283073083e-15
-       0x1.12a919094e6d7p-48,   // 3.8116806693526224039e-15
-       0x1.fee7da3eafb1fp-50,   // 1.7725601330565263108e-15
-      -0x1.8aee7d908de38p-52,   // -3.4254856196772189964e-16
-      -0x1.4600babd21fe4p-52,   // -2.8276239805165836479e-16
-       0x1.3f3dd076041cdp-55,   // 3.4612228676974612188e-17
-       0x1.9be1812d98421p-55,   // 4.465621420296759752e-17
-      -0x1.646da66119130p-58,   // -4.83050448594418188e-18
-      -0x1.0adb754ca8b19p-57    // -7.2331804878747537959e-18
-    ];
-    double y;
-    
-    if (x < 0)
-        x = -x;
-    if (x <= 8.0) {
-        y = (x/2.0) - 2.0;
-        return exp(x) * evalCheby( y, A);
-    }
-    
-    return exp(x) * evalCheby( 32.0/x - 2.0, B) / sqrt(x);
-}
-
-/**
- *  Modified Bessel function of order one
- *
- * Returns modified Bessel function of order one of the
- * argument.
- *
- * The function is defined as i1(x) = -i j1( ix ).
- *
- * The range is partitioned into the two intervals [0,8] and
- * (8, infinity).  Chebyshev polynomial expansions are employed
- * in each interval.
-*/
-double cylBessel_i1(double x)
-{ 
-    
-    const double [] A = [
-        0x1.02a63724a7ffap-2,   // 0.25258718644363364891
-       -0x1.694d10469192ep-3,   // -0.17641651835783406232
-        0x1.a46dad536f53cp-4,   // 0.10264365868984709484
-       -0x1.b1bbc537c9ebcp-5,   // -0.052945981208094988756
-        0x1.951e3e7bb2349p-6,   // 0.024726449030626516251
-       -0x1.5a29f7913a26ap-7,   // -0.010564084894626197402
-        0x1.1065349d3a1b4p-8,   // 0.0041564229443128881957
-       -0x1.8cc620b3cd4a4p-10,  // -0.0015135724506312531537
-        0x1.0c95db6c6df7dp-11,  // 0.00051228595616857575904
-       -0x1.533cad3d694fep-13,  // -0.00016176081582589674342
-        0x1.911b542c70d0bp-15,  // 4.7815651075500542211e-05
-       -0x1.bd5f9b8debbcfp-17,  // -1.3273163656039435856e-05
-        0x1.d1c4ed511afc5p-19,  // 3.4702513081376784511e-06
-       -0x1.cc0798363992ap-21,  // -8.5687202646954547472e-07
-        0x1.ae344b347d108p-23,  // 2.0032947535521353266e-07
-       -0x1.7dd3e24b8c3e8p-25,  // -4.4450591287963280534e-08
-        0x1.4258e02395010p-27,  // 9.3815373864957725905e-09
-       -0x1.0361b28ea67e6p-29,  // -1.8872497517228294408e-09
-        0x1.8ea34b43fdf6cp-32,  // 3.6255902815521172499e-10
-       -0x1.2510397eb07dep-34,  // -6.6634897235020271212e-11
-        0x1.9cee2b21d3154p-37,  // 1.1736186298890901231e-11
-       -0x1.173835fb70366p-39,  // -1.9839743977649436386e-12
-        0x1.6af784779d955p-42,  // 3.2237933659455747582e-13
-       -0x1.c628e1c8f0b3bp-45,  // -5.042185504727911792e-14
-        0x1.11d7f0615290cp-47,  // 7.6006842947354076689e-15
-       -0x1.3eaaa7e0d1573p-50,  // -1.1055969477353862494e-15
-        0x1.663e3e593bfacp-53,  // 1.5536319577362005414e-16
-       -0x1.857d0c38a0576p-56,  // -2.1114212143581659597e-17
-        0x1.99f2a0c3c4014p-59   // 2.7779141127610463724e-18
-    ];
-    
-    
-    /* Chebyshev coefficients for exp(-x) sqrt(x) I1(x)
-     * in the inverted interval [8,infinity].
-     *
-     * lim(x->inf){ exp(-x) sqrt(x) I1(x) } = 1/sqrt(2pi).
-     */
-    const double [] B = [
-        0x1.8ea18b55b1514p-1,   // 0.77857623501828010503
-       -0x1.3fda053fcdb4cp-7,   // -0.0097610974913614687031
-       -0x1.cfd7f804aa9a6p-14,  // -0.00011058893876262371343
-       -0x1.048df49ca0373p-18,  // -3.8825648088776905935e-06
-       -0x1.0dbfd2e9e5443p-22,  // -2.5122362378702088375e-07
-       -0x1.c415394bb46c1p-26,  // -2.6314688468895195913e-08
-       -0x1.0790b9ad53528p-28,  // -3.8353803859642369988e-09
-       -0x1.334ca5423dd80p-31,  // -5.589743462196583783e-10
-       -0x1.4dcf9d4504c0cp-36,  // -1.8974958123505412554e-11
-        0x1.1e1a1f1587865p-35,  // 3.2526035830154884386e-11
-        0x1.f101f653c457bp-37,  // 1.4125807436613781898e-11
-        0x1.1e7d3f6439fa3p-39,  // 2.0356285441470895558e-12
-       -0x1.953e1076ab493p-41,  // -7.1985517762459083567e-13
-       -0x1.cbc458e73e255p-42,  // -4.0835511110921974037e-13
-       -0x1.7a9482e6d22a0p-46,  // -2.1015418427726642995e-14
-        0x1.80d3c26b3281ep-45,  // 4.2724400167119510468e-14
-        0x1.776e1762d31e8p-47,  // 1.0420276984128802069e-14
-       -0x1.12db5138afbc7p-48,  // -3.8144030724370075398e-15
-       -0x1.0efcd8bc4d22ap-49,  // -1.8803547755107825099e-15
-        0x1.7d68e5f04a2d1p-52,  // 3.3082023109209285204e-16
-        0x1.55915fceb588ap-52,  // 2.9626289976459500804e-16
-       -0x1.2806c9c773320p-55,  // -3.2095259219934237557e-17
-       -0x1.acea3b2532277p-55,  // -4.6503053684893586277e-17
-        0x1.45b8aea87b950p-58,  // 4.4143483230717076529e-18
-        0x1.1556db352e8e6p-57   // 7.5172963108421052146e-18
-    ];
-
-
-    double y, z;
-    
-    z = fabs(x);
-    if( z <= 8.0 ) {
-        y = (z/2.0) - 2.0;
-        z = evalCheby( y, A ) * z * exp(z);
-    } else {
-        z = exp(z) * evalCheby( 32.0/z - 2.0, B ) / sqrt(z);
-    }
-    if (x < 0.0 )
-        z = -z;
-    return z;
-}
-
-debug(UnitTest)
-{
-unittest {
-    // NaN propagation
+  
+      // NaN propagation
     assert(isIdentical(cylBessel_i1(NaN(0xDEF)), NaN(0xDEF)));
     assert(isIdentical(cylBessel_i0(NaN(0x846)), NaN(0x846)));
+
 }
+
 }
