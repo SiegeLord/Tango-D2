@@ -34,6 +34,10 @@ private import Text = tango.text.Util;
         is considered foreign. Currently tango.text.stream includes the
         exclusive variety only.
 
+        Each pattern is exposed to the client as a slice of the original
+        content, where the slice is transient. If you need to retain the
+        exposed content, then you should .dup it appropriately. 
+
         The content provided to these iterators is intended to be fully
         read-only. All current tokenizers abide by this rule, but it is
         possible a user could mutate the content through a token slice.

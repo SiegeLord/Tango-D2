@@ -20,6 +20,10 @@ private import  tango.text.stream.StreamIterator;
 
         Iterate across a set of text patterns.
 
+        Each pattern is exposed to the client as a slice of the original
+        content, where the slice is transient. If you need to retain the
+        exposed content, then you should .dup it appropriately. 
+
         These iterators are based upon the IBuffer construct, and can
         thus be used in conjunction with other Iterators and/or Reader
         instances upon a common buffer ~ each will stay in lockstep via
