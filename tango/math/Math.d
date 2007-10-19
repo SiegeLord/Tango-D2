@@ -97,7 +97,7 @@ const real SQRT1_2    = 0.70710678118654752440L;  /** &radic;&frac12 */
 
 const real MAXLOG = 0x1.62e42fefa39ef358p+13;  /** log(real.max) */
 const real MINLOG = -0x1.6436716d5406e6d8p+13; /** log(real.min*real.epsilon) */
-
+const real EULERGAMMA = 0.57721_56649_01532_86060_65120_90082_40243_10421_59335_93992; /** Euler-Mascheroni constant 0.57721566.. */
 
 /*
  * Primitives

@@ -95,7 +95,6 @@ enum TANGO_NAN {
     POW_DOMAIN   = 0x1021,
     GAMMA_DOMAIN = 0x1101,
     GAMMA_POLE   = 0x1102,
-    GAMMA_ZERO   = 0x1100, // FIXME: what causes this?
     SGNGAMMA     = 0x1112,
     BETA_DOMAIN  = 0x1131,
     // NaNs from statistical functions

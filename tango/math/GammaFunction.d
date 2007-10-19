@@ -40,82 +40,46 @@ const real SQRT2PI = 2.50662827463100050242E0L; // sqrt(2pi)
 
 // Polynomial approximations for gamma and loggamma.
 
-const real GammaNumeratorCoeffs[] = [
-    0x1p+0,                  // 1
-    0x1.acf42d903366539ep-1,     // 0.83780043015731267283
-    0x1.73a991c8475f1aeap-2,     // 0.36295154366402391688
-    0x1.c7e918751d6b2a92p-4,     // 0.1113062816019361559
-    0x1.86d162cca32cfe86p-6,     // 0.023853632434611082525
-    0x1.0c378e2e6eaf7cd8p-8,     // 0.0040926668283940355009
-    0x1.dc5c66b7d05feb54p-12, // 0.00045429319606080091555
-    0x1.616457b47e448694p-15     // 4.2127604874716220134e-05
+const real GammaNumeratorCoeffs[] = [ 1.0,
+    0x1.acf42d903366539ep-1, 0x1.73a991c8475f1aeap-2, 0x1.c7e918751d6b2a92p-4, 
+    0x1.86d162cca32cfe86p-6, 0x1.0c378e2e6eaf7cd8p-8, 0x1.dc5c66b7d05feb54p-12,
+    0x1.616457b47e448694p-15
 ];
 
-const real GammaDenominatorCoeffs[] = [
-    0x1p+0,                   // 1
-    0x1.a8f9faae5d8fc8bp-2,   // 0.41501609505884554346
-    -0x1.cb7895a6756eebdep-3,  // -0.22435109056703291645
-    -0x1.7b9bab006d30652ap-5,  // -0.046338876712445342138
-    0x1.c671af78f312082ep-6,      // 0.027737065658400729792
-    -0x1.a11ebbfaf96252dcp-11, // -0.00079559336824947383209
-    -0x1.447b4d2230a77ddap-10, // -0.0012377992466531522311
-    0x1.ec1d45bb85e06696p-13,  // 0.00023465840591606352443
-    -0x1.d4ce24d05bd0a8e6p-17  // -1.3971485174761704409e-05
+const real GammaDenominatorCoeffs[] = [ 1.0,
+  0x1.a8f9faae5d8fc8bp-2,  -0x1.cb7895a6756eebdep-3,  -0x1.7b9bab006d30652ap-5,
+  0x1.c671af78f312082ep-6, -0x1.a11ebbfaf96252dcp-11, -0x1.447b4d2230a77ddap-10,
+  0x1.ec1d45bb85e06696p-13,-0x1.d4ce24d05bd0a8e6p-17
 ];
 
-const real GammaSmallCoeffs[] = [
-    0x1p+0,                  // 1
-    0x1.2788cfc6fb618f52p-1,     // 0.57721566490153286082
-    -0x1.4fcf4026afa2f7ecp-1, // -0.65587807152025406846
-    -0x1.5815e8fa24d7e306p-5, // -0.042002635034033440541
-    0x1.5512320aea2ad71ap-3,     // 0.16653861137208052067
-    -0x1.59af0fb9d82e216p-5,     // -0.042197733607059154702
-    -0x1.3b4b61d3bfdf244ap-7, // -0.0096220233604062716456
-    0x1.d9358e9d9d69fd34p-8,     // 0.0072205994780369096722
-    -0x1.38fc4bcbada775d6p-10 // -0.0011939450513815100956
+const real GammaSmallCoeffs[] = [ 1.0,
+    0x1.2788cfc6fb618f52p-1, -0x1.4fcf4026afa2f7ecp-1, -0x1.5815e8fa24d7e306p-5,
+    0x1.5512320aea2ad71ap-3, -0x1.59af0fb9d82e216p-5,  -0x1.3b4b61d3bfdf244ap-7,
+    0x1.d9358e9d9d69fd34p-8, -0x1.38fc4bcbada775d6p-10
 ];
 
-const real GammaSmallNegCoeffs[] = [
-    -0x1p+0,                     // -1
-    0x1.2788cfc6fb618f54p-1,     // 0.57721566490153286086
-    0x1.4fcf4026afa2bc4cp-1,     // 0.65587807152025365473
-    -0x1.5815e8fa2468fec8p-5, // -0.042002635034021129105
-    -0x1.5512320baedaf4b6p-3, // -0.16653861139444135193
-    -0x1.59af0fa283baf07ep-5, // -0.042197733437311917216
-    0x1.3b4a70de31e05942p-7,     // 0.0096219111550359767339
-    0x1.d9398be3bad13136p-8,     // 0.0072208372618931703258
-    0x1.291b73ee05bcbba2p-10     // 0.001133374167243894382
+const real GammaSmallNegCoeffs[] = [ -1.0,
+    0x1.2788cfc6fb618f54p-1, 0x1.4fcf4026afa2bc4cp-1, -0x1.5815e8fa2468fec8p-5,
+    -0x1.5512320baedaf4b6p-3, -0x1.59af0fa283baf07ep-5, 0x1.3b4a70de31e05942p-7,
+    0x1.d9398be3bad13136p-8, 0x1.291b73ee05bcbba2p-10
 ];
 
 const real logGammaStirlingCoeffs[] = [
-    0x1.5555555555553f98p-4,      // 0.083333333333333314473
-    -0x1.6c16c16c07509b1p-9,      // -0.0027777777777503496034
-    0x1.a01a012461cbf1e4p-11,  // 0.00079365077958550707556
-    -0x1.3813089d3f9d164p-11,  // -0.00059523458517656885149
-    0x1.b911a92555a277b8p-11,  // 0.00084127232973224980805
-    -0x1.ed0a7b4206087b22p-10, // -0.0018808019381193769072
-    0x1.402523859811b308p-8   // 0.0048850261424322707812
+    0x1.5555555555553f98p-4, -0x1.6c16c16c07509b1p-9, 0x1.a01a012461cbf1e4p-11,
+    -0x1.3813089d3f9d164p-11, 0x1.b911a92555a277b8p-11, -0x1.ed0a7b4206087b22p-10,
+    0x1.402523859811b308p-8
 ];
 
 const real logGammaNumerator[] = [
-    -0x1.0edd25913aaa40a2p+23, // -8875666.7836507038022
-    -0x1.31c6ce2e58842d1ep+24, // -20039374.181038151756
-    -0x1.f015814039477c3p+23,  // -16255680.62543700591
-    -0x1.74ffe40c4b184b34p+22, // -6111225.0120052143001
-    -0x1.0d9c6d08f9eab55p+20,  // -1104326.8146914642612
-    -0x1.54c6b71935f1fc88p+16, // -87238.715228435114593
-    -0x1.0e761b42932b2aaep+11  // -2163.6908276438128575
+    -0x1.0edd25913aaa40a2p+23, -0x1.31c6ce2e58842d1ep+24, -0x1.f015814039477c3p+23,
+    -0x1.74ffe40c4b184b34p+22, -0x1.0d9c6d08f9eab55p+20,  -0x1.54c6b71935f1fc88p+16,
+    -0x1.0e761b42932b2aaep+11
 ];
 
 const real logGammaDenominator[] = [
-    -0x1.4055572d75d08c56p+24, // -20993367.177578958762
-    -0x1.deeb6013998e4d76p+24, // -31386464.076561826621
-    -0x1.106f7cded5dcc79ep+24, // -17854332.870450781569
-    -0x1.25e17184848c66d2p+22, // -4814940.3794118821866
-    -0x1.301303b99a614a0ap+19, // -622744.11640662195015
-    -0x1.09e76ab41ae965p+15,      // -34035.708405343046707
-    -0x1.00f95ced9e5f54eep+9,  // -513.94814844353701437
-    0x1p+0                    // 1
+    -0x1.4055572d75d08c56p+24, -0x1.deeb6013998e4d76p+24, -0x1.106f7cded5dcc79ep+24,
+    -0x1.25e17184848c66d2p+22, -0x1.301303b99a614a0ap+19, -0x1.09e76ab41ae965p+15,
+    -0x1.00f95ced9e5f54eep+9, 1.0
 ];
 
 /*
@@ -131,25 +95,15 @@ real gammaStirling(real x)
     // CEPHES code Copyright 1994 by Stephen L. Moshier
 
     const real SmallStirlingCoeffs[] = [
-        0x1.55555555555543aap-4,   // 0.083333333333333318004
-        0x1.c71c71c720dd8792p-9,   // 0.0034722222222300753277
-        -0x1.5f7268f0b5907438p-9,  // -0.0026813271618763044182
-        -0x1.e13cd410e0477de6p-13, // -0.00022947197478731854057
-        0x1.9b0f31643442616ep-11,  // 0.00078403348427447530038
-        0x1.2527623a3472ae08p-14,  // 6.9893322606231931717e-05
-        -0x1.37f6bc8ef8b374dep-11, // -0.00059502375540563301557
-        -0x1.8c968886052b872ap-16, // -2.3638488095017590616e-05
-        0x1.76baa9c6d3eeddbcp-11   // 0.0007147391378143610789
+        0x1.55555555555543aap-4, 0x1.c71c71c720dd8792p-9, -0x1.5f7268f0b5907438p-9,
+        -0x1.e13cd410e0477de6p-13, 0x1.9b0f31643442616ep-11, 0x1.2527623a3472ae08p-14,
+        -0x1.37f6bc8ef8b374dep-11,-0x1.8c968886052b872ap-16, 0x1.76baa9c6d3eeddbcp-11
     ];
 
-    const real LargeStirlingCoeffs[] = [
-        1.0L,
-        8.33333333333333333333E-2L,
-        3.47222222222222222222E-3L,
-        -2.68132716049382716049E-3L,
-        -2.29472093621399176955E-4L,
-        7.84039221720066627474E-4L,
-        6.97281375836585777429E-5L
+    const real LargeStirlingCoeffs[] = [ 1.0L,
+        8.33333333333333333333E-2L, 3.47222222222222222222E-3L,
+        -2.68132716049382716049E-3L, -2.29472093621399176955E-4L,
+        7.84039221720066627474E-4L, 6.97281375836585777429E-5L
     ];
 
     real w = 1.0L/x;
@@ -227,7 +181,7 @@ unittest {
  */
 real gamma(real x)
 {
-/* Author: Don Clugston. Based on code from the CEPHES library.
+/* Based on code from the CEPHES library.
  * CEPHES code Copyright 1994 by Stephen L. Moshier
  *
  * Arguments |x| <= 13 are reduced by recurrence and the function
@@ -289,7 +243,7 @@ real gamma(real x)
 
     if ( x <= 0.03125L ) {
         if ( x == 0.0L )
-            return NaN(TANGO_NAN.GAMMA_ZERO);
+            return NaN(TANGO_NAN.GAMMA_POLE);
         else {
             if ( x < 0.0L ) {
                 x = -x;
@@ -1403,3 +1357,107 @@ assert(gammaIncompleteCompl(384, real.infinity)==0);
 assert(gammaIncompleteComplInv(3, 0)==real.infinity);
 }
 }
+
+/** Digamma function
+*
+*  The digamma function is the logarithmic derivative of the gamma function.
+*
+*  digamma(x) = d/dx logGamma(x)
+*
+*/
+real digamma(real x)
+{
+   // Based on CEPHES, Stephen L. Moshier.
+ 
+    // DAC: These values are Bn / n for n=2,4,6,8,10,12,14.
+    const real [] Bn_n  = [
+        1.0L/(6*2), -1.0L/(30*4), 1.0L/(42*6), -1.0L/(30*8),
+        5.0L/(66*10), -691.0L/(2730*12), 7.0L/(6*14) ];
+
+    real p, q, nz, s, w, y, z;
+    int i, n, negative;
+
+    negative = 0;
+    nz = 0.0;
+
+    if ( x <= 0.0 ) {
+        negative = 1;
+        q = x;
+        p = floor(q);
+        if( p == q ) {
+            return NaN(TANGO_NAN.GAMMA_POLE); // singularity.
+        }
+    /* Remove the zeros of tan(PI x)
+     * by subtracting the nearest integer from x
+     */
+        nz = q - p;
+        if ( nz != 0.5 ) {
+            if ( nz > 0.5 ) {
+                p += 1.0;
+                nz = q - p;
+            }
+            nz = PI/tan(PI*nz);
+        } else {
+            nz = 0.0;
+        }
+        x = 1.0 - x;
+    }
+
+    // check for small positive integer
+    if ((x <= 13.0) && (x == floor(x)) ) {
+        y = 0.0;
+        n = rndint(x);
+        // DAC: CEPHES bugfix. Cephes did this in reverse order, which
+        // created a larger roundoff error.
+        for (i=n-1; i>0; --i) {
+            y+=1.0L/i;
+        }
+        y -= EULERGAMMA;
+        goto done;
+    }
+
+    s = x;
+    w = 0.0;
+    while ( s < 10.0 ) {
+        w += 1.0/s;
+        s += 1.0;
+    }
+
+    if ( s < 1.0e17 ) {
+        z = 1.0/(s * s);
+        y = z * poly(z, Bn_n);
+    } else
+        y = 0.0;
+
+    y = log(s)  -  0.5L/s  -  y  -  w;
+
+done:
+    if ( negative ) {
+        y -= nz;
+    }
+    return y;
+}
+
+import tango.stdc.stdio;
+debug(UnitTest) {
+unittest {
+    // Exact values
+    assert(digamma(1)== -EULERGAMMA);
+    assert(feqrel(digamma(0.25), -PI/2 - 3* LN2 - EULERGAMMA)>=real.mant_dig-6);
+    assert(feqrel(digamma(1.0L/6), -PI/2 *sqrt(3.0L) - 2* LN2 -1.5*log(3.0L) - EULERGAMMA)>=real.mant_dig-7);
+    assert(digamma(-5)!<>0);    
+    assert(feqrel(digamma(2.5), -EULERGAMMA - 2*LN2 + 2.0 + 2.0L/3)>=real.mant_dig-9);
+    assert(isIdentical(digamma(NaN(0xABC)), NaN(0xABC)));
+    
+    for (int k=1; k<40; ++k) {
+        real y=0;
+        for (int u=k; u>=1; --u) {
+            y+= 1.0L/u;
+        }
+        assert(feqrel(digamma(k+1),-EULERGAMMA + y) >=real.mant_dig-2);
+    }
+   
+//    printf("%d %La %La %d %d\n", k+1, digamma(k+1), -EULERGAMMA + x, feqrel(digamma(k+1),-EULERGAMMA + y), feqrel(digamma(k+1), -EULERGAMMA + x));
+}
+}
+
