@@ -51,7 +51,7 @@ public class ArrayIterator(T) : GuardIterator!(T)
          * Implements tango.util.collection.impl.Collection.CollectionIterator.remaining
          * See_Also: tango.util.collection.impl.Collection.CollectionIterator.remaining
         **/
-        public int remaining()
+        public uint remaining()
         {
                 return size_;
         }
