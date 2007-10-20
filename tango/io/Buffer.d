@@ -455,16 +455,15 @@ class Buffer : IBuffer
 
         uint fill (void[] dst)
         {
-                uint len;
+                uint len = 0;
 
-                do {
-                   uint i = read (dst [len .. $]);
-                   if (i is IConduit.Eof)
-                       return (len > 0) ? len : IConduit.Eof;
-
-                   len += i;
-                   } while (len < dst.length);
-
+                while (len < dst.length)
+                      {
+                      uint i = read (dst [len .. $]);
+                      if (i is IConduit.Eof)
+                          return (len > 0) ? len : IConduit.Eof;
+                      len += i;
+                      }
                 return len;
         }
 
