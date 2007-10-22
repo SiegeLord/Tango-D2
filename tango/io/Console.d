@@ -409,6 +409,17 @@ struct Console
         {
                 private bool redirected = false;
 
+                /***********************************************************************
+
+                        Return the name of this conduit
+
+                ***********************************************************************/
+
+                override char[] toUtf8()
+                {
+                        return "<console>";
+                }
+
                 /***************************************************************
 
                         Windows-specific code
