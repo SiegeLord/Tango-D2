@@ -38,11 +38,23 @@ class MemoryConduit : Conduit
 
         /***********************************************************************
 
+                Clear all content
+
+        ***********************************************************************/
+
+        final override InputStream clear ()
+        {
+                content = null;
+                return this;
+        }
+
+        /***********************************************************************
+
                 Return a preferred size for buffering conduit I/O
 
         ***********************************************************************/
 
-        override uint bufferSize ()
+        final override uint bufferSize ()
         {
                 return 1024 * 4;
         }
@@ -53,7 +65,7 @@ class MemoryConduit : Conduit
 
         ***********************************************************************/
 
-        override Handle fileHandle ()
+        final override Handle fileHandle ()
         {
                 return 0;
         }
@@ -64,7 +76,7 @@ class MemoryConduit : Conduit
 
         ***********************************************************************/
 
-        override char[] toUtf8()
+        final override char[] toUtf8()
         {
                 return "<memory>";
         }
@@ -76,7 +88,7 @@ class MemoryConduit : Conduit
 
         ***********************************************************************/
 
-        override uint read (void[] dst)
+        final override uint read (void[] dst)
         {
                 if (content.length)
                    {
@@ -99,7 +111,7 @@ class MemoryConduit : Conduit
 
         ***********************************************************************/
 
-        override uint write (void[] src)
+        final override uint write (void[] src)
         {
                 content ~= src;
                 return src.length;
@@ -111,7 +123,7 @@ class MemoryConduit : Conduit
 
         ***********************************************************************/
 
-        override void detach () {}
+        final override void detach () {}
 }
 
 
