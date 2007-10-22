@@ -23,7 +23,7 @@ private import tango.text.stream.LineIterator;
         Simple way to hook up a line-tokenizer to an arbitrary InputStream,
         such as a file conduit:
         ---
-        auto input = new LineInput (new FileConduit("path"));
+        auto input = new LineInput (new FileInput("path"));
         foreach (line; input)
                  ...
         input.close;
