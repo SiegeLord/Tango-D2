@@ -1442,8 +1442,6 @@ private char[] format (char[] msg, int value)
 
 debug (UnitTest)
 {
-    void main(){}
-
     private import tango.text.stream.LineIterator;
 
     unittest
