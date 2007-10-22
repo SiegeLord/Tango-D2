@@ -25,7 +25,7 @@ private import tango.core.ByteSwap;
 class DataInput : InputFilter, Buffered
 {       
         private bool    flip;
-        private final IBuffer input;
+        private IBuffer input;
 
         /***********************************************************************
 
@@ -164,7 +164,7 @@ class DataInput : InputFilter, Buffered
 class DataOutput : OutputFilter, Buffered
 {       
         private bool    flip;
-        private final IBuffer output;
+        private IBuffer output;
 
         /***********************************************************************
 
