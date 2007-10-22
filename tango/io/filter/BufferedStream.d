@@ -42,6 +42,8 @@ class BufferedInput : Buffer
         Buffers the flow of data to a downstream output. An upstream 
         neighbour can locate and use this instead of creating another.
 
+        Don't forget to flush() buffered content before closing.
+
 *******************************************************************************/
 
 class BufferedOutput : Buffer
