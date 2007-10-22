@@ -44,8 +44,8 @@ debug (Process)
  *
  * To actually start a process you need to use the execute() method. Once the
  * program is running you will be able to write to its standard input via the
- * stdin PipeConduit and you will be able to read from its standard output and
- * error through the stdout and stderr PipeConduit's respectively.
+ * stdin OutputStream and you will be able to read from its standard output and
+ * error through the stdout and stderr InputStream respectively.
  *
  * You can check whether the process is running or not with the isRunning()
  * method and you can get its process ID via the pid property.
