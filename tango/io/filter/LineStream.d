@@ -16,13 +16,24 @@ private import tango.io.Conduit;
 
 private import tango.io.model.IConduit;
 
+private import tango.text.stream.LineIterator;
+
 /*******************************************************************************
+
+        Simple way to hook up a line-tokenizer to an arbitrary InputStream,
+        such as a file conduit:
+        ---
+        auto input = new LineInput (new FileConduit("path"));
+        foreach (line; input)
+                 ...
+        input.close;
+        ---
 
 *******************************************************************************/
 
-class LineInput(T) : InputFilter, Buffered
+class LineInput : InputFilter, Buffered
 {
-        private LineIterator!(T) line;
+        private LineIterator!(char) line;
 
         /***********************************************************************
 
@@ -32,8 +43,8 @@ class LineInput(T) : InputFilter, Buffered
 
         this (InputStream stream)
         {
-                super (stream);
-                line = new LineInterator!(T)(stream);
+                line = new LineIterator!(char)(stream);
+                super (line.buffer);
         }
 
         /***********************************************************************
@@ -51,9 +62,22 @@ class LineInput(T) : InputFilter, Buffered
 
         ***********************************************************************/
 
-        T[] readln ()
+        LineIterator!(char) iterator ()
         {
-                return line.next;
+                return line;
+        }
+
+        /**********************************************************************
+
+                Iterate over the set of tokens. This should really
+                provide read-only access to the tokens, but D does
+                not support that at this time
+
+        **********************************************************************/
+
+        int opApply (int delegate(inout char[]) dg)
+        {       
+                return line.opApply (dg);
         }
 }
 

@@ -22,11 +22,19 @@ private import tango.text.convert.Layout;
 
 /*******************************************************************************
 
+        Simple way to hook up a utf8 formatter to an arbitrary OutputStream,
+        such as a file conduit:
+        ---
+        auto output = new FormatOutput(new FileConduit("path", FileConduit.WriteCreate));
+        output.print.formatln ("{} green bottles", 10);
+        output.close;
+        ---
+
 *******************************************************************************/
 
-class FormatOutput(T) : OutputFilter
+class FormatOutput : OutputFilter
 {
-        private Print!(T) output;
+        private Print!(char) output;
 
         /***********************************************************************
 
@@ -37,7 +45,7 @@ class FormatOutput(T) : OutputFilter
         this (OutputStream stream)
         {
                 super (stream);
-                output = new Print!(T) (new Layout!(T), stream);
+                output = new Print!(char) (new Layout!(char), stream);
         }
 
         /***********************************************************************
@@ -46,7 +54,7 @@ class FormatOutput(T) : OutputFilter
 
         ***********************************************************************/
 
-        Print!(T) print ()
+        final Print!(char) print ()
         {
                 return output;
         }
