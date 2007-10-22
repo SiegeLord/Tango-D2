@@ -75,17 +75,6 @@ struct Console
 
                 /**************************************************************
 
-                        Return the associated stream
-
-                **************************************************************/
-
-                final InputStream stream ()
-                {
-                        return buffer;
-                }
-
-                /**************************************************************
-
                         Return the next line available from the console, 
                         or null when there is nothing available. The value
                         returned is a duplicate of the buffer content (it
@@ -141,6 +130,17 @@ struct Console
 
                 /**************************************************************
 
+                        Return the associated stream
+
+                **************************************************************/
+
+                final InputStream stream ()
+                {
+                        return buffer;
+                }
+
+                /**************************************************************
+
                         Is this device redirected?
 
                         Returns:
@@ -159,18 +159,48 @@ struct Console
 
                 /**************************************************************
 
-                        Divert input to an alternate stream
+                        Set redirection state to the provided boolean
 
                         Remarks:
-                        Diverts input to the specified stream, and sets
-                        the redirection status. 
+                        Configure the console redirection status, where 
+                        a redirected console is more efficient (dictates 
+                        whether newline() performs automatic flushing or 
+                        not)
+
+                **************************************************************/
+
+                final Input redirected (bool yes)
+                {
+                         redirect = yes;
+                         return this;
+                }           
+
+                /**************************************************************
+
+                        Returns the configured Conduit
+
+                        Remarks:
+                        Provides access to the underlying mechanism for 
+                        console input. Use this to retain prior state
+                        when temporarily switching inputs 
                         
                 **************************************************************/
 
-                final void divert (InputStream input, bool redirected)
+                final IConduit conduit ()
                 {
-                        redirect = redirected;
-                        buffer.input = input;
+                        return stream.conduit;
+                }           
+
+                /**************************************************************
+
+                        Divert input to an alternate conduit
+                        
+                **************************************************************/
+
+                final Input conduit (IConduit conduit)
+                {
+                        buffer.input = conduit;
+                        return this;
                 }           
         }
 
@@ -199,17 +229,6 @@ struct Console
                 {
                         redirect = redirected;
                         buffer = new Buffer (conduit);
-                }
-
-                /**************************************************************
-
-                        Return the associated stream
-
-                **************************************************************/
-
-                final OutputStream stream ()
-                {
-                        return buffer;
                 }
 
                 /**************************************************************
@@ -296,6 +315,17 @@ struct Console
 
                 /**************************************************************
 
+                        Return the associated stream
+
+                **************************************************************/
+
+                final OutputStream stream ()
+                {
+                        return buffer;
+                }
+
+                /**************************************************************
+
                         Is this device redirected?
 
                         Returns:
@@ -313,19 +343,48 @@ struct Console
 
                 /**************************************************************
 
-                        Divert output to an alternate stream
+                        Set redirection state to the provided boolean
 
                         Remarks:
-                        Diverts output to the specified stream, and sets
-                        the redirection status. The latter dictates whether
-                        newline() performs automatic flushing or not
+                        Configure the console redirection status, where 
+                        a redirected console is more efficient (dictates 
+                        whether newline() performs automatic flushing or 
+                        not)
+
+                **************************************************************/
+
+                final Output redirected (bool yes)
+                {
+                         redirect = yes;
+                         return this;
+                }           
+
+                /**************************************************************
+
+                        Returns the configured Conduit
+
+                        Remarks:
+                        Provides access to the underlying mechanism for 
+                        console input. Use this to retain prior state
+                        when temporarily switching outputs 
                         
                 **************************************************************/
 
-                final void divert (OutputStream output, bool redirected)
+                final IConduit conduit ()
                 {
-                        buffer.output = output;
-                        redirect = redirected;
+                        return stream.conduit;
+                }           
+
+                /**************************************************************
+
+                        Divert output to an alternate conduit
+
+                **************************************************************/
+
+                final Output conduit (IConduit conduit)
+                {
+                        buffer.output = conduit;
+                        return this;
                 }           
         }
 
@@ -371,7 +430,7 @@ struct Console
 
                         *******************************************************/
 
-                        private this (uint handle)
+                        this (uint handle)
                         {
                                 input = new wchar [1024 * 1];
                                 output = new wchar [1024 * 1];
@@ -384,7 +443,7 @@ struct Console
 
                         *******************************************************/
 
-                        protected override void reopen (Handle handle_)
+                        private override void reopen (Handle handle_)
                         {
                                 static const DWORD[] id = [
                                                           cast(DWORD) -10, 
