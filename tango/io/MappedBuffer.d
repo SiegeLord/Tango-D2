@@ -102,22 +102,11 @@ class MappedBuffer : Buffer
 
                 /***************************************************************
 
-                        Please use detach instead ...
-
-                ***************************************************************/
-
-                deprecated void close ()
-                {
-                        detach;
-                }
-
-                /***************************************************************
-
                         Release this mapped buffer without flushing
 
                 ***************************************************************/
 
-                void detach ()
+                override void close ()
                 {
                         if (base)
                             UnmapViewOfFile (base);
@@ -138,11 +127,12 @@ class MappedBuffer : Buffer
 
                 ***************************************************************/
 
-                override void flush ()
+                override OutputStream flush ()
                 {
                         // flush all dirty pages
                         if (! FlushViewOfFile (base, 0))
                               host.error ();
+                        return this;
                 }
         }
 
@@ -184,22 +174,11 @@ class MappedBuffer : Buffer
 
                 /***************************************************************
 
-                        Please use detach instead ...
-
-                ***************************************************************/
-
-                deprecated void close ()
-                {
-                        detach;
-                }
-
-                /***************************************************************
-
                         Release this mapped buffer without flushing
 
                 ***************************************************************/
 
-                void detach ()
+                override void close ()
                 {
                         // NOTE: When a process ends, all mmaps belonging to that process
                         //       are automatically unmapped by system (Linux).
@@ -218,7 +197,7 @@ class MappedBuffer : Buffer
 
                 ***************************************************************/
 
-                override void flush () 
+                override OutputStream flush () 
                 {
                         // MS_ASYNC: delayed flush; equivalent to "add-to-queue"
                         // MS_SYNC: function flushes file immediately; no return until flush complete
@@ -226,6 +205,7 @@ class MappedBuffer : Buffer
 
                         if (msync (base, size, MS_SYNC | MS_INVALIDATE))
                             host.error();
+                        return this;
                 }
         }
 
@@ -323,8 +303,9 @@ class MappedBuffer : Buffer
 
         ***********************************************************************/
 
-        override void clear ()
-        {
+        override InputStream clear ()
+        {       
+                return this;
         }               
 
         /***********************************************************************

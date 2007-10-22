@@ -306,6 +306,17 @@ class Buffer : IBuffer
         }
 
         /***********************************************************************
+                
+                implements Buffered interface
+
+        ***********************************************************************/
+
+        IBuffer buffer ()
+        {
+                return this;
+        }
+
+        /***********************************************************************
         
                 Generic IOException thrower
                 
@@ -942,7 +953,7 @@ class Buffer : IBuffer
                     return IConduit.Eof;
 
                 if (readable is 0)
-                    clear();
+                    index = extent = 0;  // same as clear(), but without chain
                 else 
                    if (writable is 0)
                        return 0;
@@ -995,7 +1006,7 @@ class Buffer : IBuffer
 
         ***********************************************************************/
 
-        void flush ()
+        OutputStream flush ()
         {
                 if (sink)
                    {
@@ -1005,6 +1016,7 @@ class Buffer : IBuffer
                    // flush the filter chain also
                    sink.flush;
                    }
+                return this;
         } 
 
         /***********************************************************************
@@ -1017,29 +1029,33 @@ class Buffer : IBuffer
 
         ***********************************************************************/
 
-        void clear ()
+        InputStream clear ()
         {
                 index = extent = 0;
 
                 // clear the filter chain also
                 if (source)
                     source.clear;
+                return this;
         }               
 
         /***********************************************************************
         
-                Commit the output
+                Close the stream
 
                 Remarks:
-                Propogate request to an attached OutputStream (this is a
+                Propagate request to an attached OutputStream (this is a
                 requirment for the OutputStream interface)
 
         ***********************************************************************/
 
-        final void commit () 
+        void close () 
         {
                 if (sink)
-                    sink.commit;
+                    sink.close;
+                else
+                   if (source)
+                       source.close;
         }
 
         /***********************************************************************

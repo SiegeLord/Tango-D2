@@ -80,7 +80,7 @@ private import  tango.io.Print,
 
 private import  tango.text.convert.Layout;
 
-private import  tango.io.filter.MutexFilter;
+private import  tango.io.filter.MutexStream;
 
 /*******************************************************************************
 

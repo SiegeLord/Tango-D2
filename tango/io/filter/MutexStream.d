@@ -10,7 +10,7 @@
 
 *******************************************************************************/
 
-module tango.io.filter.MutexFilter;
+module tango.io.filter.MutexStream;
 
 private import tango.io.Conduit;
 
@@ -18,7 +18,7 @@ private import tango.io.model.IConduit;
 
 /*******************************************************************************
 
-        A conduit filter that serializes access via synchronization     
+        A stream filter that serializes access via synchronization     
 
 *******************************************************************************/
 
@@ -28,7 +28,7 @@ class MutexInput : InputFilter
 
         /***********************************************************************
 
-                Propogate ctor to superclass
+                Propagate ctor to superclass
 
         ***********************************************************************/
 
@@ -62,17 +62,30 @@ class MutexInput : InputFilter
 
         ***********************************************************************/
 
-        override void clear ()
+        override InputStream clear ()
         {
                 synchronized (mutex)
                               host.clear;
+                return this;
         }
+
+        /***********************************************************************
+        
+                Close input
+
+        ***********************************************************************/
+
+        override void close ()
+        {
+                synchronized (mutex)
+                              host.close;
+        }               
 }
 
 
 /*******************************************************************************
 
-         A conduit filter that serializes access via synchronization 
+         A stream filter that serializes access via synchronization 
 
 *******************************************************************************/
 
@@ -82,7 +95,7 @@ class MutexOutput : OutputFilter
 
         /***********************************************************************
 
-                Propogate ctor to superclass
+                Propagate ctor to superclass
 
         ***********************************************************************/
 
@@ -120,7 +133,8 @@ class MutexOutput : OutputFilter
         override OutputStream copy (InputStream src)
         {
                 synchronized (mutex)
-                              return host.copy (src);
+                              host.copy (src);
+                return this;
         }
                           
         /***********************************************************************
@@ -129,22 +143,23 @@ class MutexOutput : OutputFilter
 
         ***********************************************************************/
 
-        override void flush ()
+        override OutputStream flush ()
         {
                 synchronized (mutex)
                               host.flush;
+                return this;
         }
 
         /***********************************************************************
         
-                Commit output
+                Close output
 
         ***********************************************************************/
 
-        override void commit ()
+        override void close ()
         {
                 synchronized (mutex)
-                              host.commit;
+                              host.close;
         }               
 }
 

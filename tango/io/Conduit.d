@@ -132,7 +132,7 @@ class Conduit : IConduit
 
         ***********************************************************************/
 
-        void clear () {}
+        InputStream clear () {return this;}
 
         /***********************************************************************
 
@@ -140,30 +140,19 @@ class Conduit : IConduit
 
         ***********************************************************************/
 
-        void flush () {}
-
-        /***********************************************************************
-
-                commit the output
-
-        ***********************************************************************/
-
-        void commit () {}
+        OutputStream flush () {return this;}
 
         /***********************************************************************
 
                 Close this conduit
                 
                 Remarks:
-                Close flushes & commits any filters before detaching the 
-                conduit
+                Both input and output are detached, and are no longer usable
 
         ***********************************************************************/
 
         final void close ()
         {
-                sink.flush;
-                sink.commit;
                 this.detach;
         }
 
@@ -279,18 +268,6 @@ class InputFilter : InputStream
 
         /***********************************************************************
 
-                Read from conduit into a target array. The provided dst 
-                will be populated with content from the conduit. 
-
-                Returns the number of bytes read, which may be less than
-                requested in dst
-
-        ***********************************************************************/
-
-        abstract uint read (void[] dst);
-
-        /***********************************************************************
-
                 Attach to the provided stream
 
         ***********************************************************************/
@@ -314,13 +291,40 @@ class InputFilter : InputStream
 
         /***********************************************************************
 
+                Read from conduit into a target array. The provided dst 
+                will be populated with content from the conduit. 
+
+                Returns the number of bytes read, which may be less than
+                requested in dst
+
+        ***********************************************************************/
+
+        uint read (void[] dst)
+        {
+                return host.read (dst);
+        }
+
+        /***********************************************************************
+
                 Clear any buffered content
 
         ***********************************************************************/
 
-        void clear ()
+        InputStream clear ()
         {
                 host.clear;
+                return this;
+        }
+
+        /***********************************************************************
+
+                Close the input
+
+        ***********************************************************************/
+
+        void close ()
+        {
+                host.close;
         }
 }
 
@@ -334,18 +338,6 @@ class InputFilter : InputStream
 class OutputFilter : OutputStream
 {
         protected OutputStream host;
-
-        /***********************************************************************
-
-                Write to conduit from a source array. The provided src
-                content will be written to the conduit.
-
-                Returns the number of bytes written from src, which may
-                be less than the quantity provided
-
-        ***********************************************************************/
-
-        abstract uint write (void[] src);
 
         /***********************************************************************
 
@@ -372,24 +364,40 @@ class OutputFilter : OutputStream
 
         /***********************************************************************
 
-                Emit/purge buffered content
+                Write to conduit from a source array. The provided src
+                content will be written to the conduit.
+
+                Returns the number of bytes written from src, which may
+                be less than the quantity provided
 
         ***********************************************************************/
 
-        void flush ()
+        uint write (void[] src)
         {
-                host.flush;
+                return host.write (src);
         }
 
         /***********************************************************************
 
-                Commit output
+                Emit/purge buffered content
 
         ***********************************************************************/
 
-        void commit ()
+        OutputStream flush ()
         {
-                host.commit;
+                host.flush;
+                return this;
+        }
+
+        /***********************************************************************
+
+                Close the output
+
+        ***********************************************************************/
+
+        void close ()
+        {
+                host.close;
         }
 
         /***********************************************************************
@@ -401,7 +409,8 @@ class OutputFilter : OutputStream
 
         OutputStream copy (InputStream src)
         {
-                return conduit.copy (src, this);
+                host.copy (src);
+                return this;
         }
 }
 

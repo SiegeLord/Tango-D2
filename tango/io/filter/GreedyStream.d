@@ -10,7 +10,7 @@
 
 *******************************************************************************/
 
-module tango.io.filter.GreedyFilter;
+module tango.io.filter.GreedyStream;
 
 private import tango.io.Conduit;
 
@@ -27,7 +27,7 @@ class GreedyOutput : OutputFilter
 {
         /***********************************************************************
 
-                Propogate ctor to superclass
+                Propagate ctor to superclass
 
         ***********************************************************************/
 
@@ -47,15 +47,15 @@ class GreedyOutput : OutputFilter
 
         override uint write (void[] src)
         {
-                uint len;
+                uint len = 0;
 
-                do {
-                   auto i = host.write (src [len .. $]);
-                   if (i is IConduit.Eof)
-                       return (len ? len : i);
-                   len += i;
-                   } while (len < src.length);
-
+                while (len < src.length)
+                      {
+                      auto i = host.write (src [len .. $]);
+                      if (i is IConduit.Eof)
+                          return (len ? len : i);
+                      len += i;
+                      } 
                 return len;
         }
 }
@@ -72,7 +72,7 @@ class GreedyInput : InputFilter
 {
         /***********************************************************************
 
-                Propogate ctor to superclass
+                Propagate ctor to superclass
 
         ***********************************************************************/
 
@@ -91,15 +91,15 @@ class GreedyInput : InputFilter
 
         override uint read (void[] dst)
         {
-                uint len;
+                uint len = 0;
 
-                do {
-                   auto i = host.read (dst [len .. $]);
-                   if (i is IConduit.Eof)
-                       return (len ? len : i);
-                   len += i;
-                   } while (len < dst.length);
-
+                while (len < dst.length)
+                      {
+                      auto i = host.read (dst [len .. $]);
+                      if (i is IConduit.Eof)
+                          return (len ? len : i);
+                      len += i;
+                      } 
                 return len;
         }
 }

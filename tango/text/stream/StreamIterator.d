@@ -84,15 +84,8 @@ class StreamIterator(T)
 
         final StreamIterator set (InputStream stream)
         {
-                auto b = cast(IBuffer) stream;
-                if (b)
-                    buffer = b;
-                else
-                   if (buffer)
-                       buffer.clear, buffer.setConduit (stream.conduit);
-                   else
-                      buffer = new Buffer (stream.conduit);
-
+                auto b = cast(Buffered) stream;
+                buffer = (b ? b.buffer : new Buffer (stream.conduit));
                 return this;
         }
 

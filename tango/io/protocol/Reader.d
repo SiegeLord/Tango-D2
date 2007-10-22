@@ -124,14 +124,12 @@ class Reader : IReader
 
         this (InputStream stream)
         {
-                auto b = cast(IBuffer) stream;
-                if (b is null)
-                    b = new Buffer (stream.conduit);
+                auto b = cast(Buffered) stream;
+                buffer_ = (b ? b.buffer : new Buffer (stream.conduit));
 
-                buffer_   = b;
                 allocator_ = &allocate;
-                elements  = &readElement;
-                arrays    = &readArray;
+                elements   = &readElement;
+                arrays     = &readArray;
         }
 
         /***********************************************************************
@@ -145,9 +143,9 @@ class Reader : IReader
         this (IProtocol protocol)
         {
                 allocator_ = &allocate;
-                elements  = &protocol.read;
-                arrays    = &protocol.readArray;
-                buffer_   = protocol.buffer;
+                elements   = &protocol.read;
+                arrays     = &protocol.readArray;
+                buffer_    = protocol.buffer;
         }
 
         /***********************************************************************

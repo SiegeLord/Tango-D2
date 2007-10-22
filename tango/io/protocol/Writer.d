@@ -109,11 +109,9 @@ class Writer : IWriter
 
         this (OutputStream stream)
         {
-                auto b = cast(IBuffer) stream;
-                if (b is null)
-                    b = new Buffer (stream.conduit);
-        
-                buffer_ = b;
+                auto b = cast(Buffered) stream;
+                buffer_ = (b ? b.buffer : new Buffer (stream.conduit));
+
                 arrays = &writeArray;
                 elements = &writeElement;
         }

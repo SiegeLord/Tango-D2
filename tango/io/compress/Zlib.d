@@ -149,7 +149,7 @@ class ZlibDecompressionFilter : InputFilter
 
     ***************************************************************************/ 
 
-    void clear()
+    InputStream clear()
     {
         check_valid();
 
@@ -159,6 +159,7 @@ class ZlibDecompressionFilter : InputFilter
         kill_zs();
 
         super.clear();
+        return this;
     }
 
     // This function kills the stream: it deallocates the internal state, and
@@ -303,6 +304,18 @@ class ZlibCompressionFilter : OutputFilter
 
     /***************************************************************************
 
+        commit the output
+
+    ***************************************************************************/
+
+    void close()
+    {
+        commit;
+        super.close;
+    }
+
+    /***************************************************************************
+
         Purge any buffered content.  Calling this will implicitly end the zlib
         stream, so it should not be called until you are finished compressing
         data.  Any calls to either write or commit after a compression filter
@@ -348,7 +361,6 @@ class ZlibCompressionFilter : OutputFilter
         while( !finished );
 
         kill_zs();
-        super.commit();
     }
 
     // This function kills the stream: it deallocates the internal state, and

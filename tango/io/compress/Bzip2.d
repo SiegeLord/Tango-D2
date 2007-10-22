@@ -148,6 +148,18 @@ class Bzip2CompressionFilter : OutputFilter
 
     /***************************************************************************
 
+        commit the output
+
+    ***************************************************************************/
+
+    void close()
+    {
+        commit;
+        super.close;
+    }
+
+    /***************************************************************************
+
         Purge any buffered content.  Calling this will implicitly end the
         bzip2 stream, so it should not be called until you are finished
         compressing data.  Any calls to either write or commit after a
@@ -191,7 +203,6 @@ class Bzip2CompressionFilter : OutputFilter
         while( !finished );
 
         kill_bzs();
-        super.commit();
     }
 
     // This function kills the stream: it deallocates the internal state, and
@@ -310,7 +321,7 @@ class Bzip2DecompressionFilter : InputFilter
 
     ***************************************************************************/ 
 
-    void clear()
+    InputStream clear()
     {
         check_valid();
 
@@ -319,6 +330,7 @@ class Bzip2DecompressionFilter : InputFilter
         // stream...
         kill_bzs();
         super.clear();
+        return this;
     }
 
     // This function kills the stream: it deallocates the internal state, and

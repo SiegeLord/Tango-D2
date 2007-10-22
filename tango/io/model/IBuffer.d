@@ -185,11 +185,19 @@ private import tango.io.model.IConduit;
 
 *******************************************************************************/
 
-abstract class IBuffer : InputStream, OutputStream
+abstract class IBuffer : InputStream, OutputStream, Buffered
 {
         alias append opCall;
         alias flush  opCall;
       
+        /***********************************************************************
+                
+                implements Buffered interface
+
+        ***********************************************************************/
+
+        abstract IBuffer buffer ();
+
         /***********************************************************************
                 
                 Return the backing array
@@ -498,7 +506,7 @@ abstract class IBuffer : InputStream, OutputStream
 
         ***********************************************************************/
 
-        abstract void flush ();
+        abstract OutputStream flush ();
 
         /***********************************************************************
         
@@ -506,7 +514,7 @@ abstract class IBuffer : InputStream, OutputStream
 
         ***********************************************************************/
 
-        abstract void clear ();               
+        abstract InputStream clear ();               
 
         /***********************************************************************
         
@@ -688,3 +696,20 @@ abstract class IBuffer : InputStream, OutputStream
 }
 
 
+/*******************************************************************************
+
+        Supported by streams which are prepared to share an internal buffer 
+        instance. This is intended to avoid a situation whereby content is
+        shunted unnecessarily from one buffer to another when "decorator"
+        streams are connected together in arbitrary ways.
+        
+        Do not implement this if the internal buffer should not be accessed 
+        directly by another stream e.g. if wrapper methods manipulate content
+        on the way in or out of the buffer.
+
+*******************************************************************************/
+
+interface Buffered
+{
+        IBuffer buffer();
+}
