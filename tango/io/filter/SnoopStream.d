@@ -45,7 +45,6 @@ class SnoopInput : InputStream
                 this.host = host;
                 this.snoop = snoop ? snoop : &snooper;
                 this.layout = new Layout!(char);
-                host.conduit.attach (this);
         }
 
         /***********************************************************************
@@ -144,7 +143,6 @@ class SnoopOutput : OutputStream
                 this.host = host;
                 this.snoop = snoop ? snoop : &snooper;
                 this.layout = new Layout!(char);
-                host.conduit.attach (this);
         }
 
         /***********************************************************************

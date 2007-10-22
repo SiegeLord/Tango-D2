@@ -25,7 +25,7 @@ private import tango.core.ByteSwap;
 class DataInput : InputFilter, Buffered
 {       
         private bool    flip;
-        private IBuffer input;
+        private final IBuffer input;
 
         /***********************************************************************
 
@@ -164,7 +164,7 @@ class DataInput : InputFilter, Buffered
 class DataOutput : OutputFilter, Buffered
 {       
         private bool    flip;
-        private IBuffer output;
+        private final IBuffer output;
 
         /***********************************************************************
 
@@ -281,28 +281,24 @@ class DataOutput : OutputFilter, Buffered
         }
 }
 
+/*******************************************************************************
 
-version (DataStream)
+*******************************************************************************/
+
+debug (UnitTest)
 {
-import tango.io.Stdout;
-import tango.io.Console;
-import tango.io.FileConduit;
-import tango.io.filter.SnoopStream;
+        import tango.io.Buffer;
 
-void main()
-{
-        auto file = new FileConduit ("myFile", FileConduit.ReadWriteCreate);
+        unittest
+        {
+                auto buf = new Buffer(32);
 
-        auto output = new DataOutput (new SnoopOutput(file));
-        output.write ("blah blah");
-        output.writeInt (1024);
-        output.flush;
-        
-        file.seek (0);
-        auto input = new DataInput (new SnoopInput(file));
-        auto len = input.read (new char[9]);
-        auto x = input.readInt;
+                auto output = new DataOutput (buf);
+                output.write ("blah blah");
+                output.writeInt (1024);
 
-        input.close;
-}
+                auto input = new DataInput (buf);
+                assert (input.read(new char[9]) is 9);
+                assert (input.readInt is 1024);
+        }
 }

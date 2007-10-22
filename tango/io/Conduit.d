@@ -158,10 +158,8 @@ class Conduit : IConduit
 
         /***********************************************************************
 
-                Return the current input stream. The initial input stream
-                is hosted by the conduit itself. Subsequent attachment of
-                stream filters will alter this value.
-
+                Return the current input stream 
+                 
         ***********************************************************************/
         
         final InputStream input ()
@@ -171,39 +169,13 @@ class Conduit : IConduit
 
         /***********************************************************************
 
-                Return the current output stream. The initial output stream
-                is hosted by the conduit itself. Subsequent attachment of
-                stream filters will alter this value.
+                Return the current output stream
 
         ***********************************************************************/
         
         final OutputStream output ()
         {
                 return sink;
-        }
-
-        /***********************************************************************
-
-                Attach an input filter
-
-        ***********************************************************************/
-        
-        final IConduit attach (InputStream source)
-        {
-                this.source = source;
-                return this;
-        }
-
-        /***********************************************************************
-
-                Attach an output filter
-
-        ***********************************************************************/
-        
-        final IConduit attach (OutputStream sink)
-        {
-                this.sink = sink;
-                return this;
         }
 
         /***********************************************************************
@@ -275,7 +247,6 @@ class InputFilter : InputStream
         this (InputStream host)
         {
                 this.host = host;
-                host.conduit.attach (this);
         }
 
         /***********************************************************************
@@ -348,7 +319,6 @@ class OutputFilter : OutputStream
         this (OutputStream host)
         {
                 this.host = host;
-                host.conduit.attach (this);
         }
 
         /***********************************************************************
