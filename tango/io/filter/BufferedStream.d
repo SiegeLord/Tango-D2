@@ -12,105 +12,51 @@
 
 module tango.io.filter.BufferedStream;
 
-private import  tango.io.Buffer,
-                tango.io.Conduit;
-
-private import  tango.io.model.IConduit;
+private import tango.io.Buffer;
 
 /*******************************************************************************
 
-        A conduit filter that ensures its output is written in full. Note
-        that the filter attaches itself to the associated conduit    
+        Buffers the flow of data from a downstream input. An upstream 
+        neighbour can locate and use this instead of creating another.
 
 *******************************************************************************/
 
-class BufferedOutput : OutputFilter, Buffered
+class BufferedInput : Buffer
 {
-        private IBuffer output;
-
         /***********************************************************************
 
                 Propagate ctor to superclass
 
         ***********************************************************************/
 
-        this (OutputStream stream)
+        this (InputStream stream, uint size = 16 * 1024)
         {
-                auto b = cast(Buffered) stream;
-                output = (b ? b.buffer : new Buffer (stream.conduit));
-                super (output);
-        }
-
-        /***********************************************************************
-        
-                Buffered interface
-
-        ***********************************************************************/
-
-        final IBuffer buffer ()
-        {
-                return output;
-        }
-
-        /***********************************************************************
-
-                Consume everything we were given
-
-        ***********************************************************************/
-
-        override uint write (void[] src)
-        {
-                output.append (src.ptr, src.length);
-                return src.length;
+                super (size);
+                super.input = stream;
         }
 }
 
 
 /*******************************************************************************
-
-        A conduit filter that ensures its input is read in full. Note
-        that the filter attaches itself to the associated conduit          
+        
+        Buffers the flow of data to a downstream output. An upstream 
+        neighbour can locate and use this instead of creating another.
 
 *******************************************************************************/
 
-class BufferedInput : InputFilter, Buffered
+class BufferedOutput : Buffer
 {
-        private IBuffer input;
-
         /***********************************************************************
 
                 Propagate ctor to superclass
 
         ***********************************************************************/
 
-        this (InputStream stream)
+        this (OutputStream stream, uint size = 16 * 1024)
         {
-                auto b = cast(Buffered) stream;
-                input = (b ? b.buffer : new Buffer (stream.conduit));
-                super (input);
-        }
-
-        /***********************************************************************
-        
-                Buffered interface
-
-        ***********************************************************************/
-
-        final IBuffer buffer ()
-        {
-                return input;
-        }
-
-        /***********************************************************************
-
-                Fill the provided array. Returns the number of bytes
-                actually read, which will be less that dst.length when
-                Eof has been reached and IConduit.Eof thereafter
-
-        ***********************************************************************/
-
-        override uint read (void[] dst)
-        {
-                return input.fill (dst);
+                super (size);
+                super.output = stream;
         }
 }
+
+
