@@ -54,7 +54,7 @@ class StreamIterator(T)
 {
         protected T[]           slice,
                                 pushed;
-        protected IBuffer       buffer;
+        private IBuffer         buffer_;
 
         /***********************************************************************
 
@@ -78,6 +78,17 @@ class StreamIterator(T)
 
         /***********************************************************************
 
+                Return the associated buffer
+
+        ***********************************************************************/
+
+        final IBuffer buffer ()
+        {
+                return buffer_;
+        }
+
+        /***********************************************************************
+
                 Set the provided conduit as the scanning source
 
         ***********************************************************************/
@@ -85,7 +96,7 @@ class StreamIterator(T)
         final StreamIterator set (InputStream stream)
         {
                 auto b = cast(Buffered) stream;
-                buffer = (b ? b.buffer : new Buffer (stream.conduit));
+                buffer_ = (b ? b.buffer : new Buffer (stream.conduit));
                 return this;
         }
 
@@ -268,10 +279,10 @@ class StreamIterator(T)
 
         private bool consume ()
         {
-                if (buffer.next (&scan))
+                if (buffer_.next (&scan))
                     return true;
 
-                slice = convert (buffer.slice (buffer.readable));
+                slice = convert (buffer_.slice (buffer.readable));
                 return false;
         }
 }
