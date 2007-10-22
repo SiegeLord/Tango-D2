@@ -62,28 +62,18 @@ debug (Process)
  * ---
  * try
  * {
- *     uint i = 0;
+ *     auto p = new Process ("ls -al", null);
+ *     p.execute;
  *
- *     auto p = new Process("ls -al", null);
+ *     Stdout.formatln ("Output from {}:", p.programName);
+ *     Stdout.stream.copy (p.stdout).flush;
+ *     auto result = p.wait;
  *
- *     p.execute();
- *
- *     Stdout.formatln("Output from {0}:", p.programName);
- *
- *     foreach (line; new LineIterator!(char)(p.stdout))
- *     {
- *         Stdout.formatln("line {0}: '{1}'", i++, line);
- *     }
- *
- *     auto result = p.wait();
- *
- *     Stdout.formatln("Process '{0}' ({1}) exited with reason {2}, status {3}",
- *                     p.programName, p.pid, cast(int) result.reason, result.status);
- * }
+ *     Stdout.formatln ("Process '{}' ({}) exited with reason {}, status {}",
+ *                      p.programName, p.pid, cast(int) result.reason, result.status);
+ * } 
  * catch (ProcessException e)
- * {
- *     Stdout.formatln("Process execution failed: {0}", e.toUtf8());
- * }
+ *        Stdout.formatln ("Process execution failed: {}", e);
  * ---
  */
 class Process
