@@ -12,13 +12,10 @@
 
 module tango.io.filter.FormatStream;
 
-private import tango.io.Print;
+private import  tango.io.Print,
+                tango.io.Conduit;
 
-private import tango.io.Conduit;
-
-private import tango.io.model.IConduit;
-
-private import tango.text.convert.Layout;
+private import  tango.text.convert.Layout;
 
 /*******************************************************************************
 

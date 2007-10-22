@@ -14,8 +14,6 @@ module tango.io.filter.MutexStream;
 
 private import tango.io.Conduit;
 
-private import tango.io.model.IConduit;
-
 /*******************************************************************************
 
         A stream filter that serializes access via synchronization     

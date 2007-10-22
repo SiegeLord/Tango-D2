@@ -14,8 +14,6 @@ module tango.io.filter.GreedyStream;
 
 private import tango.io.Conduit;
 
-private import tango.io.model.IConduit;
-
 /*******************************************************************************
 
         A conduit filter that ensures its output is written in full. Note

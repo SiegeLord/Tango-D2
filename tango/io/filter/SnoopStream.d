@@ -15,8 +15,6 @@ module tango.io.filter.SnoopStream;
 private import  tango.io.Console,
                 tango.io.Conduit;
 
-private import  tango.io.model.IConduit;
-
 private import  tango.text.convert.Layout;
 
 private alias void delegate(char[]) Snoop;

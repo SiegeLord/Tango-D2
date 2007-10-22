@@ -14,8 +14,6 @@ module tango.io.filter.LineStream;
 
 private import tango.io.Conduit;
 
-private import tango.io.model.IConduit;
-
 private import tango.text.stream.LineIterator;
 
 /*******************************************************************************
