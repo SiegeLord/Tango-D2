@@ -24,7 +24,7 @@ class FileInput : FileConduit
 {
         /***********************************************************************
 
-                Attach to the provided stream
+                Open a file for reading. Don't forget to use close()
 
         ***********************************************************************/
 
@@ -45,7 +45,7 @@ class FileOutput : FileConduit
 {
         /***********************************************************************
 
-                Attach to the provided stream
+                Open a file for writing. Don't forget to use close()
 
         ***********************************************************************/
 
