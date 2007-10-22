@@ -182,7 +182,7 @@ class QueueFile
 
         final synchronized void flush ()
         {
-                conduit.commit;
+                //conduit.commit;
                 dirty = false;
         }
 
